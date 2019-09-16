@@ -44,12 +44,12 @@ public class JavaInfo {
         MAJOR = Integer.valueOf(versionElements[i++]);
 
         if (i < versionElements.length)
-            MINOR = Integer.valueOf(versionElements[i++]);
+            MINOR = parseIntSafe(versionElements[i++]);
         else
             MINOR = 0;
 
         if (i < versionElements.length)
-            MICRO = Integer.valueOf(versionElements[i]);
+            MICRO = parseIntSafe(versionElements[i]);
         else
             MICRO = 0;
 
@@ -72,41 +72,37 @@ public class JavaInfo {
                 VENDOR = Vendor.UNKNOWN;
         }
 
+        String runtimeVersion = getSystemProperty("java.runtime.version").toLowerCase();
+
+        // Parse service release
         int sr = 0;
-        int fp = 0;
-
-        if (VENDOR == Vendor.IBM) {
-            // Parse service release
-            String runtimeVersion = getSystemProperty("java.runtime.version").toLowerCase();
-            int srloc = runtimeVersion.indexOf("sr");
-            if (srloc > (-1)) {
-                srloc += 2;
-                if (srloc < runtimeVersion.length()) {
-                    int len = 0;
-                    while ((srloc + len < runtimeVersion.length()) && Character.isDigit(runtimeVersion.charAt(srloc + len))) {
-                        len++;
-                    }
-                    sr = Integer.parseInt(runtimeVersion.substring(srloc, srloc + len));
+        int srloc = runtimeVersion.indexOf("sr");
+        if (srloc > (-1)) {
+            srloc += 2;
+            if (srloc < runtimeVersion.length()) {
+                int len = 0;
+                while ((srloc + len < runtimeVersion.length()) && Character.isDigit(runtimeVersion.charAt(srloc + len))) {
+                    len++;
                 }
-            }
-
-            // Parse fixpack
-            int fploc = runtimeVersion.indexOf("fp");
-            if (fploc > (-1)) {
-                fploc += 2;
-                if (fploc < runtimeVersion.length()) {
-                    int len = 0;
-                    while ((fploc + len < runtimeVersion.length()) && Character.isDigit(runtimeVersion.charAt(fploc + len))) {
-                        len++;
-                    }
-                    fp = Integer.parseInt(runtimeVersion.substring(fploc, fploc + len));
-                }
+                sr = parseIntSafe(runtimeVersion.substring(srloc, srloc + len));
             }
         }
-
         SERVICE_RELEASE = sr;
-        FIXPACK = fp;
 
+        // Parse fixpack
+        int fp = 0;
+        int fploc = runtimeVersion.indexOf("fp");
+        if (fploc > (-1)) {
+            fploc += 2;
+            if (fploc < runtimeVersion.length()) {
+                int len = 0;
+                while ((fploc + len < runtimeVersion.length()) && Character.isDigit(runtimeVersion.charAt(fploc + len))) {
+                    len++;
+                }
+                fp = parseIntSafe(runtimeVersion.substring(fploc, fploc + len));
+            }
+        }
+        FIXPACK = fp;
     }
 
     private static final String getSystemProperty(final String propName, final String defaultValue) {
@@ -155,5 +151,16 @@ public class JavaInfo {
 
     public static int fixPack() {
         return instance().FIXPACK;
+    }
+
+    /**
+     * @return the integer value of the string, or 0 if the string cannot be coerced to a string
+     */
+    private static int parseIntSafe(String str) {
+        try {
+            return Integer.parseInt(str);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
     }
 }

@@ -33,7 +33,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 
 public class TrOSGiLogForwarder implements SynchronousLogListener, SynchronousBundleListener {
-    private static final TraceComponent _tc = Tr.register(TrOSGiLogForwarder.class);
+    private static final TraceComponent _tc = Tr.register(TrOSGiLogForwarder.class,OsgiLogConstants.TRACE_GROUP, OsgiLogConstants.MESSAGE_BUNDLE);
 
     final static class OSGiTraceComponent extends TraceComponent {
         private final String ffdcMe;
@@ -54,6 +54,7 @@ public class TrOSGiLogForwarder implements SynchronousLogListener, SynchronousBu
 	private static final String COULD_NOT_GET_SERVICE_FROM_REF = "could not get service from ref";
 	private static final String COULD_NOT_OBTAIN_ALL_REQ_DEPS = "could not obtain all required dependencies";
 	private static final String SERVICE_NOT_AVAILABLE = "service not available from service registry for servicereference";
+	private static final String CANNOT_BE_CALLED_ON_NULL_OBJECT = "cannot be called on null object";
 
     private final Map<Bundle, OSGiTraceComponent> traceComponents = new ConcurrentHashMap<Bundle, OSGiTraceComponent>();
 
@@ -251,7 +252,8 @@ public class TrOSGiLogForwarder implements SynchronousLogListener, SynchronousBu
         String message = logEntry.getMessage().toLowerCase();
         if(message.contains(COULD_NOT_GET_SERVICE_FROM_REF) ||
                 message.contains(COULD_NOT_OBTAIN_ALL_REQ_DEPS) ||
-                message.contains(SERVICE_NOT_AVAILABLE)) {
+                message.contains(SERVICE_NOT_AVAILABLE) ||
+                message.contains(CANNOT_BE_CALLED_ON_NULL_OBJECT)) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "This is not an error, but may indicate high system load - " + logEntry.getMessage(),
                         getObjects(logEntry, false));

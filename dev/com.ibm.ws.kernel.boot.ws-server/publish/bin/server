@@ -55,14 +55,17 @@
 #              or set to n to startup without waiting for a debugger to attach.
 #              The default value is y. 
 #
+# WLP_DEBUG_REMOTE - Whether to allow remote debugging or not. This can be set
+#              to y to allow remote debugging. The default value is n. 
+#
 # WLP_SKIP_UMASK -  Skip setting the umask value to allow the default value 
-#                   to be used.
+#              to be used.
 #
 # WLP_ZOS_PROCEDURE - The name of the STC procedure to be used to start the 
-#                     server in a z/OS environment.
+#              server in a z/OS environment.
 #
 # WLP_ZOS_JOBNAME - The job name to use when starting the server in
-#                   a z/OS environment.
+#              a z/OS environment.
 #
 ###############################################################################
 
@@ -587,10 +590,10 @@ serverEnvDefaults()
     fi
   esac
 
-  # Add -Xquickstart -Xnoaot for client JVMs only.  AOT is ineffective if JVMs
-  # have conflicting options, and it's more important that the server JVMs be
-  # able to use AOT.
-  IBM_JAVA_OPTIONS="-Xquickstart -Xnoaot ${SERVER_IBM_JAVA_OPTIONS}"
+  # Add -Xquickstart -Xnoaot for client JVMs only.  AOT is ineffective if JVMs have conflicting
+  # options, and it's more important that the server JVMs be able to use AOT.
+  # Add -Dcom.ibm.tools.attach.enable=yes to allow self-attach on z/OS
+  IBM_JAVA_OPTIONS="-Xquickstart -Xnoaot -Dcom.ibm.tools.attach.enable=yes ${IBM_JAVA_OPTIONS}"
   export IBM_JAVA_OPTIONS
 
   # Set a default file encoding if needed
@@ -623,7 +626,8 @@ serverEnvAndJVMOptions()
   serverEnv
 
   # Avoids HeadlessException on all platforms and Liberty JVMs appearing as applications and stealing focus on Mac.
-  JVM_OPTIONS_QUOTED=-Djava.awt.headless=true
+  # Declare allowAttachSelf=true so that the VM will permit a late self attach if localConnector-1.0 is enabled
+  JVM_OPTIONS_QUOTED="-Djava.awt.headless=true -Djdk.attach.allowAttachSelf=true"
   SERVER_JVM_OPTIONS_QUOTED=${JVM_OPTIONS_QUOTED}
 
   # Add -XX:MaxPermSize unless WLP_SKIP_MAXPERMSIZE is set.
@@ -665,8 +669,13 @@ serverEnvAndJVMOptions()
     mergeJVMOptions "${WLP_INSTALL_DIR}/etc/jvm.options"
   fi
 
-  # If we are running on Java 9, apply Liberty's built-in java 9 options
-  if [ -f "${JAVA_HOME}/lib/modules" ]; then
+  JPMS_MODULE_FILE_LOCATION="${JAVA_HOME}/lib/modules"
+  if [ -z "${JAVA_HOME}" ]; then
+    JPMS_MODULE_FILE_LOCATION=$(dirname $(dirname $(which java)))/lib/modules
+  fi
+
+  # If we are running on Java 9, apply Liberty's built-in java 9 options  
+  if [ -f "${JPMS_MODULE_FILE_LOCATION}" ]; then
     mergeJVMOptions "${WLP_INSTALL_DIR}/lib/platform/java/java9.options"
   fi
 
@@ -1060,7 +1069,13 @@ case "$ACTION" in
         then
           WLP_DEBUG_SUSPEND=y
         fi
-        JAVA_DEBUG="-Dwas.debug.mode=true -Dcom.ibm.websphere.ras.inject.at.transform=true -Dsun.reflect.noInflation=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=${WLP_DEBUG_SUSPEND},address=${WLP_DEBUG_ADDRESS}"
+        if [ "${WLP_DEBUG_REMOTE}" = "y" ]
+        then
+          WLP_DEBUG_REMOTE_HOST="0.0.0.0:"
+        else
+          WLP_DEBUG_REMOTE_HOST=""
+        fi
+        JAVA_DEBUG="-Dwas.debug.mode=true -Dsun.reflect.noInflation=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=${WLP_DEBUG_SUSPEND},address=${WLP_DEBUG_REMOTE_HOST}${WLP_DEBUG_ADDRESS}"
       fi
 
       serverWorkingDirectory

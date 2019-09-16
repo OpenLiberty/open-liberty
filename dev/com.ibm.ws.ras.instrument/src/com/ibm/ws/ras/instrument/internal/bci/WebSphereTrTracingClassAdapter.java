@@ -14,6 +14,7 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 
+import com.ibm.ws.ras.instrument.internal.main.LibertyTracePreprocessInstrumentation.ClassTraceInfo;
 import com.ibm.ws.ras.instrument.internal.model.ClassInfo;
 import com.ibm.ws.ras.instrument.internal.model.FieldInfo;
 
@@ -43,6 +44,7 @@ public class WebSphereTrTracingClassAdapter extends AbstractTracingRasClassAdapt
     private FieldInfo traceComponentField;
     private boolean traceComponentAlreadyDefined;
 
+
     public WebSphereTrTracingClassAdapter(ClassVisitor visitor, ClassInfo classInfo) {
         super(visitor, classInfo);
 
@@ -63,7 +65,12 @@ public class WebSphereTrTracingClassAdapter extends AbstractTracingRasClassAdapt
         }
     }
 
-    @Override
+    public WebSphereTrTracingClassAdapter(ClassVisitor visitor, ClassInfo classInfo, ClassTraceInfo info) {
+    	super(visitor, classInfo);
+    	traceInfo = info;
+	}
+
+	@Override
     public RasMethodAdapter createRasMethodAdapter(MethodVisitor mv, int access, String name, String descriptor, String signature, String[] exceptions) {
         return new WebSphereTrTracingMethodAdapter(this, mv, access, name, descriptor, signature, exceptions);
     }

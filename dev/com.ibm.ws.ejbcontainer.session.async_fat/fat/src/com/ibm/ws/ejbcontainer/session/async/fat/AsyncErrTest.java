@@ -27,6 +27,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.rules.repeater.FeatureReplacementAction;
@@ -105,10 +106,27 @@ public class AsyncErrTest extends FATServletClient {
      * Invalid bean type - Message Driven Bean
      */
     @Test
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @ExpectedFFDC({ "com.ibm.ws.container.service.state.StateChangeException", "com.ibm.ejs.container.EJBConfigurationException" })
     public void testMDB() throws Exception {
         server.setMarkToEndOfLog();
         server.setServerConfigurationFile("AsyncErr2BeanApp_server.xml");
+        server.waitForConfigUpdateInLogUsingMark(null, "");
+
+        assertNotNull("Message was not logged: CNTR0185E", server.waitForStringInLogUsingMark("CNTR0185E"));
+        assertNotNull("An exception did NOT occurred while starting the application AsyncErr2BeanApp. CWWKZ0002E message should have been found.",
+                      server.waitForStringInLogUsingMark("CWWKZ0002E"));
+    }
+
+    /**
+     * Invalid bean type - Message Driven Bean
+     */
+    @Test
+    @SkipForRepeat(SkipForRepeat.EE7_FEATURES)
+    @ExpectedFFDC({ "com.ibm.ws.container.service.state.StateChangeException", "com.ibm.ejs.container.EJBConfigurationException" })
+    public void testMDB_EE8() throws Exception {
+        server.setMarkToEndOfLog();
+        server.setServerConfigurationFile("AsyncErr2BeanApp_server_EE8.xml");
         server.waitForConfigUpdateInLogUsingMark(null, "");
 
         assertNotNull("Message was not logged: CNTR0185E", server.waitForStringInLogUsingMark("CNTR0185E"));

@@ -12,6 +12,7 @@ package jaxrs2x.cxfClientProps;
 
 import java.util.logging.Logger;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -31,6 +32,9 @@ public class Resource extends Application {
 
     @Context
     private HttpHeaders httpHeaders;
+    
+    @Context
+    HttpServletRequest req;
 
     @GET
     @Path("/{sleepTime}")
@@ -56,5 +60,50 @@ public class Resource extends Application {
         int actualLength = entity.length();
         _log.info("chunking contentLength(from header)=" + contentLength + " actualLength=" + actualLength);
         return contentLength == null ? "CHUNKING" : contentLength + ":" + actualLength;
+    }
+    
+    @GET
+    @Path("echo/{param}")
+    public String echo(@PathParam("param") String param) {        
+        return  param;
+    }
+    
+    
+    @GET
+    @Path("redirect/{param}/{status}")
+    public Response redirect(@PathParam("param") String param,
+                             @PathParam("status") String status) { 
+        _log.info("redirect/{param}/{status} testing status = " + status);
+        return Response.status(Integer.valueOf(status)).header("Location", "http://localhost:" + req.getServerPort() + "/cxfClientPropsApp/resource/redirectecho?param=" + param).build();
+    }
+        
+    @GET
+    @Path("redirectecho")
+    public String redirectEcho(@QueryParam("param") String param) {        
+        return  param;
+    }
+    
+    @GET
+    @Path("redirecthop1/{param}/{status}")
+    public Response redirectHop1(@PathParam("param") String param,
+                                 @PathParam("status") String status) { 
+        _log.info("redirecthop1/{param}/{status} testing status = " + status);
+        return Response.status(Integer.valueOf(status)).header("Location", "http://localhost:" + req.getServerPort() + "/cxfClientPropsApp/resource/redirecthop2?param=" + param + "&status=" + status).build();
+    }
+    
+    @GET
+    @Path("redirecthop2")
+    public Response redirectHop2(@QueryParam("param") String param,
+                                 @QueryParam("status") String status) { 
+        _log.info("redirecthop2 testing status = " + status);
+        return Response.status(Integer.valueOf(status)).header("Location", "http://localhost:" + req.getServerPort() + "/cxfClientPropsApp/resource/redirecthop3?param=" + param + "&status=" + status).build();
+    }
+    
+    @GET
+    @Path("redirecthop3")
+    public Response redirectHop3(@QueryParam("param") String param,
+                                 @QueryParam("status") String status) { 
+        _log.info("redirecthop3 testing status = " + status);
+        return Response.status(Integer.valueOf(status)).header("Location", "http://localhost:" + req.getServerPort() + "/cxfClientPropsApp/resource/redirectecho?param=" + param).build();
     }
 }

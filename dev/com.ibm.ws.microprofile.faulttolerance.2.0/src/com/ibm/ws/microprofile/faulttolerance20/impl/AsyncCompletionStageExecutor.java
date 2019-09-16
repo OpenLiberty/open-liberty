@@ -13,10 +13,14 @@ package com.ibm.ws.microprofile.faulttolerance20.impl;
 import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.ForkJoinWorkerThread;
 import java.util.concurrent.ScheduledExecutorService;
+
+import org.eclipse.microprofile.faulttolerance.exceptions.FaultToleranceException;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.faulttolerance.spi.BulkheadPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.CircuitBreakerPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.FallbackPolicy;
@@ -37,9 +41,12 @@ public class AsyncCompletionStageExecutor<R> extends AsyncExecutor<CompletionSta
 
     private static final TraceComponent tc = Tr.register(AsyncCompletionStageExecutor.class);
 
+    private final ScheduledExecutorService executorService;
+
     public AsyncCompletionStageExecutor(RetryPolicy retry, CircuitBreakerPolicy cbPolicy, TimeoutPolicy timeoutPolicy, FallbackPolicy fallbackPolicy, BulkheadPolicy bulkheadPolicy,
                                         ScheduledExecutorService executorService, WSContextService contextService, MetricRecorder metricRecorder) {
         super(retry, cbPolicy, timeoutPolicy, fallbackPolicy, bulkheadPolicy, executorService, contextService, metricRecorder);
+        this.executorService = executorService;
     }
 
     @Override
@@ -49,28 +56,54 @@ public class AsyncCompletionStageExecutor<R> extends AsyncExecutor<CompletionSta
 
     @Override
     protected void setResult(AsyncExecutionContextImpl<CompletionStage<R>> executionContext, MethodResult<CompletionStage<R>> result) {
-        CompletableFuture<R> resultWrapper = (CompletableFuture<R>) executionContext.getResultWrapper();
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(tc, "Method {0} final fault tolerance result: {1}", executionContext.getMethod(), result);
+        if (System.getSecurityManager() != null && Thread.currentThread() instanceof ForkJoinWorkerThread) {
+            // Workaround in case the user completes the result on a ForkJoin thread
+            // Note: user should _never_ be using ForkJoin threads but we'll try to handle this gracefully
+            // If a security manager is present, we won't be able to apply thread context so submit a new task to set the result
+            executorService.submit(() -> doSetResult(executionContext, result));
+        } else {
+            doSetResult(executionContext, result);
         }
+    }
+
+    @FFDCIgnore(IllegalStateException.class)
+    private void doSetResult(AsyncExecutionContextImpl<CompletionStage<R>> executionContext, MethodResult<CompletionStage<R>> result) {
+        CompletableFuture<R> resultWrapper = (CompletableFuture<R>) executionContext.getResultWrapper();
 
         // Completing the return wrapper may cause user code to run, so set the thread context first as we may be on an async thread
         ThreadContextDescriptor threadContext = executionContext.getThreadContextDescriptor();
-        ArrayList<ThreadContext> contexts = threadContext.taskStarting();
-
         try {
-            if (result.isFailure()) {
-                resultWrapper.completeExceptionally(result.getFailure());
-            } else {
-                result.getResult().thenAccept(resultWrapper::complete);
-                result.getResult().exceptionally((ex) -> {
-                    resultWrapper.completeExceptionally(ex);
-                    return null;
-                });
+            ArrayList<ThreadContext> contexts = null;
+            try {
+                contexts = threadContext.taskStarting();
+            } catch (IllegalStateException e) {
+                // Component for captured context is no longer running
+                result = MethodResult.internalFailure(createAppStoppedException(e, executionContext));
             }
-        } finally {
-            threadContext.taskStopping(contexts);
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(tc, "Execution {0} final fault tolerance result: {1}", executionContext.getId(), result);
+            }
+
+            try {
+                if (result.isFailure()) {
+                    resultWrapper.completeExceptionally(result.getFailure());
+                } else {
+                    result.getResult().thenAccept(resultWrapper::complete);
+                    result.getResult().exceptionally((ex) -> {
+                        resultWrapper.completeExceptionally(ex);
+                        return null;
+                    });
+                }
+            } finally {
+                if (contexts != null) {
+                    threadContext.taskStopping(contexts);
+                }
+            }
+        } catch (Throwable t) {
+            Tr.error(tc, "internal.error.CWMFT4998E", t);
+            resultWrapper.completeExceptionally(new FaultToleranceException(Tr.formatMessage(tc, "internal.error.CWMFT4998E", t), t));
         }
     }
 

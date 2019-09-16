@@ -1,0 +1,354 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME SERV1/ws/code/security/src/com/ibm/ws/security/oauth20/resources/ProviderMsgs.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#COMPONENTPREFIX CWOAU
+#COMPONENTNAMEFOR CWOAU WebSphere OAuth
+
+# Error Messages
+# --------------
+# The text for the explanation (CMSG0001) and useraction (CMSG0002)
+# appears in the *Msgs.xml file in build/messages directory.
+
+
+security.oauth20.init.start=CWOAU0001I: Prob\u00edh\u00e1 inicializace poskytovatel\u016f OAuth 20.
+security.oauth20.init.start.explanation=Byla zah\u00e1jena inicializace modul\u016f OAuth.
+security.oauth20.init.start.useraction=Nen\u00ed. Zpr\u00e1va je pouze informa\u010dn\u00ed.
+
+security.oauth20.admin.enableTAI=CWOAU0002I: TAI OAuth \u00fasp\u011b\u0161n\u011b povoleno.
+security.oauth20.admin.enableTAI.explanation=Zp\u0159\u00edstupn\u011bn\u00ed TAI OAuth \u00fasp\u011b\u0161n\u011b dokon\u010deno.
+security.oauth20.admin.enableTAI.useraction=Nen\u00ed. Zpr\u00e1va je pouze informa\u010dn\u00ed.
+
+security.oauth20.admin.createProvider=CWOAU0003I: Poskytovatel OAuth \u00fasp\u011b\u0161n\u011b vytvo\u0159en.
+security.oauth20.admin.createProvider.explanation=Vytvo\u0159en\u00ed poskytovatele OAuth \u00fasp\u011b\u0161n\u011b dokon\u010deno.
+security.oauth20.admin.createProvider.useraction=Nen\u00ed. Zpr\u00e1va je pouze informa\u010dn\u00ed.
+
+security.oauth20.admin.serverRunningCheck=CWOAU0004E: Chyba: P\u0159\u00edkazy administrace je nutn\u00e9 spou\u0161t\u011bt v re\u017eimu p\u0159ipojen\u00ed ke spu\u0161t\u011bn\u00e9mu serveru.
+security.oauth20.admin.serverRunningCheck.explanation=P\u0159\u00edkazy administrace OAuth vy\u017eaduj\u00ed pro \u00fapravu nastaven\u00ed spu\u0161t\u011bn\u00e9 prost\u0159ed\u00ed serveru.
+security.oauth20.admin.serverRunningCheck.useraction=Spus\u0165te server nebo spr\u00e1vce implementace a operaci opakujte.
+
+security.oauth20.admin.deleteProvider=CWOAU0005I: Poskytovatel OAuth \u00fasp\u011b\u0161n\u011b odstran\u011bn.
+security.oauth20.admin.deleteProvider.explanation=Odstran\u011bn\u00ed poskytovatele OAuth \u00fasp\u011b\u0161n\u011b dokon\u010deno.
+security.oauth20.admin.deleteProvider.useraction=Nen\u00ed. Zpr\u00e1va je pouze informa\u010dn\u00ed.
+
+security.oauth20.admin.fileExists=CWOAU0006E: N\u00e1zev souboru ji\u017e existuje.
+security.oauth20.admin.fileExists.explanation=Zadan\u00fd n\u00e1zev souboru nesm\u00ed existovat.
+security.oauth20.admin.fileExists.useraction=Zadejte nov\u00fd n\u00e1zev souboru.
+
+security.oauth20.admin.providerNotFound=CWOAU0007E: Poskytovatel OAuth nebyl nalezen.
+security.oauth20.admin.providerNotFound.explanation=Zadan\u00fd poskytovatel OAuth neexistuje.
+security.oauth20.admin.providerNotFound.useraction=Zkontrolujte n\u00e1zev poskytovatele OAuth a operaci opakujte.
+
+security.oauth20.admin.exportProps=CWOAU0008I: Konfigurace \u00fasp\u011b\u0161n\u011b zaps\u00e1na do {0}
+security.oauth20.admin.exportProps.explanation=P\u0159\u00edkaz byl \u00fasp\u011b\u0161n\u011b proveden.
+security.oauth20.admin.exportProps.useraction=Nen\u00ed. Zpr\u00e1va je pouze informa\u010dn\u00ed.
+
+security.oauth20.admin.fileNotFound=CWOAU0009E: Soubor nenalezen: {0}
+security.oauth20.admin.fileNotFound.explanation=Uveden\u00fd n\u00e1zev souboru neexistuje.
+security.oauth20.admin.fileNotFound.useraction=Zkontrolujte n\u00e1zev souboru a operaci opakujte.
+
+security.oauth20.admin.importProps=CWOAU0010I: Konfigurace \u00fasp\u011b\u0161n\u011b importov\u00e1na.
+security.oauth20.admin.importProps.explanation=P\u0159\u00edkaz byl \u00fasp\u011b\u0161n\u011b proveden.
+security.oauth20.admin.importProps.useraction=Nen\u00ed. Zpr\u00e1va je pouze informa\u010dn\u00ed.
+
+security.oauth20.mbean.invoked=CWOAU0011I: OAuth20MBean zpracov\u00e1v\u00e1 p\u0159\u00edkaz {0}.
+security.oauth20.mbean.invoked.explanation=V tomto uzlu byl vyvol\u00e1n objekt OAuth typu MBean pro spu\u0161t\u011bn\u00ed p\u0159\u00edkazu. 
+security.oauth20.mbean.invoked.useraction=Nen\u00ed. Zpr\u00e1va je pouze informa\u010dn\u00ed.
+
+security.oauth20.init.error=CWOAU0012E: Chyba p\u0159i inicializaci r\u00e1mce OAuth
+security.oauth20.init.error.explanation=Nezda\u0159ilo se inicializovat r\u00e1mec OAuth.
+security.oauth20.init.error.useraction=Dal\u0161\u00ed informace viz podrobnosti v\u00fdjimky. 
+
+security.oauth20.mbean.client.invoked=CWOAU0013I: OAuth20ClientMBean zpracov\u00e1v\u00e1 p\u0159\u00edkaz {0}.
+security.oauth20.mbean.client.invoked.explanation=V tomto uzlu byl vyvol\u00e1n objekt OAuth typu MBean pro spu\u0161t\u011bn\u00ed p\u0159\u00edkazu. 
+security.oauth20.mbean.client.invoked.useraction=Nen\u00ed. Zpr\u00e1va je pouze informa\u010dn\u00ed.
+
+security.oauth20.mbean.none.found=CWOAU0014E: Nebyly nalezeny \u017e\u00e1dn\u00e9 objekty OAuth Client typu MBean, operace s tabulkami klienta v pam\u011bti se nezda\u0159\u00ed.
+security.oauth20.mbean.none.found.explanation=Chyba konfigurace na\u010detla registraci nebo vyhled\u00e1n\u00ed objekt\u016f MBean typu OAuth20ClientMBean.
+security.oauth20.mbean.none.found.useraction=Dal\u0161\u00ed podrobnosti viz protokoly trasov\u00e1n\u00ed registrace objekt\u016f typu MBean.
+
+##  client manager message
+security.oauth20.client.delete.error=CWOAU0015E: Nezda\u0159ilo se odstranit klienta s ID = {0}.
+security.oauth20.client.delete.error.explanation=Poskytovateli klienta se nezda\u0159ilo odstranit ur\u010den\u00e9ho klienta kv\u016fli intern\u00ed chyb\u011b.
+security.oauth20.client.delete.error.useraction=Nen\u00ed. Zpr\u00e1va je pouze informa\u010dn\u00ed.
+
+security.oauth20.client.update.error=CWOAU0016E: Nezda\u0159ilo se aktualizovat klienta s ID = {0}.
+security.oauth20.client.update.error.explanation=Poskytovateli klienta se nezda\u0159ilo aktualizovat ur\u010den\u00e9ho klienta kv\u016fli intern\u00ed chyb\u011b.
+security.oauth20.client.update.error.useraction=Nen\u00ed. Zpr\u00e1va je pouze informa\u010dn\u00ed.
+
+security.oauth20.client.create.error=CWOAU0017E: Nezda\u0159ilo se vytvo\u0159it klienta.
+security.oauth20.client.create.error.explanation=Poskytovateli klienta se nezda\u0159ilo vytvo\u0159it nov\u00e9ho klienta kv\u016fli intern\u00ed chyb\u011b.
+security.oauth20.client.create.error.useraction=Nen\u00ed. Zpr\u00e1va je pouze informa\u010dn\u00ed.
+
+security.oauth20.endpoint.template.forward.error=CWOAU0018E: Nelze z\u00edskat dispe\u010der po\u017eadavk\u016f ur\u010den\u00fd konfigurac\u00ed {0} v kontextu = {1} na cest\u011b = {2}. 
+security.oauth20.endpoint.template.forward.error.explanation=Servlet koncov\u00e9ho bodu OAuth20 nem\u016f\u017ee naj\u00edt ur\u010den\u00fd dispe\u010der po\u017eadavk\u016f pro vykreslen\u00ed \u0161ablony. 
+security.oauth20.endpoint.template.forward.error.useraction=Znovu zkontrolujte konfigura\u010dn\u00ed parametr a ujist\u011bte se, \u017ee zadan\u00fd kontextov\u00fd ko\u0159enov\u00fd adres\u00e1\u0159 a cesta existuj\u00ed.
+
+
+##  OAuth2.0 error handler message
+security.oauth20.error.access.denied=CWOAU0019E: Nem\u00e1te autorizaci pro p\u0159\u00edstup k tomuto chr\u00e1n\u011bn\u00e9mu prost\u0159edku.
+security.oauth20.error.access.denied.explanation=Parametr username v po\u017eadavku OAuth nebyl zad\u00e1n nebo se jednalo o \u0159et\u011bzec s nulovou d\u00e9lkou. 
+security.oauth20.error.access.denied.useraction=Zadejte v po\u017eadavku OAuth platn\u00fd parametr username.
+
+security.oauth20.error.invalid.authorizationcode=CWOAU0020E: Autoriza\u010dn\u00ed k\u00f3d {0} nepat\u0159\u00ed klientovi, kter\u00fd se jej pokou\u0161\u00ed pou\u017e\u00edt: {1}.
+security.oauth20.error.invalid.authorizationcode.explanation=Parametr client_id ur\u010den\u00fd v po\u017eadavku OAuth neodpov\u00edd\u00e1 hodnot\u011b ID klienta v autoriza\u010dn\u00edm k\u00f3du. Tyto hodnoty si maj\u00ed odpov\u00eddat. P\u0159\u00ed\u010dinou t\u00e9to chyby m\u016f\u017ee b\u00fdt, \u017ee byl parametr client_id v po\u017eadavku OAuth b\u011bhem toku OAuth zm\u011bn\u011bn.
+security.oauth20.error.invalid.authorizationcode.useraction=Ujist\u011bte se, \u017ee je hodnota parametru client_id v po\u017eadavku OAuth stejn\u00e1 jako hodnota ID klienta pou\u017eit\u00e1 k z\u00edsk\u00e1n\u00ed autoriza\u010dn\u00edho k\u00f3du. 
+
+security.oauth20.error.parameter.format=CWOAU0021E: Parametr [{0}] obsahuje neplatn\u011b form\u00e1tovanou hodnotu: [{1}].
+security.oauth20.error.parameter.format.explanation=Hodnota parametru scope v po\u017eadavku OAuth je neplatn\u00e1. Parametr scope sm\u00ed obsahovat pouze tyto hexadecim\u00e1ln\u00ed znaky: [x21, x(23 a\u017e 5B), x(5D a\u017e 7E)]
+security.oauth20.error.parameter.format.useraction=Ujist\u011bte se, \u017ee parametr scope obsahuje pouze podporovan\u00e9 znaky.
+
+security.oauth20.error.duplicate.parameter=CWOAU0022E: N\u00e1sleduj\u00edc\u00ed parametr OAuth byl v po\u017eadavku uveden v\u00edc ne\u017e jednou: {0}
+security.oauth20.error.duplicate.parameter.explanation=V r\u00e1mci po\u017eadavku OAuth byl v\u00edcekr\u00e1t zad\u00e1n stejn\u00fd parametr.
+security.oauth20.error.duplicate.parameter.useraction=Znovu zkontrolujte parametr v po\u017eadavku OAuth a ujist\u011bte se, \u017ee je zad\u00e1n jen jednou.
+
+# do not translate client_id
+security.oauth20.error.invalid.client=CWOAU0023E: Poskytovatel slu\u017eby OAuth nena\u0161el klienta {0}.
+security.oauth20.error.invalid.client.explanation=Poskytovatel slu\u017eby OAuth nena\u0161el klienta uveden\u00e9ho v hodnot\u011b parametru ID klienta po\u017eadavku OAuth.
+security.oauth20.error.invalid.client.useraction=Ujist\u011bte se, \u017ee je klient zaregistrovan\u00fd na poskytovateli slu\u017eby OAuth, nebo zadejte do hodnoty parametru client_id registrovan\u00e9ho klienta. D\u00e1le se ujist\u011bte, \u017ee klient je v konfiguraci poskytovatele slu\u017eeb OAuth povolen.
+
+#do not translate client_secret
+security.oauth20.error.invalid.clientsecret=CWOAU0024E: Klient OAuth {0} p\u0159edlo\u017eil v po\u017eadavku OAuth neplatn\u00e9 utajen\u00e9 \u00fadaje klienta.
+security.oauth20.error.invalid.clientsecret.explanation=Hodnota parametru client_secret v po\u017eadavku OAuth byla neplatn\u00e1.
+security.oauth20.error.invalid.clientsecret.useraction=Zkontrolujte hodnotu parametru client_secret v po\u017eadavku OAuth a ujist\u011bte se, \u017ee souhlas\u00ed s hodnotou utajen\u00fdch \u00fadaj\u016f klienta registrovan\u00e9ho v konfiguraci poskytovatele slu\u017eby OAuth.
+
+security.oauth20.error.invalid.granttype=CWOAU0025E: Parametr grant_type byl neplatn\u00fd: {0}
+security.oauth20.error.invalid.granttype.explanation=Hodnota parametru grant_type v po\u017eadavku OAuth je neplatn\u00e1.
+security.oauth20.error.invalid.granttype.useraction=Ujist\u011bte se, \u017ee je hodnota parametru grant_type v po\u017eadavku OAuth jednou z t\u011bchto hodnot: authorization_code, password, client_credentials, refresh_token, implicit, urn:ietf:params:oauth:grant-type:jwt-bearer
+
+security.oauth20.error.invalid.redirecturi=CWOAU0026E: Parametr redirect URI byl neplatn\u00fd: {0}
+security.oauth20.error.invalid.redirecturi.explanation=Hodnota parametru redirect URI v po\u017eadavku OAuth pravd\u011bpodobn\u011b nen\u00ed platn\u00fdm absolutn\u00edm identifik\u00e1torem URI.
+security.oauth20.error.invalid.redirecturi.useraction=Ujist\u011bte se, \u017ee hodnota parametru redirect URI z po\u017eadavku OAuth je platnou hodnotou absolutn\u00edho identifik\u00e1toru URI.
+
+security.oauth20.error.invalid.responsetype=CWOAU0027E: Parametr response_type byl neplatn\u00fd: {0}
+security.oauth20.error.invalid.responsetype.explanation=Hodnota parametru response_type v po\u017eadavku OAuth je neplatn\u00e1.
+security.oauth20.error.invalid.responsetype.useraction=Zkontrolujte hodnotu parametru response_type v po\u017eadavku OAuth a ujist\u011bte se, \u017ee obsahuje jednu z t\u011bchto hodnot: code, token.
+
+security.oauth20.error.invalid.scope=CWOAU0028E: Po\u017eadovan\u00fd rozsah: [{0}] p\u0159esahuje rozsah ud\u011blen\u00fd vlastn\u00edkem prost\u0159edku: [{1}].
+security.oauth20.error.invalid.scope.explanation=Hodnota parametru scope v po\u017eadavku OAuth nesm\u00ed b\u00fdt \u0161ir\u0161\u00ed ne\u017e rozsah schv\u00e1len\u00fd pro dan\u00e9ho klienta.
+security.oauth20.error.invalid.scope.useraction=Zkontrolujte hodnotu parametru scope v po\u017eadavku OAuth a ujist\u011bte se, \u017ee se rovn\u00e1 rozsahu, kter\u00fd byl schv\u00e1len vlastn\u00edkem prost\u0159edku, nebo je jeho podmno\u017einou.
+
+security.oauth20.error.invalid.token=CWOAU0029E: V mezipam\u011bti token\u016f nebyl nalezen token s kl\u00ed\u010dem: {0} typu: {1} podtypu: {2}.
+security.oauth20.error.invalid.token.explanation=Token OAuth bu\u010f nen\u00ed v mezipam\u011bti, nebo typ, p\u0159\u00edpadn\u011b subtyp tokenu nesouhlas\u00ed s o\u010dek\u00e1vanou hodnotou.
+security.oauth20.error.invalid.token.useraction=Ujist\u011bte se, \u017ee klient p\u0159idru\u017een\u00fd k tokenu nebyl v konfiguraci poskytovatele OAuth vypnut\u00fd. Ujist\u011bte se d\u00e1le, \u017ee hodnota type i subType tokenu maj\u00ed v\u00e1mi o\u010dek\u00e1van\u00e9 hodnoty.
+
+security.oauth20.error.invalid.tokenrequestmethod=CWOAU0030E: V koncov\u00e9m bod\u011b token\u016f byla pou\u017eita neplatn\u00e1 metoda HTTP: {0}
+security.oauth20.error.invalid.tokenrequestmethod.explanation=Metoda HTTP pou\u017eit\u00e1 klientem OAuth je neplatn\u00e1.
+security.oauth20.error.invalid.tokenrequestmethod.useraction=Ujist\u011bte se, \u017ee klient vyu\u017e\u00edv\u00e1 metodu HTTP POST.
+
+security.oauth20.error.mismatched.clientauthentication=CWOAU0031E: Parametr client_id p\u0159edan\u00fd v po\u017eadavku koncov\u00e9mu bodu token\u016f: {0} neodpov\u00eddal ov\u011b\u0159en\u00e9mu klientovi uveden\u00e9mu ve vol\u00e1n\u00ed rozhran\u00ed API: {1}
+security.oauth20.error.mismatched.clientauthentication.explanation=Hodnota parametru client_id ve vol\u00e1n\u00ed API neodpov\u00eddala ID klienta v autoriza\u010dn\u00edm k\u00f3du, kter\u00fd byl zasl\u00e1n klientu.
+security.oauth20.error.mismatched.clientauthentication.useraction=Zkontrolujte parametr client_id v po\u017eadavku OAuth nebo vol\u00e1n\u00ed rozhran\u00ed API a ujist\u011bte se, \u017ee odpov\u00edd\u00e1 ID klienta pou\u017eit\u00e9mu k z\u00edsk\u00e1n\u00ed autoriza\u010dn\u00edho k\u00f3du.
+
+security.oauth20.error.mismatched.redirecturi=CWOAU0032E: P\u0159ijat\u00fd identifik\u00e1tor URI pro p\u0159esm\u011brov\u00e1n\u00ed: {0} neodpov\u00edd\u00e1 identifik\u00e1toru URI pro p\u0159esm\u011brov\u00e1n\u00ed, pro kter\u00fd bylo ud\u011blen\u00ed opr\u00e1vn\u011bn\u00ed vyd\u00e1no: {1}
+security.oauth20.error.mismatched.redirecturi.explanation=Hodnota parametru redirect_uri v po\u017eadavku OAuth neodpov\u00edd\u00e1 atributu redirect URI v registrovan\u00e9m klientu.
+security.oauth20.error.mismatched.redirecturi.useraction=Zkontrolujte hodnotu parametru redirect_uri v po\u017eadavku OAuth a ujist\u011bte se, \u017ee odpov\u00edd\u00e1 atributu redirect URI, kter\u00fd existuje v registrovan\u00e9m klientu.
+
+security.oauth20.error.missing.parameter=CWOAU0033E: Chyb\u011bl povinn\u00fd b\u011bhov\u00fd parametr: {0}
+security.oauth20.error.missing.parameter.explanation=B\u011bhov\u00fd k\u00f3d poskytovatele OAuth nena\u0161el p\u0159i zpracov\u00e1n\u00ed po\u017eadavku klienta povinn\u00fd parametr.
+security.oauth20.error.missing.parameter.useraction=Zkontrolujte chyb\u011bj\u00edc\u00ed parametr v po\u017eadavku OAuth a ujist\u011bte se, \u017ee je zad\u00e1n.
+
+security.oauth20.error.publicclient.credential=CWOAU0034E: Ve\u0159ejn\u00fd klient se pokusil o p\u0159\u00edstup ke koncov\u00e9mu bodu token\u016f s pomoc\u00ed typu ud\u011blen\u00ed opr\u00e1vn\u011bn\u00ed client_credentials. Identifik\u00e1tor client_id je: {0}
+security.oauth20.error.publicclient.credential.explanation=Ve\u0159ejn\u00fd klient OAuth nem\u00e1 povoleno pou\u017e\u00edvat typ ud\u011blen\u00ed opr\u00e1vn\u011bn\u00ed client_credentials.
+security.oauth20.error.publicclient.credential.useraction=Zkontrolujte hodnotu parametru grant_type v po\u017eadavku OAuth a pou\u017eijte pro ve\u0159ejn\u00e9ho klienta jin\u00fd typ ud\u011blen\u00ed opr\u00e1vn\u011bn\u00ed.
+
+security.oauth20.error.publicclient.forbidden=CWOAU0035E: Ve\u0159ejn\u00fd klient se pokusil o p\u0159\u00edstup ke koncov\u00e9mu bodu token\u016f a ve\u0159ejn\u00ed klienti jsou v t\u00e9to konfiguraci komponent zak\u00e1z\u00e1ni. Identifik\u00e1tor client_id je: {0}
+security.oauth20.error.publicclient.forbidden.explanation=Poskytovatel OAuth je nakonfigurov\u00e1n tak, aby nepovoloval ve\u0159ejn\u00fdm klient\u016fm p\u0159\u00edstup ke koncov\u00e9mu bodu token\u016f.
+security.oauth20.error.publicclient.forbidden.useraction=Pokud chcete ve\u0159ejn\u00fdm klient\u016fm p\u0159\u00edstup povolit, nastavte atribut allowPublicClients v konfiguraci poskytovatele OAuth na hodnotu true.
+
+security.oauth20.error.refreshtoken.invalid.client=CWOAU0036E: Token obnoven\u00ed: {0} nepat\u0159\u00ed klientovi, kter\u00fd se jej pokou\u0161\u00ed pou\u017e\u00edt: {1}
+security.oauth20.error.refreshtoken.invalid.client.explanation=Hodnota parametru client_id v po\u017eadavku OAuth neodpov\u00edd\u00e1 ID klienta v aktualiza\u010dn\u00edm tokenu.
+security.oauth20.error.refreshtoken.invalid.client.useraction=Zkontrolujte hodnotu parametru client_id v po\u017eadavku OAuth a ujist\u011bte se, \u017ee odpov\u00edd\u00e1 ID klienta obsa\u017een\u00e9mu v aktualiza\u010dn\u00edm tokenu.
+
+security.oauth20.error.wrong.http.scheme=CWOAU0037E: V ur\u010den\u00e9m koncov\u00e9m bod\u011b: {0} se pou\u017e\u00edv\u00e1 sch\u00e9ma HTTP, je po\u017eadov\u00e1n protokol HTTPS.
+security.oauth20.error.wrong.http.scheme.explanation=Poskytovatel OAuth vy\u017eaduje, aby po\u017eadavek OAuth pou\u017e\u00edval protokol HTTPS, ale v adrese URL po\u017eadavku bylo pou\u017eito HTTP.
+security.oauth20.error.wrong.http.scheme.useraction=Zkontrolujte adresu URL po\u017eadavku v po\u017eadavku OAuth a ujist\u011bte se, \u017ee pou\u017e\u00edv\u00e1 HTTPS.
+
+security.oauth20.endpoint.client.auth.error=CWOAU0038E: Klienta nelze ov\u011b\u0159it. Bu\u010f je ID klienta: {0}, nebo je chybn\u00fd utajen\u00fd \u00fadaj klienta.
+security.oauth20.endpoint.client.auth.error.explanation=Poskytovatel OAuth nem\u016f\u017ee ov\u011b\u0159it klienta. 
+security.oauth20.endpoint.client.auth.error.useraction=Zkontrolujte, zda je ID klienta a utajen\u00fd \u00fadaj klienta platn\u00fd a zda souhlas\u00ed s konfigurac\u00ed klienta OAuth a klienta pro p\u0159ipojen\u00ed OpenID.
+
+security.oauth20.filter.request.null=CWOAU0039W: Po\u017eadavek sm\u011brovan\u00fd na adresu URL koncov\u00e9ho bodu [{0}] poskytovatel OAuth nerozpoznal jako platn\u00fd po\u017eadavek.
+security.oauth20.filter.request.null.explanation=U po\u017eadavk\u016f OAuth 2.0 a OpenID Connect se o\u010dek\u00e1v\u00e1 nasm\u011brov\u00e1n\u00ed na specifickou podmno\u017einu koncov\u00fdch bod\u016f. Mo\u017en\u00e1 nen\u00ed spr\u00e1vn\u011b naform\u00e1tovan\u00e1 adresa URL po\u017eadavku nebo byl po\u017eadavek sm\u011brov\u00e1n na kontext nebo koncov\u00fd bod, kter\u00fd tyto po\u017eadavky nepodporuje.
+security.oauth20.filter.request.null.useraction=Zkontrolujte cestu po\u017eadavku, abyste se ujistili, zda je spr\u00e1vn\u011b naform\u00e1tov\u00e1n a nasm\u011brov\u00e1n k platn\u00e9mu koncov\u00e9mu bodu, kter\u00fd podporuje po\u017eadavky OAuth 2.0, p\u0159\u00edpadn\u011b OpenID Connect.
+
+security.oauth20.error.authorization=CWOAU0039A: Nezda\u0159ila se autorizace u\u017eivatele {0}. U\u017eivatel nem\u00e1 p\u0159\u00edstup k \u017e\u00e1dn\u00e9 z rol\u00ed po\u017eadovan\u00fdch pro OAuth 2.0 a po\u017eadavek OpenID Connect.
+security.oauth20.error.authorization.explanation=U\u017eivatel nem\u00e1 nezbytn\u00e9 opr\u00e1vn\u011bn\u00ed pro p\u0159\u00edstup k prost\u0159edku OAuth 2.0 a OpenID Connect.
+security.oauth20.error.authorization.useraction=Pokud se jedn\u00e1 o neo\u010dek\u00e1van\u00e9 chov\u00e1n\u00ed, obra\u0165te se na administr\u00e1tora zabezpe\u010den\u00ed. U\u017eivatel mus\u00ed b\u00fdt namapov\u00e1n na jednu z rol\u00ed v map\u011b rol\u00ed zabezpe\u010den\u00ed webov\u00fdch aplikac\u00ed OAuth.
+
+security.oauth20.error.filter.multiple.matching=CWOAU0041E: Krit\u00e9ria filtru odpov\u00eddaj\u00ed v\u00edce ne\u017e jednomu poskytovateli [{0}] pro zpracov\u00e1n\u00ed po\u017eadavku. Krit\u00e9ria filtru by se mezi poskytovateli nem\u011bla p\u0159ekr\u00fdvat. 
+security.oauth20.error.filter.multiple.matching.explanation=Po\u017eadavky OAuth 2.0 a OpenID Connect o\u010dek\u00e1valy, \u017ee budou nasm\u011brov\u00e1ny na specifick\u00e9ho poskytovatele na z\u00e1klad\u011b krit\u00e9ri\u00ed filtru. Tento po\u017eadavek v\u0161ak spl\u0148uje krit\u00e9ria pro v\u00edce konfigurac\u00ed filtr\u016f poskytovatel\u016f.
+security.oauth20.error.filter.multiple.matching.useraction=Zkontrolujte konfiguraci filtru ka\u017ed\u00e9ho poskytovatele a ujist\u011bte se, \u017ee se krit\u00e9ria filtr\u016f mezi sebou nep\u0159ekr\u00fdvaj\u00ed.
+
+# do not translate prompt and none
+security.oauth20.error.invalid.authorization.prompt.none.value=CWOAU0042E: Hodnota parametru [{1}] po\u017eadavku na autorizaci [{0}] nen\u00ed platn\u00e1, proto\u017ee m\u00e1 krom\u011b ostatn\u00edch hodnot i hodnotu ''none''.
+security.oauth20.error.invalid.authorization.prompt.none.value.explanation=Parametr prompt nesm\u00ed obsahovat jin\u00e9 hodnoty, je-li zad\u00e1na hodnota 'none'.
+security.oauth20.error.invalid.authorization.prompt.none.value.useraction=Zadejte do parametru prompt pouze hodnotu 'none', nebo do n\u011bj zadejte jin\u00e9 hodnoty bez hodnoty 'none'.
+
+security.oauth20.error.authorization.internal.ioexception=CWOAU0043E: Koncov\u00fd bod autorizace OAuth nemohl p\u0159esm\u011brovat agenta u\u017eivatele na identifik\u00e1tor URI pro p\u0159esm\u011brov\u00e1n\u00ed [{0}], proto\u017ee do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce java.io.IOException se zpr\u00e1vou: {1}
+security.oauth20.error.authorization.internal.ioexception.explanation=P\u0159i pokusu p\u0159esm\u011brovat na identifik\u00e1tor URI pro p\u0159esm\u011brov\u00e1n\u00ed klienta do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce java.io.IOException.
+security.oauth20.error.authorization.internal.ioexception.useraction=Zkontrolujte zpr\u00e1vu v\u00fdjimky.
+
+security.oauth20.error.authorization.internal.missing.issuer=CWOAU0044E: Koncov\u00fd bod autorizace OAuth nemohl zpracovat po\u017eadavek OAuth, proto\u017ee nebyl nalezen \u017e\u00e1dn\u00fd identifik\u00e1tor vydavatele.
+security.oauth20.error.authorization.internal.missing.issuer.explanation=Chyb\u00ed identifik\u00e1tor vydavatele, kter\u00fd je nezbytn\u00fd pro dokon\u010den\u00ed po\u017eadavku na prost\u0159edek OAuth. Jedn\u00e1 se o vnit\u0159n\u00ed chybu serveru.
+security.oauth20.error.authorization.internal.missing.issuer.useraction=Nen\u00ed.
+
+security.oauth20.error.token.internal.exception=CWOAU0045E: Koncov\u00fd bod tokenu OAuth nemohl zapsat odezvu HTTP klientovi OAuth {0}, proto\u017ee do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce se zpr\u00e1vou: {1}
+security.oauth20.error.token.internal.exception.explanation=P\u0159i pokusu zapsat odezvu HTTP na po\u017eadavek tokenu OAuth do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce.
+security.oauth20.error.token.internal.exception.useraction=Zkontrolujte zpr\u00e1vu v\u00fdjimky.
+
+security.oauth20.error.token.internal.missing.issuer=CWOAU0046E: Koncov\u00fd bod tokenu OAuth nemohl zpracovat po\u017eadavek OAuth, proto\u017ee nebyl nalezen \u017e\u00e1dn\u00fd identifik\u00e1tor vydavatele.
+security.oauth20.error.token.internal.missing.issuer.explanation=Chyb\u00ed identifik\u00e1tor vydavatele, kter\u00fd je nezbytn\u00fd k dokon\u010den\u00ed po\u017eadavku tokenu OAuth. Jedn\u00e1 se o vnit\u0159n\u00ed chybu serveru.
+security.oauth20.error.token.internal.missing.issuer.useraction=Nen\u00ed.
+
+security.oauth20.error.internal.unsupported.encoding.exception=CWOAU0047E: Poskytovatel slu\u017eeb OAuth nemohl dek\u00f3dovat parametr \u0159et\u011bzce dotazu po\u017eadavku HTTP, proto\u017ee do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce java.io.UnsupportedEncodingException.
+security.oauth20.error.internal.unsupported.encoding.exception.explanation=P\u0159i pokusu dek\u00f3dovat parametr \u0159et\u011bzce dotazu po\u017eadavku HTTP z form\u00e1tu 'application/x-www-form-urlencoded' MIME tokenu OAuth nebo po\u017eadavku na prost\u0159edek do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce java.io.UnsupportedEncodingException.
+security.oauth20.error.internal.unsupported.encoding.exception.useraction=Nen\u00ed.
+
+security.oauth.error.config.notspecified.exception=CWOAU0048E: Konfigura\u010dn\u00ed parametr [{0}] nen\u00ed nastaven.
+security.oauth.error.config.notspecified.exception.explanation=Poskytovatel OAuth20 nem\u016f\u017ee zpracovat po\u017eadavek, proto\u017ee nen\u00ed nastaven povinn\u00fd konfigura\u010dn\u00ed parametr.
+security.oauth.error.config.notspecified.exception.useraction=Zkontrolujte konfigura\u010dn\u00ed parametr a ujist\u011bte se, \u017ee je povinn\u00fd konfigura\u010dn\u00ed parametr nakonfigurovan\u00fd.
+
+security.oauth.error.classmismatch.exception=CWOAU0049E: Uveden\u00e1 t\u0159\u00edda s konfigura\u010dn\u00edm parametrem [{0}] neodpov\u00edd\u00e1 povinn\u00e9 t\u0159\u00edd\u011b rozhran\u00ed [{1}].
+security.oauth.error.classmismatch.exception.explanation=Poskytovatel OAuth20 nem\u016f\u017ee sestavit uvedenou t\u0159\u00eddu, proto\u017ee uveden\u00e1 t\u0159\u00edda neodpov\u00edd\u00e1 povinn\u00e9 t\u0159\u00edd\u011b rozhran\u00ed.
+security.oauth.error.classmismatch.exception.useraction=Zkontrolujte konfigura\u010dn\u00ed parametr a ujist\u011bte se, \u017ee uveden\u00e1 t\u0159\u00edda je t\u0159\u00eddou implementa\u010dn\u00ed t\u0159\u00eddou povinn\u00e9 t\u0159\u00eddy rozhran\u00ed.
+
+security.oauth.error.classinstantiation.exception=CWOAU0050E: Uveden\u00e1 t\u0159\u00edda [{0}] s konfigura\u010dn\u00edm parametrem [{1}] nem\u016f\u017ee b\u00fdt p\u0159evedena na instance. Ko\u0159enov\u00e1 v\u00fdjimka je: {2}
+security.oauth.error.classinstantiation.exception.explanation=Poskytovatel OAuth20 nem\u016f\u017ee uvedenou t\u0159\u00eddu p\u0159ev\u00e9st na instance.
+security.oauth.error.classinstantiation.exception.useraction=Zkontrolujte zpr\u00e1vu v\u00fdjimky.
+
+security.oauth.error.invalidconfig.exception=CWOAU0051E: Konfigura\u010dn\u00ed hodnota [{1}], uveden\u00e1 v konfigura\u010dn\u00edm parametru [{0}], je neplatn\u00e1.
+security.oauth.error.invalidconfig.exception.explanation=Poskytovatel OAuth20 nem\u016f\u017ee zpracovat tento po\u017eadavek, proto\u017ee uveden\u00fd konfigura\u010dn\u00ed parametr je neplatn\u00fdm ID.
+security.oauth.error.invalidconfig.exception.useraction=Zkontrolujte konfigura\u010dn\u00ed parametr a ujist\u011bte se, \u017ee uveden\u00e1 hodnota je platn\u00e1.
+
+security.oauth.error.mismatch.granttype.exception=CWOAU0052E: Hodnota konfigura\u010dn\u00edho parametru [{0}] nesouhlas\u00ed s parametrem typu ud\u011blen\u00ed [{1}] z po\u017eadavku OAuth.
+security.oauth.error.mismatch.granttype.exception.explanation=Poskytovatel OAuth20 nem\u016f\u017ee zpracovat tento po\u017eadavek, proto\u017ee parametr grant_type z po\u017eadavku nen\u00ed povoleno zpracovat.
+security.oauth.error.mismatch.granttype.exception.useraction=Zkontrolujte konfigura\u010dn\u00ed parametr a ujist\u011bte se, \u017ee uveden\u00e1 hodnota je v souladu s parametrem typu ud\u011blen\u00ed z po\u017eadavku OAuth.
+
+security.oauth.error.mismatch.responsetype.exception=CWOAU0053E: Hodnota konfigura\u010dn\u00edho parametru [{0}] nesouhlas\u00ed s parametrem typu odezvy [{1}] z po\u017eadavku OAuth.
+security.oauth.error.mismatch.responsetype.exception.explanation=Poskytovatel OAuth20 nem\u016f\u017ee zpracovat tento po\u017eadavek, proto\u017ee parametr response_type z po\u017eadavku nen\u00ed povoleno zpracovat.
+security.oauth.error.mismatch.responsetype.exception.useraction=Zkontrolujte konfigura\u010dn\u00ed parametr a ujist\u011bte se, \u017ee uveden\u00e1 hodnota je v souladu s parametrem typu odezvy z po\u017eadavku OAuth.
+
+security.oauth20.token.limit.error=CWOAU0054E: Omezen\u00ed userClientTokenLimit z mezipam\u011bti token\u016f s ID u\u017eivatele "{0}" a ID klienta "{1}" bylo p\u0159ekro\u010deno nebo ho bylo dosa\u017eeno. Omezen\u00ed je: {2}.
+security.oauth20.token.limit.error.explanation=Jeden u\u017eivatel m\u00e1 p\u0159\u00edli\u0161 mnoho aktivn\u00edch relac\u00ed s jedn\u00edm poskytovatelem OAuth20.
+security.oauth20.token.limit.error.useraction=Bu\u010f zvy\u0161te hodnotu atributu userClientTokenLimit v konfiguraci, abyste zv\u00fd\u0161ili velikost mezipam\u011bti token\u016f, nebo pou\u017eijte jinou kombinaci u\u017eivatele/klienta, jako nap\u0159. jin\u00e9ho klienta.
+
+security.oauth20.error.invalid.registered.redirecturi=CWOAU0055E: Identifik\u00e1tor URI pro p\u0159esm\u011brov\u00e1n\u00ed, uveden\u00fd v registrovan\u00e9m klientovi poskytovatele OAuth, nen\u00ed platn\u00fd: {0}
+security.oauth20.error.invalid.registered.redirecturi.explanation=Hodnota atributu redirect v registrovan\u00e9m klientovi poskytovatele OAuth pravd\u011bpodobn\u011b nen\u00ed platn\u00fdm absolutn\u00edm identifik\u00e1torem URI.
+security.oauth20.error.invalid.registered.redirecturi.useraction=Ujist\u011bte se, \u017ee hodnota atributu redirect v konfiguraci registrovan\u00e9ho klienta poskytovatele je platn\u00fdm absolutn\u00edm identifik\u00e1torem URI.
+
+security.oauth20.error.invalid.redirecturi.mismatch=CWOAU0056E: Parametr identifik\u00e1toru URI pro p\u0159esm\u011brov\u00e1n\u00ed [{0}], poskytnut\u00fd v po\u017eadavku OAuth nebo OpenID Connect, nesouhlas\u00ed s \u017e\u00e1dn\u00fdm u identifik\u00e1tor\u016f URI pro p\u0159esm\u011brov\u00e1n\u00ed zaregistrovan\u00fdch na poskytovateli OAuth [{1}].
+security.oauth20.error.invalid.redirecturi.mismatch.explanation=Hodnota parametru redirect_uri uveden\u00e1 v po\u017eadavku OAuth nebo OpenID Connect nesouhlas\u00ed s \u017e\u00e1dnou hodnotou identifik\u00e1toru URI pro p\u0159esm\u011brov\u00e1n\u00ed uvedenou v registrovan\u00e9m klientovi poskytovatele OAuth.
+security.oauth20.error.invalid.redirecturi.mismatch.useraction=Ujist\u011bte se, \u017ee hodnota parametru redirect_uri z po\u017eadavku OAuth nebo OpenID Connect odpov\u00edd\u00e1 jedn\u00e9 z hodnot identifik\u00e1tor\u016f URI pro p\u0159esm\u011brov\u00e1n\u00ed v konfiguraci registrovan\u00e9ho klienta.
+
+security.oauth20.error.multiple.responsetype=CWOAU0057E: Parametr response_type [{0}] z po\u017eadavku OAuth nebo OpenID Connect nem\u016f\u017ee jako typ odezvy obsahovat sou\u010dasn\u011b [{1}] a [{2}].
+security.oauth20.error.multiple.responsetype.explanation=Po\u017eadavek OAuth nebo OpenID Connect by m\u011bl m\u00edt pouze jeden typ odezvy.
+security.oauth20.error.multiple.responsetype.useraction=Zkontrolujte hodnotu parametru response_type v po\u017eadavku OAuth nebo OpenID Connect a ujist\u011bte se, \u017ee obsahuje pouze jeden typ odezvy.
+
+security.oauth20.error.invalid.token.expired=CWOAU0058E: Tokenu OAuth s kl\u00ed\u010dem [{0}], typem [{1}] a podtypem [{2}] vypr\u0161ela platnost.
+security.oauth20.error.invalid.token.expired.explanation=Tokenu OAuth vypr\u0161ela platnost a ji\u017e nen\u00ed platn\u00fd.
+security.oauth20.error.invalid.token.expired.useraction=Po\u017e\u00e1dejte poskytovatele OAuth o nov\u00fd token OAuth.
+
+security.oauth20.error.invalid.token.client.not.available=CWOAU0059E: Token OAuth s kl\u00ed\u010dem [{0}], typem [{1}] a podtypem [{2}] nen\u00ed p\u0159idru\u017een k \u017e\u00e1dn\u00e9mu klientovi, nebo nen\u00ed p\u0159idru\u017een\u00fd klient povolen.
+security.oauth20.error.invalid.token.client.not.available.explanation=Token OAuth nen\u00ed p\u0159idru\u017een k \u017e\u00e1dn\u00e9mu klientovi, nebo je p\u0159idru\u017een\u00fd klient v konfiguraci zablokov\u00e1n.
+security.oauth20.error.invalid.token.client.not.available.useraction=Zkontrolujte konfiguraci klienta poskytovatele OAuth a ujist\u011bte se, \u017ee je nakonfigurovan\u00fd odpov\u00eddaj\u00edc\u00ed klient a je povolen.
+
+security.oauth20.error.mismatched.redirecturi.null.request.redirecturi=CWOAU0060E: Identifik\u00e1tor URI pro p\u0159esm\u011brov\u00e1n\u00ed, kter\u00fd je sou\u010d\u00e1st\u00ed po\u017eadavku OAuth nebo OpenID Connect, je {0}, ale v po\u017eadavku pro ud\u011blen\u00ed autorizace byl poskytnut nenulov\u00fd identifik\u00e1tor URI pro p\u0159esm\u011brov\u00e1n\u00ed: {1}
+security.oauth20.error.mismatched.redirecturi.null.request.redirecturi.explanation=Pokud nen\u00ed sou\u010d\u00e1st\u00ed po\u017eadavku \u017e\u00e1dn\u00fd identifik\u00e1tor URI pro p\u0159esm\u011brov\u00e1n\u00ed, nesm\u00ed b\u00fdt ani \u017e\u00e1dn\u00fd identifik\u00e1tor URI pro p\u0159esm\u011brov\u00e1n\u00ed uveden v ud\u011blen\u00ed autorizace.
+security.oauth20.error.mismatched.redirecturi.null.request.redirecturi.useraction=Zkontrolujte hodnotu parametru redirect_uri v po\u017eadavku OAuth nebo OpenID Connect a ujist\u011bte se, \u017ee souhlas\u00ed s atributem identifik\u00e1toru URI pro p\u0159esm\u011brov\u00e1n\u00ed v registrovan\u00e9m klientovi, nebo neuv\u00e1d\u011bjte identifik\u00e1tor URI pro p\u0159esm\u011brov\u00e1n\u00ed v po\u017eadavku na ud\u011blen\u00ed autorizace.
+
+security.oauth20.error.invalid.client.enduser=CWOAU0061E: Poskytovatel slu\u017eby OAuth nenalezl klienta, proto\u017ee n\u00e1zev klienta nen\u00ed platn\u00fd. Kontaktujte administr\u00e1tora syst\u00e9mu, abyste probl\u00e9m vy\u0159e\u0161ili.
+security.oauth20.error.invalid.client.enduser.explanation=Poskytovatel slu\u017eby OAuth nena\u0161el klienta uveden\u00e9ho v hodnot\u011b parametru ID klienta po\u017eadavku OAuth.
+security.oauth20.error.invalid.client.enduser.useraction=Kontaktujte administr\u00e1tora syst\u00e9mu, abyste probl\u00e9m vy\u0159e\u0161ili.
+
+security.oauth20.error.invalid.redirecturi.enduser=CWOAU0062E: Poskytovatel slu\u017eby OAuth nep\u0159esm\u011broval po\u017eadavek, proto\u017ee identifik\u00e1tor URI pro p\u0159esm\u011brov\u00e1n\u00ed nen\u00ed platn\u00fd. Kontaktujte administr\u00e1tora syst\u00e9mu, abyste probl\u00e9m vy\u0159e\u0161ili.
+security.oauth20.error.invalid.redirecturi.enduser.explanation=Bu\u010f je neplatn\u00e1 hodnota atributu redirect v registrovan\u00e9m klientovi poskytovatele OAuth, nebo v p\u0159\u00edpad\u011b, \u017ee je v po\u017eadavku OAuth zad\u00e1n parametr redirect_uri, nesouhlas\u00ed jeho hodnota s hodnotou identifik\u00e1toru URI pro p\u0159esm\u011brov\u00e1n\u00ed uvedenou v registrovan\u00e9m klientovi poskytovatele OAuth.
+security.oauth20.error.invalid.redirecturi.enduser.useraction=Kontaktujte administr\u00e1tora syst\u00e9mu, abyste probl\u00e9m vy\u0159e\u0161ili.
+
+security.oauth20.detail.error.mismatched.clientauthentication=CWOAU0063E: Po\u017eadavek koncov\u00e9ho bodu tokenu se nezda\u0159il, proto\u017ee v po\u017eadavku jsou dv\u011b r\u016fzn\u00e1 ID klient\u016f. Jedno z ID klient\u016f je {0} a druh\u00e9 je {1}, kter\u00e9 je ov\u011b\u0159en\u00e9 a s nejv\u011bt\u0161\u00ed pravd\u011bpodobnost\u00ed bylo p\u0159ed\u00e1no z\u00e1hlav\u00edm pro autorizaci. 
+security.oauth20.detail.error.mismatched.clientauthentication.explanation=Hodnota parametru client_id z po\u017eadavku nesouhlas\u00ed s ov\u011b\u0159en\u00fdm ID klienta p\u0159edan\u00fdm tak\u00e9 prost\u0159ednictv\u00edm po\u017eadavku.
+security.oauth20.detail.error.mismatched.clientauthentication.useraction=Ujist\u011bte se, \u017ee po\u017eadavek obsahuje pouze jedno ID ov\u011b\u0159en\u00e9ho klienta. Parametr client_id lze p\u0159ed\u00e1vat prost\u0159ednictv\u00edm z\u00e1hlav\u00ed autorizace nebo parametru po\u017eadavku.
+
+security.oauth20.error.empty.scope=CWOAU0064E: Po\u017eadovan\u00fd rozsah [{0}] a registrovan\u00fd rozsah [{1}] klienta [{2}] nemaj\u00ed mezi sebou b\u011b\u017en\u00fd rozsah. V\u00fdsledn\u00fd rozsah je pr\u00e1zdn\u00fd.
+security.oauth20.error.empty.scope.explanation=Po\u017eadovan\u00fd rozsah a registrovan\u00fd rozsah mus\u00ed m\u00edt mezi sebou minim\u00e1ln\u011b jeden b\u011b\u017en\u00fd rozsah. 
+security.oauth20.error.empty.scope.useraction=Ujist\u011bte se, \u017ee sada po\u017eadovan\u00fdch a registrovan\u00fdch rozsah\u016f m\u00e1 mezi sebou minim\u00e1ln\u011b jeden b\u011b\u017en\u00fd rozsah.
+
+security.oauth20.error.missing.scope=CWOAU0065E: Autoriza\u010dn\u00ed server nem\u016f\u017ee zpracovat po\u017eadavek [{0}]. Chyb\u00ed mu po\u017eadovan\u00fd parametr rozsahu.
+security.oauth20.error.missing.scope.explanation=Po\u017eadavek na p\u0159ipojen\u00ed OpenID mus\u00ed m\u00edt rozsah s nepr\u00e1zdn\u00fdm \u0159et\u011bzcem.
+security.oauth20.error.missing.scope.useraction=Ujist\u011bte se, \u017ee po\u017eadavek na p\u0159ipojen\u00ed OpenID m\u00e1 platn\u00fd parametr rozsahu.
+
+security.oauth20.token.limit.external.error=CWOAU0066E: Po\u017eadavek na koncov\u00fd bod tokenu se nezda\u0159il, proto\u017ee od jednoho u\u017eivatele poch\u00e1z\u00ed p\u0159\u00edli\u0161 mnoho po\u017eadavk\u016f.
+security.oauth20.token.limit.external.error.explanation=Jeden u\u017eivatel m\u00e1 p\u0159\u00edli\u0161 mnoho aktivn\u00edch relac\u00ed s jedn\u00edm poskytovatelem OAuth20. 
+security.oauth20.token.limit.external.error.useraction=Bu\u010f zvy\u0161te hodnotu atributu userClientTokenLimit v konfiguraci, abyste zv\u00fd\u0161ili velikost mezipam\u011bti token\u016f, nebo pou\u017eijte jinou kombinaci u\u017eivatele/klienta, jako nap\u0159. jin\u00e9ho klienta.
+
+security.oauth20.request.denied=CWOAU0067E: Po\u017eadavek zam\u00edtl u\u017eivatel, nebo do\u0161lo k jin\u00e9 chyb\u011b, jej\u00edm\u017e v\u00fdsledkem bylo zam\u00edtnut\u00ed po\u017eadavku.
+security.oauth20.request.denied.explanation=u\u017eivatel bu\u010f zam\u00edtl po\u017eadavek OAuth stornov\u00e1n\u00edm po\u017eadavku na formul\u00e1\u0159i souhlasu s oborem platnosti, nebo do\u0161lo k n\u011bjak\u00e9 jin\u00e9 chyb\u011b, kter\u00e1 zabr\u00e1nila p\u0159\u00edstupu k po\u017eadavku OAuth.
+security.oauth20.request.denied.useraction=U\u017eivatel mus\u00ed povolit poskytovateli OAuth sd\u00edlet obory rozsah\u016f, kter\u00e9 klient vy\u017eaduje, aby byl po\u017eadavek OAuth \u00fasp\u011b\u0161n\u00fd. Pokud u\u017eivatel po\u017eadavek schv\u00e1lil, zkontrolujte protokoly na poskytovateli OAuth, zda neobsahuj\u00ed dal\u0161\u00ed chyby.
+
+security.oauth20.error.missing.registered.scope=CWOAU0068E: Po\u017eadavek na koncov\u00fd bod autorizace OpenID Connect klientem [{0}] se nezda\u0159il. Pro tohoto klienta nejsou zaregistrov\u00e1ny \u017e\u00e1dn\u00e9 rozsahy. 
+security.oauth20.error.missing.registered.scope.explanation=Konfigurace klienta mus\u00ed obsahovat seznam obor\u016f rozsah\u016f povolen\u00fdch pro dan\u00e9ho klienta, jinak se autoriza\u010dn\u00ed po\u017eadavek OpenID Connect nezda\u0159\u00ed. 
+security.oauth20.error.missing.registered.scope.useraction=Ujist\u011bte se, \u017ee jste do konfigurace klienta poskytovatele OpenID Connect zaregistrovali seznam obor\u016f rozsah\u016f. Nastavte obor rozsah\u016f na povolen\u00e9 obory rozsah\u016f, nebo v p\u0159\u00edpad\u011b, \u017ee jsou p\u0159ijateln\u00e9 v\u0161echny obory rozsah\u016f, na hodnotu ALL_SCOPES.
+
+security.oauth20.endpoint.resowner.auth.error=CWOAU0069E: Vlastn\u00edka prost\u0159edku nelze ov\u011b\u0159it. Bu\u010f je chybn\u00fd vlastn\u00edk prost\u0159edku: {0}, nebo heslo.
+security.oauth20.endpoint.resowner.auth.error.explanation=Poskytovatel OAuth nem\u016f\u017ee ov\u011b\u0159it vlastn\u00edka prost\u0159edku. 
+security.oauth20.endpoint.resowner.auth.error.useraction=Zkontrolujte, \u017ee jsou platn\u00e9 jm\u00e9no vlastn\u00edka prost\u0159edku a heslo.
+
+security.oauth20.error.missing.client.provider=CWOAU0070E: Nebyl nalezen poskytovatel klienta pro poskytovatele OAuth.
+security.oauth20.error.missing.client.provider.explanation=Mo\u017en\u00e1 se vyskytl probl\u00e9m s inicializac\u00ed \u00falo\u017ei\u0161\u0165 klienta pro tohoto poskytovatele OAuth.
+security.oauth20.error.missing.client.provider.useraction=Zkontrolujte protokoly serveru a ujist\u011bte se, \u017ee byl poskytovatel OAuth spr\u00e1vn\u011b inicializov\u00e1n.
+
+security.oauth20.error.granttype.requires.confidential.client=CWOAU0071E: Ve\u0159ejn\u00fd klient se pokusil o p\u0159\u00edstup ke koncov\u00e9mu bodu {0} s pomoc\u00ed ud\u011blen\u00ed typu {1}. Tento typ ud\u011blen\u00ed sm\u00ed pou\u017e\u00edvat pouze d\u016fv\u011brn\u00ed klienti. Identifik\u00e1tor client_id je: {2}
+security.oauth20.error.granttype.requires.confidential.client.explanation=Ve\u0159ejn\u00fd klient OAuth uveden\u00fd typ ud\u011blen\u00ed pro tento koncov\u00fd bod pou\u017e\u00edvat nesm\u00ed. Ud\u011blen\u00ed uveden\u00e9ho typu sm\u00ed pou\u017e\u00edvat pouze d\u016fv\u011brn\u00ed klienti.
+security.oauth20.error.granttype.requires.confidential.client.useraction=Zkontrolujte hodnotu parametru grant_type v po\u017eadavku OAuth a pou\u017eijte pro ve\u0159ejn\u00e9ho klienta jin\u00fd typ ud\u011blen\u00ed opr\u00e1vn\u011bn\u00ed.
+
+# 0 - "scope" or "resource" (as of this update, may be other parms in the future}
+# 1 - string value, 2 - list of string values, 3 - config attributes: "scope" or "resourceIds" (as of this update, may be other parms in the future), 
+SECURITY.OAUTH20.ERROR.VALUE.NOT.IN.LIST=CWOAU0072E: Parametr po\u017eadavku [{0}] obsahuje neplatnou hodnotu [{1}]. Platn\u00e9 hodnoty jsou [{2}], jak bylo nadefinov\u00e1no atributem konfigurace [{3}].
+SECURITY.OAUTH20.ERROR.VALUE.NOT.IN.LIST.explanation=Ozna\u010den\u00e1 hodnota ur\u010den\u00e9ho parametru v po\u017eadavku OAuth nen\u00ed platn\u00e1. Platn\u00e9 hodnoty jsou uvedeny v ozna\u010den\u00e9m atributu konfigurace serveru.
+SECURITY.OAUTH20.ERROR.VALUE.NOT.IN.LIST.useraction=Ujist\u011bte se, \u017ee hodnoty v parametru po\u017eadavku jsou platn\u00e9.
+
+security.oauth20.front.end.error=CWOAU0073E: Do\u0161lo k chyb\u011b p\u0159i ov\u011b\u0159ov\u00e1n\u00ed u\u017eivatele. Zopakujte pokus o ov\u011b\u0159en\u00ed, nebo se obra\u0165te na administr\u00e1tora webu, pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1.
+security.oauth20.front.end.error.explanation=V po\u017eadavku mohou chyb\u011bt informace, server mo\u017en\u00e1 rozpoznal intern\u00ed chybu nebo mohlo doj\u00edt k jin\u00e9 chyb\u011b, kter\u00e1 zabr\u00e1nila serveru v \u00fasp\u011b\u0161n\u00e9 autentizaci u\u017eivatele.
+security.oauth20.front.end.error.useraction=Kontaktujte administr\u00e1tora syst\u00e9mu, abyste probl\u00e9m vy\u0159e\u0161ili.
+
+security.oauth20.endpoint.resowner.apppassword.error=CWOAU0074E: \u017d\u00e1dost o v\u00fdm\u011bnu hesla aplikace pro u\u017eivatele [{0}] nelze dokon\u010dit, proto\u017ee nebylo mo\u017en\u00e9 ov\u011b\u0159it heslo aplikace. Heslo aplikace je bu\u010f nespr\u00e1vn\u00e9, vypr\u0161elo nebo bylo zru\u0161eno nebo zadan\u00e9 ID klienta nen\u00ed platn\u00e9.
+security.oauth20.endpoint.resowner.apppassword.error.explanation=Poskytovatel OAuth nemohl ov\u011b\u0159it heslo aplikace.
+security.oauth20.endpoint.resowner.apppassword.error.useraction=Potvr\u010fte, \u017ee heslo aplikace je platn\u00e9, nevypr\u0161ela platnost a nebylo zru\u0161eno. Tak\u00e9 potvr\u010fte, \u017ee ID klienta v p\u0159\u00edstupov\u00e9m tokenu je stejn\u00e9 jako ID klienta v z\u00e1hlav\u00ed autorizace.
+
+security.oauth20.apppassword.config.c1p0.warning=CWOAU0075W: Klient OAuth [{0}] je nakonfigurov\u00e1n tak, aby povoloval po\u017eadov\u00e1n\u00ed hesel aplikace, ale poskytovatel [{1}] nen\u00ed nakonfigurov\u00e1n pro jejich zpracov\u00e1n\u00ed. To m\u016f\u017ee zp\u016fsobit selh\u00e1n\u00ed ov\u011b\u0159en\u00ed. Nastavte atribut konfigurace poskytovatele passwordGrantRequiresAppPassword na true, pokud jsou pou\u017eita hesla aplikac\u00ed.
+security.oauth20.apppassword.config.c1p0.warning.explanation=Je mo\u017en\u00e9, \u017ee aktu\u00e1ln\u00ed konfigurace je nespr\u00e1vn\u00e1.
+security.oauth20.apppassword.config.c1p0.warning.useraction=V p\u0159\u00edpad\u011b pot\u0159eby opravte konfiguraci.
+
+security.oauth20.apppassword.config.c0p1.warning=CWOAU0076W: Klient OAuth [{0}] nen\u00ed nakonfigurov\u00e1n tak, aby povoloval po\u017eadov\u00e1n\u00ed hesel aplikace, ale poskytovatel [{1}] je nakonfigurov\u00e1n pro jejich zpracov\u00e1n\u00ed. To m\u016f\u017ee zp\u016fsobit selh\u00e1n\u00ed ov\u011b\u0159en\u00ed. Nastavte atribut konfigurace poskytovatele passwordGrantRequiresAppPassword na false, pokud nejsou pou\u017eita hesla aplikac\u00ed.
+security.oauth20.apppassword.config.c0p1.warning.explanation=Je mo\u017en\u00e9, \u017ee aktu\u00e1ln\u00ed konfigurace je nespr\u00e1vn\u00e1.
+security.oauth20.apppassword.config.c0p1.warning.useraction=V p\u0159\u00edpad\u011b pot\u0159eby opravte konfiguraci.
+
+security.oauth20.apppassword.exchange.wrongclient=CWOAU0077E: Heslo aplikace vytvo\u0159en\u00e9 pro klienta [{0}] nelze pou\u017e\u00edt s klientem [{1}].
+security.oauth20.apppassword.exchange.wrongclient.explanation=Heslo aplikace bylo vytvo\u0159eno s parametrem used_by, kter\u00fd ozna\u010duje ur\u010den\u00e9ho klienta, bylo ale odesl\u00e1no na jin\u00e9ho klienta.
+security.oauth20.apppassword.exchange.wrongclient.useraction=Zadejte po\u017eadavek znovu s pou\u017eit\u00edm hesla aplikace, kter\u00e9 je platn\u00e9 pro uveden\u00e9ho klienta.
+
+security.oauth20.apppwtok.revoke.disallowed=CWOAU0078E: Do\u0161lo k pokusu o zru\u0161en\u00ed hesla aplikace nebo tokenu aplikace v koncov\u00e9m bodu odvol\u00e1n\u00ed. Tato akce nen\u00ed povolena.
+security.oauth20.apppwtok.revoke.disallowed.explanation=Hesla aplikace nebo tokeny aplikace mus\u00ed b\u00fdt odvol\u00e1ny pomoc\u00ed koncov\u00fdch bod\u016f app-passwords nebo app-tokens.
+security.oauth20.apppwtok.revoke.disallowed.useraction=Zadejte po\u017eadavek znovu s identifik\u00e1torem URI pro p\u0159\u00edslu\u0161n\u00fd koncov\u00fd bod, chcete-li odvolat hesla aplikace nebo tokeny aplikac\u00ed.
+
+security.oauth20.pkce.invalid.method.error=CWOAU0079E: Polo\u017eka code_challenge_method parametru \u017e\u00e1dosti obsahuje nepodporovan\u00fd algoritmus transformace.
+security.oauth20.pkce.invalid.method.error.explanation=Poskytovatel OAuth nepodporuje ur\u010den\u00fd algoritmus transformace. 
+security.oauth20.pkce.invalid.method.error.useraction=Pro polo\u017eku code_challenge_method pou\u017eijte hodnotu plain nebo S256.
+
+security.oauth20.pkce.codeverifier.length.error=CWOAU0080E: D\u00e9lka polo\u017eky code_verifier je neplatn\u00e1.
+security.oauth20.pkce.codeverifier.length.error.explanation=Minim\u00e1ln\u00ed d\u00e9lka polo\u017eky code_verifier by m\u011bla b\u00fdt 43 znak\u016f a maxim\u00e1ln\u00ed d\u00e9lka 128 znak\u016f. 
+security.oauth20.pkce.codeverifier.length.error.useraction=Ode\u0161lete \u017e\u00e1dost o autorizaci a token znovu s aktualizovanou polo\u017ekou code_verifier spl\u0148uj\u00edc\u00ed uveden\u00e9 po\u017eadavky na d\u00e9lku.
+
+security.oauth20.pkce.error.mismatch.codeverifier=CWOAU0081E: Polo\u017eky code_challenge a code_verifier se neshoduj\u00ed.
+security.oauth20.pkce.error.mismatch.codeverifier.explanation=Poskytovatel OAuth pou\u017eije polo\u00fdku code_challenge_method ur\u010denou v po\u017eadavku na autorizaci a provede transformaci polo\u017eky code_verifier, nem\u00e1-li polo\u017eka code_challenge_method hodnotu plain. Transformovan\u00e1 hodnota by m\u011bla odpov\u00eddat polo\u017ece code_challenge v \u017e\u00e1dosti o autorizaci.
+security.oauth20.pkce.error.mismatch.codeverifier.useraction=Ov\u011b\u0159te, \u017ee jsou spolu s \u017e\u00e1dostmi o autorizaci a token odesl\u00e1ny odpov\u00eddaj\u00edc\u00ed polo\u017eky code_challenge a code_verifier a spr\u00e1vn\u00fd algoritmus transformace.

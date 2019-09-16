@@ -4,3 +4,4 @@ visibility=private
 -features=com.ibm.websphere.appserver.jsonpImpl-1.1.1; ibm.tolerates:="1.1.0"
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

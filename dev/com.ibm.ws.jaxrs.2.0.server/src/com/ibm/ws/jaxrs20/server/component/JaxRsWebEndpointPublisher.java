@@ -10,14 +10,16 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs20.server.component;
 
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Map;
+import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 
+import org.apache.cxf.feature.Feature;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -33,12 +35,12 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jaxrs20.JaxRsConstants;
 import com.ibm.ws.jaxrs20.api.EndpointPublisher;
-import com.ibm.ws.jaxrs20.api.JaxRsEndpointConfigurator;
 import com.ibm.ws.jaxrs20.api.JaxRsFactoryBeanCustomizer;
 import com.ibm.ws.jaxrs20.api.JaxRsProviderFactoryService;
 import com.ibm.ws.jaxrs20.endpoint.JaxRsPublisherContext;
 import com.ibm.ws.jaxrs20.endpoint.JaxRsWebEndpoint;
 import com.ibm.ws.jaxrs20.metadata.EndpointInfo;
+import com.ibm.ws.jaxrs20.server.JaxRsWebEndpointImpl;
 import com.ibm.ws.jaxrs20.server.deprecated.JaxRsExtensionProcessor;
 import com.ibm.ws.jaxrs20.server.internal.JaxRsServerConstants;
 import com.ibm.wsspi.adaptable.module.Container;
@@ -56,9 +58,9 @@ import com.ibm.wsspi.webcontainer.webapp.WebAppConfig;
 public class JaxRsWebEndpointPublisher implements EndpointPublisher {
     private static final TraceComponent tc = Tr.register(JaxRsWebEndpointPublisher.class);
 
-    public Map<String, JaxRsEndpointConfigurator> endpointTypeJaxRsEndpointConfiguratorMap = new ConcurrentHashMap<String, JaxRsEndpointConfigurator>();
     private final AtomicServiceReference<JaxRsProviderFactoryService> jaxRsProviderFactoryServiceSR = new AtomicServiceReference<JaxRsProviderFactoryService>(JaxRsConstants.PROVIDERfACTORY_REFERENCE_NAME);
     private final Set<JaxRsFactoryBeanCustomizer> beanCustomizers = new HashSet<JaxRsFactoryBeanCustomizer>();
+    private final List<Feature> features = new CopyOnWriteArrayList<Feature>();
 
     @Reference(name = "jaxRsFactoryBeanCustomizer",
                service = JaxRsFactoryBeanCustomizer.class,
@@ -78,23 +80,13 @@ public class JaxRsWebEndpointPublisher implements EndpointPublisher {
         beanCustomizers.remove(beanCustomizer);
     }
 
-    @Reference(name = "jaxRsEndpointConfigurator", service = JaxRsEndpointConfigurator.class, cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC)
-    protected void registerJaxRsEndpointConfigurator(JaxRsEndpointConfigurator configurator) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(this, tc, "Register JaxRsEndpointConfigurator support Servlet");
-        }
-        endpointTypeJaxRsEndpointConfiguratorMap.put("Servlet", configurator);
+    @Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC)
+    protected void setFeature(Feature feature) {
+        features.add(feature);
     }
 
-    protected void unregisterJaxRsEndpointConfigurator(JaxRsEndpointConfigurator configurator) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(this, tc, "unregister JaxRsEndpointConfigurator support Servlet");
-        }
-        endpointTypeJaxRsEndpointConfiguratorMap.remove("Servlet");
-    }
-
-    public JaxRsEndpointConfigurator getJaxRsEndpointConfigurator(String endpointType) {
-        return endpointTypeJaxRsEndpointConfiguratorMap.get(endpointType);
+    protected void unsetFeature(Feature feature) {
+        features.remove(feature);
     }
 
     @Activate
@@ -119,23 +111,13 @@ public class JaxRsWebEndpointPublisher implements EndpointPublisher {
     @Override
     public void publish(EndpointInfo endpointInfo, JaxRsPublisherContext context) {
 
-        JaxRsEndpointConfigurator jaxRsEndpointConfigurator = getJaxRsEndpointConfigurator("Servlet");
-
-        if (jaxRsEndpointConfigurator == null) {
-            throw new IllegalStateException("Unsupport endpoint type Servlet");
-        }
-
         IServletContext servletContext = context.getAttribute(JaxRsServerConstants.SERVLET_CONTEXT, IServletContext.class);
         if (servletContext == null) {
             throw new IllegalStateException("Unable to publish the endpoint to web container due to null web app instance");
         }
 
         context.setAttribute(JaxRsServerConstants.BEAN_CUSTOMIZER, beanCustomizers);
-        JaxRsWebEndpoint jaxRsWebEndpoint = jaxRsEndpointConfigurator.createWebEndpoint(endpointInfo, context);
-
-        if (jaxRsWebEndpoint == null) {
-            return;
-        }
+        JaxRsWebEndpoint jaxRsWebEndpoint = new JaxRsWebEndpointImpl(endpointInfo, context, new ArrayList<Feature>(features));
 
         Container moduleContainer = context.getPublisherModuleContainer();
 
@@ -151,7 +133,7 @@ public class JaxRsWebEndpointPublisher implements EndpointPublisher {
 
         /**
          * check if there is already a servlet config in web.xml,
-         * if yes, then just replace the servlet to the IＢＭ　rest servlet
+         * if yes, then just replace the servlet to the IＢＭ rest servlet
          * if no, create a servlet config with the IBM rest servlet
          */
         IServletConfig sconfig = webAppConfig.getServletInfo(endpointInfo.getServletName());
@@ -205,7 +187,7 @@ public class JaxRsWebEndpointPublisher implements EndpointPublisher {
             //     <param-name>javax.ws.rs.Application</param-name>
             //     <param-value>com.ibm.sample.jaxrs.DemoApplication</param-value>
             //   </init-param>
-            // </servlet>            
+            // </servlet>
             if (sconfig.getMappings() == null || sconfig.getMappings().size() == 0) {
                 sconfig.setServletContext(servletContext);
                 sconfig.addMapping(endpointInfo.getAppPath());

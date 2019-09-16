@@ -1,0 +1,74 @@
+<!--
+    Copyright (c) 2019 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+  <include location="../fatTestPorts.xml" />
+
+  <featureManager>
+    <feature>componenttest-1.0</feature>
+    <feature>restConnector-2.0</feature>
+    <feature>ejbLite-3.2</feature>
+    <feature>jca-1.7</feature>
+    <feature>jdbc-4.2</feature>
+    <feature>jms-2.0</feature>
+    <feature>wasJmsClient-2.0</feature>
+    <feature>wasJmsServer-1.0</feature>
+  </featureManager>
+
+  <variable name="onError" value="FAIL"/>
+
+  <keyStore id="defaultKeyStore" password="Liberty"/>
+  <quickStartSecurity userName="adminuser" userPassword="adminpwd"/>
+
+  <application location="AppDefResourcesApp.ear">
+    <classloader commonLibraryRef="Derby"/>
+  </application>
+
+  <connectionFactory jndiName="eis/cf3" containerAuthDataRef="cfauth1">
+    <connectionManager maxPoolSize="3" agedTimeout="3h33m3s" enableSharingForDirectLookups="false"/>
+    <properties.AppDefResourcesApp.EmbTestAdapter.ConnectionFactory enableBetaContent="true" portNumber="3456"/>
+  </connectionFactory>
+
+  <messagingEngine id="defaultME"/>
+
+  <resourceAdapter location="${server.config.dir}/connectors/ConfigTestAdapter.rar"/>
+
+  <transaction>
+    <DATASOURCE transactional="false">
+      <connectionManager maxPoolSize="5" connectionTimeout="0s"/>
+      <jdbcDriver libraryRef="Derby"/>
+   	  <properties.derby.embedded databaseName="memory:recoverydb" createDatabase="create" user="dbuser1" password="dbpwd1"/>
+    </DATASOURCE>
+  </transaction>
+
+  <authData id="cfauth1" user="cfuser1" password="1cfuser"/>
+
+  <authData id="derbyAuth1" user="dbuser1" password="dbpwd1"/>
+  <authData id="derbyAuth2" user="dbuser2" password="dbpwd2"/>
+  <authData id="derbyAuth3" user="dbuser3" password="dbpwd3"/>
+
+  <library id="Derby">
+    <file name="${shared.resource.dir}/derby/derby.jar"/>
+  </library>
+  
+  <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+
+  <javaPermission codebase="${server.config.dir}/apps/AppDefResourcesApp.ear"
+                  className="java.lang.RuntimePermission" name="getClassLoader"/>  <!-- for the embedded RAR -->
+
+  <javaPermission codebase="${server.config.dir}/connectors/ConfigTestAdapter.rar"
+                  className="java.lang.RuntimePermission" name="getClassLoader"/>
+
+  <javaPermission codebase="${server.config.dir}/connectors/ConfigTestAdapter.rar"
+                  className="javax.security.auth.PrivateCredentialPermission"
+                  signedBy="javax.resource.spi.security.PasswordCredential"
+                  principalType="*" principalName="*" actions="read"/>
+
+</server>

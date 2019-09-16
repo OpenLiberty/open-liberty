@@ -1,0 +1,326 @@
+/*******************************************************************************
+ * Copyright (c) 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+/**
+ * Configure 'globalize', 'copyPiiFiles', 'verifyBundleNLS', 'compileJava', 'test', 'apiSpiJavadoc', and 'zipJavadoc' tasks.
+ */
+defaultTasks 'clean', 'build'
+
+// Project version is the Bundle-Version attribute if a bundle gets released, otherwise the version is the buildID.
+project.version = bnd('Bundle-Version', bnd.buildID)
+jar {
+  version=null
+}
+
+task globalize {
+  ext.destinationDir = new File(buildDir, "src/${name}/java")
+  if (parseBoolean(bnd('globalize', 'true'))) {
+    inputs.files(fileTree(dir: project.file('resources'), include: '**/*.nlsprops')).skipWhenEmpty()
+    outputs.dir destinationDir
+    doFirst {
+      project.mkdir(destinationDir)
+    }
+    doLast {
+      copy {
+        from project.file('resources')
+        into destinationDir
+        include '**/package-info.java'
+      }
+      nlsTaskdef(ant)
+      ant.validate() {
+        fileset(dir: project.file('resources'), includes: "**/*.nlsprops", excludes: "**/*_*.nlsprops")
+        completenessvalidator(messagesonly: "false")
+        duplicatekeyvalidator()
+        metadatavalidator()
+        contentvalidator(constraint: "disallowed", pattern: '"\\{\\d+\\}"', loglevel: "warning", message: "variables should not be encapsulated in quotation marks") {
+            keyfilter {
+                exclude(name: "*.explanation")
+                exclude(name: "*.useraction")
+            }
+        }
+        contentvalidator(constraint: "disallowed", pattern: "\\{\\d+\\}", loglevel: "warning", message: "variables are disallowed in explanations or useractions") {
+            keyfilter {
+                include(name: "*.explanation")
+                include(name: "*.useraction")
+            }
+        }
+        contentvalidator(constraint: "disallowed", pattern: "\\b((WAS)|(TAM)|(WIM)|(WPS)|(eWAS)|(LUW)|(ND)|(MQSeries))\\b", loglevel: "warning", message: "product acronyms are disallowed")
+        contentvalidator(constraint: "disallowed", pattern: "([A-Z0-9]{4,5})(\\d{4})([IWE]):\\S", loglevel: "error", message: "malformed message")
+      }
+      ant.normalize(dest: new File(project.buildDir, 'nlsbuild/normalized'), defaultencoding: "ISO-8859-1") {
+        fileset(dir: project.file('resources'), includes: "**/*.nlsprops")
+        encodingtable(encodings: cnf.file('resources/EncodingTable.properties'))
+        globmapper(from: "*.nlsprops", to: "*.normalized")
+      }
+      ant.commonize(dest: new File(project.buildDir, 'nlsbuild/normalized'), commonmessagefile: cnf.file('resources/nls/commonmessages.properties')) {
+        fileset(dir: new File(project.buildDir, 'nlsbuild/normalized'), includes: "**/*.normalized")
+      }
+      ant.transform() {
+        fileset(dir: new File(project.buildDir, 'nlsbuild/normalized'), includes: "**/*.normalized")
+        javatransformer(dest: destinationDir) {
+          keyfilter {
+            exclude(name: "*.explanation")
+            exclude(name: "*.useraction")
+          }
+        }
+      }
+
+      // Copy the unsuffixed nlsprops files as _en.nlsprops and
+      // commonize and normalize that. Then generate
+      // the tmsource for all languages (including the newly
+      // generated english source)
+      File nlsbuildtemp = new File(project.buildDir, 'nlsbuild/temp')
+      copy {
+        from project.file('resources')
+        into nlsbuildtemp
+        include '**/*.nlsprops'
+        exclude '**/*_??.nlsprops'
+        exclude '**/*_??_??.nlsprops'
+        rename '(.*).nlsprops', '$1' + "_en.nlsprops"
+      }
+      // Existing languages first
+      ant.normalize(dest: new File(project.buildDir, 'nlsbuild/normalizedxml'), defaultencoding: "ISO-8859-1") {
+        fileset(dir: project.file('resources')) {
+          include(name: "**/*.nlsprops")
+        }
+        encodingtable(encodings: cnf.file('resources/EncodingTable.properties'))
+        globmapper(from: "*.nlsprops", to: "*.normalized")
+      }
+      // And now english
+      ant.normalize(dest: new File(project.buildDir, 'nlsbuild/normalizedxml'), defaultencoding: "ISO-8859-1") {
+        fileset(dir: nlsbuildtemp) {
+          include(name: "**/*_en.nlsprops")
+        }
+        encodingtable(encodings: cnf.file('resources/EncodingTable.properties'))
+        globmapper(from: "*.nlsprops", to: "*.normalized")
+      }
+
+      ant.commonize(dest: new File(project.buildDir, 'nlsbuild/normalizedxml'), commonmessagefile: cnf.file('resources/nls/commonmessages.properties')) {
+        fileset(dir: new File(project.buildDir, 'nlsbuild/normalizedxml'), includes: "**/*.normalized")
+        globmapper(from: "*.normalized", to: "*.commonized")
+      }
+
+      // The xml files generated by the tmstransformer are not usually used by the local project.
+      // They are used and packaged by the build.pii.package project.
+      // So instead of generating these files to the local project and doing a copy, directly generate the
+      // files into the build.pii.package project.
+      ant.transform() {
+        fileset(dir: new File(project.buildDir, 'nlsbuild/normalizedxml'), includes: "**/*.commonized")
+        tmstransformer(dest: rootProject.file("build.pii.package/nlsxml/${project.name}"))
+      }
+    }
+  }
+}
+
+task copyPiiFiles(type: Copy) {
+  enabled parseBoolean(bnd('copy.pii', 'true'))
+  ext.destinationDir = rootProject.file("build.pii.package/nlssrc/${project.name}")
+  from project.file('resources')
+  into ext.destinationDir
+  include '**/*.nlsprops'
+  include 'OSGI-INF/l10n/*'
+  include 'l10n/*'
+  include 'publish/features/l10n/*.properties'
+  include 'WEB-CONTENT/**/nls/*.js'
+  include 'OSGI-INF/**/nls/*.js'
+}
+
+sourceSets {
+  main {
+    if (parseBoolean(bnd('globalize', 'true'))) {
+      java.srcDir globalize.destinationDir
+    }
+  }
+}
+
+compileJava {
+  if (!parseBoolean(bnd('instrument.disabled', 'false'))) {
+    inputs.files { rasInstrumentationInputFiles() }
+    def instrument = fileTree(dir: compileJava.destinationDir, include: bnd('instrument.classesIncludes'), exclude: bnd('instrument.classesExcludes'))
+    doLast {
+      if (instrument.isEmpty())
+        return
+      rasInstrumentationTaskdef(ant)
+      ant.instrumentForTrace(ffdc: bnd('instrument.ffdc'), taskInjection: bnd('instrument.taskInjection')) {
+        fileset(dir: compileJava.destinationDir, includes: bnd('instrument.classesIncludes'), excludes: bnd('instrument.classesExcludes'))
+      }
+    }
+  }
+
+  if (parseBoolean(bnd('globalize', 'true'))) {
+    dependsOn globalize
+  }
+
+  options.warnings = false
+  options.fork = true
+}
+
+test {
+  dependsOn ':cnf:copyMavenLibs'
+  def testports = fileTree(dir: compileTestJava.destinationDir, include: 'unittestports.properties')
+
+  doFirst {
+    if (testports.isEmpty())
+      return
+    def propertiesFile = new File(compileTestJava.destinationDir, 'unittestports.properties')
+    portSelectorTaskdef(ant)
+    ant.portSelector(engineName: "${bnd.buildEngineName}", location: propertiesFile, jvmarg: 'jvmargPorts')
+    jvmArgs ant.jvmargPorts.tokenize()
+  }
+
+  afterSuite { desc, result ->
+    if (!desc.parent) { // will match the outermost suite
+      rootProject.ext.testCountTotal = rootProject.ext.testCountTotal + result.testCount
+      rootProject.ext.successfulTestCountTotal = rootProject.ext.successfulTestCountTotal + result.successfulTestCount
+      rootProject.ext.failedTestCountTotal = rootProject.ext.failedTestCountTotal + result.failedTestCount
+      rootProject.ext.skippedTestCountTotal = rootProject.ext.skippedTestCountTotal + result.skippedTestCount
+      println "Test counts so far:"
+      print rootProject.ext.testCountTotal
+      println " total tests"
+      print rootProject.ext.successfulTestCountTotal
+      println " total passing"
+      print rootProject.ext.failedTestCountTotal
+      println " total failing"
+      print rootProject.ext.skippedTestCountTotal
+      println " total skipped"
+    }
+  }
+
+  timeout = Duration.ofMinutes(15)
+  ignoreFailures = Boolean.valueOf(rootProject.ext.userProps.getProperty("gradle.test.ignoreFailures", "false"))
+  environment("WLP_INSTALL_DIR", buildImage.file('wlp'))
+  jvmArgs "-Dtest.buildDir=${buildDir}"
+  jvmArgs "-Djava.io.tmpdir=${buildDir}/tmp"
+  jvmArgs "-Dmain.classesDir=" + compileJava.destinationDir
+  jvmArgs "-Dtest.classesDir=" + compileTestJava.destinationDir
+  jvmArgs "-Dcom.ibm.ws.is.unit.test=true"
+}
+
+task buildfat {
+  // A no-op task for regular projects which FATs will override
+  group = "build"
+}
+
+task apiSpiJavadoc(type: Javadoc) {
+  dependsOn jar
+  def publishSuffix = bnd('publish.wlp.jar.suffix', 'lib')
+  enabled publishSuffix.contains('api/ibm') || publishSuffix.contains('spi/ibm')
+
+  onlyIf {
+    !new File(buildDir, "javadoc").exists()
+  }
+
+  def sp = files()
+  def cp = files()
+  bndWorkspace.getProject(bnd('Bundle-SymbolicName', project.name))?.getBuildpath().each {
+    def proj = it.getProject()
+    sp += files(proj.getSourcePath())
+    cp += files(it.getFile())
+    cp += files(proj.getBuildpath()*.getFile())
+  }
+
+  destinationDir = file("$buildDir/javadoc")
+  classpath += cp
+  source = sp
+
+  include bnd('Export-Package', '').split(',').collect {
+    def pkg = it
+    int index = pkg.indexOf(";")
+    if (index != -1) {
+      pkg = pkg.substring(0, index)
+    }
+    // Replace . with / (path separator) and * (package name wildcard) with **
+    pkg = pkg.trim().replaceAll("\\.", "/").replaceAll("\\*", "/**") + "/*.java"
+    return pkg
+  }
+  exclude "**/internal/**"
+  title = bnd('Bundle-Name')
+  options.source bnd('javac.source')
+  options.memberLevel = 'PUBLIC'
+  options.noIndex true
+  options.use true
+  if (JavaVersion.current().isJava8Compatible()) {
+    options.addStringOption('Xdoclint:none', '-quiet')
+  }
+}
+
+task zipJavadoc(type: Zip) {
+  dependsOn apiSpiJavadoc
+  archiveName bnd('Bundle-SymbolicName', project.name) + '.javadoc.zip'
+  from new File(project.buildDir, "javadoc")
+}
+
+/**
+ * This task is meant to perform a simple verification of all of the bundle jars that have been
+ * created for the liberty image. It runs as part of the Package Verification build. The check
+ * it performs is to simply inspect each bundle jar, and verify that if there is at least one
+ * file with translatable messages in it, there is a file for every language.
+*/
+task verifyBundleNLS {
+    doLast {
+        // This is the top level reference to each of the jar files in the build image
+        FileTree bundleJars= fileTree(dir: "${rootDir}/../../../messageVerificationImage/wlp/lib/");
+        bundleJars.include "**/*.jar"
+
+        /* This is the String that contains all of the projects that it is safe to IGNORE message
+         * verification failures for. It is loaded from the properties file messageVerifyIgnores.
+         */
+        String ignoresList = new File("${rootDir}/../../../ant_build/resources/configuration/messageVerifyIgnores").text
+
+        // This string holds all the projects with errors
+        String badProjectsProps = "";
+        String badProjectsNLS = "";
+
+        // With the list of bundle jars, loop over each one to perform the check
+        bundleJars.each { File jarFile ->
+            FileTree jarTree = zipTree( jarFile )
+
+            // Find all the NLS metatype.properties files based on a regex
+            FileTree metatypeFiles = jarTree.matching {
+                include 'OSGI-INF/l10n/**/*'
+            }
+
+            // Store the name of the jar file being examined, and strip off the version string and file type
+            String jarName = jarFile.getName()
+            jarName = jarName.replaceFirst( "_[0-9].[0-9]+.[0-9]+", "" )
+            jarName = jarName.replaceFirst( ".jar", "")
+            jarName += "\n"
+
+            // Check the size of the tree to ensure every english file has 14 translations for it
+            if( metatypeFiles.getFiles().size() % 15 != 0 && !ignoresList.contains( jarName ) ) {
+                if( badProjectsProps.isAllWhitespace() )
+                    badProjectsProps += jarFile.getName()
+                else
+                    badProjectsProps += ", " + jarFile.getName()
+            }
+
+            // Find all the NLS .nlsprops files based on a regex
+            // Note that the .nlsprops files have been compiled, so they will be .class files in the jar
+            FileTree nlspropsFiles = jarTree.matching {
+                include '**/resources/[^/]*.class'
+            }
+
+            // Check the size of the tree to ensure every english file has 14 translations for it
+            if( nlspropsFiles.getFiles().size() % 15 != 0 && !ignoresList.contains( jarName ) ) {
+                if( badProjectsNLS.isAllWhitespace() )
+                    badProjectsNLS += jarFile.getName()
+                else
+                    badProjectsNLS += ", " + jarFile.getName()
+            }
+        }
+
+        // If either of the checks have failures in them, fail the task
+        if( !badProjectsProps.isAllWhitespace() )
+            throw new GradleException("Missing metatype.properties files: " + badProjectsProps )
+        if( !badProjectsNLS.isAllWhitespace() )
+            throw new GradleException("Missing nlsprops files: " + badProjectsNLS )
+    }
+}

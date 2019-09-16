@@ -6,4 +6,7 @@
         <name>${hazelcast.group.name}</name>
         <password>dev-pass</password>
     </group>
+    <executor-service name="default">
+        <pool-size>12</pool-size>
+    </executor-service>    
 </hazelcast>

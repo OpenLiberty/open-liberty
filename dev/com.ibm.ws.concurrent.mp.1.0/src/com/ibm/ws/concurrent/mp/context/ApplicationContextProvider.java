@@ -12,7 +12,7 @@ package com.ibm.ws.concurrent.mp.context;
 
 import java.util.ArrayList;
 
-import org.eclipse.microprofile.concurrent.ThreadContext;
+import org.eclipse.microprofile.context.ThreadContext;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.mp.ContextOp;

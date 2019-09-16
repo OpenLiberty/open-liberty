@@ -1,0 +1,58 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jbatch.joblog/resources/com/ibm/ws/jbatch/joblog/internal/resources/JBatchJobLogMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# NLS message prefix registry: http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+#
+# This file contains the messages in use.
+#
+# The range of messages "reserved":
+# 0400 - 0449: com.ibm.ws.jbatch.joblog
+# 
+
+#{0} The job name
+#{1} The job instance id
+#{2} The job execution id
+#{3} The job java exception text
+job.logging.create.new=CWWKY0400E: La registrazione lavori batch non si \u00e8 avviata per il lavoro {0}, istanza lavoro {1}, esecuzione lavoro {2}, a causa di un''eccezione. \n{3}
+job.logging.create.new.explanation=La registrazione lavori batch non ha creato il file di log. La registrazione batch non \u00e8 riuscita a causa di un'eccezione.
+job.logging.create.new.useraction=Esaminare l'eccezione, controllare lo stato del file system e intraprendere l'azione correttiva. L'esecuzione batch continua senza la registrazione lavori.
+
+#{0} The job java exception text
+job.logging.create.next=CWWKY0401W: La registrazione lavori batch non ha creato ulteriori file parte di log a causa di un''eccezione.\n{0}\nLa registrazione lavori batch non tenter\u00e0 di proseguire con il file corrente. 
+job.logging.create.next.explanation=La registrazione lavori batch non ha creato ulteriori file parte di log. La creazione di un nuovo file di registrazione batch non \u00e8 riuscita a causa di un'eccezione.\n La registrazione lavori batch non tenter\u00e0 di proseguire con il file corrente.
+job.logging.create.next.useraction=Esaminare l'eccezione, controllare lo stato del file system e intraprendere l'azione correttiva. La registrazione lavori batch non tenter\u00e0 di proseguire con il file corrente.
+
+#{0} The job java exception text
+job.logging.read.log=CWWKY0402W: La registrazione lavori batch non ha letto il file parte di log a causa di un''eccezione.\n{0}
+job.logging.read.log.explanation=La registrazione lavori batch non ha letto il file parte di log. La lettura della registrazione batch del file parte non \u00e8 riuscita a causa di un'eccezione. \nLa registrazione lavori batch continua senza pubblicare l'evento log lavoro.
+job.logging.read.log.useraction=Esaminare l'eccezione, controllare lo stato del file system e intraprendere l'azione correttiva. \nLa registrazione lavori batch continua senza pubblicare l'evento log lavoro.
+
+#{0} The file or directory name
+job.logging.delete.log=CWWKY0403W: La registrazione lavori batch non ha eliminato il seguente file parte log o directory: {0}. 
+job.logging.delete.log.explanation=La registrazione lavori batch non ha eliminato il file parte log o directory. \nLa registrazione lavori batch continua senza eliminare il file o la directory.
+job.logging.delete.log.useraction=Esaminare l'eccezione, controllare lo stato del file system e intraprendere l'azione correttiva. \nLa registrazione lavori batch continua senza eliminare il file o la directory.

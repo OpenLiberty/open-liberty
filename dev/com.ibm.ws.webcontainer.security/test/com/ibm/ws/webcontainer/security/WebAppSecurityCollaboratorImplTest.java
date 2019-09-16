@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -113,6 +113,7 @@ public class WebAppSecurityCollaboratorImplTest {
 
     private static final String HTTP_GET = "GET";
     private static final String HTTP_TRACE = "TRACE";
+    private static final String HTTP_CUSTOM = "CUSTOM";
     private static final String AUTH_METHOD_BASIC = "BASIC";
     private static final String AUTH_METHOD_FORM = "FORM";
     private final static String REALM_NAME = "WebRealm";
@@ -121,6 +122,7 @@ public class WebAppSecurityCollaboratorImplTest {
     private final static List<String> URL_PATTERN_DD_LIST = new ArrayList<String>();
     private final static String URL_PATTERN_DD = "urlPatternDD";
     private static final String UNAUTHENTICATED = "UNAUTHENTICATED";
+    private static final AuthenticationResult SUCCESS = new AuthenticationResult(AuthResult.SUCCESS, (String) null);
 
     private final Mockery mock = new JUnit4Mockery() {
         {
@@ -129,27 +131,21 @@ public class WebAppSecurityCollaboratorImplTest {
     };
 
     private final ComponentContext cc = mock.mock(ComponentContext.class);
-    private final HttpServletRequest commonReq = mock.mock(HttpServletRequest.class, "commonReq");
+    private final HttpServletRequest request = mock.mock(HttpServletRequest.class, "request");
     private final IExtendedRequest extendedReq = mock.mock(IExtendedRequest.class, "extendedReq");
-    private final HttpServletResponse commongResp = mock.mock(HttpServletResponse.class, "commongResp");
+    private final HttpServletResponse response = mock.mock(HttpServletResponse.class, "response");
     private final ServiceReference<SecurityService> securityServiceRef = mock.mock(ServiceReference.class, "securityServiceRef");
-
     private final SecurityService securityService = mock.mock(SecurityService.class);
     private final UnauthenticatedSubjectService unauthSubjSrv = mock.mock(UnauthenticatedSubjectService.class);
-
     private final WebAuthenticatorFactory authenticatorFactory = new WebAuthenticatorFactoryImpl();
-
     private final TAIService taiService = mock.mock(TAIService.class, "commonTaiService");
-
     private final ServiceReference<TAIService> taiServiceRef = mock.mock(ServiceReference.class, "taiServiceRef");
     private final WebProviderAuthenticatorProxy providerAuthenticatorProxy = mock.mock(WebProviderAuthenticatorProxy.class, "providerAuthenticatorProxy");
     private final AuthorizationService authzService = mock.mock(AuthorizationService.class);
     private final UserRegistryService userRegistryService = mock.mock(UserRegistryService.class);
     private final UserRegistry userRegistry = mock.mock(UserRegistry.class);
-    private final WebAuthenticator authenticator = mock.mock(WebAuthenticator.class);
     private final WebRequest commonWebRequest = mock.mock(WebRequest.class, "commonWebRequest");
     private final SecurityMetadata commonSecurityMetadata = mock.mock(SecurityMetadata.class, "commonSecurityMetadata");
-    private final WebAppConfig webAppConfig = mock.mock(WebAppConfig.class);
     private final LoginConfiguration commonloginConfiguration = mock.mock(LoginConfiguration.class, "commonloginConfiguration");
     private final Map<String, Object> configProps = new HashMap<String, Object>();
     private final SubjectManager subjectManager = new SubjectManager();
@@ -157,7 +153,11 @@ public class WebAppSecurityCollaboratorImplTest {
     private WebAppSecurityCollaboratorImpl secColl = null;
     private boolean setUnsupportedAuthMech = false;
     private AuthenticationResult authResult;
+    private AuthenticationResult successWithSubject;
     private WebModuleMetaData wmmd;
+    private Subject callerSubject;
+    private Subject invocationSubject;
+    private Subject authSubject;
     private final Subject delegationSubject = new Subject();
     private final BasicAuthAuthenticator basicAuthenticator = mock.mock(BasicAuthAuthenticator.class);
     private final FormLoginAuthenticator formLoginAuthenticator = mock.mock(FormLoginAuthenticator.class);
@@ -167,8 +167,6 @@ public class WebAppSecurityCollaboratorImplTest {
     private final AtomicServiceReference<TAIService> taiAtomicServiceRef = mock.mock(AtomicServiceReference.class, "taiAtomicServiceRef");
     private final WebAuthenticatorProxy authenticatorProxyForTest = new WebAuthenticatorProxyTestDouble(webAppSecurityConfig, postParameterHelper, securityAtomicServiceRef, taiAtomicServiceRef);
     final AuthenticationService authenticationService = mock.mock(AuthenticationService.class);
-    final HttpServletRequest req = mock.mock(HttpServletRequest.class, "req");
-    final HttpServletResponse res = mock.mock(HttpServletResponse.class, "res");
 
     class WebAppSecurityCollaboratorImplTestDouble extends WebAppSecurityCollaboratorImpl {
         public WebAppSecurityCollaboratorImplTestDouble() {
@@ -254,41 +252,42 @@ public class WebAppSecurityCollaboratorImplTest {
 
     @Before
     public void setUp() throws Exception {
+        callerSubject = new Subject();
+        invocationSubject = new Subject();
+        authSubject = new Subject();
+        successWithSubject = new AuthenticationResult(AuthResult.SUCCESS, authSubject);
         subjectManager.clearSubjects();
         configProps.put(WebAppSecurityConfigImpl.CFG_KEY_FAIL_OVER_TO_BASICAUTH, false);
         configProps.put(WebAppSecurityConfigImpl.CFG_KEY_USE_AUTH_DATA_FOR_UNPROTECTED, true);
 
-        createSecurityServiceExpectations();
-        createComponentContextExpectations();
-        mock.checking(new Expectations() {
-            {
-                allowing(cc).locateService(WebAppSecurityCollaboratorImpl.KEY_TAI_SERVICE, taiServiceRef);
-                will(returnValue(taiService));
-                allowing(taiService).getTais(false);
-
-                allowing(userRegistryService).isUserRegistryConfigured();
-                will(returnValue(true));
-                allowing(webAppConfig).getApplicationName();
-                will(returnValue(APP_NAME));
-                allowing(authenticationService).getAuthCacheService();
-            }
-        });
-
-        // secColl needs to be activated to be useful, this simulates DS
-        // creating and starting the class
-        secColl = new WebAppSecurityCollaboratorImpl();
-        secColl.setAuthenticatorFactory(authenticatorFactory);
-        secColl.setSecurityService(securityServiceRef);
-        secColl.setTaiService(taiServiceRef);
-        secColl.setUnauthenticatedSubjectService(unauthSubjSrv);
-        secColl.activate(cc, configProps);
+        setSecurityServicesExpectations();
+        setupCollaborator(new WebAppSecurityCollaboratorImpl(), cc, configProps);
     }
 
-    private void createComponentContextExpectations() {
+    private void setSecurityServicesExpectations() throws Exception {
         mock.checking(new Expectations() {
             {
                 allowing(cc).locateService(WebAppSecurityCollaboratorImpl.KEY_SECURITY_SERVICE, securityServiceRef);
                 will(returnValue(securityService));
+                allowing(securityAtomicServiceRef).getService();
+                will(returnValue(securityService));
+                allowing(securityService).getAuthenticationService();
+                will(returnValue(authenticationService));
+                allowing(authenticationService).delegate(SECURITY_ROLE, APP_NAME);
+                will(returnValue(delegationSubject));
+                allowing(authenticationService).getAuthCacheService();
+                allowing(securityService).getAuthorizationService();
+                will(returnValue(authzService));
+                allowing(securityService).getUserRegistryService();
+                will(returnValue(userRegistryService));
+                allowing(userRegistryService).getUserRegistry();
+                will(returnValue(userRegistry));
+                allowing(userRegistryService).isUserRegistryConfigured();
+                will(returnValue(true));
+
+                allowing(cc).locateService(WebAppSecurityCollaboratorImpl.KEY_TAI_SERVICE, taiServiceRef);
+                will(returnValue(taiService));
+                allowing(taiService).getTais(false);
             }
         });
     }
@@ -310,25 +309,6 @@ public class WebAppSecurityCollaboratorImplTest {
         });
     }
 
-    private void createSecurityServiceExpectations() throws Exception {
-        mock.checking(new Expectations() {
-            {
-                allowing(securityAtomicServiceRef).getService();
-                will(returnValue(securityService));
-                allowing(securityService).getAuthenticationService();
-                will(returnValue(authenticationService));
-                allowing(authenticationService).delegate(SECURITY_ROLE, APP_NAME);
-                will(returnValue(delegationSubject));
-                allowing(securityService).getAuthorizationService();
-                will(returnValue(authzService));
-                allowing(securityService).getUserRegistryService();
-                will(returnValue(userRegistryService));
-                allowing(userRegistryService).getUserRegistry();
-                will(returnValue(userRegistry));
-            }
-        });
-    }
-
     private void createPostParameterHelperExpectations() {
         mock.checking(new Expectations() {
             {
@@ -342,6 +322,55 @@ public class WebAppSecurityCollaboratorImplTest {
         mock.assertIsSatisfied();
     }
 
+    private void setupSecurityMetadata(String method) {
+        wmmd = createWebModuleMetaDataMock(method);
+        setTestWebModuleMetaDataOnThread(wmmd);
+    }
+
+    private WebModuleMetaData createWebModuleMetaDataMock(String method) {
+        final SecurityMetadata securityMetadata = createTestSecurityMetadata(method);
+        final WebModuleMetaData webModuleMetaDataMock = mock.mock(WebModuleMetaData.class);
+        mock.checking(new Expectations() {
+            {
+                allowing(webModuleMetaDataMock).setSecurityMetaData(with(any(SecurityMetadata.class)));
+                allowing(webModuleMetaDataMock).getSecurityMetaData();
+                will(returnValue(securityMetadata));
+                allowing(webModuleMetaDataMock).getAnnotatedSecurityMetaData();
+                will(returnValue(null));
+            }
+        });
+        return webModuleMetaDataMock;
+    }
+
+    private SecurityMetadata createTestSecurityMetadata(final String method) {
+        final SecurityConstraintCollection securityConstraintCollection = mock.mock(SecurityConstraintCollection.class);
+        final MatchResponse unprotectedMatchResponse = new MatchResponse(Collections.EMPTY_LIST, false, false);
+        List<String> protectedServletRoles = new ArrayList<String>();
+        protectedServletRoles.add("employeeRole");
+        final SecurityMetadata securityMetadataMock = mock.mock(SecurityMetadata.class, "securityMetadataMock_createTestSecurityMetadata");
+        mock.checking(new Expectations() {
+            {
+                allowing(securityMetadataMock).getLoginConfiguration();
+                will(returnValue(null));
+                allowing(securityMetadataMock).getSecurityConstraintCollection();
+                will(returnValue(securityConstraintCollection));
+                allowing(securityConstraintCollection).getMatchResponse(with("/unprotectedPreInvokeMainTestServlet"), with(method));
+                will(returnValue(unprotectedMatchResponse));
+                allowing(securityConstraintCollection).getMatchResponse(with("/unprotectedPreInvokeMain_throwExceptionServlet"), with(method));
+                will(returnValue(unprotectedMatchResponse));
+                allowing(securityConstraintCollection).getMatchResponse(with("/unprotectedPreInvokeMain_customThrowsExceptionServlet"), with(method));
+                will(returnValue(MatchResponse.CUSTOM_NO_MATCH_RESPONSE));
+                allowing(securityMetadataMock).getSecurityRoleReferenced(with(any(String.class)), with(any(String.class)));
+                will(returnValue(SECURITY_ROLE));
+                allowing(securityMetadataMock).getRunAsRoleForServlet(with(any(String.class)));
+                will(returnValue(SECURITY_ROLE));
+                allowing(securityMetadataMock).isSyncToOSThreadRequested();
+                will(returnValue(false));
+            }
+        });
+        return securityMetadataMock;
+    }
+
     private void setTestWebModuleMetaDataOnThread(final WebModuleMetaData webModuleMetaData) {
         WebComponentMetaData webComponentMetaData = createTestWebComponentMetaData(webModuleMetaData);
         ComponentMetaDataAccessorImpl cmda = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor();
@@ -350,12 +379,16 @@ public class WebAppSecurityCollaboratorImplTest {
 
     private WebComponentMetaData createTestWebComponentMetaData(final WebModuleMetaData webModuleMetaData) {
         final WebComponentMetaData webComponentMetaData = mock.mock(WebComponentMetaData.class);
+        final WebAppConfig webAppConfig = mock.mock(WebAppConfig.class);
+
         mock.checking(new Expectations() {
             {
                 allowing(webComponentMetaData).getModuleMetaData();
                 will(returnValue(webModuleMetaData));
                 allowing(webModuleMetaData).getConfiguration();
                 will(returnValue(webAppConfig));
+                allowing(webAppConfig).getApplicationName();
+                will(returnValue(APP_NAME));
             }
         });
         return webComponentMetaData;
@@ -368,8 +401,9 @@ public class WebAppSecurityCollaboratorImplTest {
      */
     @Test
     public void preInvoke() throws SecurityViolationException {
-        subjectManager.setCallerSubject(new Subject());
-        subjectManager.setInvocationSubject(new Subject());
+        subjectManager.setCallerSubject(callerSubject);
+        subjectManager.setInvocationSubject(invocationSubject);
+
         assertNull("preinvoke with no args should return null", secColl.preInvoke());
         assertNull("invocationSubject should be null", subjectManager.getInvocationSubject());
         assertNull("receivedSubject should be null", subjectManager.getCallerSubject());
@@ -383,19 +417,12 @@ public class WebAppSecurityCollaboratorImplTest {
      */
     @Test
     public void preInvokeString() throws Exception {
-        wmmd = createWebModuleMetaDataMock();
-        setTestWebModuleMetaDataOnThread(wmmd);
-        final Subject subject = createHashtableSubject();
-
-        createTestSpecificUserRegistryExpectations("someRealm");
-        mock.checking(new Expectations() {
-            {
-                one(unauthSubjSrv).getUnauthenticatedSubject();
-                will(returnValue(subject));
-            }
-        });
+        setupSecurityMetadata(HTTP_GET);
+        withRegistryRealm("someRealm");
+        withUnauthenticatedSubject(createUnauthenticatedSubject());
 
         WebSecurityContext secContext = (WebSecurityContext) secColl.preInvoke("servletName");
+
         assertSame("Thread invocationSubject should be the delegation Subject",
                    delegationSubject, subjectManager.getInvocationSubject());
         assertNull("Saved receivedSubject should be null, but is: " + secContext.getReceivedSubject(),
@@ -405,36 +432,21 @@ public class WebAppSecurityCollaboratorImplTest {
     }
 
     /**
-     * @return
-     */
-    private Subject createHashtableSubject() {
-        final Subject subject = new Subject();
-        Hashtable<String, Object> hashtable = new Hashtable<String, Object>();
-        hashtable.put(AttributeNameConstants.WSCREDENTIAL_SECURITYNAME, UNAUTHENTICATED);
-        hashtable.put(AttributeNameConstants.WSCREDENTIAL_UNIQUEID,
-                      AccessIdUtil.createAccessId(AccessIdUtil.TYPE_USER, "someRealm", UNAUTHENTICATED));
-        subject.getPublicCredentials().add(hashtable);
-        return subject;
-    }
-
-    /**
      * Test method for {@link com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl#postInvoke(java.lang.Object)}.
      *
      * @throws ServletException
      */
     @Test
     public void postInvoke_null() throws ServletException {
-        Subject invSubject = new Subject();
-        Subject recvSubject = new Subject();
-        subjectManager.setCallerSubject(recvSubject);
-        subjectManager.setInvocationSubject(invSubject);
+        subjectManager.setCallerSubject(callerSubject);
+        subjectManager.setInvocationSubject(invocationSubject);
 
         secColl.postInvoke(null);
 
         assertSame("invocationSubject was altered and should not have been",
-                   invSubject, subjectManager.getInvocationSubject());
+                   invocationSubject, subjectManager.getInvocationSubject());
         assertSame("receivedSubject was altered and should not have been",
-                   recvSubject, subjectManager.getCallerSubject());
+                   callerSubject, subjectManager.getCallerSubject());
     }
 
     /**
@@ -444,16 +456,14 @@ public class WebAppSecurityCollaboratorImplTest {
      */
     @Test
     public void postInvoke() throws ServletException {
-        Subject invSubject = new Subject();
-        Subject recvSubject = new Subject();
-        WebSecurityContext secContext = new WebSecurityContext(invSubject, recvSubject);
+        WebSecurityContext secContext = new WebSecurityContext(invocationSubject, callerSubject);
 
         secColl.postInvoke(secContext);
 
         assertSame("invocationSubject was not altered and should have been",
-                   invSubject, subjectManager.getInvocationSubject());
+                   invocationSubject, subjectManager.getInvocationSubject());
         assertSame("receivedSubject was not altered and should have been",
-                   recvSubject, subjectManager.getCallerSubject());
+                   callerSubject, subjectManager.getCallerSubject());
     }
 
     /**
@@ -465,34 +475,29 @@ public class WebAppSecurityCollaboratorImplTest {
      */
     @Test
     public void preInvokeMain() throws Exception {
-        wmmd = createWebModuleMetaDataMock();
-        setTestWebModuleMetaDataOnThread(wmmd);
+        subjectManager.setInvocationSubject(invocationSubject);
+        subjectManager.setCallerSubject(callerSubject);
 
-        final Subject invSubject = new Subject();
-        final Subject recvSubject = new Subject();
-        subjectManager.setInvocationSubject(invSubject);
-        subjectManager.setCallerSubject(recvSubject);
-
-        createTestSpecificHttpServletRequestExpectations(commonReq, HTTP_GET, "/", "unprotectedPreInvokeMainTestServlet",
-                                                         false, "defaultMethod");
-        configProps.put("useAuthenticationDataForUnprotectedResource", false);
+        setupSecurityMetadata(HTTP_GET);
+        setHttpServletRequestExpectations(HTTP_GET, "/", "unprotectedPreInvokeMainTestServlet",
+                                          false, "defaultMethod");
+        configProps.put(WebAppSecurityConfigImpl.CFG_KEY_USE_AUTH_DATA_FOR_UNPROTECTED, false);
         secColl.modified(configProps);
 
         mock.checking(new Expectations() {
             {
-                allowing(userRegistry).getRealm();
                 one(taiService).isInvokeForUnprotectedURI();
                 will(returnValue(false));
             }
         });
 
-        WebSecurityContext secContext = (WebSecurityContext) secColl.preInvoke(commonReq, commongResp, "test", true);
+        WebSecurityContext secContext = (WebSecurityContext) secColl.preInvoke(request, response, "test", true);
         assertSame("Thread invocationSubject should be delegation Subject",
                    delegationSubject, subjectManager.getInvocationSubject());
         assertEquals("invocationSubject was not set",
-                     invSubject, secContext.getInvokedSubject());
+                     invocationSubject, secContext.getInvokedSubject());
         assertEquals("receivedSubject was not set",
-                     recvSubject, secContext.getReceivedSubject());
+                     callerSubject, secContext.getReceivedSubject());
     }
 
     /**
@@ -504,19 +509,56 @@ public class WebAppSecurityCollaboratorImplTest {
      */
     @Test(expected = SecurityViolationException.class)
     public void preInvokeMain_throwException() throws Exception {
-        final Subject subject = createHashtableSubject();
-        wmmd = createWebModuleMetaDataMock();
-        setTestWebModuleMetaDataOnThread(wmmd);
-        createTestSpecificHttpServletRequestExpectations(commonReq, HTTP_GET, "/", "unprotectedPreInvokeMain_throwExceptionServlet",
-                                                         false, HTTP_TRACE);
-        createTestSpecificUserRegistryExpectations("someRealm");
+        setupSecurityMetadata(HTTP_GET);
+        setHttpServletRequestExpectations(HTTP_GET, "/", "unprotectedPreInvokeMain_throwExceptionServlet",
+                                          false, HTTP_TRACE);
+        withRegistryRealm("someRealm");
+        withUnauthenticatedSubject(createUnauthenticatedSubject());
+
+        secColl.preInvoke(request, response, "test", true);
+    }
+
+    /**
+     * Test method for
+     * {@link com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl#preInvoke(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.lang.String, boolean)}
+     * .
+     *
+     * @throws Exception a SecurityViolationException is expected because a custom HTTP method is not allowed by the security constraints..
+     */
+    @Test
+    public void preInvokeMain_customThrowsException() throws Exception {
+        setupSecurityMetadata(HTTP_CUSTOM);
+        setHttpServletRequestExpectations(HTTP_CUSTOM, "/", "unprotectedPreInvokeMain_customThrowsExceptionServlet",
+                                          false, "defaultMethod");
+        withRegistryRealm("someRealm");
+        withUnauthenticatedSubject(createUnauthenticatedSubject());
+
+        try {
+            secColl.preInvoke(request, response, "test", true);
+            fail("There must be a SecurityViolationException thrown.");
+        } catch (SecurityViolationException sve) {
+            WebSecurityCollaboratorException wsce = (WebSecurityCollaboratorException) sve.getCause();
+            assertEquals("There must be a WebReply object with a 403 status code.", HttpServletResponse.SC_FORBIDDEN, wsce.getWebReply().getStatusCode());
+        }
+    }
+
+    private Subject createUnauthenticatedSubject() {
+        final Subject subject = new Subject();
+        Hashtable<String, Object> hashtable = new Hashtable<String, Object>();
+        hashtable.put(AttributeNameConstants.WSCREDENTIAL_SECURITYNAME, UNAUTHENTICATED);
+        hashtable.put(AttributeNameConstants.WSCREDENTIAL_UNIQUEID,
+                      AccessIdUtil.createAccessId(AccessIdUtil.TYPE_USER, "someRealm", UNAUTHENTICATED));
+        subject.getPublicCredentials().add(hashtable);
+        return subject;
+    }
+
+    private void withUnauthenticatedSubject(final Subject subject) {
         mock.checking(new Expectations() {
             {
                 one(unauthSubjSrv).getUnauthenticatedSubject();
                 will(returnValue(subject));
             }
         });
-        secColl.preInvoke(commonReq, commongResp, "test", true);
     }
 
     /**
@@ -531,10 +573,10 @@ public class WebAppSecurityCollaboratorImplTest {
     @Test
     public void testHandleException_challenge() throws ClassCastException, ServletException, IOException {
         String realm = "realm";
-        createTestSpecificHttpServletResponseExpectations(commongResp);
+        withChallengeResponse();
         ChallengeReply reply = new ChallengeReply(realm);
         WebSecurityCollaboratorException wse = new WebSecurityCollaboratorException(reply);
-        secColl.handleException(commonReq, commongResp, wse);
+        secColl.handleException(request, response, wse);
     }
 
     /**
@@ -547,11 +589,12 @@ public class WebAppSecurityCollaboratorImplTest {
     @Test
     public void testHandleException_deny() throws IOException {
         final String reason = "reason";
-        createHttpServletResponseErrorExpectations(commongResp, 403, reason);
+        withErrorResponse(403, reason);
         DenyReply reply = new DenyReply(reason);
         WebSecurityCollaboratorException wse = new WebSecurityCollaboratorException(reply);
+
         try {
-            secColl.handleException(commonReq, commongResp, wse);
+            secColl.handleException(request, response, wse);
         } catch (ServletException e) {
             fail("Unexpected ServletException: " + e);
             e.printStackTrace();
@@ -573,10 +616,10 @@ public class WebAppSecurityCollaboratorImplTest {
     @Test
     public void testHandleException_redirect() throws IOException, ClassCastException, ServletException {
         final String url = "url";
-        createHttpServletResponseRedirectionExpectations(commongResp, url, "");
+        withRedirectionResponse(url, "");
         RedirectReply reply = new RedirectReply(url, null);
         WebSecurityCollaboratorException wse = new WebSecurityCollaboratorException("redirect", reply);
-        secColl.handleException(commonReq, commongResp, wse);
+        secColl.handleException(request, response, wse);
     }
 
     /**
@@ -591,10 +634,10 @@ public class WebAppSecurityCollaboratorImplTest {
     @Test
     public void testHandleException_redirect302() throws IOException, ClassCastException, ServletException {
         final String url = "url";
-        createHttpServletResponseRedirectionExpectations(commongResp, url, "");
+        withRedirectionResponse(url, "");
         RedirectReplyTestDouble reply = new RedirectReplyTestDouble(url);
         WebSecurityCollaboratorException wse = new WebSecurityCollaboratorException("redirect", reply);
-        secColl.handleException(commonReq, commongResp, wse);
+        secColl.handleException(request, response, wse);
     }
 
     /**
@@ -606,9 +649,9 @@ public class WebAppSecurityCollaboratorImplTest {
     public void testHandleException_InternalServerError() throws Exception {
         InternalErrorReply reply = new InternalErrorReply();
         WebSecurityCollaboratorException wse = new WebSecurityCollaboratorException(reply);
-        HttpServletRequest req = createHttpServletRequest();
-        createTestSpecificHttpServletRequestExpectations(req, HTTP_GET, "/", "testServlet", "http://testserver.ibm.com:1234/test/testServlet", "key=value", true, "defaultMethod");
-        secColl.handleException(req, commongResp, wse);
+        setHttpServletRequestExpectations(HTTP_GET, "/", "testServlet", "http://testserver.ibm.com:1234/test/testServlet", "key=value", true,
+                                          "defaultMethod");
+        secColl.handleException(request, response, wse);
     }
 
     /**
@@ -617,23 +660,11 @@ public class WebAppSecurityCollaboratorImplTest {
     @Test
     public void testAuthenticateRequest() {
         createAuthenticatorProxyCommonExpectations();
-        FormLoginConfiguration formLoginConfiguration = createFormLoginConfiguration();
-        LoginConfiguration loginConfiguration = createLoginConfiguration(AUTH_METHOD_FORM, formLoginConfiguration);
-        SecurityMetadata securityMetadata = createSecurityMetadata(loginConfiguration);
-        HttpServletRequest req = createHttpServletRequest();
-        HttpServletResponse resp = createHttpServletResponse();
-        final WebRequest webRequest = createWebRequest(securityMetadata, req, resp, true);
-        final AuthenticationResult authResult = new AuthenticationResult(AuthResult.SUCCESS, (String) null);
-        createFormLoginAuthenticatorExpectations(webRequest, authResult);
-
+        WebRequest webRequest = createWebRequest(AUTH_METHOD_FORM, false, false);
+        authResult = SUCCESS;
+        withProviderAuthenticatorProxyAuthenticate(webRequest);
         secColl = new WebAppSecurityCollaboratorImplTestDouble();
-        mock.checking(new Expectations() {
-            {
-                allowing(taiService).getTais(true);
-                allowing(providerAuthenticatorProxy).authenticate(webRequest);
-                will(returnValue(authResult));
-            }
-        });
+
         AuthenticationResult newAuthResult = secColl.authenticateRequest(webRequest);
 
         assertEquals("Authentication result is not correct: ", authResult, newAuthResult);
@@ -669,80 +700,63 @@ public class WebAppSecurityCollaboratorImplTest {
         return securityMetadata;
     }
 
-    private HttpServletRequest createHttpServletRequest() {
-        final HttpServletRequest req = mock.mock(HttpServletRequest.class);
-        mock.checking(new Expectations() {
-            {
-                allowing(req).getCookies();
-                will(returnValue(null));
-                allowing(taiService).getTais(true);
-            }
-        });
-        return req;
+    private void setHttpServletRequestExpectations(final String httpMethod,
+                                                   final String servletPath, final String pathInfo,
+                                                   final boolean secure, final String checkDefaultMethod) {
+        setHttpServletRequestExpectations(httpMethod, servletPath, pathInfo, null, null, secure, checkDefaultMethod);
     }
 
-    private void createTestSpecificHttpServletRequestExpectations(final HttpServletRequest req, final String httpMethod,
-                                                                  final String servletPath, final String pathInfo,
-                                                                  final boolean secure, final String checkDefaultMethod) {
-        createTestSpecificHttpServletRequestExpectations(req, httpMethod, servletPath, pathInfo, null, null, secure, checkDefaultMethod);
-    }
-
-    private void createTestSpecificHttpServletRequestExpectations(final HttpServletRequest req, final String httpMethod,
-                                                                  final String servletPath, final String pathInfo,
-                                                                  final String requestURL, final String queryString,
-                                                                  final boolean secure, final String checkDefaultMethod) {
+    private void setHttpServletRequestExpectations(final String httpMethod,
+                                                   final String servletPath, final String pathInfo,
+                                                   final String requestURL, final String queryString,
+                                                   final boolean secure, final String checkDefaultMethod) {
         mock.checking(new Expectations() {
             {
-                allowing(req).getMethod();
+                allowing(request).getMethod();
                 will(returnValue(httpMethod));
-                allowing(req).getServletPath();
+                allowing(request).getServletPath();
                 will(returnValue(servletPath));
-                allowing(req).getPathInfo();
+                allowing(request).getPathInfo();
                 will(returnValue(pathInfo));
-                allowing(req).getRequestURL();
+                allowing(request).getRequestURL();
                 will(returnValue(requestURL == null ? new StringBuffer() : new StringBuffer(requestURL)));
-                allowing(req).getQueryString();
+                allowing(request).getQueryString();
                 will(returnValue(queryString));
-                allowing(req).isSecure();
+                allowing(request).isSecure();
                 will(returnValue(secure));
-                allowing(req).getAttribute("com.ibm.ws.webcontainer.security.checkdefaultmethod");
+                allowing(request).getAttribute("com.ibm.ws.webcontainer.security.checkdefaultmethod");
                 will(returnValue(checkDefaultMethod));
-                allowing(req).getAttribute("com.ibm.ws.webcontainer.security.webmodulemetadata");
+                allowing(request).getAttribute("com.ibm.ws.webcontainer.security.webmodulemetadata");
                 will(returnValue(null));
-                allowing(req).setAttribute("com.ibm.ws.webcontainer.security.webmodulemetadata", wmmd);
+                allowing(request).setAttribute("com.ibm.ws.webcontainer.security.webmodulemetadata", wmmd);
             }
         });
     }
 
-    private HttpServletResponse createHttpServletResponse() {
-        final HttpServletResponse resp = mock.mock(HttpServletResponse.class);
-        return resp;
-    }
-
-    private void createTestSpecificHttpServletResponseExpectations(final HttpServletResponse resp) {
+    private void withChallengeResponse() {
         mock.checking(new Expectations() {
             {
-                allowing(resp).setStatus(401);
-                allowing(resp).setHeader("WWW-Authenticate", "Basic realm=\"realm\"");
+                allowing(response).setStatus(401);
+                allowing(response).setHeader("WWW-Authenticate", "Basic realm=\"realm\"");
             }
         });
     }
 
-    private void createHttpServletResponseErrorExpectations(final HttpServletResponse resp, final int error, final String reason) throws IOException {
+    private void withErrorResponse(final int error, final String reason) throws IOException {
         mock.checking(new Expectations() {
             {
-                allowing(resp).sendError(error, reason);
+                one(response).sendError(error, reason);
             }
         });
     }
 
-    private void createHttpServletResponseRedirectionExpectations(final HttpServletResponse resp, final String url, final String redirect) throws IOException {
+    private void withRedirectionResponse(final String url, final String redirect) throws IOException {
         mock.checking(new Expectations() {
             {
-                allowing(resp).isCommitted();
+                allowing(response).isCommitted();
                 will(returnValue(false));
-                allowing(resp).encodeURL(url);
-                allowing(resp).sendRedirect(redirect);
+                allowing(response).encodeURL(url);
+                allowing(response).sendRedirect(redirect);
             }
         });
     }
@@ -750,82 +764,39 @@ public class WebAppSecurityCollaboratorImplTest {
     /**
      * Creates a WebRequest mock object with its expectations.
      * Only expectations related to the WebRequest mock object are placed here.
+     *
+     * @param hasFormLoginConfig
      */
-    private WebRequest createWebRequest(final SecurityMetadata securityMetadata,
-                                        final HttpServletRequest req,
-                                        final HttpServletResponse resp,
-                                        final boolean formLoginRedirectEnabled) {
+    private WebRequest createWebRequest(String authMethod, final boolean accessPrecluded, boolean hasFormLoginConfig) {
+        final FormLoginConfiguration formLoginConfiguration = (AUTH_METHOD_FORM.equals(authMethod) || hasFormLoginConfig) ? createFormLoginConfiguration() : null;
+        LoginConfiguration loginConfiguration = createLoginConfiguration(authMethod, formLoginConfiguration);
+        final SecurityMetadata securityMetadata = createSecurityMetadata(loginConfiguration);
         final WebRequest webRequest = mock.mock(WebRequest.class);
         final LoginConfiguration loginConfig = securityMetadata.getLoginConfiguration();
-        final FormLoginConfiguration formLoginConfiguration;
-        if (loginConfig != null) {
-            formLoginConfiguration = loginConfig.getFormLoginConfiguration();
-        } else {
-            formLoginConfiguration = null;
-        }
 
         mock.checking(new Expectations() {
             {
                 allowing(webRequest).getSecurityMetadata();
                 will(returnValue(securityMetadata));
                 allowing(webRequest).getHttpServletRequest();
-                will(returnValue(req));
+                will(returnValue(request));
                 allowing(webRequest).getHttpServletResponse();
-                will(returnValue(resp));
+                will(returnValue(response));
                 allowing(webRequest).getLoginConfig();
                 will(returnValue(loginConfig));
                 allowing(webRequest).getFormLoginConfiguration();
                 will(returnValue(formLoginConfiguration));
                 allowing(webRequest).isUnprotectedURI();
-                allowing(taiService).getTais(false);
-            }
-        });
-        return webRequest;
-    }
-
-    private void createTestSpecificWebRequestExpectations(final WebRequest webRequest,
-                                                          final List<String> requiredRoles,
-                                                          final boolean accessPrecluded) {
-        mock.checking(new Expectations() {
-            {
                 allowing(webRequest).getRequiredRoles();
                 will(returnValue(requiredRoles));
                 allowing(webRequest).isAccessPrecluded();
                 will(returnValue(accessPrecluded));
                 allowing(webRequest).getApplicationName();
                 will(returnValue(APP_NAME));
-                allowing(taiService).getTais(false);
             }
         });
-    }
 
-    /**
-     * Creates the FormLoginAuthenticator expectations.
-     * Only the FormLoginAuthenticator mock object expectations are placed here.
-     */
-    private void createFormLoginAuthenticatorExpectations(final WebRequest webRequest, final AuthenticationResult authenticationResult) {
-        mock.checking(new Expectations() {
-            {
-                allowing(formLoginAuthenticator).authenticate(webRequest);
-                will(returnValue(authenticationResult));
-                allowing(taiService).getTais(false);
-            }
-        });
-    }
-
-    /**
-     * Creates the BasicAuthAuthenticator expectations.
-     * Only the BasicAuthAuthenticator mock object expectations are placed here.
-     */
-    private void createBasicAuthenticatorExpectations(final WebRequest webRequest,
-                                                      final AuthenticationResult authenticationResult) {
-        mock.checking(new Expectations() {
-            {
-                allowing(basicAuthenticator).authenticate(webRequest);
-                will(returnValue(authenticationResult));
-                allowing(taiService).getTais(false);
-            }
-        });
+        return webRequest;
     }
 
     /**
@@ -835,30 +806,36 @@ public class WebAppSecurityCollaboratorImplTest {
     @Test
     public void testAuthorizeWithRoles() {
         AuthenticationResult authResult = new AuthenticationResult(AuthResult.UNKNOWN, (String) null);
-        createTestSpecificIsAuthorizedExpectations(APP_NAME, null, null, true);
+        withSubjectAuthorized(null, null);
 
         boolean isAuthorized = secColl.authorize(authResult, APP_NAME, "uriName", null, null);
+
         assertTrue("authorize should return true.", isAuthorized);
     }
 
-    private void createTestSpecificIsAuthorizedExpectations(final String resourceName,
-                                                            final Collection<String> requiredRoles,
-                                                            final Subject subject,
-                                                            final boolean authorized) {
+    private void withSubjectAuthorized(Collection<String> requiredRoles, Subject subject) {
+        withAuthorizedExpectations(requiredRoles, subject, true);
+    }
+
+    private void withSubjectNotAuthorized(Collection<String> requiredRoles, Subject subject) {
+        withAuthorizedExpectations(requiredRoles, subject, false);
+    }
+
+    private void withAuthorizedExpectations(final Collection<String> requiredRoles,
+                                            final Subject subject,
+                                            final boolean authorized) {
         mock.checking(new Expectations() {
             {
-                allowing(authzService).isAuthorized(resourceName, requiredRoles, subject);
+                allowing(authzService).isAuthorized(APP_NAME, requiredRoles, subject);
                 will(returnValue(authorized));
             }
         });
     }
 
-    private void createTestSpecificIsEveryoneGrantedExpectations(final String resourceName,
-                                                                 final Collection<String> requiredRoles,
-                                                                 final boolean everyoneGranted) {
+    private void withEveryoneGranted(final boolean everyoneGranted) {
         mock.checking(new Expectations() {
             {
-                allowing(authzService).isEveryoneGranted(resourceName, requiredRoles);
+                one(authzService).isEveryoneGranted(APP_NAME, requiredRoles);
                 will(returnValue(everyoneGranted));
             }
         });
@@ -873,11 +850,11 @@ public class WebAppSecurityCollaboratorImplTest {
         AuthenticationResult authResult = new AuthenticationResult(AuthResult.UNKNOWN, (String) null);
         authResult.realm = "realm";
         authResult.username = "userName";
-        createTestSpecificIsAuthorizedExpectations(APP_NAME, null, null, false);
+        withSubjectNotAuthorized(null, null);
 
         boolean isAuthorized = secColl.authorize(authResult, APP_NAME, "uriName", null, null);
-        assertFalse("authorize should return true.", isAuthorized);
 
+        assertFalse("authorize should return true.", isAuthorized);
         assertTrue("Expected message was not logged",
                    outputMgr.checkForStandardOut("CWWKS9104A: Authorization failed for user userName:realm while invoking " + APP_NAME
                                                  + " on uriName. The user is not granted access to any of the required roles: null."));
@@ -889,15 +866,14 @@ public class WebAppSecurityCollaboratorImplTest {
      */
     @Test
     public void authorize_failedUnknownUserName() {
-        final Subject authSubject = new Subject();
         authSubject.getPrincipals().add(new WSPrincipal("subjectUserName", "accessId", "method"));
-        AuthenticationResult authResult = new AuthenticationResult(AuthResult.SUCCESS, authSubject);
+        AuthenticationResult authResult = successWithSubject;
         authResult.realm = "realm";
-        createTestSpecificIsAuthorizedExpectations(APP_NAME, null, authSubject, false);
+        withSubjectNotAuthorized(null, authSubject);
 
         boolean isAuthorized = secColl.authorize(authResult, APP_NAME, "uriName", null, null);
-        assertFalse("authorize should return true.", isAuthorized);
 
+        assertFalse("authorize should return true.", isAuthorized);
         assertTrue("Expected message was not logged",
                    outputMgr.checkForStandardOut("CWWKS9104A: Authorization failed for user subjectUserName while invoking " + APP_NAME
                                                  + " on uriName. The user is not granted access to any of the required roles: null."));
@@ -909,15 +885,14 @@ public class WebAppSecurityCollaboratorImplTest {
      */
     @Test
     public void authorize_failedUnknownRealm() {
-        final Subject authSubject = new Subject();
         authSubject.getPrincipals().add(new WSPrincipal("subjectUserName", "accessId", "method"));
-        AuthenticationResult authResult = new AuthenticationResult(AuthResult.SUCCESS, authSubject);
+        AuthenticationResult authResult = successWithSubject;
         authResult.username = "userName";
-        createTestSpecificIsAuthorizedExpectations(APP_NAME, null, authSubject, false);
+        withSubjectNotAuthorized(null, authSubject);
 
         boolean isAuthorized = secColl.authorize(authResult, APP_NAME, "uriName", null, null);
-        assertFalse("authorize should return true.", isAuthorized);
 
+        assertFalse("authorize should return true.", isAuthorized);
         assertTrue("Expected message was not logged",
                    outputMgr.checkForStandardOut("CWWKS9104A: Authorization failed for user userName:DEFAULT while invoking " + APP_NAME
                                                  + " on uriName. The user is not granted access to any of the required roles: null."));
@@ -926,91 +901,56 @@ public class WebAppSecurityCollaboratorImplTest {
     /**
      * Test method for {@link com.ibm.ws.webcontainer.security.internal.WebAppSecurityCollaboratorImpl#determineWebReply((HttpServletRequest commonReq, Subject receivedSubject,
      * String
-     * uriName, WebRequest commonWebRequest)} .
+     * uriName, WebRequest webRequest)} .
      */
     @Test
     public void testDetermineWebReplyWithConstraints_successful() {
-        secColl = new WebAppSecurityCollaboratorImplTestDouble();
-        final AuthenticationResult authResult = new AuthenticationResult(AuthResult.SUCCESS, (String) null);
+        authResult = SUCCESS;
         requiredRoles.clear();
         requiredRoles.add("role1");
 
         createAuthenticatorProxyCommonExpectations();
-        LoginConfiguration loginConfiguration = createLoginConfiguration(AUTH_METHOD_BASIC, null);
-        SecurityMetadata securityMetadata = createSecurityMetadata(loginConfiguration);
-        HttpServletRequest req = createHttpServletRequest();
-        createTestSpecificHttpServletRequestExpectations(req, HTTP_GET, null, null, true, "defaultMethod");
-        HttpServletResponse resp = createHttpServletResponse();
-        final WebRequest webRequest = createWebRequest(securityMetadata, req, resp, false);
-        createTestSpecificWebRequestExpectations(webRequest, requiredRoles, false);
-        createBasicAuthenticatorExpectations(webRequest, authResult);
-        createTestSpecificIsEveryoneGrantedExpectations(APP_NAME, requiredRoles, false);
-        createTestSpecificIsAuthorizedExpectations(APP_NAME, requiredRoles, null, true);
-
-        secColl.setAuthenticatorFactory(authenticatorFactory);
-        secColl.setSecurityService(securityServiceRef);
-        secColl.setTaiService(taiServiceRef);
-        secColl.activate(cc, configProps);
-
-        mock.checking(new Expectations() {
-            {
-                allowing(taiService).getTais(true);
-                allowing(userRegistry).getRealm();
-                allowing(providerAuthenticatorProxy).authenticate(webRequest);
-                will(returnValue(authResult));
-            }
-        });
+        setHttpServletRequestExpectations(HTTP_GET, null, null, true, "defaultMethod");
+        WebRequest webRequest = createWebRequest(AUTH_METHOD_BASIC, false, false);
+        withEveryoneGranted(false);
+        withSubjectAuthorized(requiredRoles, null);
+        withRegistryRealm("someRealm");
+        withProviderAuthenticatorProxyAuthenticate(webRequest);
+        setupCollaborator(new WebAppSecurityCollaboratorImplTestDouble(), cc, configProps);
 
         WebReply reply = secColl.determineWebReply(null, "uriName", webRequest);
+
         assertEquals("Reply status code should be OK.", HttpServletResponse.SC_OK, reply.getStatusCode());
     }
 
     /**
      * Test method for {@link com.ibm.ws.webcontainer.security.internal.WebAppSecurityCollaboratorImpl#determineWebReply((HttpServletRequest commonReq, Subject receivedSubject,
      * String
-     * uriName, WebRequest commonWebRequest)} .
+     * uriName, WebRequest webRequest)} .
      */
     @Test
     public void testDetermineWebReply_authnFailed() throws Exception {
-        secColl = new WebAppSecurityCollaboratorImplTestDouble();
-        final AuthenticationResult authResult = new AuthenticationResult(AuthResult.FAILURE, (String) null);
+        authResult = new AuthenticationResult(AuthResult.FAILURE, (String) null);
         requiredRoles.clear();
         requiredRoles.add("role1");
 
         createAuthenticatorProxyCommonExpectations();
-        LoginConfiguration loginConfiguration = createLoginConfiguration(AUTH_METHOD_BASIC, null);
-        SecurityMetadata securityMetadata = createSecurityMetadata(loginConfiguration);
-        HttpServletRequest req = createHttpServletRequest();
-        createTestSpecificHttpServletRequestExpectations(req, HTTP_GET, null, null, true, "defaultMethod");
-        HttpServletResponse resp = createHttpServletResponse();
-        final WebRequest webRequest = createWebRequest(securityMetadata, req, resp, false);
-        createTestSpecificWebRequestExpectations(webRequest, requiredRoles, false);
-        createBasicAuthenticatorExpectations(webRequest, authResult);
-        createTestSpecificIsEveryoneGrantedExpectations(APP_NAME, requiredRoles, false);
-        createTestSpecificUserRegistryExpectations("someRealm");
-
-        secColl.setAuthenticatorFactory(authenticatorFactory);
-        secColl.setSecurityService(securityServiceRef);
-        secColl.setTaiService(taiServiceRef);
-        secColl.activate(cc, configProps);
-        mock.checking(new Expectations() {
-            {
-                allowing(taiService).getTais(true);
-                allowing(providerAuthenticatorProxy).authenticate(webRequest);
-                will(returnValue(authResult));
-            }
-        });
+        setHttpServletRequestExpectations(HTTP_GET, null, null, true, "defaultMethod");
+        WebRequest webRequest = createWebRequest(AUTH_METHOD_BASIC, false, false);
+        withEveryoneGranted(false);
+        withRegistryRealm("someRealm");
+        withProviderAuthenticatorProxyAuthenticate(webRequest);
+        setupCollaborator(new WebAppSecurityCollaboratorImplTestDouble(), cc, configProps);
 
         WebReply reply = secColl.determineWebReply(null, "uriName", webRequest);
+
         assertEquals("Reply status code should be 403.", HttpServletResponse.SC_FORBIDDEN, reply.getStatusCode());
         assertEquals("Reply status message should be AuthenticationFailed.", "AuthenticationFailed", reply.message);
     }
 
-    private void createTestSpecificUserRegistryExpectations(final String realm) throws RegistryException {
+    private void withRegistryRealm(final String realm) {
         mock.checking(new Expectations() {
             {
-                allowing(userRegistryService).getUserRegistry();
-                will(returnValue(userRegistry));
                 allowing(userRegistry).getRealm();
                 will(returnValue(realm));
             }
@@ -1020,45 +960,37 @@ public class WebAppSecurityCollaboratorImplTest {
     /**
      * Test method for {@link com.ibm.ws.webcontainer.security.internal.WebAppSecurityCollaboratorImpl#determineWebReply((HttpServletRequest commonReq, Subject receivedSubject,
      * String
-     * uriName, WebRequest commonWebRequest)} .
+     * uriName, WebRequest webRequest)} .
      */
     @Test
     public void testDetermineWebReply_authzFailed() {
-        secColl = new WebAppSecurityCollaboratorImplTestDouble();
-        final Subject subject = new Subject();
-        subject.getPrincipals().add(new WSPrincipal("user1", "user:BasicRealm/user1", WSPrincipal.AUTH_METHOD_PASSWORD));
-        final AuthenticationResult authResult = new AuthenticationResult(AuthResult.SUCCESS, subject);
+        authSubject.getPrincipals().add(new WSPrincipal("user1", "user:BasicRealm/user1", WSPrincipal.AUTH_METHOD_PASSWORD));
+        authResult = successWithSubject;
         requiredRoles.clear();
         requiredRoles.add("role1");
 
         createAuthenticatorProxyCommonExpectations();
-        LoginConfiguration loginConfiguration = createLoginConfiguration(AUTH_METHOD_BASIC, null);
-        SecurityMetadata securityMetadata = createSecurityMetadata(loginConfiguration);
-        HttpServletRequest req = createHttpServletRequest();
-        createTestSpecificHttpServletRequestExpectations(req, HTTP_GET, null, null, true, "defaultMethod");
-        HttpServletResponse resp = createHttpServletResponse();
-        final WebRequest webRequest = createWebRequest(securityMetadata, req, resp, false);
-        createTestSpecificWebRequestExpectations(webRequest, requiredRoles, false);
-        createBasicAuthenticatorExpectations(webRequest, authResult);
-        createTestSpecificIsEveryoneGrantedExpectations(APP_NAME, requiredRoles, false);
-        createTestSpecificIsAuthorizedExpectations(APP_NAME, requiredRoles, subject, false);
+        setHttpServletRequestExpectations(HTTP_GET, null, null, true, "defaultMethod");
+        WebRequest webRequest = createWebRequest(AUTH_METHOD_BASIC, false, false);
+        withEveryoneGranted(false);
+        withSubjectNotAuthorized(requiredRoles, authSubject);
+        withRegistryRealm("BasicRealm");
+        withProviderAuthenticatorProxyAuthenticate(webRequest);
 
-        mock.checking(new Expectations() {
-            {
-                allowing(userRegistry).getRealm();
-                allowing(providerAuthenticatorProxy).authenticate(webRequest);
-                will(returnValue(authResult));
-            }
-        });
-
-        secColl.setAuthenticatorFactory(authenticatorFactory);
-        secColl.setSecurityService(securityServiceRef);
-        secColl.setTaiService(taiServiceRef);
-        secColl.activate(cc, configProps);
+        setupCollaborator(new WebAppSecurityCollaboratorImplTestDouble(), cc, configProps);
 
         WebReply reply = secColl.determineWebReply(null, "uriName", webRequest);
         assertEquals("Reply status code should be 403.", HttpServletResponse.SC_FORBIDDEN, reply.getStatusCode());
         assertEquals("Reply status message should be AuthorizationFailed.", "AuthorizationFailed", reply.message);
+    }
+
+    private void withProviderAuthenticatorProxyAuthenticate(final WebRequest webRequest) {
+        mock.checking(new Expectations() {
+            {
+                one(providerAuthenticatorProxy).authenticate(webRequest);
+                will(returnValue(authResult));
+            }
+        });
     }
 
     /**
@@ -1069,6 +1001,7 @@ public class WebAppSecurityCollaboratorImplTest {
         String realm = "myRealm";
         final AuthenticationResult authResult = new AuthenticationResult(AuthResult.SEND_401, (String) null);
         WebReply reply = secColl.createReplyForAuthnFailure(authResult, realm);
+
         assertEquals("The status code should be 401", HttpServletResponse.SC_UNAUTHORIZED, reply.getStatusCode());
         assertTrue("The message should have the realm name.", reply.message.contains(realm));
     }
@@ -1078,6 +1011,7 @@ public class WebAppSecurityCollaboratorImplTest {
         String realm = "myRealm";
         final AuthenticationResult authResult = new AuthenticationResult(AuthResult.TAI_CHALLENGE, "TrustAssociation Interception redirecting", HttpServletResponse.SC_MOVED_TEMPORARILY);
         WebReply reply = secColl.createReplyForAuthnFailure(authResult, realm);
+
         assertTrue("The reply should be a TAIChallenge reply.", reply instanceof TAIChallengeReply);
         assertEquals("The status code should be the same as in the authentication result TAI challenge code.", authResult.getTAIChallengeCode(), reply.getStatusCode());
     }
@@ -1089,6 +1023,7 @@ public class WebAppSecurityCollaboratorImplTest {
     public void testCreateReplyForAuthnFailure_redirect() {
         final AuthenticationResult authResult = new AuthenticationResult(AuthResult.REDIRECT, (String) null);
         WebReply reply = secColl.createReplyForAuthnFailure(authResult, null);
+
         assertEquals("The status code should be redirect", HttpServletResponse.SC_MOVED_TEMPORARILY, reply.getStatusCode());
     }
 
@@ -1099,291 +1034,155 @@ public class WebAppSecurityCollaboratorImplTest {
     public void testCreateReplyForAuthnFailure_continue() {
         final AuthenticationResult authResult = new AuthenticationResult(AuthResult.CONTINUE, (String) null);
         WebReply reply = secColl.createReplyForAuthnFailure(authResult, null);
+
         assertEquals("The status code should be 403", HttpServletResponse.SC_FORBIDDEN, reply.getStatusCode());
     }
 
     /**
-     * Test method for {@link com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl#performInitialChecks(WebRequest commonWebRequest, String uriName)}.
+     * Test method for {@link com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl#performInitialChecks(WebRequest webRequest, String uriName)}.
      */
     @Test
     public void testPerformChecksToSkipAuthnAuthz_invalidUri() {
-        mock.checking(new Expectations() {
-            {
-                allowing(commonWebRequest).getHttpServletRequest();
-                will(returnValue(commonReq));
-                allowing(commonWebRequest).getRequiredRoles();
-                will(returnValue(requiredRoles));
-                allowing(commonReq).getMethod();
-                will(returnValue(null));
-                allowing(commonWebRequest).getSecurityMetadata();
-                will(returnValue(commonSecurityMetadata));
-            }
-        });
-        WebReply reply = secColl.performInitialChecks(commonWebRequest, "");
+        WebRequest webRequest = createWebRequest(AUTH_METHOD_BASIC, false, false);
+
+        WebReply reply = secColl.performInitialChecks(webRequest, "");
+
         assertEquals("Web reply status code should be 403", HttpServletResponse.SC_FORBIDDEN, reply.getStatusCode());
         assertTrue("Web reply message should have info about invalid URI", reply.message.contains("Invalid URI"));
 
-        reply = secColl.performInitialChecks(commonWebRequest, null);
+        reply = secColl.performInitialChecks(webRequest, null);
+
         assertEquals("Web reply status code should be 403", HttpServletResponse.SC_FORBIDDEN, reply.getStatusCode());
         assertTrue("Web reply message should have info about invalid URI", reply.message.contains("Invalid URI"));
     }
 
     /**
-     * Test method for {@link com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl#performInitialChecks(WebRequest commonWebRequest, String uriName)}.
+     * Test method for {@link com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl#performInitialChecks(WebRequest webRequest, String uriName)}.
      */
     @Test
     public void testPerformChecksToSkipAuthnAuthz_unsupportedAuthMech() {
-        mock.checking(new Expectations() {
-            {
-                allowing(commonWebRequest).getHttpServletRequest();
-                will(returnValue(commonReq));
-                allowing(commonWebRequest).getRequiredRoles();
-                will(returnValue(requiredRoles));
-                allowing(commonWebRequest).getLoginConfig();
-                will(returnValue(null));
-                allowing(commonReq).getMethod();
-                will(returnValue(null));
-                allowing(commonWebRequest).getSecurityMetadata();
-                will(returnValue(commonSecurityMetadata));
-
-            }
-        });
+        // TODO: Use DIGEST and update test double to remove override of unsupportedAuthMech().
+        WebRequest webRequest = createWebRequest(AUTH_METHOD_BASIC, false, false);
         setUnsupportedAuthMech = true;
         secColl = new WebAppSecurityCollaboratorImplTestDouble();
-        WebReply reply = secColl.performInitialChecks(commonWebRequest, "uriName");
+
+        WebReply reply = secColl.performInitialChecks(webRequest, "uriName");
+
         assertEquals("Web reply status code should be 403", HttpServletResponse.SC_FORBIDDEN, reply.getStatusCode());
         assertTrue("Web reply message should have info about unsupported auth mech", reply.message.contains("not supported"));
     }
 
     /**
-     * Test method for {@link com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl#performInitialChecks(WebRequest commonWebRequest, String uriName)}.
+     * Test method for {@link com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl#performInitialChecks(WebRequest webRequest, String uriName)}.
      */
     @Test
     public void testPerformChecksToSkipAuthnAuthz_sslRedirect() {
-        requiredRoles.clear();
-        requiredRoles.add("role1");
-        mock.checking(new Expectations() {
-            {
-                allowing(commonWebRequest).getHttpServletRequest();
-                will(returnValue(commonReq));
-                allowing(commonReq).getMethod();
-                will(returnValue(null));
-                allowing(commonWebRequest).getRequiredRoles();
-                will(returnValue(requiredRoles));
-                allowing(commonWebRequest).getLoginConfig();
-                will(returnValue(null));
-                allowing(commonWebRequest).isAccessPrecluded();
-                will(returnValue(false));
-                allowing(commonWebRequest).getSecurityMetadata();
-                will(returnValue(commonSecurityMetadata));
-
-            }
-        });
+        WebRequest webRequest = createWebRequest(AUTH_METHOD_BASIC, false, false);
         setUnsupportedAuthMech = false;
-
         secColl = new WebAppSecurityCollaboratorImplTestDouble(null, null, new HTTPSRedirectHandlerDouble(true));
-        WebReply reply = secColl.performInitialChecks(commonWebRequest, "uriName");
+
+        WebReply reply = secColl.performInitialChecks(webRequest, "uriName");
+
         assertEquals("Web reply status code should be 302", HttpServletResponse.SC_MOVED_TEMPORARILY, reply.getStatusCode());
     }
 
     /**
-     * Test method for {@link com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl#performInitialChecks(WebRequest commonWebRequest, String uriName)}.
+     * Test method for {@link com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl#performInitialChecks(WebRequest webRequest, String uriName)}.
      */
     @Test
     public void testPerformChecksToSkipAuthnAuthz_everyoneAllowed() {
-        final WebModuleMetaData wmmd = createWebModuleMetaDataMock();
-        setTestWebModuleMetaDataOnThread(wmmd);
+        requiredRoles.clear();
+        requiredRoles.add("role1");
+        setHttpServletRequestExpectations(HTTP_GET, "/", "unprotectedPreInvokeMainTestServlet", true, "defaultMethod");
+        withEveryoneGranted(true);
+        final WebRequest webRequest = createWebRequest(AUTH_METHOD_BASIC, false, false);
 
         mock.checking(new Expectations() {
             {
-                allowing(commonWebRequest).getHttpServletRequest();
-                will(returnValue(commonReq));
-                allowing(commonWebRequest).getRequiredRoles();
-                will(returnValue(requiredRoles));
-                allowing(commonWebRequest).isSSLRequired();
-                will(returnValue(false));
-                allowing(commonWebRequest).isAccessPrecluded();
-                will(returnValue(false));
-                allowing(commonWebRequest).getLoginConfig();
-                will(returnValue(null));
-                allowing(commonWebRequest).getApplicationName();
-                will(returnValue(APP_NAME));
-                allowing(commonReq).getMethod();
-                will(returnValue(null));
-                allowing(commonReq).isSecure();
-                will(returnValue(true));
-                allowing(commonReq).getAttribute("com.ibm.ws.webcontainer.security.checkdefaultmethod");
-                will(returnValue("defaultMethod"));
-                one(authzService).isEveryoneGranted(APP_NAME, requiredRoles);
-                will(returnValue(true));
-                allowing(commonWebRequest).setUnprotectedURI(true);
+                allowing(webRequest).setUnprotectedURI(true);
                 one(taiService).isInvokeForUnprotectedURI();
                 will(returnValue(false));
-                allowing(commonWebRequest).isAccessPrecluded();
-                will(returnValue(false));
-                allowing(commonWebRequest).getSecurityMetadata();
-                will(returnValue(commonSecurityMetadata));
-
             }
         });
-        requiredRoles.clear();
-        requiredRoles.add("role1");
 
-        WebReply reply = secColl.performInitialChecks(commonWebRequest, "uriName");
+        WebReply reply = secColl.performInitialChecks(webRequest, "uriName");
+
         assertEquals("Web reply status code should be 200", HttpServletResponse.SC_OK, reply.getStatusCode());
     }
 
     @Test
     public void performInitialChecks_loginPage_FORM() {
-        final FormLoginConfiguration formLoginConfig = createFormLoginConfiguration();
-        final LoginConfiguration loginConfig = createLoginConfiguration(LoginConfiguration.FORM, formLoginConfig);
-        final WebModuleMetaData wmmd = createWebModuleMetaDataMock();
-        setTestWebModuleMetaDataOnThread(wmmd);
+        setHttpServletRequestExpectations(HTTP_GET, "/", "login.html", true, "defaultMethod");
+        WebRequest webRequest = createWebRequest(AUTH_METHOD_FORM, false, true);
+        withFormPages(webRequest.getFormLoginConfiguration());
 
-        mock.checking(new Expectations() {
-            {
-                allowing(commonWebRequest).getHttpServletRequest();
-                will(returnValue(commonReq));
-                allowing(commonReq).getMethod();
-                will(returnValue(null));
-                allowing(commonWebRequest).getRequiredRoles();
-                will(returnValue(requiredRoles));
+        WebReply reply = secColl.performInitialChecks(webRequest, "login.html");
 
-                allowing(commonWebRequest).getLoginConfig();
-                will(returnValue(loginConfig));
-                allowing(commonWebRequest).getApplicationName();
-                will(returnValue(APP_NAME));
-
-                one(formLoginConfig).getLoginPage();
-                will(returnValue("login.html"));
-                one(formLoginConfig).getErrorPage();
-                will(returnValue("loginError.html"));
-
-                allowing(commonWebRequest).isAccessPrecluded();
-                will(returnValue(false));
-                allowing(commonReq).isSecure();
-                will(returnValue(true));
-
-                allowing(commonWebRequest).getSecurityMetadata();
-                will(returnValue(commonSecurityMetadata));
-
-            }
-        });
-
-        WebReply reply = secColl.performInitialChecks(commonWebRequest, "login.html");
         assertEquals("Web reply status code should be 200", HttpServletResponse.SC_OK, reply.getStatusCode());
     }
 
     @Test
     public void performInitialChecks_errorPage_CLIENT_withFormFailover() {
-        final FormLoginConfiguration formLoginConfig = createFormLoginConfiguration();
-        final LoginConfiguration loginConfig = createLoginConfiguration(LoginConfiguration.CLIENT_CERT, formLoginConfig);
-        final WebModuleMetaData wmmd = createWebModuleMetaDataMock();
-        setTestWebModuleMetaDataOnThread(wmmd);
-
-        mock.checking(new Expectations() {
-            {
-                allowing(commonWebRequest).getHttpServletRequest();
-                will(returnValue(commonReq));
-                allowing(commonReq).getMethod();
-                will(returnValue(null));
-                allowing(commonWebRequest).getRequiredRoles();
-                will(returnValue(requiredRoles));
-
-                allowing(commonWebRequest).getLoginConfig();
-                will(returnValue(loginConfig));
-                allowing(commonWebRequest).getApplicationName();
-                will(returnValue(APP_NAME));
-
-                one(formLoginConfig).getLoginPage();
-                will(returnValue("login.html"));
-                one(formLoginConfig).getErrorPage();
-                will(returnValue("loginError.html"));
-
-                allowing(commonWebRequest).isAccessPrecluded();
-                will(returnValue(false));
-                allowing(commonReq).isSecure();
-                will(returnValue(true));
-
-                allowing(commonWebRequest).getSecurityMetadata();
-                will(returnValue(commonSecurityMetadata));
-
-            }
-        });
+        setHttpServletRequestExpectations(HTTP_GET, "/", "loginError.html", true, "defaultMethod");
+        WebRequest webRequest = createWebRequest(LoginConfiguration.CLIENT_CERT, false, true);
+        withFormPages(webRequest.getFormLoginConfiguration());
 
         configProps.put(WebAppSecurityConfigImpl.CFG_KEY_ALLOW_FAIL_OVER_TO_AUTH_METHOD, "FORM");
         secColl.modified(configProps);
-        WebReply reply = secColl.performInitialChecks(commonWebRequest, "loginError.html");
+
+        WebReply reply = secColl.performInitialChecks(webRequest, "loginError.html");
+
         assertEquals("Web reply status code should be 200", HttpServletResponse.SC_OK, reply.getStatusCode());
     }
 
     @Test
     public void performInitialChecks_errorPage_CLIENT_noFormFailover() {
-        final FormLoginConfiguration formLoginConfig = createFormLoginConfiguration();
-        final LoginConfiguration loginConfig = createLoginConfiguration(LoginConfiguration.CLIENT_CERT, formLoginConfig);
-        final WebModuleMetaData wmmd = createWebModuleMetaDataMock();
-        setTestWebModuleMetaDataOnThread(wmmd);
+        setHttpServletRequestExpectations(HTTP_GET, "/", "loginError.html", true, "defaultMethod");
+        WebRequest webRequest = createWebRequest(LoginConfiguration.CLIENT_CERT, false, true);
+        withFormPages(webRequest.getFormLoginConfiguration());
 
         mock.checking(new Expectations() {
             {
-                allowing(commonWebRequest).getHttpServletRequest();
-                will(returnValue(commonReq));
-                allowing(commonReq).getMethod();
-                will(returnValue(null));
-                allowing(commonWebRequest).getRequiredRoles();
-                will(returnValue(requiredRoles));
+                one(request).getDispatcherType();
+                will(returnValue(DispatcherType.ERROR));
+            }
+        });
 
-                allowing(commonWebRequest).getLoginConfig();
-                will(returnValue(loginConfig));
-                allowing(commonWebRequest).getApplicationName();
-                will(returnValue(APP_NAME));
+        WebReply reply = secColl.performInitialChecks(webRequest, "loginError.html");
 
+        assertEquals("Web reply status code should be 200", HttpServletResponse.SC_OK, reply.getStatusCode());
+    }
+
+    private void withFormPages(final FormLoginConfiguration formLoginConfig) {
+        mock.checking(new Expectations() {
+            {
                 one(formLoginConfig).getLoginPage();
                 will(returnValue("login.html"));
                 one(formLoginConfig).getErrorPage();
                 will(returnValue("loginError.html"));
-
-                one(commonReq).getDispatcherType();
-                will(returnValue(DispatcherType.ERROR));
-
-                allowing(commonWebRequest).isAccessPrecluded();
-                will(returnValue(false));
-                allowing(commonReq).isSecure();
-                will(returnValue(true));
-
-                allowing(commonWebRequest).getSecurityMetadata();
-                will(returnValue(commonSecurityMetadata));
-
             }
         });
-
-        WebReply reply = secColl.performInitialChecks(commonWebRequest, "loginError.html");
-        assertEquals("Web reply status code should be 200", HttpServletResponse.SC_OK, reply.getStatusCode());
     }
 
     @Test
     public void getUserPrincipal_noSubjectOnThread() {
-        assertNull("No subject on the thread means null principal",
-                   secColl.getUserPrincipal());
+        assertNull("No subject on the thread means null principal", secColl.getUserPrincipal());
     }
 
     @Test
     public void getUserPrincipal_subjectWithoutPrincipal() {
-        Subject callerSubject = new Subject();
         subjectManager.setCallerSubject(callerSubject);
-        assertNull("A subject without any principals has not been authenticated",
-                   secColl.getUserPrincipal());
+        assertNull("A subject without any principals has not been authenticated", secColl.getUserPrincipal());
     }
 
     @Test
     public void getUserPrincipal_subjectWithoutWSPrincipal() {
         Set<Principal> principals = new HashSet<Principal>();
         principals.add(new X500Principal("CN=user1"));
-        Subject callerSubject = new Subject();
         callerSubject.getPrincipals().addAll(principals);
         subjectManager.setCallerSubject(callerSubject);
-        assertNull("A subject without WSPrincipal has not gone through our login",
-                   secColl.getUserPrincipal());
+
+        assertNull("A subject without WSPrincipal has not gone through our login", secColl.getUserPrincipal());
     }
 
     @Test
@@ -1391,9 +1190,9 @@ public class WebAppSecurityCollaboratorImplTest {
         WSPrincipal principal = new WSPrincipal("user1", "user:realm/user1", WSPrincipal.AUTH_METHOD_PASSWORD);
         Set<Principal> principals = new HashSet<Principal>();
         principals.add(principal);
-        Subject callerSubject = new Subject();
         callerSubject.getPrincipals().addAll(principals);
         subjectManager.setCallerSubject(callerSubject);
+
         assertNull("The subject is unauthenticated ", secColl.getUserPrincipal());
     }
 
@@ -1404,7 +1203,6 @@ public class WebAppSecurityCollaboratorImplTest {
         Set<Principal> principals = new HashSet<Principal>();
         principals.add(principal1);
         principals.add(principal2);
-        Subject callerSubject = new Subject();
         callerSubject.getPrincipals().addAll(principals);
         subjectManager.setCallerSubject(callerSubject);
         secColl.getUserPrincipal();
@@ -1415,8 +1213,7 @@ public class WebAppSecurityCollaboratorImplTest {
      */
     @Test
     public void isUserInRole_null() {
-        assertFalse("A null role value should return false",
-                    secColl.isUserInRole(null, extendedReq));
+        assertFalse("A null role value should return false", secColl.isUserInRole(null, extendedReq));
     }
 
     /**
@@ -1424,8 +1221,7 @@ public class WebAppSecurityCollaboratorImplTest {
      */
     @Test
     public void isUserInRole_unauthenticated() {
-        assertFalse("Unauthenticated should return false",
-                    secColl.isUserInRole("SomeRole", extendedReq));
+        assertFalse("Unauthenticated should return false", secColl.isUserInRole("SomeRole", extendedReq));
     }
 
     /**
@@ -1434,7 +1230,6 @@ public class WebAppSecurityCollaboratorImplTest {
      */
     @Test
     public void isUserInRole_noRealRole() {
-        final Subject callerSubject = new Subject();
         subjectManager.setCallerSubject(callerSubject);
 
         final IWebAppDispatcherContext wadc = mock.mock(IWebAppDispatcherContext.class, "webAppDispatcher");
@@ -1453,6 +1248,7 @@ public class WebAppSecurityCollaboratorImplTest {
         });
 
         secColl = new WebAppSecurityCollaboratorImplTestDouble();
+
         assertFalse("If the role name is not defined, then should respond false",
                     secColl.isUserInRole("SomeNonExistentRole", extendedReq));
     }
@@ -1463,13 +1259,11 @@ public class WebAppSecurityCollaboratorImplTest {
      */
     @Test
     public void isUserInRole_authenticatedNotInRole() {
-        final Subject callerSubject = new Subject();
         subjectManager.setCallerSubject(callerSubject);
 
         final IWebAppDispatcherContext wadc = mock.mock(IWebAppDispatcherContext.class, "webAppDispatcher");
         final RequestProcessor reqProc = mock.mock(RequestProcessor.class, "requestProcessor");
-        final WebModuleMetaData wmmd = createWebModuleMetaDataMock();
-        setTestWebModuleMetaDataOnThread(wmmd);
+        setupSecurityMetadata(HTTP_GET);
 
         mock.checking(new Expectations() {
             {
@@ -1483,12 +1277,11 @@ public class WebAppSecurityCollaboratorImplTest {
                 will(returnValue("SomeRole"));
                 one(authzService).isAuthorized(with(any(String.class)), with(any(List.class)), with(equal(callerSubject)));
                 will(returnValue(false));
-                allowing(commonWebRequest).getSecurityMetadata();
-                will(returnValue(commonSecurityMetadata));
             }
         });
 
-        createActivatedWebAppSecurityCollaboratorTestDouble();
+        setupCollaborator(new WebAppSecurityCollaboratorImplTestDouble(), cc, configProps);
+
         assertFalse("Authenticated and not in role should return false",
                     secColl.isUserInRole("SomeRole", extendedReq));
     }
@@ -1499,13 +1292,11 @@ public class WebAppSecurityCollaboratorImplTest {
      */
     @Test
     public void isUserInRole_authenticatedInRole() {
-        final Subject callerSubject = new Subject();
         subjectManager.setCallerSubject(callerSubject);
 
         final IWebAppDispatcherContext wadc = mock.mock(IWebAppDispatcherContext.class, "webAppDispatcher");
         final RequestProcessor reqProc = mock.mock(RequestProcessor.class, "requestProcessor");
-        final WebModuleMetaData wmmd = createWebModuleMetaDataMock();
-        setTestWebModuleMetaDataOnThread(wmmd);
+        setupSecurityMetadata(HTTP_GET);
 
         mock.checking(new Expectations() {
             {
@@ -1519,12 +1310,11 @@ public class WebAppSecurityCollaboratorImplTest {
                 will(returnValue("SomeRole"));
                 one(authzService).isAuthorized(with(any(String.class)), with(any(List.class)), with(equal(callerSubject)));
                 will(returnValue(true));
-                allowing(commonWebRequest).getSecurityMetadata();
-                will(returnValue(commonSecurityMetadata));
             }
         });
 
-        createActivatedWebAppSecurityCollaboratorTestDouble();
+        setupCollaborator(new WebAppSecurityCollaboratorImplTestDouble(), cc, configProps);
+
         assertTrue("Authenticated and in role should return true",
                    secColl.isUserInRole("SomeRole", extendedReq));
     }
@@ -1541,49 +1331,9 @@ public class WebAppSecurityCollaboratorImplTest {
 
         setTestWebModuleMetaDataOnThread(webModuleMetaData);
         SecurityMetadata actualSecurityMetadata = secColl.getSecurityMetadata();
+
         assertEquals("The security meta data must be the one set on the thread.", commonSecurityMetadata, actualSecurityMetadata);
-    }
 
-    private WebModuleMetaData createWebModuleMetaDataMock() {
-        final SecurityMetadata securityMetadata = createTestSecurityMetadata();
-        final WebModuleMetaData webModuleMetaDataMock = mock.mock(WebModuleMetaData.class);
-        mock.checking(new Expectations() {
-            {
-                allowing(webModuleMetaDataMock).setSecurityMetaData(with(any(SecurityMetadata.class)));
-                allowing(webModuleMetaDataMock).getSecurityMetaData();
-                will(returnValue(securityMetadata));
-                allowing(webModuleMetaDataMock).getAnnotatedSecurityMetaData();
-                will(returnValue(null));
-            }
-        });
-        return webModuleMetaDataMock;
-    }
-
-    private SecurityMetadata createTestSecurityMetadata() {
-        final SecurityConstraintCollection securityConstraintCollection = mock.mock(SecurityConstraintCollection.class);
-        final MatchResponse unprotectedMatchResponse = new MatchResponse(Collections.EMPTY_LIST, false, false);
-        List<String> protectedServletRoles = new ArrayList<String>();
-        protectedServletRoles.add("employeeRole");
-        final SecurityMetadata securityMetadataMock = mock.mock(SecurityMetadata.class, "securityMetadataMock_createTestSecurityMetadata");
-        mock.checking(new Expectations() {
-            {
-                allowing(securityMetadataMock).getLoginConfiguration();
-                will(returnValue(null));
-                allowing(securityMetadataMock).getSecurityConstraintCollection();
-                will(returnValue(securityConstraintCollection));
-                allowing(securityConstraintCollection).getMatchResponse(with("/unprotectedPreInvokeMainTestServlet"), with(HTTP_GET));
-                will(returnValue(unprotectedMatchResponse));
-                allowing(securityConstraintCollection).getMatchResponse(with("/unprotectedPreInvokeMain_throwExceptionServlet"), with(HTTP_GET));
-                will(returnValue(unprotectedMatchResponse));
-                allowing(securityMetadataMock).getSecurityRoleReferenced(with(any(String.class)), with(any(String.class)));
-                will(returnValue(SECURITY_ROLE));
-                allowing(securityMetadataMock).getRunAsRoleForServlet(with(any(String.class)));
-                will(returnValue(SECURITY_ROLE));
-                allowing(securityMetadataMock).isSyncToOSThreadRequested();
-                will(returnValue(false));
-            }
-        });
-        return securityMetadataMock;
     }
 
     /**
@@ -1595,67 +1345,48 @@ public class WebAppSecurityCollaboratorImplTest {
     public void testAuthenticateMethodCallerSubjectAlreadyAuthenticated() throws ServletException, IOException {
         final Subject subject = createAuthenticatedSubject();
         subjectManager.setCallerSubject(subject);
-        assertTrue(secColl.authenticate(commonReq, commongResp));
+
+        assertTrue(secColl.authenticate(request, response));
     }
 
     @Test
     public void testAuthenticateMethodFailure() throws Exception {
-        secColl = new WebAppSecurityCollaboratorImplTestDouble2();
-        final WebModuleMetaData wmmd = createWebModuleMetaDataMock();
-        setTestWebModuleMetaDataOnThread(wmmd);
+        setupSecurityMetadata(HTTP_GET);
         final AuthenticationResult authResult = new AuthenticationResult(AuthResult.FAILURE, (String) null);
         this.authResult = authResult;
 
-        createTestSpecificUserRegistryExpectations("aRealm");
+        withRegistryRealm("aRealm");
+        withResponseNotCommited();
+        withErrorResponse(403, "AuthenticationFailed");
 
-        mock.checking(new Expectations() {
-            {
-                allowing(commonSecurityMetadata).getLoginConfiguration();
-                will(returnValue(commonloginConfiguration));
-                allowing(commonloginConfiguration).getAuthenticationMethod();
-                will(returnValue("BASIC"));
-                allowing(commonReq).getCookies();
-                will(returnValue(null));
-                allowing(authenticator).authenticate(commonWebRequest);
-                will(returnValue(authResult));
-                one(commongResp).isCommitted();
-                will(returnValue(false));
-                one(commongResp).sendError(403, "AuthenticationFailed");
-            }
-        });
         configProps.put(WebAppSecurityConfigImpl.CFG_KEY_SINGLE_SIGN_ON_ENABLED, false);
-        secColl.setAuthenticatorFactory(authenticatorFactory);
-        secColl.setSecurityService(securityServiceRef);
-        secColl.setTaiService(taiServiceRef);
-        secColl.activate(cc, configProps);
-        assertFalse(secColl.authenticate(commonReq, commongResp));
+
+        setupCollaborator(new WebAppSecurityCollaboratorImplTestDouble2(), cc, configProps);
+
+        assertFalse(secColl.authenticate(request, response));
     }
 
     @Test
     public void testAuthenticateMethodSuccess() throws Exception {
         Subject subject = createAuthenticatedSubject();
-        secColl = new WebAppSecurityCollaboratorImplTestDouble2();
         final AuthenticationResult authResult = new AuthenticationResult(AuthResult.SUCCESS, subject);
-        final WebModuleMetaData wmmd = createWebModuleMetaDataMock();
-        setTestWebModuleMetaDataOnThread(wmmd);
+        setupSecurityMetadata(HTTP_GET);
         this.authResult = authResult;
+        withResponseNotCommited();
 
         mock.checking(new Expectations() {
             {
-                allowing(userRegistry).getRealm();
-                one(commongResp).isCommitted();
-                will(returnValue(false));
-                one(commonReq).getAttribute("com.ibm.ws.security.javaeesec.donePostLoginProcess");
+                one(request).getAttribute("com.ibm.ws.security.javaeesec.donePostLoginProcess");
                 will(returnValue(null));
             }
         });
 
         configProps.put(WebAppSecurityConfigImpl.CFG_KEY_SINGLE_SIGN_ON_ENABLED, false);
-        secColl.setAuthenticatorFactory(authenticatorFactory);
-        secColl.setSecurityService(securityServiceRef);
-        secColl.setTaiService(taiServiceRef);
-        secColl.activate(cc, configProps);
-        secColl.authenticate(commonReq, commongResp);
+
+        setupCollaborator(new WebAppSecurityCollaboratorImplTestDouble2(), cc, configProps);
+
+        secColl.authenticate(request, response);
+
         assertEquals(subject, subjectManager.getCallerSubject());
         assertEquals(subject, subjectManager.getInvocationSubject());
     }
@@ -1685,6 +1416,15 @@ public class WebAppSecurityCollaboratorImplTest {
         }
     }
 
+    private void withResponseNotCommited() {
+        mock.checking(new Expectations() {
+            {
+                one(response).isCommitted();
+                will(returnValue(false));
+            }
+        });
+    }
+
     @Test
     public void getBasicAuthAuthenticator_ecounterRegistryException() throws Exception {
         final ComponentContext cc = mock.mock(ComponentContext.class, "cc-getBasicAuthAuthenticator_ecounterRegistryException");
@@ -1710,24 +1450,16 @@ public class WebAppSecurityCollaboratorImplTest {
             }
         });
 
-        secColl = new WebAppSecurityCollaboratorImpl(null, null, null);
-        secColl.setAuthenticatorFactory(authenticatorFactory);
-        secColl.setSecurityService(securityServiceRef);
-        secColl.setTaiService(taiServiceRef);
-        secColl.activate(cc, configProps);
+        setupCollaborator(new WebAppSecurityCollaboratorImpl(null, null, null), cc, configProps);
+
         assertNull("If a RegistryException is encountered, no BasicAuthAuthenticator should be created",
                    secColl.getBasicAuthAuthenticator());
     }
 
     @Test
     public void getBasicAuthAuthenticator() throws Exception {
-        secColl = new WebAppSecurityCollaboratorImpl(null, null, null);
-        secColl.setAuthenticatorFactory(authenticatorFactory);
-        secColl.setSecurityService(securityServiceRef);
-        secColl.setTaiService(taiServiceRef);
-        secColl.activate(cc, configProps);
-
-        createTestSpecificUserRegistryExpectations(REALM_NAME);
+        setupCollaborator(new WebAppSecurityCollaboratorImpl(null, null, null), cc, configProps);
+        withRegistryRealm(REALM_NAME);
 
         assertNotNull("If all of the required collaborators are available, a BasicAuthAuthenticator should be created",
                       secColl.getBasicAuthAuthenticator());
@@ -1758,6 +1490,7 @@ public class WebAppSecurityCollaboratorImplTest {
             }
         });
         List<String> urlPatternConflicts = secColl.getURIsInSecurityConstraints(null, null, null, urlPatternsInAnnotation);
+
         assertNull("The method getURIsInSecurityConstraints should return null because there are no conflicts.", urlPatternConflicts);
     }
 
@@ -1787,8 +1520,8 @@ public class WebAppSecurityCollaboratorImplTest {
             }
         });
         List<String> urlPatternConflicts = secColl.getURIsInSecurityConstraints(null, null, null, urlPatternsInAnnotation);
-        assertEquals(
-                     "The method getURIsInSecurityConstraints should return a list containing the url pattern in the dd because it exists in the annotation and causes a conflict.",
+
+        assertEquals("The method getURIsInSecurityConstraints should return a list containing the url pattern in the dd because it exists in the annotation and causes a conflict.",
                      URL_PATTERN_DD_LIST, urlPatternConflicts);
     }
 
@@ -1828,7 +1561,7 @@ public class WebAppSecurityCollaboratorImplTest {
                 will(returnValue(new ArrayList<String>()));
                 one(commonWebRequest).setUnprotectedURI(true); // alow it
                 one(commonWebRequest).getHttpServletRequest(); //
-                will(returnValue(commonReq)); //
+                will(returnValue(request)); //
                 one(commonWebRequest).hasAuthenticationData();
                 will(returnValue(false));
             }
@@ -1837,8 +1570,7 @@ public class WebAppSecurityCollaboratorImplTest {
         secColl.setAuthenticatorFactory(authenticatorFactory);
         secColl.optionallyAuthenticateUnprotectedResource(commonWebRequest);
 
-        assertNull("Nothing to persist, no subject should be set.",
-                   subjectManager.getCallerSubject());
+        assertNull("Nothing to persist, no subject should be set.", subjectManager.getCallerSubject());
     }
 
     /**
@@ -1853,10 +1585,6 @@ public class WebAppSecurityCollaboratorImplTest {
         roles.add("Role1");
         mock.checking(new Expectations() {
             {
-                //one(commonWebRequest).getHttpServletRequest(); //
-                //will(returnValue(commonReq)); //
-                //one(commonWebRequest).hasAuthenticationData();
-                //will(returnValue(true));
                 one(commonWebRequest).getRequiredRoles();
                 will(returnValue(roles));
                 one(commonWebRequest).getApplicationName();
@@ -1865,14 +1593,12 @@ public class WebAppSecurityCollaboratorImplTest {
                 will(returnValue(false));
             }
         });
-        secColl = new WebAppSecurityCollaboratorImpl(null, null, null, webAppSecurityConfig);
-        secColl.setAuthenticatorFactory(authenticatorFactory);
-        secColl.setSecurityService(securityServiceRef);
-        secColl.activate(cc, configProps);
+
+        setupCollaborator(new WebAppSecurityCollaboratorImpl(null, null, null, webAppSecurityConfig), cc, configProps);
+
         secColl.optionallyAuthenticateUnprotectedResource(commonWebRequest);
 
-        assertNull("Nothing to persist, no subject should be set.",
-                   subjectManager.getCallerSubject());
+        assertNull("Nothing to persist, no subject should be set.", subjectManager.getCallerSubject());
     }
 
     /**
@@ -1936,10 +1662,9 @@ public class WebAppSecurityCollaboratorImplTest {
                 one(commonWebRequest).setUnprotectedURI(true);
             }
         });
-        secColl = new WebAppSecurityCollaboratorImplTestDouble2(webAppSecurityConfig);
-        secColl.setAuthenticatorFactory(authenticatorFactory);
-        secColl.setSecurityService(securityServiceRef);
-        secColl.activate(cc, configProps);
+
+        setupCollaborator(new WebAppSecurityCollaboratorImplTestDouble2(webAppSecurityConfig), cc, configProps);
+
         secColl.optionallyAuthenticateUnprotectedResource(commonWebRequest);
 
         assertSame("The request for the unprotected resource must use the authenticated subject.",
@@ -2012,6 +1737,7 @@ public class WebAppSecurityCollaboratorImplTest {
     @Test
     public void testUnsupportedAuthMechNullSM() throws Exception {
         secColl = new WebAppSecurityCollaboratorImplTestDouble3(null);
+
         assertFalse("When SecurityMetadata is null, unsupportedAuthMech should return false",
                     secColl.unsupportedAuthMech());
     }
@@ -2025,6 +1751,7 @@ public class WebAppSecurityCollaboratorImplTest {
                 will(returnValue((LoginConfiguration) null));
             }
         });
+
         assertFalse("When LoginConfig is null, unsupportedAuthMech should return false",
                     secColl.unsupportedAuthMech());
     }
@@ -2040,6 +1767,7 @@ public class WebAppSecurityCollaboratorImplTest {
                 will(returnValue((String) null));
             }
         });
+
         assertFalse("When AuthenticationMethod is null, unsupportedAuthMech should return false",
                     secColl.unsupportedAuthMech());
     }
@@ -2055,6 +1783,7 @@ public class WebAppSecurityCollaboratorImplTest {
                 will(returnValue("DIGEST"));
             }
         });
+
         assertTrue("When AuthenticationMethod is DIGEST, unsupportedAuthMech should return true",
                    secColl.unsupportedAuthMech());
     }
@@ -2070,21 +1799,23 @@ public class WebAppSecurityCollaboratorImplTest {
                 will(returnValue("BASIC"));
             }
         });
+
         assertFalse("When AuthenticationMethod is BASIC, unsupportedAuthMech should return false",
                     secColl.unsupportedAuthMech());
     }
 
-    private void createActivatedWebAppSecurityCollaboratorTestDouble() {
-        secColl = new WebAppSecurityCollaboratorImplTestDouble();
+    /**
+     * The collaborator needs to be activated to be useful. This simulates DS creating and starting the class.
+     */
+    private void setupCollaborator(WebAppSecurityCollaboratorImpl securityCollaborator, ComponentContext cc, Map<String, Object> configProps) {
+        secColl = securityCollaborator;
         secColl.setAuthenticatorFactory(authenticatorFactory);
         secColl.setSecurityService(securityServiceRef);
         secColl.setTaiService(taiServiceRef);
+        secColl.setUnauthenticatedSubjectService(unauthSubjSrv);
         secColl.activate(cc, configProps);
     }
 
-    /**
-     * @return
-     */
     private List<SecurityConstraint> createSecurityConstraints() {
         final List<SecurityConstraint> secConstraints = new ArrayList<SecurityConstraint>();
 

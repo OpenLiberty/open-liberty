@@ -16,8 +16,7 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.microprofile.faulttolerance.metrics.fat.suite.RepeatMicroProfile13;
-import com.ibm.websphere.microprofile.faulttolerance.metrics.fat.suite.RepeatMicroProfile20;
+import com.ibm.websphere.microprofile.faulttolerance_fat.suite.RepeatFaultTolerance;
 import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.browser.WebBrowser;
@@ -34,10 +33,9 @@ public class CDIFallbackTest extends LoggingTest {
     @ClassRule
     public static SharedServer SHARED_SERVER = new SharedServer("CDIFaultToleranceMetrics");
 
-    //run against both EE8 and EE7 features
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(new RepeatMicroProfile13(SHARED_SERVER.getServerName()))
-                    .andWith(new RepeatMicroProfile20(SHARED_SERVER.getServerName()));
+    public static RepeatTests rep = RepeatFaultTolerance.repeatAll(SHARED_SERVER.getServerName())
+                    .andWith(RepeatFaultTolerance.ft11metrics20Features(SHARED_SERVER.getServerName()));
 
     @Test
     public void testFallback() throws Exception {

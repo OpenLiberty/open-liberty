@@ -73,6 +73,16 @@ public class Relationships_ManyXMany_Web extends JPAFATServletClient {
         bannerStart(Relationships_ManyXMany_Web.class);
         timestart = System.currentTimeMillis();
 
+        int appStartTimeout = server1.getAppStartTimeout();
+        if (appStartTimeout < (120 * 1000)) {
+            server1.setAppStartTimeout(120 * 1000);
+        }
+
+        int configUpdateTimeout = server1.getConfigUpdateTimeout();
+        if (configUpdateTimeout < (120 * 1000)) {
+            server1.setConfigUpdateTimeout(120 * 1000);
+        }
+
         server1.startServer();
 
         setupDatabaseApplication(server1, RESOURCE_ROOT + "ddl/");
@@ -128,12 +138,12 @@ public class Relationships_ManyXMany_Web extends JPAFATServletClient {
         });
 
         ShrinkHelper.exportToServer(server1, "apps", app);
-        server1.addInstalledAppForValidation("ManyXMany_Web");
 
         Application appRecord = new Application();
         appRecord.setLocation("ManyXMany_Web.ear");
         appRecord.setName("ManyXMany_Web");
 
+        server1.setMarkToEndOfLog();
         ServerConfiguration sc = server1.getServerConfiguration();
 //        sc.getApplications().clear();
         sc.getApplications().add(appRecord);

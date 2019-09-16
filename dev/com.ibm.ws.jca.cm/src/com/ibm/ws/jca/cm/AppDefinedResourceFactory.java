@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,7 +32,7 @@ import com.ibm.wsspi.resource.ResourceInfo;
  * delegates createResource to that resource factory.
  */
 public class AppDefinedResourceFactory implements com.ibm.ws.resource.ResourceFactory {
-    private static final TraceComponent tc = Tr.register(AppDefinedResourceFactory.class);
+    private static final TraceComponent tc = Tr.register(AppDefinedResourceFactory.class, null);
 
     /**
      * Name of the application that defines this resource.
@@ -56,12 +56,12 @@ public class AppDefinedResourceFactory implements com.ibm.ws.resource.ResourceFa
 
     /**
      * Construct a Future-like wrapper for an application-defined resource factory.
-     * 
-     * @param builder the resource factory builder
+     *
+     * @param builder       the resource factory builder
      * @param bundleContext the bundle context
-     * @param id unique identifier for the resource factory
-     * @param filter filter for the resource factory
-     * @param appName name of the application that defines the resource factory
+     * @param id            unique identifier for the resource factory
+     * @param filter        filter for the resource factory
+     * @param appName       name of the application that defines the resource factory
      * @throws InvalidSyntaxException if the filter has incorrect syntax
      */
     public AppDefinedResourceFactory(ResourceFactoryBuilder builder, BundleContext bundleContext, String id, String filter, String appName) throws InvalidSyntaxException {
@@ -88,7 +88,7 @@ public class AppDefinedResourceFactory implements com.ibm.ws.resource.ResourceFa
         try {
             ResourceFactory factory = tracker.waitForService(5000);
             if (factory == null)
-                throw new Exception(ConnectorService.getMessage("MISSING_RESOURCE_J2CA8030", info.getType(), id, "application", appName));
+                throw new Exception(ConnectorService.getMessage("MISSING_RESOURCE_J2CA8030", info == null ? "" : info.getType(), id, "application", appName));
 
             resource = factory.createResource(info);
         } catch (Exception x) {
@@ -119,7 +119,7 @@ public class AppDefinedResourceFactory implements com.ibm.ws.resource.ResourceFa
     /**
      * Destroy this application-defined resource by removing its configuration
      * and the configuration of all other services that were created for it.
-     * 
+     *
      * @throws Exception if an error occurs.
      */
     @Override

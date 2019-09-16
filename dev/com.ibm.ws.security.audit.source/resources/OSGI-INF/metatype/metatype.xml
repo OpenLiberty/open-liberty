@@ -31,7 +31,10 @@
             <Option label="%jmxNotification.desc" value="JMX_NOTIFICATION"/>
             <Option label="%securityJmsAuthn.desc" value="SECURITY_JMS_AUTHN"/>
             <Option label="%securityJmsAuthz.desc" value="SECURITY_JMS_AUTHZ"/>
-   </AD>
+            <Option label="%securitySAFAuthzDetails.desc" value="SECURITY_SAF_AUTHZ_DETAILS"/>
+            <Option label="%applicationTokenMgmt.desc" value="APPLICATION_TOKEN_MANAGEMENT"/>
+            <Option label="%securitySAFAuthz.desc" value="SECURITY_SAF_AUTHZ"/>   
+    </AD>
 
    <AD id="isCustomEvent" name="internal" description="%isCustomEvent.desc" required="false" type="Boolean" default="false"/>
    <AD id="auditData" name="internal" description="%auditData.desc" required="false" type="String"/>

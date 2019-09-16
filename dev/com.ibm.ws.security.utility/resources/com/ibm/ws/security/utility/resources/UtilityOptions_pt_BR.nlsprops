@@ -133,6 +133,20 @@ sslCert.option-key.sigAlg=\ \ \ \ algoritmo --sigAlg=signature
 sslCert.option-desc.sigAlg=\tAlgoritmo de assinatura do certificado.\n\
 \tO algoritmo de assinatura padr\u00e3o \u00e9 {8}.
 
+sslCert.option-key.keyType=\ \ \ \ --keyType
+sslCert.option-desc.keyType=\tOpcional. Por padr\u00e3o, um keystore PKCS12 ser\u00e1 gerado. Para\n\
+\tgerar um keystore JKS, especifique a op\u00e7\u00e3o --keyType com o valor\n\
+\tJKS. N\u00e3o h\u00e1 a necessidade de especificar essa op\u00e7\u00e3o se um keystore PKCS12\n\
+\t\u00e9 esperado.\n\
+\tO PKCS12 possui v\u00e1rias vantagens: ele \u00e9 mais extens\u00edvel; ele suporta\n\
+\talgoritmos criptogr\u00e1ficos mais fortes; e ele \u00e9 amplamente adotado. O PKCS12 \u00e9\n\
+\tfrequentemente o formato fornecido pelas autoridades de certifica\u00e7\u00e3o ao\n\
+\temitir certificados.
+
+sslCert.option-key.ext=\ \ \ \ Informa\u00e7\u00f5es da extens\u00e3o --extInfo=certificate
+sslCert.option-desc.ext=\tInforma\u00e7\u00f5es da extens\u00e3o de certificado a serem inclu\u00eddas no certificado.\n\
+\tA extens\u00e3o padr\u00e3o \u00e9 uma entrada de Nome Alternativo do Assunto que usa\n\
+\to nome do host.
 
 # -------- CREATE LTPA KEYS OPTIONS --------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.

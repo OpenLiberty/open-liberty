@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2018 IBM Corporation and others.
+ * Copyright (c) 2004, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.ibm.websphere.channelfw.osgi.CHFWBundle;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
@@ -90,7 +91,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
     private String forwardedRemoteAddress = null;
     private String forwardedProto = null;
     private String forwardedHost = null;
-
+    private int h2ContentLength = -1;
     /**
      * Constructor for an HTTP inbound service context object.
      *
@@ -563,7 +564,16 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
             getMyRequest().setHeaderChangeLimit(getHttpConfig().getHeaderChangeLimit());
         }
         setStartTime();
-        return getMyRequest();
+        HttpRequestMessageImpl req = getMyRequest();
+
+        // if applicable set the HTTP/2 specific content length
+        if (myLink instanceof H2HttpInboundLinkWrap) {
+            int len = ((H2HttpInboundLinkWrap)myLink).getH2ContentLength();
+            if (len != -1) {
+                req.setContentLength(len);
+            }
+        }
+        return req;
     }
 
     /**
@@ -1073,6 +1083,19 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "finishResponseMessage(body,cb)");
         }
+        // H2 doesn't support asych writes, if we got here and this is H2, switch over to sync
+        if (isH2Connection()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "finishResponseMessage: This is H2, calling sync finishResponseMessage(body)");
+            }
+            // Send the error response synchronously for H2
+            try {
+                finishResponseMessage(body);
+                return getVC();
+            } catch (IOException e) {
+                return null;
+            }
+        }
         if (!headersParsed()) {
             // request message must have the headers parsed prior to sending
             // any data out (this is a completely invalid state in the channel
@@ -1405,8 +1428,14 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
             throw ioe;
         }
 
+        // check for an HTTP/2 specific content length
+        int h2ContentLength = -1;
+        if (myLink instanceof H2HttpInboundLinkWrap) {
+            h2ContentLength = ((H2HttpInboundLinkWrap)myLink).getH2ContentLength();
+        }
+
         // check to see if a body is allowed before reading for one
-        if (!isIncomingBodyValid()) {
+        if (!isIncomingBodyValid() && h2ContentLength == -1) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
                 Tr.exit(tc, "getRequestBodyBuffers(sync): No body allowed");
             }
@@ -2161,4 +2190,31 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         return getHttpConfig().useForwardingHeadersInAccessLog();
     }
 
+    /**
+     * Check if HTTP/2 is enabled for this context
+     * 
+     * @return true if HTTP/2 is enabled for this link
+     */
+    public boolean isHttp2Enabled() {
+
+        boolean isHTTP2Enabled = false;
+
+        //If servlet-3.1 is enabled, HTTP/2 is optional and by default off.
+        if (HttpConfigConstants.OPTIONAL_DEFAULT_OFF_20.equalsIgnoreCase(CHFWBundle.getServletConfiguredHttpVersionSetting())) {
+            //If so, check if the httpEndpoint was configured for HTTP/2
+            isHTTP2Enabled = (getHttpConfig().getUseH2ProtocolAttribute() != null && getHttpConfig().getUseH2ProtocolAttribute());
+        }
+
+        //If servlet-4.0 is enabled, HTTP/2 is optional and by default on.
+        else if (HttpConfigConstants.OPTIONAL_DEFAULT_ON_20.equalsIgnoreCase(CHFWBundle.getServletConfiguredHttpVersionSetting())) {
+            //If not configured as an attribute, getUseH2ProtocolAttribute will be null, which returns true
+            //to use HTTP/2.
+            isHTTP2Enabled = (getHttpConfig().getUseH2ProtocolAttribute() == null || getHttpConfig().getUseH2ProtocolAttribute());
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Has HTTP/2 been enabled on this port: " + isHTTP2Enabled);
+        }
+        return isHTTP2Enabled;
+    }
 }

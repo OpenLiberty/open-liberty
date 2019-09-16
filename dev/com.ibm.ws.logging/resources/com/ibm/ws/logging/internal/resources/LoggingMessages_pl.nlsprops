@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2018 IBM Corporation and others.
+# Copyright (c) 2011, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -135,6 +135,26 @@ FAILED_TO_WRITE_LOG.useraction=Upewnij si\u0119, \u017ce katalog istnieje, jest 
 LOG_FILE_RESUMED=TRAS3006I: Rejestrowanie komunikat\u00f3w do pliku {0} zosta\u0142o wznowione.
 LOG_FILE_RESUMED.explanation=Komunikaty mog\u0105 by\u0107 zapisywane do pliku.
 LOG_FILE_RESUMED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+JSON_FIELDS_FORMAT_WARNING=TRAS3007W: Odwzorowanie nazwy pola rejestrowania JSON jest niepoprawnie sformatowane.
+JSON_FIELDS_FORMAT_WARNING.explanation=Odwzorowanie nazwy pola rejestrowania JSON jest niepoprawnie sformatowane.
+JSON_FIELDS_FORMAT_WARNING.useraction=Sprawd\u017a, czy format w\u0142a\u015bciwo\u015bci odwzorowania nazwy pola rejestrowania JSON jest poprawny. Odwzorowanie nazwy pola JSON mo\u017cna poda\u0107 na wiele sposob\u00f3w opisanych w dokumentacji konfigurowania rejestrowania.
+
+JSON_FIELDS_FORMAT_WARNING_2=TRAS3008W: Wprowadzona w\u0142a\u015bciwo\u015b\u0107 odwzorowania nazwy pola rejestrowania JSON ma zbyt wiele lub zbyt ma\u0142o znacznik\u00f3w.
+JSON_FIELDS_FORMAT_WARNING_2.explanation=W\u0142a\u015bciwo\u015b\u0107 odwzorowania nazwy pola rejestrowania JSON powinna by\u0107 sformatowana jako knownFieldName:newFieldName lub eventType:knownFieldName:newFieldName.
+JSON_FIELDS_FORMAT_WARNING_2.useraction=W\u0142a\u015bciwo\u015b\u0107 odwzorowania nazwy pola rejestrowania JSON powinna by\u0107 sformatowana jako knownFieldName:newFieldName lub eventType:knownFieldName:newFieldName.
+
+JSON_FIELDS_NO_MATCH=TRAS3009W: Podana nazwa pola rejestrowania JSON nie jest zgodna z \u017cadn\u0105 ze znanych nazw p\u00f3l dla okre\u015blonych zdarze\u0144
+JSON_FIELDS_NO_MATCH.explanation=Podana nazwa pola rejestrowania JSON nie jest zgodna z \u017cadn\u0105 ze znanych nazw p\u00f3l
+JSON_FIELDS_NO_MATCH.useraction=Podaj nazw\u0119 pola rejestrowania JSON, kt\u00f3ra jest zgodna z nazw\u0105 jednego ze znanych p\u00f3l (np. message, ibm_datetime, ibm_sequence)
+
+JSON_FIELDS_INCORRECT_EVENT_TYPE=TRAS3010W: Podany typ zdarzenia nie jest zgodny z \u017cadnym ze znanych typ\u00f3w zdarze\u0144
+JSON_FIELDS_INCORRECT_EVENT_TYPE.explanation=Akceptowane s\u0105 nast\u0119puj\u0105ce typy zdarze\u0144: liberty_message, liberty_trace, liberty_accesslog, liberty_ffdc
+JSON_FIELDS_INCORRECT_EVENT_TYPE.useraction=Akceptowane s\u0105 nast\u0119puj\u0105ce typy zdarze\u0144: liberty_message, liberty_trace, liberty_accesslog, liberty_ffdc
+
+JSON_FIELDS_INVALID_CHARACHTER=TRAS3011W: Wprowadzono niepoprawny znak we w\u0142a\u015bciwo\u015bci odwzorowania nazwy pola rejestrowania JSON
+JSON_FIELDS_INVALID_CHARACHTER.explanation= We w\u0142a\u015bciwo\u015bci odwzorowania nazwy pola rejestrowania JSON s\u0105 akceptowane tylko litery, cyfry i znak :
+JSON_FIELDS_INVALID_CHARACHTER.useraction= Zmie\u0144 warto\u015b\u0107 w\u0142a\u015bciwo\u015bci odwzorowania nazwy pola rejestrowania JSON tak, aby usun\u0105\u0107 niepoprawne znaki
 
 # Note: no 9999 message kept here because saving footprint space is more important
 

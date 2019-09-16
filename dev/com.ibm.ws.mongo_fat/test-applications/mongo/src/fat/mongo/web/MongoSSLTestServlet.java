@@ -1,5 +1,6 @@
 package fat.mongo.web;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import javax.annotation.Resource;
@@ -62,6 +63,8 @@ public class MongoSSLTestServlet extends FATServlet {
     public void testInvalidConfig(HttpServletRequest request, HttpServletResponse resp) throws Exception {
         String testName = request.getParameter("forTest");
         String jndiName = request.getParameter("jndiName");
+        String expectedEx = request.getParameter("expectedEx");
+
         System.out.println(">>> BEGIN " + testName);
         System.out.println("Attempting to lookup " + jndiName);
         try {
@@ -69,7 +72,8 @@ public class MongoSSLTestServlet extends FATServlet {
             MongoTestServlet.insertFind(db);
             fail("Expected Exception when coding password with useCertificateAuthentication");
         } catch (Exception e) {
-            System.out.println("Got expected exception: " + e);
+            System.out.println("Got exception: " + e);
+            assertTrue("Caught unexpected exception: " + e, e.toString().contains(expectedEx));
         } finally {
             System.out.println("<<< END   " + testName);
         }

@@ -134,6 +134,19 @@ sslCert.option-key.sigAlg=\ \ \ \ --sigAlg=algoritmo di firma
 sslCert.option-desc.sigAlg=\tL''algoritmo di firma del certificato.\n\
 \tL''algoritmo di firma predefinito \u00e8 {8}.
 
+sslCert.option-key.keyType=\ \ \ \ --keyType
+sslCert.option-desc.keyType=\tFacoltativo. Per impostazione predefinita, verr\u00e0 generato un keystore PKCS12. Per\n\
+\tgenerare un keystore JKS, specificare l''opzione --keyType con il valore\n\
+\tJKS. Non \u00e8 necessario specificare questa opzione se \u00e8 previsto\n \tun keystore PKCS12.\n\
+\tPKCS12 porta diversi vantaggi: \u00e8 pi\u00f9 estensibile: supporta\n\
+\talgoritmi di codifica pi\u00f9 robusti ed \u00e8 ampiamente adottato. PKCS12 \u00e8\n\
+\tfrequentemente il formato fornito dalle CA quando\n\
+\temettono i certificati.
+
+sslCert.option-key.ext=\ \ \ \ --extInfo=informazioni estensione certificato
+sslCert.option-desc.ext=\tLe informazioni sull''estensione del certificato da aggiungere al certificato.\n\
+\tL''estensione predefinita \u00e8 una voce Nome alternativo soggetto che utilizza\n\
+\til nome host.
 
 # -------- CREATE LTPA KEYS OPTIONS --------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.

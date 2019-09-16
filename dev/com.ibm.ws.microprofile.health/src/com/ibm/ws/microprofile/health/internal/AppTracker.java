@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017, 2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -23,16 +23,41 @@ package com.ibm.ws.microprofile.health.internal;
 
 import java.util.Set;
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
+import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
+import com.ibm.ws.container.service.state.StateChangeException;
 
 /**
  * Retrieves the application and modules names during application deployments
  */
 public interface AppTracker {
 
-    /** {@inheritDoc} */
-    void onStartup(Set<Class<?>> arg0, ServletContext ctx) throws ServletException;
+    /**
+     * Gets called when the deployed application is starting.
+     *
+     * @param appInfo
+     */
+    void applicationStarting(ApplicationInfo appInfo) throws StateChangeException;
+
+    /**
+     * Gets called when the deployed application is started.
+     *
+     * @param appInfo
+     */
+    void applicationStarted(ApplicationInfo appInfo) throws StateChangeException;
+
+    /**
+     * Gets called when the deployed application is stopping.
+     *
+     * @param appInfo
+     */
+    void applicationStopping(ApplicationInfo appInfo);
+
+    /**
+     * Gets called when the deployed application is stopped.
+     *
+     * @param appInfo
+     */
+    void applicationStopped(ApplicationInfo appInfo);
 
     /**
      * Gets a set of the names of the applications deployed
@@ -48,5 +73,20 @@ public interface AppTracker {
      * @return
      */
     Set<String> getModuleNames(String appName);
+
+    /**
+     * Returns true if the application with the specified name is started, otherwise false.
+     *
+     * @param appName
+     * @return true if the application with the specified name is started, otherwise false.
+     */
+    boolean isStarted(String appName);
+
+    /**
+     * Sets the HealthCheckService associated with this AppTracker.
+     *
+     * @param healthService
+     */
+    void setHealthCheckService(HealthCheckService healthService);
 
 }

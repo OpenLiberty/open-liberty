@@ -1,0 +1,139 @@
+/*******************************************************************************
+ * Copyright (c) 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+// TODO remove Hazelcast later, after proving the copied bucket works
+configurations {
+  caffeine
+  hazelcastJCache
+  hazelcastClient
+  infinispanCommons
+  infinispanCore
+  infinispanJCache
+  infinispanJCacheCommons
+  jbossLogging
+  jbossMarshalling
+  jbossMarshallingRiver
+  jGroups
+  reactiveStreams
+  rxjava
+}
+
+// Define G:A:V coordinates of each dependency
+dependencies {
+  caffeine 'com.github.ben-manes.caffeine:caffeine:2.8.0'
+  hazelcastJCache 'com.hazelcast:hazelcast:3.9.2'
+  hazelcastClient 'com.hazelcast:hazelcast-client:3.9.2'
+  infinispanCommons 'org.infinispan:infinispan-commons:9.4.16.Final'
+  infinispanCore 'org.infinispan:infinispan-core:9.4.16.Final'
+  infinispanJCache 'org.infinispan:infinispan-jcache:9.4.16.Final'
+  infinispanJCacheCommons 'org.infinispan:infinispan-jcache-commons:9.4.16.Final'
+  jbossLogging 'org.jboss.logging:jboss-logging:3.3.2.Final'
+  jbossMarshalling 'org.jboss.marshalling:jboss-marshalling:2.0.9.Final'
+  jbossMarshallingRiver 'org.jboss.marshalling:jboss-marshalling-river:2.0.9.Final'
+  jGroups 'org.jgroups:jgroups:4.0.0.Final'
+  reactiveStreams 'org.reactivestreams:reactive-streams:1.0.2'
+  rxjava 'io.reactivex.rxjava2:rxjava:2.2.6'
+}
+
+task addCaffeineToSharedDir(type: Copy) {
+  from configurations.caffeine
+  into new File(autoFvtDir, 'publish/shared/resources/infinispan')
+  rename 'caffeine-*.jar', 'caffeine.jar'
+}
+
+task addHazelcastJCacheProviderToSharedDir(type: Copy) {
+  from configurations.hazelcastJCache
+  into new File(autoFvtDir, 'publish/shared/resources/hazelcast')
+  rename 'hazelcast-.*.jar', 'hazelcast.jar'
+}
+
+task addHazelcastClientToSharedDir(type: Copy) {
+  from configurations.hazelcastClient
+  into new File(autoFvtDir, 'publish/shared/resources/hazelcast')
+  rename 'hazelcast-client-*.jar', 'hazelcast-client.jar'
+}
+
+task addInfinispanCommonsToSharedDir(type: Copy) {
+  from configurations.infinispanCommons
+  into new File(autoFvtDir, 'publish/shared/resources/infinispan')
+  rename 'infinispan-commons-*.jar', 'infinispan-commons.jar'
+}
+
+task addInfinispanCoreToSharedDir(type: Copy) {
+  from configurations.infinispanCore
+  into new File(autoFvtDir, 'publish/shared/resources/infinispan')
+  rename 'infinispan-core-*.jar', 'infinispan-core.jar'
+}
+
+task addInfinispanJCacheToSharedDir(type: Copy) {
+  from configurations.infinispanJCache
+  into new File(autoFvtDir, 'publish/shared/resources/infinispan')
+  rename 'infinispan-jcache-9*.jar', 'infinispan-jcache.jar'
+}
+
+task addInfinispanJCacheCommonsToSharedDir(type: Copy) {
+  from configurations.infinispanJCacheCommons
+  into new File(autoFvtDir, 'publish/shared/resources/infinispan')
+  rename 'infinispan-jcache-commons-*.jar', 'infinispan-jcache-commons.jar'
+}
+
+task addJbossLoggingToSharedDir(type: Copy) {
+  from configurations.jbossLogging
+  into new File(autoFvtDir, 'publish/shared/resources/infinispan')
+  rename 'jboss-logging-*.jar', 'jboss-logging.jar'
+}
+
+task addJbossMarshallingToSharedDir(type: Copy) {
+  from configurations.jbossMarshalling
+  into new File(autoFvtDir, 'publish/shared/resources/infinispan')
+  rename 'jboss-marshalling-2*.jar', 'jboss-marshalling.jar'
+}
+
+task addJbossMarshallingRiverToSharedDir(type: Copy) {
+  from configurations.jbossMarshallingRiver
+  into new File(autoFvtDir, 'publish/shared/resources/infinispan')
+  rename 'jboss-marshalling-river-*.jar', 'jboss-marshalling-river.jar'
+}
+
+task addJGroupsToSharedDir(type: Copy) {
+  from configurations.jGroups
+  into new File(autoFvtDir, 'publish/shared/resources/infinispan')
+  rename 'jgroups*.jar', 'jgroups.jar'
+}
+
+task addReactiveStreamsToSharedDir(type: Copy) {
+  from configurations.reactiveStreams
+  into new File(autoFvtDir, 'publish/shared/resources/infinispan')
+  rename 'reactive-streams-*.jar', 'reactive-streams.jar'
+}
+
+task addRxJavaToSharedDir(type: Copy) {
+  from configurations.rxjava
+  into new File(autoFvtDir, 'publish/shared/resources/infinispan')
+  rename 'rxjava-*.jar', 'rxjava.jar'
+}
+
+addRequiredLibraries {
+  dependsOn addDerby
+  dependsOn addCaffeineToSharedDir
+  dependsOn addHazelcastJCacheProviderToSharedDir
+  dependsOn addHazelcastClientToSharedDir
+  dependsOn addInfinispanCommonsToSharedDir
+  dependsOn addInfinispanCoreToSharedDir
+  dependsOn addInfinispanJCacheToSharedDir
+  dependsOn addInfinispanJCacheCommonsToSharedDir
+  dependsOn addJbossLoggingToSharedDir
+  dependsOn addJbossMarshallingToSharedDir
+  dependsOn addJbossMarshallingRiverToSharedDir
+  dependsOn addJGroupsToSharedDir
+  dependsOn addReactiveStreamsToSharedDir
+  dependsOn addRxJavaToSharedDir
+}

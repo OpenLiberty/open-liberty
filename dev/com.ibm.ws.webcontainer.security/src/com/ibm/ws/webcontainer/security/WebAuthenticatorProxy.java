@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2016 IBM Corporation and others.
+ * Copyright (c) 2012, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,11 +12,13 @@ package com.ibm.ws.webcontainer.security;
 
 import java.util.HashMap;
 
+import javax.security.auth.Subject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.security.audit.AuditEvent;
 import com.ibm.ws.security.SecurityService;
 import com.ibm.ws.security.audit.Audit;
 import com.ibm.ws.security.audit.utils.AuditConstants;
@@ -63,7 +65,17 @@ public class WebAuthenticatorProxy implements WebAuthenticator {
         authResult.setTargetRealm(authResult.realm);
         String authType = webRequest.getLoginConfig().getAuthenticationMethod();
 
-        if (authResult.getStatus() == AuthResult.CONTINUE) {
+        if ((authResult.getStatus() == AuthResult.CONTINUE)) {
+            // if target is unprotected, then check if TAI is enabled and invokeForUnprotectedURI is set as true.
+            // if these conditions are met, return SUCCESS.
+            if (webRequest.isPerformTAIForUnProtectedURI()) {
+                authResult = new AuthenticationResult(AuthResult.SUCCESS, (Subject) null, null, null, AuditEvent.OUTCOME_SUCCESS);
+                int statusCode = webRequest.getHttpServletResponse().getStatus();
+                Audit.audit(Audit.EventID.SECURITY_AUTHN_01, webRequest, authResult, statusCode);
+                Audit.audit(Audit.EventID.SECURITY_AUTHZ_01, webRequest, authResult, webRequest.getHttpServletRequest().getRequestURI(), statusCode);
+                // no need to set auth type, so return now.
+                return authResult;
+            }
             WebAuthenticator authenticator = getWebAuthenticator(webRequest);
             if (authenticator == null) {
                 return new AuthenticationResult(AuthResult.FAILURE, "Unable to get the appropriate WebAuthenticator. Unable to get the appropriate WebAuthenticator.");
@@ -187,8 +199,13 @@ public class WebAuthenticatorProxy implements WebAuthenticator {
      */
     public WebAuthenticator getWebAuthenticator(WebRequest webRequest) {
         String authMech = webAppSecurityConfig.getOverrideHttpAuthMethod();
-        if (authMech != null && authMech.equals("CLIENT_CERT")) {
-            return createCertificateLoginAuthenticator();
+        if (authMech != null) {
+            if (authMech.equals("CLIENT_CERT"))
+                return createCertificateLoginAuthenticator();
+            else if (authMech.equals("FORM"))
+                return createFormLoginAuthenticator(webRequest);
+            else if (authMech.equals("BASIC"))
+                return getBasicAuthAuthenticator();
         }
         SecurityMetadata securityMetadata = webRequest.getSecurityMetadata();
         LoginConfiguration loginConfig = securityMetadata.getLoginConfiguration();

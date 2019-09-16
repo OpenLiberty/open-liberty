@@ -10,23 +10,13 @@
  *******************************************************************************/
 package com.ibm.ws.injection.fat;
 
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.injection.repeatable.envmix.web.AdvRepeatableEnvMixObjServlet;
-import com.ibm.ws.injection.repeatable.envmix.web.AdvRepeatableEnvMixPrimServlet;
-import com.ibm.ws.injection.repeatable.envmix.web.BasicRepeatableEnvMixObjServlet;
-import com.ibm.ws.injection.repeatable.envmix.web.BasicRepeatableEnvMixPrimServlet;
-
 import componenttest.annotation.Server;
-import componenttest.annotation.TestServlet;
-import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
@@ -45,12 +35,18 @@ import componenttest.topology.utils.FATServletClient;
  */
 @RunWith(FATRunner.class)
 public class RepeatableEnvEntryTest extends FATServletClient {
+
+    private static final String SERVLET_BASIC_PRIM = "RepeatableEnvEntryMixWeb/BasicRepeatableEnvMixPrimServlet";
+    private static final String SERVLET_BASIC_OBJ = "RepeatableEnvEntryMixWeb/BasicRepeatableEnvMixObjServlet";
+    private static final String SERVLET_ADV_PRIM = "RepeatableEnvEntryMixWeb/AdvRepeatableEnvMixPrimServlet";
+    private static final String SERVLET_ADV_OBJ = "RepeatableEnvEntryMixWeb/AdvRepeatableEnvMixObjServlet";
+
     @Server("com.ibm.ws.injection.fat.RepeatableEnvEntryServer")
-    @TestServlets({ @TestServlet(servlet = BasicRepeatableEnvMixPrimServlet.class, contextRoot = "RepeatableEnvEntryMixWeb"),
-                    @TestServlet(servlet = BasicRepeatableEnvMixObjServlet.class, contextRoot = "RepeatableEnvEntryMixWeb"),
-                    @TestServlet(servlet = AdvRepeatableEnvMixPrimServlet.class, contextRoot = "RepeatableEnvEntryMixWeb"),
-                    @TestServlet(servlet = AdvRepeatableEnvMixObjServlet.class, contextRoot = "RepeatableEnvEntryMixWeb")
-    })
+//    @TestServlets({ @TestServlet(servlet = BasicRepeatableEnvMixPrimServlet.class, contextRoot = "RepeatableEnvEntryMixWeb"),
+//                    @TestServlet(servlet = BasicRepeatableEnvMixObjServlet.class, contextRoot = "RepeatableEnvEntryMixWeb"),
+//                    @TestServlet(servlet = AdvRepeatableEnvMixPrimServlet.class, contextRoot = "RepeatableEnvEntryMixWeb"),
+//                    @TestServlet(servlet = AdvRepeatableEnvMixObjServlet.class, contextRoot = "RepeatableEnvEntryMixWeb")
+//    })
     public static LibertyServer server;
 
     @ClassRule
@@ -58,12 +54,22 @@ public class RepeatableEnvEntryTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        // Use ShrinkHelper to build the ears
-        WebArchive RepeatableEnvEntryMixWeb = ShrinkHelper.buildDefaultApp("RepeatableEnvEntryMixWeb.war", "com.ibm.ws.injection.repeatable.envmix.web.");
-        EnterpriseArchive RepeatableEnvEntryMixTest = ShrinkWrap.create(EnterpriseArchive.class, "RepeatableEnvEntryMixTest.ear");
-        RepeatableEnvEntryMixTest.addAsModule(RepeatableEnvEntryMixWeb);
+        // Because of a bug / gap in function in the JDK 11 compiler, we cannot compile these applications with a source=8
+        // and also override the bootclasspath to use javax.annotation 1.3. For this reason, we are going to check in the
+        // app as binaries compiled on Java 8 so we can continue to have coverage on JDK 8+
+        // If these apps ever need to be changed:
+        //   1) add the app path back to the 'src' list in bnd.bnd
+        //   2) add the app path back to the .classpath
+        //   3) un-comment the Shrinkwrap code to build the app in the respective test class
 
-        ShrinkHelper.exportDropinAppToServer(server, RepeatableEnvEntryMixTest);
+//        // Use ShrinkHelper to build the ears
+//        WebArchive RepeatableEnvEntryMixWeb = ShrinkHelper.buildDefaultApp("RepeatableEnvEntryMixWeb.war", "com.ibm.ws.injection.repeatable.envmix.web.");
+//        EnterpriseArchive RepeatableEnvEntryMixTest = ShrinkWrap.create(EnterpriseArchive.class, "RepeatableEnvEntryMixTest.ear");
+//        RepeatableEnvEntryMixTest.addAsModule(RepeatableEnvEntryMixWeb);
+//
+//        ShrinkHelper.exportDropinAppToServer(server, RepeatableEnvEntryMixTest);
+
+        server.addInstalledAppForValidation("RepeatableEnvEntryMixTest");
 
         server.startServer();
     }
@@ -74,4 +80,109 @@ public class RepeatableEnvEntryTest extends FATServletClient {
             server.stopServer();
         }
     }
+
+    private final void runTest(String path) throws Exception {
+        FATServletClient.runTest(server, path, testName.getMethodName());
+    }
+
+    @Test
+    public void testRepeatableEnvPrimFldMixInjection() throws Exception {
+        runTest(SERVLET_BASIC_PRIM);
+    }
+
+    @Test
+    public void testRepeatableEnvPrimJNDIClassLevelResourceMixLookup() throws Exception {
+        runTest(SERVLET_BASIC_PRIM);
+    }
+
+    @Test
+    public void testRepeatableEnvPrimMthdMixInjection() throws Exception {
+        runTest(SERVLET_BASIC_PRIM);
+    }
+
+    @Test
+    public void testRepeatableEnvObjFldMixInjection() throws Exception {
+        runTest(SERVLET_BASIC_OBJ);
+    }
+
+    @Test
+    public void testRepeatableEnvObjJNDIClassLevelResourceMixLookup() throws Exception {
+        runTest(SERVLET_BASIC_OBJ);
+    }
+
+    @Test
+    public void testRepeatableEnvObjMthdMixInjection() throws Exception {
+        runTest(SERVLET_BASIC_OBJ);
+    }
+
+    @Test
+    public void testRepeatableEnvMixPrimHttpSessionAttributeListener() throws Exception {
+        runTest(SERVLET_ADV_PRIM);
+    }
+
+    @Test
+    public void testRepeatableEnvMixPrimHttpSessionListener() throws Exception {
+        runTest(SERVLET_ADV_PRIM);
+    }
+
+    @Test
+    public void testRepeatableEnvMixPrimRequestListener() throws Exception {
+        runTest(SERVLET_ADV_PRIM);
+    }
+
+    @Test
+    public void testRepeatableEnvMixPrimServletContextAttributeListener() throws Exception {
+        runTest(SERVLET_ADV_PRIM);
+    }
+
+    @Test
+    public void testRepeatableEnvMixPrimServletContextListener() throws Exception {
+        runTest(SERVLET_ADV_PRIM);
+    }
+
+    @Test
+    public void testRepeatableEnvMixPrimServletFilter() throws Exception {
+        runTest(SERVLET_ADV_PRIM);
+    }
+
+    @Test
+    public void testRepeatableEnvMixPrimServletRequestAttributeListener() throws Exception {
+        runTest(SERVLET_ADV_PRIM);
+    }
+
+    @Test
+    public void testRepeatableEnvMixObjHttpSessionAttributeListener() throws Exception {
+        runTest(SERVLET_ADV_OBJ);
+    }
+
+    @Test
+    public void testRepeatableEnvMixObjHttpSessionListener() throws Exception {
+        runTest(SERVLET_ADV_OBJ);
+    }
+
+    @Test
+    public void testRepeatableEnvMixObjRequestListener() throws Exception {
+        runTest(SERVLET_ADV_OBJ);
+    }
+
+    @Test
+    public void testRepeatableEnvMixObjServletContextAttributeListener() throws Exception {
+        runTest(SERVLET_ADV_OBJ);
+    }
+
+    @Test
+    public void testRepeatableEnvMixObjServletContextListener() throws Exception {
+        runTest(SERVLET_ADV_OBJ);
+    }
+
+    @Test
+    public void testRepeatableEnvMixObjServletFilter() throws Exception {
+        runTest(SERVLET_ADV_OBJ);
+    }
+
+    @Test
+    public void testRepeatableEnvMixObjServletRequestAttributeListener() throws Exception {
+        runTest(SERVLET_ADV_OBJ);
+    }
+
 }

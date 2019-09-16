@@ -1,0 +1,62 @@
+<!--
+    Copyright (c) 2019 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+    <featureManager>
+      <feature>jca-1.7</feature>
+      <feature>jndi-1.0</feature>
+      <feature>persistentExecutor-1.0</feature>
+      <feature>servlet-3.1</feature>
+    </featureManager>
+
+    <include optional="true" location="../fatTestPorts.xml"/>
+
+    <variable name="onError" value="FAIL"/>
+
+    <!-- increase the wait because we have ResourceAdapter.start waiting for a task to run -->
+    <variable name="PersistRACodebase" value="${server.config.dir}/connectors/PersistRA.rar"/>
+    <resourceAdapter id="PersistRA" location="${PersistRACodebase}" maxWaitForResources="20s"/>
+    <javaPermission codebase="${PersistRACodebase}" className="java.lang.RuntimePermission" name="getClassLoader"/>
+
+    <application location="PersistRAApp.ear">
+      <classloader classProviderRef="PersistRA"/>
+    </application>
+
+    <adminObject jndiName="eis/serializableTask">
+      <properties.PersistRA.Callable-RASerializableTask/>
+    </adminObject>
+
+    <adminObject jndiName="eis/serializableTrigger">
+      <properties.PersistRA.RASerializableTrigger/>
+    </adminObject>
+
+    <adminObject jndiName="eis/task">
+      <properties.PersistRA.Callable-RATask/>
+    </adminObject>
+
+    <adminObject jndiName="eis/trigger">
+      <properties.PersistRA.RATrigger/>
+    </adminObject>
+
+    <persistentExecutor jndiName="concurrent/myScheduler" pollInterval="3m"/>
+    <databaseStore id="defaultDatabaseStore" dataSourceRef="SchedDB" tablePrefix=""/>
+
+    <!-- database for scheduled tasks -->
+    <dataSource id="SchedDB">
+      <jdbcDriver libraryRef="DerbyLib"/>
+      <properties.derby.embedded createDatabase="create" databaseName="memory:persistradb"/>
+    </dataSource>
+    <library id="DerbyLib">
+      <fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
+    </library>
+    
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+
+</server>

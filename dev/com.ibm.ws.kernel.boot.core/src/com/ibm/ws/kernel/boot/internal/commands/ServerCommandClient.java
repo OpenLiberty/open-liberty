@@ -20,6 +20,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.channels.SocketChannel;
 import java.nio.channels.spi.SelectorProvider;
+import java.text.MessageFormat;
 import java.util.Set;
 
 import com.ibm.ws.kernel.boot.BootstrapConfig;
@@ -114,7 +115,11 @@ public class ServerCommandClient extends ServerCommand {
                 // Respond to authorization challenge.
                 File authFile = new File(commandAuthDir, authID);
                 // Delete a file created by the server (check for write access)
-                authFile.delete();
+                if (!authFile.delete()) {
+                    Debug.println("The command " + command + " could not be completed because the client could not delete the file " + authFile.getAbsolutePath());
+                    System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("info.serverCommandAuthFailure"), command, authFile.getAbsolutePath()));
+                    return errorRC;
+                }
 
                 // respond to the server to indicate the delete has happened.
                 write(channel, authID);
@@ -122,7 +127,11 @@ public class ServerCommandClient extends ServerCommand {
                 // Read command response.
                 String cmdResponse = read(channel), targetServerUUID = null, responseCode = null;
                 if (cmdResponse.isEmpty()) {
-                    throw new IOException("connection closed by server without a reply");
+                    System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("info.serverCommandCommFailure"), command));
+
+                    // Something went wrong on the server side causing it to send an empty response
+                    Debug.println("The server returned an empty response to the " + command + " command.");
+                    return errorRC;
                 }
 
                 if (cmdResponse.indexOf(DELIM) != -1) {
@@ -132,20 +141,26 @@ public class ServerCommandClient extends ServerCommand {
                     targetServerUUID = cmdResponse;
                 }
                 if (!commandID.validateTarget(targetServerUUID)) {
-                    throw new IOException("command file mismatch");
+                    System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("info.serverCommandCommFailure"), command));
+                    Debug.println("The command can't be completed because the client and server UUID values do not match: " + commandID.getUUID() + ", " + targetServerUUID);
+                    return errorRC;
                 }
                 ReturnCode result = ReturnCode.OK;
                 if (responseCode != null) {
                     try {
                         int returnCode = Integer.parseInt(responseCode.trim());
                         result = ReturnCode.getEnum(returnCode);
+                        if (result == ReturnCode.INVALID) {
+                            Debug.println("The server returned an invalid return code: " + returnCode);
+                            return ReturnCode.INVALID;
+                        }
                     } catch (NumberFormatException nfe) {
-                        throw new IOException("invalid return code");
+                        System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("info.serverCommandCommFailure"), command));
+                        Debug.println("The return code from the server, '" + responseCode + "' could not be parsed into an integer.");
+                        return ReturnCode.INVALID;
                     }
                 }
-                if (result == ReturnCode.INVALID) {
-                    throw new IOException("invalid return code");
-                }
+
                 return result;
             }
 
@@ -155,11 +170,13 @@ public class ServerCommandClient extends ServerCommand {
 
             return notStartedRC;
         } catch (ConnectException e) {
+            System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("info.serverCommandCommFailure"), command));
             Debug.printStackTrace(e);
             return notStartedRC;
         } catch (IOException e) {
+            System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("info.serverCommandCommFailure"), command));
             Debug.printStackTrace(e);
-            return errorRC;
+            return ReturnCode.ERROR_COMMUNICATE_SERVER;
         } finally {
             Utils.tryToClose(channel);
         }

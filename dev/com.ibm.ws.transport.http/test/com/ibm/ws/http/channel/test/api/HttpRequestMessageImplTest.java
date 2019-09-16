@@ -1306,10 +1306,10 @@ public class HttpRequestMessageImplTest {
             String dateValue1 = df.getRFC1123Time();
             Thread.sleep(1000);
             String dateValue2 = df.getRFC1123Time();
-            getRequest().setHeader(HttpHeaderKeys.HDR_$WSCC, dateValue1);
-            getRequest().appendHeader(HttpHeaderKeys.HDR_$WSCC, dateValue2);
+            getRequest().setHeader(HttpHeaderKeys.HDR_DATE, dateValue1);
+            getRequest().appendHeader(HttpHeaderKeys.HDR_DATE, dateValue2);
 
-            List<HeaderField> dateList = getRequest().getHeaders(HttpHeaderKeys.HDR_$WSCC);
+            List<HeaderField> dateList = getRequest().getHeaders(HttpHeaderKeys.HDR_DATE);
             assertEquals(dateValue1, df.getRFC1123Time(dateList.get(0).asDate()));
             assertEquals(dateValue2, df.getRFC1123Time(dateList.get(1).asDate()));
 
@@ -1326,21 +1326,21 @@ public class HttpRequestMessageImplTest {
             // @ Tested API -- getHeaderAsInteger(HeaderKeys)
             // @ Tested API -- getHeaderAsInteger(String, int)
             int int1 = 505789;
-            getRequest().setHeader(HttpHeaderKeys.HDR_$WSAT, "" + int1);
+            getRequest().setHeader(HttpHeaderKeys.HDR_LOCATION, "" + int1);
 
-            assertEquals(int1, getRequest().getHeader(HttpHeaderKeys.HDR_$WSAT).asInteger());
+            assertEquals(int1, getRequest().getHeader(HttpHeaderKeys.HDR_LOCATION).asInteger());
 
-            assertEquals(int1, getRequest().getHeader("$WSAT").asInteger());
+            assertEquals(int1, getRequest().getHeader("Location").asInteger());
 
             // Test the list versions
             // @ Tested API -- getHeaderIntegerValues(HeaderKeys)
 
             int1 = 4398459;
             int int2 = 12312634;
-            getRequest().setHeader(HttpHeaderKeys.HDR_$WSRA, "" + int1);
-            getRequest().appendHeader(HttpHeaderKeys.HDR_$WSRA, "" + int2);
+            getRequest().setHeader(HttpHeaderKeys.HDR_PRAGMA, "" + int1);
+            getRequest().appendHeader(HttpHeaderKeys.HDR_PRAGMA, "" + int2);
 
-            List<HeaderField> intList = getRequest().getHeaders(HttpHeaderKeys.HDR_$WSRA);
+            List<HeaderField> intList = getRequest().getHeaders(HttpHeaderKeys.HDR_PRAGMA);
             assertEquals(int1, intList.get(0).asInteger());
             assertEquals(int2, intList.get(1).asInteger());
 

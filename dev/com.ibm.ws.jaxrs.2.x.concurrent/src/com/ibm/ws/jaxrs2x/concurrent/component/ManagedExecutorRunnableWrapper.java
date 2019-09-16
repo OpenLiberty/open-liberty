@@ -16,7 +16,7 @@ import org.apache.cxf.message.Message;
 import org.osgi.service.component.annotations.Component;
 
 import com.ibm.ws.concurrent.WSManagedExecutorService;
-import com.ibm.ws.jaxrs20.client.AsyncClientRunnableWrapper;
+import com.ibm.ws.cxf.client.AsyncClientRunnableWrapper;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 import com.ibm.wsspi.threadcontext.WSContextService;
 

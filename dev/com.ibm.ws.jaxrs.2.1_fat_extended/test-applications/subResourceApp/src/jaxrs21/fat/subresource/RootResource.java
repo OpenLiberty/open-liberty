@@ -13,6 +13,7 @@ package jaxrs21.fat.subresource;
 import java.util.HashMap;
 
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.spi.CDI;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -30,6 +31,16 @@ public class RootResource {
     @Path("sub")
     public SubResource getSubResource() {
         return rc.initResource(new SubResource());
+    }
+
+    @Path("subCdi")
+    public SubResource getSubResourceUsingCdiSelection() {
+        return rc.initResource(CDI.current().select(SubResource.class).get());
+    }
+
+    @Path("subGet")
+    public SubResource getSubResourceUsingGetResource() {
+        return rc.getResource(SubResource.class);
     }
 
     @GET

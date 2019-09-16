@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -33,6 +33,10 @@ timeout.occurred.CWMFT0000E.useraction=Cre\u015fte\u0163i durata maxim\u0103 a t
 bulkhead.no.threads.CWMFT0001E=CWMFT0001E: Nu este disponibil\u0103 capacitate liber\u0103 \u00een parti\u0163ia pentru metoda {0}.
 bulkhead.no.threads.CWMFT0001E.explanation=Nu a avut succes apelul la metod\u0103 deoarece parti\u0163ia pentru metod\u0103 este plin\u0103.
 bulkhead.no.threads.CWMFT0001E.useraction=Cre\u015fte\u0163i disponibilitatea din parti\u0163ie prin cre\u015fterea capacit\u0103\u0163ii parti\u0163iei sau prin reducerea \u00eenc\u0103rc\u0103rii de lucru concurente a acestui serviciu.
+
+application.shutdown.CWMFT0002W=CWMFT0002W: Metoda asincron\u0103 {0} nu s-a putut finaliza deoarece aplica\u0163ia sau componenta care a apelat-o s-a oprit.
+application.shutdown.CWMFT0002W.explanation=Metodele asincrone ruleaz\u0103 \u00een contextul componentei care le-au pornit. Aplica\u0163ia sau componenta care a apelat metoda asincron s-a oprit, ceea ce a \u00eempiedicat metoda asincron\u0103 s\u0103 se finalizeze.
+application.shutdown.CWMFT0002W.useraction= Acest avertisment apare de obicei c\u00e2nd o aplica\u0163ie, o component\u0103 sau serverul se opre\u015fte. Dac\u0103 toate metodele asincrone trebuie s\u0103 se finalizeze, atunci aplica\u0163ia sau componenta trebuie s\u0103 a\u015ftepte rezultatele \u00eenainte de a se opri.
 
 #An internal error occurred. The exception is {0}.
 internal.error.CWMFT4998E=CWMFT4998E: A ap\u0103rut o eroare intern\u0103. Excep\u0163ia este {0}.

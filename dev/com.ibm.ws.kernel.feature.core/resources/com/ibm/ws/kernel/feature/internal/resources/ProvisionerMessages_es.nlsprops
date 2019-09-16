@@ -69,7 +69,7 @@ BUNDLE_MATCH_WARNING=CWWKF0010W: M\u00e1s de un paquete coincide con el filtro e
 BUNDLE_MATCH_WARNING.explanation=Un elemento de definici\u00f3n de caracter\u00edstica coincide con m\u00e1s de un paquete. Esto puede deberse a que el filtro es demasiado general, o a que hay paquetes antiguos en la imagen que coinciden con el filtro.
 BUNDLE_MATCH_WARNING.useraction=Aseg\u00farese de que el filtro es suficientemente espec\u00edfico y de que se utiliza una imagen de instalaci\u00f3n limpia.
 
-SERVER_STARTED=CWWKF0011I: El servidor {0} est\u00e1 preparado para ejecutar un planeta m\u00e1s inteligente.
+SERVER_STARTED=CWWKF0011I: El servidor {0} est\u00e1 preparado para ejecutar un planeta m\u00e1s inteligente. El servidor {0} se ha iniciado en {1} segundos.
 SERVER_STARTED.explanation=El servidor se ha iniciado satisfactoriamente.
 SERVER_STARTED.useraction=No se requiere ninguna acci\u00f3n.
 

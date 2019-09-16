@@ -17,14 +17,17 @@ import static org.junit.Assert.assertNull;
 import java.util.List;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 /**
  *
  */
+@RunWith(FATRunner.class)
 public class BadConfigTests {
 
     @Test

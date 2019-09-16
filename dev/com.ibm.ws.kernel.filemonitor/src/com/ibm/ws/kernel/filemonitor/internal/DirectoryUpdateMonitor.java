@@ -17,6 +17,9 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.wsspi.kernel.filemonitor.FileMonitor;
 
 /**
@@ -27,17 +30,19 @@ import com.ibm.wsspi.kernel.filemonitor.FileMonitor;
  * <li> {@link FileMonitor#MONITOR_RECURSE} property is used to
  * specify whether or not files should be monitored recursively.
  * </ul>
- * 
+ *
  * <p>
  * This monitor is only used for files that exist: if the file does not exist
  * when monitoring is started, it will be watched by a {@link ResourceUpdateMonitor} until it does.
  * <p>
  * NOT THREAD SAFE: Calling/using class must ensure that only one operation (scan/init) is
  * active on the monitored file at a time.
- * 
+ *
  * @see FileMonitor
  */
 public class DirectoryUpdateMonitor extends UpdateMonitor {
+
+    static final TraceComponent tc = Tr.register(DirectoryUpdateMonitor.class);
 
     private final String fileFilter;
     private final boolean filesOnly;
@@ -80,7 +85,7 @@ public class DirectoryUpdateMonitor extends UpdateMonitor {
 
         fileFilter = filter;
 
-        // Check for special filter values here: ignored in hashCode     
+        // Check for special filter values here: ignored in hashCode
         filesOnly = FileMonitor.MONITOR_FILTER_FILES_ONLY.equals(fileFilter);
         directoriesOnly = filesOnly ? false : FileMonitor.MONITOR_FILTER_DIRECTORIES_ONLY.equals(fileFilter);
         fileNameRegex = (filesOnly || directoriesOnly || filter == null) ? null : Pattern.compile(fileFilter);
@@ -88,7 +93,7 @@ public class DirectoryUpdateMonitor extends UpdateMonitor {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * <p>
      * The init method creates an initial baseline for the contents
      * of the directory according to the filter and recurse settings.
@@ -126,15 +131,21 @@ public class DirectoryUpdateMonitor extends UpdateMonitor {
      * are neither files nor directories. For the purposes of this class,
      * we want to consider these external links as files (so they can be detected
      * and loaded by the <library> that uses this <fileset>).
-     * 
+     *
      * We also check that the file exists, because fortunately external links will
      * return true for exists(), while broken sym links will return false.
      */
-    private static boolean isFile(File f) {
-        return (f.exists() && !f.isDirectory());
+    @Trivial
+    protected boolean isFile(File f) {
+        final boolean rc = (f.exists() && !f.isDirectory());
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "isFile", "isFile = " + rc);
+        }
+        return rc;
     }
 
     /** {@inheritDoc} */
+    @Trivial
     @Override
     public void scanForUpdates(Collection<File> created, Collection<File> modified, Collection<File> deleted) {
         performScan(created, modified, deleted);
@@ -149,7 +160,7 @@ public class DirectoryUpdateMonitor extends UpdateMonitor {
         // Check that directory exists
         if (!monitoredFile.isDirectory()) {
             // Directory does not exist or was removed
-            // If we had/knew about files before, then all of the files were deleted.. 
+            // If we had/knew about files before, then all of the files were deleted..
             if (prevScanResult != null && !prevScanResult.isEmpty() && deleted != null) {
                 for (Map.Entry<String, FileInfo> entry : prevScanResult.entrySet()) {
                     File f = new File(entry.getKey());
@@ -182,7 +193,7 @@ public class DirectoryUpdateMonitor extends UpdateMonitor {
                 for (Map.Entry<String, FileInfo> entry : prevScanResult.entrySet()) {
                     File f = new File(entry.getKey());
 
-                    // Simplify: Make sure only stuff that matches gets into the cache, 
+                    // Simplify: Make sure only stuff that matches gets into the cache,
                     // and then you know whatever is leftover in the cache was deleted
                     // (because you know it matches.. )
                     deleted.add(f);
@@ -199,7 +210,7 @@ public class DirectoryUpdateMonitor extends UpdateMonitor {
      * addition to created/modified list, add new file attributes to the new map).
      * <p>
      * Assumes only one scan is active at a time.
-     * 
+     *
      * @param cacheMap The map of file information from the previous scan
      * @param newMap The map of information for files/directories found in this scan
      * @param f A file or directory to inspect for changes
@@ -212,7 +223,7 @@ public class DirectoryUpdateMonitor extends UpdateMonitor {
         String key = f.getAbsolutePath();
 
         // !REMOVE! we saw it in this scan, it's still here.
-        // Removing items we've seen from the cacheMap allows us to identify deleted resources: 
+        // Removing items we've seen from the cacheMap allows us to identify deleted resources:
         // they will be the only items left in the cacheMap when we've completed the scan.
 
         FileInfo cachedValue = null;
@@ -230,7 +241,7 @@ public class DirectoryUpdateMonitor extends UpdateMonitor {
             addToList(created, f);
         } else if (cachedValue.hasChanged(isFile, fileModified, fileSize)) {
             newValue = new FileInfo(isFile, fileModified, fileSize);
-            // If the modified time or file size have changed since we last looked, 
+            // If the modified time or file size have changed since we last looked,
             // add the file to the list of modified resources
             addToList(modified, f);
         } else {
@@ -245,7 +256,7 @@ public class DirectoryUpdateMonitor extends UpdateMonitor {
      * Scan the "current" directory: recursive method.
      * <p>
      * Assumes only one scan is active at a time.
-     * 
+     *
      * @param cacheMap The map of file information from the previous scan
      * @param newMap The map of information for files/directories found in this scan
      * @param currentDir The current directory
@@ -270,18 +281,28 @@ public class DirectoryUpdateMonitor extends UpdateMonitor {
         }
     }
 
+    @Trivial
     protected boolean isRecursing() {
-        return (type == MonitorType.DIRECTORY_RECURSE || type == MonitorType.DIRECTORY_RECURSE_SELF);
+        boolean rc = (type == MonitorType.DIRECTORY_RECURSE || type == MonitorType.DIRECTORY_RECURSE_SELF);
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "isRecursing", "isRecursing = " + rc);
+        }
+        return rc;
     }
 
+    @Trivial
     protected boolean isIncludeSelf() {
-        return type == MonitorType.DIRECTORY_SELF || type == MonitorType.DIRECTORY_RECURSE_SELF;
+        boolean rc = (type == MonitorType.DIRECTORY_SELF || type == MonitorType.DIRECTORY_RECURSE_SELF);
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "isIncludeSelf", "isIncludeSelf = " + rc);
+        }
+        return rc;
     }
 
     /**
      * Check to see if this is a resource we're monitoring based
      * on the filter configuration
-     * 
+     *
      * @param f File (or directory) to match against configured file filters
      * @param isFile true if this is a file (instead of a directory). This is looked
      *            up once and passed around.

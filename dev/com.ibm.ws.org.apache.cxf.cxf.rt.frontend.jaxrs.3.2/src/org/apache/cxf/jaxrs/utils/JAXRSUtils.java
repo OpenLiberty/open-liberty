@@ -19,6 +19,8 @@
 
 package org.apache.cxf.jaxrs.utils;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -89,6 +91,7 @@ import org.apache.cxf.common.util.PropertyUtils;
 import org.apache.cxf.common.util.ReflectionUtil;
 import org.apache.cxf.common.util.StringUtils;
 import org.apache.cxf.helpers.DOMUtils;
+import org.apache.cxf.helpers.IOUtils;
 import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.io.DelegatingInputStream;
 import org.apache.cxf.io.ReaderInputStream;
@@ -668,11 +671,19 @@ public final class JAXRSUtils {
     }
 
     public static List<MediaType> getConsumeTypes(Consumes cm) {
-        return cm == null ? Collections.singletonList(ALL_TYPES) : getMediaTypes(cm.value());
+        return getConsumeTypes(cm, Collections.singletonList(ALL_TYPES));
+    }
+
+     public static List<MediaType> getConsumeTypes(Consumes cm, List<MediaType> defaultTypes) {
+        return cm == null ? defaultTypes : getMediaTypes(cm.value());
     }
 
     public static List<MediaType> getProduceTypes(Produces pm) {
-        return pm == null ? Collections.singletonList(ALL_TYPES) : getMediaTypes(pm.value());
+        return getProduceTypes(pm, Collections.singletonList(ALL_TYPES));
+    }
+
+     public static List<MediaType> getProduceTypes(Produces pm, List<MediaType> defaultTypes) {
+        return pm == null ? defaultTypes : getMediaTypes(pm.value());
     }
 
     public static int compareSortedConsumesMediaTypes(List<MediaType> mts1, List<MediaType> mts2, MediaType ct) {
@@ -863,18 +874,6 @@ public final class JAXRSUtils {
                                                       OperationResourceInfo ori)
         throws IOException, WebApplicationException {
 
-        InputStream is = message.getContent(InputStream.class);
-        if (is == null) {
-            Reader reader = message.getContent(Reader.class);
-            if (reader != null) {
-                is = new ReaderInputStream(reader);
-            }
-        // Liberty change start
-        } else if (is instanceof DelegatingInputStream) {
-            ((DelegatingInputStream)is).cacheInput();
-        }
-        // Liberty change end
-
         if (parameterClass == AsyncResponse.class) {
             return new AsyncResponseImpl(message);
         }
@@ -886,6 +885,25 @@ public final class JAXRSUtils {
             contentType = defaultCt == null ? MediaType.APPLICATION_OCTET_STREAM : defaultCt;
         }
 
+        // Liberty Change Start
+        MessageContext mc = new MessageContextImpl(message);
+        MediaType mt = mc.getHttpHeaders().getMediaType();
+        
+        InputStream is;
+        if (mt == null || mt.isCompatible(MediaType.APPLICATION_FORM_URLENCODED_TYPE)) {
+            is = copyAndGetEntityStream(message);
+        } else { 
+            is = message.getContent(InputStream.class);
+        }
+        
+        if (is == null) {
+            Reader reader = message.getContent(Reader.class);
+            if (reader != null) {
+                is = new ReaderInputStream(reader);
+            }
+        }
+        // Liberty Change End
+        
         return readFromMessageBody(parameterClass,
                                    parameterType,
                                    parameterAnns,
@@ -1021,14 +1039,9 @@ public final class JAXRSUtils {
             m.put(FormUtils.FORM_PARAM_MAP, params);
 
             if (mt == null || mt.isCompatible(MediaType.APPLICATION_FORM_URLENCODED_TYPE)) {
-                // Liberty change start
-                InputStream is = m.getContent(InputStream.class);
-                if (is instanceof DelegatingInputStream) {
-                    ((DelegatingInputStream)is).cacheInput();
-                }
-                // Liberty change end
+                InputStream entityStream = copyAndGetEntityStream(m); // Liberty change
                 String enc = HttpUtils.getEncoding(mt, StandardCharsets.UTF_8.name());
-                String body = FormUtils.readBody(is, enc); // Liberty change
+                String body = FormUtils.readBody(entityStream, enc); // Liberty change
                 FormUtils.populateMapFromStringOrHttpRequest(params, m, body, enc, false);
             } else {
                 if ("multipart".equalsIgnoreCase(mt.getType())
@@ -1907,4 +1920,19 @@ public final class JAXRSUtils {
     public static JaxRsRuntimeException toJaxRsRuntimeException(Throwable ex) {
         return new JaxRsRuntimeException(ex);
     }
+    
+    // Liberty change start
+    // copy the input stream so that it is not inadvertently closed
+    private static InputStream copyAndGetEntityStream(Message m) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            IOUtils.copy(m.getContent(InputStream.class), baos);
+        } catch (IOException e) {
+            throw ExceptionUtils.toInternalServerErrorException(e, null);
+        }
+        final byte[] copiedBytes = baos.toByteArray();
+        m.setContent(InputStream.class, new ByteArrayInputStream(copiedBytes));
+        return new ByteArrayInputStream(copiedBytes);
+    }
+    // Liberty change end
 }

@@ -8,6 +8,6 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;com.sun.mail.javax.mail;1.6.0}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;${repo;com.sun.mail.javax.mail;1.6.2}}!/META-INF/MANIFEST.MF,bnd.overrides
 
--buildpath: com.sun.mail:javax.mail;version=1.6.0
+-buildpath: com.sun.mail:javax.mail;version=1.6.2

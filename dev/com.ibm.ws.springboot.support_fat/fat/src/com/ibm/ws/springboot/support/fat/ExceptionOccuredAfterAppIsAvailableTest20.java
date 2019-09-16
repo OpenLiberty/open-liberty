@@ -23,6 +23,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.SpringBootApplication;
+import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -59,11 +60,19 @@ public class ExceptionOccuredAfterAppIsAvailableTest20 extends AbstractSpringTes
 
     @Test
     public void testSpringAppWithExceptionInMainMethod() throws Exception {
+        final String method_name = "testSpringAppWithExceptionInMainMethod";
         //When an exception occurs after the application is available on an endpoint, it should be removed before closing the context or stopping the server.
-        assertNotNull("The endpoint should be removed", server
-                        .waitForStringInLog("CWWKT0017I:.*"));
         assertNotNull("Error message is not displayed", server
-                        .waitForStringInLog("CWWKZ0002E:.*"));
+                        .waitForStringInLog("CWWKZ0002E:.*java.lang.RuntimeException: APPLICATION EXCEPTION"));
+
+        //see if channel-fw was able to start ep before exception thrown.
+        boolean epStarted = server.findStringsInLogs("CWWKT0016I:.*").size() > 0;
+
+        if (epStarted) {
+            assertNotNull("The endpoint should be removed", server.waitForStringInLog("CWWKT0017I:.*"));
+        } else {
+            Log.info(this.getClass(), method_name, "Did not find \"CWWKT0016I: Web application available\" in log.");
+        }
 
         //Remove the application argument "--throw.application.exception=true" from server configuration
         ServerConfiguration config = server.getServerConfiguration();

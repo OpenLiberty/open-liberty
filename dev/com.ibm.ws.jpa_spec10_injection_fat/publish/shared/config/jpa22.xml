@@ -1,0 +1,8 @@
+<server>
+    <featureManager>
+        <feature>ejblite-3.2</feature>
+        <feature>servlet-4.0</feature>
+        <feature>jpa-2.2</feature>
+        <feature>componenttest-1.0</feature>
+    </featureManager>
+</server>

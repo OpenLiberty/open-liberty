@@ -36,6 +36,7 @@ public class ReaderUtils {
     private static final String DELETE_METHOD = "delete";
     private static final String HEAD_METHOD = "head";
     private static final String OPTIONS_METHOD = "options";
+    private static final String PATCH_METHOD = "patch";
     private static final String PATH_DELIMITER = "/";
 
     /**
@@ -215,6 +216,12 @@ public class ReaderUtils {
     }
 
     public static String extractOperationMethod(Operation operation, Method method, Iterator<OpenAPIExtension> chain) {
+
+        for (Annotation annotation : method.getAnnotations()) {
+            if (annotation.getClass().getName().equals("javax.ws.rs.PATCH")) {
+                return PATCH_METHOD;
+            }
+        }
         if (method.getAnnotation(javax.ws.rs.GET.class) != null) {
             return GET_METHOD;
         } else if (method.getAnnotation(javax.ws.rs.PUT.class) != null) {

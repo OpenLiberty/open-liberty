@@ -100,7 +100,7 @@ filtrem.
 BUNDLE_MATCH_WARNING.useraction=Sprawd\u017a, czy filtr jest dostatecznie \
 dok\u0142adny oraz czy u\u017cywany jest poprawny obraz instalacyjny.
 
-SERVER_STARTED=CWWKF0011I: Serwer {0} jest gotowy do dzia\u0142ania w trybie M\u0105drzejszy \u015awiat
+SERVER_STARTED=CWWKF0011I: Serwer {0} jest gotowy do dzia\u0142ania w trybie M\u0105drzejszy \u015awiat. Serwer {0} zosta\u0142 uruchomiony w ci\u0105gu {1} sekund.
 SERVER_STARTED.explanation=Serwer zosta\u0142 pomy\u015blnie uruchomiony.
 SERVER_STARTED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 

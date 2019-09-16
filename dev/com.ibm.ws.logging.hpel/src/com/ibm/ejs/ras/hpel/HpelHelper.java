@@ -57,20 +57,21 @@ public class HpelHelper {
      * Array used to convert integers to hex values
      */
     private final static char[] hexChars = {
-                                            '0', '1', '2', '3', '4', '5', '6', '7',
-                                            '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'
+                                             '0', '1', '2', '3', '4', '5', '6', '7',
+                                             '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'
     };
 
     /**
      * Indicator if LogRecord.getThreadId() should be used as current thread Id. Otherwise, Thread.getId() will be used
      */
     private final static boolean useJULThreadId = AccessController.doPrivileged(
-                    new PrivilegedAction<Boolean>() {
-                        @Override
-                        public Boolean run() {
-                            return Boolean.parseBoolean(System.getProperty("com.ibm.websphere.logging.useJULThreadID", "false"));
-                        }
-                    });
+                                                                                new PrivilegedAction<Boolean>() {
+                                                                                    @Override
+                                                                                    public Boolean run() {
+                                                                                        return Boolean.parseBoolean(System.getProperty("com.ibm.websphere.logging.useJULThreadID",
+                                                                                                                                       "false"));
+                                                                                    }
+                                                                                });
 
     private static String os = getSystemProperty("os.name").trim();
     private static boolean isZOS = ((os.equals("OS/390") || os.equals("z/OS")));
@@ -201,8 +202,7 @@ public class HpelHelper {
         String methodName = "getHpelHandler";
 
         try { // Set up log and traceWriter for the handler (trace only if min level < INFO
-            handler = new LogRecordHandler(Level.OFF.intValue(), LogRepositoryBaseImpl.KNOWN_FORMATTERS[0],
-                            overrideProps); // hpel handler
+            handler = new LogRecordHandler(Level.OFF.intValue(), LogRepositoryBaseImpl.KNOWN_FORMATTERS[0], overrideProps); // hpel handler
             File repositoryLocation = new File(repositoryLoc + "logdata");
             LogRepositoryManager manager = new LogRepositoryManagerImpl(repositoryLocation, pid, label, useDirTree);
             LogRepositoryWriter logWriter = new LogRepositoryWriterImpl(manager);
@@ -339,7 +339,7 @@ public class HpelHelper {
         /*
          * while (pstRecurses(t)) { t = getNestedThrowable(t); if (t == null)
          * return; }
-         * 
+         *
          * // Have found the first Throwable that doesn't override
          * printStackTrace. // Obtain the nested Throwable and keep going. t =
          * getNestedThrowable(t); if (t == null) return;
@@ -485,8 +485,7 @@ public class HpelHelper {
      * @return a reference to the nested Throwable. Null is returned if the specified Throwable
      *         does not support nesting of Throwables or if the nested Throwable is null.
      */
-    private final static Throwable getNestedThrowable(Throwable t)
-    {
+    private final static Throwable getNestedThrowable(Throwable t) {
         // This is the current list of Throwables that we know of that support nested
         // exceptions. Add to the list if more show up.
 
@@ -591,13 +590,12 @@ public class HpelHelper {
         Method method = null;
         try {
             method = AccessController.doPrivileged(
-                            new PrivilegedExceptionAction<Method>() {
-                                @Override
-                                public Method run() throws Exception {
-                                    return cName.getMethod(exceptionMethod, null);
-                                }
-                            }
-                            );
+                                                   new PrivilegedExceptionAction<Method>() {
+                                                       @Override
+                                                       public Method run() throws Exception {
+                                                           return cName.getMethod(exceptionMethod, null);
+                                                       }
+                                                   });
         } catch (PrivilegedActionException e) {
             if (log.isLoggable(Level.FINE)) {
                 log.logp(Level.FINE, CLASS_NAME, exceptionMethod, "PrivilegedActionException Cause " + e.getMessage());
@@ -649,18 +647,16 @@ public class HpelHelper {
      *         is encounted while trying to retrieve the value, the exception is logged and absorbed and
      *         null is returned.
      */
-    public static String getSystemProperty(String propName)
-    {
+    public static String getSystemProperty(String propName) {
         final String temp = propName;
         try {
             String prop = AccessController.doPrivileged(
-                            new PrivilegedAction<String>() {
-                                @Override
-                                public String run() {
-                                    return System.getProperty(temp);
-                                }
-                            }
-                            );
+                                                        new PrivilegedAction<String>() {
+                                                            @Override
+                                                            public String run() {
+                                                                return System.getProperty(temp);
+                                                            }
+                                                        });
             return prop;
         } catch (SecurityException se) {
             // LOG THE EXCEPTION
@@ -711,14 +707,13 @@ public class HpelHelper {
      * @param a non-null Throwable.
      * @return true if the Throwable provides the appropriate behaviour, false otherwise
      */
-    private final static boolean pstRecursesOnNested(Throwable t)
-    {
+    private final static boolean pstRecursesOnNested(Throwable t) {
         //This method added for D200273
 
         // the following Throwables don't print out the nested throwable when printStackTrace is called
-        if (t instanceof org.omg.CORBA.portable.UnknownException)
-            return false;
         Class cName = t.getClass();
+        if (cName.getName() != null && cName.getName().equals("org.omg.CORBA.portable.UnknownException"))
+            return false;
         if (cName.getName() != null && cName.getName().equals("javax.mail.MessagingException"))
             return false;
         if (t instanceof org.xml.sax.SAXException)
@@ -762,8 +757,7 @@ public class HpelHelper {
      * Return a DateFormat object that can be used to format timestamps in the
      * System.out, System.err and TraceOutput logs.
      */
-    static DateFormat getBasicDateFormatter()
-    {
+    static DateFormat getBasicDateFormatter() {
         String pattern;
         int patternLength;
         int endOfSecsIndex;
@@ -787,8 +781,7 @@ public class HpelHelper {
             newPattern = newPattern.trim();
             sdFormatter.applyPattern(newPattern);
             formatter = sdFormatter;
-        }
-        else {
+        } else {
             formatter = new SimpleDateFormat("yy.MM.dd HH:mm:ss:SSS z");
         }
         // PK13288 Start

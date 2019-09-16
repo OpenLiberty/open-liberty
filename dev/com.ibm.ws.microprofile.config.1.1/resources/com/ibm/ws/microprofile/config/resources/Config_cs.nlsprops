@@ -112,6 +112,16 @@ generic.type.variables.notsupported.CWMCG0018E=CWMCG0018E: Prom\u011bnn\u00e1 ge
 generic.type.variables.notsupported.CWMCG0018E.explanation=Byl proveden pokus o p\u0159evod s pou\u017eit\u00edm prom\u011bnn\u00e9 generick\u00e9ho typu, nap\u0159. List<T>. Tato akce nen\u00ed podporov\u00e1na.
 generic.type.variables.notsupported.CWMCG0018E.useraction=M\u00edsto toho pou\u017eijte konkr\u00e9tn\u00ed typ argumentu, nap\u0159. List<String>.
 
+# Failed to start the {0} ConfigSource refresher process.
+failed.to.start.refresher.CWMCG0019E=CWMCG0019E: Nezda\u0159ilo se spustit proces aktualizace {0} objektu ConfigSource.
+failed.to.start.refresher.CWMCG0019E.explanation=Zm\u011bny v uveden\u00e9m objektu ConfigSource se neprojev\u00ed v instanci konfigurace.
+failed.to.start.refresher.CWMCG0019E.useraction=Zkontrolujte protokol zpr\u00e1v message.log a identifikujte probl\u00e9m.
+
+# Failed to start the {0} ConfigSource refresher process. The exception is: {1}.
+failed.to.start.refresher.exception.CWMCG0020E=CWMCG0020E: Nezda\u0159ilo se spustit proces aktualizace {0} objektu ConfigSource. V\u00fdjimka je: {1}.
+failed.to.start.refresher.exception.CWMCG0020E.explanation=Zm\u011bny v uveden\u00e9m objektu ConfigSource se neprojev\u00ed v instanci konfigurace.
+failed.to.start.refresher.exception.CWMCG0020E.useraction=Zkontrolujte protokol zpr\u00e1v message.log a identifikujte probl\u00e9m.
+
 # Environment Variables Config Source
 environment.variables.config.source=Zdroj konfigurace prom\u011bnn\u00fdch prost\u0159ed\u00ed
 # Properties File Config Source: {0}

@@ -15,19 +15,19 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
-import junit.framework.Assert;
-
 import com.ibm.wsspi.config.Fileset;
-import com.ibm.wsspi.config.internal.FilesetImpl;
 import com.ibm.wsspi.config.internal.ConfigTypeConstants.FilesetAttribute;
 import com.ibm.wsspi.kernel.filemonitor.FileMonitor;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsResource;
+
+import junit.framework.Assert;
 
 public class AbstractFilesetTestHelper {
 
@@ -153,7 +153,8 @@ public class AbstractFilesetTestHelper {
     }
 
     static void setAttributes(FilesetImpl fset, String dir, Boolean sensitive, String includes, String excludes, Long scanInterval) {
-        Map<String, Object> props = fset.modified(getAttributes(dir, sensitive, includes, excludes, scanInterval));
+        fset.modified(getAttributes(dir, sensitive, includes, excludes, scanInterval));
+        Dictionary<String, Object> props = fset.getServiceProperties();
         Collection<String> dirs = (Collection<String>) props.get(FileMonitor.MONITOR_DIRECTORIES);
         Assert.assertEquals("wrong size", 1, dirs.size());
         Assert.assertEquals("wrong dir", fset.getDir(), dirs.iterator().next());

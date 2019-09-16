@@ -22,7 +22,7 @@ import com.ibm.ws.jaxws.wsat.Constants;
 
 public final class WSATPolicyLoader implements PolicyInterceptorProviderLoader, AssertionBuilderLoader {
 
-    private final TraceComponent tc = Tr.register(
+    private static final TraceComponent tc = Tr.register(
                                                   WSATPolicyLoader.class, Constants.TRACE_GROUP, null);
 
     private final Bus bus;

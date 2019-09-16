@@ -1,0 +1,8 @@
+Subsystem-ManifestVersion: 1
+Subsystem-SymbolicName: test.activation.sequential.user-1.0; visibility:=public
+Subsystem-Version: 1.0.0
+Subsystem-Content: test.activation.type.sequential.user; version="[1,1.0.100)"
+Subsystem-Type: osgi.subsystem.feature
+IBM-API-Package: test.feature.api
+IBM-Feature-Version: 2
+WLP-Activation-Type: sequential

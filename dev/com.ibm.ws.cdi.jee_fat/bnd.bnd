@@ -40,9 +40,12 @@ javac.target: 1.7
 test.project: true
 
 -buildpath: \
+	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
+	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
+	javax.jws:jsr181-api;version=latest,\
+	com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
 	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
-	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
 	com.ibm.ws.security;version=latest,\
 	com.ibm.websphere.security;version=latest,\
 	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\

@@ -1,0 +1,67 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: WAS WebContainer
+Bundle-SymbolicName: com.ibm.ws.webcontainer.servlet.3.0.factories
+Bundle-Description: WAS WebContainer 8.0 APIs and SPIs with Servlet 3.0 support
+WLP-ServerName: IBM WebSphere Application Server
+WLP-ServerVersion: ${libertyBetaVersion}
+
+-dsannotations: com.ibm.ws.webcontainer.osgi.srt.internal.SRTConnectionContextPoolImpl, \
+ com.ibm.ws.webcontainer.osgi.container.config.internal.WebAppConfiguratorFactoryImpl, \
+ com.ibm.ws.webcontainer.osgi.webapp.internal.WebAppFactoryImpl, \
+ com.ibm.ws.webcontainer.osgi.internal.IRequestResponseFactory, \
+ com.ibm.ws.webcontainer.servlet.internal.CacheServletWrapperFactoryImpl, \
+ com.ibm.ws.webcontainer.session.impl.internal.SessionContextRegistryImplFactoryImpl, \
+ com.ibm.ws.webcontainer.async.internal.AsyncContextFactoryImpl, \
+ com.ibm.wsspi.webcontainer.util.internal.URIMatcherFactoryImpl
+ 
+Service-Component: \
+  com.ibm.ws.webcontainer.v30.dd; \
+    implementation:=com.ibm.ws.javaee.version.ServletVersion; \
+    provide:=com.ibm.ws.javaee.version.ServletVersion; \
+    properties:="version:Integer=30", \
+
+# For each exported package, create (in that package) a package-info.java
+# file, and place an @version javadoc tag in package-level javadoc. 
+# Append ";provide:=true" if this bundle also provides an implementation
+# for the exported API.
+Export-Package: com.ibm.ws.webcontainer.async.internal, \
+ com.ibm.ws.webcontainer.osgi.container.config.internal, \
+ com.ibm.ws.webcontainer.osgi.internal, \
+ com.ibm.ws.webcontainer.osgi.srt.internal, \
+ com.ibm.ws.webcontainer.osgi.webapp.internal, \
+ com.ibm.ws.webcontainer.servlet.internal, \
+ com.ibm.ws.webcontainer.session.impl.internal, \
+ com.ibm.wsspi.webcontainer.util.internal
+    
+Import-Package: \
+ com.ibm.websphere.csi, \
+ com.ibm.ws.webcontainer.osgi.container.config, \
+ com.ibm.ws.webcontainer.osgi.srt, \
+ com.ibm.ws.container.service.metadata, \
+ com.ibm.ws.webcontainer.osgi.webapp, \
+ com.ibm.wsspi.injectionengine, \
+ *
+
+-buildpath: \
+    com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+    com.ibm.ws.webcontainer;version=latest,\
+    com.ibm.ws.transport.http;version=latest,\
+    com.ibm.wsspi.org.osgi.service.component.annotations,\
+    com.ibm.ws.container.service;version=latest,\
+    com.ibm.ws.injection;version=latest,\
+    com.ibm.ws.managedobject;version=latest,\
+    com.ibm.ws.resource;version=latest,\
+    com.ibm.ws.session;version=latest, \
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest

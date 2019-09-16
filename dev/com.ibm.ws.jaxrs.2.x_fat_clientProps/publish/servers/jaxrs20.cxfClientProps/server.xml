@@ -9,4 +9,17 @@
 	<javaPermission className="java.net.SocketPermission" name="*" actions="connect"/>
 	<javaPermission className="java.net.URLPermission" name="http://localhost:23/blah" actions="GET"/>
 	<javaPermission className="java.util.PropertyPermission"  name="*" actions="read" />
+	<javaPermission actions="*" className="org.osgi.framework.AdminPermission" name="*"/>
+    <javaPermission actions="get" className="org.osgi.framework.ServicePermission" name="*"/>
+    <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+    <javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+    <javaPermission actions="connect,resolve" className="java.net.SocketPermission" name="*"/>
+    <javaPermission actions="getCookieHandler" className="java.net.NetPermission" name="*"/>
+    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/cxfClientPropsApp/resource/redirect/Hello/301" actions="GET:Accept,User-Agent"/>    
+    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/cxfClientPropsApp/resource/redirect/Hello/303" actions="GET:Accept,User-Agent"/>
+    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/cxfClientPropsApp/resource/redirect/Hello/307" actions="GET:Accept,User-Agent"/>
+    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/cxfClientPropsApp/resource/redirecthop1/Hello/301" actions="GET:Accept,User-Agent"/>    
+    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/cxfClientPropsApp/resource/redirecthop1/Hello/303" actions="GET:Accept,User-Agent"/>
+    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/cxfClientPropsApp/resource/redirecthop1/Hello/307" actions="GET:Accept,User-Agent"/>    
+    
 </server>

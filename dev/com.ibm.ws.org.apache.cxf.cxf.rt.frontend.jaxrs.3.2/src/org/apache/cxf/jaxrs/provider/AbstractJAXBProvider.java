@@ -27,6 +27,8 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -140,6 +142,21 @@ public abstract class AbstractJAXBProvider<T> extends AbstractConfigurableProvid
     private Marshaller.Listener marshallerListener;
     private DocumentDepthProperties depthProperties;
     private String namespaceMapperPropertyName;
+
+    private static JAXBContext newJAXBContextInstance(Class<?>[] classes, Map<String, Object> cProperties) throws JAXBException {
+
+         try {
+            return AccessController.doPrivileged((PrivilegedExceptionAction<JAXBContext>)() -> {
+                return JAXBContext.newInstance(classes, cProperties);
+            });
+        } catch (PrivilegedActionException e) {
+            Throwable t = e.getCause();
+            if (t instanceof JAXBException) {
+                throw (JAXBException) t;
+            }
+            throw new RuntimeException(t);
+        }
+    }
 
     public void setXmlRootAsJaxbElement(boolean xmlRootAsJaxbElement) {
         this.xmlRootAsJaxbElement = xmlRootAsJaxbElement;
@@ -353,7 +370,7 @@ public abstract class AbstractJAXBProvider<T> extends AbstractConfigurableProvid
                 collectionContextClasses.add(CollectionWrapper.class);
                 collectionContextClasses.add(type);
             }
-            return JAXBContext.newInstance(
+            return newJAXBContextInstance(
                 collectionContextClasses.toArray(new Class[0]), cProperties);
         }
     }
@@ -506,7 +523,7 @@ public abstract class AbstractJAXBProvider<T> extends AbstractConfigurableProvid
         synchronized (classContexts) {
             JAXBContext context = classContexts.get(type);
             if (context == null) {
-                Class<?>[] classes = null;
+                Class<?>[] classes;
                 if (extraClass != null) {
                     classes = new Class[extraClass.length + 1];
                     classes[0] = type;
@@ -515,7 +532,7 @@ public abstract class AbstractJAXBProvider<T> extends AbstractConfigurableProvid
                     classes = new Class[] {type};
                 }
 
-                context = JAXBContext.newInstance(classes, cProperties);
+                context = newJAXBContextInstance(classes, cProperties);
                 classContexts.put(type, context);
             }
             return context;

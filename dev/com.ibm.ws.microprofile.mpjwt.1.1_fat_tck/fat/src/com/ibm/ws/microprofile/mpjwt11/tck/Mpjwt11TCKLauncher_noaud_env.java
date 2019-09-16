@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.mpjwt11.tck;
 
+import java.util.Collections;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -46,8 +48,7 @@ public class Mpjwt11TCKLauncher_noaud_env {
     //@AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void launchMpjwt11TCKLauncher_noaud_env() throws Exception {
         String bucketAndTestName = this.getClass().getCanonicalName();
-        MvnUtils.setSuiteFileName("tck_suite_noaud_env.xml", server);
-        MvnUtils.runTCKMvnCmd(server, bucketAndTestName, bucketAndTestName);
+        MvnUtils.runTCKMvnCmd(server, bucketAndTestName, bucketAndTestName, "tck_suite_noaud_env.xml", Collections.emptyMap(), Collections.emptySet());
 
     }
 }

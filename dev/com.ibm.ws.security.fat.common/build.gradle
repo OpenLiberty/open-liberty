@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-apply from: '../cnf/gradle/scripts/fat.gradle'
+apply from: '../wlp-gradle/subprojects/fat.gradle'
 
 dependencies {
   requiredLibs 'commons-logging:commons-logging:1.1.3'

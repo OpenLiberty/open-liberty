@@ -1,0 +1,65 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMRX
+#COMPONENTNAMEFOR CWMRX MicroProfile Reactive 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# CWMRX   0000-0999       MicroProfile Reactive Streams    
+# CWMRX   1000-1999       MicroProfile Reactive Messaging
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# An internal error occurred in the Reactive Messaging Kafka Connector. The error is: {0}.
+internal.kafka.connector.error.CWMRX1000E=CWMRX1000E: An internal error occurred in the Reactive Messaging Kafka Connector. The error is: {0}. 
+internal.kafka.connector.error.CWMRX1000E.explanation=A Reactive Messaging error has occurred that prevents normal operation.
+internal.kafka.connector.error.CWMRX1000E.useraction=Review the server message.log file and FFDC logs to identify the problem.
+
+# An error occurred when committing read offsets to the Kafka broker. The error is: {0}.
+kafka.read.offsets.commit.warning.CWMRX1001W=CWMRX1001W: An error occurred when committing read offsets to the Kafka broker. The error is: {0}.
+kafka.read.offsets.commit.warning.CWMRX1001W.explanation=An error has occurred in the Kafka Incoming Connector that prevents normal operation of Reactive Messaging.
+kafka.read.offsets.commit.warning.CWMRX1001W.useraction=Review the server message.log file and FFDC logs to identify the problem.
+
+# An error occurred when polling the Kafka broker. The error is: {0}.
+kafka.poll.error.CWMRX1002E=CWMRX1002E: An error occurred when polling the Kafka broker. The error is: {0}.
+kafka.poll.error.CWMRX1002E.explanation=An error has occurred in the Kafka Incoming Connector that prevents normal operation of Reactive Messaging.
+kafka.poll.error.CWMRX1002E.useraction=Review the server message.log file and FFDC logs to identify the problem.
+
+# An error occurred when sending a message to the Kafka broker. The error is: {0}.
+kafka.send.error.CWMRX1003E=CWMRX1003E: An error occurred when sending a message to the Kafka broker. The error is: {0}.
+kafka.send.error.CWMRX1003E.explanation=An error has occurred in the Kafka Outgoing Connector that prevents normal operation of Reactive Messaging.
+kafka.send.error.CWMRX1003E.useraction=Review the server message.log file and FFDC logs to identify the problem.
+
+# The Reactive Messaging Kafka Outgoing Connector received an error. The error is {0}.
+kafka.output.error.signal.CWMRX1004E=CWMRX1004E: The Reactive Messaging Kafka Outgoing Connector received an error. The error is {0}.
+kafka.output.error.signal.CWMRX1004E.explanation=The Kafka Outgoing Connector received an error signal that prevents normal operation of Reactive Messaging.
+kafka.output.error.signal.CWMRX1004E.useraction=Review the server message.log file and FFDC logs to identify the problem.
+
+# The group.id property was not set in the configuration for this channel. Set the {0} property in one of the MicroProfile Config Sources for this application.
+kafka.groupid.not.set.CWMRX1005E=CWMRX1005E: The group.id property was not set in the configuration for this channel. Set the {0} property in one of the MicroProfile Config Sources for this application.
+kafka.groupid.not.set.CWMRX1005E.explanation=The Kafka consumer group ID must be set to allow Reactive Messaging to function properly.
+kafka.groupid.not.set.CWMRX1005E.useraction=Set the property in one of the MicroProfile ConfigSource locations for this application, for example, the microprofile-config.properties file.
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Reactive Messaging error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# The following Reactive Messaging error has occurred: {0}.
+temporary.CWMRX1999E=CWMRX1999E: The following Reactive Messaging error has occurred: {0}.
+temporary.CWMRX1999E.explanation=A Reactive Messaging error has occurred that prevents normal operation.
+temporary.CWMRX1999E.useraction=Review the server message.log file and FFDC logs to identify the problem.

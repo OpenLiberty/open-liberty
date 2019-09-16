@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005,2015 IBM Corporation and others.
+ * Copyright (c) 2005, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -890,8 +890,9 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
 
         // Starting with JPA 2.0, the application server must make the
         // ValidatorFactory available to the provider.          F743-12524 PM65716
+        // ivClassloader is used to create dynamic proxies for hibernate integration.
         getJPAComponent().addIntegrationProperties(xmlSchemaVersion,
-                                                   integrationProperties);
+                                                   integrationProperties, ivClassLoader);
 
         if (isTraceOn && tc.isDebugEnabled()) {
             Tr.debug(tc, "createContainerEMF properties:" + this.toString());
@@ -900,7 +901,11 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
         }
 
         EntityManagerFactory emfactory;
-        Object oldClassLoader = svThreadContextAccessor.pushContextClassLoaderForUnprivileged(ivClassLoader);
+
+        // Push the ThreadContextClassLoader, not the app classloader
+        ClassLoader tcclassloader = getJPAComponent().createThreadContextClassLoader(ivClassLoader);
+
+        Object oldClassLoader = svThreadContextAccessor.pushContextClassLoaderForUnprivileged(tcclassloader);
         try {
             Class<?> providerClass = ivClassLoader.loadClass(ivProviderClassName);
             PersistenceProvider provider = (PersistenceProvider) providerClass.newInstance();
@@ -940,6 +945,9 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
             if (isTraceOn && tc.isDebugEnabled() && oldClassLoader != ThreadContextAccessor.UNCHANGED)
                 Tr.debug(tc, "reverting class loader to " + oldClassLoader);
             svThreadContextAccessor.popContextClassLoaderForUnprivileged(oldClassLoader);
+
+            // destroy the ThreadContextClassLoader reference after we are done with it
+            getJPAComponent().destroyThreadContextClassLoader(tcclassloader);
         }
 
         // Indicates an error to log with problem creating a factory, post once only.

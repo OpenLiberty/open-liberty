@@ -75,6 +75,13 @@ public class ApplicationProcessorTest extends FATServletClient {
         OpenAPITestUtil.changeServerPorts(server, server.getHttpDefaultPort(), server.getHttpDefaultSecurePort());
 
         server.startServer(c.getSimpleName() + ".log");
+        assertNotNull("Web application is not available at /openapi/",
+                      server.waitForStringInLog("CWWKT0016I.*/openapi/")); // wait for /openapi/ endpoint to become available
+        assertNotNull("Web application is not available at /openapi/ui/",
+                      server.waitForStringInLog("CWWKT0016I.*/openapi/ui/")); // wait for /openapi/ui/ endpoint to become available
+        assertNotNull("Server did not report that it has started",
+                      server.waitForStringInLog("CWWKF0011I.*"));
+
     }
 
     /**
@@ -104,6 +111,7 @@ public class ApplicationProcessorTest extends FATServletClient {
     @Test
     public void testApplicationProcessor() throws Exception {
         // Validate the app is deployed
+
         OpenAPITestUtil.addApplication(server, APP_NAME_1);
         String app1Doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
         JsonNode openapiNode = OpenAPITestUtil.readYamlTree(app1Doc);

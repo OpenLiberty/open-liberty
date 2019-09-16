@@ -38,11 +38,11 @@ configurations.jersey {
 }
 
 dependencies {
-  cxf 'org.apache.cxf:cxf-core:3.1.16',
-    'org.apache.cxf:cxf-rt-frontend-jaxrs:3.1.16',
-    'org.apache.cxf:cxf-rt-rs-client:3.1.16',
-    'org.apache.cxf:cxf-rt-rs-extension-providers:3.1.16',
-    'org.apache.cxf:cxf-rt-transports-http:3.1.16'
+  cxf 'org.apache.cxf:cxf-core:3.1.18',
+    'org.apache.cxf:cxf-rt-frontend-jaxrs:3.1.18',
+    'org.apache.cxf:cxf-rt-rs-client:3.1.18',
+    'org.apache.cxf:cxf-rt-rs-extension-providers:3.1.18',
+    'org.apache.cxf:cxf-rt-transports-http:3.1.18'
   jackson1x 'org.codehaus.jackson:jackson-core-asl:1.6.2',
     'org.codehaus.jackson:jackson-jaxrs:1.6.2',
     'org.codehaus.jackson:jackson-mapper-asl:1.6.2',

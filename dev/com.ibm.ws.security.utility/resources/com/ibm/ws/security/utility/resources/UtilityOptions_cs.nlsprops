@@ -135,6 +135,20 @@ sslCert.option-key.sigAlg=\ \ \ \ --sigAlg=signature algorithm
 sslCert.option-desc.sigAlg=\tPodpisov\u00fd algoritmus certifik\u00e1tu.\n\
 \tV\u00fdchoz\u00ed podpisov\u00fd algoritmus je {8}.
 
+sslCert.option-key.keyType=\ \ \ \ --keyType
+sslCert.option-desc.keyType=\tVoliteln\u00e9. Standardn\u011b bude vygenerov\u00e1no \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f PKCS12. Chcete-li\n\
+\tvygenerovat \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f JKS, ur\u010dete volbu --keyType s hodnotou \n\
+\tJKS. Nen\u00ed nutn\u00e9 tuto volbu specifikovat, pokud je o\u010dek\u00e1v\u00e1no\n\
+\t\u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f PKCS12.\n\
+\tPKCS12 m\u00e1 \u0159adu v\u00fdhod: je roz\u0161i\u0159iteln\u011bj\u0161\u00ed; podporuje\n\
+\tsiln\u011bj\u0161\u00ed kryptografick\u00e9 algoritmy a je obecn\u011b pou\u017e\u00edvan\u00e9. PKCS12 je \n\
+\t\u010dasto form\u00e1tem, v n\u011bm\u017e certifika\u010dn\u00ed autority vyd\u00e1vaj\u00ed \n\
+\tcertifik\u00e1ty.
+
+sslCert.option-key.ext=\ \ \ \ Informace o roz\u0161\u00ed\u0159en\u00ed --extInfo=certificate
+sslCert.option-desc.ext=\tInformace o roz\u0161\u00ed\u0159en\u00ed certifik\u00e1tu p\u0159id\u00e1van\u00e9 k certifik\u00e1tu.\n\
+\tV\u00fdchoz\u00ed p\u0159\u00edpona je polo\u017eka Alternativn\u00ed n\u00e1zev subjektu uv\u00e1d\u011bj\u00edc\u00ed \n\
+\tn\u00e1zev hostitele.
 
 # -------- CREATE LTPA KEYS OPTIONS --------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.

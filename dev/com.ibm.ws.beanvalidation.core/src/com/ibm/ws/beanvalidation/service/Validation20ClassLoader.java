@@ -31,7 +31,7 @@ import com.ibm.websphere.ras.TraceComponent;
  * It should return the correct validation.xml for the module currently under execution.
  */
 public class Validation20ClassLoader extends ClassLoader {
-    private static final TraceComponent tc = Tr.register(Validation20ClassLoader.class);
+    private static final TraceComponent tc = Tr.register(Validation20ClassLoader.class, null, null);
     String moduleHint;
 
     public Validation20ClassLoader(ClassLoader parent, String hint) {

@@ -21,6 +21,7 @@ javac.target: 1.8
 fat.project: true
 
 -buildpath: \
+	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
     com.ibm.websphere.javaee.cdi.2.0;version=latest,\
     com.ibm.websphere.javaee.ejb.3.2;version=latest,\
     com.ibm.websphere.javaee.jaxrs.2.1;version=latest,\

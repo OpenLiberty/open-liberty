@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ *******************************************************************************
+ * Copyright (c) 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************
+-->
+<ejb-jar id="ejb-jar_id" 
+        xmlns="http://java.sun.com/xml/ns/javaee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd"
+        metadata-complete="false" version="3.0">   
+
+	<enterprise-beans>
+		<session>
+			<ejb-name>StatefulSessionBean</ejb-name>
+			<business-local>ejbpassivation.ejb.StatefulSessionBeanLocal</business-local>
+			<ejb-class>ejbpassivation.ejb.StatefulSessionBean</ejb-class>
+			<session-type>Stateful</session-type>	
+		</session>
+		<session>
+			<ejb-name>StatefulSessionPUBean</ejb-name>
+			<business-local>ejbpassivation.ejb.StatefulSessionPUBeanLocal</business-local>
+			<ejb-class>ejbpassivation.ejb.StatefulSessionPUBean</ejb-class>
+			<session-type>Stateful</session-type>	
+		</session>
+	</enterprise-beans>
+</ejb-jar>

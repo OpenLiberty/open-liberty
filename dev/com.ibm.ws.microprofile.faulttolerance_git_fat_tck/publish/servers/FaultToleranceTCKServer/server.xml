@@ -22,6 +22,7 @@
         <feature>componentTest-1.0</feature>
         <feature>localConnector-1.0</feature>
         <feature>mpMetrics-1.1</feature>
+        <feature>arquillian-support-1.0</feature>
    </featureManager>
 
    <include location="../fatTestPorts.xml"/>

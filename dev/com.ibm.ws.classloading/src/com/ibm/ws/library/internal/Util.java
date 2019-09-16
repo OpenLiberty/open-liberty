@@ -26,7 +26,7 @@ import java.util.Hashtable;
 import java.util.zip.ZipFile;
 
 public enum Util {;
-    private static final TraceComponent tc = Tr.register(Util.class);
+    private static final TraceComponent tc = Tr.register(Util.class,SharedLibraryConstants.TR_GROUP, SharedLibraryConstants.NLS_PROPS);
 
     @FFDCIgnore(PrivilegedActionException.class)
     static boolean isArchive(final File f) {

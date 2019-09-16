@@ -1,0 +1,7 @@
+Subsystem-ManifestVersion: 1
+IBM-ShortName: includeClientFeature-1.0
+Subsystem-SymbolicName: com.ibm.websphere.appserver.includeClientFeature-1.0; visibility:=public
+Subsystem-Version: 1.0.0
+Subsystem-Content: com.ibm.websphere.appserver.javaeeClient-7.0; type="osgi.subsystem.feature"
+Subsystem-Type: osgi.subsystem.feature
+IBM-Feature-Version: 2

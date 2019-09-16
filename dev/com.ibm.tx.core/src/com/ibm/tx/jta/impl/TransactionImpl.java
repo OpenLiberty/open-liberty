@@ -1,7 +1,7 @@
 package com.ibm.tx.jta.impl;
 
 /*******************************************************************************
- * Copyright (c) 2002, 2014 IBM Corporation and others.
+ * Copyright (c) 2002, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,7 @@ import javax.transaction.Status;
 import javax.transaction.Synchronization;
 import javax.transaction.SystemException;
 import javax.transaction.Transaction;
+import javax.transaction.TransactionSynchronizationRegistry;
 import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
 
@@ -33,6 +34,7 @@ import com.ibm.tx.config.ConfigurationProvider;
 import com.ibm.tx.config.ConfigurationProviderManager;
 import com.ibm.tx.jta.OnePhaseXAResource;
 import com.ibm.tx.jta.TransactionManagerFactory;
+import com.ibm.tx.jta.TransactionSynchronizationRegistryFactory;
 import com.ibm.tx.jta.impl.TimeoutManager.TimeoutInfo;
 import com.ibm.tx.util.TMHelper;
 import com.ibm.tx.util.alarm.Alarm;
@@ -247,9 +249,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
 
     int _txType = UOWCoordinator.TXTYPE_INTEROP_GLOBAL;
 
-    // Used to call back into the CDI code to destroy anything created within
-    // a Transaction Scope associated with this transaction.
-    private static volatile TransactionScopeDestroyer tScopeDestroyer = null;
+    private final TransactionSynchronizationRegistry tsr = TransactionSynchronizationRegistryFactory.getTransactionSynchronizationRegistry();
 
     private static TraceComponent tc = Tr.register(com.ibm.tx.jta.impl.TransactionImpl.class, TranConstants.TRACE_GROUP, TranConstants.NLS_FILE);
     private static final TraceComponent tcSummary = Tr.register("TRANSUMMARY", TranConstants.SUMMARY_TRACE_GROUP, null);
@@ -296,7 +296,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
      * on importing a transaction through ExecutionContextHandler (JCA1.5)
      *
      * @param timeout Transaction timeout in seconds
-     * @param xid The imported XID for the transaction
+     * @param xid     The imported XID for the transaction
      */
     public TransactionImpl(int timeout, Xid xid, JCARecoveryData jcard) {
         if (tc.isEntryEnabled())
@@ -684,23 +684,23 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
      *
      * This call should only be made from the root.
      *
-     * @exception RollbackException Thrown to indicate that
-     *                the transaction has been rolled back rather than committed.
+     * @exception RollbackException          Thrown to indicate that
+     *                                           the transaction has been rolled back rather than committed.
      *
-     * @exception HeuristicMixedException Thrown to indicate that a heuristic
-     *                mix decision was made.
+     * @exception HeuristicMixedException    Thrown to indicate that a heuristic
+     *                                           mix decision was made.
      *
      * @exception HeuristicRollbackException Thrown to indicate that a
-     *                heuristic rollback decision was made.
+     *                                           heuristic rollback decision was made.
      *
-     * @exception SecurityException Thrown to indicate that the thread is
-     *                not allowed to commit the transaction.
+     * @exception SecurityException          Thrown to indicate that the thread is
+     *                                           not allowed to commit the transaction.
      *
-     * @exception IllegalStateException Thrown if the transaction in the
-     *                target object is inactive.
+     * @exception IllegalStateException      Thrown if the transaction in the
+     *                                           target object is inactive.
      *
-     * @exception SystemException Thrown if the transaction manager
-     *                encounters an unexpected error condition
+     * @exception SystemException            Thrown if the transaction manager
+     *                                           encounters an unexpected error condition
      */
     @Override
     public void commit() throws RollbackException, HeuristicMixedException, HeuristicRollbackException, SecurityException, IllegalStateException, SystemException {
@@ -728,26 +728,26 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
      * a commit_one_phase request from the superior. Any other
      * subordinate requests should call the internal methods directly.
      *
-     * @exception RollbackException Thrown to indicate that
-     *                the transaction has been rolled back rather than committed.
+     * @exception RollbackException          Thrown to indicate that
+     *                                           the transaction has been rolled back rather than committed.
      *
-     * @exception HeuristicMixedException Thrown to indicate that a heuristic
-     *                mix decision was made.
+     * @exception HeuristicMixedException    Thrown to indicate that a heuristic
+     *                                           mix decision was made.
      *
-     * @exception HeuristicHazardException Thrown to indicate that a heuristic
-     *                hazard decision was made.
+     * @exception HeuristicHazardException   Thrown to indicate that a heuristic
+     *                                           hazard decision was made.
      *
      * @exception HeuristicRollbackException Thrown to indicate that a
-     *                heuristic rollback decision was made.
+     *                                           heuristic rollback decision was made.
      *
-     * @exception SecurityException Thrown to indicate that the thread is
-     *                not allowed to commit the transaction.
+     * @exception SecurityException          Thrown to indicate that the thread is
+     *                                           not allowed to commit the transaction.
      *
-     * @exception IllegalStateException Thrown if the transaction in the
-     *                target object is inactive.
+     * @exception IllegalStateException      Thrown if the transaction in the
+     *                                           target object is inactive.
      *
-     * @exception SystemException Thrown if the transaction manager
-     *                encounters an unexpected error condition
+     * @exception SystemException            Thrown if the transaction manager
+     *                                           encounters an unexpected error condition
      */
     public void commit_one_phase() throws RollbackException, HeuristicMixedException, HeuristicHazardException, HeuristicRollbackException, SecurityException, IllegalStateException, SystemException {
         if (tc.isEntryEnabled())
@@ -2155,7 +2155,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
      * return with the direction in which the 1PC completed.
      *
      * @exception SystemException
-     *                Thrown if the state change is invalid.
+     *                                Thrown if the state change is invalid.
      */
     public void logLPSState() throws SystemException {
         if (tc.isEntryEnabled())
@@ -2173,9 +2173,9 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
      * Log the fact that we have encountered a heuristic outcome.
      *
      * @param commit boolean to indicate whether we were committing or rolling
-     *            back
+     *                   back
      * @exception SystemException
-     *                Thrown if the state change is invalid.
+     *                                Thrown if the state change is invalid.
      */
     protected void logHeuristic(boolean commit) throws SystemException {
         if (tc.isEntryEnabled())
@@ -2207,12 +2207,12 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
      * list)
      *
      * @param xaRes The XAResouce object associated with the XAConnection
-     * @param flag TMSUSPEND, TMFAIL or TMSUCCESS flag to xa_end
+     * @param flag  TMSUSPEND, TMFAIL or TMSUCCESS flag to xa_end
      *
      * @exception IllegalStateException Thrown if the transaction in the
-     *                target object is inactive
-     * @exception SystemException Thrown if the transaction manager encounters
-     *                an unexpected error condition.
+     *                                      target object is inactive
+     * @exception SystemException       Thrown if the transaction manager encounters
+     *                                      an unexpected error condition.
      *
      */
     @Override
@@ -2470,9 +2470,17 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
         // call back into the CDI transaction scope code, telling it to destroy bean instances
         // created within the scope of this tran.
         try {
-            if (tScopeDestroyer != null) {
-                tScopeDestroyer.destroy();
+            if (!_inRecovery) {
+                final Object tScopeDestroyer = tsr.getResource("transactionScopeDestroyer");
+                if (tScopeDestroyer instanceof TransactionScopeDestroyer) {
+                    ((TransactionScopeDestroyer) tScopeDestroyer).destroy();
+                }
             }
+        } catch (IllegalStateException e) {
+            // This happens when we get unexpected ws-at messages e.g. a prepared for
+            // a tran that has already been taken off this thread. No need for FFDC.
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Exception getting transactionScopeDestroyer", e);
         } catch (RuntimeException e) {
             // WELD currently eats (and logs) runtime errors coming out of bean instance destructors
             // so catching here is just a precaution.
@@ -3410,9 +3418,5 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
     protected void traceCreate() {
         if (tcSummary.isDebugEnabled())
             Tr.debug(tcSummary, "Transaction created.", new Object[] { this, _xid, Util.stackToDebugString(new Throwable()) });
-    }
-
-    public static void registerTransactionScopeDestroyer(TransactionScopeDestroyer tScopeDestroyer) {
-        TransactionImpl.tScopeDestroyer = tScopeDestroyer;
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,7 @@ public class Logging extends ConfigElement {
     private String traceFormat;
     private String logDirectory;
     private boolean isoDateFormat;
+    private String jsonFields;
 
     /**
      * @return the configured log directory
@@ -127,6 +128,23 @@ public class Logging extends ConfigElement {
     @XmlAttribute(name = "traceFormat")
     public void setTraceFormat(String traceFormat) {
         this.traceFormat = ConfigElement.getValue(traceFormat);
+    }
+
+    /**
+     * default="";
+     *
+     * @param jsonFields the jsonFields to set
+     */
+    @XmlAttribute(name = "jsonFieldMappings")
+    public void setjsonFields(String jsonFields) {
+        this.jsonFields = ConfigElement.getValue(jsonFields);
+    }
+
+    /**
+     * @return the message fields
+     */
+    public String getjsonFields() {
+        return this.jsonFields;
     }
 
     /**

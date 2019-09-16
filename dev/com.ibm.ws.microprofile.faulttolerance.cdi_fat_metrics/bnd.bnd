@@ -25,7 +25,10 @@ tested.features: mpFaultTolerance-1.1,\
                  mpConfig-1.2,\
                  mpConfig-1.3,\
                  cdi-1.2,\
-                 cdi-2.0
+                 cdi-2.0,\
+                 appsecurity-3.0,\
+                 el-3.0,\
+                 mpMetrics-2.0
 
 -buildpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
@@ -40,4 +43,5 @@ tested.features: mpFaultTolerance-1.1,\
 	com.ibm.ws.security;version=latest,\
 	com.ibm.websphere.security;version=latest,\
 	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
-	com.ibm.websphere.javaee.cdi.1.2;version=latest
+	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
+	com.ibm.ws.microprofile.faulttolerance.cdi_fat;version=latest

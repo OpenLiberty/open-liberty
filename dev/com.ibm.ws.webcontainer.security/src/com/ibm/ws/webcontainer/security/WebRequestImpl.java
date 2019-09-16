@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.ws.security.jwtsso.token.proxy.JwtSSOTokenHelper;
+import com.ibm.ws.security.krb5.SpnegoUtil;
 import com.ibm.ws.webcontainer.security.internal.BasicAuthAuthenticator;
 import com.ibm.ws.webcontainer.security.internal.CertificateLoginAuthenticator;
 import com.ibm.ws.webcontainer.security.internal.SSOAuthenticator;
@@ -31,7 +32,6 @@ import com.ibm.ws.webcontainer.security.metadata.SecurityMetadata;
  *
  */
 public class WebRequestImpl implements WebRequest {
-
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String BEARER_AUTHORIZATION_METHOD = "Bearer ";
 
@@ -49,6 +49,8 @@ public class WebRequestImpl implements WebRequest {
     private Map<String, Object> propMap = null;
     private boolean requestAuthenticate = false;
     private boolean disableClientCertFailOver = false;
+    private final SpnegoUtil spnegoUtil = new SpnegoUtil();
+    private boolean isPerformTAIForUnProtectedURI = false;
 
     public WebRequestImpl(HttpServletRequest req, HttpServletResponse resp,
                           SecurityMetadata securityMetadata, WebAppSecurityConfig config) {
@@ -148,7 +150,8 @@ public class WebRequestImpl implements WebRequest {
      * @return {@code true} if some authentication data is available, {@code false} otherwise.
      */
     private boolean determineIfRequestHasAuthenticationData() {
-        return isBasicAuthHeaderInRequest(request) || isClientCertHeaderInRequest(request) || isSSOCookieInRequest(request);
+        return isBasicAuthHeaderInRequest(request) || isClientCertHeaderInRequest(request) || isSSOCookieInRequest(request)
+               || spnegoUtil.isSpnegoOrKrb5Token(request.getHeader(BasicAuthAuthenticator.BASIC_AUTH_HEADER_NAME));
     }
 
     private boolean isBasicAuthHeaderInRequest(HttpServletRequest request) {
@@ -298,6 +301,16 @@ public class WebRequestImpl implements WebRequest {
     @Override
     public void setDisableClientCertFailOver(boolean isDisable) {
         disableClientCertFailOver = isDisable;
+    }
+
+    @Override
+    public void setPerformTAIForUnProtectedURI(boolean isPerformTAIForUnProtectedURI) {
+        this.isPerformTAIForUnProtectedURI = isPerformTAIForUnProtectedURI;
+    }
+
+    @Override
+    public boolean isPerformTAIForUnProtectedURI() {
+        return isPerformTAIForUnProtectedURI;
     }
 
 }

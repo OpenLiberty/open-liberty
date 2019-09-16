@@ -10,7 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.mp.fat;
 
-import org.eclipse.microprofile.concurrent.spi.ThreadContextProvider;
+import org.eclipse.microprofile.context.spi.ThreadContextProvider;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.AfterClass;
@@ -51,6 +51,6 @@ public class MPConcurrentCDITest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        server.stopServer("CWWKC1158E"); // expected by testCDIContextPropagationBeanFirstUsedInCompletionStage
     }
 }

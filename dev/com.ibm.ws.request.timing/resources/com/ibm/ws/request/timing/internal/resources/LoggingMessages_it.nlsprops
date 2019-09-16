@@ -1,0 +1,60 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.request.timing/resources/com/ibm/ws/request/timing/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+#
+# Messages in the range TRAS3300 to 3499 are reserved for this messages file.
+# The list of prefixes and the range of messages in use (or "reserved") are shown in 
+# http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+# -------------------------------------------------------------------------------------------------
+
+# Warning message telling the user that the request time has exceed the configured slowRequestThreshold time.
+REQUEST_TIMER_WARNING=TRAS0112W: La richiesta {0} \u00e8 stata in esecuzione sul thread {1} per almeno {2}ms. La seguente traccia di stack mostra che questo thread \u00e8 attualmente in esecuzione.\n\n {3}\nLa seguente tabella mostra gli eventi che sono stati eseguiti durante questa richiesta.\n{4} 
+REQUEST_TIMER_WARNING.explanation=La richiesta \u00e8 stata in esecuzione per un periodo pi\u00f9 lungo rispetto alla durata richiesta lenta configurata. Le informazioni nella tabella mostrano gli eventi che sono gi\u00e0 stati eseguiti come parte della richiesta. Gli eventi che sono ancora in esecuzione vengono indicati con un + accanto alla durata. Il valore predefinito per la durata della richiesta lenta \u00e8 10 secondi, controllare il file server.xml per il valore corrente.
+REQUEST_TIMER_WARNING.useraction=Utilizzare le informazioni contenute nella tabella per determinare quale parte della richiesta \u00e8 pi\u00f9 lenta del previsto.  Se sono presenti molte avvertenze per differenti richieste pressoch\u00e9 contemporanee, ci\u00f2 pu\u00f2 indicare che qualcosa ha rallentato l'intero processo del server, ad esempio un altro processo sullo stesso sistema sta consumando una gran quantit\u00e0 di risorse di elaborazione.
+
+# Warning message telling the user that the request time has exceed the configured hungRequestThreshold time.
+HUNG_REQUEST_WARNING=TRAS0114W: La richiesta {0} \u00e8 stata in esecuzione sul thread {1} per almeno {2}ms. La seguente tabella mostra gli eventi che sono stati eseguiti durante questa richiesta.\n{3}
+HUNG_REQUEST_WARNING.explanation=La richiesta \u00e8 stata in esecuzione per un periodo pi\u00f9 lungo rispetto alla durata richiesta bloccata configurata. Le informazioni nella tabella mostrano gli eventi che sono gi\u00e0 stati eseguiti come parte della richiesta. I core Java verranno automaticamente attivati per raccogliere maggiori informazioni sulla possibile causa del blocco della risorsa. Il valore predefinito per la durata della richiesta bloccata \u00e8 10 minuti, controllare nel file server.xml il valore corrente.
+HUNG_REQUEST_WARNING.useraction=Utilizzare le informazioni nella tabella per determinare quale parte della richiesta \u00e8 bloccata o in loop. 
+
+# Warning message telling the user that the request time has exceed the configured hungRequestThreshold time.
+HUNG_REQUEST_COMPLETED_INFO=TRAS0115W: La richiesta {0} sul thread {1}, che \u00e8 stata precedentemente rilevata come bloccata, \u00e8 stata completata dopo {2}ms.
+HUNG_REQUEST_COMPLETED_INFO.explanation=L'attivit\u00e0 della richiesta bloccata notificher\u00e0 all'utente il momento in cui la richiesta bloccata viene completata.
+HUNG_REQUEST_COMPLETED_INFO.useraction=Nessuna azione richiesta.    
+
+# Error message telling the user that we could not read part of the configuration in server.xml
+REQUEST_TIMING_CONFIG_ERROR1=TRAS3300E: La configurazione temporale associata con il PID {0} non pu\u00f2 essere letta dalla configurazione.
+REQUEST_TIMING_CONFIG_ERROR1.explanation=Il servizio di tempistica della richiesta ha tentato di leggere una configurazione di tempistica incorporata dal file server.xml. Il PID associato con l'elemento temporale \u00e8 nel messaggio.
+REQUEST_TIMING_CONFIG_ERROR1.useraction=Consultare il file messages.log per altri messaggi di errore, come CWWKG0058E, per dettagli sul problema di configurazione. Correggere la configurazione per risolvere l'errore.
+
+# Warning message telling the user that they have defined a timing element more than once
+REQUEST_TIMING_CONFIG_WARNING_DUPLICATE=TRAS3301W: Una configurazione temporale di tipo {0} e il pattern di informazioni di contesto {1} esistono gi\u00e0. La configurazione temporale associata con il PID {2} sostituisce la precedente configurazione temporale.
+REQUEST_TIMING_CONFIG_WARNING_DUPLICATE.explanation=Trovata una configurazione temporale duplicata nel file server.xml. La combinazione di tipo e pattern di informazioni di contesto \u00e8 gi\u00e0 stata definita.
+REQUEST_TIMING_CONFIG_WARNING_DUPLICATE.useraction=Esaminare il file server.xml e rimuovere le configurazioni temporali duplicate.
+
+# Warning message telling the user that they supplied conflicting context information requirements
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_PATTERN=TRAS3302W: La configurazione temporale per il PID {0} fornisce un pattern di informazioni di contesto, ma la configurazione temporale della richiesta imposta l''attributo includeContextInfo su false. La configurazione temporale verr\u00e0 ignorata.
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_PATTERN.explanation=Il servizio di tempistica ha letto una configurazione di tempistica incorporata dal file server.xml. La configurazione temporale specificava un pattern di informazioni di contesto da corrispondere. Il servizio di tempistica della richiesta \u00e8 configurato per disabilitare le informazioni di contesto per tutte le richieste e non pu\u00f2 mettere in corrispondenza le richieste con questa configurazione temporale.
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_PATTERN.useraction=Esaminare il file server.xml e risolvere il conflitto di configurazione modificando il valore di includeContextInfo su true nella configurazione temporale della richiesta o rimuovendo il pattern delle informazioni di contesto dalla configurazione temporale.
+
+# Warning message telling the user that they put the wildcard character in the wrong place
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_ASTERISK_LOC=TRAS3303W: La configurazione temporale associata al PID {0} fornisce un pattern di informazioni di contesto che contiene un carattere jolly in una posizione non supportata. Il carattere jolly verr\u00e0 trattato come un asterisco. Il pattern delle informazioni di contesto \u00e8 {1}.
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_ASTERISK_LOC.explanation=Il servizio di tempistica ha letto una configurazione di tempistica incorporata dal file server.xml. Nel pattern delle informazioni di contesto, un carattere asterisco \u00e8 trattato come un carattere jolly a meno che non venga utilizzata la barra retroversa come carattere di escape. Un carattere jolly \u00e8 consentito solo come ultimo carattere del pattern delle informazioni di contesto.
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_ASTERISK_LOC.useraction=Per interpretare il carattere jolly come un asterisco, utilizzare una barra retroversa come carattere di escape.
+
+TRUNCATED_REQUEST_MESSAGE=\n\nLa tabella \u00e8 stata troncata perch\u00e9 il numero di eventi per la richiesta ha superato il limite consentito.

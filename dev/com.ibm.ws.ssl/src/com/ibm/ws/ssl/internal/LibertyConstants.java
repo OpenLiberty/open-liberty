@@ -28,10 +28,12 @@ public interface LibertyConstants {
 
     static final String KEY_TRUSTSTORE_REF = "trustStoreRef";
 
-    static final String DEFAULT_KEY_STORE_FILE = "key.jks";
+    static final String DEFAULT_KEY_STORE_FILE = "key.p12";
+    static final String DEFAULT_FALLBACK_KEY_STORE_FILE = "key.jks";
     static final String DEFAULT_CONFIG_LOCATION = WsLocationConstants.SYMBOL_SERVER_CONFIG_DIR + "resources/security/";
     static final String DEFAULT_OUTPUT_LOCATION = WsLocationConstants.SYMBOL_SERVER_OUTPUT_DIR + "resources/security/";
-    static final String DEFAULT_TYPE = "JKS";
+    static final String DEFAULT_FALLBACK_TYPE = "JKS";
+    static final String DEFAULT_TYPE = "PKCS12";
     static final String DEFAULT_KEY_STORE_NAME = "defaultKeyStore";
 
     static final String KEY_KEYSTORE_LOCATION = "location";

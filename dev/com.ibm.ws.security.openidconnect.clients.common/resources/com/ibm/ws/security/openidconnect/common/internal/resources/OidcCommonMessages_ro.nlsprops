@@ -20,8 +20,8 @@
 #do not translate issuerIdentifier, iss
 #
 OIDC_IDTOKEN_VERIFY_ISSUER_ERR=CWWKS1751E: Validare e\u015fuat\u0103 pentru jetonul de ID cerut de [{0}] deoarece emitentul (iss) [{1}] specificat \u00een jeton nu se potrive\u015fte cu atributul [issuerIdentifier] [{2}] pentru furnizorul specificat \u00een configura\u0163ia clientului OpenID Connect. Verifica\u0163i atributul issuerIdentifier pe configura\u0163ia de client.
-OIDC_IDTOKEN_VERIFY_ISSUER_ERR.explanation=Validarea jetonului de ID a e\u015fuat deoarece emitentul specificat \u00een configura\u0163ia clientului OpenID Connect (partea intermediar\u0103 de \u00eencredere sau RP) \u015fi emitentul din jeton nu se potrivesc.
-OIDC_IDTOKEN_VERIFY_ISSUER_ERR.useraction=Asigura\u0163i-v\u0103 c\u0103 atributul [issuerIdentifier] specificat \u00een configura\u0163ia de client OpenID Connect (RP) se potrive\u015fte cu emitentul furnizorului OpenID Connect (OP) folosit.
+OIDC_IDTOKEN_VERIFY_ISSUER_ERR.explanation=Validarea ID-ului de jeton a e\u015fuat deoarece emitentul specificat \u00een clientul OpenID Connect (partea intermediar\u0103 de \u00eencredere sau RP) sau \u00een configura\u0163ia clientului de logare social\u0103 \u015fi emitentul din jeton nu se potrivesc.
+OIDC_IDTOKEN_VERIFY_ISSUER_ERR.useraction=Asigura\u0163i-v\u0103 c\u0103 atributul [issuerIdentifier] specificat \u00een clientul OpenID Connect client (RP) sau \u00een configura\u0163ia clientului de logare social\u0103 se potrivesc cu emitentul care este folosit pentru furnizorul OpenID Connect (OP).
 
 #
 OIDC_IDTOKEN_SIGNATURE_ERR=CWWKS1752E: A ap\u0103rut o eroare \u00een timpul \u00eencerc\u0103rii de a semna un jeton de ID utiliz\u00e2nd algoritmul [{0}]: [{1}].
@@ -182,3 +182,8 @@ TOKEN_ISSUER_NOT_TRUSTED.useraction=Verifica\u0163i c\u0103 valoarea emitent car
 PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR=CWWKS1782E: Serverul resursei a e\u015fuat autentificarea cererii deoarece jetonul con\u0163ine o revendicare [{0}], dar valoarea atributului de configura\u0163ie client [{1}] arat\u0103 c\u0103 jetonul nu trebuie s\u0103 con\u0163in\u0103 revendicarea.
 PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.explanation=Jetonul nu poate con\u0163ine revendicarea specificat\u0103 din cauza valorii atributului de configura\u0163ie specificat.
 PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.useraction=Fie ob\u0163ine\u0163i un jeton nou care nu con\u0163ine revendicarea specificat\u0103, fie modifica\u0163i valoarea atributului de configura\u0163ie specificat pentru a permite s\u0103 fie inclus\u0103 revendicarea \u00een jeton.
+
+# 0=Client ID, 1=List of invalid parameter names, 2=forwardLoginParameter
+BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED=CWWKS1783W: Clientul OpenID Connect [{0}] include {1} \u00een valorile specificate de atributul de configura\u0163ie  [{2}]. Valorile specificate vor fi ignorate.
+BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED.explanation=Specifica\u0163ia OAuth 2.0 define\u015fte un set de parametri de cerere rezerva\u0163i care trebuie furnizat de client pentru cererile de autorizare. Valorile pentru ace\u015fti parametri rezerva\u0163i nu pot fi furnizate de utilizator.
+BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED.useraction=\u00cenl\u0103tura\u0163i valorile specificate din lista de valori definite \u00een configura\u0163ia clientului OpenID Connect.

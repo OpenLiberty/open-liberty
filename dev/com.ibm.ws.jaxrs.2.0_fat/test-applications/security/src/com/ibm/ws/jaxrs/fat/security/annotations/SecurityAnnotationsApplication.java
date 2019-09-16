@@ -13,8 +13,12 @@ package com.ibm.ws.jaxrs.fat.security.annotations;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.annotation.security.DeclareRoles;
+import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
+@DeclareRoles({ "Role1", "Role2", "Role1appbnd", "Role2appbnd", "AuthenticationRole" })
+@ApplicationPath("/nomapper")
 public class SecurityAnnotationsApplication extends Application {
 
     @Override

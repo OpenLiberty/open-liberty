@@ -247,6 +247,24 @@ public class ConfigEvaluatorTest {
         }
     }
 
+    private MockAttributeDefinition addIntegerTypeToRegistry(MetaTypeRegistry registry,
+                                                             String loggingPid) {
+        // Add a new integer logging element
+        MockObjectClassDefinition loggingOCD = new MockObjectClassDefinition("logging");
+        MockAttributeDefinition ad = new MockAttributeDefinition("integer", AttributeDefinition.INTEGER, 0, null);
+        ad.setValidate(new String[] { "8", "8" });
+        loggingOCD.addAttributeDefinition(ad);
+        loggingOCD.setAlias("logging");
+
+        MockBundle bundle = new MockBundle();
+        MockMetaTypeInformation metatype = new MockMetaTypeInformation(bundle);
+        metatype.add(loggingPid, true, loggingOCD);
+
+        assertFalse("The registry should be updated", registry.addMetaType(metatype).isEmpty());
+        return ad;
+
+    }
+
     private void addBooleanTypeToRegistry(MetaTypeRegistry registry,
                                           String loggingPid) {
         // Add a new boolean logging element
@@ -337,6 +355,49 @@ public class ConfigEvaluatorTest {
 
         entry = serverConfig.getFactoryInstance(registryEntry.getPid(), ocd.getAlias(), "idAAA");
         assertEquals("Expected string aaa", "aaa", evaluator.evaluate(entry, registryEntry).getProperties().get("enum"));
+    }
+
+    @Test
+    public void testOptionsInvalid() throws Exception {
+        changeLocationSettings("default");
+
+        MetaTypeRegistry registry = new MetaTypeRegistry();
+        MockMetaTypeInformation metatype = new MockMetaTypeInformation(new MockBundle());
+
+        MockObjectClassDefinition ocd = new MockObjectClassDefinition("com.ibm.enum");
+        ocd.setAlias("enum");
+        MockAttributeDefinition ad = new MockAttributeDefinition("enum", AttributeDefinition.INTEGER);
+        ad.setOptions(new String[] { "1", "2", "3" }, new String[] { "one", "TWO", "THREE" });
+        ad.setDefaultValue(new String[] { "TWO" });
+        ad.setValidate(new String[] { "TWO" });
+        ocd.addAttributeDefinition(ad);
+
+        metatype.add(ocd.getID(), true, ocd);
+        registry.addMetaType(metatype);
+        RegistryEntry registryEntry = registry.getRegistryEntry(ocd.getID());
+
+        ConfigEvaluator evaluator = createConfigEvaluator(registry, null);
+        String xml = "<server>" +
+                     "  <enum id='idone' enum='FOUR'/>" +
+                     "  <enum id='idONE' enum='ONE'/>" +
+                     "  <enum id='idTWO' enum='TWO'/>" +
+                     "</server>";
+
+        ServerConfiguration serverConfig = configParser.parseServerConfiguration(new StringReader(xml));
+
+        ConfigElement entry = serverConfig.getFactoryInstance(registryEntry.getPid(), ocd.getAlias(), "idone");
+        assertEquals("Expected integer 2 from default value",
+                     2, evaluator.evaluate(entry, registryEntry).getProperties().get("enum"));
+
+        entry = serverConfig.getFactoryInstance(registryEntry.getPid(), ocd.getAlias(), "idONE");
+        assertEquals("Expected integer 1", 1, evaluator.evaluate(entry, registryEntry).getProperties().get("enum"));
+
+        entry = serverConfig.getFactoryInstance(registryEntry.getPid(), ocd.getAlias(), "idTWO");
+        assertEquals("Expected integer 2", 2, evaluator.evaluate(entry, registryEntry).getProperties().get("enum"));
+
+        outputMgr.dumpStreams();
+        assertTrue("We should get a message that an option is invalid", outputMgr.checkForMessages("CWWKG0032W.*TWO"));
+
     }
 
     @Test
@@ -994,7 +1055,7 @@ public class ConfigEvaluatorTest {
         ConfigElement entry = serverConfig.getFactoryInstance(loggingPid, "logging", "one");
 
         try {
-            EvaluationResult result = evaluator.evaluate(entry, loggingRE);
+            evaluator.evaluate(entry, loggingRE);
         } catch (ConfigEvaluatorException ex) {
             // Passed
             return;
@@ -2029,6 +2090,70 @@ public class ConfigEvaluatorTest {
         RegistryEntry registryEntry = registry.getRegistryEntry(loggingPid);
         entry = serverConfig.getFactoryInstance(loggingPid, registryEntry.getAlias(), "one");
         evaluator.evaluate(entry, registryEntry);
+    }
+
+    // Throws an exception because there is no default value
+    @Test(expected = ConfigEvaluatorException.class)
+    public void testInvalidInteger() throws ConfigParserException, ConfigValidationException, ConfigEvaluatorException, ConfigMergeException {
+        changeLocationSettings("default");
+
+        String portPid = "com.ibm.ws.port";
+        String hostPid = "com.ibm.ws.host";
+        String hostPortPid = "com.ibm.ws.host.port";
+        String portAttribute = "portRef";
+        String loggingPid = "com.ibm.ws.logging";
+        MetaTypeRegistry registry = createRegistry(portPid, hostPid, hostPortPid, portAttribute, 2, portPid, true);
+        addIntegerTypeToRegistry(registry, loggingPid);
+
+        String xml = "<server>" +
+                     "    <logging id=\"one\" integer=\"eight\"/>" +
+                     "</server>";
+
+        ServerConfiguration serverConfig = configParser.parseServerConfiguration(new StringReader(xml));
+
+        ConfigEvaluator evaluator = createConfigEvaluator(registry, null);
+
+        ConfigElement entry = null;
+
+        RegistryEntry registryEntry = registry.getRegistryEntry(loggingPid);
+        entry = serverConfig.getFactoryInstance(loggingPid, registryEntry.getAlias(), "one");
+
+        evaluator.evaluate(entry, registryEntry);
+
+    }
+
+    @Test
+    public void testInvalidIntegerDefaultValue() throws ConfigParserException, ConfigValidationException, ConfigEvaluatorException, ConfigMergeException {
+        changeLocationSettings("default");
+
+        String portPid = "com.ibm.ws.port";
+        String hostPid = "com.ibm.ws.host";
+        String hostPortPid = "com.ibm.ws.host.port";
+        String portAttribute = "portRef";
+        String loggingPid = "com.ibm.ws.logging";
+        MetaTypeRegistry registry = createRegistry(portPid, hostPid, hostPortPid, portAttribute, 2, portPid, true);
+        MockAttributeDefinition ad = addIntegerTypeToRegistry(registry, loggingPid);
+        ad.setDefaultValue(new String[] { "8" });
+
+        String xml = "<server>" +
+                     "    <logging id=\"one\" integer=\"eight\"/>" +
+                     "</server>";
+
+        ServerConfiguration serverConfig = configParser.parseServerConfiguration(new StringReader(xml));
+
+        ConfigEvaluator evaluator = createConfigEvaluator(registry, null);
+
+        ConfigElement entry = null;
+
+        RegistryEntry registryEntry = registry.getRegistryEntry(loggingPid);
+        entry = serverConfig.getFactoryInstance(loggingPid, registryEntry.getAlias(), "one");
+        try {
+            evaluator.evaluate(entry, registryEntry);
+        } finally {
+            assertTrue("We should get a message that the default is being used",
+                       outputMgr.checkForMessages("CWWKG0083W.*eight.*8"));
+        }
+
     }
 
     // Port is a singleton here so child elements should be merged. There should not be a cardinality violation

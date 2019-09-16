@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,18 +12,20 @@ package componenttest.topology.utils;
 
 import java.io.File;
 import java.io.FileDescriptor;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -58,305 +60,413 @@ import componenttest.rules.repeater.EmptyAction;
 import componenttest.topology.impl.LibertyServer;
 
 /**
- * A set of mostly static utility functions.
- * This exists partly as there is more than one test class
- * in development that share these functions.
+ * MvnUtils allows an arquillian based MicroProfile TCK suite to be launched via Maven. The results will then be converted to junit format and presented
+ * as if they were the output of a normal FAT project.
  */
 public class MvnUtils {
 
-    public static final Class<MvnUtils> c = MvnUtils.class;
+    private static final Class<MvnUtils> c = MvnUtils.class;
 
     private static final String DEFAULT_FAILSAFE_UNDEPLOYMENT = "true";
     private static final String DEFAULT_APP_DEPLOY_TIMEOUT = "180";
-    private static final String DEFAULT_APP_UNDEPLOY_TIMEOUT = "20";
+    private static final String DEFAULT_APP_UNDEPLOY_TIMEOUT = "60";
     private static final int DEFAULT_MBEAN_TIMEOUT = 60000;
-    public static File resultsDir;
-    public static File componentRootDir;
-    public static String wlp;
-    public static File tckRunnerDir;
-    public static File pomXml;
-    public static boolean init;
-    public static String[] mvnCliRaw;
-    public static String[] mvnCliRoot;
-    public static String[] mvnCliTckRoot;
-    public static String mvnOutputFilename = "mvnOutput_TCK";
-    public static String defaultSuiteFile = "tck-suite.xml";
-    public static String defaultTargetFolder = "tck";
-    public static String targetFolder = defaultTargetFolder;
-    static List<String> jarsFromWlp = new ArrayList<String>(3);
-    private static File mvnOutput;
-    private static String apiVersion;
-    private static String implVersion;
-    private static String backStopImplVersion;
-    private static Set<String> versionedJars;
-    private static Map<String, String> mavenVersionBindingJarPatches = new HashMap<String, String>();
-    private static String overrideSuiteFileName = null;
-    private static String[] additionalMvnProps = null;
+
+    public static final String DEFAULT_SUITE_FILENAME = "tck-suite.xml";
+    public static final String API_VERSION = "api.version";
+    public static final String IMPL_VERSION = "impl.version";
+    public static final String BACKSTOP_VERSION = "backstop.version";
+    public static final String TCK_VERSION = "tck.version";
+
+    private static final String MVN_FILENAME_PREFIX = "mvnOutput_";
+
+    private static final String RELATIVE_POM_FILE = "tck/pom.xml";
+    private static final String RELATIVE_TCK_RUNNER = "publish/tckRunner";
+    private static final String MVN_CLEAN = "clean";
+    private static final String MVN_TEST = "test";
+    private static final String MVN_INSTALL = "install";
+
+    private static final String SUREFIRE_REPORTS = "surefire-reports";
+    private static final String TESTNG_REPORTS = SUREFIRE_REPORTS + "/junitreports";
+
+    private static final String MVN_TEST_OUTPUT_FILENAME_PREFIX = MVN_FILENAME_PREFIX + MVN_TEST + "_";
+    private static final String MVN_INSTALL_OUTPUT_FILENAME_PREFIX = MVN_FILENAME_PREFIX + MVN_INSTALL + "_";
+    private static final String MVN_TARGET_FOLDER_PREFIX = "tck_";
+
+    private final String bucketName;
+    private final String testName;
+    private final LibertyServer server;
+    private final String suiteFileName;
+    private final Set<String> versionedJars;
+    private final Map<String, String> additionalMvnProps;
 
     /**
-     * pass additional -Dproperty=value strings or other params to the maven command to run
+     * runs "mvn clean test" in the tck folder
      *
-     * @param propDefs - each entry should have the form -Dproperty=value, or some other valid maven param.
+     * @param server     the liberty server which should be used to run the TCK
+     * @param bucketName the name of the test project
+     * @param testName   the name of the method that's being used to launch the TCK
      */
-    public static void setAdditionalMvnProps(String[] propDefs, LibertyServer server) throws Exception {
-        additionalMvnProps = propDefs;
-        init(server);
+    public static int runTCKMvnCmd(LibertyServer server, String bucketName, String testName) throws Exception {
+        return runTCKMvnCmd(server, bucketName, testName, DEFAULT_SUITE_FILENAME, Collections.<String, String> emptyMap(), Collections.<String> emptySet());
     }
 
     /**
-     * Changes the name of the suite file used from default value to a new name.
-     * Changes maven output file from default value to default value + _ + new suite name
-     * Changes maven reports folder name from default to default value + _ + new suite name
+     * runs "mvn clean test" in the tck folder, passing through all the required properties
      *
-     * @param newName - new suite file
-     * @param server - server that will run this suite
-     * @throws Exception
+     * @param server          the liberty server which should be used to run the TCK
+     * @param bucketName      the name of the test project
+     * @param testName        the name of the method that's being used to launch the TCK
+     * @param additionalProps java properties to set when running the mvn command
      */
-    public static void setSuiteFileName(String newName, LibertyServer server) throws Exception {
-        overrideSuiteFileName = newName;
-        mvnOutputFilename = "mvnOutput_" + newName.replace(".xml", "");
-        targetFolder = defaultTargetFolder + "_" + newName.replace(".xml", "");
-        init(server);
+    public static int runTCKMvnCmd(LibertyServer server, String bucketName, String testName, Map<String, String> additionalProps) throws Exception {
+        return runTCKMvnCmd(server, bucketName, testName, DEFAULT_SUITE_FILENAME, additionalProps, Collections.<String> emptySet());
     }
 
     /**
-     * Initialise shared values for a particular server.
-     * This enables us to set up things like the Liberty install
-     * directory and jar locations once.
+     * runs "mvn clean test" in the tck folder, passing through all the required properties
      *
-     * @param server Simplicity LibertyServer
-     * @throws Exception
+     * @param  server          the liberty server which should be used to run the TCK
+     * @param  bucketName      the name of the test project
+     * @param  testName        the name of the method that's being used to launch the TCK
+     * @param  suiteFileName   the name of the suite xml file
+     * @param  additionalProps java properties to set when running the mvn command
+     * @param  versionedJars   A set of versioned jars
+     * @return                 the integer return code from the mvn command. Anything other than 0 should be regarded as a failure.
+     * @throws Exception       occurs if anything goes wrong in setting up and running the mvn command.
      */
-    public static void init(LibertyServer server) throws Exception {
-        String pomRelativePath = "tck/pom.xml";
-        init(server, pomRelativePath);
+    public static int runTCKMvnCmd(LibertyServer server, String bucketName, String testName, String suiteFileName, Map<String, String> additionalProps,
+                                   Set<String> versionedJars) throws Exception {
+        MvnUtils mvn = new MvnUtils(server, bucketName, testName, suiteFileName, additionalProps, versionedJars);
+        return mvn.runCleanTest();
     }
 
     /**
-     * Initialise shared values for a particular server.
-     * This enables us to set up things like the Liberty install
-     * directory and jar locations once.
+     * Full constructor for MvnUtils. In most cases one of the static convenience methods should be used instead of calling this directly.
      *
-     * @param server Simplicity LibertyServer
-     * @param pomRelativePath relative to "publish/tckRunner" path to pom - usually "tck/pom.xml"
-     * @throws Exception
+     * @param server          the liberty server which should be used to run the TCK
+     * @param bucketName      the name of the test project
+     * @param testName        the name of the method that's being used to launch the TCK
+     * @param suiteFileName   the name of the suite xml file
+     * @param additionalProps java properties to set when running the mvn command
+     * @param versionedJars   A set of versioned jars
      */
-    public static void init(LibertyServer server, String pomRelativePath) throws Exception {
-        wlp = server.getInstallRoot();
-        resultsDir = Props.getInstance().getFileProperty(Props.DIR_LOG); //typically ${component_Root_Directory}/results
-        componentRootDir = Props.getInstance().getFileProperty(Props.DIR_COMPONENT_ROOT);
-
-        tckRunnerDir = new File("publish/tckRunner");
-
-        pomXml = new File(tckRunnerDir, pomRelativePath);
-
-        if (!init) {
-            populateJarsFromWlp(pomXml);
-        }
-
-        String mvn = "mvn";
-        if (System.getProperty("os.name").contains("Windows")) {
-            mvn = mvn + ".cmd";
-        }
-        mvnCliRaw = new String[] { mvn, "clean", "test", "-Dwlp=" + wlp, "-Dtck_server=" + server.getServerName(),
-                                   "-Dtck_failSafeUndeployment=" + DEFAULT_FAILSAFE_UNDEPLOYMENT,
-                                   "-Dtck_appDeployTimeout=" + DEFAULT_APP_DEPLOY_TIMEOUT,
-                                   "-Dtck_appUndeployTimeout=" + DEFAULT_APP_UNDEPLOY_TIMEOUT,
-                                   "-Dtck_port=" + server.getPort(PortType.WC_defaulthost),
-                                   "-DtargetDirectory=" + resultsDir.getAbsolutePath() + "/" + targetFolder,
-                                   "-DcomponentRootDir=" + componentRootDir,
-                                   "-Dsun.rmi.transport.tcp.responseTimeout=" + DEFAULT_MBEAN_TIMEOUT
-        };
-
-        mvnCliRoot = concatStringArray(mvnCliRaw, getJarCliProperties(server, jarsFromWlp));
-
-        // The cmd below is a base for running the TCK as a whole for this project.
-        // It is possible to use other Testng control xml files (and even generate them
-        // based on examining the TCK jar) in which case the value for suiteXmlFile would
-        // be different.
-        String suiteFile = overrideSuiteFileName == null ? defaultSuiteFile : overrideSuiteFileName;
-        mvnCliTckRoot = concatStringArray(mvnCliRoot, new String[] { "-DsuiteXmlFile=" + suiteFile });
-
-        // add any properties passed in through addMvnProps()
-        mvnCliTckRoot = concatStringArray(mvnCliTckRoot, additionalMvnProps);
-
-        mvnOutput = new File(resultsDir, mvnOutputFilename);
-
-        init = true;
+    public MvnUtils(LibertyServer server, String bucketName, String testName, String suiteFileName, Map<String, String> additionalMvnProps,
+                    Set<String> versionedJars) {
+        this.server = server;
+        this.suiteFileName = suiteFileName;
+        this.bucketName = bucketName;
+        this.testName = testName;
+        this.versionedJars = versionedJars;
+        this.additionalMvnProps = additionalMvnProps;
     }
 
     /**
-     * This method will add in all the ${variables} used in <systemPath> elements in the pom.xml passed in to those
-     * that are searched for in the Liberty jar directories as held in jarsFromWlp
+     * Get a list of Files which represent JUnit xml results files.
      *
-     * @param pomXml the pom.xml file to search for <systemPath>${jar.name}</systemPath>
-     * @throws Exception
+     * @return a list of junit XML results files
      */
-    private static void populateJarsFromWlp(File pomXml) throws Exception {
+    private List<File> findJunitResultFiles() {
+        File surefileResultsDir = getSureFireResultsDir();
 
-        try {
-            DocumentBuilderFactory fac = DocumentBuilderFactory.newInstance();
-            DocumentBuilder bldr = fac.newDocumentBuilder();
-            Document doc = bldr.parse(pomXml.getAbsolutePath());
-            XPathFactory xpf = XPathFactory.newInstance();
-            XPath xp = xpf.newXPath();
-            // We are looking for <systemPath>${jar.name}</systemPath>
-            XPathExpression expr = xp.compile("//systemPath");
-
-            NodeList nl = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
-            for (int i = 0; i < nl.getLength(); i++) {
-                // turn "<systemPath>${jar.name}</systemPath>" into "jar.name"
-                String jarKey = nl.item(i).getTextContent().replaceAll("\\$\\{", "").replaceAll("\\}", "".replaceAll("\\s+", ""));
-
-                jarsFromWlp.add(jarKey);
-                Log.finer(c, "populateJarsFromWlp", jarKey);
-                // For jars that have more than one version we try to add to the regex the api version
-                if (versionedJars != null && versionedJars.contains(jarKey)) {
-                    String versionedJarKey;
-                    if (implVersion != null) {
-                        // User has passed in impl.version
-                        versionedJarKey = jarKey + "." + implVersion;
-                    } else {
-                        // Get version from pom.xml
-                        versionedJarKey = jarKey + "." + takeOffFinalOrSnapshot(apiVersion);
-                    }
-                    mavenVersionBindingJarPatches.put(jarKey, versionedJarKey);
-                }
+        File[] resultsFiles = surefileResultsDir.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.matches("TEST.*\\.xml");
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.warning(c, e.toString());
-            throw e;
+        });
+
+        if (resultsFiles == null || resultsFiles.length == 0) {
+            Assert.fail("No TCK test JUnit result files were found in the results directory which suggests the TCK tests did not run\n"
+                        + "Errors found in mvnOutput were:\n" +
+                        getErrorsFromMvnOutput());
         }
 
+        return Arrays.asList(resultsFiles);
+    }
+
+    private String getErrorsFromMvnOutput() {
+        StringBuilder sb = new StringBuilder();
+        File installOutput = getMvnInstallOutputFile();
+        if (installOutput.exists() && installOutput.canRead()) {
+            sb.append("### maven install output:\n");
+            try (Scanner s = new Scanner(installOutput)) {
+                while (s.hasNextLine() && sb.length() < 20000) {
+                    String line = s.nextLine();
+                    if (line.startsWith("[ERROR]"))
+                        sb.append(line).append("\n");
+                }
+            } catch (FileNotFoundException e) {
+            }
+        }
+
+        File testOutput = getMvnTestOutputFile();
+        if (testOutput.exists() && testOutput.canRead()) {
+            sb.append("### maven test output:\n");
+            try (Scanner s = new Scanner(testOutput)) {
+                while (s.hasNextLine() && sb.length() < 20000) {
+                    String line = s.nextLine();
+                    if (line.startsWith("[ERROR]"))
+                        sb.append(line).append("\n");
+                }
+            } catch (FileNotFoundException e) {
+            }
+        }
+        return sb.toString();
     }
 
     /**
-     * @param version
-     * @return
+     * Get the map of additional properties which should be passed in to the mvn command as "-Dkey=value" parameters
+     *
+     * @return the additionalMvnProps
      */
-    private static String takeOffFinalOrSnapshot(String version) {
-        if (version != null && version.length() > 1) {
-            // Remove anything after a dash
-            String[] bits = version.split("-");
-            version = bits[0];
-            // Remove and Final specifier
-            version = version.replace(".Final", "");
-        }
-        return version;
+    private Map<String, String> getAdditionalMvnProps() {
+        return additionalMvnProps;
     }
 
     /**
-     * Resolves a set of "-Djarname=path" type strings to add to the CLI. The path is resolved to existing
+     * Get the api.version value from within the additional Mvn properties. This is the version of the API which is to be tested.
+     *
+     * @return the api.version value from within the additional Mvn properties
+     */
+    private String getApiVersion() {
+        return getAdditionalMvnProps().get(API_VERSION);
+    }
+
+    /**
+     * Get the backstop.version value from within the additional Mvn properties. This is the default version of the Implementation which is to be tested if the impl.version was not
+     * specified.
+     *
+     * @return the backstop.version value from within the additional Mvn properties
+     */
+    private String getBackStopImplVersion() {
+        return getAdditionalMvnProps().get(BACKSTOP_VERSION);
+    }
+
+    /**
+     * Get the name of the FAT bucket to use
+     *
+     * @return the FAT bucket name
+     */
+    private String getBucketName() {
+        return this.bucketName;
+    }
+
+    /**
+     * Get the absolute path of the component root directory ... i.e. the path to the tck FAT bucket when it is on the target system
+     *
+     * @return the FAT bucket component root directory
+     */
+    private String getComponentRootDir() {
+        return Props.getInstance().getFileProperty(Props.DIR_COMPONENT_ROOT).getAbsolutePath();
+    }
+
+    /**
+     * Get the impl.version value from within the additional Mvn properties. This is the version of the Implementation which is to be tested.
+     *
+     * @return the impl.version
+     */
+    private String getImplVersion() {
+        return getAdditionalMvnProps().get(IMPL_VERSION);
+    }
+
+    /**
+     * Generates a list of "-Djarname=path" type strings to add to the CLI. The path is resolved to existing
      * jar names that match the jarName but also include version numbers etc.
      *
-     * @param server
-     * @param nonVersionedJars
-     * @return an array of string that can be added to a ProcessRunner command
+     * @return           a list of strings that can be added to a ProcessRunner command
+     * @throws Exception
      */
-    private static String[] getJarCliProperties(LibertyServer server, List<String> nonVersionedJars) {
+    private ArrayList<String> getJarCliProperties() throws Exception {
+        Map<String, String> actualJarFiles = resolveJarPaths();
+        ArrayList<String> addon = new ArrayList<>();
 
-        Map<String, String> actualJarFiles = resolveJarPaths(nonVersionedJars, server);
-        String[] addon = new String[] {};
-
-        Set<String> jarsSet = actualJarFiles.keySet();
-        for (Iterator<String> iterator = jarsSet.iterator(); iterator.hasNext();) {
-            String jarKey = iterator.next();
-            String jarPathName = actualJarFiles.get(jarKey);
-            addon = concatStringArray(addon, new String[] { "-D" + jarKey + "=" + jarPathName });
+        for (Entry<String, String> entry : actualJarFiles.entrySet()) {
+            String jarKey = entry.getKey();
+            String jarPathName = entry.getValue();
+            addon.add("-D" + jarKey + "=" + jarPathName);
         }
         return addon;
     }
 
     /**
-     * Smashes two String arrays into a returned third. Useful for appending to the CLI
-     * used for ProcessBuilder. This is not a very efficient way to do this but it is
-     * easy to read/write and it is not a performance sensitive use case.
+     * Generate the array of Strings which will be used to run the "mvn clean test" command with all the appropriate parameters
      *
-     * @param a
-     * @param b
-     * @return cat a b
+     * @return           an array of Strings representing the command to be run
+     * @throws Exception thrown if there was a problem assembling the parameters to the mvn command
      */
-    public static String[] concatStringArray(String[] a, String[] b) {
-        if (a == null && b != null) {
-            return Arrays.copyOf(b, b.length);
-        } else if (a != null && b == null) {
-            return Arrays.copyOf(a, a.length);
-        } else if (a == null && b == null) {
-            return new String[] {};
-        } else {
-            String[] result = new String[a.length + b.length];
-            System.arraycopy(a, 0, result, 0, a.length);
-            System.arraycopy(b, 0, result, a.length, b.length);
-            return result;
+    private String[] getMvnTestCommandArray() throws Exception {
+        String mvn = getMvn();
+
+        ArrayList<String> stringArrayList = new ArrayList<>();
+        stringArrayList.add(mvn);
+        stringArrayList.add(MVN_CLEAN); //TODO do we always want to clean?
+        stringArrayList.add(MVN_TEST);
+        stringArrayList.add("-Dwlp=" + getWLPInstallRoot());
+        stringArrayList.add("-Dtck_server=" + getServerName());
+        stringArrayList.add("-Dtck_failSafeUndeployment=" + DEFAULT_FAILSAFE_UNDEPLOYMENT);
+        stringArrayList.add("-Dtck_appDeployTimeout=" + DEFAULT_APP_DEPLOY_TIMEOUT);
+        stringArrayList.add("-Dtck_appUndeployTimeout=" + DEFAULT_APP_UNDEPLOY_TIMEOUT);
+        stringArrayList.add("-Dtck_port=" + getPort());
+        stringArrayList.add("-DtargetDirectory=" + getTargetDir().getAbsolutePath());
+        stringArrayList.add("-DcomponentRootDir=" + getComponentRootDir());
+        stringArrayList.add("-Dsun.rmi.transport.tcp.responseTimeout=" + DEFAULT_MBEAN_TIMEOUT);
+
+        stringArrayList.addAll(getJarCliProperties());
+
+        // The cmd below is a base for running the TCK as a whole for this project.
+        // It is possible to use other Testng control xml files (and even generate them
+        // based on examining the TCK jar) in which case the value for suiteXmlFile would
+        // be different.
+        stringArrayList.add("-DsuiteXmlFile=" + getSuiteFileName());
+
+        // add any additional properties passed
+        for (Entry<String, String> prop : getAdditionalMvnProps().entrySet()) {
+            stringArrayList.add("-D" + prop.getKey() + "=" + prop.getValue());
         }
+
+        String[] cmd = stringArrayList.toArray(new String[0]);
+        return cmd;
     }
 
     /**
-     * runs "mvn clean test" in the tck folder, passing through all the required properties
+     * Get a File which represents the mvn output file when the tests are run. Typically ${component_Root_Directory}/results/mvnOutput_test_${suite_name}
      *
-     * @param backStopImpl
+     * @return the mvn output file when running tests.
      */
-    public static int runTCKMvnCmdWithProps(LibertyServer server, String bucketName, String testName, Map<String, String> addedProps,
-                                            Set<String> versionedJarKeys, String backStopImpl) throws Exception {
-        apiVersion = addedProps.get("api.version");
-        implVersion = addedProps.get("impl.version");
-        backStopImplVersion = backStopImpl;
-
-        versionedJars = versionedJarKeys;
-
-        return runTCKMvnCmd(server, bucketName, testName, addedProps);
+    private File getMvnTestOutputFile() {
+        return new File(getResultsDir(), getMvnTestOutputFileName());
     }
 
     /**
-     * runs "mvn clean test" in the tck folder, passing through all the required properties
+     * The filename for the mvn output file when running tests. Typically mvnOutput_test_${suite_name}
      *
-     * @see #runTCKMvnCmd(LibertyServer, String, String, Map, Map)
+     * @return The filename for the mvn output file when running tests.
      */
-    public static int runTCKMvnCmd(LibertyServer server, String bucketName, String testName) throws Exception {
-        return runTCKMvnCmd(server, bucketName, testName, null);
+    private String getMvnTestOutputFileName() {
+        return MVN_TEST_OUTPUT_FILENAME_PREFIX + getSuiteName();
     }
 
     /**
-     * runs "mvn clean test" in the tck folder, passing through all the required properties
+     * Get a File which represents the TCK pom.xml file. Typically ${component_Root_Directory}/publish/tckRunner/tck/pom.xml
      *
-     * @param server the liberty server which should be used to run the TCK
-     * @param bucketName the name of the test project
-     * @param testName the name of the method that's being used to launch the TCK
-     * @param addedProps java properties to set when running the mvn command
+     * @return the pom.xml File
      */
-    public static int runTCKMvnCmd(LibertyServer server, String bucketName, String testName, Map<String, String> addedProps) throws Exception {
-        if (!init) {
-            init(server);
+    private File getPomXmlFile() {
+        return new File(getTCKRunnerDir(), RELATIVE_POM_FILE);
+    }
+
+    /**
+     * Get the standard http port for the Liberty server
+     *
+     * @return the http port number
+     */
+    private int getPort() throws Exception {
+        return server.getPort(PortType.WC_defaulthost);
+    }
+
+    /**
+     * Get the name of the Liberty Server being used to test
+     *
+     * @return The Liberty Server name
+     */
+    private String getServerName() {
+        return this.server.getServerName();
+    }
+
+    /**
+     * Get the name of the suite xml file. Normally this defaults to tck-suite.xml.
+     *
+     * @return the name of the suite xml file
+     */
+    private String getSuiteFileName() {
+        return this.suiteFileName;
+    }
+
+    /**
+     * Get the name of the suite. This is generated from the suite xml file name and made unique by adding the repeat ID, if any.
+     *
+     * @return the name of the suite
+     */
+    private String getSuiteName() {
+        return getSuiteFileName().replace(".xml", "") + getRepeatID();
+    }
+
+    /**
+     * Get a File which represents the raw reports folder from surefire ... may be either TestNG or Junit
+     *
+     * @return the raw reports directory File
+     */
+    private File getSureFireResultsDir() {
+        File targetResultsDir = getTargetDir();
+        File surefireResultsDir = new File(targetResultsDir, TESTNG_REPORTS); // TestNG result location
+        if (!surefireResultsDir.exists()) {
+            surefireResultsDir = new File(targetResultsDir, SUREFIRE_REPORTS); // JUnit result location
         }
+        return surefireResultsDir;
+    }
 
-        String[] cmd = mvnCliTckRoot;
-        if (addedProps != null) {
-            for (Iterator<Entry<String, String>> iterator = addedProps.entrySet().iterator(); iterator.hasNext();) {
-                Entry<String, String> entry = iterator.next();
-                cmd = concatStringArray(cmd, new String[] { "-D" + entry.getKey() + "=" + entry.getValue() });
-            }
-        }
+    /**
+     * Get a File which represents the target output folder. Typically ${component_Root_Directory}/results/tck_${suite_name}
+     *
+     * The ${suite_name} may include the Repeat ID which means the folder will remain unique if RepeatTests is used
+     *
+     * @return a File which represents the target output folder
+     */
+    private File getTargetDir() {
+        return new File(getResultsDir(), MVN_TARGET_FOLDER_PREFIX + getSuiteName());
+    }
 
-        // Everything under autoFVT/results is collected from the child build machine
-        int rc = runCmd(cmd, MvnUtils.tckRunnerDir, mvnOutput);
-        List<String> failingTestsList = postProcessTestResults();
+    /**
+     * Get a File which represents the root of the TCK runner. Typically ${component_Root_Directory}/publish/tckRunner
+     *
+     * @return The TCK runner dir
+     */
+    private File getTCKRunnerDir() {
+        return new File(RELATIVE_TCK_RUNNER);
+    }
 
-        // mvn returns 0 on success, anything else represents a failure.
-        // Usually this is caused by failing tests, but if we didn't detect any failing tests then we should raise an exception
-        if (rc != 0 && failingTestsList.isEmpty()) {
-            Assert.fail("In " + bucketName + ":" + testName + " the TCK (" + cmd + ") has returned non-zero return code of: " + rc + "\n"
-                        + "but did not report any failing tests.\n"
-                        + "see: ...autoFVT/results/" + MvnUtils.mvnOutputFilename + " for more details");
-        }
+    /**
+     * Get the test name. This will have been provided by the caller and is only used as part of error messages.
+     *
+     * @return the test name
+     */
+    private String getTestName() {
+        return this.testName;
+    }
 
-        return rc;
+    /**
+     * Get a Set of jar names which should be specifically versioned using either the impl.version supplied or the api version obtained from the pom.xml.
+     * This helps to disambiguate when there are multiple versions of a jar in the installation.
+     *
+     * @return A Set of jars which should be specifically versioned
+     */
+    private Set<String> getVersionedJars() {
+        return this.versionedJars;
+    }
+
+    /**
+     * Get the Liberty Install root, e.g. /opt/ibm/wlp
+     *
+     * @return the path where Liberty is installed
+     */
+    private String getWLPInstallRoot() {
+        return this.server.getInstallRoot();
+    }
+
+    /**
+     * Get a File which represents the output folder for the processed junit html files. Typically ${component_Root_Directory}/results/junit
+     *
+     * @return
+     */
+    private File getJunitResultsDir() {
+        return new File(getResultsDir(), "junit");
     }
 
     /**
      * Prepare the TestNg/Junit Result XML files for inclusion in Simplicity html processing and return a list of failing tests
      *
-     * @return A list of non passing tests
+     * @return                                      A list of non passing tests
      * @throws IOException
      * @throws SAXException
      * @throws XPathExpressionException
@@ -364,19 +474,12 @@ public class MvnUtils {
      * @throws TransformerFactoryConfigurationError
      * @throws TransformerException
      */
-    private static List<String> postProcessTestResults() throws IOException, SAXException, XPathExpressionException, ParserConfigurationException, TransformerFactoryConfigurationError, TransformerException {
+    private List<String> postProcessTestResults() throws IOException, SAXException, XPathExpressionException, ParserConfigurationException, TransformerFactoryConfigurationError, TransformerException {
 
-        List<File> resultsFiles = findJunitResultFiles();
-        File targetDir = new File(MvnUtils.resultsDir, "junit");
+        List<File> resultsFiles = findJunitResultFiles(); //the raw input files
+        File targetDir = getJunitResultsDir(); //the output dir
 
-        String id;
-        if (RepeatTestFilter.CURRENT_REPEAT_ACTION == null || RepeatTestFilter.CURRENT_REPEAT_ACTION.equals(EmptyAction.ID)) {
-            id = "";
-        } else {
-            id = "_" + RepeatTestFilter.CURRENT_REPEAT_ACTION;
-        }
-
-        copyResultsAndAppendId(targetDir, resultsFiles, id);
+        copyResultsAndAppendId(targetDir, resultsFiles);
 
         // Get the failing tests out of the JUnit result files
         List<String> failingTestsList = getNonPassingTestsNamesList(resultsFiles);
@@ -394,42 +497,174 @@ public class MvnUtils {
         return failingTestsList;
     }
 
-    private static List<File> findJunitResultFiles() {
-        File resultsDir = new File(MvnUtils.resultsDir, targetFolder + "/surefire-reports/junitreports"); // TestNG result location
-        if (!resultsDir.exists()) {
-            resultsDir = new File(MvnUtils.resultsDir, targetFolder + "/surefire-reports"); // JUnit result location
-        }
+    /**
+     * Return a full path for a jar file name substr.
+     * This function enables the Liberty build version which is often included
+     * in jar names to increment and the FAT bucket to find the jar under the
+     * new version.
+     *
+     * @param  jarName A fragment of a jar file name to be fully resolved
+     * @return         The fully resolved path to the jar
+     */
+    private String resolveJarPath(String jarName) {
+        String wlp = getWLPInstallRoot();
+        String jarPath = genericResolveJarPath(jarName, wlp);
+        return jarPath;
+    }
 
-        File[] resultsFiles = resultsDir.listFiles(new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name) {
-                return name.matches("TEST.*\\.xml");
+    /**
+     * Find a set of jars in a LibertyServer
+     *
+     * The pom.xml file for the TCK may have dependencies which look like this...
+     *
+     * <dependency>
+     * <groupId>org.eclipse.microprofile.config</groupId>
+     * <artifactId>microprofile-config-api</artifactId>
+     * <version>${microprofile.config.version}</version>
+     * <scope>system</scope>
+     * <systemPath>${com.ibm.websphere.org.eclipse.microprofile.config.1.1_}</systemPath>
+     * </dependency>
+     *
+     * This method looks for those systemPath entries which have ${xxx} variables in them and then tries to find corresponding jars in the Liberty installation
+     *
+     * @return           a Map that has the jars list parameter as the keySet and the resolved paths as entries.
+     * @throws Exception thrown if a problem occurs in parsing the pom.xml file
+     */
+    private Map<String, String> resolveJarPaths() throws Exception {
+        Map<String, String> mavenVersionBindingJarPatches = new HashMap<String, String>();
+
+        //first find all the systemPath variables to be resolved
+        Set<String> jarsFromWlp = new HashSet<>();
+        try {
+            DocumentBuilderFactory fac = DocumentBuilderFactory.newInstance();
+            DocumentBuilder bldr = fac.newDocumentBuilder();
+            File pomXml = getPomXmlFile();
+            Document doc = bldr.parse(pomXml.getAbsolutePath());
+            XPathFactory xpf = XPathFactory.newInstance();
+            XPath xp = xpf.newXPath();
+            // We are looking for <systemPath>${jar.name}</systemPath>
+            XPathExpression expr = xp.compile("//systemPath");
+
+            String implVersion = getImplVersion();
+
+            NodeList nl = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
+            for (int i = 0; i < nl.getLength(); i++) {
+                // turn "<systemPath>${jar.name}</systemPath>" into "jar.name"
+                String jarKey = nl.item(i).getTextContent().replaceAll("\\$\\{", "").replaceAll("\\}", "".replaceAll("\\s+", ""));
+
+                jarsFromWlp.add(jarKey);
+                Log.finer(c, "resolveJarPaths", jarKey);
+                // For jars that have more than one version we try to add to the regex the api version
+                if (getVersionedJars().contains(jarKey)) {
+                    String versionedJarKey;
+                    if (implVersion != null) {
+                        // User has passed in impl.version
+                        versionedJarKey = jarKey + "." + implVersion;
+                    } else {
+                        // Get version from pom.xml
+                        String apiVersion = getApiVersion();
+                        versionedJarKey = jarKey + "." + takeOffFinalOrSnapshot(apiVersion);
+                    }
+                    mavenVersionBindingJarPatches.put(jarKey, versionedJarKey);
+                }
             }
-        });
-
-        if (resultsFiles == null || resultsFiles.length == 0) {
-            Assert.fail("No TCK test JUnit result files were found in the results directory which suggests the TCK tests did not run - check build logs.\n"
-                        + "ResultsDir: " + resultsDir.getAbsolutePath());
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.warning(c, e.toString());
+            throw e;
         }
 
-        return Arrays.asList(resultsFiles);
+        //then map all of those jar variables to actual paths
+        Map<String, String> result = resolveJarPaths(jarsFromWlp, mavenVersionBindingJarPatches);
+        return result;
+    }
+
+    /**
+     * Resolve a given set of jar name fragments to actual jar paths in a Liberty installation
+     *
+     * @param  jarsFromWlp
+     * @param  mavenVersionBindingJarPatches
+     * @return
+     * @throws Exception
+     */
+    private Map<String, String> resolveJarPaths(Set<String> jarsFromWlp, Map<String, String> mavenVersionBindingJarPatches) throws Exception {
+        HashMap<String, String> result = new HashMap<String, String>(jarsFromWlp.size());
+
+        for (String jarName : jarsFromWlp) {
+            String jarPath;
+            // Sometimes we can add a particular version postfix to the regex bases on a spec pom.xml
+            if (mavenVersionBindingJarPatches.keySet().contains(jarName)) {
+                jarPath = resolveJarPath(mavenVersionBindingJarPatches.get(jarName));
+            } else {
+                jarPath = resolveJarPath(jarName);
+            }
+
+            String backStopImplVersion = getBackStopImplVersion();
+
+            // We allow the situation were we want to test the current TCK version N versus a default level of impl
+            // that is passed in from the testcase and used if no impl.version is set. This does not resolve the
+            // server.xml features dynamically but does allow different maven systempath jars for the impl jar
+            if (jarPath == null && backStopImplVersion != null && backStopImplVersion.length() > 0) {
+                jarPath = resolveJarPath(jarName + "." + backStopImplVersion);
+            }
+
+            if (jarPath == null) {
+                System.out.println("No jar found");
+            }
+
+            if (Boolean.valueOf(System.getProperty("fat.test.localrun"))) {
+                // Developers laptop FAT
+                Assert.assertNotNull(jarPath, "The resolved jarPath for " + jarName + " is null in " + getWLPInstallRoot());
+            }
+            result.put(jarName, jarPath);
+        }
+        return result;
+    }
+
+    /**
+     * runs "mvn clean test" in the tck folder, passing through all the required properties
+     */
+    public int runCleanTest() throws Exception {
+        String[] testcmd = getMvnTestCommandArray();
+        // Everything under autoFVT/results is collected from the child build machine
+        int rc = runCmd(testcmd, getTCKRunnerDir(), getMvnTestOutputFile());
+
+        List<String> failingTestsList = postProcessTestResults();
+
+        // mvn returns 0 on success, anything else represents a failure.
+        // Usually this is caused by failing tests, but if we didn't detect any failing tests then we should raise an exception
+        if (rc != 0 && failingTestsList.isEmpty()) {
+            Assert.fail("In " + getBucketName() + ":" + getTestName() + " the TCK (" + Arrays.toString(testcmd) + ") has returned non-zero return code of: " + rc + "\n"
+                        + "but did not report any failing tests.\n"
+                        + "see: ...autoFVT/results/" + getMvnTestOutputFileName() + " for more details");
+        }
+
+        return rc;
+    }
+
+    /**
+     * @return a File which represents the mvn output when "install" is run
+     */
+    private static File getMvnInstallOutputFile() {
+        return new File(getResultsDir(), MVN_INSTALL_OUTPUT_FILENAME_PREFIX + getRepeatID());
     }
 
     /**
      * Copy a list of result files to the target directory, appending the id string to both the file name and to test names inside the result XML.
      *
-     * @param targetDir the target directory
-     * @param resultFiles the result files to modify and copy
-     * @param id the id string to append to the file names and test names
+     * @param  targetDir            the target directory
+     * @param  resultFiles          the result files to modify and copy
      * @throws TransformerException
      */
-    private static void copyResultsAndAppendId(File targetDir, List<File> resultFiles,
-                                               String id) throws ParserConfigurationException, XPathExpressionException, TransformerFactoryConfigurationError, SAXException, IOException, TransformerException {
+    private static void copyResultsAndAppendId(File targetDir,
+                                               List<File> resultFiles) throws ParserConfigurationException, XPathExpressionException, TransformerFactoryConfigurationError, SAXException, IOException, TransformerException {
         DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         XPath xpath = XPathFactory.newInstance().newXPath();
         XPathExpression xpr = xpath.compile("//testcase/@name");
 
         Transformer transformer = TransformerFactory.newInstance().newTransformer();
+
+        String id = getRepeatID();
 
         for (File file : resultFiles) {
             Document doc = builder.parse(file);
@@ -453,91 +688,13 @@ public class MvnUtils {
     }
 
     /**
-     * Run a command using a ProcessBuilder.
-     *
-     * @param cmd
-     * @param workingDirectory
-     * @param outputFile
-     * @return The return code of the process. (TCKs return 0 if all tests pass and !=0 otherwise).
-     * @throws Exception
-     */
-    public static int runCmd(String[] cmd, File workingDirectory, File outputFile) throws Exception {
-        ProcessBuilder pb = new ProcessBuilder(cmd);
-        pb.directory(workingDirectory);
-        pb.redirectOutput(outputFile);
-        pb.redirectErrorStream(true);
-
-        Log.info(c, "runCmd", "Running command " + Arrays.asList(cmd));
-        Process p = pb.start();
-        int exitCode = p.waitFor();
-        return exitCode;
-
-    }
-
-    /**
-     * Find a set of jars in a LibertyServer
-     *
-     * @param jars
-     * @param server
-     * @return a Map that has the jars list parameter as the keySet and the resolved paths as entries.
-     */
-    public static Map<String, String> resolveJarPaths(List<String> jars, LibertyServer server) {
-        HashMap<String, String> result = new HashMap<String, String>(jars.size());
-        for (Iterator<String> iterator = jars.iterator(); iterator.hasNext();) {
-            String jarName = iterator.next();
-
-            String jarPath;
-            // Sometimes we can add a particular version postfix to the regex bases on a spec pom.xml
-            if (mavenVersionBindingJarPatches.keySet().contains(jarName)) {
-                jarPath = resolveJarPath(mavenVersionBindingJarPatches.get(jarName), server);
-            } else {
-                jarPath = resolveJarPath(jarName, server);
-            }
-
-            // We allow the situation were we want to test the current TCK version N versus a default level of impl
-            // that is passed in from the testcase and used if no impl.version is set. This does not resolve the
-            // server.xml features dynamically but does allow different maven systempath jars for the impl jar
-            if (jarPath == null && backStopImplVersion != null && backStopImplVersion.length() > 0) {
-                jarPath = resolveJarPath(jarName + "." + backStopImplVersion, server);
-            }
-
-            if (jarPath == null) {
-                System.out.println("No jar found");
-            }
-
-            if (Boolean.valueOf(System.getProperty("fat.test.localrun"))) {
-                // Developers laptop FAT
-                Assert.assertNotNull(jarPath, "The resolved jarPath for " + jarName + " is null in " + server.getInstallRoot());
-            }
-            result.put(jarName, jarPath);
-        }
-        return result;
-    }
-
-    /**
-     * Return a full path for a jar file name substr.
-     * This function enables the Liberty build version which is often included
-     * in jar names to increment and the FAT bucket to find the jar under the
-     * new version.
-     *
-     * @param jarName
-     * @param server
-     * @return
-     */
-    public static String resolveJarPath(String jarName, LibertyServer server) {
-        String wlp = server.getInstallRoot();
-        String jarPath = genericResolveJarPath(jarName, wlp);
-        return jarPath;
-    }
-
-    /**
      * This is more easily unit testable and reusable version of guts of resolveJarPath
      *
-     * @param jarName
-     * @param wlpPathName
-     * @return the path to the jar
+     * @param  jarName
+     * @param  wlpPathName
+     * @return             the path to the jar
      */
-    public static String genericResolveJarPath(String jarName, String wlpPathName) {
+    private static String genericResolveJarPath(String jarName, String wlpPathName) {
         Log.entering(c, "genericResolveJarPath", new Object[] { jarName, wlpPathName });
         String dev = wlpPathName + "/dev/";
         String api = dev + "api/";
@@ -551,8 +708,7 @@ public class MvnUtils {
         places.add(lib);
 
         String jarPath = null;
-        for (Iterator<String> iterator = places.iterator(); iterator.hasNext();) {
-            String dir = iterator.next();
+        for (String dir : places) {
             Log.finer(c, "genericResolveJarPath", "JAR: dir=" + dir);
             jarPath = jarPathInDir(jarName, dir);
             if (jarPath != null) {
@@ -565,13 +721,154 @@ public class MvnUtils {
     }
 
     /**
-     * Looks for a path in a directory from a sub set of the filename
+     * Return the version from the <repo>/spec/pom.xml
      *
-     * @param jarNameFragment
-     * @param dir
+     * @param  repo
      * @return
      */
-    public static String jarPathInDir(String jarNameFragment, String dir) {
+    public static String getApiSpecVersionAfterClone(File repo) {
+        return getPomVersionInDir(repo, "spec");
+    }
+
+    /**
+     * Get the basic mvn command ... "mvn.cmd" on Windows, otherwise just "mvn"
+     *
+     * @return the mvn command
+     */
+    private static String getMvn() {
+        String mvn = "mvn";
+        if (System.getProperty("os.name").contains("Windows")) {
+            mvn = mvn + ".cmd";
+        }
+        return mvn;
+    }
+
+    /**
+     * @return                              A list of non-PASSing test results
+     * @throws SAXException
+     * @throws IOException
+     * @throws XPathExpressionException
+     * @throws ParserConfigurationException
+     */
+    private static List<String> getNonPassingTestsNamesList(List<File> resultFiles) throws SAXException, IOException, XPathExpressionException, ParserConfigurationException {
+        String notPassingTestsQuery = "//testcase[child::error or child::failure]/@name";
+        HashSet<String> excludes = new HashSet<String>(Arrays.asList("arquillianBeforeTest", "arquillianAfterTest"));
+        List<String> result = new ArrayList<>();
+        for (File resultFile : resultFiles) {
+            result.addAll(getQueryInXml(resultFile, notPassingTestsQuery, excludes));
+        }
+        return result;
+    }
+
+    /**
+     * Return the project/version String of a directory's pom.xml file
+     *
+     * @param  repo
+     * @param  subdir
+     * @return
+     */
+    private static String getPomVersionInDir(File repo, String subdir) {
+        Assert.assertTrue("The cloned into directory " + repo.getAbsolutePath() + " does not exist", repo != null && repo.exists());
+        File dir = new File(repo, subdir);
+        Assert.assertTrue("The pom.xml parent directory " + dir.getAbsolutePath() + " does not exist", dir.exists());
+        File pomXml = new File(dir, "pom.xml");
+        Assert.assertTrue("The pom.xml file " + pomXml.getAbsolutePath() + " does not exist", pomXml.exists());
+        String query = "/project/version";
+        List<String> projectVersion = getQueryInXml(pomXml, query, null);
+        // Some pom.xml files have no version but inherit it from the
+        // parent
+        if (!projectVersion.isEmpty() && projectVersion.get(0).trim().length() > 0) {
+            return projectVersion.get(0).trim();
+        } else {
+            query = "/project/parent/version";
+            List<String> parentVersion = getQueryInXml(pomXml, query, null);
+            return parentVersion.isEmpty() ? null : parentVersion.get(0).trim();
+        }
+
+    }
+
+    /**
+     * Return the result of a XPath query on a file
+     *
+     * @param  xml   file
+     * @param  query as a XPath String
+     * @return       result of query into the xml
+     */
+    private static List<String> getQueryInXml(File xml, String query, Set<String> excludes) {
+        ArrayList<String> result = new ArrayList<>();
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document xmlDoc = builder.parse(xml);
+            XPathFactory xPathFactory = XPathFactory.newInstance();
+            XPath xpath = xPathFactory.newXPath();
+            XPathExpression xpr = xpath.compile(query);
+            NodeList nodes = (NodeList) xpr.evaluate(xmlDoc, XPathConstants.NODESET);
+
+            Log.finer(c, "getQueryInXml", "query " + query + " returned " + nodes.getLength() + " nodes");
+
+            if (nodes.getLength() > 0) {
+                for (int i = 0; i < nodes.getLength(); i++) {
+                    String value = nodes.item(i).getNodeValue();
+                    if (value == null || value.length() == 0) {
+                        value = nodes.item(i).getTextContent();
+                    }
+                    if (excludes == null || !excludes.contains(value)) {
+                        result.add(value);
+                    }
+                }
+            }
+
+            Log.finer(c, "getQueryInXml", "results: {0}", result);
+
+        } catch (Throwable t) {
+            Log.warning(c, t.getMessage());
+        }
+        return result;
+    }
+
+    /**
+     * Get the current Repeat Action ID. If there is no current Repeat Action ID then return an empty string.
+     *
+     * @return the current Repeat Action ID or empty string
+     */
+    private static String getRepeatID() {
+        String id;
+        if (RepeatTestFilter.CURRENT_REPEAT_ACTION == null || RepeatTestFilter.CURRENT_REPEAT_ACTION.equals(EmptyAction.ID)) {
+            id = "";
+        } else {
+            id = "_" + RepeatTestFilter.CURRENT_REPEAT_ACTION;
+        }
+        return id;
+    }
+
+    /**
+     * Get a File which represents the results directory, typically ${component_Root_Directory}/results
+     *
+     * @return the results directory
+     */
+    private static File getResultsDir() {
+        return Props.getInstance().getFileProperty(Props.DIR_LOG);
+    }
+
+    /**
+     * Return the version from the <repo>/tck/pom.xml
+     *
+     * @param  repo
+     * @return
+     */
+    public static String getTckVersionAfterClone(File repo) {
+        return getPomVersionInDir(repo, "tck");
+    }
+
+    /**
+     * Looks for a path in a directory from a sub set of the filename
+     *
+     * @param  jarNameFragment
+     * @param  dir
+     * @return
+     */
+    private static String jarPathInDir(String jarNameFragment, String dir) {
         String result = null;
         File dirFileObj = new File(dir);
         String[] files = dirFileObj.list();
@@ -618,20 +915,31 @@ public class MvnUtils {
     }
 
     /**
-     * @return A list of non-PASSing test results
-     * @throws SAXException
-     * @throws IOException
-     * @throws XPathExpressionException
-     * @throws ParserConfigurationException
+     * Run "mvn clean install" to populate a given maven repository
+     *
+     * @param repo the maven repository directory
      */
-    public static List<String> getNonPassingTestsNamesList(List<File> resultFiles) throws SAXException, IOException, XPathExpressionException, ParserConfigurationException {
-        String notPassingTestsQuery = "//testcase[child::error or child::failure]/@name";
-        HashSet<String> excludes = new HashSet<String>(Arrays.asList("arquillianBeforeTest", "arquillianAfterTest"));
-        List<String> result = new ArrayList<>();
-        for (File resultFile : resultFiles) {
-            result.addAll(getQueryInXml(resultFile, notPassingTestsQuery, excludes));
+    public static int mvnCleanInstall(File repo) {
+
+        String mvn = getMvn();
+        String[] mvnCleanInstall = new String[] { mvn, MVN_CLEAN, MVN_INSTALL };
+
+        // Everything under autoFVT/results is collected from the child build machine
+        int rc = -1;
+        try {
+            rc = runCmd(mvnCleanInstall, repo, getMvnInstallOutputFile());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return result;
+
+        // mvn returns 0 if all surefire tests pass and -1 otherwise - this Assert is enough to mark the build as having failed
+        // the TCK regression
+        Assert.assertEquals("maven clean install in " + repo + " has a non-zero return code of: "
+                            + rc +
+                            ".\nThis indicates build failure", 0, rc);
+
+        return rc;
+
     }
 
     /**
@@ -656,122 +964,40 @@ public class MvnUtils {
     }
 
     /**
-     * @param repo
+     * Run a command using a ProcessBuilder.
+     *
+     * @param  cmd
+     * @param  workingDirectory
+     * @param  outputFile
+     * @return                  The return code of the process. (TCKs return 0 if all tests pass and !=0 otherwise).
+     * @throws Exception
      */
-    public static int mvnCleanInstall(File dir) {
+    public static int runCmd(String[] cmd, File workingDirectory, File outputFile) throws IOException, InterruptedException {
+        ProcessBuilder pb = new ProcessBuilder(cmd);
+        pb.directory(workingDirectory);
+        pb.redirectOutput(outputFile);
+        pb.redirectErrorStream(true);
 
-        String mvn = "mvn";
-        if (System.getProperty("os.name").contains("Windows")) {
-            mvn = mvn + ".cmd";
-        }
-
-        String[] mvnCleanInstall = new String[] { mvn, "clean", "install" };
-
-        File results = Props.getInstance().getFileProperty(Props.DIR_LOG); //typically ${component_Root_Directory}/results
-        File output = new File(results, "mvnCleanInstall.out");
-
-        // Everything under autoFVT/results is collected from the child build machine
-        int rc = -1;
-        try {
-            rc = runCmd(mvnCleanInstall, dir, output);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        // mvn returns 0 if all surefire tests pass and -1 otherwise - this Assert is enough to mark the build as having failed
-        // the TCK regression
-        Assert.assertEquals("maven clean install in " + dir + " has a non-zero return code of: "
-                            + rc +
-                            ".\nThis indicates build failure", 0, rc);
-
-        return rc;
+        Log.info(c, "runCmd", "Running command " + Arrays.asList(cmd));
+        Process p = pb.start();
+        int exitCode = p.waitFor();
+        return exitCode;
 
     }
 
     /**
-     * Return the version from the <repo>/spec/pom.xml
-     *
-     * @param repo
+     * @param  version
      * @return
      */
-    public static String getApiSpecVersionAfterClone(File repo) {
-        return getPomVersionInDir(repo, "spec");
-    }
-
-    /**
-     * Return the version from the <repo>/tck/pom.xml
-     *
-     * @param repo
-     * @return
-     */
-    public static String getTckVersionAfterClone(File repo) {
-        return getPomVersionInDir(repo, "tck");
-    }
-
-    /**
-     * Return the project/version String of a directory's pom.xml file
-     *
-     * @param repo
-     * @param subdir
-     * @return
-     */
-    private static String getPomVersionInDir(File repo, String subdir) {
-        Assert.assertTrue("The cloned into directory " + repo.getAbsolutePath() + " does not exist", repo != null && repo.exists());
-        File dir = new File(repo, subdir);
-        Assert.assertTrue("The pom.xml parent directory " + dir.getAbsolutePath() + " does not exist", dir.exists());
-        File pomXml = new File(dir, "pom.xml");
-        Assert.assertTrue("The pom.xml file " + pomXml.getAbsolutePath() + " does not exist", pomXml.exists());
-        String query = "/project/version";
-        List<String> projectVersion = getQueryInXml(pomXml, query, null);
-        // Some pom.xml files have no version but inherit it from the
-        // parent
-        if (!projectVersion.isEmpty() && projectVersion.get(0).trim().length() > 0) {
-            return projectVersion.get(0).trim();
-        } else {
-            query = "/project/parent/version";
-            List<String> parentVersion = getQueryInXml(pomXml, query, null);
-            return parentVersion.isEmpty() ? null : parentVersion.get(0).trim();
+    private static String takeOffFinalOrSnapshot(String version) {
+        if (version != null && version.length() > 1) {
+            // Remove anything after a dash
+            String[] bits = version.split("-");
+            version = bits[0];
+            // Remove and Final specifier
+            version = version.replace(".Final", "");
         }
-
+        return version;
     }
 
-    /**
-     * Return the result of a XPath query on a file
-     *
-     * @param xml file
-     * @param query as a XPath String
-     * @return result of query into the xml
-     */
-    private static List<String> getQueryInXml(File xml, String query, Set<String> excludes) {
-        ArrayList<String> result = new ArrayList<>();
-        try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            Document xmlDoc = builder.parse(xml);
-            XPathFactory xPathFactory = XPathFactory.newInstance();
-            XPath xpath = xPathFactory.newXPath();
-            XPathExpression xpr = xpath.compile(query);
-            NodeList nodes = (NodeList) xpr.evaluate(xmlDoc, XPathConstants.NODESET);
-
-            Log.finer(c, "getQueryInXml", "query " + query + " returned " + nodes.getLength() + " nodes");
-
-            if (nodes.getLength() > 0) {
-                for (int i = 0; i < nodes.getLength(); i++) {
-                    String value = nodes.item(i).getNodeValue();
-                    if (value == null || value.length() == 0) {
-                        value = nodes.item(i).getTextContent();
-                    }
-                    if (excludes == null || !excludes.contains(value)) {
-                        result.add(value);
-                    }
-                }
-            }
-
-            Log.finer(c, "getQueryInXml", "results: {0}", result);
-
-        } catch (Throwable t) {
-            Log.warning(c, t.getMessage());
-        }
-        return result;
-    }
 }

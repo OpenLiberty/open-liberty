@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2015 IBM Corporation and others.
+ * Copyright (c) 2005, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.net.Socket;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.cert.CertificateException;
@@ -28,7 +29,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.net.ssl.SSLEngine;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocket;
 import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509ExtendedTrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import com.ibm.websphere.ras.Tr;
@@ -50,12 +55,12 @@ import com.ibm.wsspi.ssl.TrustManagerExtendedInfo;
  * This class is the TrustManager wrapper that delegates to the "real"
  * TrustManager configured for the system.
  * </p>
- * 
+ *
  * @author IBM Corporation
  * @version WAS 7.0
  * @since WAS 7.0
  */
-public final class WSX509TrustManager implements X509TrustManager {
+public final class WSX509TrustManager extends X509ExtendedTrustManager {
     private static final TraceComponent tc = Tr.register(WSX509TrustManager.class, "SSL", "com.ibm.ws.ssl.resources.ssl");
 
     private static final int MAX_MSG_LEN = 79;
@@ -94,7 +99,7 @@ public final class WSX509TrustManager implements X509TrustManager {
 
     /**
      * Constructor.
-     * 
+     *
      * @param tmArray
      * @param connectionInfo
      * @param sslConfig
@@ -174,7 +179,6 @@ public final class WSX509TrustManager implements X509TrustManager {
 
             for (int i = 0; i < tm.length; i++) {
                 if (tm[i] != null && tm[i] instanceof X509TrustManager) {
-                    // skip the default trust manager if configured to do so.
                     try {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                             Tr.debug(tc, "Delegating to X509TrustManager: " + tm[i].getClass().getName());
@@ -191,7 +195,7 @@ public final class WSX509TrustManager implements X509TrustManager {
 
                         FFDCFilter.processException(excpt, getClass().getName(), "checkClientTrusted", this, new Object[] { chain, authType });
 
-                        printClientHandshakeError(config, tsFile, e, chain);
+                        printClientHandshakeError(config, tsFile, e, chain, null, 0);
 
                         // Wrap exception in CertificateException if not a
                         // CertificateException already
@@ -275,50 +279,31 @@ public final class WSX509TrustManager implements X509TrustManager {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                         Tr.debug(tc, "Delegating to X509TrustManager: " + tm[i].getClass().getName());
                     ((X509TrustManager) tm[i]).checkServerTrusted(chain, authType);
-                } catch (CertificateException e) {
+                } catch (CertificateException excpt) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                        Tr.debug(tc, "Certificate Exception occurred: " + e.getMessage());
+                        Tr.debug(tc, "Certificate Exception occurred: " + excpt.getMessage());
+                    boolean certPathError = false;
 
                     // if the reason for the CertificateException is due to
                     // an expired date, don't accept it.
                     boolean dateValid = checkIfExpiredBeforeOrAfter(chain);
                     if (!dateValid) {
-                        throw e;
+                        throw excpt;
+                    }
+                    if (excpt.getCause() != null && excpt.getCause() instanceof java.security.cert.CertPathValidatorException) {
+                        certPathError = true;
                     }
 
                     try {
-                        // If this is a client process then we may prompt the user to accept the signer certificate
-                        if (!isServer) {
-                            if (!autoAccept) {
-                                // prompt user
-                                if (userAcceptedPrompt(chain)) {
-                                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                                        Tr.debug(tc, "prompt user - adding certificate to the truststore.");
-                                    setCertificateToTruststore(chain);
-                                } else {
-                                    printClientHandshakeError(config, tsFile, e, chain);
-                                    throw e;
-                                }
 
-                            } else {
-                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                                    Tr.debug(tc, "autoacceptsigner - adding certificate to the truststore.");
-                                setCertificateToTruststore(chain);
-                            }
+                        if (certPathError) {
+                            processCertPathException(chain, authType, excpt, null, 0);
                         } else {
-                            // IBM JDK will throw the exception in obfuscated code, get the cause
-                            Exception excpt = e;
-                            if (excpt.getClass().toString().startsWith("class com.ibm.jsse2")) {
-                                excpt = (Exception) excpt.getCause();
-                            }
-
-                            // This the server print a message and rethrow the exception
-                            FFDCFilter.processException(excpt, getClass().getName(), "checkServerTrusted", this, new Object[] { chain, authType });
-                            printClientHandshakeError(config, tsFile, e, chain);
+                            // Hostname verification error
+                            Tr.error(tc, "ssl.client.handshake.error.CWPKI0825E", new Object[] { excpt });
                             throw excpt;
                         }
-                    } catch (Exception ex)
-                    {
+                    } catch (Exception ex) {
                         throw new CertificateException(ex.getMessage());
                     }
                 }
@@ -336,20 +321,18 @@ public final class WSX509TrustManager implements X509TrustManager {
      * user's answer. If the user says yes we accept the certificate and add it to the keystore file.
      * If the user says no, exception is thrown.
      */
-    protected boolean userAcceptedPrompt(X509Certificate[] chain)
-    {
+    protected boolean userAcceptedPrompt(X509Certificate[] chain) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(tc, "userAcceptedPrompt");
         boolean accepted = false;
-        try
-        {
+        try {
             stdout.println("");
             stdout.println(TraceNLSHelper.getInstance().getString("ssl.trustmanager.signer.prompt.CWPKI0100I", "*** SSL SIGNER EXCHANGE PROMPT ***"));
             stdout.println(TraceNLSHelper.getInstance().getFormattedMessage("ssl.trustmanager.signer.prompt.CWPKI0101I",
                                                                             new Object[] { tsFile },
                                                                             "SSL signer from target host is not found in trust store "
-                                                                                            + tsFile
-                                                                                            + ".\n\nHere's the signer information (verify the digest value matches what is displayed at the server):"));
+                                                                                                     + tsFile
+                                                                                                     + ".\n\nHere's the signer information (verify the digest value matches what is displayed at the server):"));
             for (int j = 0; j < chain.length; j++) {
                 stdout.println("");
                 String shaDigest = KeyStoreManager.getInstance().generateDigest("SHA-1", chain[j]);
@@ -375,15 +358,13 @@ public final class WSX509TrustManager implements X509TrustManager {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "User accepted the certificate, certificate added to the truststore.");
                 accepted = true;
-            }
-            else {
+            } else {
                 // don't trust the certificate
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "User did not accept the certificate so do not store it to the truststore.");
             }
 
-        } catch (Exception ex)
-        {
+        } catch (Exception ex) {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Received the following while prompting user.", new Object[] { ex });
         }
@@ -403,7 +384,7 @@ public final class WSX509TrustManager implements X509TrustManager {
         String expectedYesShortResponse = TraceNLSHelper.getInstance().getString("ssl.trustmanager.signer.prompt.answer.yes", "y");
         String expectedYesFullResponse = TraceNLSHelper.getInstance().getString("ssl.trustmanager.signer.prompt.answer.full.yes", "yes");
         boolean isItYes = ((expectedYesShortResponse != null && expectedYesShortResponse.length() > 0 && expectedYesShortResponse.equalsIgnoreCase(read)) || // return true if translated y matches
-        (expectedYesFullResponse != null && expectedYesFullResponse.length() > 0 && expectedYesFullResponse.equalsIgnoreCase(read))); // return true if translated yes matches
+                           (expectedYesFullResponse != null && expectedYesFullResponse.length() > 0 && expectedYesFullResponse.equalsIgnoreCase(read))); // return true if translated yes matches
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.exit(tc, "isYes", isItYes);
@@ -425,10 +406,7 @@ public final class WSX509TrustManager implements X509TrustManager {
             if (wsks.getReadOnly()) {
                 issueMessage("ssl.keystore.readonly.CWPKI0810I",
                              new Object[] { tsCfgAlias },
-                             "The "
-                                             + tsCfgAlias
-                                             + " keystore is read only and the certificate will not be written to the keystore file.  Trust will be accepted only for this connection.");
-
+                             "The " + tsCfgAlias + " keystore is read only and the certificate will not be written to the keystore file.  Trust will be accepted only for this connection.");
             } else {
                 for (int j = 0; j < chain.length; j++) {
                     String alias = chain[j].getSubjectDN().getName();
@@ -461,7 +439,7 @@ public final class WSX509TrustManager implements X509TrustManager {
     /**
      * Increment the trailing number on the alias value until one is found that
      * does not currently exist in the input store.
-     * 
+     *
      * @param jKeyStore
      * @param alias
      * @return String
@@ -510,8 +488,7 @@ public final class WSX509TrustManager implements X509TrustManager {
             com.ibm.ws.ssl.config.KeyStoreManager.getInstance().clearJavaKeyStoresFromKeyStoreMap();
             com.ibm.ws.ssl.config.SSLConfigManager.getInstance().resetDefaultSSLContextIfNeeded(fileCol);
             Tr.audit(tc, "ssl.keystore.modified.CWPKI0811I", fileCol.toArray());
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Exception while trying to reload keystore file, exception is: " + e.getMessage());
             }
@@ -540,13 +517,18 @@ public final class WSX509TrustManager implements X509TrustManager {
         return false;
     }
 
-    private void printClientHandshakeError(SSLConfig cfg, String file, Exception e, X509Certificate[] chain) {
+    private void printClientHandshakeError(SSLConfig cfg, String file, Exception e, X509Certificate[] chain, String host, int port) {
         String extendedMessage = e.getMessage();
         String subjectDN = "unknown";
         if (chain[0] != null)
             subjectDN = chain[0].getSubjectDN().toString();
         String alias = getProperty(Constants.SSLPROP_ALIAS, cfg, SSLConfigManager.getInstance().isServerProcess());
-        Tr.error(tc, "ssl.client.handshake.error.CWPKI0022E", new Object[] { subjectDN, file, alias, extendedMessage });
+        if (host != null && port > 0) {
+            String hostPort = host + ":" + port;
+            Tr.error(tc, "ssl.client.handshake.error.CWPKI0823E", new Object[] { subjectDN, hostPort, file, alias, extendedMessage });
+        } else {
+            Tr.error(tc, "ssl.client.handshake.error.CWPKI0022E", new Object[] { subjectDN, file, alias, extendedMessage });
+        }
 
     }
 
@@ -684,6 +666,273 @@ public final class WSX509TrustManager implements X509TrustManager {
         }
 
         return value;
+    }
+
+    /*
+     * Connection-sensitive verification.
+     */
+    @Override
+    public void checkClientTrusted(X509Certificate[] chain, String authType,
+                                   Socket socket) throws CertificateException {
+        Tr.entry(tc, "checkClientTrusted", new Object[] { chain, authType, socket });
+
+        try {
+            for (int i = 0; i < tm.length; i++) {
+                if (tm[i] != null && tm[i] instanceof X509TrustManager) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(tc, "Delegating to X509TrustManager: " + tm[i].getClass().getName());
+
+                    ((X509ExtendedTrustManager) tm[i]).checkClientTrusted(chain, authType, socket);
+                }
+            }
+        } catch (CertificateException e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "Certificate Exception occurred: " + e.getMessage());
+
+            Exception excpt = e;
+            if (excpt.getClass().toString().startsWith("class com.ibm.jsse2")) {
+                excpt = (Exception) excpt.getCause();
+            }
+
+            FFDCFilter.processException(excpt, getClass().getName(), "checkClientTrusted", this, new Object[] { chain, authType });
+
+            printClientHandshakeError(config, tsFile, e, chain, null, 0);
+
+            // Wrap exception in CertificateException if not a
+            // CertificateException already
+            if (excpt instanceof CertificateException) {
+                throw (CertificateException) excpt;
+            }
+
+            throw new CertificateException(excpt.getMessage());
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.exit(tc, "checkClientTrusted");
+    }
+
+    @Override
+    public void checkClientTrusted(X509Certificate[] chain, String authType,
+                                   SSLEngine engine) throws CertificateException {
+        Tr.entry(tc, "checkClientTrusted", new Object[] { chain, authType, engine });
+
+        try {
+            for (int i = 0; i < tm.length; i++) {
+                if (tm[i] != null && tm[i] instanceof X509TrustManager) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(tc, "Delegating to X509TrustManager: " + tm[i].getClass().getName());
+
+                    ((X509ExtendedTrustManager) tm[i]).checkClientTrusted(chain, authType, engine);
+                }
+            }
+        } catch (CertificateException e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "Certificate Exception occurred: " + e.getMessage());
+
+            Exception excpt = e;
+            if (excpt.getClass().toString().startsWith("class com.ibm.jsse2")) {
+                excpt = (Exception) excpt.getCause();
+            }
+
+            FFDCFilter.processException(excpt, getClass().getName(), "checkClientTrusted", this, new Object[] { chain, authType });
+
+            printClientHandshakeError(config, tsFile, e, chain, null, 0);
+
+            // Wrap exception in CertificateException if not a
+            // CertificateException already
+            if (excpt instanceof CertificateException) {
+                throw (CertificateException) excpt;
+            }
+
+            throw new CertificateException(excpt.getMessage());
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.exit(tc, "checkClientTrusted");
+    }
+
+    @Override
+    public void checkServerTrusted(X509Certificate[] chain, String authType,
+                                   Socket socket) throws CertificateException {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.entry(tc, "checkServerTrusted", new Object[] { chain, authType, socket });
+
+        String peerHost = null;
+        int peerPort = 0;
+
+        if (socket instanceof SSLSocket) {
+            SSLSocket sslSocket = (SSLSocket) socket;
+            SSLSession session = sslSocket.getHandshakeSession();
+            peerHost = session.getPeerHost();
+            peerPort = session.getPeerPort();
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Target host: " + peerHost);
+            for (int j = 0; j < chain.length; j++) {
+                Tr.debug(tc, "Certificate information:");
+                Tr.debug(tc, "  Subject DN: " + chain[j].getSubjectDN());
+                Tr.debug(tc, "  Issuer DN: " + chain[j].getIssuerDN());
+                Tr.debug(tc, "  Serial number: " + chain[j].getSerialNumber());
+            }
+        }
+
+        try {
+            for (int i = 0; i < tm.length; i++) {
+                if (tm[i] != null && tm[i] instanceof X509TrustManager) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(tc, "Delegating to X509TrustManager: " + tm[i].getClass().getName());
+
+                    ((X509ExtendedTrustManager) tm[i]).checkServerTrusted(chain, authType, socket);
+                }
+            }
+        } catch (CertificateException excpt) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "Certificate Exception occurred: " + excpt.getMessage());
+
+            boolean dateValid = checkIfExpiredBeforeOrAfter(chain);
+            if (!dateValid) {
+                throw excpt;
+            }
+
+            try {
+                if (isCertPathError(excpt)) {
+                    processCertPathException(chain, authType, excpt, peerHost, peerPort);
+                } else {
+                    // Hostname verification error
+                    String extendedMessage = "\"" + excpt.getMessage().trim() + "\"";
+                    Tr.error(tc, "ssl.client.handshake.error.CWPKI0824E", new Object[] { peerHost, extendedMessage });
+                    throw excpt;
+                }
+            } catch (Exception ex) {
+                throw new CertificateException(ex.getMessage());
+            }
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "Server is trusted by all X509ExtendedTrustManager.");
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.exit(tc, "checkServerTrusted");
+    }
+
+    @Override
+    public void checkServerTrusted(X509Certificate[] chain, String authType,
+                                   SSLEngine engine) throws CertificateException {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.entry(tc, "checkServerTrusted", new Object[] { chain, authType, engine });
+
+        String peerHost = null;
+        int peerPort = 0;
+
+        if (engine != null) {
+            SSLSession session = engine.getHandshakeSession();
+            peerHost = session.getPeerHost();
+            peerPort = session.getPeerPort();
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Target host: " + peerHost);
+            for (int j = 0; j < chain.length; j++) {
+                Tr.debug(tc, "Certificate information:");
+                Tr.debug(tc, "  Subject DN: " + chain[j].getSubjectDN());
+                Tr.debug(tc, "  Issuer DN: " + chain[j].getIssuerDN());
+                Tr.debug(tc, "  Serial number: " + chain[j].getSerialNumber());
+            }
+        }
+
+        try {
+            for (int i = 0; i < tm.length; i++) {
+                if (tm[i] != null && tm[i] instanceof X509TrustManager) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(tc, "Delegating to X509TrustManager: " + tm[i].getClass().getName());
+
+                    ((X509ExtendedTrustManager) tm[i]).checkServerTrusted(chain, authType, engine);
+                }
+            }
+        } catch (CertificateException excpt) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "Certificate Exception occurred: " + excpt.getMessage());
+
+            boolean dateValid = checkIfExpiredBeforeOrAfter(chain);
+            if (!dateValid) {
+                throw excpt;
+            }
+
+            try {
+                if (isCertPathError(excpt)) {
+                    processCertPathException(chain, authType, excpt, peerHost, peerPort);
+                } else {
+                    String extendedMessage = excpt.getMessage().trim();
+                    // Hostname verification error
+                    Tr.error(tc, "ssl.client.handshake.error.CWPKI0824E", new Object[] { peerHost, extendedMessage });
+                    throw excpt;
+                }
+            } catch (Exception ex) {
+                throw new CertificateException(ex.getMessage());
+            }
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "Server is trusted by all X509ExtendedTrustManager.");
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.exit(tc, "checkServerTrusted");
+    }
+
+    /**
+     * @param excpt
+     * @return
+     */
+    private boolean isCertPathError(CertificateException excpt) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.entry(tc, "isCertPathError", new Object[] { excpt });
+
+        if (excpt.getCause() != null && (excpt.getCause() instanceof java.security.cert.CertPathValidatorException)) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                Tr.exit(tc, "isCertPathError cause is CertPathValidatorException " + true);
+            return true;
+        }
+
+        if (excpt.getMessage().contains("SunCertPathBuilderException") || excpt.getMessage().contains("CertPathBuilderException")) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                Tr.exit(tc, "isCertPathError, SunCertPathBuildException or CertPathBuilderException " + true);
+            return true;
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.exit(tc, "isCertPathError " + false);
+        return false;
+    }
+
+    private void processCertPathException(X509Certificate[] chain, String authType, Exception excpt, String host, int port) throws Exception {
+        // If this is a client process then we may prompt the user to accept the signer certificate
+        if (!isServer) {
+            if (!autoAccept) {
+                // prompt user
+                if (userAcceptedPrompt(chain)) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(tc, "prompt user - adding certificate to the truststore.");
+                    setCertificateToTruststore(chain);
+                } else {
+                    printClientHandshakeError(config, tsFile, excpt, chain, host, port);
+                    throw excpt;
+                }
+
+            } else {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "autoacceptsigner - adding certificate to the truststore.");
+                setCertificateToTruststore(chain);
+            }
+        } else {
+            // IBM JDK will throw the exception in obfuscated code, get the cause
+            Exception e = excpt;
+            if (e.getClass().toString().startsWith("class com.ibm.jsse2")) {
+                e = (Exception) excpt.getCause();
+            }
+
+            // This the server print a message and rethrow the exception
+            FFDCFilter.processException(e, getClass().getName(), "checkServerTrusted", this, new Object[] { chain, authType });
+            printClientHandshakeError(config, tsFile, e, chain, host, port);
+            throw e;
+        }
+
     }
 
 }

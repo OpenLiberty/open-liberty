@@ -32,6 +32,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap; //248567
 import org.w3c.dom.Node;
 
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.jsp.Constants;
 import com.ibm.ws.jsp.JspCoreException;
 import com.ibm.ws.jsp.JspOptions;
@@ -1521,6 +1522,7 @@ public class JspPageParser {
         dependencyStack.pop();
     }
 
+    @Trivial
     private int readCharacter() throws IOException {
         int character = jspReader.read();
 
@@ -1535,6 +1537,7 @@ public class JspPageParser {
         return character;
     }
 
+    @Trivial
     private int readNextCharacter() throws IOException {
         jspReader.mark(1);
         int character = jspReader.read();

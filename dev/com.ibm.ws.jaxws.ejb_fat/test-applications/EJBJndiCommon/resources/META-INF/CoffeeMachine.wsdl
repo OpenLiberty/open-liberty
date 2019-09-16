@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns1="http://common.ejbjndi.jaxws.ws.ibm.com/"
+    name="CoffeeMachine" targetNamespace="http://common.ejbjndi.jaxws.ws.ibm.com/">
+    <wsdl:types>
+        <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+            xmlns:tns="http://common.ejbjndi.jaxws.ws.ibm.com/"
+            elementFormDefault="unqualified" targetNamespace="http://common.ejbjndi.jaxws.ws.ibm.com/"
+            version="1.0">
+            <xs:element name="isSupported" type="tns:isSupported"></xs:element>
+            <xs:element name="isSupportedResponse" type="tns:isSupportedResponse"></xs:element>
+            <xs:element name="make" type="tns:make"></xs:element>
+            <xs:element name="makeResponse" type="tns:makeResponse"></xs:element>
+            <xs:complexType name="isSupported">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="arg0"
+                        type="xs:string"></xs:element>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="isSupportedResponse">
+                <xs:sequence>
+                    <xs:element name="return" type="xs:boolean"></xs:element>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="make">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="arg0"
+                        type="xs:string"></xs:element>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="makeResponse">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="return"
+                        type="tns:coffee"></xs:element>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="coffee">
+                <xs:sequence></xs:sequence>
+            </xs:complexType>
+        </xs:schema>
+    </wsdl:types>
+    <wsdl:message name="isSupported">
+        <wsdl:part element="ns1:isSupported" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="isSupportedResponse">
+        <wsdl:part element="ns1:isSupportedResponse" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="make">
+        <wsdl:part element="ns1:make" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="makeResponse">
+        <wsdl:part element="ns1:makeResponse" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:portType name="CoffeeMachine">
+        <wsdl:operation name="isSupported">
+            <wsdl:input message="ns1:isSupported" name="isSupported">
+            </wsdl:input>
+            <wsdl:output message="ns1:isSupportedResponse"
+                name="isSupportedResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="make">
+            <wsdl:input message="ns1:make" name="make">
+            </wsdl:input>
+            <wsdl:output message="ns1:makeResponse" name="makeResponse">
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:portType>
+</wsdl:definitions>

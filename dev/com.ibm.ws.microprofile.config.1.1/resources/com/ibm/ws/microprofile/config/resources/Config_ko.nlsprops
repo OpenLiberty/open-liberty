@@ -34,12 +34,12 @@ config.closed.CWMCG0001E.useraction=\uc0c8 \uad6c\uc131 \uc778\uc2a4\ud134\uc2a4
 
 # ClassLoader must not be null.
 null.classloader.CWMCG0002E=CWMCG0002E: \ud074\ub798\uc2a4 \ub85c\ub354\uac00 \ub110\uc774\uc5b4\uc11c\ub294 \uc548\ub429\ub2c8\ub2e4.
-null.classloader.CWMCG0002E.explanation=\uad6c\uc131 \ube4c\ub354\uc5d0\uc11c \uc0ac\uc6a9\ud55c \ud074\ub798\uc2a4 \ub85c\ub354\uac00 \ub110\uc774\uc5b4\uc11c\ub294 \uc548\ub429\ub2c8\ub2e4.
-null.classloader.CWMCG0002E.useraction=\ud074\ub798\uc2a4 \ub85c\ub354\ub97c \ub110\uc774 \uc544\ub2cc \uac12\uc73c\ub85c \uc124\uc815\ud558\uc2ed\uc2dc\uc624.
+null.classloader.CWMCG0002E.explanation=\uad6c\uc131 \ube4c\ub354\uc5d0\uc11c \uc0ac\uc6a9\ud55c ClassLoader\uac00 \ub110\uc774\uc5b4\uc11c\ub294 \uc548\ub429\ub2c8\ub2e4.
+null.classloader.CWMCG0002E.useraction=ClassLoader\ub97c \ub110\uc774 \uc544\ub2cc \uac12\uc73c\ub85c \uc124\uc815\ud558\uc2ed\uc2dc\uc624.
 
 # A Config instance already exists for the specified ClassLoader.
 config.already.exists.CWMCG0003E=CWMCG0003E: \uc9c0\uc815\ub41c \ud074\ub798\uc2a4 \ub85c\ub354\uc5d0 \ub300\ud55c \uad6c\uc131 \uc778\uc2a4\ud134\uc2a4\uac00 \uc774\ubbf8 \uc874\uc7ac\ud569\ub2c8\ub2e4.
-config.already.exists.CWMCG0003E.explanation=\uc9c0\uc815\ub41c \ud074\ub798\uc2a4 \ub85c\ub354\uc5d0 \ub300\ud55c \uad6c\uc131 \uc778\uc2a4\ud134\uc2a4\uac00 \uc774\ubbf8 \uc124\uc815\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+config.already.exists.CWMCG0003E.explanation=\uc9c0\uc815\ub41c ClassLoader\uc5d0 \ub300\ud55c \uad6c\uc131 \uc778\uc2a4\ud134\uc2a4\uac00 \uc774\ubbf8 \uc124\uc815\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
 config.already.exists.CWMCG0003E.useraction='releaseConfig' \uba54\uc18c\ub4dc\ub97c \uc0ac\uc6a9\ud558\uc5ec \uc774\uc804 \uc778\uc2a4\ud134\uc2a4\ub97c \uc81c\uac70\ud55c \ud6c4 \uba54\uc18c\ub4dc\ub97c \uc7ac\uc2dc\ub3c4\ud558\uc2ed\uc2dc\uc624.
 
 # Unable to close the Config instance. The exception is: {0}.
@@ -111,6 +111,16 @@ implicit.string.constructor.method.not.found.CWMCG0017E.useraction=\uc9c0\uc815\
 generic.type.variables.notsupported.CWMCG0018E=CWMCG0018E: {1} \ubcc0\ud658 \uc720\ud615\uc5d0 \ub300\ud55c {0} \uc77c\ubc18 \uc720\ud615 \ubcc0\uc218\ub294 \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 generic.type.variables.notsupported.CWMCG0018E.explanation=List<T> \ub4f1\uc758 \uc77c\ubc18 \uc720\ud615 \ubcc0\uc218\ub97c \uc0ac\uc6a9\ud55c \ubcc0\ud658\uc774 \uc2dc\ub3c4\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \uc774\ub294 \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 generic.type.variables.notsupported.CWMCG0018E.useraction=\uadf8 \ub300\uc2e0\uc5d0 List<String> \ub4f1\uc758 \uad6c\uccb4\uc801 \uc778\uc218 \uc720\ud615\uc744 \uc0ac\uc6a9\ud558\uc2ed\uc2dc\uc624.
+
+# Failed to start the {0} ConfigSource refresher process.
+failed.to.start.refresher.CWMCG0019E=CWMCG0019E: {0} ConfigSource \uc0c8\ub85c \uace0\uce58\uae30 \ud504\ub85c\uc138\uc2a4 \uc2dc\uc791\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
+failed.to.start.refresher.CWMCG0019E.explanation=\uc9c0\uc815\ub41c ConfigSource\uc758 \ubcc0\uacbd\uc0ac\ud56d\uc740 \uad6c\uc131 \uc778\uc2a4\ud134\uc2a4\uc5d0 \ubc18\uc601\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+failed.to.start.refresher.CWMCG0019E.useraction=\uc11c\ubc84 message.log \ubc0f FFDC \ub85c\uadf8\ub97c \uac80\ud1a0\ud558\uc5ec \ubb38\uc81c\uc810\uc744 \uc2dd\ubcc4\ud558\uc2ed\uc2dc\uc624.
+
+# Failed to start the {0} ConfigSource refresher process. The exception is: {1}.
+failed.to.start.refresher.exception.CWMCG0020E=CWMCG0020E: {0} ConfigSource \uc0c8\ub85c \uace0\uce58\uae30 \ud504\ub85c\uc138\uc2a4 \uc2dc\uc791\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4. \uc608\uc678\ub294 {1}\uc785\ub2c8\ub2e4.
+failed.to.start.refresher.exception.CWMCG0020E.explanation=\uc9c0\uc815\ub41c ConfigSource\uc758 \ubcc0\uacbd\uc0ac\ud56d\uc740 \uad6c\uc131 \uc778\uc2a4\ud134\uc2a4\uc5d0 \ubc18\uc601\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+failed.to.start.refresher.exception.CWMCG0020E.useraction=\uc11c\ubc84 message.log \ubc0f FFDC \ub85c\uadf8\ub97c \uac80\ud1a0\ud558\uc5ec \ubb38\uc81c\uc810\uc744 \uc2dd\ubcc4\ud558\uc2ed\uc2dc\uc624.
 
 # Environment Variables Config Source
 environment.variables.config.source=\ud658\uacbd \ubcc0\uc218 \uad6c\uc131 \uc18c\uc2a4

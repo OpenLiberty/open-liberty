@@ -120,6 +120,7 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
      */
     @Override
     public void init(VirtualConnection inVC) {
+
         this.vcHashCode = inVC.hashCode();
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "init, vc=" + getVCHash());
@@ -136,10 +137,12 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
             if (SSLChannelConstants.OPTIONAL_DEFAULT_OFF_20.equalsIgnoreCase(CHFWBundle.getServletConfiguredHttpVersionSetting())) {
                 if (getChannel().getUseH2ProtocolAttribute() != null && getChannel().getUseH2ProtocolAttribute()) {
                     http2Enabled = true;
+                    this.sslChannel.checkandInitALPN();
                 }
             } else if (SSLChannelConstants.OPTIONAL_DEFAULT_ON_20.equalsIgnoreCase(CHFWBundle.getServletConfiguredHttpVersionSetting())) {
                 if (getChannel().getUseH2ProtocolAttribute() == null || getChannel().getUseH2ProtocolAttribute()) {
                     http2Enabled = true;
+                    this.sslChannel.checkandInitALPN();
                 }
             }
         }
@@ -429,11 +432,20 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
         @Override
         public void error(IOException ioe) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                Tr.entry(tc, "error (handshake), vc=" + getVCHash());
+                Tr.debug(tc, "error (handshake), vc=" + getVCHash());
             }
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Caught exception during unwrap, " + ioe);
             }
+
+            // cleanup possible ALPN resources
+            if (flowType == FlowType.INBOUND) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Cleanup possible ALPN resources - error callback");
+                }
+                AlpnSupportUtils.getAlpnResult(getSSLEngine(), this.connLink);
+            }
+
             if (decryptedNetBuffer != null) {
                 decryptedNetBuffer.release();
                 decryptedNetBuffer = null;
@@ -694,6 +706,9 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
         encryptedAppBuffer.release();
 
         if (hsStatus == HandshakeStatus.FINISHED) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Cleanup possible ALPN resources - handshake finished");
+            }
             AlpnSupportUtils.getAlpnResult(getSSLEngine(), this);
 
             // PK16095 - take certain actions when the handshake completes
@@ -725,12 +740,16 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
         } else {
             // Unknown result from handshake. All other results should have thrown exceptions.
             // Clean up buffers used during read.
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Unhandled result from SSL engine: " + hsStatus);
+                Tr.debug(tc, "Cleanup possible ALPN resources on unhandled results");
+            }
+            AlpnSupportUtils.getAlpnResult(getSSLEngine(), this);
+
             netBuffer.release();
             getDeviceReadInterface().setBuffers(null);
             decryptedNetBuffer.release();
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Unhandled result from SSL engine: " + hsStatus);
-            }
+
             SSLException ssle = new SSLException("Unhandled result from SSL engine: " + hsStatus);
             FFDCFilter.processException(ssle, getClass().getName(), "401", this);
             close(getVirtualConnection(), ssle);
@@ -856,7 +875,6 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
             }
             exception = new IOException("Unexpected results of handshake after connect, " + hsStatus);
         }
-        AlpnSupportUtils.getAlpnResult(getSSLEngine(), this);
 
         // PK16095 - take certain actions when the handshake completes
         getChannel().onHandshakeFinish(getSSLEngine());

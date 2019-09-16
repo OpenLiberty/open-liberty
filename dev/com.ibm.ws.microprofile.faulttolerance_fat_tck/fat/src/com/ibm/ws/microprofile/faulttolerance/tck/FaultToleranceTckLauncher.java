@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.faulttolerance.tck;
 
+import java.util.Collections;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -21,6 +23,7 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.custom.junit.runner.TestModeFilter;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.MvnUtils;
 
@@ -95,7 +98,7 @@ public class FaultToleranceTckLauncher {
     /**
      * Run the TCK (controlled by autoFVT/publish/tckRunner/tcl/tck-suite.html)
      *
-     * On Java EE7 the TCK will only run if the mode is full, otherwise it will be skipped entirely. 
+     * On Java EE7 the TCK will only run if the mode is full, otherwise it will be skipped entirely.
      *
      * @throws Exception
      */
@@ -118,7 +121,10 @@ public class FaultToleranceTckLauncher {
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
     public void launchFaultToleranceTCKEE8() throws Exception {
-        MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.microprofile.faulttolerance_fat_tck", this.getClass() + ":launchFaultToleranceTCK");
+        boolean isFullMode = TestModeFilter.shouldRun(TestMode.FULL);
+        String suiteFileName = isFullMode ? "tck-suite.xml" : "tck-suite-lite.xml";
+        MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.microprofile.faulttolerance_fat_tck", this.getClass() + ":launchFaultToleranceTCK", suiteFileName,
+                              Collections.emptyMap(), Collections.emptySet());
     }
 
 }

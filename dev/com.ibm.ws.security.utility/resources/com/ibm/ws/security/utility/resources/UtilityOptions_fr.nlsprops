@@ -136,6 +136,20 @@ sslCert.option-key.sigAlg=\ \ \ \ --sigAlg=signature algorithm
 sslCert.option-desc.sigAlg=\tAlgorithme de signature du certificat.\n\
 \tL''algorithme de signature par d\u00e9faut est {8}.
 
+sslCert.option-key.keyType=\ \ \ \ --keyType
+sslCert.option-desc.keyType=\tFacultatif. Par d\u00e9faut, un magasin de cl\u00e9s PKCS12 est g\u00e9n\u00e9r\u00e9. Pour\n\
+\tg\u00e9n\u00e9rer un magasin de cl\u00e9s JKS, sp\u00e9cifiez l''option --keyType avec la valeur\n\
+\tJKS. Il n''est pas n\u00e9cessaire de sp\u00e9cifier cette option si vous voulez g\u00e9n\u00e9rer un magasin de cl\u00e9s\n\
+\tPKCS12.\n\
+\tLe format PKCS12 pr\u00e9sente plusieurs avantages : il est plus extensible ; il prend en charge\n\
+\tdes algorithmes de cryptographie plus forts ; il a \u00e9t\u00e9 largement adopt\u00e9. Il est\n\
+\tfr\u00e9quemment fourni par les autorit\u00e9s de certification lors de l''\u00e9mission de\n\
+\tcertificats.
+
+sslCert.option-key.ext=\ \ \ \ --extInfo=informations d''extension de certificat
+sslCert.option-desc.ext=\tInformations d''extension de certificat \u00e0 ajouter au certificat.\n\
+\tL''extension par d\u00e9faut est une entr\u00e9e Subject Alternative Name (SAN) qui utilise\n\
+\tle nom d''h\u00f4te.
 
 # -------- CREATE LTPA KEYS OPTIONS --------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.

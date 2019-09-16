@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2014 IBM Corporation and others.
+ * Copyright (c) 2009, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,8 @@
 package com.ibm.ws.http.dispatcher.internal;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -44,6 +46,7 @@ import com.ibm.wsspi.http.EncodingUtils;
 import com.ibm.wsspi.http.HttpDateFormat;
 import com.ibm.wsspi.http.VirtualHostListener;
 import com.ibm.wsspi.http.WorkClassifier;
+import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 import com.ibm.wsspi.http.ee7.HttpTransportBehavior;
 import com.ibm.wsspi.kernel.service.utils.MetatypeUtils;
 import com.ibm.wsspi.timer.ApproximateTime;
@@ -101,6 +104,12 @@ public class HttpDispatcher {
     static final String PROP_WC_TRUSTED = "trusted";
 
     /**
+     * Property that allows the user to restrict using private headers to requests
+     * originating from certain hosts.
+     */
+    static final String PROP_TRUSTED_SENSITIVE_HEADER_ORIGIN = "trustedSensitiveHeaderOrigin";
+
+    /**
      * Active HttpDispatcher instance. May be null between deactivate and activate
      * calls.
      */
@@ -125,9 +134,18 @@ public class HttpDispatcher {
     /** PM97514 - restrict using private headers to specific endpoints */
     private volatile boolean usePrivateHeaders = true;
     /** PM97514 - restrict using private headers to specific endpoints */
-    private volatile String[] restrictPrivateHeaderOrigin = null;
+    private volatile HashSet<String> restrictPrivateHeaderOrigin = null;
     /** PM97514 - webcontainer trusted attribute */
     private volatile boolean wcTrusted = true;
+
+    /** keep original value recieved from config for negotiating between dispatcher & webcontainer settings */
+    private volatile String[] origSensitiveHeaderOrigin = null;
+    /** restrict using private headers to specific endpoints */
+    private volatile boolean useSensitivePrivateHeaders = false;
+    private volatile HashSet<String> restrictSensitiveHeaderOrigin = null;
+
+    /** private headers defined as sensitive */
+    private static final HashSet<String> sensitiveHeaderList = new HashSet<String>(Arrays.asList("$WSCC", "$WSRA", "$WSRH", "$WSAT", "$WSRU"));
 
     private static final StaticValue<AtomicInteger> updateCount = StaticValue.createStaticValue(new Callable<AtomicInteger>() {
         @Override
@@ -205,7 +223,12 @@ public class HttpDispatcher {
                                                           config.get(PROP_TRUSTED_PRIVATE_HEADER_ORIGIN),
                                                           new String[] { "*" });
 
-        parseTrustedPrivateHeaderOrigin(origHeaderOrigin);
+        origSensitiveHeaderOrigin = MetatypeUtils.parseStringArray(CONFIG_ALIAS,
+                                                                   PROP_TRUSTED_SENSITIVE_HEADER_ORIGIN,
+                                                                   config.get(PROP_TRUSTED_SENSITIVE_HEADER_ORIGIN),
+                                                                   new String[] { "none" });
+
+        parseTrustedPrivateHeaderOrigin(origHeaderOrigin, origSensitiveHeaderOrigin);
     }
 
     public static Boolean isWelcomePageEnabled() {
@@ -261,52 +284,123 @@ public class HttpDispatcher {
     }
 
     /**
-     * Check the configuration map for the property that allows the use of
-     * the private headers to be constrained.
-     * <p>
-     * By default, private headers will always be used.
-     * This setting can be used to limit the use of the private headers
-     * to trusted source IP addresses.
+     * Parses the three private header config properties we have: trusted, trustedHeaderOrigin, and trustedSensitiveHeaderOrigin.
+     * 
+     * This class uses these internal flags to keep track of private header behavior:
+     * wcTrusted - true if any private headers are allowed; false if no private headers are allowed
+     * usePrivateHeaders - true if non-sensitive headers are allowed for some hosts
+     * useSensitivePrivateHeaders - true if sensitive headers are allowed for some hosts
+     * restrictPrivateHeaderOrigin - a list of hosts trusted for private headers; if null, any host is trusted
+     * restrictSensitiveHeaderOrigin - a list of hosts trusted for sensitive headers; if null, no host is trusted
+     * 
+     * @param trustedPrivateHeaderHosts String[] of hosts to trust for non-sensitive private headers
+     * @param trustedSensitiveHeaderHosts String[] of hosts to trust for sensitive private headers
      */
-    private synchronized void parseTrustedPrivateHeaderOrigin(String[] value) {
+    private synchronized void parseTrustedPrivateHeaderOrigin(String[] trustedPrivateHeaderHosts, String[] trustedSensitiveHeaderHosts) {
         // bump the updated count every time we call this.
         updateCount.get().incrementAndGet();
 
-        // PM97514 - allow restricting the use of private headers to requests coming from specific IP addresses
-        List<String> addrs = new ArrayList<String>();
+        // restore defaults
+        restrictPrivateHeaderOrigin = null;
+        restrictSensitiveHeaderOrigin = null;
+        usePrivateHeaders = true;
+        useSensitivePrivateHeaders = false;
 
-        // HttpDispatcher trustedHeaderOrigin value is used if the value is not the default, *
-        // If the value is *, check WebContainer trusted attribute: If trusted=false (not the default),
-        // set trustedHeaderOrigin=none
-        if (null != value) {
-            for (String ipaddr : value) {
-                if ("none".equalsIgnoreCase(ipaddr)
-                    || (!wcTrusted && "*".equals(ipaddr))) {
-                    // If the dispatcher setting contains "none"
-                    // OR the dispatcher setting contains the default "*" while trusted headers were disabled on the webcontainer,
-                    // then we don't trust host headers at all. who cares where from.
+        // If trusted=false (non-default), don't allow private headers from any host, regardless of other settings
+        if (!wcTrusted) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "webcontainer trusted=false; private headers are not trusted from any host");
+            }
+            usePrivateHeaders = false;
+            return;
+        }
+
+        // Parse trustedHeaderOrigin.  The default value is * (any host)
+        List<String> addrs = new ArrayList<String>();
+        if (trustedPrivateHeaderHosts != null && trustedPrivateHeaderHosts.length > 0) {
+            for (String ipaddr : trustedPrivateHeaderHosts) {
+                if ("none".equalsIgnoreCase(ipaddr)) {
+                    // if "none" is listed, private headers are not trusted on any host.
+                    // however any hosts listed in trustedSensitiveHeaderOrigin can still send private headers
                     usePrivateHeaders = false;
-                    restrictPrivateHeaderOrigin = null;
-                    return;
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "trusted private headers hosts: none");
+                    }
+                    break;
                 } else if ("*".equals(ipaddr)) {
                     // stop processing, empty the list, fall through to below.
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "trusted private headers hosts: *");
+                    }
                     addrs.clear();
                     break;
                 } else {
                     addrs.add(ipaddr);
                 }
             }
-        }
-
-        // yes, trust/use private headers for virtual host selection
-        usePrivateHeaders = true;
-
-        // if ip addresses were specified, only use the private header if the
-        // request came from one of the accepted IP addresses.
-        if (addrs.isEmpty()) {
-            restrictPrivateHeaderOrigin = null;
         } else {
-            restrictPrivateHeaderOrigin = addrs.toArray(new String[0]);
+            // no trusted header hosts were defined, use defualt - "*"
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "trusted private headers hosts: *");
+            }
+        }
+        if (usePrivateHeaders) {
+            // if IP addresses were listed, only trust private headers from those hosts
+            if (!addrs.isEmpty()) {
+                restrictPrivateHeaderOrigin = new HashSet<String>();
+                for (String s : addrs) {
+                    if (s != null && !s.isEmpty()) {
+                        restrictPrivateHeaderOrigin.add(s.toLowerCase());
+                    }
+                }
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "trusted private headers hosts: " + Arrays.toString(addrs.toArray()));
+                }
+            }
+        }
+        addrs.clear();
+
+        // Parse trustedSensiveHeaderOrigin.  The default value is none (no hosts trusted)
+        if (trustedSensitiveHeaderHosts != null && trustedSensitiveHeaderHosts.length > 0) {
+            for (String ipaddr : trustedSensitiveHeaderHosts) {
+                if ("none".equalsIgnoreCase(ipaddr)) {
+                    // don't trust sensitive private headers from any host
+                    useSensitivePrivateHeaders = false;
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "trusted sensitive private headers hosts: none");
+                    }
+                    return;
+                } else if ("*".equals(ipaddr)) {
+                    // sensitive private headers trusted from any host
+                    addrs.clear();
+                    useSensitivePrivateHeaders = true;
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "trusted sensitive private headers hosts: *");
+                    }
+                    break;
+                } else {
+                    addrs.add(ipaddr);
+                    useSensitivePrivateHeaders = true;
+                }
+            }
+        } else {
+            // no trusted sensitive header hosts were defined, use defualt - "none"
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "trusted sensitive private headers hosts: none");
+            }
+            return;
+        }
+        // if IP addresses were listed, only trust sensitive private headers from those hosts
+        if (!addrs.isEmpty()) {
+            restrictSensitiveHeaderOrigin = new HashSet<String>();
+            for (String s : addrs) {
+                if (s != null && !s.isEmpty()) {
+                    restrictSensitiveHeaderOrigin.add(s.toLowerCase());
+                }
+            }
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "trusted sensitive private headers hosts: " + Arrays.toString(addrs.toArray()));
+            }
         }
     }
 
@@ -314,36 +408,85 @@ public class HttpDispatcher {
      * @return true if private headers should be used (the default is true)
      */
     public static boolean usePrivateHeaders(String hostAddr) {
-        HttpDispatcher f = instance.get().get();
-        if (f != null) {
-            return f.originIsTrusted(hostAddr);
-        }
-
-        // we don't know, use the default.
-        return true;
+        return usePrivateHeaders(hostAddr, null);
     }
 
     /**
-     * Check to see if the source host address is one we allow
-     * for specification of private headers
+     * @return true if private headers should be used (the default is true)
+     */
+    public static boolean usePrivateHeaders(String hostAddr, String headerName) {
+        HttpDispatcher f = instance.get().get();
+
+        if (f != null) {
+            return f.isTrusted(hostAddr, headerName);
+        }
+
+        // we don't know, use the default.
+        if (headerName != null && HttpHeaderKeys.isSensitivePrivateHeader(headerName)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /**
+     * Check to see if the source host address is one we allow for specification of private headers
+     * 
+     * This takes into account the hosts defined in trustedHeaderOrigin and trustedSensitiveHeaderOrigin.  Note, 
+     * trustedSensitiveHeaderOrigin takes precedence over trustedHeaderOrigin; so if trustedHeaderOrigin="none" 
+     * while trustedSensitiveHeaderOrigin="*", non-sensitive headers will still be trusted for all hosts.
      *
      * @param hostAddr The source host address
-     * @return true if this is a trusted source of private headers
+     * @return true if hostAddr is a trusted source of private headers
      */
-    private boolean originIsTrusted(String hostAddr) {
-        if (!usePrivateHeaders) // no headers at all.
+    public boolean isTrusted(String hostAddr, String headerName) {
+        if (!wcTrusted) {
             return false;
-
-        if (restrictPrivateHeaderOrigin == null)
-            return true;
-
-        // Look for an IP address match
-        for (String host : restrictPrivateHeaderOrigin) {
-            if (host.equalsIgnoreCase(hostAddr)) {
-                return true;
-            }
         }
-        return false;
+        if (hostAddr == null) {
+            // no host address information passed in; return the default value 
+            return this.usePrivateHeaders;
+        }
+        if (HttpHeaderKeys.isSensitivePrivateHeader(headerName)) {
+            // if this is a sensitive private header, check trustedSensitiveHeaderOrigin values
+            return isTrustedForSensitiveHeaders(hostAddr);
+        }
+        if (!usePrivateHeaders) {
+            // trustedHeaderOrigin list is explicitly set to "none"
+            return isTrustedForSensitiveHeaders(hostAddr);
+        }
+        if (restrictPrivateHeaderOrigin == null) {
+            // trustedHeaderOrigin list is set to "*"
+            return true;
+        } else {
+            // check trustedHeaderOrigin for given host IP
+            boolean trustedOrigin = restrictPrivateHeaderOrigin.contains(hostAddr.toLowerCase());
+            if (!trustedOrigin) {
+                // if hostAddr is not in trustedHeaderOrigin, allow trustedSensitiveHeaderOrigin to override trust
+                trustedOrigin = isTrustedForSensitiveHeaders(hostAddr);
+            }
+            return trustedOrigin;
+        }
+    }
+
+    /**
+     * Check to see if the source host address is one we allow for specification of sensitive private headers
+     *
+     * @param hostAddr The source host address
+     * @return true if hostAddr is a trusted source of sensitive private headers
+     */
+    public boolean isTrustedForSensitiveHeaders(String hostAddr) {
+        if (!useSensitivePrivateHeaders) {
+            // trustedSensitiveHeaderOrigin list is either unset (defaults to "none") or explicitly set to "none"
+            return false;
+        }
+        if (restrictSensitiveHeaderOrigin == null) {
+            // trustedSensitiveHeaderOrigin is set to "*"
+            return true;
+        } else {
+            // check trustedSensitiveHeaderOrigin list for given host IP
+            return restrictSensitiveHeaderOrigin.contains(hostAddr.toLowerCase());
+        }
     }
 
     /**
@@ -580,11 +723,13 @@ public class HttpDispatcher {
         boolean newTrusted = MetatypeUtils.parseBoolean("webContainer", PROP_WC_TRUSTED,
                                                         ref.getProperty(PROP_WC_TRUSTED), true);
 
-        if (newTrusted != wcTrusted) {
+        if (newTrusted != wcTrusted) {    
             wcTrusted = newTrusted;
 
             // Check the value of trusted headers..
-            parseTrustedPrivateHeaderOrigin(origHeaderOrigin);
+            parseTrustedPrivateHeaderOrigin(origHeaderOrigin, origSensitiveHeaderOrigin);
+            // increment updateCount so listeners know the config has updated
+            updateCount.get().getAndIncrement();
         }
     }
 

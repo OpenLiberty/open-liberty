@@ -16,7 +16,11 @@ src: \
 	test-applications/EJB3INJSABean.jar/src, \
 	test-applications/EJB3INJSAWeb.war/src, \
 	test-applications/InjectionMiscBean.jar/src, \
-	test-applications/InjectionMiscWeb.war/src
+	test-applications/InjectionMiscWeb.war/src, \
+	test-applications/EJB3INJSXBean.jar/src, \
+	test-applications/EJB3INJEJBXBean.jar/src, \
+	test-applications/OtherEJB.jar/src, \
+	test-applications/EJB3INJSXWeb.war/src
 
 fat.project: true
 
@@ -24,8 +28,10 @@ tested.features: \
 	servlet-4.0, ejbLite-3.2
 
 -buildpath: \
+	com.ibm.ws.org.apache.yoko.corba.spec.1.5;version=latest,\
 	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
 	com.ibm.websphere.javaee.ejb.3.1;version=latest,\
+	com.ibm.websphere.javaee.jms.2.0;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	com.ibm.websphere.javaee.transaction.1.1; version=latest, \
 	com.ibm.websphere.security; version=latest, \

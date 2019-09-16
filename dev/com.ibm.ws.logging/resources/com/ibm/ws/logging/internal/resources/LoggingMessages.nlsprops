@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2018 IBM Corporation and others.
+# Copyright (c) 2011, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -135,6 +135,26 @@ FAILED_TO_WRITE_LOG.useraction=Ensure that the directory exists, is writable, an
 LOG_FILE_RESUMED=TRAS3006I: Logging messages to the {0} file has resumed.
 LOG_FILE_RESUMED.explanation=Messages can be written to the file.
 LOG_FILE_RESUMED.useraction=No action is required.
+
+JSON_FIELDS_FORMAT_WARNING=TRAS3007W: The JSON logging field name mapping is incorrectly formatted.
+JSON_FIELDS_FORMAT_WARNING.explanation=The JSON logging field name mapping is incorrectly formatted.
+JSON_FIELDS_FORMAT_WARNING.useraction=Ensure the format of the JSON logging field name mapping property is correct. The JSON field name mapping can be specified in a number of ways, specified in the logging configuration documentation.
+
+JSON_FIELDS_FORMAT_WARNING_2=TRAS3008W: The JSON logging field name mapping property has too many or too few tokens in an entry.
+JSON_FIELDS_FORMAT_WARNING_2.explanation=The JSON logging field name mapping property must be formatted defaultFieldName:newFieldName or source:defaultFieldName:newFieldName.
+JSON_FIELDS_FORMAT_WARNING_2.useraction=The JSON logging field name mapping property must be formatted defaultFieldName:newFieldName or source:defaultFieldName:newFieldName.
+
+JSON_FIELDS_NO_MATCH=TRAS3009W: Provided JSON logging field name does not match one of the known field names for the specified source(s)
+JSON_FIELDS_NO_MATCH.explanation=Provided JSON logging field name does not match one of the known field names
+JSON_FIELDS_NO_MATCH.useraction=Please provide a JSON logging field name that matches one of the known fields (e.g. message, ibm_datetime, ibm_sequence)
+
+JSON_FIELDS_INCORRECT_EVENT_TYPE=TRAS3010W: The provided JSON logging field mapping source identifier does not match one of the known sources
+JSON_FIELDS_INCORRECT_EVENT_TYPE.explanation=The accepted sources are: message, trace, accessLog, ffdc, audit
+JSON_FIELDS_INCORRECT_EVENT_TYPE.useraction=The accepted sources are: message, trace, accessLog, ffdc, audit
+
+JSON_FIELDS_INVALID_CHARACHTER=TRAS3011W: An invalid character was provided in the JSON logging field name mapping property
+JSON_FIELDS_INVALID_CHARACHTER.explanation= Only letters, numbers, and : are accepted in the JSON logging field name mapping property
+JSON_FIELDS_INVALID_CHARACHTER.useraction= Change your JSON logging field name mapping property value to remove invalid characters
 
 # Note: no 9999 message kept here because saving footprint space is more important
 

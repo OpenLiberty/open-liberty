@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,13 +10,16 @@
  *******************************************************************************/
 package com.ibm.ws.security.wim.registry.util;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -24,6 +27,7 @@ import org.junit.Test;
 import org.junit.rules.TestRule;
 
 import com.ibm.ws.security.wim.CoreSetup;
+import com.ibm.ws.security.wim.registry.dataobject.IDAndRealm;
 import com.ibm.wsspi.security.wim.exception.EntityNotFoundException;
 import com.ibm.wsspi.security.wim.model.Root;
 
@@ -80,4 +84,17 @@ public class BridgeUtilsTest {
         assertNull("Expected NULL when no entity is returned.", result);
     }
 
+    @Test
+    public void separateIDAndRealm() throws Exception {
+        BridgeUtils bridgeUtils = new BridgeUtils(null, null);
+
+        Set virtualRealms = new HashSet();
+        virtualRealms.add(null);
+        Map virtualRealmsDelimiter = new HashMap();
+        virtualRealmsDelimiter.put(null, "/");
+        IDAndRealm idAndRealm = bridgeUtils.separateIDAndRealm("uid=test//,o=ibm.com", "defaultRealm", "/", virtualRealms, virtualRealmsDelimiter);
+        assertEquals("/", idAndRealm.getDelimiter());
+        assertEquals("uid=test//,o=ibm.com", idAndRealm.getId());
+        assertEquals("defaultRealm", idAndRealm.getRealm());
+    }
 }

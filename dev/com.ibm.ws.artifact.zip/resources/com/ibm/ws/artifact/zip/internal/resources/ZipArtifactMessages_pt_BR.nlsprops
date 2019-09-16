@@ -22,14 +22,92 @@
 #   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
 #   (single quote must be coded as one single quote '). 
 
+# # A file path.
 bad.zip.data=CWWKM0101E: O sistema n\u00e3o p\u00f4de processar dados do archive para {0}.
 bad.zip.data.explanation=Ocorreu uma exce\u00e7\u00e3o ao processar os dados compactados para o archive. 
 bad.zip.data.useraction=Verifique se o arquivo \u00e9 um archive v\u00e1lido.
 
-remove.cache.data=CWWKM0102W: O sistema limpou dados em cache inv\u00e1lidos do local {0}
+# # A file path.
+remove.cache.data=CWWKM0102W: O sistema limpou dados em cache inv\u00e1lidos do local {0}.
 remove.cache.data.explanation=A estrutura do aplicativo parece ter sido alterada, requerendo a exclus\u00e3o de dados em cache com base na estrutura anterior.
 remove.cache.data.useraction=Se seu aplicativo tiver alterado a estrutura, isto \u00e9 esperado.
 
+# # {0} The text of the message from an exception.
 extract.cache.fail=CWWKM0103E: O sistema n\u00e3o p\u00f4de extrair um archive aninhado em um local de cache devido a {0}
 extract.cache.fail.explanation=Ocorreu um erro durante a cria\u00e7\u00e3o de dados em cache para o aplicativo, impedindo que o aplicativo fosse processado corretamente. 
 extract.cache.fail.useraction=Verifique a causa relatada.
+
+# # {0} A file path.
+extract.cache.null=CWWKM0104E: O sistema n\u00e3o p\u00f4de extrair o archive aninhado {0} para um local do cache.
+extract.cache.null.explanation=Ocorreu um erro durante a cria\u00e7\u00e3o de dados em cache para o aplicativo, impedindo que o aplicativo fosse processado corretamente. 
+extract.cache.null.useraction=Verifique se o archive aninhado \u00e9 um archive v\u00e1lido.
+
+# # {0} A file path.
+extract.secondary.timeout=CWWKM0105E: Tempo limite da extra\u00e7\u00e3o secund\u00e1ria para {0}.
+extract.secondary.timeout.explanation=Uma solicita\u00e7\u00e3o simult\u00e2nea para extrair um archive aninhado atingiu o tempo limite ao esperar a extra\u00e7\u00e3o inicial ser conclu\u00edda.
+extract.secondary.timeout.useraction=Verifique se o archive aninhado \u00e9 um archive v\u00e1lido.
+
+# # {0} A file path
+extract.secondary.failed=CWWKM0106E: Falha na extra\u00e7\u00e3o secund\u00e1ria para {0}.
+extract.secondary.failed.explanation=Uma solicita\u00e7\u00e3o simult\u00e2nea para extrair um archive aninhado foi conclu\u00edda, mas n\u00e3o extraiu o archive aninhado.
+extract.secondary.failed.useraction=Verifique se o archive aninhado \u00e9 um archive v\u00e1lido.
+
+# # {0} A file path
+extract.secondary.notfile=CWWKM0107E: A extra\u00e7\u00e3o secund\u00e1ria n\u00e3o criou um arquivo simples para {0}.
+extract.secondary.notfile.explanation=Uma solicita\u00e7\u00e3o simult\u00e2nea para extrair um archive aninhado foi conclu\u00edda, mas n\u00e3o produziu um arquivo simples.
+extract.secondary.notfile.useraction=Verifique se o archive aninhado \u00e9 um archive v\u00e1lido.
+
+# # {0} A file path
+extract.secondary.inconsistent=CWWKM0108E: Tempos inconsistentes de extra\u00e7\u00e3o secund\u00e1ria para {0}.
+extract.secondary.inconsistent.explanation=Uma solicita\u00e7\u00e3o simult\u00e2nea para extrair um archive aninhado foi conclu\u00edda, mas produziu um arquivo diferente do esperado.
+extract.secondary.inconsistent.useraction=Verifique se o archive aninhado \u00e9 um archive v\u00e1lido.
+
+# # {0} A file path
+extract.primary.directory=CWWKM0109E: A extra\u00e7\u00e3o anterior de {0} \u00e9 um diret\u00f3rio.
+extract.primary.directory.explanation=Uma extra\u00e7\u00e3o de um archive aninhado detectou um diret\u00f3rio como o archive extra\u00eddo anterior.
+extract.primary.directory.useraction=Limpe e depois reinicie o servidor para assegurar que n\u00e3o haja qualquer conte\u00fado em cache anterior presente.
+
+# # {0} A file path
+extract.primary.untyped=CWWKM0110E: A extra\u00e7\u00e3o anterior de {0} n\u00e3o pode ser tipificada.
+extract.primary.untyped.explanation=Uma extra\u00e7\u00e3o de um archive aninhado detectou um arquivo n\u00e3o tipific\u00e1vel como o archive extra\u00eddo anterior.
+extract.primary.untyped.useraction=Limpe e depois reinicie o servidor para assegurar que n\u00e3o haja qualquer conte\u00fado em cache anterior presente.
+
+# # {0} A file path.
+# # {1} A print name
+reaper.inactive=CWWKM0121W: N\u00e3o \u00e9 poss\u00edvel abrir {0}: o cache de archive {1} est\u00e1 inativo.
+reaper.inactive.explanation=Falha na solicita\u00e7\u00e3o para abrir o archive porque o cache de archive n\u00e3o est\u00e1 ativo.
+reaper.inactive.useraction=Esta mensagem indica um erro de programa\u00e7\u00e3o interno.
+
+# # {0} A file path
+reaper.unregistered.path=CWWKM0122W: Ignorando a solicita\u00e7\u00e3o de fechamento para o archive {0}, que n\u00e3o est\u00e1 aberto.
+reaper.unregistered.path.explanation=O processamento de fechamento de archive foi solicitado para um archive que n\u00e3o estava aberto.
+reaper.unregistered.path.useraction=Estas mensagens indicam um erro de programa\u00e7\u00e3o interno.
+
+# # {0} A file path
+reaper.closed.path=CWWKM0123W: Ignorando solicita\u00e7\u00e3o de fechamento para o archive {0}, que j\u00e1 estava fechado.
+reaper.closed.path.explanation=O processamento de fechamento de archive foi solicitado para um archive que j\u00e1 estava fechado.
+reaper.closed.path.useraction=Estas mensagens indicam um erro de programa\u00e7\u00e3o interno.
+
+# # {0} A file path
+reaper.pending.path=CWWKM0243W: Ignorando solicita\u00e7\u00e3o de fechamento para o archive {0}, cujo encerramento j\u00e1 est\u00e1 pendente {0}.
+reaper.pending.path.explanation=O processamento de fechamento de archive foi solicitado para um archive que j\u00e1 tem um encerramento pendente.
+reaper.pending.path.useraction=Estas mensagens indicam um erro de programa\u00e7\u00e3o interno.
+
+# # {0} A file path
+# # {1} An integer representing a file length
+# # {2} An integer representing a file length
+reaper.unexpected.length.change=CWWKM0125W: Archive {0}: atualizar dura\u00e7\u00e3o de {1} para {2}.
+reaper.unexpected.length.change.explanation=Foi feita uma atualiza\u00e7\u00e3o inesperada em um archive de aplicativo enquanto esse archive estava aberto.  Geralmente, isso acontece porque foi feita uma atualiza\u00e7\u00e3o din\u00e2mica nos arquivos de aplicativo.
+reaper.unexpected.length.change.useraction=Inicie novamente o servidor.  Ao atualizar arquivos de aplicativo, aguarde o servidor entrar em modo quiesce e aguarde pelo menos meio segundo para os arquivos de aplicativo serem encerrados.
+
+# # {0} A file path
+# # {1} An integer representing a last modified time
+# # {2} An integer representing a last modified time
+reaper.unexpected.lastmodified.change=CWWKM0126W: Archive {0}: atualizar \u00faltima modifica\u00e7\u00e3o de {1} para {2}.
+reaper.unexpected.lastmodified.change.explanation=Foi feita uma atualiza\u00e7\u00e3o inesperada em um archive de aplicativo enquanto esse archive estava aberto.  Geralmente, isso acontece porque foi feita uma atualiza\u00e7\u00e3o din\u00e2mica nos arquivos de aplicativo.
+reaper.unexpected.lastmodified.change.useraction=Inicie novamente o servidor.  Ao atualizar arquivos de aplicativo, aguarde o servidor entrar em modo quiesce e aguarde pelo menos meio segundo para os arquivos de aplicativo serem encerrados.
+
+# # {0} A file path
+reaper.reopen.active=CWWKM0127W: Reabrir {0}
+reaper.reopen.active.explanation=Uma mudan\u00e7a inesperada fez com que um archive de aplicativo aberto fosse reaberto.  O servidor tentou obter o conte\u00fado atualizado do archive, mas pode n\u00e3o ter atualizado completamente as listagens internas do conte\u00fado do archive.
+reaper.reopen.active.useraction=Inicie novamente o servidor.  Ao atualizar arquivos de aplicativo, aguarde o servidor entrar em modo quiesce e aguarde pelo menos meio segundo para os arquivos de aplicativo serem encerrados.

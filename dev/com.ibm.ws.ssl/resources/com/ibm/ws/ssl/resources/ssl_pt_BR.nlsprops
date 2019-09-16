@@ -742,3 +742,22 @@ ssl.defaultKeyStore.loaded.CWPKI0821I.useraction=Nenhuma a\u00e7\u00e3o \u00e9 n
 ssl.defaultKeyStore.loaded.jksAndPKCS12Exist.CWPKI0822W=CWPKI0822W: Uma configura\u00e7\u00e3o m\u00ednima de keystore padr\u00e3o foi especificada e os keystores key.jks e key.p12 existem no local do keystore padr\u00e3o. O keystore key.jks ser\u00e1 usado como o keystore padr\u00e3o.
 ssl.defaultKeyStore.loaded.jksAndPKCS12Exist.CWPKI0822W.explanation=Com uma configura\u00e7\u00e3o m\u00ednima de keystore padr\u00e3o e com um arquivo key.jks e um arquivo key.p12 definidos no local de keystore padr\u00e3o, o arquivo key.jks ser\u00e1 usado como keystore padr\u00e3o.
 ssl.defaultKeyStore.loaded.jksAndPKCS12Exist.CWPKI0822W.useraction=Para tornar o arquivo key.p12 o keystore padr\u00e3o, mude a configura\u00e7\u00e3o do keystore para especificar o local do key.p12 ou remova o arquivo key.jks da configura\u00e7\u00e3o. Para ter o arquivo key.jks como o keystore padr\u00e3o, n\u00e3o s\u00e3o necess\u00e1rias mudan\u00e7as. 
+#--------------------------------------------------------------------------------------------------
+ssl.client.handshake.error.CWPKI0823E=CWPKI0823E: FALHA DE HANDSHAKE SSL: um assinante \
+com SubjectDN [{0}] foi enviado do host [{1}].  O assinante pode precisar ser inclu\u00eddo no armazenamento \
+confi\u00e1vel local [{2}], localizado no alias de configura\u00e7\u00e3o SSL [{3}].  A mensagem de erro estendida a partir \
+da exce\u00e7\u00e3o de handshake SSL \u00e9: [{4}].
+ssl.client.handshake.error.CWPKI0823E.explanation=Ocorreu um erro durante o protocolo de reconhecimento SSL.  Isto pode requerer uma \
+exporta\u00e7\u00e3o/importa\u00e7\u00e3o do assinante a partir do host de destino para o TrustStore do \
+cliente.
+ssl.client.handshake.error.CWPKI0823E.useraction=Reveja a mensagem de erro estendida do TrustManager para determinar o que precisa ser alterado entre a configura\u00e7\u00e3o SSL de destino e a configura\u00e7\u00e3o SSL de cliente.
+# -------------------------------------------------------------------------------------------------
+ssl.client.handshake.error.CWPKI0824E=CWPKI0824E: FALHA DE HANDSHAKE SSL: erro \
+de verifica\u00e7\u00e3o do nome do host ao conectar-se com o host [{0}].  O nome do host usado para acessar o servidor n\u00e3o corresponde \u00e0s informa\u00e7\u00f5es de Nome Alternativo SubjectDN ou \
+Subject do certificado do servidor.  A mensagem de erro estendida a partir da exce\u00e7\u00e3o de handshake SSL \u00e9: [{1}].
+ssl.client.handshake.error.CWPKI0824E.explanation=Ocorreu um erro durante o protocolo de reconhecimento SSL.  A verifica\u00e7\u00e3o do nome do host est\u00e1 ativada e a identidade do servidor n\u00e3o pode ser verificada.  O nome do host usado para acessar o servidor n\u00e3o corresponde \u00e0s informa\u00e7\u00f5es de Nome Alternativo SubjectDN ou \
+Subject do certificado do servidor.
+ssl.client.handshake.error.CWPKI0824E.useraction=Quando a verifica\u00e7\u00e3o do nome do host est\u00e1 \
+ativada, o servidor que est\u00e1 sendo acessado precisa ser configurado com um certificado que contenha as \
+informa\u00e7\u00f5es apropriadas necess\u00e1rias para verificar a identidade do servidor.
+# -------------------------------------------------------------------------------------------------

@@ -7,5 +7,5 @@ singleton=true
   com.ibm.websphere.appserver.classloading-1.0
 -bundles=\
   com.ibm.websphere.org.eclipse.microprofile.reactive.streams.operators.1.0; location:="dev/api/stable/,lib/"; mavenCoordinates="org.eclipse.microprofile.reactive-streams-operators:microprofile-reactive-streams-operators-api:1.0"
-kind=noship
-edition=full
+kind=ga
+edition=core

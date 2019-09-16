@@ -28,7 +28,6 @@ import javax.servlet.http.HttpSession;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
-
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -44,6 +43,7 @@ import com.ibm.websphere.security.audit.context.AuditManager;
 import com.ibm.ws.security.audit.Audit;
 import com.ibm.ws.security.audit.event.ApiAuthnEvent;
 import com.ibm.ws.security.audit.event.ApiAuthnTerminateEvent;
+import com.ibm.ws.security.audit.event.ApplicationPasswordTokenEvent;
 import com.ibm.ws.security.audit.event.AuditMgmtEvent;
 import com.ibm.ws.security.audit.event.AuthenticationDelegationEvent;
 import com.ibm.ws.security.audit.event.AuthenticationEvent;
@@ -62,6 +62,7 @@ import com.ibm.ws.security.audit.event.JMXMBeanEvent;
 import com.ibm.ws.security.audit.event.JMXMBeanRegisterEvent;
 import com.ibm.ws.security.audit.event.JMXNotificationEvent;
 import com.ibm.ws.security.audit.event.MemberManagementEvent;
+import com.ibm.ws.security.audit.event.SAFAuthorizationEvent;
 import com.ibm.ws.security.audit.event.SAFAuthorizationDetailsEvent;
 //import com.ibm.ws.security.audit.utils.AuditConstants;
 import com.ibm.ws.webcontainer.security.AuthenticationResult;
@@ -82,7 +83,8 @@ import com.ibm.wsspi.security.audit.AuditService;
            immediate = true)
 public class AuditPE implements ProbeExtension {
 
-	private static final TraceComponent tc = Tr.register(AuditPE.class);
+	private static final TraceComponent tc = Tr.register(AuditPE.class, "requestProbe",
+			"com.ibm.ws.request.probe.internal.resources.LoggingMessages");
 
 	private static final String requestProbeType = "websphere.security.audit.test";
 	private static final String KEY_AUDIT_SERVICE = "auditService";
@@ -233,9 +235,15 @@ public class AuditPE implements ProbeExtension {
 				case SECURITY_JMS_AUTHN_TERMINATE_01:
 					auditEventJMSAuthnTerm01(methodParams);
 					break;
-                case SECURITY_SAF_AUTHZ_DETAILS:
-                    auditEventSafAuthDetails(methodParams);
-                    break;
+				case SECURITY_SAF_AUTHZ_DETAILS:
+					auditEventSafAuthDetails(methodParams);
+					break;
+				case APPLICATION_PASSWORD_TOKEN_01:
+					auditEventApplicationPasswordToken(methodParams);
+					break;
+				case SECURITY_SAF_AUTHZ:
+					auditEventSafAuth(methodParams);
+					break;
 				default:
 					// TODO: emit error message
 					break;
@@ -257,7 +265,7 @@ public class AuditPE implements ProbeExtension {
 			AuthenticationEvent av =
 					new AuthenticationEvent(webRequest, authResult, statusCode);
 			auditServiceRef.getService().sendEvent(av);
-        }
+		}
 		
 		try {
 			/*
@@ -659,7 +667,22 @@ public class AuditPE implements ProbeExtension {
 		}
 	}
 
-    /**
+
+	private void auditEventApplicationPasswordToken(Object[] methodParams) {
+		Object[] varargs = (Object[]) methodParams[1];
+		Map<String, Object> m = (Map<String, Object>) varargs[0];
+		// HttpServletRequest webRequest = (HttpServletRequest) varargs[0];
+		// AuthenticationResult authResult = (AuthenticationResult) varargs[1];
+		// Integer statusCode = (Integer) varargs[2];
+		if (auditServiceRef.getService() != null && auditServiceRef.getService()
+				.isAuditRequired(AuditConstants.APPLICATION_TOKEN_MANAGEMENT, (String) m.get("auditOutcome"))) {
+			ApplicationPasswordTokenEvent ae = new ApplicationPasswordTokenEvent(m);
+			auditServiceRef.getService().sendEvent(ae);
+		}
+
+	}
+
+	/**
 	 * Handles audit event for SECURITY_SAF_AUTH_DETAILS
 	 *
 	 * @param methodParams
@@ -690,4 +713,24 @@ public class AuditPE implements ProbeExtension {
 			auditServiceRef.getService().sendEvent(safAuthDetails);
 		}
 	}
+
+    private void auditEventSafAuth(Object[] methodParams) {
+        Object[] varargs = (Object[]) methodParams[1];
+
+        int safReturnCode = (Integer) varargs[0];
+        int racfReturnCode = (Integer) varargs[1];
+        int racfReasonCode = (Integer) varargs[2];
+        String userSecurityName = (String) varargs[3];
+        String safProfile = (String) varargs[4];
+        String safClass = (String) varargs[5];
+        Boolean authDecision = (Boolean) varargs[6];
+        String principleName = (String) varargs[7];
+        String applid = (String) varargs[8];
+        String accessLevel = (String) varargs[9];
+        String errorMessage = (String) varargs[10];
+        if (auditServiceRef.getService() != null && auditServiceRef.getService().isAuditRequired(AuditConstants.SECURITY_SAF_AUTHZ, AuditConstants.SUCCESS)) {
+            SAFAuthorizationEvent safAuth = new SAFAuthorizationEvent(safReturnCode, racfReturnCode, racfReasonCode, userSecurityName, applid, safProfile, safClass, authDecision, principleName, accessLevel, errorMessage);
+            auditServiceRef.getService().sendEvent(safAuth);
+        }
+    }
 }

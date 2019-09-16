@@ -168,9 +168,12 @@ error.unique.value.conflict=CWWKG0031E: Il valore {1} specificato per l''attribu
 error.unique.value.conflict.explanation=Il valore per l'attributo specificato deve essere univoco ma \u00e8 gi\u00e0 utilizzato.
 error.unique.value.conflict.useraction=Modificare il valore dell'attributo in modo che sia univoco.
 
-warn.config.invalid.value=CWWKG0032W: \u00c8 stato specificato un valore imprevisto per la propriet\u00e0 [{0}], valore = [{1}]. Il valore o i valori previsti sono: {2}.
+# {3} is either the formatted value of default.value.in.use or an empty string
+warn.config.invalid.value=CWWKG0032W: \u00c8 stato specificato un valore imprevisto per la propriet\u00e0 [{0}], valore = [{1}]. Il valore o i valori previsti sono: {2}. {3} 
 warn.config.invalid.value.explanation=Non \u00e8 possibile utilizzare il valore specificato per la propriet\u00e0.
 warn.config.invalid.value.useraction=Correggere il valore della propriet\u00e0 per utilizzare un valore previsto.
+
+default.value.in.use=Valore predefinito in uso: {0}.
 
 warning.pid.not.found=CWWKG0033W: Il valore [{1}] specificato per l''attributo riferimento [{0}] non \u00e8 stato trovato nella configurazione.
 warning.pid.not.found.explanation=Il valore specificato deve essere un elemento nella configurazione.
@@ -290,25 +293,10 @@ error.factoryOnly=CWWKG0061E: Il PID (persisted identity) {0} non \u00e8 un PID 
 error.factoryOnly.explanation=L'attributo ibm:extends \u00e8 applicabile solo ai PID factory.
 error.factoryOnly.useraction=Riconfigurare il PID per utilizzare un PID factory o rimuovere l'attributo ibm:extends dalla definizione del componente oggetto. Questo \u00e8 un errore interno. Seguire le procedure standard di WebSphere per la determinazione dei problemi.
 
-#"ibm:extendsAlias" is an xml attribute name and should not be translated
-error.factoryOnly.extendsAlias=CWWKG0096E: Il PID (persisted identity) {0} non \u00e8 un PID factory, pertanto non pu\u00f2 avere un attributo ibm:extendsAlias di {1}. Riconfigurare il PID per utilizzare un PID factory o rimuovere l''attributo ibm:extendsAlias dal PID.
-error.factoryOnly.extendsAlias.explanation=L'attributo ibm:extendsAlias \u00e8 applicabile solo ai PID factory che estendono un altro PID factory.
-error.factoryOnly.extendsAlias.useraction=Riconfigurare il PID per utilizzare un PID factory o rimuovere l'attributo ibm:extendsAlias dal PID.
-
 #"ibm:extends" is an xml attribute name and should not be translated
 error.superFactoryOnly=CWWKG0062E: Il PID (persisted identity) {0} non \u00e8 un PID factory, pertanto non pu\u00f2 essere esteso dal PID {1}.
 error.superFactoryOnly.explanation=L'attributo ibm:extends \u00e8 applicabile solo ai PID factory.
 error.superFactoryOnly.useraction=Riconfigurare il PID per utilizzare un PID factory o rimuovere l'attributo ibm:extends dalla definizione del componente oggetto. Questo \u00e8 un errore interno. Seguire le procedure standard di WebSphere per la determinazione dei problemi.
-
-#"ibm:extendsAlias" is an xml attribute name and should not be translated
-error.ExtendsAliasMustExtend=CWWKG0097E: Il PID {0} specifica un attributo ibm:extendsAlias di {1} e deve, pertanto, specificare l''attributo ibm:extends.
-error.ExtendsAliasMustExtend.explanation=Quando si specifica un attributo ibm:extendsAlias \u00e8 necessario specificare un attributo ibm:extends.
-error.ExtendsAliasMustExtend.useraction=Specificare un attributo ibm:extends.
-
-#"ibm:parentPid" and "ibm:childAlias" are xml attribute names and should not be translated
-error.parentpid.and.childalias=CWWKG0098E: Il PID {0} specifica l''attributo {1} di {2} e deve, pertanto, specificare l''attributo {3}.
-error.parentpid.and.childalias.explanation=Il metatipo indica che \u00e8 stato specificato parzialmente un elemento primo child nidificato. Gli elementi primo child nidificato devono specificare sia l'attributo ibm:parentPid che l'attributo ibm:childAlias.
-error.parentpid.and.childalias.useraction=Se questo metatipo \u00e8 previsto per un elemento primo child nidificato, fornire l'attributo mancante. In alternativa, rimuovere l'attributo fornito. 
 
 #"ibm:rename" is an xml attribute name and should not be translated
 schemagen.rename.attribute.missing=CWWKG0063E: Impossibile ridenominare la definizione dell''attributo {1} specificata dall''attributo ibm:rename {2} nel PID {0}.
@@ -429,9 +417,9 @@ error.variable.name.missing=CWWKG0091E: Deve essere specificato un attributo nom
 error.variable.name.missing.explanation=La configurazione del server contiene un elemento di configurazione variable che non dispone di un attributo nome.
 error.variable.name.missing.useraction=Aggiungere un attributo nome alla variabile.
 
-error.variable.value.missing=CWWKG0092E: Deve essere specificato un attributo valore per la variabile alla riga {0} della risorsa {1}
-error.variable.value.missing.explanation=La configurazione del server contiene un elemento di configurazione variable che non dispone di un attributo valore.
-error.variable.value.missing.useraction=Aggiungere un attributo valore alla variabile.
+error.variable.value.missing=CWWKG0092E: Deve essere specificato un attributo value o attributo defaultValue per la variabile alla riga {0} della risorsa {1}
+error.variable.value.missing.explanation=La configurazione del server contiene un elemento di configurazione variabile che non dispone di un attributo value o defaultValue.
+error.variable.value.missing.useraction=Aggiungere un attributo value o defaultValue alla variabile.
 
 audit.dropin.being.processed=CWWKG0093A: Elaborazione risorsa di drop-in di configurazione: {0}
 audit.dropin.being.processed.explanation=Il contenuto della risorsa specificata verr\u00e0 incluso nella configurazione del server.
@@ -444,6 +432,21 @@ warning.unrecognized.merge.behavior.useraction=Aggiornare la configurazione del 
 error.missing.required.attribute.singleton=CWWKG0095E: Nell''elemento {0} manca l''attributo richiesto {1}.
 error.missing.required.attribute.singleton.explanation=L'attributo mancante \u00e8 richiesto nel file di configurazione server.xml oppure in uno dei relativi file di configurazione di riferimento.
 error.missing.required.attribute.singleton.useraction=Aggiungere l'attributo al file di configurazione server.xml o ad uno dei relativi file di configurazione di riferimento.
+
+#"ibm:extendsAlias" is an xml attribute name and should not be translated
+error.factoryOnly.extendsAlias=CWWKG0096E: Il PID (persisted identity) {0} non \u00e8 un PID factory, pertanto non pu\u00f2 avere un attributo ibm:extendsAlias di {1}. Riconfigurare il PID per utilizzare un PID factory o rimuovere l''attributo ibm:extendsAlias dal PID.
+error.factoryOnly.extendsAlias.explanation=L'attributo ibm:extendsAlias \u00e8 applicabile solo ai PID factory che estendono un altro PID factory.
+error.factoryOnly.extendsAlias.useraction=Riconfigurare il PID per utilizzare un PID factory o rimuovere l'attributo ibm:extendsAlias dal PID.
+
+#"ibm:extendsAlias" is an xml attribute name and should not be translated
+error.ExtendsAliasMustExtend=CWWKG0097E: Il PID {0} specifica un attributo ibm:extendsAlias di {1} e deve, pertanto, specificare l''attributo ibm:extends.
+error.ExtendsAliasMustExtend.explanation=Quando si specifica un attributo ibm:extendsAlias \u00e8 necessario specificare un attributo ibm:extends.
+error.ExtendsAliasMustExtend.useraction=Specificare un attributo ibm:extends.
+
+#"ibm:parentPid" and "ibm:childAlias" are xml attribute names and should not be translated
+error.parentpid.and.childalias=CWWKG0098E: Il PID {0} specifica l''attributo {1} di {2} e deve, pertanto, specificare l''attributo {3}.
+error.parentpid.and.childalias.explanation=Il metatipo indica che \u00e8 stato specificato parzialmente un elemento primo child nidificato. Gli elementi primo child nidificato devono specificare sia l'attributo ibm:parentPid che l'attributo ibm:childAlias.
+error.parentpid.and.childalias.useraction=Se questo metatipo \u00e8 previsto per un elemento primo child nidificato, fornire l'attributo mancante. In alternativa, rimuovere l'attributo fornito. 
 
 #"ibm:extendsAlias" is an xml attribute name and should not be translated
 error.extendsAlias.collision=CWWKG0100E: L''attributo {2} ibm:extendsAlias \u00e8 duplicato in una gerarchia di estensioni singola. I PID sono {0} e {1}. Rendere univoco ciascun attributo ibm:extendsAlias nella gerarchia di estensioni.

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2001, 2016 IBM Corporation and others.
+# Copyright (c) 2001, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -271,13 +271,21 @@ DSRA4011.tran.none.iso.switch.unsupported=DSRA4011E: Ovlada\u010d JDBC nepodporu
 DSRA4011.tran.none.iso.switch.unsupported.explanation=Specifikace JDBC nepodporuje p\u0159ep\u00edn\u00e1n\u00ed na \u00farove\u0148 izolace TRANSACTION_NONE.
 DSRA4011.tran.none.iso.switch.unsupported.useraction=Zabra\u0148te p\u0159ep\u00edn\u00e1n\u00ed na \u00farove\u0148 izolace TRANSACTION_NONE.
 
-DSRA4012.ignored.datasource.config.used=DSRA4012I: P\u0159i pou\u017eit\u00ed Oracle UCP jsou ignorov\u00e1ny n\u00e1sleduj\u00edc\u00ed vlastnosti zdroje dat: statementCacheSize a validationTimeout. Pou\u017eijte ekvivalentn\u00ed funk\u010dnost Oracle UPC.
-DSRA4012.ignored.datasource.config.used.explanation=Vlastnosti zdroje dat statementCacheSize a validationTimeout nejsou platn\u00e9 p\u0159i pou\u017eit\u00ed Oracle UPC.
-DSRA4012.ignored.datasource.config.used.useraction=Odeberte vlastnosti zdroje dat a m\u00edsto toho pou\u017eijte ekvivalentn\u00ed funk\u010dnost Oracle UPC.
+DSRA4012.ignored.datasource.config.used=DSRA4012I: P\u0159i pou\u017eit\u00ed Oracle UCP jsou ignorov\u00e1ny n\u00e1sleduj\u00edc\u00ed vlastnosti zdroje dat: {0}.
+DSRA4012.ignored.datasource.config.used.explanation=Uveden\u00e9 vlastnosti zdroje dat nejsou platn\u00e9 p\u0159i pou\u017eit\u00ed Oracle UPC.
+DSRA4012.ignored.datasource.config.used.useraction=Odeberte vlastnosti zdroje dat, kter\u00e9 nejsou platn\u00e9, a m\u00edsto toho pou\u017eijte ekvivalentn\u00ed funk\u010dnost Oracle UCP, pokud je k dispozici.
 
-DSRA4013.ignored.connection.manager.config.used=DSRA4013I: P\u0159i pou\u017eit\u00ed Oracle UCP jsou n\u00e1sleduj\u00edc\u00ed vlastnosti spr\u00e1vce p\u0159ipojen\u00ed ignorov\u00e1ny: agedTimeout, connectionTimeout, maxIdleTime, maxPoolSize, minPoolSize, purgePolicy, reapTime, maxConnectionsPerThread, maxConnectionsPerThreadLocal. Pou\u017eijte ekvivalentn\u00ed funk\u010dnost Oracle UPC.
-DSRA4013.ignored.connection.manager.config.used.explanation=Uveden\u00e9 vlastnosti spr\u00e1vce p\u0159ipojen\u00ed nejsou platn\u00e9 p\u0159i pou\u017eit\u00ed Oracle UPC.
-DSRA4013.ignored.connection.manager.config.used.useraction=Odeberte vlastnosti spr\u00e1vce p\u0159ipojen\u00ed a m\u00edsto toho pou\u017eijte ekvivalentn\u00ed funk\u010dnost Oracle UPC.
+DSRA4013.ignored.connection.manager.config.used=DSRA4013I: Vlastnosti spr\u00e1vce p\u0159ipojen\u00ed Connection Manager nejsou platn\u00e9. P\u0159i pou\u017eit\u00ed Oracle UCP jsou platn\u00e9 n\u00e1sleduj\u00edc\u00ed vlastnosti spr\u00e1vce p\u0159ipojen\u00ed Connection Manager: {0}.
+DSRA4013.ignored.connection.manager.config.used.explanation=P\u0159i pou\u017eit\u00ed Oracle UCP jsou platn\u00e9 pouze uveden\u00e9 vlastnosti spr\u00e1vce p\u0159ipojen\u00ed Connection Manager.
+DSRA4013.ignored.connection.manager.config.used.useraction=Odeberte vlastnosti spr\u00e1vce p\u0159ipojen\u00ed Connection Manager, kter\u00e9 nejsou platn\u00e9, a m\u00edsto toho pou\u017eijte ekvivalentn\u00ed funk\u010dnost Oracle UCP, pokud je k dispozici.
+
+DSRA4014.URL.for.Driver.missing=DSRA4014E: Typ java.sql.Driver byl ur\u010den pro zdroj dat {0}, ale nebyl ur\u010den \u017e\u00e1dn\u00fd atribut URL.
+DSRA4014.URL.for.Driver.missing.explanation=Adresa URL p\u0159ipojen\u00ed mus\u00ed b\u00fdt ur\u010dena pro zdroj dat, kter\u00fd je typu java.sql.Driver.
+DSRA4014.URL.for.Driver.missing.useraction=P\u0159idejte platnou adresu URL do zdroje dat.
+
+DSRA4015.no.ucp.connection.pool.datasource=DSRA4015E: Zdroj dat {0} byl nakonfigurov\u00e1n s typem {1}, kter\u00fd nen\u00ed podporov\u00e1n serverem Oracle UCP. M\u00edsto toho pou\u017eijte typ XADataSource nebo typ DataSource.
+DSRA4015.no.ucp.connection.pool.datasource.explanation=Zdroj dat byl nakonfigurov\u00e1n s typem ConnectionPoolDataSource nebo typem ovlada\u010de, kter\u00fd nen\u00ed implementov\u00e1n ovlada\u010dem Oracle UCP.
+DSRA4015.no.ucp.connection.pool.datasource.useraction=Aktualizujte zdroj dat tak, aby pou\u017e\u00edval bu\u010f typ XADataSource, nebo typ DataSource.
 
 # ----------------------------------------------------------------------------
 # 
@@ -541,6 +549,13 @@ NO_WRAPPED_OBJECT.explanation=Ur\u010den\u00fd modul wrapper neobsahuje ur\u010d
 NO_WRAPPED_OBJECT.useraction=Ov\u011b\u0159te spr\u00e1vn\u00e9 ur\u010den\u00ed modulu wrapper a parametr\u016f pro objekt zpracovan\u00fd modulem wrapper.
 
 # 9123 deleted
+
+# 9124       NOT_AN_INTERFACE
+#
+# {0}        The Class that was specified to unwrap to
+NOT_AN_INTERFACE=DSRA9124E: Nelze rozbalit objekt do {0}, proto\u017ee {0} nen\u00ed t\u0159\u00edda rozhran\u00ed.
+NOT_AN_INTERFACE.explanation=Metoda rozbalen\u00ed povoluje pouze rozbalen\u00ed do t\u0159\u00eddy rozhran\u00ed.
+NOT_AN_INTERFACE.useraction=Prove\u010fte rozbalen\u00ed do t\u0159\u00eddy, kter\u00e1 je rozhran\u00edm nam\u00edsto konkr\u00e9tn\u00ed t\u0159\u00eddy.
 
 # 9130E      OPERATION_NOT_PERMITTED
 # 

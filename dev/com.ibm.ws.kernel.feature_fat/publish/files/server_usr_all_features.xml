@@ -1,0 +1,12 @@
+<server>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>usr:ufeatureA-1.0</feature>
+        <feature>usr:ufeatureB-1.0</feature>
+        <feature>usr:ufeatureC-1.0</feature>
+        <feature>usr:ufeatureD-1.0</feature>
+    </featureManager>
+    
+</server>

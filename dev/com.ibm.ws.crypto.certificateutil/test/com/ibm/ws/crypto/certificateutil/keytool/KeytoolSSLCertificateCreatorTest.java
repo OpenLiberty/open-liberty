@@ -26,7 +26,7 @@ import com.ibm.ws.crypto.certificateutil.DefaultSubjectDN;
  */
 public class KeytoolSSLCertificateCreatorTest {
     private final KeytoolSSLCertificateCreator creator = new KeytoolSSLCertificateCreator();
-    private final String location = System.getProperty("user.dir") + "/build/testKS.jks";
+    private final String location = System.getProperty("user.dir") + "/build/testKS.p12";
 
     /**
      * Test method for {@link com.ibm.ws.crypto.certificateutil.keytool.KeytoolSSLCertificateCreator#KeytoolCommand(java.lang.String, int, java.lang.String)}.
@@ -37,7 +37,8 @@ public class KeytoolSSLCertificateCreatorTest {
                                             DefaultSSLCertificateCreator.DEFAULT_VALIDITY,
                                             new DefaultSubjectDN().getSubjectDN(),
                                             DefaultSSLCertificateCreator.DEFAULT_SIZE,
-                                            DefaultSSLCertificateCreator.KEYALG);
+                                            DefaultSSLCertificateCreator.KEYALG,
+                                            "SAN=DNS:localhost");
     }
 
     /**
@@ -49,7 +50,8 @@ public class KeytoolSSLCertificateCreatorTest {
                                             DefaultSSLCertificateCreator.DEFAULT_VALIDITY,
                                             new DefaultSubjectDN().getSubjectDN(),
                                             DefaultSSLCertificateCreator.DEFAULT_SIZE,
-                                            DefaultSSLCertificateCreator.KEYALG);
+                                            DefaultSSLCertificateCreator.KEYALG,
+                                            "SAN=DNS:localhost");
     }
 
     /**
@@ -61,7 +63,8 @@ public class KeytoolSSLCertificateCreatorTest {
                                             DefaultSSLCertificateCreator.DEFAULT_VALIDITY,
                                             new DefaultSubjectDN().getSubjectDN(),
                                             DefaultSSLCertificateCreator.DEFAULT_SIZE,
-                                            DefaultSSLCertificateCreator.KEYALG);
+                                            DefaultSSLCertificateCreator.KEYALG,
+                                            "SAN=DNS:localhost");
     }
 
     /**
@@ -73,7 +76,8 @@ public class KeytoolSSLCertificateCreatorTest {
                                             DefaultSSLCertificateCreator.DEFAULT_VALIDITY,
                                             new DefaultSubjectDN().getSubjectDN(),
                                             DefaultSSLCertificateCreator.DEFAULT_SIZE,
-                                            DefaultSSLCertificateCreator.KEYALG);
+                                            DefaultSSLCertificateCreator.KEYALG,
+                                            "SAN=DNS:localhost");
     }
 
     /**
@@ -85,7 +89,8 @@ public class KeytoolSSLCertificateCreatorTest {
                                             DefaultSSLCertificateCreator.DEFAULT_VALIDITY,
                                             new DefaultSubjectDN().getSubjectDN(),
                                             DefaultSSLCertificateCreator.DEFAULT_SIZE,
-                                            DefaultSSLCertificateCreator.KEYALG);
+                                            DefaultSSLCertificateCreator.KEYALG,
+                                            "SAN=DNS:localhost");
     }
 
     /**
@@ -96,7 +101,8 @@ public class KeytoolSSLCertificateCreatorTest {
         creator.createDefaultSSLCertificate("/", null, -1,
                                             new DefaultSubjectDN().getSubjectDN(),
                                             DefaultSSLCertificateCreator.DEFAULT_SIZE,
-                                            DefaultSSLCertificateCreator.KEYALG);
+                                            DefaultSSLCertificateCreator.KEYALG,
+                                            "SAN=DNS:localhost");
     }
 
     /**
@@ -107,7 +113,8 @@ public class KeytoolSSLCertificateCreatorTest {
         creator.createDefaultSSLCertificate("/", "Liberty", 0,
                                             new DefaultSubjectDN().getSubjectDN(),
                                             DefaultSSLCertificateCreator.DEFAULT_SIZE,
-                                            DefaultSSLCertificateCreator.KEYALG);
+                                            DefaultSSLCertificateCreator.KEYALG,
+                                            "SAN=DNS:localhost");
     }
 
     /**
@@ -119,7 +126,8 @@ public class KeytoolSSLCertificateCreatorTest {
                                             DefaultSSLCertificateCreator.MINIMUM_VALIDITY - 1,
                                             new DefaultSubjectDN().getSubjectDN(),
                                             DefaultSSLCertificateCreator.DEFAULT_SIZE,
-                                            DefaultSSLCertificateCreator.KEYALG);
+                                            DefaultSSLCertificateCreator.KEYALG,
+                                            "SAN=DNS:localhost");
     }
 
     /**
@@ -131,7 +139,8 @@ public class KeytoolSSLCertificateCreatorTest {
                                                       DefaultSSLCertificateCreator.DEFAULT_VALIDITY,
                                                       null,
                                                       DefaultSSLCertificateCreator.DEFAULT_SIZE,
-                                                      DefaultSSLCertificateCreator.KEYALG);
+                                                      DefaultSSLCertificateCreator.KEYALG,
+                                                      "SAN=DNS:localhost");
         assertNotNull("keystore was not created", ks);
         assertTrue("keystore was not created", ks.exists());
     }
@@ -145,7 +154,8 @@ public class KeytoolSSLCertificateCreatorTest {
                                                       DefaultSSLCertificateCreator.DEFAULT_VALIDITY,
                                                       "",
                                                       DefaultSSLCertificateCreator.DEFAULT_SIZE,
-                                                      DefaultSSLCertificateCreator.KEYALG);
+                                                      DefaultSSLCertificateCreator.KEYALG,
+                                                      "SAN=DNS:localhost");
         assertNotNull("keystore was not created", ks);
         assertTrue("keystore was not created", ks.exists());
     }
@@ -159,7 +169,8 @@ public class KeytoolSSLCertificateCreatorTest {
                                             DefaultSSLCertificateCreator.DEFAULT_VALIDITY,
                                             "invalidDN",
                                             DefaultSSLCertificateCreator.DEFAULT_SIZE,
-                                            DefaultSSLCertificateCreator.KEYALG);
+                                            DefaultSSLCertificateCreator.KEYALG,
+                                            "SAN=DNS:localhost");
     }
 
     /**
@@ -171,7 +182,8 @@ public class KeytoolSSLCertificateCreatorTest {
                                             DefaultSSLCertificateCreator.DEFAULT_VALIDITY,
                                             null,
                                             DefaultSSLCertificateCreator.DEFAULT_SIZE,
-                                            "BAD_SIG_ALG");
+                                            "BAD_SIG_ALG",
+                                            "SAN=DNS:localhost");
     }
 
     /**
@@ -183,6 +195,7 @@ public class KeytoolSSLCertificateCreatorTest {
                                             DefaultSSLCertificateCreator.DEFAULT_VALIDITY,
                                             null,
                                             DefaultSSLCertificateCreator.DEFAULT_SIZE,
-                                            "SHA256withECDSA");
+                                            "SHA256withECDSA",
+                                            "SAN=DNS:localhost");
     }
 }

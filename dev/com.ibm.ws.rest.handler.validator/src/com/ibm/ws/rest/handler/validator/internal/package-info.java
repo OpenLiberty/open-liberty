@@ -10,7 +10,7 @@
  *******************************************************************************/
 
 @Version("1.0.0")
-@TraceOptions(traceGroup = "rest.validator")
+@TraceOptions(traceGroup = "rest.validation", messageBundle = "com.ibm.ws.rest.handler.validator.resources.CWWKOMessages")
 package com.ibm.ws.rest.handler.validator.internal;
 
 import org.osgi.annotation.versioning.Version;

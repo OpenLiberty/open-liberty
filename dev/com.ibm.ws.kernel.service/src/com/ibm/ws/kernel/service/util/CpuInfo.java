@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,17 +17,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.management.ManagementFactory;
-import java.lang.management.OperatingSystemMXBean;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 import javax.management.MBeanServer;
-import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.kernel.service.util.JavaInfo.Vendor;
 
 /**
  * API for getting cpu info about the system
@@ -39,14 +38,13 @@ public class CpuInfo {
      */
     private final static TraceComponent tc = Tr.register(CpuInfo.class);
 
-    private static CpuInfo instance;
-    private final int AVAILABLE_PROCESSORS;
+    private final static CpuInfo INSTANCE = new CpuInfo();
 
+    private final int AVAILABLE_PROCESSORS;
     // For CPU usage calculation
-    private final OperatingSystemMXBean osmx;
-    private final MBeanServer mBeanServer;
-    private ObjectName operatingSystemMbean;
-    final private int cpuNSFactor;
+    // Initialized lazily to avoid CPU usage during startup.
+    private CpuInfoAccessor osmx;
+    private final int cpuNSFactor;
     private long lastProcessCPUTime = 0;
     private double lastProcessCpuUsage = -1;
     private long lastSystemTimeMillis = -1;
@@ -60,16 +58,6 @@ public class CpuInfo {
             AVAILABLE_PROCESSORS = runtimeAvailableProcessors;
         } else {
             AVAILABLE_PROCESSORS = fileSystemAvailableProcessors;
-        }
-
-        // initialize mbean required to get CPU usage info
-        osmx = ManagementFactory.getOperatingSystemMXBean();
-        mBeanServer = ManagementFactory.getPlatformMBeanServer();
-
-        try {
-            operatingSystemMbean = new ObjectName("java.lang", "type", "OperatingSystem");
-        } catch (MalformedObjectNameException e) {
-            FFDCFilter.processException(e, getClass().getName(), "CpuInfo<init>");
         }
 
         int nsFactor = 1;
@@ -93,14 +81,14 @@ public class CpuInfo {
     }
 
     private double getSystemCPU() {
-        final String OS_ATTRIBUTE_SYSTEM_CPU_LOAD = "SystemCpuLoad";
         double cpuUsage = -1;
 
         // Get the system cpu usage
         try {
-            if (osmx != null) {
-                cpuUsage = (Double) mBeanServer.getAttribute(operatingSystemMbean, OS_ATTRIBUTE_SYSTEM_CPU_LOAD);
+            if (osmx == null) {
+                osmx = createCpuInfoAccessor();
             }
+            cpuUsage = osmx.getSystemCpuLoad();
         } catch (Exception e) {
             FFDCFilter.processException(e, getClass().getName(), "getSystemCPU");
         }
@@ -120,8 +108,6 @@ public class CpuInfo {
     }
 
     private synchronized double getProcessCPU() {
-        final String OS_ATTRIBUTE_PROCESS_CPU_TIME = "ProcessCpuTime";
-
         // update process cpu usage at most once every 500 ms
         long currentTimeMs = System.currentTimeMillis();
         if (currentTimeMs - lastSystemTimeMillis < 500)
@@ -131,10 +117,10 @@ public class CpuInfo {
         long processCpuTime = -1;
         // Get the CPU time from the mbean
         try {
-            // There should already be an FFDC logged if there was an issue getting a reference to the operatingSystemMbean.
-            if (osmx != null) {
-                processCpuTime = (Long) mBeanServer.getAttribute(operatingSystemMbean, OS_ATTRIBUTE_PROCESS_CPU_TIME);
+            if (osmx == null) {
+                osmx = createCpuInfoAccessor();
             }
+            processCpuTime = osmx.getProcessCpuTime();
         } catch (Exception e) {
             FFDCFilter.processException(e, getClass().getName(), "getProcessCPU");
         }
@@ -234,19 +220,13 @@ public class CpuInfo {
         return bd.doubleValue();
     }
 
-    private static CpuInfo instance() {
-        if (instance == null)
-            instance = new CpuInfo();
-        return instance;
-    }
-
     /**
      * Returns the number of hardware threads (aka cpus) available to this Java process
      *
      * @return int available processors
      */
     public static int getAvailableProcessors() {
-        return instance().AVAILABLE_PROCESSORS;
+        return INSTANCE.AVAILABLE_PROCESSORS;
     }
 
     /**
@@ -255,7 +235,7 @@ public class CpuInfo {
      * @return double process cpu usage (returns -1 if info not available)
      */
     public static double getJavaCpuUsage() {
-        return instance().getProcessCPU();
+        return INSTANCE.getProcessCPU();
     }
 
     /**
@@ -264,6 +244,106 @@ public class CpuInfo {
      * @return double system cpu usage (returns -1 if info not available)
      */
     public static double getSystemCpuUsage() {
-        return instance().getSystemCPU();
+        return INSTANCE.getSystemCPU();
+    }
+
+    public static CpuInfoAccessor createCpuInfoAccessor() {
+        java.lang.management.OperatingSystemMXBean mbean = ManagementFactory.getOperatingSystemMXBean();
+
+        if (mbean == null) {
+            return new NullCpuInfoAccessor();
+        }
+        try {
+            if (JavaInfo.vendor() == Vendor.IBM) {
+                return new IBMJavaCpuInfoAccessor(mbean);
+            }
+            return new ModernJavaCpuInfoAccessor(mbean);
+
+        } catch (NoClassDefFoundError e) {
+            return new StandardAPICpuInfoAccessor(mbean);
+        }
+
+    }
+
+    private static interface CpuInfoAccessor {
+        public long getProcessCpuTime();
+
+        public double getSystemCpuLoad();
+    }
+
+    private static class NullCpuInfoAccessor implements CpuInfoAccessor {
+        @Override
+        public long getProcessCpuTime() {
+            return -1;
+        }
+
+        @Override
+        public double getSystemCpuLoad() {
+            return -1;
+        }
+    }
+
+    private static class IBMJavaCpuInfoAccessor implements CpuInfoAccessor {
+        private final com.ibm.lang.management.OperatingSystemMXBean mbean;
+
+        public IBMJavaCpuInfoAccessor(java.lang.management.OperatingSystemMXBean jvmMbean) {
+            mbean = (com.ibm.lang.management.OperatingSystemMXBean) jvmMbean;
+        }
+
+        @Override
+        public long getProcessCpuTime() {
+            return mbean.getProcessCpuTime();
+        }
+
+        @Override
+        public double getSystemCpuLoad() {
+            return mbean.getSystemCpuLoad();
+        }
+    }
+
+    private static class ModernJavaCpuInfoAccessor implements CpuInfoAccessor {
+        private final com.sun.management.OperatingSystemMXBean mbean;
+
+        public ModernJavaCpuInfoAccessor(java.lang.management.OperatingSystemMXBean jvmMbean) {
+            mbean = (com.sun.management.OperatingSystemMXBean) jvmMbean;
+        }
+
+        @Override
+        public long getProcessCpuTime() {
+            return mbean.getProcessCpuTime();
+        }
+
+        @Override
+        public double getSystemCpuLoad() {
+            return mbean.getSystemCpuLoad();
+        }
+    }
+
+    private static class StandardAPICpuInfoAccessor implements CpuInfoAccessor {
+        private final ObjectName objectName;
+        private final MBeanServer mBeanServer;
+
+        public StandardAPICpuInfoAccessor(java.lang.management.OperatingSystemMXBean jvmMbean) {
+            objectName = jvmMbean.getObjectName();
+            mBeanServer = ManagementFactory.getPlatformMBeanServer();
+        }
+
+        @Override
+        public long getProcessCpuTime() {
+            try {
+                return (Long) mBeanServer.getAttribute(objectName, "ProcessCpuTime");
+            } catch (Exception e) {
+                return -1L;
+            }
+        }
+
+        @Override
+        public double getSystemCpuLoad() {
+            try {
+                return (Double) mBeanServer.getAttribute(objectName, "SystemCpuLoad");
+            } catch (Exception e) {
+                return -1;
+            }
+        }
     }
 }

@@ -1,0 +1,117 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.spnego/resources/com/ibm/ws/security/spnego/internal/resources/SpnegoMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security SPNEGO Authentication Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+#Message prefix block: CWWKS4300 - CWWKS4339
+#Message prefix block: CWWKS4340 - CWWKS4349 - KerberosMessage.nlsprops
+SPNEGO_CONFIG_PROCESSED=CWWKS4300I: A(z) {0} SPNEGO konfigur\u00e1ci\u00f3 sikeresen feldolgozva.
+SPNEGO_CONFIG_PROCESSED.explanation=Az SPNEGO konfigur\u00e1ci\u00f3 feldolgoz\u00e1sa sikeres volt.
+SPNEGO_CONFIG_PROCESSED.useraction=Nincs
+
+SPNEGO_CONFIG_MODIFIED=CWWKS4301I: A(z) {0} SPNEGO konfigur\u00e1ci\u00f3 sikeresen m\u00f3dos\u00edtva.
+SPNEGO_CONFIG_MODIFIED.explanation=Az SPNEGO konfigur\u00e1ci\u00f3 m\u00f3dos\u00edt\u00e1sa sikeres volt.
+SPNEGO_CONFIG_MODIFIED.useraction=Nincs.
+
+SPNEGO_USE_DEFAULT_KRB5_CONFIG_FILE=CWWKS4302I: A Kerberos konfigur\u00e1ci\u00f3s f\u00e1jl nincs megadva a server.xml f\u00e1jlban, helyette a(z) {0} alap\u00e9rtelmez\u00e9s lesz haszn\u00e1latban.
+SPNEGO_USE_DEFAULT_KRB5_CONFIG_FILE.explanation=A Kerberos konfigur\u00e1ci\u00f3 nincs megadva a server.xml f\u00e1jlban. Az alap\u00e9rtelmezett Kerberos konfigur\u00e1ci\u00f3s f\u00e1jln\u00e9v \u00e9s \u00fatvonal ker\u00fcl felhaszn\u00e1l\u00e1sra. Az alap\u00e9rtelmezett Kerberos konfigur\u00e1ci\u00f3s f\u00e1jln\u00e9v \u00e9s \u00fatvonal a JDK dokument\u00e1ci\u00f3ban tal\u00e1lhat\u00f3. 
+SPNEGO_USE_DEFAULT_KRB5_CONFIG_FILE.useraction=Ha a felhaszn\u00e1l\u00f3 elt\u00e9r\u0151 teljes k\u00e9pz\u00e9s\u0171 Kerberos konfigur\u00e1ci\u00f3s f\u00e1jlnevet \u00e9s \u00fatvonalat k\u00edv\u00e1n haszn\u00e1lni, akkor a server.xml f\u00e1jlban meg kell adnia a teljes k\u00e9pz\u00e9s\u0171 Kerberos konfigur\u00e1ci\u00f3s f\u00e1jlnevet \u00e9s \u00fatvonalat, amely t\u00e1mogatott v\u00e1ltoz\u00f3t is tartalmazhat.
+
+SPNEGO_KRB5_CONFIG_FILE_NOT_FOUND=CWWKS4303E: A megadott Kerberos konfigur\u00e1ci\u00f3s f\u00e1jl ({0}) nem tal\u00e1lhat\u00f3.
+SPNEGO_KRB5_CONFIG_FILE_NOT_FOUND.explanation=A server.xml f\u00e1jlban megadott Kerberos konfigur\u00e1ci\u00f3s f\u00e1jl nem tal\u00e1lhat\u00f3. 
+SPNEGO_KRB5_CONFIG_FILE_NOT_FOUND.useraction=Ellen\u0151rizze a teljes k\u00e9pz\u00e9s\u0171 Kerberos konfigur\u00e1ci\u00f3s f\u00e1jlnevet \u00e9s \u00fatvonalat, amely t\u00e1mogatott v\u00e1ltoz\u00f3t is tartalmazhat, hogy az megfelel-e a server.xml f\u00e1jlban megadott inform\u00e1ci\u00f3knak.
+
+SPNEGO_USE_DEFAULT_KRB5_KEYTAB_FILE=CWWKS4304I: A Kerberos kulcsc\u00edmke f\u00e1jl nincs megadva a server.xml f\u00e1jlban, helyette a(z) {0} alap\u00e9rtelmez\u00e9s lesz haszn\u00e1latban.
+SPNEGO_USE_DEFAULT_KRB5_KEYTAB_FILE.explanation=Az alap\u00e9rtelmezett Kerberos kulcsc\u00edmke f\u00e1jln\u00e9v \u00e9s \u00fatvonal ker\u00fcl felhaszn\u00e1l\u00e1sra, ha nincs megadva Kerberos kulcsc\u00edmke f\u00e1jl a server.xml f\u00e1jlban. Az alap\u00e9rtelmezett Kerberos kulcsc\u00edmke f\u00e1jln\u00e9v \u00e9s \u00fatvonal a JDK dokument\u00e1ci\u00f3ban tal\u00e1lhat\u00f3.
+SPNEGO_USE_DEFAULT_KRB5_KEYTAB_FILE.useraction=Ha a felhaszn\u00e1l\u00f3 elt\u00e9r\u0151 teljes k\u00e9pz\u00e9s\u0171 Kerberos kulcsc\u00edmke f\u00e1jlnevet \u00e9s \u00fatvonalat k\u00edv\u00e1n haszn\u00e1lni, akkor a server.xml f\u00e1jlban meg kell adnia a teljes k\u00e9pz\u00e9s\u0171 Kerberos kulcsc\u00edmke f\u00e1jlnevet \u00e9s \u00fatvonalat, amely t\u00e1mogatott v\u00e1ltoz\u00f3t is tartalmazhat.
+
+SPNEGO_KRB5_KEYTAB_FILE_NOT_FOUND=CWWKS4305E: A megadott {0} Kerberos kulcsc\u00edmke f\u00e1jl nem tal\u00e1lhat\u00f3.
+SPNEGO_KRB5_KEYTAB_FILE_NOT_FOUND.explanation=A server.xml f\u00e1jlban megadott Kerberos kulcsc\u00edmke f\u00e1jl nem tal\u00e1lhat\u00f3.  Az alap\u00e9rtelmezett Kerberos kulcsc\u00edmke f\u00e1jln\u00e9v \u00e9s \u00fatvonal a JDK dokument\u00e1ci\u00f3ban tal\u00e1lhat\u00f3.
+SPNEGO_KRB5_KEYTAB_FILE_NOT_FOUND.useraction=Ellen\u0151rizze a teljes k\u00e9pz\u00e9s\u0171 Kerberos kulcsc\u00edmke f\u00e1jlnevet \u00e9s \u00fatvonalat, amely t\u00e1mogatott v\u00e1ltoz\u00f3t is tartalmazhat, hogy az megfelel-e a server.xml f\u00e1jlban megadott inform\u00e1ci\u00f3knak.  
+
+SPNEGO_NOT_SUPPORTED_ERROR_PAGE=CWWKS4306E: <html><head><title>A SPNEGO hiteles\u00edt\u00e9s nem t\u00e1mogatott.\
+</title></head> <body>SPNEGO hiteles\u00edt\u00e9s nem t\u00e1mogatott ebben az \u00fcgyf\u00e9lb\u00f6ng\u00e9sz\u0151ben.\
+</body></html>.
+SPNEGO_NOT_SUPPORTED_ERROR_PAGE.explanation=Az SPNEGO hiteles\u00edt\u00e9st ez az \u00fcgyf\u00e9lb\u00f6ng\u00e9sz\u0151 nem t\u00e1mogatja.
+SPNEGO_NOT_SUPPORTED_ERROR_PAGE.useraction=Konfigur\u00e1lja az \u00fcgyf\u00e9lb\u00f6ng\u00e9sz\u0151t SPNEGO hiteles\u00edt\u00e9s v\u00e9grehajt\u00e1s\u00e1ra.
+
+SPNEGO_NTLM_TOKEN_RECEIVED_ERROR_PAGE=CWWKS4307E: <html><head><title>NTLM token \u00e9rkezett.\
+</title></head> <body>Az \u00fcgyf\u00e9lb\u00f6ng\u00e9sz\u0151 konfigur\u00e1ci\u00f3ja helyes, de nem jelentkezett be t\u00e1mogatott Windows tartom\u00e1nyba.\
+<p> Jelentkezzen be a t\u00e1mogatott Windows tartom\u00e1nyba.\
+</html>.
+SPNEGO_NTLM_TOKEN_RECEIVED_ERROR_PAGE.explanation=Az \u00fcgyf\u00e9lb\u00f6ng\u00e9sz\u0151 konfigur\u00e1ci\u00f3ja helyes, de nem jelentkezett be t\u00e1mogatott Windows tartom\u00e1nyba. \
+Vagy az SPNEGO konfigur\u00e1ci\u00f3 helytelen, ez\u00e9rt az \u00fcgyf\u00e9lb\u00f6ng\u00e9sz\u0151 nem k\u00fcldi el az SPNEGO vagy Kerberos tokent.
+SPNEGO_NTLM_TOKEN_RECEIVED_ERROR_PAGE.useraction=Ellen\u0151rizze, hogy bejelentkezett a t\u00e1mogatott Windows tartom\u00e1nyba, \u00e9s ellen\u0151rizze az SPNEGO konfigur\u00e1ci\u00f3t is a kiszolg\u00e1l\u00f3n \u00e9s a Windows tartom\u00e1nyban.
+
+SPNEGO_CAN_NOT_CREATE_GSSCRED_FOR_SPN=CWWKS4308E: Nem hozhat\u00f3 l\u00e9tre GSSCredential a szolg\u00e1ltat\u00e1s azonos\u00edt\u00f3nev\u00e9hez: {0}. GSSException kiv\u00e9tel \u00e9rkezett: {1}
+SPNEGO_CAN_NOT_CREATE_GSSCRED_FOR_SPN.explanation=Nem hozhat\u00f3 l\u00e9tre GSSCredential a szolg\u00e1ltat\u00e1s azonos\u00edt\u00f3nev\u00e9hez. Nem ker\u00fcl felhaszn\u00e1l\u00e1sra SPNEGO hiteles\u00edt\u00e9s ezen szolg\u00e1ltat\u00e1s azonos\u00edt\u00f3n\u00e9v (SPN) eset\u00e9n.
+SPNEGO_CAN_NOT_CREATE_GSSCRED_FOR_SPN.useraction=Ellen\u0151rizze a szolg\u00e1ltat\u00e1s azonos\u00edt\u00f3nev\u00e9nek form\u00e1tum\u00e1t, \u00e9s gondoskodjon arr\u00f3l, hogy az l\u00e9tezzen a Windows tartom\u00e1nyban \u00e9s a Kerberos kulcsc\u00edmke f\u00e1jl tartalmazza a szolg\u00e1ltat\u00f3 azonos\u00edt\u00f3nev\u00e9t.
+
+SPNEGO_NO_SPN_GSS_CREDENTIAL=CWWKS4309E: Nem hozhat\u00f3 l\u00e9tre GSSCredential egyik szolg\u00e1ltat\u00e1s azonos\u00edt\u00f3n\u00e9vhez sem. Egyik k\u00e9r\u00e9s sem fog SPNEGO hiteles\u00edt\u00e9st haszn\u00e1lni.
+SPNEGO_NO_SPN_GSS_CREDENTIAL.explanation=Nem hozhat\u00f3 l\u00e9tre GSSCredential egyik szolg\u00e1ltat\u00e1s azonos\u00edt\u00f3n\u00e9vhez sem. Nem ker\u00fcl felhaszn\u00e1l\u00e1sra SPNEGO hiteles\u00edt\u00e9s.
+SPNEGO_NO_SPN_GSS_CREDENTIAL.useraction=Ellen\u0151rizze a szolg\u00e1ltat\u00e1s azonos\u00edt\u00f3nev\u00e9nek form\u00e1tum\u00e1t, \u00e9s gondoskodjon arr\u00f3l, hogy az l\u00e9tezzen a Windows tartom\u00e1nyban \u00e9s a Kerberos kulcsc\u00edmke f\u00e1jl tartalmazza a szolg\u00e1ltat\u00f3 azonos\u00edt\u00f3nev\u00e9t.
+
+SPNEGO_NO_DELEGATED_CREDENTIALS_FOUND=CWWKS4310W: A rendszer \u00fcgyf\u00e9l \u00e1ltal deleg\u00e1lt GSSCredential tokeneket v\u00e1rt, de azok nem tal\u00e1lhat\u00f3k a(z) {0} felhaszn\u00e1l\u00f3hoz.
+SPNEGO_NO_DELEGATED_CREDENTIALS_FOUND.explanation=Az \u00fcgyf\u00e9l \u00e1ltal deleg\u00e1lt GSSCredential tokenek nem tal\u00e1lhat\u00f3k, \u00edgy az \u00fcgyf\u00e9l t\u00e1rgy nem fog rendelkezni \u00fcgyf\u00e9l GSSCredential tokenekkel.
+SPNEGO_NO_DELEGATED_CREDENTIALS_FOUND.useraction=Ha az \u00fcgyf\u00e9l \u00e1ltal deleg\u00e1lt GSSCredential tokenek sz\u00fcks\u00e9gesek a t\u00e1rgyban, akkor \u00e1ll\u00edtsa be, hogy az SPN megb\u00edzhat\u00f3 legyen Kerberos szolg\u00e1ltat\u00e1sokhoz a Windows tartom\u00e1nyban.
+
+SPNEGO_FAIL_TO_GET_WRITER=CWWKS4311E: A(z) {0} met\u00f3dus a HttpServletResponse getWriter met\u00f3dus\u00e1t h\u00edvta, de kiv\u00e9tellel meghi\u00fasult: {1}
+SPNEGO_FAIL_TO_GET_WRITER.explanation=Hiba t\u00f6rt\u00e9nt a HttpServletResponse getWriter met\u00f3dus\u00e1nak beolvas\u00e1sakor; nem \u00edrhat\u00f3 a hibaoldal a HttpServletResponse objektumba.
+SPNEGO_FAIL_TO_GET_WRITER.useraction=Tov\u00e1bbi r\u00e9szletek\u00e9rt n\u00e9zze meg a kiv\u00e9tel inform\u00e1ci\u00f3it.
+
+SPNEGO_DEFAULT_KRB5_CONF_FILE_NOT_FOUND=CWWKS4312E: A Kerberos konfigur\u00e1ci\u00f3s f\u00e1jl nincs megadva a server.xml f\u00e1jlban, \u00e9s az alap\u00e9rtelmezett Kerberos konfigur\u00e1ci\u00f3s f\u00e1jl ({0}) nem tal\u00e1lhat\u00f3.
+SPNEGO_DEFAULT_KRB5_CONF_FILE_NOT_FOUND.explanation=A Kerberos konfigur\u00e1ci\u00f3s f\u00e1jl nincs megadva a server.xml f\u00e1jlban, \u00e9s az alap\u00e9rtelmezett Kerberos konfigur\u00e1ci\u00f3s f\u00e1jl nem tal\u00e1lhat\u00f3.
+SPNEGO_DEFAULT_KRB5_CONF_FILE_NOT_FOUND.useraction=Ellen\u0151rizze az alap\u00e9rtelmezett Kerberos konfigur\u00e1ci\u00f3s f\u00e1jlnevet \u00e9s \u00fatvonalat, vagy friss\u00edtse a server.xml f\u00e1jlt a haszn\u00e1lni k\u00edv\u00e1nt konfigur\u00e1ci\u00f3s f\u00e1jllal.
+
+SPNEGO_DEFAULT_KRB5_KEYTAB_FILE_NOT_FOUND=CWWKS4313E: A Kerberos kulcsc\u00edmke f\u00e1jl nincs megadva a server.xml f\u00e1jlban, \u00e9s az alap\u00e9rtelmezett Kerberos kulcsc\u00edmke f\u00e1jl ({0}) nem tal\u00e1lhat\u00f3.
+SPNEGO_DEFAULT_KRB5_KEYTAB_FILE_NOT_FOUND.explanation=Nem tal\u00e1lhat\u00f3 az alap\u00e9rtelmezett Kerberos kulcsc\u00edmke f\u00e1jl.
+SPNEGO_DEFAULT_KRB5_KEYTAB_FILE_NOT_FOUND.useraction=Nem tal\u00e1lhat\u00f3 a server.xml f\u00e1jlban megadott \u00e9s az alap\u00e9rtelmezett Kerberos kulcsc\u00edmke f\u00e1jl. Ellen\u0151rizze az alap\u00e9rtelmezett Kerberos kulcsc\u00edmke f\u00e1jlnevet \u00e9s \u00fatvonalat, vagy friss\u00edtse a server.xml f\u00e1jlt a haszn\u00e1lni k\u00edv\u00e1nt kulcsc\u00edmke f\u00e1jllal.
+
+SPNEGO_DEFAULT_SPNS=CWWKS4314I: A servicePrincipalNames attrib\u00fatum nincs megadva a server.xml f\u00e1jlban vagy az \u00e9rt\u00e9ke \u00fcres; az alap\u00e9rtelmezett {0} ker\u00fcl felhaszn\u00e1l\u00e1sra.
+SPNEGO_DEFAULT_SPNS.explanation=A servicePrincipalNames nincs megadva a server.xml f\u00e1jlban, helyette az alap\u00e9rtelmez\u00e9s lesz haszn\u00e1latban.
+SPNEGO_DEFAULT_SPNS.useraction=Adjon meg \u00e9rt\u00e9ket a servicePrincipalNames attrib\u00fatum sz\u00e1m\u00e1ra, ha nem az alap\u00e9rtelmezett \u00e9rt\u00e9ket kell haszn\u00e1lni.
+
+SPNEGO_GSSCRED_NOT_FOUND_FOR_SPN=CWWKS4315E: Nem tal\u00e1lhat\u00f3 GSSCredential a szolg\u00e1ltat\u00e1s azonos\u00edt\u00f3nev\u00e9hez ({0}). 
+SPNEGO_GSSCRED_NOT_FOUND_FOR_SPN.explanation=Nem tal\u00e1lhat\u00f3 GSSCredential a szolg\u00e1ltat\u00e1s azonos\u00edt\u00f3nev\u00e9hez.
+SPNEGO_GSSCRED_NOT_FOUND_FOR_SPN.useraction=Ellen\u0151rizze a szolg\u00e1ltat\u00e1s azonos\u00edt\u00f3nev\u00e9t, \u00e9s gondoskodjon arr\u00f3l, hogy az meg legyen adva a Windows tartom\u00e1nyban \u00e9s a Kerberos kulcsc\u00edmke f\u00e1jlban.
+
+SPNEGO_MULTIPLE_SPNS_WITH_SAME_HOST_NAME=CWWKS4316W: A servicePrincipalNames t\u00f6bb SPN-nel rendelkezik a k\u00f6vetkez\u0151 hosztn\u00e9vhez: {0}.
+SPNEGO_MULTIPLE_SPNS_WITH_SAME_HOST_NAME.explanation=A servicePrincipalNames t\u00f6bb SPN-nel rendelkezik ugyanahhoz a hosztn\u00e9vhez. Az els\u0151 SPN lesz haszn\u00e1latban, a t\u00f6bbi SPN figyelmen k\u00edv\u00fcl marad.
+SPNEGO_MULTIPLE_SPNS_WITH_SAME_HOST_NAME.useraction=Ellen\u0151rizze a servicePrincipalNames \u00e9rt\u00e9k\u00e9t \u00e9s gondoskodjon arr\u00f3l, hogy hosztnevenk\u00e9nt csak egy SPN legyen.
+
+SPNEGO_CUSTOM_ERROR_PAGE_MALFORMED=CWWKS4317E: Az egy\u00e9ni hibaoldal {0} URL c\u00edme helytelen\u00fcl k\u00e9pzett. Az alap\u00e9rtelmezett hibaoldal ker\u00fcl felhaszn\u00e1l\u00e1sra.
+SPNEGO_CUSTOM_ERROR_PAGE_MALFORMED.explanation=Az egy\u00e9ni hibaoldal nem t\u00f6lthet\u0151 be, mert helytelen\u00fcl k\u00e9pzett URL c\u00edm van megadva.
+SPNEGO_CUSTOM_ERROR_PAGE_MALFORMED.useraction=Tekintse \u00e1t az egy\u00e9ni hibaoldalt, \u00e9s m\u00f3dos\u00edtsa azt szab\u00e1lyosan form\u00e1zott URL szintaxisra.
+
+SPNEGO_LOAD_CUSTOM_ERROR_PAGE_ERROR=CWWKS4318E: A(z) {0} egy\u00e9ni hibaoldal nem t\u00f6lthet\u0151 be {1} miatt. Az alap\u00e9rtelmezett hibaoldal ker\u00fcl felhaszn\u00e1l\u00e1sra.
+SPNEGO_LOAD_CUSTOM_ERROR_PAGE_ERROR.explanation=Az egy\u00e9ni hibaoldal a kiv\u00e9tel miatt nem t\u00f6lthet\u0151 be. Az alap\u00e9rtelmezett ker\u00fcl felhaszn\u00e1l\u00e1sra.
+SPNEGO_LOAD_CUSTOM_ERROR_PAGE_ERROR.useraction=Tekintse \u00e1t az egy\u00e9ni hibaoldalt, gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy l\u00e9tezik, illetve ellen\u0151rizze a tartalomt\u00edpust \u00e9s a tartalomk\u00f3dol\u00e1st.
+
+SPNEGO_CUSTOM_ERROR_PAGE_CONTENT_TYPE_ERROR=CWWKS4319E: A(z) {0} egy\u00e9ni hibaoldal tartalomt\u00edpusa {1} miatt nem k\u00e9rhet\u0151 le. Az alap\u00e9rtelmezett hibaoldal ker\u00fcl felhaszn\u00e1l\u00e1sra.
+SPNEGO_CUSTOM_ERROR_PAGE_CONTENT_TYPE_ERROR.explanation=Az egy\u00e9ni hibaoldal a kiv\u00e9tel miatt nem t\u00f6lthet\u0151 be a tartalomt\u00edpus lek\u00e9r\u00e9se sor\u00e1n.
+SPNEGO_CUSTOM_ERROR_PAGE_CONTENT_TYPE_ERROR.useraction=Az egy\u00e9ni hibaoldal tartalomt\u00edpus\u00e1nak \u00e1ttekint\u00e9s\u00e9vel gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00e9rv\u00e9nyes.
+
+SPNEGO_CAN_NOT_ESTABLISH_GSSCONTEXT_WITH_VALIDATE_TOKEN=CWWKS4320E: A GSSContext nem hozhat\u00f3 l\u00e9tre a(z) {0} HttpServletRequest k\u00e9r\u00e9sben tal\u00e1lhat\u00f3 \u00e9rv\u00e9nyes SPNEGO vagy Kerberos token haszn\u00e1lat\u00e1val. 
+SPNEGO_CAN_NOT_ESTABLISH_GSSCONTEXT_WITH_VALIDATE_TOKEN.explanation=A k\u00e9r\u00e9s hiteles\u00edt\u00e9s\u00e9hez haszn\u00e1lt SPNEGO vagy Kerberos token \u00e9rv\u00e9nyes, de a GSSContext nem hozhat\u00f3 l\u00e9tre.
+SPNEGO_CAN_NOT_ESTABLISH_GSSCONTEXT_WITH_VALIDATE_TOKEN.useraction=Ha nem jelenik meg tov\u00e1bbi hiba\u00fczenet, akkor enged\u00e9lyezze a JGSS \u00e9s KRB5 hibakeres\u00e9st. A JGSS \u00e9s KRB5 hibakeres\u00e9s enged\u00e9lyez\u00e9s\u00e9re vonatkoz\u00f3 \u00fatmutat\u00e1sokkal kapcsolatban tekintse meg a JDK dokument\u00e1ci\u00f3t. Az SPNEGO konfigur\u00e1ci\u00f3 ellen\u0151rz\u00e9s\u00e9vel gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fcgyf\u00e9l, SPN \u00e9s Kerberos kulcsc\u00edmke f\u00e1jlok ugyanazt a titkos\u00edt\u00e1si t\u00edpust haszn\u00e1lj\u00e1k, mint ami a Kerberos konfigur\u00e1ci\u00f3s f\u00e1jlban meg van adva.
+
+SPNEGO_CAN_NOT_GET_DELEGATE_SERVICE_SPN=CWWKS4321E: Nem olvashat\u00f3 be a(z) {0} meghatalmazott szolg\u00e1ltat\u00e1s SPN a GSSCredential-b\u00f3l. GSSException kiv\u00e9tel \u00e9rkezett: {1}
+SPNEGO_CAN_NOT_GET_DELEGATE_SERVICE_SPN.explanation=Nem olvashat\u00f3 be a meghatalmazott szolg\u00e1ltat\u00e1s SPN a GSSCredential-b\u00f3l. A proxy \u00fcgyf\u00e9l GSSCredential \u00e9rt\u00e9ke nem fog szerepelni a t\u00e1rgyban.
+SPNEGO_CAN_NOT_GET_DELEGATE_SERVICE_SPN.useraction=Ellen\u0151rizze a szolg\u00e1ltat\u00e1s azonos\u00edt\u00f3nev\u00e9nek form\u00e1tum\u00e1t, \u00e9s gondoskodjon arr\u00f3l, hogy az l\u00e9tezzen a Windows tartom\u00e1nyban \u00e9s a Kerberos kulcsc\u00edmke f\u00e1jl tartalmazza a szolg\u00e1ltat\u00f3 azonos\u00edt\u00f3nev\u00e9t.
+
+SPNEGO_DELEGATE_SPN_LOGIN_TO_KDC_FAILURE=CWWKS4322E: A(z) {0} meghatalmazott SPN nem tud hiteles\u00edt\u00e9st v\u00e9gezni a kulcseloszt\u00f3 k\u00f6zponttal (KDC) a(z) {1} Kerberos konfigur\u00e1ci\u00f3s f\u00e1jllal \u00e9s {2} kulcsc\u00edmke f\u00e1jllal. Bejelentkez\u00e9si kiv\u00e9tel t\u00f6rt\u00e9nt: {3}
+SPNEGO_DELEGATE_SPN_LOGIN_TO_KDC_FAILURE.explanation=Nem lehet hiteles\u00edt\u00e9st v\u00e9gezni a kulcseloszt\u00f3 k\u00f6zponttal (KDC).
+SPNEGO_DELEGATE_SPN_LOGIN_TO_KDC_FAILURE.useraction=Ellen\u0151rizze a szolg\u00e1ltat\u00e1s azonos\u00edt\u00f3nev\u00e9nek form\u00e1tum\u00e1t, \u00e9s gondoskodjon arr\u00f3l, hogy az l\u00e9tezzen a Windows tartom\u00e1nyban \u00e9s a Kerberos kulcsc\u00edmke f\u00e1jl tartalmazza a szolg\u00e1ltat\u00f3 azonos\u00edt\u00f3nev\u00e9t.

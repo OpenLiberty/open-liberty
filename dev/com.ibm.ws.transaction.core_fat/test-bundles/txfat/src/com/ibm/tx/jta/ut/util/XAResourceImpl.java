@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2018 IBM Corporation and others.
+ * Copyright (c) 2014, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,8 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedExceptionAction;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -1408,11 +1410,17 @@ public class XAResourceImpl implements XAResource, Serializable {
         return _resources.size();
     }
 
-    public static synchronized void clear() {
+    public static synchronized void clear() throws Exception {
         _XAEvents.clear();
         _resources.clear();
         _nextKey.set(0);
-        new File(STATE_FILE).delete();
+        AccessController.doPrivileged(new PrivilegedExceptionAction<Boolean>() {
+
+            @Override
+            public Boolean run() throws Exception {
+                return new File(STATE_FILE).delete();
+            }
+        });
     }
 
     public static synchronized void dumpState() {

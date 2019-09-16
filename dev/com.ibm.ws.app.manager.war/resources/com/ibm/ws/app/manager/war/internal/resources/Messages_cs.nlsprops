@@ -220,3 +220,20 @@ warning.could.not.expand.application.useraction=Pokuste se vy\u0159e\u0161it pro
 error.file.outside.archive=CWWKZ0132W: Soubor {0} v archivu {1} nebude extrahov\u00e1n, proto\u017ee cesta nen\u00ed obsa\u017eena v archivu.
 error.file.outside.archive.explanation=Cesta souboru ur\u010duje relativn\u00ed adres\u00e1\u0159. Extrahov\u00e1n\u00ed souboru by vedlo k um\u00edst\u011bn\u00ed souboru mimo ko\u0159enov\u00fd adres\u00e1\u0159 archivu.
 error.file.outside.archive.useraction=Odeberte z archivu soubory s relativn\u00edmi cestami. 
+
+#{0} is the application name, {1} is the location of the EAR or WAR file, {2} is the location where the file is expanded
+info.expanding.app=CWWKZ0133I: Aplikace {0} v um\u00edst\u011bn\u00ed {1} je roz\u0161i\u0159ov\u00e1na do adres\u00e1\u0159e {2}.
+info.expanding.app.explanation=Archivn\u00ed soubor pro aplikaci je roz\u0161i\u0159ov\u00e1n, proto\u017ee bylo nakonfigurov\u00e1no automatick\u00e9 prodlou\u017een\u00ed aplikac\u00ed.
+info.expanding.app.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+info.loose.app=CWWKZ0134I: Aplikace {0} pou\u017e\u00edv\u00e1 volnou definici aplikace v um\u00edst\u011bn\u00ed {1}.
+info.loose.app.explanation=Um\u00edst\u011bn\u00ed pro aplikaci ukazuje na soubor XML, kter\u00fd definuje volnou aplikaci. 
+info.loose.app.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+info.directory.app=CWWKZ0135I: Aplikace {0} pou\u017e\u00edv\u00e1 roz\u0161\u00ed\u0159en\u00fd adres\u00e1\u0159 v um\u00edst\u011bn\u00ed {1}.
+info.directory.app.explanation=Um\u00edst\u011bn\u00ed pro aplikaci ukazuje na adres\u00e1\u0159 sp\u00ed\u0161e ne\u017e na archivn\u00ed soubor. 
+info.directory.app.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+info.unexpanded.app=CWWKZ0136I: Aplikace {0} pou\u017e\u00edv\u00e1 archivn\u00ed soubor v um\u00edst\u011bn\u00ed {1}.
+info.unexpanded.app.explanation=Um\u00edst\u011bn\u00ed pro aplikaci ukazuje na bin\u00e1rn\u00ed archivn\u00ed soubor. Archivn\u00ed soubor nebude rozbalen na disku, proto\u017ee automatick\u00e9 prodlou\u017een\u00ed aplikac\u00ed nebylo konfigurov\u00e1no.
+info.unexpanded.app.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.

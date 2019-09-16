@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2015 IBM Corporation and others.
+ * Copyright (c) 2012, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -553,7 +553,7 @@ public class EJBJarType extends DescriptionGroup implements DeploymentDescriptor
      * <xsd:selector xpath="javaee:env-entry"/>
      * <xsd:field xpath="javaee:env-entry-name"/>
      * </xsd:unique>
-     * 
+     *
      * <xsd:complexType name="enterprise-beanType">
      * <xsd:sequence>
      * <xsd:group ref="javaee:descriptionGroup"/>
@@ -1560,7 +1560,7 @@ public class EJBJarType extends DescriptionGroup implements DeploymentDescriptor
     }
 
     /*
-     * 
+     *
      * <xsd:complexType name="stateful-timeoutType">
      * <xsd:sequence>
      * <xsd:element name="timeout"
@@ -1571,7 +1571,7 @@ public class EJBJarType extends DescriptionGroup implements DeploymentDescriptor
      * <xsd:attribute name="id"
      * type="xsd:ID"/>
      * </xsd:complexType>
-     * 
+     *
      * <xsd:complexType name="access-timeoutType">
      * <xsd:sequence>
      * <xsd:element name="timeout"
@@ -1731,7 +1731,7 @@ public class EJBJarType extends DescriptionGroup implements DeploymentDescriptor
      * <xsd:attribute name="id"
      * type="xsd:ID"/>
      * </xsd:complexType>
-     * 
+     *
      * <xsd:complexType name="async-methodType">
      * <xsd:sequence>
      * <xsd:element name="method-name"
@@ -1743,7 +1743,7 @@ public class EJBJarType extends DescriptionGroup implements DeploymentDescriptor
      * <xsd:attribute name="id"
      * type="xsd:ID"/>
      * </xsd:complexType>
-     * 
+     *
      * <xsd:complexType name="query-methodType">
      * <xsd:sequence>
      * <xsd:element name="method-name"
@@ -2192,7 +2192,7 @@ public class EJBJarType extends DescriptionGroup implements DeploymentDescriptor
      * </xsd:restriction>
      * </xsd:simpleContent>
      * </xsd:complexType>
-     * 
+     *
      * <xsd:complexType name="transaction-typeType">
      * <xsd:simpleContent>
      * <xsd:restriction base="javaee:string">
@@ -2201,7 +2201,7 @@ public class EJBJarType extends DescriptionGroup implements DeploymentDescriptor
      * </xsd:restriction>
      * </xsd:simpleContent>
      * </xsd:complexType>
-     * 
+     *
      * <xsd:complexType name="persistence-typeType">
      * <xsd:simpleContent>
      * <xsd:restriction base="javaee:string">
@@ -3429,7 +3429,7 @@ public class EJBJarType extends DescriptionGroup implements DeploymentDescriptor
     /*
      * Instances of this type are only created temporarily for EJB 2.0
      * compatibility. The parsed values are stored in ActivationConfigType.
-     * 
+     *
      * <!ELEMENT message-driven-destination (destination-type, subscription-durability?)>
      */
     static class MessageDrivenDestinationType extends DDParser.ElementContentParsable {
@@ -3489,7 +3489,7 @@ public class EJBJarType extends DescriptionGroup implements DeploymentDescriptor
      * type="javaee:java-identifierType"/>
      * </xsd:sequence>
      * </xsd:complexType>
-     * 
+     *
      * <xsd:complexType name="around-timeoutType">
      * <xsd:sequence>
      * <xsd:element name="class"
@@ -3859,7 +3859,7 @@ public class EJBJarType extends DescriptionGroup implements DeploymentDescriptor
      * <xsd:selector xpath="javaee:ejb-relation"/>
      * <xsd:field xpath="javaee:ejb-relation-name"/>
      * </xsd:unique>
-     * 
+     *
      * <xsd:complexType name="relationshipsType">
      * <xsd:sequence>
      * <xsd:element name="description"
@@ -3925,7 +3925,7 @@ public class EJBJarType extends DescriptionGroup implements DeploymentDescriptor
      * <xsd:selector xpath=".//javaee:ejb-relationship-role-name"/>
      * <xsd:field xpath="."/>
      * </xsd:unique>
-     * 
+     *
      * <xsd:complexType name="ejb-relationType">
      * <xsd:sequence>
      * <xsd:element name="description"
@@ -5265,7 +5265,8 @@ public class EJBJarType extends DescriptionGroup implements DeploymentDescriptor
 
         @Override
         public boolean isInherited() {
-            return inherited != null ? inherited.getBooleanValue() : false;
+            // Per XSD and specification: If not specified, this value defaults to true.
+            return inherited != null ? inherited.getBooleanValue() : true;
         }
 
         // elements

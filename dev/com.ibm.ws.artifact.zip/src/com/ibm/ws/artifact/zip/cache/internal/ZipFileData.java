@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@ package com.ibm.ws.artifact.zip.cache.internal;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
@@ -124,7 +125,7 @@ public class ZipFileData {
     public ZipFileData(String path, long initialAt)
         throws IOException, ZipException {
         String methodName = "<init>";
-        if ( tc.isDebugEnabled() ) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
             Tr.debug(tc, methodName, "Create [ " + path + " ]");
         }
 
@@ -200,7 +201,7 @@ public class ZipFileData {
     @Trivial
     public void enactOpen(long openAt) {
         String methodName = "enactOpen";
-        if ( tc.isDebugEnabled() ) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
             Tr.debug(tc, methodName + " On [ " + path + " ] at [ " + toRelSec(initialAt, openAt) + " (s) ]");
         }
 
@@ -269,7 +270,7 @@ public class ZipFileData {
     @Trivial
     public boolean enactClose(long closeAt, boolean closeAll) {
         String methodName = "enactClose";
-        if ( tc.isDebugEnabled() ) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
             Tr.debug(tc, methodName + " On [ " + path + " ] at [ " + toRelSec(initialAt, closeAt) + " (s) ]");
         }
 
@@ -280,7 +281,7 @@ public class ZipFileData {
                 closeCount++;
             }
 
-            boolean isLastClose;
+            boolean consumedLastOpen;
 
             if ( closeCount == openCount ) { // OPEN -> PENDING
                 openDuration += closeAt - lastOpenAt;
@@ -294,17 +295,17 @@ public class ZipFileData {
 
                 zipFileState = ZipFileState.PENDING;
 
-                isLastClose = true;
+                consumedLastOpen = true;
 
             } else {
-                isLastClose = false;
+                consumedLastOpen = false;
             }
 
             if ( ZIP_REAPER_COLLECT_TIMINGS ) {
                 timing(" Close " + dualTiming(closeAt, initialAt) + " " + openState());
             }
 
-            return isLastClose;
+            return consumedLastOpen;
 
         } else if ( zipFileState == ZipFileState.PENDING ) {
             throw illegalTransition(ZipFileAction.CLOSE); 
@@ -319,7 +320,7 @@ public class ZipFileData {
     @Trivial
     public void enactFullClose(long fullCloseAt) {
         String methodName = "enactFullClose";
-        if ( tc.isDebugEnabled() ) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
             Tr.debug(tc, methodName + " On [ " + path + " ] at [ " + toRelSec(initialAt, fullCloseAt) + " (s) ]");
         }
 
@@ -353,58 +354,194 @@ public class ZipFileData {
 
     @Trivial
     public void displayData() {
-        if ( !ZIP_REAPER_COLLECT_TIMINGS ) {
+        if ( ZIP_REAPER_COLLECT_TIMINGS ) {
+            introspect( new PrintWriter(System.out), System.nanoTime() );
+        }
+    }
+
+    
+/*
+ZipFile [Path]
+    State   [state]
+    Request Counts:
+        Open Requests:  [<openCount>]
+        Close Requests: [<closeCount>]
+        Active Opens:   [<openCount> - <closeCount>]
+
+    State Durations:    [<current> - <initialAt> (s) ]
+        Pre-Open:       [<firstOpenAt> - <initialAt> (s) ]
+        Open:           [<openDuration> + <openTail> (s) ]
+        Pending:        [<pendingToOpenDuration> + <pendToFullCloseDuration> + <pendTail> (s) ]
+        Closed:         [<fullCloseToOpenDuration> + <closeTail> (s) ]
+        Post-Close:     [ 0 (s) ] //might be 0 since there is no post close unless the server is shut down
+
+    Transition Counts:
+        Open:
+            to Pending: [<openToPendCount>]  [<openDuration> (s) ]
+        Pending:
+            to Open:    [<pendToOpenCount>]  [<pendToOpenDuration> (s) ]
+            to Close:   [<pendToCloseCount>]  [<pendToCloseDuration> (s) ]
+        Close:
+            to Open:    [<closeToOpenCount>]  [<closeDuration> (s) ]
+    
+    Event Times:
+        Open:
+            First:  [<firstOpenAt> (s) ]
+            Last:   [<lastOpenAt> (s) ]
+        Pend:
+            First:  [<firstPendAt> (s) ]
+            Last:   [<lastPendAt> (s) ]
+        Close:
+            First:  [<firstCloseAt> (s) ]
+            Last:   [<lastCloseAt> (s) ]
+*/
+
+    private static final String TAB = "    ";
+
+    private static String addTabs(String line, int tabs) {
+        if ( tabs > 0 ) {
+            StringBuilder builder = new StringBuilder( TAB.length() * tabs + line.length() );
+            while ( tabs > 0 ) {
+                tabs--;
+                builder.append(TAB);
+            }
+            builder.append(line);
+            line = builder.toString();
+        }
+        return line;
+    }
+
+    private static void indentLine(PrintWriter output, String line, int tabs) {
+        output.println( addTabs(line, tabs) );
+    }
+
+    public void introspect(PrintWriter output, long introspectAt) {
+        // Tails of state intervals.  Necessary to put into the
+        // introspected statistics the entire timeline of the zip file data.
+        //
+        // Tail values are not yet recorded to the zip file data state.
+        // Each records the time since the current state was entered to
+        // the introspection time.
+
+        long openTail;
+        long pendTail;
+        long closeTail;
+
+        if ( zipFileState == ZipFileState.OPEN ) {
+            openTail = introspectAt - lastOpenAt;
+            pendTail = 0;
+            closeTail = 0;
+        } else if ( zipFileState == ZipFileState.PENDING ) {
+            openTail = 0;
+            pendTail = introspectAt - lastPendAt;
+            closeTail = 0;
+        } else if ( zipFileState == ZipFileState.FULLY_CLOSED ) {
+            openTail = 0;
+            pendTail = 0;
+            closeTail = introspectAt - lastFullCloseAt;
+        } else {
+            output.println("Unknown zip file state [ " + zipFileState + " ] [ " + path + " ]");
             return;
         }
 
-        // See the class comment for details of the state model and the
-        // statistics which are gathered.
+        String line;
 
-        System.out.println("ZFR ZipFile [ " + path + " ] Statistics:");
+        line = String.format("ZipFile [ %s ]", path);
+        indentLine(output, line, 0);
 
-        String openText;
-        if ( lastLastOpenAt == -1L ) {
-            openText =
-                "   Open: First [ " + toRelSec(initialAt, firstOpenAt) + " (s) ]" +
-                " Last [ " + toRelSec(initialAt, lastOpenAt) + " (s) ]" +
-                " Count [ " + toCount(openCount) + " ]" +
-                " Duration [ " + toAbsSec(openDuration) + " (s) ]";
+        line = String.format("State: [ %s ]", zipFileState.toString());
+        indentLine(output, line, 1);
+
+        output.println();
+        line = "Request Counts:";
+        indentLine(output, line, 1);
+
+        line = String.format("Open Requests:  [ %s ]", toCount(openCount));
+        indentLine(output, line, 2);
+        line = String.format("Close Requests: [ %s ]", toCount(closeCount));
+        indentLine(output, line, 2);
+        
+        if ( openCount >= closeCount ) {
+            line = String.format("Active Opens:   [ %s ]", toCount(openCount - closeCount));
         } else {
-            openText =
-                "   Open: First [ " + toRelSec(initialAt, firstOpenAt) + " (s) ]" +
-                " Last [ " + toRelSec(initialAt, lastOpenAt) + " (s) ]" +
-                " Next Last [ " + toRelSec(initialAt, lastLastOpenAt) + " (s) ]" +
-                " Count [ " + toCount(openCount) + " ]" +
-                " Duration [ " + toAbsSec(openDuration) + " (s) ]";
+            line = String.format("Excess Closes:  [ %s ]", toCount(closeCount - openCount));
         }
-        System.out.println("ZFR " + openText);
+        indentLine(output, line, 2);
 
-        String pendingText =
-                "   Pending: First [ " + toRelSec(initialAt, firstPendAt) + " (s) ]" +
-                " Last [ " + toRelSec(initialAt, lastPendAt) + " (s) ]" +
-                " Count [ " + toCount(openToPendCount) + " ]";
-        System.out.println("ZFR " + pendingText);
+        output.println();
 
-        String pendingBeforeOpenText =
-                "     Pending to Open: Count [ " + toCount(pendToOpenCount) + " ]" +
-                " Duration [ " + toAbsSec(pendToOpenDuration) + " (s) ]";
-        System.out.println("ZFR " + pendingBeforeOpenText);
+        indentLine(output, "Lifetime:", 1);
 
-        String pendingBeforeCloseText =
-                "     Pending to Full Close: Count [ " + toCount(pendToFullCloseCount) + " ]" +
-                " Duration [ " + toAbsSec(pendToFullCloseDuration) + " (s) ]";
-        System.out.println("ZFR " + pendingBeforeCloseText);
+        line = String.format("Pre-Open:   [ %s (s) ]", toRelSec(initialAt, firstOpenAt));
+        indentLine(output, line, 2);
+        line = String.format("Open:       [ %s (s) ]", toAbsSec(openDuration + openTail));
+        indentLine(output, line, 2);
+        line = String.format("Pending:    [ %s (s) ]", toAbsSec(pendToOpenDuration + pendToFullCloseDuration + pendTail));
+        indentLine(output, line, 2);
+        line = String.format("Closed:     [ %s (s) ]", toAbsSec(fullCloseToOpenDuration + closeTail));
+        indentLine(output, line, 2);
+        line = String.format("Post-Close: [ %s (s) ]", toAbsSec(0));
+        indentLine(output, line, 2);
+        line = String.format("Total:      [ %s (s) ]", toRelSec(initialAt, introspectAt));
+        indentLine(output, line, 2);
 
-        String closeText =
-                "   Full Close: First [ " + toRelSec(initialAt, firstFullCloseAt) + " (s) ]" +
-                " Last [ " + toRelSec(initialAt, lastFullCloseAt) + " (s) ]";
-        System.out.println("ZFR " + closeText);
+        output.println();
+        indentLine(output,"Transition Counts:", 1);
 
-        String closeBeforeOpenText =
-                "     Full Close to Open: Count [ " + toCount(fullCloseToOpenCount) + " ]" +
-                " Duration [ " + toAbsSec(fullCloseToOpenDuration) + " (s) ]";
-        System.out.println(closeBeforeOpenText);
+        indentLine(output,"Open:", 2);
+        line = String.format("to Pending: [ %s ] [ %s (s) ]", toCount(openToPendCount), toAbsSec(openDuration));
+        indentLine(output, line, 3);
+        if ( zipFileState == ZipFileState.OPEN ) {
+            line = String.format("Active:                [ %s (s) ]", toAbsSec(openTail));
+            indentLine(output, line, 3);
+        }
+
+        indentLine(output, "Pending:", 2);
+        line = String.format("to Open:    [ %s ] [ %s (s) ]", toCount(pendToOpenCount), toAbsSec(pendToOpenDuration));
+        indentLine(output, line, 3);
+        line = String.format("to Close:   [ %s ] [ %s (s) ]", toCount(pendToFullCloseCount), toAbsSec(pendToFullCloseDuration));
+        indentLine(output, line, 3);
+        if ( zipFileState == ZipFileState.PENDING ) {
+            line = String.format("Active:                [ %s (s) ]", toAbsSec(pendTail));
+            indentLine(output, line, 3);
+        }
+
+        indentLine(output, "Close:", 2);
+        line = String.format("to Open:    [ %s ] [ %s (s) ]", toCount(fullCloseToOpenCount), toAbsSec(fullCloseToOpenDuration));
+        indentLine(output, line, 3);
+        if ( zipFileState == ZipFileState.FULLY_CLOSED ) {
+            line = String.format("Active:                [ %s (s) ]", toAbsSec(closeTail));
+            indentLine(output, line, 3);
+        }
+
+        output.println();
+        indentLine(output, "Event Times:", 1);
+        indentLine(output, "Open:", 2);
+        line = String.format("First: [ %s (s) ]", toRelSec(initialAt, firstOpenAt));
+        indentLine(output, line, 3);
+        line = String.format("Last:  [ %s (s) ]", toRelSec(initialAt, lastOpenAt));
+        indentLine(output, line, 3);
+
+        String firstPendText = ( (firstPendAt == -1) ? "******.******" : toRelSec(initialAt, firstPendAt) );
+        String lastPendText = ( (lastPendAt == -1) ? "******.******" : toRelSec(initialAt, lastPendAt) );
+
+        indentLine(output, "Pend:", 2);
+        line = String.format("First: [ %s (s) ]", firstPendText);
+        indentLine(output, line, 3);
+        line = String.format("Last:  [ %s (s) ]", lastPendText);
+        indentLine(output, line, 3);
+
+        String firstFullCloseText = ( (firstFullCloseAt == -1) ? "******.******" : toRelSec(initialAt, firstFullCloseAt) );
+        String lastFullCloseText = ( (lastFullCloseAt == -1) ? "******.******" : toRelSec(initialAt, lastFullCloseAt) );
+
+        indentLine(output, "Close:", 2);
+        line = String.format("First: [ %s (s) ]", firstFullCloseText);
+        indentLine(output, line, 3);
+        line = String.format("Last:  [ %s (s) ]", lastFullCloseText);
+        indentLine(output, line, 3);
     }
+
+
 
     @Trivial
     protected IllegalStateException unknownState() {
@@ -436,6 +573,10 @@ public class ZipFileData {
     // actual files on disk.
 
     protected final String path;
+
+    public String getPath() {
+        return path;
+    }
 
     // State ...
 
@@ -479,12 +620,14 @@ public class ZipFileData {
             zipFileChanged = true;
             
             if ( openCount > closeCount ) {
-                Tr.warning(tc, methodName +
-                    " Zip [ " + path + " ]:" +
-                    " Update length from [ " + Long.valueOf(zipLength) + " ]" +
-                    " to [ " + Long.valueOf(newZipLength) + " ]");
+                // Tr.warning(tc, methodName +
+                //    " Zip [ " + path + " ]:" +
+                //    " Update length from [ " + Long.valueOf(zipLength) + " ]" +
+                //    " to [ " + Long.valueOf(newZipLength) + " ]");
+                Tr.warning(tc, "reaper.unexpected.length.change",
+                           path, Long.valueOf(zipLength), Long.valueOf(newZipLength));
             } else {
-                if ( tc.isDebugEnabled() ) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                     Tr.debug(tc, methodName +
                         " Zip [ " + path + " ]:" +
                         " Update length from [ " + Long.valueOf(zipLength) + " ]" +
@@ -497,12 +640,14 @@ public class ZipFileData {
             zipFileChanged = true;
 
             if ( openCount > closeCount ) {
-                Tr.warning(tc, methodName +
-                    " Zip [ " + path + " ]:" +
-                    " Update last modified from [ " + Long.valueOf(zipLastModified) + " ]" +
-                    " to [ " + Long.valueOf(newZipLastModified) + " ]");
+                // Tr.warning(tc, methodName +
+                //    " Zip [ " + path + " ]:" +
+                //    " Update last modified from [ " + Long.valueOf(zipLastModified) + " ]" +
+                //    " to [ " + Long.valueOf(newZipLastModified) + " ]");
+                Tr.warning(tc, "reaper.unexpected.lastmodified.change",
+                           path, Long.valueOf(zipLastModified), Long.valueOf(newZipLastModified));
             } else {
-                if ( tc.isDebugEnabled() ) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                     Tr.debug(tc, methodName +
                         " Zip [ " + path + " ]:" +
                         " Update last modified from [ " + Long.valueOf(zipLastModified) + " ]" +
@@ -513,9 +658,10 @@ public class ZipFileData {
 
         if ( zipFileChanged ) {
             if ( openCount > closeCount ) {
-                Tr.warning(tc, methodName + " Reopen [ " + path + " ]");
+                // Tr.warning(tc, methodName + " Reopen [ " + path + " ]");
+                Tr.warning(tc, "reaper.reopen.active", path);
             } else {
-                if ( tc.isDebugEnabled() ) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                     Tr.debug(tc, methodName + " Reopen [ " + path + " ]");
                 }
             }
@@ -553,7 +699,7 @@ public class ZipFileData {
         zipLength = useZipLength;
         zipLastModified = useZipLastModified;
 
-        if ( tc.isDebugEnabled() ) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
             Tr.debug(tc,
                 methodName +
                 " Path [ " + path + " ]" +
@@ -566,7 +712,7 @@ public class ZipFileData {
     @Trivial
     protected ZipFile closeZipFile() {
         String methodName = "closeZipFile";
-        if ( tc.isDebugEnabled() ) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
             Tr.debug(tc, methodName + " Path [ " + path + " ]");
         }
 
@@ -606,19 +752,19 @@ public class ZipFileData {
     @Trivial
     public boolean isFullyClosed() {
         return zipFileState == ZipFileState.FULLY_CLOSED;
-    }        
+    }
 
     protected long initialAt;
     protected long finalAt;
 
     protected int openCount;
     protected int closeCount;
-    
+
     @Trivial
     public int getActiveOpens() {
         return openCount - closeCount;
     }
-    
+
     protected int openToPendCount;
     protected int pendToOpenCount;
     protected int pendToFullCloseCount;

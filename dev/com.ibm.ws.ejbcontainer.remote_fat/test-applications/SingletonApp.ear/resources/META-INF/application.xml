@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application version="6" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application_6.xsd"> 
+  <display-name>SingletonApp</display-name>
+  <module>
+    <web>
+      <web-uri>SingletonWeb.war</web-uri>
+      <context-root>SingletonWeb</context-root>
+    </web>
+  </module>
+  <module>
+    <ejb>SingletonAnnEJB.jar</ejb>
+  </module>
+  <module>
+    <ejb>SingletonMixEJB.jar</ejb>
+  </module>
+</application>

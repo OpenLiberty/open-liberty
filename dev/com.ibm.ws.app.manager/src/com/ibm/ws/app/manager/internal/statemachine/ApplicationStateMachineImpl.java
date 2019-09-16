@@ -35,6 +35,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.app.manager.AppMessageHelper;
+import com.ibm.ws.app.manager.ApplicationStateCoordinator;
 import com.ibm.ws.app.manager.internal.AppManagerConstants;
 import com.ibm.ws.app.manager.internal.ApplicationConfig;
 import com.ibm.ws.app.manager.internal.ApplicationDependency;
@@ -135,6 +136,11 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
             // initiating a recycle, so there's no need to proceed with pending actions here, and doing so will likely result in
             // an NPE because the app handler no longer exists.
             cleanupActions();
+
+            // Clear interruptible flag
+            if (!isInterruptible())
+                setInterruptible();
+
             ApplicationDependency appHandlerFuture = createDependency("resolves when the app handler for app " + getAppName() + " arrives");
             appHandlerFuture = waitingForAppHandlerFuture.getAndSet(appHandlerFuture);
             if (appHandlerFuture != null) {
@@ -542,6 +548,8 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
             for (ApplicationDependency appDep; (appDep = _notifyAppStarting.poll()) != null;) {
                 failedDependency(appDep, null);
             }
+            ApplicationStateCoordinator.updateStartingAppStatus(_appConfig.get().getConfigPid(), ApplicationStateCoordinator.AppStatus.FAILED);
+
         }
 
         @Override

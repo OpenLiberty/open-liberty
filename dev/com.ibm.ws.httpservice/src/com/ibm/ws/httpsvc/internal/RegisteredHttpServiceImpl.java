@@ -45,7 +45,7 @@ import com.ibm.ws.httpsvc.servlet.internal.ServletContextManager;
  *
  */
 public class RegisteredHttpServiceImpl implements ExtHttpService {
-    private static final TraceComponent tc = Tr.register(RegisteredHttpServiceImpl.class);
+    private static final TraceComponent tc = Tr.register(RegisteredHttpServiceImpl.class, com.ibm.ws.httpsvc.internal.HttpSvcConstants.TRACE_GROUP, null);
 
     /** DS-managed reference to the HTTP Container */
     private HttpServiceContainer container;
@@ -67,14 +67,12 @@ public class RegisteredHttpServiceImpl implements ExtHttpService {
     private Set<Filter> localFilters;
     private ServletContextManager contextManager;
 
-    private final Object servletLock = new Object()
-    {};
-    private final Object filterLock = new Object()
-    {};
+    private final Object servletLock = new Object() {};
+    private final Object filterLock = new Object() {};
 
     /**
      * Activate this component.
-     * 
+     *
      * @param ctxt
      */
     protected void activate(ComponentContext ctxt) {
@@ -92,7 +90,7 @@ public class RegisteredHttpServiceImpl implements ExtHttpService {
 
     /**
      * Deactivate this component.
-     * 
+     *
      * @param ctxt
      */
     protected void deactivate(ComponentContext ctxt, int reason) {

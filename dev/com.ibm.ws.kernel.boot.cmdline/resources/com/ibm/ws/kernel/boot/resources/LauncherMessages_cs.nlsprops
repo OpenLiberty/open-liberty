@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2016 IBM Corporation and others.
+# Copyright (c) 2010, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -760,3 +760,5 @@ info.initlogs=Prob\u00edh\u00e1 p\u0159esm\u011brov\u00e1n\u00ed stdout a stderr
 info.no.servers.defined=V u\u017eivatelsk\u00e9m adres\u00e1\u0159i {0} nejsou definov\u00e1ny \u017e\u00e1dn\u00e9 servery.
 info.list.of.defined.servers=Vzhledem k u\u017eivatelsk\u00e9mu adres\u00e1\u0159i {0} jsou definov\u00e1ny n\u00e1sleduj\u00edc\u00ed servery.
 info.communicate.server=Mezi p\u0159\u00edkazem {0} a serverem {1} do\u0161lo k chyb\u011b komunikace.
+
+info.serialFilterLoaded=Na\u010dten agent s\u00e9riov\u00e9ho filtru.

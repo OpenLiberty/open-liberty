@@ -99,6 +99,8 @@ public class FATTest extends AbstractAppManagerTest {
                           server.waitForStringInLog("CWWKO0219I.*" + httpDefaultPort));
             assertNotNull("The application testWarApplication did not appear to have started.",
                           server.waitForStringInLog("CWWKZ0001I.* testWarApplication"));
+            assertNotNull("The server did not report that the app would not be extracted",
+                          server.waitForStringInLog("CWWKZ0136I.* testWarApplication"));
 
             URL url = new URL("http://" + server.getHostname() + ":" + httpDefaultPort + "/testWarApplication/TestServlet");
             Log.info(c, method, "Calling test Application with URL=" + url.toString());
@@ -175,6 +177,8 @@ public class FATTest extends AbstractAppManagerTest {
             // Wait for the application to be installed before proceeding
             assertNotNull("The testWarApplication application never came up",
                           server.waitForStringInLog("CWWKZ0001I.* testWarApplication"));
+            assertNotNull("The server did not report that the loose app was being used",
+                          server.waitForStringInLog("CWWKZ0135I.* testWarApplication"));
 
             URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/testWarApplication/TestServlet");
             Log.info(c, method, "Calling testWarApplication Application with URL=" + url.toString());
@@ -439,9 +443,12 @@ public class FATTest extends AbstractAppManagerTest {
             server.copyFileToLibertyServerRoot(PUBLISH_FILES, "tmp",
                                                SNOOP_WAR);
 
-            //unzip the application into the location so that we can easily modify the application in a minute
+            //unzip the application into a temp location so that we can easily modify the application in a minute
             TestUtils.unzip(new File(server.getServerRoot() + "/tmp/snoop.war"),
-                            new File(server.getServerRoot() + "/apps/snoop.war"));
+                            new File(server.getServerRoot() + "/tmp/unzip/snoop.war"));
+
+            // Copy the expanded snoop.war to "apps"
+            server.renameLibertyServerRootFile("tmp/unzip/snoop.war", "apps/snoop.war");
 
             //make sure the started message has been output twice by the server (once earlier, once now).
             assertNotNull("The snoop application never resumed running after being stopped",
@@ -574,6 +581,8 @@ public class FATTest extends AbstractAppManagerTest {
                           server.waitForStringInLog("CWWKO0219I.*" + httpDefaultPort));
             assertNotNull("The application testWarApplication did not appear to have started.",
                           server.waitForStringInLog("CWWKZ0001I.* testWarApplication"));
+            assertNotNull("The server did not report that the loose app was being used",
+                          server.waitForStringInLog("CWWKZ0134I.* testWarApplication"));
 
             URL url = new URL("http://" + server.getHostname() + ":" + httpDefaultPort + "/testWarApplication/TestServlet");
             Log.info(c, method, "Calling test Application with URL=" + url.toString());
@@ -623,6 +632,8 @@ public class FATTest extends AbstractAppManagerTest {
                           server.waitForStringInLog("CWWKO0219I.*" + httpDefaultPort));
             assertNotNull("The application testWarApplication did not appear to have started.",
                           server.waitForStringInLog("CWWKZ0001I.* testWarApplication"));
+            assertNotNull("The server did not report that the loose app was being used",
+                          server.waitForStringInLog("CWWKZ0134I.* testWarApplication"));
 
             URL url = new URL("http://" + server.getHostname() + ":" + httpDefaultPort + "/testWarApplication/TestServlet");
             Log.info(c, method, "Calling test Application with URL=" + url.toString());
@@ -700,6 +711,8 @@ public class FATTest extends AbstractAppManagerTest {
                               server.waitForStringInLog("CWWKO0219I.*" + httpDefaultPort));
                 assertNotNull("The application testWarApplication did not appear to have started.",
                               server.waitForStringInLog("CWWKZ0001I.* testWarApplication"));
+                assertNotNull("The server did not report that the loose app was being used",
+                              server.waitForStringInLog("CWWKZ0134I.* testWarApplication"));
 
                 // make sure a call to the servlet works
                 URL url = new URL("http://" + server.getHostname() + ":" + httpDefaultPort + "/testWarApplication/TestServlet");

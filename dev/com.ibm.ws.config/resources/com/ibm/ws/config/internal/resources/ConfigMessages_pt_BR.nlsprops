@@ -35,6 +35,7 @@ Todos os direitos reservados. Este programa e os materiais de acompanhamento\n\
 est\u00e3o disponibilizados sob os termos do Eclipse Public License v1.0\n\
 que acompanha esta distribui\u00e7\u00e3o e est\u00e1 dispon\u00edvel em\n\
 http://www.eclipse.org/legal/epl-v10.html
+
 error.parse.server=CWWKG0001E: O analisador de configura\u00e7\u00e3o detectou um erro ao analisar a raiz da configura\u00e7\u00e3o e os \
 documentos de configura\u00e7\u00e3o referenciados. Erro: {0}
 error.parse.server.explanation=A configura\u00e7\u00e3o do servidor n\u00e3o p\u00f4de ser lida porque h\u00e1 um erro em um dos arquivos de \
@@ -183,9 +184,12 @@ error.unique.value.conflict=CWWKG0031E: O valor {1} especificado para o atributo
 error.unique.value.conflict.explanation=O valor para o atributo especificado deve ser exclusivo, mas ele j\u00e1 est\u00e1 sendo usado.
 error.unique.value.conflict.useraction=Altere o valor de atributo para que ele seja exclusivo.
 
-warn.config.invalid.value=CWWKG0032W: Valor inesperado especificado para a propriedade [{0}], valor = [{1}]. O(s) valor(es) esperado(s) \u00e9(s\u00e3o): {2}.
+# {3} is either the formatted value of default.value.in.use or an empty string
+warn.config.invalid.value=CWWKG0032W: Valor inesperado especificado para a propriedade [{0}], valor = [{1}]. O(s) valor(es) esperado(s) \u00e9(s\u00e3o): {2}. {3} 
 warn.config.invalid.value.explanation=O valor especificado para a propriedade n\u00e3o pode ser usado.
 warn.config.invalid.value.useraction=Corrija o valor da propriedade para usar um valor esperado.
+
+default.value.in.use=Valor padr\u00e3o em uso: {0}.
 
 warning.pid.not.found=CWWKG0033W: O valor [{1}] especificado para o atributo de refer\u00eancia [{0}] n\u00e3o foi localizado na configura\u00e7\u00e3o.
 warning.pid.not.found.explanation=O valor especificado deve ser um elemento na configura\u00e7\u00e3o.
@@ -307,25 +311,10 @@ error.factoryOnly=CWWKG0061E: A identidade persistida {0} n\u00e3o \u00e9 uma id
 error.factoryOnly.explanation=O atributo ibm:extends s\u00f3 \u00e9 aplic\u00e1vel a identidades persistidas de factory.
 error.factoryOnly.useraction=Reconfigure a identidade persistida para usar uma identidade persistida de factory ou remova o atributo ibm:extends da defini\u00e7\u00e3o do componente do objeto. Este \u00e9 um erro interno. Siga os procedimentos de determina\u00e7\u00e3o de problema padr\u00e3o do WebSphere.
 
-#"ibm:extendsAlias" is an xml attribute name and should not be translated
-error.factoryOnly.extendsAlias=CWWKG0096E: A identidade persistida {0} n\u00e3o \u00e9 uma identidade persistida de factory e, portanto, n\u00e3o pode ter um atributo ibm:extendsAlias de {1}. Reconfigure a identidade persistida para usar uma identidade persistida de factory ou remova o atributo ibm:extendsAlias da identidade persistida.
-error.factoryOnly.extendsAlias.explanation=O atributo ibm:extendsAlias \u00e9 aplic\u00e1vel somente para identidades persistidas de factory que estendem outra identidade persistida de factory.
-error.factoryOnly.extendsAlias.useraction=Reconfigure a identidade persistida para usar uma identidade persistida de factory ou remova o atributo ibm:extendsAlias da identidade persistida.
-
 #"ibm:extends" is an xml attribute name and should not be translated
 error.superFactoryOnly=CWWKG0062E: A identidade persistida {0} n\u00e3o \u00e9 uma identidade persistida de factory, portanto n\u00e3o pode ser estendida pela identidade persistida {1}.
 error.superFactoryOnly.explanation=O atributo ibm:extends s\u00f3 \u00e9 aplic\u00e1vel a identidades persistidas de factory.
 error.superFactoryOnly.useraction=Reconfigure a identidade persistida para usar uma identidade persistida de factory ou remova o atributo ibm:extends da defini\u00e7\u00e3o do componente do objeto. Este \u00e9 um erro interno. Siga os procedimentos de determina\u00e7\u00e3o de problema padr\u00e3o do WebSphere.
-
-#"ibm:extendsAlias" is an xml attribute name and should not be translated
-error.ExtendsAliasMustExtend=CWWKG0097E: A identidade persistida {0} especifica um atributo ibm:extendsAlias de {1} e, portanto, deve especificar o atributo ibm:extends.
-error.ExtendsAliasMustExtend.explanation=Ao especificar um atributo ibm:extendsAlias, deve-se especificar um atributo ibm:extends.
-error.ExtendsAliasMustExtend.useraction=Especifique um atributo ibm:extends.
-
-#"ibm:parentPid" and "ibm:childAlias" are xml attribute names and should not be translated
-error.parentpid.and.childalias=CWWKG0098E: A identidade persistida {0} especifica o atributo {1} de {2} e, portanto, deve especificar o atributo {3}.
-error.parentpid.and.childalias.explanation=O metatipo indica que um elemento aninhado de primeiro filho foi parcialmente especificado. Os elementos aninhados de primeiro filho devem especificar ambos os atributos, ibm:parentPid e ibm:childAlias.
-error.parentpid.and.childalias.useraction=Se esse metatipo for desejado para um elemento aninhado de primeiro filho, forne\u00e7a o atributo ausente. Caso contr\u00e1rio, remova o atributo que foi fornecido. 
 
 #"ibm:rename" is an xml attribute name and should not be translated
 schemagen.rename.attribute.missing=CWWKG0063E: N\u00e3o foi poss\u00edvel renomear a defini\u00e7\u00e3o do atributo {1} conforme especificado pelo atributo ibm:rename {2} na identidade persistida {0}.
@@ -446,9 +435,9 @@ error.variable.name.missing=CWWKG0091E: Um atributo de nome deve ser especificad
 error.variable.name.missing.explanation=A configura\u00e7\u00e3o do servidor cont\u00e9m um elemento de configura\u00e7\u00e3o da vari\u00e1vel que n\u00e3o tem um atributo de nome.
 error.variable.name.missing.useraction=Inclua um atributo de nome na vari\u00e1vel.
 
-error.variable.value.missing=CWWKG0092E: Um atributo de valor deve ser especificado para a vari\u00e1vel na linha {0} do recurso {1}
-error.variable.value.missing.explanation=A configura\u00e7\u00e3o do servidor cont\u00e9m um elemento de configura\u00e7\u00e3o da vari\u00e1vel que n\u00e3o tem um atributo de valor.
-error.variable.value.missing.useraction=Inclua um atributo de valor na vari\u00e1vel.
+error.variable.value.missing=CWWKG0092E: Um atributo de valor ou atributo defaultValue deve ser especificado para a vari\u00e1vel na linha {0} do recurso {1}
+error.variable.value.missing.explanation=A configura\u00e7\u00e3o do servidor cont\u00e9m um elemento de configura\u00e7\u00e3o de vari\u00e1vel que n\u00e3o possui um atributo de valor ou um atributo defaultValue.
+error.variable.value.missing.useraction=Inclua um atributo de valor ou atributo defaultValue na vari\u00e1vel.
 
 audit.dropin.being.processed=CWWKG0093A: Processamento do recurso de drop-ins da configura\u00e7\u00e3o: {0}
 audit.dropin.being.processed.explanation=O conte\u00fado do recurso especificado ser\u00e1 inclu\u00eddo na configura\u00e7\u00e3o do servidor.
@@ -461,6 +450,21 @@ warning.unrecognized.merge.behavior.useraction=Atualize a configura\u00e7\u00e3o
 error.missing.required.attribute.singleton=CWWKG0095E: O elemento {0} est\u00e1 omitindo o atributo necess\u00e1rio {1}.
 error.missing.required.attribute.singleton.explanation=O atributo ausente \u00e9 necess\u00e1rio no arquivo de configura\u00e7\u00e3o server.xml ou em um de seus arquivos de configura\u00e7\u00e3o referenciados.
 error.missing.required.attribute.singleton.useraction=Inclua o atributo no arquivo de configura\u00e7\u00e3o server.xml ou em um de seus arquivos de configura\u00e7\u00e3o referenciados.
+
+#"ibm:extendsAlias" is an xml attribute name and should not be translated
+error.factoryOnly.extendsAlias=CWWKG0096E: A identidade persistida {0} n\u00e3o \u00e9 uma identidade persistida de factory e, portanto, n\u00e3o pode ter um atributo ibm:extendsAlias de {1}. Reconfigure a identidade persistida para usar uma identidade persistida de factory ou remova o atributo ibm:extendsAlias da identidade persistida.
+error.factoryOnly.extendsAlias.explanation=O atributo ibm:extendsAlias \u00e9 aplic\u00e1vel somente para identidades persistidas de factory que estendem outra identidade persistida de factory.
+error.factoryOnly.extendsAlias.useraction=Reconfigure a identidade persistida para usar uma identidade persistida de factory ou remova o atributo ibm:extendsAlias da identidade persistida.
+
+#"ibm:extendsAlias" is an xml attribute name and should not be translated
+error.ExtendsAliasMustExtend=CWWKG0097E: A identidade persistida {0} especifica um atributo ibm:extendsAlias de {1} e, portanto, deve especificar o atributo ibm:extends.
+error.ExtendsAliasMustExtend.explanation=Ao especificar um atributo ibm:extendsAlias, deve-se especificar um atributo ibm:extends.
+error.ExtendsAliasMustExtend.useraction=Especifique um atributo ibm:extends.
+
+#"ibm:parentPid" and "ibm:childAlias" are xml attribute names and should not be translated
+error.parentpid.and.childalias=CWWKG0098E: A identidade persistida {0} especifica o atributo {1} de {2} e, portanto, deve especificar o atributo {3}.
+error.parentpid.and.childalias.explanation=O metatipo indica que um elemento aninhado de primeiro filho foi parcialmente especificado. Os elementos aninhados de primeiro filho devem especificar ambos os atributos, ibm:parentPid e ibm:childAlias.
+error.parentpid.and.childalias.useraction=Se esse metatipo for desejado para um elemento aninhado de primeiro filho, forne\u00e7a o atributo ausente. Caso contr\u00e1rio, remova o atributo que foi fornecido. 
 
 #"ibm:extendsAlias" is an xml attribute name and should not be translated
 error.extendsAlias.collision=CWWKG0100E: O atributo {2} ibm:extendsAlias est\u00e1 duplicado em uma hierarquia de extens\u00f5es \u00fanicas. Os PIDs s\u00e3o {0} e {1}. Torne cada atributo ibm:extendsAlias exclusivo dentro da hierarquia de extens\u00f5es.

@@ -44,6 +44,14 @@ public class CreateSSLCertificateTask extends BaseCommandTask {
     static final String ARG_CREATE_CONFIG_FILE = "--createConfigFile";
     static final String ARG_KEYSIZE = "--keySize";
     static final String ARG_SIGALG = "--sigAlg";
+    static final String ARG_KEY_TYPE = "--keyType";
+    static final String ARG_EXT = "--extInfo";
+
+    static final String JKS_KEYFILE = "key.jks";
+    static final String PKCS12_KEYFILE = "key.p12";
+
+    static final String JKS = "jks";
+    static final String PKCS12 = "pkcs12";
 
     private final DefaultSSLCertificateCreator creator;
     private final IFileUtility fileUtility;
@@ -138,7 +146,18 @@ public class CreateSSLCertificateTask extends BaseCommandTask {
         }
 
         // Create the directories we need before we prompt for a password
-        String location = dir + "resources" + SLASH + "security" + SLASH + "key.jks";
+        String location = null;
+
+        String keyType = getArgumentValue(ARG_KEY_TYPE, args, null);
+        if (keyType != null) {
+            if (keyType.equalsIgnoreCase(JKS))
+                location = dir + "resources" + SLASH + "security" + SLASH + JKS_KEYFILE;
+            else if (keyType.equalsIgnoreCase(PKCS12))
+                location = dir + "resources" + SLASH + "security" + SLASH + PKCS12_KEYFILE;
+        } else {
+            location = dir + "resources" + SLASH + "security" + SLASH + PKCS12_KEYFILE;
+        }
+
         File fLocation = new File(location);
         location = fileUtility.resolvePath(fLocation);
         if (!fileUtility.createParentDirectory(stdout, fLocation)) {
@@ -158,13 +177,14 @@ public class CreateSSLCertificateTask extends BaseCommandTask {
         String subjectDN = getArgumentValue(ARG_SUBJECT, args, new DefaultSubjectDN(null, ou_name).getSubjectDN());
         int keySize = Integer.valueOf(getArgumentValue(ARG_KEYSIZE, args, String.valueOf(DefaultSSLCertificateCreator.DEFAULT_SIZE)));
         String sigAlg = getArgumentValue(ARG_SIGALG, args, DefaultSSLCertificateCreator.SIGALG);
+        String extInfo = getArgumentValue(ARG_EXT, args, null);
 
         try {
             String encoding = getArgumentValue(ARG_ENCODING, args, PasswordUtil.getDefaultEncoding());
             String key = getArgumentValue(ARG_KEY, args, null);
             stdout.println(getMessage("sslCert.createKeyStore", location));
             String encodedPassword = PasswordUtil.encode(password, encoding, key);
-            creator.createDefaultSSLCertificate(location, password, validity, subjectDN, keySize, sigAlg);
+            creator.createDefaultSSLCertificate(location, password, validity, subjectDN, keySize, sigAlg, extInfo);
             String xmlSnippet = null;
             if (serverName != null) {
                 stdout.println(getMessage("sslCert.serverXML", serverName, subjectDN));
@@ -203,7 +223,8 @@ public class CreateSSLCertificateTask extends BaseCommandTask {
                arg.equals(ARG_VALIDITY) || arg.equals(ARG_SUBJECT) ||
                arg.equals(ARG_ENCODING) || arg.equals(ARG_KEY) ||
                arg.equals(ARG_CREATE_CONFIG_FILE) || arg.equals(ARG_KEYSIZE) ||
-               arg.equals(ARG_CLIENT) || arg.equals(ARG_SIGALG);
+               arg.equals(ARG_CLIENT) || arg.equals(ARG_SIGALG) ||
+               arg.equals(ARG_KEY_TYPE) || arg.equals(ARG_EXT);
     }
 
     /** {@inheritDoc} */

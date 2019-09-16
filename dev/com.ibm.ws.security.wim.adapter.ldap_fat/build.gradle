@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2018 IBM Corporation and others.
+ * Copyright (c) 2017,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ def appBuildDir = "${buildDir}/test-application"
 
 dependencies { 
   requiredLibs 'com.ibm.ws.componenttest:public.api:1.0.0',
+    'com.unboundid:unboundid-ldapsdk:4.0.9',
     'commons-logging:commons-logging:1.1.1',
     'commons-codec:commons-codec:1.4',
     'org.apache.httpcomponents:httpclient:4.1.2',
@@ -23,6 +24,7 @@ dependencies {
     'org.apache.directory.server:apacheds-service:2.0.0-M15',
     project(':fattest.simplicity'),
     project(':com.ibm.ws.org.apache.directory.server'),
+    project(':com.ibm.ws.com.unboundid'),
     project(':com.ibm.websphere.security.wim.base'),
     project(':com.ibm.ws.security.registry'),
     project(':com.ibm.ws.security.registry_test.servlet'),
@@ -42,7 +44,7 @@ autoFVT.doLast {
     into autoFvtDir
     include 'apacheds-2.0.0-M15/**'
   }
-
+  
   /*
    * Copy sample CustomRepository user feature to this test bucket.
    */
@@ -121,7 +123,7 @@ autoFVT.doLast {
     'com.ibm.ws.security.wim.adapter.ldap.fat.tds.failover',
     'com.ibm.ws.security.wim.adapter.ldap.fat.tworealms',
     'com.ibm.ws.security.wim.adapter.ldap.fat.ids.allIbmGroups',
-    'com.ibm.ws.security.registry.ldap.fat.attr.timeout',
+    'com.ibm.ws.security.registry.ldap.fat.regression',
     'com.ibm.ws.security.wim.adapter.ldap.fat.readtimeout'
   ]
   servers.each { server ->
@@ -216,4 +218,5 @@ assemble {
   certificateMapper_JAR
   
   dependsOn ':com.ibm.ws.security.registry_test.servlet:assemble'
+
 }

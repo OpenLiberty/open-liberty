@@ -1,0 +1,398 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.jbatch.utility/resources/com/ibm/ws/jbatch/utility/resources/UtilityOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+
+global.description=Descri\u00e7\u00e3o:
+global.actions=A\u00e7\u00f5es:
+global.options=Op\u00e7\u00f5es:
+global.required=Obrigat\u00f3rio:
+global.usage=Uso:
+global.usage.options=\t{0} {1} [options]
+
+# Note to translator: the word "help" should not be translated
+global.options.statement=\tUse help [action] para obter informa\u00e7\u00f5es de op\u00e7\u00e3o detalhadas de cada a\u00e7\u00e3o.
+
+# ------------------------------------------------------------------------#
+# List of descriptive text for options. 
+# 
+# The code provides no whitespace, so: 
+#   - begin keys with "\ \ \ \ " for leading whitespace
+#   - begin descriptions with \t 
+#   - Use "\n\" for line continuations.
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+
+help.desc=\tImprima informa\u00e7\u00f5es da ajuda para a a\u00e7\u00e3o especificada.
+
+help.usage.options=\t{0} {1} [actionName]
+
+
+#-------------------------------------------------------------------------#
+# Common options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+connect.required-key.--batchManager=\ \ \ \ --batchManager=[host]:[port],[host2]:[port2],...
+connect.required-desc.--batchManager=\tO host e a porta da API REST do gerenciador de lote. \u00c9 poss\u00edvel especificar \n\
+\tv\u00e1rios destino para alta disponibilidade e failover. Os destinos s\u00e3o \n\
+\tdelimitados por v\u00edrgula ','. 
+
+connect.required-key.--user=\ \ \ \ --user=[username]
+connect.required-desc.--user=\tO nome de usu\u00e1rio para efetuar login no gerenciador de lotes.
+
+connect.required-key.--password=\ \ \ \ --password[=senha]
+connect.required-desc.--password=\tA senha para efetuar login no gerenciador de lotes. Se nenhum valor for \n\
+\tdefinido, aparecer\u00e1 um aviso.
+
+#------------------------------\n at 72 chars -------------------------\n\#
+connect.optional-key.--controlPropertiesFile=\ \ \ \ --controlPropertiesFile=[control-properties-file]
+connect.optional-desc.--controlPropertiesFile=\tUm arquivo de propriedades que cont\u00e9m os par\u00e2metros de controle, como o host e a\n\
+\ta porta aos quais se conectar. Esses par\u00e2metros s\u00e3o substitu\u00eddos pelos par\u00e2metros \n\
+\tespecificados diretamente na linha de comandos.
+
+connect.optional-key.--httpTimeout_s=\ \ \ \ --httpTimeout_s=[tempo limite de http em segundos]
+connect.optional-desc.--httpTimeout_s=\tO tempo limite em segundos aplicado \u00e0s solicita\u00e7\u00f5es de HTTP feitas do utilit\u00e1rio\n\
+\tpara a API REST do gerenciador de lote. O mesmo valor de tempo limite \u00e9 aplicado \u00e0s\n\
+\topera\u00e7\u00f5es de conex\u00e3o e leitura. Se n\u00e3o especificado, o padr\u00e3o\n\
+\tser\u00e1 30 segundos.
+
+connect.optional-key.--trustSslCertificates=\ \ \ \ --trustSslCertificates
+connect.optional-desc.--trustSslCertificates=\tIndica que o utilit\u00e1rio deve confiar em todos os certificados SSL. O \tutilit\u00e1rio \n se comunica com a API REST do gerenciador de lote atrav\u00e9s de HTTPS. \n\
+\tPor padr\u00e3o, ele verificar\u00e1 o certificado SSL do gerenciador de lote, a \
+menos que\n \tessa op\u00e7\u00e3o seja especificada, caso em que ele confia no certificado SSL \n \te n\u00e3o executa verifica\u00e7\u00e3o.
+
+#-------------------------------------------------------------------------#
+# Wait options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+wait.optional-key.--wait=\ \ \ \ --wait
+wait.optional-desc.--wait=\tSe especificado, o programa esperar\u00e1 a conclus\u00e3o da tarefa\n\
+\tantes de sair. O c\u00f3digo de sa\u00edda \u00e9 configurado de acordo com o status do \n\
+\tlote de tarefa (a menos que --returnExitStatus seja especificado).\n\
+\tC\u00f3digos de sa\u00edda de status do lote:\n\
+\t\tBatchStatus.STOPPED = 33\n\
+\t\tBatchStatus.FAILED = 34\n\
+\t\tBatchStatus.COMPLETED = 35\n\
+\t\tBatchStatus.ABANDONED = 36
+
+wait.optional-key.--pollingInterval_s=\ \ \ \ --pollingInterval_s=[polling interval in seconds]
+wait.optional-desc.--pollingInterval_s=\tO intervalo de tempo no qual pesquisar um status da tarefa. \n\
+\tO padr\u00e3o \u00e9 30 segundos.
+
+wait.optional-key.--verbose=\ \ \ \ --verbose
+wait.optional-desc.--verbose=\tSe especificado, o programa registrar\u00e1 uma mensagem toda que vez que pesquisar\n\
+\tum status de tarefa.
+
+wait.optional-key.--getJobLog=\ \ \ \ --getJobLog
+wait.optional-desc.--getJobLog=\tSe especificado, o programa ir\u00e1 transferir por download o log da tarefa e imprimi-lo no\n\
+\tSTDOUT depois que a tarefa for conclu\u00edda. Essa op\u00e7\u00e3o deve ser combinada com --wait.
+
+wait.optional-key.--returnExitStatus=\ \ \ \ --returnExitStatus
+wait.optional-desc.--returnExitStatus=\tUse o status de sa\u00edda da tarefa como o c\u00f3digo de sa\u00edda deste programa. Esta op\u00e7\u00e3o \n\
+\tdeve ser combinada com --wait. Se o status de sa\u00edda corresponder a um \n\
+\tnome de BatchStatus (por exemplo, "CONCLU\u00cdDO"), o c\u00f3digo de sa\u00edda ser\u00e1 configurado \n\
+\tde acordo com o mapeamento descrito pela op\u00e7\u00e3o --wait. Caso contr\u00e1rio, o\n\
+\tc\u00f3digo de sa\u00edda ser\u00e1 analisado a partir do in\u00edcio da sequ\u00eancia do status de sa\u00edda.\n\
+\tPor exemplo:\n\
+\t\texitStatus="0", c\u00f3digo de sa\u00edda: 0\n\
+\t\texitStatus="8:a mensagem de falha pode ir aqui", c\u00f3digo de sa\u00edda: 8
+
+
+#-------------------------------------------------------------------------#
+# "submit" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+submit.desc=\tEnviar uma nova tarefa em lote. 
+
+submit.optional-key.--applicationName=\ \ \ \ --applicationName=[applicationName]
+submit.optional-desc.--applicationName=\tO nome do aplicativo em lote. \n\
+\tObserva\u00e7\u00e3o: Deve-se especificar --applicationName ou --moduleName. \n\
+\tCaso o --applicationName n\u00e3o seja especificado, o padr\u00e3o ser\u00e1 o [moduleName] \n\
+\tsem a extens\u00e3o ".war" ou ".jar".
+
+submit.optional-key.--moduleName=\ \ \ \ --moduleName=[moduleName]
+submit.optional-desc.--moduleName=\tIdentifica um m\u00f3dulo WAR ou EJB no aplicativo em lote. \n\
+\tA tarefa \u00e9 enviada no contexto do componente de m\u00f3dulo. \n\
+\tObserva\u00e7\u00e3o: Deve-se especificar --applicationName ou --moduleName. \n\
+\tSe --moduleName n\u00e3o for especificado, o padr\u00e3o ser\u00e1 "[applicationName].war".
+
+submit.optional-key.--componentName=\ \ \ \ --componentName=[componentName]
+submit.optional-desc.--componentName=\tIdentifica um componente EJB no m\u00f3dulo EJB do aplicativo em lote.\n\
+\tA tarefa \u00e9 enviada no contexto do componente do EJB.
+
+submit.optional-key.--jobXMLName=\ \ \ \ --jobXMLName=[jobXMLName]
+submit.optional-desc.--jobXMLName=\tO nome do XML da tarefa que descreve a tarefa. O arquivo \u00e9 lido \n\
+\ta partir do diret\u00f3rio batch-jobs no m\u00f3dulo aplicativo. \n\
+\tNota: --jobXMLName ou --jobXMLFile deve ser especificado.
+
+submit.optional-key.--jobPropertiesFile=\ \ \ \ --jobPropertiesFile=[job-properties-file]
+submit.optional-desc.--jobPropertiesFile=\tUm arquivo de propriedades contendo par\u00e2metros da tarefa.\n\
+\tEsse \u00e9 um alias da op\u00e7\u00e3o --jobParametersFile.
+
+submit.optional-key.--jobParametersFile=\ \ \ \ --jobParametersFile=[job-parameters-file]
+submit.optional-desc.--jobParametersFile=\tUm arquivo de propriedades contendo par\u00e2metros da tarefa.\n\
+\tEsse \u00e9 um alias da op\u00e7\u00e3o --jobPropertiesFile.
+
+submit.optional-key.--jobParameter=\ \ \ \ --jobParameter=[key]=[value]
+submit.optional-desc.--jobParameter=\tEspecifique um par\u00e2metro de tarefa. Mais de uma op\u00e7\u00e3o --jobParameter\n\
+\tpode ser especificada. A op\u00e7\u00e3o --jobParameter substitui as propriedades nomeadas\n\
+\tde forma semelhante em --jobParametersFile.
+
+submit.optional-key.--stopOnShutdown=\ \ \ \ --stopOnShutdown
+submit.optional-desc.--stopOnShutdown=\tEsta op\u00e7\u00e3o pode ser usada junto com --wait. Ela \
+registra um gancho de\n \tencerramento com a JVM que obt\u00e9m controle quando o programa batchManager \
+\u00e9 \n\
+\tfinalizado de forma anormal.  O gancho de encerramento tenta parar a tarefa \n \tele est\u00e1 esperando \
+pelo envio de uma solicita\u00e7\u00e3o de parada ao servidor. \n\
+\tNota: Os ganchos de encerramento da JVM obt\u00e9m controle somente quando a JVM for finalizada \n\
+\tem determinadas formas. Para obter mais informa\u00e7\u00f5es, consulte a documenta\u00e7\u00e3o Java para \n\
+\tjava.lang.Runtime.addShutdownHook.
+
+submit.optional-key.--jobXMLFile=\ \ \ \ --jobXMLFile=[jobXMLFile]
+submit.optional-desc.--jobXMLFile=\tO nome de um arquivo que cont\u00e9m o JSL para a tarefa. O arquivo \u00e9 lido\n\
+\tpelo utilit\u00e1rio batchManager e enviado sequencialmente com a solicita\u00e7\u00e3o,\n\
+\tao inv\u00e9s de ser lido a partir do diret\u00f3rio batch-jobs \n\
+\tno m\u00f3dulo aplicativo. \n\
+\tNota: --jobXMLName ou --jobXMLFile deve ser especificado.
+
+submit.optional-key.--restartTokenFile=\ \ \ \ --restartTokenFile=[restart-token-file]
+submit.optional-desc.--restartTokenFile=\tO nome de um arquivo que possui o ID da inst\u00e2ncia da tarefa \n\
+\ta ser reiniciado.  O arquivo \u00e9 lido e gravado pelo utilit\u00e1rio \
+batchManager.\n \t  Se o arquivo contiver um ID de inst\u00e2ncia, a tarefa \u00e9 reiniciada.  Caso \
+contr\u00e1rio, \n\
+\tuma nova tarefa \u00e9 enviada e o ID de inst\u00e2ncia resultante \u00e9 \
+armazenado no \n \tarquivo.
+
+#-------------------------------------------------------------------------#
+# "restart" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+restart.desc=\tReiniciar uma tarefa em lote.
+
+restart.optional-key.--jobInstanceId=\ \ \ \ --jobInstanceId=[jobInstanceId]
+restart.optional-desc.--jobInstanceId=\tA inst\u00e2ncia da tarefa a ser reiniciada.\n\
+\tObserva\u00e7\u00e3o: --jobInstanceId ou --jobExecutionId deve ser especificado.
+
+restart.optional-key.--jobExecutionId=\ \ \ \ --jobExecutionId=[jobExecutionId]
+restart.optional-desc.--jobExecutionId=\tA execu\u00e7\u00e3o da tarefa a ser reiniciada.\n\
+\tObserva\u00e7\u00e3o: --jobInstanceId ou --jobExecutionId deve ser especificado.
+
+restart.optional-key.--jobPropertiesFile=\ \ \ \ --jobPropertiesFile=[job-properties-file]
+restart.optional-desc.--jobPropertiesFile=\tUm arquivo de propriedades contendo par\u00e2metros da tarefa.\n\
+\tEsse \u00e9 um alias da op\u00e7\u00e3o --jobParametersFile.
+
+restart.optional-key.--jobParametersFile=\ \ \ \ --jobParametersFile=[job-parameters-file]
+restart.optional-desc.--jobParametersFile=\tUm arquivo de propriedades contendo par\u00e2metros da tarefa.\n\
+\tEsse \u00e9 um alias da op\u00e7\u00e3o --jobPropertiesFile.
+
+restart.optional-key.--jobParameter=\ \ \ \ --jobParameter=[key]=[value]
+restart.optional-desc.--jobParameter=\tEspecifique um par\u00e2metro de tarefa. Mais de uma op\u00e7\u00e3o --jobParameter\n\
+\tpode ser especificada. A op\u00e7\u00e3o --jobParameter substitui as propriedades nomeadas\n\
+\tde forma semelhante em --jobParametersFile.
+
+restart.optional-key.--reusePreviousParams=\ \ \ \ --reusePreviousParams
+restart.optional-desc.--reusePreviousParams=\tSe especificado a tarefa reutilizar\u00e1 os par\u00e2metros da tarefa anterior.
+
+restart.optional-key.--stopOnShutdown=\ \ \ \ --stopOnShutdown
+restart.optional-desc.--stopOnShutdown=\tEsta op\u00e7\u00e3o pode ser usada junto com --wait. Ela \
+registra um gancho de\n \tencerramento com a JVM que obt\u00e9m controle quando o programa batchManager \u00e9 \n\
+\tfinalizado de forma anormal.  O gancho de encerramento tenta parar a tarefa \n \tele est\u00e1 esperando pelo \
+envio de uma solicita\u00e7\u00e3o de parada ao servidor. \n\
+\tNota: Os ganchos de encerramento da JVM obt\u00e9m controle somente quando a JVM for finalizada \n \tem \
+determinadas formas. Para obter mais informa\u00e7\u00f5es, consulte a documenta\u00e7\u00e3o Java para \n\
+\tjava.lang.Runtime.addShutdownHook.
+
+#-------------------------------------------------------------------------#
+# "stop" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+stop.desc=\tParar uma tarefa em lote.
+
+stop.optional-key.--jobInstanceId=\ \ \ \ --jobInstanceId=[jobInstanceId]
+stop.optional-desc.--jobInstanceId=\tA inst\u00e2ncia da tarefa a ser parada.\n\
+\tObserva\u00e7\u00e3o: --jobInstanceId ou --jobExecutionId deve ser especificado.
+
+stop.optional-key.--jobExecutionId=\ \ \ \ --jobExecutionId=[jobExecutionId]
+stop.optional-desc.--jobExecutionId=\tA execu\u00e7\u00e3o da tarefa a ser parada.\n\
+\tObserva\u00e7\u00e3o: --jobInstanceId ou --jobExecutionId deve ser especificado.
+
+#-------------------------------------------------------------------------#
+# "status" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+status.desc=\tVisualizar o status de uma tarefa.
+
+status.optional-key.--jobInstanceId=\ \ \ \ --jobInstanceId=[jobInstanceId]
+status.optional-desc.--jobInstanceId=\tA inst\u00e2ncia da tarefa a ser visualizada.\n\
+\tObserva\u00e7\u00e3o: --jobInstanceId ou --jobExecutionId deve ser especificado.
+
+status.optional-key.--jobExecutionId=\ \ \ \ --jobExecutionId=[jobExecutionId]
+status.optional-desc.--jobExecutionId=\tA execu\u00e7\u00e3o da tarefa a ser visualizada.\n\
+\tObserva\u00e7\u00e3o: --jobInstanceId ou --jobExecutionId deve ser especificado.
+
+#-------------------------------------------------------------------------#
+# "getJobLog" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+getJobLog.desc=\tFazer download do joblog para uma tarefa em lote.
+
+getJobLog.optional-key.--jobInstanceId=\ \ \ \ --jobInstanceId=[jobInstanceId]
+getJobLog.optional-desc.--jobInstanceId=\tFazer download do joblog para a inst\u00e2ncia da tarefa determinada.\n\
+\tObserva\u00e7\u00e3o: --jobInstanceId ou --jobExecutionId deve ser especificado.
+
+getJobLog.optional-key.--jobExecutionId=\ \ \ \ --jobExecutionId=[jobExecutionId]
+getJobLog.optional-desc.--jobExecutionId=\tFazer download do joblog para a execu\u00e7\u00e3o da tarefa determinada.\n\
+\tObserva\u00e7\u00e3o: --jobInstanceId ou --jobExecutionId deve ser especificado.
+
+getJobLog.optional-key.--outputFile=\ \ \ \ --outputFile=[outputFile]
+getJobLog.optional-desc.--outputFile=\tCaminho para um arquivo local.  O joblog \u00e9 gravado nesse arquivo.\n\
+\tSe n\u00e3o especificado, o local de sa\u00edda padr\u00e3o depender\u00e1 de --type.\n\
+\tSe --type=text, o joblog ser\u00e1 gravado em STDOUT.\n\
+\tSe --type=zip, o joblog ser\u00e1 gravado no nome de arquivo sugerido pelo\n\
+\tcabe\u00e7alho 'Content-Disposition' na resposta HTTP.
+
+getJobLog.optional-key.--type=\ \ \ \ --type=text|zip
+getJobLog.optional-desc.--type=\tFazer download do joblog como texto simples ou como um arquivo zip.\n\
+\tSe n\u00e3o especificado, o padr\u00e3o ser\u00e1 texto.
+
+#-------------------------------------------------------------------------#
+# "listJobs" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+listJobs.desc=\tListe inst\u00e2ncias da tarefa. 
+
+listJobs.optional-key.--page=\ \ \ \ --page=[page]
+listJobs.optional-desc.--page=\tA p\u00e1gina de registros de inst\u00e2ncia da tarefa a serem retornados. Os n\u00fameros de p\u00e1gina iniciam em 0.\n\
+\tPor exemplo:\n\
+\t\t--page=0 --pageSize=10 retorna os 10 primeiros registros.\n\
+\t\t--page=2 --pageSize=10 retorna os registros de 20 a 29.\n\
+\tSe n\u00e3o especificado, o padr\u00e3o ser\u00e1 0.
+
+listJobs.optional-key.--pageSize=\ \ \ \ --pageSize=[pageSize]
+listJobs.optional-desc.--pageSize=\tO tamanho da p\u00e1gina de registros de inst\u00e2ncia da tarefa a serem retornados.\n\
+\tPor exemplo:\n\
+\t\t--page=0 --pageSize=10 retorna os 10 primeiros registros.\n\
+\t\t--page=1 --pageSize=20 retorna os registros de 20 a 39.\n\
+\tSe n\u00e3o especificado, o padr\u00e3o ser\u00e1 50.
+
+listJobs.optional-key.--jobInstanceId=\ \ \ \ --jobInstanceId=[jobInstanceId]
+listJobs.optional-desc.--jobInstanceId=\tO filtro do ID da inst\u00e2ncia da tarefa aplicado aos registros da inst\u00e2ncia da tarefa.\n\
+\tPor exemplo:\n\
+\t\t--jobInstanceId=10:20 retorna de 10 a 20 registros.\n\
+\t\t--jobInstanceId=">10" retorna mais ou igual a 10 registros.\n\
+\t\t--jobInstanceId="<10" retorna menos ou igual a 10 registros.\n\
+\t\t--jobInstanceId=10,12,15 retorna 10, 12 ou 15 registros.\n\
+\t\tSe --page e --pageSize n\u00e3o forem especificados, um padr\u00e3o de no m\u00e1x. 50\n \t\tregistros ser\u00e3o \
+retornados.
+
+listJobs.optional-key.--createTime=\ \ \ \ --createTime=[createTime]
+listJobs.optional-desc.--createTime=\tO filtro de cria\u00e7\u00e3o de tempo aplicado aos registros da inst\u00e2ncia da tarefa.\n\
+\tPor exemplo:\n\
+\t\tO --createTime=2015-09-10:2015-09-27 retorna registros que foram criados\n\
+\t\t\tentre 10/09/2015 e 27/09/2015, inclusive.\n\
+\t\tO --createTime=">3d" retorna registros que foram criados h\u00e1 3 dias em UTC ou\n\
+\t\t\tposteriormente (a data de cria\u00e7\u00e3o \u00e9 maior ou igual \u00e0 data de 3 dias atr\u00e1s).\n\
+\t\tO --createTime="<3d" retorna registros que foram criados h\u00e1 3 dias em UTC ou\n\
+\t\t\tantes (a data de cria\u00e7\u00e3o \u00e9 menor ou igual \u00e0 data de 3 dias atr\u00e1s).\n\
+\t\tO --createTime=2015-09-15 retorna todos os registros que foram criados em 15/09/2015.\n\
+\t\tSe --page e --pageSize n\u00e3o forem especificados, um padr\u00e3o de no m\u00e1x. 50\n\
+\t\tregistros ser\u00e3o retornados.  Sempre que createTime=>Xd ou\n\
+\t\tcreateTime<Xd forem especificados, a data ser\u00e1 calculada no servidor de dispatcher\n\
+\t\tno hor\u00e1rio do UTC. 
+
+listJobs.optional-key.--instanceState=\ \ \ \ --instanceState=[instanceState]
+listJobs.optional-desc.--instanceState=\tO filtro de estado da inst\u00e2ncia aplicado aos registros da inst\u00e2ncia da tarefa.\n\
+\tPor exemplo:\n\
+\t\t--instanceState=COMPLETED,FAILED,STOPPED retorna registros nos\n\
+\t\testados CONCLU\u00cdDO, COM FALHA E INTERROMPIDO.\n\
+\t\tSe --page e --pageSize n\u00e3o forem especificados, um padr\u00e3o de no m\u00e1x. 50\n \t\tregistros ser\u00e3o retornados.
+
+listJobs.optional-key.--exitStatus=\ \ \ \ --exitStatus=[exitStatus]
+listJobs.optional-desc.--exitStatus=\tO filtro de \
+status de sa\u00edda aplicado nos registros da execu\u00e7\u00e3o da tarefa que \
+est\u00e3o\n\tassociados aos registros da inst\u00e2ncia da tarefa.\n\
+\tPor exemplo:\n\
+\t\t--exitStatus=*JOB* retorna os registros da inst\u00e2ncia da \
+tarefa que t\u00eam registros \
+\n \t\tde execu\u00e7\u00e3o contendo a palavra JOB em seus status de sa\u00edda.\n\
+\t\tNota: Os crit\u00e9rios podem utilizar o operador curinga (*) em\n\
+\t\tum dos t\u00e9rminos.\n\
+\t\tSe --page e --pageSize n\u00e3o forem especificados, um padr\u00e3o de no m\u00e1x. 50\n \t\tregistros ser\u00e3o retornados.
+
+#-------------------------------------------------------------------------#
+# "purge" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+purge.desc=\tLimpe todos os registros e logs para uma inst\u00e2ncia da tarefa ou limpe uma lista de \n\
+\tregistros da inst\u00e2ncia da tarefa.
+
+purge.optional-key.--page=\ \ \ \ --page=[page]
+purge.optional-desc.--page=\tA p\u00e1gina de registros de inst\u00e2ncia da tarefa a serem retornados. Os n\u00fameros de p\u00e1gina iniciam em 0.\n\
+\tPor exemplo:\n\
+\t\t--page=0 --pageSize=10 retorna os 10 primeiros registros.\n\
+\t\t--page=2 --pageSize=10 retorna os registros de 20 a 29.\n\
+\tSe n\u00e3o especificado, o padr\u00e3o ser\u00e1 0.
+
+purge.optional-key.--pageSize=\ \ \ \ --pageSize=[pageSize]
+purge.optional-desc.--pageSize=\tO tamanho da p\u00e1gina de registros de inst\u00e2ncia da tarefa a serem retornados.\n\
+\tPor exemplo:\n\
+\t\t--page=0 --pageSize=10 retorna os 10 primeiros registros.\n\
+\t\t--page=1 --pageSize=20 retorna os registros de 20 a 39.\n\
+\tSe n\u00e3o especificado, o padr\u00e3o ser\u00e1 50.
+
+purge.optional-key.--purgeJobStoreOnly=\ \ \ \ --purgeJobStoreOnly
+purge.optional-desc.--purgeJobStoreOnly=\tIndica que a opera\u00e7\u00e3o de limpeza deve excluir somente entradas do \n\
+\tbanco de dados de armazenamento da tarefa. Nenhuma tentativa ser\u00e1 feita para excluir os logs da tarefa do \n\
+\tsistema de arquivos.
+
+purge.optional-key.--jobInstanceId=\ \ \ \ --jobInstanceId=[jobInstanceId]
+purge.optional-desc.--jobInstanceId=\tO filtro do ID da inst\u00e2ncia da tarefa aplicado \u00e0 limpeza dos registros da inst\u00e2ncia da \
+tarefa.\n\
+\tFPor exemplo:\n\
+\t\t--jobInstanceId=10:20 limpa de 10 a 20 registros.\n\
+\t\t--jobInstanceId=">10" limpa mais ou igual a 10 registros.\n\
+\t\t--jobInstanceId="<10" limpa menos ou igual a 10 registros.\n\
+\t\t--jobInstanceId=10,12,15 limpa 10, 12 ou 15 registros.\n\
+\t\tSe --page e --pageSize n\u00e3o forem especificados, um padr\u00e3o de no m\u00e1x. 50\n \t\tregistros ser\u00e3o limpos.
+
+purge.optional-key.--createTime=\ \ \ \ --createTime=[createTime]
+purge.optional-desc.--createTime=\tO filtro de cria\u00e7\u00e3o de tempo aplicado \u00e0 limpeza de registros da inst\u00e2ncia da tarefa.\n\
+\tPor exemplo:\n\
+\t\tO --createTime=2015-09-10:2015-09-27 limpa registros que foram criados\n\
+\t\t\tentre 10/09/2015 e 27/09/2015, inclusive.\n\
+\t\tO --createTime=">3d" limpa registros que foram criados h\u00e1 3 dias em UTC ou\n\
+\t\t\tposteriormente (a data de cria\u00e7\u00e3o \u00e9 maior ou igual \u00e0 data de 3 dias atr\u00e1s).\n\
+\t\tO --createTime="<3d" limpa registros que foram criados h\u00e1 3 dias em UTC ou\n\
+\t\t\tantes (a data de cria\u00e7\u00e3o \u00e9 menor ou igual \u00e0 data de 3 dias atr\u00e1s).\n\
+\t\tO --createTime=2015-09-15 limpa todos os registros que foram criados em 15/09/2015.\n\
+\t\tSe --page e --pageSize n\u00e3o forem especificados, um padr\u00e3o de no m\u00e1x. 50\n \t\tregistros ser\u00e3o limpos. Sempre que createTime=>Xd ou\n \t\tcreateTime<Xd forem especificados, a data ser\u00e1 calculada no servidor de \
+dispatcher\n \t\tno hor\u00e1rio do UTC. 
+
+purge.optional-key.--instanceState=\ \ \ \ --instanceState=[instanceState]
+purge.optional-desc.--instanceState=\tO filtro do ID da inst\u00e2ncia aplicado \u00e0 limpeza dos registros da inst\u00e2ncia da \
+tarefa.\n\
+\tPor exemplo:\n \t\t--instanceState=COMPLETED,FAILED,STOPPED limpa registros nos\n \t\testados \
+CONCLU\u00cdDO, COM FALHA E INTERROMPIDO.\n\
+\t\tSe --page e --pageSize n\u00e3o forem especificados, um padr\u00e3o de no m\u00e1x. 50\n \t\tregistros ser\u00e3o limpos.
+
+purge.optional-key.--exitStatus=\ \ \ \ --exitStatus=[exitStatus]
+purge.optional-desc.--exitStatus=\tO filtro de \
+status de sa\u00edda aplicado nos registros de execu\u00e7\u00e3o da tarefa que \
+est\u00e3o \n\
+\tassociados \u00e0 limpeza dos registros da inst\u00e2ncia da tarefa.\n\
+\tPor exemplo:\n \t\t--exitStatus=*JOB* limpa os registros de \
+inst\u00e2ncia da tarefa que possuem registros\n \t\tda execu\u00e7\u00e3o que \
+cont\u00eam a palavra JOB em seu status de sa\u00edda.\n\
+\t\tNota: Os crit\u00e9rios podem utilizar o operador curinga (*) em\n \t\tum dos t\u00e9rminos.\n\
+\t\tSe --page e --pageSize n\u00e3o forem especificados, um padr\u00e3o de no m\u00e1x. 50\n \t\tregistros ser\u00e3o limpos.

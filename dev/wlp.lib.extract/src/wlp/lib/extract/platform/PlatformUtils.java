@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2017 IBM Corporation and others.
+ * Copyright (c) 2015, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,9 +29,6 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -43,7 +40,6 @@ import wlp.lib.extract.SelfExtract;
  */
 public class PlatformUtils {
     public static final int UMASK_NOT_APPLICABLE = 0x0400;
-    public static final Logger platformLogger = Logger.getLogger("wlp.lib.extract.platform");
 
     private static final String[] EXTENDED_ATTRIBUTES = new String[] { "a", "l", "p", "s" };
     private static final String EXTENDED_ATTRIBUTES_ADD = "+";
@@ -62,9 +58,7 @@ public class PlatformUtils {
             outThread.join();
             errThread.join();
         } catch (InterruptedException e) {
-            LogRecord lg = new LogRecord(Level.FINE, e.getMessage());
-            lg.setThrown(e);
-            platformLogger.log(lg);
+            SelfExtract.err("ERROR_EXECUTING_COMMAND", new Object[] { cmd.toString(), Integer.toString(returnValue), e.getMessage() });
         }
 
         return returnValue;
@@ -74,6 +68,7 @@ public class PlatformUtils {
         final Writer writer = (null == out) ? NULL_WRITER : out;
 
         Thread thread = new Thread() {
+            @Override
             public void run() {
                 char[] buf = new char[4096];
                 BufferedReader bReader = null;
@@ -84,9 +79,7 @@ public class PlatformUtils {
                         writer.write(buf, 0, read);
                     }
                 } catch (IOException ioe) {
-                    LogRecord lg = new LogRecord(Level.FINE, ioe.getMessage());
-                    lg.setThrown(ioe);
-                    platformLogger.log(lg);
+                    SelfExtract.err("ERROR_EXECUTING_COMMAND", new Object[] { null, null, ioe.getMessage() });
                 } finally {
                     if (null != bReader) {
                         try {
@@ -109,10 +102,13 @@ public class PlatformUtils {
      */
     private static final Writer NULL_WRITER = new Writer() {
 
+        @Override
         public void write(char[] cbuf, int off, int len) throws IOException {}
 
+        @Override
         public void flush() throws IOException {}
 
+        @Override
         public void close() throws IOException {}
 
     };
@@ -238,26 +234,32 @@ class PPPlatformUtils extends AbstractPlatformPolicyFactory {
     static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(SelfExtract.class.getName() + "Messages");
     private static final PPPlatformUtils INSTANCE = new PPPlatformUtils();
 
+    @Override
     protected Object createLinuxPolicy() {
         return new PPLinux();
     }
 
+    @Override
     protected Object createSolarisPolicy() {
         return new PPSolaris();
     }
 
+    @Override
     protected Object createWindowsPolicy() {
         return new PPWindows();
     }
 
+    @Override
     protected Object createZOSPolicy() {
         return new PPZOS();
     }
 
+    @Override
     protected Object createOS400Policy() {
         return new PPOS400();
     }
 
+    @Override
     protected Object createMACOSPolicy() {
         return new PPMACOS();
     }
@@ -339,25 +341,30 @@ class PPPlatformUtils extends AbstractPlatformPolicyFactory {
 
     class PPWindows extends PPCommon {
 
+        @Override
         ReturnCode chmod(String[] fileList, String perm) {
             // There is no chmod on Windows
             return ReturnCode.OK;
         }
 
+        @Override
         int getUmask() {
             // There is no umask on Windows
             return PlatformUtils.UMASK_NOT_APPLICABLE;
         }
 
+        @Override
         ReturnCode extattr(String[] fileList, String attr) {
             // There is no extattr on Windows
             return ReturnCode.OK;
         }
 
+        @Override
         String getASCIISystemCharSet() {
             return DEFAULT_ASCII_CODESET;
         }
 
+        @Override
         String getEBCIDICSystemCharSet() {
             return null;
         }
@@ -367,6 +374,7 @@ class PPPlatformUtils extends AbstractPlatformPolicyFactory {
     class PPLinux extends PPCommon {
         private final String[] chmod_locations = new String[] { "/bin/chmod", "/usr/bin/chmod" };
 
+        @Override
         int getUmask() throws IOException {
             String shellCommand = getCmdLocation(new String[] { "/bin/bash", "/bin/sh" });
 
@@ -458,6 +466,7 @@ class PPPlatformUtils extends AbstractPlatformPolicyFactory {
             return octalUmask;
         }
 
+        @Override
         ReturnCode chmod(String[] fileList, String perm) throws IOException {
             String chmodCmd = getCmdLocation(chmod_locations); // TODO: Check if location is found
             if (null == perm || "".equals(perm)) {
@@ -483,15 +492,18 @@ class PPPlatformUtils extends AbstractPlatformPolicyFactory {
             return cmdLocation;
         }
 
+        @Override
         ReturnCode extattr(String[] fileList, String attr) throws IOException {
             // There is no extattr on Linux
             return ReturnCode.OK;
         }
 
+        @Override
         String getASCIISystemCharSet() {
             return DEFAULT_ASCII_CODESET;
         }
 
+        @Override
         String getEBCIDICSystemCharSet() {
             return null;
         }
@@ -518,6 +530,7 @@ class PPPlatformUtils extends AbstractPlatformPolicyFactory {
         private String systemASCII = null;
         private String systemEBCDIC = null;
 
+        @Override
         ReturnCode extattr(String[] fileList, String attr) throws IOException {
             if (null == attr || "".equals(attr)) {
                 return ReturnCode.OK;
@@ -627,6 +640,7 @@ class PPPlatformUtils extends AbstractPlatformPolicyFactory {
             }
         }
 
+        @Override
         String getASCIISystemCharSet() {
             if (null == systemASCII) {
                 setASCIIandEBCDICvalues();
@@ -635,6 +649,7 @@ class PPPlatformUtils extends AbstractPlatformPolicyFactory {
             return systemASCII;
         }
 
+        @Override
         String getEBCIDICSystemCharSet() {
             if (null == systemEBCDIC) {
                 setASCIIandEBCDICvalues();

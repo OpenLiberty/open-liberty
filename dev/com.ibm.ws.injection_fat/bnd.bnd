@@ -25,34 +25,30 @@ src: \
 	test-applications/EnvEntryMixWeb.war/src,\
 	test-applications/EnvEntryXMLWeb.war/src,\
 	test-applications/JPAInjectionWeb.war/src,\
-	test-applications/RepeatableDSDAnnEJB.jar/src,\
-	test-applications/RepeatableDSDAnnWeb.war/src,\
-	test-applications/RepeatableDSDMixEJB.jar/src,\
-	test-applications/RepeatableDSDMixWeb.war/src,\
-	test-applications/RepeatableDSDXMLEJB.jar/src,\
-	test-applications/RepeatableDSDXMLWeb.war/src,\
-	test-applications/RepeatableEnvEntryMixWeb.war/src,\
-	test-applications/RepeatableTransactionWeb.war/src,\
 	test-applications/ResourceRefWeb.war/src,\
 	test-applications/ServiceLookupWeb.war/src,\
 	test-applications/TransactionWeb.war/src,\
 	test-bundles/ServiceLookup/src
+	
+# These applications are pre-compiled due to a bug/deficiency in JDK 11
+# which prevents us from overriding the bootclasspath with javax.annotation.1.3
+#    test-applications/RepeatableDSDAnnEJB.jar/src,\
+#    test-applications/RepeatableDSDAnnWeb.war/src,\
+#    test-applications/RepeatableDSDMixEJB.jar/src,\
+#    test-applications/RepeatableDSDMixWeb.war/src,\
+#    test-applications/RepeatableDSDXMLEJB.jar/src,\
+#    test-applications/RepeatableDSDXMLWeb.war/src,\
+#    test-applications/RepeatableEnvEntryMixWeb.war/src,\
+#    test-applications/RepeatableTransactionWeb.war/src
 
 javac.source: 1.8
 javac.target: 1.8
-
-# Opt out of the --release javac flag for JDK 9+, which will allow us to add our own javax.annotation.* packages to the classpath
-javac.args.release: current
 
 fat.project: true
 
 tested.features: \
 	servlet-4.0, jpa-2.2, jdbc-4.2, ejbLite-3.2
 	
--buildpath.bootclasspath: \
-	com.ibm.websphere.javaee.annotation.1.3;version=latest;boot=true,\
-	${javac.bootclasspath.${javac.source}}
-
 # Intentionally put javax.annotation (as opposed to websphere.javee.annotation) on the -buildpath
 # because otherwise bndtools will merge the artifacts together and it will only be on the classpath.
 # For JDK 7/8 and JDK 9+ compatibility we need this artifact on both the bootcp and the classpath 

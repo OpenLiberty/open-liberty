@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://webejb.ejbjndi.jaxws.ws.ibm.com/"
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns2="http://schemas.xmlsoap.org/soap/http"
+    xmlns:ns1="http://common.ejbjndi.jaxws.ws.ibm.com/" name="MixedCoffeeMachineService"
+    targetNamespace="http://webejb.ejbjndi.jaxws.ws.ibm.com/">
+    <wsdl:import
+        location="CoffeeMachine.wsdl"
+        namespace="http://common.ejbjndi.jaxws.ws.ibm.com/">
+    </wsdl:import>
+    <wsdl:binding name="MixedCoffeeMachineServiceSoapBinding"
+        type="ns1:CoffeeMachine">
+        <soap:binding style="document"
+            transport="http://schemas.xmlsoap.org/soap/http"></soap:binding>
+        <wsdl:operation name="isSupported">
+            <soap:operation soapAction="" style="document"></soap:operation>
+            <wsdl:input name="isSupported">
+                <soap:body use="literal"></soap:body>
+            </wsdl:input>
+            <wsdl:output name="isSupportedResponse">
+                <soap:body use="literal"></soap:body>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="make">
+            <soap:operation soapAction="" style="document"></soap:operation>
+            <wsdl:input name="make">
+                <soap:body use="literal"></soap:body>
+            </wsdl:input>
+            <wsdl:output name="makeResponse">
+                <soap:body use="literal"></soap:body>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="MixedCoffeeMachineService">
+        <wsdl:port binding="tns:MixedCoffeeMachineServiceSoapBinding"
+            name="MixedCoffeeMachinePort">
+            <soap:address
+                location="http://ivan-pc:80100/EJBJndiWebEJB/MixedCoffeeMachineService"></soap:address>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

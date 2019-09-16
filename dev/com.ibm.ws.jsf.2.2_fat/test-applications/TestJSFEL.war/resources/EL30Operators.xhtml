@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Copyright (c) 2015, 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+    <title>JSF20 EL Operator test.</title>
+</h:head>
+<f:view>
+<h:body>
+    <h:form id="form1" prependId="false">
+        <h:outputScript name="jsf.js" library="javax.faces" target="head" />
+
+        <br>
+        	EL 3.0 String Concatenation Operator (+=) with literals (Expected: xy): <h:outputText id="out1" value="#{&quot;x&quot; += &quot;y&quot;}" />
+        </br>
+        
+        <br>
+        	EL 3.0 Assignment Operator (=) (Expected:1): <h:outputText id="out2" value="#{testString1=1}" />
+        </br>
+
+        <br>
+        	EL 3.0 Assignment Operator (=) (Expected:2): <h:outputText id="out3" value="#{testString2=2}" />
+        </br>
+
+        <br>
+        	 EL 3.0 String Concatenation Operator (+=) with variables (Expected: 12): <h:outputText id="out4" value="#{testString1 += testString2}" />
+        </br>
+        
+        <br>
+        	EL 3.0 String Concatenation Operator with literals and multiple concatenations (Expected: xyz): <h:outputText id="out5" value="#{&quot;x&quot; += &quot;y&quot; += &quot;z&quot;}" />
+        </br>
+        
+        <br>
+        	EL 3.0 String Concatenation Operator with literals and single quotes  (Expected: xyz): <h:outputText id="out6" value="#{'x' += 'y' += 'z'}" />
+        </br>
+      
+        <br>
+        	EL 3.0 String Concatenation Operator with literals and mixed quotes  (Expected: xyz):  <h:outputText id="out7" value="#{&quot;x&quot; += 'y' += &quot;z&quot;}" />
+        </br>      
+        
+        <br>
+        	EL 3.0 Assignment Operator (=) (Expected:3): <h:outputText id="out8" value="#{x=3}" />
+        </br>
+    
+        <br>
+        	EL 3.0 Assignment Operator (=) (Expected:8): <h:outputText id="out9" value="#{y=x+5}" />
+        </br>  
+        
+        <br>
+        	 EL 3.0 Assignment Operator (Expected:3): <h:outputText id="out10" value="#{x=(x->x+1)(2)}" />
+        </br>  
+        
+        <br>
+        	EL 3.0 Semi-colon Operator (Expected:8): <h:outputText id="out11" value="#{x = 5; y = 3; z = x + y}" />
+        </br> 
+        
+    </h:form>
+</h:body>
+</f:view>
+</html>
+
+
+
+

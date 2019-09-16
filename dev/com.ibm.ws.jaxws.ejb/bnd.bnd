@@ -52,9 +52,13 @@ Service-Component: \
 Export-Package: \
     com.ibm.ws.jaxws.ejb
 
+# Using version=! in order to not have a version attached to the import for packages that were removed
+# from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the 
+# packages from Java when using Java 8 or earlier and from the new shipped bundles for Java 9 and later.
 Import-Package: \
    javax.xml.ws.*;version="[2.2,3)", \
    org.apache.cxf.*;version="[2.6.2,2.6.3)", \
+   javax.xml.soap;version=!,\
    *
 
 Private-Package:\
@@ -62,12 +66,9 @@ Private-Package:\
 
 instrument.classesExcludes: com/ibm/ws/jaxws/ejb/internal/resources/*.class
 
--buildpath.bootclasspath: \
-	com.ibm.websphere.javaee.jaxb.2.2;version=latest;boot=true,\
-	com.ibm.websphere.javaee.jaxws.2.2;version=latest;boot=true,\
-	${javac.bootclasspath.${javac.source}}
-
 -buildpath: \
+	javax.xml.soap:javax.xml.soap-api;version=1.4.0,\
+	com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
     org.apache.cxf.cxf-api;strategy=exact;version=2.6.2.ibm-s20190122-2227,\
 	org.apache.cxf.cxf-rt-bindings-soap;strategy=exact;version=2.6.2.ibm-s20180529-1900,\
 	org.apache.cxf.cxf-rt-core;strategy=exact;version=2.6.2.ibm-s20180529-1900,\
@@ -76,7 +77,7 @@ instrument.classesExcludes: com/ibm/ws/jaxws/ejb/internal/resources/*.class
 	org.apache.cxf.cxf-rt-frontend-simple;strategy=exact;version=2.6.2.ibm-s20170216-1739,\
 	org.apache.cxf.cxf-rt-management;strategy=exact;version=2.6.2.ibm-s20170216-1739,\
 	org.apache.cxf.cxf-rt-transports-http;strategy=exact;version=2.6.2.ibm-s20180821-1653,\
-	org.apache.cxf.cxf-rt-ws-policy;strategy=exact;version=2.6.2.ibm-s20180529-1900,\
+	org.apache.cxf.cxf-rt-ws-policy;strategy=exact;version=2.6.2.ibm-s20190515-1254,\
 	com.ibm.websphere.appserver.spi.kernel.service,\
 	com.ibm.websphere.appserver.spi.logging,\
 	com.ibm.websphere.javaee.ejb.3.1;version=latest,\

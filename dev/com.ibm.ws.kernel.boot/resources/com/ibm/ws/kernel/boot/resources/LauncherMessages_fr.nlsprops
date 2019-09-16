@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2016 IBM Corporation and others.
+# Copyright (c) 2010, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -689,13 +689,21 @@ warning.package.root.invalid.explanation=L'utilisateur a \u00e9mis une demande d
 warning.package.root.invalid.useraction=Aucune action n'est requise.
 
 warning.package.root.invalid.runnable=CWWKE0948W: La combinaison de l'option --server-root et de --include=runnable n'est pas autoris\u00e9e. L'argument par d\u00e9faut wlp sera utilis\u00e9 pour la racine du serveur.
-warning.package.root.invalid.runnable.explanation=L'utilisateur a \u00e9mis une demande de package avec une option --server-root et --include=runnable alors que cette combinaison n'est pas autoris\u00e9e. La racine de serveur par d\u00e9faut wlp sera utilis\u00e9e.
+warning.package.root.invalid.runnable.explanation=L'utilisateur a \u00e9mis une demande de package avec une option --server-root et --include=runnable alors que cette combinaison n'est pas autoris\u00e9e. La racine du serveur par d\u00e9faut wlp sera utilis\u00e9e.
 warning.package.root.invalid.runnable.useraction=Aucune action n'est \
 requise.
 
-error.no.serialfilteragent=CWWKE0949E: Le fichier JAR d''agent de filtres en s\u00e9rie sp\u00e9cifi\u00e9 {0} n''existe pas.
-error.no.serialfilteragent.explanation=Le fichier JAR d'agent de filtres en s\u00e9rie sp\u00e9cifi\u00e9 n'existe pas ou ne peut pas \u00eatre lu.
+error.no.serialfilteragent=CWWKE0949E: Le fichier JAR d''agent de filtres de s\u00e9rie sp\u00e9cifi\u00e9 {0} n''existe pas.
+error.no.serialfilteragent.explanation=Le fichier JAR d'agent de filtres de s\u00e9rie sp\u00e9cifi\u00e9 n'existe pas ou ne peut pas \u00eatre lu.
 error.no.serialfilteragent.useraction= Assurez-vous que le fichier existe et qu'il peut \u00eatre lu par l'utilisateur en cours.
+
+error.package.extension=CWWKE0950E: Le nom de fichier archive doit se terminer par .jar lorsque l'option runnable est utilis\u00e9e.
+error.package.extension.explanation=L'option --archive doit inclure l'extension de fichier .jar si vous sp\u00e9cifiez --include=runnable.
+error.package.extension.useraction=Indiquez un nom de fichier pour --archive dont l'extension de fichier est .jar si vous sp\u00e9cifiez --include=runnable.
+
+error.package.usr.jar=CWWKE0951E: Le nom du fichier archive ne doit pas se terminer par l'extension de fichier .jar si l'option usr est utilis\u00e9e.
+error.package.usr.jar.explanation=L'option --archive ne doit pas se terminer par l'extension de fichier .jar lorsque --include=usr est sp\u00e9cifi\u00e9.
+error.package.usr.jar.useraction=Indiquez pour --archive un nom de fichier dont l'extension est diff\u00e9rente de .jar lorsque --include=usr est sp\u00e9cifi\u00e9.
 
 info.serverStarting=D\u00e9marrage du serveur {0}.
 info.serverStarted=Le serveur {0} a d\u00e9marr\u00e9.
@@ -749,6 +757,8 @@ info.resumeFailedException=La reprise de l''op\u00e9ration du serveur {0} a \u00
 info.resumingListeners.target=Reprise de l''op\u00e9ration des composants cible sp\u00e9cifi\u00e9s sur le serveur {0}.
 info.resumedListeners.target=La reprise de l''op\u00e9ration des composants cible sp\u00e9cifi\u00e9s sur le serveur {0} a abouti.
 info.resumeFailedException.target=La reprise de l''op\u00e9ration des composants cible sp\u00e9cifi\u00e9s sur le serveur {0} a \u00e9chou\u00e9. Consultez les journaux du serveur pour plus d''informations.
+info.serverCommandAuthFailure=La commande {0} a \u00e9chou\u00e9 car le processus n''a pas pu supprimer le fichier {1}.
+info.serverCommandCommFailure=La commande {0} a \u00e9chou\u00e9 en raison d''une erreur de communication avec le serveur.
 
 # For info.serverLaunch and info.serverVersion: 
 # {0} version (build and/or product name)
@@ -777,3 +787,4 @@ info.no.servers.defined=Aucun serveur n''est d\u00e9fini dans l''annuaire d''uti
 info.list.of.defined.servers=Les serveurs ci-apr\u00e8s sont d\u00e9finis par rapport \u00e0 l''annuaire d''utilisateurs {0}.
 info.communicate.server=Une erreur de communication s''est produite entre la commande {0} et le serveur {1}.
 
+info.serialFilterLoaded=Agent de filtres de s\u00e9rie charg\u00e9.

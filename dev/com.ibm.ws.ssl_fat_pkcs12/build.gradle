@@ -1,0 +1,43 @@
+/*******************************************************************************
+ * Copyright (c) 2017,2018 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+/* 
+ * This is where all application ZIP and WARs will be built.
+ */
+def appBuildDir = "${buildDir}/test-application"
+
+addRequiredLibraries {
+}
+
+dependencies { 
+  requiredLibs 'com.ibm.ws.componenttest:public.api:1.0.0',
+    'commons-logging:commons-logging:1.1.1',
+    'commons-codec:commons-codec:1.4',
+    'org.apache.httpcomponents:httpclient:4.1.2',
+    'org.apache.httpcomponents:httpcore:4.1.2',
+    'org.apache.directory.server:apacheds-service:2.0.0-M15',
+    project(':fattest.simplicity'),
+    project(':com.ibm.ws.org.apache.directory.server'),
+    project(':com.ibm.ws.security.registry'),
+    project(':com.ibm.ws.security.registry_test.servlet'),
+    project(':com.ibm.ws.webcontainer.security_test.servlets')
+}
+
+autoFVT.doLast {
+  /*
+   * Copy the local ApacheDS LDAP instances. 
+   */
+  copy {
+    from project(':com.ibm.ws.org.apache.directory.server').projectDir
+    into autoFvtDir
+    include 'apacheds-2.0.0-M15/**'
+  }
+}

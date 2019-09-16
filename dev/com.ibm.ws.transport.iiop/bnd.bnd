@@ -22,8 +22,12 @@ Export-Package: com.ibm.ws.transport.iiop.spi
 Private-Package: com.ibm.ws.config.xml.internal.nester, \
   com.ibm.ws.transport.iiop.*
 
+# Using version=! in order to not have a version attached to the import for packages that were removed
+# from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the 
+# packages from Java when using Java 8 or earlier and from the new shipped bundles for Java 9 and later.
 Import-Package: \
     org.omg.*;version=2.4, \
+    javax.rmi.CORBA;version=!,\
     *
 
 Include-Resource: \
@@ -50,6 +54,7 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 instrument.classesExcludes: com/ibm/ws/transport/iiop/resources/*.class
 
 -buildpath: \
+	com.ibm.ws.org.apache.yoko.rmi.spec.1.5;version=latest,\
 	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
 	com.ibm.websphere.appserver.spi.logging;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\

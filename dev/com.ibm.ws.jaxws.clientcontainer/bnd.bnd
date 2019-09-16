@@ -31,11 +31,15 @@ Export-Package: \
     com.ibm.ws.jaxws.utils, \
     com.ibm.wsspi.jaxws
    
+# Using version=! in order to not have a version attached to the import for packages that were removed
+# from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the 
+# packages from Java when using Java 8 or earlier and from the new shipped bundles for Java 9 and later.
 Import-Package: \
    javax.xml.bind.*;version="[2.2,3)", \
    javax.xml.ws.*;version="[2.2,3)", \
    com.ibm.ws.javaee.ddmodel.wsbnd, \
    org.apache.cxf.*;version="[2.6.2,2.6.3)", \
+   javax.annotation;version=!,\
    *
 
 Private-Package:\
@@ -100,12 +104,11 @@ Service-Component: \
 
 instrument.classesExcludes: com/ibm/ws/jaxws/clientcontainer/internal/resources/*.class
 
--buildpath.bootclasspath: \
-	com.ibm.websphere.javaee.jaxb.2.2;version=latest;boot=true,\
-	com.ibm.websphere.javaee.jaxws.2.2;version=latest;boot=true,\
-	${javac.bootclasspath.${javac.source}}
-
 -buildpath: \
+	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
+	javax.jws:jsr181-api;version=latest,\
+	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
+	com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
 	org.apache.cxf.cxf-api;strategy=exact;version=2.6.2.ibm-s20190122-2227, \
 	org.apache.cxf.cxf-rt-core;strategy=exact;version=2.6.2.ibm-s20180529-1900, \
 	org.apache.cxf.cxf-rt-frontend-simple;strategy=exact;version=2.6.2.ibm-s20170216-1739, \

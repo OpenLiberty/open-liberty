@@ -1,0 +1,100 @@
+/*******************************************************************************
+ * Copyright (c) 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+Properties props = new Properties()
+rootProject.file('generated.properties').withInputStream { props.load(it) }
+
+repositories {
+  if ((props.getProperty("artifactory.download.server") != null) && !props.getProperty('artifactory.force.external.repo')) {
+    maven {
+      credentials {
+        username props.getProperty("artifactory.download.user")
+        password props.getProperty("artifactory.download.token")
+      }
+      url ("https://na.artifactory.swg-devops.com/artifactory/wasliberty-maven-remote")
+    }
+  } else {
+    mavenCentral()
+  }
+}
+
+configurations {
+  cxf
+  spring
+  pureCXF
+}
+
+dependencies {
+  cxf 'org.apache.cxf.xjcplugins:cxf-xjc-boolean:2.6.0',
+  'org.apache.cxf.xjcplugins:cxf-xjc-bug671:2.6.0',
+  'org.apache.cxf.xjcplugins:cxf-xjc-dv:2.6.0',
+  'org.apache.cxf.xjcplugins:cxf-xjc-ts:2.6.0',
+  'org.apache.cxf.xjc-utils:cxf-xjc-runtime:2.6.0'
+  spring 'org.springframework:spring-aop:3.0.7.RELEASE',
+  'org.springframework:spring-asm:3.0.7.RELEASE',
+  'org.springframework:spring-beans:3.0.7.RELEASE',
+  'org.springframework:spring-context:3.0.7.RELEASE',
+  'org.springframework:spring-core:3.0.7.RELEASE',
+  'org.springframework:spring-expression:3.0.7.RELEASE',
+  'org.springframework:spring-web:3.0.7.RELEASE'
+  pureCXF 'aopalliance:aopalliance:1.0',
+  'asm:asm:3.1',
+  'commons-logging:commons-logging:1.1.1',
+  'org.apache.cxf:cxf-api:2.6.2',
+  'org.apache.cxf:cxf-rt-bindings-soap:2.6.2',
+  'org.apache.cxf:cxf-rt-bindings-xml:2.6.2',
+  'org.apache.cxf:cxf-rt-core:2.6.2',
+  'org.apache.cxf:cxf-rt-databinding-jaxb:2.6.2',
+  'org.apache.cxf:cxf-rt-frontend-jaxws:2.6.2',
+  'org.apache.cxf:cxf-rt-frontend-simple:2.6.2',
+  'org.apache.cxf:cxf-rt-transports-http:2.6.2',
+  'org.apache.cxf:cxf-rt-ws-addr:2.6.2',
+  'org.apache.cxf:cxf-rt-ws-policy:2.6.2',
+  'org.apache.neethi:neethi:3.0.2',
+  'org.slf4j:slf4j-api:1.7.25',
+  'org.slf4j:slf4j-jdk14:1.7.25',
+  'org.springframework:spring-aop:3.0.7.RELEASE',
+  'org.springframework:spring-asm:3.0.7.RELEASE',
+  'org.springframework:spring-beans:3.0.7.RELEASE',
+  'org.springframework:spring-context:3.0.7.RELEASE',
+  'org.springframework:spring-core:3.0.7.RELEASE',
+  'org.springframework:spring-expression:3.0.7.RELEASE',
+  'org.springframework:spring-web:3.0.7.RELEASE',
+  'org.codehaus.woodstox:stax2-api:4.2',
+  'org.codehaus.woodstox:woodstox-core-asl:4.2.0',
+  'wsdl4j:wsdl4j:1.6.2',
+  'xml-resolver:xml-resolver:1.2',
+  'org.apache.ws.xmlschema:xmlschema-core:2.0.3'
+}
+
+task addCXF(type: Copy) {
+  from configurations.cxf
+  into "${buildDir}/autoFVT/publish/shared/resources/cxf/"
+}
+
+task addSpring(type: Copy) {
+  from configurations.cxf
+  into "${buildDir}/autoFVT/publish/shared/resources/spring/"
+}
+
+task addPureCXF(type: Copy) {
+  from configurations.pureCXF
+  into "${buildDir}/autoFVT/publish/shared/resources/pureCXF/"
+}
+
+task addRestConnector(type: Copy) {
+  shouldRunAfter jar
+  from buildImage.file('wlp/clients/restConnector.jar')
+  into new File(autoFvtDir, 'lib')
+}
+
+addRequiredLibraries {
+  dependsOn addCXF, addSpring, addPureCXF, addRestConnector
+}

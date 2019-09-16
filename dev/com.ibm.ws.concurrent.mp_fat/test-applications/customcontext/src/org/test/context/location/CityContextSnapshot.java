@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.test.context.location;
 
-import org.eclipse.microprofile.concurrent.spi.ThreadContextController;
-import org.eclipse.microprofile.concurrent.spi.ThreadContextSnapshot;
+import org.eclipse.microprofile.context.spi.ThreadContextController;
+import org.eclipse.microprofile.context.spi.ThreadContextSnapshot;
 
 /**
  * Example third-party thread context snapshot, to be used for testing purposes.

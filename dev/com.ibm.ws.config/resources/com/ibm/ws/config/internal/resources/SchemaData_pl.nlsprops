@@ -34,6 +34,8 @@ config.internal.metatype.variableDefinitionType.name.documentation=Nazwa zmienne
 config.internal.metatype.variableDefinitionType.name.label=Nazwa
 config.internal.metatype.variableDefinitionType.value.documentation=Warto\u015b\u0107, kt\u00f3ra zostanie przypisana do zmiennej.
 config.internal.metatype.variableDefinitionType.value.label=Warto\u015b\u0107
+config.internal.metatype.variableDefinitionType.defaultValue.documentation=Domy\u015blna warto\u015b\u0107, kt\u00f3ra ma zosta\u0107 przypisana do zmiennej, je\u015bli warto\u015b\u0107 nie jest dost\u0119pna.
+config.internal.metatype.variableDefinitionType.defaultValue.label=Warto\u015b\u0107 domy\u015blna
 
 config.internal.metatype.duration.desc=Okre\u015bl dodatni\u0105 liczb\u0119 ca\u0142kowit\u0105, po kt\u00f3rej nast\u0119puje jednostka czasu, taka jak godziny (h), minuty (m), sekundy (s) lub milisekundy (ms). Na przyk\u0142ad okre\u015bl 500 milisekund jako 500ms. W pojedynczej pozycji mo\u017cna zawrze\u0107 wiele warto\u015bci. Na przyk\u0142ad 1s500ms oznacza 1,5 sekundy.
 config.internal.metatype.duration-s.desc=Okre\u015bl dodatni\u0105 liczb\u0119 ca\u0142kowit\u0105, po kt\u00f3rej nast\u0119puje jednostka czasu, taka jak godziny (h), minuty (m) lub sekundy (s). Na przyk\u0142ad okre\u015bl 30 sekund jako 30s. W pojedynczej pozycji mo\u017cna zawrze\u0107 wiele warto\u015bci. Na przyk\u0142ad 1m30s oznacza 90 sekund.

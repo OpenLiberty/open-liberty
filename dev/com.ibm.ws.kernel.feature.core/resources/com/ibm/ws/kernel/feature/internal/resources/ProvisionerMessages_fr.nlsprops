@@ -69,7 +69,7 @@ BUNDLE_MATCH_WARNING=CWWKF0010W: Plusieurs bundles correspondent aux filtre sp\u
 BUNDLE_MATCH_WARNING.explanation=Un \u00e9l\u00e9ment de d\u00e9finition de fonction correspondait \u00e0 plusieurs bundles. Soit le filtre est trop g\u00e9n\u00e9ral, soit l'image contient d'anciens bundles qui concordent avec le filtre.
 BUNDLE_MATCH_WARNING.useraction=Assurez-vous que le filtre est suffisamment pr\u00e9cis et qu'une image d'installation propre est utilis\u00e9e.
 
-SERVER_STARTED=CWWKF0011I: Le serveur {0} est pr\u00eat pour une plan\u00e8te plus intelligente.
+SERVER_STARTED=CWWKF0011I: Le serveur {0} est pr\u00eat pour une plan\u00e8te plus intelligente. Il a d\u00e9marr\u00e9 en {1} secondes.
 SERVER_STARTED.explanation=Le d\u00e9marrage du serveur a abouti.
 SERVER_STARTED.useraction=Aucune action n'est requise.
 

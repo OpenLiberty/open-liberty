@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.faulttolerance.tck;
 
+import java.util.Collections;
+import java.util.Map;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -18,6 +21,10 @@ import org.junit.runner.RunWith;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.custom.junit.runner.TestModeFilter;
+import componenttest.topology.impl.JavaInfo;
+import componenttest.topology.impl.JavaInfo.Vendor;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.MvnUtils;
 
@@ -36,6 +43,15 @@ public class FaultToleranceTck11Launcher {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        Vendor vendor = JavaInfo.forServer(server).vendor();
+        // For J9 JVMs, add JIT trace for getConfig method to diagnose crashes
+        if (vendor == Vendor.IBM || vendor == Vendor.OPENJ9) {
+            Map<String, String> jvmOptions = server.getJvmOptionsAsMap();
+            jvmOptions.put("-Xjit:{org/eclipse/microprofile/config/ConfigProvider.getConfig(Ljava/lang/ClassLoader;)Lorg/eclipse/microprofile/config/Config;}(tracefull,traceInlining,traceCG,log=getConfig.trace)",
+                           null);
+            server.setJvmOptions(jvmOptions);
+        }
+
         server.startServer();
     }
 
@@ -97,7 +113,10 @@ public class FaultToleranceTck11Launcher {
     @Test
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
     public void launchFaultToleranceTCK() throws Exception {
-        MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.microprofile.faulttolerance.1.1_fat_tck", this.getClass() + ":launchFaultTolerance11TCK");
+        boolean isFullMode = TestModeFilter.shouldRun(TestMode.FULL);
+        String suiteFileName = isFullMode ? "tck-suite.xml" : "tck-suite-lite.xml";
+        MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.microprofile.faulttolerance.1.1_fat_tck", this.getClass() + ":launchFaultTolerance11TCK", suiteFileName,
+                              Collections.emptyMap(), Collections.emptySet());
     }
 
 }

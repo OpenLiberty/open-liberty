@@ -15,6 +15,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
@@ -31,10 +32,10 @@ import org.junit.rules.TestRule;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
+
+import test.common.SharedOutputManager;
 
 /**
  *
@@ -158,7 +159,7 @@ public class KeystoreConfigTest {
         mock.checking(new Expectations() {
             {
                 one(locSrv).resolveString(LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_KEY_STORE_FILE);
-                will(returnValue("/key.jks"));
+                will(returnValue("/key.p12"));
             }
         });
         assertTrue("Valid configuration should return true",
@@ -175,10 +176,20 @@ public class KeystoreConfigTest {
         props.put("id", LibertyConstants.DEFAULT_KEYSTORE_REF_ID);
         props.put(LibertyConstants.KEY_KEYSTORE_LOCATION, "someBadLoc");
 
+        final String defaultKeyStore = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_FALLBACK_KEY_STORE_FILE;
+        final File defaultKeyStoreJKS = new File(defaultKeyStore);
+        final String defaultKeyStoreName = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_KEY_STORE_FILE;
+        final File defaultKeyStorePKCS12 = new File(defaultKeyStoreName);
+
         mock.checking(new Expectations() {
             {
+                one(locSrv).resolveString(defaultKeyStore);
+                will(returnValue(defaultKeyStoreJKS.getAbsolutePath()));
+                one(locSrv).resolveString(defaultKeyStoreName);
+                will(returnValue(defaultKeyStorePKCS12.getAbsolutePath()));
+
                 one(locSrv).resolveString("someBadLoc");
-                will(returnValue("key.jks"));
+                will(returnValue("key.p12"));
             }
         });
 
@@ -195,16 +206,16 @@ public class KeystoreConfigTest {
         ksConfig = new KeystoreConfig("myPid", LibertyConstants.DEFAULT_KEYSTORE_REF_ID, locSrvRef);
 
         props.put("id", LibertyConstants.DEFAULT_KEYSTORE_REF_ID);
-        props.put(LibertyConstants.KEY_KEYSTORE_LOCATION, "alternateKey.jks");
-        props.put("type", "JKS");
+        props.put(LibertyConstants.KEY_KEYSTORE_LOCATION, "alternateKey.p12");
+        props.put("type", "PKCS12");
         props.put("password", "Liberty");
 
         mock.checking(new Expectations() {
             {
                 one(locSrv).resolveString(LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_KEY_STORE_FILE);
-                will(returnValue("key.jks"));
+                will(returnValue("key.p12"));
                 one(locSrv).resolveString(LibertyConstants.DEFAULT_CONFIG_LOCATION + LibertyConstants.DEFAULT_KEY_STORE_FILE);
-                will(returnValue("key.jks"));
+                will(returnValue("key.p12"));
             }
         });
         assertTrue("Valid configuration should return true",
@@ -256,6 +267,21 @@ public class KeystoreConfigTest {
      */
     @Test
     public void updateRegistration_registeredWithProps() {
+        final String defaultKeyStore = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_FALLBACK_KEY_STORE_FILE;
+        final File defaultKeyStoreJKS = new File(defaultKeyStore);
+        final String defaultKeyStoreName = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_KEY_STORE_FILE;
+        final File defaultKeyStorePKCS12 = new File(defaultKeyStoreName);
+
+        mock.checking(new Expectations() {
+            {
+                one(locSrv).resolveString(defaultKeyStore);
+                will(returnValue(defaultKeyStoreJKS.getAbsolutePath()));
+                one(locSrv).resolveString(defaultKeyStoreName);
+                will(returnValue(defaultKeyStorePKCS12.getAbsolutePath()));
+
+            }
+        });
+
         ksConfig = new KeystoreConfig(null, null, locSrvRef);
 
         ksConfig.updateKeystoreConfig(props);

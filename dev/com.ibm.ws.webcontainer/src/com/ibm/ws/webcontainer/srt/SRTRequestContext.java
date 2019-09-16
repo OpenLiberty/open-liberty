@@ -24,6 +24,7 @@ import com.ibm.wsspi.webcontainer.logging.LoggerFactory;
 import com.ibm.ws.webcontainer.facade.IFacade;
 import com.ibm.ws.webcontainer.session.IHttpSessionContext;
 import com.ibm.ws.webcontainer.webapp.WebApp;
+import com.ibm.wsspi.webcontainer.util.ThreadContextHelper;
 
 @SuppressWarnings("unchecked")
 public class SRTRequestContext implements Cloneable
@@ -132,7 +133,35 @@ protected static Logger logger = LoggerFactory.getInstance().getLogger("com.ibm.
                     HttpSession s = (HttpSession)webappToSessionMap.get(wa);
                     IHttpSessionContext ctx =wa.getSessionContext();
                     if (ctx!=null){
-                    	wa.getSessionContext().sessionPostInvoke(s);
+                        // set app classloader as TCCL; JSF might need to load resources during session cleanup
+                        ClassLoader origClassLoader = ThreadContextHelper.getContextClassLoader();
+                        final ClassLoader warClassLoader = wa.getClassLoader();
+                        if (warClassLoader != origClassLoader) {
+                            if (logger.isLoggable(Level.FINE)) {
+                                if(origClassLoader != null) {
+                                    logger.logp(Level.FINE, CLASS_NAME, "finish", "re-set class loader from --> " + origClassLoader.toString()
+                                                + " ,to --> " + warClassLoader.toString());
+                                }
+                                else {
+                                    logger.logp(Level.FINE, CLASS_NAME, "finish", "re-set class loader from origClassLoader--> null ,to --> " 
+                                        + warClassLoader.toString()); 
+                                }
+                            }
+                            ThreadContextHelper.setClassLoader(warClassLoader);
+                        } else {
+                            origClassLoader = null;
+                        }
+
+                        try {
+                            wa.getSessionContext().sessionPostInvoke(s);
+                        }
+                        finally {
+                            // reset TCCL to its original loader
+                            if (origClassLoader != null) {
+                                final ClassLoader fOriginalClassloader = origClassLoader;
+                                ThreadContextHelper.setClassLoader(fOriginalClassloader);
+                            }
+                        }
                     }
                     else if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) { 
                     	//Quietely logging is not the best option here, but otherwise

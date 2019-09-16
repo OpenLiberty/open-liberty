@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 IBM Corporation and others.
+ * Copyright (c) 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,6 +41,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.sql.CommonDataSource;
 import javax.sql.ConnectionPoolDataSource;
@@ -50,6 +52,7 @@ import javax.sql.XADataSource;
 import org.osgi.service.component.ComponentContext;
 
 import com.ibm.websphere.crypto.InvalidPasswordDecodingException;
+import com.ibm.websphere.crypto.UnsupportedCryptoAlgorithmException;
 import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -241,6 +244,19 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
             Tr.entry(tc, "create", className, classloader, PropertyService.hidePasswords(props));
+
+        //Add a value for connectionFactoryClassName when using UCP if one is not specified
+        if (className.startsWith("oracle.ucp.jdbc") && !props.containsKey("connectionFactoryClassName")) {
+            if (className.equals("oracle.ucp.jdbc.PoolDataSourceImpl") && props instanceof PropertyService) {
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(tc, "Setting connectionFactoryClassName property to oracle.jdbc.pool.OracleDataSource");
+                ((PropertyService) props).setProperty("connectionFactoryClassName", "oracle.jdbc.pool.OracleDataSource");
+            } else if (className.equals("oracle.ucp.jdbc.PoolXADataSourceImpl") && props instanceof PropertyService) {
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(tc, "Setting connectionFactoryClassName property to oracle.jdbc.xa.client.OracleXADataSource");
+                ((PropertyService) props).setProperty("connectionFactoryClassName", "oracle.jdbc.xa.client.OracleXADataSource");
+            }
+        }
         try {
             T ds = AccessController.doPrivileged(new PrivilegedExceptionAction<T>() {
                 public T run() throws Exception {
@@ -273,6 +289,11 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                                 try {
                                     if (value instanceof String) {
                                         String str = (String) value;
+                                        // Decode password(s) that are embedded in value of Oracle connectionProperties property
+                                        if ("connectionProperties".equals(name) && className.startsWith("oracle.jdbc") && 
+                                                        (str.contains("javax.net.ssl.keyStorePassword") || str.contains("javax.net.ssl.trustStorePassword" ))); {
+                                            str = decodeOracleConnectionPropertiesPwds(str);
+                                        }
                                         // Decode passwords
                                         if (isPassword)
                                             str = PasswordUtil.getCryptoAlgorithm(str) == null ? str : PasswordUtil.decode(str);
@@ -521,9 +542,8 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                 if (className == null) {
                     //if properties.oracle.ucp is configured do not search based on classname or infer because the customer has indicated
                     //they want to use UCP, but this will likely pick up the Oracle driver instead of the UCP driver (since UCP has no ConnectionPoolDataSource)
-                    if(vendorPropertiesPID != null && vendorPropertiesPID.equals("com.ibm.ws.jdbc.dataSource.properties.oracle.ucp")) {
-                        //TODO consider if we want to throw a more specific exception here
-                        throw classNotFound(ConnectionPoolDataSource.class.getName(), null, dataSourceID, null);
+                    if("com.ibm.ws.jdbc.dataSource.properties.oracle.ucp".equals(vendorPropertiesPID)) {
+                        throw new SQLNonTransientException(AdapterUtil.getNLSMessage("DSRA4015.no.ucp.connection.pool.datasource", dataSourceID, ConnectionPoolDataSource.class.getName()));
                     }
                     className = JDBCDrivers.getConnectionPoolDataSourceClassName(getClasspath(sharedLib, true));
                     if (className == null) {
@@ -673,6 +693,14 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                 }
 
             final String className = (String) properties.get(Driver.class.getName());
+            if (className == null) {
+                String vendorPropertiesPID = props instanceof PropertyService ? ((PropertyService) props).getFactoryPID() : PropertyService.FACTORY_PID;
+                //if properties.oracle.ucp is configured do not search for driver impls because the customer has indicated
+                //they want to use UCP, but this will likely pick up the Oracle driver instead of the UCP driver (since UCP has no Driver interface)
+                if("com.ibm.ws.jdbc.dataSource.properties.oracle.ucp".equals(vendorPropertiesPID)) {
+                    throw new SQLNonTransientException(AdapterUtil.getNLSMessage("DSRA4015.no.ucp.connection.pool.datasource", dataSourceID, Driver.class.getName()));
+                }
+            }
             Driver driver = loadDriver(className, url, classloader, props, dataSourceID);
             if (driver == null)
                throw classNotFound(Driver.class.getName(), Collections.singleton("META-INF/services/java.sql.Driver"), dataSourceID, null);
@@ -1051,4 +1079,40 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
             Tr.debug(this, tc, "unsetSharedLib", lib);
         modified(null, false);
     }
+    
+    /** Decode passwords embedded in an Oracle connectionProperties element
+     * @ connProp an Oracle connectionProperties string which may contain encoded passwords
+     * @return a connectionProperties string with the passwords decoded
+     */
+    public static String decodeOracleConnectionPropertiesPwds(String connProp)
+                    throws InvalidPasswordDecodingException, UnsupportedCryptoAlgorithmException {
+        final String pattern1 = "javax\\.net\\.ssl\\.keyStorePassword\\s*=\\s*(.*?)\\s*(;|$)";
+        final String pattern2 = "javax\\.net\\.ssl\\.trustStorePassword\\s*=\\s*(.*?)\\s*(;|$)";
+        connProp = decodeEmbeddedPassword(connProp, pattern1, 1);
+        return decodeEmbeddedPassword(connProp, pattern2, 1);
+    }
+    /**
+     * Given a string which potentially contains a key value pair where the value is a password encoded using
+     * one of the supported methods, use the supplied regex pattern to locate the key value pair and
+     * replace the value portion of the string with the decoded password.  For example,
+     * given the following value of an Oracle database connectionProperties string:
+     * "oracle.net.ssl_version=1.2;javax.net.ssl.keyStorePassword={aes}AIEJn6kmbn878lbUd8jJGWKMDYPm9FD1EoiL4JFNXO7f;javax.net.ssl.keyStore= path-to-keystore/keystore.p12"
+     * return this string:
+     * "oracle.net.ssl_version=1.2;javax.net.ssl.keyStorePassword=foobar;javax.net.ssl.keyStore= path-to-keystore/keystore.p12"
+     * 
+     * @param input A string potentially containing an encoded password
+     * @param pattern A regex pattern which attempts to match the password portion in the group specified in groupNumber
+     * @param groupNumber The group of the regex that contains the password to be decoded
+     * @return
+     */
+    private static String decodeEmbeddedPassword(String input, String pattern, int groupNumber)
+                    throws InvalidPasswordDecodingException, UnsupportedCryptoAlgorithmException {
+        Matcher matcher = Pattern.compile(pattern).matcher(input);
+        if (!matcher.find()) return input; // pattern not found
+        String password = matcher.group(groupNumber);
+        // decode password if encoded                   
+        password = PasswordUtil.getCryptoAlgorithm(password) == null ? password : PasswordUtil.decode(password);
+        return new StringBuilder(input).replace(matcher.start(groupNumber), matcher.end(groupNumber), password).toString();
+    }
+
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2015 IBM Corporation and others.
+ * Copyright (c) 2010, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -352,6 +352,12 @@ public abstract class AbstractJPAComponent
 
     public abstract EmbeddableWebSphereTransactionManager getEmbeddableWebSphereTransactionManager();
 
+    @Override
+    public abstract ClassLoader createThreadContextClassLoader(ClassLoader appClassloader);
+
+    @Override
+    public abstract void destroyThreadContextClassLoader(ClassLoader tcclassloader);
+
     /**
      * Registers the singleton instance of JPAUserTxCallBackHandler with the
      * transaction service. <p>
@@ -380,10 +386,11 @@ public abstract class AbstractJPAComponent
      * 
      * @param xmlSchemaVersion the schema version of the persistence.xml
      * @param integrationProperties the current set of integration-level properties
+     * @param applicationClassLoader the application's classloader. Used to create dynamic proxies for hibernate integration.
      */
     // F743-12524
     public void addIntegrationProperties(String xmlSchemaVersion,
-                                         Map<String, Object> integrationProperties)
+                                         Map<String, Object> integrationProperties, ClassLoader applicationClassLoader)
     {
         // No additional properties added by default.
     }

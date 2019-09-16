@@ -50,7 +50,7 @@ import com.ibm.ws.ssl.config.WSKeyStore;
 public class KeyStoreServiceImpl implements KeyStoreService {
     // Intentionally left package protected for unit test
     KeyStoreManager ksMgr;
-    private static final TraceComponent tc = Tr.register(KeyStoreServiceImpl.class);
+    private static final TraceComponent tc = Tr.register(KeyStoreServiceImpl.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 
     public KeyStoreServiceImpl() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
@@ -102,6 +102,11 @@ public class KeyStoreServiceImpl implements KeyStoreService {
             }
         }
         return alist.toArray(new String[] {});
+    }
+
+    @Override
+    public int getKeyStoreCount() {
+        return ksMgr.getKeyStoreCount();
     }
 
     /** {@inheritDoc} */

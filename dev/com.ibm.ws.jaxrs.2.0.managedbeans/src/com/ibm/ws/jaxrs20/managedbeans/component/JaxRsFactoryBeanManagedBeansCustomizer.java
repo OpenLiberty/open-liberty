@@ -37,7 +37,7 @@ import com.ibm.ws.jaxrs20.metadata.ProviderResourceInfo.RuntimeType;
 @Component(name = "com.ibm.ws.jaxrs20.managedbeans.component.JaxRsFactoryBeanManagedBeansCustomizer", immediate = true, property = { "service.vendor=IBM" })
 public class JaxRsFactoryBeanManagedBeansCustomizer implements JaxRsFactoryBeanCustomizer  {
 
-    private final TraceComponent tc = Tr
+    private static final TraceComponent tc = Tr
             .register(JaxRsFactoryBeanManagedBeansCustomizer.class);
 	
 	@Override

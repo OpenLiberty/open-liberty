@@ -220,3 +220,20 @@ warning.could.not.expand.application.useraction=Essayez de r\u00e9soudre le prob
 error.file.outside.archive=CWWKZ0132W: Le fichier {0} dans l''archive {1} ne sera pas extrait car le chemin ne se trouve pas dans l''archive.
 error.file.outside.archive.explanation=Le chemin d'acc\u00e8s au fichier sp\u00e9cifie un r\u00e9pertoire relatif. L'extraction du fichier entra\u00eenerait son placement hors du r\u00e9pertoire racine de l'archive.
 error.file.outside.archive.useraction=Retirez de l'archive tous les fichiers associ\u00e9s \u00e0 des chemins d'acc\u00e8s relatifs.  
+
+#{0} is the application name, {1} is the location of the EAR or WAR file, {2} is the location where the file is expanded
+info.expanding.app=CWWKZ0133I: L''application {0} \u00e0 l''emplacement {1} est \u00e9tendue dans le r\u00e9pertoire {2}.
+info.expanding.app.explanation=Le fichier archive pour l'application est \u00e9tendu car l'extension automatique des applications a \u00e9t\u00e9 configur\u00e9e.
+info.expanding.app.useraction=Aucune action n'est requise.
+
+info.loose.app=CWWKZ0134I: L''application {0} utilise la d\u00e9finition d''application souple \u00e0 l''emplacement {1}.
+info.loose.app.explanation=L'emplacement pour l'application d\u00e9signe un fichier XML qui d\u00e9finit une application souple. 
+info.loose.app.useraction=Aucune action n'est requise.
+
+info.directory.app=CWWKZ0135I: L''application {0} utilise le r\u00e9pertoire \u00e9tendu \u00e0 l''emplacement {1}.
+info.directory.app.explanation=L'emplacement pour l'application d\u00e9signe un r\u00e9pertoire plut\u00f4t qu'un fichier archive. 
+info.directory.app.useraction=Aucune action n'est requise.
+
+info.unexpanded.app=CWWKZ0136I: L''application {0} utilise le fichier archive \u00e0 l''emplacement {1}.
+info.unexpanded.app.explanation=L'emplacement pour l'application d\u00e9signe un fichier archive binaire. Le fichier archive ne sera pas \u00e9tendu sur le disque car l'extension automatique des applications n'a pas \u00e9t\u00e9 configur\u00e9e.
+info.unexpanded.app.useraction=Aucune action n'est requise.

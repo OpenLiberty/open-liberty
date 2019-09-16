@@ -11,8 +11,6 @@
 package com.ibm.ws.ssl.internal;
 
 import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.security.Security;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -43,7 +41,6 @@ import com.ibm.websphere.ssl.JSSEHelper;
 import com.ibm.websphere.ssl.JSSEProvider;
 import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.kernel.feature.FeatureProvisioner;
-import com.ibm.ws.kernel.service.util.JavaInfo;
 import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.ws.ssl.JSSEProviderFactory;
 import com.ibm.ws.ssl.config.KeyStoreManager;
@@ -72,7 +69,7 @@ public class SSLComponent extends GenericSSLConfigService implements SSLSupportO
     /** Key that reference clients use to target an active SSL component */
     private static final String SSL_SUPPORT_KEY = "SSLSupport";
 
-    private static final TraceComponent tc = Tr.register(SSLComponent.class);
+    private static final TraceComponent tc = Tr.register(SSLComponent.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 
     protected static final String MY_ALIAS = "sslDefault";
 
@@ -100,12 +97,6 @@ public class SSLComponent extends GenericSSLConfigService implements SSLSupportO
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "Activated: " + properties);
         }
-
-        // We are claiming TLSv1.3 support starting with Java 11.0.2 on OpenJ9
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(tc, "Java vendor: " + JavaInfo.vendor() + " Java major:  " + JavaInfo.majorVersion());
-        if (JavaInfo.vendor().equals(JavaInfo.Vendor.ORACLE) && JavaInfo.majorVersion() == 11)
-            disableTLSv13();
 
         Set<String> installedFeatures = provisionerService.getInstalledFeatures();
         if (installedFeatures.contains("transportSecurity-1.0")) {
@@ -290,8 +281,7 @@ public class SSLComponent extends GenericSSLConfigService implements SSLSupportO
      * Remove the reference to the location manager:
      * required service, do nothing.
      */
-    protected void unsetLocMgr(ServiceReference<WsLocationAdmin> ref) {
-    }
+    protected void unsetLocMgr(ServiceReference<WsLocationAdmin> ref) {}
 
     @Reference(service = FeatureProvisioner.class)
     protected synchronized void setKernelProvisioner(FeatureProvisioner provisionerService) {
@@ -431,44 +421,6 @@ public class SSLComponent extends GenericSSLConfigService implements SSLSupportO
         if ((sslProps != null && sslProps.isEmpty()) || sslProps == null)
             return new LibertySSLSocketFactory();
         return new LibertySSLSocketFactory(sslProps);
-    }
-
-    // TODO: This method should be removed once we properly support TLSv1.3
-    @Deprecated
-    private void disableTLSv13() {
-        if (Boolean.parseBoolean(priv.getProperty("com.ibm.ws.ssl.enableTLSv1.3", "false"))) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "Allowing TLSv1.3 to be enabled");
-        } else {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "Disabling TLSv1.3 by adding it to jdk.tls.disabledAlgorithms");
-            String disabledAlgorithms = AccessController.doPrivileged(new PrivilegedAction<String>() {
-                @Override
-                public String run() {
-                    return Security.getProperty("jdk.tls.disabledAlgorithms");
-                }
-            });
-            if (disabledAlgorithms == null || disabledAlgorithms.trim().isEmpty()) {
-                disabledAlgorithms = "TLSv1.3";
-            } else if (disabledAlgorithms.contains("TLSv1.3")) {
-                // do not double-add TLSv1.3
-                disabledAlgorithms = null;
-            } else {
-                disabledAlgorithms += ", TLSv1.3";
-            }
-            final String finalDisabledAlgorithms = disabledAlgorithms;
-            if (finalDisabledAlgorithms != null) {
-                AccessController.doPrivileged(new PrivilegedAction<Void>() {
-                    @Override
-                    public Void run() {
-                        Security.setProperty("jdk.tls.disabledAlgorithms", finalDisabledAlgorithms);
-                        return null;
-                    }
-                });
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(tc, "Set jdk.tls.disabledAlgorithms=" + finalDisabledAlgorithms);
-            }
-        }
     }
 
 }

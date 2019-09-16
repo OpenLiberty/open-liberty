@@ -13,12 +13,12 @@
     <include location="../fatTestPorts.xml"/>
     
     <featureManager>
-      <feature>servlet-3.1</feature>
-      <feature>jdbc-4.1</feature>
-      <feature>componentTest-1.0</feature>
-      <feature>txfat-1.0</feature>
-      <feature>osgiconsole-1.0</feature>
-      <feature>cdi-1.2</feature>
+       <feature>servlet-4.0</feature>
+       <feature>jdbc-4.2</feature>
+       <feature>jndi-1.0</feature>
+       <feature>componentTest-1.0</feature>
+       <feature>txfat-1.0</feature>
+       <feature>cdi-2.0</feature>
     </featureManager>
       
     <transaction
@@ -32,5 +32,8 @@
 	
     <javaPermission codebase="${server.config.dir}/derby/derby.jar" className="java.security.AllPermission"/>
     <javaPermission codebase="${server.config.dir}/apps/transaction.war" className="java.security.AllPermission"/>
+    <javaPermission className="java.lang.RuntimePermission" name="*" actions="*"/>
+    <javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read,write,delete"/>
+
     <logging traceSpecification="Transaction=all:com.ibm.ws.jdbc.*=all:RRA=all:logservice=all=enabled:*=info=enabled"/>
 </server>

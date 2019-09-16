@@ -20,30 +20,29 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import org.eclipse.microprofile.reactive.streams.operators.CompletionRunner;
-import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
 import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
-import org.eclipse.microprofile.reactive.streams.operators.SubscriberBuilder;
 
+/**
+ * This class will Subscribe to a data stream and request a set number of elements
+ * to respond with
+ */
 @Path("/output")
 public class ReactiveOutput {
 
     @Inject
-    private StorageService storage;
+    private SessionScopedStateBean messages;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<String> get(@QueryParam("count") int count) throws InterruptedException, ExecutionException {
-        System.out.println("count: " + count);
-        storage.init();
-        SimpleSubscriber subscriber = new SimpleSubscriber();
-        PublisherBuilder<String> pBuilder = ReactiveStreams.fromPublisher(storage);
-        SubscriberBuilder<String, Void> sBuilder = ReactiveStreams.fromSubscriber(subscriber);
-        CompletionRunner<Void> runner = pBuilder.to(sBuilder);
-        runner.run();
 
-        List<String> messages = subscriber.getMessages(count);
+        EndpointSubscriber<? super String> rs = new EndpointSubscriber<>();
 
-        return messages;
+        ReactiveStreams.fromIterable(messages).to(rs).run();
+
+        List<String> response = rs.getResponse(count);
+
+        return response;
+
     }
 }

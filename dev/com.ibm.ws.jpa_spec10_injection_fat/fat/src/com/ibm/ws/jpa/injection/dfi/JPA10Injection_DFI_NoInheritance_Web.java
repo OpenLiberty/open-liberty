@@ -25,6 +25,8 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.Application;
+import com.ibm.websphere.simplicity.config.ClassloaderElement;
+import com.ibm.websphere.simplicity.config.ConfigElementList;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.jpa.FATSuite;
 import com.ibm.ws.jpa.JPAFATServletClient;
@@ -37,11 +39,13 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.PrivHelper;
 
 @RunWith(FATRunner.class)
-//@Mode(TestMode.FULL)
+@Mode(TestMode.FULL)
 public class JPA10Injection_DFI_NoInheritance_Web extends JPAFATServletClient {
     private final static String RESOURCE_ROOT = "test-applications/injection/";
     private final static String applicationName = "JPA10Injection_DFINoInheritance_Web"; // Name of EAR
@@ -57,7 +61,7 @@ public class JPA10Injection_DFI_NoInheritance_Web extends JPAFATServletClient {
         createSet.add("JPA10_INJECTION_CREATE_${dbvendor}.ddl");
     }
 
-    @Server("JPAServer")
+    @Server("JPAServerDFI")
     @TestServlets({
                     @TestServlet(servlet = DFIPkgNoInhTestServlet.class, path = contextRoot + "/" + "DFIPkgNoInhTestServlet"),
                     @TestServlet(servlet = DFIPriNoInhTestServlet.class, path = contextRoot + "/" + "DFIPriNoInhTestServlet"),
@@ -68,9 +72,21 @@ public class JPA10Injection_DFI_NoInheritance_Web extends JPAFATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        int appStartTimeout = server1.getAppStartTimeout();
+        if (appStartTimeout < (120 * 1000)) {
+            server1.setAppStartTimeout(120 * 1000);
+        }
+
+        int configUpdateTimeout = server1.getConfigUpdateTimeout();
+        if (configUpdateTimeout < (120 * 1000)) {
+            server1.setConfigUpdateTimeout(120 * 1000);
+        }
+
         PrivHelper.generateCustomPolicy(server1, FATSuite.JAXB_PERMS);
         bannerStart(JPA10Injection_DFI_NoInheritance_Web.class);
         timestart = System.currentTimeMillis();
+
+        server1.addEnvVar("repeat_phase", FATSuite.repeatPhase);
 
         server1.startServer();
 
@@ -144,12 +160,19 @@ public class JPA10Injection_DFI_NoInheritance_Web extends JPAFATServletClient {
         });
 
         ShrinkHelper.exportToServer(server1, "apps", app);
-        server1.addInstalledAppForValidation(applicationName);
 
         Application appRecord = new Application();
         appRecord.setLocation(applicationName + ".ear");
         appRecord.setName(applicationName);
 
+        if (FATSuite.repeatPhase != null && FATSuite.repeatPhase.contains("hibernate")) {
+            ConfigElementList<ClassloaderElement> cel = appRecord.getClassloaders();
+            ClassloaderElement loader = new ClassloaderElement();
+            loader.getCommonLibraryRefs().add("HibernateLib");
+            cel.add(loader);
+        }
+
+        server1.setMarkToEndOfLog();
         ServerConfiguration sc = server1.getServerConfiguration();
         sc.getApplications().add(appRecord);
         server1.updateServerConfiguration(sc);

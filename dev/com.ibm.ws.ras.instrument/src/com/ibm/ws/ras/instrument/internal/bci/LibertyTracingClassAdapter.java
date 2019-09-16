@@ -17,8 +17,11 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 
+import com.ibm.websphere.ras.annotation.TraceOptions;
+import com.ibm.ws.ras.instrument.internal.main.LibertyTracePreprocessInstrumentation.ClassTraceInfo;
 import com.ibm.ws.ras.instrument.internal.model.ClassInfo;
 import com.ibm.ws.ras.instrument.internal.model.FieldInfo;
+import com.ibm.ws.ras.instrument.internal.model.TraceOptionsData;
 
 /**
  * A <code>RasClassAdapter</code> implementation that generates calls to
@@ -73,12 +76,18 @@ public class LibertyTracingClassAdapter extends AbstractTracingRasClassAdapter {
         }
     }
 
-    public LibertyTracingClassAdapter(ClassVisitor visitor, boolean onlyInstrumentPreprocessed) {
+	public LibertyTracingClassAdapter(ClassVisitor visitor, boolean onlyInstrumentPreprocessed) {
         this(visitor, null);
         this.onlyInstrumentPreprocessed = onlyInstrumentPreprocessed;
     }
 
-    @Override
+    public LibertyTracingClassAdapter(ClassVisitor visitor, ClassTraceInfo info, boolean onlyInstrumentPreprocessed) {
+    	this(visitor, null);
+    	this.onlyInstrumentPreprocessed = onlyInstrumentPreprocessed;
+    	traceInfo = info;
+	}
+
+	@Override
     public RasMethodAdapter createRasMethodAdapter(MethodVisitor mv, int access, String name, String descriptor, String signature, String[] exceptions) {
         // Use the super class's observation of the TraceObjectField annotation
         // to detect a pre-processed class. This is a little bit of a kludge but
@@ -160,4 +169,11 @@ public class LibertyTracingClassAdapter extends AbstractTracingRasClassAdapter {
 
         return false;
     }
+
+	public boolean isTraceComponentAlreadyDefined() {
+		return traceComponentAlreadyDefined;
+	}
+
+
+
 }

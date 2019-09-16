@@ -183,7 +183,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
          * could be used instead of AtomicReference). If Java 8 support is ever dropped, this
          * can be updated.
          */
-        private final AtomicReference<Future<?>> completableFutureRef = new AtomicReference<Future<?>>();
+        private final CancellableStageRef cancellableStage = new CancellableStageRef();
 
         private final ExecutorService executor;
 
@@ -199,7 +199,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         public void execute(Runnable command) {
             Future<?> future;
             if (executor instanceof PolicyExecutor)
-                future = ((PolicyExecutor) executor).submit(completableFutureRef, command);
+                future = ((PolicyExecutor) executor).submit(cancellableStage, command);
             else
                 future = executor.submit(command);
 
@@ -240,7 +240,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         });
 
         if (futureRef != null)
-            futureRef.completableFutureRef.set(this);
+            futureRef.cancellableStage.set(this);
     }
 
     /**
@@ -257,7 +257,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         this.futureRef = futureRef;
 
         if (futureRef != null)
-            futureRef.completableFutureRef.set(this);
+            futureRef.cancellableStage.set(this);
     }
 
     // static method equivalents for CompletableFuture, plus other static methods for ManagedExecutorImpl to use
@@ -1312,6 +1312,19 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
                 futureRefLocal.remove();
             }
         }
+    }
+
+    /**
+     * Invokes cancel on the superclass,
+     * or, in the case of Java SE 8, on the CompletableFuture instance that this class proxies.
+     *
+     * @see java.util.concurrent.Future#cancel(boolean)
+     */
+    final boolean super_cancel(boolean mayInterruptIfRunning) {
+        if (JAVA8)
+            return completableFuture.cancel(mayInterruptIfRunning);
+        else
+            return super.cancel(mayInterruptIfRunning);
     }
 
     /**

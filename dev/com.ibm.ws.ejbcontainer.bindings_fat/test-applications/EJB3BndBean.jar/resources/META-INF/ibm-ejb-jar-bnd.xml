@@ -1,0 +1,34 @@
+<ejb-jar-bnd
+        xmlns="http://websphere.ibm.com/xml/ns/javaee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-bnd_1_0.xsd"
+        version="1.0">
+
+<session name="TargetOneBean" local-home-binding-name="ejblocal:ejb/LocalTargetOneHome" remote-home-binding-name="ejb/RemoteTargetOneHome">
+  <interface class="com.ibm.ws.ejbcontainer.bindings.bnd.ejb.LocalTargetOneBiz" binding-name="ejblocal:ejb/LocalTargetOneBiz"/>
+  <interface class="com.ibm.ws.ejbcontainer.bindings.bnd.ejb.RemoteTargetOneBiz" binding-name="ejb/RemoteTargetOneBiz"/>
+</session>
+
+<session name="TargetTwoBean">
+  <interface class="com.ibm.ws.ejbcontainer.bindings.bnd.ejb.RemoteTargetTwoBiz1" binding-name="ejb/RemoteTargetTwoBiz1"/>
+  <interface class="com.ibm.ws.ejbcontainer.bindings.bnd.ejb.RemoteTargetTwoBiz2" binding-name="ejb/RemoteTargetTwoBiz2"/>
+  <interface class="com.ibm.ws.ejbcontainer.bindings.bnd.ejb.RemoteTargetTwoBiz3" binding-name="ejb/RemoteTargetTwoBiz3"/>
+</session>
+
+<session name="TargetThreeBean">
+  <interface class="com.ibm.ws.ejbcontainer.bindings.bnd.ejb.LocalTargetThreeBiz1" binding-name="ejblocal:ejb/LocalTargetThreeBiz1"/>
+  <interface class="com.ibm.ws.ejbcontainer.bindings.bnd.ejb.LocalTargetThreeBiz2" binding-name="ejblocal:ejb/LocalTargetThreeBiz2"/>
+  <interface class="com.ibm.ws.ejbcontainer.bindings.bnd.ejb.LocalTargetThreeBiz3" binding-name="ejblocal:ejb/LocalTargetThreeBiz3"/>
+</session>
+
+<session name="TargetFourBean">
+  <interface class="com.ibm.ws.ejbcontainer.bindings.bnd.ejb.LocalTargetFourBiz1" binding-name="ejblocal:ejb/LocalTargetFourBiz1"/>
+  <interface class="com.ibm.ws.ejbcontainer.bindings.bnd.ejb.LocalTargetFourBiz2" binding-name="ejblocal:ejb/LocalTargetFourBiz2"/>
+  <interface class="com.ibm.ws.ejbcontainer.bindings.bnd.ejb.RemoteTargetFourBiz1" binding-name="ejb/RemoteTargetFourBiz1"/>
+  <interface class="com.ibm.ws.ejbcontainer.bindings.bnd.ejb.RemoteTargetFourBiz2" binding-name="ejb/RemoteTargetFourBiz2"/>
+</session>
+
+<session name="SubBean" local-home-binding-name="ejblocal:ejb/SubLocalHome" remote-home-binding-name="ejb/SubRemoteHome"/>
+<session name="SupBean" local-home-binding-name="ejblocal:ejb/SupLocalHome" remote-home-binding-name="ejb/SupRemoteHome"/>
+
+</ejb-jar-bnd>

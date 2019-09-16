@@ -13,7 +13,7 @@
 #NLS_ENCODING=UNICODE
 #
 #COMPONENTPREFIX CWWKC
-#COMPONENTNAMEFOR CWWKC MicroProfile Concurrency
+#COMPONENTNAMEFOR CWWKC MicroProfile Context Propagation
 #
 # NLS_MESSAGEFORMAT_VAR
 #
@@ -25,7 +25,7 @@
 # All messages must use the range CWWCK1150 to CWWCK1189 except those specifically identified as moved
 
 CWWKC1150.duplicate.context=CWWKC1150E: El mismo tipo de contexto de hebra, {0}, lo proporcionan varios proveedores de contexto de hebra que est\u00e1n disponibles para la aplicaci\u00f3n. Los proveedores de contexto de hebra son: {1}, {2}.
-CWWKC1150.duplicate.context.explanation=La especificaci\u00f3n de concurrencia de MicroProfile no permite m\u00e1s de un ThreadContextProvider para cada tipo de contexto.
+CWWKC1150.duplicate.context.explanation=La especificaci\u00f3n de propagaci\u00f3n de contexto de MicroProfile no permite m\u00e1s de un ThreadContextProvider para cada tipo de contexto.
 CWWKC1150.duplicate.context.useraction=Actualice la aplicaci\u00f3n, las bibliotecas, o ambas cosas, de modo que no exista m\u00e1s de un ThreadContextProvider del tipo especificado.
 
 # do not translate: cleared, propagated
@@ -49,3 +49,5 @@ CWWKC1156.not.supported.useraction=Actualice la aplicaci\u00f3n para que utilice
 CWWKC1157.cannot.propagate.tx=CWWKC1157E: No se admite la propagaci\u00f3n de transacciones a acciones contextuales y tareas.
 CWWKC1157.cannot.propagate.tx.explanation=Un ManagedExecutor o ThreadContext que est\u00e1 configurado para propagar contextos de transacci\u00f3n solo puede propagar contextos de transacci\u00f3n vac\u00edos. Por lo tanto, no puede crear acciones y tareas contextuales dentro de una transacci\u00f3n.
 CWWKC1157.cannot.propagate.tx.useraction=Cree la acci\u00f3n o tarea contextual fuera de la transacci\u00f3n. De forma alternativa, configure ManagedExecutor o ThreadContext para que no propague contextos de transacci\u00f3n.
+
+# CWWKC1158E used by com.ibm.ws.cdi.mp.context bundle

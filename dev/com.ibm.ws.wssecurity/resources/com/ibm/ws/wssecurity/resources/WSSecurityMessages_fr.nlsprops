@@ -1,0 +1,215 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# ORIGINS: 27         (used for IBM originated files)
+#
+# Caution: because some text editors automatically convert
+# consecutive runs of spaces to tabs, use the Java "\ " escape
+# sequence to represent each space in a run of multiple spaces.
+#
+# translator:
+# Translate words on the right hand side of the = sign.
+# Do not translate {0}, {1}, %1, %2 etc.
+# Do NOT translate any words when they START with: '-
+# Do NOT translate any words when they START with: @
+# Preserve all spaces after a backslash (\) even at the end of a line.
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.wssecurity/resources/com/ibm/ws/wssecurity/resources/WSSecurityMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAX-WS WebServices Security
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+
+# -------------------------------------------------------------------------------------------------
+# WSSecurity message ID from CWWKW0201 - CWWKW0300
+
+# TO BE DELETED
+# info.policy.loaded=CWWKW0201I: WS-Security Policy Loader.
+# info.policy.loaded.explanation=The IBM WS-Security Policy Loader is called.
+# info.policy.loaded.useraction=Information only.
+
+# Message logged once during server startup
+# {0} is the exception
+error.policy.notloaded=CWWKW0202E: WS-Security ne peut \u00eatre appliqu\u00e9 \u00e0 aucun service Web.  Une erreur s''est produite pendant la tentative d''enregistrement du chargeur de strat\u00e9gie WS-Security avec l''infrastructure CXF : [{0}]
+error.policy.notloaded.explanation=Le chargeur de strat\u00e9gie WS-Security n'a pas pu \u00eatre enregistr\u00e9 avec l'infrastructure CXF au d\u00e9marrage du serveur. Cette erreur emp\u00eache l'appel de l'environnement d'ex\u00e9cution WS-Security pour tout message SOAP et aucune contrainte WS-Security ne sera ajout\u00e9e.
+error.policy.notloaded.useraction=Traitez l'erreur d\u00e9crite dans le message.
+
+# Message logged once during server startup
+WSSECURITY_NO_CONFIG_DEFINED=CWWKW0203I:  WS-Security ne peut \u00eatre appliqu\u00e9 \u00e0 aucune application client de service Web. L'\u00e9l\u00e9ment de configuration client WS-Security, wsSecurityClient, n'existe pas dans server.xml.
+WSSECURITY_NO_CONFIG_DEFINED.explanation=La fonction wsSecurity-1.1 est activ\u00e9e mais le composant WS-Security ne parvient pas \u00e0 trouver l'\u00e9l\u00e9ment wsSecurityClient dans server.xml.
+WSSECURITY_NO_CONFIG_DEFINED.useraction=Si des contraintes WS-Security sont requises pour une application de service Web client, ajoutez l'\u00e9l\u00e9ment de configuration wsSecurityClient requis \u00e0 server.xml.
+
+# Message logged once during server startup
+WSSECURITY_NO_CONFIG_DEFINED_PROV=CWWKW0204I:  WS-Security ne peut \u00eatre appliqu\u00e9 \u00e0 aucune application de fournisseur de services Web. L'\u00e9l\u00e9ment de configuration fournisseur WS-Security, wsSecurityProvider, n'existe pas dans server.xml.
+WSSECURITY_NO_CONFIG_DEFINED_PROV.explanation= La fonction wsSecurity-1.1 est activ\u00e9e mais le composant WS-Security ne parvient pas \u00e0 trouver l'\u00e9l\u00e9ment wsSecurityProvider dans server.xml.
+WSSECURITY_NO_CONFIG_DEFINED_PROV.useraction=Si des contraintes WS-Security sont requises pour une application de service Web fournisseur, ajoutez l'\u00e9l\u00e9ment de configuration wsSecurityProvider requis \u00e0 server.xml.
+
+# TO BE DELETED
+# WSSECURITY_NO_USER_CONFIG_DEFINED=CWWKW0204I: The user name does not exist.
+# WSSECURITY_NO_USER_CONFIG_DEFINED.explanation=user name needs to be specified as attribute.
+# WSSECURITY_NO_USER_CONFIG_DEFINED.useraction=Check the syntax.
+
+# Message logged once during server startup on error when reading in the config
+# {0} is a token type, ex: X509, UsernameToken
+# {1} is the list of valid token types
+UNKNOWN_CALLER_TOKEN_NAME=CWWKW0205E: Une configuration de jeton d''appelant ne peut pas \u00eatre appliqu\u00e9e aux applications de fournisseur de service Web.  Le nom, [{0}], sp\u00e9cifi\u00e9 pour l''\u00e9l\u00e9ment callerToken dans la configuration wsSecurityProvider du fichier server.xml n''est pas valide. Les valeurs valides sont : [{1}] 
+UNKNOWN_CALLER_TOKEN_NAME.explanation=Le nom sp\u00e9cifi\u00e9 pour l'\u00e9l\u00e9ment callerToken dans la configuration wsSecurityProvider du fichier server.xml n'est pas valide.
+UNKNOWN_CALLER_TOKEN_NAME.useraction=V\u00e9rifiez dans le fichier server.xml qu'une valeur prise en charge est indiqu\u00e9e pour l'\u00e9l\u00e9ment callerToken. Les valeurs valides sont affich\u00e9es dans le message d'erreur.
+
+# Message logged at runtime for each errant inbound SOAP request
+multiple_unt_exist_err=CWWKW0206E: Impossible de cr\u00e9er un sujet de s\u00e9curit\u00e9 pour le service Web. L'\u00e9l\u00e9ment callerToken ne peut pas \u00eatre identifi\u00e9 dans le message entrant car plusieurs \u00e9l\u00e9ments UsernameToken existent dans l'en-t\u00eate de s\u00e9curit\u00e9 SOAP.
+multiple_unt_exist_err.explanation=Dans security.xml, callerToken est d\u00e9fini sur UsernameToken et l'en-t\u00eate de s\u00e9curit\u00e9 du message SOAP entrant contient plusieurs \u00e9l\u00e9ments UsernameToken.  Par cons\u00e9quent, l'environnement d'ex\u00e9cution WS-Security ne peut pas d\u00e9terminer quel \u00e9l\u00e9ment UsernameToken utiliser pour le jeton d'appelant.
+multiple_unt_exist_err.useraction=Effectuez une des actions suivantes : 1) Modifiez la configuration du client pour envoyer un seul \u00e9l\u00e9ment UsernameToken 2) Supprimez la configuration de callerToken dans server.xml
+
+# TO BE DELETED
+#  no_unt_exist_err=CWWKW0207E: There is no UsernameToken in inbound SOAP Security header to process the caller.
+#  no_unt_exist_err.explanation=Configuration requires the username token to be present in the message.
+#  no_unt_exist_err.useraction=Make sure that the requestor WS-Security policy specifies to generate one username token.
+
+# TO BE DELETED
+#  no_x509_token_exist_err=CWWKW0208E: There is no binary security token in the message to process the caller.
+#  no_x509_token_exist_err.explanation=Missing binary security token in the message.
+#  no_x509_token_exist_err.useraction=Make sure that the requestor WS-Security policy specifies to include at least one binary security token.
+
+# Message logged at runtime for each errant inbound SOAP request
+# {0} is a token type, ex: X509, UsernameToken ({0} is supposed to be used twice)
+no_caller_exist_err=CWWKW0207E:  Impossible de cr\u00e9er un sujet de s\u00e9curit\u00e9 pour le service Web.   Un \u00e9l\u00e9ment callerToken {0} est configur\u00e9 mais il n''y a aucun jeton {0} dans l''en-t\u00eate de s\u00e9curit\u00e9 SOAP entrant.  Aucun jeton d''appelant n''a pu \u00eatre s\u00e9lectionn\u00e9.
+no_caller_exist_err.explanation=L'\u00e9l\u00e9ment callerToken configur\u00e9 dans le fichier server.xml n'est pas pr\u00e9sent dans l'en-t\u00eate SOAP Security. 
+no_caller_exist_err.useraction=Effectuez l'une des op\u00e9rations suivantes : 1) Modifiez la configuration client afin d'envoyer le jeton d'appelant correct 2) Retirez la configuration callerToken dans le fichier server.xml
+
+# TO BE DELETED
+# empty_results_list=CWWKW0209E: A security subject cannot be created for the web service.  Empty results list.
+# empty_results_list.explanation=Cannot get message verification results.
+# empty_results_list.useraction=This might be due to an internal problem. Please check the logs for more information.
+
+# Message logged at runtime for each errant inbound SOAP request.
+# {0} is the error message received from base security
+error_authenticate=CWWKW0210E: Impossible de cr\u00e9er un sujet de s\u00e9curit\u00e9 pour le service Web. Cause : [{0}].
+error_authenticate.explanation=Un sujet de s\u00e9curit\u00e9 pour le jeton d'appelant extrait \u00e0 partir de l'en-t\u00eate de s\u00e9curit\u00e9 SOAP n'a pas pu \u00eatre cr\u00e9\u00e9.  La raison de l'erreur est fournie dans le message.
+error_authenticate.useraction=Traitez l'erreur d\u00e9crite dans le message.
+
+# TO BE DELETED
+# Message logged at runtime for each errant inbound SOAP request.
+# no_endorsing_token_no_asymmetric_token=CWWKW0211E: There is no EndorsingSupporting token or Asymmetric signature token in the message.
+# no_endorsing_token_no_asymmetric_token.explanation=Missing the token in the message to complete caller processing.
+# no_endorsing_token_no_asymmetric_token.useraction=Make sure that the requestor WS-Security policy specifies to include either an EndorsingSupporting type token or an Asymmetric signature token in the message.
+
+# Message logged at runtime for each errant inbound SOAP request.
+multiple_endorsing_token_err=CWWKW0212E: Un sujet de s\u00e9curit\u00e9 ne peut pas \u00eatre cr\u00e9\u00e9 pour le service Web.  Le jeton d'appelant ne peut pas \u00eatre identifi\u00e9 dans le message entrant car plusieurs \u00e9l\u00e9ments UsernameToken existent dans l'en-t\u00eate SOAP Security.  L'\u00e9l\u00e9ment callerToken dans le fichier server.xml est d\u00e9fini sur X509Token, endorsingSupportingToken est d\u00e9fini sur true (par d\u00e9faut), et il y a plusieurs \u00e9l\u00e9ments EndorsingSupportingTokens dans l'en-t\u00eate SOAP Security entrant.
+multiple_endorsing_token_err.explanation=L'\u00e9l\u00e9ment callerToken dans le fichier server.xml est d\u00e9fini sur X509Token, endorsingSupportingToken est d\u00e9fini sur true (par d\u00e9faut), et il y a plusieurs \u00e9l\u00e9ments EndorsingSupportingTokens dans l'en-t\u00eate SOAP Security entrant.  Etant donn\u00e9 qu'un seul jeton d'appelant doit figurer dans le message pour qu'un jeton d'appelant puisse \u00eatre s\u00e9lectionn\u00e9, plusieurs \u00e9l\u00e9ments EndorsingSupportingTokens ne sont pas autoris\u00e9s.                                   
+multiple_endorsing_token_err.useraction=Effectuez l'une des op\u00e9rations suivantes : 1) Modifiez la r\u00e8gle de sorte qu'un seul \u00e9l\u00e9ment endorsingSupportingToken soit inclus dans le message, 2) Retirez la configuration callerToken dans le fichier server.xml, 3) D\u00e9finissez endorsingSupportingToken sur false dans la configuration callerToken du fichier server.xml
+
+# Message logged at runtime for each errant inbound SOAP request.
+multiple_asymmetric_token_err=CWWKW0213E: Un sujet de s\u00e9curit\u00e9 ne peut pas \u00eatre cr\u00e9\u00e9 pour le service Web.  Le jeton d'appelant ne peut pas \u00eatre identifi\u00e9 dans le message entrant car plusieurs \u00e9l\u00e9ments UsernameToken existent dans l'en-t\u00eate SOAP Security.  L'\u00e9l\u00e9ment callerToken dans le fichier server.xml est d\u00e9fini sur X509Token, endorsingSupportingToken est d\u00e9fini sur false, et il y a plusieurs jetons de signature asym\u00e9trique dans l'en-t\u00eate SOAP Security entrant.
+multiple_asymmetric_token_err.explanation=L'\u00e9l\u00e9ment callerToken dans le fichier server.xml est d\u00e9fini sur X509Token, endorsingSupportingToken est d\u00e9fini sur false, et il y a plusieurs jetons de signature asym\u00e9trique dans l'en-t\u00eate SOAP Security entrant.  Etant donn\u00e9 qu'un seul jeton d'appelant doit figurer dans le message pour qu'un jeton d'appelant puisse \u00eatre s\u00e9lectionn\u00e9, plusieurs jetons de signature asym\u00e9trique ne sont pas autoris\u00e9s.                                   
+multiple_asymmetric_token_err.useraction=Effectuez l'une des op\u00e9rations suivantes : 1) Modifiez la r\u00e8gle de sorte qu'un seul jeton de signature asym\u00e9trique soit inclus dans le message, 2) Retirez la configuration callerToken dans le fichier server.xml
+
+# Do not translate "NotBefore"
+saml_token_not_yet_valid=CWWKW0214E: L''assertion NotBefore [{0}] dans le jeton SAML est hors plage. L''heure courante est [{1}]. Le param\u00e8tre de d\u00e9calage d''horloge en cours est de {2} secondes.
+saml_token_not_yet_valid.explanation=L'assertion NotBefore au sein du jeton SAML indique l'heure \u00e0 laquelle le jeton devient valide ; le jeton ne peut pas \u00eatre utilis\u00e9 avant cette heure. Pour utiliser ce jeton SAML, la valeur de l'assertion NotBefore doit \u00eatre un instant dans le pass\u00e9. Une raison possible de cette erreur est que l'horloge du destinataire est d\u00e9synchronis\u00e9e par rapport \u00e0 celle du cr\u00e9ateur de l'assertion.
+saml_token_not_yet_valid.useraction=V\u00e9rifiez que la date et l'heure sur le fournisseur d'identit\u00e9 sont synchronis\u00e9es avec ce fournisseur de services SAML de connexion unique Web (Web SSO) ou augmentez le d\u00e9calage de l'horloge.
+
+# Do not translate "NotOnOrAfter"
+saml_token_expired=CWWKW0215E: L''assertion NotOnOrAfter [{0}] dans le jeton SAML est hors plage. L''heure courante est [{1}]. Le param\u00e8tre de d\u00e9calage d''horloge en cours est de {2} secondes.
+saml_token_expired.explanation=L'assertion NotOnOrAfter au sein du jeton SAML indique l'heure \u00e0 laquelle le jeton expire. Le jeton doit \u00eatre utilis\u00e9 avant cette heure. Une raison possible de cette erreur est que l'horloge du destinataire est d\u00e9synchronis\u00e9e par rapport \u00e0 celle du cr\u00e9ateur de l'assertion.
+saml_token_expired.useraction=V\u00e9rifiez que la date et l'heure sur le fournisseur d'identit\u00e9 sont synchronis\u00e9es avec ce fournisseur de services SAML de connexion unique Web (Web SSO) ou augmentez le d\u00e9calage de l'horloge.
+
+# Do not translate "IssueInstant"
+saml_token_issued_too_long_ago=CWWKW0216E: La valeur IssueInstant [{0}] dans la r\u00e9ponse SAML est hors plage. L''heure courante est [{1}]. Le param\u00e8tre de d\u00e9calage d''horloge en cours est de {2} secondes.
+saml_token_issued_too_long_ago.explanation=L'assertion IssueInstant au sein du jeton SAML \u00e9tait trop \u00e9loign\u00e9e dans le pass\u00e9 pour que ce jeton soit utilis\u00e9. Un jeton SAML doit \u00eatre utilis\u00e9 au sein d'une p\u00e9riode configur\u00e9e apr\u00e8s avoir \u00e9t\u00e9 \u00e9mis. Une raison possible de cette erreur est que l'horloge du destinataire est d\u00e9synchronis\u00e9e par rapport \u00e0 celle du cr\u00e9ateur de l'assertion.
+saml_token_issued_too_long_ago.useraction=V\u00e9rifiez que la date et l'heure sur le fournisseur d'identit\u00e9 sont synchronis\u00e9es avec ce fournisseur de services SAML de connexion unique Web (Web SSO) ou augmentez le d\u00e9calage de l'horloge.
+
+# Do not translate "IssueInstant"
+saml_token_issue_instant_in_future=CWWKW0217E: La valeur IssueInstant [{0}] dans la r\u00e9ponse SAML est dans le futur et donc hors plage. L''heure courante est [{1}]. Le param\u00e8tre de d\u00e9calage d''horloge en cours est de {2} secondes.
+saml_token_issue_instant_in_future.explanation=L'assertion IssueInstant au sein du jeton SAML \u00e9tait d\u00e9finie sur une heure dans le futur et par cons\u00e9quent, elle n'est pas encore consid\u00e9r\u00e9e valide. La valeur IssueInstant doit \u00eatre dans le pass\u00e9 pour que le jeton SAML soit valide. Une raison possible de cette erreur est que l'horloge du destinataire est d\u00e9synchronis\u00e9e par rapport \u00e0 celle du cr\u00e9ateur de l'assertion.
+saml_token_issue_instant_in_future.useraction=V\u00e9rifiez que la date et l'heure sur le fournisseur d'identit\u00e9 sont synchronis\u00e9es avec ce fournisseur de services SAML de connexion unique Web (Web SSO) ou augmentez le d\u00e9calage de l'horloge.
+
+failed_to_extract_saml_element=CWWKW0218W: Une exception est survenue lors de la tentative d''extraction de l''\u00e9l\u00e9ment SAML \u00e0 partir du jeton SAML fourni. L''exception \u00e9tait : [{0}]
+failed_to_extract_saml_element.explanation=Une exception s'est produite lors de l'analyse syntaxique du jeton SAML. Le jeton est peut-\u00eatre incorrectement form\u00e9 ou une erreur interne s'est produite lors de la tentative d'analyse syntaxique de la cha\u00eene de jeton.
+failed_to_extract_saml_element.useraction=V\u00e9rifiez si les journaux du serveur contiennent plus d'informations sur l'erreur.
+
+failed_to_extract_saml_token_from_subject=CWWKW0219W: Une exception est survenue lors de la tentative d''extraction du jeton SAML \u00e0 partir du sujet. L''exception \u00e9tait : [{0}]
+failed_to_extract_saml_token_from_subject.explanation=Une exception est survenue lors de l'extraction du jeton SAML \u00e0 partir du sujet.
+failed_to_extract_saml_token_from_subject.useraction=V\u00e9rifiez si les journaux du serveur contiennent plus d'informations sur l'erreur.
+
+failed_to_obtain_subject_info=CWWKW0220E: L''authentification a \u00e9chou\u00e9 en raison d''une exception lors de l''obtention des informations de sujet de l''assertion SAML. L''exception \u00e9tait : [{0}]
+failed_to_obtain_subject_info.explanation=Une exception est survenue lors de la tentative d'obtention des informations li\u00e9es au sujet du jeton SAML fourni.
+failed_to_obtain_subject_info.useraction=V\u00e9rifiez si les journaux du serveur contiennent plus d'informations sur l'erreur.
+
+failed_to_authenticate=CWWKW0221E: L''authentification a \u00e9chou\u00e9 en raison d''une exception inattendue. L''exception \u00e9tait : [{0}].
+failed_to_authenticate.explanation=Un probl\u00e8me s'est vraisemblablement produit lors de l'obtention du sujet ou des informations d'identit\u00e9 pendant l'interaction avec le registre d'utilisateurs.
+failed_to_authenticate.useraction=V\u00e9rifiez si les journaux du serveur contiennent plus d'informations sur l'erreur. Assurez-vous que les informations de sujet dans le jeton SAML mappe aux valeurs attendues dans le registre d'utilisateurs configur\u00e9.
+
+# Do not translate "UsernameToken"
+password_type_mismatch=CWWKW0222E: La validation de jeton a \u00e9chou\u00e9 car le type de mot de passe UsernameToken [{0}] re\u00e7u ne correspond pas au type de entrer requis [{0}].
+password_type_mismatch.explanation=Le type de mot de passe dans UsernameToken ne correspondait pas au mot de passe requis tel que d\u00e9fini dans les r\u00e8gles de s\u00e9curit\u00e9 de services Web. Ces types doivent \u00eatre identiques ; le client de service Web doit produire une assertion que le m\u00eame type de mot de passe est d\u00e9fini dans les r\u00e8gles de s\u00e9curit\u00e9 de services Web pour que la validation aboutisse.
+password_type_mismatch.useraction=Assurez-vous que le client de service Web produise une assertion pour le m\u00eame type de mot de passe que celui d\u00e9fini dans les r\u00e8gles de s\u00e9curit\u00e9 de services Web.
+
+# Do not translate "UsernameToken"
+cannot_handle_custom_password_types=CWWKW0223E: La validation de jeton a \u00e9chou\u00e9 car un type de mot de passe personnalis\u00e9 a \u00e9t\u00e9 d\u00e9tect\u00e9, mais les donn\u00e9es de configuration fournies dans la demande indique que les types de mot de passe personnalis\u00e9s ne sont pas pris en charge.
+cannot_handle_custom_password_types.explanation=Le mot de passe dans UsernameToken n'\u00e9tait pas hach\u00e9 ni en texte brut et il a par cons\u00e9quent \u00e9t\u00e9 consid\u00e9r\u00e9 comme un type de mot de passe personnalis\u00e9. La configuration dans les donn\u00e9es de demande indique que les types de mot de passe personnalis\u00e9s ne sont pas pris en charge.
+cannot_handle_custom_password_types.useraction=Assurez-vous que le client de service Web utilise un type de mot de passe tel que d\u00e9fini dans le profil UsernameToken, ou configurez le fournisseur de service Web pour qu'il accepte les types de mot de passe personnalis\u00e9s.
+
+# Do not translate "UsernameToken"
+empty_user_or_password=CWWKW0224E: Le nom d'utilisateur ou le mot de passe sp\u00e9cifi\u00e9s dans le profil UsernameToken \u00e9taient vides. V\u00e9rifiez le profil UsernameToken afin de vous assurer qu'un nom d'utilisateur ou un mot de passe non vides sont fournis dans le jeton.
+empty_user_or_password.explanation=Le entr\u00e9es relatives au nom d'utilisateur ou au mot de passe dans le profil UsernameToken \u00e9taient vides ou manquants.
+empty_user_or_password.useraction=V\u00e9rifiez qu'un nom d'utilisateur ou un mot de passe sont fournis dans le jeton. Si aucun nom d'utilisateur ni mot de passe ne sont fournis, obtenez un nouveau profil UsernameToken.
+
+registry_exception_checking_password=CWWKW0225E: Une exception s''est produite lors de l''acc\u00e8s au registre d''utilisateurs ou lors de la v\u00e9rification de mot de passe pour l''utilisateur [{0}]. L''exception \u00e9tait : [{1}]
+registry_exception_checking_password.explanation=Une erreur s'est produite lors de l'obtention d'une r\u00e9f\u00e9rence au registre d'utilisateurs depuis le service de registre d'utilisateurs, ou une exception s'est produite lors de la v\u00e9rification du mot de passe pour l'utilisateur donn\u00e9.
+registry_exception_checking_password.useraction=Pour plus d'informations sur l'exception, consultez les journaux du serveur. Assurez-vous que le nom d'utilisateur et le mot de passe fournis sont correct et correspondent \u00e0 une entr\u00e9e dans le registre d'utilisateurs configur\u00e9.
+
+check_password_failed=CWWKW0226E: L''utilisateur [{0}] n''a pas pu \u00eatre valid\u00e9. V\u00e9rifiez que les donn\u00e9es d''identification relatives au nom d''utilisateur et au mot de passe qui ont \u00e9t\u00e9 fournies sont correctes.
+check_password_failed.explanation=L'utilisateur sp\u00e9cifi\u00e9 n'a pas pu \u00eatre valid\u00e9 par rapport au registre d'utilisateurs configur\u00e9. Ceci est probablement d\u00fb \u00e0 une non-concordance de nom d'utilisateur ou de mot de passe.
+check_password_failed.useraction=V\u00e9rifiez que les donn\u00e9es d'identification fournies afin de vous assurer que le nom d'utilisateur et le mot de passe correspondent \u00e0 une entr\u00e9e dans le registre d'utilisateurs configur\u00e9.
+
+# Do not translate "PasswordDigest" or "UsernameToken"
+no_password_returned_by_callback=CWWKW0227E: Un mot de passe null a \u00e9t\u00e9 retourn\u00e9 par le gestionnaire d'appel de mot de passe.
+no_password_returned_by_callback.explanation=Le gestionnaire d'appel de mot de passe doit retourner un mot de passe non nul pour les mots de passe de type PasswordDigest au sein d'un profil UsernameToken.
+no_password_returned_by_callback.useraction=Assurez-vous que le gestionnaire d'appel de mot de passe retourne un mot de passe non nul et non vide pour un utilisateur valide.
+
+# Example: {0} = userIdentifierValue {1} = userIdentifier
+SAML20_ATTRIBUTE_ERR=CWWKW0228E: L''assertion SAML ne contient pas d''attribut [{0}].  Un attribut [{0}] est obligatoire car la configuration d''appelant a sp\u00e9cifi\u00e9 qu''il s''agit d''un identificateur [{1}]. 
+SAML20_ATTRIBUTE_ERR.explanation=L'assertion SAML ne contient pas l'attribut ou la configuration d'appelant a sp\u00e9cifi\u00e9 une erreur erron\u00e9e pour l'identificateur mentionn\u00e9.
+SAML20_ATTRIBUTE_ERR.useraction=Effectuez l'une des op\u00e9rations suivantes : 1)Assurez-vous que l'attribut existe dans l'assertion SAML. 2) Configurez le profil callerToken pour qu'il indique un attribut diff\u00e9rent de celui de l'identificateur.
+
+# Example: {0} = realm
+SAML20_ELEMENT_ERR=CWWKW0229E: L''assertion SAML ne contient pas d''\u00e9l\u00e9ment [{0}].  Un \u00e9l\u00e9ment [{0}] est n\u00e9cessaire.  
+SAML20_ELEMENT_ERR.explanation=L'assertion SAML ne contient pas un \u00e9l\u00e9ment requis  par l'environnement d'ex\u00e9cution de la s\u00e9curit\u00e9 de services Web pour terminer le traitement du jeton d'appelant.
+SAML20_ELEMENT_ERR.useraction=Effectuez l'une des op\u00e9rations suivantes : 1) Assurez-vous que l'\u00e9l\u00e9ment requis existe dans l'assertion SAML. 2) Configurez le profil callerToken afin qu'il d\u00e9finisse une valeur pour l'\u00e9l\u00e9ment.
+
+
+SAML20_CANNOT_RESOLVE_ASSERTION=CWWKW0230E: Le service UserCredentialResolver n''a pas pu r\u00e9soudre l''assertion SAML et g\u00e9n\u00e8re une exception UserIdentityException avec le message [{0}].
+SAML20_CANNOT_RESOLVE_ASSERTION.explanation=Le service UserCredentialResolver fourni par la fonction utilisateur n'arrive pas \u00e0 mapper correctement l'assertion SAML et g\u00e9n\u00e8re une exception UserIdentityException.
+SAML20_CANNOT_RESOLVE_ASSERTION.useraction=V\u00e9rifiez que le service UserCredentialResolver est correctement configur\u00e9 si l'exception UserIdentityException n'est pas attendue.
+
+# Message logged at runtime for each errant inbound SOAP request
+multiple_saml_exist_err=CWWKW0231E: Un sujet de s\u00e9curit\u00e9 ne peut pas \u00eatre cr\u00e9\u00e9 pour le service Web.  L'\u00e9l\u00e9ment callerToken ne peut pas \u00eatre identifi\u00e9 dans le message entrant car plusieurs assertions SAML existent dans l'en-t\u00eate SOAP Security.
+multiple_saml_exist_err.explanation=L'\u00e9l\u00e9ment callerToken dans le fichier est d\u00e9fini sur SamlToken et l'en-t\u00eate Security dans le message SOAP entrant contient plusieurs assertions SAML.  Pour cette raison, l'environnement d'ex\u00e9cution de la s\u00e9curit\u00e9 de services Web ne peut pas d\u00e9terminer l'assertion SAML \u00e0 utiliser pour le jeton d'appelant.
+multiple_saml_exist_err.useraction=Effectuez l'une des op\u00e9rations suivantes : 1) Modifiez la configuration client afin d'envoyer une seule assertion SAML 2) Retirez la configuration callerToken dans le fichier server.xml
+
+# Message logged at runtime for each errant inbound SOAP request.
+# {0} user id
+# Do not translate mapToUserRegistry
+error_authenticate_maptouser=CWWKW0232E: Un sujet de s\u00e9curit\u00e9 ne peut pas \u00eatre cr\u00e9\u00e9 pour le service Web avec l''ID utilisateur [{0}].
+error_authenticate_maptouser.explanation=Un sujet de s\u00e9curit\u00e9 pour le jeton d'appelant extrait de l'en-t\u00eate SOAP Security n'a pas pu \u00eatre cr\u00e9\u00e9. Assurez-vous que l'utilisateur sp\u00e9cifi\u00e9 dans le message existe dans le registre d'utilisateurs.
+error_authenticate_maptouser.useraction=Effectuez l'une des op\u00e9rations suivantes : 1) Assurez-vous que l'utilisateur existe dans le registre d'utilisateurs dans le fichier server.xml. 2) Ne d\u00e9finissez pas l'attribut mapToUserRegistry dans la configuration callerToken.
+
+no_callbacks_provided=CWWKW0233E: Aucun rappel n'a \u00e9t\u00e9 fourni pour le traitement de la demande.
+no_callbacks_provided.explanation=Au moins un rappel doit \u00eatre transmis au gestionnaire d'appel afin de permettre le traitement et le renvoi d'un jeton SAML.
+no_callbacks_provided.useraction=Aucune action utilisateur n'est disponible pour ce cas.
+
+no_saml_found_in_subject=CWWKW0234E: Le jeton SAML requis est manquant dans le sujet.
+no_saml_found_in_subject.explanation=Une erreur s'est produite lors de l'extraction du jeton SAML du sujet ou un \u00e9l\u00e9ment SAML n'a pas \u00e9t\u00e9 trouv\u00e9 dans le sujet en cours.
+no_saml_found_in_subject.useraction=Si vous cr\u00e9ez le sujet run-as, assurez-vous que le jeton SAML est ajout\u00e9 au sujet. Sinon, v\u00e9rifiez que votre configuration de serveur prend en charge l'ajout du jeton SAML au sujet en v\u00e9rifiant l'attribut includeTokenInSubject dans votre configuration SAML.

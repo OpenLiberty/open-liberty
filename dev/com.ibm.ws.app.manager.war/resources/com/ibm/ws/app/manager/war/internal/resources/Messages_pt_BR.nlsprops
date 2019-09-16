@@ -220,3 +220,20 @@ warning.could.not.expand.application.useraction=Tente resolver o problema na men
 error.file.outside.archive=CWWKZ0132W: O arquivo {0} no archive {1} n\u00e3o ser\u00e1 extra\u00eddo porque o caminho n\u00e3o est\u00e1 contido dentro do archive.
 error.file.outside.archive.explanation=O caminho do arquivo especifica um diret\u00f3rio relativo. Extrair o arquivo resultaria no arquivo sendo localizado fora do diret\u00f3rio raiz do archive.
 error.file.outside.archive.useraction=Remova do archive quaisquer arquivos com caminhos relativos.
+
+#{0} is the application name, {1} is the location of the EAR or WAR file, {2} is the location where the file is expanded
+info.expanding.app=CWWKZ0133I: O aplicativo {0} no local {1} est\u00e1 sendo expandido para o diret\u00f3rio {2}.
+info.expanding.app.explanation=O archive para o aplicativo est\u00e1 sendo expandido porque a expans\u00e3o autom\u00e1tica de aplicativos foi configurada.
+info.expanding.app.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+info.loose.app=CWWKZ0134I: O aplicativo {0} est\u00e1 usando a defini\u00e7\u00e3o de aplicativo indefinido no local {1}.
+info.loose.app.explanation=O local para o aplicativo aponta para um arquivo XML que define um aplicativo indefinido. 
+info.loose.app.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+info.directory.app=CWWKZ0135I: O aplicativo {0} est\u00e1 usando o diret\u00f3rio expandido no local {1}.
+info.directory.app.explanation=O local para o aplicativo aponta para um diret\u00f3rio em vez de um archive. 
+info.directory.app.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+info.unexpanded.app=CWWKZ0136I: O aplicativo {0} est\u00e1 usando o archive no local {1}.
+info.unexpanded.app.explanation=O local para o aplicativo aponta para um archive bin\u00e1rio. O archive n\u00e3o ser\u00e1 expandido no disco porque a expans\u00e3o autom\u00e1tica de aplicativos n\u00e3o foi configurada.
+info.unexpanded.app.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.

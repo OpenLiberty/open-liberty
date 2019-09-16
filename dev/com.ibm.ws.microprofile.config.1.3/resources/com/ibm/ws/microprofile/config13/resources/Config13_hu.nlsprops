@@ -42,8 +42,19 @@ duplicate.application.configuration.name.CWMCG0203E=CWMCG0203E: T\u00f6bb konfig
 duplicate.application.configuration.name.CWMCG0203E.explanation=Az alkalmaz\u00e1skonfigur\u00e1ci\u00f3nak egyedinek kell lennie.
 duplicate.application.configuration.name.CWMCG0203E.useraction=A kiszolg\u00e1l\u00f3 message.log f\u00e1jlj\u00e1t \u00e9s FFDC napl\u00f3it \u00e1ttekintve azonos\u00edtsa be a probl\u00e9m\u00e1t.
 
+# An instance of the {0} service could not be found
+service.not.found.CWMCG0204E=CWMCG0204E: A(z) {0} szolg\u00e1ltat\u00e1s p\u00e9ld\u00e1nya nem tal\u00e1lhat\u00f3.
+service.not.found.CWMCG0204E.explanation=Bels\u0151 hiba t\u00f6rt\u00e9nt, \u00e9s a MicroProfile Config nem tal\u00e1lja a szolg\u00e1ltat\u00e1st.
+service.not.found.CWMCG0204E.useraction=A kiszolg\u00e1l\u00f3 message.log f\u00e1jlj\u00e1t \u00e9s FFDC napl\u00f3it \u00e1ttekintve azonos\u00edtsa be a probl\u00e9m\u00e1t.
+
 # Server XML Application Properties Config Source
 server.xml.appproperties.config.source=Kiszolg\u00e1l\u00f3 XML alkalmaz\u00e1stulajdons\u00e1gok konfigur\u00e1ci\u00f3s forr\u00e1sa
+
+# Server XML Variables Config Source
+server.xml.variables.config.source=Kiszolg\u00e1l\u00f3 XML v\u00e1ltoz\u00f3inak konfigur\u00e1ci\u00f3s forr\u00e1sa
+
+# Server XML Default Variables Config Source
+server.xml.default.variables.config.source=Kiszolg\u00e1l\u00f3 XML alap\u00e9rtelmezett v\u00e1ltoz\u00f3inak konfigur\u00e1ci\u00f3s forr\u00e1sa
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Config 1.3 error message

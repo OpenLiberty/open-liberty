@@ -20,6 +20,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
@@ -55,6 +56,7 @@ public class UserRegistryServiceImplNotificationTest {
 
     @Before
     public void setUp() {
+        final BundleContext mockBundleContext = mock.mock(BundleContext.class);
         mock.checking(new Expectations() {
             {
                 allowing(listener1Ref).getProperty(Constants.SERVICE_ID);
@@ -71,6 +73,9 @@ public class UserRegistryServiceImplNotificationTest {
                 will(returnValue(listener1));
                 allowing(cc).locateService(UserRegistryServiceImpl.KEY_LISTENER, listener2Ref);
                 will(returnValue(listener2));
+                allowing(cc).getBundleContext();
+                will(returnValue(mockBundleContext));
+                ignoring(mockBundleContext);
             }
         });
 

@@ -1,0 +1,77 @@
+/*******************************************************************************
+ * Copyright (c) 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+/**
+ * Apply biz.aQute.bnd plugin to all subprojects containing a *.bnd file.
+ * See: https://github.com/bndtools/bnd/blob/master/biz.aQute.bnd.gradle/README.md
+ *
+ * Apply from all scripts in `wlp-gradle/subprojects`.
+ */
+subprojects {
+  def bndProject = bndWorkspace.getProject(name)
+  if (bndProject != null) {
+    apply plugin: 'biz.aQute.bnd'
+
+    // Configure repositories.	
+    apply from: rootProject.file('wlp-gradle/subprojects/repos.gradle')
+    
+    // Apply Maven Publish plugin and configure publications.	
+    apply from: rootProject.file('wlp-gradle/subprojects/publish.gradle')
+
+    // Define Ant tasks to use for subprojects.	
+    apply from: rootProject.file('wlp-gradle/subprojects/anttaskdefs.gradle')
+
+    // Configure 'globalize', 'copyPiiFiles', 'verifyBundleNLS', 'compileJava', 'test', 'apiSpiJavadoc', and 'zipJavadoc' tasks.	
+    apply from: rootProject.file('wlp-gradle/subprojects/tasks.gradle')
+
+    // Apply Jacoco plugin and configure 'jacoco', 'test', 'jacocoTestReport', and 'jacocoTestCoverageVerification' tasks.	
+    apply from: rootProject.file('wlp-gradle/subprojects/jacoco.gradle')
+
+    // Create 'publishWLPJars', 'publishJavadoc', 'publishToolScripts', 'publishToolJars', 'publishSchemaResources',	
+    // 'publishPlatformManifests', 'publishPlatformFiles', 'publishTemplates', 'publishBinScripts', 'publishClientScripts',	
+    // and 'publishLibNative' tasks.	
+    // Configure 'assemble' to depend on above tasks.	
+    apply from: rootProject.file('wlp-gradle/subprojects/assemble.gradle')
+
+    // Configure 'buildfat', 'runfat', 'buildandrun', and 'cleanFat' tasks.	
+    if (bndis('fat.project')) {
+      apply from: rootProject.file('wlp-gradle/subprojects/fat.gradle')
+
+    // Apply OSS Audit plugin to all non-test projects that output bundles.
+    // See: https://github.com/OSSIndex/ossindex-gradle-plugin/blob/master/README.md
+    } else if (!bndis('test.project') && !bndProject.isNoBundles()) {
+      apply plugin: 'net.ossindex.audit'
+
+      audit {
+        group = "verification"
+        failOnError = true
+        rateLimitAsError = false
+      }
+    }
+
+  } else {
+    // Create stub tasks for non-bnd projects to use in the next step
+    task publish { }
+    task release { }
+    task releaseNeeded { dependsOn release }
+    task copyPiiFiles { }
+  }
+  
+  // Make the release task depend on assemble and publish so that invoking 'release' or 'releaseNeeded'
+  // will publish jar updates to the local `build.image/wlp` image and `cnf/release` repository
+  release.dependsOn assemble
+  release.dependsOn publish
+}
+
+// Ensure the root project has the 'audit' task so it shows up in the output of `./gradlew tasks`
+task audit {
+  group = "verification"
+}

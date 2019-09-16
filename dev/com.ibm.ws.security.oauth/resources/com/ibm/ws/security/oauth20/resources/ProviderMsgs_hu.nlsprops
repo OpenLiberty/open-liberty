@@ -1,0 +1,354 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME SERV1/ws/code/security/src/com/ibm/ws/security/oauth20/resources/ProviderMsgs.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#COMPONENTPREFIX CWOAU
+#COMPONENTNAMEFOR CWOAU WebSphere OAuth
+
+# Error Messages
+# --------------
+# The text for the explanation (CMSG0001) and useraction (CMSG0002)
+# appears in the *Msgs.xml file in build/messages directory.
+
+
+security.oauth20.init.start=CWOAU0001I: OAuth 20 szolg\u00e1ltat\u00f3k inicializ\u00e1l\u00e1sa.
+security.oauth20.init.start.explanation=Az OAuth modulok inicializ\u00e1l\u00e1sa megkezd\u0151d\u00f6tt.
+security.oauth20.init.start.useraction=Nincs, ez csak inform\u00e1ci\u00f3s \u00fczenet.
+
+security.oauth20.admin.enableTAI=CWOAU0002I: Az OAuth TAI enged\u00e9lyez\u00e9se siker\u00fclt.
+security.oauth20.admin.enableTAI.explanation=Az OAuth TAI enged\u00e9lyez\u00e9se sikeresen befejez\u0151d\u00f6tt.
+security.oauth20.admin.enableTAI.useraction=Nincs, ez csak inform\u00e1ci\u00f3s \u00fczenet.
+
+security.oauth20.admin.createProvider=CWOAU0003I: Az OAuth szolg\u00e1ltat\u00f3 l\u00e9trehoz\u00e1sa siker\u00fclt.
+security.oauth20.admin.createProvider.explanation=Az OAuth szolg\u00e1ltat\u00f3 l\u00e9trehoz\u00e1sa sikeresen befejez\u0151d\u00f6tt.
+security.oauth20.admin.createProvider.useraction=Nincs, ez csak inform\u00e1ci\u00f3s \u00fczenet.
+
+security.oauth20.admin.serverRunningCheck=CWOAU0004E: Hiba: az adminisztr\u00e1ci\u00f3s parancsokat csatlakoztatott m\u00f3dban kell futtatni, elind\u00edtott kiszolg\u00e1l\u00f3n.
+security.oauth20.admin.serverRunningCheck.explanation=Az OAuth adminisztr\u00e1ci\u00f3s  parancsok fut\u00f3 kiszolg\u00e1l\u00f3k\u00f6rnyezetet ig\u00e9nyelnek a be\u00e1ll\u00edt\u00e1sok m\u00f3dos\u00edt\u00e1s\u00e1hoz.
+security.oauth20.admin.serverRunningCheck.useraction=Ind\u00edtsa el a kiszolg\u00e1l\u00f3t vagy a telep\u00edt\u00e9skezel\u0151t, \u00e9s pr\u00f3b\u00e1lkozzon \u00fajra.
+
+security.oauth20.admin.deleteProvider=CWOAU0005I: Az OAuth szolg\u00e1ltat\u00f3 t\u00f6rl\u00e9se siker\u00fclt.
+security.oauth20.admin.deleteProvider.explanation=Az OAuth szolg\u00e1ltat\u00f3 t\u00f6rl\u00e9se sikeresen befejez\u0151d\u00f6tt.
+security.oauth20.admin.deleteProvider.useraction=Nincs, ez csak inform\u00e1ci\u00f3s \u00fczenet.
+
+security.oauth20.admin.fileExists=CWOAU0006E: A f\u00e1jln\u00e9v m\u00e1r l\u00e9tezik.
+security.oauth20.admin.fileExists.explanation=A megadott f\u00e1jln\u00e9v nem l\u00e9tezhet.
+security.oauth20.admin.fileExists.useraction=Adjon meg \u00faj f\u00e1jlnevet.
+
+security.oauth20.admin.providerNotFound=CWOAU0007E: Az OAuth szolg\u00e1ltat\u00f3 nem tal\u00e1lhat\u00f3.
+security.oauth20.admin.providerNotFound.explanation=A megadott OAuth szolg\u00e1ltat\u00f3 nem l\u00e9tezik.
+security.oauth20.admin.providerNotFound.useraction=Ellen\u0151rizze az OAuth szolg\u00e1ltat\u00f3 nev\u00e9t, majd pr\u00f3b\u00e1lkozzon \u00fajra.
+
+security.oauth20.admin.exportProps=CWOAU0008I: Sikeresen megt\u00f6rt\u00e9nt a konfigur\u00e1ci\u00f3 \u00edr\u00e1sa ide: {0}
+security.oauth20.admin.exportProps.explanation=A parancs sikeresen befejez\u0151d\u00f6tt.
+security.oauth20.admin.exportProps.useraction=Nincs, ez csak inform\u00e1ci\u00f3s \u00fczenet.
+
+security.oauth20.admin.fileNotFound=CWOAU0009E: A f\u00e1jl nem tal\u00e1lhat\u00f3: {0}
+security.oauth20.admin.fileNotFound.explanation=A megadott f\u00e1jln\u00e9v nem l\u00e9tezik.
+security.oauth20.admin.fileNotFound.useraction=Ellen\u0151rizze a f\u00e1jlnevet, majd pr\u00f3b\u00e1lkozzon \u00fajra.
+
+security.oauth20.admin.importProps=CWOAU0010I: A konfigur\u00e1ci\u00f3 sikeresen import\u00e1l\u00e1sra ker\u00fclt.
+security.oauth20.admin.importProps.explanation=A parancs sikeresen befejez\u0151d\u00f6tt.
+security.oauth20.admin.importProps.useraction=Nincs, ez csak inform\u00e1ci\u00f3s \u00fczenet.
+
+security.oauth20.mbean.invoked=CWOAU0011I: Az OAuth20MBean a k\u00f6vetkez\u0151 parancsot dolgozza fel: {0}.
+security.oauth20.mbean.invoked.explanation=A csom\u00f3ponton tal\u00e1lhat\u00f3 OAuth MBean meg lett h\u00edvva egy parancs feldolgoz\u00e1s\u00e1hoz. 
+security.oauth20.mbean.invoked.useraction=Nincs, ez csak inform\u00e1ci\u00f3s \u00fczenet.
+
+security.oauth20.init.error=CWOAU0012E: Hiba az OAuth keretrendszer inicializ\u00e1l\u00e1sakor
+security.oauth20.init.error.explanation=Az OAuth keretrendszer inicializ\u00e1l\u00e1sa nem siker\u00fclt.
+security.oauth20.init.error.useraction=B\u0151vebb inform\u00e1ci\u00f3\u00e9rt tekintse meg a kiv\u00e9tel adatait. 
+
+security.oauth20.mbean.client.invoked=CWOAU0013I: Az OAuth20ClientMBean a k\u00f6vetkez\u0151 parancsot dolgozza fel: {0}.
+security.oauth20.mbean.client.invoked.explanation=A csom\u00f3ponton tal\u00e1lhat\u00f3 OAuth MBean meg lett h\u00edvva egy parancs feldolgoz\u00e1s\u00e1hoz. 
+security.oauth20.mbean.client.invoked.useraction=Nincs, ez csak inform\u00e1ci\u00f3s \u00fczenet.
+
+security.oauth20.mbean.none.found=CWOAU0014E: Nem tal\u00e1lhat\u00f3 OAuth Client MBean, a mem\u00f3ri\u00e1ban v\u00e9gzett \u00fcgyf\u00e9l t\u00e1blam\u0171veletek sikertelenek lesznek.
+security.oauth20.mbean.none.found.explanation=Egy konfigur\u00e1ci\u00f3s hiba OAuth20ClientMBean t\u00edpus\u00fa MBean-ek regisztr\u00e1l\u00e1s\u00e1t vagy kikeres\u00e9s\u00e9t olvasta be.
+security.oauth20.mbean.none.found.useraction=Tov\u00e1bbi r\u00e9szletek\u00e9rt n\u00e9zze meg az MBean regisztr\u00e1ci\u00f3s nyomk\u00f6vet\u00e9si napl\u00f3it.
+
+##  client manager message
+security.oauth20.client.delete.error=CWOAU0015E: A k\u00f6vetkez\u0151 azonos\u00edt\u00f3j\u00fa \u00fcgyf\u00e9l t\u00f6rl\u00e9se nem siker\u00fclt: {0}.
+security.oauth20.client.delete.error.explanation=Az \u00fcgyf\u00e9lszolg\u00e1ltat\u00f3 egy bels\u0151 hiba miatt nem tudta t\u00f6r\u00f6lni a megadott \u00fcgyfelet.
+security.oauth20.client.delete.error.useraction=Nincs, ez csak inform\u00e1ci\u00f3s \u00fczenet.
+
+security.oauth20.client.update.error=CWOAU0016E: A k\u00f6vetkez\u0151 azonos\u00edt\u00f3j\u00fa \u00fcgyf\u00e9l friss\u00edt\u00e9se nem siker\u00fclt: {0}.
+security.oauth20.client.update.error.explanation=Az \u00fcgyf\u00e9lszolg\u00e1ltat\u00f3 egy bels\u0151 hiba miatt nem tudta friss\u00edteni a megadott \u00fcgyfelet.
+security.oauth20.client.update.error.useraction=Nincs, ez csak inform\u00e1ci\u00f3s \u00fczenet.
+
+security.oauth20.client.create.error=CWOAU0017E: Az \u00fcgyf\u00e9l l\u00e9trehoz\u00e1sa nem siker\u00fclt.
+security.oauth20.client.create.error.explanation=Az \u00fcgyf\u00e9lszolg\u00e1ltat\u00f3 egy bels\u0151 hiba miatt nem tudott l\u00e9trehozni \u00faj \u00fcgyfelet.
+security.oauth20.client.create.error.useraction=Nincs, ez csak inform\u00e1ci\u00f3s \u00fczenet.
+
+security.oauth20.endpoint.template.forward.error=CWOAU0018E: Nem szerezhet\u0151 meg a(z) {0} konfigur\u00e1ci\u00f3ban a context={1} path={2} helyen megadott k\u00e9r\u00e9sir\u00e1ny\u00edt\u00f3. 
+security.oauth20.endpoint.template.forward.error.explanation=Az OAuth20 v\u00e9gpont szervlet nem tal\u00e1lja a megadott k\u00e9r\u00e9sir\u00e1ny\u00edt\u00f3t a sablon megjelen\u00edt\u00e9s\u00e9hez. 
+security.oauth20.endpoint.template.forward.error.useraction=Ellen\u0151rizze \u00fajra a konfigur\u00e1ci\u00f3s param\u00e9tert, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott kontextusgy\u00f6k\u00e9r \u00e9s el\u00e9r\u00e9si \u00fat l\u00e9tezik.
+
+
+##  OAuth2.0 error handler message
+security.oauth20.error.access.denied=CWOAU0019E: Nem jogosult a v\u00e9dett er\u0151forr\u00e1s el\u00e9r\u00e9s\u00e9re.
+security.oauth20.error.access.denied.explanation=Az OAuth k\u00e9r\u00e9sben a username param\u00e9ter nincs megadva vagy null karaktersorozat.  
+security.oauth20.error.access.denied.useraction=Az OAuth k\u00e9r\u00e9sben adjon meg egy \u00e9rv\u00e9nyes username param\u00e9tert.
+
+security.oauth20.error.invalid.authorizationcode=CWOAU0020E: A(z) {0} jogosults\u00e1gk\u00f3d nem ahhoz az \u00fcgyf\u00e9lhez tartozik, amelyik haszn\u00e1lni pr\u00f3b\u00e1lja: {1}.
+security.oauth20.error.invalid.authorizationcode.explanation=Az OAuth k\u00e9r\u00e9sben megadott client_id param\u00e9ter nem egyezik meg a jogosults\u00e1gi k\u00f3dban l\u00e9v\u0151 \u00fcgyf\u00e9lazonos\u00edt\u00f3 \u00e9rt\u00e9kkel.  Ezeknek az \u00e9rt\u00e9keknek meg kell egyezni\u00fck.  A hiba oka az, hogy az OAuth k\u00e9r\u00e9s client_id param\u00e9tere m\u00f3dos\u00edt\u00e1sra ker\u00fclt az OAuth folyamat sor\u00e1n.
+security.oauth20.error.invalid.authorizationcode.useraction=Gondoskodj\u00e9k r\u00f3la, hogy az OAuth k\u00e9r\u00e9sben a client_id param\u00e9ter \u00e9rt\u00e9ke ugyanaz az \u00fcgyf\u00e9lazonos\u00edt\u00f3 \u00e9rt\u00e9k legyen, mint ami a jogosults\u00e1gi k\u00f3d lek\u00e9rdez\u00e9se sor\u00e1n ker\u00fclt felhaszn\u00e1l\u00e1sra. 
+
+security.oauth20.error.parameter.format=CWOAU0021E: A param\u00e9ter [{0}] illeg\u00e1lis form\u00e1z\u00e1s\u00fa \u00e9rt\u00e9ket tartalmaz: [{1}].
+security.oauth20.error.parameter.format.explanation=Az OAuth k\u00e9r\u00e9sben a scope param\u00e9ter \u00e9rt\u00e9ke \u00e9rv\u00e9nytelen.  A scope param\u00e9ter csak a k\u00f6vetkez\u0151 hexadecim\u00e1lis karaktereket tartalmazhatja: [x21, x(23 - 5B), x(5D - 7E)]
+security.oauth20.error.parameter.format.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a scope param\u00e9ter csak t\u00e1mogatott karaktereket tartalmazzon.
+
+security.oauth20.error.duplicate.parameter=CWOAU0022E: A k\u00f6vetkez\u0151 OAuth param\u00e9ter egyn\u00e9l t\u00f6bbsz\u00f6r szerepel a k\u00e9r\u00e9sben: {0}
+security.oauth20.error.duplicate.parameter.explanation=Ugyanaz a param\u00e9ter t\u00f6bbsz\u00f6r van megadva az OAuth k\u00e9r\u00e9sben.
+security.oauth20.error.duplicate.parameter.useraction=Ellen\u0151rizze a param\u00e9tert az OAuth k\u00e9r\u00e9sen, \u00e9s gondoskodj\u00e9k r\u00f3la, hogy az csak egyszer legyen megadva.
+
+# do not translate client_id
+security.oauth20.error.invalid.client=CWOAU0023E: Az OAuth szolg\u00e1ltat\u00f3 nem tal\u00e1lja a(z) {0} \u00fcgyfelet.
+security.oauth20.error.invalid.client.explanation=Az OAuth szolg\u00e1ltat\u00f3 nem tal\u00e1lja az OAuth k\u00e9r\u00e9s client_id param\u00e9ter\u00e9nek \u00e9rt\u00e9k\u00e9ben megadott \u00fcgyfelet.
+security.oauth20.error.invalid.client.useraction=Gondoskodj\u00e9k r\u00f3la, hogy az \u00fcgyf\u00e9l regisztr\u00e1lva legyen az OAuth szolg\u00e1ltat\u00f3ban, vagy a client_id param\u00e9ter \u00e9rt\u00e9k\u00e9ben regisztr\u00e1lt \u00fcgyfelet adjon meg. Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l is, hogy az \u00fcgyf\u00e9l enged\u00e9lyezve van az OAuth szolg\u00e1ltat\u00e1s szolg\u00e1ltat\u00f3i konfigur\u00e1ci\u00f3ban.
+
+#do not translate client_secret
+security.oauth20.error.invalid.clientsecret=CWOAU0024E: A(z) {0} OAuth \u00fcgyf\u00e9l \u00e9rv\u00e9nytelen \u00fcgyf\u00e9l titkos kulcsot adott meg az OAuth k\u00e9r\u00e9sben.
+security.oauth20.error.invalid.clientsecret.explanation=Az OAuth k\u00e9r\u00e9s client_secret param\u00e9tere \u00e9rv\u00e9nytelen.
+security.oauth20.error.invalid.clientsecret.useraction=Ellen\u0151rizze az OAuth k\u00e9r\u00e9s client_secret param\u00e9ter\u00e9nek \u00e9rt\u00e9k\u00e9t, \u00e9s gondoskodj\u00e9k r\u00f3la, hogy az megegyezzen az OAuth szolg\u00e1ltat\u00f3 konfigur\u00e1ci\u00f3ban regisztr\u00e1lt \u00fcgyf\u00e9l titkos \u00e9rt\u00e9k\u00e9vel.
+
+security.oauth20.error.invalid.granttype=CWOAU0025E: A grant_type param\u00e9ter \u00e9rv\u00e9nytelen: {0}
+security.oauth20.error.invalid.granttype.explanation=Az OAuth k\u00e9r\u00e9sben a grant_type param\u00e9ter \u00e9rv\u00e9nytelen.
+security.oauth20.error.invalid.granttype.useraction=Gondoskodj\u00e9k r\u00f3la, hogy az OAuth k\u00e9r\u00e9s grant_type param\u00e9ter\u00e9nek \u00e9rt\u00e9ke a k\u00f6vetkez\u0151k egyike legyen: authorization_code, password, client_credentials, refresh_token, implicit, urn:ietf:params:oauth:grant-type:jwt-bearer
+
+security.oauth20.error.invalid.redirecturi=CWOAU0026E: Az \u00e1tir\u00e1ny\u00edt\u00e1si URI param\u00e9ter \u00e9rv\u00e9nytelen: {0}
+security.oauth20.error.invalid.redirecturi.explanation=Lehet, hogy az OAuth k\u00e9r\u00e9sben l\u00e9v\u0151 \u00e1tir\u00e1ny\u00edt\u00e1si URI param\u00e9ter \u00e9rt\u00e9ke nem \u00e9rv\u00e9nyes abszol\u00fat URI.
+security.oauth20.error.invalid.redirecturi.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az OAuth k\u00e9r\u00e9sben az \u00e1tir\u00e1ny\u00edt\u00e1si URI param\u00e9ter \u00e9rt\u00e9ke \u00e9rv\u00e9nyes abszol\u00fat URI \u00e9rt\u00e9k.
+
+security.oauth20.error.invalid.responsetype=CWOAU0027E: A response_type param\u00e9ter \u00e9rv\u00e9nytelen: {0}
+security.oauth20.error.invalid.responsetype.explanation=Az OAuth k\u00e9r\u00e9sben a response_type param\u00e9ter \u00e9rv\u00e9nytelen.
+security.oauth20.error.invalid.responsetype.useraction=Ellen\u0151rizze a response_type param\u00e9ter \u00e9rt\u00e9k\u00e9t az OAuth k\u00e9r\u00e9sben, \u00e9s gondoskodj\u00e9k r\u00f3la, hogy az a k\u00f6vetkez\u0151 \u00e9rt\u00e9kek egyik\u00e9t tartalmazza:  code, token.
+
+security.oauth20.error.invalid.scope=CWOAU0028E: A k\u00e9rt [{0}] hat\u00f3k\u00f6r meghaladja az er\u0151forr\u00e1s tulajdonosa \u00e1ltal megadott [{1}] hat\u00f3k\u00f6rt.
+security.oauth20.error.invalid.scope.explanation=Az OAuth k\u00e9r\u00e9s scope param\u00e9ter\u00e9nek \u00e9rt\u00e9ke nem lehet sz\u00e9lesebb, mint az \u00fcgyf\u00e9l sz\u00e1m\u00e1ra j\u00f3v\u00e1hagyott hat\u00f3k\u00f6r.
+security.oauth20.error.invalid.scope.useraction=Ellen\u0151rizze a scope param\u00e9ter \u00e9rt\u00e9k\u00e9t az OAuth k\u00e9r\u00e9sben, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az az er\u0151forr\u00e1s tulajdonos \u00e1ltal j\u00f3v\u00e1hagyott hat\u00f3k\u00f6rrel megegyezik vagy annak r\u00e9szhalmaza.
+
+security.oauth20.error.invalid.token=CWOAU0029E: A(z) {0} kulcs\u00fa, {1} t\u00edpus\u00fa \u00e9s {2} alt\u00edpus\u00fa token nem tal\u00e1lhat\u00f3 a token gyors\u00edt\u00f3t\u00e1rban.
+security.oauth20.error.invalid.token.explanation=Az OAuth token nem tal\u00e1lhat\u00f3 a gyors\u00edt\u00f3t\u00e1rban, vagy a tokent\u00edpus vagy -alt\u00edpus nem egyezik meg az elv\u00e1rt \u00e9rt\u00e9kkel.
+security.oauth20.error.invalid.token.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a tokenhez tartoz\u00f3 \u00fcgyf\u00e9l nincs tiltva az OAuth szolg\u00e1ltat\u00f3 konfigur\u00e1ci\u00f3j\u00e1ban. Azt is ellen\u0151rizze, hogy a token t\u00edpusa \u00e9s alt\u00edpusa az elv\u00e1rt \u00e9rt\u00e9k\u0171-e.
+
+security.oauth20.error.invalid.tokenrequestmethod=CWOAU0030E: \u00c9rv\u00e9nytelen HTTP met\u00f3dust haszn\u00e1ltak a token v\u00e9gpontn\u00e1l: {0}
+security.oauth20.error.invalid.tokenrequestmethod.explanation=Az OAuth \u00fcgyf\u00e9l \u00e1ltal haszn\u00e1lt HTTP met\u00f3dus \u00e9rv\u00e9nytelen.
+security.oauth20.error.invalid.tokenrequestmethod.useraction=Gondoskodj\u00e9k r\u00f3la, hogy az \u00fcgyf\u00e9l a HTTP POST met\u00f3dust haszn\u00e1lja.
+
+security.oauth20.error.mismatched.clientauthentication=CWOAU0031E: A k\u00e9r\u00e9sben a(z) {0} token v\u00e9gpontnak \u00e1tadott client_id \u00e9rt\u00e9k nem egyezett meg az API h\u00edv\u00e1sban megadott hiteles\u00edtett \u00fcgyf\u00e9llel: {1}
+security.oauth20.error.mismatched.clientauthentication.explanation=Az API h\u00edv\u00e1s client_id param\u00e9tere nem egyezik meg az \u00fcgyf\u00e9l sz\u00e1m\u00e1ra elk\u00fcld\u00f6tt jogosults\u00e1gi k\u00f3dban l\u00e9v\u0151 \u00fcgyf\u00e9lazonos\u00edt\u00f3val.
+security.oauth20.error.mismatched.clientauthentication.useraction=Ellen\u0151rizze az OAuth k\u00e9r\u00e9s vagy API h\u00edv\u00e1s client_id param\u00e9ter\u00e9t, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az megfelel a jogosults\u00e1gi k\u00f3d lek\u00e9r\u00e9se sor\u00e1n haszn\u00e1lt \u00fcgyf\u00e9lazonos\u00edt\u00f3nak.
+
+security.oauth20.error.mismatched.redirecturi=CWOAU0032E: A kapott {0} \u00e1tir\u00e1ny\u00edt\u00e1si URI nem egyezik meg az \u00e1tir\u00e1ny\u00edt\u00e1si URI-val, amelyhez a feljogos\u00edt\u00e1s ki lett adva: {1}
+security.oauth20.error.mismatched.redirecturi.explanation=Az OAuth k\u00e9r\u00e9s redirect_uri param\u00e9tere nem egyezik meg a regisztr\u00e1lt \u00fcgyf\u00e9l \u00e1tir\u00e1ny\u00edt\u00e1si URI attrib\u00fatum\u00e1val.
+security.oauth20.error.mismatched.redirecturi.useraction=Ellen\u0151rizze az OAuth k\u00e9r\u00e9s redirect_uri param\u00e9ter\u00e9nek \u00e9rt\u00e9k\u00e9t, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az megegyezik a regisztr\u00e1lt \u00fcgyf\u00e9lben megl\u00e9v\u0151 \u00e1tir\u00e1ny\u00edt\u00e1si URI attrib\u00fatummal.
+
+security.oauth20.error.missing.parameter=CWOAU0033E: Hi\u00e1nyzik egy sz\u00fcks\u00e9ges fut\u00e1si param\u00e9ter: {0}
+security.oauth20.error.missing.parameter.explanation=Az OAuth fut\u00e1si k\u00f3dja nem tal\u00e1lt egy k\u00f6telez\u0151 param\u00e9tert az \u00fcgyf\u00e9lk\u00e9r\u00e9s feldolgoz\u00e1sa sor\u00e1n.
+security.oauth20.error.missing.parameter.useraction=Ellen\u0151rizze a hi\u00e1nyz\u00f3 param\u00e9tert az OAuth k\u00e9r\u00e9sben, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az meg van adva.
+
+security.oauth20.error.publicclient.credential=CWOAU0034E: Egy nyilv\u00e1nos \u00fcgyf\u00e9l megpr\u00f3b\u00e1lta el\u00e9rni a token v\u00e9gpontot a client_credentials feljogos\u00edt\u00e1si t\u00edpussal. A client_id \u00e9rt\u00e9ke: {0}
+security.oauth20.error.publicclient.credential.explanation=Egy OAuth nyilv\u00e1nos \u00fcgyf\u00e9l sz\u00e1m\u00e1ra nem megengedett a client_credentials felhatalmaz\u00e1si t\u00edpus haszn\u00e1lata.
+security.oauth20.error.publicclient.credential.useraction=Ellen\u0151rizze az OAuth k\u00e9r\u00e9sben a grant_type param\u00e9ter \u00e9rt\u00e9k\u00e9t, \u00e9s haszn\u00e1ljon m\u00e1sik felhatalmaz\u00e1si t\u00edpust a nyilv\u00e1nos \u00fcgyf\u00e9lhez.
+
+security.oauth20.error.publicclient.forbidden=CWOAU0035E: Egy nyilv\u00e1nos \u00fcgyf\u00e9l megpr\u00f3b\u00e1lta el\u00e9rni a token v\u00e9gpontot, \u00e9s a nyilv\u00e1nos \u00fcgyfelek tiltottak ebben az \u00f6sszetev\u0151 konfigur\u00e1ci\u00f3ban. A client_id \u00e9rt\u00e9ke: {0}
+security.oauth20.error.publicclient.forbidden.explanation=Az OAuth szolg\u00e1ltat\u00f3 a be\u00e1ll\u00edt\u00e1sa szerint nem enged\u00e9lyezi a nyilv\u00e1nos \u00fcgyfelek sz\u00e1m\u00e1ra a token v\u00e9gpont el\u00e9r\u00e9s\u00e9t.
+security.oauth20.error.publicclient.forbidden.useraction=Ha enged\u00e9lyezni k\u00edv\u00e1nja a nyilv\u00e1nos \u00fcgyfelek sz\u00e1m\u00e1ra a hozz\u00e1f\u00e9r\u00e9st, akkor \u00e1ll\u00edtsa be az allowPublicClients attrib\u00fatumot true \u00e9rt\u00e9kre az OAuth szolg\u00e1ltat\u00f3 konfigur\u00e1ci\u00f3j\u00e1ban.
+
+security.oauth20.error.refreshtoken.invalid.client=CWOAU0036E: A(z) {0} friss\u00edt\u00e9si token nem ahhoz az \u00fcgyf\u00e9lhez tartozik, amelyik haszn\u00e1lni pr\u00f3b\u00e1lja: {1}.
+security.oauth20.error.refreshtoken.invalid.client.explanation=Az OAuth k\u00e9r\u00e9s client_id param\u00e9ter\u00e9nek \u00e9rt\u00e9ke nem egyezik meg az \u00fcgyf\u00e9lazonos\u00edt\u00f3val a friss\u00edt\u00e9si tokenben.
+security.oauth20.error.refreshtoken.invalid.client.useraction=Ellen\u0151rizze az OAuth k\u00e9r\u00e9s client_id param\u00e9ter\u00e9nek \u00e9rt\u00e9k\u00e9t, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az megegyezik a friss\u00edt\u00e9si tokenben l\u00e9v\u0151 \u00fcgyf\u00e9lazonos\u00edt\u00f3val.
+
+security.oauth20.error.wrong.http.scheme=CWOAU0037E: HTTP s\u00e9ma ker\u00fclt felhaszn\u00e1l\u00e1sra a megadott v\u00e9gponton: {0}, HTTPS sz\u00fcks\u00e9ges.
+security.oauth20.error.wrong.http.scheme.explanation=Az OAuth szolg\u00e1ltat\u00f3 az OAuth k\u00e9r\u00e9st\u0151l HTTPS haszn\u00e1lat\u00e1t k\u00f6veteli meg, de HTTP ker\u00fclt felhaszn\u00e1l\u00e1sra a k\u00e9r\u00e9s URL c\u00edm\u00e9ben.
+security.oauth20.error.wrong.http.scheme.useraction=Ellen\u0151rizze a k\u00e9r\u00e9s URL c\u00edmet az OAuth k\u00e9r\u00e9sben, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az HTTPS protokollt haszn\u00e1l.
+
+security.oauth20.endpoint.client.auth.error=CWOAU0038E: Az \u00fcgyf\u00e9l nem hiteles\u00edthet\u0151. Az \u00fcgyf\u00e9lazonos\u00edt\u00f3: {0} vagy az \u00fcgyf\u00e9l titkos kulcsa helytelen.
+security.oauth20.endpoint.client.auth.error.explanation=Az OAuth szolg\u00e1ltat\u00f3 nem tudta ellen\u0151rizni az \u00fcgyfelet. 
+security.oauth20.endpoint.client.auth.error.useraction=Ellen\u0151rizze, hogy az \u00fcgyf\u00e9lazonos\u00edt\u00f3 \u00e9s az \u00fcgyf\u00e9l titkos kulcs \u00e9rv\u00e9nyes-e, valamint hogy azok megfelelnek-e az OAuth \u00fcgyf\u00e9l \u00e9s OpenID Connect \u00fcgyf\u00e9l konfigur\u00e1ci\u00f3j\u00e1nak.
+
+security.oauth20.filter.request.null=CWOAU0039W: A(z) [{0}] v\u00e9gponti URL c\u00edme fel\u00e9 ir\u00e1ny\u00edtott k\u00e9r\u00e9st az OAuth szolg\u00e1ltat\u00f3 nem ismerte fel \u00e9rv\u00e9nyes k\u00e9r\u00e9sk\u00e9nt.
+security.oauth20.filter.request.null.explanation=A rendszer azt v\u00e1rja el, hogy az OAuth 2.0 \u00e9s OpenID Connect k\u00e9r\u00e9sek v\u00e9gpontok egy adott r\u00e9szhalmaza fel\u00e9 legyenek ir\u00e1ny\u00edtva. A k\u00e9r\u00e9s URL c\u00edme nincs helyesen form\u00e1zva, vagy a k\u00e9r\u00e9s olyan kontextus vagy v\u00e9gpont fel\u00e9 volt ir\u00e1ny\u00edtva, amely nem t\u00e1mogatja ezeket a k\u00e9r\u00e9seket.
+security.oauth20.filter.request.null.useraction=A k\u00e9r\u00e9s \u00fatvonal\u00e1nak ellen\u0151rz\u00e9s\u00e9vel gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az megfelel\u0151en van form\u00e1zva, \u00e9s az OAuth 2.0 vagy OpenID Connect (amelyik itt megfelel\u0151) k\u00e9r\u00e9seket t\u00e1mogat\u00f3 \u00e9rv\u00e9nyes v\u00e9gpont fel\u00e9 van ir\u00e1ny\u00edtva.
+
+security.oauth20.error.authorization=CWOAU0039A: A(z) {0} felhaszn\u00e1l\u00f3ra a felhatalmaz\u00e1s meghi\u00fasult. A felhaszn\u00e1l\u00f3 nem kapott jogosults\u00e1got az OAuth 2.0 \u00e9s az OpenID Connect k\u00e9r\u00e9s egyik sz\u00fcks\u00e9ges szerep\u00e9nek el\u00e9r\u00e9s\u00e9hez sem.
+security.oauth20.error.authorization.explanation=A felhaszn\u00e1l\u00f3 nem rendelkezik az OAuth 2.0 \u00e9s OpenID Connect er\u0151forr\u00e1s el\u00e9r\u00e9s\u00e9hez sz\u00fcks\u00e9ges enged\u00e9llyel.
+security.oauth20.error.authorization.useraction=Ha nem ezt v\u00e1rta, akkor l\u00e9pjen kapcsolatba a biztons\u00e1gi adminisztr\u00e1torral. A felhaszn\u00e1l\u00f3nak t\u00e1rs\u00edtva kell lennie az OAuth webalkalmaz\u00e1s biztons\u00e1gi szerep lek\u00e9pez\u00e9s\u00e9nek egyik szerep\u00e9hez.
+
+security.oauth20.error.filter.multiple.matching=CWOAU0041E: A sz\u0171r\u0151felt\u00e9teleknek t\u00f6bb szolg\u00e1ltat\u00f3 [{0}] felelt meg a k\u00e9r\u00e9s feldolgoz\u00e1s\u00e1hoz. A sz\u0171r\u0151felt\u00e9teleknek nem szabad t\u00f6bb szolg\u00e1ltat\u00f3t \u00e1tfedni\u00fck. 
+security.oauth20.error.filter.multiple.matching.explanation=A rendszer azt v\u00e1rja el, hogy az OAuth 2.0 \u00e9s OpenID Connect k\u00e9r\u00e9sek a sz\u0171r\u0151felt\u00e9telek alapj\u00e1n egy adott szolg\u00e1ltat\u00f3hoz legyenek ir\u00e1ny\u00edtva. Ez a k\u00e9r\u00e9s azonban t\u00f6bb szolg\u00e1ltat\u00f3 sz\u0171r\u0151konfigur\u00e1ci\u00f3 felt\u00e9tel\u00e9nek felelt meg.
+security.oauth20.error.filter.multiple.matching.useraction=A szolg\u00e1ltat\u00f3k sz\u0171r\u0151be\u00e1ll\u00edt\u00e1sainak ellen\u0151rz\u00e9s\u00e9vel gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a sz\u0171r\u0151felt\u00e9telek nem fednek le t\u00f6bb szolg\u00e1ltat\u00f3t.
+
+# do not translate prompt and none
+security.oauth20.error.invalid.authorization.prompt.none.value=CWOAU0042E: A(z) [{0}] jogosults\u00e1gk\u00e9r\u00e9s [{1}] param\u00e9ter\u00e9rt\u00e9ke \u00e9rv\u00e9nytelen, mert m\u00e1s \u00e9rt\u00e9keken fel\u00fcl ''none'' \u00e9rt\u00e9kkel rendelkezik.
+security.oauth20.error.invalid.authorization.prompt.none.value.explanation=A prompt param\u00e9ter nem tartalmazhat m\u00e1s \u00e9rt\u00e9ket, ha a 'none' \u00e9rt\u00e9k meg van adva.
+security.oauth20.error.invalid.authorization.prompt.none.value.useraction=Csak a 'none' \u00e9rt\u00e9ket adja meg a prompt param\u00e9terben, vagy adjon meg m\u00e1s \u00e9rt\u00e9keket, a 'none' n\u00e9lk\u00fcl.
+
+security.oauth20.error.authorization.internal.ioexception=CWOAU0043E: Az OAuth jogosults\u00e1gi v\u00e9gpont nem ir\u00e1ny\u00edtotta \u00e1t a felhaszn\u00e1l\u00f3i \u00fcgyn\u00f6k\u00f6t a(z) [{0}] \u00e1tir\u00e1ny\u00edt\u00e1si URI-ra, mert nem v\u00e1rt java.io.IOException kiv\u00e9tel t\u00f6rt\u00e9nt a k\u00f6vetkez\u0151 \u00fczenettel: {1}
+security.oauth20.error.authorization.internal.ioexception.explanation=Nem v\u00e1rt java.io.IOException kiv\u00e9tel t\u00f6rt\u00e9nt az \u00fcgyf\u00e9l \u00e1tir\u00e1ny\u00edt\u00e1si URI fel\u00e9 t\u00f6rt\u00e9n\u0151 \u00e1tir\u00e1ny\u00edt\u00e1si k\u00eds\u00e9rlet sor\u00e1n.
+security.oauth20.error.authorization.internal.ioexception.useraction=Tekintse \u00e1t a kiv\u00e9tel\u00fczenetet.
+
+security.oauth20.error.authorization.internal.missing.issuer=CWOAU0044E: Az OAuth jogosults\u00e1gi v\u00e9gpont nem tudta feldolgozni az OAuth k\u00e9r\u00e9st, mert nem tal\u00e1lhat\u00f3 kibocs\u00e1t\u00f3azonos\u00edt\u00f3.
+security.oauth20.error.authorization.internal.missing.issuer.explanation=A kibocs\u00e1t\u00f3azonos\u00edt\u00f3 hi\u00e1nyzik, viszont az sz\u00fcks\u00e9ges az OAuth er\u0151forr\u00e1sk\u00e9r\u00e9s v\u00e9grehajt\u00e1s\u00e1hoz. Ez bels\u0151 kiszolg\u00e1l\u00f3hiba.
+security.oauth20.error.authorization.internal.missing.issuer.useraction=Nincs.
+
+security.oauth20.error.token.internal.exception=CWOAU0045E: Az OAuth token v\u00e9gpont nem tudta \u00edrni a HTTP v\u00e1laszt az {0} OAuth \u00fcgyf\u00e9l fel\u00e9, mert nem v\u00e1rt kiv\u00e9tel t\u00f6rt\u00e9nt a k\u00f6vetkez\u0151 \u00fczenettel: {1}
+security.oauth20.error.token.internal.exception.explanation=Nem v\u00e1rt kiv\u00e9tel t\u00f6rt\u00e9nt egy OAuth token k\u00e9r\u00e9shez tartoz\u00f3 HTTP v\u00e1lasz \u00edr\u00e1s\u00e1nak k\u00eds\u00e9rlete sor\u00e1n.
+security.oauth20.error.token.internal.exception.useraction=Tekintse \u00e1t a kiv\u00e9tel\u00fczenetet.
+
+security.oauth20.error.token.internal.missing.issuer=CWOAU0046E: Az OAuth token v\u00e9gpont nem tudta feldolgozni az OAuth k\u00e9r\u00e9st, mert nem tal\u00e1lhat\u00f3 kibocs\u00e1t\u00f3azonos\u00edt\u00f3.
+security.oauth20.error.token.internal.missing.issuer.explanation=A kibocs\u00e1t\u00f3azonos\u00edt\u00f3 hi\u00e1nyzik, viszont az sz\u00fcks\u00e9ges az OAuth token k\u00e9r\u00e9s v\u00e9grehajt\u00e1s\u00e1hoz. Ez bels\u0151 kiszolg\u00e1l\u00f3hiba.
+security.oauth20.error.token.internal.missing.issuer.useraction=Nincs.
+
+security.oauth20.error.internal.unsupported.encoding.exception=CWOAU0047E: Az OAuth szolg\u00e1ltat\u00f3 nem tudott dek\u00f3dolni egy HTTP k\u00e9r\u00e9s lek\u00e9rdez\u00e9si karaktersorozatot, mert nem v\u00e1rt java.io.UnsupportedEncodingException kiv\u00e9tel t\u00f6rt\u00e9nt.
+security.oauth20.error.internal.unsupported.encoding.exception.explanation=Nem v\u00e1rt java.io.UnsupportedEncodingException kiv\u00e9tel t\u00f6rt\u00e9nt egy OAuth token vagy er\u0151forr\u00e1sk\u00e9r\u00e9s HTTP k\u00e9r\u00e9s lek\u00e9rdez\u00e9si karaktersorozat param\u00e9ter\u00e9nek dek\u00f3dol\u00e1si k\u00eds\u00e9rlete sor\u00e1n 'application/x-www-form-urlencoded' MIME form\u00e1tumb\u00f3l.
+security.oauth20.error.internal.unsupported.encoding.exception.useraction=Nincs.
+
+security.oauth.error.config.notspecified.exception=CWOAU0048E: A(z) [{0}] konfigur\u00e1ci\u00f3s param\u00e9ter nincs be\u00e1ll\u00edtva.
+security.oauth.error.config.notspecified.exception.explanation=Az OAuth20 szolg\u00e1ltat\u00f3 nem tudta feldolgozni a k\u00e9r\u00e9st, mert a sz\u00fcks\u00e9ges konfigur\u00e1ci\u00f3s param\u00e9ter nincs be\u00e1ll\u00edtva.
+security.oauth.error.config.notspecified.exception.useraction=A konfigur\u00e1ci\u00f3s param\u00e9ter ellen\u0151rz\u00e9s\u00e9vel gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a sz\u00fcks\u00e9ges konfigur\u00e1ci\u00f3s param\u00e9ter be van \u00e1ll\u00edtva.
+
+security.oauth.error.classmismatch.exception=CWOAU0049E: A megadott oszt\u00e1ly a(z) [{0}] konfigur\u00e1ci\u00f3s param\u00e9terrel nem felel meg a sz\u00fcks\u00e9ges [{1}] fel\u00fcleti oszt\u00e1lynak.
+security.oauth.error.classmismatch.exception.explanation=Az OAuth20 szolg\u00e1ltat\u00f3 nem tudta \u00f6ssze\u00e1ll\u00edtani a megadott oszt\u00e1lyt, mert a megadott oszt\u00e1ly nem felel meg a sz\u00fcks\u00e9ges fel\u00fcleti oszt\u00e1lynak.
+security.oauth.error.classmismatch.exception.useraction=A konfigur\u00e1ci\u00f3s param\u00e9ter ellen\u0151rz\u00e9s\u00e9vel gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott oszt\u00e1ly a sz\u00fcks\u00e9ges fel\u00fcleti oszt\u00e1ly egyik megval\u00f3s\u00edt\u00e1si oszt\u00e1lya.
+
+security.oauth.error.classinstantiation.exception=CWOAU0050E: A megadott [{0}] oszt\u00e1ly a(z) [{1}] konfigur\u00e1ci\u00f3s param\u00e9terrel nem p\u00e9ld\u00e1nyos\u00edthat\u00f3. A gy\u00f6k\u00e9rkiv\u00e9tel: {2}
+security.oauth.error.classinstantiation.exception.explanation=Az OAuth20 szolg\u00e1ltat\u00f3 nem tudja p\u00e9ld\u00e1nyos\u00edtani a megadott oszt\u00e1lyt.
+security.oauth.error.classinstantiation.exception.useraction=Tekintse \u00e1t a kiv\u00e9tel\u00fczenetet.
+
+security.oauth.error.invalidconfig.exception=CWOAU0051E: A(z) [{0}] konfigur\u00e1ci\u00f3s param\u00e9terrel megadott [{1}] konfigur\u00e1ci\u00f3s \u00e9rt\u00e9k \u00e9rv\u00e9nytelen.
+security.oauth.error.invalidconfig.exception.explanation=Az OAuth20 szolg\u00e1ltat\u00f3 nem tudta feldolgozni a k\u00e9r\u00e9st, mert a megadott konfigur\u00e1ci\u00f3s param\u00e9ter \u00e9rv\u00e9nytelen.
+security.oauth.error.invalidconfig.exception.useraction=A konfigur\u00e1ci\u00f3s param\u00e9ter ellen\u0151rz\u00e9s\u00e9vel gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott \u00e9rt\u00e9k \u00e9rv\u00e9nyes.
+
+security.oauth.error.mismatch.granttype.exception=CWOAU0052E: A(z) [{0}] konfigur\u00e1ci\u00f3s param\u00e9ter \u00e9rt\u00e9ke nem egyezik meg az OAuth k\u00e9r\u00e9s [{1}] grant_type param\u00e9ter\u00e9vel.
+security.oauth.error.mismatch.granttype.exception.explanation=Az OAuth20 szolg\u00e1ltat\u00f3 nem tudja feldolgozni a k\u00e9r\u00e9st, mert a k\u00e9r\u00e9sben l\u00e9v\u0151 grant_type param\u00e9ter feldolgoz\u00e1sa nem megengedett.
+security.oauth.error.mismatch.granttype.exception.useraction=A konfigur\u00e1ci\u00f3s param\u00e9ter ellen\u0151rz\u00e9s\u00e9vel gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott \u00e9rt\u00e9k konzisztens az OAuth k\u00e9r\u00e9s grant_type param\u00e9ter\u00e9vel.
+
+security.oauth.error.mismatch.responsetype.exception=CWOAU0053E: A(z) [{0}] konfigur\u00e1ci\u00f3s param\u00e9ter \u00e9rt\u00e9ke nem egyezik meg az OAuth k\u00e9r\u00e9s [{1}] response_type param\u00e9ter\u00e9vel.
+security.oauth.error.mismatch.responsetype.exception.explanation=Az OAuth20 szolg\u00e1ltat\u00f3 nem tudja feldolgozni a k\u00e9r\u00e9st, mert a k\u00e9r\u00e9sben l\u00e9v\u0151 response_type param\u00e9ter feldolgoz\u00e1sa nem megengedett.
+security.oauth.error.mismatch.responsetype.exception.useraction=A konfigur\u00e1ci\u00f3s param\u00e9ter ellen\u0151rz\u00e9s\u00e9vel gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott \u00e9rt\u00e9k konzisztens az OAuth k\u00e9r\u00e9s response_type param\u00e9ter\u00e9vel.
+
+security.oauth20.token.limit.error=CWOAU0054E: A userClientTokenLimit a token gyors\u00edt\u00f3t\u00e1rban "{0}" userID \u00e9s "{1}" clientID \u00e9rt\u00e9kkel el lett \u00e9rve vagy t\u00fall\u00e9p\u00e9sre ker\u00fclt. A korl\u00e1t: {2}.
+security.oauth20.token.limit.error.explanation=Egyazon felhaszn\u00e1l\u00f3 t\u00fal sok akt\u00edv munkamenettel rendelkezik ugyanazzal az OAuth20 szolg\u00e1ltat\u00f3val.
+security.oauth20.token.limit.error.useraction=A konfigur\u00e1ci\u00f3ban a userClientTokenLimit attrib\u00fatum \u00e9rt\u00e9k\u00e9nek n\u00f6vel\u00e9s\u00e9vel n\u00f6velje a token gyors\u00edt\u00f3t\u00e1r m\u00e9ret\u00e9t, vagy haszn\u00e1ljon m\u00e1sik felhaszn\u00e1l\u00f3/\u00fcgyf\u00e9l kombin\u00e1ci\u00f3t, p\u00e9ld\u00e1ul elt\u00e9r\u0151 \u00fcgyfelet.
+
+security.oauth20.error.invalid.registered.redirecturi=CWOAU0055E: Az OAuth szolg\u00e1ltat\u00f3 regisztr\u00e1lt \u00fcgyfel\u00e9ben megadott \u00e1tir\u00e1ny\u00edt\u00e1si URI \u00e9rv\u00e9nytelen: {0}
+security.oauth20.error.invalid.registered.redirecturi.explanation=Lehet, hogy az OAuth szolg\u00e1ltat\u00f3 regisztr\u00e1lt \u00fcgyfel\u00e9ben az \u00e1tir\u00e1ny\u00edt\u00e1si attrib\u00fatum \u00e9rt\u00e9ke nem \u00e9rv\u00e9nyes abszol\u00fat URI.
+security.oauth20.error.invalid.registered.redirecturi.useraction=Gondoskodj\u00e9k r\u00f3la, hogy az OAuth szolg\u00e1ltat\u00f3 regisztr\u00e1lt \u00fcgyf\u00e9l konfigur\u00e1ci\u00f3j\u00e1ban az \u00e1tir\u00e1ny\u00edt\u00e1si attrib\u00fatum \u00e9rv\u00e9nyes abszol\u00fat URI \u00e9rt\u00e9k legyen.
+
+security.oauth20.error.invalid.redirecturi.mismatch=CWOAU0056E: Az OAuth vagy OpenID Connect k\u00e9r\u00e9sben megadott [{0}] \u00e1tir\u00e1ny\u00edt\u00e1si URI param\u00e9ter nem egyezett meg a(z) [{1}] OAuth szolg\u00e1ltat\u00f3ban regisztr\u00e1lt \u00e1tir\u00e1ny\u00edt\u00e1si URI-k egyik\u00e9vel sem.
+security.oauth20.error.invalid.redirecturi.mismatch.explanation=Az OAuth vagy OpenID Connect k\u00e9r\u00e9sben megadott redirect_uri param\u00e9ter nem egyezett meg az OAuth szolg\u00e1ltat\u00f3 regisztr\u00e1lt \u00fcgyfel\u00e9ben megadott \u00e1tir\u00e1ny\u00edt\u00e1si URI \u00e9rt\u00e9kek egyik\u00e9vel sem.
+security.oauth20.error.invalid.redirecturi.mismatch.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az OAuth vagy OpenID Connect k\u00e9r\u00e9sben a redirect_uri param\u00e9ter megegyezik a regisztr\u00e1lt \u00fcgyf\u00e9lkonfigur\u00e1ci\u00f3ban megadott \u00e1tir\u00e1ny\u00edt\u00e1si URI-k egyik\u00e9vel.
+
+security.oauth20.error.multiple.responsetype=CWOAU0057E: Az OAuth vagy OpenID Connect k\u00e9r\u00e9sben megadott [{0}] response_type param\u00e9ter nem tartalmazhat egyszerre [{1}] \u00e9s [{2}] v\u00e1laszt\u00edpust.
+security.oauth20.error.multiple.responsetype.explanation=Az OAuth vagy OpenID Connect k\u00e9r\u00e9s csak egy v\u00e1laszt\u00edpussal rendelkezhet.
+security.oauth20.error.multiple.responsetype.useraction=Ellen\u0151rizze az OAuth vagy OpenID Connect k\u00e9r\u00e9sben l\u00e9v\u0151 response_type param\u00e9tert, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy csak egy v\u00e1laszt\u00edpust tartalmaz.
+
+security.oauth20.error.invalid.token.expired=CWOAU0058E: A(z) [{0}] kulcs\u00fa, [{1}] t\u00edpus\u00fa \u00e9s [{2}] alt\u00edpus\u00fa OAuth token lej\u00e1rt.
+security.oauth20.error.invalid.token.expired.explanation=Az OAuth token lej\u00e1rt, \u00e9s m\u00e1r nem \u00e9rv\u00e9nyes.
+security.oauth20.error.invalid.token.expired.useraction=K\u00e9rjen \u00faj OAuth tokent az OAuth szolg\u00e1ltat\u00f3t\u00f3l.
+
+security.oauth20.error.invalid.token.client.not.available=CWOAU0059E: A(z) [{0}] kulcs\u00fa, [{1}] t\u00edpus\u00fa \u00e9s [{2}] alt\u00edpus\u00fa OAuth token nincs t\u00e1rs\u00edtva \u00fcgyf\u00e9llel, vagy a t\u00e1rs\u00edtott \u00fcgyf\u00e9l nincs enged\u00e9lyezve.
+security.oauth20.error.invalid.token.client.not.available.explanation=Az OAuth token nincs t\u00e1rs\u00edtva \u00fcgyf\u00e9llel, vagy a t\u00e1rs\u00edtott \u00fcgyf\u00e9l tiltott a konfigur\u00e1ci\u00f3ban.
+security.oauth20.error.invalid.token.client.not.available.useraction=Az OAuth szolg\u00e1ltat\u00f3 \u00fcgyf\u00e9lkonfigur\u00e1ci\u00f3 ellen\u0151rz\u00e9s\u00e9vel gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megfelel\u0151 \u00fcgyf\u00e9l be van \u00e1ll\u00edtva \u00e9s enged\u00e9lyezett.
+
+security.oauth20.error.mismatched.redirecturi.null.request.redirecturi=CWOAU0060E: Az OAuth vagy OpenID Connect k\u00e9r\u00e9sben szerepl\u0151 \u00e1tir\u00e1ny\u00edt\u00e1si URI {0}, azonban nem null\u00e9rt\u00e9k\u0171 \u00e1tir\u00e1ny\u00edt\u00e1si URI lett megadva a jogosults\u00e1gmegad\u00e1si k\u00e9r\u00e9sben: {1}
+security.oauth20.error.mismatched.redirecturi.null.request.redirecturi.explanation=Ha a k\u00e9r\u00e9sben nem szerepel \u00e1tir\u00e1ny\u00edt\u00e1si URI, akkor az \u00e1tir\u00e1ny\u00edt\u00e1si URI-t nem szabad megadni a jogosults\u00e1gmegad\u00e1si k\u00e9r\u00e9sben.
+security.oauth20.error.mismatched.redirecturi.null.request.redirecturi.useraction=Ellen\u0151rizze a redirect_uri param\u00e9ter \u00e9rt\u00e9k\u00e9t az OAuth vagy OpenID Connect k\u00e9r\u00e9sben, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az megegyezik a regisztr\u00e1lt \u00fcgyf\u00e9lben l\u00e9tez\u0151 \u00e1tir\u00e1ny\u00edt\u00e1si URI-val, vagy ne adjon meg \u00e1tir\u00e1ny\u00edt\u00e1si URI-t a jogosults\u00e1gmegad\u00e1si k\u00e9r\u00e9sben.
+
+security.oauth20.error.invalid.client.enduser=CWOAU0061E: Az OAuth szolg\u00e1ltat\u00f3 nem tal\u00e1lja az \u00fcgyfelet, mert az \u00fcgyf\u00e9l neve \u00e9rv\u00e9nytelen. A probl\u00e9ma megold\u00e1sa \u00e9rdek\u00e9ben l\u00e9pjen kapcsolatba a rendszeradminisztr\u00e1torral.
+security.oauth20.error.invalid.client.enduser.explanation=Az OAuth szolg\u00e1ltat\u00f3 nem tal\u00e1lja az OAuth k\u00e9r\u00e9s client_id param\u00e9ter\u00e9nek \u00e9rt\u00e9k\u00e9ben megadott \u00fcgyfelet.
+security.oauth20.error.invalid.client.enduser.useraction=A probl\u00e9ma megold\u00e1sa \u00e9rdek\u00e9ben l\u00e9pjen kapcsolatba a rendszeradminisztr\u00e1torral.
+
+security.oauth20.error.invalid.redirecturi.enduser=CWOAU0062E: Az OAuth szolg\u00e1ltat\u00f3 nem tudta \u00e1tir\u00e1ny\u00edtani a k\u00e9r\u00e9st, mert az \u00e1tir\u00e1ny\u00edt\u00e1si URI \u00e9rv\u00e9nytelen. A probl\u00e9ma megold\u00e1sa \u00e9rdek\u00e9ben l\u00e9pjen kapcsolatba a rendszeradminisztr\u00e1torral.
+security.oauth20.error.invalid.redirecturi.enduser.explanation=Az OAuth szolg\u00e1ltat\u00f3 regisztr\u00e1lt \u00fcgyfel\u00e9hez tartoz\u00f3 \u00e1tir\u00e1ny\u00edt\u00e1si attrib\u00fatum \u00e9rt\u00e9ke \u00e9rv\u00e9nytelen, vagy ha a redirect_uri param\u00e9ter meg van adva az OAuth k\u00e9r\u00e9sben, akkor annak \u00e9rt\u00e9ke nem egyezik meg az OAuth szolg\u00e1ltat\u00f3 regisztr\u00e1lt \u00fcgyfel\u00e9ben megadott \u00e1tir\u00e1ny\u00edt\u00e1si URI \u00e9rt\u00e9kkel.
+security.oauth20.error.invalid.redirecturi.enduser.useraction=A probl\u00e9ma megold\u00e1sa \u00e9rdek\u00e9ben l\u00e9pjen kapcsolatba a rendszeradminisztr\u00e1torral.
+
+security.oauth20.detail.error.mismatched.clientauthentication=CWOAU0063E: A token v\u00e9gponti k\u00e9r\u00e9s meghi\u00fasult, mert a k\u00e9r\u00e9sben k\u00e9t k\u00fcl\u00f6nb\u00f6z\u0151 client_id szerepel. Az egyik client_id {0}, a m\u00e1sik pedig {1}, amely hiteles\u00edtett \u00e9s nagyon val\u00f3sz\u00edn\u0171, hogy \u00e1tad\u00e1sra ker\u00fclt a jogosults\u00e1gi fejl\u00e9cen kereszt\u00fcl.  
+security.oauth20.detail.error.mismatched.clientauthentication.explanation=A k\u00e9r\u00e9s client_id param\u00e9ter\u00e9nek \u00e9rt\u00e9ke nem egyezik meg a hiteles\u00edtett client_id \u00e9rt\u00e9kkel, ami ugyancsak a k\u00e9r\u00e9sben ker\u00fclt \u00e1tad\u00e1sra.
+security.oauth20.detail.error.mismatched.clientauthentication.useraction=Gondoskodj\u00e9k r\u00f3la, hogy csak egy hiteles\u00edtett client_id szerepeljen a k\u00e9r\u00e9sben. A client_id a jogosults\u00e1gi fejl\u00e9c\u00e9n vagy a k\u00e9r\u00e9s param\u00e9ter\u00e9n kereszt\u00fcl adhat\u00f3 \u00e1t.
+
+security.oauth20.error.empty.scope=CWOAU0064E: A(z) [{2}] \u00fcgyf\u00e9l k\u00e9rt [{0}] hat\u00f3k\u00f6re \u00e9s regisztr\u00e1lt [{1}] hat\u00f3k\u00f6re nem ad k\u00f6z\u00f6s hat\u00f3k\u00f6rt. Az eredm\u00e9ny\u00fcl kapott hat\u00f3k\u00f6r \u00fcres.
+security.oauth20.error.empty.scope.explanation=A k\u00e9rt hat\u00f3k\u00f6rnek \u00e9s a regisztr\u00e1lt hat\u00f3k\u00f6rnek legal\u00e1bb egy k\u00f6z\u00f6s hat\u00f3k\u00f6rrel rendelkeznie kell. 
+security.oauth20.error.empty.scope.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a k\u00e9rt hat\u00f3k\u00f6r \u00e9s a regisztr\u00e1lt hat\u00f3k\u00f6r legal\u00e1bb egy k\u00f6z\u00f6s hat\u00f3k\u00f6rrel rendelkezzen.
+
+security.oauth20.error.missing.scope=CWOAU0065E: A jogosults\u00e1gkiszolg\u00e1l\u00f3 nem tudja feldolgozni a(z) [{0}] k\u00e9r\u00e9st. Hi\u00e1nyzik bel\u0151le a k\u00f6telez\u0151 hat\u00f3k\u00f6r param\u00e9ter.
+security.oauth20.error.missing.scope.explanation=Az OpenID Connect k\u00e9r\u00e9snek rendelkeznie kell egy nem \u00fcres karaktersorozatot tartalmaz\u00f3 hat\u00f3k\u00f6rrel.
+security.oauth20.error.missing.scope.useraction=Gondoskodj\u00e9k r\u00f3la, hogy az OpenID Connect k\u00e9r\u00e9s rendelkezzen \u00e9rv\u00e9nyes hat\u00f3k\u00f6r param\u00e9terrel.
+
+security.oauth20.token.limit.external.error=CWOAU0066E: A token v\u00e9gpont k\u00e9r\u00e9s az ugyanatt\u00f3l a felhaszn\u00e1l\u00f3t\u00f3l sz\u00e1rmaz\u00f3 t\u00fal sok k\u00e9r\u00e9s miatt meghi\u00fasult.
+security.oauth20.token.limit.external.error.explanation=Egyazon felhaszn\u00e1l\u00f3 t\u00fal sok akt\u00edv munkamenettel rendelkezik ugyanazzal az OAuth20 szolg\u00e1ltat\u00f3val. 
+security.oauth20.token.limit.external.error.useraction=A konfigur\u00e1ci\u00f3ban a userClientTokenLimit attrib\u00fatum \u00e9rt\u00e9k\u00e9nek n\u00f6vel\u00e9s\u00e9vel n\u00f6velje a token gyors\u00edt\u00f3t\u00e1r m\u00e9ret\u00e9t, vagy haszn\u00e1ljon m\u00e1sik felhaszn\u00e1l\u00f3/\u00fcgyf\u00e9l kombin\u00e1ci\u00f3t, p\u00e9ld\u00e1ul elt\u00e9r\u0151 \u00fcgyfelet.
+
+security.oauth20.request.denied=CWOAU0067E: A k\u00e9r\u00e9st a felhaszn\u00e1l\u00f3 elutas\u00edtotta, vagy valamilyen m\u00e1sik hiba a k\u00e9r\u00e9s elutas\u00edt\u00e1s\u00e1t eredm\u00e9nyezte.
+security.oauth20.request.denied.explanation=A felhaszn\u00e1l\u00f3 elutas\u00edtotta az OAuth k\u00e9r\u00e9st a k\u00e9r\u00e9s megszak\u00edt\u00e1s\u00e1val a k\u00e9r\u00e9s j\u00f3v\u00e1hagy\u00e1si \u0171rlapj\u00e1n, vagy valamilyen egy\u00e9b hiba t\u00f6rt\u00e9nt, ami megtagadta a hozz\u00e1f\u00e9r\u00e9st az OAuth k\u00e9r\u00e9shez.
+security.oauth20.request.denied.useraction=A felhaszn\u00e1l\u00f3nak enged\u00e9lyeznie kell az OAuth szolg\u00e1ltat\u00f3 sz\u00e1m\u00e1ra az \u00fcgyf\u00e9l \u00e1ltal k\u00e9rt hat\u00f3k\u00f6r\u00f6k megoszt\u00e1s\u00e1t az OAuth k\u00e9r\u00e9s sikere \u00e9rdek\u00e9ben. Ha a felhaszn\u00e1l\u00f3 j\u00f3v\u00e1hagyta a k\u00e9r\u00e9st, akkor az OAuth szolg\u00e1ltat\u00f3 napl\u00f3iban keressen tov\u00e1bbi hib\u00e1kat.
+
+security.oauth20.error.missing.registered.scope=CWOAU0068E: A(z) [{0}] \u00fcgyf\u00e9l k\u00e9r\u00e9se az OpenID Connect jogosults\u00e1g v\u00e9gponthoz meghi\u00fasult. Ehhez az \u00fcgyf\u00e9lhez nincsenek regisztr\u00e1lva hat\u00f3k\u00f6r\u00f6k. 
+security.oauth20.error.missing.registered.scope.explanation=Az \u00fcgyf\u00e9lkonfigur\u00e1ci\u00f3nak tartalmaznia kell az \u00fcgyf\u00e9lhez enged\u00e9lyezett hat\u00f3k\u00f6r\u00f6k list\u00e1j\u00e1t, m\u00e1sk\u00fcl\u00f6nben az OpenID Connect jogosults\u00e1g k\u00e9r\u00e9sek meghi\u00fasulnak.  
+security.oauth20.error.missing.registered.scope.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy regisztr\u00e1lja a hat\u00f3k\u00f6r\u00f6k list\u00e1j\u00e1t az OpenID Connect szolg\u00e1ltat\u00f3 \u00fcgyf\u00e9lkonfigur\u00e1ci\u00f3j\u00e1ban. \u00c1ll\u00edtsa be a hat\u00f3k\u00f6rt az enged\u00e9lyezett hat\u00f3k\u00f6r\u00f6kre, vagy ha az \u00f6sszes hat\u00f3k\u00f6r elfogadhat\u00f3, akkor az ALL_SCOPES \u00e9rt\u00e9kre.
+
+security.oauth20.endpoint.resowner.auth.error=CWOAU0069E: Az er\u0151forr\u00e1s-tulajdonost nem siker\u00fclt ellen\u0151rizni. A(z) {0} er\u0151forr\u00e1s-tulajdonos vagy a jelsz\u00f3 helytelen.
+security.oauth20.endpoint.resowner.auth.error.explanation=Az OAuth szolg\u00e1ltat\u00f3 nem tudta ellen\u0151rizni az er\u0151forr\u00e1s-tulajdonost. 
+security.oauth20.endpoint.resowner.auth.error.useraction=Ellen\u0151rizze, hogy az er\u0151forr\u00e1s neve \u00e9s a jelsz\u00f3 \u00e9rv\u00e9nyes-e.
+
+security.oauth20.error.missing.client.provider=CWOAU0070E: Nem tal\u00e1lhat\u00f3 \u00fcgyf\u00e9lszolg\u00e1ltat\u00f3 az OAuth szolg\u00e1ltat\u00f3hoz.
+security.oauth20.error.missing.client.provider.explanation=El\u0151fordulhat, hogy ezen OAuth szolg\u00e1ltat\u00f3 eset\u00e9ben probl\u00e9ma ad\u00f3dott az \u00fcgyf\u00e9lt\u00e1rol\u00f3k inicializ\u00e1l\u00e1sa sor\u00e1n.
+security.oauth20.error.missing.client.provider.useraction=Ellen\u0151rizze a kiszolg\u00e1l\u00f3napl\u00f3kat, hogy meggy\u0151z\u0151dj\u00f6n az OAuth szolg\u00e1ltat\u00f3 megfelel\u0151 inicializ\u00e1l\u00e1s\u00e1r\u00f3l.
+
+security.oauth20.error.granttype.requires.confidential.client=CWOAU0071E: Egy nyilv\u00e1nos \u00fcgyf\u00e9l megpr\u00f3b\u00e1lta el\u00e9rni a(z) {0} v\u00e9gpontot a(z) {1} feljogos\u00edt\u00e1si t\u00edpussal. Ez a feljogos\u00edt\u00e1si t\u00edpust csak bizalmas \u00fcgyfelek haszn\u00e1lhatj\u00e1k. A client_id \u00e9rt\u00e9ke: {2}
+security.oauth20.error.granttype.requires.confidential.client.explanation=Egy OAuth nyilv\u00e1nos \u00fcgyf\u00e9l sz\u00e1m\u00e1ra nem megengedett a megadott feljogos\u00edt\u00e1si t\u00edpus haszn\u00e1lata ezen v\u00e9gpont eset\u00e9n. Csak a bizalmas \u00fcgyfeleknek enged\u00e9lyezett a megadott feljogos\u00edt\u00e1si t\u00edpus haszn\u00e1lata.
+security.oauth20.error.granttype.requires.confidential.client.useraction=Ellen\u0151rizze az OAuth k\u00e9r\u00e9sben a grant_type param\u00e9ter \u00e9rt\u00e9k\u00e9t, \u00e9s haszn\u00e1ljon m\u00e1sik felhatalmaz\u00e1si t\u00edpust a nyilv\u00e1nos \u00fcgyf\u00e9lhez.
+
+# 0 - "scope" or "resource" (as of this update, may be other parms in the future}
+# 1 - string value, 2 - list of string values, 3 - config attributes: "scope" or "resourceIds" (as of this update, may be other parms in the future), 
+SECURITY.OAUTH20.ERROR.VALUE.NOT.IN.LIST=CWOAU0072E: A k\u00e9r\u00e9s [{0}] param\u00e9tere \u00e9rv\u00e9nytelen \u00e9rt\u00e9ket tartalmaz: [{1}]. A(z) [{3}] konfigur\u00e1ci\u00f3s attrib\u00fatum szerint \u00e9rv\u00e9nyes \u00e9rt\u00e9kek: [{2}].
+SECURITY.OAUTH20.ERROR.VALUE.NOT.IN.LIST.explanation=Az OAuth k\u00e9r\u00e9sben szerepl\u0151 konkr\u00e9t param\u00e9terhez megadott \u00e9rt\u00e9k \u00e9rv\u00e9nytelen. Az \u00e9rv\u00e9nyes \u00e9rt\u00e9kek list\u00e1ja megtal\u00e1lhat\u00f3 a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3 megadott attrib\u00fatum\u00e1ban.
+SECURITY.OAUTH20.ERROR.VALUE.NOT.IN.LIST.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a k\u00e9r\u00e9sparam\u00e9ter \u00e9rt\u00e9kei \u00e9rv\u00e9nyesek. 
+
+security.oauth20.front.end.error=CWOAU0073E: Hiba t\u00f6rt\u00e9nt egy felhaszn\u00e1l\u00f3 hiteles\u00edt\u00e9sekor. Pr\u00f3b\u00e1lkozzon \u00fajra a hiteles\u00edt\u00e9ssel, vagy ha a probl\u00e9ma tov\u00e1bbra is fenn\u00e1ll, vegye fel a kapcsolatot a webhely adminisztr\u00e1tor\u00e1val.
+security.oauth20.front.end.error.explanation=Lehets\u00e9ges, hogy a k\u00e9r\u00e9sb\u0151l hi\u00e1nyoznak inform\u00e1ci\u00f3k, a kiszolg\u00e1l\u00f3 egy bels\u0151 hib\u00e1ba \u00fctk\u00f6z\u00f6tt, vagy valami m\u00e1s hiba megakad\u00e1lyozta, hogy a kiszolg\u00e1l\u00f3 sikeresen hiteles\u00edtse a felhaszn\u00e1l\u00f3t.
+security.oauth20.front.end.error.useraction=A probl\u00e9ma megold\u00e1sa \u00e9rdek\u00e9ben l\u00e9pjen kapcsolatba a rendszeradminisztr\u00e1torral.
+
+security.oauth20.endpoint.resowner.apppassword.error=CWOAU0074E: Az alkalmaz\u00e1s jelsz\u00f3 csere k\u00e9r\u00e9s a(z) {0} felhaszn\u00e1l\u00f3 eset\u00e9n nem fejez\u0151d\u00f6tt be, mert az alkalmaz\u00e1s jelsz\u00f3t nem lehetett ellen\u0151rizni. Az alkalmaz\u00e1s jelszava helytelen, lej\u00e1rt vagy visszavont\u00e1k, vagy a biztos\u00edtott \u00fcgyf\u00e9lazonos\u00edt\u00f3 \u00e9rv\u00e9nytelen.
+security.oauth20.endpoint.resowner.apppassword.error.explanation=Az OAuth szolg\u00e1ltat\u00f3 nem tudta ellen\u0151rizni az alkalmaz\u00e1sjelsz\u00f3t.
+security.oauth20.endpoint.resowner.apppassword.error.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy alkalmaz\u00e1sjelsz\u00f3 \u00e9rv\u00e9nyes, nem j\u00e1rt le \u00e9s nem lett visszavonva. Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l is, hogy a hozz\u00e1f\u00e9r\u00e9si tokenben l\u00e9v\u0151 \u00fcgyf\u00e9lazonos\u00edt\u00f3 megegyezik az Authorization fejl\u00e9cben l\u00e9v\u0151 \u00fcgyf\u00e9lazonos\u00edt\u00f3val.
+
+security.oauth20.apppassword.config.c1p0.warning=CWOAU0075W: Az OAuth \u00fcgyf\u00e9l [{0}] \u00fagy van be\u00e1ll\u00edtva, hogy enged\u00e9lyezi az alkalmaz\u00e1sjelszavak k\u00e9r\u00e9s\u00e9t, de a szolg\u00e1ltat\u00f3 [{1}] nincs be\u00e1ll\u00edtva ezek feldolgoz\u00e1s\u00e1ra. Ez hiteles\u00edt\u00e9si hib\u00e1t okozhat. \u00c1ll\u00edtsa be a passwordGrantRequiresAppPassword OAuth szolg\u00e1ltat\u00f3 konfigur\u00e1ci\u00f3s attrib\u00fatumot true \u00e9rt\u00e9kre, ha alkalmaz\u00e1s jelszavakat haszn\u00e1l.
+security.oauth20.apppassword.config.c1p0.warning.explanation=Lehet, hogy a jelenlegi konfigur\u00e1ci\u00f3 helytelen.
+security.oauth20.apppassword.config.c1p0.warning.useraction=Jav\u00edtsa ki a konfigur\u00e1ci\u00f3t, ha sz\u00fcks\u00e9ges.
+
+security.oauth20.apppassword.config.c0p1.warning=CWOAU0076W: Az OAuth \u00fcgyf\u00e9l [{0}] nem \u00fagy van be\u00e1ll\u00edtva, hogy enged\u00e9lyezze az alkalmaz\u00e1sjelszavak k\u00e9r\u00e9s\u00e9t, de a szolg\u00e1ltat\u00f3 [{1}] be van \u00e1ll\u00edtva ezek feldolgoz\u00e1s\u00e1ra. Ez hiteles\u00edt\u00e9si hib\u00e1t okozhat. \u00c1ll\u00edtsa be a passwordGrantRequiresAppPassword OAuth szolg\u00e1ltat\u00f3 konfigur\u00e1ci\u00f3s attrib\u00fatumot false \u00e9rt\u00e9kre, ha nem haszn\u00e1l alkalmaz\u00e1s jelszavakat.
+security.oauth20.apppassword.config.c0p1.warning.explanation=Lehet, hogy a jelenlegi konfigur\u00e1ci\u00f3 helytelen.
+security.oauth20.apppassword.config.c0p1.warning.useraction=Jav\u00edtsa ki a konfigur\u00e1ci\u00f3t, ha sz\u00fcks\u00e9ges.
+
+security.oauth20.apppassword.exchange.wrongclient=CWOAU0077E: A(z) [{0}] \u00fcgyf\u00e9lhez l\u00e9trehozott alkalmaz\u00e1s jelsz\u00f3 nem haszn\u00e1lhat\u00f3 a(z) [{1}] \u00fcgyf\u00e9llel.
+security.oauth20.apppassword.exchange.wrongclient.explanation=Az alkalmaz\u00e1s jelsz\u00f3 egy used_by param\u00e9terrel lett l\u00e9trehozva, ami a sz\u00e1nd\u00e9kolt \u00fcgyfelet jelezte, azonban egy m\u00e1sik \u00fcgyf\u00e9lnek lett elk\u00fcldve.
+security.oauth20.apppassword.exchange.wrongclient.useraction=Adja ki \u00fajra a k\u00e9r\u00e9st egy olyan alkalmaz\u00e1s jelsz\u00f3val, amely \u00e9rv\u00e9nyes a megadott \u00fcgyf\u00e9lhez.
+
+security.oauth20.apppwtok.revoke.disallowed=CWOAU0078E: K\u00eds\u00e9rlet t\u00f6rt\u00e9nt egy alkalmaz\u00e1s jelsz\u00f3 vagy alkalmaz\u00e1s token visszavon\u00e1s\u00e1ra a visszavon\u00e1si (revocation) v\u00e9gponton. Ez a tev\u00e9kenys\u00e9g nem enged\u00e9lyezett.
+security.oauth20.apppwtok.revoke.disallowed.explanation=Az alkalmaz\u00e1s jelszavakat vagy alkalmaz\u00e1s tokeneket az app-passwords vagy app-tokens v\u00e9gpontokon kell visszavonni.
+security.oauth20.apppwtok.revoke.disallowed.useraction=Adja ki \u00fajra a k\u00e9r\u00e9st a megfelel\u0151 v\u00e9gpontot tartalmaz\u00f3 URI haszn\u00e1lat\u00e1val alkalmaz\u00e1s jelszavak vagy alkalmaz\u00e1s tokenek visszavon\u00e1s\u00e1hoz.
+
+security.oauth20.pkce.invalid.method.error=CWOAU0079E: A code_challenge_method k\u00e9r\u00e9si param\u00e9ter nem t\u00e1mogatott \u00e1talak\u00edt\u00f3 algoritmust tartalmaz.
+security.oauth20.pkce.invalid.method.error.explanation=Az OAuth szolg\u00e1ltat\u00f3 nem t\u00e1mogatja a megadott \u00e1talak\u00edt\u00f3 algoritmust.
+security.oauth20.pkce.invalid.method.error.useraction=Haszn\u00e1lja a "plain" vagy "S256" code_challenge_method param\u00e9terk\u00e9nt.
+
+security.oauth20.pkce.codeverifier.length.error=CWOAU0080E: Az code_verifier hossza \u00e9rv\u00e9nytelen.
+security.oauth20.pkce.codeverifier.length.error.explanation=A code_verifier param\u00e9ternek legal\u00e1bb 43 \u00e9s legfeljebb 128 karakter hossz\u00fanak kell lennie. 
+security.oauth20.pkce.codeverifier.length.error.useraction=K\u00fcldje \u00fajra a jogosults\u00e1g- \u00e9s tokenk\u00e9r\u00e9seket a megadott hossznak megfelel\u0151 m\u00f3dos\u00edtott code_verifier param\u00e9terrel.
+
+security.oauth20.pkce.error.mismatch.codeverifier=CWOAU0081E: A code_challenge \u00e9s code_verifier nem egyeznek.
+security.oauth20.pkce.error.mismatch.codeverifier.explanation=Az OAuth szolg\u00e1ltat\u00f3 a k\u00e9r\u00e9sben megadott code_challenge_method param\u00e9tert haszn\u00e1lja, \u00e9s a code_verifier param\u00e9tert \u00e1talak\u00edtja, kiv\u00e9ve, ha a code_challenge_method egyszer\u0171. Az \u00e1talak\u00edtott \u00e9rt\u00e9knek egyeznie kell a jogosults\u00e1g k\u00e9r\u00e9sben szerepl\u0151 code_challenge \u00e9rt\u00e9k\u00e9vel.
+security.oauth20.pkce.error.mismatch.codeverifier.useraction=Gondoskodj\u00e9k r\u00f3la, hogy egyez\u0151 code_challenge \u00e9s code_verifier \u00e9rt\u00e9keket \u00e9s megfelel\u0151 \u00e1talak\u00edt\u00f3 algoritmust k\u00fcldj\u00f6n a jogosults\u00e1g- \u00e9s tokenk\u00e9r\u00e9sekkel.

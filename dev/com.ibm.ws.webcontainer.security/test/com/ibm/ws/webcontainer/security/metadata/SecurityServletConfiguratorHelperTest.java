@@ -372,9 +372,9 @@ public class SecurityServletConfiguratorHelperTest {
                 one(webAnnotations).getAnnotationTargets();
                 will(returnValue(targets));
                 allowing(targets).getAnnotatedClasses(ROLES_ALLOWED);
-                will(returnValue(com.ibm.ws.anno.util.internal.UtilImpl_EmptyStringSet.INSTANCE));
+                will(returnValue(Collections.emptySet()));
                 allowing(targets).getClassesWithMethodAnnotation(ROLES_ALLOWED);
-                will(returnValue(com.ibm.ws.anno.util.internal.UtilImpl_EmptyStringSet.INSTANCE));
+                will(returnValue(Collections.emptySet()));
 
             }
         });
@@ -401,9 +401,9 @@ public class SecurityServletConfiguratorHelperTest {
                 one(webAnnotations).getAnnotationTargets();
                 will(returnValue(targets));
                 allowing(targets).getAnnotatedClasses(ROLES_ALLOWED);
-                will(returnValue(com.ibm.ws.anno.util.internal.UtilImpl_EmptyStringSet.INSTANCE));
+                will(returnValue(Collections.emptySet()));
                 allowing(targets).getClassesWithMethodAnnotation(ROLES_ALLOWED);
-                will(returnValue(com.ibm.ws.anno.util.internal.UtilImpl_EmptyStringSet.INSTANCE));
+                will(returnValue(Collections.emptySet()));
             }
         });
         configHelper.configureFromAnnotations(webFragmentItem);

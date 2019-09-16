@@ -85,7 +85,7 @@ class SystemConfiguration {
 
         ServiceReference<LibertyProcess> procRef = bc.getServiceReference(LibertyProcess.class);
         LibertyProcess libertyProcess = bc.getService(procRef);
-        ConfigVariableRegistry variableRegistry = new ConfigVariableRegistry(variableRegistryService, libertyProcess.getArgs(), bc.getDataFile("variableCache"));
+        ConfigVariableRegistry variableRegistry = new ConfigVariableRegistry(variableRegistryService, libertyProcess.getArgs(), bc.getDataFile("variableCacheData"));
 
         MetaTypeRegistry metatypeRegistry = metatypeRegistryTracker.getService();
 
@@ -108,7 +108,7 @@ class SystemConfiguration {
 
         this.validator.setConfiguration(serverXMLConfig);
 
-        bundleProcessor = new BundleProcessor(bc, this, locationService, variableRegistryService, configUpdater, changeHandler, validator, configRetriever);
+        bundleProcessor = new BundleProcessor(bc, this, locationService, configUpdater, changeHandler, validator, configRetriever);
 
         this.configRefresher = new ConfigRefresher(bc, changeHandler, serverXMLConfig);
 

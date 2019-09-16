@@ -62,12 +62,14 @@ public class DelayedVariableTestServlet extends HttpServlet {
     private static final String MANGLED_CAPS_ENV_VAR_ATTR = "mangledCapsEnvVar";
     private static final String DEFAULT_VAR_ATTR = "defaultVar";
     private static final String META_REF_VAR_ATTR = "metaRefVar";
+    private static final String METATYPE_VAR_ATTR = "shouldBeMetatype";
 
     private static final String DEFAULT_VALUE = "this is the default";
     private static final String MANGLED_VALUE = "mangled";
     private static final String MANGLED_CAPS_VALUE = "mangledCaps";
     private static final String CAP_VALUE = "caps";
     private static final String ENV_VALUE = "envValue";
+    private static final String METATYPE_VALUE = "fromConfig";
 
     private final ArrayList<ServiceReference<?>> references = new ArrayList<ServiceReference<?>>();
     private BundleContext bundleContext;
@@ -155,6 +157,9 @@ public class DelayedVariableTestServlet extends HttpServlet {
         assertEquals(MANGLED_CAPS_VALUE, properties.get(MANGLED_CAPS_ENV_VAR_ATTR));
         assertEquals(DEFAULT_VALUE, properties.get(DEFAULT_VAR_ATTR));
         assertEquals(DEFAULT_VALUE, properties.get(META_REF_VAR_ATTR));
+
+        // Check that values from config are used before values from environment variables
+        assertEquals(METATYPE_VALUE, properties.get(METATYPE_VAR_ATTR));
 
     }
 

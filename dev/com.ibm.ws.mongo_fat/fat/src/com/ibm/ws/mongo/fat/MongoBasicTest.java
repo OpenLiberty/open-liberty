@@ -24,25 +24,24 @@ import fat.mongo.web.MongoTestServlet;
 @RunWith(FATRunner.class)
 public class MongoBasicTest extends FATServletClient {
 
-	@Server("mongo.fat.server")
-	@TestServlet(servlet = MongoTestServlet.class, contextRoot = FATSuite.APP_NAME)
-	public static LibertyServer server;
+    @Server("mongo.fat.server")
+    @TestServlet(servlet = MongoTestServlet.class, contextRoot = FATSuite.APP_NAME)
+    public static LibertyServer server;
 
-	@BeforeClass
-	public static void beforeClass() throws Exception {
-		MongoServerSelector.assignMongoServers(server);
-		FATSuite.createApp(server);
-		server.startServer();
-	}
+    @BeforeClass
+    public static void beforeClass() throws Exception {
+        MongoServerSelector.assignMongoServers(server);
+        FATSuite.createApp(server);
+        server.startServer();
+    }
 
-	@AfterClass
-	public static void afterClass() throws Exception {
-		server.stopServer("CWKKD0013E:.*mongo-lib-10", "CWKKD0013E:.*mongo-lib-293", "SRVE0777E:.*MongoServlet\\.getDB",
-				"CWWKE0701E" // TODO: Circular reference detected trying to get service
-								// {org.osgi.service.cm.ManagedServiceFactory,
-								// com.ibm.wsspi.logging.Introspector,
-								// com.ibm.ws.runtime.update.RuntimeUpdateListener,
-								// com.ibm.wsspi.application.lifecycle.ApplicationRecycleCoordinator}
-		);
-	}
+    @AfterClass
+    public static void afterClass() throws Exception {
+        // TODO: CWWKE0701E - Circular reference detected trying to get service
+        // {org.osgi.service.cm.ManagedServiceFactory,
+        // com.ibm.wsspi.logging.Introspector,
+        // com.ibm.ws.runtime.update.RuntimeUpdateListener,
+        // com.ibm.wsspi.application.lifecycle.ApplicationRecycleCoordinator}
+        server.stopServer("CWWKE0701E");
+    }
 }

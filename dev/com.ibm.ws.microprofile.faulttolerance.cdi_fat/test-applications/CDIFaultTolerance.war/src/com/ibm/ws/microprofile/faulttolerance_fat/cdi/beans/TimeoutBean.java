@@ -10,6 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans;
 
+import static com.ibm.ws.microprofile.faulttolerance_fat.cdi.TestConstants.EXPECTED_TIMEOUT;
+import static com.ibm.ws.microprofile.faulttolerance_fat.cdi.TestConstants.NEGATIVE_TIMEOUT;
+import static com.ibm.ws.microprofile.faulttolerance_fat.cdi.TestConstants.NON_INTERRUPTABLE_TIMEOUT;
+import static com.ibm.ws.microprofile.faulttolerance_fat.cdi.TestConstants.TEST_TIMEOUT;
+
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.concurrent.CompletableFuture;
@@ -22,6 +27,7 @@ import org.eclipse.microprofile.faulttolerance.Fallback;
 import org.eclipse.microprofile.faulttolerance.Retry;
 import org.eclipse.microprofile.faulttolerance.Timeout;
 
+import com.ibm.ws.microprofile.faulttolerance_fat.cdi.TestConstants;
 import com.ibm.ws.microprofile.faulttolerance_fat.util.ConnectException;
 import com.ibm.ws.microprofile.faulttolerance_fat.util.Connection;
 
@@ -49,11 +55,11 @@ public class TimeoutBean {
         throw new ConnectException("A simple exception");
     }
 
-    @Timeout(500)
-    @Retry(maxRetries = 7, maxDuration = 10, durationUnit = ChronoUnit.SECONDS)
+    @Timeout(EXPECTED_TIMEOUT)
+    @Retry(maxRetries = 7, maxDuration = 30, durationUnit = ChronoUnit.SECONDS)
     public Connection connectC() throws InterruptedException, ConnectException {
         connectCCalls++;
-        Thread.sleep(2000);
+        Thread.sleep(TEST_TIMEOUT);
         Connection result = new Connection() {
             @Override
             public String getData() {
@@ -64,11 +70,11 @@ public class TimeoutBean {
     }
 
     @Asynchronous
-    @Timeout(500)
-    @Retry(maxRetries = 7, maxDuration = 10, durationUnit = ChronoUnit.SECONDS)
+    @Timeout(EXPECTED_TIMEOUT)
+    @Retry(maxRetries = 7, maxDuration = 30, durationUnit = ChronoUnit.SECONDS)
     public Future<Connection> connectD() throws InterruptedException, ConnectException {
         connectDCalls++;
-        Thread.sleep(2000);
+        Thread.sleep(TEST_TIMEOUT);
         Connection result = new Connection() {
             @Override
             public String getData() {
@@ -94,10 +100,10 @@ public class TimeoutBean {
         Thread.sleep(2000);
     }
 
-    @Timeout(1000)
+    @Timeout(EXPECTED_TIMEOUT)
     @Fallback(MyFallbackHandler.class)
     public Connection connectF() throws InterruptedException, ConnectException {
-        Thread.sleep(5000);
+        Thread.sleep(TEST_TIMEOUT);
         throw new ConnectException("connectF");
     }
 
@@ -124,12 +130,27 @@ public class TimeoutBean {
      *
      * @param milliseconds number of milliseconds to busy wait for
      */
-    @Timeout(500)
-    public void busyWait(int milliseconds) {
+    private void busyWait(long milliseconds) {
         long duration = Duration.ofMillis(milliseconds).toNanos();
         long start = System.nanoTime();
         while (System.nanoTime() - start < duration) {
             // Do nothing
         }
+    }
+
+    /**
+     * Method is not interruptible but will time out
+     */
+    @Timeout(EXPECTED_TIMEOUT)
+    public void busyWaitTimeout() {
+        busyWait(NON_INTERRUPTABLE_TIMEOUT);
+    }
+
+    /**
+     * Method is not interruptible and will not time out
+     */
+    @Timeout(NEGATIVE_TIMEOUT) // Use negative timeout here because the test is going to wait for this time to ensure an interrupt is not fired
+    public void busyWaitNoTimeout() {
+        busyWait(TestConstants.EXPECTED_TIMEOUT);
     }
 }

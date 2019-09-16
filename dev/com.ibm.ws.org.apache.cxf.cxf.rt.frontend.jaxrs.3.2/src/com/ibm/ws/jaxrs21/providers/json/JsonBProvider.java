@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,26 +14,30 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.Iterator;
 import java.util.ServiceLoader;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.UnaryOperator;
 
 import javax.json.bind.Jsonb;
 import javax.json.bind.spi.JsonbProvider;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
-import javax.ws.rs.ext.Providers;
+
+import org.apache.cxf.jaxrs.model.ProviderInfo;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -41,18 +45,18 @@ import com.ibm.websphere.ras.TraceComponent;
 @Produces({ "*/*" })
 @Consumes({ "*/*" })
 @Provider
-public class JsonBProvider implements MessageBodyWriter<Object>, MessageBodyReader<Object> {
+public class JsonBProvider implements MessageBodyWriter<Object>, MessageBodyReader<Object>, UnaryOperator<Jsonb> {
 
     private final static TraceComponent tc = Tr.register(JsonBProvider.class);
+    private final JsonbProvider jsonbProvider;
+    private final AtomicReference<Jsonb> jsonb = new AtomicReference<>();
+    private final Iterable<ProviderInfo<ContextResolver<?>>> contextResolvers;
 
-    private final Jsonb jsonb;
+    public JsonBProvider(JsonbProvider jsonbProvider, Iterable<ProviderInfo<ContextResolver<?>>> contextResolvers) {
+        this.contextResolvers = contextResolvers;
 
-    @Context
-    private Providers providers;
-
-    public JsonBProvider(JsonbProvider jsonbProvider) {
         if(jsonbProvider != null) {
-            this.jsonb = jsonbProvider.create().build();
+            this.jsonbProvider = jsonbProvider;
         } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "<init> called with null provider - looking up via META-INF/services/"
@@ -82,11 +86,7 @@ public class JsonBProvider implements MessageBodyWriter<Object>, MessageBodyRead
 
                         throw new IllegalArgumentException("jsonbProvider can't be null");
                     }});
-                if (provider != null) {
-                    this.jsonb = provider.create().build();
-                } else {
-                    this.jsonb = null;
-                }
+                this.jsonbProvider = provider;
             } catch (PrivilegedActionException ex) {
                 Throwable t = ex.getCause();
                 if (t instanceof RuntimeException) {
@@ -114,7 +114,16 @@ public class JsonBProvider implements MessageBodyWriter<Object>, MessageBodyRead
     public Object readFrom(Class<Object> clazz, Type genericType, Annotation[] annotations,
                            MediaType mediaType, MultivaluedMap<String, String> httpHeaders, InputStream entityStream) throws IOException, WebApplicationException {
         Object obj = null;
-        obj = getJsonb().fromJson(entityStream, genericType);
+        // For most generic return types, we want to use the genericType so as to ensure
+        // that the generic value is not lost on conversion - specifically in collections.
+        // But for CompletionStage<SomeType> we want to use clazz to pull the right value
+        // - and then client code will handle the result, storing it in the CompletionStage.
+        if ((genericType instanceof ParameterizedType) &&
+            CompletionStage.class.equals( ((ParameterizedType)genericType).getRawType())) {
+            obj = getJsonb().fromJson(entityStream, clazz);
+        } else {
+            obj = getJsonb().fromJson(entityStream, genericType);
+        }
 
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "object=" + obj);
@@ -150,7 +159,7 @@ public class JsonBProvider implements MessageBodyWriter<Object>, MessageBodyRead
         }
         return untouchable;
     }
-    
+
     private boolean isJsonType(MediaType mediaType) {
         return mediaType.getSubtype().toLowerCase().startsWith("json")
                         || mediaType.getSubtype().toLowerCase().contains("+json");
@@ -167,14 +176,37 @@ public class JsonBProvider implements MessageBodyWriter<Object>, MessageBodyRead
     }
 
     private Jsonb getJsonb() {
-        if (providers != null) {
-            ContextResolver<Jsonb> cr = providers.getContextResolver(Jsonb.class, MediaType.WILDCARD_TYPE);
-            if (cr != null) {
-                return cr.getContext(null);
+        for (ProviderInfo<ContextResolver<?>> crPi : contextResolvers) {
+            ContextResolver<?> cr = crPi.getProvider();
+            Object o = cr.getContext(null);
+            if (o instanceof Jsonb) {
+                return (Jsonb) o;
             }
-        } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Context-injected Providers is null");
         }
-        return this.jsonb;
+        if (jsonbProvider == null) {
+            return null;
+        }
+
+        Jsonb json = jsonb.get();
+        if (json == null) {
+            return jsonb.updateAndGet(this);
+        }
+
+        return json;
+    }
+
+    /**
+     * @see java.util.function.Function#apply(java.lang.Object)
+     */
+    @Override
+    public Jsonb apply(Jsonb t) {
+        if (t != null) {
+            return t;
+        }
+        return jsonbProvider.create().build();
     }
 }

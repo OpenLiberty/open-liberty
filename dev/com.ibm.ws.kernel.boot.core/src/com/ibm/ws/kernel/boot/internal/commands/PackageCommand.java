@@ -42,7 +42,6 @@ import com.ibm.ws.kernel.boot.internal.commands.ArchiveProcessor.Pair;
 import com.ibm.ws.kernel.boot.internal.commands.PackageProcessor.PackageOption;
 import com.ibm.ws.kernel.boot.logging.TextFileOutputStreamFactory;
 import com.ibm.wsspi.kernel.embeddable.Server;
-import com.ibm.wsspi.kernel.embeddable.ServerBuilder;
 
 /**
  *
@@ -57,14 +56,15 @@ public class PackageCommand {
     final String includeOption;
     final String archiveOption;
     final String rootOption;
+    final String JAR_EXTENSION = ".jar";
     private final static List<String> SUPPORTED_EXTENSIONS = new ArrayList<>();
 
     static {
-      SUPPORTED_EXTENSIONS.add(".zip");
-      SUPPORTED_EXTENSIONS.add(".jar");
-      SUPPORTED_EXTENSIONS.add(".pax");
-      SUPPORTED_EXTENSIONS.add(".tar");
-      SUPPORTED_EXTENSIONS.add(".tar.gz");
+        SUPPORTED_EXTENSIONS.add(".zip");
+        SUPPORTED_EXTENSIONS.add(".jar");
+        SUPPORTED_EXTENSIONS.add(".pax");
+        SUPPORTED_EXTENSIONS.add(".tar");
+        SUPPORTED_EXTENSIONS.add(".tar.gz");
     }
 
     public PackageCommand(BootstrapConfig bootProps, LaunchArguments launchArgs) {
@@ -112,6 +112,11 @@ public class PackageCommand {
         } else {
             archive = getArchive(serverName, new File(serverOutputDir));
 
+            if (archive == null) {
+                System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("error.package.extension"), serverName));
+                return ReturnCode.ERROR_SERVER_PACKAGE;
+            }
+
             //generate package txt
             File packageInfoFile = new File(serverOutputDir, BootstrapConstants.SERVER_PACKAGE_INFO_FILE_PREFIX + packageTimestamp + ".txt");
             generatePackageInfo(packageInfoFile, serverName, date);
@@ -156,12 +161,16 @@ public class PackageCommand {
 
         if (archiveOption == null || archiveOption.isEmpty()) {
             packageTarget = archiveBaseName + "." + defaultExtension;
-//            archive = new File(outputDir, packageTarget);
         } else {
             int index = archiveOption.lastIndexOf(".");
             if (index > 0 && isSupportedExtension(archiveOption)) {
-                packageTarget = archiveOption;
-            } else {
+                // --include=runnable with non-.jar file extension supplied to --archive is not allowed
+                if (PackageProcessor.IncludeOption.RUNNABLE.matches(includeOption) && !archiveOption.toLowerCase().endsWith(JAR_EXTENSION)) {
+                    return null;
+                } else {
+                    packageTarget = archiveOption;
+                }
+            } else { // if no file extension (or non-supported) included on filename, default to .zip, .jar, or .pax
                 packageTarget = archiveOption + '.' + defaultExtension;
             }
         }
@@ -342,9 +351,7 @@ public class PackageCommand {
         //tell user we are collecting.
         System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("info.serverPackagingCollectingInformation"),
                                                 serverName));
-        EmbeddedServerImpl server = (EmbeddedServerImpl) (new ServerBuilder()).setName(serverName).setOutputDir(new File(serverOutputDir).getParentFile()).setUserDir(bootProps.getUserRoot())
-                        //.setServerEventListener(this)
-                        .build();
+        EmbeddedServerImpl server = new EmbeddedServerImpl(serverName, bootProps.getUserRoot(), new File(serverOutputDir).getParentFile(), null, null, null, null, BootstrapConstants.LOC_AREA_NAME_WORKING_UTILS);
 
         //add in the 'do not pass go' property.
         //this will prevent the server raising the start level, preventing features starting

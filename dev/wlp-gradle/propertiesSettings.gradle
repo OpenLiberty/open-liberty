@@ -1,0 +1,149 @@
+/*******************************************************************************
+ * Copyright (c) 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+import java.text.SimpleDateFormat
+
+/**
+ * Set additional properties on `gradle.userProps` and `rootProject.ext`.
+ */
+def setProperties = { props ->
+    /**
+     * Properties used to configure automated build tasks.
+     */
+    // Retain properties from prior builds by loading from generated.properties.
+    File genPropsFile = file('../generated.properties')
+    def storedProps = [
+        'tests.total.failed',
+        'tests.total.successful',
+        'zipopenliberty.archivename',
+        'zipopenliberty.runtime.archivename',
+        'zipopenliberty.kernel.archivename',
+        'zipopenliberty.webprofile8.archivename',
+        'zipopenliberty.javaee8.archivename',
+        'zipopenliberty.microprofile3.archivename'
+    ]
+    if (genPropsFile.exists()) {
+        Properties genProps = new Properties()
+        genPropsFile.withInputStream { genProps.load(it) }
+        storedProps.each { key ->
+            def value = genProps[key]
+            if (value != null) {
+                props.setProperty(key, value)
+            }
+        }
+    }
+
+    boolean isUsingArtifactory  = props.getProperty('is.using.artifactory') == null     ? false : 'true'.equalsIgnoreCase(props.getProperty('is.using.artifactory'))
+    boolean isAutomatedBuild    = props.getProperty("buildResultUUID") != null && props.getProperty('buildLabel') != null
+    boolean isPersonal          = props.getProperty('is.personal') == null              ? false : 'true'.equalsIgnoreCase(props.getProperty('is.personal'))
+    boolean isContinuousBuild   = props.getProperty('is.continuous.build') == null      ? false : 'true'.equalsIgnoreCase(props.getProperty('is.continuous.build'))
+    boolean isRelease           = props.getProperty('is.release') == null               ? false : 'true'.equalsIgnoreCase(props.getProperty('is.release'))
+    boolean isPublicPublishing  = props.getProperty('is.public.publishing') == null     ? false : 'true'.equalsIgnoreCase(props.getProperty('is.public.publishing'))
+    boolean isUnittestsDisabled = props.getProperty('disable.run.runUnitTests') == null ? false : 'true'.equalsIgnoreCase(props.getProperty('disable.run.runUnitTests'))
+
+    props.setProperty('is.automated.build',       isAutomatedBuild.toString())
+    props.setProperty('is.personal',              isPersonal.toString())
+    props.setProperty('is.continuous.build',      isContinuousBuild.toString())
+    props.setProperty('is.release',               isRelease.toString())
+    props.setProperty('is.public.publishing',     isPublicPublishing.toString())
+    props.setProperty('disable.run.runUnitTests', isUnittestsDisabled.toString())
+
+    //Sets my RPM/DEB flag to true on every release build
+    boolean isBuildOsNativePackages = props.getProperty('build.os.native.packages') == null     ? 'true'.equalsIgnoreCase(props.getProperty('is.release')) : 'true'.equalsIgnoreCase(props.getProperty('build.os.native.packages'))
+    props.setProperty('build.os.native.packages', isBuildOsNativePackages.toString())
+
+    gradle.rootProject { rootProject ->
+        rootProject.ext.isUsingArtifactory  = isUsingArtifactory
+        rootProject.ext.isAutomatedBuild    = isAutomatedBuild
+        rootProject.ext.isPersonal          = isPersonal
+        rootProject.ext.isContinuousBuild   = isContinuousBuild
+        rootProject.ext.isRelease           = isRelease
+        rootProject.ext.isPublicPublishing  = isPublicPublishing
+        rootProject.ext.isUnittestsDisabled = isUnittestsDisabled
+        rootProject.ext.isBuildOsNativePackages = isBuildOsNativePackages
+
+        // Test results for this run
+        rootProject.ext.testCountTotal           = 0
+        rootProject.ext.successfulTestCountTotal = 0
+        rootProject.ext.failedTestCountTotal     = 0
+        rootProject.ext.skippedTestCountTotal    = 0
+    }
+
+    /**
+     * Properties for the build's JDK dependencies.
+     */
+    def javaHome = org.gradle.internal.jvm.Jvm.current().getJavaHome()
+    props.setProperty('java.home', javaHome.getAbsolutePath())
+
+    //scrape java.home JARs in jre/lib
+    FileTree jdkLibs = fileTree(System.properties['java.home'])
+
+    //bin is needed for IBM JDKs
+    jdkLibs.include 'bin/default/**/vm.jar'
+    jdkLibs.include 'lib/**/default/**/vm.jar'
+    jdkLibs.include 'lib/*.jar'
+    jdkLibs.exclude 'lib/ibmcfw.jar' //has com.ibm.nws.ejs.ras.Tr, which we don't want
+
+    def jdkLibString = ""
+    boolean isFirstPass = true;
+
+    jdkLibs.each { File file ->
+        if (isFirstPass) {
+            jdkLibString = jdkLibString + file + ";version=file;boot=true"
+        } else {
+            jdkLibString = jdkLibString + ", " + file + ";version=file;boot=true"
+        }
+        isFirstPass = false
+    }
+
+    props.setProperty('javac.bootclasspath.1.4', jdkLibString)
+    props.setProperty('javac.bootclasspath.1.6', jdkLibString)
+    props.setProperty('javac.bootclasspath.1.7', jdkLibString)
+    props.setProperty('javac.bootclasspath.1.8', jdkLibString)
+
+    if (isUsingArtifactory) {
+        // This is to support multiple JDK paths for cross-compilation.
+        props.setProperty('javac.bootclasspath.1.4', '${internaljavac.bootclasspath.1.4}')
+        props.setProperty('javac.bootclasspath.1.6', '${internaljavac.bootclasspath.1.6}')
+        props.setProperty('javac.bootclasspath.1.7', '${internaljavac.bootclasspath.1.7}')
+        props.setProperty('javac.bootclasspath.1.8', '${internaljavac.bootclasspath.1.8}')
+    }
+
+    /**
+     * Properties used for to version build outputs.
+     */
+    String timestamp = new SimpleDateFormat("yyyyMMddHHmm").format(new java.util.Date())
+
+    // For release builds we use the buildLabel as a consistent qualifier.
+    // buildLabel is set by the RTC build engines.
+    String qualifier = (isRelease && isAutomatedBuild) ? props.getProperty('buildLabel') : timestamp
+
+    props.setProperty('version.qualifier', qualifier)
+    props.setProperty('buildLabel', timestamp)
+
+    // The qualifier below is needed for service builds only, do not delete it.
+    gradle.rootProject { rootProject ->
+        rootProject.ext.qualifier = gradle.userProps.getProperty("version.qualifier")
+        rootProject.ext.releaseVersionOverride = gradle.userProps.getProperty('release.version.override')
+    }
+    /**
+     * For each property in `gradle.userProps`, set it to rootProject's extra project properties.
+     */
+    gradle.rootProject { rootProject ->
+        rootProject.ext.userProps = gradle.userProps
+        rootProject.ext.storedProps = storedProps
+        gradle.userProps.each { prop ->
+            rootProject.ext.set(prop.key, prop.value.toString())
+        }
+    }
+}
+
+setProperties(gradle.userProps)

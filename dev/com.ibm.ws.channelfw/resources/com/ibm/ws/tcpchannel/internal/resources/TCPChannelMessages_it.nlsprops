@@ -116,8 +116,8 @@ TCP_CHANNEL_STOPPED=CWWKO0220I: Il canale TCP {0} non \u00e8 pi\u00f9 in ascolto
 TCP_CHANNEL_STOPPED.explanation=Questo messaggio \u00e8 unicamente a scopo informativo.
 TCP_CHANNEL_STOPPED.useraction=Non \u00e8 richiesta alcuna azione.
 
-BIND_ERROR=CWWKO0221E: Inizializzazione del canale TCP {0} non riuscita.  Bind del socket non riuscito per l''host {1} e la porta {2}.  La porta potrebbe essere gi\u00e0 in uso.
-BIND_ERROR.explanation=L'operazione di bind del socket ha avuto esito negativo. Una causa comune \u00e8 che il numero di porta \u00e8 gi\u00e0 in uso.
+BIND_ERROR=CWWKO0221E: Inizializzazione del canale TCP {0} non riuscita.  Bind del socket non riuscito per l''host {1} e la porta {2}.  La porta potrebbe essere gi\u00e0 in uso.  Messaggio dell''eccezione: {3}
+BIND_ERROR.explanation=L'operazione di bind del socket ha avuto esito negativo. Una causa comune \u00e8 che il numero di porta \u00e8 gi\u00e0 in uso.  Per ulteriori informazioni fare riferimento al testo del messaggio dell'eccezione nel messaggio di errore.
 BIND_ERROR.useraction=Verificare che il canale TCP sia stato configurato in modo da utilizzare il numero di porta corretto.
 
 MAX_CONNS_EXCEEDED=CWWKO0222W: Il canale TCP {0} ha superato il numero massimo di connessioni aperte {1}.

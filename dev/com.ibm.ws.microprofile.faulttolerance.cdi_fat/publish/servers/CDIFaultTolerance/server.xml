@@ -34,4 +34,7 @@
 	
 	<logging traceSpecification="FAULTTOLERANCE=all=enabled:METRICS=all=enabled"/>
 	
+	<!-- Allow the OpenJDK 11 ForkJoinPool to read its properties without raising exceptions until #7111 is resolved--> 
+	<javaPermission className="java.util.PropertyPermission" name="java.util.concurrent.ForkJoinPool.common.maximumSpares" actions="read"/>
+	
 </server>

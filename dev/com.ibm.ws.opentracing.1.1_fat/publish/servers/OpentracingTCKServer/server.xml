@@ -15,7 +15,8 @@
         <feature>cdi-1.2</feature>
 	<feature>opentracing-1.1</feature>
 	<feature>mpOpenTracing-1.1</feature>
-	<feature>usr:opentracingMock-0.31</feature>
+	<feature>usr:opentracingMock-1.1</feature>
+	<feature>arquillian-support-1.0</feature>
     </featureManager>
 
     <include location="../fatTestPorts.xml" />

@@ -1,0 +1,25 @@
+/**
+ * Compile at Java 6 in order for this to run in WebSphere Migration Tools and Transformation Advisor.
+ * Since com.ibm.ws.kernel.feature.core compiles at Java 7,
+ * copy specific sources we need to compile at Java 6.
+ */
+task prebuild(type: Sync) {
+    into "build/src"
+    from("../com.ibm.ws.kernel.feature.core/src") {
+        include "com/ibm/ws/kernel/feature/AppForceRestart.java",
+                "com/ibm/ws/kernel/feature/ProcessType.java",
+                "com/ibm/ws/kernel/feature/FeatureDefinition.java",
+                "com/ibm/ws/kernel/feature/Visibility.java",
+                "com/ibm/ws/kernel/feature/package-info.java",
+                "com/ibm/ws/kernel/feature/internal/FeatureResolverImpl.java",
+                "com/ibm/ws/kernel/feature/internal/ProvisionerConstants.java",
+                "com/ibm/ws/kernel/feature/provisioning/*.java",
+                "com/ibm/ws/kernel/feature/resolver/*.java"
+    }
+
+    from("../com.ibm.ws.kernel.boot.core/src") {
+        include "com/ibm/ws/kernel/provisioning/ExtensionConstants.java",
+                "com/ibm/ws/kernel/provisioning/package-info.java"
+    }
+}
+compileJava.dependsOn prebuild

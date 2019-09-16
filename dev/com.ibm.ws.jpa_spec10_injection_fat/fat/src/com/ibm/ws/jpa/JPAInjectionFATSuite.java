@@ -15,8 +15,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.ibm.ws.jpa.injection.dfi.JPA10Injection_DFI_NoInheritance;
-import com.ibm.ws.jpa.injection.dmi.JPA10Injection_DMI_NoInheritance;
+import com.ibm.ws.jpa.injection.dfi.JPA10Injection_DFI;
+import com.ibm.ws.jpa.injection.dmi.JPA10Injection_DMI;
 import com.ibm.ws.jpa.injection.jndi.JPA10Injection_JNDI;
 
 /**
@@ -26,8 +26,8 @@ import com.ibm.ws.jpa.injection.jndi.JPA10Injection_JNDI;
 @RunWith(Suite.class)
 @SuiteClasses({
                 JPA10Injection_JNDI.class,
-                JPA10Injection_DFI_NoInheritance.class,
-                JPA10Injection_DMI_NoInheritance.class,
+                JPA10Injection_DFI.class,
+                JPA10Injection_DMI.class
 })
 public class JPAInjectionFATSuite {
 

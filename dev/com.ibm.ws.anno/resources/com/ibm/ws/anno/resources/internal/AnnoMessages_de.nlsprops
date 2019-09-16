@@ -30,30 +30,30 @@
 # -------------------------------------------------------------------------------------------------
 #
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} The class name of the resource
-# # {2} the hashcode id of the resource
+# # {2} the hashcode ID of the resource
 # # {3} The error message from the exception
 ANNO_CLASSSOURCE_CLOSE1_EXCEPTION=CWWKC0001W: [ {0} ]: Das Schlie\u00dfen der Quelle [{1}] [{2}] ist fehlgeschlagen. Fehlernachricht: {3}
 ANNO_CLASSSOURCE_CLOSE1_EXCEPTION.explanation=Beim Schlie\u00dfen der Ressource wurde eine Ausnahme ausgel\u00f6st.
-ANNO_CLASSSOURCE_CLOSE1_EXCEPTION.useraction=Suchen Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht nach weiteren Informationen.
+ANNO_CLASSSOURCE_CLOSE1_EXCEPTION.useraction=Weitere Informationen finden Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} The name of the resource
 # # {2} the name of the class associated with the resource
 # # {3} The error message from the exception
 ANNO_CLASSSOURCE_CLOSE2_EXCEPTION=CWWKC0002W: [ {0} ]: Das Schlie\u00dfen der Ressource [{1}] f\u00fcr die Klasse [{2}] ist fehlgeschlagen. Fehlernachricht: {3}
 ANNO_CLASSSOURCE_CLOSE2_EXCEPTION.explanation=Beim Schlie\u00dfen des Eingabedatenstroms f\u00fcr die Ressource wurde eine Ausnahme ausgel\u00f6st.
-ANNO_CLASSSOURCE_CLOSE2_EXCEPTION.useraction=Suchen Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht nach weiteren Informationen.
+ANNO_CLASSSOURCE_CLOSE2_EXCEPTION.useraction=Weitere Informationen finden Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} The name of the resource, includes the full path to the class
 # # {2} the name of the class associated with the resource
 ANNO_CLASSSOURCE_OPEN1_EXCEPTION=CWWKC0003W: [ {0} ]: Das \u00d6ffnen der Ressource [{1}] f\u00fcr die Klasse [{2}] ist fehlgeschlagen.
 ANNO_CLASSSOURCE_OPEN1_EXCEPTION.explanation=Beim \u00d6ffnen eines Eingabedatenstroms f\u00fcr die Ressource wurde eine Ausnahme ausgel\u00f6st.
-ANNO_CLASSSOURCE_OPEN1_EXCEPTION.useraction=Suchen Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht nach weiteren Informationen.
+ANNO_CLASSSOURCE_OPEN1_EXCEPTION.useraction=Weitere Informationen finden Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} file name
 # # {2} a class name
 # # {3} a file name
@@ -62,16 +62,16 @@ ANNO_CLASSSOURCE_ADAPT_EXCEPTION=CWWKC0004W: [ {0} ]: Die Konvertierung von [{1}
 ANNO_CLASSSOURCE_ADAPT_EXCEPTION.explanation=Die Datei konnte nicht in das neue Typobjekt konvertiert werden.
 ANNO_CLASSSOURCE_ADAPT_EXCEPTION.useraction=Es ist keine Benutzeraktion verf\u00fcgbar.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} the resource name, class name plus path
 # # {2} the name of the item
 # # {3} the name of the container that holds item
 # # {4} the name of the class
 ANNO_CLASSSOURCE_OPEN2_EXCEPTION=CWWKC0005W: [ {0} ]: Das \u00d6ffnen von [{1}] in [{2}] unter Stammelement [{3}] f\u00fcr die Klasse [{4}] ist fehlgeschlagen.
 ANNO_CLASSSOURCE_OPEN2_EXCEPTION.explanation=Beim \u00d6ffnen eines Eingabedatenstroms f\u00fcr die Ressource wurde eine Ausnahme ausgel\u00f6st.
-ANNO_CLASSSOURCE_OPEN2_EXCEPTION.useraction=Suchen Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht nach weiteren Informationen.
+ANNO_CLASSSOURCE_OPEN2_EXCEPTION.useraction=Weitere Informationen finden Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} the resource name, class name plus path
 # # {2} the name of the container that holds item
 # # {3} the name of the class
@@ -79,23 +79,23 @@ ANNO_CLASSSOURCE_RESOURCE_NOTFOUND=CWWKC0006W: [ {0} ]: Der Eintrag [{1}] wurde 
 ANNO_CLASSSOURCE_RESOURCE_NOTFOUND.explanation=Die Ressource wurde nicht im Stammcontainer gefunden.
 ANNO_CLASSSOURCE_RESOURCE_NOTFOUND.useraction=Vergewissern Sie sich, dass der Ressourcenpfad f\u00fcr die Klasse im Container vorhanden ist.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} the resource name, class name plus path
 # # {2} the name of the item
 # # {3} the name of the container that holds item
 # # {4} the name of the class
 ANNO_CLASSSOURCE_CLOSE3_EXCEPTION=CWWKC0007W: [ {0} ]: Das Schlie\u00dfen von [{1}] in [{2}] unter Stammelement [{3}] f\u00fcr die Klasse [{4}] ist fehlgeschlagen.
 ANNO_CLASSSOURCE_CLOSE3_EXCEPTION.explanation=Beim Versuch, den Eingabedatenstrom f\u00fcr die Klasse zu schlie\u00dfen, wurde eine Ausnahme ausgel\u00f6st.
-ANNO_CLASSSOURCE_CLOSE3_EXCEPTION.useraction=Suchen Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht nach weiteren Informationen.
+ANNO_CLASSSOURCE_CLOSE3_EXCEPTION.useraction=Weitere Informationen finden Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} a directory name
 # # {2} the path for the directory
 ANNO_CLASSSOURCE_EMPTY_DIR=CWWKC0008W: [ {0} ]: Es wurden keine Dateien in [{1}] unter Stammelement [{2}] gefunden.
 ANNO_CLASSSOURCE_EMPTY_DIR.explanation=F\u00fcr das Zielverzeichnis wurde Annotationsscanning aufgerufen, aber in dem Zielverzeichnis wurden keine Klassendateien gefunden.
 ANNO_CLASSSOURCE_EMPTY_DIR.useraction=Vergewissern Sie sich, dass das Verzeichnis auch wirklich Klassen enthalten muss. Entfernen Sie leere Verzeichnisse aus der Anwendung.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} the resource name, class name plus path
 # # {2} a file path
 # # {3} the name of the container for {1}
@@ -104,211 +104,211 @@ ANNO_CLASSSOURCE_NOT_FILE=CWWKC0009W: [ {0} ]: Die Ressource [{1}] wurde als Ver
 ANNO_CLASSSOURCE_NOT_FILE.explanation=Als Ressource wurde eine Datei erwartet, aber die Ressource ist ein Verzeichnis.
 ANNO_CLASSSOURCE_NOT_FILE.useraction=Es ist keine Benutzeraktion verf\u00fcgbar.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} a file path
 # # {2} the resource name, class name plus path
 # # {3} a directory name
 # # {4} the name of the class
 ANNO_CLASSSOURCE_OPEN3_EXCEPTION=CWWKC0010W: [ {0} ]: Das \u00d6ffnen von [{1}] f\u00fcr die Ressource [{2}] unter dem Stammelement [{3}] f\u00fcr die Klasse [{4}] ist fehlgeschlagen.
 ANNO_CLASSSOURCE_OPEN3_EXCEPTION.explanation=Beim Versuch, einen Eingabedatenstrom f\u00fcr die Datei zu \u00f6ffnen, ist eine Ausnahme eingetreten.
-ANNO_CLASSSOURCE_OPEN3_EXCEPTION.useraction=Suchen Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht nach weiteren Informationen.
+ANNO_CLASSSOURCE_OPEN3_EXCEPTION.useraction=Weitere Informationen finden Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} A resource name
 # # {2} A directory path
 # # {3} A class name
 # # {4} The error message from the exception
 ANNO_CLASSSOURCE_CLOSE4_EXCEPTION=CWWKC0011W: [ {0} ]: Das Schlie\u00dfen der Ressource [{1}] unter dem Stammelement [{2}] f\u00fcr die Klasse [{3}] ist fehlgeschlagen. Fehlernachricht: {4}
 ANNO_CLASSSOURCE_CLOSE4_EXCEPTION.explanation=Beim Schlie\u00dfen des Eingabedatenstroms f\u00fcr die Ressource wurde eine Ausnahme ausgel\u00f6st.
-ANNO_CLASSSOURCE_CLOSE4_EXCEPTION.useraction=Suchen Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht nach weiteren Informationen.
+ANNO_CLASSSOURCE_CLOSE4_EXCEPTION.useraction=Weitere Informationen finden Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} A jar file path name
 ANNO_CLASSSOURCE_OPEN4_EXCEPTION=CWWKC0012W: [ {0} ]: Das \u00d6ffnen von [{1}] ist mit einer Ausnahme fehlgeschlagen.
 ANNO_CLASSSOURCE_OPEN4_EXCEPTION.explanation=Die Datei wurde als JAR-Datei ge\u00f6ffnet und diese Aktion hat eine Ausnahme ausgel\u00f6st.
-ANNO_CLASSSOURCE_OPEN4_EXCEPTION.useraction=Suchen Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht nach weiteren Informationen.
+ANNO_CLASSSOURCE_OPEN4_EXCEPTION.useraction=Weitere Informationen finden Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} The name of the jar file
 # # {2} A number, the value of the 'open counter'
 ANNO_CLASSSOURCE_JAR_STATE_BAD=CWWKC0013W: [ {0} ]: Die JAR-Datei [{1}] mit dem \u00d6ffnungsz\u00e4hler [{2}] hat f\u00fcr das Schlie\u00dfen nicht den richtigen Status.
 ANNO_CLASSSOURCE_JAR_STATE_BAD.explanation=Es ist ein interner Fehler aufgetreten. Die Anzahl aktiver Benutzer f\u00fcr die JAR-Datei stimmt nicht mit dem Status der JAR-Datei \u00fcberein.
 ANNO_CLASSSOURCE_JAR_STATE_BAD.useraction=CMSG0002
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} The name of a jar file
 ANNO_CLASSSOURCE_CLOSE5_EXCEPTION=CWWKC0014W: [ {0} ]: Das Schlie\u00dfen von [{1}] ist fehlgeschlagen.
 ANNO_CLASSSOURCE_CLOSE5_EXCEPTION.explanation=Beim Versuch, das JarFile-Objekt zu schlie\u00dfen, ist eine Ausnahme eingetreten.
-ANNO_CLASSSOURCE_CLOSE5_EXCEPTION.useraction=Suchen Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht nach weiteren Informationen.
+ANNO_CLASSSOURCE_CLOSE5_EXCEPTION.useraction=Weitere Informationen finden Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} a resource name
 # # {2} a class name
 # # {3} a jar file path
 ANNO_CLASSSOURCE_OPEN5_EXCEPTION=CWWKC0015W: [ {0} ]: Das \u00d6ffnen von [{1}] f\u00fcr die Klasse [{2}] in [{3}] ist fehlgeschlagen.
 ANNO_CLASSSOURCE_OPEN5_EXCEPTION.explanation=Es wurde ein Eintrag f\u00fcr die Klasse in der JAR-Datei gefunden, aber bei der Erstellung eines Eingabedatenstroms f\u00fcr die Klasse wurde eine Ausnahme ausgel\u00f6st.
-ANNO_CLASSSOURCE_OPEN5_EXCEPTION.useraction=Suchen Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht nach weiteren Informationen.
+ANNO_CLASSSOURCE_OPEN5_EXCEPTION.useraction=Weitere Informationen finden Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} A resource name
 # # {2} A class name
 # # {3} A jar file path
 # # {4} The error message from the exception
 ANNO_CLASSSOURCE_CLOSE6_EXCEPTION=CWWKC0016W: [ {0} ]: Das Schlie\u00dfen der Ressource [{1}] f\u00fcr die Klasse [{2}] in [{3}] ist fehlgeschlagen. Fehlernachricht: {4}
 ANNO_CLASSSOURCE_CLOSE6_EXCEPTION.explanation=Beim Schlie\u00dfen eines Eingabedatenstroms f\u00fcr die Ressource wurde eine Ausnahme ausgel\u00f6st.
-ANNO_CLASSSOURCE_CLOSE6_EXCEPTION.useraction=Suchen Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht nach weiteren Informationen.
+ANNO_CLASSSOURCE_CLOSE6_EXCEPTION.useraction=Weitere Informationen finden Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} a java class name
 # # {2} a method name
 ANNO_ANNOINFO_NO_METHOD=CWWKC0017W: Die Annotation [{0}] der Annotationsklasse [{1}] enth\u00e4lt die Methode [{2}] nicht.
 ANNO_ANNOINFO_NO_METHOD.explanation=F\u00fcr einen Parameter in einer codierten Annotation wurde keine \u00fcbereinstimmende Methode gefunden.
 ANNO_ANNOINFO_NO_METHOD.useraction=Es ist keine Benutzeraktion verf\u00fcgbar.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} a hash id used to identify the object
 # # {2} a hash id used to identify the object
 ANNO_CLASSINFO_EXISTS1=CWWKC0018W: [{0}] [{1}] ist bereits als eindeutige Java-Klasse [{2}] vorhanden.
 ANNO_CLASSINFO_EXISTS1.explanation=Es ist bereits ein Klasseninfoobjekt f\u00fcr die Klasse im Cache vorhanden.
 ANNO_CLASSINFO_EXISTS1.useraction=Es ist keine Benutzeraktion verf\u00fcgbar.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} a hash id used to identify the object
 ANNO_CLASSINFO_EXISTS2=CWWKC0019W: [{0}] [{1}] ist bereits als Java-Klasse vorhanden.
 ANNO_CLASSINFO_EXISTS2.explanation=Es ist bereits ein Klasseninfoobjekt f\u00fcr die Klasse im Cache vorhanden.
 ANNO_CLASSINFO_EXISTS2.useraction=Es ist keine Benutzeraktion verf\u00fcgbar.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} a hash id used to identify the object
 # # {2} a hash id used to identify the object
 ANNO_CLASSINFO_EXISTS3=CWWKC0020W: [{0}] [{1}] ist bereits als eindeutige annotierte Klasse [{2}] vorhanden.
 ANNO_CLASSINFO_EXISTS3.explanation=Es ist bereits ein Klasseninfoobjekt f\u00fcr die Klasse im Cache vorhanden.
 ANNO_CLASSINFO_EXISTS3.useraction=Es ist keine Benutzeraktion verf\u00fcgbar.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} a hash id used to identify the object
 ANNO_CLASSINFO_EXISTS4=CWWKC0021W: [{0}] [{1}] ist bereits als annotierte Klasse vorhanden.
 ANNO_CLASSINFO_EXISTS4.explanation=Es ist bereits ein Klasseninformationsobjekt f\u00fcr die Klasse im Cache vorhanden.
 ANNO_CLASSINFO_EXISTS4.useraction=Es ist keine Benutzeraktion verf\u00fcgbar.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} the name of a class
 ANNO_CLASSINFO_SCAN_EXCEPTION=CWWKC0022W: [ {0} ] Beim Scannen der Klasse [{1}] wurde eine Ausnahme ausgel\u00f6st. Nachricht: [{2}] Ursache: [{3}]
 ANNO_CLASSINFO_SCAN_EXCEPTION.explanation=Beim Scannen einer Klasse nach Annotationen wurde eine Ausnahme ausgel\u00f6st.
-ANNO_CLASSINFO_SCAN_EXCEPTION.useraction=Suchen Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht nach weiteren Informationen.
+ANNO_CLASSINFO_SCAN_EXCEPTION.useraction=Weitere Informationen finden Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} a hash id used to identify the object
 # # {2} a hash id used to identify the object
 ANNO_CLASSINFO_METHODEXISTS=CWWKC0023W: [ {0} ] Durch das Hinzuf\u00fcgen von [{1}] wird ein vorhandenes Objekt [{2}] \u00fcberschrieben.
 ANNO_CLASSINFO_METHODEXISTS.explanation=Es ist bereits ein Methodenobjekt f\u00fcr die Klasse im Cache vorhanden.
 ANNO_CLASSINFO_METHODEXISTS.useraction=Es ist keine Benutzeraktion erforderlich. 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} a hash id used to identify the object
 # # {2} a hash id used to identify the object
 ANNO_CLASSINFO_FIELDEXISTS=CWWKC0024W: [ {0} ] Durch das Hinzuf\u00fcgen von [{1}] wird ein vorhandenes Objekt [{2}] \u00fcberschrieben.
 ANNO_CLASSINFO_FIELDEXISTS.explanation=Es ist bereits ein Feldobjekt f\u00fcr die Klasse im Cache vorhanden.
 ANNO_CLASSINFO_FIELDEXISTS.useraction=Es ist keine Benutzeraktion erforderlich. 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} The name of a class
 ANNO_CLASSINFO_CLASS_NOTFOUND=CWWKC0025W: [ {0} ] Die Klasse wurde nicht gefunden [{1}].
 ANNO_CLASSINFO_CLASS_NOTFOUND.explanation=Der Annotationsscanprozess konnte die Klasse nicht aufl\u00f6sen. M\u00f6glicherweise kann die Klasse in einem sp\u00e4teren Versuch aufgel\u00f6st werden.
 ANNO_CLASSINFO_CLASS_NOTFOUND.useraction=Vergewissern Sie sich, dass die Klasse in der Anwendung bzw. im Klassenpfad der Anwendung enthalten ist.
 
-# # {0} A hashcode id used to identify the object emitting the message
-# # {1} A hashcode id used to identify the object causing the exception
+# # {0} A hashcode ID used to identify the object that emits the message
+# # {1} A hashcode ID used to identify the object causing the exception
 # # {2} The error message from the exception
 ANNO_INFOSTORE_OPEN1_EXCEPTION=CWWKC0026W: [ {0} ]: Beim \u00d6ffnen von [{1}] wurde eine Ausnahme ausgel\u00f6st. Nachricht: {2}
 ANNO_INFOSTORE_OPEN1_EXCEPTION.explanation=Beim \u00d6ffnen einer Klassenquelle wurde eine Ausnahme ausgel\u00f6st.
-ANNO_INFOSTORE_OPEN1_EXCEPTION.useraction=Suchen Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht nach weiteren Informationen.
+ANNO_INFOSTORE_OPEN1_EXCEPTION.useraction=Weitere Informationen finden Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht.
 
-# # {0} A hashcode id used to identify the object emitting the message
-# # {1} A hashcode id used to identify the object causing the exception
+# # {0} A hashcode ID used to identify the object that emits the message
+# # {1} A hashcode ID used to identify the object causing the exception
 ANNO_INFOSTORE_CLOSE1_EXCEPTION=CWWKC0027W: [ {0} ]: Beim Schlie\u00dfen von [{1}] wurde eine Ausnahme ausgel\u00f6st.
 ANNO_INFOSTORE_CLOSE1_EXCEPTION.explanation=Beim Schlie\u00dfen einer Klassenquelle wurde eine Ausnahme ausgel\u00f6st.
-ANNO_INFOSTORE_CLOSE1_EXCEPTION.useraction=Suchen Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht nach weiteren Informationen.
+ANNO_INFOSTORE_CLOSE1_EXCEPTION.useraction=Weitere Informationen finden Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} the full resource name for the class
 # # {2} The class name
 ANNO_INFOSTORE_OPEN2_EXCEPTION=CWWKC0028W: [ {0} ]: Das \u00d6ffnen eines Eingabedatenstroms f\u00fcr die Ressource [{1}] f\u00fcr die Klasse [{2}] ist mit einer Ausnahme fehlgeschlagen.
 ANNO_INFOSTORE_OPEN2_EXCEPTION.explanation=Es ist eine Ausnahme eingetreten, als beim Scannen nach Annotationen versucht wurde, einen Eingabedatenstrom f\u00fcr die Klasse zu \u00f6ffnen.
-ANNO_INFOSTORE_OPEN2_EXCEPTION.useraction=Suchen Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht nach weiteren Informationen.
+ANNO_INFOSTORE_OPEN2_EXCEPTION.useraction=Weitere Informationen finden Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} the full resource name for the class
 # # {2} The class name
 ANNO_INFOSTORE_CLOSE2_EXCEPTION=CWWKC0029W: [ {0} ]: Das Schlie\u00dfen eines Eingabedatenstroms f\u00fcr die Ressource [{1}] f\u00fcr die Klasse [{2}] ist mit einer Ausnahme fehlgeschlagen.
 ANNO_INFOSTORE_CLOSE2_EXCEPTION.explanation=Es ist eine Ausnahme eingetreten, als beim Scannen nach Annotationen versucht wurde, einen Eingabedatenstrom f\u00fcr die Klasse zu schlie\u00dfen.
-ANNO_INFOSTORE_CLOSE2_EXCEPTION.useraction=Suchen Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht nach weiteren Informationen.
+ANNO_INFOSTORE_CLOSE2_EXCEPTION.useraction=Weitere Informationen finden Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht.
 
 # # {0} The class name
 # # {1} the full resource name for the class
 ANNO_CREATE_READER_EXCEPTION=CWWKC0030W: Die Erstellung eines Klassenlesers f\u00fcr die Klasse [ {0} ] aus der Ressource [{1}] ist mit einer Ausnahme fehlgeschlagen.
 ANNO_CREATE_READER_EXCEPTION.explanation=Es wurde eine Ausnahme ausgel\u00f6st, als beim Scannen nach Annotationen versucht wurde, ein ClassReader-Objekt f\u00fcr die Verarbeitung des Eingabedatenstroms f\u00fcr die Ressource zu erstellen.
-ANNO_CREATE_READER_EXCEPTION.useraction=Suchen Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht nach weiteren Informationen.
+ANNO_CREATE_READER_EXCEPTION.useraction=Weitere Informationen finden Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} a parameter name
 # # {2} a parameter value
 ANNO_INFOVISIT_INVALID_STATE=CWWKC0031W: Interner Statusfehler: Visitor [ {0} ] [ {1} ] wird auf [ {2} ] gesetzt.
 ANNO_INFOVISIT_INVALID_STATE.explanation=Bei der Verarbeitung einer Annotation ist ein Fehler aufgetreten, weil das Visitor-Objekt ung\u00fcltig ist.
 ANNO_INFOVISIT_INVALID_STATE.useraction=CMSG0001 
 
-# # {0} A hashcode id used to identify the object emitting the message
-# # {1} A hashcode id used to identify the object that exists
+# # {0} A hashcode ID used to identify the object that emits the message
+# # {1} A hashcode ID used to identify the object that exists
 ANNO_INFOVISITOR_RESET1=CWWKC0032W: [ {0} ] Es ist noch ein Paket vorhanden [ {1} ]
 ANNO_INFOVISITOR_RESET1.explanation=Interner Fehler. W\u00e4hrend der Zur\u00fccksetzung des Visitor-Objekts wurde festgestellt, dass vorhandene Daten existieren.
 ANNO_INFOVISITOR_RESET1.useraction=CMSG0002
 
-# # {0} A hashcode id used to identify the object emitting the message
-# # {1} A hashcode id used to identify the object that exists
+# # {0} A hashcode ID used to identify the object that emits the message
+# # {1} A hashcode ID used to identify the object that exists
 ANNO_INFOVISITOR_RESET2=CWWKC0033W: [ {0} ] Es ist noch eine Klasse vorhanden [ {1} ]
 ANNO_INFOVISITOR_RESET2.explanation=Interner Fehler. W\u00e4hrend der Zur\u00fccksetzung des Visitor-Objekts wurde festgestellt, dass vorhandene Daten existieren.
 ANNO_INFOVISITOR_RESET2.useraction=CMSG0002
 
-# # {0} A hashcode id used to identify the object emitting the message
-# # {1} A hashcode id used to identify the object that exists
+# # {0} A hashcode ID used to identify the object that emits the message
+# # {1} A hashcode ID used to identify the object that exists
 ANNO_INFOVISITOR_RESET3=CWWKC0034W: [ {0} ] Es ist noch eine Methode vorhanden [ {1} ]
 ANNO_INFOVISITOR_RESET3.explanation=Interner Fehler. W\u00e4hrend der Zur\u00fccksetzung des Visitor-Objekts wurde festgestellt, dass vorhandene Daten existieren.
 ANNO_INFOVISITOR_RESET3.useraction=CMSG0002
 
-# # {0} A hashcode id used to identify the object emitting the message
-# # {1} A hashcode id used to identify the object that exists
+# # {0} A hashcode ID used to identify the object that emits the message
+# # {1} A hashcode ID used to identify the object that exists
 ANNO_INFOVISITOR_RESET4=CWWKC0035W: [ {0} ] Es ist noch ein Feld vorhanden [ {1} ]
 ANNO_INFOVISITOR_RESET4.explanation=Interner Fehler. W\u00e4hrend der Zur\u00fccksetzung des Visitor-Objekts wurde festgestellt, dass vorhandene Daten existieren.
 ANNO_INFOVISITOR_RESET4.useraction=CMSG0002
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 ANNO_INFOVISITOR_RESET5=CWWKC0036W: [ {0} ] Es ist noch ein Haltestatus vorhanden.
 ANNO_INFOVISITOR_RESET5.explanation=Interner Fehler. W\u00e4hrend der Zur\u00fccksetzung des Visitor-Objekts wurde festgestellt, dass vorhandene Daten existieren.
 ANNO_INFOVISITOR_RESET5.useraction=CMSG0002
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} The name of a class
 ANNO_INFOVISITOR_RESET6=CWWKC0037W: [ {0} ] Es ist noch der Name einer externen Klasse vorhanden [ {1} ].
 ANNO_INFOVISITOR_RESET6.explanation=Interner Fehler. W\u00e4hrend der Zur\u00fccksetzung des Visitor-Objekts wurde festgestellt, dass vorhandene Daten existieren.
 ANNO_INFOVISITOR_RESET6.useraction=CMSG0002
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} The name of a class package
 ANNO_INFOVISITOR_VISIT1=CWWKC0038W: [ {0} ] Das Paket f\u00fcr den Namen [ {1} ] ist null.
 ANNO_INFOVISITOR_VISIT1.explanation=Interner Fehler. Beim Scannen nach Annotationen konnte ein Objekt nicht erstellt werden.
 ANNO_INFOVISITOR_VISIT1.useraction=CMSG0002
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} The name of a class field
 ANNO_INFOVISITOR_VISIT2=CWWKC0039W: [ {0} ] Das Feldobjekt f\u00fcr den Namen [ {1} ] wurde nicht gefunden.
 ANNO_INFOVISITOR_VISIT2.explanation=Interner Fehler. Beim Scannen nach Annotationen konnte ein Objekt nicht erstellt werden.
 ANNO_INFOVISITOR_VISIT2.useraction=CMSG0002
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} The name of a class method
 ANNO_INFOVISITOR_VISIT3=CWWKC0040W: [ {0} ] Das Methodenobjekt f\u00fcr den Namen [ {1} ] wurde nicht gefunden.
 ANNO_INFOVISITOR_VISIT3.explanation=Interner Fehler. Beim Scannen nach Annotationen konnte ein Objekt nicht erstellt werden.
 ANNO_INFOVISITOR_VISIT3.useraction=CMSG0002
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 ANNO_INFOVISITOR_VISIT4=CWWKC0041W: [ {0} ] Das visitor-Objekt kann nicht identifiziert werden.
 ANNO_INFOVISITOR_VISIT4.explanation=CMSG0001 
 ANNO_INFOVISITOR_VISIT4.useraction=CMSG0002
@@ -324,23 +324,23 @@ ANNO_CLASSINFO_INTERFACE_MISSORDERED_ADD.useraction=CMSG0002
 
 ANNO_TARGETS_SCAN_EXCEPTION=CWWKC0044W: Beim Scannen nach Klassen- und Annotationsdaten ist eine Ausnahme eingetreten. Die Ausnahme war {0}.
 ANNO_TARGETS_SCAN_EXCEPTION.explanation=Beim Scannen nach Klassen- und Annotationsdaten ist ein Fehler aufgetreten. Das zugeordnete Modul funktioniert m\u00f6glicherweise nicht ordnungsgem\u00e4\u00df.
-ANNO_TARGETS_SCAN_EXCEPTION.useraction=Suchen Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht nach weiteren Informationen.
+ANNO_TARGETS_SCAN_EXCEPTION.useraction=Weitere Informationen finden Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht.
 
 ANNO_TARGETS_FLUSH_WRITE_EXCEPTION=CWWKC0045W: Beim Abschlie\u00dfen des Schreibens der Klassen- und Annotationsdaten ist eine Ausnahme eingetreten.
 ANNO_TARGETS_FLUSH_WRITE_EXCEPTION.explanation=Beim Abschlie\u00dfen des Schreibens der Klassen- und Annotationsdaten ist ein Problem aufgetreten. Der Cache mit den Klassen- und Annotationsdaten ist m\u00f6glicherweise unvollst\u00e4ndig und sollte gel\u00f6scht werden.
-ANNO_TARGETS_FLUSH_WRITE_EXCEPTION.useraction=Suchen Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht nach weiteren Informationen.
+ANNO_TARGETS_FLUSH_WRITE_EXCEPTION.useraction=Weitere Informationen finden Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht.
 
 ANNO_TARGETS_READ_EXCEPTION=CWWKC0046W: Beim Lesen der Annotationsdaten ist eine Ausnahme eingetreten.
 ANNO_TARGETS_READ_EXCEPTION.explanation=Beim Lesen der Klassen- und Annotationsdaten ist ein Problem aufgetreten. Eine weitere Verarbeitung kann zu ung\u00fcltigen Ergebnissen f\u00fchren, weil die Daten nicht vollst\u00e4ndig gelesen wurden. Der Cache mit den Klassen- und Annotationsdaten sollte gel\u00f6scht werden.
-ANNO_TARGETS_READ_EXCEPTION.useraction=Suchen Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht nach weiteren Informationen.
+ANNO_TARGETS_READ_EXCEPTION.useraction=Weitere Informationen finden Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht.
 
 ANNO_TARGETS_WRITE_EXCEPTION=CWWKC0047W: Beim Schreiben der Annotationsdaten ist eine Ausnahme eingetreten.
 ANNO_TARGETS_WRITE_EXCEPTION.explanation=Beim Schreiben der Klassen- und Annotationsdaten ist ein Problem aufgetreten. Die angezeigte Zeile wurde nicht erfolgreich in die Klassen- und Annotationsdaten geschrieben. Der Cache mit den Klassen- und Annotationsdaten ist m\u00f6glicherweise unvollst\u00e4ndig und sollte gel\u00f6scht werden.
-ANNO_TARGETS_WRITE_EXCEPTION.useraction=Suchen Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht nach weiteren Informationen.
+ANNO_TARGETS_WRITE_EXCEPTION.useraction=Weitere Informationen finden Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht.
 
 ANNO_TARGETS_SCAN_CLASS_EXCEPTION=CWWKC0048W: Beim Scannen der Klasse [ {0} ] nach Klassen- und Annotationsdaten ist eine Ausnahme eingetreten.
 ANNO_TARGETS_SCAN_CLASS_EXCEPTION.explanation=Beim Versuch, eine Klasse nach Klassen- und Annotationsdaten zu scannen, ist ein Problem aufgetreten. \u00dcberpr\u00fcfen Sie die angezeigte Klasse, um sicherzustellen, dass sie lesbar ist und g\u00fcltige Klassenbytes enth\u00e4lt.
-ANNO_TARGETS_SCAN_CLASS_EXCEPTION.useraction=Suchen Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht nach weiteren Informationen.
+ANNO_TARGETS_SCAN_CLASS_EXCEPTION.useraction=Weitere Informationen finden Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht.
 
 ANNO_TARGETS_FAILED_TO_CREATE_READER=CWWKC0049W: Beim Erstellen eines Klassenbytecodelesers f\u00fcr die Klasse [ {0} ] ist eine Ausnahme eingetreten.
 ANNO_TARGETS_FAILED_TO_CREATE_READER.explanation=Beim Vorbereiten eines Klassenbytecodelesers ist ein Problem aufgetreten. Die Bytecodewerte f\u00fcr diese Klasse sind m\u00f6glicherweise nicht g\u00fcltig oder die Klassendatei ist nicht lesbar. Deshalb sind die Klassen- und Annotationsdaten f\u00fcr diese Klasse nicht verf\u00fcgbar und das Modul, das diese Klasse verwendet, funktioniert m\u00f6glicherweise nicht ordnungsgem\u00e4\u00df.
@@ -398,13 +398,13 @@ ANNO_UTIL_UNRECOGNIZED_TYPE=CWWKC0062W: Interner Verarbeitungsfehler: In der Zei
 ANNO_UTIL_UNRECOGNIZED_TYPE.explanation=CMSG0001 
 ANNO_UTIL_UNRECOGNIZED_TYPE.useraction=CMSG0002
 
-# #{0} A hashcode id used to identify the object emitting the message
+# #{0} A hashcode ID used to identify the object that emits the message
 # #{1} The name of the java exception which occurred
 # #{2} The class name of the resource being closed
-# #{3} The hashcode id of the resource being closed
+# #{3} The hashcode ID of the resource being closed
 ANNO_CLASSSOURCE_CLOSE_EXCEPTION=CWWKC0063W: [ {0} ]: Die zus\u00e4tzliche Ausnahme {1}, die beim Schlie\u00dfen der Ressource {2} [ {3} ] eingetreten ist, wird verworfen.
 ANNO_CLASSSOURCE_CLOSE_EXCEPTION.explanation=Beim Versuch, die Ressource zu schlie\u00dfen, ist eine Ausnahme eingetreten.
-ANNO_CLASSSOURCE_CLOSE_EXCEPTION.useraction=Suchen Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht nach weiteren Informationen.
+ANNO_CLASSSOURCE_CLOSE_EXCEPTION.useraction=Weitere Informationen finden Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht.
 
 # # {0} The name of the class
 # # {1} The name of the JAR file the class is in.
@@ -414,95 +414,95 @@ ANNO_TARGETS_CORRUPT_CLASS.useraction=Die Klasse kann ersetzt oder entfernt werd
 
 #### Added 07-Feb-2018:
 
-# # {0} A hashcode ID that identifies the object emitting the message
+# # {0} A hashcode ID that identifies the object that emits the message
 # # {1} A hashcode ID that identifies the object causing the exception
 # # {2} The error message from the exception
 ANNO_CLASSSOURCE_CHILD_OPEN_EXCEPTION=CWWKC0065W: [ {0} ]: Beim \u00d6ffnen der untergeordneten Klassenquelle [{1}] wurde eine Ausnahme ausgel\u00f6st. Fehlernachricht: {2}
 ANNO_CLASSSOURCE_CHILD_OPEN_EXCEPTION.explanation=Beim \u00d6ffnen der untergeordneten Klassenquelle wurde eine Ausnahme ausgel\u00f6st.
-ANNO_CLASSSOURCE_CHILD_OPEN_EXCEPTION.useraction=Suchen Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht nach weiteren Informationen.
+ANNO_CLASSSOURCE_CHILD_OPEN_EXCEPTION.useraction=Weitere Informationen finden Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht.
 
-# # {0} A hashcode ID that identifies the object emitting the message
+# # {0} A hashcode ID that identifies the object that emits the message
 # # {1} A hashcode ID that identifies the object causing the exception
 # # {2} The error message from the exception
 ANNO_CLASSSOURCE_CHILD_CLOSE_EXCEPTION=CWWKC0066W: [ {0} ]: Das Schlie\u00dfen der untergeordneten Klassenquelle [{1}] ist fehlgeschlagen. Fehlernachricht: {3}
 ANNO_CLASSSOURCE_CHILD_CLOSE_EXCEPTION.explanation=Beim Schlie\u00dfen einer untergeordneten Klassenquelle wurde eine Ausnahme ausgel\u00f6st.
-ANNO_CLASSSOURCE_CHILD_CLOSE_EXCEPTION.useraction=Suchen Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht nach weiteren Informationen.
+ANNO_CLASSSOURCE_CHILD_CLOSE_EXCEPTION.useraction=Weitere Informationen finden Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} An entry name
 # # {2} A class name
 # # {3} The error message from the exception
 ANNO_CLASSSOURCE_ENTRY_SCAN_EXCEPTION=CWWKC0067W: [ {0} ] Die Verarbeitung des Eintrags [{1}] f\u00fcr die Klasse [{2}] hat eine Ausnahme ausgel\u00f6st. Fehlernachricht: {3}
 ANNO_CLASSSOURCE_ENTRY_SCAN_EXCEPTION.explanation=Die Verarbeitung von Klasseninformationen, die aus einem Eintrag gelesen wurden, hat eine Ausnahme ausgel\u00f6st.
-ANNO_CLASSSOURCE_ENTRY_SCAN_EXCEPTION.useraction=Suchen Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht nach weiteren Informationen.
+ANNO_CLASSSOURCE_ENTRY_SCAN_EXCEPTION.useraction=Weitere Informationen finden Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} A JAR entry name
 # # {2} A class name
 # # {3} A JAR file name
 # # {4} The error message from the exception
 ANNO_CLASSSOURCE_ENTRY_CLOSE_EXCEPTION=CWWKC0068W: [ {0} ]: Das Schlie\u00dfen des Eintrags [{1}] f\u00fcr die Klasse [{2}] in [{3}] ist fehlgeschlagen. Fehlernachricht: {4}
 ANNO_CLASSSOURCE_ENTRY_CLOSE_EXCEPTION.explanation=Beim Schlie\u00dfen des Eintrags wurde eine Ausnahme ausgel\u00f6st.
-ANNO_CLASSSOURCE_ENTRY_CLOSE_EXCEPTION.useraction=Suchen Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht nach weiteren Informationen.
+ANNO_CLASSSOURCE_ENTRY_CLOSE_EXCEPTION.useraction=Weitere Informationen finden Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} A file name
 # # {2} A class name
 # # {3} The error message from the exception
 ANNO_CLASSSOURCE_FILE_SCAN_EXCEPTION=CWWKC0069W: [ {0} ] Die Verarbeitung der Datei [{1}] f\u00fcr die Klasse [{2}] hat eine Ausnahme ausgel\u00f6st. Fehlernachricht: {3}
 ANNO_CLASSSOURCE_FILE_SCAN_EXCEPTION.explanation=Die Verarbeitung von Klasseninformationen, die aus einer Datei gelesen wurden, hat eine Ausnahme ausgel\u00f6st.
-ANNO_CLASSSOURCE_FILE_SCAN_EXCEPTION.useraction=Suchen Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht nach weiteren Informationen.
+ANNO_CLASSSOURCE_FILE_SCAN_EXCEPTION.useraction=Weitere Informationen finden Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} A resource name
 # # {2} A directory path
 # # {3} A class name
 # # {4} The error message from the exception
 ANNO_CLASSSOURCE_FILE_CLOSE_EXCEPTION=CWWKC0070W: [ {0} ]: Das Schlie\u00dfen der Ressource [{1}] unter dem Stammelement [{2}] f\u00fcr die Klasse [{3}] ist fehlgeschlagen. Fehlernachricht: {4}
 ANNO_CLASSSOURCE_FILE_CLOSE_EXCEPTION.explanation=Beim Schlie\u00dfen der Datei wurde eine Ausnahme ausgel\u00f6st.
-ANNO_CLASSSOURCE_FILE_CLOSE_EXCEPTION.useraction=Suchen Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht nach weiteren Informationen.
+ANNO_CLASSSOURCE_FILE_CLOSE_EXCEPTION.useraction=Weitere Informationen finden Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} A JAR entry name
 # # {2} A class name
 # # {3} The error message from the exception
 ANNO_CLASSSOURCE_JARENTRY_SCAN_EXCEPTION=CWWKC0071W: [ {0} ] Die Verarbeitung des JAR-Eintrags [{1}] f\u00fcr die Klasse [{2}] hat eine Ausnahme ausgel\u00f6st. Fehlernachricht: {3}
 ANNO_CLASSSOURCE_JARENTRY_SCAN_EXCEPTION.explanation=Die Verarbeitung von Klasseninformationen, die aus einer JAR-Datei gelesen wurden, hat eine Ausnahme ausgel\u00f6st.
-ANNO_CLASSSOURCE_JARENTRY_SCAN_EXCEPTION.useraction=Suchen Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht nach weiteren Informationen.
+ANNO_CLASSSOURCE_JARENTRY_SCAN_EXCEPTION.useraction=Weitere Informationen finden Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} A JAR entry name
 # # {2} A class name
 # # {3} A jar name
 # # {4} The error message from the exception
 ANNO_CLASSSOURCE_JARENTRY_CLOSE_EXCEPTION=CWWKC0072W: [ {0} ]: Das Schlie\u00dfen des JAR-Eintrags [{1}] f\u00fcr die Klasse [{2}] in [{3}] ist fehlgeschlagen. Fehlernachricht: {4}
 ANNO_CLASSSOURCE_JARENTRY_CLOSE_EXCEPTION.explanation=Beim Schlie\u00dfen der Datei wurde eine Ausnahme ausgel\u00f6st.
-ANNO_CLASSSOURCE_JARENTRY_CLOSE_EXCEPTION.useraction=Suchen Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht nach weiteren Informationen.
+ANNO_CLASSSOURCE_JARENTRY_CLOSE_EXCEPTION.useraction=Weitere Informationen finden Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} A resource name
 # # {2} A class name
 # # {3} The error message from the exception
 ANNO_CLASSSOURCE_RESOURCE_SCAN_EXCEPTION=CWWKC0073W: [ {0} ] Die Verarbeitung der Ressource [{1}] f\u00fcr die Klasse [{2}] hat eine Ausnahme ausgel\u00f6st. Fehlernachricht: {3}
 ANNO_CLASSSOURCE_RESOURCE_SCAN_EXCEPTION.explanation=Die Verarbeitung von Klasseninformationen, die aus einer Ressource gelesen wurden, hat eine Ausnahme ausgel\u00f6st.
-ANNO_CLASSSOURCE_RESOURCE_SCAN_EXCEPTION.useraction=Suchen Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht nach weiteren Informationen.
+ANNO_CLASSSOURCE_RESOURCE_SCAN_EXCEPTION.useraction=Weitere Informationen finden Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} The resource name
 # # {2} The class name
 # # {3} The error message from the exception
 ANNO_CLASSSOURCE_RESOURCE_CLOSE_EXCEPTION=CWWKC0074W: [ {0} ]: Das Schlie\u00dfen der Ressource [{1}] f\u00fcr die Klasse [{2}] ist fehlgeschlagen. Fehlernachricht: {3}
 ANNO_CLASSSOURCE_RESOURCE_CLOSE_EXCEPTION.explanation=Beim Schlie\u00dfen der Ressource wurde eine Ausnahme ausgel\u00f6st.
-ANNO_CLASSSOURCE_RESOURCE_CLOSE_EXCEPTION.useraction=Suchen Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht nach weiteren Informationen.
+ANNO_CLASSSOURCE_RESOURCE_CLOSE_EXCEPTION.useraction=Weitere Informationen finden Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} The target convertion type
 # # {2} The error message from the exception
 ANNO_CLASSSOURCE_MODE_ADAPT_EXCEPTION=CWWKC0075W: [ {0} ]: Der Container dieser Klassenquelle konnte nicht in [{1}] konvertiert werden. Fehlernachricht: {2}
 ANNO_CLASSSOURCE_MODE_ADAPT_EXCEPTION.explanation=Die Datei konnte nicht in das neue Typobjekt konvertiert werden.
 ANNO_CLASSSOURCE_MODE_ADAPT_EXCEPTION.useraction=Es ist keine Benutzeraktion verf\u00fcgbar.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} File name
 # # {2} A class name
 # # {3} A file name
@@ -512,53 +512,82 @@ ANNO_CLASSSOURCE_ENTRY_ADAPT_EXCEPTION=CWWKC0076W: [ {0} ]: Die Konvertierung vo
 ANNO_CLASSSOURCE_ENTRY_ADAPT_EXCEPTION.explanation=Der Eintrag konnte nicht in das neue Typobjekt konvertiert werden.
 ANNO_CLASSSOURCE_ENTRY_ADAPT_EXCEPTION.useraction=Es ist keine Benutzeraktion verf\u00fcgbar.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} a class name
 # # {2} The error message from the exception
 ANNO_CLASSSOURCE_JANDEX_SCAN_EXCEPTION=CWWKC0077W: [ {0} ] Die Verarbeitung der Jandex-Informationen f\u00fcr die Klasse [{1}] hat eine Ausnahme ausgel\u00f6st. Fehlernachricht: {2}
 ANNO_CLASSSOURCE_JANDEX_SCAN_EXCEPTION.explanation=Die Verarbeitung von Jandex-Informationen einer Klasse hat eine Ausnahme ausgel\u00f6st.
-ANNO_CLASSSOURCE_JANDEX_SCAN_EXCEPTION.useraction=Suchen Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht nach weiteren Informationen.
+ANNO_CLASSSOURCE_JANDEX_SCAN_EXCEPTION.useraction=Weitere Informationen finden Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht.
 
-# # {0} A hashcode id used to identify the object emitting the message
-# # {1} A resource name
-# # {2} The error message from the exception
-ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION=CWWKC0087W: [ {0} ] Das \u00d6ffnen der indexierten Jandex-Ressource [{1}] ist fehlgeschlagen. Fehlernachricht: {2}
+# # {0} A String: A hashcode ID used to identify the object that emits the message
+# # {1} A String: A resource name: A file name or an archive entry name.
+# # {2} A String: An archive name.
+# # {3} The error message from the exception
+ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION=CWWKC0087W: [ {0} ] Das \u00d6ffnen der indexierten Jandex-Ressource [{1}] aus [{2}] ist fehlgeschlagen. Fehlernachricht: {3}
 ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION.explanation=Der Versuch, die indexierte Jandex-Ressource zu \u00f6ffnen, hat eine Ausnahme ausgel\u00f6st.
-ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION.useraction=Suchen Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht nach weiteren Informationen.
+ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION.useraction=Weitere Informationen finden Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht.
 
-# # {0} A hashcode id used to identify the object emitting the message
-# # {1} A resource name
-# # {2} The error message from the exception
-ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION=CWWKC0088W: [ {0} ] Das Lesen der indexierten Jandex-Ressource [{1}] ist fehlgeschlagen. Fehlernachricht: {2}
+# # {0} A String: A hashcode ID used to identify the object that emits the message
+# # {1} A String: A resource name: A file name or an archive entry name.
+# # {2} A String: An archive name.
+# # {3} The error message from the exception
+ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION=CWWKC0088W: [ {0} ] Das Lesen der indexierten Jandex-Ressource [{1}] aus [{2}] ist fehlgeschlagen. Fehlernachricht: {3}
 ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION.explanation=Der Versuch, die indexierte Jandex-Datei zu lesen, ist mit einer Ausnahme fehlgeschlagen.
-ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION.useraction=Suchen Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht nach weiteren Informationen.
+ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION.useraction=Weitere Informationen finden Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} A resource name
 # # {2} The error message from the exception
 ANNO_CLASSSOURCE_FILE_JANDEX_OPEN_EXCEPTION=CWWKC0089W: [ {0} ] Das \u00d6ffnen der indexierten Jandex-Datei [{1}] ist fehlgeschlagen. Fehlernachricht: {2}
 ANNO_CLASSSOURCE_FILE_JANDEX_OPEN_EXCEPTION.explanation=Der Versuch, die indexierte Jandex-Ressource zu \u00f6ffnen, hat eine Ausnahme ausgel\u00f6st.
-ANNO_CLASSSOURCE_FILE_JANDEX_OPEN_EXCEPTION.useraction=Suchen Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht nach weiteren Informationen.
+ANNO_CLASSSOURCE_FILE_JANDEX_OPEN_EXCEPTION.useraction=Weitere Informationen finden Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} A resource name
 # # {2} The error message from the exception
 ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION=CWWKC0090W: [ {0} ] Das Lesen der indexierten Jandex-Datei [{1}] ist fehlgeschlagen. Fehlernachricht: {2}
 ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION.explanation=Der Versuch, die indexierte Jandex-Datei zu lesen, ist mit einer Ausnahme fehlgeschlagen.
-ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION.useraction=Suchen Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht nach weiteren Informationen.
+ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION.useraction=Weitere Informationen finden Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht.
 
 # # {0} A class name
-ANNO_TARGETS_JANDEX_DUPLICATE_CLASS=CWWKC0091W: Interner Fehler beim Scannen von Klassen: Jandex hat die Klasse [ {0} ] bereits verarbeitet.
+ANNO_TARGETS_JANDEX_DUPLICATE_CLASS=CWWKC0091W: Interner Fehler beim Scannen von Klassen: Jandex hat bei der Verarbeitung ein Duplikat der Klasse [{0}] festgestellt.
 ANNO_TARGETS_JANDEX_DUPLICATE_CLASS.explanation=CMSG0001 
 ANNO_TARGETS_JANDEX_DUPLICATE_CLASS.useraction=CMSG0002
 
-# # {0} A number
-# # {1} A number
-# # {2} A number
-# # {3} A number
-# # {4} The name of a file or the name of a directory
-# # Read - Past tense. 
-ANNO_JANDEX_USAGE=CWWKC0092I: Die Jandex-Indizes f\u00fcr {0} wurden aus {1} Archiven ({2} von {3} Klassen) in {4} gelesen. 
-ANNO_JANDEX_USAGE.explanation=Diese Nachricht zeigt die Anzahl der Archive im Modul an, die durch das Lesen von Jandex-Indizes und nicht durch das Scannen der eigentlichen Klassendateien verarbeitet wurden. Au\u00dferdem enth\u00e4lt die Nachricht die Gesamtanzahl der Klassen in der Anwendung, die durch das Lesen von Jandex-Indizes verarbeitet wurden.
-ANNO_JANDEX_USAGE.useraction=Wenn Jandex-Indizes f\u00fcr die Anwendung gelesen werden sollen, ist keine Aktion erforderlich. Wenn keine Jandex-Indizes f\u00fcr die Anwendung gelesen werden sollen, setzen Sie das Attribut useJandex="false" im Element application der Datei server.xml. Alternativ k\u00f6nnen Sie useJandex="false" im Element applicationManger in der Datei server.xml setzen, damit Jandex-Indizes in allen Anwendungen ignoriert werden.
+# # {0} A number: The count of module locations which had Jandex indexes.
+# # {1} A number: The total count of module locations.
+# # {2} A number: The count of module classes which were read from a Jandex index.
+# # {3} A number: The total count of module classes.
+# # {4} A string: A module name
+ANNO_JANDEX_USAGE=CWWKC0092I: Jandex-Geltungsbereich f\u00fcr das Modul {4}: Jandex-Indizes wurden in {0} von {1} Modulpositionen gelesen, Jandex-Indizes haben {2} von {3} Modulklassen bereitgestellt.
+ANNO_JANDEX_USAGE.explanation=Dies zeigt den Anteil eines Moduls, das mithilfe von Jandex-Indizes nach Annotationen durchsucht wurde. Modulpositionen sind entweder das Modul selbst. Bei einem Webmodul hingegen sind es die WEB-INF/classes-Ordner und WEB-INF/lib-JAR-Dateien des Moduls.
+ANNO_JANDEX_USAGE.useraction=Es ist keine Aktion erforderlich, wenn Jandex-Indizes f\u00fcr die Anwendung gelesen werden sollen. Wenn Jandex-Indizes f\u00fcr eine einzelne Anwendung ignoriert werden sollen, setzen Sie das Attribut useJandex="false" im Element 'application' f\u00fcr diese Anwendung in der Datei server.xml. Alternativ k\u00f6nnen Sie zum Ignorieren der Jandex-Indizes in allen Anwendungen das Attribut useJandex="false" im Element 'applicationManger' in der Datei server.xml setzen.
 
+# # {0} A string: An application name.
+# # {1} A string: A module name.
+# # {2} A number: The total count of module locations.
+# # {3} A number: The count of module locations which had Jandex indexes.
+# # {4} A number: The total count of module classes.
+# # {5} A number: The count of module classes which were read from a Jandex index.
+ANNOCACHE_JANDEX_USAGE=CWWKC0093I: Jandex-Geltungsbereich f\u00fcr das Modul {1} in der Anwendung {0}: Jandex-Indizes wurden in {3} von {2} Modulpositionen gelesen. Jandex-Indizes haben {5} von {4} Modulklassen bereitgestellt.
+ANNOCACHE_JANDEX_USAGE.explanation=Dies zeigt den Anteil eines Moduls, das mithilfe von Jandex-Indizes nach Annotationen durchsucht wurde. Modulpositionen sind entweder das Modul selbst. Bei einem Webmodul hingegen sind es die WEB-INF/classes-Ordner und WEB-INF/lib-JAR-Dateien des Moduls.
+ANNOCACHE_JANDEX_USAGE.useraction=Es ist keine Aktion erforderlich, wenn Jandex-Indizes f\u00fcr die Anwendung gelesen werden sollen. Wenn Jandex-Indizes f\u00fcr eine einzelne Anwendung ignoriert werden sollen, setzen Sie das Attribut useJandex="false" im Element 'application' f\u00fcr diese Anwendung in der Datei server.xml. Alternativ k\u00f6nnen Sie zum Ignorieren der Jandex-Indizes in allen Anwendungen das Attribut useJandex="false" im Element 'applicationManger' in der Datei server.xml setzen.
+
+# # {0} A string: Message text from an exception.
+ANNO_TARGETS_CACHE_EXCEPTION=CWWKC0101W: Cachefehler bei der Annotationsverarbeitung: {0}
+ANNO_TARGETS_CACHE_EXCEPTION.explanation=Beim Zugreifen auf Annotationscachedaten ist eine Ausnahme eingetreten.
+ANNO_TARGETS_CACHE_EXCEPTION.useraction=Weitere Informationen finden Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht.
+
+# # {0} A string: A class name.
+# # {1} A string: A location which contains the class: The path to the JAR file which contains the class, or the path to the directory which contains the class, or the name of the internal data structure which contains the class.
+# # {2} A string: Message text from an exception.
+ANNO_TARGETS_CLASS_SCAN_EXCEPTION=CWWKC0103W: Beim Scannen von Klasse {0} von {1} ist eine Ausnahme eingetreten. Die Ausnahme war {2}.
+ANNO_TARGETS_CLASS_SCAN_EXCEPTION.explanation=Die Klasse und die Annotationsdaten konnten nicht gescannt werden. Das zugeordnete Modul funktioniert m\u00f6glicherweise nicht ordnungsgem\u00e4\u00df.
+ANNO_TARGETS_CLASS_SCAN_EXCEPTION.useraction=Weitere Informationen finden Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht.
+
+# # {0} A String: An internal print string of the data structure which was used to locate the class.
+# # {1} A String: A class name.
+# # {2} A String: A class name.
+ANNO_TARGETS_CLASS_NAME_MISMATCH=CWWKC0105W: Interner Fehler beim Scannen von Klassen: Visitor {0} hat den Klassennamen {1} aus einer Ressource gelesen, die den Klassennamen {2} haben m\u00fcsste.
+ANNO_TARGETS_CLASS_NAME_MISMATCH.explanation=Das Verzeichnis und der Name einer Ressource ".class" stimmt nicht mit dem Namen der Klasse \u00fcberein, die in der Ressource ".class" aufgezeichnet ist. Die Klassenressource wird ignoriert.
+ANNO_TARGETS_CLASS_NAME_MISMATCH.useraction=Verschieben Sie die Klassenressource in das Verzeichnis, das mit dem qualifizierter Namen der Klasse \u00fcbereinstimmt. Benennen Sie die Klassenressource so um, dass sie dem qualifizierter Namen der Klasse entspricht.

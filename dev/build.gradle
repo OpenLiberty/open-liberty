@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,123 +8,52 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-/*
- * Master Gradle build script
- *
- * Depends on bnd_* values from gradle.properties.
+
+/**
+ * Configure extra project properties.
  */
 ext {
   cnf = rootProject.project(bnd_cnf)
   buildImage = project(':build.image')
-}
 
-subprojects {
-  apply plugin: 'java'
-
-  def bndProject = bndWorkspace.getProject(name)
-
-  if (bndProject != null) {
-    apply plugin: 'biz.aQute.bnd'
-  } else {
-    task publish { }
-    task release { }
-    task releaseNeeded { dependsOn release }
-    task copyPiiFiles { }
-  }
-
-  tasks.withType(JavaCompile) {
-    doFirst {
-      // javac 12 has a min target of 1.7, so upgrade any 1.6 projects to 1.7 if running on Java 12
-      if (JavaVersion.current().isJava12Compatible()) {
-        if ('1.6'.equals(sourceCompatibility)) {
-          sourceCompatibility = "1.7"
-          targetCompatibility = "1.7"
-        }
-      }
-      // For Java 9+ builds, set the --release compiler flag to keep bootclasspath in sync/ 
-      if(JavaVersion.current().isJava9Compatible() && !'off'.equals(bnd('javac.args.release'))) {
-        def release = sourceCompatibility
-        if(sourceCompatibility.startsWith('1.'))
-          release = sourceCompatibility.substring(2);
-        if('current'.equals(bnd('javac.args.release')))
-          release = JavaVersion.current().getMajorVersion() 
-        options.compilerArgs.addAll([ '--release', release])
-      }
-    }
-  }
-  tasks.withType(Javadoc) {
-    doFirst {
-      // Starting with JDK 9.0.4 the javadoc compiler started to striclty enforce proper HTML
-      // syntax and other breaking changes.  Fixing all of these ocurrances would take far too
-      // long and be a poor use of time, so we will disable these checks for JDK9 and up
-      if(JavaVersion.current().isJava9Compatible()) {
-        options.addStringOption('Xdoclint:none', '-quiet')
-      }
-    }
-  }
-
-  if (bndProject != null) {
-    apply from: cnf.file('gradle/scripts/repos.gradle')
-    apply from: cnf.file('gradle/scripts/publish.gradle')
-    apply from: cnf.file('gradle/scripts/anttaskdefs.gradle')
-    apply from: cnf.file('gradle/scripts/tasks.gradle')
-
-    if (bndis('fat.project')) {
-      apply from: cnf.file('gradle/scripts/fat.gradle')
-    } else if (!bndis('test.project') && !bndProject.isNoBundles()) {
-      // Automatically apply OSS Audit plugin to all non-test projects
-      apply plugin: 'net.ossindex.audit'
-      audit {
-        group = "verification"
-        failOnError = true
+  /**
+   * Store some of the properties determined at build time to a file named `generated.properties` for future builds.
+   * The properties are used for uploading artifacts to the IBM DHE remote filesystem in a separate Gradle invocation from the one that created the artifact.
+   */
+  storeProps = {
+    Properties props = new Properties()
+    rootProject.ext.storedProps.each { key ->
+      def value = rootProject.userProps[key]
+      if (value != null) {
+        props.setProperty(key, value)
       }
     }
 
-  }
-
-  // Make the release task depend on assemble so that invoking 'release' or 'releaseNeeded'
-  // will publish jar updates to the local build.image/wlp image
-  release.dependsOn assemble
-  release.dependsOn publish
-}
-
-task testReport(type: TestReport) {
-    // make sure this task is run after all subproject test tasks
-    mustRunAfter subprojects.test
-
-    destinationDir = cnf.file('generated/testReports/allUnitTests')
-    // Include the results from the `test` task in all subprojects
-    reportOn subprojects.test
-}
-
-task zipTestReport(type: Zip) {
-  dependsOn testReport
-    baseName 'openliberty_test_report'
-    from cnf.file('generated/testReports/allUnitTests')
-    destinationDir cnf.file('generated/testReports')
-    userProps.setProperty('gradle.test.report.zip', archivePath.toString())
-        File propsFile = rootProject.file('generated.properties')
-        userProps.store(propsFile.newWriter(), null)
-}
-
-task testResults {
-  dependsOn subprojects.test
-
-  doLast {
-    userProps.setProperty('tests.total.failed', failedTestCountTotal.toString())
-    userProps.setProperty('tests.total.successful', successfulTestCountTotal.toString())
-
-    File propsFile = new File('generated.properties')
-    userProps.store(propsFile.newWriter(), null)
+    File propsFile = rootProject.file('generated.properties')
+    props.store(propsFile.newWriter(), null)
   }
 }
-testResults.dependsOn zipTestReport
+
+/**
+ * Apply Java plugin to all subprojects.
+ * See: https://docs.gradle.org/current/userguide/java_plugin.html
+ *
+ * Generate a HTML test report of all unit test results.
+ * See: https://docs.gradle.org/current/dsl/org.gradle.api.tasks.testing.TestReport.html
+ */
+apply from: 'wlp-gradle/java.gradle'
+
+/**
+ * Apply biz.aQute.bnd plugin to all subprojects containing a *.bnd file.
+ * See: https://github.com/bndtools/bnd/blob/master/biz.aQute.bnd.gradle/README.md
+ *
+ * Apply from all scripts in `wlp-gradle/subprojects`.
+ *
+ * Apply OSS Audit plugin to all non-test projects that output bundles.
+ * See: https://github.com/OSSIndex/ossindex-gradle-plugin/blob/master/README.md
+ */
+apply from: 'wlp-gradle/biz.aQute.bnd.gradle'
 
 wrapper {
   jarFile = rootProject.file('.gradle-wrapper/gradle-wrapper.jar')
-}
-
-// Ensure the root project has the 'audit' task so it shows up in the output of `./gradlew tasks`
-task audit {
-  group = "verification"
 }

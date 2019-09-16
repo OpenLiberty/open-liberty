@@ -1,0 +1,8 @@
+<server>
+
+    <include location="../fatTestPorts.xml"/>
+    
+    <!--brought in by the build-test.xml from the build.image project-->
+	<include location="full/server.xml"/>
+    
+</server>

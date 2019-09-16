@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2001, 2016 IBM Corporation and others.
+# Copyright (c) 2001, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -271,17 +271,21 @@ DSRA4011.tran.none.iso.switch.unsupported=DSRA4011E: The JDBC driver does not su
 DSRA4011.tran.none.iso.switch.unsupported.explanation=The JDBC specification does not support switching to an isolation level of TRANSACTION_NONE.
 DSRA4011.tran.none.iso.switch.unsupported.useraction=Avoid switching to an isolation level of TRANSACTION_NONE.
 
-DSRA4012.ignored.datasource.config.used=DSRA4012I: When using Oracle UCP the following data source properties are ignored: statementCacheSize and validationTimeout. Use the equivalent Oracle UCP functionality.
-DSRA4012.ignored.datasource.config.used.explanation=The statementCacheSize and validationTimeout data source properties are not valid when using Oracle UCP.
-DSRA4012.ignored.datasource.config.used.useraction=Remove the data source properties and instead use the equivalent Oracle UCP functionality.
+DSRA4012.ignored.datasource.config.used=DSRA4012I: When using Oracle UCP the following data source properties are ignored: {0}.
+DSRA4012.ignored.datasource.config.used.explanation=The listed data source properties are not valid when using Oracle UCP.
+DSRA4012.ignored.datasource.config.used.useraction=Remove the data source properties that are not valid and instead use the equivalent Oracle UCP functionality, if available.
 
-DSRA4013.ignored.connection.manager.config.used=DSRA4013I: When using Oracle UCP the following connection manager properties are ignored: agedTimeout, connectionTimeout, maxIdleTime, maxPoolSize, minPoolSize, purgePolicy, reapTime, maxConnectionsPerThread, maxConnectionsPerThreadLocal. Use the equivalent Oracle UCP functionality.
-DSRA4013.ignored.connection.manager.config.used.explanation=The listed connection manager properties are not valid when using Oracle UCP.
-DSRA4013.ignored.connection.manager.config.used.useraction=Remove the connection manager properties and instead use the equivalent Oracle UCP functionality.
+DSRA4013.ignored.connection.manager.config.used=DSRA4013I: The connection manager properties are not valid. When using Oracle UCP, the following connection manager properties are valid: {0}.
+DSRA4013.ignored.connection.manager.config.used.explanation=When using Oracle UCP, only the listed connection manager properties are valid.
+DSRA4013.ignored.connection.manager.config.used.useraction=Remove the connection manager properties that are not valid and instead use the equivalent Oracle UCP functionality, if available.
 
 DSRA4014.URL.for.Driver.missing=DSRA4014E: The type java.sql.Driver was specified for data source {0} but no URL attribute was specified.
 DSRA4014.URL.for.Driver.missing.explanation=A connection URL must be specified for a data source that is a java.sql.Driver type.
 DSRA4014.URL.for.Driver.missing.useraction=Add a valid URL to the data source.
+
+DSRA4015.no.ucp.connection.pool.datasource=DSRA4015E: The {0} data source was configured with the {1} type, which is not supported by Oracle UCP. Instead, use the XADataSource or DataSource type.
+DSRA4015.no.ucp.connection.pool.datasource.explanation=The data source was configured with the ConnectionPoolDataSource or Driver type, which is not implemented by the Oracle UCP driver.
+DSRA4015.no.ucp.connection.pool.datasource.useraction=Update the data source to use either the XADataSource or DataSource type.
 
 # ----------------------------------------------------------------------------
 # 
@@ -545,6 +549,13 @@ NO_WRAPPED_OBJECT.explanation=The wrapper that is specified does not contain the
 NO_WRAPPED_OBJECT.useraction=Verify that the wrapper and the parameters for the wrapped object are specified correctly.
 
 # 9123 deleted
+
+# 9124       NOT_AN_INTERFACE
+#
+# {0}        The Class that was specified to unwrap to
+NOT_AN_INTERFACE=DSRA9124E: Cannot unwrap object to {0} because {0} is not an interface class.
+NOT_AN_INTERFACE.explanation=The unwrap method only permits unwrapping to an interface class.
+NOT_AN_INTERFACE.useraction=Unwrap to a class that is an interface instead of a concrete class.
 
 # 9130E      OPERATION_NOT_PERMITTED
 # 

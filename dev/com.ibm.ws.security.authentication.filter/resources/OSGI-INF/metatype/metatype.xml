@@ -90,7 +90,7 @@
 
     <OCD id="com.ibm.ws.security.authentication.filter.requestHeader.metatype" name="%requestHeader" description="%requestHeader.desc">
         <AD id="name" name="%name" description="%name.desc" required="true" type="String"  />
-        <AD id="value" name="%value" description="%value.desc" required="true" type="String"  />
+        <AD id="value" name="%value" description="%valueOptional.desc" required="false" type="String"  />
         <AD id="matchType" name="%matchType" description="%matchType.desc" required="false" type="String" default="contains">
             	<Option label="%equals.desc" value="equals"/>
             	<Option label="%contains.desc" value="contains"/>

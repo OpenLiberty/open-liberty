@@ -1,7 +1,7 @@
 package com.ibm.tx.jta.embeddable.impl;
 
 /*******************************************************************************
- * Copyright (c) 2007, 2009 IBM Corporation and others.
+ * Copyright (c) 2007, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,16 +25,14 @@ import com.ibm.tx.jta.impl.TransactionImpl;
  * This class records state for timing out transactions, and runs a thread
  * which performs occasional checks to time out transactions.
  */
-public class EmbeddableTimeoutManager extends TimeoutManager
-{
+public class EmbeddableTimeoutManager extends TimeoutManager {
     private static final TraceComponent tc = Tr.register(
-                                                         EmbeddableTimeoutManager.class
-                                                         , TranConstants.TRACE_GROUP, TranConstants.NLS_FILE);
+                                                         EmbeddableTimeoutManager.class, TranConstants.TRACE_GROUP, TranConstants.NLS_FILE);
 
     /**
      * table of transactions and associated timeoutinfo structures
      */
-    private static final Hashtable<TransactionImpl, com.ibm.tx.jta.impl.TimeoutManager.TimeoutInfo> inactivityTimeouts = new Hashtable<TransactionImpl, com.ibm.tx.jta.impl.TimeoutManager.TimeoutInfo>();
+    private static final Hashtable<EmbeddableTransactionImpl, TimeoutInfo> inactivityTimeouts = new Hashtable<EmbeddableTransactionImpl, TimeoutInfo>();
 
     /**
      * Sets the timeout for the transaction to the specified type and time in
@@ -43,15 +41,14 @@ public class EmbeddableTimeoutManager extends TimeoutManager
      * If the type is none, the timeout for the transaction is
      * cancelled, otherwise the current timeout for the transaction is modified
      * to be of the new type and duration.
-     * 
-     * @param localTID The local identifier for the transaction.
+     *
+     * @param localTID    The local identifier for the transaction.
      * @param timeoutType The type of timeout to establish.
-     * @param seconds The length of the timeout.
-     * 
+     * @param seconds     The length of the timeout.
+     *
      * @return Indicates success of the operation.
      */
-    public static void setTimeout(TransactionImpl tran, int timeoutType, int seconds)
-    {
+    public static void setTimeout(EmbeddableTransactionImpl tran, int timeoutType, int seconds) {
         final boolean traceOn = TraceComponent.isAnyTracingEnabled();
 
         if (traceOn && tc.isEntryEnabled())
@@ -61,17 +58,16 @@ public class EmbeddableTimeoutManager extends TimeoutManager
         if (tran == null)
             throw new IllegalArgumentException("setTimeout called with null tran");
 
-        com.ibm.tx.jta.impl.TimeoutManager.TimeoutInfo info = null;
+        TimeoutInfo info = null;
 
-        switch (timeoutType)
-        {
-        // If the new type is active or in_doubt, then create a new TimeoutInfo
-        // if
-        // necessary, and set up the type and interval.
+        switch (timeoutType) {
+            // If the new type is active or in_doubt, then create a new TimeoutInfo
+            // if
+            // necessary, and set up the type and interval.
             case TimeoutManager.ACTIVE_TIMEOUT:
             case TimeoutManager.IN_DOUBT_TIMEOUT:
             case TimeoutManager.REPEAT_TIMEOUT:
-                info = tran.setTimeoutInfo(new TimeoutInfo(tran, seconds, timeoutType));
+                info = (TimeoutInfo) tran.setTimeoutInfo(new TimeoutInfo(tran, seconds, timeoutType));
 
                 if (traceOn && tc.isDebugEnabled() && info != null
                     && timeoutType != TimeoutManager.REPEAT_TIMEOUT)
@@ -84,27 +80,22 @@ public class EmbeddableTimeoutManager extends TimeoutManager
                 if (seconds == 0) // cancel
                 {
                     info = inactivityTimeouts.remove(tran);
-                    if (null != info)
-                    {
+                    if (null != info) {
                         info.cancelAlarm();
-                    }
-                    else
-                    {
+                    } else {
                         if (traceOn && tc.isDebugEnabled())
                             Tr.debug(tc,
                                      "Failed to find existing timeout for transaction: "
-                                                     + tran);
+                                         + tran);
                     }
-                }
-                else
-                {
+                } else {
                     info = new TimeoutInfo(tran, seconds, timeoutType);
                     info = inactivityTimeouts.put(tran, info);
 
                     if (traceOn && tc.isDebugEnabled() && info != null)
                         Tr.debug(tc,
                                  "Found existing inactivity timeout for transaction: "
-                                                 + info);
+                                     + info);
                     // not expecting this, should we cancel it?
                 }
 
@@ -112,17 +103,14 @@ public class EmbeddableTimeoutManager extends TimeoutManager
 
             // For any other type, remove the timeout if there is one.
             default:
-                info = tran.setTimeoutInfo(null);
-                if (null != info)
-                {
+                info = (TimeoutInfo) tran.setTimeoutInfo(null);
+                if (null != info) {
                     info.cancelAlarm();
-                }
-                else
-                {
+                } else {
                     if (traceOn && tc.isDebugEnabled())
                         Tr.debug(tc,
                                  "Failed to find existing timeout for transaction: "
-                                                 + tran);
+                                     + tran);
                 }
 
                 break;
@@ -135,10 +123,8 @@ public class EmbeddableTimeoutManager extends TimeoutManager
     /**
      * This class records information for a timeout for a transaction.
      */
-    static class TimeoutInfo extends com.ibm.tx.jta.impl.TimeoutManager.TimeoutInfo
-    {
-        TimeoutInfo(TransactionImpl tran, int duration, int type)
-        {
+    static class TimeoutInfo extends TimeoutManager.TimeoutInfo {
+        TimeoutInfo(TransactionImpl tran, int duration, int type) {
             super(tran, duration, type);
         }
 
@@ -148,24 +134,20 @@ public class EmbeddableTimeoutManager extends TimeoutManager
          * the transaction completion code.
          */
         @Override
-        public void alarm(Object alarmContext)
-        {
+        public void alarm(Object alarmContext) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
                 Tr.entry(tc, "alarm", _tran);
 
-            switch (_timeoutType)
-            {
-            // If active, then attempt to roll the transaction back.
+            switch (_timeoutType) {
+                // If active, then attempt to roll the transaction back.
                 case TimeoutManager.ACTIVE_TIMEOUT:
                     if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
                         Tr.event(tc, "Transaction timeout", _tran);
-                    Tr.info(tc, "WTRN0006_TRANSACTION_HAS_TIMED_OUT", new Object[]
-                    { _tran.getTranName(), _duration });
+                    Tr.info(tc, "WTRN0006_TRANSACTION_HAS_TIMED_OUT", new Object[] { _tran.getTranName(), _duration });
 
                     final Thread thread = _tran.getMostRecentThread();
 
-                    if (thread != null)
-                    {
+                    if (thread != null) {
                         final StackTraceElement[] stack = thread.getStackTrace();
 
                         final StringWriter writer = new StringWriter();
@@ -173,8 +155,7 @@ public class EmbeddableTimeoutManager extends TimeoutManager
 
                         printWriter.println();
 
-                        for (StackTraceElement element : stack)
-                        {
+                        for (StackTraceElement element : stack) {
                             printWriter.println("\t" + element);
                         }
 
@@ -193,8 +174,7 @@ public class EmbeddableTimeoutManager extends TimeoutManager
                 case TimeoutManager.INACTIVITY_TIMEOUT:
                     if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
                         Tr.event(tc, "Transaction inactivity timeout", _tran);
-                    Tr.info(tc, "WTRN0080_CLIENT_INACTIVITY_TIMEOUT", new Object[]
-                    { _tran.getTranName(), new Integer(_duration) });
+                    Tr.info(tc, "WTRN0080_CLIENT_INACTIVITY_TIMEOUT", new Object[] { _tran.getTranName(), new Integer(_duration) });
 
                     inactivityTimeouts.remove(_tran);
                     ((EmbeddableTransactionImpl) _tran).inactivityTimeout();
@@ -202,7 +182,7 @@ public class EmbeddableTimeoutManager extends TimeoutManager
 
                 // If in doubt, then replay_completion needs to be driven.
                 // This is done by telling the TransactionImpl to act as
-                // if in recovery.  
+                // if in recovery.
                 case TimeoutManager.IN_DOUBT_TIMEOUT:
                     if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
                         Tr.event(tc, "In doubt timeout", _tran);

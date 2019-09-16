@@ -15,6 +15,8 @@ Bundle-Name: WebSphere kernel services
 Bundle-SymbolicName: com.ibm.ws.kernel.service
 Bundle-Description: WebSphere kernel services, version ${bVersion}
 
+Bundle-Activator: com.ibm.ws.kernel.service.location.internal.Activator
+
 # For each exported package, create (in that package) a package-info.java
 # file, and place an @version javadoc tag in package-level javadoc. 
 # Append ";provide:=true" if this bundle also provides an implementation
@@ -29,7 +31,12 @@ Export-Package: \
  
 Private-Package: \
  com.ibm.ws.kernel.server.internal, \
- com.ibm.ws.kernel.service.utils.resources
+ com.ibm.ws.kernel.service.utils.resources, \
+ com.ibm.ws.kernel.service.location.internal.*, \
+ com.ibm.ws.kernel.pseudo.internal.*, \
+ !com.ibm.lang.management, !com.sun.management
+
+Import-Package: !com.sun.management, !com.ibm.lang.management, *
  
 -includeresource: \
   OSGI-INF/permissions.perm=resources/permissions.perm
@@ -38,7 +45,8 @@ Private-Package: \
   com.ibm.ws.kernel.server.internal.ServerInfoMBeanImpl, \
   com.ibm.ws.kernel.server.internal.ServerEndpointControlMBeanImpl
 
-instrument.classesExcludes: com/ibm/ws/kernel/service/utils/resources/*.class
+instrument.classesExcludes: com/ibm/ws/kernel/service/utils/resources/*.class, \
+  com/ibm/ws/kernel/**/internal/resources/*.class
 
 -buildpath: \
 	com.ibm.websphere.org.osgi.core;version=latest,\
@@ -54,4 +62,17 @@ instrument.classesExcludes: com/ibm/ws/kernel/service/utils/resources/*.class
 	org.eclipse.osgi;version=latest
 
 -testpath: \
-  ../build.sharedResources/lib/junit/old/junit.jar;version=file
+	org.jmockit:jmockit;version=1.25, \
+	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+	com.ibm.ws.junit.extensions;version=latest, \
+	org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
+	org.jmock:jmock;strategy=exact;version=2.5.1, \
+	org.hamcrest:hamcrest-all;version=1.3, \
+	com.ibm.ws.org.objenesis:objenesis;version=1.0, \
+	org.jmock:jmock-legacy;version=2.5.0, \
+	cglib:cglib-nodep;version=3.2.10, \
+	org.mockito:mockito-all;version=1.9.5, \
+	com.ibm.websphere.org.osgi.core;version=latest, \
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.ws.kernel.boot;version=latest, \
+	com.ibm.ws.logging;version=latest

@@ -36,6 +36,8 @@ Import-Package: \
 instrument.classesExcludes: com/ibm/ws/jndi/iiop/*.class
 
 -buildpath: \
+	com.ibm.ws.org.apache.yoko.corba.spec.1.5;version=latest,\
+	com.ibm.ws.org.apache.yoko.rmi.spec.1.5;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	com.ibm.websphere.appserver.spi.logging;version=latest,\

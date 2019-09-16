@@ -37,11 +37,13 @@ public class Audit {
         SECURITY_JMS_AUTHZ_01,
         SECURITY_JMS_AUTHN_TERMINATE_01,
         SECURITY_JMS_CLOSED_CONNECTION_01,
-	SECURITY_SAF_AUTHZ_DETAILS,
+        SECURITY_SAF_AUTHZ,
+        SECURITY_SAF_AUTHZ_DETAILS,
         JMX_NOTIFICATION_01,
         JMX_MBEAN_01,
         JMX_MBEAN_ATTRIBUTES_01,
-        JMX_MBEAN_REGISTER_01
+        JMX_MBEAN_REGISTER_01,
+        APPLICATION_PASSWORD_TOKEN_01
 
     }
 
@@ -53,12 +55,12 @@ public class Audit {
      * audit feature is enabled and this method is invoked.
      *
      * @param eventId -
-     *            The unique ID identifying the ProbeExtension method to be
-     *            called to generate the audit record. The ID should be defined
-     *            in the Audit.EventID enumeration. An ID should be defined
-     *            for each unique set of params to be passed to the ProbeExtension.
-     * @param params -
-     *            The objects needed to produce the audit record.
+     *                    The unique ID identifying the ProbeExtension method to be
+     *                    called to generate the audit record. The ID should be defined
+     *                    in the Audit.EventID enumeration. An ID should be defined
+     *                    for each unique set of params to be passed to the ProbeExtension.
+     * @param params  -
+     *                    The objects needed to produce the audit record.
      */
     @Trivial
     public static void audit(EventID eventId, Object... params) {}

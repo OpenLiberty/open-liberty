@@ -15,6 +15,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -91,14 +92,24 @@ public class HttpRequestor {
     }
 
     public void sendRequest() throws IOException, MessageSentException {
+        sendRequest(null);
+    }
+
+    private final Map<String, List<String>> parameterMap = new HashMap<String, List<String>>();
+
+    public void sendRequest(ParametersOfInterest poi) throws IOException, MessageSentException {
 
         httpOutboundSC = (HttpOutboundServiceContext) vc.getChannelAccessor();
-        //httpOutboundSC = (HttpOutboundServiceContextImpl) vc.getChannelAccessor();
         access.setTCPConnectionContext(httpOutboundSC.getTSC());
         access.setDeviceConnLink(httpOutboundSC.getLink());
 
         HttpRequestMessage hrm = httpOutboundSC.getRequest();
+
         hrm.setRequestURI(endpointAddress.getPath());
+
+        // PH10279
+        hrm.setQueryString(endpointAddress.getURI().getQuery());
+
         hrm.setVersion(VersionValues.V11);
         hrm.setMethod(MethodValues.GET);
 
@@ -181,6 +192,25 @@ public class HttpRequestor {
         httpOutboundSC.enableImmediateResponseRead();
         httpOutboundSC.sendRequestHeaders();
 
+        // PH10279
+        // client side needs to store query string and path parameters for later retrieval from the session object
+        if (poi != null) {
+            Tr.debug(tc, "set query parms to " + endpointAddress.getURI().getQuery());
+            poi.setQueryString(endpointAddress.getURI().getQuery());
+
+            if (hrm != null) {
+                Map<String, String[]> paramMap = hrm.getParameterMap();
+                for (Map.Entry<String, String[]> entry : paramMap.entrySet()) {
+                    String key = entry.getKey();
+                    String[] value = entry.getValue();
+                    List<String> list = Arrays.asList(value);
+                    parameterMap.put(key, list);
+                }
+                poi.setParameterMap(parameterMap);
+                Tr.debug(tc, "set ParameterMap " + parameterMap);
+
+            }
+        }
     }
 
     public WsByteBuffer completeResponse() throws IOException {
@@ -262,7 +292,9 @@ public class HttpRequestor {
 
         // Finish adding needed info, this will be used during Session calls - IE session.getParameterMap, etc
         things.setURI(endpointAddress.getURI());
-        things.setParameterMap(null);
+
+        // PH10279 things.setParameterMap(null);
+
         if (config != null) {
             things.setLocalSubProtocols(config.getPreferredSubprotocols());
         }

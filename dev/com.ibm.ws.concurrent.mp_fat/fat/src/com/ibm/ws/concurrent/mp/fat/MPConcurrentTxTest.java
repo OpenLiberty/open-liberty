@@ -12,10 +12,12 @@ package com.ibm.ws.concurrent.mp.fat;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
@@ -40,6 +42,27 @@ public class MPConcurrentTxTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        server.stopServer(
+                          // From expected timeout of unresolved transaction with setRollbackOnly:
+                          "DSRA0302E.*XA_RBROLLBACK", // XAException occurred.  Error code is: XA_RBROLLBACK (100).  Exception is...
+                          "DSRA0304E" // XAException occurred. XAException contents and details are...
+        );
+    }
+
+    @AllowedFFDC({
+                   "java.lang.IllegalStateException", // attempt to use same transaction on 2 threads at once
+                   "javax.transaction.xa.XAException" // transaction marked rollback-only due to intentionally caused error
+    })
+    @Test
+    public void testTransactionTimesOutAndReleasesLocks() throws Exception {
+        server.setMarkToEndOfLog();
+
+        runTest(server, APP_NAME + "/MPConcurrentTestServlet", testName.getMethodName());
+
+        // This test involves an asynchronous transaction timeout, which can continue logging FFDC and error messages on another
+        // thread after the test's servlet method completes. Wait for the FFDC and error messages to appear in the logs
+        // in order to prevent it from overlapping subsequent tests where it would be considered a test failure.
+        server.waitForStringInLogUsingMark("FFDC1015I.*IllegalStateException");
+        server.waitForStringInLogUsingMark("DSRA0302E.*XA_RBROLLBACK");
     }
 }

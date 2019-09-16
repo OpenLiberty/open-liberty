@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -190,8 +190,9 @@ public class FormLoginAuthenticator implements WebAuthenticator {
         // if the global login is set as CERT and the fallback is allowed to FORM,
         // use global form login.
         String authMech = webAppSecConfig.getOverrideHttpAuthMethod();
-        if (authMech != null && authMech.equals("CLIENT_CERT") && webAppSecConfig.getAllowFailOverToFormLogin()) {
+        if (authMech != null && ((authMech.equals("CLIENT_CERT") && webAppSecConfig.getAllowFailOverToFormLogin()) || authMech.equals("FORM"))) {
             inURL = webAppSecConfig.getLoginFormURL();
+            contextPath = webAppSecConfig.getLoginFormContextRoot();
         } else if (formLoginConfig != null) {
             inURL = formLoginConfig.getLoginPage();
             if (inURL != null)

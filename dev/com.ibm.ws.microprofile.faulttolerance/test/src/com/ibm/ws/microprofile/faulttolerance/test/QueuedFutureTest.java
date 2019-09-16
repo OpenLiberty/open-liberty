@@ -28,6 +28,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -58,7 +59,7 @@ public class QueuedFutureTest {
 
     @Test
     public void testCancellation() {
-        QueuedFuture<Void> qf = new QueuedFuture<>();
+        QueuedFuture<Void> qf = new QueuedFuture<>(new AtomicInteger());
 
         CompletableFuture<Void> latch = newLatch();
 
@@ -78,7 +79,8 @@ public class QueuedFutureTest {
 
     @Test
     public void testGet() throws InterruptedException, ExecutionException, TimeoutException {
-        QueuedFuture<String> qf = new QueuedFuture<>();
+        AtomicInteger inProgressCounter = new AtomicInteger(0);
+        QueuedFuture<String> qf = new QueuedFuture<>(inProgressCounter);
 
         CompletableFuture<String> latch = newLatch();
 
@@ -88,6 +90,7 @@ public class QueuedFutureTest {
 
         latch.complete("OK");
         assertEquals("Incorrect result returned", "OK", qf.get(2, TimeUnit.MINUTES));
+        assertEquals("InProgressCounter was non-zero when get() returned", 0, inProgressCounter.get());
         assertTrue("Queued future not done", qf.isDone());
         assertFalse("Queued future cancelled", qf.isCancelled());
 
@@ -96,7 +99,7 @@ public class QueuedFutureTest {
 
     @Test
     public void testAbort() {
-        QueuedFuture<String> qf = new QueuedFuture<>();
+        QueuedFuture<String> qf = new QueuedFuture<>(new AtomicInteger(0));
 
         CompletableFuture<String> latch = newLatch();
 

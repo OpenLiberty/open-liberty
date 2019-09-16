@@ -24,7 +24,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.omg.CORBA.UserException;
 
 import com.ibm.websphere.simplicity.log.Log;
 
@@ -131,7 +130,7 @@ public class POP3Test {
      * @throws Exception
      */
     @BeforeClass
-    public static void startPOP3Server() throws UserException, Exception {
+    public static void startPOP3Server() throws Exception {
 
         int pop3Port = Integer.getInteger("pop3_port"); // As per server.xm
         pop3Server = new POP3Server(handler, pop3Port);

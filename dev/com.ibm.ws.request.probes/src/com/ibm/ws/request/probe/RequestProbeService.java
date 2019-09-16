@@ -55,7 +55,7 @@ import com.ibm.wsspi.requestContext.RequestContext;
  */
 public class RequestProbeService {
 
-	private static final TraceComponent tc = Tr.register(RequestProbeService.class);
+	private static final TraceComponent tc = Tr.register(RequestProbeService.class,"requestProbe", "com.ibm.ws.request.probe.internal.resources.LoggingMessages");
 
 	/** Registered Probe Extensions **/
 	private static volatile List<ProbeExtension> probeExtensions = 

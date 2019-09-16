@@ -13,4 +13,5 @@ package com.ibm.ws.classloading.internal;
 public interface ClassLoadingConstants {
     String SHARED_LIBRARY_DOMAIN = "Shared Library";
     String GLOBAL_SHARED_LIBRARY_ID = "global";
+    String LS = System.lineSeparator();
 }

@@ -29,7 +29,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
  */
 public class KeystoreConfig {
     /** Trace service */
-    private static final TraceComponent tc = Tr.register(KeystoreConfig.class);
+    private static final TraceComponent tc = Tr.register(KeystoreConfig.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 
     private final String pid;
     private final String id;

@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2018 IBM Corporation and others.
+# Copyright (c) 2017, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -31,8 +31,6 @@ Export-Package: \
 Include-Resource: \
     OSGI-INF=resources/OSGI-INF
 
-DynamicImport-Package: *
-
 # catch any packages not explicitly exported and make sure they are private
 Private-Package: \
   !com.ibm.ws.classloading.configuration, \
@@ -62,10 +60,10 @@ Service-Component: \
     permission=com.ibm.ws.classloading.java2sec.JavaPermissionsConfiguration; \
     classLoadingService=com.ibm.wsspi.classloading.ClassLoadingService; \
     wsjarURLStreamHandler='org.osgi.service.url.URLStreamHandlerService(url.handler.protocol=wsjar)'; \
-    dynamic:='permission,wsjarURLStreamHandler'; \
+    dynamic:='permission'; \
     multiple:='permission'; \
     greedy:='permission'; \
-    optional:='permission,wsjarURLStreamHandler'; \
+    optional:='permission'; \
     properties:="service.vendor=IBM"
 
 instrument.classesExcludes: com/ibm/ws/classloading/internal/resources/*.class

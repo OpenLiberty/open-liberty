@@ -22,7 +22,7 @@ IBM-API-Package: \
   com.ibm.websphere.appserver.javax.cdi-1.2, \
   com.ibm.websphere.appserver.javax.interceptor-1.2, \
   com.ibm.websphere.appserver.javax.validation-1.1, \
-  com.ibm.websphere.appserver.internal.optional.jaxb-2.2,\
+  com.ibm.websphere.appserver.internal.optional.jaxb-2.2; ibm.tolerates:=2.3, \
   com.ibm.websphere.appserver.internal.slf4j-1.7.7,\
   com.ibm.websphere.appserver.transaction-1.2
 -bundles=\

@@ -219,3 +219,20 @@ warning.could.not.expand.application.useraction=Versuchen Sie, das in der Ausnah
 error.file.outside.archive=CWWKZ0132W: Die Datei {0} im Archiv {1} wird nicht extrahiert, weil der Pfad nicht in dem Archiv enthalten ist.
 error.file.outside.archive.explanation=Im Pfad der Datei ist ein relatives Verzeichnis angegeben. Das Extrahieren der Datei f\u00fchrt dazu, dass sich die Datei au\u00dferhalb des Stammverzeichnisses des Archivs befindet.
 error.file.outside.archive.useraction=Entfernen Sie alle Dateien mit relativen Pfaden aus dem Archiv. 
+
+#{0} is the application name, {1} is the location of the EAR or WAR file, {2} is the location where the file is expanded
+info.expanding.app=CWWKZ0133I: Die Anwendung {0} an der Position {1} wird im Verzeichnis {2} erweitert.
+info.expanding.app.explanation=Die Archivdatei f\u00fcr die Anwendung wird erweitert, das die automatische Erweiterung von Anwendungen konfiguriert wurde.
+info.expanding.app.useraction=Es ist keine Aktion erforderlich. 
+
+info.loose.app=CWWKZ0134I: Die Anwendung {0} verwendet die lose Anwendungsdefinition an der Position {1}.
+info.loose.app.explanation=Die Position f\u00fcr die Anwendung zeigt auf eine XML-Datei, die eine lose Anwendung definiert. 
+info.loose.app.useraction=Es ist keine Aktion erforderlich.
+
+info.directory.app=CWWKZ0135I: Die Anwendung {0} verwendet das Erweiterungsverzeichnis an der Position {1}.
+info.directory.app.explanation=Die Position f\u00fcr die Anwendung zeigt auf ein Verzeichnis und nicht auf eine Archivdatei. 
+info.directory.app.useraction=Es ist keine Aktion erforderlich.
+
+info.unexpanded.app=CWWKZ0136I: Die Anwendung {0} verwendet die Archivdatei an der Position {1}.
+info.unexpanded.app.explanation=Die Position f\u00fcr die Anwendung zeigt auf eine bin\u00e4re Archivdatei. Die Archivdatei wird nicht auf der Platte erweitert, da die automatische Erweiterung von Anwendungen nicht konfiguriert wurde.
+info.unexpanded.app.useraction=Es ist keine Aktion erforderlich.

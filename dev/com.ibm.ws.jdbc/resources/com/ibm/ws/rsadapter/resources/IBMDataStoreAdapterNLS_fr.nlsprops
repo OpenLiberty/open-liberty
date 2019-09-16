@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2001, 2016 IBM Corporation and others.
+# Copyright (c) 2001, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -271,13 +271,21 @@ DSRA4011.tran.none.iso.switch.unsupported=DSRA4011E: Le pilote JDBC ne prend pas
 DSRA4011.tran.none.iso.switch.unsupported.explanation=La sp\u00e9cification JDBC ne prend pas en charge le passage au niveau d'isolement TRANSACTION_NONE.
 DSRA4011.tran.none.iso.switch.unsupported.useraction=Evitez de passer au niveau d'isolement TRANSACTION_NONE.
 
-DSRA4012.ignored.datasource.config.used=DSRA4012I: Si vous utilisez un pool de connexions universelles (UCP) Oracle, les propri\u00e9t\u00e9s de source de donn\u00e9es suivantes sont ignor\u00e9es : statementCacheSize et validationTimeout. Utilisez la fonctionnalit\u00e9 de pool de connexions universelles (UCP) Oracle \u00e9quivalente.
-DSRA4012.ignored.datasource.config.used.explanation=Les propri\u00e9t\u00e9s de source de donn\u00e9es statementCacheSize et validationTimeout ne sont pas valides si vous utilisez un pool de connexions universelles (UCP) Oracle.
-DSRA4012.ignored.datasource.config.used.useraction=Retirez les propri\u00e9t\u00e9s de source de donn\u00e9es et utilisez la fonctionnalit\u00e9 de pool de connexions universelles (UCP) Oracle \u00e9quivalente \u00e0 la place.
+DSRA4012.ignored.datasource.config.used=DSRA4012I: Si vous utilisez un pool de connexions universelles (UCP) Oracle, les propri\u00e9t\u00e9s de source de donn\u00e9es suivantes sont ignor\u00e9es : {0}.
+DSRA4012.ignored.datasource.config.used.explanation=Les propri\u00e9t\u00e9s de source de donn\u00e9es r\u00e9pertori\u00e9es ne sont pas valides si vous utilisez un pool de connexions universelles (UCP) Oracle.
+DSRA4012.ignored.datasource.config.used.useraction=Retirez les propri\u00e9t\u00e9s de source de donn\u00e9es qui ne sont pas valides et utilisez la fonctionnalit\u00e9 de pool de connexions universelles (UCP) Oracle \u00e9quivalente \u00e0 la place, si elle est disponible.
 
-DSRA4013.ignored.connection.manager.config.used=DSRA4013I: Si vous utilisez un pool de connexions universelles (UCP) Oracle, les propri\u00e9t\u00e9s de gestionnaire de connexion suivantes sont ignor\u00e9es : agedTimeout, connectionTimeout, maxIdleTime, maxPoolSize, minPoolSize, purgePolicy, reapTime, maxConnectionsPerThread et maxConnectionsPerThreadLocal. Utilisez la fonctionnalit\u00e9 de pool de connexions universelles (UCP) Oracle \u00e9quivalente.
-DSRA4013.ignored.connection.manager.config.used.explanation=Les propri\u00e9t\u00e9s de gestionnaire de connexions r\u00e9pertori\u00e9es ne sont pas valides si vous utilisez un pool de connexions universelles (UCP) Oracle.
-DSRA4013.ignored.connection.manager.config.used.useraction=Retirez les propri\u00e9t\u00e9s de gestionnaire de connexions et utilisez la fonctionnalit\u00e9 de pool de connexions universelles (UCP) Oracle \u00e9quivalente \u00e0 la place.
+DSRA4013.ignored.connection.manager.config.used=DSRA4013I: Les propri\u00e9t\u00e9s de gestionnaire de connexions ne sont pas valides. Si vous utilisez un pool de connexions universelles (UCP) Oracle, les propri\u00e9t\u00e9s de gestionnaire de connexions suivantes sont valides : {0}.
+DSRA4013.ignored.connection.manager.config.used.explanation=Si vous utilisez un pool de connexions universelles (UCP) Oracle, les propri\u00e9t\u00e9s de gestionnaire de connexions r\u00e9pertori\u00e9es sont valides.
+DSRA4013.ignored.connection.manager.config.used.useraction=Retirez les propri\u00e9t\u00e9s de gestionnaire de connexions qui ne sont pas valides et utilisez la fonctionnalit\u00e9 de pool de connexions universelles (UCP) Oracle \u00e9quivalente \u00e0 la place, si elle est disponible.
+
+DSRA4014.URL.for.Driver.missing=DSRA4014E: Le type java.sql.Driver a \u00e9t\u00e9 sp\u00e9cifi\u00e9 pour la source de donn\u00e9es {0} alors qu''aucun attribut d''URL n''a \u00e9t\u00e9 sp\u00e9cifi\u00e9.
+DSRA4014.URL.for.Driver.missing.explanation=Une URL de connexion doit \u00eatre sp\u00e9cifi\u00e9e pour toute source de donn\u00e9es de type java.sql.Driver.
+DSRA4014.URL.for.Driver.missing.useraction=Ajoutez une URL valide \u00e0 la source de donn\u00e9es.
+
+DSRA4015.no.ucp.connection.pool.datasource=DSRA4015E: La source de donn\u00e9es {0} a \u00e9t\u00e9 configur\u00e9e avec le type {1}, qui n''est pas pris en charge par le pool de connexions universelles (UCP) Oracle. A la place, utilisez le type XADataSource ou DataSource.
+DSRA4015.no.ucp.connection.pool.datasource.explanation=La source de donn\u00e9es a \u00e9t\u00e9 configur\u00e9e avec le type ConnectionPoolDataSource ou Driver, qui n'est pas impl\u00e9ment\u00e9 par le pilote du pool de connexions universelles (UCP) Oracle.
+DSRA4015.no.ucp.connection.pool.datasource.useraction=Mettez \u00e0 jour la source de donn\u00e9es pour qu'elle utilise le type XADataSource ou DataSource.
 
 # ----------------------------------------------------------------------------
 # 
@@ -541,6 +549,13 @@ NO_WRAPPED_OBJECT.explanation=L'encapsuleur indiqu\u00e9 ne contient pas le type
 NO_WRAPPED_OBJECT.useraction=V\u00e9rifiez que l'encapsuleur et les param\u00e8tres associ\u00e9s \u00e0 l'objet encapsul\u00e9 sont correctement d\u00e9finis.
 
 # 9123 deleted
+
+# 9124       NOT_AN_INTERFACE
+#
+# {0}        The Class that was specified to unwrap to
+NOT_AN_INTERFACE=DSRA9124E: Impossible de d\u00e9sencapsuler l''objet dans {0} car {0} n''est pas une classe d''interface.
+NOT_AN_INTERFACE.explanation=La m\u00e9thode de d\u00e9sencapsulage permet uniquement le d\u00e9sencapsulage dans une classe d'interface.
+NOT_AN_INTERFACE.useraction=Proc\u00e9dez au d\u00e9sencapsulage dans une classe qui est une interface au lieu d'une classe concr\u00e8te.
 
 # 9130E      OPERATION_NOT_PERMITTED
 # 

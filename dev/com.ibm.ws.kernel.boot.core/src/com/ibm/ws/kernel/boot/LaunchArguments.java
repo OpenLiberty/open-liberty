@@ -98,6 +98,12 @@ public class LaunchArguments {
                     break;
                 }
 
+                // Ignore java parameters as they are processed in the .bat script.
+                if (arg.startsWith("-D")) {
+                    i.remove();
+                    break;
+                }
+
                 if (arg.startsWith("-")) {
                     String argToLower = arg.toLowerCase(Locale.ENGLISH);
                     i.remove(); // consume this argument
@@ -192,11 +198,13 @@ public class LaunchArguments {
                         if (KNOWN_OPTIONS.contains(key)) {
                             options.put(key, value);
                         } else {
+
                             System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("error.unknownArgument"), arg));
                             System.out.println();
 
                             returnValue = ReturnCode.BAD_ARGUMENT;
                             break;
+
                         }
                     }
                 } else {

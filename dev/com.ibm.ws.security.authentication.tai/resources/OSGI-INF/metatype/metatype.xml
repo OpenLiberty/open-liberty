@@ -24,6 +24,8 @@
             required="true" type="Boolean" default="false" />
         <AD id="interceptors" ibm:type="pid" ibm:reference="com.ibm.ws.security.authentication.tai.interceptor"
             required="false" type="String" cardinality="2147483647" />
+        <AD id="continueAfterUnprotectedURI" name="%continueAfterUnprotectedURI" description="%continueAfterUnprotectedURI.desc"
+            required="true" type="Boolean" default="false" />            
     </OCD>
 
     <Designate factoryPid="com.ibm.ws.security.authentication.tai">

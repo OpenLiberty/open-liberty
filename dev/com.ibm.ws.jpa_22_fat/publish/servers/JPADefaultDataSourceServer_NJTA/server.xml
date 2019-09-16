@@ -1,0 +1,48 @@
+<!--
+    Copyright (c) 2019 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server description="JPA Default DataSource Server">
+
+	<featureManager>
+		<feature>servlet-4.0</feature>
+		<feature>jpa-2.2</feature>
+	    <feature>componenttest-1.0</feature>
+    </featureManager>
+    
+    <include location="../fatTestPorts.xml"/>
+    
+    <jpa defaultNonJtaDataSourceJndiName="jdbc/NJTA_DS1" />
+    
+    <dataSource id="jdbc/JTA_DS1" jndiName="jdbc/JTA_DS1" >
+    	    <jdbcDriver libraryRef="DerbyLib"/>
+    	    <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
+    </dataSource>
+    
+    <dataSource id="jdbc/NJTA_DS1" jndiName="jdbc/NJTA_DS1" transactional="false">
+    	    <jdbcDriver libraryRef="DerbyLib"/>
+    	    <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
+    </dataSource>
+    
+    <dataSource id="jdbc/JTA_DS2" jndiName="jdbc/JTA_DS2" >
+    	    <jdbcDriver libraryRef="DerbyLib"/>
+    	    <properties.derby.embedded databaseName="memory:ds2" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
+    </dataSource>
+    
+    <dataSource id="jdbc/NJTA_DS2" jndiName="jdbc/NJTA_DS2" transactional="false">
+    	    <jdbcDriver libraryRef="DerbyLib"/>
+    	    <properties.derby.embedded databaseName="memory:ds2" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
+    </dataSource>
+    
+    <library id="DerbyLib" fat.modify="true">
+    	<fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
+    </library>
+    
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+</server>

@@ -119,12 +119,12 @@ public class JPA20QueryLockMode_EJB extends JPAFATServletClient {
         });
 
         ShrinkHelper.exportToServer(server1, "apps", app);
-        server1.addInstalledAppForValidation("QueryLockMode_EJB");
 
         Application appRecord = new Application();
         appRecord.setLocation("QueryLockMode_EJB.ear");
         appRecord.setName("QueryLockMode_EJB");
 
+        server1.setMarkToEndOfLog();
         ServerConfiguration sc = server1.getServerConfiguration();
         sc.getApplications().add(appRecord);
         server1.updateServerConfiguration(sc);

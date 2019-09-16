@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 IBM Corporation and others.
+ * Copyright (c) 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Dictionary;
@@ -27,6 +28,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
@@ -80,6 +82,7 @@ import com.ibm.wsspi.adaptable.module.Entry;
 import com.ibm.wsspi.adaptable.module.NonPersistentCache;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleCoordinator;
+import com.ibm.wsspi.classloading.ClassLoadingService;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
@@ -105,6 +108,7 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
     private static final String REFERENCE_JPA_PROVIDER = "jpaProvider";
     private static final String REFERENCE_JPA_PROPS_PROVIDER = "jpaPropsProvider";
     private static final String REFERENCE_APP_COORD = "appCoord";
+    private static final String REFERENCE_CLASSLOADING_SERVICE = "classLoadingService";
 
     private ComponentContext context;
     private Dictionary<String, Object> props;
@@ -117,6 +121,7 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
     private final ConcurrentServiceReferenceSet<ResourceBindingListener> resourceBindingListeners = new ConcurrentServiceReferenceSet<ResourceBindingListener>(REFERENCE_RESOURCE_BINDING_LISTENERS);
     private final AtomicServiceReference<JPAProviderIntegration> providerIntegrationSR = new AtomicServiceReference<JPAProviderIntegration>(REFERENCE_JPA_PROVIDER);
     private final ConcurrentServiceReferenceSet<JPAEMFPropertyProvider> propProviderSRs = new ConcurrentServiceReferenceSet<JPAEMFPropertyProvider>(REFERENCE_JPA_PROPS_PROVIDER);
+    private ClassLoadingService classLoadingService;
 
     @Activate
     protected void activate(ComponentContext cc) {
@@ -144,20 +149,42 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
     @Modified
     @SuppressWarnings({ "unchecked", "rawtypes" })
     protected void modified(Map<?, ?> newProperties) {
-        String originalProvider = (String) props.get("defaultPersistenceProvider");
+        final String originalProvider = (String) props.get("defaultPersistenceProvider");
+        final String originalDefaultJtaDataSourceJndiName = (String) props.get("defaultJtaDataSourceJndiName");
+        final String originalDefaultNonJtaDataSourceJndiName = (String) props.get("defaultNonJtaDataSourceJndiName");
+
         if (newProperties instanceof Dictionary) {
             props = (Dictionary<String, Object>) newProperties;
         } else {
             props = new Hashtable(newProperties);
         }
-        String curProvider = (String) newProperties.get("defaultPersistenceProvider");
+        final String curProvider = (String) newProperties.get("defaultPersistenceProvider");
+        final String curDefaultJtaDataSourceJndiName = (String) newProperties.get("defaultJtaDataSourceJndiName");
+        final String curDefaultNonJtaDataSourceJndiName = (String) newProperties.get("defaultNonJtaDataSourceJndiName");
 
-        // If the <jpa defaultPersistenceProvider=""/> element has changed, restart all JPA apps
-        if ((originalProvider != null && !originalProvider.equals(curProvider)) ||
-            (curProvider != null && !curProvider.equals(originalProvider))) {
+        boolean recycleJPAApplications = false;
+
+        if (!Objects.equals(originalProvider, curProvider)) {
+            // If the <jpa defaultPersistenceProvider=""/> element has changed, restart all JPA apps
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "Detected change in defaultPersistenceProvider of the <jpa> element.  Restarting all JPA applications.",
                          originalProvider + " -> " + curProvider);
+            recycleJPAApplications = true;
+        } else if (!Objects.equals(originalDefaultJtaDataSourceJndiName, curDefaultJtaDataSourceJndiName)) {
+            // If the <jpa defaultJtaDataSourceJndiName=""/> element has changed, restart all JPA apps
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "Detected change in defaultJtaDataSourceJndiName of the <jpa> element.  Restarting all JPA applications.",
+                         originalProvider + " -> " + curProvider);
+            recycleJPAApplications = true;
+        } else if (!Objects.equals(originalDefaultNonJtaDataSourceJndiName, curDefaultNonJtaDataSourceJndiName)) {
+            // If the <jpa defaultNonJtaDataSourceJndiName=""/> element has changed, restart all JPA apps
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "Detected change in defaultNonJtaDataSourceJndiName of the <jpa> element.  Restarting all JPA applications.",
+                         originalProvider + " -> " + curProvider);
+            recycleJPAApplications = true;
+        }
+
+        if (recycleJPAApplications) {
             recycleJPAApplications();
         }
     }
@@ -304,10 +331,12 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
     }
 
     @Override
-    public void applicationStarted(ApplicationInfo appInfo) {}
+    public void applicationStarted(ApplicationInfo appInfo) {
+    }
 
     @Override
-    public void applicationStopping(ApplicationInfo appInfo) {}
+    public void applicationStopping(ApplicationInfo appInfo) {
+    }
 
     @Override
     public void applicationStopped(ApplicationInfo appInfo) {
@@ -595,16 +624,17 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
      *
      * The ValidatorFactory is supported in WAS.
      *
-     * @param xmlSchemaVersion      the schema version of the persistence.xml
-     * @param integrationProperties the current set of integration-level properties
+     * @param xmlSchemaVersion       the schema version of the persistence.xml
+     * @param integrationProperties  the current set of integration-level properties
+     * @param applicationClassLoader the application's classloader. Used to create dynamic proxies for hibernate integration.
      */
     // F743-12524
     @Override
     public void addIntegrationProperties(String xmlSchemaVersion,
-                                         Map<String, Object> integrationProperties) {
+                                         Map<String, Object> integrationProperties, ClassLoader applicationClassLoader) {
 
         for (JPAEMFPropertyProvider propProvider : propProviderSRs.services()) {
-            propProvider.updateProperties(integrationProperties);
+            propProvider.updateProperties(integrationProperties, applicationClassLoader);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "addIntegrationProperties " + propProvider + " props: {0}", integrationProperties);
             }
@@ -744,6 +774,40 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
         jpaRuntime.unsetReference(reference);
     }
 
+    @Reference(name = REFERENCE_CLASSLOADING_SERVICE, service = ClassLoadingService.class)
+    protected void setClassLoadingService(ClassLoadingService ref) {
+        classLoadingService = ref;
+    }
+
+    protected void unsetClassLoadingService(ClassLoadingService ref) {
+        classLoadingService = null;
+    }
+
+    @Override
+    public ClassLoader createThreadContextClassLoader(final ClassLoader appClassloader) {
+        final ClassLoadingService cls = classLoadingService;
+        return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+
+            @Override
+            public ClassLoader run() {
+                return cls.createThreadContextClassLoader(appClassloader);
+            }
+        });
+    }
+
+    @Override
+    public void destroyThreadContextClassLoader(final ClassLoader tcclassloader) {
+        final ClassLoadingService cls = classLoadingService;
+        AccessController.doPrivileged(new PrivilegedAction() {
+            @Override
+            public Object run() {
+                cls.destroyThreadContextClassLoader(tcclassloader);
+                return null;
+            }
+
+        });
+    }
+
     @Override
     public boolean isServerRuntime() {
         return server;
@@ -795,9 +859,11 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
     }
 
     @Reference(name = REFERENCE_APP_COORD)
-    protected void setAppRecycleCoordinator(ServiceReference<ApplicationRecycleCoordinator> ref) {}
+    protected void setAppRecycleCoordinator(ServiceReference<ApplicationRecycleCoordinator> ref) {
+    }
 
-    protected void unsetAppRecycleCoordinator(ServiceReference<ApplicationRecycleCoordinator> ref) {}
+    protected void unsetAppRecycleCoordinator(ServiceReference<ApplicationRecycleCoordinator> ref) {
+    }
 
     @Override
     public void registerJPAExPcBindingContextAccessor(JPAExPcBindingContextAccessor accessor) {
@@ -840,9 +906,16 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
         if (FrameworkState.isStopping())
             return;
 
-        Set<String> appsToRestart = new HashSet<String>();
+        final Map<String, JPAApplInfo> appsToRestartMap = new HashMap<String, JPAApplInfo>();
+        final Set<String> appsToRestart = new HashSet<String>();
         synchronized (applList) {
-            appsToRestart.addAll(applList.keySet());
+            appsToRestartMap.putAll(applList);
+        }
+
+        for (Map.Entry<String, JPAApplInfo> entry : appsToRestartMap.entrySet()) {
+            if (entry.getValue().hasPersistenceUnitsDefined()) {
+                appsToRestart.add(entry.getKey());
+            }
         }
         appsToRestart.addAll(stuckApps);
         stuckApps.clear();

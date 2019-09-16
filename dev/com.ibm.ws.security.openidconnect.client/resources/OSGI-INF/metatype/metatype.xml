@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2019 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+-->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+    <OCD id="com.ibm.ws.security.openidconnect.client.oidcClientConfig.metatype" ibm:alias="openidConnectClient"
+         name="%openidConnectClient" description="%openidConnectClient.desc">
+         <AD id="scope" name="%scope" description="%scope.desc" required="true" type="String"  default="openid profile"  ibm:type="token"/>
+         <AD id="clientId" name="%clientId" description="%clientId.desc" required="false" type="String" />
+  		 <AD id="clientSecret" name="%clientSecret" description="%clientSecret.desc" required="false" type="String" ibm:type="password"/>		 
+		 <AD id="redirectToRPHostAndPort" name="%redirectToRPHostAndPort" description="%redirectToRPHostAndPort.desc" required="false" type="String" />
+		 <AD id="redirectJunctionPath" name="%redirectJunctionPath" description="%redirectJunctionPath.desc" required="false" type="String" />
+		 <AD id="isClientSideRedirectSupported" name="%isClientSideRedirectSupported" description="%isClientSideRedirectSupported.desc" required="false" type="Boolean" default="true" />
+         <AD id="issuerIdentifier" name="%issuerIdentifier" description="%issuerIdentifier.desc" required="false" type="String" />
+         <AD id="userIdentityToCreateSubject" name="%userIdentityToCreateSubject" description="%userIdentityToCreateSubject.desc"  required="true" type="String"  default="sub" />
+         <AD id="mapIdentityToRegistryUser" name="%mapIdentityToRegistryUser" description="%mapIdentityToRegistryUser.desc" required="false" type="Boolean" default="false"/>
+         <AD id="oidcclientRequestParameterSupported" name="internal" description="internal use only" required="false" type="Boolean" default="true"/>
+	     <AD id="trustStoreRef" name="%trustStoreRef" description="%trustStoreRef.desc" required="false" type="String" ibmui:uiReference="com.ibm.ws.ssl.keystore" />
+	     <AD id="trustAliasName" name="%trustAliasName" description="%trustAliasName.desc" required="false" type="String" />
+		 <AD id="httpsRequired" name="%httpsRequired" description="%httpsRequired.desc" required="true" type="Boolean" default="true"/>
+  		 <AD id="nonceEnabled" name="%nonceEnabled" description="%nonceEnabled.desc" required="false" type="Boolean" default="false"/> 
+  		 <AD id="realmName" name="%realmName" description="%realmName.desc" required="false" type="String" />
+  		         		 
+  		         		 
+         <!--<AD id="sslRef" name="%sslRef" description="%sslRef.desc" required="false" type="String" ibmui:uiReference="com.ibm.ws.ssl.repertoire" />-->
+         <AD id="sslRef" name="%sslRef" description="%sslRef.desc" required="false" type="String" ibm:type="pid" ibm:reference="com.ibm.ws.ssl.repertoire" ibmui:uiReference="com.ibm.ws.ssl.repertoire" />
+         <!-- following lines are supposed to make sure ssl is fully activated before we are --> 
+         <AD id="SSLSupport.cardinality.minimum" name="internal" description="internal use only" type="String" default="${count(sslRef)}"/>
+         <AD id="SSLSupport.target" name="internal" description="internal use only"  type="String" default="(repertoirePIDs=${sslRef})"/>  
+         
+         
+         <AD id="signatureAlgorithm" required="false" type="String" name="%signatureAlgorithm" description="%signatureAlgorithm.desc" default="HS256">
+            	<Option label="%tokenSignAlgorithm.NONE" value="none" />
+            	<Option label="%tokenSignAlgorithm.RS256" value="RS256" />
+            	<Option label="%tokenSignAlgorithm.HS256" value="HS256" />
+         </AD>
+  		 
+  		 <AD id="includeIdTokenInSubject" name="%includeIdTokenInSubject" description="%includeIdTokenInSubject.desc"  required="false" type="Boolean" default="true"/>
+  		 <AD id="accessTokenInLtpaCookie" name="%accessTokenInLtpaCookie" description="%accessTokenInLtpaCookie.desc"  required="false" type="Boolean" default="false"/>
+         <AD id="initialStateCacheCapacity" name="%initialStateCacheCapacity" description="%initialStateCacheCapacity.desc" required="false" type="Integer" min="0" default="3000" />             
+         <AD id="hostNameVerificationEnabled" name="%hostNameVerificationEnabled" description="%hostNameVerificationEnabled.desc" required="false" type="Boolean" default="false"/>
+         <AD id="discoveryEndpointUrl" name="%discoveryEndpointUrl" description="%discoveryEndpointUrl.desc" required="false" type="String" />
+         <AD id="authorizationEndpointUrl" name="%authorizationEndpointUrl" description="%authorizationEndpointUrl.desc" required="false" type="String" />
+         <AD id="tokenEndpointUrl" name="%tokenEndpointUrl" description="%tokenEndpointUrl.desc" required="false" type="String" />
+         <AD id="userInfoEndpointUrl" name="%userInfoEndpointUrl" description="%userInfoEndpointUrl.desc"
+            required="false" type="String" />  
+         <AD id="userInfoEndpointEnabled" name="%userInfoEndpointEnabled" description="%userInfoEndpointEnabled.desc"
+            required="false" type="Boolean" default="false" />
+         <AD id="jwkEndpointUrl" name="%jwkEndpointUrl" description="%jwkEndpointUrl.desc" required="false"  type="String" />
+         <AD id="jwkClientId" name="%jwkClientIdentifier" description="%jwkClientIdentifier.desc" required="false"  type="String" />
+         <AD id="jwkClientSecret" name="%jwkClientSecret" description="%jwkClientSecret.desc" required="false"  type="String" ibm:type="password"/>
+
+         <AD id="grantType" name="%grantType" description="%grantType.desc" required="true" type="String" default="authorization_code">
+                <Option label="%grantType.authorization_code" value="authorization_code" />
+            	<Option label="%grantType.implicit" value="implicit" />
+         </AD>
+         <AD id="responseType" name="%responseType" description="%responseType.desc" required="false" type="String">
+                <Option label="%responseType.code" value="code" />
+            	<Option label="%responseType.idToken" value="id_token" />
+            	<Option label="%responseType.idTokenToken" value="id_token token" />
+            	<Option label="%responseType.Token" value="token" />
+         </AD> 
+         <AD id="userIdentifier" name="%userIdentifier" description="%userIdentifier.desc"
+            required="false" type="String"/>
+         <AD id="groupIdentifier" name="%groupIdentifier" description="%groupIdentifier.desc" required="false" type="String" default="groupIds" />
+         <AD id="realmIdentifier" name="%realmIdentifier" description="%realmIdentifier.desc" required="false" type="String" default="realmName" />
+         <AD id="uniqueUserIdentifier" name="%userUniqueIdentifier" description="%userUniqueIdentifier.desc" required="false" type="String" default="uniqueSecurityName" />
+         <AD id="tokenEndpointAuthMethod" name="%tokenEndpointAuthMethod" description="%tokenEndpointAuthMethod.desc" required="false" 
+             type="String" default="post" >
+                <!-- support basic or post -->
+                <Option label="basic" value="basic" />
+            	<Option label="post"  value="post" />
+            	<!-- future maybe exclusive or, bad, adding cardinality to 3 or 4.  
+            	<Option label="jwt"   value="jwt" />
+            	<Option label="saml"  value="saml" />
+            	-->
+         </AD>
+         <AD id="jsonWebKey" name="internal" description="internal use only" required="false" type="String" />
+         <AD id="prompt" name="internal" description="internal use only" required="false" type="String" />
+          <AD id="jwt" name="internal" description="internal use only" ibm:type="pid" ibm:reference="com.ibm.ws.security.openidconnect.client.jwt" 
+             required="false" type="String"  />
+         <AD id="inboundPropagation" name="%inboundPropagation" description="%inboundPropagation.desc" required="false" type="String" default="none" >
+                <Option label="%inboundPropagation.supported" value="supported" />
+            	<Option label="%inboundPropagation.required" value="required" />
+            	<Option label="%inboundPropagation.none" value="none" />
+         </AD>
+         <AD id="validationMethod" name="%validationMethod" description="%validationMethod.desc" required="false" type="String" default="introspect">
+                <Option label="%validationMethod.introspect" value="introspect" />
+            	<Option label="%validationMethod.userinfo" value="userinfo" />
+         </AD>
+         <AD id="authzParameter" name="%authzParameter" description="%authzParameter.desc" required="false" type="String" ibm:type="pid" ibm:reference="com.ibm.ws.security.openidconnect.client.param" cardinality="20" />
+         <AD id="tokenParameter" name="%tokenParameter" description="%tokenParameter.desc" required="false" type="String" ibm:type="pid" ibm:reference="com.ibm.ws.security.openidconnect.client.param" cardinality="20" />
+         <AD id="userinfoParameter" name="internal" description="internal use only" required="false" type="String" ibm:type="pid" ibm:reference="com.ibm.ws.security.openidconnect.client.param" cardinality="20" />
+         <AD id="jwkParameter" name="internal" description="internal use only" required="false" type="String" ibm:type="pid" ibm:reference="com.ibm.ws.security.openidconnect.client.param" cardinality="20" />
+         <AD id="audiences" name="%audiences" description="%audiences.desc" required="false" type="String" cardinality="400" />
+         <AD id="headerName" name="%headerName" description="%headerName.desc" required="false" type="String" />
+         <AD id="validationEndpointUrl" name="%validationEndpointUrl" description="%validationEndpointUrl.desc" required="false" type="String" />
+         <AD id="disableIssChecking" name="%disableIssChecking" description="%disableIssChecking.desc" required="false" type="Boolean" default="false" />
+         <AD id="authnSessionDisabled" name="%authnSessionDisabled" description="%authnSessionDisabled.desc" required="false" type="Boolean" default="true" />
+         <AD id="disableLtpaCookie" name ="%disableLtpaCookie" description="%disableLtpaCookie.desc"
+            required="false" type="Boolean" default="false"/>
+         <AD id="useSystemPropertiesForHttpClientConnections" name ="%useSystemPropertiesForHttpClientConnections" description="%useSystemPropertiesForHttpClientConnections.desc"
+            required="false" type="Boolean" default="false"/>
+         <AD id="reAuthnOnAccessTokenExpire" name="%reAuthnOnAccessTokenExpire" description="%reAuthnOnAccessTokenExpire.desc" required="false" type="Boolean" default="true" />
+         <AD id="reAuthnCushion" name="%reAuthnCushion" description="%reAuthnCushion.desc" required="false" type="String" ibm:type="duration" default="0s"/>            
+		 <AD id="validateAccessTokenLocally" name="internal" description="internal use only" required="false" type="Boolean" default="true"/>
+		 <AD id="sharedKey" name="internal" description="internal use only" required="false" type="String" ibm:type="password" />
+         <AD id="includeCustomCacheKeyInSubject" name="internal" description="internal use only"  required="false" type="Boolean" default="true"/>
+         <AD id="clockSkew" name="internal" description="internal use only" required="false" type="String" default="300s" ibm:type="duration" />        
+
+         <AD id="authContextClassReference" name="internal" description="internal use only" required="false" type="String" ibm:type="token" />
+         <AD id="authFilterRef" name="%authFilterRef" description="%authFilterRef.desc" ibm:type="pid" ibm:reference="com.ibm.ws.security.authentication.filter" required="false" type="String"  />
+         <AD id="createSession" name ="%createSession" description="%createSession.desc"
+            required="false" type="Boolean" default="true"/>
+         <AD id="resource" name="%resource" description="%resource.desc" required="false" type="String" cardinality="2147483647" /> 
+         <AD id="authenticationTimeLimit" name="%authenticationTimeLimit" description="%authenticationTimeLimit.desc" required="false" type="String" default="420s" ibm:type="duration" />
+         <AD id="discoveryPollingRate" name="%discoveryPollingRate" description="%discoveryPollingRate.desc" required="false" type="String" default="300s" ibm:type="duration" /> 
+         <AD id="useAccessTokenAsIdToken" name="internal" description="internal use only" required="false" type="Boolean" default="false"/>
+         <AD id="tokenReuse" name="%tokenReuse" description="%tokenReuse.desc" required="false" type="Boolean" default="false" />
+         <AD id="forwardLoginParameter" name="%forwardLoginParameter" description="%forwardLoginParameter.desc" required="false" type="String" cardinality="2147483647" />
+     </OCD>
+
+    <Designate factoryPid="com.ibm.ws.security.openidconnect.client.oidcClientConfig">
+                <Object ocdref="com.ibm.ws.security.openidconnect.client.oidcClientConfig.metatype" />
+    </Designate>
+    
+     <OCD id="com.ibm.ws.security.openidconnect.client.jwt.metatype" name="internal" description="internal use only" 
+         ibmui:localization="OSGI-INF/l10n/metatype" >
+     	 <AD id="builder" name="internal" description="internal use only" required="false" type="String" />
+         <AD id="claims" name="internal" description="internal use only" required="false" type="String" cardinality="400" />
+    </OCD>
+
+    <Designate factoryPid="com.ibm.ws.security.openidconnect.client.jwt">
+        <Object ocdref="com.ibm.ws.security.openidconnect.client.jwt.metatype" />
+    </Designate>
+    
+    <OCD id="com.ibm.ws.security.openidconnect.client.param.metatype" name="%oidcClientCustomRequestParam" description="%oidcClientCustomRequestParam.desc" 
+         ibmui:localization="OSGI-INF/l10n/metatype" >
+     	 <AD id="name" name="%oidcClientCustomRequestParamName" description="%oidcClientCustomRequestParamName.desc" required="false" type="String" />
+         <AD id="value" name="%oidcClientCustomRequestParamValue" description="%oidcClientCustomRequestParamValue.desc" required="false" type="String" />
+    </OCD>
+
+    <Designate factoryPid="com.ibm.ws.security.openidconnect.client.param">
+        <Object ocdref="com.ibm.ws.security.openidconnect.client.param.metatype" />
+    </Designate>
+    
+    <OCD description="%oidcClientWebapp.desc" name="%oidcClientWebapp.name" 
+         id="com.ibm.ws.security.openidconnect.client.webapp" 
+         ibm:alias="oidcClientWebapp" ibmui:localization="OSGI-INF/l10n/metatype">   
+         <!--    <AD  name="%contextPath" description="%contextPath.desc" id="contextPath" required="false" type="String" default="/oidcclient" /> -->                 
+         <AD  name="%oidcClientWebapp.contextPath.name" description="%oidcClientWebapp.desc" id="contextPath" required="true" type="String" default="/oidcclient" />
+         <AD name="internal" id="contextName" ibm:final="true" type="String"   description="internal" default="oidcClientWebapp" />
+    </OCD>    
+    <Designate pid="com.ibm.ws.security.openidconnect.client.webapp"> <!--  needs to match pid in WabConfiguration impl -->
+        <!--  just needs to ref the id in the OCD element.  -->
+        <Object ocdref="com.ibm.ws.security.openidconnect.client.webapp"/>
+    </Designate>
+
+<!--  see also WABConfiguration javadoc -->
+</metatype:MetaData>

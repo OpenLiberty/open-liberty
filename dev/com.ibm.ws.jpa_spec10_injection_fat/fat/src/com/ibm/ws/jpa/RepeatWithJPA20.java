@@ -12,39 +12,22 @@
 package com.ibm.ws.jpa;
 
 import java.io.File;
-import java.util.HashSet;
-import java.util.Set;
 
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.rules.repeater.EE7FeatureReplacementAction;
-import componenttest.rules.repeater.EE8FeatureReplacementAction;
-import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTestAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 /**
  *
  */
-public class RepeatWithJPA20 extends FeatureReplacementAction {
-    public static final String ID = "JPA20_FEATURES";
-
-    public RepeatWithJPA20() {
-        super(EE8FeatureReplacementAction.EE8_FEATURE_SET, featuresToAdd());
-        forceAddFeatures(false);
-        this.withID(ID);
-    }
-
-    private static Set<String> featuresToAdd() {
-        Set<String> addFeatures = new HashSet<>(EE7FeatureReplacementAction.EE7_FEATURE_SET);
-        addFeatures.remove("jpa-2.1");
-        addFeatures.add("jpa-2.0");
-        return addFeatures;
-    }
+public class RepeatWithJPA20 implements RepeatTestAction {
+    public static final String ID = "JPA20";
 
     @Override
     public boolean isEnabled() {
-        LibertyServer server = LibertyServerFactory.getLibertyServer("JPA10Server");
+        LibertyServer server = LibertyServerFactory.getLibertyServer("JPAServer");
 
         File jpa20Feature = new File(server.getInstallRoot() + "/lib/features/com.ibm.websphere.appserver.jpa-2.0.mf");
         Log.info(getClass(), "isEnabled", "Does the jpa-2.0 feature exist? " + jpa20Feature.exists());
@@ -54,5 +37,15 @@ public class RepeatWithJPA20 extends FeatureReplacementAction {
     @Override
     public String toString() {
         return "Set JPA feature to 2.0 version";
+    }
+
+    @Override
+    public void setup() throws Exception {
+        FATSuite.repeatPhase = "jpa20.xml";
+    }
+
+    @Override
+    public String getID() {
+        return ID;
     }
 }

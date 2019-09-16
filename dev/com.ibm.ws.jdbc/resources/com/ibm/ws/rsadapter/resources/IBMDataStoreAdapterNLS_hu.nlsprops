@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2001, 2016 IBM Corporation and others.
+# Copyright (c) 2001, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -271,13 +271,21 @@ DSRA4011.tran.none.iso.switch.unsupported=DSRA4011E: A JDBC illeszt\u0151program
 DSRA4011.tran.none.iso.switch.unsupported.explanation=A JDBC specifik\u00e1ci\u00f3 nem t\u00e1mogatja az \u00e1tv\u00e1lt\u00e1st TRANSACTION_NONE elk\u00fcl\u00f6n\u00edt\u00e9si szintre.
 DSRA4011.tran.none.iso.switch.unsupported.useraction=Ker\u00fclje az \u00e1tv\u00e1lt\u00e1st a TRANSACTION_NONE elk\u00fcl\u00f6n\u00edt\u00e9si szintre.
 
-DSRA4012.ignored.datasource.config.used=DSRA4012I: Oracle UCP haszn\u00e1lata eset\u00e9n az al\u00e1bbi adatforr\u00e1s tulajdons\u00e1gok figyelmen k\u00edv\u00fcl maradnak: statementCacheSize \u00e9s validationTimeout. Haszn\u00e1lja az egyen\u00e9rt\u00e9k\u0171 Oracle UCP funkcionalit\u00e1st.
-DSRA4012.ignored.datasource.config.used.explanation=A statementCacheSize \u00e9s validationTimeout adatforr\u00e1s tulajdons\u00e1gok nem \u00e9rv\u00e9nyesek Oracle UCP haszn\u00e1lata eset\u00e9n.
-DSRA4012.ignored.datasource.config.used.useraction=T\u00e1vol\u00edtsa el az adatforr\u00e1s tulajdons\u00e1gokat, \u00e9s haszn\u00e1lja helyett\u00fck az egyen\u00e9rt\u00e9k\u0171 Oracle UCP funkcionalit\u00e1st.
+DSRA4012.ignored.datasource.config.used=DSRA4012I: Oracle UCP haszn\u00e1lata eset\u00e9n az al\u00e1bbi adatforr\u00e1s tulajdons\u00e1gok figyelmen k\u00edv\u00fcl maradnak: {0}.
+DSRA4012.ignored.datasource.config.used.explanation=A felsorolt adatforr\u00e1s tulajdons\u00e1gok nem \u00e9rv\u00e9nyesek Oracle UCP haszn\u00e1lata eset\u00e9n.
+DSRA4012.ignored.datasource.config.used.useraction=T\u00e1vol\u00edtsa el az \u00e9rv\u00e9nytelen adatforr\u00e1s tulajdons\u00e1gokat, \u00e9s haszn\u00e1lja helyett\u00fck az egyen\u00e9rt\u00e9k\u0171 Oracle UCP funkcionalit\u00e1st, ha el\u00e9rhet\u0151.
 
-DSRA4013.ignored.connection.manager.config.used=DSRA4013I: Oracle UCP haszn\u00e1lata eset\u00e9n az al\u00e1bbi kapcsolatkezel\u0151 tulajdons\u00e1gok figyelmen k\u00edv\u00fcl maradnak: agedTimeout, connectionTimeout, maxIdleTime, maxPoolSize, minPoolSize, purgePolicy, reapTime, maxConnectionsPerThread, maxConnectionsPerThreadLocal. Haszn\u00e1lja az egyen\u00e9rt\u00e9k\u0171 Oracle UCP funkcionalit\u00e1st.
-DSRA4013.ignored.connection.manager.config.used.explanation=A felsorolt kapcsolatkezel\u0151 tulajdons\u00e1gok nem \u00e9rv\u00e9nyesek Oracle UCP haszn\u00e1lata eset\u00e9n.
-DSRA4013.ignored.connection.manager.config.used.useraction=T\u00e1vol\u00edtsa el a kapcsolatkezel\u0151 tulajdons\u00e1gokat, \u00e9s haszn\u00e1lja helyett\u00fck az egyen\u00e9rt\u00e9k\u0171 Oracle UCP funkcionalit\u00e1st.
+DSRA4013.ignored.connection.manager.config.used=DSRA4013I: A kapcsolatkezel\u0151 tulajdons\u00e1gok \u00e9rv\u00e9nytelenek. Oracle UCP haszn\u00e1lata eset\u00e9n az al\u00e1bbi kapcsolatkezel\u0151 tulajdons\u00e1gok figyelmen k\u00edv\u00fcl maradnak: {0}.
+DSRA4013.ignored.connection.manager.config.used.explanation=Oracle UCP haszn\u00e1lata eset\u00e9n csak a felsorolt kapcsolatkezel\u0151 tulajdons\u00e1gok \u00e9rv\u00e9nyesek.
+DSRA4013.ignored.connection.manager.config.used.useraction=T\u00e1vol\u00edtsa el az \u00e9rv\u00e9nytelen kapcsolatkezel\u0151 tulajdons\u00e1gokat, \u00e9s haszn\u00e1lja helyett\u00fck az egyen\u00e9rt\u00e9k\u0171 Oracle UCP funkcionalit\u00e1st, ha el\u00e9rhet\u0151.
+
+DSRA4014.URL.for.Driver.missing=DSRA4014E: A(z) {0} adatforr\u00e1shoz java.sql.Driver t\u00edpus lett megadva, de URL attrib\u00fatum nem ker\u00fclt megad\u00e1sra.
+DSRA4014.URL.for.Driver.missing.explanation=A java.sql.Driver t\u00edpus\u00fa adatforr\u00e1sokhoz meg kell adni egy kapcsolati URL-c\u00edmet.
+DSRA4014.URL.for.Driver.missing.useraction=Adjon hozz\u00e1 az adatforr\u00e1shoz egy \u00e9rv\u00e9nyes URL-c\u00edmet.
+
+DSRA4015.no.ucp.connection.pool.datasource=DSRA4015E: A(z) {0} adatforr\u00e1s {1} t\u00edpussal lett be\u00e1ll\u00edtva, amit az Oracle UCP nem t\u00e1mogat. Haszn\u00e1lja helyette az XADataSource vagy a DataSource t\u00edpust.
+DSRA4015.no.ucp.connection.pool.datasource.explanation=Az adatforr\u00e1s a ConnectionPoolDataSource vagy Driver t\u00edpussal lett be\u00e1ll\u00edtva, amit az Oracle UCP illeszt\u0151program nem val\u00f3s\u00edt meg.
+DSRA4015.no.ucp.connection.pool.datasource.useraction=Friss\u00edtse az adatforr\u00e1st, hogy az XADataSource vagy a DataSource t\u00edpust haszn\u00e1lja.
 
 # ----------------------------------------------------------------------------
 # 
@@ -541,6 +549,13 @@ NO_WRAPPED_OBJECT.explanation=A megadott \u00e1talak\u00edt\u00f3 nem tartalmazz
 NO_WRAPPED_OBJECT.useraction=Ellen\u0151rizze, hogy az \u00e1talak\u00edt\u00f3 \u00e9s az \u00e1talak\u00edtott objektum param\u00e9terei helyesen lettek megadva.
 
 # 9123 deleted
+
+# 9124       NOT_AN_INTERFACE
+#
+# {0}        The Class that was specified to unwrap to
+NOT_AN_INTERFACE=DSRA9124E: Az objektum nem bonthat\u00f3 ki a(z) {0} oszt\u00e1lyba, mert a(z) {0} nem fel\u00fcleti oszt\u00e1ly.
+NOT_AN_INTERFACE.explanation=A kicsomagol\u00e1si met\u00f3dus csak fel\u00fcleti oszt\u00e1lyba t\u00f6rt\u00e9n\u0151 kicsomagol\u00e1st tesz lehet\u0151v\u00e9.
+NOT_AN_INTERFACE.useraction=V\u00e9gezze a kibont\u00e1st egy fel\u00fcletoszt\u00e1lyba konkr\u00e9t oszt\u00e1ly helyett.
 
 # 9130E      OPERATION_NOT_PERMITTED
 # 

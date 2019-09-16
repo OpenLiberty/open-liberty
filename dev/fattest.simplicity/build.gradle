@@ -40,3 +40,32 @@ jar {
     dependsOn assembleBootstrap
     dependsOn assembleBinaryDependencies
 }
+
+configurations {
+    arquillianFeature
+}
+
+dependencies {
+    arquillianFeature 'io.openliberty.arquillian:arquillian-liberty-support:1.0.5:feature@zip'
+}
+
+task extractArquillianSupportFeature(type:Sync) {
+    configurations.arquillianFeature.each {
+        from(zipTree(it))
+    }
+    into('build/arquillian-feature-extract')
+    
+    doLast {
+        // Update the feature manifest to mark it as a test feature
+        file('build/arquillian-feature-extract/extension/lib/features/arquillian-liberty-support.mf')
+            .append('IBM-Test-Feature: true\n')
+    }
+}
+
+task publishArquillianSupportFeature(type:Copy) {
+    dependsOn extractArquillianSupportFeature
+    from('build/arquillian-feature-extract/extension')
+    into(buildImage.file('wlp'))
+}
+
+assemble.dependsOn publishArquillianSupportFeature

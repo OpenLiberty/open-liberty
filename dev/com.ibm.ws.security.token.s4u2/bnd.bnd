@@ -1,0 +1,50 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: WebSphere Security Token S4U2 Service
+Bundle-Description: WebSphere Security Token S4U2, version ${bVersion}
+Bundle-SymbolicName: com.ibm.ws.security.token.s4u2
+Fragment-Host: com.ibm.ws.security.token
+
+WS-TraceGroup: \
+  security
+
+Import-Package: \
+    com.sun.security.auth.module;resolution:=optional, \
+    com.sun.security.auth.callback;resolution:=optional, \
+    com.sun.security.jgss;resolution:=optional, \
+    com.ibm.ws.security,  *
+  
+Export-Package: \
+ com.ibm.ws.security.s4u2proxy, \
+ com.ibm.ws.security.token.krb5
+
+Private-Package: \
+ com.ibm.wsspi.security.token
+
+-buildpath: \
+	com.ibm.websphere.appserver.api.security;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.websphere.security;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.common.encoder;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.logging.core;version=latest,\
+	com.ibm.ws.security;version=latest,\
+	com.ibm.ws.security.authentication;version=latest,\
+	com.ibm.ws.security.authorization;version=latest,\
+	com.ibm.ws.security.registry;version=latest,\
+	com.ibm.ws.security.token;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.security.authentication.builtin;version=latest

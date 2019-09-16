@@ -322,8 +322,8 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                 /*
                  * New with jdbc 4.1 support, if the connection was aborted, skip the entire pool connection purge.
                  */
-                boolean aborted = mcWrapper != null && mcWrapper.getManagedConnection() instanceof WSManagedConnection
-                                  && ((WSManagedConnection) mcWrapper.getManagedConnection()).isAborted();
+                boolean aborted = mcWrapper != null && mcWrapper.getManagedConnectionWithoutStateCheck() instanceof WSManagedConnection
+                                  && ((WSManagedConnection) mcWrapper.getManagedConnectionWithoutStateCheck()).isAborted();
                 if (gConfigProps.getPurgePolicy() == PurgePolicy.EntirePool
                     && !aborted) {
 
@@ -1733,6 +1733,14 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
         }
         activeRequest.decrementAndGet();
 
+        if (isTracingEnabled && tc.isDebugEnabled()) {
+            if (mcWrapper.getPoolState() == 3) {
+                // unshared connections may or may not be in a transaction, but they can be in a scope of a transaction
+                // Save the transaction scope for easier debugging of problems
+                ((com.ibm.ejs.j2c.MCWrapper) mcWrapper).setUnSharedPoolCoordinator(affinity);
+            }
+        }
+
         if (isTracingEnabled && tc.isEntryEnabled())
             Tr.exit(this, tc, "reserve", new Object[] { mcWrapper, mcWrapper.getManagedConnection() });
         return mcWrapper;
@@ -2746,6 +2754,24 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
 
     }
 
+    /*
+     * Used for toString trace reduction optimization.
+     */
+    private class ToStringStackElements {
+        /**
+         * @param ste
+         * @param numberOfOccurrents
+         */
+        public ToStringStackElements(StackTraceElement[] ste, int numberOfOccurrents) {
+            super();
+            this.ste = ste;
+            this.numberOfOccurrents = numberOfOccurrents;
+        }
+
+        StackTraceElement[] ste = null;
+        int numberOfOccurrents = 0;
+    }
+
     /**
      * Returns current state of the Pool Manager as String.
      *
@@ -2775,6 +2801,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
 
         StringBuffer aBuffer = new StringBuffer(500);
         StringBuffer bBuffer = new StringBuffer(500);
+        ArrayList<ToStringStackElements> throwableStackTraceElements = new ArrayList<ToStringStackElements>();
 
         aBuffer.append("JNDI name:");
         aBuffer.append(gConfigProps.cfName);
@@ -2828,7 +2855,6 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
 
         aBuffer.append(nl);
 
-        //    synchronized(waiterFreePoolLock) {  // removed code due to dead lock
         if (waiterCount > 0) {
             aBuffer.append("The waiter count is ");
             aBuffer.append(waiterCount);
@@ -2841,12 +2867,9 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
             }
             aBuffer.append(nl);
         }
-        //    }
 
         if (!gConfigProps.connectionPoolingEnabled) {
             aBuffer.append("Connection pooling is disabled, free connections are not pooled.");
-            //return aBuffer.toString(); //  - dump the normal information in the pool.
-            // The free pool should not contain any connections in the trace debug.
         }
         /*
          * Shared connection information
@@ -2890,7 +2913,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                         aBuffer.append("  ");
                         aBuffer.append(mcw);
                         if (holdTimeLimit_loc > -1) {
-                            dumpHoldTimeAndStackInfo(mcw, aBuffer, connectionLeakBuffer, currentTime);
+                            dumpHoldTimeAndStackInfo(mcw, aBuffer, connectionLeakBuffer, currentTime, throwableStackTraceElements);
                         }
                         ++totalNumberOfSharedConnections;
                         atleastOne = true;
@@ -2968,7 +2991,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                         }
                         aBuffer.append(mcw);
                         if (holdTimeLimit_loc > -1) {
-                            dumpHoldTimeAndStackInfo(mcw, aBuffer, connectionLeakBuffer, currentTime);
+                            dumpHoldTimeAndStackInfo(mcw, aBuffer, connectionLeakBuffer, currentTime, throwableStackTraceElements);
                         }
                         ++totalNumberOfUnSharedConnections;
                         atleastOne = true;
@@ -2990,11 +3013,11 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
         int holdTimeLimit_loc_disabled = -1;
         if (localConnection_ != null) {
             displaySharedTLSConnections(aBuffer, connectionLeakBuffer, currentTime,
-                                        holdTimeLimit_loc_disabled);
+                                        holdTimeLimit_loc_disabled, throwableStackTraceElements);
             displayFreeTLSConnections(aBuffer, connectionLeakBuffer, currentTime,
-                                      holdTimeLimit_loc_disabled);
+                                      holdTimeLimit_loc_disabled, throwableStackTraceElements);
             displayUnsharedTLSConnections(aBuffer, connectionLeakBuffer, currentTime,
-                                          holdTimeLimit_loc_disabled);
+                                          holdTimeLimit_loc_disabled, throwableStackTraceElements);
         }
         // This is only for additional trace if needed.
         //    displayAllConnectionInPool(aBuffer, connectionLeakBuffer, currentTime,
@@ -3005,7 +3028,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
             Object o = null;
             for (int i = 0; i < tscdList.size(); ++i) {
                 /*
-                 * Print as many mcWrapper in the list as posible.
+                 * Print as many mcWrapper in the list as possible.
                  */
                 try {
                     o = tscdList.get(i);
@@ -3046,7 +3069,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
 
     private void displaySharedTLSConnections(StringBuffer aBuffer,
                                              StringBuffer connectionLeakBuffer, long currentTime,
-                                             int holdTimeLimit_loc) {
+                                             int holdTimeLimit_loc, ArrayList<ToStringStackElements> throwableStackTraceElements) {
         boolean atleastOne;
         /*
          * Inuse Shared TLS connection information
@@ -3075,7 +3098,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                         aBuffer.append("  ");
                         aBuffer.append(mcw);
                         if (holdTimeLimit_loc > -1) {
-                            dumpHoldTimeAndStackInfo(mcw, aBuffer, connectionLeakBuffer, currentTime);
+                            dumpHoldTimeAndStackInfo(mcw, aBuffer, connectionLeakBuffer, currentTime, throwableStackTraceElements);
                         }
                         ++totalNumberOfSharedTLSConnections;
                         atleastOne = true;
@@ -3097,7 +3120,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
 
     private void displayFreeTLSConnections(StringBuffer aBuffer,
                                            StringBuffer connectionLeakBuffer, long currentTime,
-                                           int holdTimeLimit_loc) {
+                                           int holdTimeLimit_loc, ArrayList<ToStringStackElements> throwableStackTraceElements) {
         boolean atleastOne;
         /*
          * Inuse UnShared connection information
@@ -3124,7 +3147,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                         }
                         aBuffer.append(mcw);
                         if (holdTimeLimit_loc > -1) {
-                            dumpHoldTimeAndStackInfo(mcw, aBuffer, connectionLeakBuffer, currentTime);
+                            dumpHoldTimeAndStackInfo(mcw, aBuffer, connectionLeakBuffer, currentTime, throwableStackTraceElements);
                         }
                         ++totalNumberOfFreeSharedTLSConnections;
                         atleastOne = true;
@@ -3146,7 +3169,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
 
     private void displayUnsharedTLSConnections(StringBuffer aBuffer,
                                                StringBuffer connectionLeakBuffer, long currentTime,
-                                               int holdTimeLimit_loc) {
+                                               int holdTimeLimit_loc, ArrayList<ToStringStackElements> throwableStackTraceElements) {
         boolean atleastOne;
         /*
          * Inuse UnShared connection information
@@ -3177,7 +3200,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                         }
                         aBuffer.append(mcw);
                         if (holdTimeLimit_loc > -1) {
-                            dumpHoldTimeAndStackInfo(mcw, aBuffer, connectionLeakBuffer, currentTime);
+                            dumpHoldTimeAndStackInfo(mcw, aBuffer, connectionLeakBuffer, currentTime, throwableStackTraceElements);
                         }
                         ++totalNumberOfUnSharedTLSConnections;
                         atleastOne = true;
@@ -3202,7 +3225,9 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
      * connection leak information added to the trace. The connection leak information will only
      * be added if it is enabled. By default, connection leak logic is enabled by group WAS.j2c.
      */
-    private void dumpHoldTimeAndStackInfo(MCWrapper mcw, StringBuffer aBuffer, StringBuffer connectionLeakBuffer, long currentTime) {
+    private void dumpHoldTimeAndStackInfo(MCWrapper mcw, StringBuffer aBuffer, StringBuffer connectionLeakBuffer, long currentTime,
+                                          ArrayList<ToStringStackElements> mcwInitialStackList) {
+        Throwable t = null;
         long startHoldTime = ((com.ibm.ejs.j2c.MCWrapper) mcw).getHoldTimeStart();
         if (startHoldTime != 0) { //  - if start time is zero we don't have enough information to dump the stack information.
             long holdTime = currentTime - startHoldTime;
@@ -3215,23 +3240,62 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                 }
                 //aBuffer.deleteCharAt(aBuffer.length()-1);
                 Date startDateTime = new Date(startHoldTime);
+                long lastAllTime = ((com.ibm.ejs.j2c.MCWrapper) mcw).getLastAllocationTime();
+                String startDateAllocationTime = startHoldTime == lastAllTime ? " Start time same as last allocation time " : " Last allocation time " + new Date(lastAllTime);
                 long timeInUseInSeconds = holdTime / 1000;
                 /*
                  * Add the new in-use information to the trace.
                  */
-                aBuffer.append(" Start time inuse " + startDateTime + " Time inuse " + timeInUseInSeconds + " (seconds)" + nl);
-                Throwable t = ((com.ibm.ejs.j2c.MCWrapper) mcw).getInitialRequestStackTrace();
+                aBuffer.append(" Start time inuse " + startDateTime + " Time inuse " + timeInUseInSeconds + " (seconds) " + startDateAllocationTime + nl);
+                t = ((com.ibm.ejs.j2c.MCWrapper) mcw).getInitialRequestStackTrace();
                 if (t != null) {
                     /*
                      * Add the connection leak logic to the trace.
                      */
                     connectionLeakBuffer.append("  " + mcw);
                     connectionLeakBuffer.append("     Start time inuse " + startDateTime + " Time inuse " + timeInUseInSeconds + " (seconds)" + nl);
-                    connectionLeakBuffer.append("     Last allocation time " + new Date(((com.ibm.ejs.j2c.MCWrapper) mcw).getLastAllocationTime()) + nl);
-                    connectionLeakBuffer.append("       getConnection stack trace information:" + nl);
-                    StackTraceElement[] ste = t.getStackTrace();
-                    for (int i = 0; i < ste.length; ++i) {
-                        connectionLeakBuffer.append("          " + ste[i].toString() + nl);
+                    connectionLeakBuffer.append("    " + startDateAllocationTime + nl);
+                    connectionLeakBuffer.append("       getConnection stack trace information:");
+
+                    StackTraceElement[] mcwInitialStack = t.getStackTrace();
+                    boolean stringBuffersEqual = false;
+                    int matchingMCStack = -1;
+                    int occurred = -1;
+                    if (mcwInitialStackList.size() != 0) {
+                        // process stack information looking for duplicates.
+                        int j = 0;
+                        for (ToStringStackElements previousMCWSTE : mcwInitialStackList) {
+                            boolean stackLinesEqual = true;
+                            if (mcwInitialStack.length == previousMCWSTE.ste.length) {
+                                int i = 0;
+                                for (Object currentMCWSTE : mcwInitialStack) {
+                                    // search through stack comparing each line in stack
+                                    if (!currentMCWSTE.toString().equals(previousMCWSTE.ste[i++].toString())) {
+                                        stackLinesEqual = false;
+                                        break;
+                                    }
+                                }
+                                if (stackLinesEqual == true) {
+                                    // stacks are equal
+                                    stringBuffersEqual = true;
+                                    matchingMCStack = ++j;
+                                    occurred = ++previousMCWSTE.numberOfOccurrents;
+                                    break;
+                                }
+                            }
+                            ++j;
+                        }
+                    }
+                    if (stringBuffersEqual) {
+                        // stack matches existing stack already dumped.
+                        connectionLeakBuffer.append("          Matches stack number " + matchingMCStack + " occurred " + occurred + " times" + nl);
+                    } else {
+                        // add stack and dump the stack information
+                        mcwInitialStackList.add(new ToStringStackElements(mcwInitialStack, 1));
+                        connectionLeakBuffer.append("          Stack number " + mcwInitialStackList.size() + nl);
+                        for (Object o : mcwInitialStack) {
+                            connectionLeakBuffer.append("          " + o.toString() + nl);
+                        }
                     }
                     connectionLeakBuffer.append(nl);
                 }

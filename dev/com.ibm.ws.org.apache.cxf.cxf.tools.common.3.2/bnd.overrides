@@ -4,7 +4,20 @@ bVersion=1.0
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.tools.common.3.2
 
 Import-Package: \
+  !com.ctc.wstx.*,\
+  !org.codehaus.stax2.*,\
+  !com.sun.msv.*,\
+  !com.sun.xml.bind.marshaller,\
+  !com.sun.xml.fastinfoset.stax.*,\
+  !org.apache.log4j.*,\
+  !net.sf.cglib.proxy.*,\
+  !org.springframework.*,\
+  !javax.validation.*, \
+  !org.apache.aries.*,\
+  !org.apache.cxf.transport.https,\
+  !org.osgi.service.blueprint.*,\
   !javax.wsdl,\
   !org.apache.velocity.*,\
   !org.junit.*,\
+  org.apache.cxf;version="[3.0.0,4)",\
   *

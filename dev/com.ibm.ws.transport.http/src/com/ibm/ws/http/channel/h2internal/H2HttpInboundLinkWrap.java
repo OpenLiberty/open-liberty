@@ -54,6 +54,7 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
     private HashMap<String, String> pseudoHeaders = null;
     private ArrayList<H2HeaderField> headers = null;
     private int headersLength = 0;
+    private int h2ContentLength = -1;
 
     private HttpInboundServiceContextImpl httpInboundServiceContextImpl = null;
 
@@ -70,6 +71,20 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
 
         httpInboundServiceContextImpl = (HttpInboundServiceContextImpl) this.getChannelAccessor();
 
+    }
+
+    /**
+     * Keep track of the content length
+     */
+    public void setH2ContentLength(int len) {
+        h2ContentLength = len;
+    }
+
+    /**
+     * Get the HTTP/2 content length
+     */
+    public int getH2ContentLength() {
+        return h2ContentLength;
     }
 
     // implement the methods that HttpInboundLink will need to have changed/overridden so that it will work "as-is"

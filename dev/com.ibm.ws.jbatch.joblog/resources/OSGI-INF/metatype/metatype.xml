@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2019 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+-->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+    <OCD id="com.ibm.ws.jbatch.joblog.config" 
+	    name="%com.ibm.ws.jbatch.joblog.config.name"
+		description="%com.ibm.ws.jbatch.joblog.config.desc" 
+		ibm:alias="batchJobLogging" 
+		ibmui:localization="OSGI-INF/l10n/metatype">
+
+        <AD id="enabled"   
+            name="%enabled.name" 
+            description="%enabled.desc"
+            type="Boolean"  
+            required="true"
+            default="true" />
+
+        <!-- 
+        <AD id="jobLoggers"   
+            name="%jobLoggers.name" 
+            description="%jobLoggers.desc"
+            type="String"  
+            required="true"
+            default="" />
+
+        <AD id="writeToServerLog"   
+            name="%writeToServerLog.name" 
+            description="%writeToServerLog.desc"
+            type="Boolean"  
+            required="true"
+            default="false" />
+
+        <AD id="includeServerLogging"   
+            name="%includeServerLogging.name" 
+            description="%includeServerLogging.desc"
+            type="Boolean"  
+            required="true"
+            default="true" />
+         -->
+
+        <AD id="maxRecords"   
+            name="%maxRecords.name" 
+            description="%maxRecords.desc"
+            type="Integer"  
+            required="true"
+            min="0"
+            max="2147483647"
+            default="1000" />
+            
+        <AD id="maxTime"   
+            name="%maxTime.name" 
+            description="%maxTime.desc"
+            type="Integer"  
+            required="true"
+            min="0"
+            max="2147483647"
+            default="0" />    
+           
+        <!--     
+        <AD id="purgeOnPublish"   
+            name="%purgeOnPublish.name" 
+            description="%purgeOnPublish.desc"
+            type="Boolean"  
+            required="true"
+            default="false" />
+        -->
+    </OCD>
+    
+    <Designate pid="com.ibm.ws.jbatch.joblog">
+        <Object ocdref="com.ibm.ws.jbatch.joblog.config"/>
+    </Designate>
+
+
+</metatype:MetaData>

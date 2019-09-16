@@ -13,7 +13,7 @@
 #NLS_ENCODING=UNICODE
 #
 #COMPONENTPREFIX CWWKC
-#COMPONENTNAMEFOR CWWKC MicroProfile Concurrency
+#COMPONENTNAMEFOR CWWKC MicroProfile Context Propagation
 #
 # NLS_MESSAGEFORMAT_VAR
 #
@@ -25,7 +25,7 @@
 # All messages must use the range CWWCK1150 to CWWCK1189 except those specifically identified as moved
 
 CWWKC1150.duplicate.context=CWWKC1150E: Derselbe Threadkontexttyp {0} wird von mehreren Threadkontextprovidern bereitgestellt, die der Anwendung zur Verf\u00fcgung stehen. Zu den Threadkontextprovidern geh\u00f6ren: {1}, {2}.
-CWWKC1150.duplicate.context.explanation=Die MicroProfile Concurrency-Spezifikation l\u00e4sst nicht mehr als einen ThreadContextProvider pro Kontexttyp zu.
+CWWKC1150.duplicate.context.explanation=Die MicroProfile MicroProfile Context Propagation-Spezifikation l\u00e4sst nicht mehr als einen ThreadContextProvider pro Kontexttyp zu.
 CWWKC1150.duplicate.context.useraction=Aktualisieren Sie die verf\u00fcgbare Anwendung, die Bibliotheken oder beides, sodass nur ein einziger ThreadContextProvider des angegebenen Typs vorhanden ist.
 
 # do not translate: cleared, propagated
@@ -49,3 +49,5 @@ CWWKC1156.not.supported.useraction=Aktualisieren Sie die Anwendung, um die Metho
 CWWKC1157.cannot.propagate.tx=CWWKC1157E: Die Weitergabe von Transaktionen an kontextbezogene Aktionen und Tasks wird nicht unterst\u00fctzt.
 CWWKC1157.cannot.propagate.tx.explanation=Ein ManagedExecutor oder ThreadContext, der f\u00fcr die Weitergabe von Transaktionskontexten konfiguriert ist, kann nur leere Transaktionskontexte weitergeben. Daher k\u00f6nnen Sie keine kontextbezogenen Aktionen und Tasks in einer Transaktion erstellen.
 CWWKC1157.cannot.propagate.tx.useraction=Erstellen Sie die kontextbezogene Aktion bzw. Task au\u00dferhalb einer Transaktion. Konfigurieren Sie alternativ den ManagedExecutor oder ThreadContext so, dass keine Transaktionskontexte weitergegeben werden.
+
+# CWWKC1158E used by com.ibm.ws.cdi.mp.context bundle

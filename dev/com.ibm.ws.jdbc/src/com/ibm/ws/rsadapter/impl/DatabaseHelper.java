@@ -310,6 +310,13 @@ public class DatabaseHelper {
     }
 
     /**
+     * For PostgreSQL only
+     */
+    public Object getLargeObjectAPI(Connection con) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    /**
      * Returns a trace component for supplemental JDBC driver level trace.
      * If supplemental JDBC driver level trace is not wanted, this method should return NULL.
      * 
@@ -1117,10 +1124,10 @@ public class DatabaseHelper {
      * default values before pooling a connection. 
      * 
      * @return Map of properties or Null if not implemented
-     * @param java.sql.Connection
+     * @param connImpl The JDBC vendor's Connection impl object
      * @throws SQLException
      */
-    public Map<String, Object> cacheVendorConnectionProps(Connection sqlConn) throws SQLException {
+    public Map<String, Object> cacheVendorConnectionProps(Connection connImpl) throws SQLException {
         return null;
     }
 

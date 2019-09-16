@@ -7,12 +7,12 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 Export-Package: \
   com.ibm.ws.microprofile.rest.client.component,\
-  org.apache.cxf.microprofile.client.cdi;version="3.3.0",\
-  org.apache.cxf.microprofile.client;version="3.3.0",\
-  org.apache.cxf.microprofile.client.cdi;version="3.3.0",\
-  org.apache.cxf.microprofile.client.config;version="3.3.0",\
-  org.apache.cxf.microprofile.client.proxy;version="3.3.0",\
-  org.apache.cxf.microprofile.client.spi;thread-context=true;version="3.3.0"
+  org.apache.cxf.microprofile.client.cdi;version="3.3.3",\
+  org.apache.cxf.microprofile.client;version="3.3.3",\
+  org.apache.cxf.microprofile.client.cdi;version="3.3.3",\
+  org.apache.cxf.microprofile.client.config;version="3.3.3",\
+  org.apache.cxf.microprofile.client.proxy;version="3.3.3",\
+  org.apache.cxf.microprofile.client.spi;thread-context=true;version="3.3.3"
 
 Import-Package: \
  javax.annotation;version="[1.2,2)",\
@@ -23,6 +23,7 @@ Import-Package: \
  javax.enterprise.inject.spi;version="[1.1,2.1)",\
  javax.enterprise.util;version="[1.1,2.1)",\
  javax.interceptor;version="[1.1,2.1)",\
+ javax.net.ssl,\
  javax.ws.rs;version="[2.0,3)",\
  javax.ws.rs.client;version="[2.0,3)",\
  javax.ws.rs.core;version="[2.0,3)",\
@@ -32,10 +33,14 @@ Import-Package: \
  org.apache.cxf.common.i18n;version="[3.1,4)",\
  org.apache.cxf.common.logging;version="[3.1,4)",\
  org.apache.cxf.common.util;version="[3.1,4)",\
+ org.apache.cxf.configuration.jsse;version="[3.1,4)",\
  org.apache.cxf.endpoint;version="[3.1,4)",\
+ org.apache.cxf.helpers;version="[3.1,4)",\
  org.apache.cxf.interceptor;version="[3.1,4)",\
+ org.apache.cxf.jaxrs;version="[3.1,4)",\
  org.apache.cxf.jaxrs.client;version="[3.1,4)",\
  org.apache.cxf.jaxrs.client.blueprint;version="[3.1,4)",\
+ org.apache.cxf.jaxrs.client.spec;version="[3.3,4)",\
  org.apache.cxf.jaxrs.impl;version="[3.1,4)",\
  org.apache.cxf.jaxrs.model;version="[3.1,4)",\
  org.apache.cxf.jaxrs.provider;version="[3.1,4)",\

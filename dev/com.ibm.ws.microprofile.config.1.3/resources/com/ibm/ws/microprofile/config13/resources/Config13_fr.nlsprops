@@ -42,8 +42,19 @@ duplicate.application.configuration.name.CWMCG0203E=CWMCG0203E: Plusieurs config
 duplicate.application.configuration.name.CWMCG0203E.explanation=La configuration d'application doit \u00eatre unique.
 duplicate.application.configuration.name.CWMCG0203E.useraction=Consultez le journal message.log du serveur et les journaux FFDC pour identifier le probl\u00e8me.
 
+# An instance of the {0} service could not be found
+service.not.found.CWMCG0204E=CWMCG0204E: Une instance du service {0} est introuvable.
+service.not.found.CWMCG0204E.explanation=Une erreur interne s'est produite et MicroProfile Config n'a pas pu trouver de service.
+service.not.found.CWMCG0204E.useraction=Consultez le fichier message.log du serveur et les journaux de l'outil de diagnostic de premier niveau pour identifier le probl\u00e8me.
+
 # Server XML Application Properties Config Source
 server.xml.appproperties.config.source=Source de configuration des propri\u00e9t\u00e9s de l'application XML de serveur
+
+# Server XML Variables Config Source
+server.xml.variables.config.source=Source de configuration des variables XML de serveur
+
+# Server XML Default Variables Config Source
+server.xml.default.variables.config.source=Source de configuration des variables par d\u00e9faut XML de serveur
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Config 1.3 error message

@@ -43,7 +43,7 @@ public class Java11Test extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        server.stopServer("CWWJP9991W"); // warnings for JPA's auto drop/create tables
     }
 
     @Test

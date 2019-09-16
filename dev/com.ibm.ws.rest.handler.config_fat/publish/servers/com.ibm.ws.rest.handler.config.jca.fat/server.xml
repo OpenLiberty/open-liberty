@@ -1,0 +1,68 @@
+<!--
+    Copyright (c) 2019 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+  <include location="../fatTestPorts.xml" />
+
+  <featureManager>
+    <feature>componenttest-1.0</feature>
+    <feature>restConnector-2.0</feature>
+    <feature>jca-1.7</feature>
+  </featureManager>
+
+  <variable name="onError" value="FAIL"/>
+
+  <keyStore id="defaultKeyStore" password="Liberty"/>
+  <quickStartSecurity userName="adminuser" userPassword="adminpwd"/>
+
+  <resourceAdapter id="tca" location="${server.config.dir}/connectors/TestConfigAdapter.rar">
+    <properties.tca debugMode="true"/>
+  </resourceAdapter>
+
+  <activationSpec id="App1/EJB1/MyMDB" autoStart="false">
+    <authData user="actspecU1" password="act1v5p3c"/>
+    <properties.tca maxSize="8192" messageSelector="*"/>
+  </activationSpec>
+
+  <activationSpec id="MyDefaultMessageListener">
+    <properties.tca/>
+  </activationSpec>
+
+  <adminObject id="conspec1" jndiName="eis/conspec1">
+    <properties.tca.ConnectionSpec connectionTimeout="10000" userName="1user" password="password1"/>
+  </adminObject>
+
+  <adminObject id="conspec2" jndiName="eis/conspec2">
+    <!-- It is an error to omit the properties.* element which identifies the resource adapter -->
+  </adminObject>
+
+  <adminObject jndiName="eis/conspec3">
+    <properties.tca.ConnectionSpec/>
+  </adminObject>
+
+  <connectionFactory id="cf1" jndiName="eis/cf1" connectionManagerRef="cm1">
+    <containerAuthData user="containerUser1" password="pwd1"/>
+    <recoveryAuthData user="recoveryUser1" password="pwd1"/>
+    <properties.tca.ConnectionFactory enableBetaContent="true" portNumber="7766"/>
+  </connectionFactory>
+
+  <connectionManager id="cm1" maxPoolSize="101"/>
+
+  <connectionFactory jndiName="eis/ds2">
+    <properties.tca.DataSource userName="user2" password="pwd2" escapeChar="$"/>
+  </connectionFactory>
+
+  <resourceAdapter location="${server.config.dir}/connectors/AnotherTestAdapter.rar"/>
+
+  <connectionFactory id="cf3" jndiName="eis/cf3">
+    <properties.AnotherTestAdapter.ConnectionFactory enableBetaContent="false"/>
+  </connectionFactory>
+
+</server>

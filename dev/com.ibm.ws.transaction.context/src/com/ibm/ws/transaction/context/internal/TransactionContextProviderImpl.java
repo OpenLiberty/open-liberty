@@ -22,8 +22,8 @@ import javax.enterprise.concurrent.ManagedTask;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 
-import com.ibm.tx.jta.embeddable.EmbeddableTransactionManagerFactory;
 import com.ibm.ws.Transaction.UOWCurrent;
+import com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.threadcontext.ThreadContext;
 import com.ibm.wsspi.threadcontext.ThreadContextDeserializationInfo;
@@ -39,6 +39,8 @@ public class TransactionContextProviderImpl implements JCAContextProvider, Threa
      * Reference to the transaction inflow manager.
      */
     final AtomicServiceReference<Object> transactionInflowManagerRef = new AtomicServiceReference<Object>("transactionInflowManager");
+
+    private EmbeddableWebSphereTransactionManager transactionManager;
 
     /**
      * Called during service activation.
@@ -67,9 +69,12 @@ public class TransactionContextProviderImpl implements JCAContextProvider, Threa
         else if (ManagedTask.USE_TRANSACTION_OF_EXECUTION_THREAD.equals(value))
             return new TransactionContextImpl(false);
         else if ("PROPAGATE".equals(value)) {
-            if (EmbeddableTransactionManagerFactory.getUOWCurrent().getUOWType() == UOWCurrent.UOW_GLOBAL)
+            UOWCurrent uowCurrent = (UOWCurrent) transactionManager;
+            if (uowCurrent.getUOWType() == UOWCurrent.UOW_GLOBAL) {
+                // Per spec, IllegalStateException could be reaised here to reject all propagation of transactions
+                // However, we allow propagation as long as the transaction isn't used in parallel.
                 return new SerialTransactionContextImpl();
-            else
+            } else
                 return new TransactionContextImpl(true);
         } else
             throw new IllegalArgumentException(ManagedTask.TRANSACTION + '=' + value);
@@ -141,11 +146,25 @@ public class TransactionContextProviderImpl implements JCAContextProvider, Threa
     }
 
     /**
+     * Declarative Services method to set the transaction manager.
+     */
+    protected void setTransactionManager(EmbeddableWebSphereTransactionManager tm) {
+        transactionManager = tm;
+    }
+
+    /**
      * Declarative Services method for unsetting the TransactionInflowManager service
      *
      * @param ref reference to the service
      */
     protected void unsetTransactionInflowManager(ServiceReference<Object> ref) {
         transactionInflowManagerRef.unsetReference(ref);
+    }
+
+    /**
+     * Declarative Services method to unset the transaction manager.
+     */
+    protected void unsetTransactionManager(EmbeddableWebSphereTransactionManager tm) {
+        transactionManager = null;
     }
 }

@@ -15,6 +15,7 @@ import java.security.PrivilegedAction;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
@@ -101,10 +102,7 @@ public class ClientModuleRuntimeContainer implements ModuleRuntimeContainer, Def
         this.classLoadingService = null;
     }
 
-    @Reference(name = "managedObjectService",
-                    service = ManagedObjectService.class,
-                    policy = ReferencePolicy.DYNAMIC,
-                    policyOption = ReferencePolicyOption.GREEDY)
+    @Reference(name = "managedObjectService", service = ManagedObjectService.class, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
     protected void setManagedObjectService(ServiceReference<ManagedObjectService> ref) {
         this.managedObjectServiceRef.setReference(ref);
     }
@@ -222,8 +220,7 @@ public class ClientModuleRuntimeContainer implements ModuleRuntimeContainer, Def
             ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().beginContext(cmd);
             ApplicationClientBnd appClientBnd = appClientBnds.get(cmmd);
             CallbackHandler callbackHandler = callbackHandlers.get(cmmd);
-            ClientModuleInjection cmi = new ClientModuleInjection(cmmd, appClientBnd, resourceRefConfigFactory, injectionEngine,
-                            managedObjectServiceRef, callbackHandler, runningInClient);
+            ClientModuleInjection cmi = new ClientModuleInjection(cmmd, appClientBnd, resourceRefConfigFactory, injectionEngine, managedObjectServiceRef, callbackHandler, runningInClient);
             cmi.processReferences();
 
             activeCMDs.put(cmmd.getJ2EEName(), cmd);
@@ -249,7 +246,9 @@ public class ClientModuleRuntimeContainer implements ModuleRuntimeContainer, Def
             activeCMDs.remove(moduleInfo.getMetaData().getJ2EEName());
             serviceReg.unregister();
             int state = bundleContext.getBundle(0).getState();
-            if (state == Bundle.STARTING || state == Bundle.ACTIVE) {
+            String processType = bundleContext.getProperty("wlp.process.type");
+            boolean isServer = processType == null ? true : "SERVER".equals(processType.trim().toUpperCase(Locale.ENGLISH)) ? true : false;
+            if ((state == Bundle.STARTING || state == Bundle.ACTIVE) && !isServer) {
                 bundleContext.getBundle(0).stop();
             }
             classLoadingService.destroyThreadContextClassLoader(appContextClassLoader);

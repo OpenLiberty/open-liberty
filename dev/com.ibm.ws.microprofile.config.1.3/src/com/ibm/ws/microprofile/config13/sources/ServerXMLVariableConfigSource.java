@@ -35,7 +35,7 @@ public class ServerXMLVariableConfigSource extends InternalConfigSource implemen
     private BundleContext bundleContext;
 
     public ServerXMLVariableConfigSource() {
-        super(Config13Constants.SERVER_XML_VARIABLE_ORDINAL, Tr.formatMessage(tc, "server.xml.variable.config.source"));
+        super(Config13Constants.SERVER_XML_VARIABLE_ORDINAL, Tr.formatMessage(tc, "server.xml.variables.config.source"));
     }
 
     /** {@inheritDoc} */

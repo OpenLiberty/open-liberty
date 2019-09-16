@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,7 +18,6 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 
-import org.apache.directory.api.ldap.model.entry.Entry;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -31,8 +30,9 @@ import com.ibm.websphere.simplicity.config.wim.LdapCache;
 import com.ibm.websphere.simplicity.config.wim.LdapRegistry;
 import com.ibm.websphere.simplicity.config.wim.SearchResultsCache;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.apacheds.EmbeddedApacheDS;
+import com.ibm.ws.com.unboundid.InMemoryLDAPServer;
 import com.ibm.ws.security.registry.test.UserRegistryServletConnection;
+import com.unboundid.ldap.sdk.Entry;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -58,7 +58,7 @@ public class ContextPoolTimeoutTest {
      */
     private static ServerConfiguration emptyConfiguration = null;
 
-    private static EmbeddedApacheDS ldapServer = null;
+    private static InMemoryLDAPServer ds;
     private static final String SUB_DN = "o=ibm,c=us";
     private static final String USER_BASE_DN = "ou=TestUsers,ou=Test,o=ibm,c=us";
     private static final String USER = "user";
@@ -82,21 +82,19 @@ public class ContextPoolTimeoutTest {
      */
     @AfterClass
     public static void teardownClass() throws Exception {
-        if (libertyServer != null) {
-            try {
+        try {
+            if (libertyServer != null) {
                 libertyServer.stopServer();
-            } catch (Exception e) {
-                Log.error(c, "teardown", e, "Liberty server threw error while stopping. " + e.getMessage());
             }
-        }
-        if (ldapServer != null) {
+        } finally {
             try {
-                ldapServer.stopService();
+                if (ds != null) {
+                    ds.shutDown(true);
+                }
             } catch (Exception e) {
-                Log.error(c, "teardown", e, "LDAP server threw error while stopping. " + e.getMessage());
+                Log.error(c, "teardown", e, "LDAP server threw error while shutting down. " + e.getMessage());
             }
         }
-
         libertyServer.deleteFileFromLibertyInstallRoot("lib/features/internalfeatures/securitylibertyinternals-1.0.mf");
     }
 
@@ -146,26 +144,33 @@ public class ContextPoolTimeoutTest {
      * @throws Exception If the server failed to start for some reason.
      */
     private static void setupldapServer() throws Exception {
-        ldapServer = new EmbeddedApacheDS("contextpoolTimeoutLDAP");
-        ldapServer.addPartition("users", USER_BASE_DN);
-        ldapServer.startServer();
+        ds = new InMemoryLDAPServer(SUB_DN);
 
+        Entry entry = new Entry(SUB_DN);
+        entry.addAttribute("objectclass", "top");
+        entry.addAttribute("objectclass", "domain");
+        ds.add(entry);
         /*
          * Add the partition entries.
          */
-        Entry entry = ldapServer.newEntry(USER_BASE_DN);
-        entry.add("objectclass", "organizationalunit");
-        entry.add("ou", "Test");
-        entry.add("ou", "TestUsers");
-        ldapServer.add(entry);
+        entry = new Entry("ou=Test,o=ibm,c=us");
+        entry.addAttribute("objectclass", "organizationalunit");
+        entry.addAttribute("ou", "Test");
+        ds.add(entry);
 
-        entry = ldapServer.newEntry(USER_DN);
-        entry.add("objectclass", "inetorgperson");
-        entry.add("uid", USER);
-        entry.add("sn", USER);
-        entry.add("cn", USER);
-        entry.add("userPassword", PWD);
-        ldapServer.add(entry);
+        entry = new Entry(USER_BASE_DN);
+        entry.addAttribute("objectclass", "organizationalunit");
+        entry.addAttribute("ou", "Test");
+        entry.addAttribute("ou", "TestUsers");
+        ds.add(entry);
+
+        entry = new Entry(USER_DN);
+        entry.addAttribute("objectclass", "inetorgperson");
+        entry.addAttribute("uid", USER);
+        entry.addAttribute("sn", USER);
+        entry.addAttribute("cn", USER);
+        entry.addAttribute("userPassword", PWD);
+        ds.add(entry);
 
     }
 
@@ -182,10 +187,10 @@ public class ContextPoolTimeoutTest {
         ldap.setId("ldap1");
         ldap.setRealm("LDAPRealm");
         ldap.setHost("localhost");
-        ldap.setPort(String.valueOf(ldapServer.getLdapServer().getPort()));
+        ldap.setPort(String.valueOf(ds.getListenPort()));
         ldap.setBaseDN(SUB_DN);
-        ldap.setBindDN(EmbeddedApacheDS.getBindDN());
-        ldap.setBindPassword(EmbeddedApacheDS.getBindPassword());
+        ldap.setBindDN(InMemoryLDAPServer.getBindDN());
+        ldap.setBindPassword(InMemoryLDAPServer.getBindPassword());
         ldap.setLdapType("Custom");
         ContextPool cp = new ContextPool(true, 0, 2, 1, "2s", "5s");
         ldap.setContextPool(cp);

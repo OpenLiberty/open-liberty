@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,7 +20,7 @@ import java.util.function.Supplier;
 import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.concurrent.ManagedScheduledExecutorService;
 
-import org.eclipse.microprofile.concurrent.ManagedExecutor;
+import org.eclipse.microprofile.context.ManagedExecutor;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -43,7 +43,7 @@ import com.ibm.wsspi.threadcontext.WSContextService;
 
 /**
  * Super class of ManagedScheduledExecutorServiceImpl to be used with Java 8 and above.
- * This class provides implementation of the MicroProfile Concurrency methods.
+ * This class provides implementation of the MicroProfile Context Propagation methods.
  * These methods can be collapsed into ManagedExecutorServiceImpl once there is
  * no longer a need for OpenLiberty to support Java 7.
  */
@@ -55,7 +55,7 @@ import com.ibm.wsspi.threadcontext.WSContextService;
                         "creates.objectClass=java.util.concurrent.ScheduledExecutorService",
                         "creates.objectClass=javax.enterprise.concurrent.ManagedExecutorService",
                         "creates.objectClass=javax.enterprise.concurrent.ManagedScheduledExecutorService",
-                        "creates.objectClass=org.eclipse.microprofile.concurrent.ManagedExecutor" })
+                        "creates.objectClass=org.eclipse.microprofile.context.ManagedExecutor" })
 public class ManagedScheduledExecutorImpl extends AbstractManagedScheduledExecutorService implements ManagedExecutor {
     @Activate
     @Override

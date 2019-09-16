@@ -16,6 +16,7 @@ Bundle-SymbolicName: com.ibm.ws.kernel.instrument.serialfilter.serverconfig
 Bundle-Description: Java Serialization Filter Server Configuration, version=${bVersion}
 
 Private-Package: \
+ com.ibm.ws.config.xml.internal.nester, \
  com.ibm.ws.kernel.instrument.serialfilter.serverconfig.internal.resources
 
 Export-Package: \
@@ -41,6 +42,7 @@ Include-Resource: \
     com.ibm.ws.kernel.instrument.serialfilter,\
     com.ibm.ws.kernel.service;version=latest,\
     com.ibm.ws.org.apache.felix.scr;version=latest, \
+    com.ibm.ws.config;version=latest, \
     com.ibm.ws.org.osgi.annotation.versioning;version=latest
 
 -testpath: \

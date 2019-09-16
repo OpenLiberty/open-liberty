@@ -26,5 +26,6 @@ tested.features: \
   jaxb-2.3
 
 -buildpath: \
+	javax.activation:activation;version=1.1,\
     com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest

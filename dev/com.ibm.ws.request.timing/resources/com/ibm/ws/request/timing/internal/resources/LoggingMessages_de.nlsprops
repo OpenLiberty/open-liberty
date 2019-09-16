@@ -1,0 +1,61 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.request.timing/resources/com/ibm/ws/request/timing/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+#
+# Messages in the range TRAS3300 to 3499 are reserved for this messages file.
+# The list of prefixes and the range of messages in use (or "reserved") are shown in 
+# http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+# -------------------------------------------------------------------------------------------------
+
+# Warning message telling the user that the request time has exceed the configured slowRequestThreshold time.
+REQUEST_TIMER_WARNING=TRAS0112W: Die Anforderung {0} im Thread {1} ist seit mindestens {2} ms aktiv. Der folgende Stack-Trace zeigt, was momentan in diesem Thread ausgef\u00fchrt wird.\n\n {3}\nDie folgende Tabelle zeigt die Ergebnisse, die w\u00e4hrend dieser Anforderung ausgef\u00fchrt wurden. \n{4} 
+REQUEST_TIMER_WARNING.explanation=Die Ausf\u00fchrungsdauer der Anforderung \u00fcberschreitet die konfigurierte Dauer f\u00fcr langsame Anforderungen. Die Informationen in der Tabelle zeigen, welche Ereignisse im Rahmen der Anforderung bereits ausgef\u00fchrt wurden. Noch aktive Ereignisse sind mit einem Pluszeichen (+) neben der Dauer markiert. Die Standarddauer f\u00fcr langsame Anforderungen sind 10 Sekunden. Den aktuellen Wert k\u00f6nnen Sie der Datei server.xml entnehmen.
+REQUEST_TIMER_WARNING.useraction=Verwenden Sie die Informationen in der Tabelle, um den Teil der Anforderung zu bestimmen, der langsamer ist als erwartet. Wenn nahezu zur selben Zeit viele Warnungen f\u00fcr verschiedene Anforderungen ausgegeben werden, kann dies ein Hinweis darauf sein, dass der gesamte Serverprozess verlangsamt wird, z. B. durch einen anderen Prozess auf demselben System, der eine gro\u00dfe Menge an Verarbeitungsressourcen konsumiert.
+
+# Warning message telling the user that the request time has exceed the configured hungRequestThreshold time.
+HUNG_REQUEST_WARNING=TRAS0114W: Die Anforderung {0} im Thread {1} ist seit mindestens {2} ms aktiv. Die folgende Tabelle enth\u00e4lt die Ereignisse, die w\u00e4hrend dieser Anforderung ausgef\u00fchrt wurden. \n{3}
+HUNG_REQUEST_WARNING.explanation=Die Ausf\u00fchrungsdauer der Anforderung \u00fcberschreitet die konfigurierte Dauer f\u00fcr blockierte Anforderungen. Die Informationen in der Tabelle zeigen, welche Ereignisse im Rahmen der Anforderung bereits ausgef\u00fchrt wurden. Es werden automatisch Java-Cores ausgel\u00f6st, um weitere Informationen zu erfassen, die Aufschluss dar\u00fcber geben, was zur Blockierung der Anforderung f\u00fchrt. Die Standarddauer f\u00fcr blockierte Anforderungen sind 10 Sekunden. Den aktuellen Wert k\u00f6nnen Sie der Datei server.xml entnehmen.
+HUNG_REQUEST_WARNING.useraction=Verwenden Sie die Informationen in der Tabelle, um den Teil der Anforderung zu bestimmen, der blockiert ist oder sich in einer Schleife befindet. 
+
+# Warning message telling the user that the request time has exceed the configured hungRequestThreshold time.
+HUNG_REQUEST_COMPLETED_INFO=TRAS0115W: Die zuvor als blockiert erkannte Anforderung {0} im Thread {1} wurde nach {2} Millisekunen abgeschlossen.
+HUNG_REQUEST_COMPLETED_INFO.explanation=Die Task f\u00fcr blockierte Anforderungen benachrichtigt den Benutzer, wenn eine blockierte Anforderung abgeschlossen wurde.
+HUNG_REQUEST_COMPLETED_INFO.useraction=Es ist keine Aktion erforderlich.
+
+
+# Error message telling the user that we could not read part of the configuration in server.xml
+REQUEST_TIMING_CONFIG_ERROR1=TRAS3300E: Die der PID {0} zugeordnete Timing-Konfiguration kann nicht aus der Konfiguration gelesen werden.
+REQUEST_TIMING_CONFIG_ERROR1.explanation=Der Timing-Service f\u00fcr Anforderung hat versucht, eine eingebettete Timing-Konfiguration aus der Datei server.xml zu lesen. Die dem Element timing zugeordnete PID ist in der Nachricht angegeben.
+REQUEST_TIMING_CONFIG_ERROR1.useraction=Suchen Sie in der Datei messages.log nach weiteren Nachrichten, wie z. B. CWWKG0058E, die Details zum Konfigurationsproblem enthalten. Korrigieren Sie die Konfiguration, um den Fehler zu beheben.
+
+# Warning message telling the user that they have defined a timing element more than once
+REQUEST_TIMING_CONFIG_WARNING_DUPLICATE=TRAS3301W: Es ist bereits eine Timing-Konfiguration mit dem Typ {0} und dem Kontextinformationsmuster {1} vorhanden. Die der PID {2} zugeordnete Timing-Konfiguration ersetzt die vorherige Timing-Konfiguration.
+REQUEST_TIMING_CONFIG_WARNING_DUPLICATE.explanation=Es wurde eine doppelte Timing-Konfiguration in der Datei server.xml gefunden. Die Kombination von Typ und Kontextinformationsmuster wurde bereits definiert.
+REQUEST_TIMING_CONFIG_WARNING_DUPLICATE.useraction=\u00dcberpr\u00fcfen Sie die Datei server.xml und entfernen Sie alle doppelten Timing-Konfigurationen.
+
+# Warning message telling the user that they supplied conflicting context information requirements
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_PATTERN=TRAS3302W: Die Timing-Konfiguration f\u00fcr die PID {0} enth\u00e4lt ein Kontextinformationsmuster, aber in der Timing-Konfiguration der Anforderung ist das Attribut includeContextInfo auf false gesetzt. Die Timing-Konfiguration wird ignoriert.
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_PATTERN.explanation=Der Timing-Service f\u00fcr Anforderung hat eine eingebettete Timing-Konfiguration aus der Datei server.xml gelesen. In der Timing-Konfiguration ist ein abzugleichendes Kontextinformationsmuster angegeben. Der Timing-Service der Anforderung ist so konfiguriert, dass Kontextinformationen f\u00fcr alle Anforderungen inaktiviert sind, und kann dieser Timing-Konfiguration deshalb keine Anforderungen zuordnen.
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_PATTERN.useraction=\u00dcberpr\u00fcfen Sie die Datei server.xml und beheben Sie den Konfigurationskonflikt, indem Sie den Wert von includeContextInfo in der Timing-Konfiguration der Anforderung auf true setzen oder indem Sie das Kontextinformationsmuster aus der Timing-Konfiguration entfernen.
+
+# Warning message telling the user that they put the wildcard character in the wrong place
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_ASTERISK_LOC=TRAS3303W: In der der PID {0} zugeordneten Timing-Konfiguration ist ein Kontextinformationsmuster angegeben, das einen Platzhalter an einer nicht unterst\u00fctzten Position enth\u00e4lt. Der Platzhalter wird als Stern behandelt. Das Kontextinformationsmuster lautet folgenderma\u00dfen: {1}.
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_ASTERISK_LOC.explanation=Der Timing-Service f\u00fcr Anforderung hat eine eingebettete Timing-Konfiguration aus der Datei server.xml gelesen. Im Kontextinformationsmuster wird ein Stern als Platzhalter behandelt, sofern ihm kein Backslash-Zeichen als Escapezeichen vorangestellt ist. Ein Platzhalter ist nur als letztes Zeichen im Kontextinformationsmuster zul\u00e4ssig.
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_ASTERISK_LOC.useraction=Wenn Sie m\u00f6chten, dass das Platzhalterzeichen als Stern interpretiert wird, m\u00fcssen Sie ihm ein Backslash-Zeichen als Escapezeichen voranstellen.
+
+TRUNCATED_REQUEST_MESSAGE=\n\nDie Tabelle wurde abgeschnitten, weil die Anzahl der Ereignisse f\u00fcr die Anforderung den zul\u00e4ssigen Grenzwert \u00fcberschreitet.

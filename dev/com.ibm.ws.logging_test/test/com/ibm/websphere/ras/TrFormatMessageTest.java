@@ -17,12 +17,10 @@ import java.util.List;
 import java.util.Locale;
 
 import org.junit.Assume;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import junit.framework.Assert;
 
-@Ignore
 public class TrFormatMessageTest {
     private static final String TEST_NLS = "test.resources.Messages";
     private static final String javaVersion = System.getProperty("java.version");

@@ -27,7 +27,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 
-import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
@@ -57,7 +57,7 @@ public class EnablingBeansXmlValidationTest extends LoggingTest {
      */
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    @ExpectedFFDC({ "org.jboss.weld.exceptions.IllegalStateException", "com.ibm.ws.container.service.state.StateChangeException" })
+    @AllowedFFDC({ "org.jboss.weld.exceptions.IllegalStateException", "com.ibm.ws.container.service.state.StateChangeException" }) //We are expecting these errors, but we're using Allowed because the schema download occasionally fails.
     public void testEnablingBeansXmlValidation() throws Exception {
         boolean foundNetworkError = false;
         try {

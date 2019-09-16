@@ -1,0 +1,9 @@
+<server>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>clientB-1.0</feature>
+    </featureManager>
+
+</server>

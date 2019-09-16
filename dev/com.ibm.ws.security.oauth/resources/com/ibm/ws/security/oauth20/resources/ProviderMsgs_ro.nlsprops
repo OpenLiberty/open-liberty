@@ -1,0 +1,354 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME SERV1/ws/code/security/src/com/ibm/ws/security/oauth20/resources/ProviderMsgs.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#COMPONENTPREFIX CWOAU
+#COMPONENTNAMEFOR CWOAU WebSphere OAuth
+
+# Error Messages
+# --------------
+# The text for the explanation (CMSG0001) and useraction (CMSG0002)
+# appears in the *Msgs.xml file in build/messages directory.
+
+
+security.oauth20.init.start=CWOAU0001I: Ini\u0163ializarea furnizorilor de OAuth 20.
+security.oauth20.init.start.explanation=Ini\u0163ializarea modulelor OAuth a \u00eenceput.
+security.oauth20.init.start.useraction=F\u0103r\u0103, doar informativ.
+
+security.oauth20.admin.enableTAI=CWOAU0002I: OAuth TAI s-a activat cu succes.
+security.oauth20.admin.enableTAI.explanation=Activarea OAuth TAI s-a finalizat cu succes.
+security.oauth20.admin.enableTAI.useraction=F\u0103r\u0103, doar informativ.
+
+security.oauth20.admin.createProvider=CWOAU0003I: OAuth Provider s-a creat cu succes.
+security.oauth20.admin.createProvider.explanation=Crearea furnizorului de OAuth s-a finalizat cu succes.
+security.oauth20.admin.createProvider.useraction=F\u0103r\u0103, doar informativ.
+
+security.oauth20.admin.serverRunningCheck=CWOAU0004E: Eroare: comenzile admin trebuie rulate \u00een modul conectat la un server pornit.
+security.oauth20.admin.serverRunningCheck.explanation=Comenzile de administrare OAuth necesit\u0103 un mediu de server \u00een rulare pentru a modifica set\u0103rile.
+security.oauth20.admin.serverRunningCheck.useraction=Porni\u0163i serverul sau managerul de implementare \u015fi \u00eencerca\u0163i din nou.
+
+security.oauth20.admin.deleteProvider=CWOAU0005I: OAuth Provider s-a \u015fters cu succes.
+security.oauth20.admin.deleteProvider.explanation=\u015etergerea furnizorului de OAuth provider s-a finalizat cu succes.
+security.oauth20.admin.deleteProvider.useraction=F\u0103r\u0103, doar informativ.
+
+security.oauth20.admin.fileExists=CWOAU0006E: Numele de fi\u015fier exist\u0103 deja.
+security.oauth20.admin.fileExists.explanation=Numele de fi\u015fier specificat nu trebuie s\u0103 existe.
+security.oauth20.admin.fileExists.useraction=Specifica\u0163i un nume de fi\u015fier nou.
+
+security.oauth20.admin.providerNotFound=CWOAU0007E: Nu a fost g\u0103sit furnizorul de OAuth.
+security.oauth20.admin.providerNotFound.explanation=Furnizorul specificat de OAuth nu exist\u0103.
+security.oauth20.admin.providerNotFound.useraction=Verifica\u0163i numele furnizorului de OAuth \u015fi \u00eencerca\u0163i  din nou.
+
+security.oauth20.admin.exportProps=CWOAU0008I: Configura\u0163ie scris\u0103 cu succes pe {0}
+security.oauth20.admin.exportProps.explanation=Comanda s-a finalizat cu succes.
+security.oauth20.admin.exportProps.useraction=F\u0103r\u0103, doar informativ.
+
+security.oauth20.admin.fileNotFound=CWOAU0009E: Fi\u015fierul nu a fost g\u0103sit: {0}
+security.oauth20.admin.fileNotFound.explanation=Numele de fi\u015fier specificat nu exist\u0103.
+security.oauth20.admin.fileNotFound.useraction=Verifica\u0163i numele fi\u015fierului \u015fi \u00eencerca\u0163i din nou.
+
+security.oauth20.admin.importProps=CWOAU0010I: Configura\u0163ia s-a importat cu succes.
+security.oauth20.admin.importProps.explanation=Comanda s-a finalizat cu succes.
+security.oauth20.admin.importProps.useraction=F\u0103r\u0103, doar informativ.
+
+security.oauth20.mbean.invoked=CWOAU0011I: Comanda de procesare OAuth20MBean {0}.
+security.oauth20.mbean.invoked.explanation=A fost invocat OAuth MBean pe acest nod pentru a rula o comand\u0103. 
+security.oauth20.mbean.invoked.useraction=F\u0103r\u0103, doar informativ.
+
+security.oauth20.init.error=CWOAU0012E: Eroare la ini\u0163ializarea cadrului de lucru OAuth
+security.oauth20.init.error.explanation=Cadrul de lucru OAuth a e\u015fuat ini\u0163ializarea.
+security.oauth20.init.error.useraction=Consulta\u0163i detaliile excep\u0163iilor pentru mai multe informa\u0163ii. 
+
+security.oauth20.mbean.client.invoked=CWOAU0013I: Comanda de procesare OAuth20ClientMBean {0}.
+security.oauth20.mbean.client.invoked.explanation=A fost invocat OAuth MBean pe acest nod pentru a rula o comand\u0103. 
+security.oauth20.mbean.client.invoked.useraction=F\u0103r\u0103, doar informativ.
+
+security.oauth20.mbean.none.found=CWOAU0014E: Nu s-a g\u0103sit niciun OAuth Client MBeans, opera\u0163iile cu tabele de clien\u0163i in-memory vor e\u015fua.
+security.oauth20.mbean.none.found.explanation=O eroare de configurare a extras \u00eenregistrarea sau c\u0103utarea deMBeans de tip OAuth20ClientMBean.
+security.oauth20.mbean.none.found.useraction=Referi\u0163i-v\u0103 la jurnalele de urm\u0103rire \u00eenregistr\u0103ri MBean pentru detalii suplimentare.
+
+##  client manager message
+security.oauth20.client.delete.error=CWOAU0015E: A e\u015fuat \u015ftergerea clientului cu id = {0}.
+security.oauth20.client.delete.error.explanation=Furnizorul de clien\u0163i a e\u015fuat \u015ftergerea clientului specificat datorit\u0103 unei erori interne.
+security.oauth20.client.delete.error.useraction=F\u0103r\u0103, doar informativ.
+
+security.oauth20.client.update.error=CWOAU0016E: A e\u015fuat actualizarea clientului cu id = {0}.
+security.oauth20.client.update.error.explanation=Furnizorul de clien\u0163i a e\u015fuat actualizarea clientului specificat datorit\u0103 unei erori interne.
+security.oauth20.client.update.error.useraction=F\u0103r\u0103, doar informativ.
+
+security.oauth20.client.create.error=CWOAU0017E: A e\u015fuat crearea clientului.
+security.oauth20.client.create.error.explanation=Furnizorul de clien\u0163i a e\u015fuat crearea unui nou client datorit\u0103 unei erori interne.
+security.oauth20.client.create.error.useraction=F\u0103r\u0103, doar informativ.
+
+security.oauth20.endpoint.template.forward.error=CWOAU0018E: Nu se poate ob\u0163ine dispecerul de cereri specificat de configura\u0163ia {0} la context={1} cale={2}. 
+security.oauth20.endpoint.template.forward.error.explanation=Servletul de puncte finale OAuth20 nu poate g\u0103si dispecerul de cereri specificat pentru a randa \u015fablonul. 
+security.oauth20.endpoint.template.forward.error.useraction=Verifica\u0163i de dou\u0103 ori parametrul de configurare \u015fi asigura\u0163i-v\u0103 c\u0103 exist\u0103 calea \u015fi r\u0103d\u0103cina de context specificate.
+
+
+##  OAuth2.0 error handler message
+security.oauth20.error.access.denied=CWOAU0019E: Nu sunte\u0163i autorizat s\u0103 accesa\u0163i aceast\u0103 resurs\u0103 protejat\u0103.
+security.oauth20.error.access.denied.explanation=Parametrul username din cererea OAuth fie nu a fost specificat, fie a fost un \u015fir nul.  
+security.oauth20.error.access.denied.useraction=Specifica\u0163i un parametru username valid \u00een cererea OAuth.
+
+security.oauth20.error.invalid.authorizationcode=CWOAU0020E: Codul de autoriza\u0163ie {0} nu apar\u0163ine clientului care \u00eencearc\u0103 s\u0103-l utilizeze: {1}.
+security.oauth20.error.invalid.authorizationcode.explanation=Parametrul client_id specificat \u00een cererea OAuth nu se potrive\u015fte cu valoarea ID-ului de client din codul de autoriza\u0163ie.  Aceste valori ar trebui s\u0103 se potriveasc\u0103.  Un motiv pentru aceast\u0103 eroare este faptul c\u0103 parametrul client_id din cererea OAuth a fost modificat pe durata fluxului OAuth.
+security.oauth20.error.invalid.authorizationcode.useraction=Asigura\u0163i-v\u0103 c\u0103 valoarea parametrului client_id din cererea OAuth este identic\u0103 cu valoarea ID-ului de client care a fost utilizat\u0103 la ob\u0163inerea codului de autoriza\u0163ie. 
+
+security.oauth20.error.parameter.format=CWOAU0021E: Parametrul [{0}] con\u0163ine o valoare formatat\u0103 ilegal: [{1}].
+security.oauth20.error.parameter.format.explanation=Valoarea parametrului scope din cererea OAuth nu este valid\u0103.  Parametrul scope trebuie s\u0103 con\u0163in\u0103 doar urm\u0103toarele caractere hexazecimale: [x21, x(de la 23 la 5B), x(de la 5D la 7E)]
+security.oauth20.error.parameter.format.useraction=Asigura\u0163i-v\u0103 c\u0103 parametrul scope con\u0163ine numai caracterele suportate.
+
+security.oauth20.error.duplicate.parameter=CWOAU0022E: Parametrul OAuth urm\u0103tor a fost furnizat mai mult dec\u00e2t o dat\u0103 \u00een cererea: {0}
+security.oauth20.error.duplicate.parameter.explanation=Acela\u015fi parametru a fost specificat de mai multe ori \u00een cererea OAuth.
+security.oauth20.error.duplicate.parameter.useraction=Verifica\u0163i \u00eenc\u0103 o dat\u0103 parametrul din cererea OAuth \u015fi asigura\u0163i-v\u0103 c\u0103 este specificat o singur\u0103 dat\u0103.
+
+# do not translate client_id
+security.oauth20.error.invalid.client=CWOAU0023E: Furnizorul de servicii OAuth nu a putut g\u0103si clientul {0}.
+security.oauth20.error.invalid.client.explanation=Furnizorul de servicii OAuth nu a putut g\u0103si clientul specificat \u00een valoarea parametrului client_id \u00een cererea OAuth.
+security.oauth20.error.invalid.client.useraction=Asigura\u0163i-v\u0103 c\u0103 clientul este \u00eenregistrat cu furnizorul de servicii OAuth sau specifica\u0163i un client \u00eenregistrat pentru valoarea parametrului client_id. De asemenea, asigura\u0163i-v\u0103 c\u0103 clientul este activat \u00een configura\u0163ia furnizorului de servicii OAuth.
+
+#do not translate client_secret
+security.oauth20.error.invalid.clientsecret=CWOAU0024E: Clientul OAuth {0} a prezentat un secret de client invalid \u00een cererea OAuth.
+security.oauth20.error.invalid.clientsecret.explanation=Valoarea parametrului client_secret din cererea OAuth nu este valid\u0103.
+security.oauth20.error.invalid.clientsecret.useraction=Verifica\u0163i valoarea parametrului client_secret \u00een cererea OAuth \u015fi aisgura\u0163i-v\u0103 c\u0103 se potrive\u015fte valorii secretului de client al clientului \u00eenregistrat \u00een configura\u0163ia furnizorului de servicii OAuth.
+
+security.oauth20.error.invalid.granttype=CWOAU0025E: Parametrul grant_type este invalid: {0}
+security.oauth20.error.invalid.granttype.explanation=Valoarea parametrului grant_type din cererea OAuth nu este valid\u0103.
+security.oauth20.error.invalid.granttype.useraction=Asigura\u0163i-v\u0103 c\u0103 valoarea parametrului grant_type din cererea OAuth este una dintre urm\u0103toarele valori: authorization_code, password, client_credentials, refresh_token, implicit, urn:ietf:params:oauth:grant-type:jwt-bearer
+
+security.oauth20.error.invalid.redirecturi=CWOAU0026E: Parametrul redirect URI este invalid: {0}
+security.oauth20.error.invalid.redirecturi.explanation=Valoarea parametrului URI de redirec\u0163ionare din cererea OAuth s-ar putea s\u0103 nu fie un URI absolut valid.
+security.oauth20.error.invalid.redirecturi.useraction=Asigura\u0163i-v\u0103 c\u0103 valoarea parametrului URI de redirec\u0163ionare din cererea OAuth este o valoare URI absolut\u0103 valid\u0103.
+
+security.oauth20.error.invalid.responsetype=CWOAU0027E: Parametrul response_type este invalid: {0}
+security.oauth20.error.invalid.responsetype.explanation=Valoarea parametrului response_type din cererea OAuth nu este valid\u0103.
+security.oauth20.error.invalid.responsetype.useraction=Verifica\u0163i valoarea parametrului response_type din cererea OAuth \u015fi asigura\u0163i-v\u0103 c\u0103 este una dintre urm\u0103toarele valori: code, token.
+
+security.oauth20.error.invalid.scope=CWOAU0028E: Domeniul solicitat: [{0}] dep\u0103\u015fe\u015fte domeniul acordat de proprietarul resursei: [{1}].
+security.oauth20.error.invalid.scope.explanation=Valoarea parametrului scope din cererea OAuth nu poate fi mai mare dec\u00e2t domeniul aprobat pentru client.
+security.oauth20.error.invalid.scope.useraction=Verifica\u0163i valoarea parametrului scope din cererea OAuth \u015fi asigura\u0163i-v\u0103 c\u0103 este egal\u0103 cu sau un subset al domeniului care a fost aprobat de proprietarul resursei.
+
+security.oauth20.error.invalid.token=CWOAU0029E: Jetonul cu cheie: {0} tip: {1} subType: {2} nu a fost g\u0103sit \u00een cache-ul de jetoane.
+security.oauth20.error.invalid.token.explanation=Jetonul OAuth fie nu era \u00een cache, fie tipul jetonului sau subtipul (subType) nu s-au potrivit cu valoarea a\u015fteptat\u0103.
+security.oauth20.error.invalid.token.useraction=Asigura\u0163i-v\u0103 c\u0103 clientul asociat cu jetonul nu este dezactivat \u00een configura\u0163ia furnizorului OAuth. De asemenea, asigura\u0163i-v\u0103 c\u0103 tipul \u015fi subtipul jetonului au ambele valorile care sunt a\u015fteptate.
+
+security.oauth20.error.invalid.tokenrequestmethod=CWOAU0030E: A fost utilizat\u0103 o metod\u0103 HTTP invalid\u0103 la punctul final al jetonului: {0}
+security.oauth20.error.invalid.tokenrequestmethod.explanation=Metoda HTTP utilizat\u0103 de clientul OAuth nu este valid\u0103.
+security.oauth20.error.invalid.tokenrequestmethod.useraction=Asigura\u0163i-v\u0103 c\u0103 clientul utilizeaz\u0103 metoda HTTP POST.
+
+security.oauth20.error.mismatched.clientauthentication=CWOAU0031E: Client_id transmis \u00een cerere c\u0103tre punctul final al jetonului: {0} nu s-a potrivit cu clientul autentificat furnizat \u00een apelul API: {1}
+security.oauth20.error.mismatched.clientauthentication.explanation=Valoarea parametrului client_id din apelul de API nu se potrive\u015fte cu ID-ul de client din codul de autoriza\u0163ie trimis clientului.
+security.oauth20.error.mismatched.clientauthentication.useraction=Verifica\u0163i parametrul client_id din cererea OAuth sau apelul API \u015fi asigura\u0163i-v\u0103 c\u0103 se potrive\u015fte cu ID-ul de client utilizat la ob\u0163inerea codului de autoriza\u0163ie.
+
+security.oauth20.error.mismatched.redirecturi=CWOAU0032E: URI-ul de redirectare primit: {0} nu se potrive\u015fte cu URI-ul de redirectare pentru care s-a emis acordarea: {1}
+security.oauth20.error.mismatched.redirecturi.explanation=Valoarea parametrului redirect_uri din cererea OAuth nu se potrive\u015fte cu atributul redirect URI din clientul \u00eenregistrat.
+security.oauth20.error.mismatched.redirecturi.useraction=Verifica\u0163i valoarea parametrului redirect_uri din cererea OAuth \u015fi asigura\u0163i-v\u0103 c\u0103 se potrive\u015fte cu atributul redirect URI existent \u00een clientul \u00eenregistrat.
+
+security.oauth20.error.missing.parameter=CWOAU0033E: Lipse\u015fte un parametru runtime necesar: {0}
+security.oauth20.error.missing.parameter.explanation=Codul runtime al furnizorului OAuth nu a g\u0103sit un parametru necesar \u00een timpul proces\u0103rii cererii clientului.
+security.oauth20.error.missing.parameter.useraction=Verifica\u0163i parametrul lips\u0103 \u00een cererea OAuth \u015fi asigura\u0163i-v\u0103 c\u0103 este specificat.
+
+security.oauth20.error.publicclient.credential=CWOAU0034E: Un client public a \u00eencercat s\u0103 acceseze punctul final al jetonului utiliz\u00e2nd tipul de acordare client_credentials. Client_id este: {0}
+security.oauth20.error.publicclient.credential.explanation=Un client public OAuth nu are permisiunea de a utiliza tipul de acordare client_credentials.
+security.oauth20.error.publicclient.credential.useraction=Verifica\u0163i valoarea parametrului grant_type din cererea OAuth request \u015fi utiliza\u0163i alt tip de acordare pentru clientul public.
+
+security.oauth20.error.publicclient.forbidden=CWOAU0035E: Un client public a \u00eencercat s\u0103 acceseze punctul final al jetonului, iar clien\u0163ii publici sunt interzi\u015fi \u00een aceast\u0103 configura\u0163ie de componente. Client_id este: {0}
+security.oauth20.error.publicclient.forbidden.explanation=Furnizorul OAuth este configurat s\u0103 nu permit\u0103 clien\u0163ilor publici accesul la punctul final al jetonului.
+security.oauth20.error.publicclient.forbidden.useraction=Dac\u0103 inten\u0163iona\u0163i s\u0103 permite\u0163i accesul pentru clien\u0163ii publici, seta\u0163i atributul allowPublicClients la true \u00een configura\u0163ia furnizorului OAuth.
+
+security.oauth20.error.refreshtoken.invalid.client=CWOAU0036E: Jetonul de re\u00eemprosp\u0103tare: {0} nu apar\u0163ine clientului care \u00eencearc\u0103 s\u0103-l utilizeze: {1}
+security.oauth20.error.refreshtoken.invalid.client.explanation=Valoarea parametrului client_id din cererea OAuth nu se potrive\u015fte cu ID-ul de client din jetonul de re\u00eemprosp\u0103tare.
+security.oauth20.error.refreshtoken.invalid.client.useraction=Verifica\u0163i valoarea parametrului client_id din cererea OAuth \u015fi asigura\u0163i-v\u0103 c\u0103 se potrive\u015fte cu ID-ul de client con\u0163inut de jetonul de re\u00eemprosp\u0103tare.
+
+security.oauth20.error.wrong.http.scheme=CWOAU0037E: Este utilizat\u0103 schema HTTP \u00een punctul final specificat: {0}, este necesar HTTPS.
+security.oauth20.error.wrong.http.scheme.explanation=Furnizorul OAuth necesit\u0103 utilizarea HTTPS \u00een cererea OAuth, dar \u00een URL-ul cererii a fost utilizat HTTP.
+security.oauth20.error.wrong.http.scheme.useraction=Verifica\u0163i URL-ul cererii OAuth \u015fi asigura\u0163i-v\u0103 c\u0103 utilizeaz\u0103 HTTPS.
+
+security.oauth20.endpoint.client.auth.error=CWOAU0038E: Clientul nu a putut fi verificat. Este incorect ID-ul de client {0} sau secretul de client.
+security.oauth20.endpoint.client.auth.error.explanation=Furnizorul OAuth nu a putut verifica clientul. 
+security.oauth20.endpoint.client.auth.error.useraction=Verifica\u0163i c\u0103 ID-ul de client \u015fi secretul clientului sunt valide \u015fi se potrivesc configura\u0163iei clientului OAuth \u015fi a clientului OpenID Connect.
+
+security.oauth20.filter.request.null=CWOAU0039W: Cererea direc\u0163ionat\u0103 la URL-ul punctului final [{0}] nu a fost recunoscut\u0103 de furnizorul OAuth ca cerere valid\u0103.
+security.oauth20.filter.request.null.explanation=Se a\u015fteapt\u0103 ca cererile OAuth 2.0 \u015fi OpenID Connect s\u0103 fie direc\u0163ionate c\u0103tre anumite puncte finale. Este posibil ca URL-ul cererii s\u0103 nu fi fost formatat corect sau cererea s\u0103 fi fost direc\u0163ionat\u0103 c\u0103tre un context sau un punct final care nu suport\u0103 aceste cereri.
+security.oauth20.filter.request.null.useraction=Verifica\u0163i calea cererii, pentru a v\u0103 asigura c\u0103 este formatat\u0103 corespunz\u0103tor \u015fi direc\u0163ionat\u0103 c\u0103tre un punct final valid, care suport\u0103 cereri OAuth 2.0 sau OpenID Connect, dup\u0103 caz.
+
+security.oauth20.error.authorization=CWOAU0039A: A e\u015fuat autorizarea pentru utilizatorul {0}. Utilizatorului nu i-a fost acordat acces la niciunul dintre rolurile necesare pentru cererea OAuth 2.0 \u015fi OpenID Connect.
+security.oauth20.error.authorization.explanation=Utilizatorul nu are permisiunea necesar\u0103 pentru a accesa resursa OAuth 2.0 \u015fi OpenID Connect.
+security.oauth20.error.authorization.useraction=Dac\u0103 este ceva nea\u015fteptat, contacta\u0163i administratorul de securitate. Utilizatorul dumneavoastr\u0103 trebuie s\u0103 fie mapat la unul din rolurile din maparea de roluri de securitate a aplica\u0163iei web OAuth.
+
+security.oauth20.error.filter.multiple.matching=CWOAU0041E: Criteriile de filtrare s-au potrivit pentru mai mult de un furnizor [{0}] pentru procesarea cererii. Criteriile de filtrare ar trebui s\u0103 nu se suprapun\u0103 \u00eentre furnizori. 
+security.oauth20.error.filter.multiple.matching.explanation=Cererile OAuth 2.0 \u015fi OpenID Connect sunt a\u015fteptate s\u0103 fie direc\u0163ionate la un anumit furnizor pe baza criteriilor de filtrare. Totu\u015fi, aceast\u0103 cerere a \u00eentrunit criteriile pentru mai multe configura\u0163ii de filtre de furnizor.
+security.oauth20.error.filter.multiple.matching.useraction=Verifica\u0163i configura\u0163ia filtrului fiec\u0103rui furnizor pentru a v\u0103 asigura c\u0103 criteriile de filtrare nu se suprapun \u00eentre mai mul\u0163i furnizori.
+
+# do not translate prompt and none
+security.oauth20.error.invalid.authorization.prompt.none.value=CWOAU0042E: Cererea de autorizare [{0}] valoare parametru: [{1}] nu este valid\u0103 pentru c\u0103 are valoarea ''none'' pe l\u00e2ng\u0103 alte valori.
+security.oauth20.error.invalid.authorization.prompt.none.value.explanation=Parametrul prompt nu trebuie s\u0103 con\u0163in\u0103 alte valori c\u00e2nd se specific\u0103 valoarea 'none'.
+security.oauth20.error.invalid.authorization.prompt.none.value.useraction=Specifica\u0163i numai valoarea 'none' \u00een parametrul prompt sau specifica\u0163i celelalte valori f\u0103r\u0103 valoarea 'none'.
+
+security.oauth20.error.authorization.internal.ioexception=CWOAU0043E: Punctul final de autorizare OAuth nu a putut redirec\u0163iona agentul utilizatorului la URI-ul de redirec\u0163ionare [{0}] pentru c\u0103 a ap\u0103rut o java.io.IOException nea\u015fteptat\u0103 cu mesajul: {1}
+security.oauth20.error.authorization.internal.ioexception.explanation=A ap\u0103rut o java.io.IOException nea\u015fteptat\u0103 \u00een timp ce se \u00eencerca redirec\u0163ionarea la URI-ul de redirec\u0163ionare al clientului.
+security.oauth20.error.authorization.internal.ioexception.useraction=Examina\u0163i mesajul excep\u0163iei.
+
+security.oauth20.error.authorization.internal.missing.issuer=CWOAU0044E: Punctul final de autorizare OAuth nu a putut procesa cererea OAuth pentru c\u0103 nu a fost g\u0103sit niciun identificator emitent.
+security.oauth20.error.authorization.internal.missing.issuer.explanation=Identificatorul emitent lipse\u015fte \u015fi este necesar pentru a finaliza cererea resursei OAuth. Aceasta este o eroare de server intern\u0103.
+security.oauth20.error.authorization.internal.missing.issuer.useraction=F\u0103r\u0103.
+
+security.oauth20.error.token.internal.exception=CWOAU0045E: Punctul final de jeton OAuth nu a putut scrie r\u0103spunsul HTTP la clientul OAuth {0} pentru c\u0103 a ap\u0103rut o excep\u0163ie nea\u015fteptat\u0103 cu mesajul: {1}
+security.oauth20.error.token.internal.exception.explanation=A ap\u0103rut o excep\u0163ie nea\u015fteptat\u0103 \u00een timp ce se \u00eencerca scrierea r\u0103spunsului HTTP pentru o cerere de jeton OAuth.
+security.oauth20.error.token.internal.exception.useraction=Examina\u0163i mesajul excep\u0163iei.
+
+security.oauth20.error.token.internal.missing.issuer=CWOAU0046E: Punctul final de jeton OAuth nu a putut procesa cererea OAuth pentru c\u0103 nu a fost g\u0103sit niciun identificator emitent.
+security.oauth20.error.token.internal.missing.issuer.explanation=Identificatorul emitent lipse\u015fte \u015fi este necesar pentru a finaliza cererea de jeton OAuth. Aceasta este o eroare de server intern\u0103.
+security.oauth20.error.token.internal.missing.issuer.useraction=F\u0103r\u0103.
+
+security.oauth20.error.internal.unsupported.encoding.exception=CWOAU0047E: Furnizorul de servicii OAuth nu a putut decoda un parametru \u015fir de interogare de cerere HTTP pentru c\u0103 a ap\u0103rut o java.io.UnsupportedEncodingException nea\u015fteptat\u0103.
+security.oauth20.error.internal.unsupported.encoding.exception.explanation=A ap\u0103rut o java.io.UnsupportedEncodingException nea\u015fteptat\u0103 \u00een timp ce se \u00eencerca decodarea unui parametru \u015fir de interogare de cerere HTTP de la formatul MIME 'application/x-www-form-urlencoded' pentru un jeton OAuth sau cerere de resurs\u0103.
+security.oauth20.error.internal.unsupported.encoding.exception.useraction=F\u0103r\u0103.
+
+security.oauth.error.config.notspecified.exception=CWOAU0048E: Parametrul de configurare [{0}] nu este setat.
+security.oauth.error.config.notspecified.exception.explanation=Furnizorul OAuth20 nu poate procesa cererea pentru c\u0103 parametrul de configurare necesar nu este setat.
+security.oauth.error.config.notspecified.exception.useraction=Verifica\u0163i parametrul de configurare \u015fi asigura\u0163i-v\u0103 c\u0103 este configurat parametrul de configurare necesar.
+
+security.oauth.error.classmismatch.exception=CWOAU0049E: Clasa specificat\u0103 cu parametrul de configurare [{0}] nu se potrive\u015fte cu clasa de interfa\u0163\u0103 necesar\u0103 [{1}].
+security.oauth.error.classmismatch.exception.explanation=Furnizorul OAuth20 nu poate construi clasa specificat\u0103 pentru c\u0103 clasa specificat\u0103 nu se potrive\u015fte cu clasa de interfa\u0163\u0103 necesar\u0103.
+security.oauth.error.classmismatch.exception.useraction=Verifica\u0163i parametrul de configurare \u015fi asigura\u0163i-v\u0103 c\u0103 clasa specificat\u0103 este o clas\u0103 de implementare a clasei de interfa\u0163\u0103 necesare.
+
+security.oauth.error.classinstantiation.exception=CWOAU0050E: Clasa specificat\u0103 [{0}] cu parametrul de configurare [{1}] nu poate fi instan\u0163iat\u0103. Excep\u0163ia root este : {2}
+security.oauth.error.classinstantiation.exception.explanation=Furnizorul OAuth20 nu poate instan\u0163ia clasa specificat\u0103.
+security.oauth.error.classinstantiation.exception.useraction=Examina\u0163i mesajul excep\u0163iei.
+
+security.oauth.error.invalidconfig.exception=CWOAU0051E: Valoarea de configurare [{1}] care este specificat\u0103 \u00een parametrul de configurare [{0}] nu este valid\u0103.
+security.oauth.error.invalidconfig.exception.explanation=Furnizorul OAuth20 nu poate procesa cererea pentru c\u0103 parametrul de configurare specificat este invalid.
+security.oauth.error.invalidconfig.exception.useraction=Verifica\u0163i parametrul de configurare \u015fi asigura\u0163i-v\u0103 c\u0103 valoarea specificat\u0103 este valid\u0103.
+
+security.oauth.error.mismatch.granttype.exception=CWOAU0052E: Valoarea parametrului de configurare [{0}] nu se potrive\u015fte cu parametrul grant_type [{1}] din cererea OAuth.
+security.oauth.error.mismatch.granttype.exception.explanation=Furnizorul OAuth20 nu poate procesa cererea pentru c\u0103 parametrului grant_type din cerere nu-i este permis s\u0103 fie procesat.
+security.oauth.error.mismatch.granttype.exception.useraction=Verifica\u0163i parametrul de configurare \u015fi asigura\u0163i-v\u0103 c\u0103 valoarea specificat\u0103 este compatibil\u0103 cu parametrul grant_type din cererea OAuth.
+
+security.oauth.error.mismatch.responsetype.exception=CWOAU0053E: Valoarea parametrului de configurare [{0}] nu se potrive\u015fte cu parametrul response_type [{1}] din cererea OAuth.
+security.oauth.error.mismatch.responsetype.exception.explanation=Furnizorul OAuth20 nu poate procesa cererea pentru c\u0103 parametrului response_type din cerere nu-i este permis s\u0103 fie procesat.
+security.oauth.error.mismatch.responsetype.exception.useraction=Verifica\u0163i parametrul de configurare \u015fi asigura\u0163i-v\u0103 c\u0103 valoarea specificat\u0103 este compatibil\u0103 cu parametrul respose_type din cererea OAuth.
+
+security.oauth20.token.limit.error=CWOAU0054E: userClientTokenLimit din cache-ul de jeton cu userID "{0}" \u015fi clientID "{1}" a fost dep\u0103\u015fit sau atins. Limita este: {2}.
+security.oauth20.token.limit.error.explanation=Acela\u015fi utilizator are prea multe sesiuni active cu acela\u015fi furnizor OAuth20.
+security.oauth20.token.limit.error.useraction=Fie cre\u015fte\u0163i valoarea atributului userClientTokenLimit \u00een configura\u0163ie, pentru a cre\u015fte m\u0103rimea cache-ului de jeton, fie utiliza\u0163i alt\u0103 combina\u0163ie utilizator/client, de exemplu un client diferit.
+
+security.oauth20.error.invalid.registered.redirecturi=CWOAU0055E: URI-ul de redirec\u0163ionare specificat \u00een clientul \u00eenregistrat al furnizorului OAuth nu este valid: {0}
+security.oauth20.error.invalid.registered.redirecturi.explanation=Valoarea atributului de redirec\u0163ionare din clientul \u00eenregistrat al furnizorului OAuth s-ar putea s\u0103 nu fie un URI absolut valid.
+security.oauth20.error.invalid.registered.redirecturi.useraction=Asigura\u0163i-v\u0103 c\u0103 valoarea atributului de redirec\u0163ionare din configura\u0163ia de client \u00eenregistrat al furnizorului OAuth este o valoare URI absolut\u0103 valid\u0103.
+
+security.oauth20.error.invalid.redirecturi.mismatch=CWOAU0056E: Parametrul URI de redirec\u0163ionare [{0}] furnizat \u00een cererea OAuth sau OpenID Connect nu s-a potrivit cu niciunul din URI-urile de redirec\u0163ionare \u00eenregistrate cu furnizorul OAuth [{1}].
+security.oauth20.error.invalid.redirecturi.mismatch.explanation=Valoarea parametrului redirect_uri specificat\u0103 \u00een cererea OAuth sau OpenID Connect nu se potrive\u015fte cu niciuna din valorile URI specificate \u00een clientul \u00eenregistrat al furnizorului OAuth.
+security.oauth20.error.invalid.redirecturi.mismatch.useraction=Asigura\u0163i-v\u0103 c\u0103 valoarea parametrului redirect_uri din cererea OAuth sau OpenID Connect se potrive\u015fte cu una dintre valorile URI de redirec\u0163ionare specificate \u00een configura\u0163ia de client \u00eenregistrat.
+
+security.oauth20.error.multiple.responsetype=CWOAU0057E: Parametrul response_type [{0}] din cererea OAuth sau OpenID Connect nu poate include \u015fi [{1}] \u015fi [{2}] ca tipuri de r\u0103spuns.
+security.oauth20.error.multiple.responsetype.explanation=Cererea OAuth sau OpenID Connect ar trebui s\u0103 aib\u0103 un singur tip de r\u0103spuns.
+security.oauth20.error.multiple.responsetype.useraction=Verifica\u0163i valoarea parametrului response_type din cererea OAuth sau OpenID Connect \u015fi asigura\u0163i-v\u0103 c\u0103 aceasta con\u0163ine un singur tip de r\u0103spuns.
+
+security.oauth20.error.invalid.token.expired=CWOAU0058E: Jetonul OAuth cu cheia [{0}], tipul [{1}], \u015fi subtipul [{2}] a expirat.
+security.oauth20.error.invalid.token.expired.explanation=Jetonul OAuth a expirat \u015fi nu mai este valid.
+security.oauth20.error.invalid.token.expired.useraction=Cere\u0163i un nou jeton OAuth de la furnizorul OAuth.
+
+security.oauth20.error.invalid.token.client.not.available=CWOAU0059E: Jetonul OAuth cu cheia [{0}], tipul [{1}] \u015fi subtipul [{2}] nu este asociat cu niciun client sau clientul asociat nu este activat.
+security.oauth20.error.invalid.token.client.not.available.explanation=Jetonul OAuth nu este asociat cu niciun client sau clientul asociat a fost dezactivat \u00een configura\u0163ie.
+security.oauth20.error.invalid.token.client.not.available.useraction=Verifica\u0163i configura\u0163ia de client al furnizorului OAuth pentru a v\u0103 asigura c\u0103 este configurat \u015fi activat clientul corespunz\u0103tor.
+
+security.oauth20.error.mismatched.redirecturi.null.request.redirecturi=CWOAU0060E: URI-ul de redirec\u0163ionare inclus \u00een cererea OAuth sau OpenID Connect este {0}, dar un URI de redirec\u0163ionare nenul este furnizat \u00een cererea pentru acordarea autoriza\u0163iei: {1}
+security.oauth20.error.mismatched.redirecturi.null.request.redirecturi.explanation=Dac\u0103 nu este inclus niciun URI de redirec\u0163ionare \u00een cerere, atunci nu trebuie s\u0103 fi fost specificat niciun URI de redirec\u0163ionare \u00een cererea pentru acordarea autoriza\u0163iei.
+security.oauth20.error.mismatched.redirecturi.null.request.redirecturi.useraction=Verifica\u0163i valoarea parametrului redirect_uri din cererea OAuth sau OpenID Connect \u015fi asigura\u0163i-v\u0103 c\u0103 se potrive\u015fte atributului URI de redirec\u0163ionare din cererea pentru acordarea autoriza\u0163iei.
+
+security.oauth20.error.invalid.client.enduser=CWOAU0061E: Furnizorul de servicii OAuth nu a putut g\u0103si clientul pentru c\u0103 numele clientului nu este valid. Contacta\u0163i-v\u0103 administratorul de sistem pentru a rezolva problema.
+security.oauth20.error.invalid.client.enduser.explanation=Furnizorul de servicii OAuth nu a putut g\u0103si clientul specificat \u00een valoarea parametrului client_id din cererea OAuth.
+security.oauth20.error.invalid.client.enduser.useraction=Contacta\u0163i-v\u0103 administratorul de sistem pentru a rezolva problema.
+
+security.oauth20.error.invalid.redirecturi.enduser=CWOAU0062E: Furnizorul de servicii OAuth nu a putut redirec\u0163iona cererea pentru c\u0103 URI-ul de redirec\u0163ionare nu era valid. Contacta\u0163i-v\u0103 administratorul de sistem pentru a rezolva problema.
+security.oauth20.error.invalid.redirecturi.enduser.explanation=Fie valoarea atributului de redirec\u0163ionare din clientul \u00eenregistrat al furnizorului OAuth nu este valid\u0103, fie dac\u0103 parametrul redirect_uri este specificat \u00een cererea OAuth, valoarea sa nu se potrive\u015fte cu valoarea URI-ului de redirec\u0163ionare specificat\u0103 \u00een clientul \u00eenregistrat al furnizorului OAuth.
+security.oauth20.error.invalid.redirecturi.enduser.useraction=Contacta\u0163i-v\u0103 administratorul de sistem pentru a rezolva problema.
+
+security.oauth20.detail.error.mismatched.clientauthentication=CWOAU0063E: Cererea punctului final de jeton a e\u015fuat pentru c\u0103 erau dou\u0103 client_id-uri diferite \u00een cerere. Unul dintre client_id-uri este {0} \u015fi cel\u0103lalt este {1} care este autentificat \u015fi foarte probabil transmis prin antetul de Autoriza\u0163ie.  
+security.oauth20.detail.error.mismatched.clientauthentication.explanation=Valoarea parametrului client_id din cerere nu s-a potrivit cu client_id-ul autentificat care este transmis, de asemenea, prin cerere.
+security.oauth20.detail.error.mismatched.clientauthentication.useraction=Asigura\u0163i-v\u0103 c\u0103 este un singur client_id autentificat \u00een cerere. Un client_id poate fi transmis prin antetul de Autoriza\u0163ie sau parametrul unei cereri.
+
+security.oauth20.error.empty.scope=CWOAU0064E: Domeniul cerut [{0}] \u015fi domeniul \u00eenregistrat [{1}] ale clientului [{2}] nu au un domeniu comun. Domeniul rezultat este vid.
+security.oauth20.error.empty.scope.explanation=Setul de domenii cerut \u015fi setul de domenii \u00eenregistrat trebuie s\u0103 aib\u0103 cel pu\u0163in un domeniu comun. 
+security.oauth20.error.empty.scope.useraction=Asigura\u0163i-v\u0103 c\u0103 seturile de domenii cerut \u015fi \u00eenregistrat au cel pu\u0163in un domeniu comun.
+
+security.oauth20.error.missing.scope=CWOAU0065E: Server de autorizare nu poate procesa cererea [{0}]. Lipse\u015fte parametrul domeniului cerut.
+security.oauth20.error.missing.scope.explanation=Cererea OpenID Connect trebuie s\u0103 aib\u0103 un domeniu cu un \u015fir care s\u0103 nu fie gol.
+security.oauth20.error.missing.scope.useraction=Asigura\u0163i-v\u0103 c\u0103 cererea OpenID Connect are un parametru de domeniu valid.
+
+security.oauth20.token.limit.external.error=CWOAU0066E: Cererea de punct final jeton a e\u015fuat, din cauza prea multor cereri de la acela\u015fi utilizator.
+security.oauth20.token.limit.external.error.explanation=Acela\u015fi utilizator are prea multe sesiuni active cu acela\u015fi furnizor OAuth20. 
+security.oauth20.token.limit.external.error.useraction=Fie cre\u015fte\u0163i valoarea atributului userClientTokenLimit \u00een configura\u0163ie, pentru a cre\u015fte m\u0103rimea cache-ului de jeton, fie utiliza\u0163i alt\u0103 combina\u0163ie utilizator/client, de exemplu un client diferit.
+
+security.oauth20.request.denied=CWOAU0067E: Cererea a fost refuzat\u0103 de utilizator sau a ap\u0103rut alt\u0103 eroare, care a determinat refuzarea cererii.
+security.oauth20.request.denied.explanation=Fie utilizatorul a refuzat cererea OAuth prin anularea cererii formularului de consim\u0163\u0103m\u00e2nt pentru domeniu, fir a ap\u0103rut alt\u0103 eroare care a determinat refuzul accesului pentru cererea OAuth.
+security.oauth20.request.denied.useraction=Pentru a reu\u015fi cererea OAuth, utilizatorul trebuie s\u0103-i permit\u0103 furnizorului OAuth s\u0103 partajeze domeniile pe care le cere clientul. Dac\u0103 utilizatorul a aprobat cererea, verifica\u0163i istoricele furnizorului OAuth pentru erori suplimentare.
+
+security.oauth20.error.missing.registered.scope=CWOAU0068E: Cererea pentru punctul final de autorizare OpenID Connect de c\u0103tre clientul [{0}] a e\u015fuat. Nu este \u00eenregistrat niciun domeniu pentru acest client. 
+security.oauth20.error.missing.registered.scope.explanation=Configura\u0163ia de client trebuie s\u0103 con\u0163in\u0103 o list\u0103 de domenii permise pentru client, altfel cererile de autorizare OpenID Connect e\u015fueaz\u0103.  
+security.oauth20.error.missing.registered.scope.useraction=Asigura\u0163i-v\u0103 c\u0103 \u00eenregistra\u0163i o list\u0103 de domenii \u00een configura\u0163ia de client OpenID Connect Provider. Seta\u0163i domeniul la domeniile permise sau la ALL_SCOPES \u00een cazul \u00een care toate domeniile sunt acceptabile.
+
+security.oauth20.endpoint.resowner.auth.error=CWOAU0069E: Posesorul resursei nu a putut fi verificat. Fie este incorect posesorul resursei: {0} fie este incorect\u0103 parola.
+security.oauth20.endpoint.resowner.auth.error.explanation=Furnizorul OAuth nu a putut verifica posesorul resursei. 
+security.oauth20.endpoint.resowner.auth.error.useraction=Verifica\u0163i c\u0103 numele posesorului resursei \u015fi parola sunt valide.
+
+security.oauth20.error.missing.client.provider=CWOAU0070E: Nu a fost g\u0103sit un furnizor client pentru furnizorul OAuth.
+security.oauth20.error.missing.client.provider.explanation=S-ar putea s\u0103 fi exista o problem\u0103 la ini\u0163ializarea depozitelor de clien\u0163i pentru acest furnizor OAuth.
+security.oauth20.error.missing.client.provider.useraction=Verifica\u0163i istoricele serverului pentru a v\u0103 asigura c\u0103 furnizorul OAuth a fost ini\u0163ializat corect.
+
+security.oauth20.error.granttype.requires.confidential.client=CWOAU0071E: Un client public a \u00eencercat s\u0103 acceseze punctul final {0} utiliz\u00e2nd tipul de acordare {1}. Acest tip de acordare poate fi folosit de clien\u0163ii confiden\u0163iali. Client_id este: {2}
+security.oauth20.error.granttype.requires.confidential.client.explanation=Un client public OAuth nu are permisiunea de a utiliza tipul de acordare specificat pentru acest punct final. Doar clien\u0163ii confiden\u0163iali au permisiunea de a utiliza acest tip de acordare.
+security.oauth20.error.granttype.requires.confidential.client.useraction=Verifica\u0163i valoarea parametrului grant_type din cererea OAuth request \u015fi utiliza\u0163i alt tip de acordare pentru clientul public.
+
+# 0 - "scope" or "resource" (as of this update, may be other parms in the future}
+# 1 - string value, 2 - list of string values, 3 - config attributes: "scope" or "resourceIds" (as of this update, may be other parms in the future), 
+SECURITY.OAUTH20.ERROR.VALUE.NOT.IN.LIST=CWOAU0072E: Parametrul de cerere [{0}] con\u0163ine o valoare invalid\u0103 [{1}]. Valorile valide sunt [{2}],  a\u015fa cum a fost definite de atributul de configura\u0163ie [{3}].
+SECURITY.OAUTH20.ERROR.VALUE.NOT.IN.LIST.explanation=Valoarea indicat\u0103 a parametrului specific din cererea OAuth nu este valid\u0103. Valorile valide sunt listate \u00een atributul indicat de configura\u0163ia de server.
+SECURITY.OAUTH20.ERROR.VALUE.NOT.IN.LIST.useraction=Asigura\u0163i-v\u0103 c\u0103 valorile din parametrul cererii sunt valide.
+
+security.oauth20.front.end.error=CWOAU0073E: S-a \u00eent\u00e2lnit o eroare \u00een timpul autentific\u0103rii unui utilizator. V\u0103 rug\u0103m s\u0103 \u00eencerca\u0163i autentificarea din nou sau s\u0103 contacta\u0163i administratorul de site dac\u0103 problema persist\u0103.
+security.oauth20.front.end.error.explanation=Ar putea lipsi informa\u0163ii din cerere, serverul ar putea \u00eent\u00e2lni o eroare intern\u0103 sau alt\u0103 eroare ar putea \u00eempiedica serverul s\u0103 autentifice cu succes utilizatorul.
+security.oauth20.front.end.error.useraction=Contacta\u0163i administratorul de sistem pentru a rezolva problema.
+
+security.oauth20.endpoint.resowner.apppassword.error=CWOAU0074E: Cererea de schimb de parole aplica\u0163ie pentru utilizatorul {0} nu s-a finalizat deoarece parola de aplica\u0163ie nu a putut fi verificat\u0103. Parola de aplica\u0163ie este fie incorect\u0103, expirat\u0103 sau revocat\u0103, fie ID-ul de client furnizat nu este valid.
+security.oauth20.endpoint.resowner.apppassword.error.explanation=Furnizorul OAuth nu a putut s\u0103 verifice parola de aplica\u0163ie.
+security.oauth20.endpoint.resowner.apppassword.error.useraction=Confirma\u0163i c\u0103 parola de aplica\u0163ie este valid\u0103, nu este expirat\u0103 \u015fi nu a fost revocat\u0103. De asemenea, confirma\u0163i c\u0103 ID-ul de client din jetonul de acces este acela\u015fi cu ID-ul de client din antetul de autorizare.
+
+security.oauth20.apppassword.config.c1p0.warning=CWOAU0075W: Clientul OAuth [{0}] este configurat pentru a permite s\u0103 fie cerute parole de aplica\u0163ie, dar furnizorul [{1}] nu este configurat pentru a le procesa. Aceasta ar putea cauza e\u015fecul autentific\u0103rii. Seta\u0163i atributul de configura\u0163ie al furnizorului OAuth, passwordGrantRequiresAppPassword, la true dac\u0103 sunt folosite parole de aplica\u0163ie.
+security.oauth20.apppassword.config.c1p0.warning.explanation=Configura\u0163ia curent\u0103 ar putea fi incorect\u0103.
+security.oauth20.apppassword.config.c1p0.warning.useraction=Corecta\u0163i configura\u0163ia dac\u0103 este necesar.
+
+security.oauth20.apppassword.config.c0p1.warning=CWOAU0076W: Clientul OAuth [{0}] nu este configurat pentru a permite s\u0103 fie cerute parole de aplica\u0163ie, dar furnizorul [{1}] este configurat pentru a le procesa. Aceasta ar putea cauza e\u015fecul autentific\u0103rii. Seta\u0163i atributul de configura\u0163ie al furnizorului OAuth, passwordGrantRequiresAppPassword, la false dac\u0103 nu sunt folosite parole de aplica\u0163ie.
+security.oauth20.apppassword.config.c0p1.warning.explanation=Configura\u0163ia curent\u0103 ar putea fi incorect\u0103.
+security.oauth20.apppassword.config.c0p1.warning.useraction=Corecta\u0163i configura\u0163ia dac\u0103 este necesar.
+
+security.oauth20.apppassword.exchange.wrongclient=CWOAU0077E: Parola de aplica\u0163ie creat\u0103 pentru clientul [{0}] nu poate fi folosit\u0103 cu clientul [{1}].
+security.oauth20.apppassword.exchange.wrongclient.explanation=Parola de aplica\u0163ie a fost creat\u0103 cu un parametru used_by care indic\u0103 un client destinat, dar a fost trimis\u0103 la un client diferit.
+security.oauth20.apppassword.exchange.wrongclient.useraction=Lansa\u0163i cererea din nou cu o parol\u0103 de aplica\u0163ie care este valid\u0103 pentru clientul specificat.
+
+security.oauth20.apppwtok.revoke.disallowed=CWOAU0078E: A fost f\u0103cut\u0103 o \u00eencercare de revocare a parolei de aplica\u0163ie sau a jetonului de aplica\u0163ie la punctul final de revocare. Aceast\u0103 ac\u0163iune nu este permis\u0103.
+security.oauth20.apppwtok.revoke.disallowed.explanation=Parole de aplica\u0163ie sau jetoanele de aplica\u0163ie trebuie revocate folosind punctele finale app-passwords sau app-tokens.
+security.oauth20.apppwtok.revoke.disallowed.useraction=Lansa\u0163i cerea din nou cu un URI pentru punctul final corespunz\u0103tor pentru a revoca parolele de aplica\u0163ie sau jetoanele de aplica\u0163ie.
+
+security.oauth20.pkce.invalid.method.error=CWOAU0079E: Parametrul cererii code_challenge_method con\u0163ine un algoritm de transformare nesuportat.
+security.oauth20.pkce.invalid.method.error.explanation=Furnizorul OAuth nu suport\u0103 algoritmul de transformare specificat. 
+security.oauth20.pkce.invalid.method.error.useraction=Utiliza\u0163i "plain" sau "S256" code_challenge_method.
+
+security.oauth20.pkce.codeverifier.length.error=CWOAU0080E: Lungimea code_verifier nu este valid\u0103.
+security.oauth20.pkce.codeverifier.length.error.explanation=code_verifier ar trebui s\u0103 aib\u0103 lungimea minim\u0103 de 43 caractere \u015fi maxim\u0103 de 128 caractere. 
+security.oauth20.pkce.codeverifier.length.error.useraction=Trimite\u0163i cererile de autorizare \u015fi de jeton din nou cu un code_verifier actualizat care \u00eendepline\u015fte lungimea specificat\u0103.
+
+security.oauth20.pkce.error.mismatch.codeverifier=CWOAU0081E: code_challenge \u015fi code_verifier nu se potrivesc.
+security.oauth20.pkce.error.mismatch.codeverifier.explanation=Furnizorul OAuth utilizeaz\u0103 code_challenge_method specificat \u00een cererea de autentificare \u015fi transform\u0103 code_verifier \u00een afara cazului c\u00e2nd code_challenge_method este plain. Valoarea transformat\u0103 trebuie s\u0103 se potriveasc\u0103 cu code_challenge din cererea de autorizare.
+security.oauth20.pkce.error.mismatch.codeverifier.useraction=Asigura\u0163i-v\u0103 c\u0103 trimite\u0163i cu cererile de autorizare \u015fi de jeton code_challenge \u015fi code_verifier care se potrivesc \u015fi algoritmul de transformare corect.

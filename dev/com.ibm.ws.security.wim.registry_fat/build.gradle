@@ -12,7 +12,9 @@
 dependencies { 
   requiredLibs project(':fattest.simplicity'),
     project(':com.ibm.ws.security.registry'),
-    project(':com.ibm.ws.security.registry_test.servlet')
+    project(':com.ibm.ws.security.registry_test.servlet'),
+    'com.unboundid:unboundid-ldapsdk:4.0.9',
+    project(':com.ibm.ws.com.unboundid')
 }
 autoFVT.dependsOn ':com.ibm.ws.security.registry_test.servlet:war'
 autoFVT.doLast {
@@ -30,7 +32,9 @@ autoFVT.doLast {
    */
   def servers = [
     'com.ibm.ws.security.wim.registry.fat.DefaultWIMRealm',
-    'com.ibm.ws.security.wim.registry.fat.DefaultWIMRealmMultipleRepos'
+    'com.ibm.ws.security.wim.registry.fat.DefaultWIMRealmMultipleRepos',
+    'com.ibm.ws.security.wim.registry.fat.WIMURRegression',
+    'com.ibm.ws.security.wim.registry.fat.MultiValuedOutputPropMapping'
   ]
   servers.each { server ->
     copy { 

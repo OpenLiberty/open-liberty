@@ -13,6 +13,7 @@ package com.ibm.ws.classloading.internal;
 import static com.ibm.ws.classloading.internal.AppClassLoader.SearchLocation.DELEGATES;
 import static com.ibm.ws.classloading.internal.AppClassLoader.SearchLocation.PARENT;
 import static com.ibm.ws.classloading.internal.AppClassLoader.SearchLocation.SELF;
+import static com.ibm.ws.classloading.internal.ClassLoadingConstants.LS;
 import static com.ibm.ws.classloading.internal.Util.freeze;
 import static com.ibm.ws.classloading.internal.Util.list;
 
@@ -35,6 +36,7 @@ import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.jar.Manifest;
@@ -51,6 +53,8 @@ import com.ibm.ws.classloading.internal.providers.Providers;
 import com.ibm.ws.classloading.internal.util.ClassRedefiner;
 import com.ibm.ws.classloading.internal.util.FeatureSuggestion;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.boot.classloader.ClassLoaderHook;
+import com.ibm.ws.kernel.boot.classloader.ClassLoaderHookFactory;
 import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.classloading.ApiType;
@@ -102,6 +106,7 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
     private final ClassGenerator generator;
     private final ConcurrentHashMap<String, ProtectionDomain> protectionDomains = new ConcurrentHashMap<String, ProtectionDomain>();
     protected final ClassLoader parent;
+    private final ClassLoaderHook hook;
 
     // Protection added for issue 
     // https://github.com/OpenLiberty/open-liberty/issues/7345
@@ -170,8 +175,9 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
         this.privateLibraries = Providers.getPrivateLibraries(config);
         this.delegateLoaders = Providers.getDelegateLoaders(config, apiAccess);
         this.generator = generator;
+        this.hook = ClassLoaderHookFactory.getClassLoaderHook(this);
 
-        verifyNoAccess();
+        this.verityNoAccess();
     }
 
     /** Provides the delegate loaders so the {@link ShadowClassLoader} can mimic the structure. */
@@ -518,7 +524,7 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
     final ByteResourceInformation findClassBytes(String className) throws ClassNotFoundException {
         String resourceName = Util.convertClassNameToResourceName(className);
         try {
-            ByteResourceInformation result = findClassBytes(className, resourceName);
+            ByteResourceInformation result = findClassBytes(className, resourceName, hook);
             if (result == null) {
                 String message = String.format("Could not find class '%s' as resource '%s'", className, resourceName);
                 throw new ClassNotFoundException(message);
@@ -737,5 +743,23 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
         noteAccess();
 
         return config.getId();
+    }
+
+    public String toDiagString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(config).append(LS);
+        
+        sb.append("    API Visibility: ");
+        for (ApiType type : apiAccess.getApiTypeVisibility()) {
+            sb.append(type).append(" ");
+        }
+        sb.append(LS);
+        
+        sb.append("    CodeSources: ");
+        for (Map.Entry<String, ProtectionDomain> entry : protectionDomains.entrySet()) {
+            sb.append(LS).append("      ").append(entry.getKey()).append(" = ")
+              .append(entry.getValue().getCodeSource().getLocation());
+        }
+        return sb.toString();
     }
 }

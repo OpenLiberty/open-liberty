@@ -13,7 +13,7 @@
 #NLS_ENCODING=UNICODE
 #
 #COMPONENTPREFIX CWWKC
-#COMPONENTNAMEFOR CWWKC MicroProfile Concurrency
+#COMPONENTNAMEFOR CWWKC MicroProfile Context Propagation
 #
 # NLS_MESSAGEFORMAT_VAR
 #
@@ -25,7 +25,7 @@
 # All messages must use the range CWWCK1150 to CWWCK1189 except those specifically identified as moved
 
 CWWKC1150.duplicate.context=CWWKC1150E: Ugyanazt a(z) {0} sz\u00e1lkontextust\u00edpust t\u00f6bb, az alkalmaz\u00e1s sz\u00e1m\u00e1ra rendelkez\u00e9sre \u00e1ll\u00f3 sz\u00e1lkontextus szolg\u00e1ltat\u00f3 is biztos\u00edtja. Sz\u00e1lkontextus szolg\u00e1ltat\u00f3k: {1}, {2}.
-CWWKC1150.duplicate.context.explanation=A MicroProfile egyidej\u0171s\u00e9g meghat\u00e1roz\u00e1s legfeljebb csak egy ThreadContextProvider szolg\u00e1ltat\u00f3t tesz lehet\u0151v\u00e9 az egyes kontextust\u00edpusokra vonatkoz\u00f3an.
+CWWKC1150.duplicate.context.explanation=A MicroProfile kontextus terjeszt\u00e9si specifik\u00e1ci\u00f3 legfeljebb csak egy ThreadContextProvider szolg\u00e1ltat\u00f3t tesz lehet\u0151v\u00e9 az egyes kontextust\u00edpusokra vonatkoz\u00f3an.
 CWWKC1150.duplicate.context.useraction=Friss\u00edtse az el\u00e9rhet\u0151 alkalmaz\u00e1sokat, k\u00f6nyvt\u00e1rakat vagy mindkett\u0151t, hogy legfeljebb egy megadott t\u00edpus\u00fa ThreadContextProvider \u00e1lljon rendelkez\u00e9sre.
 
 # do not translate: cleared, propagated
@@ -49,3 +49,5 @@ CWWKC1156.not.supported.useraction=Friss\u00edtse az alkalmaz\u00e1st, hogy a me
 CWWKC1157.cannot.propagate.tx=CWWKC1157E: A k\u00f6rnyezetf\u00fcgg\u0151 m\u0171veletekre \u00e9s feladatokra t\u00f6rt\u00e9n\u0151 tranzakci\u00f3tov\u00e1bb\u00edt\u00e1s nem t\u00e1mogatott.
 CWWKC1157.cannot.propagate.tx.explanation=A tranzakci\u00f3kontextust tov\u00e1bb\u00edt\u00e1s\u00e1ra be\u00e1ll\u00edtott ManagedExecutor vagy ThreadContext \u00f6ssze\u00e1ll\u00edt\u00f3k csak \u00fcres tranzakci\u00f3kontextust tov\u00e1bb\u00edthatnak. Ez\u00e9rt a tranzakci\u00f3kban nem hozhat l\u00e9tre k\u00f6rnyezetf\u00fcgg\u0151 m\u0171veleteket \u00e9s feladatokat.
 CWWKC1157.cannot.propagate.tx.useraction=Hozza l\u00e9tre a k\u00f6rnyezetf\u00fcgg\u0151 m\u0171veletet vagy feladatot a tranzakci\u00f3kon k\u00edv\u00fcl. Ennek alternat\u00edv\u00e1jak\u00e9nt be\u00e1ll\u00edthatja a ManagedExecutor vagy ThreadContext \u00f6ssze\u00e1ll\u00edt\u00f3kat, hogy ne tov\u00e1bb\u00edtsa a tranzakci\u00f3 kontextus\u00e1t.
+
+# CWWKC1158E used by com.ibm.ws.cdi.mp.context bundle

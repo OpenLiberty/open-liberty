@@ -17,7 +17,9 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({ DefaultWIMRealmTest.class,
-                DefaultWIMRealmMultipleReposTest.class
+                DefaultWIMRealmMultipleReposTest.class,
+                WIMURRegressionTest.class,
+                MultiValuedOutputPropMappingTest.class
 })
 /**
  * Purpose: This suite collects and runs all known good test suites.

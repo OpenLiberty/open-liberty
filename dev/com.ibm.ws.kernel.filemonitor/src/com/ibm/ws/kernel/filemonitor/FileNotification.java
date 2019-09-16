@@ -35,4 +35,9 @@ public interface FileNotification {
      * Processed pending application updates {see#link: FileNotificationImpl}
      */
     void processApplicationChanges();
+
+    /**
+     * Processes pending security keystore updates {see#link: FileNotificationImpl}
+     */
+    boolean processSecurityChanges(String id);
 }

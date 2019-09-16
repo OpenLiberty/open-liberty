@@ -15,11 +15,10 @@ import java.security.PrivilegedAction;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionHandler;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -73,7 +72,7 @@ class UpdateQueue<T> {
 
     }
 
-    private final ExecutorService threadPool;
+    private final ScheduledThreadPoolExecutor threadPool;
     private final Queue<T>[] queues;
 
     public UpdateQueue() {
@@ -150,11 +149,9 @@ class UpdateQueue<T> {
          * Pass in the new RejectedExecutionHandler defined above.
          */
         int maxSize = CpuInfo.getAvailableProcessors();
-        threadPool = new ThreadPoolExecutor(0, maxSize,
-                        60L, TimeUnit.SECONDS,
-                        new LinkedBlockingQueue<Runnable>(),
-                        threadFactory,
-                        rejectionHandler);
+        threadPool = new ScheduledThreadPoolExecutor(0, threadFactory, rejectionHandler);
+        threadPool.setMaximumPoolSize(maxSize);
+        threadPool.setKeepAliveTime(60, TimeUnit.SECONDS);
         // STOP: D84795
 
         @SuppressWarnings("unchecked")
@@ -176,9 +173,13 @@ class UpdateQueue<T> {
         return future;
     }
 
+    Future<?> addScheduled(Runnable command) {
+        return threadPool.schedule(command, 30, TimeUnit.SECONDS);
+    }
+
     /**
      * Wait for all futures to finish within a specified time.
-     * 
+     *
      * @return true if all futures finished within a specified time, false otherwise.
      */
     @FFDCIgnore({ InterruptedException.class, ExecutionException.class, TimeoutException.class })

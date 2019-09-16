@@ -372,7 +372,7 @@ public class HttpLocalFormat {
          */
         SimpleDateFormat getParse() {
             if (this.myParse == null) {
-                this.myParse = new SimpleDateFormat(pattern);
+                this.myParse = new SimpleDateFormat(pattern, Locale.US);
                 if (gmtTimeZone) {
                     this.myParse.setTimeZone(gmt);
                 }

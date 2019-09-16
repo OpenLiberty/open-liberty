@@ -153,13 +153,13 @@
 
 7093=Dans la requ\u00eate nomm\u00e9e [{0}], la classe [{2}] pour l''argument de requ\u00eate nomm\u00e9 [{1}] est introuvable. Incluez la classe manquante dans votre chemin d''acc\u00e8s aux classes.
 
-7095=La ressource sessions.xml [{0}] est introuvable dans le chemin d''acc\u00e8s \u00e0 la ressource.  V\u00e9rifiez que le nom/chemin de ressource et le chargeur de classe transmis \u00e0 l''\u00e9l\u00e9ment SessionManager.getSession sont corrects.  Le fichier sessions.xml doit \u00eatre inclus \u00e0 la racine du fichier jar d\u00e9ploy\u00e9 de l''application ; si le fichier sessions.xml est d\u00e9ploy\u00e9 dans un sous-r\u00e9pertoire du jar de l''application, assurez-vous que le chemin de ressource utilise le s\u00e9parateur correct, "/" (barre oblique normale, non invers\u00e9e).
+7095=La ressource sessions.xml [{0}] est introuvable dans le chemin d''acc\u00e8s \u00e0 la ressource.  V\u00e9rifiez que le nom/chemin de ressource et le chargeur de classe transmis \u00e0 l''\u00e9l\u00e9ment SessionManager.getSession sont corrects.  Le fichier sessions.xml doit \u00eatre inclus \u00e0 la racine du fichier jar d\u00e9ploy\u00e9e de l''application ; si le fichier sessions.xml est d\u00e9ploy\u00e9 dans un sous-r\u00e9pertoire du jar de l''application, assurez-vous que le chemin de ressource correct utilisant "/" not "\" est utilis\u00e9.
 
 7096=Impossible d''utiliser la m\u00e9thode commit() pour valider de nouveau UnitOfWork.
 
 7097=Op\u00e9ration non prise en charge : [{0}].
 
-7099=La ressource XML du projet de d\u00e9ploiement [{0}] est introuvable dans le chemin d''acc\u00e8s \u00e0 la ressource.  V\u00e9rifiez que le nom/chemin de ressource et le chargeur de classe transmis \u00e0 l''\u00e9l\u00e9ment XMLProjectReader sont corrects.  Le fichier XML du projet doit \u00eatre inclus \u00e0 la racine du fichier jar d\u00e9ploy\u00e9 de l''application ; si le XML du projet est d\u00e9ploy\u00e9 dans un sous-r\u00e9pertoire du jar de l''application, assurez-vous que le chemin de ressource utilise le s\u00e9parateur correct, "/" (barre oblique normale, non invers\u00e9e).
+7099=La ressource XML du projet de d\u00e9ploiement [{0}] est introuvable dans le chemin d''acc\u00e8s \u00e0 la ressource.  V\u00e9rifiez que le nom/chemin de ressource et le chargeur de classe transmis \u00e0 l''\u00e9l\u00e9ment XMLProjectReader sont corrects.  Le fichier XML de projet doit \u00eatre inclus \u00e0 la racine du fichier jar d\u00e9ploy\u00e9e de l''application ; si le fichier XML du projet est d\u00e9ploy\u00e9 dans un sous-r\u00e9pertoire du jar de l''application, assurez-vous que le chemin de ressource correct utilisant "/" not "\" est utilis\u00e9.
 
 7100=Impossible de trouver la session nomm\u00e9e {0}] dans le fichier session.xml [{1}]
 
@@ -545,10 +545,7 @@
 
 7311=Une classe cible incorrecte est utilis\u00e9e avec l''attribut de collection d''\u00e9l\u00e9ment [{0}] sur la classe [{1}].  Seuls les types de base et les classes imbriquables sont autoris\u00e9s.
 
-# START NON-TRANSLATABLE
 7312=Une classe imbriquable non valide [{0}] est utilis\u00e9e avec l''attribut de collection d''\u00e9l\u00e9ment [{1}] sur la classe [{2}]. Voir la section 2.6 de la sp\u00e9c : Une classe imbriquable (y compris une classe imbriquable au sein d''une autre classe imbriquable) contenue au sein d''une collection d''\u00e9l\u00e9ment ne doit pas contenir une collection d''\u00e9l\u00e9ment, elle ne peut pas non plus contenir une relation \u00e0 une entit\u00e9 autre qu''une relation plusieurs-\u00e0-un ou un-\u00e0-un. La classe imbriquable doit \u00eatre sur le c\u00f4t\u00e9 de propri\u00e9t\u00e9 d''une telle relation et cette derni\u00e8re doit \u00eatre mapp\u00e9e par un mappage de cl\u00e9 externe. Le mappage pour l''attribut [{3}] sur la classe imbriquable est en violation de cela.
-# END NON-TRANSLATABLE
-
 7313=L''attribut [{1}] est introuvable dans la classe imbriquable[{0}]. Il est r\u00e9f\u00e9renc\u00e9 dans un remplacement d''association pour l''attribut imbriqu\u00e9 [{3}] sur la classe [{2}].
 
 7314=Le mappage [{0}] est utilis\u00e9 pour mapper la cl\u00e9 dans un \u00e9l\u00e9ment MappedKeyMapContainerPolicy et il utilise l''adressage indirect.  Les mappages utilis\u00e9s pour mes cl\u00e9s de mappe ne peuvent pas utiliser l''adressage indirect.

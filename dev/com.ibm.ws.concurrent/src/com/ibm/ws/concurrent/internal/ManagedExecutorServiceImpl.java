@@ -175,7 +175,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     }
 
     /**
-     * Constructor for MicroProfile Concurrency (ManagedExecutorBuilder and CDI injected ManagedExecutor).
+     * Constructor for ManagedExecutorBuilder (from MicroProfile Context Propagation).
      */
     @Trivial // traced in super super class
     public ManagedExecutorServiceImpl(String name, PolicyExecutor policyExecutor, WSContextService mpThreadContext,

@@ -13,7 +13,7 @@
 #NLS_ENCODING=UNICODE
 #
 #COMPONENTPREFIX CWWKC
-#COMPONENTNAMEFOR CWWKC MicroProfile Concurrency
+#COMPONENTNAMEFOR CWWKC MicroProfile Context Propagation
 #
 # NLS_MESSAGEFORMAT_VAR
 #
@@ -25,7 +25,7 @@
 # All messages must use the range CWWCK1150 to CWWCK1189 except those specifically identified as moved
 
 CWWKC1150.duplicate.context=CWWKC1150E: Le m\u00eame type de contexte d''unit\u00e9 d''ex\u00e9cution, {0}, est fourni par plusieurs fournisseurs de contexte d''unit\u00e9 d''ex\u00e9cution disponibles pour l''application. Les fournisseurs de contexte d''unit\u00e9 d''ex\u00e9cution sont : {1}, {2}.
-CWWKC1150.duplicate.context.explanation=La sp\u00e9cification MicroProfile Concurrency n'admet pas plus d'un fournisseur de contexte d'unit\u00e9 d'ex\u00e9cution pour chaque type de contexte.
+CWWKC1150.duplicate.context.explanation=La sp\u00e9cification MicroProfile Context Propagation n'admet pas plus d'un fournisseur de contexte d'unit\u00e9 d'ex\u00e9cution pour chaque type de contexte.
 CWWKC1150.duplicate.context.useraction=Mettez \u00e0 jour l'application ou les biblioth\u00e8ques disponibles, ou les deux, pour qu'il n'existe qu'un seul fournisseur de contexte d'ex\u00e9cution du type sp\u00e9cifi\u00e9.
 
 # do not translate: cleared, propagated
@@ -49,3 +49,5 @@ CWWKC1156.not.supported.useraction=Mettez \u00e0 jour l'application afin d'utili
 CWWKC1157.cannot.propagate.tx=CWWKC1157E: La propagation des transactions vers des t\u00e2ches et des actions contextuelles n'est pas prise en charge.
 CWWKC1157.cannot.propagate.tx.explanation=Un programme d'ex\u00e9cution g\u00e9r\u00e9 ou un contexte d'unit\u00e9 d'ex\u00e9cution qui est configur\u00e9 pour propager des contextes de transaction ne peut propager que des contextes de transaction vides. Par cons\u00e9quent, vous ne pouvez pas cr\u00e9er de t\u00e2che ni d'action contextuelle dans une transaction.
 CWWKC1157.cannot.propagate.tx.useraction=Cr\u00e9ez la t\u00e2che ou l'action contextuelle en dehors d'une transaction. Vous pouvez aussi configurer le programme d'ex\u00e9cution g\u00e9r\u00e9 ou le contexte d'unit\u00e9 d'ex\u00e9cution de sorte qu'il ne propage pas les contextes de transaction.
+
+# CWWKC1158E used by com.ibm.ws.cdi.mp.context bundle

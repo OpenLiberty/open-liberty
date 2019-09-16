@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 IBM Corporation and others.
+ * Copyright (c) 2009, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,8 +43,7 @@ import com.ibm.ws.recoverylog.spi.RecoverableUnitSection;
 import com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager;
 import com.ibm.ws.uow.embeddable.SynchronizationRegistryUOWScope;
 
-public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionImpl implements SynchronizationRegistryUOWScope, DistributableTransaction
-{
+public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionImpl implements SynchronizationRegistryUOWScope, DistributableTransaction {
     private static final TraceComponent tc = Tr.register(EmbeddableTransactionImpl.class, TranConstants.TRACE_GROUP, TranConstants.NLS_FILE);
 
     protected final int _inactivityTimeout = _configProvider.getClientInactivityTimeout();
@@ -66,8 +65,9 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
 
     private int _retryWait = (_configProvider.getHeuristicRetryInterval() <= 0) ? defaultRetryTime : _configProvider.getHeuristicRetryInterval();
 
-    public EmbeddableTransactionImpl()
-    {
+    private Thread _thread;
+
+    public EmbeddableTransactionImpl() {
         super();
     }
 
@@ -75,13 +75,15 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
         super(timeout, xid, jcard);
     }
 
-    public EmbeddableTransactionImpl(EmbeddableFailureScopeController fsc)
-    {
+    public EmbeddableTransactionImpl(EmbeddableFailureScopeController fsc) {
         super(fsc);
     }
 
-    public EmbeddableTransactionImpl(int timeout)
-    {
+    public EmbeddableTransactionImpl(int txType, int timeout) {
+        super(txType, timeout);
+    }
+
+    public EmbeddableTransactionImpl(int timeout) {
         super(timeout);
 
         final boolean traceOn = TraceComponent.isAnyTracingEnabled();
@@ -89,6 +91,7 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
         if (traceOn && tc.isEventEnabled())
             Tr.event(tc, "EmbeddableTransaction BEGIN occurred for TX: " + _localTID);
         _activeAssociations++; // created locally and is 'on server'
+        setThread(Thread.currentThread());
         updateMostRecentThread();
     }
 
@@ -96,8 +99,8 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
      * Constructor when TransactionImpl is created
      * on importing a transaction from a remote server.
      * via WS-AT
-     * 
-     * @param timeout Transaction timeout in seconds
+     *
+     * @param timeout   Transaction timeout in seconds
      * @param globalTID The imported identifier
      */
     public EmbeddableTransactionImpl(int timeout, String globalID) throws SystemException {
@@ -114,16 +117,14 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
 
         _globalId = globalID;
 
-        if (traceOn)
-        {
+        if (traceOn) {
             if (tc.isEntryEnabled())
-                Tr.exit(tc, "TransactionImpl");
+                Tr.exit(tc, "EmbeddableTransactionImpl", this);
         }
     }
 
     @Override
-    protected void initialize(int timeout)
-    {
+    protected void initialize(int timeout) {
         final boolean traceOn = TraceComponent.isAnyTracingEnabled();
 
         if (traceOn && tc.isEventEnabled())
@@ -132,8 +133,7 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
         // Let the failure scope controller know about this transaction so that it can
         // examine all its associated transaction when its asked to shutdown (either at
         // server shutdown or peer recovery termination)
-        if (_failureScopeController != null)
-        {
+        if (_failureScopeController != null) {
             _failureScopeController.registerTransaction(this, false);
 
             //
@@ -152,13 +152,10 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
             // the transaction service will recognize during xa_recover processing. We can't allow
             // 2PC interaction with the resources under an XID with a temporary APPLID.
             //
-            if (_failureScopeController.getRecoveryManager() == null)
-            {
+            if (_failureScopeController.getRecoveryManager() == null) {
                 _disableTwoPhase = true;
             }
-        }
-        else
-        {
+        } else {
             _disableTwoPhase = true;
         }
 
@@ -174,10 +171,8 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
 
         // LIDB1673.7.2: check for maximum timeout
         final int maximumTransactionTimeout = _configProvider.getMaximumTransactionTimeout();
-        if (maximumTransactionTimeout > 0)
-        {
-            if (timeout > maximumTransactionTimeout || timeout == 0)
-            {
+        if (maximumTransactionTimeout > 0) {
+            if (timeout > maximumTransactionTimeout || timeout == 0) {
                 if (traceOn && tc.isEventEnabled())
                     Tr.event(tc, "Timeout limited by maximumTransactionTimeout");
                 timeout = maximumTransactionTimeout;
@@ -188,21 +183,18 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
         // If we have a timeout we need to add ourselves to
         // the manager so the thread is started.
         //
-        if (timeout > 0)
-        {
+        if (timeout > 0) {
             _timeout = timeout;
             EmbeddableTimeoutManager.setTimeout(this, EmbeddableTimeoutManager.ACTIVE_TIMEOUT, timeout);
         }
     }
 
-    public boolean startInactivityTimer(EmbeddableWebSphereTransactionManager.InactivityTimer inactivityTimer)
-    {
+    public boolean startInactivityTimer(EmbeddableWebSphereTransactionManager.InactivityTimer inactivityTimer) {
         _inactivityTimer = inactivityTimer;
 
         final boolean timerStarted = startInactivityTimer();
 
-        if (!timerStarted)
-        {
+        if (!timerStarted) {
             _inactivityTimer = null;
         }
 
@@ -212,13 +204,12 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
     /**
      * Start an inactivity timer and call alarm method of parameter when
      * timeout expires.
-     * 
+     *
      * @param iat callback object to be notified when timer expires.
-     *            This may be null.
+     *                This may be null.
      * @exception SystemException thrown if transaction is not active
      */
-    public boolean startInactivityTimer()
-    {
+    public boolean startInactivityTimer() {
         final boolean traceOn = TraceComponent.isAnyTracingEnabled();
 
         if (traceOn && tc.isEntryEnabled())
@@ -226,8 +217,7 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
 
         if (_inactivityTimeout > 0
             && _status.getState() == TransactionState.STATE_ACTIVE
-            && !_inactivityTimerActive)
-        {
+            && !_inactivityTimerActive) {
             EmbeddableTimeoutManager.setTimeout(this,
                                                 EmbeddableTimeoutManager.INACTIVITY_TIMEOUT, _inactivityTimeout);
             _inactivityTimerActive = true;
@@ -244,21 +234,18 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
      * Rollback all resources, but do not drive state changes.
      * Used when transaction HAS TIMED OUT.
      */
-    public void rollbackResources()
-    {
+    public void rollbackResources() {
         final boolean traceOn = TraceComponent.isAnyTracingEnabled();
 
         if (traceOn && tc.isEntryEnabled())
             Tr.entry(tc, "rollbackResources");
 
-        try
-        {
+        try {
             final Transaction t = ((EmbeddableTranManagerSet) TransactionManagerFactory.getTransactionManager()).suspend();
             getResources().rollbackResources();
             if (t != null)
                 ((EmbeddableTranManagerSet) TransactionManagerFactory.getTransactionManager()).resume(t);
-        } catch (Exception ex)
-        {
+        } catch (Exception ex) {
             FFDCFilter.processException(ex, "com.ibm.tx.jta.impl.EmbeddableTransactionImpl.rollbackResources", "104", this);
             if (traceOn && tc.isDebugEnabled())
                 Tr.debug(tc, "Exception caught from rollbackResources()", ex);
@@ -269,10 +256,8 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
     }
 
     @Override
-    public EmbeddableRegisteredResources getResources()
-    {
-        if (_resources == null)
-        {
+    public EmbeddableRegisteredResources getResources() {
+        if (_resources == null) {
             _resources = new EmbeddableRegisteredResources(this, _disableTwoPhase);
         }
 
@@ -286,17 +271,15 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
      * be no _inactivityTimer to call and the context will be on_server.
      * If the timeout runs before, then a subsequent resume will fail
      * as the transaction will be rolled back.
-     * 
+     *
      */
-    public synchronized void stopInactivityTimer()
-    {
+    public synchronized void stopInactivityTimer() {
         final boolean traceOn = TraceComponent.isAnyTracingEnabled();
 
         if (traceOn && tc.isEntryEnabled())
             Tr.entry(tc, "stopInactivityTimer");
 
-        if (_inactivityTimerActive)
-        {
+        if (_inactivityTimerActive) {
             _inactivityTimerActive = false;
             EmbeddableTimeoutManager.setTimeout(this, EmbeddableTimeoutManager.INACTIVITY_TIMEOUT, 0);
         }
@@ -316,8 +299,7 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
     // This method is called inline by commit/rollback at the end of the transaction.
     //
     @Override
-    protected void distributeAfter(int status) throws SystemException
-    {
+    protected void distributeAfter(int status) throws SystemException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "distributeAfter", status);
 
@@ -326,8 +308,7 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
         // callbacks.
         EmbeddableTransactionManagerFactory.getTransactionManager().suspend(); //LIDB2775-103
 
-        if (_syncs != null)
-        {
+        if (_syncs != null) {
             _syncs.distributeAfter(status);
         }
 
@@ -336,14 +317,12 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
     }
 
     @Override
-    public int getUOWType()
-    {
+    public int getUOWType() {
         return UOWSynchronizationRegistry.UOW_TYPE_GLOBAL_TRANSACTION;
     }
 
     @Override
-    public int getUOWStatus()
-    {
+    public int getUOWStatus() {
         final boolean traceOn = TraceComponent.isAnyTracingEnabled();
 
         if (traceOn && tc.isEntryEnabled())
@@ -352,8 +331,7 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
         final int status = getStatus();
         final int uowStatus;
 
-        switch (status)
-        {
+        switch (status) {
             case Status.STATUS_ACTIVE: {
                 uowStatus = UOWSynchronizationRegistry.UOW_STATUS_ACTIVE;
                 break;
@@ -389,14 +367,13 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
         return uowStatus;
     }
 
-    protected void updateMostRecentThread()
-    {
+    protected void updateMostRecentThread() {
         _mostRecentThread.push(Thread.currentThread());
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.tx.remote.DistributableTransaction#suspendAssociation()
      */
 
@@ -405,8 +382,7 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
      * This updates the server association counts for this context.
      */
     @Override
-    public void suspendAssociation()
-    {
+    public void suspendAssociation() {
         final boolean traceOn = TraceComponent.isAnyTracingEnabled();
 
         if (traceOn && tc.isEntryEnabled())
@@ -422,12 +398,12 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
      * Called by interceptor when an outgoing request is sent.
      * This updates the server association counts for this context.
      */
-    public synchronized void suspendAssociation(boolean notify)
-    {
+    public synchronized void suspendAssociation(boolean notify) {
         final boolean traceOn = TraceComponent.isAnyTracingEnabled();
 
         if (traceOn && tc.isEntryEnabled())
-            Tr.entry(tc, "suspendAssociation", notify);
+            Tr.entry(tc, "suspendAssociation",
+                     new Object[] { notify, _activeAssociations, _suspendedAssociations, _thread != null ? String.format("%08X", _thread.getId()) : "Not on a thread" });
 
         _suspendedAssociations++;
 
@@ -435,12 +411,13 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
             notifyAll();
 
         if (traceOn && tc.isEntryEnabled())
-            Tr.exit(tc, "suspendAssociation");
+            Tr.exit(tc, "suspendAssociation",
+                    new Object[] { _activeAssociations, _suspendedAssociations, _thread != null ? String.format("%08X", _thread.getId()) : "Not on a thread" });
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.tx.remote.DistributableTransaction#resumeAssociation()
      */
 
@@ -449,56 +426,55 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
      * This polices the single threaded operation of the transaction.
      */
     @Override
-    public void resumeAssociation()
-    {
+    public void resumeAssociation() {
         final boolean traceOn = TraceComponent.isAnyTracingEnabled();
 
         if (traceOn && tc.isEntryEnabled())
-            Tr.entry(tc, "resumeAssociation");
+            Tr.entry(tc, "resumeAssociation",
+                     new Object[] { _activeAssociations, _suspendedAssociations, _thread != null ? String.format("%08X", _thread.getId()) : "Not on a thread" });
 
         resumeAssociation(true);
 
         if (traceOn && tc.isEntryEnabled())
-            Tr.exit(tc, "resumeAssociation");
+            Tr.exit(tc, "resumeAssociation",
+                    new Object[] { _activeAssociations, _suspendedAssociations, _thread != null ? String.format("%08X", _thread.getId()) : "Not on a thread" });
     }
 
     /**
      * This polices the single threaded operation of the transaction.
      * allowSetRollback indicates whether the condition where there is already an
      * active association should result in rolling back the transaction.
-     * 
+     *
      * In the standard case of a client interceptor attempting to resume the association between
      * a transaction and the thread as part of response processing allowSetRollback is set to true
      * - this means that if the transaction already has an active association with another thread
      * the transaction is marked for rollback and an exception is thrown, even though we still wait
      * to give the thread exclusive access to the transaction. This was the pre-existing behaviour
      * before APAR PI13992
-     * 
+     *
      * If another component is temporarily suspending+resuming while waiting for some other condition
      * we simply want to wait to allow the thread exclusive access to the transaction - in this case the
      * method should be called with allowSetRollback set to false - in this case the method waits to grant
      * the thread exclusive access to the transaction and does NOT set the transaction to rollback only
      * if the transaction is currently actively associated with another thread.
      */
-    public synchronized void resumeAssociation(boolean allowSetRollback) throws TRANSACTION_ROLLEDBACK
-    {
+    public synchronized void resumeAssociation(boolean allowSetRollback) throws TRANSACTION_ROLLEDBACK {
         final boolean traceOn = TraceComponent.isAnyTracingEnabled();
 
         if (traceOn && tc.isEntryEnabled())
-            Tr.entry(tc, "resumeAssociation", allowSetRollback);
+            Tr.entry(tc, "resumeAssociation",
+                     new Object[] { allowSetRollback, _activeAssociations, _suspendedAssociations, _thread != null ? String.format("%08X", _thread.getId()) : "Not on a thread" });
 
         // if another thread is active we have to wait
         // doSetRollback indicates if this method has marked the transaction for rollbackOnly
         // and if so TRANSACTION_ROLLEDBACK exception is thrown.
         boolean doSetRollback = false;
-        while (_activeAssociations > _suspendedAssociations)
-        {
+        while (_activeAssociations > _suspendedAssociations) {
             doSetRollback = allowSetRollback;
             try {
                 if (doSetRollback && !_rollbackOnly)
                     setRollbackOnly();
-            } catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 FFDCFilter.processException(ex, "com.ibm.ws.Transaction.JTA.TransactionImpl.resumeAssociation", "1748", this);
                 if (traceOn && tc.isDebugEnabled())
                     Tr.debug(tc, "setRollbackOnly threw exception", ex);
@@ -514,20 +490,22 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
         } // end while
 
         _suspendedAssociations--;
-        if (doSetRollback)
-        {
+        if (doSetRollback) {
+            final TRANSACTION_ROLLEDBACK trb = new TRANSACTION_ROLLEDBACK("Context already active");
             if (traceOn && tc.isEntryEnabled())
-                Tr.exit(tc, "resumeAssociation throwing rolledback");
-            throw new TRANSACTION_ROLLEDBACK("Context already active");
+                Tr.exit(tc, "resumeAssociation throwing rolledback",
+                        new Object[] { _activeAssociations, _suspendedAssociations, _thread != null ? String.format("%08X", _thread.getId()) : "Not on a thread", trb });
+            throw trb;
         }
 
         if (traceOn && tc.isEntryEnabled())
-            Tr.exit(tc, "resumeAssociation");
+            Tr.exit(tc, "resumeAssociation",
+                    new Object[] { _activeAssociations, _suspendedAssociations, _thread != null ? String.format("%08X", _thread.getId()) : "Not on a thread" });
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.tx.remote.DistributableTransaction#getGlobalId()
      */
     @Override
@@ -540,20 +518,25 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
         return _globalId;
     }
 
+    public boolean isResumable() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "isResumable", new Object[] { this, _thread == null || _suspendedAssociations >= _activeAssociations });
+        return (_thread == null || _suspendedAssociations >= _activeAssociations);
+    }
+
     /**
      * Called by interceptor when incoming request arrives.
      * This polices the single threaded operation of the transaction.
      */
     @Override
-    public synchronized void addAssociation()
-    {
+    public synchronized void addAssociation() {
         final boolean traceOn = TraceComponent.isAnyTracingEnabled();
 
         if (traceOn && tc.isEntryEnabled())
-            Tr.entry(tc, "addAssociation");
+            Tr.entry(tc, "addAssociation",
+                     new Object[] { _activeAssociations, _suspendedAssociations, _thread != null ? String.format("%08X", _thread.getId()) : "Not on a thread" });
 
-        if (_activeAssociations > _suspendedAssociations)
-        {
+        if (_activeAssociations > _suspendedAssociations) {
             if (traceOn && tc.isDebugEnabled())
                 Tr.debug(tc, "addAssociation received incoming request for active context");
             try {
@@ -565,16 +548,19 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
                 // swallow this exception
             }
 
+            final TRANSACTION_ROLLEDBACK trb = new TRANSACTION_ROLLEDBACK("Context already active");
             if (traceOn && tc.isEntryEnabled())
-                Tr.exit(tc, "addAssociation throwing rolledback");
-            throw new TRANSACTION_ROLLEDBACK("Context already active");
+                Tr.exit(tc, "addAssociation throwing rolledback",
+                        new Object[] { _activeAssociations, _suspendedAssociations, _thread != null ? String.format("%08X", _thread.getId()) : "Not on a thread", trb });
+            throw trb;
         }
 
         stopInactivityTimer();
         _activeAssociations++;
 
         if (traceOn && tc.isEntryEnabled())
-            Tr.exit(tc, "addAssociation");
+            Tr.exit(tc, "addAssociation",
+                    new Object[] { _activeAssociations, _suspendedAssociations, _thread != null ? String.format("%08X", _thread.getId()) : "Not on a thread" });
     }
 
     /**
@@ -582,35 +568,33 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
      * This updates the server association count for this context.
      */
     @Override
-    public synchronized void removeAssociation()
-    {
+    public synchronized void removeAssociation() {
         final boolean traceOn = TraceComponent.isAnyTracingEnabled();
 
         if (traceOn && tc.isEntryEnabled())
-            Tr.entry(tc, "removeAssociation");
+            Tr.entry(tc, "removeAssociation",
+                     new Object[] { _activeAssociations, _suspendedAssociations, _thread != null ? String.format("%08X", _thread.getId()) : "Not on a thread" });
 
         _activeAssociations--;
 
-        if (_activeAssociations <= 0)
-        {
+        if (_activeAssociations <= 0) {
             startInactivityTimer();
-        }
-        else
-        {
+        } else {
             _mostRecentThread.pop();
         }
 
         notifyAll(); //LIDB1673.23
 
         if (traceOn && tc.isEntryEnabled())
-            Tr.exit(tc, "removeAssociation");
+            Tr.exit(tc, "removeAssociation",
+                    new Object[] { _activeAssociations, _suspendedAssociations, _thread != null ? String.format("%08X", _thread.getId()) : "Not on a thread" });
     }
 
     /**
      * Enlist an asynchronous resource with the target TransactionImpl object.
      * A WSATParticipantWrapper is typically a representation of a downstream WSAT
      * subordinate server.
-     * 
+     *
      * @param asyncResource the remote WSATParticipantWrapper
      */
     @Override
@@ -652,65 +636,53 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
             abortTransactionParticipants();
 
             // inactivity timeout may have happened ... check status
-            if (_status.getState() == TransactionState.STATE_ACTIVE)
-            {
+            if (_status.getState() == TransactionState.STATE_ACTIVE) {
                 // If there is no txn timeout, or we are into completion phase the timeout setting may be zero
                 if (_timeout == 0)
                     _timeout = 10;
                 EmbeddableTimeoutManager.setTimeout(this, EmbeddableTimeoutManager.REPEAT_TIMEOUT, _timeout);
 
                 // d369039 only rollback if still in ACTIVE state
-                if (_activeAssociations <= 0)
-                {
+                if (_activeAssociations <= 0) {
                     rollbackResources();
                 }
             }
-        }
-        else if (_activeAssociations <= 0) // off server ... do the rollback
+        } else if (_activeAssociations <= 0) // off server ... do the rollback
         {
             final EmbeddableTranManagerSet tranManager = (EmbeddableTranManagerSet) TransactionManagerFactory.getTransactionManager();
 
             boolean resumed = false;
-            try
-            {
+            try {
                 tranManager.resume(this);
                 resumed = true;
-            } catch (Throwable t)
-            {
+            } catch (Throwable t) {
                 FFDCFilter.processException(t, "com.ibm.ws.tx.jta.TransactionImpl.timeoutTransaction", "1311", this);
                 if (traceOn && tc.isDebugEnabled())
                     Tr.debug(tc, "timeoutTransaction resume threw exception", t);
                 // swallow this exception
             }
 
-            if (resumed)
-            {
+            if (resumed) {
                 boolean rolledback = false;
-                try
-                {
+                try {
                     tranManager.rollback();
                     rolledback = true;
-                } catch (Throwable t)
-                {
+                } catch (Throwable t) {
                     FFDCFilter.processException(t, "com.ibm.ws.tx.jta.TransactionImpl.timeoutTransaction", "1326", this);
                     if (traceOn && tc.isDebugEnabled())
                         Tr.debug(tc, "timeoutTransaction rollback threw exception", t);
                     // swallow this exception
-                } finally
-                {
-                    if (!rolledback)
-                    {
+                } finally {
+                    if (!rolledback) {
                         tranManager.suspend();
                     }
                 }
             }
-        }
-        else // on server ... just re-schedule timeout
+        } else // on server ... just re-schedule timeout
         {
             _rollbackOnly = true; // for the case of server quiesce?
             // inactivity timeout may have happened ... check status
-            if (_status.getState() == TransactionState.STATE_ACTIVE)
-            {
+            if (_status.getState() == TransactionState.STATE_ACTIVE) {
                 // If there is no txn timeout, or we are into completion phase the timeout setting may be zero
                 if (_timeout == 0)
                     _timeout = 10;
@@ -732,11 +704,11 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
      * If this method is called more times than the retry limit specified in
      * COMMITRETRY, then the global outcome of the transaction is taken from the
      * value of HEURISTICDIRECTION.
-     * 
+     *
      * This method is synchronized together with the Associations methods as it
      * needs to support concurrency between inbound requests and in-doubt timer
      * activity. On recovery, there will be no associations for non-subordinates.
-     * 
+     *
      * @return
      */
     @Override
@@ -749,9 +721,9 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
             if (_subordinate) {
                 // For a subordinate, first check whether the global outcome is known locally.
                 switch (state) {
-                // Due to the possibility of recovery being attempted asynchronously to
-                // an incoming superior request, we must cover the case where the
-                // transaction has now actually committed already.
+                    // Due to the possibility of recovery being attempted asynchronously to
+                    // an incoming superior request, we must cover the case where the
+                    // transaction has now actually committed already.
                     case TransactionState.STATE_HEURISTIC_ON_COMMIT:
                     case TransactionState.STATE_COMMITTED:
                     case TransactionState.STATE_COMMITTING:
@@ -845,11 +817,11 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
 //     * If this method is called more times than the retry limit specified in
 //     * COMMITRETRY, then the global outcome of the transaction is taken from the
 //     * value of HEURISTICDIRECTION.
-//     * 
+//     *
 //     * This method is synchronized together with the Associations methods as it
 //     * needs to support concurrency between inbound requests and in-doubt timer
 //     * activity. On recovery, there will be no associations for non-subordinates.
-//     * 
+//     *
 //     * @return
 //     */
 //    @Override
@@ -869,8 +841,7 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
 //            Tr.exit(tc, "recover");
 //    }
 
-    public boolean hasSuspendedAssociations()
-    {
+    public boolean hasSuspendedAssociations() {
         final boolean traceOn = TraceComponent.isAnyTracingEnabled();
 
         if (traceOn && tc.isEntryEnabled())
@@ -886,8 +857,7 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
      * Called by the timeout manager when inactivity timer expires.
      * Needs to be synchronized as it may interfere with normal timeout.
      */
-    public synchronized void inactivityTimeout()
-    {
+    public synchronized void inactivityTimeout() {
         final boolean traceOn = TraceComponent.isAnyTracingEnabled();
 
         if (traceOn && tc.isEntryEnabled())
@@ -895,42 +865,33 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
 
         _inactivityTimerActive = false;
 
-        if (_inactivityTimer != null)
-        {
-            try
-            {
+        if (_inactivityTimer != null) {
+            try {
                 // important that this runs as part of synchronized block
                 // to prevent context being re-imported while processing.
                 _inactivityTimer.alarm();
-            } catch (Throwable exc)
-            {
+            } catch (Throwable exc) {
                 FFDCFilter.processException(exc, "com.ibm.ws.tx.jta.TransactionImpl.inactivityTimeout", "2796", this);
                 if (traceOn && tc.isEventEnabled())
                     Tr.event(tc, "exception caught in inactivityTimeout", exc);
                 // swallow
-            } finally
-            {
+            } finally {
                 _inactivityTimer = null;
             }
 
-        }
-        else
-        {
+        } else {
             if (_activeAssociations <= 0) // off server ... do the rollback
             {
                 final EmbeddableTranManagerSet tranManager = (EmbeddableTranManagerSet) TransactionManagerFactory.getTransactionManager();
 
-                try
-                {
+                try {
                     // resume this onto the current thread and roll it back
                     tranManager.resume(this);
-                    // PK15024 
+                    // PK15024
                     // If there is a superior server involved in this transaction, make sure it is told about this inactivity timeout.
-                    try
-                    {
+                    try {
                         tranManager.setRollbackOnly();
-                    } catch (Exception e)
-                    {
+                    } catch (Exception e) {
                         FFDCFilter.processException(e, "com.ibm.ws.Transaction.JTA.TransactionImpl.inactivityTimeout", "4353", this);
                         if (traceOn && tc.isDebugEnabled())
                             Tr.debug(tc, "inactivityTimeout setRollbackOnly threw exception", e);
@@ -938,9 +899,7 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
                     // Mark it so that a bean on the superior server can test its status on return.
                     // PK15024
                     tranManager.rollback();
-                } catch (Exception ex)
-                {
-                    FFDCFilter.processException(ex, "com.ibm.ws.Transaction.JTA.TransactionImpl.inactivityTimeout", "2628", this);
+                } catch (Exception ex) {
                     if (traceOn && tc.isDebugEnabled())
                         Tr.debug(tc, "inactivityTimeout resume/rollback threw exception", ex);
                     // swallow this exception
@@ -954,18 +913,16 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
     }
 
     @Override
-    public Thread getMostRecentThread()
-    {
+    public Thread getMostRecentThread() {
         // If active assocations is > 0 then transaction is on server or
         // downstream and the thread with which the transaction was last
         // associated is valid. Otherwise the request has returned to an
-        // upstream server or client and the thread with which the 
+        // upstream server or client and the thread with which the
         // transaction was last associated will have been returned to the
         // thread pool and may be handling another request, i.e. it's
         // not relevant to this transaction.
 
-        if (_activeAssociations > 0)
-        {
+        if (_activeAssociations > 0) {
             return _mostRecentThread.peek();
         }
 
@@ -985,13 +942,16 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
             _timeout = 0;
         }
 
+        if (_inactivityTimerActive) {
+            stopInactivityTimer();
+        }
+
         if (tc.isEntryEnabled())
             Tr.exit(tc, "cancelAlarms");
     }
 
     @Override
-    protected void handleHeuristicOnCommit(boolean waitForHeuristic)
-    {
+    protected void handleHeuristicOnCommit(boolean waitForHeuristic) {
         final boolean traceOn = TraceComponent.isAnyTracingEnabled();
 
         if (traceOn && tc.isEntryEnabled())
@@ -1003,18 +963,14 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
         // Really when we get a forget we should remove our subordinate and heuristic
         // status from the log.  Check of superior has gone.
         if (_doNotRetryRecovery && waitForHeuristic &&
-            TransactionState.STATE_HEURISTIC_ON_COMMIT == _status.getState())
-        {
+            TransactionState.STATE_HEURISTIC_ON_COMMIT == _status.getState()) {
             if (traceOn && tc.isEventEnabled())
                 Tr.event(tc, "recoverCommit", "Checking if we can forget transaction");
 
-            if (_wsatRC != null)
-            {
+            if (_wsatRC != null) {
                 // WSAT currently will never send a forget...
                 notifyCompletion();
-            }
-            else if (_JCARecoveryData == null)
-            {
+            } else if (_JCARecoveryData == null) {
                 replay();
             }
         }
@@ -1024,8 +980,7 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
     }
 
     @Override
-    protected void handleHeuristicOnRollback(boolean waitForHeuristic)
-    {
+    protected void handleHeuristicOnRollback(boolean waitForHeuristic) {
         final boolean traceOn = TraceComponent.isAnyTracingEnabled();
 
         if (traceOn && tc.isEntryEnabled())
@@ -1037,17 +992,13 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
         // Really when we get a forget we should remove our subordinate and heuristic
         // status from the log.  Check of superior has gone.
         if (_doNotRetryRecovery && waitForHeuristic &&
-            TransactionState.STATE_HEURISTIC_ON_ROLLBACK == _status.getState())
-        {
+            TransactionState.STATE_HEURISTIC_ON_ROLLBACK == _status.getState()) {
             if (traceOn && tc.isEventEnabled())
                 Tr.event(tc, "recoverRollback", "Checking if we can forget transaction");
-            if (_wsatRC != null)
-            {
+            if (_wsatRC != null) {
                 // WSAT currently will never send a forget...
                 notifyCompletion();
-            }
-            else if (_JCARecoveryData == null)
-            {
+            } else if (_JCARecoveryData == null) {
                 replay();
             }
         }
@@ -1057,15 +1008,13 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
     }
 
     @Override
-    protected void retryCompletion()
-    {
+    protected void retryCompletion() {
         final boolean traceOn = TraceComponent.isAnyTracingEnabled();
 
         if (traceOn && tc.isEntryEnabled())
             Tr.entry(tc, "retryCompletion", new Object[] { this, _configProvider.getHeuristicRetryLimit(), _retryAttempts });
 
-        if (_configProvider.getHeuristicRetryLimit() <= 0 || _retryAttempts < _configProvider.getHeuristicRetryLimit())
-        {
+        if (_configProvider.getHeuristicRetryLimit() <= 0 || _retryAttempts < _configProvider.getHeuristicRetryLimit()) {
             _retryAttempts++;
 
             // Issue replay_completion for either IIOP or WSAT
@@ -1076,22 +1025,18 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
             // set the timer to retry again later.
             // Note: this code is now the same as the old JTS1 and so should interwork ok.
             Tr.warning(tc, "WTRN0056_TRAN_RESYNC_FAILURE", getTranName());
-            if (!_inRecovery)
-            {
+            if (!_inRecovery) {
                 // Use timeout manger if we are in-doubt and a normal transaction.
                 // otherwise if in recovery, just return and let RecoveryManager poll us.
                 if (_retryAttempts % 10 == 0 && _retryWait < Integer.MAX_VALUE / 2)
                     _retryWait *= 2;
                 EmbeddableTimeoutManager.setTimeout(this, EmbeddableTimeoutManager.IN_DOUBT_TIMEOUT, _retryWait);
             }
-        }
-        else
-        {
+        } else {
             // If we are not to attempt a retry of the replay_completion method, then
             // the HEURISTICCOMPLETION system variable is used to set the global
             // outcome.
-            switch (_configProvider.getHeuristicCompletionDirection())
-            {
+            switch (_configProvider.getHeuristicCompletionDirection()) {
                 case ConfigurationProvider.HEURISTIC_COMPLETION_DIRECTION_COMMIT:
                     Tr.error(tc, "WTRN0093_COMMIT_REPLAY_COMPLETION", getTranName());
                     recoverCommit(false);
@@ -1111,48 +1056,40 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
             Tr.exit(tc, "retryCompletion");
     }
 
-    protected void replay()
-    {
+    protected void replay() {
         final boolean traceOn = TraceComponent.isAnyTracingEnabled();
 
         if (traceOn && tc.isEntryEnabled())
             Tr.entry(tc, "replay", this);
 
-        try
-        {
+        try {
             // Use the WSATRecoveryCoordinator to get the global outcome
-            if (_wsatRC != null)
-            {
+            if (_wsatRC != null) {
                 _wsatRC.replayCompletion(_globalId);
             } else {
                 if (traceOn && tc.isEventEnabled())
                     Tr.event(tc, "No WSATRecoveryCoordinator to call replayCompletion on: " + _globalId);
             }
-        } catch (Throwable exc)
-        {
+        } catch (Throwable exc) {
             FFDCFilter.processException(exc, "com.ibm.tx.jta.embeddable.impl.EmbeddableTransactionImpl.replay", "1018", this);
             if (traceOn && tc.isEventEnabled())
                 Tr.event(tc, "exception caught in recover", exc);
         }
 
-        if (traceOn && tc.isEntryEnabled())
-        {
+        if (traceOn && tc.isEntryEnabled()) {
             Tr.exit(tc, "replay");
         }
     }
 
     @Override
-    protected void reconstructCoordinators(RecoverableUnit log) throws SystemException
-    {
+    protected void reconstructCoordinators(RecoverableUnit log) throws SystemException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "reconstructCoordinators", new Object[] { log, this });
 
         // Create a WSATRecoveryCoordinator if we are a WSAT subordinate.
         final RecoverableUnitSection _wsatRCSection = log.lookupSection(RECCOORD_WSAT_SECTION);
-        if (_wsatRCSection != null)
-        {
-            if (_subordinate)
-            {
+        if (_wsatRCSection != null) {
+            if (_subordinate) {
                 // If we have already discovered we are a subordinate, then something is broken.
                 Tr.error(tc, "WTRN0001_ERR_INT_ERROR", new Object[] { "reconstruct", this.getClass().getName() });
                 if (tc.isEntryEnabled())
@@ -1190,7 +1127,7 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.tx.remote.DistributableTransaction#setWSATRecoveryCoordinator(com.ibm.tx.jta.embeddable.impl.WSATRecoveryCoordinator)
      */
     @Override
@@ -1207,11 +1144,25 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.tx.remote.DistributableTransaction#replayCompletion()
      */
     @Override
     public void replayCompletion() {
         recover();
+    }
+
+    public void setThread(Thread t) {
+        _thread = t;
+    }
+
+    public Thread getThread() {
+        return _thread;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + ",active=" + _activeAssociations + ",suspended=" + _suspendedAssociations + ","
+               + (_thread != null ? "thread=" + String.format("%08X", _thread.getId()) : "Not on a thread");
     }
 }

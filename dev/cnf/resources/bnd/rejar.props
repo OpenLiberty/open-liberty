@@ -1,3 +1,14 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+
 Bundle-Distributor: IBM
 
 # No ~ on the generated.build.id include.. we want the included file to replace
@@ -21,7 +32,7 @@ Bundle-Version: ${bFullVersion}.${if;${driver;gradle};${version.qualifier};eclip
 -consumer-policy :    ${range;[==,+)}
 
 # Require a 1.6 JDK (at least): see section 3.4.1 of OSGi 4.3 core spec
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.6))"
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
 #tell bnd to use our Externals plugin
 -plugin.build.bnd.plugins: ${def;${if;${driver;gradle};build.bnd.plugins;EMPTY}}

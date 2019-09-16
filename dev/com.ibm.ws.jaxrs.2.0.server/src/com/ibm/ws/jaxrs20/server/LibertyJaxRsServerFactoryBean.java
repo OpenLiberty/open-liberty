@@ -123,9 +123,9 @@ public class LibertyJaxRsServerFactoryBean extends JAXRSServerFactoryBean {
      * subclass itself since this would create a circular dependency.
      *
      * @param app
+     * @param appinfo
      */
-    void injectContextApplication(Application app) {
-        ApplicationInfo appinfo = new ApplicationInfo(app, this.getBus());
+    void injectContextApplication(Application app, ApplicationInfo appinfo) {
         if (appinfo.contextsAvailable()) {
             InjectionRuntimeContext irc = InjectionRuntimeContextHelper.getRuntimeContext();
             for (Map.Entry<Class<?>, Method> entry : appinfo.getContextMethods().entrySet()) {
@@ -154,7 +154,8 @@ public class LibertyJaxRsServerFactoryBean extends JAXRSServerFactoryBean {
         Class<?> appClass = this.moduleMetadata.getAppContextClassLoader().loadClass(endpointInfo.getAppClassName());
         Application app = (Application) createSingletonInstance(appClass, servletConfig);
 
-        injectContextApplication(app);
+        ApplicationInfo appinfo = new ApplicationInfo(app, this.getBus());
+        injectContextApplication(app, appinfo);
 
         /**
          * step 2: Application can be init only once, the init order depends on the priority of beanCustomizer
@@ -206,9 +207,12 @@ public class LibertyJaxRsServerFactoryBean extends JAXRSServerFactoryBean {
         }
 
         /**
-         * step 5: set Application object to ServerFactoryBean
+         * step 5: set ApplicationInfo object to ServerFactoryBean
          */
-        super.setApplication(app);
+        if (replaced) {
+            appinfo = new ApplicationInfo(app, this.getBus());
+        }
+        super.setApplicationInfo(appinfo);
         endpointInfo.setApp(app);
     }
 

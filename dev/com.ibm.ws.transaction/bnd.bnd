@@ -60,6 +60,9 @@ Service-Component: com.ibm.ws.transaction; \
 	 uowCallback=com.ibm.ws.uow.UOWScopeCallback; \
   	 properties:="service.vendor=IBM"
 
+# Using version=! in order to not have a version attached to the import for packages that were removed
+# from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the 
+# packages from Java when using Java 8 or earlier and from the new shipped bundles for Java 9 and later.
 Import-Package: \
     !com.ibm.wsspi.webcontainer.collaborator, \
  	javax.transaction; version=1.1.0, \
@@ -67,6 +70,7 @@ Import-Package: \
  	javax.servlet; resolution:=optional, \
  	javax.servlet.http; resolution:=optional, \
  	com.ibm.ws.recoverylog.spi, \
+    javax.annotation;version=!,\
  	*
 
 # Allow use of the collaborator package even if the webcontainer bundle turns up 
@@ -101,6 +105,7 @@ Export-Package: \
 instrument.classesExcludes: com/ibm/ws/transaction/services/TransactionMessages*.class
 
 -buildpath: \
+	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
 	com.ibm.tx.jta;version=latest,\
 	com.ibm.tx.ltc;version=latest,\
 	com.ibm.tx.util;version=latest,\

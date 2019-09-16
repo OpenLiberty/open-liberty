@@ -1,0 +1,65 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.request.timing/resources/com/ibm/ws/request/timing/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+#
+# Messages in the range TRAS3300 to 3499 are reserved for this messages file.
+# The list of prefixes and the range of messages in use (or "reserved") are shown in 
+# http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+# -------------------------------------------------------------------------------------------------
+
+# Warning message telling the user that the request time has exceed the configured slowRequestThreshold time.
+REQUEST_TIMER_WARNING=TRAS0112W: Request {0} has been running on thread {1} for at least {2}ms. The following stack trace shows what this thread is currently running.\n\n {3}\nThe following table shows the events that have run during this request.\n{4} 
+REQUEST_TIMER_WARNING.explanation=The request has been running for longer than the configured slow request duration. The information in the table shows what events have already run as part of the request. Events that are still running are indicated with a + next to the duration. The default value for slow request duration is 10 seconds, check the server.xml file for the current value.
+REQUEST_TIMER_WARNING.useraction=Use the information in the table to determine what part of the request is slower than expected.  If many warnings are provided for different requests at nearly the same time it may indicate that something slowed down the entire server process, such as another process on the same system consuming a large amount of processing resources.
+
+# Information message telling the user that the previously detected slow request has finished in a set amount of time.
+REQUEST_TIMER_FINISH_SLOW=TRAS0113I: Request {0} on thread {1}, which was previously detected as slow, completed after {2} ms.
+REQUEST_TIMER_FINISH_SLOW.explanation=The request has been running for longer than the configured slow request duration. The request completed in the posted time.
+REQUEST_TIMER_FINISH_SLOW.useraction=No action required.
+
+# Warning message telling the user that the request time has exceed the configured hungRequestThreshold time.
+HUNG_REQUEST_WARNING=TRAS0114W: Request {0} has been running on thread {1} for at least {2}ms. The following table shows the events that have run during this request.\n{3}
+HUNG_REQUEST_WARNING.explanation=The request has been running for longer than the configured hung request duration. The information in the table shows what events have already run as part of the request. Java cores will automatically be triggered to collect further information about what may be causing the request to hang. The default value for hung request duration is 10 minutes, check the server.xml file for the current value.
+HUNG_REQUEST_WARNING.useraction=Use the information in the table to determine what part of the request is hanging or in a loop. 
+
+# Warning message telling the user that the request time has exceed the configured hungRequestThreshold time.
+HUNG_REQUEST_COMPLETED_INFO=TRAS0115W: Request {0} on thread {1} which was previously detected to be hung, has completed after {2}ms.
+HUNG_REQUEST_COMPLETED_INFO.explanation=Hung request task will notify the user when any hung request is completed.
+HUNG_REQUEST_COMPLETED_INFO.useraction=No action required.    
+
+# Error message telling the user that we could not read part of the configuration in server.xml
+REQUEST_TIMING_CONFIG_ERROR1=TRAS3300E: The timing configuration associated with PID {0} cannot be read from the configuration.
+REQUEST_TIMING_CONFIG_ERROR1.explanation=The request timing service attempted to read an embedded timing configuration from the server.xml file. The PID associated with the timing element is in the message.
+REQUEST_TIMING_CONFIG_ERROR1.useraction=Look in messages.log for other error messages, such as CWWKG0058E, for details on the configuration problem. Correct the configuration to resolve the error.
+
+# Warning message telling the user that they have defined a timing element more than once
+REQUEST_TIMING_CONFIG_WARNING_DUPLICATE=TRAS3301W: A timing configuration of type {0} and context info pattern {1} already exists. The timing configuration associated with PID {2} replaces the previous timing configuration.
+REQUEST_TIMING_CONFIG_WARNING_DUPLICATE.explanation=A duplicate timing configuration was found in the server.xml file. The combination of type and context info pattern was already defined.
+REQUEST_TIMING_CONFIG_WARNING_DUPLICATE.useraction=Inspect the server.xml file and remove any duplicate timing configurations.
+
+# Warning message telling the user that they supplied conflicting context information requirements
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_PATTERN=TRAS3302W: The timing configuration for the {0} PID supplies a context information pattern, but the request timing configuration sets the includeContextInfo attribute to false. The timing configuration will be ignored.
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_PATTERN.explanation=The request timing service read an embedded timing configuration from the server.xml file. The timing configuration specified a context information pattern to match. The request timing service is configured to disable context information for all requests, and cannot match requests to this timing configuration.
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_PATTERN.useraction=Inspect the server.xml file and resolve the configuration conflict by changing the value of includeContextInfo to true in the request timing configuration, or by removing the context information pattern from the timing configuration.
+
+# Warning message telling the user that they put the wildcard character in the wrong place
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_ASTERISK_LOC=TRAS3303W: The timing configuration associated with the {0} PID supplies a context information pattern that contains a wildcard in an unsupported location. The wildcard will be treated as an asterisk. The context information pattern is {1}.
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_ASTERISK_LOC.explanation=The request timing service read an embedded timing configuration from the server.xml file. In the context information pattern, an asterisk character is treated as a wildcard unless it is escaped with a backslash character. A wildcard is only permitted as the last character of the context information pattern.
+REQUEST_TIMING_CONFIG_WARNING_CTX_INFO_ASTERISK_LOC.useraction=To interpret the wildcard character as an asterisk, escape it with a backslash character.
+
+TRUNCATED_REQUEST_MESSAGE=\n\nThe table has been truncated because the number of events for the request exceeded the permitted limit.

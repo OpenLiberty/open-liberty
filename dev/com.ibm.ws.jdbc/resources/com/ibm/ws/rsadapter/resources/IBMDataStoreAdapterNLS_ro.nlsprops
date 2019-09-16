@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2001, 2016 IBM Corporation and others.
+# Copyright (c) 2001, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -271,13 +271,21 @@ DSRA4011.tran.none.iso.switch.unsupported=DSRA4011E: Driver-ul JDBC nu suport\u0
 DSRA4011.tran.none.iso.switch.unsupported.explanation=Specifica\u0163ia JDBC nu suport\u0103 comutarea la un nivel de izolare TRANSACTION_NONE.
 DSRA4011.tran.none.iso.switch.unsupported.useraction=Evita\u0163i comutarea la un nivel de izolare TRANSACTION_NONE.
 
-DSRA4012.ignored.datasource.config.used=DSRA4012I: C\u00e2nd se utilizeaz\u0103 Oracle UCP, urm\u0103toarele propriet\u0103\u0163i de surs\u0103 de date sunt ignorate: statementCacheSize \u015fi validationTimeout. Utiliza\u0163i func\u0163ionalitatea Oracle UCP echivalent\u0103.
-DSRA4012.ignored.datasource.config.used.explanation=Propriet\u0103\u0163ile de surs\u0103 de date statementCacheSize \u015fi validationTimeout nu sunt valide atunci c\u00e2nd se utilizeaz\u0103 Oracle UCP.
-DSRA4012.ignored.datasource.config.used.useraction=\u00cenl\u0103tura\u0163i propriet\u0103\u0163ile de surs\u0103 de date \u015fi, \u00een locul lor, utiliza\u0163i func\u0163ionalitatea Oracle UCP echivalent\u0103.
+DSRA4012.ignored.datasource.config.used=DSRA4012I: C\u00e2nd se utilizeaz\u0103 Oracle UCP, urm\u0103toarele propriet\u0103\u0163i de surs\u0103 de date sunt ignorate: {0}.
+DSRA4012.ignored.datasource.config.used.explanation=Propriet\u0103\u0163ile sursei de date listate nu sunt valide atunci c\u00e2nd se utilizeaz\u0103 Oracle UCP.
+DSRA4012.ignored.datasource.config.used.useraction=\u00cenl\u0103tura\u0163i propriet\u0103\u0163ile de surs\u0103 de date care nu sunt valide \u015fi, \u00een locul lor, utiliza\u0163i func\u0163ionalitatea Oracle UCP echivalent\u0103, dac\u0103 este disponibil\u0103.
 
-DSRA4013.ignored.connection.manager.config.used=DSRA4013I: C\u00e2nd se utilizeaz\u0103 Oracle UCP, urm\u0103toarele propriet\u0103\u0163i de manager de conexiuni sunt ignorate: agedTimeout, connectionTimeout, maxIdleTime, maxPoolSize, minPoolSize, purgePolicy, reapTime, maxConnectionsPerThread, maxConnectionsPerThreadLocal. Utiliza\u0163i func\u0163ionalitatea Oracle UCP echivalent\u0103.
-DSRA4013.ignored.connection.manager.config.used.explanation=Propriet\u0103\u0163ile de manager de conexiuni listate nu sunt valide atunci c\u00e2nd se utilizeaz\u0103 Oracle UCP.
-DSRA4013.ignored.connection.manager.config.used.useraction=\u00cenl\u0103tura\u0163i propriet\u0103\u0163ile de manager de conexiuni \u015fi, \u00een locul lor, utiliza\u0163i func\u0163ionalitatea Oracle UCP echivalent\u0103.
+DSRA4013.ignored.connection.manager.config.used=DSRA4013I: Propriet\u0103\u0163ile managerului de conexiune nu sunt valide. C\u00e2nd se utilizeaz\u0103 Oracle UCP, urm\u0103toarele propriet\u0103\u0163i de manager de conexiuni sunt valide: {0}.
+DSRA4013.ignored.connection.manager.config.used.explanation=C\u00e2nd se utilizeaz\u0103 Oracle UCP, doar propriet\u0103\u0163ile de manager de conexiuni listate sunt valide.
+DSRA4013.ignored.connection.manager.config.used.useraction=\u00cenl\u0103tura\u0163i propriet\u0103\u0163ile managerui de conexiune care nu sunt valide \u015fi, \u00een locul lor, utiliza\u0163i func\u0163ionalitatea Oracle UCP echivalent\u0103, dac\u0103 este disponibil\u0103.
+
+DSRA4014.URL.for.Driver.missing=DSRA4014E: A fost specificat tipul java.sql.Driver pentru sursa de date {0}, dar nu a fost specificat niciun atribut URL.
+DSRA4014.URL.for.Driver.missing.explanation=Trebuie specificat un URL de conexiune pentru o surs\u0103 de date care este de tipul java.sql.Driver.
+DSRA4014.URL.for.Driver.missing.useraction=Ad\u0103uga\u0163i un URL valid URL la sursa de date.
+
+DSRA4015.no.ucp.connection.pool.datasource=DSRA4015E: Sursa de date {0} a fost configurat\u0103 cu tipul {1}, care nu este suportat de Oracle UCP. Folosi\u0163i \u00een locul lui tipul XADataSource sau DataSource.
+DSRA4015.no.ucp.connection.pool.datasource.explanation=Sursa de date a fost configurat\u0103 cu tipul ConnectionPoolDataSource sau Driver, care nu este de driver-ul Oracle UCP.
+DSRA4015.no.ucp.connection.pool.datasource.useraction=Actualiza\u0163i sursa de date pentru a utiliza tipul XADataSource sau DataSource.
 
 # ----------------------------------------------------------------------------
 # 
@@ -541,6 +549,13 @@ NO_WRAPPED_OBJECT.explanation=Wrapper-ul care este specificat nu con\u0163ine ti
 NO_WRAPPED_OBJECT.useraction=Verifica\u0163i c\u0103 wrapper-ul \u015fi parametrii pentru obiectul wrapped sunt specifica\u0163i corect.
 
 # 9123 deleted
+
+# 9124       NOT_AN_INTERFACE
+#
+# {0}        The Class that was specified to unwrap to
+NOT_AN_INTERFACE=DSRA9124E: Nu se poate face unwrap obiectului la {0} deoarece {0} nu este o clas\u0103 de interfa\u0163\u0103.
+NOT_AN_INTERFACE.explanation=Metoda unwrap permite unwrapping numai la o clas\u0103 de interfa\u0163\u0103.
+NOT_AN_INTERFACE.useraction=Face\u0163i unwrap la o clas\u0103 care este interfa\u0163\u0103 \u00een locul unei clase concrete.
 
 # 9130E      OPERATION_NOT_PERMITTED
 # 

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2001, 2016 IBM Corporation and others.
+# Copyright (c) 2001, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -271,13 +271,21 @@ DSRA4011.tran.none.iso.switch.unsupported=DSRA4011E: Der JDBC-Treiber unterst\u0
 DSRA4011.tran.none.iso.switch.unsupported.explanation=Die JDBC-Spezifikation unterst\u00fctzt den Wechsel auf die Isolationsstufe TRANSACTION_NONE nicht.
 DSRA4011.tran.none.iso.switch.unsupported.useraction=Vermeiden Sie den Wechsel auf die Isolationsstufe TRANSACTION_NONE.
 
-DSRA4012.ignored.datasource.config.used=DSRA4012I: Bei der Verwendung von Oracle UCP werden die folgenden Datenquelleneigenschaften ignoriert: statementCacheSize und validationTimeout. Verwenden Sie die entsprechende Oracle UCP-Funktionalit\u00e4t.
-DSRA4012.ignored.datasource.config.used.explanation=Die Datenquelleneigenschaften statementCacheSize und validationTimeout sind bei Verwendung von Oracle UCP nicht zul\u00e4ssig.
-DSRA4012.ignored.datasource.config.used.useraction=Entfernen Sie die Datenquelleneigenschaften und verwenden Sie stattdessen die entsprechende Oracle UCP-Funktionalit\u00e4t.
+DSRA4012.ignored.datasource.config.used=DSRA4012I: Bei der Verwendung von Oracle UCP werden die folgenden Datenquelleneigenschaften ignoriert: {0}.
+DSRA4012.ignored.datasource.config.used.explanation=Die aufgef\u00fchrten Datenquelleneigenschaften sind nicht g\u00fcltig, wenn Oracle UCP verwendet wird.
+DSRA4012.ignored.datasource.config.used.useraction=Entfernen Sie die Datenquelleneigenschaften und verwenden Sie stattdessen die entsprechende Oracle UCP-Funktionalit\u00e4t, sofern verf\u00fcgbar.
 
-DSRA4013.ignored.connection.manager.config.used=DSRA4013I: Bei der Verwendung von Oracle UCP werden die folgenden Connection Manager-Eigenschaften ignoriert: agedTimeout, connectionTimeout, maxIdleTime, maxPoolSize, minPoolSize, purgePolicy, reapTime, maxConnectionsPerThread, maxConnectionsPerThreadLocal. Verwenden Sie die entsprechende Oracle UCP-Funktionalit\u00e4t.
-DSRA4013.ignored.connection.manager.config.used.explanation=Die aufgef\u00fchrten Connection Manager-Eigenschaften sind bei Verwendung von Oracle UCP nicht zul\u00e4ssig.
-DSRA4013.ignored.connection.manager.config.used.useraction=Entfernen Sie die Connection Manager-Eigenschaften und verwenden Sie stattdessen die entsprechende Oracle UCP-Funktionalit\u00e4t.
+DSRA4013.ignored.connection.manager.config.used=DSRA4013I: Die Verbindungsmanagereigenschaften sind nicht g\u00fcltig. Bei der Verwendung von Oracle UCP sind die folgenden Verbindungsmanagereigenschaften zul\u00e4ssig: {0}.
+DSRA4013.ignored.connection.manager.config.used.explanation=Bei der Verwendung von Oracle UCP sind nur die aufgef\u00fchrten Verbindungsmanagereigenschaften g\u00fcltig.
+DSRA4013.ignored.connection.manager.config.used.useraction=Entfernen Sie die Verbindungsmanagereigenschaften, die nicht g\u00fcltig sind und verwenden Sie stattdessen die entsprechende Oracle UCP-Funktionalit\u00e4t, sofern verf\u00fcgbar.
+
+DSRA4014.URL.for.Driver.missing=DSRA4014E: java.sql.Driver wurde als Typ f\u00fcr eine Datenquelle {0} angegeben, aber es wurden keine URL-Attribute angegeben.
+DSRA4014.URL.for.Driver.missing.explanation=Sie m\u00fcssen f\u00fcr eine Datenquelle vom Typ java.sql.Driver eine Verbindungs-URL angegeben.
+DSRA4014.URL.for.Driver.missing.useraction=F\u00fcgen Sie der Datenquelle eine g\u00fcltige URL hinzu.
+
+DSRA4015.no.ucp.connection.pool.datasource=DSRA4015E: Die Datenquelle {0} wurde mit dem Typ {1} konfiguriert, der nicht von Oracle UCP unterst\u00fctzt wird. Verwenden Sie stattdessen den Typ XADataSource oder DataSource.
+DSRA4015.no.ucp.connection.pool.datasource.explanation=Die Datenquelle wurde mit dem Typ ConnectionPoolDataSource oder dem Treibertyp konfiguriert. Dies wird vom Treiber Oracle UCP nicht implementiert.
+DSRA4015.no.ucp.connection.pool.datasource.useraction=\u00c4ndern Sie den Typ f\u00fcr die Datenquelle entweder in XADataSource oder in DataSource.
 
 # ----------------------------------------------------------------------------
 # 
@@ -541,6 +549,13 @@ NO_WRAPPED_OBJECT.explanation=Der angegebene Wrapper enth\u00e4lt nicht das Wrap
 NO_WRAPPED_OBJECT.useraction=Stellen Sie sicher, dass der Wrapper und die Parameter f\u00fcr das eingeschlossene Objekt richtig angegeben sind.
 
 # 9123 deleted
+
+# 9124       NOT_AN_INTERFACE
+#
+# {0}        The Class that was specified to unwrap to
+NOT_AN_INTERFACE=DSRA9124E: Das Objekt-Wrapping f\u00fcr {0} kann nicht aufgehoben werden, weil {0} keine Schnittstellenklasse ist.
+NOT_AN_INTERFACE.explanation=Die Unwrap-Methode erlaubt nur das Aufheben von Wrapping f\u00fcr eine Schnittstellenklasse.
+NOT_AN_INTERFACE.useraction=Heben Sie das Wrapping f\u00fcr eine Klasse auf, die eine Schnittstelle ist, anstatt f\u00fcr eine konkrete Klasse.
 
 # 9130E      OPERATION_NOT_PERMITTED
 # 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,7 +18,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.apache.directory.api.ldap.model.entry.Entry;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -28,8 +27,9 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.wim.LdapFilters;
 import com.ibm.websphere.simplicity.config.wim.LdapRegistry;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.apacheds.EmbeddedApacheDS;
+import com.ibm.ws.com.unboundid.InMemoryLDAPServer;
 import com.ibm.ws.security.registry.test.UserRegistryServletConnection;
+import com.unboundid.ldap.sdk.Entry;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -49,7 +49,7 @@ public class URAPIs_IDMapping_Test {
      */
     private static ServerConfiguration emptyConfiguration = null;
 
-    private static EmbeddedApacheDS ldapServer = null;
+    private static InMemoryLDAPServer ds;
     private static final String BASE_DN = "o=ibm,c=us";
 
     private static final String RESIDENTIALPERSON_CN = "residentialperson_cn";
@@ -88,21 +88,19 @@ public class URAPIs_IDMapping_Test {
      */
     @AfterClass
     public static void teardownClass() throws Exception {
-        if (libertyServer != null) {
-            try {
+        try {
+            if (libertyServer != null) {
                 libertyServer.stopServer();
-            } catch (Exception e) {
-                // Ignore.
             }
-        }
-        if (ldapServer != null) {
+        } finally {
             try {
-                ldapServer.stopService();
+                if (ds != null) {
+                    ds.shutDown(true);
+                }
             } catch (Exception e) {
-                // Ignore
+                Log.error(c, "teardown", e, "LDAP server threw error while shutting down. " + e.getMessage());
             }
         }
-
         libertyServer.deleteFileFromLibertyInstallRoot("lib/features/internalfeatures/securitylibertyinternals-1.0.mf");
     }
 
@@ -152,54 +150,49 @@ public class URAPIs_IDMapping_Test {
      * @throws Exception If the server failed to start for some reason.
      */
     private static void setupLDAPServer() throws Exception {
-        ldapServer = new EmbeddedApacheDS("testing");
-        ldapServer.addPartition("testing", BASE_DN);
-        ldapServer.startServer();
+        ds = new InMemoryLDAPServer(BASE_DN);
 
-        /*
-         * Add the partition entries.
-         */
-        Entry entry = ldapServer.newEntry(BASE_DN);
-        entry.add("objectclass", "organization");
-        entry.add("o", "ibm");
-        ldapServer.add(entry);
+        Entry entry = new Entry(BASE_DN);
+        entry.addAttribute("objectclass", "top");
+        entry.addAttribute("objectclass", "domain");
+        ds.add(entry);
 
         /*
          * Create the users and groups.
          */
-        entry = ldapServer.newEntry(RESIDENTIALPERSON_DN);
-        entry.add("objectclass", "residentialperson");
-        entry.add("sn", RESIDENTIALPERSON_SN);
-        entry.add("cn", RESIDENTIALPERSON_CN);
-        entry.add("l", RESIDENTIALPERSON_L);
-        entry.add("userPassword", "password");
-        ldapServer.add(entry);
+        entry = new Entry(RESIDENTIALPERSON_DN);
+        entry.addAttribute("objectclass", "residentialperson");
+        entry.addAttribute("sn", RESIDENTIALPERSON_SN);
+        entry.addAttribute("cn", RESIDENTIALPERSON_CN);
+        entry.addAttribute("l", RESIDENTIALPERSON_L);
+        entry.addAttribute("userPassword", "password");
+        ds.add(entry);
 
-        entry = ldapServer.newEntry(INETORGPERSON_DN);
-        entry.add("objectclass", "inetorgperson");
-        entry.add("uid", INETORGPERSON_UID);
-        entry.add("sn", INETORGPERSON_SN);
-        entry.add("cn", INETORGPERSON_CN);
-        entry.add("userPassword", "password");
-        ldapServer.add(entry);
+        entry = new Entry(INETORGPERSON_DN);
+        entry.addAttribute("objectclass", "inetorgperson");
+        entry.addAttribute("uid", INETORGPERSON_UID);
+        entry.addAttribute("sn", INETORGPERSON_SN);
+        entry.addAttribute("cn", INETORGPERSON_CN);
+        entry.addAttribute("userPassword", "password");
+        ds.add(entry);
 
-        entry = ldapServer.newEntry(GROUPOFNAMES_DN);
-        entry.add("objectclass", "groupofnames");
-        entry.add("cn", GROUPOFNAMES_CN);
-        entry.add("ou", GROUPOFNAMES_OU);
-        entry.add("o", GROUPOFNAMES_O);
-        entry.add("member", RESIDENTIALPERSON_DN);
-        entry.add("member", INETORGPERSON_DN);
-        ldapServer.add(entry);
+        entry = new Entry(GROUPOFNAMES_DN);
+        entry.addAttribute("objectclass", "groupofnames");
+        entry.addAttribute("cn", GROUPOFNAMES_CN);
+        entry.addAttribute("ou", GROUPOFNAMES_OU);
+        entry.addAttribute("o", GROUPOFNAMES_O);
+        entry.addAttribute("member", RESIDENTIALPERSON_DN);
+        entry.addAttribute("member", INETORGPERSON_DN);
+        ds.add(entry);
 
-        entry = ldapServer.newEntry(GROUPOFUNIQUENAMES_DN);
-        entry.add("objectclass", "groupofuniquenames");
-        entry.add("cn", GROUPOFUNIQUENAMES_CN);
-        entry.add("ou", GROUPOFUNIQUENAMES_OU);
-        entry.add("o", GROUPOFUNIQUENAMES_O);
-        entry.add("uniquemember", RESIDENTIALPERSON_DN);
-        entry.add("uniquemember", INETORGPERSON_DN);
-        ldapServer.add(entry);
+        entry = new Entry(GROUPOFUNIQUENAMES_DN);
+        entry.addAttribute("objectclass", "groupofuniquenames");
+        entry.addAttribute("cn", GROUPOFUNIQUENAMES_CN);
+        entry.addAttribute("ou", GROUPOFUNIQUENAMES_OU);
+        entry.addAttribute("o", GROUPOFUNIQUENAMES_O);
+        entry.addAttribute("uniquemember", RESIDENTIALPERSON_DN);
+        entry.addAttribute("uniquemember", INETORGPERSON_DN);
+        ds.add(entry);
     }
 
     public void updateLibertyServer(String userIdMap, String groupIdMap, String groupMemberIdMap) throws Exception {
@@ -210,10 +203,10 @@ public class URAPIs_IDMapping_Test {
 
         ldap.setRealm("LDAPRealm");
         ldap.setHost("localhost");
-        ldap.setPort(String.valueOf(ldapServer.getLdapServer().getPort()));
+        ldap.setPort(String.valueOf(ds.getListenPort()));
         ldap.setBaseDN(BASE_DN);
-        ldap.setBindDN(EmbeddedApacheDS.getBindDN());
-        ldap.setBindPassword(EmbeddedApacheDS.getBindPassword());
+        ldap.setBindDN(InMemoryLDAPServer.getBindDN());
+        ldap.setBindPassword(InMemoryLDAPServer.getBindPassword());
         ldap.setLdapType("Custom");
 
         String userFilter = "(&(|(objectclass=inetorgperson)(objectclass=residentialperson))(|(uid=%v)(cn=%v)))";

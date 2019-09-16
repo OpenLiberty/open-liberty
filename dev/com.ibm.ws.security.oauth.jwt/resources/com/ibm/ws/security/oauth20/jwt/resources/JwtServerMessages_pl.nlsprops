@@ -1,0 +1,137 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/openidconnect/op/internal/resources/OidcServerMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server OpenID ConnectSecurity
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS2200 - CWWKS2299
+
+JWT_TOKEN_TOO_MANY_TOKENS_ERR=CWWKS2202E: \u017b\u0105danie punktu ko\u0144cowego znacznika nie powiod\u0142o si\u0119, poniewa\u017c znaleziono wi\u0119cej ni\u017c jeden znacznik JWT.
+JWT_TOKEN_TOO_MANY_TOKENS_ERR.explanation=\u017b\u0105danie punktu ko\u0144cowego znacznika zawiera wi\u0119cej ni\u017c jeden znacznik JWT. Nie jest to dozwolone.
+JWT_TOKEN_TOO_MANY_TOKENS_ERR.useraction=Upewnij si\u0119, \u017ce \u017c\u0105danie punktu ko\u0144cowego znacznika zawiera tylko jeden znacznik JWT.
+
+JWT_TOKEN_NO_TOKEN_EXTERNAL_ERR=CWWKS2203E: \u017b\u0105danie punktu ko\u0144cowego znacznika nie powiod\u0142o si\u0119, poniewa\u017c nie znaleziono znacznika JWT.
+JWT_TOKEN_NO_TOKEN_EXTERNAL_ERR.explanation=\u017b\u0105danie punktu ko\u0144cowego znacznika nie zawiera znacznika JWT. Nie mo\u017cna go przetworzy\u0107.
+JWT_TOKEN_NO_TOKEN_EXTERNAL_ERR.useraction=Upewnij si\u0119, \u017ce \u017c\u0105danie punktu ko\u0144cowego znacznika zawiera znacznik JWT.
+
+JWT_UNEXPECTED_EXCEPTION_ERR=CWWKS2204E: Podczas przetwarzania \u017c\u0105dania punktu ko\u0144cowego znacznika dostawca OpenID Connect odebra\u0142 nieoczekiwany wyj\u0105tek ({0}).
+JWT_UNEXPECTED_EXCEPTION_ERR.explanation=Dostawca OpenID Connect odebra\u0142 nieoczekiwany wyj\u0105tek.
+JWT_UNEXPECTED_EXCEPTION_ERR.useraction=Skontaktuj si\u0119 z firm\u0105 IBM.
+
+JWT_TOKEN_BAD_NUMBER_ERR=CWWKS2205E: \u017b\u0105danie punktu ko\u0144cowego znacznika nie powiod\u0142o si\u0119. Format \u017c\u0105dania {0} [{1}] w znaczniku JWT nie jest prawid\u0142owy. Format powinien by\u0107 liczb\u0105 ca\u0142kowit\u0105 i okre\u015bla\u0107 czas UTC.
+JWT_TOKEN_BAD_NUMBER_ERR.explanation=\u017b\u0105danie JWT nie ma oczekiwanego formatu liczby ca\u0142kowitej czasu UTC.
+JWT_TOKEN_BAD_NUMBER_ERR.useraction=Upewnij si\u0119, \u017ce \u017c\u0105danie w znaczniku JWT ma poprawny format. Czas UTC musi mie\u0107 format liczbowy.
+
+JWT_TOKEN_BAD_SUB_EXTERNAL_ERR=CWWKS2206E: \u017b\u0105danie punktu ko\u0144cowego znacznika nie powiod\u0142o si\u0119, poniewa\u017c nie mo\u017cna zweryfikowa\u0107 znacznika JWT. Podczas weryfikacji \u017c\u0105dania sub: [{0}] wyst\u0105pi\u0142 nieoczekiwany wyj\u0105tek.
+JWT_TOKEN_BAD_SUB_EXTERNAL_ERR.explanation=\u017b\u0105danie punktu ko\u0144cowego znacznika nie powiod\u0142o si\u0119. Nie mo\u017cna zweryfikowa\u0107 \u017c\u0105dania sub znacznika JWT. Podczas weryfikacji wyst\u0105pi\u0142 nieoczekiwany wyj\u0105tek.
+JWT_TOKEN_BAD_SUB_EXTERNAL_ERR.useraction=Upewnij si\u0119, \u017ce \u017c\u0105danie sub w znaczniku JWT jest poprawnym u\u017cytkownikiem dostawcy OpenID Connect.
+
+JWT_TOKEN_BAD_AUD_ERR=CWWKS2207E: \u017b\u0105danie punktu ko\u0144cowego znacznika nie powiod\u0142o si\u0119. Znacznik JWT jest niepoprawny, poniewa\u017c ten dostawca OpenID Connect nie jest uwzgl\u0119dniony w \u017c\u0105daniu aud (grupa docelowa).
+JWT_TOKEN_BAD_AUD_ERR.explanation=Dostawca OpenID Connect musi by\u0107 na li\u015bcie grupy docelowej znacznika JWT. Identyfikatorem dostawcy OpenID Connect jest issuerIdentifier w konfiguracji lub adres URL punktu ko\u0144cowego znacznika.  
+JWT_TOKEN_BAD_AUD_ERR.useraction=Upewnij si\u0119, \u017ce \u017c\u0105danie aud w znaczniku JWT uwzgl\u0119dnia docelowego dostawc\u0119 OpenID Connect. Sprawd\u017a identyfikator issuerIdentifier w konfiguracji dostawcy OpenID Connect lub adres URL punktu ko\u0144cowego znacznika. 
+
+JWT_TOKEN_MISS_REQUIRED_CLAIM_ERR=CWWKS2208E: \u017b\u0105danie punktu ko\u0144cowego znacznika nie powiod\u0142o si\u0119, poniewa\u017c nie mo\u017cna zweryfikowa\u0107 znacznika JWT. W znaczniku JWT brakuje wymaganego \u017c\u0105dania {0}.
+JWT_TOKEN_MISS_REQUIRED_CLAIM_ERR.explanation=Nie mo\u017cna przetworzy\u0107 \u017c\u0105dania punktu ko\u0144cowego znacznika, poniewa\u017c w znaczniku JWT brakuje wymaganego \u017c\u0105dania.
+JWT_TOKEN_MISS_REQUIRED_CLAIM_ERR.useraction=Dodaj wymagane \u017c\u0105danie do znacznika JWT.
+
+JWT_TOKEN_ISS_MISMATCH_ERR=CWWKS2209E: \u017b\u0105danie punktu ko\u0144cowego znacznika nie powiod\u0142o si\u0119. Znacznik JWT jest niepoprawny, poniewa\u017c jego \u017c\u0105danie iss [{0}] nie jest zgodne z identyfikatorem URI przekierowania klienta lub identyfikatorem klienta okre\u015blonym w konfiguracji dostawcy OpenID Connect. 
+JWT_TOKEN_ISS_MISMATCH_ERR.explanation=\u017b\u0105danie wystawcy w znaczniku JWT musi by\u0107 zgodne z identyfikatorem URI przekierowania klienta lub identyfikatorem klienta, kt\u00f3ry jest zarejestrowany w dostawcy OpenID Connect.
+JWT_TOKEN_ISS_MISMATCH_ERR.useraction=Upewnij si\u0119, \u017ce \u017c\u0105danie wystawcy jest identyfikatorem URI przekierowania klienta lub identyfikatorem klienta.  Sprawd\u017a identyfikator klienta lub identyfikator URI przekierowania w konfiguracji dostawcy OpenID Connect. 
+
+JWT_TOKEN_SUB_NOT_FOUND_ERR=CWWKS2210E: \u017b\u0105danie punktu ko\u0144cowego znacznika nie powiod\u0142o si\u0119. Znacznik JWT jest niepoprawny, poniewa\u017c nie znaleziono jego \u017c\u0105dania sub [{0}] w rejestrze u\u017cytkownik\u00f3w dostawcy OpenID Connect.
+JWT_TOKEN_SUB_NOT_FOUND_ERR.explanation=Znacznik JWT jest niepoprawny, poniewa\u017c nie znaleziono jego \u017c\u0105dania podmiotu w rejestrze u\u017cytkownik\u00f3w dostawcy OpenID Connect.
+JWT_TOKEN_SUB_NOT_FOUND_ERR.useraction=Upewnij si\u0119, \u017ce \u017c\u0105danie podmiotu w znaczniku JWT jest u\u017cytkownikiem w rejestrze u\u017cytkownik\u00f3w dostawcy OpenID Connect.
+
+JWT_TOKEN_EXPIRED_ERR=CWWKS2211E: \u017b\u0105danie punktu ko\u0144cowego znacznika nie powiod\u0142o si\u0119, poniewa\u017c znacznik JWT utraci\u0142 wa\u017cno\u015b\u0107. Czas utraty wa\u017cno\u015bci (exp) w \u017c\u0105daniu wynosi [{0}].
+JWT_TOKEN_EXPIRED_ERR.explanation=Znacznik JWT utraci\u0142 wa\u017cno\u015b\u0107. Czas wa\u017cno\u015bci jest wskazany w komunikacie o b\u0142\u0119dzie.
+JWT_TOKEN_EXPIRED_ERR.useraction=Upewnij si\u0119, \u017ce znacznik JWT nie utraci\u0142 wa\u017cno\u015bci, zsynchronizuj czas mi\u0119dzy systemami, lub zwi\u0119ksz czas wa\u017cno\u015bci.
+
+JWT_TOKEN_FUTURE_TOKEN_ERR=CWWKS2212E: \u017b\u0105danie punktu ko\u0144cowego znacznika nie powiod\u0142o si\u0119, poniewa\u017c znacznik JWT jest niepoprawny. Jego \u017c\u0105danie iat to [{0}]. Czas wystawienia (iat) jest z przysz\u0142o\u015bci.
+JWT_TOKEN_FUTURE_TOKEN_ERR.explanation=Czas wystawienia (issued-at-time) w znaczniku JWT wykracza poza czas bie\u017c\u0105cy. Nie jest to poprawne podczas przetwarzania.
+JWT_TOKEN_FUTURE_TOKEN_ERR.useraction=Zsynchronizuj czas mi\u0119dzy systemami i upewnij si\u0119, \u017ce czas iat jest poprawny, lub wprowad\u017a znacznik JWT p\u00f3\u017aniej.
+
+# do not translate tokenMaxLifetime
+JWT_TOKEN_MAX_LIFETIME_ERR=CWWKS2214E: \u017b\u0105danie punktu ko\u0144cowego znacznika nie powiod\u0142o si\u0119. Znacznik JWT jest niepoprawny, poniewa\u017c jego \u017c\u0105danie iss (issue-at-time):[{0}] przekracza maksymalny dozwolony czas \u017cycia znacznika JWT, kt\u00f3ry zosta\u0142 zdefiniowany w atrybucie tokenMaxLifetime w konfiguracji: [{1}] s.
+JWT_TOKEN_MAX_LIFETIME_ERR.explanation=Wystawiony znacznik JWT przekracza maksymalny czas \u017cycia znacznika JWT (warto\u015b\u0107 tokenMaxLifetime), kt\u00f3ry jest zdefiniowany w konfiguracji dostawcy OpenID Connect.
+JWT_TOKEN_MAX_LIFETIME_ERR.useraction=Upewnij si\u0119, znacznik JWT zosta\u0142 wystawiony w obr\u0119bie maksymalnego czasu \u017cycia znacznika JWT lub zwi\u0119ksz warto\u015b\u0107 tokenMaxLifetime w konfiguracji serwera.
+
+JWT_TOKEN_IAT_NEEDED_ERR=CWWKS2215E: \u017b\u0105danie punktu ko\u0144cowego znacznika nie powiod\u0142o si\u0119. Znacznik JWT musi udost\u0119pnia\u0107 \u017c\u0105danie iat, poniewa\u017c atrybut iatRequired zosta\u0142 ustawiony na warto\u015b\u0107 true w konfiguracji dostawcy OpenID Connect.
+JWT_TOKEN_IAT_NEEDED_ERR.explanation=Dostawca OpenID Connect ma ustawiony atrybut iatRequired na warto\u015b\u0107 true. W tym przypadku \u017c\u0105danie iat w znaczniku JWT jest wymagane. Brak \u017c\u0105dania iat spowoduje wyst\u0105pienie b\u0142\u0119du.
+JWT_TOKEN_IAT_NEEDED_ERR.useraction=Podaj \u017c\u0105danie iat w znaczniku JWT lub ustaw atrybut iatRequired na warto\u015b\u0107 false w dostawcy OpenID Connect.
+
+JWT_TOKEN_BEFORE_ERR=CWWKS2216E: \u017b\u0105danie punktu ko\u0144cowego znacznika nie powiod\u0142o si\u0119, poniewa\u017c znacznik JWT zosta\u0142 za\u017c\u0105dany przed \u017c\u0105daniem nbf: [{0}].
+JWT_TOKEN_BEFORE_ERR.explanation=Znacznik JWT zawiera \u017c\u0105danie not-before, ale czas \u017c\u0105dania jest wcze\u015bniejszy ni\u017c czas nbf (not-before-time). 
+JWT_TOKEN_BEFORE_ERR.useraction=Upewnij si\u0119, \u017ce znacznik JWT jest wprowadzany po \u017c\u0105daniu not-before-time (nbf).
+
+JWT_TOKEN_DUP_JTI_ERR=CWWKS2217E: \u017b\u0105danie punktu ko\u0144cowego znacznika nie powiod\u0142o si\u0119. Zosta\u0142 ju\u017c wprowadzony inny znacznik JWT o tym samym \u017c\u0105daniu iss: [{0}] i jti: [{1}].
+JWT_TOKEN_DUP_JTI_ERR.explanation=Nie mo\u017cna dwukrotnie wprowadzi\u0107 znacznika JWT wystawionego przez tego samego wystawc\u0119. Warto\u015b\u0107 jti jest unikanym identyfikatorem znacznika.
+JWT_TOKEN_DUP_JTI_ERR.useraction=Upewnij si\u0119, \u017ce ka\u017cdy znacznik JWT wystawiony przez tego samego wystawc\u0119, ma unikalny identyfikator jti.
+
+#
+# Message prefix block: CWWKS2251 - CWWKS2299
+JWT_TOKEN_MISSING_REQUIRED_CLAIM_ERR=CWWKS2251E: \u017b\u0105danie punktu ko\u0144cowego znacznika nie powiod\u0142o si\u0119. W znaczniku JWT \u017c\u0105dania brakuje wymaganego \u017c\u0105dania {0}.
+JWT_TOKEN_MISSING_REQUIRED_CLAIM_ERR.explanation=Znacznik JWT nie zawiera wszystkich wymaganych \u017c\u0105da\u0144.
+JWT_TOKEN_MISSING_REQUIRED_CLAIM_ERR.useraction=Podaj wymagane \u017c\u0105dania w znaczniku JWT. 
+
+JWT_TOKEN_NO_TOKEN_ERR=CWWKS2257E: \u017b\u0105danie punktu ko\u0144cowego znacznika nie powiod\u0142o si\u0119. \u017b\u0105danie jest niepoprawne, poniewa\u017c brakuje wymaganego znacznika JWT.
+JWT_TOKEN_NO_TOKEN_ERR.explanation=\u017b\u0105danie jest niepoprawne, poniewa\u017c brakuje wymaganego znacznika JWT.
+JWT_TOKEN_NO_TOKEN_ERR.useraction=Upewnij si\u0119, \u017ce \u017c\u0105danie zawiera jeden znacznik JWT.
+
+JWT_TOKEN_UNEXPECTED_EXCEPTION=CWWKS2258E: \u017b\u0105danie punktu ko\u0144cowego znacznika nie powiod\u0142o si\u0119. Metoda [{0}] odebra\u0142a nieoczekiwany wyj\u0105tek [{1}].
+JWT_TOKEN_UNEXPECTED_EXCEPTION.explanation=Serwer odebra\u0142 wyj\u0105tek, kt\u00f3ry nie by\u0142 oczekiwany.
+JWT_TOKEN_UNEXPECTED_EXCEPTION.useraction=Upewnij si\u0119, \u017ce konfiguracja w pliku server.xml jest poprawna. Je\u015bli taka sytuacja wyst\u0119puje stale, skontaktuj si\u0119 z firm\u0105 IBM.
+
+JWT_TOKEN_TOKEN_BEFORE_NBF_ERR=CWWKS2260E: \u017b\u0105danie punktu ko\u0144cowego znacznika nie powiod\u0142o si\u0119, poniewa\u017c znacznik JWT zosta\u0142 za\u017c\u0105dany przed \u017c\u0105daniem nbf. Czas bie\u017c\u0105cy plus przesuni\u0119cie zegara w dostawcy OpenID Connect wynosi [{0}]. Czasem nbf jest [{1}].
+JWT_TOKEN_TOKEN_BEFORE_NBF_ERR.explanation=Znacznik JWT jest niepoprawny. Jest on prezentowany przed \u017c\u0105daniem nbf (not-before-time). 
+JWT_TOKEN_TOKEN_BEFORE_NBF_ERR.useraction=Upewnij si\u0119, \u017ce znacznik JWT w \u017c\u0105daniu jest umieszczony po czasie nbf (not-before-time). Zsynchronizuj czas mi\u0119dzy klientem i dostawc\u0105 OpenID Connect lub zwi\u0119ksz przesuni\u0119cie zegara w konfiguracji dostawcy OpenID Connect.
+
+JWT_TOKEN_IAT_FUTURE_ERR=CWWKS2262E: \u017b\u0105danie punktu ko\u0144cowego znacznika nie powiod\u0142o si\u0119. Czas \u017c\u0105dania iat znacznika JWT jest w przysz\u0142o\u015bci: [{0}]. Bie\u017c\u0105cy czas plus przesuni\u0119cie zegara: [{1}]. 
+JWT_TOKEN_IAT_FUTURE_ERR.explanation=\u017b\u0105danie iat w znaczniku JWT wskazuje, \u017ce znacznik zosta\u0142 wystawiony w przysz\u0142o\u015bci. Nie jest to poprawne w bie\u017c\u0105cym czasie w dostawcy OpenID Connect.
+JWT_TOKEN_IAT_FUTURE_ERR.useraction=Upewnij si\u0119, \u017ce czas mi\u0119dzy klientem a dostawc\u0105 OpenID Connect jest zsynchronizowany i nie wprowadzaj znacznika JWT, kt\u00f3rego czas iat jest w przysz\u0142o\u015bci. 
+
+JWT_TOKEN_EXPIRE_ERR=CWWKS2263E: \u017b\u0105danie punktu ko\u0144cowego znacznika nie powiod\u0142o si\u0119. Czas znacznika JWT przekaza\u0142 swoje \u017c\u0105danie exp: [{0}]. Czas bie\u017c\u0105cy plus przesuni\u0119cie zegara w dostawcy OpenID Connect wynosi [{1}].
+JWT_TOKEN_EXPIRE_ERR.explanation=Czas exp znacznika JWT przekroczy\u0142 bie\u017c\u0105cy czas plus przesuniecie zegara. Nie jest to poprawne. 
+JWT_TOKEN_EXPIRE_ERR.useraction=Upewnij si\u0119, \u017ce znacznik JWT nie utraci\u0142 wa\u017cno\u015bci lub zsynchronizuj czas mi\u0119dzy klientem i dostawc\u0105 OpenID Connect. 
+
+JWT_TOKEN_INVALID_ISS_ERR=CWWKS2265E: \u017b\u0105danie punktu ko\u0144cowego znacznika nie powiod\u0142o si\u0119. Wystawca znacznika JWT [{0}] nie jest zgodny z identyfikatorem klienta [{2}] lub dowolnym identyfikatorem URI przekierowania, np.: [{1}]. 
+JWT_TOKEN_INVALID_ISS_ERR.explanation=\u017b\u0105danie iss w znaczniku JWT musi by\u0107 identyfikatorem klienta lub dowolnym identyfikatorem URI przekierowania klienta.
+JWT_TOKEN_INVALID_ISS_ERR.useraction=Upewnij si\u0119, \u017ce \u017c\u0105danie iss w znaczniku JWT jest identyfikatorem klienta lub dowolnym identyfikatorem URI przekierowania klienta.
+
+JWT_TOKEN_INVALID_AUD_ERR=CWWKS2266E: \u017b\u0105danie punktu ko\u0144cowego znacznika nie powiod\u0142o si\u0119. \u017b\u0105danie grupy docelowej [{0}] nie jest zgodne z identyfikatorem wystawcy dostawcy OpenID Connect [{1}] lub punktu ko\u0144cowego znacznika [{2}].
+JWT_TOKEN_INVALID_AUD_ERR.explanation=\u017b\u0105danie aud w znaczniku JWT musi by\u0107 identyfikatorem wystawcy lub punktem ko\u0144cowym znacznika dostawcy OpenID Connect.
+JWT_TOKEN_INVALID_AUD_ERR.useraction=Upewnij si\u0119, \u017ce \u017c\u0105danie aud w znaczniku JWT jest identyfikatorem wystawcy lub punktem ko\u0144cowym znacznika dostawcy OpenID Connect.
+
+JWT_TOKEN_INVALID_AUD_IDENTIFIER_ERR=CWWKS2267E: \u017b\u0105danie punktu ko\u0144cowego znacznika nie powiod\u0142o si\u0119. \u017b\u0105danie grupy docelowej to [{0}], co nie jest zgodne z identyfikatorem wystawcy dostawcy [{1}], kt\u00f3ry zosta\u0142 zdefiniowany w atrybucie issuerIdentifier dostawcy openidConnectProvider w konfiguracji.
+JWT_TOKEN_INVALID_AUD_IDENTIFIER_ERR.explanation=\u017b\u0105danie aud w znaczniku JWT musi by\u0107 identyfikatorem wystawcy jawnie okre\u015blonym w konfiguracji.
+JWT_TOKEN_INVALID_AUD_IDENTIFIER_ERR.useraction=Upewnij si\u0119, \u017ce \u017c\u0105danie aud w znaczniku JWT jest zgodne z identyfikatorem wystawcy zdefiniowanym w konfiguracji.
+
+JWT_TOKEN_REGISTRY_EXCEPTION_ERR=CWWKS2268E: \u017b\u0105danie punktu ko\u0144cowego znacznika nie powiod\u0142o si\u0119. Podczas weryfikacji \u017c\u0105dania sub [{0}] odebrano nieoczekiwany wyj\u0105tek rejestru [{1}]
+JWT_TOKEN_REGISTRY_EXCEPTION_ERR.explanation=Podczas weryfikacji \u017c\u0105dania sub w rejestrze u\u017cytkownik\u00f3w dostawcy OpenID Connect wyst\u0105pi\u0142 nieoczekiwany wyj\u0105tek.
+JWT_TOKEN_REGISTRY_EXCEPTION_ERR.useraction=Upewnij si\u0119, \u017ce rejestr u\u017cytkownik\u00f3w w dostawcy OpenID Connect dzia\u0142a poprawnie i \u017c\u0105danie sub (u\u017cytkownik) jest poprawnym u\u017cytkownikiem w rejestrze.
+
+JWT_TOKEN_NO_PUBLIC_KEY_DETAIL_ERR=CWWKS2269E: \u017b\u0105danie punktu ko\u0144cowego znacznika nie powiod\u0142o si\u0119. Nie mo\u017cna uzyska\u0107 magazynu zaufanych certyfikat\u00f3w, aby zweryfikowa\u0107 znacznik JWT, z powodu wyj\u0105tku [{0}]. Warto\u015bci konfiguracji w elemencie jwtGrantType to signatureAlgorithm: [{1}] i trustStoreRef: [{2}], a nazwa aliasu to: [{3}]
+JWT_TOKEN_NO_PUBLIC_KEY_DETAIL_ERR.explanation=Wskazany algorytm podpisu dla znacznika JWT wymaga klucza publicznego, aby m\u00f3c zweryfikowa\u0107 przychodz\u0105cy znacznik JWT, ale uzyskanie tego klucza nie powiod\u0142o si\u0119.  
+JWT_TOKEN_NO_PUBLIC_KEY_DETAIL_ERR.useraction=Upewnij si\u0119, \u017ce konfiguracja element\u00f3w jwtGrantType i keyStore jest poprawna oraz upewnij si\u0119, \u017ce po\u0142o\u017cenie i has\u0142o magazynu zaufanych certyfikat\u00f3w s\u0105 poprawne. 
+
+JWT_TOKEN_NO_PUBLIC_KEY_ERR=CWWKS2270E: \u017b\u0105danie punktu ko\u0144cowego znacznika nie powiod\u0142o si\u0119. Nie mo\u017cna uzyska\u0107 magazynu zaufanych certyfikat\u00f3w, aby zweryfikowa\u0107 znacznik JWT. Algorytm podpisu do weryfikacji w dostawcy po\u0142\u0105cze\u0144 OpenID: [{0}]. 
+JWT_TOKEN_NO_PUBLIC_KEY_ERR.explanation=Dostawca po\u0142\u0105cze\u0144 OpenID nie mo\u017ce uzyska\u0107 magazynu zaufanych certyfikat\u00f3w, aby zweryfikowa\u0107 znacznik JWT.  Konfiguracja elementu openidConnectProvider musi by\u0107 poprawna. 
+JWT_TOKEN_NO_PUBLIC_KEY_ERR.useraction=Upewnij si\u0119, \u017ce konfiguracja element\u00f3w jwtGrantType i trustStoreRef w elemencie openidConnectProvider jest poprawna oraz upewnij si\u0119, \u017ce po\u0142o\u017cenie i has\u0142o magazynu zaufanych certyfikat\u00f3w s\u0105 poprawne.
+
+JWT_UNEXPECTED_ERR=CWWKS2271E: Podczas przetwarzania \u017c\u0105dania punktu ko\u0144cowego znacznika dostawca po\u0142\u0105cze\u0144 OpenID nie m\u00f3g\u0142 zosta\u0107 przetworzony z nast\u0119puj\u0105cego powodu: [{0}].
+JWT_UNEXPECTED_ERR.explanation=Wyst\u0105pi\u0142 nieoczekiwany b\u0142\u0105d dostawcy po\u0142\u0105cze\u0144 OpenID.
+JWT_UNEXPECTED_ERR.useraction=Upewnij si\u0119, \u017ce konfiguracja jest poprawna. Je\u015bli problem b\u0119dzie nadal wyst\u0119powa\u0142, skontaktuj si\u0119 z firm\u0105 IBM.
+
+JWT_TOKEN_OAUTH_RS256_NOT_SUPPORTED_ERR=CWWKS2272E: \u017b\u0105danie punktu ko\u0144cowego znacznika OAuth nie powiod\u0142o si\u0119. Znacznik JWT jest podpisany przy u\u017cyciu algorytmu RS256. Jest on obs\u0142ugiwany tylko w przypadku punktu ko\u0144cowego znacznika po\u0142\u0105cze\u0144 OpenID.
+JWT_TOKEN_OAUTH_RS256_NOT_SUPPORTED_ERR.explanation=Znacznik JWT podpisany przy u\u017cyciu algorytmu podpisu RS256 nie jest obs\u0142ugiwany w punkcie ko\u0144cowym znacznika OAuth. 
+JWT_TOKEN_OAUTH_RS256_NOT_SUPPORTED_ERR.useraction=Aby u\u017cywa\u0107 znacznika JWT z algorytmem podpisu RS256, nale\u017cy przygotowa\u0107 poprawn\u0105 konfiguracj\u0119 elementu openidConnectProvider i wys\u0142a\u0107 \u017c\u0105danie za po\u015brednictwem punktu ko\u0144cowego znacznika po\u0142\u0105cze\u0144 OpenID.

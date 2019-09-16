@@ -24,7 +24,7 @@ import com.ibm.websphere.ras.TraceComponent;
 public class SessionEventHandler implements EventHandler {
 
     /** trace variable */
-    private static final TraceComponent tc = Tr.register(SessionEventHandler.class);
+    private static final TraceComponent tc = Tr.register(SessionEventHandler.class, com.ibm.ws.httpsvc.internal.HttpSvcConstants.TRACE_GROUP);
 
     protected static final Topic PURGE_EVENT = new Topic("com/ibm/ws/httpsvc/session/PURGE");
 
@@ -40,7 +40,7 @@ public class SessionEventHandler implements EventHandler {
 
     /**
      * DS method to activate this component.
-     * 
+     *
      * @param context
      */
     protected void activate(ComponentContext context) {
@@ -51,7 +51,7 @@ public class SessionEventHandler implements EventHandler {
 
     /**
      * DS method to deactivate this component.
-     * 
+     *
      * @param context
      */
     protected void deactivate(ComponentContext context) {
@@ -62,7 +62,7 @@ public class SessionEventHandler implements EventHandler {
 
     /**
      * DS method for setting the session manager service reference.
-     * 
+     *
      * @param mgr
      */
     protected void setSessionMgr(SessionManager mgr) {
@@ -71,7 +71,7 @@ public class SessionEventHandler implements EventHandler {
 
     /**
      * DS method for removing the session manager service reference.
-     * 
+     *
      * @param mgr
      */
     protected void unsetSessionMgr(SessionManager mgr) {

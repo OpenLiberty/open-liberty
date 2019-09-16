@@ -12,6 +12,7 @@
 package com.ibm.ws.anno.classsource.internal;
 
 import java.io.InputStream;
+import java.io.File;
 import java.text.MessageFormat;
 import java.util.Set;
 
@@ -37,6 +38,10 @@ public abstract class ClassSourceImpl implements ClassSource {
     @Trivial
     protected static long getTime() {
         return System.currentTimeMillis();
+    }
+
+    protected static String getAbsolutePath(String path) {
+        return (new File(path)).getAbsolutePath();
     }
 
     //

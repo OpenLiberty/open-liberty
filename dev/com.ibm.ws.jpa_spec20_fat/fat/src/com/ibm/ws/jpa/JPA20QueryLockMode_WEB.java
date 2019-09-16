@@ -119,12 +119,12 @@ public class JPA20QueryLockMode_WEB extends JPAFATServletClient {
         });
 
         ShrinkHelper.exportToServer(server1, "apps", app);
-        server1.addInstalledAppForValidation("QueryLockModeWeb");
 
         Application appRecord = new Application();
         appRecord.setLocation("QueryLockModeWeb.ear");
         appRecord.setName("QueryLockModeWeb");
 
+        server1.setMarkToEndOfLog();
         ServerConfiguration sc = server1.getServerConfiguration();
         sc.getApplications().add(appRecord);
         server1.updateServerConfiguration(sc);

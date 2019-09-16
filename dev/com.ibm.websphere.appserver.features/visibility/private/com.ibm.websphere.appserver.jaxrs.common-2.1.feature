@@ -14,7 +14,7 @@ IBM-App-ForceRestart: uninstall, \
   com.ibm.websphere.appserver.httpcommons-1.0, \
   com.ibm.websphere.appserver.jsonpInternal-1.1, \
   com.ibm.websphere.appserver.jsonbInternal-1.0, \
-  com.ibm.websphere.appserver.optional.jaxb-2.2,\
+  com.ibm.websphere.appserver.optional.jaxb-2.2; ibm.tolerates:=2.3, \
   com.ibm.websphere.appserver.internal.slf4j-1.7.7, \
   com.ibm.websphere.appserver.internal.cxf.common-3.2
 -bundles=\
@@ -36,3 +36,4 @@ IBM-App-ForceRestart: uninstall, \
   bin/jaxrs/tools/wadl2java.jar
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

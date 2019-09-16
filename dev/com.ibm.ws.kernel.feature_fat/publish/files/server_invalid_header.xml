@@ -1,0 +1,9 @@
+<server>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>invalid_header_feature</feature>
+    </featureManager>
+    
+</server>

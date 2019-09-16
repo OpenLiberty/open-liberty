@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2016 IBM Corporation and others.
+# Copyright (c) 2010, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -696,6 +696,14 @@ error.no.serialfilteragent=CWWKE0949E: El archivo jar de agente de filtro serie 
 error.no.serialfilteragent.explanation=El archivo jar de agente de filtro serie especificado no existe o no se puede leer.
 error.no.serialfilteragent.useraction= Aseg\u00farese de que el archivo exista y que el usuario actual lo pueda leer.
 
+error.package.extension=CWWKE0950E: El nombre de archivo del archivo debe finalizar con .jar cuando se utiliza la opci\u00f3n runnable.
+error.package.extension.explanation=La opci\u00f3n --archive debe incluir una extensi\u00f3n de archivo que finalice con .jar cuando se especifica --include=runnable.
+error.package.extension.useraction=Proporcione un nombre de archivo para --archive con una extensi\u00f3n de archivo .jar cuando especifique --include=runnable.
+
+error.package.usr.jar=CWWKE0951E: El nombre del archivo de archivado no debe finalizar con la extensi\u00f3n de archivo .jar cuando la se utiliza la opci\u00f3n usr.
+error.package.usr.jar.explanation=La opci\u00f3n --archive no debe finalizar con una extensi\u00f3n de archivo .jar cuando se especifica --include=usr.
+error.package.usr.jar.useraction=Proporcione un nombre de archivo para --archive con una extensi\u00f3n de archivo distinta de .jar file cuando se especifique --include=usr.
+
 info.serverStarting=Se est\u00e1 iniciando el servidor {0}.
 info.serverStarted=Servidor {0} iniciado.
 info.serverStartedWithPID=Servidor {0} iniciado con ID de proceso {1}.
@@ -748,6 +756,8 @@ info.resumeFailedException=No se ha podido reanudar el servidor {0}. Compruebe l
 info.resumingListeners.target=Reanudando los componentes de destino especificados del servidor {0}.
 info.resumedListeners.target=Se ha completado la reanudaci\u00f3n de los componentes de destino especificados del servidor {0}.
 info.resumeFailedException.target=No se han podido reanudar los componentes de destino especificados del servidor {0}. Compruebe los registros de servidor para obtener detalles.
+info.serverCommandAuthFailure=El mandato {0} ha fallado porque el proceso no ha podido suprimir el archivo {1}.
+info.serverCommandCommFailure=El mandato {0} ha fallado debido a un error de comunicaci\u00f3n con el servidor.
 
 # For info.serverLaunch and info.serverVersion: 
 # {0} version (build and/or product name)
@@ -776,3 +786,4 @@ info.no.servers.defined=No se han definido servidores en el directorio de usuari
 info.list.of.defined.servers=Los servidores siguientes se definen en relaci\u00f3n con el directorio de usuario {0}.
 info.communicate.server=Se ha producido un error de comunicaciones entre el mandato {0} y el servidor {1}.
 
+info.serialFilterLoaded=Se ha cargado el agente de filtro serie.

@@ -70,7 +70,7 @@ BUNDLE_MATCH_WARNING=CWWKF0010W: More than one bundle matched the specified filt
 BUNDLE_MATCH_WARNING.explanation=A feature definition element matched more than one bundle. This could be because the filter is too general, or because there are old bundles in the image that match the filter.
 BUNDLE_MATCH_WARNING.useraction=Make sure that the filter is sufficiently specific, and that a clean install image is being used.
 
-SERVER_STARTED=CWWKF0011I: The server {0} is ready to run a smarter planet.
+SERVER_STARTED=CWWKF0011I: The {0} server is ready to run a smarter planet. The {0} server started in {1} seconds.
 SERVER_STARTED.explanation=The server has started successfully.
 SERVER_STARTED.useraction=No action is required.
 

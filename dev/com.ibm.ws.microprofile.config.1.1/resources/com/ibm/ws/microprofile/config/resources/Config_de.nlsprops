@@ -110,6 +110,16 @@ implicit.string.constructor.method.not.found.CWMCG0017E.useraction=Stellen Sie s
 generic.type.variables.notsupported.CWMCG0018E=CWMCG0018E: Die generische Typvariable {0} f\u00fcr den Konvertierungstyp {1} wird nicht unterst\u00fctzt.
 generic.type.variables.notsupported.CWMCG0018E.explanation=Es wurde versucht, eine Konvertierung mit einer generischen Typvariablen (z. B. List<T>) zu erstellen. Dies wird nicht unterst\u00fctzt.
 generic.type.variables.notsupported.CWMCG0018E.useraction=Verwenden Sie stattdessen einen konkreten Argumenttyp, z. B. Liste<Zeichenfolge>.
+# Failed to start the {0} ConfigSource refresher process.
+failed.to.start.refresher.CWMCG0019E=CWMCG0019E: Der Konfigurationsquellenaktualisierungsprozess f\u00fcr {0} konnte nicht gestartet werden.
+failed.to.start.refresher.CWMCG0019E.explanation=\u00c4nderungen in der angegebenen Konfigurationsquelle werde nicht in der Konfigurationsinstanz widergespiegelt.
+failed.to.start.refresher.CWMCG0019E.useraction=Ermitteln Sie das Problem anhand der Protokolldatei f\u00fcr die Servernachrichten (message.log) und der FFDC-Protokolldateien.
+
+# Failed to start the {0} ConfigSource refresher process. The exception is: {1}.
+failed.to.start.refresher.exception.CWMCG0020E=CWMCG0020E: Der Konfigurationsquellenaktualisierungsprozess f\u00fcr {0} konnte nicht gestartet werden. Die Ausnahme ist {1}.
+failed.to.start.refresher.exception.CWMCG0020E.explanation=\u00c4nderungen in der angegebenen Konfigurationsquelle werde nicht in der Konfigurationsinstanz widergespiegelt.
+failed.to.start.refresher.exception.CWMCG0020E.useraction=Ermitteln Sie das Problem anhand der Protokolldatei f\u00fcr die Servernachrichten (message.log) und der FFDC-Protokolldateien.
+
 # Environment Variables Config Source
 environment.variables.config.source=Konfigurationsquelle f\u00fcr Umgebungsvariablen
 # Properties File Config Source: {0}

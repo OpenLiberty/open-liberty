@@ -112,7 +112,8 @@ public class SyncExecutor<R> implements Executor<R> {
 
             TimeoutState timeoutState = FaultToleranceStateFactory.INSTANCE.createTimeoutState(executorService, timeoutPolicy, metricRecorder);
 
-            if (!circuitBreaker.requestPermissionToExecute()) {
+            boolean circuitBreakerPermissionGiven = circuitBreaker.requestPermissionToExecute();
+            if (!circuitBreakerPermissionGiven) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                     Tr.event(tc, "Execution {0} attempt Circuit Breaker open, not executing", executionContext.getId());
                 }
@@ -144,7 +145,9 @@ public class SyncExecutor<R> implements Executor<R> {
                 Thread.interrupted(); // Clear interrupted flag if we were timed out
             }
 
-            circuitBreaker.recordResult(result);
+            if (circuitBreakerPermissionGiven) {
+                circuitBreaker.recordResult(result);
+            }
 
             RetryResult retryResult = retryContext.recordResult(result);
             if (!retryResult.shouldRetry()) {

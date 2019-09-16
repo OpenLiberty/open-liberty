@@ -10,23 +10,13 @@
  *******************************************************************************/
 package com.ibm.ws.injection.fat;
 
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.injection.repeatable.dsdann.web.BasicRepeatableDSDAnnServlet;
-import com.ibm.ws.injection.repeatable.dsdmix.web.BasicRepeatableDSDMixServlet;
-import com.ibm.ws.injection.repeatable.dsdxml.web.BasicRepeatableDSDXMLServlet;
-
 import componenttest.annotation.Server;
-import componenttest.annotation.TestServlet;
-import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
@@ -34,11 +24,16 @@ import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
 public class RepeatableDSDTest extends FATServletClient {
+
+    private static final String APP_ANN_WEB = "RepeatableDSDAnnWeb/BasicRepeatableDSDAnnServlet";
+    private static final String APP_MIX_WEB = "RepeatableDSDMixWeb/BasicRepeatableDSDMixServlet";
+    private static final String APP_XML_WEB = "RepeatableDSDXMLWeb/BasicRepeatableDSDXMLServlet";
+
     @Server("com.ibm.ws.injection.fat.RepeatableDSDServer")
-    @TestServlets({ @TestServlet(servlet = BasicRepeatableDSDAnnServlet.class, contextRoot = "RepeatableDSDAnnWeb"),
-                    @TestServlet(servlet = BasicRepeatableDSDMixServlet.class, contextRoot = "RepeatableDSDMixWeb"),
-                    @TestServlet(servlet = BasicRepeatableDSDXMLServlet.class, contextRoot = "RepeatableDSDXMLWeb")
-    })
+//    @TestServlets({ @TestServlet(servlet = BasicRepeatableDSDAnnServlet.class, contextRoot = "RepeatableDSDAnnWeb"),
+//                    @TestServlet(servlet = BasicRepeatableDSDMixServlet.class, contextRoot = "RepeatableDSDMixWeb"),
+//                    @TestServlet(servlet = BasicRepeatableDSDXMLServlet.class, contextRoot = "RepeatableDSDXMLWeb")
+//    })
     public static LibertyServer server;
 
     @ClassRule
@@ -46,25 +41,33 @@ public class RepeatableDSDTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        // Use ShrinkHelper to build the ears
-        JavaArchive RepeatableDSDAnnEJB = ShrinkHelper.buildJavaArchive("RepeatableDSDAnnEJB.jar", "com.ibm.ws.injection.repeatable.dsdann.ejb.");
-        WebArchive RepeatableDSDAnnWeb = ShrinkHelper.buildDefaultApp("RepeatableDSDAnnWeb.war", "com.ibm.ws.injection.repeatable.dsdann.web.");
-        EnterpriseArchive RepeatableDSDAnnTest = ShrinkWrap.create(EnterpriseArchive.class, "RepeatableDSDAnnTest.ear");
-        RepeatableDSDAnnTest.addAsModule(RepeatableDSDAnnEJB).addAsModule(RepeatableDSDAnnWeb);
+        // Because of a bug / gap in function in the JDK 11 compiler, we cannot compile these applications with a source=8
+        // and also override the bootclasspath to use javax.annotation 1.3. For this reason, we are going to check in the
+        // app as binaries compiled on Java 8 so we can continue to have coverage on JDK 8+
+        // If these apps ever need to be changed:
+        //   1) add the app path back to the 'src' list in bnd.bnd
+        //   2) add the app path back to the .classpath
+        //   3) un-comment the Shrinkwrap code to build the app in the respective test class
 
-        JavaArchive RepeatableDSDMixEJB = ShrinkHelper.buildJavaArchive("RepeatableDSDMixEJB.jar", "com.ibm.ws.injection.repeatable.dsdmix.ejb.");
-        WebArchive RepeatableDSDMixWeb = ShrinkHelper.buildDefaultApp("RepeatableDSDMixWeb.war", "com.ibm.ws.injection.repeatable.dsdmix.web.");
-        EnterpriseArchive RepeatableDSDMixTest = ShrinkWrap.create(EnterpriseArchive.class, "RepeatableDSDMixTest.ear");
-        RepeatableDSDMixTest.addAsModule(RepeatableDSDMixEJB).addAsModule(RepeatableDSDMixWeb);
-
-        JavaArchive RepeatableDSDXMLEJB = ShrinkHelper.buildJavaArchive("RepeatableDSDXMLEJB.jar", "com.ibm.ws.injection.repeatable.dsdxml.ejb.");
-        WebArchive RepeatableDSDXMLWeb = ShrinkHelper.buildDefaultApp("RepeatableDSDXMLWeb.war", "com.ibm.ws.injection.repeatable.dsdxml.web.");
-        EnterpriseArchive RepeatableDSDXMLTest = ShrinkWrap.create(EnterpriseArchive.class, "RepeatableDSDXMLTest.ear");
-        RepeatableDSDXMLTest.addAsModule(RepeatableDSDXMLEJB).addAsModule(RepeatableDSDXMLWeb);
-
-        ShrinkHelper.exportAppToServer(server, RepeatableDSDAnnTest);
-        ShrinkHelper.exportAppToServer(server, RepeatableDSDMixTest);
-        ShrinkHelper.exportAppToServer(server, RepeatableDSDXMLTest);
+//        // Use ShrinkHelper to build the ears
+//        JavaArchive RepeatableDSDAnnEJB = ShrinkHelper.buildJavaArchive("RepeatableDSDAnnEJB.jar", "com.ibm.ws.injection.repeatable.dsdann.ejb.");
+//        WebArchive RepeatableDSDAnnWeb = ShrinkHelper.buildDefaultApp("RepeatableDSDAnnWeb.war", "com.ibm.ws.injection.repeatable.dsdann.web.");
+//        EnterpriseArchive RepeatableDSDAnnTest = ShrinkWrap.create(EnterpriseArchive.class, "RepeatableDSDAnnTest.ear");
+//        RepeatableDSDAnnTest.addAsModule(RepeatableDSDAnnEJB).addAsModule(RepeatableDSDAnnWeb);
+//
+//        JavaArchive RepeatableDSDMixEJB = ShrinkHelper.buildJavaArchive("RepeatableDSDMixEJB.jar", "com.ibm.ws.injection.repeatable.dsdmix.ejb.");
+//        WebArchive RepeatableDSDMixWeb = ShrinkHelper.buildDefaultApp("RepeatableDSDMixWeb.war", "com.ibm.ws.injection.repeatable.dsdmix.web.");
+//        EnterpriseArchive RepeatableDSDMixTest = ShrinkWrap.create(EnterpriseArchive.class, "RepeatableDSDMixTest.ear");
+//        RepeatableDSDMixTest.addAsModule(RepeatableDSDMixEJB).addAsModule(RepeatableDSDMixWeb);
+//
+//        JavaArchive RepeatableDSDXMLEJB = ShrinkHelper.buildJavaArchive("RepeatableDSDXMLEJB.jar", "com.ibm.ws.injection.repeatable.dsdxml.ejb.");
+//        WebArchive RepeatableDSDXMLWeb = ShrinkHelper.buildDefaultApp("RepeatableDSDXMLWeb.war", "com.ibm.ws.injection.repeatable.dsdxml.web.");
+//        EnterpriseArchive RepeatableDSDXMLTest = ShrinkWrap.create(EnterpriseArchive.class, "RepeatableDSDXMLTest.ear");
+//        RepeatableDSDXMLTest.addAsModule(RepeatableDSDXMLEJB).addAsModule(RepeatableDSDXMLWeb);
+//
+//        ShrinkHelper.exportAppToServer(server, RepeatableDSDAnnTest);
+//        ShrinkHelper.exportAppToServer(server, RepeatableDSDMixTest);
+//        ShrinkHelper.exportAppToServer(server, RepeatableDSDXMLTest);
 
         server.addInstalledAppForValidation("RepeatableDSDAnnTest");
         server.addInstalledAppForValidation("RepeatableDSDMixTest");
@@ -78,5 +81,79 @@ public class RepeatableDSDTest extends FATServletClient {
         if (server != null && server.isStarted()) {
             server.stopServer();
         }
+    }
+
+    private final void runTest(String path, String test) throws Exception {
+        FATServletClient.runTest(server, path, test);
+    }
+
+    @Test
+    public void testAnnRepeatableDSDAppLevel() throws Exception {
+        runTest(APP_ANN_WEB, "testRepeatableDSDAppLevel");
+    }
+
+    @Test
+    public void testAnnRepeatableDSDCompLevel() throws Exception {
+        runTest(APP_ANN_WEB, "testRepeatableDSDAppLevel");
+    }
+
+    @Test
+    public void testAnnRepeatableDSDGlobalLevel() throws Exception {
+        runTest(APP_ANN_WEB, "testRepeatableDSDAppLevel");
+    }
+
+    @Test
+    public void testAnnRepeatableDSDModLevel() throws Exception {
+        runTest(APP_ANN_WEB, "testRepeatableDSDAppLevel");
+    }
+
+    @Test
+    public void testRepeatableDSDAnnOnly() throws Exception {
+        runTest(APP_MIX_WEB, testName.getMethodName());
+    }
+
+    @Test
+    public void testRepeatableDSDMerge() throws Exception {
+        runTest(APP_MIX_WEB, testName.getMethodName());
+    }
+
+    @Test
+    public void testRepeatableDSDOverride() throws Exception {
+        runTest(APP_MIX_WEB, testName.getMethodName());
+    }
+
+    @Test
+    public void testRepeatableDSDXMLOnly() throws Exception {
+        runTest(APP_MIX_WEB, testName.getMethodName());
+    }
+
+    @Test
+    public void testXmlRepeatableDSDAppLevel() throws Exception {
+        runTest(APP_XML_WEB, "testRepeatableDSDAppLevel");
+    }
+
+    @Test
+    public void testXmlRepeatableDSDCompLevel() throws Exception {
+        runTest(APP_XML_WEB, "testRepeatableDSDAppLevel");
+    }
+
+    @Test
+    public void testXmlRepeatableDSDGlobalLevel() throws Exception {
+        runTest(APP_XML_WEB, "testRepeatableDSDAppLevel");
+    }
+
+    @Test
+    public void testRepeatableDSDMetaDataCompleteAnnOnly() throws Exception {
+        runTest(APP_XML_WEB, testName.getMethodName());
+    }
+
+    @Test
+    public void testRepeatableDSDMetaDataCompleteValid() throws Exception {
+        runTest(APP_XML_WEB, testName.getMethodName());
+    }
+
+    @Test
+    public void testXmlRepeatableDSDModLevel() throws Exception {
+        runTest(APP_XML_WEB, "testRepeatableDSDAppLevel");
     }
 }

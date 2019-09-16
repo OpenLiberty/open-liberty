@@ -112,7 +112,7 @@ NO_VALID_TRANSACTION_CONTEXT_J2CA0040.explanation=Do\u0161lo k intern\u00ed chyb
 NO_VALID_TRANSACTION_CONTEXT_J2CA0040.useraction=CMSG0002
 
 # --------------------------------
-POOL_MANAGER_EXCP_CCF2_0001_J2CA0045=J2CA0045E: P\u0159ipojen\u00ed nen\u00ed dostupn\u00e9 p\u0159i vyvol\u00e1v\u00e1n\u00ed metody {0} pro prost\u0159edek {1}.
+POOL_MANAGER_EXCP_CCF2_0001_J2CA0045=J2CA0045E: P\u0159ipojen\u00ed nen\u00ed dostupn\u00e9 p\u0159i vyvol\u00e1v\u00e1n\u00ed metody {0} pro prost\u0159edek {1}. Do\u0161lo k vypr\u0161en\u00ed \u010dasov\u00e9ho limitu {2} ms \u010dek\u00e1n\u00ed, p\u0159i\u010dem\u017e \u010dekaj\u00edc\u00edch po\u017eadavk\u016f zb\u00fdv\u00e1 {3} a celkem je aktu\u00e1ln\u011b pou\u017eito {4} p\u0159ipojen\u00ed.
 POOL_MANAGER_EXCP_CCF2_0001_J2CA0045.explanation=Do\u0161lo k uplynut\u00ed \u010dasov\u00e9ho limitu \u010dek\u00e1n\u00ed. Byla vyvol\u00e1na v\u00fdjimkaConnectionWaitTimeoutException.
 POOL_MANAGER_EXCP_CCF2_0001_J2CA0045.useraction=Nakonfigurujte znovu fond p\u0159ipojen\u00ed. Chcete-li t\u00e9to chyb\u011b p\u0159edej\u00edt, zvy\u0161te maxim\u00e1ln\u00ed po\u010det p\u0159ipojen\u00ed nebo zvy\u0161te \u010dasov\u00fd interval \u010dek\u00e1n\u00ed.
 

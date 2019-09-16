@@ -39,12 +39,14 @@ public class ClassSourceImpl_MappedContainer
     extends ClassSourceImpl
     implements ClassSource_MappedContainer {
 
-    public static final String CLASS_NAME = ClassSourceImpl_MappedContainer.class.getName();
+    @SuppressWarnings("hiding")
+	public static final String CLASS_NAME = ClassSourceImpl_MappedContainer.class.getName();
     private static final TraceComponent tc = Tr.register(ClassSourceImpl_MappedContainer.class);
 
     // Top O' the world
 
-    @Trivial
+    @SuppressWarnings("unused")
+	@Trivial
     public ClassSourceImpl_MappedContainer(
         ClassSourceImpl_Factory factory, Util_InternMap internMap,
         String name, ClassSource_Options options,
@@ -60,7 +62,7 @@ public class ClassSourceImpl_MappedContainer
     /**
      * <p>Open this class source.</p>
      *
-     * @throws ClassSource_Excewption Thrown if the open failed.
+     * @throws ClassSource_Exception Thrown if the open failed.
      */
     @Override
     @Trivial
@@ -94,7 +96,7 @@ public class ClassSourceImpl_MappedContainer
     /**
      * <p>Close this class source.</p>
      *
-     * @throws ClassSource_Excewption Thrown if the close failed.
+     * @throws ClassSource_Exception Thrown if the close failed.
      */
     @Override
     @Trivial
@@ -315,14 +317,13 @@ public class ClassSourceImpl_MappedContainer
                         } catch (ClassSource_Exception e) {
                             didProcess = false;
 
-                            // TODO: NEW_MESSAGE: Need a new message here.
+                            // ANNO_TARGETS_CLASS_SCAN_EXCEPTION: 
+                            // CWWKC0103W: An exception occurred while scanning class {0} of {1}.
+                            // The exception was {3}.
 
-                             String eMsg = "[ " + getHashText() + " ]" +
-                                           " Failed to process class [ " + nextClassName + " ]" +
-                                           " under root [ " + getContainer() + " ]";
-                            // CWWKC0068W: An exception occurred while processing class [ {0} ] in container [ {1} ]
-                            // identified by [ {2} ]. The exception was {3}.
-                            Tr.warning(tc, "ANNO_TARGETS_SCAN_EXCEPTION", e);
+                            Tr.warning(tc, "ANNO_TARGETS_CLASS_SCAN_EXCEPTION",
+                                nextClassName, nextEntry.getRoot().getPhysicalPath(),
+                                e);
                         }
 
                         if (didProcess) {
@@ -416,7 +417,7 @@ public class ClassSourceImpl_MappedContainer
 
     @Override
     protected boolean basicHasJandexIndex() {
-    	return ( getContainer().getEntry( getJandexIndexPath() ) != null );
+        return ( getContainer().getEntry( getJandexIndexPath() ) != null );
     }
 
     @SuppressWarnings("deprecation")

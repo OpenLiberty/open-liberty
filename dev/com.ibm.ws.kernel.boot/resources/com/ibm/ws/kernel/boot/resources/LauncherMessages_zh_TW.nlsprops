@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2016 IBM Corporation and others.
+# Copyright (c) 2010, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -699,6 +699,14 @@ error.no.serialfilteragent=CWWKE0949E: \u6307\u5b9a\u7684\u5e8f\u5217\u904e\u6ff
 error.no.serialfilteragent.explanation=\u6307\u5b9a\u7684\u5e8f\u5217\u904e\u6ffe\u5668\u4ee3\u7406\u7a0b\u5f0f JAR \u6a94\u4e0d\u5b58\u5728\u6216\u7121\u6cd5\u8b80\u53d6\u3002
 error.no.serialfilteragent.useraction= \u8acb\u78ba\u5b9a\u8a72\u6a94\u6848\u5df2\u5b58\u5728\uff0c\u4e14\u53ef\u4f9b\u73fe\u884c\u4f7f\u7528\u8005\u8b80\u53d6\u3002
 
+error.package.extension=CWWKE0950E: \u7576\u4f7f\u7528 runnable \u9078\u9805\u6642\uff0c\u4fdd\u5b58\u6a94\u540d\u7a31\u7684\u7d50\u5c3e\u5fc5\u9808\u662f .jar\u3002
+error.package.extension.explanation=\u7576\u6307\u5b9a --include=runnable \u6642\uff0c--archive \u9078\u9805\u5fc5\u9808\u5305\u542b .jar \u526f\u6a94\u540d\u3002
+error.package.extension.useraction=\u7576\u6307\u5b9a --include=runnable \u6642\uff0c\u8acb\u63d0\u4f9b --archive \u7684\u6a94\u540d\uff0c\u4e14\u526f\u6a94\u540d\u662f .jar\u3002
+
+error.package.usr.jar=CWWKE0951E: \u7576\u4f7f\u7528 usr \u9078\u9805\u6642\uff0c\u4fdd\u5b58\u6a94\u540d\u7a31\u7684\u7d50\u5c3e\u4e0d\u5f97\u662f .jar \u526f\u6a94\u540d\u3002
+error.package.usr.jar.explanation=\u7576\u6307\u5b9a --include=usr \u6642\uff0c--archive \u9078\u9805\u7684\u7d50\u5c3e\u4e0d\u5f97\u662f .jar \u526f\u6a94\u540d\u3002
+error.package.usr.jar.useraction=\u7576\u6307\u5b9a --include=usr \u6642\uff0c\u8acb\u63d0\u4f9b\u6a94\u540d\u7d66 --archive\uff0c\u4e26\u4f7f\u7528 .jar \u4ee5\u5916\u7684\u526f\u6a94\u540d\u3002
+
 info.serverStarting=\u6b63\u5728\u555f\u52d5\u4f3a\u670d\u5668 {0}\u3002
 info.serverStarted=\u5df2\u555f\u52d5\u4f3a\u670d\u5668 {0}\u3002
 info.serverStartedWithPID=\u5df2\u555f\u52d5\u4f3a\u670d\u5668 {0}\uff0c\u5176\u7a0b\u5e8f ID \u70ba {1}\u3002
@@ -751,6 +759,8 @@ info.resumeFailedException=\u56de\u5fa9 {0} \u4f3a\u670d\u5668\u5931\u6557\u3002
 info.resumingListeners.target=\u6b63\u5728\u56de\u5fa9 {0} \u4f3a\u670d\u5668\u4e2d\u6307\u5b9a\u7684\u76ee\u6a19\u5143\u4ef6\u3002
 info.resumedListeners.target=\u56de\u5fa9 {0} \u4f3a\u670d\u5668\u4e2d\u6307\u5b9a\u7684\u76ee\u6a19\u5143\u4ef6\u5df2\u5b8c\u6210\u3002
 info.resumeFailedException.target=\u56de\u5fa9 {0} \u4f3a\u670d\u5668\u4e2d\u6307\u5b9a\u7684\u76ee\u6a19\u5143\u4ef6\u5931\u6557\u3002\u8acb\u6aa2\u67e5\u4f3a\u670d\u5668\u65e5\u8a8c\uff0c\u4ee5\u53d6\u5f97\u8a73\u7d30\u8cc7\u6599\u3002
+info.serverCommandAuthFailure={0} \u6307\u4ee4\u5931\u6557\uff0c\u56e0\u70ba\u8655\u7406\u7a0b\u5e8f\u7121\u6cd5\u522a\u9664 {1} \u6a94\u3002
+info.serverCommandCommFailure={0} \u6307\u4ee4\u5931\u6557\uff0c\u56e0\u70ba\u8207\u4f3a\u670d\u5668\u901a\u8a0a\u6642\u767c\u751f\u932f\u8aa4\u3002
 
 # For info.serverLaunch and info.serverVersion: 
 # {0} version (build and/or product name)
@@ -780,3 +790,4 @@ info.no.servers.defined=\u4f7f\u7528\u8005\u76ee\u9304 {0} \u4e2d\u672a\u5b9a\u7
 info.list.of.defined.servers=\u4e0b\u5217\u4f3a\u670d\u5668\u662f\u76f8\u5c0d\u65bc\u4f7f\u7528\u8005\u76ee\u9304 {0} \u800c\u5b9a\u7fa9\u3002
 info.communicate.server=\u6307\u4ee4 {0} \u548c\u4f3a\u670d\u5668 {1} \u4e4b\u9593\u767c\u751f\u901a\u8a0a\u932f\u8aa4\u3002
 
+info.serialFilterLoaded=\u5df2\u8f09\u5165\u5e8f\u5217\u904e\u6ffe\u5668\u4ee3\u7406\u7a0b\u5f0f\u3002

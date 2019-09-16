@@ -1,0 +1,52 @@
+#!/bin/sh
+set -e
+
+case "$1" in
+    configure)
+        echo "Adding group - openliberty"
+        if (! getent group openliberty > /dev/null 2>&1); then
+            addgroup --system --quiet openliberty
+        fi
+
+        echo "Adding user - openliberty"
+        if (! id openliberty > /dev/null 2>&1); then
+            adduser --system --home /usr/share/openliberty --no-create-home --ingroup openliberty --disabled-password --shell /bin/bash --quiet openliberty  
+        fi
+
+        echo "Setting up the systemd openliberty service"
+        if [ -x "/etc/init.d/openliberty" ] && [ -r "/lib/systemd/system/openliberty@.service" ]; then
+            systemctl daemon-reload
+            systemctl enable openliberty@defaultServer.service
+        fi
+
+        echo "Moving the LICENSE file to the license directory"
+        mkdir -p /usr/share/doc/openliberty
+        mv /opt/ol/LICENSE /usr/share/doc/openliberty
+
+        echo "Setting up defaultServer for user"
+        mkdir -p /var/lib/openliberty/usr/servers
+        if [ ! -d "/var/lib/openliberty/usr/servers/defaultServer" ]; then
+            unzip /usr/share/openliberty/defaultServer.zip -d /var/lib/openliberty/usr/servers
+            printf "\nLOG_DIR=/var/log/openliberty/defaultServer" >> /var/lib/openliberty/usr/servers/defaultServer/server.env
+        fi
+        mkdir -p /var/run/openliberty
+        mkdir -p /var/log/openliberty
+
+        echo "Setting permissions to files/folders"
+        chown -R openliberty:openliberty /var/lib/openliberty
+        chmod -R u+w /var/lib/openliberty
+        chown -R openliberty:openliberty /var/run/openliberty
+        chmod -R u+w /var/run/openliberty
+        chown -R openliberty:openliberty /var/log/openliberty
+        chmod -R u+w /var/log/openliberty
+        ;;
+    abort-remove|abort-upgrade)
+        ;;
+    *)
+        echo "postinst called with unknown argument \`$1'" >&2
+        ;;
+esac
+
+#DEBHELPER#
+exit 0
+

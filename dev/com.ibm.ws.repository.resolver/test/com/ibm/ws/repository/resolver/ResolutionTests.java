@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2018 IBM Corporation and others.
+ * Copyright (c) 2013, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.repository.resolver;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
@@ -18,7 +19,6 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.AllOf.allOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -32,6 +32,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.hamcrest.Matchers;
 import org.jmock.Mockery;
 import org.junit.Test;
 import org.osgi.service.resolver.ResolutionException;
@@ -42,6 +43,7 @@ import com.ibm.ws.kernel.productinfo.ProductInfoParseException;
 import com.ibm.ws.product.utility.extension.ifix.xml.IFixInfo;
 import com.ibm.ws.repository.common.enums.InstallPolicy;
 import com.ibm.ws.repository.common.enums.ResourceType;
+import com.ibm.ws.repository.common.enums.Visibility;
 import com.ibm.ws.repository.connections.ProductDefinition;
 import com.ibm.ws.repository.connections.RepositoryConnectionList;
 import com.ibm.ws.repository.connections.liberty.ProductInfoProductDefinition;
@@ -1913,10 +1915,241 @@ public class ResolutionTests {
     }
 
     /**
+     * Test the resoleAsSet method with 2 level feature dependencies
+     *
+     * Dependency chart
+     * Feature X -> Feature I 1.0
+     * Feature Y -> Feature I 1.1 tolerate 1.0
+     *
+     * Expected: Feature X, Feature Y, Feature I1.0
+     * Actual: Feature X, Feature Y, Feature I1.0
+     * This test case works as expected.
+     */
+    @Test
+    public void testSet() throws RepositoryException {
+        // initialize all of the features
+        EsaResourceWritable featureX = WritableResourceFactory.createEsa(null);
+        featureX.setProvideFeature("com.example.featureX-1.0");
+        featureX.addRequireFeatureWithTolerates("com.example.featureI-1.0", Collections.<String> emptyList());
+        featureX.setVisibility(Visibility.PUBLIC);
+        repoFeatures.add(featureX);
+
+        EsaResourceWritable featureY = WritableResourceFactory.createEsa(null);
+        featureY.setProvideFeature("com.example.featureY-1.0");
+        featureY.addRequireFeatureWithTolerates("com.example.featureI-1.1", Arrays.asList("1.0"));
+        featureY.setVisibility(Visibility.PUBLIC);
+        repoFeatures.add(featureY);
+
+        EsaResourceWritable featureI10 = WritableResourceFactory.createEsa(null);
+        featureI10.setProvideFeature("com.example.featureI-1.0");
+        featureI10.setVisibility(Visibility.PUBLIC);
+        featureI10.setSingleton("true");
+        repoFeatures.add(featureI10);
+
+        EsaResourceWritable featureI11 = WritableResourceFactory.createEsa(null);
+        featureI11.setProvideFeature("com.example.featureI-1.1");
+        featureI11.setVisibility(Visibility.PUBLIC);
+        featureI11.setSingleton("true");
+        repoFeatures.add(featureI11);
+
+        // build repository and resolve the features
+        RepositoryResolver resolver = createResolver();
+        Collection<List<RepositoryResource>> resolved = resolver.resolveAsSet(Arrays.asList(featureX.getProvideFeature(), featureY.getProvideFeature()));
+
+        assertThat(resolved, containsInAnyOrder(
+                                                Matchers.<RepositoryResource> contains(featureI10, featureX),
+                                                Matchers.<RepositoryResource> contains(featureI10, featureY)));
+
+    }
+
+    /**
+     * Test the resolveAsSet method with 3 level feature dependencies
+     *
+     * All features are public
+     *
+     * Dependency map
+     * Feature A -> Feature X -> Feature I 1.0
+     * Feature B -> Feature Y -> Feature I 1.1 tolerate 1.0
+     *
+     * Expected: resolution fails because Feature B does not tolerate Feature I 1.0
+     */
+    @Test
+    public void testSetTransitivePublic() throws RepositoryException {
+        // initialize all the features
+        EsaResourceWritable featureA = WritableResourceFactory.createEsa(null);
+        featureA.setProvideFeature("com.example.featureA-1.0");
+        featureA.addRequireFeatureWithTolerates("com.example.featureX-1.0", Collections.<String> emptyList());
+        featureA.setVisibility(Visibility.PUBLIC);
+        repoFeatures.add(featureA);
+
+        EsaResourceWritable featureB = WritableResourceFactory.createEsa(null);
+        featureB.setProvideFeature("com.example.featureB-1.0");
+        featureB.addRequireFeatureWithTolerates("com.example.featureY-1.0", Collections.<String> emptyList());
+        featureB.setVisibility(Visibility.PUBLIC);
+        repoFeatures.add(featureB);
+
+        EsaResourceWritable featureX = WritableResourceFactory.createEsa(null);
+        featureX.setProvideFeature("com.example.featureX-1.0");
+        featureX.addRequireFeatureWithTolerates("com.example.featureI-1.0", Collections.<String> emptyList());
+        featureX.setVisibility(Visibility.PUBLIC);
+        repoFeatures.add(featureX);
+
+        EsaResourceWritable featureY = WritableResourceFactory.createEsa(null);
+        featureY.setProvideFeature("com.example.featureY-1.0");
+        featureY.addRequireFeatureWithTolerates("com.example.featureI-1.1", Arrays.asList("1.0"));
+        featureY.setVisibility(Visibility.PUBLIC);
+        repoFeatures.add(featureY);
+
+        EsaResourceWritable featureI10 = WritableResourceFactory.createEsa(null);
+        featureI10.setProvideFeature("com.example.featureI-1.0");
+        featureI10.setVisibility(Visibility.PUBLIC);
+        featureI10.setSingleton("true");
+        repoFeatures.add(featureI10);
+
+        EsaResourceWritable featureI11 = WritableResourceFactory.createEsa(null);
+        featureI11.setProvideFeature("com.example.featureI-1.1");
+        featureI11.setVisibility(Visibility.PUBLIC);
+        featureI11.setSingleton("true");
+        repoFeatures.add(featureI11);
+
+        // build the repository and resolve the features
+        RepositoryResolver resolver = createResolver();
+        try {
+            Collection<List<RepositoryResource>> resolved = resolver.resolveAsSet(Arrays.asList(featureA.getProvideFeature(), featureB.getProvideFeature()));
+            fail("Resolution should fail, actual result: " + resolved);
+        } catch (RepositoryResolutionException e) {
+            // Expected
+        }
+
+    }
+
+    /**
+     * Test the resolveAsSet method with 3 level feature dependencies
+     *
+     * Feature I is private
+     *
+     * Dependency map
+     * Feature A -> Feature X -> Feature I 1.0
+     * Feature B -> Feature Y -> Feature I 1.1 tolerate 1.0
+     *
+     * Expected: resolution succeeds because although Feature B does not tolerate Feature I 1.0, Feature I is private.
+     */
+    @Test
+    public void testSetTransitivePrivate() throws RepositoryException {
+        // initialize all the features
+        EsaResourceWritable featureA = WritableResourceFactory.createEsa(null);
+        featureA.setProvideFeature("com.example.featureA-1.0");
+        featureA.addRequireFeatureWithTolerates("com.example.featureX-1.0", Collections.<String> emptyList());
+        featureA.setVisibility(Visibility.PUBLIC);
+        repoFeatures.add(featureA);
+
+        EsaResourceWritable featureB = WritableResourceFactory.createEsa(null);
+        featureB.setProvideFeature("com.example.featureB-1.0");
+        featureB.addRequireFeatureWithTolerates("com.example.featureY-1.0", Collections.<String> emptyList());
+        featureB.setVisibility(Visibility.PUBLIC);
+        repoFeatures.add(featureB);
+
+        EsaResourceWritable featureX = WritableResourceFactory.createEsa(null);
+        featureX.setProvideFeature("com.example.featureX-1.0");
+        featureX.addRequireFeatureWithTolerates("com.example.featureI-1.0", Collections.<String> emptyList());
+        featureX.setVisibility(Visibility.PUBLIC);
+        repoFeatures.add(featureX);
+
+        EsaResourceWritable featureY = WritableResourceFactory.createEsa(null);
+        featureY.setProvideFeature("com.example.featureY-1.0");
+        featureY.addRequireFeatureWithTolerates("com.example.featureI-1.1", Arrays.asList("1.0"));
+        featureY.setVisibility(Visibility.PUBLIC);
+        repoFeatures.add(featureY);
+
+        EsaResourceWritable featureI10 = WritableResourceFactory.createEsa(null);
+        featureI10.setProvideFeature("com.example.featureI-1.0");
+        featureI10.setVisibility(Visibility.PRIVATE);
+        featureI10.setSingleton("true");
+        repoFeatures.add(featureI10);
+
+        EsaResourceWritable featureI11 = WritableResourceFactory.createEsa(null);
+        featureI11.setProvideFeature("com.example.featureI-1.1");
+        featureI11.setVisibility(Visibility.PRIVATE);
+        featureI11.setSingleton("true");
+        repoFeatures.add(featureI11);
+
+        // build the repository and resolve the features
+        RepositoryResolver resolver = createResolver();
+        Collection<List<RepositoryResource>> resolved = resolver.resolveAsSet(Arrays.asList(featureA.getProvideFeature(), featureB.getProvideFeature()));
+        assertThat(resolved, containsInAnyOrder(
+                                                Matchers.<RepositoryResource> contains(featureI10, featureX, featureA),
+                                                Matchers.<RepositoryResource> contains(featureI10, featureY, featureB)));
+
+    }
+
+    /**
+     * Test the resolveAsSet method with 3 level feature dependencies
+     *
+     * This is similar to the previous test but with FeatureI 1.1 being the correct choice to resolve the conflict
+     *
+     * This is the more common scenario in the product (feature was written for an old version but tolerates a newer version)
+     *
+     * Feature I is private
+     *
+     * Dependency map
+     * Feature A -> Feature X -> Feature I 1.1
+     * Feature B -> Feature Y -> Feature I 1.0 tolerate 1.1
+     *
+     * Expected: resolution succeeds because although Feature B does not tolerate Feature I 1.1, Feature I is private.
+     */
+    @Test
+    public void testSetTransitivePrivateTolerateNewer() throws RepositoryException {
+        // initialize all the features
+        EsaResourceWritable featureA = WritableResourceFactory.createEsa(null);
+        featureA.setProvideFeature("com.example.featureA-1.0");
+        featureA.addRequireFeatureWithTolerates("com.example.featureX-1.0", Collections.<String> emptyList());
+        featureA.setVisibility(Visibility.PUBLIC);
+        repoFeatures.add(featureA);
+
+        EsaResourceWritable featureB = WritableResourceFactory.createEsa(null);
+        featureB.setProvideFeature("com.example.featureB-1.0");
+        featureB.addRequireFeatureWithTolerates("com.example.featureY-1.0", Collections.<String> emptyList());
+        featureB.setVisibility(Visibility.PUBLIC);
+        repoFeatures.add(featureB);
+
+        EsaResourceWritable featureX = WritableResourceFactory.createEsa(null);
+        featureX.setProvideFeature("com.example.featureX-1.0");
+        featureX.addRequireFeatureWithTolerates("com.example.featureI-1.1", Collections.<String> emptyList());
+        featureX.setVisibility(Visibility.PUBLIC);
+        repoFeatures.add(featureX);
+
+        EsaResourceWritable featureY = WritableResourceFactory.createEsa(null);
+        featureY.setProvideFeature("com.example.featureY-1.0");
+        featureY.addRequireFeatureWithTolerates("com.example.featureI-1.0", Arrays.asList("1.1"));
+        featureY.setVisibility(Visibility.PUBLIC);
+        repoFeatures.add(featureY);
+
+        EsaResourceWritable featureI10 = WritableResourceFactory.createEsa(null);
+        featureI10.setProvideFeature("com.example.featureI-1.0");
+        featureI10.setVisibility(Visibility.PRIVATE);
+        featureI10.setSingleton("true");
+        repoFeatures.add(featureI10);
+
+        EsaResourceWritable featureI11 = WritableResourceFactory.createEsa(null);
+        featureI11.setProvideFeature("com.example.featureI-1.1");
+        featureI11.setVisibility(Visibility.PRIVATE);
+        featureI11.setSingleton("true");
+        repoFeatures.add(featureI11);
+
+        // build the repository and resolve the features
+        RepositoryResolver resolver = createResolver();
+        Collection<List<RepositoryResource>> resolved = resolver.resolveAsSet(Arrays.asList(featureA.getProvideFeature(), featureB.getProvideFeature()));
+        assertThat(resolved, containsInAnyOrder(
+                                                Matchers.<RepositoryResource> contains(featureI11, featureX, featureA),
+                                                Matchers.<RepositoryResource> contains(featureI11, featureY, featureB)));
+
+    }
+
+    /**
      * Run a test to make sure that a sample with an applies to set is resolved correctly
      *
-     * @param name The name of the sample
-     * @param appliesTo The applies to to put onto the sample
+     * @param name           The name of the sample
+     * @param appliesTo      The applies to to put onto the sample
      * @param productVersion The product version to be
      * @throws RepositoryResourceException
      * @throws RepositoryBackendException
@@ -1937,9 +2170,9 @@ public class ResolutionTests {
     /**
      * Run a test against a product definition with the supplied version and expect a single result back.
      *
-     * @param name The name to resolve
+     * @param name           The name to resolve
      * @param productVersion The product version to use
-     * @param testResource The resource to expect
+     * @param testResource   The resource to expect
      * @throws IOException
      * @throws ProductInfoParseException
      * @throws RepositoryException
@@ -1984,8 +2217,8 @@ public class ResolutionTests {
      * Creates an {@link EsaResourceWritable} and adds it to the list of features in the repo with just the core fields set.
      *
      * @param symbolicName The symbolic name of the resource
-     * @param shortName The short name of the resource
-     * @param version The version of the resource
+     * @param shortName    The short name of the resource
+     * @param version      The version of the resource
      * @return The resource
      * @throws RepositoryResourceException
      * @throws RepositoryBackendException
@@ -2010,11 +2243,11 @@ public class ResolutionTests {
     /**
      * Creates an {@link EsaResourceWritable} and adds it to the list of features in the repo
      *
-     * @param symbolicName The symbolic name of the resource
-     * @param shortName The short name of the resource
-     * @param version The version of the resource
+     * @param symbolicName           The symbolic name of the resource
+     * @param shortName              The short name of the resource
+     * @param version                The version of the resource
      * @param dependencySymoblicName The symbolic names of dependencies
-     * @param appliesTo The product this feature applies to
+     * @param appliesTo              The product this feature applies to
      * @return The resource
      * @throws RepositoryBackendException
      */
@@ -2026,14 +2259,14 @@ public class ResolutionTests {
     /**
      * Creates an {@link EsaResourceWritable} and adds it to the list of features in the repo.
      *
-     * @param symbolicName The symbolic name of the resource
-     * @param shortName The short name of the resource
-     * @param version The version of the resource
-     * @param appliesTo The product this feature applies to
+     * @param symbolicName           The symbolic name of the resource
+     * @param shortName              The short name of the resource
+     * @param version                The version of the resource
+     * @param appliesTo              The product this feature applies to
      * @param dependencySymoblicName The symbolic names of dependencies
      * @param provisionSymbolicNames The symbolic name(s) of the capability required for this feature to be auto provision
-     * @param autoInstallable The autoInstallable value to use
-     * @param requiredFixes fixes required by this feature
+     * @param autoInstallable        The autoInstallable value to use
+     * @param requiredFixes          fixes required by this feature
      * @return The resource
      * @throws RepositoryBackendException
      */

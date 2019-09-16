@@ -222,5 +222,6 @@ build_liberty* tasks and project-level build scripts should be defined here. -->
 	<property name="liberty.build.im.offering.dir" location="${basedir}/../build.im.zip.offering" />
 	<property name="fixlist.archive.aparlist.dir" location="${liberty.image.common.dir}/aparlists" />
 	<property name="fixlist.build.projects.file" value="${fixlist.dir}/FixList-BuildProjects.txt" />
+
 </project>
 

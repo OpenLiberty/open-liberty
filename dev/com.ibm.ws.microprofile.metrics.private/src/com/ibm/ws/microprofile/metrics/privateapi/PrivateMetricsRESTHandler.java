@@ -48,7 +48,7 @@ public class PrivateMetricsRESTHandler extends BaseMetricsHandler {
 
     @Reference
     public void setSharedMetricRegistries(SharedMetricRegistries sharedMetricRegistry) {
-        this.sharedMetricRegistry = sharedMetricRegistry;
+    	this.sharedMetricRegistry = sharedMetricRegistry;
     }
 
     @Deactivate

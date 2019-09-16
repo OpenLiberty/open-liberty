@@ -13,14 +13,14 @@ package com.ibm.ws.artifact.internal;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.Dictionary;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.felix.scr.ext.annotation.DSExt;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -32,6 +32,8 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 
 import com.ibm.ws.artifact.contributor.ArtifactContainerFactoryHelper;
+import com.ibm.ws.kernel.service.util.ServiceRegistrationModifier;
+import com.ibm.ws.kernel.service.util.ServiceRegistrationModifier.ServicePropertySupplier;
 import com.ibm.wsspi.artifact.ArtifactContainer;
 import com.ibm.wsspi.artifact.ArtifactEntry;
 import com.ibm.wsspi.artifact.factory.ArtifactContainerFactory;
@@ -41,9 +43,9 @@ import com.ibm.wsspi.kernel.service.utils.ServiceAndServiceReferencePair;
 
 @Component(immediate = true,
            configurationPolicy = ConfigurationPolicy.IGNORE,
-           property = { "service.vendor=IBM" })
-@DSExt.ConfigurableServiceProperties
-public class ArtifactContainerFactoryService implements ArtifactContainerFactory {
+           property = { "service.vendor=IBM" },
+           service = {})
+public class ArtifactContainerFactoryService implements ArtifactContainerFactory, ServicePropertySupplier {
 
     /**  */
     private static final String CATEGORY_PROP_NAME = "category";
@@ -56,49 +58,53 @@ public class ArtifactContainerFactoryService implements ArtifactContainerFactory
 
     private Map<String, Object> baseProperties;
 
+    private final ServiceRegistrationModifier<ArtifactContainerFactory> registration = new ServiceRegistrationModifier<>(ArtifactContainerFactory.class, this, this);
+
     @Activate
-    protected Map<String, Object> activate(ComponentContext cCtx, Map<String, Object> properties) {
+    protected void activate(ComponentContext cCtx, Map<String, Object> properties) {
         helperMap.activate(cCtx);
         contributorMap.activate(cCtx);
         helperCategoryMap.activate(cCtx);
         contributorCategoryMap.activate(cCtx);
         this.baseProperties = properties;
-        return getProperties();
+        registration.registerOrUpdate(cCtx.getBundleContext());
     }
 
     @Deactivate
-    protected Map<String, Object> deactivate(ComponentContext cCtx) {
+    protected void deactivate(ComponentContext cCtx) {
+        registration.unregister();
         helperMap.deactivate(cCtx);
         contributorMap.deactivate(cCtx);
         helperCategoryMap.deactivate(cCtx);
         contributorCategoryMap.deactivate(cCtx);
-        Map<String, Object> props = baseProperties;
         baseProperties = null;
-        return props;
     }
 
-    private Map<String, Object> getProperties() {
+    @Override
+    public Hashtable<String, Object> getServiceProperties() {
         if (baseProperties == null) {
             return null;
         }
-        Map<String, Object> props = new HashMap<String, Object>(baseProperties);
+        Hashtable<String, Object> props = new Hashtable<String, Object>(baseProperties);
         props.put(CATEGORY_PROP_NAME, categories.toArray(new String[categories.size()]));
         return props;
     }
 
     @Reference(service = ArtifactContainerFactoryHelper.class, cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC)
-    protected Map<String, Object> setHelper(ServiceReference<ArtifactContainerFactoryHelper> helper) {
-        return internalSetContributor(helper, helperMap, helperCategoryMap);
+    protected void setHelper(ServiceReference<ArtifactContainerFactoryHelper> helper) {
+        internalSetContributor(helper, helperMap, helperCategoryMap);
+        registration.update();
     }
 
     @Reference(service = ArtifactContainerFactoryContributor.class, cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC)
-    protected Map<String, Object> setContributor(ServiceReference<ArtifactContainerFactoryContributor> helper) {
-        return internalSetContributor(helper, contributorMap, contributorCategoryMap);
+    protected void setContributor(ServiceReference<ArtifactContainerFactoryContributor> helper) {
+        internalSetContributor(helper, contributorMap, contributorCategoryMap);
+        registration.update();
     }
 
-    protected <T extends ArtifactContainerFactoryContributor> Map<String, Object> internalSetContributor(ServiceReference<T> helper,
-                                                                                                         ConcurrentServiceReferenceSetMap<String, T> selectedMap,
-                                                                                                         ConcurrentServiceReferenceSetMap<String, T> selectedCategoryMap) {
+    protected <T extends ArtifactContainerFactoryContributor> Dictionary<String, Object> internalSetContributor(ServiceReference<T> helper,
+                                                                                                                ConcurrentServiceReferenceSetMap<String, T> selectedMap,
+                                                                                                                ConcurrentServiceReferenceSetMap<String, T> selectedCategoryMap) {
         if (helper.getProperty("handlesType") != null) {
             Object o = helper.getProperty("handlesType");
             if (o instanceof String) {
@@ -123,21 +129,23 @@ public class ArtifactContainerFactoryService implements ArtifactContainerFactory
                 }
             }
         }
-        return getProperties();
+        return getServiceProperties();
     }
 
-    protected Map<String, Object> unsetHelper(ServiceReference<ArtifactContainerFactoryHelper> helper) {
-        return internalUnsetContributor(helper, helperMap, helperCategoryMap, contributorCategoryMap);
+    protected void unsetHelper(ServiceReference<ArtifactContainerFactoryHelper> helper) {
+        internalUnsetContributor(helper, helperMap, helperCategoryMap, contributorCategoryMap);
+        registration.update();
     }
 
-    protected Map<String, Object> unsetContributor(ServiceReference<ArtifactContainerFactoryContributor> helper) {
-        return internalUnsetContributor(helper, contributorMap, contributorCategoryMap, helperCategoryMap);
+    protected void unsetContributor(ServiceReference<ArtifactContainerFactoryContributor> helper) {
+        internalUnsetContributor(helper, contributorMap, contributorCategoryMap, helperCategoryMap);
+        registration.update();
     }
 
-    protected <T extends ArtifactContainerFactoryContributor, U extends ArtifactContainerFactoryContributor> Map<String, Object> internalUnsetContributor(ServiceReference<T> helper,
-                                                                                                                                                          ConcurrentServiceReferenceSetMap<String, T> selectedMap,
-                                                                                                                                                          ConcurrentServiceReferenceSetMap<String, T> selectedCategoryMap,
-                                                                                                                                                          ConcurrentServiceReferenceSetMap<String, U> otherCategoryMap) {
+    protected <T extends ArtifactContainerFactoryContributor, U extends ArtifactContainerFactoryContributor> Dictionary<String, Object> internalUnsetContributor(ServiceReference<T> helper,
+                                                                                                                                                                 ConcurrentServiceReferenceSetMap<String, T> selectedMap,
+                                                                                                                                                                 ConcurrentServiceReferenceSetMap<String, T> selectedCategoryMap,
+                                                                                                                                                                 ConcurrentServiceReferenceSetMap<String, U> otherCategoryMap) {
         if (helper.getProperty("handlesType") != null) {
             Object o = helper.getProperty("handlesType");
             if (o instanceof String) {
@@ -170,7 +178,7 @@ public class ArtifactContainerFactoryService implements ArtifactContainerFactory
                 }
             }
         }
-        return getProperties();
+        return getServiceProperties();
     }
 
     @Override
@@ -309,7 +317,7 @@ public class ArtifactContainerFactoryService implements ArtifactContainerFactory
                 }
             } catch (ClassNotFoundException ex) {
                 //broken container factory helper, not a user error.
-                //means someone is supplying a bundle that offers a factory helper for 
+                //means someone is supplying a bundle that offers a factory helper for
                 //type 'xxx' when the bundle offering that helper is unable to load 'xxx'.
             }
         }

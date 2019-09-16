@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -61,6 +60,7 @@ import com.ibm.ws.kernel.feature.internal.FeatureManager.ProvisioningMode;
 import com.ibm.ws.kernel.feature.internal.subsystem.FeatureRepository;
 import com.ibm.ws.kernel.feature.internal.subsystem.FeatureResourceImpl;
 import com.ibm.ws.kernel.feature.internal.subsystem.SubsystemFeatureDefinitionImpl;
+import com.ibm.ws.kernel.feature.provisioning.ActivationType;
 import com.ibm.ws.kernel.feature.provisioning.FeatureResource;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Result;
@@ -188,16 +188,7 @@ public class FeatureManagerTest {
                     //allow mock calls from the BundleInstallOriginBundleListener <init>
                     allowing(mockBundleContext).getBundle();
                     will(returnValue(mockBundle));
-                    one(mockBundle).getDataFile("bundle.origin.cache");
-                    //allow the BundleInstallOriginBundleListener to get a ScheduledExecutorService
-                    //and schedule a purge for the future
-                    one(mockBundleContext).getServiceReference(ScheduledExecutorService.class);
-                    will(returnValue(mockScheduledExecutorService));
-                    one(mockBundleContext).getService(mockScheduledExecutorService);
-                    will(returnValue(mockScheduledExecutorService.getService()));
-                    one(mockScheduledExecutorService.getService()).schedule(with(any(BundleInstallOriginBundleListener.class)), with(any(Integer.class)),
-                                                                            with(any(TimeUnit.class)));
-                    one(mockBundleContext).ungetService(mockScheduledExecutorService);
+                    one(mockBundleContext).getDataFile("bundle.origin.cache");
 
                     allowing(mockBundleContext).addBundleListener(with(any(BundleListener.class)));
 
@@ -261,6 +252,9 @@ public class FeatureManagerTest {
 
                     allowing(mockBundleContext).getProperty("wlp.liberty.boot");
                     will(returnValue(null));
+
+                    allowing(mockBundleContext).getDataFile("feature.fix.cache");
+                    will(returnValue(File.createTempFile("feature.fix.cache", null)));
                 }
             });
             fm.activate(mockComponentContext, new HashMap<String, Object>());
@@ -476,16 +470,7 @@ public class FeatureManagerTest {
                     //allow mock calls from the BundleInstallOriginBundleListener <init>
                     allowing(mockBundleContext).getBundle();
                     will(returnValue(mockBundle));
-                    one(mockBundle).getDataFile("bundle.origin.cache");
-                    //allow the BundleInstallOriginBundleListener to get a ScheduledExecutorService
-                    //and schedule a purge for the future
-                    one(mockBundleContext).getServiceReference(ScheduledExecutorService.class);
-                    will(returnValue(mockScheduledExecutorService));
-                    one(mockBundleContext).getService(mockScheduledExecutorService);
-                    will(returnValue(mockScheduledExecutorService.getService()));
-                    one(mockScheduledExecutorService.getService()).schedule(with(any(BundleInstallOriginBundleListener.class)), with(any(Integer.class)),
-                                                                            with(any(TimeUnit.class)));
-                    one(mockBundleContext).ungetService(mockScheduledExecutorService);
+                    one(mockBundleContext).getDataFile("bundle.origin.cache");
 
                 }
             });
@@ -619,7 +604,7 @@ public class FeatureManagerTest {
             });
 
             final BundleInstallStatus iStatus = new BundleInstallStatus();
-            iStatus.addMissingBundle(new FeatureResourceImpl("missing", Collections.<String, String> emptyMap(), null, null));
+            iStatus.addMissingBundle(new FeatureResourceImpl("missing", Collections.<String, String> emptyMap(), null, null, ActivationType.SEQUENTIAL));
 
             try {
                 fm.checkInstallStatus(iStatus);

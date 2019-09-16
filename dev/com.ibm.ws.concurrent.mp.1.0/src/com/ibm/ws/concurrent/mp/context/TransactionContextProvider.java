@@ -16,7 +16,7 @@ import java.util.Map;
 
 import javax.enterprise.concurrent.ManagedTask;
 
-import org.eclipse.microprofile.concurrent.ThreadContext;
+import org.eclipse.microprofile.context.ThreadContext;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;

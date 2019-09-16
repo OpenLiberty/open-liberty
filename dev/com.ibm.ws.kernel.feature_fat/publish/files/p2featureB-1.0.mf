@@ -1,0 +1,6 @@
+Subsystem-ManifestVersion: 1
+Subsystem-SymbolicName: p2featureB-1.0; visibility:=public
+Subsystem-Version: 1.0.0
+Subsystem-Content: p2bundle2;  version="[1,2)"
+Subsystem-Type: osgi.subsystem.feature
+IBM-Feature-Version: 2

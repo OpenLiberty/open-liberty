@@ -21,7 +21,9 @@ import com.ibm.ws.microprofile.faulttolerance.impl.policy.CircuitBreakerPolicyIm
 import com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder;
 import com.ibm.ws.microprofile.faulttolerance.utils.DummyMetricRecorder;
 import com.ibm.ws.microprofile.faulttolerance20.impl.MethodResult;
+import com.ibm.ws.microprofile.faulttolerance20.state.CircuitBreakerState;
 
+@SuppressWarnings("restriction") // Unit test accesses non-exported *PolicyImpl classes
 public class CircuitBreakerStateImplTest {
 
     private static MetricRecorder dummyMetrics = DummyMetricRecorder.get();
@@ -150,11 +152,86 @@ public class CircuitBreakerStateImplTest {
         assertFalse(state.requestPermissionToExecute());
     }
 
-    private void runFailures(CircuitBreakerStateImpl state, int times) {
+    @Test
+    public void testHalfOpenLimit() throws InterruptedException {
+        CircuitBreakerPolicyImpl policy = new CircuitBreakerPolicyImpl();
+        policy.setDelay(Duration.ofMillis(100));
+        policy.setFailureRatio(0.75);
+        policy.setRequestVolumeThreshold(4);
+        policy.setSuccessThreshold(3);
+
+        // Summary:
+        // circuit opens if 75% of last 4 requests failed
+        // circuit half-closes after 100ms
+        // circuit fully closes after 3 successful requests
+
+        // Run 100% failures, results in circuit open
+        CircuitBreakerStateImpl state = new CircuitBreakerStateImpl(policy, dummyMetrics);
+        runFailures(state, 4);
+        assertFalse(state.requestPermissionToExecute());
+
+        // Wait >100ms, results in circuit half-open
+        Thread.sleep(150);
+        // While half open, we should be able to start only three executions
+        assertTrue(state.requestPermissionToExecute());
+        assertTrue(state.requestPermissionToExecute());
+        assertTrue(state.requestPermissionToExecute());
+        assertFalse(state.requestPermissionToExecute());
+
+        // As one finishes, we should be able to start one more
+        state.recordResult(MethodResult.success(null));
+        assertTrue(state.requestPermissionToExecute());
+        assertFalse(state.requestPermissionToExecute());
+
+        // As one finishes, we should be able to start one more
+        state.recordResult(MethodResult.success(null));
+        assertTrue(state.requestPermissionToExecute());
+        assertFalse(state.requestPermissionToExecute());
+
+        // After three complete successfully, circuit should be closed and we can run as many as we want
+        state.recordResult(MethodResult.success(null));
+        assertTrue(state.requestPermissionToExecute());
+        assertTrue(state.requestPermissionToExecute());
+        assertTrue(state.requestPermissionToExecute());
+        assertTrue(state.requestPermissionToExecute());
+    }
+
+    @Test
+    public void testHalfOpenStuck() throws InterruptedException {
+        CircuitBreakerPolicyImpl policy = new CircuitBreakerPolicyImpl();
+        policy.setDelay(Duration.ofMillis(100));
+        policy.setFailureRatio(0.75);
+        policy.setRequestVolumeThreshold(4);
+        policy.setSuccessThreshold(1);
+
+        // Summary:
+        // circuit opens if 75% of last 4 requests failed
+        // circuit half-closes after 100ms
+        // circuit fully closes after 1 successful request
+
+        // Run 100% failures, results in circuit open
+        CircuitBreakerStateImpl state = new CircuitBreakerStateImpl(policy, dummyMetrics);
+        runFailures(state, 4);
+        assertFalse(state.requestPermissionToExecute());
+
+        // Wait >100ms, results in circuit half-open
+        Thread.sleep(150);
+        // While half open, we should be able to start only one execution...
+        assertTrue(state.requestPermissionToExecute());
+        assertFalse(state.requestPermissionToExecute());
+
+        // ...unless we wait for the delay again
+        Thread.sleep(150);
+        // then we should get one more
+        assertTrue(state.requestPermissionToExecute());
+        assertFalse(state.requestPermissionToExecute());
+    }
+
+    private void runFailures(CircuitBreakerState state, int times) {
         runFailures(state, times, RuntimeException.class);
     }
 
-    private void runFailures(CircuitBreakerStateImpl state, int times, Class<? extends Exception> exClazz) {
+    private void runFailures(CircuitBreakerState state, int times, Class<? extends Exception> exClazz) {
         try {
             for (int i = 0; i < times; i++) {
                 assertTrue("No permission for attempt " + i, state.requestPermissionToExecute());
@@ -165,7 +242,7 @@ public class CircuitBreakerStateImplTest {
         }
     }
 
-    private void runSuccesses(CircuitBreakerStateImpl state, int times) {
+    private void runSuccesses(CircuitBreakerState state, int times) {
         for (int i = 0; i < times; i++) {
             assertTrue("No permission for attempt " + i, state.requestPermissionToExecute());
             state.recordResult(MethodResult.success(null));

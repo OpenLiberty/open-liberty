@@ -33,10 +33,13 @@ Export-Package: \
   com.ibm.ws.jaxrs20.providers.api,\
   com.ibm.ws.jaxrs21.sse
 
-
-
+# Using version=! in order to not have a version attached to the import for packages that were removed
+# from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the 
+# packages from Java when using Java 8 or earlier and from the new shipped bundles for Java 9 and later.
 Import-Package: \
   com.ibm.json.java;resolution:=optional,\
+  javax.xml.bind;version=!,\
+  javax.xml.bind.annotation;version=!,\
   *
 # !com.wordnik.swagger.jaxrs.config, \
 # !com.wordnik.swagger.jaxrs.listing, \
@@ -141,6 +144,7 @@ Private-Package:\
 instrument.classesExcludes: com/ibm/ws/jaxrs20/internal/resources/*.class
 
 -buildpath: \
+  com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
   com.ibm.websphere.appserver.spi.logging,\
   com.ibm.websphere.appserver.spi.threading,\
   com.ibm.websphere.javaee.annotation.1.2;version=latest,\
@@ -183,4 +187,5 @@ instrument.classesExcludes: com/ibm/ws/jaxrs20/internal/resources/*.class
   javax.xml.bind:jaxb-api;version=latest,\
   org.jmock:jmock;strategy=exact;version=2.5.1,\
   org.jmock:jmock-junit4;strategy=exact;version=2.5.1,\
-  org.hamcrest:hamcrest-all;version=1.3
+  org.hamcrest:hamcrest-all;version=1.3,\
+  com.ibm.websphere.org.eclipse.microprofile.rest.client.1.2;version=latest

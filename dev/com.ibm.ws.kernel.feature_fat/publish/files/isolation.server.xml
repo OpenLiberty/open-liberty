@@ -1,0 +1,10 @@
+<server>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>isolation.Runtime.Test.Feature-1.0</feature>
+        <feature>usr:isolation.Product.Test.Feature-1.0</feature>
+    </featureManager>
+    
+</server>

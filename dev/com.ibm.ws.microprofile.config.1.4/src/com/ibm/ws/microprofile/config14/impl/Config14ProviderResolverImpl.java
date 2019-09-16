@@ -18,7 +18,7 @@ public class Config14ProviderResolverImpl extends Config13ProviderResolverImpl {
     /** {@inheritDoc} */
     @Override
     protected AbstractConfigBuilder newBuilder(ClassLoader classLoader) {
-        return new Config14BuilderImpl(classLoader, getScheduledExecutorService());
+        return new Config14BuilderImpl(classLoader, getScheduledExecutorService(), getInternalConfigSources());
     }
 
 }

@@ -13,7 +13,7 @@
 
   <featureManager>
     <feature>componenttest-1.0</feature>
-    <feature>configValidator-1.0</feature> <!-- TODO replace when functionality is enabled via auto-feature -->
+    <feature>restConnector-2.0</feature>
     <feature>jdbc-4.2</feature>
     <feature>mpOpenApi-1.0</feature>
   </featureManager>
@@ -21,11 +21,25 @@
   <variable name="onError" value="FAIL"/>
 
   <keyStore id="defaultKeyStore" password="Liberty"/>
-  <quickStartSecurity userName="adminuser" userPassword="adminpwd"/>
+  
+  <basicRegistry>
+    <user name="adminuser" password="adminpwd" />
+    <user name="reader" password="readerpwd" />
+    <user name="user" password="userpwd" />
+  </basicRegistry>
+  <administrator-role>
+    <user>adminuser</user>
+  </administrator-role>
+  <reader-role>
+    <user>reader</user>
+  </reader-role>
   
   <library id="Derby">
     <file name="${shared.resource.dir}/derby/derby.jar"/>
   </library>
+  
+  <variable name="DB_USER" value="dbuser"/>
+  <variable name="DB_PASS" value="dbpass"/>
 
   <dataSource id="DataSourceWithoutJDBCDriver" jndiName="jdbc/withoutJDBCDriver" connectionSharing="MatchCurrentState" transactional="false">
     <containerAuthData id="dbuser-auth" user="dbuser" password="{xor}Oz0vPiws"/>
@@ -36,7 +50,7 @@
     <jdbcDriver libraryRef="Derby"/>
     <!-- user/password settings defined in bootstrap.properties -->
    	<properties.derby.embedded databaseName="memory:defaultdb" createDatabase="create" 
-   	                           user="dbuser" password="dbpass"/>
+   	                           user="${DB_USER}" password="${DB_PASS}"/>
   </dataSource>
 
   <dataSource id="jdbc/nonexistentdb" jndiName="${id}">
@@ -61,9 +75,9 @@
     </dataSource>
   </databaseStore>
 
-  <!-- cloudant feature intentionally disabled, so it doesn't matter that we are using an incorrect library -->
-  <cloudant id="builder" libraryRef="DerbyLib" url="http://douc.hursley.ibm.com:5984" username="u1" password="pwd1"/>
-  <cloudantDatabase id="CloudantDBNotEnabled" jndiName="cloudant/db" cloudantRef="builder" databaseName="testdb"/>
+  <!-- mongo feature intentionally disabled, so it doesn't matter that we are using an incorrect library -->
+  <mongo id="mongo" libraryRef="DerbyLib"/>
+  <mongoDB id="MongoDBNotEnabled" jndiName="mongo/db" mongoRef="mongo" databaseName="db-test" />
   
   <authData id="auth1" user="dbuser" password="dbpass"/>
   

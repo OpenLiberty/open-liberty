@@ -162,7 +162,7 @@
         <dependency>
             <groupId>io.openliberty.arquillian</groupId>
             <artifactId>arquillian-liberty-managed</artifactId>
-            <version>1.0.3</version>
+            <version>1.0.5</version>
             <scope>test</scope>
         </dependency>
 <!-- 
@@ -246,6 +246,7 @@
                         <!-- <tck_port>${tck_port}</tck_port>  -->
                         <tck_port>8010</tck_port>
                         <!-- <wiremock.server.port>8765</wiremock.server.port> -->
+                        <sun.rmi.transport.tcp.responseTimeout>${sun.rmi.transport.tcp.responseTimeout}</sun.rmi.transport.tcp.responseTimeout>
                     </systemPropertyVariables>
                     <suiteXmlFiles>
                         <suiteXmlFile>${suiteXmlFile}</suiteXmlFile>

@@ -59,12 +59,12 @@ public class CreateSSLCertificateTaskTest {
     private static String EXPECTED_CLIENT_KEYSTORE_PATH;
     private static File EXPECTED_KEYSTORE_FILE;
     {
-        EXPECTED_KEYSTORE_FILE = new File(EXPECTED_SERVER_DIR + "resources" + CreateSSLCertificateTask.SLASH + "security" + CreateSSLCertificateTask.SLASH + "key.jks");
+        EXPECTED_KEYSTORE_FILE = new File(EXPECTED_SERVER_DIR + "resources" + CreateSSLCertificateTask.SLASH + "security" + CreateSSLCertificateTask.SLASH + "key.p12");
         EXPECTED_KEYSTORE_PATH = EXPECTED_KEYSTORE_FILE.getAbsolutePath();
     }
     private static File EXPECTED_CLIENT_KEYSTORE_FILE;
     {
-        EXPECTED_CLIENT_KEYSTORE_FILE = new File(EXPECTED_CLIENT_DIR + "resources" + CreateSSLCertificateTask.SLASH + "security" + CreateSSLCertificateTask.SLASH + "key.jks");
+        EXPECTED_CLIENT_KEYSTORE_FILE = new File(EXPECTED_CLIENT_DIR + "resources" + CreateSSLCertificateTask.SLASH + "security" + CreateSSLCertificateTask.SLASH + "key.p12");
         EXPECTED_CLIENT_KEYSTORE_PATH = EXPECTED_CLIENT_KEYSTORE_FILE.getAbsolutePath();
     }
     private static final String PLAINTEXT = "encodeMe";
@@ -418,7 +418,8 @@ public class CreateSSLCertificateTaskTest {
                                                          DefaultSSLCertificateCreator.DEFAULT_VALIDITY,
                                                          new DefaultSubjectDN(null, SERVER_NAME).getSubjectDN(),
                                                          DefaultSSLCertificateCreator.DEFAULT_SIZE,
-                                                         DefaultSSLCertificateCreator.SIGALG);
+                                                         DefaultSSLCertificateCreator.SIGALG,
+                                                         null);
             }
         });
 
@@ -451,7 +452,8 @@ public class CreateSSLCertificateTaskTest {
                                                          DefaultSSLCertificateCreator.DEFAULT_VALIDITY,
                                                          new DefaultSubjectDN(null, CLIENT_NAME).getSubjectDN(),
                                                          DefaultSSLCertificateCreator.DEFAULT_SIZE,
-                                                         DefaultSSLCertificateCreator.SIGALG);
+                                                         DefaultSSLCertificateCreator.SIGALG,
+                                                         null);
             }
         });
 
@@ -520,7 +522,8 @@ public class CreateSSLCertificateTaskTest {
                                                          DefaultSSLCertificateCreator.DEFAULT_VALIDITY,
                                                          new DefaultSubjectDN(null, SERVER_NAME).getSubjectDN(),
                                                          DefaultSSLCertificateCreator.DEFAULT_SIZE,
-                                                         DefaultSSLCertificateCreator.SIGALG);
+                                                         DefaultSSLCertificateCreator.SIGALG,
+                                                         null);
             }
         });
 
@@ -554,7 +557,8 @@ public class CreateSSLCertificateTaskTest {
                                                          Integer.valueOf(VALIDITY),
                                                          new DefaultSubjectDN(null, SERVER_NAME).getSubjectDN(),
                                                          DefaultSSLCertificateCreator.DEFAULT_SIZE,
-                                                         DefaultSSLCertificateCreator.SIGALG);
+                                                         DefaultSSLCertificateCreator.SIGALG,
+                                                         null);
             }
         });
 
@@ -588,7 +592,8 @@ public class CreateSSLCertificateTaskTest {
                                                          DefaultSSLCertificateCreator.DEFAULT_VALIDITY,
                                                          SUBJECT_DN,
                                                          DefaultSSLCertificateCreator.DEFAULT_SIZE,
-                                                         DefaultSSLCertificateCreator.SIGALG);
+                                                         DefaultSSLCertificateCreator.SIGALG,
+                                                         null);
             }
         });
 
@@ -622,7 +627,8 @@ public class CreateSSLCertificateTaskTest {
                                                          DefaultSSLCertificateCreator.DEFAULT_VALIDITY,
                                                          LONG_SUBJECT_DN,
                                                          DefaultSSLCertificateCreator.DEFAULT_SIZE,
-                                                         DefaultSSLCertificateCreator.SIGALG);
+                                                         DefaultSSLCertificateCreator.SIGALG,
+                                                         null);
             }
         });
 
@@ -657,7 +663,8 @@ public class CreateSSLCertificateTaskTest {
                                                          Integer.valueOf(VALIDITY),
                                                          SUBJECT_DN,
                                                          DefaultSSLCertificateCreator.DEFAULT_SIZE,
-                                                         DefaultSSLCertificateCreator.SIGALG);
+                                                         DefaultSSLCertificateCreator.SIGALG,
+                                                         null);
             }
         });
 
@@ -692,7 +699,8 @@ public class CreateSSLCertificateTaskTest {
                                                          Integer.valueOf(VALIDITY),
                                                          SUBJECT_DN,
                                                          DefaultSSLCertificateCreator.DEFAULT_SIZE,
-                                                         DefaultSSLCertificateCreator.SIGALG);
+                                                         DefaultSSLCertificateCreator.SIGALG,
+                                                         null);
             }
         });
 
@@ -732,7 +740,8 @@ public class CreateSSLCertificateTaskTest {
                                                          Integer.valueOf(VALIDITY),
                                                          SUBJECT_DN,
                                                          DefaultSSLCertificateCreator.DEFAULT_SIZE,
-                                                         DefaultSSLCertificateCreator.SIGALG);
+                                                         DefaultSSLCertificateCreator.SIGALG,
+                                                         null);
             }
         });
 
@@ -861,7 +870,8 @@ public class CreateSSLCertificateTaskTest {
                                                          Integer.valueOf(VALIDITY),
                                                          SUBJECT_DN,
                                                          DefaultSSLCertificateCreator.DEFAULT_SIZE,
-                                                         DefaultSSLCertificateCreator.KEYALG);
+                                                         DefaultSSLCertificateCreator.KEYALG,
+                                                         null);
                 will(throwException(new CertificateException("Expected")));
 
                 one(stdout).println("Unable to create default SSL certificate:" +

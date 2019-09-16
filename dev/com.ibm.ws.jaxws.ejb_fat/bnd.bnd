@@ -1,0 +1,47 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+          
+bVersion=1.0
+
+src: \
+	fat/src,\
+	test-applications/EJBWSInterceptorClient/src,\
+	test-applications/EJBWSInterceptor/src,\
+	test-applications/EJBJndiEJB/src,\
+	test-applications/EJBJndiCommon/src,\
+	test-applications/EJBJndiWebEJB/src,\
+	test-applications/EJBJndiWeb/src,\
+	test-applications/EJBHandler/src,\
+	test-applications/EJBWSBasicClient/src,\
+	test-applications/EJBWSBasic/src,\
+	test-applications/EJBWSProvider/src,\
+	test-applications/EJBInWarServiceClient/src,\
+	test-applications/EJBInWarService/src,\
+	test-applications/EJBWSContext/src,\
+	test-applications/EJBWSContextClient/src,\
+	test-applications/EJBWSLifeCycle/src,\
+	test-applications/EJBWSLifeCycleClient/src
+	
+fat.project: true
+
+# These features get added programatically
+tested.features: \
+  jaxws-2.2,\
+  ejb-3.2
+
+-buildpath: \
+	com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
+	com.ibm.websphere.javaee.jws.1.0;version=latest,\
+	com.sun.xml.messaging.saaj:saaj-impl;version=1.4.0,\
+	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
+	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.1;version=latest

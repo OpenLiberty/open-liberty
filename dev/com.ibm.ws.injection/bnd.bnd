@@ -41,7 +41,8 @@ Service-Component: \
     provide:=com.ibm.ws.serialization.DeserializationClassProvider;\
     properties:="service.vendor=IBM,classes=com.ibm.ws.injectionengine.osgi.internal.ResourceFactoryReference"
 
-instrument.classesExcludes: com/ibm/ws/injection/resources/*.class
+instrument.classesExcludes: com/ibm/ws/injection/resources/*.class, \
+	com/ibm/ws/injectionengine/osgi/internal/naming/InjectionJavaColonHelper.class
 
 -buildpath: \
 	com.ibm.ws.injection.core;version=latest,\

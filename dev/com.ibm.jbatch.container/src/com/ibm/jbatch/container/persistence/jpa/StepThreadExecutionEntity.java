@@ -41,9 +41,8 @@ import com.ibm.ws.serialization.DeserializationObjectInputStream;
 @DiscriminatorColumn(name = "THREADTYPE", discriminatorType = DiscriminatorType.CHAR)
 @DiscriminatorValue("P")
 // The base level is (P)artition, and (T)op-level extends this
-@NamedQuery(name = StepThreadExecutionEntity.GET_STEP_THREAD_EXECUTIONIDS_BY_JOB_EXEC_AND_STATUSES_QUERY,
-                query = "SELECT e FROM StepThreadExecutionEntity e" +
-                        " WHERE e.jobExec.jobExecId=:jobExecutionId AND e.batchStatus IN :status ORDER BY e.stepExecutionId ASC")
+@NamedQuery(name = StepThreadExecutionEntity.GET_STEP_THREAD_EXECUTIONIDS_BY_JOB_EXEC_AND_STATUSES_QUERY, query = "SELECT e FROM StepThreadExecutionEntity e" +
+                                                                                                                  " WHERE e.jobExec.jobExecId=:jobExecutionId AND e.batchStatus IN :status ORDER BY e.stepExecutionId ASC")
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = { "FK_JOBEXECID", "STEPNAME", "PARTNUM" }))
 public class StepThreadExecutionEntity implements WSPartitionStepThreadExecution, StepExecution, EntityConstants {
@@ -143,11 +142,6 @@ public class StepThreadExecutionEntity implements WSPartitionStepThreadExecution
     @JoinColumn(name = "FK_JOBEXECID", nullable = false)
     private JobExecutionEntity jobExec;
 
-    /* 220050 - Backout 205106
-    @OneToOne(optional = true, mappedBy = "stepExecutionEntity", cascade = CascadeType.REMOVE)
-    private RemotablePartitionEntity remotablePartition;
-    */
-
     // Easiest to allow this to be null otherwise we'd have to worry about
     // how to supply the generated key value to this column too.
     @ManyToOne
@@ -214,8 +208,6 @@ public class StepThreadExecutionEntity implements WSPartitionStepThreadExecution
      * @return the remotablePartition
      */
     public RemotablePartitionEntity getRemotablePartition() {
-        //222050 - Backout 205106
-        //return remotablePartition;
         return null;
     }
 
@@ -223,8 +215,7 @@ public class StepThreadExecutionEntity implements WSPartitionStepThreadExecution
      * @param remotablePartition the remotablePartition to set
      */
     public void setRemotablePartition(RemotablePartitionEntity remotablePartition) {
-        //222050 Backout 205106
-        //this.remotablePartition = remotablePartition;
+        // Intentionally empty, see StepThreadExecutionEntityV2
     }
 
     public long getWriteCount() {

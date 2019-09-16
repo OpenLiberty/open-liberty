@@ -69,7 +69,8 @@ public enum ApiRegion {
      */
     THREAD_CONTEXT("thread-context", "liberty.thread.context.api", false);
 
-    private static final TraceComponent tc = Tr.register(ApiRegion.class);
+    private static final TraceComponent tc = Tr.register(ApiRegion.class, com.ibm.ws.kernel.feature.internal.ProvisionerConstants.TR_GROUP,
+                                                         com.ibm.ws.kernel.feature.internal.ProvisionerConstants.NLS_PROPS);
     private static final ApiRegion[] values = ApiRegion.values();
     private final String apiType;
     private final String regionName;
@@ -83,7 +84,7 @@ public enum ApiRegion {
 
     /**
      * Returns the api type granted by the region
-     * 
+     *
      * @return the api type
      */
     public String getApiType() {
@@ -93,7 +94,7 @@ public enum ApiRegion {
     /**
      * Returns the name of the region that grants access to the
      * api type.
-     * 
+     *
      * @return the region name
      */
     public String getRegionName() {
@@ -103,7 +104,7 @@ public enum ApiRegion {
     /**
      * Returns true if the region delegates to the internal region
      * to grant access to internal packages
-     * 
+     *
      * @return true if delegation to the internal region.
      */
     public boolean delegateInternal() {
@@ -112,7 +113,7 @@ public enum ApiRegion {
 
     /**
      * Returns the APIRegion type for the specified API type
-     * 
+     *
      * @param apiType the API type to get the region for
      * @return the APIRegion type for the specified API type
      * @throws IllegalArgumentException if the apiType is not valid
@@ -139,18 +140,18 @@ public enum ApiRegion {
      * which was created by calling {@link RegionDigraph#copy()} on the
      * specified region digraph. A {@code null} value
      * may be returned by the callable if no update is needed.
-     * 
-     * @param digraph The region digraph to update. Also the
-     *            region digraph used to make a copy to be returned by
-     *            the specified updateTo callable.
+     *
+     * @param digraph  The region digraph to update. Also the
+     *                     region digraph used to make a copy to be returned by
+     *                     the specified updateTo callable.
      * @param updateTo A callable that returns an updated copy of
-     *            the specified digraph. The returned digraph will be used to
-     *            call {@link RegionDigraph#replace(RegionDigraph)} on the
-     *            specified digraph.
-     * @throws BundleException if the update could not complete or if the
-     *             callable throws a BundleException it is rethrown.
+     *                     the specified digraph. The returned digraph will be used to
+     *                     call {@link RegionDigraph#replace(RegionDigraph)} on the
+     *                     specified digraph.
+     * @throws BundleException  if the update could not complete or if the
+     *                              callable throws a BundleException it is rethrown.
      * @throws RuntimeException if the callable throws any exception other
-     *             than a BundleException.
+     *                              than a BundleException.
      */
     @FFDCIgnore({ BundleException.class, InterruptedException.class })
     public static void update(RegionDigraph digraph, Callable<RegionDigraph> updateTo) throws BundleException {

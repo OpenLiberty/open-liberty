@@ -53,7 +53,7 @@ import com.ibm.wsspi.logging.LogHandler;
  */
 public class MessageRouterConfigurator implements BundleListener {
 
-    private final TraceComponent tc = Tr.register(this.getClass(), null, "com.ibm.ws.logging.internal.resources.LoggingMessages");
+    private static final TraceComponent tc = Tr.register(MessageRouterConfigurator.class, null, "com.ibm.ws.logging.internal.resources.LoggingMessages");
 
     /**
      * A reference to the OSGI bundle framework.

@@ -1,0 +1,10 @@
+<server>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>capabilityD-1.0</feature> <!-- Requires A20 -->
+        <feature>comboA10B10-1.0</feature> <!-- Requires A10 or A11, but NOT tolerate A20 -->
+    </featureManager>
+
+</server>

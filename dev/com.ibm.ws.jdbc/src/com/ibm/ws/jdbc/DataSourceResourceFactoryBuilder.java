@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,14 +15,12 @@ import java.sql.SQLException;
 import java.sql.SQLNonTransientException;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -81,13 +79,6 @@ public class DataSourceResourceFactoryBuilder implements ResourceFactoryBuilder 
      * Name of property used by config service to identify where the configuration of a component instance originates.
      */
     private static final String CONFIG_SOURCE = "config.source";
-
-    /**
-     * Interface names, including package, for supported data source types. 
-     */
-    private static final Collection<String> DS_INTERFACE_NAMES = Arrays.asList(XADataSource.class.getName(),
-                                                                               ConnectionPoolDataSource.class.getName(),
-                                                                               DataSource.class.getName());
 
     /**
      * Property value that indicates the configuration originated in a configuration file, such as server.xml,
@@ -181,9 +172,15 @@ public class DataSourceResourceFactoryBuilder implements ResourceFactoryBuilder 
         dsSvcProps.put(DataSourceService.TARGET_JDBC_DRIVER, jdbcDriverFilter);
         dsSvcProps.put("connectionManager.cardinality.minimum", 1); // require exactly 1 connection manager (the one specified by the target)
 
+        BundleContext bundleContext = DataSourceService.priv.getBundleContext(FrameworkUtil.getBundle(DataSourceResourceFactoryBuilder.class));
+
         String containerAuthDataRef = (String) vendorProps.remove(DSConfig.CONTAINER_AUTH_DATA_REF);
         if (containerAuthDataRef != null) {
             String authDataFilter = FilterUtils.createPropertyFilter(ID, containerAuthDataRef);
+            ServiceReference<?>[] refs = DataSourceService.priv.getServiceReferences(bundleContext, "com.ibm.websphere.security.auth.data.AuthData", authDataFilter);
+            if (refs == null || refs.length == 0)
+                throw new IllegalArgumentException(Tr.formatMessage(tc, "PROP_SET_ERROR", DSConfig.CONTAINER_AUTH_DATA_REF, "", containerAuthDataRef));
+            dsSvcProps.put(DSConfig.CONTAINER_AUTH_DATA_REF, new String[] { (String) refs[0].getProperty("service.pid") });
             dsSvcProps.put(DataSourceService.TARGET_CONTAINER_AUTH_DATA, authDataFilter);
             dsSvcProps.put("containerAuthData.cardinality.minimum", 1);
         }
@@ -191,9 +188,18 @@ public class DataSourceResourceFactoryBuilder implements ResourceFactoryBuilder 
         String recoveryAuthDataRef = (String) vendorProps.remove(DSConfig.RECOVERY_AUTH_DATA_REF);
         if (recoveryAuthDataRef != null) {
             String authDataFilter = FilterUtils.createPropertyFilter(ID, recoveryAuthDataRef);
+            ServiceReference<?>[] refs = DataSourceService.priv.getServiceReferences(bundleContext, "com.ibm.websphere.security.auth.data.AuthData", authDataFilter);
+            if (refs == null || refs.length == 0)
+                throw new IllegalArgumentException(Tr.formatMessage(tc, "PROP_SET_ERROR", DSConfig.RECOVERY_AUTH_DATA_REF, "", recoveryAuthDataRef));
+            dsSvcProps.put(DSConfig.RECOVERY_AUTH_DATA_REF, new String[] { (String) refs[0].getProperty("service.pid") });
             dsSvcProps.put(DataSourceService.TARGET_RECOVERY_AUTH_DATA, authDataFilter);
             dsSvcProps.put("recoveryAuthData.cardinality.minimum", 1);
         }
+
+        // Must use array to remain consistent with multiple cardinality of onConnect attribute in metatype
+        String onConnect = (String) vendorProps.remove(DSConfig.ON_CONNECT);
+        if (onConnect != null)
+            dsSvcProps.put(DSConfig.ON_CONNECT, new String[] { onConnect });
 
         if (application != null) {
             dsSvcProps.put(AppDefinedResource.APPLICATION, application);
@@ -205,15 +211,10 @@ public class DataSourceResourceFactoryBuilder implements ResourceFactoryBuilder 
         }
 
         Object value;
-        for (String name : ConnectionManagerService.CONNECTION_MANAGER_PROPS)
-            if ((value = vendorProps.remove(name)) != null)
-                cmSvcProps.put(name, value);
 
         for (String name : DSConfig.DATA_SOURCE_PROPS)
             if ((value = vendorProps.remove(name)) != null)
                 dsSvcProps.put(name, value);
-
-        BundleContext bundleContext = DataSourceService.priv.getBundleContext(FrameworkUtil.getBundle(DataSourceResourceFactoryBuilder.class));
 
         // className
         String className = (String) vendorProps.remove(DataSourceDef.className.name());
@@ -226,17 +227,34 @@ public class DataSourceResourceFactoryBuilder implements ResourceFactoryBuilder 
         // libraryRef - scan shared libraries from the application
         className = updateWithLibraries(bundleContext, application, declaringApplication, className, url, driverProps, dsSvcProps);
 
-        // initialPoolSize > 0 not supported
-        value = vendorProps.remove(DataSourceDef.initialPoolSize.name());
-        if (value != null && ((Integer) value) > 0)
-            ConnectorService.logMessage(Level.INFO, "IGNORE_FEATURE_J2CA0240", DataSourceDef.initialPoolSize.name(), jndiName);
-
-        // maxStatements per datasource --> statementCacheSize per connection
+        boolean isUCP = className.startsWith("oracle.ucp");
+        
+        for (String name : ConnectionManagerService.CONNECTION_MANAGER_PROPS) {
+            //keep the datasource definition conn manager props in vender props when using UCP so they are passed to UCP
+            if(!isUCP || !ConnectionManagerService.CONNECTION_MANAGER_DSD_PROPS.contains(name))
+                if ((value = vendorProps.remove(name)) != null) {
+                    cmSvcProps.put(name, value);
+                }
+        }
+        
+        // initialPoolSize > 0 not supported unless using UCP
+        if(!isUCP) {
+            value = vendorProps.remove(DataSourceDef.initialPoolSize.name());
+            if (value != null && ((Integer) value) > 0)
+                ConnectorService.logMessage(Level.INFO, "IGNORE_FEATURE_J2CA0240", DataSourceDef.initialPoolSize.name(), jndiName);
+        }
+        
+        // maxStatements per datasource --> statementCacheSize per connection or for UCP maxStatements per connection
         value = vendorProps.remove(DataSourceDef.maxStatements.name());
         if (value != null) {
-            Integer maxPoolSize = (Integer) cmSvcProps.get(DataSourceDef.maxPoolSize.name());
+            Integer maxPoolSize = (Integer) (isUCP ? vendorProps.get(DataSourceDef.maxPoolSize.name()) : cmSvcProps.get(DataSourceDef.maxPoolSize.name()));
             int stmtCacheSize = maxPoolSize == null || maxPoolSize <= 0 ? 0 : ((Integer) value / maxPoolSize);
-            dsSvcProps.put(DSConfig.STATEMENT_CACHE_SIZE, stmtCacheSize);
+            if(isUCP) {
+                //when using UCP put maxStatements back to vendor props after dividing so it's sent to UCP
+                vendorProps.put(DataSourceDef.maxStatements.name(), stmtCacheSize);
+            } else {
+                dsSvcProps.put(DSConfig.STATEMENT_CACHE_SIZE, stmtCacheSize);
+            }
         }
 
         // serverName defaults to "localhost" (unless it's Derby Embedded, which doesn't have serverName)
@@ -250,6 +268,7 @@ public class DataSourceResourceFactoryBuilder implements ResourceFactoryBuilder 
         PropertyService.parsePasswordProperties(vendorProps);
 
         // Add vendor properties to the data source properties as flattened config
+        dsSvcProps.put(BASE_PROPERTIES_KEY + "config.referenceType", PropertyService.FACTORY_PID);
         for (Map.Entry<String, Object> entry : vendorProps.entrySet())
             dsSvcProps.put(BASE_PROPERTIES_KEY + entry.getKey(), entry.getValue());
 

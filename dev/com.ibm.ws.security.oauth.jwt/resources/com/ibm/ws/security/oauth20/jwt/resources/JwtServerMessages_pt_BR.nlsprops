@@ -1,0 +1,137 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/openidconnect/op/internal/resources/OidcServerMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server OpenID ConnectSecurity
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS2200 - CWWKS2299
+
+JWT_TOKEN_TOO_MANY_TOKENS_ERR=CWWKS2202E: A solicita\u00e7\u00e3o de terminal de token falhou, porque foi encontrado mais de um token JWT.
+JWT_TOKEN_TOO_MANY_TOKENS_ERR.explanation=A solicita\u00e7\u00e3o de terminal de token possui mais de um token JWT. N\u00e3o \u00e9 permitido.
+JWT_TOKEN_TOO_MANY_TOKENS_ERR.useraction=Certifique-se de que apenas um token JWT est\u00e1 na solicita\u00e7\u00e3o de terminal de token.
+
+JWT_TOKEN_NO_TOKEN_EXTERNAL_ERR=CWWKS2203E: A solicita\u00e7\u00e3o de terminal de token falhou, porque n\u00e3o foi encontrado nenhum token JWT.
+JWT_TOKEN_NO_TOKEN_EXTERNAL_ERR.explanation=A solicita\u00e7\u00e3o de terminal de token n\u00e3o tem um token JWT. Ela n\u00e3o pode ser processada.
+JWT_TOKEN_NO_TOKEN_EXTERNAL_ERR.useraction=Certifique-se de que a solicita\u00e7\u00e3o de terminal de token possui um token JWT.
+
+JWT_UNEXPECTED_EXCEPTION_ERR=CWWKS2204E: Durante o processamento da solicita\u00e7\u00e3o de terminal de token, o provedor OpenID Connect obteve uma exce\u00e7\u00e3o inesperada ({0}).
+JWT_UNEXPECTED_EXCEPTION_ERR.explanation=O provedor OpenID Connect obt\u00e9m uma exce\u00e7\u00e3o inesperada.
+JWT_UNEXPECTED_EXCEPTION_ERR.useraction=Entre em contato com a IBM.
+
+JWT_TOKEN_BAD_NUMBER_ERR=CWWKS2205E: A solicita\u00e7\u00e3o de terminal de token falhou. A solicita\u00e7\u00e3o ''{0}'' [{1}] no token JWT n\u00e3o est\u00e1 no formato correto. Ela deve estar no hor\u00e1rio UTC e deve ser um n\u00famero inteiro.
+JWT_TOKEN_BAD_NUMBER_ERR.explanation=A solicita\u00e7\u00e3o JWT n\u00e3o est\u00e1 no formato em n\u00famero inteiro de hor\u00e1rio UTC esperado.
+JWT_TOKEN_BAD_NUMBER_ERR.useraction=Certifique-se de que a solicita\u00e7\u00e3o no token JWT est\u00e1 no formato correto. O hor\u00e1rio UTC deve estar no formato num\u00e9rico.
+
+JWT_TOKEN_BAD_SUB_EXTERNAL_ERR=CWWKS2206E: A solicita\u00e7\u00e3o de terminal de token falhou porque o token JWT n\u00e3o pode ser verificado. Durante a verifica\u00e7\u00e3o da solicita\u00e7\u00e3o ''sub'': [{0}], ocorreu uma exce\u00e7\u00e3o inesperada.
+JWT_TOKEN_BAD_SUB_EXTERNAL_ERR.explanation=A solicita\u00e7\u00e3o de terminal de token falhou. N\u00e3o \u00e9 poss\u00edvel verificar a solicita\u00e7\u00e3o 'sub' do token JWT. Ocorreu uma exce\u00e7\u00e3o inesperada durante a verifica\u00e7\u00e3o.
+JWT_TOKEN_BAD_SUB_EXTERNAL_ERR.useraction=Certifique-se de que a solicita\u00e7\u00e3o 'sub' no token JWT \u00e9 um usu\u00e1rio v\u00e1lido do provedor OpenID Connect.
+
+JWT_TOKEN_BAD_AUD_ERR=CWWKS2207E: A solicita\u00e7\u00e3o de terminal de token falhou. O token JWT n\u00e3o \u00e9 v\u00e1lido porque este provedor OpenID Connect n\u00e3o est\u00e1 inclu\u00eddo em sua solicita\u00e7\u00e3o 'aud' (p\u00fablico).
+JWT_TOKEN_BAD_AUD_ERR.explanation=O provedor OpenID Connect tem de estar na lista de p\u00fablico do token JWT. O ID do provedor OpenID Connect \u00e9 issuerIdentifier na configura\u00e7\u00e3o, ou sua URL de Terminal de Token.  
+JWT_TOKEN_BAD_AUD_ERR.useraction=Certifique-se de que a solicita\u00e7\u00e3o 'aud' no token JWT inclui o provedor OpenID Connect de destino. Verifique os issuerIdentifier na configura\u00e7\u00e3o do provedor OpenID Connect, ou sua URL de Terminal de Token. 
+
+JWT_TOKEN_MISS_REQUIRED_CLAIM_ERR=CWWKS2208E: A solicita\u00e7\u00e3o de terminal de token falhou porque o token JWT n\u00e3o pode ser verificado. O token JWT n\u00e3o possui a solicita\u00e7\u00e3o ''{0}'' requerida.
+JWT_TOKEN_MISS_REQUIRED_CLAIM_ERR.explanation=N\u00e3o \u00e9 poss\u00edvel processar a solicita\u00e7\u00e3o de terminal de token, porque est\u00e1 ausente uma solicita\u00e7\u00e3o obrigat\u00f3ria do token JWT.
+JWT_TOKEN_MISS_REQUIRED_CLAIM_ERR.useraction=Inclua a reivindica\u00e7\u00e3o obrigat\u00f3ria no token JWT.
+
+JWT_TOKEN_ISS_MISMATCH_ERR=CWWKS2209E: A solicita\u00e7\u00e3o de terminal de token falhou. O token JWT n\u00e3o \u00e9 v\u00e1lido porque sua solicita\u00e7\u00e3o ''iss'' [{0}] n\u00e3o corresponde ao URI de redirecionamento ou clientId especificado na configura\u00e7\u00e3o do provedor OpenID Connect. 
+JWT_TOKEN_ISS_MISMATCH_ERR.explanation=A solicita\u00e7\u00e3o do emissor no token JWT deve corresponder o URI de redirecionamento de cliente ou o clientId que est\u00e1 registrado no provedor OpenID Connect.
+JWT_TOKEN_ISS_MISMATCH_ERR.useraction=Certifique-se de que a solicita\u00e7\u00e3o de emissor \u00e9 a URI de redirecionamento de cliente ou o clientId.  Verifique o clientId ou o URI de redirecionamento na configura\u00e7\u00e3o do provedor OpenID Connect. 
+
+JWT_TOKEN_SUB_NOT_FOUND_ERR=CWWKS2210E: A solicita\u00e7\u00e3o de terminal de token falhou. O token JWT n\u00e3o \u00e9 v\u00e1lido porque sua solicita\u00e7\u00e3o ''sub'' [{0}] n\u00e3o foi localizada no registro do usu\u00e1rio do provedor de OpenID Connect.
+JWT_TOKEN_SUB_NOT_FOUND_ERR.explanation=O token JWT n\u00e3o \u00e9 v\u00e1lido porque sua solicita\u00e7\u00e3o de assunto n\u00e3o foi localizada no registro do usu\u00e1rio do provedor de OpenID Connect.
+JWT_TOKEN_SUB_NOT_FOUND_ERR.useraction=Certifique-se de que a solicita\u00e7\u00e3o do assunto no token JWT \u00e9 um usu\u00e1rio no registro de usu\u00e1rios do provedor OpenID Connect.
+
+JWT_TOKEN_EXPIRED_ERR=CWWKS2211E: A solicita\u00e7\u00e3o de terminal de token falhou porque o token JWT expirou. O prazo de expira\u00e7\u00e3o (''exp'') na solicita\u00e7\u00e3o \u00e9 [{0}].
+JWT_TOKEN_EXPIRED_ERR.explanation=O token JWT expirou. O prazo de expira\u00e7\u00e3o \u00e9 indicado na mensagem de erro.
+JWT_TOKEN_EXPIRED_ERR.useraction=Certifique-se de que o token JWT n\u00e3o tenha expirado, sincronize a hora entre os sistemas, ou aumente o prazo de expira\u00e7\u00e3o.
+
+JWT_TOKEN_FUTURE_TOKEN_ERR=CWWKS2212E: A solicita\u00e7\u00e3o de terminal de token falhou porque o token JWT n\u00e3o \u00e9 v\u00e1lido. Sua solicita\u00e7\u00e3o ''iat'' \u00e9 [{0}]. O issued-at-time (''iat'') est\u00e1 no futuro.
+JWT_TOKEN_FUTURE_TOKEN_ERR.explanation=O issued-at-time no token JWT \u00e9 ap\u00f3s o hor\u00e1rio atual. N\u00e3o \u00e9 v\u00e1lido no momento do processamento.
+JWT_TOKEN_FUTURE_TOKEN_ERR.useraction=Sincronize o hor\u00e1rio entre os sistemas, e certifique-se de que o tempo 'iat' \u00e9 v\u00e1lido ou submeta o token JWT posteriormente.
+
+# do not translate tokenMaxLifetime
+JWT_TOKEN_MAX_LIFETIME_ERR=CWWKS2214E: A solicita\u00e7\u00e3o de terminal de token falhou. O token JWT n\u00e3o \u00e9 v\u00e1lido porque sua solicita\u00e7\u00e3o ''iss'' (issue-at-time):[{0}] excede o tempo de vida m\u00e1ximo permitido de Token JWT, o qual \u00e9 definido como tokenMaxLifetime na configura\u00e7\u00e3o: [{1}] segundos.
+JWT_TOKEN_MAX_LIFETIME_ERR.explanation=O token JWT emitido excede o m\u00e1ximo de tempo de vida do token JWT (valor tokenMaxLifetime) que \u00e9 definido na configura\u00e7\u00e3o do provedor OpenID Connect.
+JWT_TOKEN_MAX_LIFETIME_ERR.useraction=Certifique-se de que o token JWT \u00e9 emitido dentro do tempo de vida m\u00e1ximo do token JWT ou aumente o valor tokenMaxLifetime na configura\u00e7\u00e3o do servidor.
+
+JWT_TOKEN_IAT_NEEDED_ERR=CWWKS2215E: A solicita\u00e7\u00e3o de terminal de token falhou. O token JWT precisa fornecer a solicita\u00e7\u00e3o 'iat' porque 'iatRequired' est\u00e1 configurado para true na configura\u00e7\u00e3o do provedor OpenID Connect.
+JWT_TOKEN_IAT_NEEDED_ERR.explanation=O provedor OpenID Connect definiu 'iatRequired' como true. Neste caso, a solicita\u00e7\u00e3o 'iat' no token JWT \u00e9 necess\u00e1ria. A solicita\u00e7\u00e3o 'iat' ausente resulta em uma falha.
+JWT_TOKEN_IAT_NEEDED_ERR.useraction=Forne\u00e7a uma solicita\u00e7\u00e3o 'iat' no token JWT ou configure 'iatRequired' para false no provedor OpenID Connect.
+
+JWT_TOKEN_BEFORE_ERR=CWWKS2216E: A solicita\u00e7\u00e3o de terminal de token falhou porque o token JWT foi solicitado antes de sua solicita\u00e7\u00e3o ''nbf'':[{0}].
+JWT_TOKEN_BEFORE_ERR.explanation=O token JWT possui uma solicita\u00e7\u00e3o not-before, mas o tempo de solicita\u00e7\u00e3o \u00e9 anterior \u00e0 hora nbf (not-before-time). 
+JWT_TOKEN_BEFORE_ERR.useraction=Certifique-se de que um token JWT \u00e9 enviado ap\u00f3s sua solicita\u00e7\u00e3o not-before-time ('nbf').
+
+JWT_TOKEN_DUP_JTI_ERR=CWWKS2217E: A solicita\u00e7\u00e3o de terminal de token falhou. Um outro token JWT com os mesmos ''file'':[{0}] e ''jti'':[{1}] j\u00e1 foi enviado.
+JWT_TOKEN_DUP_JTI_ERR.explanation=Um token JWT, que \u00e9 emitido pelo mesmo emissor, n\u00e3o pode ser submetido duas vezes. O valor jti \u00e9 o ID exclusivo de um token.
+JWT_TOKEN_DUP_JTI_ERR.useraction=Certifique-se de que cada token JWT que \u00e9 emitido pelo mesmo emissor, possui um ID de jti exclusivo.
+
+#
+# Message prefix block: CWWKS2251 - CWWKS2299
+JWT_TOKEN_MISSING_REQUIRED_CLAIM_ERR=CWWKS2251E: A solicita\u00e7\u00e3o de terminal de token falhou. O token JWT no pedido est\u00e1 sem uma solicita\u00e7\u00e3o obrigat\u00f3ria ''{0}''.
+JWT_TOKEN_MISSING_REQUIRED_CLAIM_ERR.explanation=O token JWT n\u00e3o cont\u00e9m todas as solicita\u00e7\u00f5es necess\u00e1rias.
+JWT_TOKEN_MISSING_REQUIRED_CLAIM_ERR.useraction=Forne\u00e7a as solicita\u00e7\u00f5es necess\u00e1rias no token JWT. 
+
+JWT_TOKEN_NO_TOKEN_ERR=CWWKS2257E: A solicita\u00e7\u00e3o de terminal de token falhou. A solicita\u00e7\u00e3o n\u00e3o \u00e9 v\u00e1lida porque o token JWT requerido est\u00e1 ausente.
+JWT_TOKEN_NO_TOKEN_ERR.explanation=A solicita\u00e7\u00e3o n\u00e3o \u00e9 v\u00e1lida porque o token JWT requerido est\u00e1 ausente.
+JWT_TOKEN_NO_TOKEN_ERR.useraction=Certifique-se de que o pedido cont\u00e9m um token JWT.
+
+JWT_TOKEN_UNEXPECTED_EXCEPTION=CWWKS2258E: A solicita\u00e7\u00e3o de terminal de token falhou. O m\u00e9todo [{0}] recebe uma exce\u00e7\u00e3o inesperada [{1}].
+JWT_TOKEN_UNEXPECTED_EXCEPTION.explanation=O servidor obt\u00e9m uma exce\u00e7\u00e3o que n\u00e3o era esperada.
+JWT_TOKEN_UNEXPECTED_EXCEPTION.useraction=Certifique-se de que a configura\u00e7\u00e3o no arquivo server.xml esteja correta. Se isto ocorrer consistentemente, entre em contato com a IBM.
+
+JWT_TOKEN_TOKEN_BEFORE_NBF_ERR=CWWKS2260E: A solicita\u00e7\u00e3o de terminal de token falhou porque o token JWT foi solicitado antes da sua solicita\u00e7\u00e3o ''nbf''. O hor\u00e1rio atual mais clock skew no provedor OpenID Connect \u00e9 [{0}]. O hor\u00e1rio do ''nbf'' \u00e9 [{1}].
+JWT_TOKEN_TOKEN_BEFORE_NBF_ERR.explanation=O token JWT n\u00e3o \u00e9 v\u00e1lido. \u00c9 apresentada antes de sua solicita\u00e7\u00e3o 'nbf' (not-before-time). 
+JWT_TOKEN_TOKEN_BEFORE_NBF_ERR.useraction=Certifique-se de que o token JWT no pedido \u00e9 um hor\u00e1rio ap\u00f3s not-before-time ('nbf'). Sincronize o tempo entre o provedor e cliente OpenID Connect, ou aumente o clock skew na configura\u00e7\u00e3o do provedor OpenID Connect.
+
+JWT_TOKEN_IAT_FUTURE_ERR=CWWKS2262E: A solicita\u00e7\u00e3o de terminal de token falhou. O hor\u00e1rio da solicita\u00e7\u00e3o ''iat'' do token JWT est\u00e1 no futuro: [{0}]. O hor\u00e1rio atual mais o clock skew: [{1}]. 
+JWT_TOKEN_IAT_FUTURE_ERR.explanation=A solicita\u00e7\u00e3o 'iat' no token JWT indica que o token ser\u00e1 emitido no futuro. N\u00e3o \u00e9 v\u00e1lido na hora atual no provedor OpenID Connect.
+JWT_TOKEN_IAT_FUTURE_ERR.useraction=Certifique-se de que a hora entre o cliente e o provedor OpenID Connect esteja sincronizada e n\u00e3o envie um token JWT cujo 'iat' esteja no futuro. 
+
+JWT_TOKEN_EXPIRE_ERR=CWWKS2263E: A solicita\u00e7\u00e3o de terminal de token falhou. O hor\u00e1rio do token JWT passou sua solicita\u00e7\u00e3o ''exp'': [{0}]. O hor\u00e1rio atual mais clock skew no provedor OpenID Connect \u00e9 [{1}].
+JWT_TOKEN_EXPIRE_ERR.explanation=O hor\u00e1rio do 'exp' do token JWT tiver passado o hor\u00e1rio atual mais o clock skew. Isso n\u00e3o \u00e9 v\u00e1lido. 
+JWT_TOKEN_EXPIRE_ERR.useraction=Certifique-se de que o token JWT n\u00e3o expira ou sincroniza o hor\u00e1rio entre o cliente e o provedor OpenID Connect. 
+
+JWT_TOKEN_INVALID_ISS_ERR=CWWKS2265E: A solicita\u00e7\u00e3o de terminal de token falhou. O emissor de token JWT [{0}] n\u00e3o corresponde ao clientId [{2}] ou a qualquer URI de redirecionamento como: [{1}]. 
+JWT_TOKEN_INVALID_ISS_ERR.explanation=A solicita\u00e7\u00e3o 'iss' no token JWT deve ser o ID do cliente ou qualquer URI de redirecionamento do cliente.
+JWT_TOKEN_INVALID_ISS_ERR.useraction=Certifique-se de que a solicita\u00e7\u00e3o 'iss' no token JWT \u00e9 o ID do cliente ou qualquer URI de redirecionamento do cliente.
+
+JWT_TOKEN_INVALID_AUD_ERR=CWWKS2266E: A solicita\u00e7\u00e3o de terminal de token falhou. A solicita\u00e7\u00e3o de p\u00fablico [{0}] n\u00e3o corresponde ao identificador do emissor do provedor OpenID Connect [{1}] ou o terminal de token [{2}].
+JWT_TOKEN_INVALID_AUD_ERR.explanation=A solicita\u00e7\u00e3o 'aud' no token JWT deve ser o identificador do emissor ou o terminal de token do provedor OpenID Connect.
+JWT_TOKEN_INVALID_AUD_ERR.useraction=Certifique-se de que a solicita\u00e7\u00e3o 'aud' no token JWT \u00e9 o identificador do emissor ou o terminal de token do provedor OpenID Connect.
+
+JWT_TOKEN_INVALID_AUD_IDENTIFIER_ERR=CWWKS2267E: A solicita\u00e7\u00e3o de terminal de token falhou. A solicita\u00e7\u00e3o do p\u00fablico \u00e9 [{0}] que n\u00e3o corresponde ao identificador do emissor do provedor [{1}], que \u00e9 definida como issuerIdentifier do openidConnectProvider na configura\u00e7\u00e3o.
+JWT_TOKEN_INVALID_AUD_IDENTIFIER_ERR.explanation=A solicita\u00e7\u00e3o 'aud' no token JWT deve ser o identificador do emissor que est\u00e1 explicitamente especificado na configura\u00e7\u00e3o.
+JWT_TOKEN_INVALID_AUD_IDENTIFIER_ERR.useraction=Certifique-se de que a solicita\u00e7\u00e3o 'aud' no token JWT corresponde ao identificador do emissor definido na configura\u00e7\u00e3o.
+
+JWT_TOKEN_REGISTRY_EXCEPTION_ERR=CWWKS2268E: A solicita\u00e7\u00e3o de terminal de token falhou. Durante a verifica\u00e7\u00e3o da solicita\u00e7\u00e3o ''sub'' [{0}], ele obteve uma exce\u00e7\u00e3o de registro inesperada [{1}]
+JWT_TOKEN_REGISTRY_EXCEPTION_ERR.explanation=Durante a verifica\u00e7\u00e3o da solicita\u00e7\u00e3o 'sub' no Registro do Usu\u00e1rio do provedor OpenID Connect. Ocorreu uma Exce\u00e7\u00e3o inesperada.
+JWT_TOKEN_REGISTRY_EXCEPTION_ERR.useraction=Certifique-se de que o Registro do Usu\u00e1rio do provedor OpenID Connect est\u00e1 funcionando corretamente e o sub(usu\u00e1rio) \u00e9 um usu\u00e1rio v\u00e1lido no Registro.
+
+JWT_TOKEN_NO_PUBLIC_KEY_DETAIL_ERR=CWWKS2269E: A solicita\u00e7\u00e3o de terminal de token falhou. N\u00e3o \u00e9 poss\u00edvel obter um armazenamento confi\u00e1vel para verificar o Token JWT devido a uma exce\u00e7\u00e3o [{0}]. Os valores de configura\u00e7\u00e3o em jwtGrantType s\u00e3o signatureAlgorithm: [{1}] trustStoreRef: [{2}] e o nome alternativo \u00e9: [{3}]
+JWT_TOKEN_NO_PUBLIC_KEY_DETAIL_ERR.explanation=O algoritmo de assinatura indicado para o Token JWT precisa de uma chave p\u00fablica para verificar o Token JWT recebido, mas falhou ao obter um.  
+JWT_TOKEN_NO_PUBLIC_KEY_DETAIL_ERR.useraction=Assegure-se de que a configura\u00e7\u00e3o de jwtGrantType e keyStore esteja configurada adequadamente e tamb\u00e9m assegure-se de que a senha e o local de trustStore estejam corretos. 
+
+JWT_TOKEN_NO_PUBLIC_KEY_ERR=CWWKS2270E: A solicita\u00e7\u00e3o de terminal de token falhou. N\u00e3o \u00e9 poss\u00edvel obter um armazenamento confi\u00e1vel para verificar o Token JWT. O algoritmo de assinatura para verifica\u00e7\u00e3o no provedor OpenID Connect \u00e9 [{0}]. 
+JWT_TOKEN_NO_PUBLIC_KEY_ERR.explanation=O provedor OpenID Connect n\u00e3o pode obter um armazenamento confi\u00e1vel para verificar o token JWT.  A configura\u00e7\u00e3o do openidConnectProvider precisa ser configurada adequadamente. 
+JWT_TOKEN_NO_PUBLIC_KEY_ERR.useraction=Assegure-se de que a configura\u00e7\u00e3o de jwtGrantType e do trustStoreRef no openidConnectProvider esteja configurada adequadamente e tamb\u00e9m assegure-se de que a senha e o local de trustStore estejam corretos.
+
+JWT_UNEXPECTED_ERR=CWWKS2271E: Durante o processamento da solicita\u00e7\u00e3o de terminal de token, o Provedor OpenID Connect falhou ao processar devido a [{0}].
+JWT_UNEXPECTED_ERR.explanation=O Provedor OpenID Connect obt\u00e9m um erro inesperado.
+JWT_UNEXPECTED_ERR.useraction=Assegure-se de que a configura\u00e7\u00e3o esteja configurada adequadamente. Se o problema persistir, entre em contato com a IBM.
+
+JWT_TOKEN_OAUTH_RS256_NOT_SUPPORTED_ERR=CWWKS2272E: A solicita\u00e7\u00e3o de terminal de token OAuth falhou. O Token JWT \u00e9 assinado com RS256. Ele \u00e9 suportado somente com o terminal de token OpenID Connect.
+JWT_TOKEN_OAUTH_RS256_NOT_SUPPORTED_ERR.explanation=O Token JWT assinado com o algoritmo de assinatura RS256 n\u00e3o \u00e9 suportado no terminal de token OAuth. 
+JWT_TOKEN_OAUTH_RS256_NOT_SUPPORTED_ERR.useraction=Para usar o Token JWT com o algoritmo de assinatura RS256, configure uma configura\u00e7\u00e3o openidConnectProvider adequada e tamb\u00e9m envie a solicita\u00e7\u00e3o por meio do terminal de token OpenID Connect.

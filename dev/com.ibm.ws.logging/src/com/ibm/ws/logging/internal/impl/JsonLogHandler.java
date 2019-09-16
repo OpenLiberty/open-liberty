@@ -23,6 +23,7 @@ import com.ibm.ws.logging.collector.CollectorConstants;
 import com.ibm.ws.logging.collector.CollectorJsonUtils;
 import com.ibm.ws.logging.collector.Formatter;
 import com.ibm.ws.logging.data.GenericData;
+import com.ibm.ws.logging.internal.NLSConstants;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.CollectorManager;
 import com.ibm.wsspi.collector.manager.SynchronousHandler;
@@ -32,7 +33,7 @@ import com.ibm.wsspi.collector.manager.SynchronousHandler;
  */
 public abstract class JsonLogHandler implements SynchronousHandler, Formatter {
 
-    private static final TraceComponent tc = Tr.register(JsonLogHandler.class);
+    private static final TraceComponent tc = Tr.register(JsonLogHandler.class, NLSConstants.GROUP, NLSConstants.LOGGING_NLS);
 
     protected String serverHostName = null;
     protected String serverName = null;
@@ -64,8 +65,8 @@ public abstract class JsonLogHandler implements SynchronousHandler, Formatter {
      * Constructor for the JsonLoghandler which will establish server information needed
      * to fill in the fields of the JSON data object
      *
-     * @param serverName The wlp servername
-     * @param wlpUserDir The wlp user directory
+     * @param serverName  The wlp servername
+     * @param wlpUserDir  The wlp user directory
      * @param sourcesList The first sourceList to subscribe to collectorManager with
      */
     public JsonLogHandler(String serverName, String wlpUserDir, List<String> sourcesList) {
@@ -158,7 +159,7 @@ public abstract class JsonLogHandler implements SynchronousHandler, Formatter {
     public Object formatEvent(String source, String location, Object event, String[] tags, int maxFieldLength) {
 
         String eventType = CollectorJsonUtils.getEventType(source, location);
-        String jsonStr = CollectorJsonUtils.jsonifyEvent(event, eventType, serverName, wlpUserDir, serverHostName, "1.1", tags,
+        String jsonStr = CollectorJsonUtils.jsonifyEvent(event, eventType, serverName, wlpUserDir, serverHostName, "JSON", tags,
                                                          MAXFIELDLENGTH);
         return jsonStr;
     }

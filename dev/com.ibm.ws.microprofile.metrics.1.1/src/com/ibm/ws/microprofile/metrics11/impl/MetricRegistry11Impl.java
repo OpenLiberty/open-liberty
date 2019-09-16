@@ -10,6 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.metrics11.impl;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.NoSuchElementException;
 
 import javax.enterprise.inject.Vetoed;
@@ -19,6 +23,7 @@ import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import org.eclipse.microprofile.metrics.Metadata;
 import org.eclipse.microprofile.metrics.Metric;
 import org.eclipse.microprofile.metrics.MetricRegistry;
+import org.eclipse.microprofile.metrics.MetricType;
 
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.metrics.impl.MetricRegistryImpl;
@@ -33,7 +38,7 @@ public class MetricRegistry11Impl extends MetricRegistryImpl {
 
     /**
      * Creates a new {@link MetricRegistry}.
-     * 
+     *
      * @param configResolver
      */
     public MetricRegistry11Impl(ConfigProviderResolver configResolver) {
@@ -44,7 +49,7 @@ public class MetricRegistry11Impl extends MetricRegistryImpl {
     @Override
     public <T extends Metric> T register(String name, T metric) throws IllegalArgumentException {
         // For MP Metrics 1.0, MetricType.from(Class in) does not support lambdas or proxy classes
-        return register(new Metadata(name, from(metric)), metric);
+        return register(newMetadata(name, from(metric)), metric);
     }
 
     @Override
@@ -57,14 +62,14 @@ public class MetricRegistry11Impl extends MetricRegistryImpl {
     @FFDCIgnore({ NoSuchElementException.class })
     public <T extends Metric> T register(Metadata metadata, T metric) throws IllegalArgumentException {
         //Create Copy of Metadata object so it can't be changed after its registered
-        Metadata metadataCopy = new Metadata(metadata.getName(), metadata.getDisplayName(), metadata.getDescription(), metadata.getTypeRaw(), metadata.getUnit());
+        Metadata metadataCopy = newMetadata(metadata);
         for (String tag : metadata.getTags().keySet()) {
             metadataCopy.getTags().put(tag, metadata.getTags().get(tag));
         }
         metadataCopy.setReusable(metadata.isReusable());
 
         //Append global tags to the metric
-        Config config = configResolver.getConfig(Thread.currentThread().getContextClassLoader());
+        Config config = configResolver.getConfig(getThreadContextClassLoader());
         try {
             String[] globaltags = config.getValue("MP_METRICS_TAGS", String.class).split(",");
             String currentTags = metadataCopy.getTagsAsString();
@@ -89,4 +94,38 @@ public class MetricRegistry11Impl extends MetricRegistryImpl {
         return metric;
     }
 
+    private static ClassLoader getThreadContextClassLoader() {
+        if (System.getSecurityManager() == null) {
+            return Thread.currentThread().getContextClassLoader();
+        }
+        return AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> {
+            return Thread.currentThread().getContextClassLoader();
+        });
+    }
+
+    private static Metadata newMetadata(String name, MetricType type) {
+        if (System.getSecurityManager() == null) {
+            return new Metadata(name, type);
+        }
+        try {
+            return AccessController.doPrivileged((PrivilegedExceptionAction<Metadata>) () -> {
+                return new Metadata(name, type);
+            });
+        } catch (PrivilegedActionException pae) {
+            throw new IllegalArgumentException(pae.getCause());
+        }
+    }
+
+    private static Metadata newMetadata(Metadata metadata) {
+        if (System.getSecurityManager() == null) {
+            return new Metadata(metadata.getName(), metadata.getDisplayName(), metadata.getDescription(), metadata.getTypeRaw(), metadata.getUnit());
+        }
+        try {
+            return AccessController.doPrivileged((PrivilegedExceptionAction<Metadata>) () -> {
+                return new Metadata(metadata.getName(), metadata.getDisplayName(), metadata.getDescription(), metadata.getTypeRaw(), metadata.getUnit());
+            });
+        } catch (PrivilegedActionException pae) {
+            throw new IllegalArgumentException(pae.getCause());
+        }
+    }
 }

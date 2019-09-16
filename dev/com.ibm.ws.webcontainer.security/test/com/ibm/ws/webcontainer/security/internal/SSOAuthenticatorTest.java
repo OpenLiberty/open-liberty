@@ -273,6 +273,8 @@ public class SSOAuthenticatorTest {
                 one(webAppSecConfig).isUseOnlyCustomCookieName();
                 will(returnValue(false));
 
+                allowing(ssoCookieHelper).addJwtSsoCookiesToResponse(authSubject, req, resp);
+
                 // Now authenticate, which should be successful and the result
                 // immediately returned
                 one(authService).authenticate(with(equal(JaasLoginConfigConstants.SYSTEM_WEB_INBOUND)), with(any(AuthenticationData.class)), with(equal((Subject) null)));

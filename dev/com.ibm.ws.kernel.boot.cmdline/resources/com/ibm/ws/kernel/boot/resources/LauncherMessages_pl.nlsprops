@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2016 IBM Corporation and others.
+# Copyright (c) 2010, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -1018,3 +1018,5 @@ info.no.servers.defined=Brak serwer\u00f3w zdefiniowanych wzgl\u0119dem katalogu
 info.list.of.defined.servers=Nast\u0119puj\u0105ce serwery zosta\u0142y zdefiniowane wzgl\u0119dem katalogu u\u017cytkownika {0}.
 info.communicate.server=Wyst\u0105pi\u0142 b\u0142\u0105d komunikacji \
 mi\u0119dzy komend\u0105 {0} i serwerem {1}.
+
+info.serialFilterLoaded=Za\u0142adowano agent filtru szeregowego.

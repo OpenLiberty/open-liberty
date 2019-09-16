@@ -170,9 +170,12 @@ error.unique.value.conflict=CWWKG0031E: Hodnota {1} zadan\u00e1 pro jedine\u010d
 error.unique.value.conflict.explanation=Hodnota pro zadan\u00fd atribut mus\u00ed b\u00fdt jedine\u010dn\u00e1, ale je ji\u017e pou\u017e\u00edv\u00e1na.
 error.unique.value.conflict.useraction=Zm\u011b\u0148te hodnotu atributu tak, aby byla jedine\u010dn\u00e1.
 
-warn.config.invalid.value=CWWKG0032W: Neo\u010dek\u00e1van\u00e1 hodnota vlastnosti [{0}], hodnota = [{1}]. O\u010dek\u00e1van\u00e9 hodnoty jsou: {2}.
+# {3} is either the formatted value of default.value.in.use or an empty string
+warn.config.invalid.value=CWWKG0032W: Neo\u010dek\u00e1van\u00e1 hodnota vlastnosti [{0}], hodnota = [{1}]. O\u010dek\u00e1van\u00e9 hodnoty jsou: {2}. {3} 
 warn.config.invalid.value.explanation=Zadanou hodnotu vlastnosti nelze pou\u017e\u00edt.
 warn.config.invalid.value.useraction=Opravte hodnotu vlastnosti tak, aby pou\u017e\u00edvala o\u010dek\u00e1vanou hodnotu.
+
+default.value.in.use=Pou\u017e\u00edvan\u00e1 v\u00fdchoz\u00ed hodnota: {0}.
 
 warning.pid.not.found=CWWKG0033W: Hodnota [{1}] zadan\u00e1 pro atribut odkazu [{0}] nebyla v konfiguraci nalezena.
 warning.pid.not.found.explanation=Zadan\u00e1 hodnota mus\u00ed b\u00fdt prvkem v konfiguraci.
@@ -292,29 +295,10 @@ error.factoryOnly=CWWKG0061E: P\u0159etrv\u00e1vaj\u00edc\u00ed identita {0} nen
 error.factoryOnly.explanation=Atribut ibm:extends lze pou\u017e\u00edt pouze pro identity p\u0159etrv\u00e1vaj\u00edc\u00ed prost\u0159ednictv\u00edm tov\u00e1rny.
 error.factoryOnly.useraction=Zm\u011b\u0148te konfiguraci p\u0159etrv\u00e1vaj\u00edc\u00ed identity tak, aby pou\u017e\u00edvala identitu p\u0159etrv\u00e1vaj\u00edc\u00ed prost\u0159ednictv\u00edm tov\u00e1rny nebo odeberte atribut ibm:extends z definice komponenty objektu. Jedn\u00e1 se o intern\u00ed chybu. \u0158i\u010fte se standardn\u00edmi postupy pro ur\u010den\u00ed probl\u00e9mu s produktem WebSphere.
 
-#"ibm:extendsAlias" is an xml attribute name and should not be translated
-error.factoryOnly.extendsAlias=CWWKG0096E: P\u0159etrv\u00e1vaj\u00edc\u00ed identita {0} nen\u00ed identitou p\u0159etrv\u00e1vaj\u00edc\u00ed prost\u0159ednictv\u00edm tov\u00e1rny, a tak nem\u016f\u017ee m\u00edt atribut ibm:extendsAlias pro {1}. Zm\u011b\u0148te \
-konfiguraci p\u0159etrv\u00e1vaj\u00edc\u00ed identity tak, aby pou\u017e\u00edvala identitu p\u0159etrv\u00e1vaj\u00edc\u00ed prost\u0159ednictv\u00edm tov\u00e1rny, nebo z p\u0159etrv\u00e1vaj\u00edc\u00ed identity odeberte atribut ibm:extendsAlias.
-error.factoryOnly.extendsAlias.explanation=Atribut ibm:extendsAlias lze pou\u017e\u00edt pouze na identity p\u0159etrv\u00e1vaj\u00edc\u00ed prost\u0159ednictv\u00edm tov\u00e1ren, kter\u00e9 roz\u0161i\u0159uj\u00ed jinou identitu p\u0159etrv\u00e1vaj\u00edc\u00ed \
-prost\u0159ednictv\u00edm tov\u00e1rny.
-error.factoryOnly.extendsAlias.useraction=Zm\u011b\u0148te konfiguraci p\u0159etrv\u00e1vaj\u00edc\u00ed identity tak, aby pou\u017e\u00edvala identitu p\u0159etrv\u00e1vaj\u00edc\u00ed prost\u0159ednictv\u00edm tov\u00e1rny, nebo z p\u0159etrv\u00e1vaj\u00edc\u00ed identity odeberte \
-atribut ibm:extendsAlias.
-
 #"ibm:extends" is an xml attribute name and should not be translated
 error.superFactoryOnly=CWWKG0062E: P\u0159etrv\u00e1vaj\u00edc\u00ed identita {0} nen\u00ed identitou p\u0159etrv\u00e1vaj\u00edc\u00ed prost\u0159ednictv\u00edm tov\u00e1rny, a proto ji nelze roz\u0161\u00ed\u0159it p\u0159etrv\u00e1vaj\u00edc\u00ed identitou {1}.
 error.superFactoryOnly.explanation=Atribut ibm:extends lze pou\u017e\u00edt pouze pro identity p\u0159etrv\u00e1vaj\u00edc\u00ed prost\u0159ednictv\u00edm tov\u00e1rny.
 error.superFactoryOnly.useraction=Zm\u011b\u0148te konfiguraci p\u0159etrv\u00e1vaj\u00edc\u00ed identity tak, aby pou\u017e\u00edvala identitu p\u0159etrv\u00e1vaj\u00edc\u00ed prost\u0159ednictv\u00edm tov\u00e1rny nebo odeberte atribut ibm:extends z definice komponenty objektu. Jedn\u00e1 se o intern\u00ed chybu. \u0158i\u010fte se standardn\u00edmi postupy pro ur\u010den\u00ed probl\u00e9mu s produktem WebSphere.
-
-#"ibm:extendsAlias" is an xml attribute name and should not be translated
-error.ExtendsAliasMustExtend=CWWKG0097E: P\u0159etrv\u00e1vaj\u00edc\u00ed identita {0} ur\u010duje atribut ibm:extendsAlias pro {1}, a proto mus\u00ed ur\u010dovat atribut ibm:extends.
-error.ExtendsAliasMustExtend.explanation=Kdy\u017e ur\u010d\u00edte atribut ibm:extendsAlias, mus\u00edte ur\u010dit i atribut ibm:extends.
-error.ExtendsAliasMustExtend.useraction=Ur\u010dete atribut ibm:extends.
-
-#"ibm:parentPid" and "ibm:childAlias" are xml attribute names and should not be translated
-error.parentpid.and.childalias=CWWKG0098E: P\u0159etrv\u00e1vaj\u00edc\u00ed identita {0} ur\u010duje atribut {1} pro {2}, a proto mus\u00ed ur\u010dovat atribut {3}.
-error.parentpid.and.childalias.explanation=Metatyp ud\u00e1v\u00e1, \u017ee byl \u010d\u00e1ste\u010dn\u011b ur\u010den vno\u0159en\u00fd prvek child-first. Vno\u0159en\u00e9 prvky child-first mus\u00ed ur\u010dovat atribut ibm:parentPid i atribut \
-ibm:childAlias.
-error.parentpid.and.childalias.useraction=Pokud je tento metatyp ur\u010den\u00fd pro vno\u0159en\u00fd prvek child-first, zadejte chyb\u011bj\u00edc\u00ed atribut. Jinak odeberte zadan\u00fd atribut. 
 
 #"ibm:rename" is an xml attribute name and should not be translated
 schemagen.rename.attribute.missing=CWWKG0063E: Nelze p\u0159ejmenovat definici atributu {1} podle atributu ibm:rename {2} v p\u0159etrv\u00e1vaj\u00edc\u00ed identit\u011b {0}.
@@ -435,9 +419,9 @@ error.variable.name.missing=CWWKG0091E: Mus\u00ed b\u00fdt uveden atribut n\u00e
 error.variable.name.missing.explanation=Konfigurace serveru obsahuje prvek konfigurace prom\u011bnn\u00e9, kter\u00fd nem\u00e1 atribut n\u00e1zvu.
 error.variable.name.missing.useraction=P\u0159idejte do prom\u011bnn\u00e9 atribut n\u00e1zvu.
 
-error.variable.value.missing=CWWKG0092E: Mus\u00ed b\u00fdt uveden atribut hodnoty pro prom\u011bnnou na \u0159\u00e1dku {0} prost\u0159edku {1}
-error.variable.value.missing.explanation=Konfigurace serveru obsahuje prvek konfigurace prom\u011bnn\u00e9, kter\u00fd nem\u00e1 atribut hodnoty.
-error.variable.value.missing.useraction=P\u0159idejte do prom\u011bnn\u00e9 atribut hodnoty.
+error.variable.value.missing=CWWKG0092E: Mus\u00ed b\u00fdt uveden atribut hodnoty nebo atribut defaultValue pro prom\u011bnnou na \u0159\u00e1dku {0} prost\u0159edku {1}
+error.variable.value.missing.explanation=Konfigurace serveru obsahuje prvek konfigurace prom\u011bnn\u00e9, kter\u00fd nem\u00e1 atribut hodnoty nebo atribut defaultValue.
+error.variable.value.missing.useraction=P\u0159idejte atribut hodnoty nebo atribut defaultValue do prom\u011bnn\u00e9.
 
 audit.dropin.being.processed=CWWKG0093A: Zpracov\u00e1n\u00ed prost\u0159edku vkl\u00e1d\u00e1n\u00ed konfigurace: {0}
 audit.dropin.being.processed.explanation=Obsah ur\u010den\u00e9ho prost\u0159edku bude vlo\u017een do konfigurace serveru.
@@ -450,6 +434,25 @@ warning.unrecognized.merge.behavior.useraction=Aktualizac\u00ed konfigurace serv
 error.missing.required.attribute.singleton=CWWKG0095E: Prvku {0} chyb\u00ed povinn\u00fd atribut {1}.
 error.missing.required.attribute.singleton.explanation=Chyb\u011bj\u00edc\u00ed atribut je povinn\u00fd v konfigura\u010dn\u00edm souboru server.xml nebo v jednom z jeho odkazovan\u00fdch konfigura\u010dn\u00edch soubor\u016f.
 error.missing.required.attribute.singleton.useraction=P\u0159idejte atribut do konfigura\u010dn\u00edho souboru server.xml nebo do jednoho z jeho odkazovan\u00fdch konfigura\u010dn\u00edch soubor\u016f.
+
+#"ibm:extendsAlias" is an xml attribute name and should not be translated
+error.factoryOnly.extendsAlias=CWWKG0096E: P\u0159etrv\u00e1vaj\u00edc\u00ed identita {0} nen\u00ed identitou p\u0159etrv\u00e1vaj\u00edc\u00ed prost\u0159ednictv\u00edm tov\u00e1rny, a tak nem\u016f\u017ee m\u00edt atribut ibm:extendsAlias pro {1}. Zm\u011b\u0148te \
+konfiguraci p\u0159etrv\u00e1vaj\u00edc\u00ed identity tak, aby pou\u017e\u00edvala identitu p\u0159etrv\u00e1vaj\u00edc\u00ed prost\u0159ednictv\u00edm tov\u00e1rny, nebo z p\u0159etrv\u00e1vaj\u00edc\u00ed identity odeberte atribut ibm:extendsAlias.
+error.factoryOnly.extendsAlias.explanation=Atribut ibm:extendsAlias lze pou\u017e\u00edt pouze na identity p\u0159etrv\u00e1vaj\u00edc\u00ed prost\u0159ednictv\u00edm tov\u00e1ren, kter\u00e9 roz\u0161i\u0159uj\u00ed jinou identitu p\u0159etrv\u00e1vaj\u00edc\u00ed \
+prost\u0159ednictv\u00edm tov\u00e1rny.
+error.factoryOnly.extendsAlias.useraction=Zm\u011b\u0148te konfiguraci p\u0159etrv\u00e1vaj\u00edc\u00ed identity tak, aby pou\u017e\u00edvala identitu p\u0159etrv\u00e1vaj\u00edc\u00ed prost\u0159ednictv\u00edm tov\u00e1rny, nebo z p\u0159etrv\u00e1vaj\u00edc\u00ed identity odeberte \
+atribut ibm:extendsAlias.
+
+#"ibm:extendsAlias" is an xml attribute name and should not be translated
+error.ExtendsAliasMustExtend=CWWKG0097E: P\u0159etrv\u00e1vaj\u00edc\u00ed identita {0} ur\u010duje atribut ibm:extendsAlias pro {1}, a proto mus\u00ed ur\u010dovat atribut ibm:extends.
+error.ExtendsAliasMustExtend.explanation=Kdy\u017e ur\u010d\u00edte atribut ibm:extendsAlias, mus\u00edte ur\u010dit i atribut ibm:extends.
+error.ExtendsAliasMustExtend.useraction=Ur\u010dete atribut ibm:extends.
+
+#"ibm:parentPid" and "ibm:childAlias" are xml attribute names and should not be translated
+error.parentpid.and.childalias=CWWKG0098E: P\u0159etrv\u00e1vaj\u00edc\u00ed identita {0} ur\u010duje atribut {1} pro {2}, a proto mus\u00ed ur\u010dovat atribut {3}.
+error.parentpid.and.childalias.explanation=Metatyp ud\u00e1v\u00e1, \u017ee byl \u010d\u00e1ste\u010dn\u011b ur\u010den vno\u0159en\u00fd prvek child-first. Vno\u0159en\u00e9 prvky child-first mus\u00ed ur\u010dovat atribut ibm:parentPid i atribut \
+ibm:childAlias.
+error.parentpid.and.childalias.useraction=Pokud je tento metatyp ur\u010den\u00fd pro vno\u0159en\u00fd prvek child-first, zadejte chyb\u011bj\u00edc\u00ed atribut. Jinak odeberte zadan\u00fd atribut. 
 
 #"ibm:extendsAlias" is an xml attribute name and should not be translated
 error.extendsAlias.collision=CWWKG0100E: V jedn\u00e9 hierarchii prvk\u016f extends je duplicitn\u00ed atribut ibm:extendsAlias {2}. Identifik\u00e1tory PID jsou {0} a {1}. Ka\u017ed\u00fd atribut \

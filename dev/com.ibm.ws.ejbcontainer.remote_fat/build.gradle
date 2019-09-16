@@ -24,13 +24,29 @@ configurations {
 
 dependencies {
   ejbTools 'test:com.ibm.ws.ejbcontainer.fat_tools:1.+'
+  // Dependencies needed for when running on Java 9 (EE-type APIs were removed from JDK)
+  requiredLibs 'com.ibm.ws.org.apache.yoko:yoko-spec-corba:1.5.+'
 }
 
-
-task addEJBTools(type: Copy) {
-  from configurations.ejbTools
-  into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.ejbcontainer.remote.fat.RemoteServer/lib/global"
-  rename 'com.ibm.ws.ejbcontainer.fat_tools-(.*).jar', 'com.ibm.ws.ejbcontainer.fat_tools.jar'
+task addEJBTools {
+  dependsOn ':com.ibm.ws.ejbcontainer.fat_tools:release'
+  doLast {
+    copy {
+      from configurations.ejbTools
+      into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.ejbcontainer.remote.fat.RemoteServer/lib/global"
+      rename 'com.ibm.ws.ejbcontainer.fat_tools-(.*).jar', 'com.ibm.ws.ejbcontainer.fat_tools.jar'
+    }
+    copy {
+      from configurations.ejbTools
+      into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.ejbcontainer.remote.fat.RemoteServerClient/lib/global"
+      rename 'com.ibm.ws.ejbcontainer.fat_tools-(.*).jar', 'com.ibm.ws.ejbcontainer.fat_tools.jar'
+    }
+    copy {
+      from configurations.ejbTools
+      into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.ejbcontainer.remote.fat.RemoteSessionServer/lib/global"
+      rename 'com.ibm.ws.ejbcontainer.fat_tools-(.*).jar', 'com.ibm.ws.ejbcontainer.fat_tools.jar'
+    }
+  }
 }
 
 addRequiredLibraries {

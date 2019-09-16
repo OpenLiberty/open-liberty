@@ -89,6 +89,15 @@ public class AuditEvent {
     public final static String TARGET_JMX_MBEAN_QUERYEXP = "target.jmx.mbean.queryExp";
 
     public final static String TARGET_APPNAME = "target.appname";
+    public final static String TARGET_APPLICATION_ID = "target.applicationId";
+    public final static String TARGET_TOKEN_ID = "target.tokenId";
+    public final static String TARGET_CLIENT_ID = "target.clientId";
+    public final static String TARGET_ENDPOINT = "target.endpoint";
+    public final static String TARGET_PROVIDER = "target.provider";
+    public final static String TARGET_INITIATOR_ROLE = "target.initiatorRole";
+    public final static String TARGET_NUMBER_REVOKED = "target.numberRevoked";
+    public final static String TARGET_USERID = "target.userId";
+
     public final static String TARGET_PARAMS = "target.params";
     public final static String TARGET_TYPEURI = "target.typeURI";
     public final static String TARGET_HOST_ADDRESS = "target.host.address";
@@ -122,6 +131,8 @@ public class AuditEvent {
     public static final String TARGET_SAF_PROFILE = "target.saf.profile";
     public static final String TARGET_SAF_CLASS = "target.saf.class";
     public static final String TARGET_AUTHORIZATION_DECISION = "target.authorization.decision";
+    public static final String TARGET_ACCESS_LEVEL = "target.access.level";
+    public static final String TARGET_SAF_ERROR_MESSAGE = "target.saf.error.message";
 
     public final static String INITIATOR = "initiator";
     public final static String INITIATOR_ID = "initiator.id";

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -27,6 +26,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.threading.CancellableStage;
 import com.ibm.ws.threading.PolicyTaskCallback;
 import com.ibm.ws.threading.PolicyTaskFuture;
 import com.ibm.ws.threading.StartTimeoutException;
@@ -57,10 +57,9 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
     final PolicyTaskCallback callback;
 
     /**
-     * This optional reference to a CompletableFuture that is associated with this task, allows the
-     * PolicyExecutor, upon shutdownNow, to cancel CompletableFuture instances corresponding to queued tasks.
+     * Allows the PolicyExecutor, upon shutdownNow, to cancel CompletionStage instances corresponding to queued tasks.
      */
-    AtomicReference<Future<?>> completableFutureRef;
+    CancellableStage cancellableStage;
 
     /**
      * The policy executor instance.
@@ -352,9 +351,9 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
     }
 
     @Trivial
-    PolicyTaskFutureImpl(PolicyExecutorImpl executor, Runnable task, AtomicReference<Future<?>> completableFutureRef, long startTimeoutNS) {
+    PolicyTaskFutureImpl(PolicyExecutorImpl executor, Runnable task, CancellableStage cancellableStage, long startTimeoutNS) {
         this(executor, task, null, null, startTimeoutNS);
-        this.completableFutureRef = completableFutureRef;
+        this.cancellableStage = cancellableStage;
     }
 
     @FFDCIgnore(RejectedExecutionException.class)
@@ -392,7 +391,6 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
      * @param cause the cause of the abort.
      * @return true if the future transitioned to ABORTED state.
      */
-    @FFDCIgnore(Exception.class)
     final boolean abort(boolean removeFromQueue, Throwable cause) {
         if (removeFromQueue && executor.queue.remove(this))
             executor.maxQueueSizeConstraint.release();
@@ -409,17 +407,10 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
             } finally {
                 if (latch != null)
                     latch.countDown();
-                Future<?> cf = completableFutureRef == null ? null : completableFutureRef.get();
-                if (cf != null) {
+                if (cancellableStage != null) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                        Tr.debug(this, tc, "completable future to complete exceptionally: " + cf);
-                    try {
-                        // TODO Invoke directly once compatibility with Java 7 is no longer needed
-                        cf.getClass().getMethod("completeExceptionally", Throwable.class).invoke(cf, cause);
-                    } catch (Exception x) {
-                        // Not a true CompletableFuture
-                        cf.cancel(false);
-                    }
+                        Tr.debug(this, tc, "completion stage to complete exceptionally: " + cancellableStage);
+                    cancellableStage.completeExceptionally(cause);
                 }
             }
         else {
@@ -569,11 +560,10 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
             } finally {
                 if (latch != null)
                     latch.countDown();
-                Future<?> cf = completableFutureRef == null ? null : completableFutureRef.get();
-                if (cf != null) {
+                if (cancellableStage != null) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                        Tr.debug(this, tc, "completable future to cancel: " + cf);
-                    cf.cancel(false);
+                        Tr.debug(this, tc, "completion stage to cancel: " + cancellableStage);
+                    cancellableStage.cancel(false);
                 }
             }
         else {
@@ -653,7 +643,11 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
     public final long getElapsedRunTime(TimeUnit unit) {
         long begin = nsQueueEnd;
         long elapsed = nsRunEnd - begin;
-        return unit.convert(elapsed >= 0 ? elapsed : begin - nsAcceptBegin > 0 ? System.nanoTime() - begin : 0, TimeUnit.NANOSECONDS);
+        if (elapsed < 0)
+            elapsed = begin - nsAcceptBegin > 0 ? System.nanoTime() - begin : 0;
+        else if (elapsed > 0 && state.get() == ABORTED)
+            elapsed = 0; // nsQueueEnd,nsRunEnd can get out of sync when abort is attempted by multiple threads at once
+        return unit.convert(elapsed, TimeUnit.NANOSECONDS);
     }
 
     @Trivial
@@ -730,6 +724,12 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
                     state.releaseShared(SUCCESSFUL);
                     if (latch != null)
                         latch.countDown(t);
+                } else if (Integer.valueOf(CANCELED).equals(result.get())) {
+                    if (trace && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "canceled during/after run");
+                    // Prevent dirty read of state during onEnd before the canceling thread transitions the state to CANCELING/CANCELED
+                    while (state.get() == RUNNING)
+                        Thread.yield();
                 }
 
                 if (trace && tc.isDebugEnabled())

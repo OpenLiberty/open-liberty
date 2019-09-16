@@ -1,0 +1,401 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.jbatch.utility/resources/com/ibm/ws/jbatch/utility/resources/UtilityOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+
+global.description=Descripci\u00f3n:
+global.actions=Acciones:
+global.options=Opciones:
+global.required=Necesario:
+global.usage=Uso:
+global.usage.options=\t{0} {1} [opciones]
+
+# Note to translator: the word "help" should not be translated
+global.options.statement=\tUtilice help [action] para obtener informaci\u00f3n de opciones detalladas de cada acci\u00f3n.
+
+# ------------------------------------------------------------------------#
+# List of descriptive text for options. 
+# 
+# The code provides no whitespace, so: 
+#   - begin keys with "\ \ \ \ " for leading whitespace
+#   - begin descriptions with \t 
+#   - Use "\n\" for line continuations.
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+
+help.desc=\tImprime informaci\u00f3n de ayuda para la acci\u00f3n especificada.
+
+help.usage.options=\t{0} {1} [nombre_acci\u00f3n]
+
+
+#-------------------------------------------------------------------------#
+# Common options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+connect.required-key.--batchManager=\ \ \ \ --batchManager=[host]:[puerto],[host2]:[puerto2],...
+connect.required-desc.--batchManager=\tHost y puerto del API REST del gestor de procesos por lotes. Se pueden especificar \n\
+\tvarios destinos para la alta disponibilidad y la migraci\u00f3n tras error. Los destinos se \n\
+\tdelimitan mediante una coma ','. 
+
+connect.required-key.--user=\ \ \ \ --user=[nombre_usuario]
+connect.required-desc.--user=\tEl nombre de usuario para iniciar sesi\u00f3n en el gestor de proceso por lotes.
+
+connect.required-key.--password=\ \ \ \ --password[=contrase\u00f1a]
+connect.required-desc.--password=\tLa contrase\u00f1a para iniciar sesi\u00f3n en el gestor de proceso por lotes. Si no se ha definido ning\u00fan valor \n\
+\tse le solicitar\u00e1.
+
+#------------------------------\n at 72 chars -------------------------\n\#
+connect.optional-key.--controlPropertiesFile=\ \ \ \ --controlPropertiesFile=[archivo-control-propiedades]
+connect.optional-desc.--controlPropertiesFile=\tUn archivo de propiedades que contiene los par\u00e1metros de control, como el host y\n\
+\tel puerto al que conectarse. Estos par\u00e1metros se sustituyen por los par\u00e1metros \n\
+\tespecificados directamente en la l\u00ednea de mandatos.
+
+connect.optional-key.--httpTimeout_s=\ \ \ \ --httpTimeout_s=[tiempo de espera http en segundos]
+connect.optional-desc.--httpTimeout_s=\tTiempo de espera en segundos aplicado a solicitudes HTTP realizadas desde el programa de utilidad\n\
+\ta la API REST del gestor de lotes. Se aplica el mismo valor de tiempo de espera a\n\
+\tlas operaciones de conexi\u00f3n y lectura. Si no se especifica, el valor predeterminado\n\
+\tes de 30 segundos.
+
+connect.optional-key.--trustSslCertificates=\ \ \ \ --trustSslCertificates
+connect.optional-desc.--trustSslCertificates=\tIndica que el programa de utilidad debe confiar en todos los certificados SSL. El \n\
+\tprograma de utilidad se comunica con la API REST del gestor de procesos por lotes sobre HTTPS. \n\
+\tDe forma predeterminada verifica el certificado SSL del gestor de proceso por lotes,\n\
+\ta no ser que se especifique esta opci\u00f3n, en cuyo caso se conf\u00eda en el certificado \n\
+\tSSL y no realiza ninguna verificaci\u00f3n.
+
+#-------------------------------------------------------------------------#
+# Wait options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+wait.optional-key.--wait=\ \ \ \ --wait
+wait.optional-desc.--wait=\tSi se especifica, el programa esperar\u00e1 a que termine el trabajo\n\
+\tantes de salir. El c\u00f3digo de salida se establece seg\u00fan el estado del lote\n\
+\tdel trabajo (a menos que se especifique --returnExitStatus).\n\
+\tC\u00f3digos de salida de estado del lote:\n\
+\t\tBatchStatus.STOPPED = 33\n\
+\t\tBatchStatus.FAILED = 34\n\
+\t\tBatchStatus.COMPLETED = 35\n\
+\t\tBatchStatus.ABANDONED = 36
+
+wait.optional-key.--pollingInterval_s=\ \ \ \ --pollingInterval_s=[intervalo de sondeo en segundos]
+wait.optional-desc.--pollingInterval_s=\tEl intervalo de tiempo en que se va a sondear el estado de trabajo. \n\
+\tEl valor predeterminado es 30 segundos.
+
+wait.optional-key.--verbose=\ \ \ \ --verbose
+wait.optional-desc.--verbose=\tSi se especifica, el programa registrar\u00e1 un mensaje cada vez que sondee\n\
+\tel estado de un trabajo.
+
+wait.optional-key.--getJobLog=\ \ \ \ --getJobLog
+wait.optional-desc.--getJobLog=\tSi se especifica, el programa descargar\u00e1 el registro de trabajo y lo imprimir\u00e1 en\n\
+\tSTDOUT una vez finalizado el trabajo. Esta opci\u00f3n debe combinarse con --wait.
+
+wait.optional-key.--returnExitStatus=\ \ \ \ --returnExitStatus
+wait.optional-desc.--returnExitStatus=\tUtilice el estado de salida del trabajo como el c\u00f3digo de salida de este programa. Esta opci\u00f3n\n\
+\tdebe combinarse con --wait. Si el estado de salida coincide con un \n\
+\tnombre de BatchStatus (por ejemplo, "COMPLETED"), el c\u00f3digo de salida se establece\n\
+\tseg\u00fan la correlaci\u00f3n descrita por la opci\u00f3n --wait. De lo contrario, el\n\
+\tc\u00f3digo de salida se analiza desde el principio de la serie de estado de salida.\n\
+\tPor ejemplo:\n\
+\t\texitStatus="0", c\u00f3digo de salida: 0\n\
+\t\texitStatus="8:el mensaje de error puede ir aqu\u00ed", c\u00f3digo de salida: 8
+
+
+#-------------------------------------------------------------------------#
+# "submit" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+submit.desc=\tEnviar un trabajo por lotes. 
+
+submit.optional-key.--applicationName=\ \ \ \ --applicationName=[nombre_aplicaci\u00f3n]
+submit.optional-desc.--applicationName=\tEl nombre de la aplicaci\u00f3n por lotes. \n\
+\tNota: deben especificarse --applicationName o --moduleName.\n\
+\tSi no se especifica --applicationName, se utiliza el valor predeterminado [nombreM\u00f3dulo]\n\
+\tsin la extensi\u00f3n ".war" o ".jar".
+
+submit.optional-key.--moduleName=\ \ \ \ --moduleName=[nombreM\u00f3dulo]
+submit.optional-desc.--moduleName=\tIdentifica un m\u00f3dulo WAR o EJB dentro de la aplicaci\u00f3n por lotes. \n\
+\tEl trabajo se somete bajo el contexto de componente del m\u00f3dulo. \n\
+\tNota: deben especificarse --applicationName o --moduleName.\n\
+\tSi no se especifica --moduleName, se utiliza el valor predeterminado "[nombreAplicaci\u00f3n].war".
+
+submit.optional-key.--componentName=\ \ \ \ --componentName=[nombreComponente]
+submit.optional-desc.--componentName=\tIdentifica un componente EJB dentro del m\u00f3dulo EJB de aplicaci\u00f3n por lotes.\n\
+\tEl trabajo se somete bajo el contexto de componente de EJB.
+
+submit.optional-key.--jobXMLName=\ \ \ \ --jobXMLName=[nombre_XML_trabajo]
+submit.optional-desc.--jobXMLName=\tEl nombre del XML del trabajo que describe el trabajo. El archivo se lee \n\
+\tdel directorio batch-jobs del m\u00f3dulo de aplicaci\u00f3n. \n\
+\tNota: Se debe especificar --jobXMLName o --jobXMLFile.
+
+submit.optional-key.--jobPropertiesFile=\ \ \ \ --jobPropertiesFile=[archivo-propiedades-trabajo]
+submit.optional-desc.--jobPropertiesFile=\tUn archivo de propiedades que contiene par\u00e1metros de trabajo.\n\
+\tSe trata de un alias de la opci\u00f3n --jobParametersFile.
+
+submit.optional-key.--jobParametersFile=\ \ \ \ --jobParametersFile=[archivo-par\u00e1metros-trabajo]
+submit.optional-desc.--jobParametersFile=\tUn archivo de propiedades que contiene par\u00e1metros de trabajo.\n\
+\tSe trata de un alias de la opci\u00f3n --jobPropertiesFile.
+
+submit.optional-key.--jobParameter=\ \ \ \ --jobParameter=[clave]=[valor]
+submit.optional-desc.--jobParameter=\tEspecifique un par\u00e1metro de trabajo. Se puede especificar m\u00e1s de una opci\u00f3n\n\
+\t--jobParameter. La opci\u00f3n --jobParameter altera temporalmente propiedades con nombres\n\
+\tsimilares en --jobParametersFile.
+
+submit.optional-key.--stopOnShutdown=\ \ \ \ --stopOnShutdown
+submit.optional-desc.--stopOnShutdown=\tEsta opci\u00f3n debe utilizarse junto con --wait. Registra un gancho de \n\
+\tconclusi\u00f3n con la JVM que obtiene el control cuando el programa batchManager \n\
+\ttermina de forma an\u00f3mala.  El gancho de conclusi\u00f3n intenta detener el trabajo \n\
+\ten el que que espera enviando una solicitud de detenci\u00f3n al servidor. \n\
+\tNota: El gancho de conclusi\u00f3n JVM solo obtiene el control cuando la \n\
+\tJVM finaliza de ciertas maneras. Para obtener m\u00e1s informaci\u00f3n, consulte\n\
+\tjava.lang.Runtime.addShutdownHook en la documentaci\u00f3n de Java.
+
+submit.optional-key.--jobXMLFile=\ \ \ \ --jobXMLFile=[jobXMLFile]
+submit.optional-desc.--jobXMLFile=\tEl nombre de un archivo que contiene el JSL para el trabajo. El archivo lo \n\
+\tlee el programa de utilidad batchManager y se env\u00eda en l\u00ednea con la \n\
+\tsolicitud, en lugar de leerse desde el directorio batch-jobs \n\
+\ten el m\u00f3dulo de aplicaci\u00f3n. \n\
+\tNota: Se debe especificar --jobXMLName o --jobXMLFile.
+
+submit.optional-key.--restartTokenFile=\ \ \ \ --restartTokenFile=[restart-token-file]
+submit.optional-desc.--restartTokenFile=\tEl nombre de un archivo que conserva un ID de instancia del trabajo \n\
+\tque se ha de reiniciar.  El archivo lo lee y lo graba el programa de utilidad batchManager. \n\
+\t  Si el archivo contiene una ID de instancia, se reinicia el trabajo.  Si no, \n\
+\tse env\u00eda un trabajo nuevo y el ID de instancia resultante se almacena en \n\
+\tel archivo.
+
+#-------------------------------------------------------------------------#
+# "restart" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+restart.desc=\tReiniciar un trabajo por lotes.
+
+restart.optional-key.--jobInstanceId=\ \ \ \ --jobInstanceId=[ID_instancia_trabajo]
+restart.optional-desc.--jobInstanceId=\tLa instancia de trabajo que se va a reiniciar.\n\
+\tNota: se debe especificar --jobInstanceId o --jobExecutionId.
+
+restart.optional-key.--jobExecutionId=\ \ \ \ --jobExecutionId=[ID_ejecuci\u00f3n_trabajos]
+restart.optional-desc.--jobExecutionId=\tLa ejecuci\u00f3n de trabajos que se va a reiniciar.\n\
+\tNota: se debe especificar --jobInstanceId o --jobExecutionId.
+
+restart.optional-key.--jobPropertiesFile=\ \ \ \ --jobPropertiesFile=[archivo-propiedades-trabajo]
+restart.optional-desc.--jobPropertiesFile=\tUn archivo de propiedades que contiene par\u00e1metros de trabajo.\n\
+\tSe trata de un alias de la opci\u00f3n --jobParametersFile.
+
+restart.optional-key.--jobParametersFile=\ \ \ \ --jobParametersFile=[archivo-par\u00e1metros-trabajo]
+restart.optional-desc.--jobParametersFile=\tUn archivo de propiedades que contiene par\u00e1metros de trabajo.\n\
+\tSe trata de un alias de la opci\u00f3n --jobPropertiesFile.
+
+restart.optional-key.--jobParameter=\ \ \ \ --jobParameter=[clave]=[valor]
+restart.optional-desc.--jobParameter=\tEspecifique un par\u00e1metro de trabajo. Se puede especificar m\u00e1s de una opci\u00f3n\n\
+\t--jobParameter. La opci\u00f3n --jobParameter altera temporalmente propiedades con nombres\n\
+\tsimilares en --jobParametersFile.
+
+restart.optional-key.--reusePreviousParams=\ \ \ \ --reusePreviousParams
+restart.optional-desc.--reusePreviousParams=\tSi se especifica, el trabajo reutilizar\u00e1 los par\u00e1metros de trabajo anterior.
+
+restart.optional-key.--stopOnShutdown=\ \ \ \ --stopOnShutdown
+restart.optional-desc.--stopOnShutdown=\tEsta opci\u00f3n debe utilizarse junto con --wait. Registra un gancho de \n\
+\tconclusi\u00f3n con la JVM que obtiene el control cuando el programa batchManager \n\
+\ttermina de forma an\u00f3mala.  El gancho de conclusi\u00f3n intenta detener el trabajo \n\
+\ten el que que espera enviando una solicitud de detenci\u00f3n al servidor. \n\
+\tNota: El gancho de conclusi\u00f3n JVM solo obtiene el control cuando la \n\
+\tJVM finaliza de ciertas maneras. Para obtener m\u00e1s informaci\u00f3n, consulte\n\
+\tjava.lang.Runtime.addShutdownHook en la documentaci\u00f3n de Java.
+
+#-------------------------------------------------------------------------#
+# "stop" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+stop.desc=\tDetener un trabajo por lotes.
+
+stop.optional-key.--jobInstanceId=\ \ \ \ --jobInstanceId=[ID_instancia_trabajo]
+stop.optional-desc.--jobInstanceId=\tLa instancia de trabajo que se va a detener.\n\
+\tNota: se debe especificar --jobInstanceId o --jobExecutionId.
+
+stop.optional-key.--jobExecutionId=\ \ \ \ --jobExecutionId=[ID_ejecuci\u00f3n_trabajos]
+stop.optional-desc.--jobExecutionId=\tLa ejecuci\u00f3n de trabajos que se va a detener.\n\
+\tNota: se debe especificar --jobInstanceId o --jobExecutionId.
+
+#-------------------------------------------------------------------------#
+# "status" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+status.desc=\tVer el estado de un trabajo.
+
+status.optional-key.--jobInstanceId=\ \ \ \ --jobInstanceId=[ID_instancia_trabajo]
+status.optional-desc.--jobInstanceId=\tLa instancia de trabajo que se va a ver.\n\
+\tNota: se debe especificar --jobInstanceId o --jobExecutionId.
+
+status.optional-key.--jobExecutionId=\ \ \ \ --jobExecutionId=[ID_ejecuci\u00f3n_trabajos]
+status.optional-desc.--jobExecutionId=\tLa ejecuci\u00f3n de trabajo que se va a ver.\n\
+\tNota: se debe especificar --jobInstanceId o --jobExecutionId.
+
+#-------------------------------------------------------------------------#
+# "getJobLog" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+getJobLog.desc=\tDescargar el registro de trabajo de un trabajo por lotes.
+
+getJobLog.optional-key.--jobInstanceId=\ \ \ \ --jobInstanceId=[ID_instancia_trabajo]
+getJobLog.optional-desc.--jobInstanceId=\tDescargar el registro de trabajo de la instancia de trabajo especificada.\n\
+\tNota: se debe especificar --jobInstanceId o --jobExecutionId.
+
+getJobLog.optional-key.--jobExecutionId=\ \ \ \ --jobExecutionId=[ID_ejecuci\u00f3n_trabajos]
+getJobLog.optional-desc.--jobExecutionId=\tDescargar el registro de trabajo para la ejecuci\u00f3n de trabajo especificada.\n\
+\tNota: se debe especificar --jobInstanceId o --jobExecutionId.
+
+getJobLog.optional-key.--outputFile=\ \ \ \ --outputFile=[archivo_salida]
+getJobLog.optional-desc.--outputFile=\tV\u00eda de acceso al archivo local.  El registro de trabajo se graba en este archivo.\n\
+\tSi no se especifica, la ubicaci\u00f3n de salida predeterminada depende de --type.\n\
+\tSi --type=text, el registro de trabajo se graba en STDOUT.\n\
+\tSi --type=zip, el registro de trabajo se graba en el nombre de archivo sugerido por\n\
+\tla cabecera 'Content-Disposition' de la respuesta HTTP.
+
+getJobLog.optional-key.--type=\ \ \ \ --type=text|zip
+getJobLog.optional-desc.--type=\tDescargar el registro de trabajo como texto sin formato o como archivo zip.\n\
+\tSi no se especifica, el valor predeterminado es text.
+
+#-------------------------------------------------------------------------#
+# "listJobs" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+listJobs.desc=\tListar instancias de trabajo. 
+
+listJobs.optional-key.--page=\ \ \ \ --page=[p\u00e1gina]
+listJobs.optional-desc.--page=\tLa p\u00e1gina de los registros de instancia de trabajo que se devuelven. Los n\u00fameros de p\u00e1gina empiezan en 0.\n\
+\tPor ejemplo:\n\
+\t\t--page=0 --pageSize=10 devuelve los primeros 10 registros.\n\
+\t\t--page=2 --pageSize=10 devuelve los registros del 20 al 29.\n\
+\tSi no se especifica, el valor predeterminado es 0.
+
+listJobs.optional-key.--pageSize=\ \ \ \ --pageSize=[tama\u00f1oP\u00e1gina]
+listJobs.optional-desc.--pageSize=\tEl tama\u00f1o de la p\u00e1gina de los registros de instancia de trabajo que se devuelven.\n\
+\tPor ejemplo:\n\
+\t\t--page=0 --pageSize=10 devuelve los primeros 10 registros.\n\
+\t\t--page=1 --pageSize=20 devuelve los registros del 20 al 39.\n\
+\tSi no se especifica, el valor predeterminado es 50.
+
+listJobs.optional-key.--jobInstanceId=\ \ \ \ --jobInstanceId=[ID_instancia_trabajo]
+listJobs.optional-desc.--jobInstanceId=\tEl filtro de ID de instancia de trabajo aplicado a los registros de la instancia de trabajo.\n\
+\tPor ejemplo:\n\
+\t\t--jobInstanceId=10:20 devuelve los registros 10 a 20.\n\
+\t\t--jobInstanceId=">10" devuelve los registros mayores o iguales a 10.\n\
+\t\t--jobInstanceId="<10" devuelve los registros menores o iguales a 10.\n\
+\t\t--jobInstanceId=10,12,15 devuelve los registros 10, 12 y 15.\n\
+\t\tSi no se especifica --page y --pageSize, se devuelve un m\u00e1ximo\n\
+\t\tde 50 caracteres de forma predeterminada.
+
+listJobs.optional-key.--createTime=\ \ \ \ --createTime=[Tiempo_creaci\u00f3n]
+listJobs.optional-desc.--createTime=\tEl filtro de tiempo de creaci\u00f3n aplicado a los registros de la instancia de trabajo.\n\
+\tPor ejemplo:\n\
+\t\t--createTime=2015-09-10:2015-09-27 devuelve registros que se crearon\n\
+\t\t\tentre el 10-09-2015 y el 27-09-2015, inclusive.\n\
+\t\t--createTime=">3d" devuelve registros que se crearon hace 3 d\u00edas UTC o\n\
+\t\t\tm\u00e1s tarde (la fecha de creaci\u00f3n es posterior o igual a la fecha de hace 3 d\u00edas).\n\
+\t\t--createTime="<3d" devuelve registros que se crearon hace 3 d\u00edas UTC o\n\
+\t\t\tcon anterioridad (la fecha de creaci\u00f3n es anterior o igual que la fecha de hace 3 d\u00edas).\n\
+\t\t--createTime=2015-09-15 devuelve todos los registros que se crearon en el 15-09-2015.\n\
+\t\tSi no se especifica --page y --pageSize, se devuelve un m\u00e1ximo\n\
+\t\tde 50 caracteres de forma predeterminada.  Siempre que se especifica createTime=>Xd o\n\
+\t\tcreateTime<Xd la fecha se calcular\u00e1 en el servidor de asignador\n\
+\t\ten Hora Universal Coordinada. 
+
+listJobs.optional-key.--instanceState=\ \ \ \ --instanceState=[estado_instancia]
+listJobs.optional-desc.--instanceState=\tEl filtro de estado de instancia aplicado a los registros de la instancia de trabajo.\n\
+\tPor ejemplo:\n\
+\t\t--instanceState=COMPLETED,FAILED,STOPPED devuelve los registros en los\n\
+\t\testados COMPLETED, FAILED y STOPPED.\n\
+\t\tSi no se especifica --page y --pageSize, se devuelve un m\u00e1ximo\n\
+\t\tde 50 caracteres de forma predeterminada.
+
+listJobs.optional-key.--exitStatus=\ \ \ \ --exitStatus=[estado_salida]
+listJobs.optional-desc.--exitStatus=\tEl filtro de estado de salida aplicado a los registros de ejecuci\u00f3n\n\
+\tde trabajo que est\u00e1n asociados con los registros de la instancia de trabajo.\n\
+\tPor ejemplo:\n\
+\t\t--exitStatus=*JOB* devuelve los registros de instancia de trabajo que tienen registros \n\
+\t\tde ejecuci\u00f3n que contienen la palabra JOB en su estado de salida.\n\
+\t\tNota: El criterio puede utilizar el operador comod\u00edn (*) en\n\
+\t\tcualquier extremo.\n\
+\t\tSi no se especifica --page y --pageSize, se devuelve un m\u00e1ximo\n\
+\t\tde 50 caracteres de forma predeterminada.
+
+#-------------------------------------------------------------------------#
+# "purge" description and options
+#------------------------------\n at 72 chars -------------------------\n\#
+
+purge.desc=\tDepurar todos los registros de una instancia de trabajo o\n\
+\tdepurar una lista de registros de instancia.
+
+purge.optional-key.--page=\ \ \ \ --page=[p\u00e1gina]
+purge.optional-desc.--page=\tLa p\u00e1gina de los registros de instancia de trabajo que se devuelven. Los n\u00fameros de p\u00e1gina empiezan en 0.\n\
+\tPor ejemplo:\n\
+\t\t--page=0 --pageSize=10 devuelve los primeros 10 registros.\n\
+\t\t--page=2 --pageSize=10 devuelve los registros del 20 al 29.\n\
+\tSi no se especifica, el valor predeterminado es 0.
+
+purge.optional-key.--pageSize=\ \ \ \ --pageSize=[tama\u00f1oP\u00e1gina]
+purge.optional-desc.--pageSize=\tEl tama\u00f1o de la p\u00e1gina de los registros de instancia de trabajo que se devuelven.\n\
+\tPor ejemplo:\n\
+\t\t--page=0 --pageSize=10 devuelve los primeros 10 registros.\n\
+\t\t--page=1 --pageSize=20 devuelve los registros del 20 al 39.\n\
+\tSi no se especifica, el valor predeterminado es 50.
+
+purge.optional-key.--purgeJobStoreOnly=\ \ \ \ --purgeJobStoreOnly
+purge.optional-desc.--purgeJobStoreOnly=\tIndica que la operaci\u00f3n de depuraci\u00f3n solo debe suprimir entradas de \n\
+\tla base de datos del almac\u00e9n de trabajos. En ning\u00fan caso se intentar\u00e1 suprimir \n\
+\tlos registros de trabajo del sistema de archivos.
+
+purge.optional-key.--jobInstanceId=\ \ \ \ --jobInstanceId=[ID_instancia_trabajo]
+purge.optional-desc.--jobInstanceId=\tEl filtro de ID de instancia de trabajo aplicado a la depuraci\u00f3n de los registros de la instancia de trabajo.\n\
+\tPor ejemplo:\n\
+\t\t--jobInstanceId=10:20 depura los registros 10 a 20.\n\
+\t\t--jobInstanceId=">10" depura los registros mayores o iguales a 10.\n\
+\t\t--jobInstanceId="<10" depura los registros menores o iguales a 10.\n\
+\t\t--jobInstanceId=10,12,15 depura los registros 10, 12 y 15.\n\
+\t\tSi no se especifica --page y --pageSize, se depura un m\u00e1ximo\n\
+\t\tde 50 caracteres de forma predeterminada.
+
+purge.optional-key.--createTime=\ \ \ \ --createTime=[Tiempo_creaci\u00f3n]
+purge.optional-desc.--createTime=\tEl filtro de tiempo de creaci\u00f3n aplicado a la depuraci\u00f3n de los registros de la instancia de trabajo.\n\
+\tPor ejemplo:\n\
+\t\t--createTime=2015-09-10:2015-09-27 depura los registros que se crearon\n\
+\t\t\tentre el 10-09-2015 y el 27-09-2015, inclusive.\n\
+\t\t--createTime=">3d" depura los registros que se crearon hace 3 d\u00edas UTC o\n\
+\t\t\tm\u00e1s tarde (la fecha de creaci\u00f3n es posterior o igual a la fecha de hace 3 d\u00edas).\n\
+\t\t--createTime="<3d" depura los registros que se crearon hace 3 d\u00edas UTC o\n\
+\t\t\tcon anterioridad (la fecha de creaci\u00f3n es anterior o igual que la fecha de hace 3 d\u00edas).\n\
+\t\t--createTime=2015-09-15 depura todos los registros que se crearon en el 15-09-2015.\n\
+\t\tSi no se especifica --page y --pageSize, se depura un m\u00e1ximo\n\
+\t\tde 50 caracteres de forma predeterminada. Siempre que se especifica createTime=>Xd o\n\
+\t\tcreateTime<Xd la fecha se calcular\u00e1 en el servidor de asignador\n\
+\t\ten Hora Universal Coordinada. 
+
+purge.optional-key.--instanceState=\ \ \ \ --instanceState=[estado_instancia]
+purge.optional-desc.--instanceState=\tEl filtro de estado de instancia de trabajo aplicado a la depuraci\u00f3n de los registros de la instancia de trabajo.\n\
+\tPor ejemplo:\n\
+\t\t--instanceState=COMPLETED,FAILED,STOPPED depura los registros en los\n\
+\t\testados COMPLETED, FAILED y STOPPED.\n\
+\t\tSi no se especifica --page y --pageSize, se depura un m\u00e1ximo\n\
+\t\tde 50 caracteres de forma predeterminada.
+
+purge.optional-key.--exitStatus=\ \ \ \ --exitStatus=[estado_salida]
+purge.optional-desc.--exitStatus=\tEl filtro de estado de salida aplicado a los registros de ejecuci\u00f3n\n\
+\tde trabajo que est\u00e1n asociados con la depuraci\u00f3n de los registros de la instancia de trabajo.\n\
+\tPor ejemplo:\n\
+\t\t--exitStatus=*JOB* depura los registros de instancia de trabajo que tienen registros \n\
+\t\tde ejecuci\u00f3n que contienen la palabra JOB en su estado de salida.\n\
+\t\tNota: El criterio puede utilizar el operador comod\u00edn (*) en\n\
+\t\tcualquier extremo.\n\
+\t\tSi no se especifica --page y --pageSize, se depura un m\u00e1ximo\n\
+\t\tde 50 caracteres de forma predeterminada.

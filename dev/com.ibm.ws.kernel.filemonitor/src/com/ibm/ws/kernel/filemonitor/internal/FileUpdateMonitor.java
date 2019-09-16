@@ -13,6 +13,9 @@ package com.ibm.ws.kernel.filemonitor.internal;
 import java.io.File;
 import java.util.Collection;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+
 /**
  * The <code>FileUpdateMonitor</code> monitors simple/single files for changes.
  * This monitor is only used for files that exist: if the file does not exist
@@ -22,6 +25,8 @@ import java.util.Collection;
  * active on the monitored file at a time.
  */
 public class FileUpdateMonitor extends UpdateMonitor {
+
+    static final TraceComponent tc = Tr.register(FileUpdateMonitor.class);
 
     private boolean exists = false;
     private long monitoredTime = 0;
@@ -50,7 +55,7 @@ public class FileUpdateMonitor extends UpdateMonitor {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * <p>
      * FileUpdateMonitor:
      * If the file being monitored is deleted, the File will be added to the
@@ -89,7 +94,7 @@ public class FileUpdateMonitor extends UpdateMonitor {
      * <p>
      * Added File parameter for better logging... otherwise it is difficult
      * to know what is actually getting scanned.
-     * 
+     *
      * @param monitoredFile the file to scan
      * @return {@code true} if the file has changed
      */
@@ -99,6 +104,10 @@ public class FileUpdateMonitor extends UpdateMonitor {
         long newSize = monitoredFile.length();
 
         if (newTime != monitoredTime || newSize != monitoredSize) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "performScan", "File with name = '" + monitoredFile.getName() + "' has been modified. monitoredTime = "
+                                            + monitoredTime + " newTime = " + newTime + " monitoredSize = " + monitoredSize + " newSize = " + newSize);
+            }
             monitoredTime = newTime;
             monitoredSize = newSize;
             return true;

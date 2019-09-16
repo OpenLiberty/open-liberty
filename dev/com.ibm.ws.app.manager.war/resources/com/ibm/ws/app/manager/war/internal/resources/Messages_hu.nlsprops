@@ -220,3 +220,20 @@ warning.could.not.expand.application.useraction=Pr\u00f3b\u00e1lja meg elh\u00e1
 error.file.outside.archive=CWWKZ0132W: A(z) {0} f\u00e1jl a(z) {1} arch\u00edvumban nem ker\u00fcl kibont\u00e1sra, mert az arch\u00edvum nem tartalmazz az \u00fatvonalat.
 error.file.outside.archive.explanation=A f\u00e1jl \u00fatvonala relat\u00edv k\u00f6nyvt\u00e1rat hat\u00e1roz meg. A f\u00e1jl kibont\u00e1sa azt eredm\u00e9nyezn\u00e9, hogy a f\u00e1jl az arch\u00edvum gy\u00f6k\u00e9rk\u00f6nyvt\u00e1r\u00e1n k\u00edv\u00fclre ker\u00fcl.
 error.file.outside.archive.useraction=A relat\u00edv \u00fatvonallal rendelkez\u0151 f\u00e1jlok elt\u00e1vol\u00edt\u00e1sa az arch\u00edvumb\u00f3l. 
+
+#{0} is the application name, {1} is the location of the EAR or WAR file, {2} is the location where the file is expanded
+info.expanding.app=CWWKZ0133I: A(z) {0} alkalmaz\u00e1s a(z) {1} helyen kibont\u00e1sra ker\u00fcl a(z) {2} k\u00f6nyvt\u00e1rba.
+info.expanding.app.explanation=Az alkalmaz\u00e1s arch\u00edv f\u00e1jlja kibont\u00e1sra ker\u00fcl, mert az alkalmaz\u00e1sok automatikus kibont\u00e1sa lett be\u00e1ll\u00edtva.
+info.expanding.app.useraction=Nincs teend\u0151.
+
+info.loose.app=CWWKZ0134I: A(z) {0} alkalmaz\u00e1s a laza alkalmaz\u00e1smeghat\u00e1roz\u00e1st haszn\u00e1lja a(z) {1} helyen.
+info.loose.app.explanation=Az alkalmaz\u00e1s helye olyan XML f\u00e1jlra mutat, amely laza alkalmaz\u00e1st ad meg. 
+info.loose.app.useraction=Nincs teend\u0151.
+
+info.directory.app=CWWKZ0135I: A(z) {0} alkalmaz\u00e1s a kibontott k\u00f6nyvt\u00e1rat haszn\u00e1lja a(z) {1} helyen.
+info.directory.app.explanation=Az alkalmaz\u00e1s helye arch\u00edv f\u00e1jl helyett k\u00f6nyvt\u00e1rra mutat. 
+info.directory.app.useraction=Nincs teend\u0151.
+
+info.unexpanded.app=CWWKZ0136I: A(z) {0} alkalmaz\u00e1s az arch\u00edv f\u00e1jlt haszn\u00e1lja a(z) {1} helyen.
+info.unexpanded.app.explanation=Az alkalmaz\u00e1s helye bin\u00e1ris arch\u00edv f\u00e1jlra mutat. Az arch\u00edv f\u00e1jl nem lesz kibontva lemezre, mivel az alkalmaz\u00e1sok automatikus kibont\u00e1sa nem lett be\u00e1ll\u00edtva.
+info.unexpanded.app.useraction=Nincs teend\u0151.

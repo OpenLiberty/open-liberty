@@ -135,6 +135,20 @@ sslCert.option-key.sigAlg=\ \ \ \ --sigAlg=algorytm podpisu
 sslCert.option-desc.sigAlg=\tAlgorytm podpisu dla certyfikatu.\n\
 \tDomy\u015blny algorytm podpisu to {8}.
 
+sslCert.option-key.keyType=\ \ \ \ --keyType
+sslCert.option-desc.keyType=\tOpcjonalna. Domy\u015blnie zostanie wygenerowany magazyn kluczy PKCS12. Aby\n\
+\twygenerowa\u0107 magazyn kluczy JKS, podaj opcj\u0119 --keyType o warto\u015bci\n\
+\tJKS. Nie ma potrzeby podawania tej opcji, je\u015bli oczekiwanym magazynem kluczy jest\n\
+\tPKCS12.\n\
+\tMagazyn PKCS12 ma wiele zalet: \u0142atwiej mo\u017cna go rozszerza\u0107, obs\u0142uguje\n\
+\tsilniejsze algorytmy szyfruj\u0105ce i jest szerzej obs\u0142ugiwany. PKCS12 jest\n\
+\tformatem cz\u0119sto udost\u0119pnianym przez o\u015brodki certyfikacji podczas\n\
+\twystawiania certyfikat\u00f3w.
+
+sslCert.option-key.ext=\ \ \ \ --extInfo=informacje o rozszerzeniu certyfikatu
+sslCert.option-desc.ext=\tInformacje o rozszerzeniu certyfikatu, kt\u00f3re maj\u0105 zosta\u0107 dodane do certyfikatu.\n\
+\tDomy\u015blnym rozszerzeniem jest wpis alternatywnej nazwy tematu u\u017cywaj\u0105cy\n\
+\tnazwy hosta.
 
 # -------- CREATE LTPA KEYS OPTIONS --------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.

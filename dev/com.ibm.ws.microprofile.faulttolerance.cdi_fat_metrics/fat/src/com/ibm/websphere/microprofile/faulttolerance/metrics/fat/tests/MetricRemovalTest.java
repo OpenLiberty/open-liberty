@@ -24,24 +24,33 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.microprofile.faulttolerance.metrics.fat.tests.removal.MetricListServlet;
 import com.ibm.websphere.microprofile.faulttolerance.metrics.fat.tests.removal.RemovalBean;
 import com.ibm.websphere.microprofile.faulttolerance.metrics.fat.tests.removal.RemovalServlet;
+import com.ibm.websphere.microprofile.faulttolerance_fat.suite.RepeatFaultTolerance;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
 @RunWith(FATRunner.class)
 public class MetricRemovalTest {
 
-    @Server("CDIFaultToleranceMetricsRemoval")
+    private static final String SERVER_NAME = "CDIFaultToleranceMetricsRemoval";
+
+    @Server(SERVER_NAME)
     public static LibertyServer server;
+
+    @ClassRule
+    public static RepeatTests r = RepeatFaultTolerance.repeatDefault(SERVER_NAME)
+                    .andWith(RepeatFaultTolerance.ft11metrics20Features(SERVER_NAME));
 
     private final static String TEST_METRIC = "ft.com.ibm.websphere.microprofile.faulttolerance.metrics.fat.tests.removal.RemovalBean.doWorkWithRetry.invocations.total";
 
@@ -56,9 +65,8 @@ public class MetricRemovalTest {
                         .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
                         .addAsManifestResource(MetricRemovalTest.class.getResource("removal/permissions.xml"), "permissions.xml");
 
-        server.startServer();
-
         try {
+            server.startServer();
             deployApp(removalTest);
 
             try {
@@ -79,6 +87,7 @@ public class MetricRemovalTest {
             assertThat(getMetricsPage(), not(containsString(TEST_METRIC)));
         } finally {
             undeployApp(metricReporter);
+            server.stopServer();
         }
 
     }

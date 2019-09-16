@@ -11,6 +11,8 @@
 package com.ibm.ws.crypto.certificateutil.keytool;
 
 import java.io.File;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.security.cert.CertificateException;
 import java.util.List;
 
@@ -26,13 +28,30 @@ public class KeytoolSSLCertificateCreator implements DefaultSSLCertificateCreato
 
     /** {@inheritDoc} */
     @Override
-    public File createDefaultSSLCertificate(String filePath, String password, int validity, String subjectDN, int keySize, String sigAlg) throws CertificateException {
+    public File createDefaultSSLCertificate(String filePath, String password, int validity, String subjectDN, int keySize, String sigAlg,
+                                            String extInfo) throws CertificateException {
+
+        String setKeyStoreType = null;
+        KeytoolCommand keytoolCmd = null;
 
         validateParameters(filePath, password, validity, subjectDN, keySize, sigAlg);
 
         String keyType = getKeyFromSigAlg(sigAlg);
 
-        KeytoolCommand keytoolCmd = new KeytoolCommand(filePath, password, validity, subjectDN, keySize, keyType, sigAlg, DEFAULT_KEYSTORE_TYPE);
+        if (filePath.lastIndexOf(".") != -1) {
+            setKeyStoreType = filePath.substring(filePath.lastIndexOf(".") + 1, filePath.length());
+        }
+
+        if (extInfo == null) {
+            extInfo = defaultExtInfo();
+        }
+
+        if (!setKeyStoreType.equals("p12") && (!setKeyStoreType.equals(DEFAULT_KEYSTORE_TYPE))) {
+            keytoolCmd = new KeytoolCommand(filePath, password, validity, subjectDN, keySize, keyType, sigAlg, setKeyStoreType, extInfo);
+        } else {
+            keytoolCmd = new KeytoolCommand(filePath, password, validity, subjectDN, keySize, keyType, sigAlg, DEFAULT_KEYSTORE_TYPE, extInfo);
+        }
+
         keytoolCmd.executeCommand();
         File f = new File(filePath);
         if (f.exists()) {
@@ -130,6 +149,44 @@ public class KeytoolSSLCertificateCreator implements DefaultSSLCertificateCreato
             return KEYALG_EC_TYPE;
         else
             return KEYALG_RSA_TYPE;
+    }
+
+    /**
+     * Create the default SAN extension value
+     *
+     * @param hostName May be {@code null}. If {@code null} an attempt is made to determine it.
+     */
+    public String defaultExtInfo() {
+        String hostname = getHostName();
+        String ext = null;
+
+        InetAddress addr;
+        try {
+            addr = InetAddress.getByName(hostname);
+            if (addr != null && addr.toString().startsWith("/"))
+                ext = "SAN=ip:" + hostname;
+            else {
+                // If the hostname start with a digit keytool will not create a SAN with the value
+                if (!Character.isDigit(hostname.charAt(0)))
+                    ext = "SAN=dns:" + hostname;
+            }
+        } catch (UnknownHostException e) {
+            // use return null and not set SAN if there is an exception here
+        }
+        return ext;
+    }
+
+    /**
+     * Get the host name.
+     *
+     * @return String value of the host name or "localhost" if not able to resolve
+     */
+    private String getHostName() {
+        try {
+            return java.net.InetAddress.getLocalHost().getCanonicalHostName();
+        } catch (java.net.UnknownHostException e) {
+            return "localhost";
+        }
     }
 
 }

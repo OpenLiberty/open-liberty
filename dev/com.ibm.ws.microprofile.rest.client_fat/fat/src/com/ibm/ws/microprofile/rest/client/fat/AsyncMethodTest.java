@@ -10,7 +10,14 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.rest.client.fat;
 
+import static org.junit.Assert.assertTrue;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
@@ -38,11 +45,8 @@ public class AsyncMethodTest extends FATServletClient {
 
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-        .andWith(new FeatureReplacementAction()
-                 .withID("mpRestClient-1.2")
-                 .addFeature("mpRestClient-1.2")
-                 .removeFeature("mpRestClient-1.1")
-                 .forServers(SERVER_NAME));
+        .andWith(FATSuite.MP_REST_CLIENT("1.2", SERVER_NAME))
+        .andWith(FATSuite.MP_REST_CLIENT("1.3", SERVER_NAME));
 
     private static final String appName = "asyncApp";
 
@@ -58,6 +62,13 @@ public class AsyncMethodTest extends FATServletClient {
 
     @AfterClass
     public static void afterClass() throws Exception {
-        server.stopServer("CWWKF0033E"); //ignore this error for mismatch with jsonb-1.0 and Java EE 7
+        try {
+            // check for error that occurs if cannot handle CompletionStage<?> generic type in JsonBProvider
+            List<String> jsonbProviderErrors = server.findStringsInLogs("E Problem with reading the data");
+            assertTrue("Found JsonBProvider errors in log file", 
+                       jsonbProviderErrors == null || jsonbProviderErrors.isEmpty());
+        } finally {
+            server.stopServer("CWWKF0033E"); //ignore this error for mismatch with jsonb-1.0 and Java EE 7
+        }
     }
 }

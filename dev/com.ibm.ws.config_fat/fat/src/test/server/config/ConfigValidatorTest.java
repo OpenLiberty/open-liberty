@@ -14,8 +14,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -24,6 +26,7 @@ import componenttest.topology.impl.LibertyServerFactory;
  * Tests the XML signing and validation functions, ensuring correct behavior when signing is enforced
  * and invalid documents are encountered.
  */
+@RunWith(FATRunner.class)
 public class ConfigValidatorTest {
 
     // Since we have tracing enabled give server longer timeout to start up.
@@ -33,7 +36,7 @@ public class ConfigValidatorTest {
     @Test
     @ExpectedFFDC({ "com.ibm.websphere.config.ConfigValidationException", "java.lang.ClassNotFoundException" })
     public void testValidator() throws Exception {
-       
+
         String jarName = "com.ibm.ws.config.ext_1.0." + server.getMicroVersion() + ".jar";
         server.copyFileToLibertyInstallRoot("lib/features", "internalFeatureForFat/configfatlibertyinternals-1.0.mf");
 

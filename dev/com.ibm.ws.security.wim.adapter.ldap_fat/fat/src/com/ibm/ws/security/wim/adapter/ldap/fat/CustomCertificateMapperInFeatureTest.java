@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.apache.directory.api.ldap.model.entry.Entry;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -31,8 +30,9 @@ import com.ibm.websphere.security.wim.ConfigConstants;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.wim.LdapRegistry;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.apacheds.EmbeddedApacheDS;
+import com.ibm.ws.com.unboundid.InMemoryLDAPServer;
 import com.ibm.ws.webcontainer.security.test.servlets.ClientCertAuthClient;
+import com.unboundid.ldap.sdk.Entry;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
@@ -64,7 +64,7 @@ public class CustomCertificateMapperInFeatureTest {
     private final static String LDAP_USER_3 = "LDAPUser3";
 
     private static ServerConfiguration originalConfiguration = null;
-    private static EmbeddedApacheDS ldapServer = null;
+    private static InMemoryLDAPServer ds;
 
     private static final String LDAP_PARTITION_1_DN = "O=IBM,C=US";
     private static final String LDAP_PARTITION_2_DN = "O=IBM,C=UK";
@@ -90,19 +90,19 @@ public class CustomCertificateMapperInFeatureTest {
         Log.info(c, "tearDown", "Stopping the server...");
         myServer.stopServer(new String[] { "CWIML4538E", "CWWKS1102E" });
 
-        if (ldapServer != null) {
-            try {
-                ldapServer.stopService();
-            } catch (Exception e) {
-                Log.error(c, "teardown", e, "LDAP server threw error while stopping. " + e.getMessage());
+        try {
+            if (ds != null) {
+                ds.shutDown(true);
             }
+        } catch (Exception e) {
+            Log.error(c, "teardown", e, "LDAP server threw error while shutting down. " + e.getMessage());
         }
-
         /*
          * Delete any files we copied to the test server and uninstall the user bundles.
          */
         myServer.uninstallUserBundle("com.ibm.ws.security.wim.adapter.ldap.certificate.mapper.sample_1.0");
         myServer.uninstallUserFeature("ldapCertificateMapperSample-1.0");
+
     }
 
     /**
@@ -141,40 +141,37 @@ public class CustomCertificateMapperInFeatureTest {
      * @throws Exception If the server failed to start for some reason.
      */
     private static void setupLdapServer() throws Exception {
-        ldapServer = new EmbeddedApacheDS("testserver");
-        ldapServer.addPartition("partition1", LDAP_PARTITION_1_DN);
-        ldapServer.addPartition("partition2", LDAP_PARTITION_2_DN);
-        ldapServer.startServer();
+        ds = new InMemoryLDAPServer(LDAP_PARTITION_1_DN, LDAP_PARTITION_2_DN);
 
         /*
          * Add the partition entries.
          */
-        Entry entry = ldapServer.newEntry(LDAP_PARTITION_1_DN);
-        entry.add("objectclass", "organization");
-        entry.add("o", "ibm");
-        ldapServer.add(entry);
 
-        entry = ldapServer.newEntry(LDAP_PARTITION_2_DN);
-        entry.add("objectclass", "organization");
-        entry.add("o", "ibm");
-        ldapServer.add(entry);
+        Entry entry = new Entry(LDAP_PARTITION_1_DN);
+        entry.addAttribute("objectclass", "top");
+        entry.addAttribute("objectclass", "domain");
+        ds.add(entry);
 
+        entry = new Entry(LDAP_PARTITION_2_DN);
+        entry.addAttribute("objectclass", "top");
+        entry.addAttribute("objectclass", "domain");
+        ds.add(entry);
         /*
          * Create the users.
          */
-        entry = ldapServer.newEntry(LDAP_USER_1_DN);
-        entry.add("objectclass", "inetorgperson");
-        entry.add("uid", LDAP_USER_1);
-        entry.add("sn", LDAP_USER_1);
-        entry.add("cn", LDAP_USER_1);
-        ldapServer.add(entry);
+        entry = new Entry(LDAP_USER_1_DN);
+        entry.addAttribute("objectclass", "inetorgperson");
+        entry.addAttribute("uid", LDAP_USER_1);
+        entry.addAttribute("sn", LDAP_USER_1);
+        entry.addAttribute("cn", LDAP_USER_1);
+        ds.add(entry);
 
-        entry = ldapServer.newEntry(LDAP_USER_3_DN);
-        entry.add("objectclass", "inetorgperson");
-        entry.add("uid", LDAP_USER_3);
-        entry.add("sn", LDAP_USER_3);
-        entry.add("cn", LDAP_USER_3);
-        ldapServer.add(entry);
+        entry = new Entry(LDAP_USER_3_DN);
+        entry.addAttribute("objectclass", "inetorgperson");
+        entry.addAttribute("uid", LDAP_USER_3);
+        entry.addAttribute("sn", LDAP_USER_3);
+        entry.addAttribute("cn", LDAP_USER_3);
+        ds.add(entry);
     }
 
     /**
@@ -192,10 +189,10 @@ public class CustomCertificateMapperInFeatureTest {
         LdapRegistry ldap = new LdapRegistry();
         ldap.setRealm("LDAPRealm");
         ldap.setHost("localhost");
-        ldap.setPort(String.valueOf(ldapServer.getLdapServer().getPort()));
+        ldap.setPort(String.valueOf(ds.getListenPort()));
         ldap.setBaseDN(LDAP_PARTITION_1_DN);
-        ldap.setBindDN(EmbeddedApacheDS.getBindDN());
-        ldap.setBindPassword(EmbeddedApacheDS.getBindPassword());
+        ldap.setBindDN(InMemoryLDAPServer.getBindDN());
+        ldap.setBindPassword(InMemoryLDAPServer.getBindPassword());
         ldap.setLdapType("Custom");
         ldap.setCertificateMapMode("CUSTOM");
         server.getLdapRegistries().add(ldap);
@@ -288,7 +285,7 @@ public class CustomCertificateMapperInFeatureTest {
         /*
          * Expect JNDI error searching for non-existent partition.
          */
-        trace = "LDAP: error code 32 - NO_SUCH_OBJECT";
+        trace = "LDAP: error code 32 - Unable to perform the search because base entry '" + LDAP_USER_2_DN + "' does not exist in the server.";
         matching = myServer.findStringsInLogsAndTraceUsingMark(trace);
         assertFalse("Did not find JNDI error in logs.", matching.isEmpty());
 
@@ -550,10 +547,10 @@ public class CustomCertificateMapperInFeatureTest {
         LdapRegistry ldap = new LdapRegistry();
         ldap.setRealm("LDAPRealm1");
         ldap.setHost("localhost");
-        ldap.setPort(String.valueOf(ldapServer.getLdapServer().getPort()));
+        ldap.setPort(String.valueOf(ds.getListenPort()));
         ldap.setBaseDN(LDAP_PARTITION_2_DN);
-        ldap.setBindDN(EmbeddedApacheDS.getBindDN());
-        ldap.setBindPassword(EmbeddedApacheDS.getBindPassword());
+        ldap.setBindDN(InMemoryLDAPServer.getBindDN());
+        ldap.setBindPassword(InMemoryLDAPServer.getBindPassword());
         ldap.setLdapType("Custom");
         ldap.setCertificateMapMode("CUSTOM");
         server.getLdapRegistries().add(ldap);
@@ -565,10 +562,10 @@ public class CustomCertificateMapperInFeatureTest {
         ldap = new LdapRegistry();
         ldap.setRealm("LDAPRealm2");
         ldap.setHost("localhost");
-        ldap.setPort(String.valueOf(ldapServer.getLdapServer().getPort()));
+        ldap.setPort(String.valueOf(ds.getListenPort()));
         ldap.setBaseDN(LDAP_PARTITION_1_DN);
-        ldap.setBindDN(EmbeddedApacheDS.getBindDN());
-        ldap.setBindPassword(EmbeddedApacheDS.getBindPassword());
+        ldap.setBindDN(InMemoryLDAPServer.getBindDN());
+        ldap.setBindPassword(InMemoryLDAPServer.getBindPassword());
         ldap.setLdapType("Custom");
         ldap.setCertificateMapMode("CUSTOM");
         server.getLdapRegistries().add(ldap);
@@ -609,10 +606,10 @@ public class CustomCertificateMapperInFeatureTest {
         LdapRegistry ldap = new LdapRegistry();
         ldap.setRealm("LDAPRealm1");
         ldap.setHost("localhost");
-        ldap.setPort(String.valueOf(ldapServer.getLdapServer().getPort()));
+        ldap.setPort(String.valueOf(ds.getListenPort()));
         ldap.setBaseDN(LDAP_PARTITION_2_DN);
-        ldap.setBindDN(EmbeddedApacheDS.getBindDN());
-        ldap.setBindPassword(EmbeddedApacheDS.getBindPassword());
+        ldap.setBindDN(InMemoryLDAPServer.getBindDN());
+        ldap.setBindPassword(InMemoryLDAPServer.getBindPassword());
         ldap.setLdapType("Custom");
         ldap.setCertificateMapMode("CUSTOM");
         ldap.setCertificateMapperId(ID_MAPPER_3);
@@ -625,10 +622,10 @@ public class CustomCertificateMapperInFeatureTest {
         ldap = new LdapRegistry();
         ldap.setRealm("LDAPRealm2");
         ldap.setHost("localhost");
-        ldap.setPort(String.valueOf(ldapServer.getLdapServer().getPort()));
+        ldap.setPort(String.valueOf(ds.getListenPort()));
         ldap.setBaseDN(LDAP_PARTITION_1_DN);
-        ldap.setBindDN(EmbeddedApacheDS.getBindDN());
-        ldap.setBindPassword(EmbeddedApacheDS.getBindPassword());
+        ldap.setBindDN(InMemoryLDAPServer.getBindDN());
+        ldap.setBindPassword(InMemoryLDAPServer.getBindPassword());
         ldap.setLdapType("Custom");
         ldap.setCertificateMapMode(ConfigConstants.CONFIG_VALUE_CERT_NOT_SUPPORTED_MODE);
         server.getLdapRegistries().add(ldap);
@@ -668,10 +665,10 @@ public class CustomCertificateMapperInFeatureTest {
         LdapRegistry ldap = new LdapRegistry();
         ldap.setRealm("LDAPRealm1");
         ldap.setHost("localhost");
-        ldap.setPort(String.valueOf(ldapServer.getLdapServer().getPort()));
+        ldap.setPort(String.valueOf(ds.getListenPort()));
         ldap.setBaseDN(LDAP_PARTITION_2_DN);
-        ldap.setBindDN(EmbeddedApacheDS.getBindDN());
-        ldap.setBindPassword(EmbeddedApacheDS.getBindPassword());
+        ldap.setBindDN(InMemoryLDAPServer.getBindDN());
+        ldap.setBindPassword(InMemoryLDAPServer.getBindPassword());
         ldap.setLdapType("Custom");
         ldap.setCertificateMapMode("CUSTOM");
         ldap.setCertificateMapperId(ID_MAPPER_3);
@@ -683,10 +680,10 @@ public class CustomCertificateMapperInFeatureTest {
         ldap = new LdapRegistry();
         ldap.setRealm("LDAPRealm1");
         ldap.setHost("localhost");
-        ldap.setPort(String.valueOf(ldapServer.getLdapServer().getPort()));
+        ldap.setPort(String.valueOf(ds.getListenPort()));
         ldap.setBaseDN(LDAP_PARTITION_1_DN);
-        ldap.setBindDN(EmbeddedApacheDS.getBindDN());
-        ldap.setBindPassword(EmbeddedApacheDS.getBindPassword());
+        ldap.setBindDN(InMemoryLDAPServer.getBindDN());
+        ldap.setBindPassword(InMemoryLDAPServer.getBindPassword());
         ldap.setLdapType("Custom");
         ldap.setCertificateMapMode("CUSTOM");
         ldap.setCertificateMapperId(ID_MAPPER_4);

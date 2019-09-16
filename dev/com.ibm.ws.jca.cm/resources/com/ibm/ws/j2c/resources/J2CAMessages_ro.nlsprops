@@ -112,7 +112,7 @@ NO_VALID_TRANSACTION_CONTEXT_J2CA0040.explanation=A fost o eroare intern\u0103 l
 NO_VALID_TRANSACTION_CONTEXT_J2CA0040.useraction=-CMSG0002
 
 # --------------------------------
-POOL_MANAGER_EXCP_CCF2_0001_J2CA0045=J2CA0045E: Conexiunea nu este disponibil\u0103 c\u00e2nd se invoc\u0103 metoda {0} pentru resursa {1}.
+POOL_MANAGER_EXCP_CCF2_0001_J2CA0045=J2CA0045E: Conexiunea nu este disponibil\u0103 c\u00e2nd se invoc\u0103 metoda {0} pentru resursa {1}. S-a generat timeout pentru {2} milisecunde cu {3} cereri \u00een a\u015fteptare r\u0103mase \u015fi {4} conexiuni \u00een total utilizate.
 POOL_MANAGER_EXCP_CCF2_0001_J2CA0045.explanation=A ap\u0103rut un timeout de a\u015fteptare a conexiunii. S-a creat o ConnectionWaitTimeoutException.
 POOL_MANAGER_EXCP_CCF2_0001_J2CA0045.useraction=Reconfigura\u0163i pool-ul de conexiuni. Cre\u015fte\u0163i num\u0103rul maxim de conexiuni sau cre\u015fte\u0163i timpul de a\u015fteptare a conexiunii pentru a evita aceast\u0103 eroare.
 

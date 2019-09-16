@@ -1,0 +1,32 @@
+<server description="new server">
+
+	<featureManager>
+        <feature>jndi-1.0</feature>
+        <feature>jaxws-2.2</feature>
+        <feature>localConnector-1.0</feature>
+        <feature>servlet-3.1</feature>
+    </featureManager>
+
+    
+    <!-- TESTING THE UPLOAD! -->
+
+ 
+	<include location="../fatTestPorts.xml"/>
+	<!--httpEndpoint host="*" httpPort="9088" id="defaultHttpEndpoint"/-->
+	<httpEndpoint host="localhost" httpPort="19081" id="localHostOnly"/>
+	
+	<virtualHost allowFromEndpointRef="defaultHttpEndpoint" id="localVH">
+	     <hostAlias>localhost:${bvt.prop.HTTP_default}</hostAlias>
+	</virtualHost>
+	
+	<virtualHost allowFromEndpointRef="localHostOnly" id="otherVH">
+	     <hostAlias>localhost:19081</hostAlias>
+	</virtualHost>
+
+
+
+    <applicationMonitor updateTrigger="mbean"/>
+
+    <javaPermission className="java.security.AllPermission" name="*" actions="*"/>
+  
+</server>

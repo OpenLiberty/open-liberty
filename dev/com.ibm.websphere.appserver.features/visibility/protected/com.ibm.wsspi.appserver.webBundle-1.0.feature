@@ -4,7 +4,7 @@ symbolicName = com.ibm.wsspi.appserver.webBundle-1.0
 visibility = protected
 
 -bundles= \
- com.ibm.ws.app.manager.wab; start-phase:=CONTAINER_LATE, \
+ com.ibm.ws.app.manager.wab; start-phase:=APPLICATION_EARLY, \
  com.ibm.ws.eba.wab.integrator
 
 -features= \

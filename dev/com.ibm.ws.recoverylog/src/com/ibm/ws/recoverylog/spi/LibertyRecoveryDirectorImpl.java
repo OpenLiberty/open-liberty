@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2018 IBM Corporation and others.
+ * Copyright (c) 2013, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import java.util.Iterator;
 
 import com.ibm.tx.util.logging.Tr;
 import com.ibm.tx.util.logging.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 /**
  *
@@ -132,7 +133,8 @@ public class LibertyRecoveryDirectorImpl extends RecoveryDirectorImpl {
             Tr.exit(tc, "drivePeerRecovery");
     }
 
-    public void peerRecoverServers(RecoveryAgent recoveryAgent, String myRecoveryIdentity, ArrayList<String> peersToRecover) throws RecoveryFailedException {
+    @FFDCIgnore({ RecoveryFailedException.class })
+    public synchronized void peerRecoverServers(RecoveryAgent recoveryAgent, String myRecoveryIdentity, ArrayList<String> peersToRecover) throws RecoveryFailedException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "peerRecoverServers", new Object[] { recoveryAgent, myRecoveryIdentity, peersToRecover });
 
@@ -155,7 +157,15 @@ public class LibertyRecoveryDirectorImpl extends RecoveryDirectorImpl {
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Failed to claim lease for peer", this);
                 }
+            } catch (RecoveryFailedException rfexc) {
+                Tr.audit(tc, "WTRN0108I: " +
+                             "HADB Peer locking failed for server with recovery identity " + peerRecoveryIdentity);
+                if (tc.isEntryEnabled())
+                    Tr.exit(tc, "peerRecoverServers", rfexc);
+                throw rfexc;
             } catch (Exception exc) {
+                Tr.audit(tc, "WTRN0108I: " +
+                             "HADB Peer locking failed for server with recovery identity " + peerRecoveryIdentity + " with exception " + exc);
                 if (tc.isEntryEnabled())
                     Tr.exit(tc, "peerRecoverServers", exc);
                 throw new RecoveryFailedException(exc);

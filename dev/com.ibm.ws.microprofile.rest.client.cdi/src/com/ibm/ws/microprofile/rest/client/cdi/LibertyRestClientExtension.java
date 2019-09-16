@@ -42,8 +42,8 @@ import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 public class LibertyRestClientExtension implements WebSphereCDIExtension, Extension {
     private final static TraceComponent tc = Tr.register(LibertyRestClientExtension.class);
 
-    private static final Map<ClassLoader, Set<Class<?>>> restClientClasses = new WeakHashMap<>();
-    private static final Set<Throwable> errors = new LinkedHashSet<>();
+    private final Map<ClassLoader, Set<Class<?>>> restClientClasses = new WeakHashMap<>();
+    private final Set<Throwable> errors = new LinkedHashSet<>();
 
     private static ClassLoader getContextClassLoader() {
         return AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> {

@@ -28,6 +28,7 @@ Import-Package: \
   !org.apache.cxf.ws.policy.*,\
   !org.apache.cxf.wsdl,\
   !org.osgi.service.blueprint.*,\
+  com.ibm.ws.cxf.client.*,\
   *
 
 Service-Component: \

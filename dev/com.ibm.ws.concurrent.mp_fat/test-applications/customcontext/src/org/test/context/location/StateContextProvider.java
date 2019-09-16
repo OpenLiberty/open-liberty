@@ -12,8 +12,8 @@ package org.test.context.location;
 
 import java.util.Map;
 
-import org.eclipse.microprofile.concurrent.spi.ThreadContextProvider;
-import org.eclipse.microprofile.concurrent.spi.ThreadContextSnapshot;
+import org.eclipse.microprofile.context.spi.ThreadContextProvider;
+import org.eclipse.microprofile.context.spi.ThreadContextSnapshot;
 
 /**
  * Example third-party thread context provider, to be used for testing purposes.

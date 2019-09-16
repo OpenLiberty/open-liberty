@@ -11,6 +11,7 @@
 
 package com.ibm.ws.jpa.ormdiagnostics.tests;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
@@ -100,6 +101,13 @@ public class TestEARLibertyDump extends FATServletClient {
                                                  new String[] { "GuestBookJPA.jar",
                                                                 "GuestBookAPP.war/WEB-INF/lib/GuestBookJPA.jar" },
                                                  introspectorData);
+
+        List<String> expectedArchives = new ArrayList<String>();
+        expectedArchives.add("GuestBookEAR/GuestBookAPP.war");
+        expectedArchives.add("GuestBookEAR/GuestBookAPP.war/WEB-INF/lib/GuestBookEJB.jar");
+        expectedArchives.add("GuestBookEAR/GuestBookAPP.war/WEB-INF/lib/GuestBookJPA.jar");
+        expectedArchives.add("GuestBookEAR/lib/GuestBookJPA.jar");
+        ORMIntrospectorHelper.verifyApplicationArchives(expectedArchives, introspectorData);
 
         ORMIntrospectorHelper.verifyPersistenceUnit("SimpleApplicationPU", introspectorData);
 

@@ -52,4 +52,5 @@ Include-Resource: \
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.websphere.org.osgi.service.component;version=latest, \
 	com.ibm.wsspi.org.osgi.service.component.annotations,\
+	com.ibm.ws.config;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest

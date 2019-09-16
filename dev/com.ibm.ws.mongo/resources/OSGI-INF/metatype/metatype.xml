@@ -47,6 +47,7 @@
   <AD id="sslEnabled"                     ibmui:group="MongoClientOptions" type="Boolean" required="false" name="%sslEnabled" description="%sslEnabled.desc"/>
   <AD id="sslRef"                         ibmui:group="MongoClientOptions" type="String"  required="false" name="%sslRef"     description="%sslRef.desc" cardinality="1" ibm:type="pid" ibm:reference="com.ibm.ws.ssl.repertoire" ibmui:requiresTrue="sslEnabled"/> 
   <AD id="ssl.target"                  type="String"  required="false"  name="internal"            description="internal use only" ibm:final="true" default="(service.pid=${sslRef})"/>
+  <AD id="ssl.cardinality.minimum"     type="String"  required="false"  name="internal"            description="internal use only" ibm:final="true" default="${count(sslRef)}" />
   <AD id="threadsAllowedToBlockForConnectionMultiplier" ibmui:group="MongoClientOptions" type="Integer" required="false" min="0" name="%threadsAllowedToBlockForConnectionMultiplier" description="%threadsAllowedToBlockForConnectionMultiplier.desc"/>  
   <AD id="readPreference"                 ibmui:group="MongoClientOptions" type="String"  required="false" name="%readPreference" description="%readPreference.desc">
    <Option value="nearest"            label="nearest"/>

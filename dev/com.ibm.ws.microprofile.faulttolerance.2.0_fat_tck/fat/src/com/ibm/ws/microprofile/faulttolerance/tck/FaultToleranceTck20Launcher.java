@@ -10,21 +10,26 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.faulttolerance.tck;
 
-import java.io.FileDescriptor;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
+import java.util.Collections;
+import java.util.Map;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import com.ibm.websphere.microprofile.faulttolerance_fat.suite.RepeatFaultTolerance;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.custom.junit.runner.TestModeFilter;
+import componenttest.rules.repeater.RepeatTests;
+import componenttest.topology.impl.JavaInfo;
+import componenttest.topology.impl.JavaInfo.Vendor;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.MvnUtils;
 
@@ -38,11 +43,26 @@ import componenttest.topology.utils.MvnUtils;
 @RunWith(FATRunner.class)
 public class FaultToleranceTck20Launcher {
 
-    @Server("FaultTolerance20TCKServer")
+    private static final String SERVER_NAME = "FaultTolerance20TCKServer";
+
+    @Server(SERVER_NAME)
     public static LibertyServer server;
+
+    @ClassRule
+    public static RepeatTests repeat = RepeatTests.with(RepeatFaultTolerance.ft20metrics11Features(SERVER_NAME).fullFATOnly())
+                    .andWith(RepeatFaultTolerance.mp30Features(SERVER_NAME));
 
     @BeforeClass
     public static void setUp() throws Exception {
+        Vendor vendor = JavaInfo.forServer(server).vendor();
+        // For J9 JVMs, add JIT trace for getConfig method to diagnose crashes
+        if (vendor == Vendor.IBM || vendor == Vendor.OPENJ9) {
+            Map<String, String> jvmOptions = server.getJvmOptionsAsMap();
+            jvmOptions.put("-Xjit:{org/eclipse/microprofile/config/ConfigProvider.getConfig(Ljava/lang/ClassLoader;)Lorg/eclipse/microprofile/config/Config;}(tracefull,traceInlining,traceCG,log=getConfig.trace)",
+                           null);
+            server.setJvmOptions(jvmOptions);
+        }
+
         server.startServer();
     }
 
@@ -101,30 +121,21 @@ public class FaultToleranceTck20Launcher {
      * @throws Exception
      */
     @Test
-    @Mode(TestMode.EXPERIMENTAL)
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
     public void launchFaultToleranceTCK() throws Exception {
-        MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.microprofile.faulttolerance.2.0_fat_tck", this.getClass() + ":launchFaultToleranceTCK");
-    }
+        boolean isFullMode = TestModeFilter.shouldRun(TestMode.FULL);
+        boolean isMetrics11 = RepeatTestFilter.CURRENT_REPEAT_ACTION == RepeatFaultTolerance.FT20_METRICS11_ID;
 
-    @Mode(TestMode.LITE)
-    @Test
-    public void testThatDoesNothingAndCanAlwaysRunAndPass() {
-        if (TestModeFilter.FRAMEWORK_TEST_MODE != TestMode.EXPERIMENTAL) {
-            System.out.println("\n\n\n");
-            System.out.println("TCK MASTER BRANCH RUN NOT REQUESTED: fat.test.mode=" + TestModeFilter.FRAMEWORK_TEST_MODE
-                               + ", run with '-Dfat.test.mode=experimental' to run the TCK");
-            System.out.println("\n\n\n");
-            // In FATs System.out is captured to a file, we try to be kind to any developer and give it to them straight
-            if (Boolean.valueOf(System.getProperty("fat.test.localrun"))) {
-                try (PrintStream screen = new PrintStream(new FileOutputStream(FileDescriptor.out))) {
-                    screen.println("\n\n\n");
-                    screen.println("TCK MASTER BRANCH RUN NOT REQUESTED: fat.test.mode=" + TestModeFilter.FRAMEWORK_TEST_MODE
-                                   + ", run with '-Dfat.test.mode=experimental' to run the TCK");
-                    screen.println("\n\n\n");
-                }
-            }
+        String suiteFileName;
+        if (isMetrics11) {
+            // For the repeat with FT 2.0 and mpMetrics 1.1, run only the metrics tests
+            suiteFileName = "tck-suite-metrics-only.xml";
+        } else {
+            suiteFileName = isFullMode ? "tck-suite.xml" : "tck-suite-lite.xml";
         }
+
+        MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.microprofile.faulttolerance.2.0_fat_tck", this.getClass() + ":launchFaultToleranceTCK", suiteFileName,
+                              Collections.emptyMap(), Collections.emptySet());
     }
 
 }

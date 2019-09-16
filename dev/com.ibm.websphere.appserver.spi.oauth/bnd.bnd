@@ -1,0 +1,27 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion: 1.4
+
+Bundle-Name: WebSphere OAuth 2.0 web single sign-on  SPI
+Bundle-Description: WebSphere OAuth 2.0 web single sign-on  SPI, version ${bVersion}
+Bundle-SymbolicName: com.ibm.websphere.appserver.spi.oauth
+
+Import-Package: com.ibm.wsspi.security.oauth20,com.ibm.wsspi.security.openidconnect,*
+
+Export-Package: com.ibm.wsspi.security.oauth20,com.ibm.wsspi.security.openidconnect
+
+-includeresource: {META-INF/maven/com.ibm.websphere.appserver.spi/com.ibm.websphere.appserver.spi.oauth/pom.xml=com.ibm.websphere.appserver.spi.oauth.pom}
+
+publish.wlp.jar.suffix: dev/spi/ibm
+
+-buildpath: \
+	com.ibm.ws.security.oauth.2.0;version=latest

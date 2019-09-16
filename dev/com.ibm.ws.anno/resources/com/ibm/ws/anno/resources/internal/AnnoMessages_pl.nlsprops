@@ -30,30 +30,30 @@
 # -------------------------------------------------------------------------------------------------
 #
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} The class name of the resource
-# # {2} the hashcode id of the resource
+# # {2} the hashcode ID of the resource
 # # {3} The error message from the exception
 ANNO_CLASSSOURCE_CLOSE1_EXCEPTION=CWWKC0001W: Zamkni\u0119cie zasobu \u017ar\u00f3d\u0142owego [{1}] [{2}] zako\u0144czy\u0142o si\u0119 niepowodzeniem. Identyfikator obiektu emituj\u0105cego komunikat: [{0}]. Komunikat o b\u0142\u0119dzie: {3}
 ANNO_CLASSSOURCE_CLOSE1_EXCEPTION.explanation=Zamkni\u0119cie zasobu spowodowa\u0142o wyj\u0105tek.
-ANNO_CLASSSOURCE_CLOSE1_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+ANNO_CLASSSOURCE_CLOSE1_EXCEPTION.useraction=Aby uzyska\u0107 wi\u0119cej informacji, zapoznaj si\u0119 z wyj\u0105tkiem i powi\u0105zanym komunikatem FFDC.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} The name of the resource
 # # {2} the name of the class associated with the resource
 # # {3} The error message from the exception
 ANNO_CLASSSOURCE_CLOSE2_EXCEPTION=CWWKC0002W: Zamkni\u0119cie zasobu [{1}] dla klasy [{2}] zako\u0144czy\u0142o si\u0119 niepowodzeniem. Identyfikator obiektu emituj\u0105cego komunikat: [{0}]. Komunikat o b\u0142\u0119dzie: {3}
 ANNO_CLASSSOURCE_CLOSE2_EXCEPTION.explanation=Zamkni\u0119cie strumienia wej\u015bciowego dla zasobu spowodowa\u0142o wyj\u0105tek.
-ANNO_CLASSSOURCE_CLOSE2_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+ANNO_CLASSSOURCE_CLOSE2_EXCEPTION.useraction=Aby uzyska\u0107 wi\u0119cej informacji, zapoznaj si\u0119 z wyj\u0105tkiem i powi\u0105zanym komunikatem FFDC.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} The name of the resource, includes the full path to the class
 # # {2} the name of the class associated with the resource
 ANNO_CLASSSOURCE_OPEN1_EXCEPTION=CWWKC0003W: Otwarcie zasobu [{1}] dla klasy [{2}] zako\u0144czy\u0142o si\u0119 niepowodzeniem. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
 ANNO_CLASSSOURCE_OPEN1_EXCEPTION.explanation=Otwarcie strumienia wej\u015bciowego dla zasobu spowodowa\u0142o wyj\u0105tek.
-ANNO_CLASSSOURCE_OPEN1_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+ANNO_CLASSSOURCE_OPEN1_EXCEPTION.useraction=Aby uzyska\u0107 wi\u0119cej informacji, zapoznaj si\u0119 z wyj\u0105tkiem i powi\u0105zanym komunikatem FFDC.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} file name
 # # {2} a class name
 # # {3} a file name
@@ -62,16 +62,16 @@ ANNO_CLASSSOURCE_ADAPT_EXCEPTION=CWWKC0004W: Przekszta\u0142cenie pliku [{1}] ja
 ANNO_CLASSSOURCE_ADAPT_EXCEPTION.explanation=Nie mo\u017cna przekszta\u0142ci\u0107 pliku w obiekt nowego typu.
 ANNO_CLASSSOURCE_ADAPT_EXCEPTION.useraction=\u017badna czynno\u015b\u0107 u\u017cytkownika nie jest dost\u0119pna.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} the resource name, class name plus path
 # # {2} the name of the item
 # # {3} the name of the container that holds item
 # # {4} the name of the class
 ANNO_CLASSSOURCE_OPEN2_EXCEPTION=CWWKC0005W: Otwarcie zasobu [{1}] jako elementu [{2}] w kontenerze g\u0142\u00f3wnym [{3}] dla klasy [{4}] nie powiod\u0142o si\u0119. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
 ANNO_CLASSSOURCE_OPEN2_EXCEPTION.explanation=Otwarcie strumienia wej\u015bciowego dla zasobu spowodowa\u0142o wyj\u0105tek.
-ANNO_CLASSSOURCE_OPEN2_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+ANNO_CLASSSOURCE_OPEN2_EXCEPTION.useraction=Aby uzyska\u0107 wi\u0119cej informacji, zapoznaj si\u0119 z wyj\u0105tkiem i powi\u0105zanym komunikatem FFDC.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} the resource name, class name plus path
 # # {2} the name of the container that holds item
 # # {3} the name of the class
@@ -79,23 +79,23 @@ ANNO_CLASSSOURCE_RESOURCE_NOTFOUND=CWWKC0006W: Nie znaleziono wpisu [{1}] w kont
 ANNO_CLASSSOURCE_RESOURCE_NOTFOUND.explanation=Zas\u00f3b nie zosta\u0142 znaleziony w kontenerze g\u0142\u00f3wnym.
 ANNO_CLASSSOURCE_RESOURCE_NOTFOUND.useraction=Sprawd\u017a, czy \u015bcie\u017cka do zasobu dla klasy istnieje w kontenerze.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} the resource name, class name plus path
 # # {2} the name of the item
 # # {3} the name of the container that holds item
 # # {4} the name of the class
 ANNO_CLASSSOURCE_CLOSE3_EXCEPTION=CWWKC0007W: Zamkni\u0119cie zasobu [{1}] jako elementu [{2}] w kontenerze g\u0142\u00f3wnym [{3}] dla klasy [{4}] nie powiod\u0142o si\u0119. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
 ANNO_CLASSSOURCE_CLOSE3_EXCEPTION.explanation=Pr\u00f3ba zamkni\u0119cia strumienia wej\u015bciowego dla klasy spowodowa\u0142a wyj\u0105tek.
-ANNO_CLASSSOURCE_CLOSE3_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+ANNO_CLASSSOURCE_CLOSE3_EXCEPTION.useraction=Aby uzyska\u0107 wi\u0119cej informacji, zapoznaj si\u0119 z wyj\u0105tkiem i powi\u0105zanym komunikatem FFDC.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} a directory name
 # # {2} the path for the directory
 ANNO_CLASSSOURCE_EMPTY_DIR=CWWKC0008W: W katalogu [{1}] w \u015bcie\u017cce [{2}] nie znaleziono \u017cadnych plik\u00f3w. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
 ANNO_CLASSSOURCE_EMPTY_DIR.explanation=Dla katalogu docelowego wywo\u0142ano skanowanie adnotacji, ale nie znaleziono w nim \u017cadnych plik\u00f3w klasy.
 ANNO_CLASSSOURCE_EMPTY_DIR.useraction=Sprawd\u017a, czy katalog powinien zawiera\u0107 klasy. Usu\u0144 puste katalogi z aplikacji.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} the resource name, class name plus path
 # # {2} a file path
 # # {3} the name of the container for {1}
@@ -104,213 +104,213 @@ ANNO_CLASSSOURCE_NOT_FILE=CWWKC0009W: Zas\u00f3b [{1}] zosta\u0142 znaleziony ja
 ANNO_CLASSSOURCE_NOT_FILE.explanation=Oczekiwano, \u017ce zas\u00f3b b\u0119dzie plikiem, a okaza\u0142o si\u0119, \u017ce jest katalogiem.
 ANNO_CLASSSOURCE_NOT_FILE.useraction=\u017badna czynno\u015b\u0107 u\u017cytkownika nie jest dost\u0119pna.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} a file path
 # # {2} the resource name, class name plus path
 # # {3} a directory name
 # # {4} the name of the class
 ANNO_CLASSSOURCE_OPEN3_EXCEPTION=CWWKC0010W: Nie powiod\u0142o si\u0119 otwarcie pliku [{1}] dla zasobu [{2}] w katalogu g\u0142\u00f3wnym [{3}] dla klasy [{4}]. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
 ANNO_CLASSSOURCE_OPEN3_EXCEPTION.explanation=Pr\u00f3ba otwarcia strumienia wej\u015bciowego dla pliku spowodowa\u0142a wyj\u0105tek.
-ANNO_CLASSSOURCE_OPEN3_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+ANNO_CLASSSOURCE_OPEN3_EXCEPTION.useraction=Aby uzyska\u0107 wi\u0119cej informacji, zapoznaj si\u0119 z wyj\u0105tkiem i powi\u0105zanym komunikatem FFDC.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} A resource name
 # # {2} A directory path
 # # {3} A class name
 # # {4} The error message from the exception
 ANNO_CLASSSOURCE_CLOSE4_EXCEPTION=CWWKC0011W: Nie powiod\u0142o si\u0119 zamkni\u0119cie zasobu [{1}] w katalogu g\u0142\u00f3wnym [{2}] dla klasy [{3}]. Identyfikator obiektu emituj\u0105cego komunikat: [{0}]. Komunikat o b\u0142\u0119dzie: {4}
 ANNO_CLASSSOURCE_CLOSE4_EXCEPTION.explanation=Zamkni\u0119cie strumienia wej\u015bciowego dla zasobu spowodowa\u0142o wyj\u0105tek.
-ANNO_CLASSSOURCE_CLOSE4_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+ANNO_CLASSSOURCE_CLOSE4_EXCEPTION.useraction=Aby uzyska\u0107 wi\u0119cej informacji, zapoznaj si\u0119 z wyj\u0105tkiem i powi\u0105zanym komunikatem FFDC.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} A jar file path name
 ANNO_CLASSSOURCE_OPEN4_EXCEPTION=CWWKC0012W: Otwarcie pliku [{1}] nie powiod\u0142o si\u0119 z powodu wyj\u0105tku. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
 ANNO_CLASSSOURCE_OPEN4_EXCEPTION.explanation=Plik by\u0142 otwierany jako plik JarFile, co spowodowa\u0142o wyj\u0105tek.
-ANNO_CLASSSOURCE_OPEN4_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+ANNO_CLASSSOURCE_OPEN4_EXCEPTION.useraction=Aby uzyska\u0107 wi\u0119cej informacji, zapoznaj si\u0119 z wyj\u0105tkiem i powi\u0105zanym komunikatem FFDC.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} The name of the jar file
 # # {2} A number, the value of the 'open counter'
 ANNO_CLASSSOURCE_JAR_STATE_BAD=CWWKC0013W: Stan licznika otwar\u0107 [{2}] pliku JAR [{1}] jest niepoprawny dla zamkni\u0119cia. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
 ANNO_CLASSSOURCE_JAR_STATE_BAD.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Liczba aktywnych u\u017cytkownik\u00f3w pliku JAR nie jest zgodna ze stanem pliku JAR.
 ANNO_CLASSSOURCE_JAR_STATE_BAD.useraction=CMSG0002
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} The name of a jar file
 ANNO_CLASSSOURCE_CLOSE5_EXCEPTION=CWWKC0014W: Zamkni\u0119cie obiektu [{1}] zako\u0144czy\u0142o si\u0119 niepowodzeniem. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
 ANNO_CLASSSOURCE_CLOSE5_EXCEPTION.explanation=Pr\u00f3ba zamkni\u0119cia obiektu JarFile spowodowa\u0142a wyst\u0105pienie wyj\u0105tku.
-ANNO_CLASSSOURCE_CLOSE5_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+ANNO_CLASSSOURCE_CLOSE5_EXCEPTION.useraction=Aby uzyska\u0107 wi\u0119cej informacji, zapoznaj si\u0119 z wyj\u0105tkiem i powi\u0105zanym komunikatem FFDC.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} a resource name
 # # {2} a class name
 # # {3} a jar file path
 ANNO_CLASSSOURCE_OPEN5_EXCEPTION=CWWKC0015W: Otwarcie zasobu [{1}] dla klasy [{2}] w \u015bcie\u017cce [{3}] zako\u0144czy\u0142o si\u0119 niepowodzeniem. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
 ANNO_CLASSSOURCE_OPEN5_EXCEPTION.explanation=Wykryto wpis dla klasy w pliku JAR, ale utworzenie strumienia wej\u015bciowego dla klasy spowodowa\u0142o wyj\u0105tek.
-ANNO_CLASSSOURCE_OPEN5_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+ANNO_CLASSSOURCE_OPEN5_EXCEPTION.useraction=Aby uzyska\u0107 wi\u0119cej informacji, zapoznaj si\u0119 z wyj\u0105tkiem i powi\u0105zanym komunikatem FFDC.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} A resource name
 # # {2} A class name
 # # {3} A jar file path
 # # {4} The error message from the exception
 ANNO_CLASSSOURCE_CLOSE6_EXCEPTION=CWWKC0016W: Zamkni\u0119cie zasobu [{1}] dla klasy [{2}] w \u015bcie\u017cce [{3}] zako\u0144czy\u0142o si\u0119 niepowodzeniem. Identyfikator obiektu emituj\u0105cego komunikat: [{0}]. Komunikat o b\u0142\u0119dzie: {4}
 ANNO_CLASSSOURCE_CLOSE6_EXCEPTION.explanation=Zamkni\u0119cie strumienia wej\u015bciowego dla zasobu spowodowa\u0142o wyj\u0105tek.
-ANNO_CLASSSOURCE_CLOSE6_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+ANNO_CLASSSOURCE_CLOSE6_EXCEPTION.useraction=Aby uzyska\u0107 wi\u0119cej informacji, zapoznaj si\u0119 z wyj\u0105tkiem i powi\u0105zanym komunikatem FFDC.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} a java class name
 # # {2} a method name
 ANNO_ANNOINFO_NO_METHOD=CWWKC0017W: Adnotacja [{0}] klasy adnotacji [{1}] nie zawiera metody [{2}].
 ANNO_ANNOINFO_NO_METHOD.explanation=Nie mo\u017cna znale\u017a\u0107 zgodnej metody dla parametru w kodowanej adnotacji.
 ANNO_ANNOINFO_NO_METHOD.useraction=\u017badna czynno\u015b\u0107 u\u017cytkownika nie jest dost\u0119pna.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} a hash id used to identify the object
 # # {2} a hash id used to identify the object
 ANNO_CLASSINFO_EXISTS1=CWWKC0018W: Obiekt [{1}] jest ju\u017c odr\u0119bn\u0105 klas\u0105 Java [{2}]. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
 ANNO_CLASSINFO_EXISTS1.explanation=Obiekt informacji dla danej klasy ju\u017c istnieje w pami\u0119ci podr\u0119cznej.
 ANNO_CLASSINFO_EXISTS1.useraction=\u017badna czynno\u015b\u0107 u\u017cytkownika nie jest dost\u0119pna.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} a hash id used to identify the object
 ANNO_CLASSINFO_EXISTS2=CWWKC0019W: Obiekt [{1}] jest ju\u017c klas\u0105 Java. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
 ANNO_CLASSINFO_EXISTS2.explanation=Obiekt informacji dla danej klasy ju\u017c istnieje w pami\u0119ci podr\u0119cznej.
 ANNO_CLASSINFO_EXISTS2.useraction=\u017badna czynno\u015b\u0107 u\u017cytkownika nie jest dost\u0119pna.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} a hash id used to identify the object
 # # {2} a hash id used to identify the object
 ANNO_CLASSINFO_EXISTS3=CWWKC0020W: Obiekt [{1}] jest ju\u017c odr\u0119bn\u0105 klas\u0105 z adnotacjami [{2}]. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
 ANNO_CLASSINFO_EXISTS3.explanation=Obiekt informacji dla danej klasy ju\u017c istnieje w pami\u0119ci podr\u0119cznej.
 ANNO_CLASSINFO_EXISTS3.useraction=\u017badna czynno\u015b\u0107 u\u017cytkownika nie jest dost\u0119pna.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} a hash id used to identify the object
 ANNO_CLASSINFO_EXISTS4=CWWKC0021W: Obiekt [{1}] jest ju\u017c klas\u0105 z adnotacjami. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
 ANNO_CLASSINFO_EXISTS4.explanation=Obiekt informacji dla danej klasy ju\u017c istnieje w pami\u0119ci podr\u0119cznej.
 ANNO_CLASSINFO_EXISTS4.useraction=\u017badna czynno\u015b\u0107 u\u017cytkownika nie jest dost\u0119pna.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} the name of a class
 ANNO_CLASSINFO_SCAN_EXCEPTION=CWWKC0022W: Skanowanie klasy [{1}] spowodowa\u0142o wyj\u0105tek. Identyfikator obiektu emituj\u0105cego komunikat: [{0}]. Komunikat: [{2}]. Przyczyna: [{3}].
 ANNO_CLASSINFO_SCAN_EXCEPTION.explanation=Skanowanie klasy w poszukiwaniu adnotacji spowodowa\u0142o wyj\u0105tek.
-ANNO_CLASSINFO_SCAN_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+ANNO_CLASSINFO_SCAN_EXCEPTION.useraction=Aby uzyska\u0107 wi\u0119cej informacji, zapoznaj si\u0119 z wyj\u0105tkiem i powi\u0105zanym komunikatem FFDC.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} a hash id used to identify the object
 # # {2} a hash id used to identify the object
 ANNO_CLASSINFO_METHODEXISTS=CWWKC0023W: Dodanie obiektu [{1}] nadpisuje istniej\u0105cy obiekt [{2}]. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
 ANNO_CLASSINFO_METHODEXISTS.explanation=Obiekt metody dla klasy ju\u017c istnieje w pami\u0119ci podr\u0119cznej.
 ANNO_CLASSINFO_METHODEXISTS.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} a hash id used to identify the object
 # # {2} a hash id used to identify the object
 ANNO_CLASSINFO_FIELDEXISTS=CWWKC0024W: Dodanie obiektu [{1}] nadpisuje istniej\u0105cy obiekt [{2}]. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
 ANNO_CLASSINFO_FIELDEXISTS.explanation=Obiekt pola dla klasy ju\u017c istnieje w pami\u0119ci podr\u0119cznej.
 ANNO_CLASSINFO_FIELDEXISTS.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} The name of a class
 ANNO_CLASSINFO_CLASS_NOTFOUND=CWWKC0025W: Nie znaleziono klasy [{1}]. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
 ANNO_CLASSINFO_CLASS_NOTFOUND.explanation=Proces skanowania adnotacji nie m\u00f3g\u0142 rozstrzygn\u0105\u0107 klasy. Problem ten mo\u017ce zosta\u0107 rozwi\u0105zany przez p\u00f3\u017aniejsz\u0105 pr\u00f3b\u0119 rozstrzygni\u0119cia klasy.
 ANNO_CLASSINFO_CLASS_NOTFOUND.useraction=Sprawd\u017a, czy klasa jest uwzgl\u0119dniona w aplikacji lub w \u015bcie\u017cce klasy aplikacji.
 
-# # {0} A hashcode id used to identify the object emitting the message
-# # {1} A hashcode id used to identify the object causing the exception
+# # {0} A hashcode ID used to identify the object that emits the message
+# # {1} A hashcode ID used to identify the object causing the exception
 # # {2} The error message from the exception
 ANNO_INFOSTORE_OPEN1_EXCEPTION=CWWKC0026W: Otwarcie obiektu [{1}] spowodowa\u0142o wyj\u0105tek. Identyfikator obiektu emituj\u0105cego komunikat: [{0}]. Komunikat: {2}
 ANNO_INFOSTORE_OPEN1_EXCEPTION.explanation=Otwarcie obiektu \u017ar\u00f3d\u0142owego klasy spowodowa\u0142o wyj\u0105tek.
-ANNO_INFOSTORE_OPEN1_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+ANNO_INFOSTORE_OPEN1_EXCEPTION.useraction=Aby uzyska\u0107 wi\u0119cej informacji, zapoznaj si\u0119 z wyj\u0105tkiem i powi\u0105zanym komunikatem FFDC.
 
-# # {0} A hashcode id used to identify the object emitting the message
-# # {1} A hashcode id used to identify the object causing the exception
+# # {0} A hashcode ID used to identify the object that emits the message
+# # {1} A hashcode ID used to identify the object causing the exception
 ANNO_INFOSTORE_CLOSE1_EXCEPTION=CWWKC0027W: Zamkni\u0119cie obiektu [{1}] spowodowa\u0142o wyj\u0105tek. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
 ANNO_INFOSTORE_CLOSE1_EXCEPTION.explanation=Zamkni\u0119cie obiektu \u017ar\u00f3d\u0142owego klasy spowodowa\u0142o wyj\u0105tek.
-ANNO_INFOSTORE_CLOSE1_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+ANNO_INFOSTORE_CLOSE1_EXCEPTION.useraction=Aby uzyska\u0107 wi\u0119cej informacji, zapoznaj si\u0119 z wyj\u0105tkiem i powi\u0105zanym komunikatem FFDC.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} the full resource name for the class
 # # {2} The class name
 ANNO_INFOSTORE_OPEN2_EXCEPTION=CWWKC0028W: Otwarcie strumienia wej\u015bciowego zasobu [{1}] dla klasy [{2}] nie powiod\u0142o si\u0119 z powodu wyj\u0105tku. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
 ANNO_INFOSTORE_OPEN2_EXCEPTION.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas pr\u00f3by otwarcia strumienia wej\u015bciowego dla klasy przez proces skanowania adnotacji.
-ANNO_INFOSTORE_OPEN2_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+ANNO_INFOSTORE_OPEN2_EXCEPTION.useraction=Aby uzyska\u0107 wi\u0119cej informacji, zapoznaj si\u0119 z wyj\u0105tkiem i powi\u0105zanym komunikatem FFDC.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} the full resource name for the class
 # # {2} The class name
 ANNO_INFOSTORE_CLOSE2_EXCEPTION=CWWKC0029W: Zamkni\u0119cie strumienia wej\u015bciowego zasobu [{1}] dla klasy [{2}] nie powiod\u0142o si\u0119 z powodu wyj\u0105tku. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
 ANNO_INFOSTORE_CLOSE2_EXCEPTION.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas pr\u00f3by zamkni\u0119cia strumienia wej\u015bciowego dla klasy przez proces skanowania adnotacji.
-ANNO_INFOSTORE_CLOSE2_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+ANNO_INFOSTORE_CLOSE2_EXCEPTION.useraction=Aby uzyska\u0107 wi\u0119cej informacji, zapoznaj si\u0119 z wyj\u0105tkiem i powi\u0105zanym komunikatem FFDC.
 
 # # {0} The class name
 # # {1} the full resource name for the class
 ANNO_CREATE_READER_EXCEPTION=CWWKC0030W: Utworzenie programu czytaj\u0105cego klasy dla klasy [{0}] z zasobu [{1}] nie powiod\u0142o si\u0119 z powodu wyj\u0105tku.
 ANNO_CREATE_READER_EXCEPTION.explanation=Proces skanowania adnotacji tworzy\u0142 program czytaj\u0105cy klasy, aby przetworzy\u0107 strumie\u0144 wej\u015bciowy dla zasobu, i spowodowa\u0142o to wyj\u0105tek.
-ANNO_CREATE_READER_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+ANNO_CREATE_READER_EXCEPTION.useraction=Aby uzyska\u0107 wi\u0119cej informacji, zapoznaj si\u0119 z wyj\u0105tkiem i powi\u0105zanym komunikatem FFDC.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} a parameter name
 # # {2} a parameter value
 ANNO_INFOVISIT_INVALID_STATE=CWWKC0031W: Wewn\u0119trzny b\u0142\u0105d stanu: Go\u015b\u0107 [{0}] ustawi\u0142 parametr [{1}] na warto\u015b\u0107 [{2}].
 ANNO_INFOVISIT_INVALID_STATE.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas przetwarzania adnotacji. Obiekt go\u015bcia jest niepoprawny.
 ANNO_INFOVISIT_INVALID_STATE.useraction=CMSG0001
 
-# # {0} A hashcode id used to identify the object emitting the message
-# # {1} A hashcode id used to identify the object that exists
+# # {0} A hashcode ID used to identify the object that emits the message
+# # {1} A hashcode ID used to identify the object that exists
 ANNO_INFOVISITOR_RESET1=CWWKC0032W: Istniej\u0105 pozosta\u0142o\u015bci pakietu [{1}]. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
 ANNO_INFOVISITOR_RESET1.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Podczas resetowania go\u015bcia znaleziono pozosta\u0142o\u015bci danych.
 ANNO_INFOVISITOR_RESET1.useraction=CMSG0002
 
-# # {0} A hashcode id used to identify the object emitting the message
-# # {1} A hashcode id used to identify the object that exists
+# # {0} A hashcode ID used to identify the object that emits the message
+# # {1} A hashcode ID used to identify the object that exists
 ANNO_INFOVISITOR_RESET2=CWWKC0033W: Istniej\u0105 pozosta\u0142o\u015bci klasy [{1}]. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
 ANNO_INFOVISITOR_RESET2.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Podczas resetowania go\u015bcia znaleziono pozosta\u0142o\u015bci danych.
 ANNO_INFOVISITOR_RESET2.useraction=CMSG0002
 
-# # {0} A hashcode id used to identify the object emitting the message
-# # {1} A hashcode id used to identify the object that exists
+# # {0} A hashcode ID used to identify the object that emits the message
+# # {1} A hashcode ID used to identify the object that exists
 ANNO_INFOVISITOR_RESET3=CWWKC0034W: Istniej\u0105 pozosta\u0142o\u015bci metody [{1}]. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
 ANNO_INFOVISITOR_RESET3.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Podczas resetowania go\u015bcia znaleziono pozosta\u0142o\u015bci danych.
 ANNO_INFOVISITOR_RESET3.useraction=CMSG0002
 
-# # {0} A hashcode id used to identify the object emitting the message
-# # {1} A hashcode id used to identify the object that exists
+# # {0} A hashcode ID used to identify the object that emits the message
+# # {1} A hashcode ID used to identify the object that exists
 ANNO_INFOVISITOR_RESET4=CWWKC0035W: Istniej\u0105 pozosta\u0142o\u015bci pola [{1}]. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
 ANNO_INFOVISITOR_RESET4.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Podczas resetowania go\u015bcia znaleziono pozosta\u0142o\u015bci danych.
 ANNO_INFOVISITOR_RESET4.useraction=CMSG0002
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 ANNO_INFOVISITOR_RESET5=CWWKC0036W: Istniej\u0105 pozosta\u0142o\u015bci stanu wstrzymania. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
 ANNO_INFOVISITOR_RESET5.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Podczas resetowania go\u015bcia znaleziono pozosta\u0142o\u015bci danych.
 ANNO_INFOVISITOR_RESET5.useraction=CMSG0002
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} The name of a class
 ANNO_INFOVISITOR_RESET6=CWWKC0037W: Istniej\u0105 pozosta\u0142o\u015bci nazwy klasy zewn\u0119trznej [{1}]. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
 ANNO_INFOVISITOR_RESET6.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Podczas resetowania go\u015bcia znaleziono pozosta\u0142o\u015bci danych.
 ANNO_INFOVISITOR_RESET6.useraction=CMSG0002
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} The name of a class package
 ANNO_INFOVISITOR_VISIT1=CWWKC0038W: Pakiet o nazwie [{1}] ma warto\u015b\u0107 NULL. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
 ANNO_INFOVISITOR_VISIT1.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Nie mo\u017cna utworzy\u0107 obiektu podczas przetwarzania skanowania adnotacji.
 ANNO_INFOVISITOR_VISIT1.useraction=CMSG0002
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} The name of a class field
 ANNO_INFOVISITOR_VISIT2=CWWKC0039W: Nie znaleziono obiektu pola o nazwie [{1}]. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
 ANNO_INFOVISITOR_VISIT2.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Nie mo\u017cna utworzy\u0107 obiektu podczas przetwarzania skanowania adnotacji.
 ANNO_INFOVISITOR_VISIT2.useraction=CMSG0002
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} The name of a class method
 ANNO_INFOVISITOR_VISIT3=CWWKC0040W: Nie znaleziono obiektu metody o nazwie [{1}]. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
 ANNO_INFOVISITOR_VISIT3.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Nie mo\u017cna utworzy\u0107 obiektu podczas przetwarzania skanowania adnotacji.
 ANNO_INFOVISITOR_VISIT3.useraction=CMSG0002
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 ANNO_INFOVISITOR_VISIT4=CWWKC0041W: Nie mo\u017cna zidentyfikowa\u0107 obiektu go\u015bcia. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
 ANNO_INFOVISITOR_VISIT4.explanation=CMSG0001
 ANNO_INFOVISITOR_VISIT4.useraction=CMSG0002
@@ -326,23 +326,23 @@ ANNO_CLASSINFO_INTERFACE_MISSORDERED_ADD.useraction=CMSG0002
 
 ANNO_TARGETS_SCAN_EXCEPTION=CWWKC0044W: Wyst\u0105pi\u0142 wyj\u0105tek podczas skanowania danych klasy i adnotacji. Wyj\u0105tek: {0}.
 ANNO_TARGETS_SCAN_EXCEPTION.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas skanowania danych klasy i adnotacji.  Powi\u0105zany modu\u0142 mo\u017ce dzia\u0142a\u0107 niepoprawnie.
-ANNO_TARGETS_SCAN_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+ANNO_TARGETS_SCAN_EXCEPTION.useraction=Aby uzyska\u0107 wi\u0119cej informacji, zapoznaj si\u0119 z wyj\u0105tkiem i powi\u0105zanym komunikatem FFDC.
 
 ANNO_TARGETS_FLUSH_WRITE_EXCEPTION=CWWKC0045W: Wyst\u0105pi\u0142 wyj\u0105tek podczas ko\u0144czenia zapisywania danych klasy i adnotacji.
 ANNO_TARGETS_FLUSH_WRITE_EXCEPTION.explanation=Wyst\u0105pi\u0142 problem podczas ko\u0144czenia zapisywania danych klasy i adnotacji.  Pami\u0119\u0107 podr\u0119czna danych klasy i adnotacji mo\u017ce by\u0107 niekompletna i powinna zosta\u0107 wyczyszczona.
-ANNO_TARGETS_FLUSH_WRITE_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+ANNO_TARGETS_FLUSH_WRITE_EXCEPTION.useraction=Aby uzyska\u0107 wi\u0119cej informacji, zapoznaj si\u0119 z wyj\u0105tkiem i powi\u0105zanym komunikatem FFDC.
 
 ANNO_TARGETS_READ_EXCEPTION=CWWKC0046W: Wyst\u0105pi\u0142 wyj\u0105tek podczas odczytywania danych adnotacji.
 ANNO_TARGETS_READ_EXCEPTION.explanation=Wyst\u0105pi\u0142 problem podczas odczytywania danych klasy i adnotacji.  Dalsze przetwarzanie mo\u017ce prowadzi\u0107 do niepoprawnych wynik\u00f3w, poniewa\u017c odczytane zosta\u0142y niekompletne dane.  Pami\u0119\u0107 podr\u0119czna danych klasy i adnotacji powinna zosta\u0107 wyczyszczona.
-ANNO_TARGETS_READ_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+ANNO_TARGETS_READ_EXCEPTION.useraction=Aby uzyska\u0107 wi\u0119cej informacji, zapoznaj si\u0119 z wyj\u0105tkiem i powi\u0105zanym komunikatem FFDC.
 
 ANNO_TARGETS_WRITE_EXCEPTION=CWWKC0047W: Wyst\u0105pi\u0142 wyj\u0105tek podczas zapisywania danych adnotacji.
 ANNO_TARGETS_WRITE_EXCEPTION.explanation=Wyst\u0105pi\u0142 problem podczas zapisywania danych klasy i adnotacji.  Wy\u015bwietlony wiersz nie zosta\u0142 pomy\u015blnie zapisany w danych klasy i adnotacji.  Pami\u0119\u0107 podr\u0119czna danych klasy i adnotacji mo\u017ce by\u0107 niekompletna i powinna zosta\u0107 wyczyszczona.
-ANNO_TARGETS_WRITE_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+ANNO_TARGETS_WRITE_EXCEPTION.useraction=Aby uzyska\u0107 wi\u0119cej informacji, zapoznaj si\u0119 z wyj\u0105tkiem i powi\u0105zanym komunikatem FFDC.
 
 ANNO_TARGETS_SCAN_CLASS_EXCEPTION=CWWKC0048W: Wyst\u0105pi\u0142 wyj\u0105tek podczas skanowania klasy [{0}] w poszukiwaniu informacji o klasie i adnotacjach.
 ANNO_TARGETS_SCAN_CLASS_EXCEPTION.explanation=Wyst\u0105pi\u0142 problem podczas pr\u00f3by skanowania klasy w poszukiwaniu informacji o klasie i adnotacjach.  Przejrzyj wskazan\u0105 klas\u0119, aby sprawdzi\u0107, czy mo\u017ce zosta\u0107 odczytana i czy zawiera poprawne bajty klasy.
-ANNO_TARGETS_SCAN_CLASS_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+ANNO_TARGETS_SCAN_CLASS_EXCEPTION.useraction=Aby uzyska\u0107 wi\u0119cej informacji, zapoznaj si\u0119 z wyj\u0105tkiem i powi\u0105zanym komunikatem FFDC.
 
 ANNO_TARGETS_FAILED_TO_CREATE_READER=CWWKC0049W: Wyst\u0105pi\u0142 wyj\u0105tek podczas tworzenia programu czytaj\u0105cego kod bajtowy klasy [{0}].
 ANNO_TARGETS_FAILED_TO_CREATE_READER.explanation=Wyst\u0105pi\u0142 problem podczas przygotowywania programu czytaj\u0105cego kod bajtowy klasy.  Warto\u015bci kodu bajtowego dla klasy mog\u0105 by\u0107 niepoprawne lub nie mo\u017cna odczyta\u0107 pliku klasy.  Z tego powodu informacje o klasie i adnotacjach klasy nie b\u0119d\u0105 dost\u0119pne, a modu\u0142, kt\u00f3ry u\u017cywa klasy, mo\u017ce dzia\u0142a\u0107 niepoprawnie.
@@ -400,13 +400,13 @@ ANNO_UTIL_UNRECOGNIZED_TYPE=CWWKC0062W: Wewn\u0119trzny b\u0142\u0105d przetwarz
 ANNO_UTIL_UNRECOGNIZED_TYPE.explanation=CMSG0001
 ANNO_UTIL_UNRECOGNIZED_TYPE.useraction=CMSG0002
 
-# #{0} A hashcode id used to identify the object emitting the message
+# #{0} A hashcode ID used to identify the object that emits the message
 # #{1} The name of the java exception which occurred
 # #{2} The class name of the resource being closed
-# #{3} The hashcode id of the resource being closed
+# #{3} The hashcode ID of the resource being closed
 ANNO_CLASSSOURCE_CLOSE_EXCEPTION=CWWKC0063W: Usuwanie nadmiarowego wyj\u0105tku zamkni\u0119cia {1} z klasy {2} zasobu [{3}]. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].
 ANNO_CLASSSOURCE_CLOSE_EXCEPTION.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas pr\u00f3by zamkni\u0119cia zasobu.
-ANNO_CLASSSOURCE_CLOSE_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+ANNO_CLASSSOURCE_CLOSE_EXCEPTION.useraction=Aby uzyska\u0107 wi\u0119cej informacji, zapoznaj si\u0119 z wyj\u0105tkiem i powi\u0105zanym komunikatem FFDC.
 
 # # {0} The name of the class
 # # {1} The name of the JAR file the class is in.
@@ -416,95 +416,95 @@ ANNO_TARGETS_CORRUPT_CLASS.useraction=W zale\u017cno\u015bci od istotno\u015bci 
 
 #### Added 07-Feb-2018:
 
-# # {0} A hashcode ID that identifies the object emitting the message
+# # {0} A hashcode ID that identifies the object that emits the message
 # # {1} A hashcode ID that identifies the object causing the exception
 # # {2} The error message from the exception
 ANNO_CLASSSOURCE_CHILD_OPEN_EXCEPTION=CWWKC0065W: Otwarcie obiektu \u017ar\u00f3d\u0142owego klasy potomnej [{1}] spowodowa\u0142o wyj\u0105tek. Identyfikator obiektu emituj\u0105cego komunikat: [{0}]. Komunikat o b\u0142\u0119dzie: {2}
 ANNO_CLASSSOURCE_CHILD_OPEN_EXCEPTION.explanation=Otwarcie obiektu \u017ar\u00f3d\u0142owego klasy potomnej spowodowa\u0142o wyj\u0105tek.
-ANNO_CLASSSOURCE_CHILD_OPEN_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+ANNO_CLASSSOURCE_CHILD_OPEN_EXCEPTION.useraction=Aby uzyska\u0107 wi\u0119cej informacji, zapoznaj si\u0119 z wyj\u0105tkiem i powi\u0105zanym komunikatem FFDC.
 
-# # {0} A hashcode ID that identifies the object emitting the message
+# # {0} A hashcode ID that identifies the object that emits the message
 # # {1} A hashcode ID that identifies the object causing the exception
 # # {2} The error message from the exception
 ANNO_CLASSSOURCE_CHILD_CLOSE_EXCEPTION=CWWKC0066W: Zamkni\u0119cie obiektu \u017ar\u00f3d\u0142owego klasy potomnej [{1}] zako\u0144czy\u0142o si\u0119 niepowodzeniem. Identyfikator obiektu emituj\u0105cego komunikat: [{0}]. Komunikat o b\u0142\u0119dzie: {3}
 ANNO_CLASSSOURCE_CHILD_CLOSE_EXCEPTION.explanation=Zamkni\u0119cie obiektu \u017ar\u00f3d\u0142owego klasy potomnej spowodowa\u0142o wyj\u0105tek.
-ANNO_CLASSSOURCE_CHILD_CLOSE_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+ANNO_CLASSSOURCE_CHILD_CLOSE_EXCEPTION.useraction=Aby uzyska\u0107 wi\u0119cej informacji, zapoznaj si\u0119 z wyj\u0105tkiem i powi\u0105zanym komunikatem FFDC.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} An entry name
 # # {2} A class name
 # # {3} The error message from the exception
 ANNO_CLASSSOURCE_ENTRY_SCAN_EXCEPTION=CWWKC0067W: Przetwarzanie pozycji [{1}] dla klasy [{2}] spowodowa\u0142o wyj\u0105tek. Identyfikator obiektu emituj\u0105cego komunikat: [{0}]. Komunikat o b\u0142\u0119dzie: {3}
 ANNO_CLASSSOURCE_ENTRY_SCAN_EXCEPTION.explanation=Przetwarzanie informacji o klasie odczytanych z pozycji spowodowa\u0142o wyj\u0105tek.
-ANNO_CLASSSOURCE_ENTRY_SCAN_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+ANNO_CLASSSOURCE_ENTRY_SCAN_EXCEPTION.useraction=Aby uzyska\u0107 wi\u0119cej informacji, zapoznaj si\u0119 z wyj\u0105tkiem i powi\u0105zanym komunikatem FFDC.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} A JAR entry name
 # # {2} A class name
 # # {3} A JAR file name
 # # {4} The error message from the exception
 ANNO_CLASSSOURCE_ENTRY_CLOSE_EXCEPTION=CWWKC0068W: Zamkni\u0119cie pozycji [{1}] dla klasy [{2}] w \u015bcie\u017cce [{3}] zako\u0144czy\u0142o si\u0119 niepowodzeniem. Identyfikator obiektu emituj\u0105cego komunikat: [{0}]. Komunikat o b\u0142\u0119dzie: {4}
 ANNO_CLASSSOURCE_ENTRY_CLOSE_EXCEPTION.explanation=Zamkni\u0119cie pozycji spowodowa\u0142o wyj\u0105tek.
-ANNO_CLASSSOURCE_ENTRY_CLOSE_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+ANNO_CLASSSOURCE_ENTRY_CLOSE_EXCEPTION.useraction=Aby uzyska\u0107 wi\u0119cej informacji, zapoznaj si\u0119 z wyj\u0105tkiem i powi\u0105zanym komunikatem FFDC.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} A file name
 # # {2} A class name
 # # {3} The error message from the exception
 ANNO_CLASSSOURCE_FILE_SCAN_EXCEPTION=CWWKC0069W: Przetwarzanie pliku [{1}] dla klasy [{2}] spowodowa\u0142o wyj\u0105tek. Identyfikator obiektu emituj\u0105cego komunikat: [{0}]. Komunikat o b\u0142\u0119dzie: {3}
 ANNO_CLASSSOURCE_FILE_SCAN_EXCEPTION.explanation=Przetwarzanie informacji o klasie odczytanych z pliku spowodowa\u0142o wyj\u0105tek.
-ANNO_CLASSSOURCE_FILE_SCAN_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+ANNO_CLASSSOURCE_FILE_SCAN_EXCEPTION.useraction=Aby uzyska\u0107 wi\u0119cej informacji, zapoznaj si\u0119 z wyj\u0105tkiem i powi\u0105zanym komunikatem FFDC.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} A resource name
 # # {2} A directory path
 # # {3} A class name
 # # {4} The error message from the exception
 ANNO_CLASSSOURCE_FILE_CLOSE_EXCEPTION=CWWKC0070W: Nie powiod\u0142o si\u0119 zamkni\u0119cie zasobu [{1}] w katalogu g\u0142\u00f3wnym [{2}] dla klasy [{3}]. Identyfikator obiektu emituj\u0105cego komunikat: [{0}]. Komunikat o b\u0142\u0119dzie: {4}
 ANNO_CLASSSOURCE_FILE_CLOSE_EXCEPTION.explanation=Zamkni\u0119cie pliku spowodowa\u0142o wyj\u0105tek.
-ANNO_CLASSSOURCE_FILE_CLOSE_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+ANNO_CLASSSOURCE_FILE_CLOSE_EXCEPTION.useraction=Aby uzyska\u0107 wi\u0119cej informacji, zapoznaj si\u0119 z wyj\u0105tkiem i powi\u0105zanym komunikatem FFDC.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} A JAR entry name
 # # {2} A class name
 # # {3} The error message from the exception
 ANNO_CLASSSOURCE_JARENTRY_SCAN_EXCEPTION=CWWKC0071W: Przetwarzanie pozycji JAR [{1}] dla klasy [{2}] spowodowa\u0142o wyj\u0105tek. Identyfikator obiektu emituj\u0105cego komunikat: [{0}]. Komunikat o b\u0142\u0119dzie: {3}
 ANNO_CLASSSOURCE_JARENTRY_SCAN_EXCEPTION.explanation=Przetwarzanie informacji o klasie odczytanych z pozycji JAR spowodowa\u0142o wyj\u0105tek.
-ANNO_CLASSSOURCE_JARENTRY_SCAN_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+ANNO_CLASSSOURCE_JARENTRY_SCAN_EXCEPTION.useraction=Aby uzyska\u0107 wi\u0119cej informacji, zapoznaj si\u0119 z wyj\u0105tkiem i powi\u0105zanym komunikatem FFDC.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} A JAR entry name
 # # {2} A class name
 # # {3} A jar name
 # # {4} The error message from the exception
 ANNO_CLASSSOURCE_JARENTRY_CLOSE_EXCEPTION=CWWKC0072W: Zamkni\u0119cie pozycji JAR [{1}] dla klasy [{2}] w \u015bcie\u017cce [{3}] zako\u0144czy\u0142o si\u0119 niepowodzeniem. Identyfikator obiektu emituj\u0105cego komunikat: [{0}]. Komunikat o b\u0142\u0119dzie: {4}
 ANNO_CLASSSOURCE_JARENTRY_CLOSE_EXCEPTION.explanation=Zamkni\u0119cie pliku spowodowa\u0142o wyj\u0105tek.
-ANNO_CLASSSOURCE_JARENTRY_CLOSE_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+ANNO_CLASSSOURCE_JARENTRY_CLOSE_EXCEPTION.useraction=Aby uzyska\u0107 wi\u0119cej informacji, zapoznaj si\u0119 z wyj\u0105tkiem i powi\u0105zanym komunikatem FFDC.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} A resource name
 # # {2} A class name
 # # {3} The error message from the exception
 ANNO_CLASSSOURCE_RESOURCE_SCAN_EXCEPTION=CWWKC0073W: Przetwarzanie zasobu [{1}] dla klasy [{2}] spowodowa\u0142o wyj\u0105tek. Identyfikator obiektu emituj\u0105cego komunikat: [{0}]. Komunikat o b\u0142\u0119dzie: {3}
 ANNO_CLASSSOURCE_RESOURCE_SCAN_EXCEPTION.explanation=Przetwarzanie informacji o klasie odczytanych z zasobu spowodowa\u0142o wyj\u0105tek.
-ANNO_CLASSSOURCE_RESOURCE_SCAN_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+ANNO_CLASSSOURCE_RESOURCE_SCAN_EXCEPTION.useraction=Aby uzyska\u0107 wi\u0119cej informacji, zapoznaj si\u0119 z wyj\u0105tkiem i powi\u0105zanym komunikatem FFDC.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} The resource name
 # # {2} The class name
 # # {3} The error message from the exception
 ANNO_CLASSSOURCE_RESOURCE_CLOSE_EXCEPTION=CWWKC0074W: Zamkni\u0119cie zasobu [{1}] dla klasy [{2}] zako\u0144czy\u0142o si\u0119 niepowodzeniem. Identyfikator obiektu emituj\u0105cego komunikat: [{0}]. Komunikat o b\u0142\u0119dzie: {3}
 ANNO_CLASSSOURCE_RESOURCE_CLOSE_EXCEPTION.explanation=Zamkni\u0119cie zasobu spowodowa\u0142o wyj\u0105tek.
-ANNO_CLASSSOURCE_RESOURCE_CLOSE_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+ANNO_CLASSSOURCE_RESOURCE_CLOSE_EXCEPTION.useraction=Aby uzyska\u0107 wi\u0119cej informacji, zapoznaj si\u0119 z wyj\u0105tkiem i powi\u0105zanym komunikatem FFDC.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} The target convertion type
 # # {2} The error message from the exception
 ANNO_CLASSSOURCE_MODE_ADAPT_EXCEPTION=CWWKC0075W: Nie powiod\u0142o si\u0119 przekszta\u0142cenie kontenera tego obiektu \u017ar\u00f3d\u0142owego klasy w [{1}]. Identyfikator obiektu emituj\u0105cego komunikat: [{0}]. Komunikat o b\u0142\u0119dzie: {2}
 ANNO_CLASSSOURCE_MODE_ADAPT_EXCEPTION.explanation=Nie mo\u017cna przekszta\u0142ci\u0107 pliku w obiekt nowego typu.
 ANNO_CLASSSOURCE_MODE_ADAPT_EXCEPTION.useraction=\u017badna czynno\u015b\u0107 u\u017cytkownika nie jest dost\u0119pna.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} File name
 # # {2} A class name
 # # {3} A file name
@@ -514,53 +514,82 @@ ANNO_CLASSSOURCE_ENTRY_ADAPT_EXCEPTION=CWWKC0076W: Przekszta\u0142cenie pliku [{
 ANNO_CLASSSOURCE_ENTRY_ADAPT_EXCEPTION.explanation=Nie mo\u017cna przekszta\u0142ci\u0107 pozycji w obiekt nowego typu.
 ANNO_CLASSSOURCE_ENTRY_ADAPT_EXCEPTION.useraction=\u017badna czynno\u015b\u0107 u\u017cytkownika nie jest dost\u0119pna.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} a class name
 # # {2} The error message from the exception
 ANNO_CLASSSOURCE_JANDEX_SCAN_EXCEPTION=CWWKC0077W: Przetwarzanie informacji Jandex dla klasy [{1}] spowodowa\u0142o wyj\u0105tek. Identyfikator obiektu emituj\u0105cego komunikat: [{0}]. Komunikat o b\u0142\u0119dzie: {2}
 ANNO_CLASSSOURCE_JANDEX_SCAN_EXCEPTION.explanation=Przetwarzanie informacji Jandex klasy spowodowa\u0142o wyj\u0105tek.
-ANNO_CLASSSOURCE_JANDEX_SCAN_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+ANNO_CLASSSOURCE_JANDEX_SCAN_EXCEPTION.useraction=Aby uzyska\u0107 wi\u0119cej informacji, zapoznaj si\u0119 z wyj\u0105tkiem i powi\u0105zanym komunikatem FFDC.
 
-# # {0} A hashcode id used to identify the object emitting the message
-# # {1} A resource name
-# # {2} The error message from the exception
-ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION=CWWKC0087W: Otwarcie zasobu indeksu Jandex [{1}] zako\u0144czy\u0142o si\u0119 niepowodzeniem. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].  Komunikat o b\u0142\u0119dzie: {2}
+# # {0} A String: A hashcode ID used to identify the object that emits the message
+# # {1} A String: A resource name: A file name or an archive entry name.
+# # {2} A String: An archive name.
+# # {3} The error message from the exception
+ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION=CWWKC0087W: [ {0} ] Otwarcie zasobu indeksu Jandex [{1}] z archiwum [{2}] nie powiod\u0142o si\u0119.  Komunikat o b\u0142\u0119dzie: {3}
 ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION.explanation=Pr\u00f3ba otwarcia zasobu indeksu Jandex spowodowa\u0142a wyj\u0105tek.
-ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION.useraction=Aby uzyska\u0107 wi\u0119cej informacji, zapoznaj si\u0119 z wyj\u0105tkiem i powi\u0105zanym komunikatem FFDC.
 
-# # {0} A hashcode id used to identify the object emitting the message
-# # {1} A resource name
-# # {2} The error message from the exception
-ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION=CWWKC0088W: Odczytanie zasobu indeksu Jandex [{1}] zako\u0144czy\u0142o si\u0119 niepowodzeniem. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].  Komunikat o b\u0142\u0119dzie: {2}
+# # {0} A String: A hashcode ID used to identify the object that emits the message
+# # {1} A String: A resource name: A file name or an archive entry name.
+# # {2} A String: An archive name.
+# # {3} The error message from the exception
+ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION=CWWKC0088W: [ {0} ] Odczyt zasobu indeksu Jandex [{1}] z archiwum [{2}] nie powi\u00f3d\u0142 si\u0119.  Komunikat o b\u0142\u0119dzie: {3}
 ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION.explanation=Pr\u00f3ba odczytania indeksu Jandex nie powiod\u0142a si\u0119 z powodu wyj\u0105tku.
-ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION.useraction=Aby uzyska\u0107 wi\u0119cej informacji, zapoznaj si\u0119 z wyj\u0105tkiem i powi\u0105zanym komunikatem FFDC.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} A resource name
 # # {2} The error message from the exception
 ANNO_CLASSSOURCE_FILE_JANDEX_OPEN_EXCEPTION=CWWKC0089W: Otwarcie pliku indeksu Jandex [{1}] zako\u0144czy\u0142o si\u0119 niepowodzeniem. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].  Komunikat o b\u0142\u0119dzie: {2}
 ANNO_CLASSSOURCE_FILE_JANDEX_OPEN_EXCEPTION.explanation=Pr\u00f3ba otwarcia zasobu indeksu Jandex spowodowa\u0142a wyj\u0105tek.
-ANNO_CLASSSOURCE_FILE_JANDEX_OPEN_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+ANNO_CLASSSOURCE_FILE_JANDEX_OPEN_EXCEPTION.useraction=Aby uzyska\u0107 wi\u0119cej informacji, zapoznaj si\u0119 z wyj\u0105tkiem i powi\u0105zanym komunikatem FFDC.
 
-# # {0} A hashcode id used to identify the object emitting the message
+# # {0} A hashcode ID used to identify the object that emits the message
 # # {1} A resource name
 # # {2} The error message from the exception
 ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION=CWWKC0090W: Odczytanie pliku indeksu Jandex [{1}] zako\u0144czy\u0142o si\u0119 niepowodzeniem. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].  Komunikat o b\u0142\u0119dzie: {2}
 ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION.explanation=Pr\u00f3ba odczytania indeksu Jandex nie powiod\u0142a si\u0119 z powodu wyj\u0105tku.
-ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
+ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION.useraction=Aby uzyska\u0107 wi\u0119cej informacji, zapoznaj si\u0119 z wyj\u0105tkiem i powi\u0105zanym komunikatem FFDC.
 
 # # {0} A class name
-ANNO_TARGETS_JANDEX_DUPLICATE_CLASS=CWWKC0091W: B\u0142\u0105d wewn\u0119trzny skanowania klasy: przetwarzanie duplikatu klasy [{0}] w ramach przetwarzania Jandex.
+ANNO_TARGETS_JANDEX_DUPLICATE_CLASS=CWWKC0091W: B\u0142\u0105d wewn\u0119trzny skanowania klasy: Podczas przetwarzania Jandex napotkano duplikat klasy [{0}].
 ANNO_TARGETS_JANDEX_DUPLICATE_CLASS.explanation=CMSG0001
 ANNO_TARGETS_JANDEX_DUPLICATE_CLASS.useraction=CMSG0002
 
-# # {0} A number
-# # {1} A number
-# # {2} A number
-# # {3} A number
-# # {4} The name of a file or the name of a directory
-# # Read - Past tense. 
-ANNO_JANDEX_USAGE=CWWKC0092I: Odczytano indeksy Jandex dla {0} z {1} archiw\u00f3w ({2} z {3} klas) w pliku lub katalogu {4}. 
-ANNO_JANDEX_USAGE.explanation=Podaje liczb\u0119 archiw\u00f3w w module, kt\u00f3re zosta\u0142y przetworzone poprzez odczyt indeks\u00f3w Jandex, a nie poprzez skanowanie rzeczywistych plik\u00f3w klas.  Podaje tak\u017ce \u0142\u0105czn\u0105 liczb\u0119 klas w aplikacji, kt\u00f3re zosta\u0142y przetworzone poprzez odczyt indeks\u00f3w Jandex.
-ANNO_JANDEX_USAGE.useraction=Je\u015bli w przypadku aplikacji maj\u0105 by\u0107 odczytywane indeksy Jandex, nie trzeba wykonywa\u0107 \u017cadnej czynno\u015bci.  Je\u015bli w przypadku aplikacji nie maj\u0105 by\u0107 odczytywane indeksy Jandex, ustaw atrybut useJandex="false" w elemencie aplikacji w pliku server.xml. Mo\u017cna r\u00f3wnie\u017c ustawi\u0107 parametr useJandex="false" w elemencie applicationManger w pliku server.xml, aby ignorowa\u0107 indeksy Jandex we wszystkich aplikacjach.
+# # {0} A number: The count of module locations which had Jandex indexes.
+# # {1} A number: The total count of module locations.
+# # {2} A number: The count of module classes which were read from a Jandex index.
+# # {3} A number: The total count of module classes.
+# # {4} A string: A module name
+ANNO_JANDEX_USAGE=CWWKC0092I: Pokrycie Jandex modu\u0142u {4}: Indeksy Jandex zosta\u0142y odczytane dla {0} z {1} po\u0142o\u017ce\u0144 modu\u0142\u00f3w. Indeksy Jandex udost\u0119pni\u0142y {2} z {3} klas modu\u0142u.
+ANNO_JANDEX_USAGE.explanation=Wy\u015bwietla proporcj\u0119 modu\u0142u, kt\u00f3ry by\u0142 skanowany w poszukiwaniu adnotacji za pomoc\u0105 indeks\u00f3w Jandex.  Po\u0142o\u017cenia modu\u0142u s\u0105 albo samym modu\u0142em, albo (w przypadku modu\u0142u WWW) folderem WEB-INF/classes i plikami JAR WEB-INF/lib modu\u0142u.
+ANNO_JANDEX_USAGE.useraction=Je\u015bli indeksy Jandex maj\u0105 by\u0107 odczytywane dla aplikacji, nie jest wymagana \u017cadna czynno\u015b\u0107.  Aby zignorowa\u0107 indeksy Jandex dla pojedynczej aplikacji, nale\u017cy ustawi\u0107 atrybut useJandex="false" w elemencie 'application' tej aplikacji w pliku server.xml. Alternatywnie, aby zignorowa\u0107 indeksy Jandex we wszystkich aplikacjach, nale\u017cy ustawi\u0107 parametr useJandex="false" w elemencie 'applicationManger' w pliku server.xml.
 
+# # {0} A string: An application name.
+# # {1} A string: A module name.
+# # {2} A number: The total count of module locations.
+# # {3} A number: The count of module locations which had Jandex indexes.
+# # {4} A number: The total count of module classes.
+# # {5} A number: The count of module classes which were read from a Jandex index.
+ANNOCACHE_JANDEX_USAGE=CWWKC0093I: Pokrycie Jandex modu\u0142u {1} w aplikacji {0}: Indeksy Jandex zosta\u0142y odczytane dla {3} z {2} po\u0142o\u017ce\u0144 modu\u0142\u00f3w. Indeksy Jandex udost\u0119pni\u0142y {5} z {4} klas modu\u0142u.
+ANNOCACHE_JANDEX_USAGE.explanation=Wy\u015bwietla proporcj\u0119 modu\u0142u, kt\u00f3ry by\u0142 skanowany w poszukiwaniu adnotacji za pomoc\u0105 indeks\u00f3w Jandex.  Po\u0142o\u017cenia modu\u0142u s\u0105 albo samym modu\u0142em, albo (w przypadku modu\u0142u WWW) folderem WEB-INF/classes i plikami JAR WEB-INF/lib modu\u0142u.
+ANNOCACHE_JANDEX_USAGE.useraction=Je\u015bli indeksy Jandex maj\u0105 by\u0107 odczytywane dla aplikacji, nie jest wymagana \u017cadna czynno\u015b\u0107.  Aby zignorowa\u0107 indeksy Jandex dla pojedynczej aplikacji, nale\u017cy ustawi\u0107 atrybut useJandex="false" w elemencie 'application' tej aplikacji w pliku server.xml. Alternatywnie, aby zignorowa\u0107 indeksy Jandex we wszystkich aplikacjach, nale\u017cy ustawi\u0107 parametr useJandex="false" w elemencie 'applicationManger' w pliku server.xml.
+
+# # {0} A string: Message text from an exception.
+ANNO_TARGETS_CACHE_EXCEPTION=CWWKC0101W: B\u0142\u0105d pami\u0119ci podr\u0119cznej przetwarzania adnotacji: {0}
+ANNO_TARGETS_CACHE_EXCEPTION.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas uzyskiwania dost\u0119pu do danych pami\u0119ci podr\u0119cznej adnotacji.
+ANNO_TARGETS_CACHE_EXCEPTION.useraction=Aby uzyska\u0107 wi\u0119cej informacji, zapoznaj si\u0119 z wyj\u0105tkiem i powi\u0105zanym komunikatem FFDC.
+
+# # {0} A string: A class name.
+# # {1} A string: A location which contains the class: The path to the JAR file which contains the class, or the path to the directory which contains the class, or the name of the internal data structure which contains the class.
+# # {2} A string: Message text from an exception.
+ANNO_TARGETS_CLASS_SCAN_EXCEPTION=CWWKC0103W: Wyst\u0105pi\u0142 wyj\u0105tek podczas skanowania klasy {0} z {1}.  Wyj\u0105tek: {2}.
+ANNO_TARGETS_CLASS_SCAN_EXCEPTION.explanation=Nie mo\u017cna przeskanowa\u0107 danych klasy i adnotacji. Powi\u0105zany modu\u0142 mo\u017ce dzia\u0142a\u0107 niepoprawnie.
+ANNO_TARGETS_CLASS_SCAN_EXCEPTION.useraction=Aby uzyska\u0107 wi\u0119cej informacji, zapoznaj si\u0119 z wyj\u0105tkiem i powi\u0105zanym komunikatem FFDC.
+
+# # {0} A String: An internal print string of the data structure which was used to locate the class.
+# # {1} A String: A class name.
+# # {2} A String: A class name.
+ANNO_TARGETS_CLASS_NAME_MISMATCH=CWWKC0105W: B\u0142\u0105d wewn\u0119trzny skanowania klas: Go\u015b\u0107 {0} odczyta\u0142 nazw\u0119 klasy {1} z zasobu, kt\u00f3ry powinien zawiera\u0107 klas\u0119 o nazwie {2}.
+ANNO_TARGETS_CLASS_NAME_MISMATCH.explanation=Katalog i nazwa zasobu ".class" nie s\u0105 zgodne z nazw\u0105 klasy, kt\u00f3ra zosta\u0142a zarejestrowana w zasobie ".class". Zas\u00f3b class zostanie zignorowany.
+ANNO_TARGETS_CLASS_NAME_MISMATCH.useraction=Przenie\u015b zas\u00f3b class do katalogu, kt\u00f3ry jest zgodny z nazw\u0105 kwalifikowan\u0105 klasy. Zmie\u0144 nazw\u0119 zasobu class, aby by\u0142a zgodna z nazw\u0105 kwalifikowan\u0105 klasy.

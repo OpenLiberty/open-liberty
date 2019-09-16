@@ -9,6 +9,9 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 -dsannotations: com.ibm.ws.jaxrs21.component.*
 
+# Using version=! in order to not have a version attached to the import for packages that were removed
+# from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the 
+# packages from Java when using Java 8 or earlier and from the new shipped bundles for Java 9 and later.
 Import-Package: \
   !org.apache.aries.*,\
   !org.springframework.*,\
@@ -21,6 +24,11 @@ Import-Package: \
   javax.tools;resolution:=optional,\
   javax.validation;resolution:=optional,\
   com.ibm.json.java;resolution:=optional,\
+  javax.annotation;version=!,\
+  javax.xml.bind;version=!,\
+  javax.xml.bind.annotation;version=!,\
+  javax.xml.bind.annotation.adapters;version=!,\
+  javax.xml.bind.attachment;version=!,\
   *
 
 exportVer=3.3.0
@@ -47,9 +55,7 @@ Export-Package: com.ibm.ws.jaxrs20.cache,\
   com.ibm.ws.jaxrs20.injection,\
   com.ibm.ws.jaxrs20.injection.metadata,\
   com.ibm.ws.jaxrs20.metadata,\
-  com.ibm.ws.jaxrs20.metadata.builder,\
   com.ibm.ws.jaxrs20.providers.multipart,\
-  com.ibm.ws.jaxrs20.support,\
   com.ibm.ws.jaxrs20.utils,\
   com.ibm.ws.jaxrs21.component,\
   com.ibm.ws.jaxrs21.threading

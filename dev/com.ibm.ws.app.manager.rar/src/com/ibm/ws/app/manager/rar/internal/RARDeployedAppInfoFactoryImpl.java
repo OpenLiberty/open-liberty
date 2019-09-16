@@ -15,29 +15,23 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.ws.app.manager.module.DeployedAppInfo;
 import com.ibm.ws.app.manager.module.DeployedAppInfoFactory;
-import com.ibm.ws.app.manager.module.internal.DeployedAppInfoFactoryBase;
+import com.ibm.ws.app.manager.module.DeployedAppServices;
 import com.ibm.ws.app.manager.module.internal.ModuleHandler;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.application.handler.ApplicationInformation;
 
 @Component(service = DeployedAppInfoFactory.class,
            property = { "service.vendor=IBM", "type:String=rar" })
-public class RARDeployedAppInfoFactoryImpl extends DeployedAppInfoFactoryBase {
+public class RARDeployedAppInfoFactoryImpl implements DeployedAppInfoFactory {
 
-    protected ModuleHandler rarModuleHandler;
-
+    @Reference
+    protected DeployedAppServices deployedAppServices;
     @Reference(target = "(type=connector)")
-    protected void setRarModuleHandler(ModuleHandler handler) {
-        rarModuleHandler = handler;
-    }
-
-    protected void unsetRarModuleHandler(ModuleHandler handler) {
-        rarModuleHandler = null;
-    }
+    protected ModuleHandler rarModuleHandler;
 
     @Override
     public RARDeployedAppInfo createDeployedAppInfo(ApplicationInformation<DeployedAppInfo> applicationInformation) throws UnableToAdaptException {
-    	RARDeployedAppInfo deployedApp = new RARDeployedAppInfo(applicationInformation, this);
+    	RARDeployedAppInfo deployedApp = new RARDeployedAppInfo(applicationInformation, deployedAppServices, rarModuleHandler);
         applicationInformation.setHandlerInfo(deployedApp);
         return deployedApp;
     }

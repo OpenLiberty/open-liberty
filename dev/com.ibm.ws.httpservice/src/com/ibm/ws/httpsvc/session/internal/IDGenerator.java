@@ -18,30 +18,28 @@ import com.ibm.websphere.ras.TraceComponent;
 /**
  * ID generator for HTTP session values, based on the WAS version created
  * by Aditya.
- * 
+ *
  */
 public class IDGenerator {
 
     /** Debug variable */
-    private static final TraceComponent tc = Tr.register(IDGenerator.class);
+    private static final TraceComponent tc = Tr.register(IDGenerator.class, com.ibm.ws.httpsvc.internal.HttpSvcConstants.TRACE_GROUP, null);
 
-    private static final char[] sBitChars =
-        { 'G', '9', 'U', 'i', 'b', 'w',
-          '-', '8', '6', 'z', 'u', 'p', 'J',
-          'R', 'S', 'h', 'K', '5', 'n', 'c',
-          '4', 'C', 't', 'I', 'W', '7', 'F',
-          'e', 'M', 'g', 'q', '2', '3', 'V',
-          'Z', 'k', 'O', 'D', 'a', 'v', 'y',
-          'Y', 'P', 'X', 'E', 'N', '1', 'f',
-          'l', 'B', '0', 'L', 's', 'o', 'A',
-          'T', 'd', 'x', 'm', 'r', 'Q', '_',
-          'j', 'H' };
+    private static final char[] sBitChars = { 'G', '9', 'U', 'i', 'b', 'w',
+                                              '-', '8', '6', 'z', 'u', 'p', 'J',
+                                              'R', 'S', 'h', 'K', '5', 'n', 'c',
+                                              '4', 'C', 't', 'I', 'W', '7', 'F',
+                                              'e', 'M', 'g', 'q', '2', '3', 'V',
+                                              'Z', 'k', 'O', 'D', 'a', 'v', 'y',
+                                              'Y', 'P', 'X', 'E', 'N', '1', 'f',
+                                              'l', 'B', '0', 'L', 's', 'o', 'A',
+                                              'T', 'd', 'x', 'm', 'r', 'Q', '_',
+                                              'j', 'H' };
 
     /**
      * The mask for the second bytes
      */
-    private static final int[] sSecondByteMasks =
-        { 0x0, 0x1, 0x3, 0x7, 0xf, 0x1f, 0x3f };
+    private static final int[] sSecondByteMasks = { 0x0, 0x1, 0x3, 0x7, 0xf, 0x1f, 0x3f };
 
     /**
      * An instance of the SecureRandom class that will be used to generate
@@ -67,7 +65,7 @@ public class IDGenerator {
 
     /**
      * Constructor using the provided session-id size.
-     * 
+     *
      * @param sessionIDLength
      */
     public IDGenerator(int sessionIDLength) {
@@ -89,7 +87,7 @@ public class IDGenerator {
 
     /**
      * Request the next random ID field from the generator.
-     * 
+     *
      * @return String
      */
     public String getID() {
@@ -109,7 +107,7 @@ public class IDGenerator {
      * id. The conversion is performed breaking the byte array into groups of 6
      * bits, then taking each group (value 0-63) and converting to a character
      * 'A'-'Z', 'a'-'z','0'-'9',_,-.
-     * 
+     *
      * @param pBytes
      * @param sessionIdLength
      * @return String

@@ -1,0 +1,51 @@
+<?xml version="1.0" ?><wsdl:definitions name="PeopleService" targetNamespace="http://server.wsr.test.jaxws.ws.ibm.com" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://server.wsr.test.jaxws.ws.ibm.com" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <wsdl:types>
+<xs:schema elementFormDefault="unqualified" targetNamespace="http://server.wsr.test.jaxws.ws.ibm.com" version="1.0" xmlns:tns="http://server.wsr.test.jaxws.ws.ibm.com" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xs:element name="hello" type="tns:hello"></xs:element>
+<xs:element name="helloResponse" type="tns:helloResponse"></xs:element>
+<xs:complexType name="hello">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="arg0" type="xs:string"></xs:element>
+    </xs:sequence>
+  </xs:complexType>
+<xs:complexType name="helloResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"></xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>
+  </wsdl:types>
+  <wsdl:message name="hello">
+    <wsdl:part element="tns:hello" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="helloResponse">
+    <wsdl:part element="tns:helloResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="People">
+    <wsdl:operation name="hello">
+      <wsdl:input message="tns:hello" name="hello">
+    </wsdl:input>
+      <wsdl:output message="tns:helloResponse" name="helloResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="PeopleServiceSoapBinding" type="tns:People">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"></soap:binding>
+    <wsdl:operation name="hello">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="hello">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="helloResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="PeopleService">
+    <wsdl:port binding="tns:PeopleServiceSoapBinding" name="BillPort">
+      <soap:address location="http://localhost:9080/helloServer/PeopleService"></soap:address>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

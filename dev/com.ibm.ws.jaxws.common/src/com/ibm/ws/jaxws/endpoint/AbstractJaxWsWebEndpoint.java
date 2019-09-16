@@ -15,6 +15,9 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -106,13 +109,11 @@ public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
         boolean wsdlLocationExisted = true;
         boolean wsdlLocationEmpty = StringUtils.isEmpty(wsdlLocation);
         //check whether there is jax-ws-catalog enabled
-        if (!wsdlLocationEmpty && wsdlUrl == null)
-        {
+        if (!wsdlLocationEmpty && wsdlUrl == null) {
             wsdlLocationExisted = false;
             OASISCatalogManager catalogManager = jaxWsModuleMetaData.getServerMetaData().getServerBus().getExtension(OASISCatalogManager.class);
             String resolvedLocation = null;
-            if (catalogManager != null)
-            {
+            if (catalogManager != null) {
 
                 try {
                     resolvedLocation = catalogManager.resolveSystem(wsdlLocation);
@@ -127,8 +128,7 @@ public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
                 }
 
             }
-            if (resolvedLocation != null)
-            {
+            if (resolvedLocation != null) {
                 wsdlLocationExisted = true;
             }
 
@@ -178,7 +178,19 @@ public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
     public void invoke(HttpServletRequest request, HttpServletResponse response) throws ServletException {
         try {
             updateDestination(request);
-            destination.invoke(servletConfig, servletConfig.getServletContext(), request, response);
+
+            final HttpServletRequest req = request;
+            final HttpServletResponse resp = response;
+            try {
+                AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
+                    public Void run() throws IOException {
+                        destination.invoke(servletConfig, servletConfig.getServletContext(), req, resp);
+                        return null;
+                    }
+                });
+            } catch (PrivilegedActionException pae) {
+                throw (IOException) pae.getException();
+            }
         } catch (IOException e) {
             throw new ServletException(e);
         }
@@ -200,7 +212,7 @@ public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
 
     /**
      * Configure common endpoint properties
-     * 
+     *
      * @param endpointInfo
      */
     protected void configureEndpointInfoProperties(EndpointInfo libertyEndpointInfo, org.apache.cxf.service.model.EndpointInfo cxfEndpointInfo) {
@@ -261,7 +273,7 @@ public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
 
     /**
      * Calculate the base URL based on the HttpServletRequest instance
-     * 
+     *
      * @param request
      * @return
      */
@@ -276,7 +288,7 @@ public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
         if (!"/".equals(pathInfo) || reqPrefix.endsWith("/")) {
             StringBuilder sb = new StringBuilder();
             // request.getScheme(), request.getLocalName() and request.getLocalPort()
-            // should be marginally cheaper - provided request.getLocalName() does 
+            // should be marginally cheaper - provided request.getLocalName() does
             // return the actual name used in request URI as opposed to localhost
             // consistently across the Servlet stacks
 

@@ -416,6 +416,9 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
     @Activate
     protected void activate(ComponentContext ctx) {
         _appManagerRARSupportDependency = createDependency("resolves when either support for type=rar applications is registered or we are ready for apps to start");
+        if (_appTypeSupport.get("rar") != null) {
+            _appManagerRARSupportDependency.setResult(true);
+        }
         _appManagerReadyDependency = createDependency("resolves when we are ready for apps to start");
         synchronized (this) {
             if (FrameworkState.isStopping()) {
@@ -995,7 +998,10 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
             typeSupport.setSupported(true);
         }
         if ("rar".equals(appType)) {
-            _appManagerRARSupportDependency.setResult(true);
+            ApplicationDependency current = _appManagerRARSupportDependency;
+            if (current != null) {
+                current.setResult(true);
+            }
         }
     }
 
@@ -1373,7 +1379,8 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
                 }
 
                 @Override
-                public void failedCompletion(Future<Boolean> future, Throwable t) {}
+                public void failedCompletion(Future<Boolean> future, Throwable t) {
+                }
             });
             appsStarting.onCompletion(new CompletionListener<Boolean>() {
                 @Override
@@ -1849,7 +1856,8 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
             }
 
             @Override
-            public void failedCompletion(Future<Boolean> future, Throwable t) {}
+            public void failedCompletion(Future<Boolean> future, Throwable t) {
+            }
         });
         return appRemoved;
     }

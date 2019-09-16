@@ -42,8 +42,19 @@ duplicate.application.configuration.name.CWMCG0203E=CWMCG0203E: \u767c\u73fe\u61
 duplicate.application.configuration.name.CWMCG0203E.explanation=\u61c9\u7528\u7a0b\u5f0f\u914d\u7f6e\u5fc5\u9808\u662f\u552f\u4e00\u7684\u3002
 duplicate.application.configuration.name.CWMCG0203E.useraction=\u8acb\u6aa2\u95b1\u4f3a\u670d\u5668 message.log \u548c FFDC \u65e5\u8a8c\u4ee5\u8b58\u5225\u554f\u984c\u3002
 
+# An instance of the {0} service could not be found
+service.not.found.CWMCG0204E=CWMCG0204E: \u627e\u4e0d\u5230 {0} \u670d\u52d9\u7684\u5be6\u4f8b\u3002
+service.not.found.CWMCG0204E.explanation=\u767c\u751f\u5167\u90e8\u932f\u8aa4\uff0cMicroProfile Config \u627e\u4e0d\u5230\u670d\u52d9\u3002
+service.not.found.CWMCG0204E.useraction=\u8acb\u6aa2\u95b1\u4f3a\u670d\u5668 message.log \u6a94\u548c FFDC \u65e5\u8a8c\uff0c\u4ee5\u8b58\u5225\u554f\u984c\u3002
+
 # Server XML Application Properties Config Source
 server.xml.appproperties.config.source=\u4f3a\u670d\u5668 XML \u61c9\u7528\u7a0b\u5f0f\u5167\u5bb9\u914d\u7f6e\u4f86\u6e90
+
+# Server XML Variables Config Source
+server.xml.variables.config.source=\u4f3a\u670d\u5668 XML \u8b8a\u6578\u914d\u7f6e\u4f86\u6e90
+
+# Server XML Default Variables Config Source
+server.xml.default.variables.config.source=\u4f3a\u670d\u5668 XML \u9810\u8a2d\u8b8a\u6578\u914d\u7f6e\u4f86\u6e90
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Config 1.3 error message

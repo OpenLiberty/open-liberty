@@ -12,9 +12,9 @@ package com.ibm.ws.concurrent.mp.context;
 
 import java.util.Map;
 
-import org.eclipse.microprofile.concurrent.ThreadContext;
-import org.eclipse.microprofile.concurrent.spi.ThreadContextProvider;
-import org.eclipse.microprofile.concurrent.spi.ThreadContextSnapshot;
+import org.eclipse.microprofile.context.ThreadContext;
+import org.eclipse.microprofile.context.spi.ThreadContextProvider;
+import org.eclipse.microprofile.context.spi.ThreadContextSnapshot;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2018 IBM Corporation and others.
+ * Copyright (c) 2006, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -270,6 +270,10 @@ public abstract class EJBMDOrchestrator {
     } // createEJBModuleMetaDataImpl
 
     private Map<String, javax.ejb.ApplicationException> createApplicationExceptionMap(EJBJar ejbJar) {
+        final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
+        if (isTraceOn && tc.isEntryEnabled())
+            Tr.entry(tc, "createApplicationExceptionMap : " + ejbJar);
+
         // Get List of ApplicationException objects and convert to a Map where
         // key is String name of exceptions class and value is the rollback
         // setting of the exception class from xml.
@@ -287,10 +291,16 @@ public abstract class EJBMDOrchestrator {
                         appExMap.put(className, new ApplicationExceptionImpl(appEx.isRollback(), appEx.isInherited())); // F743-14982
                     }
 
+                    if (isTraceOn && tc.isEntryEnabled())
+                        Tr.exit(tc, "createApplicationExceptionMap : " + appExMap.size());
+
                     return appExMap;
                 }
             }
         }
+
+        if (isTraceOn && tc.isEntryEnabled())
+            Tr.exit(tc, "createApplicationExceptionMap : null");
 
         return null;
     }

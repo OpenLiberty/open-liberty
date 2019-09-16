@@ -23,21 +23,29 @@ IBM-Web-Extension-Processing-Disabled: true
 
 Web-ContextPath: /openapi
 
+# Using version=! in order to not have a version attached to the import for packages that were removed
+# from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the 
+# packages from Java when using Java 8 or earlier and from the new shipped bundles for Java 9 and later.
 Import-Package: \
 	org.eclipse.microprofile.config.*;version="[1.0,2)",\
+	javax.xml.bind.annotation;version=!,\
 	*
     
 Export-Package: \
 	com.ibm.ws.microprofile.openapi,\
 	com.ibm.ws.microprofile.openapi.utils,\
     !com.ibm.ws.microprofile.openapi.impl.validation.resources,\
-    com.ibm.ws.microprofile.openapi.impl.*
+    com.ibm.ws.microprofile.openapi.impl,\
+    com.ibm.ws.microprofile.openapi.impl.core.*,\
+    com.ibm.ws.microprofile.openapi.impl.jaxrs2.*,\
+    com.ibm.ws.microprofile.openapi.impl.parser.*,\
+    com.ibm.ws.microprofile.openapi.impl.validation
     
 
 Private-Package: \
     com.ibm.ws.microprofile.openapi.resources,\
     com.ibm.ws.microprofile.openapi.impl.validation.resources
-    
+        
 Include-Resource: \
     WEB-INF=resources/WEB-INF, \
   	META-INF/services=resources/META-INF/services
@@ -59,6 +67,7 @@ instrument.classesExcludes: \
     **/com/ibm/ws/microprofile/openapi/OpenAPIFilter.class
 
 -buildpath: \
+	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.ws.kernel.filemonitor;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\
@@ -86,7 +95,8 @@ instrument.classesExcludes: \
 	com.fasterxml.jackson.core:jackson-databind;version=2.9.1,\
 	com.fasterxml.jackson.dataformat:jackson-dataformat-yaml;version=2.9.1,\
 	com.ibm.websphere.javaee.jaxrs.2.0;version=latest,\
-	org.yaml.snakeyaml;version=1.18
+	org.yaml.snakeyaml;version=1.18,\
+	com.ibm.ws.microprofile.openapi.model;version=latest
 
 -testpath: \
         ../build.sharedResources/lib/junit/old/junit.jar;version=file, \

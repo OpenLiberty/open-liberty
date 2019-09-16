@@ -30,7 +30,6 @@ public class OSSMessageTest {
 
     private static final String CLASSPATH = System.getProperty("java.class.path").replace("\\", "/");
     private static final String testBuildDir = System.getProperty("test.buildDir").replace("\\", "/");
-    private static final String mainClassesDir = System.getProperty("main.classesDir").replace("\\", "/");
 
     private final String OSS_JAR_NAME;
     private final String WLP_JAR_NAME;
@@ -38,13 +37,13 @@ public class OSSMessageTest {
 
     /**
      * @param ossJarBaseName
-     *            The basename of the OSS jar name. For example if the OSS jar is yasson-1.0.2.jar, put 'yasson-1'
+     *                            The basename of the OSS jar name. For example if the OSS jar is yasson-1.0.2.jar, put 'yasson-1'
      * @param wlpJarBaseName
-     *            The basename of the repackaged OSS jar in the wlp install. For example if the jar becomes com.ibm.ws.org.eclipse.yasson.1.0.jar, put
-     *            'com.ibm.ws.org.eclipse.yasson.1'
+     *                            The basename of the repackaged OSS jar in the wlp install. For example if the jar becomes com.ibm.ws.org.eclipse.yasson.1.0.jar, put
+     *                            'com.ibm.ws.org.eclipse.yasson.1'
      * @param messageFilePath
-     *            The path of the NLS message file within the OSS jar to compare checksums against. For example if
-     *            there is a messgae file at OSS_JAR!/org/whatever/foo/Messages.properties, put 'org/whatever/foo/Messages.properties'
+     *                            The path of the NLS message file within the OSS jar to compare checksums against. For example if
+     *                            there is a messgae file at OSS_JAR!/org/whatever/foo/Messages.properties, put 'org/whatever/foo/Messages.properties'
      */
     public OSSMessageTest(String ossJarBaseName, String wlpJarBaseName, String messageFilePath) {
         OSS_JAR_NAME = ossJarBaseName;
@@ -54,8 +53,7 @@ public class OSSMessageTest {
 
     @Test
     public void testMessagesUnchanged() throws Exception {
-
-        File srcNLSFile = new File(mainClassesDir + "/../../../../resources/" + MSG_FILE_PATH);
+        File srcNLSFile = new File(testBuildDir + "/../../resources/" + MSG_FILE_PATH);
         assertTrue("Checked-in NLS file did not exist at: " + srcNLSFile.getAbsolutePath(), srcNLSFile.exists());
 
         File ossFile = null;
@@ -76,7 +74,7 @@ public class OSSMessageTest {
                 break;
             }
         }
-        assertTrue("Liberty bundle did not exist at: " + wlpFile.getAbsolutePath(), wlpFile.exists());
+        assertTrue("Liberty bundle did not exist under: " + buildDir.getAbsolutePath(), wlpFile != null && wlpFile.exists());
 
         long ossMessageChecksum = getChecksum(ossFile);
         long wsMessageChecksum = getChecksum(wlpFile);

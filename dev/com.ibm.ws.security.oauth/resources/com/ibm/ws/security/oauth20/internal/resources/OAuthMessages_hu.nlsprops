@@ -1,0 +1,464 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/oauth20/internal/resources/OauthMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server OAUTH Security
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS1400 - CWWKS1499
+OAUTH_PROVIDER_CONFIG_INVALID=CWWKS1400E: A(z) {0} OAuth szolg\u00e1ltat\u00f3 konfigur\u00e1ci\u00f3 \u00e9rv\u00e9nytelen.
+OAUTH_PROVIDER_CONFIG_INVALID.explanation=Nem k\u00e9rhet\u0151 le a megadott oauth szolg\u00e1ltat\u00f3 konfigur\u00e1ci\u00f3.
+OAUTH_PROVIDER_CONFIG_INVALID.useraction=Adjon meg \u00e9rv\u00e9nyes oauth szolg\u00e1ltat\u00f3 konfigur\u00e1ci\u00f3t.
+
+OAUTH_PROVIDER_CONFIG_NO_LIBRARYREF=CWWKS1401W: A(z) {0} OAuth szolg\u00e1ltat\u00f3 rendelkezik megadott k\u00f6zvet\u00edt\u0151 oszt\u00e1llyal, de a libraryRef nincs megadva, vagy a k\u00f6nyvt\u00e1r nincs aktiv\u00e1lva.
+OAUTH_PROVIDER_CONFIG_NO_LIBRARYREF.explanation=A(z) OAuth szolg\u00e1ltat\u00f3 rendelkezik megadott k\u00f6zvet\u00edt\u0151 oszt\u00e1llyal, de a libraryRef nincs megadva, vagy a k\u00f6nyvt\u00e1r nincs aktiv\u00e1lva. Ez lehet konfigur\u00e1ci\u00f3s hiba, vagy lehet, hogy a k\u00f6nyvt\u00e1r a szolg\u00e1ltat\u00f3 aktiv\u00e1l\u00e1sa ut\u00e1n a lett aktiv\u00e1lva.
+OAUTH_PROVIDER_CONFIG_NO_LIBRARYREF.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az OAuth szolg\u00e1ltat\u00f3 libraryRef \u00e9rt\u00e9ke megfelel\u0151en lett meghat\u00e1rozva.
+
+OAUTH_PROVIDER_CONFIG_MEDIATOR_LIBRARYREF_ACTIVE=CWWKS1402I: A(z) {0} OAuth szolg\u00e1ltat\u00f3 libraryRef aktiv\u00e1lva {1} k\u00f6zvet\u00edt\u0151 oszt\u00e1lyra.
+OAUTH_PROVIDER_CONFIG_MEDIATOR_LIBRARYREF_ACTIVE.explanation=Az OAuth szolg\u00e1ltat\u00f3 rendelkezik megadott k\u00f6zvet\u00edt\u0151 oszt\u00e1llyal, \u00e9s a libraryRef aktiv\u00e1l\u00e1sra ker\u00fclt.
+OAUTH_PROVIDER_CONFIG_MEDIATOR_LIBRARYREF_ACTIVE.useraction=Nincs.
+
+OAUTH_PROVIDER_CONFIG_PROCESSED=CWWKS1403I: A(z) {0} OAuth szolg\u00e1ltat\u00f3 konfigur\u00e1ci\u00f3 sikeresen feldolgozva.
+OAUTH_PROVIDER_CONFIG_PROCESSED.explanation=Az OAuth szolg\u00e1ltat\u00f3 konfigur\u00e1ci\u00f3ja sikeresen feldolgoz\u00e1sra ker\u00fclt.
+OAUTH_PROVIDER_CONFIG_PROCESSED.useraction=Nincs.
+
+OAUTH_ROLE_CONFIG_PROCESSED=CWWKS1404I: OAuth szerepek konfigur\u00e1ci\u00f3ja sikeresen feldolgozva.
+OAUTH_ROLE_CONFIG_PROCESSED.explanation=Az OAuth szerepek konfigur\u00e1ci\u00f3ja sikeresen feldolgoz\u00e1sra ker\u00fclt.
+OAUTH_ROLE_CONFIG_PROCESSED.useraction=Nincs.
+
+OAUTH_INTROSPECT_NO_TOKEN=CWWKS1405E: Az \u00f6nelemz\u00e9si k\u00e9r\u00e9s nem rendelkezik token param\u00e9terrel. A k\u00e9r\u00e9s URI: {0}.
+OAUTH_INTROSPECT_NO_TOKEN.explanation=Az \u00f6nelemz\u00e9si k\u00e9r\u00e9snek tokenk\u00e9r\u00e9si param\u00e9terrel kell rendelkeznie, amely megadja az \u00f6nelemz\u00e9s al\u00e1 vetni k\u00edv\u00e1nt hozz\u00e1f\u00e9r\u00e9si tokent.
+OAUTH_INTROSPECT_NO_TOKEN.useraction=H\u00edvja meg \u00fajra a k\u00e9r\u00e9st egy olyan tokennel, amely egy \u00e9rv\u00e9nyes hozz\u00e1f\u00e9r\u00e9si tokent ad meg.
+
+OAUTH_INVALID_CLIENT=CWWKS1406E: A(z) {0} k\u00e9r\u00e9s \u00e9rv\u00e9nytelen \u00fcgyf\u00e9lazonos\u00edt\u00f3val rendelkezik. A k\u00e9r\u00e9s URI: {1}.
+OAUTH_INVALID_CLIENT.explanation=A jelzett k\u00e9r\u00e9snek \u00e9rv\u00e9nyes \u00fcgyf\u00e9lazonos\u00edt\u00f3val \u00e9s jelsz\u00f3val kell rendelkeznie, \u00e9s az \u00fcgyf\u00e9lazonos\u00edt\u00f3nak meg kell egyeznie a hozz\u00e1f\u00e9r\u00e9si tokent l\u00e9trehoz\u00f3 azonos\u00edt\u00f3val.
+OAUTH_INVALID_CLIENT.useraction=H\u00edvja meg a k\u00e9r\u00e9st \u00fajra, \u00e9rv\u00e9nyes \u00fcgyf\u00e9lazonos\u00edt\u00f3val.
+
+CUSTOMIZED_FACTORY_INSTANTIATE_ERROR=CWWKS1407E: Az egy\u00e9ni jogosults\u00e1gmegad\u00e1si t\u00edpus kezel\u0151 (Grant Type Handler) {0} nev\u0171 oszt\u00e1lya nem p\u00e9ld\u00e1nyos\u00edthat\u00f3 {1}
+CUSTOMIZED_FACTORY_INSTANTIATE_ERROR.explanation=Az egy\u00e9ni jogosults\u00e1gmegad\u00f3 t\u00edpus kezel\u0151 (Grant Type Handler) oszt\u00e1lyneve nem p\u00e9ld\u00e1nyos\u00edthat\u00f3.
+CUSTOMIZED_FACTORY_INSTANTIATE_ERROR.useraction=Ellen\u0151rizze az oszt\u00e1lynevet a konfigur\u00e1ci\u00f3ban.
+
+CUSTOMIZED_CLASS_NOT_FOUND=CWWKS1408E: Az egy\u00e9ni jogosults\u00e1gmegad\u00e1si t\u00edpus kezel\u0151 (Grant Type Handler) {0} nev\u0171 oszt\u00e1lya nem tal\u00e1lhat\u00f3 {1}
+CUSTOMIZED_CLASS_NOT_FOUND.explanation=Az egy\u00e9ni jogosults\u00e1gmegad\u00f3 t\u00edpus kezel\u0151 (Grant Type Handler) oszt\u00e1lyneve nem tal\u00e1lhat\u00f3.
+CUSTOMIZED_CLASS_NOT_FOUND.useraction=Ellen\u0151rizze az oszt\u00e1lynevet a konfigur\u00e1ci\u00f3ban.
+
+OAUTH_OSGI_ENDPOINT_SERVICE_ERROR=CWWKS1409E: Konfigur\u00e1ci\u00f3s hiba t\u00f6rt\u00e9nt. Nincs el\u00e9rhet\u0151 v\u00e9gponti szolg\u00e1ltat\u00e1s. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy rendelkezik konfigur\u00e1lt oauth-2.0 vagy openidConnectServer-1.0 szolg\u00e1ltat\u00e1ssal. 
+OAUTH_OSGI_ENDPOINT_SERVICE_ERROR.explanation=Nem \u00e9rhet\u0151 el v\u00e9gponti szolg\u00e1ltat\u00e1s az OSGi szolg\u00e1ltat\u00e1snyilv\u00e1ntart\u00e1son kereszt\u00fcl.
+OAUTH_OSGI_ENDPOINT_SERVICE_ERROR.useraction=Foglalja bele az oauth-2.0 vagy openidConnectServer-1.0 szolg\u00e1ltat\u00e1st a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ba.
+
+OAUTH_ENDPOINT_SERVICE_ACTIVATED=CWWKS1410I: Az OAuth v\u00e9gponti szolg\u00e1ltat\u00e1s aktiv\u00e1lva van.
+OAUTH_ENDPOINT_SERVICE_ACTIVATED.explanation=Az OAuth csatlakoz\u00e1si szolg\u00e1ltat\u00e1s aktiv\u00e1lva van.
+OAUTH_ENDPOINT_SERVICE_ACTIVATED.useraction=Nincs
+
+OAUTH_INTROSPECT_REVOKE_INVALID_CLIENT=CWWKS1411E: A k\u00e9r\u00e9s olyan \u00fcgyf\u00e9lazonos\u00edt\u00f3val rendelkezett, amely nem egyezett meg a hozz\u00e1f\u00e9r\u00e9si tokent l\u00e9trehoz\u00f3 \u00fcgyf\u00e9lazonos\u00edt\u00f3val, vagy a k\u00e9r\u00e9s \u00fcgyf\u00e9lazonos\u00edt\u00f3ja vagy \u00fcgyf\u00e9l titka \u00e9rv\u00e9nytelen volt. A k\u00e9r\u00e9s URI: {0}.
+OAUTH_INTROSPECT_REVOKE_INVALID_CLIENT.explanation=A k\u00e9r\u00e9s olyan \u00fcgyf\u00e9lazonos\u00edt\u00f3val rendelkezett, amely nem egyezett meg a hozz\u00e1f\u00e9r\u00e9si tokent l\u00e9trehoz\u00f3 \u00fcgyf\u00e9lazonos\u00edt\u00f3val, vagy a k\u00e9r\u00e9s \u00fcgyf\u00e9lazonos\u00edt\u00f3ja vagy \u00fcgyf\u00e9l titka \u00e9rv\u00e9nytelen volt.
+OAUTH_INTROSPECT_REVOKE_INVALID_CLIENT.useraction=H\u00edvja meg a k\u00e9r\u00e9st \u00fajra, \u00e9rv\u00e9nyes \u00fcgyf\u00e9lazonos\u00edt\u00f3val.
+
+OAUTH_REQUEST_ATTRIBUTE_MISSING=CWWKS1412E: A(z) {0} k\u00e9r\u00e9s v\u00e9gpont nem rendelkezik {1} attrib\u00fatummal.
+OAUTH_REQUEST_ATTRIBUTE_MISSING.explanation=Az attrib\u00fatum hi\u00e1nyzik a k\u00e9r\u00e9sb\u0151l
+OAUTH_REQUEST_ATTRIBUTE_MISSING.useraction=Vizsg\u00e1lja meg a k\u00e9r\u00e9s v\u00e9gpontj\u00e1t a server.xml f\u00e1jlban, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megfelel\u0151 szolg\u00e1ltat\u00f3val rendelkezik 
+
+OAUTH_PROVIDER_OBJECT_NULL=CWWKS1413E: Az OAuth20Provider objektum nem be\u00e1ll\u00edtott \u00e9rt\u00e9k a(z) {0} OAuth szolg\u00e1ltat\u00f3 eset\u00e9ben.
+OAUTH_PROVIDER_OBJECT_NULL.explanation=Az OAuth20Provider l\u00e9trehoz\u00e1sa nem lehets\u00e9ges az OAuth szolg\u00e1ltat\u00f3n\u00e9v eset\u00e9ben
+OAUTH_PROVIDER_OBJECT_NULL.useraction=Ellen\u0151rizze a szolg\u00e1ltat\u00f3 be\u00e1ll\u00edt\u00e1s\u00e1t  
+
+# Tr.error
+JWT_SERVER_SCOPE_NOT_PRE_AUTHORIZED_ERR=CWWKS1414E: A token v\u00e9gponti k\u00e9r\u00e9s meghi\u00fasult, mert a(z) [{0}] hat\u00e1sk\u00f6r a k\u00e9r\u00e9s hat\u00e1sk\u00f6r param\u00e9ter\u00e9ben nem ker\u00fclt megad\u00e1sra a ''preAuthorizedScope'' list\u00e1ban a(z) [{1}] \u00fcgyf\u00e9lben.
+JWT_SERVER_SCOPE_NOT_PRE_AUTHORIZED_ERR.explanation=A token v\u00e9gponti k\u00e9r\u00e9s hat\u00e1sk\u00f6r param\u00e9ter\u00e9ben k\u00e9rt minden hat\u00e1sk\u00f6rt meg kell adni az \u00fcgyf\u00e9l konfigur\u00e1ci\u00f3 'preAuthorizedScope' list\u00e1j\u00e1ban.
+JWT_SERVER_SCOPE_NOT_PRE_AUTHORIZED_ERR.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a token v\u00e9gponti k\u00e9r\u00e9sben l\u00e9v\u0151 minden hat\u00e1sk\u00f6r megad\u00e1sra ker\u00fcl az \u00fcgyf\u00e9l konfigur\u00e1ci\u00f3 'preAuthorizedScope' list\u00e1j\u00e1ban.
+
+# 
+JWT_SERVER_SCOPE_NOT_PRE_AUTHORIZED_EXTERNAL_ERR=CWWKS1415E: A token v\u00e9gponti k\u00e9r\u00e9s meghi\u00fasult, mert az egyik hat\u00e1sk\u00f6r a k\u00e9r\u00e9s hat\u00e1sk\u00f6r param\u00e9ter\u00e9ben nem ker\u00fclt megad\u00e1sra a(z) [{0}] \u00fcgyf\u00e9l ''preAuthorizedScope'' list\u00e1j\u00e1ban.
+JWT_SERVER_SCOPE_NOT_PRE_AUTHORIZED_EXTERNAL_ERR.explanation=A token v\u00e9gponti k\u00e9r\u00e9s hat\u00e1sk\u00f6r param\u00e9ter\u00e9ben k\u00e9rt minden hat\u00e1sk\u00f6rt meg kell adni az \u00fcgyf\u00e9l konfigur\u00e1ci\u00f3 'preAuthorizedScope' list\u00e1j\u00e1ban.
+JWT_SERVER_SCOPE_NOT_PRE_AUTHORIZED_EXTERNAL_ERR.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a token v\u00e9gponti k\u00e9r\u00e9sben megadott minden hat\u00e1sk\u00f6r megad\u00e1sra ker\u00fcl az \u00fcgyf\u00e9l konfigur\u00e1ci\u00f3 'preAuthorizedScope' list\u00e1j\u00e1ban.
+
+# 
+JWT_SERVER_NO_PRE_AUTHORIZED_SCOPE_ERR=CWWKS1416E: A token v\u00e9gponti k\u00e9r\u00e9s meghi\u00fasult, mert a(z) [{0}] \u00fcgyf\u00e9l nem rendelkezik az autoAuthorize param\u00e9terrel, \u00e9s a konfigur\u00e1ci\u00f3j\u00e1ban nem adja meg a ''preAuthorizedScope'' list\u00e1t . Nem enged\u00e9lyezhet\u0151k hat\u00e1sk\u00f6r\u00f6k.
+JWT_SERVER_NO_PRE_AUTHORIZED_SCOPE_ERR.explanation=Az \u00fcgyf\u00e9lnek rendelkeznie kell az autoAuthorize param\u00e9terrel, hogy a HTTP k\u00e9r\u00e9sb\u0151l enged\u00e9lyezhet\u0151k legyenek a hat\u00e1sk\u00f6r\u00f6k. Ellenkez\u0151 esetben a hat\u00e1sk\u00f6r\u00f6ket az \u00fcgyf\u00e9l konfigur\u00e1ci\u00f3 'preAuthorizedScope' list\u00e1j\u00e1ban kell megadni.
+JWT_SERVER_NO_PRE_AUTHORIZED_SCOPE_ERR.useraction=Gondoskodj\u00e9k r\u00f3la, hogy az \u00fcgyf\u00e9l rendelkezik az autoAuthorize param\u00e9terrel, vagy hogy a hat\u00e1sk\u00f6r\u00f6k az \u00fcgyf\u00e9l konfigur\u00e1ci\u00f3 'preAuthorizedScope' list\u00e1j\u00e1ban ker\u00fclnek megad\u00e1sra.
+
+# do not translate urn:ietf:params:oauth:grant-type:jwt-bearer
+OAUTH_SERVER_GRANT_TYPE_NOT_SUPPORTED_ERR=CWWKS1417E: A token v\u00e9gponti k\u00e9r\u00e9s meghi\u00fasult. A(z) [{0}] \u00fcgyf\u00e9l nem t\u00e1mogatja a feljogos\u00edt\u00e1si t\u00edpust: [{0}].
+OAUTH_SERVER_GRANT_TYPE_NOT_SUPPORTED_ERR.explanation=Az \u00fcgyf\u00e9l az \u00fczenetben azt jelezte, hogy nem t\u00e1mogatja a feljogos\u00edt\u00e1si t\u00edpust, mivel az nincs megadva az \u00fcgyf\u00e9lkonfigur\u00e1ci\u00f3 grantType list\u00e1j\u00e1ban.
+OAUTH_SERVER_GRANT_TYPE_NOT_SUPPORTED_ERR.useraction=Adja meg a jelzett feljogos\u00edt\u00e1si t\u00edpust az \u00fcgyf\u00e9lkonfigur\u00e1ci\u00f3 grantType list\u00e1j\u00e1ban.
+
+JWT_SERVER_DUPLICATED_PARAMETERS_ERR=CWWKS1418E: A token v\u00e9gponti k\u00e9r\u00e9s meghi\u00fasult. Az OpenID Connect szolg\u00e1ltat\u00f3 nem tudja feldolgozni a k\u00e9r\u00e9st, mert az t\u00f6bb [{0}] param\u00e9tert tartalmaz.
+JWT_SERVER_DUPLICATED_PARAMETERS_ERR.explanation=A token v\u00e9gponti k\u00e9r\u00e9s nem tartalmazhat t\u00f6bbet a jelzett param\u00e9terekb\u0151l. M\u00e1sk\u00fcl\u00f6nben az OpenID Connect szolg\u00e1ltat\u00f3 nem k\u00e9pes azt feldolgozni.
+JWT_SERVER_DUPLICATED_PARAMETERS_ERR.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a jelzett param\u00e9terekb\u0151l csak egy van a token v\u00e9gponti k\u00e9r\u00e9sben.
+
+OAUTH_INTROSPECT_CLIENT_NOT_AUTHORIZED=CWWKS1419E: Az \u00fcgyf\u00e9l nem jogosult a hozz\u00e1f\u00e9r\u00e9si token \u00f6nelemz\u00e9s\u00e9re. A k\u00e9r\u00e9s URI: {0}.
+OAUTH_INTROSPECT_CLIENT_NOT_AUTHORIZED.explanation=A k\u00e9r\u00e9s olyan \u00fcgyf\u00e9lazonos\u00edt\u00f3val rendelkezett, amely nem jogosult tokenek \u00f6nelemz\u00e9s\u00e9re.
+OAUTH_INTROSPECT_CLIENT_NOT_AUTHORIZED.useraction=Enged\u00e9lyezze az \u00fcgyf\u00e9lnek a hozz\u00e1f\u00e9r\u00e9si tokenek \u00f6nelemz\u00e9s\u00e9t az introspectTokens param\u00e9ter true \u00e9rt\u00e9kre \u00e1ll\u00edt\u00e1s\u00e1val az OAuth \u00fcgyf\u00e9l konfigur\u00e1ci\u00f3ban.
+
+OAUTH_INTROSPECT_CLIENT_NOT_AUTHORIZED_SERVER_LOG=CWWKS1420E: A(z) {0} \u00fcgyf\u00e9l nem jogosult a hozz\u00e1f\u00e9r\u00e9si token \u00f6nelemz\u00e9s\u00e9re. A k\u00e9r\u00e9s URI: {1}.
+OAUTH_INTROSPECT_CLIENT_NOT_AUTHORIZED_SERVER_LOG.explanation=A k\u00e9r\u00e9s olyan \u00fcgyf\u00e9lazonos\u00edt\u00f3val rendelkezett, amely nem jogosult tokenek \u00f6nelemz\u00e9s\u00e9re.
+OAUTH_INTROSPECT_CLIENT_NOT_AUTHORIZED_SERVER_LOG.useraction=Enged\u00e9lyezze az \u00fcgyf\u00e9lnek a hozz\u00e1f\u00e9r\u00e9si tokenek \u00f6nelemz\u00e9s\u00e9t az introspectTokens param\u00e9ter true \u00e9rt\u00e9kre \u00e1ll\u00edt\u00e1s\u00e1val az OAuth \u00fcgyf\u00e9l konfigur\u00e1ci\u00f3ban.
+
+OAUTH_LENGTH_TOO_SMALL_AND_CHANGED=CWWKS1421I: A(z) {0} \u00e9rt\u00e9ke az oauthProvider konfigur\u00e1ci\u00f3ban {1}. Ez kisebb, mint az aj\u00e1nlott \u00e9rt\u00e9k. A rendszer a(z) {2} alap\u00e9rtelmezett \u00e9rt\u00e9ket \u00e1ll\u00edtotta be.
+OAUTH_LENGTH_TOO_SMALL_AND_CHANGED.explanation=A jelzett attrib\u00fatum \u00e9rt\u00e9ke t\u00fal kicsi. A rendszer az alap\u00e9rtelmezett \u00e9rt\u00e9ket \u00e1ll\u00edtja be. 
+OAUTH_LENGTH_TOO_SMALL_AND_CHANGED.useraction=\u00c1ll\u00edtsa be a jelzett attrib\u00fatumot egy megfelel\u0151 \u00e9rt\u00e9kre, amely nem kisebb, mint az alap\u00e9rtelmezett \u00e9rt\u00e9k.
+
+OAUTH_LENGTH_TOO_LARGE_AND_CHANGED=CWWKS1422I: A(z) {0} \u00e9rt\u00e9ke az oauthProvider konfigur\u00e1ci\u00f3ban {1}. A rendszer be\u00e1ll\u00edtotta a megengedett maxim\u00e1lis \u00e9rt\u00e9ket: {2}.
+OAUTH_LENGTH_TOO_LARGE_AND_CHANGED.explanation=A jelzett attrib\u00fatum \u00e9rt\u00e9ke t\u00fal nagy.
+OAUTH_LENGTH_TOO_LARGE_AND_CHANGED.useraction=\u00c1ll\u00edtsa be a jelzett attrib\u00fatumot egy megfelel\u0151 \u00e9rt\u00e9kre.  
+
+OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR=CWWKS1423E: Az OAuth \u00fcgyf\u00e9l regisztr\u00e1ci\u00f3ja vagy friss\u00edt\u00e9se meghi\u00fasult, mivel az \u00fcgyf\u00e9ladatok illeg\u00e1lis "{0}" karaktert tartalmaznak.
+OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR.explanation=A karakter \u00fcgyf\u00e9ladatokban nem megengedett.
+OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR.useraction=T\u00e1vol\u00edtsa el az illeg\u00e1lis karaktert, majd k\u00fcldje el \u00fajra a k\u00e9r\u00e9st. 
+
+OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND=CWWKS1424E: A(z) {0} \u00fcgyf\u00e9lazonos\u00edt\u00f3 nem tal\u00e1lhat\u00f3.
+OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.explanation=A k\u00e9r\u00e9s olyan \u00fcgyf\u00e9l-azonos\u00edt\u00f3t tartalmazott, amely nem tal\u00e1lhat\u00f3. 
+OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.useraction=Pr\u00f3b\u00e1lkozzon \u00fajra a k\u00e9r\u00e9ssel \u00fagy, hogy egy \u00e9rv\u00e9nyes \u00fcgyf\u00e9lazonos\u00edt\u00f3t ad meg.
+
+OAUTH_CLIENT_REGISTRATION_INVALID_REQUEST_PATH=CWWKS1425E: A regisztr\u00e1ci\u00f3s k\u00e9r\u00e9s egy helytelen URI azonos\u00edt\u00f3hoz lett kiadva.
+OAUTH_CLIENT_REGISTRATION_INVALID_REQUEST_PATH.explanation=\u00dcgyfelek csak a regisztr\u00e1ci\u00f3s v\u00e9gpont URI azonos\u00edt\u00f3hoz elk\u00fcld\u00f6tt POST k\u00e9r\u00e9ssel hozhat\u00f3k l\u00e9tre.  
+OAUTH_CLIENT_REGISTRATION_INVALID_REQUEST_PATH.useraction=Tekintse \u00e1t a szolg\u00e1ltat\u00e1s API dokument\u00e1ci\u00f3j\u00e1t, majd pr\u00f3b\u00e1lja meg \u00fajra elk\u00fcldeni a k\u00e9r\u00e9st a regisztr\u00e1ci\u00f3s v\u00e9gpont URI azonos\u00edt\u00f3nak.
+
+OAUTH_CLIENT_REGISTRATION_MISSING_CLIENTID=CWWKS1426E: A(z) {0} m\u0171velet meghi\u00fasult, mivel a k\u00e9r\u00e9s nem tartalmazta a(z) {1} param\u00e9tert.
+OAUTH_CLIENT_REGISTRATION_MISSING_CLIENTID.explanation=\u00dcgyfelek csak a regisztr\u00e1ci\u00f3s v\u00e9gpont URI azonos\u00edt\u00f3hoz elk\u00fcld\u00f6tt POST k\u00e9r\u00e9ssel hozhat\u00f3k l\u00e9tre.  
+OAUTH_CLIENT_REGISTRATION_MISSING_CLIENTID.useraction=Tekintse \u00e1t a szolg\u00e1ltat\u00e1s API dokument\u00e1ci\u00f3j\u00e1t, majd pr\u00f3b\u00e1lja meg \u00fajra elk\u00fcldeni a k\u00e9r\u00e9st a regisztr\u00e1ci\u00f3s v\u00e9gpont URI azonos\u00edt\u00f3nak.
+
+OAUTH_CLIENT_REGISTRATION_INVALID_CLIENTID=CWWKS1427E: A(z) {0} m\u0171velet meghi\u00fasult, mivel a k\u00e9r\u00e9s egy \u00e9rv\u00e9nytelen {1} {2} param\u00e9tert tartalmaz.
+OAUTH_CLIENT_REGISTRATION_INVALID_CLIENTID.explanation=M\u0171veletek csak regisztr\u00e1lt \u00e9s \u00e9rv\u00e9nyes \u00fcgyfeleken v\u00e9gezhet\u0151k.  
+OAUTH_CLIENT_REGISTRATION_INVALID_CLIENTID.useraction=Tekintse \u00e1t a szolg\u00e1ltat\u00e1s API dokument\u00e1ci\u00f3j\u00e1t, majd pr\u00f3b\u00e1lja meg \u00fajra elk\u00fcldeni a k\u00e9r\u00e9st a megfelel\u0151 param\u00e9terekkel.
+
+OAUTH_CLIENT_REGISTRATION_MALFORMED_REQUEST=CWWKS1428E: A k\u00e9r\u00e9s t\u00f6rzse helytelen\u00fcl van form\u00e1zva.
+OAUTH_CLIENT_REGISTRATION_MALFORMED_REQUEST.explanation=A k\u00e9r\u00e9s t\u00f6rzsben l\u00e9v\u0151 JSON helytelen\u00fcl van form\u00e1zva.
+OAUTH_CLIENT_REGISTRATION_MALFORMED_REQUEST.useraction=Tekintse \u00e1t a szolg\u00e1ltat\u00e1s API dokument\u00e1ci\u00f3j\u00e1t, majd pr\u00f3b\u00e1lja meg \u00fajra elk\u00fcldeni a k\u00e9r\u00e9st.
+
+OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS=CWWKS1429E: A(z) {0} \u00fcgyf\u00e9lazonos\u00edt\u00f3 m\u00e1r l\u00e9tezik.
+OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS.explanation=A m\u0171velet meghi\u00fasult, mivel az \u00fcgyf\u00e9l-azonos\u00edt\u00f3 m\u00e1r l\u00e9tezik. 
+OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS.useraction=Tekintse \u00e1t a szolg\u00e1ltat\u00e1s API dokument\u00e1ci\u00f3j\u00e1t, majd pr\u00f3b\u00e1lja meg \u00fajra elk\u00fcldeni a k\u00e9r\u00e9st a megfelel\u0151 param\u00e9terekkel.
+
+OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE=CWWKS1430E: Az \u00fcgyf\u00e9l friss\u00edt\u00e9se meghi\u00fasult. A friss\u00edt\u00e9si k\u00e9r\u00e9s azt jelzi, hogy az \u00fcgyf\u00e9ltitkot meg kell \u0151rizni, azonban a megl\u00e9v\u0151 regisztr\u00e1ci\u00f3hoz nincs be\u00e1ll\u00edtva titkos kulcs.
+OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE.explanation=A friss\u00edt\u00e9si k\u00e9r\u00e9s azt jelzi, hogy az \u00fcgyf\u00e9ltitkot meg kell \u0151rizni, azonban a megl\u00e9v\u0151 regisztr\u00e1ci\u00f3hoz nincs be\u00e1ll\u00edtva titkos kulcs.
+OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE.useraction=Tekintse \u00e1t a szolg\u00e1ltat\u00e1s API dokument\u00e1ci\u00f3j\u00e1t, majd pr\u00f3b\u00e1lja meg \u00fajra elk\u00fcldeni a k\u00e9r\u00e9st a megfelel\u0151 param\u00e9terekkel.
+
+OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE=CWWKS1431E: Az \u00fcgyf\u00e9l friss\u00edt\u00e9se meghi\u00fasult. Egy nyilv\u00e1nos \u00fcgyf\u00e9lhez kiadott friss\u00edt\u00e9si k\u00e9r\u00e9s nem adhat meg \u00fcgyf\u00e9l titkot.
+OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE.explanation=Egy nyilv\u00e1nos \u00fcgyf\u00e9lhez kiadott friss\u00edt\u00e9si k\u00e9r\u00e9s nem adhat meg \u00fcgyf\u00e9l titkot.
+OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE.useraction=Tekintse \u00e1t a szolg\u00e1ltat\u00e1s API dokument\u00e1ci\u00f3j\u00e1t, majd pr\u00f3b\u00e1lja meg \u00fajra elk\u00fcldeni a k\u00e9r\u00e9st a megfelel\u0151 param\u00e9terekkel.
+
+OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG=CWWKS1432E: Az \u00fcgyf\u00e9l friss\u00edt\u00e9se meghi\u00fasult. Az \u00fcgyf\u00e9ltitok nem friss\u00edthet\u0151, mert a k\u00e9r\u00e9s az \u00fcgyf\u00e9l regisztr\u00e1ci\u00f3s \u00e1llapota alapj\u00e1n \u00e9rv\u00e9nytelen konfigur\u00e1ci\u00f3t ad meg.
+OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG.explanation=A k\u00e9r\u00e9s nem hajthat\u00f3 v\u00e9gre, mert az \u00fcgyf\u00e9l regisztr\u00e1ci\u00f3s \u00e1llapot\u00e1hoz k\u00e9pest \u00e9rv\u00e9nytelen konfigur\u00e1ci\u00f3t ad meg.
+OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG.useraction=Tekintse \u00e1t a szolg\u00e1ltat\u00e1s API dokument\u00e1ci\u00f3j\u00e1t, majd pr\u00f3b\u00e1lja meg \u00fajra elk\u00fcldeni a k\u00e9r\u00e9st a megfelel\u0151 param\u00e9terekkel.
+
+OAUTH_UNSUPPORTED_METHOD=CWWKS1433E: A(z) {0} HTTP met\u00f3dus nem t\u00e1mogatott a(z) {1} szolg\u00e1ltat\u00e1shoz.
+OAUTH_UNSUPPORTED_METHOD.explanation=Egy adott szolg\u00e1ltat\u00e1shoz csak n\u00e9h\u00e1ny HTTP met\u00f3dus t\u00e1mogatott.  
+OAUTH_UNSUPPORTED_METHOD.useraction=Jav\u00edtsa ki a HTTP k\u00e9r\u00e9st.
+
+OAUTH_COVERAGE_MAP_MISSING_PARAMS=CWWKS1434E: A k\u00e9r\u00e9sb\u0151l hi\u00e1nyoznak k\u00f6telez\u0151 param\u00e9terek.
+OAUTH_COVERAGE_MAP_MISSING_PARAMS.explanation=A szolg\u00e1ltat\u00e1snak elk\u00fcld\u00f6tt k\u00e9r\u00e9s meg lett tagadva, mert hi\u00e1nyozik bel\u0151le a(z) {0} k\u00f6telez\u0151 param\u00e9ter.
+OAUTH_COVERAGE_MAP_MISSING_PARAMS.useraction=Tekintse \u00e1t a szolg\u00e1ltat\u00e1s API dokument\u00e1ci\u00f3j\u00e1t, majd pr\u00f3b\u00e1lja meg \u00fajra elk\u00fcldeni a k\u00e9r\u00e9st a megfelel\u0151 param\u00e9terekkel.
+
+OAUTH_COVERAGE_MAP_MISSING_TOKEN_PARAM=CWWKS1435E: A k\u00e9r\u00e9sb\u0151l hi\u00e1nyzik a(z) {0} param\u00e9ter.
+OAUTH_COVERAGE_MAP_MISSING_TOKEN_PARAM.explanation=A szolg\u00e1ltat\u00e1snak elk\u00fcld\u00f6tt k\u00e9r\u00e9s meg lett tagadva, mert hi\u00e1nyozik bel\u0151le a(z) {0} k\u00f6telez\u0151 param\u00e9ter.  
+OAUTH_COVERAGE_MAP_MISSING_TOKEN_PARAM.useraction=Tekintse \u00e1t a szolg\u00e1ltat\u00e1s API dokument\u00e1ci\u00f3j\u00e1t, majd pr\u00f3b\u00e1lja meg \u00fajra elk\u00fcldeni a k\u00e9r\u00e9st a megfelel\u0151 param\u00e9terekkel.
+
+OAUTH_COVERAGE_MAP_MULTIPLE_TOKEN_PARAM=CWWKS1436E: A k\u00e9r\u00e9s t\u00f6bb {0} param\u00e9tert tartalmaz.
+OAUTH_COVERAGE_MAP_MULTIPLE_TOKEN_PARAM.explanation=A szolg\u00e1ltat\u00e1snak elk\u00fcld\u00f6tt k\u00e9r\u00e9s meg lett tagadva, mert \u00e9rv\u00e9nytelen param\u00e9tereket tartalmaz. Csak egy {0} param\u00e9ter adhat\u00f3 meg.  
+OAUTH_COVERAGE_MAP_MULTIPLE_TOKEN_PARAM.useraction=Tekintse \u00e1t a szolg\u00e1ltat\u00e1s API dokument\u00e1ci\u00f3j\u00e1t, majd pr\u00f3b\u00e1lja meg \u00fajra elk\u00fcldeni a k\u00e9r\u00e9st a megfelel\u0151 param\u00e9terekkel.
+
+OAUTH_COVERAGE_MAP_UNRECOGNIZED_TOKEN_PARAM=CWWKS1437E: A k\u00e9r\u00e9s fel nem ismerhet\u0151 tokent\u00edpus param\u00e9tert tartalmaz: {0}.
+OAUTH_COVERAGE_MAP_UNRECOGNIZED_TOKEN_PARAM.explanation=A szolg\u00e1ltat\u00e1snak elk\u00fcld\u00f6tt k\u00e9r\u00e9s meg lett tagadva, mivel egy fel nem ismerhet\u0151 {0} tokent\u00edpus lett megadva.  
+OAUTH_COVERAGE_MAP_UNRECOGNIZED_TOKEN_PARAM.useraction=Tekintse \u00e1t a szolg\u00e1ltat\u00e1s API dokument\u00e1ci\u00f3j\u00e1t, majd pr\u00f3b\u00e1lja meg \u00fajra elk\u00fcldeni a k\u00e9r\u00e9st a megfelel\u0151 param\u00e9terekkel.
+
+OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_CREATE_FAILURE=CWWKS1438E: Az \u00fcgyf\u00e9l l\u00e9trehoz\u00e1sa meghi\u00fasult.
+OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_CREATE_FAILURE.explanation=Egy nyilv\u00e1nos \u00fcgyf\u00e9l l\u00e9trehoz\u00e1sakor nem adhat\u00f3 meg egy client_secret param\u00e9ter.  
+OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_CREATE_FAILURE.useraction=Ne adjon meg egy client_secret param\u00e9tert, vagy hozzon l\u00e9tre egy nem nyilv\u00e1nos \u00fcgyfelet.
+
+OAUATH_CERT_AUTH_WITH_NO_CERT=CWWKS1439E: A k\u00e9r\u00e9s felhaszn\u00e1l\u00f3i hiteles\u00edt\u00e9se meghi\u00fasult, mert a certAuthentication attrib\u00fatum be\u00e1ll\u00edt\u00e1sa az oauthProvider konfigur\u00e1ci\u00f3ban true, de a HTTP nem biztos\u00edt \u00fcgyf\u00e9ltan\u00fas\u00edtv\u00e1nyt a felhaszn\u00e1l\u00f3i hiteles\u00edt\u00e9s SSL egyeztet\u00e9se sor\u00e1n.
+OAUATH_CERT_AUTH_WITH_NO_CERT.explanation=A k\u00e9r\u00e9shez egy \u00fcgyf\u00e9ltan\u00fas\u00edtv\u00e1nyt kell biztos\u00edtani a felhaszn\u00e1l\u00f3i hiteles\u00edt\u00e9s  SSL egyeztet\u00e9se sor\u00e1n, amikor az oauthProvider konfigur\u00e1ci\u00f3 certAuthentication attrib\u00fatuma enged\u00e9lyezett.
+OAUATH_CERT_AUTH_WITH_NO_CERT.useraction=L\u00e1ssa el a k\u00e9r\u00e9st megfelel\u0151 \u00fcgyf\u00e9ltan\u00fas\u00edtv\u00e1nnyal a ni hiteles\u00edt\u00e9s SSL egyeztet\u00e9se sor\u00e1n, \u00e9s \u00e1ll\u00edtsa be az ssl konfigur\u00e1ci\u00f3 clientAuthenticationSupported attrib\u00fatum\u00e1t true \u00e9rt\u00e9kre, vagy a tilt\u00e1shoz \u00e1ll\u00edtsa be a certAuthentication attrib\u00fatumot false \u00e9rt\u00e9kre. 
+
+OAUATH_BASIC_AUTH_FAIL=CWWKS1440E: A k\u00e9r\u00e9s felhaszn\u00e1l\u00f3i hiteles\u00edt\u00e9se meghi\u00fasult, mert a k\u00e9r\u00e9sben a jogosults\u00e1gi fejl\u00e9c \u00e9rv\u00e9nyes\u00edt\u00e9se \u00e9rv\u00e9nyes felhaszn\u00e1l\u00f3k\u00e9nt meghi\u00fasult.
+OAUATH_BASIC_AUTH_FAIL.explanation=A k\u00e9r\u00e9sben \u00e9rv\u00e9nyes jogosults\u00e1gi fejl\u00e9cet kell megadni, amelynek \u00e9rv\u00e9nyes felhaszn\u00e1l\u00f3nak \u00e9s jelsz\u00f3nak kell lennie.
+OAUATH_BASIC_AUTH_FAIL.useraction=Biztos\u00edtsa, hogy a k\u00e9r\u00e9s jogosults\u00e1gi fejl\u00e9ce \u00e9rv\u00e9nyes felhaszn\u00e1l\u00f3val \u00e9s jelsz\u00f3val rendelkezzen, illetve hogy a felhaszn\u00e1l\u00f3 regisztr\u00e1lva legyen az OpenId Connect szolg\u00e1ltat\u00f3ban.
+
+OAUATH_CLIENT_CERT_AUTH_FAIL=CWWKS1441E: A k\u00e9r\u00e9s felhaszn\u00e1l\u00f3i hiteles\u00edt\u00e9se meghi\u00fasult, mert az SSL egyeztet\u00e9s sor\u00e1n a k\u00e9r\u00e9sben megadott \u00fcgyf\u00e9ltan\u00fas\u00edtv\u00e1ny nem \u00e9rv\u00e9nyes\u00edthet\u0151 \u00e9rv\u00e9nyes felhaszn\u00e1l\u00f3k\u00e9nt. Ok: {0} 
+OAUATH_CLIENT_CERT_AUTH_FAIL.explanation=Mivel a certAuthentication attrib\u00fatum az oauthProvider konfigur\u00e1ci\u00f3ban enged\u00e9lyezett, a felhaszn\u00e1l\u00f3i hiteles\u00edt\u00e9shez a k\u00e9r\u00e9sben az SSL egyeztet\u00e9s sor\u00e1n \u00e9rv\u00e9nyes felhaszn\u00e1l\u00f3val meg kell adni az \u00fcgyf\u00e9ltan\u00fas\u00edtv\u00e1nyt.
+OAUATH_CLIENT_CERT_AUTH_FAIL.useraction=Biztos\u00edtsa, hogy a k\u00e9r\u00e9sben az SSL egyeztet\u00e9s sor\u00e1n megadott \u00fcgyf\u00e9ltan\u00fas\u00edtv\u00e1ny \u00e9rv\u00e9nyes felhaszn\u00e1l\u00f3val rendelkezik, illetve hogy a felhaszn\u00e1l\u00f3 regisztr\u00e1lva legyen az OpenID Connect szolg\u00e1ltat\u00f3ban.
+
+OAUTH_CLIENT_REGISTRATION_VALUE_NOT_SUPPORTED=CWWKS1442E: A(z) {0} \u00e9rt\u00e9k nem egy t\u00e1mogatott \u00e9rt\u00e9k a(z) {1} \u00fcgyf\u00e9l regisztr\u00e1ci\u00f3s metaadat mez\u0151j\u00e9hez.
+OAUTH_CLIENT_REGISTRATION_VALUE_NOT_SUPPORTED.explanation=Ez az \u00fcgyf\u00e9l tulajdons\u00e1g j\u00f3v\u00e1hagyott \u00e9rt\u00e9kekre van korl\u00e1tozva, \u00e9s a megadott \u00e9rt\u00e9k nincs j\u00f3v\u00e1hagyva.
+OAUTH_CLIENT_REGISTRATION_VALUE_NOT_SUPPORTED.useraction=Tekintse \u00e1t a szolg\u00e1ltat\u00e1s API dokument\u00e1ci\u00f3j\u00e1t, \u00e9s pr\u00f3b\u00e1lkozzon \u00fajra a k\u00e9r\u00e9ssel \u00fagy, hogy egy j\u00f3v\u00e1hagyott \u00e9rt\u00e9ket ad meg.
+
+OAUTH_CLIENT_REGISTRATION_VALUE_DUPE=CWWKS1443E: A(z) {0} \u00e9rt\u00e9k t\u00f6bbsz\u00f6r szerepel a(z) {1} \u00fcgyf\u00e9lregisztr\u00e1ci\u00f3s metaadat mez\u0151 eset\u00e9n.
+OAUTH_CLIENT_REGISTRATION_VALUE_DUPE.explanation=A tulajdons\u00e1ghoz megadott \u00e9rt\u00e9kek t\u00f6bbsz\u00f6r szerepl\u0151 \u00e9rt\u00e9keket tartalmaznak, ami nem enged\u00e9lyezett. 
+OAUTH_CLIENT_REGISTRATION_VALUE_DUPE.useraction=Tekintse \u00e1t a szolg\u00e1ltat\u00e1s API dokument\u00e1ci\u00f3j\u00e1t, majd pr\u00f3b\u00e1lja meg \u00fajra elk\u00fcldeni a k\u00e9r\u00e9st a megfelel\u0151 tulajdons\u00e1ggal, amely nem tartalmaz t\u00f6bbsz\u00f6r szerepl\u0151 \u00e9rt\u00e9keket.
+
+OAUTH_CLIENT_REGISTRATION_GRANT_RESPONSE_VALIDATION=CWWKS1444E: A response_type \u00fcgyf\u00e9lregisztr\u00e1ci\u00f3s metaadat mez\u0151 a(z) {0} \u00e9rt\u00e9ket tartalmazza, ami megk\u00f6vetel legal\u00e1bb egy megfelel\u0151 {1} grant_type \u00e9rt\u00e9ket.
+OAUTH_CLIENT_REGISTRATION_GRANT_RESPONSE_VALIDATION.explanation=A k\u00e9r\u00e9s a grant_type \u00e9rt\u00e9k \u00e9s response_type \u00e9rt\u00e9k \u00e9rv\u00e9nytelen kombin\u00e1ci\u00f3j\u00e1t tartalmazza. 
+OAUTH_CLIENT_REGISTRATION_GRANT_RESPONSE_VALIDATION.useraction=Tekintse \u00e1t az API dokument\u00e1ci\u00f3t \u00e9s az OpenID Connect \u00fcgyf\u00e9lregisztr\u00e1ci\u00f3 specifik\u00e1ci\u00f3j\u00e1t a grant_type \u00e9rt\u00e9k \u00e9s response_type \u00e9rt\u00e9k \u00e9rv\u00e9nyes kombin\u00e1ci\u00f3inak meg\u00e1llap\u00edt\u00e1sa \u00e9rdek\u00e9ben.
+
+OAUTH_CLIENT_REGISTRATION_VALUE_MALFORMED_URI=CWWKS1445E: A(z) {1} \u00fcgyf\u00e9lregisztr\u00e1ci\u00f3s metaadat mez\u0151 {0} \u00e9rt\u00e9ke helytelen\u00fcl form\u00e1zott URI szintaxist tartalmaz.
+OAUTH_CLIENT_REGISTRATION_VALUE_MALFORMED_URI.explanation=A k\u00e9r\u00e9s nem v\u00e9gezhet\u0151 el, mert a tulajdons\u00e1g\u00e9rt\u00e9ket helytelen\u00fcl form\u00e1zott URI szintaxissal adja meg.
+OAUTH_CLIENT_REGISTRATION_VALUE_MALFORMED_URI.useraction=Tekintse \u00e1t a k\u00e9r\u00e9sben l\u00e9v\u0151 tulajdons\u00e1g\u00e9rt\u00e9ket, \u00e9s m\u00f3dos\u00edtsa \u00fagy, hogy megfeleljen egy szab\u00e1lyosan form\u00e1zott URI szintaxisnak.
+
+OAUTH_CLIENT_REGISTRATION_VALUE_NOT_ABSOLUTE_URI=CWWKS1446E: A(z) {1} \u00fcgyf\u00e9lregisztr\u00e1ci\u00f3s metaadat mez\u0151 {0} \u00e9rt\u00e9ke nem egy abszol\u00fat URI.
+OAUTH_CLIENT_REGISTRATION_VALUE_NOT_ABSOLUTE_URI.explanation=A k\u00e9r\u00e9s nem v\u00e9gezhet\u0151 el, mert egy nem-abszol\u00fat URI azonos\u00edt\u00f3t ad meg, amikor abszol\u00fat URI sz\u00fcks\u00e9ges.
+OAUTH_CLIENT_REGISTRATION_VALUE_NOT_ABSOLUTE_URI.useraction=Tekintse \u00e1t a k\u00e9r\u00e9sben l\u00e9v\u0151 tulajdons\u00e1g\u00e9rt\u00e9ket, \u00e9s m\u00f3dos\u00edtsa \u00fagy, hogy megfeleljen egy abszol\u00fat URI szintaxisnak.
+
+OAUTH_CLIENT_REGISTRATION_VALUE_OUT_NOT_ALLOWED=CWWKS1447E: A(z) {0} \u00fcgyf\u00e9lregisztr\u00e1ci\u00f3s metaadat mez\u0151 nem adhat\u00f3 meg egy l\u00e9trehoz\u00e1si vagy friss\u00edt\u00e9si m\u0171velethez, mert az egy kimeneti param\u00e9ter.
+OAUTH_CLIENT_REGISTRATION_VALUE_OUT_NOT_ALLOWED.explanation=A k\u00e9r\u00e9s nem v\u00e9gezhet\u0151 el, mert a megadott tulajdons\u00e1g\u00e9rt\u00e9k egy nem m\u00f3dos\u00edthat\u00f3 kimeneti param\u00e9ter.
+OAUTH_CLIENT_REGISTRATION_VALUE_OUT_NOT_ALLOWED.useraction=T\u00e1vol\u00edtsa el a tulajdons\u00e1g\u00e9rt\u00e9ket a k\u00e9r\u00e9sb\u0151l, mivel a l\u00e9trehoz\u00e1si vagy friss\u00edt\u00e9si m\u0171veletekhez nem adhat\u00f3 meg egy kimeneti param\u00e9ter.
+
+OAUTH_PROVIDER_DATABASESTORE_INVALID_DATASOURCEREF=CWWKS1448E: A(z) {0} OAuth szolg\u00e1ltat\u00f3hoz meg van adva egy databaseStore elem, azonban a dataSourceRef attrib\u00fatum nincs megadva, vagy az adatforr\u00e1s nincs aktiv\u00e1lva.
+OAUTH_PROVIDER_DATABASESTORE_INVALID_DATASOURCEREF.explanation=Az OAuth szolg\u00e1ltat\u00f3hoz meg van adva egy databaseStore elem, azonban a dataSourceRef attrib\u00fatum nincs megadva, vagy az adatforr\u00e1s nincs aktiv\u00e1lva. Ennek oka egy konfigur\u00e1ci\u00f3s hiba lehet.
+OAUTH_PROVIDER_DATABASESTORE_INVALID_DATASOURCEREF.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a databaseStore elem dataSourceRef attrib\u00fatuma helyesen van meghat\u00e1rozva az OAuth szolg\u00e1ltat\u00f3ban.
+
+OAUTH_PROVIDER_DATABASESTORE_INVALID_ATTRIBUTE=CWWKS1449E: A(z) {0} OAuth szolg\u00e1ltat\u00f3hoz meg van adva egy databaseStore elem, azonban a(z) {1} attrib\u00fatum nincs megadva, vagy \u00e9rv\u00e9nytelen.
+OAUTH_PROVIDER_DATABASESTORE_INVALID_ATTRIBUTE.explanation=Az OAuth szolg\u00e1ltat\u00f3hoz meg van adva egy databaseStore elem, azonban az attrib\u00fatum nincs megadva, vagy \u00e9rv\u00e9nytelen. Ennek oka egy konfigur\u00e1ci\u00f3s hiba lehet.
+OAUTH_PROVIDER_DATABASESTORE_INVALID_ATTRIBUTE.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a databaseStore elem attrib\u00fatuma helyesen van meghat\u00e1rozva az OAuth szolg\u00e1ltat\u00f3ban.
+
+OIDC_SERVER_MULTI_OIDC_TO_ONE_OAUTH=CWWKS1450E: Konfigur\u00e1ci\u00f3s hiba t\u00f6rt\u00e9nt. A(z) {0} \u00e9s a(z) {1} OpenID Connect szolg\u00e1ltat\u00f3 ugyanazzal az OAuth szolg\u00e1ltat\u00f3val rendelkezik: {2}. Mindk\u00e9t OpenID Connect szolg\u00e1ltat\u00f3 deaktiv\u00e1l\u00e1sra ker\u00fclt.
+OIDC_SERVER_MULTI_OIDC_TO_ONE_OAUTH.explanation=Minden egyes OpenID Connect szolg\u00e1ltat\u00f3nak egyedi OAuth szolg\u00e1ltat\u00f3val kell rendelkeznie a server.xml f\u00e1jlban. Ellenkez\u0151 esetben a t\u00f6bbsz\u00f6r szerepl\u0151 OpenID Connect szolg\u00e1ltat\u00f3 deaktiv\u00e1l\u00e1sra ker\u00fcl.  
+OIDC_SERVER_MULTI_OIDC_TO_ONE_OAUTH.useraction=Gondoskodj\u00e9k r\u00f3la, hogy minden OpenID Connect szolg\u00e1ltat\u00f3 egyedi OAuth szolg\u00e1ltat\u00f3val rendelkezzen a server.xml f\u00e1jlban.
+
+OAUTH_PROVIDER_DATABASESTORE_INVALID_DATASOURCEFACTORY=CWWKS1451E: A(z) {0} OAuth szolg\u00e1ltat\u00f3hoz meg van adva egy databaseStore elem, de a megadott adatforr\u00e1shoz tartoz\u00f3 dataSourceFactory nincs aktiv\u00e1lva.
+OAUTH_PROVIDER_DATABASESTORE_INVALID_DATASOURCEFACTORY.explanation=A(z) OAuth szolg\u00e1ltat\u00f3hoz meg van adva egy databaseStore elem, de a megadott adatforr\u00e1shoz tartoz\u00f3 dataSourceFactory nincs aktiv\u00e1lva. Ez az adatforr\u00e1s konfigur\u00e1ci\u00f3s hib\u00e1j\u00e1nak eredm\u00e9nye lehet.
+OAUTH_PROVIDER_DATABASESTORE_INVALID_DATASOURCEFACTORY.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a databaseStore elem dataSourceRef attrib\u00fatuma az OAuth szolg\u00e1ltat\u00f3ban helyesen van meghat\u00e1rozva, \u00e9rv\u00e9nyes adatforr\u00e1st azonos\u00edtva.
+
+OAUTH_SERVER_TOKEN_INTROSPECT_PROVIDER_INTERNAL_ERROR=CWWKS1452E: A(z) {1} Liberty felhaszn\u00e1l\u00f3i szolg\u00e1ltat\u00e1s \u00e1ltal visszaadott JSONObject a(z) {0} eset\u00e9n null vagy rossz.
+OAUTH_SERVER_TOKEN_INTROSPECT_PROVIDER_INTERNAL_ERROR.explanation=A Liberty rendszerben telep\u00edtett TokenIntrospectProvider null vagy rossz JSON form\u00e1tum\u00fa karaktersorozatot ad vissza az adott felhaszn\u00e1l\u00f3 eset\u00e9n.
+OAUTH_SERVER_TOKEN_INTROSPECT_PROVIDER_INTERNAL_ERROR.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a TokenIntrospectProvider \u00e9rv\u00e9nyes JSON form\u00e1tum\u00fa karaktersorozatot adjon vissza.
+
+OAUTH_SERVER_MULTIPLE_TOKEN_INTROSPECT_PROVIDER_CONFIGURED=CWWKS1453I: T\u00f6bb TokenIntrospectProviders van konfigur\u00e1lva.
+OAUTH_SERVER_MULTIPLE_TOKEN_INTROSPECT_PROVIDER_CONFIGURED.explanation=Egyn\u00e9l t\u00f6bb TokenIntrospectProviders van konfigur\u00e1lva a server.xml f\u00e1jlban.
+OAUTH_SERVER_MULTIPLE_TOKEN_INTROSPECT_PROVIDER_CONFIGURED.useraction=Nincs teend\u0151.
+
+OAUTH_SERVER_INVALID_ACCESS_TOKEN=CWWKS1454E: A k\u00e9r\u00e9s meghi\u00fasult, mert az hozz\u00e1f\u00e9r\u00e9si token nem \u00e9rv\u00e9nyes vagy lej\u00e1rt.
+OAUTH_SERVER_INVALID_ACCESS_TOKEN.explanation=A k\u00e9r\u00e9s feldolgoz\u00e1sa meghi\u00fasult, mert a hozz\u00e1f\u00e9r\u00e9si token \u00e9rv\u00e9nytelen.
+OAUTH_SERVER_INVALID_ACCESS_TOKEN.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a hozz\u00e1f\u00e9r\u00e9si token \u00e9rv\u00e9nyes, \u00e9s nem j\u00e1rt le.
+
+#This message can be appended to 1455E under some conditions
+# do not translate keyStoreRef
+CHECK_KEYSTORE_REF=Az OpenId Connect szolg\u00e1ltat\u00f3 keyStoreRef konfigur\u00e1ci\u00f3s attrib\u00fatuma lehet, hogy hi\u00e1nyzik vagy hib\u00e1s.
+
+#This message is intended to be a child of CWWKS1456E
+#0=signatureAlgorithm, 1=exception or error message if any
+JWT_BAD_SIGNING_KEY=CWWKS1455E: Az al\u00e1\u00edr\u00e1si algoritmus [{0}] \u00e1ltal megk\u00f6vetelt al\u00e1\u00edr\u00e1si kulcs nem volt el\u00e9rhet\u0151. {1}
+JWT_BAD_SIGNING_KEY.explanation=Nem tal\u00e1lhat\u00f3 al\u00e1\u00edr\u00e1si kulcs, vagy nem tal\u00e1lhat\u00f3 olyan kulcs, ami a be\u00e1ll\u00edtott al\u00e1\u00edr\u00e1si algoritmust haszn\u00e1lja.
+JWT_BAD_SIGNING_KEY.useraction=Gondoskodjon arr\u00f3l, hogy az al\u00e1\u00edr\u00e1si kulcs \u00e9s az al\u00e1\u00edr\u00e1si algoritmus megfelel\u0151en be legyen \u00e1ll\u00edtva.
+
+#0=oidc OP ID, 1=exception or error message
+JWT_CANNOT_GENERATE_JWT=CWWKS1456E: Az OpenID Connect Provider [{0}] nem tud tokent l\u00e9trehozni. [ {1} ]
+JWT_CANNOT_GENERATE_JWT.explanation=Az OpenID Connect Provider nem tud tokent l\u00e9trehozni. Az ok megjelenik az \u00fczenetben.
+JWT_CANNOT_GENERATE_JWT.useraction=L\u00e1sd az \u00fczenetben megjelen\u00edtett hiba teend\u0151j\u00e9t.
+
+#0=Configured signature algorithm
+SIGNING_KEY_NOT_RSA=CWWKS1457E: Az al\u00e1\u00edr\u00e1si kulcs t\u00edpusa nem RSA. Az al\u00e1\u00edr\u00e1si algoritmushoz [{0}] RSA al\u00e1\u00edr\u00e1si kulcs sz\u00fcks\u00e9ges.
+SIGNING_KEY_NOT_RSA.explanation=Ehhez az al\u00e1\u00edr\u00e1si algoritmushoz RSA-kulcs sz\u00fcks\u00e9ges.
+SIGNING_KEY_NOT_RSA.useraction=\u00c1ll\u00edtson be m\u00e1sik al\u00e1\u00edr\u00e1si algoritmust, vagy adjon meg RSA kulcsot az al\u00e1\u00edr\u00e1sokhoz.
+
+#0=Java runtime level
+JWT_MEDIATOR_SPI_REQUIRES_JDK=CWWKS1458W: A fut\u00e1si k\u00f6rnyezet \u00e1ltal haszn\u00e1lt Java v\u00e1ltozatot [{0}] nem t\u00e1mogatja a JWT Mediator SPI. A t\u00e1mogatott Java v\u00e1ltozat 1.7 vagy \u00fajabb.
+JWT_MEDIATOR_SPI_REQUIRES_JDK.explanation=Az \u00fczenetben l\u00e1that\u00f3 Java v\u00e1ltozat nem t\u00e1mogatja a JWT Mediator SPI funkci\u00f3t.
+JWT_MEDIATOR_SPI_REQUIRES_JDK.useraction=Telep\u00edtsen Java 1.7 vagy \u00fajabb v\u00e1ltozatot.
+
+#0=Expired token count
+#1=value of the cleanupExpiredTokenInterval
+#2=cleanupExpiredTokenInterval
+OAUTH_PROVIDER_DB_TOOMANY_EXPTOKEN=CWWKS1459W: Az adatb\u00e1zisb\u00f3l elt\u00e1vol\u00edtand\u00f3 lej\u00e1rt tokenek sz\u00e1ma [{0}]. A lej\u00e1rt tokenek magas sz\u00e1ma hat\u00e1ssal lehet a teljes\u00edtm\u00e9nyre. A token tiszt\u00edt\u00e1si feladata \u00fagy van be\u00e1ll\u00edtva, hogy [{1}] m\u00e1sodpercenk\u00e9nt fusson. Fontolja meg ennek az id\u0151k\u00f6znek a cs\u00f6kkent\u00e9s\u00e9t \u00fagy, hogy az OAuth szolg\u00e1ltat\u00f3 konfigur\u00e1ci\u00f3j\u00e1ban a(z) [{2}] attrib\u00fatum m\u00f3dos\u00edt\u00e1s\u00e1val gyakrabban futtatja a lej\u00e1rt tokenek tiszt\u00edt\u00e1si feladat\u00e1t.
+OAUTH_PROVIDER_DB_TOOMANY_EXPTOKEN.explanation=Az adatb\u00e1zis-gyors\u00edt\u00f3t\u00e1r nagy mennyis\u00e9g\u0171 lej\u00e1rt tokent tartalmaz, ami a tokenlek\u00e9r\u00e9sek teljes\u00edtm\u00e9ny\u00e9vel kapcsolatos probl\u00e9m\u00e1khoz vezethet. A megadott attrib\u00fatum \u00e9rt\u00e9k\u00e9nek cs\u00f6kkent\u00e9s\u00e9vel a tiszt\u00edt\u00e1si feladat gyakrabban fut, \u00e9s cs\u00f6kkenti az adatb\u00e1zisban t\u00e1rolt lej\u00e1rt tokenek sz\u00e1m\u00e1t.
+OAUTH_PROVIDER_DB_TOOMANY_EXPTOKEN.useraction=Cs\u00f6kkentse az OAuth szolg\u00e1ltat\u00f3 konfigur\u00e1ci\u00f3j\u00e1ban a megadott attrib\u00fatum \u00e9rt\u00e9k\u00e9t.
+
+# 0=SQL operation (such as "SELECT", "UPDATE", "DELETE"), 1=OAuth client ID, 2=Exception message (if present)
+ERROR_PERFORMING_DB_OPERATION=CWWKS1460E: Az OAuth szolg\u00e1ltat\u00e1s hib\u00e1t \u00e9szlelt a(z) [{0}] m\u0171velet [{1}] OpenID Connect \u00fcgyf\u00e9llel val\u00f3 futtat\u00e1sa sor\u00e1n a gyors\u00edt\u00f3t\u00e1rban t\u00e1rolt adatb\u00e1zisban. {2}
+ERROR_PERFORMING_DB_OPERATION.explanation=Elk\u00e9pzelhet\u0151, hogy az adatb\u00e1zis-kapcsolat nem \u00e1ll rendelkez\u00e9sre, az adatb\u00e1zist\u00e1bla helytelen adatt\u00edpusokkal rendelkez\u0151 oszlopokat tartalmaz, vagy az adatb\u00e1zis parancs rossz form\u00e1tum\u00fa.
+ERROR_PERFORMING_DB_OPERATION.useraction=Ellen\u0151rizze, hogy az adatb\u00e1zis-kapcsolat tov\u00e1bbra is nyitva van \u00e9s el\u00e9rhet\u0151. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az adatb\u00e1zist\u00e1bl\u00e1k megfelel\u0151 adatt\u00edpusokkal vannak be\u00e1ll\u00edtva.
+
+# 0=Exception message (if present)
+ERROR_GETTING_CLIENTS_FROM_DB=CWWKS1461E: Az OAuth szolg\u00e1ltat\u00e1s hib\u00e1t \u00e9szlelt az \u00f6sszes OpenID Connect \u00fcgyf\u00e9l lek\u00e9r\u00e9se sor\u00e1n a gyors\u00edt\u00f3t\u00e1rban t\u00e1rolt adatb\u00e1zisb\u00f3l. {0}
+ERROR_GETTING_CLIENTS_FROM_DB.explanation=Elk\u00e9pzelhet\u0151, hogy az adatb\u00e1zis-kapcsolat nem \u00e1ll rendelkez\u00e9sre, az adatb\u00e1zist\u00e1bla helytelen adatt\u00edpusokkal rendelkez\u0151 oszlopokat tartalmaz, vagy az adatb\u00e1zis parancs rossz form\u00e1tum\u00fa.
+ERROR_GETTING_CLIENTS_FROM_DB.useraction=Ellen\u0151rizze, hogy az adatb\u00e1zis-kapcsolat tov\u00e1bbra is nyitva van \u00e9s el\u00e9rhet\u0151. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az adatb\u00e1zist\u00e1bl\u00e1k megfelel\u0151 adatt\u00edpusokkal vannak be\u00e1ll\u00edtva.
+
+# This is migrated from com.ibm.ws.security.openidconnect.server-1.0
+# It is an existing message. So, it keeps the same ID as before
+OIDC_SERVER_USERINFO_INTERNAL_ERROR=CWWKS1620E: Bels\u0151 kiszolg\u00e1l\u00f3hiba t\u00f6rt\u00e9nt egy userinfo k\u00e9r\u00e9s feldolgoz\u00e1sa k\u00f6zben. A hiba: {0}. A k\u00e9r\u00e9s URI: {1}.
+OIDC_SERVER_USERINFO_INTERNAL_ERROR.explanation=Bels\u0151 kiszolg\u00e1l\u00f3hiba t\u00f6rt\u00e9nt egy userinfo k\u00e9r\u00e9s feldolgoz\u00e1sa k\u00f6zben. 
+OIDC_SERVER_USERINFO_INTERNAL_ERROR.useraction=Keresse meg az IBM term\u00e9kt\u00e1mogat\u00e1st.
+
+# intended for  use with regular expressions in redirects
+regexp.evaluation.error=CWWKS1462E: A regul\u00e1ris kifejez\u00e9s nem ki\u00e9rt\u00e9kelhet\u0151: {0}.
+regexp.evaluation.error.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt a regul\u00e1ris kifejez\u00e9s ki\u00e9rt\u00e9kel\u00e9se sor\u00e1n.
+regexp.evaluation.error.useraction=Jav\u00edtsa ki a regul\u00e1ris kifejez\u00e9st. 
+
+OAUTH_REGISTRATION_REQUEST_MISSING_CLIENT=CWWKS1463E: Az OpenID Connect regisztr\u00e1ci\u00f3s k\u00e9r\u00e9s nem tartalmaz \u00fcgyfelet. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a k\u00e9r\u00e9s t\u00f6rzs nem \u00fcres, \u00e9s tartalmaz egy JSON form\u00e1tumban k\u00f3dot \u00fcgyfelet.
+OAUTH_REGISTRATION_REQUEST_MISSING_CLIENT.explanation=A k\u00e9r\u00e9s t\u00f6rzs\u00e9nek tartalmaznia kell egy JSON form\u00e1tumban k\u00f3dolt \u00fcgyfelet.
+OAUTH_REGISTRATION_REQUEST_MISSING_CLIENT.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a k\u00e9r\u00e9s t\u00f6rzs nem \u00fcres, \u00e9s tartalmaz egy JSON form\u00e1tumban k\u00f3dot \u00fcgyfelet.
+
+# 0=OAuth client ID, 1=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_CREATE_CLIENT=CWWKS1464E: Az OAuth szolg\u00e1ltat\u00e1s hib\u00e1ba \u00fctk\u00f6z\u00f6tt egy OAuthClient bejegyz\u00e9s l\u00e9trehoz\u00e1sakor a(z) {0} azonos\u00edt\u00f3val az OAuthStore megval\u00f3s\u00edt\u00e1sban. {1}
+ERROR_PERFORMING_OAUTH_STORE_CREATE_CLIENT.explanation=Az OAuthStore megval\u00f3s\u00edt\u00e1s nem hajtotta v\u00e9gre a m\u0171veletet. A lehets\u00e9ges konfigur\u00e1ci\u00f3s probl\u00e9m\u00e1k k\u00f6z\u00e9 tartoznak az OAuthStore megval\u00f3s\u00edt\u00e1sra jellemz\u0151 elemek hi\u00e1nyz\u00f3 vagy helytelen attrib\u00fatumai a server.xml f\u00e1jlban vagy m\u00e1s, a megval\u00f3s\u00edt\u00e1sra jellemz\u0151 konfigur\u00e1ci\u00f3s f\u00e1jlban. A lehets\u00e9ges m\u0171k\u00f6d\u00e9si probl\u00e9m\u00e1k k\u00f6z\u00e9 tartoznak az adatb\u00e1zis-, h\u00e1l\u00f3zati vagy f\u00e1jlrendszerhib\u00e1k.
+ERROR_PERFORMING_OAUTH_STORE_CREATE_CLIENT.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az OAuthStore megval\u00f3s\u00edt\u00e1s m\u00e9g mindig el\u00e9rhet\u0151, \u00e9s megfelel\u0151en van konfigur\u00e1lva.
+
+# 0=OAuth token lookup key, 1=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_CREATE_TOKEN=CWWKS1465E: Az OAuth szolg\u00e1ltat\u00e1s hib\u00e1ba \u00fctk\u00f6z\u00f6tt egy OAuthToken bejegyz\u00e9s l\u00e9trehoz\u00e1sakor a(z) {0} kikeres\u00e9si kulccsal az OAuthStore megval\u00f3s\u00edt\u00e1sban. {1}
+ERROR_PERFORMING_OAUTH_STORE_CREATE_TOKEN.explanation=Az OAuthStore megval\u00f3s\u00edt\u00e1s nem hajtotta v\u00e9gre a m\u0171veletet. A lehets\u00e9ges konfigur\u00e1ci\u00f3s probl\u00e9m\u00e1k k\u00f6z\u00e9 tartoznak az OAuthStore megval\u00f3s\u00edt\u00e1sra jellemz\u0151 elemek hi\u00e1nyz\u00f3 vagy helytelen attrib\u00fatumai a server.xml f\u00e1jlban vagy m\u00e1s, a megval\u00f3s\u00edt\u00e1sra jellemz\u0151 konfigur\u00e1ci\u00f3s f\u00e1jlban. A lehets\u00e9ges m\u0171k\u00f6d\u00e9si probl\u00e9m\u00e1k k\u00f6z\u00e9 tartoznak az adatb\u00e1zis-, h\u00e1l\u00f3zati vagy f\u00e1jlrendszerhib\u00e1k.
+ERROR_PERFORMING_OAUTH_STORE_CREATE_TOKEN.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az OAuthStore megval\u00f3s\u00edt\u00e1s m\u00e9g mindig el\u00e9rhet\u0151, \u00e9s megfelel\u0151en van konfigur\u00e1lva.
+
+# 0=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_CREATE_CONSENT=CWWKS1466E: Az OAuth szolg\u00e1ltat\u00e1s hib\u00e1ba \u00fctk\u00f6z\u00f6tt egy OAuthConsent bejegyz\u00e9s l\u00e9trehoz\u00e1sakor az OAuthStore megval\u00f3s\u00edt\u00e1sban. {0}
+ERROR_PERFORMING_OAUTH_STORE_CREATE_CONSENT.explanation=Az OAuthStore megval\u00f3s\u00edt\u00e1s nem hajtotta v\u00e9gre a m\u0171veletet. A lehets\u00e9ges konfigur\u00e1ci\u00f3s probl\u00e9m\u00e1k k\u00f6z\u00e9 tartoznak az OAuthStore megval\u00f3s\u00edt\u00e1sra jellemz\u0151 elemek hi\u00e1nyz\u00f3 vagy helytelen attrib\u00fatumai a server.xml f\u00e1jlban vagy m\u00e1s, a megval\u00f3s\u00edt\u00e1sra jellemz\u0151 konfigur\u00e1ci\u00f3s f\u00e1jlban. A lehets\u00e9ges m\u0171k\u00f6d\u00e9si probl\u00e9m\u00e1k k\u00f6z\u00e9 tartoznak az adatb\u00e1zis-, h\u00e1l\u00f3zati vagy f\u00e1jlrendszerhib\u00e1k.
+ERROR_PERFORMING_OAUTH_STORE_CREATE_CONSENT.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az OAuthStore megval\u00f3s\u00edt\u00e1s m\u00e9g mindig el\u00e9rhet\u0151, \u00e9s megfelel\u0151en van konfigur\u00e1lva.
+
+# 0=OAuth client ID, 1=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_READ_CLIENT=CWWKS1467E: Az OAuth szolg\u00e1ltat\u00e1s hib\u00e1ba \u00fctk\u00f6z\u00f6tt egy {0} azonos\u00edt\u00f3val rendelkez\u0151 OAuthClient bejegyz\u00e9s beolvas\u00e1sakor az OAuthStore megval\u00f3s\u00edt\u00e1sb\u00f3l. {1}
+ERROR_PERFORMING_OAUTH_STORE_READ_CLIENT.explanation=Az OAuthStore megval\u00f3s\u00edt\u00e1s nem hajtotta v\u00e9gre a m\u0171veletet. A lehets\u00e9ges konfigur\u00e1ci\u00f3s probl\u00e9m\u00e1k k\u00f6z\u00e9 tartoznak az OAuthStore megval\u00f3s\u00edt\u00e1sra jellemz\u0151 elemek hi\u00e1nyz\u00f3 vagy helytelen attrib\u00fatumai a server.xml f\u00e1jlban vagy m\u00e1s, a megval\u00f3s\u00edt\u00e1sra jellemz\u0151 konfigur\u00e1ci\u00f3s f\u00e1jlban. A lehets\u00e9ges m\u0171k\u00f6d\u00e9si probl\u00e9m\u00e1k k\u00f6z\u00e9 tartoznak az adatb\u00e1zis-, h\u00e1l\u00f3zati vagy f\u00e1jlrendszerhib\u00e1k.
+ERROR_PERFORMING_OAUTH_STORE_READ_CLIENT.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az OAuthStore megval\u00f3s\u00edt\u00e1s m\u00e9g mindig el\u00e9rhet\u0151, \u00e9s megfelel\u0151en van konfigur\u00e1lva.
+
+# 0=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_READ_ALL_CLIENTS=CWWKS1468E: Az OAuth szolg\u00e1ltat\u00e1s hib\u00e1ba \u00fctk\u00f6z\u00f6tt az \u00f6sszes OAuthClient bejegyz\u00e9s beolvas\u00e1sakor az OAuthStore megval\u00f3s\u00edt\u00e1sb\u00f3l. {0}
+ERROR_PERFORMING_OAUTH_STORE_READ_ALL_CLIENTS.explanation=Az OAuthStore megval\u00f3s\u00edt\u00e1s nem hajtotta v\u00e9gre a m\u0171veletet. A lehets\u00e9ges konfigur\u00e1ci\u00f3s probl\u00e9m\u00e1k k\u00f6z\u00e9 tartoznak az OAuthStore megval\u00f3s\u00edt\u00e1sra jellemz\u0151 elemek hi\u00e1nyz\u00f3 vagy helytelen attrib\u00fatumai a server.xml f\u00e1jlban vagy m\u00e1s, a megval\u00f3s\u00edt\u00e1sra jellemz\u0151 konfigur\u00e1ci\u00f3s f\u00e1jlban. A lehets\u00e9ges m\u0171k\u00f6d\u00e9si probl\u00e9m\u00e1k k\u00f6z\u00e9 tartoznak az adatb\u00e1zis-, h\u00e1l\u00f3zati vagy f\u00e1jlrendszerhib\u00e1k.
+ERROR_PERFORMING_OAUTH_STORE_READ_ALL_CLIENTS.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az OAuthStore megval\u00f3s\u00edt\u00e1s m\u00e9g mindig el\u00e9rhet\u0151, \u00e9s megfelel\u0151en van konfigur\u00e1lva.
+
+# 0=OAuth token lookup key, 1=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_READ_TOKEN=CWWKS1469E: Az OAuth szolg\u00e1ltat\u00e1s hib\u00e1ba \u00fctk\u00f6z\u00f6tt egy {0} kikeres\u00e9si kulccsal rendelkez\u0151 OAuthToken bejegyz\u00e9s beolvas\u00e1sakor az OAuthStore megval\u00f3s\u00edt\u00e1sb\u00f3l. {1}
+ERROR_PERFORMING_OAUTH_STORE_READ_TOKEN.explanation=Az OAuthStore megval\u00f3s\u00edt\u00e1s nem hajtotta v\u00e9gre a m\u0171veletet. A lehets\u00e9ges konfigur\u00e1ci\u00f3s probl\u00e9m\u00e1k k\u00f6z\u00e9 tartoznak az OAuthStore megval\u00f3s\u00edt\u00e1sra jellemz\u0151 elemek hi\u00e1nyz\u00f3 vagy helytelen attrib\u00fatumai a server.xml f\u00e1jlban vagy m\u00e1s, a megval\u00f3s\u00edt\u00e1sra jellemz\u0151 konfigur\u00e1ci\u00f3s f\u00e1jlban. A lehets\u00e9ges m\u0171k\u00f6d\u00e9si probl\u00e9m\u00e1k k\u00f6z\u00e9 tartoznak az adatb\u00e1zis-, h\u00e1l\u00f3zati vagy f\u00e1jlrendszerhib\u00e1k.
+ERROR_PERFORMING_OAUTH_STORE_READ_TOKEN.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az OAuthStore megval\u00f3s\u00edt\u00e1s m\u00e9g mindig el\u00e9rhet\u0151, \u00e9s megfelel\u0151en van konfigur\u00e1lva.
+
+# 0=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_READ_ALL_TOKENS=CWWKS1470E: Az OAuth szolg\u00e1ltat\u00e1s hib\u00e1ba \u00fctk\u00f6z\u00f6tt az \u00f6sszes OAuthToken bejegyz\u00e9s beolvas\u00e1sakor az OAuthStore megval\u00f3s\u00edt\u00e1sb\u00f3l. {0}
+ERROR_PERFORMING_OAUTH_STORE_READ_ALL_TOKENS.explanation=Az OAuthStore megval\u00f3s\u00edt\u00e1s nem hajtotta v\u00e9gre a m\u0171veletet. A lehets\u00e9ges konfigur\u00e1ci\u00f3s probl\u00e9m\u00e1k k\u00f6z\u00e9 tartoznak az OAuthStore megval\u00f3s\u00edt\u00e1sra jellemz\u0151 elemek hi\u00e1nyz\u00f3 vagy helytelen attrib\u00fatumai a server.xml f\u00e1jlban vagy m\u00e1s, a megval\u00f3s\u00edt\u00e1sra jellemz\u0151 konfigur\u00e1ci\u00f3s f\u00e1jlban. A lehets\u00e9ges m\u0171k\u00f6d\u00e9si probl\u00e9m\u00e1k k\u00f6z\u00e9 tartoznak az adatb\u00e1zis-, h\u00e1l\u00f3zati vagy f\u00e1jlrendszerhib\u00e1k.
+ERROR_PERFORMING_OAUTH_STORE_READ_ALL_TOKENS.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az OAuthStore megval\u00f3s\u00edt\u00e1s m\u00e9g mindig el\u00e9rhet\u0151, \u00e9s megfelel\u0151en van konfigur\u00e1lva.
+
+# 0=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_COUNT_TOKENS=CWWKS1471E: Az OAuth szolg\u00e1ltat\u00e1s hib\u00e1ba \u00fctk\u00f6z\u00f6tt az OAuthStore megval\u00f3s\u00edt\u00e1sban l\u00e9v\u0151 OAuthToken bejegyz\u00e9sek sz\u00e1ml\u00e1l\u00e1sakor. {0}
+ERROR_PERFORMING_OAUTH_STORE_COUNT_TOKENS.explanation=Az OAuthStore megval\u00f3s\u00edt\u00e1s nem hajtotta v\u00e9gre a m\u0171veletet. A lehets\u00e9ges konfigur\u00e1ci\u00f3s probl\u00e9m\u00e1k k\u00f6z\u00e9 tartoznak az OAuthStore megval\u00f3s\u00edt\u00e1sra jellemz\u0151 elemek hi\u00e1nyz\u00f3 vagy helytelen attrib\u00fatumai a server.xml f\u00e1jlban vagy m\u00e1s, a megval\u00f3s\u00edt\u00e1sra jellemz\u0151 konfigur\u00e1ci\u00f3s f\u00e1jlban. A lehets\u00e9ges m\u0171k\u00f6d\u00e9si probl\u00e9m\u00e1k k\u00f6z\u00e9 tartoznak az adatb\u00e1zis-, h\u00e1l\u00f3zati vagy f\u00e1jlrendszerhib\u00e1k.
+ERROR_PERFORMING_OAUTH_STORE_COUNT_TOKENS.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az OAuthStore megval\u00f3s\u00edt\u00e1s m\u00e9g mindig el\u00e9rhet\u0151, \u00e9s megfelel\u0151en van konfigur\u00e1lva.
+
+# 0=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_READ_CONSENT=CWWKS1472E: Az OAuth szolg\u00e1ltat\u00e1s hib\u00e1ba \u00fctk\u00f6z\u00f6tt egy OAuthConsent bejegyz\u00e9s beolvas\u00e1sakor az OAuthStore megval\u00f3s\u00edt\u00e1sb\u00f3l. {0}
+ERROR_PERFORMING_OAUTH_STORE_READ_CONSENT.explanation=Az OAuthStore megval\u00f3s\u00edt\u00e1s nem hajtotta v\u00e9gre a m\u0171veletet. A lehets\u00e9ges konfigur\u00e1ci\u00f3s probl\u00e9m\u00e1k k\u00f6z\u00e9 tartoznak az OAuthStore megval\u00f3s\u00edt\u00e1sra jellemz\u0151 elemek hi\u00e1nyz\u00f3 vagy helytelen attrib\u00fatumai a server.xml f\u00e1jlban vagy m\u00e1s, a megval\u00f3s\u00edt\u00e1sra jellemz\u0151 konfigur\u00e1ci\u00f3s f\u00e1jlban. A lehets\u00e9ges m\u0171k\u00f6d\u00e9si probl\u00e9m\u00e1k k\u00f6z\u00e9 tartoznak az adatb\u00e1zis-, h\u00e1l\u00f3zati vagy f\u00e1jlrendszerhib\u00e1k.
+ERROR_PERFORMING_OAUTH_STORE_READ_CONSENT.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az OAuthStore megval\u00f3s\u00edt\u00e1s m\u00e9g mindig el\u00e9rhet\u0151, \u00e9s megfelel\u0151en van konfigur\u00e1lva.
+
+# 0=OAuth client ID, 1=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_UPDATE_CLIENT=CWWKS1473E: Az OAuth szolg\u00e1ltat\u00e1s hib\u00e1ba \u00fctk\u00f6z\u00f6tt egy OAuthClient bejegyz\u00e9s friss\u00edt\u00e9sekor a(z) {0} azonos\u00edt\u00f3val az OAuthStore megval\u00f3s\u00edt\u00e1sban. {1}
+ERROR_PERFORMING_OAUTH_STORE_UPDATE_CLIENT.explanation=Az OAuthStore megval\u00f3s\u00edt\u00e1s nem hajtotta v\u00e9gre a m\u0171veletet. A lehets\u00e9ges konfigur\u00e1ci\u00f3s probl\u00e9m\u00e1k k\u00f6z\u00e9 tartoznak az OAuthStore megval\u00f3s\u00edt\u00e1sra jellemz\u0151 elemek hi\u00e1nyz\u00f3 vagy helytelen attrib\u00fatumai a server.xml f\u00e1jlban vagy m\u00e1s, a megval\u00f3s\u00edt\u00e1sra jellemz\u0151 konfigur\u00e1ci\u00f3s f\u00e1jlban. A lehets\u00e9ges m\u0171k\u00f6d\u00e9si probl\u00e9m\u00e1k k\u00f6z\u00e9 tartoznak az adatb\u00e1zis-, h\u00e1l\u00f3zati vagy f\u00e1jlrendszerhib\u00e1k.
+ERROR_PERFORMING_OAUTH_STORE_UPDATE_CLIENT.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az OAuthStore megval\u00f3s\u00edt\u00e1s m\u00e9g mindig el\u00e9rhet\u0151, \u00e9s megfelel\u0151en van konfigur\u00e1lva.
+
+# 0=OAuth token lookup key, 1=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_UPDATE_TOKEN=CWWKS1474E: Az OAuth szolg\u00e1ltat\u00e1s hib\u00e1ba \u00fctk\u00f6z\u00f6tt egy OAuthToken bejegyz\u00e9s friss\u00edt\u00e9sekor a(z) {0} kikeres\u00e9si kulccsal az OAuthStore megval\u00f3s\u00edt\u00e1sban. {1}
+ERROR_PERFORMING_OAUTH_STORE_UPDATE_TOKEN.explanation=Az OAuthStore megval\u00f3s\u00edt\u00e1s nem hajtotta v\u00e9gre a m\u0171veletet. A lehets\u00e9ges konfigur\u00e1ci\u00f3s probl\u00e9m\u00e1k k\u00f6z\u00e9 tartoznak az OAuthStore megval\u00f3s\u00edt\u00e1sra jellemz\u0151 elemek hi\u00e1nyz\u00f3 vagy helytelen attrib\u00fatumai a server.xml f\u00e1jlban vagy m\u00e1s, a megval\u00f3s\u00edt\u00e1sra jellemz\u0151 konfigur\u00e1ci\u00f3s f\u00e1jlban. A lehets\u00e9ges m\u0171k\u00f6d\u00e9si probl\u00e9m\u00e1k k\u00f6z\u00e9 tartoznak az adatb\u00e1zis-, h\u00e1l\u00f3zati vagy f\u00e1jlrendszerhib\u00e1k.
+ERROR_PERFORMING_OAUTH_STORE_UPDATE_TOKEN.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az OAuthStore megval\u00f3s\u00edt\u00e1s m\u00e9g mindig el\u00e9rhet\u0151, \u00e9s megfelel\u0151en van konfigur\u00e1lva.
+
+# 0=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_UPDATE_CONSENT=CWWKS1475E: Az OAuth szolg\u00e1ltat\u00e1s hib\u00e1ba \u00fctk\u00f6z\u00f6tt egy OAuthConsent bejegyz\u00e9s friss\u00edt\u00e9sekor az OAuthStore megval\u00f3s\u00edt\u00e1sban. {0}
+ERROR_PERFORMING_OAUTH_STORE_UPDATE_CONSENT.explanation=Az OAuthStore megval\u00f3s\u00edt\u00e1s nem hajtotta v\u00e9gre a m\u0171veletet. A lehets\u00e9ges konfigur\u00e1ci\u00f3s probl\u00e9m\u00e1k k\u00f6z\u00e9 tartoznak az OAuthStore megval\u00f3s\u00edt\u00e1sra jellemz\u0151 elemek hi\u00e1nyz\u00f3 vagy helytelen attrib\u00fatumai a server.xml f\u00e1jlban vagy m\u00e1s, a megval\u00f3s\u00edt\u00e1sra jellemz\u0151 konfigur\u00e1ci\u00f3s f\u00e1jlban. A lehets\u00e9ges m\u0171k\u00f6d\u00e9si probl\u00e9m\u00e1k k\u00f6z\u00e9 tartoznak az adatb\u00e1zis-, h\u00e1l\u00f3zati vagy f\u00e1jlrendszerhib\u00e1k.
+ERROR_PERFORMING_OAUTH_STORE_UPDATE_CONSENT.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az OAuthStore megval\u00f3s\u00edt\u00e1s m\u00e9g mindig el\u00e9rhet\u0151, \u00e9s megfelel\u0151en van konfigur\u00e1lva.
+
+# 0=OAuth client ID, 1=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_DELETE_CLIENT=CWWKS1476E: Az OAuth szolg\u00e1ltat\u00e1s hib\u00e1ba \u00fctk\u00f6z\u00f6tt egy {0} azonos\u00edt\u00f3j\u00fa OAuthClient bejegyz\u00e9s t\u00f6rl\u00e9sekor az OAuthStore megval\u00f3s\u00edt\u00e1sban. {1}
+ERROR_PERFORMING_OAUTH_STORE_DELETE_CLIENT.explanation=Az OAuthStore megval\u00f3s\u00edt\u00e1s nem hajtotta v\u00e9gre a m\u0171veletet. A lehets\u00e9ges konfigur\u00e1ci\u00f3s probl\u00e9m\u00e1k k\u00f6z\u00e9 tartoznak az OAuthStore megval\u00f3s\u00edt\u00e1sra jellemz\u0151 elemek hi\u00e1nyz\u00f3 vagy helytelen attrib\u00fatumai a server.xml f\u00e1jlban vagy m\u00e1s, a megval\u00f3s\u00edt\u00e1sra jellemz\u0151 konfigur\u00e1ci\u00f3s f\u00e1jlban. A lehets\u00e9ges m\u0171k\u00f6d\u00e9si probl\u00e9m\u00e1k k\u00f6z\u00e9 tartoznak az adatb\u00e1zis-, h\u00e1l\u00f3zati vagy f\u00e1jlrendszerhib\u00e1k.
+ERROR_PERFORMING_OAUTH_STORE_DELETE_CLIENT.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az OAuthStore megval\u00f3s\u00edt\u00e1s m\u00e9g mindig el\u00e9rhet\u0151, \u00e9s megfelel\u0151en van konfigur\u00e1lva.
+
+# 0=OAuth token lookup key, 1=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_DELETE_TOKEN=CWWKS1477E: Az OAuth szolg\u00e1ltat\u00e1s hib\u00e1ba \u00fctk\u00f6z\u00f6tt egy {0} kikeres\u00e9si kulccsal rendelkez\u0151 OAuthToken bejegyz\u00e9s t\u00f6rl\u00e9sekor az OAuthStore megval\u00f3s\u00edt\u00e1sban. {1}
+ERROR_PERFORMING_OAUTH_STORE_DELETE_TOKEN.explanation=Az OAuthStore megval\u00f3s\u00edt\u00e1s nem hajtotta v\u00e9gre a m\u0171veletet. A lehets\u00e9ges konfigur\u00e1ci\u00f3s probl\u00e9m\u00e1k k\u00f6z\u00e9 tartoznak az OAuthStore megval\u00f3s\u00edt\u00e1sra jellemz\u0151 elemek hi\u00e1nyz\u00f3 vagy helytelen attrib\u00fatumai a server.xml f\u00e1jlban vagy m\u00e1s, a megval\u00f3s\u00edt\u00e1sra jellemz\u0151 konfigur\u00e1ci\u00f3s f\u00e1jlban. A lehets\u00e9ges m\u0171k\u00f6d\u00e9si probl\u00e9m\u00e1k k\u00f6z\u00e9 tartoznak az adatb\u00e1zis-, h\u00e1l\u00f3zati vagy f\u00e1jlrendszerhib\u00e1k.
+ERROR_PERFORMING_OAUTH_STORE_DELETE_TOKEN.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az OAuthStore megval\u00f3s\u00edt\u00e1s m\u00e9g mindig el\u00e9rhet\u0151, \u00e9s megfelel\u0151en van konfigur\u00e1lva.
+
+# 0=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_DELETE_TOKENS=CWWKS1478E: Az OAuth szolg\u00e1ltat\u00e1s hib\u00e1ba \u00fctk\u00f6z\u00f6tt az OAuthToken bejegyz\u00e9sek t\u00f6rl\u00e9sekor az OAuthStore megval\u00f3s\u00edt\u00e1sb\u00f3l. {0}
+ERROR_PERFORMING_OAUTH_STORE_DELETE_TOKENS.explanation=Az OAuthStore megval\u00f3s\u00edt\u00e1s nem hajtotta v\u00e9gre a m\u0171veletet. A lehets\u00e9ges konfigur\u00e1ci\u00f3s probl\u00e9m\u00e1k k\u00f6z\u00e9 tartoznak az OAuthStore megval\u00f3s\u00edt\u00e1sra jellemz\u0151 elemek hi\u00e1nyz\u00f3 vagy helytelen attrib\u00fatumai a server.xml f\u00e1jlban vagy m\u00e1s, a megval\u00f3s\u00edt\u00e1sra jellemz\u0151 konfigur\u00e1ci\u00f3s f\u00e1jlban. A lehets\u00e9ges m\u0171k\u00f6d\u00e9si probl\u00e9m\u00e1k k\u00f6z\u00e9 tartoznak az adatb\u00e1zis-, h\u00e1l\u00f3zati vagy f\u00e1jlrendszerhib\u00e1k.
+ERROR_PERFORMING_OAUTH_STORE_DELETE_TOKENS.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az OAuthStore megval\u00f3s\u00edt\u00e1s m\u00e9g mindig el\u00e9rhet\u0151, \u00e9s megfelel\u0151en van konfigur\u00e1lva.
+
+# 0=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_DELETE_CONSENT=CWWKS1479E: Az OAuth szolg\u00e1ltat\u00e1s hib\u00e1ba \u00fctk\u00f6z\u00f6tt egy OAuthConsent bejegyz\u00e9s t\u00f6rl\u00e9sekor az OAuthStore megval\u00f3s\u00edt\u00e1sban. {0}
+ERROR_PERFORMING_OAUTH_STORE_DELETE_CONSENT.explanation=Az OAuthStore megval\u00f3s\u00edt\u00e1s nem hajtotta v\u00e9gre a m\u0171veletet. A lehets\u00e9ges konfigur\u00e1ci\u00f3s probl\u00e9m\u00e1k k\u00f6z\u00e9 tartoznak az OAuthStore megval\u00f3s\u00edt\u00e1sra jellemz\u0151 elemek hi\u00e1nyz\u00f3 vagy helytelen attrib\u00fatumai a server.xml f\u00e1jlban vagy m\u00e1s, a megval\u00f3s\u00edt\u00e1sra jellemz\u0151 konfigur\u00e1ci\u00f3s f\u00e1jlban. A lehets\u00e9ges m\u0171k\u00f6d\u00e9si probl\u00e9m\u00e1k k\u00f6z\u00e9 tartoznak az adatb\u00e1zis-, h\u00e1l\u00f3zati vagy f\u00e1jlrendszerhib\u00e1k.
+ERROR_PERFORMING_OAUTH_STORE_DELETE_CONSENT.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az OAuthStore megval\u00f3s\u00edt\u00e1s m\u00e9g mindig el\u00e9rhet\u0151, \u00e9s megfelel\u0151en van konfigur\u00e1lva.
+
+# 0=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_DELETE_CONSENTS=CWWKS1480E: Az OAuth szolg\u00e1ltat\u00e1s hib\u00e1ba \u00fctk\u00f6z\u00f6tt az OAuthConsent bejegyz\u00e9sek t\u00f6rl\u00e9sekor az OAuthStore megval\u00f3s\u00edt\u00e1sb\u00f3l. {0}
+ERROR_PERFORMING_OAUTH_STORE_DELETE_CONSENTS.explanation=Az OAuthStore megval\u00f3s\u00edt\u00e1s nem hajtotta v\u00e9gre a m\u0171veletet. A lehets\u00e9ges konfigur\u00e1ci\u00f3s probl\u00e9m\u00e1k k\u00f6z\u00e9 tartoznak az OAuthStore megval\u00f3s\u00edt\u00e1sra jellemz\u0151 elemek hi\u00e1nyz\u00f3 vagy helytelen attrib\u00fatumai a server.xml f\u00e1jlban vagy m\u00e1s, a megval\u00f3s\u00edt\u00e1sra jellemz\u0151 konfigur\u00e1ci\u00f3s f\u00e1jlban. A lehets\u00e9ges m\u0171k\u00f6d\u00e9si probl\u00e9m\u00e1k k\u00f6z\u00e9 tartoznak az adatb\u00e1zis-, h\u00e1l\u00f3zati vagy f\u00e1jlrendszerhib\u00e1k.
+ERROR_PERFORMING_OAUTH_STORE_DELETE_CONSENTS.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az OAuthStore megval\u00f3s\u00edt\u00e1s m\u00e9g mindig el\u00e9rhet\u0151, \u00e9s megfelel\u0151en van konfigur\u00e1lva.
+
+# 0=OAuth provider name, 1=customStore attribute name
+OAUTH_PROVIDER_CUSTOMSTORE_INVALID_ATTRIBUTE=CWWKS1481E: A(z) {0} OAuth szolg\u00e1ltat\u00f3hoz meg van adva egy customStore elem, azonban a(z) {1} attrib\u00fatum nincs megadva, vagy \u00e9rv\u00e9nytelen.
+OAUTH_PROVIDER_CUSTOMSTORE_INVALID_ATTRIBUTE.explanation=Az OAuth szolg\u00e1ltat\u00f3hoz meg van adva egy customStore elem, azonban az attrib\u00fatum nincs megadva, vagy \u00e9rv\u00e9nytelen. A probl\u00e9ma oka egy konfigur\u00e1ci\u00f3s hiba lehet.
+OAUTH_PROVIDER_CUSTOMSTORE_INVALID_ATTRIBUTE.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a customStore elem attrib\u00fatuma helyesen van meghat\u00e1rozva az OAuth szolg\u00e1ltat\u00f3ban.
+
+OAUTH_SERVER_APPNAME_IN_USE_OR_TOO_LONG=CWWKS1482E: A(z) [{1}] szolg\u00e1ltat\u00f3nak elk\u00fcld\u00f6tt [{0}] alkalmaz\u00e1sn\u00e9vhez m\u00e1r tartozik alkalmaz\u00e1sjelsz\u00f3 vagy alkalmaz\u00e1stoken, illetve t\u00fal hossz\u00fa.
+OAUTH_SERVER_APPNAME_IN_USE_OR_TOO_LONG.explanation=Az alkalmaz\u00e1shoz alkalmaz\u00e1sjelsz\u00f3 vagy alkalmaz\u00e1stoken sz\u00fcks\u00e9ges, de egy m\u00e1r l\u00e9tezik, vagy a k\u00e9rt n\u00e9v t\u00fal hossz\u00fa.
+OAUTH_SERVER_APPNAME_IN_USE_OR_TOO_LONG.useraction=T\u00f6r\u00f6lje a megl\u00e9v\u0151 alkalmaz\u00e1sjelsz\u00f3t vagy alkalmaz\u00e1stokent \u00faj ig\u00e9nyl\u00e9se el\u0151tt az alkalmaz\u00e1shoz, illetve haszn\u00e1ljon m\u00e1s alkalmaz\u00e1snevet.
+
+# Do not translate user_id or tokenManager
+OAUTH_SERVER_USERNAME_PARAM_NOT_SUPPORTED=CWWKS1483E: A(z) {1} URI c\u00edmre k\u00fcld\u00f6tt {0} k\u00e9r\u00e9s \u00e9rv\u00e9nytelen. A user_id attrib\u00fatum meg van adva, de a hiteles\u00edtett felhaszn\u00e1l\u00f3 nem rendelkezik jogosults\u00e1ggal a haszn\u00e1lat\u00e1ra.
+OAUTH_SERVER_USERNAME_PARAM_NOT_SUPPORTED.explanation=Csak a tokenManager szerepk\u00f6rrel rendelkez\u0151 felhaszn\u00e1l\u00f3k adhatj\u00e1k meg a user_id attrib\u00fatumot a k\u00e9r\u00e9s URI sz\u00e1m\u00e1ra.
+OAUTH_SERVER_USERNAME_PARAM_NOT_SUPPORTED.useraction=Adja ki a k\u00e9r\u00e9st \u00fajra a sz\u00fcks\u00e9ges tokenManager szereppel \u00e9s egy \u00e9rv\u00e9nyes user_id attrib\u00fatummal.
+
+OAUTH_INVALID_REQUEST_NO_ID_SECRET=CWWKS1484E: A(z) {1} URI azonos\u00edt\u00f3nak k\u00fcld\u00f6tt {0} k\u00e9r\u00e9s \u00e9rv\u00e9nytelen. Az \u00fcgyf\u00e9lazonos\u00edt\u00f3 \u00e9s/vagy az \u00fcgyf\u00e9l titok hi\u00e1nyzik.
+OAUTH_INVALID_REQUEST_NO_ID_SECRET.explanation=A jelzett k\u00e9r\u00e9s nem \u00e9rv\u00e9nyes. Az URI sz\u00e1m\u00e1ra lek\u00fcld\u00f6tt k\u00e9r\u00e9s Authorization fejl\u00e9c\u00e9ben meg kell adni egy \u00e9rv\u00e9nyes \u00fcgyf\u00e9lazonos\u00edt\u00f3t \u00e9s \u00fcgyf\u00e9l titkot.
+OAUTH_INVALID_REQUEST_NO_ID_SECRET.useraction=Jav\u00edtsa a k\u00e9r\u00e9st. Adja ki \u00fajra a k\u00e9r\u00e9st egy \u00e9rv\u00e9nyes \u00fcgyf\u00e9lazonos\u00edt\u00f3val \u00e9s \u00fcgyf\u00e9l titokkal az Authorization fejl\u00e9cben.
+
+OAUTH_INVALID_REQUEST_AUTHN_FAIL=CWWKS1485E: Az \u00fcgyf\u00e9l-hiteles\u00edt\u00e9s meghi\u00fasult. A(z) {1} URI azonos\u00edt\u00f3nak elk\u00fcld\u00f6tt {0} k\u00e9r\u00e9s eset\u00e9n az \u00fcgyf\u00e9lazonos\u00edt\u00f3 \u00e9s/vagy \u00fcgyf\u00e9l titok nem \u00e9rv\u00e9nyes.
+OAUTH_INVALID_REQUEST_AUTHN_FAIL.explanation=Az URI sz\u00e1m\u00e1ra lek\u00fcld\u00f6tt k\u00e9r\u00e9s Authorization fejl\u00e9c\u00e9ben meg kell adni egy \u00e9rv\u00e9nyes \u00fcgyf\u00e9lazonos\u00edt\u00f3t \u00e9s \u00fcgyf\u00e9l titkot.
+OAUTH_INVALID_REQUEST_AUTHN_FAIL.useraction=Adja ki \u00fajra a k\u00e9r\u00e9st egy \u00e9rv\u00e9nyes \u00fcgyf\u00e9lazonos\u00edt\u00f3val \u00e9s \u00fcgyf\u00e9l titokkal az Authorization fejl\u00e9cben.
+
+# Do not translate appPasswordAllowed
+OAUTH_UNAUTHORIZED_CLIENT=CWWKS1486E: A(z) {0} \u00fcgyf\u00e9l nem jogosult alkalmaz\u00e1sjelszavak vagy hozz\u00e1f\u00e9r\u00e9si tokenek haszn\u00e1lat\u00e1ra.
+OAUTH_UNAUTHORIZED_CLIENT.explanation=Az \u00fcgyf\u00e9l nincs be\u00e1ll\u00edtva alkalmaz\u00e1sjelszavak vagy hozz\u00e1f\u00e9r\u00e9si tokenek haszn\u00e1lat\u00e1ra.
+OAUTH_UNAUTHORIZED_CLIENT.useraction=Jav\u00edtsa a megadott \u00fcgyf\u00e9l OpenID Connect szolg\u00e1ltat\u00f3 konfigur\u00e1ci\u00f3j\u00e1t, \u00e9s \u00e1ll\u00edtsa be az appPasswordAllowed attrib\u00fatumot true \u00e9rt\u00e9kre.
+
+# Do not translate userClientTokenLimit
+OAUTH_INVALID_REQUEST_TOO_MANY_TOKENS=CWWKS1487E: A k\u00e9r\u00e9s nem \u00e9rv\u00e9nyes. A(z) [{0}] felhaszn\u00e1l\u00f3 el\u00e9rte az alkalmaz\u00e1stokenek vagy alkalmaz\u00e1sjelszavak maxim\u00e1lisan enged\u00e9lyezett sz\u00e1m\u00e1t.
+OAUTH_INVALID_REQUEST_TOO_MANY_TOKENS.explanation=Az \u00faj alkalmaz\u00e1s jelsz\u00f3 vagy alkalmaz\u00e1s token l\u00e9trehoz\u00e1s\u00e1ra ir\u00e1nyul\u00f3 k\u00e9r\u00e9s teljes\u00edt\u00e9s\u00e9vel t\u00fall\u00e9pn\u00e9 az adott \u00fcgyf\u00e9lhez \u00e9s szolg\u00e1ltat\u00f3hoz enged\u00e9lyezett alkalmaz\u00e1s jelszavak vagy alkalmaz\u00e1s tokenek konfigur\u00e1lt sz\u00e1m\u00e1t.
+OAUTH_INVALID_REQUEST_TOO_MANY_TOKENS.useraction=T\u00f6r\u00f6lj\u00f6n alkalmaz\u00e1s jelszavakat vagy alkalmaz\u00e1s tokeneket, vagy m\u00f3dos\u00edtsa az OAuth \u00fcgyf\u00e9l userClientTokenLimit attrib\u00fatum\u00e1nak konfigur\u00e1ci\u00f3j\u00e1t \u00e9s n\u00f6velje a felhaszn\u00e1l\u00f3nk\u00e9nt enged\u00e9lyezett alkalmaz\u00e1s jelszavak \u00e9s alkalmaz\u00e1s tokenek sz\u00e1m\u00e1t.
+
+OAUTH_PARAMETER_VALUE_LENGTH_TOO_LONG=CWWKS1488E: A(z) [{1}] URI sz\u00e1m\u00e1ra elk\u00fcld\u00f6tt [{0}] param\u00e9ter \u00e9rt\u00e9ke meghaladja a maxim\u00e1lis enged\u00e9lyezett hosszt ({2} karakter).
+OAUTH_PARAMETER_VALUE_LENGTH_TOO_LONG.explanation=A megadott param\u00e9ter\u00e9rt\u00e9k hossz\u00e1t \u00e9sszer\u0171 m\u00e9rt\u00e9kben korl\u00e1tozni kell.
+OAUTH_PARAMETER_VALUE_LENGTH_TOO_LONG.useraction=Jav\u00edtsa a megadott param\u00e9tert, hogy a hossza kevesebb legyen, mint a karakterek megadott sz\u00e1ma, majd k\u00fcldje el \u00fajra a k\u00e9r\u00e9st.
+
+OAUTH_INVALID_ATINREQUEST_AUTHN_FAIL=CWWKS1489E: Az \u00fcgyf\u00e9l-hiteles\u00edt\u00e9s meghi\u00fasult. A hozz\u00e1f\u00e9r\u00e9si token nem \u00e9rv\u00e9nyes a(z) {1} URI azonos\u00edt\u00f3ra elk\u00fcld\u00f6tt {0} k\u00e9r\u00e9s eset\u00e9n.
+OAUTH_INVALID_ATINREQUEST_AUTHN_FAIL.explanation=A megadott k\u00e9r\u00e9s URI-vel meg kell adni egy \u00e9rv\u00e9nyes tokent.
+OAUTH_INVALID_ATINREQUEST_AUTHN_FAIL.useraction=Adja ki \u00fajra a k\u00e9r\u00e9st egy \u00e9rv\u00e9nyes hozz\u00e1f\u00e9r\u00e9si tokennel.
+
+OAUTH_INVALID_REQUEST_NO_TOKEN=CWWKS1490E: A(z) {1} URI c\u00edmre k\u00fcld\u00f6tt {0} k\u00e9r\u00e9s \u00e9rv\u00e9nytelen. A hozz\u00e1f\u00e9r\u00e9si token hi\u00e1nyzik.
+OAUTH_INVALID_REQUEST_NO_TOKEN.explanation=A megadott k\u00e9r\u00e9snek tartalmaznia kell egy \u00e9rv\u00e9nyes hozz\u00e1f\u00e9r\u00e9si tokent.
+OAUTH_INVALID_REQUEST_NO_TOKEN.useraction=Adja ki \u00fajra a k\u00e9r\u00e9st egy \u00e9rv\u00e9nyes hozz\u00e1f\u00e9r\u00e9si tokennel.
+
+OAUTH_INVALID_REQUEST_NO_AUTHHEADER=CWWKS1491E: A(z) {0} k\u00e9r\u00e9sb\u0151l hi\u00e1nyoznak az \u00fcgyf\u00e9l hiteles\u00edt\u00e9si inform\u00e1ci\u00f3k. A k\u00e9r\u00e9s URI: {1}.
+OAUTH_INVALID_REQUEST_NO_AUTHHEADER.explanation=A megadott k\u00e9r\u00e9snek tartalmaznia kell \u00fcgyf\u00e9l hiteles\u00edt\u00e9si inform\u00e1ci\u00f3kat.
+OAUTH_INVALID_REQUEST_NO_AUTHHEADER.useraction=Adja ki \u00fajra a k\u00e9r\u00e9st \u00e9rv\u00e9nyes \u00fcgyf\u00e9l hiteles\u00edt\u00e9si inform\u00e1ci\u00f3kkal a Authorization fejl\u00e9cben.
+
+OAUTH_CLIENTINREQ_DONOT_MATCH_AT=CWWKS1492E: A(z) {1} URI c\u00edmre k\u00fcld\u00f6tt {0} k\u00e9r\u00e9s \u00e9rv\u00e9nytelen. A hozz\u00e1f\u00e9r\u00e9si token \u00e1ltal k\u00e9pviselt \u00fcgyf\u00e9l nem egyezik a k\u00e9r\u00e9sben megadott \u00fcgyf\u00e9llel.
+OAUTH_CLIENTINREQ_DONOT_MATCH_AT.explanation=A megadott k\u00e9r\u00e9snek az Authorization fejl\u00e9cben megadott \u00fcgyf\u00e9llel megegyez\u0151 \u00fcgyf\u00e9l hozz\u00e1f\u00e9r\u00e9si tokenj\u00e9t kell tartalmaznia.
+OAUTH_CLIENTINREQ_DONOT_MATCH_AT.useraction=Adja ki \u00fajra a k\u00e9r\u00e9st az Authorization fejl\u00e9cben megadott \u00fcgyf\u00e9l hozz\u00e1f\u00e9r\u00e9si tokenj\u00e9vel.
+
+OAUTH_AUTH_HEADER_NOT_BASIC_AUTH=CWWKS1493E: A(z) {1} URI azonos\u00edt\u00f3ra k\u00fcld\u00f6tt {0} k\u00e9r\u00e9s nem tartalmaz Alapvet\u0151 hiteles\u00edt\u00e9si adatokat.
+OAUTH_AUTH_HEADER_NOT_BASIC_AUTH.explanation=A megadott k\u00e9r\u00e9snek tartalmaznia kell egy konfigur\u00e1lt OAuth \u00fcgyf\u00e9l hiteles\u00edt\u00e9si adatait a jogosults\u00e1gi fejl\u00e9cben, hogy a k\u00e9r\u00e9st hiteles\u00edteni lehessen.
+OAUTH_AUTH_HEADER_NOT_BASIC_AUTH.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a k\u00e9r\u00e9s az Alapvet\u0151 hiteles\u00edt\u00e9si s\u00e9m\u00e1t haszn\u00e1lja az OAuth \u00fcgyf\u00e9l hiteles\u00edt\u00e9si adatainak tartalmaz\u00e1s\u00e1hoz.
+
+# Do not translate internalClientId, internalClientSecret, isEnabled, appPasswordAllowed, or appTokenAllowed
+OAUTH_UI_ENDPOINT_NOT_ENABLED=CWWKS1494W: A(z) {0} URI azonos\u00edt\u00f3ra k\u00fcld\u00f6tt k\u00e9r\u00e9s nem dolgozhat\u00f3 fel, mert legal\u00e1bb egy \u00fcgyf\u00e9l vagy szolg\u00e1ltat\u00f3attrib\u00fatum nincs be\u00e1ll\u00edtva. Ellen\u0151rizze, hogy az internalClientId \u00e9s az internalClientSecret szolg\u00e1ltat\u00f3 attrib\u00fatumok be vannak-e \u00e1ll\u00edtva. Ellen\u0151rizze, hogy az isEnabled, appPasswordAllowed vagy appTokenAllowed \u00fcgyf\u00e9l attrib\u00fatumok be vannak-e \u00e1ll\u00edtva.
+OAUTH_UI_ENDPOINT_NOT_ENABLED.explanation=Az \u00fcgyf\u00e9l \u00e9s szolg\u00e1ltat\u00f3 attrib\u00fatumokat be kell \u00e1ll\u00edtani az URI azonos\u00edt\u00f3hoz a k\u00e9r\u00e9sek feldolgoz\u00e1s\u00e1hoz.
+OAUTH_UI_ENDPOINT_NOT_ENABLED.useraction=\u00c1ll\u00edtsa be helyesen az \u00fcgyf\u00e9l \u00e9s szolg\u00e1ltat\u00f3 attrib\u00fatumokat, hogy a szolg\u00e1ltat\u00f3 fel tudja dolgozni a k\u00e9r\u00e9st.
+
+# Java runtime level
+JAVA8_REQUIRED=CWWKS1495W: Az OpenID Connect szolg\u00e1ltat\u00f3 nem tudja feldolgozni a [{0}] URI k\u00e9r\u00e9st, mert a Java v\u00e1ltozat a 8-as v\u00e1ltozatn\u00e1l alacsonyabb. Java 8 vagy \u00fajabb sz\u00fcks\u00e9ges.
+JAVA8_REQUIRED.explanation=A haszn\u00e1lt Java v\u00e1ltozat nem V8 vagy \u00fajabb.
+JAVA8_REQUIRED.useraction=Telep\u00edtsen Java 8 vagy \u00fajabb v\u00e1ltozatot.
+
+JAVA8_REQUIRED_FOR_AT_HASHING=CWWKS1496W: A(z) {0} OpenID Connect szolg\u00e1ltat\u00f3 a(z) {1} konfigur\u00e1ci\u00f3s attrib\u00fatummal {2} algoritmus haszn\u00e1lat\u00e1ra van be\u00e1ll\u00edtva, \u00e9s ez Java 8 vagy \u00fajabb v\u00e1ltozatot ig\u00e9nyel. A megadott OpenID Connect szolg\u00e1ltat\u00f3 figyelmen k\u00edv\u00fcl hagyja a(z) {3} be\u00e1ll\u00edt\u00e1st.
+JAVA8_REQUIRED_FOR_AT_HASHING.explanation=A haszn\u00e1lt Java v\u00e1ltozat nem V8 vagy \u00fajabb.
+JAVA8_REQUIRED_FOR_AT_HASHING.useraction=Telep\u00edtse a Java 8 vagy \u00fajabb v\u00e1ltozat\u00e1t az eml\u00edtett konfigur\u00e1ci\u00f3s be\u00e1ll\u00edt\u00e1s haszn\u00e1lat\u00e1hoz.
+
+# html title of logout page
+LOGOUT_PAGE_TITLE=Kijelentkez\u00e9s
+# html body of logout page
+LOGOUT_PAGE_BODY=A kijelentkez\u00e9s sikeres.
+
+# html title of logout error page
+LOGOUT_ERROR_PAGE_TITLE=Kijelentkez\u00e9s
+# html body of logout error page
+LOGOUT_ERROR_PAGE_BODY=Kiv\u00e9tel t\u00f6rt\u00e9nt a kijelentkez\u00e9s sor\u00e1n.  A kijelentkez\u00e9s v\u00e9grehajt\u00e1s\u00e1hoz javasolt a webb\u00f6ng\u00e9sz\u0151b\u0151l t\u00f6rt\u00e9n\u0151 kil\u00e9p\u00e9s.

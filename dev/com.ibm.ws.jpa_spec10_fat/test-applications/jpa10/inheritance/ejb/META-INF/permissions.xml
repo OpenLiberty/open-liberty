@@ -32,6 +32,10 @@
       <name>createClassLoader</name>
    </permission>
    <permission>
+      <class-name>java.lang.RuntimePermission</class-name>
+      <name>accessClassInPackage.com.sun.org.apache.xerces.internal.dom</name>
+   </permission>
+   <permission>
       <class-name>java.io.FilePermission</class-name>
       <name>-</name>
       <actions>read</actions>

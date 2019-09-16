@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -66,13 +67,14 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 
-import org.eclipse.microprofile.concurrent.ManagedExecutor;
-import org.eclipse.microprofile.concurrent.ThreadContext;
+import org.eclipse.microprofile.context.ManagedExecutor;
+import org.eclipse.microprofile.context.ThreadContext;
 import org.junit.Test;
 import org.test.context.location.CurrentLocation;
 import org.test.context.location.TestContextTypes;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
@@ -105,6 +107,11 @@ public class MPConcurrentTestServlet extends FATServlet {
     private Function<CompletableFuture<?>, CompletableFuture<?>> newIncompleteFuture;
     private TriFunction<CompletableFuture<?>, Long, TimeUnit, CompletableFuture<?>> orTimeout;
 
+    // some of the new Java 12+ methods on CompletableFuture
+    private BiFunction<CompletableFuture<?>, Function<?, ?>, CompletableFuture<?>> exceptionallyAsync;
+    private BiFunction<CompletableFuture<?>, Function<?, ?>, CompletableFuture<?>> exceptionallyCompose;
+    private TriFunction<CompletableFuture<?>, Function<?, ?>, Executor, CompletableFuture<?>> exceptionallyComposeAsync;
+
     // Internal methods for creating a ManagedCompletableFuture for any executor
     private Function<Executor, CompletableFuture<?>> ManagedCompletableFuture_newIncompleteFuture;
     private BiFunction<Supplier<?>, Executor, CompletableFuture<?>> ManagedCompletableFuture_supplyAsync;
@@ -128,7 +135,7 @@ public class MPConcurrentTestServlet extends FATServlet {
     @Resource(name = "java:module/noContextExecutorRef", lookup = "concurrent/noContextExecutor")
     private ManagedExecutor noContextExecutor;
 
-    @Resource(name = "java:app/oneContextExecutorRef", lookup = "concurrent/oneContextExecutor")
+    @Resource(name = "java:app/env/oneContextExecutorRef", lookup = "concurrent/oneContextExecutor")
     private ManagedExecutor oneContextExecutor; // the single enabled context is jeeMetadataContext
 
     // Executor that runs everything on the invoker's thread instead of submitting tasks to run asynchronously.
@@ -227,6 +234,28 @@ public class MPConcurrentTestServlet extends FATServlet {
                 try {
                     return (CompletableFuture<?>) cl.getMethod("orTimeout", long.class, TimeUnit.class)
                                     .invoke(cf, time, unit);
+                } catch (Exception x) {
+                    throw convertToRuntimeException(x);
+                }
+            };
+
+            exceptionallyAsync = (cf, func) -> {
+                try {
+                    return (CompletableFuture<?>) cl.getMethod("exceptionallyAsync", Function.class).invoke(cf, func);
+                } catch (Exception x) {
+                    throw convertToRuntimeException(x);
+                }
+            };
+            exceptionallyCompose = (cf, func) -> {
+                try {
+                    return (CompletableFuture<?>) cf.getClass().getMethod("exceptionallyCompose", Function.class).invoke(cf, func);
+                } catch (Exception x) {
+                    throw convertToRuntimeException(x);
+                }
+            };
+            exceptionallyComposeAsync = (cf, func, exec) -> {
+                try {
+                    return (CompletableFuture<?>) cf.getClass().getMethod("exceptionallyComposeAsync", Function.class, Executor.class).invoke(cf, func, exec);
                 } catch (Exception x) {
                     throw convertToRuntimeException(x);
                 }
@@ -1583,10 +1612,77 @@ public class MPConcurrentTestServlet extends FATServlet {
     }
 
     /**
+     * Test the CompletionStageFactory.supplyAsync internal interface that is provided to JAX-RS to
+     * create completion stages for the reactive client that enable the supplied to executor to run
+     * all dependent asynchronous actions as well as the initial action.
+     */
+    @Test
+    public void testCompletionStageFactorySupplyAsync() throws Exception {
+        // CompletionStageFactory is more properly obtained via Declarative Services.
+        // However, application code cannot access declarative services or the service registry,
+        // so we are cheating and using reflection. Do not copy this approach in real applications.
+        ClassLoader loader = defaultManagedExecutor.getClass().getClassLoader();
+        Class<?> CompletionStageFactory = loader.loadClass("com.ibm.ws.concurrent.mp.spi.CompletionStageFactory");
+        Object completionStageFactory = CompletionStageFactory.newInstance();
+        Method supplyAsync = CompletionStageFactory.getMethod("supplyAsync", Supplier.class, ExecutorService.class);
+
+        Supplier<String> supplyThreadName = () -> Thread.currentThread().getName();
+
+        Function<String, Object> lookUpResourceRef = s -> {
+            try {
+                return InitialContext.doLookup("java:app/env/oneContextExecutorRef");
+            } catch (NamingException x) {
+                return x;
+            }
+        };
+
+        Function<Object, String> getThreadName = o -> Thread.currentThread().getName();
+
+        String threadName;
+        Object lookupResult;
+
+        // *** custom non-managed executor ***
+        @SuppressWarnings("unchecked")
+        CompletableFuture<String> cf1 = (CompletableFuture<String>) supplyAsync.invoke(completionStageFactory, supplyThreadName, testThreads);
+        CompletableFuture<Object> cf2 = cf1.thenApplyAsync(lookUpResourceRef);
+        CompletableFuture<String> cf3 = cf2.thenApplyAsync(getThreadName);
+
+        threadName = cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertFalse(threadName, threadName.startsWith("Default Executor-thread-")); // not on Liberty global thread pool
+        assertEquals(threadName, -1, threadName.toUpperCase().indexOf("FORK")); // not on fork join pool
+
+        lookupResult = cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertTrue(lookupResult.toString(), lookupResult instanceof NamingException); // no access to application's namespace
+
+        threadName = cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertFalse(threadName, threadName.startsWith("Default Executor-thread-")); // not on Liberty global thread pool
+        assertEquals(threadName, -1, threadName.toUpperCase().indexOf("FORK")); // not on fork join pool
+
+        // there should not be any context clearing without a managed executor service
+        lookupResult = cf3.thenApply(lookUpResourceRef).get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertTrue(lookupResult.toString(), lookupResult instanceof ManagedExecutor); // current thread has access to application's namespace
+
+        // *** managed executor ***
+        @SuppressWarnings("unchecked")
+        CompletableFuture<String> cf5 = (CompletableFuture<String>) supplyAsync.invoke(completionStageFactory, supplyThreadName, defaultManagedExecutor);
+        CompletableFuture<Object> cf6 = cf5.thenApplyAsync(lookUpResourceRef);
+        CompletableFuture<String> cf7 = cf6.thenApplyAsync(getThreadName);
+
+        threadName = cf5.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // managed executor uses Liberty global thread pool
+
+        lookupResult = cf6.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertTrue(lookupResult.toString(), lookupResult instanceof ManagedExecutor); // managed executor thread has access to application's namespace
+
+        threadName = cf7.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // managed executor uses Liberty global thread pool
+    }
+
+    /**
      * When the mpConcurrency-1.0 feature is enabled, The OpenLiberty implementation of
      * javax.enterprise.concurrent.ManagedExecutorService and
      * javax.enterprise.concurrent.ManagedScheduledExecutorService are also implementations of
-     * org.eclipse.microprofile.concurrent.ManagedExecutor
+     * org.eclipse.microprofile.context.ManagedExecutor
      */
     @Test
     public void testEEManagedExecutorServiceIsAlsoMPManagedExecutor() throws Exception {
@@ -1603,7 +1699,7 @@ public class MPConcurrentTestServlet extends FATServlet {
     /**
      * When the mpConcurrency-1.0 feature is enabled, The OpenLiberty implementation of
      * javax.enterprise.concurrent.ContextService is also an implementation of
-     * org.eclipse.microprofile.concurrent.ThreadContext
+     * org.eclipse.microprofile.context.ThreadContext
      */
     @Test
     public void testEEContextServiceIsAlsoMPThreadContext() throws Exception {
@@ -2773,9 +2869,9 @@ public class MPConcurrentTestServlet extends FATServlet {
     public void testNoNewMethods() throws Exception {
         int methodCount = CompletableFuture.class.getMethods().length;
         assertTrue("Methods have been added to CompletableFuture which need to be properly implemented on wrapper class ManagedCompletableFuture. " +
-                   "Expected 117 (Java 9) or 104 (Java 8). Found " + methodCount,
+                   "Expected 127 (Java 12) 117 (Java 9+) or 104 (Java 8). Found " + methodCount,
                    // WARNING: do not update these values unless you have properly implemented (or added code to reject) the new methods on ManagedCompletableFuture!
-                   methodCount == 117 || methodCount == 104);
+                   methodCount == 127 || methodCount == 117 || methodCount == 104);
     }
 
     /**
@@ -4284,6 +4380,236 @@ public class MPConcurrentTestServlet extends FATServlet {
     }
 
     /**
+     * Verify exceptionallyAsync(Function) which was added in Java 12
+     */
+    @Test
+    @MinimumJavaLevel(javaLevel = 12)
+    public void testExceptionallyAsync() throws Exception {
+        AtomicInteger count = new AtomicInteger();
+        LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<Object>();
+        String currentThreadName = Thread.currentThread().getName();
+
+        final Function<Throwable, Executor> lookup = (previousFailure) -> {
+            System.out.println("> lookup #" + count.incrementAndGet() + " from testExceptionallyAsync");
+            if (previousFailure != null)
+                results.add(previousFailure);
+            results.add(Thread.currentThread().getName());
+            try {
+                ManagedExecutorService result = InitialContext.doLookup("java:comp/env/executorRef");
+                System.out.println("< lookup: " + result);
+                return result;
+            } catch (NamingException x) {
+                System.out.println("< lookup failed");
+                x.printStackTrace(System.out);
+                throw new CompletionException(x);
+            }
+        };
+
+        String threadName;
+        Object previousFailure;
+
+        // Verify that exceptionally is skipped when no exception is raised by prior stage
+
+        CompletableFuture<?> cf1 = defaultManagedExecutor
+                        .completedFuture((Throwable) null)
+                        .thenApplyAsync(lookup); // expect lookup to succeed because managed executor transfers thread context from the servlet
+        cf1 = exceptionallyAsync.apply(cf1, lookup); // should not be invoked due to lack of any failure in prior stage
+
+        String s;
+        assertTrue(s = cf1.toString(), s.startsWith("ManagedCompletableFuture@"));
+
+        // thenApplyAsync on default execution facility
+        assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+        assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // must run on Liberty global thread pool
+        assertNotSame(currentThreadName, threadName); // cannot be the servlet thread because operation is async
+
+        assertEquals(defaultManagedExecutor, cf1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        assertEquals(1, count.get()); // lookup function only ran once
+
+        // Verify that exceptionally is invoked when exception is raised by prior stage
+
+        CompletableFuture<?> cf2 = defaultManagedExecutor
+                        .completedFuture((Throwable) null)
+                        .thenApplyAsync(x -> 1 / 0 < 2 ? sameThreadExecutor : null, testThreads); // force ArithmeticException to occur
+        cf2 = exceptionallyAsync.apply(cf2, lookup);
+
+        assertTrue(s = cf2.toString(), s.startsWith("ManagedCompletableFuture@"));
+
+        // exceptionallyAsync should run on a managed thread
+        assertNotNull(previousFailure = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        if (previousFailure instanceof CompletionException && ((CompletionException) previousFailure).getCause() instanceof ArithmeticException)
+            ; // pass
+        else if (previousFailure instanceof Throwable)
+            throw new Exception((Throwable) previousFailure);
+        else
+            fail("Unexpected value supplied to function as previous failure: " + previousFailure);
+
+        assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+        assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // must run on Liberty global thread pool
+        assertNotSame(currentThreadName, threadName); // cannot be the servlet thread because operation is async
+
+        assertEquals(defaultManagedExecutor, cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(2, count.get()); // one additional execution of the lookup function
+    }
+
+    /**
+     * Verify testExceptionallyComposeAsync(Function, Executor) which was added in Java 12
+     */
+    @Test
+    @MinimumJavaLevel(javaLevel = 12)
+    public void testExceptionallyComposeAsync() throws Exception {
+        AtomicInteger count = new AtomicInteger();
+        LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<Object>();
+        String currentThreadName = Thread.currentThread().getName();
+
+        final Function<Throwable, Executor> lookup = (previousFailure) -> {
+            System.out.println("> lookup #" + count.incrementAndGet() + " from testExceptionallyComposeAsync");
+            if (previousFailure != null)
+                results.add(previousFailure);
+            results.add(Thread.currentThread().getName());
+            try {
+                ManagedExecutorService result = InitialContext.doLookup("java:comp/env/executorRef");
+                System.out.println("< lookup: " + result);
+                return result;
+            } catch (NamingException x) {
+                System.out.println("< lookup failed");
+                x.printStackTrace(System.out);
+                throw new CompletionException(x);
+            }
+        };
+
+        String threadName;
+        Object previousFailure;
+
+        // Verify that exceptionally is skipped when no exception is raised by prior stage
+
+        CompletableFuture<?> cf1 = defaultManagedExecutor
+                        .completedFuture((Throwable) null)
+                        .thenApplyAsync(lookup); // expect lookup to succeed because managed executor transfers thread context from the servlet
+        cf1 = exceptionallyComposeAsync.apply(cf1, lookup, noContextExecutor); // should not be invoked due to lack of any failure in prior stage
+
+        String s;
+        assertTrue(s = cf1.toString(), s.startsWith("ManagedCompletableFuture@"));
+
+        // thenApplyAsync on default execution facility
+        assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+        assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // must run on Liberty global thread pool
+        assertNotSame(currentThreadName, threadName); // cannot be the servlet thread because operation is async
+
+        assertEquals(defaultManagedExecutor, cf1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        assertEquals(1, count.get()); // lookup function only ran once
+
+        // Verify that exceptionally is invoked when exception is raised by prior stage
+
+        CompletableFuture<?> cf2 = defaultManagedExecutor
+                        .completedFuture((Throwable) null)
+                        .thenApplyAsync(x -> 1 / 0 < 2 ? sameThreadExecutor : null, testThreads); // force ArithmeticException to occur
+        cf2 = exceptionallyComposeAsync.apply(cf2, t -> {
+            if (t != null)
+                results.add(t);
+            return defaultManagedExecutor.supplyAsync(() -> {
+                String result = Thread.currentThread().getName();
+                results.add(result);
+                return result;
+            });
+        }, defaultManagedExecutor);
+
+        assertTrue(s = cf2.toString(), s.startsWith("ManagedCompletableFuture@"));
+
+        // exceptionallyComposeAsync should run on a managed thread
+        assertNotNull(previousFailure = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        if (previousFailure instanceof CompletionException && ((CompletionException) previousFailure).getCause() instanceof ArithmeticException)
+            ; // pass
+        else if (previousFailure instanceof Throwable)
+            throw new Exception((Throwable) previousFailure);
+        else
+            fail("Unexpected value supplied to function as previous failure: " + previousFailure);
+
+        assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+        assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // must run on a managed thread
+        assertEquals(threadName, cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+    }
+
+    /**
+     * Verify testExceptionallyCompose(Function) which was added in Java 12
+     */
+    @Test
+    @MinimumJavaLevel(javaLevel = 12)
+    public void testExceptionallyCompose() throws Exception {
+        AtomicInteger count = new AtomicInteger();
+        LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<Object>();
+        String currentThreadName = Thread.currentThread().getName();
+
+        final Function<Throwable, Executor> lookup = (previousFailure) -> {
+            System.out.println("> lookup #" + count.incrementAndGet() + " from testExceptionallyCompose");
+            if (previousFailure != null)
+                results.add(previousFailure);
+            results.add(Thread.currentThread().getName());
+            try {
+                ManagedExecutorService result = InitialContext.doLookup("java:comp/env/executorRef");
+                System.out.println("< lookup: " + result);
+                return result;
+            } catch (NamingException x) {
+                System.out.println("< lookup failed");
+                x.printStackTrace(System.out);
+                throw new CompletionException(x);
+            }
+        };
+
+        String threadName;
+        Object previousFailure;
+
+        // Verify that exceptionally is skipped when no exception is raised by prior stage
+
+        CompletableFuture<?> cf1 = defaultManagedExecutor
+                        .completedFuture((Throwable) null)
+                        .thenApplyAsync(lookup); // expect lookup to succeed because managed executor transfers thread context from the servlet
+        cf1 = exceptionallyCompose.apply(cf1, lookup); // should not be invoked due to lack of any failure in prior stage
+
+        String s;
+        assertTrue(s = cf1.toString(), s.startsWith("ManagedCompletableFuture@"));
+
+        // thenApplyAsync on default execution facility
+        assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+        assertTrue(threadName, threadName.startsWith("Default Executor-thread-")); // must run on Liberty global thread pool
+        assertNotSame(currentThreadName, threadName); // cannot be the servlet thread because operation is async
+
+        assertEquals(defaultManagedExecutor, cf1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        assertEquals(1, count.get()); // lookup function only ran once
+
+        // Verify that exceptionally is invoked when exception is raised by prior stage
+
+        CompletableFuture<?> cf2 = defaultManagedExecutor
+                        .completedFuture((Throwable) null)
+                        .thenApplyAsync(x -> 1 / 0 < 2 ? sameThreadExecutor : null, testThreads); // force ArithmeticException to occur
+        cf2 = exceptionallyCompose.apply(cf2, t -> {
+            if (t != null)
+                results.add(t);
+            final String curThread = Thread.currentThread().getName();
+            results.add(curThread);
+            return defaultManagedExecutor.completedFuture(curThread);
+        });
+
+        assertTrue(s = cf2.toString(), s.startsWith("ManagedCompletableFuture@"));
+
+        assertNotNull(previousFailure = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        if (previousFailure instanceof CompletionException && ((CompletionException) previousFailure).getCause() instanceof ArithmeticException)
+            ; // pass
+        else if (previousFailure instanceof Throwable)
+            throw new Exception((Throwable) previousFailure);
+        else
+            fail("Unexpected value supplied to function as previous failure: " + previousFailure);
+
+        // exceptionallyCompose should run on an unmanaged thread or the current servlet thread
+        assertNotNull(threadName = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+        assertTrue(threadName, threadName.equals(currentThreadName) || !threadName.startsWith("Default Executor-thread-")); // could run on current thread if previous stage is complete, otherwise must run on unmanaged thread
+        assertEquals(threadName, cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS).toString());
+    }
+
+    /**
      * Verify that the function argument to thenCompose can return a result that is a managed CompletableFuture.
      */
     @Test
@@ -4619,7 +4945,7 @@ public class MPConcurrentTestServlet extends FATServlet {
     }
 
     /**
-     * Verify toString output for our MicroProfile Concurrency ThreadContext implementation.
+     * Verify toString output for our ThreadContext implementation.
      */
     @Test
     public void testToStringThreadContext() throws Exception {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1998, 2014 IBM Corporation and others.
+ * Copyright (c) 1998, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -49,23 +49,21 @@ import com.ibm.ws.javaee.dd.ejb.Session;
 import com.ibm.ws.javaee.util.DDUtil;
 
 /**
- * 
+ *
  * A collection of useful utility methods for parsing and processing
  * method-level attributes. <p>
- * 
+ *
  */
-public class MethodAttribUtils
-{
+public class MethodAttribUtils {
     private static final String CLASS_NAME = MethodAttribUtils.class.getName();
     private static TraceComponent tc = Tr.register(MethodAttribUtils.class, "MetaData", "com.ibm.ejs.container.container");
 
     private static TraceComponent tcDebug = Tr.register(CLASS_NAME + "_Validation ",
                                                         MethodAttribUtils.class,
                                                         "MetaDataValidation",
-                                                        "com.ibm.ejs.container.container"); // F743-1752.1
+                                                        "com.ibm.ejs.container.container");
 
-    static
-    {
+    static {
         populateTxMofMap();
         populateTxAttrFromJEE15Map();
         populateIsoStringMap();
@@ -73,39 +71,35 @@ public class MethodAttribUtils
 
     /**
      * getAnnotationCMTTransactions fill the TransactionAttribute array with data from
-     * Annotations. //d366845.8
+     * Annotations.
      */
     public static final void getAnnotationCMTransactions(TransactionAttribute[] tranAttrs,
                                                          int methodInterfaceType,
                                                          Method[] beanMethods,
-                                                         BeanMetaData bmd)
-    {
+                                                         BeanMetaData bmd) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "getAnnotationCMTransactions");
 
-        for (int i = 0; i < beanMethods.length; i++)
-        {
+        for (int i = 0; i < beanMethods.length; i++) {
             // Only get the value from annotations if it is not already set by WCCM
-            if (tranAttrs[i] == null)
-            {
+            if (tranAttrs[i] == null) {
                 javax.ejb.TransactionAttribute methTranAttr = null;
 
                 // Don't bother looking for annotations, if we're told there are none.
                 if (!bmd.metadataComplete) {
                     methTranAttr = beanMethods[i].getAnnotation(javax.ejb.TransactionAttribute.class);
 
+                    // EJB 3.2, section 4.3.14:
+                    // "A stateful session bean's PostConstruct, PreDestroy,
+                    // PrePassivate or PostActivate lifecycle callback
+                    // interceptor method is invoked in the scope of a
+                    // transaction determined by the transaction attribute
+                    // specified in the lifecycle callback method's metadata
+                    // annotations or deployment descriptor"
                     if (methTranAttr == null &&
-                        // EJB 3.2, section 4.3.14:
-                        // "A stateful session bean's PostConstruct, PreDestroy,
-                        // PrePassivate or PostActivate lifecycle callback
-                        // interceptor method is invoked in the scope of a
-                        // transaction determined by the transaction attribute
-                        // specified in the lifecycle callback method's metadata
-                        // annotations or deployment descriptor"
                         (bmd.type != InternalConstants.TYPE_STATEFUL_SESSION ||
-                        methodInterfaceType != InternalConstants.METHOD_INTF_LIFECYCLE_INTERCEPTOR))
-                    {
+                         methodInterfaceType != InternalConstants.METHOD_INTF_LIFECYCLE_INTERCEPTOR)) {
                         methTranAttr = beanMethods[i].getDeclaringClass().getAnnotation(javax.ejb.TransactionAttribute.class);
 
                         if (isTraceOn && tc.isDebugEnabled() &&
@@ -150,10 +144,9 @@ public class MethodAttribUtils
     }
 
     /**
-     * F743-4582
      * Determines which methods on the specified Enterprise Bean should be
      * marked asynchronous by updating the passed-in boolean array.
-     * 
+     *
      * Pre-conditions:
      * <ol>
      * <li>asynchMethodFlags, ejbMethods, wccmEnterpriseBean, and bmd must be non-null</li>
@@ -161,52 +154,48 @@ public class MethodAttribUtils
      * <li>bmd.classLoader must be set to the bean's classloader (not null)</li>
      * <li>bmd.ivBusiness[Local|Remote]InterfaceClasses must be non-null</li>
      * </ol>
-     * 
-     * @param asynchMethodFlags - array indicating which ejb methods are asynchronous
-     *            - corresponds to the methods in <code>ejbMethods</code>
-     * @param ejbMethods - array of methods on the bean class, limited by the interface
-     *            currently being processed
+     *
+     * @param asynchMethodFlags  - array indicating which ejb methods are asynchronous
+     *                               - corresponds to the methods in <code>ejbMethods</code>
+     * @param ejbMethods         - array of methods on the bean class, limited by the interface
+     *                               currently being processed
      * @param wccmEnterpriseBean - Enterprise bean object read in from ejb-jar.xml via WCCM
-     * @param methodInterface - MethodInterface type (Local, Remote, etc.) currently being
-     *            processed
-     * 
+     * @param methodInterface    - MethodInterface type (Local, Remote, etc.) currently being
+     *                               processed
+     *
      * @return True if at least one asynchronous method was found on this bean.
-     * 
+     *
      * @throws EJBConfigurationException if the XML DD contains invalid meta-data
      */
     public static boolean getXMLAsynchronousMethods(boolean[] asynchMethodFlags,
                                                     MethodInterface methodInterface,
                                                     String[] methodNames,
                                                     Class<?>[][] methodParamTypes,
-                                                    EnterpriseBean wccmEnterpriseBean)
-                    throws EJBConfigurationException {
+                                                    EnterpriseBean wccmEnterpriseBean) throws EJBConfigurationException {
 
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
-        boolean asynchMethodFound = false; //d621123
+        boolean asynchMethodFound = false;
 
         if (isTraceOn && tc.isEntryEnabled()) {
             Tr.entry(tc, "getXMLAsynchronousMethods", new Object[] {
-                                                                    asynchMethodFlags, wccmEnterpriseBean, methodInterface });
+                                                                     asynchMethodFlags, wccmEnterpriseBean, methodInterface });
         }
 
-        //iterate through the asynch-methodTypes in the deployment descriptor
+        // iterate through the asynch-methodTypes in the deployment descriptor
         // and match them with the methods defined in the ejbMethods array.
         // then for each match, set the asynchMethodsFlags array at the same
         // index to true. all others should be false (or left as they were...)
 
-        //first verify if all methods are set to asynch (i.e. if the asynch applies
+        // first verify if all methods are set to asynch (i.e. if the asynch applies
         // to the entire bean)
 
         if (wccmEnterpriseBean.getKindValue() == EnterpriseBean.KIND_SESSION &&
-            //d599046 - check SERVICE_ENDPOINT
-            methodInterface != MethodInterface.SERVICE_ENDPOINT)
-        {
+            methodInterface != MethodInterface.SERVICE_ENDPOINT) {
             Session sb = (Session) wccmEnterpriseBean;
-            //F00743.9717
             List<AsyncMethod> asynchMethods = sb.getAsyncMethods();
             for (AsyncMethod am : asynchMethods) {
 
-                String methodName = am.getMethodName(); //d603858
+                String methodName = am.getMethodName();
                 if (methodName == null || "".equals(methodName.trim())) {
                     //error in ejb-jar.xml! method-name element is required
                     Tr.error(tc, "INVALID_ASYNC_METHOD_ELEMENT_MISSING_METHOD_NAME_CNTR0203E", sb.getName());
@@ -222,29 +211,28 @@ public class MethodAttribUtils
                 }
 
                 //style type 1 - unqualified wildcard:
-                if ("*".equals(methodName))
-                {
+                if ("*".equals(methodName)) {
                     //in this case, all methods are asynchronous:
                     for (int i = 0; i < asynchMethodFlags.length; i++) {
                         asynchMethodFlags[i] = true;
                     }
-                    asynchMethodFound = true; //d621123
+                    asynchMethodFound = true;
 
                     //if this is the case, there is no need for further processing
                     if (isTraceOn && tc.isEntryEnabled()) {
                         Tr.exit(tc, "getXMLAsynchronousMethods - all methods are marked async");
                     }
-                    return asynchMethodFound; //d621123
+                    return asynchMethodFound;
                 }
 
                 // if we are here, then methodName is not a wildcard - style type 2 (no parms) & 3 (parms)
 
                 //iterate over method array and check method name and parms (if specified):
                 for (int i = 0; i < methodNames.length; i++) {
-                    if (methodNames[i] != null && methodNames[i].equals(methodName)) { //d599046 - null check
-                        if (parms == null || DDUtil.methodParamsMatch(parms, methodParamTypes[i])) { // RTC100828
+                    if (methodNames[i] != null && methodNames[i].equals(methodName)) {
+                        if (parms == null || DDUtil.methodParamsMatch(parms, methodParamTypes[i])) {
                             asynchMethodFlags[i] = true;
-                            asynchMethodFound = true; //d621123
+                            asynchMethodFound = true;
                         }
                     }
                 } // end for (int i=0; i<ejbMethods.length; i++)
@@ -252,7 +240,7 @@ public class MethodAttribUtils
 
             if (isTraceOn && tc.isDebugEnabled()) {
                 for (int i = 0; i < methodNames.length; i++) {
-                    Tr.debug(tc, methodNames[i] + Arrays.toString(methodParamTypes[i]) + " == " + //d599046 - null check
+                    Tr.debug(tc, methodNames[i] + Arrays.toString(methodParamTypes[i]) + " == " +
                                  (asynchMethodFlags[i] ? "Asynchronous" : "Synchronous"));
                 }
             }
@@ -266,7 +254,7 @@ public class MethodAttribUtils
         if (isTraceOn && tc.isEntryEnabled()) {
             Tr.exit(tc, "getXMLAsynchronousMethods");
         }
-        return (asynchMethodFound); //d621123
+        return (asynchMethodFound);
     }
 
     /**
@@ -275,17 +263,16 @@ public class MethodAttribUtils
      * that is passed into this method. Each entry in the output array is either set to
      * false (ie. if the corresponding beanMethod is not asynchronous), or true (if the
      * corresponding beanMethod is asynchronous).
-     * 
-     * @param beanMethods Input array of Method objects representing the methods of this EJB.
+     *
+     * @param beanMethods   Input array of Method objects representing the methods of this EJB.
      * @param asynchMethods Output array of boolean entries that identifies which methods
-     *            in the input array are asynchronous methods.
-     * 
+     *                          in the input array are asynchronous methods.
+     *
      * @return True if at least one asynchronous method was found on this bean.
      */
     public static boolean getAsynchronousMethods(Method[] beanMethods,
                                                  boolean[] asynchMethodFlags,
-                                                 MethodInterface methodInterface)
-    {
+                                                 MethodInterface methodInterface) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "getAsynchronousMethods");
@@ -293,24 +280,21 @@ public class MethodAttribUtils
         Asynchronous asynchAnnotation = null;
         boolean asynchMethodFound = false;
 
-        if (methodInterface != MethodInterface.SERVICE_ENDPOINT) { //d599046
-            for (int i = 0; i < beanMethods.length; i++)
-            {
+        if (methodInterface != MethodInterface.SERVICE_ENDPOINT) {
+            for (int i = 0; i < beanMethods.length; i++) {
                 // Check to make sure this beanMethod is not null because it can be if the method
                 // was a remove method.  Remove methods get special handling.
                 if (beanMethods[i] != null) {
 
                     // Only get the value from annotations if it is not already set by WCCM.  There is no way to
                     // turn off the asynchronous setting using annotations or xml (ie. it can only be turned on).
-                    if (asynchMethodFlags[i] == false)
-                    {
+                    if (asynchMethodFlags[i] == false) {
                         asynchAnnotation = null;
 
                         // Try to get method level annotation
                         asynchAnnotation = beanMethods[i].getAnnotation(Asynchronous.class);
 
-                        if (asynchAnnotation == null)
-                        {
+                        if (asynchAnnotation == null) {
                             // Method level annotation not found so check for class level annotation
                             asynchAnnotation = beanMethods[i].getDeclaringClass().getAnnotation(Asynchronous.class);
 
@@ -331,8 +315,7 @@ public class MethodAttribUtils
                         }
 
                         // Update array of asynch methods with true or false for the current method
-                        if (asynchAnnotation != null)
-                        {
+                        if (asynchAnnotation != null) {
                             asynchMethodFlags[i] = true;
                             asynchMethodFound = true;
                         } else {
@@ -361,21 +344,18 @@ public class MethodAttribUtils
      * Check all methods for method-level Security annotations. Specifically
      * <code>RolesAllowed</code>, <code>PermitAll</code> and<code>DenyAll</code>.
      * If no Roles are defined via annotations or XML, then default to PermitAll.
-     * 
-     * @param beanMethods Array of methods for this EJB.
+     *
+     * @param beanMethods  Array of methods for this EJB.
      * @param rolesAllowed ArrayList array to hold all allowed roles (value returned)
-     * @param denyAll boolean array indicating which methods are designated
-     *            to deny all access (value returned).
-     * @param permitAll boolean array indicating which methods are designated
-     *            to permit all roles (value returned).
+     * @param denyAll      boolean array indicating which methods are designated
+     *                         to deny all access (value returned).
+     * @param permitAll    boolean array indicating which methods are designated
+     *                         to permit all roles (value returned).
      */
-    //366845.11.2
     public static final void getAnnotationsForSecurity(Method[] beanMethods,
                                                        ArrayList<String>[] rolesAllowed,
                                                        boolean[] denyAll,
-                                                       boolean[] permitAll)
-                    throws EJBConfigurationException
-    {
+                                                       boolean[] permitAll) throws EJBConfigurationException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "getAnnotationsForSecurity");
@@ -412,11 +392,10 @@ public class MethodAttribUtils
         // method only. If applied at both the class and method level, the method value
         // overrides the class value.
         //
-        for (int i = 0; i < beanMethods.length; i++)
-        {
+        for (int i = 0; i < beanMethods.length; i++) {
             RolesAllowed classRolesAllowed = null;
             RolesAllowed methRolesAllowed = null;
-            DenyAll classDenyAll = null; // F743-21028
+            DenyAll classDenyAll = null;
             DenyAll methDenyAll = null;
             PermitAll classPermitAll = null;
             PermitAll methPermitAll = null;
@@ -466,8 +445,7 @@ public class MethodAttribUtils
 
                 // Check for @RolesAllowed at the method.
                 methRolesAllowed = beanMethod.getAnnotation(RolesAllowed.class);
-                if (methRolesAllowed != null)
-                {
+                if (methRolesAllowed != null) {
                     if (isTraceOn && tc.isDebugEnabled())
                         Tr.debug(tc, "Method-level RolsAllowed annotation set. ");
 
@@ -509,36 +487,28 @@ public class MethodAttribUtils
                 // class will be applicable for this particular method.
                 if ((methRolesAllowed == null) &&
                     (methDenyAll == null) &&
-                    (methPermitAll == null))
-                {
+                    (methPermitAll == null)) {
                     classRolesAllowed = beanMethod.getDeclaringClass().getAnnotation(RolesAllowed.class);
                     classPermitAll = beanMethod.getDeclaringClass().getAnnotation(PermitAll.class);
-                    classDenyAll = beanMethod.getDeclaringClass().getAnnotation(DenyAll.class); // F743-21028
+                    classDenyAll = beanMethod.getDeclaringClass().getAnnotation(DenyAll.class);
 
                     // Must not be more than one of @DenyAll, @PermitAll or
-                    // @RolesAllowed set at class level.                   F743-21028
+                    // @RolesAllowed set at class level.
                     String conflict1 = null, conflict2 = null;
-                    if (classRolesAllowed != null)
-                    {
-                        if (classPermitAll != null)
-                        {
+                    if (classRolesAllowed != null) {
+                        if (classPermitAll != null) {
                             conflict1 = "@RolesAllowed";
                             conflict2 = "@PermitAll";
-                        }
-                        else if (classDenyAll != null)
-                        {
+                        } else if (classDenyAll != null) {
                             conflict1 = "@RolesAllowed";
                             conflict2 = "@DenyAll";
                         }
-                    }
-                    else if (classPermitAll != null && classDenyAll != null)
-                    {
+                    } else if (classPermitAll != null && classDenyAll != null) {
                         conflict1 = "@PermitAll";
                         conflict2 = "@DenyAll";
                     }
 
-                    if (conflict1 != null)
-                    {
+                    if (conflict1 != null) {
                         Tr.error(tc, "CONFLICTING_ANNOTATIONS_CONFIGURED_ON_CLASS_CNTR0152E",
                                  new Object[] { conflict1, conflict2, beanMethod.getDeclaringClass().getName() });
                         throw new EJBConfigurationException(conflict1 + " and " + conflict2 +
@@ -547,8 +517,7 @@ public class MethodAttribUtils
                                                             beanMethod.getDeclaringClass().getName());
                     }
 
-                    if (classRolesAllowed != null)
-                    {
+                    if (classRolesAllowed != null) {
                         if (isTraceOn && tc.isDebugEnabled())
                             Tr.debug(tc, "Class RolesAllowed annotation set: ");
 
@@ -574,8 +543,7 @@ public class MethodAttribUtils
                         permitAll[i] = true;
                     }
 
-                    else if (classDenyAll != null) // F743-21028
-                    {
+                    else if (classDenyAll != null) {
                         if (isTraceOn && tc.isDebugEnabled())
                             Tr.debug(tc, "Class DenyAll annotation set");
                         denyAll[i] = true;
@@ -585,8 +553,7 @@ public class MethodAttribUtils
 
             } //if (beanMethod != null)
 
-            if (isTraceOn && tc.isDebugEnabled())
-            {
+            if (isTraceOn && tc.isDebugEnabled()) {
                 String methodName = "Unknown";
                 if (beanMethods[i] != null) {
                     methodName = beanMethods[i].getName();
@@ -677,21 +644,20 @@ public class MethodAttribUtils
      * getXMLCMTransactions fills the TransactionAttribute array of given type
      * from the XML based WCCM data. If transaction attributes are not specified
      * for a method, then the array element will be left null.
-     * 
-     * @param tranAttrs the output array
-     * @param type the method interface type of the methods
-     * @param methodNames the method names
+     *
+     * @param tranAttrs        the output array
+     * @param type             the method interface type of the methods
+     * @param methodNames      the method names
      * @param methodParamTypes the method parameter types
-     * @param tranAttrList the transaction attributes declared in ejb-jar.xml
-     * @param bmd the bean metadata
+     * @param tranAttrList     the transaction attributes declared in ejb-jar.xml
+     * @param bmd              the bean metadata
      */
     public static final void getXMLCMTransactions(TransactionAttribute[] tranAttrs,
                                                   int type,
                                                   String[] methodNames,
                                                   Class<?>[][] methodParamTypes,
                                                   List<ContainerTransaction> tranAttrList,
-                                                  BeanMetaData bmd) //PK93643
-    {
+                                                  BeanMetaData bmd) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "getXMLCMTransactions", Arrays.toString(tranAttrs));
@@ -724,7 +690,7 @@ public class MethodAttribUtils
 
                     // If ejbNameFromMethodElement is null the customer most likey has an xml
                     // coding error in the method element where the ejb-name is incorrect.
-                    if (ejbNameFromMethodElement == null) { //PK93643
+                    if (ejbNameFromMethodElement == null) {
                         Tr.warning(tc, "INVALID_CONTAINER_TRANSACTION_XML_CNTR0121W",
                                    new Object[] { bmd.getJ2EEName().getModule(), txMOFMap[tranType] });
                     }
@@ -735,7 +701,7 @@ public class MethodAttribUtils
                         }
                     }
 
-                    if ((ejbNameFromMethodElement != null) && (ejbNameFromMethodElement.equals(bmd.enterpriseBeanName))) { //PK93643
+                    if ((ejbNameFromMethodElement != null) && (ejbNameFromMethodElement.equals(bmd.enterpriseBeanName))) {
                         String meName = me.getMethodName().trim();
                         if (meName.equals("*")) {
                             if (meType == com.ibm.ws.javaee.dd.ejb.Method.INTERFACE_TYPE_UNSPECIFIED) {
@@ -860,37 +826,32 @@ public class MethodAttribUtils
 
     } // getXMLCMTransactions
 
-    private static void trace(com.ibm.ws.javaee.dd.ejb.Method m, String message)
-    {
+    private static void trace(com.ibm.ws.javaee.dd.ejb.Method m, String message) {
         int methodIntfType = m.getInterfaceTypeValue();
-        MethodInterface methodIntf = methodIntfType ==
-                        com.ibm.ws.javaee.dd.ejb.Method.INTERFACE_TYPE_UNSPECIFIED ? null : methodInterfaceTypeMap[methodIntfType - 1];
+        MethodInterface methodIntf = methodIntfType == com.ibm.ws.javaee.dd.ejb.Method.INTERFACE_TYPE_UNSPECIFIED ? null : methodInterfaceTypeMap[methodIntfType - 1];
         Tr.debug(tc, message,
                  new Object[] { "ejb-name:      " + m.getEnterpriseBeanName(),
-                               "method-intf:   " + methodIntf,
-                               "method-name:   " + m.getMethodName(),
-                               "method-params: " + m.getMethodParamList() });
+                                "method-intf:   " + methodIntf,
+                                "method-name:   " + m.getMethodName(),
+                                "method-params: " + m.getMethodParamList() });
     }
 
-    private static void trace(Method m, String beanName, String message)
-    {
+    private static void trace(Method m, String beanName, String message) {
         Tr.debug(tc, message,
                  new Object[] { "Enterprise Bean Name: " + beanName,
-                               "Method name: " + m.toString() });
+                                "Method name: " + m.toString() });
     }
 
     /**
      * getXMLPermissions fills the SecurityRoles array
      * from the XML based WCCM data.
      */
-    //366845.11.1
     public static final void getXMLMethodsDenied(boolean[] denyAll,
                                                  int type,
                                                  String[] methodNames,
                                                  Class<?>[][] methodParamTypes,
                                                  ExcludeList excludeList,
-                                                 BeanMetaData bmd) //PK93643
-    {
+                                                 BeanMetaData bmd) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "getXMLMethodsDenied", Arrays.toString(denyAll));
@@ -917,12 +878,12 @@ public class MethodAttribUtils
 
                 // If ejbNameFromMethodElement is null the customer most likely has an xml
                 // coding error in the method element where the ejb-name is incorrect.
-                if (ejbNameFromMethodElement == null) { //PK93643
+                if (ejbNameFromMethodElement == null) {
                     Tr.warning(tc, "INVALID_EXCLUDE_LIST_XML_CNTR0124W",
-                               new Object[] { bmd.getJ2EEName().getModule(), bmd.enterpriseBeanName }); //PK93643
+                               new Object[] { bmd.getJ2EEName().getModule(), bmd.enterpriseBeanName });
                 }
 
-                if ((ejbNameFromMethodElement != null) && (ejbNameFromMethodElement.equals(bmd.enterpriseBeanName))) { //PK93643
+                if ((ejbNameFromMethodElement != null) && (ejbNameFromMethodElement.equals(bmd.enterpriseBeanName))) {
                     String meName = me.getMethodName().trim();
                     if (meName.equals("*")) {
                         if (meType == com.ibm.ws.javaee.dd.ejb.Method.INTERFACE_TYPE_UNSPECIFIED) {
@@ -1000,24 +961,23 @@ public class MethodAttribUtils
 
     /**
      * Process all of the method-permissions from XML. <p>
-     * 
-     * @param securityRoles an array of ArrayLists that will be filled
-     *            with the Security Roles for each method.
-     * @param permitAll boolean array representing each method that
-     *            will be set to true for each method that
-     *            is set as "Unchecked", meaning that all
-     *            security roles are permitted.
-     * @param denyAll boolean array representing each method. The
-     *            value will be true if the method was listed
-     *            in the exclude-list XML stanza.
-     * @param type Indicates the type of methods we are processing
-     *            (ie. Local, Remote, Home, etc.).
-     * @param methodNames Array of all method names for this component.
+     *
+     * @param securityRoles    an array of ArrayLists that will be filled
+     *                             with the Security Roles for each method.
+     * @param permitAll        boolean array representing each method that
+     *                             will be set to true for each method that
+     *                             is set as "Unchecked", meaning that all
+     *                             security roles are permitted.
+     * @param denyAll          boolean array representing each method. The
+     *                             value will be true if the method was listed
+     *                             in the exclude-list XML stanza.
+     * @param type             Indicates the type of methods we are processing
+     *                             (ie. Local, Remote, Home, etc.).
+     * @param methodNames      Array of all method names for this component.
      * @param methodSignatures Array of all method signatures for this component.
-     * @param permissionsList List of Role information from XML
-     * @param enterpriseBean The EJB that is being processed.
+     * @param permissionsList  List of Role information from XML
+     * @param enterpriseBean   The EJB that is being processed.
      **/
-    //366845.12.2
     @SuppressWarnings("unchecked")
     public static final void getXMLPermissions(ArrayList[] securityRoles,
                                                boolean[] permitAll,
@@ -1025,9 +985,8 @@ public class MethodAttribUtils
                                                int type,
                                                String[] methodNames,
                                                Class<?>[][] methodParamTypes,
-                                               List permissionsList,
-                                               BeanMetaData bmd) //PK93643
-    {
+                                               List<MethodPermission> permissionsList,
+                                               BeanMetaData bmd) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "getXMLPermissions", Arrays.toString(securityRoles));
@@ -1044,7 +1003,7 @@ public class MethodAttribUtils
             // k : Method loop
 
             for (int i = 0; i < permissionsList.size(); ++i) {
-                MethodPermission methodPermission = (MethodPermission) permissionsList.get(i);
+                MethodPermission methodPermission = permissionsList.get(i);
                 boolean isUnchecked = methodPermission.isUnchecked();
                 List<String> roleNames = methodPermission.getRoleNames();
                 List<com.ibm.ws.javaee.dd.ejb.Method> methodElements = methodPermission.getMethodElements();
@@ -1056,9 +1015,9 @@ public class MethodAttribUtils
 
                     // If ejbNameFromMethodElement is null the customer most likey has an xml
                     // coding error in the method element where the ejb-name is incorrect.
-                    if (ejbNameFromMethodElement == null) { //PK93643
+                    if (ejbNameFromMethodElement == null) {
                         Tr.warning(tc, "INVALID_METHOD_PERMISSION_XML_CNTR0123W",
-                                   new Object[] { bmd.getJ2EEName().getModule(), bmd.enterpriseBeanName }); //PK93643
+                                   new Object[] { bmd.getJ2EEName().getModule(), bmd.enterpriseBeanName });
                     }
 
                     if (isTraceOn && tc.isDebugEnabled()) {
@@ -1071,7 +1030,7 @@ public class MethodAttribUtils
 
                     }
 
-                    if ((ejbNameFromMethodElement != null) && (ejbNameFromMethodElement.equals(bmd.enterpriseBeanName))) { //PK93643
+                    if ((ejbNameFromMethodElement != null) && (ejbNameFromMethodElement.equals(bmd.enterpriseBeanName))) {
                         String meName = me.getMethodName().trim();
                         if (meName.equals("*")) {
                             if (meType == com.ibm.ws.javaee.dd.ejb.Method.INTERFACE_TYPE_UNSPECIFIED) {
@@ -1089,7 +1048,7 @@ public class MethodAttribUtils
                                         }
 
                                         // create ArrayList of the security roles
-                                        if (securityRoles[k] == null) { //d444436
+                                        if (securityRoles[k] == null) {
                                             securityRoles[k] = new ArrayList<String>();
                                         }
                                         securityRoles[k].addAll(roleNames);
@@ -1110,7 +1069,7 @@ public class MethodAttribUtils
                                             trace(me, "Style 2 - assigning roles " + roleNames);
                                         }
 
-                                        // Create new ArrayList of security roles         //d444436
+                                        // Create new ArrayList of security roles
                                         if (securityRoles[k] == null) {
                                             securityRoles[k] = new ArrayList<String>();
                                         }
@@ -1142,7 +1101,7 @@ public class MethodAttribUtils
                                             }
 
                                             // create ArrayList of security roles
-                                            if (securityRoles[k] == null) { //d444436
+                                            if (securityRoles[k] == null) {
                                                 securityRoles[k] = new ArrayList<String>();
                                             }
                                             securityRoles[k].addAll(roleNames);
@@ -1163,7 +1122,7 @@ public class MethodAttribUtils
                                                 }
 
                                                 // create security roles ArrayList
-                                                if (securityRoles[k] == null) { //d444436
+                                                if (securityRoles[k] == null) {
                                                     securityRoles[k] = new ArrayList<String>();
                                                 }
                                                 securityRoles[k].addAll(roleNames);
@@ -1199,13 +1158,12 @@ public class MethodAttribUtils
                                                  Class<?>[][] methodParamTypes,
                                                  List<ActivitySessionMethod> asAttrList,
                                                  String ejbName,
-                                                 boolean usesBeanManagedAS)
-    {
+                                                 boolean usesBeanManagedAS) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
-            Tr.entry(tc, "getActivitySessions", (Object[])asAttrs);
+            Tr.entry(tc, "getActivitySessions", (Object[]) asAttrs);
 
-        if (!usesBeanManagedAS) { // d127328
+        if (!usesBeanManagedAS) {
 
             if (isTraceOn && tc.isDebugEnabled())
                 Tr.debug(tc, "Bean is CMAS");
@@ -1231,9 +1189,9 @@ public class MethodAttribUtils
                     for (int j = 0; j < methodElements.size(); ++j) {
                         com.ibm.ws.javaee.dd.ejb.Method me = methodElements.get(j);
                         if (isTraceOn && tc.isDebugEnabled()) {
-                            trace(me, me.getInterfaceTypeValue() == com.ibm.ws.javaee.dd.ejb.Method.INTERFACE_TYPE_UNSPECIFIED ?
-                                            "Interface type unspecified" :
-                                            "Interface type: " + me.getInterfaceTypeValue());
+                            trace(me,
+                                  me.getInterfaceTypeValue() == com.ibm.ws.javaee.dd.ejb.Method.INTERFACE_TYPE_UNSPECIFIED ? "Interface type unspecified" : "Interface type: "
+                                                                                                                                                            + me.getInterfaceTypeValue());
                         }
                         // Is this method element for the bean we are processing?
                         if ((me.getEnterpriseBeanName()).equals(ejbName)) {
@@ -1315,18 +1273,17 @@ public class MethodAttribUtils
      * To set all txAttr in list, use 1-element array {"*"} for checkedNames.
      **/
     public static final void checkTxAttrs(TransactionAttribute[] txAttrs,
-                                          String[] methodNames, String[] methodSignatures,//PQ63130
-                                          String[] checkedNames, String[] checkedSignatures,//PQ63130
+                                          String[] methodNames, String[] methodSignatures,
+                                          String[] checkedNames, String[] checkedSignatures,
 
-                                          TransactionAttribute prescribedAttr)
-    {
+                                          TransactionAttribute prescribedAttr) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "checkTxAttrs");
         for (int i = 0; i < methodNames.length; ++i) {
             for (int j = 0; j < checkedNames.length; ++j) {
 
-                //PQ63130 added check of method signature
+                // added check of method signature
                 if (((methodNames[i].equals(checkedNames[j])) && (methodSignatures[i].equals(checkedSignatures[j]))) | checkedNames[j].equals("*")) {
 
                     txAttrs[i] = prescribedAttr;
@@ -1340,12 +1297,10 @@ public class MethodAttribUtils
 
     }
 
-    //d141634
     /**
      * Check BMT beans for unneeded Tran Attributes in XML (ie. WCCM)
      */
-    public static final void chkBMTFromXML(List<ContainerTransaction> tranAttrList, EnterpriseBean enterpriseBean, J2EEName j2eeName)
-    {
+    public static final void chkBMTFromXML(List<ContainerTransaction> tranAttrList, EnterpriseBean enterpriseBean, J2EEName j2eeName) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "chkBMTFromXML");
@@ -1365,9 +1320,9 @@ public class MethodAttribUtils
                 for (int j = 0; j < methodElements.size(); ++j) {
                     com.ibm.ws.javaee.dd.ejb.Method me = methodElements.get(j);
                     if (isTraceOn && tc.isDebugEnabled()) {
-                        trace(me, me.getInterfaceTypeValue() == com.ibm.ws.javaee.dd.ejb.Method.INTERFACE_TYPE_UNSPECIFIED ?
-                                        "Interface type unspecified" :
-                                        "Interface type: " + me.getInterfaceTypeValue());
+                        trace(me,
+                              me.getInterfaceTypeValue() == com.ibm.ws.javaee.dd.ejb.Method.INTERFACE_TYPE_UNSPECIFIED ? "Interface type unspecified" : "Interface type: "
+                                                                                                                                                        + me.getInterfaceTypeValue());
                     }
                     if (enterpriseBean.getName().equals(me.getEnterpriseBeanName())) {
 
@@ -1387,34 +1342,29 @@ public class MethodAttribUtils
 
     /**
      * Check BMT beans for unneeded Tran Attributes from annotations
-     * 
+     *
      * @param beanMethods Array of methods within this EJB
-     * @param j2eeName Name of EJB for warning message if needed
+     * @param j2eeName    Name of EJB for warning message if needed
      */
-    //d395828
-    public static final void chkBMTFromAnnotations(Method[] beanMethods, J2EEName j2eeName)
-    {
+    public static final void chkBMTFromAnnotations(Method[] beanMethods, J2EEName j2eeName) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "chkBMTFromAnnotations");
 
         javax.ejb.TransactionAttribute methTranAttr = null;
 
-        for (int i = 0; i < beanMethods.length; i++)
-        {
+        for (int i = 0; i < beanMethods.length; i++) {
             // Unless a Remove method is added the last index in the beanMethods
             // array will be null causing an NPE.   So we need to check for
             // null first.
             if (beanMethods[i] != null) {
 
                 methTranAttr = beanMethods[i].getAnnotation(javax.ejb.TransactionAttribute.class);
-                if (methTranAttr == null)
-                {
+                if (methTranAttr == null) {
                     methTranAttr = beanMethods[i].getDeclaringClass().getAnnotation(javax.ejb.TransactionAttribute.class);
                 }
                 // If a Transaction attribute exists then create a warning message.
-                if (methTranAttr != null)
-                {
+                if (methTranAttr != null) {
                     Tr.warning(tc, "BMT_DEFINES_CMT_ATTRIBUTES_CNTR0067W", new Object[] { j2eeName });
                 }
             }
@@ -1427,15 +1377,14 @@ public class MethodAttribUtils
         return;
     }
 
-    // d141634 Check BMAS beans for unneeded CMAS attributes in XML (ie. WCCM)
+    // Check BMAS beans for unneeded CMAS attributes in XML (ie. WCCM)
 
-    public static final void chkBMASFromXML(List<ActivitySessionMethod> asAttrList, EnterpriseBean enterpriseBean, J2EEName j2eeName)
-    {
+    public static final void chkBMASFromXML(List<ActivitySessionMethod> asAttrList, EnterpriseBean enterpriseBean, J2EEName j2eeName) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "chkBMAS");
 
-        //For Annotations only configuration, Enterprise Bean from WCCM may be null.  In this case there
+        // For Annotations only configuration, Enterprise Bean from WCCM may be null.  In this case there
         // is no need to check for AS attributes from xml.
         if (enterpriseBean != null) {
 
@@ -1453,9 +1402,9 @@ public class MethodAttribUtils
                     for (int j = 0; j < methodElements.size(); ++j) {
                         com.ibm.ws.javaee.dd.ejb.Method me = methodElements.get(j);
                         if (isTraceOn && tc.isDebugEnabled()) {
-                            trace(me, me.getInterfaceTypeValue() == com.ibm.ws.javaee.dd.ejb.Method.INTERFACE_TYPE_UNSPECIFIED ?
-                                            "Interface type unspecified" :
-                                            "Interface type: " + me.getInterfaceTypeValue());
+                            trace(me,
+                                  me.getInterfaceTypeValue() == com.ibm.ws.javaee.dd.ejb.Method.INTERFACE_TYPE_UNSPECIFIED ? "Interface type unspecified" : "Interface type: "
+                                                                                                                                                            + me.getInterfaceTypeValue());
                         }
                         if (enterpriseBean.getName().equals(me.getEnterpriseBeanName())) {
                             Tr.warning(tc, "BMAS_DEFINES_CMAS_ATTRIBUTES_CNTR0068W", new Object[] { j2eeName });
@@ -1472,17 +1421,14 @@ public class MethodAttribUtils
         return;
     }
 
-    // d141634
-
-    public static final String normalizeSignature(String deplDescriptorSignature)
-    {
+    public static final String normalizeSignature(String deplDescriptorSignature) {
         /*
          * Removes embedded blanks in the vicinity of array brackets, within a blank-delimited list
          * of method arguments.
-         * 
+         *
          * Example input: int char [] char[ ] [ ]
          * Example output: int char[] char[][]
-         * 
+         *
          * Requires: no leading or trailing blanks on input string -- use trim() first if this
          * might be the case.
          */
@@ -1530,28 +1476,27 @@ public class MethodAttribUtils
         return sb.toString();
     }
 
-    public static final String convertArraySignature(String theJavaSignature)
-    {
+    public static final String convertArraySignature(String theJavaSignature) {
         /*
          * This method converts a Java-internal format argument signature to a Java language signature.
          * Such conversion is necessary because of the difference in how Array argument types are
          * represented internally in the JVM vs. their natural Java language encoding (used in Java EE
          * deployment descriptors).
-         * 
+         *
          * The following text is from the documentation for the Class.getName() method:
          * -----------------------------
          * If this Class object represents a class of arrays, then the internal form of the
          * name consists of the name of the element type in Java signature format, preceded
          * by one or more "[" characters representing the depth of array nesting. Thus:
-         * 
+         *
          * (new Object[3]).getClass().getName()
-         * 
+         *
          * returns "[Ljava.lang.Object;" and:
-         * 
+         *
          * (new int[3][4][5][6][7][8][9]).getClass().getName()
-         * 
+         *
          * returns "[[[[[[[I". The encoding of element type names is as follows:
-         * 
+         *
          * B byte
          * C char
          * D double
@@ -1562,13 +1507,13 @@ public class MethodAttribUtils
          * S short
          * Z boolean
          * -----------------------------
-         * 
+         *
          * Thus, if the input is "[[[B", the returned string from this method will be "byte[][][]".
-         * 
+         *
          * REQUIREMENTS/GUARANTEES:
          * This method requires that there be no blanks in the input. This will be satisfied where
          * the result from Class.getName() is supplied as input (the typical case).
-         * 
+         *
          * It is guaranteed that there will be no blanks in the result value.
          */
 
@@ -1614,8 +1559,7 @@ public class MethodAttribUtils
         return sb.toString();
     }
 
-    public static final String methodSignatureOnly(Method method)
-    {
+    public static final String methodSignatureOnly(Method method) {
         // Conform to the WCCM style
         StringBuffer sb = new StringBuffer();
         Class<?>[] methodParams = method.getParameterTypes();
@@ -1631,8 +1575,7 @@ public class MethodAttribUtils
         return sb.toString();
     }
 
-    public static final String mapTypeToJDIEncoding(Class<?> type)
-    {
+    public static final String mapTypeToJDIEncoding(Class<?> type) {
         String returnValue;
         String typeName = type.getName();
         if (type.isArray()) {
@@ -1666,8 +1609,7 @@ public class MethodAttribUtils
         return returnValue;
     }
 
-    public static final String jdiMethodSignature(Method method)
-    {
+    public static final String jdiMethodSignature(Method method) {
         StringBuffer sb = new StringBuffer();
         Class<?>[] methodParams = method.getParameterTypes();
         sb.append("(");
@@ -1688,8 +1630,7 @@ public class MethodAttribUtils
      * are identical except for the abstract modifier on the remote
      * interface method.
      */
-    public static final boolean methodsEqual(Method remoteMethod, Method beanMethod)
-    {
+    public static final boolean methodsEqual(Method remoteMethod, Method beanMethod) {
         if ((remoteMethod == null) || (beanMethod == null)) {
             return false;
         }
@@ -1739,8 +1680,7 @@ public class MethodAttribUtils
      * the same parameters.
      */
     public static final boolean homeMethodEquals(Method homeMethod,
-                                                 Properties beanMethodProps)
-    {
+                                                 Properties beanMethodProps) {
         if ((homeMethod == null) || (beanMethodProps == null)) {
             return false;
         }
@@ -1761,8 +1701,7 @@ public class MethodAttribUtils
         //-------------------------
 
         Class<?> homeMethodParamTypes[] = homeMethod.getParameterTypes();
-        String beanMethodParamTypes[] =
-                        (String[]) beanMethodProps.get("ArgumentTypes");
+        String beanMethodParamTypes[] = (String[]) beanMethodProps.get("ArgumentTypes");
 
         if (homeMethodParamTypes.length != beanMethodParamTypes.length) {
             return false;
@@ -1789,13 +1728,13 @@ public class MethodAttribUtils
      * Map transaction attribute value to string.
      */
     public static final String TX_ATTR_STR[] = {
-                                                "TX_NOT_SUPPORTED", // 0
-                                                "TX_BEAN_MANAGED", // 1
-                                                "TX_REQUIRED", // 2
-                                                "TX_SUPPORTS", // 3
-                                                "TX_REQUIRES_NEW", // 4
-                                                "TX_MANDATORY", // 5
-                                                "TX_NEVER" // 6
+                                                 "TX_NOT_SUPPORTED", // 0
+                                                 "TX_BEAN_MANAGED", // 1
+                                                 "TX_REQUIRED", // 2
+                                                 "TX_SUPPORTS", // 3
+                                                 "TX_REQUIRES_NEW", // 4
+                                                 "TX_MANDATORY", // 5
+                                                 "TX_NEVER" // 6
     };
 
     /**
@@ -1803,15 +1742,13 @@ public class MethodAttribUtils
      */
     private static String[] ISOLATION_STR;
 
-    public static final String getIsolationLevelString(int isolationLevel)
-    {
+    public static final String getIsolationLevelString(int isolationLevel) {
         if (isolationLevel >= 0 && isolationLevel < ISOLATION_STR.length)
             return ISOLATION_STR[isolationLevel];
         return "-- ILLEGAL ISOLATION LEVEL --";
     }
 
-    private static final void populateIsoStringMap()
-    {
+    private static final void populateIsoStringMap() {
         ISOLATION_STR = new String[9];
         for (int i = 0; i < ISOLATION_STR.length; i++)
             ISOLATION_STR[i] = "-- ILLEGAL ISOLATION LEVEL --";
@@ -1822,8 +1759,7 @@ public class MethodAttribUtils
         ISOLATION_STR[java.sql.Connection.TRANSACTION_NONE] = "TRANSACTION_NONE";
     }
 
-    private static final void populateTxMofMap()
-    {
+    private static final void populateTxMofMap() {
         txMOFMap = new TransactionAttribute[7];
         txMOFMap[ContainerTransaction.TRANS_ATTRIBUTE_NOT_SUPPORTED] = TransactionAttribute.TX_NOT_SUPPORTED;
         txMOFMap[ContainerTransaction.TRANS_ATTRIBUTE_SUPPORTS] = TransactionAttribute.TX_SUPPORTS;
@@ -1835,8 +1771,7 @@ public class MethodAttribUtils
 
     private static TransactionAttribute txMOFMap[];
 
-    private static final void populateTxAttrFromJEE15Map()
-    {
+    private static final void populateTxAttrFromJEE15Map() {
         txAttrFromJEE15Map = new TransactionAttribute[6];
         txAttrFromJEE15Map[javax.ejb.TransactionAttributeType.NOT_SUPPORTED.ordinal()] = TransactionAttribute.TX_NOT_SUPPORTED;
         txAttrFromJEE15Map[javax.ejb.TransactionAttributeType.SUPPORTS.ordinal()] = TransactionAttribute.TX_SUPPORTS;
@@ -1854,11 +1789,11 @@ public class MethodAttribUtils
     /**
      * Fills a specified long array with data from the @AccessTimeout annotation for each
      * of the business methods of a specified Singleton or Stateful session bean. <p>
-     * 
+     *
      * See "4.8.4.5 Specification of Concurrency Locking Attributes with Metadata Annotations"
      * for rules regarding the merge of xml and annotation data for the method
      * access timeout.
-     * 
+     *
      * <dl>
      * <dt>pre-conditions
      * <dd>For each ejbMethods[i], timeouts[i] is required to be initialized
@@ -1871,101 +1806,78 @@ public class MethodAttribUtils
      * the specified default value required by EJB specification (-1 starting in EE6
      * and 0 for EE5 Compatibility).
      * </dl>
-     * 
-     * @param timeouts
-     *            is the array of timeout values to be filled with annotation values.
-     * @param ejbMethods
-     *            is the array of business methods of the session bean.
-     * @param defaultTimeout
-     *            is the default AccessTimeout to be used if not specified.
-     * @param metadataComplete
-     *            is the metadata-complete setting applicable to the session bean.
-     * 
+     *
+     * @param timeouts         is the array of timeout values to be filled with annotation values.
+     * @param ejbMethods       is the array of business methods of the session bean.
+     * @param defaultTimeout   is the default AccessTimeout to be used if not specified.
+     * @param metadataComplete is the metadata-complete setting applicable to the session bean.
+     *
      * @throws EJBConfigurationException
-     * 
+     *
      * @see javax.ejb.AccessTimeout
      */
-    // F743-1752.1 added entire method.
     public static void getAnnotationCMCLockAccessTimeout(long[] timeouts,
                                                          Method[] ejbMethods,
                                                          long defaultTimeout,
-                                                         boolean metadataComplete)
-                    throws EJBConfigurationException // F743-1752CodRev
-    {
+                                                         boolean metadataComplete) throws EJBConfigurationException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
-        if (isTraceOn && tc.isEntryEnabled())
-        {
+        if (isTraceOn && tc.isEntryEnabled()) {
             Tr.entry(tc, "getAnnotationCMCLockAccessTimeout: "
-                         + " methods = " + Arrays.toString(ejbMethods)); //F743-7027.1
+                         + " methods = " + Arrays.toString(ejbMethods));
         }
 
         // For each of the business methods, determine the access timeout
         // value to use if not already set by the ejb-jar.xml processing.
-        for (int i = 0; i < ejbMethods.length; i++)
-        {
+        for (int i = 0; i < ejbMethods.length; i++) {
             Method beanMethod = ejbMethods[i];
 
             // Only use the value from annotations if it is not already set
             // from value in ejb-jar.xml (e.g. obtained via WCCM).
-            if (timeouts[i] == -2)
-            {
+            if (timeouts[i] == -2) {
                 // ejb-jar.xml did not contain the lock type for this method.
                 // Only change if metadata complete is false.
-                // EJB 2.1 remove method (null) has no annotation.        F743-22642
-                if (metadataComplete == false && beanMethod != null)
-                {
+                // EJB 2.1 remove method (null) has no annotation.
+                if (metadataComplete == false && beanMethod != null) {
                     // metadata complete is false, so see if there is a @AccessTimeout
                     // annotation on this method.
                     AccessTimeout annotation = beanMethod.getAnnotation(AccessTimeout.class);
-                    if (annotation == null)
-                    {
+                    if (annotation == null) {
                         // No @AccessTimeout annotation on method, see if there is one at class level of
                         // the class that declared this method object.
                         Class<?> c = beanMethod.getDeclaringClass();
                         annotation = c.getAnnotation(AccessTimeout.class);
 
-                        if (isTraceOn && tc.isDebugEnabled() && annotation != null)
-                        {
+                        if (isTraceOn && tc.isDebugEnabled() && annotation != null) {
                             Tr.debug(tc, beanMethod.getName() + " from class " + c.getName());
                         }
                     }
 
                     // Did we find a @AccessTimeout annotation at method or class level?
-                    if (annotation != null)
-                    {
-                        // F743-1752CodRev start
+                    if (annotation != null) {
                         // Use value from @AccessTimeout annotation provided it is
                         // a valid value (must be -1 or greater).
-                        long value = annotation.value(); // F743-7027
-                        TimeUnit unit = annotation.unit(); // F743-7027
+                        long value = annotation.value();
+                        TimeUnit unit = annotation.unit();
 
-                        if (value < -1 || value == Long.MAX_VALUE) // F743-7027
-                        {
+                        if (value < -1 || value == Long.MAX_VALUE) {
                             // CNTR0192E: The access timeout value {0} is not valid for the enterprise
                             // bean {1} method of the {2} class. The value must be -1 or greater and
                             // less than java.lang.Long.MAX_VALUE (9223372036854775807).
-                            Tr.error(tc, "SINGLETON_INVALID_ACCESS_TIMEOUT_CNTR0192E"
-                                     , new Object[] { value, beanMethod.getName(), beanMethod.getDeclaringClass().getName() });
+                            Tr.error(tc, "SINGLETON_INVALID_ACCESS_TIMEOUT_CNTR0192E", new Object[] { value, beanMethod.getName(), beanMethod.getDeclaringClass().getName() });
 
                             throw new EJBConfigurationException("CNTR0192E: @AccessTimeout annotation value " + value +
                                                                 " is not valid for the enterprise bean " + beanMethod.getName() +
                                                                 " method of the " + beanMethod.getDeclaringClass().getName() +
                                                                 " class. The value must be -1 or greater and less than" +
                                                                 " java.lang.Long.MAX_VALUE (9223372036854775807).");
-                        }
-                        else if (value > 0)
-                        {
+                        } else if (value > 0) {
                             // Valid value, convert to milli-seconds if necessary.
-                            if (unit == TimeUnit.MILLISECONDS) // F743-7027
-                            {
+                            if (unit == TimeUnit.MILLISECONDS) {
                                 timeouts[i] = value;
-                            }
-                            else
-                            {
-                                timeouts[i] = TimeUnit.MILLISECONDS.convert(value, unit); // F743-6605.1
+                            } else {
+                                timeouts[i] = TimeUnit.MILLISECONDS.convert(value, unit);
                                 // Throw exception if conversion resulted in an overflow. The assumption
                                 // is pre-conditions are honored by caller of this method.
-                                // begin F743-6605.1
                                 if (timeouts[i] == Long.MAX_VALUE || timeouts[i] == Long.MIN_VALUE) {
                                     // CNTR0196E: The conversion of access timeout value {0} from {1} time
                                     // unit to
@@ -1979,28 +1891,21 @@ public class MethodAttribUtils
                                     throw new EJBConfigurationException("Conversion of access timeout value of " + value + " " + unit
                                                                         + " to milliseconds resulted in overflow.");
                                 }
-                                // end F743-6605.1
                             }
-                        } // F743-1752CodRev end
-                        else
-                        {
-                            timeouts[i] = value; // special value -1 or 0  F743-21028.5
+                        } else {
+                            timeouts[i] = value; // special value -1 or 0
                         }
-                    }
-                    else
-                    {
-                        timeouts[i] = defaultTimeout; // set default  F743-21028.5 F743-22462
+                    } else {
+                        timeouts[i] = defaultTimeout; // set default
                     }
                 } // if !metadataComplete
-                else
-                {
-                    timeouts[i] = defaultTimeout; // set default     F743-21028.5 F743-22462
+                else {
+                    timeouts[i] = defaultTimeout; // set default
                 }
             }
         }
 
-        if (isTraceOn && tc.isEntryEnabled())
-        {
+        if (isTraceOn && tc.isEntryEnabled()) {
             Tr.exit(tc, "getAnnotationCMCLockAccessTimeout", Arrays.toString(timeouts));
         }
     }
@@ -2010,7 +1915,7 @@ public class MethodAttribUtils
      * of the business methods of a specified Singleton session bean.
      * See "4.8.4.5 Specification of Concurrency Locking Attributes with Metadata Annotations"
      * for rules regarding the merge of xml and annotation data for the method lock type.
-     * 
+     *
      * <dl>
      * <dt>pre-conditions
      * <dd>For each ejbMethods[i], lockType[i] is required to be initialized
@@ -2022,25 +1927,19 @@ public class MethodAttribUtils
      * lockType[i] is set to either the value obtained from @Lock annotation or
      * the default value required by EJB specification (LockType.WRITE).
      * </dl>
-     * 
-     * @param lockType
-     *            is the array of LockType objects to be filled with annotation values. *
-     * @param ejbMethods
-     *            is the array of business methods of the Singleton session bean.
-     * @param bmd
-     *            is the BeanMetaData for the Singleton session bean.
-     * 
+     *
+     * @param lockType   is the array of LockType objects to be filled with annotation values. *
+     * @param ejbMethods is the array of business methods of the Singleton session bean.
+     * @param bmd        is the BeanMetaData for the Singleton session bean.
+     *
      * @see javax.ejb.Lock
      * @see javax.ejb.LockType
      */
-    // F743-1752.1 added entire method.
-    public static void getAnnotationCMCLockType(LockType[] lockType, Method[] ejbMethods, BeanMetaData bmd)
-    {
+    public static void getAnnotationCMCLockType(LockType[] lockType, Method[] ejbMethods, BeanMetaData bmd) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
-        if (isTraceOn && tc.isEntryEnabled())
-        {
+        if (isTraceOn && tc.isEntryEnabled()) {
             Tr.entry(tc, "getAnnotationCMCLockType: "
-                         + " methods = " + Arrays.toString(ejbMethods)); //F743-7027.1
+                         + " methods = " + Arrays.toString(ejbMethods));
         }
 
         LockType methodLockType = null;
@@ -2048,47 +1947,37 @@ public class MethodAttribUtils
 
         // For each of the business methods, determine the lock type
         // value to use if not already set by the ejb-jar.xml processing.
-        for (int i = 0; i < ejbMethods.length; i++)
-        {
+        for (int i = 0; i < ejbMethods.length; i++) {
             Method beanMethod = ejbMethods[i];
 
             // Only use the value from annotations if it is not already set
             // from value in ejb-jar.xml (e.g. obtained via WCCM).
             methodLockType = lockType[i];
-            if (methodLockType == null)
-            {
+            if (methodLockType == null) {
                 // ejb-jar.xml did not contain the lock type for this method.
                 // Metadata complete in XML?
-                if (metadataComplete)
-                {
+                if (metadataComplete) {
                     // metadata complete is true in ejb-jar.xml file, so use the default value for LockType.
                     methodLockType = LockType.WRITE;
-                }
-                else
-                {
+                } else {
                     // metadata complete is false, so see if there is a @Lock annotation on this method.
                     Lock annotation = beanMethod.getAnnotation(Lock.class);
-                    if (annotation == null)
-                    {
+                    if (annotation == null) {
                         // No @Lock annotation on method, see if there is one at class level of
                         // the class that declared this method object.
                         Class<?> c = beanMethod.getDeclaringClass();
                         annotation = c.getAnnotation(Lock.class);
 
-                        if (isTraceOn && tc.isDebugEnabled() && annotation != null)
-                        {
+                        if (isTraceOn && tc.isDebugEnabled() && annotation != null) {
                             Tr.debug(tc, beanMethod.getName() + " from class " + c.getName());
                         }
                     }
 
                     // Did we find a @Lock annotation at method or class level?
-                    if (annotation == null)
-                    {
+                    if (annotation == null) {
                         // no @Lock annotation found, so use default lock type.
                         methodLockType = LockType.WRITE;
-                    }
-                    else
-                    {
+                    } else {
                         // there is a @Lock annotation, so use it.
                         methodLockType = annotation.value();
                     }
@@ -2096,16 +1985,14 @@ public class MethodAttribUtils
                 } // end if ( metadataComplete )
 
                 // Set the lock type for this method as determined by above logic.
-                lockType[i] = methodLockType; //F743-1752CodRev
+                lockType[i] = methodLockType;
 
-                if (isTraceOn && tc.isDebugEnabled())
-                {
+                if (isTraceOn && tc.isDebugEnabled()) {
                     Tr.debug(tc, beanMethod.getName() + " = " + methodLockType);
                 }
 
             } // end if ( methodLockType == null )
-            else
-            {
+            else {
                 // The ejb-jar.xml did specify a lock type for this method. Check
                 // to see if overriding an explicit lock ty0e specified by the
                 // Bean Provider via annotation.  EJB spec that DD should not
@@ -2116,12 +2003,10 @@ public class MethodAttribUtils
                 // annotations. So we will doing nothing more that trace the fact
                 // that it occured.
                 boolean traceEnabled = isTraceOn && (tcDebug.isDebugEnabled() || tc.isDebugEnabled());
-                if (traceEnabled)
-                {
+                if (traceEnabled) {
                     // Is there an annotation for this method to use?
                     Lock annotation = beanMethod.getAnnotation(Lock.class);
-                    if (annotation == null)
-                    {
+                    if (annotation == null) {
                         // No, is one specified at declaring class level for this method?
                         Class<?> c = beanMethod.getDeclaringClass();
                         annotation = c.getAnnotation(Lock.class);
@@ -2131,27 +2016,20 @@ public class MethodAttribUtils
                     // be a different value, then we want to trace that it was changed since it could
                     // potentially be causing an application failure.  It could also be fixing an
                     // application error, which is why we only trace the occurance.
-                    if (annotation != null && (annotation.value().equals(methodLockType) == false))
-                    {
+                    if (annotation != null && (annotation.value().equals(methodLockType) == false)) {
                         // Change in lock type, build a warning message and trace it.
                         String msg;
-                        if (methodLockType == LockType.WRITE)
-                        {
+                        if (methodLockType == LockType.WRITE) {
                             msg = "ejb-jar.xml is overriding a @Lock(READ) with a write lock. This may cause a deadlock to occur.";
-                        }
-                        else
-                        {
+                        } else {
                             msg = "ejb-jar.xml is overriding a @Lock(WRITE) with a read lock. This may cause data integrity problems.";
                         }
                         StringBuilder sb = new StringBuilder();
                         sb.append("warning, for the ").append(beanMethod.toString()).append(" method, the ").append(msg);
 
-                        if (tcDebug.isDebugEnabled())
-                        {
+                        if (tcDebug.isDebugEnabled()) {
                             Tr.debug(tcDebug, sb.toString());
-                        }
-                        else
-                        {
+                        } else {
                             Tr.debug(tc, sb.toString());
                         }
                     }
@@ -2159,8 +2037,7 @@ public class MethodAttribUtils
             }
         } // end for
 
-        if (isTraceOn && tc.isEntryEnabled())
-        {
+        if (isTraceOn && tc.isEntryEnabled()) {
             Tr.exit(tc, "getAnnotationCMCLockType", Arrays.toString(lockType));
         }
     }
@@ -2191,7 +2068,7 @@ public class MethodAttribUtils
      * Since the <concurrent-method> can occur zero to n times, this method fills a specified
      * LockType array with data from each <lock> stanza that occurs for a specified method
      * of a specified singleton session bean.
-     * 
+     *
      * <dl>
      * <dt>pre-conditions
      * <dd>For each ejbMethods[i], lockType[i] is required to be initialized to null.
@@ -2199,28 +2076,23 @@ public class MethodAttribUtils
      * <dd>For each ejbMethods[i], lockType[i] is set to either the value obtained
      * from the <lock> stanza in DD or to null if DD does not contain a value for this method.
      * </dl>
-     * 
-     * @param lockType
-     *            is the array of LockType objects to be filled with annotation values.
-     * 
-     * @param ejbMethods
-     *            is the array of business methods of the Singleton session bean.
-     * 
-     * @param sessionBean
-     *            is the non null reference to the WCCM Session object for the singleton
-     *            session bean. Do not call this method with a null reference since there
-     *            is no WCCM data to process when null.
-     * 
+     *
+     * @param lockType    is the array of LockType objects to be filled with annotation values.
+     *
+     * @param ejbMethods  is the array of business methods of the Singleton session bean.
+     *
+     * @param sessionBean is the non null reference to the WCCM Session object for the singleton
+     *                        session bean. Do not call this method with a null reference since there
+     *                        is no WCCM data to process when null.
+     *
      * @see javax.ejb.Lock
      * @see javax.ejb.LockType
      */
-    // F743-7027 added entire method.
-    public static void getXMLCMCLockType(LockType[] lockType, Method[] ejbMethods, Session sessionBean)
-    {
+    public static void getXMLCMCLockType(LockType[] lockType, Method[] ejbMethods, Session sessionBean) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "getXMLCMCLockType: " + sessionBean.getEjbClassName()
-                         + " methods = " + Arrays.toString(ejbMethods)); //F743-7027.1
+                         + " methods = " + Arrays.toString(ejbMethods));
 
         // Create an array of ints that will hold the highest priority
         // style of <lock> stanza configured for each method.  The priority
@@ -2233,32 +2105,28 @@ public class MethodAttribUtils
         //  3 - style three is the case where both method name and parameters are specified.
         //      This style is required by spec to override any style 1 or 2 configured for the bean.
 
-        int numberOfEjbMethods = ejbMethods.length; //F743-7027CodRev
-        int[] highestStyleOnMethod = new int[numberOfEjbMethods]; //F743-7027CodRev
+        int numberOfEjbMethods = ejbMethods.length;
+        int[] highestStyleOnMethod = new int[numberOfEjbMethods];
 
         // Get the list of WCCM ConcurrentMethod objects configured for this
         // singleton session bean and its enterprise bean name. There is one ConcurrentMethod
         // object created for each <lock> stanza that exists in DD.
 
         String enterpriseBeanName = sessionBean.getName();
-        //F00743.9717
         List<ConcurrentMethod> cmcMethodList = sessionBean.getConcurrentMethods();
 
         // For each of WCCM ConcurrentMethod objects, determine which EJB methods this
         // ConcurrentMethod object applies to and set the lock type in the lockType array
         // passed to this method by the caller.
-        int numberOfCmcMethods = cmcMethodList.size(); //F743-7027CodRev
-        for (int i = 0; i < numberOfCmcMethods; i++) //F743-7027CodRev
-        {
+        int numberOfCmcMethods = cmcMethodList.size();
+        for (int i = 0; i < numberOfCmcMethods; i++) {
             // Get the WCCM ConcurrentLockType, NamedMethod, and MethodParams objects
             // from the WCCM ConcurrentMethod object being processed in this iteration.
-            //F00743.9717
             ConcurrentMethod cmcMethod = cmcMethodList.get(i);
             int cmcLockType = cmcMethod.getLockTypeValue();
 
             // Process lock type if DD provided one for this ConcurrentMethod object.
-            if (cmcLockType != ConcurrentMethod.LOCK_TYPE_UNSPECIFIED)
-            {
+            if (cmcLockType != ConcurrentMethod.LOCK_TYPE_UNSPECIFIED) {
                 NamedMethod namedMethod = cmcMethod.getMethod();
                 List<String> parms = namedMethod.getMethodParamList();
 
@@ -2266,34 +2134,26 @@ public class MethodAttribUtils
                 // Assumption here is WCCM parser error occurs and application does not install
                 // if invalid value was coded (something other than Read or Write).
                 LockType methodLockType = null;
-                //F00743.9717
-                if (cmcLockType == ConcurrentMethod.LOCK_TYPE_READ)
-                {
+                if (cmcLockType == ConcurrentMethod.LOCK_TYPE_READ) {
                     methodLockType = LockType.READ;
-                }
-                else if (cmcLockType == ConcurrentMethod.LOCK_TYPE_WRITE)
-                {
+                } else if (cmcLockType == ConcurrentMethod.LOCK_TYPE_WRITE) {
                     methodLockType = LockType.WRITE;
                 }
 
                 // Now determine whether ConcurrentMethod is a style 1, 2, or 3 configuration
                 // and update lockType array with method lock type as appropriate.
                 String cmcMethodName = namedMethod.getMethodName().trim();
-                if (isTraceOn && tc.isDebugEnabled()) //F743-7027.1
-                {
-                    Tr.debug(tc, cmcMethodName + " LockType = " + methodLockType); //F743-7027.1
+                if (isTraceOn && tc.isDebugEnabled()) {
+                    Tr.debug(tc, cmcMethodName + " LockType = " + methodLockType);
                 }
-                if (cmcMethodName.equals("*"))
-                {
+                if (cmcMethodName.equals("*")) {
                     // style type 1 -- update all entries in lockType array that was not
                     // previously set by either a style 2 or 3 configuration.
                     // The EJB spec is silent on whether more than one style 1 can be specified
                     // for the same singleton session bean.  Our assumption is the last style 1 is used.
-                    for (int j = 0; j < numberOfEjbMethods; ++j) //F743-7027CodRev
-                    {
+                    for (int j = 0; j < numberOfEjbMethods; ++j) {
                         Method m = ejbMethods[j];
-                        if (highestStyleOnMethod[j] <= 1)
-                        {
+                        if (highestStyleOnMethod[j] <= 1) {
                             if (isTraceOn && tc.isDebugEnabled())
                                 trace(m, enterpriseBeanName,
                                       "Style 1 - replacing " + lockType[j] + " lock type with " + methodLockType);
@@ -2302,22 +2162,17 @@ public class MethodAttribUtils
                             highestStyleOnMethod[j] = 1;
                         }
                     }
-                }
-                else if (parms == null)
-                {
+                } else if (parms == null) {
                     // style type 2 -- update all entries in lockType array for a
                     // method with matching method name that was not previously
                     // set by a style 3 configuration.
                     // The EJB spec is silent on whether more than one style 2 can be specified
                     // for the same method.  Our assumption is the last style 2 is used.
-                    for (int j = 0; j < numberOfEjbMethods; ++j) //F743-7027CodRev
-                    {
-                        if (highestStyleOnMethod[j] <= 2)
-                        {
+                    for (int j = 0; j < numberOfEjbMethods; ++j) {
+                        if (highestStyleOnMethod[j] <= 2) {
                             Method m = ejbMethods[j];
-                            String methodName = m.getName(); //F743-7027.1
-                            if (cmcMethodName.equals(methodName)) //F743-7027.1
-                            {
+                            String methodName = m.getName();
+                            if (cmcMethodName.equals(methodName)) {
                                 if (isTraceOn && tc.isDebugEnabled())
                                     trace(m, enterpriseBeanName,
                                           "Style 2 - replacing " + lockType[j] + " lock type with " + methodLockType);
@@ -2327,21 +2182,16 @@ public class MethodAttribUtils
                             }
                         }
                     }
-                }
-                else
-                {
+                } else {
                     // style type 3 -- update only the lockType array entry with a
                     // matching method signature.
                     // The EJB spec is silent on whether more than one style 3 can be specified
                     // for the same method signature.  Our assumption is the last style 3 is used.
                     Method style3Method = DDUtil.findMethod(namedMethod, ejbMethods);
-                    if (style3Method != null) //F743-7027.1
-                    {
-                        for (int j = 0; j < numberOfEjbMethods; ++j) //F743-7027CodRev
-                        {
+                    if (style3Method != null) {
+                        for (int j = 0; j < numberOfEjbMethods; ++j) {
                             Method m = ejbMethods[j];
-                            if (style3Method.equals(m))
-                            {
+                            if (style3Method.equals(m)) {
                                 if (isTraceOn && tc.isDebugEnabled())
                                     trace(m, enterpriseBeanName,
                                           "Style 3 - replacing " + lockType[j] + " lock type with " + methodLockType);
@@ -2360,7 +2210,7 @@ public class MethodAttribUtils
         } // end for
 
         if (isTraceOn && tc.isEntryEnabled())
-            Tr.exit(tc, "getXMLCMCLockType: " + sessionBean.getEjbClassName(), Arrays.toString(lockType)); //F743-7027.1
+            Tr.exit(tc, "getXMLCMCLockType: " + sessionBean.getEjbClassName(), Arrays.toString(lockType));
     }
 
     /**
@@ -2389,7 +2239,7 @@ public class MethodAttribUtils
      * Since the <concurrent-method> can occur zero to n times, this method fills a specified
      * long array with data from each <access-timeout> stanza that occurs for a specified method
      * of a specified singleton session bean.
-     * 
+     *
      * <dl>
      * <dt>pre-conditions
      * <dd>For each ejbMethods[i], accessTimeouts[i] is required to be initialized to -2.
@@ -2397,31 +2247,25 @@ public class MethodAttribUtils
      * <dd>For each ejbMethods[i], accessTimeouts[i] is set to either the value obtained
      * from the <access-timeout> stanza in DD or to -2 if DD does not contain a value for this method.
      * </dl>
-     * 
-     * @param accessTimeouts
-     *            is the array of long values to be filled access timeout values in milli-seconds.
-     * 
-     * @param ejbMethods
-     *            is the array of business methods of the Singleton session bean.
-     * 
-     * @param sessionBean
-     *            is the non null reference to the WCCM Session object for the singleton
-     *            session bean. Do not call this method with a null reference since there
-     *            is no WCCM data to process when null.
-     * 
+     *
+     * @param accessTimeouts is the array of long values to be filled access timeout values in milli-seconds.
+     *
+     * @param ejbMethods     is the array of business methods of the Singleton session bean.
+     *
+     * @param sessionBean    is the non null reference to the WCCM Session object for the singleton
+     *                           session bean. Do not call this method with a null reference since there
+     *                           is no WCCM data to process when null.
+     *
      * @throws EJBConfigurationException if the DD contains a <access-timeout> value that is invalid
-     *             or results in overflow when conversion from the specified unit to milli-seconds occurs.
-     * 
+     *                                       or results in overflow when conversion from the specified unit to milli-seconds occurs.
+     *
      * @see java.util.concurrent.TimeUnit
      */
-    // F743-7027 added entire method.
-    public static void getXMLCMCLockAccessTimeout(long[] accessTimeouts, Method[] ejbMethods, Session sessionBean)
-                    throws EJBConfigurationException
-    {
+    public static void getXMLCMCLockAccessTimeout(long[] accessTimeouts, Method[] ejbMethods, Session sessionBean) throws EJBConfigurationException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "getXMLCMCLockAccessTimeout: " + sessionBean.getEjbClassName()
-                         + " methods = " + Arrays.toString(ejbMethods)); //F743-7027.1
+                         + " methods = " + Arrays.toString(ejbMethods));
 
         // Create an array of ints that will hold the highest priority
         // style of <access-timeout> stanza configured for each method.  The priority
@@ -2434,64 +2278,54 @@ public class MethodAttribUtils
         //  3 - style three is the case where both method name and parameters are specified.
         //      This style is required by spec to override any style 1 or 2 configured for the bean.
 
-        int numberOfEjbMethods = ejbMethods.length; //F743-7027CodRev
-        int[] highestStyleOnMethod = new int[numberOfEjbMethods]; //F743-7027CodRev
+        int numberOfEjbMethods = ejbMethods.length;
+        int[] highestStyleOnMethod = new int[numberOfEjbMethods];
 
         // Get the list of WCCM ConcurrentMethod objects configured for this
         // singleton session bean and its enterprise bean name. There is one ConcurrentMethod
         // object created for each <lock> stanza that exists in DD.
         String enterpriseBeanName = sessionBean.getName();
 
-        //F00743.9717
         List<ConcurrentMethod> cmcMethodList = sessionBean.getConcurrentMethods();
 
         // For each of WCCM ConcurrentMethod objects, determine which EJB methods this
         // ConcurrentMethod object applies to and set the access timeout in the array
         // passed to this method by the caller.
-        int numberOfCmcMethods = cmcMethodList.size(); //F743-7027CodRev
-        for (int i = 0; i < numberOfCmcMethods; i++) //F743-7027CodRev
-        {
+        int numberOfCmcMethods = cmcMethodList.size();
+        for (int i = 0; i < numberOfCmcMethods; i++) {
             // Get the WCCM AccessTimeout, NamedMethod, and MethodParams objects
             // from the WCCM ConcurrentMethod object being processed in this iteration.
-            //F00743.9717
             ConcurrentMethod cmcMethod = cmcMethodList.get(i);
             com.ibm.ws.javaee.dd.ejb.AccessTimeout accessTimeout = cmcMethod.getAccessTimeout();
             NamedMethod namedMethod = cmcMethod.getMethod();
             List<String> parms = namedMethod.getMethodParamList();
 
             // If access timeout configured via xml, then process it.
-            if (accessTimeout != null)
-            {
+            if (accessTimeout != null) {
                 long timeout;
                 long value = accessTimeout.getTimeout();
                 String cmcMethodName = namedMethod.getMethodName().trim();
-                if (isTraceOn && tc.isDebugEnabled()) //F743-7027.1
-                    Tr.debug(tc, cmcMethodName + " AccessTimeout value = " + value); //F743-7027.1
+                if (isTraceOn && tc.isDebugEnabled())
+                    Tr.debug(tc, cmcMethodName + " AccessTimeout value = " + value);
 
                 // Validate configured value and process it.
-                if (value < -1 || value == Long.MAX_VALUE)
-                {
+                if (value < -1 || value == Long.MAX_VALUE) {
                     // CNTR0192E: The access timeout value {0} is not valid for the enterprise
                     // bean {1} method of the {2} class. The value must be -1 or greater and
                     // less than java.lang.Long.MAX_VALUE (9223372036854775807).
                     String className = sessionBean.getEjbClassName();
-                    Tr.error(tc, "SINGLETON_INVALID_ACCESS_TIMEOUT_CNTR0192E"
-                             , new Object[] { value, cmcMethodName, className });
+                    Tr.error(tc, "SINGLETON_INVALID_ACCESS_TIMEOUT_CNTR0192E", new Object[] { value, cmcMethodName, className });
 
                     throw new EJBConfigurationException("CNTR0192E: The access timeout value " + value +
                                                         " is not valid for the enterprise bean " + cmcMethodName +
                                                         " method of the " + className +
                                                         " class. The value must be -1 or greater and less" +
                                                         " than java.lang.Long.MAX_VALUE (9223372036854775807).");
-                }
-                else if (value > 0)
-                {
-                    //F00743.9717
+                } else if (value > 0) {
                     // Map the access timeout unit into a milli-second unit.
                     TimeUnit tu = accessTimeout.getUnitValue();
-                    timeout = TimeUnit.MILLISECONDS.convert(value, tu); // F743-6605.1
+                    timeout = TimeUnit.MILLISECONDS.convert(value, tu);
 
-                    // begin F743-6605.1
                     if (timeout == Long.MAX_VALUE || timeout == Long.MIN_VALUE) {
                         // CNTR0196E: The conversion of access timeout value {0} from {1} time
                         // unit to milliseconds time unit resulted in an overflow.
@@ -2504,26 +2338,20 @@ public class MethodAttribUtils
                         throw new EJBConfigurationException("Conversion of access timeout value of " + value + " " + tu
                                                             + " to milliseconds resulted in overflow.");
                     }
-                    // end F743-6605.1
-                }
-                else
-                {
-                    timeout = value; // special value -1 or 0        F743-21028.5
+                } else {
+                    timeout = value; // special value -1 or 0
                 }
 
                 // Determine if ConcurrentMethod is a style 1, 2, or 3 configuration and update
                 // access timeout array with the method access timeout value specified.
                 // The EJB spec is silent on whether more than one style 1 can be specified
                 // for the singleton session bean.  Our assumption is the last style 1 is used.
-                if (cmcMethodName.equals("*"))
-                {
+                if (cmcMethodName.equals("*")) {
                     // style type 1 -- update all entries in access timeout array that was not
                     // previously set by either a style 2 or 3 configuration.
-                    for (int j = 0; j < numberOfEjbMethods; ++j) //F743-7027CodRev
-                    {
+                    for (int j = 0; j < numberOfEjbMethods; ++j) {
                         Method m = ejbMethods[j];
-                        if (highestStyleOnMethod[j] <= 1)
-                        {
+                        if (highestStyleOnMethod[j] <= 1) {
                             if (isTraceOn && tc.isDebugEnabled())
                                 trace(m, enterpriseBeanName,
                                       "Style 1 - replacing access timeout value of " + accessTimeouts[j] + " with " + timeout);
@@ -2532,21 +2360,15 @@ public class MethodAttribUtils
                             highestStyleOnMethod[j] = 1;
                         }
                     }
-                }
-                else if (parms == null)
-                {
+                } else if (parms == null) {
                     // style type 2 -- update all entries in access timeout array for a method
                     // with matching method name that was not previously set by a style 3 configuration.
                     // The EJB spec is silent on whether more than one style 2 can be specified
                     // for the same method name.  Our assumption is the last style 2 is used.
-                    for (int j = 0; j < numberOfEjbMethods; ++j) //F743-7027CodRev
-                    {
-                        if (highestStyleOnMethod[j] <= 2)
-                        {
+                    for (int j = 0; j < numberOfEjbMethods; ++j) {
+                        if (highestStyleOnMethod[j] <= 2) {
                             Method m = ejbMethods[j];
-                            String methodName = m.getName(); //F743-7027.1
-                            if (cmcMethodName.equals(methodName)) //F743-7027.1
-                            {
+                            if (m != null && cmcMethodName.equals(m.getName())) {
                                 if (isTraceOn && tc.isDebugEnabled())
                                     trace(m, enterpriseBeanName,
                                           "Style 2 - replacing access timeout value of " + accessTimeouts[j] + " with " + timeout);
@@ -2556,21 +2378,16 @@ public class MethodAttribUtils
                             }
                         }
                     }
-                }
-                else
-                {
+                } else {
                     // style type 3 -- update only the access timeout array entry with a
                     // matching method signature. style 3 always overrides style 1 and 2.
                     // The EJB spec is silent on whether more than one style 3 can be specified
                     // for the same method.  Our assumption is the last style 3 is used.
                     Method style3Method = DDUtil.findMethod(namedMethod, ejbMethods);
-                    if (style3Method != null) //F743-7027.1
-                    {
-                        for (int j = 0; j < numberOfEjbMethods; ++j) //F743-7027CodRev
-                        {
+                    if (style3Method != null) {
+                        for (int j = 0; j < numberOfEjbMethods; ++j) {
                             Method m = ejbMethods[j];
-                            if (style3Method.equals(m))
-                            {
+                            if (style3Method.equals(m)) {
                                 if (isTraceOn && tc.isDebugEnabled())
                                     trace(m, enterpriseBeanName,
                                           "Style 3 - replacing access timeout value of " + accessTimeouts[j] + " with " + timeout);
@@ -2596,7 +2413,7 @@ public class MethodAttribUtils
     /**
      * Converts a specified javax.util.concurrent.TimeUnit into a value that is in
      * javax.util.concurrent.TimeUnit.MILLISECONDS time units.
-     * 
+     *
      * <dl>
      * <dt>pre-conditions
      * <dd>
@@ -2604,23 +2421,21 @@ public class MethodAttribUtils
      * <dd>
      * 0 < value parameter < Long.MAX_VALUE.
      * </dl>
-     * 
-     * @param value is the value to be converted. Since -1 has special meaning (infinite),
-     *            return without converting.
-     * 
-     * @param unit is the javax.util.concurrent.TimeUnit that value parameter currently is.
-     * 
+     *
+     * @param value      is the value to be converted. Since -1 has special meaning (infinite),
+     *                       return without converting.
+     *
+     * @param unit       is the javax.util.concurrent.TimeUnit that value parameter currently is.
+     *
      * @param annotation is a flag indicating whether to issue the annotation-specific or the XML-specific msg
-     * 
-     * @param bmd is the BeanMetaData, used for the message, if issued.
-     * 
+     *
+     * @param bmd        is the BeanMetaData, used for the message, if issued.
+     *
      * @return
      *         timeout value in javax.util.concurrent.TimeUnit.MILLISECONDS units.
-     * 
+     *
      * @throws EJBConfigurationException is thrown if overflow occurs during conversion.
      */
-    // F743-7027 added entire method.
-    // F743-6605.1 streamlined method.
     public static long timeUnitToMillis(long value,
                                         TimeUnit unit,
                                         boolean annotation,
@@ -2641,30 +2456,26 @@ public class MethodAttribUtils
             if (timeout == Long.MAX_VALUE || timeout == Long.MIN_VALUE) {
                 Tr.error(tc, "STATEFUL_TIMEOUT_OVERFLOW_CNTR0309E",
                          new Object[] { bmd.getName(), bmd.getModuleMetaData().getName(),
-                                       bmd.getModuleMetaData().getApplicationMetaData().getName(),
-                                       value, unit });
+                                        bmd.getModuleMetaData().getApplicationMetaData().getName(),
+                                        value, unit });
                 throw new EJBConfigurationException("Conversion of stateful session timeout value of " +
                                                     value + " " + unit + " to milliseconds resulted in overflow.");
             }
 
-        }
-        else {
+        } else {
             if (timeout == 0) {
                 // 0 means no wait, represented internally as the nominal 1 millisecond
                 timeout = 1;
-            }
-            else if (timeout == -1) {
+            } else if (timeout == -1) {
                 // -1 indicates wait forever, represented internally as 0
                 timeout = 0L;
-            }
-            else {
+            } else {
 
                 // invalid (negative) timeout value
                 Object[] parms = new Object[] { bmd.getName(), bmd.getModuleMetaData().getName(), bmd.getModuleMetaData().getApplicationMetaData().getName(), timeout };
                 if (annotation) {
                     Tr.error(tc, "NEGATIVE_STATEFUL_TIMEOUT_ANN_CNTR0311E", parms);
-                }
-                else {
+                } else {
                     Tr.error(tc, "NEGATIVE_STATEFUL_TIMEOUT_XML_CNTR0312E", parms);
                 }
 

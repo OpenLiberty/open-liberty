@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2016 IBM Corporation and others.
+# Copyright (c) 2010, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -948,6 +948,14 @@ error.no.serialfilteragent=CWWKE0949E: Podany plik JAR agenta filtru szeregowego
 error.no.serialfilteragent.explanation=Podany plik JAR agenta filtru szeregowego nie istnieje lub nie mo\u017cna go odczyta\u0107.
 error.no.serialfilteragent.useraction= Sprawd\u017a, czy plik istnieje oraz czy bie\u017c\u0105cy u\u017cytkownik mo\u017ce go odczyta\u0107.
 
+error.package.extension=CWWKE0950E: Je\u015bli jest u\u017cywana opcja runnable, nazwa pliku archiwum musi ko\u0144czy\u0107 si\u0119 \u0142a\u0144cuchem .jar.
+error.package.extension.explanation=Je\u015bli podajesz opcj\u0119 --include=runnable, opcja --archive musi uwzgl\u0119dnia\u0107 rozszerzenie nazwy pliku ko\u0144cz\u0105ce si\u0119 \u0142a\u0144cuchem .jar.
+error.package.extension.useraction=Je\u015bli podajesz opcj\u0119 --include=runnable, w przypadku opcji --archive podaj nazw\u0119 pliku z rozszerzeniem nazwy pliku .jar.
+
+error.package.usr.jar=CWWKE0951E: Nazwa pliku archiwum nie mo\u017ce ko\u0144czy\u0107 si\u0119 rozszerzeniem nazwy pliku .jar, gdy u\u017cywana jest opcja usr.
+error.package.usr.jar.explanation=Opcja --archive nie mo\u017ce ko\u0144czy\u0107 si\u0119 rozszerzeniem nazwy pliku .jar, gdy okre\u015blona jest opcja --include=usr.
+error.package.usr.jar.useraction=Podaj nazw\u0119 pliku przy u\u017cyciu opcji --archive z rozszerzeniem nazwy pliku innym ni\u017c .jar, gdy jest u\u017cywana opcja --include=usr.
+
 info.serverStarting=Uruchamianie serwera {0}.
 info.serverStarted=Serwer {0} zosta\u0142 uruchomiony.
 info.serverStartedWithPID=Serwer {0} zosta\u0142 \
@@ -1013,6 +1021,8 @@ info.resumeFailedException=Wznawianie serwera {0} nie powiod\u0142o si\u0119. Sz
 info.resumingListeners.target=Wznawianie okre\u015blonych komponent\u00f3w docelowych serwera {0}.
 info.resumedListeners.target=Wznawianie okre\u015blonych komponent\u00f3w docelowych serwera {0} zosta\u0142o wykonane.
 info.resumeFailedException.target=Wznawianie okre\u015blonych komponent\u00f3w docelowych serwera {0} nie powiod\u0142o si\u0119. Szczeg\u00f3\u0142owe informacje znajduj\u0105 si\u0119 w dziennikach serwera.
+info.serverCommandAuthFailure=Komenda {0} nie powiod\u0142a si\u0119, poniewa\u017c proces nie m\u00f3g\u0142 usun\u0105\u0107 pliku {1}.
+info.serverCommandCommFailure=Komenda {0} nie powiod\u0142a si\u0119 ze wzgl\u0119du na b\u0142\u0105d komunikacji z serwerem.
 
 # For info.serverLaunch and info.serverVersion: 
 # {0} version (build and/or product name)
@@ -1044,3 +1054,4 @@ info.list.of.defined.servers=Nast\u0119puj\u0105ce serwery zosta\u0142y zdefinio
 info.communicate.server=Wyst\u0105pi\u0142 b\u0142\u0105d komunikacji \
 mi\u0119dzy komend\u0105 {0} i serwerem {1}.
 
+info.serialFilterLoaded=Za\u0142adowano agent filtru szeregowego.

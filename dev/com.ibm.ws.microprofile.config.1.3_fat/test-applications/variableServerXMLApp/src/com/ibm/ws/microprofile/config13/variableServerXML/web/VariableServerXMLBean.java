@@ -12,6 +12,8 @@ package com.ibm.ws.microprofile.config13.variableServerXML.web;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Optional;
+
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
@@ -59,6 +61,18 @@ public class VariableServerXMLBean {
     @Inject
     @ConfigProperty(name = "serverXMLChangeableKey")
     String changeableAppProperty;
+
+    @Inject
+    @ConfigProperty(name = "serverXMLDefaultKey1")
+    Optional<String> serverXMLDefaultKey1;
+
+    @Inject
+    @ConfigProperty(name = "serverXMLDefaultKey2")
+    Optional<String> serverXMLDefaultKey2;
+
+    @Inject
+    @ConfigProperty(name = "serverXMLDefaultKey2", defaultValue = "defaultValueFromAnnotation")
+    Optional<String> serverXMLDefaultKey2b;
 
     /**
      * Just a basic test that the key/value pair exists in the server.xml
@@ -115,5 +129,17 @@ public class VariableServerXMLBean {
      */
     public void appPropertiesAfterTest() throws Exception {
         assertEquals("updatedvalueinAppProperties", changeableAppProperty);
+    }
+
+    public void testDefaultVariableValueNotUsed() {
+        assertEquals("ValueFromBootstrapProperties", serverXMLDefaultKey1.get()); //should have come from bootstrap.properties (i.e. a System Property)
+    }
+
+    public void testDefaultVariableValueUsed() {
+        assertEquals("defaultValueFromVariable2", serverXMLDefaultKey2.get()); //should have come from server.xml variable with defaultValue
+    }
+
+    public void testDefaultValueNotUsed() {
+        assertEquals("defaultValueFromVariable2", serverXMLDefaultKey2b.get()); //should have come from server.xml variable with defaultValue ... despite there being a default on the annotation above
     }
 }

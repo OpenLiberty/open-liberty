@@ -13,6 +13,7 @@ package com.ibm.ws.rsadapter.jdbc.v42;
 import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLType;
 import java.util.Arrays;
 import java.util.Map;
@@ -43,7 +44,16 @@ public class WSJdbc42CallableStatement extends WSJdbc41CallableStatement impleme
 
     @Override
     public long getCompatibleUpdateCount() throws SQLException {
-        return mcf.jdbcDriverSpecVersion >= 42 ? stmtImpl.getLargeUpdateCount() : stmtImpl.getUpdateCount();
+        // KEEP CODE IN SYNC: This method is duplicated in WSJdbc42Statement, WSJdbc42PreparedStatement,
+        // and WSJdbc42CallableStatement because multiple inheritance isn't allowed.
+        if (mcf.jdbcDriverSpecVersion >= 42 && mcf.supportsGetLargeUpdateCount) {
+            try {
+                return stmtImpl.getLargeUpdateCount();
+            } catch (SQLFeatureNotSupportedException | UnsupportedOperationException notSupp) {
+                mcf.supportsGetLargeUpdateCount = false;
+            }
+        }
+        return stmtImpl.getUpdateCount();
     }
 
     @Override

@@ -15,16 +15,8 @@ package com.ibm.ws.microprofile.config13.interfaces;
  */
 public class Config13Constants {
 
-    /***** Taken from com.ibm.ws.config.xml.internal.XMLConfigConstants *****/
-    /** Property identifying prefix of configuration key */
-    public static final String CFG_CONFIG_PREFIX = "config.";
-
-    /** Property identifying the service prefix */
-    public static final String CFG_SERVICE_PREFIX = "service.";
-    /************************************************************************/
-
-    public static final String[] SYSTEM_PREFIXES = new String[] { CFG_CONFIG_PREFIX, CFG_SERVICE_PREFIX };
     public static final int APP_PROPERTY_ORDINAL = 600;
     public static final int SERVER_XML_VARIABLE_ORDINAL = 500;
+    public static final int SERVER_XML_DEFAULT_VARIABLE_ORDINAL = 1;
 
 }

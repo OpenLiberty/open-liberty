@@ -211,6 +211,13 @@ public abstract class ServerCommand {
         public boolean validateTarget(String targetServerUUID) {
             return targetServerUUID.equals(this.uuid);
         }
+
+        /**
+         * @return
+         */
+        public String getUUID() {
+            return this.uuid;
+        }
     }
 
 }

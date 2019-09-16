@@ -1,0 +1,42 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+javac.source: 1.8
+javac.target: 1.8
+
+Bundle-Name: Cloudant validator
+Bundle-SymbolicName: com.ibm.ws.rest.handler.validator.cloudant
+Bundle-Description: Cloudant validator; version=${bVersion}
+
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+
+WS-TraceGroup: rest.validation
+
+Private-Package:\
+  com.ibm.ws.rest.handler.validator.cloudant.*
+
+-dsannotations:\
+  com.ibm.ws.rest.handler.validator.cloudant.CloudantDatabaseValidator
+
+-buildpath:\
+  com.ibm.websphere.appserver.spi.kernel.service,\
+  com.ibm.websphere.appserver.spi.logging,\
+  com.ibm.websphere.org.osgi.core,\
+  com.ibm.websphere.org.osgi.service.cm,\
+  com.ibm.websphere.org.osgi.service.component,\
+  com.ibm.wsspi.org.osgi.service.component.annotations,\
+  com.ibm.ws.cloudant,\
+  com.ibm.ws.app.manager.lifecycle,\
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+  com.ibm.ws.resource;version=latest,\
+  com.ibm.ws.rest.handler.validator;version=latest

@@ -49,13 +49,25 @@ import componenttest.app.FATServlet;
 @WebServlet(urlPatterns = "/AsyncTestServlet")
 public class AsyncTestServlet extends FATServlet {
     private final static Logger _log = Logger.getLogger(AsyncTestServlet.class.getName());
-    private final static int TIMEOUT = 10;
-    private final static int MULTISTAGE_TIMEOUT = 40;
+    final static int TIMEOUT = 10;
+    final static int MULTISTAGE_TIMEOUT = 40;
 
     final static String URI_CONTEXT_ROOT = "http://localhost:" + Integer.getInteger("bvt.prop.HTTP_default") + "/asyncApp/";
 
     @Resource
     ExecutorService executor;
+
+    @Override
+    public void before() {
+        assertNotNull(executor);
+        App.executorService.compareAndSet(null, executor);
+    }
+
+    @Override
+    public void after() {
+        assertNotNull(executor);
+        App.executorService.compareAndSet(executor, null);
+    }
 
     /**
      * Tests multi-stage CompletionStage (async) from a Rest Client.

@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2019 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+-->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+    <OCD id="com.ibm.ws.security.oauth20.roles.metatype" ibm:alias="oauth-roles"
+         name="%oauthRoles" description="%oauthRoles.desc">
+        <AD id="authenticated" ibm:type="pid" ibm:reference="com.ibm.ws.security.oauth20.authenticated.role"
+            required="false" type="String" cardinality="2147483647" />
+        <AD id="clientManager" ibm:type="pid" ibm:reference="com.ibm.ws.security.oauth20.clientmanager.role"
+            required="false" type="String" cardinality="2147483647" />
+        <AD id="tokenManager" ibm:type="pid" ibm:reference="com.ibm.ws.security.oauth20.tokenmanager.role"
+            required="false" type="String" cardinality="2147483647" />
+    </OCD>
+
+    <!-- roles are processed by OAuth20WebAppAuthorizationTable.java --> 
+    <Designate factoryPid="com.ibm.ws.security.oauth20.roles">
+        <Object ocdref="com.ibm.ws.security.oauth20.roles.metatype" />
+    </Designate>
+
+    <OCD id="com.ibm.ws.security.oauth20.authenticated.role.metatype" 
+         name="%authenticated" description="%authenticated.desc">
+        <AD id="user" ibm:type="pid" ibm:reference="com.ibm.ws.security.oauth20.user"
+            required="false" type="String" cardinality="2147483647" />
+        <AD id="group" ibm:type="pid" ibm:reference="com.ibm.ws.security.oauth20.group"
+            required="false" type="String" cardinality="2147483647" />        
+        <AD id="special-subject" ibm:type="pid" ibm:reference="com.ibm.ws.security.oauth20.specialsubject"
+            required="false" type="String" cardinality="2147483647" />   
+    </OCD>
+    
+    <Designate factoryPid="com.ibm.ws.security.oauth20.authenticated.role">
+        <Object ocdref="com.ibm.ws.security.oauth20.authenticated.role.metatype" />
+    </Designate>
+
+    <OCD id="com.ibm.ws.security.oauth20.user.metatype" name="%user" description="%user.desc">
+        <AD id="name" name="%userName" description="%userName.desc"
+            required="true" type="String" />
+        <AD id="access-id" name="%userAccessId" description="%userAccessId.desc"
+            required="false" type="String" />
+    </OCD>
+
+    <Designate factoryPid="com.ibm.ws.security.oauth20.user">
+        <Object ocdref="com.ibm.ws.security.oauth20.user.metatype" />
+    </Designate>
+
+    <OCD id="com.ibm.ws.security.oauth20.group.metatype" name="%group" description="%group.desc">
+        <AD id="name" name="%groupName" description="%groupName.desc"
+            required="true" type="String" />
+        <AD id="access-id" name="%groupAccessId" description="%groupAccessId.desc"
+            required="false" type="String" />
+    </OCD>
+
+    <Designate factoryPid="com.ibm.ws.security.oauth20.group">
+        <Object ocdref="com.ibm.ws.security.oauth20.group.metatype" />
+    </Designate> 
+
+    <OCD id="com.ibm.ws.security.oauth20.specialsubject.metatype" name="%specialSubject" description="%specialSubject.desc">
+        <AD id="type" required="true" type="String" name="%specialSubjectType" description="%specialSubjectType.desc">
+            <Option label="%allAuthenticated.desc" value="ALL_AUTHENTICATED_USERS"/>
+            <Option label="%everyone.desc" value="EVERYONE"/>
+        </AD>        
+    </OCD>
+
+    <Designate factoryPid="com.ibm.ws.security.oauth20.specialsubject">
+        <Object ocdref="com.ibm.ws.security.oauth20.specialsubject.metatype" />
+    </Designate> 
+        
+    <OCD id="com.ibm.ws.security.oauth20.clientmanager.role.metatype" 
+         name="%clientManager" description="%clientManager.desc">
+        <AD id="user" ibm:type="pid" ibm:reference="com.ibm.ws.security.oauth20.user"
+            required="false" type="String" cardinality="2147483647" />
+        <AD id="group" ibm:type="pid" ibm:reference="com.ibm.ws.security.oauth20.group"
+            required="false" type="String" cardinality="2147483647" />
+        <AD id="special-subject" ibm:type="pid" ibm:reference="com.ibm.ws.security.oauth20.specialsubject"
+            required="false" type="String" cardinality="2147483647" />  
+    </OCD>
+
+    <Designate factoryPid="com.ibm.ws.security.oauth20.clientmanager.role">
+        <Object ocdref="com.ibm.ws.security.oauth20.clientmanager.role.metatype" />
+    </Designate>
+    
+       <OCD id="com.ibm.ws.security.oauth20.tokenmanager.role.metatype" 
+         name="%tokenManager" description="%tokenManager.desc">
+        <AD id="user" ibm:type="pid" ibm:reference="com.ibm.ws.security.oauth20.user"
+            required="false" type="String" cardinality="2147483647" />
+        <AD id="group" ibm:type="pid" ibm:reference="com.ibm.ws.security.oauth20.group"
+            required="false" type="String" cardinality="2147483647" />
+        <AD id="special-subject" ibm:type="pid" ibm:reference="com.ibm.ws.security.oauth20.specialsubject"
+            required="false" type="String" cardinality="2147483647" />  
+    </OCD>
+
+    <Designate factoryPid="com.ibm.ws.security.oauth20.tokenmanager.role">
+        <Object ocdref="com.ibm.ws.security.oauth20.tokenmanager.role.metatype" />
+    </Designate>
+ 
+    <OCD id="com.ibm.ws.security.oauth20.provider.metatype" ibm:alias="oauthProvider"
+         name="%oauthProvider" description="%oauthProvider.desc">
+        <AD id="localStore" required="false" type="String" 
+            ibm:type="pid" ibm:reference="com.ibm.ws.security.oauth20.server.store" cardinality="1" />
+            
+        <AD id="databaseStore" required="false" type="String" ibm:flat="true" 
+            ibm:type="pid" ibm:reference="com.ibm.ws.security.oauth20.database.store" cardinality="1" />
+        <AD id="dataSourceFactory.target" name="internal" description="internal use only"
+            required="false" type="String"
+            ibm:final="true" default="(service.pid=${databaseStore.0.dataSourceRef})" />
+                      
+        <AD id="customStore" required="false" type="String" ibm:flat="true"
+            ibm:type="pid" ibm:reference="com.ibm.ws.security.oauth20.provider.custom.store" cardinality="1"/>
+        <AD id="CustomStore.target" name="internal" description="internal use only" type="String" default="(oauth.store.id=${customStore.0.storeId})"/>
+
+<!-- No distributed cache support in 850X
+        <AD id="tokenCache" name="%token.cache.jndi.tokens" description="%token.cache.jndi.tokens.desc"
+            required="false" type="String" default="services/cache/OAuth20MemTokenCache"/>
+        <AD id="userCache" name="%token.cache.jndi.users" description="%token.cache.jndi.users.desc"
+            required="false" type="String" default="services/cache/OAuth20MemTokenOwnerCache"/>
+        <AD id="tokenDBCache" name="%db.token.cache.jndi.tokens" description="%db.token.cache.jndi.tokens.desc"
+            required="false" type="String" default="services/cache/OAuth20DBTokenCache"/>    
+        <AD id="clientDBCache" name="%db.token.cache.jndi.clients" description="%db.token.cache.jndi.clients.desc"
+            required="false" type="String" default="services/cache/OAuth20DBClientCache"/>
+-->
+        <AD id="authorizationGrantLifetime" name="%authorizationGrantLifetime" description="%authorizationGrantLifetime.desc"
+            required="false" type="String" default="604800" ibm:type="duration(s)" />
+        <AD id="authorizationCodeLifetime" name="%authorizationCodeLifetime" description="%authorizationCodeLifetime.desc"
+            required="false" type="String" default="60" ibm:type="duration(s)" />
+        <AD id="authorizationCodeLength" name="%authorizationCodeLength" description="%authorizationCodeLength.desc"
+            required="false" type="Long" default="30" />
+        <AD id="accessTokenLifetime" name="%accessTokenLifetime" description="%accessTokenLifetime.desc"
+            required="false" type="String" default="7200" ibm:type="duration(s)" />
+        <AD id="accessTokenLength" name="%accessTokenLength" description="%accessTokenLength.desc"
+            required="false" type="Long" default="40" />
+        <AD id="issueRefreshToken" name="%issueRefreshToken" description="%issueRefreshToken.desc"
+            required="false" type="Boolean" default="true" />
+        <AD id="refreshTokenLength" name="%refreshTokenLength" description="%refreshTokenLength.desc"
+            required="false" type="Long" default="50" />
+        <AD id="revokeAccessTokensWithRefreshTokens" name="%revokeAccessTokensWithRefreshTokens"
+              description="%revokeAccessTokensWithRefreshTokens.desc" required="false" type="Boolean" default="true" />
+<!--         <AD id="accessTokenHandlerClassname" name="%oauth.token.handler.class" description="%oauth.token.handler.class.desc"
+            required="false" type="String" default="com.ibm.ws.security.oauth20.plugins.BaseTokenHandler"/>   -->
+        <AD id="libraryRef" name="%libraryRef" description="%libraryRef.desc"
+            ibm:type="pid" ibm:reference="com.ibm.ws.classloading.sharedlibrary"
+            required="false" type="String" />
+		<!-- Support only 1 shared library. using this target attribute ensures that
+		     only the configured shared library is bound.  -->
+        <AD id="sharedLib.target" name="internal" description="internal use only"
+            required="false" type="String" 
+            ibm:final="true" default="(service.pid=${libraryRef})" />
+        <AD id="mediatorClassname" name="%mediatorClassname" description="%mediatorClassname.desc"
+            required="false" type="String" cardinality="2147483647" />
+        <AD id="allowPublicClients" name="%allowPublicClients" description="%allowPublicClients.desc"
+            required="false" type="Boolean" default="false" />
+        <AD id="grantType" name="%grantType" description="%grantType.desc"
+            required="false" type="String" cardinality="2147483647" default="authorization_code, implicit, refresh_token, client_credentials, password, urn:ietf:params:oauth:grant-type:jwt-bearer" />
+        <AD id="authorizationFormTemplate" name="%authorizationFormTemplate" description="%authorizationFormTemplate.desc"
+            required="false" type="String" default="template.html" />
+        <AD id="authorizationErrorTemplate" name="%authorizationErrorTemplate" description="%authorizationErrorTemplate.desc"
+            required="false" type="String" default="" />
+        <AD id="customLoginURL" name="%customLoginURL" description="%customLoginURL.desc"
+            required="false" type="String" default="login.jsp" />
+<!--         <AD id="auditHandlerClassname" name="%oauth.audithandler.class" description="%oauth.audithandler.class.desc"
+            required="false" type="String" />
+-->
+<!--         <AD id="xmlFileAuditHandlerFilename" name="%xml.file.audithandler.class" description="%xml.file.audithandler.class.desc"
+            required="false" type="String" />
+-->
+        <AD id="autoAuthorizeParam" name="%autoAuthorizeParam" description="%autoAuthorizeParam.desc"
+            required="false" type="String" default="autoauthz"/>
+        <AD id="autoAuthorize" name="%autoAuthorizeParam" description="%autoAuthorizeParam.desc"
+            required="false" type="Boolean" default="false"/>
+        <AD id="autoAuthorizeClient" name="%autoAuthorizeClient" description="%autoAuthorizeClient.desc"
+            required="false" type="String" cardinality="2147483647"/>
+        <AD id="clientURISubstitutions" name="%clientURISubstitutions" description="%clientURISubstitutions.desc"
+            required="false" type="String"/>
+        <AD id="clientTokenCacheSize" name="%clientTokenCacheSize" description="%clientTokenCacheSize.desc"
+            required="false" type="Long" />
+        <AD id="userClientTokenLimit" name="%userClientTokenLimit" description="%userClientTokenLimit.desc"
+            required="false" type="Long" />
+        <AD id="filter" name="%filter" description="%filter.desc"
+            required="false" type="String"/>
+        <AD id="characterEncoding" name="%characterEncoding" description="%characterEncoding.desc"
+            required="false" type="String"/>
+        <AD id="oauthOnly" name="%oauthOnly" description="%oauthOnly.desc"
+            required="false" type="Boolean" default="true"/>
+        <AD id="includeTokenInSubject" name="%includeTokenInSubject" description="%includeTokenInSubject.desc"
+            required="false" type="Boolean" default="true"/>
+        <AD id="consentCacheEntryLifetime" name="%consentCacheEntryLifetime" description="%consentCacheEntryLifetime.desc"
+        	required="false" type="String" default="1800" ibm:type="duration(s)"/>
+        <AD id="consentCacheSize" name="%consentCacheSize" description="%consentCacheSize.desc"
+	        required="false" type="Long" default="1000" min="0"/>
+	        
+         <!-- note that jwtAccessToken conflicts with the tokenFormat attribute, where we can choose betweeen 
+             Jwt token, mp-format Jwt token, or opaque access token. For backwards compatibility 
+             purposes jwtAccessToken must remain, but tokenFormat attribute will take precedence if used.   
+         -->
+	    <AD id="tokenFormat" type="String" required="false" name="%tokenFormat" description="%tokenFormat.desc" 
+	        cardinality="1" >	        
+	        <Option label="%tokenFormat.opaque" value="opaque" />
+			<Option label="%tokenFormat.jwt" value="jwt" />
+		    <Option label="%tokenFormat.mpjwt" value="mpjwt" />	        
+	    </AD>
+        <AD id="accessTokenCacheEnabled" name="%accessTokenCacheEnabled" description="%accessTokenCacheEnabled.desc"
+            required="false" type="Boolean" default="true"/>  
+	    <AD id="httpsRequired" name="%httpsRequired" description="%httpsRequired.desc" required="true" type="Boolean" default="true"/>
+        <AD id="certAuthentication" name="%certAuthentication" description="%certAuthentication.desc"
+            required="false" type="Boolean" default="false" />
+        <AD id="allowCertAuthentication" name="%allowCertAuthentication" description="%allowCertAuthentication.desc"
+            required="false" type="Boolean" default="true" />
+        <AD id="allowSpnegoAuthentication" name="%allowSpnegoAuthentication" description="%allowSpnegoAuthentication.desc"
+            required="false" type="Boolean" default="false" />
+		<AD id="clientAdmin" name="internal" description="internal use only"
+            required="false" type="String"/>	
+		<!-- 
+		     jwtGrantType (JWT GrantType)
+		-->
+		<AD id="jwtGrantType"
+		    required="false" type="String"  cardinality="1" 
+            ibm:type="pid" ibm:reference="com.ibm.ws.security.oauth20.provider.granttype.jwt"/>
+            
+        <!-- note that jwtAccessToken conflicts with the tokenFormat attribute, where we can choose betweeen 
+             Jwt token, mp-format Jwt token, or opaque access token. For backwards compatibility 
+             purposes this must remain, but tokenFormat attribute will take precedence.  
+         -->      
+        <AD id="jwtAccessToken" name="%jwtAccessToken" description="%jwtAccessToken.desc"
+            required="false" type="Boolean" default="false"/> 
+		
+        <!-- Cache header for how max age of coverage_map document. Value is specified in seconds. Default is 10 min -->    
+        <AD id="coverageMapSessionMaxAge" name="%coverageMapSessionMaxAge" description="%coverageMapSessionMaxAge.desc"
+            required="false" type="String" default="600" ibm:type="duration(s)"/> 
+            
+        <AD id="skipResourceOwnerValidation" name="%skipResourceOwnerValidation" description="%skipResourceOwnerValidation.desc"
+            required="false" type="Boolean" default="false"/>
+         <AD id="accessTokenEncoding" type="String" required="false" default="plain" name="%accessTokenEncoding" description="%accessTokenEncoding.desc" >	        
+	        <Option label="%accessTokenEncoding.plain" value="plain" />
+			<Option label="%accessTokenEncoding.PBKDF2WithHmacSHA512" value="PBKDF2WithHmacSHA512" />	        
+	    </AD>    
+        <AD id="logoutRedirectURL" name="%logoutRedirectURL" description="%logoutRedirectURL.desc"
+            required="false" type="String"/>                      
+        <AD id="passwordGrantRequiresAppPassword" name="%passwordGrantRequiresAppPassword" description="%passwordGrantRequiresAppPassword.desc"
+            required="false" type="Boolean" default="false" />
+        <AD id="appPasswordLifetime" name="%appPasswordLifetime" description="%appPasswordLifetime.desc" required="false" type="String" default="90d" ibm:type="duration(s)" />
+        <AD id="appTokenLifetime" name="%appTokenLifetime" description="%appTokenLifetime.desc" required="false" type="String" default="90d" ibm:type="duration(s)" />   
+        <!-- max combined quantity allowed per user, per client --> 
+        <AD id="appTokenOrPasswordLimit" name="%appTokenOrPasswordLimit" description="%appTokenOrPasswordLimit.desc" required="false" type="Long" default="100" />
+        <!-- these next two are used by the app-password UI -->
+        <AD id="internalClientId" name="%internalClientId" description="%internalClientId.desc" required="false" type="String" />
+        <AD id="internalClientSecret" name="%internalClientSecret" description="%internalClientSecret.desc" required="false" type="String" ibm:type="password" />
+        <AD id="clientSecretEncoding" type="String" required="false" default="xor" name="%clientSecretEncoding" description="%clientSecretEncoding.desc">
+	        <Option label="%clientSecretEncoding.xor" value="xor" />
+		 	<Option label="%clientSecretEncoding.PBKDF2WithHmacSHA512" value="PBKDF2WithHmacSHA512" />	        
+        </AD>
+    </OCD>
+   <!--   
+    <Designate factoryPid="com.ibm.ws.security.oauth20.provider.config">
+        <Object ocdref="com.ibm.ws.security.oauth20.provider.metatype" />
+    </Designate>
+    -->
+    <Designate factoryPid="com.ibm.ws.security.oauth20.provider">
+        <Object ocdref="com.ibm.ws.security.oauth20.provider.metatype" />
+    </Designate>
+
+    <OCD id="com.ibm.ws.security.oauth20.server.store.metatype"  
+         name="%localStore" description="%localStore.desc">
+        <AD id="tokenStoreSize" name="%localStore.tokenStoreSize" description="%localStore.tokenStoreSize"
+            required="false" type="Long" default="2000"/>
+        <AD id="client" required="false" type="String" 
+            ibm:type="pid" ibm:reference="com.ibm.ws.security.oauth20.client" cardinality="2147483647" />
+    </OCD> 
+    
+    <Designate factoryPid="com.ibm.ws.security.oauth20.server.store">
+        <Object ocdref="com.ibm.ws.security.oauth20.server.store.metatype" />
+    </Designate>
+
+    <OCD id="com.ibm.ws.security.oauth20.database.store.metatype"  
+         name="%databaseStore" description="%databaseStore.desc">
+        <AD id="cleanupExpiredTokenInterval" name="%cleanupExpiredTokenInterval" description="%cleanupExpiredTokenInterval.desc"
+            required="false" type="String" default="3600" ibm:type="duration(s)" />
+<!--    This does not appear to be actually used in the tWAS code
+        <AD id="limitRefreshToken" name="%limitRefreshToken" description="%limitRefreshToken.desc"
+            required="false" type="Boolean" default="true"/>
+ -->
+        <AD id="dataSourceRef" name="%dataSourceRef" description="%dataSourceRef.desc" required="true" 
+            type="String" cardinality="1" ibm:type="pid" ibm:reference="com.ibm.ws.jdbc.dataSource"/>
+
+        <AD id="user" name="%databaseStore.user" description="%databaseStore.user" required="false" type="String" />
+        <AD id="password" name="%databaseStore.password" description="%databaseStore.password.desc" required="false" type="String" ibm:type="password"/>
+        <AD id="schema" name="%databaseStore.schema" description="%databaseStore.schema" required="false" type="String" default="OAuthDBSchema"/>
+    </OCD>
+     
+    <Designate factoryPid="com.ibm.ws.security.oauth20.database.store">
+        <Object ocdref="com.ibm.ws.security.oauth20.database.store.metatype" />
+    </Designate>
+     
+    <OCD id="com.ibm.ws.security.oauth20.provider.custom.store" name="%customStore" description="%customStore.desc">
+         <AD id="storeId" name="%storeId" description="%storeId.desc" required="true" type="String"/>
+         <AD id="cleanupExpiredInterval" name="%cleanupExpiredInterval" description="%cleanupExpiredInterval.desc"
+            required="false" type="String" default="3600" ibm:type="duration(s)"/>
+    </OCD> 
+    
+    <Designate factoryPid="com.ibm.ws.security.oauth20.provider.custom.store">
+        <Object ocdref="com.ibm.ws.security.oauth20.provider.custom.store" />
+    </Designate>   
+                     
+     
+    <OCD id="com.ibm.ws.security.oauth20.client.metatype" name="%client" description="%client.desc">
+    	   <!-- Tagging 'name' as an original client metatype value before OIDC additions. This is equivalent to OIDC 'client_id' -->
+           <AD id="name" name="%name" description="%name.desc" required="false" type="String" />
+           
+           <!-- Tagging 'secret' as an original client metatype value before OIDC additions. This is equivalent to OIDC 'client_secret' -->
+           <AD id="secret" name="%secret" description="%secret.desc" required="false" type="String" ibm:type="password"/>
+           
+           <!-- Leaving stub as note for registrationClientUri, that it is calculated and not configured -->
+           
+           <!-- Tagging 'redirect' as an original client metatype value before OIDC additions. This has been modified to have greater than 1 cardinality' -->
+           <AD id="redirect" name="%redirect" description="%redirect.desc" required="false" type="String" cardinality="2147483647"/>
+ 
+           <!-- Tagging 'displayName' as an original client metatype value before OIDC additions. This is equivalent to OIDC 'client_name' -->
+           <AD id="displayname" name="%displayname" description="%displayname.desc" required="false" type="String" />
+           
+           <AD id="tokenEndpointAuthMethod" name="%tokenEndpointAuthMethod" description="%tokenEndpointAuthMethod.desc" required="false" type="String" default="client_secret_basic">
+           	    <Option label="%tokenEndpointAuthMethod.none" value="none" />
+           	    <Option label="%tokenEndpointAuthMethod.clientSecretPost" value="client_secret_post" />
+			    <Option label="%tokenEndpointAuthMethod.clientSecretBasic" value="client_secret_basic" />
+           </AD>
+           
+           <!-- Not adjusting the cardinality of scope to greater than one because spec indicates it is a space delimited String -->
+           <AD id="scope" name="%scope" description="%scope.desc" required="false" type="String"/>
+           
+           <AD id="grantTypes" name="%grantTypes" description="%grantTypes.desc" required="false" type="String" cardinality="6" default="authorization_code, implicit, refresh_token, client_credentials, password, urn:ietf:params:oauth:grant-type:jwt-bearer">
+           		<Option label="%grantTypes.authorizationCode" value="authorization_code" />
+				<Option label="%grantTypes.implicit" value="implicit" />
+				<Option label="%grantTypes.refreshToken" value="refresh_token" />
+				<Option label="%grantTypes.clientCredentials" value="client_credentials" />
+				<Option label="%grantTypes.password" value="password" />
+				<Option label="%grantTypes.jwtBearer" value="urn:ietf:params:oauth:grant-type:jwt-bearer" />
+           </AD>
+           
+           <AD id="responseTypes" name="%responseTypes" description="%responseTypes.desc" required="false" type="String" cardinality="3" default="code, id_token token, token">
+           		<Option label="%responseTypes.code" value="code" />
+				<Option label="%responseTypes.token" value="token" />
+				<Option label="%responseTypes.idTokenToken" value="id_token token" />
+           </AD>
+           
+           <AD id="applicationType" name="%applicationType" description="%applicationType.desc" required="false" type="String" default="web">
+				<Option label="%applicationType.native" value="native" />
+				<Option label="%applicationType.web" value="web" />
+           </AD>
+           
+           <AD id="subjectType" name="%subjectType" description="%subjectType.desc" required="false" type="String">
+           		<Option label="%subjectType.public" value="public" />
+           </AD>
+           
+           <AD id="postLogoutRedirectUris" name="%postLogoutRedirectUris" description="%postLogoutRedirectUris.desc" required="false" type="String" cardinality="2147483647"/>
+           
+           <AD id="sessionManaged" name="%sessionManaged" description="%sessionManaged.desc" required="false" type="Boolean" default="false"/>
+           
+           <!-- Not adjusting the cardinality of preAuthorizedScope to greater than one because spec indicates it is a space delimited String -->
+           <AD id="preAuthorizedScope" name="%preAuthorizedScope" description="%preAuthorizedScope.desc" required="false" type="String"/>
+           
+           <AD id="introspectTokens" name="%introspectTokens" description="%introspectTokens.desc" required="false" type="Boolean" default="false"/>
+           
+           <AD id="allowRegexpRedirects" name="%allowRegexpRedirects" description="%allowRegexpRedirects.desc" required="false" type="Boolean" default="false"/>
+             
+           <AD id="trustedUriPrefixes" name="internal" description="internal use only" required="false" type="String" cardinality="2147483647"/>
+           
+           <AD id="resourceIds" name="%resourceIds" description="%resourceIds.desc" required="false" type="String" cardinality="2147483647"/>
+           
+           <AD id="functionalUserId" name="%functionalUserId" description="%functionalUserId.desc" required="false" type="String"/>
+           
+           <AD id="functionalUserGroupIds" name="%functionalUserGroupIds" description="%functionalUserGroupIds.desc" required="false" type="String" cardinality="2147483647"/>
+           
+           <!-- Tagging 'enabled' as an original client metatype value before OIDC additions. -->
+           <AD id="enabled" name="%enabled" description="%enabled.desc" required="false" type="Boolean" default="true" />
+
+           <AD id="appPasswordAllowed" name="%appPasswordAllowed" description="%appPasswordAllowed.desc" required="false" type="Boolean" default="false" />
+
+           <AD id="appTokenAllowed" name="%appTokenAllowed" description="%appTokenAllowed.desc" required="false" type="Boolean" default="false" />
+
+           <AD id="proofKeyForCodeExchange" name="%proofKeyForCodeExchange" description="%proofKeyForCodeExchange.desc" required="false" type="Boolean" default="false" />
+
+           <AD id="publicClient" name="%publicClient" description="%publicClient.desc" required="false" type="Boolean" default="false" />
+
+    </OCD>
+    
+    <Designate factoryPid="com.ibm.ws.security.oauth20.client">
+        <Object ocdref="com.ibm.ws.security.oauth20.client.metatype" />
+    </Designate>
+    
+    <!-- jwt grant type handler-->
+    <OCD id="com.ibm.ws.security.oauth20.provider.granttype.jwt.metatype"  
+         name="%jwtGrantType" description="%jwtGrantType.desc">
+	    <AD id="maxJtiCacheSize" name="%maxJtiCacheSize" description="%maxJtiCacheSize.desc"
+            required="false" type="Long" default="10000"  min="1"/> 
+            
+	    <AD id="clockSkew" name="%clockSkew" description="%clockSkew.desc"
+            required="false" type="String" default="300s" ibm:type="duration(s)" min="0"/>
+                   
+       	<AD id="tokenMaxLifetime" name="%tokenMaxLifetime" description="%tokenMaxLifetime.desc"
+            required="false" type="String" default="7200s" ibm:type="duration(s)" min="1"/> 
+                                          
+        <AD id="iatRequired" name="%iatRequired" description="%iatRequired.desc"
+            required="false" type="Boolean" default="false" />
+    </OCD> 
+    <Designate factoryPid="com.ibm.ws.security.oauth20.provider.granttype.jwt">
+           <Object ocdref="com.ibm.ws.security.oauth20.provider.granttype.jwt.metatype" />
+    </Designate>
+       
+
+</metatype:MetaData>

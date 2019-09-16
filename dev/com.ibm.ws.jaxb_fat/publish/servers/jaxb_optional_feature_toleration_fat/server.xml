@@ -1,0 +1,18 @@
+<!--
+    Copyright (c) 2019 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+    <featureManager>
+        <feature>jpaContainer-2.1</feature>	<!-- jpaContainer-2.1 feature contains com.ibm.websphere.appserver.optional.jaxb-2.2 feature that we target to test it's jaxb-2.3 toleration -->
+        <feature>jaxb-2.2</feature>			<!-- This feature is going to be changed to jaxb-2.3 in FatSuite class using FeatureReplacementAction("jaxb-2.2", "jaxb-2.3") -->
+    </featureManager>
+    
+    <include location="../fatTestPorts.xml"/>
+</server>

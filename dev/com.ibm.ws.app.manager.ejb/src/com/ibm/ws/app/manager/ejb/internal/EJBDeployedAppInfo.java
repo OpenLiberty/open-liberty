@@ -16,14 +16,15 @@ import java.util.Collections;
 import java.util.List;
 
 import com.ibm.ws.app.manager.module.DeployedAppInfo;
+import com.ibm.ws.app.manager.module.DeployedAppServices;
 import com.ibm.ws.app.manager.module.internal.DeployedAppInfoBase;
+import com.ibm.ws.app.manager.module.internal.ModuleHandler;
 import com.ibm.ws.app.manager.module.internal.ModuleInfoUtils;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.app.deploy.ContainerInfo;
 import com.ibm.ws.container.service.app.deploy.EJBModuleInfo;
 import com.ibm.ws.container.service.app.deploy.ModuleClassesContainerInfo;
 import com.ibm.ws.container.service.app.deploy.ModuleInfo;
-import com.ibm.ws.container.service.app.deploy.extended.ApplicationInfoForContainer;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedApplicationInfo;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
@@ -37,15 +38,15 @@ class EJBDeployedAppInfo extends DeployedAppInfoBase {
     private final EJBModuleContainerInfo ejbContainerModuleInfo;
 
     EJBDeployedAppInfo(ApplicationInformation<DeployedAppInfo> applicationInformation,
-                       EJBDeployedAppInfoFactoryImpl factory) throws UnableToAdaptException {
-        super(applicationInformation, factory);
+                       DeployedAppServices deployedAppServices, ModuleHandler ejbModuleHandler) throws UnableToAdaptException {
+        super(applicationInformation, deployedAppServices);
 
         String moduleURI = ModuleInfoUtils.getModuleURIFromLocation(applicationInformation.getLocation());
-        ejbContainerModuleInfo = new EJBModuleContainerInfo(factory.ejbModuleHandler, 
-                                                            factory.getModuleMetaDataExtenders().get("ejb"), 
-                                                            factory.getNestedModuleMetaDataFactories().get("ejb"), 
-                                                            applicationInformation.getContainer(), null, 
-                                                            moduleURI, moduleClassesInfo);
+        ejbContainerModuleInfo = new EJBModuleContainerInfo(ejbModuleHandler,
+                                                            deployedAppServices.getModuleMetaDataExtenders("ejb"),
+                                                            deployedAppServices.getNestedModuleMetaDataFactories("ejb"),
+                                                            applicationInformation.getContainer(), null,
+                                                            moduleURI, this, moduleClassesInfo);
         moduleContainerInfos.add(ejbContainerModuleInfo);
     }
 
@@ -91,8 +92,7 @@ class EJBDeployedAppInfo extends DeployedAppInfoBase {
                                                                                ejbContainerModuleInfo.moduleName,
                                                                                getContainer(),
                                                                                this,
-                                                                               getConfigHelper(),
-                                                                               (ApplicationInfoForContainer) applicationInformation);
+                                                                               getConfigHelper());
         ejbContainerModuleInfo.moduleName = appInfo.getName();
         return appInfo;
     }

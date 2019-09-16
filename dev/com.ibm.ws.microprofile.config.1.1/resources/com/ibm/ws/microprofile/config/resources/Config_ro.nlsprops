@@ -44,7 +44,7 @@ config.already.exists.CWMCG0003E.useraction=Utiliza\u0163i metoda 'releaseConfig
 
 # Unable to close the Config instance. The exception is: {0}.
 could.not.close.CWMCG0004E=CWMCG0004E: Nu se poate \u00eenchide instan\u0163a Config. Excep\u0163ia este: {0}
-could.not.close.CWMCG0004E.explanation=A ap\u0103rut o excep\u0163ie la \u00eencercarea de a \u00eenchide o instan\u0163\u0103 Config. E posibil ca resursele sale s\u0103 nu fi fost eliberate.
+could.not.close.CWMCG0004E.explanation=A ap\u0103rut o excep\u0163ie la \u00eencercarea de a \u00eenchide o instan\u0163\u0103 Config. Este posibil ca resursele sale s\u0103 nu fi fost eliberate.
 could.not.close.CWMCG0004E.useraction=Examina\u0163i istoricele de server message.log \u015fi FFDC pentru a identifica problema.
 
 # Unable to convert the string "{0}" to a value of type {1}.
@@ -111,6 +111,16 @@ implicit.string.constructor.method.not.found.CWMCG0017E.useraction=Verifica\u016
 generic.type.variables.notsupported.CWMCG0018E=CWMCG0018E: Variabila de tip generic {0} pentru tipul de conversie {1} nu este suportat\u0103.
 generic.type.variables.notsupported.CWMCG0018E.explanation=A fost f\u0103cut\u0103 o \u00eencercare de a converti utiliz\u00e2nd o Variabila de tip generic, cum ar fi List<T>. Acest lucru nu este suportat.
 generic.type.variables.notsupported.CWMCG0018E.useraction=\u00cen loc, utiliza\u0163i un tip de argument concret, cum ar fi List<String>.
+
+# Failed to start the {0} ConfigSource refresher process.
+failed.to.start.refresher.CWMCG0019E=CWMCG0019E: A e\u015fuat pornirea procesului de re\u00eemprosp\u0103tare ConfigSource {0}.
+failed.to.start.refresher.CWMCG0019E.explanation=Modific\u0103rile din ConfigSource specificat nu sunt reflectate \u00een instan\u0163a Config.
+failed.to.start.refresher.CWMCG0019E.useraction=Examina\u0163i istoricele de server message.log \u015fi FFDC pentru a identifica problema.
+
+# Failed to start the {0} ConfigSource refresher process. The exception is: {1}.
+failed.to.start.refresher.exception.CWMCG0020E=CWMCG0020E: A e\u015fuat pornirea procesului de re\u00eemprosp\u0103tare ConfigSource {0}. Excep\u0163ia este: {1}.
+failed.to.start.refresher.exception.CWMCG0020E.explanation=Modific\u0103rile din ConfigSource specificat nu sunt reflectate \u00een instan\u0163a Config.
+failed.to.start.refresher.exception.CWMCG0020E.useraction=Examina\u0163i istoricele de server message.log \u015fi FFDC pentru a identifica problema.
 
 # Environment Variables Config Source
 environment.variables.config.source=Surs\u0103 de configura\u0163ie variabile de mediu

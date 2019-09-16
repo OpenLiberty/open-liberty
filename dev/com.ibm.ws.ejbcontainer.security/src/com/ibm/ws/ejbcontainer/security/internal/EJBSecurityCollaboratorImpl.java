@@ -404,14 +404,13 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
             methodParameters = Arrays.asList(methodArguments);
         }
 
-        ejbAuditHashMap.put("methodArguments", methodArguments);
         ejbAuditHashMap.put("applicationName", applicationName);
         ejbAuditHashMap.put("moduleName", moduleName);
         ejbAuditHashMap.put("methodName", methodName);
         ejbAuditHashMap.put("methodInterface", methodInterface);
         ejbAuditHashMap.put("methodSignature", methodSignature);
         ejbAuditHashMap.put("beanName", beanName);
-        ejbAuditHashMap.put("methodParameters", methodParameters);
+        ejbAuditHashMap.put("methodParameters", methodParameters == null ? "null" : methodParameters.toString());
 
     }
 
@@ -423,7 +422,7 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
      * <li>is EVERYONE granted to any of the required roles</li>
      * <li>is the subject authorized to any of the required roles</li>
      *
-     * @param EBJRequestData the info on the EJB method to call
+     * @param EJBRequestData the info on the EJB method to call
      * @param subject the subject authorize
      * @throws EJBAccessDeniedException when the subject is not authorized to the EJB
      */

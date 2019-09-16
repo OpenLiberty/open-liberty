@@ -116,8 +116,8 @@ TCP_CHANNEL_STOPPED=CWWKO0220I: Le canal TCP {0} a arr\u00eat\u00e9 l''\u00e9cou
 TCP_CHANNEL_STOPPED.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
 TCP_CHANNEL_STOPPED.useraction=Aucune action n'est requise.
 
-BIND_ERROR=CWWKO0221E: L''initialisation du canal TCP {0} n''a pas r\u00e9ussi.  La liaison de socket n''a pas abouti pour l''h\u00f4te {1} et le port {2}.  Le port est peut-\u00eatre d\u00e9j\u00e0 utilis\u00e9.
-BIND_ERROR.explanation=L'op\u00e9ration de liaison de socket n'a pas r\u00e9ussi. La cause la plus courante est que le port indiqu\u00e9 est d\u00e9j\u00e0 utilis\u00e9.
+BIND_ERROR=CWWKO0221E: L''initialisation du canal TCP {0} n''a pas r\u00e9ussi.  La liaison de socket n''a pas abouti pour l''h\u00f4te {1} et le port {2}.  Le port est peut-\u00eatre d\u00e9j\u00e0 utilis\u00e9.  Message de l''exception : {3}
+BIND_ERROR.explanation=L'op\u00e9ration de liaison de socket n'a pas r\u00e9ussi. La cause la plus courante est que le port indiqu\u00e9 est d\u00e9j\u00e0 utilis\u00e9.  Reportez-vous au message de l'exception dans le message d'erreur pour plus d'informations.
 BIND_ERROR.useraction=V\u00e9rifiez que le canal TCP a \u00e9t\u00e9 configur\u00e9 pour utiliser le num\u00e9ro de port correct.
 
 MAX_CONNS_EXCEEDED=CWWKO0222W: Le canal TCP {0} a d\u00e9pass\u00e9 le nombre maximum de connexions ouvertes autoris\u00e9 {1}.

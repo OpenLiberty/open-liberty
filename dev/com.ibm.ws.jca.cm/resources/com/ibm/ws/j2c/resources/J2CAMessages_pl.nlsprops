@@ -112,7 +112,7 @@ NO_VALID_TRANSACTION_CONTEXT_J2CA0040.explanation=Wyst\u0105pi\u0142 b\u0142\u01
 NO_VALID_TRANSACTION_CONTEXT_J2CA0040.useraction=CMSG0002
 
 # --------------------------------
-POOL_MANAGER_EXCP_CCF2_0001_J2CA0045=J2CA0045E: Po\u0142\u0105czenie nie by\u0142o dost\u0119pne podczas wywo\u0142ywania metody {0} dla zasobu {1}.
+POOL_MANAGER_EXCP_CCF2_0001_J2CA0045=J2CA0045E: Po\u0142\u0105czenie nie by\u0142o dost\u0119pne podczas wywo\u0142ywania metody {0} dla zasobu {1}. Przekroczono limit czasu oczekiwania ({2} ms), liczba pozosta\u0142ych \u017c\u0105da\u0144 oczekiwania: {3}, bie\u017c\u0105ca \u0142\u0105czna liczba u\u017cywanych po\u0142\u0105cze\u0144: {4}.
 POOL_MANAGER_EXCP_CCF2_0001_J2CA0045.explanation=Przekroczono limit czasu oczekiwania na po\u0142\u0105czenie. Zosta\u0142 utworzony wyj\u0105tek ConnectionWaitTimeoutException.
 POOL_MANAGER_EXCP_CCF2_0001_J2CA0045.useraction=Skonfiguruj ponownie pul\u0119 po\u0142\u0105cze\u0144. Aby unikn\u0105\u0107 tego b\u0142\u0119du, zwi\u0119ksz maksymaln\u0105 liczb\u0119 po\u0142\u0105cze\u0144 lub wyd\u0142u\u017c czas oczekiwania na po\u0142\u0105czenie.
 

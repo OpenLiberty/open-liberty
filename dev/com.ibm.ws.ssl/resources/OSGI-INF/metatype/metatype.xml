@@ -24,10 +24,10 @@
             required="false" type="String" ibm:type="password" />
 
         <AD id="location" name="%location" description="%location.desc" ibm:type="location"
-            required="false" type="String" default="${server.output.dir}/resources/security/key.jks" />
+            required="false" type="String" default="${server.output.dir}/resources/security/key.p12" />
 
         <AD id="type" name="%type" description="%type.desc" 
-            required="false" type="String" default="jks"/>
+            required="false" type="String" default="PKCS12"/>
             
         <AD id="valid" name="internal" description="internal use only" 
             ibm:final="true" required="false" type="Boolean" default="true"  />           
@@ -119,6 +119,9 @@
            
         <AD id="outboundConnection" ibm:flat="true" ibm:type="pid" ibm:reference="com.ibm.ws.ssl.repertoire.config.outboundConnection"
             required="false" type="String" cardinality="2147483647" />    
+         
+        <AD id="verifyHostname" name="%repertoire.verifyHostname" description="%repertoire.verifyHostname.desc" 
+            required="false" type="Boolean" default="false" />
             
     </OCD>
 
@@ -149,7 +152,7 @@
             required="false" type="String" ibmui:uiReference="com.ibm.ws.ssl.repertoire" />
             
         <AD id="httpHostNameVerification" name="%default.httpHostNameVerification" description="%default.httpHostNameVerification.desc" 
-            required="false" type="String" default="false" ibmui:uiReference="com.ibm.ws.ssl.repertoire" />
+            required="false" type="Boolean" default="false" />
             
     </OCD>
 

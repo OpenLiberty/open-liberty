@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.request.probe.audit.servlet;
 
+import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -19,8 +20,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor;
 import com.ibm.wsspi.request.probe.bci.TransformDescriptorHelper;
-
-import org.osgi.service.component.ComponentContext;
 
 /**
  *
@@ -40,7 +39,8 @@ public class AuditRPTD implements RequestProbeTransformDescriptor {
     @Deactivate
     protected void deactivate(ComponentContext cc) {}
 
-    private static final TraceComponent tc = Tr.register(AuditRPTD.class);
+	private static final TraceComponent tc = Tr.register(AuditRPTD.class, "requestProbe",
+			"com.ibm.ws.request.probe.internal.resources.LoggingMessages");
 
 	private static final String classToInstrument = "com/ibm/ws/security/audit/Audit";
 	private static final String methodToInstrument = "audit";

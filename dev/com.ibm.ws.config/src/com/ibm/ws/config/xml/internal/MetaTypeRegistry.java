@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 IBM Corporation and others.
+ * Copyright (c) 2009, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,16 +24,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.locks.ReentrantLock;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.Constants;
-import org.osgi.framework.ServiceReference;
-import org.osgi.service.cm.ManagedService;
-import org.osgi.service.cm.ManagedServiceFactory;
-import org.osgi.service.event.Event;
-import org.osgi.service.event.EventAdmin;
 import org.osgi.service.metatype.AttributeDefinition;
 import org.osgi.service.metatype.MetaTypeInformation;
 import org.osgi.service.metatype.MetaTypeProvider;
@@ -50,7 +43,6 @@ import com.ibm.ws.config.xml.internal.metatype.ExtendedAttributeDefinition;
 import com.ibm.ws.config.xml.internal.metatype.ExtendedAttributeDefinitionImpl;
 import com.ibm.ws.config.xml.internal.metatype.ExtendedObjectClassDefinition;
 import com.ibm.ws.config.xml.internal.metatype.ExtendedObjectClassDefinitionImpl;
-import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
 /**
  * Registry for MetaType information.
@@ -110,9 +102,6 @@ final class MetaTypeRegistry {
 
         metaTypeTracker = new ServiceTracker<MetaTypeService, MetaTypeService>(bc, MetaTypeService.class.getName(), null);
         metaTypeTracker.open();
-
-        this.mtpTracker = new MTPTracker(bc, this);
-        this.mtpTracker.open();
     }
 
     void stop(BundleContext context) {
@@ -200,22 +189,6 @@ final class MetaTypeRegistry {
         }
 
         return updatedRegistryEntries;
-    }
-
-    ExtendedMetaTypeInformation getExtendedMetaTypeInformation(Bundle bundle) {
-        MetaTypeInformation information = bundleMap.get(bundle);
-        if (information == null) {
-            MetaTypeInformation newInformation = new ExtendedMetaTypeInformation(bundle);
-            information = bundleMap.putIfAbsent(bundle, newInformation);
-            if (information == null) {
-                information = newInformation;
-            }
-        }
-        if (!(information instanceof ExtendedMetaTypeInformation)) {
-            // Per spec, only use MetaTypeProviders when no metatype xml is specified
-            return null;
-        }
-        return (ExtendedMetaTypeInformation) information;
     }
 
     private boolean addMetaTypeDefinition(MetaTypeInformation info, String pid, boolean isFactory, Set<RegistryEntry> updatedRegistryEntries) {
@@ -421,13 +394,6 @@ final class MetaTypeRegistry {
 
     }
 
-    private void removeServiceUse(String service, RegistryEntry entry) {
-        List<RegistryEntry> serviceUsers = serviceToServicesMap.get(service);
-        if (serviceUsers != null) {
-            serviceUsers.remove(entry);
-        }
-    }
-
     protected static class PidReference {
         //pid of parent, outer entry
         private final RegistryEntry referencingEntry;
@@ -439,9 +405,9 @@ final class MetaTypeRegistry {
         private final boolean isParentFirst;
 
         /**
-         * @param referencedEntry RegistryEntry of child (nested)
+         * @param referencedEntry  RegistryEntry of child (nested)
          * @param referencingEntry RegistryEntry for parent (outer)
-         * @param ad parent AD name containing the ibm:reference or ibm:service or childAlias
+         * @param ad               parent AD name containing the ibm:reference or ibm:service or childAlias
          */
         PidReference(RegistryEntry referencedEntry, RegistryEntry referencingEntry, String ad, boolean isParentFirst) {
             this.referencedEntry = referencedEntry;
@@ -764,7 +730,7 @@ final class MetaTypeRegistry {
          * @param pid
          * @param isFactory
          * @param bundle
-         * @param ocd an already verified to be internally consistent ObjectClassDefinition
+         * @param ocd              an already verified to be internally consistent ObjectClassDefinition
          * @param metatypeRegistry
          */
         RegistryEntry(String pid, boolean isFactory, Bundle bundle, ExtendedObjectClassDefinition ocd, MetaTypeRegistry metatypeRegistry) {
@@ -793,7 +759,7 @@ final class MetaTypeRegistry {
 
         /**
          * @param metatypeRegistry MetaTypeRegistry for lookups in error messages
-         * @param extendedEntry valid RegistryEntry that this one extends or refines.
+         * @param extendedEntry    valid RegistryEntry that this one extends or refines.
          */
         public void complete(RegistryEntry extendedEntry, MetaTypeRegistry metatypeRegistry) {
             if (!extendedEntry.isFactory()) {
@@ -1245,417 +1211,6 @@ final class MetaTypeRegistry {
 
     }
 
-    private static class ExtendedMetaTypeInformation implements MetaTypeInformation {
-        private final Map<String, MetaTypeProvider> pidToProviders = new HashMap<String, MetaTypeProvider>();
-        private final Map<MetaTypeProvider, PIDCollection> providerToPids = new HashMap<MetaTypeProvider, PIDCollection>();
-        private final Bundle bundle;
-        private final List<String> pids = new ArrayList<String>();
-        private final List<String> factoryPids = new ArrayList<String>();
-        private final ReentrantLock lock = new ReentrantLock();
-
-        private ExtendedMetaTypeInformation(Bundle bundle) {
-            this.bundle = bundle;
-        }
-
-        /*
-         * (non-Javadoc)
-         *
-         * @see org.osgi.service.metatype.MetaTypeProvider#getLocales()
-         */
-        @Override
-        public String[] getLocales() {
-            lock.lock();
-
-            try {
-                ArrayList<String> locales = new ArrayList<String>();
-
-                for (MetaTypeProvider provider : getMetaTypeProviders()) {
-                    if (provider.getLocales() != null) {
-                        for (String locale : provider.getLocales()) {
-                            if (!locales.contains(locale)) {
-                                locales.add(locale);
-                            }
-                        }
-                    }
-
-                }
-                return locales.toArray(new String[locales.size()]);
-            } finally {
-                lock.unlock();
-            }
-        }
-
-        /**
-         * @return
-         */
-        private Set<MetaTypeProvider> getMetaTypeProviders() {
-            lock.lock();
-
-            try {
-
-                Set<MetaTypeProvider> retVal = new HashSet<MetaTypeProvider>();
-                for (Map.Entry<String, MetaTypeProvider> entry : pidToProviders.entrySet()) {
-                    retVal.add(entry.getValue());
-                }
-                return retVal;
-            } finally {
-                lock.unlock();
-            }
-        }
-
-        /*
-         * (non-Javadoc)
-         *
-         * @see org.osgi.service.metatype.MetaTypeProvider#getObjectClassDefinition(java.lang.String, java.lang.String)
-         */
-        @Override
-        public ObjectClassDefinition getObjectClassDefinition(String pid, String arg1) {
-            lock.lock();
-
-            try {
-                synchronized (bundle) {
-                    MetaTypeProvider provider = pidToProviders.get(pid);
-                    return provider == null ? null : provider.getObjectClassDefinition(pid, arg1);
-                }
-            } finally {
-                lock.unlock();
-            }
-        }
-
-        /*
-         * (non-Javadoc)
-         *
-         * @see org.osgi.service.metatype.MetaTypeInformation#getBundle()
-         */
-        @Override
-        public Bundle getBundle() {
-            lock.lock();
-
-            try {
-                return this.bundle;
-            } finally {
-                lock.unlock();
-            }
-        }
-
-        /*
-         * (non-Javadoc)
-         *
-         * @see org.osgi.service.metatype.MetaTypeInformation#getFactoryPids()
-         */
-        @Override
-        public String[] getFactoryPids() {
-            lock.lock();
-
-            try {
-                synchronized (bundle) {
-                    return factoryPids.toArray(new String[factoryPids.size()]);
-                }
-            } finally {
-                lock.unlock();
-            }
-        }
-
-        /*
-         * (non-Javadoc)
-         *
-         * @see org.osgi.service.metatype.MetaTypeInformation#getPids()
-         */
-        @Override
-        public String[] getPids() {
-            lock.lock();
-
-            try {
-                synchronized (bundle) {
-                    return pids.toArray(new String[pids.size()]);
-                }
-            } finally {
-                lock.unlock();
-            }
-        }
-
-        private void addMetaTypeProvider(MetaTypeProvider provider, Collection<String> providerPids, boolean isFactory) {
-            lock.lock();
-
-            try {
-                PIDCollection pidCollection = providerToPids.get(provider);
-                if (pidCollection == null) {
-                    pidCollection = new PIDCollection();
-                    providerToPids.put(provider, pidCollection);
-                }
-
-                if (isFactory) {
-                    pidCollection.setFactoryPids(providerPids);
-                    factoryPids.addAll(providerPids);
-                } else {
-                    pidCollection.setPids(providerPids);
-                    pids.addAll(providerPids);
-                }
-
-                for (String pid : providerPids) {
-                    pidToProviders.put(pid, provider);
-                }
-            } finally {
-                lock.unlock();
-            }
-        }
-
-        private PIDCollection removeMetaTypeProvider(MetaTypeProvider provider) {
-            lock.lock();
-
-            try {
-                PIDCollection pidCollection = providerToPids.remove(provider);
-
-                for (String pid : pidCollection.getFactoryPids()) {
-                    factoryPids.remove(pid);
-                    pidToProviders.remove(pid);
-                }
-
-                for (String pid : pidCollection.getPids()) {
-                    pids.remove(pid);
-                    pidToProviders.remove(pid);
-                }
-
-                return pidCollection;
-            } finally {
-                lock.unlock();
-            }
-
-        }
-
-        /**
-         * @param pid
-         * @param b
-         */
-        private void removePid(String pid, boolean isFactory) {
-            lock.lock();
-
-            try {
-                if (isFactory) {
-                    factoryPids.remove(pid);
-                } else {
-                    pids.remove(pid);
-                }
-
-                pidToProviders.remove(pid);
-            } finally {
-                lock.unlock();
-            }
-
-        }
-    }
-
-    private static class PIDCollection {
-
-        private Collection<String> factoryPids;
-        private Collection<String> pids;
-
-        /**
-         * @return
-         */
-        private Collection<String> getFactoryPids() {
-            return factoryPids;
-        }
-
-        /**
-         * @param providerPids
-         */
-        private void setPids(Collection<String> providerPids) {
-            this.pids = providerPids;
-
-        }
-
-        /**
-         * @param providerPids
-         */
-        private void setFactoryPids(Collection<String> providerPids) {
-            this.factoryPids = providerPids;
-
-        }
-
-        /**
-         * @return
-         */
-        private Collection<String> getPids() {
-            return this.pids;
-        }
-
-        /**
-         * @return
-         */
-        private Collection<String> getAllPids() {
-            Collection<String> allPids = new ArrayList<String>();
-            if (factoryPids != null)
-                allPids.addAll(factoryPids);
-            if (pids != null)
-                allPids.addAll(pids);
-            return allPids;
-        }
-
-        @Override
-        public String toString() {
-            StringBuilder sb = new StringBuilder();
-            for (String pid : getAllPids()) {
-                sb.append(pid);
-                sb.append(",");
-            }
-            return sb.toString();
-        }
-
-    }
-
-    private static class MTPTracker extends ServiceTracker<MetaTypeProvider, MetaTypeProvider> {
-
-        private final MetaTypeRegistry registry;
-        private ServiceTracker<EventAdmin, EventAdmin> eventTracker = null;
-
-        private MTPTracker(BundleContext bc, MetaTypeRegistry registry) {
-            super(bc, MetaTypeProvider.class.getName(), null);
-            this.registry = registry;
-
-            eventTracker = new ServiceTracker<EventAdmin, EventAdmin>(bc, EventAdmin.class.getName(), null);
-            eventTracker.open();
-        }
-
-        @Override
-        public void close() {
-            if (null != this.eventTracker) {
-                this.eventTracker.close();
-                this.eventTracker = null;
-            }
-
-            super.close();
-        }
-
-        /** {@inheritDoc} */
-        @Override
-        public MetaTypeProvider addingService(ServiceReference<MetaTypeProvider> reference) {
-
-            MetaTypeProvider provider = super.addingService(reference);
-            if (FrameworkState.isStopping()) {
-                return provider;
-            }
-            Bundle bundle = reference.getBundle();
-
-            synchronized (bundle) {
-                MetaTypeInformation information = registry.getExtendedMetaTypeInformation(bundle);
-                if (information == null) {
-                    // Per spec, only use MetaTypeProviders when no metatype xml is specified
-                    return provider;
-                }
-
-                ExtendedMetaTypeInformation wrapper = (ExtendedMetaTypeInformation) information;
-                wrapper.addMetaTypeProvider(provider, getPids(reference, MetaTypeProvider.METATYPE_PID), false);
-                wrapper.addMetaTypeProvider(provider, getPids(reference, MetaTypeProvider.METATYPE_FACTORY_PID), true);
-
-                if (provider instanceof ManagedService) {
-                    wrapper.addMetaTypeProvider(provider, getPids(reference, Constants.SERVICE_PID), false);
-                }
-                if (provider instanceof ManagedServiceFactory) {
-                    wrapper.addMetaTypeProvider(provider, getPids(reference, Constants.SERVICE_PID), true);
-                }
-
-                Set<RegistryEntry> updatedRegistryEntries = registry.addMetaType(information);
-                if (!updatedRegistryEntries.isEmpty()) {
-
-                    EventAdmin eventAdmin = eventTracker.getService();
-                    Map<String, Object> properties = new HashMap<String, Object>();
-                    properties.put(BUNDLE, bundle);
-                    properties.put(UPDATED_PIDS, updatedRegistryEntries);
-                    Event event = new Event(MTP_ADDED_TOPIC, properties);
-                    eventAdmin.postEvent(event);
-                }
-            }
-            return provider;
-
-        }
-
-        /** {@inheritDoc} */
-        @Override
-        public void modifiedService(ServiceReference<MetaTypeProvider> reference, MetaTypeProvider service) {
-            super.modifiedService(reference, service);
-        }
-
-        /** {@inheritDoc} */
-        @Override
-        public void removedService(ServiceReference<MetaTypeProvider> reference, MetaTypeProvider service) {
-            if (FrameworkState.isStopping()) {
-                return;
-            }
-
-            Bundle bundle = reference.getBundle();
-
-            synchronized (bundle) {
-                MetaTypeInformation information = registry.getMetaTypeInformation(bundle);
-                if (information == null || !(information instanceof ExtendedMetaTypeInformation)) {
-                    return;
-                }
-
-                ExtendedMetaTypeInformation wrapper = (ExtendedMetaTypeInformation) information;
-                String pid = (String) reference.getProperty(Constants.SERVICE_PID);
-
-                PIDCollection removedPids = wrapper.removeMetaTypeProvider(service);
-
-                if (service instanceof ManagedService) {
-                    wrapper.removePid(pid, false);
-                }
-
-                if (service instanceof ManagedServiceFactory) {
-                    wrapper.removePid(pid, true);
-                }
-
-                Collection<String> pids = removedPids.getPids();
-                Collection<String> factoryPids = removedPids.getFactoryPids();
-                Set<RegistryEntry> updatedPids;
-
-                updatedPids = registry.removeMetaTypeDefinitions(information, pids.toArray(new String[pids.size()]));
-                updatedPids.addAll(registry.removeMetaTypeDefinitions(information, factoryPids.toArray(new String[factoryPids.size()])));
-
-                EventAdmin eventAdmin = eventTracker.getService();
-                Map<String, Object> properties = new HashMap<String, Object>();
-                properties.put(MTP_INFO, information);
-                properties.put(UPDATED_PIDS, updatedPids);
-                Event event = new Event(MTP_REMOVED_TOPIC, properties);
-                eventAdmin.postEvent(event);
-            }
-
-            super.removedService(reference, service);
-
-        }
-
-        /**
-         * @param ref
-         * @param metatypePid
-         * @return
-         */
-        @SuppressWarnings("unchecked")
-        private Collection<String> getPids(ServiceReference<MetaTypeProvider> ref, String pid) {
-
-            Object property = ref.getProperty(pid);
-
-            if (property == null)
-                return Collections.emptyList();
-
-            if (property instanceof String) {
-                return Collections.singletonList((String) property);
-            }
-
-            if (property instanceof String[]) {
-                Collection<String> retVal = new ArrayList<String>();
-                for (String value : (String[]) property) {
-                    retVal.add(value);
-                }
-                return retVal;
-            }
-
-            if (property instanceof Collection) {
-                return (Collection<String>) property;
-            }
-
-            return Collections.emptyList();
-        }
-    }
-
     // ---old api
 
     RegistryEntry getRegistryEntry(ConfigElement element) {
@@ -1673,6 +1228,37 @@ final class MetaTypeRegistry {
         RegistryEntry entry = getRegistryEntry(factoryPid);
         if (entry != null) {
             return entry.getAttributeMap();
+        }
+        return null;
+    }
+
+    Integer getAttributeCardinality(String pid, String attributeID) {
+        RegistryEntry ent = getRegistryEntryByPidOrAlias(pid);
+        if (ent != null) {
+            Map<String, ExtendedAttributeDefinition> attributeMap;
+            attributeMap = ent.getAttributeMap();
+            if (attributeMap != null) {
+                if (attributeMap.containsKey(attributeID))
+                    return attributeMap.get(attributeID).getCardinality();
+                else {
+                    // If it's a child-first nested element with ibm:final id, then it effectively behaves as cardinality 1
+                    Map<String, RegistryEntry> map = childAliasMap.get(attributeID);
+                    if (map != null) {
+                        ent = map.get(pid);
+                        if (ent != null) {
+                            ExtendedObjectClassDefinition ocd = ent.getObjectClassDefinition();
+                            if (ocd != null) {
+                                attributeMap = ocd.getAttributeMap();
+                                if (attributeMap != null) {
+                                    ExtendedAttributeDefinition id = attributeMap.get("id");
+                                    if (id.isFinal())
+                                        return -1; // cardinality is negative for Vector, positive for array
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
         return null;
     }

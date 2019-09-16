@@ -15,6 +15,7 @@ bVersion=1.0
 
 src: \
 	fat/src,\
+	test-applications/hibernateSearchTest.war/src,\
 	test-applications/deltaspikeTest.war/src
 	
 tested.features:\
@@ -58,4 +59,8 @@ test.project: true
 	org.apache.deltaspike.cdictrl:deltaspike-cdictrl-api;version=1.5.0,\
 	org.apache.deltaspike.cdictrl:deltaspike-cdictrl-weld;version=1.5.0,\
 	org.apache.deltaspike.modules:deltaspike-scheduler-module-api;version=1.5.0,\
-	org.apache.deltaspike.modules:deltaspike-scheduler-module-impl;version=1.5.0
+	org.apache.deltaspike.modules:deltaspike-scheduler-module-impl;version=1.5.0,\
+        com.ibm.websphere.javaee.transaction.1.2;version=latest,\
+        com.ibm.websphere.javaee.persistence.2.0;version=latest,\
+        org.hibernate.common.hibernate-commons-annotations;version=5.1.0.Final,\
+        org.hibernate.search-engine;version=5.11.2.Final

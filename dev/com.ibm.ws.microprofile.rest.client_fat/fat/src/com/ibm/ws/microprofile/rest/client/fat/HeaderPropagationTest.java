@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.rest.client.fat;
 
+import static org.junit.Assert.assertNotNull;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -33,18 +35,9 @@ public class HeaderPropagationTest extends FATServletClient {
 
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-        .andWith(new FeatureReplacementAction()
-                 .withID("mpRestClient-1.1")
-                 .addFeature("mpRestClient-1.1")
-                 .removeFeature("mpRestClient-1.0")
-                 .removeFeature("mpRestClient-1.2")
-                 .forServers(SERVER_NAME))
-        .andWith(FeatureReplacementAction.EE8_FEATURES()
-                 .withID("mpRestClient-1.2")
-                 .addFeature("mpRestClient-1.2")
-                 .removeFeature("mpRestClient-1.0")
-                 .removeFeature("mpRestClient-1.1")
-                 .forServers(SERVER_NAME));
+        .andWith(FATSuite.MP_REST_CLIENT("1.1", SERVER_NAME))
+        .andWith(FATSuite.MP_REST_CLIENT(FeatureReplacementAction.EE8_FEATURES(), "1.2", SERVER_NAME))
+        .andWith(FATSuite.MP_REST_CLIENT(FeatureReplacementAction.EE8_FEATURES(),"1.3", SERVER_NAME));
 
     private static final String appName = "headerPropagationApp";
 
@@ -56,6 +49,7 @@ public class HeaderPropagationTest extends FATServletClient {
     public static void setUp() throws Exception {
         ShrinkHelper.defaultApp(server, appName, "mpRestClient10.headerPropagation");
         server.startServer();
+        assertNotNull("LTPA configuration should report it is ready", server.waitForStringInLog("CWWKS4105I"));
     }
 
     @AfterClass

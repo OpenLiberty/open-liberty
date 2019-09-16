@@ -27,12 +27,15 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
+@RunWith(FATRunner.class)
 public class ChildAliasTest {
 
     /**
@@ -92,21 +95,38 @@ public class ChildAliasTest {
 
     @Test
     public void testChildAlias1() throws Exception {
+        // precondition: regular server.xml
+        testServer.setMarkToEndOfLog();
+        testServer.setServerConfigurationFile("childalias/server.xml");
+        testServer.waitForConfigUpdateInLogUsingMark(null);
+
         test(testServer);
     }
 
     @Test
     public void testChildAlias2() throws Exception {
+        // precondition: regular server.xml
+        testServer.setMarkToEndOfLog();
+        testServer.setServerConfigurationFile("childalias/server.xml");
+        testServer.waitForConfigUpdateInLogUsingMark(null);
         test(testServer);
     }
 
     @Test
     public void testChildAliasSingleton1() throws Exception {
+        // precondition: regular server.xml
+        testServer.setMarkToEndOfLog();
+        testServer.setServerConfigurationFile("childalias/server.xml");
+        testServer.waitForConfigUpdateInLogUsingMark(null);
         test(testServer);
     }
 
     @Test
     public void testChildAliasSingleton2() throws Exception {
+        // precondition: regular server.xml
+        testServer.setMarkToEndOfLog();
+        testServer.setServerConfigurationFile("childalias/server.xml");
+        testServer.waitForConfigUpdateInLogUsingMark(null);
         test(testServer);
     }
 
@@ -123,6 +143,7 @@ public class ChildAliasTest {
         testServer.setServerConfigurationFile("childalias/serverB.xml");
         testServer.waitForConfigUpdateInLogUsingMark(null);
         test(testServer);
+
     }
 
     @Test
@@ -157,6 +178,11 @@ public class ChildAliasTest {
 
     @Test
     public void testRemoveChild() throws Exception {
+        // precondition: serverC.xml
+        testServer.setMarkToEndOfLog();
+        testServer.setServerConfigurationFile("childalias/serverC.xml");
+        testServer.waitForConfigUpdateInLogUsingMark(null);
+
         testServer.setMarkToEndOfLog();
         testServer.setServerConfigurationFile("childalias/serverC2.xml");
         testServer.waitForConfigUpdateInLogUsingMark(null);
@@ -165,6 +191,11 @@ public class ChildAliasTest {
 
     @Test
     public void testAddNewChild() throws Exception {
+        // precondition: serverC2.xml
+        testServer.setMarkToEndOfLog();
+        testServer.setServerConfigurationFile("childalias/serverC2.xml");
+        testServer.waitForConfigUpdateInLogUsingMark(null);
+
         testServer.setMarkToEndOfLog();
         testServer.setServerConfigurationFile("childalias/serverC3.xml");
         testServer.waitForConfigUpdateInLogUsingMark(null);
@@ -173,6 +204,11 @@ public class ChildAliasTest {
 
     @Test
     public void testUpdateChild() throws Exception {
+        // precondition: serverC3
+        testServer.setMarkToEndOfLog();
+        testServer.setServerConfigurationFile("childalias/serverC3.xml");
+        testServer.waitForConfigUpdateInLogUsingMark(null);
+
         testServer.setMarkToEndOfLog();
         testServer.setServerConfigurationFile("childalias/serverC4.xml");
         testServer.waitForConfigUpdateInLogUsingMark(null);
@@ -181,6 +217,11 @@ public class ChildAliasTest {
 
     @Test
     public void testRemoveSingletonChild() throws Exception {
+        // precondition: serverC4.xml
+        testServer.setMarkToEndOfLog();
+        testServer.setServerConfigurationFile("childalias/serverC4.xml");
+        testServer.waitForConfigUpdateInLogUsingMark(null);
+
         testServer.setMarkToEndOfLog();
         testServer.setServerConfigurationFile("childalias/serverC5.xml");
         testServer.waitForConfigUpdateInLogUsingMark(null);
@@ -189,6 +230,11 @@ public class ChildAliasTest {
 
     @Test
     public void testAddNewSingletonChild() throws Exception {
+        // precondition: serverC5.xml
+        testServer.setMarkToEndOfLog();
+        testServer.setServerConfigurationFile("childalias/serverC5.xml");
+        testServer.waitForConfigUpdateInLogUsingMark(null);
+
         testServer.setMarkToEndOfLog();
         testServer.setServerConfigurationFile("childalias/serverC6.xml");
         testServer.waitForConfigUpdateInLogUsingMark(null);
@@ -197,6 +243,11 @@ public class ChildAliasTest {
 
     @Test
     public void testUpdateSingletonChild() throws Exception {
+        // precondition: serverC6.xml
+        testServer.setMarkToEndOfLog();
+        testServer.setServerConfigurationFile("childalias/serverC6.xml");
+        testServer.waitForConfigUpdateInLogUsingMark(null);
+
         testServer.setMarkToEndOfLog();
         testServer.setServerConfigurationFile("childalias/serverC7.xml");
         testServer.waitForConfigUpdateInLogUsingMark(null);

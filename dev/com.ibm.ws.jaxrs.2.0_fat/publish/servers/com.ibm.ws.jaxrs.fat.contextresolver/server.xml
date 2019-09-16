@@ -11,4 +11,5 @@
 	<javaPermission className="java.util.PropertyPermission" name="javax.xml.bind.JAXBContext" actions="read"/>
 	<javaPermission className="java.util.PropertyPermission" name="com.sun.xml.bind.improvedXsiTypeHandling" actions="read"/>
 	<javaPermission className="java.util.PropertyPermission" name="com.sun.xml.bind.v2.runtime.JAXBContextImpl.fastBoot" actions="read"/>
+	<javaPermission className="org.osgi.framework.AdminPermission" name="*" actions="class,resolve"/>
 </server>

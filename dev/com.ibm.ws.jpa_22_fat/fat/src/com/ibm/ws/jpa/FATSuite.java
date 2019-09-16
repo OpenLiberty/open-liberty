@@ -19,9 +19,11 @@ import com.ibm.ws.jpa.jpa22.JPA22FATSuite;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+                JPADefaultDataSourceTest.class,
                 JPABootstrapTest.class,
                 JPA22FATSuite.class,
-                JPAAppClientTest.class
+                JPAAppClientTest.class,
+                EJBPassivationTest.class,
 })
 public class FATSuite {
     public final static String[] JAXB_PERMS = { "permission java.lang.RuntimePermission \"accessClassInPackage.com.sun.xml.internal.bind.v2.runtime.reflect\";",

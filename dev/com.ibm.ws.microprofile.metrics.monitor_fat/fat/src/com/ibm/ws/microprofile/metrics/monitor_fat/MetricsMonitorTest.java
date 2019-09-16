@@ -86,186 +86,6 @@ public class MetricsMonitorTest {
             server.removeAllInstalledAppsForValidation();
         }
     }
-       
-    @Test
-    public void testEnableDisableFeatures() throws Exception {
-
-    	String testName = "testEnableDisableFeatures";
-    	Log.info(c, testName, "------- No monitor-1.0: no vendor metrics should be available ------");
-    	server.setServerConfigurationFile("server_mpMetric11.xml");
-    	server.startServer();
-    	Assert.assertNotNull("Web application /metrics not loaded", server.waitForStringInLog("CWWKT0016I: Web application available \\(default_host\\): http:\\/\\/.*:.*\\/metrics\\/"));
-       	Assert.assertNotNull("CWWKO0219I NOT FOUND",server.waitForStringInLogUsingMark("defaultHttpEndpoint-ssl"));
-       	Assert.assertNotNull("SRVE9103I NOT FOUND",server.waitForStringInLogUsingMark("SRVE9103I"));
-    	Log.info(c, testName, "------- server started -----");
-      	checkStrings(getHttpsServlet("/metrics"), 
-          	new String[] { "base:" }, 
-          	new String[] { "vendor:" });
-      	
-    	Log.info(c, testName, "------- Enable mpMetrics-1.1 and monitor-1.0: threadpool metrics should be available ------");
-    	server.setMarkToEndOfLog();
-    	server.setServerConfigurationFile("server_monitor.xml");
-    	String logMsg = server.waitForStringInLogUsingMark("CWPMI2001I");
-    	Log.info(c, testName, logMsg);
-		Assert.assertNotNull("No CWPMI2001I was found.", logMsg);
-       	server.setMarkToEndOfLog(server.getMostRecentTraceFile());
-       	
-       	Log.info(c, testName, "------- threadpool metrics should be available ------");
-		getHttpsServlet("/metrics/vendor");
-		
-       	Log.info(c, testName, "------- servlet metrics should be available ------");
-       	Assert.assertNotNull("CWWKO0219I NOT FOUND",server.waitForStringInTraceUsingMark("Monitoring MXBean WebSphere:type=ServletStats"));
-       	checkStrings(getHttpsServlet("/metrics/vendor"), new String[] {
-       		"vendor:threadpool_default_executor_active_threads",
-       		"vendor:threadpool_default_executor_size",
-       		"vendor:servlet_com_ibm_ws_microprofile_metrics"
-       	}, new String[] {});
-       	       	
-       	Log.info(c, testName, "------- Add session application and run session servlet ------");
-       	ShrinkHelper.defaultDropinApp(server, "testSessionApp", "com.ibm.ws.microprofile.metrics.monitor_fat.session.servlet");
-       	Log.info(c, testName, "------- added testSessionApp to dropins -----");
-    	checkStrings(getHttpServlet("/testSessionApp/testSessionServlet"),
-    		new String[] { "Session id:" }, new String[] {});
-       	Log.info(c, testName, "------- session metrics should be available ------");
-       	checkStrings(getHttpsServlet("/metrics/vendor"), new String[] {
-       		"vendor:session_default_host_test_session_app_create_total",
-       		"vendor:session_default_host_test_session_app_live_sessions",
-       		"vendor:session_default_host_test_session_app_active_sessions",
-       		"vendor:session_default_host_test_session_app_invalidated_total",
-       		"vendor:session_default_host_test_session_app_invalidatedby_timeout_total"
-       	}, new String[] {});
-       	
-       	Log.info(c, testName, "------- Add JDBC application and run JDBC servlet ------");
-       	ShrinkHelper.defaultDropinApp(server, "testJDBCApp", "com.ibm.ws.microprofile.metrics.monitor_fat.jdbc.servlet");
-       	Log.info(c, testName, "------- added testJDBCApp to dropins -----");
-      	checkStrings(getHttpServlet("/testJDBCApp/testJDBCServlet?operation=create"), 
-      		new String[] { "sql: create table cities" }, new String[] {});
-       	Log.info(c, testName, "------- connectionpool metrics should be available ------");
-       	checkStrings(getHttpsServlet("/metrics/vendor"), new String[] {
-       		"vendor:connectionpool_jdbc_example_ds1_connection_handles",
-       		"vendor:connectionpool_jdbc_example_ds1_free_connections",
-       		"vendor:connectionpool_jdbc_example_ds1_destroy_total",
-       		"vendor:connectionpool_jdbc_example_ds1_create_total",
-       		"vendor:connectionpool_jdbc_example_ds1_managed_connections",
-       		"vendor:connectionpool_jdbc_example_ds1_wait_time_total",
-       		"vendor:connectionpool_jdbc_example_ds1_in_use_time_total",
-       		"vendor:connectionpool_jdbc_example_ds1_queued_requests_total",
-       		"vendor:connectionpool_jdbc_example_ds1_used_connections_total",
-       		"vendor:connectionpool_jdbc_example_ds2_connection_handles",
-       		"vendor:connectionpool_jdbc_example_ds2_free_connections",
-       		"vendor:connectionpool_jdbc_example_ds2_destroy_total",
-       		"vendor:connectionpool_jdbc_example_ds2_create_total",
-       		"vendor:connectionpool_jdbc_example_ds2_managed_connections",
-       		"vendor:connectionpool_jdbc_example_ds2_wait_time_total",
-       		"vendor:connectionpool_jdbc_example_ds2_in_use_time_total",
-       		"vendor:connectionpool_jdbc_example_ds2_queued_requests_total",
-       		"vendor:connectionpool_jdbc_example_ds2_used_connections_total",
-       	}, new String[] {});
-       	
-       	Log.info(c, testName, "------- Add jax-ws endpoint application and run jax-ws client servlet ------");
-       	ShrinkHelper.defaultDropinApp(server, "testJaxWsApp", "com.ibm.ws.microprofile.metrics.monitor_fat.jaxws","com.ibm.ws.microprofile.metrics.monitor_fat.jaxws.client");
-       	Log.info(c, testName, "------- added testJaxWsApp to dropins -----");
-    	checkStrings(getHttpServlet("/testJaxWsApp/SimpleStubClientServlet"),
-    		new String[] { "Pass" }, new String[] {});
-       	Log.info(c, testName, "------- jax-ws metrics should be available ------");
-       	checkStrings(getHttpsServlet("/metrics/vendor"), new String[] {
-       		"vendor:jaxws_client_jaxws_monitor_fat_metrics_microprofile_ws_ibm_com_simple_echo_service_simple_echo_port_checked_application_faults_total",
-       		"vendor:jaxws_client_jaxws_monitor_fat_metrics_microprofile_ws_ibm_com_simple_echo_service_simple_echo_port_runtime_faults_total",
-       		"vendor:jaxws_client_jaxws_monitor_fat_metrics_microprofile_ws_ibm_com_simple_echo_service_simple_echo_port_response_time_total_seconds",
-       		"vendor:jaxws_client_jaxws_monitor_fat_metrics_microprofile_ws_ibm_com_simple_echo_service_simple_echo_port_invocations_total",
-       		"vendor:jaxws_client_jaxws_monitor_fat_metrics_microprofile_ws_ibm_com_simple_echo_service_simple_echo_port_unchecked_application_faults_total",
-       		"vendor:jaxws_client_jaxws_monitor_fat_metrics_microprofile_ws_ibm_com_simple_echo_service_simple_echo_port_logical_runtime_faults_total",
-       		"vendor:jaxws_server_jaxws_monitor_fat_metrics_microprofile_ws_ibm_com_simple_echo_service_simple_echo_port_checked_application_faults_total",
-       		"vendor:jaxws_server_jaxws_monitor_fat_metrics_microprofile_ws_ibm_com_simple_echo_service_simple_echo_port_runtime_faults_total",
-       		"vendor:jaxws_server_jaxws_monitor_fat_metrics_microprofile_ws_ibm_com_simple_echo_service_simple_echo_port_response_time_total_seconds",
-       		"vendor:jaxws_server_jaxws_monitor_fat_metrics_microprofile_ws_ibm_com_simple_echo_service_simple_echo_port_invocations_total",
-       		"vendor:jaxws_server_jaxws_monitor_fat_metrics_microprofile_ws_ibm_com_simple_echo_service_simple_echo_port_unchecked_application_faults_total",
-       		"vendor:jaxws_server_jaxws_monitor_fat_metrics_microprofile_ws_ibm_com_simple_echo_service_simple_echo_port_logical_runtime_faults_total"	
-       	}, new String[] {});
-       	
-       	Log.info(c, testName, "------- Monitor filter ThreadPool and WebContainer  ------");
-       	server.setMarkToEndOfLog();
-       	server.setServerConfigurationFile("server_monitorFilter1.xml");
-       	Assert.assertNotNull("CWWKG0017I NOT FOUND",server.waitForStringInLogUsingMark("CWWKG0017I"));
-       	Log.info(c, testName, "------- Only threadpool and servlet metrics should be available ------");
-       	getHttpsServlet("/metrics"); // Initialize the metrics endpoint first, to load the mpMetrics servlet metrics.
-       	checkStrings(getHttpsServlet("/metrics/vendor"), 
-       		new String[] { "vendor:threadpool", "vendor:servlet" }, 
-       		new String[] { "vendor:session", "vendor:connectionpool" });
-       	
-       	Log.info(c, testName, "------- Monitor filter WebContainer and Session ------");
-       	server.setMarkToEndOfLog();
-       	server.setServerConfigurationFile("server_monitorFilter2.xml");
-       	Assert.assertNotNull("CWWKG0017I NOT FOUND",server.waitForStringInLogUsingMark("CWWKG0017I"));
-    	checkStrings(getHttpServlet("/testSessionApp/testSessionServlet"), 
-    		new String[] { "Session id:" }, new String[] {});
-       	Log.info(c, testName, "------- Only servlet and session metrics should be available ------");
-       	checkStrings(getHttpsServlet("/metrics/vendor"), 
-       		new String[] { "vendor:servlet", "vendor:session" }, 
-       		new String[] { "vendor:threadpool", "vendor:connectionpool" });
-       	
-       	Log.info(c, testName, "------- Monitor filter Session and ConnectionPool ------");
-       	server.setMarkToEndOfLog();
-       	server.setServerConfigurationFile("server_monitorFilter3.xml");
-       	Assert.assertNotNull("CWWKG0017I NOT FOUND",server.waitForStringInLogUsingMark("CWWKG0017I"));
-      	checkStrings(getHttpServlet("/testJDBCApp/testJDBCServlet?operation=select&city=city1&id=id1"), 
-          		new String[] { "sql: select" }, new String[] {});
-       	Log.info(c, testName, "------- Only session and connectionpool metrics should be available ------");
-       	checkStrings(getHttpsServlet("/metrics/vendor"), 
-       		new String[] { "vendor:session", "vendor:connectionpool" }, 
-       		new String[] { "vendor:servlet", "vendor:threadpool" });
-       	
-       	Log.info(c, testName, "------- Monitor filter ThreadPool, WebContainer, Session and ConnectionPool ------");
-       	server.setMarkToEndOfLog();
-       	server.setServerConfigurationFile("server_monitorFilter4.xml");
-       	Assert.assertNotNull("CWWKG0017I NOT FOUND",server.waitForStringInLogUsingMark("CWWKG0017I"));
-    	checkStrings(getHttpServlet("/testSessionApp/testSessionServlet"), 
-        		new String[] { "Session id:" }, new String[] {});
-      	checkStrings(getHttpServlet("/testJDBCApp/testJDBCServlet?operation=select&city=city1&id=id1"), 
-          		new String[] { "sql: select" }, new String[] {});
-       	Log.info(c, testName, "------- all four vendor metrics should be available ------");
-       	checkStrings(getHttpsServlet("/metrics/vendor"), 
-       		new String[] {"vendor:threadpool", "vendor:servlet", "vendor:session", "vendor:connectionpool" }, 
-       		new String[] {});
-       	
-       	Log.info(c, testName, "------- Remove JAX-WS application ------");
-       	boolean rc1 = server.removeAndStopDropinsApplications("testJaxWsApp.war");
-       	Log.info(c, testName, "------- " + (rc1 ? "successfully removed" : "failed to remove") + " JAX-WS application ------");
-       	server.setMarkToEndOfLog();
-       	server.setServerConfigurationFile("server_noJaxWs.xml");
-       	Assert.assertNotNull("CWWKG0017I NOT FOUND",server.waitForStringInLogUsingMark("CWWKG0017I"));
-       	Assert.assertNotNull("CWWKT0016I NOT FOUND",server.waitForStringInLogUsingMark("CWWKT0016I"));
-       	Assert.assertNotNull("SRVE9103I NOT FOUND",server.waitForStringInLogUsingMark("SRVE9103I"));
-       	Log.info(c, testName, "------- jax-ws metrics should not be available ------");
-      	checkStrings(getHttpsServlet("/metrics/vendor"), 
-      		new String[] { "vendor:" }, 
-      		new String[] { "vendor:jaxws_client", "vendor:jaxws_server"});       	
-      	
-       	Log.info(c, testName, "------- Remove JDBC application ------");
-       	boolean rc2 = server.removeAndStopDropinsApplications("testJDBCApp.war");
-       	Log.info(c, testName, "------- " + (rc2 ? "successfully removed" : "failed to remove") + " JDBC application ------");
-       	server.setMarkToEndOfLog();
-       	server.setServerConfigurationFile("server_noJDBC.xml");
-       	Assert.assertNotNull("CWWKG0017I NOT FOUND",server.waitForStringInLogUsingMark("CWWKG0017I"));
-       	Assert.assertNotNull("CWWKT0016I NOT FOUND",server.waitForStringInLogUsingMark("CWWKT0016I"));
-       	Assert.assertNotNull("CWWKZ0009I NOT FOUND",server.waitForStringInLogUsingMark("CWWKZ0009I"));
-       	Assert.assertNotNull("SRVE9103I NOT FOUND",server.waitForStringInLogUsingMark("SRVE9103I"));
-       	Log.info(c, testName, "------- connectionpool metrics should not be available ------");
-      	checkStrings(getHttpsServlet("/metrics/vendor"), 
-      		new String[] { "vendor:" },       	
-      		new String[] { "vendor:connectionpool", "vendor:servlet_test_jdbc_app" });
-      	      	
-       	Log.info(c, testName, "------- Remove monitor-1.0 ------");
-    	server.setMarkToEndOfLog();
-    	server.setServerConfigurationFile("server_noJDBCMonitor.xml");
-       	Assert.assertNotNull("CWWKG0016I NOT FOUND",server.waitForStringInLogUsingMark("CWWKG0016I"));
-       	Assert.assertNotNull("CWWKZ0003I NOT FOUND",server.waitForStringInLogUsingMark("CWWKF0008I"));
-       	Assert.assertNotNull("CWPMI2002I NOT FOUND",server.waitForStringInLogUsingMark("CWPMI2002I"));
-       	Log.info(c, testName, "------- no vendor metrics should be available ------");
-      	checkStrings(getHttpsServlet("/metrics"), 
-      		new String[] {}, 
-      		new String[] { "vendor:" });
-    }
 
     @Test
     public void testDisableMpMetricsFeature() throws Exception {
@@ -275,8 +95,10 @@ public class MetricsMonitorTest {
     	Log.info(c, testName, "------- Enable mpMetrics-1.1 and monitor-1.0: vendor metrics should be available ------");
     	server.setServerConfigurationFile("server_monitor.xml");
     	server.startServer();
+    	Assert.assertNotNull("CWWKO0219I NOT FOUND",server.waitForStringInLog("defaultHttpEndpoint-ssl",60000));
     	Log.info(c, testName, server.waitForStringInLog("defaultHttpEndpoint-ssl",60000));
     	Log.info(c, testName, "------- server started -----");
+    	Assert.assertNotNull("CWWKT0016I NOT FOUND",server.waitForStringInLogUsingMark("CWWKT0016I"));
       	checkStrings(getHttpsServlet("/metrics"), 
           	new String[] { "base:", "vendor:" }, 
           	new String[] {});
@@ -296,8 +118,12 @@ public class MetricsMonitorTest {
     	Log.info(c, testName, "------- Enable mpMetrics-1.0 and monitor-1.0: vendor metrics should not be available ------");
     	server.setServerConfigurationFile("server_mpMetric10Monitor10.xml");
     	server.startServer();
-    	Log.info(c, testName, server.waitForStringInLog("defaultHttpEndpoint-ssl",60000));
-    	Log.info(c, testName, "------- server started -----");
+    	Assert.assertNotNull("CWWKO0219I NOT FOUND",server.waitForStringInLog("defaultHttpEndpoint-ssl",60000));
+        String logMsg = server.waitForStringInLog("SRVE9103I",60000);   
+        Log.info(c, testName, logMsg);
+        Assert.assertNotNull("No SRVE9103I message", logMsg);    
+        Assert.assertNotNull("CWWKT0016I NOT FOUND",server.waitForStringInLog(".*CWWKT0016I.*metrics.*",60000));
+        Log.info(c, testName, "------- server started -----");
       	checkStrings(getHttpsServlet("/metrics"), 
           	new String[] { "base:" }, 
           	new String[] { "vendor: "});
@@ -311,7 +137,9 @@ public class MetricsMonitorTest {
     	Log.info(c, testName, "------- Enable microProfile-1.3 and monitor-1.0: vendor metrics should be available ------");
     	server.setServerConfigurationFile("server_microProfile13Monitor10.xml");
     	server.startServer();
+    	Assert.assertNotNull("CWWKO0219I NOT FOUND",server.waitForStringInLog("defaultHttpEndpoint-ssl",60000));
     	Log.info(c, testName, server.waitForStringInLog("CWWKS5500I",60000));
+    	Assert.assertNotNull("CWWKT0016I NOT FOUND",server.waitForStringInLog(".*CWWKT0016I.*metrics.*",60000));
     	Log.info(c, testName, "------- server started -----");
       	checkStrings(getHttpsServlet("/metrics"),
           	new String[] { "vendor:" }, 

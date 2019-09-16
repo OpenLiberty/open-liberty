@@ -1,0 +1,464 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/oauth20/internal/resources/OauthMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server OAUTH Security
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS1400 - CWWKS1499
+OAUTH_PROVIDER_CONFIG_INVALID=CWWKS1400E: Konfigurace poskytovatele OAuth {0} je neplatn\u00e1.
+OAUTH_PROVIDER_CONFIG_INVALID.explanation=Nelze z\u00edskat konfiguraci poskytovatele OAuth.
+OAUTH_PROVIDER_CONFIG_INVALID.useraction=Zadejte platnou konfiguraci poskytovatele OAuth.
+
+OAUTH_PROVIDER_CONFIG_NO_LIBRARYREF=CWWKS1401W: Poskytovatel OAuth {0} m\u00e1 ur\u010denou t\u0159\u00eddu medi\u00e1tora, ale bu\u010f nen\u00ed ur\u010den odkaz libraryRef, nebo nen\u00ed aktivov\u00e1na p\u0159\u00edslu\u0161n\u00e1 knihovna.
+OAUTH_PROVIDER_CONFIG_NO_LIBRARYREF.explanation=Poskytovatel OAuth m\u00e1 ur\u010denou t\u0159\u00eddu medi\u00e1tora, ale bu\u010f nen\u00ed ur\u010den odkaz libraryRef, nebo nen\u00ed aktivov\u00e1na p\u0159\u00edslu\u0161n\u00e1 knihovna. M\u016f\u017ee se jednat o chybu konfigurace, nebo mohla b\u00fdt knihovna aktivov\u00e1na a\u017e po aktivaci poskytovatele.
+OAUTH_PROVIDER_CONFIG_NO_LIBRARYREF.useraction=Zajist\u011bte, aby byl odkaz libraryRef poskytovatele OAuth definov\u00e1n spr\u00e1vn\u011b.
+
+OAUTH_PROVIDER_CONFIG_MEDIATOR_LIBRARYREF_ACTIVE=CWWKS1402I: Odkaz libraryRef poskytovatele OAuth {0} aktivov\u00e1n pro t\u0159\u00eddu medi\u00e1tora {1}.
+OAUTH_PROVIDER_CONFIG_MEDIATOR_LIBRARYREF_ACTIVE.explanation=Poskytovatel OAuth m\u00e1 ur\u010denou t\u0159\u00eddu medi\u00e1tora a je aktivov\u00e1n odkaz libraryRef.
+OAUTH_PROVIDER_CONFIG_MEDIATOR_LIBRARYREF_ACTIVE.useraction=Nen\u00ed.
+
+OAUTH_PROVIDER_CONFIG_PROCESSED=CWWKS1403I: Konfigurace poskytovatele OAuth {0} byla \u00fasp\u011b\u0161n\u011b zpracov\u00e1na.
+OAUTH_PROVIDER_CONFIG_PROCESSED.explanation=Konfigurace poskytovatele OAuth byla \u00fasp\u011b\u0161n\u011b zpracov\u00e1na.
+OAUTH_PROVIDER_CONFIG_PROCESSED.useraction=Nen\u00ed.
+
+OAUTH_ROLE_CONFIG_PROCESSED=CWWKS1404I: Konfigurace rol\u00ed OAuth byla \u00fasp\u011b\u0161n\u011b zpracov\u00e1na.
+OAUTH_ROLE_CONFIG_PROCESSED.explanation=Konfigurace rol\u00ed OAuth byla \u00fasp\u011b\u0161n\u011b zpracov\u00e1na.
+OAUTH_ROLE_CONFIG_PROCESSED.useraction=Nen\u00ed.
+
+OAUTH_INTROSPECT_NO_TOKEN=CWWKS1405E: Po\u017eadavek na introspekci nem\u011bl parametr tokenu. Identifik\u00e1tor URI po\u017eadavku byl {0}.
+OAUTH_INTROSPECT_NO_TOKEN.explanation=Po\u017eadavek na introspekci mus\u00ed m\u00edt parametr tokenu po\u017eadavku ur\u010duj\u00edc\u00ed p\u0159\u00edstupov\u00fd token, kde se m\u00e1 prov\u00e1d\u011bt introspekce.
+OAUTH_INTROSPECT_NO_TOKEN.useraction=Znovu vyvolejte po\u017eadavek s parametrem tokenu, kter\u00fd ur\u010duje platn\u00fd p\u0159\u00edstupov\u00fd token.
+
+OAUTH_INVALID_CLIENT=CWWKS1406E: Po\u017eadavek {0} m\u00e1 neplatn\u00e9 pov\u011b\u0159en\u00ed klienta. Identifik\u00e1tor URI po\u017eadavku byl {1}.
+OAUTH_INVALID_CLIENT.explanation=Uveden\u00fd po\u017eadavek mus\u00ed m\u00edt platn\u00e9 ID klienta a heslo a ID tohoto klienta se mus\u00ed shodovat s ID klienta, kter\u00fd vytvo\u0159il p\u0159\u00edstupov\u00fd token.
+OAUTH_INVALID_CLIENT.useraction=Znovu vyvolejte po\u017eadavek s platn\u00fdm pov\u011b\u0159en\u00edm klienta.
+
+CUSTOMIZED_FACTORY_INSTANTIATE_ERROR=CWWKS1407E: N\u00e1zev t\u0159\u00eddy {0} upraven\u00e9 obslu\u017en\u00e9 rutiny typu Grant nelze p\u0159ev\u00e9st na instanci {1}
+CUSTOMIZED_FACTORY_INSTANTIATE_ERROR.explanation=N\u00e1zev t\u0159\u00eddy upraven\u00e9 obslu\u017en\u00e9 rutiny typu Grant nelze p\u0159ev\u00e9st na instanci.
+CUSTOMIZED_FACTORY_INSTANTIATE_ERROR.useraction=Dvakr\u00e1t zkontrolujte n\u00e1zev t\u0159\u00eddy v konfiguraci.
+
+CUSTOMIZED_CLASS_NOT_FOUND=CWWKS1408E: N\u00e1zev t\u0159\u00eddy {0} upraven\u00e9 obslu\u017en\u00e9 rutiny typu Grant nebyl nalezen. {1}
+CUSTOMIZED_CLASS_NOT_FOUND.explanation=N\u00e1zev t\u0159\u00eddy upraven\u00e9 obslu\u017en\u00e9 rutiny typu Grant nebyl nalezen.
+CUSTOMIZED_CLASS_NOT_FOUND.useraction=Dvakr\u00e1t zkontrolujte n\u00e1zev t\u0159\u00eddy v konfiguraci.
+
+OAUTH_OSGI_ENDPOINT_SERVICE_ERROR=CWWKS1409E: Do\u0161lo k chyb\u011b konfigurace. Nen\u00ed k dispozici \u017e\u00e1dn\u00e1 slu\u017eba koncov\u00e9ho bodu. Zkontrolujte, zda m\u00e1te nakonfigurovanou funkci oauth-2.0 nebo openidConnectServer-1.0. 
+OAUTH_OSGI_ENDPOINT_SERVICE_ERROR.explanation=Prost\u0159ednictv\u00edm registru slu\u017eeb OSGi nen\u00ed k dispozici \u017e\u00e1dn\u00e1 slu\u017eba koncov\u00e9ho bodu.
+OAUTH_OSGI_ENDPOINT_SERVICE_ERROR.useraction=Zahr\u0148te funkci oauth-2.0 nebo openidConnectServer-1.0 do sv\u00e9 konfigurace serveru.
+
+OAUTH_ENDPOINT_SERVICE_ACTIVATED=CWWKS1410I: Slu\u017eba koncov\u00e9ho bodu OAuth je aktivov\u00e1na.
+OAUTH_ENDPOINT_SERVICE_ACTIVATED.explanation=Slu\u017eba p\u0159ipojen\u00ed OAuth je aktivov\u00e1na.
+OAUTH_ENDPOINT_SERVICE_ACTIVATED.useraction=Nen\u00ed
+
+OAUTH_INTROSPECT_REVOKE_INVALID_CLIENT=CWWKS1411E: Po\u017eadavek m\u011bl ID klienta, kter\u00e9 se neshodovalo s ID klienta, kter\u00fd vytvo\u0159il p\u0159\u00edstupov\u00fd token, nebo po\u017eadavek m\u011bl neplatn\u00e9 ID klienta nebo utajen\u00e9 \u00fadaje klienta. Identifik\u00e1tor URI po\u017eadavku byl {0}.
+OAUTH_INTROSPECT_REVOKE_INVALID_CLIENT.explanation=Po\u017eadavek m\u011bl ID klienta, kter\u00e9 se neshodovalo s ID klienta, kter\u00fd vytvo\u0159il p\u0159\u00edstupov\u00fd token, nebo po\u017eadavek m\u011bl neplatn\u00e9 ID klienta nebo utajen\u00e9 \u00fadaje klienta.
+OAUTH_INTROSPECT_REVOKE_INVALID_CLIENT.useraction=Znovu vyvolejte po\u017eadavek s platn\u00fdm pov\u011b\u0159en\u00edm klienta.
+
+OAUTH_REQUEST_ATTRIBUTE_MISSING=CWWKS1412E: Koncov\u00fd bod po\u017eadavku {0} nem\u00e1 atribut {1}.
+OAUTH_REQUEST_ATTRIBUTE_MISSING.explanation=Atribut chyb\u00ed v po\u017eadavku.
+OAUTH_REQUEST_ATTRIBUTE_MISSING.useraction=Zkontrolujte koncov\u00fd bod po\u017eadavku v souboru server.xml a ujist\u011bte se, \u017ee m\u00e1te spr\u00e1vn\u00e9ho poskytovatele. 
+
+OAUTH_PROVIDER_OBJECT_NULL=CWWKS1413E: Objekt OAuth20Provider m\u00e1 pro poskytovatele OAuth {0} hodnotu null.
+OAUTH_PROVIDER_OBJECT_NULL.explanation=Nelze vytvo\u0159it objekt OAuth20Provider pro n\u00e1zev poskytovatele OAuth.
+OAUTH_PROVIDER_OBJECT_NULL.useraction=P\u0159ekontrolujte konfiguraci poskytovatele. 
+
+# Tr.error
+JWT_SERVER_SCOPE_NOT_PRE_AUTHORIZED_ERR=CWWKS1414E: Po\u017eadavek koncov\u00e9ho bodu tokenu se nezda\u0159il, proto\u017ee rozsah [{0}] v parametru rozsahu po\u017eadavku nebyl v seznamu ''preAuthorizedScope'' na klientovi [{1}] definov\u00e1n.
+JWT_SERVER_SCOPE_NOT_PRE_AUTHORIZED_ERR.explanation=V\u0161echny rozsahy po\u017eadovan\u00e9 v parametru rozsahu po\u017eadavku koncov\u00e9ho bodu tokenu mus\u00ed b\u00fdt definovan\u00e9 v seznamu 'preAuthorizedScope' konfigurace klienta.
+JWT_SERVER_SCOPE_NOT_PRE_AUTHORIZED_ERR.useraction=Ujist\u011bte se, \u017ee v\u0161echny rozsahy v po\u017eadavku koncov\u00e9ho bodu tokenu jsou definovan\u00e9 v seznamu 'preAuthorizedScope' konfigurace klienta.
+
+# 
+JWT_SERVER_SCOPE_NOT_PRE_AUTHORIZED_EXTERNAL_ERR=CWWKS1415E: Po\u017eadavek koncov\u00e9ho bodu tokenu se nezda\u0159il, proto\u017ee jeden z rozsah\u016f v parametru rozsahu po\u017eadavku nebyl definovan\u00fd v seznamu ''preAuthorizedScope'' klienta [{0}].
+JWT_SERVER_SCOPE_NOT_PRE_AUTHORIZED_EXTERNAL_ERR.explanation=V\u0161echny rozsahy po\u017eadovan\u00e9 v parametru rozsahu po\u017eadavku koncov\u00e9ho bodu tokenu mus\u00ed b\u00fdt definovan\u00e9 v seznamu 'preAuthorizedScope' konfigurace klienta.
+JWT_SERVER_SCOPE_NOT_PRE_AUTHORIZED_EXTERNAL_ERR.useraction=Ujist\u011bte se, \u017ee v\u0161echny rozsahy uveden\u00e9 v po\u017eadavku koncov\u00e9ho bodu tokenu jsou definovan\u00e9 v seznamu 'preAuthorizedScope' konfigurace klienta.
+
+# 
+JWT_SERVER_NO_PRE_AUTHORIZED_SCOPE_ERR=CWWKS1416E: Po\u017eadavek koncov\u00e9ho bodu tokenu se nezda\u0159il, proto\u017ee klient [{0}] nen\u00ed automaticky autorizovan\u00fd a nem\u00e1 ve sv\u00e9 konfiguraci definovan\u00fd seznam ''preAuthorizedScope''. Nelze autorizovat \u017e\u00e1dn\u00fd rozsah.
+JWT_SERVER_NO_PRE_AUTHORIZED_SCOPE_ERR.explanation=Klient mus\u00ed b\u00fdt automaticky autorizovan\u00fd, aby mohl autorizovat rozsahy z po\u017eadavku HTTP. Jinak mus\u00ed b\u00fdt rozsahy definovan\u00e9 v seznamu 'preAuthorizedScope' konfigurace klienta.
+JWT_SERVER_NO_PRE_AUTHORIZED_SCOPE_ERR.useraction=Ujist\u011bte se, \u017ee je klient automaticky autorizovan\u00fd nebo \u017ee je v seznamu 'preAuthorizedScope' konfigurace klienta definovan\u00fd rozsah.
+
+# do not translate urn:ietf:params:oauth:grant-type:jwt-bearer
+OAUTH_SERVER_GRANT_TYPE_NOT_SUPPORTED_ERR=CWWKS1417E: Po\u017eadavek koncov\u00e9ho bodu tokenu se nezda\u0159il. Klient [{0}] nepodporuje typ ud\u011blen\u00ed: [{0}].
+OAUTH_SERVER_GRANT_TYPE_NOT_SUPPORTED_ERR.explanation=Klient uveden\u00fd ve zpr\u00e1v\u011b nepodporuje dan\u00fd typ ud\u011blen\u00ed, proto\u017ee nen\u00ed uvedeno v seznamu grantType konfigurace klienta.
+OAUTH_SERVER_GRANT_TYPE_NOT_SUPPORTED_ERR.useraction=Zadejte uveden\u00fd typ ud\u011blen\u00ed do seznamu grantType v konfiguraci klienta.
+
+JWT_SERVER_DUPLICATED_PARAMETERS_ERR=CWWKS1418E: Po\u017eadavek koncov\u00e9ho bodu tokenu se nezda\u0159il. Poskytovatel p\u0159ipojen\u00ed OpenID nem\u016f\u017ee zpracovat po\u017eadavek, proto\u017ee obsahuje v\u00edce ne\u017e jeden parametr [{0}].
+JWT_SERVER_DUPLICATED_PARAMETERS_ERR.explanation=Po\u017eadavek koncov\u00e9ho bodu tokenu nem\u016f\u017ee obsahovat v\u00edce ne\u017e jeden uveden\u00fd parametr. Jinak ho poskytovatel p\u0159ipojen\u00ed OpenID nem\u016f\u017ee zpracovat.
+JWT_SERVER_DUPLICATED_PARAMETERS_ERR.useraction=Ujist\u011bte se, \u017ee po\u017eadavek koncov\u00e9ho bodu tokenu obsahuje pouze jeden uveden\u00fd parametr.
+
+OAUTH_INTROSPECT_CLIENT_NOT_AUTHORIZED=CWWKS1419E: Klient nem\u00e1 autorizaci pro introspekci p\u0159\u00edstupov\u00fdch token\u016f. Identifik\u00e1tor URI po\u017eadavku byl {0}.
+OAUTH_INTROSPECT_CLIENT_NOT_AUTHORIZED.explanation=Po\u017eadavek m\u011bl ID klienta, kter\u00fd nem\u00e1 autorizaci pro introspekci token\u016f.
+OAUTH_INTROSPECT_CLIENT_NOT_AUTHORIZED.useraction=Autorizujte klienta pro introspekci p\u0159\u00edstupov\u00fdch token\u016f nastaven\u00edm parametru introspectTokens na hodnotu true v konfiguraci klienta OAuth.
+
+OAUTH_INTROSPECT_CLIENT_NOT_AUTHORIZED_SERVER_LOG=CWWKS1420E: Klient {0} nem\u00e1 autorizaci pro introspekci p\u0159\u00edstupov\u00fdch token\u016f. Identifik\u00e1tor URI po\u017eadavku byl {1}.
+OAUTH_INTROSPECT_CLIENT_NOT_AUTHORIZED_SERVER_LOG.explanation=Po\u017eadavek m\u011bl ID klienta, kter\u00fd nem\u00e1 autorizaci pro introspekci token\u016f.
+OAUTH_INTROSPECT_CLIENT_NOT_AUTHORIZED_SERVER_LOG.useraction=Autorizujte klienta pro introspekci p\u0159\u00edstupov\u00fdch token\u016f nastaven\u00edm parametru introspectTokens na hodnotu true v konfiguraci klienta OAuth.
+
+OAUTH_LENGTH_TOO_SMALL_AND_CHANGED=CWWKS1421I: Hodnota {0} v konfiguraci oauthProvider je {1}. To je m\u00e9n\u011b ne\u017e doporu\u010dovan\u00e1 hodnota. Bude nastavena na v\u00fdchoz\u00ed hodnotu {2}.
+OAUTH_LENGTH_TOO_SMALL_AND_CHANGED.explanation=Hodnota uveden\u00e9ho atributu je p\u0159\u00edli\u0161 mal\u00e1. Nastav\u00ed se na v\u00fdchoz\u00ed hodnotu. 
+OAUTH_LENGTH_TOO_SMALL_AND_CHANGED.useraction=Nastavte uveden\u00fd atribut na \u0159\u00e1dnou hodnotu, kter\u00e1 nen\u00ed men\u0161\u00ed ne\u017e v\u00fdchoz\u00ed hodnota.
+
+OAUTH_LENGTH_TOO_LARGE_AND_CHANGED=CWWKS1422I: Hodnota {0} v konfiguraci oauthProvider je {1}. Byla nastavena na povolenou maxim\u00e1ln\u00ed hodnotu {2}.
+OAUTH_LENGTH_TOO_LARGE_AND_CHANGED.explanation=Hodnota v uveden\u00e9m atributu je p\u0159\u00edli\u0161 velk\u00e1.
+OAUTH_LENGTH_TOO_LARGE_AND_CHANGED.useraction=Nastavte uveden\u00fd atribut na \u0159\u00e1dnou hodnotu. 
+
+OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR=CWWKS1423E: Registrace nebo aktualizace klienta OAuth se nezda\u0159ila, proto\u017ee data klienta obsahuj\u00ed neplatn\u00fd znak "{0}".
+OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR.explanation=V datech klienta nen\u00ed znak povolen.
+OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR.useraction=Odeberte neplatn\u00fd znak a pot\u00e9 po\u017eadavek znovu ode\u0161lete. 
+
+OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND=CWWKS1424E: Nebylo nalezeno ID klienta {0}.
+OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.explanation=Po\u017eadavek obsahoval ID klienta, kter\u00e9 nebylo nalezeno. 
+OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.useraction=Opakujte po\u017eadavek s platn\u00fdm ID klienta.
+
+OAUTH_CLIENT_REGISTRATION_INVALID_REQUEST_PATH=CWWKS1425E: Byl zad\u00e1n po\u017eadavek na registraci pro nespr\u00e1vn\u00fd identifik\u00e1tor URI.
+OAUTH_CLIENT_REGISTRATION_INVALID_REQUEST_PATH.explanation=Klienty je mo\u017en\u00e9 vytv\u00e1\u0159et pouze zad\u00e1n\u00edm po\u017eadavku POST pro identifik\u00e1tor URI koncov\u00e9ho bodu registrace. 
+OAUTH_CLIENT_REGISTRATION_INVALID_REQUEST_PATH.useraction=Prostudujte si dokumentaci rozhran\u00ed API pro tuto slu\u017ebu a zopakujte po\u017eadavek adresovan\u00fd identifik\u00e1toru URI koncov\u00e9ho bodu registrace.
+
+OAUTH_CLIENT_REGISTRATION_MISSING_CLIENTID=CWWKS1426E: Operace {0} se nezda\u0159ila, proto\u017ee po\u017eadavek neobsahoval parametr {1}.
+OAUTH_CLIENT_REGISTRATION_MISSING_CLIENTID.explanation=Klienty je mo\u017en\u00e9 vytv\u00e1\u0159et pouze zad\u00e1n\u00edm po\u017eadavku POST pro identifik\u00e1tor URI koncov\u00e9ho bodu registrace. 
+OAUTH_CLIENT_REGISTRATION_MISSING_CLIENTID.useraction=Prostudujte si dokumentaci rozhran\u00ed API pro tuto slu\u017ebu a zopakujte po\u017eadavek adresovan\u00fd identifik\u00e1toru URI koncov\u00e9ho bodu registrace.
+
+OAUTH_CLIENT_REGISTRATION_INVALID_CLIENTID=CWWKS1427E: Operace {0} se nezda\u0159ila, proto\u017ee po\u017eadavek obsahuje neplatn\u00fd parametr {1} {2}.
+OAUTH_CLIENT_REGISTRATION_INVALID_CLIENTID.explanation=Operace je mo\u017en\u00e9 prov\u00e1d\u011bt pouze s registrovan\u00fdmi a platn\u00fdmi klienty. 
+OAUTH_CLIENT_REGISTRATION_INVALID_CLIENTID.useraction=Prostudujte si dokumentaci rozhran\u00ed API pro tuto slu\u017ebu a zopakujte po\u017eadavek se spr\u00e1vn\u00fdmi parametry.
+
+OAUTH_CLIENT_REGISTRATION_MALFORMED_REQUEST=CWWKS1428E: T\u011blo po\u017eadavku je nespr\u00e1vn\u011b utvo\u0159eno.
+OAUTH_CLIENT_REGISTRATION_MALFORMED_REQUEST.explanation=JSON v t\u011ble po\u017eadavku je chybn\u00fd.
+OAUTH_CLIENT_REGISTRATION_MALFORMED_REQUEST.useraction=Prostudujte si dokumentaci rozhran\u00ed API pro tuto slu\u017ebu a zopakujte po\u017eadavek.
+
+OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS=CWWKS1429E: ID klienta {0} ji\u017e existuje.
+OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS.explanation=Operace se nezda\u0159ila, proto\u017ee ID klienta ji\u017e existuje. 
+OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS.useraction=Prostudujte si dokumentaci rozhran\u00ed API pro tuto slu\u017ebu a zopakujte po\u017eadavek se spr\u00e1vn\u00fdmi parametry.
+
+OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE=CWWKS1430E: Aktualizace klienta se nezda\u0159ila. Po\u017eadavek na aktualizaci uv\u00e1d\u00ed, \u017ee mus\u00ed b\u00fdt utajen\u00e9 \u00fadaje klienta zachov\u00e1ny, ale pro st\u00e1vaj\u00edc\u00ed registraci \u017e\u00e1dn\u00e9 utajen\u00e9 \u00fadaje nastaveny nejsou.
+OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE.explanation=Po\u017eadavek na aktualizaci uv\u00e1d\u00ed, \u017ee mus\u00ed b\u00fdt utajen\u00e9 \u00fadaje klienta zachov\u00e1ny, ale pro st\u00e1vaj\u00edc\u00ed registraci \u017e\u00e1dn\u00e9 utajen\u00e9 \u00fadaje nastaveny nejsou.
+OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE.useraction=Prostudujte si dokumentaci rozhran\u00ed API pro tuto slu\u017ebu a zopakujte po\u017eadavek se spr\u00e1vn\u00fdmi parametry.
+
+OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE=CWWKS1431E: Aktualizace klienta se nezda\u0159ila. Po\u017eadavek na aktualizaci pro ve\u0159ejn\u00e9ho klienta nesm\u00ed uv\u00e1d\u011bt utajen\u00e9 \u00fadaje klienta.
+OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE.explanation=Po\u017eadavek na aktualizaci pro ve\u0159ejn\u00e9ho klienta nesm\u00ed uv\u00e1d\u011bt utajen\u00e9 \u00fadaje klienta.
+OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE.useraction=Prostudujte si dokumentaci rozhran\u00ed API pro tuto slu\u017ebu a zopakujte po\u017eadavek se spr\u00e1vn\u00fdmi parametry.
+
+OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG=CWWKS1432E: Aktualizace klienta se nezda\u0159ila. Tajn\u00fd kl\u00ed\u010d klienta nelze aktualizovat, proto\u017ee vzhledem k aktu\u00e1ln\u00edmu stavu registrace klienta uv\u00e1d\u00ed po\u017eadavek neplatnou konfiguraci.
+OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG.explanation=Po\u017eadavek nelze dokon\u010dit, proto\u017ee uv\u00e1d\u00ed vzhledem k aktu\u00e1ln\u00edmu stavu registrace klienta neplatnou konfiguraci.
+OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG.useraction=Prostudujte si dokumentaci rozhran\u00ed API pro tuto slu\u017ebu a zopakujte po\u017eadavek se spr\u00e1vn\u00fdmi parametry.
+
+OAUTH_UNSUPPORTED_METHOD=CWWKS1433E: Metoda HTTP {0} nen\u00ed podporov\u00e1na pro slu\u017ebu {1}.
+OAUTH_UNSUPPORTED_METHOD.explanation=Pro danou slu\u017ebu jsou podporov\u00e1ny jen n\u011bkter\u00e9 metody HTTP. 
+OAUTH_UNSUPPORTED_METHOD.useraction=Opravte po\u017eadavek HTTP.
+
+OAUTH_COVERAGE_MAP_MISSING_PARAMS=CWWKS1434E: V po\u017eadavku chyb\u00ed povinn\u00e9 parametry.
+OAUTH_COVERAGE_MAP_MISSING_PARAMS.explanation=Po\u017eadavek na tuto slu\u017ebu byl zam\u00edtnut, proto\u017ee v n\u011bm chyb\u00ed povinn\u00fd parametr {0}.
+OAUTH_COVERAGE_MAP_MISSING_PARAMS.useraction=Prostudujte si dokumentaci rozhran\u00ed API pro tuto slu\u017ebu a zopakujte po\u017eadavek se spr\u00e1vn\u00fdmi parametry.
+
+OAUTH_COVERAGE_MAP_MISSING_TOKEN_PARAM=CWWKS1435E: V po\u017eadavku chyb\u00ed parametr {0}.
+OAUTH_COVERAGE_MAP_MISSING_TOKEN_PARAM.explanation=Po\u017eadavek na tuto slu\u017ebu byl zam\u00edtnut, proto\u017ee v n\u011bm chyb\u00ed povinn\u00fd parametr {0}. 
+OAUTH_COVERAGE_MAP_MISSING_TOKEN_PARAM.useraction=Prostudujte si dokumentaci rozhran\u00ed API pro tuto slu\u017ebu a zopakujte po\u017eadavek se spr\u00e1vn\u00fdmi parametry.
+
+OAUTH_COVERAGE_MAP_MULTIPLE_TOKEN_PARAM=CWWKS1436E: Po\u017eadavek obsahuje v\u00edce parametr\u016f {0}.
+OAUTH_COVERAGE_MAP_MULTIPLE_TOKEN_PARAM.explanation=Po\u017eadavek na tuto slu\u017ebu byl zam\u00edtnut, proto\u017ee obsahuje neplatn\u00e9 parametry. M\u016f\u017ee b\u00fdt uveden pouze jeden parametr {0}. 
+OAUTH_COVERAGE_MAP_MULTIPLE_TOKEN_PARAM.useraction=Prostudujte si dokumentaci rozhran\u00ed API pro tuto slu\u017ebu a zopakujte po\u017eadavek se spr\u00e1vn\u00fdmi parametry.
+
+OAUTH_COVERAGE_MAP_UNRECOGNIZED_TOKEN_PARAM=CWWKS1437E: Po\u017eadavek obsahuje nezn\u00e1m\u00fd parametr typu tokenu {0}.
+OAUTH_COVERAGE_MAP_UNRECOGNIZED_TOKEN_PARAM.explanation=Po\u017eadavek na tuto slu\u017ebu byl zam\u00edtnut, proto\u017ee byl uveden nezn\u00e1m\u00fd typ tokenu {0}. 
+OAUTH_COVERAGE_MAP_UNRECOGNIZED_TOKEN_PARAM.useraction=Prostudujte si dokumentaci rozhran\u00ed API pro tuto slu\u017ebu a zopakujte po\u017eadavek se spr\u00e1vn\u00fdmi parametry.
+
+OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_CREATE_FAILURE=CWWKS1438E: Vytvo\u0159en\u00ed klienta se nezda\u0159ilo.
+OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_CREATE_FAILURE.explanation=P\u0159i vytv\u00e1\u0159en\u00ed ve\u0159ejn\u00e9ho klienta nelze zadat utajen\u00e9 \u00fadaje klienta. 
+OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_CREATE_FAILURE.useraction=Bu\u010f nezad\u00e1vejte client_secret, nebo vytvo\u0159te neve\u0159ejn\u00e9ho klienta.
+
+OAUATH_CERT_AUTH_WITH_NO_CERT=CWWKS1439E: Ov\u011b\u0159en\u00ed u\u017eivatele po\u017eadavku se nezda\u0159ilo, proto\u017ee atribut certAuthentication je v konfiguraci poskytovatele oauthProvider nastaven na hodnotu true, ale po\u017eadavek HTTP nedodal b\u011bhem nav\u00e1z\u00e1n\u00ed komunikace p\u0159es zabezpe\u010den\u00ed SSL pro ov\u011b\u0159en\u00ed u\u017eivatele certifik\u00e1t klienta.
+OAUATH_CERT_AUTH_WITH_NO_CERT.explanation=Po\u017eadavek mus\u00ed b\u011bhem nav\u00e1z\u00e1n\u00ed komunikace p\u0159es zabezpe\u010den\u00ed SSL poskytnout pro ov\u011b\u0159en\u00ed u\u017eivatele certifik\u00e1t klienta, je-li povolen atribut certAuthentication v konfiguraci poskytovatele oauthProvider.
+OAUATH_CERT_AUTH_WITH_NO_CERT.useraction=B\u011bhem nav\u00e1z\u00e1n\u00ed komunikace p\u0159es zabezpe\u010den\u00ed SSL povolte po ov\u011b\u0159en\u00ed u\u017eivatele po\u017eadavek s \u0159\u00e1dn\u00fdm certifik\u00e1tem klienta a nastavte atribut clientAuthenticationSupported v konfiguraci SSL na hodnotu true, nebo nastavte atribut certAuthentication na hodnotu false, \u010d\u00edm\u017e ho zak\u00e1\u017eete. 
+
+OAUATH_BASIC_AUTH_FAIL=CWWKS1440E: Ov\u011b\u0159en\u00ed u\u017eivatele po\u017eadavku se nezda\u0159ilo, proto\u017ee nebylo mo\u017en\u00e9 ov\u011b\u0159it z\u00e1hlav\u00ed autorizace v po\u017eadavku jako platn\u00e9ho u\u017eivatele.
+OAUATH_BASIC_AUTH_FAIL.explanation=Po\u017eadavek mus\u00ed poskytovat platn\u00e9 z\u00e1hlav\u00ed autorizace, kter\u00e9 mus\u00ed obsahovat platn\u00e9ho u\u017eivatele a heslo.
+OAUATH_BASIC_AUTH_FAIL.useraction=Ujist\u011bte se, \u017ee z\u00e1hlav\u00ed autorizace v po\u017eadavku obsahuje platn\u00e9ho u\u017eivatele a heslo, a tento u\u017eivatel mus\u00ed b\u00fdt registrovan\u00fd na poskytovateli p\u0159ipojen\u00ed OpenID.
+
+OAUATH_CLIENT_CERT_AUTH_FAIL=CWWKS1441E: Ov\u011b\u0159en\u00ed u\u017eivatele po\u017eadavku se nezda\u0159ilo, proto\u017ee certifik\u00e1t klienta poskytnut\u00fd b\u011bhem nav\u00e1z\u00e1n\u00ed komunikace p\u0159es zabezpe\u010den\u00ed SSL v po\u017eadavku nebyl ov\u011b\u0159en jako platn\u00fd u\u017eivatel. P\u0159\u00ed\u010dina: {0} 
+OAUATH_CLIENT_CERT_AUTH_FAIL.explanation=Jeliko\u017e atribut certAuthentication je v konfiguraci poskytovatele oauthProvider povolen, mus\u00ed po\u017eadavek poskytnout b\u011bhem nav\u00e1z\u00e1n\u00ed komunikace p\u0159es zabezpe\u010den\u00ed SSL certifik\u00e1t klienta s platn\u00fdm u\u017eivatelem, aby byl u\u017eivatel ov\u011b\u0159en.
+OAUATH_CLIENT_CERT_AUTH_FAIL.useraction=Ujist\u011bte se, \u017ee certifik\u00e1t klienta, kter\u00fd byl poskytnut b\u011bhem nav\u00e1z\u00e1n\u00ed komunikace p\u0159es zabezpe\u010den\u00ed SSL, obsahuje v po\u017eadavku platn\u00e9ho u\u017eivatele, a tento u\u017eivatel mus\u00ed b\u00fdt registrovan\u00fd v poskytovateli p\u0159ipojen\u00ed OpenID.
+
+OAUTH_CLIENT_REGISTRATION_VALUE_NOT_SUPPORTED=CWWKS1442E: Hodnota {0} nen\u00ed podporovanou hodnotou pole metadat registrace klienta {1}.
+OAUTH_CLIENT_REGISTRATION_VALUE_NOT_SUPPORTED.explanation=Tato vlastnost klienta je omezena na schv\u00e1len\u00e9 hodnoty a uveden\u00e1 hodnota schv\u00e1len\u00e1 nen\u00ed.
+OAUTH_CLIENT_REGISTRATION_VALUE_NOT_SUPPORTED.useraction=Prostudujte si dokumentaci rozhran\u00ed API pro tuto slu\u017ebu a zopakujte po\u017eadavek se schv\u00e1lenou hodnotou.
+
+OAUTH_CLIENT_REGISTRATION_VALUE_DUPE=CWWKS1443E: Hodnota {0} je duplicitn\u00ed hodnotou pole metadat registrace klienta {1}.
+OAUTH_CLIENT_REGISTRATION_VALUE_DUPE.explanation=Uveden\u00e9 hodnoty t\u00e9to vlastnosti obsahuj\u00ed duplicitn\u00ed hodnoty, co\u017e nen\u00ed povoleno. 
+OAUTH_CLIENT_REGISTRATION_VALUE_DUPE.useraction=Prostudujte si dokumentaci rozhran\u00ed API pro tuto slu\u017ebu a zopakujte po\u017eadavek s vlastnost\u00ed, kter\u00e1 neobsahuje duplicitn\u00ed hodnoty.
+
+OAUTH_CLIENT_REGISTRATION_GRANT_RESPONSE_VALIDATION=CWWKS1444E: Pole metadat registrace klienta response_type obsahuje hodnotu {0}, kter\u00e1 vy\u017eaduje minim\u00e1ln\u011b odpov\u00eddaj\u00edc\u00ed hodnotu typu ud\u011blen\u00ed {1}.
+OAUTH_CLIENT_REGISTRATION_GRANT_RESPONSE_VALIDATION.explanation=Po\u017eadavek obsahuje neplatnou kombinaci hodnot grant_type a response_type. 
+OAUTH_CLIENT_REGISTRATION_GRANT_RESPONSE_VALIDATION.useraction=Prostudujte si dokumentaci rozhran\u00ed API a specifikace registrace klienta pro p\u0159ipojen\u00ed OpenID a ur\u010dete platnou kombinaci hodnot grant_type a response_type.
+
+OAUTH_CLIENT_REGISTRATION_VALUE_MALFORMED_URI=CWWKS1445E: Hodnota {0} pole metadat registrace klienta {1} obsahuje chybnou syntaxi identifik\u00e1toru URI.
+OAUTH_CLIENT_REGISTRATION_VALUE_MALFORMED_URI.explanation=Po\u017eadavek nelze dokon\u010dit, proto\u017ee uv\u00e1d\u00ed hodnotu vlastnosti s chybnou syntax\u00ed identifik\u00e1toru URI.
+OAUTH_CLIENT_REGISTRATION_VALUE_MALFORMED_URI.useraction=Zkontrolujte hodnotu vlastnosti v po\u017eadavku a upravte ji tak, aby odpov\u00eddala spr\u00e1vn\u011b vytvo\u0159en\u00e9 syntaxi identifik\u00e1toru URI.
+
+OAUTH_CLIENT_REGISTRATION_VALUE_NOT_ABSOLUTE_URI=CWWKS1446E: Hodnota {0} pole metadat registrace klienta {1} nen\u00ed absolutn\u00edm identifik\u00e1torem URI.
+OAUTH_CLIENT_REGISTRATION_VALUE_NOT_ABSOLUTE_URI.explanation=Po\u017eadavek nelze dokon\u010dit, proto\u017ee neuv\u00e1d\u00ed absolutn\u00ed identifik\u00e1tor URI, p\u0159esto\u017ee se tento po\u017eaduje.
+OAUTH_CLIENT_REGISTRATION_VALUE_NOT_ABSOLUTE_URI.useraction=Zkontrolujte hodnotu vlastnosti v po\u017eadavku a upravte ji tak, aby odpov\u00eddala syntaxi absolutn\u00edho identifik\u00e1toru URI.
+
+OAUTH_CLIENT_REGISTRATION_VALUE_OUT_NOT_ALLOWED=CWWKS1447E: Pole metadat registrace klienta {0} nelze uv\u00e9st pro akci vytvo\u0159en\u00ed nebo aktualizace, proto\u017ee jde o v\u00fdstupn\u00ed parametr.
+OAUTH_CLIENT_REGISTRATION_VALUE_OUT_NOT_ALLOWED.explanation=Po\u017eadavek nelze dokon\u010dit, proto\u017ee uveden\u00e1 hodnota vlastnosti je neupraviteln\u00fdm v\u00fdstupn\u00edm parametrem.
+OAUTH_CLIENT_REGISTRATION_VALUE_OUT_NOT_ALLOWED.useraction=Odeberte hodnotu vlastnosti z po\u017eadavku, nebo\u0165 nen\u00ed pro uveden\u00ed v\u00fdstupn\u00edho parametru pro akce vytvo\u0159en\u00ed nebo aktualizace platn\u00e1.
+
+OAUTH_PROVIDER_DATABASESTORE_INVALID_DATASOURCEREF=CWWKS1448E: Poskytovatel OAuth {0} m\u00e1 uveden prvek databaseStore, ale bu\u010f nen\u00ed atribut dataSourceRef, nebo nen\u00ed zdroj dat aktivov\u00e1n.
+OAUTH_PROVIDER_DATABASESTORE_INVALID_DATASOURCEREF.explanation=Poskytovatel OAuth m\u00e1 uveden prvek databaseStore, ale bu\u010f nen\u00ed uveden atribut dataSourceRef, nebo nen\u00ed zdroj dat aktivov\u00e1n. To by mohlo b\u00fdt zp\u016fsobeno chybou konfigurace.
+OAUTH_PROVIDER_DATABASESTORE_INVALID_DATASOURCEREF.useraction=Ujist\u011bte se, \u017ee je atribut dataSourceRef prvku databaseStore v poskytovateli OAuth spr\u00e1vn\u011b definov\u00e1n.
+
+OAUTH_PROVIDER_DATABASESTORE_INVALID_ATTRIBUTE=CWWKS1449E: Poskytovatel OAuth {0} m\u00e1 uveden prvek databaseStore, ale atribut {1} bu\u010f nen\u00ed uveden, nebo je neplatn\u00fd.
+OAUTH_PROVIDER_DATABASESTORE_INVALID_ATTRIBUTE.explanation=Poskytovatel OAuth m\u00e1 uveden prvek databaseStore, ale tento atribut bu\u010f nen\u00ed uveden, nebo je neplatn\u00fd. To by mohlo b\u00fdt zp\u016fsobeno chybou konfigurace.
+OAUTH_PROVIDER_DATABASESTORE_INVALID_ATTRIBUTE.useraction=Ujist\u011bte se, \u017ee je atribut prvku databaseStore v poskytovateli OAuth spr\u00e1vn\u011b definov\u00e1n.
+
+OIDC_SERVER_MULTI_OIDC_TO_ONE_OAUTH=CWWKS1450E: Do\u0161lo k chyb\u011b konfigurace. Poskytovatel\u00e9 p\u0159ipojen\u00ed OpenID {0} a {1} maj\u00ed stejn\u00e9ho poskytovatele OAuht {2}. Oba poskytovatel\u00e9 p\u0159ipojen\u00ed OpenID byly deaktivov\u00e1ni.
+OIDC_SERVER_MULTI_OIDC_TO_ONE_OAUTH.explanation=Ka\u017ed\u00fd poskytovatel p\u0159ipojen\u00ed OpenID mus\u00ed m\u00edt v souboru server.xml jedine\u010dn\u00e9ho poskytovatele OAuth. Jinak se duplicitn\u00ed poskytovatel\u00e9 p\u0159ipojen\u00ed OpenID deaktivuj\u00ed. 
+OIDC_SERVER_MULTI_OIDC_TO_ONE_OAUTH.useraction=Ujist\u011bte se, \u017ee ka\u017ed\u00fd poskytovatel p\u0159ipojen\u00ed OpenID m\u00e1 v souboru server.xml jedine\u010dn\u00e9ho poskytovatele OAuth.
+
+OAUTH_PROVIDER_DATABASESTORE_INVALID_DATASOURCEFACTORY=CWWKS1451E: Poskytovatel OAuth {0} m\u00e1 uveden prvek databaseStore, ale atribut dataSourceFactory nen\u00ed pro uveden\u00fd prvek dataSource aktivovan\u00fd.
+OAUTH_PROVIDER_DATABASESTORE_INVALID_DATASOURCEFACTORY.explanation=Poskytovatel OAuth m\u00e1 uveden prvek databaseStore, ale pro tento prvek dataSource nen\u00ed aktivovan\u00fd atribut dataSourceFactory. To by mohlo b\u00fdt zp\u016fsobeno chybou konfigurace prvku dataSource.
+OAUTH_PROVIDER_DATABASESTORE_INVALID_DATASOURCEFACTORY.useraction=Ujist\u011bte se, \u017ee je atribut dataSourceRef prvku databaseStore v poskytovateli OAuth spr\u00e1vn\u011b nadefinov\u00e1n tak, aby se odkazoval na platn\u00fd zdroj dat.
+
+OAUTH_SERVER_TOKEN_INTROSPECT_PROVIDER_INTERNAL_ERROR=CWWKS1452E: Objekt JSONObject pro {0} vr\u00e1cen\u00fd u\u017eivatelskou funkc\u00ed Liberty {1} je null nebo chybn\u00fd.
+OAUTH_SERVER_TOKEN_INTROSPECT_PROVIDER_INTERNAL_ERROR.explanation=Poskytovatel TokenIntrospectProvider nainstalovan\u00fd v Liberty vrac\u00ed pro dan\u00e9ho u\u017eivatele null nebo chybn\u00fd \u0159et\u011bzec form\u00e1tu JSON.
+OAUTH_SERVER_TOKEN_INTROSPECT_PROVIDER_INTERNAL_ERROR.useraction=Ujist\u011bte se, \u017ee poskytovatel TokenIntrospectProvider vrac\u00ed platn\u00fd \u0159et\u011bzec form\u00e1tu JSON.
+
+OAUTH_SERVER_MULTIPLE_TOKEN_INTROSPECT_PROVIDER_CONFIGURED=CWWKS1453I: Existuje v\u00edce nakonfigurovan\u00fdch poskytovatel\u016f TokenIntrospectProviders.
+OAUTH_SERVER_MULTIPLE_TOKEN_INTROSPECT_PROVIDER_CONFIGURED.explanation=Existuje v\u00edce poskytovatel\u016f TokenIntrospectProviders nakonfigurovan\u00fdch v souboru server.xml.
+OAUTH_SERVER_MULTIPLE_TOKEN_INTROSPECT_PROVIDER_CONFIGURED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+OAUTH_SERVER_INVALID_ACCESS_TOKEN=CWWKS1454E: Po\u017eadavek se nezda\u0159il, proto\u017ee access_token nen\u00ed platn\u00fd nebo mu vypr\u0161ela platnost.
+OAUTH_SERVER_INVALID_ACCESS_TOKEN.explanation=Nezda\u0159ilo se zpracovat po\u017eadavek, proto\u017ee access_token nen\u00ed platn\u00fd.
+OAUTH_SERVER_INVALID_ACCESS_TOKEN.useraction=Ujist\u011bte se, \u017ee access_token je platn\u00fd a \u017ee nem\u00e1 vypr\u0161enou platnost.
+
+#This message can be appended to 1455E under some conditions
+# do not translate keyStoreRef
+CHECK_KEYSTORE_REF=Je mo\u017en\u00e9, \u017ee atribut konfigurace keyStoreRef poskytovatele OpenId Connect chyb\u00ed nebo je nespr\u00e1vn\u00fd.
+
+#This message is intended to be a child of CWWKS1456E
+#0=signatureAlgorithm, 1=exception or error message if any
+JWT_BAD_SIGNING_KEY=CWWKS1455E: Podpisov\u00fd kl\u00ed\u010d po\u017eadovan\u00fd podpisov\u00fdm algoritmem [{0}] nebyl dostupn\u00fd. {1}
+JWT_BAD_SIGNING_KEY.explanation=Podpisov\u00fd kl\u00ed\u010d nelze nal\u00e9zt, nebo nelze nal\u00e9zt kl\u00ed\u010d pou\u017e\u00edvaj\u00edc\u00ed konfigurovan\u00fd podpisov\u00fd algoritmus.
+JWT_BAD_SIGNING_KEY.useraction=Ujist\u011bte se, \u017ee podpisov\u00fd kl\u00ed\u010d a podpisov\u00fd algoritmus jsou nakonfigurov\u00e1ny spr\u00e1vn\u011b.
+
+#0=oidc OP ID, 1=exception or error message
+JWT_CANNOT_GENERATE_JWT=CWWKS1456E: Poskytovatel p\u0159ipojen\u00ed OpenID [{0}] nem\u016f\u017ee vytvo\u0159it token. [{1}]
+JWT_CANNOT_GENERATE_JWT.explanation=Poskytovatel p\u0159ipojen\u00ed OpenID nem\u016f\u017ee vytvo\u0159it token. P\u0159\u00ed\u010dina je zobrazena ve zpr\u00e1v\u011b.
+JWT_CANNOT_GENERATE_JWT.useraction=Projd\u011bte si akce u\u017eivatele pro chybu, kter\u00e1 se zobraz\u00ed ve zpr\u00e1v\u011b.
+
+#0=Configured signature algorithm
+SIGNING_KEY_NOT_RSA=CWWKS1457E: Typ podpisov\u00e9ho kl\u00ed\u010de nen\u00ed RSA. Podpisov\u00fd kl\u00ed\u010d RSA je zapot\u0159eb\u00ed pro podpisov\u00fd algoritmus [{0}].
+SIGNING_KEY_NOT_RSA.explanation=Kl\u00ed\u010d RSA je nezbytn\u00fd pro tento podpisov\u00fd algoritmus.
+SIGNING_KEY_NOT_RSA.useraction=Zkonfigurujte jin\u00fd podpisov\u00fd algoritmus, nebo ur\u010dete kl\u00ed\u010d RSA pou\u017eiteln\u00fd pro podpisy.
+
+#0=Java runtime level
+JWT_MEDIATOR_SPI_REQUIRES_JDK=CWWKS1458W: Verze jazyka Java pou\u017eit\u00e1 t\u00edmto b\u011bhov\u00fdm prost\u0159ed\u00edm [{0}] nen\u00ed podporov\u00e1na rozhran\u00edm poskytovatele slu\u017eeb medi\u00e1tora JWT. Podporovan\u00e1 verze Java je 1.7 nebo vy\u0161\u0161\u00ed.
+JWT_MEDIATOR_SPI_REQUIRES_JDK.explanation=Verze Java ve zpr\u00e1v\u011b nepodporuje funkci rozhran\u00ed poskytovatele slu\u017eeb medi\u00e1tora JWT.
+JWT_MEDIATOR_SPI_REQUIRES_JDK.useraction=Nainstalujte verzi Java 1.7 nebo vy\u0161\u0161\u00ed.
+
+#0=Expired token count
+#1=value of the cleanupExpiredTokenInterval
+#2=cleanupExpiredTokenInterval
+OAUTH_PROVIDER_DB_TOOMANY_EXPTOKEN=CWWKS1459W: Po\u010det token\u016f s vypr\u0161enou platnost\u00ed, kter\u00e9 se maj\u00ed odebrat z datab\u00e1ze, je [{0}]. Toto vysok\u00e9 mno\u017estv\u00ed token\u016f s vypr\u0161enou platnost\u00ed m\u016f\u017ee m\u00edt dopad na v\u00fdkon. Spou\u0161t\u011bn\u00ed \u00falohy \u010di\u0161t\u011bn\u00ed token\u016f je nakonfigurov\u00e1no na ka\u017ed\u00fdch [{1}] sekund. Zva\u017ete sn\u00ed\u017een\u00ed tohoto \u010dasov\u00e9ho intervalu upraven\u00edm atributu [{2}] v konfiguraci poskytovatele OAuth, aby se \u00faloha vy\u010di\u0161t\u011bn\u00ed token\u016f s vypr\u0161enou platnost\u00ed spou\u0161t\u011bla \u010dast\u011bji.
+OAUTH_PROVIDER_DB_TOOMANY_EXPTOKEN.explanation=Mezipam\u011b\u0165 datab\u00e1ze obsahuje velk\u00e9 mno\u017estv\u00ed token\u016f s vypr\u0161enou platnost\u00ed, co\u017e m\u016f\u017ee v\u00e9st k probl\u00e9m\u016fm s v\u00fdkonem p\u0159i vyhled\u00e1v\u00e1n\u00ed token\u016f. Po sn\u00ed\u017een\u00ed hodnoty uveden\u00e9ho atributu se bude \u00faloha vy\u010di\u0161t\u011bn\u00ed spou\u0161t\u011bt \u010dast\u011bji, \u010d\u00edm\u017e dojde k omezen\u00ed po\u010dtu token\u016f s vypr\u0161enou platnost\u00ed uchov\u00e1van\u00fdch v datab\u00e1zi.
+OAUTH_PROVIDER_DB_TOOMANY_EXPTOKEN.useraction=Aktualizujte uveden\u00fd atribut konfigurace poskytovatele OAuth sn\u00ed\u017een\u00edm t\u00e9to hodnoty.
+
+# 0=SQL operation (such as "SELECT", "UPDATE", "DELETE"), 1=OAuth client ID, 2=Exception message (if present)
+ERROR_PERFORMING_DB_OPERATION=CWWKS1460E: Funkce OAuth rozpoznala chybu p\u0159i spu\u0161t\u011bn\u00ed operace [{0}] s klientem OpenID Connect [{1}] v datab\u00e1zi ulo\u017een\u00e9 v mezipam\u011bti. {2}
+ERROR_PERFORMING_DB_OPERATION.explanation=P\u0159ipojen\u00ed k datab\u00e1zi nemus\u00ed b\u00fdt k dispozici, tabulka datab\u00e1ze m\u016f\u017ee obsahovat sloupce s chybn\u00fdmi datov\u00fdmi typy nebo je p\u0159\u00edkaz datab\u00e1ze chybn\u00fd.
+ERROR_PERFORMING_DB_OPERATION.useraction=Ov\u011b\u0159te, \u017ee je datab\u00e1zov\u00e9 p\u0159ipojen\u00ed st\u00e1le otev\u0159en\u00e9 a p\u0159\u00edstupn\u00e9. Ujist\u011bte se, \u017ee datab\u00e1zov\u00e9 tabulky jsou nakonfigurov\u00e1ny s p\u0159\u00edslu\u0161n\u00fdmi datov\u00fdmi typy.
+
+# 0=Exception message (if present)
+ERROR_GETTING_CLIENTS_FROM_DB=CWWKS1461E: Funkce OAuth rozpoznala chybu p\u0159i na\u010d\u00edt\u00e1n\u00ed v\u0161ech klient\u016f OpenID Connect z datab\u00e1ze ulo\u017een\u00e9 v mezipam\u011bti. {0}
+ERROR_GETTING_CLIENTS_FROM_DB.explanation=P\u0159ipojen\u00ed k datab\u00e1zi nemus\u00ed b\u00fdt k dispozici, tabulka datab\u00e1ze m\u016f\u017ee obsahovat sloupce s chybn\u00fdmi datov\u00fdmi typy nebo je p\u0159\u00edkaz datab\u00e1ze chybn\u00fd.
+ERROR_GETTING_CLIENTS_FROM_DB.useraction=Ov\u011b\u0159te, \u017ee je datab\u00e1zov\u00e9 p\u0159ipojen\u00ed st\u00e1le otev\u0159en\u00e9 a p\u0159\u00edstupn\u00e9. Ujist\u011bte se, \u017ee datab\u00e1zov\u00e9 tabulky jsou nakonfigurov\u00e1ny s p\u0159\u00edslu\u0161n\u00fdmi datov\u00fdmi typy.
+
+# This is migrated from com.ibm.ws.security.openidconnect.server-1.0
+# It is an existing message. So, it keeps the same ID as before
+OIDC_SERVER_USERINFO_INTERNAL_ERROR=CWWKS1620E: P\u0159i zpracov\u00e1n\u00ed po\u017eadavku na informace o u\u017eivateli do\u0161lo k intern\u00ed chyb\u011b serveru. Chyba: {0} Identifik\u00e1tor URI po\u017eadavku byl {1}.
+OIDC_SERVER_USERINFO_INTERNAL_ERROR.explanation=P\u0159i zpracov\u00e1n\u00ed po\u017eadavku na informace o u\u017eivateli do\u0161lo k intern\u00ed chyb\u011b serveru. 
+OIDC_SERVER_USERINFO_INTERNAL_ERROR.useraction=Obra\u0165te se na podporu spole\u010dnosti IBM.
+
+# intended for  use with regular expressions in redirects
+regexp.evaluation.error=CWWKS1462E: Regul\u00e1rn\u00ed v\u00fdraz nelze vyhodnotit: {0}.
+regexp.evaluation.error.explanation=Do\u0161lo k v\u00fdjimce p\u0159i vyhodnocov\u00e1n\u00ed regul\u00e1rn\u00edho v\u00fdrazu.
+regexp.evaluation.error.useraction=Opravte regul\u00e1rn\u00ed v\u00fdraz. 
+
+OAUTH_REGISTRATION_REQUEST_MISSING_CLIENT=CWWKS1463E: Registra\u010dn\u00ed po\u017eadavek OpenID Connect neobsahuje klienta. Ujist\u011bte se, \u017ee t\u011blo po\u017eadavku nen\u00ed pr\u00e1zdn\u00e9 a obsahuje klienta zak\u00f3dovan\u00e9ho ve form\u00e1tu JSON.
+OAUTH_REGISTRATION_REQUEST_MISSING_CLIENT.explanation=T\u011blo po\u017eadavku mus\u00ed obsahovat klienta zak\u00f3dovan\u00e9ho ve form\u00e1tu JSON.
+OAUTH_REGISTRATION_REQUEST_MISSING_CLIENT.useraction=Ujist\u011bte se, \u017ee t\u011blo po\u017eadavku nen\u00ed pr\u00e1zdn\u00e9 a obsahuje klienta zak\u00f3dovan\u00e9ho ve form\u00e1tu JSON.
+
+# 0=OAuth client ID, 1=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_CREATE_CLIENT=CWWKS1464E: Funkce OAuth rozpoznala chybu p\u0159i vytv\u00e1\u0159en\u00ed polo\u017eky OAuthClient s identifik\u00e1torem {0} v implementaci OAuthStore. {1}
+ERROR_PERFORMING_OAUTH_STORE_CREATE_CLIENT.explanation=Implementace OAuthStore nem\u016f\u017ee prov\u00e9st operaci. Mo\u017en\u00fdmi probl\u00e9my konfigurace jsou chyb\u011bj\u00edc\u00ed nebo nespr\u00e1vn\u00e9 atributy pro specifick\u00e9 prvky implementace OAuthStore v souboru server.xml nebo v jin\u00e9m specifick\u00e9m konfigura\u010dn\u00edm souboru implementace. Mezi mo\u017en\u00e9 provozn\u00ed probl\u00e9my pat\u0159\u00ed datab\u00e1ze, s\u00ed\u0165ov\u00e9 p\u0159ipojen\u00ed nebo chyby syst\u00e9mu soubor\u016f.
+ERROR_PERFORMING_OAUTH_STORE_CREATE_CLIENT.useraction=Ov\u011b\u0159te, zda je implementace OAuthStore st\u00e1le dostupn\u00e1 a zda je spr\u00e1vn\u011b nakonfigurov\u00e1na.
+
+# 0=OAuth token lookup key, 1=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_CREATE_TOKEN=CWWKS1465E: Funkce OAuth rozpoznala chybu p\u0159i vytv\u00e1\u0159en\u00ed polo\u017eky OAuthToken s vyhled\u00e1vac\u00edm kl\u00ed\u010dem {0} v implementaci OAuthStore. {1}
+ERROR_PERFORMING_OAUTH_STORE_CREATE_TOKEN.explanation=Implementace OAuthStore nem\u016f\u017ee prov\u00e9st operaci. Mo\u017en\u00fdmi probl\u00e9my konfigurace jsou chyb\u011bj\u00edc\u00ed nebo nespr\u00e1vn\u00e9 atributy pro specifick\u00e9 prvky implementace OAuthStore v souboru server.xml nebo v jin\u00e9m specifick\u00e9m konfigura\u010dn\u00edm souboru implementace. Mezi mo\u017en\u00e9 provozn\u00ed probl\u00e9my pat\u0159\u00ed datab\u00e1ze, s\u00ed\u0165ov\u00e9 p\u0159ipojen\u00ed nebo chyby syst\u00e9mu soubor\u016f.
+ERROR_PERFORMING_OAUTH_STORE_CREATE_TOKEN.useraction=Ov\u011b\u0159te, zda je implementace OAuthStore st\u00e1le dostupn\u00e1 a zda je spr\u00e1vn\u011b nakonfigurov\u00e1na.
+
+# 0=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_CREATE_CONSENT=CWWKS1466E: Funkce OAuth rozpoznala chybu p\u0159i vytv\u00e1\u0159en\u00ed polo\u017eky OAuthConsent v implementaci OAuthStore. {0}
+ERROR_PERFORMING_OAUTH_STORE_CREATE_CONSENT.explanation=Implementace OAuthStore nem\u016f\u017ee prov\u00e9st operaci. Mo\u017en\u00fdmi probl\u00e9my konfigurace jsou chyb\u011bj\u00edc\u00ed nebo nespr\u00e1vn\u00e9 atributy pro specifick\u00e9 prvky implementace OAuthStore v souboru server.xml nebo v jin\u00e9m specifick\u00e9m konfigura\u010dn\u00edm souboru implementace. Mezi mo\u017en\u00e9 provozn\u00ed probl\u00e9my pat\u0159\u00ed datab\u00e1ze, s\u00ed\u0165ov\u00e9 p\u0159ipojen\u00ed nebo chyby syst\u00e9mu soubor\u016f.
+ERROR_PERFORMING_OAUTH_STORE_CREATE_CONSENT.useraction=Ov\u011b\u0159te, zda je implementace OAuthStore st\u00e1le dostupn\u00e1 a zda je spr\u00e1vn\u011b nakonfigurov\u00e1na.
+
+# 0=OAuth client ID, 1=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_READ_CLIENT=CWWKS1467E: Funkce OAuth rozpoznala chybu p\u0159i \u010dten\u00ed polo\u017eky OAuthClient s identifik\u00e1torem {0} z implementace OAuthStore. {1}
+ERROR_PERFORMING_OAUTH_STORE_READ_CLIENT.explanation=Implementace OAuthStore nem\u016f\u017ee prov\u00e9st operaci. Mo\u017en\u00fdmi probl\u00e9my konfigurace jsou chyb\u011bj\u00edc\u00ed nebo nespr\u00e1vn\u00e9 atributy pro specifick\u00e9 prvky implementace OAuthStore v souboru server.xml nebo v jin\u00e9m specifick\u00e9m konfigura\u010dn\u00edm souboru implementace. Mezi mo\u017en\u00e9 provozn\u00ed probl\u00e9my pat\u0159\u00ed datab\u00e1ze, s\u00ed\u0165ov\u00e9 p\u0159ipojen\u00ed nebo chyby syst\u00e9mu soubor\u016f.
+ERROR_PERFORMING_OAUTH_STORE_READ_CLIENT.useraction=Ov\u011b\u0159te, zda je implementace OAuthStore st\u00e1le dostupn\u00e1 a zda je spr\u00e1vn\u011b nakonfigurov\u00e1na.
+
+# 0=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_READ_ALL_CLIENTS=CWWKS1468E: Funkce OAuth rozpoznala chybu p\u0159i \u010dten\u00ed v\u0161ech polo\u017eek OAuthClient z implementace OAuthStore. {0}
+ERROR_PERFORMING_OAUTH_STORE_READ_ALL_CLIENTS.explanation=Implementace OAuthStore nem\u016f\u017ee prov\u00e9st operaci. Mo\u017en\u00fdmi probl\u00e9my konfigurace jsou chyb\u011bj\u00edc\u00ed nebo nespr\u00e1vn\u00e9 atributy pro specifick\u00e9 prvky implementace OAuthStore v souboru server.xml nebo v jin\u00e9m specifick\u00e9m konfigura\u010dn\u00edm souboru implementace. Mezi mo\u017en\u00e9 provozn\u00ed probl\u00e9my pat\u0159\u00ed datab\u00e1ze, s\u00ed\u0165ov\u00e9 p\u0159ipojen\u00ed nebo chyby syst\u00e9mu soubor\u016f.
+ERROR_PERFORMING_OAUTH_STORE_READ_ALL_CLIENTS.useraction=Ov\u011b\u0159te, zda je implementace OAuthStore st\u00e1le dostupn\u00e1 a zda je spr\u00e1vn\u011b nakonfigurov\u00e1na.
+
+# 0=OAuth token lookup key, 1=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_READ_TOKEN=CWWKS1469E: Funkce OAuth rozpoznala chybu p\u0159i \u010dten\u00ed polo\u017eky OAuthToken s vyhled\u00e1vac\u00edm kl\u00ed\u010dem {0} z implementace OAuthStore. {1}
+ERROR_PERFORMING_OAUTH_STORE_READ_TOKEN.explanation=Implementace OAuthStore nem\u016f\u017ee prov\u00e9st operaci. Mo\u017en\u00fdmi probl\u00e9my konfigurace jsou chyb\u011bj\u00edc\u00ed nebo nespr\u00e1vn\u00e9 atributy pro specifick\u00e9 prvky implementace OAuthStore v souboru server.xml nebo v jin\u00e9m specifick\u00e9m konfigura\u010dn\u00edm souboru implementace. Mezi mo\u017en\u00e9 provozn\u00ed probl\u00e9my pat\u0159\u00ed datab\u00e1ze, s\u00ed\u0165ov\u00e9 p\u0159ipojen\u00ed nebo chyby syst\u00e9mu soubor\u016f.
+ERROR_PERFORMING_OAUTH_STORE_READ_TOKEN.useraction=Ov\u011b\u0159te, zda je implementace OAuthStore st\u00e1le dostupn\u00e1 a zda je spr\u00e1vn\u011b nakonfigurov\u00e1na.
+
+# 0=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_READ_ALL_TOKENS=CWWKS1470E: Funkce OAuth rozpoznala chybu p\u0159i \u010dten\u00ed v\u0161ech polo\u017eek OAuthToken z implementace OAuthStore. {0}
+ERROR_PERFORMING_OAUTH_STORE_READ_ALL_TOKENS.explanation=Implementace OAuthStore nem\u016f\u017ee prov\u00e9st operaci. Mo\u017en\u00fdmi probl\u00e9my konfigurace jsou chyb\u011bj\u00edc\u00ed nebo nespr\u00e1vn\u00e9 atributy pro specifick\u00e9 prvky implementace OAuthStore v souboru server.xml nebo v jin\u00e9m specifick\u00e9m konfigura\u010dn\u00edm souboru implementace. Mezi mo\u017en\u00e9 provozn\u00ed probl\u00e9my pat\u0159\u00ed datab\u00e1ze, s\u00ed\u0165ov\u00e9 p\u0159ipojen\u00ed nebo chyby syst\u00e9mu soubor\u016f.
+ERROR_PERFORMING_OAUTH_STORE_READ_ALL_TOKENS.useraction=Ov\u011b\u0159te, zda je implementace OAuthStore st\u00e1le dostupn\u00e1 a zda je spr\u00e1vn\u011b nakonfigurov\u00e1na.
+
+# 0=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_COUNT_TOKENS=CWWKS1471E: Funkce OAuth rozpoznala chybu p\u0159i v\u00fdpo\u010dtu polo\u017eek OAuthToken v implementaci OAuthStore. {0}
+ERROR_PERFORMING_OAUTH_STORE_COUNT_TOKENS.explanation=Implementace OAuthStore nem\u016f\u017ee prov\u00e9st operaci. Mo\u017en\u00fdmi probl\u00e9my konfigurace jsou chyb\u011bj\u00edc\u00ed nebo nespr\u00e1vn\u00e9 atributy pro specifick\u00e9 prvky implementace OAuthStore v souboru server.xml nebo v jin\u00e9m specifick\u00e9m konfigura\u010dn\u00edm souboru implementace. Mezi mo\u017en\u00e9 provozn\u00ed probl\u00e9my pat\u0159\u00ed datab\u00e1ze, s\u00ed\u0165ov\u00e9 p\u0159ipojen\u00ed nebo chyby syst\u00e9mu soubor\u016f.
+ERROR_PERFORMING_OAUTH_STORE_COUNT_TOKENS.useraction=Ov\u011b\u0159te, zda je implementace OAuthStore st\u00e1le dostupn\u00e1 a zda je spr\u00e1vn\u011b nakonfigurov\u00e1na.
+
+# 0=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_READ_CONSENT=CWWKS1472E: Funkce OAuth rozpoznala chybu p\u0159i \u010dten\u00ed polo\u017eky OAuthConsent v implementaci OAuthStore. {0}
+ERROR_PERFORMING_OAUTH_STORE_READ_CONSENT.explanation=Implementace OAuthStore nem\u016f\u017ee prov\u00e9st operaci. Mo\u017en\u00fdmi probl\u00e9my konfigurace jsou chyb\u011bj\u00edc\u00ed nebo nespr\u00e1vn\u00e9 atributy pro specifick\u00e9 prvky implementace OAuthStore v souboru server.xml nebo v jin\u00e9m specifick\u00e9m konfigura\u010dn\u00edm souboru implementace. Mezi mo\u017en\u00e9 provozn\u00ed probl\u00e9my pat\u0159\u00ed datab\u00e1ze, s\u00ed\u0165ov\u00e9 p\u0159ipojen\u00ed nebo chyby syst\u00e9mu soubor\u016f.
+ERROR_PERFORMING_OAUTH_STORE_READ_CONSENT.useraction=Ov\u011b\u0159te, zda je implementace OAuthStore st\u00e1le dostupn\u00e1 a zda je spr\u00e1vn\u011b nakonfigurov\u00e1na.
+
+# 0=OAuth client ID, 1=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_UPDATE_CLIENT=CWWKS1473E: Funkce OAuth rozpoznala chybu p\u0159i aktualizaci polo\u017eky OAuthClient s identifik\u00e1torem {0} v implementaci OAuthStore. {1}
+ERROR_PERFORMING_OAUTH_STORE_UPDATE_CLIENT.explanation=Implementace OAuthStore nem\u016f\u017ee prov\u00e9st operaci. Mo\u017en\u00fdmi probl\u00e9my konfigurace jsou chyb\u011bj\u00edc\u00ed nebo nespr\u00e1vn\u00e9 atributy pro specifick\u00e9 prvky implementace OAuthStore v souboru server.xml nebo v jin\u00e9m specifick\u00e9m konfigura\u010dn\u00edm souboru implementace. Mezi mo\u017en\u00e9 provozn\u00ed probl\u00e9my pat\u0159\u00ed datab\u00e1ze, s\u00ed\u0165ov\u00e9 p\u0159ipojen\u00ed nebo chyby syst\u00e9mu soubor\u016f.
+ERROR_PERFORMING_OAUTH_STORE_UPDATE_CLIENT.useraction=Ov\u011b\u0159te, zda je implementace OAuthStore st\u00e1le dostupn\u00e1 a zda je spr\u00e1vn\u011b nakonfigurov\u00e1na.
+
+# 0=OAuth token lookup key, 1=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_UPDATE_TOKEN=CWWKS1474E: Funkce OAuth rozpoznala chybu p\u0159i aktualizaci polo\u017eky OAuthToken s vyhled\u00e1vac\u00edm kl\u00ed\u010dem {0} v implementaci OAuthStore. {1}
+ERROR_PERFORMING_OAUTH_STORE_UPDATE_TOKEN.explanation=Implementace OAuthStore nem\u016f\u017ee prov\u00e9st operaci. Mo\u017en\u00fdmi probl\u00e9my konfigurace jsou chyb\u011bj\u00edc\u00ed nebo nespr\u00e1vn\u00e9 atributy pro specifick\u00e9 prvky implementace OAuthStore v souboru server.xml nebo v jin\u00e9m specifick\u00e9m konfigura\u010dn\u00edm souboru implementace. Mezi mo\u017en\u00e9 provozn\u00ed probl\u00e9my pat\u0159\u00ed datab\u00e1ze, s\u00ed\u0165ov\u00e9 p\u0159ipojen\u00ed nebo chyby syst\u00e9mu soubor\u016f.
+ERROR_PERFORMING_OAUTH_STORE_UPDATE_TOKEN.useraction=Ov\u011b\u0159te, zda je implementace OAuthStore st\u00e1le dostupn\u00e1 a zda je spr\u00e1vn\u011b nakonfigurov\u00e1na.
+
+# 0=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_UPDATE_CONSENT=CWWKS1475E: Funkce OAuth rozpoznala chybu p\u0159i aktualizaci polo\u017eky OAuthConsent v implementaci OAuthStore. {0}
+ERROR_PERFORMING_OAUTH_STORE_UPDATE_CONSENT.explanation=Implementace OAuthStore nem\u016f\u017ee prov\u00e9st operaci. Mo\u017en\u00fdmi probl\u00e9my konfigurace jsou chyb\u011bj\u00edc\u00ed nebo nespr\u00e1vn\u00e9 atributy pro specifick\u00e9 prvky implementace OAuthStore v souboru server.xml nebo v jin\u00e9m specifick\u00e9m konfigura\u010dn\u00edm souboru implementace. Mezi mo\u017en\u00e9 provozn\u00ed probl\u00e9my pat\u0159\u00ed datab\u00e1ze, s\u00ed\u0165ov\u00e9 p\u0159ipojen\u00ed nebo chyby syst\u00e9mu soubor\u016f.
+ERROR_PERFORMING_OAUTH_STORE_UPDATE_CONSENT.useraction=Ov\u011b\u0159te, zda je implementace OAuthStore st\u00e1le dostupn\u00e1 a zda je spr\u00e1vn\u011b nakonfigurov\u00e1na.
+
+# 0=OAuth client ID, 1=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_DELETE_CLIENT=CWWKS1476E: Funkce OAuth rozpoznala chybu p\u0159i odstra\u0148ov\u00e1n\u00ed polo\u017eky OAuthClient s identifik\u00e1torem {0} v implementaci OAuthStore. {1}
+ERROR_PERFORMING_OAUTH_STORE_DELETE_CLIENT.explanation=Implementace OAuthStore nem\u016f\u017ee prov\u00e9st operaci. Mo\u017en\u00fdmi probl\u00e9my konfigurace jsou chyb\u011bj\u00edc\u00ed nebo nespr\u00e1vn\u00e9 atributy pro specifick\u00e9 prvky implementace OAuthStore v souboru server.xml nebo v jin\u00e9m specifick\u00e9m konfigura\u010dn\u00edm souboru implementace. Mezi mo\u017en\u00e9 provozn\u00ed probl\u00e9my pat\u0159\u00ed datab\u00e1ze, s\u00ed\u0165ov\u00e9 p\u0159ipojen\u00ed nebo chyby syst\u00e9mu soubor\u016f.
+ERROR_PERFORMING_OAUTH_STORE_DELETE_CLIENT.useraction=Ov\u011b\u0159te, zda je implementace OAuthStore st\u00e1le dostupn\u00e1 a zda je spr\u00e1vn\u011b nakonfigurov\u00e1na.
+
+# 0=OAuth token lookup key, 1=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_DELETE_TOKEN=CWWKS1477E: Funkce OAuth rozpoznala chybu p\u0159i odstra\u0148ov\u00e1n\u00ed polo\u017eky OAuthToken s vyhled\u00e1vac\u00edm kl\u00ed\u010dem {0} v implementaci OAuthStore. {1}
+ERROR_PERFORMING_OAUTH_STORE_DELETE_TOKEN.explanation=Implementace OAuthStore nem\u016f\u017ee prov\u00e9st operaci. Mo\u017en\u00fdmi probl\u00e9my konfigurace jsou chyb\u011bj\u00edc\u00ed nebo nespr\u00e1vn\u00e9 atributy pro specifick\u00e9 prvky implementace OAuthStore v souboru server.xml nebo v jin\u00e9m specifick\u00e9m konfigura\u010dn\u00edm souboru implementace. Mezi mo\u017en\u00e9 provozn\u00ed probl\u00e9my pat\u0159\u00ed datab\u00e1ze, s\u00ed\u0165ov\u00e9 p\u0159ipojen\u00ed nebo chyby syst\u00e9mu soubor\u016f.
+ERROR_PERFORMING_OAUTH_STORE_DELETE_TOKEN.useraction=Ov\u011b\u0159te, zda je implementace OAuthStore st\u00e1le dostupn\u00e1 a zda je spr\u00e1vn\u011b nakonfigurov\u00e1na.
+
+# 0=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_DELETE_TOKENS=CWWKS1478E: Funkce OAuth rozpoznala chybu p\u0159i odstra\u0148ov\u00e1n\u00ed polo\u017eek OAuthToken s vypr\u0161enou platnost\u00ed z implementace OAuthStore. {0}
+ERROR_PERFORMING_OAUTH_STORE_DELETE_TOKENS.explanation=Implementace OAuthStore nem\u016f\u017ee prov\u00e9st operaci. Mo\u017en\u00fdmi probl\u00e9my konfigurace jsou chyb\u011bj\u00edc\u00ed nebo nespr\u00e1vn\u00e9 atributy pro specifick\u00e9 prvky implementace OAuthStore v souboru server.xml nebo v jin\u00e9m specifick\u00e9m konfigura\u010dn\u00edm souboru implementace. Mezi mo\u017en\u00e9 provozn\u00ed probl\u00e9my pat\u0159\u00ed datab\u00e1ze, s\u00ed\u0165ov\u00e9 p\u0159ipojen\u00ed nebo chyby syst\u00e9mu soubor\u016f.
+ERROR_PERFORMING_OAUTH_STORE_DELETE_TOKENS.useraction=Ov\u011b\u0159te, zda je implementace OAuthStore st\u00e1le dostupn\u00e1 a zda je spr\u00e1vn\u011b nakonfigurov\u00e1na.
+
+# 0=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_DELETE_CONSENT=CWWKS1479E: Funkce OAuth rozpoznala chybu p\u0159i odstra\u0148ov\u00e1n\u00ed polo\u017eky OAuthConsent v implementaci OAuthStore. {0}
+ERROR_PERFORMING_OAUTH_STORE_DELETE_CONSENT.explanation=Implementace OAuthStore nem\u016f\u017ee prov\u00e9st operaci. Mo\u017en\u00fdmi probl\u00e9my konfigurace jsou chyb\u011bj\u00edc\u00ed nebo nespr\u00e1vn\u00e9 atributy pro specifick\u00e9 prvky implementace OAuthStore v souboru server.xml nebo v jin\u00e9m specifick\u00e9m konfigura\u010dn\u00edm souboru implementace. Mezi mo\u017en\u00e9 provozn\u00ed probl\u00e9my pat\u0159\u00ed datab\u00e1ze, s\u00ed\u0165ov\u00e9 p\u0159ipojen\u00ed nebo chyby syst\u00e9mu soubor\u016f.
+ERROR_PERFORMING_OAUTH_STORE_DELETE_CONSENT.useraction=Ov\u011b\u0159te, zda je implementace OAuthStore st\u00e1le dostupn\u00e1 a zda je spr\u00e1vn\u011b nakonfigurov\u00e1na.
+
+# 0=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_DELETE_CONSENTS=CWWKS1480E: Funkce OAuth rozpoznala chybu p\u0159i odstra\u0148ov\u00e1n\u00ed polo\u017eek OAuthConsent s vypr\u0161enou platnost\u00ed z implementace OAuthStore. {0}
+ERROR_PERFORMING_OAUTH_STORE_DELETE_CONSENTS.explanation=Implementace OAuthStore nem\u016f\u017ee prov\u00e9st operaci. Mo\u017en\u00fdmi probl\u00e9my konfigurace jsou chyb\u011bj\u00edc\u00ed nebo nespr\u00e1vn\u00e9 atributy pro specifick\u00e9 prvky implementace OAuthStore v souboru server.xml nebo v jin\u00e9m specifick\u00e9m konfigura\u010dn\u00edm souboru implementace. Mezi mo\u017en\u00e9 provozn\u00ed probl\u00e9my pat\u0159\u00ed datab\u00e1ze, s\u00ed\u0165ov\u00e9 p\u0159ipojen\u00ed nebo chyby syst\u00e9mu soubor\u016f.
+ERROR_PERFORMING_OAUTH_STORE_DELETE_CONSENTS.useraction=Ov\u011b\u0159te, zda je implementace OAuthStore st\u00e1le dostupn\u00e1 a zda je spr\u00e1vn\u011b nakonfigurov\u00e1na.
+
+# 0=OAuth provider name, 1=customStore attribute name
+OAUTH_PROVIDER_CUSTOMSTORE_INVALID_ATTRIBUTE=CWWKS1481E: Poskytovatel OAuth {0} m\u00e1 uveden prvek customStore, ale atribut {1} bu\u010f nen\u00ed uveden, nebo je neplatn\u00fd.
+OAUTH_PROVIDER_CUSTOMSTORE_INVALID_ATTRIBUTE.explanation=Poskytovatel OAuth m\u00e1 uveden prvek customStore, ale atribut bu\u010f nen\u00ed uveden, nebo je neplatn\u00fd. Tento probl\u00e9m m\u016f\u017ee b\u00fdt zp\u016fsoben chybou konfigurace.
+OAUTH_PROVIDER_CUSTOMSTORE_INVALID_ATTRIBUTE.useraction=Ujist\u011bte se, \u017ee atribut prvku customStore v poskytovateli OAuth je spr\u00e1vn\u011b nadefinov\u00e1n.
+
+OAUTH_SERVER_APPNAME_IN_USE_OR_TOO_LONG=CWWKS1482E: N\u00e1zev aplikace [{0}] odeslan\u00fd poskytovateli [{1}] je ji\u017e p\u0159idru\u017een k heslu aplikace nebo tokenu aplikace, nebo je p\u0159\u00edli\u0161 dlouh\u00fd.
+OAUTH_SERVER_APPNAME_IN_USE_OR_TOO_LONG.explanation=Heslo aplikace nebo token aplikace byl po\u017eadov\u00e1n pro aplikaci, ale ji\u017e existuje nebo je po\u017eadovan\u00fd n\u00e1zev p\u0159\u00edli\u0161 dlouh\u00fd.
+OAUTH_SERVER_APPNAME_IN_USE_OR_TOO_LONG.useraction=Odstra\u0148te existuj\u00edc\u00ed heslo aplikace nebo token aplikace p\u0159ed vy\u017e\u00e1d\u00e1n\u00edm nov\u00e9ho pro tuto aplikaci nebo pou\u017eijte jin\u00fd n\u00e1zev aplikace.
+
+# Do not translate user_id or tokenManager
+OAUTH_SERVER_USERNAME_PARAM_NOT_SUPPORTED=CWWKS1483E: Po\u017eadavek {0} odeslan\u00fd identifik\u00e1toru URI {1} je neplatn\u00fd. Atribut user_id je ur\u010den, ale ov\u011b\u0159en\u00fd u\u017eivatel nem\u00e1 opr\u00e1vn\u011bn\u00ed jej pou\u017e\u00edt.
+OAUTH_SERVER_USERNAME_PARAM_NOT_SUPPORTED.explanation=Atribut ID u\u017eivatele (user_id) pro tento identifik\u00e1tor URI po\u017eadavku mohou poskytnout pouze u\u017eivatel\u00e9 v roli tokenManager.
+OAUTH_SERVER_USERNAME_PARAM_NOT_SUPPORTED.useraction=Zadejte po\u017eadavek znovu s po\u017eadovanou rol\u00ed tokenManager a platn\u00fdm ID u\u017eivatele.
+
+OAUTH_INVALID_REQUEST_NO_ID_SECRET=CWWKS1484E: Po\u017eadavek {0} odeslan\u00fd na identifik\u00e1tor URI {1} je neplatn\u00fd. Chyb\u00ed ID klienta, tajn\u00fd kl\u00ed\u010d klienta nebo ID klienta i tajn\u00fd kl\u00ed\u010d klienta.
+OAUTH_INVALID_REQUEST_NO_ID_SECRET.explanation=Ozna\u010den\u00fd po\u017eadavek nen\u00ed platn\u00fd. V z\u00e1hlav\u00ed autorizace mus\u00ed b\u00fdt zad\u00e1no platn\u00e9 ID klienta a tajn\u00fd kl\u00ed\u010d klienta pro po\u017eadavek, kter\u00fd je odesl\u00e1n identifik\u00e1toru URI.
+OAUTH_INVALID_REQUEST_NO_ID_SECRET.useraction=Opravte po\u017eadavek. Zadejte po\u017eadavek znovu s platn\u00fdm ID klienta a tajn\u00fdm kl\u00ed\u010dem klienta v z\u00e1hlav\u00ed autorizace.
+
+OAUTH_INVALID_REQUEST_AUTHN_FAIL=CWWKS1485E: Ov\u011b\u0159en\u00ed klienta se nezda\u0159ilo. Bu\u010f ID klienta, tajn\u00fd kl\u00ed\u010d klienta, nebo jak ID klienta, tak tajn\u00fd kl\u00ed\u010d klienta nejsou platn\u00e9 pro po\u017eadavek {0} odeslan\u00fd na identifik\u00e1tor URI {1}.
+OAUTH_INVALID_REQUEST_AUTHN_FAIL.explanation=V z\u00e1hlav\u00ed autorizace mus\u00ed b\u00fdt zad\u00e1no platn\u00e9 ID klienta a tajn\u00fd kl\u00ed\u010d klienta pro po\u017eadavek, kter\u00fd je odesl\u00e1n identifik\u00e1toru URI.
+OAUTH_INVALID_REQUEST_AUTHN_FAIL.useraction=Zadejte po\u017eadavek znovu s platn\u00fdm ID klienta a tajn\u00fdm kl\u00ed\u010dem klienta v z\u00e1hlav\u00ed autorizace.
+
+# Do not translate appPasswordAllowed
+OAUTH_UNAUTHORIZED_CLIENT=CWWKS1486E: Klient {0} nem\u00e1 autorizaci pro pou\u017eit\u00ed hesel aplikace nebo token\u016f aplikace.
+OAUTH_UNAUTHORIZED_CLIENT.explanation=Klient nen\u00ed nakonfigurov\u00e1n na pou\u017e\u00edv\u00e1n\u00ed hesel aplikace nebo token\u016f aplikace.
+OAUTH_UNAUTHORIZED_CLIENT.useraction=Opravte konfiguraci poskytovatele OpenID Connect pro uveden\u00e9ho klienta tak, aby byla nastavena hodnota atributu appPasswordAllowed na hodnotu true.
+
+# Do not translate userClientTokenLimit
+OAUTH_INVALID_REQUEST_TOO_MANY_TOKENS=CWWKS1487E: Po\u017eadavek nen\u00ed platn\u00fd. U\u017eivatel [{0}] dos\u00e1hl maxim\u00e1ln\u00edho povolen\u00e9ho po\u010dtu token\u016f aplikace nebo hesel aplikace.
+OAUTH_INVALID_REQUEST_TOO_MANY_TOKENS.explanation=Po\u017eadavek na vytvo\u0159en\u00ed nov\u00e9ho hesla nebo tokenu aplikace by p\u0159ekro\u010dil nakonfigurovan\u00fd po\u010det hesel nebo token\u016f aplikace povolen\u00fd na u\u017eivatele pro dan\u00e9ho klienta a poskytovatele.
+OAUTH_INVALID_REQUEST_TOO_MANY_TOKENS.useraction=Odstra\u0148te hesla aplikac\u00ed nebo tokeny aplikac\u00ed nebo zm\u011b\u0148te atribut userClientTokenLimit konfigurace klienta OAuth tak, aby zv\u00fd\u0161il po\u010det hesel aplikac\u00ed a token\u016f aplikac\u00ed, kter\u00e9 jsou povoleny pro jednotliv\u00e9 u\u017eivatele.
+
+OAUTH_PARAMETER_VALUE_LENGTH_TOO_LONG=CWWKS1488E: Hodnota parametru [{0}] odeslan\u00e1 identifik\u00e1toru URI [{1}] p\u0159ekra\u010duje maxim\u00e1ln\u00ed povolenou d\u00e9lku {2} znak\u016f.
+OAUTH_PARAMETER_VALUE_LENGTH_TOO_LONG.explanation=D\u00e9lka zadan\u00e9 hodnoty parametru mus\u00ed b\u00fdt omezena na rozumnou d\u00e9lku.
+OAUTH_PARAMETER_VALUE_LENGTH_TOO_LONG.useraction=Opravte ur\u010den\u00fd parametr tak, aby jeho d\u00e9lka byla men\u0161\u00ed ne\u017e uveden\u00fd po\u010det znak\u016f, a ode\u0161lete po\u017eadavek znovu.
+
+OAUTH_INVALID_ATINREQUEST_AUTHN_FAIL=CWWKS1489E: Ov\u011b\u0159en\u00ed klienta se nezda\u0159ilo. P\u0159\u00edstupov\u00fd token nen\u00ed platn\u00fd pro po\u017eadavek {0} odeslan\u00fd na identifik\u00e1tor URI {1}.
+OAUTH_INVALID_ATINREQUEST_AUTHN_FAIL.explanation=S uveden\u00fdm identifik\u00e1torem URI po\u017eadavku mus\u00ed b\u00fdt dod\u00e1n platn\u00fd p\u0159\u00edstupov\u00fd token.
+OAUTH_INVALID_ATINREQUEST_AUTHN_FAIL.useraction=Zadejte po\u017eadavek znovu s platn\u00fdm p\u0159\u00edstupov\u00fdm tokenem.
+
+OAUTH_INVALID_REQUEST_NO_TOKEN=CWWKS1490E: Po\u017eadavek {0} odeslan\u00fd identifik\u00e1toru URI {1} je neplatn\u00fd. P\u0159\u00edstupov\u00fd token chyb\u00ed.
+OAUTH_INVALID_REQUEST_NO_TOKEN.explanation=Uveden\u00fd po\u017eadavek mus\u00ed obsahovat platn\u00fd p\u0159\u00edstupov\u00fd token.
+OAUTH_INVALID_REQUEST_NO_TOKEN.useraction=Zadejte po\u017eadavek znovu s platn\u00fdm p\u0159\u00edstupov\u00fdm tokenem.
+
+OAUTH_INVALID_REQUEST_NO_AUTHHEADER=CWWKS1491E: V po\u017eadavku {0} chyb\u00ed informace o ov\u011b\u0159en\u00ed klienta. Identifik\u00e1tor URI po\u017eadavku je {1}.
+OAUTH_INVALID_REQUEST_NO_AUTHHEADER.explanation=Uveden\u00fd po\u017eadavek mus\u00ed zahrnovat informace o ov\u011b\u0159en\u00ed klienta.
+OAUTH_INVALID_REQUEST_NO_AUTHHEADER.useraction=Zadejte po\u017eadavek znovu s platn\u00fdmi informacemi o ov\u011b\u0159en\u00ed klienta v z\u00e1hlav\u00ed autorizace.
+
+OAUTH_CLIENTINREQ_DONOT_MATCH_AT=CWWKS1492E: Po\u017eadavek {0} odeslan\u00fd identifik\u00e1toru URI {1} je neplatn\u00fd. Klient, kter\u00fd p\u0159edstavuje p\u0159\u00edstupov\u00fd token, neodpov\u00edd\u00e1 klientovi poskytovan\u00e9mu v po\u017eadavku.
+OAUTH_CLIENTINREQ_DONOT_MATCH_AT.explanation=Ur\u010den\u00fd po\u017eadavek mus\u00ed obsahovat p\u0159\u00edstupov\u00fd token pro stejn\u00e9ho klienta, kter\u00fd je uveden v z\u00e1hlav\u00ed autorizace.
+OAUTH_CLIENTINREQ_DONOT_MATCH_AT.useraction=Zadejte po\u017eadavek znovu s p\u0159\u00edstupov\u00fdm tokenem pro klienta, kter\u00fd je uveden v z\u00e1hlav\u00ed autorizace.
+
+OAUTH_AUTH_HEADER_NOT_BASIC_AUTH=CWWKS1493E: Po\u017eadavek {0} odeslan\u00fd identifik\u00e1toru URI {1} neobsahuje z\u00e1kladn\u00ed ov\u011b\u0159ovac\u00ed pov\u011b\u0159en\u00ed.
+OAUTH_AUTH_HEADER_NOT_BASIC_AUTH.explanation=Ur\u010den\u00fd po\u017eadavek mus\u00ed obsahovat pov\u011b\u0159en\u00ed v z\u00e1hlav\u00ed autorizace pro nakonfigurovan\u00e9ho klienta OAuth tak, aby bylo mo\u017en\u00e9 po\u017eadavek ov\u011b\u0159it.
+OAUTH_AUTH_HEADER_NOT_BASIC_AUTH.useraction=Ujist\u011bte se, \u017ee po\u017eadavek pou\u017e\u00edv\u00e1 sch\u00e9ma z\u00e1kladn\u00edho ov\u011b\u0159en\u00ed pro zahrnut\u00ed pov\u011b\u0159en\u00ed klienta OAuth.
+
+# Do not translate internalClientId, internalClientSecret, isEnabled, appPasswordAllowed, or appTokenAllowed
+OAUTH_UI_ENDPOINT_NOT_ENABLED=CWWKS1494W: Po\u017eadavek odeslan\u00fd k identifik\u00e1toru URI {0} nelze zpracovat, proto\u017ee jeden nebo v\u00edce atribut\u016f klienta nebo poskytovatele nejsou nastaveny. Ov\u011b\u0159te, \u017ee jsou nakonfigurov\u00e1ny atributy poskytovatele internalClientId a internalClientSecret. Ov\u011b\u0159te, zda jsou nakonfigurov\u00e1ny atributy klienta isEnabled, appPasswordAllowed nebo appTokenAllowed.
+OAUTH_UI_ENDPOINT_NOT_ENABLED.explanation=Atributy klienta a poskytovatele mus\u00ed b\u00fdt nastaveny pro identifik\u00e1tor URI, aby mohl zpracov\u00e1vat po\u017eadavky.
+OAUTH_UI_ENDPOINT_NOT_ENABLED.useraction=Nastavte spr\u00e1vn\u011b atributy klienta a poskytovatele, aby mohl poskytovatel zpracovat po\u017eadavek.
+
+# Java runtime level
+JAVA8_REQUIRED=CWWKS1495W: Poskytovatel OpenID Connect nem\u016f\u017ee zpracovat po\u017eadavek URI [{0}], proto\u017ee verze Java je ni\u017e\u0161\u00ed ne\u017e Java 8. Je vy\u017eadov\u00e1na Java verze 8 nebo vy\u0161\u0161\u00ed.
+JAVA8_REQUIRED.explanation=Pou\u017e\u00edvan\u00e1 verze Java nen\u00ed verze 8 nebo vy\u0161\u0161\u00ed.
+JAVA8_REQUIRED.useraction=Nainstalujte verzi Java 8 nebo vy\u0161\u0161\u00ed.
+
+JAVA8_REQUIRED_FOR_AT_HASHING=CWWKS1496W: Poskytovatel OpenID Connect {0} m\u00e1 nastaven atribut konfigurace {1} pro pou\u017eit\u00ed algoritmu {2} a vy\u017eaduje verzi Java 8 nebo vy\u0161\u0161\u00ed. Ur\u010den\u00fd poskytovatel OpenID Connect ignoruje nastaven\u00ed {3}.
+JAVA8_REQUIRED_FOR_AT_HASHING.explanation=Pou\u017e\u00edvan\u00e1 verze Java nen\u00ed verze 8 nebo vy\u0161\u0161\u00ed.
+JAVA8_REQUIRED_FOR_AT_HASHING.useraction=Nainstalujte verzi Java 8 nebo vy\u0161\u0161\u00ed pro pou\u017eit\u00ed zm\u00edn\u011bn\u00e9 volby konfigurace.
+
+# html title of logout page
+LOGOUT_PAGE_TITLE=Odhl\u00e1sit
+# html body of logout page
+LOGOUT_PAGE_BODY=Odhl\u00e1\u0161en\u00ed bylo \u00fasp\u011b\u0161n\u00e9.
+
+# html title of logout error page
+LOGOUT_ERROR_PAGE_TITLE=Odhl\u00e1sit
+# html body of logout error page
+LOGOUT_ERROR_PAGE_BODY=B\u011bhem odhla\u0161ov\u00e1n\u00ed do\u0161lo k v\u00fdjimce. Doporu\u010duje se k dokon\u010den\u00ed odhl\u00e1\u0161en\u00ed zav\u0159\u00edt webov\u00fd prohl\u00ed\u017ee\u010d.

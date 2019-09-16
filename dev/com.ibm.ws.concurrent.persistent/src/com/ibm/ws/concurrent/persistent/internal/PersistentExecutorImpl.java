@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2015 IBM Corporation and others.
+ * Copyright (c) 2014, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -268,7 +268,8 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
     /**
      * Liberty scheduled executor.
      */
-    ScheduledExecutorService scheduledExecutor;
+    @Reference(target = "(deferrable=false)")
+    protected volatile ScheduledExecutorService scheduledExecutor;
 
     /**
      * Liberty serialization service.
@@ -445,7 +446,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
     /**
      * Utility method that deserializes an object from bytes.
      *
-     * @param bytes from which to deserialize an object. If null, then null should be returned as the result.
+     * @param bytes  from which to deserialize an object. If null, then null should be returned as the result.
      * @param loader optional class loader to use when deserializing.
      * @return deserialized object.
      * @throws IOException if an error occurs deserializing the object.
@@ -479,9 +480,9 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
      *
      * This method is for the mbean only.
      *
-     * @param hostName the host name.
-     * @param userDir wlp.user.dir
-     * @param libertyServerName name of the Liberty server.
+     * @param hostName           the host name.
+     * @param userDir            wlp.user.dir
+     * @param libertyServerName  name of the Liberty server.
      * @param executorIdentifier config.displayId of the persistent executor.
      * @return a list of partition information. Each entry in the list consists of
      *         (partitionId, hostName, userDir, libertyServerName, executorIdentifier)
@@ -554,10 +555,10 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
      *
      * This method is for the mbean only.
      *
-     * @param partition identifier of the partition in which to search for tasks.
-     * @param state a task state. For example, TaskState.SCHEDULED
-     * @param inState indicates whether to include or exclude results with the specified state
-     * @param minId minimum value for task id to be returned in the results. A null value means no minimum.
+     * @param partition  identifier of the partition in which to search for tasks.
+     * @param state      a task state. For example, TaskState.SCHEDULED
+     * @param inState    indicates whether to include or exclude results with the specified state
+     * @param minId      minimum value for task id to be returned in the results. A null value means no minimum.
      * @param maxResults limits the number of results to return to the specified maximum value. A null value means no limit.
      * @return in-memory, ordered list of task ID.
      * @throws Exception if an error occurs when attempting to access the persistent task store.
@@ -1026,10 +1027,10 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
     /**
      * Create and persist a new task to the persistent store.
      *
-     * @param task the task.
+     * @param task     the task.
      * @param taskInfo information to store with the task in binary form which is not directly queryable.
-     * @param trigger trigger for the task (if any).
-     * @param result optional predetermined result for the task (if any).
+     * @param trigger  trigger for the task (if any).
+     * @param result   optional predetermined result for the task (if any).
      * @return snapshot of task status reflecting the initial creation of the task.
      */
     private <T> TimerStatus<T> newTask(Object task, TaskInfo taskInfo, Trigger trigger, Object result) {
@@ -1184,7 +1185,8 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
             else if (alternatePartition != null) {
                 Controller controller = controllerRef.getService();
                 if (controller != null)
-                    autoSchedule = new ControllerAutoSchedule(controller, alternatePartition, record.getId(), nextExecTime, record.getMiscBinaryFlags(), record.getTransactionTimeout());
+                    autoSchedule = new ControllerAutoSchedule(controller, alternatePartition, record.getId(), nextExecTime, record.getMiscBinaryFlags(), record
+                                    .getTransactionTimeout());
             }
             if (autoSchedule != null) {
                 UOWCurrent uowCurrent = (UOWCurrent) tranController.tranMgr;
@@ -1204,9 +1206,9 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
     /**
      * Invoked by a controller to notify a persistent executor that a task has been assigned to it.
      *
-     * @param taskId unique identifier for the task.
-     * @param nextExecTime next execution time for the task.
-     * @param binaryFlags combination of bits for various binary values.
+     * @param taskId             unique identifier for the task.
+     * @param nextExecTime       next execution time for the task.
+     * @param binaryFlags        combination of bits for various binary values.
      * @param transactionTimeout transaction timeout.
      */
     public void notifyOfTaskAssignment(long taskId, long nextExecTime, short binaryFlags, int transactionTimeout) {
@@ -1277,9 +1279,9 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
      *
      * This method is for the mbean only.
      *
-     * @param hostName the host name.
-     * @param userDir wlp.user.dir
-     * @param libertyServerName name of the Liberty server.
+     * @param hostName           the host name.
+     * @param userDir            wlp.user.dir
+     * @param libertyServerName  name of the Liberty server.
      * @param executorIdentifier config.displayId of the persistent executor.
      * @return the number of entries removed from the persistent store.
      * @throws Exception if an error occurs.
@@ -1532,7 +1534,8 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
      * @param ref reference to the service
      */
     @Reference(service = ApplicationRecycleCoordinator.class)
-    protected void setAppRecycleService(ServiceReference<ApplicationRecycleCoordinator> ref) {}
+    protected void setAppRecycleService(ServiceReference<ApplicationRecycleCoordinator> ref) {
+    }
 
     /**
      * Declarative Services method for setting the class loader identifier service.
@@ -1623,16 +1626,6 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
     }
 
     /**
-     * Declarative Services method for setting the Liberty scheduled executor.
-     *
-     * @param svc the service
-     */
-    @Reference(target = "(deferrable=false)")
-    protected void setScheduledExecutor(ScheduledExecutorService svc) {
-        scheduledExecutor = svc;
-    }
-
-    /**
      * Declarative Services method for setting the serialization service
      *
      * @param ref reference to the service
@@ -1645,7 +1638,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
     /**
      * Declarative Services method for setting the database store
      *
-     * @param svc the service
+     * @param svc   the service
      * @param props service properties
      */
     @Reference(target = "(id=unbound)")
@@ -1754,8 +1747,8 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
      *
      * This method is for the mbean only.
      *
-     * @param maxTaskId task id including and up to which to transfer non-ended tasks from the old partition to this partition.
-     *            If null, all non-ended tasks are transferred from the old partition to this partition.
+     * @param maxTaskId      task id including and up to which to transfer non-ended tasks from the old partition to this partition.
+     *                           If null, all non-ended tasks are transferred from the old partition to this partition.
      * @param oldPartitionId partition id to which tasks are currently assigned.
      * @return count of transferred tasks.
      */
@@ -1801,7 +1794,8 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
      *
      * @param ref reference to the service
      */
-    protected void unsetAppRecycleService(ServiceReference<ApplicationRecycleCoordinator> ref) {}
+    protected void unsetAppRecycleService(ServiceReference<ApplicationRecycleCoordinator> ref) {
+    }
 
     /**
      * Declarative Services method for unsetting the class loader identifier service.
@@ -1858,15 +1852,6 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
     }
 
     /**
-     * Declarative Services method for unsetting the Liberty scheduled executor.
-     *
-     * @param svc the service
-     */
-    protected void unsetScheduledExecutor(ScheduledExecutorService svc) {
-        scheduledExecutor = null;
-    }
-
-    /**
      * Declarative Services method for unsetting the serialization service
      *
      * @param ref reference to the service
@@ -1880,7 +1865,8 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
      *
      * @param svc the service
      */
-    protected void unsetTaskStore(DatabaseStore svc) {}
+    protected void unsetTaskStore(DatabaseStore svc) {
+    }
 
     /**
      * Declarative Services method for unsetting the transaction manager
@@ -1916,13 +1902,13 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
      *
      * This method is for the mbean only.
      *
-     * @param oldHostName the host name to update.
-     * @param oldUserDir wlp.user.dir to update.
-     * @param oldLibertyServerName name of the Liberty server to update.
+     * @param oldHostName           the host name to update.
+     * @param oldUserDir            wlp.user.dir to update.
+     * @param oldLibertyServerName  name of the Liberty server to update.
      * @param oldExecutorIdentifier config.displayId of the persistent executor to update.
-     * @param newHostName the new host name.
-     * @param newUserDir the new wlp.user.dir.
-     * @param newLibertyServerName the new name of the Liberty server.
+     * @param newHostName           the new host name.
+     * @param newUserDir            the new wlp.user.dir.
+     * @param newLibertyServerName  the new name of the Liberty server.
      * @param newExecutorIdentifier config.displayId of the new persistent executor.
      * @return the number of entries removed from the persistent store.
      * @throws Exception if an error occurs.
@@ -2201,7 +2187,84 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
         }
 
         @Override
-        public void beforeCompletion() {}
+        public void beforeCompletion() {
+        }
+
+        /**
+         * Attempt to claim a late task, and if successful in doing so, submit it to run.
+         *
+         * @param taskData          list of task detail, as returned by TaskStore.findLateTasks
+         * @param lateTaskThreshold number of seconds beyond which a task is considered late.
+         * @return true if a claim on the task was registered in the persistent store,
+         *         regardless of whether the task was actually transferred to this instance.
+         *         Otherwise false.
+         * @throws Exception if an error occurs.
+         */
+        private boolean claimLateTask(Object[] taskData, long lateTaskThreshold) throws Exception {
+            final boolean trace = TraceComponent.isAnyTracingEnabled();
+
+            long taskId = (long) taskData[0];
+            long expectedExecTime = (long) taskData[2];
+            long now = new Date().getTime();
+
+            if (trace && tc.isDebugEnabled())
+                Tr.debug(PersistentExecutorImpl.this, tc, "Task " + taskId + " is late by " + (now - expectedExecTime) + "ms");
+
+            // Attempt to claim ownership of the late task
+            boolean claimed = false;
+            String reassignment = ":CLAIM:" + taskId; // starting with non-alphanumeric indicates the property is for internal use
+            now = new Date().getTime();
+            long lateTaskThresholdMS = TimeUnit.SECONDS.toMillis(lateTaskThreshold);
+            String validUntil = String.format("%019d", now + lateTaskThresholdMS);
+
+            EmbeddableWebSphereTransactionManager tranMgr = tranMgrRef.getServiceWithException();
+            tranMgr.begin();
+            try {
+                claimed = taskStore.createProperty(reassignment, validUntil);
+            } finally {
+                if (!claimed)
+                    tranMgr.rollback(); // JPA marks the transaction as rollback-only for exceptional path
+                else
+                    tranMgr.commit();
+            }
+
+            if (!claimed) {
+                String comparisonValue = String.format("%019d", now);
+                tranMgr.begin();
+                try {
+                    claimed = taskStore.setPropertyIfLessThanOrEqual(reassignment, validUntil, comparisonValue);
+                } finally {
+                    tranMgr.commit();
+                }
+            }
+
+            if (trace && tc.isDebugEnabled())
+                Tr.debug(PersistentExecutorImpl.this, tc, "Task " + taskId + " claimed? " + claimed);
+
+            if (claimed) {
+                int currentVersion = (Integer) taskData[4];
+                long partition = getPartitionId();
+                boolean transferred;
+                tranMgr.begin();
+                try {
+                    transferred = taskStore.setPartition(taskId, currentVersion, partition);
+                } finally {
+                    tranMgr.commit();
+                }
+
+                if (transferred) {
+                    inMemoryTaskIds.put(taskId, Boolean.TRUE);
+                    short mbits = (Short) taskData[1];
+                    int txTimeout = (Integer) taskData[3];
+                    InvokerTask task = new InvokerTask(PersistentExecutorImpl.this, taskId, expectedExecTime, mbits, txTimeout);
+                    if (trace && tc.isDebugEnabled())
+                        Tr.debug(PersistentExecutorImpl.this, tc, "Submit task " + taskId + " for immediate execution");
+                    executor.submit(task);
+                }
+            }
+
+            return claimed;
+        }
 
         @Override
         public void run() {
@@ -2223,7 +2286,8 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
                 try {
                     EmbeddableWebSphereTransactionManager tranMgr = tranMgrRef.getServiceWithException();
 
-                    long maxNextExecTime = config.pollInterval >= 0 ? (config.pollInterval + new Date().getTime()) : Long.MAX_VALUE;
+                    long now = new Date().getTime();
+                    long maxNextExecTime = config.pollInterval >= 0 ? (config.pollInterval + now) : Long.MAX_VALUE;
                     List<Object[]> results;
                     tranMgr.begin();
                     try {
@@ -2250,6 +2314,27 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
                                 Tr.debug(PersistentExecutorImpl.this, tc, "Found task " + taskId + " already scheduled");
                         }
                     }
+
+                    if (config.lateTaskThreshold > 0) {
+                        if (trace && tc.isDebugEnabled())
+                            Tr.debug(PersistentExecutorImpl.this, tc, "Poll for tasks late by " + config.lateTaskThreshold + "s");
+                        long lateTaskThresholdMS = TimeUnit.SECONDS.toMillis(config.lateTaskThreshold);
+                        tranMgr.begin();
+                        try {
+                            results = taskStore.findLateTasks(now - lateTaskThresholdMS, getPartitionId(), config.pollSize);
+                        } catch (Throwable x) {
+                            throw failure = x;
+                        } finally {
+                            tranMgr.commit();
+                        }
+                        boolean anyClaimed = false;
+                        for (Object[] result : results)
+                            anyClaimed |= claimLateTask(result, config.lateTaskThreshold);
+                        if (anyClaimed) {
+                            // schedule a task to clean up the properties table after claims start to expire
+                            scheduledExecutor.schedule(new PropertyCleanupTask(), config.lateTaskThreshold, TimeUnit.SECONDS);
+                        }
+                    }
                 } finally {
                     // Schedule next poll
                     config = configRef.get();
@@ -2271,6 +2356,46 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
             if (trace && tc.isEntryEnabled())
                 Tr.exit(PersistentExecutorImpl.this, tc, "run[poll]", failure);
+        }
+    }
+
+    /**
+     * Cleans up out-dated claim entries from the properties table.
+     */
+    @Trivial
+    private class PropertyCleanupTask implements Runnable {
+        @Override
+        public void run() {
+            final boolean trace = TraceComponent.isAnyTracingEnabled();
+            if (trace && tc.isEntryEnabled())
+                Tr.entry(PersistentExecutorImpl.this, tc, "run[PropertyCleanupTask]");
+
+            if (deactivated) {
+                if (trace && tc.isEntryEnabled())
+                    Tr.exit(PersistentExecutorImpl.this, tc, "run[PropertyCleanupTask]", "not active - skipped");
+                return;
+            }
+
+            try {
+                EmbeddableWebSphereTransactionManager tranMgr = tranMgrRef.getServiceWithException();
+
+                String now = String.format("%019d", new Date().getTime());
+                tranMgr.begin();
+                try {
+                    int removed = taskStore.removePropertiesIfLessThanOrEqual(":CLAIM:%", null, now);
+
+                    if (trace && tc.isEntryEnabled())
+                        Tr.exit(PersistentExecutorImpl.this, tc, "run[PropertyCleanupTask]", removed);
+                } finally {
+                    if (tranMgr.getStatus() == Status.STATUS_ACTIVE)
+                        tranMgr.commit();
+                    else
+                        tranMgr.rollback();
+                }
+            } catch (Throwable x) {
+                if (trace && tc.isEntryEnabled())
+                    Tr.exit(PersistentExecutorImpl.this, tc, "run[PropertyCleanupTask]", x);
+            }
         }
     }
 

@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.ibm.ws.app.manager.module.DeployedAppInfo;
+import com.ibm.ws.app.manager.module.DeployedAppServices;
 import com.ibm.ws.app.manager.module.internal.ContextRootUtil;
 import com.ibm.ws.app.manager.module.internal.DeployedAppInfoBase;
 import com.ibm.ws.app.manager.module.internal.ModuleHandler;
@@ -29,7 +30,6 @@ import com.ibm.ws.container.service.app.deploy.ContainerInfo;
 import com.ibm.ws.container.service.app.deploy.ModuleClassesContainerInfo;
 import com.ibm.ws.container.service.app.deploy.ModuleInfo;
 import com.ibm.ws.container.service.app.deploy.WebModuleInfo;
-import com.ibm.ws.container.service.app.deploy.extended.ApplicationInfoForContainer;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedApplicationInfo;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.DefaultNotification;
@@ -46,13 +46,11 @@ class WARDeployedAppInfo extends DeployedAppInfoBase {
 
     private static final String CONTEXT_ROOT = "context-root";
 
-    private final ModuleHandler webModuleHandler;
     private final WebModuleContainerInfo webContainerModuleInfo;
 
     WARDeployedAppInfo(ApplicationInformation<DeployedAppInfo> applicationInformation,
-                       WARDeployedAppInfoFactoryImpl factory) throws UnableToAdaptException {
-        super(applicationInformation, factory);
-        this.webModuleHandler = factory.webModuleHandler;
+                       DeployedAppServices deployedAppServices, ModuleHandler webModuleHandler) throws UnableToAdaptException {
+        super(applicationInformation, deployedAppServices);
 
         String moduleURI = ModuleInfoUtils.getModuleURIFromLocation(applicationInformation.getLocation());
         String contextRoot = ContextRootUtil.getContextRoot((String) applicationInformation.getConfigProperty(CONTEXT_ROOT));
@@ -61,7 +59,11 @@ class WARDeployedAppInfo extends DeployedAppInfoBase {
         if (contextRoot == null) {
             contextRoot = ContextRootUtil.getContextRoot(getContainer());
         }
-        this.webContainerModuleInfo = new WebModuleContainerInfo(webModuleHandler, factory.getModuleMetaDataExtenders().get("web"), factory.getNestedModuleMetaDataFactories().get("web"), applicationInformation.getContainer(), null, moduleURI, moduleClassesInfo, contextRoot);
+        this.webContainerModuleInfo = new WebModuleContainerInfo(webModuleHandler,
+                                                                 deployedAppServices.getModuleMetaDataExtenders("web"),
+                                                                 deployedAppServices.getNestedModuleMetaDataFactories("web"),
+                                                                 applicationInformation.getContainer(), null, moduleURI,
+                                                                 this, moduleClassesInfo, contextRoot);
         moduleContainerInfos.add(webContainerModuleInfo);
     }
 
@@ -110,8 +112,7 @@ class WARDeployedAppInfo extends DeployedAppInfoBase {
                                                                                webContainerModuleInfo.moduleName,
                                                                                getContainer(),
                                                                                this,
-                                                                               getConfigHelper(),
-                                                                               (ApplicationInfoForContainer) applicationInformation);
+                                                                               getConfigHelper());
         webContainerModuleInfo.moduleName = appInfo.getName();
         // ??? Contrary to the EE specs, we use the deployment name, not the EE
         // application name, as the default context root for compatibility.

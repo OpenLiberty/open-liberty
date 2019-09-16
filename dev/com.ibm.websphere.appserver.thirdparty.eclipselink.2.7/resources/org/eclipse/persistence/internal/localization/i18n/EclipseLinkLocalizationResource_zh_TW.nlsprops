@@ -27,5 +27,5 @@
 #   (single quote must be coded as one single quote '). 
 #
 # -------------------------------------------------------------------------------------------------
-NoTranslationForThisLocale=\uff08\u6c92\u6709\u6b64\u8a0a\u606f\u7684\u82f1\u6587\u7ffb\u8b6f\u3002\uff09
+NoTranslationForThisLocale= \uff08\u6c92\u6709\u6b64\u8a0a\u606f\u7684\u82f1\u6587\u7ffb\u8b6f\u3002\uff09
 

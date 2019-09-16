@@ -38,7 +38,7 @@ abstract class AbstractRepositoryWrapper implements RepositoryWrapper {
     }
 
     @Override
-    public Repository getRepository() throws WIMException {
+    public Repository getRepository() {
         return null;
     }
 

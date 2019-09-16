@@ -15,8 +15,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.JarURLConnection;
 import java.net.URL;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -32,6 +30,8 @@ import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import javax.persistence.spi.PersistenceUnitInfo;
 
@@ -159,37 +159,27 @@ public class PersistenceUnitScanner {
 
     private Set<ClassInfoType> processUnexplodedFile(Path path) throws ClassScannerException {
         final HashSet<ClassInfoType> citSet = new HashSet<ClassInfoType>();
-        final HashSet<Path> archiveFiles = new HashSet<Path>();
 
         if (path == null) {
             throw new ClassScannerException("Null argument is invalid for method processUnexplodedFile().");
         }
 
-        // URL referring to a jar file is the only legal option here.
         try {
-            try (FileSystem fs = FileSystems.getFileSystem(path.toUri())) {
-                for (Path jarRootPath : fs.getRootDirectories()) {
-                    Files.walkFileTree(jarRootPath, new SimpleFileVisitor<Path>() {
-                        @Override
-                        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                            if (Files.isRegularFile(file) && Files.size(file) > 0
-                                && file.getFileName().toString().endsWith(".class")) {
-                                archiveFiles.add(file);
-                            }
+            try (ZipFile zf = new ZipFile(path.toFile())) {
+                final Enumeration<? extends ZipEntry> entryEnum = zf.entries();
+                while (entryEnum.hasMoreElements()) {
+                    final ZipEntry entry = entryEnum.nextElement();
+                    if (entry.isDirectory()) {
+                        continue;
+                    }
 
-                            return FileVisitResult.CONTINUE;
+                    final String entryName = entry.getName();
+                    if (entryName.endsWith(".class")) {
+                        try (InputStream is = zf.getInputStream(entry)) {
+                            String cName = entryName.replace("/", ".");
+                            cName = cName.substring(0, cName.length() - 6); // Remove ".class" from name
+                            citSet.add(scanByteCodeFromInputStream(cName, is));
                         }
-                    });
-                }
-
-                for (Path p : archiveFiles) {
-                    String cName = path.relativize(p).toString().replace("/", ".");
-                    cName = cName.substring(0, cName.length() - 6); // Remove ".class" from name
-
-                    try (InputStream is = Files.newInputStream(p)) {
-                        citSet.add(scanByteCodeFromInputStream(cName, is));
-                    } catch (Throwable t) {
-                        throw new ClassScannerException(t);
                     }
                 }
             }
@@ -471,10 +461,20 @@ public class PersistenceUnitScanner {
         final boolean isMetaInfoOrmXML = "META-INF/orm.xml".equals(ormFileName);
         final ArrayList<URL> retArr = new ArrayList<URL>();
 
+        final URL puu = pui.getPersistenceUnitRootUrl();
+
+        String puRootURL = pui.getPersistenceUnitRootUrl().toExternalForm();
+        if (puRootURL.startsWith("wsjpa:")) {
+            // The wsjpa protocol is a JPA runtime artifact, calling ClassLoader.getResource() will never
+            // return a URL using that protocol.
+            puRootURL = puRootURL.substring(6);
+        }
+
         Enumeration<URL> ormEnum = pui.getClassLoader().getResources(ormFileName);
         while (ormEnum.hasMoreElements()) {
             final URL url = ormEnum.nextElement();
-            final String urlExtern = url.toExternalForm(); //  ParserUtils.decode(url.toExternalForm());
+            final String urlExtern = url.toExternalForm();
+            final URL containerURL = new URL(urlExtern.substring(0, urlExtern.length() - "META-INF/orm.xml".length()));
 
             if (!isMetaInfoOrmXML) {
                 // If it's not "META-INF/orm.xml", then the mapping files may be present anywhere in the classpath.
@@ -483,15 +483,16 @@ public class PersistenceUnitScanner {
             }
 
             // Check against persistence unit root
-            if (urlExtern.startsWith(pui.getPersistenceUnitRootUrl().toExternalForm())) {
+            if (puu.sameFile(containerURL)) {
                 retArr.add(url);
                 continue;
             }
 
             // Check against Jar files, if any
             for (URL jarUrl : pui.getJarFileUrls()) {
-                final String jarExtern = jarUrl.toExternalForm();
-                if (urlExtern.startsWith(jarExtern)) {
+                final String jarUrlExtern = jarUrl.toExternalForm();
+                final URL jarContainerURL = new URL(jarUrlExtern.substring(0, jarUrlExtern.length() - "META-INF/orm.xml".length()));
+                if (puu.sameFile(jarContainerURL)) {
                     retArr.add(url);
                     continue;
                 }

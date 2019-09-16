@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?><wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://webejb.ejbjndi.jaxws.ws.ibm.com/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" name="MixedCoffeeMachineService" targetNamespace="http://webejb.ejbjndi.jaxws.ws.ibm.com/">
+  <wsdl:types>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://webejb.ejbjndi.jaxws.ws.ibm.com/" elementFormDefault="unqualified" targetNamespace="http://webejb.ejbjndi.jaxws.ws.ibm.com/" version="1.0">
+<xs:element name="isSupported" type="tns:isSupported"></xs:element>
+<xs:element name="isSupportedResponse" type="tns:isSupportedResponse"></xs:element>
+<xs:element name="make" type="tns:make"></xs:element>
+<xs:element name="makeResponse" type="tns:makeResponse"></xs:element>
+<xs:complexType name="make">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="arg0" type="xs:string"></xs:element>
+    </xs:sequence>
+  </xs:complexType>
+<xs:complexType name="makeResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:coffee"></xs:element>
+    </xs:sequence>
+  </xs:complexType>
+<xs:complexType name="coffee">
+    <xs:sequence></xs:sequence>
+  </xs:complexType>
+<xs:complexType name="isSupported">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="arg0" type="xs:string"></xs:element>
+    </xs:sequence>
+  </xs:complexType>
+<xs:complexType name="isSupportedResponse">
+    <xs:sequence>
+      <xs:element name="return" type="xs:boolean"></xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>  </wsdl:types>
+  <wsdl:message name="make">
+    <wsdl:part element="tns:make" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="makeResponse">
+    <wsdl:part element="tns:makeResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="isSupported">
+    <wsdl:part element="tns:isSupported" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="isSupportedResponse">
+    <wsdl:part element="tns:isSupportedResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="CoffeeMachine">
+    <wsdl:operation name="make">
+      <wsdl:input message="tns:make" name="make">
+    </wsdl:input>
+      <wsdl:output message="tns:makeResponse" name="makeResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="isSupported">
+      <wsdl:input message="tns:isSupported" name="isSupported">
+    </wsdl:input>
+      <wsdl:output message="tns:isSupportedResponse" name="isSupportedResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="MixedCoffeeMachineServiceSoapBinding" type="tns:CoffeeMachine">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"></soap:binding>
+    <wsdl:operation name="make">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="make">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="makeResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="isSupported">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="isSupported">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="isSupportedResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="MixedCoffeeMachineService">
+    <wsdl:port binding="tns:MixedCoffeeMachineServiceSoapBinding" name="MixedCoffeeMachinePort">
+      <soap:address location="http://localhost:9080/httpConduitProperties/MixedCoffeeMachineService"></soap:address>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

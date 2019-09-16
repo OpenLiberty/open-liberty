@@ -41,7 +41,7 @@ public class Launcher {
      * command line parameters. This method will call <code>System.exit</code> when the framework shuts down.
      *
      * @param args
-     *            Command line arguments.
+     *                 Command line arguments.
      * @throws Exception
      *
      * @see Launcher#createPlatform(String[])
@@ -58,7 +58,7 @@ public class Launcher {
      * running) will immediately return.
      *
      * @param args
-     *            Command line arguments
+     *                 Command line arguments
      *
      * @return 0 if platform was launched and shut down successfully, > 20 if
      *         an exception or unexpected condition occurred during
@@ -159,7 +159,6 @@ public class Launcher {
             if (t == null)
                 t = e;
 
-            System.out.println("in Launcher, about to error.unknownException");
             System.out.println(BootstrapConstants.messages.getString("error.unableToLaunch"));
             System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("error.unknownException"), t.toString()));
 
@@ -230,7 +229,7 @@ public class Launcher {
     /**
      * Handle the process action.
      *
-     * @param bootProps An instance of BootstrapConfig
+     * @param bootProps  An instance of BootstrapConfig
      * @param launchArgs An instance of LaunchArguments
      */
     protected ReturnCode handleActions(BootstrapConfig bootProps, LaunchArguments launchArgs) {
@@ -301,7 +300,7 @@ public class Launcher {
     /**
      * Find main locations
      *
-     * @param bootProps An instance of BootstrapConfig
+     * @param bootProps   An instance of BootstrapConfig
      * @param processName Process name to be used
      */
     protected void findLocations(BootstrapConfig bootProps, String processName) {
@@ -320,9 +319,9 @@ public class Launcher {
         if (consoleLogFileStr == null)
             consoleLogFileStr = getEnv(BootstrapConstants.ENV_LOG_FILE);
 
-        // Do enough processing to know where the directories should be..
+        // Do enough processing to know where the directories should be.
         // this should not cause any directories to be created
-        bootProps.findLocations(processName, userDirStr, serversDirStr, logDirStr, consoleLogFileStr);
+        bootProps.findLocations(processName, userDirStr, serversDirStr, logDirStr, consoleLogFileStr, null);
     }
 
     protected ReturnCode showHelp(LaunchArguments launchArgs) {
@@ -361,7 +360,7 @@ public class Launcher {
      * properties.
      *
      * @param key
-     *            Property key
+     *                Property key
      * @return Object value, or null if not found.
      */
     protected String getEnv(final String key) {

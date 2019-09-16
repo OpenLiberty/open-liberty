@@ -65,6 +65,10 @@ public class IDGeneratorImpl implements IIDGenerator {
      */
     protected static Logger logger = Logger.getLogger("com.ibm.ws.util", "com.ibm.ws.session.resources.WASSessionCore");
 
+    public static void init() {
+        // nothing to do.  Just want to get the Class's Logger initialized
+    }
+
     // ----------------------------------------
     // Class Constructor
     // ----------------------------------------

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar id="ejb-jar_ID" xmlns="http://java.sun.com/xml/ns/javaee"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd"
+      metadata-complete="false" version="3.1">
+      <display-name>AsyncTestEJB-Mix</display-name>
+
+  <enterprise-beans>
+    <session>
+      <ejb-name>BasicSingletonMixedBean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.async.fat.mix.ejb.BasicSingletonMixedBean</ejb-class>
+      <async-method>
+        <method-name>test_asyncMethAnnWithStyle2XML</method-name>
+      </async-method>
+      <async-method>
+        <method-name>test_asyncMethStyle2XMLOnly</method-name>
+      </async-method>
+      <transaction-type>Container</transaction-type>
+    </session>
+
+    <session>
+      <ejb-name>BasicStatefulMixedBean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.async.fat.mix.ejb.BasicStatefulMixedBean</ejb-class>
+      <async-method>
+        <method-name>test_asyncMethAnnWithStyle2XML</method-name>
+      </async-method>
+      <async-method>
+        <method-name>test_asyncMethStyle2XMLOnly</method-name>
+      </async-method>
+      <transaction-type>Container</transaction-type>
+    </session>
+
+    <session>
+      <ejb-name>BasicStatelessMixedBean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.async.fat.mix.ejb.BasicStatelessMixedBean</ejb-class>
+      <async-method>
+        <method-name>test_asyncMethAnnWithStyle2XML</method-name>
+      </async-method>
+      <async-method>
+        <method-name>test_asyncMethStyle2XMLOnly</method-name>
+      </async-method>
+      <transaction-type>Container</transaction-type>
+    </session>
+
+    <session>
+      <ejb-name>InheritanceSingletonAnnBean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.async.fat.mix.ejb.InheritanceSingletonAnnBean</ejb-class>
+      <async-method>
+        <method-name>test_AnnAndXMLMethodAsync</method-name>
+      </async-method>
+      <transaction-type>Container</transaction-type>
+    </session>
+
+    <session>
+      <ejb-name>InheritanceStatefulAnnBean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.async.fat.mix.ejb.InheritanceStatefulAnnBean</ejb-class>
+      <async-method>
+        <method-name>test_AnnAndXMLMethodAsync</method-name>
+      </async-method>
+      <transaction-type>Container</transaction-type>
+    </session>
+
+    <session>
+      <ejb-name>InheritanceStatelessAnnBean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.async.fat.mix.ejb.InheritanceStatelessAnnBean</ejb-class>
+      <async-method>
+        <method-name>test_AnnAndXMLMethodAsync</method-name>
+      </async-method>
+      <transaction-type>Container</transaction-type>
+    </session>
+
+    <session>
+      <ejb-name>InheritanceSingletonXMLBean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.async.fat.mix.ejb.InheritanceSingletonXMLBean</ejb-class>
+      <async-method>
+        <method-name>*</method-name>
+      </async-method>
+      <transaction-type>Container</transaction-type>
+    </session>
+
+    <session>
+      <ejb-name>InheritanceStatefulXMLBean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.async.fat.mix.ejb.InheritanceStatefulXMLBean</ejb-class>
+      <async-method>
+        <method-name>*</method-name>
+      </async-method>
+      <transaction-type>Container</transaction-type>
+    </session>
+
+    <session>
+      <ejb-name>InheritanceStatelessXMLBean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.async.fat.mix.ejb.InheritanceStatelessXMLBean</ejb-class>
+      <async-method>
+        <method-name>*</method-name>
+      </async-method>
+      <transaction-type>Container</transaction-type>
+    </session>
+
+    <session id="NoInterfaceBean3_ID">
+      <ejb-name>NoInterfaceBean3</ejb-name>
+      <local-bean/>
+      <ejb-class>com.ibm.ws.ejbcontainer.async.fat.mix.ejb.NoInterfaceBean3</ejb-class>
+      <session-type>Stateless</session-type>
+      <transaction-type>Container</transaction-type> 
+      <env-entry id="EnvEntry_1">
+        <description></description>
+        <env-entry-name>com.ibm.ws.ejbcontainer.async.fat.mix.ejb.NoInterfaceBean3/ivVariableForInjectedString</env-entry-name>
+        <env-entry-type>java.lang.String</env-entry-type>
+        <env-entry-value>This_is_my_injected_string_verbage</env-entry-value>
+        <injection-target>
+          <injection-target-class>com.ibm.ws.ejbcontainer.async.fat.mix.ejb.NoInterfaceBean3</injection-target-class>
+          <injection-target-name>ivVariableForInjectedString</injection-target-name>
+        </injection-target>
+      </env-entry>
+      <ejb-local-ref id="ejbLocalRef_1">
+        <ejb-ref-name>ejb/componentLookupForNoInterfaceBean4</ejb-ref-name>
+        <ejb-ref-type>Session</ejb-ref-type>
+        <local>com.ibm.ws.ejbcontainer.async.fat.mix.ejb.NoInterfaceBean4</local>
+        <ejb-link>NoInterfaceBean4</ejb-link>
+      </ejb-local-ref>                      
+    </session>
+  </enterprise-beans>
+
+  <assembly-descriptor id="AssemblyDescriptor_ID">
+    <container-transaction id="MethodTransaction_1">
+      <method id="MethodElement_1">
+        <ejb-name>NoInterfaceBean3</ejb-name>
+        <method-name>methodWithNotSupportedTransactionDefinedViaXML</method-name>
+      </method>
+      <trans-attribute>NotSupported</trans-attribute>
+    </container-transaction>			
+  </assembly-descriptor>      
+</ejb-jar>

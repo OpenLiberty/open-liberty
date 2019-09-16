@@ -1,0 +1,464 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/oauth20/internal/resources/OauthMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server OAUTH Security
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS1400 - CWWKS1499
+OAUTH_PROVIDER_CONFIG_INVALID=CWWKS1400E: Konfiguracja dostawcy OAuth {0} jest niepoprawna.
+OAUTH_PROVIDER_CONFIG_INVALID.explanation=Nie mo\u017cna uzyska\u0107 okre\u015blonej konfiguracji dostawcy OAuth.
+OAUTH_PROVIDER_CONFIG_INVALID.useraction=Podaj poprawn\u0105 konfiguracj\u0119 dostawcy OAuth.
+
+OAUTH_PROVIDER_CONFIG_NO_LIBRARYREF=CWWKS1401W: Dostawca OAuth {0} ma okre\u015blon\u0105 klas\u0119 mediatora, ale nie okre\u015blono odwo\u0142ania libraryRef lub biblioteka nie zosta\u0142a aktywowana.
+OAUTH_PROVIDER_CONFIG_NO_LIBRARYREF.explanation=Dostawca OAuth ma okre\u015blon\u0105 klas\u0119 mediatora, ale nie okre\u015blono odwo\u0142ania libraryRef lub biblioteka nie zosta\u0142a aktywowana. Mo\u017ce to by\u0107 b\u0142\u0105d konfiguracji lub biblioteka mog\u0142a zosta\u0107 aktywowana po aktywowaniu dostawcy.
+OAUTH_PROVIDER_CONFIG_NO_LIBRARYREF.useraction=Upewnij si\u0119, \u017ce odwo\u0142anie libraryRef dostawcy OAuth zosta\u0142o poprawnie zdefiniowane.
+
+OAUTH_PROVIDER_CONFIG_MEDIATOR_LIBRARYREF_ACTIVE=CWWKS1402I: Odwo\u0142anie libraryRef dostawcy OAuth {0} zosta\u0142o aktywowane dla klasy mediatora {1}.
+OAUTH_PROVIDER_CONFIG_MEDIATOR_LIBRARYREF_ACTIVE.explanation=Dostawca OAuth ma okre\u015blon\u0105 klas\u0119 mediatora i odwo\u0142anie libraryRef zosta\u0142o aktywowane.
+OAUTH_PROVIDER_CONFIG_MEDIATOR_LIBRARYREF_ACTIVE.useraction=Brak.
+
+OAUTH_PROVIDER_CONFIG_PROCESSED=CWWKS1403I: Konfiguracja dostawcy OAuth {0} zosta\u0142a pomy\u015blnie przetworzona.
+OAUTH_PROVIDER_CONFIG_PROCESSED.explanation=Konfiguracja dostawcy OAuth zosta\u0142a pomy\u015blnie przetworzona.
+OAUTH_PROVIDER_CONFIG_PROCESSED.useraction=Brak.
+
+OAUTH_ROLE_CONFIG_PROCESSED=CWWKS1404I: Konfiguracja r\u00f3l OAuth zosta\u0142a pomy\u015blnie przetworzona.
+OAUTH_ROLE_CONFIG_PROCESSED.explanation=Konfiguracja r\u00f3l OAuth zosta\u0142a pomy\u015blnie przetworzona.
+OAUTH_ROLE_CONFIG_PROCESSED.useraction=Brak.
+
+OAUTH_INTROSPECT_NO_TOKEN=CWWKS1405E: \u017b\u0105danie introspekcji nie ma parametru token. Identyfikator URI \u017c\u0105dania: {0}.
+OAUTH_INTROSPECT_NO_TOKEN.explanation=\u017b\u0105danie introspekcji musi mie\u0107 parametr token, kt\u00f3ry okre\u015bla znacznik dost\u0119pu do introspekcji.
+OAUTH_INTROSPECT_NO_TOKEN.useraction=Wywo\u0142aj \u017c\u0105danie ponownie z parametrem token, kt\u00f3ry okre\u015bla poprawny znacznik dost\u0119pu.
+
+OAUTH_INVALID_CLIENT=CWWKS1406E: \u017b\u0105danie {0} ma niepoprawne referencje klienta. Identyfikator URI \u017c\u0105dania: {1}.
+OAUTH_INVALID_CLIENT.explanation=Wskazane \u017c\u0105danie musi zawiera\u0107 poprawny identyfikator klienta i poprawne has\u0142o, a identyfikator klienta musi by\u0107 zgodny z identyfikatorem klienta, kt\u00f3ry utworzy\u0142 znacznik dost\u0119pu.
+OAUTH_INVALID_CLIENT.useraction=Wywo\u0142aj \u017c\u0105danie ponownie z poprawn\u0105 referencj\u0105 klienta.
+
+CUSTOMIZED_FACTORY_INSTANTIATE_ERROR=CWWKS1407E: Nie mo\u017cna utworzy\u0107 instancji nazwy klasy {0} dostosowanej procedury obs\u0142ugi typu nadania ({1})
+CUSTOMIZED_FACTORY_INSTANTIATE_ERROR.explanation=Nie mo\u017cna utworzy\u0107 instancji nazwy klasy dostosowanej procedury obs\u0142ugi typu nadania.
+CUSTOMIZED_FACTORY_INSTANTIATE_ERROR.useraction=Dok\u0142adnie sprawd\u017a nazw\u0119 klasy w konfiguracji.
+
+CUSTOMIZED_CLASS_NOT_FOUND=CWWKS1408E: Nie mo\u017cna znale\u017a\u0107 nazwy klasy {0} dostosowanej procedury obs\u0142ugi typu nadania ({1})
+CUSTOMIZED_CLASS_NOT_FOUND.explanation=Nie mo\u017cna znale\u017a\u0107 nazwy klasy dostosowanej procedury obs\u0142ugi typu nadania.
+CUSTOMIZED_CLASS_NOT_FOUND.useraction=Dok\u0142adnie sprawd\u017a nazw\u0119 klasy w konfiguracji.
+
+OAUTH_OSGI_ENDPOINT_SERVICE_ERROR=CWWKS1409E: Wyst\u0105pi\u0142 b\u0142\u0105d konfiguracji. Brak dost\u0119pnej us\u0142ugi punktu ko\u0144cowego. Upewnij si\u0119, \u017ce skonfigurowano sk\u0142adnik oauth-2.0 lub openidConnectServer-1.0. 
+OAUTH_OSGI_ENDPOINT_SERVICE_ERROR.explanation=\u017badna us\u0142uga punktu ko\u0144cowego nie jest dost\u0119pna z poziomu rejestru us\u0142ug OSGi.
+OAUTH_OSGI_ENDPOINT_SERVICE_ERROR.useraction=Uwzgl\u0119dnij sk\u0142adnik oauth-2.0 lub openidConnectServer-1.0 w konfiguracji serwera.
+
+OAUTH_ENDPOINT_SERVICE_ACTIVATED=CWWKS1410I: Us\u0142uga punktu ko\u0144cowego OAuth zosta\u0142a aktywowana.
+OAUTH_ENDPOINT_SERVICE_ACTIVATED.explanation=Us\u0142uga po\u0142\u0105czenia OAuth zosta\u0142a aktywowana.
+OAUTH_ENDPOINT_SERVICE_ACTIVATED.useraction=Brak
+
+OAUTH_INTROSPECT_REVOKE_INVALID_CLIENT=CWWKS1411E: Identyfikator klienta zawarty w \u017c\u0105daniu nie jest tym samym identyfikatorem klienta, kt\u00f3ry utworzy\u0142 znacznik dost\u0119pu, albo \u017c\u0105danie zawiera niepoprawny identyfikator klienta lub niepoprawny klucz tajny klienta. Identyfikator URI \u017c\u0105dania: {0}.
+OAUTH_INTROSPECT_REVOKE_INVALID_CLIENT.explanation=Identyfikator klienta zawarty w \u017c\u0105daniu nie jest tym samym identyfikatorem klienta, kt\u00f3ry utworzy\u0142 znacznik dost\u0119pu, albo \u017c\u0105danie zawiera niepoprawny identyfikator klienta lub niepoprawny klucz tajny klienta.
+OAUTH_INTROSPECT_REVOKE_INVALID_CLIENT.useraction=Wywo\u0142aj \u017c\u0105danie ponownie z poprawn\u0105 referencj\u0105 klienta.
+
+OAUTH_REQUEST_ATTRIBUTE_MISSING=CWWKS1412E: Punkt ko\u0144cowy \u017c\u0105dania {0} nie zawiera atrybutu {1}.
+OAUTH_REQUEST_ATTRIBUTE_MISSING.explanation=Brak atrybutu w \u017c\u0105daniu
+OAUTH_REQUEST_ATTRIBUTE_MISSING.useraction=Sprawd\u017a punkt ko\u0144cowy \u017c\u0105dania w pliku server.xml, aby upewni\u0107 si\u0119, \u017ce dostawca jest w\u0142a\u015bciwy 
+
+OAUTH_PROVIDER_OBJECT_NULL=CWWKS1413E: Obiekt OAuth20Provider ma warto\u015b\u0107 NULL dla dostawcy OAuth {0}.
+OAUTH_PROVIDER_OBJECT_NULL.explanation=Nie mo\u017cna utworzy\u0107 obiektu OAuth20Provider dla nazwy dostawcy OAuth
+OAUTH_PROVIDER_OBJECT_NULL.useraction=Dok\u0142adnie sprawd\u017a konfiguracj\u0119 dostawcy  
+
+# Tr.error
+JWT_SERVER_SCOPE_NOT_PRE_AUTHORIZED_ERR=CWWKS1414E: \u017b\u0105danie punktu ko\u0144cowego znacznika nie powiod\u0142o si\u0119, poniewa\u017c zasi\u0119g [{0}] w parametrze zasi\u0119gu \u017c\u0105dania nie zosta\u0142 zdefiniowany na li\u015bcie preAuthorizedScope w kliencie [{1}].
+JWT_SERVER_SCOPE_NOT_PRE_AUTHORIZED_ERR.explanation=Wszystkie zasi\u0119gi, kt\u00f3rych za\u017c\u0105dano w parametrze zasi\u0119gu \u017c\u0105dania punktu ko\u0144cowego znacznika, musz\u0105 by\u0107 zdefiniowane na li\u015bcie preAuthorizedScope konfiguracji klienta.
+JWT_SERVER_SCOPE_NOT_PRE_AUTHORIZED_ERR.useraction=Upewnij si\u0119, \u017ce wszystkie zasi\u0119gi w \u017c\u0105daniu punktu ko\u0144cowego znacznika s\u0105 zdefiniowane na li\u015bcie preAuthorizedScope konfiguracji klienta.
+
+# 
+JWT_SERVER_SCOPE_NOT_PRE_AUTHORIZED_EXTERNAL_ERR=CWWKS1415E: \u017b\u0105danie punktu ko\u0144cowego znacznika nie powiod\u0142o si\u0119, poniewa\u017c na li\u015bcie preAuthorizedScope klienta [{0}] nie zdefiniowano jednego z zasi\u0119g\u00f3w w parametrze zasi\u0119gu \u017c\u0105dania.
+JWT_SERVER_SCOPE_NOT_PRE_AUTHORIZED_EXTERNAL_ERR.explanation=Wszystkie zasi\u0119gi, kt\u00f3rych za\u017c\u0105dano w parametrze zasi\u0119gu \u017c\u0105dania punktu ko\u0144cowego znacznika, musz\u0105 by\u0107 zdefiniowane na li\u015bcie preAuthorizedScope konfiguracji klienta.
+JWT_SERVER_SCOPE_NOT_PRE_AUTHORIZED_EXTERNAL_ERR.useraction=Upewnij si\u0119, \u017ce wszystkie zasi\u0119gi okre\u015blone w \u017c\u0105daniu punktu ko\u0144cowego znacznika s\u0105 zdefiniowane na li\u015bcie preAuthorizedScope konfiguracji klienta.
+
+# 
+JWT_SERVER_NO_PRE_AUTHORIZED_SCOPE_ERR=CWWKS1416E: \u017b\u0105danie punktu ko\u0144cowego znacznika nie powiod\u0142o si\u0119, poniewa\u017c klient [{0}] nie zosta\u0142 autoryzowany automatycznie, a lista preAuthorizedScope nie zosta\u0142a zdefiniowana w konfiguracji. Nie mo\u017cna autoryzowa\u0107 \u017cadnych zasi\u0119g\u00f3w.
+JWT_SERVER_NO_PRE_AUTHORIZED_SCOPE_ERR.explanation=Klient musi zosta\u0107 autoryzowany automatycznie, aby autoryzowa\u0107 zasi\u0119gi z \u017c\u0105dania HTTP. W przeciwnym razie zasi\u0119gi musz\u0105 zosta\u0107 zdefiniowane na li\u015bcie preAuthorizedScope konfiguracji klienta.
+JWT_SERVER_NO_PRE_AUTHORIZED_SCOPE_ERR.useraction=Upewnij si\u0119, \u017ce klient jest autoryzowany automatycznie lub \u017ce na li\u015bcie preAuthorizedScope konfiguracji klienta zdefiniowano zasi\u0119gi.
+
+# do not translate urn:ietf:params:oauth:grant-type:jwt-bearer
+OAUTH_SERVER_GRANT_TYPE_NOT_SUPPORTED_ERR=CWWKS1417E: \u017b\u0105danie punktu ko\u0144cowego znacznika nie powiod\u0142o si\u0119. Klient [{0}] nie obs\u0142uguje typu nadania: [{0}].
+OAUTH_SERVER_GRANT_TYPE_NOT_SUPPORTED_ERR.explanation=Klient wskazany w komunikacie nie obs\u0142uguje typu nadania, poniewa\u017c nie zosta\u0142 okre\u015blony na li\u015bcie grantType konfiguracji klienta.
+OAUTH_SERVER_GRANT_TYPE_NOT_SUPPORTED_ERR.useraction=Podaj wskazany typ nadania na li\u015bcie grantType w konfiguracji klienta.
+
+JWT_SERVER_DUPLICATED_PARAMETERS_ERR=CWWKS1418E: \u017b\u0105danie punktu ko\u0144cowego znacznika nie powiod\u0142o si\u0119. Dostawca OpenID Connect nie mo\u017ce przetworzy\u0107 \u017c\u0105dania, poniewa\u017c zawiera ono wi\u0119cej ni\u017c jeden parametr [{0}].
+JWT_SERVER_DUPLICATED_PARAMETERS_ERR.explanation=\u017b\u0105danie punktu ko\u0144cowego znacznika nie mo\u017ce zawiera\u0107 wi\u0119cej ni\u017c jednego ze wskazanych parametr\u00f3w. W przeciwnym razie dostawca OpenID Connect nie b\u0119dzie m\u00f3g\u0142 go przetworzy\u0107.
+JWT_SERVER_DUPLICATED_PARAMETERS_ERR.useraction=Upewnij si\u0119, \u017ce tylko jeden ze wskazanych parametr\u00f3w znajduje si\u0119 w \u017c\u0105daniu punktu ko\u0144cowego znacznika.
+
+OAUTH_INTROSPECT_CLIENT_NOT_AUTHORIZED=CWWKS1419E: Klient nie ma uprawnie\u0144 do introspekcji znacznik\u00f3w dost\u0119pu. Identyfikator URI \u017c\u0105dania: {0}.
+OAUTH_INTROSPECT_CLIENT_NOT_AUTHORIZED.explanation=\u017b\u0105danie zawiera identyfikator klienta, kt\u00f3ry nie ma autoryzacji do introspekcji znacznik\u00f3w.
+OAUTH_INTROSPECT_CLIENT_NOT_AUTHORIZED.useraction=Upowa\u017cnij klienta do introspekcji znacznik\u00f3w dost\u0119pu, ustawiaj\u0105c atrybut introspectTokens na warto\u015b\u0107 true w konfiguracji klienta OAuth.
+
+OAUTH_INTROSPECT_CLIENT_NOT_AUTHORIZED_SERVER_LOG=CWWKS1420E: Klient {0} nie jest autoryzowany do introspekcji znacznik\u00f3w dost\u0119pu. Identyfikator URI \u017c\u0105dania: {1}.
+OAUTH_INTROSPECT_CLIENT_NOT_AUTHORIZED_SERVER_LOG.explanation=\u017b\u0105danie zawiera identyfikator klienta, kt\u00f3ry nie ma autoryzacji do introspekcji znacznik\u00f3w.
+OAUTH_INTROSPECT_CLIENT_NOT_AUTHORIZED_SERVER_LOG.useraction=Upowa\u017cnij klienta do introspekcji znacznik\u00f3w dost\u0119pu, ustawiaj\u0105c atrybut introspectTokens na warto\u015b\u0107 true w konfiguracji klienta OAuth.
+
+OAUTH_LENGTH_TOO_SMALL_AND_CHANGED=CWWKS1421I: Warto\u015b\u0107 elementu {0} w konfiguracji oauthProvider wynosi {1}. Jest ona mniejsza ni\u017c warto\u015b\u0107 zalecana. Zosta\u0142a ustawiona warto\u015b\u0107 domy\u015blna {2}.
+OAUTH_LENGTH_TOO_SMALL_AND_CHANGED.explanation=Warto\u015b\u0107 wskazanego atrybutu jest zbyt ma\u0142a. Zostanie on zresetowany do warto\u015bci domy\u015blnej. 
+OAUTH_LENGTH_TOO_SMALL_AND_CHANGED.useraction=Dla wskazanego atrybutu ustaw poprawn\u0105 warto\u015b\u0107 nie mniejsz\u0105 ni\u017c warto\u015b\u0107 domy\u015blna.
+
+OAUTH_LENGTH_TOO_LARGE_AND_CHANGED=CWWKS1422I: Warto\u015b\u0107 elementu {0} w konfiguracji oauthProvider wynosi {1}. Zosta\u0142a ustawiona maksymalna dozwolona warto\u015b\u0107 {2}.
+OAUTH_LENGTH_TOO_LARGE_AND_CHANGED.explanation=Warto\u015b\u0107 wskazanego atrybutu jest zbyt du\u017ca.
+OAUTH_LENGTH_TOO_LARGE_AND_CHANGED.useraction=Ustaw poprawn\u0105 warto\u015b\u0107 wskazanego atrybutu.  
+
+OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR=CWWKS1423E: Rejestracja lub aktualizacja klienta OAuth nie powiod\u0142a si\u0119, poniewa\u017c dane klienta zawieraj\u0105 niedozwolony znak \u201e{0}\u201d.
+OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR.explanation=Ten znak nie jest dozwolony w danych klienta.
+OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR.useraction=Usu\u0144 niepoprawny znak i wprowad\u017a ponownie \u017c\u0105danie. 
+
+OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND=CWWKS1424E: Nie znaleziono identyfikatora klienta {0}.
+OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.explanation=\u017b\u0105danie zawiera\u0142o identyfikator klienta, kt\u00f3rego nie znaleziono.
+OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.useraction=Pon\u00f3w \u017c\u0105danie przy u\u017cyciu poprawnego identyfikatora klienta.
+
+OAUTH_CLIENT_REGISTRATION_INVALID_REQUEST_PATH=CWWKS1425E: \u017b\u0105danie rejestracji zosta\u0142o wykonane do niepoprawnego identyfikatora URI.
+OAUTH_CLIENT_REGISTRATION_INVALID_REQUEST_PATH.explanation=Klienty mo\u017cna utworzy\u0107 tylko, wykonuj\u0105c \u017c\u0105danie POST do identyfikatora URI punktu ko\u0144cowego rejestracji.  
+OAUTH_CLIENT_REGISTRATION_INVALID_REQUEST_PATH.useraction=Przejrzyj dokumentacj\u0119 interfejsu API dla tej us\u0142ugi i pon\u00f3w \u017c\u0105danie do identyfikatora URI punktu ko\u0144cowego rejestracji.
+
+OAUTH_CLIENT_REGISTRATION_MISSING_CLIENTID=CWWKS1426E: Operacja {0} nie powiod\u0142a si\u0119, poniewa\u017c \u017c\u0105danie nie zawiera\u0142o parametru {1}.
+OAUTH_CLIENT_REGISTRATION_MISSING_CLIENTID.explanation=Klienty mo\u017cna utworzy\u0107 tylko, wykonuj\u0105c \u017c\u0105danie POST do identyfikatora URI punktu ko\u0144cowego rejestracji.  
+OAUTH_CLIENT_REGISTRATION_MISSING_CLIENTID.useraction=Przejrzyj dokumentacj\u0119 interfejsu API dla tej us\u0142ugi i pon\u00f3w \u017c\u0105danie do identyfikatora URI punktu ko\u0144cowego rejestracji.
+
+OAUTH_CLIENT_REGISTRATION_INVALID_CLIENTID=CWWKS1427E: Operacja {0} nie powiod\u0142a si\u0119, poniewa\u017c \u017c\u0105danie zawiera\u0142o niepoprawny parametr {1} {2}.
+OAUTH_CLIENT_REGISTRATION_INVALID_CLIENTID.explanation=Operacje mo\u017cna wykonywa\u0107 tylko na zarejestrowanych i poprawnych klientach.  
+OAUTH_CLIENT_REGISTRATION_INVALID_CLIENTID.useraction=Przejrzyj dokumentacj\u0119 interfejsu API dla tej us\u0142ugi i pon\u00f3w \u017c\u0105danie przy u\u017cyciu odpowiednich parametr\u00f3w.
+
+OAUTH_CLIENT_REGISTRATION_MALFORMED_REQUEST=CWWKS1428E: Tre\u015b\u0107 \u017c\u0105dania jest zniekszta\u0142cona.
+OAUTH_CLIENT_REGISTRATION_MALFORMED_REQUEST.explanation=Kod JSON w tre\u015bci \u017c\u0105dania jest zniekszta\u0142cony.
+OAUTH_CLIENT_REGISTRATION_MALFORMED_REQUEST.useraction=Przejrzyj dokumentacj\u0119 interfejsu API dla tej us\u0142ugi i pon\u00f3w \u017c\u0105danie.
+
+OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS=CWWKS1429E: Identyfikator klienta {0} ju\u017c istnieje.
+OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS.explanation=Operacja nie powiod\u0142a si\u0119, poniewa\u017c identyfikator klienta ju\u017c istnieje.  
+OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS.useraction=Przejrzyj dokumentacj\u0119 interfejsu API dla tej us\u0142ugi i pon\u00f3w \u017c\u0105danie przy u\u017cyciu odpowiednich parametr\u00f3w.
+
+OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE=CWWKS1430E: Zaktualizowanie klienta nie powiod\u0142o si\u0119. \u017b\u0105danie aktualizacji wskazuje, \u017ce klucz tajny klienta musi zosta\u0107 utrwalony, ale istniej\u0105ca rejestracja nie ma ustawionego klucza tajnego.
+OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE.explanation=\u017b\u0105danie aktualizacji wskazuje, \u017ce klucz tajny klienta musi zosta\u0107 utrwalony, ale istniej\u0105ca rejestracja nie ma ustawionego klucza tajnego.
+OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE.useraction=Przejrzyj dokumentacj\u0119 interfejsu API dla tej us\u0142ugi i pon\u00f3w \u017c\u0105danie przy u\u017cyciu odpowiednich parametr\u00f3w.
+
+OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE=CWWKS1431E: Zaktualizowanie klienta nie powiod\u0142o si\u0119. \u017b\u0105danie aktualizacji dla klienta publicznego nie mo\u017ce okre\u015bla\u0107 klucza tajnego klienta.
+OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE.explanation=\u017b\u0105danie aktualizacji dla klienta publicznego nie mo\u017ce okre\u015bla\u0107 klucza tajnego klienta.
+OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE.useraction=Przejrzyj dokumentacj\u0119 interfejsu API dla tej us\u0142ugi i pon\u00f3w \u017c\u0105danie przy u\u017cyciu odpowiednich parametr\u00f3w.
+
+OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG=CWWKS1432E: Zaktualizowanie klienta nie powiod\u0142o si\u0119. Nie mo\u017cna zaktualizowa\u0107 klucza tajnego klienta, poniewa\u017c \u017c\u0105danie okre\u015bla niepoprawn\u0105 konfiguracj\u0119 w przypadku bie\u017c\u0105cego stanu rejestracji klienta.
+OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG.explanation=\u017b\u0105dania nie mo\u017cna wykona\u0107, poniewa\u017c okre\u015bla niepoprawn\u0105 konfiguracj\u0119 w obliczu bie\u017c\u0105cego stanu rejestracji klienta.
+OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG.useraction=Przejrzyj dokumentacj\u0119 interfejsu API dla tej us\u0142ugi i pon\u00f3w \u017c\u0105danie przy u\u017cyciu odpowiednich parametr\u00f3w.
+
+OAUTH_UNSUPPORTED_METHOD=CWWKS1433E: Metoda HTTP {0} nie jest obs\u0142ugiwana dla us\u0142ugi {1}.
+OAUTH_UNSUPPORTED_METHOD.explanation=Tylko niekt\u00f3re metody HTTP s\u0105 obs\u0142ugiwane dla danej us\u0142ugi.  
+OAUTH_UNSUPPORTED_METHOD.useraction=Popraw \u017c\u0105danie HTTP.
+
+OAUTH_COVERAGE_MAP_MISSING_PARAMS=CWWKS1434E: Brak wymaganych parametr\u00f3w w \u017c\u0105daniu.
+OAUTH_COVERAGE_MAP_MISSING_PARAMS.explanation=\u017b\u0105danie skierowane do tej us\u0142ugi zosta\u0142o odrzucone, poniewa\u017c brak w nim wymaganego parametru {0}.
+OAUTH_COVERAGE_MAP_MISSING_PARAMS.useraction=Przejrzyj dokumentacj\u0119 interfejsu API dla tej us\u0142ugi i pon\u00f3w \u017c\u0105danie przy u\u017cyciu odpowiednich parametr\u00f3w.
+
+OAUTH_COVERAGE_MAP_MISSING_TOKEN_PARAM=CWWKS1435E: Brak parametru {0} w \u017c\u0105daniu.
+OAUTH_COVERAGE_MAP_MISSING_TOKEN_PARAM.explanation=\u017b\u0105danie skierowane do tej us\u0142ugi zosta\u0142o odrzucone, poniewa\u017c brak w nim wymaganego parametru {0}.  
+OAUTH_COVERAGE_MAP_MISSING_TOKEN_PARAM.useraction=Przejrzyj dokumentacj\u0119 interfejsu API dla tej us\u0142ugi i pon\u00f3w \u017c\u0105danie przy u\u017cyciu odpowiednich parametr\u00f3w.
+
+OAUTH_COVERAGE_MAP_MULTIPLE_TOKEN_PARAM=CWWKS1436E: \u017b\u0105danie zawiera wiele parametr\u00f3w {0}.
+OAUTH_COVERAGE_MAP_MULTIPLE_TOKEN_PARAM.explanation=\u017b\u0105danie skierowane do tej us\u0142ugi zosta\u0142o odrzucone, poniewa\u017c zawiera ono niepoprawne parametry. Mo\u017cna okre\u015bli\u0107 tylko jeden parametr {0}.  
+OAUTH_COVERAGE_MAP_MULTIPLE_TOKEN_PARAM.useraction=Przejrzyj dokumentacj\u0119 interfejsu API dla tej us\u0142ugi i pon\u00f3w \u017c\u0105danie przy u\u017cyciu odpowiednich parametr\u00f3w.
+
+OAUTH_COVERAGE_MAP_UNRECOGNIZED_TOKEN_PARAM=CWWKS1437E: \u017b\u0105danie zawiera nierozpoznany parametr typu elementu {0}.
+OAUTH_COVERAGE_MAP_UNRECOGNIZED_TOKEN_PARAM.explanation=\u017b\u0105danie skierowane do tej us\u0142ugi zosta\u0142o odrzucone, poniewa\u017c okre\u015blono nierozpoznany typ elementu {0}.  
+OAUTH_COVERAGE_MAP_UNRECOGNIZED_TOKEN_PARAM.useraction=Przejrzyj dokumentacj\u0119 interfejsu API dla tej us\u0142ugi i pon\u00f3w \u017c\u0105danie przy u\u017cyciu odpowiednich parametr\u00f3w.
+
+OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_CREATE_FAILURE=CWWKS1438E: Utworzenie klienta nie powiod\u0142o si\u0119.
+OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_CREATE_FAILURE.explanation=Nie mo\u017cna okre\u015bla\u0107 klucza tajnego klienta podczas tworzenia klienta publicznego.  
+OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_CREATE_FAILURE.useraction=Nie okre\u015blaj klucza tajnego klienta lub utw\u00f3rz klient niepubliczny.
+
+OAUATH_CERT_AUTH_WITH_NO_CERT=CWWKS1439E: Uwierzytelnienie u\u017cytkownika \u017c\u0105dania nie powiod\u0142o si\u0119, poniewa\u017c atrybut certAuthentication w konfiguracji dostawcy oauthProvider jest ustawiony na warto\u015b\u0107 true, ale \u017c\u0105danie HTTP nie udost\u0119pnia certyfikatu klienta podczas uzgadniania SSL na potrzeby uwierzytelnienia u\u017cytkownika.
+OAUATH_CERT_AUTH_WITH_NO_CERT.explanation=Wymagane jest, aby \u017c\u0105danie udost\u0119pnia\u0142o certyfikat klienta podczas uzgadniania SSL na potrzeby uwierzytelnienia u\u017cytkownika, je\u015bli w\u0142\u0105czony jest atrybut certAuthentication w konfiguracji dostawcy oauthProvider.
+OAUATH_CERT_AUTH_WITH_NO_CERT.useraction=W\u0142\u0105cz wysy\u0142anie poprawnego certyfikatu klienta w \u017c\u0105daniu podczas uzgadniania SSL na potrzeby uwierzytelniania u\u017cytkownika i ustaw atrybut clientAuthenticationSupported w konfiguracji SSL na warto\u015b\u0107 true lub ustaw atrybut certAuthentication na warto\u015b\u0107 false, aby wy\u0142\u0105czy\u0107 t\u0119 funkcj\u0119. 
+
+OAUATH_BASIC_AUTH_FAIL=CWWKS1440E: Uwierzytelnienie u\u017cytkownika \u017c\u0105dania nie powiod\u0142o si\u0119, poniewa\u017c nag\u0142\u00f3wek Authorization w \u017c\u0105daniu nie zosta\u0142 zweryfikowany jako poprawny u\u017cytkownik.
+OAUATH_BASIC_AUTH_FAIL.explanation=Wymagane jest, aby \u017c\u0105danie udost\u0119pnia\u0142o poprawny nag\u0142\u00f3wek Authorization, kt\u00f3ry musi zawiera\u0107 poprawn\u0105 nazw\u0119 i has\u0142o u\u017cytkownika.
+OAUATH_BASIC_AUTH_FAIL.useraction=Upewnij si\u0119, \u017ce nag\u0142\u00f3wek Authorization w \u017c\u0105daniu zawiera poprawn\u0105 nazw\u0119 i has\u0142o u\u017cytkownika oraz \u017ce u\u017cytkownik jest zarejestrowany w dostawcy OpenId Connect.
+
+OAUATH_CLIENT_CERT_AUTH_FAIL=CWWKS1441E: Uwierzytelnienie u\u017cytkownika \u017c\u0105dania nie powiod\u0142o si\u0119, poniewa\u017c certyfikat klienta udost\u0119pniany za po\u015brednictwem uzgadniania SSL w \u017c\u0105daniu nie zosta\u0142 zweryfikowany jako poprawny u\u017cytkownik. Przyczyna: {0} 
+OAUATH_CLIENT_CERT_AUTH_FAIL.explanation=Poniewa\u017c atrybut certAuthentication w konfiguracji dostawcy oauthProvider jest w\u0142\u0105czony, \u017c\u0105danie podczas uzgadniania SSL musi udost\u0119pnia\u0107 certyfikat klienta zawieraj\u0105cy poprawnego u\u017cytkownika na potrzeby uwierzytelniania u\u017cytkownika.
+OAUATH_CLIENT_CERT_AUTH_FAIL.useraction=Upewnij si\u0119, \u017ce certyfikat klienta udost\u0119pniany podczas uzgadniania SSL w \u017c\u0105daniu zawiera poprawnego u\u017cytkownika oraz \u017ce u\u017cytkownik jest zarejestrowany w dostawcy OpenID Connect.
+
+OAUTH_CLIENT_REGISTRATION_VALUE_NOT_SUPPORTED=CWWKS1442E: Warto\u015b\u0107 {0} nie jest obs\u0142ugiwana w polu metadanych rejestracji klienta {1}.
+OAUTH_CLIENT_REGISTRATION_VALUE_NOT_SUPPORTED.explanation=Dla tej w\u0142a\u015bciwo\u015bci klienta mo\u017cna podawa\u0107 tylko zatwierdzone warto\u015bci, a podana warto\u015b\u0107 nie jest zatwierdzona.
+OAUTH_CLIENT_REGISTRATION_VALUE_NOT_SUPPORTED.useraction=Przejrzyj dokumentacj\u0119 interfejsu API dla tej us\u0142ugi i pon\u00f3w \u017c\u0105danie, podaj\u0105c zatwierdzon\u0105 warto\u015b\u0107.
+
+OAUTH_CLIENT_REGISTRATION_VALUE_DUPE=CWWKS1443E: Warto\u015b\u0107 {0} jest duplikatem pola metadanych rejestracji klienta {1}.
+OAUTH_CLIENT_REGISTRATION_VALUE_DUPE.explanation=Warto\u015bci podane dla tej w\u0142a\u015bciwo\u015bci zawieraj\u0105 duplikaty. Nie jest to dozwolone. 
+OAUTH_CLIENT_REGISTRATION_VALUE_DUPE.useraction=Przejrzyj dokumentacj\u0119 interfejsu API dla tej us\u0142ugi i pon\u00f3w \u017c\u0105danie, podaj\u0105c odpowiedni\u0105 w\u0142a\u015bciwo\u015b\u0107 bez zduplikowanych warto\u015bci.
+
+OAUTH_CLIENT_REGISTRATION_GRANT_RESPONSE_VALIDATION=CWWKS1444E: Pole metadanych rejestracji klienta response_type zawiera warto\u015b\u0107 {0}, kt\u00f3ra wymaga co najmniej zgodnej warto\u015bci {1} pola grant_type.
+OAUTH_CLIENT_REGISTRATION_GRANT_RESPONSE_VALIDATION.explanation=\u017b\u0105danie zawiera niepoprawn\u0105 kombinacj\u0119 warto\u015bci grant_type i response_type. 
+OAUTH_CLIENT_REGISTRATION_GRANT_RESPONSE_VALIDATION.useraction=Przejrzyj dokumentacj\u0119 interfejsu API i specyfikacj\u0119 rejestracji klienta OpenID Connect, aby okre\u015bli\u0107 poprawn\u0105 kombinacj\u0119 warto\u015bci grant_type i response_type.
+
+OAUTH_CLIENT_REGISTRATION_VALUE_MALFORMED_URI=CWWKS1445E: Warto\u015b\u0107 {0} pola metadanych rejestracji klienta {1} zawiera identyfikator URI o zniekszta\u0142conej sk\u0142adni.
+OAUTH_CLIENT_REGISTRATION_VALUE_MALFORMED_URI.explanation=Nie mo\u017cna wykona\u0107 \u017c\u0105dania, poniewa\u017c zawiera ono warto\u015b\u0107 w\u0142a\u015bciwo\u015bci z identyfikatorem URI o zniekszta\u0142conej sk\u0142adni.
+OAUTH_CLIENT_REGISTRATION_VALUE_MALFORMED_URI.useraction=Przejrzyj warto\u015b\u0107 w\u0142a\u015bciwo\u015bci w \u017c\u0105daniu i zmodyfikuj j\u0105 tak, aby zawiera\u0142a identyfikator URI o poprawnej sk\u0142adni.
+
+OAUTH_CLIENT_REGISTRATION_VALUE_NOT_ABSOLUTE_URI=CWWKS1446E: Warto\u015b\u0107 {0} pola metadanych rejestracji klienta {1} nie jest bezwzgl\u0119dnym identyfikatorem URI.
+OAUTH_CLIENT_REGISTRATION_VALUE_NOT_ABSOLUTE_URI.explanation=Nie mo\u017cna wykona\u0107 \u017c\u0105dania, poniewa\u017c zawiera ono identyfikator URI, kt\u00f3ry nie jest bezwzgl\u0119dny, a jest on wymagany.
+OAUTH_CLIENT_REGISTRATION_VALUE_NOT_ABSOLUTE_URI.useraction=Przejrzyj warto\u015b\u0107 w\u0142a\u015bciwo\u015bci w \u017c\u0105daniu i zmodyfikuj j\u0105 tak, aby zawiera\u0142a bezwzgl\u0119dny identyfikator URI.
+
+OAUTH_CLIENT_REGISTRATION_VALUE_OUT_NOT_ALLOWED=CWWKS1447E: Pola metadanych rejestracji klienta {0} nie mo\u017cna poda\u0107 dla dzia\u0142ania tworzenia ani aktualizacji, poniewa\u017c jest to parametr wyj\u015bciowy.
+OAUTH_CLIENT_REGISTRATION_VALUE_OUT_NOT_ALLOWED.explanation=Nie mo\u017cna wykona\u0107 \u017c\u0105dania, poniewa\u017c podana warto\u015b\u0107 w\u0142a\u015bciwo\u015bci to parametr wyj\u015bciowy, kt\u00f3rego nie mo\u017cna modyfikowa\u0107.
+OAUTH_CLIENT_REGISTRATION_VALUE_OUT_NOT_ALLOWED.useraction=Usu\u0144 warto\u015b\u0107 w\u0142a\u015bciwo\u015bci z \u017c\u0105dania, poniewa\u017c dla dzia\u0142a\u0144 tworzenia i aktualizowania nie mo\u017cna podawa\u0107 parametr\u00f3w wyj\u015bciowych.
+
+OAUTH_PROVIDER_DATABASESTORE_INVALID_DATASOURCEREF=CWWKS1448E: Dostawca OAuth {0} ma okre\u015blony element databaseStore, ale nie okre\u015blono atrybutu dataSourceRef lub \u017ar\u00f3d\u0142o danych nie zosta\u0142o aktywowane.
+OAUTH_PROVIDER_DATABASESTORE_INVALID_DATASOURCEREF.explanation=Dostawca OAuth ma okre\u015blony element databaseStore, ale nie okre\u015blono atrybutu dataSourceRef lub \u017ar\u00f3d\u0142o danych nie zosta\u0142o aktywowane. Przyczyn\u0105 mo\u017ce by\u0107 b\u0142\u0105d konfiguracji.
+OAUTH_PROVIDER_DATABASESTORE_INVALID_DATASOURCEREF.useraction=Upewnij si\u0119, \u017ce atrybut dataSourceRef elementu databaseStore w dostawcy OAuth jest poprawnie zdefiniowany.
+
+OAUTH_PROVIDER_DATABASESTORE_INVALID_ATTRIBUTE=CWWKS1449E: Dostawca OAuth {0} ma okre\u015blony element databaseStore, ale nie okre\u015blono atrybutu {1} lub jest on niepoprawny.
+OAUTH_PROVIDER_DATABASESTORE_INVALID_ATTRIBUTE.explanation=Dostawca OAuth ma okre\u015blony element databaseStore, ale nie okre\u015blono atrybutu lub jest on niepoprawny. Przyczyn\u0105 mo\u017ce by\u0107 b\u0142\u0105d konfiguracji.
+OAUTH_PROVIDER_DATABASESTORE_INVALID_ATTRIBUTE.useraction=Upewnij si\u0119, \u017ce atrybut elementu databaseStore w dostawcy OAuth jest poprawnie zdefiniowany.
+
+OIDC_SERVER_MULTI_OIDC_TO_ONE_OAUTH=CWWKS1450E: Wyst\u0105pi\u0142 b\u0142\u0105d konfiguracji. Dostawca OpenID Connect {0} i {1} maj\u0105 takiego samego dostawc\u0119 OAuth {2}. Obaj dostawcy OpenID Connect s\u0105 nieaktywni.
+OIDC_SERVER_MULTI_OIDC_TO_ONE_OAUTH.explanation=Ka\u017cdy dostawca OpenID Connect musi mie\u0107 unikalnego dostawc\u0119 OAuth w pliku server.xml. W przeciwnym razie zduplikowany dostawca OpenID Connect jest dezaktywowany.  
+OIDC_SERVER_MULTI_OIDC_TO_ONE_OAUTH.useraction=Upewnij si\u0119, \u017ce ka\u017cdy dostawca OpenID Connect ma unikalnego dostawc\u0119 OAuth w pliku server.xml.
+
+OAUTH_PROVIDER_DATABASESTORE_INVALID_DATASOURCEFACTORY=CWWKS1451E: Dla dostawcy OAuth {0} okre\u015blono element databaseStore, ale element dataSourceFactory dla podanego \u017ar\u00f3d\u0142a danych nie zosta\u0142 aktywowany.
+OAUTH_PROVIDER_DATABASESTORE_INVALID_DATASOURCEFACTORY.explanation=Dla dostawcy OAuth okre\u015blono element databaseStore, ale element dataSourceFactory dla podanego \u017ar\u00f3d\u0142a danych nie zosta\u0142 aktywowany. Przyczyn\u0105 mo\u017ce by\u0107 b\u0142\u0105d konfiguracji \u017ar\u00f3d\u0142a danych.
+OAUTH_PROVIDER_DATABASESTORE_INVALID_DATASOURCEFACTORY.useraction=Upewnij si\u0119, \u017ce atrybut dataSourceRef elementu databaseStore w dostawcy OAuth zosta\u0142 poprawnie zdefiniowany tak, aby odwo\u0142ywa\u0142 si\u0119 do poprawnego \u017ar\u00f3d\u0142a danych.
+
+OAUTH_SERVER_TOKEN_INTROSPECT_PROVIDER_INTERNAL_ERROR=CWWKS1452E: Obiekt JSONObject dla u\u017cytkownika {0} zwr\u00f3cony przez sk\u0142adnik {1} u\u017cytkownika serwera Liberty jest niepoprawny lub ma warto\u015b\u0107 NULL.
+OAUTH_SERVER_TOKEN_INTROSPECT_PROVIDER_INTERNAL_ERROR.explanation=Dostawca TokenIntrospectProvider zainstalowany na serwerze Liberty zwraca niepoprawny \u0142a\u0144cuch formatu JSON dla danego u\u017cytkownika lub ten \u0142a\u0144cuch ma warto\u015b\u0107 NULL.
+OAUTH_SERVER_TOKEN_INTROSPECT_PROVIDER_INTERNAL_ERROR.useraction=Zapewnij zwracanie poprawnego \u0142a\u0144cucha w formacie JSON przez dostawc\u0119 TokenIntrospectProvider.
+
+OAUTH_SERVER_MULTIPLE_TOKEN_INTROSPECT_PROVIDER_CONFIGURED=CWWKS1453I: Istnieje wiele skonfigurowanych dostawc\u00f3w TokenIntrospectProvider.
+OAUTH_SERVER_MULTIPLE_TOKEN_INTROSPECT_PROVIDER_CONFIGURED.explanation=W pliku server.xml jest skonfigurowany wi\u0119cej ni\u017c jeden dostawca TokenIntrospectProvider.
+OAUTH_SERVER_MULTIPLE_TOKEN_INTROSPECT_PROVIDER_CONFIGURED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107 u\u017cytkownika.
+
+OAUTH_SERVER_INVALID_ACCESS_TOKEN=CWWKS1454E: \u017b\u0105danie nie powiod\u0142o si\u0119, poniewa\u017c znacznik access_token jest niepoprawny lub utraci\u0142 wa\u017cno\u015b\u0107.
+OAUTH_SERVER_INVALID_ACCESS_TOKEN.explanation=Przetwarzanie \u017c\u0105dania nie powiod\u0142o si\u0119, poniewa\u017c znacznik access_token nie jest poprawny.
+OAUTH_SERVER_INVALID_ACCESS_TOKEN.useraction=Sprawd\u017a, czy znacznik access_token jest poprawny i czy nie utraci\u0142 wa\u017cno\u015bci.
+
+#This message can be appended to 1455E under some conditions
+# do not translate keyStoreRef
+CHECK_KEYSTORE_REF=Brak atrybutu konfiguracji dostawcy OpenId Connect keyStoreRef lub jest on niepoprawny.
+
+#This message is intended to be a child of CWWKS1456E
+#0=signatureAlgorithm, 1=exception or error message if any
+JWT_BAD_SIGNING_KEY=CWWKS1455E: Klucz podpisywania wymagany przez algorytm podpisywania [{0}] by\u0142 niedost\u0119pny. {1}
+JWT_BAD_SIGNING_KEY.explanation=Nie mo\u017cna znale\u017a\u0107 klucza podpisywania lub nie mo\u017cna znale\u017a\u0107 klucza u\u017cywaj\u0105cego skonfigurowanego algorytmu podpisywania.
+JWT_BAD_SIGNING_KEY.useraction=Sprawd\u017a, czy klucz podpisywania i algorytm podpisywania zosta\u0142y poprawnie skonfigurowane.
+
+#0=oidc OP ID, 1=exception or error message
+JWT_CANNOT_GENERATE_JWT=CWWKS1456E: Dostawca OpenID Connect [{0}] nie mo\u017ce utworzy\u0107 znacznika. [{1}]
+JWT_CANNOT_GENERATE_JWT.explanation=Dostawca OpenID Connect nie mo\u017ce utworzy\u0107 znacznika. Przyczyna jest wy\u015bwietlana w komunikacie.
+JWT_CANNOT_GENERATE_JWT.useraction=Zapoznaj si\u0119 z czynno\u015bci\u0105 u\u017cytkownika dla b\u0142\u0119du wy\u015bwietlonego w tym komunikacie.
+
+#0=Configured signature algorithm
+SIGNING_KEY_NOT_RSA=CWWKS1457E: Typem klucza podpisywania nie jest RSA. Klucz podpisywania RSA jest wymagany dla algorytmu podpisywania [{0}].
+SIGNING_KEY_NOT_RSA.explanation=Klucz RSA jest wymagany dla tego algorytmu podpisywania.
+SIGNING_KEY_NOT_RSA.useraction=Skonfiguruj inny algorytm podpisywania lub podaj klucz RSA, kt\u00f3ry b\u0119dzie u\u017cywany w podpisach.
+
+#0=Java runtime level
+JWT_MEDIATOR_SPI_REQUIRES_JDK=CWWKS1458W: Wersja \u015brodowiska Java u\u017cywana przez to \u015brodowisko wykonawcze [{0}] nie jest obs\u0142ugiwana przez t\u0119 funkcj\u0119 SPI mediatora JWT. Obs\u0142ugiwane jest \u015brodowisko Java w wersji 1.7 lub nowsze.
+JWT_MEDIATOR_SPI_REQUIRES_JDK.explanation=Wersja \u015brodowiska Java podana w komunikacie nie mo\u017ce obs\u0142u\u017cy\u0107 funkcji SPI mediatora JWT.
+JWT_MEDIATOR_SPI_REQUIRES_JDK.useraction=Zainstaluj \u015brodowisko Java w wersji 1.7 lub nowsze.
+
+#0=Expired token count
+#1=value of the cleanupExpiredTokenInterval
+#2=cleanupExpiredTokenInterval
+OAUTH_PROVIDER_DB_TOOMANY_EXPTOKEN=CWWKS1459W: Liczba niewa\u017cnych znacznik\u00f3w przeznaczonych do usuni\u0119cia z bazy danych: [{0}]. Tak du\u017ca liczba mo\u017ce mie\u0107 wp\u0142yw na wydajno\u015b\u0107. Zadanie czyszcz\u0105ce znaczniki jest skonfigurowane tak, aby by\u0142o uruchamiane co [{1}] s. Rozwa\u017c zmniejszenie tego odst\u0119pu czasu. Wystarczy zmieni\u0107 warto\u015b\u0107 atrybutu [{2}] w konfiguracji dostawcy OAuth tak, aby zadanie czyszcz\u0105ce niewa\u017cne znaczniki by\u0142o uruchamiane cz\u0119\u015bciej.
+OAUTH_PROVIDER_DB_TOOMANY_EXPTOKEN.explanation=Pami\u0119\u0107 podr\u0119czna bazy danych zawiera wiele niewa\u017cnych znacznik\u00f3w, co mo\u017ce powodowa\u0107 wyst\u0119powanie problem\u00f3w z wydajno\u015bci\u0105 podczas operacji wyszukiwania znacznik\u00f3w. Dzi\u0119ki zmniejszeniu warto\u015bci podanego atrybutu zadanie czyszcz\u0105ce b\u0119dzie uruchamiane cz\u0119\u015bciej i zostanie zmniejszona liczba niewa\u017cnych znacznik\u00f3w, kt\u00f3re s\u0105 przechowywane w bazie danych.
+OAUTH_PROVIDER_DB_TOOMANY_EXPTOKEN.useraction=Zmniejsz warto\u015b\u0107 podanego atrybutu w konfiguracji dostawcy OAuth.
+
+# 0=SQL operation (such as "SELECT", "UPDATE", "DELETE"), 1=OAuth client ID, 2=Exception message (if present)
+ERROR_PERFORMING_DB_OPERATION=CWWKS1460E: Sk\u0142adnik OAuth napotka\u0142 b\u0142\u0105d podczas uruchamiania operacji [{0}] za pomoc\u0105 klienta OpenID Connect [{1}] w buforowanej bazie danych. {2}
+ERROR_PERFORMING_DB_OPERATION.explanation=Po\u0142\u0105czenie z baz\u0105 danych mo\u017ce nie by\u0107 dost\u0119pne, tabela bazy danych mo\u017ce zawiera\u0107 kolumny, kt\u00f3rych typy danych s\u0105 niepoprawne, lub komenda bazy danych jest zniekszta\u0142cona.
+ERROR_PERFORMING_DB_OPERATION.useraction=Sprawd\u017a, czy po\u0142\u0105czenie z baz\u0105 danych jest nadal otwarte i dost\u0119pne. Upewnij si\u0119, \u017ce tabele bazy danych s\u0105 skonfigurowane przy u\u017cyciu odpowiednich typ\u00f3w danych.
+
+# 0=Exception message (if present)
+ERROR_GETTING_CLIENTS_FROM_DB=CWWKS1461E: Sk\u0142adnik OAuth napotka\u0142 b\u0142\u0105d podczas pobierania wszystkich klient\u00f3w OpenID Connect z buforowanej bazy danych. {0}
+ERROR_GETTING_CLIENTS_FROM_DB.explanation=Po\u0142\u0105czenie z baz\u0105 danych mo\u017ce nie by\u0107 dost\u0119pne, tabela bazy danych mo\u017ce zawiera\u0107 kolumny, kt\u00f3rych typy danych s\u0105 niepoprawne, lub komenda bazy danych jest zniekszta\u0142cona.
+ERROR_GETTING_CLIENTS_FROM_DB.useraction=Sprawd\u017a, czy po\u0142\u0105czenie z baz\u0105 danych jest nadal otwarte i dost\u0119pne. Upewnij si\u0119, \u017ce tabele bazy danych s\u0105 skonfigurowane przy u\u017cyciu odpowiednich typ\u00f3w danych.
+
+# This is migrated from com.ibm.ws.security.openidconnect.server-1.0
+# It is an existing message. So, it keeps the same ID as before
+OIDC_SERVER_USERINFO_INTERNAL_ERROR=CWWKS1620E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny serwera podczas przetwarzania \u017c\u0105dania informacji o u\u017cytkowniku. B\u0142\u0105d: {0}. Identyfikator URI \u017c\u0105dania: {1}.
+OIDC_SERVER_USERINFO_INTERNAL_ERROR.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny serwera podczas przetwarzania \u017c\u0105dania informacji o u\u017cytkowniku. 
+OIDC_SERVER_USERINFO_INTERNAL_ERROR.useraction=Skontaktuj si\u0119 z dzia\u0142em wsparcia IBM.
+
+# intended for  use with regular expressions in redirects
+regexp.evaluation.error=CWWKS1462E: Nie mo\u017cna warto\u015bciowa\u0107 tego wyra\u017cenia regularnego: {0}.
+regexp.evaluation.error.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas warto\u015bciowania tego wyra\u017cenia regularnego.
+regexp.evaluation.error.useraction=Popraw to wyra\u017cenie regularne. 
+
+OAUTH_REGISTRATION_REQUEST_MISSING_CLIENT=CWWKS1463E: \u017b\u0105danie rejestracji protoko\u0142u OpenID Connect nie zawiera klienta. Upewnij si\u0119, \u017ce tre\u015b\u0107 \u017c\u0105dania nie jest pusta i zawiera klient zakodowany w formacie JSON.
+OAUTH_REGISTRATION_REQUEST_MISSING_CLIENT.explanation=Tre\u015b\u0107 \u017c\u0105dania musi zawiera\u0107 klient zakodowany w formacie JSON.
+OAUTH_REGISTRATION_REQUEST_MISSING_CLIENT.useraction=Upewnij si\u0119, \u017ce tre\u015b\u0107 \u017c\u0105dania nie jest pusta i zawiera klient zakodowany w formacie JSON.
+
+# 0=OAuth client ID, 1=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_CREATE_CLIENT=CWWKS1464E: Sk\u0142adnik OAuth napotka\u0142 b\u0142\u0105d podczas tworzenia wpisu OAuthClient o identyfikatorze {0} w implementacji OAuthStore. {1}
+ERROR_PERFORMING_OAUTH_STORE_CREATE_CLIENT.explanation=Implementacja OAuthStore nie mo\u017ce wykona\u0107 tej operacji. Mo\u017cliwe problemy z konfiguracjami to brakuj\u0105ce lub niepoprawne atrybuty dla element\u00f3w specyficznych dla implementacji OAuthStore w pliku server.xml lub w innym pliku konfiguracyjnym specyficznym dla implementacji. Mo\u017cliwe problemy operacyjne to b\u0142\u0119dy bazy danych, sieci lub systemu plik\u00f3w.
+ERROR_PERFORMING_OAUTH_STORE_CREATE_CLIENT.useraction=Sprawd\u017a, czy implementacja OAuthStore jest nadal dost\u0119pna i czy zosta\u0142a poprawnie skonfigurowana.
+
+# 0=OAuth token lookup key, 1=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_CREATE_TOKEN=CWWKS1465E: Sk\u0142adnik OAuth napotka\u0142 b\u0142\u0105d podczas tworzenia wpisu OAuthToken z kluczem wyszukiwania {0} w implementacji OAuthStore. {1}
+ERROR_PERFORMING_OAUTH_STORE_CREATE_TOKEN.explanation=Implementacja OAuthStore nie mo\u017ce wykona\u0107 tej operacji. Mo\u017cliwe problemy z konfiguracjami to brakuj\u0105ce lub niepoprawne atrybuty dla element\u00f3w specyficznych dla implementacji OAuthStore w pliku server.xml lub w innym pliku konfiguracyjnym specyficznym dla implementacji. Mo\u017cliwe problemy operacyjne to b\u0142\u0119dy bazy danych, sieci lub systemu plik\u00f3w.
+ERROR_PERFORMING_OAUTH_STORE_CREATE_TOKEN.useraction=Sprawd\u017a, czy implementacja OAuthStore jest nadal dost\u0119pna i czy zosta\u0142a poprawnie skonfigurowana.
+
+# 0=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_CREATE_CONSENT=CWWKS1466E: Sk\u0142adnik OAuth napotka\u0142 b\u0142\u0105d podczas tworzenia wpisu OAuthConsent w implementacji OAuthStore. {0}
+ERROR_PERFORMING_OAUTH_STORE_CREATE_CONSENT.explanation=Implementacja OAuthStore nie mo\u017ce wykona\u0107 tej operacji. Mo\u017cliwe problemy z konfiguracjami to brakuj\u0105ce lub niepoprawne atrybuty dla element\u00f3w specyficznych dla implementacji OAuthStore w pliku server.xml lub w innym pliku konfiguracyjnym specyficznym dla implementacji. Mo\u017cliwe problemy operacyjne to b\u0142\u0119dy bazy danych, sieci lub systemu plik\u00f3w.
+ERROR_PERFORMING_OAUTH_STORE_CREATE_CONSENT.useraction=Sprawd\u017a, czy implementacja OAuthStore jest nadal dost\u0119pna i czy zosta\u0142a poprawnie skonfigurowana.
+
+# 0=OAuth client ID, 1=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_READ_CLIENT=CWWKS1467E: Sk\u0142adnik OAuth napotka\u0142 b\u0142\u0105d podczas odczytu wpisu OAuthClient o identyfikatorze {0} z implementacji OAuthStore. {1}
+ERROR_PERFORMING_OAUTH_STORE_READ_CLIENT.explanation=Implementacja OAuthStore nie mo\u017ce wykona\u0107 tej operacji. Mo\u017cliwe problemy z konfiguracjami to brakuj\u0105ce lub niepoprawne atrybuty dla element\u00f3w specyficznych dla implementacji OAuthStore w pliku server.xml lub w innym pliku konfiguracyjnym specyficznym dla implementacji. Mo\u017cliwe problemy operacyjne to b\u0142\u0119dy bazy danych, sieci lub systemu plik\u00f3w.
+ERROR_PERFORMING_OAUTH_STORE_READ_CLIENT.useraction=Sprawd\u017a, czy implementacja OAuthStore jest nadal dost\u0119pna i czy zosta\u0142a poprawnie skonfigurowana.
+
+# 0=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_READ_ALL_CLIENTS=CWWKS1468E: Sk\u0142adnik OAuth napotka\u0142 b\u0142\u0105d podczas odczytu wszystkich wpis\u00f3w OAuthClient z implementacji OAuthStore. {0}
+ERROR_PERFORMING_OAUTH_STORE_READ_ALL_CLIENTS.explanation=Implementacja OAuthStore nie mo\u017ce wykona\u0107 tej operacji. Mo\u017cliwe problemy z konfiguracjami to brakuj\u0105ce lub niepoprawne atrybuty dla element\u00f3w specyficznych dla implementacji OAuthStore w pliku server.xml lub w innym pliku konfiguracyjnym specyficznym dla implementacji. Mo\u017cliwe problemy operacyjne to b\u0142\u0119dy bazy danych, sieci lub systemu plik\u00f3w.
+ERROR_PERFORMING_OAUTH_STORE_READ_ALL_CLIENTS.useraction=Sprawd\u017a, czy implementacja OAuthStore jest nadal dost\u0119pna i czy zosta\u0142a poprawnie skonfigurowana.
+
+# 0=OAuth token lookup key, 1=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_READ_TOKEN=CWWKS1469E: Sk\u0142adnik OAuth napotka\u0142 b\u0142\u0105d podczas odczytu wpisu OAuthToken z kluczem wyszukiwania {0} z implementacji OAuthStore. {1}
+ERROR_PERFORMING_OAUTH_STORE_READ_TOKEN.explanation=Implementacja OAuthStore nie mo\u017ce wykona\u0107 tej operacji. Mo\u017cliwe problemy z konfiguracjami to brakuj\u0105ce lub niepoprawne atrybuty dla element\u00f3w specyficznych dla implementacji OAuthStore w pliku server.xml lub w innym pliku konfiguracyjnym specyficznym dla implementacji. Mo\u017cliwe problemy operacyjne to b\u0142\u0119dy bazy danych, sieci lub systemu plik\u00f3w.
+ERROR_PERFORMING_OAUTH_STORE_READ_TOKEN.useraction=Sprawd\u017a, czy implementacja OAuthStore jest nadal dost\u0119pna i czy zosta\u0142a poprawnie skonfigurowana.
+
+# 0=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_READ_ALL_TOKENS=CWWKS1470E: Sk\u0142adnik OAuth napotka\u0142 b\u0142\u0105d podczas odczytu wszystkich wpis\u00f3w OAuthToken z implementacji OAuthStore. {0}
+ERROR_PERFORMING_OAUTH_STORE_READ_ALL_TOKENS.explanation=Implementacja OAuthStore nie mo\u017ce wykona\u0107 tej operacji. Mo\u017cliwe problemy z konfiguracjami to brakuj\u0105ce lub niepoprawne atrybuty dla element\u00f3w specyficznych dla implementacji OAuthStore w pliku server.xml lub w innym pliku konfiguracyjnym specyficznym dla implementacji. Mo\u017cliwe problemy operacyjne to b\u0142\u0119dy bazy danych, sieci lub systemu plik\u00f3w.
+ERROR_PERFORMING_OAUTH_STORE_READ_ALL_TOKENS.useraction=Sprawd\u017a, czy implementacja OAuthStore jest nadal dost\u0119pna i czy zosta\u0142a poprawnie skonfigurowana.
+
+# 0=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_COUNT_TOKENS=CWWKS1471E: Sk\u0142adnik OAuth napotka\u0142 b\u0142\u0105d podczas zliczania wpis\u00f3w OAuthToken w implementacji OAuthStore. {0}
+ERROR_PERFORMING_OAUTH_STORE_COUNT_TOKENS.explanation=Implementacja OAuthStore nie mo\u017ce wykona\u0107 tej operacji. Mo\u017cliwe problemy z konfiguracjami to brakuj\u0105ce lub niepoprawne atrybuty dla element\u00f3w specyficznych dla implementacji OAuthStore w pliku server.xml lub w innym pliku konfiguracyjnym specyficznym dla implementacji. Mo\u017cliwe problemy operacyjne to b\u0142\u0119dy bazy danych, sieci lub systemu plik\u00f3w.
+ERROR_PERFORMING_OAUTH_STORE_COUNT_TOKENS.useraction=Sprawd\u017a, czy implementacja OAuthStore jest nadal dost\u0119pna i czy zosta\u0142a poprawnie skonfigurowana.
+
+# 0=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_READ_CONSENT=CWWKS1472E: Sk\u0142adnik OAuth napotka\u0142 b\u0142\u0105d podczas odczytywania wpisu OAuthConsent z implementacji OAuthStore. {0}
+ERROR_PERFORMING_OAUTH_STORE_READ_CONSENT.explanation=Implementacja OAuthStore nie mo\u017ce wykona\u0107 tej operacji. Mo\u017cliwe problemy z konfiguracjami to brakuj\u0105ce lub niepoprawne atrybuty dla element\u00f3w specyficznych dla implementacji OAuthStore w pliku server.xml lub w innym pliku konfiguracyjnym specyficznym dla implementacji. Mo\u017cliwe problemy operacyjne to b\u0142\u0119dy bazy danych, sieci lub systemu plik\u00f3w.
+ERROR_PERFORMING_OAUTH_STORE_READ_CONSENT.useraction=Sprawd\u017a, czy implementacja OAuthStore jest nadal dost\u0119pna i czy zosta\u0142a poprawnie skonfigurowana.
+
+# 0=OAuth client ID, 1=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_UPDATE_CLIENT=CWWKS1473E: Sk\u0142adnik OAuth napotka\u0142 b\u0142\u0105d podczas aktualizowania wpisu OAuthClient o identyfikatorze {0} w implementacji OAuthStore. {1}
+ERROR_PERFORMING_OAUTH_STORE_UPDATE_CLIENT.explanation=Implementacja OAuthStore nie mo\u017ce wykona\u0107 tej operacji. Mo\u017cliwe problemy z konfiguracjami to brakuj\u0105ce lub niepoprawne atrybuty dla element\u00f3w specyficznych dla implementacji OAuthStore w pliku server.xml lub w innym pliku konfiguracyjnym specyficznym dla implementacji. Mo\u017cliwe problemy operacyjne to b\u0142\u0119dy bazy danych, sieci lub systemu plik\u00f3w.
+ERROR_PERFORMING_OAUTH_STORE_UPDATE_CLIENT.useraction=Sprawd\u017a, czy implementacja OAuthStore jest nadal dost\u0119pna i czy zosta\u0142a poprawnie skonfigurowana.
+
+# 0=OAuth token lookup key, 1=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_UPDATE_TOKEN=CWWKS1474E: Sk\u0142adnik OAuth napotka\u0142 b\u0142\u0105d podczas aktualizowania wpisu OAuthToken z kluczem wyszukiwania {0} w implementacji OAuthStore. {1}
+ERROR_PERFORMING_OAUTH_STORE_UPDATE_TOKEN.explanation=Implementacja OAuthStore nie mo\u017ce wykona\u0107 tej operacji. Mo\u017cliwe problemy z konfiguracjami to brakuj\u0105ce lub niepoprawne atrybuty dla element\u00f3w specyficznych dla implementacji OAuthStore w pliku server.xml lub w innym pliku konfiguracyjnym specyficznym dla implementacji. Mo\u017cliwe problemy operacyjne to b\u0142\u0119dy bazy danych, sieci lub systemu plik\u00f3w.
+ERROR_PERFORMING_OAUTH_STORE_UPDATE_TOKEN.useraction=Sprawd\u017a, czy implementacja OAuthStore jest nadal dost\u0119pna i czy zosta\u0142a poprawnie skonfigurowana.
+
+# 0=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_UPDATE_CONSENT=CWWKS1475E: Sk\u0142adnik OAuth napotka\u0142 b\u0142\u0105d podczas aktualizowania wpisu OAuthConsent w implementacji OAuthStore. {0}
+ERROR_PERFORMING_OAUTH_STORE_UPDATE_CONSENT.explanation=Implementacja OAuthStore nie mo\u017ce wykona\u0107 tej operacji. Mo\u017cliwe problemy z konfiguracjami to brakuj\u0105ce lub niepoprawne atrybuty dla element\u00f3w specyficznych dla implementacji OAuthStore w pliku server.xml lub w innym pliku konfiguracyjnym specyficznym dla implementacji. Mo\u017cliwe problemy operacyjne to b\u0142\u0119dy bazy danych, sieci lub systemu plik\u00f3w.
+ERROR_PERFORMING_OAUTH_STORE_UPDATE_CONSENT.useraction=Sprawd\u017a, czy implementacja OAuthStore jest nadal dost\u0119pna i czy zosta\u0142a poprawnie skonfigurowana.
+
+# 0=OAuth client ID, 1=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_DELETE_CLIENT=CWWKS1476E: Sk\u0142adnik OAuth napotka\u0142 b\u0142\u0105d podczas usuwania wpisu OAuthClient o identyfikatorze {0} z implementacji OAuthStore. {1}
+ERROR_PERFORMING_OAUTH_STORE_DELETE_CLIENT.explanation=Implementacja OAuthStore nie mo\u017ce wykona\u0107 tej operacji. Mo\u017cliwe problemy z konfiguracjami to brakuj\u0105ce lub niepoprawne atrybuty dla element\u00f3w specyficznych dla implementacji OAuthStore w pliku server.xml lub w innym pliku konfiguracyjnym specyficznym dla implementacji. Mo\u017cliwe problemy operacyjne to b\u0142\u0119dy bazy danych, sieci lub systemu plik\u00f3w.
+ERROR_PERFORMING_OAUTH_STORE_DELETE_CLIENT.useraction=Sprawd\u017a, czy implementacja OAuthStore jest nadal dost\u0119pna i czy zosta\u0142a poprawnie skonfigurowana.
+
+# 0=OAuth token lookup key, 1=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_DELETE_TOKEN=CWWKS1477E: Sk\u0142adnik OAuth napotka\u0142 b\u0142\u0105d podczas usuwania wpisu OAuthToken z kluczem wyszukiwania {0} z implementacji OAuthStore. {1}
+ERROR_PERFORMING_OAUTH_STORE_DELETE_TOKEN.explanation=Implementacja OAuthStore nie mo\u017ce wykona\u0107 tej operacji. Mo\u017cliwe problemy z konfiguracjami to brakuj\u0105ce lub niepoprawne atrybuty dla element\u00f3w specyficznych dla implementacji OAuthStore w pliku server.xml lub w innym pliku konfiguracyjnym specyficznym dla implementacji. Mo\u017cliwe problemy operacyjne to b\u0142\u0119dy bazy danych, sieci lub systemu plik\u00f3w.
+ERROR_PERFORMING_OAUTH_STORE_DELETE_TOKEN.useraction=Sprawd\u017a, czy implementacja OAuthStore jest nadal dost\u0119pna i czy zosta\u0142a poprawnie skonfigurowana.
+
+# 0=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_DELETE_TOKENS=CWWKS1478E: Sk\u0142adnik OAuth napotka\u0142 b\u0142\u0105d podczas usuwania wpis\u00f3w OAuthToken, kt\u00f3re utraci\u0142y wa\u017cno\u015b\u0107, z implementacji OAuthStore. {0}
+ERROR_PERFORMING_OAUTH_STORE_DELETE_TOKENS.explanation=Implementacja OAuthStore nie mo\u017ce wykona\u0107 tej operacji. Mo\u017cliwe problemy z konfiguracjami to brakuj\u0105ce lub niepoprawne atrybuty dla element\u00f3w specyficznych dla implementacji OAuthStore w pliku server.xml lub w innym pliku konfiguracyjnym specyficznym dla implementacji. Mo\u017cliwe problemy operacyjne to b\u0142\u0119dy bazy danych, sieci lub systemu plik\u00f3w.
+ERROR_PERFORMING_OAUTH_STORE_DELETE_TOKENS.useraction=Sprawd\u017a, czy implementacja OAuthStore jest nadal dost\u0119pna i czy zosta\u0142a poprawnie skonfigurowana.
+
+# 0=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_DELETE_CONSENT=CWWKS1479E: Sk\u0142adnik OAuth napotka\u0142 b\u0142\u0105d podczas usuwania wpisu OAuthConsent z implementacji OAuthStore. {0}
+ERROR_PERFORMING_OAUTH_STORE_DELETE_CONSENT.explanation=Implementacja OAuthStore nie mo\u017ce wykona\u0107 tej operacji. Mo\u017cliwe problemy z konfiguracjami to brakuj\u0105ce lub niepoprawne atrybuty dla element\u00f3w specyficznych dla implementacji OAuthStore w pliku server.xml lub w innym pliku konfiguracyjnym specyficznym dla implementacji. Mo\u017cliwe problemy operacyjne to b\u0142\u0119dy bazy danych, sieci lub systemu plik\u00f3w.
+ERROR_PERFORMING_OAUTH_STORE_DELETE_CONSENT.useraction=Sprawd\u017a, czy implementacja OAuthStore jest nadal dost\u0119pna i czy zosta\u0142a poprawnie skonfigurowana.
+
+# 0=Exception message (if present)
+ERROR_PERFORMING_OAUTH_STORE_DELETE_CONSENTS=CWWKS1480E: Sk\u0142adnik OAuth napotka\u0142 b\u0142\u0105d podczas usuwania wpis\u00f3w OAuthConsent, kt\u00f3re utraci\u0142y wa\u017cno\u015b\u0107, z implementacji OAuthStore. {0}
+ERROR_PERFORMING_OAUTH_STORE_DELETE_CONSENTS.explanation=Implementacja OAuthStore nie mo\u017ce wykona\u0107 tej operacji. Mo\u017cliwe problemy z konfiguracjami to brakuj\u0105ce lub niepoprawne atrybuty dla element\u00f3w specyficznych dla implementacji OAuthStore w pliku server.xml lub w innym pliku konfiguracyjnym specyficznym dla implementacji. Mo\u017cliwe problemy operacyjne to b\u0142\u0119dy bazy danych, sieci lub systemu plik\u00f3w.
+ERROR_PERFORMING_OAUTH_STORE_DELETE_CONSENTS.useraction=Sprawd\u017a, czy implementacja OAuthStore jest nadal dost\u0119pna i czy zosta\u0142a poprawnie skonfigurowana.
+
+# 0=OAuth provider name, 1=customStore attribute name
+OAUTH_PROVIDER_CUSTOMSTORE_INVALID_ATTRIBUTE=CWWKS1481E: W dostawcy OAuth {0} okre\u015blono element customStore, ale atrybut {1} nie zosta\u0142 okre\u015blony lub jest niepoprawny.
+OAUTH_PROVIDER_CUSTOMSTORE_INVALID_ATTRIBUTE.explanation=W dostawcy OAuth okre\u015blono element customStore, ale nie okre\u015blono atrybutu lub jest on niepoprawny. Przyczyn\u0105 tego problemu mo\u017ce by\u0107 b\u0142\u0105d konfiguracji.
+OAUTH_PROVIDER_CUSTOMSTORE_INVALID_ATTRIBUTE.useraction=Upewnij si\u0119, \u017ce atrybut elementu customStore w dostawcy OAuth zosta\u0142 poprawnie zdefiniowany.
+
+OAUTH_SERVER_APPNAME_IN_USE_OR_TOO_LONG=CWWKS1482E: Nazwa aplikacji [{0}] wys\u0142ana do dostawcy [{1}] jest ju\u017c powi\u0105zana z has\u0142em aplikacji lub znacznikiem aplikacji albo jest za d\u0142uga.
+OAUTH_SERVER_APPNAME_IN_USE_OR_TOO_LONG.explanation=Za\u017c\u0105dano has\u0142a lub znacznika dla aplikacji, ale w jej przypadku ju\u017c istnieje has\u0142o lub znacznik albo \u017c\u0105dana nazwa jest zbyt d\u0142uga.
+OAUTH_SERVER_APPNAME_IN_USE_OR_TOO_LONG.useraction=Usu\u0144 istniej\u0105ce has\u0142o lub istniej\u0105cy znacznik aplikacji, zanim za\u017c\u0105dasz nowego has\u0142a lub znacznika dla tej aplikacji, albo u\u017cyj innej nazwy aplikacji.
+
+# Do not translate user_id or tokenManager
+OAUTH_SERVER_USERNAME_PARAM_NOT_SUPPORTED=CWWKS1483E: \u017b\u0105danie {0} wys\u0142ane do identyfikatora URI {1} jest niepoprawne. Podano atrybut user_id, ale uwierzytelniany u\u017cytkownik nie ma uprawnienia do jego u\u017cywania.
+OAUTH_SERVER_USERNAME_PARAM_NOT_SUPPORTED.explanation=Tylko u\u017cytkownicy o roli tokenManager mog\u0105 poda\u0107 atrybut user_id dla tego identyfikatora URI \u017c\u0105dania.
+OAUTH_SERVER_USERNAME_PARAM_NOT_SUPPORTED.useraction=Wy\u015blij ponownie to \u017c\u0105danie, podaj\u0105c wymagan\u0105 rol\u0119 tokenManager i poprawny identyfikator u\u017cytkownika.
+
+OAUTH_INVALID_REQUEST_NO_ID_SECRET=CWWKS1484E: \u017b\u0105danie {0} wys\u0142ane do identyfikatora URI {1} jest niepoprawne. Brak ID klienta, klucza tajnego klienta lub obu tych warto\u015bci.
+OAUTH_INVALID_REQUEST_NO_ID_SECRET.explanation=Wskazane \u017c\u0105danie jest niepoprawne. Poprawne warto\u015bci identyfikatora klienta i klucza tajnego klienta musz\u0105 zosta\u0107 podane w nag\u0142\u00f3wku Authorization \u017c\u0105dania wys\u0142anego do tego identyfikatora URI.
+OAUTH_INVALID_REQUEST_NO_ID_SECRET.useraction=Popraw \u017c\u0105danie. Wy\u015blij ponownie to \u017c\u0105danie, podaj\u0105c poprawny identyfikator klienta i klucz tajny klienta w nag\u0142\u00f3wku Authorization.
+
+OAUTH_INVALID_REQUEST_AUTHN_FAIL=CWWKS1485E: Uwierzytelnianie klienta nie powiod\u0142o si\u0119. Identyfikator klienta, klucz tajny klienta lub obie te warto\u015bci s\u0105 niepoprawne dla \u017c\u0105dania {0}, kt\u00f3re zosta\u0142o wys\u0142ane do identyfikatora URI {1}.
+OAUTH_INVALID_REQUEST_AUTHN_FAIL.explanation=Poprawne warto\u015bci identyfikatora klienta i klucza tajnego klienta musz\u0105 zosta\u0107 podane w nag\u0142\u00f3wku Authorization \u017c\u0105dania wys\u0142anego do tego identyfikatora URI.
+OAUTH_INVALID_REQUEST_AUTHN_FAIL.useraction=Wy\u015blij ponownie to \u017c\u0105danie, podaj\u0105c poprawny identyfikator klienta i klucz tajny klienta w nag\u0142\u00f3wku Authorization.
+
+# Do not translate appPasswordAllowed
+OAUTH_UNAUTHORIZED_CLIENT=CWWKS1486E: Klient {0} nie jest autoryzowany do u\u017cywania hase\u0142 lub znacznik\u00f3w aplikacji.
+OAUTH_UNAUTHORIZED_CLIENT.explanation=Klient nie jest skonfigurowany pod k\u0105tem zezwalania na u\u017cywanie hase\u0142 lub znacznik\u00f3w aplikacji.
+OAUTH_UNAUTHORIZED_CLIENT.useraction=Popraw konfiguracj\u0119 dostawcy OpenID Connect dla okre\u015blonego klienta w celu ustawienia warto\u015bci true dla atrybutu appPasswordAllowed.
+
+# Do not translate userClientTokenLimit
+OAUTH_INVALID_REQUEST_TOO_MANY_TOKENS=CWWKS1487E: \u017b\u0105danie nie jest poprawne. U\u017cytkownik [{0}] osi\u0105gn\u0105\u0142 maksymaln\u0105 dozwolon\u0105 liczb\u0119 znacznik\u00f3w aplikacji lub hase\u0142 aplikacji.
+OAUTH_INVALID_REQUEST_TOO_MANY_TOKENS.explanation=\u017b\u0105danie utworzenia nowego has\u0142a aplikacji lub znacznika aplikacji spowodowa\u0142oby przekroczenie skonfigurowanej liczby hase\u0142 aplikacji lub znacznik\u00f3w aplikacji dozwolonych na u\u017cytkownika dla danego klienta i dostawcy.
+OAUTH_INVALID_REQUEST_TOO_MANY_TOKENS.useraction=Usu\u0144 has\u0142a aplikacji lub znaczniki aplikacji lub zmie\u0144 atrybut userClientTokenLimit konfiguracji klienta OAuth, aby zwi\u0119kszy\u0107 liczb\u0119 hase\u0142 aplikacji i znacznik\u00f3w aplikacji dozwolonych dla ka\u017cdego u\u017cytkownika.
+
+OAUTH_PARAMETER_VALUE_LENGTH_TOO_LONG=CWWKS1488E: Warto\u015b\u0107 parametru [{0}] przes\u0142anego do identyfikatora URI [{1}] przekracza maksymaln\u0105 dozwolon\u0105 d\u0142ugo\u015b\u0107 wynosz\u0105c\u0105 {2} znak\u00f3w.
+OAUTH_PARAMETER_VALUE_LENGTH_TOO_LONG.explanation=D\u0142ugo\u015b\u0107 podanej warto\u015bci parametru musi by\u0107 odpowiednio ograniczona.
+OAUTH_PARAMETER_VALUE_LENGTH_TOO_LONG.useraction=Popraw okre\u015blony parametr w taki spos\u00f3b, aby jego d\u0142ugo\u015b\u0107 by\u0142a mniejsza ni\u017c okre\u015blona liczba znak\u00f3w, a nast\u0119pnie pon\u00f3w \u017c\u0105danie.
+
+OAUTH_INVALID_ATINREQUEST_AUTHN_FAIL=CWWKS1489E: Uwierzytelnianie klienta nie powiod\u0142o si\u0119. Znacznik dost\u0119pu jest niepoprawny dla \u017c\u0105dania {0} wys\u0142anego do identyfikatora URI {1}.
+OAUTH_INVALID_ATINREQUEST_AUTHN_FAIL.explanation=Poprawny znacznik dost\u0119pu musi zosta\u0107 dostarczony z okre\u015blonym identyfikatorem URI \u017c\u0105dania.
+OAUTH_INVALID_ATINREQUEST_AUTHN_FAIL.useraction=Wy\u015blij \u017c\u0105danie ponownie z poprawnym znacznikiem dost\u0119pu.
+
+OAUTH_INVALID_REQUEST_NO_TOKEN=CWWKS1490E: \u017b\u0105danie {0} wys\u0142ane do identyfikatora URI {1} jest niepoprawne. Brak znacznika dost\u0119pu.
+OAUTH_INVALID_REQUEST_NO_TOKEN.explanation=Okre\u015blone \u017c\u0105danie musi zawiera\u0107 poprawny znacznik dost\u0119pu.
+OAUTH_INVALID_REQUEST_NO_TOKEN.useraction=Wy\u015blij \u017c\u0105danie ponownie z poprawnym znacznikiem dost\u0119pu.
+
+OAUTH_INVALID_REQUEST_NO_AUTHHEADER=CWWKS1491E: W \u017c\u0105daniu {0} brakuje informacji uwierzytelniaj\u0105cej klienta. Identyfikator URI \u017c\u0105dania: {1}.
+OAUTH_INVALID_REQUEST_NO_AUTHHEADER.explanation=Okre\u015blone \u017c\u0105danie musi zawiera\u0107 informacje o uwierzytelnianiu klienta.
+OAUTH_INVALID_REQUEST_NO_AUTHHEADER.useraction=Wy\u015blij ponownie to \u017c\u0105danie, podaj\u0105c poprawne informacje uwierzytelniaj\u0105ce klienta w nag\u0142\u00f3wku Authorization.
+
+OAUTH_CLIENTINREQ_DONOT_MATCH_AT=CWWKS1492E: \u017b\u0105danie {0} wys\u0142ane do identyfikatora URI {1} jest niepoprawne. Klient reprezentowany przez znacznik dost\u0119pu nie jest zgodny z klientem podanym w \u017c\u0105daniu.
+OAUTH_CLIENTINREQ_DONOT_MATCH_AT.explanation=Okre\u015blone \u017c\u0105danie musi zawiera\u0107 znacznik dost\u0119pu dla tego samego klienta, kt\u00f3ry jest udost\u0119pniany w nag\u0142\u00f3wku Authorization.
+OAUTH_CLIENTINREQ_DONOT_MATCH_AT.useraction=Wy\u015blij ponownie \u017c\u0105danie, podaj\u0105c znacznik dost\u0119pu dla klienta, kt\u00f3ry jest udost\u0119pniany w nag\u0142\u00f3wku Authorization.
+
+OAUTH_AUTH_HEADER_NOT_BASIC_AUTH=CWWKS1493E: \u017b\u0105danie {0} wys\u0142ane na adres URI {1} nie zawiera referencji uwierzytelniania podstawowego.
+OAUTH_AUTH_HEADER_NOT_BASIC_AUTH.explanation=Okre\u015blone \u017c\u0105danie musi zawiera\u0107 referencje w nag\u0142\u00f3wku Autoryzacja skonfigurowanym dla klienta OAuth, aby to \u017c\u0105danie mog\u0142o zosta\u0107 uwierzytelnione.
+OAUTH_AUTH_HEADER_NOT_BASIC_AUTH.useraction=Sprawd\u017a, czy to \u017c\u0105danie korzysta ze schematu uwierzytelniania podstawowego w celu udost\u0119pnienia referencji klienta OAuth.
+
+# Do not translate internalClientId, internalClientSecret, isEnabled, appPasswordAllowed, or appTokenAllowed
+OAUTH_UI_ENDPOINT_NOT_ENABLED=CWWKS1494W: Nie mo\u017cna przetworzy\u0107 \u017c\u0105dania wys\u0142anego do identyfikatora URI {0}, poniewa\u017c co najmniej jeden z atrybut\u00f3w klienta lub dostawcy nie zosta\u0142 ustawiony. Upewnij si\u0119, \u017ce skonfigurowano atrybuty dostawcy internalClientId i internalClientSecret. Sprawd\u017a, czy skonfigurowano atrybuty klienta isEnabled, appPasswordAllowed lub appTokenAllowed.
+OAUTH_UI_ENDPOINT_NOT_ENABLED.explanation=Atrybuty klienta i dostawcy musz\u0105 by\u0107 ustawione dla tego identyfikatora URI, aby mo\u017cna by\u0142o przetwarza\u0107 \u017c\u0105dania.
+OAUTH_UI_ENDPOINT_NOT_ENABLED.useraction=Ustaw poprawnie atrybuty klienta i dostawcy, aby dostawca m\u00f3g\u0142 przetworzy\u0107 \u017c\u0105danie.
+
+# Java runtime level
+JAVA8_REQUIRED=CWWKS1495W: Dostawca OpenID Connect nie mo\u017ce przetworzy\u0107 \u017c\u0105dania identyfikatora URI [{0}], poniewa\u017c \u015brodowisko Java jest w wersji starszej ni\u017c Java 8. Wymagane jest \u015brodowisko Java 8 lub nowsze.
+JAVA8_REQUIRED.explanation=Nie jest u\u017cywane \u015brodowisko Java w wersji 8 lub nowszej.
+JAVA8_REQUIRED.useraction=Zainstaluj \u015brodowisko Java w wersji 8 lub nowszej.
+
+JAVA8_REQUIRED_FOR_AT_HASHING=CWWKS1496W: Dostawca OpenID Connect {0} zawiera atrybut konfiguracji {1} ustawiony do u\u017cywania algorytmu {2}. Takie ustawienie wymaga \u015brodowiska Java 8 lub nowszego. Podany dostawca OpenID Connect ignoruje ustawienie {3}.
+JAVA8_REQUIRED_FOR_AT_HASHING.explanation=Nie jest u\u017cywane \u015brodowisko Java w wersji 8 lub nowszej.
+JAVA8_REQUIRED_FOR_AT_HASHING.useraction=Zainstaluj \u015brodowisko Java w wersji 8 lub nowszej, aby u\u017cywa\u0107 wspomnianej opcji konfiguracyjnej.
+
+# html title of logout page
+LOGOUT_PAGE_TITLE=Wylogowanie
+# html body of logout page
+LOGOUT_PAGE_BODY=Wylogowanie powiod\u0142o si\u0119.
+
+# html title of logout error page
+LOGOUT_ERROR_PAGE_TITLE=Wylogowanie
+# html body of logout error page
+LOGOUT_ERROR_PAGE_BODY=Wyst\u0105pi\u0142 wyj\u0105tek podczas wylogowywania.  Zaleca si\u0119 zamkni\u0119cie przegl\u0105darki WWW w celu uko\u0144czenia wylogowania.

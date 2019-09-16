@@ -116,8 +116,8 @@ TCP_CHANNEL_STOPPED=CWWKO0220I: Der TCP-Kanal {0} ist auf Host {1} an Port {2} n
 TCP_CHANNEL_STOPPED.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
 TCP_CHANNEL_STOPPED.useraction=Es ist keine Aktion erforderlich.
 
-BIND_ERROR=CWWKO0221E: Die Initialisierung des TCP-Kanals {0} war nicht erfolgreich. Das Binden des Sockets f\u00fcr den Host {1} und den Port {2} war nicht erfolgreich. Der Port ist m\u00f6glicherweise bereits im Gebrauch.
-BIND_ERROR.explanation=Die Operation zum Binden des Sockets war nicht erfolgreich. Gew\u00f6hnlich ist dieser Fehler darauf zur\u00fcckzuf\u00fchren, dass die Portnummer bereits im Gebrauch ist.
+BIND_ERROR=CWWKO0221E: Die Initialisierung des TCP-Kanals {0} war nicht erfolgreich. Das Binden des Sockets f\u00fcr den Host {1} und den Port {2} war nicht erfolgreich. Der Port ist m\u00f6glicherweise bereits im Gebrauch. Ausnahmebedingungsnachricht: {3}
+BIND_ERROR.explanation=Die Operation zum Binden des Sockets war nicht erfolgreich. Gew\u00f6hnlich ist dieser Fehler darauf zur\u00fcckzuf\u00fchren, dass die Portnummer bereits im Gebrauch ist. Weitere Informationen finden Sie in der Ausnahmebedingungsnachricht in der Fehlernachricht.
 BIND_ERROR.useraction=Vergewissern Sie sich, dass der TCP-Kanal mit der richtigen Portnummer konfiguriert wurde.
 
 MAX_CONNS_EXCEEDED=CWWKO0222W: Der TCP-Kanal {0} hat die maximal zul\u00e4ssige Anzahl offener Verbindungen ({1}) \u00fcberschritten.

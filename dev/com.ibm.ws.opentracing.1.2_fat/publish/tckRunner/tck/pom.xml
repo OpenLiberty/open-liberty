@@ -88,7 +88,7 @@
         <dependency>
             <groupId>io.openliberty.arquillian</groupId>
             <artifactId>arquillian-liberty-managed</artifactId>
-            <version>1.0.3</version>
+            <version>1.0.5</version>
             <scope>test</scope>
         </dependency>
 
@@ -180,6 +180,7 @@
                         <wlp>${wlp}</wlp>
                         <tck_server>${tck_server}</tck_server>
                         <tck_port>${tck_port}</tck_port>
+                        <sun.rmi.transport.tcp.responseTimeout>${sun.rmi.transport.tcp.responseTimeout}</sun.rmi.transport.tcp.responseTimeout>
                     </systemPropertyVariables>
                     <suiteXmlFiles>
                         <suiteXmlFile>${suiteXmlFile}</suiteXmlFile>

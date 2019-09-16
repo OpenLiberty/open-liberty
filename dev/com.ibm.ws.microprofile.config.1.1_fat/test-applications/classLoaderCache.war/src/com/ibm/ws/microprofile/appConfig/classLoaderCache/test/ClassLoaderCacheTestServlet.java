@@ -41,8 +41,9 @@ public class ClassLoaderCacheTestServlet extends FATServlet {
         Method getConfigCacheSize = resolver.getClass().getMethod("getConfigCacheSize");
 
         int size = (int) getConfigCacheSize.invoke(resolver);
-        System.out.println("Before: " + size);
-        assertEquals("Wrong number of Configs in the cache", before, size);
+        System.out.println("Before: " + resolver);
+        assertEquals("Wrong number of Configs in the cache - " + resolver, before, size);
+        System.out.println("After: " + resolver);
 
         Config configA = resolver.getConfig(); //using the classloader unique to the war
         String testA = configA.getValue("TEST", String.class);

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2016 IBM Corporation and others.
+# Copyright (c) 2010, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -701,6 +701,14 @@ error.no.serialfilteragent=CWWKE0949E: Uveden\u00fd soubor JAR modulu Serial Fil
 error.no.serialfilteragent.explanation=Uveden\u00fd soubor JAR modulu Serial Filter Agent neexistuje, nebo se nezda\u0159ilo na\u010dten\u00ed.
 error.no.serialfilteragent.useraction= Zkontrolujte, \u017ee soubor existuje a \u017ee jej m\u016f\u017ee aktu\u00e1ln\u00ed u\u017eivatel \u010d\u00edst.
 
+error.package.extension=CWWKE0950E: N\u00e1zev archivn\u00edho souboru mus\u00ed kon\u010dit p\u0159\u00edponou .jar, je-li pou\u017eita volba runnable.
+error.package.extension.explanation=Volba --archive mus\u00ed obsahovat p\u0159\u00edponu souboru, kter\u00e1 kon\u010d\u00ed p\u0159\u00edponou .jar p\u0159i ur\u010den\u00ed --include=runnable.
+error.package.extension.useraction=P\u0159i ur\u010den\u00ed --include=runnable zadejte pro --archive n\u00e1zev souboru s p\u0159\u00edponou souboru .jar.
+
+error.package.usr.jar=CWWKE0951E: N\u00e1zev archivn\u00edho souboru nesm\u00ed kon\u010dit p\u0159\u00edponou souboru .jar, je-li pou\u017eita volba usr.
+error.package.usr.jar.explanation=Volba --archive mus\u00ed kon\u010dit p\u0159\u00edponou souboru .jar, je-li ur\u010deno --include=usr.
+error.package.usr.jar.useraction=Zadejte n\u00e1zev souboru pro --archive s p\u0159\u00edponou souboru jinou ne\u017e p\u0159\u00edponu souboru .jar, je-li zad\u00e1na volba --include=usr.
+
 info.serverStarting=Spou\u0161t\u011bn\u00ed serveru {0}.
 info.serverStarted=Server {0} byl spu\u0161t\u011bn.
 info.serverStartedWithPID=Server {0} byl spu\u0161t\u011bn s ID procesu {1}.
@@ -764,6 +772,8 @@ info.resumingListeners.target=Obnoven\u00ed ur\u010den\u00fdch c\u00edlov\u00fdc
 info.resumedListeners.target=Obnoven\u00ed ur\u010den\u00fdch c\u00edlov\u00fdch komponent serveru {0} bylo dokon\u010deno.
 info.resumeFailedException.target=Obnoven\u00ed ur\u010den\u00fdch c\u00edlov\u00fdch komponent serveru {0} se nezda\u0159ilo. Podrobn\u00e9 informace naleznete v \
 protokolech serveru.
+info.serverCommandAuthFailure=P\u0159\u00edkaz {0} se nezda\u0159il, proto\u017ee proces nem\u016f\u017ee odstranit soubor {1}.
+info.serverCommandCommFailure=P\u0159\u00edkaz {0} se nezda\u0159il kv\u016fli chyb\u011b komunikace se serverem.
 
 # For info.serverLaunch and info.serverVersion: 
 # {0} version (build and/or product name)
@@ -792,3 +802,4 @@ info.no.servers.defined=V u\u017eivatelsk\u00e9m adres\u00e1\u0159i {0} nejsou d
 info.list.of.defined.servers=Vzhledem k u\u017eivatelsk\u00e9mu adres\u00e1\u0159i {0} jsou definov\u00e1ny n\u00e1sleduj\u00edc\u00ed servery.
 info.communicate.server=Mezi p\u0159\u00edkazem {0} a serverem {1} do\u0161lo k chyb\u011b komunikace.
 
+info.serialFilterLoaded=Na\u010dten agent s\u00e9riov\u00e9ho filtru.

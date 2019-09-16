@@ -1,0 +1,57 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+-sub: *.bnd
+
+src: \
+	fat/src, \
+	test-applications/ServletTest/src, \
+	test-applications/test.feature.api.client.war/src, \
+	test-applications/IgnoreAPI.ear/IgnoreAPIEJB.jar/src, \
+	test-bundles/test.feature.api/src, \
+	test-bundles/test.feature.provisioner/src, \
+	test-bundles/test.service.consumer/src, \
+	test-bundles/test.service.provider/src, \
+	test-bundles/test.activation.type/src, \
+	test-bundles/test.origin.bundle/src
+
+fat.project: true
+
+tested.features: featuref-1.0, productauto:pfeaturen-1.0, productauto:pfeaturem-1.0, featuree-1.0, productauto:pfeaturel-1.0, featureg-1.0, productauto:pfeaturef-1.0, productauto:pfeatureg-1.0, productauto:pfeaturee-1.0, capabilityc-1.0, badpathtool-1.0, emptyiconheader-1.0, goldenpathtool-1.0, icondirectivestool-1.0, noheadertool-1.0, missingiconstool-1.0, jwt-1.0, servlet-3.1
+	
+
+-buildpath: \
+	org.eclipse.osgi;version=latest,\
+	../build.sharedResources/lib/junit/old/junit.jar;version=file,\
+	com.ibm.ws.junit.extensions;version=latest,\
+	org.hamcrest:hamcrest-all;version=1.3,\
+	org.jmock:jmock-junit4;strategy=exact;version=2.5.1,\
+	org.jmock:jmock;strategy=exact;version=2.5.1,\
+	org.apache.commons:commons-compress;version=1.19,\
+	com.ibm.ws.org.apache.commons.compress,\
+	fattest.simplicity;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.cm;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.wsspi.thirdparty.equinox;version=latest,\
+	com.ibm.ws.kernel.boot.core;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.logging.core;version=latest,\
+	com.ibm.ws.org.eclipse.equinox.region;version=latest,\
+	com.ibm.ws.runtime.update;version=latest,\
+	com.ibm.ws.kernel.feature.core;version=latest,\
+	com.ibm.ws.kernel.feature;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.1,\
+	com.ibm.ws.org.osgi.annotation.versioning,\
+	com.ibm.websphere.javaee.ejb.3.1

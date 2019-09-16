@@ -39,7 +39,6 @@ import com.ibm.ws.jsf23.fat.tests.JSF23UISelectManyTests;
 import com.ibm.ws.jsf23.fat.tests.JSF23ViewParametersTests;
 import com.ibm.ws.jsf23.fat.tests.JSF23ViewResourceTests;
 import com.ibm.ws.jsf23.fat.tests.JSF23WebSocketTests;
-import com.ibm.ws.jsf23.fat.tests.JSFDummyTest;
 
 /**
  * JSF 2.3 Tests
@@ -67,7 +66,6 @@ import com.ibm.ws.jsf23.fat.tests.JSFDummyTest;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-                JSFDummyTest.class,
                 JSF23FaceletVDLTests.class,
                 JSF23CDIGeneralTests.class,
                 JSF23GeneralTests.class,

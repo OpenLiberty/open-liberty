@@ -10,10 +10,13 @@
  *******************************************************************************/
 package com.ibm.ws.rsadapter.impl;
 
+import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.SQLException;
@@ -129,6 +132,13 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
         VENDOR_PROPERTY_SETTERS.add("setRemarksReporting");
         VENDOR_PROPERTY_SETTERS.add("setRestrictGetTables");
         VENDOR_PROPERTY_SETTERS.add("setSessionTimeZone");
+        
+        /*
+         * PostgreSQL property setters
+         */
+        VENDOR_PROPERTY_SETTERS.add("setDefaultFetchSize");
+        VENDOR_PROPERTY_SETTERS.add("setPrepareThreshold");
+        VENDOR_PROPERTY_SETTERS.add("setAutosave");
     }
 
     /**
@@ -651,7 +661,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                                 connectionPropertyChanged && mcf.supportsGetTypeMap ? getTypeMap() : cri.ivTypeMap,
                                 holdabilityChanged ? getHoldability() : cri.ivHoldability,
                                 connectionPropertyChanged && mcf.supportsGetSchema ? getSchemaSafely() : cri.ivSchema,
-                                connectionPropertyChanged && mcf.supportsGetNetworkTimeout ? getNetworkTimeoutSafely() : cri.ivNetworkTimeout,
+                                connectionPropertyChanged && mcf.supportsGetNetworkTimeout ? Integer.valueOf(getNetworkTimeoutSafely()) : cri.ivNetworkTimeout,
                                 cri.ivConfigID,
                                 cri.supportIsolvlSwitching);
 
@@ -2108,9 +2118,29 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                 setTypeMap(cri.ivTypeMap);
             }
             
-            if(mcf.supportsGetNetworkTimeout && cri.ivNetworkTimeout != currentNetworkTimeout){
-                ExecutorService libertyThreadPool = mcf.connectorSvc.getLibertyThreadPool();
-                setNetworkTimeout(libertyThreadPool, cri.ivNetworkTimeout);
+            // Use the default timeout if cri.ivNetworkTimeout hasn't been initialized.
+            final int timeoutToSet = cri.ivNetworkTimeout == null ? defaultNetworkTimeout : cri.ivNetworkTimeout;
+            
+            if (mcf.supportsGetNetworkTimeout && currentNetworkTimeout != timeoutToSet) {
+                final ExecutorService libertyThreadPool = mcf.connectorSvc.getLibertyThreadPool();
+                // setNetworkTimeout is the only JDBC Connection property that may perform access checks
+                if (System.getSecurityManager() == null) {
+                    setNetworkTimeout(libertyThreadPool, timeoutToSet);
+                } else {
+                    try {
+                        AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
+                            @Override
+                            public Void run() throws Exception {
+                                setNetworkTimeout(libertyThreadPool, timeoutToSet);
+                                return null;
+                            }
+                        });
+                    } catch (PrivilegedActionException e) {
+                        if (e.getException() instanceof SQLException)
+                            throw (SQLException) e.getException();
+                        throw (RuntimeException) e.getException();
+                    }
+                }
             }
 
             if(mcf.supportsGetSchema && (cri.ivSchema != null || defaultSchema != null)){
@@ -2147,7 +2177,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                                    "Schema:        " + defaultSchema + "/" + (cri.ivSchema == null ? defaultSchema : cri.ivSchema),
                                    "ShardingKey:   " + initialShardingKey + "/" + cri.ivShardingKey,
                                    "SuperShardingK:" + initialSuperShardingKey + "/" + cri.ivSuperShardingKey,
-                                   "NetworkTimeout:" + defaultNetworkTimeout + "/" + (cri.ivNetworkTimeout == 0 ? defaultNetworkTimeout : cri.ivNetworkTimeout),
+                                   "NetworkTimeout:" + defaultNetworkTimeout + "/" + (cri.ivNetworkTimeout == null ? defaultNetworkTimeout : cri.ivNetworkTimeout),
                                    "IsReadOnly:    " + defaultReadOnly + "/" + (cri.ivReadOnly == null ? defaultReadOnly : cri.ivReadOnly), 
                                    "TypeMap:       " + defaultTypeMap + "/" + (cri.ivTypeMap == null ? defaultTypeMap : cri.ivTypeMap),
                                    "Holdability:   " + AdapterUtil.getCursorHoldabilityString(previousHoldability) +
@@ -2962,8 +2992,25 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
 
             if(mcf.supportsGetNetworkTimeout){
                 try{
-                    ExecutorService libertyThreadPool = mcf.connectorSvc.getLibertyThreadPool();
-                    setNetworkTimeout(libertyThreadPool, defaultNetworkTimeout);
+                    final ExecutorService libertyThreadPool = mcf.connectorSvc.getLibertyThreadPool();
+                    // setNetworkTimeout is the only JDBC Connection property that may perform access checks
+                    if (System.getSecurityManager() == null) {
+                        setNetworkTimeout(libertyThreadPool, defaultNetworkTimeout);
+                    } else {
+                        try {
+                            AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
+                                @Override
+                                public Void run() throws Exception {
+                                    setNetworkTimeout(libertyThreadPool, defaultNetworkTimeout);
+                                    return null;
+                                }
+                            });
+                        } catch (PrivilegedActionException e) {
+                            if (e.getException() instanceof SQLException)
+                                throw (SQLException) e.getException();
+                            throw (RuntimeException) e.getException();
+                        }
+                    }
                     
                     if(connectionSharing == ConnectionSharing.MatchCurrentState){
                         if(!cri.isCRIChangable())

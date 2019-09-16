@@ -11,26 +11,25 @@
 package com.ibm.ws.jaxrs20.metadata;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.ibm.websphere.csi.J2EEName;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.app.deploy.ModuleInfo;
-import com.ibm.ws.jaxrs20.support.JaxRsInstanceManager;
 import com.ibm.ws.jaxrs20.utils.JaxRsUtils;
+import com.ibm.ws.runtime.metadata.MetaDataSlot;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.wsspi.adaptable.module.Container;
-import com.ibm.wsspi.injectionengine.ReferenceContext;
 
 /**
  * JaxWsModuleMetaData holds all the runtime data for the webservice engine, e.g. Container, classloader and etc.
  */
 public class JaxRsModuleMetaData {
 
-    private volatile JaxRsServerMetaData serverMetaData;
+    private static final TraceComponent tc = Tr.register(JaxRsModuleMetaData.class);
 
-    private volatile JaxRsClientMetaData clientMetaData;
+    private volatile JaxRsServerMetaData serverMetaData;
 
     private String name;
 
@@ -42,11 +41,33 @@ public class JaxRsModuleMetaData {
 
     private final ModuleInfo moduleInfo;
 
-    private final Map<Class<?>, ReferenceContext> referenceContextMap;
-
-    private JaxRsInstanceManager jaxRsInstanceManager;
-
     private Object managedAppRef;
+
+    public static MetaDataSlot jaxrsModuleSlot = null;
+
+    public static void setJaxRsModuleMetaData(ModuleMetaData mmd, JaxRsModuleMetaData moduleMetaData) {
+        if (mmd != null) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Setting ModuleMetaData on ModuleMetaData instance: " + mmd);
+            }
+            mmd.setMetaData(jaxrsModuleSlot, moduleMetaData);
+        } else {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Could not set ModuleMetaData because ModuleMetaData " + "is null");
+            }
+        }
+    }
+
+    public static JaxRsModuleMetaData getJaxRsModuleMetaData(ModuleMetaData mmd) {
+        if (mmd != null) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Getting JaxRs module metadata from module metadata instance: " + mmd);
+            }
+
+            return (JaxRsModuleMetaData) mmd.getMetaData(jaxrsModuleSlot);
+        }
+        return null;
+    }
 
     /**
      * @return the managedAppRef
@@ -70,30 +91,7 @@ public class JaxRsModuleMetaData {
         this.enclosingModuleMetaDatas.add(moduleMetaData);
         this.j2EEName = moduleMetaData.getJ2EEName();
         this.moduleInfo = JaxRsUtils.getModuleInfo(moduleContainer);
-        this.jaxRsInstanceManager = new JaxRsInstanceManager(moduleInfo.getClassLoader());
         this.appContextClassLoader = appContextClassLoader;
-        this.referenceContextMap = new HashMap<Class<?>, ReferenceContext>();
-    }
-
-    /**
-     * @return the referenceContextMap
-     */
-    public Map<Class<?>, ReferenceContext> getReferenceContextMap() {
-        return referenceContextMap;
-    }
-
-    /**
-     * @return the referenceContext of the injected class
-     */
-    public ReferenceContext getReferenceContext(Class<?> clazz) {
-        return referenceContextMap.get(clazz);
-    }
-
-    /**
-     * @param referenceContext the referenceContext to set
-     */
-    public void setReferenceContext(Class<?> clazz, ReferenceContext referenceContext) {
-        this.referenceContextMap.put(clazz, referenceContext);
     }
 
     /**
@@ -101,13 +99,6 @@ public class JaxRsModuleMetaData {
      */
     public ModuleInfo getModuleInfo() {
         return moduleInfo;
-    }
-
-    /**
-     * @return the jaxWsInstanceManager
-     */
-    public JaxRsInstanceManager getJaxRsInstanceManager() {
-        return jaxRsInstanceManager;
     }
 
     /**
@@ -122,20 +113,6 @@ public class JaxRsModuleMetaData {
             }
         }
         return serverMetaData;
-    }
-
-    /**
-     * @return the clientMetaData
-     */
-    public JaxRsClientMetaData getClientMetaData() {
-        if (clientMetaData == null) {
-            synchronized (this) {
-                if (clientMetaData == null) {
-                    clientMetaData = new JaxRsClientMetaData(this);
-                }
-            }
-        }
-        return clientMetaData;
     }
 
     /**
@@ -185,11 +162,5 @@ public class JaxRsModuleMetaData {
         if (serverMetaData != null) {
             serverMetaData.destroy();
         }
-        if (clientMetaData != null) {
-            clientMetaData.destroy();
-        }
-
-        jaxRsInstanceManager = null;
     }
-
 }

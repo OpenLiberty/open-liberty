@@ -31,6 +31,19 @@ public interface FileMonitor extends com.ibm.wsspi.kernel.filemonitor.FileMonito
     String MONITOR_IDENTIFICATION_NAME = "monitor.identification";
 
     /**
+     * <h4>Service property</h4>
+     *
+     * The value should be a String, indicating the config id of
+     * keystore that should be monitored for external update
+     */
+    String MONITOR_KEYSTORE_CONFIG_ID = "monitor.keystore.id";
+
+    /**
+     * Security file monitor that can be identified by this value for external updates
+     */
+    String SECURITY_MONITOR_IDENTIFICATION_VALUE = "com.ibm.ws.security.monitor.keystore";
+
+    /**
      * Called by the monitor service when a scheduled scan completes with
      * changes (indicated by the presence of files in the corresponding collection).
      *

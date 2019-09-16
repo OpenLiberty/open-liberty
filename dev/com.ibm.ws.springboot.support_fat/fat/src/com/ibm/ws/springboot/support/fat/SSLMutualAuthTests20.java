@@ -12,6 +12,7 @@ package com.ibm.ws.springboot.support.fat;
 
 import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
 
+import java.io.IOException;
 import java.net.SocketException;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -71,6 +72,8 @@ public class SSLMutualAuthTests20 extends SSLCommonTests {
             // we get different exceptions; this is from Oracle VM
         } catch (SSLException e) {
             // we get different exceptions; this is from IBM VM
+        } catch (IOException e) {
+            // we get different exceptions; this is from openJ9
         }
     }
 

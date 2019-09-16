@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,11 +36,10 @@ public class TAIServiceImpl implements TAIService {
 
     private static final String KEY_INTERCEPTOR_SERVICE = "interceptorService";
     private static final String KEY_ID = "id";
-    private final ConcurrentServiceReferenceMap<String, TrustAssociationInterceptor> interceptorServiceRef = new ConcurrentServiceReferenceMap<String, TrustAssociationInterceptor>(
-                    KEY_INTERCEPTOR_SERVICE);
+    private final ConcurrentServiceReferenceMap<String, TrustAssociationInterceptor> interceptorServiceRef = new ConcurrentServiceReferenceMap<String, TrustAssociationInterceptor>(KEY_INTERCEPTOR_SERVICE);
     private TAIConfigImpl taiConfig = null;
 
-    //Map of TrustAssociationInterceptor - by TAI id 
+    //Map of TrustAssociationInterceptor - by TAI id
     //Order matters here: use a LinkedHashMap to preserve order across platforms
     private final Map<String, TrustAssociationInterceptor> invokeBeforeSSOTais = new LinkedHashMap<String, TrustAssociationInterceptor>();
     private final Map<String, TrustAssociationInterceptor> invokeAfterSSOTais = new LinkedHashMap<String, TrustAssociationInterceptor>();

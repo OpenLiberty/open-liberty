@@ -1,6 +1,7 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.internal.optional.jaxb-2.2
 visibility=private
+singleton=true
 IBM-App-ForceRestart: uninstall, \
  install
 IBM-Process-Types: client, \
@@ -15,3 +16,4 @@ Subsystem-Name: Java XML Bindings 2.2 for Java 9 and above
   com.ibm.ws.jaxb.tools.2.2.10; require-java:="9"
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

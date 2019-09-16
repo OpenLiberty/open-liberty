@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -75,6 +76,22 @@ public class JPAIntrospection {
         final JPAIntrospection jpaIntrospector = getJPAIntrospection();
         if (jpaIntrospector != null) {
             jpaIntrospector.doEndApplicationVisit();
+        }
+    }
+
+    public static final void registerArchiveSet(Set<String> archivesSet) {
+        if (archivesSet == null || archivesSet.isEmpty()) {
+            return;
+        }
+
+        final JPAIntrospection jpaIntrospector = getJPAIntrospection();
+        if (jpaIntrospector != null) {
+            try {
+                jpaIntrospector.doRegisterArchiveSet(archivesSet);
+            } catch (Throwable t) {
+                FFDCFilter.processException(t, JPAIntrospection.class.getName() + ".registerArchiveSet", "92");
+            }
+
         }
     }
 
@@ -174,6 +191,7 @@ public class JPAIntrospection {
     private JPAApplInfoIntrospect currentAppl = null;
     private JPAScopeInfoIntrospect currentScopeInfo = null;
     private JPAPxmlInfoIntrospect currentPxmlInfo = null;
+    private final HashMap<JPAApplInfoIntrospect, Set<String>> applicationArchivesMap = new HashMap<JPAApplInfoIntrospect, Set<String>>();
 
     public final Map<String, JPAApplInfoIntrospect> getJPAApplInfoIntrospectMap() {
         return Collections.unmodifiableMap(jpaApplInfoMap);
@@ -186,6 +204,24 @@ public class JPAIntrospection {
 
     private void doEndApplicationVisit() {
         currentAppl = null;
+    }
+
+    private void doRegisterArchiveSet(Set<String> archivesSet) {
+        if (currentAppl != null) {
+            Set<String> applicationArchives = applicationArchivesMap.get(currentAppl);
+            if (applicationArchives == null) {
+                applicationArchives = new TreeSet<String>(new Comparator<String>() {
+                    @Override
+                    public int compare(String s1, String s2) {
+                        return s1.compareTo(s2);
+                    }
+
+                });
+                applicationArchivesMap.put(currentAppl, applicationArchives);
+            }
+
+            applicationArchives.addAll(archivesSet);
+        }
     }
 
     private void doBeginPUScopeVisit(JPAScopeInfo scopeInfo) {
@@ -412,6 +448,18 @@ public class JPAIntrospection {
             }
 
             dout.println();
+
+            dout.println("   Application Modules and Archives:");
+            final Set<String> applicationArchives = applicationArchivesMap.get(result.getAppl());
+            if (applicationArchives == null || applicationArchives.isEmpty()) {
+                dout.println("      -- None were located.");
+            } else {
+                for (String archiveName : applicationArchives) {
+                    dout.println("     " + archiveName);
+                }
+            }
+            dout.println();
+
             dout.println(result.getBaos().toString());
         }
     }

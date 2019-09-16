@@ -28,14 +28,13 @@ import org.junit.Test;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentContext;
 
-import com.ibm.wsspi.config.internal.FilesetImpl;
 import com.ibm.wsspi.config.internal.FilesetImpl.FilterType;
 
 /**
  * The fileset configuration element uses include and exclude filters to provide
  * a set of file names. This class provides tests to check the behaviour of the
  * filters is correct for many different cases.
- * 
+ *
  * The implementation of the {@link FilenameFilter} is a private class inside
  * the {@link FilesetImpl} so reflection is used to access the methods required
  * to test them, primarily the accept method.
@@ -77,7 +76,6 @@ public class FilesetNameFilterTest extends AbstractFilesetTestHelper {
         filter.clearFilters();
         // set the dir on the fileset
         mockComponentContext = context.mock(ComponentContext.class);
-        fset.activate(mockComponentContext, getAttributes(DIR.toString(), null, null, null, null));
 
         final BundleContext mockBundleContext = context.mock(BundleContext.class);
         context.checking(new Expectations() {
@@ -88,7 +86,7 @@ public class FilesetNameFilterTest extends AbstractFilesetTestHelper {
                 ignoring(mockBundleContext);
             }
         });
-
+        fset.activate(mockComponentContext, getAttributes(DIR.toString(), null, null, null, null));
     }
 
     @Test
@@ -320,7 +318,7 @@ public class FilesetNameFilterTest extends AbstractFilesetTestHelper {
     /**
      * This class uses reflection to delegate to the real filter Object which is
      * privately constructed and used inside the FilesetImpl.
-     * 
+     *
      */
     private static final class ReflectiveFilter {
         private final Object realFilter;
@@ -343,13 +341,11 @@ public class FilesetNameFilterTest extends AbstractFilesetTestHelper {
             clearFiltersMethod.invoke(realFilter, new Object[0]);
         }
 
-        public void addFilter(FilterType type, String filter) throws IllegalArgumentException, IllegalAccessException,
-                        InvocationTargetException {
+        public void addFilter(FilterType type, String filter) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
             addFilterMethod.invoke(realFilter, type, filter);
         }
 
-        public boolean accept(File dir, String name) throws IllegalArgumentException, IllegalAccessException,
-                        InvocationTargetException {
+        public boolean accept(File dir, String name) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
             return (Boolean) acceptMethod.invoke(realFilter, dir, name);
         }
     }

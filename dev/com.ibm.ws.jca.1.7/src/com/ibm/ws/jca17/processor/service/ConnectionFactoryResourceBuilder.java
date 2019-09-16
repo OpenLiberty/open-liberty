@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 IBM Corporation and others.
+ * Copyright (c) 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -181,6 +181,10 @@ public class ConnectionFactoryResourceBuilder implements ResourceFactoryBuilder 
         connectionFactorySvcProps.put(UNIQUE_JNDI_NAME, connectionFactoryID);
         connectionFactorySvcProps.put(TARGET_CONNECTION_MANAGER, conManagerFilter);
 
+        // jaasLoginContextEntryRef is not supported in app-defined connection factory. Avoid matching a random jaasLoginContextEntry
+        connectionFactorySvcProps.put("jaasLoginContextEntry.target", "(service.pid=unbound)");
+        connectionFactorySvcProps.put("jaasLoginContextEntry.cardinality.minimum", 0);
+
         if (application != null) {
             connectionFactorySvcProps.put(AppDefinedResource.APPLICATION, application);
             if (module != null) {
@@ -206,24 +210,37 @@ public class ConnectionFactoryResourceBuilder implements ResourceFactoryBuilder 
 
         Dictionary<String, Object> connectionFactoryDefaultProps = getDefaultProperties(resourceAdapter, interfaceName);
 
+        String configPropsPid = null;
         for (Enumeration<String> keys = connectionFactoryDefaultProps.keys(); keys.hasMoreElements();) {
             String key = keys.nextElement();
             Object value = connectionFactoryDefaultProps.get(key);
 
             //Override the managed connection factory class default property values with values provided annotation
             if (annotationProps.containsKey(key))
-                value = annotationProps.get(key);
+                value = annotationProps.remove(key);
 
             if (value instanceof String)
                 value = variableRegistry.resolveString((String) value);
 
-            connectionFactorySvcProps.put(BASE_PROPERTIES_KEY + key, value);
+            if ("config.displayId".equals(key))
+                connectionFactorySvcProps.put(BASE_PROPERTIES_KEY + "config.referenceType", configPropsPid = (String) value);
+            else
+                connectionFactorySvcProps.put(BASE_PROPERTIES_KEY + key, value);
         }
 
         Object value;
         for (String name : ConnectionManagerService.CONNECTION_MANAGER_PROPS)
             if ((value = annotationProps.remove(name)) != null)
                 cmSvcProps.put(name, value);
+
+        // Add remaining properties
+        WSConfigurationHelper configHelper = wsConfigurationHelperRef.getServiceWithException();
+        for (Map.Entry<String, Object> entry : annotationProps.entrySet()) {
+            String key = entry.getKey();
+            String attrName = configHelper.getMetaTypeAttributeName(configPropsPid, key);
+            if (attrName != null && !"INTERNAL".equalsIgnoreCase(attrName))
+                connectionFactorySvcProps.put(BASE_PROPERTIES_KEY + key, entry.getValue());
+        }
 
         BundleContext bundleContext = AdministeredObjectResourceFactoryBuilder.priv.getBundleContext(FrameworkUtil.getBundle(ConnectionFactoryService.class));
 
@@ -294,9 +311,9 @@ public class ConnectionFactoryResourceBuilder implements ResourceFactoryBuilder 
      * application[MyApp]/module[MyModule]/connectionFactory[java:module/env/jdbc/cf1]
      *
      * @param application application name if data source is in java:app, java:module, or java:comp. Otherwise null.
-     * @param module module name if data source is in java:module or java:comp. Otherwise null.
-     * @param component component name if data source is in java:comp and isn't in web container. Otherwise null.
-     * @param jndiName configured JNDI name for the data source. For example, java:module/env/jca/cf1
+     * @param module      module name if data source is in java:module or java:comp. Otherwise null.
+     * @param component   component name if data source is in java:comp and isn't in web container. Otherwise null.
+     * @param jndiName    configured JNDI name for the data source. For example, java:module/env/jca/cf1
      * @return the unique identifier
      */
     private static final String getConnectionFactoryID(String application, String module, String component, String jndiName) {

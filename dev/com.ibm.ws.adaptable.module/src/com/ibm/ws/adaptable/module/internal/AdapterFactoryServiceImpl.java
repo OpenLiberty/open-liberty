@@ -12,13 +12,12 @@ package com.ibm.ws.adaptable.module.internal;
 
 import java.security.AccessController;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.felix.scr.ext.annotation.DSExt;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -31,6 +30,8 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.ws.kernel.service.util.SecureAction;
+import com.ibm.ws.kernel.service.util.ServiceRegistrationModifier;
+import com.ibm.ws.kernel.service.util.ServiceRegistrationModifier.ServicePropertySupplier;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
@@ -45,9 +46,9 @@ import com.ibm.wsspi.kernel.service.utils.ServiceAndServiceReferencePair;
 
 @Component(immediate = true,
            configurationPolicy = ConfigurationPolicy.IGNORE,
-           property = { "service.vendor=IBM" })
-@DSExt.ConfigurableServiceProperties
-public class AdapterFactoryServiceImpl implements AdapterFactoryService {
+           property = { "service.vendor=IBM" },
+           service = {})
+public class AdapterFactoryServiceImpl implements AdapterFactoryService, ServicePropertySupplier {
 
     private final static String toType = "toType";
     private final static SecureAction priv = AccessController.doPrivileged(SecureAction.get());
@@ -57,17 +58,19 @@ public class AdapterFactoryServiceImpl implements AdapterFactoryService {
     private final Set<String> containerToTypes = Collections.synchronizedSet(new HashSet<String>());
     private final Set<String> entryToTypes = Collections.synchronizedSet(new HashSet<String>());
     private Map<String, Object> baseProperties;
+    private final ServiceRegistrationModifier<AdapterFactoryService> registration = new ServiceRegistrationModifier<>(AdapterFactoryService.class, this, this);
 
     @Activate
-    protected Map<String, Object> activate(ComponentContext cCtx, Map<String, Object> properties) {
+    protected void activate(ComponentContext cCtx, Map<String, Object> properties) {
         entryHelperMap.activate(cCtx);
         containerHelperMap.activate(cCtx);
         baseProperties = properties;
-        return getProperties();
+        registration.registerOrUpdate(cCtx.getBundleContext());
     }
 
     @Deactivate
     protected void deactivate(ComponentContext cCtx) {
+        registration.unregister();
         entryHelperMap.deactivate(cCtx);
         containerHelperMap.deactivate(cCtx);
         baseProperties = null;
@@ -75,11 +78,11 @@ public class AdapterFactoryServiceImpl implements AdapterFactoryService {
 
     @Reference(name = "containerHelper", service = ContainerAdapter.class, cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC,
                policyOption = ReferencePolicyOption.GREEDY)
-    protected Map<String, Object> setContainerHelper(ServiceReference<ContainerAdapter<?>> helper) {
+    protected void setContainerHelper(ServiceReference<ContainerAdapter<?>> helper) {
         //ignore helpers that don't have the properties we require.
         Object o = helper.getProperty(toType);
         if (o == null)
-            return null;
+            return;
 
         if (o instanceof String) {
             String key = (String) o;
@@ -91,16 +94,16 @@ public class AdapterFactoryServiceImpl implements AdapterFactoryService {
                 containerHelperMap.putReference(key, helper);
             }
         }
-        return getProperties();
+        registration.update();
     }
 
     @Reference(name = "entryHelper", service = EntryAdapter.class, cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC,
                policyOption = ReferencePolicyOption.GREEDY)
-    protected Map<String, Object> setEntryHelper(ServiceReference<EntryAdapter<?>> helper) {
+    protected void setEntryHelper(ServiceReference<EntryAdapter<?>> helper) {
         //ignore helpers that don't have the properties we require.
         Object o = helper.getProperty(toType);
         if (o == null)
-            return null;
+            return;
 
         if (o instanceof String) {
             String key = (String) o;
@@ -112,14 +115,14 @@ public class AdapterFactoryServiceImpl implements AdapterFactoryService {
                 entryHelperMap.putReference(key, helper);
             }
         }
-        return getProperties();
+        registration.update();
     }
 
-    protected Map<String, Object> unsetContainerHelper(ServiceReference<ContainerAdapter<?>> helper) {
+    protected void unsetContainerHelper(ServiceReference<ContainerAdapter<?>> helper) {
         //ignore helpers that don't have the properties we require.
         Object o = helper.getProperty(toType);
         if (o == null)
-            return null;
+            return;
 
         if (o instanceof String) {
             String key = (String) o;
@@ -137,14 +140,14 @@ public class AdapterFactoryServiceImpl implements AdapterFactoryService {
                 }
             }
         }
-        return getProperties();
+        registration.update();
     }
 
-    protected Map<String, Object> unsetEntryHelper(ServiceReference<EntryAdapter<?>> helper) {
+    protected void unsetEntryHelper(ServiceReference<EntryAdapter<?>> helper) {
         //ignore helpers that don't have the properties we require.
         Object o = helper.getProperty(toType);
         if (o == null)
-            return null;
+            return;
 
         if (o instanceof String) {
             String key = (String) o;
@@ -162,14 +165,15 @@ public class AdapterFactoryServiceImpl implements AdapterFactoryService {
                 }
             }
         }
-        return getProperties();
+        registration.update();
     }
 
-    private Map<String, Object> getProperties() {
+    @Override
+    public Hashtable<String, Object> getServiceProperties() {
         if (baseProperties == null) {
             return null;
         }
-        Map<String, Object> props = new HashMap<String, Object>(baseProperties);
+        Hashtable<String, Object> props = new Hashtable<String, Object>(baseProperties);
         props.put("containerToType", containerToTypes.toArray(new String[containerToTypes.size()]));
         props.put("entryToType", entryToTypes.toArray(new String[entryToTypes.size()]));
         return props;

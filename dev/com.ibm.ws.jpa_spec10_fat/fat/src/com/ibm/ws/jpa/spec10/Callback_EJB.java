@@ -115,6 +115,16 @@ public class Callback_EJB extends JPAFATServletClient {
         bannerStart(Callback_EJB.class);
         timestart = System.currentTimeMillis();
 
+        int appStartTimeout = server1.getAppStartTimeout();
+        if (appStartTimeout < (120 * 1000)) {
+            server1.setAppStartTimeout(120 * 1000);
+        }
+
+        int configUpdateTimeout = server1.getConfigUpdateTimeout();
+        if (configUpdateTimeout < (120 * 1000)) {
+            server1.setConfigUpdateTimeout(120 * 1000);
+        }
+
         server1.startServer();
 
         setupDatabaseApplication(server1, RESOURCE_ROOT + "ddl/");
@@ -168,12 +178,12 @@ public class Callback_EJB extends JPAFATServletClient {
         });
 
         ShrinkHelper.exportToServer(server1, "apps", app);
-        server1.addInstalledAppForValidation("Callback_EJB");
 
         Application appRecord = new Application();
         appRecord.setLocation("Callback_EJB.ear");
         appRecord.setName("Callback_EJB");
 
+        server1.setMarkToEndOfLog();
         ServerConfiguration sc = server1.getServerConfiguration();
         sc.getApplications().add(appRecord);
         server1.updateServerConfiguration(sc);

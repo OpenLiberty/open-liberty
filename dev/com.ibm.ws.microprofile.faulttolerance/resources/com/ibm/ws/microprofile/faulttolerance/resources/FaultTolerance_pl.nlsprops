@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -33,6 +33,10 @@ timeout.occurred.CWMFT0000E.useraction=Zwi\u0119ksz limit maksymalnego czasu trw
 bulkhead.no.threads.CWMFT0001E=CWMFT0001E: Brak dost\u0119pnej wolnej pojemno\u015bci w przegrodzie dla metody {0}.
 bulkhead.no.threads.CWMFT0001E.explanation=Wywo\u0142anie metody nie powiod\u0142o si\u0119, poniewa\u017c przegroda metody jest pe\u0142na.
 bulkhead.no.threads.CWMFT0001E.useraction=Zwi\u0119ksz dost\u0119pno\u015b\u0107 w przegrodzie przez zwi\u0119kszenie jej pojemno\u015bci lub zmniejszenie wsp\u00f3\u0142bie\u017cnego obci\u0105\u017cenia tej us\u0142ugi.
+
+application.shutdown.CWMFT0002W=CWMFT0002W: Nie mo\u017cna wykona\u0107 metody asynchronicznej {0}, poniewa\u017c aplikacja lub komponent, kt\u00f3ry j\u0105 wywo\u0142a\u0142, jest zatrzymany.
+application.shutdown.CWMFT0002W.explanation=Metody asynchroniczne s\u0105 uruchamiane w kontek\u015bcie komponentu, kt\u00f3ry je uruchomi\u0142. Aplikacja lub komponent, kt\u00f3ry wywo\u0142a\u0142 t\u0119 metod\u0119 asynchroniczn\u0105, zosta\u0142 zatrzymany, co uniemo\u017cliwi\u0142o wykonanie tej metody asynchronicznej.
+application.shutdown.CWMFT0002W.useraction= To ostrze\u017cenie zazwyczaj wyst\u0119puje, gdy aplikacja, komponent lub serwer jest zamykany. Je\u015bli wszystkie dzia\u0142aj\u0105ce metody asynchroniczne musz\u0105 zosta\u0107 wykonane, w\u00f3wczas aplikacja lub komponent musi czeka\u0107 na wyniki, zanim zostanie zatrzymany.
 
 #An internal error occurred. The exception is {0}.
 internal.error.CWMFT4998E=CWMFT4998E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. Wyj\u0105tek: {0}.

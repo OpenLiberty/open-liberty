@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017, 2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -54,12 +54,12 @@ public class HealthCheckHttpResponseBuilder {
     private static final String HEALTH_CHECK_PAYLOAD_STATE = "state";
     private static final String HEALTH_CHECK_PAYLOAD_DATA = "data";
 
-    private State overallState = State.UP;
-    private final ArrayList<Map<String, Object>> checks = new ArrayList<Map<String, Object>>();
+    protected State overallState = State.UP;
+    protected final ArrayList<Map<String, Object>> checks = new ArrayList<Map<String, Object>>();
 
     JSON json = null;
 
-    void addResponses(Set<HealthCheckResponse> hcResponseSet) {
+    public void addResponses(Set<HealthCheckResponse> hcResponseSet) {
         Iterator<HealthCheckResponse> hcResponseIt = hcResponseSet.iterator();
         while (hcResponseIt.hasNext()) {
             HealthCheckResponse hcResponse = hcResponseIt.next();
@@ -69,7 +69,7 @@ public class HealthCheckHttpResponseBuilder {
         }
     }
 
-    void setHttpResponse(HttpServletResponse httpResponse) {
+    public void setHttpResponse(HttpServletResponse httpResponse) {
         httpResponse.setHeader(HTTP_HEADER_CONTENT_TYPE, MEDIA_TYPE_APPLICATION_JSON);
         HashMap<String, Object> payload = new HashMap<String, Object>();
 
@@ -95,7 +95,7 @@ public class HealthCheckHttpResponseBuilder {
 
     //--------------------------------
 
-    private void setChecks(HealthCheckResponse response) {
+    protected void setChecks(HealthCheckResponse response) {
 
         HashMap<String, Object> check = new HashMap<String, Object>();
         check.put(HEALTH_CHECK_PAYLOAD_NAME, response.getName());
@@ -120,7 +120,7 @@ public class HealthCheckHttpResponseBuilder {
             Tr.debug(tc, "setChecks(): checks = " + checks);
     }
 
-    private void setJSONPayload(Map<String, Object> payload, HttpServletResponse httpResponse) {
+    protected void setJSONPayload(Map<String, Object> payload, HttpServletResponse httpResponse) {
         try {
             JSON jsonService = getJSON();
             httpResponse.getOutputStream().write(jsonService.asBytes(payload));
@@ -149,5 +149,14 @@ public class HealthCheckHttpResponseBuilder {
             json = JSONFactory.newInstance(settings);
         }
         return json;
+    }
+
+    /**
+     * Sets the overall state for the health check
+     *
+     * @param state
+     */
+    public void setOverallState(State state) {
+        this.overallState = state;
     }
 }

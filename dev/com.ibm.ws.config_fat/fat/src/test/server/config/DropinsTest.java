@@ -17,13 +17,16 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
+@RunWith(FATRunner.class)
 public class DropinsTest extends ServletRunner {
 
     private static final String CONTEXT_ROOT = "configdropins";
@@ -79,10 +82,13 @@ public class DropinsTest extends ServletRunner {
             server.setMarkToEndOfLog();
             server.deleteDropinOverrideConfiguration("simple.xml");
             server.waitForConfigUpdateInLogUsingMark(null);
+            server.setMarkToEndOfLog();
             server.deleteDropinDefaultConfiguration("aBrokenFile.xml");
             server.waitForConfigUpdateInLogUsingMark(null);
+            server.setMarkToEndOfLog();
             server.deleteDropinOverrideConfiguration("aBrokenFile.xml");
             server.waitForConfigUpdateInLogUsingMark(null);
+            server.setMarkToEndOfLog();
         }
     }
 

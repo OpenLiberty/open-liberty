@@ -27,6 +27,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.mp.jwt.impl.DefaultJsonWebTokenImpl;
 import com.ibm.ws.security.mp.jwt.proxy.JsonWebTokenUtil;
+import com.ibm.ws.security.mp.jwt.tai.TAIJwtUtils;
 
 /**
  * The JsonWebTokenUtilImpl service only activate when running with JDK 8 and it's handler the JsonWebToken in subject
@@ -114,6 +115,14 @@ public class JsonWebTokenUtilImpl implements JsonWebTokenUtil {
         }
 
         return (Principal) jsonWebToken;
+    }
+
+    @Override
+    public void addLoggedOutJwtToList(Principal p) {
+        if (p instanceof JsonWebToken) {
+            String jwt = ((JsonWebToken) p).getRawToken().toString();
+            TAIJwtUtils.addLoggedOutJwtToList(jwt);
+        }
     }
 
     private void multipleJsonWebTokenPrincipalsError(Set<JsonWebToken> principals) {

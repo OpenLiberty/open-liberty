@@ -1,0 +1,9 @@
+Subsystem-ManifestVersion: 1
+Subsystem-SymbolicName: isolation.Product.Test.Feature-1.0; visibility:=public
+Subsystem-Version: 1.0.0
+Subsystem-Type: osgi.subsystem.feature
+Subsystem-Content: test.feature.isolation.U4; version="[1,1.0.100)",
+ test.feature.isolation.U5; version="[1,1.0.100)",
+ test.feature.isolation.U6; version="[1,1.0.100)"
+IBM-Feature-Version: 2
+IBM-SPI-Package: test.feature.isolation.p4a

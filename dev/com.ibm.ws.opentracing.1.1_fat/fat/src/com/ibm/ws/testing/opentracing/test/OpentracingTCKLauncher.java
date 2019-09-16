@@ -27,8 +27,8 @@ import componenttest.topology.utils.MvnUtils;
 @RunWith(FATRunner.class)
 public class OpentracingTCKLauncher {
 
-    private static final String FEATURE_NAME = "com.ibm.ws.opentracing.mock-0.31.mf";
-    private static final String BUNDLE_NAME = "com.ibm.ws.opentracing.mock-0.31.jar";
+    private static final String FEATURE_NAME = "com.ibm.ws.opentracing.mock-1.1.mf";
+    private static final String BUNDLE_NAME = "com.ibm.ws.opentracing.mock-1.1.jar";
 
     @Server("OpentracingTCKServer")
     public static LibertyServer server;

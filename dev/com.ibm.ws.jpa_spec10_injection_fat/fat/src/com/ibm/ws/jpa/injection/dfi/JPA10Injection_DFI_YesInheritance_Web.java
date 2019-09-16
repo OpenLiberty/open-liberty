@@ -25,6 +25,8 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.Application;
+import com.ibm.websphere.simplicity.config.ClassloaderElement;
+import com.ibm.websphere.simplicity.config.ConfigElementList;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.jpa.FATSuite;
 import com.ibm.ws.jpa.JPAFATServletClient;
@@ -32,20 +34,27 @@ import com.ibm.ws.jpa.fvt.injection.tests.web.dfi.inh.anoovrd.DFIPkgYesInhAnoOvr
 import com.ibm.ws.jpa.fvt.injection.tests.web.dfi.inh.anoovrd.DFIPriYesInhAnoOvrdTestServlet;
 import com.ibm.ws.jpa.fvt.injection.tests.web.dfi.inh.anoovrd.DFIProYesInhAnoOvrdTestServlet;
 import com.ibm.ws.jpa.fvt.injection.tests.web.dfi.inh.anoovrd.DFIPubYesInhAnoOvrdTestServlet;
+import com.ibm.ws.jpa.fvt.injection.tests.web.dfi.inh.ddovrd.DFIPkgYesInhDDOvrdTestServlet;
+import com.ibm.ws.jpa.fvt.injection.tests.web.dfi.inh.ddovrd.DFIPriYesInhDDOvrdTestServlet;
+import com.ibm.ws.jpa.fvt.injection.tests.web.dfi.inh.ddovrd.DFIProYesInhDDOvrdTestServlet;
+import com.ibm.ws.jpa.fvt.injection.tests.web.dfi.inh.ddovrd.DFIPubYesInhDDOvrdTestServlet;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.PrivHelper;
 
 @RunWith(FATRunner.class)
-//@Mode(TestMode.FULL)
+@Mode(TestMode.FULL)
 public class JPA10Injection_DFI_YesInheritance_Web extends JPAFATServletClient {
     private final static String RESOURCE_ROOT = "test-applications/injection/";
     private final static String applicationName = "JPA10Injection_DFIYesInheritance_Web"; // Name of EAR
     private final static String contextRoot = "JPA10Injection_DFIYesInheritance_Web";
+    private final static String contextRoot2 = "JPA10Injection_DFIYesInheritance_DDOvrd_Web";
 
     private final static Set<String> dropSet = new HashSet<String>();
     private final static Set<String> createSet = new HashSet<String>();
@@ -57,20 +66,38 @@ public class JPA10Injection_DFI_YesInheritance_Web extends JPAFATServletClient {
         createSet.add("JPA10_INJECTION_CREATE_${dbvendor}.ddl");
     }
 
-    @Server("JPAServer")
+    @Server("JPAServerDFI")
     @TestServlets({
                     @TestServlet(servlet = DFIPkgYesInhAnoOvrdTestServlet.class, path = contextRoot + "/" + "DFIPkgYesInhAnoOvrdTestServlet"),
                     @TestServlet(servlet = DFIPriYesInhAnoOvrdTestServlet.class, path = contextRoot + "/" + "DFIPriYesInhAnoOvrdTestServlet"),
                     @TestServlet(servlet = DFIProYesInhAnoOvrdTestServlet.class, path = contextRoot + "/" + "DFIProYesInhAnoOvrdTestServlet"),
                     @TestServlet(servlet = DFIPubYesInhAnoOvrdTestServlet.class, path = contextRoot + "/" + "DFIPubYesInhAnoOvrdTestServlet"),
+
+                    @TestServlet(servlet = DFIPkgYesInhDDOvrdTestServlet.class, path = contextRoot2 + "/" + "DFIPkgYesInhDDOvrdTestServlet"),
+                    @TestServlet(servlet = DFIPriYesInhDDOvrdTestServlet.class, path = contextRoot2 + "/" + "DFIPriYesInhDDOvrdTestServlet"),
+                    @TestServlet(servlet = DFIProYesInhDDOvrdTestServlet.class, path = contextRoot2 + "/" + "DFIProYesInhDDOvrdTestServlet"),
+                    @TestServlet(servlet = DFIPubYesInhDDOvrdTestServlet.class, path = contextRoot2 + "/" + "DFIPubYesInhDDOvrdTestServlet"),
+
     })
     public static LibertyServer server1;
 
     @BeforeClass
     public static void setUp() throws Exception {
+        int appStartTimeout = server1.getAppStartTimeout();
+        if (appStartTimeout < (120 * 1000)) {
+            server1.setAppStartTimeout(120 * 1000);
+        }
+
+        int configUpdateTimeout = server1.getConfigUpdateTimeout();
+        if (configUpdateTimeout < (120 * 1000)) {
+            server1.setConfigUpdateTimeout(120 * 1000);
+        }
+
         PrivHelper.generateCustomPolicy(server1, FATSuite.JAXB_PERMS);
         bannerStart(JPA10Injection_DFI_YesInheritance_Web.class);
         timestart = System.currentTimeMillis();
+
+        server1.addEnvVar("repeat_phase", FATSuite.repeatPhase);
 
         server1.startServer();
 
@@ -95,6 +122,7 @@ public class JPA10Injection_DFI_YesInheritance_Web extends JPAFATServletClient {
 
     private static void setupTestApplication() throws Exception {
         final String webModuleName = "injectionDFIYesInheritance";
+        final String webModule2Name = "injectionDFIYesInheritanceDDOvrd";
         final String webFileRootPath = RESOURCE_ROOT + "web/" + webModuleName + "/";
         final String libsPath = RESOURCE_ROOT + "libs/";
 
@@ -125,8 +153,15 @@ public class JPA10Injection_DFI_YesInheritance_Web extends JPAFATServletClient {
         webApp.addPackages(true, "com.ibm.ws.jpa.fvt.injection.tests.web.dfi.inh.anoovrd");
         ShrinkHelper.addDirectory(webApp, webFileRootPath + webModuleName + ".war");
 
+        WebArchive webApp2 = ShrinkWrap.create(WebArchive.class, webModule2Name + ".war");
+        webApp2.addPackages(true, "com.ibm.ws.jpa.fvt.injection.entities.war");
+        webApp2.addPackages(true, "com.ibm.ws.jpa.fvt.injection.testlogic");
+        webApp2.addPackages(true, "com.ibm.ws.jpa.fvt.injection.tests.web.dfi.inh.ddovrd");
+        ShrinkHelper.addDirectory(webApp2, webFileRootPath + webModule2Name + ".war");
+
         final EnterpriseArchive app = ShrinkWrap.create(EnterpriseArchive.class, applicationName + ".ear");
         app.addAsModule(webApp);
+        app.addAsModule(webApp2);
         app.addAsLibrary(jpapulibJar);
         app.addAsLibrary(jpacoreJar);
         app.addAsLibrary(jpaejbJar);
@@ -144,12 +179,19 @@ public class JPA10Injection_DFI_YesInheritance_Web extends JPAFATServletClient {
         });
 
         ShrinkHelper.exportToServer(server1, "apps", app);
-        server1.addInstalledAppForValidation(applicationName);
 
         Application appRecord = new Application();
         appRecord.setLocation(applicationName + ".ear");
         appRecord.setName(applicationName);
 
+        if (FATSuite.repeatPhase != null && FATSuite.repeatPhase.contains("hibernate")) {
+            ConfigElementList<ClassloaderElement> cel = appRecord.getClassloaders();
+            ClassloaderElement loader = new ClassloaderElement();
+            loader.getCommonLibraryRefs().add("HibernateLib");
+            cel.add(loader);
+        }
+
+        server1.setMarkToEndOfLog();
         ServerConfiguration sc = server1.getServerConfiguration();
         sc.getApplications().add(appRecord);
         server1.updateServerConfiguration(sc);

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://ejb.ejbjndi.jaxws.ws.ibm.com/"
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns2="http://schemas.xmlsoap.org/soap/http"
+    xmlns:ns1="http://common.ejbjndi.jaxws.ws.ibm.com/" name="EJBCoffeemateProviderService"
+    targetNamespace="http://ejb.ejbjndi.jaxws.ws.ibm.com/">
+    <wsdl:import
+        location="CoffeemateProvider.wsdl"
+        namespace="http://common.ejbjndi.jaxws.ws.ibm.com/">
+    </wsdl:import>
+    <wsdl:binding name="EJBCoffeemateProviderServiceSoapBinding"
+        type="ns1:CoffeemateProvider">
+        <soap:binding style="document"
+            transport="http://schemas.xmlsoap.org/soap/http"></soap:binding>
+        <wsdl:operation name="take">
+            <soap:operation soapAction="" style="document"></soap:operation>
+            <wsdl:input name="take">
+                <soap:body use="literal"></soap:body>
+            </wsdl:input>
+            <wsdl:output name="takeResponse">
+                <soap:body use="literal"></soap:body>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="EJBCoffeemateProviderService">
+        <wsdl:port binding="tns:EJBCoffeemateProviderServiceSoapBinding"
+            name="EJBCoffeemateProviderPort">
+            <soap:address
+                location="http://ivan-pc:80100/EJBJndiEJB/EJBCoffeemateProviderService"></soap:address>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

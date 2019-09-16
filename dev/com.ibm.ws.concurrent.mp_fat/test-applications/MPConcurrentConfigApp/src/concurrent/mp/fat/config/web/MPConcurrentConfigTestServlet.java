@@ -24,22 +24,23 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Exchanger;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.eclipse.microprofile.concurrent.ManagedExecutor;
-import org.eclipse.microprofile.concurrent.ManagedExecutorConfig;
-import org.eclipse.microprofile.concurrent.NamedInstance;
-import org.eclipse.microprofile.concurrent.ThreadContext;
+import org.eclipse.microprofile.context.ManagedExecutor;
+import org.eclipse.microprofile.context.ThreadContext;
 import org.junit.Test;
 import org.test.context.location.CurrentLocation;
+import org.test.context.location.TestContextTypes;
 
 import componenttest.app.FATServlet;
 
@@ -52,27 +53,15 @@ public class MPConcurrentConfigTestServlet extends FATServlet {
     ConcurrencyConfigBean bean;
 
     @Inject
-    @NamedInstance("applicationProducedExecutor")
-    ManagedExecutor appProducedExecutor;
+    @Named("securityAndAppContextExecutor")
+    ManagedExecutor securityContextExecutor;
 
     @Inject
-    @ManagedExecutorConfig(maxAsync = 1, cleared = { ThreadContext.TRANSACTION, ThreadContext.SECURITY })
-    ManagedExecutor annotatedExecutorWithMPConfigOverride; // MP Config sets maxAsync=2, maxQueued=3
+    @Named("maxQueued3Executor")
+    ManagedExecutor maxQueued3Executor;
 
     @Inject
-    @NamedInstance("containerExecutorReturnedByAppProducer")
-    ManagedExecutor containerExecutorReturnedByAppProducer;
-
-    @Inject
-    @NamedInstance("containerExecutorWithNameAndConfig")
-    @ManagedExecutorConfig(maxQueued = 9, cleared = ThreadContext.ALL_REMAINING, propagated = "State") // MP Config sets maxAsync=1, maxQueued=2
-    ManagedExecutor containerExecutorWithNameAndConfig;
-
-    @Inject
-    ManagedExecutor executorWithMPConfigOverride; // MP Config sets cleared=City, propagated=Application,State
-
-    @Inject
-    @NamedInstance("incompleteStageForSecurityContextTests")
+    @Named("incompleteStageForSecurityContextTests")
     CompletionStage<LinkedBlockingQueue<String>> incompleteStageForSecurityContextTests;
 
     /**
@@ -82,7 +71,7 @@ public class MPConcurrentConfigTestServlet extends FATServlet {
     public void testApplicationProducedManagedExecutorUsingMicroProfileConfig() throws Exception {
         CountDownLatch started = new CountDownLatch(1);
         CountDownLatch blocker = new CountDownLatch(1);
-        CompletableFuture<Boolean> cf0 = appProducedExecutor.supplyAsync(() -> {
+        CompletableFuture<Boolean> cf0 = securityContextExecutor.supplyAsync(() -> {
             try {
                 started.countDown();
                 return blocker.await(TIMEOUT_NS, TimeUnit.NANOSECONDS);
@@ -92,11 +81,11 @@ public class MPConcurrentConfigTestServlet extends FATServlet {
         });
         assertTrue(started.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
 
-        CompletableFuture<Integer> cf1 = appProducedExecutor.supplyAsync(() -> 1);
-        CompletableFuture<Integer> cf2 = appProducedExecutor.supplyAsync(() -> 2);
+        CompletableFuture<Integer> cf1 = securityContextExecutor.supplyAsync(() -> 1);
+        CompletableFuture<Integer> cf2 = securityContextExecutor.supplyAsync(() -> 2);
 
         try {
-            Future<?> future = appProducedExecutor.submit(() -> System.out.println("This should never run!"));
+            Future<?> future = securityContextExecutor.submit(() -> System.out.println("This should never run!"));
             fail("Should not be able to queue third task when MicroProfile Config overrides maxQueued to be 2. " + future);
         } catch (RejectedExecutionException x) {
             // Pass - intentionally exceeded queue capacity in order to test maxQueued constraint
@@ -153,65 +142,20 @@ public class MPConcurrentConfigTestServlet extends FATServlet {
     }
 
     /**
-     * Use MicroProfile Config to override config properties of a ManagedExecutor injection point
-     * that is annotated with ManagedExecutorConfig and does not have any qualifiers.
+     * Use MicroProfile Config to specify default context propagation, but explicitly override
+     * this when using the builder. The configuration explicitly provided to the builder must
+     * take precedence.
      */
     @Test
-    public void testMPConfigOverridesAnnotatedManagedExecutor() throws Exception {
-        assertNotNull(annotatedExecutorWithMPConfigOverride);
-
-        CountDownLatch started = new CountDownLatch(2);
-        CountDownLatch blocker = new CountDownLatch(1);
-        CompletableFuture<Boolean> cf0 = annotatedExecutorWithMPConfigOverride.supplyAsync(() -> {
-            try {
-                started.countDown();
-                return blocker.await(TIMEOUT_NS, TimeUnit.NANOSECONDS);
-            } catch (InterruptedException x) {
-                throw new RuntimeException(x);
-            }
-        });
-        CompletableFuture<Boolean> cf1 = annotatedExecutorWithMPConfigOverride.supplyAsync(() -> {
-            try {
-                started.countDown();
-                return blocker.await(TIMEOUT_NS, TimeUnit.NANOSECONDS);
-            } catch (InterruptedException x) {
-                throw new RuntimeException(x);
-            }
-        });
-        assertTrue(started.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-
-        CompletableFuture<Integer> cf2 = annotatedExecutorWithMPConfigOverride.supplyAsync(() -> 20);
-        CompletableFuture<Integer> cf3 = annotatedExecutorWithMPConfigOverride.supplyAsync(() -> 30);
-        CompletableFuture<Integer> cf4 = annotatedExecutorWithMPConfigOverride.supplyAsync(() -> 40);
-
-        try {
-            Future<?> future = annotatedExecutorWithMPConfigOverride.submit(() -> System.out.println("This should not run!"));
-            fail("Should not be able to run more than 2 tasks or have more then 3 queued. " + future);
-        } catch (RejectedExecutionException x) {
-            // Pass - intentionally exceeded queue capacity in order to test maxQueued constraint
-        }
-
-        blocker.countDown();
-
-        assertEquals(cf0.get(TIMEOUT_NS, TimeUnit.NANOSECONDS), Boolean.TRUE);
-        assertEquals(cf1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS), Boolean.TRUE);
-        assertEquals(cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS), Integer.valueOf(20));
-        assertEquals(cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS), Integer.valueOf(30));
-        assertEquals(cf4.get(TIMEOUT_NS, TimeUnit.NANOSECONDS), Integer.valueOf(40));
-    }
-
-    /**
-     * Use MicroProfile Config to override config properties of a ManagedExecutor injection point
-     * that is not annotated with ManagedExecutorConfig and does not have any qualifiers.
-     */
-    @Test
-    public void testMPConfigOverridesInjectedManagedExecutor() throws Exception {
-        assertNotNull(executorWithMPConfigOverride);
+    public void testMPConfigDefaultsDoNotOverrideExplicitlySpecifiedValues() throws Exception {
+        ManagedExecutor executor = ManagedExecutor.builder()
+                        .propagated(TestContextTypes.STATE)
+                        .build();
 
         CurrentLocation.setLocation("Rochester", "Minnesota");
         try {
             // Run on another thread to confirm propagated context
-            CompletableFuture<Void> cf1 = executorWithMPConfigOverride.runAsync(() -> {
+            CompletableFuture<Void> cf1 = executor.runAsync(() -> {
                 assertEquals("Context type not propagated.", "Minnesota", CurrentLocation.getState());
             });
             cf1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
@@ -227,92 +171,29 @@ public class MPConcurrentConfigTestServlet extends FATServlet {
             assertEquals("Context type not restored.", "Minnesota", CurrentLocation.getState());
         } finally {
             CurrentLocation.clear();
+            executor.shutdownNow();
         }
     }
 
     /**
-     * Use MicroProfile Config to override config properties of a ManagedExecutor injection point
-     * that is annotated with ManagedExecutorConfig and the NamedInstance qualifier.
+     * Use MicroProfile Config to default the maxQueued attribute of a ManagedExecutor to 3.
      */
     @Test
-    public void testMPConfigOverridesManagedExecutorWithConfigAndName() throws Exception {
-        assertNotNull(containerExecutorWithNameAndConfig);
-
-        CurrentLocation.setLocation("Stewartville", "Minnesota");
-        try {
-            // First, verify ManagedExecutorConfig attributes that are not overridden by MicroProfile Config
-
-            // Run on same thread to confirm cleared context
-            CompletableFuture<Void> cf1 = containerExecutorWithNameAndConfig.completedFuture(null).thenRun(() -> {
-                assertEquals("Context type not cleared.", "", CurrentLocation.getCity());
-                CurrentLocation.setLocation("Sparta", "Wisconsin");
-            });
-            cf1.join();
-
-            // Run on another thread to confirm propagated context
-            CompletableFuture<Void> cf2 = cf1.thenRun(() -> {
-                assertEquals("Context type not propagated.", "Minnesota", CurrentLocation.getState());
-            });
-            cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
-
-            assertEquals("Context type not restored.", "Stewartville", CurrentLocation.getCity());
-            assertEquals("Context type not restored.", "Minnesota", CurrentLocation.getState());
-
-            // Verify that MicroProfile Config overrides of maxAsync/maxQueued are honored
-
-            // schedule task to block and wait for it to start
-            Exchanger<String> status = new Exchanger<String>();
-            Future<String> future3 = containerExecutorWithNameAndConfig.submit(() -> status.exchange(status.exchange("READY")));
-            try {
-                status.exchange("WAITING", TIMEOUT_NS, TimeUnit.NANOSECONDS);
-
-                CompletableFuture<Integer> cf4 = cf2.thenApplyAsync(unused -> 44);
-                CompletableFuture<Integer> cf5 = cf2.thenApplyAsync(unused -> 55);
-
-                try {
-                    Future<?> future6 = containerExecutorWithNameAndConfig.submit(() -> System.out.println("This shouldn't be able to run!"));
-                    fail("Should not be able to run more than 1 task or have more than 2 queued. " + future6);
-                } catch (RejectedExecutionException x) {
-                    // Pass - intentionally exceeded queue capacity in order to test maxQueued constraint
-                }
-
-                // unblock the running task
-                status.exchange("CONTINUE");
-
-                assertEquals("CONTINUE", future3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-                assertEquals(Integer.valueOf(44), cf4.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-                assertEquals(Integer.valueOf(55), cf5.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-            } finally {
-                if (future3.isDone())
-                    future3.cancel(true);
-            }
-
-        } finally {
-            CurrentLocation.clear();
-        }
-    }
-
-    /**
-     * Use MicroProfile Config to override config properties of a ManagedExecutor injection point
-     * that is a parameter of a Producer method. This is verified by confirming that maxQueued=3
-     * from microprofile-config.properties is enforced.
-     */
-    @Test
-    public void testMPConfigOverridesManagedExecutorConfigOnParameter() throws Exception {
-        assertNotNull(containerExecutorReturnedByAppProducer);
+    public void testMPConfigDefaultsMaxQueued() throws Exception {
+        assertNotNull(maxQueued3Executor);
 
         // schedule task to block and wait for it to start
         Exchanger<String> status = new Exchanger<String>();
-        Future<String> future0 = containerExecutorReturnedByAppProducer.submit(() -> status.exchange(status.exchange("READY")));
+        Future<String> future0 = maxQueued3Executor.submit(() -> status.exchange(status.exchange("READY")));
         try {
             status.exchange("WAITING", TIMEOUT_NS, TimeUnit.NANOSECONDS);
 
-            CompletableFuture<Integer> cf1 = containerExecutorReturnedByAppProducer.supplyAsync(() -> 111);
-            CompletableFuture<Integer> cf2 = containerExecutorReturnedByAppProducer.supplyAsync(() -> 222);
-            CompletableFuture<Integer> cf3 = containerExecutorReturnedByAppProducer.supplyAsync(() -> 333);
+            CompletableFuture<Integer> cf1 = maxQueued3Executor.supplyAsync(() -> 111);
+            CompletableFuture<Integer> cf2 = maxQueued3Executor.supplyAsync(() -> 222);
+            CompletableFuture<Integer> cf3 = maxQueued3Executor.supplyAsync(() -> 333);
 
             try {
-                Future<?> future = containerExecutorReturnedByAppProducer.submit(() -> System.out.println("This shouldn't be running!"));
+                Future<?> future = maxQueued3Executor.submit(() -> System.out.println("This shouldn't be running!"));
                 fail("Should not be able to run more than 1 task or have more than 3 queued. " + future);
             } catch (RejectedExecutionException x) {
                 // Pass - intentionally exceeded queue capacity in order to test maxQueued constraint
@@ -332,23 +213,147 @@ public class MPConcurrentConfigTestServlet extends FATServlet {
     }
 
     /**
+     * Use MicroProfile Config to specify the default propagated and cleared context types for
+     * ManagedExecutor instances. This is verified by confirming that maxAsync=2, maxQueued=3
+     * from microprofile-config.properties is enforced.
+     */
+    @Test
+    public void testMPConfigSpecifiesDefaultAsyncAndQueuedMaximumsForManagedExecutor() throws Exception {
+        // Defaults:
+        // mp.context.ManagedExecutor.maxAsync=2
+        // mp.context.ManagedExecutor.maxQueued=3
+        ManagedExecutor executor = ManagedExecutor.builder().build();
+
+        // schedule 2 tasks to block and wait for them to start
+        Exchanger<String> status1 = new Exchanger<String>();
+        Exchanger<String> status2 = new Exchanger<String>();
+        Future<String> future1 = executor.submit(() -> status1.exchange(status1.exchange("READY_1")));
+        Future<String> future2 = executor.submit(() -> status2.exchange(status2.exchange("READY_2")));
+
+        try {
+            status1.exchange("WAITING_1", TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            status2.exchange("WAITING_2", TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+            CompletableFuture<Integer> cf3 = executor.supplyAsync(() -> 30);
+            CompletableFuture<Integer> cf4 = executor.supplyAsync(() -> 40);
+            CompletableFuture<Integer> cf5 = executor.supplyAsync(() -> 50);
+
+            try {
+                Future<?> future = executor.submit(() -> System.out.println("This shouldn't be running!"));
+                fail("Should not be able to run more than 2 tasks or have more than 3 queued. " + future);
+            } catch (RejectedExecutionException x) {
+                // Pass - intentionally exceeded queue capacity in order to test maxQueued constraint
+            }
+
+            // unblock one of the the running tasks
+            status1.exchange("CONTINUE_1");
+
+            assertEquals("CONTINUE_1", future1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertEquals(Integer.valueOf(30), cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertEquals(Integer.valueOf(40), cf4.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertEquals(Integer.valueOf(50), cf5.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            // unblock the other running task
+            status2.exchange("CONTINUE_2");
+
+            assertEquals("CONTINUE_2", future2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        } finally {
+            if (future1.isDone())
+                future1.cancel(true);
+            if (future2.isDone())
+                future2.cancel(true);
+        }
+    }
+
+    /**
+     * Use MicroProfile Config to specify the default propagated and cleared context types for ManagedExecutor instances.
+     */
+    @Test
+    public void testMPConfigSpecifiesDefaultContextPropagationForManagedExecutor() throws Exception {
+        // Defaults:
+        // mp.context.ManagedExecutor.cleared=Transaction
+        // mp.context.ManagedExecutor.propagated=City,Application
+        ManagedExecutor executor = ManagedExecutor.builder()
+                        .maxAsync(10)
+                        .build();
+
+        CurrentLocation.setLocation("Mantorville", "Minnesota");
+        try {
+            // Run on same thread to confirm cleared context
+            CompletableFuture<Void> cf1 = executor.completedFuture("unused").thenAccept(s -> {
+                assertEquals("Context type not cleared.", "", CurrentLocation.getState());
+                CurrentLocation.setLocation("Tomah", "Wisconsin");
+            });
+            cf1.join();
+
+            // Run on another thread to confirm propagated context
+            CompletableFuture<Void> cf2 = cf1.thenRunAsync(() -> assertEquals("Context type not propagated.", "Mantorville", CurrentLocation.getCity()));
+            cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+            assertEquals("Context type not restored.", "Mantorville", CurrentLocation.getCity());
+            assertEquals("Context type not restored.", "Minnesota", CurrentLocation.getState());
+        } finally {
+            CurrentLocation.clear();
+            executor.shutdownNow();
+        }
+    }
+
+    /**
+     * Use MicroProfile Config to specify the default propagated and cleared context types for ThreadContext instances.
+     */
+    @Test
+    public void testMPConfigSpecifiesDefaultContextPropagationForThreadContext() throws Exception {
+        // Defaults:
+        // mp.context.ThreadContext.cleared=
+        // mp.context.ThreadContext.propagated=State
+        // mp.context.ThreadContext.unchanged=Remaining
+        ThreadContext threadContext = ThreadContext.builder().build();
+
+        CurrentLocation.setLocation("Owatonna", "Minnesota");
+        try {
+            // Run on same thread to confirm cleared context
+            Runnable test = threadContext.contextualRunnable(() -> {
+                assertEquals("Context type not left unchanged.", "Oskaloosa", CurrentLocation.getCity());
+                assertEquals("Context type not propagated.", "Minnesota", CurrentLocation.getState());
+                CurrentLocation.setLocation("Wasau", "Wisconsin");
+            });
+
+            CurrentLocation.setLocation("Oskaloosa", "Iowa");
+
+            test.run();
+
+            assertEquals("Context type not restored.", "Wasau", CurrentLocation.getCity());
+            assertEquals("Context type not restored.", "Iowa", CurrentLocation.getState());
+        } finally {
+            CurrentLocation.clear();
+        }
+    }
+
+    /**
      * Verifies that a managed executor configured with cleared=SECURITY clears security context for async actions/tasks.
      */
     public void testSecurityContextCleared(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-        Future<String> getUserName = annotatedExecutorWithMPConfigOverride.submit(() -> {
-            Principal principal = req.getUserPrincipal();
-            return principal == null ? null : principal.getName();
-        });
+        ExecutorService executor = ManagedExecutor.builder()
+                        .cleared(ThreadContext.SECURITY)
+                        .build();
+        try {
+            Future<String> getUserName = executor.submit(() -> {
+                Principal principal = req.getUserPrincipal();
+                return principal == null ? null : principal.getName();
+            });
 
-        String user = getUserName.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
-        assertNull(user);
+            String user = getUserName.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            assertNull(user);
+        } finally {
+            executor.shutdownNow();
+        }
     }
 
     /**
      * Verifies that a managed executor configured with cleared=ALL_REMAINING clears security context for async actions/tasks.
      */
     public void testSecurityContextClearedWhenAllRemaining(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-        CompletableFuture<String> getUserName = containerExecutorWithNameAndConfig.completedFuture(20).thenApplyAsync(unused -> {
+        CompletableFuture<String> getUserName = maxQueued3Executor.completedFuture(20).thenApplyAsync(unused -> {
             Principal principal = req.getUserPrincipal();
             return principal == null ? null : principal.getName();
         });
@@ -362,12 +367,19 @@ public class MPConcurrentConfigTestServlet extends FATServlet {
      * Prerequisite: must invoke this test method as "user1"
      */
     public void testSecurityContextPropagatedWhenAllRemaining(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-        CompletableFuture<String> getUserName = containerExecutorReturnedByAppProducer.supplyAsync(() -> {
-            Principal principal = req.getUserPrincipal();
-            return principal == null ? null : principal.getName();
-        });
+        ManagedExecutor executor = ManagedExecutor.builder()
+                        .propagated(ThreadContext.ALL_REMAINING)
+                        .build();
+        try {
+            CompletableFuture<String> getUserName = executor.supplyAsync(() -> {
+                Principal principal = req.getUserPrincipal();
+                return principal == null ? null : principal.getName();
+            });
 
-        String user = getUserName.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
-        assertEquals("user1", user);
+            String user = getUserName.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            assertEquals("user1", user);
+        } finally {
+            executor.shutdownNow();
+        }
     }
 }

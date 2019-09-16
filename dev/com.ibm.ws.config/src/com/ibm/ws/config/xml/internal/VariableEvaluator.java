@@ -39,38 +39,8 @@ public class VariableEvaluator {
         this.configEvaluator = configEvaluator;
     }
 
-    String lookupVariable(String variableName, boolean useEnvironment) {
-        if (variableRegistry == null)
-            return null;
-
-        String originalVariableName = variableName;
-        String value = variableRegistry.lookupVariable(variableName);
-
-        if (useEnvironment) {
-            // Try to resolve as an env variable ( resolve env.var-Name )
-            if (value == null) {
-                value = variableRegistry.lookupVariable("env." + variableName);
-            }
-
-            // Try to resolve with non-alpha characters replaced ( resolve env.var_Name )
-            if (value == null) {
-                variableName = stringUtils.replaceNonAlpha(variableName);
-                value = variableRegistry.lookupVariable("env." + variableName);
-            }
-
-            // Try to resolve with upper case ( resolve env.VAR_NAME )
-            if (value == null) {
-                variableName = variableName.toUpperCase();
-                value = variableRegistry.lookupVariable("env." + variableName);
-            }
-
-            // Finally, try a default value
-            if (value == null) {
-                value = variableRegistry.lookupVariableDefaultValue(originalVariableName);
-            }
-        }
-
-        return value;
+    private String lookupVariableFromRegistry(String variableName) {
+        return variableRegistry == null ? null : variableRegistry.lookupVariable(variableName);
     }
 
     String resolveVariables(String str, EvaluationContext context, boolean ignoreWarnings) throws ConfigEvaluatorException {
@@ -89,6 +59,12 @@ public class VariableEvaluator {
             }
 
             if (rep != null) {
+                // Recursively resolve variables so that we can find cycles.
+
+                context.push(rep);
+                rep = resolveVariables(rep, context, ignoreWarnings);
+                context.pop();
+
                 str = str.replace(matcher.group(0), rep);
                 matcher.reset(str);
             }
@@ -131,7 +107,7 @@ public class VariableEvaluator {
 
             context.push(variable);
 
-            realValue = lookupVariable(variable, useEnvironment);
+            realValue = lookupVariableFromRegistry(variable);
 
             if (realValue == null) {
                 // Try checking the properties. This will pick up already evaluated attributes, including flattened config
@@ -193,6 +169,16 @@ public class VariableEvaluator {
                     }
                 }
 
+                // Try to get an environment variable ( env.MYVAR )
+                if (realValue == null && useEnvironment) {
+                    realValue = lookupEnvironmentVariable(variable);
+                }
+
+                // Try to get a default value (<variable name="var" default="defaultValue"/>)
+                if (realValue == null) {
+                    realValue = lookupDefaultVariable(variable);
+                }
+
                 if (realValue == null) {
                     // If the value is null, add it to the context so that we don't try to evaluate it again.
                     // If the value is not null here, this is a variable that points to a configuration attribute,
@@ -248,6 +234,7 @@ public class VariableEvaluator {
     /**
      * Replaces list variable expressions in raw string values
      */
+    @SuppressWarnings("unchecked")
     Object processVariableLists(Object rawValue, ExtendedAttributeDefinition attributeDef,
                                 EvaluationContext context, boolean ignoreWarnings) throws ConfigEvaluatorException {
         if (attributeDef != null && !attributeDef.resolveVariables())
@@ -312,4 +299,37 @@ public class VariableEvaluator {
         }
         return null;
     }
+
+    private Object lookupEnvironmentVariable(String variableName) {
+        if (variableRegistry == null)
+            return null;
+        Object value = null;
+
+        // Try to resolve as an env variable ( resolve env.var-Name )
+
+        value = variableRegistry.lookupVariable("env." + variableName);
+
+        // Try to resolve with non-alpha characters replaced ( resolve env.var_Name )
+        if (value == null) {
+            variableName = stringUtils.replaceNonAlpha(variableName);
+            value = variableRegistry.lookupVariable("env." + variableName);
+        }
+
+        // Try to resolve with upper case ( resolve env.VAR_NAME )
+        if (value == null) {
+            variableName = variableName.toUpperCase();
+            value = variableRegistry.lookupVariable("env." + variableName);
+        }
+
+        return value;
+
+    }
+
+    private Object lookupDefaultVariable(String variableName) {
+        if (variableRegistry == null)
+            return null;
+
+        return variableRegistry.lookupVariableDefaultValue(variableName);
+    }
+
 }

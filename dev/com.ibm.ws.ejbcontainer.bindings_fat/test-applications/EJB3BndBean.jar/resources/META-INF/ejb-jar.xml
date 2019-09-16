@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+   <ejb-jar id="EJBJar_1060639024453" version="3.0"
+         xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd"
+         metadata-complete="false">
+      <enterprise-beans>
+         <session id="Session_1051542150766">
+            <ejb-name>TargetOneBean</ejb-name>
+            <home>com.ibm.ws.ejbcontainer.bindings.bnd.ejb.RemoteTargetOneHome</home>
+            <remote>com.ibm.ws.ejbcontainer.bindings.bnd.ejb.RemoteTargetOne</remote>
+            <local-home>com.ibm.ws.ejbcontainer.bindings.bnd.ejb.LocalTargetOneHome</local-home>
+            <local>com.ibm.ws.ejbcontainer.bindings.bnd.ejb.LocalTargetOne</local>
+            <business-local>com.ibm.ws.ejbcontainer.bindings.bnd.ejb.LocalTargetOneBiz</business-local>
+            <business-remote>com.ibm.ws.ejbcontainer.bindings.bnd.ejb.RemoteTargetOneBiz</business-remote>
+            <ejb-class>com.ibm.ws.ejbcontainer.bindings.bnd.ejb.TargetOneBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session> 
+         
+         <session id="Session_1051542150788">
+           <ejb-name>TargetThreeBean</ejb-name>
+           <business-local>com.ibm.ws.ejbcontainer.bindings.bnd.ejb.LocalTargetThreeBiz1</business-local>
+           <business-local>com.ibm.ws.ejbcontainer.bindings.bnd.ejb.LocalTargetThreeBiz2</business-local>
+           <business-local>com.ibm.ws.ejbcontainer.bindings.bnd.ejb.LocalTargetThreeBiz3</business-local>
+           <ejb-class>com.ibm.ws.ejbcontainer.bindings.bnd.ejb.TargetThreeBean</ejb-class>
+           <session-type>Stateless</session-type>
+           <transaction-type>Container</transaction-type>
+         </session>
+ 
+          <session id="Session_1051542150799">
+           <ejb-name>TargetFourBean</ejb-name>
+           <business-local>com.ibm.ws.ejbcontainer.bindings.bnd.ejb.LocalTargetFourBiz1</business-local>
+           <business-local>com.ibm.ws.ejbcontainer.bindings.bnd.ejb.LocalTargetFourBiz2</business-local>
+           <ejb-class>com.ibm.ws.ejbcontainer.bindings.bnd.ejb.TargetFourBean</ejb-class>
+           <session-type>Stateful</session-type>
+           <transaction-type>Container</transaction-type>
+         </session>
+       </enterprise-beans>
+   </ejb-jar>

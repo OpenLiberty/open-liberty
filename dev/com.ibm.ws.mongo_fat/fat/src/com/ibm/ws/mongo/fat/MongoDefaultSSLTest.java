@@ -38,10 +38,11 @@ public class MongoDefaultSSLTest extends FATServletClient {
 
     @AfterClass
     public static void afterClass() throws Exception {
-        server.stopServer("SRVE0777E.*com.mongodb.CommandResult",
-                          "SRVE0777E.*com.mongodb.CommandFailureException",
-                          "SRVE0315E.*com.mongodb.CommandFailureException",
-                          "CWWKE0701E" // TODO: Circular reference detected trying to get service {org.osgi.service.cm.ManagedServiceFactory, com.ibm.wsspi.logging.Introspector, com.ibm.ws.runtime.update.RuntimeUpdateListener, com.ibm.wsspi.application.lifecycle.ApplicationRecycleCoordinator}
-        );
+        // TODO: CWWKE0701E - Circular reference detected trying to get service
+        // {org.osgi.service.cm.ManagedServiceFactory,
+        // com.ibm.wsspi.logging.Introspector,
+        // com.ibm.ws.runtime.update.RuntimeUpdateListener,
+        // com.ibm.wsspi.application.lifecycle.ApplicationRecycleCoordinator}
+        server.stopServer("CWWKE0701E");
     }
 }

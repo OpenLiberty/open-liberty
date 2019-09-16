@@ -25,6 +25,7 @@ tested.features: \
   osgiconsole-1.0
 
 -buildpath: \
+  com.ibm.websphere.javaee.annotation.1.1;version=latest,\
   com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
   com.ibm.websphere.javaee.ejb.3.2;version=latest,\
   com.ibm.websphere.javaee.servlet.3.1;version=latest,\

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2018 IBM Corporation and others.
+ * Copyright (c) 2015, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,9 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.logging.source;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.LogRecord;
 
+import com.ibm.websphere.logging.hpel.LogRecordContext;
 import com.ibm.websphere.ras.DataFormatHelper;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -23,6 +25,7 @@ import com.ibm.ws.logging.collector.CollectorJsonHelpers;
 import com.ibm.ws.logging.collector.LogFieldConstants;
 import com.ibm.ws.logging.data.KeyValuePairList;
 import com.ibm.ws.logging.data.LogTraceData;
+import com.ibm.ws.logging.internal.NLSConstants;
 import com.ibm.ws.logging.internal.WsLogRecord;
 import com.ibm.ws.logging.utils.LogFormatUtils;
 import com.ibm.ws.logging.utils.SequenceNumber;
@@ -31,10 +34,13 @@ import com.ibm.wsspi.collector.manager.Source;
 
 public class LogSource implements Source {
 
-    private static final TraceComponent tc = Tr.register(LogSource.class);
+    private static final TraceComponent tc = Tr.register(LogSource.class, NLSConstants.GROUP, NLSConstants.LOGGING_NLS);
 
     private final String sourceName = "com.ibm.ws.logging.source.message";
     private final String location = "memory";
+    private final String SYSOUT = "SystemOut";
+    private final String SYSERR = "SystemErr";
+
     private BufferManager bufferMgr = null;
     private final SequenceNumber sequenceNumber = new SequenceNumber();
 
@@ -130,8 +136,15 @@ public class LogSource implements Source {
         logData.setModule(logRecord.getLoggerName());
         logData.setSeverity(LogFormatUtils.mapLevelToType(logRecord));
         logData.setLoglevel(LogFormatUtils.mapLevelToRawType(logRecord));
-        logData.setMethodName(logRecord.getSourceMethodName());
-        logData.setClassName(logRecord.getSourceClassName());
+
+        if (logRecord.getLoggerName() != null && (logRecord.getLoggerName().equals(SYSOUT) ||
+                                                  logRecord.getLoggerName().equals(SYSERR))) {
+            logData.setMethodName("");
+            logData.setClassName("");
+        } else {
+            logData.setMethodName(logRecord.getSourceMethodName());
+            logData.setClassName(logRecord.getSourceClassName());
+        }
 
         logData.setLevelValue(logRecord.getLevel().intValue());
         String threadName = Thread.currentThread().getName();
@@ -149,6 +162,15 @@ public class LogSource implements Source {
             if (wsLogRecord.getExtensions() != null) {
                 extensions = new KeyValuePairList(LogFieldConstants.EXTENSIONS_KVPL);
                 Map<String, String> extMap = wsLogRecord.getExtensions();
+                for (Map.Entry<String, String> entry : extMap.entrySet()) {
+                    CollectorJsonHelpers.handleExtensions(extensions, entry.getKey(), entry.getValue());
+                }
+            }
+        } else {
+            Map<String, String> extMap = new HashMap<String, String>();
+            LogRecordContext.getExtensions(extMap);
+            if (!extMap.isEmpty()) {
+                extensions = new KeyValuePairList(LogFieldConstants.EXTENSIONS_KVPL);
                 for (Map.Entry<String, String> entry : extMap.entrySet()) {
                     CollectorJsonHelpers.handleExtensions(extensions, entry.getKey(), entry.getValue());
                 }

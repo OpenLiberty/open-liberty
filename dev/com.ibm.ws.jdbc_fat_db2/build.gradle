@@ -1,0 +1,55 @@
+/*******************************************************************************
+ * Copyright (c) 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+configurations {
+  db2
+}
+
+dependencies {
+  requiredLibs 'org.testcontainers:testcontainers:1.12.0',
+               'org.testcontainers:database-commons:1.12.0',
+               'org.testcontainers:db2:1.12.0',
+               'org.testcontainers:jdbc:1.12.0',
+               'org.apache.commons:commons-compress:1.19',
+               'org.rnorth.duct-tape:duct-tape:1.0.7',
+               'org.rnorth.visible-assertions:visible-assertions:2.1.2',
+               'org.rnorth:tcp-unix-socket-proxy:1.0.2',
+               'net.java.dev.jna:jna:5.2.0',
+               'org.slf4j:slf4j-api:1.7.7',
+               'org.slf4j:slf4j-jdk14:1.7.7'
+  db2 'com.ibm.db2:jcc:11.1.4.4'
+}
+
+task copyDB2(type: Copy) {
+  shouldRunAfter jar
+  from configurations.db2
+  into new File(autoFvtDir, 'publish/shared/resources/db2')
+}
+
+addRequiredLibraries.dependsOn copyDB2
+
+// This is the equivalent ant code that needs to be invoked in order to transform the SQLJProcedure.sqlj
+// file into a .java file. Since the SQLJ customizer code library is not publicly available, and the
+// SQLJProcedure.sqlj file rarely changes, we will simply check in the generated file.
+//     <target name="addRequiredFiles">
+//         <echo message="running sqlj xform with java level: ${build.with.java.level}"/>
+//         <java classname="sqlj.tools.Sqlj" classpathref="project.class.path" fork="true">
+//           <arg value="-compile=false"/> <!-- compile the generated .java files later with <wlpjavac> -->
+//           <arg value="-d=${classes.dir}"/>
+//           <arg value="-status"/>
+//           <arg value="-db2optimize"/>
+//           <arg value="${basedir}/test-applications/sqljapp/src/web/SQLJProcedure.sqlj"/>
+//         </java>
+//         <echo message="SQLJ transform complete.  Now compiling generated .java file"/>      
+//         <wlpJavac srcdir="${basedir}/test-applications/sqljapp/src/" 
+//                   destdir="${classes.dir}" 
+//                   buildWithJavaLevel="${build.with.java.level}"/>
+//     </target>

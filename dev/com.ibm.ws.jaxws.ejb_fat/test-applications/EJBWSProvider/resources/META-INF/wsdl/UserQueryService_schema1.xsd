@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema version="1.0" targetNamespace="http://ejbbasic.jaxws.ws.ibm.com/" xmlns:tns="http://ejbbasic.jaxws.ws.ibm.com/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="UserNotFoundException" type="tns:UserNotFoundException"/>
+
+  <xs:element name="getUser" type="tns:getUser"/>
+
+  <xs:element name="getUserResponse" type="tns:getUserResponse"/>
+
+  <xs:element name="listUsers" type="tns:listUsers"/>
+
+  <xs:element name="listUsersResponse" type="tns:listUsersResponse"/>
+
+  <xs:complexType name="listUsers">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="listUsersResponse">
+    <xs:sequence>
+      <xs:element name="return" type="tns:user" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="user">
+    <xs:sequence>
+      <xs:element name="name" type="xs:string" minOccurs="0"/>
+      <xs:element name="registerDate" type="xs:dateTime" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getUser">
+    <xs:sequence>
+      <xs:element name="arg0" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getUserResponse">
+    <xs:sequence>
+      <xs:element name="return" type="tns:user" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="UserNotFoundException">
+    <xs:sequence>
+      <xs:element name="message" type="xs:string" minOccurs="0"/>
+      <xs:element name="userName" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>
+

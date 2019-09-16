@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2001, 2016 IBM Corporation and others.
+# Copyright (c) 2001, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -270,13 +270,21 @@ DSRA4011.tran.none.iso.switch.unsupported=DSRA4011E: JDBC \u9a71\u52a8\u7a0b\u5e
 DSRA4011.tran.none.iso.switch.unsupported.explanation=JDBC \u89c4\u8303\u4e0d\u652f\u6301\u5207\u6362\u5230 TRANSACTION_NONE \u9694\u79bb\u7ea7\u522b\u3002
 DSRA4011.tran.none.iso.switch.unsupported.useraction=\u5e94\u907f\u514d\u5207\u6362\u5230 TRANSACTION_NONE \u9694\u79bb\u7ea7\u522b\u3002
 
-DSRA4012.ignored.datasource.config.used=DSRA4012I: \u4f7f\u7528 Oracle UCP \u65f6\uff0c\u5c06\u5ffd\u7565\u4e0b\u5217\u6570\u636e\u6e90\u5c5e\u6027\uff1astatementCacheSize \u548c validationTimeout\u3002\u8bf7\u4f7f\u7528\u7b49\u6548\u7684 Oracle UCP \u529f\u80fd\u3002
-DSRA4012.ignored.datasource.config.used.explanation=\u4f7f\u7528 Oracle UCP \u65f6\uff0cstatementCacheSize \u548c validationTimeout \u6570\u636e\u6e90\u5c5e\u6027\u65e0\u6548\u3002
-DSRA4012.ignored.datasource.config.used.useraction=\u8bf7\u79fb\u9664\u8fd9\u4e9b\u6570\u636e\u6e90\u5c5e\u6027\uff0c\u5e76\u6539\u4e3a\u4f7f\u7528\u7b49\u6548\u7684 Oracle UCP \u529f\u80fd\u3002
+DSRA4012.ignored.datasource.config.used=DSRA4012I: \u4f7f\u7528 Oracle UCP \u65f6\uff0c\u5c06\u5ffd\u7565\u4e0b\u5217\u6570\u636e\u6e90\u5c5e\u6027\uff1a{0}\u3002
+DSRA4012.ignored.datasource.config.used.explanation=\u4f7f\u7528 Oracle UCP \u65f6\uff0c\u5217\u793a\u7684\u6570\u636e\u6e90\u5c5e\u6027\u65e0\u6548\u3002
+DSRA4012.ignored.datasource.config.used.useraction=\u8bf7\u79fb\u9664\u65e0\u6548\u7684\u6570\u636e\u6e90\u5c5e\u6027\uff0c\u5e76\u6539\u4e3a\u4f7f\u7528\u7b49\u4ef7\u7684 Oracle UCP \u529f\u80fd\uff08\u5982\u679c\u53ef\u7528\uff09\u3002
 
-DSRA4013.ignored.connection.manager.config.used=DSRA4013I: \u4f7f\u7528 Oracle UCP \u65f6\uff0c\u5c06\u5ffd\u7565\u4e0b\u5217\u8fde\u63a5\u7ba1\u7406\u5668\u5c5e\u6027\uff1aagedTimeout\u3001connectionTimeout\u3001maxIdleTime\u3001maxPoolSize\u3001minPoolSize\u3001purgePolicy\u3001reapTime\u3001maxConnectionsPerThread \u548c maxConnectionsPerThreadLocal\u3002\u8bf7\u4f7f\u7528\u7b49\u6548\u7684 Oracle UCP \u529f\u80fd\u3002
-DSRA4013.ignored.connection.manager.config.used.explanation=\u4f7f\u7528 Oracle UCP \u65f6\uff0c\u5217\u793a\u7684\u8fde\u63a5\u7ba1\u7406\u5668\u5c5e\u6027\u65e0\u6548\u3002
-DSRA4013.ignored.connection.manager.config.used.useraction=\u8bf7\u79fb\u9664\u8fd9\u4e9b\u8fde\u63a5\u7ba1\u7406\u5668\u5c5e\u6027\uff0c\u5e76\u6539\u4e3a\u4f7f\u7528\u7b49\u6548\u7684 Oracle UCP \u529f\u80fd\u3002
+DSRA4013.ignored.connection.manager.config.used=DSRA4013I: \u8fde\u63a5\u7ba1\u7406\u5668\u5c5e\u6027\u65e0\u6548\u3002\u4f7f\u7528 Oracle UCP \u65f6\uff0c\u4e0b\u5217\u8fde\u63a5\u7ba1\u7406\u5668\u5c5e\u6027\u6709\u6548\uff1a{0}\u3002
+DSRA4013.ignored.connection.manager.config.used.explanation=\u4f7f\u7528 Oracle UCP \u65f6\uff0c\u4ec5\u5217\u793a\u7684\u8fde\u63a5\u7ba1\u7406\u5668\u5c5e\u6027\u6709\u6548\u3002
+DSRA4013.ignored.connection.manager.config.used.useraction=\u8bf7\u79fb\u9664\u65e0\u6548\u7684\u8fde\u63a5\u7ba1\u7406\u5668\u5c5e\u6027\uff0c\u5e76\u6539\u4e3a\u4f7f\u7528\u7b49\u4ef7\u7684 Oracle UCP \u529f\u80fd\uff08\u5982\u679c\u53ef\u7528\uff09\u3002
+
+DSRA4014.URL.for.Driver.missing=DSRA4014E: \u5bf9\u6570\u636e\u6e90 {0} \u6307\u5b9a\u4e86\u7c7b\u578b java.sql.Driver\uff0c\u4f46\u672a\u6307\u5b9a URL \u5c5e\u6027\u3002
+DSRA4014.URL.for.Driver.missing.explanation=\u5fc5\u987b\u5bf9\u7c7b\u578b\u4e3a java.sql.Driver \u7684\u6570\u636e\u6e90\u6307\u5b9a\u8fde\u63a5 URL\u3002
+DSRA4014.URL.for.Driver.missing.useraction=\u8bf7\u5c06\u6709\u6548 URL \u6dfb\u52a0\u5230\u8be5\u6570\u636e\u6e90\u3002
+
+DSRA4015.no.ucp.connection.pool.datasource=DSRA4015E: \u5bf9 {0} \u6570\u636e\u6e90\u914d\u7f6e\u4e86 {1} \u7c7b\u578b\uff0cOracle UCP \u4e0d\u652f\u6301\u8be5\u7c7b\u578b\u3002\u8bf7\u6539\u4e3a\u4f7f\u7528 XADataSource \u6216 DataSource \u7c7b\u578b\u3002
+DSRA4015.no.ucp.connection.pool.datasource.explanation=\u5bf9\u8be5\u6570\u636e\u6e90\u914d\u7f6e\u4e86 ConnectionPoolDataSource \u6216 Driver \u7c7b\u578b\uff0cOracle UCP \u9a71\u52a8\u7a0b\u5e8f\u672a\u5b9e\u73b0\u8be5\u7c7b\u578b\u3002
+DSRA4015.no.ucp.connection.pool.datasource.useraction=\u8bf7\u66f4\u65b0\u8be5\u6570\u636e\u6e90\u4ee5\u4f7f\u7528 XADataSource \u6216 DataSource \u7c7b\u578b\u3002
 
 # ----------------------------------------------------------------------------
 # 
@@ -540,6 +548,13 @@ NO_WRAPPED_OBJECT.explanation=\u6307\u5b9a\u7684\u5305\u88c5\u5668\u672a\u5305\u
 NO_WRAPPED_OBJECT.useraction=\u8bf7\u9a8c\u8bc1\u662f\u5426\u5df2\u6b63\u786e\u6307\u5b9a\u5305\u88c5\u5668\u4ee5\u53ca\u88ab\u5305\u88c5\u5bf9\u8c61\u7684\u53c2\u6570\u3002
 
 # 9123 deleted
+
+# 9124       NOT_AN_INTERFACE
+#
+# {0}        The Class that was specified to unwrap to
+NOT_AN_INTERFACE=DSRA9124E: \u65e0\u6cd5\u5c06\u5bf9\u8c61\u89e3\u5305\u81f3 {0}\uff0c\u56e0\u4e3a {0} \u4e0d\u662f\u63a5\u53e3\u7c7b\u3002
+NOT_AN_INTERFACE.explanation=\u89e3\u5305\u65b9\u6cd5\u4ec5\u5141\u8bb8\u89e3\u5305\u81f3\u63a5\u53e3\u7c7b\u3002
+NOT_AN_INTERFACE.useraction=\u8bf7\u89e3\u5305\u81f3\u63a5\u53e3\u7c7b\uff0c\u800c\u4e0d\u662f\u89e3\u5305\u81f3\u5177\u4f53\u7c7b\u3002
 
 # 9130E      OPERATION_NOT_PERMITTED
 # 

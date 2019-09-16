@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,8 +20,11 @@ import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.net.SocketFactory;
+import javax.net.ssl.SSLParameters;
+import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
 import com.ibm.ejs.ras.Tr;
@@ -48,6 +51,8 @@ public class LibertySSLSocketFactory extends javax.net.ssl.SSLSocketFactory {
 
     protected boolean default_constructor = true;
     private static com.ibm.ws.ssl.protocol.LibertySSLSocketFactory thisClass = null;
+
+    private static String ENDPOINT_ALGORITHM = "HTTPS";
 
     /***
      * <p>
@@ -266,7 +271,7 @@ public class LibertySSLSocketFactory extends javax.net.ssl.SSLSocketFactory {
             Tr.entry(tc, "createSocket");
         javax.net.ssl.SSLSocketFactory currentFactory = default_factory;
         javax.net.ssl.SSLSocket socket = null;
-        java.util.Properties sslProps = props;
+        java.util.Properties sslprops = props;
         if (default_constructor) {
             try {
                 java.util.Properties sslPropsOnThread = getSSLPropertiesOnThread();
@@ -278,10 +283,10 @@ public class LibertySSLSocketFactory extends javax.net.ssl.SSLSocketFactory {
                         currentConnectionInfo = new HashMap<String, Object>();
                         currentConnectionInfo.put(Constants.CONNECTION_INFO_DIRECTION, Constants.DIRECTION_OUTBOUND);
                     }
-                    sslProps = getProperties(null, currentConnectionInfo, null);
+                    sslprops = getProperties(null, currentConnectionInfo, null);
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Getting SSLSocketFactory");
-                    currentFactory = getSSLSocketFactory(currentConnectionInfo, sslProps);
+                    currentFactory = getSSLSocketFactory(currentConnectionInfo, sslprops);
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Got SSLSocketFactory", new Object[] { currentFactory });
                 } else {
@@ -311,7 +316,12 @@ public class LibertySSLSocketFactory extends javax.net.ssl.SSLSocketFactory {
         }
         if (currentFactory != null) {
             socket = (javax.net.ssl.SSLSocket) currentFactory.createSocket();
-            socket = SSLConfigManager.getInstance().setCipherListOnSocket(sslProps, socket);
+
+            SSLParameters p = socket.getSSLParameters();
+            String[] ciphers = SSLConfigManager.getInstance().getCipherList(sslprops, socket);
+            p.setCipherSuites(ciphers);
+
+            socket.setSSLParameters(p);
         } else
             throw new javax.net.ssl.SSLException("SSLSocketFactory is null. This can occur if javax.net.ssl.SSLSocketFactory.getDefault() is called to create a socket and javax.net.ssl.* properties are not set.");
 
@@ -365,7 +375,12 @@ public class LibertySSLSocketFactory extends javax.net.ssl.SSLSocketFactory {
 
         if (factory != null) {
             socket = (javax.net.ssl.SSLSocket) factory.createSocket(s, host, port, autoClose);
-            socket = SSLConfigManager.getInstance().setCipherListOnSocket(sslprops, socket);
+
+            if (sslprops != null) {
+                SSLParameters p = createSSLParameters(sslprops, socket);
+                socket.setSSLParameters(p);
+            }
+
         } else
             throw new javax.net.ssl.SSLException("SSLSocketFactory is null. This can occur if javax.net.ssl.SSLSocketFactory.getDefault() is called to create a socket and javax.net.ssl.* properties are not set.");
         if (tc.isEntryEnabled())
@@ -441,7 +456,12 @@ public class LibertySSLSocketFactory extends javax.net.ssl.SSLSocketFactory {
 
         if (factory != null) {
             socket = (javax.net.ssl.SSLSocket) factory.createSocket(host, port);
-            socket = SSLConfigManager.getInstance().setCipherListOnSocket(sslprops, socket);
+
+            if (sslprops != null) {
+                SSLParameters p = createSSLParameters(sslprops, socket);
+                socket.setSSLParameters(p);
+            }
+
         } else
             throw new javax.net.ssl.SSLException("SSLSocketFactory is null. This can occur if javax.net.ssl.SSLSocketFactory.getDefault() is called to create a socket and javax.net.ssl.* properties are not set.");
 
@@ -526,7 +546,12 @@ public class LibertySSLSocketFactory extends javax.net.ssl.SSLSocketFactory {
 
         if (factory != null) {
             socket = (javax.net.ssl.SSLSocket) factory.createSocket(address, port, localAddress, localPort);
-            socket = SSLConfigManager.getInstance().setCipherListOnSocket(sslprops, socket);
+
+            if (sslprops != null) {
+                SSLParameters p = createSSLParameters(sslprops, socket);
+                socket.setSSLParameters(p);
+            }
+
         } else
             throw new javax.net.ssl.SSLException("SSLSocketFactory is null. This can occur if javax.net.ssl.SSLSocketFactory.getDefault() is called to create a socket and javax.net.ssl.* properties are not set.");
 
@@ -582,7 +607,11 @@ public class LibertySSLSocketFactory extends javax.net.ssl.SSLSocketFactory {
 
         if (factory != null) {
             socket = (javax.net.ssl.SSLSocket) factory.createSocket(host, port);
-            socket = SSLConfigManager.getInstance().setCipherListOnSocket(sslprops, socket);
+
+            if (sslprops != null) {
+                SSLParameters p = createSSLParameters(sslprops, socket);
+                socket.setSSLParameters(p);
+            }
         } else
             throw new javax.net.ssl.SSLException("SSLSocketFactory is null. This can occur if javax.net.ssl.SSLSocketFactory.getDefault() is called to create a socket and javax.net.ssl.* properties are not set.");
 
@@ -639,7 +668,12 @@ public class LibertySSLSocketFactory extends javax.net.ssl.SSLSocketFactory {
 
         if (factory != null) {
             socket = (javax.net.ssl.SSLSocket) factory.createSocket(host, port, localHost, localPort);
-            socket = SSLConfigManager.getInstance().setCipherListOnSocket(sslprops, socket);
+
+            if (sslprops != null) {
+                SSLParameters p = createSSLParameters(sslprops, socket);
+                socket.setSSLParameters(p);
+            }
+
         } else
             throw new javax.net.ssl.SSLException("SSLSocketFactory is null. This can occur if javax.net.ssl.SSLSocketFactory.getDefault() is called to create a socket and javax.net.ssl.* properties are not set.");
 
@@ -666,6 +700,22 @@ public class LibertySSLSocketFactory extends javax.net.ssl.SSLSocketFactory {
                 Tr.debug(tc, "one of parameters is null, throwing NullPointerException.");
             throw new java.lang.NullPointerException();
         }
+    }
+
+    private static SSLParameters createSSLParameters(Properties sslprops, SSLSocket socket) {
+
+        SSLParameters p = socket.getSSLParameters();
+        String[] ciphers = SSLConfigManager.getInstance().getCipherList(sslprops, socket);
+        p.setCipherSuites(ciphers);
+
+        //Enable hostname verification
+        String enableEndpointId = sslprops.getProperty(Constants.SSLPROP_HOSTNAME_VERIFICATION, "false");
+        if (enableEndpointId != null && enableEndpointId.equalsIgnoreCase("true")) {
+            p.setEndpointIdentificationAlgorithm(ENDPOINT_ALGORITHM);
+        }
+
+        return p;
+
     }
 
     /**

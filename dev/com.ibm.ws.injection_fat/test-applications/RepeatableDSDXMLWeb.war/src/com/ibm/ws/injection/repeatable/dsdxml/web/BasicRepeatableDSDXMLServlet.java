@@ -58,7 +58,7 @@ public class BasicRepeatableDSDXMLServlet extends FATServlet {
      *
      */
     @Test
-    public void testRepeatableDSDModLevel() throws Exception {
+    public void testRepeatableDSDModLevel_BasicRepeatableDSDXML() throws Exception {
         getAndVerifyResult("java:module/BasicModLevelDS", 1842, 8);
     }
 
@@ -70,7 +70,7 @@ public class BasicRepeatableDSDXMLServlet extends FATServlet {
      *
      */
     @Test
-    public void testRepeatableDSDAppLevel() throws Exception {
+    public void testRepeatableDSDAppLevel_BasicRepeatableDSDXML() throws Exception {
         getAndVerifyResult("java:app/BasicAppLevelDS", 1822, 8);
     }
 
@@ -82,7 +82,7 @@ public class BasicRepeatableDSDXMLServlet extends FATServlet {
      *
      */
     @Test
-    public void testRepeatableDSDGlobalLevel() throws Exception {
+    public void testRepeatableDSDGlobalLevel_BasicRepeatableDSDXML() throws Exception {
         getAndVerifyResult("java:global/BasicGlobalLevelDS", 1832, 8);
     }
 
@@ -93,7 +93,7 @@ public class BasicRepeatableDSDXMLServlet extends FATServlet {
      * @throws Exception
      */
     @Test
-    public void testRepeatableDSDCompLevel() throws Exception {
+    public void testRepeatableDSDCompLevel_BasicRepeatableDSDXML() throws Exception {
         getAndVerifyResult("java:comp/env/BasicCompLevelDS", 1813, 8);
     }
 

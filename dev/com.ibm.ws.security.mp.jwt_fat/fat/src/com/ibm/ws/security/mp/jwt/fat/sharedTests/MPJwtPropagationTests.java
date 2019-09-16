@@ -96,7 +96,7 @@ public class MPJwtPropagationTests extends CommonMpJwtFat {
         bootstrapUtils.writeBootstrapProperty(server, "mpJwt_jwksUri", "");
         deployRSClientApps(server);
         serverTracker.addServer(server);
-        server.startServerUsingExpandedConfiguration(configFile);
+        server.startServerUsingExpandedConfiguration(configFile, commonStartMsgs);
         SecurityFatHttpUtils.saveServerPorts(server, MpJwtFatConstants.BVT_SERVER_3_PORT_NAME_ROOT);
     }
 
@@ -107,7 +107,7 @@ public class MPJwtPropagationTests extends CommonMpJwtFat {
         bootstrapUtils.writeBootstrapProperty(server, "mpJwt_jwksUri", "");
         deployRSServerPropagationApps(server);
         serverTracker.addServer(server);
-        server.startServerUsingExpandedConfiguration(configFile);
+        server.startServerUsingExpandedConfiguration(configFile, commonStartMsgs);
         SecurityFatHttpUtils.saveServerPorts(server, MpJwtFatConstants.BVT_SERVER_1_PORT_NAME_ROOT);
     }
 

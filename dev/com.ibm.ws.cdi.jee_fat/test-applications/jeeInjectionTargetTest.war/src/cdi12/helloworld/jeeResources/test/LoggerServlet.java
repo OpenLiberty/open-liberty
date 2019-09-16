@@ -36,7 +36,7 @@ public class LoggerServlet extends HttpServlet {
         JEEResourceExtension extension = beanManager.getExtension(JEEResourceExtension.class);
 
         PrintWriter pw = response.getWriter();
-        Iterator<String> itr = extension.logger.iterator();
+        Iterator<String> itr = extension.getLogger().iterator();
         while (itr.hasNext()) {
             pw.write(itr.next());
             if (itr.hasNext()) {

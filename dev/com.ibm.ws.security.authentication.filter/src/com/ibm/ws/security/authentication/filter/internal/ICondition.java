@@ -23,6 +23,11 @@ public interface ICondition {
      */
     public boolean checkCondition(IValue test) throws FilterException;
 
+    /*
+     * We allow requestHeader attribute name without value, so we will check the attribute name instead of value.
+     */
+    public boolean isNoAttrValue();
+
     @Override
     public String toString();
 }

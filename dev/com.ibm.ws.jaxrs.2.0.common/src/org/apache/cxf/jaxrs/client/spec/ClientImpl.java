@@ -83,7 +83,7 @@ public class ClientImpl implements Client {
     private final TLSConfiguration secConfig;
     private boolean closed;
     private Set<WebClient> baseClients =
-        Collections.newSetFromMap(new WeakHashMap<WebClient, Boolean>());
+        Collections.synchronizedSet(Collections.newSetFromMap(new WeakHashMap<WebClient, Boolean>()));
     public ClientImpl(Configuration config,
                       TLSConfiguration secConfig) {
         configImpl = new ClientConfigurableImpl<Client>(this, config);
@@ -93,8 +93,10 @@ public class ClientImpl implements Client {
     @Override
     public void close() {
         if (!closed) {
-            for (WebClient wc : baseClients) {
-                wc.close();
+            synchronized (baseClients) {
+                for (WebClient wc : baseClients) {
+                    wc.close();
+                }
             }
             baseClients = null;
             closed = true;

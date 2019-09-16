@@ -48,6 +48,9 @@
 @REM              or set to n to startup without waiting for a debugger to attach.
 @REM              The default value is y.
 @REM
+@REM WLP_DEBUG_REMOTE - Whether to allow remote debugging or not. This can be set
+@REM              to y to allow remote debugging. The default value is n. 
+@REM
 @REM ----------------------------------------------------------------------------
 
 setlocal enabledelayedexpansion
@@ -121,10 +124,7 @@ if "help" == "%ACTION%" (
 ) else if "run" == "%ACTION%" (
   call:runServer
 ) else if "debug" == "%ACTION%" (
-  if not defined WLP_DEBUG_ADDRESS set WLP_DEBUG_ADDRESS=7777
-  if not defined WLP_DEBUG_SUSPEND set WLP_DEBUG_SUSPEND=y
-  set JAVA_PARAMS_QUOTED=-Dwas.debug.mode=true -Dcom.ibm.websphere.ras.inject.at.transform=true -Dsun.reflect.noInflation=true -agentlib:jdwp=transport=dt_socket,server=y,suspend="!WLP_DEBUG_SUSPEND!",address="!WLP_DEBUG_ADDRESS!" !JAVA_PARAMS_QUOTED!
-  call:runServer
+  call:debugServer
 ) else if "status" == "%ACTION%" (
   call:serverStatus
 ) else if "status:fast" == "%ACTION%" (
@@ -230,6 +230,28 @@ goto:eof
 
   !JAVA_CMD_QUOTED! !JAVA_PARAMS_QUOTED! --batch-file=--create !PARAMS_QUOTED!
   set RC=%errorlevel%
+  call:javaCmdResult
+goto:eof
+
+:debugServer
+  call:serverEnvAndJVMOptions
+  if not %RC% == 0 goto:eof
+
+  if not defined WLP_DEBUG_ADDRESS set WLP_DEBUG_ADDRESS=7777
+  if not defined WLP_DEBUG_SUSPEND set WLP_DEBUG_SUSPEND=y
+  if not defined WLP_DEBUG_REMOTE set WLP_DEBUG_REMOTE_HOST="0.0.0.0:"
+  if not defined WLP_DEBUG_REMOTE_HOST set WLP_DEBUG_REMOTE_HOST=""
+  set JAVA_PARAMS_QUOTED=-Dwas.debug.mode=true -Dsun.reflect.noInflation=true -agentlib:jdwp=transport=dt_socket,server=y,suspend="!WLP_DEBUG_SUSPEND!",address="!WLP_DEBUG_REMOTE_HOST!!WLP_DEBUG_ADDRESS!" !JAVA_PARAMS_QUOTED!
+
+  call:serverExists true
+  if %RC% == 2 goto:eof
+
+  call:serverWorkingDirectory
+  set SAVE_IBM_JAVA_OPTIONS=!IBM_JAVA_OPTIONS!
+  set IBM_JAVA_OPTIONS=!SERVER_IBM_JAVA_OPTIONS!
+  !JAVA_CMD_QUOTED! !JAVA_AGENT_QUOTED! !JVM_OPTIONS! !JAVA_PARAMS_QUOTED! --batch-file !PARAMS_QUOTED!
+  set RC=%errorlevel%
+  set IBM_JAVA_OPTIONS=!SAVE_IBM_JAVA_OPTIONS!
   call:javaCmdResult
 goto:eof
 
@@ -488,7 +510,7 @@ goto:eof
   @REM Add -Xquickstart -Xnoaot for client JVMs only.  AOT is ineffective if
   @REM JVMs have conflicting options, and it's more important that server JVMs
   @REM be able to use AOT.
-  set IBM_JAVA_OPTIONS=-Xquickstart -Xnoaot !SERVER_IBM_JAVA_OPTIONS!
+  set IBM_JAVA_OPTIONS=-Xquickstart -Xnoaot !IBM_JAVA_OPTIONS!
 goto:eof
 
 @REM
@@ -518,6 +540,8 @@ goto:eof
   )
   @REM Avoid HeadlessException.
   set JVM_OPTIONS=-Djava.awt.headless=true !JVM_OPTIONS!
+  @REM allow late self attach for when the localConnector-1.0 feature is enabled
+  set JVM_OPTIONS=-Djdk.attach.allowAttachSelf=true !JVM_OPTIONS!
 
 
   @REM The order of merging the jvm.option files sets the precedence. 

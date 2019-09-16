@@ -15,15 +15,25 @@ javac.source: 1.8
 javac.target: 1.8
 
 src: \
-	fat/src
+	fat/src,\
+	test-applications/testOpenAPIApp/src,\
+	test-resourceadapter/src
 
 fat.project: true
 
 -buildpath: \
-    com.ibm.websphere.javaee.jsonp.1.1;version=latest,\
+	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
+	com.ibm.websphere.javaee.connector.1.7;version=latest,\
+	com.ibm.websphere.javaee.jms.2.0;version=latest,\
+	com.ibm.websphere.javaee.jsonp.1.1;version=latest,\
 	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
 	com.ibm.websphere.javaee.transaction.1.2;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
-    com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-    org.apache.derby:derby;version=10.11.1.1
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.rest.handler.validator;version=latest,\
+	com.ibm.ws.rest.handler.validator.jca;version=latest,\
+	com.ibm.ws.rest.handler.validator.jdbc;version=latest,\
+	com.ibm.ws.security.jaas.common;version=latest,\
+	com.ibm.ws.microprofile.openapi;version=latest,\
+	com.ibm.websphere.org.eclipse.microprofile.openapi.1.0;version=latest

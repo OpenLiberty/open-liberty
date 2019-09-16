@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.test.context.location;
 
-import org.eclipse.microprofile.concurrent.spi.ThreadContextController;
+import org.eclipse.microprofile.context.spi.ThreadContextController;
 
 /**
  * Example third-party thread context restorer, to be used for testing purposes.

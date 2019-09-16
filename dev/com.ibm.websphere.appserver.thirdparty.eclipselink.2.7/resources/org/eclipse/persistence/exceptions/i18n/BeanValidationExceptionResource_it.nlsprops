@@ -32,8 +32,7 @@
 7501=La modalit\u00e0 di convalida bean su {0}marshaller \u00e8 impostata su un valore non consentito, "{1}".
 
 7510=Vincoli violati sul bean {0}marshalled:
+{1}{2}
 
 7525=Impossibile analizzare la propriet\u00e0 {0} perch\u00e9 \u00e8 annotata con @NotNull e ha anche l''attributo "xs:nillable=true".
-
-{1}{2}=
 

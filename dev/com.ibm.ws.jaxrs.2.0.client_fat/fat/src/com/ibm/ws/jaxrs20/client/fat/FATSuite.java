@@ -29,7 +29,6 @@ import com.ibm.ws.jaxrs20.client.fat.test.JAXRSClientLtpaTest;
 import com.ibm.ws.jaxrs20.client.fat.test.JAXRSClientSSLDefaultTest;
 import com.ibm.ws.jaxrs20.client.fat.test.JAXRSClientSSLFiltersTest;
 import com.ibm.ws.jaxrs20.client.fat.test.JAXRSClientSSLProxyAuthTest;
-import com.ibm.ws.jaxrs20.client.fat.test.JAXRSClientSSLTest;
 import com.ibm.ws.jaxrs20.client.fat.test.JAXRSClientSSLTestNoLibertySSLCfg;
 import com.ibm.ws.jaxrs20.client.fat.test.JAXRSClientSSLTestNoLibertySSLFeature;
 import com.ibm.ws.jaxrs20.client.fat.test.JAXRSClientStandaloneTest;
@@ -51,7 +50,7 @@ import componenttest.rules.repeater.RepeatTests;
                 HandleResponsesTest.class,
                 JAXRSClientStandaloneTest.class,
                 JAXRS20WithClientFeatureEnabledTest.class,
-                JAXRSClientSSLTest.class,
+                //JAXRSClientSSLTest.class,
                 JAXRSClientSSLDefaultTest.class,
                 JAXRSClientSSLFiltersTest.class,
                 JAXRSClientSSLTestNoLibertySSLCfg.class,

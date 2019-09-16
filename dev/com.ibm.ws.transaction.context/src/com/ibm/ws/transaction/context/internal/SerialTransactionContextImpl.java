@@ -16,6 +16,7 @@ import java.io.ObjectOutputStream;
 import java.util.concurrent.RejectedExecutionException;
 
 import javax.transaction.InvalidTransactionException;
+import javax.transaction.Status;
 import javax.transaction.SystemException;
 import javax.transaction.Transaction;
 
@@ -25,6 +26,7 @@ import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
 import com.ibm.ws.LocalTransaction.LocalTransactionCurrent;
 import com.ibm.ws.Transaction.UOWCurrent;
 import com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager;
+import com.ibm.ws.uow.embeddable.EmbeddableUOWTokenImpl;
 import com.ibm.ws.uow.embeddable.UOWManager;
 import com.ibm.ws.uow.embeddable.UOWManagerFactory;
 import com.ibm.ws.uow.embeddable.UOWToken;
@@ -65,18 +67,37 @@ public class SerialTransactionContextImpl implements ThreadContext {
     @Override
     public void taskStarting() throws RejectedExecutionException {
         // Suspend whatever is currently on the thread.
+        UOWManager uowManager = UOWManagerFactory.getUOWManager();
         try {
-            UOWManager uowManager = UOWManagerFactory.getUOWManager();
             suspendedUOW = uowManager.suspend();
         } catch (com.ibm.ws.uow.embeddable.SystemException e) {
+            suspendedUOW = null;
         }
 
+        boolean resumed = false;
         try {
             EmbeddableTransactionManagerFactory.getTransactionManager().resume(tx);
+            resumed = true;
         } catch (InvalidTransactionException x) {
             throw new RejectedExecutionException(x);
         } catch (SystemException x) {
             throw new RejectedExecutionException(x);
+        } catch (IllegalStateException x) {
+            if (tx != null) {
+                try {
+                    tx.setRollbackOnly();
+                } catch (IllegalStateException isx) {
+                } catch (SystemException sysx) {
+                }
+            }
+            throw x;
+        } finally {
+            if (!resumed && suspendedUOW != null)
+                try {
+                    uowManager.resume(suspendedUOW);
+                } catch (com.ibm.ws.uow.embeddable.SystemException x) {
+                    // A prior error is already being raised, so ignore apart from logging to FFDC
+                }
         }
     }
 
@@ -127,11 +148,15 @@ public class SerialTransactionContextImpl implements ThreadContext {
                 break;
         }
 
-        // Resume the original transaction.
+        // Resume the original transaction if it hasn't already committed or rolled back.
         try {
             if (suspendedUOW != null) {
-                UOWManager uowManager = UOWManagerFactory.getUOWManager();
-                uowManager.resume(suspendedUOW);
+                Transaction tran = suspendedUOW instanceof EmbeddableUOWTokenImpl ? ((EmbeddableUOWTokenImpl) suspendedUOW).getTransaction() : null;
+                int status = tran == null ? Status.STATUS_UNKNOWN : tran.getStatus();
+                if (status != Status.STATUS_NO_TRANSACTION && status != Status.STATUS_COMMITTED && status != Status.STATUS_ROLLEDBACK) {
+                    UOWManager uowManager = UOWManagerFactory.getUOWManager();
+                    uowManager.resume(suspendedUOW);
+                }
                 suspendedUOW = null;
             }
         } catch (Throwable e) {

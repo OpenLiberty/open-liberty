@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,12 +12,22 @@ package com.ibm.ws.config.xml.internal;
 
 import java.io.InputStream;
 import java.util.Dictionary;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import org.osgi.service.metatype.AttributeDefinition;
 
 import com.ibm.websphere.config.ConfigEvaluatorException;
 import com.ibm.websphere.config.ConfigUpdateException;
 import com.ibm.websphere.config.WSConfigurationHelper;
+import com.ibm.websphere.metatype.MetaTypeFactory;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.config.xml.internal.ConfigEvaluator.EvaluationResult;
 import com.ibm.ws.config.xml.internal.MetaTypeRegistry.RegistryEntry;
+import com.ibm.ws.config.xml.internal.metatype.ExtendedAttributeDefinition;
+import com.ibm.wsspi.kernel.service.utils.MetatypeUtils;
+import com.ibm.wsspi.kernel.service.utils.OnErrorUtil.OnError;
+import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
 
 /**
  *
@@ -81,6 +91,65 @@ public class WSConfigurationHelperImpl implements WSConfigurationHelper {
     @Override
     public boolean removeDefaultConfiguration(String pid, String id) throws ConfigUpdateException {
         return bundleProcessor.removeDefaultConfiguration(pid, id);
+    }
+
+    @Override
+    @Trivial
+    public Object convert(String pid, String attributeID, String strVal) {
+        RegistryEntry ent = metatypeRegistry.getRegistryEntryByPidOrAlias(pid);
+        if (ent != null) {
+            Map<String, ExtendedAttributeDefinition> attributeMap;
+            attributeMap = ent.getAttributeMap();
+            if (attributeMap != null) {
+                ExtendedAttributeDefinition ad = attributeMap.get(attributeID);
+                if (ad != null) {
+                    // The following is copied from ConfigEvaluator, excluding pid types, which are handled differently
+                    int type = ad.getType();
+                    try {
+                        if (type == AttributeDefinition.BOOLEAN) {
+                            return Boolean.valueOf(strVal);
+                        } else if (type == AttributeDefinition.BYTE) {
+                            return Byte.valueOf(strVal);
+                        } else if (type == AttributeDefinition.CHARACTER) {
+                            return Character.valueOf(strVal.charAt(0));
+                        } else if (type == AttributeDefinition.DOUBLE) {
+                            return Double.valueOf(strVal);
+                        } else if (type == AttributeDefinition.FLOAT) {
+                            return Float.valueOf(strVal);
+                        } else if (type == AttributeDefinition.INTEGER) {
+                            return Integer.valueOf(strVal);
+                        } else if (type == AttributeDefinition.LONG) {
+                            return Long.valueOf(strVal);
+                        } else if (type == AttributeDefinition.SHORT) {
+                            return Short.valueOf(strVal);
+                        } else if (type == MetaTypeFactory.DURATION_TYPE) {
+                            return MetatypeUtils.evaluateDuration(strVal, TimeUnit.MILLISECONDS);
+                        } else if (type == MetaTypeFactory.DURATION_S_TYPE) {
+                            return MetatypeUtils.evaluateDuration(strVal, TimeUnit.SECONDS);
+                        } else if (type == MetaTypeFactory.DURATION_M_TYPE) {
+                            return MetatypeUtils.evaluateDuration(strVal, TimeUnit.MINUTES);
+                        } else if (type == MetaTypeFactory.DURATION_H_TYPE) {
+                            return MetatypeUtils.evaluateDuration(strVal, TimeUnit.HOURS);
+                        } else if (type == MetaTypeFactory.PASSWORD_TYPE || type == MetaTypeFactory.HASHED_PASSWORD_TYPE) {
+                            return new SerializableProtectedString(strVal.toCharArray());
+                        } else if (type == MetaTypeFactory.ON_ERROR_TYPE) {
+                            return Enum.valueOf(OnError.class, strVal.trim().toUpperCase());
+                        } else if (type == MetaTypeFactory.TOKEN_TYPE) {
+                            return MetatypeUtils.evaluateToken(strVal);
+                        }
+                    } catch (Throwable x) {
+                        // auto FFDC, and value is returned without conversion
+                    }
+                }
+            }
+        }
+        return strVal;
+    }
+
+    @Override
+    @Trivial
+    public Integer getMetaTypeAttributeCardinality(String pid, String attributeID) {
+        return metatypeRegistry.getAttributeCardinality(pid, attributeID);
     }
 
     /*

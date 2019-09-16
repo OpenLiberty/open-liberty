@@ -1,13 +1,23 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
 
 releaseTypeGA=true
 
 libertyBaseVersion=19.0.0
-libertyFixpackVersion=3
+libertyFixpackVersion=9
 libertyServiceVersion=${libertyBaseVersion}.${libertyFixpackVersion}
-libertyBetaVersion=2019.3.0.0
+libertyBetaVersion=2019.9.0.0
 libertyRelease=${if;${releaseTypeGA};${libertyServiceVersion};${libertyBetaVersion}}
 
-libertyBundleMicroVersion=26
+libertyBundleMicroVersion=32
 copyrightBuildYear=2019
 buildID=${libertyRelease}-${buildLabel}
 productEdition=BASE_ILAN

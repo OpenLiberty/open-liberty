@@ -13,10 +13,10 @@ package com.ibm.ws.security.authentication.filter.internal;
 
 public class GreaterCondition extends SimpleCondition {
     /**
-     *  
+     *
      */
-    public GreaterCondition(String key, IValue value, String operand) {
-        super(key, value, operand);
+    public GreaterCondition(String key, IValue value, String operand, boolean noAttrValue) {
+        super(key, value, operand, noAttrValue);
     }
 
     @Override

@@ -1,0 +1,354 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME SERV1/ws/code/security/src/com/ibm/ws/security/oauth20/resources/ProviderMsgs.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#COMPONENTPREFIX CWOAU
+#COMPONENTNAMEFOR CWOAU WebSphere OAuth
+
+# Error Messages
+# --------------
+# The text for the explanation (CMSG0001) and useraction (CMSG0002)
+# appears in the *Msgs.xml file in build/messages directory.
+
+
+security.oauth20.init.start=CWOAU0001I: Inicializando proveedores OAuth 20.
+security.oauth20.init.start.explanation=Se ha iniciado la inicializaci\u00f3n de los m\u00f3dulos OAuth.
+security.oauth20.init.start.useraction=Ninguna, mensaje informativo.
+
+security.oauth20.admin.enableTAI=CWOAU0002I: TAI OAuth se ha habilitado satisfactoriamente.
+security.oauth20.admin.enableTAI.explanation=La habilitaci\u00f3n de TAI OAuth se ha completado satisfactoriamente.
+security.oauth20.admin.enableTAI.useraction=Ninguna, mensaje informativo.
+
+security.oauth20.admin.createProvider=CWOAU0003I: El proveedor TAI se ha creado satisfactoriamente.
+security.oauth20.admin.createProvider.explanation=La creaci\u00f3n del proveedor OAuth se ha completado satisfactoriamente.
+security.oauth20.admin.createProvider.useraction=Ninguna, mensaje informativo.
+
+security.oauth20.admin.serverRunningCheck=CWOAU0004E: Error: Los mandatos de administraci\u00f3n deben ejecutarse en modalidad conectada con un servidor iniciado.
+security.oauth20.admin.serverRunningCheck.explanation=Los mandatos de administraci\u00f3n OAuth necesitan un entorno de servidor en ejecuci\u00f3n para modificar valores.
+security.oauth20.admin.serverRunningCheck.useraction=Inicie el servidor o el gestor de despliegue e int\u00e9ntelo de nuevo.
+
+security.oauth20.admin.deleteProvider=CWOAU0005I: El proveedor TAI se ha eliminado satisfactoriamente.
+security.oauth20.admin.deleteProvider.explanation=La eliminaci\u00f3n del proveedor OAuth se ha completado satisfactoriamente.
+security.oauth20.admin.deleteProvider.useraction=Ninguna, mensaje informativo.
+
+security.oauth20.admin.fileExists=CWOAU0006E: El archivo ya existe.
+security.oauth20.admin.fileExists.explanation=El archivo especificado no debe existir.
+security.oauth20.admin.fileExists.useraction=Especifique un nombre de archivo nuevo.
+
+security.oauth20.admin.providerNotFound=CWOAU0007E: No se ha encontrado el proveedor OAuth.
+security.oauth20.admin.providerNotFound.explanation=El proveedor OAuth especificado no existe.
+security.oauth20.admin.providerNotFound.useraction=Compruebe el nombre del proveedor OAuth e int\u00e9ntelo de nuevo.
+
+security.oauth20.admin.exportProps=CWOAU0008I: Se ha grabado correctamente la configuraci\u00f3n en {0}
+security.oauth20.admin.exportProps.explanation=El mandato se ha completado satisfactoriamente.
+security.oauth20.admin.exportProps.useraction=Ninguna, mensaje informativo.
+
+security.oauth20.admin.fileNotFound=CWOAU0009E: Archivo no encontrado: {0}
+security.oauth20.admin.fileNotFound.explanation=El nombre de archivo especificado no existe.
+security.oauth20.admin.fileNotFound.useraction=Compruebe el nombre del archivo e int\u00e9ntelo de nuevo.
+
+security.oauth20.admin.importProps=CWOAU0010I: La configuraci\u00f3n se ha importado satisfactoriamente.
+security.oauth20.admin.importProps.explanation=El mandato se ha completado satisfactoriamente.
+security.oauth20.admin.importProps.useraction=Ninguna, mensaje informativo.
+
+security.oauth20.mbean.invoked=CWOAU0011I: OAuth20MBean est\u00e1 procesando el mandato {0}.
+security.oauth20.mbean.invoked.explanation=Se ha invocado el MBean OAuth de este nodo para ejecutar un mandato. 
+security.oauth20.mbean.invoked.useraction=Ninguna, mensaje informativo.
+
+security.oauth20.init.error=CWOAU0012E: Error al inicializar la infraestructura OAuth
+security.oauth20.init.error.explanation=No se ha podido inicializar la infraestructura OAuth.
+security.oauth20.init.error.useraction=Consulte los detalles de la excepci\u00f3n para obtener m\u00e1s informaci\u00f3n. 
+
+security.oauth20.mbean.client.invoked=CWOAU0013I: OAuth20ClientMBean est\u00e1 procesando el mandato {0}.
+security.oauth20.mbean.client.invoked.explanation=Se ha invocado el MBean OAuth de este nodo para ejecutar un mandato. 
+security.oauth20.mbean.client.invoked.useraction=Ninguna, mensaje informativo.
+
+security.oauth20.mbean.none.found=CWOAU0014E: No se han encontrado MBeans cliente OAuth; no se podr\u00e1n realizar las operaciones de tabla de cliente en memoria.
+security.oauth20.mbean.none.found.explanation=Un error de configuraci\u00f3n ha recuperado el registro o b\u00fasqueda de MBeans de tipo OAuth20ClientMBean.
+security.oauth20.mbean.none.found.useraction=Consulte los registros de rastreo de registro de MBean para obtener m\u00e1s detalles.
+
+##  client manager message
+security.oauth20.client.delete.error=CWOAU0015E: No se ha podido eliminar el cliente con id = {0}.
+security.oauth20.client.delete.error.explanation=El proveedor cliente no ha podido eliminar el cliente especificado por un error interno.
+security.oauth20.client.delete.error.useraction=Ninguna, mensaje informativo.
+
+security.oauth20.client.update.error=CWOAU0016E: No se ha podido actualizar el cliente con id = {0}.
+security.oauth20.client.update.error.explanation=El proveedor cliente no ha podido actualizar el cliente especificado por un error interno.
+security.oauth20.client.update.error.useraction=Ninguna, mensaje informativo.
+
+security.oauth20.client.create.error=CWOAU0017E: No se ha podido crear el cliente.
+security.oauth20.client.create.error.explanation=El proveedor cliente no ha podido crear un nuevo cliente por un error interno.
+security.oauth20.client.create.error.useraction=Ninguna, mensaje informativo.
+
+security.oauth20.endpoint.template.forward.error=CWOAU0018E: No se puede obtener el asignador de solicitudes especificado por la configuraci\u00f3n {0} en context={1} path={2}. 
+security.oauth20.endpoint.template.forward.error.explanation=El servlet de punto final OAuth20 no puede encontrar el asignador de solicitudes especificado para representar la plantilla. 
+security.oauth20.endpoint.template.forward.error.useraction=Compruebe el par\u00e1metro de configuraci\u00f3n y aseg\u00farese de que existen la ra\u00edz de contexto y la v\u00eda de acceso especificadas.
+
+
+##  OAuth2.0 error handler message
+security.oauth20.error.access.denied=CWOAU0019E: No est\u00e1 autorizado para acceder a este recurso protegido.
+security.oauth20.error.access.denied.explanation=No se ha especificado el par\u00e1metro username en la solicitud OAuth o era una cadena nula.  
+security.oauth20.error.access.denied.useraction=Especifique un par\u00e1metro username v\u00e1lido en la solicitud OAuth.
+
+security.oauth20.error.invalid.authorizationcode=CWOAU0020E: El c\u00f3digo de autorizaci\u00f3n {0} no pertenece al cliente que intenta utilizarlo: {1}.
+security.oauth20.error.invalid.authorizationcode.explanation=El par\u00e1metro client_id especificado en la solicitud OAuth no coincide con el valor del ID de cliente del c\u00f3digo de autorizaci\u00f3n.  Estos valores deben coincidir.  Una de las razones de este error es que el par\u00e1metro client_id de la solicitud OAuth se haya modificado durante el flujo de OAuth.
+security.oauth20.error.invalid.authorizationcode.useraction=Aseg\u00farese de que el valor del par\u00e1metro client_id de la solicitud OAuth sea el mismo valor del ID del cliente que el utilizado cuando se obtiene el c\u00f3digo de autorizaci\u00f3n. 
+
+security.oauth20.error.parameter.format=CWOAU0021E: El par\u00e1metro [{0}] contiene un valor con formato no v\u00e1lido: [{1}].
+security.oauth20.error.parameter.format.explanation=El valor del par\u00e1metro scope de la solicitud OAuth no es v\u00e1lido.  El par\u00e1metro scope s\u00f3lo debe contener los siguientes caracteres hexadecimales: [x21, x(23 a 5B), x(5D a 7E)]
+security.oauth20.error.parameter.format.useraction=Aseg\u00farese de que el par\u00e1metro scope contiene s\u00f3lo caracteres soportados.
+
+security.oauth20.error.duplicate.parameter=CWOAU0022E: El par\u00e1metro OAuth siguiente se ha proporcionado m\u00e1s de una vez en la solicitud: {0}
+security.oauth20.error.duplicate.parameter.explanation=Se ha especificado varias veces el mismo par\u00e1metro en la solicitud OAuth.
+security.oauth20.error.duplicate.parameter.useraction=Compruebe el par\u00e1metro de la solicitud OAuth y aseg\u00farese de que se especifica s\u00f3lo una vez.
+
+# do not translate client_id
+security.oauth20.error.invalid.client=CWOAU0023E: El proveedor de servicios OAuth no ha podido encontrar el cliente {0}.
+security.oauth20.error.invalid.client.explanation=El proveedor de servicios OAuth no ha podido encontrar el cliente especificado en el valor del par\u00e1metro client_id de la solicitud OAuth.
+security.oauth20.error.invalid.client.useraction=Aseg\u00farese de que el cliente est\u00e1 registrado con el proveedor de servicios OAuth para el valor del par\u00e1metro client_id. Asimismo, aseg\u00farese de que el cliente est\u00e1 habilitado en la configuraci\u00f3n del proveedor de servicios OAuth.
+
+#do not translate client_secret
+security.oauth20.error.invalid.clientsecret=CWOAU0024E: El cliente OAuth {0} ha presentado un secreto de cliente no v\u00e1lido en la solicitud OAuth.
+security.oauth20.error.invalid.clientsecret.explanation=El valor del par\u00e1metro client_secret de la solicitud OAuth no era v\u00e1lido.
+security.oauth20.error.invalid.clientsecret.useraction=Compruebe el valor del par\u00e1metro client_secret de la solicitud OAuth y aseg\u00farese de que coincide con el valor del secreto de cliente del cliente registrado en la configuraci\u00f3n del proveedor de servicios OAuth.
+
+security.oauth20.error.invalid.granttype=CWOAU0025E: El par\u00e1metro grant_type no era v\u00e1lido: {0}
+security.oauth20.error.invalid.granttype.explanation=El valor del par\u00e1metro grant_type de la solicitud OAuth no es v\u00e1lido.
+security.oauth20.error.invalid.granttype.useraction=Aseg\u00farese de que el valor del par\u00e1metro grant_type de la solicitud OAuth es uno de los valores siguientes: authorization_code, password, client_credentials, refresh_token, implicit, urn:ietf:params:oauth:grant-type:jwt-bearer
+
+security.oauth20.error.invalid.redirecturi=CWOAU0026E: El par\u00e1metro URI de redirecci\u00f3n no era v\u00e1lido: {0}
+security.oauth20.error.invalid.redirecturi.explanation=El valor del par\u00e1metro URI de redirecci\u00f3n en la solicitud OAuth no puede ser un URI absoluto v\u00e1lido.
+security.oauth20.error.invalid.redirecturi.useraction=Aseg\u00farese de que el valor del atributo de URI de redirecci\u00f3n en la solicitud OAuth sea un valor de URI absoluto v\u00e1lido.
+
+security.oauth20.error.invalid.responsetype=CWOAU0027E: El par\u00e1metro response_type no era v\u00e1lido: {0}
+security.oauth20.error.invalid.responsetype.explanation=El valor del par\u00e1metro response_type de la solicitud OAuth no es v\u00e1lido.
+security.oauth20.error.invalid.responsetype.useraction=Compruebe el valor del par\u00e1metro response_type de la solicitud OAuth y aseg\u00farese de que coincide con uno de los valores siguientes: code, token.
+
+security.oauth20.error.invalid.scope=CWOAU0028E: El \u00e1mbito solicitado [{0}] supera el \u00e1mbito otorgado por el propietario del recurso: [{1}].
+security.oauth20.error.invalid.scope.explanation=El valor del par\u00e1metro scope de la solicitud OAuth no puede ser m\u00e1s amplio que el \u00e1mbito aprobado para el cliente.
+security.oauth20.error.invalid.scope.useraction=Compruebe el valor del par\u00e1metro scope de la solicitud OAuth y aseg\u00farese de que es igual o un subconjunto del \u00e1mbito aprobado por el propietario del recurso.
+
+security.oauth20.error.invalid.token=CWOAU0029E: No se ha encontrado en la memoria cach\u00e9 de se\u00f1ales la se\u00f1al con clave: {0} tipo: {1} subtipo: {2}.
+security.oauth20.error.invalid.token.explanation=La se\u00f1al OAuth no estaba en la memoria cach\u00e9 o el tipo de se\u00f1al o subType no coincid\u00eda con el valor esperado.
+security.oauth20.error.invalid.token.useraction=Aseg\u00farese de que el cliente asociado con la se\u00f1al no est\u00e1 inhabilitado en la configuraci\u00f3n del proveedor OAuth. Asimismo, aseg\u00farese de que el tipo y subtipo de la se\u00f1al tienen ambos los valores que se espera.
+
+security.oauth20.error.invalid.tokenrequestmethod=CWOAU0030E: Se ha utilizado un m\u00e9todo HTTP no v\u00e1lido en el punto final de la se\u00f1al: {0}
+security.oauth20.error.invalid.tokenrequestmethod.explanation=El m\u00e9todo HTTP utilizado por el cliente OAuth no es v\u00e1lido.
+security.oauth20.error.invalid.tokenrequestmethod.useraction=Aseg\u00farese de que el cliente utiliza el m\u00e9todo HTTP POST.
+
+security.oauth20.error.mismatched.clientauthentication=CWOAU0031E: El client_id pasado en la solicitud al punto final de la se\u00f1al {0} no coincide con el cliente autenticado proporcionado en la llamada de API: {1}
+security.oauth20.error.mismatched.clientauthentication.explanation=El valor del par\u00e1metro client_id de la llamada de API no coincide con el ID de cliente del c\u00f3digo de autorizaci\u00f3n que se ha enviado al cliente.
+security.oauth20.error.mismatched.clientauthentication.useraction=Compruebe el par\u00e1metro client_id de la solicitud OAuth o de la llamada de API y aseg\u00farese de que coincide con el ID de cliente utilizado cuando se obtiene el c\u00f3digo de autorizaci\u00f3n.
+
+security.oauth20.error.mismatched.redirecturi=CWOAU0032E: El URI de redirecci\u00f3n recibido {0} no coincide con el URI de redirecci\u00f3n para el que se ha emitido la concesi\u00f3n: {1}
+security.oauth20.error.mismatched.redirecturi.explanation=El valor del par\u00e1metro redirect_uri de la solicitud OAuth no coincide con el atributo URI de redirecci\u00f3n del cliente registrado.
+security.oauth20.error.mismatched.redirecturi.useraction=Compruebe el valor del par\u00e1metro redirect_uri de la solicitud OAuth y aseg\u00farese de que coincide con el atributo URI de redirecci\u00f3n que existe en el cliente registrado.
+
+security.oauth20.error.missing.parameter=CWOAU0033E: Falta un par\u00e1metro de tiempo de ejecuci\u00f3n necesario: {0}
+security.oauth20.error.missing.parameter.explanation=El c\u00f3digo de tiempo de ejecuci\u00f3n del proveedor OAuth no ha encontrado el par\u00e1metro necesario al procesar la solicitud del cliente.
+security.oauth20.error.missing.parameter.useraction=Compruebe el par\u00e1metro que falta en la solicitud OAuth y aseg\u00farese de que se especifica.
+
+security.oauth20.error.publicclient.credential=CWOAU0034E: Un cliente p\u00fablico intent\u00f3 acceder al punto final de la se\u00f1al utilizando el tipo de concesi\u00f3n client_credentials. El client_id es: {0}
+security.oauth20.error.publicclient.credential.explanation=Un cliente p\u00fablico OAuth no tiene permiso para utilizar el tipo de concesi\u00f3n client_credentials.
+security.oauth20.error.publicclient.credential.useraction=Compruebe el valor del par\u00e1metro grant_type de la solicitud OAuth y utilice un tipo de concesi\u00f3n diferente para el cliente p\u00fablico.
+
+security.oauth20.error.publicclient.forbidden=CWOAU0035E: Un cliente p\u00fablico intent\u00f3 acceder al punto final de la se\u00f1al y est\u00e1n prohibidos los clientes p\u00fablicos en esta configuraci\u00f3n de componentes. El client_id es: {0}
+security.oauth20.error.publicclient.forbidden.explanation=El proveedor OAuth est\u00e1 configurado para no permitir a los clientes p\u00fablicos acceder al punto final de la se\u00f1al.
+security.oauth20.error.publicclient.forbidden.useraction=Si intenta permitir el acceso a los clientes p\u00fablicos, establezca el atributo allowPublicClients en true en la configuraci\u00f3n del proveedor OAuth.
+
+security.oauth20.error.refreshtoken.invalid.client=CWOAU0036E: La se\u00f1al de renovaci\u00f3n {0} no pertenece al cliente que intenta utilizarla: {1}
+security.oauth20.error.refreshtoken.invalid.client.explanation=El valor del par\u00e1metro client_id de la solicitud OAuth no coincide con el ID de cliente de la se\u00f1al de renovaci\u00f3n.
+security.oauth20.error.refreshtoken.invalid.client.useraction=Compruebe el valor del par\u00e1metro client_id de la solicitud OAuth y aseg\u00farese de que coincide con el ID de cliente contenido en la se\u00f1al de renovaci\u00f3n.
+
+security.oauth20.error.wrong.http.scheme=CWOAU0037E: Se utiliza un esquema HTTP en el punto final especificado: {0}, se necesita HTTPS.
+security.oauth20.error.wrong.http.scheme.explanation=El proveedor OAuth necesita que la solicitud OAuth utilice HTTPS, pero se ha utilizado HTTP en el URL de solicitud.
+security.oauth20.error.wrong.http.scheme.useraction=Compruebe el URL de solicitud en la solicitud OAuth y aseg\u00farese de que utiliza HTTPS.
+
+security.oauth20.endpoint.client.auth.error=CWOAU0038E: No se ha podido verificar el cliente. El ID de cliente {0} o el secreto del cliente es incorrecto.
+security.oauth20.endpoint.client.auth.error.explanation=El proveedor OAuth no ha podido verificar el cliente. 
+security.oauth20.endpoint.client.auth.error.useraction=Compruebe que el ID de cliente y el secreto de cliente sean v\u00e1lidos y coincidan con la configuraci\u00f3n del cliente OAuth y el cliente de OpenID Connect.
+
+security.oauth20.filter.request.null=CWOAU0039W: La solicitud redirigida al URL de punto final de [{0}] no la ha reconocido el proveedor OAuth como solicitud v\u00e1lida.
+security.oauth20.filter.request.null.explanation=Se esperaba que las solicitudes OAuth 2.0 y OpenID Connect se dirigieran a un subconjunto espec\u00edfico de puntos finales. Es posible que el formato del URL de solicitud no sea el correcto o que la solicitud se haya dirigido a un contexto o punto final que no soporta estas solicitudes.
+security.oauth20.filter.request.null.useraction=Compruebe la v\u00eda de acceso de la solicitud para asegurarse de que tiene el formato y que est\u00e1 dirigida a un punto final v\u00e1lido que soporta solicitudes OAuth 2.0 u OpenID Connect, cualquiera que sea la apropiada.
+
+security.oauth20.error.authorization=CWOAU0039A: Ha fallado la autorizaci\u00f3n para el usuario {0}. No se ha concedido acceso al usuario a ninguno de los roles necesarios para la solicitud OAuth 2.0 y OpenID Connect.
+security.oauth20.error.authorization.explanation=El usuario no tiene el permiso necesario para acceder al recurso de OAuth 2.0 y OpenID Connect.
+security.oauth20.error.authorization.useraction=P\u00f3ngase en contacto con el administrador de seguridad si esta situaci\u00f3n es inesperada.El usuario debe estar correlacionado con uno de los roles de la correlaci\u00f3n de roles de seguridad de la aplicaci\u00f3n web OAuth.
+
+security.oauth20.error.filter.multiple.matching=CWOAU0041E: Se han encontrado criterios de filtro coincidentes para m\u00e1s de un proveedor [{0}] para procesar la solicitud. Los criterios de filtro no se deben solapar entre proveedores. 
+security.oauth20.error.filter.multiple.matching.explanation=Se espera que las solicitudes OAuth 2.0 y OpenID Connect se redirijan a un proveedor espec\u00edfico en funci\u00f3n de los criterios de filtro. Sin embargo,esta solicitud ha cumplido los criterios para varias configuraciones de filtro de proveedor.
+security.oauth20.error.filter.multiple.matching.useraction=Compruebe la configuraci\u00f3n de filtro de cada proveedor para asegurarse de que los criterios de filtro no se solapan entre varios proveedores.
+
+# do not translate prompt and none
+security.oauth20.error.invalid.authorization.prompt.none.value=CWOAU0042E: El valor del par\u00e1metro [{1}] de la solicitud de autorizaci\u00f3n [{0}] no es v\u00e1lido porque tiene un valor de ''none'' adem\u00e1s de otros valores.
+security.oauth20.error.invalid.authorization.prompt.none.value.explanation=El par\u00e1metro de solicitud no debe contener otros valores cuando se especifica un valor 'none'.
+security.oauth20.error.invalid.authorization.prompt.none.value.useraction=Especifique \u00fanicamente el valor 'none' en el par\u00e1metro de solicitud o especifique los otros valores sin el valor 'none'.
+
+security.oauth20.error.authorization.internal.ioexception=CWOAU0043E: El punto final de autorizaci\u00f3n OAuth no ha podido redireccionar el agente de usuario al URI de redirecci\u00f3n [{0}] porque se ha producido una java.io.IOException inesperada con el mensaje: {1}
+security.oauth20.error.authorization.internal.ioexception.explanation=Se ha producido una java.io.IOException inesperada al intentar la redirecci\u00f3n al URI de redirecci\u00f3n del cliente.
+security.oauth20.error.authorization.internal.ioexception.useraction=Revise el mensaje de excepci\u00f3n.
+
+security.oauth20.error.authorization.internal.missing.issuer=CWOAU0044E: El punto final de autorizaci\u00f3n OAuth no ha podido procesar la solicitud OAuth porque no se ha encontrado ning\u00fan identificador de emisor.
+security.oauth20.error.authorization.internal.missing.issuer.explanation=Falta el identificador de emisor o es necesario para completar la solicitud de recurso OAuth. Se trata de un error interno del servidor.
+security.oauth20.error.authorization.internal.missing.issuer.useraction=Ninguna.
+
+security.oauth20.error.token.internal.exception=CWOAU0045E: El punto final de se\u00f1al OAuth no ha podido escribir la respuesta HTTP en el cliente OAuth {0} porque se ha producido una excepci\u00f3n inesperada con el mensaje: {1}
+security.oauth20.error.token.internal.exception.explanation=Se ha producido una excepci\u00f3n inesperada al intentar escribir la respuesta HTTP para la solicitud de se\u00f1al OAuth.
+security.oauth20.error.token.internal.exception.useraction=Revise el mensaje de excepci\u00f3n.
+
+security.oauth20.error.token.internal.missing.issuer=CWOAU0046E: El punto final de se\u00f1al OAuth no ha podido procesar la solicitud OAuth porque no se ha encontrado ning\u00fan identificador de emisor.
+security.oauth20.error.token.internal.missing.issuer.explanation=Falta el identificador de emisor y es necesario para completar la solicitud de se\u00f1al OAuth. Se trata de un error interno del servidor.
+security.oauth20.error.token.internal.missing.issuer.useraction=Ninguna.
+
+security.oauth20.error.internal.unsupported.encoding.exception=CWOAU0047E: El proveedor de servicios OAuth no ha podido descodificar un par\u00e1metro de serie de consulta de solicitud HTTP porque se ha producido una java.io.UnsupportedEncodingException inesperada.
+security.oauth20.error.internal.unsupported.encoding.exception.explanation=Se ha producido una java.io.UnsupportedEncodingException inesperada al intentar descodificar un par\u00e1metro de serie de consulta de solicitud HTTP del formato MIME 'application/x-www-form-urlencoded' para una solicitud de recurso o se\u00f1al OAuth.
+security.oauth20.error.internal.unsupported.encoding.exception.useraction=Ninguna.
+
+security.oauth.error.config.notspecified.exception=CWOAU0048E: El par\u00e1metro de configuraci\u00f3n [{0}] no se ha establecido.
+security.oauth.error.config.notspecified.exception.explanation=El proveedor OAuth20 no puede procesar la solicitud porque el par\u00e1metro de configuraci\u00f3n necesario no est\u00e1 establecido.
+security.oauth.error.config.notspecified.exception.useraction=Compruebe el par\u00e1metro de configuraci\u00f3n y aseg\u00farese de que el par\u00e1metro de configuraci\u00f3n necesario est\u00e1 configurado.
+
+security.oauth.error.classmismatch.exception=CWOAU0049E: La clase especificada con el par\u00e1metro de configuraci\u00f3n [{0}] no coincide con la clase de interfaz necesaria [{1}].
+security.oauth.error.classmismatch.exception.explanation=El proveedor OAuth20 no puede construir la clase especificada porque la clase especificada no coincide con la clase de interfaz necesaria.
+security.oauth.error.classmismatch.exception.useraction=Compruebe el par\u00e1metro de configuraci\u00f3n y aseg\u00farese de que la clase especificada es una clase de implementaci\u00f3n de la clase de interfaz necesaria.
+
+security.oauth.error.classinstantiation.exception=CWOAU0050E: No se puede crear una instancia de la clase especificada [{0}] con el par\u00e1metro de configuraci\u00f3n [{1}]. La excepci\u00f3n ra\u00edz es: {2}
+security.oauth.error.classinstantiation.exception.explanation=El proveedor OAuth20 no puede crear una instancia de la clase especificada.
+security.oauth.error.classinstantiation.exception.useraction=Revise el mensaje de excepci\u00f3n.
+
+security.oauth.error.invalidconfig.exception=CWOAU0051E: El valor de configuraci\u00f3n [{1}] que se ha especificado con el par\u00e1metro de configuraci\u00f3n [{0}] no es v\u00e1lido.
+security.oauth.error.invalidconfig.exception.explanation=El proveedor OAuth20 no puede procesar la solicitud porque el par\u00e1metro de configuraci\u00f3n especificado no es v\u00e1lido.
+security.oauth.error.invalidconfig.exception.useraction=Compruebe el par\u00e1metro de configuraci\u00f3n y aseg\u00farese de que el valor especificado sea v\u00e1lido.
+
+security.oauth.error.mismatch.granttype.exception=CWOAU0052E: El valor del par\u00e1metro de configuraci\u00f3n [{0}] no coincide con el par\u00e1metro grant_type [{1}] de la solicitud OAuth.
+security.oauth.error.mismatch.granttype.exception.explanation=El proveedor OAuth20 no puede procesar la solicitud porque el par\u00e1metro grant_type en la solicitud no permite el proceso.
+security.oauth.error.mismatch.granttype.exception.useraction=Compruebe el par\u00e1metro de configuraci\u00f3n y aseg\u00farese de que el valor especificado sea coherente con el par\u00e1metro grant_type de la solicitud OAuth.
+
+security.oauth.error.mismatch.responsetype.exception=CWOAU0053E: El valor del par\u00e1metro de configuraci\u00f3n [{0}] no coincide con el par\u00e1metro response_type [{1}] de la solicitud OAuth.
+security.oauth.error.mismatch.responsetype.exception.explanation=El proveedor OAuth20 no puede procesar la solicitud porque el par\u00e1metro response_type de la solicitud no permite el proceso.
+security.oauth.error.mismatch.responsetype.exception.useraction=Compruebe el par\u00e1metro de configuraci\u00f3n y aseg\u00farese de que el valor especificado sea coherente con el par\u00e1metro respose_type de la solicitud OAuth.
+
+security.oauth20.token.limit.error=CWOAU0054E: Se ha alcanzado o excedido el userClientTokenLimit en la memoria cach\u00e9 de se\u00f1al con el ID de usuario "{0}" y el ID de cliente "{1}". El l\u00edmite es: {2}.
+security.oauth20.token.limit.error.explanation=El mismo usuario tiene demasiadas sesiones activas con el mismo proveedor OAuth20.
+security.oauth20.token.limit.error.useraction=Aumente el valor del atributo userClientTokenLimit en la configuraci\u00f3n para aumentar el tama\u00f1o de la memoria cach\u00e9 de se\u00f1al, o bien utilice una combinaci\u00f3n diferente de usuario/cliente como, por ejemplo, un cliente diferente.
+
+security.oauth20.error.invalid.registered.redirecturi=CWOAU0055E: El URI de redirecci\u00f3n especificado en el cliente registrado del proveedor OAuth no es v\u00e1lido: {0}
+security.oauth20.error.invalid.registered.redirecturi.explanation=El valor del atributo de redirecci\u00f3n en el cliente registrado del proveedor OAuth no puede ser un URI absoluto v\u00e1lido.
+security.oauth20.error.invalid.registered.redirecturi.useraction=Aseg\u00farese de que el valor del atributo de redirecci\u00f3n en la configuraci\u00f3n de cliente registrado del proveedor OAuth es un valor de URI absoluto v\u00e1lido.
+
+security.oauth20.error.invalid.redirecturi.mismatch=CWOAU0056E: El par\u00e1metro de URI de redirecci\u00f3n [{0}] proporcionado en la solicitud OAuth o de OpenID Connect no ha coincidido con ninguno de los URI de redireccionamiento registrados con el proveedor OAuth [{1}].
+security.oauth20.error.invalid.redirecturi.mismatch.explanation=El valor del par\u00e1metro redirect_uri especificado en la solicitud OAuth o de OpenID Connect no coincide con ninguno de los valores de URI de redirecci\u00f3n especificados en el cliente registrado del proveedor OAuth.
+security.oauth20.error.invalid.redirecturi.mismatch.useraction=Aseg\u00farese de que el valor del par\u00e1metro redirect_uri de la solicitud OAuth o de OpenID Connect coincida con uno de los valores de URI de redirecci\u00f3n especificados en la configuraci\u00f3n de cliente registrado.
+
+security.oauth20.error.multiple.responsetype=CWOAU0057E: El par\u00e1metro response_type [{0}] en la solicitud de OAuth o OpenID Connect no puede incluir [{1}] y [{2}] simult\u00e1neamente como tipos de respuesta.
+security.oauth20.error.multiple.responsetype.explanation=La solicitud OAuth o de OpenID Connect debe tener solo un tipo de respuesta.
+security.oauth20.error.multiple.responsetype.useraction=Compruebe el valor del par\u00e1metro response_type de la solicitud OAuth o de OpenID Connect y aseg\u00farese de que contiene s\u00f3lo un tipo de respuesta.
+
+security.oauth20.error.invalid.token.expired=CWOAU0058E: La se\u00f1al OAuth con la clave [{0}], tipo [{1}] y subtipo [{2}] ha caducado.
+security.oauth20.error.invalid.token.expired.explanation=La se\u00f1al OAuth ha caducado y ya no es v\u00e1lida.
+security.oauth20.error.invalid.token.expired.useraction=Solicitar una nueva solicitud OAuth del proveedor OAuth.
+
+security.oauth20.error.invalid.token.client.not.available=CWOAU0059E: La se\u00f1al OAuth con la clave [{0}], tipo [{1}] y subtipo [{2}] no est\u00e1 asociada con ning\u00fan cliente, o el cliente asociado no est\u00e1 habilitado.
+security.oauth20.error.invalid.token.client.not.available.explanation=La se\u00f1al OAuth no est\u00e1 asociada con ning\u00fan cliente, o el cliente asociado se ha inhabilitado en la configuraci\u00f3n.
+security.oauth20.error.invalid.token.client.not.available.useraction=Compruebe la configuraci\u00f3n de cliente de proveedor OAuth para asegurarse de que est\u00e9 configurado y habilitado el cliente adecuado.
+
+security.oauth20.error.mismatched.redirecturi.null.request.redirecturi=CWOAU0060E: El URI de redirecci\u00f3n incluido en la solicitud OAuth o de OpenID Connect es {0}, pero se ha proporcionado un URI de redirecci\u00f3n no nulo en la solicitud de concesi\u00f3n de autorizaci\u00f3n: {1}
+security.oauth20.error.mismatched.redirecturi.null.request.redirecturi.explanation=Si no hay ning\u00fan URI de redirecci\u00f3n incluido en la solicitud, no se debe haber especificado un URI de redirecci\u00f3n en la solicitud de concesi\u00f3n de autorizaci\u00f3n.
+security.oauth20.error.mismatched.redirecturi.null.request.redirecturi.useraction=Compruebe el valor del par\u00e1metro redirect_uri de la solicitud OAuth o de OpenID Connect y aseg\u00farese de que coincide con el atributo URI de redirecci\u00f3n que existe en el cliente registrado, o no incluya un URI de redirecci\u00f3n en la solicitud de la concesi\u00f3n de autorizaci\u00f3n.
+
+security.oauth20.error.invalid.client.enduser=CWOAU0061E: El proveedor de servicios OAuth no ha podido encontrar el cliente porque el nombre de cliente no es v\u00e1lido. P\u00f3ngase en contacto con el administrador del sistema para resolver el problema.
+security.oauth20.error.invalid.client.enduser.explanation=El proveedor de servicios OAuth no ha podido encontrar el cliente especificado en el valor del par\u00e1metro client_id de la solicitud OAuth.
+security.oauth20.error.invalid.client.enduser.useraction=P\u00f3ngase en contacto con el administrador del sistema para resolver el problema.
+
+security.oauth20.error.invalid.redirecturi.enduser=CWOAU0062E: El proveedor de servicios OAuth no ha podido redirigir la solicitud porque el URI de redirecci\u00f3n no era v\u00e1lido. P\u00f3ngase en contacto con el administrador del sistema para resolver el problema.
+security.oauth20.error.invalid.redirecturi.enduser.explanation=Es posible que el valor del atributo de redirecci\u00f3n del cliente registrado del proveedor de servicios OAuth no sea v\u00e1lido o, si el par\u00e1metro redirect_uri se especifica en la solicitud OAuth, su valor no coincide con el valor de URI de redirecci\u00f3n especificado en el cliente registrado del proveedor OAuth.
+security.oauth20.error.invalid.redirecturi.enduser.useraction=P\u00f3ngase en contacto con el administrador del sistema para resolver el problema.
+
+security.oauth20.detail.error.mismatched.clientauthentication=CWOAU0063E: La solicitud de punto final de se\u00f1al ha fallado debido a dos client_id distintos en la solicitud. Uno de los client_id es {0} y otro es {1} que se ha autenticado y muy posiblemente se ha pasado en la cabecera de autorizaci\u00f3n. 
+security.oauth20.detail.error.mismatched.clientauthentication.explanation=El valor del par\u00e1metro client_id en la solicitud no ha coincidido con el client_id autenticado que se pasa tambi\u00e9n mediante la solicitud.
+security.oauth20.detail.error.mismatched.clientauthentication.useraction=Aseg\u00farese de que haya solo un client_id autenticado en la solicitud. Se puede pasar un client_id mediante la cabecera de autorizaci\u00f3n o el par\u00e1metro de una solicitud.
+
+security.oauth20.error.empty.scope=CWOAU0064E: El \u00e1mbito solicitado [{0}] y el \u00e1mbito registrado [{1}] del cliente [{2}] no tiene un \u00e1mbito com\u00fan entre ellos. El \u00e1mbito resultante est\u00e1 vac\u00edo.
+security.oauth20.error.empty.scope.explanation=El conjunto de \u00e1mbitos solicitados y el conjunto de \u00e1mbitos registrados debe tener al menos un \u00e1mbito com\u00fan entre ellos. 
+security.oauth20.error.empty.scope.useraction=Aseg\u00farese de que los conjuntos de \u00e1mbitos solicitados y registrados tienen al menos un \u00e1mbito com\u00fan entre ellos.
+
+security.oauth20.error.missing.scope=CWOAU0065E: El servidor de autorizaciones no puede procesar la solicitud [{0}]. Falta el par\u00e1metro del \u00e1mbito solicitado.
+security.oauth20.error.missing.scope.explanation=La solicitud OpenID Connect debe tener un \u00e1mbito con una serie no vac\u00eda.
+security.oauth20.error.missing.scope.useraction=Aseg\u00farese de que la solicitud OpenID Connect tiene un par\u00e1metro de \u00e1mbito v\u00e1lido.
+
+security.oauth20.token.limit.external.error=CWOAU0066E: La solicitud del punto final de se\u00f1al ha fallado debido a demasiadas solicitudes del mismo usuario.
+security.oauth20.token.limit.external.error.explanation=El mismo usuario tiene demasiadas sesiones activas con el mismo proveedor OAuth20. 
+security.oauth20.token.limit.external.error.useraction=Aumente el valor del atributo userClientTokenLimit en la configuraci\u00f3n para aumentar el tama\u00f1o de la memoria cach\u00e9 de se\u00f1al, o bien utilice una combinaci\u00f3n diferente de usuario/cliente como, por ejemplo, un cliente diferente.
+
+security.oauth20.request.denied=CWOAU0067E: El usuario ha rechazado la solicitud, o se ha producido otro error que ha generado el rechazo de la solicitud.
+security.oauth20.request.denied.explanation=El usuario ha rechazado la solicitud OAuth cancelando la solicitud en el formulario de consentimiento de \u00e1mbito, o bien se ha producido alg\u00fan otro error que ha rechazado el acceso a la solicitud OAuth.
+security.oauth20.request.denied.useraction=El usuario debe permitir al proveedor OAuth compartir los \u00e1mbitos que requiere el cliente para que la solicitud OAuth pueda tener \u00e9xito. Si el usuario ha aprobado la solicitud, consulte los registros en el proveedor OAuth para ver cualquier error adicional.
+
+security.oauth20.error.missing.registered.scope=CWOAU0068E: La solicitud en el punto final de autorizaci\u00f3n de OpenID Connect realizada por el cliente [{0}] ha fallado. No se han registrado \u00e1mbitos para este cliente. 
+security.oauth20.error.missing.registered.scope.explanation=La configuraci\u00f3n de cliente debe contener una lista de \u00e1mbitos permitidos para el cliente, de lo contrario las solicitudes de autorizaci\u00f3n de OpenID Connect fallar\u00e1n. 
+security.oauth20.error.missing.registered.scope.useraction=Aseg\u00farese de registrar una lista de \u00e1mbitos en la configuraci\u00f3n del cliente del proveedor de OpenID Connect. Defina el \u00e1mbito en los \u00e1mbitos permitidos o en ALL_SCOPES en el caso de que sean aceptables todos los \u00e1mbitos.
+
+security.oauth20.endpoint.resowner.auth.error=CWOAU0069E: No se ha podido verificar el propietario del recurso. El propietario del recurso: {0} o la contrase\u00f1a son incorrectos.
+security.oauth20.endpoint.resowner.auth.error.explanation=El proveedor OAuth no ha podido verificar el propietario del recurso.
+security.oauth20.endpoint.resowner.auth.error.useraction=Compruebe que el nombre de usuario y la contrase\u00f1a del propietario del recurso sean v\u00e1lidos.
+
+security.oauth20.error.missing.client.provider=CWOAU0070E: No se ha encontrado un proveedor de cliente para el proveedor OAuth.
+security.oauth20.error.missing.client.provider.explanation=Es posible que exista un problema al inicializar los almacenes de cliente para este proveedor OAuth.
+security.oauth20.error.missing.client.provider.useraction=Compruebe los registros del servidor para garantizar que el proveedor OAuth se haya inicializado correctamente.
+
+security.oauth20.error.granttype.requires.confidential.client=CWOAU0071E: Un cliente p\u00fablico intent\u00f3 acceder al punto final {0} utilizando el tipo de concesi\u00f3n {1}. Este tipo de concesi\u00f3n solo lo pueden utilizar clientes confidenciales. El client_id es: {2}
+security.oauth20.error.granttype.requires.confidential.client.explanation=Un cliente p\u00fablico OAuth no tiene permiso para utilizar el tipo de concesi\u00f3n especificado para este punto final. S\u00f3lo los clientes confidenciales est\u00e1n autorizados a utilizar el tipo de concesi\u00f3n especificado.
+security.oauth20.error.granttype.requires.confidential.client.useraction=Compruebe el valor del par\u00e1metro grant_type de la solicitud OAuth y utilice un tipo de concesi\u00f3n diferente para el cliente p\u00fablico.
+
+# 0 - "scope" or "resource" (as of this update, may be other parms in the future}
+# 1 - string value, 2 - list of string values, 3 - config attributes: "scope" or "resourceIds" (as of this update, may be other parms in the future), 
+SECURITY.OAUTH20.ERROR.VALUE.NOT.IN.LIST=CWOAU0072E: El par\u00e1metro de solicitud [{0}] contiene un valor no v\u00e1lido [{1}]. Los valores v\u00e1lidos son [{2}] tal como los define el atributo de configuraci\u00f3n [{3}].
+SECURITY.OAUTH20.ERROR.VALUE.NOT.IN.LIST.explanation=El valor indicado del par\u00e1metro espec\u00edfico en la solicitud OAuth no es v\u00e1lido. Los valores v\u00e1lidos aparecen listados en el atributo indicado de la configuraci\u00f3n del servidor.
+SECURITY.OAUTH20.ERROR.VALUE.NOT.IN.LIST.useraction=Aseg\u00farese de que los valores del par\u00e1metro de solicitud son v\u00e1lidos.
+
+security.oauth20.front.end.error=CWOAU0073E: Se ha producido un error al autenticar a un usuario. Intente autenticarse de nuevo o p\u00f3ngase en contacto con el administrador del sitio si el problema contin\u00faa.
+security.oauth20.front.end.error.explanation=Es posible que falte informaci\u00f3n en la solicitud, el servidor puede haber experimentado un error interno o se ha producido alg\u00fan otro error que impide que el servidor autentique correctamente al usuario.
+security.oauth20.front.end.error.useraction=Contacte con el administrador del sistema para resolver el problema.
+
+security.oauth20.endpoint.resowner.apppassword.error=CWOAU0074E: La solicitud de intercambio de contrase\u00f1a de aplicaci\u00f3n del usuario {0} no se ha completado porque no se ha podido verificar la contrase\u00f1a de aplicaci\u00f3n. La contrase\u00f1a de aplicaci\u00f3n es incorrecta, ha caducado o se ha revocado, o el ID de cliente proporcionado no es v\u00e1lido.
+security.oauth20.endpoint.resowner.apppassword.error.explanation=El proveedor OAuth no ha podido verificar la contrase\u00f1a de aplicaci\u00f3n.
+security.oauth20.endpoint.resowner.apppassword.error.useraction=Confirme que la contrase\u00f1a de aplicaci\u00f3n es v\u00e1lida, no ha caducado y que no se ha revocado. Adem\u00e1s, confirme que el ID de cliente en la se\u00f1al de acceso es la misma que el ID de cliente la cabecera de autorizaci\u00f3n.
+
+security.oauth20.apppassword.config.c1p0.warning=CWOAU0075W: El cliente OAuth [{0}] est\u00e1 configurado para permitir que se soliciten contrase\u00f1as de aplicaci\u00f3n pero el proveedor [{1}] no est\u00e1 configurado para procesarlas. Esto puede provocar un error de autenticaci\u00f3n. Establezca el atributo de configuraci\u00f3n de proveedor OAuth passwordGrantRequiresAppPassword en true si se utilizan contrase\u00f1as de aplicaci\u00f3n.
+security.oauth20.apppassword.config.c1p0.warning.explanation=Es posible que la configuraci\u00f3n actual sea incorrecta.
+security.oauth20.apppassword.config.c1p0.warning.useraction=Corrija la configuraci\u00f3n si es necesario.
+
+security.oauth20.apppassword.config.c0p1.warning=CWOAU0076W: El cliente OAuth [{0}] no est\u00e1 configurado para permitir que se soliciten contrase\u00f1as de aplicaci\u00f3n pero el proveedor [{1}] s\u00ed est\u00e1 configurado para procesarlas. Esto puede provocar un error de autenticaci\u00f3n. Establezca el atributo de configuraci\u00f3n de proveedor OAuth passwordGrantRequiresAppPassword en false si no se utilizan contrase\u00f1as de aplicaci\u00f3n.
+security.oauth20.apppassword.config.c0p1.warning.explanation=Es posible que la configuraci\u00f3n actual sea incorrecta.
+security.oauth20.apppassword.config.c0p1.warning.useraction=Corrija la configuraci\u00f3n si es necesario.
+
+security.oauth20.apppassword.exchange.wrongclient=CWOAU0077E: La contrase\u00f1a de aplicaci\u00f3n creada por el cliente [{0}] no se puede utilizar con el cliente [{1}].
+security.oauth20.apppassword.exchange.wrongclient.explanation=La contrase\u00f1a de aplicaci\u00f3n se ha creado con un par\u00e1metro used_by que indicaba un cliente deseado, pero se ha enviado a un cliente diferente.
+security.oauth20.apppassword.exchange.wrongclient.useraction=Vuelva a emitir la solicitud con una contrase\u00f1a de aplicaci\u00f3n que sea v\u00e1lida para el cliente especificado.
+
+security.oauth20.apppwtok.revoke.disallowed=CWOAU0078E: Se ha intentado revocar una contrase\u00f1a de aplicaci\u00f3n o una se\u00f1al de aplicaci\u00f3n en el punto final de revocaci\u00f3n. Esta acci\u00f3n no est\u00e1 permitida.
+security.oauth20.apppwtok.revoke.disallowed.explanation=Las contrase\u00f1as de aplicaci\u00f3n o las se\u00f1ales de aplicaci\u00f3n deben revocarse utilizando los puntos finales app-passwords o app-tokens.
+security.oauth20.apppwtok.revoke.disallowed.useraction=Vuelva a emitir la solicitud con el URI para el punto final adecuado para revocar las contrase\u00f1as de aplicaci\u00f3n o las se\u00f1ales de aplicaci\u00f3n.
+
+security.oauth20.pkce.invalid.method.error=CWOAU0079E: El par\u00e1metro de solicitud code_challenge_method contiene un algoritmo no soportado.
+security.oauth20.pkce.invalid.method.error.explanation=El proveedor OAuth no da soporte al algoritmo de transformaci\u00f3n especificado.
+security.oauth20.pkce.invalid.method.error.useraction=Utilice "plain" o "S256" como code_challenge_method.
+
+security.oauth20.pkce.codeverifier.length.error=CWOAU0080E: La longitud de code_verifier no es v\u00e1lida.
+security.oauth20.pkce.codeverifier.length.error.explanation=El code_verifier debe tener una longitud m\u00ednima de 43 caracteres y una longitud m\u00e1xima de 128 caracteres. 
+security.oauth20.pkce.codeverifier.length.error.useraction=Env\u00ede de nuevo las solicitudes de autorizaci\u00f3n y se\u00f1al con el code_verifier actualizado que se ajuste a la longitud especificada.
+
+security.oauth20.pkce.error.mismatch.codeverifier=CWOAU0081E: El code_challenge y el code_verifier no coinciden.
+security.oauth20.pkce.error.mismatch.codeverifier.explanation=El proveedor OAuth utiliza el code_challenge_method especificado en la solicitud de autorizaci\u00f3n y transforma el code_verifier a menos que el code_challenge_method sea plain. El valor transformado debe coincidir con el code_challenge de la solicitud de autorizaci\u00f3n.
+security.oauth20.pkce.error.mismatch.codeverifier.useraction=Aseg\u00farese de enviar el code_challenge y el code_verifier coincidentes y el algoritmo de transformaci\u00f3n correcto con las solicitudes de autorizaci\u00f3n y se\u00f1al.

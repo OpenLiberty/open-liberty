@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,10 +27,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.osgi.framework.ServiceReference;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 import com.ibm.wsspi.security.tai.TrustAssociationInterceptor;
+
+import test.common.SharedOutputManager;
 
 @SuppressWarnings("unchecked")
 public class TAIConfigImplTest {
@@ -41,8 +41,7 @@ public class TAIConfigImplTest {
             setImposteriser(ClassImposteriser.INSTANCE);
         }
     };
-    protected final ConcurrentServiceReferenceMap<String, TrustAssociationInterceptor> interceptorConfigRef = new ConcurrentServiceReferenceMap<String, TrustAssociationInterceptor>(
-                                                                                                                                                                                     "interceptorService");
+    protected final ConcurrentServiceReferenceMap<String, TrustAssociationInterceptor> interceptorConfigRef = new ConcurrentServiceReferenceMap<String, TrustAssociationInterceptor>("interceptorService");
 
     Map<String, Object> properties = new HashMap<String, Object>();
 

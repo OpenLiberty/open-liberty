@@ -24,6 +24,7 @@ import java.util.Set;
 import com.ibm.ws.ffdc.DiagnosticModule;
 import com.ibm.ws.ffdc.FFDC;
 import com.ibm.ws.ffdc.IncidentStream;
+import com.ibm.wsspi.logging.Incident;
 
 /**
  * An IncidentStreamImpl is a lightweight implementation of an Incident stream
@@ -31,11 +32,11 @@ import com.ibm.ws.ffdc.IncidentStream;
  */
 public final class IncidentLogger {
 
-    public void logIncident(IncidentStream iStream, IncidentImpl incident, Throwable th, Object callerThis, Object[] objectArray) {
+    public void logIncident(IncidentStream iStream, Incident incident, Throwable th, Object callerThis, Object[] objectArray) {
         logIncident(iStream, incident, th, callerThis, objectArray, false);
     }
 
-    public void logIncident(IncidentStream iStream, IncidentImpl incident, Throwable th, Object callerThis, Object[] objectArray, boolean callerDumpOnly) {
+    public void logIncident(IncidentStream iStream, Incident incident, Throwable th, Object callerThis, Object[] objectArray, boolean callerDumpOnly) {
 
         final String time = formatTime();
 

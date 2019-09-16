@@ -310,4 +310,27 @@ public class SSLConfig {
 
         return null;
     }
+
+    /**
+     * @param String - alias of SSL configuration being used
+     * @return boolean
+     */
+    public boolean enableVerifyHostname(String sslAlias) {
+
+        Properties sslProps = null;
+        final String alias = sslAlias;
+        try {
+            sslProps = AccessController.doPrivileged(new PrivilegedExceptionAction<Properties>() {
+                @Override
+                public Properties run() throws SSLException {
+                    return jsseHelper.getProperties(alias, null, null);
+                }
+            });
+        } catch (PrivilegedActionException pae) {
+            // Can't get the properties so return false
+            return false;
+        }
+
+        return Boolean.valueOf(sslProps.getProperty(Constants.SSLPROP_HOSTNAME_VERIFICATION, "false"));
+    }
 }

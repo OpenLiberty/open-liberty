@@ -13,20 +13,25 @@ package com.ibm.ws.security.openidconnect.common;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.jmock.Expectations;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 
 import com.ibm.ws.security.test.common.CommonTestClass;
@@ -36,10 +41,12 @@ import test.common.SharedOutputManager;
 
 public class ConfigUtilsTest extends CommonTestClass {
 
-    static SharedOutputManager outputMgr = SharedOutputManager.getInstance();
+    static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("com.ibm.ws.security.openidconnect.common.*=all=enabled");
 
     @SuppressWarnings("unchecked")
     protected final AtomicServiceReference<ConfigurationAdmin> configAdminRef = mockery.mock(AtomicServiceReference.class);
+    private final ConfigurationAdmin configAdmin = mockery.mock(ConfigurationAdmin.class);
+    final Configuration configuration = mockery.mock(Configuration.class);
 
     private final String uniqueId = "myConfig";
     private final String configAttributeName = "forwardLoginParameter";
@@ -439,13 +446,500 @@ public class ConfigUtilsTest extends CommonTestClass {
         }
     }
 
+    /************************************** populateCustomRequestParameterMap **************************************/
+
+    @Test
+    public void test_populateCustomRequestParameterMap_nullAgs() {
+        try {
+            HashMap<String, String> paramMapToPopulate = null;
+            String[] configuredCustomRequestParams = null;
+            String configAttrName = null;
+            String configAttrValue = null;
+
+            utils.populateCustomRequestParameterMap(configAdmin, paramMapToPopulate, configuredCustomRequestParams, configAttrName, configAttrValue);
+
+            assertNull("Inputted map should have remained unmodified and null, but was: [" + paramMapToPopulate + "].", paramMapToPopulate);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_populateCustomRequestParameterMap_emptyConfiguredParamList_nullInputMap() {
+        try {
+            HashMap<String, String> paramMapToPopulate = null;
+            String[] configuredCustomRequestParams = new String[0];
+            String configAttrName = null;
+            String configAttrValue = null;
+
+            utils.populateCustomRequestParameterMap(configAdmin, paramMapToPopulate, configuredCustomRequestParams, configAttrName, configAttrValue);
+
+            assertNull("Inputted map should have remained unmodified and null, but was: [" + paramMapToPopulate + "].", paramMapToPopulate);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_populateCustomRequestParameterMap_emptyConfiguredParamList_nonNullInputMap() {
+        try {
+            HashMap<String, String> paramMapToPopulate = new HashMap<String, String>();
+            String[] configuredCustomRequestParams = new String[0];
+            String configAttrName = null;
+            String configAttrValue = null;
+
+            utils.populateCustomRequestParameterMap(configAdmin, paramMapToPopulate, configuredCustomRequestParams, configAttrName, configAttrValue);
+
+            assertTrue("Inputted map should have remained unmodified and empty, but was: [" + paramMapToPopulate + "].", paramMapToPopulate.isEmpty());
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_populateCustomRequestParameterMap_oneConfiguredParam_noMatchingConfiguration() {
+        try {
+            HashMap<String, String> paramMapToPopulate = new HashMap<String, String>();
+            final String configValue = "config1";
+            String[] configuredCustomRequestParams = new String[] { configValue };
+            String configAttrName = null;
+            String configAttrValue = null;
+            mockery.checking(new Expectations() {
+                {
+                    one(configAdmin).getConfiguration(configValue, "");
+                    will(returnValue(null));
+                }
+            });
+
+            utils.populateCustomRequestParameterMap(configAdmin, paramMapToPopulate, configuredCustomRequestParams, configAttrName, configAttrValue);
+
+            assertTrue("Inputted map should have remained unmodified and empty, but was: [" + paramMapToPopulate + "].", paramMapToPopulate.isEmpty());
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_populateCustomRequestParameterMap_oneConfiguredParam_matchingConfigMissingProperties() {
+        try {
+            HashMap<String, String> paramMapToPopulate = new HashMap<String, String>();
+            final String configValue = "config1";
+            String[] configuredCustomRequestParams = new String[] { configValue };
+            String configAttrName = null;
+            String configAttrValue = null;
+            final Dictionary<String, Object> props = createSampleConfigProps();
+            mockery.checking(new Expectations() {
+                {
+                    one(configAdmin).getConfiguration(configValue, "");
+                    will(returnValue(configuration));
+                    one(configuration).getProperties();
+                    will(returnValue(props));
+                }
+            });
+
+            utils.populateCustomRequestParameterMap(configAdmin, paramMapToPopulate, configuredCustomRequestParams, configAttrName, configAttrValue);
+
+            assertTrue("Inputted map should have remained unmodified and empty, but was: [" + paramMapToPopulate + "].", paramMapToPopulate.isEmpty());
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_populateCustomRequestParameterMap_oneConfiguredParam() {
+        try {
+            HashMap<String, String> paramMapToPopulate = new HashMap<String, String>();
+            final String configValue = "config1";
+            String[] configuredCustomRequestParams = new String[] { configValue };
+            String configAttrName = "name";
+            String configAttrValue = "value";
+            final Dictionary<String, Object> props = new Hashtable<String, Object>();
+            String name = "a configured name";
+            String value = "a configured value";
+            props.put(configAttrName, name);
+            props.put(configAttrValue, value);
+            mockery.checking(new Expectations() {
+                {
+                    one(configAdmin).getConfiguration(configValue, "");
+                    will(returnValue(configuration));
+                    one(configuration).getProperties();
+                    will(returnValue(props));
+                }
+            });
+
+            utils.populateCustomRequestParameterMap(configAdmin, paramMapToPopulate, configuredCustomRequestParams, configAttrName, configAttrValue);
+
+            assertFalse("Inputted map should not have remained unmodified and empty, but did.", paramMapToPopulate.isEmpty());
+            assertEquals("Updated map's size did not match expected size. Updated map was [" + paramMapToPopulate + "].", 1, paramMapToPopulate.size());
+            assertTrue("Updated map did not contain expected [" + name + "] key. Map was [" + paramMapToPopulate + "].", paramMapToPopulate.containsKey(name));
+            assertEquals("Updated map did not contain the expected value for the [" + name + "] key.", value, paramMapToPopulate.get(name));
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_populateCustomRequestParameterMap_multipleConfiguredParams_noMatchingPropertiesFound() {
+        try {
+            final Configuration config1 = mockery.mock(Configuration.class, "config1");
+            final Configuration config2 = mockery.mock(Configuration.class, "config2");
+            final Configuration config3 = mockery.mock(Configuration.class, "config3");
+
+            HashMap<String, String> paramMapToPopulate = new HashMap<String, String>();
+            final String configValue1 = "config1";
+            final String configValue2 = "config2";
+            final String configValue3 = "config3";
+            String[] configuredCustomRequestParams = new String[] { configValue1, configValue2, configValue3 };
+            String configAttrName = "name";
+            String configAttrValue = "value";
+
+            // None of the configurations associated with the custom request parameters exist or contain the required properties
+            mockery.checking(new Expectations() {
+                {
+                    one(configAdmin).getConfiguration(configValue1, "");
+                    will(returnValue(config1));
+                    one(config1).getProperties();
+                    will(returnValue(null));
+                    one(configAdmin).getConfiguration(configValue2, "");
+                    will(returnValue(config2));
+                    one(config2).getProperties();
+                    will(returnValue(new Hashtable<String, Object>()));
+                    one(configAdmin).getConfiguration(configValue3, "");
+                    will(returnValue(config3));
+                    one(config3).getProperties();
+                    will(returnValue(createSampleConfigProps()));
+                }
+            });
+
+            utils.populateCustomRequestParameterMap(configAdmin, paramMapToPopulate, configuredCustomRequestParams, configAttrName, configAttrValue);
+
+            assertTrue("Inputted map should have remained unmodified and empty, but was: [" + paramMapToPopulate + "].", paramMapToPopulate.isEmpty());
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_populateCustomRequestParameterMap_multipleConfiguredParams_someMatchingPropertiesFound() {
+        try {
+            final Configuration config1 = mockery.mock(Configuration.class, "config1");
+            final Configuration config2 = mockery.mock(Configuration.class, "config2");
+            final Configuration config3 = mockery.mock(Configuration.class, "config3");
+            final Configuration config4 = mockery.mock(Configuration.class, "config4");
+
+            HashMap<String, String> paramMapToPopulate = new HashMap<String, String>();
+            final String configValue1 = "config1";
+            final String configValue2 = "config2";
+            final String configValue3 = "config3";
+            final String configValue4 = "config4";
+            String[] configuredCustomRequestParams = new String[] { configValue1, configValue2, configValue3, configValue4 };
+            String configAttrName = "name";
+            String configAttrValue = "value";
+
+            // Only two of the configurations associated with the custom request parameters contain the required properties
+            String config2Name = "config 2 name";
+            String config2Value = "config 2 value";
+            String config3Name = "config 3 name";
+            String config3Value = "config 3 value";
+            final Dictionary<String, Object> config2Props = createSampleConfigProps();
+            config2Props.put(configAttrName, config2Name);
+            config2Props.put(configAttrValue, config2Value);
+            final Dictionary<String, Object> config3Props = createSampleConfigProps();
+            config3Props.put(configAttrName, config3Name);
+            config3Props.put(configAttrValue, config3Value);
+            mockery.checking(new Expectations() {
+                {
+                    one(configAdmin).getConfiguration(configValue1, "");
+                    will(returnValue(config1));
+                    one(config1).getProperties();
+                    will(returnValue(null));
+                    one(configAdmin).getConfiguration(configValue2, "");
+                    will(returnValue(config2));
+                    one(config2).getProperties();
+                    will(returnValue(config2Props));
+                    one(configAdmin).getConfiguration(configValue3, "");
+                    will(returnValue(config3));
+                    one(config3).getProperties();
+                    will(returnValue(config3Props));
+                    one(configAdmin).getConfiguration(configValue4, "");
+                    will(returnValue(config4));
+                    one(config4).getProperties();
+                    will(returnValue(createSampleConfigProps()));
+                }
+            });
+
+            utils.populateCustomRequestParameterMap(configAdmin, paramMapToPopulate, configuredCustomRequestParams, configAttrName, configAttrValue);
+
+            assertFalse("Inputted map should not have remained unmodified and empty, but did.", paramMapToPopulate.isEmpty());
+            assertEquals("Updated map's size did not match expected size. Updated map was [" + paramMapToPopulate + "].", 2, paramMapToPopulate.size());
+            assertTrue("Updated map did not contain expected [" + config2Name + "] key. Map was [" + paramMapToPopulate + "].", paramMapToPopulate.containsKey(config2Name));
+            assertEquals("Updated map did not contain the expected value for the [" + config2Name + "] key.", config2Value, paramMapToPopulate.get(config2Name));
+            assertTrue("Updated map did not contain expected [" + config3Name + "] key. Map was [" + paramMapToPopulate + "].", paramMapToPopulate.containsKey(config3Name));
+            assertEquals("Updated map did not contain the expected value for the [" + config3Name + "] key.", config3Value, paramMapToPopulate.get(config3Name));
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /************************************** addCustomRequestParameterValueToMap **************************************/
+
+    @Test
+    public void test_addCustomRequestParameterValueToMap_nullProperties() {
+        try {
+            HashMap<String, String> paramMapToPopulate = new HashMap<String, String>();
+            String configAttrName = "name";
+            String configAttrValue = "value";
+            mockery.checking(new Expectations() {
+                {
+                    one(configuration).getProperties();
+                    will(returnValue(null));
+                }
+            });
+
+            utils.addCustomRequestParameterValueToMap(configuration, paramMapToPopulate, configAttrName, configAttrValue);
+
+            assertTrue("Inputted map should have remained unmodified and empty, but was: [" + paramMapToPopulate + "].", paramMapToPopulate.isEmpty());
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_addCustomRequestParameterValueToMap_emptyProperties() {
+        try {
+            HashMap<String, String> paramMapToPopulate = new HashMap<String, String>();
+            String configAttrName = "name";
+            String configAttrValue = "value";
+            final Dictionary<String, Object> props = new Hashtable<String, Object>();
+            mockery.checking(new Expectations() {
+                {
+                    one(configuration).getProperties();
+                    will(returnValue(props));
+                }
+            });
+
+            utils.addCustomRequestParameterValueToMap(configuration, paramMapToPopulate, configAttrName, configAttrValue);
+
+            assertTrue("Inputted map should have remained unmodified and empty, but was: [" + paramMapToPopulate + "].", paramMapToPopulate.isEmpty());
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_addCustomRequestParameterValueToMap_emptyProperties_nullAttributeName() {
+        try {
+            HashMap<String, String> paramMapToPopulate = new HashMap<String, String>();
+            String configAttrName = null;
+            String configAttrValue = "value";
+            final Dictionary<String, Object> props = new Hashtable<String, Object>();
+            props.put(configAttrValue, "some value");
+            mockery.checking(new Expectations() {
+                {
+                    one(configuration).getProperties();
+                    will(returnValue(props));
+                }
+            });
+
+            utils.addCustomRequestParameterValueToMap(configuration, paramMapToPopulate, configAttrName, configAttrValue);
+
+            assertTrue("Inputted map should have remained unmodified and empty, but was: [" + paramMapToPopulate + "].", paramMapToPopulate.isEmpty());
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_addCustomRequestParameterValueToMap_emptyProperties_nullAttributeValue() {
+        try {
+            HashMap<String, String> paramMapToPopulate = new HashMap<String, String>();
+            String configAttrName = "name";
+            String configAttrValue = null;
+            final Dictionary<String, Object> props = new Hashtable<String, Object>();
+            props.put(configAttrName, "some name");
+            mockery.checking(new Expectations() {
+                {
+                    one(configuration).getProperties();
+                    will(returnValue(props));
+                }
+            });
+
+            utils.addCustomRequestParameterValueToMap(configuration, paramMapToPopulate, configAttrName, configAttrValue);
+
+            assertTrue("Inputted map should have remained unmodified and empty, but was: [" + paramMapToPopulate + "].", paramMapToPopulate.isEmpty());
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_addCustomRequestParameterValueToMap_missingNameProperty() {
+        try {
+            HashMap<String, String> paramMapToPopulate = new HashMap<String, String>();
+            String configAttrName = "name";
+            String configAttrValue = "value";
+            final Dictionary<String, Object> props = new Hashtable<String, Object>();
+            props.put("integer", new Integer(1));
+            props.put("string", "some string value");
+            mockery.checking(new Expectations() {
+                {
+                    one(configuration).getProperties();
+                    will(returnValue(props));
+                }
+            });
+
+            utils.addCustomRequestParameterValueToMap(configuration, paramMapToPopulate, configAttrName, configAttrValue);
+
+            assertTrue("Inputted map should have remained unmodified and empty, but was: [" + paramMapToPopulate + "].", paramMapToPopulate.isEmpty());
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_addCustomRequestParameterValueToMap_missingValueProperty() {
+        try {
+            HashMap<String, String> paramMapToPopulate = new HashMap<String, String>();
+            String configAttrName = "name";
+            String configAttrValue = "value";
+            final Dictionary<String, Object> props = new Hashtable<String, Object>();
+            String name = "name value";
+            props.put(configAttrName, name);
+            mockery.checking(new Expectations() {
+                {
+                    one(configuration).getProperties();
+                    will(returnValue(props));
+                }
+            });
+
+            utils.addCustomRequestParameterValueToMap(configuration, paramMapToPopulate, configAttrName, configAttrValue);
+
+            assertTrue("Inputted map should have remained unmodified and empty, but was: [" + paramMapToPopulate + "].", paramMapToPopulate.isEmpty());
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_addCustomRequestParameterValueToMap_emptyPropertyValues() {
+        try {
+            HashMap<String, String> paramMapToPopulate = new HashMap<String, String>();
+            String configAttrName = "name";
+            String configAttrValue = "value";
+            final Dictionary<String, Object> props = new Hashtable<String, Object>();
+            String name = "";
+            String value = "";
+            props.put(configAttrName, name);
+            props.put(configAttrValue, value);
+            mockery.checking(new Expectations() {
+                {
+                    one(configuration).getProperties();
+                    will(returnValue(props));
+                }
+            });
+
+            utils.addCustomRequestParameterValueToMap(configuration, paramMapToPopulate, configAttrName, configAttrValue);
+
+            assertFalse("Inputted map should not have remained unmodified and empty, but did.", paramMapToPopulate.isEmpty());
+            assertEquals("Updated map's size did not match expected size. Updated map was [" + paramMapToPopulate + "].", 1, paramMapToPopulate.size());
+            assertTrue("Updated map did not contain expected [" + name + "] key. Map was [" + paramMapToPopulate + "].", paramMapToPopulate.containsKey(name));
+            assertEquals("Updated map did not contain the expected value for the [" + name + "] key.", value, paramMapToPopulate.get(name));
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_addCustomRequestParameterValueToMap_nonStringName() {
+        try {
+            HashMap<String, String> paramMapToPopulate = new HashMap<String, String>();
+            String configAttrName = "name";
+            String configAttrValue = "value";
+            final Dictionary<String, Object> props = new Hashtable<String, Object>();
+            props.put(configAttrName, new Integer(42));
+            mockery.checking(new Expectations() {
+                {
+                    one(configuration).getProperties();
+                    will(returnValue(props));
+                }
+            });
+
+            utils.addCustomRequestParameterValueToMap(configuration, paramMapToPopulate, configAttrName, configAttrValue);
+
+            assertTrue("Inputted map should have remained unmodified and empty, but was: [" + paramMapToPopulate + "].", paramMapToPopulate.isEmpty());
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_addCustomRequestParameterValueToMap_nonStringValue() {
+        try {
+            HashMap<String, String> paramMapToPopulate = new HashMap<String, String>();
+            String configAttrName = "name";
+            String configAttrValue = "value";
+            final Dictionary<String, Object> props = new Hashtable<String, Object>();
+            props.put(configAttrName, "some name value");
+            props.put(configAttrValue, new Character('a'));
+            mockery.checking(new Expectations() {
+                {
+                    one(configuration).getProperties();
+                    will(returnValue(props));
+                }
+            });
+
+            utils.addCustomRequestParameterValueToMap(configuration, paramMapToPopulate, configAttrName, configAttrValue);
+
+            assertTrue("Inputted map should have remained unmodified and empty, but was: [" + paramMapToPopulate + "].", paramMapToPopulate.isEmpty());
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_addCustomRequestParameterValueToMap_normalStringValues() {
+        try {
+            HashMap<String, String> paramMapToPopulate = new HashMap<String, String>();
+            String configAttrName = "name";
+            String configAttrValue = "value";
+            final Dictionary<String, Object> props = new Hashtable<String, Object>();
+            String name = "some name";
+            String value = "an associated value";
+            props.put(configAttrName, name);
+            props.put(configAttrValue, value);
+            mockery.checking(new Expectations() {
+                {
+                    one(configuration).getProperties();
+                    will(returnValue(props));
+                }
+            });
+
+            utils.addCustomRequestParameterValueToMap(configuration, paramMapToPopulate, configAttrName, configAttrValue);
+
+            assertFalse("Inputted map should not have remained unmodified and empty, but did.", paramMapToPopulate.isEmpty());
+            assertEquals("Updated map's size did not match expected size. Updated map was [" + paramMapToPopulate + "].", 1, paramMapToPopulate.size());
+            assertTrue("Updated map did not contain expected [" + name + "] key. Map was [" + paramMapToPopulate + "].", paramMapToPopulate.containsKey(name));
+            assertEquals("Updated map did not contain the expected value for the [" + name + "] key.", value, paramMapToPopulate.get(name));
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
     /************************************** Helper methods **************************************/
 
     private Map<String, Object> createSampleProps() {
         Map<String, Object> props = new HashMap<String, Object>();
         props.put("my sample prop 1", "sample prop 1 value");
-        props.put("my_sample_prop_2", "sample_prop_2_value");
-        props.put("mySampleProp3", "sampleProp3Value");
+        props.put("my_sample_prop_2", new Integer(42));
+        props.put("mySampleProp3", new HashMap<String, String>());
+        return props;
+    }
+
+    private Dictionary<String, Object> createSampleConfigProps() {
+        Dictionary<String, Object> props = new Hashtable<String, Object>();
+        props.put("my sample prop 1", "sample prop 1 value");
+        props.put("my_sample_prop_2", new Integer(42));
+        props.put("mySampleProp3", new HashMap<String, String>());
         return props;
     }
 

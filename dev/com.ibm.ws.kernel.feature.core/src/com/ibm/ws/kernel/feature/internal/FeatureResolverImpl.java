@@ -78,7 +78,8 @@ public class FeatureResolverImpl implements FeatureResolver {
     static {
         Object temp = null;
         try {
-            temp = Tr.register(FeatureResolverImpl.class);
+            temp = Tr.register(FeatureResolverImpl.class, com.ibm.ws.kernel.feature.internal.ProvisionerConstants.TR_GROUP,
+                               com.ibm.ws.kernel.feature.internal.ProvisionerConstants.NLS_PROPS);
         } catch (Throwable t) {
             // nothing
         }

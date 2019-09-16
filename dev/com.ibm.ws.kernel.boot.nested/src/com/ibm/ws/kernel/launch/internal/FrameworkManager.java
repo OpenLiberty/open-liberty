@@ -19,6 +19,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.lang.instrument.Instrumentation;
+import java.lang.reflect.Proxy;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.text.MessageFormat;
@@ -111,7 +112,7 @@ public class FrameworkManager {
     /**
      * Command listener waiting for stop commands.
      */
-    protected ServerCommandListener sc = null;
+    protected volatile ServerCommandListener sc = null;
 
     /**
      * JVM Shutdown hook: this gets called when the JVM shuts down and attempts
@@ -180,15 +181,17 @@ public class FrameworkManager {
     /* A registered service for ClientRunner and only used in a client process. */
     private ClientRunner clientRunner;
 
+    private final CountDownLatch serverListenerLatch = new CountDownLatch(1);
+
     /**
      * Create and launch the OSGi framework
      *
      * @param config
-     *            BootstrapConfig object encapsulating active initial framework
-     *            properties
+     *                        BootstrapConfig object encapsulating active initial framework
+     *                        properties
      * @param logProvider
-     *            The initialized/active log provider that must be included in
-     *            framework management activities (start/stop/.. ), or null
+     *                        The initialized/active log provider that must be included in
+     *                        framework management activities (start/stop/.. ), or null
      * @param callback
      */
     public void launchFramework(BootstrapConfig config, LogProvider logProvider) {
@@ -196,7 +199,7 @@ public class FrameworkManager {
             throw new IllegalArgumentException("bootstrap config must not be null");
         boolean isClient = config.getProcessType().equals(BootstrapConstants.LOC_PROCESS_TYPE_CLIENT);
         try {
-            String nTime = config.remove(BootstrapConstants.LAUNCH_TIME);
+            String nTime = config.get(BootstrapConstants.LAUNCH_TIME);
             startTime = nTime == null ? System.nanoTime() : Long.parseLong(nTime);
             if (isClient) {
                 Tr.audit(tc, "audit.launchTime.client", config.getProcessName());
@@ -313,6 +316,11 @@ public class FrameworkManager {
                             // framework without calling our shutdownFramework() method.
                             removeShutdownHook();
 
+                            try {
+                                serverListenerLatch.await(5, TimeUnit.SECONDS);
+                            } catch (InterruptedException e) {
+                                Thread.currentThread().interrupt();
+                            }
                             // Close the command listener port, and stop any of its threads.
                             if (sc != null) {
                                 sc.close();
@@ -464,9 +472,9 @@ public class FrameworkManager {
      * launch the platform/runtime.
      *
      * @param systemBundleCtx
-     *            The framework system bundle context
+     *                            The framework system bundle context
      * @param config
-     *            The active bootstrap config
+     *                            The active bootstrap config
      */
     private void registerLibertyProcessService(BundleContext systemBundleCtx, BootstrapConfig config) {
         List<String> cmds = config.getCmdArgs();
@@ -481,13 +489,15 @@ public class FrameworkManager {
      * Register the instrumentation class as a service in the OSGi registry
      *
      * @param systemBundleCtx
-     *            The framework system bundle context
+     *                            The framework system bundle context
      */
     protected void registerInstrumentationService(BundleContext systemContext) {
         Instrumentation inst = config.getInstrumentation();
         if (inst != null) {
             // Register a wrapper so we can trace callers.
-            inst = new TraceInstrumentation(inst);
+            inst = (Instrumentation) Proxy.newProxyInstance(TraceInstrumentation.class.getClassLoader(),
+                                                            new Class[] { Instrumentation.class },
+                                                            new TraceInstrumentation(inst));
             Hashtable<String, String> svcProps = new Hashtable<String, String>();
             systemContext.registerService(Instrumentation.class.getName(), inst, svcProps);
         }
@@ -497,7 +507,7 @@ public class FrameworkManager {
      * Register the PauseableComponentController class as a service in the OSGi registry
      *
      * @param systemBundleCtx
-     *            The framework system bundle context
+     *                            The framework system bundle context
      */
     protected void registerPauseableComponentController(BundleContext systemContext) {
         PauseableComponentControllerImpl pauseableComponentController = new PauseableComponentControllerImpl(systemContext);
@@ -751,9 +761,16 @@ public class FrameworkManager {
      * Made a method to allow test to avoid/swap out the listen() behavior
      */
     protected void startServerCommandListener() {
-        String uuid = systemBundleCtx.getProperty("org.osgi.framework.uuid");
-        sc = new ServerCommandListener(config, uuid, this);
-        sc.startListening();
+        final Thread listeningThread = new Thread("kernel-command-listener") {
+            @Override
+            public void run() {
+                String uuid = systemBundleCtx.getProperty("org.osgi.framework.uuid");
+                sc = new ServerCommandListener(config, uuid, FrameworkManager.this, this);
+                serverListenerLatch.countDown();
+                sc.startListening();
+            }
+        };
+        listeningThread.start();
     }
 
     protected class ShutdownHook extends Thread {
@@ -873,11 +890,11 @@ public class FrameworkManager {
      * the elapsed time, in milliseconds, to format
      *
      * @param factor
-     *            If true, the elapsed time will be factored into more detailed
-     *            units: days/hours/minutes/seconds
-     *            The decimal format of the seconds is #.### or #.## or #.# or # or 0
-     *            If false it will be returned as the total of seconds
-     *            The decimal format of the seconds is #.### or #.## or #.# or # or 0
+     *                   If true, the elapsed time will be factored into more detailed
+     *                   units: days/hours/minutes/seconds
+     *                   The decimal format of the seconds is #.### or #.## or #.# or # or 0
+     *                   If false it will be returned as the total of seconds
+     *                   The decimal format of the seconds is #.### or #.## or #.# or # or 0
      *
      * @return A String containing the formatted elapsed time.
      *         Examples when the English language 'en' is the 'Locale':
@@ -1051,9 +1068,9 @@ public class FrameworkManager {
      * server status from them.
      *
      * @param timestamp
-     *            Create a unique dump folder based on the time stamp string.
+     *                            Create a unique dump folder based on the time stamp string.
      * @param javaDumpActions
-     *            The java dumps to create, or null for the default set.
+     *                            The java dumps to create, or null for the default set.
      */
     public void introspectFramework(String timestamp, Set<JavaDumpAction> javaDumpActions) {
         Tr.audit(tc, "info.introspect.request.received");

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar id="ejb-jar_ID" xmlns="http://java.sun.com/xml/ns/javaee" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd" 
+         metadata-complete="false" version="3.1">
+      <display-name>SingletonMix</display-name>
+      <enterprise-beans>
+         <session id="StatefulEJBRefBean">
+            <ejb-name>StatefulEJBRefBean</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.singleton.mix.ejb.StatefulEJBRefBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <transaction-type>Container</transaction-type>           
+         </session>
+      </enterprise-beans>
+</ejb-jar>

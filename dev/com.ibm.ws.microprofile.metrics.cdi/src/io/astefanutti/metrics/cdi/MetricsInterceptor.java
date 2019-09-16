@@ -28,6 +28,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 import javax.annotation.Priority;
 import javax.inject.Inject;
@@ -84,7 +86,7 @@ import com.ibm.ws.microprofile.metrics.cdi.producer.MetricRegistryFactory;
             Class<?> type = bean;
             do {
                 // TODO: discover annotations declared on implemented interfaces
-                for (Method method : type.getDeclaredMethods())
+                for (Method method : getDeclaredMethods(type))
                     if (!method.isSynthetic() && !Modifier.isPrivate(method.getModifiers()))
                         registerMetrics(bean, method);
                 type = type.getSuperclass();
@@ -98,7 +100,7 @@ import com.ibm.ws.microprofile.metrics.cdi.producer.MetricRegistryFactory;
         Class<?> type = bean;
         do {
             // TODO: discover annotations declared on implemented interfaces
-            for (Method method : type.getDeclaredMethods()) {
+            for (Method method : getDeclaredMethods(type)) {
                 MetricResolver.Of<Gauge> gauge = resolver.gauge(bean, method);
                 if (gauge.isPresent()) {
                     registry.register(gauge.metricName(), new ForwardingGauge(method, context.getTarget()), gauge.metadata());
@@ -140,7 +142,11 @@ import com.ibm.ws.microprofile.metrics.cdi.producer.MetricRegistryFactory;
         private ForwardingGauge(Method method, Object object) {
             this.method = method;
             this.object = object;
-            method.setAccessible(true);
+            AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
+                method.setAccessible(true);
+                return null;
+            });
+
         }
 
         @FFDCIgnore({ IllegalStateException.class })
@@ -174,5 +180,14 @@ import com.ibm.ws.microprofile.metrics.cdi.producer.MetricRegistryFactory;
         } catch (IllegalAccessException | InvocationTargetException cause) {
             throw new IllegalStateException("Error while calling method [" + method + "]", cause);
         }
+    }
+
+    private static Method[] getDeclaredMethods(Class<?> type) {
+        if (System.getSecurityManager() == null) {
+            return type.getDeclaredMethods();
+        }
+        return AccessController.doPrivileged((PrivilegedAction<Method[]>) () -> {
+            return type.getDeclaredMethods();
+        });
     }
 }

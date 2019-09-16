@@ -1581,12 +1581,11 @@ public class LdapConnection {
         /*
          * We didn't find any cached attributes, so search for the entity and it's attributes.
          */
-        String filter = iLdapConfigMgr.getLdapRDNFilter(null, LdapHelper.getRDN(uniqueName));
-        String parent = LdapHelper.getParentDN(uniqueName);
+        String filter = "objectclass=*";
         SearchControls controls = new SearchControls();
         controls.setTimeLimit(iTimeLimit);
         controls.setCountLimit(iCountLimit);
-        controls.setSearchScope(SearchControls.ONELEVEL_SCOPE);
+        controls.setSearchScope(SearchControls.OBJECT_SCOPE);
         controls.setReturningAttributes(attrIds); // Only retrieve requested attributes
         controls.setReturningObjFlag(false);
 
@@ -1594,18 +1593,18 @@ public class LdapConnection {
         NamingEnumeration<SearchResult> neu = null;
         try {
             try {
-                neu = ctx.search(parent, filter, controls);
+                neu = ctx.search(uniqueName, filter, controls);
             } catch (NamingException e) {
                 if (!ContextManager.isConnectionException(e)) {
                     throw e;
                 }
                 ctx = iContextManager.reCreateDirContext(ctx, e.toString());
-                neu = ctx.search(parent, filter, controls);
+                neu = ctx.search(uniqueName, filter, controls);
             }
             if (neu.hasMoreElements()) {
                 SearchResult thisEntry = neu.nextElement();
                 if (thisEntry != null) {
-                    DN = LdapHelper.prepareDN(thisEntry.getName(), parent);
+                    DN = LdapHelper.prepareDN(thisEntry.getNameInNamespace(), null);
                     attributes = thisEntry.getAttributes();
                     if (iAttrRangeStep > 0) {
                         supportRangeAttributes(attributes, DN, ctx);
@@ -1614,7 +1613,7 @@ public class LdapConnection {
             }
 
         } catch (NameNotFoundException e) {
-            String msg = Tr.formatMessage(tc, WIMMessageKey.ENTITY_NOT_FOUND, WIMMessageHelper.generateMsgParms(parent));
+            String msg = Tr.formatMessage(tc, WIMMessageKey.ENTITY_NOT_FOUND, WIMMessageHelper.generateMsgParms(uniqueName));
             throw new EntityNotFoundException(WIMMessageKey.ENTITY_NOT_FOUND, msg, e);
         } catch (NamingException e) {
             String msg = Tr.formatMessage(tc, WIMMessageKey.NAMING_EXCEPTION, WIMMessageHelper.generateMsgParms(e.toString(true)));

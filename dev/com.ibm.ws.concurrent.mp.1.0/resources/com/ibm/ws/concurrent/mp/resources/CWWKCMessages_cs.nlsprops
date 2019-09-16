@@ -13,7 +13,7 @@
 #NLS_ENCODING=UNICODE
 #
 #COMPONENTPREFIX CWWKC
-#COMPONENTNAMEFOR CWWKC MicroProfile Concurrency
+#COMPONENTNAMEFOR CWWKC MicroProfile Context Propagation
 #
 # NLS_MESSAGEFORMAT_VAR
 #
@@ -25,7 +25,7 @@
 # All messages must use the range CWWCK1150 to CWWCK1189 except those specifically identified as moved
 
 CWWKC1150.duplicate.context=CWWKC1150E: Stejn\u00fd typ kontextu podprocesu, {0}, je poskytov\u00e1n v\u00edce poskytovateli kontextu podprocesu, kte\u0159\u00ed jsou k dispozici pro danou aplikaci. Poskytovatel\u00e9 kontextu podprocesu jsou: {1}, {2}.
-CWWKC1150.duplicate.context.explanation=Specifikace soub\u011b\u017enosti MicroProfile povoluje pro ka\u017ed\u00fd typ kontextu ne v\u00edce ne\u017e jeden ThreadContextProvider.
+CWWKC1150.duplicate.context.explanation=Specifikace \u0161\u00ed\u0159en\u00ed kontextu MicroProfile nepovoluje pro ka\u017ed\u00fd typ kontextu v\u00edce ne\u017e jednu polo\u017eku ThreadContextProvider.
 CWWKC1150.duplicate.context.useraction=Aktualizujte dostupnou aplikaci, knihovny nebo oboj\u00ed tak, aby neexistoval v\u00edce ne\u017e jeden ThreadContextProvider uveden\u00e9ho typu.
 
 # do not translate: cleared, propagated
@@ -49,3 +49,5 @@ CWWKC1156.not.supported.useraction=Aktualizujte aplikaci tak, aby pou\u017e\u00e
 CWWKC1157.cannot.propagate.tx=CWWKC1157E: \u0160\u00ed\u0159en\u00ed transakc\u00ed do kontextov\u00fdch akc\u00ed a \u00faloh nen\u00ed podporov\u00e1no.
 CWWKC1157.cannot.propagate.tx.explanation=ManagedExecutor nebo ThreadContext nakonfigurovan\u00e9 pro \u0161\u00ed\u0159en\u00ed kontext\u016f transakc\u00ed mohou \u0161\u00ed\u0159it pouze pr\u00e1zdn\u00e9 kontexty transakc\u00ed. Proto v r\u00e1mci transakce nelze vytv\u00e1\u0159et kontextov\u00e9 akce a \u00falohy.
 CWWKC1157.cannot.propagate.tx.useraction=Vytvo\u0159te kontextovou akci nebo \u00falohu mimo transakci. Voliteln\u011b nakonfigurujte ManagedExecutor nebo ThreadContext tak, aby nep\u0159enesly kontexty transakc\u00ed.
+
+# CWWKC1158E used by com.ibm.ws.cdi.mp.context bundle

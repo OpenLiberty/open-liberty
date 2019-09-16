@@ -39,10 +39,18 @@ public interface FileNotificationMBean extends FileNotification {
     /**
      * Processed pending server configuration changes {see#link: FileNotificationImpl}
      */
+    @Override
     void processConfigurationChanges();
 
     /**
      * Processed pending application updates {see#link: FileNotificationImpl}
      */
+    @Override
     void processApplicationChanges();
+
+    /**
+     * Processes pending security keystore updates {see#link: FileNotificationImpl}
+     */
+    @Override
+    boolean processSecurityChanges(String id);
 }

@@ -15,6 +15,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -174,6 +176,26 @@ public class PackageProcessor implements ArchiveProcessor {
         return newMani;
     }
 
+    private Archive createArchive(final File file) throws IOException {
+
+        if (System.getSecurityManager() == null) {
+            return ArchiveFactory.create(file);
+        } else {
+            try {
+                return AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Archive>() {
+
+                    @Override
+                    public Archive run() throws IOException {
+                        return ArchiveFactory.create(file);
+                    }
+                });
+            } catch (PrivilegedActionException e) {
+                e.printStackTrace();
+                throw (IOException) e.getException();
+            }
+        }
+    }
+
     public ReturnCode execute(boolean runtimeOnly) {
         Archive archive = null;
         ReturnCode rc = backupWebSphereApplicationServerProperty(installRoot);
@@ -181,10 +203,18 @@ public class PackageProcessor implements ArchiveProcessor {
             return rc;
         }
         try {
+
+            // Dont allow --include=usr and --archive=*.jar combination
+            if (isIncludeOptionEqualToUsr() && isArchiveJar()) {
+                System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("error.package.usr.jar"), processName));
+                return ReturnCode.ERROR_SERVER_PACKAGE;
+            }
+
             // Create the default archive
-            archive = ArchiveFactory.create(packageFile);
+            archive = ArchiveFactory.create(packageFile, java2SecurityEnabled());
+
             // for a Jar archive, the manifest must be first.
-            if (packageFile.getName().endsWith(".jar")) {
+            if (isArchiveJar()) {
                 File manifest = new File(bootProps.getInstallRoot(), "lib/extract/META-INF/MANIFEST.MF");
                 if (!manifest.exists()) {
                     //maybe user didnt extract file with jar -jar, but unzipped..
@@ -519,6 +549,7 @@ public class PackageProcessor implements ArchiveProcessor {
             entryConfigs.add(serverSharedDirConfig);
             // exclude security sensitive files
             serverSharedDirConfig.exclude(Pattern.compile(REGEX_SEPARATOR + "resources" + REGEX_SEPARATOR + "security" + REGEX_SEPARATOR + "key.jks"));
+            serverSharedDirConfig.exclude(Pattern.compile(REGEX_SEPARATOR + "resources" + REGEX_SEPARATOR + "security" + REGEX_SEPARATOR + "key.p12"));
 
             /*
              * exclude loose xml files from shared directory
@@ -744,5 +775,18 @@ public class PackageProcessor implements ArchiveProcessor {
     public void setArchivePrefix(String prefix) {
         packageArchiveEntryPrefix = prefix + "/";
         isServerRootOptionSet = true;
+    }
+
+    // Check if Java 2 Security is enabled
+    private boolean java2SecurityEnabled() {
+        SecurityManager sm = System.getSecurityManager();
+        if (sm != null)
+            return true;
+        else
+            return false;
+    }
+
+    private boolean isArchiveJar() {
+        return packageFile.getName().endsWith(".jar");
     }
 }

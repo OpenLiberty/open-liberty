@@ -1,0 +1,18 @@
+<server description="Test SSL configuration - noSSLConfigServer.xml">
+
+    <!-- Not that this is currently INCLUDING ssl-1.0, so the feature is still
+         active in this configuration -->
+	<featureManager>
+		<feature>appSecurity-1.0</feature>
+		<feature>timedexit-1.0</feature>
+
+	</featureManager>
+
+	<application type="war" id="basicauth"
+				 name="basicauth"
+				 location="${server.config.dir}/apps/basicauth.war" />
+
+	<include optional="true" location="../fatTestPorts.xml"/>
+    <javaPermission className="java.security.AllPermission"/>
+
+</server>

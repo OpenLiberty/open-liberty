@@ -12,16 +12,16 @@ package com.ibm.ws.concurrent.mp.context;
 
 import java.util.Map;
 
-import org.eclipse.microprofile.concurrent.spi.ThreadContextController;
-import org.eclipse.microprofile.concurrent.spi.ThreadContextProvider;
-import org.eclipse.microprofile.concurrent.spi.ThreadContextSnapshot;
+import org.eclipse.microprofile.context.spi.ThreadContextController;
+import org.eclipse.microprofile.context.spi.ThreadContextProvider;
+import org.eclipse.microprofile.context.spi.ThreadContextSnapshot;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
 /**
  * In Liberty, the container-provided context types are considered always available
- * even if the feature supplying the container internal org.eclipse.microprofile.concurrent.spi.ThreadContextSnapshot
+ * even if the feature supplying the container internal org.eclipse.microprofile.context.spi.ThreadContextSnapshot
  * type isn't available. This class allows for the possibility that the feature could become
  * available at a later time, by deferring the creation of the cleared thread context snapshot
  * until the action or task is about to start.

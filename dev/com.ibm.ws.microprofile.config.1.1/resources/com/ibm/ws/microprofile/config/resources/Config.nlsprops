@@ -112,6 +112,16 @@ generic.type.variables.notsupported.CWMCG0018E=CWMCG0018E: The {0} Generic Type 
 generic.type.variables.notsupported.CWMCG0018E.explanation=An attempt was made to convert using a Generic Type Variable, such as List<T>. This is not supported.
 generic.type.variables.notsupported.CWMCG0018E.useraction=Instead, use a concrete argument type, such as List<String>.
 
+# Failed to start the {0} ConfigSource refresher process.
+failed.to.start.refresher.CWMCG0019E=CWMCG0019E: Failed to start the {0} ConfigSource refresher process.
+failed.to.start.refresher.CWMCG0019E.explanation=Changes in the specified ConfigSource are not reflected in the Config instance.
+failed.to.start.refresher.CWMCG0019E.useraction=Review the server message.log and FFDC logs to identify the problem.
+
+# Failed to start the {0} ConfigSource refresher process. The exception is: {1}.
+failed.to.start.refresher.exception.CWMCG0020E=CWMCG0020E: Failed to start the {0} ConfigSource refresher process. The exception is: {1}.
+failed.to.start.refresher.exception.CWMCG0020E.explanation=Changes in the specified ConfigSource are not reflected in the Config instance.
+failed.to.start.refresher.exception.CWMCG0020E.useraction=Review the server message.log and FFDC logs to identify the problem.
+
 # Environment Variables Config Source
 environment.variables.config.source=Environment Variables Config Source
 # Properties File Config Source: {0}

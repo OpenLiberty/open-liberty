@@ -22,14 +22,92 @@
 #   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
 #   (single quote must be coded as one single quote '). 
 
+# # A file path.
 bad.zip.data=CWWKM0101E: The system could not process archive data for {0}.
 bad.zip.data.explanation=An exception occurred while processing the compressed data for the archive. 
 bad.zip.data.useraction=Check that the file is a valid archive.
 
-remove.cache.data=CWWKM0102W: The system has cleaned invalid cache data from location {0}
+# # A file path.
+remove.cache.data=CWWKM0102W: The system has cleaned invalid cache data from location {0}.
 remove.cache.data.explanation=The application structure appears to have changed, requiring deletion of cache data based on the previous structure.
 remove.cache.data.useraction=If your application has changed structure, this is expected.
 
+# # {0} The text of the message from an exception.
 extract.cache.fail=CWWKM0103E: The system could not extract a nested archive to a cache location due to {0}
 extract.cache.fail.explanation=An error occurred during creation of cache data for the application, preventing the application from being processed correctly. 
 extract.cache.fail.useraction=Check the reported cause.
+
+# # {0} A file path.
+extract.cache.null=CWWKM0104E: The system could not extract nested archive {0} to a cache location.
+extract.cache.null.explanation=An error occurred during creation of cache data for the application, preventing the application from being processed correctly. 
+extract.cache.null.useraction=Check that the nested archive is a valid archive.
+
+# # {0} A file path.
+extract.secondary.timeout=CWWKM0105E: Secondary extraction timeout for {0}.
+extract.secondary.timeout.explanation=A concurrent request to extract a nested archive timed out waiting for the initial extraction to complete.
+extract.secondary.timeout.useraction=Check that the nested archive is a valid archive.
+
+# # {0} A file path
+extract.secondary.failed=CWWKM0106E: Failed secondary extraction for {0}.
+extract.secondary.failed.explanation=A concurrent request to extract a nested archive completed but did not extract the nested archive.
+extract.secondary.failed.useraction=Check that the nested archive is a valid archive.
+
+# # {0} A file path
+extract.secondary.notfile=CWWKM0107E: Secondary extraction did not create a simple file for {0}.
+extract.secondary.notfile.explanation=A concurrent request to extract a nested archive completed but did not produce a simple file.
+extract.secondary.notfile.useraction=Check that the nested archive is a valid archive.
+
+# # {0} A file path
+extract.secondary.inconsistent=CWWKM0108E: Secondary extraction inconsistent times for {0}.
+extract.secondary.inconsistent.explanation=A concurrent request to extract a nested archive completed but produced a different file than was expected.
+extract.secondary.inconsistent.useraction=Check that the nested archive is a valid archive.
+
+# # {0} A file path
+extract.primary.directory=CWWKM0109E: Prior extraction of {0} is a directory.
+extract.primary.directory.explanation=An extraction of a nested archive has detected a directory as the prior extracted archive.
+extract.primary.directory.useraction=Clean then restart the server to ensure no prior cache contents are present.
+
+# # {0} A file path
+extract.primary.untyped=CWWKM0110E: Prior extraction of {0} cannot be typed.
+extract.primary.untyped.explanation=An extraction of a nested archive has detected an untypable file as the prior extracted archive.
+extract.primary.untyped.useraction=Clean then restart the server to ensure no prior cache contents are present.
+
+# # {0} A file path.
+# # {1} A print name
+reaper.inactive=CWWKM0121W: Cannot open {0}: Archive cache {1} is inactive.
+reaper.inactive.explanation=A request to open an archive file failed because the archive file cache is not active.
+reaper.inactive.useraction=This message indicates an internal programming error.
+
+# # {0} A file path
+reaper.unregistered.path=CWWKM0122W: Ignoring close request for archive {0}, which is not open.
+reaper.unregistered.path.explanation=Archive file close processing was requested for an archive file which was not opened.
+reaper.unregistered.path.useraction=This messages indicates an internal programming error.
+
+# # {0} A file path
+reaper.closed.path=CWWKM0123W: Ignoring close request for archive {0}, which is already closed.
+reaper.closed.path.explanation=Archive file close processing was requested for an archive file which was already closed.
+reaper.closed.path.useraction=This messages indicates an internal programming error.
+
+# # {0} A file path
+reaper.pending.path=CWWKM0243W: Ignoring close request for archive {0}, which is already pending closure {0}.
+reaper.pending.path.explanation=Archive file close processing was requested for an archive file which is already pending closure.
+reaper.pending.path.useraction=This messages indicates an internal programming error.
+
+# # {0} A file path
+# # {1} An integer representing a file length
+# # {2} An integer representing a file length
+reaper.unexpected.length.change=CWWKM0125W: Archive {0}: Update length from {1} to {2}.
+reaper.unexpected.length.change.explanation=An unexpected update was made to an application archive file while that archive was open.  This usually occurs because a dynamic update was made to application files.
+reaper.unexpected.length.change.useraction=Restart the server.  When updating application files, wait for the server to quiesce, plus wait at least a half second to allow application files to be closed.
+
+# # {0} A file path
+# # {1} An integer representing a last modified time
+# # {2} An integer representing a last modified time
+reaper.unexpected.lastmodified.change=CWWKM0126W: Archive {0}: Update last modified from {1} to {2}.
+reaper.unexpected.lastmodified.change.explanation=An unexpected update was made to an application archive file while that archive was open.  This usually occurs because a dynamic update was made to application files.
+reaper.unexpected.lastmodified.change.useraction=Restart the server.  When updating application files, wait for the server to quiesce, plus wait at least a half second to allow application files to be closed.
+
+# # {0} A file path
+reaper.reopen.active=CWWKM0127W: Reopen {0}
+reaper.reopen.active.explanation=An unexpected change has caused an open application archive file to be re-opened.  The server has attempted to obtain the updated contents of the archive file, but may not have fully updated internal listings of the archive contents.
+reaper.reopen.active.useraction=Restart the server.  When updating application files, wait for the server to quiesce, plus wait at least a half second to allow application files to be closed.

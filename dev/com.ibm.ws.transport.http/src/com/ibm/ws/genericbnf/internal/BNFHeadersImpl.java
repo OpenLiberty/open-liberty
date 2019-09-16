@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2018 IBM Corporation and others.
+ * Copyright (c) 2004, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import java.io.ObjectOutput;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import com.ibm.websphere.ras.Tr;
@@ -34,6 +35,7 @@ import com.ibm.wsspi.genericbnf.HeaderField;
 import com.ibm.wsspi.genericbnf.HeaderKeys;
 import com.ibm.wsspi.genericbnf.HeaderStorage;
 import com.ibm.wsspi.genericbnf.exception.MalformedMessageException;
+import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 
 /**
  * Generic class implementing an Augmented BNF Header/Value storage. This
@@ -119,7 +121,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     // ********************************************************************
 
     /** Storage for the header/value pairs */
-    private transient HeaderElement[] storage = new HeaderElement[100];
+    private transient HashMap<Integer, HeaderElement> storage = new HashMap<Integer, HeaderElement>();
     /**
      * This array stores the names of the headers in the list they were
      * either parsed or set by the user (depending on scenario)
@@ -736,7 +738,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
             this.deserializationVersion = SERIALIZATION_V2;
             len = input.readInt();
         }
-        this.storage = new HeaderElement[len];
+        this.storage = new HashMap<Integer, HeaderElement>();
 
         // now read all of the headers
         int number = input.readInt();
@@ -762,7 +764,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     @Override
     public void writeExternal(ObjectOutput output) throws IOException {
         output.writeInt(SERIALIZATION_V2);
-        output.writeInt(this.storage.length);
+        output.writeInt(this.storage.size());
         output.writeInt(this.numberOfHeaders);
         int count = 0;
         HeaderElement elem = this.hdrSequence;
@@ -1106,7 +1108,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
                 //instead of marshallHeader
                 if (this.table != null) {
                     try {
-                        if (!H2Headers.checkIsValidH2WriteHeader(elem.getName())) {
+                        if (!H2Headers.checkIsValidH2WriteHeader(elem.getName(), elem.asString())) {
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                                 Tr.debug(tc, "On an HTTP/2 connection - will not encode this header header: " + elem.getName());
                             }
@@ -1663,12 +1665,12 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
             final HeaderElement next = elem.nextSequence;
             final HeaderKeys key = elem.getKey();
             final int ord = key.getOrdinal();
-            if (null != this.storage[ord]) {
+            if (storage.containsKey(ord)) {
                 // first instance being removed
                 if (key.useFilters()) {
                     filterRemove(key, null);
                 }
-                this.storage[ord] = null;
+                storage.remove(ord);
             }
             elem.destroy();
             elem = next;
@@ -2103,24 +2105,26 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
                 return;
             }
         }
+       if (HttpHeaderKeys.isWasPrivateHeader(key.getName())) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "checking to see if private header is allowed: " + key.getName());
+            }
+           if (!filterAdd(key, elem.asBytes())) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, key.getName() +" is not trusted for this host; not adding header");
+                }
+               return;
+           }
+       }
+       
         incrementHeaderCounter();
         HeaderElement root = findHeader(key);
         boolean rc = addInstanceOfElement(root, elem);
         // did we change the root node?
         if (rc) {
             final int ord = key.getOrdinal();
-            if (ord >= this.storage.length) {
-                // increase it to be able to contain the new ordinal plus some padding
-                HeaderElement[] temp = new HeaderElement[ord + 10];
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(tc, "Increasing header storage to " + temp.length);
-                }
-                for (int i = 0; i < this.storage.length; i++) {
-                    temp[i] = this.storage[i];
-                }
-                this.storage = temp;
-            }
-            this.storage[ord] = elem;
+            storage.put(ord, elem);
+
         }
     }
 
@@ -2191,10 +2195,28 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
      */
     private HeaderElement findHeader(HeaderKeys key, int instance) {
         final int ord = key.getOrdinal();
-        if (ord >= this.storage.length) {
+
+        if (!storage.containsKey(ord) && ord <= HttpHeaderKeys.ORD_MAX) {
             return null;
         }
-        HeaderElement elem = this.storage[ord];
+
+        HeaderElement elem = null;
+
+        //If the ordinal created for this key is larger than 1024, the header key
+        //storage has been capped. As such, search the internal header storage
+        //to see if we have a header with this name already added.
+        if (ord > HttpHeaderKeys.ORD_MAX) {
+            for (HeaderElement header : storage.values()) {
+                if (header.getKey().getName().equals(key.getName())) {
+                    elem = header;
+                    break;
+                }
+            }
+
+        } else {
+            elem = storage.get(ord);
+        }
+
         int i = -1;
         while (null != elem) {
             if (!elem.wasRemoved()) {
@@ -2215,10 +2237,28 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
      */
     private HeaderElement findHeader(HeaderKeys key) {
         final int ord = key.getOrdinal();
-        if (ord >= this.storage.length) {
+
+        if (!storage.containsKey(ord) && ord <= HttpHeaderKeys.ORD_MAX) {
             return null;
         }
-        HeaderElement elem = this.storage[ord];
+
+        HeaderElement elem = null;
+
+        //If the ordinal created for this key is larger than 1024, the header key
+        //storage has been capped. As such, search the internal header storage
+        //to see if we have a header with this name already added.
+        if (ord > HttpHeaderKeys.ORD_MAX) {
+            for (HeaderElement header : storage.values()) {
+                if (header.getKey().getName().equals(key.getName())) {
+                    elem = header;
+                    break;
+                }
+            }
+
+        } else {
+            elem = storage.get(ord);
+        }
+
         while (null != elem && elem.wasRemoved()) {
             elem = elem.nextInstance;
         }

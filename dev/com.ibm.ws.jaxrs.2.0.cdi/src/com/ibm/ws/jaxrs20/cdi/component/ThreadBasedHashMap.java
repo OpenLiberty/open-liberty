@@ -12,6 +12,7 @@ package com.ibm.ws.jaxrs20.cdi.component;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 import com.ibm.ws.managedobject.ManagedObject;
 
@@ -23,7 +24,7 @@ public class ThreadBasedHashMap extends HashMap<Class<?>, ManagedObject<?>> {
     ThreadLocal<Map<Class<?>, ManagedObject<?>>> tlMap = new ThreadLocal<Map<Class<?>, ManagedObject<?>>>() {
         @Override
         protected Map<Class<?>, ManagedObject<?>> initialValue() {
-            return new HashMap<>();
+            return new WeakHashMap<>();
         }
     };
 

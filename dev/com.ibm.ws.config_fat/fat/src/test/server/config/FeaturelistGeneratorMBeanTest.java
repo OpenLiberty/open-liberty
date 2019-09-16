@@ -37,6 +37,7 @@ import javax.net.ssl.X509TrustManager;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.config.mbeans.FeatureListMBean;
 import com.ibm.websphere.filetransfer.FileTransferMBean;
@@ -44,6 +45,7 @@ import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jmx.connector.client.rest.ClientProvider;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -51,6 +53,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 /**
  * FAT-Tests to test the functionality of com.ibm.websphere.config.mbeans.FeatureListMBean
  */
+@RunWith(FATRunner.class)
 public class FeaturelistGeneratorMBeanTest {
 
     private static Class<?> logClass = FeaturelistGeneratorMBeanTest.class;
@@ -105,10 +108,12 @@ public class FeaturelistGeneratorMBeanTest {
             }
 
             @Override
-            public void checkClientTrusted(X509Certificate[] certs, String authType) {}
+            public void checkClientTrusted(X509Certificate[] certs, String authType) {
+            }
 
             @Override
-            public void checkServerTrusted(X509Certificate[] certs, String authType) {}
+            public void checkServerTrusted(X509Certificate[] certs, String authType) {
+            }
         } };
 
         SSLContext sc = SSLContext.getInstance("SSL");

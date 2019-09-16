@@ -112,7 +112,7 @@ NO_VALID_TRANSACTION_CONTEXT_J2CA0040.explanation=Il y avait une erreur interne 
 NO_VALID_TRANSACTION_CONTEXT_J2CA0040.useraction=CMSG0002
 
 # --------------------------------
-POOL_MANAGER_EXCP_CCF2_0001_J2CA0045=J2CA0045E: La connexion n''est pas disponible lors de l''appel de la m\u00e9thode {0} pour la ressource {1}.
+POOL_MANAGER_EXCP_CCF2_0001_J2CA0045=J2CA0045E: La connexion n''est pas disponible lors de l''appel de la m\u00e9thode {0} pour la ressource {1}. D\u00e9passement du d\u00e9lai d''attente au bout de {2} milliseconde(s) avec {3} demande(s) en attente restante(s) et un total de {4} connexion(s) actuellement utilis\u00e9e(s).
 POOL_MANAGER_EXCP_CCF2_0001_J2CA0045.explanation=Le d\u00e9lai d'attente de connexion a \u00e9t\u00e9 d\u00e9pass\u00e9. Une exception ConnectionWaitTimeoutException a \u00e9t\u00e9 cr\u00e9\u00e9e.
 POOL_MANAGER_EXCP_CCF2_0001_J2CA0045.useraction=Reconfigurez le pool de connexions. Pour \u00e9viter cette erreur, vous pouvez augmenter le nombre maximal de connexions ou le d\u00e9lai imparti aux connexions.
 

@@ -1,0 +1,24 @@
+<server description="Test SSL configuration - relativePathSSLConfigServer.xml">
+
+	<featureManager>
+		<feature>ssl-1.0</feature>
+		<feature>appSecurity-2.0</feature>
+		<feature>servlet-3.1</feature>
+		<feature>timedexit-1.0</feature>
+
+	</featureManager>
+
+	<sslDefault sslRef="AlternateSSLSettings" />
+
+	<ssl id="AlternateSSLSettings" keyStoreRef="AlternateKeyStore" trustStoreRef="AlternateTrustStore" />
+	<keyStore id="AlternateKeyStore" location="AlternateServerKeyFile.jks" type="JKS" password="ytrebiL" />
+	<keyStore id="AlternateTrustStore" location="AlternateServerTrustFile.jks" type="JKS" password="ytrebiL" />
+
+	<application type="war" id="basicauth"
+				 name="basicauth"
+				 location="${server.config.dir}/apps/basicauth.war" />
+
+	<include optional="true" location="../fatTestPorts.xml"/>
+    <javaPermission className="java.security.AllPermission"/>
+
+</server>

@@ -23,4 +23,10 @@
             <context-root>JPA10Injection_DFIYesInheritance_Web</context-root>
         </web>
     </module>
+    <module id="WebModule_2">
+        <web>
+            <web-uri>injectionDFIYesInheritanceDDOvrd.war</web-uri>
+            <context-root>JPA10Injection_DFIYesInheritance_DDOvrd_Web</context-root>
+        </web>
+    </module>
 </application>

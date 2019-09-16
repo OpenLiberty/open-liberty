@@ -1,9 +1,20 @@
+/*******************************************************************************
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package componenttest.topology.utils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.GeneralSecurityException;
 import java.security.SecureRandom;
@@ -17,17 +28,24 @@ import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonStructure;
+import javax.net.SocketFactory;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+
+import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.topology.impl.LibertyServer;
 
 public class HttpsRequest {
 
+    private static final Class<?> c = HttpsRequest.class;
+
+    private final boolean isHTTPS;
     private final String url;
     private final Set<Integer> expectedResponseCode = new HashSet<Integer>();
     private String reqMethod = "GET";
@@ -38,16 +56,22 @@ public class HttpsRequest {
     private Integer timeout;
     private boolean silent = false;
     private int responseCode = -1;
+    private SSLSocketFactory sf = null;
+
+    private static String concat(String... pathParts) {
+        String base = "";
+        for (String part : pathParts)
+            base += part;
+        return base;
+    }
 
     public HttpsRequest(String url) {
         this.url = url;
+        this.isHTTPS = url.startsWith("https://");
     }
 
     public HttpsRequest(LibertyServer server, String... pathParts) {
-        String base = "https://" + server.getHostname() + ":" + server.getHttpDefaultSecurePort();
-        for (String part : pathParts)
-            base += part;
-        this.url = base;
+        this("https://" + server.getHostname() + ":" + server.getHttpDefaultSecurePort() + concat(pathParts));
     }
 
     /**
@@ -63,6 +87,15 @@ public class HttpsRequest {
      */
     public HttpsRequest requestProp(String key, String value) {
         props.put(key, value);
+        return this;
+    }
+
+    public HttpsRequest sslSocketFactory(SocketFactory sslSf) {
+        if (!isHTTPS)
+            throw new IllegalArgumentException("Cannot set an SSLSocketFactory on an HTTP connection");
+        if (!(sslSf instanceof SSLSocketFactory))
+            throw new IllegalArgumentException("Socket factory must be an instanceof SSLSocketFactory, but was: " + sslSf);
+        this.sf = (SSLSocketFactory) sslSf;
         return this;
     }
 
@@ -121,12 +154,16 @@ public class HttpsRequest {
      */
     public <T> T run(Class<T> type) throws Exception {
         if (!silent) {
-            System.out.println(reqMethod + ' ' + url);
+            Log.info(c, "run", reqMethod + ' ' + url);
         }
 
-        HttpsURLConnection con = (HttpsURLConnection) new URL(url).openConnection();
+        HttpURLConnection con = (HttpURLConnection) new URL(url).openConnection();
+
         try {
-            if (allowInsecure) {
+            if (allowInsecure && sf != null)
+                throw new IllegalStateException("Cannot set allowInsecure=true and sslSocketFactory because " +
+                                                " allowInsecure=true installs its own sslSocketFactory.");
+            if (allowInsecure && isHTTPS) {
                 //All hosts are valid
                 HostnameVerifier allHostsValid = new HostnameVerifier() {
                     @Override
@@ -135,7 +172,7 @@ public class HttpsRequest {
                     }
                 };
                 // Install the all-trusting host verifier
-                con.setHostnameVerifier(allHostsValid);
+                ((HttpsURLConnection) con).setHostnameVerifier(allHostsValid);
 
                 TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
                     @Override
@@ -153,29 +190,35 @@ public class HttpsRequest {
                     SSLContext sc = SSLContext.getInstance("TLS");
                     sc.init(null, trustAllCerts, new SecureRandom());
 
-                    con.setSSLSocketFactory(sc.getSocketFactory());
+                    ((HttpsURLConnection) con).setSSLSocketFactory(sc.getSocketFactory());
                 } catch (GeneralSecurityException e) {
-                    System.err.println("CheckServerAvailability hit an error when trying to ignore certificates.");
+                    Log.error(c, "run", e, "CheckServerAvailability hit an error when trying to ignore certificates.");
                     e.printStackTrace();
                 }
-
+            }
+            if (sf != null && isHTTPS) {
+                ((HttpsURLConnection) con).setSSLSocketFactory(sf);
             }
 
             con.setDoInput(true);
             con.setDoOutput(true);
             con.setRequestMethod(reqMethod);
 
-            if (type.getPackage().equals("javax.json"))
-                con.setRequestProperty("Content-Type", "application/json");
-            else
-                con.setRequestProperty("Content-Type", "text/html");
+            if ("GET".equals(con.getRequestMethod()) && json != null) {
+                throw new IllegalStateException("Writing a JSON body to a GET request will force the connection to be switched to a POST request at the JDK layer.");
+            }
 
             if (json != null) {
-                con.setRequestProperty("Accept", "application/json");
-                OutputStream out = con.getOutputStream();
+                con.setRequestProperty("Content-Type", "application/json");
+                OutputStream out = con.getOutputStream(); //This line will change a GET request to a POST request
                 out.write(json.getBytes("UTF-8"));
                 out.close();
+            } else {
+                con.setRequestProperty("Content-Type", "text/html");
             }
+
+            if (type.getPackage().toString().startsWith("javax.json"))
+                con.setRequestProperty("Accept", "application/json");
 
             if (basicAuth != null)
                 con.setRequestProperty("Authorization", basicAuth);
@@ -194,6 +237,7 @@ public class HttpsRequest {
                 expectCode(HttpsURLConnection.HTTP_OK);
             }
             if (!expectedResponseCode.contains(responseCode)) {
+                Log.info(c, "run", "Got unexpected response code: " + responseCode);
                 throw new Exception("Unexpected response (See HTTP_* constant values on HttpURLConnection): " + responseCode);
             }
             if (responseCode / 100 == 2) { // response codes in the 200s mean success
@@ -213,8 +257,26 @@ public class HttpsRequest {
                     return type.cast(out.toString("UTF-8"));
                 } else
                     throw new IllegalArgumentException(type.getName());
-            } else
+            } else if (con.getErrorStream() != null) {
+                if (JsonArray.class.equals(type))
+                    return type.cast(Json.createReader(con.getErrorStream()).readArray());
+                else if (JsonObject.class.equals(type))
+                    return type.cast(Json.createReader(con.getErrorStream()).readObject());
+                else if (JsonStructure.class.equals(type))
+                    return type.cast(Json.createReader(con.getErrorStream()).read());
+                else if (String.class.equals(type)) {
+                    ByteArrayOutputStream out = new ByteArrayOutputStream();
+                    InputStream in = con.getErrorStream();
+                    int numBytesRead;
+                    for (byte[] b = new byte[8192]; (numBytesRead = in.read(b)) != -1;)
+                        out.write(b, 0, numBytesRead);
+                    in.close();
+                    return type.cast(out.toString("UTF-8"));
+                } else
+                    throw new IllegalArgumentException(type.getName());
+            } else {
                 return null;
+            }
         } finally {
             con.disconnect();
         }

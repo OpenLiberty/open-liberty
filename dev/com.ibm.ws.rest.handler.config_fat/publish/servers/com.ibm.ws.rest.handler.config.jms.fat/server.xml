@@ -1,0 +1,82 @@
+<!--
+    Copyright (c) 2019 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+  <include location="../fatTestPorts.xml" />
+
+  <featureManager>
+    <feature>componenttest-1.0</feature>
+    <feature>restConnector-2.0</feature>
+    <feature>jms-2.0</feature>
+  </featureManager>
+
+  <variable name="onError" value="FAIL"/>
+
+  <keyStore id="defaultKeyStore" password="Liberty"/>
+  <quickStartSecurity userName="adminuser" userPassword="adminpwd"/>
+
+  <resourceAdapter id="jmsra" location="${server.config.dir}/connectors/TestConfigJMSAdapter.rar">
+    <properties.jmsra debugMode="true"/>
+  </resourceAdapter>
+
+  <authData id="jmsUser1" user="jmsU1" password="1jmsU"/>
+
+  <jmsConnectionFactory id="cf1" jndiName="jms/cf1" containerAuthDataRef="jmsUser1" recoveryAuthDataRef="jmsUser1">
+    <connectionManager id="cm" maxPoolSize="14" minPoolSize="4"/>
+    <properties.jmsra escapeChar="^" portNumber="4455"/>
+  </jmsConnectionFactory>
+
+  <!-- merges with above -->
+  <jmsConnectionFactory id="cf1" containerAuthDataRef="jmsUser1" recoveryAuthDataRef="jmsUser1"/>
+
+  <jmsDestination id="dest1" jndiName="jms/dest1">
+    <properties.jmsra.JMSDestinationImpl destinationName="3605 Hwy 52N, Rochester, MN 55901"/>
+  </jmsDestination>
+
+  <jmsDestination id="dest2" jndiName="jms/dest2">
+    <properties.jmsra.JMSQueueImpl destinationName="201 4th St SE, Rochester, MN 55904" queueName="D2"/>
+  </jmsDestination>
+
+  <jmsQueue id="q1" jndiName="jms/q1">
+    <properties.jmsra.JMSQueueImpl queueName="Q1"/>
+  </jmsQueue>
+
+  <jmsQueue id="q2" jndiName="jms/q2">
+    <properties.jmsra.JMSOtherQueueImpl queueName="Q2" queueManager="qm"/>
+  </jmsQueue>
+
+  <jmsQueueConnectionFactory jndiName="jms/qcf2">
+    <properties.jmsra/>
+  </jmsQueueConnectionFactory>
+
+  <jmsTopic id="topic1" jndiName="jms/topic1">
+    <properties.jmsra topicName="What's for dinner?"/>
+  </jmsTopic>
+
+  <jmsTopic id="topic2" jndiName="jms/topic2">
+    <properties.jmsra topicName="Who pays for free shipping?"/>
+  </jmsTopic>
+
+  <jmsTopicConnectionFactory id="cf3" jndiName="jms/tcf3">
+    <properties.jmsra escapeChar="%" userName="user3" password="3user"/>
+  </jmsTopicConnectionFactory>
+
+  <jmsTopicConnectionFactory id="cf4" jndiName="jms/tcf4" containerAuthDataRef="jmsUser1">
+    <properties.jmsra hostName="host4.rchland.ibm.com"/>
+  </jmsTopicConnectionFactory>
+
+  <jmsActivationSpec id="App1/EJB1/MessageDrivenBean1" authDataRef="jmsUser1">
+    <properties.jmsra destinationRef="dest1"/>
+  </jmsActivationSpec>
+
+  <jmsActivationSpec id="App1/EJB1/MessageDrivenBean2">
+    <properties.jmsra destinationRef="topic1"/>
+  </jmsActivationSpec>
+</server>

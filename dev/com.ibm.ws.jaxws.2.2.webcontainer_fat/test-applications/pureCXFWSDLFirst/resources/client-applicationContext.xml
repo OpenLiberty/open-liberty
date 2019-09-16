@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jaxws="http://cxf.apache.org/jaxws"
+	xmlns:customer="http://customerservice.example.com/"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd
+		http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd
+">
+
+	<!--
+		Define a cxf endpoint based on client stub generated from a wsdl. It
+		is important to provide serviceName and endpointName so the wsdl is
+		not needed at runtime. As far as I know the serviceName and
+		endpointName do not have to have a special convention but it is good
+		practice to use the service namespace and Service Interface name in
+		the names
+	-->
+	<jaxws:client id="customerService" 
+		serviceName="customer:CustomerServiceService" 
+		endpointName="customer:CustomerServiceEndpoint"
+		address="http://localhost:9080/pureCXFWSDLFirst/services/CustomerServicePort" 
+		serviceClass="com.ibm.samples.jaxws.spring.wsdlfirst.stub.CustomerService">
+	</jaxws:client>
+	
+	<bean id="tester" class="com.ibm.samples.jaxws.spring.wsdlfirst.client.CustomerServiceTester">
+		<property name="customerService" ref="customerService"></property>
+	</bean>
+</beans>

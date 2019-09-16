@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2017 IBM Corporation and others.
+ * Copyright (c) 2012, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,20 +40,7 @@ public class DeserializationObjectInputStream extends ObjectInputStream {
     private final ClassLoader classLoader;
 
     // The PlatformClassloader. It is set when running with java 9 and above.
-    private static final ClassLoader platformClassloader;
-    static {
-        ClassLoader pcl = null;
-        if (JavaInfo.majorVersion() >= 9) {
-            try {
-                Method getPlatformClassLoader = ClassLoader.class.getMethod("getPlatformClassLoader");
-                pcl = (ClassLoader) getPlatformClassLoader.invoke(null);
-            } catch (Throwable t) {
-                // Log an FFDC.
-            }
-        }
-
-        platformClassloader = pcl;
-    }
+    private static final ClassLoader platformClassloader = getPlatformClassLoader();
 
     public DeserializationObjectInputStream(InputStream in, ClassLoader classLoader) throws IOException {
         super(in);
@@ -260,5 +247,27 @@ public class DeserializationObjectInputStream extends ObjectInputStream {
                 return klass.getClassLoader();
             }
         });
+    }
+
+    /**
+     * Returns the PlatformClassloader when running with java 9 and above; otherwise returns null.
+     */
+    private static ClassLoader getPlatformClassLoader() {
+        if (JavaInfo.majorVersion() >= 9) {
+            return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+                @Override
+                public ClassLoader run() {
+                    ClassLoader pcl = null;
+                    try {
+                        Method getPlatformClassLoader = ClassLoader.class.getMethod("getPlatformClassLoader");
+                        pcl = (ClassLoader) getPlatformClassLoader.invoke(null);
+                    } catch (Throwable t) {
+                        // Log an FFDC.
+                    }
+                    return pcl;
+                }
+            });
+        }
+        return null;
     }
 }

@@ -44,16 +44,24 @@ class ConfigComparator {
         this.metatypeRegistry = registry;
     }
 
-    private RegistryEntry getRegistry(RegistryEntry parent, String name) {
+    private RegistryEntry getRegistry(RegistryEntry parent, String childNodeName) {
         if (metatypeRegistry == null)
             return null;
 
         RegistryEntry entry = null;
         // Attempt to look up the registry entry by childAlias value
-        if (parent != null) {
-            entry = metatypeRegistry.getRegistryEntry(parent.getPid(), name);
+        RegistryEntry pe = parent;
+        while (pe != null) {
+            // The parent entry must have ibm:supportsExtensions defined for ibm:childAlias to be valid here
+            if (pe.getObjectClassDefinition().supportsExtensions()) {
+                RegistryEntry childAliasEntry = metatypeRegistry.getRegistryEntry(pe.getPid(), childNodeName);
+                if (childAliasEntry != null)
+                    return childAliasEntry;
+            }
+            pe = pe.getExtendedRegistryEntry();
         }
-        return (entry == null) ? metatypeRegistry.getRegistryEntryByPidOrAlias(name) : entry;
+
+        return (entry == null) ? metatypeRegistry.getRegistryEntryByPidOrAlias(childNodeName) : entry;
     }
 
     public ComparatorResult computeDelta() throws ConfigUpdateException {
@@ -599,8 +607,10 @@ class ConfigComparator {
             delta = (newVariable == null) ? null : DeltaType.ADDED;
         } else if (newVariable == null) {
             delta = DeltaType.REMOVED;
-        } else if (oldVariable.getValue().equals(newVariable.getValue())) {
+        } else if (oldVariable.getValue() != null && oldVariable.getValue().equals(newVariable.getValue())) {
             delta = compareVariableReferences(oldVariables, newVariables, oldVariable.getValue(), stack);
+        } else if (oldVariable.getDefaultValue() != null && oldVariable.getDefaultValue().equals(newVariable.getDefaultValue())) {
+            delta = compareVariableReferences(oldVariables, newVariables, oldVariable.getDefaultValue(), stack);
         } else {
             delta = DeltaType.MODIFIED;
         }

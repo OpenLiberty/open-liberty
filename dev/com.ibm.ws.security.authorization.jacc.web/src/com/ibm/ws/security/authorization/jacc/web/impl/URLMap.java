@@ -17,6 +17,7 @@ package com.ibm.ws.security.authorization.jacc.web.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +36,7 @@ public class URLMap {
     // following List is used to compose unchecked string of http-method-omission.
     // this list has intersection of methods which are assigned to role.
     // for example, if there are two webresources which have the same urlpattern but different http-method-omission below:
-    // a. http method omission GET, POST, assigned ROLE R1. 
+    // a. http method omission GET, POST, assigned ROLE R1.
     // b. http method omission GET, assigned ROLE R2.
     // these two should yield unchecked list GET.
     // In here after a. is processed, unchkResourceForOmissionList has GET, POST, then after b. GET since POST isn't an intersection of a. and b..
@@ -163,7 +164,7 @@ public class URLMap {
             if (outputOmission != null) {
                 outputOmission = getMethod(mapMethodOmission, excludedForOmissionList);
                 if (outputOmission == null) {
-                    // this means that all methods are excluded. 
+                    // this means that all methods are excluded.
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "all methods - excluded (1)");
                     return new ActionString();
@@ -206,7 +207,7 @@ public class URLMap {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "outputNormal: " + outputNormal);
         if (mapMethodOmission != null) {
-            // to support following scenarios, search items which are excluded and assigned any role first, 
+            // to support following scenarios, search items which are excluded and assigned any role first,
             // then if there is no match, exclude list. At last search role.
             // scenario1: Two identical URL pattern "/c/*", but different method.
             //            one is method omission of (!GET,POST,PUT) with  auth constraint "R1"
@@ -312,7 +313,7 @@ public class URLMap {
         return output;
     }
 
-    // Returns HashMap which elements consist of (String role name, String methods). 
+    // Returns HashMap which elements consist of (String role name, String methods).
     // In here, null is used to represent all methods.
 
     public Map<String, String> getRoleMap() {
@@ -351,7 +352,7 @@ public class URLMap {
         return output;
     }
 
-// --------- private methods --------- 
+// --------- private methods ---------
 
     private void setMethodsAttribute(List<String> mList, boolean omission, int attribute, String value) {
         Map<String, MethodConstraint> mapWork = null;
@@ -565,8 +566,7 @@ public class URLMap {
                     // excluded or userdata is set as confidential or integral
                     if (mc.isExcluded()) {
                         result = true;
-                    }
-                    else if (!mc.isUserDataNone()) {
+                    } else if (!mc.isUserDataNone()) {
                         ud = mc.getUserData();
                         result = (ud != null) && (ud.equalsIgnoreCase("CONFIDENTIAL") || ud.equalsIgnoreCase("INTEGRAL"));
                     }
@@ -700,7 +700,7 @@ public class URLMap {
                 attribute = EXCLUDED_OR_UD_NON_NONE;
                 negative = true;
             } else {
-                // assumes that CONFIDENTIAL and INTEGRAL 
+                // assumes that CONFIDENTIAL and INTEGRAL
                 attribute = UD_CONFIDENTIAL_OR_INTEGRAL_NON_NONE;
             }
             outputNormal = getMethod(mapMethod, attribute, true);
@@ -1000,12 +1000,19 @@ public class URLMap {
             List<String> methodListOmission = e.getValue();
             List<String> methodList = RTMNormal.get(role);
 
-            List<String> methodListMergedOmission = mergeMethodList(methodListOmission, methodList);
+            // if both lists are identical, it should be all methods.
+            if (listEquals(methodListOmission, methodList)) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "role: " + role + " allmethods");
+                output.put(role, null);
+            } else {
+                List<String> methodListMergedOmission = mergeMethodList(methodListOmission, methodList);
 
-            String methodString = convertMethod(methodListMergedOmission, true);
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "role: " + role + " method: " + methodString);
-            output.put(role, methodString);
+                String methodString = convertMethod(methodListMergedOmission, true);
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "role: " + role + " method: " + methodString);
+                output.put(role, methodString);
+            }
         }
         // process normal table.
         for (Entry<String, List<String>> e : RTMNormal.entrySet()) {
@@ -1027,11 +1034,9 @@ public class URLMap {
         return output;
     }
 
-    private List<String> mergeMethodList(List<String> methodListOmission, List<String> methodList)
-    {
+    private List<String> mergeMethodList(List<String> methodListOmission, List<String> methodList) {
         List<String> output = new ArrayList<String>();
-        for (int i = 0; i < methodListOmission.size(); i++)
-        {
+        for (int i = 0; i < methodListOmission.size(); i++) {
             String method = methodListOmission.get(i);
             if (methodList == null || (!methodList.contains(method))) {
                 output.add(method);
@@ -1045,6 +1050,18 @@ public class URLMap {
         return output;
     }
 
+    // return true if contents of the lists are identical, ignore order and duplicates.
+    private boolean listEquals(List list1, List list2) {
+        if (list1 != null && list2 != null) {
+            return new HashSet<>(list1).equals(new HashSet<>(list2));
+        } else {
+            if (list1 == null && list2 == null) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
 // getter methods for unit tests
 
     public static final int METHODS_NORMAL = 1;

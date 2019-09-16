@@ -33,6 +33,8 @@ publish.wlp.jar.suffix: dev/api/spec
 rmic.iiop.classes: javax.management.j2ee.Management, javax.management.j2ee.ManagementHome
 
 -buildpath: \
+	com.ibm.ws.org.apache.yoko.corba.spec.1.5;version=latest,\
+	com.ibm.ws.org.apache.yoko.rmi.spec.1.5;version=latest,\
 	com.ibm.websphere.javaee.ejb.3.2;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
 	

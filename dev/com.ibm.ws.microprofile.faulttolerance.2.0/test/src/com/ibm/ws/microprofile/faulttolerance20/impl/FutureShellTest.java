@@ -11,6 +11,10 @@
 package com.ibm.ws.microprofile.faulttolerance20.impl;
 
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.emptyCollectionOf;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
@@ -24,39 +28,69 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class FutureShellTest {
 
-    private static final String TEST_EXCEPTION_MESSAGE_PREFIX = "Test exception with value: ";
+    /**
+     * Time to wait for an event which is expected to occur
+     */
+    private static final long TIMEOUT_MS = 20000;
+
+    /**
+     * Time to wait to simulate work
+     */
+    private static final long RUNTIME_MS = 100;
+
+    private static ScheduledExecutorService executor;
+
+    @BeforeClass
+    public static void setup() {
+        executor = Executors.newScheduledThreadPool(10);
+    }
+
+    @AfterClass
+    public static void cleanup() {
+        executor.shutdown();
+    }
 
     @Test
     public void testFutureShell() throws InterruptedException, ExecutionException, TimeoutException {
         String value = "testFutureShell";
         FutureShell<String> futureShell = new FutureShell<String>();
 
-        Future<String> completableFuture = createFuture(value);
+        CompletableFuture<String> completableFuture = new CompletableFuture<>();
         futureShell.setDelegate(completableFuture);
-        assertEquals(value, futureShell.get(1000, TimeUnit.MILLISECONDS));
+        executor.schedule(() -> {
+            completableFuture.complete(value);
+        }, RUNTIME_MS, TimeUnit.MILLISECONDS);
+        assertEquals(value, futureShell.get(TIMEOUT_MS, TimeUnit.MILLISECONDS));
     }
 
     @Test
     public void testFailedFutureShell() throws InterruptedException, TimeoutException {
-        String value = "testFailedFutureShell";
         FutureShell<String> futureShell = new FutureShell<String>();
 
+        CompletableFuture<String> completableFuture = new CompletableFuture<>();
+        futureShell.setDelegate(completableFuture);
+
+        Exception exception = new IllegalStateException();
+        executor.schedule(() -> {
+            completableFuture.completeExceptionally(exception);
+        }, RUNTIME_MS, TimeUnit.MILLISECONDS);
+
         try {
-            Future<String> completableFuture = createFailedFuture(value);
-            futureShell.setDelegate(completableFuture);
-            futureShell.get(1000, TimeUnit.MILLISECONDS);;
+            futureShell.get(TIMEOUT_MS, TimeUnit.MILLISECONDS);
             fail("No ExecutionException was thrown");
         } catch (ExecutionException e) {
-            assertThat("Exception message was wrong",
-                       e.getMessage(), containsString(TEST_EXCEPTION_MESSAGE_PREFIX + String.valueOf(value)));
+            assertThat("Exception was wrong", e.getCause(), sameInstance(exception));
         }
     }
 
@@ -68,9 +102,9 @@ public class FutureShellTest {
         boolean canceled = false;
 
         try {
-            Future<String> completableFuture = createFuture(value);
+            Future<String> completableFuture = CompletableFuture.completedFuture(value);
             futureShell.setDelegate(completableFuture);
-            futureShell.get(1000, TimeUnit.MILLISECONDS);
+            futureShell.get(TIMEOUT_MS, TimeUnit.MILLISECONDS);
             fail("No CancellationException was thrown");
         } catch (CancellationException e) { //expected
             canceled = true;
@@ -80,15 +114,15 @@ public class FutureShellTest {
 
     @Test
     public void testCancelAfterSettingDelegate() throws InterruptedException, ExecutionException, TimeoutException {
-        String value = "testCancelAfterSettingDelegate";
         FutureShell<String> futureShell = new FutureShell<String>();
         boolean canceled = false;
 
+        Future<String> completableFuture = new CompletableFuture<>();
+        futureShell.setDelegate(completableFuture);
+        futureShell.cancel(true);
+
         try {
-            Future<String> completableFuture = createFuture(value);
-            futureShell.setDelegate(completableFuture);
-            futureShell.cancel(true);
-            futureShell.get(1000, TimeUnit.MILLISECONDS);
+            futureShell.get(TIMEOUT_MS, TimeUnit.MILLISECONDS);
             fail("No CancellationException was thrown");
         } catch (CancellationException e) {
             canceled = true;
@@ -97,41 +131,43 @@ public class FutureShellTest {
     }
 
     @Test
-    public void testGetBeforeSettingDeligate() throws InterruptedException, ExecutionException, TimeoutException {
-        String value = "testGetBeforeSettingDeligate";
+    public void testGetBeforeSettingDelegate() throws InterruptedException, ExecutionException, TimeoutException {
+        String value = "testGetBeforeSettingDelegate";
         FutureShell<String> futureShell = new FutureShell<String>();
-        Future<String> delegate = createFuture(value);
+        CompletableFuture<String> delegate = new CompletableFuture<>();
 
-        Future<String> result = Executors.newCachedThreadPool().submit(() -> {
-            return futureShell.get(1000, TimeUnit.MILLISECONDS);
+        Future<String> result = executor.submit(() -> {
+            return futureShell.get(TIMEOUT_MS, TimeUnit.MILLISECONDS);
         });
 
-        Thread.sleep(500);
+        Thread.sleep(RUNTIME_MS);
         futureShell.setDelegate(delegate);
+        delegate.complete(value);
         assertThat("The FutureShell had the wrong result",
-                   result.get(1000, TimeUnit.MILLISECONDS), containsString(value));
+                   result.get(TIMEOUT_MS, TimeUnit.MILLISECONDS), containsString(value));
     }
 
     @Test
-    public void testGetBeforeSettingFailedDeligate() throws InterruptedException, TimeoutException {
-        String value = "testGetBeforeSettingFailedDeligate";
+    public void testGetBeforeSettingFailedDelegate() throws InterruptedException, TimeoutException {
         FutureShell<String> futureShell = new FutureShell<String>();
-        Future<String> result = null;
-        Future<String> delegate = null;
+        CompletableFuture<String> delegate = new CompletableFuture<>();
+        Exception exception = new IllegalStateException();
+
+        Future<String> result = executor.submit(() -> {
+            return futureShell.get(TIMEOUT_MS, TimeUnit.MILLISECONDS);
+        });
+        Thread.sleep(RUNTIME_MS);
+        futureShell.setDelegate(delegate);
+        delegate.completeExceptionally(exception);
+
         try {
-            delegate = createFailedFuture(value);
-
-            result = Executors.newCachedThreadPool().submit(() -> {
-                return futureShell.get(1000, TimeUnit.MILLISECONDS);
-            });
-            Thread.sleep(500);
-            futureShell.setDelegate(delegate);
-
             result.get(1000, TimeUnit.MILLISECONDS);
             fail("ExecutionException was not thrown");
         } catch (ExecutionException e) {
-            assertThat("Exception message was wrong",
-                       e.getMessage(), containsString(TEST_EXCEPTION_MESSAGE_PREFIX + String.valueOf(value)));
+            Throwable exceptionFromResult = e.getCause();
+            assertThat(exceptionFromResult, instanceOf(ExecutionException.class));
+            Throwable exceptionFromFutureShell = exceptionFromResult.getCause();
+            assertThat("Exception was wrong", exceptionFromFutureShell, sameInstance(exception));
         }
     }
 
@@ -145,38 +181,42 @@ public class FutureShellTest {
         futureShell.setCancellationCallback(cancellationCallback);
         futureShell.cancel(false);
 
-        assertTrue(callbackResults.contains(value));
+        assertThat(callbackResults, contains(value));
     }
 
     @Test
-    public void testCancellationCallbackWontFireWithDeligate() throws InterruptedException {
-        String value = "testCancellationCallbackWontFireWithDeligate";
+    public void testCancellationCallbackWontFireWithDelegate() throws InterruptedException {
+        String value = "testCancellationCallbackWontFireWithDelegate";
         final Set<String> callbackResults = new HashSet<String>();
         Consumer<Boolean> cancellationCallback = createCancellationCallback(value, callbackResults);
         FutureShell<String> futureShell = new FutureShell<String>();
+        CompletableFuture<String> delegate = new CompletableFuture<>();
 
-        futureShell.setDelegate(createFuture(value));
-        Thread.sleep(10);
         futureShell.setCancellationCallback(cancellationCallback);
+        futureShell.setDelegate(delegate);
         futureShell.cancel(false);
 
-        assertFalse(callbackResults.contains(value));
+        assertThat(callbackResults, emptyCollectionOf(String.class));
+
+        delegate.complete(value);
+        assertThat(callbackResults, emptyCollectionOf(String.class));
     }
 
     @Test
     public void testIsDone() throws InterruptedException {
         FutureShell<String> cancelFutureShell = new FutureShell<String>();
-        assertFalse("Is done returned true with no deligate", cancelFutureShell.isDone());
+        assertFalse("Is done returned true with no delegate", cancelFutureShell.isDone());
 
         cancelFutureShell.cancel(false);
         assertTrue("isDone returned false after cancelation", cancelFutureShell.isDone());
 
         FutureShell<String> futureShell = new FutureShell<String>();
+        CompletableFuture<String> delegate = new CompletableFuture<>();
 
-        futureShell.setDelegate(createFuture("testIsDone"));
-        assertFalse("Is done returned true when the deligate should still be running", futureShell.isDone());
-        Thread.sleep(510);
-        assertTrue("Is done returned false when the deligate should be done", futureShell.isDone());
+        futureShell.setDelegate(delegate);
+        assertFalse("Is done returned true when the delegate is not complete", futureShell.isDone());
+        delegate.complete("testIsDone");
+        assertTrue("Is done returned false when the delegate is complete", futureShell.isDone());
 
     }
 
@@ -184,36 +224,12 @@ public class FutureShellTest {
     public void testGetWithTimeout() throws InterruptedException, ExecutionException {
         try {
             FutureShell<String> futureShell = new FutureShell<String>();
-            futureShell.setDelegate(createFuture("testGetWithTimeout"));
-            futureShell.get(100, TimeUnit.MILLISECONDS);
+            futureShell.setDelegate(new CompletableFuture<>());
+            futureShell.get(RUNTIME_MS, TimeUnit.MILLISECONDS);
             fail("FutureShell did not throw a timeout exception");
         } catch (TimeoutException e) {
             //Expected expectation, do nothing.
         }
-    }
-
-    private Future<String> createFuture(String value) throws InterruptedException {
-        CompletableFuture<String> completableFuture = new CompletableFuture<>();
-
-        Executors.newCachedThreadPool().submit(() -> {
-            Thread.sleep(500);
-            completableFuture.complete(value);
-            return null;
-        });
-
-        return completableFuture;
-    }
-
-    private Future<String> createFailedFuture(String value) throws InterruptedException {
-        CompletableFuture<String> completableFuture = new CompletableFuture<>();
-
-        Executors.newCachedThreadPool().submit(() -> {
-            Thread.sleep(500);
-            completableFuture.completeExceptionally(new IllegalStateException(TEST_EXCEPTION_MESSAGE_PREFIX + value));
-            return null;
-        });
-
-        return completableFuture;
     }
 
     private Consumer<Boolean> createCancellationCallback(String value, final Set<String> results) {

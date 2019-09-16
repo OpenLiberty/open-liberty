@@ -22,14 +22,92 @@
 #   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
 #   (single quote must be coded as one single quote '). 
 
+# # A file path.
 bad.zip.data=CWWKM0101E: Le syst\u00e8me n''a pas pu traiter les donn\u00e9es d''archive pour {0}.
 bad.zip.data.explanation=Une exception est survenue lors du traitement des donn\u00e9es compress\u00e9es de l'archive. 
 bad.zip.data.useraction=V\u00e9rifiez que le fichier est une archive valide.
 
-remove.cache.data=CWWKM0102W: Le syst\u00e8me a supprim\u00e9 les donn\u00e9es en cache non valides de l''emplacement {0}
+# # A file path.
+remove.cache.data=CWWKM0102W: Le syst\u00e8me a supprim\u00e9 les donn\u00e9es du cache non valides de l''emplacement {0}
 remove.cache.data.explanation=La structure de l'application semble avoir chang\u00e9. Cela n\u00e9cessite de supprimer les donn\u00e9es en cache, car elles sont bas\u00e9es sur l'ancienne structure.
 remove.cache.data.useraction=Si votre application a chang\u00e9 de structure, ce comportement est normal.
 
+# # {0} The text of the message from an exception.
 extract.cache.fail=CWWKM0103E: Le syst\u00e8me n''a pas pu extraire une archive int\u00e9gr\u00e9e de l''application vers un emplacement cache pour la raison suivante : {0}
 extract.cache.fail.explanation=Une erreur s'est produite durant la cr\u00e9ation des donn\u00e9es de cache de l'application, emp\u00eachant le traitement correct de celle-ci. 
 extract.cache.fail.useraction=V\u00e9rifiez la cause indiqu\u00e9e.
+
+# # {0} A file path.
+extract.cache.null=CWWKM0104E: Le syst\u00e8me n''a pas pu extraire l''archive imbriqu\u00e9e {0} dans un emplacement de cache.
+extract.cache.null.explanation=Une erreur est survenue au cours de la cr\u00e9ation des donn\u00e9es de cache de l'application, ce qui emp\u00eache le traitement correct de l'application. 
+extract.cache.null.useraction=V\u00e9rifiez que l'archive imbriqu\u00e9e est valide.
+
+# # {0} A file path.
+extract.secondary.timeout=CWWKM0105E: D\u00e9passement du d\u00e9lai d''attente de l''extraction secondaire pour {0}.
+extract.secondary.timeout.explanation=Une demande simultan\u00e9e d'extraction d'archive imbriqu\u00e9e a expir\u00e9 en attendant la fin de l'extraction initiale.
+extract.secondary.timeout.useraction=V\u00e9rifiez que l'archive imbriqu\u00e9e est valide.
+
+# # {0} A file path
+extract.secondary.failed=CWWKM0106E: Echec de l''extraction secondaire pour {0}.
+extract.secondary.failed.explanation=Une demande simultan\u00e9e d'extraction d'archive imbriqu\u00e9e a \u00e9t\u00e9 \u00e9mise mais n'a pas extrait l'archive imbriqu\u00e9e.
+extract.secondary.failed.useraction=V\u00e9rifiez que l'archive imbriqu\u00e9e est valide.
+
+# # {0} A file path
+extract.secondary.notfile=CWWKM0107E: L''extraction secondaire n''a pas cr\u00e9\u00e9 de fichier simple pour {0}.
+extract.secondary.notfile.explanation=Une demande simultan\u00e9e d'extraction d'archive imbriqu\u00e9e a abouti mais n'a pas g\u00e9n\u00e9r\u00e9 de fichier simple.
+extract.secondary.notfile.useraction=V\u00e9rifiez que l'archive imbriqu\u00e9e est valide.
+
+# # {0} A file path
+extract.secondary.inconsistent=CWWKM0108E: Heures incoh\u00e9rentes d''extraction secondaire pour {0}.
+extract.secondary.inconsistent.explanation=Une demande simultan\u00e9e d'extraction d'archive imbriqu\u00e9e a abouti mais a g\u00e9n\u00e9r\u00e9 un fichier diff\u00e9rent de celui pr\u00e9vu.
+extract.secondary.inconsistent.useraction=V\u00e9rifiez que l'archive imbriqu\u00e9e est valide.
+
+# # {0} A file path
+extract.primary.directory=CWWKM0109E: L''extraction pr\u00e9c\u00e9dente de {0} est un r\u00e9pertoire.
+extract.primary.directory.explanation=L'extraction d'une archive imbriqu\u00e9e a d\u00e9tect\u00e9 un r\u00e9pertoire comme archive pr\u00e9c\u00e9demment extraite.
+extract.primary.directory.useraction=Nettoyez puis red\u00e9marrez le serveur pour vous assurer qu'aucun contenu de cache pr\u00e9c\u00e9dent n'existe.
+
+# # {0} A file path
+extract.primary.untyped=CWWKM0110E: L''extraction pr\u00e9c\u00e9dente de {0} ne peut pas \u00eatre associ\u00e9e \u00e0 un type.
+extract.primary.untyped.explanation=L'extraction d'une archive imbriqu\u00e9e a d\u00e9tect\u00e9 un fichier ne pouvant pas \u00eatre associ\u00e9 \u00e0 un type comme archive pr\u00e9c\u00e9demment extraite.
+extract.primary.untyped.useraction=Nettoyez puis red\u00e9marrez le serveur pour vous assurer qu'aucun contenu de cache pr\u00e9c\u00e9dent n'existe.
+
+# # {0} A file path.
+# # {1} A print name
+reaper.inactive=CWWKM0121W: Impossible d''ouvrir {0} : le cache d''archives {1} est inactif.
+reaper.inactive.explanation=Une demande d'ouverture d'un fichier archive a \u00e9chou\u00e9 car le cache des fichiers archive n'est pas actif.
+reaper.inactive.useraction=Ce message indique une erreur de programmation interne.
+
+# # {0} A file path
+reaper.unregistered.path=CWWKM0122W: La demande de fermeture de l''archive {0}, qui n''est pas ouverte, a \u00e9t\u00e9 ignor\u00e9e.
+reaper.unregistered.path.explanation=La fermeture d'un fichier archive a \u00e9t\u00e9 demand\u00e9e alors que le fichier archive n'est pas ouvert.
+reaper.unregistered.path.useraction=Ce messages indique une erreur de programmation interne.
+
+# # {0} A file path
+reaper.closed.path=CWWKM0123W: La demande de fermeture de l''archive {0}, qui est d\u00e9j\u00e0 ferm\u00e9e, a \u00e9t\u00e9 ignor\u00e9e.
+reaper.closed.path.explanation=La fermeture d'un fichier archive a \u00e9t\u00e9 demand\u00e9e alors que le fichier archive est d\u00e9j\u00e0 ferm\u00e9.
+reaper.closed.path.useraction=Ce messages indique une erreur de programmation interne.
+
+# # {0} A file path
+reaper.pending.path=CWWKM0243W: La demande de fermeture de l''archive {0}, qui est d\u00e9j\u00e0 en attente de fermeture, a \u00e9t\u00e9 ignor\u00e9e.
+reaper.pending.path.explanation=La fermeture d'un fichier archive a \u00e9t\u00e9 demand\u00e9e alors que la fermeture du fichier archive est d\u00e9j\u00e0 en attente.
+reaper.pending.path.useraction=Ce messages indique une erreur de programmation interne.
+
+# # {0} A file path
+# # {1} An integer representing a file length
+# # {2} An integer representing a file length
+reaper.unexpected.length.change=CWWKM0125W: Archive {0} : mise \u00e0 jour de la longueur {1} avec {2}.
+reaper.unexpected.length.change.explanation=Une mise \u00e0 jour inattendue d'un fichier archive d'application a \u00e9t\u00e9 effectu\u00e9e alors que cette archive \u00e9tait ouverte.  En g\u00e9n\u00e9ral, ce probl\u00e8me survient lorsqu'une mise \u00e0 jour dynamique a \u00e9t\u00e9 effectu\u00e9e pour des fichiers d'application.
+reaper.unexpected.length.change.useraction=Red\u00e9marrez le serveur.  Lors de la mise \u00e0 jour de fichiers d'application, attendez la mise au repos du serveur, puis attendez au moins une demi-seconde la fermeture des fichiers d'application.
+
+# # {0} A file path
+# # {1} An integer representing a last modified time
+# # {2} An integer representing a last modified time
+reaper.unexpected.lastmodified.change=CWWKM0126W: Archive {0} : mise \u00e0 jour de l''heure de la derni\u00e8re modification {1} avec {2}.
+reaper.unexpected.lastmodified.change.explanation=Une mise \u00e0 jour inattendue d'un fichier archive d'application a \u00e9t\u00e9 effectu\u00e9e alors que cette archive \u00e9tait ouverte.  En g\u00e9n\u00e9ral, ce probl\u00e8me survient lorsqu'une mise \u00e0 jour dynamique a \u00e9t\u00e9 effectu\u00e9e pour des fichiers d'application.
+reaper.unexpected.lastmodified.change.useraction=Red\u00e9marrez le serveur.  Lors de la mise \u00e0 jour de fichiers d'application, attendez la mise au repos du serveur, puis attendez au moins une demi-seconde la fermeture des fichiers d'application.
+
+# # {0} A file path
+reaper.reopen.active=CWWKM0127W: R\u00e9ouverture de {0}
+reaper.reopen.active.explanation=Une modification inattendue a entra\u00een\u00e9 la r\u00e9ouverture d'un fichier archive d'application ouvert.  Le serveur a tent\u00e9 d'obtenir le contenu mis \u00e0 jour du fichier archive, mais il se peut qu'il n'ait pas enti\u00e8rement mis \u00e0 jour les liste internes des contenus d'archive.
+reaper.reopen.active.useraction=Red\u00e9marrez le serveur.  Lors de la mise \u00e0 jour de fichiers d'application, attendez la mise au repos du serveur, puis attendez au moins une demi-seconde la fermeture des fichiers d'application.

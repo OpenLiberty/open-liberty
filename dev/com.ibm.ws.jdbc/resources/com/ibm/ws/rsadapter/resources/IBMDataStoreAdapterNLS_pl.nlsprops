@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2001, 2016 IBM Corporation and others.
+# Copyright (c) 2001, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -271,13 +271,21 @@ DSRA4011.tran.none.iso.switch.unsupported=DSRA4011E: Sterownik JDBC nie obs\u014
 DSRA4011.tran.none.iso.switch.unsupported.explanation=Specyfikacja JDBC nie obs\u0142uguje prze\u0142\u0105czania na poziom odseparowania TRANSACTION_NONE.
 DSRA4011.tran.none.iso.switch.unsupported.useraction=Unikaj prze\u0142\u0105czania na poziom odseparowania TRANSACTION_NONE. 
 
-DSRA4012.ignored.datasource.config.used=DSRA4012I: W przypadku korzystania z puli Oracle UCP nast\u0119puj\u0105ce w\u0142a\u015bciwo\u015bci \u017ar\u00f3d\u0142a danych s\u0105 ignorowane: statementCacheSize i validationTimeout. U\u017cyj r\u00f3wnowa\u017cnej funkcjonalno\u015bci puli Oracle UCP.
-DSRA4012.ignored.datasource.config.used.explanation=W\u0142a\u015bciwo\u015bci \u017ar\u00f3d\u0142a danych statementCacheSize i validationTimeout nie s\u0105 poprawne, je\u015bli jest u\u017cywana pula Oracle UCP.
-DSRA4012.ignored.datasource.config.used.useraction=Usu\u0144 w\u0142a\u015bciwo\u015bci \u017ar\u00f3d\u0142a danych i zamiast nich u\u017cyj r\u00f3wnowa\u017cnej funkcji puli Oracle UCP.
+DSRA4012.ignored.datasource.config.used=DSRA4012I: W przypadku korzystania z produktu Oracle UCP nast\u0119puj\u0105ce w\u0142a\u015bciwo\u015bci \u017ar\u00f3d\u0142a danych s\u0105 ignorowane: {0}.
+DSRA4012.ignored.datasource.config.used.explanation=Podane w\u0142a\u015bciwo\u015bci \u017ar\u00f3d\u0142a danych nie s\u0105 poprawne, je\u015bli u\u017cywany jest produkt Oracle UCP.
+DSRA4012.ignored.datasource.config.used.useraction=Usu\u0144 w\u0142a\u015bciwo\u015bci \u017ar\u00f3d\u0142a danych, kt\u00f3re nie s\u0105 poprawne, a zamiast nich u\u017cyj r\u00f3wnowa\u017cnej funkcjonalno\u015bci produktu Oracle UCP, je\u015bli jest dost\u0119pna.
 
-DSRA4013.ignored.connection.manager.config.used=DSRA4013I: W przypadku u\u017cywania puli Oracle UCP nast\u0119puj\u0105ce w\u0142a\u015bciwo\u015bci mened\u017cera po\u0142\u0105cze\u0144 s\u0105 ignorowane: agedTimeout, connectionTimeout, maxIdleTime, maxPoolSize, minPoolSize, purgePolicy, reapTime, maxConnectionsPerThread, maxConnectionsPerThreadLocal. U\u017cyj r\u00f3wnowa\u017cnej funkcjonalno\u015bci puli Oracle UCP.
-DSRA4013.ignored.connection.manager.config.used.explanation=Wy\u015bwietlone w\u0142a\u015bciwo\u015bci mened\u017cera po\u0142\u0105cze\u0144 nie s\u0105 poprawne, je\u015bli jest u\u017cywana pula Oracle UCP.
-DSRA4013.ignored.connection.manager.config.used.useraction=Usu\u0144 w\u0142a\u015bciwo\u015bci mened\u017cera po\u0142\u0105cze\u0144 i zamiast nich u\u017cyj r\u00f3wnowa\u017cnej funkcji puli Oracle UCP.
+DSRA4013.ignored.connection.manager.config.used=DSRA4013I: W\u0142a\u015bciwo\u015bci mened\u017cera po\u0142\u0105cze\u0144 s\u0105 niepoprawne. W przypadku korzystania z produktu Oracle UCP nast\u0119puj\u0105ce w\u0142a\u015bciwo\u015bci mened\u017cera po\u0142\u0105cze\u0144 s\u0105 poprawne: {0}.
+DSRA4013.ignored.connection.manager.config.used.explanation=W przypadku korzystania z produktu Oracle UCP poprawne s\u0105 tylko wymienione w\u0142a\u015bciwo\u015bci mened\u017cera po\u0142\u0105cze\u0144.
+DSRA4013.ignored.connection.manager.config.used.useraction=Usu\u0144 w\u0142a\u015bciwo\u015bci mened\u017cera po\u0142\u0105cze\u0144, kt\u00f3re nie s\u0105 poprawne, a zamiast nich u\u017cyj r\u00f3wnowa\u017cnej funkcjonalno\u015bci produktu Oracle UCP, je\u015bli jest dost\u0119pna.
+
+DSRA4014.URL.for.Driver.missing=DSRA4014E: Typ java.sql.Driver zosta\u0142 podany dla \u017ar\u00f3d\u0142a danych {0}, ale nie okre\u015blono atrybutu URL.
+DSRA4014.URL.for.Driver.missing.explanation=Nale\u017cy poda\u0107 adres URL po\u0142\u0105czenia dla \u017ar\u00f3d\u0142a danych typu java.sql.Driver.
+DSRA4014.URL.for.Driver.missing.useraction=Dodaj poprawny adres URL \u017ar\u00f3d\u0142a danych.
+
+DSRA4015.no.ucp.connection.pool.datasource=DSRA4015E: \u0179r\u00f3d\u0142o danych {0} zosta\u0142o skonfigurowane z typem {1}, kt\u00f3ry nie jest obs\u0142ugiwany przez produkt Oracle UCP. Zamiast niego u\u017cyj typu XADataSource lub DataSource.
+DSRA4015.no.ucp.connection.pool.datasource.explanation=\u0179r\u00f3d\u0142o danych zosta\u0142o skonfigurowane z typem ConnectionPoolDataSource lub Driver, kt\u00f3ry nie zosta\u0142 zaimplementowany przez sterownik produktu Oracle UCP.
+DSRA4015.no.ucp.connection.pool.datasource.useraction=Zaktualizuj \u017ar\u00f3d\u0142o danych, aby u\u017cywa\u0142o typu XADataSource lub DataSource.
 
 # ----------------------------------------------------------------------------
 # 
@@ -541,6 +549,13 @@ NO_WRAPPED_OBJECT.explanation=Okre\u015blone opakowanie nie zawiera opakowanych 
 NO_WRAPPED_OBJECT.useraction=Sprawd\u017a, czy opakowanie i parametry opakowanego obiektu zosta\u0142y podane poprawnie.
 
 # 9123 deleted
+
+# 9124       NOT_AN_INTERFACE
+#
+# {0}        The Class that was specified to unwrap to
+NOT_AN_INTERFACE=DSRA9124E: Nie mo\u017cna odpakowa\u0107 obiektu do klasy {0}, poniewa\u017c klasa {0} nie jest klas\u0105 interfejsu.
+NOT_AN_INTERFACE.explanation=Metoda unwrap zezwala tylko na odpakowywanie do klasy interfejsu.
+NOT_AN_INTERFACE.useraction=Odpakuj do klasy interfejsu, a nie do klasy konkretnej.
 
 # 9130E      OPERATION_NOT_PERMITTED
 # 

@@ -21,13 +21,10 @@ import com.ibm.ws.microprofile.faulttolerance_fat.cdi.FallbackServlet;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
-@Mode(TestMode.LITE)
 @RunWith(FATRunner.class)
 public class CDIFallbackTest extends FATServletClient {
 

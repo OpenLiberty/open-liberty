@@ -29,8 +29,8 @@
 
 # Config is closed.
 config.closed.CWMCG0001E=CWMCG0001E: Se ha cerrado la configuraci\u00f3n.
-config.closed.CWMCG0001E.explanation=No se pueden realizar operaciones sobre una instancia de configuraci\u00f3n que se haya cerrado.
-config.closed.CWMCG0001E.useraction=Obtenga una nueva instancia de configuraci\u00f3n e intente de nuevo la operaci\u00f3n.
+config.closed.CWMCG0001E.explanation=Las operaciones no se pueden realizar en una instancia de configuraci\u00f3n que se ha cerrado.
+config.closed.CWMCG0001E.useraction=Obtenga una instancia de configuraci\u00f3n nueva y vuelve a intentar la operaci\u00f3n.
 
 # ClassLoader must not be null.
 null.classloader.CWMCG0002E=CWMCG0002E: ClassLoader no debe ser nulo.
@@ -40,7 +40,7 @@ null.classloader.CWMCG0002E.useraction=Establezca el ClassLoader en un valor no 
 # A Config instance already exists for the specified ClassLoader.
 config.already.exists.CWMCG0003E=CWMCG0003E: Ya existe una instancia de configuraci\u00f3n para el ClassLoader especificado.
 config.already.exists.CWMCG0003E.explanation=Ya se ha establecido una instancia de configuraci\u00f3n para el ClassLoader especificado.
-config.already.exists.CWMCG0003E.useraction=Utilice el m\u00e9todo 'releaseConfig' para eliminar la instancia anterior y luego vuelva a intentar el m\u00e9todo.
+config.already.exists.CWMCG0003E.useraction=Utilice el m\u00e9todo 'releaseConfig' para eliminar la instancia anterior y, despu\u00e9s, vuelva a intentar el m\u00e9todo.
 
 # Unable to close the Config instance. The exception is: {0}.
 could.not.close.CWMCG0004E=CWMCG0004E: No se puede cerrar la instancia de configuraci\u00f3n. La excepci\u00f3n es: {0}.
@@ -49,12 +49,12 @@ could.not.close.CWMCG0004E.useraction=Revise los registros FFDC y el archivo mes
 
 # Unable to convert the string "{0}" to a value of type {1}.
 unable.to.convert.CWMCG0006E=CWMCG0006E: No se ha podido convertir la serie "{0}" a un valor de tipo {1}.
-unable.to.convert.CWMCG0006E.explanation=No se ha encontrado ning\u00fan valor de convertidor adecuado para el tipo especificado.
-unable.to.convert.CWMCG0006E.useraction=A\u00f1ada un convertidor adecuado o aseg\u00farese de que la clase tiene un constructor de tipo serie p\u00fablico o un m\u00e9todo valueOf(String) est\u00e1tico.
+unable.to.convert.CWMCG0006E.explanation=No se ha encontrado ning\u00fan conversor id\u00f3neo para el tipo determinado.
+unable.to.convert.CWMCG0006E.useraction=A\u00f1ada un conversor apto o aseg\u00farese de que la clase tiene un constructor de serie p\u00fablica o un m\u00e9todo valueOf(String) est\u00e1tico.
 
 # A Converter of type {0} threw an exception. The input string was: "{1}". The exception is: {2}.
 conversion.exception.CWMCG0007E=CWMCG0007E: Un conversor del tipo {0} ha lanzado una excepci\u00f3n. La serie de entrada era: "{1}". La excepci\u00f3n es: {2}.
-conversion.exception.CWMCG0007E.explanation=Un convertidor ha generado una excepci\u00f3n.
+conversion.exception.CWMCG0007E.explanation=Un conversor ha lanzado una excepci\u00f3n.
 conversion.exception.CWMCG0007E.useraction=Revise los registros FFDC y el archivo message.log del servidor para identificar el problema.
 
 # Unable to convert the string "{0}" to a value of type Boolean. Expected one of [true, yes, on, false, no, off].
@@ -64,7 +64,7 @@ unable.to.convert.boolean.CWMCG0008E.useraction=Actualice la serie de entrada de
 
 # Could not determine conversion type of Converter class {0}.
 unable.to.determine.conversion.type.CWMCG0009E=CWMCG0009E: No se ha podido determinar el tipo d conversi\u00f3n de la clase de convertidor {0}.
-unable.to.determine.conversion.type.CWMCG0009E.explanation=La clase de implementaci\u00f3n del convertidor no ten\u00eda un tipo gen\u00e9rico adecuado.
+unable.to.determine.conversion.type.CWMCG0009E.explanation=La clase de implementaci\u00f3n de conversor no ten\u00eda un tipo gen\u00e9rico id\u00f3neo.
 unable.to.determine.conversion.type.CWMCG0009E.useraction=Aseg\u00farese de que la clase de implementaci\u00f3n tiene una variable de tipo gen\u00e9rico apto para la interfaz de conversor.
 
 # Unable to discover ConfigSources. The exception is: {0}.
@@ -112,6 +112,16 @@ generic.type.variables.notsupported.CWMCG0018E=CWMCG0018E: No se soporta la vari
 generic.type.variables.notsupported.CWMCG0018E.explanation=Se ha realizado un intento de conversi\u00f3n utilizando una variable de tipo gen\u00e9rico, como List<T>. No est\u00e1 soportada.
 generic.type.variables.notsupported.CWMCG0018E.useraction=En su lugar, utilice un tipo de argumento concreto, por ejemplo List<String>.
 
+# Failed to start the {0} ConfigSource refresher process.
+failed.to.start.refresher.CWMCG0019E=CWMCG0019E: No se ha podido iniciar el proceso de renovaci\u00f3n de ConfigSource {0}.
+failed.to.start.refresher.CWMCG0019E.explanation=Los cambios de ConfigSource especificados no se ven reflejados en la instancia de configuraci\u00f3n.
+failed.to.start.refresher.CWMCG0019E.useraction=Revise los registros FFDC y el archivo message.log del servidor para identificar el problema.
+
+# Failed to start the {0} ConfigSource refresher process. The exception is: {1}.
+failed.to.start.refresher.exception.CWMCG0020E=CWMCG0020E: No se ha podido iniciar el proceso de renovaci\u00f3n de ConfigSource {0}. La excepci\u00f3n es: {1}.
+failed.to.start.refresher.exception.CWMCG0020E.explanation=Los cambios de ConfigSource especificados no se ven reflejados en la instancia de configuraci\u00f3n.
+failed.to.start.refresher.exception.CWMCG0020E.useraction=Revise los registros FFDC y el archivo message.log del servidor para identificar el problema.
+
 # Environment Variables Config Source
 environment.variables.config.source=Origen de configuraci\u00f3n de variables de entorno
 # Properties File Config Source: {0}
@@ -125,5 +135,5 @@ system.properties.config.source=Origen de configuraci\u00f3n de propiedades de s
 
 # The following Config API error has occurred: {0}.
 temporary.CWMCG9999E=CWMCG9999E: Se ha producido el siguiente error de API de configuraci\u00f3n: {0}.
-temporary.CWMCG9999E.explanation=Se ha producido un error de la API de configuraci\u00f3n que impide el funcionamiento normal.
+temporary.CWMCG9999E.explanation=Se ha producido un error de API de configuraci\u00f3n que impide el funcionamiento normal.
 temporary.CWMCG9999E.useraction=Revise el archivo message.log del servidor y los registros FFDC para identificar el problema.

@@ -44,6 +44,8 @@ tested.features: \
 
 -buildpath: \
   com.ibm.websphere.javaee.annotation.1.2;version=latest,\
+  com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
+  com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
   com.ibm.websphere.javaee.cdi.1.2;version=latest,\
   com.ibm.websphere.javaee.jaxrs.2.0;version=latest,\
   com.ibm.websphere.javaee.jsonp.1.0,\

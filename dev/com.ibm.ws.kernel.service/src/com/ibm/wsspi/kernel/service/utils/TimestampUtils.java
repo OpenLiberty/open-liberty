@@ -32,10 +32,10 @@ public class TimestampUtils {
     static {
         long start = OsgiPropertyUtils.getLong("kernel.launch.time", 0);
         if (start == 0)
-            start = System.currentTimeMillis();
+            start = System.nanoTime();
 
-        startTime = start;
-        startTimeNano = System.nanoTime();
+        startTime = System.currentTimeMillis();
+        startTimeNano = start;
     }
 
     public static void writeTimeToFile(File file, long timestamp) {
@@ -86,9 +86,9 @@ public class TimestampUtils {
 
     /**
      * @param nlsClass
-     *            Class from the calling bundle
+     *                     Class from the calling bundle
      * @param msgKey
-     *            Translated message key
+     *                     Translated message key
      */
     public static void auditElapsedTime(TraceComponent callingTc, String msgKey) {
         if (callingTc.isAuditEnabled())
@@ -96,7 +96,7 @@ public class TimestampUtils {
     }
 
     public static String getElapsedTime() {
-        return getElapsedTime(startTime);
+        return getElapsedTimeNanos(startTimeNano);
     }
 
     /**

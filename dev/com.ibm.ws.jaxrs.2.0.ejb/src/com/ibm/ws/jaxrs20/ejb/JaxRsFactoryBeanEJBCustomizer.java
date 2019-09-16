@@ -55,8 +55,8 @@ import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 
 @Component(name = "com.ibm.ws.jaxrs20.ejb.JaxRsFactoryEJBBeanCustomizer", immediate = true, property = { "service.vendor=IBM" })
 public class JaxRsFactoryBeanEJBCustomizer implements JaxRsFactoryBeanCustomizer {
-    private final TraceComponent tc = Tr.register(JaxRsFactoryBeanEJBCustomizer.class);
-    private CXFJaxRsProviderResourceHolder cxfPRHolder;
+
+    private static final TraceComponent tc = Tr.register(JaxRsFactoryBeanEJBCustomizer.class);
 
     //private final Set<Class<ExceptionMapper<?>>> exceptionMappers = new HashSet<Class<ExceptionMapper<?>>>();
 
@@ -133,10 +133,10 @@ public class JaxRsFactoryBeanEJBCustomizer implements JaxRsFactoryBeanCustomizer
                 }
 
             }
-            cxfPRHolder = context.getCxfRPHolder();
-            findEJBClass(ejbEndpointList, perRequestIterator, true);
-            findEJBClass(ejbEndpointList, singletonIterator, false);
-            handleAbstractClassInterface(moduleMetaData, ejbEndpointList, endpointInfo.getAbstractClassInterfaceList(), perRequestProviderAndPathInfos,
+            CXFJaxRsProviderResourceHolder cxfPRHolder = context.getCxfRPHolder();
+            findEJBClass(cxfPRHolder, ejbEndpointList, perRequestIterator, true);
+            findEJBClass(cxfPRHolder, ejbEndpointList, singletonIterator, false);
+            handleAbstractClassInterface(cxfPRHolder, moduleMetaData, ejbEndpointList, endpointInfo.getAbstractClassInterfaceList(), perRequestProviderAndPathInfos,
                                          singletonProviderAndPathInfos, ejbModuleName);
         } catch (UnableToAdaptException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -158,7 +158,8 @@ public class JaxRsFactoryBeanEJBCustomizer implements JaxRsFactoryBeanCustomizer
      * @param perRequestProviderAndPathInfos
      * @param cxfPRHolder
      */
-    private void handleAbstractClassInterface(JaxRsModuleMetaData moduleMetaData, List<EJBEndpoint> ejbEndpointList, List<String> abstractClassInterfaceList,
+    private void handleAbstractClassInterface(CXFJaxRsProviderResourceHolder cxfPRHolder, JaxRsModuleMetaData moduleMetaData, List<EJBEndpoint> ejbEndpointList,
+                                              List<String> abstractClassInterfaceList,
                                               Set<ProviderResourceInfo> perRequestProviderAndPathInfos, Set<ProviderResourceInfo> singletonProviderAndPathInfos,
                                               String ejbModuleName) {
         for (String abstractClassInterfaceName : abstractClassInterfaceList) {
@@ -387,7 +388,7 @@ public class JaxRsFactoryBeanEJBCustomizer implements JaxRsFactoryBeanCustomizer
         return jndiName.toString();
     }
 
-    private void findEJBClass(List<EJBEndpoint> ejbEndpointList,
+    private void findEJBClass(CXFJaxRsProviderResourceHolder cxfPRHolder, List<EJBEndpoint> ejbEndpointList,
                               Iterator<ProviderResourceInfo> providerResourceInfoIterator,
                               Boolean perRequest) {
         while (providerResourceInfoIterator.hasNext()) {

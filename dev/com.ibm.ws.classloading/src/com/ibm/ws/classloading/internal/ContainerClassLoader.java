@@ -61,7 +61,6 @@ import com.ibm.ws.classloading.internal.util.ClassRedefiner;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.boot.classloader.ClassLoaderHook;
-import com.ibm.ws.kernel.boot.classloader.ClassLoaderHookFactory;
 import com.ibm.ws.kernel.feature.ServerStarted;
 import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 import com.ibm.ws.util.CacheHashMap;
@@ -111,8 +110,6 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
     private final List<UniversalContainer> nativeLibraryContainers = new ArrayList<UniversalContainer>();
 
     private final ClassRedefiner redefiner;
-
-    protected final ClassLoaderHook hook;
 
     final String jarProtocol;
 
@@ -231,9 +228,9 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
                 } catch (MalformedURLException e) {
                     sharedClassCacheURL = null;
                 }
-            } else {//if (!"file".equals(protocol)) {
+            } else if (!"file".equals(protocol)) {
                 sharedClassCacheURL = null;
-            } /*else {
+            } else {
                 String externalForm = resourceURL.toExternalForm();
                 if (externalForm.endsWith(resourceName)) {
                     try {
@@ -244,7 +241,7 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
                 } else {
                     sharedClassCacheURL = null;
                 }
-            }*/
+            }
         }
         return sharedClassCacheURL;
     }
@@ -1403,8 +1400,6 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
         //Temporary, reintroduced until WSJAR is implemented.
         JarCacheDisabler.disableJarCaching();
 
-        hook = ClassLoaderHookFactory.getClassLoaderHook(this);
-
         smartClassPath = new UnreadSmartClassPath();
 
         if (classpath != null) {
@@ -1487,7 +1482,7 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
         return null;
     }
 
-    protected ByteResourceInformation findClassBytes(String className, String resourceName) throws IOException {
+    protected ByteResourceInformation findClassBytes(String className, String resourceName, ClassLoaderHook hook) throws IOException {
         Object token = ThreadIdentityManager.runAsServer();
         try {
             return smartClassPath.getByteResourceInformation(className, resourceName, hook);

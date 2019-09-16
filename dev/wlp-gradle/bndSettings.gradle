@@ -1,0 +1,197 @@
+/*******************************************************************************
+ * Copyright (c) 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+/**
+ * Settings for biz.aQute.bnd plugin.
+ */
+buildscript {
+    /**
+     * Set all properties on BndWorkspace from gradle.userProps, which was configured by `gradle/propertiesSettings.gradle`.
+     */
+    gradle.ext.bndWorkspaceConfigure = { workspace ->
+        gradle.userProps.each { prop ->
+            workspace.setProperty(prop.key, prop.value.toString())
+        }
+    }
+
+    /**
+     * Prefer a configured Artifactory over plugins.gradle.org and the configured Bnd plugin repository.
+     * Do not fall back to plugins.gradle.org and the configured Bnd plugin repository when there are Artifactory outages.
+     */
+    repositories {
+        if ('true'.equalsIgnoreCase(gradle.userProps.getProperty('is.using.artifactory'))) {
+            maven {
+                credentials {
+                    username gradle.userProps.getProperty("artifactory.download.user")
+                    password gradle.userProps.getProperty("artifactory.download.token")
+                }
+                url ("https://" + gradle.userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-open-liberty")
+            }
+        } else {
+            maven { url uri(bnd_repourl) }
+            maven { url "https://plugins.gradle.org/m2/" }
+        }
+    }
+
+    dependencies {
+        classpath bnd_plugin
+        classpath 'gradle.plugin.net.ossindex:ossindex-gradle-plugin:0.4.11'
+        classpath 'com.gradle:build-scan-plugin:2.1'
+    }
+
+    // Since the files in the repository change with each build, we need to recheck for changes
+    configurations.classpath {
+        resolutionStrategy {
+            cacheChangingModulesFor 30, 'minutes'
+            cacheDynamicVersionsFor 30, 'minutes'
+        }
+    }
+
+    dependencies {
+        components {
+            all { ComponentMetadataDetails details ->
+                details.changing = true
+            }
+        }
+    }
+
+    // Add bnd gradle plugin to buildscript classpath of rootProject
+    def bndPlugin = files(configurations.classpath.files)
+    gradle.rootProject {
+        buildscript {
+            dependencies {
+                classpath bndPlugin
+            }
+        }
+    }
+}
+
+/**
+ * Initialize the bnd workspace
+ */
+import aQute.bnd.build.Workspace
+import aQute.bnd.osgi.Constants
+
+Workspace.setDriver(Constants.BNDDRIVER_GRADLE)
+Workspace.addGestalt(Constants.GESTALT_BATCH, null)
+Workspace workspace = new Workspace(rootDir, bnd_cnf).setOffline(startParameter.offline)
+gradle.bndWorkspaceConfigure(workspace)
+
+// Add cnf project to the graph
+include bnd_cnf
+
+// Start with the declared build project name
+def defaultProjectName = bnd_build
+
+// If in a subproject, use the subproject name
+for (def currentDir = startParameter.currentDir; currentDir != rootDir; currentDir = currentDir.parentFile) {
+    defaultProjectName = currentDir.name
+}
+
+// Build a set of project names we need to include from the specified tasks
+def optionsWithArgs = ['--tests']
+def skipNextName = false
+def projectNames = startParameter.taskNames.collect { taskName ->
+    if (skipNextName) {
+        skipNextName = false
+        return
+    } else {
+        if (optionsWithArgs.contains(taskName)) {
+            skipNextName = true
+            return
+        } else {
+            def elements = taskName.split(':')
+            switch (elements.length) {
+                case 1:
+                    return defaultProjectName
+                case 2:
+                    println elements[0]
+                    return elements[0].empty ? bnd_build : elements[0]
+                default:
+                    return elements[0].empty ? elements[1] : elements[0]
+            }
+        }
+    }
+}.toSet()
+projectNames.remove(null)
+
+// Include the default project name if in a subproject or no tasks specified
+if ((startParameter.currentDir != rootDir) || projectNames.empty) {
+    projectNames.add(defaultProjectName)
+}
+
+// If bnd_build used but declared empty, add all non-private folders of rootDir
+def addAll = projectNames.remove('')
+if (addAll) {
+    println 'Preparing all bnd projects in the workspace (this can take a while)'
+}
+
+/**
+ * This method is a hardcoded method that assumes if a project is
+ * a multi module project, it will have a module named "module"
+ **/
+def includeModuleIfExists(projectName) {
+    File module = new File(rootDir, projectName + '/module')
+    if (module.exists()) {
+        include projectName + ':' + module.getName()
+    }
+}
+
+def allBndProjects = workspace.getAllProjects().collect { project ->
+    if (!project.name.startsWith('.')) {
+        if (addAll) {
+            project.prepare()
+            include project.name
+
+            if (new File(rootDir, project.name + '/springboot.gradle').exists()) {
+                includeModuleIfExists(project.name)
+            }
+
+        }
+        return project.name
+    } else {
+        return ''
+    }
+}.toSet()
+allBndProjects.remove('')
+if (addAll) {
+    println 'All bnd projects in the workspace have been prepared'
+}
+
+// Add our common build/tool projects
+projectNames.add('build.image')
+projectNames.add('wlp-bndPlugins')
+projectNames.add('wlp-rasInstrumentation')
+
+// Add each project and its dependencies to the graph
+projectNames.each { projectName ->
+    if (allBndProjects.contains(projectName)) {
+        include projectName
+        workspace.getProject(projectName).getDependson()*.getName().each {
+            include it
+        }
+
+        if (new File(rootDir, projectName + '/springboot.gradle').exists()) {
+            includeModuleIfExists(projectName)
+        }
+    }
+}
+
+private boolean parseBoolean(String value) {
+    return 'on'.equalsIgnoreCase(value) || 'true'.equalsIgnoreCase(value)
+}
+
+// Pass workspace to root project
+gradle.projectsLoaded { gradle ->
+    gradle.rootProject.ext.bndWorkspace = workspace
+    gradle.rootProject.ext.gradleBndProjects = allBndProjects
+    gradle.rootProject.ext.parseBoolean = { value -> parseBoolean(value) }
+}

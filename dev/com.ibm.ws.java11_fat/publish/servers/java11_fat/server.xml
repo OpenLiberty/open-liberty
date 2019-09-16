@@ -14,10 +14,22 @@
         <feature>servlet-4.0</feature>
         <feature>jaxrs-2.1</feature>
         <feature>cdi-2.0</feature>
+        <feature>jpa-2.2</feature>
     </featureManager>
     
     <include location="../fatTestPorts.xml"/>
     
     <application location="java11-app.war" />
+    
+    <library id="derbyLib">
+        <fileset dir="${shared.resource.dir}/derby"/>
+    </library>
+    
+    <dataSource id="DefaultDataSource">
+        <jdbcDriver libraryRef="derbyLib"/>
+        <properties.derby.embedded createDatabase="create" databaseName="memory:derbyDB"/>
+    </dataSource>
+    
+    <javaPermission codeBase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
 
 </server>

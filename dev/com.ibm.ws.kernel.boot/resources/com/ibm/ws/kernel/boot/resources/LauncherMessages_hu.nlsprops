@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2016 IBM Corporation and others.
+# Copyright (c) 2010, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -695,6 +695,14 @@ error.no.serialfilteragent=CWWKE0949E: A megadott {0} soros\u00edt\u00e1si sz\u0
 error.no.serialfilteragent.explanation=A megadott soros\u00edt\u00e1si sz\u0171r\u0151 \u00fcgyn\u00f6k jar f\u00e1jl nem l\u00e9tezik vagy nem olvashat\u00f3.
 error.no.serialfilteragent.useraction= Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a f\u00e1jl l\u00e9tezik \u00e9s az aktu\u00e1lis felhaszn\u00e1l\u00f3 \u00e1ltal olvashat\u00f3.
 
+error.package.extension=CWWKE0950E: Az arch\u00edv f\u00e1jln\u00e9vnek a runnable param\u00e9ter haszn\u00e1lata eset\u00e9n .jar kiterjeszt\u00e9sre kell v\u00e9gz\u0151dnie.
+error.package.extension.explanation=Az --archive param\u00e9ternek az --include=runnable param\u00e9ter megad\u00e1sa eset\u00e9n .jar v\u00e9g\u0171 f\u00e1jlkiterjeszt\u00e9st kell tartalmaznia.
+error.package.extension.useraction=Adjon meg .jar f\u00e1jlkiterjeszt\u00e9s\u0171 f\u00e1jlnevet az --archive param\u00e9terben, ha megadja az --include=runnable param\u00e9tert.
+
+error.package.usr.jar=CWWKE0951E: Az arch\u00edv f\u00e1jl neve nem v\u00e9gz\u0151dhet .jar f\u00e1jlkiterjeszt\u00e9sre az usr param\u00e9ter haszn\u00e1lata eset\u00e9n.
+error.package.usr.jar.explanation=Az --archive param\u00e9ter nem v\u00e9gz\u0151dhet .jar f\u00e1jlkiterjeszt\u00e9sre, ha az --include=usr param\u00e9ter meg van adva.
+error.package.usr.jar.useraction=Az --archive param\u00e9terben megadott f\u00e1jln\u00e9vhez adjon meg nem .jar f\u00e1jlkiterjeszt\u00e9ssel rendelkez\u0151 f\u00e1jlnevet, ha az --include=usr param\u00e9ter meg van adva.
+
 info.serverStarting=A(z) {0} kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa.
 info.serverStarted=A(z) {0} kiszolg\u00e1l\u00f3 elindult.
 info.serverStartedWithPID=A(z) {0} kiszolg\u00e1l\u00f3 {1} folyamatazonos\u00edt\u00f3val elindult.
@@ -747,6 +755,8 @@ info.resumeFailedException=A(z) {0} kiszolg\u00e1l\u00f3 folytat\u00e1sa nem sik
 info.resumingListeners.target=A(z) {0} kiszolg\u00e1l\u00f3 megadott c\u00e9l\u00f6sszetev\u0151inek folytat\u00e1sa.
 info.resumedListeners.target=A(z) {0} kiszolg\u00e1l\u00f3 megadott c\u00e9l\u00f6sszetev\u0151inek folytat\u00e1sa megt\u00f6rt\u00e9nt.
 info.resumeFailedException.target=A(z) {0} kiszolg\u00e1l\u00f3 megadott c\u00e9l\u00f6sszetev\u0151inek folytat\u00e1sa nem siker\u00fclt. A r\u00e9szletek\u00e9rt vizsg\u00e1lja meg a kiszolg\u00e1l\u00f3 napl\u00f3it.
+info.serverCommandAuthFailure=A(z) {0} parancs meghi\u00fasult, mert a feldolgoz\u00e1s nem tudta t\u00f6r\u00f6lni a(z) {1} f\u00e1jlt.
+info.serverCommandCommFailure=A(z) {0} parancs meghi\u00fasult, mert kommunik\u00e1ci\u00f3s hiba l\u00e9pett fel a kiszolg\u00e1l\u00f3val.
 
 # For info.serverLaunch and info.serverVersion: 
 # {0} version (build and/or product name)
@@ -775,3 +785,4 @@ info.no.servers.defined=Nincs meghat\u00e1rozva kiszolg\u00e1l\u00f3 a(z) {0} fe
 info.list.of.defined.servers=A k\u00f6vetkez\u0151 kiszolg\u00e1l\u00f3k vannak meghat\u00e1rozva a(z) {0} felhaszn\u00e1l\u00f3i k\u00f6nyvt\u00e1rhoz viszony\u00edtva.
 info.communicate.server=Kommunik\u00e1ci\u00f3s hiba t\u00f6rt\u00e9nt a(z) {0} parancs \u00e9s a(z) {1} kiszolg\u00e1l\u00f3 k\u00f6z\u00f6tt.
 
+info.serialFilterLoaded=A soros sz\u0171r\u0151 \u00fcgyn\u00f6k bet\u00f6ltve.

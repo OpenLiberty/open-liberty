@@ -21,12 +21,15 @@ DynamicImport-Package: \
     com.ibm.wsspi.ssl
 
 Private-Package:\
-     com.ibm.ws.cloudant.*
+     com.ibm.ws.cloudant.internal
+     
+Export-Package: \
+    com.ibm.ws.cloudant
 
 Include-Resource:\
     OSGI-INF=resources/OSGI-INF
 
--dsannotations: com.ibm.ws.cloudant.internal.CloudantDatabaseService,\
+-dsannotations: com.ibm.ws.cloudant.CloudantDatabaseService,\
  com.ibm.ws.cloudant.internal.CloudantApplicationListener
 
 Service-Component: \

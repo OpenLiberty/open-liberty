@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2018 IBM Corporation and others.
+# Copyright (c) 2018, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -22,3 +22,12 @@
 SF_INFO_ENABLED=CWWKS8000I: Filtr szeregowy serwera WebSphere Application Server jest w\u0142\u0105czony.
 SF_INFO_ENABLED.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
 SF_INFO_ENABLED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+SF_ERROR_NOT_ENABLED=CWWKS8070E: Element serialFilter zosta\u0142 zignorowany, poniewa\u017c nie jest w\u0142\u0105czony filtr szeregowy serwera WebSphere Application Server.
+SF_ERROR_NOT_ENABLED.explanation=Element serialFilter zosta\u0142 zignorowany, poniewa\u017c nie jest w\u0142\u0105czona wymagana funkcja.
+SF_ERROR_NOT_ENABLED.useraction=W\u0142\u0105cz filtr szeregowy serwera WebSphere Application Server.
+SF_WARNING_DUPLICATE_MODE=CWWKS8071W: Warto\u015b\u0107 operacji ''{0}'' klasy ''{1}'' lub tej klasy i metody ''{2}'' zosta\u0142a zignorowana, poniewa\u017c ta warto\u015b\u0107 jest ju\u017c zdefiniowana.
+SF_WARNING_DUPLICATE_MODE.explanation=Warto\u015b\u0107 operacji podanej klasy lub klasy i metody jest ju\u017c zdefiniowana, a zduplikowana definicja zosta\u0142a zignorowana.
+SF_WARNING_DUPLICATE_MODE.useraction=Sprawd\u017a konfiguracj\u0119 serwera pod k\u0105tem wyst\u0119powania wielu definicji w atrybucie filterMode elementu serialFilter. Usu\u0144 duplikaty.
+SF_WARNING_DUPLICATE_POLICY=CWWKS8072W: Warto\u015b\u0107 uprawnienia ''{0}'' klasy ''{1}'' zosta\u0142a ignorowana, poniewa\u017c ta warto\u015b\u0107 jest ju\u017c zdefiniowana.
+SF_WARNING_DUPLICATE_POLICY.explanation=Warto\u015b\u0107 uprawnienia podanej klasy jest ju\u017c zdefiniowana, a zduplikowana definicja zosta\u0142a zignorowana.
+SF_WARNING_DUPLICATE_POLICY.useraction=Sprawd\u017a konfiguracj\u0119 serwera pod k\u0105tem wyst\u0119powania wielu definicji w atrybucie permission elementu serialFilter. Usu\u0144 duplikaty.

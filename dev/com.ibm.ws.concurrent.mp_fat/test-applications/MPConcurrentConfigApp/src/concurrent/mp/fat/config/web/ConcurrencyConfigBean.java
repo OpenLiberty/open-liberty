@@ -16,40 +16,37 @@ import java.util.concurrent.LinkedBlockingQueue;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
+import javax.inject.Named;
 
-import org.eclipse.microprofile.concurrent.ManagedExecutor;
-import org.eclipse.microprofile.concurrent.ManagedExecutorConfig;
-import org.eclipse.microprofile.concurrent.NamedInstance;
-import org.eclipse.microprofile.concurrent.ThreadContext;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.eclipse.microprofile.context.ManagedExecutor;
+import org.eclipse.microprofile.context.ThreadContext;
 
 @ApplicationScoped
 public class ConcurrencyConfigBean {
     @Produces
     @ApplicationScoped
-    @NamedInstance("applicationProducedExecutor")
-    ManagedExecutor createExecutor(@ConfigProperty(name = "AppProducedExecutor.maxAsync", defaultValue = "1") Integer a,
+    @Named("securityAndAppContextExecutor")
+    ManagedExecutor createExecutor(@ConfigProperty(name = "AppProducedExecutor.maxAsync", defaultValue = "1") Integer a, // Not defined in MP Config, so maxAsync=1
                                    @ConfigProperty(name = "AppProducedExecutor.maxQueued", defaultValue = "4") Integer q) { // MP Config sets maxQueued=2
-        return ManagedExecutor.builder().maxAsync(a).maxQueued(q).propagated(ThreadContext.SECURITY).build();
+        return ManagedExecutor.builder().maxAsync(a).maxQueued(q).propagated(ThreadContext.SECURITY, ThreadContext.APPLICATION).build();
     }
 
-    // MicroProfile Concurrency automatically shuts down ManagedExecutors when the application stops.
+    // MicroProfile Context Propagation automatically shuts down ManagedExecutors when the application stops.
     // But even if the application writes its own disposer, it shouldn't get an error.
-    void disposeExecutor(@Disposes @NamedInstance("applicationProducedExecutor") ManagedExecutor exec) {
+    void disposeExecutor(@Disposes @Named("securityAndAppContextExecutor") ManagedExecutor exec) {
         exec.shutdownNow();
     }
 
     @Produces
     @ApplicationScoped
-    @NamedInstance("containerExecutorReturnedByAppProducer")
-    ManagedExecutor getExecutor(@ManagedExecutorConfig(maxAsync = 1, maxQueued = 1) ManagedExecutor exec) { // MP Config sets maxQueued=3
-        return exec;
-    }
+    @Named("maxQueued3Executor")
+    ManagedExecutor exec = ManagedExecutor.builder().maxAsync(1).build(); // MP Config defaults maxQueued to 3
 
     @Produces
     @ApplicationScoped
-    @NamedInstance("incompleteStageForSecurityContextTests")
-    CompletionStage<LinkedBlockingQueue<String>> getIncompleteFuture(@NamedInstance("containerExecutorReturnedByAppProducer") ManagedExecutor exec) {
+    @Named("incompleteStageForSecurityContextTests")
+    CompletionStage<LinkedBlockingQueue<String>> getIncompleteFuture(@Named("securityAndAppContextExecutor") ManagedExecutor exec) {
         return exec.newIncompleteFuture();
     }
 }

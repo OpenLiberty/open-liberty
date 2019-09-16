@@ -1,7 +1,7 @@
 package com.ibm.tx.jta.impl;
 
 /*******************************************************************************
- * Copyright (c) 2002, 2018 IBM Corporation and others.
+ * Copyright (c) 2002, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,7 +18,6 @@ import com.ibm.tx.config.ConfigurationProviderManager;
 import com.ibm.tx.util.alarm.Alarm;
 import com.ibm.tx.util.alarm.AlarmListener;
 import com.ibm.tx.util.alarm.AlarmManager;
-import com.ibm.tx.util.logging.FFDCFilter;
 import com.ibm.tx.util.logging.Tr;
 import com.ibm.tx.util.logging.TraceComponent;
 import com.ibm.ws.recoverylog.spi.LibertyRecoveryDirectorImpl;
@@ -122,7 +121,7 @@ public class LeaseTimeoutManager {
                     try {
                         ((LibertyRecoveryDirectorImpl) _recoveryDirector).peerRecoverServers(_recoveryAgent, _recoveryIdentity, peersToRecover);
                     } catch (RecoveryFailedException e) {
-                        FFDCFilter.processException(e, "com.ibm.tx.jta.impl.LeaseTimeoutManager.alarm", "146", this);
+                        // The exception will have been reported in peerRecoverServers()
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "Swallow exception " + e);
                     }

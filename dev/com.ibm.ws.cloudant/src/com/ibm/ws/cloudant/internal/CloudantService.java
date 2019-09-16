@@ -246,7 +246,7 @@ public class CloudantService implements ApplicationRecycleComponent, LibraryChan
      * @throws Exception
      */
     @FFDCIgnore(value = {InvocationTargetException.class, PrivilegedActionException.class })
-    Object createResource(String databaseName, boolean createDatabase, int resAuth, List<? extends ResourceInfo.Property> loginPropertyList) throws Exception {
+    public Object createResource(String databaseName, boolean createDatabase, int resAuth, List<? extends ResourceInfo.Property> loginPropertyList) throws Exception {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         try {
             ComponentMetaData cData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
@@ -257,24 +257,7 @@ public class CloudantService implements ApplicationRecycleComponent, LibraryChan
 
             AuthData containerAuthData = null;
             if (resAuth == ResourceInfo.AUTH_CONTAINER) {
-                // look at resource info to see if auth alias specified in bindings via the login configuration properties
-                if (!loginPropertyList.isEmpty()) {
-                    for (ResourceInfo.Property property : loginPropertyList) {
-                        if (property.getName().equals(AUTHENTICATION_ALIAS_LOGIN_NAME)) {
-                            String authAliasName = property.getValue();
-                            containerAuthData = AuthDataProvider.getAuthData(authAliasName);
-                            if (trace && tc.isDebugEnabled())
-                                Tr.debug(this, tc, "resource ref container auth alias " + authAliasName, containerAuthData);
-                            break;
-                        }
-                    }
-                }
-                // fall back to default container auth alias, if any
-                if (containerAuthData == null) {
-                    containerAuthData = containerAuthDataRef.getService();
-                    if (trace && tc.isDebugEnabled())
-                        Tr.debug(this, tc, "default container auth " + containerAuthData);
-                }
+                containerAuthData = getContainerAuthData(loginPropertyList);
             }
 
             String userName = containerAuthData == null ? (String) props.get(USERNAME) : containerAuthData.getUserName();
@@ -378,6 +361,32 @@ public class CloudantService implements ApplicationRecycleComponent, LibraryChan
             // rethrowing the exception allows it to be captured in FFDC
             throw x;
         }
+    }
+
+    @Trivial
+    private AuthData getContainerAuthData(List<? extends ResourceInfo.Property> loginPropertyList) throws Exception {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        AuthData containerAuthData = null;
+        // look at resource info to see if auth alias specified in bindings via the login configuration properties
+        if (!loginPropertyList.isEmpty()) {
+            for (ResourceInfo.Property property : loginPropertyList) {
+                if (property.getName().equals(AUTHENTICATION_ALIAS_LOGIN_NAME)) {
+                    String authAliasName = property.getValue();
+                    containerAuthData = AuthDataProvider.getAuthData(authAliasName);
+                    if (trace && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "resource ref container auth alias " + authAliasName, containerAuthData);
+                    break;
+                }
+            }
+        }
+        // fall back to default container auth alias, if any
+        if (containerAuthData == null) {
+            containerAuthData = containerAuthDataRef.getService();
+            if (trace && tc.isDebugEnabled())
+                Tr.debug(this, tc, "default container auth " + containerAuthData);
+        }
+
+        return containerAuthData;
     }
 
     /**
@@ -486,7 +495,7 @@ public class CloudantService implements ApplicationRecycleComponent, LibraryChan
     }
 
     /**
-     * Method to reflectively invoke setters on the cloudant client builder 
+     * Method to reflectively invoke setters on the cloudant client builder
      * @param clazz client builder class
      * @param clientBuilder builder instance
      * @param name method to invoke
@@ -596,5 +605,34 @@ public class CloudantService implements ApplicationRecycleComponent, LibraryChan
     
     protected void unsetSsl(ServiceReference<Object> ref) {
         sslConfig.unsetReference(ref);
+    }
+
+    /**
+     * Return the cloudant client object used for a particular username and password
+     *
+     * @param resAuth
+     * @param loginPropertyList
+     * @return CloudantClient object
+     * @throws Exception
+     */
+    public Object getCloudantClient(int resAuth, List<? extends ResourceInfo.Property> loginPropertyList) throws Exception {
+        AuthData containerAuthData = null;
+        if (resAuth == ResourceInfo.AUTH_CONTAINER) {
+            containerAuthData = getContainerAuthData(loginPropertyList);
+        }
+
+        String userName = containerAuthData == null ? (String) props.get(USERNAME) : containerAuthData.getUserName();
+        String password = null;
+        if (containerAuthData == null) {
+            SerializableProtectedString protectedPwd = (SerializableProtectedString) props.get(PASSWORD);
+            if (protectedPwd != null) {
+                password = String.valueOf(protectedPwd.getChars());
+                password = PasswordUtil.getCryptoAlgorithm(password) == null ? password : PasswordUtil.decode(password);
+            }
+        } else
+            password = String.valueOf(containerAuthData.getPassword());
+
+        final ClientKey key = new ClientKey(null, userName, password);
+        return clients.get(key);
     }
 }

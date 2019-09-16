@@ -41,21 +41,10 @@ import componenttest.topology.utils.FATServletClient;
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class MongoConfigUpdateTest extends FATServletClient {
-
     @Server("mongo.fat.server.config.update")
     public static LibertyServer server;
 
     private static ServerConfiguration originalConfig;
-    private static final String[] EXPECTED_ERRS = {
-                                                    "CWKKD0017E:.*", "CWKKD0013E:.*", "SRVE0777E:.*",
-                                                    "SRVE0315E:.*com.mongodb.CommandFailureException.*client_not_known.*",
-                                                    "CWWKE0701E" // TODO: Circular reference detected
-                    // trying to get service
-                    // {org.osgi.service.cm.ManagedServiceFactory,
-                    // com.ibm.wsspi.logging.Introspector,
-                    // com.ibm.ws.runtime.update.RuntimeUpdateListener,
-                    // com.ibm.wsspi.application.lifecycle.ApplicationRecycleCoordinator}
-    };
 
     @BeforeClass
     public static void beforeClass() throws Exception {
@@ -67,7 +56,14 @@ public class MongoConfigUpdateTest extends FATServletClient {
 
     @AfterClass
     public static void afterClass() throws Exception {
-        server.stopServer(EXPECTED_ERRS);
+        // TODO: CWWKE0701E - Circular reference detected trying to get service
+        // {org.osgi.service.cm.ManagedServiceFactory,
+        // com.ibm.wsspi.logging.Introspector,
+        // com.ibm.ws.runtime.update.RuntimeUpdateListener,
+        // com.ibm.wsspi.application.lifecycle.ApplicationRecycleCoordinator}
+        server.stopServer("CWKKD0013E:.*",
+                          "SRVE0319E:.*",
+                          "CWWKE0701E");
     }
 
     @Before

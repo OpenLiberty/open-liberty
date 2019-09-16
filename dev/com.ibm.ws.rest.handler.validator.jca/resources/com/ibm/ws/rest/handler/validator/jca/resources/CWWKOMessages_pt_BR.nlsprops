@@ -1,0 +1,37 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.rest.handler.validator.jca/resources/com/ibm/ws/rest/handler/validator/jca/resources/CWWKOMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Validation REST endpoint
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWKO1560 to CWWKO1569
+
+CWWKO1560_VALIDATION_NOT_IMPLEMENTED=CWWKO1560E: A valida\u00e7\u00e3o n\u00e3o \u00e9 fornecida para o connection factory {0}, que implementa {1}.
+CWWKO1560_VALIDATION_NOT_IMPLEMENTED.explanation=A valida\u00e7\u00e3o \u00e9 poss\u00edvel somente para connection factories do adaptador de recursos que s\u00e3o connection factories JMS ou implementam javax.resource.cci.ConnectionFactory ou javax.sql.DataSource.
+CWWKO1560_VALIDATION_NOT_IMPLEMENTED.useraction=N\u00e3o tente validar esse tipo de connection factory.
+
+CWWKO1561_JMS_NOT_ENABLED=CWWKO1561E: O adaptador de recursos requer JMS, mas um recurso que ativa o JMS n\u00e3o est\u00e1 presente na configura\u00e7\u00e3o do servidor.
+CWWKO1561_JMS_NOT_ENABLED.explanation=Um recurso que ativa o JMS \u00e9 necess\u00e1rio para esse elemento de configura\u00e7\u00e3o.
+CWWKO1561_JMS_NOT_ENABLED.useraction=Inclua um recurso que permita o JMS na configura\u00e7\u00e3o do servidor.
+
+CWWKO1562_NO_CONSPEC=CWWKO1562E: A valida\u00e7\u00e3o n\u00e3o pode ser executada com o usu\u00e1rio e a senha especificados porque n\u00e3o h\u00e1 uma maneira padr\u00e3o de localizar a implementa\u00e7\u00e3o de ConnectionSpec adequada.
+CWWKO1562_NO_CONSPEC.explanation=O terminal REST de valida\u00e7\u00e3o n\u00e3o p\u00f4de determinar o nome da implementa\u00e7\u00e3o de ConnectionSpec, portanto, ele n\u00e3o tem como fornecer o nome do usu\u00e1rio e a senha especificados para o connection factory.
+CWWKO1562_NO_CONSPEC.useraction=Omita os par\u00e2metros de usu\u00e1rio e senha ao solicitar a valida\u00e7\u00e3o desse connection factory.

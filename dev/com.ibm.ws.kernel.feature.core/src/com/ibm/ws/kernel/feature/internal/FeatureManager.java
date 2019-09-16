@@ -10,6 +10,13 @@
  *******************************************************************************/
 package com.ibm.ws.kernel.feature.internal;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.MalformedURLException;
@@ -28,6 +35,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -143,6 +151,10 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
 
     final static String INSTALLED_BUNDLE_CACHE = "platform/feature.bundles.cache";
     final static String FEATURE_DEF_CACHE_FILE = "platform/feature.cache";
+    final static String FEATURE_FIX_CACHE_FILE = "feature.fix.cache";
+    final static int FEATURE_FIX_CACHE_VERSION = 1;
+    final static String FEATURE_TEST_FIXES = "IBM-Test-Fixes";
+    final static String FEATURE_INTERIM_FIXES = "IBM-Interim-Fixes";
     final static String FEATURE_PRODUCT_EXTENSIONS_INSTALL = "com.ibm.websphere.productInstall";
     final static String FEATURE_PRODUCT_EXTENSIONS_FILE_EXTENSION = ".properties";
     final static String PRODUCT_INFO_STRING_OPEN_LIBERTY = "Open Liberty";
@@ -291,7 +303,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * activated and when changes to our configuration have occurred.
      *
      * @param componentContext
-     *            the OSGi DS context
+     *                             the OSGi DS context
      */
     @Activate()
     protected void activate(ComponentContext componentContext, Map<String, Object> properties) {
@@ -402,7 +414,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * implementation is stopped.
      *
      * @param componentContext
-     *            the OSGi DS context
+     *                             the OSGi DS context
      */
     @Deactivate()
     @FFDCIgnore(InterruptedException.class)
@@ -441,7 +453,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * reference required by activator, inject directly.
      *
      * @param locationService
-     *            a location service
+     *                            a location service
      */
     @Reference(name = "locationService", service = WsLocationAdmin.class)
     protected void setLocationService(WsLocationAdmin locationService) {
@@ -454,9 +466,10 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * deactivate. Do nothing.
      *
      * @param locationService
-     *            a location service
+     *                            a location service
      */
-    protected void unsetLocationService(WsLocationAdmin locationService) {}
+    protected void unsetLocationService(WsLocationAdmin locationService) {
+    }
 
     public WsLocationAdmin getLocationService() {
         return locationService;
@@ -488,7 +501,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
     /**
      *
      */
-    protected void unsetRuntimeUpdateManager(RuntimeUpdateManager runtimeUpdateManager) {}
+    protected void unsetRuntimeUpdateManager(RuntimeUpdateManager runtimeUpdateManager) {
+    }
 
     /**
      * Inject a <code>EventAdmin</code> service instance.
@@ -503,7 +517,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * Called to unset intermediate dynamic references or after
      * deactivate. Do nothing.
      */
-    protected void unsetEventAdminService(EventAdmin eventAdminService) {}
+    protected void unsetEventAdminService(EventAdmin eventAdminService) {
+    }
 
     /**
      * Inject a <code>RegionDigraph</code> service instance.
@@ -525,13 +540,14 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * Called to unset intermediate dynamic references or after
      * deactivate. Do nothing.
      */
-    protected void unsetDigraph(RegionDigraph digraph) {}
+    protected void unsetDigraph(RegionDigraph digraph) {
+    }
 
     /**
      * Inject an <code>ExecutorService</code> service instance.
      *
      * @param executorService
-     *            an executor service
+     *                            an executor service
      */
     @Reference(name = "executorService", service = ExecutorService.class)
     protected void setExecutorService(ExecutorService executorService) {
@@ -542,9 +558,10 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * Remove the <code>ExecutorService</code> service instance.
      *
      * @param executorService
-     *            an executor service
+     *                            an executor service
      */
-    protected void unsetExecutorService(ExecutorService executorService) {}
+    protected void unsetExecutorService(ExecutorService executorService) {
+    }
 
     /**
      * Declarative Services method for setting the variable registry service implementation reference.
@@ -561,7 +578,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * Called to unset intermediate dynamic references or after
      * deactivate. Do nothing.
      */
-    protected void unsetVariableRegistry(VariableRegistry variableRegistry) {}
+    protected void unsetVariableRegistry(VariableRegistry variableRegistry) {
+    }
 
     @Override
     public void updated(Dictionary<String, ?> configuration) throws ConfigurationException {
@@ -658,7 +676,6 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
                 default:
                     break;
             }
-
             // Create and validate feature cache (will remove cached features that no longer match filesystem)
             featureRepository.init();
 
@@ -692,9 +709,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
                 // been installed into the runtime, so that we can recalculate any new autofeatures to install.
                 featureChange.features = getPublicFeatures(preInstalledFeatures, false).toArray(new String[] {});
             }
-
             updateFeatures(locationService, provisioner, preInstalledFeatures, featureChange, featureUpdateNumber.incrementAndGet());
-
             // All done with the updates we could find...
             switch (featureChange.provisioningMode) {
                 case CONTENT_REQUEST:
@@ -709,7 +724,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
                     checkBundleStatus(startStatus); // FFDC, etc.
 
                     //register a service that can be looked up for server start.
-                    bundleContext.registerService(ServerStarted.class, new ServerStarted() {}, new Hashtable<String, Object>());
+                    bundleContext.registerService(ServerStarted.class, new ServerStarted() {
+                    }, new Hashtable<String, Object>());
                     break;
                 default:
                     break;
@@ -726,7 +742,6 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
             BundleRepositoryRegistry.disposeAll();
             // clean up kernel features
             KernelFeatureDefinitionImpl.dispose();
-
             // Clean up anything we can from bundle/feature caches
             bundleCache.dispose();
             featureRepository.dispose();
@@ -830,16 +845,20 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      *
      * @param provisioningMode
      * @param preInstalledFeatures
-     * @param deletedAutoFeatures - The list of deleted AutoFeatures.This is used to trace which auto features have been deleted.
+     * @param deletedAutoFeatures       - The list of deleted AutoFeatures.This is used to trace which auto features have been deleted.
      * @param deletedPublicAutoFeatures - The list of deleted Public AutoFeatures.This is used to issue to the console which public
-     *            auto features have been deleted.
+     *                                      auto features have been deleted.
      */
     private void writeUpdateMessages(ProvisioningMode provisioningMode, Set<String> preInstalledFeatures, Set<String> deletedAutoFeatures,
                                      Set<String> deletedPublicAutoFeatures) {
         writeServiceMessages();
 
         Set<String> postInstalledFeatures = new HashSet<>(featureRepository.getInstalledFeatures());
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "all installed features " + postInstalledFeatures);
+        }
 
+        //remove the pre-installed features from all installed features to show just the added features
         postInstalledFeatures.removeAll(preInstalledFeatures);
         Set<String> installedPublicFeatures = Collections.emptySet();
 
@@ -902,7 +921,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
                 if (supportedProcessTypes.contains(ProcessType.CLIENT)) {
                     Tr.audit(tc, "CLIENT_STARTED", locationService.getServerName());
                 } else {
-                    Tr.audit(tc, "SERVER_STARTED", locationService.getServerName());
+                    Tr.audit(tc, "SERVER_STARTED", locationService.getServerName(), TimestampUtils.getElapsedTime());
                 }
             }
         }
@@ -932,41 +951,70 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
     private void writeServiceMessages() {
         // This print stream is used to write a fix.data file containing detected fixes for service.
         PrintStream out = null;
+        Map<Bundle, Map<String, String>> cachedFixes = new HashMap<>();
+        boolean dirtyFixCache = readCachedFixes(cachedFixes);
+
         Bundle[] bundles = bundleContext.getBundles();
+
         Set<String> iFixSet = new HashSet<String>();
         Set<String> tFixSet = new HashSet<String>();
 
         for (Bundle b : bundles) {
-            Dictionary<String, String> headers;
-            try {
-                headers = b.getHeaders("");
-            } catch (IllegalStateException ise) {
-                // This can happen if a bundle was uninstalled between the call to bundleContext.getBundles() and here.
-                // Testing shows this typically happens to dynamically generated bundles, like
-                // "WSClassLoadingService@Thread Context:WebModule:basicauth-basicauth-/basicauth"
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "writeServiceMessages - caught exception getting manifest headers for bundle " + b, ise);
+            String tFixes;
+            boolean hasTFixes = false;
+            String iFixes;
+            boolean hasIFixes = false;
+            Map<String, String> cachedHeaders = cachedFixes.get(b);
+            if (cachedHeaders == null) {
+                Dictionary<String, String> headers;
+                try {
+                    headers = b.getHeaders("");
+                } catch (IllegalStateException ise) {
+                    // This can happen if a bundle was uninstalled between the call to bundleContext.getBundles() and here.
+                    // Testing shows this typically happens to dynamically generated bundles, like
+                    // "WSClassLoadingService@Thread Context:WebModule:basicauth-basicauth-/basicauth"
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "writeServiceMessages - caught exception getting manifest headers for bundle " + b, ise);
+                    }
+                    continue;
                 }
-                continue;
+
+                cachedHeaders = new HashMap<>(2);
+                tFixes = headers.get(FEATURE_TEST_FIXES);
+                hasTFixes = tFixes != null;
+                if (hasTFixes) {
+                    cachedHeaders.put(FEATURE_TEST_FIXES, tFixes);
+                }
+                iFixes = headers.get(FEATURE_INTERIM_FIXES);
+                hasIFixes = iFixes != null;
+                if (hasIFixes) {
+                    cachedHeaders.put(FEATURE_INTERIM_FIXES, iFixes);
+                }
+
+                cachedFixes.put(b, cachedHeaders);
+                dirtyFixCache = true;
+            } else {
+                tFixes = cachedHeaders.get(FEATURE_TEST_FIXES);
+                hasTFixes = tFixes != null;
+                iFixes = cachedHeaders.get(FEATURE_INTERIM_FIXES);
+                hasIFixes = iFixes != null;
             }
 
-            String fixes = headers.get("IBM-Test-Fixes");
-            if (fixes != null) {
+            if (hasTFixes) {
                 out = getFixWriter(out);
                 out.print("tFix: ");
                 out.print(b.getLocation());
                 out.print(": ");
-                out.println(fixes);
-                tFixSet.addAll(Arrays.asList(fixes.split("[,\\s]")));
+                out.println(tFixes);
+                tFixSet.addAll(Arrays.asList(tFixes.split("[,\\s]")));
             }
-            fixes = headers.get("IBM-Interim-Fixes");
-            if (fixes != null) {
+            if (hasIFixes) {
                 out = getFixWriter(out);
                 out.print("iFix: ");
                 out.print(b.getLocation());
                 out.print(": ");
-                out.println(fixes);
-                iFixSet.addAll(Arrays.asList(fixes.split("[,\\s]")));
+                out.println(iFixes);
+                iFixSet.addAll(Arrays.asList(iFixes.split("[,\\s]")));
             }
         }
 
@@ -999,13 +1047,97 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
             out.flush();
             out.close();
         }
+        if (dirtyFixCache) {
+            writeCachedFixes(cachedFixes);
+        }
+    }
+
+    /**
+     * @param cachedFixes
+     */
+    private void writeCachedFixes(Map<Bundle, Map<String, String>> cachedFixes) {
+        File cache = bundleContext.getDataFile(FEATURE_FIX_CACHE_FILE);
+        try (DataOutputStream out = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(cache)))) {
+            out.writeInt(FEATURE_FIX_CACHE_VERSION);
+            out.writeInt(cachedFixes.size());
+            for (Entry<Bundle, Map<String, String>> bFixes : cachedFixes.entrySet()) {
+                out.writeLong(bFixes.getKey().getBundleId());
+                out.writeLong(bFixes.getKey().getLastModified());
+
+                writeFixHeader(FEATURE_TEST_FIXES, bFixes.getValue(), out);
+                writeFixHeader(FEATURE_INTERIM_FIXES, bFixes.getValue(), out);
+            }
+        } catch (IOException e) {
+            // auto FFDC is fine here
+        }
+    }
+
+    private void writeFixHeader(String fixHeader, Map<String, String> headers, DataOutputStream out) throws IOException {
+        String fixes = headers.get(fixHeader);
+        boolean hasFixes = fixes != null;
+        out.writeBoolean(hasFixes);
+        if (hasFixes) {
+            out.writeUTF(fixes);
+        }
+    }
+
+    private boolean readCachedFixes(Map<Bundle, Map<String, String>> result) {
+        BundleContext systemContext = bundleContext.getBundle(Constants.SYSTEM_BUNDLE_LOCATION).getBundleContext();
+        boolean dirty = false;
+        File cache = bundleContext.getDataFile(FEATURE_FIX_CACHE_FILE);
+        if (cache.isFile()) {
+            try (DataInputStream in = new DataInputStream(new BufferedInputStream(new FileInputStream(cache)))) {
+                if (in.readInt() != FEATURE_FIX_CACHE_VERSION) {
+                    // don't understand the cache version; start with empty dirty cache
+                    return true;
+                }
+                int numBundles = in.readInt();
+                for (int i = 0; i < numBundles; i++) {
+                    long id = in.readLong();
+                    long lastModified = in.readLong();
+                    String tFixes = readFixHeader(in);
+                    String iFixes = readFixHeader(in);
+
+                    boolean hasTFixes = tFixes != null;
+                    boolean hasIFixes = iFixes != null;
+                    Bundle b = systemContext.getBundle(id);
+                    if (b != null && b.getLastModified() == lastModified) {
+                        if (!hasTFixes && !hasIFixes) {
+                            // common case; no fix headers in bundle
+                            result.put(b, Collections.<String, String> emptyMap());
+                        } else {
+                            Map<String, String> bFixes = new HashMap<>(2);
+                            if (hasTFixes) {
+                                bFixes.put(FEATURE_TEST_FIXES, tFixes);
+                            }
+                            if (hasIFixes) {
+                                bFixes.put(FEATURE_INTERIM_FIXES, iFixes);
+                            }
+                            result.put(b, bFixes);
+                        }
+                    } else {
+                        // missing or updated bundle; make dirty to ensure the cache is rewritten
+                        dirty = true;
+                    }
+                }
+            } catch (IOException e) {
+                // auto FFDC is fine here
+            }
+        } else {
+            dirty = true;
+        }
+        return dirty;
+    }
+
+    private String readFixHeader(DataInputStream in) throws IOException {
+        return in.readBoolean() ? in.readUTF() : null;
     }
 
     /**
      * @param postInstalledFeatures
      */
     private Set<String> getPublicFeatures(Set<String> postInstalledFeatures, boolean includeAutoFeatures) {
-        Set<String> publicFeatures = new HashSet<String>();
+        Set<String> publicFeatures = new TreeSet<String>();
         Iterator<String> it = postInstalledFeatures.iterator();
         while (it.hasNext()) {
             String feature = it.next();
@@ -1086,10 +1218,10 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
     /**
      * Update installed features and bundles
      *
-     * @param locService Location service used to resolve resources (feature definitions or bundles)
-     * @param provisioner Provisioner for installing/starting bundles
+     * @param locService           Location service used to resolve resources (feature definitions or bundles)
+     * @param provisioner          Provisioner for installing/starting bundles
      * @param preInstalledFeatures
-     * @param newFeatureSet New/revised list of active features
+     * @param newFeatureSet        New/revised list of active features
      * @return true if no errors occurred during the update, false otherwise
      */
     @FFDCIgnore(Throwable.class)
@@ -1100,7 +1232,6 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
                                      long sequenceNumber) {
         // NOTE RE: FFDCIgnore above-- The catch block for Throwable below, stores
         // the exception in an InstallStatus object and calls FFDC at a more appropriate time.
-
         BundleList newBundleList = null;
 
         // In 850 we were not case sensitive so we need to stay that way.
@@ -1197,7 +1328,6 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
                                            ProvisionerConstants.LEVEL_FEATURE_CONTAINERS,
                                            fwStartLevel.getInitialBundleStartLevel(),
                                            locService);
-
                 // add all installed bundles to list of bundlesToStart.
                 // TODO would be good if we could avoid this when features have not changed, but in
                 // some scenarios, the framework may reinstall a features bundle even on a warm restart,
@@ -1207,7 +1337,6 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
                 }
 
                 featureRepository.updateServices();
-
                 if (featuresHaveChanges) {
                     // Uninstall extra bundles.
                     // Important to test for null here, and not "!isEmpty()":
@@ -1256,6 +1385,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
 
         // Analyze unresolved bundles for missing java dependencies
         analyzeUnresolvedBundles(installedBundles, goodFeatures);
+
         startStatus = provisioner.preStartBundles(installedBundles);
         status &= checkBundleStatus(startStatus);
 
@@ -1308,7 +1438,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * and the unsatisfied java version dependency.
      *
      * @param installedBundles A list of the currently installed bundles
-     * @param features A list of the currently installed features
+     * @param features         A list of the currently installed features
      */
     private void analyzeUnresolvedBundles(List<Bundle> installedBundles, Set<String> features) {
 
@@ -1436,7 +1566,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * Find which features include the given bundle
      *
      * @param features The feature list to scan for this bundle
-     * @param b1 The bundle to look for in features
+     * @param b1       The bundle to look for in features
      * @return List of features this bundle is included in
      */
     public Set<String> findIncludingFeatures(Set<String> features, Bundle b1) {
@@ -1567,13 +1697,6 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
         return reportedErrors;
     }
 
-    /**
-     * @return
-     */
-    private Object getWrongProcessType() {
-        return EnumSet.complementOf(supportedProcessTypes).iterator().next().toString().toLowerCase();
-    }
-
     private String getFeatureName(String symbolicName) {
         ProvisioningFeatureDefinition fd = featureRepository.getFeature(symbolicName);
         if (fd == null) {
@@ -1653,10 +1776,10 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * Issues appropriate diagnostics & messages for this environment.
      *
      * @param listName
-     *            the name of the feature that was installed
+     *                          the name of the feature that was installed
      * @param installStatus
-     *            Status object holding any warnings or exceptions that occurred
-     *            during bundle installation
+     *                          Status object holding any warnings or exceptions that occurred
+     *                          during bundle installation
      * @return true if no exceptions occurred during bundle installation, false otherwise.
      */
     protected boolean checkInstallStatus(BundleInstallStatus installStatus) throws IllegalStateException {
@@ -1770,8 +1893,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * and issue appropriate diagnostics & messages for this environment.
      *
      * @param bundleStatus
-     *            Status object holding any exceptions that occurred
-     *            during bundle start or stop/uninstall
+     *                         Status object holding any exceptions that occurred
+     *                         during bundle start or stop/uninstall
      * @return true if no exceptions occurred while stating bundles, false otherwise.
      */
     protected boolean checkBundleStatus(BundleLifecycleStatus bundleStatus) {
@@ -1825,7 +1948,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * necessarily know that it's ours..).
      *
      * @param level
-     *            StartLevel to change to
+     *                  StartLevel to change to
      * @return BundleStartStatus containing any exceptions encountered
      *         during the StartLevel change operation.
      */

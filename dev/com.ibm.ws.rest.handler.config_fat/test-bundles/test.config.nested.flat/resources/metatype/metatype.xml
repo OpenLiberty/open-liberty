@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017,2019 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0">
+	
+ <Designate factoryPid="com.ibm.ws.config.nested"> 
+  <Object ocdref="com.ibm.ws.config.nested" />
+ </Designate>
+
+ <OCD id="com.ibm.ws.config.nested" ibm:alias="parent" ibm:supportExtensions="true" name="parent" description="parent">
+  <AD id="name" type="String" required="false" name="name" description="name"/>
+  <AD id="child" type="String" required="false" cardinality="5" ibm:flat="true" ibm:type="pid" ibm:reference="com.ibm.ws.config.nested.child" name="child ref" description="child ref"/>
+ </OCD>
+
+ 
+ <Designate factoryPid="com.ibm.ws.config.nested.child"> 
+  <Object ocdref="com.ibm.ws.config.nested.child" />
+ </Designate>
+
+ <OCD id="com.ibm.ws.config.nested.child" ibm:alias="child" name="child" description="child"> 
+  <AD id="value" type="String" required="false" name="value" description="value"/>  
+  <AD id="grandchild" required="false" type="String" cardinality="-5" ibm:type="pid" ibm:reference="com.ibm.ws.config.nested.grandchild" ibm:flat="true" name="grandchild" description="grandchild"/>
+ </OCD>
+
+ <Designate factoryPid="com.ibm.ws.config.nested.grandchild"> 
+  <Object ocdref="com.ibm.ws.config.nested.grandchild" />
+ </Designate>
+
+ <OCD id="com.ibm.ws.config.nested.grandchild"  ibm:alias="grandchild" name="copyGrandchild" description="copyGrandchild"> 
+  <AD id="value" type="String" required="false" name="value" description="value"/>
+ </OCD>
+
+</metatype:MetaData>

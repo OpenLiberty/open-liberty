@@ -22,14 +22,92 @@
 #   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
 #   (single quote must be coded as one single quote '). 
 
+# # A file path.
 bad.zip.data=CWWKM0101E: System nie m\u00f3g\u0142 przetworzy\u0107 danych archiwalnych dla elementu {0}.
 bad.zip.data.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas przetwarzania skompresowanych danych dla archiwum. 
 bad.zip.data.useraction=Sprawd\u017a, czy plik jest poprawnym archiwum.
 
-remove.cache.data=CWWKM0102W: System wyczy\u015bci\u0142 niepoprawne dane pami\u0119ci podr\u0119cznej w po\u0142o\u017ceniu {0}
+# # A file path.
+remove.cache.data=CWWKM0102W: W pliku {0} system wyczy\u015bci\u0142 niepoprawne dane pochodz\u0105ce z pami\u0119ci podr\u0119cznej.
 remove.cache.data.explanation=Struktura aplikacji wygl\u0105da na zmienion\u0105, co wymaga usuni\u0119cia danych pami\u0119ci podr\u0119cznej utworzonych na podstawie poprzedniej struktury.
 remove.cache.data.useraction=Je\u015bli struktura aplikacji uleg\u0142a zmianie, takie zachowanie jest oczekiwane.
 
+# # {0} The text of the message from an exception.
 extract.cache.fail=CWWKM0103E: System nie m\u00f3g\u0142 wyodr\u0119bni\u0107 zagnie\u017cd\u017conego archiwum do po\u0142o\u017cenia pami\u0119ci podr\u0119cznej, przyczyna: {0}
 extract.cache.fail.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas tworzenia danych pami\u0119ci podr\u0119cznej dla aplikacji, co uniemo\u017cliwi\u0142o poprawne przetworzenie aplikacji. 
 extract.cache.fail.useraction=Sprawd\u017a zg\u0142oszon\u0105 przyczyn\u0119.
+
+# # {0} A file path.
+extract.cache.null=CWWKM0104E: System nie m\u00f3g\u0142 rozpakowa\u0107 zagnie\u017cd\u017conego archiwum {0} do po\u0142o\u017cenia pami\u0119ci podr\u0119cznej.
+extract.cache.null.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas tworzenia danych pami\u0119ci podr\u0119cznej dla aplikacji, co uniemo\u017cliwi\u0142o poprawne przetworzenie aplikacji. 
+extract.cache.null.useraction=Sprawd\u017a, czy zagnie\u017cd\u017cone archiwum jest poprawne.
+
+# # {0} A file path.
+extract.secondary.timeout=CWWKM0105E: Przekroczono limit czasu dodatkowego rozpakowywania pliku {0}.
+extract.secondary.timeout.explanation=Podczas oczekiwania na zako\u0144czenie pocz\u0105tkowego rozpakowywania nast\u0105pi\u0142o przekroczenie limitu czasu wsp\u00f3\u0142bie\u017cnego \u017c\u0105dania rozpakowania zagnie\u017cd\u017conego archiwum.
+extract.secondary.timeout.useraction=Sprawd\u017a, czy zagnie\u017cd\u017cone archiwum jest poprawne.
+
+# # {0} A file path
+extract.secondary.failed=CWWKM0106E: Nie powiod\u0142o si\u0119 dodatkowe rozpakowywanie pliku {0}.
+extract.secondary.failed.explanation=Wsp\u00f3\u0142bie\u017cne \u017c\u0105danie rozpakowania zagnie\u017cd\u017conego archiwum zosta\u0142o zako\u0144czone, ale zagnie\u017cd\u017cone archiwum nie zosta\u0142o rozpakowane.
+extract.secondary.failed.useraction=Sprawd\u017a, czy zagnie\u017cd\u017cone archiwum jest poprawne.
+
+# # {0} A file path
+extract.secondary.notfile=CWWKM0107E: Dodatkowe rozpakowywanie pliku {0} nie spowodowa\u0142o utworzenia prostego pliku.
+extract.secondary.notfile.explanation=Wsp\u00f3\u0142bie\u017cne \u017c\u0105danie rozpakowania zagnie\u017cd\u017conego archiwum zosta\u0142o zako\u0144czone, ale nie spowodowa\u0142o utworzenia prostego pliku.
+extract.secondary.notfile.useraction=Sprawd\u017a, czy zagnie\u017cd\u017cone archiwum jest poprawne.
+
+# # {0} A file path
+extract.secondary.inconsistent=CWWKM0108E: Niesp\u00f3jne czasy dodatkowego rozpakowywania pliku {0}.
+extract.secondary.inconsistent.explanation=Wsp\u00f3\u0142bie\u017cne \u017c\u0105danie rozpakowania zagnie\u017cd\u017conego archiwum zosta\u0142o zako\u0144czone, ale spowodowa\u0142o utworzenie innego pliku ni\u017c oczekiwano.
+extract.secondary.inconsistent.useraction=Sprawd\u017a, czy zagnie\u017cd\u017cone archiwum jest poprawne.
+
+# # {0} A file path
+extract.primary.directory=CWWKM0109E: Wcze\u015bniejsze rozpakowywanie pliku {0} spowodowa\u0142o utworzenie katalogu.
+extract.primary.directory.explanation=Podczas rozpakowywania zagnie\u017cd\u017conego archiwum wykryto katalog z wcze\u015bniej rozpakowanego archiwum.
+extract.primary.directory.useraction=Wykonaj operacj\u0119 czyszczenia, a nast\u0119pnie zrestartuj serwer, aby mie\u0107 pewno\u015b\u0107, \u017ce nie ma ju\u017c \u017cadnej wcze\u015bniejszej zawarto\u015bci pami\u0119ci podr\u0119cznej.
+
+# # {0} A file path
+extract.primary.untyped=CWWKM0110E: Nie mo\u017cna okre\u015bli\u0107 typu pliku wcze\u015bniej rozpakowanego archiwum {0}.
+extract.primary.untyped.explanation=Podczas rozpakowywania zagnie\u017cd\u017conego archiwum wykryto, \u017ce wcze\u015bniej rozpakowanym archiwum jest plik nieokre\u015blonego typu.
+extract.primary.untyped.useraction=Wykonaj operacj\u0119 czyszczenia, a nast\u0119pnie zrestartuj serwer, aby mie\u0107 pewno\u015b\u0107, \u017ce nie ma ju\u017c \u017cadnej wcze\u015bniejszej zawarto\u015bci pami\u0119ci podr\u0119cznej.
+
+# # {0} A file path.
+# # {1} A print name
+reaper.inactive=CWWKM0121W: Nie mo\u017cna otworzy\u0107 pliku {0}: pami\u0119\u0107 podr\u0119czna archiwum {1} jest nieaktywna.
+reaper.inactive.explanation=\u017b\u0105danie otwarcia pliku archiwum nie powiod\u0142o si\u0119, poniewa\u017c pami\u0119\u0107 podr\u0119czna pliku archiwum nie jest aktywna.
+reaper.inactive.useraction=Ten komunikat \u015bwiadczy o wyst\u0105pieniu wewn\u0119trznego b\u0142\u0119du programowego.
+
+# # {0} A file path
+reaper.unregistered.path=CWWKM0122W: \u017b\u0105danie zamkni\u0119cia archiwum {0}, kt\u00f3re nie jest otwarte, zostanie zignorowane.
+reaper.unregistered.path.explanation=Za\u017c\u0105dano zamkni\u0119cia pliku archiwum, kt\u00f3re nie by\u0142o otwarte.
+reaper.unregistered.path.useraction=Ten komunikat \u015bwiadczy o wyst\u0105pieniu wewn\u0119trznego b\u0142\u0119du programowego.
+
+# # {0} A file path
+reaper.closed.path=CWWKM0123W: \u017b\u0105danie zamkni\u0119cia archiwum {0}, kt\u00f3re jest ju\u017c zamkni\u0119te, zostanie zignorowane.
+reaper.closed.path.explanation=Za\u017c\u0105dano zamkni\u0119cia pliku archiwum, kt\u00f3re by\u0142o ju\u017c zamkni\u0119te.
+reaper.closed.path.useraction=Ten komunikat \u015bwiadczy o wyst\u0105pieniu wewn\u0119trznego b\u0142\u0119du programowego.
+
+# # {0} A file path
+reaper.pending.path=CWWKM0243W: \u017b\u0105danie zamkni\u0119cia archiwum {0}, kt\u00f3re ju\u017c oczekuje na zamkni\u0119cie {0}, zostanie zignorowane.
+reaper.pending.path.explanation=Za\u017c\u0105dano zamkni\u0119cia pliku archiwum, kt\u00f3re ju\u017c oczekuje na zamkni\u0119cie.
+reaper.pending.path.useraction=Ten komunikat \u015bwiadczy o wyst\u0105pieniu wewn\u0119trznego b\u0142\u0119du programowego.
+
+# # {0} A file path
+# # {1} An integer representing a file length
+# # {2} An integer representing a file length
+reaper.unexpected.length.change=CWWKM0125W: Archiwum {0}: aktualizacja d\u0142ugo\u015bci z {1} na {2}.
+reaper.unexpected.length.change.explanation=Wykonano nieoczekiwan\u0105 aktualizacj\u0119 pliku archiwum aplikacji, gdy to archiwum by\u0142o otwarte.  Taka sytuacja zwykle wyst\u0119puje w przypadku wykonywania dynamicznej aktualizacji plik\u00f3w aplikacji.
+reaper.unexpected.length.change.useraction=Zrestartuj serwer.  Gdy aktualizujesz pliki aplikacji, poczekaj na wygaszenie serwera, a nast\u0119pnie poczekaj co najmniej p\u00f3\u0142 sekundy na zamkni\u0119cie plik\u00f3w aplikacji.
+
+# # {0} A file path
+# # {1} An integer representing a last modified time
+# # {2} An integer representing a last modified time
+reaper.unexpected.lastmodified.change=CWWKM0126W: Archiwum {0}: aktualizacja ostatniej modyfikacji z {1} na {2}.
+reaper.unexpected.lastmodified.change.explanation=Wykonano nieoczekiwan\u0105 aktualizacj\u0119 pliku archiwum aplikacji, gdy to archiwum by\u0142o otwarte.  Taka sytuacja zwykle wyst\u0119puje w przypadku wykonywania dynamicznej aktualizacji plik\u00f3w aplikacji.
+reaper.unexpected.lastmodified.change.useraction=Zrestartuj serwer.  Gdy aktualizujesz pliki aplikacji, poczekaj na wygaszenie serwera, a nast\u0119pnie poczekaj co najmniej p\u00f3\u0142 sekundy na zamkni\u0119cie plik\u00f3w aplikacji.
+
+# # {0} A file path
+reaper.reopen.active=CWWKM0127W: Ponowne otwarcie pliku {0}.
+reaper.reopen.active.explanation=Nieoczekiwana zmiana spowodowa\u0142a ponowne otwarcie otwartego pliku archiwum aplikacji.  Serwer pr\u00f3bowa\u0142 uzyska\u0107 zaktualizowan\u0105 zawarto\u015b\u0107 pliku archiwum, ale prawdopodobnie nie zaktualizowa\u0142 w pe\u0142ni wewn\u0119trznych listing\u00f3w zawarto\u015bci archiwum.
+reaper.reopen.active.useraction=Zrestartuj serwer.  Gdy aktualizujesz pliki aplikacji, poczekaj na wygaszenie serwera, a nast\u0119pnie poczekaj co najmniej p\u00f3\u0142 sekundy na zamkni\u0119cie plik\u00f3w aplikacji.

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2016 IBM Corporation and others.
+# Copyright (c) 2010, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -694,6 +694,14 @@ error.no.serialfilteragent=CWWKE0949E: Fi\u015fierul jar al agentului de filtru 
 error.no.serialfilteragent.explanation=Fi\u015fierul jar al agentului de filtru serial specificat nu exist\u0103 sau nu poate fi citit.
 error.no.serialfilteragent.useraction= Asigura\u0163i-v\u0103 c\u0103 fi\u015fierul exist\u0103 \u015fi c\u0103 poate fi citit de utilizatorul curent.
 
+error.package.extension=CWWKE0950E: Numele de fi\u015fier al arhivei trebuie s\u0103 se termine cu .jar atunci c\u00e2nd este utilizat\u0103 op\u0163iunea runnable.
+error.package.extension.explanation=Op\u0163iunea --archive trebuie s\u0103 includ\u0103 o extensie de fi\u015fier care se termin\u0103 cu .jar atunci c\u00e2nd se specific\u0103 --include=runnable.
+error.package.extension.useraction=Furniza\u0163i pentru --archive un nume de fi\u015fier cu extensia .jar atunci c\u00e2nd specifica\u0163i --include=runnable.
+
+error.package.usr.jar=CWWKE0951E: Numele fi\u015fierului arhiv\u0103 nu trebuie s\u0103 se termine cu o extensie de fi\u015fier .jar c\u00e2nd este folosit\u0103 op\u0163iunea usr.
+error.package.usr.jar.explanation=Op\u0163iunea --archive nu trebuie s\u0103 se termine cu o extensie de fi\u015fier .jar c\u00e2nd este specificat --include=usr.
+error.package.usr.jar.useraction=Furniza\u0163i un alt nume de fi\u015fier la --archive cu o alt\u0103 extensie de fi\u015fier dec\u00e2t .jar c\u00e2nd este specificat --include=usr.
+
 info.serverStarting=Se porne\u015fte serverul {0}.
 info.serverStarted=Serverul {0} a pornit.
 info.serverStartedWithPID=Serverul {0} a pornit cu ID de proces {1}.
@@ -746,6 +754,8 @@ info.resumeFailedException=Reluarea serverului {0} a e\u015fuat. Pentru detalii 
 info.resumingListeners.target=Se reiau componentele \u0163int\u0103 specificate ale serverului {0}.
 info.resumedListeners.target=Reluarea componentelor \u0163int\u0103 specificate ale serverului {0} s-a finalizat.
 info.resumeFailedException.target=Reluarea componentelor \u0163int\u0103 specificate ale serverului {0} a e\u015fuat. Pentru detalii verifica\u0163i \u00een istoricele de server.
+info.serverCommandAuthFailure=Comanda {0} a e\u015fuat deoarece procesul nu a putut \u015fterge fi\u015fierul {1}.
+info.serverCommandCommFailure=Comanda {0} a e\u015fuat din cauza unei erori de comunica\u0163ie cu serverul.
 
 # For info.serverLaunch and info.serverVersion: 
 # {0} version (build and/or product name)
@@ -775,3 +785,4 @@ info.list.of.defined.servers=Urm\u0103toarele servere sunt definite relativ la d
 info.communicate.server=A ap\u0103rut o \
 eroare de comunica\u0163ii \u00eentre comanda {0} \u015fi serverul {1}.
 
+info.serialFilterLoaded=Agentul de filtrare serial\u0103 a fost \u00eenc\u0103rcat.

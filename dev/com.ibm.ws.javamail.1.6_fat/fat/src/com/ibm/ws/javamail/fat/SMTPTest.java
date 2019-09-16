@@ -25,7 +25,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.omg.CORBA.UserException;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.icegreen.greenmail.user.GreenMailUser;
@@ -125,7 +124,7 @@ public class SMTPTest {
     }
 
     @BeforeClass
-    public static void startGreenMail() throws UserException, Exception {
+    public static void startGreenMail() throws Exception {
 
         if (server.isStarted() != true) {
             server.startServer();

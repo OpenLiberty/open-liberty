@@ -31,8 +31,8 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
 
+import com.ibm.ws.app.manager.module.DeployedAppServices;
 import com.ibm.ws.app.manager.module.DeployedModuleInfo;
-import com.ibm.ws.app.manager.module.internal.DeployedAppInfoFactoryBase;
 import com.ibm.ws.app.manager.module.internal.ModuleInfoUtils;
 import com.ibm.ws.app.manager.module.internal.SimpleDeployedAppInfoBase;
 import com.ibm.ws.app.manager.springboot.container.config.SpringConfiguration;
@@ -65,9 +65,9 @@ public class WebInstance implements Instance {
         private final AtomicReference<ServiceRegistration<ServletContainerInitializer>> sciRegistration = new AtomicReference<>();
         private final AtomicReference<String> appName = new AtomicReference<>();
 
-        InstanceDeployedAppInfo(WebInitializer initializer, DeployedAppInfoFactoryBase factory,
+        InstanceDeployedAppInfo(WebInitializer initializer, DeployedAppServices deployedAppServices,
                                 ExtendedApplicationInfo appInfo) throws UnableToAdaptException {
-            super(factory);
+            super(deployedAppServices);
             super.appInfo = appInfo;
             this.initializer = initializer;
         }
@@ -77,11 +77,11 @@ public class WebInstance implements Instance {
             String moduleURI = ModuleInfoUtils.getModuleURIFromLocation(id);
             WebModuleContainerInfo mci = new WebModuleContainerInfo(//
                             instanceFactory.getModuleHandler(), //
-                            instanceFactory.getDeployedAppFactory().getModuleMetaDataExtenders().get("web"), //
-                            instanceFactory.getDeployedAppFactory().getNestedModuleMetaDataFactories().get("web"), //
-                            appContainer, null, moduleURI, moduleClassesInfo, initializer.getContextPath());
+                            instanceFactory.getDeployedAppServices().getModuleMetaDataExtenders("web"), //
+                            instanceFactory.getDeployedAppServices().getNestedModuleMetaDataFactories("web"), //
+                            appContainer, null, moduleURI, (m, c) -> app.getClassLoader(), moduleClassesInfo, initializer.getContextPath());
             moduleContainerInfos.add(mci);
-            WebModuleMetaData mmd = (WebModuleMetaData) mci.createModuleMetaData(appInfo, this, (m, c) -> app.getClassLoader());
+            WebModuleMetaData mmd = (WebModuleMetaData) mci.createModuleMetaData(appInfo, this);
             addSpringConfigToModuleMetadata(mmd, additionalConfig);
             appName.set(mmd.getJ2EEName().getApplication());
             return getDeployedModule(mci.moduleInfo);
@@ -188,7 +188,7 @@ public class WebInstance implements Instance {
         npc.addToCache(TagLibContainerInfo.class, tagLibInfo);
 
         ExtendedApplicationInfo appInfo = app.createApplicationInfo(id, appContainer);
-        InstanceDeployedAppInfo deployedApp = new InstanceDeployedAppInfo(initializer, instanceFactory.getDeployedAppFactory(), appInfo);
+        InstanceDeployedAppInfo deployedApp = new InstanceDeployedAppInfo(initializer, instanceFactory.getDeployedAppServices(), appInfo);
         DeployedModuleInfo deployedModule = deployedApp.createDeployedModule(appContainer, id, app, cfg);
         deployed.set(deployedModule);
 

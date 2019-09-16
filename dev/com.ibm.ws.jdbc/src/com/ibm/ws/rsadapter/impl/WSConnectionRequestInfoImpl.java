@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2001, 2017 IBM Corporation and others.
+ * Copyright (c) 2001, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -88,7 +88,7 @@ public class WSConnectionRequestInfoImpl implements ConnectionRequestInfo, FFDCS
     String ivSchema;
     Object ivShardingKey;
     Object ivSuperShardingKey;
-    int ivNetworkTimeout;
+    Integer ivNetworkTimeout;
 
     // If the CRI is aware of the meaning of the default values for unspecified properties,
     // then it can do matching based on the default values.
@@ -217,7 +217,7 @@ public class WSConnectionRequestInfoImpl implements ConnectionRequestInfo, FFDCS
     public WSConnectionRequestInfoImpl(String user, String password, int isolationLevel,
                                        String catalog, Boolean isReadOnly, Object shardingKey, Object superShardingKey,
                                        Map<String, Class<?>> typeMap, int holdability, 
-                                       String schema, int networkTimeout, 
+                                       String schema, Integer networkTimeout, 
                                        int configID,
                                        boolean supportIslSwitching)
     {
@@ -370,7 +370,7 @@ public class WSConnectionRequestInfoImpl implements ConnectionRequestInfo, FFDCS
     /**
      * @return the number of milliseconds the driver will wait for a database request to complete.
      */
-    public final int getNetworkTimeout(){
+    public final Integer getNetworkTimeout(){
         return ivNetworkTimeout;
     }
 
@@ -609,9 +609,10 @@ public class WSConnectionRequestInfoImpl implements ConnectionRequestInfo, FFDCS
         // At least one of the CRIs should know the default value.
         int defaultValue = defaultNetworkTimeout == 0 ? cri.defaultNetworkTimeout : defaultNetworkTimeout;
 
-        return ivNetworkTimeout == cri.ivNetworkTimeout
-               || ivNetworkTimeout == 0 && (defaultValue == cri.ivNetworkTimeout)
-               || cri.ivNetworkTimeout == 0 && ivNetworkTimeout == defaultValue;
+        return (ivNetworkTimeout == null && cri.ivNetworkTimeout == null)
+               || ivNetworkTimeout != null && ivNetworkTimeout.equals(cri.ivNetworkTimeout)
+               || ivNetworkTimeout == null && (defaultValue == cri.ivNetworkTimeout)
+               || cri.ivNetworkTimeout == null && ivNetworkTimeout == defaultValue;
     }
 
     /**

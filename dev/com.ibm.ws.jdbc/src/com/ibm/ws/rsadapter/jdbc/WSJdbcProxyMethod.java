@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2001, 2013 IBM Corporation and others.
+ * Copyright (c) 2001, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -78,7 +78,7 @@ public abstract class WSJdbcProxyMethod
         // It is ok to add JDBC API methods to this list to block the vendor 
         //   versions of the method.  The API versions will not be blocked.
 
-        unsafeMethods = new HashSet<String>(47);
+        unsafeMethods = new HashSet<String>(50);
 
         unsafeMethods.add("_getPC");
         // oracle.jdbc.OracleConnection._getPC()
@@ -176,10 +176,18 @@ public abstract class WSJdbcProxyMethod
         //  oracle.jdbc.OracleConnection.prepareStatementWithKey(String)
         //  oracle.jdbc.internal.OracleConnection.prepareStatementWithKey(String)
         unsafeMethods.add("realObject");
+        unsafeMethods.add("reconfigureDataSource");
+        // oracle.ucp.jdbc.PoolDataSource.reconfigureDataSource(Properties)
         unsafeMethods.add("resetUser"); 
         unsafeMethods.add("setAutoClose");
         // oracle.jdbc.OracleConnection.setAutoClose(boolean)
         // oracle.jdbc.internal.OracleConnection.setAutoClose(boolean)
+        unsafeMethods.add("setConnectionFactoryProperty");
+        // oracle.ucp.jdbc.PoolDataSource.setConnectionFactoryProperty(String, String)
+        //Using full classname for setConnectonproperty as it appears to exist on other datasources
+        //and we don't want to break existing uses
+        unsafeMethods.add("oracle.ucp.jdbc.PoolDataSource.setConnectionProperty");
+        // oracle.ucp.jdbc.PoolDataSource.setConnectionProperty(String, String)
         unsafeMethods.add("setCurrentUser"); 
         unsafeMethods.add("setSafelyClosed");
         //oracle.jdbc.internal.OracleConnection.setSafelyClosed(boolean)
@@ -199,9 +207,9 @@ public abstract class WSJdbcProxyMethod
         //  oracle.jdbc.OracleConnection.setXAErrorFlag(boolean)
         //  oracle.jdbc.internal.OracleConnection.setXAErrorFlag(boolean)    
         unsafeMethods.add("unwrap"); 
-        //  oracle.jdbc.OracleConnectin.unwrap()
-        //  oracle.jdbc.internal.OracleConnectin.unwrap()
-
+        //  oracle.jdbc.OracleConnection.unwrap()
+        //  oracle.jdbc.internal.OracleConnection.unwrap()
+        
         // "setQueryTimeout" and "setLongDataCacheSize" are not permitted on the data source
         // because they complicate default values for statement pooling. 
         // The full package is listed to avoid disabling ExtStatement.setLongDataCacheSize

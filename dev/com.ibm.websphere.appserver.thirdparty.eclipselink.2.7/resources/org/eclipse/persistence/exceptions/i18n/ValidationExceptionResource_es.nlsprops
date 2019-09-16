@@ -153,13 +153,13 @@
 
 7093=En la consulta denominada [{0}], no se encuentra la clase [{2}] para el argumento de consulta denominado [{1}]. Incluya la clase que falta en la classpath.
 
-7095=El recurso sessions.xml [{0}] no se ha encontrado en la v\u00eda de acceso de recurso.  Compruebe que el nombre/v\u00eda de acceso del recurso y el cargador de clases que se han pasado a SessionManager.getSession sean correctos.  sessions.xml debe estar incluido en la ra\u00edz del archivo jar desplegado de la aplicaci\u00f3n; si sessions.xml se despliega en un subdirectorio en el archivo jar de la aplicaci\u00f3n, aseg\u00farese de que se utilice la v\u00eda de acceso del recurso correcta con "/", no "".
+7095=El recurso sessions.xml [{0}] no se ha encontrado en la v\u00eda de acceso de recurso.  Compruebe que el nombre/v\u00eda de acceso del recurso y el cargador de clases que se han pasado a SessionManager.getSession sean correctos.  sessions.xml debe estar incluido en la ra\u00edz del archivo jar desplegado de la aplicaci\u00f3n; si sessions.xml se despliega en un subdirectorio en el archivo jar de la aplicaci\u00f3n, aseg\u00farese de que se utilice la v\u00eda de acceso del recurso correcta con "/", no "\".
 
 7096=No se puede utilizar el m\u00e9todo commit() para confirmar UnitOfWork de nuevo.
 
 7097=La operaci\u00f3n no est\u00e1 soportada: [{0}].
 
-7099=El recurso XML del proyecto de despliegue [{0}] no se ha encontrado en la v\u00eda de acceso de recurso.  Compruebe que el nombre/v\u00eda de acceso del recurso y el cargador de clases que se han pasado a XMLProjectReader sean correctos.  El XML del proyecto debe estar incluido en la ra\u00edz del archivo jar desplegado de la aplicaci\u00f3n; si el XML del proyecto se despliega en un subdirectorio en el archivo jar de la aplicaci\u00f3n, aseg\u00farese de que se utilice la v\u00eda de acceso del recurso correcta con "/", no "".
+7099=El recurso XML del proyecto de despliegue [{0}] no se ha encontrado en la v\u00eda de acceso de recurso.  Compruebe que el nombre/v\u00eda de acceso del recurso y el cargador de clases que se han pasado a XMLProjectReader sean correctos.  El XML del proyecto debe estar incluido en la ra\u00edz del archivo jar desplegado de la aplicaci\u00f3n; si el XML del proyecto se despliega en un subdirectorio en el archivo jar de la aplicaci\u00f3n, aseg\u00farese de que se utilice la v\u00eda de acceso del recurso correcta con "/", no "\".
 
 7100=No se ha podido encontrar la sesi\u00f3n con el nombre [{0}] en el archivo session.xml [{1}]
 
@@ -545,9 +545,7 @@
 
 7311=Se est\u00e1 utilizando una clase de destino no v\u00e1lida con el atributo de colecci\u00f3n de elementos [{0}] en la clase [{1}].  S\u00f3lo se permiten tipos b\u00e1sicos y clases incorporables.
 
-# START NON-TRANSLATABLE
 7312=Se est\u00e1 utilizando una clase incorporable no v\u00e1lida [{0}] con el atributo de colecci\u00f3n de elementos [{1}] en la clase [{2}]. Consulte la secci\u00f3n 2.6 de la especificaci\u00f3n: "Una clase incorporable (incluida una clase incorporable dentro de otra clase incorporable) contenida en una colecci\u00f3n de elementos no puede contener una colecci\u00f3n de elementos, ni puede contener una relaci\u00f3n con una entidad que no sea una relaci\u00f3n de muchos a uno o de uno a uno". La clase incorporable debe estar en el lado de propietario de esta relaci\u00f3n y la relaci\u00f3n debe estar correlacionada mediante una correlaci\u00f3n de claves for\u00e1neas. La correlaci\u00f3n del atributo [{3}] en la clase incorporable no cumple esta especificaci\u00f3n.
-# END NON-TRANSLATABLE
 
 7313=No se ha encontrado el atributo [{1}] en la clase incorporable [{0}]. Se hace referencia a \u00e9l en una alteraci\u00f3n temporal de asociaci\u00f3n para el atributo incorporado [{3}] en la clase [{2}].
 

@@ -48,6 +48,7 @@ class JMXRESTConnector(object):
 	mbeanConnection = None
 	trustStore = None
 	trustStorePassword = None
+	trustStoreType = None
 
 	def __init__(self):
 		pass
@@ -59,13 +60,14 @@ class JMXRESTConnector(object):
 			self.connectAdvanced(host, port, args[0])
 
 	def connectAdvanced(self,host,port,map):
-		print "Connecting to the server..."
+		print("Connecting to the server...")
 		System.setProperty("javax.net.ssl.trustStore", self.trustStore)
 		System.setProperty("javax.net.ssl.trustStorePassword", self.trustStorePassword)
+		System.setProperty("javax.net.ssl.trustStoreType", "PKCS12");
 		url = JMXServiceURL("REST", host, port, "/IBMJMXConnectorREST")
 		self.connector = JMXConnectorFactory.newJMXConnector(url, map)
 		self.connector.connect()
-		print "Successfully connected to the server " + '"' + host + ':%i"' % port
+		print("Successfully connected to the server " + '"' + host + ':%i"' % port)
 
 	def connectBasic(self,host,port,user,password):
 		map = HashMap()

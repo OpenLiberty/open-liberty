@@ -1,0 +1,50 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.kerberos_java8/resources/com/ibm/ws/security/kerberos/internal/resources/KerberosMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Kerberos Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+#Message prefix block: CWWKS4340 - CWWKS4349
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_SELF_FAILURE=CWWKS4340E: Nem lehet megszem\u00e9lyes\u00edteni a(z) {0} felhaszn\u00e1l\u00f3t a saj\u00e1t felhaszn\u00e1l\u00f3i GSSCredential beolvas\u00e1s\u00e1hoz a(z) {1} meghatalmazott szolg\u00e1ltat\u00e1si azonos\u00edt\u00f3n\u00e9v haszn\u00e1latakor, mert {2} kiv\u00e9tel t\u00f6rt\u00e9nt.
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_SELF_FAILURE.explanation=Nem v\u00e1rt kiv\u00e9tel miatt nem szem\u00e9lyes\u00edthet\u0151 meg a felhaszn\u00e1l\u00f3.
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_SELF_FAILURE.useraction=Gondoskodjon arr\u00f3l, hogy a meghatalmazott szolg\u00e1ltat\u00e1s azonos\u00edt\u00f3neve (SPN) enged\u00e9lyezve legyen a meghatalmazotthoz, \u00e9s tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt n\u00e9zze \u00e1t a kiszolg\u00e1l\u00f3 napl\u00f3it.
+
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_BACKEND_SERVICE_FAILURE=CWWKS4341E: Nem lehet megszem\u00e9lyes\u00edteni a(z) {0} felhaszn\u00e1l\u00f3t a h\u00e1tt\u00e9rszolg\u00e1ltat\u00e1s GSSCredential beolvas\u00e1s\u00e1hoz a(z) {1} meghatalmazott szolg\u00e1ltat\u00e1si azonos\u00edt\u00f3n\u00e9v haszn\u00e1latakor, mert {2} kiv\u00e9tel t\u00f6rt\u00e9nt.
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_BACKEND_SERVICE_FAILURE.explanation=Nem v\u00e1rt kiv\u00e9tel miatt nem szem\u00e9lyes\u00edthet\u0151 meg a felhaszn\u00e1l\u00f3.
+KRB_IMPERSONATE_USER_TO_GET_GSSCRED_FOR_BACKEND_SERVICE_FAILURE.useraction=Gondoskodjon arr\u00f3l, hogy a S4U2proxy attrib\u00fatum true \u00e9rt\u00e9kre legyen be\u00e1ll\u00edtva a SPNEGO elem konfigur\u00e1ci\u00f3j\u00e1ban, \u00e9s hogy a meghatalmazott szolg\u00e1ltat\u00e1s SPN enged\u00e9lyezve legyen a meghatalmazotthoz a kulcseloszt\u00f3 k\u00f6zpontban (KDC), \u00e9s az \u00fcgyf\u00e9lszolg\u00e1ltat\u00e1s jegye rendelkezzen true \u00e9rt\u00e9k\u0171 tov\u00e1bb\u00edthat\u00f3 jelz\u0151vel, \u00e9s a meghatalmazott szolg\u00e1ltat\u00e1s jegyei is rendelkezzenek true \u00e9rt\u00e9k\u0171 tov\u00e1bb\u00edthat\u00f3 jelz\u0151vel. Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse \u00e1t a kiszolg\u00e1l\u00f3napl\u00f3kat.
+
+KRB_S4U2SELF_IS_NOT_ENABLED=CWWKS4342E: A(z) {0} met\u00f3dus nem dolgozhat\u00f3 fel, mert a korl\u00e1tozott S4U2self meghatalmaz\u00e1s nem enged\u00e9lyezett.
+KRB_S4U2SELF_IS_NOT_ENABLED.explanation=A met\u00f3dus nem dolgozhat\u00f3 fel, mert a korl\u00e1tozott S4U2self meghatalmaz\u00e1s nem enged\u00e9lyezett.
+KRB_S4U2SELF_IS_NOT_ENABLED.useraction=Gondoskodjon arr\u00f3l, hogy a korl\u00e1tozott meghatalmaz\u00e1si funkci\u00f3 enged\u00e9lyezve legyen, \u00e9s a S4U2self attrib\u00fatum true \u00e9rt\u00e9kre legyen \u00e1ll\u00edtva a server.xml f\u00e1jl korl\u00e1tozott meghatalmaz\u00e1s konfigur\u00e1ci\u00f3j\u00e1ban. Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse \u00e1t a kiszolg\u00e1l\u00f3napl\u00f3kat.
+
+KRB_S4U2PROXY_IS_NOT_ENABLED=CWWKS4343E: A(z) {0} met\u00f3dus nem dolgozhat\u00f3 fel, mert a korl\u00e1tozott S4U2proxy meghatalmaz\u00e1s nem enged\u00e9lyezett.
+KRB_S4U2PROXY_IS_NOT_ENABLED.explanation=A met\u00f3dus nem dolgozhat\u00f3 fel, mert a korl\u00e1tozott S4U2proxy meghatalmaz\u00e1s nem enged\u00e9lyezett.
+KRB_S4U2PROXY_IS_NOT_ENABLED.useraction=Gondoskodjon arr\u00f3l, hogy a korl\u00e1tozott meghatalmaz\u00e1si funkci\u00f3 enged\u00e9lyezve legyen, \u00e9s a S4U2proxy attrib\u00fatum true \u00e9rt\u00e9kre legyen \u00e1ll\u00edtva a server.xml f\u00e1jl korl\u00e1tozott meghatalmaz\u00e1s konfigur\u00e1ci\u00f3j\u00e1ban. Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse \u00e1t a kiszolg\u00e1l\u00f3napl\u00f3kat.
+
+KRB_S4U2PROXY_IS_NOT_SUPPORT=CWWKS4344E: A Kerberos korl\u00e1tozott meghatalmaz\u00e1si funkci\u00f3 nem t\u00e1mogatott {0} Java sz\u00e1ll\u00edt\u00f3val \u00e9s {1} v\u00e1ltozattal.
+KRB_S4U2PROXY_IS_NOT_SUPPORT.explanation=A Kerberos korl\u00e1tozott meghatalmaz\u00e1si funkci\u00f3 nem enged\u00e9lyezhet\u0151 a Java fut\u00e1si k\u00f6rnyezet sz\u00e1ll\u00edt\u00f3 \u00e9s v\u00e1ltozat miatt.
+KRB_S4U2PROXY_IS_NOT_SUPPORT.useraction=Haszn\u00e1ljon a Kerberos korl\u00e1tozott meghatalmaz\u00e1si funkci\u00f3 \u00e1ltal t\u00e1mogatott Java fut\u00e1si k\u00f6rnyezet sz\u00e1ll\u00edt\u00f3t \u00e9s v\u00e1ltozatot.
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<handler-chains xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee">
+    <handler-chain>
+        <handler>
+            <handler-name>SOAPHandler</handler-name>
+            <handler-class>com.ibm.ws.test.wsfeatures.client.handler.TestSOAPHandler</handler-class>
+            <init-param>
+                <param-name>soapArg0</param-name>
+                <param-value>testInitParamInSoapClient</param-value>
+            </init-param>
+        </handler>
+    </handler-chain>
+</handler-chains>

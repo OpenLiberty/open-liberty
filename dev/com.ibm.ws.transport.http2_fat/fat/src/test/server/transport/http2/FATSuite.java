@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,11 +45,15 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 AlwaysPassesTest.class, // LITE
                 Http2LiteModeTests.class, // LITE
                 Http2FullModeTests.class, // FULL
-                Http2ConfigTests.class, // FULL
-                //MultiSessionTests.class, // FULL; disabled for now
                 /** move tests to Http2FullTracingTests to diagnose failures via full tracing */
-                Http2FullTracingTests.class // FULL
+                Http2FullTracingTests.class, // FULL
+                Http2Config40H2Off.class, // FULL
+                Http2Config31H2Off.class, // FULL
+                Http2Config31H2On.class // FULL
+                //MultiSessionTests.class // FULL; disabled for now
+
 })
+
 public class FATSuite {
     private static final Class<?> c = FATSuite.class;
 

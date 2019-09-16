@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.ejbcontainer.remote.fat.tests;
 
-import static org.junit.Assert.assertNotNull;
+import java.util.Collections;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
@@ -23,6 +23,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.EJBAsynchronousElement;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.ejbcontainer.remote.ejb3session.sl.ann.web.AdvBasicCMTStatelessRemoteServlet;
 import com.ibm.ws.ejbcontainer.remote.ejb3session.sl.ann.web.AdvCompCMTStatelessLocalServlet;
 import com.ibm.ws.ejbcontainer.remote.ejb3session.sl.ann.web.AdvCompCMTStatelessRemoteServlet;
@@ -51,18 +53,20 @@ import com.ibm.ws.ejbcontainer.remote.ejb3session.sl.mix.web.MixCompCMTStateless
 import com.ibm.ws.ejbcontainer.remote.ejb3session.sl.mix.web.RemoteStatelessTwoNamesServlet;
 import com.ibm.ws.ejbcontainer.remote.ejb3session.sl.mix.web.StatelessTwoNamesServlet;
 import com.ibm.ws.ejbcontainer.remote.ejb3session.sl.mix.web.TxAttrMixedAnnotationXMLServlet;
-import com.ibm.ws.ejbcontainer.remote.enventry.web.EnvEntryServlet;
+import com.ibm.ws.ejbcontainer.remote.fat.basic.BasicRemoteTestServlet;
+import com.ibm.ws.ejbcontainer.remote.fat.crossapp.client.CrossAppTestServlet;
+import com.ibm.ws.ejbcontainer.remote.fat.home.EJBHomeTestServlet;
+import com.ibm.ws.ejbcontainer.remote.fat.home2x.web.EJBHome2xTestServlet;
+import com.ibm.ws.ejbcontainer.remote.fat.tx.RemoteTxTestServlet;
 import com.ibm.ws.ejbcontainer.remote.misc.jitdeploy.web.ExceptionServlet;
 import com.ibm.ws.ejbcontainer.remote.misc.jitdeploy.web.IDLEntityStubServlet;
+import com.ibm.ws.ejbcontainer.remote.singleton.ann.web.InitializeFailureServlet;
+import com.ibm.ws.ejbcontainer.remote.singleton.mix.web.PassivationServlet;
 
-import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
@@ -71,9 +75,15 @@ import componenttest.topology.impl.LibertyServer;
 public class RemoteTests extends AbstractTest {
 
     @Server("com.ibm.ws.ejbcontainer.remote.fat.RemoteServer")
-    @TestServlets({ @TestServlet(servlet = EnvEntryServlet.class, contextRoot = "EnvEntryWeb"),
+    @TestServlets({ @TestServlet(servlet = BasicRemoteTestServlet.class, contextRoot = "BasicRemote"),
+                    @TestServlet(servlet = CrossAppTestServlet.class, contextRoot = "CrossAppRemoteClient"),
+                    @TestServlet(servlet = EJBHome2xTestServlet.class, contextRoot = "EJBHome2xTestWeb"),
+                    @TestServlet(servlet = EJBHomeTestServlet.class, contextRoot = "EJBHomeTest"),
                     @TestServlet(servlet = ExceptionServlet.class, contextRoot = "JitDeployWeb"),
                     @TestServlet(servlet = IDLEntityStubServlet.class, contextRoot = "JitDeployWeb"),
+                    @TestServlet(servlet = RemoteTxTestServlet.class, contextRoot = "RemoteTx"),
+                    @TestServlet(servlet = InitializeFailureServlet.class, contextRoot = "SingletonWeb"),
+                    @TestServlet(servlet = PassivationServlet.class, contextRoot = "SingletonWeb"),
                     @TestServlet(servlet = AdvBasicCMTStatelessRemoteServlet.class, contextRoot = "StatelessAnnWeb"),
                     @TestServlet(servlet = AdvCompCMTStatelessLocalServlet.class, contextRoot = "StatelessAnnWeb"),
                     @TestServlet(servlet = AdvCompCMTStatelessRemoteServlet.class, contextRoot = "StatelessAnnWeb"),
@@ -114,66 +124,52 @@ public class RemoteTests extends AbstractTest {
 
     @BeforeClass
     public static void beforeClass() throws Exception {
-        // Use ShrinkHelper to build the Ears
+        // Use ShrinkHelper to build the Ears & Wars
 
-        //#################### AppExcExtendsThrowableErrBean
-        JavaArchive AppExcExtendsThrowableErrBeanJar = ShrinkHelper.buildJavaArchive("AppExcExtendsThrowableErrBean.jar", "com.ibm.ws.ejbcontainer.remote.jitdeploy.error1.ejb.");
+        //#################### InitTxRecoveryLogApp.ear (Automatically initializes transaction recovery logs)
+        JavaArchive InitTxRecoveryLogEJBJar = ShrinkHelper.buildJavaArchive("InitTxRecoveryLogEJB.jar", "com.ibm.ws.ejbcontainer.init.recovery.ejb.");
 
-        EnterpriseArchive AppExcExtendsThrowableErrBean = ShrinkWrap.create(EnterpriseArchive.class, "AppExcExtendsThrowableErrBean.ear");
-        AppExcExtendsThrowableErrBean.addAsModule(AppExcExtendsThrowableErrBeanJar);
+        EnterpriseArchive InitTxRecoveryLogApp = ShrinkWrap.create(EnterpriseArchive.class, "InitTxRecoveryLogApp.ear");
+        InitTxRecoveryLogApp.addAsModule(InitTxRecoveryLogEJBJar);
 
-        ShrinkHelper.exportAppToServer(server, AppExcExtendsThrowableErrBean);
+        ShrinkHelper.exportDropinAppToServer(server, InitTxRecoveryLogApp);
 
-        //#################### EnvEntryShared.jar
-        JavaArchive EnvEntrySharedJar = ShrinkHelper.buildJavaArchive("EnvEntryShared.jar", "com.ibm.ws.ejbcontainer.remote.enventry.shared.");
+        //#################### BasicRemote.war
+        WebArchive BasicRemoteWeb = ShrinkHelper.buildDefaultApp("BasicRemote.war", "com.ibm.ws.ejbcontainer.remote.fat.basic.");
+        BasicRemoteWeb = (WebArchive) ShrinkHelper.addDirectory(BasicRemoteWeb, "test-applications/BasicRemote.war/resources");
 
-        ShrinkHelper.exportToServer(server, "lib/global", EnvEntrySharedJar);
+        ShrinkHelper.exportDropinAppToServer(server, BasicRemoteWeb);
 
-        //#################### EnvEntryApp
-        JavaArchive EnvEntryEJBJar = ShrinkHelper.buildJavaArchive("EnvEntryEJB.jar", "com.ibm.ws.ejbcontainer.remote.enventry.ejb.");
-        WebArchive EnvEntryWeb = ShrinkHelper.buildDefaultApp("EnvEntryWeb.war", "com.ibm.ws.ejbcontainer.remote.enventry.web.");
+        //#################### CrossAppRemoteClient.war
+        JavaArchive CrossAppRemoteSharedJar = ShrinkHelper.buildJavaArchive("CrossAppRemoteShared.jar", "com.ibm.ws.ejbcontainer.remote.fat.crossapp.shared.");
+        WebArchive CrossAppRemoteClient = ShrinkHelper.buildDefaultApp("CrossAppRemoteClient.war", "com.ibm.ws.ejbcontainer.remote.fat.crossapp.client.");
+        CrossAppRemoteClient.addAsLibrary(CrossAppRemoteSharedJar);
+        CrossAppRemoteClient = (WebArchive) ShrinkHelper.addDirectory(CrossAppRemoteClient, "test-applications/CrossAppRemoteClient.war/resources");
 
-        EnterpriseArchive EnvEntryApp = ShrinkWrap.create(EnterpriseArchive.class, "EnvEntryApp.ear");
-        EnvEntryApp.addAsModule(EnvEntryEJBJar).addAsModule(EnvEntryWeb);
-        EnvEntryApp = (EnterpriseArchive) ShrinkHelper.addDirectory(EnvEntryApp, "test-applications/EnvEntryApp.ear/resources");
+        ShrinkHelper.exportDropinAppToServer(server, CrossAppRemoteClient);
 
-        ShrinkHelper.exportDropinAppToServer(server, EnvEntryApp);
+        //#################### CrossAppRemoteEJB.war
+        WebArchive CrossAppRemoteEJB = ShrinkHelper.buildDefaultApp("CrossAppRemoteEJB.war", "com.ibm.ws.ejbcontainer.remote.fat.crossapp.ejb.");
+        CrossAppRemoteEJB.addAsLibrary(CrossAppRemoteSharedJar);
 
-        //################### EnvEntryBad1App
-        JavaArchive EnvEntryBad1EJBJar = ShrinkHelper.buildJavaArchive("EnvEntryBad1EJB.jar", "com.ibm.ws.ejbcontainer.remote.enventry.bad.ejb.");
+        ShrinkHelper.exportDropinAppToServer(server, CrossAppRemoteEJB);
 
-        EnterpriseArchive EnvEntryBad1App = ShrinkWrap.create(EnterpriseArchive.class, "EnvEntryBad1App.ear");
-        EnvEntryBad1App.addAsModule(EnvEntryBad1EJBJar);
-        ShrinkHelper.addDirectory(EnvEntryBad1App, "test-applications/EnvEntryBad1App.ear/resources");
+        //#################### EJBHome2xTest.ear
+        JavaArchive EJBHome2xTestEJB = ShrinkHelper.buildJavaArchive("EJBHome2xTestEJB.jar", "com.ibm.ws.ejbcontainer.remote.fat.home2x.ejb.");
+        EJBHome2xTestEJB = (JavaArchive) ShrinkHelper.addDirectory(EJBHome2xTestEJB, "test-applications/EJBHome2xTestEJB.jar/resources");
+        WebArchive EJBHome2xTestWeb = ShrinkHelper.buildDefaultApp("EJBHome2xTestWeb.war", "com.ibm.ws.ejbcontainer.remote.fat.home2x.web.");
 
-        ShrinkHelper.exportDropinAppToServer(server, EnvEntryBad1App);
+        EnterpriseArchive EJBHome2xTest = ShrinkWrap.create(EnterpriseArchive.class, "EJBHome2xTest.ear");
+        EJBHome2xTest.addAsModule(EJBHome2xTestEJB).addAsModule(EJBHome2xTestWeb);
+        EJBHome2xTest = (EnterpriseArchive) ShrinkHelper.addDirectory(EJBHome2xTest, "test-applications/EJBHome2xTest.ear/resources");
 
-        //################### EnvEntryBad2App
-        JavaArchive EnvEntryBad2EJBJar = ShrinkHelper.buildJavaArchive("EnvEntryBad2EJB.jar", "com.ibm.ws.ejbcontainer.remote.enventry.bad.ejb2.");
+        ShrinkHelper.exportDropinAppToServer(server, EJBHome2xTest);
 
-        EnterpriseArchive EnvEntryBad2App = ShrinkWrap.create(EnterpriseArchive.class, "EnvEntryBad2App.ear");
-        EnvEntryBad2App.addAsModule(EnvEntryBad2EJBJar);
-        ShrinkHelper.addDirectory(EnvEntryBad2App, "test-applications/EnvEntryBad2App.ear/resources");
+        //#################### EJBHomeTest.war
+        WebArchive EJBHomeTest = ShrinkHelper.buildDefaultApp("EJBHomeTest.war", "com.ibm.ws.ejbcontainer.remote.fat.home.");
+        EJBHomeTest = (WebArchive) ShrinkHelper.addDirectory(EJBHomeTest, "test-applications/EJBHomeTest.war/resources");
 
-        ShrinkHelper.exportDropinAppToServer(server, EnvEntryBad2App);
-
-        //################### EnvEntryBad3App
-        JavaArchive EnvEntryBad3EJBJar = ShrinkHelper.buildJavaArchive("EnvEntryBad3EJB.jar", "com.ibm.ws.ejbcontainer.remote.enventry.bad.ejb3.");
-
-        EnterpriseArchive EnvEntryBad3App = ShrinkWrap.create(EnterpriseArchive.class, "EnvEntryBad3App.ear");
-        EnvEntryBad3App.addAsModule(EnvEntryBad3EJBJar);
-        ShrinkHelper.addDirectory(EnvEntryBad3App, "test-applications/EnvEntryBad3App.ear/resources");
-
-        ShrinkHelper.exportDropinAppToServer(server, EnvEntryBad3App);
-
-        //################### EnvEntryBad4App
-        JavaArchive EnvEntryBad4EJBJar = ShrinkHelper.buildJavaArchive("EnvEntryBad4EJB.jar", "com.ibm.ws.ejbcontainer.remote.enventry.bad.ejb4.");
-
-        EnterpriseArchive EnvEntryBad4App = ShrinkWrap.create(EnterpriseArchive.class, "EnvEntryBad4App.ear");
-        EnvEntryBad4App.addAsModule(EnvEntryBad4EJBJar);
-        ShrinkHelper.addDirectory(EnvEntryBad4App, "test-applications/EnvEntryBad4App.ear/resources");
-
-        ShrinkHelper.exportDropinAppToServer(server, EnvEntryBad4App);
+        ShrinkHelper.exportDropinAppToServer(server, EJBHomeTest);
 
         //#################### JitDeployApp
         JavaArchive JitDeployEJBJar = ShrinkHelper.buildJavaArchive("JitDeployEJB.jar", "com.ibm.ws.ejbcontainer.remote.misc.jitdeploy.ejb.");
@@ -181,9 +177,29 @@ public class RemoteTests extends AbstractTest {
 
         EnterpriseArchive JitDeployApp = ShrinkWrap.create(EnterpriseArchive.class, "JitDeployApp.ear");
         JitDeployApp.addAsModule(JitDeployEJBJar).addAsModule(JitDeployWeb);
-		JitDeployApp = (EnterpriseArchive) ShrinkHelper.addDirectory(JitDeployApp, "test-applications/JitDeployApp.ear/resources");
+        JitDeployApp = (EnterpriseArchive) ShrinkHelper.addDirectory(JitDeployApp, "test-applications/JitDeployApp.ear/resources");
 
         ShrinkHelper.exportDropinAppToServer(server, JitDeployApp);
+
+        //#################### RemoteTx.war
+        WebArchive RemoteTx = ShrinkHelper.buildDefaultApp("RemoteTx.war", "com.ibm.ws.ejbcontainer.remote.fat.tx.");
+        RemoteTx = (WebArchive) ShrinkHelper.addDirectory(RemoteTx, "test-applications/RemoteTx.war/resources");
+
+        ShrinkHelper.exportDropinAppToServer(server, RemoteTx);
+
+        //#################### SingletonApp.ear
+        JavaArchive SingletonAnnEJBJar = ShrinkHelper.buildJavaArchive("SingletonAnnEJB.jar", "com.ibm.ws.ejbcontainer.remote.singleton.ann.ejb.",
+                                                                       "com.ibm.ws.ejbcontainer.remote.singleton.ann.shared.");
+        JavaArchive SingletonMixEJBJar = ShrinkHelper.buildJavaArchive("SingletonMixEJB.jar", "com.ibm.ws.ejbcontainer.remote.singleton.mix.ejb.",
+                                                                       "com.ibm.ws.ejbcontainer.remote.singleton.mix.shared.");
+        WebArchive SingletonWeb = ShrinkHelper.buildDefaultApp("SingletonWeb.war", "com.ibm.ws.ejbcontainer.remote.singleton.ann.web.",
+                                                               "com.ibm.ws.ejbcontainer.remote.singleton.mix.web.");
+
+        EnterpriseArchive SingletonApp = ShrinkWrap.create(EnterpriseArchive.class, "SingletonApp.ear");
+        SingletonApp.addAsModule(SingletonAnnEJBJar).addAsModule(SingletonMixEJBJar).addAsModule(SingletonWeb);
+        SingletonApp = (EnterpriseArchive) ShrinkHelper.addDirectory(SingletonApp, "test-applications/SingletonApp.ear/resources");
+
+        ShrinkHelper.exportDropinAppToServer(server, SingletonApp);
 
         //#################### StatelessAnnTestApp
         JavaArchive StatelessAnnEJBJar = ShrinkHelper.buildJavaArchive("StatelessAnnEJB.jar", "com.ibm.ws.ejbcontainer.remote.ejb3session.sl.ann.ejb.");
@@ -191,7 +207,7 @@ public class RemoteTests extends AbstractTest {
 
         EnterpriseArchive StatelessAnnApp = ShrinkWrap.create(EnterpriseArchive.class, "StatelessAnnTest.ear");
         StatelessAnnApp.addAsModule(StatelessAnnEJBJar).addAsModule(StatelessAnnWeb);
-		StatelessAnnApp = (EnterpriseArchive) ShrinkHelper.addDirectory(StatelessAnnApp, "test-applications/StatelessAnnTest.ear/resources");
+        StatelessAnnApp = (EnterpriseArchive) ShrinkHelper.addDirectory(StatelessAnnApp, "test-applications/StatelessAnnTest.ear/resources");
 
         ShrinkHelper.exportDropinAppToServer(server, StatelessAnnApp);
 
@@ -206,7 +222,7 @@ public class RemoteTests extends AbstractTest {
         EnterpriseArchive StatelessMixApp = ShrinkWrap.create(EnterpriseArchive.class, "StatelessMixTest.ear");
         StatelessMixApp.addAsModule(StatelessMixASMDescEJBJar).addAsModule(StatelessMixEJBJar).addAsModule(StatelessMixMDCEJBJar).addAsModule(StatelessMixSCEJBJar).addAsModule(StatelessMixWeb);
         StatelessMixApp.addAsLibrary(StatelessMixIntfJar);
-		StatelessMixApp = (EnterpriseArchive) ShrinkHelper.addDirectory(StatelessMixApp, "test-applications/StatelessMixTest.ear/resources");
+        StatelessMixApp = (EnterpriseArchive) ShrinkHelper.addDirectory(StatelessMixApp, "test-applications/StatelessMixTest.ear/resources");
 
         ShrinkHelper.exportDropinAppToServer(server, StatelessMixApp);
 
@@ -217,273 +233,56 @@ public class RemoteTests extends AbstractTest {
 
     @AfterClass
     public static void afterClass() throws Exception {
-        server.stopServer("CNTR0019E", "CNTR0020E", "CNTR0075E", "CNTR0190E", "CNTR0201E", "CNTR4002E", "CNTR4006E", "CNTR5107E",
-                          "CWNEN0009E", "CWNEN0011E", "CWNEN0021W", "CWNEN0030E", "CWNEN0063E", "CWNEN0064E",
-                          "CWWKZ0002E", "CWWKZ0106E");
+        // CNTR0019E - testMandatoryAttribThrowsExcp, testMandatoryAttribThrowsExcpOnLocalInt, + many
+        // CNTR0020E - testBusinessRMISystemException, testBusinessRemoteSystemException, + many
+        // CNTR0021E - testBusinessRMITransactionException, testBusinessRemoteTransactionException
+        // CNTR0328W - testAsyncConfigMaxUnclaimedRemoteResults, testAsyncConfigUnclaimedRemoteResultTimeout
+        // CNTR5101W - testEJBHomeRecursiveStubs
+        // CWNEN0028E - testAnnInjectionFailure, testAnnDependsOnFailure
+        // WTRN0074E - testBusinessRMITransactionException, testBusinessRemoteTransactionException
+        server.stopServer("CNTR0019E", "CNTR0020E", "CNTR0021E", "CNTR0328W", "CNTR5101W", "CWNEN0028E", "WTRN0074E");
     }
 
-    // For C2, constant for the bogus class name, which should appear somewhere in the error message:
-    protected static final String NOSUCHCLASS = "com.ibm.ws.ejbcontainer.remote.enventry.bad.ejb.NoSuchClass";
-
-    // For E2, constant for the bogus enum class name, which should appear somewhere in the error message:
-    protected static final String NOSUCHENUMTYPE_ENUM_TYPE = "com.ibm.ws.ejbcontainer.remote.enventry.bad.ejb2.NoSuchEnumType";
-
-    // For E3, constants for the Enum class name and the bogus enum value, which should appear somewhere in the error message:
-    protected static final String NOSUCHENUMVALUE_ENUM_TYPE = "com.ibm.ws.ejbcontainer.remote.enventry.shared.EnvEntryDriver\\$EnvEntryEnum";
-    protected static final String NOSUCHENUMVALUE_ENUM_VALUE = "NO_SUCH_ENUM_VALUE";
-
-    // For E4, constants for the existing non-Enum, non-Class class name:
-    protected static final String EXISTING_NON_ENUM_NON_CLASS_ENV_ENTRY_NAME = "EnvEntry_ExistingNonEnumNonClass_EntryName";
-    //      env-entry-type may be either ..Bad4XmlBean or ..Bad4AnnBean, so just look for Bad4, which is common to both variations
-    protected static final String EXISTING_NON_ENUM_NON_CLASS_ENV_ENTRY_TYPE = "com.ibm.ws.ejbcontainer.remote.enventry.bad.ejb4.Bad4";
-
-    /**
-     * This test verifies that application exceptions declared on the throws
-     * clause must extend Exception.
-     *
-     * <p>An application is installed with a module with a bean with an
-     * exception that extends Throwable rather than Exception.
-     *
-     * <p>The expected result is that the following message is printed, and the
-     * bean fails to start: "CNTR5107E: The {0} application exception defined on
-     * method {1} of class {1} must be defined as a subclass of the
-     * java.lang.Exception class."
-     */
-    @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    @Mode(TestMode.FULL)
-    @ExpectedFFDC({ "javax.ejb.NoSuchEJBException", "com.ibm.wsspi.injectionengine.InjectionException",
-                    "javax.ejb.EJBException", "com.ibm.ejs.container.ContainerException",
-                    "com.ibm.ejs.container.EJBConfigurationException", "com.ibm.ws.container.service.state.StateChangeException" })
-    public void testApplicationExceptionExtendsThrowable() throws Exception {
+    private void updateServerConfiguration(ServerConfiguration config) throws Exception {
         server.setMarkToEndOfLog();
-        server.saveServerConfiguration();
-        server.setServerConfigurationFile("ExtendsThrowable.xml");
-        assertNotNull(server.waitForStringInLogUsingMark("CNTR5107E"));
-        assertNotNull(server.waitForStringInLogUsingMark("CWWKZ0106E"));
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton("BasicRemote"));
+    }
+
+    private void restoreServerConfiguration() throws Exception {
+        server.setMarkToEndOfLog();
         server.restoreServerConfiguration();
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton("BasicRemote"));
     }
 
-    /**
-     * This test verifies that application exceptions declared on the throws
-     * clause must extend Exception.
-     *
-     * <p>An application is installed with a module with a bean with an
-     * exception that extends Throwable rather than Exception.
-     *
-     * <p>The expected result is that the following message is printed, and the
-     * bean fails to start: "CNTR5107E: The {0} application exception defined on
-     * method {1} of class {1} must be defined as a subclass of the
-     * java.lang.Exception class."
-     */
     @Test
-    @SkipForRepeat(SkipForRepeat.EE7_FEATURES)
-    @Mode(TestMode.FULL)
-    @ExpectedFFDC({ "javax.ejb.NoSuchEJBException", "com.ibm.wsspi.injectionengine.InjectionException",
-                    "javax.ejb.EJBException", "com.ibm.ejs.container.ContainerException",
-                    "com.ibm.ejs.container.EJBConfigurationException", "com.ibm.ws.container.service.state.StateChangeException" })
-    public void testApplicationExceptionExtendsThrowableEE8() throws Exception {
-        server.setMarkToEndOfLog();
+    public void testAsyncConfigMaxUnclaimedRemoteResults() throws Exception {
         server.saveServerConfiguration();
-        server.setServerConfigurationFile("ExtendsThrowableEE8.xml");
-        assertNotNull(server.waitForStringInLogUsingMark("CNTR5107E"));
-        assertNotNull(server.waitForStringInLogUsingMark("CWWKZ0106E"));
-        server.restoreServerConfiguration();
+        ServerConfiguration config = server.getServerConfiguration();
+        EJBAsynchronousElement asynchronous = new EJBAsynchronousElement();
+        asynchronous.setMaxUnclaimedRemoteResults("1");
+        config.getEJBContainer().setAsynchronous(asynchronous);
+        try {
+            updateServerConfiguration(config);
+            runTest("BasicRemote/BasicRemoteTestServlet");
+        } finally {
+            restoreServerConfiguration();
+        }
     }
 
-    /**
-     * Define an <env-entry> in ejb-jar.xml, under bean Bad1XmlBean:
-     * <env-entry>
-     * <description>C2x - Non-existent class specified in XML only</description>
-     * <env-entry-name>EnvEntry_Non-existentClass_EntryName</env-entry-name>
-     * <env-entry-type>java.lang.Class</env-entry-type>
-     * <env-entry-value>com.ibm.ws.ejbcontainer.remote.enventry.shared.NoSuchClass</env-entry-value>
-     * <injection-target>
-     * <injection-target-class>com.ibm.ws.ejbcontainer.remote.enventry.shared.Bad1XmlBean</injection-target-class>
-     * <injection-target-name>ivEnvEntry_NoSuchClass</injection-target-name>
-     * </injection-target>
-     * </env-entry>
-     *
-     * - Verify that an appropriate error CWNEN0011E is issued
-     */
     @Test
-    @Mode(TestMode.FULL)
-    @ExpectedFFDC({ "com.ibm.ejs.container.EJBConfigurationException", "com.ibm.wsspi.injectionengine.InjectionConfigurationException", "java.lang.ClassNotFoundException" })
-    public void testC2xEnvEntryNonExistingClass() throws Exception {
-        server.setMarkToEndOfLog();
-        runTest("EnvEntryWeb/EnvEntryServlet");
-        assertNotNull(server.waitForStringInLogUsingMark(NOSUCHCLASS));
-    }
-
-    /**
-     * Define an <env-entry> in ejb-jar.xml, under bean Bad2XmlBean:
-     * <env-entry>
-     * <description>E2x - Non-existent enum type specified in XML only</description>
-     * <env-entry-name>EnvEntry_Non-existentEnumType_EntryName</env-entry-name>
-     * <env-entry-type>com.ibm.ws.ejbcontainer.remote.enventry.shared.NoSuchEnumType</env-entry-type>
-     * <env-entry-value>EV0</env-entry-value>
-     * <injection-target>
-     * <injection-target-class>com.ibm.ws.ejbcontainer.remote.enventry.shared.Bad2XmlBean</injection-target-class>
-     * <injection-target-name>ivEnvEntry_NoSuchEnumType</injection-target-name>
-     * </injection-target>
-     * </env-entry>
-     *
-     * - Verify that an appropriate error is issued
-     */
-    @Test
-    @Mode(TestMode.FULL)
-    @ExpectedFFDC({ "com.ibm.ejs.container.EJBConfigurationException", "com.ibm.wsspi.injectionengine.InjectionConfigurationException", "java.lang.ClassNotFoundException" })
-    public void testE2xEnvEntryNonExistingEnumType() throws Exception {
-        server.setMarkToEndOfLog();
-        runTest("EnvEntryWeb/EnvEntryServlet");
-        assertNotNull(server.waitForStringInLogUsingMark(NOSUCHENUMTYPE_ENUM_TYPE));
-    }
-
-    /**
-     * Define an <env-entry> in ejb-jar.xml, under bean Bad2XmlBean:
-     * <env-entry>
-     * <description>E3x - Non-existent enum value specified in XML only</description>
-     * <env-entry-name>EnvEntry_Non-existentEnumValue_EntryName</env-entry-name>
-     * <env-entry-type>com.ibm.ws.ejbcontainer.remote.enventry.shared.EnvEntryDriver$EnvEntryEnum</env-entry-type>
-     * <env-entry-value>NO_SUCH_ENUM_VALUE</env-entry-value>
-     * <injection-target>
-     * <injection-target-class>com.ibm.ws.ejbcontainer.remote.enventry.shared.Bad3XmlBean</injection-target-class>
-     * <injection-target-name>ivEnvEntry_NoSuchEnumValue</injection-target-name>
-     * </injection-target>
-     * </env-entry>
-     *
-     * - Verify that an appropriate error is issued
-     */
-    @Test
-    @Mode(TestMode.FULL)
-    @ExpectedFFDC({ "java.lang.IllegalArgumentException", "com.ibm.ejs.container.EJBConfigurationException", "com.ibm.wsspi.injectionengine.InjectionConfigurationException" })
-    public void testE3xEnvEntryNonExistingEnumValue() throws Exception {
-        server.setMarkToEndOfLog();
-        runTest("EnvEntryWeb/EnvEntryServlet");
-        assertNotNull(server.waitForStringInLogUsingMark(NOSUCHENUMVALUE_ENUM_TYPE));
-        assertNotNull(server.waitForStringInLogUsingMark(NOSUCHENUMVALUE_ENUM_VALUE));
-    }
-
-    /**
-     * Define an <env-entry> in ejb-jar.xml, under bean Bad4XmlBean:
-     * <env-entry>
-     * <description>E4X - Existing class that is neither an Enum nor a Class; specified in XML only</description>
-     * <env-entry-name>EnvEntry_ExistingNonEnumNonClass_EntryName</env-entry-name>
-     * <env-entry-type>com.ibm.ws.ejbcontainer.remote.enventry.shared.Bad4XmlBean</env-entry-type>
-     * <env-entry-value>NOT_APPLICABLE</env-entry-value>
-     * <injection-target>
-     * <injection-target-class>com.ibm.ws.ejbcontainer.remote.enventry.shared.Bad4XmlBean</injection-target-class>
-     * <injection-target-name>ivEnvEntry_ExistingNonEnumNonClass</injection-target-name>
-     * </injection-target>
-     * </env-entry>
-     *
-     * - Verify that an appropriate error is issued
-     */
-    @Test
-    @Mode(TestMode.FULL)
-    @ExpectedFFDC({ "com.ibm.ejs.container.EJBConfigurationException", "com.ibm.wsspi.injectionengine.InjectionConfigurationException" })
-    public void testE4xEnvEntryExistingNonEnumNonClass() throws Exception {
-        server.setMarkToEndOfLog();
-        runTest("EnvEntryWeb/EnvEntryServlet");
-        assertNotNull(server.waitForStringInLogUsingMark(EXISTING_NON_ENUM_NON_CLASS_ENV_ENTRY_NAME));
-        assertNotNull(server.waitForStringInLogUsingMark(EXISTING_NON_ENUM_NON_CLASS_ENV_ENTRY_TYPE));
-    }
-
-    /**
-     * Define an <env-entry> in ejb-jar.xml, under bean Bad1Bean:
-     * <env-entry>
-     * <description>C2a - Non-existent class specified in XML, for @Resource annotation</description>
-     * <env-entry-name>EnvEntry_Non-existentClass_EntryName</env-entry-name>
-     * <env-entry-type>java.lang.Class</env-entry-type>
-     * <env-entry-value>com.ibm.ws.ejbcontainer.remote.enventry.shared.NoSuchClass</env-entry-value>
-     * </env-entry>
-     * Annotate an Enum<?> instance var:
-     *
-     * @Resource(name="EnvEntry_Non-existentClass_EntryName") Enum<?> ivEnvEntry_NoSuchClass;
-     *
-     *                                                        - Verify that an appropriate error is issued
-     */
-    @Test
-    @Mode(TestMode.FULL)
-    @ExpectedFFDC({ "com.ibm.ejs.container.EJBConfigurationException", "com.ibm.wsspi.injectionengine.InjectionConfigurationException", "java.lang.ClassNotFoundException" })
-    public void testC2aEnvEntryNonExistingClass() throws Exception {
-        server.setMarkToEndOfLog();
-        runTest("EnvEntryWeb/EnvEntryServlet");
-        assertNotNull(server.waitForStringInLogUsingMark(NOSUCHCLASS));
-    }
-
-    /**
-     * E2A.
-     * Define an <env-entry> in ejb-jar.xml, under bean Bad2Bean:
-     * <env-entry>
-     * <description>E2a - Non-existent enum type specified in XML and @Resource annotation</description>
-     * <env-entry-name>EnvEntry_Non-existentEnumType_EntryName</env-entry-name>
-     * <env-entry-type>com.ibm.ws.ejbcontainer.remote.enventry.shared.NoSuchEnumType</env-entry-type>
-     * <env-entry-value>EV0</env-entry-value>
-     * </env-entry>
-     * Annotate an Enum<?> instance var:
-     *
-     * @Resource(name="EnvEntry_Non-existentEnumType_EntryName")
-     *                                                           Enum<?> ivEnvEntry_NoSuchEnumType;
-     *
-     *                                                           - Verify that an appropriate error is issued
-     */
-    @Test
-    @Mode(TestMode.FULL)
-    @ExpectedFFDC({ "com.ibm.ejs.container.EJBConfigurationException", "com.ibm.wsspi.injectionengine.InjectionConfigurationException", "java.lang.ClassNotFoundException" })
-    public void testE2aEnvEntryNonExistingEnumType() throws Exception {
-        server.setMarkToEndOfLog();
-        runTest("EnvEntryWeb/EnvEntryServlet");
-        assertNotNull(server.waitForStringInLogUsingMark(NOSUCHENUMTYPE_ENUM_TYPE));
-    }
-
-    /**
-     * Define an <env-entry> in ejb-jar.xml, under bean Bad3Bean:
-     * <env-entry>
-     * <description>E3a - Non-existent enum value specified in XML and @Resource annotation</description>
-     * <env-entry-name>EnvEntry_Non-existentEnumValue_EntryName</env-entry-name>
-     * <env-entry-type>com.ibm.ws.ejbcontainer.remote.enventry.shared.EnvEntryDriver$EnvEntryEnum</env-entry-type>
-     * <env-entry-value>NO_SUCH_ENUM_VALUE</env-entry-value>
-     * </env-entry>
-     * Annotate an Enum<?> instance var:
-     *
-     * @Resource(name="EnvEntry_Non-existentEnumValue_EntryName")
-     *                                                            Enum<?> ivEnvEntry_NoSuchEnumValue;
-     *
-     *                                                            - Verify that an appropriate error is issued
-     */
-    @Test
-    @Mode(TestMode.FULL)
-    @ExpectedFFDC({ "java.lang.IllegalArgumentException", "com.ibm.ejs.container.EJBConfigurationException", "com.ibm.wsspi.injectionengine.InjectionConfigurationException" })
-    public void testE3aEnvEntryNonExistingEnumValue() throws Exception {
-        server.setMarkToEndOfLog();
-        runTest("EnvEntryWeb/EnvEntryServlet");
-        assertNotNull(server.waitForStringInLogUsingMark(NOSUCHENUMVALUE_ENUM_TYPE));
-        assertNotNull(server.waitForStringInLogUsingMark(NOSUCHENUMVALUE_ENUM_VALUE));
-    }
-
-    /**
-     * Define an <env-entry> in ejb-jar.xml, under bean Bad4Bean:
-     * <env-entry>
-     * <description>E4a - Existing class that is neither an Enum nor a Class; specified in XML and @Resource annotation</description>
-     * <env-entry-name>EnvEntry_ExistingNonEnumNonClass_EntryName</env-entry-name>
-     * <env-entry-type>com.ibm.ws.ejbcontainer.remote.enventry.shared.Bad1Bean</env-entry-type>
-     * <env-entry-value>NOT_APPLICABLE</env-entry-value>
-     * </env-entry>
-     * Annotate an Enum<?> instance var:
-     *
-     * @Resource(name="EnvEntry_ExistingNonEnumNonClass_EntryName")
-     *                                                              Enum<?> ivEnvEntry_NotApplicableEnumValue;
-     *
-     *                                                              - Verify that an appropriate error is issued
-     */
-    @Test
-    @Mode(TestMode.FULL)
-    @ExpectedFFDC({ "com.ibm.ejs.container.EJBConfigurationException", "com.ibm.wsspi.injectionengine.InjectionConfigurationException" })
-    public void testE4aEnvEntryExistingNonEnumNonClass() throws Exception {
-        server.setMarkToEndOfLog();
-        runTest("EnvEntryWeb/EnvEntryServlet");
-        assertNotNull(server.waitForStringInLogUsingMark(EXISTING_NON_ENUM_NON_CLASS_ENV_ENTRY_NAME));
-        assertNotNull(server.waitForStringInLogUsingMark(EXISTING_NON_ENUM_NON_CLASS_ENV_ENTRY_TYPE));
+    public void testAsyncConfigUnclaimedRemoteResultTimeout() throws Exception {
+        server.saveServerConfiguration();
+        ServerConfiguration config = server.getServerConfiguration();
+        EJBAsynchronousElement asynchronous = new EJBAsynchronousElement();
+        asynchronous.setUnclaimedRemoteResultTimeout("1s");
+        asynchronous.setExtraAttribute("scheduledExecutorService.target", "(deferrable=false)");
+        config.getEJBContainer().setAsynchronous(asynchronous);
+        try {
+            updateServerConfiguration(config);
+            runTest("BasicRemote/BasicRemoteTestServlet");
+        } finally {
+            restoreServerConfiguration();
+        }
     }
 }

@@ -41,6 +41,7 @@ import org.eclipse.microprofile.openapi.annotations.ExternalDocumentation;
 import org.eclipse.microprofile.openapi.annotations.OpenAPIDefinition;
 import org.eclipse.microprofile.openapi.annotations.extensions.Extension;
 import org.eclipse.microprofile.openapi.annotations.media.ExampleObject;
+import org.eclipse.microprofile.openapi.annotations.parameters.Parameters;
 import org.eclipse.microprofile.openapi.annotations.servers.Server;
 import org.eclipse.microprofile.openapi.models.Components;
 import org.eclipse.microprofile.openapi.models.OpenAPI;
@@ -210,7 +211,7 @@ public class Reader {
             Map<String, Object> ext = BaseReaderUtils.parseExtensions(classExtensions.toArray(new org.eclipse.microprofile.openapi.annotations.extensions.Extension[classExtensions.size()]));
             if (ext != null && ext.size() > 0) {
                 ext.forEach((k, v) -> {
-                    openAPI.addExtension(k, v);
+                    ((OpenAPIImpl) openAPI).addExtension_compat(k, v);
                 });
             }
         }
@@ -811,7 +812,8 @@ public class Reader {
             Map<String, Object> ext = BaseReaderUtils.parseExtensions(operationExtensions.toArray(new org.eclipse.microprofile.openapi.annotations.extensions.Extension[operationExtensions.size()]));
             if (ext != null && ext.size() > 0) {
                 ext.forEach((k, v) -> {
-                    operation.addExtension(k, v);
+
+                    ((OperationImpl) operation).addExtension_compat(k, v);
                 });
             }
         }
@@ -897,6 +899,21 @@ public class Reader {
                                             classConsumes,
                                             methodConsumes,
                                             operation).ifPresent(p -> p.forEach(operation::addParameter));
+        }
+
+        Annotation paramAnns[][] = ReflectionUtils.getParameterAnnotations(method);
+        for (Annotation[] annotations : paramAnns) {
+            for (Annotation annotation : annotations) {
+                if (annotation instanceof Parameters) {
+                    Parameters params = (Parameters) annotation;
+                    getParametersListFromAnnotation(
+                                                    //OperationParser.getParametersList(
+                                                    params.value(),
+                                                    classConsumes,
+                                                    methodConsumes,
+                                                    operation).ifPresent(p -> p.forEach(operation::addParameter));
+                }
+            }
         }
 
         // apiResponses

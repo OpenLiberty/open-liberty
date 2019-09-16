@@ -10,12 +10,18 @@
  *******************************************************************************/
 package com.ibm.ws.config.xml.internal;
 
+import static com.ibm.ws.config.admin.internal.ConfigurationStorageHelper.readMap;
+import static com.ibm.ws.config.admin.internal.ConfigurationStorageHelper.toMapOrDictionary;
+import static com.ibm.ws.config.admin.internal.ConfigurationStorageHelper.writeMap;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -134,6 +140,8 @@ class ConfigVariableRegistry implements VariableRegistry, ConfigVariables {
             String variableValue = entry.getValue().getValue();
             if (variableValue != null)
                 registry.replaceVariable(variableName, variableValue);
+            else
+                registry.removeVariable(variableName);
         }
         configVariables = newVariables;
 
@@ -234,43 +242,28 @@ class ConfigVariableRegistry implements VariableRegistry, ConfigVariables {
 
     }
 
-    @SuppressWarnings("unchecked")
     @FFDCIgnore({ Exception.class })
     private synchronized void loadVariableCache() {
-        FileInputStream fis = null;
-        ObjectInputStream ois = null;
-        try {
-            fis = new FileInputStream(variableCacheFile);
-            ois = new ObjectInputStream(fis);
-            this.variableCache = (Map<String, Object>) ois.readObject();
-            this.defaultVariableCache = (Map<String, Object>) ois.readObject();
+        try (DataInputStream in = new DataInputStream(new BufferedInputStream(new FileInputStream(variableCacheFile)))) {
+            readMap(in, toMapOrDictionary(this.variableCache = new HashMap<>()));
+            readMap(in, toMapOrDictionary(this.defaultVariableCache = new HashMap<>()));
         } catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "loadVariableCache():  Exception = " + e.getMessage());
             }
-        } finally {
-            ConfigUtil.closeIO(ois);
-            ConfigUtil.closeIO(fis);
         }
     }
 
     @FFDCIgnore({ IOException.class })
     private synchronized void saveVariableCache() {
-        FileOutputStream fos = null;
-        ObjectOutputStream oos = null;
-        try {
-            fos = new FileOutputStream(variableCacheFile, false);
-            oos = new ObjectOutputStream(fos);
-            oos.writeObject(variableCache);
-            oos.writeObject(defaultVariableCache);
+        try (DataOutputStream out = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(variableCacheFile)))) {
+            writeMap(out, toMapOrDictionary(variableCache));
+            writeMap(out, toMapOrDictionary(defaultVariableCache));
         } catch (IOException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "saveVariableCache():  Exception = " + e.getMessage());
             }
             FFDCFilter.processException(e, ConfigVariableRegistry.class.getName(), "saveVariableCache(): Exception = " + e.getMessage());
-        } finally {
-            ConfigUtil.closeIO(oos);
-            ConfigUtil.closeIO(fos);
         }
     }
 

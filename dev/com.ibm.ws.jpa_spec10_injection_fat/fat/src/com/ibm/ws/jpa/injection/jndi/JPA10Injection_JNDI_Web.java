@@ -25,6 +25,8 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.Application;
+import com.ibm.websphere.simplicity.config.ClassloaderElement;
+import com.ibm.websphere.simplicity.config.ConfigElementList;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.jpa.FATSuite;
 import com.ibm.ws.jpa.JPAFATServletClient;
@@ -64,9 +66,21 @@ public class JPA10Injection_JNDI_Web extends JPAFATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        int appStartTimeout = server1.getAppStartTimeout();
+        if (appStartTimeout < (120 * 1000)) {
+            server1.setAppStartTimeout(120 * 1000);
+        }
+
+        int configUpdateTimeout = server1.getConfigUpdateTimeout();
+        if (configUpdateTimeout < (120 * 1000)) {
+            server1.setConfigUpdateTimeout(120 * 1000);
+        }
+
         PrivHelper.generateCustomPolicy(server1, FATSuite.JAXB_PERMS);
         bannerStart(JPA10Injection_JNDI_Web.class);
         timestart = System.currentTimeMillis();
+
+        server1.addEnvVar("repeat_phase", FATSuite.repeatPhase);
 
         server1.startServer();
 
@@ -140,12 +154,19 @@ public class JPA10Injection_JNDI_Web extends JPAFATServletClient {
         });
 
         ShrinkHelper.exportToServer(server1, "apps", app);
-        server1.addInstalledAppForValidation(applicationName);
 
         Application appRecord = new Application();
         appRecord.setLocation(applicationName + ".ear");
         appRecord.setName(applicationName);
 
+        if (FATSuite.repeatPhase != null && FATSuite.repeatPhase.contains("hibernate")) {
+            ConfigElementList<ClassloaderElement> cel = appRecord.getClassloaders();
+            ClassloaderElement loader = new ClassloaderElement();
+            loader.getCommonLibraryRefs().add("HibernateLib");
+            cel.add(loader);
+        }
+
+        server1.setMarkToEndOfLog();
         ServerConfiguration sc = server1.getServerConfiguration();
         sc.getApplications().add(appRecord);
         server1.updateServerConfiguration(sc);

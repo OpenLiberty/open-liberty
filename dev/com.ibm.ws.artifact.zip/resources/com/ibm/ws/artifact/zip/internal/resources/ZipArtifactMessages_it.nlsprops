@@ -22,14 +22,92 @@
 #   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
 #   (single quote must be coded as one single quote '). 
 
+# # A file path.
 bad.zip.data=CWWKM0101E: Il sistema non \u00e8 stato in grado di elaborare i dati dell''archivio per {0}.
 bad.zip.data.explanation=Si \u00e8 verificata un'eccezione durante l'elaborazione dei dati compressi per l'archivio. 
 bad.zip.data.useraction=Verificare che il file sia un archivio valido.
 
-remove.cache.data=CWWKM0102W: Il sistema ha eliminato i dati della cache non validi dall''ubicazione {0}
+# # A file path.
+remove.cache.data=CWWKM0102W: Il sistema ha ripulito i dati della cache non validi dall''ubicazione {0}.
 remove.cache.data.explanation=La struttura dell'applicazione sembra essere stata modificata, richiedendo l'eliminazione dei dati della cache basati sulla struttura precedente.
 remove.cache.data.useraction=Se \u00e8 stata modificata la struttura dell'applicazione, questo funzionamento \u00e8 previsto.
 
+# # {0} The text of the message from an exception.
 extract.cache.fail=CWWKM0103E: Il sistema non \u00e8 stato in grado di estrarre un archivio nidificato in un''ubicazione della cache a causa di {0}
 extract.cache.fail.explanation=Si \u00e8 verificato un errore durante la creazione dei dati della cache per l'applicazione, impedendo la corretta elaborazione dell'applicazione. 
 extract.cache.fail.useraction=Controllare la causa indicata.
+
+# # {0} A file path.
+extract.cache.null=CWWKM0104E: Il sistema non \u00e8 stato in grado di estrarre l''''archivio nidificato {0} nell''''ubicazione cache.
+extract.cache.null.explanation=Si \u00e8 verificato un errore durante la creazione dei dati cache per l'applicazione e ci\u00f2 impedisce l'elaborazione corretta dell'applicazione. 
+extract.cache.null.useraction=Verificare che l'archivio nidificato sia un archivio valido.
+
+# # {0} A file path.
+extract.secondary.timeout=CWWKM0105E: Timeout estrazione secondaria per {0}.
+extract.secondary.timeout.explanation=Una richiesta simultanea per estrarre un archivio nidificato \u00e8 scaduta in attesa del completamento dell'estrazione iniziale.
+extract.secondary.timeout.useraction=Verificare che l'archivio nidificato sia un archivio valido.
+
+# # {0} A file path
+extract.secondary.failed=CWWKM0106E: Estrazione secondaria non riuscita per {0}.
+extract.secondary.failed.explanation=Una richiesta simultanea per estrarre un archivio nidificato \u00e8 stata completata ma non ha estratto l'archivio nidificato.
+extract.secondary.failed.useraction=Verificare che l'archivio nidificato sia un archivio valido.
+
+# # {0} A file path
+extract.secondary.notfile=CWWKM0107E: L''''estrazione secondaria non ha creato un file semplice per {0}.
+extract.secondary.notfile.explanation=Una richiesta simultanea per estrarre un archivio nidificato \u00e8 stata completata ma non ha prodotto un file semplice.
+extract.secondary.notfile.useraction=Verificare che l'archivio nidificato sia un archivio valido.
+
+# # {0} A file path
+extract.secondary.inconsistent=CWWKM0108E: Tempi di estrazione secondaria incongruenti per {0}.
+extract.secondary.inconsistent.explanation=Una richiesta simultanea per estrarre un archivio nidificato \u00e8 stata completata ma ha prodotto un file diverso rispetto a quello previsto.
+extract.secondary.inconsistent.useraction=Verificare che l'archivio nidificato sia un archivio valido.
+
+# # {0} A file path
+extract.primary.directory=CWWKM0109E: L''''estrazione precedente di {0} \u00e8 una directory.
+extract.primary.directory.explanation=Un'estrazione di un archivio nidificato ha rilevato una directory come archivio estratto precedente.
+extract.primary.directory.useraction=Ripulire e riavviare il server per assicurarsi che non siano presenti contenuti di cache precedenti.
+
+# # {0} A file path
+extract.primary.untyped=CWWKM0110E: Impossibile identificare il tipo dell''''estrazione precedente di {0}.
+extract.primary.untyped.explanation=Un'estrazione di un archivio nidificato ha rilevato un file di cui non \u00e8 possibile determinare il tipo come archivio estratto precedente.
+extract.primary.untyped.useraction=Ripulire e riavviare il server per assicurarsi che non siano presenti contenuti di cache precedenti.
+
+# # {0} A file path.
+# # {1} A print name
+reaper.inactive=CWWKM0121W: Impossibile aprire {0}: la cache di archivio {1} \u00e8 inattiva.
+reaper.inactive.explanation=Una richiesta di apertura di un file di archivio non \u00e8 riuscita perch\u00e9 la cache del file di archivio non \u00e8 attiva.
+reaper.inactive.useraction=Questo messaggio indica un errore di programmazione interno.
+
+# # {0} A file path
+reaper.unregistered.path=CWWKM0122W: Viene ignorata la richiesta di chiusura per l''''archivio {0}, che non \u00e8 aperto.
+reaper.unregistered.path.explanation=\u00c8 stata richiesta l'elaborazione della chiusura di un file di archivio per un file di archivio che non \u00e8 stato aperto.
+reaper.unregistered.path.useraction=Questo messaggio indica un errore di programmazione interno.
+
+# # {0} A file path
+reaper.closed.path=CWWKM0123W: Viene ignorata la richiesta di chiusura per l''''archivio {0}, che \u00e8 gi\u00e0 chiuso.
+reaper.closed.path.explanation=\u00c8 stata richiesta l'elaborazione della chiusura di un file di archivio per un file di archivio che era gi\u00e0 chiuso.
+reaper.closed.path.useraction=Questo messaggio indica un errore di programmazione interno.
+
+# # {0} A file path
+reaper.pending.path=CWWKM0243W: Viene ignorata la richiesta di chiusura per l''''archivio {0}, che \u00e8 gi\u00e0 in stato di chiusura in sospeso {0}.
+reaper.pending.path.explanation=\u00c8 stata richiesta l'elaborazione della chiusura di un file di archivio per un file di archivio che \u00e8 gi\u00e0 in stato di chiusura in sospeso.
+reaper.pending.path.useraction=Questo messaggio indica un errore di programmazione interno.
+
+# # {0} A file path
+# # {1} An integer representing a file length
+# # {2} An integer representing a file length
+reaper.unexpected.length.change=CWWKM0125W: Archivio {0}: aggiornamento lunghezza da {1} a {2}.
+reaper.unexpected.length.change.explanation=\u00c8 stato effettuato un aggiornamento non previsto in un file di archivio dell'applicazione mentre l'archivio era aperto.  Questo di solito si verifica perch\u00e9 \u00e8 stato effettuato un aggiornamento dinamico ai file dell'applicazione.
+reaper.unexpected.length.change.useraction=Riavviare il server.  Quando si aggiornano i file dell'applicazione, attendere che il server sia inattivo, inoltre attendere almeno mezzo secondo per consentire la chiusura dei file dell'applicazione.
+
+# # {0} A file path
+# # {1} An integer representing a last modified time
+# # {2} An integer representing a last modified time
+reaper.unexpected.lastmodified.change=CWWKM0126W: Archivio {0}: aggiornamento ultima modifica da {1} a {2}.
+reaper.unexpected.lastmodified.change.explanation=\u00c8 stato effettuato un aggiornamento non previsto in un file di archivio dell'applicazione mentre l'archivio era aperto.  Questo di solito si verifica perch\u00e9 \u00e8 stato effettuato un aggiornamento dinamico ai file dell'applicazione.
+reaper.unexpected.lastmodified.change.useraction=Riavviare il server.  Quando si aggiornano i file dell'applicazione, attendere che il server sia inattivo, inoltre attendere almeno mezzo secondo per consentire la chiusura dei file dell'applicazione.
+
+# # {0} A file path
+reaper.reopen.active=CWWKM0127W: {0} riaperto
+reaper.reopen.active.explanation=Una modifica non prevista ha causato la riapertura di un file di archivio dell'applicazione aperto.  Il server ha tentato di ottenere il contenuto aggiornato del file di archivio, ma potrebbe non avere completamente aggiornati gli elenchi interni del contenuto dell'archivio.
+reaper.reopen.active.useraction=Riavviare il server.  Quando si aggiornano i file dell'applicazione, attendere che il server sia inattivo, inoltre attendere almeno mezzo secondo per consentire la chiusura dei file dell'applicazione.

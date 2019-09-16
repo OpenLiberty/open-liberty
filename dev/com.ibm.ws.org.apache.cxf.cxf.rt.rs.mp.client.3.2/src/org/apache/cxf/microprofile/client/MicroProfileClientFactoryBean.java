@@ -70,7 +70,6 @@ public class MicroProfileClientFactoryBean extends JAXRSClientFactoryBean {
         //Liberty change start
         //registeredProviders.add(new ProviderInfo<>(new JsrJsonpProvider(), getBus(), false));
         registeredProviders.add(new ProviderInfo<>(ProviderFactory.createJsonpProvider(), getBus(), false));
-        registeredProviders.add(new ProviderInfo<>(ProviderFactory.createJsonBindingProvider(), getBus(), false));
         //Liberty change end
         super.setProviders(registeredProviders);
     }
@@ -96,6 +95,7 @@ public class MicroProfileClientFactoryBean extends JAXRSClientFactoryBean {
         super.initClient(client, ep, addHeaders);
         MicroProfileClientProviderFactory factory = MicroProfileClientProviderFactory.createInstance(getBus(),
                 comparator);
+        registeredProviders.add(new ProviderInfo<>(ProviderFactory.createJsonBindingProvider(factory.getContextResolversActual()), getBus(), false));
         factory.setUserProviders(registeredProviders);
         ep.put(MicroProfileClientProviderFactory.CLIENT_FACTORY_NAME, factory);
     }

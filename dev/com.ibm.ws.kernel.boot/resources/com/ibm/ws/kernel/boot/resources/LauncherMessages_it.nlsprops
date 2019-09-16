@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2016 IBM Corporation and others.
+# Copyright (c) 2010, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -694,6 +694,14 @@ error.no.serialfilteragent=CWWKE0949E: Il file jar dell''agent del filtro serial
 error.no.serialfilteragent.explanation=Il file jar dell'agent del filtro seriale specificato non esiste o non pu\u00f2 essere letto.
 error.no.serialfilteragent.useraction= Verificare che il file esista e che possa essere letto dall'utente corrente.
 
+error.package.extension=CWWKE0950E: Il nome file di archivio deve terminare con .jar quando viene utilizzata l'opzione runnable.
+error.package.extension.explanation=L'opzione --archive deve includere un'estensione file che termina con .jar quando si specifica --include=runnable.
+error.package.extension.useraction=Fornire un nome file a --archive con un'estensione file .jar quando si specifica --include=runnable.
+
+error.package.usr.jar=CWWKE0951E: Il nome del file di archivio non deve terminare con un'estensione di file .jar quando viene utilizzata l'opzione usr.
+error.package.usr.jar.explanation=L'opzione --archive non deve terminare con un'estensione di file .jar quando \u00e8 specificato --include=usr.
+error.package.usr.jar.useraction=Fornire un nome file a --archive con un'estensione file diversa da .jar quando \u00e8 specificato --include=usr.
+
 info.serverStarting=Avvio del server {0} in corso.
 info.serverStarted=Server {0} avviato.
 info.serverStartedWithPID=Server {0} avviato con ID processo {1}.
@@ -752,6 +760,8 @@ info.resumedListeners.target=Riattivazione dei componenti di destinazione specif
 info.resumeFailedException.target=Riattivazione dei componenti di destinazione specificati del server {0} non riuscita. \
 Per ulteriori informazioni, \
 controllare i log del server.
+info.serverCommandAuthFailure=Il comando {0} non \u00e8 riuscito perch\u00e9 il processo non ha potuto eliminare il file {1}.
+info.serverCommandCommFailure=Il comando {0} non \u00e8 riuscito a causa di un problema di comunicazione con il server.
 
 # For info.serverLaunch and info.serverVersion: 
 # {0} version (build and/or product name)
@@ -780,3 +790,4 @@ info.no.servers.defined=Non vi sono server definiti nella directory utente {0}.
 info.list.of.defined.servers=I seguenti server sono definiti in relazione alla directory utente {0}.
 info.communicate.server=Si \u00e8 verificato un errore di comunicazione tra il comando {0} e il server {1}.
 
+info.serialFilterLoaded=Agent filtro seriale caricato.

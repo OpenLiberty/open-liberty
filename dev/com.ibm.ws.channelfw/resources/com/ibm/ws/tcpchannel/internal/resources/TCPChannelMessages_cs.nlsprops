@@ -116,8 +116,8 @@ TCP_CHANNEL_STOPPED=CWWKO0220I: Kan\u00e1l TCP {0} ukon\u010dil naslouch\u00e1n\
 TCP_CHANNEL_STOPPED.explanation=Tato zpr\u00e1va je pouze informativn\u00ed.
 TCP_CHANNEL_STOPPED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
 
-BIND_ERROR=CWWKO0221E: Inicializace kan\u00e1lu TCP {0} se nezda\u0159ila. Nepoda\u0159ilo se vytvo\u0159it vazbu soketu k hostiteli {1} a portu {2}. Je mo\u017en\u00e9, \u017ee je port ji\u017e pou\u017e\u00edv\u00e1n.
-BIND_ERROR.explanation=Operace sv\u00e1z\u00e1n\u00ed soketu se nezda\u0159ila. K tomu doch\u00e1z\u00ed obvykle v p\u0159\u00edpad\u011b, \u017ee je dan\u00e9 \u010d\u00edslo portu ji\u017e obsazeno.
+BIND_ERROR=CWWKO0221E: Inicializace kan\u00e1lu TCP {0} se nezda\u0159ila. Nepoda\u0159ilo se vytvo\u0159it vazbu soketu k hostiteli {1} a portu {2}. Je mo\u017en\u00e9, \u017ee je port ji\u017e pou\u017e\u00edv\u00e1n. Zpr\u00e1va v\u00fdjimky: {3}
+BIND_ERROR.explanation=Operace sv\u00e1z\u00e1n\u00ed soketu se nezda\u0159ila. K tomu doch\u00e1z\u00ed obvykle v p\u0159\u00edpad\u011b, \u017ee je dan\u00e9 \u010d\u00edslo portu ji\u017e obsazeno. Zkontrolujte text zpr\u00e1vy v\u00fdjimky v chybov\u00e9 zpr\u00e1v\u011b, kde jsou uvedeny dal\u0161\u00ed informace.
 BIND_ERROR.useraction=Ov\u011b\u0159te, zda byl kan\u00e1l TCP konfigurov\u00e1n pro pou\u017eit\u00ed spr\u00e1vn\u00e9ho \u010d\u00edsla portu.
 
 MAX_CONNS_EXCEEDED=CWWKO0222W: Kan\u00e1l TCP {0} p\u0159ekro\u010dil maxim\u00e1ln\u00ed po\u010det otev\u0159en\u00fdch p\u0159ipojen\u00ed {1}.

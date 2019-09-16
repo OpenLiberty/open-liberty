@@ -1,0 +1,27 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/sso/common/internal/resources/SAMLPropagationMessages.nlsprops
+#COMPONENTPREFIX CWWKS CWTAI
+#COMPONENTNAMEFOR WebSphere Application Server Security SAML PROPAGATION
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS5251 - CWWKS5299
+
+no_saml_found_in_subject=CWWKS5251W: A sz\u00fcks\u00e9ges SAML token hi\u00e1nyzik a t\u00e1rgyb\u00f3l. Ez a probl\u00e9ma akkor fordulhat el\u0151, ha a felhaszn\u00e1l\u00f3 hiteles\u00edt\u00e9se SAML haszn\u00e1lat\u00e1val nem volt sikeres, a felhaszn\u00e1l\u00f3 kor\u00e1bban kijelentkezett, vagy a SAML includeTokenInSubject konfigur\u00e1ci\u00f3s attrib\u00fatum false \u00e9rt\u00e9kre van \u00e1ll\u00edtva.
+no_saml_found_in_subject.explanation=Hiba t\u00f6rt\u00e9nt az SAML token kinyer\u00e9sekor a t\u00e1rgyb\u00f3l vagy egy SAML elem nem tal\u00e1lhat\u00f3 az aktu\u00e1lis t\u00e1rgyban.
+no_saml_found_in_subject.useraction=Ha l\u00e9trehozza a futtat\u00e1s (run-as) t\u00e1rgyat, akkor \u00fcgyeljen arra, hogy az SAML token hozz\u00e1 legyen adva a t\u00e1rgyhoz. Ellenkez\u0151 esetben az SAML konfigur\u00e1ci\u00f3ban az includeTokenInSubject attrib\u00fatum ellen\u0151rz\u00e9s\u00e9vel gondoskodjon arr\u00f3l, hogy a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3ja t\u00e1mogassa az SAML token hozz\u00e1ad\u00e1s\u00e1t a t\u00e1rgyhoz.
+
+failed_to_extract_saml_token_from_subject=CWWKS5252W: Kiv\u00e9tel t\u00f6rt\u00e9nt, am\u00edg megk\u00eds\u00e9relte kinyerni az SAML tokent a t\u00e1rgyb\u00f3l. A kiv\u00e9tel: [{0}]
+failed_to_extract_saml_token_from_subject.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt az SAML token kinyer\u00e9sekor a t\u00e1rgyb\u00f3l.
+failed_to_extract_saml_token_from_subject.useraction=A hib\u00e1val kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt n\u00e9zze meg a kiszolg\u00e1l\u00f3 napl\u00f3it.

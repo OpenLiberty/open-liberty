@@ -328,18 +328,49 @@ public class TAIAuthenticator implements WebAuthenticator {
     @FFDCIgnore(AuthenticationException.class)
     private AuthenticationResult authenticateWithSubject(HttpServletRequest req, HttpServletResponse res, Subject subject, String taiId) {
         AuthenticationResult authResult;
+        SubjectHelper subjectHelper = new SubjectHelper();
         try {
             AuthenticationData authenticationData = createAuthenticationData(req, res, subject);
+            boolean addLtpaCookie = addLtpaCookieToResponse(subject, taiId);
+            if (!addLtpaCookie) {
+                addDisableLtpaSSOCacheProp(subject, subjectHelper);
+            }
             Subject new_subject = authenticationService.authenticate(JaasLoginConfigConstants.SYSTEM_WEB_INBOUND, authenticationData, subject);
             authResult = new AuthenticationResult(AuthResult.SUCCESS, new_subject);
-            // if DISABLE_LTPA_AND_SESSION_NOT_ON_OR_AFTER then do not callSSOCookie
-            if (addLtpaCookieToResponse(new_subject, taiId)) {
+            if (addLtpaCookie) {
                 ssoCookieHelper.addSSOCookiesToResponse(new_subject, req, res);
+            } else {
+//                removeInternalProps(new_subject, subjectHelper, AuthenticationConstants.INTERNAL_DISABLE_LTPA_SSO_CACHE);
             }
         } catch (AuthenticationException e) {
             authResult = new AuthenticationResult(AuthResult.FAILURE, e.getMessage());
         }
         return authResult;
+    }
+
+    protected void removeInternalProps(Subject subject, SubjectHelper subjectHelper, String propName) {
+        Hashtable<String, Object> hashtable = (Hashtable<String, Object>) subjectHelper.getSensitiveHashtableFromSubject(subject);
+        Set<Object> publicCredentials = subject.getPublicCredentials();
+        publicCredentials.remove(hashtable);
+        hashtable.remove(propName);
+        if (!hashtable.isEmpty()) {
+            publicCredentials.add(hashtable);
+        }
+        Set<Object> privateCredentials = subject.getPrivateCredentials();
+        privateCredentials.remove(hashtable);
+        hashtable.remove(propName);
+        if (!hashtable.isEmpty()) {
+            privateCredentials.add(hashtable);
+        }
+
+    }
+
+    /**
+     * @param subject
+     */
+    private void addDisableLtpaSSOCacheProp(Subject subject, SubjectHelper subjectHelper) {
+        Hashtable<String, Object> hashtable = (Hashtable<String, Object>) subjectHelper.getSensitiveHashtableFromSubject(subject);
+        hashtable.put(AuthenticationConstants.INTERNAL_DISABLE_LTPA_SSO_CACHE, Boolean.TRUE);
     }
 
     private boolean addLtpaCookieToResponse(Subject subject, String taiId) {

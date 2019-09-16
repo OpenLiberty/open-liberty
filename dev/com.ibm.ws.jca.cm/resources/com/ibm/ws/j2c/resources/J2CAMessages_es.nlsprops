@@ -112,7 +112,7 @@ NO_VALID_TRANSACTION_CONTEXT_J2CA0040.explanation=Se ha producido un error inter
 NO_VALID_TRANSACTION_CONTEXT_J2CA0040.useraction=CMSG0002
 
 # --------------------------------
-POOL_MANAGER_EXCP_CCF2_0001_J2CA0045=J2CA0045E: La conexi\u00f3n no est\u00e1 disponible al invocar el m\u00e9todo {0} para el recurso {1}.
+POOL_MANAGER_EXCP_CCF2_0001_J2CA0045=J2CA0045E: La conexi\u00f3n no est\u00e1 disponible al invocar el m\u00e9todo {0} para el recurso {1}. Se ha excedido el tiempo de espera de {2} milisegundo(s) con las {3} solicitudes de espera restantes y las {4} conexiones totales actuales utilizadas.
 POOL_MANAGER_EXCP_CCF2_0001_J2CA0045.explanation=Se ha producido un tiempo de espera excedido de conexi\u00f3n. Se ha generado una excepci\u00f3n ConnectionWaitTimeoutException.
 POOL_MANAGER_EXCP_CCF2_0001_J2CA0045.useraction=Vuelva a configurar la agrupaci\u00f3n de conexiones.  Puede aumentar el n\u00famero m\u00e1ximo de conexiones o incremente el tiempo de espera de conexi\u00f3n para evitar este error.
 

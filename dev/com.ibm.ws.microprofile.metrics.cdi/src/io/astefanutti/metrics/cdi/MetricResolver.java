@@ -28,6 +28,9 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Vetoed;
@@ -85,7 +88,7 @@ public class MetricResolver {
             initialDiscovery = true;
         }
 
-        Metadata metadata = new Metadata(name, this.getType(annotation), this.getUnit(annotation));
+        Metadata metadata = newMetadata(name, this.getType(annotation), this.getUnit(annotation));
         metadata.setDescription(this.getDescription(annotation));
         metadata.setDisplayName(this.getDisplayname(annotation));
         for (String tag : this.getTags(annotation)) {
@@ -107,7 +110,7 @@ public class MetricResolver {
                 initialDiscovery = true;
             }
 
-            Metadata metadata = new Metadata(name, this.getType(annotation), this.getUnit(annotation));
+            Metadata metadata = newMetadata(name, this.getType(annotation), this.getUnit(annotation));
             metadata.setDescription(this.getDescription(annotation));
             metadata.setDisplayName(this.getDisplayname(annotation));
             for (String tag : this.getTags(annotation)) {
@@ -336,6 +339,19 @@ public class MetricResolver {
         @Override
         public boolean isInitialDiscovery() {
             return false;
+        }
+    }
+
+    private static Metadata newMetadata(String name, MetricType type, String unit) {
+        if (System.getSecurityManager() == null) {
+            return new Metadata(name, type, unit);
+        }
+        try {
+            return AccessController.doPrivileged((PrivilegedExceptionAction<Metadata>) () -> {
+                return new Metadata(name, type, unit);
+            });
+        } catch (PrivilegedActionException pae) {
+            throw new IllegalArgumentException(pae.getCause());
         }
     }
 }

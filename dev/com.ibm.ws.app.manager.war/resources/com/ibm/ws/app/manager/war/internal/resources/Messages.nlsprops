@@ -220,3 +220,20 @@ warning.could.not.expand.application.useraction=Attempt to resolve the issue in 
 error.file.outside.archive=CWWKZ0132W: The file {0} in the archive {1} will not be extracted because the path is not contained within the archive.
 error.file.outside.archive.explanation=The file's path specifies a relative directory. Extracting the file would result in the file being located outside of the archive's root directory.
 error.file.outside.archive.useraction=Remove any files with relative paths from the archive.  
+
+#{0} is the application name, {1} is the location of the EAR or WAR file, {2} is the location where the file is expanded
+info.expanding.app=CWWKZ0133I: The {0} application at the {1} location is being expanded to the {2} directory.
+info.expanding.app.explanation=The archive file for the application is being expanded because automatic expansion of applications was configured.
+info.expanding.app.useraction=No action is required.
+
+info.loose.app=CWWKZ0134I: The {0} application is using the loose application definition at the {1} location.
+info.loose.app.explanation=The location for the application points to an XML file that defines a loose application. 
+info.loose.app.useraction=No action is required.
+
+info.directory.app=CWWKZ0135I: The {0} application is using the expanded directory at the {1} location.
+info.directory.app.explanation=The location for the application points to a directory rather than an archive file. 
+info.directory.app.useraction=No action is required.
+
+info.unexpanded.app=CWWKZ0136I: The {0} application is using the archive file at the {1} location.
+info.unexpanded.app.explanation=The location for the application points to a binary archive file. The archive file will not be expanded on disk because automatic expansion of applications was not configured.
+info.unexpanded.app.useraction=No action is required.

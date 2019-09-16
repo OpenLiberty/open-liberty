@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2017, 2018 IBM Corporation and others.
+* Copyright (c) 2017, 2019 IBM Corporation and others.
 *
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
@@ -23,6 +23,9 @@
 *******************************************************************************/
 package com.ibm.ws.microprofile.metrics.impl;
 
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.Collections;
 import java.util.Map;
 import java.util.SortedMap;
@@ -35,6 +38,7 @@ import java.util.concurrent.ConcurrentMap;
 
 import javax.enterprise.inject.Vetoed;
 
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import org.eclipse.microprofile.metrics.Counter;
 import org.eclipse.microprofile.metrics.Gauge;
 import org.eclipse.microprofile.metrics.Histogram;
@@ -54,7 +58,7 @@ public class MetricRegistryImpl extends MetricRegistry {
     /**
      * Concatenates elements to form a dotted name, eliding any null values or empty strings.
      *
-     * @param name the first element of the name
+     * @param name  the first element of the name
      * @param names the remaining elements of the name
      * @return {@code name} and {@code names} concatenated by periods
      */
@@ -141,23 +145,24 @@ public class MetricRegistryImpl extends MetricRegistry {
     /**
      * Given a {@link Metric}, registers it under the given name.
      *
-     * @param name the name of the metric
+     * @param name   the name of the metric
      * @param metric the metric
-     * @param <T> the type of the metric
+     * @param <T>    the type of the metric
      * @return {@code metric}
      * @throws IllegalArgumentException if the name is already registered
      */
     @Override
     public <T extends Metric> T register(String name, T metric) throws IllegalArgumentException {
         // For MP Metrics 1.0, MetricType.from(Class in) does not support lambdas or proxy classes
-        return register(name, metric, new Metadata(name, from(metric)));
+        return register(name, metric, newMetadata(name, from(metric)));
     }
 
     @Override
     public <T extends Metric> T register(String name, T metric, Metadata metadata) throws IllegalArgumentException {
+
         final Metric existing = metrics.putIfAbsent(name, metric);
         //Create Copy of Metadata object so it can't be changed after its registered
-        Metadata metadataCopy = new Metadata(metadata.getName(), metadata.getDisplayName(), metadata.getDescription(), metadata.getTypeRaw(), metadata.getUnit());
+        Metadata metadataCopy = newMetadata(metadata);
         for (String tag : metadata.getTags().keySet()) {
             metadataCopy.getTags().put(tag, metadata.getTags().get(tag));
         }
@@ -222,7 +227,7 @@ public class MetricRegistryImpl extends MetricRegistry {
      */
     @Override
     public Counter counter(String name) {
-        return this.counter(new Metadata(name, MetricType.COUNTER));
+        return this.counter(newMetadata(name, MetricType.COUNTER));
     }
 
     @Override
@@ -239,7 +244,7 @@ public class MetricRegistryImpl extends MetricRegistry {
      */
     @Override
     public Histogram histogram(String name) {
-        return this.histogram(new Metadata(name, MetricType.HISTOGRAM));
+        return this.histogram(newMetadata(name, MetricType.HISTOGRAM));
     }
 
     @Override
@@ -256,7 +261,7 @@ public class MetricRegistryImpl extends MetricRegistry {
      */
     @Override
     public Meter meter(String name) {
-        return this.meter(new Metadata(name, MetricType.METERED));
+        return this.meter(newMetadata(name, MetricType.METERED));
     }
 
     @Override
@@ -273,7 +278,7 @@ public class MetricRegistryImpl extends MetricRegistry {
      */
     @Override
     public Timer timer(String name) {
-        return timer(new Metadata(name, MetricType.TIMER));
+        return timer(newMetadata(name, MetricType.TIMER));
     }
 
     @Override
@@ -429,6 +434,7 @@ public class MetricRegistryImpl extends MetricRegistry {
     }
 
     @SuppressWarnings("unchecked")
+    @FFDCIgnore({java.lang.IllegalArgumentException.class})
     private <T extends Metric> T getOrAdd(Metadata metadata, MetricBuilder<T> builder) {
         final Metric metric = metrics.get(metadata.getName());
         if (builder.isInstance(metric)) {
@@ -443,7 +449,9 @@ public class MetricRegistryImpl extends MetricRegistry {
                 }
             }
         }
-        throw new IllegalArgumentException(metadata.getName() + " is already used for a different type of metric");
+        throw new IllegalArgumentException(metadata.getName() + " is already used for a different type of metric. "
+                                           + "A metric name can only be used with one type of metric. Ensure that " + metadata.getName()
+                                           + " is used with only one type of metric.");
     }
 
     @SuppressWarnings("unchecked")
@@ -527,5 +535,31 @@ public class MetricRegistryImpl extends MetricRegistry {
         T newMetric();
 
         boolean isInstance(Metric metric);
+    }
+
+    private static Metadata newMetadata(String name, MetricType type) {
+        if (System.getSecurityManager() == null) {
+            return new Metadata(name, type);
+        }
+        try {
+            return AccessController.doPrivileged((PrivilegedExceptionAction<Metadata>) () -> {
+                return new Metadata(name, type);
+            });
+        } catch (PrivilegedActionException pae) {
+            throw new IllegalArgumentException(pae.getCause());
+        }
+    }
+
+    private static Metadata newMetadata(Metadata metadata) {
+        if (System.getSecurityManager() == null) {
+            return new Metadata(metadata.getName(), metadata.getDisplayName(), metadata.getDescription(), metadata.getTypeRaw(), metadata.getUnit());
+        }
+        try {
+            return AccessController.doPrivileged((PrivilegedExceptionAction<Metadata>) () -> {
+                return new Metadata(metadata.getName(), metadata.getDisplayName(), metadata.getDescription(), metadata.getTypeRaw(), metadata.getUnit());
+            });
+        } catch (PrivilegedActionException pae) {
+            throw new IllegalArgumentException(pae.getCause());
+        }
     }
 }

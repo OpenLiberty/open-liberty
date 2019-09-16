@@ -60,7 +60,7 @@ public class WSX509TrustManagerTest {
     private final WSKeyStore WSKS = mock.mock(WSKeyStore.class, "WSKS");
     KeyStoreManager ksMgr = mock.mock(KeyStoreManager.class, "ksMgr");
     private final SSLConfig sslCfg = mock.mock(SSLConfig.class);
-    private WSX509TrustManager tm = new WSX509TrustManager(mockTM1, null, sslCfg, "defaultTrustStore", "\temp\trust.jks");
+    private WSX509TrustManager tm = new WSX509TrustManager(mockTM1, null, sslCfg, "defaultTrustStore", "\temp\trust.p12");
 
     @After
     public void tearDown() {
@@ -120,7 +120,7 @@ public class WSX509TrustManagerTest {
      * Test checkServerTrust and is not trusted
      */
     public void checkServerTrusted_notTrusted() throws CertificateException {
-        tm = new WSX509TrustManager(mockTM1, null, sslCfg, "defaultTrustStore", "\temp\trust.jks");
+        tm = new WSX509TrustManager(mockTM1, null, sslCfg, "defaultTrustStore", "\temp\trust.p12");
 
         mock.checking(new Expectations() {
             {
@@ -150,7 +150,7 @@ public class WSX509TrustManagerTest {
      * Test checkServerTrusted, trusted
      */
     public void checkServerTrusted_trusted() throws CertificateException {
-        tm = new WSX509TrustManager(mockTM1, null, sslCfg, "defaultTrustStore", "\temp\trust.jks");
+        tm = new WSX509TrustManager(mockTM1, null, sslCfg, "defaultTrustStore", "\temp\trust.p12");
 
         mock.checking(new Expectations() {
             {
@@ -235,7 +235,7 @@ public class WSX509TrustManagerTest {
      */
     @Test
     public void setCertificateToTruststore_noKeyStore() throws Exception {
-        tm = new WSX509TrustManager(mockTM1, null, sslCfg, "defaultTrustStore", "\temp\trust.jks");
+        tm = new WSX509TrustManager(mockTM1, null, sslCfg, "defaultTrustStore", "\temp\trust.p12");
 
         try {
             tm.setCertificateToTruststore(mockX509s);

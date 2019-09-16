@@ -22,5 +22,5 @@ import java.util.Map;
  */
 public interface JPAEMFPropertyProvider {
 
-    public void updateProperties(Map<String,Object> props);
+    public void updateProperties(Map<String,Object> props, ClassLoader applicationClassLoader);
 }

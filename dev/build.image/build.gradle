@@ -64,14 +64,12 @@ import org.gradle.internal.os.OperatingSystem
 
 File packageDir = new File(project.buildDir, 'openliberty')
 File mavenDir = new File(project.buildDir, 'maven')
-def props = new Properties()
-rootProject.file('generated.properties').withInputStream { props.load(it) }
 
 // Set the generated zip version to the product version and the
 // version qualifier to be consistent
 // with what is used for the individual Bundle-Versions
 // as well as the server version output.
-def releaseVersion = "${bnd.libertyRelease}-" + props.getProperty("version.qualifier")
+def releaseVersion = "${bnd.libertyRelease}-" + rootProject.userProps.getProperty("version.qualifier")
 
 class PackageLibertyWithFeatures extends DefaultTask {
     Closure withFeatures
@@ -160,13 +158,13 @@ def javaee8Features() {
     features
 }
 
-def microProfile2Features() {
-    String features = project.file('profiles/microProfile2/features.xml').readLines()
+def microProfile3Features() {
+    String features = project.file('profiles/microProfile3/features.xml').readLines()
     features
 }
 
 task packageOpenLiberty(type: PackageLibertyWithFeatures) {
-    enabled props["ghe.build.type"] == null || !props["ghe.build.type"].contains("ifix")
+    enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
     dependsOn parent.subprojects.assemble
     dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
     withFeatures this.&gaPublicFeatures
@@ -174,7 +172,7 @@ task packageOpenLiberty(type: PackageLibertyWithFeatures) {
 }
 
 task packageOpenLibertyKernel(type: PackageLibertyWithFeatures) {
-    enabled props["ghe.build.type"] == null || !props["ghe.build.type"].contains("ifix")
+    enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
     dependsOn parent.subprojects.assemble
     dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
     withFeatures { '' }
@@ -205,7 +203,7 @@ task packageOpenLibertyWebProfile8(type: PackageLibertyWithFeatures) {
             this.&removeFeature("${it}")
         }
     }
-    enabled props["ghe.build.type"] == null || !props["ghe.build.type"].contains("ifix")
+    enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
     dependsOn parent.subprojects.assemble
     dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
     withFeatures this.&webProfile8Features
@@ -232,7 +230,7 @@ task packageOpenLibertyJavaee8(type: PackageLibertyWithFeatures) {
         }
     }
 
-    enabled props["ghe.build.type"] == null || !props["ghe.build.type"].contains("ifix")
+    enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
     dependsOn parent.subprojects.assemble
     dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
     withFeatures this.&javaee8Features
@@ -252,21 +250,21 @@ task packageOpenLibertyJavaee8(type: PackageLibertyWithFeatures) {
     }
 }
 
-task packageOpenLibertyMicroProfile2(type: PackageLibertyWithFeatures) {
+task packageOpenLibertyMicroProfile3(type: PackageLibertyWithFeatures) {
     doFirst {
         excludedFeatures.each {
             this.&removeFeature("${it}")
         }
     }
 
-    enabled props["ghe.build.type"] == null || !props["ghe.build.type"].contains("ifix")
+    enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
     dependsOn parent.subprojects.assemble
     dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
-    withFeatures this.&microProfile2Features
+    withFeatures this.&microProfile3Features
     outputTo packageDir
     doLast {
         copy {
-            from "$packageDir/wlp/templates/servers/microProfile2/server.xml" 
+            from "$packageDir/wlp/templates/servers/microProfile3/server.xml" 
             into "$packageDir/wlp/templates/servers/defaultServer" 
         }
         excludedFeatures.each {
@@ -274,6 +272,23 @@ task packageOpenLibertyMicroProfile2(type: PackageLibertyWithFeatures) {
         }
     }
 }
+
+// Includes all features.
+task zipOpenLibertyAll(type: Zip) {
+    dependsOn parent.subprojects.assemble
+    dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
+    baseName 'openliberty-all'
+    from projectDir
+    include 'wlp/**'
+    exclude 'wlp/usr/servers/**'
+    destinationDir distsDir
+    version releaseVersion
+    doLast {
+        rootProject.userProps.setProperty('zipopenliberty.archivename', archivePath.toString())
+        rootProject.storeProps()
+    }
+}
+publish.dependsOn zipOpenLibertyAll
 
 // Includes only kind=ga features.
 task zipOpenLiberty(type: Zip) {
@@ -283,9 +298,8 @@ task zipOpenLiberty(type: Zip) {
     destinationDir distsDir
     version releaseVersion
     doLast{
-        props.setProperty('zipopenliberty.runtime.archivename', archivePath.toString())
-        File propsFile = rootProject.file('generated.properties')
-        props.store(propsFile.newWriter(), null)
+        rootProject.userProps.setProperty('zipopenliberty.runtime.archivename', archivePath.toString())
+        rootProject.storeProps()
     }
 }
 publish.dependsOn zipOpenLiberty
@@ -298,9 +312,8 @@ task zipOpenLibertyKernel(type: Zip) {
     destinationDir distsDir
     version releaseVersion
     doLast{
-        props.setProperty('zipopenliberty.kernel.archivename', archivePath.toString())
-        File propsFile = rootProject.file('generated.properties')
-        props.store(propsFile.newWriter(), null)
+        rootProject.userProps.setProperty('zipopenliberty.kernel.archivename', archivePath.toString())
+        rootProject.storeProps()
     }
 }
 publish.dependsOn zipOpenLibertyKernel
@@ -313,9 +326,8 @@ task zipOpenLibertyWebProfile8(type: Zip) {
     destinationDir distsDir
     version releaseVersion
     doLast{
-        props.setProperty('zipopenliberty.webprofile8.archivename', archivePath.toString())
-        File propsFile = rootProject.file('generated.properties')
-        props.store(propsFile.newWriter(), null)
+        rootProject.userProps.setProperty('zipopenliberty.webprofile8.archivename', archivePath.toString())
+        rootProject.storeProps()
     }
 }
 publish.dependsOn zipOpenLibertyWebProfile8
@@ -328,44 +340,24 @@ task zipOpenLibertyJavaee8(type: Zip) {
     destinationDir distsDir
     version releaseVersion
     doLast{
-        props.setProperty('zipopenliberty.javaee8.archivename', archivePath.toString())
-        File propsFile = rootProject.file('generated.properties')
-        props.store(propsFile.newWriter(), null)
+        rootProject.userProps.setProperty('zipopenliberty.javaee8.archivename', archivePath.toString())
+        rootProject.storeProps()
     }
 }
 publish.dependsOn zipOpenLibertyJavaee8
 
-task zipOpenLibertyMicroProfile2(type: Zip) {
-    dependsOn packageOpenLibertyMicroProfile2
-    baseName 'openliberty-microProfile2'
+task zipOpenLibertyMicroProfile3(type: Zip) {
+    dependsOn packageOpenLibertyMicroProfile3
+    baseName 'openliberty-microProfile3'
     from packageDir
     destinationDir distsDir
     version releaseVersion
     doLast {
-        props.setProperty('zipopenliberty.microprofile2.archivename', archivePath.toString())
-        File propsFile = rootProject.file('generated.properties')
-        props.store(propsFile.newWriter(), null)
+        rootProject.userProps.setProperty('zipopenliberty.microprofile3.archivename', archivePath.toString())
+        rootProject.storeProps()
     }
 }
-publish.dependsOn zipOpenLibertyMicroProfile2
-
-// Includes all features.
-task zipOpenLibertyAll(type: Zip) {
-    dependsOn parent.subprojects.assemble
-    dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
-    baseName 'openliberty-all'
-    from projectDir
-    include 'wlp/**'
-    destinationDir distsDir
-    version releaseVersion
-    doLast {
-        props.setProperty('zipopenliberty.archivename', archivePath.toString())
-        File propsFile = rootProject.file('generated.properties')
-        props.store(propsFile.newWriter(), null)
-    }
-}
-publish.dependsOn zipOpenLibertyAll
-
+publish.dependsOn zipOpenLibertyMicroProfile3
 
 clean.doLast {
     file('wlp').deleteDir()
@@ -549,32 +541,47 @@ if (isRelease) {
     publish.dependsOn zipOpenLibertyMaven
 }
 
+task zipTestReport(type: Zip) {
+    baseName 'openliberty_test_report'
+    from cnf.file('generated/testReports/allUnitTests')
+    destinationDir cnf.file('generated/testReports')
+    rootProject.userProps.setProperty('gradle.test.report.zip', archivePath.toString())
+    rootProject.storeProps()
+}
 
 
 
 task createJSONForPublicArtifacts {
     enabled isAutomatedBuild
+    dependsOn zipTestReport
 
     doLast {
+        println "running createJSONForPublicArtifacts"
         delete "${buildDir}/info.json"
         File json = new File("${buildDir}/info.json")
         json.createNewFile()
 
         String testsPassed = "0"
-        if (props.getProperty("tests.total.successful") != null) {
-            testsPassed = props.getProperty("tests.total.successful")
+        if (rootProject.userProps.getProperty("tests.total.successful") != null) {
+            testsPassed = rootProject.userProps.getProperty("tests.total.successful")
+	    println "testsPassed is ${testsPassed}"
         }
         String testsTotal = "0"
-        if ((props.getProperty("tests.total.successful") != null) &&
-                (props.getProperty("tests.total.failed") != null)) {
-            def sum = Integer.valueOf(props.getProperty("tests.total.successful")) + Integer.valueOf(props.getProperty("tests.total.failed"))
+        if ((rootProject.userProps.getProperty("tests.total.successful") != null) &&
+                (rootProject.userProps.getProperty("tests.total.failed") != null)) {
+            def sum = Integer.valueOf(rootProject.userProps.getProperty("tests.total.successful")) + Integer.valueOf(rootProject.userProps.getProperty("tests.total.failed"))
             testsTotal = sum.toString()
+	    println "testsTotal is ${testsTotal}"
         }
 
-        String junitPath = props.getProperty("junit.report.zip")
-        String testReportPath = props.getProperty("gradle.test.report.zip");
-        String logPath = props.getProperty("published.gradle.log")
-        String driverLocation = props.getProperty("zipopenliberty.archivename")
+        String junitPath = rootProject.userProps.getProperty("junit.report.zip")
+        String testReportPath = rootProject.userProps.getProperty("gradle.test.report.zip");
+        String logPath = rootProject.userProps.getProperty("published.gradle.log")
+        String driverLocation = rootProject.userProps.getProperty("zipopenliberty.archivename")
+        println "junitPath is ${junitPath}"
+        println "testReportPath is ${testReportPath}"
+        println "logPath is ${logPath}"
+        println "driverLocation is ${driverLocation}"
 
         if (junitPath == null) {
             raise InvalidUserDataException("Could not find property named 'junit.report.zip'")
@@ -598,6 +605,7 @@ task createJSONForPublicArtifacts {
         } else {
             testResultName = new File(junitPath).getName()
         }
+	    println "testResultName is ${testResultName}"
         String logName = new File(logPath).getName()
         String driverLocationName = new File(driverLocation).getName()
 
@@ -613,141 +621,94 @@ task createJSONForPublicArtifacts {
 
         json.text = JsonOutput.prettyPrint(JsonOutput.toJson(object))
 
-        props.setProperty('published.json', json.toString())
+        rootProject.userProps.setProperty('published.json', json.toString())
+        println "json output is:"
+        println json.toString()
 
-        File propsFile = new File('generated.properties')
-        props.store(propsFile.newWriter(), null)
+        rootProject.storeProps()
     }
 }
 
-buildscript {
-    repositories {
-        if (isUsingArtifactory) {
-            maven {
-                credentials {
-                    username userProps.getProperty("artifactory.download.user")
-                    password userProps.getProperty("artifactory.download.token")
-                }
-                url ("https://" + userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-open-liberty")
-            }
-        } else {
-            jcenter()
-        }
-    }
-
-    dependencies {
-        classpath 'org.hidetake:gradle-ssh-plugin:2.9.0'
-        classpath 'org.hidetake:groovy-ssh:2.9.0'
-        classpath 'com.jcraft:jsch:0.1.54'
-    }
+task gatherTestResults {
+    dependsOn zipTestReport,createJSONForPublicArtifacts
 }
 
-apply plugin: 'org.hidetake.ssh'
+if (isBuildOsNativePackages){
+    task copyOpenLiberty(type: Sync) {
+       dependsOn zipOpenLiberty
 
-remotes {
-    dhe {
-        host = props.getProperty("dhe.server")
-        user = props.getProperty("dhe.user")
-        password = props.getProperty("dhe.password")
-        knownHosts = allowAnyHosts
+       mkdir("packaging/tempPackagingDir")
+
+       from zipOpenLiberty
+       into 'packaging/tempPackagingDir'
     }
-}
 
-ssh.settings {
-    jschLog = true
-    fileTransfer = "scp"
-}
-
-task publishPublicArtifactsOnDhe {
-    dependsOn createJSONForPublicArtifacts
-    enabled isAutomatedBuild && isPublicPublishing && (isPersonal || isContinuousBuild || isRelease)
-
-    doLast {
-        // Re-arrange buildLabel, ex: 201708101600 to 2017-08-10_1600
-        def (yr, mo, d, t) = [bnd.buildLabel.substring(0,4), bnd.buildLabel.substring(4,6), bnd.buildLabel.substring(6,8), bnd.buildLabel.substring(8)]
-        String version = "${yr}-${mo}-${d}_${t}"
-        String packageName = null
-        if (isRelease) {
-            packageName = props.getProperty("published.package.nightly")
-        } else {
-            packageName = props.getProperty("published.package.personal")
-            version = props.getProperty("buildResultUUID")
-        }
-
-        String userAtHost = props.getProperty("dhe.user") + "@" + props.getProperty("dhe.server")
-        String dir = "/www/stage/export/pub/software/openliberty/runtime"
-        String publicDHEUrl = "http://public.dhe.ibm.com/ibmdl/export/pub/software/openliberty/runtime"
-        String dest = userAtHost + ":" + dir
-
-        def artifactList = [props.getProperty("published.json"),
-                            props.getProperty("published.gradle.log")]
-
-        artifactList.add(props.getProperty("zipopenliberty.archivename"))
-
-        if (isPersonal) {
-            artifactList.add(props.getProperty("gradle.test.report.zip"))
-        } else {
-            artifactList.add(props.getProperty("junit.report.zip"))
-            // add runtime, javaee8, and webprofile8 images to publish list for release builds only
-            if (isRelease) {
-                artifactList.add(props.getProperty("zipopenliberty.runtime.archivename"))
-                artifactList.add(props.getProperty("zipopenliberty.javaee8.archivename"))
-                artifactList.add(props.getProperty("zipopenliberty.webprofile8.archivename"))
-            }
-        }
-
-        mkdir("${buildDir}/${version}")
-        artifactList.each { filePath ->
-            copy {
-                from filePath
-                into "${buildDir}/${version}"
-                if (props.getProperty("gradle.test.report.zip") != null && props.getProperty("gradle.test.report.zip").equals(filePath)) {
-                    def reportZip = file(props.getProperty("gradle.test.report.zip"))
-                    from zipTree(reportZip)
-                    mkdir("${buildDir}/${version}/junit")
-                    into "${buildDir}/${version}/junit"
-                }
-            }
-        }
-
-        // Upload build artifacts
-        ssh.run {
-            session(remotes.dhe) {
-                put from: "${buildDir}/${version}", into: "${dir}/${packageName}/"
-            }
-        }
-
-        delete "${buildDir}/${version}"
-        delete "${buildDir}/info.json"
-
-        // Update build listing json with the newly uploaded build
-        exec {
-            commandLine "curl", "-o", "${buildDir}/info.json", "${publicDHEUrl}/${packageName}/info.json"
-        }
-
-        File json = new File("${buildDir}/info.json")
-        if (json.getText().contains("404 Not Found")) {
-            json.text = ""
-        }
-
-        def object = [:]
-        if (json.getText() != "") {
-            object = new JsonSlurper().parseText(json.getText())
-        }
-
-        List versionsList = object['versions']
-        if (versionsList != null) {
-            versionsList.add("${version}")
-        } else {
-            versionsList = ["${version}"]
-        }
-        object['versions'] = versionsList
-        json.text = JsonOutput.toJson(object)
-
-        ssh.run {
-            session(remotes.dhe) {
-                put from: "${buildDir}/info.json", into: "${dir}/${packageName}/"
-            }
-        }
+    task updateSpecTemplate(type: Copy) {
+        from 'packaging'
+        include 'openliberty.spec.template'
+        into 'packaging/rpmbuild/SPECS'
+        filter { line -> line.replaceAll('@SPEC_VERSION@', bnd('libertyServiceVersion', 'Unknown')) }
+        rename { it.replace(".template", "") }
     }
+
+    task updateChangelogTemplate(type: Copy) {
+        from 'packaging'
+        include 'changelog.template'
+        into 'packaging/debuild/openliberty/debian'
+        filter { line -> line.replaceAll('@CHANGELOG_VERSION@', bnd('libertyServiceVersion', 'Unknown')) }
+        rename { it.replace(".template", "") }
+    }
+
+    task updateBuildPackageScriptTemplate(type: Copy) {
+        from 'packaging'
+        include 'buildOsNativePackages.sh.template'
+        into 'packaging'
+        filter { line -> line.replaceAll('@DRIVER_VERSION@', bnd('libertyServiceVersion', 'Unknown')) }
+        rename { it.replace(".template", "") }
+    }
+
+    task updateRulesTemplate(type: Copy) {
+        from 'packaging'
+        include 'rules.template'
+        into 'packaging/debuild/openliberty/debian'
+        filter { line -> line.replaceAll('@VERSION@', bnd('libertyServiceVersion', 'Unknown')) }
+        rename { it.replace(".template", "") }
+    }
+
+    task buildOsNativePackages(type:Exec) {
+        dependsOn copyOpenLiberty
+        dependsOn updateChangelogTemplate
+        dependsOn updateSpecTemplate
+        dependsOn updateBuildPackageScriptTemplate
+        dependsOn updateRulesTemplate
+
+        workingDir 'packaging'
+        mkdir("packaging/tempPackagingDir/tempTar")
+        
+        def rpms = file("./packaging/rpmbuild/RPMS/noarch/openliberty-" + bnd('libertyServiceVersion') + "-1.noarch.rpm")
+        def debs = file("./packaging/debuild/openliberty_" + bnd('libertyServiceVersion') + "-1ubuntu1_all.deb")
+        
+        inputs.dir('packaging/tempPackagingDir')
+        outputs.file(rpms)
+        outputs.file(debs)
+
+        errorOutput = new ByteArrayOutputStream()
+
+        commandLine 'sh', './buildOsNativePackages.sh'
+
+        ignoreExitValue true
+
+        doLast {
+            file('packaging/tempPackagingDir').deleteDir()
+            file('packaging/rpmbuild/SPECS/openliberty.spec').delete()
+            file('packaging/debuild/openliberty/debian/changelog').delete()
+            file('packaging/buildOsNativePackages.sh').delete()
+            file('packaging/debuild/openliberty/debian/rules').delete()
+            if (execResult.getExitValue() != 0) {
+                throw new GradleException("Script buildOsNativePackages.sh failed to run rpmbuild and debuild: " + errorOutput.toString())
+            }
+        }
+        
+    }
+    publish.dependsOn buildOsNativePackages
 }

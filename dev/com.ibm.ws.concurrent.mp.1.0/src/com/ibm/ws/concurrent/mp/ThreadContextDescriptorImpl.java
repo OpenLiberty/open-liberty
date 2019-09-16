@@ -18,8 +18,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.RejectedExecutionException;
 
-import org.eclipse.microprofile.concurrent.spi.ThreadContextProvider;
-import org.eclipse.microprofile.concurrent.spi.ThreadContextSnapshot;
+import org.eclipse.microprofile.context.spi.ThreadContextProvider;
+import org.eclipse.microprofile.context.spi.ThreadContextSnapshot;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -41,9 +41,9 @@ class ThreadContextDescriptorImpl implements ThreadContextDescriptor {
     private final Map<String, String> EMPTY_MAP = Collections.emptyMap();
 
     /**
-     * The concurrency provider.
+     * The context manager provider.
      */
-    private final ConcurrencyProviderImpl concurrencyProvider;
+    private final ContextManagerProviderImpl cmProvider;
 
     /**
      * List of thread context snapshots (either captured from the requesting thread or cleared/empty)
@@ -55,11 +55,11 @@ class ThreadContextDescriptorImpl implements ThreadContextDescriptor {
      */
     private final String metadataIdentifier;
 
-    ThreadContextDescriptorImpl(ConcurrencyProviderImpl concurrencyProvider, LinkedHashMap<ThreadContextProvider, ContextOp> configPerProvider) {
-        this.concurrencyProvider = concurrencyProvider;
+    ThreadContextDescriptorImpl(ContextManagerProviderImpl cmProvider, LinkedHashMap<ThreadContextProvider, ContextOp> configPerProvider) {
+        this.cmProvider = cmProvider;
 
         ComponentMetaData cData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-        metadataIdentifier = cData == null ? null : concurrencyProvider.metadataIdentifierService.getMetaDataIdentifier(cData);
+        metadataIdentifier = cData == null ? null : cmProvider.metadataIdentifierService.getMetaDataIdentifier(cData);
 
         // create snapshots of captured or cleared context here, per the configured instructions for each type
         for (Map.Entry<ThreadContextProvider, ContextOp> entry : configPerProvider.entrySet()) {
@@ -119,7 +119,7 @@ class ThreadContextDescriptorImpl implements ThreadContextDescriptor {
 
         // EE Concurrency 3.3.4: All invocations to any of the proxied interface methods will fail with a
         // java.lang.IllegalStateException exception if the application component is not started or deployed.
-        if (metadataIdentifier != null && concurrencyProvider.metadataIdentifierService.getMetaData(metadataIdentifier) == null)
+        if (metadataIdentifier != null && cmProvider.metadataIdentifierService.getMetaData(metadataIdentifier) == null)
             com.ibm.ws.context.service.serializable.ThreadContextDescriptorImpl.notAvailable(metadataIdentifier, "");
 
         ArrayList<com.ibm.wsspi.threadcontext.ThreadContext> contextAppliedToThread = new ArrayList<com.ibm.wsspi.threadcontext.ThreadContext>(contextSnapshots.size());

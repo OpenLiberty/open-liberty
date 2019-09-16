@@ -5,18 +5,16 @@
 
     <keyStore id="defaultKeyStore" password="Liberty"/>
 	
-	<logging traceSpecification="com.ibm.ws.microprofile.metrics*=all"/>
-	
     <basicRegistry>
         <user name="admin" password="adminpwd" />
-        <user name="viewer" password="viewerpwd" />
+        <user name="reader" password="readerpwd" />
         <user name="user" password="userpwd" />
     </basicRegistry>
     <administrator-role>
         <user>admin</user>
     </administrator-role>
-    <viewer-role>
-        <user>viewer</user>
-    </viewer-role>
+    <reader-role>
+        <user>reader</user>
+    </reader-role>
 
 </server>

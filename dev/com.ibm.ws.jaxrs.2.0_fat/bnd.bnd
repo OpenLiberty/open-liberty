@@ -14,6 +14,7 @@ bVersion=1.0
 src: \
   fat/src,\
   test-applications/annotationscan/src,\
+  test-applications/beanparam/src,\
   test-applications/beanvalidation/src,\
   test-applications/bookcontinuationstore/src,\
   test-applications/bookstore/src,\
@@ -29,6 +30,8 @@ src: \
   test-applications/jackson/src,\
   test-applications/jacksonJsonIgnore/src,\
   test-applications/json/src,\
+  test-applications/testManagedBeans/src,\
+  test-applications/paramconverter/src,\
   test-applications/params/src,\
   test-applications/providerAndResource/src,\
   test-applications/providerCache/src,\
@@ -42,6 +45,7 @@ src: \
   test-applications/servletcoexist2/src,\
   test-applications/servletcoexist3/src,\
   test-applications/thirdpartyjersey/src,\
+  test-applications/uriInfo/src,\
   test-applications/validation/src,\
   test-applications/wadl/src,\
   test-applications/webcontainer/src
@@ -51,13 +55,19 @@ fat.project: true
 # These features get added programatically
 tested.features: \
   jaxrs-2.1,\
-  cdi-2.0
+  cdi-2.0,\
+  appsecurity-3.0
 
 -buildpath: \
   com.ibm.websphere.javaee.annotation.1.2,\
+  com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
+  javax.activation:activation;version=1.1,\
+  javax.jws:jsr181-api;version=latest,\
+  com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
   com.ibm.websphere.javaee.cdi.1.2,\
   com.ibm.websphere.javaee.ejb.3.2,\
   com.ibm.websphere.javaee.jaxrs.2.0,\
+  com.ibm.websphere.javaee.jsonb.1.0,\
   com.ibm.websphere.javaee.servlet.3.1,\
   com.ibm.websphere.javaee.validation.1.1,\
   com.ibm.ws.jaxrs.2.0.common;version=latest,\

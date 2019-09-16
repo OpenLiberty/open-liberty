@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2013 IBM Corporation and others.
+ * Copyright (c) 2005, 2013, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,9 +15,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.UnknownHostException;
 import java.security.AccessController;
 import java.security.Key;
 import java.security.KeyException;
@@ -49,6 +51,7 @@ import com.ibm.ws.crypto.certificateutil.DefaultSSLCertificateCreator;
 import com.ibm.ws.crypto.certificateutil.DefaultSSLCertificateFactory;
 import com.ibm.ws.crypto.certificateutil.DefaultSubjectDN;
 import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.kernel.service.util.JavaInfo;
 import com.ibm.ws.ssl.JSSEProviderFactory;
 import com.ibm.ws.ssl.core.WSPKCSInKeyStore;
 import com.ibm.ws.ssl.core.WSPKCSInKeyStoreList;
@@ -88,7 +91,7 @@ public class WSKeyStore extends Properties {
     private String location = null;
 
     private String provider = JSSEProviderFactory.getInstance().getKeyStoreProvider();
-    private String type = Constants.KEYSTORE_TYPE_JKS;
+    private String type = Constants.KEYSTORE_TYPE_PKCS12;
     private Boolean fileBased = Boolean.TRUE;
     private Boolean readOnly = Boolean.FALSE;
     private Boolean initializeAtStartup = Boolean.FALSE;
@@ -133,6 +136,11 @@ public class WSKeyStore extends Properties {
         setProperty(Constants.SSLPROP_KEY_STORE_CREATE_CMS_STASH, Constants.TRUE);
     }
 
+    WSKeyStore(String _name) { // for testing
+        this.name = _name;
+        this.cfgSvc = null;
+    }
+
     /**
      * Constructor using a provided name and array of properties.
      *
@@ -147,12 +155,24 @@ public class WSKeyStore extends Properties {
         List<Map<String, Object>> keyEntryElements = Nester.nest(KEY_STORE_KEYENTRY, properties);
         saveAliasInformation(keyEntryElements);
 
+        // Let's get the fully resolved path to the default JKS keystore
+        String default_location = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_KEY_STORE_FILE;
+        String fallback_keystore = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_FALLBACK_KEY_STORE_FILE;
+        String res = null;
+        try {
+            res = null;
+            res = cfgSvc.resolveString(fallback_keystore);
+            default_location = cfgSvc.resolveString((default_location));
+        } catch (IllegalStateException e) {
+            // ignore
+        }
+
         String specifiedType = null;
         Enumeration<String> keys = properties.keys();
         while (keys.hasMoreElements()) {
             final String key = keys.nextElement();
-
             final Object oValue = properties.get(key);
+
             if (!(oValue instanceof String)) {
                 if (key.equalsIgnoreCase(KEY_STORE_POLLING_RATE) &&
                     oValue instanceof Long) {
@@ -177,6 +197,7 @@ public class WSKeyStore extends Properties {
             } else if (key.equalsIgnoreCase("type")) {
                 this.type = value;
                 specifiedType = value;
+
             } else if (key.equalsIgnoreCase("initializeAtStartup")) {
                 this.initializeAtStartup = Boolean.valueOf(value);
             } else if (key.equalsIgnoreCase("createStashFileForCMS")) {
@@ -209,38 +230,92 @@ public class WSKeyStore extends Properties {
             this.password = SerializableProtectedString.EMPTY_PROTECTED_STRING;
         }
 
-        this.isDefault = LibertyConstants.DEFAULT_KEYSTORE_REF_ID.equals(name);
-        if (this.isDefault) {
-            // This is the default key store.. some things we'll just fill in if they
-            // are missing... we only do this for the default
-            if (this.location == null && specifiedType == null) {
-                this.location = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_KEY_STORE_FILE;
-                specifiedType = this.type = Constants.KEYSTORE_TYPE_JKS;
-            }
-            if (password.isEmpty()) {
-                String envPassword = System.getenv("keystore_password");
-                if (envPassword != null && !envPassword.isEmpty()) {
-                    Tr.audit(tc, "ssl.defaultKeyStore.env.password.CWPKI0820A");
-                    password = new SerializableProtectedString(envPassword.toCharArray());
-                } else {
-                    Tr.info(tc, "ssl.defaultKeyStore.not.created.CWPKI0819I");
-                    throw new IllegalArgumentException("Required keystore information is missing, must provide a password for the default keystore");
-                }
-            }
-        }
-
-        if (specifiedType == null || location == null) {
+        if (this.type == null || this.location == null) {
             Tr.error(tc, "ssl.keystore.config.error");
             throw new IllegalArgumentException("Required keystore information is missing, must provide a location and type.");
         }
 
-        if (getFileBased().booleanValue()) {
+        this.isDefault = LibertyConstants.DEFAULT_KEYSTORE_REF_ID.equals(name);
+
+        boolean storeFileExists = defaultFileExists(this.location);
+
+        if (this.isDefault && !storeFileExists) {
+
+            // if a type is specified in server.xml, and it's JKS, use the default location for the key.jks keystore; else we'll use PKCS12
+
+            // check if we have an existing key.jks.  If so, use that instead of creating a PKCS12 keystore
+            File f = new File(res);
+
+            //location from metatype sometimes has a extra slashes, need to normalize it
+            this.location = this.location.replaceAll("/+", "/");
+
+            if (f.exists() && this.location.toLowerCase().equals(default_location.toLowerCase())) {
+                // use the JKS file instead, as it exists
+                this.location = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_FALLBACK_KEY_STORE_FILE;
+                specifiedType = Constants.KEYSTORE_TYPE_JKS;
+                this.type = Constants.KEYSTORE_TYPE_JKS;
+            }
+
+            // check if they've specified a type, and create the corresponding key.jks or key.p12
+            if (type.equals(Constants.KEYSTORE_TYPE_JKS) && this.location.toLowerCase().endsWith("/key.p12")) {
+                this.location = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_FALLBACK_KEY_STORE_FILE;
+                specifiedType = Constants.KEYSTORE_TYPE_JKS;
+                this.type = Constants.KEYSTORE_TYPE_JKS;
+
+            } else if (type.equals(Constants.KEYSTORE_TYPE_PKCS12) && this.location.toLowerCase().endsWith("/key.p12")) {
+                specifiedType = Constants.KEYSTORE_TYPE_PKCS12;
+                this.type = Constants.KEYSTORE_TYPE_PKCS12;
+            } else if (!type.equals(Constants.KEYSTORE_TYPE_JKS)) {
+                if (this.location.toLowerCase().endsWith(".jks")) {
+                    this.type = LibertyConstants.DEFAULT_FALLBACK_TYPE;
+                    specifiedType = type;
+                }
+            }
+
+        } else {
+            // this is not the default keystore, but a location has been specified.  If the keystore is JKS type, set the type to JKS
+            if (this.location.toUpperCase().endsWith(Constants.KEYSTORE_TYPE_JKS)) {
+                specifiedType = Constants.KEYSTORE_TYPE_JKS;
+                this.type = Constants.KEYSTORE_TYPE_JKS;
+            }
+        }
+
+        if (password.isEmpty() && this.isDefault) {
+            String envPassword = System.getenv("keystore_password");
+            if (envPassword != null && !envPassword.isEmpty()) {
+                Tr.audit(tc, "ssl.defaultKeyStore.env.password.CWPKI0820A");
+                password = new SerializableProtectedString(envPassword.toCharArray());
+            } else {
+                Tr.info(tc, "ssl.defaultKeyStore.not.created.CWPKI0819I");
+                throw new IllegalArgumentException("Required keystore information is missing, must provide a password for the default keystore");
+            }
+        }
+
+        if (getFileBased().booleanValue() && this.location != null) {
             // resolve paths now
             setLocation(this.location);
         }
 
         setUpInternalProperties();
         initializeKeyStore(true);
+    }
+
+    /**
+     * @param location2
+     * @return
+     */
+    private boolean defaultFileExists(String ksFile) {
+
+        boolean exists = false;
+        // check if the file from the configuration exists.
+        if (ksFile != null) {
+            File f = new File(ksFile);
+
+            if (f.exists()) {
+                exists = true;
+            }
+        }
+        return exists;
     }
 
     /**
@@ -307,6 +382,7 @@ public class WSKeyStore extends Properties {
      * @param _location
      */
     private void setLocation(String _location) {
+
         String res = null;
         File resFile = null;
 
@@ -426,10 +502,10 @@ public class WSKeyStore extends Properties {
                     setProperty(Constants.SSLPROP_TOKEN_ENABLED, Constants.TRUE);
 
                     // set appropriate provider for jvm vendor
-                    if (isOracleVendor())
-                        setProperty(Constants.SSLPROP_KEY_STORE_PROVIDER, SUNPKCS11_PROVIDER_NAME);
-                    else
+                    if (JavaInfo.vendor().equals(JavaInfo.Vendor.IBM))
                         setProperty(Constants.SSLPROP_KEY_STORE_PROVIDER, IBMPKCS11Impl_PROVIDER_NAME);
+                    else
+                        setProperty(Constants.SSLPROP_KEY_STORE_PROVIDER, SUNPKCS11_PROVIDER_NAME);
                 }
             }
 
@@ -667,6 +743,9 @@ public class WSKeyStore extends Properties {
             throw ex;
         }
 
+        if (isDefault)
+            Tr.info(tc, "Successfully loaded default keystore: " + this.location + " of type: " + this.type);
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.exit(tc, "do_getKeyStore", myKeyStore);
         return myKeyStore;
@@ -683,7 +762,6 @@ public class WSKeyStore extends Properties {
                     String name = getProperty(Constants.SSLPROP_KEY_STORE_NAME);
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                         Tr.debug(tc, "Initializing KeyStore: " + name);
-
                     String password = decodePassword(getProperty(Constants.SSLPROP_KEY_STORE_PASSWORD));
                     String type = getProperty(Constants.SSLPROP_KEY_STORE_TYPE);
                     boolean fileBased = Boolean.parseBoolean(getProperty(Constants.SSLPROP_KEY_STORE_FILE_BASED));
@@ -694,9 +772,10 @@ public class WSKeyStore extends Properties {
 
                     if (fileBased && storeFile != null) {
                         keyStoreLocation = cfgSvc.resolveString(storeFile);
+                        //Tr.info(tc, "File path for store: " + keyStoreLocation + " of type: " + type);
 
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                            Tr.debug(tc, "File path for store: " + keyStoreLocation);
+                            Tr.debug(tc, "File path for store: " + keyStoreLocation + " of type: " + type);
 
                         // Check if the filename exists as a File.
                         File kFile = new File(keyStoreLocation).getAbsoluteFile();
@@ -712,10 +791,12 @@ public class WSKeyStore extends Properties {
                             // is = openKeyStore(keyStoreLocation);
 
                             // load the keystore
-                            if (password.isEmpty() && (type.equalsIgnoreCase(Constants.KEYSTORE_TYPE_JCEKS) || type.equalsIgnoreCase(Constants.KEYSTORE_TYPE_JKS)))
+
+                            if (password.isEmpty() && (type.equalsIgnoreCase(Constants.KEYSTORE_TYPE_JCEKS) || type.equalsIgnoreCase(Constants.KEYSTORE_TYPE_JKS))) {
                                 ks1.load(is, null);
-                            else
+                            } else {
                                 ks1.load(is, password.toCharArray());
+                            }
 
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                                 Enumeration<String> e = ks1.aliases();
@@ -737,11 +818,16 @@ public class WSKeyStore extends Properties {
                             if (parentFile == null || parentFile.isDirectory() || parentFile.mkdirs()) {
                                 try {
                                     String serverName = cfgSvc.getServerName();
+                                    String san = null;
+                                    if (genKeyHostName != null) {
+                                        san = createCertSANInfo(genKeyHostName);
+                                    }
                                     // Call Certificate factory to go create the certificate
                                     DefaultSSLCertificateCreator certCreator = DefaultSSLCertificateFactory.getDefaultSSLCertificateCreator();
                                     certCreator.createDefaultSSLCertificate(keyStoreLocation, password, DefaultSSLCertificateCreator.DEFAULT_VALIDITY,
                                                                             new DefaultSubjectDN(genKeyHostName, serverName).getSubjectDN(),
-                                                                            DefaultSSLCertificateCreator.DEFAULT_SIZE, DefaultSSLCertificateCreator.SIGALG);
+                                                                            DefaultSSLCertificateCreator.DEFAULT_SIZE, DefaultSSLCertificateCreator.SIGALG,
+                                                                            san);
                                 } catch (IllegalArgumentException e) {
                                     // We can state that it is a password error because the keyStoreLocation is already known to be good
                                     // and the validity and DN are default values.
@@ -753,7 +839,9 @@ public class WSKeyStore extends Properties {
                                 }
 
                                 JSSEProvider jsseProvider = JSSEProviderFactory.getInstance();
+
                                 ks1 = jsseProvider.getKeyStoreInstance(type, provider);
+
                                 is = new URL("file:" + kFile.getCanonicalPath()).openStream();
 
                                 // load the keystore
@@ -767,6 +855,7 @@ public class WSKeyStore extends Properties {
                         } else {
                             throw new SSLException("KeyStore \"" + keyStoreLocation + "\" does not exist.");
                         }
+
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                             Tr.debug(tc, "do_getKeyStore (loaded)");
                         return ks1;
@@ -833,6 +922,7 @@ public class WSKeyStore extends Properties {
                     }
                 }
             }
+
         });
     }
 
@@ -1310,27 +1400,47 @@ public class WSKeyStore extends Properties {
         myKeyStore = null;
     }
 
-    public boolean isOracleVendor() {
-        String vendorName = getSystemProperty("java.vendor");
-        boolean isOracle = false;
-        if (vendorName != null) {
-            if (vendorName.toLowerCase().contains("oracle")) {
-                isOracle = true;
+    public static String getCannonicalPath(String location, Boolean fileBased) {
+        String cannonicalLocation = location;
+        if (fileBased) {
+            //Try to create File object based on Location to get the cannonical path
+            try {
+                cannonicalLocation = new File(location).getCanonicalPath();
+            } catch (IOException e) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "Exception finding full file path. Setting back to default");
             }
         }
-        return isOracle;
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "getCannonicalLocation -> " + cannonicalLocation);
+        }
+        return cannonicalLocation;
     }
 
-    @SuppressWarnings("unchecked")
-    public String getSystemProperty(final String propName) {
-        String value = (String) java.security.AccessController.doPrivileged(new java.security.PrivilegedAction() {
-            @Override
-            public Object run() {
-                return System.getProperty(propName);
-            }
-        });
+    private String createCertSANInfo(String hostname) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.entry(tc, "createCertSANInfo: " + hostname);
+        String ext = null;
 
-        return value;
+        InetAddress addr;
+        try {
+            addr = InetAddress.getByName(hostname);
+            if (addr != null && addr.toString().startsWith("/"))
+                ext = "SAN=ip:" + hostname;
+            else {
+                // If the hostname start with a digit keytool will not create a SAN with the value
+                if (!Character.isDigit(hostname.charAt(0)))
+                    ext = "SAN=dns:" + hostname;
+            }
+        } catch (UnknownHostException e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "createCertSANInfo exception -> " + e.getMessage());
+            }
+            // return null, do not set a SAN if there is a failure here
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.exit(tc, "createCertSANInfo: " + ext);
+        return ext;
     }
 
 }

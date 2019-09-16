@@ -27,11 +27,11 @@ import componenttest.topology.impl.LibertyServer;
 @SuiteClasses({
                 MongoBasicTest.class,
                 MongoSSLTest.class,
+                MongoSSLInvalidTrustTest.class,
                 MongoDefaultSSLTest.class,
                 MongoConfigUpdateTest.class
 })
 public class FATSuite {
-
     public static final String APP_NAME = "mongo";
     public static String HOST_NAME;
 
@@ -50,8 +50,7 @@ public class FATSuite {
 
     // TODO: Should not need to scrape trace in order to know a feature is usable --> use min.cardinality
     public static void waitForMongoSSL(LibertyServer server) throws Exception {
-        // Just because SSL feature is reported as starting doesn't mean it is really
-        // ready,
+        // Just because SSL feature is reported as starting doesn't mean it is really ready,
         // nor that Mongo is functional, so wait for SSL to report the keystore has been
         // added, then wait for MongoDBService to activate.
         server.resetLogMarks(); // look from start of logs
@@ -59,5 +58,4 @@ public class FATSuite {
                       server.waitForStringInTraceUsingMark("Adding keystore: (myDefaultTrustStore|differentTrustStore)"));
         assertNotNull("Did not find message indicating MongoDBService had activated", server.waitForStringInTraceUsingMark("MongoDBService * < activate"));
     }
-
 }

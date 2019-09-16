@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2016 IBM Corporation and others.
+# Copyright (c) 2010, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -844,3 +844,5 @@ info.initlogs=Redirecionando stdout e stderr para o arquivo {0}
 info.no.servers.defined=N\u00e3o h\u00e1 servidores definidos no diret\u00f3rio do usu\u00e1rio {0}.
 info.list.of.defined.servers=Os servidores a seguir est\u00e3o definidos para o diret\u00f3rio do usu\u00e1rio {0}.
 info.communicate.server=Ocorreu um erro de comunica\u00e7\u00e3o entre o comando {0} e o servidor {1}.
+
+info.serialFilterLoaded=O agente de filtro serial carregado.

@@ -152,10 +152,11 @@ public class JMSDestinationResourceFactoryBuilder implements ResourceFactoryBuil
         String module = (String) annotationDDProps.remove(AppDefinedResource.MODULE);
         String component = (String) annotationDDProps.remove(AppDefinedResource.COMPONENT);
         String jndiName = (String) annotationDDProps.remove(AdminObjectService.JNDI_NAME);
+        String interfaceName = (String) annotationDDProps.remove(INTERFACE_NAME);
         annotationDDProps.remove(DESCRIPTION);
         annotationDDProps.remove(NAME);
 
-        String adminObjectID = getadminObjectID(application, module, component, jndiName);
+        String adminObjectID = getAdminObjectID(application, module, component, jndiName, interfaceName);
 
         StringBuilder filter = new StringBuilder(FilterUtils.createPropertyFilter(ID, adminObjectID));
         filter.insert(filter.length() - 1, '*');
@@ -179,7 +180,6 @@ public class JMSDestinationResourceFactoryBuilder implements ResourceFactoryBuil
         }
         String resourceAdapter = ((String) annotationDDProps.remove(RESOURCE_ADAPTER));
         String destinationName = (String) annotationDDProps.get(JMSResourceDefinitionConstants.DESTINATION_NAME);
-        String interfaceName = (String) annotationDDProps.remove(INTERFACE_NAME);
 
         //If the resource adapter type is wasJms, then the destination name has to be mapped with respective name in the resource adapter.
         if (JMSResourceDefinitionConstants.RESOURCE_ADAPTER_WASJMS.equals(resourceAdapter)) {
@@ -216,7 +216,10 @@ public class JMSDestinationResourceFactoryBuilder implements ResourceFactoryBuil
             if (value instanceof String)
                 value = variableRegistry.resolveString((String) value);
 
-            adminObjectSvcProps.put(JMSResourceDefinitionConstants.PROPERTIES_REF_KEY + key, value);
+            if (CONFIG_DISPLAY_ID.equals(key))
+                adminObjectSvcProps.put(JMSResourceDefinitionConstants.PROPERTIES_REF_KEY + "config.referenceType", value);
+            else
+                adminObjectSvcProps.put(JMSResourceDefinitionConstants.PROPERTIES_REF_KEY + key, value);
         }
 
         //Get all the properties for a given resource(get the resource by the interfaceName) from the corresponding resource adapter, 
@@ -343,17 +346,18 @@ public class JMSDestinationResourceFactoryBuilder implements ResourceFactoryBuil
     }
 
     /**
-     * Utility method that creates a unique identifier for an application defined data source.
+     * Utility method that creates a unique identifier for an application-defined JMS destination.
      * For example,
-     * application[MyApp]/module[MyModule]/connectionFactory[java:module/env/jdbc/cf1]
+     * application[MyApp]/module[MyModule]/jmsQueue[java:module/env/jms/queue1]
      * 
-     * @param application application name if data source is in java:app, java:module, or java:comp. Otherwise null.
-     * @param module module name if data source is in java:module or java:comp. Otherwise null.
-     * @param component component name if data source is in java:comp and isn't in web container. Otherwise null.
-     * @param jndiName configured JNDI name for the data source. For example, java:module/env/jca/cf1
+     * @param application application name if the destination is in java:app, java:module, or java:comp. Otherwise null.
+     * @param module module name if the destination is in java:module or java:comp. Otherwise null.
+     * @param component component name if the destination is in java:comp and isn't in web container. Otherwise null.
+     * @param jndiName configured JNDI name for the destination. For example, java:module/env/jms/topic1
+     * @param interfaceName fully qualified name of the JMS destination interface.
      * @return the unique identifier
      */
-    private static final String getadminObjectID(String application, String module, String component, String jndiName) {
+    private static final String getAdminObjectID(String application, String module, String component, String jndiName, String interfaceName) {
         StringBuilder sb = new StringBuilder(jndiName.length() + 80);
         if (application != null) {
             sb.append(AppDefinedResource.APPLICATION).append('[').append(application).append(']').append('/');
@@ -363,7 +367,17 @@ public class JMSDestinationResourceFactoryBuilder implements ResourceFactoryBuil
                     sb.append(AppDefinedResource.COMPONENT).append('[').append(component).append(']').append('/');
             }
         }
-        return sb.append(AdminObjectService.ADMIN_OBJECT).append('[').append(jndiName).append(']').toString();
+
+        if ("javax.jms.Queue".equals(interfaceName))
+            sb.append("jmsQueue");
+        else if ("javax.jms.Topic".equals(interfaceName))
+            sb.append("jmsTopic");
+        else if ("javax.jms.Destination".equals(interfaceName))
+            sb.append("jmsDestination");
+        else
+            sb.append(AdminObjectService.ADMIN_OBJECT);
+
+        return sb.append('[').append(jndiName).append(']').toString();
     }
 
     /**

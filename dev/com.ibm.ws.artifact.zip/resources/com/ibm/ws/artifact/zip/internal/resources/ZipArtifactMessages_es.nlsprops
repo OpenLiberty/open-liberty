@@ -22,14 +22,92 @@
 #   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
 #   (single quote must be coded as one single quote '). 
 
+# # A file path.
 bad.zip.data=CWWKM0101E: El sistema no ha podido procesar los datos de archivado para {0}.
 bad.zip.data.explanation=Se ha producido una excepci\u00f3n al procesar los datos comprimidos para el archivo. 
 bad.zip.data.useraction=Compruebe que el archivo es v\u00e1lido.
 
-remove.cache.data=CWWKM0102W: El sistema ha limpiado los datos de memoria cach\u00e9 no v\u00e1lidos desde la ubicaci\u00f3n {0}
+# # A file path.
+remove.cache.data=CWWKM0102W: El sistema ha limpiado los datos de memoria cach\u00e9 no v\u00e1lidos desde la ubicaci\u00f3n {0}.
 remove.cache.data.explanation=La estructura de la aplicaci\u00f3n parece haber cambiado, y requiere la supresi\u00f3n de los datos de memoria cach\u00e9 basados en la estructura anterior.
 remove.cache.data.useraction=Si la aplicaci\u00f3n ha cambiado de estructura, esto se esperaba.
 
+# # {0} The text of the message from an exception.
 extract.cache.fail=CWWKM0103E: El sistema no ha podido extraer un archivo anidado a una ubicaci\u00f3n de memoria cach\u00e9 debido a {0}
 extract.cache.fail.explanation=Se ha producido un error durante la creaci\u00f3n de los datos de memoria cach\u00e9 para la aplicaci\u00f3n, lo que impide que se pueda acceder correctamente a la aplicaci\u00f3n. 
 extract.cache.fail.useraction=Compruebe la causa notificada.
+
+# # {0} A file path.
+extract.cache.null=CWWKM0104E: El sistema no ha podido extraer el archivo anidado {0} a una ubicaci\u00f3n de memoria cach\u00e9.
+extract.cache.null.explanation=Se ha producido un error durante la creaci\u00f3n de los datos de memoria cach\u00e9 para la aplicaci\u00f3n, lo que impide que se pueda acceder correctamente a la aplicaci\u00f3n. 
+extract.cache.null.useraction=Compruebe que el archivo anidado sea un archivo v\u00e1lido.
+
+# # {0} A file path.
+extract.secondary.timeout=CWWKM0105E: Tiempo de espera excedido para la extracci\u00f3n secundaria de {0}.
+extract.secondary.timeout.explanation=Se ha excedido el tiempo de espera de una solicitud concurrente de extracci\u00f3n de un archivo anidado mientras se esperaba a que se completara la extracci\u00f3n inicial.
+extract.secondary.timeout.useraction=Compruebe que el archivo anidado sea un archivo v\u00e1lido.
+
+# # {0} A file path
+extract.secondary.failed=CWWKM0106E: Ha fallado la extracci\u00f3n secundaria de {0}.
+extract.secondary.failed.explanation=Se ha completado una solicitud concurrente de extracci\u00f3n de un archivo anidado pero el archivo anidado no se ha extra\u00eddo.
+extract.secondary.failed.useraction=Compruebe que el archivo anidado sea un archivo v\u00e1lido.
+
+# # {0} A file path
+extract.secondary.notfile=CWWKM0107E: La extracci\u00f3n secundaria no ha creado un archivo simple para {0}.
+extract.secondary.notfile.explanation=Se ha completado una solicitud concurrente de extracci\u00f3n de un archivo anidado pero no ha generado un archivo simple.
+extract.secondary.notfile.useraction=Compruebe que el archivo anidado sea un archivo v\u00e1lido.
+
+# # {0} A file path
+extract.secondary.inconsistent=CWWKM0108E: Temporizaci\u00f3n contradictoria en la extracci\u00f3n secundaria de {0}.
+extract.secondary.inconsistent.explanation=Se ha completado una solicitud concurrente de extracci\u00f3n de un archivo anidado pero se ha generado un archivo distinto del esperado.
+extract.secondary.inconsistent.useraction=Compruebe que el archivo anidado sea un archivo v\u00e1lido.
+
+# # {0} A file path
+extract.primary.directory=CWWKM0109E: La extracci\u00f3n anterior de {0} es un directorio.
+extract.primary.directory.explanation=La extracci\u00f3n de un archivo anidado ha detectado que hay un directorio como el anterior archivo extra\u00eddo.
+extract.primary.directory.useraction=Haga limpieza y reinicie el servidor para garantizar que no queda contenido anterior en la memoria cach\u00e9.
+
+# # {0} A file path
+extract.primary.untyped=CWWKM0110E: La extracci\u00f3n anterior de {0} no puede escribirse.
+extract.primary.untyped.explanation=La extracci\u00f3n de un archivo anidado ha detectado que hay un archivo que no se puede escribir como el anterior archivo extra\u00eddo.
+extract.primary.untyped.useraction=Haga limpieza y reinicie el servidor para garantizar que no queda contenido anterior en la memoria cach\u00e9.
+
+# # {0} A file path.
+# # {1} A print name
+reaper.inactive=CWWKM0121W: No se puede abrir {0}: la memoria cach\u00e9 del archivo {1} est\u00e1 inactiva.
+reaper.inactive.explanation=Una solicitud de apertura de un archivo de archivado ha fallado porque la memoria cach\u00e9 del archivo de archivado no est\u00e1 activa.
+reaper.inactive.useraction=Este mensaje indica un error de programaci\u00f3n interno.
+
+# # {0} A file path
+reaper.unregistered.path=CWWKM0122W: Haga caso omiso de la solicitud de cierre del archivo {0}, que no est\u00e1 abierto.
+reaper.unregistered.path.explanation=Se ha solicitado un proceso de cierre de archivo de archivado para un archivo de archivado que no estaba abierto.
+reaper.unregistered.path.useraction=Este mensaje indica un error de programaci\u00f3n interno.
+
+# # {0} A file path
+reaper.closed.path=CWWKM0123W: Haga caso omiso de la solicitud de cierre del archivo {0}, que ya est\u00e1 cerrado
+reaper.closed.path.explanation=Se ha solicitado un proceso de cierre de archivo de archivado para un archivo de archivado que ya estaba cerrado.
+reaper.closed.path.useraction=Este mensaje indica un error de programaci\u00f3n interno.
+
+# # {0} A file path
+reaper.pending.path=CWWKM0243W: Haga caso omiso de la solicitud de cierre del archivo {0}, que ya est\u00e1 pendiente de cierre {0}.
+reaper.pending.path.explanation=Se ha solicitado un proceso de cierre de archivo de archivado para un archivo de archivado que ya est\u00e1 pendiente de cierre.
+reaper.pending.path.useraction=Este mensaje indica un error de programaci\u00f3n interno.
+
+# # {0} A file path
+# # {1} An integer representing a file length
+# # {2} An integer representing a file length
+reaper.unexpected.length.change=CWWKM0125W: Archivo {0}: actualice la longitud de {1} a {2}.
+reaper.unexpected.length.change.explanation=Se ha realizado una actualizaci\u00f3n inesperada de un archivo de archivado de aplicaci\u00f3n mientras el archivo estaba abierto.  Esto sucede normalmente porque se ha realizado una actualizaci\u00f3n din\u00e1mica a los archivos de aplicaci\u00f3n.
+reaper.unexpected.length.change.useraction=Reinicie el servidor.  Cuando actualice los archivos de aplicaci\u00f3n, espere a que el servidor quede inactivo y despu\u00e9s espere al menos medio segundo m\u00e1s para permitir el cierre de los archivos de aplicaci\u00f3n.
+
+# # {0} A file path
+# # {1} An integer representing a last modified time
+# # {2} An integer representing a last modified time
+reaper.unexpected.lastmodified.change=CWWKM0126W: Archivo {0}: actualice la fecha de \u00faltima modificaci\u00f3n de {1} a {2}.
+reaper.unexpected.lastmodified.change.explanation=Se ha realizado una actualizaci\u00f3n inesperada de un archivo de archivado de aplicaci\u00f3n mientras el archivo estaba abierto.  Esto sucede normalmente porque se ha realizado una actualizaci\u00f3n din\u00e1mica a los archivos de aplicaci\u00f3n.
+reaper.unexpected.lastmodified.change.useraction=Reinicie el servidor.  Cuando actualice los archivos de aplicaci\u00f3n, espere a que el servidor quede inactivo y despu\u00e9s espere al menos medio segundo m\u00e1s para permitir el cierre de los archivos de aplicaci\u00f3n.
+
+# # {0} A file path
+reaper.reopen.active=CWWKM0127W: Reabrir {0}
+reaper.reopen.active.explanation=Un cambio inesperado ha provocado la reapertura de un archivo de archivado de aplicaci\u00f3n ya abierto.  El servidor ha intentado obtener el contenido actualizado del archivo de archivado, pero quiz\u00e1 no haya listados internos actualizados completos del contenido del archivo.
+reaper.reopen.active.useraction=Reinicie el servidor.  Cuando actualice los archivos de aplicaci\u00f3n, espere a que el servidor quede inactivo y despu\u00e9s espere al menos medio segundo m\u00e1s para permitir el cierre de los archivos de aplicaci\u00f3n.

@@ -27,17 +27,20 @@ import java.util.List;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ConfigMonitorElement;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.exception.TopologyException;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
+@RunWith(FATRunner.class)
 public class ServerConfigTest {
 
     // Since we have tracing enabled give server longer timeout to start up.

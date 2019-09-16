@@ -1,0 +1,41 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.rest.handler.validator/resources/com/ibm/ws/rest/handler/validator/resources/CWWKOMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Validation REST endpoint
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWKO1550 to CWWKO1559
+
+CWWKO1550_VALIDATOR_NOT_FOUND=CWWKO1550E: La validation n''est pas fournie pour les \u00e9l\u00e9ments de configuration de type {0}.
+CWWKO1550_VALIDATOR_NOT_FOUND.explanation=Le type sp\u00e9cifi\u00e9 d'\u00e9l\u00e9ment de configuration ne peut pas valider sa configuration.
+CWWKO1550_VALIDATOR_NOT_FOUND.useraction=N'essayez pas de valider ce type d'\u00e9l\u00e9ment de configuration.
+
+CWWKO1551_CANNOT_VALIDATE=CWWKO1551E: Une ou plusieurs d\u00e9pendances ne sont pas satisfaites, ou la fonction qui active la ressource n'est pas activ\u00e9e, ou il n'est pas possible de valider ce type de ressource.
+CWWKO1551_CANNOT_VALIDATE.explanation=La demande de validation de la configuration sp\u00e9cifi\u00e9e ne peut pas \u00eatre trait\u00e9e. Il se peut qu'une d\u00e9pendance n'ait pas \u00e9t\u00e9 satisfaite, qu'une fonction activant un \u00e9l\u00e9ment de configuration manque, ou que l'\u00e9l\u00e9ment de configuration ne prenne pas en charge la validation.
+CWWKO1551_CANNOT_VALIDATE.useraction=V\u00e9rifiez que la fonction qui fournit l'\u00e9l\u00e9ment de configuration est activ\u00e9e, qu'aucune d\u00e9pendance ne manque, et que l'\u00e9l\u00e9ment de configuration prend en charge la validation.
+
+CWWKO1552_MISSING_DELIMITER=CWWKO1552E: L'en-t\u00eate X-Login-Config-Props requiert un signe \u00e9gal (=) comme d\u00e9limiteur entre le nom et la valeur de la propri\u00e9t\u00e9 de configuration de connexion.
+CWWKO1552_MISSING_DELIMITER.explanation=Le signe d\u00e9limiteur \u00e9gal (=) est n\u00e9cessaire pour identifier la partie de l'en-t\u00eate X-Login-Config-Props qui constitue le nom de la propri\u00e9t\u00e9 de configuration de connexion et celle qui constitue la valeur.
+CWWKO1552_MISSING_DELIMITER.useraction=Mettez \u00e0 jour l'en-t\u00eate X-Login-Config-Props pour inclure le signe \u00e9gal (=) entre le nom et la valeur de la propri\u00e9t\u00e9 de configuration de connexion.
+
+CWWKO1553_HANDLER_NOT_FOUND=CWWKO1553E: Aucun gestionnaire enregistr\u00e9 ne correspond \u00e0 l''URL demand\u00e9e {0}.
+CWWKO1553_HANDLER_NOT_FOUND.explanation=Une tentative d'acc\u00e8s a \u00e9t\u00e9 effectu\u00e9e pour une URL qui ne correspondait \u00e0 aucun des gestionnaires enregistr\u00e9s.
+CWWKO1553_HANDLER_NOT_FOUND.useraction=Corrigez l'URL afin qu'elle corresponde \u00e0 un gestionnaire enregistr\u00e9.

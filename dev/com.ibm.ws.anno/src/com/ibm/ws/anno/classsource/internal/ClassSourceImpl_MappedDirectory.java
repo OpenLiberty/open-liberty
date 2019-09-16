@@ -36,12 +36,14 @@ public class ClassSourceImpl_MappedDirectory
     extends ClassSourceImpl
     implements ClassSource_MappedDirectory {
 
-    public static final String CLASS_NAME = ClassSourceImpl_MappedDirectory.class.getName();
+    @SuppressWarnings({ "hiding" })
+	public static final String CLASS_NAME = ClassSourceImpl_MappedDirectory.class.getName();
     private static final TraceComponent tc = Tr.register(ClassSourceImpl_MappedDirectory.class);
 
     // Top O' the world
 
-    @Trivial
+    @SuppressWarnings({ "unused" })
+	@Trivial
     public ClassSourceImpl_MappedDirectory(
         ClassSourceImpl_Factory factory, Util_InternMap internMap,
         String name, ClassSource_Options options,
@@ -50,6 +52,7 @@ public class ClassSourceImpl_MappedDirectory
         super(factory, internMap, name, options, dirPath);
 
         this.dirPath = dirPath; // TODO: verify the path?
+        this.absDirPath = getAbsolutePath(dirPath);
     }
 
     //
@@ -123,11 +126,17 @@ public class ClassSourceImpl_MappedDirectory
     //
 
     protected final String dirPath;
+    protected final String absDirPath;
 
     @Override
     @Trivial
     public String getDirPath() {
         return dirPath;
+    }
+
+    @Trivial
+    public String getAbsDirPath() {
+        return absDirPath;
     }
 
     public String getFilePath(String resourcePath) {
@@ -172,7 +181,7 @@ public class ClassSourceImpl_MappedDirectory
 
         File[] childFiles = UtilImpl_FileUtils.listFiles(targetDir);
         if ( childFiles == null ) {
-            Tr.warning(tc, "ANNO_CLASSSOURCE_EMPTY_DIR", getHashText(), targetDir, getDirPath());
+            Tr.warning(tc, "ANNO_CLASSSOURCE_EMPTY_DIR", getHashText(), targetDir, getAbsDirPath());
 
             if ( tc.isEntryEnabled() ) {
                 Tr.exit(tc, methodName, getHashText());
@@ -246,14 +255,13 @@ public class ClassSourceImpl_MappedDirectory
                         } catch (ClassSource_Exception e) {
                             didProcess = false;
 
-                            // TODO: NEW_MESSAGE: Need a new message here.
+                            // ANNO_TARGETS_CLASS_SCAN_EXCEPTION: 
+                            // CWWKC0103W: An exception occurred while scanning class {0} of {1}.
+                            // The exception was {3}.
 
-                            // String eMsg = "[ " + getHashText() + " ]" +
-                            //               " Failed to process resource [ " + nextResourceName + " ]" +
-                            //               " under root [ " + getDirPath() + " ]" +
-                            //               " for class [ " + nextClassName + " ]";
-                            // CWWKC0044W: An exception occurred while scanning class and annotation data.
-                            Tr.warning(tc, "ANNO_TARGETS_SCAN_EXCEPTION", e);
+                            Tr.warning(tc, "ANNO_TARGETS_CLASS_SCAN_EXCEPTION",
+                                nextClassName, targetDir.getAbsolutePath(),
+                                e);
                         }
 
                         if (didProcess) {
@@ -351,7 +359,7 @@ public class ClassSourceImpl_MappedDirectory
         try {
             jandexStream = openResourceStream(null, useJandexPath, fullJandexPath);
         } catch ( ClassSource_Exception e ) {
-            String errorMessage = "Failed to read [ " + fullJandexPath + " ] as JANDEX index";
+            String errorMessage = "Failed to read [ " + getAbsolutePath(fullJandexPath) + " ] as JANDEX index";
             Tr.error(tc, errorMessage);
             return null;
         }
@@ -365,13 +373,13 @@ public class ClassSourceImpl_MappedDirectory
 
             if ( tc.isDebugEnabled() ) {
                 Tr.debug(tc, MessageFormat.format("[ {0} ] Read JANDEX index [ {1} ] from [ {2} ] Classes  [ {3} ]", 
-                         new Object[] { getHashText(), fullJandexPath, getCanonicalName(), Integer.toString(jandexIndex.getKnownClasses().size()) } ));
+                         new Object[] { getHashText(), getAbsolutePath(fullJandexPath), getCanonicalName(), Integer.toString(jandexIndex.getKnownClasses().size()) } ));
             }            
             return jandexIndex;
 
         } catch ( Exception e ) {
             // TODO:
-            String errorMessage = "Failed to read [ " + fullJandexPath + " ] as JANDEX index";
+            String errorMessage = "Failed to read [ " + getAbsolutePath(fullJandexPath) + " ] as JANDEX index";
             Tr.error(tc, errorMessage);
             return null;
 
@@ -419,12 +427,12 @@ public class ClassSourceImpl_MappedDirectory
             // Disable the following warning and defer message generation to a higher level, 
             // preferably the ultimate consumer of the exception.
             //Tr.warning(tc, "ANNO_CLASSSOURCE_NOT_FILE",
-            //           getHashText(), externalResourceName, filePath, getDirPath(), className);
+            //           getHashText(), externalResourceName, filePath, getAbsDirPath(), className);
             String eMsg =
                 "[ " + getHashText() + " ]" +
                 " Found directory [ " + filePath + " ]" +
                 " for resource [ " + externalResourceName + " ]" +
-                " under root [ " + getDirPath() + " ]";
+                " under root [ " + getAbsDirPath() + " ]";
             if ( className != null ) {
                 eMsg += " for class [ " + className + " ]";
             }
@@ -439,12 +447,12 @@ public class ClassSourceImpl_MappedDirectory
             // Disable the following warning and defer message generation to a higher level, 
             // preferably the ultimate consumer of the exception.
             //Tr.warning(tc, "ANNO_CLASSSOURCE_OPEN3_EXCEPTION",
-            //           getHashText(), filePath, externalResourceName, getDirPath(), className);
+            //           getHashText(), filePath, externalResourceName, getAbsDirPath(), className);
             String eMsg =
                 "[ " + getHashText() + " ]" +
                 " Failed to open [ " + filePath + " ]" +
                 " for resource [ " + externalResourceName + " ]" +
-                " under root [ " + getDirPath() + " ]";
+                " under root [ " + getAbsDirPath() + " ]";
             if ( className != null ) {
                 eMsg += " for class [ " + className + " ]";
             }
@@ -480,11 +488,11 @@ public class ClassSourceImpl_MappedDirectory
         } catch ( IOException e ) {
             // String eMsg = "[ " + getHashText() + " ]" +
             //               " Failed to close resource [ " + externalResourceName + " ]" +
-            //               " under root [ " + getDirPath() + " ]" +
+            //               " under root [ " + getAbsDirPath() + " ]" +
             //               " for class [ " + className + " ]";
             Tr.warning(tc,
                 "ANNO_CLASSSOURCE_CLOSE4_EXCEPTION",
-                getHashText(), externalResourceName, getDirPath(), className);
+                getHashText(), externalResourceName, getAbsDirPath(), className);
         }
     }
 

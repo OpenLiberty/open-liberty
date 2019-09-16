@@ -34,7 +34,8 @@ Private-Package: \
 -includeresource: \
  OSGI-INF/permissions.perm=resources/permissions.perm, \
  OSGI-INF/metatype=resources/OSGI-INF/metatype, \
- OSGI-INF/l10n=resources/OSGI-INF/l10n
+ OSGI-INF/l10n=resources/OSGI-INF/l10n, \
+ @${repo;com.ibm.ws.kernel.feature.core}!/!com/ibm/ws/kernel/feature/internal/resources/
 
 -dsannotations: com.ibm.ws.kernel.feature.internal.FeatureManager
 
@@ -57,7 +58,6 @@ instrument.classesExcludes: com/ibm/ws/kernel/feature/internal/resources/*.class
 	com.ibm.ws.kernel.boot.core;version=latest,\
 	com.ibm.ws.kernel.boot.nested;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\
-	com.ibm.ws.kernel.service.location;version=latest,\
 	com.ibm.ws.logging.core;version=latest,\
 	com.ibm.ws.org.eclipse.equinox.region;version=latest, \
 	com.ibm.ws.runtime.update;version=latest, \

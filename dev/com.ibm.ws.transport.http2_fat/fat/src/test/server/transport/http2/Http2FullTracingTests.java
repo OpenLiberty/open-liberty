@@ -115,4 +115,10 @@ public class Http2FullTracingTests extends FATServletClient {
     public void testDataOnStreamZero() throws Exception {
         runTest(genericServletPath, testName.getMethodName());
     }
+
+    // Moved to tracing, build break 258327
+    @Test
+    public void testHeaderFrameAfterHeaderFrameWithEndOfStream() throws Exception {
+        runTest(defaultServletPath, testName.getMethodName());
+    }
 }

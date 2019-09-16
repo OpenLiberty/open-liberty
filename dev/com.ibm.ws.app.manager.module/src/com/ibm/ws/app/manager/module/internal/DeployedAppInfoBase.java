@@ -24,16 +24,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Dictionary;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Future;
 
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 
@@ -41,6 +37,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.app.manager.module.ApplicationNestedConfigHelper;
+import com.ibm.ws.app.manager.module.DeployedAppServices;
 import com.ibm.ws.classloading.ClassLoaderConfigHelper;
 import com.ibm.ws.classloading.ClassLoadingButler;
 import com.ibm.ws.classloading.java2sec.PermissionManager;
@@ -54,10 +51,6 @@ import com.ibm.ws.container.service.app.deploy.extended.LibraryContainerInfo;
 import com.ibm.ws.container.service.app.deploy.extended.LibraryContainerInfo.LibraryType;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.javaee.dd.permissions.PermissionsConfig;
-import com.ibm.ws.runtime.metadata.ModuleMetaData;
-import com.ibm.ws.threadContext.ModuleMetaDataAccessorImpl;
-import com.ibm.ws.threading.FutureMonitor;
-import com.ibm.ws.threading.listeners.CompletionListener;
 import com.ibm.wsspi.adaptable.module.AdaptableModuleFactory;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
@@ -122,19 +115,17 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
     }
 
     protected static final class SharedLibDeploymentInfo {
-        private final BundleContext bundleContext;
         private final WsLocationAdmin locAdmin;
         private final ArtifactContainerFactory artifactFactory;
         private final AdaptableModuleFactory moduleFactory;
 
         private final List<ContainerInfo> classesContainerInfo = new ArrayList<ContainerInfo>();
 
-        public SharedLibDeploymentInfo(DeployedAppInfoFactoryBase factory, String parentPid) {
+        public SharedLibDeploymentInfo(DeployedAppServices deployedAppServices, String parentPid) {
 
-            this.bundleContext = factory.getBundleContext();
-            this.locAdmin = factory.getLocationAdmin();
-            this.artifactFactory = factory.getArtifactFactory();
-            this.moduleFactory = factory.getModuleFactory();
+            this.locAdmin = deployedAppServices.getLocationAdmin();
+            this.artifactFactory = deployedAppServices.getArtifactFactory();
+            this.moduleFactory = deployedAppServices.getModuleFactory();
 
             try {
                 // Find the classloaders for the application
@@ -144,16 +135,16 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
                 classloaderFilter.append(FilterUtils.createPropertyFilter("config.parentPID", parentPid));
                 classloaderFilter.append(')');
 
-                Configuration[] classloaderConfigs = factory.getConfigurationAdmin().listConfigurations(classloaderFilter.toString());
+                Configuration[] classloaderConfigs = deployedAppServices.getConfigurationAdmin().listConfigurations(classloaderFilter.toString());
                 if (classloaderConfigs != null && classloaderConfigs.length == 1) {
                     Configuration cfg = classloaderConfigs[0];
                     Dictionary<String, Object> props = cfg.getProperties();
                     if (props != null) {
                         String[] libraryPIDs = (String[]) props.get("privateLibraryRef");
-                        processLibraryPIDs(classesContainerInfo, libraryPIDs, LibraryType.PRIVATE_LIB);
+                        processLibraryPIDs(deployedAppServices, classesContainerInfo, libraryPIDs, LibraryType.PRIVATE_LIB);
 
                         libraryPIDs = (String[]) props.get("commonLibraryRef");
-                        processLibraryPIDs(classesContainerInfo, libraryPIDs, LibraryType.COMMON_LIB);
+                        processLibraryPIDs(deployedAppServices, classesContainerInfo, libraryPIDs, LibraryType.COMMON_LIB);
                     } else {
                         cfg.delete();
                         return;
@@ -161,7 +152,8 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
                 }
 
                 if (classesContainerInfo.isEmpty()) {
-                    addLibraryContainers(classesContainerInfo, factory.getGlobalSharedLibraryPid(), LibraryType.GLOBAL_LIB, factory.getGlobalSharedLibrary());
+                    addLibraryContainers(classesContainerInfo, deployedAppServices.getGlobalSharedLibraryPid(), LibraryType.GLOBAL_LIB,
+                                         deployedAppServices.getGlobalSharedLibrary());
                 }
             } catch (IOException e) {
                 // Auto FFDC
@@ -176,13 +168,12 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
             return this.classesContainerInfo;
         }
 
-        private void processLibraryPIDs(List<ContainerInfo> sharedLibContainers, String[] libraryPIDs, LibraryContainerInfo.LibraryType libType) throws InvalidSyntaxException {
+        private void processLibraryPIDs(DeployedAppServices deployedAppServices, List<ContainerInfo> sharedLibContainers, String[] libraryPIDs,
+                                        LibraryContainerInfo.LibraryType libType) throws InvalidSyntaxException {
             if (libraryPIDs != null) {
                 for (String pid : libraryPIDs) {
-                    String libraryFilter = FilterUtils.createPropertyFilter(Constants.SERVICE_PID, pid);
-                    Collection<ServiceReference<Library>> libraryRefs = bundleContext.getServiceReferences(Library.class, libraryFilter);
-                    for (ServiceReference<Library> libraryRef : libraryRefs) {
-                        Library library = bundleContext.getService(libraryRef);
+                    Collection<Library> libraries = deployedAppServices.getLibrariesFromPid(pid);
+                    for (Library library : libraries) {
                         addLibraryContainers(sharedLibContainers, pid, libType, library);
                     }
                 }
@@ -281,7 +272,6 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
     protected final ClassLoadingService classLoadingService;
     protected final Library globalSharedLibrary;
     protected final SharedLibDeploymentInfo sharedLibDeploymentInfo;
-    private final FutureMonitor futureMonitor;
     private final ConfigurationAdmin configAdmin;
     private final ClassLoaderConfigHelper libraryConfigHelper;
     protected final boolean isDelegateLast;
@@ -289,17 +279,16 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
     private final PermissionsConfig permissionsConfig;
 
     protected DeployedAppInfoBase(ApplicationInformation<?> applicationInformation,
-                                  DeployedAppInfoFactoryBase factory) throws UnableToAdaptException {
-        super(factory);
+                                  DeployedAppServices deployedAppServices) throws UnableToAdaptException {
+        super(deployedAppServices);
         this.applicationInformation = applicationInformation;
         this.location = applicationInformation.getLocation();
-        this.classLoadingService = factory.getClassLoadingService();
-        this.globalSharedLibrary = factory.getGlobalSharedLibrary();
-        this.futureMonitor = factory.getFutureMonitor();
-        this.configAdmin = factory.getConfigurationAdmin();
+        this.classLoadingService = deployedAppServices.getClassLoadingService();
+        this.globalSharedLibrary = deployedAppServices.getGlobalSharedLibrary();
+        this.configAdmin = deployedAppServices.getConfigurationAdmin();
         this.libraryConfigHelper = new ClassLoaderConfigHelper(getConfigHelper(), configAdmin, classLoadingService);
         this.isDelegateLast = libraryConfigHelper.isDelegateLast();
-        this.permissionManager = factory.getPermissionManager();
+        this.permissionManager = deployedAppServices.getPermissionManager();
         try {
             this.permissionsConfig = getContainer().adapt(PermissionsConfig.class); // throws UnableToAdaptException
         } catch (UnableToAdaptException e) {
@@ -313,7 +302,7 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
         if (sourcePid != null) {
             parentPid = sourcePid;
         }
-        this.sharedLibDeploymentInfo = new SharedLibDeploymentInfo(factory, parentPid);
+        this.sharedLibDeploymentInfo = new SharedLibDeploymentInfo(deployedAppServices, parentPid);
     }
 
     @Trivial
@@ -348,125 +337,18 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
         return null;
     }
 
-    protected void registerApplicationMBean() {
-        // no-op unless overridden
-    }
-
-    public boolean preDeployApp(Future<Boolean> result) {
-        appInfo = createApplicationInfo();
-
-        try {
-            metaDataService.fireApplicationMetaDataCreated(appInfo.getMetaData(), appInfo.getContainer());
-        } catch (Throwable ex) {
-            uninstallApp();
-            futureMonitor.setResult(result, ex);
-            return false;
-        }
-
-        Map<URL, ModuleMetaData> mmds = new HashMap<URL, ModuleMetaData>();
-        for (ModuleContainerInfoBase modInfo : moduleContainerInfos) {
-            try {
-                ModuleMetaData mmd = modInfo.createModuleMetaData(appInfo, this, this);
-                URL location = modInfo.getContainer().getURLs().iterator().next();
-                mmds.put(location, mmd);
-            } catch (Throwable ex) {
-                uninstallApp();
-                futureMonitor.setResult(result, ex);
-                return false;
-            }
-        }
-
-        registerApplicationMBean();
-
-        starting = true;
-        try {
-            ModuleMetaDataAccessorImpl.getModuleMetaDataAccessor().beginContext(mmds);
-            stateChangeService.fireApplicationStarting(appInfo);
-        } catch (Throwable ex) {
-            uninstallApp();
-            futureMonitor.setResult(result, ex);
-            return false;
-        } finally {
-            ModuleMetaDataAccessorImpl.getModuleMetaDataAccessor().endContext();
-        }
-        return true;
-    }
-
-    public boolean postDeployApp(Future<Boolean> result) {
-        started = true;
-        try {
-            stateChangeService.fireApplicationStarted(appInfo);
-        } catch (Throwable ex) {
-            uninstallApp();
-            futureMonitor.setResult(result, ex);
-            return false;
-        }
-        return true;
-    }
-
     public boolean deployApp(Future<Boolean> result) {
         if (moduleContainerInfos.isEmpty()) {
             // Subclasses should either always add a module or give an error.
             throw new IllegalStateException();
         }
+        appInfo = createApplicationInfo();
 
-        if (!preDeployApp(result)) {
-            return false;
-        }
-        if (!deployModules(result)) {
-            return false;
-        }
-        if (!postDeployApp(result)) {
-            return false;
-        }
-        return true;
+        return installApp(result);
     }
 
-    private boolean deployModules(final Future<Boolean> result) {
-        DeployModulesListener listener = new DeployModulesListener(result);
-
-        for (ModuleContainerInfoBase modInfo : moduleContainerInfos) {
-            DeployedModuleInfoImpl deployedMod = (DeployedModuleInfoImpl) getDeployedModule(modInfo.moduleInfo);
-            futureMonitor.onCompletion(deployedMod.installModule(this, futureMonitor, modInfo.getType()), listener);
-            if (listener.isFailed()) {
-                uninstallApp();
-                return false;
-            }
-            if (modInfo.nestedModules != null) {
-                for (DeployedModuleInfoImpl nestedMod : modInfo.nestedModules) {
-                    nestedMod.installModule(this, null, null);
-                }
-            }
-        }
-        return true;
-    }
-
-    private class DeployModulesListener implements CompletionListener<Boolean> {
-        private final Future<Boolean> aggregateResultFuture;
-        private int remaining = moduleContainerInfos.size();
-        private volatile boolean aggregateResult = true;
-
-        DeployModulesListener(Future<Boolean> aggregateResultFuture) {
-            this.aggregateResultFuture = aggregateResultFuture;
-        }
-
-        @Override
-        public synchronized void successfulCompletion(Future<Boolean> future, Boolean result) {
-            aggregateResult &= result;
-            if (--remaining == 0) {
-                futureMonitor.setResult(aggregateResultFuture, aggregateResult);
-            }
-        }
-
-        @Override
-        public synchronized void failedCompletion(Future<Boolean> future, Throwable t) {
-            futureMonitor.setResult(aggregateResultFuture, t);
-            aggregateResult = false;
-        }
-
-        public boolean isFailed() {
-            return !aggregateResult;
-        }
+    protected ModuleClassLoaderFactory getModuleClassLoaderFactory() {
+        return this;
     }
 
     protected ClassLoader createTopLevelClassLoader(List<Container> classPath,

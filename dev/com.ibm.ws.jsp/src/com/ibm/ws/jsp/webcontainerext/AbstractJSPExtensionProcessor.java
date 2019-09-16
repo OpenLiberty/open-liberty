@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997,2005 IBM Corporation and others.
+ * Copyright (c) 1997,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -87,7 +87,9 @@ import com.ibm.ws.jsp.webcontainerext.ws.PrepareJspHelper;
 import com.ibm.ws.jsp.webcontainerext.ws.PrepareJspHelperFactory;
 import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 import com.ibm.ws.util.WSUtil;
+import com.ibm.ws.webcontainer.servlet.IServletContextExtended;
 import com.ibm.ws.webcontainer.util.DocumentRootUtils;
+import com.ibm.ws.webcontainer.webapp.WebAppConfiguration;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.jsp.compiler.JspCompilerFactory;
 import com.ibm.wsspi.jsp.context.JspClassloaderContext;
@@ -97,16 +99,11 @@ import com.ibm.wsspi.jsp.resource.JspInputSourceFactory;
 import com.ibm.wsspi.jsp.resource.translation.JspResources;
 import com.ibm.wsspi.webcontainer.RequestProcessor;
 import com.ibm.wsspi.webcontainer.WCCustomProperties;
-import com.ibm.wsspi.webcontainer.collaborator.ICollaboratorHelper;
-import com.ibm.wsspi.webcontainer.collaborator.IWebAppNameSpaceCollaborator;
 import com.ibm.wsspi.webcontainer.extension.ExtensionProcessor;
-import com.ibm.wsspi.webcontainer.metadata.WebComponentMetaData;
 import com.ibm.wsspi.webcontainer.servlet.IServletConfig;
 import com.ibm.wsspi.webcontainer.servlet.IServletContext;
 import com.ibm.wsspi.webcontainer.servlet.IServletWrapper;
 import com.ibm.wsspi.webcontainer.webapp.WebAppConfig;
-import com.ibm.ws.webcontainer.webapp.WebAppConfiguration;
-import com.ibm.ws.webcontainer.servlet.IServletContextExtended;
 
 public abstract class AbstractJSPExtensionProcessor extends com.ibm.ws.webcontainer.extension.WebExtensionProcessor {
     static protected Logger logger;
@@ -141,11 +138,7 @@ public abstract class AbstractJSPExtensionProcessor extends com.ibm.ws.webcontai
 
     // defect 238792: begin list of JSP mapped servlets.
     protected HashMap jspFileMappings = new HashMap();
-    private IWebAppNameSpaceCollaborator webAppNameSpaceCollab;
     // defect 238792: end list of JSP mapped servlets.
-
-    private ICollaboratorHelper collabHelper;
-    private WebComponentMetaData cmd;
     
     public AbstractJSPExtensionProcessor(IServletContext webapp, 
                                          JspXmlExtConfig webAppConfig, 
@@ -155,8 +148,6 @@ public abstract class AbstractJSPExtensionProcessor extends com.ibm.ws.webcontai
         final boolean isAnyTraceEnabled = com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled();
         this.webapp = (IServletContextExtended) webapp;
         this.jspOptions = webAppConfig.getJspOptions();
-        collabHelper = this.webapp.getCollaboratorHelper();
-		webAppNameSpaceCollab =  collabHelper.getWebAppNameSpaceCollaborator();
         //497716.2
         //always adding the lifecycle listener so we can cleanup the AnnotationHandler
         //doing logic for using ThreadTagPool within listener
@@ -681,8 +672,9 @@ public abstract class AbstractJSPExtensionProcessor extends com.ibm.ws.webcontai
             }
 
             String fileSystemPath = context.getRealPath(path);
+            URL resource = webapp.getResource(path);
 
-            if (adaptableContainer != null && fileSystemPath != null) {
+            if (adaptableContainer != null && fileSystemPath != null && resource != null) {
                 return true;
             } else if (fileSystemPath == null) {
                 return false;

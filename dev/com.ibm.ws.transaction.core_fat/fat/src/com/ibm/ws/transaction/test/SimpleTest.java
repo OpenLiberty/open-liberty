@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.transaction.test;
 
+import java.security.AccessController;
+import java.security.PrivilegedExceptionAction;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -59,7 +62,14 @@ public class SimpleTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer("WTRN0017W"); // Stop the server and indicate the 'WTRN0017W' error message was expected
+        AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
+
+            @Override
+            public Void run() throws Exception {
+                server.stopServer("WTRN0017W");
+                return null;
+            }
+        });
     }
 
 }

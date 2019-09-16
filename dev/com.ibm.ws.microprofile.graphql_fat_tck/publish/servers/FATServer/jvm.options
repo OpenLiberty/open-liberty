@@ -1,0 +1,10 @@
+# Uncomment the following to debug remotely
+#-Dwas.debug.mode=true
+#-Dcom.ibm.websphere.ras.inject.at.transform=true
+#-Dsun.reflect.noInflation=true
+#-Dcom.ibm.tools.attach.enable=yes
+#-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=7777
+
+
+# required for TCK:
+-Dmp.graphql.tck.endpoint.port=8010

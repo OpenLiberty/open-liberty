@@ -23,7 +23,6 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-import org.apache.http.client.HttpClient;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -41,7 +40,6 @@ public class SecuritySSLTest {
     @Server("com.ibm.ws.jaxrs.fat.security.ssl")
     public static LibertyServer server;
 
-    private static HttpClient client;
     private static final String secwar = "security";
 
     @BeforeClass

@@ -18,7 +18,7 @@ Bundle-Description: WebSphere OSGi Web Application Support, version ${bVersion}
 
 Private-Package: com.ibm.ws.app.manager.wab*
 
--dsannotations:, \
+-dsannotations: \
   com.ibm.ws.app.manager.wab.internal.WABInstaller, \
   com.ibm.ws.app.manager.wab.internal.WABExtensionFactory
 
@@ -47,6 +47,7 @@ instrument.classesExcludes: com/ibm/ws/app/manager/wab/internal/resources/*.clas
 	com.ibm.ws.adaptable.module;version=latest,\
 	com.ibm.ws.artifact;version=latest,\
 	com.ibm.ws.webcontainer;version=latest,\
+	com.ibm.ws.app.manager;version=latest,\
 	com.ibm.ws.app.manager.module;version=latest,\
     com.ibm.ws.runtime.update,\
 	com.ibm.ws.threading,\

@@ -12,11 +12,20 @@ package com.ibm.ws.ras.instrument.internal.bci;
 
 import static com.ibm.ws.ras.instrument.internal.bci.LibertyTracingClassAdapter.TRACE_COMPONENT_TYPE;
 import static com.ibm.ws.ras.instrument.internal.bci.LibertyTracingClassAdapter.TR_TYPE;
+import static org.objectweb.asm.Opcodes.ICONST_0;
+
+import java.util.Iterator;
+import java.util.List;
 
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
+import org.objectweb.asm.tree.AbstractInsnNode;
+import org.objectweb.asm.tree.FieldInsnNode;
+import org.objectweb.asm.tree.MethodNode;
+
+import com.ibm.ws.ras.instrument.internal.model.TraceOptionsData;
 
 public class LibertyTracingMethodAdapter extends AbstractRasMethodAdapter<AbstractTracingRasClassAdapter> {
 
@@ -227,23 +236,93 @@ public class LibertyTracingMethodAdapter extends AbstractRasMethodAdapter<Abstra
 
     @Override
     public void initializeTraceObjectField() {
-        if (!getClassAdapter().isTraceObjectFieldInitializationRequired() || isAlreadyTraced()) {
+    	if (!getClassAdapter().isTraceObjectFieldInitializationRequired() || isAlreadyTraced()) {
             return;
         }
+    	getClassAdapter().visitAnnotation(AbstractRasClassAdapter.TRACE_OPTIONS_TYPE.getDescriptor(), true);
+    	TraceOptionsData traceOptionsData = getClassAdapter().getTraceOptionsData();
+    	
+    	
+    	if (traceOptionsData.getTraceGroups().size() > 1) {
+    		
+    	        
+    	        visitGetClassForType(Type.getObjectType(getClassAdapter().getClassInternalName()));
 
-        visitGetClassForType(Type.getObjectType(getClassAdapter().getClassInternalName()));
-        visitMethodInsn(
-                        INVOKESTATIC,
-                        TR_TYPE.getInternalName(),
-                        "register",
-                        Type.getMethodDescriptor(
-                                                 TRACE_COMPONENT_TYPE,
-                                                 new Type[] { Type.getType(Class.class) }), false);
+    	        String[] traceGroups = traceOptionsData.getTraceGroups().toArray(new String[traceOptionsData.getTraceGroups().size()]);
+    	       
+    	        
+    	        visitInsn(ICONST_0 + traceGroups.length);
+    	        visitTypeInsn(ANEWARRAY, "java/lang/String");
+
+    	                for (int i = 0; i < traceGroups.length; ++i)
+    	                {     
+    	                    visitInsn(DUP);
+    	                    visitInsn(ICONST_0 + i);
+    	                    visitLdcInsn(traceGroups[i]);
+    	                    visitInsn(AASTORE);
+    	                }
+    	       
+    	        String messageBundle = traceOptionsData.getMessageBundle();
+    	        if (messageBundle != null) {
+    	            visitLdcInsn(messageBundle);
+    	        } else {
+    	            visitInsn(ACONST_NULL);
+    	        }
+    	        
+    	        String traceOptionName = getClassAdapter().getClassName();
+    	        if (traceOptionName != null) {
+    	            visitLdcInsn(traceOptionName);
+    	        } else {
+    	            visitInsn(ACONST_NULL);
+    	        }
+    	        
+    	        visitMethodInsn(
+    	                        INVOKESTATIC,
+    	                        TR_TYPE.getInternalName(),
+    	                        "register",
+    	                        Type.getMethodDescriptor(TRACE_COMPONENT_TYPE, new Type[] {
+    	                                                                                   Type.getType(Class.class),
+    	                                                                                   Type.getType("[Ljava/lang/String;"),
+    	                                                                                   Type.getType(String.class),
+    	                                                                                   Type.getType(String.class)}), false);
+    	} else {
+    	
+    	
+		        visitGetClassForType(Type.getObjectType(getClassAdapter().getClassInternalName()));
+		
+		        List<String> traceGroups = traceOptionsData.getTraceGroups();
+		        String traceGroupName = traceGroups.isEmpty() ? null : traceGroups.get(0);
+		        if (traceGroupName != null) {
+		            visitLdcInsn(traceGroupName);
+		        } else {
+		            visitInsn(ACONST_NULL);
+		        }
+		
+		        String messageBundle = traceOptionsData.getMessageBundle();
+		        if (messageBundle != null) {
+		            visitLdcInsn(messageBundle);
+		        } else {
+		            visitInsn(ACONST_NULL);
+		        }
+		        visitMethodInsn(
+		                        INVOKESTATIC,
+		                        TR_TYPE.getInternalName(),
+		                        "register",
+		                        Type.getMethodDescriptor(TRACE_COMPONENT_TYPE, new Type[] {
+		                                                                                   Type.getType(Class.class),
+		                                                                                   Type.getType(String.class),
+		                                                                                   Type.getType(String.class) }), false);
+        
+    	}
+
         visitSetTraceObjectField();
+        
+        
         setModifiedMethod(true);
     }
 
-    private void visitInvokeTraceGuardMethod(String guardMethodName, Label skipTraceLabel) {
+
+	private void visitInvokeTraceGuardMethod(String guardMethodName, Label skipTraceLabel) {
         visitMethodInsn(
                         INVOKESTATIC,
                         TRACE_COMPONENT_TYPE.getInternalName(),
@@ -274,4 +353,83 @@ public class LibertyTracingMethodAdapter extends AbstractRasMethodAdapter<Abstra
             super.boxSensitive(type);
         }
     }
+
+	@Override
+	public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
+		
+		//replace existing method with fully qualified version
+		if ((name.equals("register")) && (desc.equals("(Ljava/lang/Class;)Lcom/ibm/websphere/ras/TraceComponent;"))) {
+			
+			getClassAdapter().visitAnnotation(AbstractRasClassAdapter.TRACE_OPTIONS_TYPE.getDescriptor(), true);
+	    	TraceOptionsData traceOptionsData = getClassAdapter().getTraceOptionsData();
+	    	
+	    	if (traceOptionsData.getTraceGroups().size() > 1){
+    		
+    	        String[] traceGroups = traceOptionsData.getTraceGroups().toArray(new String[traceOptionsData.getTraceGroups().size()]);
+    	       
+    	        visitInsn(ICONST_0 + traceGroups.length);
+    	        visitTypeInsn(ANEWARRAY, "java/lang/String");
+
+    	                for (int i = 0; i < traceGroups.length; ++i)
+    	                {     
+    	                    visitInsn(DUP);
+    	                    visitInsn(ICONST_0 + i);
+    	                    visitLdcInsn(traceGroups[i]);
+    	                    visitInsn(AASTORE);
+    	                }
+    	        
+    	       
+    	        String messageBundle = traceOptionsData.getMessageBundle();
+    	        if (messageBundle != null) {
+    	            visitLdcInsn(messageBundle);
+    	        } else {
+    	            visitInsn(ACONST_NULL);
+    	        }
+    	        
+    	        String traceOptionName = getClassAdapter().getClassName();
+    	        if (traceOptionName != null) {
+    	            visitLdcInsn(traceOptionName);
+    	        } else {
+    	            visitInsn(ACONST_NULL);
+    	        }
+    	        
+    	        visitMethodInsn(
+    	                        INVOKESTATIC,
+    	                        TR_TYPE.getInternalName(),
+    	                        "register",
+    	                        Type.getMethodDescriptor(TRACE_COMPONENT_TYPE, new Type[] {
+    	                                                                                   Type.getType(Class.class),
+    	                                                                                   Type.getType("[Ljava/lang/String;"),
+    	                                                                                   Type.getType(String.class),
+    	                                                                                   Type.getType(String.class)}), false);
+    	} else {
+
+	        List<String> traceGroups = traceOptionsData.getTraceGroups();
+	        
+	        String traceGroupName = traceGroups.isEmpty() ? null : traceGroups.get(0);
+	        if (traceGroupName != null) {
+	            visitLdcInsn(traceGroupName);
+	        } else {
+	            visitInsn(ACONST_NULL);
+	        }
+
+	        String messageBundle = traceOptionsData.getMessageBundle();
+	        if (messageBundle != null) {
+	            visitLdcInsn(messageBundle);
+	        } else {
+	            visitInsn(ACONST_NULL);
+	        }
+	        visitMethodInsn(
+	                        INVOKESTATIC,
+	                        TR_TYPE.getInternalName(),
+	                        "register",
+	                        Type.getMethodDescriptor(TRACE_COMPONENT_TYPE, new Type[] {
+	                                                                                   Type.getType(Class.class),
+	                                                                                   Type.getType(String.class),
+	                                                                                   Type.getType(String.class) }), false);
+    	}
+	        
+	        setModifiedMethod(true);
+		} else super.visitMethodInsn(opcode, owner, name, desc, itf);
+	}
 }

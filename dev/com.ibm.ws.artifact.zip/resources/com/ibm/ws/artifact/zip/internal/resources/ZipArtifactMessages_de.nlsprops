@@ -22,14 +22,92 @@
 #   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
 #   (single quote must be coded as one single quote '). 
 
+# # A file path.
 bad.zip.data=CWWKM0101E: Das System konnte die Archivdaten f\u00fcr {0} nicht verarbeiten.
 bad.zip.data.explanation=Bei der Verarbeitung der komprimierten Daten f\u00fcr das Archiv ist eine Ausnahme eingetreten. 
 bad.zip.data.useraction=Vergewissern Sie sich, dass die Datei ein g\u00fcltiges Archiv ist.
 
+# # A file path.
 remove.cache.data=CWWKM0102W: Das System hat ung\u00fcltige Cachedaten an der Position {0} gel\u00f6scht.
 remove.cache.data.explanation=Die Anwendungsstruktur scheint sich ge\u00e4ndert zu haben. Deshalb m\u00fcssen Cachedaten, die auf der vorherigen Struktur basieren, gel\u00f6scht werden.
 remove.cache.data.useraction=Wenn sich die Struktur Ihrer Anwendung ge\u00e4ndert hat, wird diese Ausnahme erwartet.
 
+# # {0} The text of the message from an exception.
 extract.cache.fail=CWWKM0103E: Das System konnte ein verschachteltes Archiv nicht an eine Cacheposition extrahieren. Ursache: {0}
 extract.cache.fail.explanation=W\u00e4hrend der Erstellung der Cachedaten f\u00fcr die Anwendung ist ein Fehler aufgetreten, der eine ordnungsgem\u00e4\u00dfe Verarbeitung der Anwendung verhindert. 
 extract.cache.fail.useraction=\u00dcberpr\u00fcfen Sie die gemeldete Ursache.
+
+# # {0} A file path.
+extract.cache.null=CWWKM0104E: Das System konnte ein verschachteltes Archiv {0} nicht an eine Cacheposition extrahieren.
+extract.cache.null.explanation=W\u00e4hrend der Erstellung der Cachedaten f\u00fcr die Anwendung ist ein Fehler aufgetreten, der eine ordnungsgem\u00e4\u00dfe Verarbeitung der Anwendung verhindert. 
+extract.cache.null.useraction=Vergewissern Sie sich, dass das verschachtelte Archiv ein g\u00fcltiges Archiv ist.
+
+# # {0} A file path.
+extract.secondary.timeout=CWWKM0105E: Zeitlimit\u00fcberschreitung f\u00fcr sekund\u00e4re Extraktion f\u00fcr {0}.
+extract.secondary.timeout.explanation=Eine gleichzeitige Anforderung zur Extraktion eines verschachtelten Archivs hat das zul\u00e4ssige Zeitlimit \u00fcberschritten, w\u00e4hrend darauf gewartet wurde, dass die urspr\u00fcngliche Extraktion abgeschlossen wird.
+extract.secondary.timeout.useraction=Vergewissern Sie sich, dass das verschachtelte Archiv ein g\u00fcltiges Archiv ist.
+
+# # {0} A file path
+extract.secondary.failed=CWWKM0106E: Sekund\u00e4re Extraktion f\u00fcr {0} fehlgeschlagen.
+extract.secondary.failed.explanation=Eine gleichzeitige Anforderung zur Extraktion eines verschachtelten Archivs wurde zwar ausgef\u00fchrt, aber das verschachtelte Archiv wurde nicht extrahiert.
+extract.secondary.failed.useraction=Vergewissern Sie sich, dass das verschachtelte Archiv ein g\u00fcltiges Archiv ist.
+
+# # {0} A file path
+extract.secondary.notfile=CWWKM0107E: Die sekund\u00e4re Extraktion hat keine einfache Datei f\u00fcr {0} erstellt.
+extract.secondary.notfile.explanation=Eine gleichzeitige Anforderung zur Extraktion eines verschachtelten Archivs wurde zwar ausgef\u00fchrt, es wurde jedoch keine einfache Datei erzeugt.
+extract.secondary.notfile.useraction=Vergewissern Sie sich, dass das verschachtelte Archiv ein g\u00fcltiges Archiv ist.
+
+# # {0} A file path
+extract.secondary.inconsistent=CWWKM0108E: Sekund\u00e4re Extraktion f\u00fcr {0} ist inkonsistent.
+extract.secondary.inconsistent.explanation=Eine gleichzeitige Anforderung zur Extraktion eines verschachtelten Archivs wurde zwar ausgef\u00fchrt, es wurde jedoch eine andere Datei erzeugt, als erwartet.
+extract.secondary.inconsistent.useraction=Vergewissern Sie sich, dass das verschachtelte Archiv ein g\u00fcltiges Archiv ist.
+
+# # {0} A file path
+extract.primary.directory=CWWKM0109E: Vorherige Extraktion von {0} ist ein Verzeichnis.
+extract.primary.directory.explanation=Eine Extraktion eines verschachtelten Archivs hat ein Verzeichnis als zuvor extrahiertes Archiv erkannt.
+extract.primary.directory.useraction=Bereinigen Sie den Server und starten Sie ihn anschlie\u00dfend erneut, um sicherzustellen, dass kein fr\u00fcherer Cacheinhalt vorhanden ist.
+
+# # {0} A file path
+extract.primary.untyped=CWWKM0110E: Vorherige Extraktion von {0} kann nicht typisiert werden.
+extract.primary.untyped.explanation=Eine Extraktion eines verschachtelten Archivs hat eine nicht typisierbare Datei als zuvor extrahiertes Archiv erkannt.
+extract.primary.untyped.useraction=Bereinigen Sie den Server und starten Sie ihn anschlie\u00dfend erneut, um sicherzustellen, dass kein fr\u00fcherer Cacheinhalt vorhanden ist.
+
+# # {0} A file path.
+# # {1} A print name
+reaper.inactive=CWWKM0121W: {0} kann nicht ge\u00f6ffnet werden: Der Archivcache {1} ist inaktiv.
+reaper.inactive.explanation=Eine Anforderung zum \u00d6ffnen einer Archivdatei ist fehlgeschlagen, weil der Archivdateicache nicht aktiv ist.
+reaper.inactive.useraction=Diese Nachricht gibt einen internen Programmierfehler an.
+
+# # {0} A file path
+reaper.unregistered.path=CWWKM0122W: Die Schlie\u00dfanforderung f\u00fcr das Archiv {0}, das nicht ge\u00f6ffnet ist, wird ignoriert.
+reaper.unregistered.path.explanation=Es wurde eine Archivdateischlie\u00dfverarbeitung f\u00fcr eine Archivdatei angefordert, die nicht ge\u00f6ffnet ist.
+reaper.unregistered.path.useraction=Diese Nachricht gibt einen internen Programmierfehler an.
+
+# # {0} A file path
+reaper.closed.path=CWWKM0123W: Die Schlie\u00dfanforderung f\u00fcr das Archiv {0}, das bereits geschlossen wurde, wird ignoriert.
+reaper.closed.path.explanation=Es wurde eine Archivdateischlie\u00dfverarbeitung f\u00fcr eine Archivdatei angefordert, die bereits geschlossen wurde.
+reaper.closed.path.useraction=Diese Nachricht gibt einen internen Programmierfehler an.
+
+# # {0} A file path
+reaper.pending.path=CWWKM0243W: Die Schlie\u00dfanforderung f\u00fcr das Archiv {0}, f\u00fcr das die Schlie\u00dfung von {0} bereits ansteht, wird ignoriert.
+reaper.pending.path.explanation=Es wurde eine Archivdateischlie\u00dfverarbeitung f\u00fcr eine Archivdatei angefordert, deren Schlie\u00dfung bereits ansteht.
+reaper.pending.path.useraction=Diese Nachricht gibt einen internen Programmierfehler an.
+
+# # {0} A file path
+# # {1} An integer representing a file length
+# # {2} An integer representing a file length
+reaper.unexpected.length.change=CWWKM0125W: {0} archivieren: L\u00e4nge wurde von {1} in {2} aktualisiert.
+reaper.unexpected.length.change.explanation=Es wurde eine Anwendungsarchivdatei aktualisiert, w\u00e4hrend dieses Archiv ge\u00f6ffnet war. Dies tritt in der Regel ein, wenn f\u00fcr Anwendungsdateien eine dynamische Aktualisierung durchgef\u00fchrt wird.
+reaper.unexpected.length.change.useraction=Starten Sie den Server erneut. Wenn Sie Anwendungsdateien aktualisieren, warten Sie, bis der Server in den Wartemodus versetzt wurde, und warten Sie anschlie\u00dfend mindestens eine halbe Sekunde, damit die Anwendungsdateien geschlossen werden k\u00f6nnen.
+
+# # {0} A file path
+# # {1} An integer representing a last modified time
+# # {2} An integer representing a last modified time
+reaper.unexpected.lastmodified.change=CWWKM0126W: {0} archivieren: Letzte \u00c4nderung wurde von {1} in {2} aktualisiert.
+reaper.unexpected.lastmodified.change.explanation=Es wurde eine Anwendungsarchivdatei aktualisiert, w\u00e4hrend dieses Archiv ge\u00f6ffnet war. Dies tritt in der Regel ein, wenn f\u00fcr Anwendungsdateien eine dynamische Aktualisierung durchgef\u00fchrt wird.
+reaper.unexpected.lastmodified.change.useraction=Starten Sie den Server erneut. Wenn Sie Anwendungsdateien aktualisieren, warten Sie, bis der Server in den Wartemodus versetzt wurde, und warten Sie anschlie\u00dfend mindestens eine halbe Sekunde, damit die Anwendungsdateien geschlossen werden k\u00f6nnen.
+
+# # {0} A file path
+reaper.reopen.active=CWWKM0127W: {0} erneut \u00f6ffnen
+reaper.reopen.active.explanation=Eine nicht erwartete \u00c4nderung hat dazu gef\u00fchrt, dass eine ge\u00f6ffnete Anwendungsarchivdatei erneut ge\u00f6ffnet wurde. Der Server hat versucht, den aktualisierten Inhalt der Archivdatei abzurufen, hat aber m\u00f6glicherweise nicht alle internen Listen des Archivinhalts vollst\u00e4ndig aktualisiert.
+reaper.reopen.active.useraction=Starten Sie den Server erneut. Wenn Sie Anwendungsdateien aktualisieren, warten Sie, bis der Server in den Wartemodus versetzt wurde, und warten Sie anschlie\u00dfend mindestens eine halbe Sekunde, damit die Anwendungsdateien geschlossen werden k\u00f6nnen.

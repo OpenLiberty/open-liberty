@@ -12,4 +12,10 @@
 		<class-name>java.lang.RuntimePermission</class-name>
 		<name>accessDeclaredMembers</name>
 	</permission>
+	<!-- Needed for metrics-1.1 until #4155 is fixed -->
+	<permission>
+		<class-name>java.lang.RuntimePermission</class-name>
+		<name>getClassLoader</name>
+	</permission>
+	
 </permissions>

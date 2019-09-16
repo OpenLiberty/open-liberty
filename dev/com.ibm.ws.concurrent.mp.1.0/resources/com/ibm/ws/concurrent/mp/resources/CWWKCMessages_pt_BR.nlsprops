@@ -13,7 +13,7 @@
 #NLS_ENCODING=UNICODE
 #
 #COMPONENTPREFIX CWWKC
-#COMPONENTNAMEFOR CWWKC MicroProfile Concurrency
+#COMPONENTNAMEFOR CWWKC MicroProfile Context Propagation
 #
 # NLS_MESSAGEFORMAT_VAR
 #
@@ -25,7 +25,7 @@
 # All messages must use the range CWWCK1150 to CWWCK1189 except those specifically identified as moved
 
 CWWKC1150.duplicate.context=CWWKC1150E: O mesmo tipo de contexto de encadeamento, {0}, \u00e9 fornecido por v\u00e1rios provedores de contexto de encadeamento, que est\u00e3o dispon\u00edveis para o aplicativo. Os provedores de contexto de encadeamento s\u00e3o: {1}, {2}.
-CWWKC1150.duplicate.context.explanation=A especifica\u00e7\u00e3o MicroProfile Concurrency permite no m\u00e1ximo um ThreadContextProvider para cada tipo de contexto.
+CWWKC1150.duplicate.context.explanation=A especifica\u00e7\u00e3o Propaga\u00e7\u00e3o de Contexto MicroProfile permite no m\u00e1ximo um ThreadContextProvider para cada tipo de contexto.
 CWWKC1150.duplicate.context.useraction=Atualize o aplicativo dispon\u00edvel, as bibliotecas, ou ambos, para que exista no m\u00e1ximo um ThreadContextProvider do tipo especificado.
 
 # do not translate: cleared, propagated
@@ -49,3 +49,5 @@ CWWKC1156.not.supported.useraction=Atualize o aplicativo para usar o m\u00e9todo
 CWWKC1157.cannot.propagate.tx=CWWKC1157E: A propaga\u00e7\u00e3o de transa\u00e7\u00f5es para a\u00e7\u00f5es e tarefas contextuais n\u00e3o \u00e9 suportada.
 CWWKC1157.cannot.propagate.tx.explanation=Um ManagedExecutor ou ThreadContext que est\u00e1 configurado para propagar contextos de transa\u00e7\u00e3o pode propagar apenas contextos de transa\u00e7\u00e3o vazios. Portanto, n\u00e3o \u00e9 poss\u00edvel criar a\u00e7\u00f5es e tarefas contextuais em uma transa\u00e7\u00e3o.
 CWWKC1157.cannot.propagate.tx.useraction=Crie a a\u00e7\u00e3o ou tarefa contextual fora de uma transa\u00e7\u00e3o. Como alternativa, configure o ManagedExecutor ou ThreadContext para n\u00e3o propagar contextos de transa\u00e7\u00e3o.
+
+# CWWKC1158E used by com.ibm.ws.cdi.mp.context bundle

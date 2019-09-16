@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,7 +18,11 @@ import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.spi.AlterableContext;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.context.Destroyed;
+import javax.enterprise.context.Initialized;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.PassivationCapable;
+import javax.enterprise.util.AnnotationLiteral;
 import javax.transaction.Status;
 import javax.transaction.TransactionScoped;
 import javax.transaction.TransactionSynchronizationRegistry;
@@ -43,6 +47,24 @@ public class TransactionContext implements AlterableContext, TransactionScopeDes
     private final String TXC_STORAGE_ID = "cdi_TXC";
 
     private static final TraceComponent tc = Tr.register(TransactionContext.class, TranConstants.TRACE_GROUP, TranConstants.NLS_FILE);
+
+    private static InitializedQualifier initializedQualifier = initializedQualifier = new InitializedQualifier() {
+        public Class value() {
+            return TransactionScoped.class;
+        }
+    };
+
+    private static DestroyedQualifier destroyedQualifier = destroyedQualifier = new DestroyedQualifier() {
+        public Class value() {
+            return TransactionScoped.class;
+        }
+    };
+
+    private final BeanManager beanManager;
+
+    public TransactionContext(BeanManager beanManager) {
+        this.beanManager = beanManager;
+    }
 
     @Override
     public <T> T get(Contextual<T> contextual) {
@@ -70,6 +92,12 @@ public class TransactionContext implements AlterableContext, TransactionScopeDes
 
         data = new InstanceAndContext<T>(contextual, creationalContext, t);
         storage.put(contextId, data);
+
+        //A new transaction has called get() for the first time. This is what we consider to be the start of a transaction scope.
+        beanManager.fireEvent("Initializing transaction context", initializedQualifier);
+
+        //Put this into the registry so it can be found when it's time to call destroy.
+        tsr.putResource("transactionScopeDestroyer", this);
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "get", t);
@@ -179,6 +207,9 @@ public class TransactionContext implements AlterableContext, TransactionScopeDes
                 Tr.debug(tc, "Tran synchronization registry not available, skipping destroy");
         }
 
+        //Fire any observers
+        beanManager.fireEvent("Destroying transaction context", destroyedQualifier);
+
         if (tc.isEntryEnabled())
             Tr.exit(tc, "destroy");
     }
@@ -259,5 +290,9 @@ public class TransactionContext implements AlterableContext, TransactionScopeDes
             return sb.toString();
         }
     }
+
+    //These can be removed in java 8.
+    public abstract static class DestroyedQualifier extends AnnotationLiteral<Destroyed> implements Destroyed {} 
+    public abstract static class InitializedQualifier extends AnnotationLiteral<Initialized> implements Initialized {} 
 
 }

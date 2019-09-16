@@ -112,7 +112,7 @@ NO_VALID_TRANSACTION_CONTEXT_J2CA0040.explanation=Houve um erro interno no proce
 NO_VALID_TRANSACTION_CONTEXT_J2CA0040.useraction=CMSG0002
 
 # --------------------------------
-POOL_MANAGER_EXCP_CCF2_0001_J2CA0045=J2CA0045E: Conex\u00e3o n\u00e3o dispon\u00edvel durante a chamada do m\u00e9todo {0} para o recurso {1}.
+POOL_MANAGER_EXCP_CCF2_0001_J2CA0045=J2CA0045E: Conex\u00e3o n\u00e3o dispon\u00edvel durante a chamada do m\u00e9todo {0} para o recurso {1}. Tempo limite atingido esperando por {2} milissegundo(s) com {3} solicita\u00e7\u00f5es de espera restantes e {4} conex\u00f5es totais atuais usadas.
 POOL_MANAGER_EXCP_CCF2_0001_J2CA0045.explanation=Ocorreu um tempo limite de espera da conex\u00e3o.  Uma ConnectionWaitTimeoutException foi criada.
 POOL_MANAGER_EXCP_CCF2_0001_J2CA0045.useraction=Reconfigure o conjunto de conex\u00f5es.  Aumente o n\u00famero m\u00e1ximo de conex\u00f5es ou aumente o tempo de espera de conex\u00e3o para evitar esse erro.
 

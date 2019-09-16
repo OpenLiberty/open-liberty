@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2016 IBM Corporation and others.
+# Copyright (c) 2010, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -196,9 +196,9 @@ info.frameworkRestart=CWWKE0041I: The platform cache is out of sync. Restarting 
 info.frameworkRestart.explanation=The framework has been restarted because the platform cache was out of sync.
 info.frameworkRestart.useraction=No action is required.
 
-error.badVersion=CWWKE0042E: The correct Java version is not running. The runtime environment requires Java 7 or higher.
+error.badVersion=CWWKE0042E: The correct Java version is not running. The runtime environment requires Java 8 or higher.
 error.badVersion.explanation=Either an unsupported Java version is running, or the JAVA_HOME system variable is set to point to an older version of Java.
-error.badVersion.useraction= Upgrade the Java version to Java 7, or adjust the JAVA_HOME system variable to point to Java 7.
+error.badVersion.useraction= Upgrade the Java version to Java 8, or adjust the JAVA_HOME system variable to point to Java 8.
 
 error.unsupportedLaunch=CWWKE0043E: The launch location is not a local file. ({0})
 error.unsupportedLaunch.explanation=The runtime environment must be launched from a local file, for example a JAR file.
@@ -696,6 +696,14 @@ error.no.serialfilteragent=CWWKE0949E: The specified serial filter agent jar fil
 error.no.serialfilteragent.explanation=The specified serial filter agent jar file does not exist, or fail to read.
 error.no.serialfilteragent.useraction= Ensure that the file exists and can be read by the current user.
 
+error.package.extension=CWWKE0950E: The archive filename must end with .jar when the runnable option is used.
+error.package.extension.explanation=The --archive option must include a file extension that ends with .jar when specifying --include=runnable.
+error.package.extension.useraction=Supply a file name to --archive with a file extension of .jar when specifying --include=runnable.
+
+error.package.usr.jar=CWWKE0951E: The archive file name must not end with a .jar file extension when the usr option is used.
+error.package.usr.jar.explanation=The --archive option must not end with a .jar file extension when --include=usr is specified.
+error.package.usr.jar.useraction=Supply a file name to --archive with a file extension other than a .jar file extension when --include=usr is specified.
+
 info.serverStarting=Starting server {0}.
 info.serverStarted=Server {0} started.
 info.serverStartedWithPID=Server {0} started with process ID {1}.
@@ -748,6 +756,8 @@ info.resumeFailedException=Resuming the {0} server failed. Check the server logs
 info.resumingListeners.target=Resuming the specified target components of the {0} server.
 info.resumedListeners.target=Resuming the specified target components of the {0} server completed.
 info.resumeFailedException.target=Resuming the specified target components of the {0} server failed. Check the server logs for details.
+info.serverCommandAuthFailure=The command {0} failed because the process could not delete the file {1}.
+info.serverCommandCommFailure=The command {0} failed because of a communication error with the server.
 
 # For info.serverLaunch and info.serverVersion: 
 # {0} version (build and/or product name)
@@ -776,3 +786,4 @@ info.no.servers.defined=There are no servers defined in the user directory {0}.
 info.list.of.defined.servers=The following servers are defined relative to the user directory {0}.
 info.communicate.server=A communication error has occurred between the command {0} and the server {1}.
 
+info.serialFilterLoaded=The serial filter agent loaded.

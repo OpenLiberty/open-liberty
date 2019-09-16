@@ -225,7 +225,7 @@ public class ResolverFully {
                         if (schema.getExtensions() != null) {
                             Map<String, Object> extensions = schema.getExtensions();
                             for (String key : extensions.keySet()) {
-                                model.addExtension(key, schema.getExtensions().get(key));
+                                ((SchemaImpl) model).addExtension_compat(key, schema.getExtensions().get(key));
                             }
                         }
                         return model;

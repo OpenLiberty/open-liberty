@@ -1,0 +1,81 @@
+<server>
+  <include location="../fatTestPorts.xml" />
+
+  <featureManager>
+    <feature>componenttest-1.0</feature>
+    <feature>restConnector-2.0</feature>
+    <feature>jdbc-4.2</feature>
+    <feature>appSecurity-2.0</feature>
+    <feature>jca-1.7</feature>
+    <feature>jms-2.0</feature>
+  </featureManager>
+
+  <variable name="onError" value="FAIL"/>
+
+  <keyStore id="defaultKeyStore" password="Liberty"/>
+  <quickStartSecurity userName="adminuser" userPassword="adminpwd"/>
+  
+  <library id="Derby">
+    <file name="${shared.resource.dir}/derby/derby.jar"/>
+  </library>
+  
+  <authData id="auth1" user="dbuser" password="dbpass"/>
+
+  <jaasLoginModule id="customLoginModule" className="com.ibm.ws.rest.handler.validator.loginmodule.TestLoginModule" controlFlag="REQUIRED">
+    <library>
+      <fileset dir="${server.config.dir}" includes="customLoginModule.jar"/>
+    </library>
+  </jaasLoginModule>
+  
+  <jaasLoginContextEntry id="customLoginEntry" name="customLoginEntry" loginModuleRef="customLoginModule" />
+
+  <jmsConnectionFactory id="jmscf1" jndiName="jms/cf1" jaasLoginContextEntryRef="customLoginEntry">
+    <properties.TestValidationJMSAdapter hostName="myhost.openliberty.io" portNumber="1357"/>
+  </jmsConnectionFactory>
+
+  <jmsQueueConnectionFactory id="qcf2" jndiName="jms/qcf2" jaasLoginContextEntryRef="customLoginEntry">
+    <properties.TestValidationJMSAdapter hostName="myhost.openliberty.io" portNumber="2468"/>
+  </jmsQueueConnectionFactory>
+
+  <jmsTopicConnectionFactory id="tcf3" jndiName="jms/tcf3" jaasLoginContextEntryRef="customLoginEntry">
+    <properties.TestValidationJMSAdapter hostName="myhost.openliberty.io" portNumber="3579"/>
+  </jmsTopicConnectionFactory>
+  
+  <dataSource id="customLoginDS" jndiName="jdbc/customLoginDS" jaasLoginContextEntry="customLoginEntry">
+    <jdbcDriver libraryRef="Derby"/>
+    <!-- user/password settings propagated by custom login module -->
+    <properties.derby.embedded databaseName="memory:defaultdb" createDatabase="create"/>
+  </dataSource>
+  
+  <!-- This datasource intentionally has no auth data associated in server.xml, to simulate a <custom-login-configuration>
+       being applied in an app's ibm-web-bnd.xml like so:
+       <resource-ref name="jdbc/customLoginDSWebBnd" binding-name="jdbc/customLoginDSWebBnd">
+         <custom-login-configuration name="customLoginEntry">
+       </resource-ref>
+  -->
+  <dataSource id="customLoginDSWebBnd" jndiName="jdbc/customLoginDSWebBnd">
+    <jdbcDriver libraryRef="Derby"/>
+    <!-- user/password settings propagated by custom login module -->
+    <properties.derby.embedded databaseName="memory:defaultdb" createDatabase="create"/>
+  </dataSource>
+  
+  <transaction>
+    <DATASOURCE transactional="false">
+      <connectionManager maxPoolSize="5" connectionTimeout="0s"/>
+      <jdbcDriver libraryRef="Derby"/>
+   	  <properties.derby.embedded databaseName="memory:recoverydb" createDatabase="create"/>
+    </DATASOURCE>
+  </transaction>
+  
+  <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+  <javaPermission codebase="${server.config.dir}/customLoginModule.jar" className="java.security.AllPermission"/>
+
+  <javaPermission codebase="${server.config.dir}/dropins/TestValidationJMSAdapter.rar"
+                  className="java.lang.RuntimePermission" name="getClassLoader"/>
+
+  <javaPermission codebase="${server.config.dir}/dropins/TestValidationJMSAdapter.rar"
+                  className="javax.security.auth.PrivateCredentialPermission"
+                  signedBy="javax.resource.spi.security.PasswordCredential"
+                  principalType="*" principalName="*" actions="read"/>
+
+</server>

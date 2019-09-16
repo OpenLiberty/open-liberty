@@ -34,6 +34,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.config.mbeans.ServerSchemaGenerator;
 import com.ibm.websphere.filetransfer.FileTransferMBean;
@@ -43,6 +44,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jmx.connector.client.rest.ClientProvider;
 
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -51,6 +53,7 @@ import componenttest.topology.utils.HttpUtils;
 /**
  * FAT-Tests to test the functionality of com.ibm.websphere.config.mbeans.ServerSchemaGenerator MBean
  */
+@RunWith(FATRunner.class)
 public class SchemaGeneratorMBeanTest {
 
     private static Class<?> logClass = SchemaGeneratorMBeanTest.class;
@@ -91,7 +94,7 @@ public class SchemaGeneratorMBeanTest {
                       server.waitForStringInLog("CWWKO0219I.*ssl"));
 
         // Set up the trust store
-        System.setProperty("javax.net.ssl.trustStore", outputDir + "/resources/security/key.jks");
+        System.setProperty("javax.net.ssl.trustStore", outputDir + "/resources/security/key.p12");
         System.setProperty("javax.net.ssl.trustStorePassword", "Liberty");
 
         Map<String, Object> environment = new HashMap<String, Object>();

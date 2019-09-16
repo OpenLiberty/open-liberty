@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018-2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,35 +10,20 @@
  *******************************************************************************/
 package com.ibm.ws.fat.util.tck;
 
-import java.util.EnumSet;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.io.File;
-import org.jboss.arquillian.container.test.spi.client.deployment.ApplicationArchiveProcessor;
-import org.jboss.arquillian.test.spi.TestClass;
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
+import java.util.Collections;
+import java.util.Set;
 
 /**
  * We weave in the hamcrest jar that is used by some of the microprofile config tck tests.
  * The build.gradle file pull the hamcrest jar from maven and puts it in the lib directory
  */
-public class HamcrestArchiveProcessor implements ApplicationArchiveProcessor {
+public class HamcrestArchiveProcessor extends AbstractArchiveWeaver {
 
-    private static final Logger LOG = Logger.getLogger(HamcrestArchiveProcessor.class.getName());
+    private final Set<File> files = Collections.singleton(new File("../../../lib/hamcrest-all-1.3.jar"));
 
-    /* (non-Javadoc)
-     * @see org.jboss.arquillian.container.test.spi.client.deployment.ApplicationArchiveProcessor#process(org.jboss.shrinkwrap.api.Archive, org.jboss.arquillian.test.spi.TestClass)
-     */
     @Override
-    public void process(Archive<?> applicationArchive, TestClass testClass) {
-        if (applicationArchive instanceof WebArchive) {
-            File hamcrest = new File("../../../lib/hamcrest-all-1.3.jar");
-            LOG.log(Level.INFO, "WLP: Adding Jar: {0} to {1}", new String[] {hamcrest.getAbsolutePath(), applicationArchive.getName()});
-            ((WebArchive) applicationArchive).addAsLibraries(hamcrest);
-        } else {
-            LOG.log(Level.INFO, "Attempted to add hamcrest jar but {0} was not a WebArchive", applicationArchive);
-        }
+    protected Set<File> getFilesToWeave() {
+        return files;
     }
 }

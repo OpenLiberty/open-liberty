@@ -21,15 +21,13 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.CommonSecurityFat;
 import com.ibm.ws.security.fat.common.actions.TestActions;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
-import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
+import com.ibm.ws.security.fat.common.utils.CommonWaitForAppChecks;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 import com.ibm.ws.security.jwtsso.fat.utils.CommonExpectations;
 import com.ibm.ws.security.jwtsso.fat.utils.JwtFatActions;
 import com.ibm.ws.security.jwtsso.fat.utils.JwtFatConstants;
-import com.ibm.ws.security.jwtsso.fat.utils.MessageConstants;
 
 import componenttest.annotation.AllowedFFDC;
-import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -56,7 +54,7 @@ public class CookieExpirationTests extends CommonSecurityFat {
     public static void setUp() throws Exception {
         server.addInstalledAppForValidation(JwtFatConstants.APP_FORMLOGIN);
         serverTracker.addServer(server);
-        server.startServerUsingExpandedConfiguration("server_withFeature.xml");
+        server.startServerUsingExpandedConfiguration("server_withFeature.xml", CommonWaitForAppChecks.getSSLChannelReadyMsgs());
 
     }
 
@@ -105,7 +103,7 @@ public class CookieExpirationTests extends CommonSecurityFat {
      * - Should be prompted with the login page because the JWT SSO cookie is no longer valid
      */
     @AllowedFFDC({ "com.ibm.websphere.security.jwt.InvalidClaimException", "com.ibm.websphere.security.jwt.InvalidTokenException",
-                    "com.ibm.ws.security.authentication.AuthenticationException" })
+                   "com.ibm.ws.security.authentication.AuthenticationException" })
     @Test
     public void test_shortJwtCookieLifetime_reuseCookieOutsideClockSkew() throws Exception {
         server.reconfigureServerUsingExpandedConfiguration(_testName, "server_shortJwtLifetime_shortClockSkew.xml");
@@ -122,13 +120,13 @@ public class CookieExpirationTests extends CommonSecurityFat {
 
         Expectations expectations = new Expectations();
         expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(currentAction));
-        // as of 6248 we now run quietly when a cookie routinely expires. 
+        // as of 6248 we now run quietly when a cookie routinely expires.
         /*
-        expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS6025E_JWT_TOKEN_EXPIRED));
-        expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS6031E_JWT_ERROR_PROCESSING_JWT));
-        expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS5524E_ERROR_CREATING_JWT));
-        expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ));
-        */
+         * expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS6025E_JWT_TOKEN_EXPIRED));
+         * expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS6031E_JWT_ERROR_PROCESSING_JWT));
+         * expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS5524E_ERROR_CREATING_JWT));
+         * expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ));
+         */
 
         Page response = actions.invokeUrlWithCookie(_testName, protectedUrl, jwtCookie);
         validationUtils.validateResult(response, currentAction, expectations);

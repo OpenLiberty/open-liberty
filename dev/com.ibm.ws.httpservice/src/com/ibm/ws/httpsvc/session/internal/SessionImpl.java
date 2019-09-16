@@ -32,7 +32,7 @@ import com.ibm.websphere.ras.TraceComponent;
 public class SessionImpl implements HttpSession {
 
     /** Debug variable */
-    private static final TraceComponent tc = Tr.register(SessionImpl.class);
+    private static final TraceComponent tc = Tr.register(SessionImpl.class, com.ibm.ws.httpsvc.internal.HttpSvcConstants.TRACE_GROUP);
 
     private static final long NO_TIMEOUT = -1L;
 
@@ -48,7 +48,7 @@ public class SessionImpl implements HttpSession {
 
     /**
      * Constructor.
-     * 
+     *
      * @param id
      * @param context
      */
@@ -110,7 +110,7 @@ public class SessionImpl implements HttpSession {
 
     /**
      * Query whether or not this session is still valid.
-     * 
+     *
      * @return boolean, true means invalid, false means valid
      */
     public boolean isInvalid() {
@@ -124,7 +124,7 @@ public class SessionImpl implements HttpSession {
      * re-used the session information). This will return true if the
      * session is expired or false if still valid. The caller should
      * start the invalidation process if this returned true.
-     * 
+     *
      * @param updateAccessTime
      * @return boolean
      */

@@ -29,4 +29,5 @@ public interface AppManagerConstants {
     public static final String SHARED_APPS_DIR = WsLocationConstants.SYMBOL_SHARED_APPS_DIR;
     public static final String AUTO_INSTALL_PROP = ".installedByDropins";
     public static final String USE_JANDEX = "useJandex";
+    public static final String XML_SUFFIX = ".xml";
 }

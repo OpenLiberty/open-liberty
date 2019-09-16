@@ -20,9 +20,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
@@ -233,7 +236,7 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
         }
     });
 
-    private int modulesStarting=0;
+    private volatile int modulesStarting=0;
     
     // Servlet 4.0
     private URIMatcherFactory uriMatcherFactory;
@@ -254,7 +257,6 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
      */
     public WebContainer() {
         this("Was.webcontainer", null);
-        self.set(this);
         requestMapper = new VirtualHostContextRootMapper();
         setVHostCompatFlag(false);
     }
@@ -274,8 +276,6 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "Activating the WebContainer bundle");
         }
-        
-        WebContainer.instance.set(this);
 
         this.context = compcontext;
         
@@ -313,9 +313,13 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
             Tr.debug(tc, methodName, "Posted STARTED_EVENT");
         }
 
+        self.set(this);
+        WebContainer.instance.set(this);
+        selfInit.countDown();
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, methodName, "Activating the WebContainer bundle: Complete");
-        }        
+        }
     }
     
     
@@ -407,6 +411,8 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
         //this.vhostManager.purge(); // Clear/purge all maps.
 
         WebContainer.instance.compareAndSet(this, null);
+        self.compareAndSet(this, null);
+        selfInit = new CountDownLatch(1);
         extensionFactories.clear();
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -480,9 +486,9 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
      * @return EventEngine - null if not found
      */
     public static EventEngine getEventService() {
-        WebContainer instance = (WebContainer) self.get();
-        if (instance != null)
-            return instance.eventService;
+        WebContainer thisInstance = instance.get();
+        if (thisInstance != null)
+            return thisInstance.eventService;
 
         return null;
     }
@@ -552,9 +558,9 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
      * @exception Exception if service is not found.
      */
     public static ExecutorService getExecutorService() throws Exception {
-        WebContainer instance = (WebContainer) self.get();
-        if (instance != null) {
-            return instance.es;
+        WebContainer thisInstance = instance.get();
+        if (thisInstance != null) {
+            return thisInstance.es;
         }
 
         // if we're here then something is really wrong with the system.
@@ -748,9 +754,9 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
      * @return String
      */
     public static String getTempDirectory() {
-        WebContainer instance = (WebContainer) self.get();
+        WebContainer thisInstance = instance.get();
 
-        if (instance == null) {
+        if (thisInstance == null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                 Tr.event(tc, "WebContainer not running, returning null temp dir");
             }
@@ -759,12 +765,12 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
 
         String rc = null;
         try {
-            File f = instance.context.getBundleContext().getDataFile("temp");
+            File f = thisInstance.context.getBundleContext().getDataFile("temp");
             if (null != f) {
                 rc = f.getAbsolutePath() + File.separatorChar;
             }
         } catch (Throwable t) {
-            FFDCFilter.processException(t, CLASS_NAME, "getTempDirectory", self);
+            FFDCFilter.processException(t, CLASS_NAME, "getTempDirectory", thisInstance);
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                 Tr.event(tc, "Error getting temp dir; " + t);
             }
@@ -871,7 +877,7 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
     /**
      * This will start a web module in the web container
      */
-    public Future<Boolean> startModule(ExtendedModuleInfo moduleInfo) throws StateChangeException {
+    public Future<Boolean> startModule(final ExtendedModuleInfo moduleInfo) throws StateChangeException {
         final WebModuleInfo webModule = (WebModuleInfo) moduleInfo;
         
         // Track number of modules starting. Rarely a server can begin shutting down while a module is still starting which
@@ -883,6 +889,12 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
             Tr.entry(tc, "startModule: " + webModule.getName() + " " + webModule.getContextRoot() + ", modulesStarting = " + modulesStarting);
         }
         try {
+            
+            // if this service has been deactivated, then leave as cleanly as possible
+            if ((futureMonitor == null) || (instance.get() == null)){
+               CompletedFuture f = new CompletedFuture(false);
+               return f;
+            }
             // If server is stopping return don't start the application, just an future set to true. 
             if (isServerStopping()) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -941,7 +953,15 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
                     backgroundWebAppStartFutures.add(es, new Runnable() {
                         @Override
                         public void run() {
-                                startWebApplication(dMod); 
+                            try {
+                                startWebApplication(dMod);
+                            } catch (Throwable e) {
+                                FFDCWrapper.processException(e, getClass().getName(), "startModule async", new Object[] { webModule, this });
+                                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                                    Tr.event(tc, "startModule async: " + webModule.getName() + "; " + e);
+                                }
+                                stopModule(moduleInfo);
+                            }
                         }
                     });
                 }
@@ -1413,17 +1433,17 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
         String serverInfo = cachedServerInfo;
 
         if ( serverInfo == null ) {
-            WebContainer instance = (WebContainer) self.get();
+            WebContainer thisInstance = instance.get();
 
-            if (instance == null) {
+            if (thisInstance == null) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                     Tr.event(tc, "WebContainer not running, returning null ");
                 }
                 return null;
             }
 
-            String serverName = instance.context.getBundleContext().getBundle().getHeaders("").get("WLP-ServerName"); 
-            String serverVersion = instance.context.getBundleContext().getBundle().getHeaders("").get("WLP-ServerVersion"); // the "" prevents localization
+            String serverName = thisInstance.context.getBundleContext().getBundle().getHeaders("").get("WLP-ServerName"); 
+            String serverVersion = thisInstance.context.getBundleContext().getBundle().getHeaders("").get("WLP-ServerVersion"); // the "" prevents localization
 
             serverInfo = cachedServerInfo = serverName +'/' + serverVersion;
         }
@@ -1545,10 +1565,60 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
     
     public static int getServletContainerSpecLevel() {
         if (WebContainer.loadedContainerSpecLevel == SPEC_LEVEL_UNLOADED) {
-            logger.logp(Level.WARNING, CLASS_NAME, "getServletContainerSpecLevel", "servlet.feature.not.loaded.correctly");
-            return WebContainer.DEFAULT_SPEC_LEVEL;
+            CountDownLatch currentLatch = selfInit;
+            // wait for activation
+            try {
+                currentLatch.await(5, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                // auto-FFDC
+                Thread.currentThread().interrupt();
+            }
+            currentLatch.countDown(); // don't wait again
+
+            if (WebContainer.loadedContainerSpecLevel == SPEC_LEVEL_UNLOADED) {
+                logger.logp(Level.WARNING, CLASS_NAME, "getServletContainerSpecLevel", "servlet.feature.not.loaded.correctly");
+                return WebContainer.DEFAULT_SPEC_LEVEL;
+            }
         }
         
         return WebContainer.loadedContainerSpecLevel;
     }
+    
+    
+    protected static class CompletedFuture implements Future {
+
+        boolean value = false;
+        
+        // simple future that is assigned a Boolean when constructed
+        public CompletedFuture(boolean v) {
+            value = v;
+        }
+        
+        @Override
+        public boolean cancel(boolean mayInterruptIfRunning) {
+            return false;
+        }
+
+        @Override
+        public boolean isCancelled() {
+            return false;
+        }
+        
+        @Override
+        public boolean isDone() {
+            return true;
+        }
+
+        @Override
+        public Boolean get() throws InterruptedException, ExecutionException {
+            return value;
+        }
+    
+        @Override
+        public Boolean get(long timeout, TimeUnit unit) throws InterruptedException,
+            ExecutionException, TimeoutException {
+            return value;
+        }    
+    }
+        
 }

@@ -1,0 +1,46 @@
+/*******************************************************************************
+ * Copyright (c) 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+configurations {
+  jcommander
+}
+	
+dependencies {
+  jcommander 'com.beust:jcommander:1.72'
+}
+
+task clone {
+  mustRunAfter cleanFat
+  doLast{
+    gitClone "microprofile-reactive-messaging"
+  }
+}
+
+task addjcommander(type: Copy) {
+  from configurations.jcommander
+  into new File(autoFvtDir, 'publish/servers/ReactiveStreamsTCKServer/lib')
+}
+
+/*
+  This is handled in ReactiveStreamsMessageingGitTckLauncher as repository is built from a java command, not a gradle command.  
+
+  task addapi(type: Copy) {
+  mustRunAfter clone
+  from new File(autoFvtDir, 'publish/gitRepos/microprofile-reactive-messaging/api/target/microprofile-reactive-messaging-api-1.0-SNAPSHOT.jar')
+  into new File(autoFvtDir, 'publish/servers/ReactiveStreamsTCKServer/lib')
+}
+*/
+
+addRequiredLibraries {
+  dependsOn addjcommander
+  dependsOn clone
+  //dependsOn addapi
+}
+	

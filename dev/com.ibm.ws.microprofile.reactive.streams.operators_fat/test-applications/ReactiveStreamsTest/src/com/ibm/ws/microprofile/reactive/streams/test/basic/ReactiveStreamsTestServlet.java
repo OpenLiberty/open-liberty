@@ -46,8 +46,7 @@ public class ReactiveStreamsTestServlet extends FATServlet {
     @Inject
     ReactiveStreamsEngine engine1;
 
-    @Inject
-    IntegerSubscriber integerSubscriber;
+    IntegerSubscriber integerSubscriber = null;
 
     String value = "v";
     String expectedValue = "v";
@@ -75,11 +74,14 @@ public class ReactiveStreamsTestServlet extends FATServlet {
         PublisherBuilder<Integer> data = ReactiveStreams.of(1, 2, 3, 4, 5);
         ProcessorBuilder<Integer, Integer> filter = ReactiveStreams.<Integer> builder().dropWhile(t -> t < 3);
 
+        integerSubscriber = new IntegerSubscriber();
         data.via(filter).to(integerSubscriber).run();
-        integerSubscriber.startConsuming();
 
-        while (!integerSubscriber.isComplete()) {
+        int loops = 0;
+        while (!integerSubscriber.isComplete() && loops++ < 10 * 60 * 5) {
             Thread.sleep(100);
+            System.out.println("sleep for loop " + loops);
+            loops++;
         }
 
         ArrayList<Integer> results = integerSubscriber.getResults();
@@ -107,7 +109,7 @@ public class ReactiveStreamsTestServlet extends FATServlet {
     @Test
     public void serviceLoadReactiveStreamsEngineTest() {
         Iterator<ReactiveStreamsEngine> engines = ServiceLoader.load(ReactiveStreamsEngine.class).iterator();
-        assertTrue("Reactive Streams Engine has been injected as null", engines.hasNext());
+        assertTrue("Reactive Streams Engine is not service loadable", engines.hasNext());
     }
 
     private ProcessorBuilder<Integer, Integer> builder() {

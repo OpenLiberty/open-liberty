@@ -1,0 +1,58 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jbatch.joblog/resources/com/ibm/ws/jbatch/joblog/internal/resources/JBatchJobLogMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# NLS message prefix registry: http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+#
+# This file contains the messages in use.
+#
+# The range of messages "reserved":
+# 0400 - 0449: com.ibm.ws.jbatch.joblog
+# 
+
+#{0} The job name
+#{1} The job instance id
+#{2} The job execution id
+#{3} The job java exception text
+job.logging.create.new=CWWKY0400E: A k\u00f6tegelt feladat napl\u00f3z\u00e1s egy kiv\u00e9tel miatt nem indult el a(z) {0} feladat, {1} feladatp\u00e9ld\u00e1ny, {2} feladatv\u00e9grehajt\u00e1s eset\u00e9n. \n{3}
+job.logging.create.new.explanation=A k\u00f6tegelt feladat napl\u00f3z\u00e1s nem tudott l\u00e9trehozni napl\u00f3f\u00e1jlt. A K\u00f6tegelt napl\u00f3z\u00e1s egy kiv\u00e9tel miatt meghi\u00fasult.
+job.logging.create.new.useraction=Tekintse \u00e1t a kiv\u00e9telt, ellen\u0151rizze a f\u00e1jlrendszer \u00e1llapot\u00e1t, \u00e9s v\u00e9gezze el a jav\u00edt\u00e1st. A k\u00f6tegelt v\u00e9grehajt\u00e1s a feladatnapl\u00f3z\u00e1s n\u00e9lk\u00fcl folytat\u00f3dik.
+
+#{0} The job java exception text
+job.logging.create.next=CWWKY0401W: A k\u00f6tegelt feladat napl\u00f3z\u00e1s egy kiv\u00e9tel miatt nem hozott l\u00e9tre tov\u00e1bbi napl\u00f3r\u00e9szf\u00e1jlokat. \n{0}\nA k\u00f6tegelt feladat napl\u00f3z\u00e1s megk\u00eds\u00e9rli folytatni a jelenlegi f\u00e1jllal. 
+job.logging.create.next.explanation=A k\u00f6tegelt feladat napl\u00f3z\u00e1s nem tudott l\u00e9trehozni tov\u00e1bbi napl\u00f3r\u00e9szf\u00e1jlokat. A K\u00f6tegelt napl\u00f3z\u00e1s \u00faj f\u00e1jl l\u00e9trehoz\u00e1sa egy kiv\u00e9tel miatt meghi\u00fasult. \n A k\u00f6tegelt feladat napl\u00f3z\u00e1s megk\u00eds\u00e9rli folytatni a jelenlegi f\u00e1jllal.
+job.logging.create.next.useraction=Tekintse \u00e1t a kiv\u00e9telt, ellen\u0151rizze a f\u00e1jlrendszer \u00e1llapot\u00e1t, \u00e9s v\u00e9gezze el a jav\u00edt\u00e1st. A k\u00f6tegelt feladat napl\u00f3z\u00e1s megk\u00eds\u00e9rli folytatni a jelenlegi f\u00e1jllal.
+
+#{0} The job java exception text
+job.logging.read.log=CWWKY0402W: A k\u00f6tegelt feladat napl\u00f3z\u00e1s egy kiv\u00e9tel miatt nem olvasta be a tov\u00e1bbi napl\u00f3r\u00e9szf\u00e1jlokat. \n{0}
+job.logging.read.log.explanation=A k\u00f6tegelt feladat napl\u00f3z\u00e1s nem tudta olvasni napl\u00f3r\u00e9szf\u00e1jlt.  A k\u00f6tegelt napl\u00f3z\u00e1s r\u00e9szf\u00e1jl olvas\u00e1s kiv\u00e9tel miatt meghi\u00fasult. \nA k\u00f6tegelt feladat napl\u00f3z\u00e1s a feladatnapl\u00f3 esem\u00e9ny k\u00f6zz\u00e9t\u00e9tele n\u00e9lk\u00fcl folytat\u00f3dik.
+job.logging.read.log.useraction=Tekintse \u00e1t a kiv\u00e9telt, ellen\u0151rizze a f\u00e1jlrendszer \u00e1llapot\u00e1t, \u00e9s v\u00e9gezze el a jav\u00edt\u00e1st. A k\u00f6tegelt feladat napl\u00f3z\u00e1s a feladatnapl\u00f3 esem\u00e9ny k\u00f6zz\u00e9t\u00e9tele n\u00e9lk\u00fcl folytat\u00f3dik.
+
+#{0} The file or directory name
+job.logging.delete.log=CWWKY0403W: A k\u00f6tegelt feladat napl\u00f3z\u00e1s nem t\u00f6r\u00f6lte a k\u00f6vetkez\u0151 napl\u00f3r\u00e9szf\u00e1jlt vagy k\u00f6nyvt\u00e1rat: {0}. 
+job.logging.delete.log.explanation=A k\u00f6tegelt feladat napl\u00f3z\u00e1s nem t\u00f6r\u00f6lte a napl\u00f3r\u00e9szf\u00e1jlt vagy k\u00f6nyvt\u00e1rat.\n  K\u00f6tegelt feladat napl\u00f3z\u00e1s folytat\u00f3dik a f\u00e1jl vagy k\u00f6nyvt\u00e1r t\u00f6rl\u00e9se n\u00e9lk\u00fcl.
+job.logging.delete.log.useraction=Tekintse \u00e1t a kiv\u00e9telt, ellen\u0151rizze a f\u00e1jlrendszer \u00e1llapot\u00e1t, \u00e9s v\u00e9gezze el a jav\u00edt\u00e1st.\n  K\u00f6tegelt feladat napl\u00f3z\u00e1s folytat\u00f3dik a f\u00e1jl vagy k\u00f6nyvt\u00e1r t\u00f6rl\u00e9se n\u00e9lk\u00fcl.

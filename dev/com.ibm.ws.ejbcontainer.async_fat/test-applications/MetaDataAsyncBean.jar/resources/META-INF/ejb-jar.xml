@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd"
+	version="3.1" metadata-complete="true">
+
+<!-- Note that the metadata-complete attribute is set to true
+     and therefore all of the annotations in the following bean(s) 
+     will be ignored -->
+     
+  <enterprise-beans>
+    <session>
+      <ejb-name>BasicSingletonBean</ejb-name>
+      <business-local>com.ibm.ws.ejbcontainer.async.fat.mix.shared.BasicMetadataLocal</business-local>
+      <ejb-class>com.ibm.ws.ejbcontainer.async.fat.mix.mdcomp.ejb.BasicSingletonBean</ejb-class>
+      <session-type>Singleton</session-type>
+      <async-method>
+        <method-name>test_metaDataComplete</method-name>
+        <method-params>
+          <method-param>java.lang.String</method-param>
+        </method-params>
+      </async-method>
+    </session>
+
+    <session>
+      <ejb-name>BasicStatefulBean</ejb-name>
+      <business-local>com.ibm.ws.ejbcontainer.async.fat.mix.shared.BasicMetadataLocal</business-local>
+      <ejb-class>com.ibm.ws.ejbcontainer.async.fat.mix.mdcomp.ejb.BasicStatefulBean</ejb-class>
+      <session-type>Stateful</session-type>
+      <async-method>
+        <method-name>test_metaDataComplete</method-name>
+        <method-params>
+          <method-param>java.lang.String</method-param>
+        </method-params>
+      </async-method>
+    </session>
+
+    <session>
+      <ejb-name>BasicStatelessBean</ejb-name>
+      <business-local>com.ibm.ws.ejbcontainer.async.fat.mix.shared.BasicMetadataLocal</business-local>
+      <ejb-class>com.ibm.ws.ejbcontainer.async.fat.mix.mdcomp.ejb.BasicStatelessBean</ejb-class>
+      <session-type>Stateless</session-type>
+      <async-method>
+        <method-name>test_metaDataComplete</method-name>
+        <method-params>
+          <method-param>java.lang.String</method-param>
+        </method-params>
+      </async-method>
+    </session>
+  </enterprise-beans>
+</ejb-jar>

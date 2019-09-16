@@ -71,10 +71,17 @@ public class PackageRunnableTest {
     }
 
     @BeforeClass
-    public static void setupClass() throws Exception {}
+    public static void setupClass() throws Exception {
+    }
 
     @AfterClass
-    public static void tearDownClass() throws Exception {}
+    public static void tearDownClass() throws Exception {
+        String[] entries = extractAndRunDir.list();
+        for (String s : entries) {
+            File currentFile = new File(extractAndRunDir.getPath(), s);
+            currentFile.delete();
+        }
+    }
 
     private void deleteDir(File file) {
         File[] contents = file.listFiles();

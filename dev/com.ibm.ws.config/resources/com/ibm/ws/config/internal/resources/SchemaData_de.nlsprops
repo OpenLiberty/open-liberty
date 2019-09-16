@@ -34,6 +34,8 @@ config.internal.metatype.variableDefinitionType.name.documentation=Der Name der 
 config.internal.metatype.variableDefinitionType.name.label=Name
 config.internal.metatype.variableDefinitionType.value.documentation=Der Wert, der der Variablen zugeordnet werden soll.
 config.internal.metatype.variableDefinitionType.value.label=Wert
+config.internal.metatype.variableDefinitionType.defaultValue.documentation=Der Standardwert, der der Variablen zugeordnet werden soll, wenn kein Wert verf\u00fcgbar ist.
+config.internal.metatype.variableDefinitionType.defaultValue.label=Standardwert
 
 config.internal.metatype.duration.desc=Geben Sie eine positive ganze Zahl, gefolgt von einer Zeiteinheit, an. Die g\u00fcltigen Zeiteinheiten sind Stunden (h), Minuten (m), Sekunden (s) und Millisekunden (ms). Geben Sie 500 Millisekunden beispielsweise als 500ms an. Sie k\u00f6nnen mehrere Werte in einen einzigen Eintrag einschlie\u00dfen. 1s500ms entspricht beispielsweise 1,5 Sekunden.
 config.internal.metatype.duration-s.desc=Geben Sie eine positive ganze Zahl, gefolgt von einer Zeiteinheit, an. Die g\u00fcltigen Zeiteinheiten sind Stunden (h), Minuten (m) und Sekunden (s). Geben Sie 30 Sekunden beispielsweise als 30s an. Sie k\u00f6nnen mehrere Werte in einen einzigen Eintrag einschlie\u00dfen. 1m30s entspricht beispielsweise 90 Sekunden.

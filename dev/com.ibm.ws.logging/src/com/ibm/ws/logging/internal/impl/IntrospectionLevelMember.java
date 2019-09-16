@@ -15,6 +15,7 @@ import java.io.StringWriter;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
@@ -74,7 +75,7 @@ public final class IntrospectionLevelMember {
      *
      * @see java.lang.Object#equals(java.lang.Object)
      * @param obj
-     *            The other object to be tested
+     *                The other object to be tested
      * @return true if the other object is the same
      */
     @Override
@@ -119,15 +120,15 @@ public final class IntrospectionLevelMember {
      * responsibility to add this new member to any relevant allKnownMembers set
      *
      * @param level
-     *            The introspection level for this member
+     *                            The introspection level for this member
      * @param name
-     *            The text used as the name of this level member
+     *                            The text used as the name of this level member
      * @param description
-     *            The text used as the description of this level member
+     *                            The text used as the description of this level member
      * @param member
-     *            The object being introspected
+     *                            The object being introspected
      * @param allKnownMembers
-     *            The set of all known level members
+     *                            The set of all known level members
      */
     private IntrospectionLevelMember(int level, String name, String description, Object member, Set<IntrospectionLevelMember> allKnownMembers) {
         _level = level;
@@ -249,9 +250,9 @@ public final class IntrospectionLevelMember {
      * the new child should be introspected further
      *
      * @param name
-     *            The name of the new child
+     *                  The name of the new child
      * @param value
-     *            The value of the new child
+     *                  The value of the new child
      */
     private void addNewChild(String name, Object value) {
         IntrospectionLevelMember prospectiveMember = new IntrospectionLevelMember(_level + 1, name, makeDescription(value), makeMember(value), _allKnownMembersInThisTree);
@@ -272,7 +273,7 @@ public final class IntrospectionLevelMember {
      * Return the value of the member's field
      *
      * @param field
-     *            The field to be queried
+     *                  The field to be queried
      * @return The value of the field
      */
     private Object getFieldValue(final Field field) {
@@ -303,7 +304,7 @@ public final class IntrospectionLevelMember {
      * Return the fields in a particular class
      *
      * @param currentClass
-     *            The class to be introspected
+     *                         The class to be introspected
      * @return the fields of the class
      */
     private Field[] getFields(final Class<?> currentClass) {
@@ -313,7 +314,28 @@ public final class IntrospectionLevelMember {
                 try {
                     Field[] tempObjectFields = currentClass.getDeclaredFields();
                     if (tempObjectFields.length != 0) {
-                        AccessibleObject.setAccessible(tempObjectFields, true);
+                        /*
+                         * If we are running on Java 9 or later, call setAccessible only if module currentClass belongs to is open.
+                         * Calling setAccessible when module is not open leads to a warning being displayed in the console by the JDK, which we want to avoid.
+                         * If we are running on Java 8 or earlier, we can freely call setAccessible.
+                         */
+                        //Attempt Java 9 and above
+                        try {
+                            Class moduleClass = Class.forName("java.lang.Module");
+                            Method getModule = Class.class.getMethod("getModule");
+                            Object module = getModule.invoke(currentClass);
+                            Class[] paramString = new Class[1];
+                            paramString[0] = String.class;
+                            Method isOpen = moduleClass.getMethod("isOpen", paramString);
+                            Package currentPackage = currentClass.getPackage();
+                            String packageName = currentPackage.getName();
+                            boolean isOpenCheck = (boolean) isOpen.invoke(module, packageName);
+                            if (isOpenCheck) {
+                                AccessibleObject.setAccessible(tempObjectFields, true);
+                            }
+                        } catch (Exception e) { //Fallback to java 8 and below
+                            AccessibleObject.setAccessible(tempObjectFields, true);
+                        }
                     }
                     return tempObjectFields;
                 } catch (Throwable t) {
@@ -333,7 +355,7 @@ public final class IntrospectionLevelMember {
      * Make a string that describes this object
      *
      * @param value
-     *            The value needing a description
+     *                  The value needing a description
      * @return The description
      */
     private String makeDescription(Object value) {
@@ -367,7 +389,7 @@ public final class IntrospectionLevelMember {
      * description
      *
      * @param value
-     *            The object to be converted
+     *                  The object to be converted
      * @return The converted string
      */
     private String convertSimpleArrayToString(Object value) {
@@ -397,7 +419,7 @@ public final class IntrospectionLevelMember {
      * the object reference if it does require further introspection
      *
      * @param value
-     *            The object that might require further introspection
+     *                  The object that might require further introspection
      * @return null if the object doesn't require further introspection, value
      *         if it does
      */
@@ -428,9 +450,9 @@ public final class IntrospectionLevelMember {
      * Print this IntrospectionLevelMember to an incident stream
      *
      * @param is
-     *            The incident stream
+     *                     The incident stream
      * @param maxDepth
-     *            The maximum depth to descend
+     *                     The maximum depth to descend
      */
     public void print(IncidentStream is, int maxDepth) {
         StringBuffer fullName = new StringBuffer();

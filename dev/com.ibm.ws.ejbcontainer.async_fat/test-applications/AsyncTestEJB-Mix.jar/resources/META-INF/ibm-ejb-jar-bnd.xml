@@ -1,0 +1,25 @@
+<ejb-jar-bnd
+  xmlns="http://websphere.ibm.com/xml/ns/javaee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-bnd_1_0.xsd"
+  version="1.0">
+
+  <!-- 
+  		This binding stanza is used by the NoInterfaceBean2 bean.
+  		
+  		The bean has an @EJB annotation that it uses to inject a Reference to the NoInterfaceBean into an instance variable.
+  		
+  		The @EJB annotation has a 'name' parm of 'componentLookupThatMapsToGlobalLookupForNoInterfaceBean', which maps it to the
+  		'name' attribute of the <resource-ref> stanza below.
+  -->
+  <session name="NoInterfaceBean2">
+        <resource-ref name="componentLookupThatMapsToGlobalLookupForNoInterfaceBean" binding-name="ejb/globalLookupForNoInterfaceBean"/>
+  </session>
+  
+<!--
+		This binding stanza is used by the NoInterfaceBean3 bean. 
+ -->  
+  <session name="NoInterfaceBean3">
+        <resource-ref name="ejb/componentLookupForNoInterfaceBean3" binding-name="ejb/globalLookupForNoInterfaceBean3"/>
+  </session>
+</ejb-jar-bnd>

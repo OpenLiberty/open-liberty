@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 IBM Corporation and others.
+ * Copyright (c) 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -103,7 +103,7 @@ public class JMSConnectionFactoryResourceBuilder implements ResourceFactoryBuild
     private static final String CREATES_OBJECTCLASS = "creates.objectClass";
     private static final String RESOURCE_ADAPTER = "resourceAdapter";
     private static final String INTERFACE_NAME = "interfaceName";
-    private static final String USER_NAME_PORP = "userName";
+    private static final String USER_NAME_PROP = "userName";
     private static final String USER_PROP = "user";
 
     private BundleContext bundleContext;
@@ -163,13 +163,19 @@ public class JMSConnectionFactoryResourceBuilder implements ResourceFactoryBuild
             annotationDDProps.put(prop.getKey(), value);
         }
 
+        // TODO Connection factory's client id property might not exactly match
+        //Object clientId = props.get("clientId");
+        //if (clientId != null && !annotationDDProps.containsKey("clientID"))
+        //    annotationDDProps.put("clientID", clientId);
+
         String application = (String) annotationDDProps.remove(AppDefinedResource.APPLICATION);
         String declaringApplication = (String) annotationDDProps.remove(DECLARING_APPLICATION);
         String module = (String) annotationDDProps.remove(AppDefinedResource.MODULE);
         String component = (String) annotationDDProps.remove(AppDefinedResource.COMPONENT);
         String jndiName = (String) annotationDDProps.remove(ResourceFactory.JNDI_NAME);
+        String interfaceName = (String) annotationDDProps.remove(INTERFACE_NAME);
 
-        String connectionFactoryID = getConnectionFactoryID(application, module, component, jndiName);
+        String connectionFactoryID = getConnectionFactoryID(application, module, component, jndiName, interfaceName);
         String conManagerID = connectionFactoryID + '/' + ConnectionManagerService.CONNECTION_MANAGER;
 
         String conManagerFilter = FilterUtils.createPropertyFilter(ID, conManagerID);
@@ -194,6 +200,10 @@ public class JMSConnectionFactoryResourceBuilder implements ResourceFactoryBuild
         // activate before the connection manager
         connectionFactorySvcProps.put(CARDINALITY_MINIMUM_CONNECTION_MANAGER, 1);
 
+        // jaasLoginContextEntryRef is not supported in app-defined connection factory. Avoid matching a random jaasLoginContextEntry
+        connectionFactorySvcProps.put("jaasLoginContextEntry.target", "(service.pid=unbound)");
+        connectionFactorySvcProps.put("jaasLoginContextEntry.cardinality.minimum", 0);
+
         if (application != null) {
             connectionFactorySvcProps.put(AppDefinedResource.APPLICATION, application);
             if (module != null) {
@@ -203,7 +213,6 @@ public class JMSConnectionFactoryResourceBuilder implements ResourceFactoryBuild
             }
         }
         String resourceAdapter = (String) annotationDDProps.remove(RESOURCE_ADAPTER);
-        String interfaceName = (String) annotationDDProps.remove(INTERFACE_NAME);
 
         connectionFactorySvcProps.put(BOOTSTRAP_CONTEXT, "(id=" + resourceAdapter + ")");
         connectionFactorySvcProps.put(CREATES_OBJECTCLASS, interfaceName);
@@ -223,7 +232,10 @@ public class JMSConnectionFactoryResourceBuilder implements ResourceFactoryBuild
             if (value instanceof String)
                 value = variableRegistry.resolveString((String) value);
 
-            connectionFactorySvcProps.put(JMSResourceDefinitionConstants.PROPERTIES_REF_KEY + key, value);
+            if ("config.displayId".equals(key))
+                connectionFactorySvcProps.put(JMSResourceDefinitionConstants.PROPERTIES_REF_KEY + "config.referenceType", value);
+            else
+                connectionFactorySvcProps.put(JMSResourceDefinitionConstants.PROPERTIES_REF_KEY + key, value);
         }
 
         //Additional property handling due to naming inconsistency between JEE specification and wasJms & wmqJms resource adapter
@@ -231,7 +243,7 @@ public class JMSConnectionFactoryResourceBuilder implements ResourceFactoryBuild
         //The key "password" do not have any inconsistency, so not handled here
         //TODO: There may some third party resource adapters which may have naming inconsistency with different properties, to handle that in future we can keep the mapping(inProp = outProp) in a collection
         //so that it can be handled dynamically.
-        annotationDDProps.put(USER_NAME_PORP, annotationDDProps.get(USER_PROP));
+        annotationDDProps.put(USER_NAME_PROP, annotationDDProps.get(USER_PROP));
 
         //Get all the properties for a given resource(get the resource by the interfaceName) from the corresponding resource adapter,
         //then see if user specified any of these props in annotation/dd, if yes set that value otherwise ignore.
@@ -239,6 +251,10 @@ public class JMSConnectionFactoryResourceBuilder implements ResourceFactoryBuild
         AttributeDefinition[] attributeDefinitions = getAttributeDefinitions(resourceAdapter, interfaceName);
         for (AttributeDefinition attributeDefinition : attributeDefinitions) {
             Object value = annotationDDProps.remove(attributeDefinition.getID());
+            // TODO standard clientId annotation attribute is not being applied to clientID resource adapter property, which varies only in case.
+            // The following is one possible way to fix,
+            //if (value == null && attributeDefinition.getID().equalsIgnoreCase("clientId"))
+            //    value = annotationDDProps.remove("clientId"); // how should the default "" value be interpreted?
             if (value != null) {
 
                 if (value instanceof String)
@@ -304,7 +320,7 @@ public class JMSConnectionFactoryResourceBuilder implements ResourceFactoryBuild
      * Get Properties only those have default value
      *
      * @param resourceAdapter type of the resource adapter
-     * @param interfaceName the resource type provided by the resource adapter
+     * @param interfaceName   the resource type provided by the resource adapter
      * @return properties which has default values.
      * @throws ConfigEvaluatorException
      * @throws ResourceException
@@ -338,14 +354,13 @@ public class JMSConnectionFactoryResourceBuilder implements ResourceFactoryBuild
      * Get all the AttributeDefinition defined for the given Resource Adapter and Interface Name.
      *
      * @param resourceAdapter type of the resource adapter
-     * @param interfaceName the resource type provided by the resource adapter
+     * @param interfaceName   the resource type provided by the resource adapter
      * @return all the AttributeDefinition defined for the given resource adapter and interface
      * @throws ConfigEvaluatorException
      * @throws ResourceException
      */
     private AttributeDefinition[] getAttributeDefinitions(String resourceAdapter, String interfaceName) throws ConfigEvaluatorException, ResourceException {
         Bundle bundle = JMSResourceDefinitionHelper.getBundle(bundleContext, resourceAdapter);
-        AttributeDefinition[] ads = null;
         if (bundle != null) {
 
             MetaTypeInformation metaTypeInformation = metaTypeServiceRef.getService().getMetaTypeInformation(bundle);
@@ -373,13 +388,14 @@ public class JMSConnectionFactoryResourceBuilder implements ResourceFactoryBuild
      * For example,
      * application[MyApp]/module[MyModule]/connectionFactory[java:module/env/jdbc/cf1]
      *
-     * @param application application name if data source is in java:app, java:module, or java:comp. Otherwise null.
-     * @param module module name if data source is in java:module or java:comp. Otherwise null.
-     * @param component component name if data source is in java:comp and isn't in web container. Otherwise null.
-     * @param jndiName configured JNDI name for the data source. For example, java:module/env/jca/cf1
+     * @param application   application name if data source is in java:app, java:module, or java:comp. Otherwise null.
+     * @param module        module name if data source is in java:module or java:comp. Otherwise null.
+     * @param component     component name if data source is in java:comp and isn't in web container. Otherwise null.
+     * @param jndiName      configured JNDI name for the data source. For example, java:module/env/jca/cf1
+     * @param interfaceName fully qualified name of the JMS connection factory interface.
      * @return the unique identifier
      */
-    private static final String getConnectionFactoryID(String application, String module, String component, String jndiName) {
+    private static final String getConnectionFactoryID(String application, String module, String component, String jndiName, String interfaceName) {
         StringBuilder sb = new StringBuilder(jndiName.length() + 80);
         if (application != null) {
             sb.append(AppDefinedResource.APPLICATION).append('[').append(application).append(']').append('/');
@@ -389,7 +405,15 @@ public class JMSConnectionFactoryResourceBuilder implements ResourceFactoryBuild
                     sb.append(AppDefinedResource.COMPONENT).append('[').append(component).append(']').append('/');
             }
         }
-        return sb.append(ConnectionFactoryService.CONNECTION_FACTORY).append('[').append(jndiName).append(']').toString();
+
+        if ("javax.jms.QueueConnectionFactory".equals(interfaceName))
+            sb.append("jmsQueueConnectionFactory");
+        else if ("javax.jms.TopicConnectionFactory".equals(interfaceName))
+            sb.append("jmsTopicConnectionFactory");
+        else
+            sb.append("jmsConnectionFactory");
+
+        return sb.append('[').append(jndiName).append(']').toString();
     }
 
     /**

@@ -11,6 +11,7 @@
 
 package com.ibm.ws.config.admin.internal;
 
+import java.io.IOException;
 import java.security.Permission;
 import java.util.Collections;
 import java.util.Dictionary;
@@ -41,7 +42,7 @@ import com.ibm.wsspi.kernel.service.location.VariableRegistry;
 /**
  * A factory to create instances of ConfigurationAdmin.
  * It also contains all of centralized maps and tables
- * 
+ *
  */
 class ConfigAdminServiceFactory implements ServiceFactory<ConfigurationAdmin>, BundleListener {
 
@@ -68,7 +69,7 @@ class ConfigAdminServiceFactory implements ServiceFactory<ConfigurationAdmin>, B
     private final PluginManager pluginManager;
     private final ConfigurationStore configurationStore;
 
-    protected final UpdateQueue<String> updateQueue;
+    protected final UpdateQueue<String> updateQueue = new UpdateQueue<>();
 
     private final ConfigEventDispatcher ced;
 
@@ -86,9 +87,9 @@ class ConfigAdminServiceFactory implements ServiceFactory<ConfigurationAdmin>, B
 
     /**
      * Constructor.
-     * 
+     *
      * @param bc
-     *            BundleContext
+     *               BundleContext
      */
     public ConfigAdminServiceFactory(BundleContext bc) {
         this.bundleContext = bc;
@@ -103,8 +104,6 @@ class ConfigAdminServiceFactory implements ServiceFactory<ConfigurationAdmin>, B
         pluginManager.start();
 
         this.ced = new ConfigEventDispatcher(this, bc);
-
-        this.updateQueue = new UpdateQueue<String>();
 
         this.msTracker = new ManagedServiceTracker(this, bc);
         this.msfTracker = new ManagedServiceFactoryTracker(this, bc);
@@ -128,6 +127,11 @@ class ConfigAdminServiceFactory implements ServiceFactory<ConfigurationAdmin>, B
         this.configurationAdminRef.unregister();
         this.msfTracker.close();
         this.msTracker.close();
+        try {
+            configurationStore.saveConfigurationDatas(true);
+        } catch (IOException e) {
+            // Auto FFDC
+        }
         this.updateQueue.shutdown();
         this.ced.close();
         pluginManager.stop();
@@ -140,7 +144,7 @@ class ConfigAdminServiceFactory implements ServiceFactory<ConfigurationAdmin>, B
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.osgi.framework.ServiceFactory#getService(org.osgi.framework.Bundle,
      * org.osgi.framework.ServiceRegistration)
@@ -154,13 +158,14 @@ class ConfigAdminServiceFactory implements ServiceFactory<ConfigurationAdmin>, B
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.osgi.framework.ServiceFactory#ungetService(org.osgi.framework.Bundle,
      * org.osgi.framework.ServiceRegistration, java.lang.Object)
      */
     @Override
-    public void ungetService(Bundle bundle, ServiceRegistration<ConfigurationAdmin> registration, ConfigurationAdmin service) {}
+    public void ungetService(Bundle bundle, ServiceRegistration<ConfigurationAdmin> registration, ConfigurationAdmin service) {
+    }
 
     public void registerConfiguration(ConfigID id, ExtendedConfigurationImpl config) {
         if (tc.isDebugEnabled()) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 IBM Corporation and others.
+ * Copyright (c) 2007, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -225,27 +224,53 @@ public class SSLConfigManager {
 
     }
 
+    public void resetDefaultSSLContextIfNeeded(Collection<File> modifiedFiles) throws Exception {
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.entry(tc, "resetDefaultSSLContextIfNeeded", modifiedFiles);
+
+        String filePath = null;
+        String comparePath = null;
+        for (File modifiedKeystoreFile : modifiedFiles) {
+            try {
+                filePath = modifiedKeystoreFile.getCanonicalPath();
+                comparePath = filePath.replace('\\', '/');
+            } catch (IOException e) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "Exception comparing file path.");
+                continue;
+            }
+
+            resetDefaultSSLContextIfNeeded(comparePath);
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.exit(tc, "resetDefaultSSLContextIfNeeded");
+
+    }
+
     /**
      * Called after all the SSL configuration is processed, set the default SSLContext for the runtime.
      *
      * @throws SSLException
      */
-    public synchronized void resetDefaultSSLContextIfNeeded(Collection<File> modifiedFiles) throws Exception {
+    public synchronized void resetDefaultSSLContextIfNeeded(String modifiedFile) throws Exception {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.entry(tc, "resetDefaultSSLContext");
+            Tr.entry(tc, "resetDefaultSSLContextIfNeeded", modifiedFile);
 
         SSLConfig defaultSSLConfig = getDefaultSSLConfig();
 
-        if (defaultSSLConfig != null && keyStoreModified(defaultSSLConfig, modifiedFiles))
+        if (defaultSSLConfig != null && keyStoreModified(defaultSSLConfig, modifiedFile)) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "Setting new default SSLContext with: " + defaultSSLConfig);
             JSSEProviderFactory.getInstance(null).setServerDefaultSSLContext(defaultSSLConfig);
-        else {
+        } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "Modified keystore file are not part of the default SSL configuration.");
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.exit(tc, "resetDefaultSSLContext");
+            Tr.exit(tc, "resetDefaultSSLContextIfNeeded");
 
     }
 
@@ -254,30 +279,18 @@ public class SSLConfigManager {
      * @param modifiedFiles
      * @return
      */
-    private boolean keyStoreModified(SSLConfig defaultSSLConfig, Collection<File> modifiedFiles) {
+    private boolean keyStoreModified(SSLConfig defaultSSLConfig, String modifiedFile) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(tc, "keyStoreModified");
 
-        try {
-            String ksPropValue = defaultSSLConfig.getProperty(Constants.SSLPROP_KEY_STORE, null);
-            String tsPropValue = defaultSSLConfig.getProperty(Constants.SSLPROP_TRUST_STORE, null);
+        String ksPropValue = defaultSSLConfig.getProperty(Constants.SSLPROP_KEY_STORE, null);
+        String tsPropValue = defaultSSLConfig.getProperty(Constants.SSLPROP_TRUST_STORE, null);
 
-            Iterator itr = modifiedFiles.iterator();
-            while (itr.hasNext()) {
-                File file = (File) itr.next();
-                String path = file.getCanonicalPath();
-                String comparePath = path.replace('\\', '/');
-
-                if ((ksPropValue != null && ksPropValue.equals(comparePath)) ||
-                    (tsPropValue != null && tsPropValue.equals(comparePath))) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-                        Tr.exit(tc, "keyStoreModified true");
-                    return true;
-                }
-            }
-        } catch (IOException e) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "Exception comparing file path.");
+        if ((ksPropValue != null && ksPropValue.equals(modifiedFile)) ||
+            (tsPropValue != null && tsPropValue.equals(modifiedFile))) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                Tr.exit(tc, "keyStoreModified true");
+            return true;
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
@@ -504,6 +517,11 @@ public class SSLConfigManager {
         prop = (String) map.get("id");
         if (null != prop && !prop.isEmpty()) {
             sslprops.setProperty(Constants.SSLPROP_ALIAS, prop);
+        }
+
+        Boolean hostnameVerification = (Boolean) map.get("verifyHostname");
+        if (null != hostnameVerification) {
+            sslprops.setProperty(Constants.SSLPROP_HOSTNAME_VERIFICATION, hostnameVerification.toString());
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -1573,49 +1591,35 @@ public class SSLConfigManager {
      * @param socket
      * @return
      */
-    public SSLSocket setCipherListOnSocket(java.util.Properties props, javax.net.ssl.SSLSocket socket) {
+    public String[] getCipherList(java.util.Properties props, SSLSocket socket) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "setCipherListOnSocket");
-
-        if (props == null) {
-            if (tc.isEntryEnabled())
-                Tr.exit(tc, "setCipherListOnSocket props == null");
-            return socket;
-        }
+            Tr.entry(tc, "getCipherList");
 
         String ciphers[] = null;
         String cipherString = props.getProperty(Constants.SSLPROP_ENABLED_CIPHERS);
 
-        if (socket != null) {
+        try {
 
-            try {
+            if (cipherString != null) {
 
-                if (cipherString != null) {
-
-                    ciphers = cipherString.split("\\s");
-                } else {
-                    String securityLevel = props.getProperty(Constants.SSLPROP_SECURITY_LEVEL);
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "securityLevel from properties is " + securityLevel);
-                    if (securityLevel == null)
-                        securityLevel = "HIGH";
-
-                    String[] supportedCiphers = socket.getEnabledCipherSuites();
-                    ciphers = com.ibm.ws.ssl.config.SSLConfigManager.getInstance().adjustSupportedCiphersToSecurityLevel(supportedCiphers, securityLevel);
-
-                }
-                if (ciphers != null) {
-                    socket.setEnabledCipherSuites(ciphers);
-                }
-
-            } catch (Exception e) {
+                ciphers = cipherString.split("\\s");
+            } else {
+                String securityLevel = props.getProperty(Constants.SSLPROP_SECURITY_LEVEL);
                 if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Exception setting ciphers in SSL Socket Factory.", new Object[] { e });
+                    Tr.debug(tc, "securityLevel from properties is " + securityLevel);
+                if (securityLevel == null)
+                    securityLevel = "HIGH";
+
+                ciphers = adjustSupportedCiphersToSecurityLevel(socket.getEnabledCipherSuites(), securityLevel);
+
             }
+        } catch (Exception e) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Exception setting ciphers in SSL Socket Factory.", new Object[] { e });
         }
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "setCipherListOnSocket");
-        return socket;
+            Tr.exit(tc, "getCipherList");
+        return ciphers;
     }
 
     public boolean isTransportSecurityEnabled() {

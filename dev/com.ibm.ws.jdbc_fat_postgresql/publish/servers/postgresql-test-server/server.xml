@@ -1,0 +1,103 @@
+<server>
+
+    <featureManager>
+        <feature>servlet-4.0</feature>
+        <feature>componenttest-1.0</feature>
+        <feature>jdbc-4.2</feature>
+        <feature>jndi-1.0</feature>
+    </featureManager>
+
+    <application location="postgresqlApp.war">
+        <classloader commonLibraryRef="PostgresLib"/>
+    </application>
+    
+    <dataSource jndiName="jdbc/postgres/genericprops">
+      <jdbcDriver libraryRef="PostgresLib" />
+      <properties serverName="${env.POSTGRES_HOST}" portNumber="${env.POSTGRES_PORT}" databaseName="${env.POSTGRES_DB}" user="${env.POSTGRES_USER}" password="${env.POSTGRES_PASS}"/>
+    </dataSource>
+
+    <!-- Uses an anonymously named postgres JDBC driver, so that the file name heuristic doesn't discover the driver type -->    
+    <library id="PostgresLib">
+        <fileset dir="${server.config.dir}/jdbc"/>
+    </library>
+    
+    <!-- datasource type auto-detection should locate the java.sql.Driver in the driver.jar -->
+    <dataSource jndiName="jdbc/anonymous/Driver">
+      <jdbcDriver libraryRef="PostgresLib" />
+      <properties serverName="${env.POSTGRES_HOST}" portNumber="${env.POSTGRES_PORT}" databaseName="${env.POSTGRES_DB}" user="${env.POSTGRES_USER}" password="${env.POSTGRES_PASS}"/>
+    </dataSource>
+    
+    <dataSource jndiName="jdbc/anonymous/XADataSource" type="javax.sql.XADataSource">
+      <jdbcDriver libraryRef="PostgresLib" />
+      <properties serverName="${env.POSTGRES_HOST}" portNumber="${env.POSTGRES_PORT}" databaseName="${env.POSTGRES_DB}" user="${env.POSTGRES_USER}" password="${env.POSTGRES_PASS}"
+                  defaultRowFetchSize="5" applicationName="postgresqlApp"/>
+    </dataSource>
+    
+    <dataSource jndiName="jdbc/postgres/minimal">
+      <jdbcDriver libraryRef="PostgresLib" />
+      <properties.postgresql serverName="${env.POSTGRES_HOST}" portNumber="${env.POSTGRES_PORT}" databaseName="${env.POSTGRES_DB}" user="${env.POSTGRES_USER}" password="${env.POSTGRES_PASS}"/>
+    </dataSource>
+    
+    <dataSource jndiName="jdbc/postgres/xa" type="javax.sql.XADataSource">
+      <jdbcDriver libraryRef="PostgresLib" />
+      <connectionManager enableSharingForDirectLookups="false"/>
+      <properties.postgresql serverName="${env.POSTGRES_HOST}" portNumber="${env.POSTGRES_PORT}" databaseName="${env.POSTGRES_DB}" user="${env.POSTGRES_USER}" password="${env.POSTGRES_PASS}"/>
+    </dataSource>
+    
+    <dataSource jndiName="jdbc/postgres/maxPoolSize1" type="javax.sql.XADataSource">
+      <jdbcDriver libraryRef="PostgresLib" />
+      <connectionManager maxPoolSize="1" enableSharingForDirectLookups="false"/>
+      <properties.postgresql serverName="${env.POSTGRES_HOST}" portNumber="${env.POSTGRES_PORT}" databaseName="${env.POSTGRES_DB}" user="${env.POSTGRES_USER}" password="${env.POSTGRES_PASS}"
+                             applicationName="fatTestApp"/>
+    </dataSource>
+    
+    <dataSource jndiName="jdbc/postgres/ConnectionPoolDataSource" type="javax.sql.ConnectionPoolDataSource">
+      <jdbcDriver libraryRef="PostgresLib" />
+      <properties.postgresql serverName="${env.POSTGRES_HOST}" portNumber="${env.POSTGRES_PORT}" databaseName="${env.POSTGRES_DB}" user="${env.POSTGRES_USER}" password="${env.POSTGRES_PASS}"/>
+    </dataSource>
+    
+    <dataSource jndiName="jdbc/postgres/DataSource" type="javax.sql.DataSource">
+      <jdbcDriver libraryRef="PostgresLib" />
+      <properties.postgresql serverName="${env.POSTGRES_HOST}" portNumber="${env.POSTGRES_PORT}" databaseName="${env.POSTGRES_DB}" user="${env.POSTGRES_USER}" password="${env.POSTGRES_PASS}"/>
+    </dataSource>
+    
+    <dataSource jndiName="jdbc/postgres/readOnly">
+      <jdbcDriver libraryRef="PostgresLib" />
+      <properties.postgresql serverName="${env.POSTGRES_HOST}" portNumber="${env.POSTGRES_PORT}" databaseName="${env.POSTGRES_DB}" user="${env.POSTGRES_USER}" password="${env.POSTGRES_PASS}"
+                             readOnly="true"/>
+    </dataSource>
+    
+    <dataSource jndiName="jdbc/postgres/defaultAutoCommit" type="javax.sql.ConnectionPoolDataSource">
+      <jdbcDriver libraryRef="PostgresLib" />
+      <properties.postgresql serverName="${env.POSTGRES_HOST}" portNumber="${env.POSTGRES_PORT}" databaseName="${env.POSTGRES_DB}" user="${env.POSTGRES_USER}" password="${env.POSTGRES_PASS}"
+                             defaultAutoCommit="true"/>
+    </dataSource>
+    
+    <dataSource jndiName="jdbc/postgres/defaultAutoCommitOff" type="javax.sql.ConnectionPoolDataSource">
+      <jdbcDriver libraryRef="PostgresLib" />
+      <connectionManager enableSharingForDirectLookups="false"/>
+      <properties.postgresql serverName="${env.POSTGRES_HOST}" portNumber="${env.POSTGRES_PORT}" databaseName="${env.POSTGRES_DB}" user="${env.POSTGRES_USER}" password="${env.POSTGRES_PASS}"
+                             defaultAutoCommit="false"/>
+    </dataSource>
+    
+    <dataSource jndiName="jdbc/postgres/urlOnly">
+      <jdbcDriver libraryRef="PostgresLib" />
+      <properties.postgresql URL="${env.POSTGRES_URL}"/>
+    </dataSource>
+    
+    <include location="../fatTestPorts.xml"/>
+    
+    <!-- Needed because this sysprop is read by static init of the org.postgresql.jdbc.PgStatement class, which could be triggered by many different 
+         code paths in the Liberty code and it's not feasible to doPriv all of those paths or worth eagerly loading the PgStatement class -->
+    <javaPermission codeBase="${server.config.dir}/apps/postgresqlApp.war" className="java.util.PropertyPermission" name="org.postgresql.forceBinary" actions="read"/>
+    
+    <!-- Needed because test app uses reflection on WSJdbcConnection to verify underlying connection properties -->
+    <javaPermission codeBase="${server.config.dir}/apps/postgresqlApp.war" className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+    <javaPermission codeBase="${server.config.dir}/apps/postgresqlApp.war" className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
+    
+    <javaPermission codeBase="${server.config.dir}/apps/postgresqlApp.war" className="java.sql.SQLPermission" name="setNetworkTimeout"/>
+    
+    <javaPermission codeBase="${server.config.dir}/jdbc/driver.jar" className="java.security.AllPermission"/>
+    <javaPermission codeBase="${shared.resource.dir}/postgres/postgresql.jar" className="java.security.AllPermission"/>
+
+</server>

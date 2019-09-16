@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2018 IBM Corporation and others.
+# Copyright (c) 2012, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -248,3 +248,7 @@ AUTHENTICATION_WITH_CERT_NOT_SUPPORTED.useraction=\u9451\u5225\u6642\u8acb\u4f7f
 CANNOT_WRITE_TO_READ_ONLY_REPOSITORY=CWIML1027E: \u56e0\u5132\u5b58\u5eab {0} \u662f\u552f\u8b80\u5132\u5b58\u5eab\uff0c\u7121\u6cd5\u5b8c\u6210\u4f7f\u7528\u8005\u767b\u9304\u4f5c\u696d\u3002\u4e0d\u652f\u63f4\u5beb\u5165\u4f5c\u696d\u3002
 CANNOT_WRITE_TO_READ_ONLY_REPOSITORY.explanation=\u5132\u5b58\u5eab\u662f\u552f\u8b80\u5132\u5b58\u5eab\u3002\u4e0d\u652f\u63f4\u5efa\u7acb\u3001\u66f4\u65b0\u6216\u522a\u9664\u4f5c\u696d\u3002
 CANNOT_WRITE_TO_READ_ONLY_REPOSITORY.useraction=\u8acb\u78ba\u5b9a\u6c92\u6709\u5c0d\u552f\u8b80\u5132\u5b58\u5eab\u547c\u53eb\u5beb\u5165\u4f5c\u696d\u3002
+
+REQUIRED_IDENTIFIERS_MISSING=CWIML3001W: \u907a\u6f0f\u5be6\u9ad4\u7684\u5fc5\u8981 ID\u3002
+REQUIRED_IDENTIFIERS_MISSING.explanation=\u672a\u6307\u5b9a ID uniqueName \u548c uniqueId\u3002\u81f3\u5c11\u5fc5\u9808\u6307\u5b9a\u4e00\u500b ID\u3002
+REQUIRED_IDENTIFIERS_MISSING.useraction=\u78ba\u5b9a\u6bcf\u4e00\u500b\u50b3\u5165\u7684\u5be6\u9ad4\u6307\u5b9a ID \u5167\u5bb9\u3002\u5982\u679c\u672a\u6307\u5b9a ID\uff0c\u8acb\u65b0\u589e\u5167\u5bb9\uff0c\u4e26\u6307\u5b9a uniqueName \u6216 the uniqueId\u3002

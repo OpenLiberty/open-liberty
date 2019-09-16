@@ -821,7 +821,7 @@ private ICollaboratorHelper collabHelper;
 				 */    
                 // PK31377 - added if/else
                 if (!resp.isCommitted()){  
-                    resp.sendError(404, MessageFormat.format(nls.getString("File.not.found", "File not found"), new Object[]{pathInfo}));
+                    resp.sendError(404, MessageFormat.format(nls.getString("File.not.found", "File not found: {0}"), new Object[] {pathInfo}));
        	   	  		if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))
                 	logger.exiting(CLASS_NAME,"handleRequest","handleRequest ---> File not found");
                 }else{		    	   

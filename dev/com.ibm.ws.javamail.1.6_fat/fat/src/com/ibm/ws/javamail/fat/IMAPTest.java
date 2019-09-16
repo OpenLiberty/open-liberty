@@ -33,7 +33,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.omg.CORBA.UserException;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
@@ -152,7 +151,7 @@ public class IMAPTest {
      * @throws Exception
      */
     @BeforeClass
-    public static void startGreenMail() throws UserException, Exception {
+    public static void startGreenMail() throws Exception {
         setupApp();
         if (server.isStarted() != true) {
             server.startServer();

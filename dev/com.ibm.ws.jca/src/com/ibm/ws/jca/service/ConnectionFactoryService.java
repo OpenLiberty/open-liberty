@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,10 +15,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Set;
@@ -97,6 +100,11 @@ public class ConnectionFactoryService extends AbstractConnectionFactoryService i
     private final AtomicServiceReference<BootstrapContextImpl> bootstrapContextRef = new AtomicServiceReference<BootstrapContextImpl>("bootstrapContext");
 
     /**
+     * Connection factory interface names.
+     */
+    private Object cfInterfaceNames;
+
+    /**
      * Component context.
      */
     private ComponentContext componentContext;
@@ -161,6 +169,7 @@ public class ConnectionFactoryService extends AbstractConnectionFactoryService i
         String sourcePID = (String) props.get("ibm.extends.source.pid"); // com.ibm.ws.jca.jmsQueueConnectionFactory_gen_3f3cb305-4146-41f9-8a57-b231d09013e6
         configElementName = sourcePID == null ? "connectionFactory" : sourcePID.substring(15, sourcePID.indexOf('_', 15));
 
+        cfInterfaceNames = props.get("creates.objectClass");
         mcfImplClassName = (String) props.get(CONFIG_PROPS_PREFIX + "managedconnectionfactory-class");
         jndiName = (String) props.get(JNDI_NAME);
         id = (String) props.get("config.displayId");
@@ -197,6 +206,17 @@ public class ConnectionFactoryService extends AbstractConnectionFactoryService i
     protected void deactivate(ComponentContext context) {
         destroyConnectionFactories(true);
         bootstrapContextRef.deactivate(context);
+    }
+
+    /**
+     * This method is provided for the connection factory validator.
+     *
+     * @return list of fully qualified names of the connection factory interfaces that this resource factory creates.
+     */
+    public final List<String> getConnectionFactoryInterfaceNames() {
+        return cfInterfaceNames instanceof String ? Collections.singletonList((String) cfInterfaceNames) //
+                        : cfInterfaceNames instanceof String[] ? Arrays.asList((String[]) cfInterfaceNames) //
+                                        : Collections.<String> emptyList();
     }
 
     @Override
@@ -355,6 +375,10 @@ public class ConnectionFactoryService extends AbstractConnectionFactoryService i
                                                    + ", " + Connector.class.getName() + ':' + ddTransactionSupport);
         }
 
+        // Otherwise choose NoTransaction
+        if (transactionSupport == null)
+            transactionSupport = TransactionSupportLevel.NoTransaction;
+
         if (connectionFactoryTransactionSupport != null) {
             if (connectionFactoryTransactionSupport.ordinal() > transactionSupport.ordinal())
                 throw new IllegalArgumentException(ManagedConnectionFactory.class.getName() + ':' + transactionSupport
@@ -363,8 +387,7 @@ public class ConnectionFactoryService extends AbstractConnectionFactoryService i
                 transactionSupport = connectionFactoryTransactionSupport;
         }
 
-        // Otherwise choose NoTransaction
-        return transactionSupport == null ? TransactionSupportLevel.NoTransaction : transactionSupport;
+        return transactionSupport;
     }
 
     @Override
@@ -422,7 +445,17 @@ public class ConnectionFactoryService extends AbstractConnectionFactoryService i
      *
      * @param ref reference to the service
      */
-    protected void setSslConfig(ServiceReference<?> ref) {}
+    protected void setSslConfig(ServiceReference<?> ref) {
+    }
+
+    /**
+     * Indicates to the connection manager whether validation is occurring on the current thread.
+     *
+     * @param isValidating true if validation is occurring on the current thread. Otherwise false.
+     */
+    public void setValidating(boolean isValidating) {
+        conMgrSvc.setValidating(isValidating);
+    }
 
     /**
      * Declarative Services method for unsetting the BootstrapContext reference
@@ -447,7 +480,8 @@ public class ConnectionFactoryService extends AbstractConnectionFactoryService i
      *
      * @param ref reference to the service
      */
-    protected void unsetSslConfig(ServiceReference<?> ref) {}
+    protected void unsetSslConfig(ServiceReference<?> ref) {
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -463,8 +497,11 @@ public class ConnectionFactoryService extends AbstractConnectionFactoryService i
         if (metadata != null && metadata.isEmbedded()) { // metadata is null for SIB/MQ
             ComponentMetaData cData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
             String currentApp = null;
-            if (cData != null)
+            if (cData != null) {
                 currentApp = cData.getJ2EEName().getApplication();
+                if ("com.ibm.ws.rest.handler".equals(currentApp))
+                    return; // Allow access by internally implemented REST endpoints such as /ibm/api/validation/
+            }
             String adapterName = bootstrapContext.getResourceAdapterName();
             String embeddedApp = metadata.getJ2EEName().getApplication();
             Utils.checkAccessibility(jndiName, adapterName, embeddedApp, currentApp, false);

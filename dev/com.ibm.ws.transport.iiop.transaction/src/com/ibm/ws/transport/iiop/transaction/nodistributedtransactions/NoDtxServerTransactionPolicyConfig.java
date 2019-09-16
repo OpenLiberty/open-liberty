@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,7 @@ import javax.transaction.TransactionManager;
 import org.omg.CORBA.SystemException;
 import org.omg.CosTransactions.PropagationContext;
 
-import com.ibm.tx.jta.impl.TransactionImpl;
+import com.ibm.tx.jta.embeddable.impl.EmbeddableTransactionImpl;
 import com.ibm.tx.util.TMHelper;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -58,7 +58,7 @@ public class NoDtxServerTransactionPolicyConfig extends AbstractServerTransactio
 
             // Need to create a new transaction of type TXTYPE_NONINTEROP_GLOBAL, so that the EJB container picks up that remote 
             // tx import has been attempted. This type will be installed on the thread.
-            Transaction theTx = new TransactionImpl(UOWCoordinator.TXTYPE_NONINTEROP_GLOBAL, 0);
+            Transaction theTx = new EmbeddableTransactionImpl(UOWCoordinator.TXTYPE_NONINTEROP_GLOBAL, 0);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "set TxType to TXTYPE_NONINTEROP_GLOBAL in tran - ", theTx);
 

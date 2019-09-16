@@ -18,5 +18,5 @@ Subsystem-Name: MicroProfile Fault Tolerance 2.0
  com.ibm.ws.microprofile.faulttolerance.cdi; apiJar=false; location:="lib/",\
  com.ibm.ws.microprofile.faulttolerance.cdi.2.0.services; apiJar=false; location:="lib/",\
  com.ibm.ws.microprofile.faulttolerance.cdi.2.0; apiJar=false; location:="lib/",
-kind=beta
+kind=ga
 edition=core

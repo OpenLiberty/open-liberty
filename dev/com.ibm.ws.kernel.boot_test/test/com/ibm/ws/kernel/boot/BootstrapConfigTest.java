@@ -312,6 +312,11 @@ public class BootstrapConfigTest {
             assertSame("E: outputRoot should be same as processesRoot", bc.processesRoot, bc.outputRoot);
             assertSame("E: outputDir should be same as configDir", bc.configDir, bc.outputDir);
 
+            // Embedded workarea for utilities
+            bc = new TestBootstrapConfig();
+            bc.findLocations(testName.getMethodName(), null, null, null, null, BootstrapConstants.LOC_AREA_NAME_WORKING_UTILS);
+            assertTrue("F: workarea should be child of outputDir/workarea: ", new File(bc.outputDir, "workarea").equals(bc.workarea.getParentFile()));
+
         } finally {
             TestUtils.cleanTempFiles(test1);
             System.clearProperty(BootstrapConstants.LOC_PROPERTY_INSTANCE_DIR);

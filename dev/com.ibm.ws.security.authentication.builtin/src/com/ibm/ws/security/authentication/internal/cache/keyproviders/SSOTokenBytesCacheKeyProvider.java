@@ -12,19 +12,23 @@ package com.ibm.ws.security.authentication.internal.cache.keyproviders;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.Hashtable;
 
 import javax.security.auth.Subject;
 
 import com.ibm.ws.common.internal.encoder.Base64Coder;
+import com.ibm.ws.security.authentication.AuthenticationConstants;
 import com.ibm.ws.security.authentication.cache.CacheContext;
 import com.ibm.ws.security.authentication.cache.CacheKeyProvider;
 import com.ibm.ws.security.authentication.internal.SSOTokenHelper;
+import com.ibm.ws.security.authentication.utility.SubjectHelper;
 import com.ibm.wsspi.security.token.SingleSignonToken;
 
 /**
  * Provides the SSO token bytes as the cache key.
  */
 public class SSOTokenBytesCacheKeyProvider implements CacheKeyProvider {
+    private static final String[] disableLtpaSSOCache = new String[] { AuthenticationConstants.INTERNAL_DISABLE_LTPA_SSO_CACHE };
 
     /** {@inheritDoc} */
     @Override
@@ -34,6 +38,10 @@ public class SSOTokenBytesCacheKeyProvider implements CacheKeyProvider {
 
     private String getSingleSignonTokenBytes(final Subject subject) {
         String base64EncodedSSOTokenBytes = null;
+
+        if (isDisableLtpaSSOCache(subject))
+            return null;
+
         SingleSignonToken ssoToken = AccessController.doPrivileged(new PrivilegedAction<SingleSignonToken>() {
 
             @Override
@@ -45,5 +53,15 @@ public class SSOTokenBytesCacheKeyProvider implements CacheKeyProvider {
             base64EncodedSSOTokenBytes = Base64Coder.toString(Base64Coder.base64Encode(ssoToken.getBytes()));
         }
         return base64EncodedSSOTokenBytes;
+    }
+
+    private boolean isDisableLtpaSSOCache(final Subject subject) {
+        SubjectHelper subjectHelper = new SubjectHelper();
+        //No need to check for value true or false.
+        Hashtable<String, ?> hashtable = subjectHelper.getHashtableFromSubject(subject, disableLtpaSSOCache);
+        if (hashtable != null)
+            return true;
+        else
+            return false;
     }
 }

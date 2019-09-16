@@ -228,6 +228,13 @@ public class BootstrapManifest {
 
                     //check if we have a package file for the version of Java we are using
                     int indexOfPackageFileToUse = systemPackageFileNames.indexOf(pkgListFileName);
+                    // If not found, check for a more generic version string
+                    if (indexOfPackageFileToUse < 0 && javaVersion.indexOf('.') > 0) {
+                        // If exact version match is not found, strip the minor/micro versions leaving just the major version
+                        String genericPkgListFileName = SYSTEM_PKG_PREFIX + javaVersion.split("\\.")[0] + SYSTEM_PKG_SUFFIX;
+                        indexOfPackageFileToUse = systemPackageFileNames.indexOf(genericPkgListFileName);
+                    }
+
                     //if we don't, then we should use the highest available package list instead
                     //unless there are no files at all, we don't worry about the case of not having
                     //a matching file for a lower version because the minimum execution environment

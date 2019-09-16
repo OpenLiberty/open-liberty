@@ -21,7 +21,7 @@ import com.ibm.websphere.ras.TraceComponent;
 public class SessionConfig {
 
     /** Debug variable */
-    private static final TraceComponent tc = Tr.register(SessionConfig.class);
+    private static final TraceComponent tc = Tr.register(SessionConfig.class, com.ibm.ws.httpsvc.internal.HttpSvcConstants.TRACE_GROUP, null);
 
     /** Property name for the session id name */
     private static final String PROP_IDNAME = "name";
@@ -65,7 +65,7 @@ public class SessionConfig {
 
     /**
      * Session configuration has been updated with the provided properties.
-     * 
+     *
      * @param props
      */
     public void updated(Dictionary<?, ?> props) {
@@ -126,7 +126,7 @@ public class SessionConfig {
 
     /**
      * Query the version of this running session manager.
-     * 
+     *
      * @return String
      */
     public String getSessionVersion() {
@@ -135,7 +135,7 @@ public class SessionConfig {
 
     /**
      * Query whether session cookies are enabled or not.
-     * 
+     *
      * @return boolean
      */
     public boolean usingCookies() {
@@ -145,7 +145,7 @@ public class SessionConfig {
     /**
      * Query whether session has been configured to use URL rewriting
      * instead of cookies.
-     * 
+     *
      * @return boolean
      */
     public boolean isURLRewriting() {
@@ -156,7 +156,7 @@ public class SessionConfig {
      * Query the marker found in the URL when URL rewriting is enabled. The
      * URL would look similar to /path;jsessionid=ID?querydata, where the
      * ";jsessionid=" is the marker.
-     * 
+     *
      * @return String, null if URL rewriting is not enabled
      */
     public String getURLRewritingMarker() {
@@ -165,7 +165,7 @@ public class SessionConfig {
 
     /**
      * Query the ID name for sessions (i.e. jsessionid).
-     * 
+     *
      * @return String
      */
     public String getIDName() {
@@ -175,7 +175,7 @@ public class SessionConfig {
     /**
      * Query whether the session cookies are configured to have the secure
      * flag or not.
-     * 
+     *
      * @return boolean
      */
     public boolean isCookieSecure() {
@@ -184,7 +184,7 @@ public class SessionConfig {
 
     /**
      * Query the configured max-age setting for session cookies.
-     * 
+     *
      * @return int
      */
     public int getCookieMaxAge() {
@@ -193,7 +193,7 @@ public class SessionConfig {
 
     /**
      * Query the configured path value for session cookies.
-     * 
+     *
      * @return String
      */
     public String getCookiePath() {
@@ -202,7 +202,7 @@ public class SessionConfig {
 
     /**
      * Query the configured domain value for session cookies.
-     * 
+     *
      * @return String
      */
     public String getCookieDomain() {

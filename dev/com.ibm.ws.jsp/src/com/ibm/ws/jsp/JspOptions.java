@@ -52,11 +52,11 @@ public class JspOptions {
     protected String     ieClassId = "clsid:8AD9C840-044E-11D1-B3E9-00805F499D93";
     protected boolean    isZOS = false;
     protected String     javaEncoding = "UTF-8";
-    protected String     jdkSourceLevel = "16";
+    private   int        jdkSourceLevel;
     protected String     jspCompileClasspath = null;
     protected boolean    keepGenerated = false;
     protected boolean    keepGeneratedclassfiles = true;
-    protected Map        looseLibMap = null;
+    protected Map<?,?>   looseLibMap = null;
     protected File       outputDir = null;
     protected boolean    reloadEnabled = Constants.DEFAULT_RELOAD_ENABLED;
     protected boolean    reloadEnabledSet = false;
@@ -111,18 +111,16 @@ public class JspOptions {
     protected boolean    allowMultipleAttributeValues = false; //PI30519
     protected boolean    allowPrecedenceInJspExpressionsWithConstantString = false; //PI37304
     
-    private static final Object tmpLockObject = new Object();
-    
-
-    
     //@BLB Pretouch End
     // defect 400645
     String overriddenJspOptions = new String();
     
     public JspOptions() {
+        setJdkSourceLevel(16);
     }   
     
     public JspOptions(Properties jspParams) {
+        setJdkSourceLevel(16);
         populateOptions(jspParams);
     }
     
@@ -221,47 +219,30 @@ public class JspOptions {
             }
         }
         
-        String useJdkSourceLevel = jspParams.getProperty("jdkSourceLevel");
-        if (useJdkSourceLevel != null) {
-            if (useJdkSourceLevel.equals("13")
-                || useJdkSourceLevel.equals("14")
-                || useJdkSourceLevel.equals("15")
-                || useJdkSourceLevel.equals("16")   //PM04610
-                || useJdkSourceLevel.equals("17")
-                || useJdkSourceLevel.equals("18")) { //126902
-                    if (useJdkSourceLevel.equals("17")) {
-                        if (JspOptions.isJavaVersionAtLeast17()) {
-                            //if 17 is only supported by the JDK compiler, set the useJDKCompiler to true
-                            //this.useJDKCompiler=true;
-                            //this.useJikes=false;
-                        } else {
-                            useJdkSourceLevel="16";
-                        }
-                    }
-                    
-                logger.logp(Level.INFO, CLASS_NAME, "populateOptions", JspMessages.getMessage("jsp.jdksourcelevel.value", new Object [] {useJdkSourceLevel})); //152472
-                
-                this.jdkSourceLevel = useJdkSourceLevel;
-            }
-            else {
-                if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.INFO)){
-                    logger.logp(Level.INFO, CLASS_NAME, "populateOptions", "Invalid value for jdkSourceLevel = "+ useJdkSourceLevel+".");
-                }
+        int useJdkSourceLevel = -1;
+        String rawJdkSourceLevel = jspParams.getProperty("jdkSourceLevel");
+        try {
+            if (rawJdkSourceLevel != null)
+                useJdkSourceLevel = Integer.parseInt(rawJdkSourceLevel);
+        } catch(NumberFormatException e) {
+            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.INFO)) {
+                logger.logp(Level.INFO, CLASS_NAME, "populateOptions", "Invalid value for jdkSourceLevel = " + rawJdkSourceLevel + ".");
             }
         }
-		
-		// Normalize compileWithAssert and jdkSourceLevel; compileWithAssert with value true means compile with
-		// jdk 1.4 source level.  Only jdkSourceLevel will be used elsewhere in the JSP container.
-		if (this.compileWithAssert==true){
-			// if jdkSourceLevel was not set, then set it to 1.4 level
-			if (useJdkSourceLevel!=null && useJdkSourceLevel.equals("13")){
-				// if jdkSourceLevel was set to 1.3, then set it to 1.4 level to honor higher setting of compileWithAssert
-				this.jdkSourceLevel="14";
-                if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.INFO)){
-                    logger.logp(Level.INFO, CLASS_NAME, "populateOptions", "jdkSourceLevel was set to '13'.  Setting jdkSourceLevel to '14' because compileWithAssert is true.");
-                }				
-			}
-		}
+        if (useJdkSourceLevel >= 13) {
+            logger.logp(Level.INFO, CLASS_NAME, "populateOptions", JspMessages.getMessage("jsp.jdksourcelevel.value", new Object[] { useJdkSourceLevel })); //152472
+            setJdkSourceLevel(useJdkSourceLevel);
+        }
+        
+        // Normalize compileWithAssert and jdkSourceLevel; compileWithAssert with value true means compile with
+        // jdk 1.4 source level.  Only jdkSourceLevel will be used elsewhere in the JSP container.
+        if (this.compileWithAssert == true && useJdkSourceLevel == 13) {
+            // if jdkSourceLevel was set to 1.3, then set it to a higher level to honor higher setting of compileWithAssert
+            setJdkSourceLevel(14);
+            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.INFO)) {
+                logger.logp(Level.INFO, CLASS_NAME, "populateOptions", "jdkSourceLevel was set to '13'.  Setting jdkSourceLevel to '14' because compileWithAssert is true.");
+            }
+        }
 
         String disableComp = jspParams.getProperty("disableJspRuntimeCompilation");
         if ( disableComp != null ) {
@@ -1069,20 +1050,19 @@ public class JspOptions {
         this.compileWithAssert = compileWithAssert;
     }
 
-    public void setJdkSourceLevel(String jdkSourceLevel) {
-        if (jdkSourceLevel.equals("17")) {
-            if (JspOptions.isJavaVersionAtLeast17()) {
-                //if 17 is only supported by the JDK compiler, set the useJDKCompiler to true
-                //this.useJDKCompiler=true;
-                //this.useJikes=false;
-            } else {
-                jdkSourceLevel="16";
+    public void setJdkSourceLevel(int jdkSourceLevel) {
+        if (jdkSourceLevel < 17 && JavaInfo.majorVersion() >= 12) {
+            // In Java 12 the minimum allowed compiler source level is 1.7
+            jdkSourceLevel = 17;
+            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.INFO)) {
+                logger.logp(Level.INFO, CLASS_NAME, "setJdkSourceLevel", "Requested jdkSourceLevel=" + jdkSourceLevel + 
+                            ", but forcing to 17 because it is the min supported by Java 12+");
             }
         }
         this.jdkSourceLevel = jdkSourceLevel;
     }
 
-    public String getJdkSourceLevel() {
+    public int getJdkSourceLevel() {
         return jdkSourceLevel;
     }
 
@@ -1167,7 +1147,7 @@ public class JspOptions {
         return looseLibMap;
     }
 
-    public void setLooseLibMap(Map map) {
+    public void setLooseLibMap(Map<?,?> map) {
         looseLibMap = map;
     }
 
@@ -1690,10 +1670,6 @@ public class JspOptions {
 
     public void setRecompileJspOnRestart(boolean recompileJspOnRestart) {
         this.recompileJspOnRestart = recompileJspOnRestart;
-    }
-
-    public static boolean isJavaVersionAtLeast17() {
-        return JavaInfo.majorVersion() >= 7;
     }
 
 }

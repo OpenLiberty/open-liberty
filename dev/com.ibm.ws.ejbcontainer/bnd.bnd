@@ -30,10 +30,18 @@ Require-Bundle: com.ibm.ws.container.service
 #
 # com.ibm.ws.logging needs an explicit import because LoggerHelper intentionally
 # accesses it via reflection only.
+#
+# Using version=! in order to not have a version attached to the import for packages that were removed
+# from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the 
+# packages from Java when using Java 8 or earlier and from the new shipped bundles for Java 9 and later.
 Import-Package: \
   !com.ibm.ws.injectionengine, \
   !org.omg.stub.java.rmi, \
   com.ibm.ws.logging, \
+  org.omg.CORBA;version=!,\
+  org.omg.CORBA.portable;version=!,\
+  org.omg.CORBA_2_3.portable;version=!,\
+  org.omg.PortableServer;version=!,\
   *
 
 DynamicImport-Package: \
@@ -121,6 +129,7 @@ instrument.classesIncludes: com/ibm/ws/ejbcontainer/osgi/**/*.class
 instrument.classesExcludes: com/ibm/ws/ejbcontainer/osgi/internal/resources/*.class
 
 -buildpath: \
+	com.ibm.ws.org.apache.yoko.corba.spec.1.5;version=latest,\
 	com.ibm.ws.ejbcontainer.core;version=latest,\
 	com.ibm.ws.ejbcontainer.remote.portable.core;version=latest,\
 	com.ibm.websphere.javaee.ejb.3.1;version=latest,\

@@ -1,0 +1,41 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.rest.handler.validator/resources/com/ibm/ws/rest/handler/validator/resources/CWWKOMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Validation REST endpoint
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWKO1550 to CWWKO1559
+
+CWWKO1550_VALIDATOR_NOT_FOUND=CWWKO1550E: Dla element\u00f3w konfiguracji typu {0} nie udost\u0119pniono sprawdzania poprawno\u015bci.
+CWWKO1550_VALIDATOR_NOT_FOUND.explanation=Podany typ elementu konfiguracji nie ma mo\u017cliwo\u015bci sprawdzenia swojej konfiguracji.
+CWWKO1550_VALIDATOR_NOT_FOUND.useraction=Nie pr\u00f3buj sprawdza\u0107 poprawno\u015bci tego typu elementu konfiguracji.
+
+CWWKO1551_CANNOT_VALIDATE=CWWKO1551E: Nie spe\u0142niono co najmniej jednej zale\u017cno\u015bci, opcja w\u0142\u0105czaj\u0105ca zas\u00f3b nie zosta\u0142a w\u0142\u0105czona lub nie ma mo\u017cliwo\u015bci sprawdzenia poprawno\u015bci tego typu zasobu.
+CWWKO1551_CANNOT_VALIDATE.explanation=Nie mo\u017cna wykona\u0107 \u017c\u0105dania sprawdzenia poprawno\u015bci dla podanej konfiguracji. Mo\u017cliwe przyczyny: niespe\u0142niona zale\u017cno\u015b\u0107, brak opcji w\u0142\u0105czaj\u0105cej element konfiguracji lub brak obs\u0142ugi sprawdzania poprawno\u015bci w elemencie konfiguracji.
+CWWKO1551_CANNOT_VALIDATE.useraction=Sprawd\u017a, czy opcja udost\u0119pniaj\u0105ca element konfiguracji zosta\u0142a w\u0142\u0105czona, czy nie brakuje \u017cadnych zale\u017cno\u015bci oraz czy element konfiguracji obs\u0142uguje sprawdzanie poprawno\u015bci.
+
+CWWKO1552_MISSING_DELIMITER=CWWKO1552E: Nag\u0142\u00f3wek X-Login-Config-Props wymaga ogranicznika mi\u0119dzy nazw\u0105 a warto\u015bci\u0105 w\u0142a\u015bciwo\u015bci konfiguracyjnej logowania w postaci znaku r\u00f3wno\u015bci (=).
+CWWKO1552_MISSING_DELIMITER.explanation=Ogranicznik w postaci znaku r\u00f3wno\u015bci jest konieczny do rozr\u00f3\u017cnienia cz\u0119\u015bci nag\u0142\u00f3wka X-Login-Config-Props odnosz\u0105cych si\u0119 do nazwy i warto\u015bci w\u0142a\u015bciwo\u015bci konfiguracyjnej logowania.
+CWWKO1552_MISSING_DELIMITER.useraction=Zaktualizuj nag\u0142\u00f3wek X-Login-Config-Props tak, aby mi\u0119dzy nazw\u0105 a warto\u015bci\u0105 w\u0142a\u015bciwo\u015bci konfiguracyjnej logowania znajdowa\u0142 si\u0119 znak r\u00f3wno\u015bci (=).
+
+CWWKO1553_HANDLER_NOT_FOUND=CWWKO1553E: Brak zarejestrowanych procedur obs\u0142ugi zgodnych z \u017c\u0105danym adresem URL {0}.
+CWWKO1553_HANDLER_NOT_FOUND.explanation=Podj\u0119to pr\u00f3b\u0119 uzyskania dost\u0119pu do adresu URL, kt\u00f3ry nie by\u0142 zgodny z \u017cadn\u0105 z zarejestrowanych procedur obs\u0142ugi.
+CWWKO1553_HANDLER_NOT_FOUND.useraction=Popraw adres URL, aby by\u0142 zgodny z zarejestrowan\u0105 procedur\u0105 obs\u0142ugi.

@@ -15,4 +15,7 @@
             </tcp-ip>
         </join>
     </network>
+    <executor-service name="default">
+        <pool-size>12</pool-size>
+    </executor-service>    
 </hazelcast>

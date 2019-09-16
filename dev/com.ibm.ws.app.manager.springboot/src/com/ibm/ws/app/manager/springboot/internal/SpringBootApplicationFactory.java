@@ -23,7 +23,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
@@ -31,7 +33,7 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 
 import com.ibm.ws.app.manager.module.DeployedAppInfo;
 import com.ibm.ws.app.manager.module.DeployedAppInfoFactory;
-import com.ibm.ws.app.manager.module.internal.DeployedAppInfoFactoryBase;
+import com.ibm.ws.app.manager.module.DeployedAppServices;
 import com.ibm.ws.app.manager.module.internal.ModuleHandler;
 import com.ibm.ws.app.manager.springboot.support.ContainerInstanceFactory;
 import com.ibm.ws.app.manager.springboot.support.SpringBootSupport;
@@ -44,16 +46,27 @@ import com.ibm.wsspi.kernel.service.utils.FileUtils;
 
 @Component(service = DeployedAppInfoFactory.class,
            property = { "service.vendor=IBM", "type=" + SPRING_APP_TYPE })
-public class SpringBootApplicationFactory extends DeployedAppInfoFactoryBase {
+public class SpringBootApplicationFactory implements DeployedAppInfoFactory {
 
     private final AtomicInteger nextAppID = new AtomicInteger(0);
-    @Reference
-    private LibIndexCache libIndexCache;
-    @Reference(target = "(type=" + SPRING_APP_TYPE + ")")
-    private ModuleHandler springModuleHandler;
+    private final BundleContext bundleContext;
+    protected final DeployedAppServices deployedAppServices;
+    private final LibIndexCache libIndexCache;
+    private final ModuleHandler springModuleHandler;
     private final List<Container> springBootSupportContainers = new CopyOnWriteArrayList<Container>();
     private final Map<ServiceReference<SpringBootSupport>, List<Container>> springBootSupports = new ConcurrentHashMap<>();
     private final Map<Class<?>, ContainerInstanceFactory<?>> containerInstanceFactories = new ConcurrentHashMap<>();
+
+    @Activate
+    public SpringBootApplicationFactory(BundleContext bundleContext,
+                                        @Reference DeployedAppServices deployedAppServices,
+                                        @Reference LibIndexCache libIndexCache,
+                                        @Reference(target = "(type=" + SPRING_APP_TYPE + ")") ModuleHandler springModuleHandler) {
+        this.bundleContext = bundleContext;
+        this.deployedAppServices = deployedAppServices;
+        this.libIndexCache = libIndexCache;
+        this.springModuleHandler = springModuleHandler;
+    }
 
     @Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC, unbind = "removeSpringBootSupport")
     protected void addSpringBootSupport(SpringBootSupport support, ServiceReference<SpringBootSupport> ref) {
@@ -78,9 +91,13 @@ public class SpringBootApplicationFactory extends DeployedAppInfoFactoryBase {
         containerInstanceFactories.remove(factory.getType());
     }
 
+    public BundleContext getBundleContext() {
+        return bundleContext;
+    }
+
     @Override
     public DeployedAppInfo createDeployedAppInfo(ApplicationInformation<DeployedAppInfo> applicationInformation) throws UnableToAdaptException {
-        SpringBootApplicationImpl app = new SpringBootApplicationImpl(applicationInformation, this, nextAppID.getAndIncrement());
+        SpringBootApplicationImpl app = new SpringBootApplicationImpl(applicationInformation, this, deployedAppServices, nextAppID.getAndIncrement());
         applicationInformation.setHandlerInfo(app);
         return app;
     }
@@ -107,8 +124,8 @@ public class SpringBootApplicationFactory extends DeployedAppInfoFactoryBase {
         File cacheDirAdapt = ensureDataFileExists(bundle, "cacheAdapt");
         File cacheDirOverlay = ensureDataFileExists(bundle, "cacheOverlay");
         // Create an artifact API and adaptable Container implementation for the bundle
-        ArtifactContainer artifactContainer = getArtifactFactory().getContainer(cacheDir, bundle);
-        Container wabContainer = getModuleFactory().getContainer(cacheDirAdapt, cacheDirOverlay, artifactContainer);
+        ArtifactContainer artifactContainer = deployedAppServices.getArtifactFactory().getContainer(cacheDir, bundle);
+        Container wabContainer = deployedAppServices.getModuleFactory().getContainer(cacheDirAdapt, cacheDirOverlay, artifactContainer);
         return wabContainer;
     }
 
@@ -117,7 +134,7 @@ public class SpringBootApplicationFactory extends DeployedAppInfoFactoryBase {
     }
 
     File getDataDir(String path) throws IOException {
-        return ensureDataFileExists(getBundleContext().getBundle(), path);
+        return ensureDataFileExists(bundleContext.getBundle(), path);
     }
 
     static File ensureDataFileExists(Bundle bundle, String path) {

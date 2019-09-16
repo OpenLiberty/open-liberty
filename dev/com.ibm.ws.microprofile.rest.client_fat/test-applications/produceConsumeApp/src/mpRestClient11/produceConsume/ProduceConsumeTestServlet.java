@@ -37,12 +37,12 @@ public class ProduceConsumeTestServlet extends FATServlet {
     /**
      * Tests that MP Rest Client's <code>@Produces</code> annotation affects the value transmitted in
      * the <code>Accept</code> header, and that it's <code>@Consumes</code> annotation affects the
-     * value transmitted in the <code>Content-Type</code> header.  Note that this is opposite of
-     * what you would expect for JAX-RS resources. 
+     * value transmitted in the <code>Content-Type</code> header when it is applied to the method.
+     * Note that this is opposite of what you would expect for JAX-RS resources. 
      */
     @Test
-    public void testProducesConsumesAnnotationOnClientInterface(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-        final String m = "testProducesConsumesAnnotationOnClientInterface";
+    public void testProducesConsumesAnnotationOnClientInterfaceMethod(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        final String m = "testProducesConsumesAnnotationOnClientInterfaceMethod";
         MyClient client = RestClientBuilder.newBuilder()
                                            .baseUri(URI.create("http://localhost:23/null"))
                                            .register(Filter.class)
@@ -65,5 +65,30 @@ public class ProduceConsumeTestServlet extends FATServlet {
         _log.info(m + "Sent-ContentType: " + contentTypeHeader);
         assertEquals(MediaType.APPLICATION_XML, acceptHeader);
         assertEquals(MediaType.APPLICATION_JSON, contentTypeHeader);
+    }
+
+    /**
+     * Tests that MP Rest Client's <code>@Produces</code> annotation affects the value transmitted in
+     * the <code>Accept</code> header, and that it's <code>@Consumes</code> annotation affects the
+     * value transmitted in the <code>Content-Type</code> header when it is applied to the interface, but
+     * not specified in the method.
+     * Note that this is opposite of what you would expect for JAX-RS resources. 
+     */
+    @Test
+    public void testProducesConsumesAnnotationOnClientInterfaceType(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        final String m = "testProducesConsumesAnnotationOnClientInterfaceType";
+        MyClient client = RestClientBuilder.newBuilder()
+                                           .baseUri(URI.create("http://localhost:23/null"))
+                                           .register(Filter.class)
+                                           .build(MyClient.class);
+        
+        _log.info(m + " @Produce(text/html) @Consume(text/plain)");
+        Response r = client.produceHTMLConsumeTEXT();
+        String acceptHeader = r.getHeaderString("Sent-Accept");
+        _log.info(m + "Sent-Accept: " + acceptHeader);
+        String contentTypeHeader = r.getHeaderString("Sent-ContentType");
+        _log.info(m + "Sent-ContentType: " + contentTypeHeader);
+        assertEquals(MediaType.TEXT_HTML, acceptHeader);
+        assertEquals(MediaType.TEXT_PLAIN, contentTypeHeader);
     }
 }

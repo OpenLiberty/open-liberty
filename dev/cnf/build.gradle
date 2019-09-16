@@ -413,8 +413,8 @@ task checkForUpdates() {
       totalArtifacts++
       def (g,a,v) = line.split(':').collect { it.trim() }
       g = g.replace('.','/')
-      println '### g=' + g + '   a=' + a + '  v=' + v
-      println '  checking http://central.maven.org/maven2/' + g + '/' + a + '/maven-metadata.xml'
+      //println '### g=' + g + '   a=' + a + '  v=' + v
+      //println '  checking http://central.maven.org/maven2/' + g + '/' + a + '/maven-metadata.xml'
       def response = new URL('http://central.maven.org/maven2/' + g + '/' + a + '/maven-metadata.xml').text
       def mavenMetadata = xmlParser.parseText(response)
       VersionString currentVersion = new VersionString(v)
@@ -427,9 +427,7 @@ task checkForUpdates() {
          }
       }
       if (!possibleUpdate.raw.equals(currentVersion.raw)) {
-        println '  current version: ' + v
-        println '  latest released: ' + mavenMetadata.versioning.release
-        println '  found possible update at version=' + possibleUpdate.raw
+        println(sprintf("%-60s --> %s", line, possibleUpdate.raw))
         possibleUpdates++;
       }
     }

@@ -11,13 +11,10 @@
 package com.ibm.ws.transaction.test;
 
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -25,17 +22,18 @@ import componenttest.topology.impl.LibertyServerFactory;
 @SuiteClasses({
                 SimpleFS2PCCloudTest.class,
                 Simple2PCCloudTest.class,
-                DualServerDynamicTest.class
+                DualServerDynamicFSTest.class,
+                DualServerDynamicDBTest.class,
+                DualServerPeerLockingTest.class
 })
 public class FATSuite {
 
     private static LibertyServer server1 = LibertyServerFactory.getLibertyServer("com.ibm.ws.transaction_FSCLOUD001");
     private static LibertyServer server2 = LibertyServerFactory.getLibertyServer("com.ibm.ws.transaction_FSCLOUD002");
-    // Using the RepeatTests @ClassRule will cause all tests to be run twice.
-    // First without any modifications, then again with all features upgraded to their EE8 equivalents.
-    @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(FeatureReplacementAction.EE8_FEATURES());
+    // We don't repeat these tests, when they run in full mode doubling the number of tests can mean that the whole
+    // suite can take longer than the 3 hour threshold for a FAT suite.
+    //
+    // So run the suite with the EE8 Feature set only.
 
     @BeforeClass
     public static void beforeSuite() throws Exception {

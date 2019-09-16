@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://ejb.ejbjndi.jaxws.ws.ibm.com/"
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http"
+    name="EJBCoffeemateProviderService" targetNamespace="http://ejb.ejbjndi.jaxws.ws.ibm.com/">
+    <wsdl:types>
+        <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+            xmlns:tns="http://ejb.ejbjndi.jaxws.ws.ibm.com/"
+            elementFormDefault="unqualified" targetNamespace="http://ejb.ejbjndi.jaxws.ws.ibm.com/"
+            version="1.0">
+            <xs:element name="take" type="tns:take"></xs:element>
+            <xs:element name="takeResponse" type="tns:takeResponse"></xs:element>
+            <xs:complexType name="take">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="arg0"
+                        type="xs:string"></xs:element>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="takeResponse">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="return"
+                        type="xs:string"></xs:element>
+                </xs:sequence>
+            </xs:complexType>
+        </xs:schema>
+    </wsdl:types>
+    <wsdl:message name="takeResponse">
+        <wsdl:part element="tns:takeResponse" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="take">
+        <wsdl:part element="tns:take" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:portType name="EJBCoffeemateProvider">
+        <wsdl:operation name="take">
+            <wsdl:input message="tns:take" name="take">
+            </wsdl:input>
+            <wsdl:output message="tns:takeResponse" name="takeResponse">
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="EJBCoffeemateProviderServiceSoapBinding"
+        type="tns:EJBCoffeemateProvider">
+        <soap:binding style="document"
+            transport="http://schemas.xmlsoap.org/soap/http"></soap:binding>
+        <wsdl:operation name="take">
+            <soap:operation soapAction="" style="document"></soap:operation>
+            <wsdl:input name="take">
+                <soap:body use="literal"></soap:body>
+            </wsdl:input>
+            <wsdl:output name="takeResponse">
+                <soap:body use="literal"></soap:body>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="EJBCoffeemateProviderService">
+        <wsdl:port binding="tns:EJBCoffeemateProviderServiceSoapBinding"
+            name="EJBCoffeemateProviderPort">
+            <soap:address
+                location="http://localhost:9080/httpConduitProperties/EJBCoffeemateProviderService"></soap:address>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

@@ -72,4 +72,5 @@ instrument.classesExcludes: com/ibm/ws/javamail/resources/*.class
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.ws.logging.core,\
 	com.ibm.ws.resource;version=latest, \
+	com.ibm.ws.config;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest

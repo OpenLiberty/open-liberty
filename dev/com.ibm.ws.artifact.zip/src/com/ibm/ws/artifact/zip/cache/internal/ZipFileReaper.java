@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,9 +11,14 @@
 package com.ibm.ws.artifact.zip.cache.internal;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.LinkedBlockingQueue;
+//import java.util.function.Consumer;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
@@ -149,13 +154,190 @@ public class ZipFileReaper {
 
     //
 
+    // Locking note:
+    //
+    // 'Tr.warning' can cause a bundle load, which can cause a call to 'AppClassLoader.loadClass'.
+    //
+    // But, 'AppClassLoader.loadClass' can obtain an entry's input stream, which causes
+    // a call to 'ZipFileReaper.open'.
+    //
+    // See below for stacks which show typical deadlocked threads.
+    //
+    // To avoid the deadlock, the stall warning is issued from a new thread.
+    //
+    // zip file reaper 55 BLOCKED
+    // com.ibm.ws.classloading.internal.AppClassLoader.loadClass(AppClassLoader.java:480)
+    // java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:1032)
+    // java.base/java.util.ResourceBundle$Control.newBundle(ResourceBundle.java:3170)
+    // java.base/java.util.ResourceBundle.loadBundle(ResourceBundle.java:1994)
+    // ...
+    // java.base/java.util.ResourceBundle.getBundle(ResourceBundle.java:1509)
+    // ...
+    // com.ibm.ws.logging.internal.impl.BaseTraceService.warning(BaseTraceService.java:512)
+    // com.ibm.websphere.ras.Tr.warning(Tr.java:653)
+    // com.ibm.ws.artifact.zip.cache.internal.ZipFileReaper$ReaperRunnable.run(ZipFileReaper.java:235)
+    // 
+    // Default Executor-thread-2 40 BLOCKED
+    // com.ibm.ws.artifact.zip.cache.internal.ZipFileReaper.open(ZipFileReaper.java:1018)
+    // ...
+    // com.ibm.ws.artifact.zip.internal.ZipFileEntry.getInputStream(ZipFileEntry.java:176)
+    // com.ibm.ws.classloading.internal.ContainerClassLoader$ArtifactEntryUniversalResource.getByteResourceInformation(ContainerClassLoader.java:517)
+    // ...
+    // com.ibm.ws.classloading.internal.AppClassLoader.loadClass(AppClassLoader.java:482)
+    // java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:1032)
+    // org.apache.derby.impl.sql.compile.SQLParser.insertColumnsAndSource(SQLParser.java:8249)
+    // ...
+    // com.ibm.ws.rsadapter.jdbc.WSJdbcStatement.executeUpdate(WSJdbcStatement.java:608)
+    // ...
+    // javax.servlet.http.HttpServlet.service(HttpServlet.java:575)
+
+    private static class DeferredLogRecord {
+        // Currently only defer warnings.  Other log record types could be
+        // made asynchronous, but so far that hasn't been necessary.
+
+        private final String msgKey;
+        private final Object[] msgArgs;
+
+        public DeferredLogRecord(String msgKey, Object... msgArgs) {
+            this.msgKey = msgKey;
+            this.msgArgs = msgArgs;
+        }
+
+        public void emit() {
+            Tr.warning(tc, msgKey, msgArgs);
+        }
+    }
+
+    private static class DeferredLogEmitter implements Runnable {
+        public DeferredLogEmitter() {
+            this.deferredLogQueue = new LinkedBlockingQueue<DeferredLogRecord>();
+        }
+
+        public void run() {
+            try {
+                while ( true ) {
+                    take().emit(); // 'take' throws InterruptedException
+                }
+            } catch ( InterruptedException e ) {
+                // Handle interruption *OUTSIDE* of the loop.  We
+                // want interruption to cause an exit.
+                //
+                // FFDC and ignore
+            }
+        }
+
+        //
+
+        protected final BlockingQueue<DeferredLogRecord> deferredLogQueue;
+
+        public void post(String msgKey, Object... msgArgs) {
+            try {
+                deferredLogQueue.put( new DeferredLogRecord(msgKey, msgArgs) );
+            } catch ( InterruptedException e ) {
+                // Don't really care if a put is interrupted.  That means
+                // that a warning was not emitted.  If that is a problem,
+                // the warning would need to be emitted outside of usual
+                // trace.
+                //
+                // FFDC and ignore
+            }
+        }
+
+        public DeferredLogRecord take() throws InterruptedException {
+            return deferredLogQueue.take();
+        }
+    }
+
+    private static final DeferredLogEmitter logEmitter;
+    private static final Thread logThread;
+
+    // Should this initialization be done only when constructing the first
+    // reaper?
+
+    static {
+        logEmitter = new DeferredLogEmitter();
+        logThread = new Thread(logEmitter, "reaper logger");
+        logThread.setDaemon(true);
+        logThread.start();
+    }
+
+    protected static void asyncWarning(final String msgKey, final Object ... msgArgs) {
+        logEmitter.post(msgKey, msgArgs);
+    }
+
+    //
+
     private static class ReaperRunnable implements Runnable {
         @Trivial
         public ReaperRunnable(ZipFileReaper reaper) {
             this.reaper = reaper;
+
+            // These are used only by 'run', but are stored at the
+            // instance level to enable view by the introspector.
+
+            this.initialAt = -1;
+
+            this.isFinal = false;
+            this.finalAt = -1;
+
+            this.didShutdownReap = false;
+            this.shutdownReapAt = -1;
+
+            this.nextReapAt = -1;
+            this.lastReapAt = -1;
+            this.nextReapDelay = -1;
+
+            this.startupLatch = new CountDownLatch(1);
         }
 
-        //
+        private long initialAt;
+
+        private boolean isFinal;
+        private long finalAt;
+
+        private boolean didShutdownReap;
+        private long shutdownReapAt;
+
+        private long nextReapAt;
+        private long lastReapAt;
+        private long nextReapDelay;
+        private String nextReapReason;
+
+        private final CountDownLatch startupLatch;
+
+        protected void waitForStartup() throws InterruptedException {
+            startupLatch.await(); // throws InterruptedException
+        }
+
+        protected void signalStartup() {
+            startupLatch.countDown();
+        }
+
+        // Invoked by 'ZipFileReaper.introspect(PrintWriter)'
+
+        protected void introspect(PrintWriter output) {
+            output.println();
+            output.println("  Runner [ " + this + " ]");
+
+            long reaperInitialAt = getReaper().getInitialAt();
+
+            output.println("    Initial       [ " + toRelSec(reaperInitialAt, initialAt) + " (s) ]");
+            if ( isFinal ) {
+                output.println("    Final         [ " + toRelSec(reaperInitialAt, initialAt) + " (s) ]");
+            }
+
+            if ( didShutdownReap ) {
+                output.println("    Shutdown Reap [ " + toRelSec(reaperInitialAt, shutdownReapAt) + " (s) ]");
+            }
+
+            output.println("    Last Reap     [ " + toRelSec(reaperInitialAt, lastReapAt) + " (s) ]");
+            output.println("    Next Reap     [ " + toRelSec(reaperInitialAt, nextReapAt) + " (s) ]");
+            String delayText = ( (nextReapDelay < 0) ? "INDEFINITE" : toAbsSec(nextReapDelay) );
+            output.println("    Next Delay    [ " + delayText + " (s) ] (" + nextReapReason + ")");
+
+            output.println();
+            output.println("  Logger [ " + logThread + " ]");
+        }
 
         private final ZipFileReaper reaper;
 
@@ -166,15 +348,29 @@ public class ZipFileReaper {
 
         //
 
+        /**
+         * Time allowed for stalled reaps: Any reap delay which exceeds the expected delay
+         * by this amount causes a warning.
+         */
+        public static final long STALL_LIMIT = ZipCachingProperties.NANO_IN_ONE * 10;
+
         @Trivial
         public void run() {
             String methodName = "run";
-            if ( tc.isDebugEnabled() ) {
-                Tr.debug(tc, methodName + " Start");
+            boolean doDebug = ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() );
+
+            long startAt = SystemUtils.getNanoTime();
+            if ( doDebug ) {
+                Tr.debug(tc, methodName + " Start [ " + toRelSec(startAt, startAt) + " (s) ]");
             }
 
             synchronized ( reaper.reaperLock ) {
-                long reapDelay = REAP_DELAY_INDEFINITE;
+                // Use this latch to ensure the reaper thread has started
+                // and has acquired the reaper lock before allowing zip file
+                // operations.  That prevents us from having to handle cases where
+                // the reaper thread doesn't start immediately.
+
+                signalStartup();
 
                 // CAUTION CAUTION CAUTION CAUTION
                 //
@@ -187,28 +383,105 @@ public class ZipFileReaper {
                 //
                 // CAUTION CAUTION CAUTION CAUTION
 
+                nextReapDelay = REAP_DELAY_INDEFINITE;
+                reaper.addWaitReason("indefinite (initial)");
+
+                nextReapAt = initialAt;
+                nextReapReason = "indefinite (initial)";
+
                 while ( true ) {
+                    
+                    long lastReapAt = nextReapAt;
+
                     // Condition:
                     // Start an indefinite wait if and only if there are no pending closes.
-                    // Upon waking up, at least one pending close is expected, but
+                    // Upon waking, at least one pending close is expected, but
                     // is not guaranteed.
 
+                    // The reaper delay logic is fragile: Put in these extra checks to guard
+                    // against incorrectly putting the reaper in an indefinite wait, since that
+                    // cannoe be recovered.
+
+                    String errorMessage;
+
+                    ZipFileData testPending = reaper.getRipest();
+                    if ( nextReapDelay < 0L ) {
+                        if ( testPending != null ) {
+                            errorMessage = "Indefinite wait with pending [ " + testPending + " ]";
+                            nextReapReason = "specific (corrected from indefinite) [ " + nextReapDelay + " ]";
+                            nextReapDelay = reaper.getQuickPendMin();
+                            reaper.addWaitReason("specific (corrected from indefinite)");
+                        } else {
+                            errorMessage = null;
+                            nextReapReason = "indefinite (no pending)";
+                        }
+
+                    } else if ( nextReapDelay == 0L ) {
+                        errorMessage = "Incorrect explicit indefinited wait [ " + testPending + " ]";
+                        if ( testPending == null ) {
+                            nextReapDelay = REAP_DELAY_INDEFINITE;
+                            nextReapReason = "indefinite (corrected from zero)";
+                            reaper.addWaitReason("indefinite (corrected from zero)");
+                        } else {
+                            nextReapDelay = reaper.getQuickPendMin();
+                            nextReapReason = "specific (corrected from zero)";
+                            reaper.addWaitReason("specific (corrected from zero)");
+                        }
+
+                    } else {
+                        errorMessage = null;
+                        if ( testPending == null ) {
+                            nextReapReason = "specific (no pending)";
+                        } else {
+                            nextReapReason = "specific [ " + nextReapDelay + " ]";
+                        }
+                    }
+
+                    if ( errorMessage != null ) {
+                        reaper.handleError(errorMessage);
+                    }
+
                     try {
-                        if ( reapDelay < 0L ) {
+                        if ( nextReapDelay < 0L ) {
                             reaper.reaperLock.wait(methodName, "new pending close"); // throws InterruptedException
                         } else {
-                            reaper.reaperLock.waitNS(reapDelay, methodName, "active pending close"); // throws InterruptedException
+                            reaper.reaperLock.waitNS(nextReapDelay, methodName, "active pending close"); // throws InterruptedException
                         }
                     } catch ( InterruptedException e ) {
-                        if ( tc.isDebugEnabled() ) {
+                        if ( doDebug ) {
                             Tr.debug(tc, methodName + " Interrupted!");
                         }
                         break;
                     }
 
+                    nextReapAt = SystemUtils.getNanoTime();
+                    
+                    if ( doDebug ) {
+                        Tr.debug(tc, methodName + " Reap [ " + toRelSec(startAt, nextReapAt) + " (s) ]");
+                        
+                        // Issue #7770 - Remove reaper stall warning - change to debug
+                        // asyncWarning("reaper.stall", toAbsSec(actualDelay), toAbsSec(reapDelay));
+                        
+                        String message;
+                        long actualReapDelay = nextReapAt - lastReapAt;
+                        if ( nextReapDelay > 0L ) {
+                            long overage = actualReapDelay - nextReapDelay;
+                            if ( overage > STALL_LIMIT ) {
+                                message = " Excessive reap cycle time:";
+                            } else {
+                                message = " Reap cycle time:";  
+                            }
+                        } else {
+                            message = " Reap cycle time:";
+                        }
+                        Tr.debug(tc, methodName + message + " Actual delay [ " 
+                                        + toAbsSec(actualReapDelay) + " (s) ]; Requested delay [ " 
+                                        + toAbsSec(nextReapDelay) + " (s) ]");
+                    }
+
                     ZipFileData ripestPending = reaper.getRipest();
                     if ( ripestPending == null ) {
-                        if ( tc.isDebugEnabled() ) {
+                        if ( doDebug ) {
                             Tr.debug(tc, methodName + " No pending!");
                         }
 
@@ -217,47 +490,48 @@ public class ZipFileReaper {
                         // this code holds the reaper lock, none can be added before
                         // the next wait.
 
-                        reapDelay = REAP_DELAY_INDEFINITE;
+                        nextReapDelay = REAP_DELAY_INDEFINITE;
+                        reaper.addWaitReason("indefinite (no pending)");
                         continue;
                     }
 
-                    long reapAt = SystemUtils.getNanoTime();
-
                     long lastPendAt = ripestPending.lastPendAt;
-                    long consumedPend = ( reapAt - lastPendAt );
+                    long consumedPend = ( nextReapAt - lastPendAt );
                     long pendMax = ( ripestPending.expireQuickly ? reaper.getQuickPendMin() : reaper.getSlowPendMax() );
 
                     if ( consumedPend < pendMax ) {
                         // The ripest still has time left before it is fully closed.
                         // That is the amount of time to wait to the next reap. 
-                        reapDelay = pendMax - consumedPend;
-                        if ( tc.isDebugEnabled() ) {
-                            Tr.debug(tc, methodName + " Ripest [ " + ripestPending.path + " ] waited [ " + toAbsSec(consumedPend) + " (s) ] remaining [ " + toAbsSec(reapDelay) + " (s) ]");
+
+                        nextReapDelay = pendMax - consumedPend;
+                        reaper.addWaitReason("specific (incomplete pend)");
+                        if ( doDebug ) {
+                            Tr.debug(tc, methodName + " Ripest [ " + ripestPending.path + " ] waited [ " + toAbsSec(consumedPend) + " (s) ] remaining [ " + toAbsSec(nextReapDelay) + " (s) ]");
                         }
 
                     } else {
                         // The ripest is ready to fully close.  Fully close the ripest, and any
                         // other pending closes which are fully ripe, and set the next reap delay
                         // according to the ripest but not fully ripe pending close. 
-                        if ( tc.isDebugEnabled() ) {
+                        if ( doDebug ) {
                             Tr.debug(tc, methodName + " Ripest [ " + ripestPending.path + " ] waited [ " + toAbsSec(consumedPend) + " (s) ]");
                         }
 
-                        reapDelay = reaper.reap(reapAt, ZipFileReaper.IS_NOT_SHUTDOWN_REAP);
+                        nextReapDelay = reaper.reap(nextReapAt, ZipFileReaper.IS_NOT_SHUTDOWN_REAP);
+                        reaper.addWaitReason("specific (reap)");
                     }
                 }
             }
 
-            if ( tc.isDebugEnabled() ) {
-                Tr.debug(tc, methodName + " Shutting down");
+            long shutdownAt = SystemUtils.getNanoTime();
+            if ( doDebug ) {
+                Tr.debug(tc, methodName + " Shutting down [ " + toRelSec(startAt, shutdownAt) + " (s) ]");
             }
+            reaper.reap(shutdownAt, ZipFileReaper.IS_SHUTDOWN_REAP); // Maybe, move this to the shutdown thread.
 
-            // Maybe, move this to the shutdown thread.
-
-            reaper.reap(SystemUtils.getNanoTime(), ZipFileReaper.IS_SHUTDOWN_REAP);
-
-            if ( tc.isDebugEnabled() ) {
-                Tr.debug(tc, methodName + " Stop");
+            long stopAt = SystemUtils.getNanoTime();
+            if ( doDebug ) {
+                Tr.debug(tc, methodName + " Stop [ " + toRelSec(startAt, stopAt) + " (s) ]");
             }
         }
     }
@@ -277,8 +551,11 @@ public class ZipFileReaper {
              ZipCachingProperties.ZIP_CACHE_REAPER_QUICK_PEND_MIN,
              ZipCachingProperties.ZIP_CACHE_REAPER_QUICK_PEND_MIN,
              ZipCachingProperties.ZIP_CACHE_REAPER_SLOW_PEND_MAX,
-             ZipCachingProperties.ZIP_CACHE_REAPER_SLOW_PEND_MAX);
+             ZipCachingProperties.ZIP_CACHE_REAPER_SLOW_PEND_MAX,
+             NULL_ERROR_HANDLER);
     }
+
+    protected static final ErrorConsumer<String> NULL_ERROR_HANDLER = null;
 
     @Trivial
     public ZipFileReaper(
@@ -286,14 +563,38 @@ public class ZipFileReaper {
         boolean debugState,
         int maxCache,
         long quickPendMin, long quickPendMax,
-        long slowPendMin, long slowPendMax) {
+        long slowPendMin, long slowPendMax,
+        ErrorConsumer<String> errorHandler) {
 
         this(reaperName,
              debugState,
              maxCache,
              quickPendMin, quickPendMax,
              slowPendMin, slowPendMax,
+             errorHandler,
              SystemUtils.getNanoTime() );
+    }
+
+    @Trivial
+    public ZipFileReaper(
+        String reaperName,
+        boolean debugState,
+        int maxCache,
+        long quickPendMin,
+        long quickPendMax,
+        long slowPendMin,
+        long slowPendMax
+    ) {
+        this(
+            reaperName,
+            debugState,
+            maxCache,
+            quickPendMin,
+            quickPendMax,
+            slowPendMin,
+            slowPendMax,
+            ZipFileReaper.NULL_ERROR_HANDLER
+        );
     }
 
     private static void validate(
@@ -346,6 +647,7 @@ public class ZipFileReaper {
         int maxCache,
         long quickPendMin, long quickPendMax,
         long slowPendMin, long slowPendMax,
+        ErrorConsumer<String> errorHandler,
         final long initialAt) {
 
         // Parameters ...
@@ -405,12 +707,22 @@ public class ZipFileReaper {
 
         this.isActive = true;
 
-        // TODO: Not sure which of the following two steps to do first.
+        this.waitReasons = new Reasons("Reaper Waits");
 
+        this.errorHandler = errorHandler;
+
+        // TODO: Not sure which of the following two steps to do first.
+ 
         this.reaperThread.start();
 
         if ( this.debugState ) {
             SystemUtils.addShutdownHook(this.reaperShutdownThread);
+        }
+
+        try {
+            this.reaperRunnable.waitForStartup(); // throws InterruptedException
+        } catch ( InterruptedException e ) {
+            // FFDC
         }
     }
 
@@ -444,10 +756,10 @@ public class ZipFileReaper {
          * registered zip files.
          */
         public void run() {
-            Thread reaperThread = getReaperThread();
+            Thread useReaperThread = getReaperThread();
 
             // The reaper is shut down by being interrupted.
-            reaperThread.interrupt();
+            useReaperThread.interrupt();
 
             // This join is necessary to ensure that the reaper
             // thread can complete its shutdown steps.  Otherwise,
@@ -457,7 +769,7 @@ public class ZipFileReaper {
             // Maybe, the shutdown steps should be invoked directly
             // from here.
             try {
-                reaperThread.join(); // throws InterruptedException
+                useReaperThread.join(); // throws InterruptedException
             } catch ( InterruptedException e ) {
                 // Ignore
             }
@@ -600,7 +912,7 @@ public class ZipFileReaper {
             ZipFileData ripestQuick = pendingQuickStorage.getFirst();
             long expireAtQuick = ripestQuick.lastPendAt + quickPendMin;
 
-            ZipFileData ripestSlow = pendingQuickStorage.getFirst();
+            ZipFileData ripestSlow = pendingSlowStorage.getFirst();
             long expireAtSlow = ripestSlow.lastPendAt + slowPendMin;
 
             if ( expireAtQuick <= expireAtSlow ) {
@@ -614,7 +926,7 @@ public class ZipFileReaper {
 
     protected void fullyClose(ZipFileData data, long fullCloseAt, boolean isShutdown) {
         String methodName = "fullyClose";
-        if ( tc.isDebugEnabled() ) {
+        if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
             Tr.debug(tc, methodName + " Path [ " + data.path + " ] at [ " + toRelSec(initialAt, fullCloseAt) + " (s) ]");
         }
 
@@ -627,7 +939,7 @@ public class ZipFileReaper {
 
             ZipFileData oldestCompletedClose =
                 completedStorage.addLast( data, getMaxCache() );
-            if ( tc.isDebugEnabled() ) {
+            if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                 if ( oldestCompletedClose != null ) {
                     Tr.debug(tc, methodName + " Discard completed close [ " + oldestCompletedClose.path + " ]");
                 }
@@ -663,32 +975,160 @@ public class ZipFileReaper {
         return reaperThread;
     }
 
+    protected void introspectReaperThread(PrintWriter output) {
+        output.println();
+        output.println("  Reaper [ " + reaperThread + " ]");
+        output.println("    Id          [ " + reaperThread.getId() + " ]"); 
+        output.println("    Name        [ " + reaperThread.getName() + " ]"); 
+        output.println("    Daemon      [ " + reaperThread.isDaemon() + " ]");
+        output.println("    Priority    [ " + reaperThread.getPriority() + " ]");
+        output.println("    Group       [ " + reaperThread.getThreadGroup() + " ]");
+
+        output.println();
+        output.println("    State       [ " + reaperThread.getState() + " ]");
+        output.println("    Alive       [ " + reaperThread.isAlive() + " ]");
+        output.println("    Interrupted [ " + reaperThread.isInterrupted() + " ]");
+
+        output.println();
+        reaperLock.introspect(output);
+
+        output.println();
+        waitReasons.introspect(output);
+
+        output.println();
+        reaperRunnable.introspect(output);
+    }
+
     //
 
+    public interface ErrorConsumer<T>{
+        public void accept(T t);
+    }
+
+    /**
+     * Error handling hook.  Used by unit tests to detect test errors.
+     */
+    private final ErrorConsumer<String> errorHandler;
+
+    private void handleError(String errorMessage) {
+        //System.out.println("**** ZipFileReaper ERROR [ " + errorMessage + " ] ****");
+
+        Tr.error(tc, errorMessage);
+
+        if ( errorHandler != null ) {
+            errorHandler.accept(errorMessage);
+        }
+
+        PrintWriter writer = new PrintWriter(System.out);
+        introspect(writer, System.nanoTime());
+        writer.flush();
+    }
+
+    //
+
+    public static final int NUM_REASONS = 10;
+
+    private static class Reasons {
+        private final String description;
+        private int nextReason;
+        public final String[] reasons;
+
+        public Reasons(String description) {
+            this.description = description;
+            this.reasons = new String[NUM_REASONS];
+            this.nextReason = 0;
+        }
+
+        public void add(String reason) {
+            reasons[nextReason] = reason;
+            if ( nextReason == NUM_REASONS - 1 ) {
+                nextReason = 0;
+            } else {
+                nextReason = nextReason + 1;
+            }
+        }
+
+        public void introspect(PrintWriter printWriter) {
+            printWriter.println(description + ": ");
+
+            int lastReason = ( (nextReason == 0) ? (NUM_REASONS - 1) : (nextReason - 1) );
+            if ( reasons[lastReason] == null ) {
+                printWriter.println("  *** NONE ***");
+            } else {
+                for ( int reasonNo = 0; reasonNo > -NUM_REASONS; reasonNo-- ) {
+                    int actualReasonNo = nextReason + reasonNo - 1;
+                    if ( actualReasonNo < 0 ) {
+                        actualReasonNo += NUM_REASONS;
+                    }
+
+                    String reason = reasons[actualReasonNo];
+                    if ( reason == null ) {
+                        break;
+                    }
+
+                    printWriter.println("  [ " + reasonNo + " ] [ " + reasons[actualReasonNo] + " ]");
+                }
+            }
+        }
+    }
+
+    private Reasons waitReasons;
+
+    protected void addWaitReason(String reason) {
+        waitReasons.add(reason);
+    }
+
     private static class ReaperLock {
-        public void notify(String methodName, String text) {
-            if ( tc.isDebugEnabled() ) {
+        Reasons lockReasons;
+
+        public ReaperLock() {
+            this.lockReasons = new Reasons("Reaper Lock Activity");
+        }
+
+        public void addReason(String reason) {
+            lockReasons.add(reason);
+        }
+
+        public void introspect(PrintWriter printWriter) {
+            lockReasons.introspect(printWriter);
+        }
+
+        public void skipNotify(String methodName, String text) {
+            addReason(text);
+
+            if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                 Tr.debug(tc, methodName + " " + text);
             }
+        }
 
+        public void notify(String methodName, String text) {
+            addReason(text);
+
+            if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+                Tr.debug(tc, methodName + " " + text);
+            }
             notify();
         }
 
         public void wait(String methodName, String text) throws InterruptedException {
-            if ( tc.isDebugEnabled() ) {
+            addReason(text);
+
+            if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                 Tr.debug(tc, methodName + " Waiting for [ " + text + " ]");
             }
             wait(); // throws InterruptedException
-            if ( tc.isDebugEnabled() ) {
+            if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                 Tr.debug(tc, methodName + " Waited for [ " + text + " ]");
             }
         }
 
         public void waitNS(long waitNs, String methodName, String text) throws InterruptedException {
+            addReason(text);
+
             long waitMs = waitNs / ZipCachingProperties.NANO_IN_MILLI;
             int fracWaitNs = (int) (waitNs - (waitMs * ZipCachingProperties.NANO_IN_MILLI));
 
-            if ( tc.isDebugEnabled() ) {
+            if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                 Tr.debug(tc, methodName +
                     " Waiting [ " + Long.toString(waitMs) + " (ms) " + Integer.toString(fracWaitNs) + " (ns) ]" +
                     " for [ " + text + " ]");
@@ -702,7 +1142,7 @@ public class ZipFileReaper {
 
             wait(waitMs, fracWaitNs); // throws InterruptedException
 
-            if ( tc.isDebugEnabled() ) {
+            if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                 Tr.debug(tc, methodName +
                     " Waited [ " + Long.toString(waitMs) + " (ms) " + Integer.toString(fracWaitNs) + " (ns) ]" +
                     " for [ " + text + " ]");
@@ -724,7 +1164,7 @@ public class ZipFileReaper {
      * closes are pending and the thread should wait until a pending
      * close is available.
      */
-    private static final long REAP_DELAY_INDEFINITE = -1;
+    private static final long REAP_DELAY_INDEFINITE = -1L;
 
     /**
      * Reap the pending closes.
@@ -773,7 +1213,7 @@ public class ZipFileReaper {
      */
     private long reap(long reapAt, boolean isShutdownReap) {
         String methodName = "reap";
-        if ( tc.isDebugEnabled() ) {
+        if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
             Tr.debug(tc, methodName + " At [ " + toRelSec(initialAt, reapAt) + " (s) ] Force [ " + isShutdownReap + " ]");
             Tr.debug(tc, methodName +
                 " All [ " + storage.size() + " ]" +
@@ -794,7 +1234,7 @@ public class ZipFileReaper {
             if ( isShutdownReap ) {
                 // Shutdown closes all pending, regardless of how long they have waited.
 
-                if ( tc.isDebugEnabled() ) {
+                if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                     Tr.debug(tc, methodName +
                             " Path [ " + nextPending.path + " ]" +
                             " Waiting [ " + toAbsSec(nextPendDuration) + " (s) ] (Quick): Forced");
@@ -806,7 +1246,7 @@ public class ZipFileReaper {
 
             } else { // Normal reap.
                 if ( nextPendDuration > quickPendMin) { // Reached the shortest expiration?
-                    if ( tc.isDebugEnabled() ) {
+                    if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                         Tr.debug(tc, methodName +
                             " Path [ " + nextPending.path + " ]" +
                             " Waiting [ " + toAbsSec(nextPendDuration) + " (s) ] (Quick): Expired");
@@ -817,7 +1257,7 @@ public class ZipFileReaper {
                     fullyClose(nextPending, reapAt, IS_NOT_SHUTDOWN_REAP);
 
                 } else { // Not yet reached the shorted expiration.
-                    if ( tc.isDebugEnabled() ) {
+                    if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                         Tr.debug(tc, methodName +
                             " Path [ " + nextPending.path + " ]" +
                             " Waiting [ " + toAbsSec(nextPendDuration) + " (s) ]: Still Waiting");
@@ -844,7 +1284,7 @@ public class ZipFileReaper {
             if ( isShutdownReap ) {
                 // Shutdown closes all pending, regardless of how long they have waited.
 
-                if ( tc.isDebugEnabled() ) {
+                if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                     Tr.debug(tc, methodName +
                             " Path [ " + nextPending.path + " ]" +
                             " Waiting [ " + toAbsSec(nextPendDuration) + " (s) ] (Slow): Forced");
@@ -856,7 +1296,7 @@ public class ZipFileReaper {
 
             } else { // Normal reap.
                 if ( nextPendDuration > slowPendMin ) { // Reached the shortest expiration?
-                    if ( tc.isDebugEnabled() ) {
+                    if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                         Tr.debug(tc, methodName +
                             " Path [ " + nextPending.path + " ]" +
                             " Waiting [ " + toAbsSec(nextPendDuration) + " (s) ] (Slow): Expired");
@@ -867,7 +1307,7 @@ public class ZipFileReaper {
                     fullyClose(nextPending, reapAt, IS_NOT_SHUTDOWN_REAP);
 
                 } else { // Not yet reached the shorted expiration.
-                    if ( tc.isDebugEnabled() ) {
+                    if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                         Tr.debug(tc, methodName +
                             " Path [ " + nextPending.path + " ]" +
                             " Waiting [ " + toAbsSec(nextPendDuration) + " (s) ]: Still Waiting");
@@ -888,7 +1328,7 @@ public class ZipFileReaper {
         // which seems off.
 
         if ( isShutdownReap ) {
-            if ( tc.isDebugEnabled() ) {
+            if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                 Tr.debug(tc, methodName + " De-activating reaper");
             }
 
@@ -909,16 +1349,16 @@ public class ZipFileReaper {
                 String path = mustBeOpenOrClosed.path;
 
                 if ( mustBeOpenOrClosed.isFullyClosed() ) {
-                    if ( tc.isDebugEnabled() ) {
+                    if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                         Tr.debug(tc, methodName + " Closed [ " + path + " ]: No shutdown action");
                     }
                 } else {
                     if ( mustBeOpenOrClosed.isPending() ) {
-                        if ( tc.isDebugEnabled() ) {
+                        if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                             Tr.debug(tc, methodName + " Unexpected Pending [ " + path + " ]: Shutdown close");
                         }
                     } else {
-                        if ( tc.isDebugEnabled() ) {
+                        if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                             Tr.debug(tc, methodName +
                                 " Open [ " + path + " ] [ " + mustBeOpenOrClosed.getActiveOpens() + " ]:" +
                                 " Shutdown pend and close");
@@ -961,7 +1401,7 @@ public class ZipFileReaper {
             }
         }
 
-        if ( tc.isDebugEnabled() ) {
+        if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
             String delayText =
                 ( (nextReapDelay == REAP_DELAY_INDEFINITE) ? "Indefinite" : toAbsSec(nextReapDelay) );
             String speedText =
@@ -979,7 +1419,7 @@ public class ZipFileReaper {
     @Trivial
     public ZipFile open(String path, long openAt) throws IOException, ZipException {
         String methodName = "open";
-        if ( tc.isDebugEnabled() ) {
+        if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
             Tr.debug(tc, methodName + " Path [ " + path + " ] at [ " + toRelSec(initialAt, openAt) + " (s) ]");
         }
 
@@ -989,7 +1429,8 @@ public class ZipFileReaper {
 
         synchronized ( reaperLock ) {
             if ( !getIsActive() ) {
-                Tr.warning(tc, methodName + " Cannot open [ " + path + " ]: ZipFile cache [ " + reaperName + " ] is inactive");
+                asyncWarning("reaper.inactive", path, reaperName);
+                // "Cannot open [ " + path + " ]: ZipFile cache [ " + reaperName + " ] is inactive"
                 throw new IOException("Cannot open [ " + path + " ]: ZipFile cache is inactive");
             }
 
@@ -1002,12 +1443,12 @@ public class ZipFileReaper {
                 }
 
                 if ( data == null ) {
-                    if ( tc.isDebugEnabled() ) {
+                    if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                         Tr.debug(tc, methodName + " New [ " + path + " ]");
                     }
                     data = new ZipFileData( path, getInitialAt() ); // throws IOException, ZipException
                 } else {
-                    if ( tc.isDebugEnabled() ) {
+                    if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                         Tr.debug(tc, methodName + " Recovered [ " + path + " ]");
                     }
                 }
@@ -1016,14 +1457,14 @@ public class ZipFileReaper {
             }
 
             if ( data.isFullyClosed() ) {
-                if ( tc.isDebugEnabled() ) {
+                if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                     Tr.debug(tc, methodName + " Open [ " + path + " ]");
                 }
 
                 zipFile = data.openZipFile(); // throws IOException, ZipException
 
             } else if ( data.isPending() ) {
-                if ( tc.isDebugEnabled() ) {
+                if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                     Tr.debug(tc, methodName + " Unpend [ " + path + " ]");
                 }
 
@@ -1048,7 +1489,7 @@ public class ZipFileReaper {
                 }
 
             } else if ( data.isOpen() ) {
-                if ( tc.isDebugEnabled() ) {
+                if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                     Tr.debug(tc, methodName + " Already open [ " + path + " ]");
                 }
 
@@ -1069,7 +1510,7 @@ public class ZipFileReaper {
 
             data.enactOpen(openAt);
 
-            if ( tc.isDebugEnabled() ) {
+            if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                 Tr.debug(tc, methodName + " Path [ " + path + " ] [ " + zipFile + " ]");
             }
             return zipFile;
@@ -1085,7 +1526,7 @@ public class ZipFileReaper {
 
         synchronized ( reaperLock ) {
             if ( !getIsActive() ) {
-                if ( tc.isDebugEnabled() ) {
+                if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                     Tr.debug(tc, methodName + " Path [ " + path + " ]: Ignore: Inactive");
                 }
                 return null;
@@ -1094,16 +1535,19 @@ public class ZipFileReaper {
             ZipFileData data = storage.get(path);
 
             if ( data == null ) {
-                Tr.warning(tc, methodName + " Unregistered [ " + path + " ]: Ignore");
+                asyncWarning("reaper.unregistered.path", path);
+                // "Unregistered [ " + path + " ]: Ignore"
 
             } else if ( data.isFullyClosed() ) {
-                Tr.warning(tc, methodName + " Fully closed [ " + path + " ]: Ignore");
+                asyncWarning("reaper.closed.path", path);
+                // "Fully closed [ " + path + " ]: Ignore"
 
             } else if ( data.isPending() ) {
-                Tr.warning(tc, methodName + " Pending [ " + path + " ]: No active opens: Ignore");
+                asyncWarning("reaper.pending.path", path);
+                // "Pending [ " + path + " ]: No active opens: Ignore"
 
             } else if ( data.isOpen() ) {
-                if ( tc.isDebugEnabled() ) {
+                if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                     Tr.debug(tc, methodName + " Active opens [ " + path + " ] [ " + data.getActiveOpens() + " ]");
                 }
 
@@ -1133,6 +1577,7 @@ public class ZipFileReaper {
                         }
 
                         String wakeReason;
+                        String skipWakeReason;
 
                         if ( wasQuickEmpty && wasSlowEmpty ) {
                             // The reaper was in an indefinite wait, since there were
@@ -1143,9 +1588,12 @@ public class ZipFileReaper {
                             // will find the ripest pending close and set a definite wait
                             // based on that pending close.
                             wakeReason = "Added first pending";
+                            skipWakeReason = null;
 
                         } else if ( expireQuickly ) {
                             if ( !wasQuickEmpty ) { // expireQuickly && !wasQuickEmpty
+                                // Either:
+                                //
                                 // The reaper is set to a definite wait based on the ripest
                                 // quick pending.
                                 //
@@ -1155,8 +1603,9 @@ public class ZipFileReaper {
                                 // Either way, the definite wait already set for the reaper
                                 // remains correct.
                                 wakeReason = null; // Added quick while quick are present.
-
+                                skipWakeReason = "Quick added with other quick";
                                 // wasQuickEmpty ==> !wasSlowEmpty
+
                             } else { // expireQuickly && wasQuickEmpty && !wasSlowEmpty
                                 // The reaper is set to a definite wait based on the ripest
                                 // slow pending close.
@@ -1178,7 +1627,13 @@ public class ZipFileReaper {
                                 // cycle to run.  The reaper will notice that no pending closes
                                 // have expired, and will recompute and set the reaper wait to a
                                 // newly computed definite wait.
+                                //
+                                // The reaper is set to an indefinite wait, because this close
+                                // captured the notification and prevented the reaper from waking
+                                // up for a prior close request.
+
                                 wakeReason = "Added first quick while slow are present";
+                                skipWakeReason = null;
                             }
 
                         } else { // !expireQuickly
@@ -1186,6 +1641,7 @@ public class ZipFileReaper {
                             // is later than the expiration of the ripest pending close.  The definite
                             // wait already set for the reaper remains correct.
                             wakeReason = null; // Added slow while quick or slow are present.
+                            skipWakeReason = "slow added with quick or slow";
                         }
 
                         // CAUTION CAUTION CAUTION CAUTION
@@ -1200,6 +1656,8 @@ public class ZipFileReaper {
 
                         if ( wakeReason != null ) {
                             reaperLock.notify(methodName, wakeReason);
+                        } else {
+                            reaperLock.skipNotify(methodName, skipWakeReason);
                         }
                     }
                 }
@@ -1211,4 +1669,40 @@ public class ZipFileReaper {
             return ( (data == null) ? null : data.zipFileState );
         }
     }
+
+    //
+
+    public void introspect(PrintWriter output, long introspectAt) {
+        synchronized ( reaperLock ) {
+            output.println();
+            output.println("  IsActive [ " + Boolean.valueOf(isActive) + " ]");
+            output.println("  Initial  [ " + toAbsSec(initialAt) + " (s) ]" );
+            output.println("  Final    [ " + toAbsSec(finalAt) + " (s) ]");
+            output.println("  Current  [ " + toAbsSec(introspectAt) + " (s) ]");
+
+            introspectReaperThread(output);
+
+            output.println();
+            output.println("Active and Pending Data:");
+            if ( storage.isEmpty() ) {
+                output.println("  ** NONE **");
+            } else {
+                for ( Map.Entry<String, ZipFileData> reaperEntry : storage.entrySet() ) {
+                    output.println();
+                    reaperEntry.getValue().introspect(output, introspectAt);
+                }
+            }
+
+            pendingQuickStorage.introspect(output, ZipFileDataStore.DISPLAY_SPARSELY, introspectAt);
+            pendingSlowStorage.introspect(output, ZipFileDataStore.DISPLAY_SPARSELY, introspectAt);
+
+            if ( completedStorage == null ) {
+                output.println();
+                output.println("Completed zip file data is not being tracked");
+            } else {
+                completedStorage.introspect(output, ZipFileDataStore.DISPLAY_FULLY, introspectAt);
+            }
+        }
+    }
 }
+

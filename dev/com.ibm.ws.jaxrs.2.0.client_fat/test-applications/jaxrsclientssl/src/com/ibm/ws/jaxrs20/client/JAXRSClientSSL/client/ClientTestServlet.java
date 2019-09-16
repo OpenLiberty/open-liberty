@@ -10,15 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs20.client.JAXRSClientSSL.client;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -31,6 +25,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
+
+
 
 @WebServlet("/ClientTestServlet")
 public class ClientTestServlet extends HttpServlet {
@@ -168,59 +164,60 @@ public class ClientTestServlet extends HttpServlet {
         ret.append(res);
     }
 
-    public void testClientBasicSSL_CustomizedSSLContext(Map<String, String> param, StringBuilder ret) {
-        String res = "";
-
-        String serverIP = param.get("hostname");
-        String serverPort = param.get("secport");
-
-        ClientBuilder cb = ClientBuilder.newBuilder();
-
-        //set a invalid Customized SSL context, then the access should fail as using Customized SSL context instead of Liberty SSL config "mySSLConfig"
-        KeyStore ts;
-        try {
-            ts = KeyStore.getInstance("jceks");
-        } catch (KeyStoreException e1) {
-            ret.append("new KeyStore fails");
-            return;
-        }
-        String keyStorePath = param.get("SERVER_CONFIG_DIR") + "/resources/security/clientInvalidTrust.jks";
-
-        try {
-            ts.load(new FileInputStream(keyStorePath), "passw0rd".toCharArray());
-        } catch (NoSuchAlgorithmException e1) {
-            ret.append("load KeyStore " + keyStorePath + " fails");
-            return;
-        } catch (CertificateException e1) {
-            ret.append("load KeyStore " + keyStorePath + " fails");
-            return;
-        } catch (FileNotFoundException e1) {
-            ret.append("load KeyStore " + keyStorePath + " fails");
-            return;
-        } catch (IOException e1) {
-            ret.append("load KeyStore " + keyStorePath + " fails");
-            return;
-        }
-
-        cb.trustStore(ts);
-        cb.keyStore(ts, "passw0rd");
-
-        Client c = cb.build();
-
-        c.property("com.ibm.ws.jaxrs.client.ssl.config", "mySSLConfig");
-
-        try {
-            WebTarget wt = c.target("https://" + serverIP + ":" + serverPort + "/" + moduleName + "/Test/BasicResource");
-
-            res = wt.path("echo").path(param.get("param")).request().get(String.class);
-        } catch (Exception e) {
-            res = e.getMessage();
-        } finally {
-            c.close();
-            ret.append(res);
-        }
-    }
-
+/*
+ * public void testClientBasicSSL_CustomizedSSLContext(Map<String, String> param, StringBuilder ret) {
+ * String res = "";
+ *
+ * String serverIP = param.get("hostname");
+ * String serverPort = param.get("secport");
+ *
+ * ClientBuilder cb = ClientBuilder.newBuilder();
+ *
+ * //set a invalid Customized SSL context, then the access should fail as using Customized SSL context instead of Liberty SSL config "mySSLConfig"
+ * KeyStore ts;
+ * try {
+ * ts = KeyStore.getInstance("jceks");
+ * } catch (KeyStoreException e1) {
+ * ret.append("new KeyStore fails");
+ * return;
+ * }
+ * String keyStorePath = param.get("SERVER_CONFIG_DIR") + "/resources/security/clientInvalidTrust.jks";
+ *
+ * try {
+ * ts.load(new FileInputStream(keyStorePath), "passw0rd".toCharArray());
+ * } catch (NoSuchAlgorithmException e1) {
+ * ret.append("load KeyStore " + keyStorePath + " fails");
+ * return;
+ * } catch (CertificateException e1) {
+ * ret.append("load KeyStore " + keyStorePath + " fails");
+ * return;
+ * } catch (FileNotFoundException e1) {
+ * ret.append("load KeyStore " + keyStorePath + " fails");
+ * return;
+ * } catch (IOException e1) {
+ * ret.append("load KeyStore " + keyStorePath + " fails");
+ * return;
+ * }
+ *
+ * cb.trustStore(ts);
+ * cb.keyStore(ts, "passw0rd");
+ *
+ * Client c = cb.build();
+ *
+ * c.property("com.ibm.ws.jaxrs.client.ssl.config", "mySSLConfig");
+ *
+ * try {
+ * WebTarget wt = c.target("https://" + serverIP + ":" + serverPort + "/" + moduleName + "/Test/BasicResource");
+ *
+ * res = wt.path("echo").path(param.get("param")).request().get(String.class);
+ * } catch (Exception e) {
+ * res = e.getMessage();
+ * } finally {
+ * c.close();
+ * ret.append(res);
+ * }
+ * }
+ */
     public void testClientBasicSSL_InvalidSSLRef(Map<String, String> param, StringBuilder ret) {
         String res = "";
 

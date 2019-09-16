@@ -112,6 +112,16 @@ generic.type.variables.notsupported.CWMCG0018E=CWMCG0018E: A(z) {0} generikus t\
 generic.type.variables.notsupported.CWMCG0018E.explanation=K\u00eds\u00e9rlet t\u00f6rt\u00e9nt \u00e1talak\u00edt\u00e1sra egy generikus t\u00edpus\u00fa v\u00e1ltoz\u00f3 haszn\u00e1lat\u00e1val, mint p\u00e9ld\u00e1ul a List<T>. Ez nem t\u00e1mogatott.
 generic.type.variables.notsupported.CWMCG0018E.useraction=Haszn\u00e1ljon ehelyett egy konkr\u00e9t argumentumt\u00edpust, mint p\u00e9ld\u00e1ul a List<String>.
 
+# Failed to start the {0} ConfigSource refresher process.
+failed.to.start.refresher.CWMCG0019E=CWMCG0019E: A(z) {0} ConfigSource friss\u00edt\u0151 folyamatot nem siker\u00fclt elind\u00edtani.
+failed.to.start.refresher.CWMCG0019E.explanation=A megadott ConfigSource v\u00e1ltoz\u00e1sait a Config p\u00e9ld\u00e1ny nem t\u00fckr\u00f6zi.
+failed.to.start.refresher.CWMCG0019E.useraction=A kiszolg\u00e1l\u00f3 message.log f\u00e1jlj\u00e1t \u00e9s FFDC napl\u00f3it \u00e1ttekintve azonos\u00edtsa be a probl\u00e9m\u00e1t.
+
+# Failed to start the {0} ConfigSource refresher process. The exception is: {1}.
+failed.to.start.refresher.exception.CWMCG0020E=CWMCG0020E: A(z) {0} ConfigSource friss\u00edt\u0151 folyamatot nem siker\u00fclt elind\u00edtani. A kiv\u00e9tel: {1}.
+failed.to.start.refresher.exception.CWMCG0020E.explanation=A megadott ConfigSource v\u00e1ltoz\u00e1sait a Config p\u00e9ld\u00e1ny nem t\u00fckr\u00f6zi.
+failed.to.start.refresher.exception.CWMCG0020E.useraction=A kiszolg\u00e1l\u00f3 message.log f\u00e1jlj\u00e1t \u00e9s FFDC napl\u00f3it \u00e1ttekintve azonos\u00edtsa be a probl\u00e9m\u00e1t.
+
 # Environment Variables Config Source
 environment.variables.config.source=K\u00f6rnyezeti v\u00e1ltoz\u00f3 konfigur\u00e1ci\u00f3s forr\u00e1s
 # Properties File Config Source: {0}

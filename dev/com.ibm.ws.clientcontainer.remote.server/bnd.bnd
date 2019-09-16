@@ -37,6 +37,8 @@ Import-Package: \
 
 
 -buildpath: \
+	com.ibm.ws.org.apache.yoko.corba.spec.1.5;version=latest,\
+	com.ibm.ws.org.apache.yoko.rmi.spec.1.5;version=latest,\
 	com.ibm.websphere.appserver.spi.logging;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\

@@ -23,10 +23,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.microprofile.config.spi.ConfigSource;
@@ -35,6 +37,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.microprofile.config.interfaces.ConfigException;
 import com.ibm.ws.microprofile.config.interfaces.ConfigStartException;
 
 public class PollingDynamicConfig implements Closeable {
@@ -80,6 +83,14 @@ public class PollingDynamicConfig implements Closeable {
         }
 
         this.future = start();
+        if (this.future != null && this.future.isDone()) {
+            try {
+                this.future.get(0, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                throw new ConfigException(Tr.formatMessage(tc, "failed.to.start.refresher.exception.CWMCG0020E", e.getMessage()), e);
+            }
+            throw new ConfigException(Tr.formatMessage(tc, "failed.to.start.refresher.CWMCG0019E"));
+        }
     }
 
     /**
@@ -142,21 +153,28 @@ public class PollingDynamicConfig implements Closeable {
         if (busy.compareAndSet(false, true)) {
             try {
                 Map<String, String> updated = new HashMap<>();
-                Map<String, String> props = source.getProperties();
-                if (props != null) {
-                    updated.putAll(props);
-                }
-                if (!updated.equals(current)) {
-                    current = updated;
-
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "update: Contents of ConfigSource {0} has changed.", this);
+                //a last minute check to see if the system is shutting down
+                if (!com.ibm.wsspi.kernel.service.utils.FrameworkState.isStopping()) {
+                    Map<String, String> props = source.getProperties();
+                    if (props != null) {
+                        updated.putAll(props);
                     }
+                    if (!updated.equals(current)) {
+                        current = updated;
 
-                    notifyConfigUpdated();
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "update: Contents of ConfigSource {0} has changed.", this);
+                        }
+
+                        notifyConfigUpdated();
+                    } else {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "update: Contents of ConfigSource {0} has NOT changed.", this);
+                        }
+                    }
                 } else {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "update: Contents of ConfigSource {0} has NOT changed.", this);
+                        Tr.debug(tc, "update: Parent Config has been garbage collectded.", this);
                     }
                 }
             } catch (ConfigStartException cse) {
@@ -269,8 +287,8 @@ public class PollingDynamicConfig implements Closeable {
         @Override
         public void run() {
 
-            PollingDynamicConfig config = configRef.get();
-            if (config == null || com.ibm.wsspi.kernel.service.utils.FrameworkState.isStopping()) {
+            PollingDynamicConfig config1 = configRef.get();
+            if (config1 == null || com.ibm.wsspi.kernel.service.utils.FrameworkState.isStopping()) {
                 // Our pollingDynamicConfig has been GC'd, we can't update it any more, cancel ourselves
                 // OR the OSGi Framework is being shutdown (i.e. the server is being shutdown)
                 if (future != null) {
@@ -284,7 +302,7 @@ public class PollingDynamicConfig implements Closeable {
                     Tr.debug(tc, "start: Scheduled Update starting: {0}", this);
                 }
 
-                config.update();
+                config1.update();
 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "start", "Scheduled Update completed: {0}", this);
@@ -293,6 +311,14 @@ public class PollingDynamicConfig implements Closeable {
                 //                    LOG.warn("Failed to load properties", e);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "start", "Scheduled Update failed: {0}. Exception: {1}", this, e);
+                }
+            } finally {
+                if (com.ibm.wsspi.kernel.service.utils.FrameworkState.isStopping()) {
+                    // the OSGi Framework is being shutdown (i.e. the server is being shutdown)
+                    if (future != null) {
+                        future.cancel(false);
+                    }
+                    return;
                 }
             }
         }

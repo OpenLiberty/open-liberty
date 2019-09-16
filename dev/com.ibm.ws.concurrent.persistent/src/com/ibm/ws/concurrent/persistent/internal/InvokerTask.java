@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2017 IBM Corporation and others.
+ * Copyright (c) 2014, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import javax.enterprise.concurrent.LastExecution;
@@ -563,7 +564,12 @@ public class InvokerTask implements Runnable, Synchronization {
                         expectedExecTime = nextExecTime;
                         long delay = nextExecTime - new Date().getTime();
 
-                        persistentExecutor.scheduledExecutor.schedule(this, delay, TimeUnit.MILLISECONDS);
+                        ScheduledExecutorService executor = persistentExecutor.scheduledExecutor;
+                        if (executor == null) {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                                Tr.debug(this, tc, "deactivated - reschedule skipped");
+                        } else
+                            executor.schedule(this, delay, TimeUnit.MILLISECONDS);
                     } else if (ownerForDeferredTask != null)
                         appTracker.deferTask(this, ownerForDeferredTask, persistentExecutor);
                     else {

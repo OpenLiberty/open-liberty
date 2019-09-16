@@ -17,19 +17,20 @@ import javax.ws.rs.QueryParam;
 
 import componenttest.topology.utils.FATServletClient;
 
+/**
+ * This class stores the potential data away in the dataset that
+ * is eventually Published to the ReactiveOutput endpoint Subscriber
+ * which will request(n) a certain number of elements
+ */
 @Path("/input")
 public class ReactiveInput {
 
     @Inject
-    StorageService storage;
-
-    @Inject
-    SimpleAsyncPublisher publisher;
+    SessionScopedStateBean messages;
 
     @GET
     public String sendMessage(@QueryParam("message") String message) {
-        storage.toString();
-        publisher.publish(message);
+        messages.add(message);
         return FATServletClient.SUCCESS;
     }
 

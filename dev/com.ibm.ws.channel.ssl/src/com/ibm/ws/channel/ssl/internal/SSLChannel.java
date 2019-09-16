@@ -1088,4 +1088,8 @@ public class SSLChannel implements InboundChannel, OutboundChannel, Discriminato
         return this.jsseHelper;
     }
 
+    public void checkandInitALPN() {
+        this.myFactory.initALPN();
+    }
+
 }

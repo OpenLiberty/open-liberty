@@ -76,11 +76,7 @@ public class RepositoryManager {
      */
     private void addRepository(String repositoryId, RepositoryWrapper repositoryHolder) {
         repositories.put(repositoryId, repositoryHolder);
-        try {
-            numRepos = getNumberOfRepositories();
-        } catch (WIMException e) {
-            // okay
-        }
+        numRepos = getNumberOfRepositories();
     }
 
     void addUserRegistry(UserRegistry userRegistry) {
@@ -98,11 +94,7 @@ public class RepositoryManager {
         if (repositoryHolder != null) {
             repositoryHolder.clear();
         }
-        try {
-            numRepos = getNumberOfRepositories();
-        } catch (WIMException e) {
-            // okay
-        }
+        numRepos = getNumberOfRepositories();
     }
 
     /**
@@ -110,7 +102,7 @@ public class RepositoryManager {
      * instances. Please note that this method does not use the configuration
      * data for the RepositoryService for this lookup.
      */
-    public Repository getRepository(String instanceId) throws WIMException {
+    public Repository getRepository(String instanceId) {
         RepositoryWrapper repositoryHolder = repositories.get(instanceId);
         if (repositoryHolder != null) {
             return repositoryHolder.getRepository();
@@ -158,7 +150,7 @@ public class RepositoryManager {
 
         AuditManager auditManager = new AuditManager();
         Audit.audit(Audit.EventID.SECURITY_MEMBER_MGMT_01, auditManager.getRESTRequest(), auditManager.getRequestType(), auditManager.getRepositoryId(), uniqueName,
-                    vmmService.getConfigManager().getDefaultRealmName(), null, Integer.valueOf("204"));
+                    vmmService.getConfigManager().getConfiguredPrimaryRealmName(), null, Integer.valueOf("204"));
 
         throw new InvalidUniqueNameException(WIMMessageKey.ENTITY_NOT_IN_REALM_SCOPE, Tr.formatMessage(
                                                                                                        tc,
@@ -183,11 +175,11 @@ public class RepositoryManager {
         return Collections.emptyMap();
     }
 
-    public List<String> getRepoIds() throws WIMException {
+    public List<String> getRepoIds() {
         return new ArrayList<String>(repositories.keySet());
     }
 
-    public int getNumberOfRepositories() throws WIMException {
+    public int getNumberOfRepositories() {
         return getRepoIds().size();
     }
 

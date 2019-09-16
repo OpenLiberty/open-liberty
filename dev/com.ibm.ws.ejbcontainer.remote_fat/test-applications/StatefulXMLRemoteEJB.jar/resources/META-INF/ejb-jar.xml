@@ -1,0 +1,1571 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar id="ejb-jar_ID"
+    xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd"
+    metadata-complete="false" version="3.1">
+
+      <display-name>EJB3SFX</display-name>
+      <enterprise-beans>
+
+         <session id="BasicCMTStatefulRemote">
+            <ejb-name>BasicCMTStatefulRemoteBean</ejb-name>
+            <business-remote>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.BasicCMTStatefulRemote</business-remote>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.BasicCMTStatefulRemoteBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <concurrent-method>
+                <method>
+                    <method-name>tx_Default</method-name>
+                </method>
+                <access-timeout>
+                    <timeout>0</timeout>
+                    <unit>Milliseconds</unit>
+                </access-timeout>
+            </concurrent-method>
+            <transaction-type>Container</transaction-type>
+            <resource-env-ref id="ResourceEnvRef_102">
+               <description>Moved the injection target info to the proper location.</description>
+               <resource-env-ref-name>SessionContext</resource-env-ref-name>
+               <resource-env-ref-type>javax.ejb.SessionContext</resource-env-ref-type>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.BasicCMTStatefulRemoteBean</injection-target-class>
+                  <injection-target-name>ivContext</injection-target-name>
+               </injection-target>
+            </resource-env-ref>
+         </session>
+         <session id="CompCMTStatefulRemote">
+            <ejb-name>CompCMTStatefulRemote</ejb-name>
+            <home>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.BasicCMTStatefulEJBRemoteHome</home>
+            <remote>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.BasicCMTStatefulEJBRemote</remote>
+            <business-remote>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.BasicCMTStatefulRemote</business-remote>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.CompCMTStatefulRemoteBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <concurrent-method>
+                <method>
+                    <method-name>tx_Default</method-name>
+                </method>
+                <access-timeout>
+                    <timeout>0</timeout>
+                    <unit>Milliseconds</unit>
+                </access-timeout>
+            </concurrent-method>
+            <transaction-type>Container</transaction-type>
+         </session>
+         <session id="AdvBasicCMTStatefulRemote">
+            <ejb-name>AdvBasicCMTStatefulRemote</ejb-name>
+            <business-remote>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.BasicCMTStatefulRemote</business-remote>
+            <business-remote>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.AdvCMTStatefulRemote</business-remote>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.AdvBasicCMTStatefulRemoteBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <concurrent-method>
+                <method>
+                    <method-name>tx_Default</method-name>
+                </method>
+                <access-timeout>
+                    <timeout>0</timeout>
+                    <unit>Milliseconds</unit>
+                </access-timeout>
+            </concurrent-method>
+            <transaction-type>Container</transaction-type>
+            <resource-env-ref id="ResourceEnvRef_302">
+               <description>Moved the injection target info to the proper location.</description>
+               <resource-env-ref-name>SessionContext</resource-env-ref-name>
+               <resource-env-ref-type>javax.ejb.SessionContext</resource-env-ref-type>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.AdvBasicCMTStatefulRemoteBean</injection-target-class>
+                  <injection-target-name>ivContext</injection-target-name>
+               </injection-target>
+            </resource-env-ref>
+         </session>
+         <session id="AdvCompCMTStatefulRemote">
+            <ejb-name>AdvCompCMTStatefulRemote</ejb-name>
+            <home>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.BasicCMTStatefulEJBRemoteHome</home>
+            <remote>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.BasicCMTStatefulEJBRemote</remote>
+            <business-remote>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.BasicCMTStatefulRemote</business-remote>
+            <business-remote>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.AdvCMTStatefulRemote</business-remote>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.AdvCompCMTStatefulRemoteBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <concurrent-method>
+                <method>
+                    <method-name>tx_Default</method-name>
+                </method>
+                <access-timeout>
+                    <timeout>0</timeout>
+                    <unit>Milliseconds</unit>
+                </access-timeout>
+            </concurrent-method>
+            <transaction-type>Container</transaction-type>
+         </session>
+         <session id="CompNoBizCMTStatefulRemote">
+            <ejb-name>CompNoBizCMTStatefulRemote</ejb-name>
+            <home>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.BasicCMTStatefulEJBRemoteHome</home>
+            <remote>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.BasicCMTStatefulEJBRemote</remote>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.CompNoBizCMTStatefulRemoteBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+
+         <session id="RemoveAdvBMTBean">
+            <ejb-name>RemoveAdvBMTBean</ejb-name>
+            <home>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.RemoveBMTEJBRemoteHome</home>
+            <remote>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.RemoveBMTEJBRemote</remote>
+            
+            <business-remote>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.RemoveBMTRemote</business-remote>
+            <business-remote>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.RemoveRemote</business-remote>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.RemoveAdvBMTBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <init-method>
+              <create-method>
+                <method-name>create</method-name>
+              </create-method>
+              <bean-method>
+                <method-name>ejbCreate</method-name>
+              </bean-method>
+            </init-method>
+            <init-method>
+              <create-method>
+                <method-name>create</method-name>
+              </create-method>
+              <bean-method>
+                <method-name>ejbCreate</method-name>
+                <method-params><method-param>java.lang.String</method-param></method-params>
+              </bean-method>
+            </init-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+          </remove-method>
+            <remove-method>
+              <bean-method>
+                <method-name>remove</method-name>
+                <method-params>
+                  <method-param>int</method-param>
+                  <method-param>int</method-param></method-params>
+              </bean-method>
+            </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_begin</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_commit</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_rollback</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_Transaction</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_retain</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+            <retain-if-exception>true</retain-if-exception>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_RemoveEx</method-name>
+            </bean-method>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>removeUnique</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+          </remove-method>
+            <transaction-type>Bean</transaction-type>
+
+            <resource-env-ref>
+               <description>SessionContext</description>
+               <resource-env-ref-name>SessionContext</resource-env-ref-name>
+               <resource-env-ref-type>javax.ejb.SessionContext</resource-env-ref-type>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.RemoveAdvBMTBean</injection-target-class>
+                  <injection-target-name>ivContext</injection-target-name>
+               </injection-target>
+            </resource-env-ref>
+            <post-construct>
+               <lifecycle-callback-method>initUserTransaction</lifecycle-callback-method>
+            </post-construct>
+         </session>
+
+         <session id="RemoveAdvCMTBean">
+            <ejb-name>RemoveAdvCMTBean</ejb-name>
+            <home>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.RemoveCMTEJBRemoteHome</home>
+            <remote>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.RemoveCMTEJBRemote</remote>
+            <business-remote>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.RemoveCMTRemote</business-remote>
+            <business-remote>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.RemoveRemote</business-remote>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.RemoveAdvCMTBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <init-method>
+            <create-method>
+              <method-name>create</method-name>
+            </create-method>
+            <bean-method>
+              <method-name>ejbCreate</method-name>
+            </bean-method>
+            </init-method>
+            <init-method>
+            <create-method>
+              <method-name>create</method-name>
+            </create-method>
+            <bean-method>
+              <method-name>ejbCreate</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+            </init-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+          </remove-method>
+            <remove-method>
+              <bean-method>
+                <method-name>remove</method-name>
+                <method-params>
+                  <method-param>int</method-param>
+                  <method-param>int</method-param></method-params>
+              </bean-method>
+            </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>removeUnique</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_Required</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_RequiresNew</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_NotSupported</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_Supports</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_Mandatory</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_Never</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_retain_Required</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+            <retain-if-exception>true</retain-if-exception>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_retain_NotSupported</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+            <retain-if-exception>true</retain-if-exception>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_Required_RemoveEx</method-name>
+            </bean-method>
+          </remove-method>
+            <transaction-type>Container</transaction-type>
+         </session>
+
+         <session id="RemoveBasicBMTBean">
+            <ejb-name>RemoveBasicBMTBean</ejb-name>
+            <business-remote>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.RemoveBMTRemote</business-remote>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.RemoveBasicBMTBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <remove-method>
+            <bean-method>
+              <method-name>remove</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_begin</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_commit</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_rollback</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_Transaction</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_retain</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+            <retain-if-exception>true</retain-if-exception>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_RemoveEx</method-name>
+            </bean-method>
+          </remove-method>
+            <transaction-type>Bean</transaction-type>
+            <resource-env-ref>
+               <description>SessionContext</description>
+               <resource-env-ref-name>SessionContext</resource-env-ref-name>
+               <resource-env-ref-type>javax.ejb.SessionContext</resource-env-ref-type>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.RemoveBasicBMTBean</injection-target-class>
+                  <injection-target-name>ivContext</injection-target-name>
+               </injection-target>
+            </resource-env-ref>
+            <post-construct>
+               <lifecycle-callback-method>initUserTransaction</lifecycle-callback-method>
+            </post-construct>
+         </session>
+
+         <session id="RemoveBasicCMTBean">
+            <ejb-name>RemoveBasicCMTBean</ejb-name>
+            <business-remote>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.RemoveCMTRemote</business-remote>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.RemoveBasicCMTBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <remove-method>
+            <bean-method>
+              <method-name>remove</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_Required</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_RequiresNew</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_NotSupported</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_Supports</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_Mandatory</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_Mandatory</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_Never</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_retain_Required</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+            <retain-if-exception>true</retain-if-exception>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_retain_Required</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+            <retain-if-exception>true</retain-if-exception>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_retain_NotSupported</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+            <retain-if-exception>true</retain-if-exception>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_Required_RemoveEx</method-name>
+            </bean-method>
+          </remove-method>
+            <transaction-type>Container</transaction-type>
+            <resource-env-ref>
+               <description>SessionContext</description>
+               <resource-env-ref-name>SessionContext</resource-env-ref-name>
+               <resource-env-ref-type>javax.ejb.SessionContext</resource-env-ref-type>
+               <injection-target>
+                  <injection-target-class>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.RemoveBasicCMTBean</injection-target-class>
+                  <injection-target-name>ivContext</injection-target-name>
+               </injection-target>
+            </resource-env-ref>
+         </session>
+
+         <session id="RemoveCompBMTBean">
+            <ejb-name>RemoveCompBMTBean</ejb-name>
+            <home>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.RemoveBMTEJBRemoteHome</home>
+            <remote>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.RemoveBMTEJBRemote</remote>
+            <business-remote>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.RemoveBMTRemote</business-remote>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.RemoveCompBMTBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <remove-method>
+            <bean-method>
+              <method-name>remove</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_begin</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_commit</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_rollback</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_Transaction</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_retain</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+            <retain-if-exception>true</retain-if-exception>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_RemoveEx</method-name>
+            </bean-method>
+          </remove-method>
+            <transaction-type>Bean</transaction-type>
+            <resource-env-ref>
+            <description>SessionContext</description>
+          <resource-env-ref-name>SessionContext</resource-env-ref-name>
+          <resource-env-ref-type>javax.ejb.SessionContext</resource-env-ref-type>
+          <injection-target>
+              <injection-target-class>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.RemoveBasicBMTBean</injection-target-class>
+              <injection-target-name>ivContext</injection-target-name>
+          </injection-target>
+            </resource-env-ref>
+           <post-construct>
+          <lifecycle-callback-method>initUserTransaction</lifecycle-callback-method>
+        </post-construct>
+         </session>
+
+         <session id="RemoveCompCMTBean">
+            <ejb-name>RemoveCompCMTBean</ejb-name>
+            <home>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.RemoveCMTEJBRemoteHome</home>
+            <remote>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.RemoveCMTEJBRemote</remote>
+            <business-remote>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.RemoveCMTRemote</business-remote>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.RemoveCompCMTBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <remove-method>
+            <bean-method>
+              <method-name>remove</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_Required</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_RequiresNew</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_NotSupported</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_Supports</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_Mandatory</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_Never</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_retain_Required</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+            <retain-if-exception>true</retain-if-exception>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_retain_NotSupported</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+            <retain-if-exception>true</retain-if-exception>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_Required_RemoveEx</method-name>
+            </bean-method>
+          </remove-method>
+            <transaction-type>Container</transaction-type>
+         </session>
+
+         <session id="RemoveCompViewBMTBean">
+            <ejb-name>RemoveCompViewBMTBean</ejb-name>
+            <home>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.RemoveBMTEJBRemoteHome</home>
+            <remote>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.RemoveBMTEJBRemote</remote>
+            <business-remote>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.RemoveBMTRemote</business-remote>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.RemoveCompViewBMTBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <init-method>
+            <create-method>
+              <method-name>create</method-name>
+            </create-method>
+            <bean-method>
+              <method-name>ejbCreate</method-name>
+            </bean-method>
+      </init-method>
+            <init-method>
+            <create-method>
+              <method-name>create</method-name>
+            </create-method>
+            <bean-method>
+              <method-name>ejbCreate</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+      </init-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_begin</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_commit</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_rollback</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_Transaction</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_retain</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+            <retain-if-exception>true</retain-if-exception>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_RemoveEx</method-name>
+            </bean-method>
+          </remove-method>
+            <transaction-type>Bean</transaction-type>
+                  <resource-env-ref>
+          <description>SessionContext</description>
+          <resource-env-ref-name>SessionContext</resource-env-ref-name>
+          <resource-env-ref-type>javax.ejb.SessionContext</resource-env-ref-type>
+          <injection-target>
+              <injection-target-class>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.RemoveCompViewBMTBean</injection-target-class>
+              <injection-target-name>ivContext</injection-target-name>
+          </injection-target>
+      </resource-env-ref>
+      <post-construct>
+         <lifecycle-callback-method>initUserTransaction</lifecycle-callback-method>
+      </post-construct>
+
+
+         </session>
+
+         <session id="RemoveCompViewCMTBean">
+            <ejb-name>RemoveCompViewCMTBean</ejb-name>
+            <home>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.RemoveCMTEJBRemoteHome</home>
+            <remote>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.RemoveCMTEJBRemote</remote>
+            <business-remote>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.RemoveCMTRemote</business-remote>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.RemoveCompViewCMTBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <init-method>
+            <create-method>
+              <method-name>create</method-name>
+            </create-method>
+            <bean-method>
+              <method-name>ejbCreate</method-name>
+            </bean-method>
+      </init-method>
+            <init-method>
+            <create-method>
+              <method-name>create</method-name>
+            </create-method>
+            <bean-method>
+              <method-name>ejbCreate</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+      </init-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_Required</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_RequiresNew</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_NotSupported</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_Supports</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_Mandatory</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_Never</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_retain_Required</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+            <retain-if-exception>true</retain-if-exception>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_retain_NotSupported</method-name>
+              <method-params><method-param>java.lang.String</method-param></method-params>
+            </bean-method>
+            <retain-if-exception>true</retain-if-exception>
+          </remove-method>
+            <remove-method>
+            <bean-method>
+              <method-name>remove_Required_RemoveEx</method-name>
+            </bean-method>
+          </remove-method>
+            <transaction-type>Container</transaction-type>
+                  <resource-env-ref>
+          <description>SessionContext</description>
+          <resource-env-ref-name>SessionContext</resource-env-ref-name>
+          <resource-env-ref-type>javax.ejb.SessionContext</resource-env-ref-type>
+          <injection-target>
+              <injection-target-class>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.RemoveCompViewCMTBean</injection-target-class>
+              <injection-target-name>ivContext</injection-target-name>
+          </injection-target>
+      </resource-env-ref>
+
+
+         </session>
+
+         <session id="InitBasicCMTBean">
+            <ejb-name>InitBasicCMTBean</ejb-name>
+            
+            <business-remote>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.InitRemote</business-remote>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.InitBasicCMTBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <remove-method>
+            <bean-method>
+              <method-name>finish</method-name>
+              <method-params>
+                <method-param>java.lang.String</method-param>
+                <method-param>int</method-param>
+              </method-params>
+            </bean-method>
+          </remove-method>
+            <transaction-type>Container</transaction-type>
+         </session>
+
+
+         <session id="InitCompCMTBean">
+            <ejb-name>InitCompCMTBean</ejb-name>
+            <home>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.InitEJBRemoteHome</home>
+            <remote>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.InitEJBRemote</remote>
+            
+            <business-remote>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.InitRemote</business-remote>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.InitCompCMTBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <remove-method>
+            <bean-method>
+              <method-name>finish</method-name>
+              <method-params>
+                <method-param>java.lang.String</method-param>
+                <method-param>int</method-param>
+              </method-params>
+            </bean-method>
+          </remove-method>
+            <transaction-type>Container</transaction-type>
+         </session>
+
+         <session id="InitCompViewCMTBean">
+            <ejb-name>InitCompViewCMTBean</ejb-name>
+            <home>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.InitEJBRemoteHome</home>
+            <remote>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.InitEJBRemote</remote>
+            
+            <business-remote>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.InitRemote</business-remote>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.InitCompViewCMTBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <init-method>
+            <create-method>
+              <method-name>create</method-name>
+            </create-method>
+            <bean-method>
+              <method-name>initialize</method-name>
+            </bean-method>
+      </init-method>
+            <init-method>
+            <create-method>
+              <method-name>create</method-name>
+              <method-params>
+                <method-param>java.lang.String</method-param>
+              </method-params>
+            </create-method>
+            <bean-method>
+              <method-name>initialize</method-name>
+              <method-params>
+                <method-param>java.lang.String</method-param>
+              </method-params>
+            </bean-method>
+      </init-method>
+            <init-method>
+            <create-method>
+              <method-name>createDefault</method-name>
+            </create-method>
+            <bean-method>
+              <method-name>initializeDefault</method-name>
+            </bean-method>
+      </init-method>
+            <init-method>
+            <create-method>
+              <method-name>createBasic</method-name>
+              <method-params>
+                <method-param>java.lang.String</method-param>
+              </method-params>
+            </create-method>
+            <bean-method>
+              <method-name>initializeBasic</method-name>
+              <method-params>
+                <method-param>java.lang.String</method-param>
+              </method-params>
+            </bean-method>
+      </init-method>
+            <init-method>
+            <create-method>
+              <method-name>createBasic</method-name>
+              <method-params>
+                <method-param>int</method-param>
+              </method-params>
+            </create-method>
+            <bean-method>
+              <method-name>initializeBasic</method-name>
+              <method-params>
+                <method-param>int</method-param>
+              </method-params>
+            </bean-method>
+      </init-method>
+            <init-method>
+            <create-method>
+              <method-name>createAdv</method-name>
+              <method-params>
+                <method-param>java.lang.String</method-param>
+                <method-param>int</method-param>
+              </method-params>
+            </create-method>
+            <bean-method>
+              <method-name>ejbCreateAdv</method-name>
+              <method-params>
+                <method-param>java.lang.String</method-param>
+                <method-param>int</method-param>
+              </method-params>
+            </bean-method>
+      </init-method>
+            <init-method>
+            <create-method>
+              <method-name>createDup</method-name>
+              <method-params>
+                <method-param>java.lang.String</method-param>
+              </method-params>
+            </create-method>
+            <bean-method>
+              <method-name>initialize</method-name>
+              <method-params>
+                <method-param>java.lang.String</method-param>
+              </method-params>
+            </bean-method>
+      </init-method>
+            <remove-method>
+            <bean-method>
+              <method-name>finish</method-name>
+              <method-params>
+                <method-param>java.lang.String</method-param>
+                <method-param>int</method-param>
+              </method-params>
+            </bean-method>
+          </remove-method>
+            <transaction-type>Container</transaction-type>
+         </session>
+
+         <session>
+            <ejb-name>RemoveStyle1Bean</ejb-name>
+            <home>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.RemoveCMTEJBRemoteHome</home>
+            <remote>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.RemoveCMTEJBRemote</remote>
+            
+            <business-remote>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.RemoveCMTRemote</business-remote>
+            <business-remote>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.RemoveRemote</business-remote>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.RemoveAdvCMTBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <init-method>
+               <create-method>
+                  <method-name>create</method-name>
+               </create-method>
+               <bean-method>
+                  <method-name>ejbCreate</method-name>
+               </bean-method>
+            </init-method>
+            <init-method>
+               <create-method>
+                  <method-name>create</method-name>
+               </create-method>
+               <bean-method>
+                  <method-name>ejbCreate</method-name>
+                  <method-params><method-param>java.lang.String</method-param></method-params>
+               </bean-method>
+            </init-method>
+            <remove-method>
+               <bean-method>
+                  <method-name>*</method-name>
+               </bean-method>
+            </remove-method>
+            <transaction-type>Container</transaction-type>
+         </session>
+
+         <session>
+            <ejb-name>RemoveStyle2Bean</ejb-name>
+            <home>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.RemoveCMTEJBRemoteHome</home>
+            <remote>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.RemoveCMTEJBRemote</remote>
+            
+            <business-remote>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.RemoveCMTRemote</business-remote>
+            <business-remote>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.RemoveRemote</business-remote>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.RemoveAdvCMTBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <init-method>
+               <create-method>
+                  <method-name>create</method-name>
+               </create-method>
+               <bean-method>
+                  <method-name>ejbCreate</method-name>
+               </bean-method>
+            </init-method>
+            <init-method>
+               <create-method>
+                  <method-name>create</method-name>
+               </create-method>
+               <bean-method>
+                  <method-name>ejbCreate</method-name>
+                  <method-params><method-param>java.lang.String</method-param></method-params>
+               </bean-method>
+            </init-method>
+            <remove-method>
+               <bean-method>
+                  <method-name>remove</method-name>
+               </bean-method>
+            </remove-method>
+            <transaction-type>Container</transaction-type>
+         </session>
+
+         <session>
+            <ejb-name>RemoveStyle3Bean</ejb-name>
+            <home>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.RemoveCMTEJBRemoteHome</home>
+            <remote>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.RemoveCMTEJBRemote</remote>
+            
+            <business-remote>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.RemoveCMTRemote</business-remote>
+            <business-remote>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.RemoveRemote</business-remote>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.fat.xml.sf.ejb.RemoveAdvCMTBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <init-method>
+               <create-method>
+                  <method-name>create</method-name>
+               </create-method>
+               <bean-method>
+                  <method-name>ejbCreate</method-name>
+               </bean-method>
+            </init-method>
+            <init-method>
+               <create-method>
+                  <method-name>create</method-name>
+               </create-method>
+               <bean-method>
+                  <method-name>ejbCreate</method-name>
+                  <method-params><method-param>java.lang.String</method-param></method-params>
+               </bean-method>
+            </init-method>
+            <remove-method>
+               <bean-method>
+                  <method-name>remove</method-name>
+                  <method-params>
+                     <method-param>java.lang.String</method-param>
+                  </method-params>
+               </bean-method>
+            </remove-method>
+            <transaction-type>Container</transaction-type>
+         </session>
+
+      </enterprise-beans>
+
+      <assembly-descriptor id="AssemblyDescriptor_1">
+         <container-transaction id="MethodTransaction_1">
+            <description>Required</description>
+            
+            <method id="MethodElement_16">
+               <ejb-name>BasicCMTStatefulRemoteBean</ejb-name>
+               <method-name>tx_Required</method-name>
+            </method>
+            <method id="MethodElement_17">
+               <ejb-name>CompCMTStatefulRemote</ejb-name>
+               <method-name>tx_Required</method-name>
+            </method>
+            <method id="MethodElement_18">
+               <ejb-name>AdvBasicCMTStatefulRemote</ejb-name>
+               <method-name>tx_Required</method-name>
+            </method>
+            <method id="MethodElement_19">
+               <ejb-name>AdvCompCMTStatefulRemote</ejb-name>
+               <method-name>tx_Required</method-name>
+            </method>
+            <method id="MethodElement_20">
+               <ejb-name>CompNoBizCMTStatefulRemote</ejb-name>
+               <method-name>tx_Required</method-name>
+            </method>
+            <method id="MethodElement_21a">
+               <ejb-name>RemoveAdvCMTBean</ejb-name>
+               <method-name>remove_Required</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_21b">
+               <ejb-name>RemoveAdvCMTBean</ejb-name>
+               <method-name>remove_retain_Required</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_21c">
+               <ejb-name>RemoveAdvCMTBean</ejb-name>
+               <method-name>remove_Required_RemoveEx</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_21d">
+               <ejb-name>RemoveBasicCMTBean</ejb-name>
+               <method-name>remove_Required</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_21e">
+               <ejb-name>RemoveBasicCMTBean</ejb-name>
+               <method-name>remove_retain_Required</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_21f">
+               <ejb-name>RemoveBasicCMTBean</ejb-name>
+               <method-name>remove_Required_RemoveEx</method-name>
+            </method>
+            <method id="MethodElement_21g">
+               <ejb-name>RemoveCompCMTBean</ejb-name>
+               <method-name>remove_Required</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_21h">
+               <ejb-name>RemoveCompCMTBean</ejb-name>
+               <method-name>remove_retain_Required</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_21i">
+               <ejb-name>RemoveCompCMTBean</ejb-name>
+               <method-name>remove_Required_RemoveEx</method-name>
+            </method>
+            <method id="MethodElement_21j">
+               <ejb-name>RemoveCompViewCMTBean</ejb-name>
+               <method-name>remove_Required</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_21k">
+               <ejb-name>RemoveCompViewCMTBean</ejb-name>
+               <method-name>remove_retain_Required</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_21l">
+               <ejb-name>RemoveCompViewCMTBean</ejb-name>
+               <method-name>remove_Required_RemoveEx</method-name>
+            </method>
+            <method id="MethodElement_21m">
+               <ejb-name>RemoveStyle1Bean</ejb-name>
+               <method-name>remove_Required</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_21n">
+               <ejb-name>RemoveStyle1Bean</ejb-name>
+               <method-name>remove_retain_Required</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_21o">
+               <ejb-name>RemoveStyle1Bean</ejb-name>
+               <method-name>remove_Required_RemoveEx</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_21p">
+               <ejb-name>RemoveStyle2Bean</ejb-name>
+               <method-name>remove_Required</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_21q">
+               <ejb-name>RemoveStyle2Bean</ejb-name>
+               <method-name>remove_retain_Required</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_21r">
+               <ejb-name>RemoveStyle2Bean</ejb-name>
+               <method-name>remove_Required_RemoveEx</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_21s">
+               <ejb-name>RemoveStyle3Bean</ejb-name>
+               <method-name>remove_Required</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_21t">
+               <ejb-name>RemoveStyle3Bean</ejb-name>
+               <method-name>remove_retain_Required</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_21u">
+               <ejb-name>RemoveStyle3Bean</ejb-name>
+               <method-name>remove_Required_RemoveEx</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <trans-attribute>Required</trans-attribute>
+         </container-transaction>
+         <container-transaction id="MethodTransaction_2_3">
+            <description>NotSupported</description>
+            
+            <method id="MethodElement_28">
+               <ejb-name>BasicCMTStatefulRemoteBean</ejb-name>
+               <method-name>tx_NotSupported</method-name>
+            </method>
+            <method id="MethodElement_29">
+               <ejb-name>CompCMTStatefulRemote</ejb-name>
+               <method-name>tx_NotSupported</method-name>
+            </method>
+            <method id="MethodElement_30">
+               <ejb-name>AdvBasicCMTStatefulRemote</ejb-name>
+               <method-name>tx_NotSupported</method-name>
+            </method>
+            <method id="MethodElement_31">
+               <ejb-name>AdvCompCMTStatefulRemote</ejb-name>
+               <method-name>tx_NotSupported</method-name>
+            </method>
+            <method id="MethodElement_32">
+               <ejb-name>AdvBasicCMTStatefulRemote</ejb-name>
+               <method-name>adv_Tx_NotSupported</method-name>
+            </method>
+            <method id="MethodElement_33">
+               <ejb-name>AdvCompCMTStatefulRemote</ejb-name>
+               <method-name>adv_Tx_NotSupported</method-name>
+            </method>
+            <method id="MethodElement_34">
+               <ejb-name>CompNoBizCMTStatefulRemote</ejb-name>
+               <method-name>tx_NotSupported</method-name>
+            </method>
+            <method id="MethodElement_34a">
+               <ejb-name>RemoveAdvCMTBean</ejb-name>
+               <method-name>remove_NotSupported</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_34b">
+               <ejb-name>RemoveAdvCMTBean</ejb-name>
+               <method-name>remove_retain_NotSupported</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_34c">
+               <ejb-name>RemoveBasicCMTBean</ejb-name>
+               <method-name>remove_NotSupported</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_34d">
+               <ejb-name>RemoveBasicCMTBean</ejb-name>
+               <method-name>remove_retain_NotSupported</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_34e">
+               <ejb-name>RemoveCompCMTBean</ejb-name>
+               <method-name>remove_NotSupported</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_34f">
+               <ejb-name>RemoveCompCMTBean</ejb-name>
+               <method-name>remove_retain_NotSupported</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_34g">
+               <ejb-name>RemoveCompViewCMTBean</ejb-name>
+               <method-name>remove_NotSupported</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_34h">
+               <ejb-name>RemoveCompViewCMTBean</ejb-name>
+               <method-name>remove_retain_NotSupported</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_34i">
+               <ejb-name>RemoveStyle1Bean</ejb-name>
+               <method-name>remove_NotSupported</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_34j">
+               <ejb-name>RemoveStyle1Bean</ejb-name>
+               <method-name>remove_retain_NotSupported</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_34k">
+               <ejb-name>RemoveStyle2Bean</ejb-name>
+               <method-name>remove_NotSupported</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_34l">
+               <ejb-name>RemoveStyle2Bean</ejb-name>
+               <method-name>remove_retain_NotSupported</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_34m">
+               <ejb-name>RemoveStyle3Bean</ejb-name>
+               <method-name>remove_NotSupported</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_34n">
+               <ejb-name>RemoveStyle3Bean</ejb-name>
+               <method-name>remove_retain_NotSupported</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <trans-attribute>NotSupported</trans-attribute>
+         </container-transaction>
+         <container-transaction id="MethodTransaction_4">
+            <description>RequiresNew</description>
+            
+            <method id="MethodElement_46">
+               <ejb-name>BasicCMTStatefulRemoteBean</ejb-name>
+               <method-name>tx_RequiresNew</method-name>
+            </method>
+            <method id="MethodElement_47">
+               <ejb-name>CompCMTStatefulRemote</ejb-name>
+               <method-name>tx_RequiresNew</method-name>
+            </method>
+            <method id="MethodElement_48">
+               <ejb-name>AdvBasicCMTStatefulRemote</ejb-name>
+               <method-name>tx_RequiresNew</method-name>
+            </method>
+            <method id="MethodElement_49">
+               <ejb-name>AdvCompCMTStatefulRemote</ejb-name>
+               <method-name>tx_RequiresNew</method-name>
+            </method>
+            <method id="MethodElement_50">
+               <ejb-name>CompNoBizCMTStatefulRemote</ejb-name>
+               <method-name>tx_RequiresNew</method-name>
+            </method>
+            <method id="MethodElement_51a">
+               <ejb-name>RemoveAdvCMTBean</ejb-name>
+               <method-name>remove_RequiresNew</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_51b">
+               <ejb-name>RemoveBasicCMTBean</ejb-name>
+               <method-name>remove_RequiresNew</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_51c">
+               <ejb-name>RemoveCompCMTBean</ejb-name>
+               <method-name>remove_RequiresNew</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_51d">
+               <ejb-name>RemoveCompViewCMTBean</ejb-name>
+               <method-name>remove_RequiresNew</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_51e">
+               <ejb-name>RemoveStyle1Bean</ejb-name>
+               <method-name>remove_RequiresNew</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_51f">
+               <ejb-name>RemoveStyle2Bean</ejb-name>
+               <method-name>remove_RequiresNew</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_51g">
+               <ejb-name>RemoveStyle3Bean</ejb-name>
+               <method-name>remove_RequiresNew</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <trans-attribute>RequiresNew</trans-attribute>
+         </container-transaction>
+         <container-transaction id="MethodTransaction_5">
+            <description>Supports</description>
+            
+            <method id="MethodElement_56">
+               <ejb-name>BasicCMTStatefulRemoteBean</ejb-name>
+               <method-name>tx_Supports</method-name>
+            </method>
+            <method id="MethodElement_57">
+               <ejb-name>CompCMTStatefulRemote</ejb-name>
+               <method-name>tx_Supports</method-name>
+            </method>
+            <method id="MethodElement_58">
+               <ejb-name>AdvBasicCMTStatefulRemote</ejb-name>
+               <method-name>tx_Supports</method-name>
+            </method>
+            <method id="MethodElement_59">
+               <ejb-name>AdvCompCMTStatefulRemote</ejb-name>
+               <method-name>tx_Supports</method-name>
+            </method>
+            <method id="MethodElement_60">
+               <ejb-name>CompNoBizCMTStatefulRemote</ejb-name>
+               <method-name>tx_Supports</method-name>
+            </method>
+            <method id="MethodElement_61a">
+               <ejb-name>RemoveAdvCMTBean</ejb-name>
+               <method-name>getString</method-name>
+            </method>
+            <method id="MethodElement_61b">
+               <ejb-name>RemoveAdvCMTBean</ejb-name>
+               <method-name>howdy</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_61c">
+               <ejb-name>RemoveAdvCMTBean</ejb-name>
+               <method-name>remove_Supports</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_61d">
+               <ejb-name>RemoveBasicCMTBean</ejb-name>
+               <method-name>getString</method-name>
+            </method>
+            <method id="MethodElement_61e">
+               <ejb-name>RemoveBasicCMTBean</ejb-name>
+               <method-name>remove_Supports</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_61f">
+               <ejb-name>RemoveCompCMTBean</ejb-name>
+               <method-name>getString</method-name>
+            </method>
+            <method id="MethodElement_61g">
+               <ejb-name>RemoveCompCMTBean</ejb-name>
+               <method-name>howdy</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_61h">
+               <ejb-name>RemoveCompCMTBean</ejb-name>
+               <method-name>remove_Supports</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_61i">
+               <ejb-name>RemoveCompViewCMTBean</ejb-name>
+               <method-name>getString</method-name>
+            </method>
+            <method id="MethodElement_61j">
+               <ejb-name>RemoveCompViewCMTBean</ejb-name>
+               <method-name>howdy</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_61k">
+               <ejb-name>RemoveCompViewCMTBean</ejb-name>
+               <method-name>remove_Supports</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_61l">
+               <ejb-name>RemoveStyle1Bean</ejb-name>
+               <method-name>getString</method-name>
+            </method>
+            <method id="MethodElement_61m">
+               <ejb-name>RemoveStyle1Bean</ejb-name>
+               <method-name>howdy</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_61n">
+               <ejb-name>RemoveStyle1Bean</ejb-name>
+               <method-name>remove_Supports</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_61o">
+               <ejb-name>RemoveStyle2Bean</ejb-name>
+               <method-name>getString</method-name>
+            </method>
+            <method id="MethodElement_61p">
+               <ejb-name>RemoveStyle2Bean</ejb-name>
+               <method-name>howdy</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_61q">
+               <ejb-name>RemoveStyle2Bean</ejb-name>
+               <method-name>remove_Supports</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_61r">
+               <ejb-name>RemoveStyle3Bean</ejb-name>
+               <method-name>getString</method-name>
+            </method>
+            <method id="MethodElement_61s">
+               <ejb-name>RemoveStyle3Bean</ejb-name>
+               <method-name>howdy</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_61t">
+               <ejb-name>RemoveStyle3Bean</ejb-name>
+               <method-name>remove_Supports</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <trans-attribute>Supports</trans-attribute>
+         </container-transaction>
+         <container-transaction id="MethodTransaction_6">
+            <description>Never</description>
+            
+            <method id="MethodElement_66">
+               <ejb-name>BasicCMTStatefulRemoteBean</ejb-name>
+               <method-name>tx_Never</method-name>
+            </method>
+            <method id="MethodElement_67">
+               <ejb-name>CompCMTStatefulRemote</ejb-name>
+               <method-name>tx_Never</method-name>
+            </method>
+            <method id="MethodElement_68">
+               <ejb-name>AdvBasicCMTStatefulRemote</ejb-name>
+               <method-name>tx_Never</method-name>
+            </method>
+            <method id="MethodElement_69">
+               <ejb-name>AdvCompCMTStatefulRemote</ejb-name>
+               <method-name>tx_Never</method-name>
+            </method>
+            <method id="MethodElement_70">
+               <ejb-name>CompNoBizCMTStatefulRemote</ejb-name>
+               <method-name>tx_Never</method-name>
+            </method>
+            <method id="MethodElement_70a">
+               <ejb-name>RemoveAdvCMTBean</ejb-name>
+               <method-name>remove_Never</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_70b">
+               <ejb-name>RemoveBasicCMTBean</ejb-name>
+               <method-name>remove_Never</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_70c">
+               <ejb-name>RemoveCompCMTBean</ejb-name>
+               <method-name>remove_Never</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_70d">
+               <ejb-name>RemoveCompViewCMTBean</ejb-name>
+               <method-name>remove_Never</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_70e">
+               <ejb-name>RemoveStyle1Bean</ejb-name>
+               <method-name>remove_Never</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_70f">
+               <ejb-name>RemoveStyle2Bean</ejb-name>
+               <method-name>remove_Never</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_70g">
+               <ejb-name>RemoveStyle3Bean</ejb-name>
+               <method-name>remove_Never</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <trans-attribute>Never</trans-attribute>
+         </container-transaction>
+         <container-transaction id="MethodTransaction_7_8">
+            <description>Mandatory</description>
+            
+            <method id="MethodElement_78">
+               <ejb-name>BasicCMTStatefulRemoteBean</ejb-name>
+               <method-name>tx_Mandatory</method-name>
+            </method>
+            <method id="MethodElement_79">
+               <ejb-name>CompCMTStatefulRemote</ejb-name>
+               <method-name>tx_Mandatory</method-name>
+            </method>
+            <method id="MethodElement_80">
+               <ejb-name>AdvBasicCMTStatefulRemote</ejb-name>
+               <method-name>tx_Mandatory</method-name>
+            </method>
+            <method id="MethodElement_81">
+               <ejb-name>AdvCompCMTStatefulRemote</ejb-name>
+               <method-name>tx_Mandatory</method-name>
+            </method>
+            <method id="MethodElement_82">
+               <ejb-name>AdvBasicCMTStatefulRemote</ejb-name>
+               <method-name>adv_Tx_Mandatory</method-name>
+            </method>
+            <method id="MethodElement_83">
+               <ejb-name>AdvCompCMTStatefulRemote</ejb-name>
+               <method-name>adv_Tx_Mandatory</method-name>
+            </method>
+            <method id="MethodElement_84">
+               <ejb-name>CompNoBizCMTStatefulRemote</ejb-name>
+               <method-name>tx_Mandatory</method-name>
+            </method>
+            <method id="MethodElement_84a">
+               <ejb-name>RemoveAdvCMTBean</ejb-name>
+               <method-name>remove_Mandatory</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_84b">
+               <ejb-name>RemoveBasicCMTBean</ejb-name>
+               <method-name>remove_Mandatory</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_84c">
+               <ejb-name>RemoveCompCMTBean</ejb-name>
+               <method-name>remove_Mandatory</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_84d">
+               <ejb-name>RemoveCompViewCMTBean</ejb-name>
+               <method-name>remove_Mandatory</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_84e">
+               <ejb-name>RemoveStyle1Bean</ejb-name>
+               <method-name>remove_Mandatory</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_84f">
+               <ejb-name>RemoveStyle2Bean</ejb-name>
+               <method-name>remove_Mandatory</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <method id="MethodElement_84g">
+               <ejb-name>RemoveStyle3Bean</ejb-name>
+               <method-name>remove_Mandatory</method-name>
+               <method-params><method-param>java.lang.String</method-param></method-params>
+            </method>
+            <trans-attribute>Mandatory</trans-attribute>
+         </container-transaction>
+      </assembly-descriptor>
+   </ejb-jar>

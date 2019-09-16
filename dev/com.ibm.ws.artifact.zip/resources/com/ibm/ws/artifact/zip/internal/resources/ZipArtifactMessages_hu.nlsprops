@@ -22,14 +22,92 @@
 #   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
 #   (single quote must be coded as one single quote '). 
 
+# # A file path.
 bad.zip.data=CWWKM0101E: A rendszer nem tudta feldolgozni a(z) {0} arch\u00edvum adatait.
 bad.zip.data.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt az arch\u00edvum t\u00f6m\u00f6r\u00edtett adatainak feldolgoz\u00e1sa sor\u00e1n. 
 bad.zip.data.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a f\u00e1jl egy \u00e9rv\u00e9nyes arch\u00edvum.
 
-remove.cache.data=CWWKM0102W: A rendszer ki\u00fcr\u00edtett az \u00e9rv\u00e9nytelen gyors\u00edt\u00f3t\u00e1radatokat a(z) {0} helyr\u0151l.
+# # A file path.
+remove.cache.data=CWWKM0102W: A rendszer t\u00f6r\u00f6lte az \u00e9rv\u00e9nytelen gyors\u00edt\u00f3t\u00e1r adatokat a(z) {0} helyr\u0151l.
 remove.cache.data.explanation=\u00dagy t\u0171nik, hogy az alkalmaz\u00e1s strukt\u00far\u00e1ja megv\u00e1ltozott, ami az el\u0151z\u0151 strukt\u00far\u00e1n alapul\u00f3 gyors\u00edt\u00f3t\u00e1radatok t\u00f6rl\u00e9s\u00e9t ig\u00e9nyli.
 remove.cache.data.useraction=Ha az alkalmaz\u00e1s strukt\u00far\u00e1ja megv\u00e1ltozott, akkor ez az elv\u00e1rt viselked\u00e9s.
 
+# # {0} The text of the message from an exception.
 extract.cache.fail=CWWKM0103E: A rendszer nem tudott kibontani egy be\u00e1gyazott arch\u00edvumot egy gyors\u00edt\u00f3t\u00e1r helyre a k\u00f6vetkez\u0151 miatt: {0}
 extract.cache.fail.explanation=Hiba t\u00f6rt\u00e9nt az alkalmaz\u00e1shoz tartoz\u00f3 gyors\u00edt\u00f3t\u00e1radatok l\u00e9trehoz\u00e1sakor, ami megakad\u00e1lyozta az alkalmaz\u00e1s feldolgoz\u00e1s\u00e1t. 
 extract.cache.fail.useraction=Ellen\u0151rizze a jelentett okot.
+
+# # {0} A file path.
+extract.cache.null=CWWKM0104E: A rendszer nem tudta kibontani a(z) {0} be\u00e1gyazott arch\u00edvumot egy ideiglenes t\u00e1rol\u00f3ba.
+extract.cache.null.explanation=Hiba t\u00f6rt\u00e9nt az alkalmaz\u00e1shoz tartoz\u00f3 gyors\u00edt\u00f3t\u00e1radatok l\u00e9trehoz\u00e1sakor, ami megakad\u00e1lyozta az alkalmaz\u00e1s feldolgoz\u00e1s\u00e1t. 
+extract.cache.null.useraction=Ellen\u0151rizze, hogy a be\u00e1gyazott arch\u00edvum \u00e9rv\u00e9nyes arch\u00edvum.
+
+# # {0} A file path.
+extract.secondary.timeout=CWWKM0105E: M\u00e1sodlagos kibont\u00e1si id\u0151t\u00fall\u00e9p\u00e9s a k\u00f6vetkez\u0151 eset\u00e9ben: {0}.
+extract.secondary.timeout.explanation=Egy be\u00e1gyazott arch\u00edvum kibont\u00e1s\u00e1ra ir\u00e1nyul\u00f3 p\u00e1rhuzamos k\u00e9r\u00e9s t\u00fall\u00e9pte az id\u0151korl\u00e1tot, mik\u00f6zben a kezdeti kibont\u00e1s befejez\u0151d\u00e9s\u00e9re v\u00e1rt.
+extract.secondary.timeout.useraction=Ellen\u0151rizze, hogy a be\u00e1gyazott arch\u00edvum \u00e9rv\u00e9nyes arch\u00edvum.
+
+# # {0} A file path
+extract.secondary.failed=CWWKM0106E: A m\u00e1sodlagos kibont\u00e1s nem siker\u00fclt a k\u00f6vetkez\u0151 eset\u00e9ben: {0}.
+extract.secondary.failed.explanation=Egy be\u00e1gyazott arch\u00edvum kibont\u00e1s\u00e1ra ir\u00e1nyul\u00f3 p\u00e1rhuzamos k\u00e9r\u00e9s befejez\u0151d\u00f6tt, de nem bontotta ki a be\u00e1gyazott arch\u00edvumot.
+extract.secondary.failed.useraction=Ellen\u0151rizze, hogy a be\u00e1gyazott arch\u00edvum \u00e9rv\u00e9nyes arch\u00edvum.
+
+# # {0} A file path
+extract.secondary.notfile=CWWKM0107E: A m\u00e1sodlagos kibont\u00e1s nem hozta l\u00e9tre a k\u00f6vetkez\u0151 egyszer\u0171 f\u00e1jlj\u00e1t: {0}.
+extract.secondary.notfile.explanation=Egy be\u00e1gyazott arch\u00edvum kibont\u00e1s\u00e1ra ir\u00e1nyul\u00f3 p\u00e1rhuzamos k\u00e9r\u00e9s befejez\u0151d\u00f6tt, de nem \u00e1ll\u00edtott el\u0151 egyszer\u0171 f\u00e1jlt.
+extract.secondary.notfile.useraction=Ellen\u0151rizze, hogy a be\u00e1gyazott arch\u00edvum \u00e9rv\u00e9nyes arch\u00edvum.
+
+# # {0} A file path
+extract.secondary.inconsistent=CWWKM0108E: A m\u00e1sodlagos kibont\u00e1s id\u0151pontjai ellentmond\u00f3ak a k\u00f6vetkez\u0151 eset\u00e9ben: {0}.
+extract.secondary.inconsistent.explanation=Egy be\u00e1gyazott arch\u00edvum kibont\u00e1s\u00e1ra ir\u00e1nyul\u00f3 p\u00e1rhuzamos k\u00e9r\u00e9s befejez\u0151d\u00f6tt, de nem a v\u00e1rt f\u00e1jlt \u00e1ll\u00edtotta el\u0151.
+extract.secondary.inconsistent.useraction=Ellen\u0151rizze, hogy a be\u00e1gyazott arch\u00edvum \u00e9rv\u00e9nyes arch\u00edvum.
+
+# # {0} A file path
+extract.primary.directory=CWWKM0109E: A(z) {0} kor\u00e1bbi kibont\u00e1sa k\u00f6nyvt\u00e1r.
+extract.primary.directory.explanation=A be\u00e1gyazott arch\u00edvum kibont\u00e1sa k\u00f6nyvt\u00e1rat \u00e9szlelt kor\u00e1bban kibontott arch\u00edvumk\u00e9nt.
+extract.primary.directory.useraction=T\u00f6r\u00f6lje, majd ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t, hogy biztosan ne legyen jelen kor\u00e1bbi gyors\u00edt\u00f3t\u00e1r tartalom.
+
+# # {0} A file path
+extract.primary.untyped=CWWKM0110E: A(z) {0} kor\u00e1bbi kibont\u00e1sa nem tipiz\u00e1lhat\u00f3.
+extract.primary.untyped.explanation=A be\u00e1gyazott arch\u00edvum kibont\u00e1sa nem tipiz\u00e1lhat\u00f3 f\u00e1jlt \u00e9szlelt kor\u00e1bban kibontott arch\u00edvumk\u00e9nt.
+extract.primary.untyped.useraction=T\u00f6r\u00f6lje, majd ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t, hogy biztosan ne legyen jelen kor\u00e1bbi gyors\u00edt\u00f3t\u00e1r tartalom.
+
+# # {0} A file path.
+# # {1} A print name
+reaper.inactive=CWWKM0121W: A(z) {0} nem nyithat\u00f3 meg: A(z) {1} arch\u00edv gyors\u00edt\u00f3t\u00e1r inakt\u00edv.
+reaper.inactive.explanation=Az arch\u00edv f\u00e1jl megnyit\u00e1s\u00e1ra ir\u00e1nyul\u00f3 k\u00e9r\u00e9s meghi\u00fasult, mivel az arch\u00edv f\u00e1jl nem akt\u00edv.
+reaper.inactive.useraction=Ez az \u00fczenet bels\u0151 programoz\u00e1si hib\u00e1t jelez.
+
+# # {0} A file path
+reaper.unregistered.path=CWWKM0122W: A(z) {0} arch\u00edvum bez\u00e1r\u00e1si k\u00e9r\u00e9se figyelmen k\u00edv\u00fcl marad, mivel nincs megnyitva.
+reaper.unregistered.path.explanation=Arch\u00edv f\u00e1jl bez\u00e1r\u00e1si feldolgoz\u00e1st k\u00e9rtek olyan f\u00e1jl eset\u00e9ben, amely nincs megnyitva.
+reaper.unregistered.path.useraction=Ez az \u00fczenet bels\u0151 programoz\u00e1si hib\u00e1t jelez.
+
+# # {0} A file path
+reaper.closed.path=CWWKM0123W: A(z) {0} arch\u00edvum bez\u00e1r\u00e1si k\u00e9r\u00e9se figyelmen k\u00edv\u00fcl marad, mivel m\u00e1r be van z\u00e1rva.
+reaper.closed.path.explanation=Arch\u00edv f\u00e1jl bez\u00e1r\u00e1si feldolgoz\u00e1st k\u00e9rtek olyan f\u00e1jl eset\u00e9ben, amely m\u00e1r be lett z\u00e1rva.
+reaper.closed.path.useraction=Ez az \u00fczenet bels\u0151 programoz\u00e1si hib\u00e1t jelez.
+
+# # {0} A file path
+reaper.pending.path=CWWKM0243W: A(z) {0} arch\u00edvum bez\u00e1r\u00e1si k\u00e9r\u00e9se figyelmen k\u00edv\u00fcl marad, mivel a(z) {0} bez\u00e1r\u00e1sa m\u00e1r f\u00fcgg\u0151ben van.
+reaper.pending.path.explanation=Arch\u00edv f\u00e1jl bez\u00e1r\u00e1si feldolgoz\u00e1st k\u00e9rtek olyan f\u00e1jl eset\u00e9ben, amelynek bez\u00e1r\u00e1sa m\u00e1r f\u00fcgg\u0151ben van.
+reaper.pending.path.useraction=Ez az \u00fczenet bels\u0151 programoz\u00e1si hib\u00e1t jelez.
+
+# # {0} A file path
+# # {1} An integer representing a file length
+# # {2} An integer representing a file length
+reaper.unexpected.length.change=CWWKM0125W: {0} arch\u00edvum: Hossz friss\u00edt\u00e9se ett\u0151l: {1} eddig: {2}.
+reaper.unexpected.length.change.explanation=V\u00e1ratlanul friss\u00edtettek egy alkalmaz\u00e1s arch\u00edvumf\u00e1jlt, mik\u00f6zben az meg volt nyitva.  Ez rendszerint az\u00e9rt t\u00f6rt\u00e9nik, mert az alkalmaz\u00e1sf\u00e1jlokat dinamikusan friss\u00edtett\u00e9k.
+reaper.unexpected.length.change.useraction=Ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t.  Alkalmaz\u00e1sf\u00e1jlok friss\u00edt\u00e9sekor v\u00e1rja meg, am\u00edg a kiszolg\u00e1l\u00f3 fokozatosan le\u00e1ll\u00edt\u00e1sra ker\u00fcl, plusz v\u00e1rjon legal\u00e1bb f\u00e9l m\u00e1sodpercet, hogy az alkalmaz\u00e1sf\u00e1jlok bez\u00e1r\u00f3djanak.
+
+# # {0} A file path
+# # {1} An integer representing a last modified time
+# # {2} An integer representing a last modified time
+reaper.unexpected.lastmodified.change=CWWKM0126W: {0} arch\u00edvum: Legut\u00f3bbi m\u00f3dos\u00edt\u00e1s friss\u00edt\u00e9se err\u0151l: {1} erre: {2}.
+reaper.unexpected.lastmodified.change.explanation=V\u00e1ratlanul friss\u00edtettek egy alkalmaz\u00e1s arch\u00edvumf\u00e1jlt, mik\u00f6zben az meg volt nyitva.  Ez rendszerint az\u00e9rt t\u00f6rt\u00e9nik, mert az alkalmaz\u00e1sf\u00e1jlokat dinamikusan friss\u00edtett\u00e9k.
+reaper.unexpected.lastmodified.change.useraction=Ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t.  Alkalmaz\u00e1sf\u00e1jlok friss\u00edt\u00e9sekor v\u00e1rja meg, am\u00edg a kiszolg\u00e1l\u00f3 fokozatosan le\u00e1ll\u00edt\u00e1sra ker\u00fcl, plusz v\u00e1rjon legal\u00e1bb f\u00e9l m\u00e1sodpercet, hogy az alkalmaz\u00e1sf\u00e1jlok bez\u00e1r\u00f3djanak.
+
+# # {0} A file path
+reaper.reopen.active=CWWKM0127W: {0} \u00fajranyit\u00e1sa
+reaper.reopen.active.explanation=Egy v\u00e1ratlan m\u00f3dos\u00edt\u00e1s megnyitott arch\u00edv f\u00e1jl \u00fajranyit\u00e1s\u00e1t okozta.  A kiszolg\u00e1l\u00f3 megpr\u00f3b\u00e1lta lek\u00e9rdezni az arch\u00edv f\u00e1jl friss\u00edtett tartalm\u00e1t, de lehet, hogy az arch\u00edv tartalmak bels\u0151 list\u00e1ja nem teljesen friss.
+reaper.reopen.active.useraction=Ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t.  Alkalmaz\u00e1sf\u00e1jlok friss\u00edt\u00e9sekor v\u00e1rja meg, am\u00edg a kiszolg\u00e1l\u00f3 fokozatosan le\u00e1ll\u00edt\u00e1sra ker\u00fcl, plusz v\u00e1rjon legal\u00e1bb f\u00e9l m\u00e1sodpercet, hogy az alkalmaz\u00e1sf\u00e1jlok bez\u00e1r\u00f3djanak.

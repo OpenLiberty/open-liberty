@@ -1,0 +1,56 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+# For information on bnd syntax, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
+
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: SCIM 2.0 bundle
+Bundle-SymbolicName: com.ibm.ws.security.wim.scim.2.0
+Bundle-Description: SCIM 2.0; version=${bVersion}
+
+# Require Java 8
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+javac.source: 1.8
+javac.target: 1.8
+
+#
+# Eventually can move the websphere classes to an API project.
+#
+#Export-Package: \
+#	com.ibm.websphere.security.wim.scim20.*;provide:=true,\
+
+
+Private-Package: \
+	com.ibm.websphere.security.wim.scim20.*;provide:=true,\
+	com.ibm.ws.security.wim.scim20.*;provide:=true
+
+
+Include-Resource: \
+    OSGI-INF=resources/OSGI-INF
+
+
+-dsannotations: \
+  com.ibm.ws.security.wim.scim20.rest.SCIMRESTHandler
+  
+
+-buildpath: \
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.websphere.org.osgi.service.component,\
+	com.ibm.websphere.rest.handler;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations,\
+	com.ibm.ws.com.fasterxml.jackson.2.9.1;version=latest,\
+	com.ibm.ws.management.security;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.logging.core;version=latest
+
+-testpath: \
+        ../build.sharedResources/lib/junit/old/junit.jar;version=file

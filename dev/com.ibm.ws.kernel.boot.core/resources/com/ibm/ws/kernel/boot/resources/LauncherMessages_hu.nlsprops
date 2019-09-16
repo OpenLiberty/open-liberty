@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2016 IBM Corporation and others.
+# Copyright (c) 2010, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -740,3 +740,5 @@ info.initlogs=Az stdout \u00e9s stderr \u00e1tir\u00e1ny\u00edt\u00e1sa a(z) {0}
 info.no.servers.defined=Nincs meghat\u00e1rozva kiszolg\u00e1l\u00f3 a(z) {0} felhaszn\u00e1l\u00f3i k\u00f6nyvt\u00e1rban.
 info.list.of.defined.servers=A k\u00f6vetkez\u0151 kiszolg\u00e1l\u00f3k vannak meghat\u00e1rozva a(z) {0} felhaszn\u00e1l\u00f3i k\u00f6nyvt\u00e1rhoz viszony\u00edtva.
 info.communicate.server=Kommunik\u00e1ci\u00f3s hiba t\u00f6rt\u00e9nt a(z) {0} parancs \u00e9s a(z) {1} kiszolg\u00e1l\u00f3 k\u00f6z\u00f6tt.
+
+info.serialFilterLoaded=A soros sz\u0171r\u0151 \u00fcgyn\u00f6k bet\u00f6ltve.

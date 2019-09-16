@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2012 IBM Corporation and others.
+    Copyright (c) 2012, 2019 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -40,14 +40,15 @@
   </security-constraint>
 
   <security-constraint id="SecurityConstraint_2">
-    <display-name>MicroProfile Metrics Security Constraint - Viewer Role</display-name>
-    <web-resource-collection id="WebResourceCollection_3">
+    <display-name>MicroProfile Metrics Security Constraint - Reader Role</display-name>
+    <web-resource-collection id="WebResourceCollection_2">
         <web-resource-name>MicroProfile Metrics URL</web-resource-name>
         <url-pattern>/*</url-pattern>
         <http-method>GET</http-method>
+        <http-method>OPTIONS</http-method>
     </web-resource-collection>
     <auth-constraint>
-      <role-name>Viewer</role-name>
+      <role-name>Reader</role-name>
     </auth-constraint>
     <user-data-constraint id="UserDataConstraint_2">
       <transport-guarantee>CONFIDENTIAL</transport-guarantee>
@@ -60,8 +61,8 @@
   </security-role>
 
   <security-role id="SecurityRole_2">
-    <description>Viewer Role</description>
-    <role-name>Viewer</role-name>
+    <description>Reader Role</description>
+    <role-name>Reader</role-name>
   </security-role>
 
   <login-config id="LoginConfig_1">

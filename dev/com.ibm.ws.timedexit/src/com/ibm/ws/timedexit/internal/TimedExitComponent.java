@@ -21,14 +21,14 @@ import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 /**
  * A declarative services component can be completely POJO based
  * (no awareness/use of OSGi services).
- * 
+ *
  * OSGi methods (activate/deactivate) should be protected.
  */
 public class TimedExitComponent implements org.osgi.framework.BundleActivator {
 
     private final TimedExitThread mash = new TimedExitThread();
 
-    private static TraceComponent tc = Tr.register(TimedExitComponent.class);
+    private static TraceComponent tc = Tr.register(TimedExitComponent.class, "timedexit", "com.ibm.ws.timedexit.internal.resources.TimedExitMessages");
 
     @Override
     public void start(BundleContext context) {
@@ -56,10 +56,9 @@ public class TimedExitComponent implements org.osgi.framework.BundleActivator {
         // shutdown processing!
 
         if (!FrameworkState.isStopping()) {
-            Throwable ex = new RequiredTimedExitFeatureStoppedException(
-                            "The timedexit-1.0 feature is being stopped before the server is stopping.  " +
-                                            "It must be enabled during ALL FAT bucket runs; make sure that" +
-                                            " fatTestPorts.xml is included in the server.xml.");
+            Throwable ex = new RequiredTimedExitFeatureStoppedException("The timedexit-1.0 feature is being stopped before the server is stopping.  " +
+                                                                        "It must be enabled during ALL FAT bucket runs; make sure that" +
+                                                                        " fatTestPorts.xml is included in the server.xml.");
             FFDCFilter.processException(ex, getClass().getName(), "stop");
         }
 

@@ -30,6 +30,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
@@ -69,6 +70,7 @@ public class UserRegistryServiceImplWithAutoDetectTest {
      */
     @Before
     public void setUp() {
+        final BundleContext mockBundleContext = mock.mock(BundleContext.class);
         mock.checking(new Expectations() {
             {
                 allowing(componentContext).getProperties();
@@ -91,6 +93,10 @@ public class UserRegistryServiceImplWithAutoDetectTest {
                 will(returnValue(0L));
                 allowing(ef).getProperty(Constants.SERVICE_RANKING);
                 will(returnValue(0));
+
+                allowing(componentContext).getBundleContext();
+                will(returnValue(mockBundleContext));
+                ignoring(mockBundleContext);
             }
         });
 

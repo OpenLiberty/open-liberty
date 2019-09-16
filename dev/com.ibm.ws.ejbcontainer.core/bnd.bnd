@@ -18,6 +18,8 @@ publish.wlp.jar.disabled: true
 -buildpath.bootclasspath: ${javac.bootclasspath.1.7}
 
 -buildpath: \
+	com.ibm.ws.org.apache.yoko.corba.spec.1.5;version=latest,\
+	com.ibm.ws.org.apache.yoko.rmi.spec.1.5;version=latest,\
 	com.ibm.websphere.javaee.ejb.3.1;version=latest,\
 	com.ibm.ws.logging.core,\
 	com.ibm.ws.ejbcontainer.remote.portable.core;version=latest,\
@@ -35,8 +37,9 @@ publish.wlp.jar.disabled: true
 	com.ibm.ws.javaee.dd.common;version=latest,\
 	com.ibm.ws.org.objectweb.asm;version=latest,\
 	com.ibm.websphere.javaee.interceptor.1.1;version=latest,\
-	com.ibm.tx.ltc;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	com.ibm.tx.ltc;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.kernel.service;version=latest
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \

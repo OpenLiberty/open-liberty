@@ -13,7 +13,7 @@
 
   <featureManager>
     <feature>componenttest-1.0</feature>
-    <feature>configValidator-1.0</feature> <!-- TODO replace when functionality is enabled via auto-feature -->
+    <feature>restConnector-2.0</feature>
     <feature>jdbc-4.2</feature>
     <feature>usr:nestedFlat-1.0</feature>
   </featureManager>
@@ -21,7 +21,18 @@
   <variable name="onError" value="FAIL"/>
 
   <keyStore id="defaultKeyStore" password="Liberty"/>
-  <quickStartSecurity userName="adminuser" userPassword="adminpwd"/>
+  
+  <basicRegistry>
+    <user name="adminuser" password="adminpwd" />
+    <user name="reader" password="readerpwd" />
+    <user name="user" password="userpwd" />
+  </basicRegistry>
+  <administrator-role>
+    <user>adminuser</user>
+  </administrator-role>
+  <reader-role>
+    <user>reader</user>
+  </reader-role>
   
   <library id="Derby">
     <file name="${shared.resource.dir}/derby/derby.jar"/>
@@ -40,7 +51,7 @@
   </dataSource>
 
   <dataSource id="jdbc/nonexistentdb" jndiName="${id}">
-    <connectionManager id="NestedConPool" agedTimeout="1h2m3s" connectionTimeout="0s" maxIdleTime="40m" reapTime="2m30s"/>
+    <CONNECTIONMANAGER id="NestedConPool" agedTimeout="1h2m3s" connectionTimeout="0s" maxIdleTime="40m" reapTime="2m30s"/>
     <jdbcDriver libraryRef="Derby"/>
    	<properties.derby.embedded databaseName="memory:doesNotExist"/>
   </dataSource>
@@ -61,9 +72,9 @@
     </dataSource>
   </databaseStore>
 
-  <!-- cloudant feature intentionally disabled, so it doesn't matter that we are using an incorrect library -->
-  <cloudant id="builder" libraryRef="DerbyLib" url="http://douc.hursley.ibm.com:5984" username="u1" password="pwd1"/>
-  <cloudantDatabase id="CloudantDBNotEnabled" jndiName="cloudant/db" cloudantRef="builder" databaseName="testdb"/>
+  <!-- mongo feature intentionally disabled, so it doesn't matter that we are using an incorrect library -->
+  <mongo id="builder" libraryRef="DerbyLib" password="pwd1" user="u1"/>
+  <mongoDB id="MongoDBNotEnabled" jndiName="mongo/db" mongoRef="builder" databaseName="testdb" />
   
   <authData id="auth1" user="dbuser" password="dbpass"/>
   
@@ -85,6 +96,10 @@
     invalidProperty="The property's value." jdbcDriverRef="DerbyDriver" queryTimeout="2m10s"
     recoveryAuthDataRef="auth2" statementCacheSize="15" validationTimeout="20s">
     <properties databaseName="memory:defaultdb" createDatabase="create"/>
+  </dataSource>
+  
+  <dataSource id="NestedElementCase" jndiName="jdbc/nestedElementCase">
+  	<JdBcDrIvEr libraryRef="Derby" javax.sql.DataSource="org.apache.derby.jdbc.EmbeddedDataSource" />
   </dataSource>
 
   <connectionManager id="pool1" maxPoolSize="10" purgePolicy="ValidateAllConnections"/>
@@ -110,6 +125,18 @@
   	<child value="two">
   		<grandchild value="three"/>
   	</child>
+  </usr_parent>
+  
+  <!-- config for testConfigDefaultInstances -->
+  <usr_parent id="dflt">
+  	<usr_child id="usrConfig">
+  		<usr_grandchild value="a"/>
+  	</usr_child>
+  	<usr_child id="mergedConfig" name="mergedChild">
+  		<usr_grandchild id="one" value="b"/>
+  		<usr_grandchild id="two" value="c"/>
+  		<usr_grandchild id="four" name="grandchildOpt"/>
+  	</usr_child>
   </usr_parent>
   
   <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>

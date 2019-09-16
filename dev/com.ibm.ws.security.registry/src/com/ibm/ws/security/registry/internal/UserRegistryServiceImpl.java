@@ -11,14 +11,13 @@
 package com.ibm.ws.security.registry.internal;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.felix.scr.ext.annotation.DSExt;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -37,6 +36,8 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.bnd.metatype.annotation.Ext;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.service.util.ServiceRegistrationModifier;
+import com.ibm.ws.kernel.service.util.ServiceRegistrationModifier.ServicePropertySupplier;
 import com.ibm.ws.security.registry.ExternalUserRegistryWrapper;
 import com.ibm.ws.security.registry.FederationRegistry;
 import com.ibm.ws.security.registry.RegistryException;
@@ -91,9 +92,9 @@ interface UserRegistryRefConfig {
 //order means config.displayId comes from factory config
            configurationPid = { "com.ibm.ws.security.registry.internal.UserRegistryRefConfig", "com.ibm.ws.security.registry" },
            configurationPolicy = ConfigurationPolicy.OPTIONAL,
-           property = "service.vendor=IBM")
-@DSExt.ConfigurableServiceProperties
-public class UserRegistryServiceImpl implements UserRegistryService {
+           property = "service.vendor=IBM",
+           service = {})
+public class UserRegistryServiceImpl implements UserRegistryService, ServicePropertySupplier {
 
     private static final TraceComponent tc = Tr.register(UserRegistryServiceImpl.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 
@@ -103,7 +104,8 @@ public class UserRegistryServiceImpl implements UserRegistryService {
 
     // Keep track of the actual user registry to use
     private final AtomicReference<UserRegistry> userRegistry = new AtomicReference<UserRegistry>();
-    private final Object userRegistrySync = new Object() {};
+    private final Object userRegistrySync = new Object() {
+    };
     private final List<String> registryTypes = new ArrayList<String>();
 
     static final String KEY_FEDERATION_REGISTRY = "FederationRegistry";
@@ -131,6 +133,9 @@ public class UserRegistryServiceImpl implements UserRegistryService {
     private volatile Map<String, Object> props;
 
     private boolean isFederationActive = false;
+
+    private final ServiceRegistrationModifier<UserRegistryService> userRegistryServiceRegistration = new ServiceRegistrationModifier<>(UserRegistryService.class, this, this);
+    private volatile Hashtable<String, Object> userRegistryServiceProps;
 
     /**
      * Method will be called for each UserRegistryConfiguration that is
@@ -161,7 +166,7 @@ public class UserRegistryServiceImpl implements UserRegistryService {
      * @param ref Reference to a registered UserRegistryConfiguration
      */
     @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.MULTIPLE, target = "(!(objectClass=com.ibm.ws.security.registry.FederationRegistry))")
-    protected Map<String, Object> setUserRegistry(ServiceReference<UserRegistry> ref) {
+    protected void setUserRegistry(ServiceReference<UserRegistry> ref) {
         String configId = (String) ref.getProperty(KEY_CONFIG_ID);
         String type = (String) ref.getProperty(KEY_TYPE);
 
@@ -189,7 +194,7 @@ public class UserRegistryServiceImpl implements UserRegistryService {
 
         notifyListeners();
 
-        return refreshUserRegistryCache();
+        updateUserRegistryServiceRegistration();
     }
 
     /**
@@ -212,10 +217,10 @@ public class UserRegistryServiceImpl implements UserRegistryService {
             return configId;
     }
 
-    protected Map<String, Object> updatedUserRegistry(ServiceReference<UserRegistry> ref) {
+    protected void updatedUserRegistry(ServiceReference<UserRegistry> ref) {
         notifyListeners();
 
-        return refreshUserRegistryCache();
+        updateUserRegistryServiceRegistration();
     }
 
     /**
@@ -230,7 +235,7 @@ public class UserRegistryServiceImpl implements UserRegistryService {
      *
      * @param ref Reference to an unregistered UserRegistryConfiguration
      */
-    protected Map<String, Object> unsetUserRegistry(ServiceReference<UserRegistry> ref) {
+    protected void unsetUserRegistry(ServiceReference<UserRegistry> ref) {
         String id = parseIdFromConfigID((String) ref.getProperty(KEY_CONFIG_ID));
         userRegistries.removeReference(id, ref);
         notifyListeners();
@@ -246,28 +251,28 @@ public class UserRegistryServiceImpl implements UserRegistryService {
          * Don't refresh the user registry cache if we are shutting down.
          */
         if (FrameworkState.isStopping()) {
-            return null;
+            return;
         } else {
-            return refreshUserRegistryCache();
+            updateUserRegistryServiceRegistration();
         }
     }
 
     @Reference(name = KEY_FEDERATION_REGISTRY, policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL)
-    protected Map<String, Object> setFederationRegistry(ServiceReference<FederationRegistry> federationRegistryRef) {
+    protected void setFederationRegistry(ServiceReference<FederationRegistry> federationRegistryRef) {
         federationRegistryServiceRef.setReference(federationRegistryRef);
-        return refreshUserRegistryCache();
+        updateUserRegistryServiceRegistration();
     }
 
-    protected Map<String, Object> unsetFederationRegistry(ServiceReference<FederationRegistry> federationRegistryRef) {
+    protected void unsetFederationRegistry(ServiceReference<FederationRegistry> federationRegistryRef) {
         federationRegistryServiceRef.unsetReference(federationRegistryRef);
 
         /*
          * Don't refresh the user registry cache if we are shutting down.
          */
         if (FrameworkState.isStopping()) {
-            return null;
+            return;
         } else {
-            return refreshUserRegistryCache();
+            updateUserRegistryServiceRegistration();
         }
     }
 
@@ -287,7 +292,7 @@ public class UserRegistryServiceImpl implements UserRegistryService {
     }
 
     @Activate
-    protected Map<String, Object> activate(ComponentContext cc, Map<String, Object> props) {
+    protected void activate(ComponentContext cc, Map<String, Object> props) {
         this.props = props;
         refId = (String[]) props.get(CFG_KEY_REFID);
         realm = (String) props.get(CFG_KEY_REALM);
@@ -296,28 +301,29 @@ public class UserRegistryServiceImpl implements UserRegistryService {
         userRegistries.activate(cc);
         listeners.activate(cc);
         federationRegistryServiceRef.activate(cc);
-        return getServiceProperties();
+        updateServiceProperties();
+        userRegistryServiceRegistration.registerOrUpdate(cc.getBundleContext());
     }
 
     @Modified
-    protected Map<String, Object> modify(Map<String, Object> props) {
+    protected void modify(Map<String, Object> props) {
         refId = (String[]) props.get(CFG_KEY_REFID);
         realm = (String) props.get(CFG_KEY_REALM);
         urCount = props.get(CFG_KEY_UR_COUNT) == null ? -1 : Integer.valueOf((String) props.get(CFG_KEY_UR_COUNT));
         this.props = props;
         notifyListeners();
 
-        return refreshUserRegistryCache();
+        updateUserRegistryServiceRegistration();
     }
 
     @Deactivate
-    protected Map<String, Object> deactivate(ComponentContext cc) {
+    protected void deactivate(ComponentContext cc) {
+        userRegistryServiceRegistration.unregister();
         refId = null;
         realm = null;
         userRegistries.deactivate(cc);
         listeners.deactivate(cc);
         federationRegistryServiceRef.deactivate(cc);
-        return getServiceProperties();
     }
 
     /**
@@ -517,31 +523,43 @@ public class UserRegistryServiceImpl implements UserRegistryService {
         }
     }
 
+    @Override
+    public Hashtable<String, Object> getServiceProperties() {
+        return userRegistryServiceProps;
+    }
+
+    private void updateUserRegistryServiceRegistration() {
+        updateServiceProperties();
+        userRegistryServiceRegistration.update();
+    }
+
     /**
      * Determine a new user registry to use by resetting the cache and calling getServiceProperties
      */
-    private Map<String, Object> refreshUserRegistryCache() {
+    private void updateServiceProperties() {
         synchronized (userRegistrySync) {
             userRegistry.set(null);
-            return getServiceProperties();
+            userRegistryServiceProps = getServiceProperties0();
         }
     }
 
     @FFDCIgnore(RegistryException.class)
-    private Map<String, Object> getServiceProperties() {
+    private Hashtable<String, Object> getServiceProperties0() {
         Map<String, Object> props = this.props;
         if (props == null) {
             return null;
         }
-        Map<String, Object> result = new HashMap<String, Object>(props);
+        Hashtable<String, Object> result = new Hashtable<String, Object>(props);
         try {
             UserRegistry userRegistry = determineActiveUserRegistry(false);
             if (userRegistry == null) {
                 result.put(SERVICE_PROPERTY_USER_REGISTRY_CONFIGURED, false);
             } else {
                 result.put(SERVICE_PROPERTY_USER_REGISTRY_CONFIGURED, true);
-                result.put(SERVICE_PROPERTY_REALM, userRegistry.getRealm());
-
+                String realm = userRegistry.getRealm();
+                if (realm != null) {
+                    result.put(SERVICE_PROPERTY_REALM, userRegistry.getRealm());
+                }
             }
         } catch (RegistryException e) {
             //apparently it wasn't configured very successfully

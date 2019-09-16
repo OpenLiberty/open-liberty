@@ -16,7 +16,10 @@ import javax.management.NotificationBroadcasterSupport;
 
 import com.ibm.ws.app.manager.internal.monitor.ApplicationMonitor;
 import com.ibm.ws.container.service.app.deploy.extended.ApplicationInfoForContainer;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.wsspi.adaptable.module.Container;
+import com.ibm.wsspi.adaptable.module.NonPersistentCache;
+import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.application.handler.ApplicationHandler;
 import com.ibm.wsspi.application.handler.ApplicationInformation;
 import com.ibm.wsspi.application.handler.ApplicationMonitoringInformation;
@@ -41,6 +44,13 @@ public class ApplicationInstallInfo implements ApplicationInformation<Object>, A
         _resolvedLocation.set(resolvedLocation);
         _handler = handler;
         _updateHandler = updateHandler;
+        /* put jandex configuration into overlay cache */
+        try {
+            NonPersistentCache cache = container.adapt(NonPersistentCache.class);
+            cache.addToCache(ApplicationInfoForContainer.class, this);
+        } catch (UnableToAdaptException ex) {
+            FFDCFilter.processException(ex, getClass().getName(), "ApplicationInstallInfo_ctor");
+        }
     }
 
     public ApplicationHandler<?> getHandler() {

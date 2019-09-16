@@ -299,7 +299,6 @@ class ConfigEvaluator {
 
         if (attributeDef.isFlat()) {
 
-            //TODO check for not final, not PID??
             RegistryEntry nestedRegistryEntry = getRegistryEntry(attributeDef.getReferencePid());
             if (nestedRegistryEntry == null) {
                 return null;
@@ -337,22 +336,7 @@ class ConfigEvaluator {
                 throw e;
             }
             evaluateFlatAttribute(attributeName, attributeName, context, nestedRegistryEntry, flatPrefix, config, i, processedNames, ignoreWarnings);
-//            if (hierarchy != null) {
-//                for (RegistryEntry entry : hierarchy) {
-//                    //TODO both pid and alias?  or just alias?
-//                    i = evaluateFlatAttribute(attributeName, entry.getPid(), context, entry, flatPrefix, config, i, processedNames, ignoreWarnings);
-//                    if (entry.getAlias() != null) {
-//                        i = evaluateFlatAttribute(attributeName, entry.getAlias(), context, entry, flatPrefix, config, i, processedNames, ignoreWarnings);
-//                    }
-//                    //TODO extends alias, not childAlias
-//                    if (entry.getChildAlias() != null) {
-//                        i = evaluateFlatAttribute(attributeName, entry.getChildAlias(), context, entry, flatPrefix, config, i, processedNames, ignoreWarnings);
-//                    }
-//                }
-//            }
-//            i = evaluateFlatAttribute(attributeName, attributeName, context, nestedRegistryEntry, flatPrefix, config, i, processedNames, ignoreWarnings);
 
-            //TODO no merging of flat stuff for cardinality 0.
             int cardinality = attributeDef.getCardinality();
             cardinality = cardinality == Integer.MIN_VALUE ? Integer.MAX_VALUE : cardinality < 0 ? -cardinality : cardinality == 0 ? 1 : cardinality;
             if (i.get() > cardinality) {
@@ -465,21 +449,26 @@ class ConfigEvaluator {
                 actualValue = evaluateMetaType(rawValue, attributeDef, context, ignoreWarnings);
             } catch (ConfigEvaluatorException iae) {
                 // try to fall-back to default value if validation of an option fails.
+                Object badValue = rawValue;
+                rawValue = getUnconfiguredAttributeValue(context, attributeDef);
+
+                //ignoreWarnings indicates that we are trying to get the default or variable value here and do not
+                //care about any validation failures.
+
                 String validOptions[] = attributeDef.getOptionValues();
                 if (validOptions == null) {
-                    // Fall back to variable registry or default value
-                    Object badValue = rawValue;
-                    rawValue = getUnconfiguredAttributeValue(context, attributeDef);
                     if (rawValue != null && !ignoreWarnings) {
                         Tr.warning(tc, "warn.config.validate.failed", iae.getMessage());
                         Tr.warning(tc, "warn.config.invalid.using.default.value", attributeDef.getID(), badValue, rawValue);
                         actualValue = evaluateMetaType(rawValue, attributeDef, context, ignoreWarnings);
                     } else {
+                        // Either (1) There is no default so we have to throw an exception or (2) We are trying to get
+                        // the default or variable value (ignoreWarnings == true) but it doesn't exist so we throw an
+                        // exception.
                         throw iae;
                     }
-
                 } else {
-                    if (tc.isWarningEnabled() && !ignoreWarnings) {
+                    if (!ignoreWarnings) {
                         StringBuffer strBuffer = new StringBuffer();
                         // This formatter is consistent with the message in nlsprops
                         for (int i = 0; i < validOptions.length; i++) {
@@ -487,11 +476,13 @@ class ConfigEvaluator {
                             strBuffer.append(validOptions[i]);
                             strBuffer.append("]");
                         }
-                        Tr.warning(tc, "warn.config.invalid.value", attributeDef.getID(), rawValue, strBuffer.toString());
-                    }
 
-                    // Fall back to variable registry or default value
-                    rawValue = getUnconfiguredAttributeValue(context, attributeDef);
+                        String defaultString = "";
+                        if (rawValue != null)
+                            defaultString = Tr.formatMessage(tc, "default.value.in.use", rawValue);
+                        Tr.warning(tc, "warn.config.invalid.value", attributeDef.getID(), badValue, strBuffer.toString(), defaultString);
+
+                    }
                     if (rawValue != null) {
                         actualValue = evaluateMetaType(rawValue, attributeDef, context, ignoreWarnings);
                     }

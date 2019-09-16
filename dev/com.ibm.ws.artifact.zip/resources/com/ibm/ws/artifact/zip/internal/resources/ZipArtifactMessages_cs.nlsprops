@@ -22,14 +22,92 @@
 #   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
 #   (single quote must be coded as one single quote '). 
 
+# # A file path.
 bad.zip.data=CWWKM0101E: Syst\u00e9m nem\u016f\u017ee zpracovat archivn\u00ed data pro {0}.
 bad.zip.data.explanation=Do\u0161lo k v\u00fdjimce p\u0159i zpracov\u00e1n\u00ed komprimovan\u00fdch dat pro archiv. 
 bad.zip.data.useraction=Zkontrolujte, \u017ee je soubor v platn\u00e9m archivu.
 
-remove.cache.data=CWWKM0102W: Syst\u00e9m vy\u010distil neplatn\u00e1 data mezipam\u011bti z um\u00edst\u011bn\u00ed {0}
+# # A file path.
+remove.cache.data=CWWKM0102W: Syst\u00e9m vy\u010distil neplatn\u00e1 data mezipam\u011bti z um\u00edst\u011bn\u00ed {0}.
 remove.cache.data.explanation=Zd\u00e1 se, \u017ee struktura aplikace byla zm\u011bn\u011bna, co\u017e vy\u017eaduje odstran\u011bn\u00ed dat mezipam\u011bti zalo\u017een\u00fdch na p\u0159edch\u00e1zej\u00edc\u00ed struktu\u0159e.
 remove.cache.data.useraction=Pokud va\u0161e aplikace m\u011bnila strukturu, je tato zpr\u00e1va o\u010dek\u00e1van\u00e1.
 
+# # {0} The text of the message from an exception.
 extract.cache.fail=CWWKM0103E: Syst\u00e9m nem\u016f\u017ee extrahovat vno\u0159en\u00fd archiv do um\u00edst\u011bn\u00ed mezipam\u011bti v d\u016fsledku {0}
 extract.cache.fail.explanation=Do\u0161lo k chyb\u011b p\u0159i vytv\u00e1\u0159en\u00ed dat mezipam\u011bti pro aplikaci, co\u017e aplikaci br\u00e1n\u00ed ve spr\u00e1vn\u00e9m zpracov\u00e1n\u00ed. 
 extract.cache.fail.useraction=Zkontrolujte hl\u00e1\u0161enou p\u0159\u00ed\u010dinu.
+
+# # {0} A file path.
+extract.cache.null=CWWKM0104E: Syst\u00e9m nem\u016f\u017ee extrahovat vno\u0159en\u00fd archiv {0} do um\u00edst\u011bn\u00ed mezipam\u011bti.
+extract.cache.null.explanation=Do\u0161lo k chyb\u011b p\u0159i vytv\u00e1\u0159en\u00ed dat mezipam\u011bti pro aplikaci, co\u017e aplikaci br\u00e1n\u00ed ve spr\u00e1vn\u00e9m zpracov\u00e1n\u00ed. 
+extract.cache.null.useraction=Zkontrolujte, \u017ee je vno\u0159en\u00fd archiv v platn\u00e9m archivu.
+
+# # {0} A file path.
+extract.secondary.timeout=CWWKM0105E: \u010casov\u00fd limit sekund\u00e1rn\u00ed extrakce pro {0}.
+extract.secondary.timeout.explanation=Vypr\u0161el \u010dasov\u00fd limit soub\u011b\u017en\u00e9ho po\u017eadavku na extrakci vno\u0159en\u00e9ho archivu p\u0159i \u010dek\u00e1n\u00ed na dokon\u010den\u00ed po\u010d\u00e1te\u010dn\u00ed extrakce.
+extract.secondary.timeout.useraction=Zkontrolujte, \u017ee je vno\u0159en\u00fd archiv v platn\u00e9m archivu.
+
+# # {0} A file path
+extract.secondary.failed=CWWKM0106E: Sekund\u00e1rn\u00ed extrakce se nezda\u0159ila pro {0}.
+extract.secondary.failed.explanation=Soub\u011b\u017en\u00fd po\u017eadavek na extrakci vno\u0159en\u00e9ho archivu byl dokon\u010den, ale neextrahoval vno\u0159en\u00fd archiv.
+extract.secondary.failed.useraction=Zkontrolujte, \u017ee je vno\u0159en\u00fd archiv v platn\u00e9m archivu.
+
+# # {0} A file path
+extract.secondary.notfile=CWWKM0107E: Sekund\u00e1rn\u00ed extrakce nevytvo\u0159ila jednoduch\u00fd soubor pro {0}.
+extract.secondary.notfile.explanation=Soub\u011b\u017en\u00fd po\u017eadavek na extrakci vno\u0159en\u00e9ho archivu byl dokon\u010den, ale nebyl vytvo\u0159en jednoduch\u00fd soubor.
+extract.secondary.notfile.useraction=Zkontrolujte, \u017ee je vno\u0159en\u00fd archiv v platn\u00e9m archivu.
+
+# # {0} A file path
+extract.secondary.inconsistent=CWWKM0108E: Nekonzistentn\u00ed \u010dasy sekund\u00e1rn\u00ed extrakce pro {0}.
+extract.secondary.inconsistent.explanation=Soub\u011b\u017en\u00fd po\u017eadavek na extrakci vno\u0159en\u00e9ho archivu byl dokon\u010den, ale byl vytvo\u0159en jin\u00fd soubor, ne\u017e se o\u010dek\u00e1valo.
+extract.secondary.inconsistent.useraction=Zkontrolujte, \u017ee je vno\u0159en\u00fd archiv v platn\u00e9m archivu.
+
+# # {0} A file path
+extract.primary.directory=CWWKM0109E: P\u0159edchoz\u00ed extrakce {0} je adres\u00e1\u0159.
+extract.primary.directory.explanation=Extrakce vno\u0159en\u00e9ho archivu zjistila adres\u00e1\u0159 jako p\u0159edchoz\u00ed extrahovan\u00fd archiv.
+extract.primary.directory.useraction=Vy\u010dist\u011bte a restartujte server, abyste se ujistili, \u017ee nen\u00ed k dispozici p\u0159edchoz\u00ed obsah mezipam\u011bti.
+
+# # {0} A file path
+extract.primary.untyped=CWWKM0110E: P\u0159edchoz\u00ed extrakci {0} nelze zadat.
+extract.primary.untyped.explanation=Extrakce vno\u0159en\u00e9ho archivu zjistila netypov\u00fd soubor jako p\u0159edchoz\u00ed extrahovan\u00fd archiv.
+extract.primary.untyped.useraction=Vy\u010dist\u011bte a restartujte server, abyste se ujistili, \u017ee nen\u00ed k dispozici p\u0159edchoz\u00ed obsah mezipam\u011bti.
+
+# # {0} A file path.
+# # {1} A print name
+reaper.inactive=CWWKM0121W: Nelze otev\u0159\u00edt {0}: Mezipam\u011b\u0165 archivu {1} je neaktivn\u00ed.
+reaper.inactive.explanation=Po\u017eadavek na otev\u0159en\u00ed archivn\u00edho souboru se nezda\u0159il, proto\u017ee mezipam\u011b\u0165 archivn\u00edho souboru nen\u00ed aktivn\u00ed.
+reaper.inactive.useraction=Tato zpr\u00e1va ozna\u010duje intern\u00ed chybu programov\u00e1n\u00ed.
+
+# # {0} A file path
+reaper.unregistered.path=CWWKM0122W: Ignoruje se po\u017eadavek na zav\u0159en\u00ed pro archiv {0}, kter\u00fd nen\u00ed otev\u0159en\u00fd.
+reaper.unregistered.path.explanation=Pro archivn\u00ed soubor, kter\u00fd nebyl otev\u0159en, bylo po\u017eadov\u00e1no zpracov\u00e1n\u00ed zav\u0159en\u00ed archivn\u00edho souboru.
+reaper.unregistered.path.useraction=Tato zpr\u00e1va ozna\u010duje intern\u00ed chybu programov\u00e1n\u00ed.
+
+# # {0} A file path
+reaper.closed.path=CWWKM0123W: Ignoruje se po\u017eadavek na zav\u0159en\u00ed pro archiv {0}, kter\u00fd je ji\u017e zav\u0159en\u00fd.
+reaper.closed.path.explanation=Pro archivn\u00ed soubor, kter\u00fd byl ji\u017e zav\u0159en, bylo po\u017eadov\u00e1no zpracov\u00e1n\u00ed zav\u0159en\u00ed archivn\u00edho souboru.
+reaper.closed.path.useraction=Tato zpr\u00e1va ozna\u010duje intern\u00ed chybu programov\u00e1n\u00ed.
+
+# # {0} A file path
+reaper.pending.path=CWWKM0243W: Ignoruje se po\u017eadavek na zav\u0159en\u00ed pro archiv {0}, kter\u00fd ji\u017e m\u00e1 nevy\u0159\u00edzen\u00e9 uzav\u0159en\u00ed {0}.
+reaper.pending.path.explanation=Bylo po\u017eadov\u00e1no zpracov\u00e1n\u00ed zav\u0159en\u00ed archivn\u00edho souboru pro archivn\u00ed soubor, kter\u00fd ji\u017e m\u00e1 nevy\u0159\u00edzen\u00e9 uzav\u0159en\u00ed.
+reaper.pending.path.useraction=Tato zpr\u00e1va ozna\u010duje intern\u00ed chybu programov\u00e1n\u00ed.
+
+# # {0} A file path
+# # {1} An integer representing a file length
+# # {2} An integer representing a file length
+reaper.unexpected.length.change=CWWKM0125W: Archiv {0}: Aktualizovat d\u00e9lku z {1} do {2}.
+reaper.unexpected.length.change.explanation=P\u0159i otev\u0159en\u00ed archivu byla na archivn\u00ed soubor aplikace provedena neo\u010dek\u00e1van\u00e1 aktualizace. K tomu obvykle doch\u00e1z\u00ed proto, \u017ee byla provedena dynamick\u00e1 aktualizace soubor\u016f aplikace.
+reaper.unexpected.length.change.useraction=Restartujte server. P\u0159i aktualizaci soubor\u016f aplikace po\u010dkejte na uveden\u00ed serveru do klidov\u00e9ho stavu a vy\u010dkejte alespo\u0148 p\u016fl sekundy, aby bylo mo\u017en\u00e9 soubory aplikace zav\u0159\u00edt.
+
+# # {0} A file path
+# # {1} An integer representing a last modified time
+# # {2} An integer representing a last modified time
+reaper.unexpected.lastmodified.change=CWWKM0126W: Archiv {0}: Aktualizace naposledy zm\u011bn\u011bna z {1} na {2}.
+reaper.unexpected.lastmodified.change.explanation=P\u0159i otev\u0159en\u00ed archivu byla na archivn\u00ed soubor aplikace provedena neo\u010dek\u00e1van\u00e1 aktualizace. K tomu obvykle doch\u00e1z\u00ed proto, \u017ee byla provedena dynamick\u00e1 aktualizace soubor\u016f aplikace.
+reaper.unexpected.lastmodified.change.useraction=Restartujte server. P\u0159i aktualizaci soubor\u016f aplikace po\u010dkejte na uveden\u00ed serveru do klidov\u00e9ho stavu a vy\u010dkejte alespo\u0148 p\u016fl sekundy, aby bylo mo\u017en\u00e9 soubory aplikace zav\u0159\u00edt.
+
+# # {0} A file path
+reaper.reopen.active=CWWKM0127W: Znovu otev\u0159\u00edt {0}
+reaper.reopen.active.explanation=Neo\u010dek\u00e1van\u00e1 zm\u011bna zp\u016fsobila, \u017ee se m\u00e1 znovu otev\u0159\u00edt otev\u0159en\u00fd archivn\u00ed soubor aplikace. Server se pokusil z\u00edskat aktualizovan\u00fd obsah archivn\u00edho souboru, ale nemus\u00ed m\u00edt pln\u011b aktualizovan\u00fd intern\u00ed v\u00fdpis obsahu archivu.
+reaper.reopen.active.useraction=Restartujte server. P\u0159i aktualizaci soubor\u016f aplikace po\u010dkejte na uveden\u00ed serveru do klidov\u00e9ho stavu a vy\u010dkejte alespo\u0148 p\u016fl sekundy, aby bylo mo\u017en\u00e9 soubory aplikace zav\u0159\u00edt.

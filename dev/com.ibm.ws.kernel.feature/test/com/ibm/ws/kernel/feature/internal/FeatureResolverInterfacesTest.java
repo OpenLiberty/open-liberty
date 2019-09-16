@@ -40,6 +40,7 @@ import org.osgi.framework.VersionRange;
 import com.ibm.ws.kernel.feature.AppForceRestart;
 import com.ibm.ws.kernel.feature.ProcessType;
 import com.ibm.ws.kernel.feature.Visibility;
+import com.ibm.ws.kernel.feature.provisioning.ActivationType;
 import com.ibm.ws.kernel.feature.provisioning.FeatureResource;
 import com.ibm.ws.kernel.feature.provisioning.HeaderElementDefinition;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
@@ -572,6 +573,11 @@ public class FeatureResolverInterfacesTest {
 
         @Override
         public Integer getRequireJava() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public ActivationType getActivationType() {
             throw new UnsupportedOperationException();
         }
 

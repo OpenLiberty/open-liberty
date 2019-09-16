@@ -107,7 +107,7 @@ NO_VALID_TRANSACTION_CONTEXT_J2CA0040.explanation=Bei der Verarbeitung im Verbin
 NO_VALID_TRANSACTION_CONTEXT_J2CA0040.useraction=CMSG0002
 
 # --------------------------------
-POOL_MANAGER_EXCP_CCF2_0001_J2CA0045=J2CA0045E: Die Verbindung ist beim Aufruf der Methode {0} f\u00fcr Ressource {1} nicht verf\u00fcgbar.
+POOL_MANAGER_EXCP_CCF2_0001_J2CA0045=J2CA0045E: Die Verbindung ist beim Aufruf der Methode {0} f\u00fcr Ressource {1} nicht verf\u00fcgbar. Das Zeitlimit wurde nach {2} Millisekunde(n) bei {3} verbleibenden wartenden Anforderungen und insgesamt {4} momentan verwendeten Verbindungen \u00fcberschritten.
 POOL_MANAGER_EXCP_CCF2_0001_J2CA0045.explanation=Die zul\u00e4ssige Wartezeit auf eine Verbindung wurde \u00fcberschritten. Es wurde eine Ausnahme vom Typ ConnectionWaitTimeoutException erstellt.
 POOL_MANAGER_EXCP_CCF2_0001_J2CA0045.useraction=Rekonfigurieren Sie den Verbindungspool. Sie k\u00f6nnen die maximale Anzahl der Verbindungen erh\u00f6hen oder die Wartezeit f\u00fcr Verbindungen heraufsetzen, um diesen Fehler zu vermeiden.
 

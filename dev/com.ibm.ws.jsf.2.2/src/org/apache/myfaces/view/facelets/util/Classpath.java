@@ -88,20 +88,7 @@ public final class Classpath
             {
                 if (conn instanceof JarURLConnection)
                 {
-                    try
-                    {
                         jar = ((JarURLConnection) conn).getJarFile();
-                    }
-                    
-                    catch (Throwable e)
-                    {
-                        // This can happen if the classloader provided us a URL that it thinks exists
-                        // but really doesn't.  In particular, if a JAR contains META-INF/MANIFEST.MF
-                        // but not META-INF/, some classloaders may incorrectly report that META-INF/
-                        // exists and we'll end up here.  Just ignore this case.
-                        
-                        continue;
-                    }
                 }
                 else
                 {
@@ -119,6 +106,14 @@ public final class Classpath
                         _searchFromURL(result, prefix, suffix, url);
                     }
                 }    
+            }
+            catch (Throwable e)
+            { 
+                // This can happen if the classloader provided us a URL that it thinks exists
+                // but really doesn't.  In particular, if a JAR contains META-INF/MANIFEST.MF
+                // but not META-INF/, some classloaders may incorrectly report that META-INF/
+                // exists and we'll end up here.  Just ignore this case.
+                continue;
             }
             finally 
             {

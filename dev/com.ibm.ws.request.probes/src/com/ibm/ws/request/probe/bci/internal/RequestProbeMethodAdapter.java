@@ -23,7 +23,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
 public class RequestProbeMethodAdapter extends AdviceAdapter {
-    private static final TraceComponent tc = Tr.register(RequestProbeMethodAdapter.class);
+    private static final TraceComponent tc = Tr.register(RequestProbeMethodAdapter.class,"requestProbe", "com.ibm.ws.request.probe.internal.resources.LoggingMessages");
 
     private final MethodVisitor visitor;
 

@@ -32,8 +32,7 @@
 7501=Re\u017eim ov\u011b\u0159ov\u00e1n\u00ed objekt\u016f typu bean je u objektu marshaller {0} nastaven na neplatnou hodnotu "{1}".
 
 7510=U objektu bean u objektu marshaller {0} byla poru\u0161ena omezen\u00ed:
+{1}{2}
 
 7525=Nelze prov\u00e9st anal\u00fdzu vlastnosti {0}, proto\u017ee je anotov\u00e1na jako @NotNull a sou\u010dasn\u011b m\u00e1 atribut "xs:nillable=true".
-
-{1}{2}=
 

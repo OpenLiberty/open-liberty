@@ -37,18 +37,9 @@ public class CollectionsTest extends FATServletClient {
 
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-        .andWith(new FeatureReplacementAction()
-                 .withID("mpRestClient-1.1")
-                 .addFeature("mpRestClient-1.1")
-                 .removeFeature("mpRestClient-1.0")
-                 .removeFeature("mpRestClient-1.2")
-                 .forServers(SERVER_NAME))
-        .andWith(new FeatureReplacementAction()
-                 .withID("mpRestClient-1.2")
-                 .addFeature("mpRestClient-1.2")
-                 .removeFeature("mpRestClient-1.0")
-                 .removeFeature("mpRestClient-1.1")
-                 .forServers(SERVER_NAME));
+        .andWith(FATSuite.MP_REST_CLIENT("1.1", SERVER_NAME))
+        .andWith(FATSuite.MP_REST_CLIENT("1.2", SERVER_NAME))
+        .andWith(FATSuite.MP_REST_CLIENT("1.3", SERVER_NAME));
 
     private static final String appName = "collectionsApp";
     public static final String JOHNZON_IMPL = "publish/shared/resources/johnzon/";

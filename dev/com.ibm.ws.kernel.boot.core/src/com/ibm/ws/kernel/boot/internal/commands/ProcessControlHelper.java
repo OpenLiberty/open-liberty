@@ -30,6 +30,7 @@ import com.ibm.ws.kernel.boot.internal.BootstrapConstants;
 import com.ibm.ws.kernel.boot.internal.FileShareLockProcessStatusImpl;
 import com.ibm.ws.kernel.boot.internal.PSProcessStatusImpl;
 import com.ibm.ws.kernel.boot.internal.ProcessStatus;
+import com.ibm.ws.kernel.boot.internal.ProcessStatus.State;
 import com.ibm.ws.kernel.boot.internal.ServerLock;
 
 /**
@@ -139,7 +140,8 @@ public class ProcessControlHelper {
 
         for (int i = 0; i < BootstrapConstants.MAX_POLL_ATTEMPTS; i++) {
             try {
-                if (!ps.isPossiblyRunning()) {
+                State processRunning = ps.isPossiblyRunning();
+                if ((processRunning == State.NO) || (processRunning == State.UNDETERMINED)) {
                     return ReturnCode.OK;
                 }
 
@@ -261,6 +263,7 @@ public class ProcessControlHelper {
             }
             rc = ReturnCode.SERVER_UNKNOWN_STATUS;
         } else {
+            rc = ReturnCode.ERROR_SERVER_START;
             System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("info.serverStartException"), serverName));
         }
 

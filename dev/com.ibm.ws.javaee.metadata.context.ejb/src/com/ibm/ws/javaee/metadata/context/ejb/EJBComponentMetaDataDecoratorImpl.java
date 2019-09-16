@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,19 +26,24 @@ import com.ibm.ws.runtime.metadata.ComponentMetaData;
 @Component(service = ComponentMetaDataDecorator.class, configurationPolicy = ConfigurationPolicy.IGNORE)
 public class EJBComponentMetaDataDecoratorImpl implements ComponentMetaDataDecorator {
     @Activate
-    protected void activate(ComponentContext context) {}
+    protected void activate(ComponentContext context) {
+    }
 
     @Deactivate
-    protected void deactivate(ComponentContext context) {}
+    protected void deactivate(ComponentContext context) {
+    }
 
     /**
      * @see com.ibm.ws.javaee.metadata.context.ComponentMetaDataDecorator#decorate(com.ibm.ws.runtime.metadata.ComponentMetaData)
      */
     @Override
     public ComponentMetaData decorate(ComponentMetaData metadata) {
-        if (metadata instanceof EJBComponentMetaData)
-            metadata = new EJBComponentMetaDataWrapper((EJBComponentMetaData) metadata);
-
-        return metadata;
+        if (metadata instanceof EJBComponentMetaDataWrapper)
+            return metadata;
+        else if (metadata instanceof EJBComponentMetaData)
+            return new EJBComponentMetaDataWrapper((EJBComponentMetaData) metadata);
+        else
+            return metadata;
     }
+
 }

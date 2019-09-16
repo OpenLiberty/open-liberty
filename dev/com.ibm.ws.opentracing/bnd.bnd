@@ -33,10 +33,7 @@ Import-Package: \
 Export-Package: \
 	com.ibm.ws.opentracing;version=1.0,\
 	com.ibm.ws.opentracing.filters;version=1.0,\
-	com.ibm.ws.opentracing.tracer;version=1.0;provide=true,\
-	io.opentracing;version=0.30.0,\
-	io.opentracing.propagation;version=0.30.0,\
-	io.opentracing.tag;version=0.30.0
+	com.ibm.ws.opentracing.tracer;version=1.0;provide=true
                 
 Private-Package: com.ibm.ws.opentracing.resources
 

@@ -14,8 +14,12 @@ package com.ibm.ws.kernel.boot.internal;
  * Monitors the status of a running process.
  */
 public interface ProcessStatus {
+    public enum State {
+        YES, NO, UNDETERMINED
+    }
+
     /**
      * Returns true if the process is possibly running.
      */
-    boolean isPossiblyRunning();
+    State isPossiblyRunning();
 }

@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.StringTokenizer;
 
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.jsp.Constants;
 import com.ibm.ws.jsp.JspCoreException;
 
@@ -249,6 +250,7 @@ public class JspEncodingScanner
         }
     }
     
+    @Trivial
     private int readCharacter() throws IOException {
         int character = jspReader.read();
         charCount++;        

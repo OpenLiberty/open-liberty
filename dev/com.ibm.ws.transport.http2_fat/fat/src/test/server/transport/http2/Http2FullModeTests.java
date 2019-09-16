@@ -743,10 +743,11 @@ public class Http2FullModeTests extends FATServletClient {
      *
      * @throws Exception
      */
-    @Test
-    public void testHeaderFrameAfterHeaderFrameWithEndOfStream() throws Exception {
-        runTest(defaultServletPath, testName.getMethodName());
-    }
+    // Moved to tracing, build break 258327
+    //@Test
+    //public void testHeaderFrameAfterHeaderFrameWithEndOfStream() throws Exception {
+    //    runTest(defaultServletPath, testName.getMethodName());
+    //}
 
     /**
      * Test Coverage: send DATA frame before END_HEADERS has been sent.
@@ -1730,6 +1731,17 @@ public class Http2FullModeTests extends FATServletClient {
      */
     @Test
     public void testExceedMaxConcurrentStreams() throws Exception {
+        runTest(defaultServletPath, testName.getMethodName());
+    }
+
+    /**
+     * Test Coverage: Send a POST request with body data, but no content-length header
+     * Test Outcome: The server response contains a string from the request body
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testSendPostRequestWithBody() throws Exception {
         runTest(defaultServletPath, testName.getMethodName());
     }
 }

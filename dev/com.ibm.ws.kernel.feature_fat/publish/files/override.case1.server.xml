@@ -1,0 +1,10 @@
+<server>
+
+    <include location="../fatTestPorts.xml"/>
+    
+       <!-- Enable features -->
+    <featureManager>
+        <feature>override.systemFeature.requiresJavaxRMI-1.0</feature>
+    </featureManager>
+    
+</server>

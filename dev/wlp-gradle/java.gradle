@@ -1,0 +1,86 @@
+/*******************************************************************************
+ * Copyright (c) 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+/**
+ * Apply Java plugin to all subprojects.
+ * See: https://docs.gradle.org/current/userguide/java_plugin.html
+ */
+subprojects {
+  apply plugin: 'java'
+
+  test {
+    ignoreFailures = true
+    //  A number of tests make heavy use of java.util.Random, which can drain the entropy pool of /dev/random on Linux when
+    // running on OpenJDK-based distributions. This results in large delays as tests wait for the entropy pool to be repopulated.
+    // The fix is thus to ensure we use the pseudorandom entropy pool (/dev/urandom) (which is also valid for Windows/zOS).
+    jvmArgs '-Djava.security.egd=file:///dev/urandom'
+  }
+  
+  tasks.withType(JavaCompile) {
+    doFirst {
+      // javac 12 has a min target of 1.7, so upgrade any 1.6 projects to 1.7 if running on Java 12
+      if (JavaVersion.current().isJava12Compatible()) {
+        if ('1.6'.equals(sourceCompatibility)) {
+          sourceCompatibility = "1.7"
+          targetCompatibility = "1.7"
+        }
+      }
+      // For Java 9+ builds, set the --release compiler flag to keep bootclasspath in sync/ 
+      if(JavaVersion.current().isJava9Compatible() && !'off'.equals(bnd('javac.args.release'))) {
+        def release = sourceCompatibility
+        if(sourceCompatibility.startsWith('1.'))
+          release = sourceCompatibility.substring(2);
+        if('current'.equals(bnd('javac.args.release')))
+          release = JavaVersion.current().getMajorVersion() 
+        options.compilerArgs.addAll([ '--release', release])
+      }
+    }
+  }
+
+  tasks.withType(Javadoc) {
+    doFirst {
+      // Starting with JDK 9.0.4 the javadoc compiler started to striclty enforce proper HTML
+      // syntax and other breaking changes.  Fixing all of these ocurrances would take far too
+      // long and be a poor use of time, so we will disable these checks for JDK9 and up
+      if(JavaVersion.current().isJava9Compatible()) {
+        options.addStringOption('Xdoclint:none', '-quiet')
+      }
+    }
+  }
+
+}
+
+/**
+ * Generate a HTML test report of all unit test results.
+ * See: https://docs.gradle.org/current/dsl/org.gradle.api.tasks.testing.TestReport.html
+ */
+task testReport(type: TestReport) {
+  // Run after all `test` tasks, so no test results are missing
+  mustRunAfter subprojects*.test
+  destinationDir = cnf.file('generated/testReports/allUnitTests')
+
+  // Include the results from the `test` task in all subprojects
+  reportOn subprojects*.test
+
+  doLast {
+    // Save test count properties to a file, so they can be loaded by subsequent builds
+    userProps.setProperty('tests.total.failed', failedTestCountTotal.toString())
+    userProps.setProperty('tests.total.successful', successfulTestCountTotal.toString())
+
+    File propsFile = new File('generated.properties')
+    userProps.store(propsFile.newWriter(), null)
+  }
+}
+
+task testResults {
+  dependsOn subprojects.test
+  dependsOn testReport
+}

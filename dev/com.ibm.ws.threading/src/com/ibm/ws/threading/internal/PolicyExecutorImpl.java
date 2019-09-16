@@ -36,6 +36,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.threading.CancellableStage;
 import com.ibm.ws.threading.PolicyExecutor;
 import com.ibm.ws.threading.PolicyTaskCallback;
 import com.ibm.ws.threading.PolicyTaskFuture;
@@ -1244,8 +1245,8 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     }
 
     @Override
-    public PolicyTaskFuture<Void> submit(AtomicReference<Future<?>> completableFutureRef, Runnable task) {
-        PolicyTaskFutureImpl<Void> policyTaskFuture = new PolicyTaskFutureImpl<Void>(this, task, completableFutureRef, startTimeout);
+    public PolicyTaskFuture<Void> submit(CancellableStage cancellable, Runnable task) {
+        PolicyTaskFutureImpl<Void> policyTaskFuture = new PolicyTaskFutureImpl<Void>(this, task, cancellable, startTimeout);
         enqueue(policyTaskFuture, maxWaitForEnqueueNS.get(), null);
         return policyTaskFuture;
     }

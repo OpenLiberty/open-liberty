@@ -178,6 +178,9 @@
         <AD name="%http.incomingBodyBufferSize" description="%http.incomingBodyBufferSize.desc"
             id="incomingBodyBufferSize" required="false" type="Integer" min="1024" max="1048576" default="32768" />
             
+        <AD name="%http.throwIOEForInboundConnections" description="%http.throwIOEForInboundConnections.desc"
+            id="ThrowIOEForInboundConnections" required="false" type="Boolean"/>   
+            
         <AD name="%http2.connectionIdleTimeout" description="%http2.connectionIdleTimeout.desc"
 			id="http2ConnectionIdleTimeout" required="false" type="String" ibm:type="duration(s)" min="0" default="0" />
 
@@ -204,7 +207,7 @@
          ibm:alias="remoteIp"> 
          
          <AD name="%http.remoteip.proxies" description="%http.remoteip.proxies.desc"
-         id="proxies" required="false" type="String" default="10.\\d{1\,3}.\\d{1\,3}.\\d{1\,3}|192.168.\\d{1\,3}.\\d{1\,3}|169.254.\\d{1\,3}.\\d{1\,3}|127.\\d{1\,3}.\\d{1\,3}.\\d{1\,3}|172.1[6-9]{1}.\\d{1\,3}.\\d{1\,3}|172.2[0-9]{1}.\\d{1\,3}.\\d{1\,3}|172.3[0-1]{1}.\\d{1\,3}.\\d{1\,3}|0:0:0:0:0:0:0:1|::1"/>
+         id="proxies" required="false" type="String" default="10\\.\\d{1\,3}\\.\\d{1\,3}\\.\\d{1\,3}|192\\.168\\.\\d{1\,3}\\.\\d{1\,3}|169\\.254\\.\\d{1\,3}\\.\\d{1\,3}|127\\.\\d{1\,3}\\.\\d{1\,3}\\.\\d{1\,3}|172\\.1[6-9]{1}\\.\\d{1\,3}\\.\\d{1\,3}|172\\.2[0-9]{1}\\.\\d{1\,3}\\.\\d{1\,3}|172\\.3[0-1]{1}\\.\\d{1\,3}\\.\\d{1\,3}|0:0:0:0:0:0:0:1|::1"/>
          
          <AD name="%http.remoteip.useRemoteIpInAccessLog" description="%http.remoteip.useRemoteIpInAccessLog.desc"
          id="useRemoteIpInAccessLog" required="false" type="Boolean" default="false" />
@@ -230,6 +233,9 @@
             
         <AD name="%dispatcher.trustedHeaderOrigin" description="%dispatcher.trustedHeaderOrigin.desc"
             id="trustedHeaderOrigin" required="false" type="String" default="*" cardinality="2147483647" />
+
+         <AD name="%dispatcher.trustedSensitiveHeaderOrigin" description="%dispatcher.trustedSensitiveHeaderOrigin.desc"
+            id="trustedSensitiveHeaderOrigin" required="false" type="String" default="none" cardinality="2147483647" />
     </OCD>
 
     <Designate pid="com.ibm.ws.http.dispatcher">

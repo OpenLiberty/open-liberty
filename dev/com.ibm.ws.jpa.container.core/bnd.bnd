@@ -18,6 +18,7 @@ publish.wlp.jar.disabled: true
 instrument.disabled: true
 
 -buildpath: \
+	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
 	com.ibm.websphere.javaee.persistence.2.0;version=latest,\
 	com.ibm.ws.logging.core,\
 	com.ibm.ws.container.service;version=latest,\

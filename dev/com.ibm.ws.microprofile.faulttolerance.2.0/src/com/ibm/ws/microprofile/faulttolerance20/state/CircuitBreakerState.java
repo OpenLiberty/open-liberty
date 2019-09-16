@@ -44,6 +44,8 @@ public interface CircuitBreakerState {
      * This may result in the circuit breaker changing its state.
      * <p>
      * If this method returns true, an execution must be attempted and the result recorded with a call to {@link #recordResult(MethodResult)}.
+     * <p>
+     * If this method returns false, {@link #recordResult(MethodResult)} must not be called.
      *
      * @return {@code true} if the circuit breaker permits an execution at this time, {@code false} otherwise.
      */
@@ -51,6 +53,8 @@ public interface CircuitBreakerState {
 
     /**
      * Record the result of an execution on the circuit breaker
+     * <p>
+     * Must be called once for every time that {@link #requestPermissionToExecute()} returns {@code true}.
      *
      * @param result the result the execution
      */

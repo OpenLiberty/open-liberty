@@ -40,7 +40,6 @@ import com.ibm.websphere.simplicity.config.wim.Realm;
 import com.ibm.websphere.simplicity.config.wim.RealmPropertyMapping;
 import com.ibm.websphere.simplicity.config.wim.SearchResultsCache;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.apacheds.EmbeddedApacheDS;
 import com.ibm.ws.security.registry.test.UserRegistryServletConnection;
 
 import componenttest.custom.junit.runner.FATRunner;
@@ -60,7 +59,6 @@ public class FATTestIDS_allIbmGroups {
     private static final Class<?> c = FATTestIDS_allIbmGroups.class;
     private static UserRegistryServletConnection servlet;
     private static ServerConfiguration emptyConfiguration = null;
-    private static EmbeddedApacheDS ldapServer = null;
 
     private static final String LDAP_PARTITION = "dc=domain,dc=com";
     private static final String USER_1 = "user1";
@@ -89,13 +87,6 @@ public class FATTestIDS_allIbmGroups {
                 libertyServer.stopServer();
             } catch (Exception e) {
                 Log.error(c, "teardown", e, "Liberty server threw error while stopping. " + e.getMessage());
-            }
-        }
-        if (ldapServer != null) {
-            try {
-                ldapServer.stopService();
-            } catch (Exception e) {
-                Log.error(c, "teardown", e, "LDAP server threw error while stopping. " + e.getMessage());
             }
         }
 
@@ -194,7 +185,7 @@ public class FATTestIDS_allIbmGroups {
              * Configure group membership.
              */
             GroupProperties groupProperties = new GroupProperties();
-            groupProperties.setMemberAttribute(new MemberAttribute(null, "ibm-allmembers", "groupofnames", "all"));
+            groupProperties.getMemberAttributes().add(new MemberAttribute(null, "ibm-allmembers", "groupofnames", "all"));
             groupProperties.setMembershipAttribute(new MembershipAttribute("ibm-allgroups", "all"));
             ldap.setGroupProperties(groupProperties);
         }

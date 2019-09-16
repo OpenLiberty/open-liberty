@@ -10,9 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.appConfig.dynamicSources.test;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
 import javax.servlet.annotation.WebServlet;
@@ -200,7 +199,7 @@ public class DynamicSourcesTestServlet extends FATServlet {
             Thread.sleep(ConfigConstants.MINIMUM_DYNAMIC_REFRESH_INTERVAL + 1000);
 
             // Check that config source is currently being refreshed
-            assertThat(s1.lastRefresh, not(equalTo(lastRefresh)));
+            assertFalse("Config Source was not refreshed", s1.lastRefresh == lastRefresh);
 
         } finally {
             ConfigProviderResolver.instance().releaseConfig(config);
@@ -209,7 +208,7 @@ public class DynamicSourcesTestServlet extends FATServlet {
         // Check that now that config has been closed, the config source is no longer being refreshed
         long lastRefresh = s1.lastRefresh;
         Thread.sleep(1500);
-        assertThat(s1.lastRefresh, equalTo(lastRefresh));
+        assertEquals("Config Source was still being refreshed", s1.lastRefresh, lastRefresh);
 
         // Check that the config itself is actually closed
         try {
@@ -219,5 +218,4 @@ public class DynamicSourcesTestServlet extends FATServlet {
             // Expected
         }
     }
-
 }

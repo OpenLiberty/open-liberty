@@ -32,8 +32,7 @@
 7501=Le mode de validation de bean sur {0}marshaller est d\u00e9fini sur une valeur interdite, "{1}".
 
 7510=Contraintes viol\u00e9es sur le bean {0}marshalled :
+{1}{2}
 
 7525=Impossible de faire une analyse syntaxique de la propri\u00e9t\u00e9 {0}, car elle est annot\u00e9e avec @NotNull et comporte l''attribut "xs:nillable=true".
-
-{1}{2}=
 

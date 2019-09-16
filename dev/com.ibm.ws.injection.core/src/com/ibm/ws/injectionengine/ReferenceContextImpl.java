@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2018 IBM Corporation and others.
+ * Copyright (c) 2009, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -135,6 +135,7 @@ public class ReferenceContextImpl implements ReferenceContext {
      * Set of all classes that have been processed.
      */
     private final Set<Class<?>> ivProcessedInjectionClasses = new HashSet<Class<?>>();
+    private static final int svInjClassMapCacheSize = 512;
 
     /**
      * Set of all injection bindings that have been processed.
@@ -973,7 +974,9 @@ public class ReferenceContextImpl implements ReferenceContext {
 
             // Now that metadata has processed successfully, add all the classes
             // to the list of processed classes.
-            ivProcessedInjectionClasses.addAll(injectionClasses);
+            if (ivProcessedInjectionClasses.size() <= svInjClassMapCacheSize) {
+                ivProcessedInjectionClasses.addAll(injectionClasses);
+            }
         }
 
         if (isTraceOn && tc.isDebugEnabled())
