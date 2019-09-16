@@ -22,13 +22,10 @@ package com.ibm.ws.http.channel.h2internal;
 public class H2RateState {
 
     private static final int maxReadControlFrameCount = 10000;
-    private static final int maxWriteControlFrameCount = 10000;
     private static final int maxResetFrameCount = 5000;
     private static final int maxEmptyFrameCount = 500;
-
-    private Long controlFrameCount = 0L;
-    private Long writeControlFrameCount = 0L;
-    private int resetCount = 0;
+    private volatile long controlFrameCount = 0L;
+    private volatile int resetCount = 0;
 
     public synchronized void setStreamReset() {
         resetCount++;
@@ -42,20 +39,11 @@ public class H2RateState {
         controlFrameCount = controlFrameCount / 2;
     }
 
-    public synchronized void incrementWriteControlFrameCount() {
-        writeControlFrameCount++;
-    }
-
-    public synchronized void incrementWriteNonControlFrameCount() {
-        writeControlFrameCount = writeControlFrameCount / 2;
-    }
-
     /**
      * @return true if the connection is considered to be misbehaving
      */
     public synchronized boolean isControlRatioExceeded() {
         if (controlFrameCount > maxReadControlFrameCount
-            || writeControlFrameCount > maxWriteControlFrameCount 
             || resetCount > maxResetFrameCount) {
             return true;
         }

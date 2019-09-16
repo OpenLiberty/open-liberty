@@ -541,14 +541,9 @@ public class H2StreamProcessor {
 
                     // check to see if this connection is misbehaving
                     if (addFrame == null || addFrame == ADDITIONAL_FRAME.FIRST_TIME) {
-                        if (isControlFrame(frame)) {
-                            h2rs.incrementWriteControlFrameCount();
-                        } else {
-                            h2rs.incrementWriteNonControlFrameCount();
-                        }
                         if (h2rs.isControlRatioExceeded()) {
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                Tr.debug(tc, "processNextFrame: too many control frames sent, sending GOAWAY");
+                                Tr.debug(tc, "processNextFrame: too many control processed, sending GOAWAY");
                             }
                             addFrame = ADDITIONAL_FRAME.GOAWAY;
                             addFrameException = new ProtocolException("too many control frames generated");
