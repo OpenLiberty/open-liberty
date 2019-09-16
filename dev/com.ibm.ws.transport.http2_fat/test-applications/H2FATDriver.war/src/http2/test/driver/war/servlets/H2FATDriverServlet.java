@@ -5061,7 +5061,8 @@ public class H2FATDriverServlet extends FATServlet {
         }
         String testName = "testPingStress";
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
-        Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
+        Http2Client h2Client = new Http2Client(request.getParameter("hostName"), Integer.parseInt(request.getParameter("port")), blockUntilConnectionIsDone, 120000);
+        h2Client.doNotWaitForAck();
         h2Client.addExpectedFrame(DEFAULT_SERVER_SETTINGS_FRAME);
 
         h2Client.sendUpgradeHeader(HEADERS_ONLY_URI);
@@ -5090,7 +5091,7 @@ public class H2FATDriverServlet extends FATServlet {
         }
         String testName = "testPriorityStress";
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
-        Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
+        Http2Client h2Client = new Http2Client(request.getParameter("hostName"), Integer.parseInt(request.getParameter("port")), blockUntilConnectionIsDone, 90000);
         h2Client.addExpectedFrame(DEFAULT_SERVER_SETTINGS_FRAME);
 
         h2Client.sendUpgradeHeader(HEADERS_ONLY_URI);
@@ -5122,7 +5123,7 @@ public class H2FATDriverServlet extends FATServlet {
         }
         String testName = "testResetStress";
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
-        Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
+        Http2Client h2Client = new Http2Client(request.getParameter("hostName"), Integer.parseInt(request.getParameter("port")), blockUntilConnectionIsDone, 90000);
         h2Client.addExpectedFrame(DEFAULT_SERVER_SETTINGS_FRAME);
 
         h2Client.sendUpgradeHeader(HEADERS_ONLY_URI);
@@ -5155,7 +5156,7 @@ public class H2FATDriverServlet extends FATServlet {
         }
         String testName = "testEmptyFrameStress";
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
-        Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
+        Http2Client h2Client = new Http2Client(request.getParameter("hostName"), Integer.parseInt(request.getParameter("port")), blockUntilConnectionIsDone, 90000);
         h2Client.addExpectedFrame(DEFAULT_SERVER_SETTINGS_FRAME);
 
         h2Client.sendUpgradeHeader(HEADERS_ONLY_URI);
@@ -5193,7 +5194,7 @@ public class H2FATDriverServlet extends FATServlet {
         }
         String testName = "testEmptyFrameStress";
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
-        Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
+        Http2Client h2Client = new Http2Client(request.getParameter("hostName"), Integer.parseInt(request.getParameter("port")), blockUntilConnectionIsDone, 90000);
         h2Client.addExpectedFrame(DEFAULT_SERVER_SETTINGS_FRAME);
 
         h2Client.sendUpgradeHeader(HEADERS_ONLY_URI);
@@ -5234,7 +5235,7 @@ public class H2FATDriverServlet extends FATServlet {
         }
         String testName = "testSettingsFrameStress";
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
-        Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
+        Http2Client h2Client = new Http2Client(request.getParameter("hostName"), Integer.parseInt(request.getParameter("port")), blockUntilConnectionIsDone, 120000);
         h2Client.doNotWaitForAck();
         h2Client.addExpectedFrame(DEFAULT_SERVER_SETTINGS_FRAME);
 
