@@ -10,20 +10,92 @@
  *******************************************************************************/
 
 configurations {
+  caffeine
+  infinispanCommons
+  infinispanCore
   infinispanJCache
+  infinispanJCacheCommons
+  infinispanProtoStream
+  jbossLogging
+  reactiveStreams
+  rxjava
 }
 
 // Define G:A:V coordinates of each dependency
 dependencies {
+  caffeine 'com.github.ben-manes.caffeine:caffeine:2.8.0'
+  infinispanCommons 'org.infinispan:infinispan-commons:10.0.0.CR1'
+  infinispanCore 'org.infinispan:infinispan-core:10.0.0.CR1'
   infinispanJCache 'org.infinispan:infinispan-jcache:10.0.0.CR1'
+  infinispanJCacheCommons 'org.infinispan:infinispan-jcache-commons:10.0.0.CR1'
+  infinispanProtoStream 'org.infinispan.protostream:protostream:4.3.0.Alpha11'
+  jbossLogging 'org.jboss.logging:jboss-logging:3.3.2.Final'
+  reactiveStreams 'org.reactivestreams:reactive-streams:1.0.2'
+  rxjava 'io.reactivex.rxjava2:rxjava:2.2.6'
+}
+
+task addCaffeineToSharedDir(type: Copy) {
+  from configurations.caffeine
+  into new File(autoFvtDir, 'publish/shared/resources/infinispan10')
+  rename 'caffeine-*.jar', 'caffeine.jar'
+}
+
+task addInfinispanCommonsToSharedDir(type: Copy) {
+  from configurations.infinispanCommons
+  into new File(autoFvtDir, 'publish/shared/resources/infinispan10')
+  rename 'infinispan-commons-10.*.jar', 'infinispan-commons.jar'
+}
+
+task addInfinispanCoreToSharedDir(type: Copy) {
+  from configurations.infinispanCore
+  into new File(autoFvtDir, 'publish/shared/resources/infinispan10')
+  rename 'infinispan-core-10.*.jar', 'infinispan-core.jar'
 }
 
 task addInfinispanJCacheToSharedDir(type: Copy) {
   from configurations.infinispanJCache
-  into new File(autoFvtDir, 'publish/shared/resources/infinispan')
-  rename 'infinispan-jcache-*.jar', 'infinispan-jcache.jar'
+  into new File(autoFvtDir, 'publish/shared/resources/infinispan10')
+  rename 'infinispan-jcache-10.*.jar', 'infinispan-jcache.jar'
+}
+
+task addInfinispanJCacheCommonsToSharedDir(type: Copy) {
+  from configurations.infinispanJCacheCommons
+  into new File(autoFvtDir, 'publish/shared/resources/infinispan10')
+  rename 'infinispan-jcache-commons-10.*.jar', 'infinispan-jcache-commons.jar'
+}
+
+task addInfinispanProtoStreamToSharedDir(type: Copy) {
+  from configurations.infinispanProtoStream
+  into new File(autoFvtDir, 'publish/shared/resources/infinispan10')
+  rename 'protostream-*.jar', 'protostream.jar'
+}
+
+task addJbossLoggingToSharedDir(type: Copy) {
+  from configurations.jbossLogging
+  into new File(autoFvtDir, 'publish/shared/resources/infinispan10')
+  rename 'jboss-logging-*.jar', 'jboss-logging.jar'
+}
+
+task addReactiveStreamsToSharedDir(type: Copy) {
+  from configurations.reactiveStreams
+  into new File(autoFvtDir, 'publish/shared/resources/infinispan10')
+  rename 'reactive-streams-*.jar', 'reactive-streams.jar'
+}
+
+task addRxJavaToSharedDir(type: Copy) {
+  from configurations.rxjava
+  into new File(autoFvtDir, 'publish/shared/resources/infinispan10')
+  rename 'rxjava-*.jar', 'rxjava.jar'
 }
 
 addRequiredLibraries {
+  dependsOn addCaffeineToSharedDir
+  dependsOn addInfinispanCommonsToSharedDir
+  dependsOn addInfinispanCoreToSharedDir
   dependsOn addInfinispanJCacheToSharedDir
+  dependsOn addInfinispanJCacheCommonsToSharedDir
+  dependsOn addInfinispanProtoStreamToSharedDir
+  dependsOn addJbossLoggingToSharedDir
+  dependsOn addReactiveStreamsToSharedDir
+  dependsOn addRxJavaToSharedDir
 }

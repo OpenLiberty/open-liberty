@@ -286,16 +286,25 @@ public class SessionCacheConfigTestServlet extends FATServlet {
         MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
         ObjectName name;
 
+        // Useful to see when the provider changes the value that is used for CacheManager
+        name = mbs.queryNames(new ObjectName("javax.cache:type=CacheConfiguration,CacheManager=*,Cache=com.ibm.ws.session.meta.default_host.sessionCacheConfigApp"), null).iterator().next();
+        System.out.println("Found with name " + name.toString());
+
+        // TODO switch to configured infinispan.xml, and replace
+        // CacheManager=org.infinispan.jcache.embedded.JCachingProvider
+        // with
+        // CacheManager=*infinispan.xml
+
         // CacheMXBean for session meta info cache
-        name = mbs.queryNames(new ObjectName("javax.cache:type=CacheConfiguration,CacheManager=*infinispan.xml,Cache=com.ibm.ws.session.meta.default_host.sessionCacheConfigApp"), null).iterator().next();
-        CacheMXBean metaInfoCacheMXBean = JMX.newMBeanProxy(mbs,name, CacheMXBean.class);
+        name = mbs.queryNames(new ObjectName("javax.cache:type=CacheConfiguration,CacheManager=org.infinispan.jcache.embedded.JCachingProvider,Cache=com.ibm.ws.session.meta.default_host.sessionCacheConfigApp"), null).iterator().next();
+        CacheMXBean metaInfoCacheMXBean = JMX.newMBeanProxy(mbs, name, CacheMXBean.class);
         assertEquals(String.class.getName(), metaInfoCacheMXBean.getKeyType());
         assertEquals(ArrayList.class.getName(), metaInfoCacheMXBean.getValueType());
         assertTrue(metaInfoCacheMXBean.isManagementEnabled());
         assertTrue(metaInfoCacheMXBean.isStatisticsEnabled());
 
         // CacheMXBean for session attributes cache
-        name = mbs.queryNames(new ObjectName("javax.cache:type=CacheConfiguration,CacheManager=*infinispan.xml,Cache=com.ibm.ws.session.attr.default_host.sessionCacheConfigApp"), null).iterator().next();
+        name = mbs.queryNames(new ObjectName("javax.cache:type=CacheConfiguration,CacheManager=org.infinispan.jcache.embedded.JCachingProvider,Cache=com.ibm.ws.session.attr.default_host.sessionCacheConfigApp"), null).iterator().next();
         CacheMXBean attrCacheMXBean = JMX.newMBeanProxy(mbs, name, CacheMXBean.class);
         assertEquals(String.class.getName(), attrCacheMXBean.getKeyType());
         assertEquals("[B", attrCacheMXBean.getValueType()); // byte[]
@@ -303,13 +312,13 @@ public class SessionCacheConfigTestServlet extends FATServlet {
         assertTrue(attrCacheMXBean.isStatisticsEnabled());
 
         // CacheStatisticsMXBean for session meta info cache
-        name = mbs.queryNames(new ObjectName("javax.cache:type=CacheStatistics,CacheManager=*infinispan.xml,Cache=com.ibm.ws.session.meta.default_host.sessionCacheConfigApp"), null).iterator().next();
+        name = mbs.queryNames(new ObjectName("javax.cache:type=CacheStatistics,CacheManager=org.infinispan.jcache.embedded.JCachingProvider,Cache=com.ibm.ws.session.meta.default_host.sessionCacheConfigApp"), null).iterator().next();
         CacheStatisticsMXBean metaInfoCacheStatsMXBean = JMX.newMBeanProxy(mbs, name, CacheStatisticsMXBean.class);
         metaInfoCacheStatsMXBean.clear();
         assertEquals(0, metaInfoCacheStatsMXBean.getCacheEvictions());
 
         // CacheStatisticsMXBean for session attributes cache
-        name = mbs.queryNames(new ObjectName("javax.cache:type=CacheStatistics,CacheManager=*infinispan.xml,Cache=com.ibm.ws.session.attr.default_host.sessionCacheConfigApp"), null).iterator().next();
+        name = mbs.queryNames(new ObjectName("javax.cache:type=CacheStatistics,CacheManager=org.infinispan.jcache.embedded.JCachingProvider,Cache=com.ibm.ws.session.attr.default_host.sessionCacheConfigApp"), null).iterator().next();
         CacheStatisticsMXBean attrCacheStatsMXBean = JMX.newMBeanProxy(mbs, name, CacheStatisticsMXBean.class);
         // TODO found value of 1 with Infinispan assertEquals(0, attrCacheStatsMXBean.getCacheRemovals());
 
