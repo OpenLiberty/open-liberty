@@ -18,17 +18,16 @@
 
   <include location="../fatTestPorts.xml"/>
 
-  <!-- database for tasks -->
+  <!-- database for tasks : Properties added by fat for database rotation -->
   <dataSource id="DefaultDataSource" fat.modify="true">
-    <containerAuthData user="user1" password="pwd1" fat.modify="true"/>
-    <jdbcDriver libraryRef="DerbyLib"/>
-    <properties.derby.embedded createDatabase="create" databaseName="memory:persisttimers"/>
+    <jdbcDriver libraryRef="AnonymousJDBCLib"/>
   </dataSource>
-  <library id="DerbyLib">
-    <fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
+  
+  <library id="AnonymousJDBCLib">
+    <fileset dir="${shared.resource.dir}/jdbc" includes="${env.DB_DRIVER}"/>
   </library>
   
-  <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+  <javaPermission codebase="${shared.resource.dir}/jdbc/${env.DB_DRIVER}" className="java.security.AllPermission"/>
 
   <variable name="onError" value="FAIL"/>
 </server>

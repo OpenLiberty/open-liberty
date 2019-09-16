@@ -20,6 +20,7 @@ import com.ibm.websphere.simplicity.Machine;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
+import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 
 @RunWith(Suite.class)
 @SuiteClasses({ PersistentExecutorTimersTest.class })
@@ -32,5 +33,8 @@ public class FATSuite {
         Machine machine = server.getMachine();
         String installRoot = server.getInstallRoot();
         LibertyFileManager.deleteLibertyDirectoryAndContents(machine, installRoot + "/usr/shared/resources/data/persisttimers");
+    
+        //Allows local tests to switch between using a local docker client, to using a remote docker client. 
+        ExternalTestServiceDockerClientStrategy.clearTestcontainersConfig();
     }
 }
