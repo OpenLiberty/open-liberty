@@ -68,6 +68,12 @@ public class JaegerConfigTest {
                                        new File("test-applications/mpOpenTracing/resources/beans.xml"));
         ShrinkHelper.exportAppToServer(server1, serviceWar);
         ShrinkHelper.exportAppToServer(server2, serviceWar);
+        
+        File libsDir = new File("lib");
+        File[] libs = libsDir.listFiles();
+        for (File file : libs) {
+            server1.copyFileToLibertyServerRoot(file.getParent(), "jaegerLib", file.getName());
+        }
     }
 
     /**
@@ -103,7 +109,7 @@ public class JaegerConfigTest {
         try {
         	executeWebService(server1, "helloWorld");
         } catch (IOException e) {
-        	// Error will be thrown when hitting endpoint
+        	// Error should be thrown when hitting endpoint
         }
         String logMsg = server2.waitForStringInLog("CWMOT1007E");
         FATLogging.info(CLASS, methodName, "Actual Response", logMsg);

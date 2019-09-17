@@ -24,7 +24,11 @@ com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.4.1
 com.fasterxml.jackson.module:jackson-module-parameter-names:2.9.1
 com.fasterxml:classmate:1.3.4
 com.google.code.gson:gson:2.2.4
+<<<<<<< HEAD
 com.google.guava:failureaccess:1.0.1
+=======
+com.google.code.gson:gson:2.8.2
+>>>>>>> using library jars from Artifactory instead of file system
 com.google.guava:guava:27.0.1-android
 com.google.inject:guice:2.0
 com.googlecode.json-simple:json-simple:1.1.1
@@ -88,7 +92,10 @@ commons-net:commons-net:3.6
 httpunit:httpunit:1.5.4
 httpunit:httpunit:1.7
 io.github.classgraph:classgraph:4.6.7
+io.jaegertracing:jaeger-client:0.34.0
 io.jaegertracing:jaeger-core:0.34.0
+io.jaegertracing:jaeger-thrift:0.34.0
+io.jaegertracing:jaeger-tracerresolver:0.34.0
 io.leangen.geantyref:geantyref:1.3.6
 io.opentracing:opentracing-api:0.30.0
 io.opentracing:opentracing-api:0.31.0
@@ -270,6 +277,7 @@ org.apache.myfaces.core:myfaces-impl:2.2.12
 org.apache.myfaces.core:myfaces-impl:2.3.3
 org.apache.neethi:neethi:3.0.2
 org.apache.servicemix.bundles:org.apache.servicemix.bundles.bcel:5.2_3
+org.apache.thrift:libthrift:0.11.0
 org.apache.tomcat.embed:tomcat-embed-websocket:8.5.23
 org.apache.wink:wink-client:1.4
 org.apache.wink:wink-common:1.4
@@ -426,12 +434,14 @@ org.powermock:powermock-core:1.5
 org.quartz-scheduler:quartz:2.2.1
 org.quartz-scheduler:quartz:2.2.1
 org.reactivestreams:reactive-streams-examples:1.0.2
-org.reactivestreams:reactive-streams:1.0.2
 org.reactivestreams:reactive-streams-tck:1.0.2
+org.reactivestreams:reactive-streams:1.0.2
 org.rnorth.duct-tape:duct-tape:1.0.7
+org.slf4j:slf4j-api:1.7.26
 org.slf4j:slf4j-api:1.7.7
 org.slf4j:slf4j-jdk14:1.7.7
 org.slf4j:slf4j-simple:1.7.25
+org.slf4j:slf4j-simple:1.7.26
 org.sonatype.goodies:package-url-java:1.0.1
 org.springframework.boot:spring-boot-autoconfigure:1.5.9.RELEASE
 org.springframework.boot:spring-boot-autoconfigure:2.0.0.RELEASE
