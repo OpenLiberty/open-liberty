@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2018 IBM Corporation and others.
+ * Copyright (c) 2016, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,13 +43,11 @@ public class JWKSet {
     public List<JWK> getJWKs() {
         return null;// jwks;
     }
-
-    public synchronized void addJWK(JWK jwk) {
-
-        //clean up first
+    
+    private synchronized void removeStaleEntries(Collection<JWK> collection) {
         long current = (new Date()).getTime();
         List<JWK> jwksToBeRemoved = new ArrayList<JWK>();
-        Iterator<JWK> it = jwks.iterator();
+        Iterator<JWK> it =collection.iterator();
         while (it.hasNext()) {
             JWK oldJwk = it.next();
             if (current - oldJwk.getCreated() > Stale) {
@@ -60,9 +58,12 @@ public class JWKSet {
         Iterator<JWK> itremoved = jwksToBeRemoved.iterator();
         while (itremoved.hasNext()) {
             JSONWebKey removed = itremoved.next();
-            jwks.remove(removed);
+            collection.remove(removed);
         }
+    }
 
+    public void addJWK(JWK jwk) {
+        removeStaleEntries(jwks);
         jwks.add(0, jwk);
     }
 
@@ -237,19 +238,20 @@ public class JWKSet {
     }
 
     public void add(JWK jwk) {
+        removeStaleEntries(jwks);
         jwks.add(jwk);
     }
 
     public void add(int i, JWK jwk) {
         jwks.add(i, jwk);
     }
-
-    // TODO: Add cleanup
+    
     public void add(String setId, JWK jwk) {
         if (jwksBySetId.containsKey(setId) == false) {
             jwksBySetId.put(setId, Collections.synchronizedSet(new HashSet<JWK>()));
+        } else {
+            removeStaleEntries(jwksBySetId.get(setId));
         }
-
         jwksBySetId.get(setId).add(jwk);
     }
 
@@ -257,6 +259,7 @@ public class JWKSet {
     JWK theOnePEMJwk = null;
 
     public void add(JWK jwk, boolean isFromPEM) {
+        removeStaleEntries(jwks);
         jwks.add(jwk);
         if (isFromPEM) {
             theOnePEMJwk = jwk;
