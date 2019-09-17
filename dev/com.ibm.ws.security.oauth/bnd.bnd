@@ -194,5 +194,8 @@ Include-Resource.zh: ${if;${include.zh};com/ibm/ws/security/oauth20/resources/Pr
     com.ibm.ws.kernel.boot;version=latest, \
     com.ibm.ws.security.test.common;version=latest, \
     org.apache.derby:derby;version=10.11.1.1, \
-    com.ibm.ws.org.joda.time.1.6.2;version=latest
-
+    com.ibm.ws.org.joda.time.1.6.2;version=latest, \
+    fattest.simplicity;version=latest, \
+    com.ibm.ws.componenttest:public.api;version=latest, \
+    com.ibm.ws.org.glassfish.json.1.0;version=latest, \
+    com.ibm.websphere.javaee.jaxb.2.2;version=latest

@@ -14,6 +14,8 @@
  */
 defaultTasks 'clean', 'build'
 
+def userBuildProperties = new Properties()
+
 // Project version is the Bundle-Version attribute if a bundle gets released, otherwise the version is the buildID.
 project.version = bnd('Bundle-Version', bnd.buildID)
 jar {
@@ -163,11 +165,29 @@ compileJava {
   options.fork = true
 }
 
+task setUserBuildProperties {
+  doFirst {
+    def filePath = System.getProperty("user.home") + "/user.build.properties"
+    println "Reading user build properties from $filePath"
+    File userBuildPropsFile = file(filePath)
+    if (userBuildPropsFile.exists()) {
+      userBuildPropsFile.withInputStream { userBuildProperties.load(it) }
+    }
+  }
+}
+
 test {
-  dependsOn ':cnf:copyMavenLibs'
+  dependsOn ':cnf:copyMavenLibs', setUserBuildProperties
   def testports = fileTree(dir: compileTestJava.destinationDir, include: 'unittestports.properties')
 
   doFirst {
+    // Pass the user build properties as JVM arguments so unit tests can make use of Consul services
+    userBuildProperties.each { key, value ->
+      println "Adding JVM arg for user build property [$key]"
+      if (value != null) {
+        jvmArgs "-D$key=$value"
+      }
+    }
     if (testports.isEmpty())
       return
     def propertiesFile = new File(compileTestJava.destinationDir, 'unittestports.properties')
