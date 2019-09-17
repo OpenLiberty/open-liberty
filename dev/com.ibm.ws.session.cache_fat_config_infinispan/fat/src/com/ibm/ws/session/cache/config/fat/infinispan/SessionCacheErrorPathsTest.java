@@ -52,7 +52,7 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
     private static final String SERVLET_NAME = "SessionCacheConfigTestServlet";
 
     private static ServerConfiguration savedConfig;
-    private static String infinispanConfigFile = "infinispanxml";
+    private static String infinispanConfigFile = "infinispan.xml";
 
     @Server("com.ibm.ws.session.cache.fat.config.infinispan")
     public static LibertyServer server;
