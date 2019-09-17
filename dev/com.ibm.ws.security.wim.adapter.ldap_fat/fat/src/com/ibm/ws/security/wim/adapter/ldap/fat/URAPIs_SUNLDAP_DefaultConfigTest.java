@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,18 +17,18 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.List;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.registry.EntryNotFoundException;
-import com.ibm.ws.security.registry.RegistryException;
 import com.ibm.ws.security.registry.SearchResult;
 import com.ibm.ws.security.registry.test.UserRegistryServletConnection;
 
@@ -47,6 +47,10 @@ public class URAPIs_SUNLDAP_DefaultConfigTest {
     private static final Class<?> c = URAPIs_SUNLDAP_DefaultConfigTest.class;
     private static UserRegistryServletConnection servlet;
     private final LeakedPasswordChecker passwordChecker = new LeakedPasswordChecker(server);
+
+    /** Test rule for testing for expected exceptions. */
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
 
     /**
      * Updates the sample, which is expected to be at the hard-coded path.
@@ -117,17 +121,13 @@ public class URAPIs_SUNLDAP_DefaultConfigTest {
      * This verifies the various required bundles got installed and are working.
      */
     @Test
-    public void checkPasswordWithInvalidUser() {
+    public void checkPasswordWithInvalidUser() throws Exception {
         String user = "invalid";
         String password = "ppersona1";
         Log.info(c, "checkPasswordWithInvalidUser", "Checking good credentials");
-        try {
-            servlet.checkPassword(user, password);
-        } catch (RegistryException e) {
-            /* Ignore. */
-        }
-        server.waitForStringInLog("CWIML4537E");
-        assertTrue("An invalid user should cause RegistryException with No principal is found message", true);
+
+        assertNull("Authentiction should fail.", servlet.checkPassword(user, password));
+        assertNotNull("An invalid user should cause RegistryException with No principal is found message", server.waitForStringInLog("CWIML4537E"));
         passwordChecker.checkForPasswordInAnyFormat(password);
     }
 
@@ -142,7 +142,7 @@ public class URAPIs_SUNLDAP_DefaultConfigTest {
         Log.info(c, "checkPasswordWithBadCredentials", "Checking bad credentials");
         assertNull("Authentication should not succeed.",
                    servlet.checkPassword(user, password));
-        server.waitForStringInLog("CWIML4529E");
+        assertNotNull("Expected CWIML4529E message.", server.waitForStringInLog("CWIML4529E"));
         passwordChecker.checkForPasswordInAnyFormat(password);
     }
 
@@ -255,14 +255,11 @@ public class URAPIs_SUNLDAP_DefaultConfigTest {
     public void getUserDisplayNameWithInvalidUser() throws Exception {
         String user = "invalidUser";
         Log.info(c, "getUserDisplayNameWithInvalidUser", "Checking with an invalid user.");
-        try {
-            servlet.getUserDisplayName(user);
-            fail("Expected EntryNotFoundException.");
-        } catch (EntryNotFoundException e) {
-            String errorMessage = e.getMessage();
-            assertTrue("An invalid user should cause EntryNotFoundException error CWIML4001E. Message was: "
-                       + errorMessage, errorMessage.contains("CWIML4001E"));
-        }
+
+        expectedException.expect(EntryNotFoundException.class);
+        expectedException.expectMessage("CWIML4001E");
+
+        servlet.getUserDisplayName(user);
     }
 
     /**
@@ -285,14 +282,11 @@ public class URAPIs_SUNLDAP_DefaultConfigTest {
     public void getUniqueUserIdWithInvalidUser() throws Exception {
         String user = "invalidUser";
         Log.info(c, "getUniqueUserIdWithInvalidUser", "Checking with an invalid user.");
-        try {
-            servlet.getUniqueUserId(user);
-            fail("Expected EntryNotFoundException.");
-        } catch (EntryNotFoundException e) {
-            String errorMessage = e.getMessage();
-            assertTrue("An invalid user should cause EntryNotFoundException error CWIML4001E. Message was: "
-                       + errorMessage, errorMessage.contains("CWIML4001E"));
-        }
+
+        expectedException.expect(EntryNotFoundException.class);
+        expectedException.expectMessage("CWIML4001E");
+
+        servlet.getUniqueUserId(user);
     }
 
     /**
@@ -316,14 +310,11 @@ public class URAPIs_SUNLDAP_DefaultConfigTest {
     public void getUserSecurityNameWithInvalidUser() throws Exception {
         String user = "uid=invalid,ou=users,dc=rtp,dc=raleigh,dc=ibm,dc=com";
         Log.info(c, "getUserSecurityNameWithInvalidUser", "Checking with an invalid user.");
-        try {
-            servlet.getUserSecurityName(user);
-            fail("Expected EntryNotFoundException.");
-        } catch (EntryNotFoundException e) {
-            String errorMessage = e.getMessage();
-            assertTrue("An invalid user should cause EntryNotFoundException error CWIML4527E. Message was: "
-                       + errorMessage, errorMessage.contains("CWIML4527E"));
-        }
+
+        expectedException.expect(EntryNotFoundException.class);
+        expectedException.expectMessage("CWIML4527E");
+
+        servlet.getUserSecurityName(user);
     }
 
     /**
@@ -470,14 +461,11 @@ public class URAPIs_SUNLDAP_DefaultConfigTest {
     public void getGroupDisplayNameWithInvalidGroup() throws Exception {
         String group = "cn=invalidgroup,ou=users,dc=rtp,dc=raleigh,dc=ibm,dc=com";
         Log.info(c, "getGroupDisplayNameWithInvalidGroup", "Checking with an invalid group.");
-        try {
-            servlet.getGroupDisplayName(group);
-            fail("Expected EntryNotFoundException.");
-        } catch (EntryNotFoundException e) {
-            String errorMessage = e.getMessage();
-            assertTrue("An invalid group should cause EntryNotFoundException error CWIML4527E. Message was: "
-                       + errorMessage, errorMessage.contains("CWIML4527E"));
-        }
+
+        expectedException.expect(EntryNotFoundException.class);
+        expectedException.expectMessage("CWIML4527E");
+
+        servlet.getGroupDisplayName(group);
     }
 
     /**
@@ -488,14 +476,11 @@ public class URAPIs_SUNLDAP_DefaultConfigTest {
     public void getGroupDisplayNameWithEntityOutOfRealmScope() throws Exception {
         String group = "cn=invalidgroup";
         Log.info(c, "getGroupDisplayNameWithEntityOutOfRealmScope", "Checking with an invalid group.");
-        try {
-            servlet.getGroupDisplayName(group);
-            fail("Expected RegistryException.");
-        } catch (RegistryException e) {
-            String errorMessage = e.getMessage();
-            assertTrue("An invalid group should cause RegistryException error CWIML0515E. Message was: "
-                       + errorMessage, errorMessage.contains("CWIML0515E"));
-        }
+
+        expectedException.expect(EntryNotFoundException.class);
+        expectedException.expectMessage("CWIML0515E");
+
+        servlet.getGroupDisplayName(group);
     }
 
     /**
@@ -518,14 +503,11 @@ public class URAPIs_SUNLDAP_DefaultConfigTest {
     public void getUniqueGroupIdWithInvalidGroup() throws Exception {
         String group = "invalidGroup";
         Log.info(c, "getUniqueGroupIdWithInvalidGroup", "Checking with an invalid group.");
-        try {
-            servlet.getUniqueGroupId(group);
-            fail("Expected EntryNotFoundException.");
-        } catch (EntryNotFoundException e) {
-            String errorMessage = e.getMessage();
-            assertTrue("An invalid group should cause EntryNotFoundException error CWIML4001E. Message was: "
-                       + errorMessage, errorMessage.contains("CWIML4001E"));
-        }
+
+        expectedException.expect(EntryNotFoundException.class);
+        expectedException.expectMessage("CWIML4001E");
+
+        servlet.getUniqueGroupId(group);
     }
 
     /**
@@ -547,14 +529,11 @@ public class URAPIs_SUNLDAP_DefaultConfigTest {
     public void getGroupSecurityNameWithInvalidGroup() throws Exception {
         String group = "cn=invalid,ou=users,dc=rtp,dc=raleigh,dc=ibm,dc=com";
         Log.info(c, "getGroupSecurityNameWithInvalidGroup", "Checking with an invalid group.");
-        try {
-            servlet.getGroupSecurityName(group);
-            fail("Expected EntryNotFoundException.");
-        } catch (EntryNotFoundException e) {
-            String errorMessage = e.getMessage();
-            assertTrue("An invalid group should cause EntryNotFoundException error CWIML4527E. Message was: "
-                       + errorMessage, errorMessage.contains("CWIML4527E"));
-        }
+
+        expectedException.expect(EntryNotFoundException.class);
+        expectedException.expectMessage("CWIML4527E");
+
+        servlet.getGroupSecurityName(group);
     }
 
     /**
@@ -565,14 +544,11 @@ public class URAPIs_SUNLDAP_DefaultConfigTest {
     public void getGroupSecurityNameWithInvalidUniqueName() throws Exception {
         String group = "invalid";
         Log.info(c, "getGroupSecurityNameWithUniqueName", "Checking with an invalid group.");
-        try {
-            servlet.getGroupSecurityName(group);
-            fail("Expected EntryNotFoundException.");
-        } catch (EntryNotFoundException e) {
-            String errorMessage = e.getMessage();
-            assertTrue("An invalid group should cause EntryNotFoundException error CWIML4001E. Message was: "
-                       + errorMessage, errorMessage.contains("CWIML4001E"));
-        }
+
+        expectedException.expect(EntryNotFoundException.class);
+        expectedException.expectMessage("CWIML4001E");
+
+        servlet.getGroupSecurityName(group);
     }
 
     /**
@@ -583,14 +559,11 @@ public class URAPIs_SUNLDAP_DefaultConfigTest {
     public void getGroupSecurityNameWithEntityOutOfRealmScope() throws Exception {
         String group = "uid=invalid";
         Log.info(c, "getGroupSecurityNameWithUniqueName", "Checking with an invalid group.");
-        try {
-            servlet.getGroupSecurityName(group);
-            fail("Expected EntryNotFoundException.");
-        } catch (EntryNotFoundException e) {
-            String errorMessage = e.getMessage();
-            assertTrue("An invalid group should cause EntryNotFoundException error CWIML0515E. Message was: "
-                       + errorMessage, errorMessage.contains("CWIML0515E"));
-        }
+
+        expectedException.expect(EntryNotFoundException.class);
+        expectedException.expectMessage("CWIML0515E");
+
+        servlet.getGroupSecurityName(group);
     }
 
     /**
@@ -625,14 +598,11 @@ public class URAPIs_SUNLDAP_DefaultConfigTest {
     public void getGroupsForUserWithInvalidUser() throws Exception {
         String user = "invalidUser";
         Log.info(c, "getGroupsForUserWithInvalidUser", "Checking with an invalid user.");
-        try {
-            servlet.getGroupsForUser(user);
-            fail("Expected EntryNotFoundException.");
-        } catch (EntryNotFoundException e) {
-            String errorMessage = e.getMessage();
-            assertTrue("An invalid group should cause EntryNotFoundException error CWIML4001E. Message was: "
-                       + errorMessage, errorMessage.contains("CWIML4001E"));
-        }
+
+        expectedException.expect(EntryNotFoundException.class);
+        expectedException.expectMessage("CWIML4001E");
+
+        servlet.getGroupsForUser(user);
     }
 
     /**
@@ -655,14 +625,11 @@ public class URAPIs_SUNLDAP_DefaultConfigTest {
     public void getUniqueGroupIdsWithInvalidUser() throws Exception {
         String user = "uid=invalid,ou=users,dc=rtp,dc=raleigh,dc=ibm,dc=com";
         Log.info(c, "getUniqueGroupIdsForUser", "Checking with a valid user.");
-        try {
-            servlet.getUniqueGroupIdsForUser(user);
-            fail("Expected EntryNotFoundException.");
-        } catch (EntryNotFoundException e) {
-            String errorMessage = e.getMessage();
-            assertTrue("An invalid group should cause EntryNotFoundException error CWIML4527E. Message was: "
-                       + errorMessage, errorMessage.contains("CWIML4527E"));
-        }
+
+        expectedException.expect(EntryNotFoundException.class);
+        expectedException.expectMessage("CWIML4527E");
+
+        servlet.getUniqueGroupIdsForUser(user);
     }
 
     /**
@@ -673,13 +640,10 @@ public class URAPIs_SUNLDAP_DefaultConfigTest {
     public void getUniqueGroupIdsWithInvalidUniqueName() throws Exception {
         String user = "invalid";
         Log.info(c, "getUniqueGroupIdsForUser", "Checking with a valid user.");
-        try {
-            servlet.getUniqueGroupIdsForUser(user);
-            fail("Expected EntryNotFoundException.");
-        } catch (EntryNotFoundException e) {
-            String errorMessage = e.getMessage();
-            assertTrue("An invalid group should cause EntryNotFoundException error CWIML4001E. Message was: "
-                       + errorMessage, errorMessage.contains("CWIML4001E"));
-        }
+
+        expectedException.expect(EntryNotFoundException.class);
+        expectedException.expectMessage("CWIML4001E");
+
+        servlet.getUniqueGroupIdsForUser(user);
     }
 }
