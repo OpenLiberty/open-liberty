@@ -64,6 +64,9 @@ import com.ibm.ws.concurrent.persistent.ejb.TimerStatus;
 import com.ibm.ws.concurrent.persistent.ejb.TimerTrigger;
 import com.ibm.ws.concurrent.persistent.ejb.TimersPersistentExecutor;
 
+import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.ExpectedFFDC;
+
 @WebServlet("/*")
 public class SchedulerFATServlet extends HttpServlet {
     private static final long serialVersionUID = 8447513765214641067L;
@@ -1333,6 +1336,7 @@ public class SchedulerFATServlet extends HttpServlet {
      * Submit a persistent task to run immediately and verify that it runs successfully and returns the specified result.
      */
     @Test
+    @AllowedFFDC("javax.persistence.RollbackException")
     public void testImmediateRunnableWithResult(PrintWriter out) throws Exception {
         String unicode = "\u215C";
         String taskKey = "testImmediateRunnableWithResult-2" + unicode;

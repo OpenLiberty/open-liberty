@@ -22,30 +22,29 @@
 
   <persistentExecutor jndiName="concurrent/myScheduler" taskStoreRef="DBTaskStore" retryLimit="1" initialPollDelay="30m"/>
 
-  <databaseStore id="DBTaskStore" createTables="false">
-    <dataSource fat.modify="true" containerAuthDataRef="authx" jndiName="jdbc/schedDB" id="TaskStoreDS">
+  <databaseStore id="DBTaskStore">
+    <dataSource fat.modify="true" jndiName="jdbc/schedDB" id="TaskStoreDS">
       <jdbcDriver libraryRef="FATJDBCLib"/>
-      <!-- This database gets manually pre-created in the JUnit side of the test -->
-      <properties databaseName="${shared.resource.dir}/data/scheddb"/>
+      <!-- properties created by FATRunner during database rotation. -->
     </dataSource>
   </databaseStore>
-
-  <authData fat.modify="true" id="authx" user="userx" password="passx"/>
-  
-  <library id="FATJDBCLib">
-    <fileset dir="${shared.resource.dir}/derby"/>
-  </library>
 
   <!-- database (always Derby) for the test application -->
   <dataSource id="DefaultDataSource">
     <jdbcDriver libraryRef="DerbyJDBCLib"/>
     <properties createDatabase="create" databaseName="memory:testdb"/>
   </dataSource>
+  
+  <library id="FATJDBCLib">
+    <fileset dir="${shared.resource.dir}/jdbc" includes="${env.DB_DRIVER}"/>
+  </library>
+    
   <library id="DerbyJDBCLib">
-    <fileset dir="${shared.resource.dir}/derby"/>
+    <fileset dir="${shared.resource.dir}/jdbc" includes="derby.jar"/>
   </library>
   
-  <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+  <javaPermission codebase="${shared.resource.dir}/jdbc/derby.jar" className="java.security.AllPermission"/>
+  <javaPermission codebase="${shared.resource.dir}/jdbc/${env.DB_DRIVER}" className="java.security.AllPermission"/>
   <javaPermission className="java.io.FilePermission" name="${server.config.dir}/ddl/*" actions="read"/>
   <javaPermission className="java.lang.RuntimePermission" name="modifyThread"/>
   <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>

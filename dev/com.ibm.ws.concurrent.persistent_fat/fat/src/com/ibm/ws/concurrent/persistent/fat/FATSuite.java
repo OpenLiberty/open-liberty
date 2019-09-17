@@ -22,6 +22,7 @@ import com.ibm.websphere.simplicity.Machine;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
+import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 
 @RunWith(Suite.class)
 @SuiteClasses({ SchedulerTest.class })
@@ -41,5 +42,8 @@ public class FATSuite {
         assertTrue("Helper feature should have been copied to lib/features.",
                    server.fileExistsInLibertyInstallRoot("lib/features/timerInterfacesTestFeature-1.0.mf"));
         server.copyFileToLibertyInstallRoot("lib/", "bundles/test.feature.sim.ejb.timer.jar");
+        
+        //Allows local tests to switch between using a local docker client, to using a remote docker client. 
+        ExternalTestServiceDockerClientStrategy.clearTestcontainersConfig();
     }
 }
