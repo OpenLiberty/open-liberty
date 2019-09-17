@@ -109,11 +109,11 @@ instrument.classesExcludes: com/ibm/ws/jaxws/clientcontainer/internal/resources/
 	javax.jws:jsr181-api;version=latest,\
 	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
 	com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
-	org.apache.cxf.cxf-api;strategy=exact;version=2.6.2.ibm-s20190122-2227, \
-	org.apache.cxf.cxf-rt-core;strategy=exact;version=2.6.2.ibm-s20180529-1900, \
-	org.apache.cxf.cxf-rt-frontend-simple;strategy=exact;version=2.6.2.ibm-s20170216-1739, \
-	org.apache.cxf.cxf-rt-frontend-jaxws;strategy=exact;version=2.6.2.ibm-s20180914-1510, \
-	org.apache.cxf.cxf-rt-transports-http;strategy=exact;version=2.6.2.ibm-s20180821-1653, \
+	com.ibm.ws.org.apache.cxf.cxf.api.2.6.2, \
+	com.ibm.ws.org.apache.cxf.cxf.rt.core.2.6.2,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.frontend.simple.2.6.2, \
+	com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxws.2.6.2, \
+	com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.2.6.2, \
 	com.ibm.websphere.appserver.spi.logging;version=latest,\
 	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
 	com.ibm.ws.adaptable.module;version=latest,\
