@@ -52,7 +52,7 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
     private static final String SERVLET_NAME = "SessionCacheConfigTestServlet";
 
     private static ServerConfiguration savedConfig;
-    //private static String hazelcastConfigFile = "hazelcast-localhost-only.xml";
+    private static String infinispanConfigFile = "infinispanxml";
 
     @Server("com.ibm.ws.session.cache.fat.config.infinispan")
     public static LibertyServer server;
@@ -187,16 +187,16 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
     }
 
     /**
-     * Start the server with an invalid Hazelcast uri configured on httpSessionCache.
+     * Start the server with an invalid Infinispan uri configured on httpSessionCache.
      * Verify that after correcting the uri, session data is persisted.
      */
-    // @AllowedFFDC(value = { "javax.cache.CacheException" }) // for invalid uri
-    // TODO @Test
+    @AllowedFFDC(value = { "javax.cache.CacheException", "org.infinispan.commons.CacheConfigurationException" }) // for invalid uri
+    @Test
     public void testInvalidURI() throws Exception {
         // Start the server with invalid httpSessionCache uri
-        String invalidHazelcastURI = "file:" + new java.io.File(server.getUserDir() + "/servers/com.ibm.ws.session.cache.fat.config.infinispan/server.xml").getAbsolutePath();
+        String invalidInfinispanURI = "file:" + new java.io.File(server.getUserDir() + "/servers/com.ibm.ws.session.cache.fat.config.infinispan/server.xml").getAbsolutePath();
         ServerConfiguration config = savedConfig.clone();
-        config.getHttpSessionCaches().get(0).setUri(invalidHazelcastURI);
+        config.getHttpSessionCaches().get(0).setUri(invalidInfinispanURI);
         server.updateServerConfiguration(config);
         server.startServer(testName.getMethodName() + ".log");
 
@@ -205,8 +205,8 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
             run("testSessionCacheNotAvailable", session);
 
             // Correct the URI
-            // TODO String validHazelcastURI = "file:" + new java.io.File(server.getUserDir() + "/shared/resources/hazelcast/" + hazelcastConfigFile).getAbsolutePath();
-            // TODO config.getHttpSessionCaches().get(0).setUri(validHazelcastURI);
+            String validInfinispanURI = "file:" + new java.io.File(server.getUserDir() + "/shared/resources/infinispan10/" + infinispanConfigFile).getAbsolutePath();
+            config.getHttpSessionCaches().get(0).setUri(validInfinispanURI);
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
             server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
@@ -376,9 +376,7 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
 
             assertTrue(dumpInfo, lines.contains("JCache provider diagnostics for HTTP Sessions"));
             assertTrue(dumpInfo, lines.contains("CachingProvider implementation: org.infinispan.jcache.embedded.JCachingProvider"));
-            assertTrue(dumpInfo, lines.contains("Cache manager URI: org.infinispan.jcache.embedded.JCachingProvider"));
-            // TODO switch to configured infinispan.xml,
-            //assertTrue(dumpInfo, lines.parallelStream().anyMatch(line -> line.matches(".*Cache manager URI: .*infinispan.xml.*")));
+            assertTrue(dumpInfo, lines.parallelStream().anyMatch(line -> line.matches(".*Cache manager URI: .*infinispan.xml.*")));
             assertTrue(dumpInfo, lines.contains("Cache manager is closed? false"));
             assertFalse(dumpInfo, lines.contains("Cache manager is closed? true"));
 
@@ -446,9 +444,7 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
 
             assertTrue(dumpInfo, lines.contains("JCache provider diagnostics for HTTP Sessions"));
             assertTrue(dumpInfo, lines.contains("CachingProvider implementation: org.infinispan.jcache.embedded.JCachingProvider"));
-            assertTrue(dumpInfo, lines.contains("Cache manager URI: org.infinispan.jcache.embedded.JCachingProvider"));
-            // TODO switch to configured infinispan.xml,
-            //assertTrue(dumpInfo, lines.parallelStream().anyMatch(line -> line.matches(".*Cache manager URI: .*infinispan.xml.*")));
+            assertTrue(dumpInfo, lines.parallelStream().anyMatch(line -> line.matches(".*Cache manager URI: .*infinispan.xml.*")));
             assertTrue(dumpInfo, lines.contains("Cache manager is closed? false"));
             assertFalse(dumpInfo, lines.contains("Cache manager is closed? true"));
 

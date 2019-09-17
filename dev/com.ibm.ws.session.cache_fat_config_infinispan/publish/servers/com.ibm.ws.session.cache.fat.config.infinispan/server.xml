@@ -13,7 +13,7 @@
     <classloader commonLibraryRef="InfinispanLib"/>
   </application>
 
-  <httpSessionCache libraryRef="InfinispanLib"/> <!-- TODO uri="file:${shared.resource.dir}/infinispan10/infinispan.xml"/> -->
+  <httpSessionCache libraryRef="InfinispanLib" uri="file:${shared.resource.dir}/infinispan10/infinispan.xml"/>
 
   <httpSession hideSessionValues="false"/>
 
