@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -39,7 +40,7 @@ import componenttest.topology.impl.LibertyServerFactory;
  * <li>{@link #testImproperConfig()}</li>
  * </ul>
  */
-@Mode(TestMode.FULL)
+@Mode(TestMode.LITE)
 @MinimumJavaLevel(javaLevel = 8)
 public class JaegerConfigTest {
 	
@@ -76,6 +77,13 @@ public class JaegerConfigTest {
         }
     }
 
+    @After
+    public void tearDown() throws Exception {
+    	if (currentServer != null && currentServer.isStarted()) {
+        	currentServer.stopServer("CWMOT1007E");
+        }
+    }
+    
     /**
      * Create traces with a proper Jaeger configuration.
      * 
@@ -93,7 +101,6 @@ public class JaegerConfigTest {
         String logMsg = server1.waitForStringInLog("INFO io.jaegertracing");
         FATLogging.info(CLASS, methodName, "Actual Response", logMsg);
         Assert.assertNotNull(logMsg);
-        currentServer.stopServer();
     }
     
     /**
@@ -105,6 +112,7 @@ public class JaegerConfigTest {
     @Test
     public void testImproperConfig() throws Exception {
     	server2.startServer();
+    	currentServer = server2;
         String methodName = "testImproperConfig";
         try {
         	executeWebService(server1, "helloWorld");
@@ -114,7 +122,6 @@ public class JaegerConfigTest {
         String logMsg = server2.waitForStringInLog("CWMOT1007E");
         FATLogging.info(CLASS, methodName, "Actual Response", logMsg);
         Assert.assertNotNull(logMsg);
-        server2.stopServer("CWMOT1007E");
     }
 
     protected List<String> executeWebService(LibertyServer server, String method) throws Exception {

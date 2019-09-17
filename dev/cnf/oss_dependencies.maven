@@ -24,11 +24,8 @@ com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.4.1
 com.fasterxml.jackson.module:jackson-module-parameter-names:2.9.1
 com.fasterxml:classmate:1.3.4
 com.google.code.gson:gson:2.2.4
-<<<<<<< HEAD
-com.google.guava:failureaccess:1.0.1
-=======
 com.google.code.gson:gson:2.8.2
->>>>>>> using library jars from Artifactory instead of file system
+com.google.guava:failureaccess:1.0.1
 com.google.guava:guava:27.0.1-android
 com.google.inject:guice:2.0
 com.googlecode.json-simple:json-simple:1.1.1
