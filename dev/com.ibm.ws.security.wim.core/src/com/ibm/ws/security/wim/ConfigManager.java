@@ -437,15 +437,17 @@ public class ConfigManager {
             validateRealmName(realmName);
             String parent = null;
             RealmConfig realmConfig = getRealmConfig(realmName);
-            Map<String, String> defaultParentsMap = realmConfig.getDefaultParentMapping();
-            if (defaultParentsMap != null) {
-                parent = defaultParentsMap.get(entType);
-                if (parent != null) {
-                    defaultParent = parent;
+            if (realmConfig != null) {
+                Map<String, String> defaultParentsMap = realmConfig.getDefaultParentMapping();
+                if (defaultParentsMap != null) {
+                    parent = defaultParentsMap.get(entType);
+                    if (parent != null) {
+                        defaultParent = parent;
+                    }
                 }
-            }
-            if (parent == null && !isUniqueNameInRealm(defaultParent, realmName)) {
-                defaultParent = null;
+                if (parent == null && !isUniqueNameInRealm(defaultParent, realmName)) {
+                    defaultParent = null;
+                }
             }
         }
         return defaultParent;

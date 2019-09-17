@@ -44,6 +44,7 @@ import com.ibm.ws.security.wim.util.AuditConstants;
 import com.ibm.ws.security.wim.util.ControlsHelper;
 import com.ibm.ws.security.wim.util.SchemaConstantsInternal;
 import com.ibm.ws.security.wim.util.SortHandler;
+import com.ibm.ws.security.wim.util.StringUtil;
 import com.ibm.ws.security.wim.util.UniqueNameHelper;
 import com.ibm.ws.security.wim.xpath.FederationLogicalNode;
 import com.ibm.ws.security.wim.xpath.FederationParenthesisNode;
@@ -232,10 +233,8 @@ public class ProfileManager implements ProfileServiceLite {
 
         if (repositoryManager != null && repositoryManager.getNumberOfRepositoriesVolatile() < 1) {
             if (repositoryManager.getNumberOfRepositories() < 1) { // double check that we're at 0 repos
-                throw new NoUserRepositoriesFoundException(WIMMessageKey.MISSING_REGISTRY_DEFINITION, Tr.formatMessage(
-                                                                                                                       tc,
-                                                                                                                       WIMMessageKey.MISSING_REGISTRY_DEFINITION,
-                                                                                                                       null));
+                String msg = Tr.formatMessage(tc, WIMMessageKey.MISSING_REGISTRY_DEFINITION, (Object[]) null);
+                throw new NoUserRepositoriesFoundException(WIMMessageKey.MISSING_REGISTRY_DEFINITION, msg);
             }
         }
 
@@ -244,6 +243,11 @@ public class ProfileManager implements ProfileServiceLite {
 
         Root adapterRoot = null;
         try {
+            /*
+             * Configure the realm name so it is retrievable on this thread.
+             */
+            RepositoryManager.setRealmOnThread(getRealmName(root));
+
             //Calling Implementation
             switch (METHODTYPE) {
                 case ProfileManager.LOGIN:
@@ -270,7 +274,13 @@ public class ProfileManager implements ProfileServiceLite {
 
         } catch (WIMException wime) {
             throw wime;
+        } finally {
+            /*
+             * Clear the realm name from this thread.
+             */
+            RepositoryManager.clearRealmOnThread();
         }
+
         return adapterRoot;
     }
 
@@ -414,7 +424,7 @@ public class ProfileManager implements ProfileServiceLite {
                 // Trust the entity type specified by the client
                 // This eliminates an extra call to LDAP for performance
                 realEntityType = (federationEntityType == null) ? entity.getTypeName() : federationEntityType;
-                repositoryId = getRepositoryManager().getRepositoryId(uniqueName);
+                repositoryId = getRepositoryManager().getRepositoryIdByUniqueName(uniqueName);
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, METHODNAME + " Client entity type will be trusted: " + realEntityType);
             } else {
@@ -2203,7 +2213,7 @@ public class ProfileManager implements ProfileServiceLite {
                     retEntDO = innerRetrieveEntityFromRepository(root, retEntDO, uniqueId, isAllowOperationIfReposDown, failureRepositoryIds);
                 } else {
                     if (repositoryId == null) {
-                        repositoryId = getRepositoryManager().getRepositoryId(uniqueName);
+                        repositoryId = getRepositoryManager().getRepositoryIdByUniqueName(uniqueName);
                     }
 
                     // from the specified repository
@@ -2466,8 +2476,9 @@ public class ProfileManager implements ProfileServiceLite {
         String value = null;
         List<Context> contexts = root.getContexts();
         if (contexts == null || contexts.size() == 0) {
-            if (getConfigManager() != null)
+            if (getConfigManager() != null) {
                 value = getConfigManager().getConfiguredPrimaryRealmName();
+            }
         } else {
 
             int i = 0;
@@ -2482,6 +2493,10 @@ public class ProfileManager implements ProfileServiceLite {
             if (value == null) {
                 value = getConfigManager().getConfiguredPrimaryRealmName();
             }
+        }
+
+        if (value == null) {
+            value = getDefaultRealmName();
         }
         return value;
     }
@@ -2696,9 +2711,9 @@ public class ProfileManager implements ProfileServiceLite {
         int bestMatch = -1;
         for (String repoId : reposIds) {
             // read the list of base entries for a given repository which are defined in realm
-            Map<String, String> baseEntryies = repositoryManager.getRepositoryBaseEntries(repoId);
+            Map<String, String> baseEntries = repositoryManager.getRepositoryBaseEntries(repoId);
 
-            for (Map.Entry<String, String> entry : baseEntryies.entrySet()) {
+            for (Map.Entry<String, String> entry : baseEntries.entrySet()) {
                 // check if the repository base entry is present in  realm
                 if (realmBases.contains(entry.getKey())) {
                     String baseDN = entry.getValue();
@@ -2719,7 +2734,7 @@ public class ProfileManager implements ProfileServiceLite {
                                 break;
                             }
                             if ((uLength > nodeLength)
-                                && (com.ibm.ws.security.wim.util.StringUtil.endsWithIgnoreCase(externalName, "," + reposNodeName))) {
+                                && (StringUtil.endsWithIgnoreCase(externalName, "," + reposNodeName))) {
                                 if (nodeLength > bestMatch) {
                                     repo = repoId;
                                     bestMatch = nodeLength;
@@ -2823,7 +2838,7 @@ public class ProfileManager implements ProfileServiceLite {
         String uniqueName = identifier.getUniqueName();
 
         if (repositoryId == null)
-            repositoryId = getRepositoryManager().getRepositoryId(uniqueName);
+            repositoryId = getRepositoryManager().getRepositoryIdByUniqueName(uniqueName);
 
         // check realm
         String realmName = getRealmName(root);

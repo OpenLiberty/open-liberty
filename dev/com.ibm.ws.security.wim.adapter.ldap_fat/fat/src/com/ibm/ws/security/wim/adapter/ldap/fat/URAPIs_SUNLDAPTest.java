@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,7 +23,9 @@ import java.util.List;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
@@ -47,6 +49,10 @@ public class URAPIs_SUNLDAPTest {
     private static final Class<?> c = URAPIs_SUNLDAPTest.class;
     private static UserRegistryServletConnection servlet;
     private final LeakedPasswordChecker passwordChecker = new LeakedPasswordChecker(server);
+
+    /** Test rule for testing for expected exceptions. */
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
 
     /**
      * Updates the sample, which is expected to be at the hard-coded path.
@@ -136,14 +142,11 @@ public class URAPIs_SUNLDAPTest {
     public void getUsersForGroupWithInvalidGroup() throws Exception {
         String group = "invalidGroup";
         Log.info(c, "getUsersForGroupWithInvalidGroup", "Checking with an invalid group.");
-        try {
-            servlet.getUsersForGroup(group, 0);
-            fail("Expected EntryNotFoundException.");
-        } catch (EntryNotFoundException e) {
-            String errorMessage = e.getMessage();
-            assertTrue("An invalid user should cause EntryNotFoundException error CWIML4001E. Message was: "
-                       + errorMessage, errorMessage.contains("CWIML4001E"));
-        }
+
+        expectedException.expect(EntryNotFoundException.class);
+        expectedException.expectMessage("CWIML4001E");
+
+        servlet.getUsersForGroup(group, 0);
     }
 
     /**
@@ -574,10 +577,10 @@ public class URAPIs_SUNLDAPTest {
         Log.info(c, "getGroupDisplayNameWithEntityOutOfRealmScope", "Checking with an invalid group.");
         try {
             servlet.getGroupDisplayName(group);
-            fail("Expected RegistryException.");
-        } catch (RegistryException e) {
+            fail("Expected EntryNotFoundException.");
+        } catch (EntryNotFoundException e) {
             String errorMessage = e.getMessage();
-            assertTrue("An invalid user should cause RegistryException error CWIML0515E. Message was: "
+            assertTrue("An invalid user should cause EntryNotFoundException error CWIML0515E. Message was: "
                        + errorMessage, errorMessage.contains("CWIML0515E"));
         }
     }
