@@ -44,7 +44,7 @@ public class JWKSet {
         return null;// jwks;
     }
     
-    private synchronized void removeStaleEntries(Collection<JWK> collection) {
+    synchronized void removeStaleEntries(Collection<JWK> collection) {
         long current = (new Date()).getTime();
         List<JWK> jwksToBeRemoved = new ArrayList<JWK>();
         Iterator<JWK> it =collection.iterator();
