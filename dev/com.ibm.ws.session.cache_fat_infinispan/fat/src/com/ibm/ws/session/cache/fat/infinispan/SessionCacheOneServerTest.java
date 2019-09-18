@@ -66,7 +66,7 @@ public class SessionCacheOneServerTest extends FATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         executor.shutdownNow();
-        server.stopServer("CWWKL0058W:.*InfinispanLib"); // TODO why does occur for Infinispan jar, but not Hazelcast?
+        server.stopServer();
     }
 
     /**
