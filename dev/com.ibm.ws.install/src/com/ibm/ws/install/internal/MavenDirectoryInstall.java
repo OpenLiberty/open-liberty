@@ -2,7 +2,10 @@
 package com.ibm.ws.install.internal;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -11,6 +14,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.logging.Level;
@@ -26,10 +30,13 @@ public class MavenDirectoryInstall {
 	private final InstallKernelMap map;
 	private final File fromDir;
 	private String toExtension;
+	private String openLibertyVersion;
+	private Logger logger;
+
+	private final String OPEN_LIBERTY_PRODUCT_ID = "io.openliberty";
 	private final String OPEN_LIBERTY_MAVEN_COORDINATES = "io.openliberty.features";
 	private final String CLOSED_LIBERTY_MAVEN_COORDINATES = "com.ibm.websphere.appserver.features";
-	private String openLibertyVersion = "19.0.0.8";
-	private Logger logger;
+
 
 	/**
 	 * Initialize a map based install kernel with a local maven directory
@@ -37,17 +44,37 @@ public class MavenDirectoryInstall {
 	 * @param featuresToInstall
 	 * @param fromDir
 	 * @throws IOException
+	 * @throws InstallException
 	 */
 	public MavenDirectoryInstall(Collection<String> featuresToInstall, File fromDir)
-			throws IOException {
-		this.map = new InstallKernelMap();
-		this.fromDir = fromDir;
+			throws IOException, InstallException {
 
+		this.fromDir = fromDir;
 		this.logger = InstallLogUtils.getInstallLogger();
 
 		logger.log(Level.FINE, "The features to install from local maven repository are:" + featuresToInstall);
 		logger.log(Level.FINE, "The local maven repository is: " + fromDir.getAbsolutePath());
 
+		map = new InstallKernelMap();
+		initializeMap(featuresToInstall);
+		getLibertyVersions();
+
+	}
+
+	public MavenDirectoryInstall(Collection<String> featuresToInstall, File fromDir, String toExtension)
+			throws IOException, InstallException {
+		this(featuresToInstall, fromDir);
+		this.toExtension = toExtension;
+
+	}
+
+	/**
+	 * Initialize the Install kernel map.
+	 * 
+	 * @param featuresToInstall
+	 * @throws IOException
+	 */
+	private void initializeMap(Collection<String> featuresToInstall) throws IOException {
 		map.put("runtime.install.dir", Utils.getInstallDir());
 		map.put("target.user.directory", new File(Utils.getInstallDir(), "usr/tmp"));
 		map.put("install.local.esa", true);
@@ -55,13 +82,50 @@ public class MavenDirectoryInstall {
 		map.put("features.to.resolve", new ArrayList<>(featuresToInstall));
 		map.put("license.accept", true); // TODO: discuss later
 		map.get("install.kernel.init.code");
+
 	}
 
-	public MavenDirectoryInstall(Collection<String> featuresToInstall, File fromDir, String toExtension)
-			throws IOException
-	{
-		this(featuresToInstall, fromDir);
-		this.toExtension = toExtension;
+	/**
+	 * Get the open liberty runtime version.
+	 * 
+	 * @throws IOException
+	 * @throws InstallException
+	 * 
+	 */
+	private void getLibertyVersions() throws IOException, InstallException {
+		File dir = new File(Utils.getInstallDir(), "lib/versions");
+		File[] propertiesFiles = dir.listFiles(new FilenameFilter() {
+			@Override
+			public boolean accept(File dir, String name) {
+				return name.endsWith(".properties");
+			}
+		});
+
+		if (propertiesFiles == null) {
+			throw new IOException("Could not find properties files.");
+		}
+
+		for (File propertiesFile : propertiesFiles) {
+			Properties properties = new Properties();
+			try (InputStream input = new FileInputStream(propertiesFile)) {
+				properties.load(input);
+				String productId = properties.getProperty("com.ibm.websphere.productId");
+				String productVersion = properties.getProperty("com.ibm.websphere.productVersion");
+				
+				if (productId.equals(OPEN_LIBERTY_PRODUCT_ID)) {
+					openLibertyVersion = productVersion;
+				}
+
+			} catch (IOException e) {
+				throw new IOException("Could not read the properties file " + propertiesFile.getAbsolutePath());
+			}
+		}
+		if (openLibertyVersion == null) {
+			// openliberty.properties file is missing
+			throw new InstallException("Could not determine the open liberty runtime version.");
+		} else {
+			logger.log(Level.FINE, "The Open Liberty runtime version is " + openLibertyVersion);
+		}
 
 	}
 
@@ -167,12 +231,13 @@ public class MavenDirectoryInstall {
 	 * @param resolvedFeatures
 	 * @return
 	 * @throws IOException
+	 * @throws InstallException
 	 */
-	private Collection<File> retrieveEsas(Collection<String> resolvedFeatures) throws IOException {
+	private Collection<File> retrieveEsas(Collection<String> resolvedFeatures) throws IOException, InstallException {
 		Collection<File> foundEsas = new HashSet<>();
 		try (Stream<Path> files = Files.walk(Paths.get(fromDir.toURI()))) {
 			foundEsas.addAll(files.filter(f -> f.getFileName().toString().endsWith("esa"))
-					.filter(f -> resolvedFeatures.removeIf(
+					.filter(f -> f.getFileName().toString().contains(openLibertyVersion) && resolvedFeatures.removeIf(
 							featureName -> featureName.equals(extractFeatureName(f.getFileName().toString()))))
 					.map(f -> f.toFile()).collect(Collectors.toList()));
 
@@ -181,8 +246,12 @@ public class MavenDirectoryInstall {
 		// repository. if there were any features not found, then use the maven artifact
 		// downloader to download those ESAs
 		logger.log(Level.FINE, "ESAs not found:" + resolvedFeatures);
+		if (!resolvedFeatures.isEmpty()) {
+			throw new InstallException("Could not find ESA files for: " + resolvedFeatures);
+		}
 		return foundEsas;
 	}
+
 
 	/**
 	 * Extracts the feature name and version from an ESA filepath, such as
