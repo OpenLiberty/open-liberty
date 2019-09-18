@@ -764,17 +764,30 @@ public class TargetsVisitorClassImpl extends ClassVisitor {
                 logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] [ {1} ] Class load", logParms);
             }
 
-            // This test cannot be used: JSP pre-compilation does not create the
-            // appropriate directory structure for generated classes.
+            // Problem here:
+            //
+            // JSP pre-compilation does not create the appropriate directory
+            // structure for generated classes.
+            //
+            // However, when a class is not in its appropriate location, a call to
+            // to detail the class information will fail to locate the class.
+            //
+            // That failure results in null class information, or results in artificial
+            // class information.  Neither will obtain the annotation which is expected
+            // to be present on the class.  That can lead to a null pointer exception
+            // at WebAppConfiguratorHelper.configureServletAnnotation:2414.
 
-//            if (!className.equals(getExternalName())) {
-//                if (logger.isLoggable(Level.FINER)) {
-//                    logger.logp(Level.FINER, CLASS_NAME, methodName,
-//                            "[ {0} ] Class name mismatch [ {1} ]",
-//                            new Object[] { getHashText(), className });
-//                }
-//                throw VISIT_ENDED_CLASS_MISMATCH;
-//            }
+            // Leaving this test in causes a failure of the servlet 3.1 tests;
+            // Removing this test cases failures in the EBA WAB fats.
+
+            if (!className.equals(getExternalName())) {
+                if (logger.isLoggable(Level.FINER)) {
+                    logger.logp(Level.FINER, CLASS_NAME, methodName,
+                            "[ {0} ] Class name mismatch [ {1} ]",
+                            new Object[] { getHashText(), className });
+                }
+                throw VISIT_ENDED_CLASS_MISMATCH;
+            }
 
             recordDefinition( classData.setClassName(ClassData.IS_CLASS, className) );
 
