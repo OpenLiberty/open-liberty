@@ -13,7 +13,7 @@
     <classloader commonLibraryRef="InfinispanLib"/>
   </application>
 
-  <httpSessionCache libraryRef="InfinispanLib"/>
+  <httpSessionCache libraryRef="InfinispanLib"/> <!-- TODO uri="file:${shared.resource.dir}/infinispan10/infinispan.xml"/> -->
 
   <httpSession hideSessionValues="false"/>
 
@@ -22,7 +22,7 @@
   -->
 
   <library id="InfinispanLib">
-    <fileset dir="${shared.resource.dir}/infinispan" includes="*.jar"/>
+    <fileset dir="${shared.resource.dir}/infinispan10" includes="*.jar"/>
   </library>
 
   <!-- Needed because the application uses Hazelcast directly   -->
@@ -64,7 +64,7 @@
   <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.sun.net.www.protocol.wsjar"/>
 
   <javaPermission codebase="${shared.resource.dir}/hazelcast/hazelcast.jar" className="java.security.AllPermission"/>
-  <javaPermission codebase="${shared.resource.dir}/infinispan/*" className="java.security.AllPermission"/>
+  <javaPermission codebase="${shared.resource.dir}/infinispan10/*" className="java.security.AllPermission"/>
 
   <!-- Allow the application to access OSGi service registry in order to obtain the CacheManager instance that is used by sessionCache feature -->
   <javaPermission codebase="${server.config.dir}/apps/sessionCacheConfigApp.war" className="org.osgi.framework.AdminPermission" name="*" actions="*"/>
