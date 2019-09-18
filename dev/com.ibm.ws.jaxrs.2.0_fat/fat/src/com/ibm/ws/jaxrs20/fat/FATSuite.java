@@ -38,6 +38,7 @@ import com.ibm.ws.jaxrs20.fat.jackson1x.JacksonPOJOwithUserJacksonLib1xTest;
 import com.ibm.ws.jaxrs20.fat.jackson2x.JacksonPOJOwithUserJacksonLib2xTest;
 import com.ibm.ws.jaxrs20.fat.jacksonJsonIgnore.JacksonJsonIgnoreTest;
 import com.ibm.ws.jaxrs20.fat.json.UTF8Test;
+import com.ibm.ws.jaxrs20.fat.link.LinkHeaderTest;
 import com.ibm.ws.jaxrs20.fat.managedbeans.ManagedBeansTest;
 import com.ibm.ws.jaxrs20.fat.paramconverter.ParamConverterTest;
 import com.ibm.ws.jaxrs20.fat.params.ParamsTest;
@@ -88,6 +89,7 @@ import componenttest.rules.repeater.RepeatTests;
                 JAXRSValidationDisabledTest.class,
                 JAXRSWebContainerTest.class,
                 JerseyTest.class,
+                LinkHeaderTest.class,
                 ManagedBeansTest.class,
                 ParamConverterTest.class,
                 ParamsTest.class,
