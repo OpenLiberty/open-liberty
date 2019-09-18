@@ -11,12 +11,15 @@
 
 configurations {
   caffeine
+  gson
   infinispanCommons
   infinispanCore
   infinispanJCache
   infinispanJCacheCommons
-  infinispanProtoStream
   jbossLogging
+  jGroups
+  protoparser
+  protostream
   reactiveStreams
   rxjava
 }
@@ -24,12 +27,15 @@ configurations {
 // Define G:A:V coordinates of each dependency
 dependencies {
   caffeine 'com.github.ben-manes.caffeine:caffeine:2.8.0'
+  gson 'com.google.code.gson:gson:2.8.2'
   infinispanCommons 'org.infinispan:infinispan-commons:10.0.0.CR1'
   infinispanCore 'org.infinispan:infinispan-core:10.0.0.CR1'
   infinispanJCache 'org.infinispan:infinispan-jcache:10.0.0.CR1'
   infinispanJCacheCommons 'org.infinispan:infinispan-jcache-commons:10.0.0.CR1'
-  infinispanProtoStream 'org.infinispan.protostream:protostream:4.3.0.Alpha11'
+  protoparser 'com.squareup:protoparser:4.0.3'
+  protostream 'org.infinispan.protostream:protostream:4.3.0.Alpha11'
   jbossLogging 'org.jboss.logging:jboss-logging:3.3.2.Final'
+  jGroups 'org.jgroups:jgroups:4.1.2.Final'
   reactiveStreams 'org.reactivestreams:reactive-streams:1.0.2'
   rxjava 'io.reactivex.rxjava2:rxjava:2.2.6'
 }
@@ -38,6 +44,12 @@ task addCaffeineToSharedDir(type: Copy) {
   from configurations.caffeine
   into new File(autoFvtDir, 'publish/shared/resources/infinispan10')
   rename 'caffeine-*.jar', 'caffeine.jar'
+}
+
+task addGSONToSharedDir(type: Copy) {
+  from configurations.gson
+  into new File(autoFvtDir, 'publish/shared/resources/infinispan10')
+  rename 'gson-*.jar', 'gson.jar'
 }
 
 task addInfinispanCommonsToSharedDir(type: Copy) {
@@ -64,16 +76,28 @@ task addInfinispanJCacheCommonsToSharedDir(type: Copy) {
   rename 'infinispan-jcache-commons-10.*.jar', 'infinispan-jcache-commons.jar'
 }
 
-task addInfinispanProtoStreamToSharedDir(type: Copy) {
-  from configurations.infinispanProtoStream
-  into new File(autoFvtDir, 'publish/shared/resources/infinispan10')
-  rename 'protostream-*.jar', 'protostream.jar'
-}
-
 task addJbossLoggingToSharedDir(type: Copy) {
   from configurations.jbossLogging
   into new File(autoFvtDir, 'publish/shared/resources/infinispan10')
   rename 'jboss-logging-*.jar', 'jboss-logging.jar'
+}
+
+task addJGroupsToSharedDir(type: Copy) {
+  from configurations.jGroups
+  into new File(autoFvtDir, 'publish/shared/resources/infinispan10')
+  rename 'jgroups-*.jar', 'jgroups.jar'
+}
+
+task addProtoParserToSharedDir(type: Copy) {
+  from configurations.protoparser
+  into new File(autoFvtDir, 'publish/shared/resources/infinispan10')
+  rename 'protoparser-*.jar', 'protoparser.jar'
+}
+
+task addProtoStreamToSharedDir(type: Copy) {
+  from configurations.protostream
+  into new File(autoFvtDir, 'publish/shared/resources/infinispan10')
+  rename 'protostream-*.jar', 'protostream.jar'
 }
 
 task addReactiveStreamsToSharedDir(type: Copy) {
@@ -90,12 +114,15 @@ task addRxJavaToSharedDir(type: Copy) {
 
 addRequiredLibraries {
   dependsOn addCaffeineToSharedDir
+  dependsOn addGSONToSharedDir
   dependsOn addInfinispanCommonsToSharedDir
   dependsOn addInfinispanCoreToSharedDir
   dependsOn addInfinispanJCacheToSharedDir
   dependsOn addInfinispanJCacheCommonsToSharedDir
-  dependsOn addInfinispanProtoStreamToSharedDir
   dependsOn addJbossLoggingToSharedDir
+  dependsOn addJGroupsToSharedDir
+  dependsOn addProtoParserToSharedDir
+  dependsOn addProtoStreamToSharedDir
   dependsOn addReactiveStreamsToSharedDir
   dependsOn addRxJavaToSharedDir
 }
