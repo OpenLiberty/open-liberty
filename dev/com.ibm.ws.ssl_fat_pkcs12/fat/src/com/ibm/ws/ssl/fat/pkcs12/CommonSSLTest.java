@@ -24,6 +24,7 @@ import org.junit.Rule;
 import org.junit.rules.TestName;
 
 import com.ibm.websphere.simplicity.Machine;
+import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.webcontainer.security.test.servlets.SSLBasicAuthClient;
@@ -310,4 +311,51 @@ public abstract class CommonSSLTest {
         // if we make it here something is wrong with cert and
         return false;
     }
+
+    /**
+     * @param ext
+     * @param subject
+     * @param hostname
+     * @return
+     */
+    protected int createTestCert(LibertyServer libertyServer, String subject, String ext) {
+
+        ProgramOutput po = null;
+        String subjectDN = "CN=nohost,O=ibm,C=us";
+        String extension = "BC=ca:true";
+
+        if (subject != null)
+            subjectDN = subject;
+
+        if (ext != null)
+            extension = ext;
+
+        try {
+            po = libertyServer.getMachine().execute(System.getProperty("java.home") + "/bin/keytool",
+                                                    new String[] { "-genKeyPair",
+                                                                   "-keystore", server.getServerRoot() + "/resources/security/key.p12",
+                                                                   "-alias", "default",
+                                                                   "-storepass", "password",
+                                                                   "-keypass", "password",
+                                                                   "-keyalg", "RSA",
+                                                                   "-sigalg", "sha256withRSA",
+                                                                   "-keysize", "2048",
+                                                                   "-storetype", "PKCS12",
+                                                                   "-dname", subjectDN,
+                                                                   "-ext", extension
+                                                    },
+                                                    server.getServerRoot(),
+                                                    null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        Log.info(c, name.getMethodName(), "genKeyPair RC: " + po.getReturnCode());
+        Log.info(c, name.getMethodName(), "genKeyPair stdout:\n" + po.getStdout());
+        Log.info(c, name.getMethodName(), "genKeyPair stderr:\n" + po.getStderr());
+
+        return po.getReturnCode();
+
+    }
+
 }
