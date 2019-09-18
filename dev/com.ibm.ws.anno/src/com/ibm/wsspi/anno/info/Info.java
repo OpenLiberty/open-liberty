@@ -37,49 +37,27 @@ import com.ibm.websphere.ras.TraceComponent;
  * 
  * {@link AnnotationInfo} {@link AnnotationValue}
  * 
- * <p>A single type is provided to represent a simplified method
- * descriptor. This is used for fast method lookups:</p>
- * 
- * {@link MethodInfoDescriptorInterface}
- * 
  * <p>A number of implementation details are surfaced through the
  * interface. That is, classes are further typed as array and primitive
  * classes. Also, the class interface exposes limited knowledge of
  * the persistence state of a particular class, as expressed through
  * proxy and non-proxy classes.</p>
  * 
- * <p>Several operations provide parameter based variations. Most typical,
- * an operation may provide a variation that accepts a string parameter,
- * another variation that accepts a class object parameter, and a third variation
- * that access a java class parameter. For example, {@link #isAnnotationPresent(String)}, {@link #isAnnotationPresent(ClassInfo), and {@link #isAnnotationPresent(Class)}.
- * These are related by name. That is, the following are equivalent:</p>
- * 
- * <code>
- * isAnnotationPresent( "javax.ejb.EJB" );
- * isAnnotationPresent( classInfo.getName() );
- * isAnnotationPresent( javax.ejb.EJB.class.getName() );
- * </code>
- * 
- * <p>That is, if <code>classInfo</code> is the class object for the class
- * <code>javax.ejb.EJB</code>.</p>
- * 
  * <p>Any info object, including annotation objects, may have annotations. In addition,
  * class objects may have annotations through their methods and fields. An info object
  * may have annotations which were declared on that object, and may have annotations
  * which are present by annotation inheritance.</p>
- * 
- * <p/>
  * 
  * <p>Model notes:</p>
  * 
  * <p>On the relationship of info objects to their annotations:</p>
  * 
  * <pre>
- * [ Info ] 1 -> * [ AnnotationInfo ]
+ * [ Info ] 1 - * [ AnnotationInfo ]
  * I.getDeclaredAnnotations()
  * A.getDeclaringInfo()
  * 
- * [ Info ] + -> * [ AnnotationInfo ]
+ * [ Info ] + - * [ AnnotationInfo ]
  * I.getAnnotations()
  * A.getFoundInfo()
  * </pre>
@@ -122,12 +100,12 @@ import com.ibm.websphere.ras.TraceComponent;
  * 
  * <p>Here a class info object may represent either a java interface, or a java class.</p>
  * <pre>
- * [ ClassInfo ] 1 -> * [ MethodInfo ]
+ * [ ClassInfo ] 1 - * [ MethodInfo ]
  * 
  * C.getDeclaredMethods()
  * M.getDeclaringClass()
  * 
- * [ ClassInfo ] + -> * [ MethodInfo ]
+ * [ ClassInfo ] + - * [ MethodInfo ]
  * 
  * C.getMethods()
  * M.getFoundClasses()
@@ -149,12 +127,12 @@ import com.ibm.websphere.ras.TraceComponent;
  * further discussion:</p>
  * 
  * <pre>
- * [ ClassInfo ] 1 -> * [ FieldInfo ]
+ * [ ClassInfo ] 1 - * [ FieldInfo ]
  * 
  * C.getDeclaredFields()
  * F.getDeclaringClass()
  * 
- * [ ClassInfo ] + -> * [ FieldInfo ]
+ * [ ClassInfo ] + - * [ FieldInfo ]
  * 
  * C.getFields()
  * F.getFoundClasses()
@@ -231,7 +209,7 @@ public interface Info {
      * @return True if this info object was declared as public. Otherwise, false.
      * 
      * @see #getModifiers()
-     * @see java.lang.reflect.Modifiers#PUBLIC
+     * @see java.lang.reflect.Modifier#PUBLIC
      */
     public boolean isPublic();
 
@@ -241,7 +219,7 @@ public interface Info {
      * @return True if this info object was declared as protected. Otherwise, false.
      * 
      * @see #getModifiers()
-     * @see java.lang.reflect.Modifiers#PROTECTED
+     * @see java.lang.reflect.Modifier#PROTECTED
      */
     public boolean isProtected();
 
@@ -256,7 +234,7 @@ public interface Info {
      * @return True if this info object was declared as private. Otherwise, false.
      * 
      * @see #getModifiers()
-     * @see java.lang.reflect.Modifiers#PRIVATE
+     * @see java.lang.reflect.Modifier#PRIVATE
      */
     public boolean isPrivate();
 

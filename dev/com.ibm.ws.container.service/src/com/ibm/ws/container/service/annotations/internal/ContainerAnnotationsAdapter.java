@@ -77,6 +77,11 @@ public class ContainerAnnotationsAdapter implements ContainerAdapter<ContainerAn
             throw new UnableToAdaptException(msg);
         }
 
+        if ( com.ibm.ws.container.service.annocache.AnnotationsBetaHelper.getLibertyBeta() ) {
+            Tr.warning(tc, "Unconverted adapt to container annotations");
+            (new Throwable("Unconverted adapt to container annotations")).printStackTrace(System.out);
+        }
+
         return new ContainerAnnotationsImpl(root, rootOverlay, artifactContainer, containerToAdapt, annotationService);
     }
 
