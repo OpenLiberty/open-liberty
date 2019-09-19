@@ -59,29 +59,4 @@ public class BuilderTestValidationUtils extends TestValidationUtils {
 
     }
 
-    //    /**
-    //     * Get the requested part from a JWT token string - convert it to a JSON object
-    //     *
-    //     * @param jwt_token
-    //     *            - the JWT token string to get part of
-    //     * @param index
-    //     *            - the portion of the token to return
-    //     * @return - the correct portion as a json object
-    //     * @throws Exception
-    //     */
-    //    public JSONObject getJSONOjbectPart(String jwt_token, int index) throws Exception {
-    //        String[] jwt_token_parts;
-    //        String thisMethod = "getJSONOjbectPart";
-    //
-    //        jwt_token_parts = jwt_token.split("\\.");
-    //        if (jwt_token_parts == null) {
-    //            throw new Exception("Failed splitting token");
-    //        }
-    //
-    //        JSONObject jsonInfo = JSONObject.parse(new String(Base64.decodeBase64(jwt_token_parts[index])));
-    //
-    //        return jsonInfo;
-    //
-    //    }
-
 }

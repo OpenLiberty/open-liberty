@@ -17,8 +17,8 @@ import org.junit.runner.RunWith;
 import com.gargoylesoftware.htmlunit.Page;
 import com.ibm.ws.security.fat.common.CommonSecurityFat;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
-import com.ibm.ws.security.fat.common.jwt.ClaimConstants;
 import com.ibm.ws.security.fat.common.jwt.JWTTokenBuilder;
+import com.ibm.ws.security.fat.common.jwt.PayloadConstants;
 import com.ibm.ws.security.fat.common.jwt.utils.JwtTokenBuilderUtils;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 
@@ -154,7 +154,7 @@ public abstract class ConsumeMangledJWTTests extends CommonSecurityFat {
     @Test
     public void ConsumeMangledJWTTests_Missing_iss_disableIssCheckingFalse() throws Exception {
 
-        builder.unsetClaim(ClaimConstants.ISSUER);
+        builder.unsetClaim(PayloadConstants.ISSUER);
         String badJwtToken = buildToken();
 
         Expectations expectations = buildNegativeAttributeExpectations(getIssuerNotTrustedMsg() + ".+\\[null\\]");
@@ -238,7 +238,7 @@ public abstract class ConsumeMangledJWTTests extends CommonSecurityFat {
     @Test
     public void ConsumeMangledJWTTests_Missing_sub_NotMapped() throws Exception {
 
-        builder.unsetClaim(ClaimConstants.SUBJECT);
+        builder.unsetClaim(PayloadConstants.SUBJECT);
 
         String updatedJwtToken = buildToken();
 
@@ -314,7 +314,7 @@ public abstract class ConsumeMangledJWTTests extends CommonSecurityFat {
     @Test
     public void ConsumeMangledJWTTests_Missing_exp() throws Exception {
 
-        builder.unsetClaim(ClaimConstants.EXPIRATION_TIME);
+        builder.unsetClaim(PayloadConstants.EXPIRATION_TIME);
 
         String updatedJwtToken = buildToken();
 
@@ -335,8 +335,8 @@ public abstract class ConsumeMangledJWTTests extends CommonSecurityFat {
     @Test
     public void ConsumeMangledJWTTests_Bad_exp() throws Exception {
 
-        builder.unsetClaim(ClaimConstants.EXPIRATION_TIME);
-        builder.setClaim(ClaimConstants.EXPIRATION_TIME, badString);
+        builder.unsetClaim(PayloadConstants.EXPIRATION_TIME);
+        builder.setClaim(PayloadConstants.EXPIRATION_TIME, badString);
 
         String updatedJwtToken = buildToken();
 
@@ -356,7 +356,7 @@ public abstract class ConsumeMangledJWTTests extends CommonSecurityFat {
     @Test
     public void ConsumeMangledJWTTests_Missing_iat() throws Exception {
 
-        builder.unsetClaim(ClaimConstants.ISSUED_AT);
+        builder.unsetClaim(PayloadConstants.ISSUED_AT);
 
         String updatedJwtToken = buildToken();
 
@@ -377,8 +377,8 @@ public abstract class ConsumeMangledJWTTests extends CommonSecurityFat {
     @Test
     public void ConsumeMangledJWTTests_Bad_iat() throws Exception {
 
-        builder.unsetClaim(ClaimConstants.ISSUED_AT);
-        builder.setClaim(ClaimConstants.ISSUED_AT, badString);
+        builder.unsetClaim(PayloadConstants.ISSUED_AT);
+        builder.setClaim(PayloadConstants.ISSUED_AT, badString);
 
         String updatedJwtToken = buildToken();
 
@@ -441,7 +441,7 @@ public abstract class ConsumeMangledJWTTests extends CommonSecurityFat {
     public void ConsumeMangledJWTTests_Missing_aud() throws Exception {
 
         // remove the audience from the token
-        builder.unsetClaim(ClaimConstants.AUDIENCE);
+        builder.unsetClaim(PayloadConstants.AUDIENCE);
 
         String updatedJwtToken = buildToken();
 
@@ -508,7 +508,7 @@ public abstract class ConsumeMangledJWTTests extends CommonSecurityFat {
         String updatedJwtToken = buildToken();
 
         Expectations expectations = addGoodResponseAndClaimsExpectations(currentAction, builder);
-        expectations = updateExpectationsForJsonAttribute(expectations, ClaimConstants.JWT_ID, builder.getRawClaims().getStringClaimValue(ClaimConstants.JWT_ID));
+        expectations = updateExpectationsForJsonAttribute(expectations, PayloadConstants.JWT_ID, builder.getRawClaims().getStringClaimValue(PayloadConstants.JWT_ID));
 
         Page response = consumeToken(updatedJwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -533,7 +533,7 @@ public abstract class ConsumeMangledJWTTests extends CommonSecurityFat {
         String jwtToken = buildToken();
 
         Expectations expectations = addGoodResponseAndClaimsExpectations(currentAction, builder);
-        expectations = updateExpectationsForJsonAttribute(expectations, ClaimConstants.JWT_ID, builder.getRawClaims().getStringClaimValue(ClaimConstants.JWT_ID));
+        expectations = updateExpectationsForJsonAttribute(expectations, PayloadConstants.JWT_ID, builder.getRawClaims().getStringClaimValue(PayloadConstants.JWT_ID));
 
         Page response = consumeToken(jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -559,7 +559,7 @@ public abstract class ConsumeMangledJWTTests extends CommonSecurityFat {
         String secondJwtToken = buildToken();
 
         Expectations expectations = addGoodResponseAndClaimsExpectations(currentAction, builder);
-        expectations = updateExpectationsForJsonAttribute(expectations, ClaimConstants.JWT_ID, builder.getRawClaims().getStringClaimValue(ClaimConstants.JWT_ID));
+        expectations = updateExpectationsForJsonAttribute(expectations, PayloadConstants.JWT_ID, builder.getRawClaims().getStringClaimValue(PayloadConstants.JWT_ID));
 
         Page response = consumeToken(firstJwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -584,25 +584,25 @@ public abstract class ConsumeMangledJWTTests extends CommonSecurityFat {
         // create unique jwt tokens - each using the same builder, but each having a unique jti
         builder.setGeneratedJwtId();
         Expectations goodExpectations1 = addGoodResponseAndClaimsExpectations(currentAction, builder);
-        goodExpectations1 = updateExpectationsForJsonAttribute(goodExpectations1, ClaimConstants.JWT_ID, builder.getRawClaims().getStringClaimValue(ClaimConstants.JWT_ID));
+        goodExpectations1 = updateExpectationsForJsonAttribute(goodExpectations1, PayloadConstants.JWT_ID, builder.getRawClaims().getStringClaimValue(PayloadConstants.JWT_ID));
         Expectations reusedExpectations1 = buildNegativeAttributeExpectations(getJtiReusedMsg());
         String firstJwtToken = buildToken();
 
         builder.setGeneratedJwtId();
         Expectations goodExpectations2 = addGoodResponseAndClaimsExpectations(currentAction, builder);
-        goodExpectations2 = updateExpectationsForJsonAttribute(goodExpectations2, ClaimConstants.JWT_ID, builder.getRawClaims().getStringClaimValue(ClaimConstants.JWT_ID));
+        goodExpectations2 = updateExpectationsForJsonAttribute(goodExpectations2, PayloadConstants.JWT_ID, builder.getRawClaims().getStringClaimValue(PayloadConstants.JWT_ID));
         Expectations reusedExpectations2 = buildNegativeAttributeExpectations(getJtiReusedMsg());
         String secondJwtToken = buildToken();
 
         builder.setGeneratedJwtId();
         Expectations goodExpectations3 = addGoodResponseAndClaimsExpectations(currentAction, builder);
-        goodExpectations3 = updateExpectationsForJsonAttribute(goodExpectations3, ClaimConstants.JWT_ID, builder.getRawClaims().getStringClaimValue(ClaimConstants.JWT_ID));
+        goodExpectations3 = updateExpectationsForJsonAttribute(goodExpectations3, PayloadConstants.JWT_ID, builder.getRawClaims().getStringClaimValue(PayloadConstants.JWT_ID));
         Expectations reusedExpectations3 = buildNegativeAttributeExpectations(getJtiReusedMsg());
         String thirdJwtToken = buildToken();
 
         builder.setGeneratedJwtId();
         Expectations goodExpectations4 = addGoodResponseAndClaimsExpectations(currentAction, builder);
-        goodExpectations4 = updateExpectationsForJsonAttribute(goodExpectations4, ClaimConstants.JWT_ID, builder.getRawClaims().getStringClaimValue(ClaimConstants.JWT_ID));
+        goodExpectations4 = updateExpectationsForJsonAttribute(goodExpectations4, PayloadConstants.JWT_ID, builder.getRawClaims().getStringClaimValue(PayloadConstants.JWT_ID));
         Expectations reusedExpectations4 = buildNegativeAttributeExpectations(getJtiReusedMsg());
         String fourthJwtToken = buildToken();
 
@@ -643,8 +643,8 @@ public abstract class ConsumeMangledJWTTests extends CommonSecurityFat {
         String longLivedJwtToken = buildToken();
 
         Expectations longLivedExpectations = addGoodResponseAndClaimsExpectations(currentAction, builder);
-        longLivedExpectations = updateExpectationsForJsonAttribute(longLivedExpectations, ClaimConstants.JWT_ID,
-                                                                   builder.getRawClaims().getStringClaimValue(ClaimConstants.JWT_ID));
+        longLivedExpectations = updateExpectationsForJsonAttribute(longLivedExpectations, PayloadConstants.JWT_ID,
+                                                                   builder.getRawClaims().getStringClaimValue(PayloadConstants.JWT_ID));
 
         builder.setExpirationTimeSecondsFromNow(-2500);
         String shortLivedJwtToken = buildToken();
@@ -673,14 +673,14 @@ public abstract class ConsumeMangledJWTTests extends CommonSecurityFat {
         builder.setGeneratedJwtId();
         String shorterJtiJwtToken = buildToken();
         Expectations shorterJtiExpectations = addGoodResponseAndClaimsExpectations(currentAction, builder);
-        shorterJtiExpectations = updateExpectationsForJsonAttribute(shorterJtiExpectations, ClaimConstants.JWT_ID,
-                                                                    builder.getRawClaims().getStringClaimValue(ClaimConstants.JWT_ID));
+        shorterJtiExpectations = updateExpectationsForJsonAttribute(shorterJtiExpectations, PayloadConstants.JWT_ID,
+                                                                    builder.getRawClaims().getStringClaimValue(PayloadConstants.JWT_ID));
 
-        builder.setJwtId(builder.getRawClaims().getStringClaimValue(ClaimConstants.JWT_ID) + "xx");
+        builder.setJwtId(builder.getRawClaims().getStringClaimValue(PayloadConstants.JWT_ID) + "xx");
         String longerJtiJwtToken = buildToken();
         Expectations longerJtiExpectations = addGoodResponseAndClaimsExpectations(currentAction, builder);
-        longerJtiExpectations = updateExpectationsForJsonAttribute(longerJtiExpectations, ClaimConstants.JWT_ID,
-                                                                   builder.getRawClaims().getStringClaimValue(ClaimConstants.JWT_ID));
+        longerJtiExpectations = updateExpectationsForJsonAttribute(longerJtiExpectations, PayloadConstants.JWT_ID,
+                                                                   builder.getRawClaims().getStringClaimValue(PayloadConstants.JWT_ID));
 
         // start with the longer length jti - show that the token works
         Page longerJtiResponse = consumeToken(longerJtiJwtToken);
@@ -707,14 +707,14 @@ public abstract class ConsumeMangledJWTTests extends CommonSecurityFat {
         builder.setGeneratedJwtId();
         String shorterJtiJwtToken = buildToken();
         Expectations shorterJtiExpectations = addGoodResponseAndClaimsExpectations(currentAction, builder);
-        shorterJtiExpectations = updateExpectationsForJsonAttribute(shorterJtiExpectations, ClaimConstants.JWT_ID,
-                                                                    builder.getRawClaims().getStringClaimValue(ClaimConstants.JWT_ID));
+        shorterJtiExpectations = updateExpectationsForJsonAttribute(shorterJtiExpectations, PayloadConstants.JWT_ID,
+                                                                    builder.getRawClaims().getStringClaimValue(PayloadConstants.JWT_ID));
 
-        builder.setJwtId(builder.getRawClaims().getStringClaimValue(ClaimConstants.JWT_ID) + "xx");
+        builder.setJwtId(builder.getRawClaims().getStringClaimValue(PayloadConstants.JWT_ID) + "xx");
         String longerJtiJwtToken = buildToken();
         Expectations longerJtiExpectations = addGoodResponseAndClaimsExpectations(currentAction, builder);
-        longerJtiExpectations = updateExpectationsForJsonAttribute(longerJtiExpectations, ClaimConstants.JWT_ID,
-                                                                   builder.getRawClaims().getStringClaimValue(ClaimConstants.JWT_ID));
+        longerJtiExpectations = updateExpectationsForJsonAttribute(longerJtiExpectations, PayloadConstants.JWT_ID,
+                                                                   builder.getRawClaims().getStringClaimValue(PayloadConstants.JWT_ID));
 
         // use the token with the slightly shorter jti - show that the token works
         Page shorterJtiResponse = consumeToken(shorterJtiJwtToken);
@@ -757,11 +757,11 @@ public abstract class ConsumeMangledJWTTests extends CommonSecurityFat {
     @Test
     public void ConsumeMangledJWTTests_nonce() throws Exception {
 
-        builder.setClaim(ClaimConstants.NONCE, someString);
+        builder.setClaim(PayloadConstants.NONCE, someString);
         String jwtToken = buildToken();
 
         Expectations expectations = addGoodResponseAndClaimsExpectations(currentAction, builder);
-        expectations = updateExpectationsForJsonAttribute(expectations, ClaimConstants.NONCE, someString);
+        expectations = updateExpectationsForJsonAttribute(expectations, PayloadConstants.NONCE, someString);
 
         Page response = consumeToken(jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -777,11 +777,11 @@ public abstract class ConsumeMangledJWTTests extends CommonSecurityFat {
     @Test
     public void ConsumeMangledJWTTests_at_hash() throws Exception {
 
-        builder.setClaim(ClaimConstants.AT_HASH, someString);
+        builder.setClaim(PayloadConstants.AT_HASH, someString);
         String jwtToken = buildToken();
 
         Expectations expectations = addGoodResponseAndClaimsExpectations(currentAction, builder);
-        expectations = updateExpectationsForJsonAttribute(expectations, ClaimConstants.AT_HASH, someString);
+        expectations = updateExpectationsForJsonAttribute(expectations, PayloadConstants.AT_HASH, someString);
 
         Page response = consumeToken(jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -797,11 +797,11 @@ public abstract class ConsumeMangledJWTTests extends CommonSecurityFat {
     @Test
     public void ConsumeMangledJWTTests_typ() throws Exception {
 
-        builder.setClaim(ClaimConstants.TYPE, someString);
+        builder.setClaim(PayloadConstants.TYPE, someString);
         String jwtToken = buildToken();
 
         Expectations expectations = addGoodResponseAndClaimsExpectations(currentAction, builder);
-        expectations = updateExpectationsForJsonAttribute(expectations, ClaimConstants.TYPE, someString);
+        expectations = updateExpectationsForJsonAttribute(expectations, PayloadConstants.TYPE, someString);
 
         Page response = consumeToken(jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -817,11 +817,11 @@ public abstract class ConsumeMangledJWTTests extends CommonSecurityFat {
     @Test
     public void ConsumeMangledJWTTests_azp() throws Exception {
 
-        builder.setClaim(ClaimConstants.AUTHORIZED_PARTY, builder.getRawClaims().getIssuer());
+        builder.setClaim(PayloadConstants.AUTHORIZED_PARTY, builder.getRawClaims().getIssuer());
         String jwtToken = buildToken();
 
         Expectations expectations = addGoodResponseAndClaimsExpectations(currentAction, builder);
-        expectations = updateExpectationsForJsonAttribute(expectations, ClaimConstants.AUTHORIZED_PARTY, builder.getRawClaims().getIssuer());
+        expectations = updateExpectationsForJsonAttribute(expectations, PayloadConstants.AUTHORIZED_PARTY, builder.getRawClaims().getIssuer());
 
         Page response = consumeToken(jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);

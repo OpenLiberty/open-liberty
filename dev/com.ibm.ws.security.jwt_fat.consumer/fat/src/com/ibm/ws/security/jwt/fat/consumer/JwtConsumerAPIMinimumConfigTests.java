@@ -54,7 +54,7 @@ public class JwtConsumerAPIMinimumConfigTests extends CommonSecurityFat {
 
         serverTracker.addServer(consumerServer);
         consumerServer.startServerUsingExpandedConfiguration("server_minimumConfig.xml");
-        SecurityFatHttpUtils.saveServerPorts(consumerServer, JWTConsumerConstants.BVT_SERVER_1_PORT_NAME_ROOT);
+        SecurityFatHttpUtils.saveServerPorts(consumerServer, JwtConsumerConstants.BVT_SERVER_1_PORT_NAME_ROOT);
 
     }
 

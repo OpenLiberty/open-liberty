@@ -12,26 +12,19 @@ package com.ibm.ws.jaxrs.fat.jwtconsumerclient;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Arrays;
 import java.util.Base64;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.jose4j.json.JsonUtil;
-
-import com.ibm.json.java.JSONObject;
-import com.ibm.websphere.security.jwt.Claims;
 import com.ibm.websphere.security.jwt.InvalidConsumerException;
 import com.ibm.websphere.security.jwt.JwtBuilder;
 import com.ibm.websphere.security.jwt.JwtConsumer;
 import com.ibm.websphere.security.jwt.JwtToken;
-import com.ibm.ws.security.jwt.fat.consumer.JWTConsumerConstants;
+import com.ibm.ws.security.fat.common.jwt.utils.JWTApiApplicationUtils;
+import com.ibm.ws.security.jwt.fat.consumer.JwtConsumerConstants;
 
 /**
  * Test application to run the jwtConsumer Apis.
@@ -44,6 +37,7 @@ public class JwtConsumerClient extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
     private static final String newLine = System.getProperty("line.separator");
+    protected JWTApiApplicationUtils appUtils = new JWTApiApplicationUtils();
 
     protected JwtBuilder myJwtBuilder = null;
     protected JwtConsumer myJwtConsumer = null;
@@ -83,171 +77,67 @@ public class JwtConsumerClient extends HttpServlet {
 
     protected void doWorker(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         System.out.println("Got into the JWT Consumer Client");
-        outputParameters(request);
+        appUtils.outputParameters(request);
 
         runConsumer(request, response);
     }
 
     private void runConsumer(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        configId = getSpecialValue(request.getParameter(JWTConsumerConstants.JWT_CONSUMER_PARAM_CLIENT_ID));
-        String tokenParam = getSpecialValue(request.getParameter(JWTConsumerConstants.JWT_CONSUMER_PARAM_JWT));
+        configId = getSpecialValue(request.getParameter(JwtConsumerConstants.JWT_CONSUMER_PARAM_CLIENT_ID));
+        String tokenParam = getSpecialValue(request.getParameter(JwtConsumerConstants.JWT_CONSUMER_PARAM_JWT));
 
-        outputEntry(response);
+        pw = appUtils.outputEntry(response, JwtConsumerConstants.JWT_CONSUMER_ENDPOINT);
 
         try {
             myJwtConsumer = createConsumer(configId);
             if (myJwtConsumer == null) {
                 throw new Exception("Could not create JwtConsumer object for id [" + configId + "].");
             }
-            logIt("Successfully created consumer for id [" + configId + "]");
+            appUtils.logIt(pw, "Successfully created consumer for id [" + configId + "]");
 
             outputTokenJson(tokenParam);
 
             JwtToken token = myJwtConsumer.createJwt(tokenParam);
-            logIt(JWTConsumerConstants.BUILT_JWT_TOKEN + ((token == null) ? null : token.compact()));
+            appUtils.logIt(pw, JwtConsumerConstants.BUILT_JWT_TOKEN + ((token == null) ? null : token.compact()));
 
-            outputHeader(JWTConsumerConstants.JWT_BUILDER_HEADER, token);
-            outputClaims(JWTConsumerConstants.JWT_CONSUMER_CLAIM, token);
+            appUtils.outputHeader(pw, JwtConsumerConstants.JWT_TOKEN_HEADER, token);
+            appUtils.outputClaims(pw, JwtConsumerConstants.JWT_CONSUMER_CLAIM, token);
 
         } catch (Exception e) {
-            handleException(response, e);
+            appUtils.handleException(pw, response, e);
         }
-        outputExit();
-    }
-
-    /**
-     * Output the Base64-decoded header from the provided token. Each key and value within the header is individually output to
-     * aid validation.
-     *
-     * @param prefixMsg
-     * @param token
-     * @throws IOException
-     */
-    protected void outputHeader(String prefixMsg, JwtToken token) throws IOException {
-        if (token == null) {
-            logIt(prefixMsg + null);
-            return;
-        }
-        String tokenString = token.compact();
-        String[] tokenParts = tokenString.split("\\.");
-        if (tokenParts == null) {
-            logIt(prefixMsg + JWTConsumerConstants.JWT_CONSUMER_TOKEN_HEADER_MALFORMED + tokenString);
-            return;
-        }
-
-        String decodedHeader = new String(Base64.getDecoder().decode(tokenParts[0]), "UTF-8");
-        logIt(prefixMsg + JWTConsumerConstants.JWT_BUILDER_JSON + decodedHeader);
-
-        JSONObject headerInfo = JSONObject.parse(decodedHeader);
-        @SuppressWarnings("unchecked")
-        Set<String> jKeys = headerInfo.keySet();
-        for (String key : jKeys) {
-            logIt(prefixMsg + JWTConsumerConstants.JWT_CONSUMER_TOKEN_HEADER_JSON + JWTConsumerConstants.JWT_BUILDER_KEY + key + " " + JWTConsumerConstants.JWT_BUILDER_VALUE + headerInfo.get(key));
-        }
-    }
-
-    /**
-     * Outputs all of the claims contained in the provided token. The individual claims are output in addition to the full JSON
-     * representation of the token claims.
-     *
-     * @param prefixMsg
-     * @param token
-     * @throws Exception
-     */
-    protected void outputClaims(String prefixMsg, JwtToken token) throws Exception {
-        if (token == null) {
-            logIt(prefixMsg + JWTConsumerConstants.JWT_BUILDER_NO_TOKEN);
-            return;
-        }
-
-        Claims theClaims = token.getClaims();
-        if (theClaims == null) {
-            logIt(prefixMsg + JWTConsumerConstants.JWT_BUILDER_NO_CLAIMS);
-            return;
-        }
-
-        logIt(prefixMsg + JWTConsumerConstants.JWT_BUILDER_ISSUER + theClaims.getIssuer());
-        logIt(prefixMsg + JWTConsumerConstants.JWT_BUILDER_SUBJECT + theClaims.getSubject());
-        logIt(prefixMsg + JWTConsumerConstants.JWT_BUILDER_AUDIENCE + theClaims.getAudience());
-        logIt(prefixMsg + JWTConsumerConstants.JWT_BUILDER_EXPIRATION + theClaims.getExpiration());
-        logIt(prefixMsg + JWTConsumerConstants.JWT_BUILDER_NOTBEFORE + theClaims.getNotBefore());
-        logIt(prefixMsg + JWTConsumerConstants.JWT_BUILDER_ISSUED_AT + theClaims.getIssuedAt());
-        logIt(prefixMsg + JWTConsumerConstants.JWT_BUILDER_JWTID + theClaims.getJwtId());
-        logIt(prefixMsg + JWTConsumerConstants.JWT_BUILDER_AUTHORIZEDPARTY + theClaims.getAuthorizedParty());
-
-        // Print everything that is in the payload
-        String jString = theClaims.toJsonString();
-        logIt(prefixMsg + JWTConsumerConstants.JWT_BUILDER_JSON + jString);
-
-        if (jString != null) {
-            Map<String, Object> jObject = JsonUtil.parseJson(jString);
-            Set<String> jKeys = jObject.keySet();
-            for (String key : jKeys) {
-                logIt(prefixMsg + JWTConsumerConstants.JWT_BUILDER_JSON + JWTConsumerConstants.JWT_BUILDER_GETALLCLAIMS + JWTConsumerConstants.JWT_BUILDER_KEY + key + " " + JWTConsumerConstants.JWT_BUILDER_VALUE + jObject.get(key));
-            }
-        } else {
-            logIt(prefixMsg + JWTConsumerConstants.JWT_BUILDER_JSON + null);
-        }
+        appUtils.outputExit(pw, JwtConsumerConstants.JWT_CONSUMER_ENDPOINT);
     }
 
     /******************************************* Helper methods *******************************************/
-
-    private void outputParameters(HttpServletRequest request) {
-        Map<String, String[]> params = request.getParameterMap();
-        for (Entry<String, String[]> entry : params.entrySet()) {
-            System.out.println("Parm: " + entry.getKey() + "=" + Arrays.toString(entry.getValue()));
-        }
-    }
-
     private JwtConsumer createConsumer(String configId) throws InvalidConsumerException {
         if (configId != null) {
-            logIt("Using configId: " + configId);
+            appUtils.logIt(pw, "Using configId: " + configId);
             if (configId.equals(nullString)) {
                 myJwtConsumer = JwtConsumer.create(null);
             } else {
                 myJwtConsumer = JwtConsumer.create(configId);
             }
         } else {
-            logIt("Not specifying a configId");
+            appUtils.logIt(pw, "Not specifying a configId");
             myJwtConsumer = JwtConsumer.create();
         }
         return myJwtConsumer;
     }
 
-    private void handleException(HttpServletResponse response, Exception e) throws IOException {
-
-        System.out.println(e.getMessage());
-        logIt("Caught an exception calling external App: " + e.toString()); // this is probably expected
-        //pw.close(); // we cannot close it here since it affects the following. Instead of getting 500, we will end up receiving 200.
-        //        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-
-    }
-
-    private void outputEntry(HttpServletResponse response) throws IOException {
-        pw = response.getWriter();
-        response.setContentType("text/plain");
-        logIt("");
-        logIt("*******************  Start of JwtConsumerClient output  ******************* ");
-    }
-
-    private void outputExit() {
-        logIt("*******************  End of JwtConsumerClient output  ******************* ");
-        pw.close();
-    }
-
     private void outputTokenJson(String token) throws Exception {
         if (token == null || token.isEmpty()) {
-            logIt("Token string is null or empty");
+            appUtils.logIt(pw, "Token string is null or empty");
             return;
         }
         String[] tokenParts = token.split("\\.");
         for (int i = 0; i < tokenParts.length; i++) {
             try {
                 String decodedPart = new String(Base64.getDecoder().decode(tokenParts[i]), "UTF-8");
-                logIt("Token part[" + i + "]: " + decodedPart);
+                appUtils.logIt(pw, "Token part[" + i + "]: " + decodedPart);
             } catch (Exception e) {
-                logIt("Decoding token part [" + i + "] failed with" + e.getMessage());
+                appUtils.logIt(pw, "Decoding token part [" + i + "] failed with" + e.getMessage());
             }
         }
     }
@@ -258,10 +148,6 @@ public class JwtConsumerClient extends HttpServlet {
      * @param msg
      *            message to record
      */
-    protected void logIt(String msg) {
-        System.out.println(msg);
-        pw.print(msg + newLine);
-    }
 
     private String getSpecialValue(String specialString) {
         System.out.println("getSpecialValue: " + specialString);

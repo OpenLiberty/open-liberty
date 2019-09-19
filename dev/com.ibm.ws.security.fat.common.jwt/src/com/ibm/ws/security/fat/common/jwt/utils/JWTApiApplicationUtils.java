@@ -8,7 +8,7 @@
  * Contributors:
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.jwt.fat.builder;
+package com.ibm.ws.security.fat.common.jwt.utils;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -26,8 +26,10 @@ import org.jose4j.json.JsonUtil;
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.security.jwt.Claims;
 import com.ibm.websphere.security.jwt.JwtToken;
+import com.ibm.ws.security.fat.common.jwt.JwtConstants;
+import com.ibm.ws.security.fat.common.jwt.PayloadConstants;
 
-public class JWTApplicationUtils {
+public class JWTApiApplicationUtils {
 
     private static final String newLine = System.getProperty("line.separator");
 
@@ -52,11 +54,6 @@ public class JWTApplicationUtils {
      * @param msg
      *            message to record
      */
-    //    protected void logIt(String msg) {
-    //        System.out.println(msg);
-    //        pw.print(msg + newLine);
-    //    }
-
     public void handleException(PrintWriter pw, HttpServletResponse response, Exception e) throws IOException {
 
         System.out.println(e.getMessage());
@@ -97,37 +94,38 @@ public class JWTApplicationUtils {
      */
     public void outputClaims(PrintWriter pw, String prefixMsg, JwtToken token) throws Exception {
         if (token == null) {
-            logIt(pw, prefixMsg + JWTBuilderConstants.JWT_BUILDER_NO_TOKEN);
+            logIt(pw, prefixMsg + JwtConstants.NO_JWT_TOKEN);
             return;
         }
 
         Claims theClaims = token.getClaims();
         if (theClaims == null) {
-            logIt(pw, prefixMsg + JWTBuilderConstants.JWT_BUILDER_NO_CLAIMS);
+            logIt(pw, prefixMsg + JwtConstants.NO_JWT_CLAIMS);
             return;
         }
 
-        logIt(pw, prefixMsg + JWTBuilderConstants.JWT_BUILDER_ISSUER + theClaims.getIssuer());
-        logIt(pw, prefixMsg + JWTBuilderConstants.JWT_BUILDER_SUBJECT + theClaims.getSubject());
-        logIt(pw, prefixMsg + JWTBuilderConstants.JWT_BUILDER_AUDIENCE + theClaims.getAudience());
-        logIt(pw, prefixMsg + JWTBuilderConstants.JWT_BUILDER_EXPIRATION + theClaims.getExpiration());
-        logIt(pw, prefixMsg + JWTBuilderConstants.JWT_BUILDER_NOTBEFORE + theClaims.getNotBefore());
-        logIt(pw, prefixMsg + JWTBuilderConstants.JWT_BUILDER_ISSUED_AT + theClaims.getIssuedAt());
-        logIt(pw, prefixMsg + JWTBuilderConstants.JWT_BUILDER_JWTID + theClaims.getJwtId());
-        logIt(pw, prefixMsg + JWTBuilderConstants.JWT_BUILDER_AUTHORIZEDPARTY + theClaims.getAuthorizedParty());
+        logIt(pw, prefixMsg + PayloadConstants.ISSUER + ": " + theClaims.getIssuer());
+        logIt(pw, prefixMsg + PayloadConstants.SUBJECT + ": " + theClaims.getSubject());
+        logIt(pw, prefixMsg + PayloadConstants.AUDIENCE + ": " + theClaims.getAudience());
+        logIt(pw, prefixMsg + PayloadConstants.EXPIRATION_TIME + ": " + theClaims.getExpiration());
+        logIt(pw, prefixMsg + PayloadConstants.NOT_BEFORE + ": " + theClaims.getNotBefore());
+        logIt(pw, prefixMsg + PayloadConstants.ISSUED_AT + ": " + theClaims.getIssuedAt());
+        logIt(pw, prefixMsg + PayloadConstants.JWT_ID + ": " + theClaims.getJwtId());
+        logIt(pw, prefixMsg + PayloadConstants.AUTHORIZED_PARTY + ": " + theClaims.getAuthorizedParty());
 
         // Print everything that is in the payload
         String jString = theClaims.toJsonString();
-        logIt(pw, prefixMsg + JWTBuilderConstants.JWT_BUILDER_JSON + jString);
+        logIt(pw, prefixMsg + JwtConstants.JWT_JSON + jString);
 
         if (jString != null) {
             Map<String, Object> jObject = JsonUtil.parseJson(jString);
             Set<String> jKeys = jObject.keySet();
             for (String key : jKeys) {
-                logIt(pw, prefixMsg + JWTBuilderConstants.JWT_BUILDER_JSON + JWTBuilderConstants.JWT_BUILDER_GETALLCLAIMS + JWTBuilderConstants.JWT_BUILDER_KEY + key + " " + JWTBuilderConstants.JWT_BUILDER_VALUE + jObject.get(key));
+                logIt(pw, prefixMsg + JwtConstants.JWT_JSON + JwtConstants.JWT_GETALLCLAIMS + JwtConstants.JWT_CLAIM_KEY + key + " "
+                          + JwtConstants.JWT_CLAIM_VALUE + jObject.get(key));
             }
         } else {
-            logIt(pw, prefixMsg + JWTBuilderConstants.JWT_BUILDER_JSON + null);
+            logIt(pw, prefixMsg + JwtConstants.JWT_JSON + null);
         }
     }
 
@@ -147,18 +145,18 @@ public class JWTApplicationUtils {
         String tokenString = token.compact();
         String[] tokenParts = tokenString.split("\\.");
         if (tokenParts == null) {
-            logIt(pw, prefixMsg + JWTBuilderConstants.JWT_CONSUMER_TOKEN_HEADER_MALFORMED + tokenString);
+            logIt(pw, prefixMsg + JwtConstants.JWT_MALFORMED_TOKEN_HEADER + tokenString);
             return;
         }
 
         String decodedHeader = new String(Base64.getDecoder().decode(tokenParts[0]), "UTF-8");
-        logIt(pw, prefixMsg + JWTBuilderConstants.JWT_BUILDER_JSON + decodedHeader);
+        logIt(pw, prefixMsg + JwtConstants.JWT_JSON + decodedHeader);
 
         JSONObject headerInfo = JSONObject.parse(decodedHeader);
         @SuppressWarnings("unchecked")
         Set<String> jKeys = headerInfo.keySet();
         for (String key : jKeys) {
-            logIt(pw, prefixMsg + JWTBuilderConstants.JWT_CONSUMER_TOKEN_HEADER_JSON + JWTBuilderConstants.JWT_BUILDER_KEY + key + " " + JWTBuilderConstants.JWT_BUILDER_VALUE + headerInfo.get(key));
+            logIt(pw, prefixMsg + JwtConstants.JWT_TOKEN_HEADER_JSON + JwtConstants.JWT_CLAIM_KEY + key + " " + JwtConstants.JWT_CLAIM_VALUE + headerInfo.get(key));
         }
     }
 }

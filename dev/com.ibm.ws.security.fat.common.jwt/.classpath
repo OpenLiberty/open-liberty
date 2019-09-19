@@ -6,6 +6,5 @@
 	<classpathentry kind="src" path="test-applications/helloworld/src"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="/com.ibm.ws.org.jose4j/build/libs/com.ibm.ws.org.jose4j.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

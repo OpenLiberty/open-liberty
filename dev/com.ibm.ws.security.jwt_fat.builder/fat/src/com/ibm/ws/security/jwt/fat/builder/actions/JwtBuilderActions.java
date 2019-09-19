@@ -8,7 +8,7 @@
  * Contributors:
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.jwt.fat.buider.actions;
+package com.ibm.ws.security.jwt.fat.builder.actions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +20,8 @@ import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.actions.TestActions;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
-import com.ibm.ws.security.fat.common.web.WebResponseUtils;
 import com.ibm.ws.security.jwt.fat.builder.JWTBuilderConstants;
+import com.ibm.ws.security.jwt.fat.builder.utils.BuilderHelpers;
 
 import componenttest.topology.impl.LibertyServer;
 
@@ -81,9 +81,7 @@ public class JwtBuilderActions extends TestActions {
         if (builderId != null) {
             requestParms.add(new NameValuePair(JWTBuilderConstants.JWT_BUILDER_PARAM_BUILDER_ID, builderId));
         }
-        //        if (jwtToken != null) {
-        //            requestParms.add(new NameValuePair(JWTBuilderConstants.JWT_BUILDER_PARAM_JWT, jwtToken));
-        //        }
+
         if (parms != null) {
             for (NameValuePair parm : parms) {
                 Log.info(thisClass, "setRequestParm", "Setting: " + parm.getName() + " value: " + parm.getValue());
@@ -93,35 +91,24 @@ public class JwtBuilderActions extends TestActions {
         return requestParms;
     }
 
-    public String extractJwtTokenFromResponse(Object response, String tokenString) throws Exception {
-        String thisMethod = "extractJwtTokenFromResponse";
-        String method = "extractJwtTokenFromResponse";
+    public Page invokeProtectedAppWithJwtTokenAsParm(String testcase, Object response, String app) throws Exception {
+        // pull out the token and then invoke the app on the RS server
+        String jwtToken = BuilderHelpers.extractJwtTokenFromResponse(response, JWTBuilderConstants.BUILT_JWT_TOKEN);
 
-        try {
-            String fullResponse = WebResponseUtils.getResponseText(response);
-            String[] responseLines = fullResponse.split(System.getProperty("line.separator"));
-            String jwtTokenString = null;
-            for (String line : responseLines) {
-                if (line.contains(tokenString)) {
-                    jwtTokenString = line.trim().substring(line.indexOf(tokenString) + tokenString.length());
-                    Log.info(thisClass, thisMethod, "Found: " + tokenString + " set to: " + jwtTokenString);
-                }
-            }
-            return jwtTokenString;
-        } catch (Exception e) {
-            Log.error(thisClass, method, e);
-            throw new Exception("Failed to extract the JWT Token from the provided response: " + e);
-        }
+        List<NameValuePair> requestParms = new ArrayList<NameValuePair>();
+        requestParms.add(new NameValuePair("access_token", jwtToken));
+        Page appResponse = invokeUrlWithParametersUsingPost(testcase, app, requestParms);
+
+        return appResponse;
     }
 
-    //    public String setPassableParmValue(Object rawValue) throws Exception {
-    //
-    //        if (rawValue instanceof String) {
-    //            return (String) rawValue;
-    //        }
-    //        if (rawValue instanceof Long) {
-    //            return ((Long) rawValue).toString();
-    //        }
-    //        return null;
-    //    }
+    public Page invokeProtectedAppWithJwtTokenInHeader(String testcase, Object response, String app) throws Exception {
+        // pull out the token and then invoke the app on the RS server
+        String jwtToken = BuilderHelpers.extractJwtTokenFromResponse(response, JWTBuilderConstants.BUILT_JWT_TOKEN);
+
+        Page appResponse = invokeUrlWithBearerTokenUsingPost(testcase, app, jwtToken);
+
+        return appResponse;
+    }
+
 }

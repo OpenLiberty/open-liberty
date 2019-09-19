@@ -19,13 +19,12 @@ import com.gargoylesoftware.htmlunit.Page;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.jwt.JWTTokenBuilder;
-import com.ibm.ws.security.fat.common.jwt.JwtConstants;
 import com.ibm.ws.security.fat.common.jwt.JwtMessageConstants;
+import com.ibm.ws.security.fat.common.jwt.expectations.JwtApiExpectation;
 import com.ibm.ws.security.fat.common.jwt.sharedTests.ConsumeMangledJWTTests;
 import com.ibm.ws.security.fat.common.utils.CommonExpectations;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.jwt.fat.consumer.actions.JwtConsumerActions;
-import com.ibm.ws.security.jwt.fat.consumer.expectations.JwtConsumerExpectation;
 import com.ibm.ws.security.jwt.fat.consumer.utils.ConsumerHelpers;
 
 import componenttest.annotation.Server;
@@ -63,7 +62,7 @@ public class JwtConsumerApiBasicTests extends ConsumeMangledJWTTests {
 
         serverTracker.addServer(consumerServer);
         consumerServer.startServerUsingExpandedConfiguration("server_jwtConsumer.xml");
-        SecurityFatHttpUtils.saveServerPorts(consumerServer, JWTConsumerConstants.BVT_SERVER_1_PORT_NAME_ROOT);
+        SecurityFatHttpUtils.saveServerPorts(consumerServer, JwtConsumerConstants.BVT_SERVER_1_PORT_NAME_ROOT);
 
     }
 
@@ -87,7 +86,7 @@ public class JwtConsumerApiBasicTests extends ConsumeMangledJWTTests {
 
         JWTTokenBuilder builder = consumerHelpers.createBuilderWithDefaultConsumerClaims();
 
-        builder.setAudience(SecurityFatHttpUtils.getServerSecureUrlBase(consumerServer) + JWTConsumerConstants.JWT_CONSUMER_ENDPOINT);
+        builder.setAudience(SecurityFatHttpUtils.getServerSecureUrlBase(consumerServer) + JwtConsumerConstants.JWT_CONSUMER_ENDPOINT);
 
         return builder;
     }
@@ -189,8 +188,8 @@ public class JwtConsumerApiBasicTests extends ConsumeMangledJWTTests {
     public void JwtConsumerApiBasicTests_noConfigId_noToken() throws Exception {
 
         Expectations expectations = new Expectations();
-        expectations.addExpectations(CommonExpectations.successfullyReachedUrl(currentAction, SecurityFatHttpUtils.getServerUrlBase(consumerServer) + JwtConstants.JWT_CONSUMER_ENDPOINT));
-        expectations.addExpectation(new JwtConsumerExpectation(JWTConsumerConstants.STRING_MATCHES, JwtMessageConstants.CWWKS6040E_JWT_STRING_EMPTY + ".+" + JWTConsumerConstants.JWT_CONSUMER_DEFAULT_CONFIG, "Response did not show the expected failure."));
+        expectations.addExpectations(CommonExpectations.successfullyReachedUrl(currentAction, SecurityFatHttpUtils.getServerUrlBase(consumerServer) + JwtConsumerConstants.JWT_CONSUMER_ENDPOINT));
+        expectations.addExpectation(new JwtApiExpectation(JwtConsumerConstants.STRING_MATCHES, JwtMessageConstants.CWWKS6040E_JWT_STRING_EMPTY + ".+" + JwtConsumerConstants.JWT_CONSUMER_DEFAULT_CONFIG, "Response did not show the expected failure."));
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, null, null);
         validationUtils.validateResult(response, currentAction, expectations);

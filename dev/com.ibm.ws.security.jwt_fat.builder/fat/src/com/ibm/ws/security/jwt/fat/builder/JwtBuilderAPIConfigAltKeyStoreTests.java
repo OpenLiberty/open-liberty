@@ -22,11 +22,10 @@ import com.ibm.ws.security.fat.common.CommonSecurityFat;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
 import com.ibm.ws.security.fat.common.jwt.HeaderConstants;
-import com.ibm.ws.security.fat.common.jwt.JwtConstants;
 import com.ibm.ws.security.fat.common.jwt.JwtMessageConstants;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
-import com.ibm.ws.security.jwt.fat.buider.actions.JwtBuilderActions;
+import com.ibm.ws.security.jwt.fat.builder.actions.JwtBuilderActions;
 import com.ibm.ws.security.jwt.fat.builder.utils.BuilderHelpers;
 
 import componenttest.annotation.ExpectedFFDC;
@@ -37,16 +36,10 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 
 /**
- * Tests that use the Consumer API when extending the ConsumeMangledJWTTests.
- * The server will be configured with the appropriate jwtConsumer's
- * We will validate that we can <use> (and the output is correct):
- * 1) create a JWTConsumer
- * 2) create a JwtToken object
- * 3) create a claims object
- * 4) use all of the get methods on the claims object
- * 5) use toJsonString method got get all attributes in the payload
+ * This is the test class that will run basic JWT Builder Config tests (with an alternate server wide keystore).
+ * Testing is done in a unique test class to avoid having to reconfigure the server for each test.
  *
- */
+ **/
 
 @SuppressWarnings("restriction")
 @Mode(TestMode.FULL)
@@ -114,9 +107,9 @@ public class JwtBuilderAPIConfigAltKeyStoreTests extends CommonSecurityFat {
     public void JwtBuilderAPIConfigAltKeyStoreTests_sigAlg_RS256_badGlobalKeyStore_goodKeyStoreRef_noKeyAlias() throws Exception {
 
         String builderId = "key_sigAlg_RS256";
-        JSONObject settings = BuilderHelpers.setDefaultClaims(builderId);
-        settings.put(HeaderConstants.ALGORITHM, JwtConstants.SIGALG_RS256);
-        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, settings, builderServer);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        expectationSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_RS256);
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
         validationUtils.validateResult(response, expectations);
@@ -141,9 +134,9 @@ public class JwtBuilderAPIConfigAltKeyStoreTests extends CommonSecurityFat {
     public void JwtBuilderAPIConfigAltKeyStoreTests_sigAlg_RS256_badGlobalKeyStore_goodKeyStoreRef_goodKeyAlias() throws Exception {
 
         String builderId = "key_sigAlg_RS256_goodKeyAlias";
-        JSONObject settings = BuilderHelpers.setDefaultClaims(builderId);
-        settings.put(HeaderConstants.ALGORITHM, JwtConstants.SIGALG_RS256);
-        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, settings, builderServer);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        expectationSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_RS256);
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
         validationUtils.validateResult(response, expectations);

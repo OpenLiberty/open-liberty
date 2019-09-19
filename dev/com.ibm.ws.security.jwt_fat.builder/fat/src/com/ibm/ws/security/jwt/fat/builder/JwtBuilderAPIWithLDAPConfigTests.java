@@ -18,14 +18,12 @@ import org.junit.runner.RunWith;
 
 import com.gargoylesoftware.htmlunit.Page;
 import com.ibm.json.java.JSONObject;
-import com.ibm.ws.security.fat.common.CommonSecurityFat;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
-import com.ibm.ws.security.fat.common.jwt.ClaimConstants;
-import com.ibm.ws.security.fat.common.jwt.JwtConstants;
 import com.ibm.ws.security.fat.common.jwt.JwtMessageConstants;
+import com.ibm.ws.security.fat.common.jwt.PayloadConstants;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
-import com.ibm.ws.security.jwt.fat.buider.actions.JwtBuilderActions;
+import com.ibm.ws.security.jwt.fat.builder.actions.JwtBuilderActions;
 import com.ibm.ws.security.jwt.fat.builder.utils.BuilderHelpers;
 
 import componenttest.annotation.Server;
@@ -33,24 +31,16 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.LDAPUtils;
 
 /**
- * Tests that use the Consumer API when extending the ConsumeMangledJWTTests.
- * The server will be configured with the appropriate jwtConsumer's
- * We will validate that we can <use> (and the output is correct):
- * 1) create a JWTConsumer
- * 2) create a JwtToken object
- * 3) create a claims object
- * 4) use all of the get methods on the claims object
- * 5) use toJsonString method got get all attributes in the payload
+ * This is the test class that will run basic JWT Builder Config tests with LDAP.
  *
- */
+ **/
 
 @SuppressWarnings("restriction")
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-public class JwtBuilderAPIWithLDAPConfigTests extends CommonSecurityFat {
+public class JwtBuilderAPIWithLDAPConfigTests extends JwtBuilderCommonLDAPFat {
 
     @Server("com.ibm.ws.security.jwt_fat.builder")
     public static LibertyServer builderServer;
@@ -61,7 +51,8 @@ public class JwtBuilderAPIWithLDAPConfigTests extends CommonSecurityFat {
     @BeforeClass
     public static void setUp() throws Exception {
 
-        LDAPUtils.addLDAPVariables(builderServer);
+        setupLdapServer(builderServer);
+
         serverTracker.addServer(builderServer);
         builderServer.startServerUsingExpandedConfiguration("server_LDAPRegistry_configTests.xml");
         SecurityFatHttpUtils.saveServerPorts(builderServer, JWTBuilderConstants.BVT_SERVER_1_PORT_NAME_ROOT);
@@ -82,16 +73,16 @@ public class JwtBuilderAPIWithLDAPConfigTests extends CommonSecurityFat {
     public void JwtBuilderAPIWithLDAPConfigTests_emptyClaims() throws Exception {
 
         String builderId = "emptyClaims";
-        JSONObject settings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
 
         // have to set subject
         JSONObject testSettings = new JSONObject();
-        testSettings.put(ClaimConstants.SUBJECT, "testuser");
-        settings.put("overrideSettings", testSettings);
-        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, settings, builderServer);
-        expectations = BuilderHelpers.buildBuilderClaimsNotFound(expectations, JwtConstants.JWT_BUILDER_CLAIM, "uid");
-        expectations = BuilderHelpers.buildBuilderClaimsNotFound(expectations, JwtConstants.JWT_BUILDER_CLAIM, "sn");
-        expectations = BuilderHelpers.buildBuilderClaimsNotFound(expectations, JwtConstants.JWT_BUILDER_CLAIM, "cn");
+        testSettings.put(PayloadConstants.SUBJECT, USER);
+        expectationSettings.put("overrideSettings", testSettings);
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+        expectations = BuilderHelpers.buildBuilderClaimsNotFound(expectations, JWTBuilderConstants.JWT_CLAIM, "uid");
+        expectations = BuilderHelpers.buildBuilderClaimsNotFound(expectations, JWTBuilderConstants.JWT_CLAIM, "sn");
+        expectations = BuilderHelpers.buildBuilderClaimsNotFound(expectations, JWTBuilderConstants.JWT_CLAIM, "cn");
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         validationUtils.validateResult(response, expectations);
@@ -111,16 +102,16 @@ public class JwtBuilderAPIWithLDAPConfigTests extends CommonSecurityFat {
     public void JwtBuilderAPIWithLDAPConfigTests_specificClaims_allSet() throws Exception {
 
         String builderId = "specificClaims_allSet";
-        JSONObject settings = BuilderHelpers.setDefaultClaims(builderId);
-        settings.put("uid", "testuser");
-        settings.put("sn", "testuser");
-        settings.put("cn", "testuser");
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        expectationSettings.put("uid", USER);
+        expectationSettings.put("sn", USER);
+        expectationSettings.put("cn", USER);
 
         // have to set subject
         JSONObject testSettings = new JSONObject();
-        testSettings.put(ClaimConstants.SUBJECT, "testuser");
-        settings.put("overrideSettings", testSettings);
-        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, settings, builderServer);
+        testSettings.put(PayloadConstants.SUBJECT, USER);
+        expectationSettings.put("overrideSettings", testSettings);
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         validationUtils.validateResult(response, expectations);
@@ -141,18 +132,16 @@ public class JwtBuilderAPIWithLDAPConfigTests extends CommonSecurityFat {
     public void JwtBuilderAPIWithLDAPConfigTests_specificClaims_someNotSet() throws Exception {
 
         String builderId = "specificClaims_someNotSet";
-        JSONObject settings = BuilderHelpers.setDefaultClaims(builderId);
-        settings.put("uid", "testuser");
-        settings.put("sn", "testuser");
-        settings.put("cn", "testuser");
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        expectationSettings.put("uid", USER);
+        expectationSettings.put("sn", USER);
+        expectationSettings.put("cn", USER);
         // have to set subject
         JSONObject testSettings = new JSONObject();
-        testSettings.put(ClaimConstants.SUBJECT, "testuser");
-        settings.put("overrideSettings", testSettings);
-        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, settings, builderServer);
-        expectations = BuilderHelpers.buildBuilderClaimsNotFound(expectations, JwtConstants.JWT_BUILDER_CLAIM, "yourClaim");
-        //        expectations.addExpectation(new ResponseFullExpectation(JWTBuilderConstants.STRING_DOES_NOT_MATCH, JwtConstants.JWT_BUILDER_CLAIM + JwtConstants.JWT_BUILDER_JSON + JwtConstants.JWT_BUILDER_GETALLCLAIMS + ".*yourClaim.*", "Found unknown claim \"yourClaim\" in the listed claims and it should not be there."));
-        //        expectations.addExpectation(new ResponseFullExpectation(JWTBuilderConstants.STRING_DOES_NOT_MATCH, JwtConstants.JWT_BUILDER_CLAIM + JwtConstants.JWT_BUILDER_JSON + "\\{" + ".*yourClaim.*\\}", "Found unknown claim \"yourClaim\" in the list of claims and it should not be there."));
+        testSettings.put(PayloadConstants.SUBJECT, USER);
+        expectationSettings.put("overrideSettings", testSettings);
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+        expectations = BuilderHelpers.buildBuilderClaimsNotFound(expectations, JWTBuilderConstants.JWT_CLAIM, "yourClaim");
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
         validationUtils.validateResult(response, expectations);

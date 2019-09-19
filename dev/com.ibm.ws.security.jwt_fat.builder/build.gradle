@@ -57,18 +57,18 @@ task jwtbuilderclient(type: War, dependsOn: classes) {
     into "WEB-INF/classes"
   }
   /* copy needed files from jwt common fat into our app */
-     from(zipTree("../com.ibm.ws.security.fat.common/build/libs/com.ibm.ws.security.fat.common.jar")) {
-     include 'com/ibm/ws/security/fat/common/Constants.class'
+  from(zipTree("../com.ibm.ws.security.fat.common/build/libs/com.ibm.ws.security.fat.common.jar")) {
+    include 'com/ibm/ws/security/fat/common/Constants.class'
     into "WEB-INF/classes"
   }
   /* copy needed files from jwt common fat into our app */
-     from(zipTree("../com.ibm.ws.security.fat.common.jwt/build/libs/com.ibm.ws.security.fat.common.jwt.jar")) {
-     include 'com/ibm/ws/security/fat/common/jwt/JwtConstants.class'
+  from(zipTree("../com.ibm.ws.security.fat.common.jwt/build/libs/com.ibm.ws.security.fat.common.jwt.jar")) {
+    include 'com/ibm/ws/security/fat/common/jwt/JwtConstants.class', 'com/ibm/ws/security/fat/common/jwt/utils/JWTApiApplicationUtils.class'
     into "WEB-INF/classes"
   }  
   /* end of jose4j copy */  
   /* copy contents of the jose4j jar into our test app - we don't have another way to get to the jar */
-     from(zipTree("../com.ibm.ws.org.jose4j/build/libs/com.ibm.ws.org.jose4j.jar")) {
+  from(zipTree("../com.ibm.ws.org.jose4j/build/libs/com.ibm.ws.org.jose4j.jar")) {
     into "WEB-INF/classes"
   }
   /* end of jose4j copy */  

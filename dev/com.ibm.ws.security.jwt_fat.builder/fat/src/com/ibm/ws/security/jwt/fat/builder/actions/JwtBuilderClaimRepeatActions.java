@@ -8,7 +8,7 @@
  * Contributors:
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.jwt.fat.buider.actions;
+package com.ibm.ws.security.jwt.fat.builder.actions;
 
 public class JwtBuilderClaimRepeatActions {
 

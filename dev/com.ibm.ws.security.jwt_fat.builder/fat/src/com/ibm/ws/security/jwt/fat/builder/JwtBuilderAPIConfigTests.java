@@ -23,15 +23,14 @@ import com.ibm.ws.security.fat.common.CommonSecurityFat;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ResponseFullExpectation;
 import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
-import com.ibm.ws.security.fat.common.jwt.ClaimConstants;
 import com.ibm.ws.security.fat.common.jwt.HeaderConstants;
-import com.ibm.ws.security.fat.common.jwt.JwtConstants;
 import com.ibm.ws.security.fat.common.jwt.JwtMessageConstants;
-import com.ibm.ws.security.fat.common.jwt.expectations.JwtClaimExpectation;
+import com.ibm.ws.security.fat.common.jwt.PayloadConstants;
+import com.ibm.ws.security.fat.common.jwt.expectations.JwtApiExpectation;
 import com.ibm.ws.security.fat.common.utils.CommonExpectations;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
-import com.ibm.ws.security.jwt.fat.buider.actions.JwtBuilderActions;
+import com.ibm.ws.security.jwt.fat.builder.actions.JwtBuilderActions;
 import com.ibm.ws.security.jwt.fat.builder.utils.BuilderHelpers;
 
 import componenttest.annotation.ExpectedFFDC;
@@ -42,16 +41,9 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 
 /**
- * Tests that use the Consumer API when extending the ConsumeMangledJWTTests.
- * The server will be configured with the appropriate jwtConsumer's
- * We will validate that we can <use> (and the output is correct):
- * 1) create a JWTConsumer
- * 2) create a JwtToken object
- * 3) create a claims object
- * 4) use all of the get methods on the claims object
- * 5) use toJsonString method got get all attributes in the payload
+ * This is the test class that will run basic JWT Builder Config tests.
  *
- */
+ **/
 
 @SuppressWarnings("restriction")
 @Mode(TestMode.FULL)
@@ -82,7 +74,7 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
      * </p>
      * <OL>
      * <LI>Invoke the JWT Builder using the default builder config.
-     * <LI>What this means is that we're not specifying any JWT Builder config, therefore, we'll use attributes from base config
+     * <LI>What this means is that we're not specifying any JWT Builder id, therefore, we'll use attributes from base config
      * as well as embedded defaults
      * </OL>
      * <P>
@@ -94,8 +86,8 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     @Test
     public void JwtBuilderAPIConfigTests_defaultConfig() throws Exception {
 
-        JSONObject settings = BuilderHelpers.setDefaultClaims(builderServer);
-        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, settings, builderServer);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderServer);
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, null);
         validationUtils.validateResult(response, expectations);
@@ -150,8 +142,8 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     public void JwtBuilderAPIConfigTests_emptyConfig() throws Exception {
 
         String builderId = "emptyConfig";
-        JSONObject settings = BuilderHelpers.setDefaultClaims(builderId);
-        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, settings, builderServer);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
         validationUtils.validateResult(response, expectations);
@@ -176,10 +168,10 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     public void JwtBuilderAPIConfigTests_specificExpiry() throws Exception {
 
         String builderId = "specificExpiry";
-        JSONObject settings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
         // override the default expiration time
-        settings.put(ClaimConstants.EXPIRATION_TIME, BuilderHelpers.setNowLong() + (1 * 60 * 60));
-        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, settings, builderServer);
+        expectationSettings.put(PayloadConstants.EXPIRATION_TIME, BuilderHelpers.setNowLong() + (1 * 60 * 60));
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
         validationUtils.validateResult(response, expectations);
@@ -205,10 +197,10 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     public void JwtBuilderAPIConfigTests_specificExpiresInSeconds() throws Exception {
 
         String builderId = "specificExpirySeconds";
-        JSONObject settings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
         // override the default expiration time
-        settings.put(ClaimConstants.EXPIRATION_TIME, BuilderHelpers.setNowLong() + (1800));
-        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, settings, builderServer);
+        expectationSettings.put(PayloadConstants.EXPIRATION_TIME, BuilderHelpers.setNowLong() + (1800));
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
         validationUtils.validateResult(response, expectations);
@@ -232,13 +224,13 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     public void JwtBuilderAPIConfigTests_specificAudiences() throws Exception {
 
         String builderId = "specificAudiences";
-        JSONObject settings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
         // set an audience value
         JSONArray parmarray = new JSONArray();
         parmarray.add("Client02");
         parmarray.add("Client03");
-        settings.put(ClaimConstants.AUDIENCE, parmarray);
-        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, settings, builderServer);
+        expectationSettings.put(PayloadConstants.AUDIENCE, parmarray);
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
         validationUtils.validateResult(response, expectations);
@@ -262,13 +254,13 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     public void JwtBuilderAPIConfigTests_specificScopes() throws Exception {
 
         String builderId = "specificScopes";
-        JSONObject settings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
         // set scope value
         JSONArray parmarray = new JSONArray();
         parmarray.add("myScope");
         parmarray.add("yourScope");
-        settings.put(ClaimConstants.SCOPE, parmarray);
-        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, settings, builderServer);
+        expectationSettings.put(PayloadConstants.SCOPE, parmarray);
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
         validationUtils.validateResult(response, expectations);
@@ -292,12 +284,12 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     public void JwtBuilderAPIConfigTests_specificJti() throws Exception {
 
         String builderId = "specificJti";
-        JSONObject settings = BuilderHelpers.setDefaultClaims(builderId);
-        settings.put(ClaimConstants.JWT_ID, true);
-        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, settings, builderServer);
-        expectations.addExpectation(new JwtClaimExpectation(JwtConstants.STRING_DOES_NOT_MATCH, JwtConstants.JWT_BUILDER_CLAIM + JwtConstants.JWT_BUILDER_JWTID + ".*null.*", "jti was found and should NOT have been"));
-        expectations.addExpectation(new JwtClaimExpectation(JwtConstants.STRING_MATCHES, JwtConstants.JWT_BUILDER_CLAIM + JwtConstants.JWT_BUILDER_JSON + "\\{" + ".*\"" + ClaimConstants.JWT_ID + "\".*\\}", "jti was NOT found in the list of claims"));
-        expectations.addExpectation(new JwtClaimExpectation(JwtConstants.STRING_MATCHES, JwtConstants.JWT_BUILDER_CLAIM + JwtConstants.JWT_BUILDER_JSON + JwtConstants.JWT_BUILDER_GETALLCLAIMS + JwtConstants.JWT_BUILDER_KEY + ClaimConstants.JWT_ID + ".*", "The jti claim was NOT found and should have been"));
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        expectationSettings.put(PayloadConstants.JWT_ID, true);
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+        expectations.addExpectation(new JwtApiExpectation(JWTBuilderConstants.STRING_DOES_NOT_MATCH, JWTBuilderConstants.JWT_CLAIM + PayloadConstants.JWT_ID + ".*null.*", "jti was found and should NOT have been"));
+        expectations.addExpectation(new JwtApiExpectation(JWTBuilderConstants.STRING_MATCHES, JWTBuilderConstants.JWT_CLAIM + JWTBuilderConstants.JWT_JSON + "\\{" + ".*\"" + PayloadConstants.JWT_ID + "\".*\\}", "jti was NOT found in the list of claims"));
+        expectations.addExpectation(new JwtApiExpectation(JWTBuilderConstants.STRING_MATCHES, JWTBuilderConstants.JWT_CLAIM + JWTBuilderConstants.JWT_JSON + JWTBuilderConstants.JWT_GETALLCLAIMS + JWTBuilderConstants.JWT_CLAIM_KEY + PayloadConstants.JWT_ID + ".*", "The jti claim was NOT found and should have been"));
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
         validationUtils.validateResult(response, expectations);
@@ -320,10 +312,10 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     public void JwtBuilderAPIConfigTests_specificIssuer() throws Exception {
 
         String builderId = "specificIssuer";
-        JSONObject settings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
         // set issuer value
-        settings.put(ClaimConstants.ISSUER, "someSpecificIssuer");
-        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, settings, builderServer);
+        expectationSettings.put(PayloadConstants.ISSUER, "someSpecificIssuer");
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
         validationUtils.validateResult(response, expectations);
@@ -351,10 +343,10 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     public void JwtBuilderAPIConfigTests_sigAlg_RS256_goodGlobalKeyStore() throws Exception {
 
         String builderId = "key_sigAlg_RS256_noKeyRef";
-        JSONObject settings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
         // set alg value
-        settings.put(HeaderConstants.ALGORITHM, JwtConstants.SIGALG_RS256);
-        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, settings, builderServer);
+        expectationSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_RS256);
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
         validationUtils.validateResult(response, expectations);
@@ -377,10 +369,10 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     public void JwtBuilderAPIConfigTests_sigAlg_RS256_goodGlobalKeyStore_goodKeyStoreRef_noKeyAlias() throws Exception {
 
         String builderId = "key_sigAlg_RS256";
-        JSONObject settings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
         // set alg value
-        settings.put(HeaderConstants.ALGORITHM, JwtConstants.SIGALG_RS256);
-        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, settings, builderServer);
+        expectationSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_RS256);
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
         validationUtils.validateResult(response, expectations);
@@ -404,10 +396,10 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     public void JwtBuilderAPIConfigTests_sigAlg_RS256_goodGlobalKeyStore_goodKeyStoreRef_goodKeyAlias() throws Exception {
 
         String builderId = "key_sigAlg_RS256_goodKeyAlias";
-        JSONObject settings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
         // set alg value
-        settings.put(HeaderConstants.ALGORITHM, JwtConstants.SIGALG_RS256);
-        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, settings, builderServer);
+        expectationSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_RS256);
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
         validationUtils.validateResult(response, expectations);
@@ -431,9 +423,7 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     public void JwtBuilderAPIConfigTests_sigAlg_RS256_goodGlobalKeyStore_goodKeyStoreRef_badKeyAlias() throws Exception {
 
         String builderId = "key_sigAlg_RS256_badKeyAlias";
-        JSONObject settings = BuilderHelpers.setDefaultClaims(builderId);
-        // set alg value
-        settings.put(HeaderConstants.ALGORITHM, JwtConstants.SIGALG_RS256);
+
         Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
@@ -459,10 +449,10 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     public void JwtBuilderAPIConfigTests_sigAlg_RS256_goodGlobalKeyStore_noKeyStoreRef_goodKeyAlias() throws Exception {
 
         String builderId = "key_sigAlg_RS256_goodKeyAlias_global";
-        JSONObject settings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
         // set alg value
-        settings.put(HeaderConstants.ALGORITHM, JwtConstants.SIGALG_RS256);
-        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, settings, builderServer);
+        expectationSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_RS256);
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
         validationUtils.validateResult(response, expectations);
@@ -487,9 +477,7 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     public void JwtBuilderAPIConfigTests_sigAlg_RS256_goodGlobalKeyStore_noKeyStoreRef_badKeyAlias() throws Exception {
 
         String builderId = "key_sigAlg_RS256_badKeyAlias_global";
-        JSONObject settings = BuilderHelpers.setDefaultClaims(builderId);
-        // set alg value
-        settings.put(HeaderConstants.ALGORITHM, JwtConstants.SIGALG_RS256);
+
         Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
@@ -514,9 +502,7 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     public void JwtBuilderAPIConfigTests_sigAlg_RS256_goodGlobalKeyStore_badKeyStoreRef() throws Exception {
 
         String builderId = "key_sigAlg_RS256_badKeyStoreRef";
-        JSONObject settings = BuilderHelpers.setDefaultClaims(builderId);
-        // set alg value
-        settings.put(HeaderConstants.ALGORITHM, JwtConstants.SIGALG_RS256);
+
         Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
@@ -542,10 +528,10 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     public void JwtBuilderAPIConfigTests_sigAlg_HS256_with_sharedKey() throws Exception {
 
         String builderId = "key_sigAlg_HS256_with_sharedKey";
-        JSONObject settings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
         // set alg value
-        settings.put(HeaderConstants.ALGORITHM, JwtConstants.SIGALG_HS256);
-        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, settings, builderServer);
+        expectationSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_HS256);
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
         validationUtils.validateResult(response, expectations);
@@ -570,10 +556,10 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     public void JwtBuilderAPIConfigTests_sigAlg_HS256_with_xor_sharedKey() throws Exception {
 
         String builderId = "key_sigAlg_HS256_with_xor_sharedKey";
-        JSONObject settings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
         // set alg value
-        settings.put(HeaderConstants.ALGORITHM, JwtConstants.SIGALG_HS256);
-        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, settings, builderServer);
+        expectationSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_HS256);
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
         validationUtils.validateResult(response, expectations);
@@ -597,9 +583,7 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     public void JwtBuilderAPIConfigTests_sigAlg_HS256_without_sharedKey() throws Exception {
 
         String builderId = "key_sigAlg_HS256_without_sharedKey";
-        JSONObject settings = BuilderHelpers.setDefaultClaims(builderId);
-        // set alg value
-        settings.put(HeaderConstants.ALGORITHM, JwtConstants.SIGALG_RS256);
+
         Expectations expectations = BuilderHelpers.createBadBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, builderServer);
         expectations.addExpectation(new ServerMessageExpectation(builderServer, JwtMessageConstants.CWWKS6016E_BAD_KEY_ALIAS, "Message log did not contain an error indicating a problem with the signing key."));
 
@@ -624,11 +608,11 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     public void JwtBuilderAPIConfigTests_jwkEnabled_defaultValues() throws Exception {
 
         String builderId = "jwkEnabled";
-        JSONObject settings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
         // add a check just to make sure that the kid is in the header (can't do anything about checking the value)
-        settings.put(HeaderConstants.KEY_ID, "");
+        expectationSettings.put(HeaderConstants.KEY_ID, "");
 
-        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, settings, builderServer);
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
         validationUtils.validateResult(response, expectations);
@@ -652,12 +636,12 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     public void JwtBuilderAPIConfigTests_jwkEnabled_sigAlg_RS256() throws Exception {
 
         String builderId = "jwkEnabled_RS256";
-        JSONObject settings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
         // add a check just to make sure that the kid is in the header (can't do anything about checking the value)
-        settings.put(HeaderConstants.KEY_ID, "");
+        expectationSettings.put(HeaderConstants.KEY_ID, "");
         // set alg value
-        settings.put(HeaderConstants.ALGORITHM, JwtConstants.SIGALG_RS256);
-        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, settings, builderServer);
+        expectationSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_RS256);
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
         validationUtils.validateResult(response, expectations);
@@ -681,11 +665,11 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     public void JwtBuilderAPIConfigTests_jwkEnabled_sigAlg_HS256() throws Exception {
 
         String builderId = "jwkEnabled_HS256";
-        JSONObject settings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
         // The signature alg of HS256 will override jwkEnabled
         // set alg value
-        settings.put(HeaderConstants.ALGORITHM, JwtConstants.SIGALG_HS256);
-        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, settings, builderServer);
+        expectationSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_HS256);
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
         validationUtils.validateResult(response, expectations);
@@ -696,11 +680,11 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     public void JwtBuilderAPIConfigTests_jwkEnabled_sigAlg_HS256_xor() throws Exception {
 
         String builderId = "jwkEnabled_HS256_xor";
-        JSONObject settings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
         // The signature alg of HS256 will override jwkEnabled
         // set alg value
-        settings.put(HeaderConstants.ALGORITHM, JwtConstants.SIGALG_HS256);
-        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, settings, builderServer);
+        expectationSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_HS256);
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
         validationUtils.validateResult(response, expectations);
@@ -723,11 +707,11 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     public void JwtBuilderAPIConfigTests_jwkEnabled_jwkSigningKeySize_1024() throws Exception {
 
         String builderId = "jwkEnabled_size_1024";
-        JSONObject settings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
         // add a check just to make sure that the kid is in the header (can't do anything about checking the value)
-        settings.put(HeaderConstants.KEY_ID, "");
+        expectationSettings.put(HeaderConstants.KEY_ID, "");
 
-        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, settings, builderServer);
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
         validationUtils.validateResult(response, expectations);
@@ -750,11 +734,11 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     public void JwtBuilderAPIConfigTests_jwkEnabled_jwkSigningKeySize_2048() throws Exception {
 
         String builderId = "jwkEnabled_size_2048";
-        JSONObject settings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
         // add a check just to make sure that the kid is in the header (can't do anything about checking the value)
-        settings.put(HeaderConstants.KEY_ID, "");
+        expectationSettings.put(HeaderConstants.KEY_ID, "");
 
-        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, settings, builderServer);
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
         validationUtils.validateResult(response, expectations);
@@ -777,11 +761,11 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     public void JwtBuilderAPIConfigTests_jwkEnabled_jwkSigningKeySize_4096() throws Exception {
 
         String builderId = "jwkEnabled_size_4096";
-        JSONObject settings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
         // add a check just to make sure that the kid is in the header (can't do anything about checking the value)
-        settings.put(HeaderConstants.KEY_ID, "");
+        expectationSettings.put(HeaderConstants.KEY_ID, "");
 
-        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, settings, builderServer);
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId);
         validationUtils.validateResult(response, expectations);

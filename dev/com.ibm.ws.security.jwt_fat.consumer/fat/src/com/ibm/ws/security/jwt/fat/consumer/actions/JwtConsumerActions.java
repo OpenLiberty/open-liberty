@@ -18,8 +18,8 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.util.NameValuePair;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.actions.TestActions;
-import com.ibm.ws.security.fat.common.jwt.JwtConstants;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
+import com.ibm.ws.security.jwt.fat.consumer.JwtConsumerConstants;
 
 import componenttest.topology.impl.LibertyServer;
 
@@ -35,7 +35,7 @@ public class JwtConsumerActions extends TestActions {
 
     public Page invokeJwtConsumer(String testName, LibertyServer server, String consumerId, String jwtToken, List<NameValuePair> extraClaims) throws Exception {
 
-        String jwtConsumerUrl = SecurityFatHttpUtils.getServerUrlBase(server) + JwtConstants.JWT_CONSUMER_ENDPOINT;
+        String jwtConsumerUrl = SecurityFatHttpUtils.getServerUrlBase(server) + JwtConsumerConstants.JWT_CONSUMER_ENDPOINT;
 
         List<NameValuePair> requestParams = setRequestParms(consumerId, jwtToken, extraClaims);
 
@@ -55,10 +55,10 @@ public class JwtConsumerActions extends TestActions {
 
         List<NameValuePair> requestParms = new ArrayList<NameValuePair>();
         if (consumerId != null) {
-            requestParms.add(new NameValuePair(JwtConstants.JWT_CONSUMER_PARAM_CLIENT_ID, consumerId));
+            requestParms.add(new NameValuePair(JwtConsumerConstants.JWT_CONSUMER_PARAM_CLIENT_ID, consumerId));
         }
         if (jwtToken != null) {
-            requestParms.add(new NameValuePair(JwtConstants.JWT_CONSUMER_PARAM_JWT, jwtToken));
+            requestParms.add(new NameValuePair(JwtConsumerConstants.JWT_CONSUMER_PARAM_JWT, jwtToken));
         }
         if (extraClaims != null) {
             for (NameValuePair claim : extraClaims) {

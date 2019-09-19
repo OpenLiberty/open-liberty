@@ -191,19 +191,19 @@ public class JWTTokenBuilder {
 
     public JWTTokenBuilder setScope(String in) {
 
-        _claims.setClaim(ClaimConstants.SCOPE, in);
+        _claims.setClaim(PayloadConstants.SCOPE, in);
         return this;
     }
 
     public JWTTokenBuilder setRealmName(String in) {
 
-        _claims.setClaim(ClaimConstants.REALM_NAME, in);
+        _claims.setClaim(PayloadConstants.REALM_NAME, in);
         return this;
     }
 
     public JWTTokenBuilder setTokenType(String in) {
 
-        _claims.setClaim(ClaimConstants.TOKEN_TYPE, in);
+        _claims.setClaim(PayloadConstants.TOKEN_TYPE, in);
         return this;
     }
 //    public JWTTokenBuilder setScope(String... in) {

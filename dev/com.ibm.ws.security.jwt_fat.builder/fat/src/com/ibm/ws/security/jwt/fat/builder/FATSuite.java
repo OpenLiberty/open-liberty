@@ -23,14 +23,14 @@ import com.ibm.ws.security.fat.common.AlwaysRunAndPassTest;
 
         // Basic Functional tests
         JwtBuilderApiBasicTests.class,
-        //        JwtBuilderApiWithLDAPBasicTests.class,
-        //        JwkEndpointValidationUrlTests.class,
-        //
-        //        // Configuration Tests
-        //        JwtBuilderAPIConfigTests.class,
-        //        JwtBuilderAPIConfigAltKeyStoreTests.class,
-        //        JwtBuilderAPIWithLDAPConfigTests.class,
-        //        JwtBuilderAPIMinimumConfigTests.class
+        JwtBuilderApiWithLDAPBasicTests.class,
+        JwkEndpointValidationUrlTests.class,
+        
+        // Configuration Tests
+        JwtBuilderAPIConfigTests.class,
+        JwtBuilderAPIConfigAltKeyStoreTests.class,
+        JwtBuilderAPIWithLDAPConfigTests.class,
+        JwtBuilderAPIMinimumConfigTests.class
 
 })
 

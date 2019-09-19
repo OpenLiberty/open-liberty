@@ -84,14 +84,25 @@ public class TestActions {
      * Invoke the specified URL, adding a bearer token header first.
      */
     public Page invokeUrlWithBearerToken(String currentTest, WebClient wc, String url, String token) throws Exception {
-        return invokeUrlWithBearerToken(currentTest, wc, url, token, null);
+        return invokeUrlWithBearerTokenUsingGet(currentTest, wc, url, token);
     }
-
-    public Page invokeUrlWithBearerToken(String currentTest, WebClient wc, String url, String token, List<NameValuePair> requestParms) throws Exception {
+    public Page invokeUrlWithBearerTokenUsingGet(String currentTest, WebClient wc, String url, String token) throws Exception {
+        return invokeUrlWithBearerToken(currentTest, wc, url, token, HttpMethod.GET, null);
+    }
+    public Page invokeUrlWithBearerTokenUsingGet(String currentTest, String url, String token) throws Exception {
+        return invokeUrlWithBearerToken(currentTest, new WebClient(), url, token, HttpMethod.GET, null);
+    }
+    public Page invokeUrlWithBearerTokenUsingPost(String currentTest, WebClient wc, String url, String token) throws Exception {
+        return invokeUrlWithBearerToken(currentTest, wc, url, token, HttpMethod.POST, null);
+    }
+    public Page invokeUrlWithBearerTokenUsingPost(String currentTest, String url, String token) throws Exception {
+        return invokeUrlWithBearerToken(currentTest, new WebClient(), url, token, HttpMethod.POST, null);
+    }
+    public Page invokeUrlWithBearerToken(String currentTest, WebClient wc, String url, String token, HttpMethod method, List<NameValuePair> requestParms) throws Exception {
         String thisMethod = "invokeUrlWithBearerToken";
         loggingUtils.printMethodName(thisMethod);
         try {
-            WebRequest request = createGetRequest(url);
+            WebRequest request = createHttpRequest(url, method);
             request.setAdditionalHeader("Authorization", "Bearer " + token);
             if (requestParms != null) {
                 request.setRequestParameters(requestParms);
@@ -125,10 +136,26 @@ public class TestActions {
      * Invokes the specified URL using the provided WebClient object and returns the Page object that represents the response.
      */
     public Page invokeUrlWithParameters(String currentTest, WebClient wc, String url, List<NameValuePair> requestParams) throws Exception {
+        return invokeUrlWithParametersUsingGet(currentTest, wc, url, requestParams) ;
+    }
+    public Page invokeUrlWithParametersUsingGet(String currentTest, WebClient wc, String url, List<NameValuePair> requestParams) throws Exception {
+        return invokeUrlWithParameters(currentTest, wc, url, HttpMethod.GET, requestParams) ;
+    }
+    public Page invokeUrlWithParametersUsingGet(String currentTest, String url, List<NameValuePair> requestParams) throws Exception {
+        return invokeUrlWithParameters(currentTest, new WebClient(), url, HttpMethod.GET, requestParams) ;
+    }
+    public Page invokeUrlWithParametersUsingPost(String currentTest, WebClient wc, String url, List<NameValuePair> requestParams) throws Exception {
+        return invokeUrlWithParameters(currentTest, wc, url, HttpMethod.POST, requestParams) ;
+    }
+    public Page invokeUrlWithParametersUsingPost(String currentTest, String url, List<NameValuePair> requestParams) throws Exception {
+        return invokeUrlWithParameters(currentTest, new WebClient(), url, HttpMethod.POST, requestParams) ;
+    }
+    
+    public Page invokeUrlWithParameters(String currentTest, WebClient wc, String url, HttpMethod method, List<NameValuePair> requestParams) throws Exception {
         String thisMethod = "invokeUrlWithParameters";
         loggingUtils.printMethodName(thisMethod);
         try {
-            WebRequest request = createGetRequest(url);
+            WebRequest request = createHttpRequest(url, method);
             if (requestParams != null) {
                 request.setRequestParameters(requestParams);
             }
@@ -238,6 +265,10 @@ public class TestActions {
         webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
         webClient.getOptions().setUseInsecureSSL(true);
         return webClient;
+    }
+
+    public WebRequest createHttpRequest(String url, HttpMethod method) throws MalformedURLException {
+        return new WebRequest(new URL(url), method);
     }
 
     public WebRequest createGetRequest(String url) throws MalformedURLException {

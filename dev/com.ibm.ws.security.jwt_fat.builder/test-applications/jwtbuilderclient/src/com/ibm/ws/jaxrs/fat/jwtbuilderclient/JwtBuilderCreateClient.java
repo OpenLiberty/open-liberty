@@ -20,18 +20,23 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.websphere.security.jwt.JwtBuilder;
 import com.ibm.websphere.security.jwt.JwtToken;
-import com.ibm.ws.security.jwt.fat.builder.JWTApplicationUtils;
+import com.ibm.ws.security.fat.common.jwt.utils.JWTApiApplicationUtils;
 import com.ibm.ws.security.jwt.fat.builder.JWTBuilderConstants;
 
 /**
- * Test application to run the jwtBuilder Apis.
- * This app will create a jwtBuilder, and then invoke all of the methods on the api's that it supports.
- * The test case invoking the app will validate that the specific values processed by the api's are correct.
- * (ie: <claims>.toJsonString() and <claims>.getIssuer() contain that value that the test set)
+ * Test application to run the jwtBuilder create Apis.
+ * This app focuses on creating a builder. Different config ids or no config id can be passed.
+ * The tests using this app are simply trying to create a jwt token using a builder that is
+ * populated from just the specified or default config (we won't use any of the set methods
+ * to update any of the attributes)
+ * The app creates and populates a builder (based on the config). Then, it creates a jwt from
+ * the builder. Finally, it uses the claim get methods to log the values found in the jwt.
+ * The calling test cases will validate that the values logged are appropriate for the config/test case.
  */
+@SuppressWarnings("restriction")
 public class JwtBuilderCreateClient extends HttpServlet {
 
-    protected JWTApplicationUtils appUtils = new JWTApplicationUtils();
+    protected JWTApiApplicationUtils appUtils = new JWTApiApplicationUtils();
     private static final long serialVersionUID = 1L;
     PrintWriter pw = null;
     protected JwtBuilder myJwtBuilder = null;
@@ -83,14 +88,10 @@ public class JwtBuilderCreateClient extends HttpServlet {
             JwtToken newJwtToken = myJwtBuilder.buildJwt();
             appUtils.logIt(pw, "JwtToken: " + newJwtToken.toString());
 
-            appUtils.outputHeader(pw, JWTBuilderConstants.JWT_BUILDER_HEADER, newJwtToken);
-            appUtils.outputClaims(pw, JWTBuilderConstants.JWT_BUILDER_CLAIM, newJwtToken);
+            appUtils.outputHeader(pw, JWTBuilderConstants.JWT_TOKEN_HEADER, newJwtToken);
+            appUtils.outputClaims(pw, JWTBuilderConstants.JWT_CLAIM, newJwtToken);
 
-            if (newJwtToken != null) {
-                jwtTokenString = newJwtToken.compact();
-            } else {
-                jwtTokenString = "token was null";
-            }
+            jwtTokenString = newJwtToken.compact();
 
             appUtils.logIt(pw, JWTBuilderConstants.BUILT_JWT_TOKEN + jwtTokenString);
             System.out.println("exiting the svc client");
@@ -140,69 +141,4 @@ public class JwtBuilderCreateClient extends HttpServlet {
 
     }
 
-    /******************************************* Helper methods *******************************************/
-
-    //    private void outputParameters(HttpServletRequest request) {
-    //        Map<String, String[]> params = request.getParameterMap();
-    //        for (Entry<String, String[]> entry : params.entrySet()) {
-    //            System.out.println("Parm: " + entry.getKey() + "=" + Arrays.toString(entry.getValue()));
-    //        }
-    //    }
-
-    //    /***
-    //     * Log information to both the server log and add it to the response that will be returned to the caller.
-    //     *
-    //     * @param msg
-    //     *            message to record
-    //     */
-    //    //    protected void logIt(String msg) {
-    //    //        System.out.println(msg);
-    //    //        pw.print(msg + newLine);
-    //    //    }
-    //
-    //    private void handleException(HttpServletResponse response, Exception e) throws IOException {
-    //
-    //        System.out.println(e.getMessage());
-    //        appUtils.logIt(pw, "Caught an exception calling external App: " + e.toString()); // this is probably expected
-    //        //pw.close(); // we cannot close it here since it affects the following. Instead of getting 500, we will end up receiving 200.
-    //        //        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-    //
-    //    }
-    //
-    //    private void outputEntry(HttpServletResponse response) throws IOException {
-    //        pw = response.getWriter();
-    //        response.setContentType("text/plain");
-    //        appUtils.logIt(pw, "");
-    //        appUtils.logIt(pw, "*******************  Start of JwtBuilderClient output  ******************* ");
-    //    }
-    //
-    //    private void outputExit() {
-    //        appUtils.logIt(pw, "*******************  End of JwtBuilderClient output  ******************* ");
-    //        pw.close();
-    //    }
-    //
-    //    /**
-    //     * Since we can't really pass null and "" through the interface, we can pass values that
-    //     * imply null and "". If we are passed one of those, we need to translate it to the real value.
-    //     *
-    //     * @param specialString
-    //     *            - the passed string
-    //     * @return
-    //     */
-    //    private String getSpecialValue(String specialString) {
-    //        System.out.println("getSpecialValue: " + specialString);
-    //        if (specialString == null) {
-    //            return specialString;
-    //        }
-    //        if (specialString.equals(nullString)) {
-    //            System.out.println("getSpecialValue: return null");
-    //            return null;
-    //        } else if (specialString.equals(emptyString)) {
-    //            System.out.println("getSpecialValue: return empty");
-    //            return emptyValue;
-    //        } else {
-    //            System.out.println("getSpecialValue: return passed in value");
-    //            return specialString;
-    //        }
-    //    }
 }

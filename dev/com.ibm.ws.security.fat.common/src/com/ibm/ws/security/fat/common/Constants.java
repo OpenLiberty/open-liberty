@@ -19,6 +19,7 @@ public class Constants {
     public static final String STRING_EQUALS = "equals";
     public static final String STRING_NULL = "null";
     public static final String STRING_NOT_NULL = "not null";
+    public static final String TIME_TYPE = "time type";
 
     /**
      * This interface allows us to create a simple check type inheritance structure to divide up different categories of check

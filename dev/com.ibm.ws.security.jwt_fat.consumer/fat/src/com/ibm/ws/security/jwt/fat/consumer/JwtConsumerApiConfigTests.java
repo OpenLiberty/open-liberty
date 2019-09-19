@@ -22,13 +22,13 @@ import com.gargoylesoftware.htmlunit.Page;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.CommonSecurityFat;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
-import com.ibm.ws.security.fat.common.jwt.ClaimConstants;
 import com.ibm.ws.security.fat.common.jwt.JWTTokenBuilder;
 import com.ibm.ws.security.fat.common.jwt.JwtMessageConstants;
+import com.ibm.ws.security.fat.common.jwt.PayloadConstants;
+import com.ibm.ws.security.fat.common.jwt.expectations.JwtApiExpectation;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 import com.ibm.ws.security.jwt.fat.consumer.actions.JwtConsumerActions;
-import com.ibm.ws.security.jwt.fat.consumer.expectations.JwtConsumerExpectation;
 import com.ibm.ws.security.jwt.fat.consumer.utils.ConsumerHelpers;
 
 import componenttest.annotation.ExpectedFFDC;
@@ -64,7 +64,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
 
         serverTracker.addServer(consumerServer);
         consumerServer.startServerUsingExpandedConfiguration("server_configTests.xml");
-        SecurityFatHttpUtils.saveServerPorts(consumerServer, JWTConsumerConstants.BVT_SERVER_1_PORT_NAME_ROOT);
+        SecurityFatHttpUtils.saveServerPorts(consumerServer, JwtConsumerConstants.BVT_SERVER_1_PORT_NAME_ROOT);
         // one of the JWT Consumer configs had an empty SignatureAlg value which results in a CWWKG0032W warning - mark this as "OK"
         consumerServer.addIgnoredErrors(Arrays.asList(JwtMessageConstants.CWWKG0032W_CONFIG_INVALID_VALUE + ".+" + "signatureAlgorithm"));
 
@@ -154,7 +154,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         builder.setIssuer("testIssuer2");
         String jwtToken = buildToken();
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6052E_JWT_TRUSTED_ISSUERS_NULL + ".+\\[testIssuer2\\]", currentAction, consumerServer, JWTConsumerConstants.JWT_CONSUMER_DEFAULT_CONFIG);
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6052E_JWT_TRUSTED_ISSUERS_NULL + ".+\\[testIssuer2\\]", currentAction, consumerServer, JwtConsumerConstants.JWT_CONSUMER_DEFAULT_CONFIG);
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, "", jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -194,7 +194,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         String jwtToken = buildToken();
 
         Expectations expectations = consumerHelpers.buildConsumerClientAppExpectations(currentAction, consumerServer);
-        expectations.addExpectation(new JwtConsumerExpectation(JWTConsumerConstants.STRING_MATCHES, JwtMessageConstants.CWWKS6030E_JWT_CONSUMER_ID_DOESNT_EXIST + ".*doesntExist", "Response did not show the expected " + JwtMessageConstants.CWWKS6030E_JWT_CONSUMER_ID_DOESNT_EXIST + " failure."));
+        expectations.addExpectation(new JwtApiExpectation(JwtConsumerConstants.STRING_MATCHES, JwtMessageConstants.CWWKS6030E_JWT_CONSUMER_ID_DOESNT_EXIST + ".*doesntExist", "Response did not show the expected " + JwtMessageConstants.CWWKS6030E_JWT_CONSUMER_ID_DOESNT_EXIST + " failure."));
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, "doesntExist", jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -238,7 +238,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
     public void JwtConsumerApiConfigTests_issuerBlank_issuerNotInToken() throws Exception {
 
         // remove the issuer from the token
-        builder.unsetClaim(ClaimConstants.ISSUER);
+        builder.unsetClaim(PayloadConstants.ISSUER);
         String jwtToken = buildToken();
 
         Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6052E_JWT_TRUSTED_ISSUERS_NULL + ".+\\[" + builder.getRawClaims().getIssuer() + "\\]", currentAction, consumerServer, "blankIssuer");
@@ -278,7 +278,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
     public void JwtConsumerApiConfigTests_issuerOmitted_issuerNotInToken() throws Exception {
 
         // remove the issuer from the token
-        builder.unsetClaim(ClaimConstants.ISSUER);
+        builder.unsetClaim(PayloadConstants.ISSUER);
         String jwtToken = buildToken();
 
         Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6052E_JWT_TRUSTED_ISSUERS_NULL + ".+\\[" + builder.getRawClaims().getIssuer() + "\\]", currentAction, consumerServer, "omittedIssuer");
@@ -383,7 +383,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
     @Test
     public void JwtConsumerApiConfigTests_sharedKeyXor_SigAlgHS256() throws Exception {
 
-        builder.setAudience(SecurityFatHttpUtils.getServerSecureUrlBase(consumerServer) + JWTConsumerConstants.JWT_CONSUMER_ENDPOINT);
+        builder.setAudience(SecurityFatHttpUtils.getServerSecureUrlBase(consumerServer) + JwtConsumerConstants.JWT_CONSUMER_ENDPOINT);
         String jwtToken = buildToken();
 
         Expectations expectations = addGoodConsumerClientResponseAndClaimsExpectations();
@@ -404,7 +404,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
     @Test
     public void JwtConsumerApiConfigTests_sharedKeyBadXor_SigAlgHS256() throws Exception {
 
-        builder.setAudience(SecurityFatHttpUtils.getServerSecureUrlBase(consumerServer) + JWTConsumerConstants.JWT_CONSUMER_ENDPOINT);
+        builder.setAudience(SecurityFatHttpUtils.getServerSecureUrlBase(consumerServer) + JwtConsumerConstants.JWT_CONSUMER_ENDPOINT);
         String jwtToken = buildToken();
 
         Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6041E_JWT_SIGNATURE_INVALID, currentAction, consumerServer, "sharedKeyBadXor_HS256");
@@ -429,7 +429,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
     @Test
     public void JwtConsumerApiConfigTests_audienceOmitted_audienceInToken() throws Exception {
 
-        builder.setAudience(SecurityFatHttpUtils.getServerSecureUrlBase(consumerServer) + JWTConsumerConstants.JWT_CONSUMER_ENDPOINT);
+        builder.setAudience(SecurityFatHttpUtils.getServerSecureUrlBase(consumerServer) + JwtConsumerConstants.JWT_CONSUMER_ENDPOINT);
         String jwtToken = buildToken();
 
         Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6023E_BAD_AUDIENCE, currentAction, consumerServer, "audienceOmitted");
@@ -467,7 +467,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
     @Test
     public void JwtConsumerApiConfigTests_audienceBlank_audienceInToken() throws Exception {
 
-        builder.setAudience(SecurityFatHttpUtils.getServerSecureUrlBase(consumerServer) + JWTConsumerConstants.JWT_CONSUMER_ENDPOINT);
+        builder.setAudience(SecurityFatHttpUtils.getServerSecureUrlBase(consumerServer) + JwtConsumerConstants.JWT_CONSUMER_ENDPOINT);
         String jwtToken = buildToken();
 
         Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6023E_BAD_AUDIENCE, currentAction, consumerServer, "audienceBlank");
@@ -505,7 +505,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
     @Test
     public void JwtConsumerApiConfigTests_audienceMultiple_audienceInToken() throws Exception {
 
-        builder.setAudience(SecurityFatHttpUtils.getServerSecureUrlBase(consumerServer) + JWTConsumerConstants.JWT_CONSUMER_ENDPOINT);
+        builder.setAudience(SecurityFatHttpUtils.getServerSecureUrlBase(consumerServer) + JwtConsumerConstants.JWT_CONSUMER_ENDPOINT);
         String jwtToken = buildToken();
 
         Expectations expectations = addGoodConsumerClientResponseAndClaimsExpectations();
@@ -525,7 +525,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
     @Test
     public void JwtConsumerApiConfigTests_audienceMultiple_audienceMultipleInToken() throws Exception {
 
-        builder.setAudience(SecurityFatHttpUtils.getServerSecureUrlBase(consumerServer) + JWTConsumerConstants.JWT_CONSUMER_ENDPOINT, SecurityFatHttpUtils.getServerUrlBase(consumerServer) + JWTConsumerConstants.JWT_CONSUMER_ENDPOINT);
+        builder.setAudience(SecurityFatHttpUtils.getServerSecureUrlBase(consumerServer) + JwtConsumerConstants.JWT_CONSUMER_ENDPOINT, SecurityFatHttpUtils.getServerUrlBase(consumerServer) + JwtConsumerConstants.JWT_CONSUMER_ENDPOINT);
         String jwtToken = buildToken();
 
         Expectations expectations = addGoodConsumerClientResponseAndClaimsExpectations();
@@ -862,7 +862,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
     public void JwtConsumerApiConfigTests_clockSkew_default() throws Exception {
 
         builder.setExpirationTimeSecondsFromNow(5);
-        builder.setAudience(SecurityFatHttpUtils.getServerSecureUrlBase(consumerServer) + JWTConsumerConstants.JWT_CONSUMER_ENDPOINT);
+        builder.setAudience(SecurityFatHttpUtils.getServerSecureUrlBase(consumerServer) + JwtConsumerConstants.JWT_CONSUMER_ENDPOINT);
         String jwtToken = buildToken();
 
         Expectations expectations = addGoodConsumerClientResponseAndClaimsExpectations();
@@ -886,7 +886,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
     public void JwtConsumerApiConfigTests_clockSkew_short() throws Exception {
 
         builder.setExpirationTimeSecondsFromNow(5);
-        builder.setAudience(SecurityFatHttpUtils.getServerSecureUrlBase(consumerServer) + JWTConsumerConstants.JWT_CONSUMER_ENDPOINT);
+        builder.setAudience(SecurityFatHttpUtils.getServerSecureUrlBase(consumerServer) + JwtConsumerConstants.JWT_CONSUMER_ENDPOINT);
         String jwtToken = buildToken();
 
         Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtMessageConstants.CWWKS6025E_TOKEN_EXPIRED + ".+exp.+clock skew.+3", currentAction, consumerServer, "clockSkew_short");

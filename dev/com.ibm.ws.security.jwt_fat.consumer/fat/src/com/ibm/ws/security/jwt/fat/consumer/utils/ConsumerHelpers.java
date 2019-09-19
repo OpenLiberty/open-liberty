@@ -15,14 +15,13 @@ import java.util.List;
 import org.jose4j.jwt.JwtClaims;
 
 import com.ibm.ws.security.fat.common.expectations.Expectations;
-import com.ibm.ws.security.fat.common.jwt.ClaimConstants;
 import com.ibm.ws.security.fat.common.jwt.JWTTokenBuilder;
-import com.ibm.ws.security.fat.common.jwt.JwtConstants;
+import com.ibm.ws.security.fat.common.jwt.PayloadConstants;
+import com.ibm.ws.security.fat.common.jwt.expectations.JwtApiExpectation;
 import com.ibm.ws.security.fat.common.jwt.utils.JwtTokenBuilderUtils;
 import com.ibm.ws.security.fat.common.utils.CommonExpectations;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
-import com.ibm.ws.security.jwt.fat.consumer.JWTConsumerConstants;
-import com.ibm.ws.security.jwt.fat.consumer.expectations.JwtConsumerExpectation;
+import com.ibm.ws.security.jwt.fat.consumer.JwtConsumerConstants;
 
 import componenttest.topology.impl.LibertyServer;
 
@@ -73,15 +72,15 @@ public class ConsumerHelpers extends JwtTokenBuilderUtils {
         List<String> audiences = claims.getAudience();
         if (audiences != null) {
             for (String aud : audiences) {
-                expectations = updateConsumerExpectationsForJsonAttribute(expectations, ClaimConstants.AUDIENCE, JWTConsumerConstants.JWT_BUILDER_AUDIENCE, aud);
+                expectations = updateConsumerExpectationsForJsonAttribute(expectations, PayloadConstants.AUDIENCE, aud);
             }
         }
-        expectations = updateConsumerExpectationsForJsonAttribute(expectations, ClaimConstants.ISSUER, JWTConsumerConstants.JWT_BUILDER_ISSUER, claims.getIssuer());
-        expectations = updateConsumerExpectationsForJsonAttribute(expectations, ClaimConstants.ISSUED_AT, JWTConsumerConstants.JWT_BUILDER_ISSUED_AT, claims.getIssuedAt().getValue());
-        expectations = updateConsumerExpectationsForJsonAttribute(expectations, ClaimConstants.EXPIRATION_TIME, JWTConsumerConstants.JWT_BUILDER_EXPIRATION, claims.getExpirationTime().getValue());
-        expectations = updateExpectationsForJsonAttribute(expectations, ClaimConstants.SCOPE, claims.getStringClaimValue(ClaimConstants.SCOPE));
-        expectations = updateConsumerExpectationsForJsonAttribute(expectations, ClaimConstants.SUBJECT, JWTConsumerConstants.JWT_BUILDER_SUBJECT, claims.getSubject());
-        expectations = updateExpectationsForJsonAttribute(expectations, ClaimConstants.REALM_NAME, claims.getStringClaimValue(ClaimConstants.REALM_NAME));
+        expectations = updateConsumerExpectationsForJsonAttribute(expectations, PayloadConstants.ISSUER, claims.getIssuer());
+        expectations = updateConsumerExpectationsForJsonAttribute(expectations, PayloadConstants.ISSUED_AT, claims.getIssuedAt().getValue());
+        expectations = updateConsumerExpectationsForJsonAttribute(expectations, PayloadConstants.EXPIRATION_TIME, claims.getExpirationTime().getValue());
+        expectations = updateExpectationsForJsonAttribute(expectations, PayloadConstants.SCOPE, claims.getStringClaimValue(PayloadConstants.SCOPE));
+        expectations = updateConsumerExpectationsForJsonAttribute(expectations, PayloadConstants.SUBJECT, claims.getSubject());
+        expectations = updateExpectationsForJsonAttribute(expectations, PayloadConstants.REALM_NAME, claims.getStringClaimValue(PayloadConstants.REALM_NAME));
         return expectations;
     }
 
@@ -100,8 +99,8 @@ public class ConsumerHelpers extends JwtTokenBuilderUtils {
      */
     public Expectations updateExpectationsForJsonAttribute(Expectations expectations, String key, Object value) throws Exception {
 
-        expectations.addExpectation(new JwtConsumerExpectation(key, value, JwtConsumerExpectation.ValidationMsgType.CLAIM_FROM_LIST));
-        expectations.addExpectation(new JwtConsumerExpectation(key, value, JwtConsumerExpectation.ValidationMsgType.CLAIM_LIST_MEMBER));
+        expectations.addExpectation(new JwtApiExpectation(key, value, JwtApiExpectation.ValidationMsgType.CLAIM_FROM_LIST));
+        expectations.addExpectation(new JwtApiExpectation(key, value, JwtApiExpectation.ValidationMsgType.CLAIM_LIST_MEMBER));
 
         return expectations;
     }
@@ -120,9 +119,9 @@ public class ConsumerHelpers extends JwtTokenBuilderUtils {
      * @return - expecations object updated with a new expectation
      * @throws Exception
      */
-    public Expectations updateConsumerExpectationsForJsonAttribute(Expectations expectations, String key, String keyLogName, Object value) throws Exception {
+    public Expectations updateConsumerExpectationsForJsonAttribute(Expectations expectations, String key, Object value) throws Exception {
 
-        expectations.addExpectation(new JwtConsumerExpectation(keyLogName, value, JwtConsumerExpectation.ValidationMsgType.SPECIFIC_CLAIM_API));
+        expectations.addExpectation(new JwtApiExpectation(key, value, JwtApiExpectation.ValidationMsgType.SPECIFIC_CLAIM_API));
 
         return updateExpectationsForJsonAttribute(expectations, key, value);
 
@@ -131,7 +130,7 @@ public class ConsumerHelpers extends JwtTokenBuilderUtils {
     public Expectations buildNegativeAttributeExpectations(String specificErrorId, String currentAction, LibertyServer consumerServer, String jwtConsumerId) throws Exception {
 
         Expectations expectations = buildConsumerClientAppExpectations(currentAction, consumerServer);
-        expectations.addExpectation(new JwtConsumerExpectation(specificErrorId, jwtConsumerId));
+        expectations.addExpectation(new JwtApiExpectation(specificErrorId, jwtConsumerId));
 
         return expectations;
     }
@@ -139,7 +138,7 @@ public class ConsumerHelpers extends JwtTokenBuilderUtils {
     public Expectations buildConsumerClientAppExpectations(String currentAction, LibertyServer consumerServer) throws Exception {
 
         Expectations expectations = new Expectations();
-        expectations.addExpectations(CommonExpectations.successfullyReachedUrl(currentAction, SecurityFatHttpUtils.getServerUrlBase(consumerServer) + JwtConstants.JWT_CONSUMER_ENDPOINT));
+        expectations.addExpectations(CommonExpectations.successfullyReachedUrl(currentAction, SecurityFatHttpUtils.getServerUrlBase(consumerServer) + JwtConsumerConstants.JWT_CONSUMER_ENDPOINT));
 
         return expectations;
     }

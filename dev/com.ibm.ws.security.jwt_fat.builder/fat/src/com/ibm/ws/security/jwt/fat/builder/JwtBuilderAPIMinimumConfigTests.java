@@ -20,13 +20,12 @@ import com.gargoylesoftware.htmlunit.Page;
 import com.ibm.json.java.JSONObject;
 import com.ibm.ws.security.fat.common.CommonSecurityFat;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
-import com.ibm.ws.security.fat.common.jwt.ClaimConstants;
 import com.ibm.ws.security.fat.common.jwt.HeaderConstants;
-import com.ibm.ws.security.fat.common.jwt.JwtConstants;
 import com.ibm.ws.security.fat.common.jwt.JwtMessageConstants;
+import com.ibm.ws.security.fat.common.jwt.PayloadConstants;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
-import com.ibm.ws.security.jwt.fat.buider.actions.JwtBuilderActions;
+import com.ibm.ws.security.jwt.fat.builder.actions.JwtBuilderActions;
 import com.ibm.ws.security.jwt.fat.builder.utils.BuilderHelpers;
 
 import componenttest.annotation.AllowedFFDC;
@@ -92,14 +91,14 @@ public class JwtBuilderAPIMinimumConfigTests extends CommonSecurityFat {
 
         builderServer.reconfigureServerUsingExpandedConfiguration(_testName, "server_minimumRunnableConfig.xml");
 
-        JSONObject settings = BuilderHelpers.setDefaultClaims(builderServer);
-        settings.put(ClaimConstants.ISSUER, SecurityFatHttpUtils.getServerIpUrlBase(builderServer) + "jwt/defaultJWT");
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderServer);
+        expectationSettings.put(PayloadConstants.ISSUER, SecurityFatHttpUtils.getServerIpUrlBase(builderServer) + "jwt/defaultJWT");
         JSONObject testSettings = new JSONObject();
-        testSettings.put(HeaderConstants.ALGORITHM, JwtConstants.SIGALG_RS256);
-        testSettings.put(JwtConstants.SHARED_KEY_TYPE, JwtConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
-        settings.put("overrideSettings", testSettings);
+        testSettings.put(HeaderConstants.ALGORITHM, JWTBuilderConstants.SIGALG_RS256);
+        testSettings.put(JWTBuilderConstants.SHARED_KEY_TYPE, JWTBuilderConstants.SHARED_KEY_PRIVATE_KEY_TYPE);
+        expectationSettings.put("overrideSettings", testSettings);
 
-        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, settings, builderServer);
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, null, testSettings);
         validationUtils.validateResult(response, expectations);
@@ -111,9 +110,9 @@ public class JwtBuilderAPIMinimumConfigTests extends CommonSecurityFat {
 
         builderServer.reconfigureServerUsingExpandedConfiguration(_testName, "server_minimumSSLConfig1.xml");
 
-        JSONObject settings = BuilderHelpers.setDefaultClaims(builderServer);
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderServer);
 
-        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, settings, builderServer);
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, null);
         validationUtils.validateResult(response, expectations);
@@ -125,10 +124,10 @@ public class JwtBuilderAPIMinimumConfigTests extends CommonSecurityFat {
 
         builderServer.reconfigureServerUsingExpandedConfiguration(_testName, "server_minimumSSLConfig2.xml");
 
-        JSONObject settings = BuilderHelpers.setDefaultClaims(builderServer);
-        settings.put(ClaimConstants.ISSUER, SecurityFatHttpUtils.getServerIpUrlBase(builderServer) + "jwt/defaultJWT");
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderServer);
+        expectationSettings.put(PayloadConstants.ISSUER, SecurityFatHttpUtils.getServerIpUrlBase(builderServer) + "jwt/defaultJWT");
 
-        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, settings, builderServer);
+        Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
 
         Page response = actions.invokeJwtBuilder_setApis(_testName, builderServer, null);
         validationUtils.validateResult(response, expectations);

@@ -56,7 +56,7 @@ public class JwtConsumerApiConfigWithGlobalTrustTests extends CommonSecurityFat 
 
         serverTracker.addServer(consumerServer);
         consumerServer.startServerUsingExpandedConfiguration("server_configGlobalTrust.xml");
-        SecurityFatHttpUtils.saveServerPorts(consumerServer, JWTConsumerConstants.BVT_SERVER_1_PORT_NAME_ROOT);
+        SecurityFatHttpUtils.saveServerPorts(consumerServer, JwtConsumerConstants.BVT_SERVER_1_PORT_NAME_ROOT);
 
         createBuilderWithDefaultClaims();
         jwtToken = builder.build();
