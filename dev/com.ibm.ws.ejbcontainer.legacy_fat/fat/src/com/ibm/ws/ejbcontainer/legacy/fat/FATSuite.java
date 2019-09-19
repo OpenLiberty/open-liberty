@@ -20,4 +20,5 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 @SuiteClasses({
                 AlwaysPassesTest.class
 })
-public class FATSuite {}
+public class FATSuite {
+}

@@ -391,7 +391,7 @@ public class DatabaseHashMapMR extends DatabaseHashMap {
                 boolean needToInsert = false;
                 int batchInsertPSCount = results.length;
                 // PI53220 Oracle 11 returns -2 (SUCCESS_NO_INFO); PI57327 Oracle 12 returns successful results.
-                if (results[0] == java.sql.Statement.SUCCESS_NO_INFO && updateCount > 0 && (_smc.writeAllProperties() || batchInsertPSCount == updateCount))
+                if (results.length > 0 && results[0] == java.sql.Statement.SUCCESS_NO_INFO && updateCount > 0 && (_smc.writeAllProperties() || batchInsertPSCount == updateCount))
                 {
                     batchInsertPSCount = batchInsertPSCount - updateCount; // Oracle only : when Write All option or no insert cases
                 }

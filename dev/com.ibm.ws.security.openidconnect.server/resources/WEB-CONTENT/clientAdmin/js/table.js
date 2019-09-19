@@ -64,10 +64,11 @@ var table = (function() {
     var createTableRow = function(clientData, filterValue) {
         var clientName = "<td tabindex='-1'>" + clientData.client_name + "</td>";
         var clientId = "<td tabindex='-1'>" + clientData.client_id + "</td>";
+        var clientId_ID = clientData.client_id.replace(/\s/g, '__');
         var editAriaLabel = utils.formatString(messages.EDIT_ARIA, [utils.encodeData(clientData.client_name)]);
-        var editButton = "<td><button id='edit_" + clientData.client_id + "' class='tool_table_button edit_client_button' type='button' aria-label='" + editAriaLabel + "'>" + messages.EDIT + "</button></td>";
+        var editButton = "<td><button id='edit_" + clientId_ID + "' class='tool_table_button edit_client_button' type='button' aria-label='" + editAriaLabel + "'>" + messages.EDIT + "</button></td>";
         var deleteAriaLabel = utils.formatString(messages.DELETE_ARIA, [utils.encodeData(clientData.client_name)]);
-        var deleteButton = "<td><button id='delete_" + clientData.client_id + "' class='tool_table_button delete_client_button' type='button' aria-label='" + deleteAriaLabel + "'>" + messages.DELETE + "</button></td>";
+        var deleteButton = "<td><button id='delete_" + clientId_ID + "' class='tool_table_button delete_client_button' type='button' aria-label='" + deleteAriaLabel + "'>" + messages.DELETE + "</button></td>";
 
         // Create a table row and add the filter data attribute as the client name lowercased.
         // This will be used in filtering and sorting

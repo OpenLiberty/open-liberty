@@ -141,7 +141,7 @@ public interface UserRegistry extends java.rmi.Remote {
                     RemoteException;
 
     /**
-     * Gets a list of users that match a <i>pattern</i> in the registy.
+     * Gets a list of users that match a <i>pattern</i> in the registry.
      * The maximum number of users returned is defined by the <i>limit</i>
      * argument.
      * <p>This method is called by GUI(adminConsole) and Scripting(Command Line) to

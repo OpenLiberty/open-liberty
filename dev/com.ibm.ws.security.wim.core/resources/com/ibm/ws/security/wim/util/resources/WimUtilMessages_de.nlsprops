@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2018 IBM Corporation and others.
+# Copyright (c) 2012, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -268,3 +268,7 @@ AUTHENTICATION_WITH_CERT_NOT_SUPPORTED.useraction=Authentifizieren Sie sich mit 
 CANNOT_WRITE_TO_READ_ONLY_REPOSITORY=CWIML1027E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden, weil das Repository {0} schreibgesch\u00fctzt ist. Das Repository unterst\u00fctzt keine Schreiboperationen. 
 CANNOT_WRITE_TO_READ_ONLY_REPOSITORY.explanation=Das Repository ist schreibgesch\u00fctzt. Es unterst\u00fctzt keine Erstellungs-, Aktualisierungs- und L\u00f6schoperatione.
 CANNOT_WRITE_TO_READ_ONLY_REPOSITORY.useraction=Stellen Sie sicher, dass keine Schreiboperation f\u00fcr ein schreibgesch\u00fctztes Repository aufgerufen wird.
+
+REQUIRED_IDENTIFIERS_MISSING=CWIML3001W: Die erforderlichen IDs f\u00fcr die Entit\u00e4t fehlen.
+REQUIRED_IDENTIFIERS_MISSING.explanation=Die IDs uniqueName und uniqueId wurden nicht angegeben. Es muss mindestens eine ID angegeben werden.
+REQUIRED_IDENTIFIERS_MISSING.useraction=Stellen Sie sicher, dass die ID-Eigenschaft f\u00fcr jede \u00fcbergebene Eint\u00e4t angegeben wird. Wenn eine ID nicht angegeben wurde, f\u00fcgen Sie die Eigenschaft hinzu und geben Sie entweder uniqueName oder uniqueId an.

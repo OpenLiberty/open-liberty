@@ -37,7 +37,7 @@ tested.features: featuref-1.0, productauto:pfeaturen-1.0, productauto:pfeaturem-
 	org.hamcrest:hamcrest-all;version=1.3,\
 	org.jmock:jmock-junit4;strategy=exact;version=2.5.1,\
 	org.jmock:jmock;strategy=exact;version=2.5.1,\
-	org.apache.commons:commons-compress;version=1.18,\
+	org.apache.commons:commons-compress;version=1.19,\
 	com.ibm.ws.org.apache.commons.compress,\
 	fattest.simplicity;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\

@@ -10,10 +10,15 @@
  *******************************************************************************/
 package com.ibm.ws.security.fat.common.jwt;
 
-import org.jose4j.jwt.ReservedClaimNames;
+public class PayloadConstants {
 
-public class PayloadConstants extends ReservedClaimNames {
-
+    public static final String EXPIRATION_TIME = "exp";
+    public static final String NOT_BEFORE = "nbf";
+    public static final String ISSUED_AT = "iat";
+    public static final String ISSUER = "iss";
+    public static final String AUDIENCE = "aud";
+    public static final String SUBJECT = "sub";
+    public static final String JWT_ID = "jti";
     public static final String SCOPE = "scope";
     public static final String REALM_NAME = "realmName";
     public static final String TOKEN_TYPE = "token_type";

@@ -29,11 +29,11 @@ import com.ibm.ws.com.unboundid.InMemoryLDAPServer;
 import com.ibm.ws.security.registry.test.UserRegistryServletConnection;
 import com.unboundid.ldap.sdk.Entry;
 
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.LDAPFatUtils;
 import componenttest.topology.utils.LDAPUtils;
 
@@ -43,7 +43,10 @@ import componenttest.topology.utils.LDAPUtils;
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
 public class WIMURRegressionTest {
-    private static LibertyServer libertyServer = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.wim.registry.fat.WIMURRegression");
+
+    @Server("com.ibm.ws.security.wim.registry.fat.WIMURRegression")
+    public static LibertyServer libertyServer;
+
     private static final Class<?> c = WIMURRegressionTest.class;
     private static UserRegistryServletConnection servlet;
     private static InMemoryLDAPServer ds = null;

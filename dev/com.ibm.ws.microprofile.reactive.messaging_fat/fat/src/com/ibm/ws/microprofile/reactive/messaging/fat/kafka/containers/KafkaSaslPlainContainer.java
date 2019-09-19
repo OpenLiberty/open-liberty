@@ -3,6 +3,7 @@ package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.containers;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
@@ -148,6 +149,12 @@ public class KafkaSaslPlainContainer extends GenericContainer<KafkaSaslPlainCont
         super.doStart();
 
         copyFileFromContainer(KEYSTORE_FILEPATH, KEYSTORE_FILENAME);
+    }
+
+    @Override
+    public void stop() {
+        // Shut down both the proxy and the container
+        Stream.<Runnable> of(proxy::stop, super::stop).parallel().forEach(Runnable::run);
     }
 
     private String getZookeeperProperties() {

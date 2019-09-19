@@ -127,6 +127,8 @@ public class AggregateFunctionTestLogic extends AbstractTestLogic {
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
         final String jdbcDriverVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("jdbcDriverVersion") == null) ? "UNKNOWN" : (String) testProps.get("jdbcDriverVersion"));
 
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
 

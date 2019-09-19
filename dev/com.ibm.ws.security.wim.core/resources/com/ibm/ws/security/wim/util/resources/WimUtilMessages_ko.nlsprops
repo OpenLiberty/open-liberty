@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2018 IBM Corporation and others.
+# Copyright (c) 2012, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -267,3 +267,7 @@ AUTHENTICATION_WITH_CERT_NOT_SUPPORTED.useraction=\uc778\uc99d\uc11c \ub300\uc2e
 CANNOT_WRITE_TO_READ_ONLY_REPOSITORY=CWIML1027E: \uc800\uc7a5\uc18c {0}\uc774(\uac00) \uc77d\uae30 \uc804\uc6a9 \uc800\uc7a5\uc18c\uc774\ubbc0\ub85c \uc0ac\uc6a9\uc790 \ub808\uc9c0\uc2a4\ud2b8\ub9ac \uc870\uc791\uc744 \uc644\ub8cc\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \uc774 \uc800\uc7a5\uc18c\ub294 \uc4f0\uae30 \uc870\uc791\uc744 \uc9c0\uc6d0\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. 
 CANNOT_WRITE_TO_READ_ONLY_REPOSITORY.explanation=\uc800\uc7a5\uc18c\uac00 \uc77d\uae30 \uc804\uc6a9 \uc800\uc7a5\uc18c\uc785\ub2c8\ub2e4. \uc774 \uc800\uc7a5\uc18c\ub294 \uc791\uc131, \uc5c5\ub370\uc774\ud2b8 \ub610\ub294 \uc0ad\uc81c \uc870\uc791\uc744 \uc9c0\uc6d0\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 CANNOT_WRITE_TO_READ_ONLY_REPOSITORY.useraction=\uc4f0\uae30 \uc870\uc791\uc774 \uc77d\uae30 \uc804\uc6a9 \uc800\uc7a5\uc18c\uc5d0\uc11c \ud638\ucd9c\ub418\uc9c0 \uc54a\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+REQUIRED_IDENTIFIERS_MISSING=CWIML3001W: \uc5d4\ud2f0\ud2f0\uc758 \ud544\uc218 ID\uac00 \ub204\ub77d\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+REQUIRED_IDENTIFIERS_MISSING.explanation=ID uniqueName \ubc0f uniqueId\uac00 \uc9c0\uc815\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4. \ucd5c\uc18c \ud558\ub098\uc758 ID\ub97c \uc9c0\uc815\ud574\uc57c \ud569\ub2c8\ub2e4.
+REQUIRED_IDENTIFIERS_MISSING.useraction=\uc804\ub2ec\ub418\ub294 \uac01 \uc5d4\ud2f0\ud2f0\uc758 ID \ud2b9\uc131\uc774 \uc9c0\uc815\ub418\uc5b4 \uc788\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624. ID\uac00 \uc9c0\uc815\ub418\uc9c0 \uc54a\uc740 \uacbd\uc6b0 \ud2b9\uc131\uc744 \ucd94\uac00\ud558\uace0 uniqueName \ub610\ub294 uniqueId\ub97c \uc9c0\uc815\ud558\uc2ed\uc2dc\uc624.

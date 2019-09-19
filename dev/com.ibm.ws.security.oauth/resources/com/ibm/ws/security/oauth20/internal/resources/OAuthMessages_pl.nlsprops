@@ -113,12 +113,12 @@ OAUTH_LENGTH_TOO_LARGE_AND_CHANGED=CWWKS1422I: Warto\u015b\u0107 elementu {0} w 
 OAUTH_LENGTH_TOO_LARGE_AND_CHANGED.explanation=Warto\u015b\u0107 wskazanego atrybutu jest zbyt du\u017ca.
 OAUTH_LENGTH_TOO_LARGE_AND_CHANGED.useraction=Ustaw poprawn\u0105 warto\u015b\u0107 wskazanego atrybutu.  
 
-OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR=CWWKS1423E: Rejestracja lub aktualizacja klienta OAuth nie powiod\u0142a si\u0119, poniewa\u017c dane klienta zawieraj\u0105 niedozwolony znak [{0}].
+OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR=CWWKS1423E: Rejestracja lub aktualizacja klienta OAuth nie powiod\u0142a si\u0119, poniewa\u017c dane klienta zawieraj\u0105 niedozwolony znak \u201e{0}\u201d.
 OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR.explanation=Ten znak nie jest dozwolony w danych klienta.
-OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR.useraction=Usu\u0144 niepoprawne znaki i wprowad\u017a ponownie \u017c\u0105danie. 
+OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR.useraction=Usu\u0144 niepoprawny znak i wprowad\u017a ponownie \u017c\u0105danie. 
 
 OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND=CWWKS1424E: Nie znaleziono identyfikatora klienta {0}.
-OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.explanation=\u017b\u0105danie zawiera\u0142o identyfikator klienta, kt\u00f3rego nie znaleziono. 
+OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.explanation=\u017b\u0105danie zawiera\u0142o identyfikator klienta, kt\u00f3rego nie znaleziono.
 OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.useraction=Pon\u00f3w \u017c\u0105danie przy u\u017cyciu poprawnego identyfikatora klienta.
 
 OAUTH_CLIENT_REGISTRATION_INVALID_REQUEST_PATH=CWWKS1425E: \u017b\u0105danie rejestracji zosta\u0142o wykonane do niepoprawnego identyfikatora URI.
@@ -138,7 +138,7 @@ OAUTH_CLIENT_REGISTRATION_MALFORMED_REQUEST.explanation=Kod JSON w tre\u015bci \
 OAUTH_CLIENT_REGISTRATION_MALFORMED_REQUEST.useraction=Przejrzyj dokumentacj\u0119 interfejsu API dla tej us\u0142ugi i pon\u00f3w \u017c\u0105danie.
 
 OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS=CWWKS1429E: Identyfikator klienta {0} ju\u017c istnieje.
-OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS.explanation=Operacja nie powiod\u0142a si\u0119, poniewa\u017c identyfikator klienta ju\u017c istnieje. 
+OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS.explanation=Operacja nie powiod\u0142a si\u0119, poniewa\u017c identyfikator klienta ju\u017c istnieje.  
 OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS.useraction=Przejrzyj dokumentacj\u0119 interfejsu API dla tej us\u0142ugi i pon\u00f3w \u017c\u0105danie przy u\u017cyciu odpowiednich parametr\u00f3w.
 
 OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE=CWWKS1430E: Zaktualizowanie klienta nie powiod\u0142o si\u0119. \u017b\u0105danie aktualizacji wskazuje, \u017ce klucz tajny klienta musi zosta\u0107 utrwalony, ale istniej\u0105ca rejestracja nie ma ustawionego klucza tajnego.
@@ -240,6 +240,10 @@ OAUTH_SERVER_MULTIPLE_TOKEN_INTROSPECT_PROVIDER_CONFIGURED.useraction=Nie jest w
 OAUTH_SERVER_INVALID_ACCESS_TOKEN=CWWKS1454E: \u017b\u0105danie nie powiod\u0142o si\u0119, poniewa\u017c znacznik access_token jest niepoprawny lub utraci\u0142 wa\u017cno\u015b\u0107.
 OAUTH_SERVER_INVALID_ACCESS_TOKEN.explanation=Przetwarzanie \u017c\u0105dania nie powiod\u0142o si\u0119, poniewa\u017c znacznik access_token nie jest poprawny.
 OAUTH_SERVER_INVALID_ACCESS_TOKEN.useraction=Sprawd\u017a, czy znacznik access_token jest poprawny i czy nie utraci\u0142 wa\u017cno\u015bci.
+
+#This message can be appended to 1455E under some conditions
+# do not translate keyStoreRef
+CHECK_KEYSTORE_REF=Brak atrybutu konfiguracji dostawcy OpenId Connect keyStoreRef lub jest on niepoprawny.
 
 #This message is intended to be a child of CWWKS1456E
 #0=signatureAlgorithm, 1=exception or error message if any
@@ -445,7 +449,7 @@ JAVA8_REQUIRED=CWWKS1495W: Dostawca OpenID Connect nie mo\u017ce przetworzy\u010
 JAVA8_REQUIRED.explanation=Nie jest u\u017cywane \u015brodowisko Java w wersji 8 lub nowszej.
 JAVA8_REQUIRED.useraction=Zainstaluj \u015brodowisko Java w wersji 8 lub nowszej.
 
-JAVA8_REQUIRED_FOR_AT_HASHING=CWWKS1496W: Dostawca OpenID Connect {0} zawiera atrybut konfiguracji {1} ustawiony do u\u017cywania algorytmu {2}. Takie ustawienie wymaga \u015brodowiska Java 8 lub nowszego. Podany dostawca zignoruje ustawienie {3}.
+JAVA8_REQUIRED_FOR_AT_HASHING=CWWKS1496W: Dostawca OpenID Connect {0} zawiera atrybut konfiguracji {1} ustawiony do u\u017cywania algorytmu {2}. Takie ustawienie wymaga \u015brodowiska Java 8 lub nowszego. Podany dostawca OpenID Connect ignoruje ustawienie {3}.
 JAVA8_REQUIRED_FOR_AT_HASHING.explanation=Nie jest u\u017cywane \u015brodowisko Java w wersji 8 lub nowszej.
 JAVA8_REQUIRED_FOR_AT_HASHING.useraction=Zainstaluj \u015brodowisko Java w wersji 8 lub nowszej, aby u\u017cywa\u0107 wspomnianej opcji konfiguracyjnej.
 

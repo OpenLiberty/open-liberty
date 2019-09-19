@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2018 IBM Corporation and others.
+# Copyright (c) 2012, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -267,3 +267,7 @@ AUTHENTICATION_WITH_CERT_NOT_SUPPORTED.useraction=Authentifiez-vous \u00e0 l'aid
 CANNOT_WRITE_TO_READ_ONLY_REPOSITORY=CWIML1027E: L''op\u00e9ration de registre d''utilisateurs n''a pas pu \u00eatre ex\u00e9cut\u00e9e car le r\u00e9f\u00e9rentiel {0} est en lecture seule. Il ne prend pas en charge les op\u00e9rations d''\u00e9criture. 
 CANNOT_WRITE_TO_READ_ONLY_REPOSITORY.explanation=Le r\u00e9f\u00e9rentiel est en lecture seule. Il ne permet d'effectuer des op\u00e9rations de cr\u00e9ation, de mise \u00e0 jour ou de suppression.
 CANNOT_WRITE_TO_READ_ONLY_REPOSITORY.useraction=V\u00e9rifiez qu'aucune op\u00e9ration d'\u00e9criture n'est appel\u00e9e sur un r\u00e9f\u00e9rentiel en lecture seule.
+
+REQUIRED_IDENTIFIERS_MISSING=CWIML3001W: Les identificateurs requis pour l'entit\u00e9 sont manquants.
+REQUIRED_IDENTIFIERS_MISSING.explanation=Les identificateurs uniqueName et uniqueId ne sont pas indiqu\u00e9s. Vous devez d\u00e9finir au moins un identificateur.
+REQUIRED_IDENTIFIERS_MISSING.useraction=Assurez-vous que la propri\u00e9t\u00e9 d'identification est indiqu\u00e9e pour chaque entit\u00e9 transmise. Si aucun identificateur n'est indiqu\u00e9, ajoutez la propri\u00e9t\u00e9 et indiquez un nom unique ou un ID unique.

@@ -27,7 +27,7 @@
 
 # do not translate: CDI, CompletionStage
 CWWKC1158.cannot.lazy.enlist.beans=CWWKC1158E: Vous devez acc\u00e9der aux beans CDI avant de capturer le contexte de l''action ou de la t\u00e2che contextuelle afin que les beans CDI se comportent correctement lorsqu''ils sont accessibles \u00e0 partir de l''action ou de la t\u00e2che. \
-Vous devez acc\u00e9der aux beans CDI suivants avant la capture du contexte : {0}.
+Les beans CDI suivants n''\u00e9taient pas accessibles avant la capture du contexte : {0}.
 CWWKC1158.cannot.lazy.enlist.beans.explanation=Lorsque le contexte CDI est captur\u00e9, seuls les beans CDI auxquels vous avez acc\u00e9d\u00e9 \u00e0 ce moment-l\u00e0 sont cr\u00e9\u00e9s par l'environnement d'ex\u00e9cution CDI. \
 Par cons\u00e9quent, les beans CDI auxquels vous avez d'abord acc\u00e9d\u00e9 dans le cadre d'op\u00e9rations contextuelles ne peuvent pas propager leur \u00e9tat correctement dans les op\u00e9rations contextuelles suivantes.
 CWWKC1158.cannot.lazy.enlist.beans.useraction=Vous devez modifier l'application pour qu'elle appelle une op\u00e9ration de bean CDI, telle qu'une m\u00e9thode publique, avant que le contexte de l'op\u00e9ration ne soit captur\u00e9.

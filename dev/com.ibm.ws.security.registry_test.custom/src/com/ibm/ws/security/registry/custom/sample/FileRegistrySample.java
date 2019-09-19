@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2016 IBM Corporation and others.
+ * Copyright (c) 1997, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -50,6 +50,7 @@ public class FileRegistrySample implements UserRegistry {
 
     private static String USERFILENAME = null;
     private static String GROUPFILENAME = null;
+    private static String MULTI_VALUE_DELIMITER = ",";
 
     /** Default Constructor **/
     public FileRegistrySample() throws java.rmi.RemoteException {}
@@ -74,21 +75,12 @@ public class FileRegistrySample implements UserRegistry {
      *                if there is any registry-specific problem
      **/
     @Override
-    public void initialize(java.util.Properties props) throws CustomRegistryException {
+    public void initialize(Properties props) throws CustomRegistryException {
         try {
-            /*
-             * try getting the USERFILENAME and the GROUPFILENAME from
-             * properties that are passed in (For example, from the
-             * administrative console). Set these values in the administrative
-             * console. Go to the special custom settings in the custom
-             * user registry section of the Authentication panel.
-             * For example:
-             * usersFile c:/temp/users.props
-             * groupsFile c:/temp/groups.props
-             */
             if (props != null) {
                 USERFILENAME = props.getProperty("usersFile");
                 GROUPFILENAME = props.getProperty("groupsFile");
+                MULTI_VALUE_DELIMITER = props.getProperty("multiValueDelimiter");
             }
 
         } catch (Exception ex) {
@@ -405,7 +397,7 @@ public class FileRegistrySample implements UserRegistry {
         }
 
         if (usrSecName == null) {
-            EntryNotFoundException ex = new EntryNotFoundException("Cannot obtain the user securityName for" + uniqueUserId);
+            EntryNotFoundException ex = new EntryNotFoundException("Cannot obtain the user securityName for " + uniqueUserId);
             throw ex;
         }
 
@@ -625,7 +617,7 @@ public class FileRegistrySample implements UserRegistry {
                     if ((s.substring(index1 + 1, index2)).equals(uniqueUserId)) {
                         int lastIndex = s.lastIndexOf(":");
                         String subs = s.substring(index2 + 1, lastIndex);
-                        StringTokenizer st1 = new StringTokenizer(subs, ",");
+                        StringTokenizer st1 = new StringTokenizer(subs, MULTI_VALUE_DELIMITER);
                         while (st1.hasMoreTokens())
                             uniqueGrpIds.add(st1.nextToken());
                         break;
@@ -747,7 +739,7 @@ public class FileRegistrySample implements UserRegistry {
                     for (int i = 0; i < 2; i++)
                         st.nextToken();
                     String subs = st.nextToken();
-                    StringTokenizer st1 = new StringTokenizer(subs, ",");
+                    StringTokenizer st1 = new StringTokenizer(subs, MULTI_VALUE_DELIMITER);
                     while (st1.hasMoreTokens()) {
                         if ((st1.nextToken()).equals(userName)) {
                             int index = s.indexOf(":");
@@ -823,7 +815,7 @@ public class FileRegistrySample implements UserRegistry {
                         for (int i = 0; i < 2; i++)
                             st.nextToken();
                         String subs = st.nextToken();
-                        StringTokenizer st1 = new StringTokenizer(subs, ",");
+                        StringTokenizer st1 = new StringTokenizer(subs, MULTI_VALUE_DELIMITER);
                         while (st1.hasMoreTokens()) {
                             user = st1.nextToken();
                             usrsForGroup.add(user);

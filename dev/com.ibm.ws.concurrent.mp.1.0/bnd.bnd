@@ -35,6 +35,9 @@ DynamicImport-Package:\
 Private-Package:\
   com.ibm.ws.concurrent.mp.*
     
+Export-Package: \
+  com.ibm.ws.concurrent.mp.spi.*
+      
 instrument.classesExcludes: com/ibm/ws/concurrent/mp/resources/*.class
 
 -dsannotations: \

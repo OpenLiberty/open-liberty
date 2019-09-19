@@ -113,9 +113,9 @@ OAUTH_LENGTH_TOO_LARGE_AND_CHANGED=CWWKS1422I: Il valore di {0} nella configuraz
 OAUTH_LENGTH_TOO_LARGE_AND_CHANGED.explanation=Il valore per l'attributo indicato \u00e8 troppo elevato.
 OAUTH_LENGTH_TOO_LARGE_AND_CHANGED.useraction=Impostare l'attributo indicato su un valore appropriato.  
 
-OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR=CWWKS1423E: La registrazione o l''aggiornamento del client OAuth non \u00e8 riuscito perch\u00e9 i dati del client contengono un carattere non valido [{0}].
+OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR=CWWKS1423E: La registrazione o l''aggiornamento del client OAuth non \u00e8 riuscito perch\u00e9 i dati del client contengono il carattere "{0}" non consentito.
 OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR.explanation=Il carattere non \u00e8 consentito nei dati client.
-OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR.useraction=Rimuovere i caratteri non consentiti e inoltrare nuovamente la richiesta. 
+OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR.useraction=Rimuovere il carattere non consentito e inoltrare nuovamente la richiesta. 
 
 OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND=CWWKS1424E: L''ID client {0} non \u00e8 stato trovato.
 OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.explanation=La richiesta conteneva un ID client che non \u00e8 stato trovato.  
@@ -240,6 +240,10 @@ OAUTH_SERVER_MULTIPLE_TOKEN_INTROSPECT_PROVIDER_CONFIGURED.useraction=Non sono r
 OAUTH_SERVER_INVALID_ACCESS_TOKEN=CWWKS1454E: La richiesta non \u00e8 riuscita perch\u00e9 access_token non \u00e8 valido o \u00e8 scaduto.
 OAUTH_SERVER_INVALID_ACCESS_TOKEN.explanation=Elaborazione richiesta non riuscita perch\u00e9 access_token non \u00e8 valido.
 OAUTH_SERVER_INVALID_ACCESS_TOKEN.useraction=Assicurarsi che access_token sia valido e non sia scaduto.
+
+#This message can be appended to 1455E under some conditions
+# do not translate keyStoreRef
+CHECK_KEYSTORE_REF=L'attributo di configurazione del provider OpenId Connect keyStoreRef potrebbe essere mancante o non corretto.
 
 #This message is intended to be a child of CWWKS1456E
 #0=signatureAlgorithm, 1=exception or error message if any
@@ -445,7 +449,7 @@ JAVA8_REQUIRED=CWWKS1495W: Il provider OpenID Connect non pu\u00f2 elaborare la 
 JAVA8_REQUIRED.explanation=La versione di Java in uso non \u00e8 la 8 o successive.
 JAVA8_REQUIRED.useraction=Installare Java versione 8 o successive.
 
-JAVA8_REQUIRED_FOR_AT_HASHING=CWWKS1496W: Il provider OpenID  Connect {0} ha l''attributo di configurazione {1} impostato per utilizzare l''algoritmo {2}, ci\u00f2 richiede Java 8 o successive. Il provider specificato ignorer\u00e0 l''impostazione {3}.
+JAVA8_REQUIRED_FOR_AT_HASHING=CWWKS1496W: Il provider OpenID  Connect {0} ha l''attributo di configurazione {1} impostato per utilizzare l''algoritmo {2}, ci\u00f2 richiede Java 8 o successive. Il provider OpenID Connect specificato ignora l''impostazione {3}.
 JAVA8_REQUIRED_FOR_AT_HASHING.explanation=La versione di Java in uso non \u00e8 la 8 o successive.
 JAVA8_REQUIRED_FOR_AT_HASHING.useraction=Installare Java versione 8 o successive per poter utilizzare l'opzione di configurazione indicata.
 

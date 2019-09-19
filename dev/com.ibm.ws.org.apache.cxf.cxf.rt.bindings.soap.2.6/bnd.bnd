@@ -8,33 +8,31 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.apache.cxf:cxf-rt-bindings-soap;2.6.2}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;${repo;org.apache.cxf:cxf-rt-bindings-soap;2.6.2;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
+
+instrument.ffdc: false
+javac.source: 1.7
+javac.target: 1.7
 
 cxfVersion=2.6.2
 
--includeresource: \
-   @${repo;org.apache.cxf:cxf-rt-bindings-soap;${cxfVersion};EXACT}!/!*-INF/*,\
-   org/apache/cxf/binding/soap=${bin}/org/apache/cxf/binding/soap
+Include-Resource:\
+  @${repo;org.apache.cxf:cxf-rt-bindings-soap;${cxfVersion};EXACT}!/META-INF/cxf/**, \
+  @${repo;org.apache.cxf:cxf-rt-bindings-soap;${cxfVersion};EXACT}!/META-INF/DEPENDENCIES, \
+  @${repo;org.apache.cxf:cxf-rt-bindings-soap;${cxfVersion};EXACT}!/META-INF/LICENSE, \
+  @${repo;org.apache.cxf:cxf-rt-bindings-soap;${cxfVersion};EXACT}!/META-INF/NOTICE, \
+  @${repo;org.apache.cxf:cxf-rt-bindings-soap;${cxfVersion};EXACT}!/META-INF/spring.handlers, \
+  @${repo;org.apache.cxf:cxf-rt-bindings-soap;${cxfVersion};EXACT}!/META-INF/spring.schemas, \
+  @${repo;org.apache.cxf:cxf-rt-bindings-soap;${cxfVersion};EXACT}!/META-INF/wsdl.plugin.xml, \
+  @${repo;org.apache.cxf:cxf-rt-bindings-soap;${cxfVersion};EXACT}!/org/apache/cxf/**, \
+  @${repo;org.apache.cxf:cxf-rt-bindings-soap;${cxfVersion};EXACT}!/schemas/**, \
+  org/apache/cxf/binding/soap=${bin}/org/apache/cxf/binding/soap
 
-# Remove the resources (blueprint/metadata configuration files) in the OSGI-INF directory
-# As we have no plan to support that, will add these things back with NLS support in the future 
-#  @lib/cxf-rt-bindings-soap-2.6.2.jar!/OSGI-INF/blueprint/**, \
--buildpath: org.apache.cxf:cxf-rt-bindings-soap;version=${cxfVersion},\
-  com.ibm.ws.org.apache.cxf.cxf.api.2.6;version=latest,\
-  org.apache.mina:mina-core;version=2.1.3,\
-  com.sun.xml.fastinfoset:FastInfoset;version=1.2.16,\
-  org.springframework:spring-beans;version=3.0.7.RELEASE,\
-  com.ibm.websphere.javaee.mail.1.5;version=latest,\
-  com.ibm.ws.org.apache.ws.xmlschema.core.2.0.3,\
-  com.ibm.ws.com.sun.xml.messaging.saaj;version=latest,\
-  com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
-  com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
-  com.ibm.websphere.javaee.annotation.1.1;version=latest,\
-  javax.jws:jsr181-api;version=latest,\
-  javax.xml.soap:javax.xml.soap-api;version=1.4.0,\
-  com.ibm.websphere.org.osgi.core,\
-  com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-  com.ibm.websphere.javaee.wsdl4j.1.2;version=latest,\
-  javax.activation:activation;version=1.1,\
-  org.springframework:spring-core;version=3.0.7.RELEASE,\
-  com.ibm.ws.logging.core
+-buildpath: org.apache.cxf:cxf-rt-bindings-soap;strategy=exact;version=${cxfVersion}, \
+  com.ibm.websphere.javaee.wsdl4j.1.2;version=latest, \
+  com.ibm.websphere.org.osgi.core, \
+  com.ibm.ws.com.sun.xml.messaging.saaj;version=latest, \
+  com.ibm.ws.logging.core, \
+  com.ibm.ws.org.apache.cxf.cxf.api.2.6;version=latest, \
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+  org.apache.mina:mina-core;strategy=exact;version=2.1.3

@@ -23,7 +23,7 @@ import com.ibm.ws.concurrent.mp.ManagedCompletableFuture;
 /**
  * Provides JAX-RS with access to ManagedCompletableFuture.supplyAsync(supplier, executor)
  */
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE)
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE, service = { CompletionStageFactory.class })
 public class CompletionStageFactory {
     @Reference
     protected ExecutorService libertyGlobalThreadPool;

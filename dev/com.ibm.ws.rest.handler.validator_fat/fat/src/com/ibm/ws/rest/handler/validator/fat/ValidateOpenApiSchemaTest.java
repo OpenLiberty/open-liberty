@@ -194,8 +194,7 @@ public class ValidateOpenApiSchemaTest extends FATServletClient {
      * Test the validation OpenAPI endpoint honors the Accept header of application/json and
      * doesn't return cloudant API data when cloudant isn't enabled.
      */
-    //TODO: Disabled until the temporary Beta configValidator-1.0 feature is removed and replaced with individual auto features.
-//    @Test
+    @Test
     public void testDisableCloudantValidator() throws Exception {
         ServerConfiguration config = server.getServerConfiguration();
         String featureToDisable = "cloudant-1.0";
@@ -238,8 +237,7 @@ public class ValidateOpenApiSchemaTest extends FATServletClient {
     /**
      * Test the validation OpenAPI doesn't return JCA or JMS API data when JCA isn't enabled in the server.
      */
-    //TODO: Disabled until the temporary Beta configValidator-1.0 feature is removed and replaced with individual auto features.
-//    @Test
+    @Test
     public void testDisableJCAValidator() throws Exception {
         ServerConfiguration config = server.getServerConfiguration();
         List<String> featuresToDisable = Arrays.asList("jca-1.7", "jms-2.0", "wasJmsClient-2.0", "wasJmsServer-1.0");
@@ -286,8 +284,7 @@ public class ValidateOpenApiSchemaTest extends FATServletClient {
     /**
      * Test the validation OpenAPI doesn't return JDBC API data when JDBC isn't enabled in the server.
      */
-    //TODO: Disabled until the temporary Beta configValidator-1.0 feature is removed and replaced with individual auto features.
-//    @Test
+    @Test
     public void testDisableJDBCValidator() throws Exception {
         ServerConfiguration config = server.getServerConfiguration();
         String featureToDisable = "jdbc-4.2";
@@ -334,8 +331,7 @@ public class ValidateOpenApiSchemaTest extends FATServletClient {
     /**
      * Test the validation OpenAPI doesn't return JMS API data when JMS isn't enabled in the server.
      */
-    //TODO: Disabled until the temporary Beta configValidator-1.0 feature is removed and replaced with individual auto features.
-//    @Test
+    @Test
     public void testDisableJMSValidator() throws Exception {
         ServerConfiguration config = server.getServerConfiguration();
         List<String> featuresToDisable = Arrays.asList("jms-2.0", "wasJmsClient-2.0", "wasJmsServer-1.0");

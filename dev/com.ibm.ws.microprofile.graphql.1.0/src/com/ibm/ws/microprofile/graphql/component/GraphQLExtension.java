@@ -42,6 +42,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.CDIServiceUtils;
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
+import com.ibm.ws.microprofile.graphql.internal.MPDefaultInclusionStrategy;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
@@ -100,6 +101,7 @@ public class GraphQLExtension implements Extension, WebSphereCDIExtension, Intro
         GraphQLSchemaGenerator schemaGen = new GraphQLSchemaGenerator()
                         .withResolverBuilders(new AnnotatedResolverBuilder())
                         .withValueMapperFactory(new JacksonValueMapperFactory())
+                        .withInclusionStrategy(new MPDefaultInclusionStrategy())
                         .withResolverInterceptors(new PartialResultsResolverInterceptor())
                         .withOutputConverters(new DataFetcherResultOutputConverter());
 

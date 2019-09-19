@@ -461,11 +461,10 @@ public class BaseTraceService implements TrService {
     }
 
     public static void applyJsonFields(String value) {
-        if (value == null || value == "") {
+        if (value == null || value == "" || value.isEmpty()) {
             //if no property is set, return
             return;
         }
-
         TraceComponent tc = Tr.register(LogTraceData.class, NLSConstants.GROUP, NLSConstants.LOGGING_NLS);
         boolean valueFound = false;
         Map<String, String> messageMap = new HashMap<>();
@@ -520,27 +519,27 @@ public class BaseTraceService implements TrService {
                 entry[1] = entry[1].trim();
                 entry[2] = entry[2].trim();
                 //add properties to their respective hashmaps and trim whitespaces
-                if (CollectorConstants.MESSAGES_LOG_EVENT_TYPE.equals(entry[0])) {
+                if (CollectorConstants.MESSAGES_CONFIG_VAL.equals(entry[0])) {
                     if (LogTraceList.contains(entry[1]) || entry[1].startsWith("ext_")) {
                         messageMap.put(entry[1], entry[2]);
                         valueFound = true;
                     }
-                } else if (CollectorConstants.TRACE_LOG_EVENT_TYPE.equals(entry[0])) {
+                } else if (CollectorConstants.TRACE_CONFIG_VAL.equals(entry[0])) {
                     if (LogTraceList.contains(entry[1]) || entry[1].startsWith("ext_")) {
                         traceMap.put(entry[1], entry[2]);
                         valueFound = true;
                     }
-                } else if (CollectorConstants.FFDC_EVENT_TYPE.equals(entry[0])) {
+                } else if (CollectorConstants.FFDC_CONFIG_VAL.equals(entry[0])) {
                     if (FFDCList.contains(entry[1])) {
                         ffdcMap.put(entry[1], entry[2]);
                         valueFound = true;
                     }
-                } else if (CollectorConstants.ACCESS_LOG_EVENT_TYPE.equals(entry[0])) {
+                } else if (CollectorConstants.ACCESS_CONFIG_VAL.equals(entry[0])) {
                     if (AccessLogList.contains(entry[1])) {
                         accessLogMap.put(entry[1], entry[2]);
                         valueFound = true;
                     }
-                } else if (CollectorConstants.AUDIT_LOG_EVENT_TYPE.equals(entry[0])) {
+                } else if (CollectorConstants.AUDIT_CONFIG_VAL.equals(entry[0])) {
                     if (AuditList.contains(entry[1])) {
                         auditMap.put(entry[1], entry[2]);
                         valueFound = true;

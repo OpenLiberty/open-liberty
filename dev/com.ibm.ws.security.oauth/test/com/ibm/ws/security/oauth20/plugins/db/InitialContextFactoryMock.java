@@ -32,8 +32,12 @@ import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 
 import com.google.gson.JsonObject;
+import com.ibm.oauth.core.internal.oauth20.OAuth20Constants;
+import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.ws.security.oauth20.plugins.OidcBaseClient;
 import com.ibm.ws.security.oauth20.plugins.OidcBaseClientDBModel;
+import com.ibm.ws.security.oauth20.util.HashSecretUtils;
+import com.ibm.ws.security.oauth20.util.OidcOAuth20Util;
 import com.ibm.ws.security.oidc.common.AbstractOidcRegistrationBaseTest;
 
 /**
@@ -54,7 +58,7 @@ public class InitialContextFactoryMock implements InitialContextFactory {
     private static final String TABLE_NAME = "OAUTH20CLIENTCONFIG";
     private static final String SCHEMA_TABLE_NAME = SCHEMA + "." + TABLE_NAME;
 
-    // private static final String COL_CLIENTMETADATA = "CLIENTMETADATA";
+    private static final String COL_CLIENTMETADATA = "CLIENTMETADATA";
     private static final String COL_COMPONENTID = "COMPONENTID";
     private static final String COL_CLIENTID = "CLIENTID";
     private static final String COL_CLIENTSECRET = "CLIENTSECRET";
@@ -68,16 +72,18 @@ public class InitialContextFactoryMock implements InitialContextFactory {
             + "CLIENTSECRET VARCHAR(256),"
             + "DISPLAYNAME VARCHAR(256) NOT NULL,"
             + "REDIRECTURI VARCHAR(2048),"
-            + "ENABLED INT"
+            + "ENABLED INT,"
+            + "CLIENTMETADATA CLOB NOT NULL DEFAULT '{}'"
             + ")";
 
-    private static final String CLIENT_CONFIG_PARAMS = String.format(" (%s, %s, %s, %s, %s, %s)",
+    private static final String CLIENT_CONFIG_PARAMS = String.format(" (%s, %s, %s, %s, %s, %s, %s)",
             COL_COMPONENTID,
             COL_CLIENTID,
             COL_CLIENTSECRET,
             COL_DISPLAYNAME,
             COL_REDIRECTURI,
-            COL_ENABLED);
+            COL_ENABLED,
+            COL_CLIENTMETADATA);
 
     private static final String QUERY_CONSTRAINT = "ALTER TABLE " + SCHEMA_TABLE_NAME + " ADD CONSTRAINT PK_COMPIDCLIENTID PRIMARY KEY (COMPONENTID,CLIENTID)";
 
@@ -158,13 +164,15 @@ public class InitialContextFactoryMock implements InitialContextFactory {
     public static OidcBaseClientDBModel getInitializedOidcBaseClientModel() {
         OidcBaseClient tmpClient = AbstractOidcRegistrationBaseTest.getsampleOidcBaseClients(1, CachedDBOidcClientProviderTest.PROVIDER_NAME).get(0);
 
+        JsonObject clientMetadataAsJson = OidcOAuth20Util.getJsonObj(tmpClient);
+
         return new OidcBaseClientDBModel(tmpClient.getComponentId(),
                 tmpClient.getClientId(),
                 tmpClient.getClientSecret(),
                 tmpClient.getClientName(),
                 tmpClient.getRedirectUris().get(0).getAsString(), // Only taking first redirect uri, for use in old DB schema
                 tmpClient.isEnabled() ? 1 : 0,
-                new JsonObject());
+                clientMetadataAsJson);
     }
 
     protected static void addEntryToOldOAuth20ClientConfigTable() {
@@ -172,18 +180,28 @@ public class InitialContextFactoryMock implements InitialContextFactory {
 
         String QUERY_INSERT = "INSERT INTO " + SCHEMA_TABLE_NAME
                 + CLIENT_CONFIG_PARAMS
-                + " VALUES ( ?, ?, ?, ?, ?, ? )";
+                + " VALUES ( ?, ?, ?, ?, ?, ?, ? )";
 
         OidcBaseClientDBModel sampleClientForInitialization = getInitializedOidcBaseClientModel();
+
+        String clientSecret = sampleClientForInitialization.getClientSecret();
+        if (AbstractOidcRegistrationBaseTest.isHash) {
+            HashSecretUtils.hashClientMetaTypeSecret(sampleClientForInitialization.getClientMetadata(), sampleClientForInitialization.getClientId(), true);
+            clientSecret = HashSecretUtils.hashSecret(clientSecret, sampleClientForInitialization.getClientId(), true, sampleClientForInitialization.getClientMetadata());
+        } else {
+            clientSecret = PasswordUtil.passwordEncode(clientSecret);
+            sampleClientForInitialization.getClientMetadata().addProperty(OAuth20Constants.CLIENT_SECRET, clientSecret);
+        }
 
         try {
             stInsert = inMemoryDbConn.prepareStatement(QUERY_INSERT);
             stInsert.setString(1, sampleClientForInitialization.getComponentId());
             stInsert.setString(2, sampleClientForInitialization.getClientId());
-            stInsert.setString(3, sampleClientForInitialization.getClientSecret());
+            stInsert.setString(3, clientSecret);
             stInsert.setString(4, sampleClientForInitialization.getDisplayName());
             stInsert.setString(5, sampleClientForInitialization.getRedirectUri());
             stInsert.setInt(6, sampleClientForInitialization.getEnabled());
+            stInsert.setString(7, sampleClientForInitialization.getClientMetadata().toString());
 
             stInsert.executeUpdate();
         } catch (SQLException e) {

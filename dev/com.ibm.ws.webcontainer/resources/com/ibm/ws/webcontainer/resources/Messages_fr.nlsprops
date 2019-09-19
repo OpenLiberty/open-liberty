@@ -17,7 +17,7 @@
 #
 #CMVCPATHNAME ws/code/webcontainer/src/com/ibm/ws/webcontainer/resources/Messages.nlsprops
 #COMPONENTPREFIX SRVE CWWWC
-#COMPONENTNAMEFOR SRVE Servlet Engine
+#COMPONENTNAMEFOR SRVE CWWWC Servlet Engine
 #ISMESSAGEFILE TRUE
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
@@ -1585,6 +1585,15 @@ uncaught.exception.during.AsyncListener.onComplete.useraction=V\u00e9rifiez le c
 # 0200 - 0299 for Servlet 3.0
 # 0300 - 0399 for Servlet 3.1
 # 0400 - 0499 for Servlet 4
+
 #name.is.null=CWWWC0400E: An attribute name, or initial parameter name, is null.
 #name.is.null.explanation=This is an application error.  The name is null in either context getAttribute(), setAttribute(), getInitParameter(), or setInitParameter().
 #name.is.null.useraction=Update the attribute name, or initial parameter name, with a non-null value.
+
+# Notes for translation
+# {0} is the name of the ServletContainerInitializer that was being invoked at the time of the Exception.
+# {1} is the Exception that was thrown from the onStartup method of the ServletContainerInitializer {0}.
+# {2} is the application name that the ServletContainerInitializer is contained in.
+exception.occurred.while.running.ServletContainerInitializers.onStartup=CWWWC0001W: Le ServletContainerInitializer [{0}], situ\u00e9 dans l''application suivante [{2}], a g\u00e9n\u00e9r\u00e9 l''erreur suivante lors de l''appel de la m\u00e9thode onStartup : [{1}]
+exception.occurred.while.running.ServletContainerInitializers.onStartup.explanation=Une exception a \u00e9t\u00e9 \u00e9mise \u00e0 partir d'un ServletContainerInitializer lors de l'appel de la m\u00e9thode onStartup.
+exception.occurred.while.running.ServletContainerInitializers.onStartup.useraction=Consultez l'exception pour d\u00e9terminer la cause de l'erreur.

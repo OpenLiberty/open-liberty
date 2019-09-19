@@ -8,9 +8,11 @@ Subsystem-Name: MicroProfile GraphQL 1.0
 -features=com.ibm.websphere.appserver.org.eclipse.microprofile.graphql-1.0, \
  com.ibm.websphere.appserver.cdi-2.0,\
  com.ibm.websphere.appserver.javax.annotation-1.3, \
+ com.ibm.websphere.appserver.jsonb-1.0, \
  com.ibm.websphere.appserver.servlet-4.0, \
  com.ibm.websphere.appserver.internal.slf4j-1.7.7
 -bundles=com.ibm.ws.require.java8, \
+ com.ibm.websphere.javaee.websocket.1.1; apiJar=false; location:="dev/api/spec/,lib/", \
  com.ibm.ws.com.fasterxml.jackson.2.9.1, \
  com.ibm.ws.io.leangen.graphql.spqr.0.9.9, \
  com.ibm.ws.io.leangen.geantyref.1.3, \

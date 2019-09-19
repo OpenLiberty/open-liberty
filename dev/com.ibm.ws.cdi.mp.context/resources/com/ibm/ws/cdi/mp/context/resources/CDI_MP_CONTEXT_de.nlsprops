@@ -26,8 +26,8 @@
 # com.ibm.ws.concurrent.mp.1.0 message bundle
 
 # do not translate: CDI, CompletionStage
-CWWKC1158.cannot.lazy.enlist.beans=CWWKC1158E: Sie m\u00fcssen auf CDI-Beans zugreifen, bevor Sie den Kontext f\u00fcr die kontextbezogene Aktion oder Aufgabe erfassen, um ordnungsgem\u00e4\u00dfes Verhalten der CDI-Beans beim Zugriff durch die Aktion oder Aufgabe sicherzustellen. \
-Vor dem Erfassen des Kontexts ist ein Zugriff auf die folgenden CDI-Beans erforderlich: {0}.
+CWWKC1158.cannot.lazy.enlist.beans=CWWKC1158E: Sie m\u00fcssen auf die CDI-Beans zugreifen, bevor die kontextbezogene Aktion oder Aufgabe erfasst wird, um ordnungsgem\u00e4\u00dfes Verhalten der CDI-Beans beim Zugriff durch die Aktion oder Aufgabe sicherzustellen. \
+Auf die folgenden CDI-Beans wurde nicht zugegriffen, bevor der Kontext erfasst wurde: {0}.
 CWWKC1158.cannot.lazy.enlist.beans.explanation=Wenn der CDI-Kontext erfasst wird, werden von der CDI-Laufzeit nur die CDI-Beans erstellt, auf die zu diesem Zeitpunkt bereits zugegriffen wurde. \
 Daher k\u00f6nnen CDI-Beans, auf die erstmals in kontextuellen Operationen zugegriffen wird, ihren Status nicht korrekt an nachfolgende kontextuelle Operationen weitergeben.
 CWWKC1158.cannot.lazy.enlist.beans.useraction=Die Anwendung muss ge\u00e4ndert werden, damit eine CDI-Beans-Operation, wie beispielsweise eine \u00f6ffentliche Methode, vor der Erfassung des Kontexts f\u00fcr die Operation aufgerufen wird.

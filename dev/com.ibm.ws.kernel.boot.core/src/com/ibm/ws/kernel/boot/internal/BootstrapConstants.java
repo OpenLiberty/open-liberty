@@ -125,6 +125,7 @@ public final class BootstrapConstants {
     public static final String LOC_AREA_NAME_EXTENSION = "extension";
     public static final String LOC_AREA_NAME_LIB = "lib";
     public static final String LOC_AREA_NAME_WORKING = "workarea";
+    public static final String LOC_AREA_NAME_WORKING_UTILS = "workarea-utils";
     public static final String LOC_AREA_NAME_APP = "apps";
     public static final String LOC_AREA_NAME_RES = "resources";
     public static final String LOC_AREA_NAME_CFG = "config";

@@ -519,8 +519,14 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
     }
 
     public void stop(boolean immediate) {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "stop", new Object[] { Boolean.valueOf(immediate) });
+
         // Stop lease timeout alarm popping when server is on its way down
         LeaseTimeoutManager.stopTimeout();
+
+        // Stop HADB Log Availability alarm popping when server is on its way down
+        HADBLogAvailabilityManager.stopTimeout();
 
         // The entire server is shutting down. All recovery/peer recovery processing must be stopped. Sping
         // through all known failure scope controllers (which includes the local failure scope if we started
@@ -532,6 +538,8 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
             final FailureScopeController fsc = failureScopeControllerTableValuesIterator.next();
             fsc.shutdown(immediate);
         }
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "stop");
     }
 
     @Override

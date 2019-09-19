@@ -1,0 +1,33 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.rest.handler.config.openapi/resources/com/ibm/ws/rest/handler/config/openapi/resources/CWWKOMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Config OpenAPI REST endpoint
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWKO1570 to CWWKO1579
+
+CWWKO1570_HANDLER_NOT_FOUND=CWWKO1570E: Nincsenek a k\u00e9rt URL c\u00edmnek ({0}) megfelel\u0151 regisztr\u00e1lt kezel\u0151k.
+CWWKO1570_HANDLER_NOT_FOUND.explanation=Olyan URL el\u00e9r\u00e9s\u00e9re t\u00f6rt\u00e9nt k\u00eds\u00e9rlet, amely a regisztr\u00e1lt kezel\u0151k egyik\u00e9nek sem felel meg.
+CWWKO1570_HANDLER_NOT_FOUND.useraction=Jav\u00edtsa az URL c\u00edmet, hogy megfeleljen valamelyik regisztr\u00e1lt kezel\u0151nek.
+
+CWWKO1571_OSGI_SERVICE_NOT_AVAILABLE=CWWKO1571E: A(z) {0} OSGi szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el.
+CWWKO1571_OSGI_SERVICE_NOT_AVAILABLE.explanation=Ezt a bels\u0151 kiszolg\u00e1l\u00f3hib\u00e1t az\u00e9rt dobja a rendszer, mert a megadott szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el.
+CWWKO1571_OSGI_SERVICE_NOT_AVAILABLE.useraction=Ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t a clean param\u00e9terrel.

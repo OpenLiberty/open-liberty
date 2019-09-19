@@ -25,9 +25,6 @@ public class CommonLocalLDAPServerSuite {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        Log.info(c, "setUp", "Setting LDAPUtils.USE_LOCAL_LDAP_SERVER to false to force checking of availability of physical LDAP servers");
-        LDAPUtils.USE_LOCAL_LDAP_SERVER = false;
-
         HashMap<String, ArrayList<String>> testServers = LocalLDAPServerSuite.addTestServer(LDAPUtils.LDAP_SERVER_4_NAME, LDAPUtils.LDAP_SERVER_4_PORT,
                                                                                             LDAPUtils.LDAP_SERVER_5_NAME, LDAPUtils.LDAP_SERVER_5_PORT, null);
         LocalLDAPServerSuite.addTestServer(LDAPUtils.LDAP_SERVER_4_NAME, LDAPUtils.LDAP_SERVER_4_PORT,

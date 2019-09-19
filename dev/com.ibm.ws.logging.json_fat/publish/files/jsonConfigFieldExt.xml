@@ -10,7 +10,7 @@
  -->
 <server description="Server for testing Liberty logging in a server">
 
-	<logging messageSource="message" messageFormat="json" consoleFormat="json" jsonFields="ext_correctBooleanExtension_bool:Correct_bool123,liberty_message:ext_correctStringExtension:Correct_string123"/>
+	<logging messageSource="message" messageFormat="json" consoleFormat="json" jsonFieldMappings="ext_correctBooleanExtension_bool:Correct_bool123,message:ext_correctStringExtension:Correct_string123"/>
     <include location="../fatTestPorts.xml"/>
 
     <featureManager>

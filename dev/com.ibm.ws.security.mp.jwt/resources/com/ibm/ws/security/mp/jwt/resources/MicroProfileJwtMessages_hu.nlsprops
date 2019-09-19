@@ -150,3 +150,8 @@ MP_JWT_FRONT_END_ERROR.useraction=A probl\u00e9ma megold\u00e1sa \u00e9rdek\u00e
 MPJWT_NOT_FOUND_IN_APPLICATION=CWWKS5526W: A MicroProfile JWT szolg\u00e1ltat\u00e1s nem tud v\u00e9grehajtani hiteles\u00edt\u00e9st, mivel [{0}] hiteles\u00edt\u00e9si t\u00edpust v\u00e1r az alkalmaz\u00e1sban, de [{1}] t\u00edpust tal\u00e1lt. A(z) [{2}] attrib\u00fatum \u00e9rt\u00e9k [{3}]. 
 MPJWT_NOT_FOUND_IN_APPLICATION.explanation=Sikeres hiteles\u00edt\u00e9s v\u00e9grehajt\u00e1s\u00e1hoz tegye a k\u00f6vetkez\u0151t: a) Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az ignoreApplicationAuthMethod attrib\u00fatum \u00e9rt\u00e9ke is "true" b) a loginConfig feljegyz\u00e9s \u00e9rt\u00e9ke MP-JWT az alkalmaz\u00e1sban.
 MPJWT_NOT_FOUND_IN_APPLICATION.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kiszolg\u00e1l\u00f3 vagy alkalmaz\u00e1s friss\u00edtve lett.
+
+# do not translate HttpServletRequest.logout
+JWT_PREVIOUSLY_LOGGED_OUT=CWWKS5527E: A MicroProfile JWT szolg\u00e1ltat\u00e1s nem tudja elv\u00e9gezni a hiteles\u00edt\u00e9st, mert a k\u00e9r\u00e9sben tal\u00e1lhat\u00f3 JWT kor\u00e1bban m\u00e1r kijelentkezett.
+JWT_PREVIOUSLY_LOGGED_OUT.explanation=Az adott JWT jelsorral hiteles\u00edtett alanyra vonatkoz\u00f3an kor\u00e1bbi HttpServletRequest.logout() h\u00edv\u00e1s t\u00f6rt\u00e9nt. 
+JWT_PREVIOUSLY_LOGGED_OUT.useraction=K\u00fcldje le \u00fajra a k\u00e9r\u00e9st m\u00e1sik JWT jelsorral.

@@ -106,6 +106,8 @@ public class InstallUtils {
                                                                   "ZOS");
     public static final String DEFAULT_TO_EXTENSION = "default";
 
+    private static boolean isServerXmlInstallation = false;
+    
     public static final File getServersDir() {
         return new File(Utils.getUserDir(), SERVER_DIR_NAME);
     }
@@ -1196,5 +1198,14 @@ public class InstallUtils {
         }
         return licensesToAccept;
     }
+    
+    public static void setIsServerXmlInstall(boolean val) {
+        isServerXmlInstallation = val;
+    }
+
+     public static boolean getIsServerXmlInstall() {
+        return isServerXmlInstallation;
+    }
+
 
 }

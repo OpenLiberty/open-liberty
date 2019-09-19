@@ -41,15 +41,15 @@ var messages = {
 
     // Common Column Names
     "CLIENT_NAME_COL": "Nome client",
-    "EXPIRES_COL": "Data di scadenza",
-    "ISSUED_COL": "Data di emissione",
+    "EXPIRES_COL": "Data scadenza",
+    "ISSUED_COL": "Data emissione",
     "NAME_COL": "Nome",
     "TYPE_COL": "Tipo",
 
     // Client Admin
     "CLIENT_ADMIN_TITLE": "Gestisci client OAuth",
     "CLIENT_ADMIN_DESC": "Utilizzare questo strumento per aggiungere e modificare i client e rigenerare i segreti client.",
-    "CLIENT_ADMIN_SEARCH_PLACEHOLDER": "Filtra su nome client OAuth",
+    "CLIENT_ADMIN_SEARCH_PLACEHOLDER": "Filtra per nome client OAuth",
     "ADD_NEW_CLIENT": "Aggiungi nuovo client OAuth.",
     "CLIENT_NAME": "Nome client",
     "CLIENT_ID": "ID Client",
