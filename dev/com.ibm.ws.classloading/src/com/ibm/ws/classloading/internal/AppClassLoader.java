@@ -685,12 +685,24 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
             sb.append(type).append(" ");
         }
         sb.append(LS);
-        
+
+        sb.append("    ClassPath: ").append(LS);
+        for (Collection<URL> containerURLs : getClassPath()) {
+            sb.append("      * ");
+            for (URL url : containerURLs) {
+                sb.append(url.toString()).append(" | ");
+            }
+            sb.append(LS);
+        }
+        sb.append(LS);
+
         sb.append("    CodeSources: ");
         for (Map.Entry<String, ProtectionDomain> entry : protectionDomains.entrySet()) {
             sb.append(LS).append("      ").append(entry.getKey()).append(" = ")
               .append(entry.getValue().getCodeSource().getLocation());
         }
+        sb.append(LS);
+
         return sb.toString();
     }
 }
