@@ -167,8 +167,9 @@ public class MavenDirectoryInstall {
 
 		Collection<String> actionReturnResult = new ArrayList<String>();
 
+		logger.log(Level.INFO, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_STARTING_INSTALL"));
 		for (File esaFile : artifacts) {
-			logger.log(Level.INFO, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_INSTALLING",
+			logger.log(Level.FINE, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_INSTALLING",
 					extractFeatureName(esaFile.getName())));
 			map.put("license.accept", true);
 			map.put("action.install", esaFile);
@@ -188,13 +189,18 @@ public class MavenDirectoryInstall {
 				throw new InstallException(exceptionMessage);
 			} else if (map.get("action.install.result") != null) {
 				// installation was successful
-				logger.log(Level.FINE, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("LOG_INSTALLED_FEATURE",
-						extractFeatureName(esaFile.getName())));
 				actionReturnResult.addAll((Collection<String>) map.get("action.install.result"));
+				Collection<String> returnResult;
+				if (!(returnResult = (Collection<String>) map.get("action.install.result")).isEmpty()) {
+					logger.log(Level.INFO,
+							(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("LOG_INSTALLED_FEATURE", String.join(", ", returnResult))
+									.replace("CWWKF1304I: ", ""))); // TODO: come up with new message for successfully
+																	// installed feature
+				}
 			}
 		}
 
-		logger.log(Level.INFO, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("TOOL_FEATURES_INSTALLATION_COMPLETED"));
+		logger.log(Level.INFO, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("TOOL_INSTALLATION_COMPLETED"));
 	}
 
 	/**
