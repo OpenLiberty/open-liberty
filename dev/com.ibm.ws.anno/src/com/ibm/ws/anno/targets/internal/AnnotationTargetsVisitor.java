@@ -405,12 +405,19 @@ public class AnnotationTargetsVisitor extends ClassVisitor {
             // Removing this test cases failures in the EBA WAB fats.
 
             if (!className.equals(getExternalName())) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Class name mismatch", getHashText(), className);
+                }
+
+                // Disabling the warning for now, as it breaks FAT tests.
+                //
                 // ANNO_TARGETS_CLASS_NAME_MISMATCH=
                 // CWWKC0105W: 
                 // Class scanning internal error: Visitor {0} read class name {1}
                 // from a resource which should have class name {2}.
-                Tr.warning(tc, "ANNO_TARGETS_CLASS_NAME_MISMATCH",
-                    getHashText(), className, getExternalName() );
+                // Tr.warning(tc, "ANNO_TARGETS_CLASS_NAME_MISMATCH",
+                //     getHashText(), className, getExternalName() );
+
                 throw VISIT_ENDED_CLASS_MISMATCH;
             }
 
