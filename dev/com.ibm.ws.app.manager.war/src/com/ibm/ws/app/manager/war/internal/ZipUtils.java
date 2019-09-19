@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 IBM Corporation and others.
+ * Copyright (c) 2011,2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -256,7 +256,6 @@ public class ZipUtils {
         unzip(source, target, isEar, lastModified, transferBuffer);
     }
 
-    @Trivial
     public static void unzip(
         File source, File target,
         boolean isEar, long lastModified,
@@ -389,7 +388,6 @@ public class ZipUtils {
         target.setLastModified(lastModified); 
     }
 
-    @Trivial
     private static void transfer(
         ZipFile sourceZip, ZipEntry sourceEntry,
         File targetFile,

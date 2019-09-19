@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 IBM Corporation and others.
+ * Copyright (c) 2011, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,7 +22,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
 import com.ibm.ws.container.service.annotations.WebAnnotations;
 import com.ibm.ws.container.service.config.ServletConfigurator;
 import com.ibm.ws.container.service.config.ServletConfiguratorHelper;
@@ -77,30 +76,9 @@ public class WebAppConfigurator implements ServletConfigurator {
     // web.xml, or defaulted according to the web container feature version.
     private final VersionInfo webVersionInfo;
 
-    // Annotations ...
-
+    // Annotations data for the module.  Not final, since it is
+    // set during the configuration processing (after construction).
     private WebAnnotations webAnnotations;
-
-    private void setWebAnnotations() throws UnableToAdaptException {
-        webAnnotations = AnnotationsBetaHelper.getWebAnnotations(moduleContainer);
-    }
-
-    @Override
-    public WebAnnotations getWebAnnotations() {
-        return webAnnotations;
-    }
-
-    private void openInfoStore() throws UnableToAdaptException {
-        webAnnotations.openInfoStore();
-    }
-
-    private void closeInfoStore() throws UnableToAdaptException {
-        webAnnotations.closeInfoStore();
-    }
-
-    private List<WebFragmentInfo> getOrderedItems() throws UnableToAdaptException {
-        return ( webAnnotations.getOrderedItems() );
-    }
 
     // Transient state ... 
 
@@ -343,6 +321,11 @@ public class WebAppConfigurator implements ServletConfigurator {
     }
 
     @Override
+    public WebAnnotations getWebAnnotations() {
+        return this.webAnnotations;
+    }
+
+    @Override
     public long generateUniqueId() {
         return this.uniqueId.getAndIncrement();
     }
@@ -396,11 +379,11 @@ public class WebAppConfigurator implements ServletConfigurator {
         // Maybe, move this inside the 'isMetadataComplete' test?
         // The web annotations don't seem to be used except when
         // metadata-complete is false.
-
-        setWebAnnotations(); // throws UnableToAdaptException
+        
+        this.webAnnotations = this.moduleContainer.adapt(WebAnnotations.class);
 
         if ( !webIsMetadataComplete ) {
-            openInfoStore(); // throws UnableToAdaptException
+            this.webAnnotations.openInfoStore();
         }
         
         try {
@@ -422,7 +405,7 @@ public class WebAppConfigurator implements ServletConfigurator {
             
             //process web-fragment.xml
             if (!webIsMetadataComplete) {
-                for ( WebFragmentInfo webFragmentItem : getOrderedItems() ) {
+                for (WebFragmentInfo webFragmentItem : this.webAnnotations.getOrderedItems()) {
                     WebFragment webFragment = webFragmentItem.getWebFragment();
                     this.currentLibraryURI = webFragmentItem.getLibraryURI();
                     this.currentSource = ConfigSource.WEB_FRAGMENT;
@@ -450,7 +433,7 @@ public class WebAppConfigurator implements ServletConfigurator {
             
         } finally {
             if (!webIsMetadataComplete) {
-                closeInfoStore(); // throws UnableToAdaptException
+                this.webAnnotations.closeInfoStore();
             }
         }
 

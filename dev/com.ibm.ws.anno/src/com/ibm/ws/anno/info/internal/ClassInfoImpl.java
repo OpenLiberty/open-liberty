@@ -17,8 +17,7 @@ import com.ibm.wsspi.anno.info.PackageInfo;
 
 public abstract class ClassInfoImpl extends InfoImpl implements ClassInfo {
 
-    @SuppressWarnings("hiding")
-	public static final String CLASS_NAME = ClassInfoImpl.class.getName();
+    public static final String CLASS_NAME = ClassInfoImpl.class.getName();
 
     //
 
@@ -97,8 +96,8 @@ public abstract class ClassInfoImpl extends InfoImpl implements ClassInfo {
     //
 
     @Override
-    protected String internName(String useName) {
-        return getInfoStore().internClassName(useName);
+    protected String internName(String name) {
+        return getInfoStore().internClassName(name);
     }
 
     //
@@ -112,9 +111,13 @@ public abstract class ClassInfoImpl extends InfoImpl implements ClassInfo {
 
     public abstract List<MethodInfoImpl> getMethods();
 
-    public MethodInfoImpl getMethod(String useName) {
-        for ( MethodInfoImpl meth : getMethods() ) {
-            if ( meth.getName().equals(useName) ) {
+    /**
+     * @param name
+     * @return
+     */
+    public MethodInfoImpl getMethod(String name) {
+        for (MethodInfoImpl meth : getMethods()) {
+            if (meth.getName().equals(name)) {
                 return meth;
             }
         }

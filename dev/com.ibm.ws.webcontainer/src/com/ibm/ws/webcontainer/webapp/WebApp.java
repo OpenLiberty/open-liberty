@@ -105,7 +105,6 @@ import com.ibm.ws.container.DeployedModule;
 import com.ibm.ws.container.ErrorPage;
 import com.ibm.ws.container.MimeFilter;
 import com.ibm.ws.container.service.annotations.WebAnnotations;
-import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.managedobject.ManagedObject;
@@ -753,54 +752,31 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
      * @return True if annotations are accepted from the class.  Otherwise, false.
      */
     protected boolean acceptAnnotationsFrom(String className, boolean acceptPartial, boolean acceptExcluded) {
-        // As an optimization, immediately return with a false - do-not-accept - value
-        // when the web module is metadata complete and neither partial nor excluded
-        // classes are accepted:
-        //
-        // Always accept annotations from seed classes.
-        //
-        // Accept classes from metadata-complete but non-excluded regions of the web module
-        // if 'acceptPartial' is true.
-        //
-        // Accept classes from excluded regions of the web module if 'acceptExcluded' is true.
-        //
-        // If 'acceptPartial' and 'acceptExcluded' are both false, then only accept a class
-        // if that class is in a non-metadata-complete region of the web module.
-        //
-        // If the web module as a whole is metatadata complete, the non-metadata complete
-        // region is empty.
+        String methodName = "acceptAnnotationsFrom";
 
-        if ( config.isMetadataComplete() ) {
-            if ( !acceptPartial && !acceptExcluded ) {
+        // Don't unnecessarily obtain the annotation targets table:
+        // No seed annotations will be obtained when the module is metadata-complete.
+      
+        if (config.isMetadataComplete()) {
+            if (!acceptPartial && !acceptExcluded) {
                 return false;
             }
         }
-
-        AnnotationTargets_Targets targets = getAnnotationTargets();
-        if ( targets == null ) {
-        	return false; // Annotations failure
-        }
-
-        return ( targets.isSeedClassName(className) ||
-                 (acceptPartial && targets.isPartialClassName(className)) ||
-                 (acceptExcluded && targets.isExcludedClassName(className)) );
-    }
-
-    /**
-     * Answer the annotation targets of the web module.
-     *
-     * @return The annotations targets of the web module.  Return null if
-     *     annotation processing fails.
-     */
-    private AnnotationTargets_Targets getAnnotationTargets() {
+      
         try {
-            // Conditionally use the cache enabled implementation.
-            WebAnnotations webAnnotations = AnnotationsBetaHelper.getWebAnnotations( getModuleContainer() );
-            return webAnnotations.getAnnotationTargets();
-        } catch ( UnableToAdaptException e ) {
-            return null; // FFDC
-        } 
+            WebAnnotations webAppAnnotations = getModuleContainer().adapt(WebAnnotations.class);
+            AnnotationTargets_Targets table = webAppAnnotations.getAnnotationTargets();
+          
+            return ( table.isSeedClassName(className) ||
+                     (acceptPartial && table.isPartialClassName(className)) ||
+                     (acceptExcluded && table.isExcludedClassName(className)) );
+              
+        } catch (UnableToAdaptException e) {
+            logger.logp(Level.FINE, CLASS_NAME, methodName, "caught UnableToAdaptException: " + e);
+            return false;
+        }      
     }
+    
     
     /**
      * <p>Invoke post-construct and pre-destroy methods on the target object.</p>

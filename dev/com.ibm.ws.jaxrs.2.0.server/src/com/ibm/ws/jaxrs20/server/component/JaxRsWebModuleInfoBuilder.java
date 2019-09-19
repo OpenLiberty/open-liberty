@@ -30,7 +30,6 @@ import org.osgi.service.component.annotations.Deactivate;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.annotations.WebAnnotations;
-import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedModuleInfo;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jaxrs20.api.JaxRsModuleInfoBuilder;
@@ -76,20 +75,29 @@ public class JaxRsWebModuleInfoBuilder implements JaxRsModuleInfoBuilder {
             return null;
         }
 
-        WebAnnotations webAnnotations = AnnotationsBetaHelper.getWebAnnotations(containerToAdapt);
+        WebAnnotations webAnnotations = containerToAdapt.adapt(WebAnnotations.class);
 
         try {
+            webAnnotations.openInfoStore();
+
             WebAppConfig webAppConfig = containerToAdapt.adapt(WebAppConfig.class);
 
             AnnotationTargets_Targets annotationTargets = webAnnotations.getAnnotationTargets();
-
+//			Set<String> allProviderClassNames = new HashSet<String>();
+//			Set<String> allPathClassNames = new HashSet<String>();
             Set<String> allAppPathClassNames = new HashSet<String>();
             Set<String> allProviderAndPathClassNames = new HashSet<String>();
 
             // Scan annotation for @Provider, @Path, @ApplicationPath
-            allProviderAndPathClassNames.addAll( annotationTargets.getAnnotatedClasses(Provider.class.getName()) );
-            allProviderAndPathClassNames.addAll( annotationTargets.getAnnotatedClasses(Path.class.getName()) );
-            allAppPathClassNames.addAll( annotationTargets.getAnnotatedClasses(ApplicationPath.class.getName()) );
+            allProviderAndPathClassNames.addAll(annotationTargets.getAnnotatedClasses(
+                                                                                      Provider.class.getName(),
+                                                                                      AnnotationTargets_Targets.POLICY_SEED));
+            allProviderAndPathClassNames.addAll(annotationTargets.getAnnotatedClasses(
+                                                                                      Path.class.getName(),
+                                                                                      AnnotationTargets_Targets.POLICY_SEED));
+            allAppPathClassNames.addAll(annotationTargets.getAnnotatedClasses(
+                                                                              ApplicationPath.class.getName(),
+                                                                              AnnotationTargets_Targets.POLICY_SEED));
 
             // Process web.xml file firstly.
             // This is because for subclasses of javax.ws.rs.core.Application we
@@ -315,6 +323,8 @@ public class JaxRsWebModuleInfoBuilder implements JaxRsModuleInfoBuilder {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Exception when build jaxrs web module info: ", e);
             }
+        } finally {
+            webAnnotations.closeInfoStore();
         }
 
         return null;

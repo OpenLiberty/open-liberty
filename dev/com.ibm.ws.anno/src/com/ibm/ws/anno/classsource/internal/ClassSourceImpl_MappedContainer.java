@@ -193,8 +193,7 @@ public class ClassSourceImpl_MappedContainer
 
     public static final String EMPTY_PREFIX = "";
 
-    @SuppressWarnings("deprecation")
-	@Trivial
+    @Trivial
     protected void processClasses(
         Container targetContainer, String prefix,
         ClassSource_Streamer streamer,

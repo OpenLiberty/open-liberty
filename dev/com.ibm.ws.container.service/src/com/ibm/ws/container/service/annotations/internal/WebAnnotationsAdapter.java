@@ -73,11 +73,6 @@ public class WebAnnotationsAdapter implements ContainerAdapter<WebAnnotations> {
             throw new UnableToAdaptException(msg);
         }
         else {
-            if ( com.ibm.ws.container.service.annocache.AnnotationsBetaHelper.getLibertyBeta() ) {
-                Tr.warning(tc, "Unconverted adapt to web annotations");
-                (new Throwable("Unconverted adapt to web annotations")).printStackTrace(System.out);
-            }
-
             return new WebAnnotationsImpl(root,
                             rootOverlay,
                             artifactContainer,

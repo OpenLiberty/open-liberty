@@ -105,8 +105,6 @@ import org.apache.cxf.message.MessageUtils;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.annotations.WebAnnotations;
-import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
-
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jaxrs20.api.JaxRsFactoryBeanCustomizer;
 import com.ibm.ws.jaxrs20.injection.InjectionRuntimeContextHelper;
@@ -129,8 +127,18 @@ public final class InjectionUtils {
 
     private static final String IGNORE_MATRIX_PARAMETERS = "ignore.matrix.parameters";
 
+//    private static List<String> JAXRS_JEE_COMPONENTS = Collections.<String> emptyList();
+
+    private static List<String> explicitLifcycle = new ArrayList<String>();
+    static {
+        explicitLifcycle.add("javax.enterprise.context.RequestScoped");
+        explicitLifcycle.add("javax.enterprise.context.ApplicationScoped");
+        explicitLifcycle.add("javax.enterprise.context.SessionScoped");
+        explicitLifcycle.add("javax.enterprise.context.Dependent");
+    }
+
     private InjectionUtils() {
-        // EMPTY
+
     }
 
     public static Field getDeclaredField(Class<?> cls, String fieldName) {
@@ -1800,197 +1808,145 @@ public final class InjectionUtils {
         return o instanceof GenericEntity ? ((GenericEntity<?>) o).getEntity() : o;
     }
 
-    private static final Set<String> JAXRS_INTERFACE_NAMES;
+    private static final Set<String> JAXRS_COMPONENTS_INTERFACE;
     static {
-        JAXRS_INTERFACE_NAMES = new HashSet<String>();
-        JAXRS_INTERFACE_NAMES.add("javax.ws.rs.ext.MessageBodyWriter");
-        JAXRS_INTERFACE_NAMES.add("javax.ws.rs.ext.MessageBodyReader");
-        JAXRS_INTERFACE_NAMES.add("javax.ws.rs.ext.ExceptionMapper");
-        JAXRS_INTERFACE_NAMES.add("javax.ws.rs.ext.ContextResolver");
-        JAXRS_INTERFACE_NAMES.add("javax.ws.rs.ext.ReaderInterceptor");
-        JAXRS_INTERFACE_NAMES.add("javax.ws.rs.ext.WriterInterceptor");
-        JAXRS_INTERFACE_NAMES.add("javax.ws.rs.ext.ParamConverterProvider");
+        JAXRS_COMPONENTS_INTERFACE = new HashSet<String>();
+        JAXRS_COMPONENTS_INTERFACE.add("javax.ws.rs.ext.MessageBodyWriter");
+        JAXRS_COMPONENTS_INTERFACE.add("javax.ws.rs.ext.MessageBodyReader");
+        JAXRS_COMPONENTS_INTERFACE.add("javax.ws.rs.ext.ExceptionMapper");
+        JAXRS_COMPONENTS_INTERFACE.add("javax.ws.rs.ext.ContextResolver");
+        JAXRS_COMPONENTS_INTERFACE.add("javax.ws.rs.ext.ReaderInterceptor");
+        JAXRS_COMPONENTS_INTERFACE.add("javax.ws.rs.ext.WriterInterceptor");
+        JAXRS_COMPONENTS_INTERFACE.add("javax.ws.rs.ext.ParamConverterProvider");
+        JAXRS_COMPONENTS_INTERFACE.add("javax.ws.rs.container.ContainerRequestFilter");
+        JAXRS_COMPONENTS_INTERFACE.add("javax.ws.rs.container.ContainerResponseFilter");
+        JAXRS_COMPONENTS_INTERFACE.add("javax.ws.rs.container.DynamicFeature");
+        JAXRS_COMPONENTS_INTERFACE.add("org.apache.cxf.jaxrs.ext.ContextResolver");
 
-        JAXRS_INTERFACE_NAMES.add("javax.ws.rs.container.ContainerRequestFilter");
-        JAXRS_INTERFACE_NAMES.add("javax.ws.rs.container.ContainerResponseFilter");
-        JAXRS_INTERFACE_NAMES.add("javax.ws.rs.container.DynamicFeature");
+        JAXRS_COMPONENTS_INTERFACE.add("javax.ws.rs.core.Application");
 
-        JAXRS_INTERFACE_NAMES.add("org.apache.cxf.jaxrs.ext.ContextResolver");
-
-        JAXRS_INTERFACE_NAMES.add("javax.ws.rs.core.Application");
     }
 
-    private static final Set<String> JAXRS_ABSTRACT_CLASS_NAMES;
+    private static final Set<String> JAXRS_COMPONENTS_ABSTRACTCLASS;
     static {
-        JAXRS_ABSTRACT_CLASS_NAMES = new HashSet<String>();
-        JAXRS_ABSTRACT_CLASS_NAMES.add("javax.ws.rs.core.Application");
+        JAXRS_COMPONENTS_ABSTRACTCLASS = new HashSet<String>();
+        JAXRS_COMPONENTS_ABSTRACTCLASS.add("javax.ws.rs.core.Application");
     }
 
     /**
-     * Answer the JAX-RS injection classes for a web module.
-     *
-     * @param moduleContainer The web module container in which to
-     *     locate JAX-RS injection classes
-     *
-     * @return The list of JAX-RS injection classes of the
-     *     web module.
+     * @param moduleContainer
+     * @return
+     * @throws UnableToAdaptException
      */
     public static List<String> getJaxRsInjectionClasses(Container moduleContainer) {
-        WebAnnotations webAnnotations;
-        AnnotationTargets_Targets annotationTargets;
+
+//        if (!JAXRS_JEE_COMPONENTS.isEmpty()) {
+//            return JAXRS_JEE_COMPONENTS;
+//        }
+
+        WebAnnotations webAnnotations = null;
         try {
-            webAnnotations = AnnotationsBetaHelper.getWebAnnotations(moduleContainer);
-            annotationTargets = webAnnotations.getAnnotationTargets();
-        } catch ( Exception e ) {
-            // Detection cannot be done without annotations information.
-            return Collections.<String> emptyList(); // FFDC
-        }
-
-        Set<String> candidateClassNames = new HashSet<String>();
-
-        candidateClassNames.addAll( annotationTargets.getAllInheritedAnnotatedClasses(Provider.class.getName()) );
-        candidateClassNames.addAll( annotationTargets.getAllInheritedAnnotatedClasses(Path.class.getName()) );
-        candidateClassNames.addAll( annotationTargets.getAllInheritedAnnotatedClasses(ApplicationPath.class.getName()) );
-
-        for ( String interfaceName : JAXRS_INTERFACE_NAMES) {
-            candidateClassNames.addAll( annotationTargets.getAllImplementorsOf(interfaceName) );
-        }
-        for ( String abstractClassName : JAXRS_ABSTRACT_CLASS_NAMES ) {
-            candidateClassNames.addAll( annotationTargets.getSubclassNames(abstractClassName) );
-        }
-
-        if ( candidateClassNames.isEmpty() ) {
-            // No candidates.  Don't bother opening the info store.
-            return Collections.<String> emptyList();
-        }
-
-        try {
+            webAnnotations = moduleContainer
+                            .adapt(WebAnnotations.class);
             webAnnotations.openInfoStore();
-        } catch ( Exception e ) {
-            // Detection cannot be done without annotations information.
-            return Collections.<String> emptyList(); // FFDC
-        }
+            AnnotationTargets_Targets annotationTargets = webAnnotations
+                            .getAnnotationTargets();
+            Set<String> allComponentsClassNames = new HashSet<String>();
+            //We should skip the annotation scan on Interface
 
-        try {
-            Set<String> selectedClassNames = new HashSet<String>();
+            // Scan annotation for @Provider, @Path, @ApplicationPath
+            allComponentsClassNames.addAll(annotationTargets.getAllInheritedAnnotatedClasses(
+                                                                                             Provider.class.getName(),
+                                                                                             AnnotationTargets_Targets.POLICY_SEED));
+            allComponentsClassNames
+                            .addAll(annotationTargets.getAllInheritedAnnotatedClasses(
+                                                                                      Path.class.getName(),
+                                                                                      AnnotationTargets_Targets.POLICY_SEED));
+            allComponentsClassNames.addAll(annotationTargets.getAllInheritedAnnotatedClasses(
+                                                                                             ApplicationPath.class.getName(), AnnotationTargets_Targets.POLICY_SEED));
 
-            for ( String candidateClassName : candidateClassNames ) {
-                ClassInfo candidateClassInfo;
+            Set<String> allComponentsClassNamesFinal = new HashSet<String>();
 
-                try {
-                    candidateClassInfo = webAnnotations.getClassInfo(candidateClassName);
-                } catch ( Exception e ) {
-                    // (Unexpected): Could not process the class.  Ignore and continue.
-                    continue; // FFDC
-                }
+            //add the valid provider but no @Provider
 
-                if ( candidateClassInfo == null ) {
-                    // (Unexpected): Did not find the class.  Ignore and continue.
-                    continue;
-                }
+            for (String str : JAXRS_COMPONENTS_INTERFACE) {
+                allComponentsClassNames.addAll(annotationTargets.getAllImplementorsOf(str));
+            }
 
-                // Injection annotations are @Inject as a class, method, field, or constructor
-                // annotation, except ignore @Inject as a class annotation if the class has an
-                // explicit lifecycle annotation.
+            for (String str : JAXRS_COMPONENTS_ABSTRACTCLASS) {
 
-                if ( !candidateClassInfo.isInterface() ) {
-                    // Select a normal class if the class or one of its superclasses
-                    // has injection annotations.
-                    if ( selectForInjection(candidateClassInfo) ) {
-                        selectedClassNames.add(candidateClassName);
+                allComponentsClassNames.addAll(annotationTargets.getSubclassNames(str));
+            }
+
+            //filter the interface but add all implementors
+            //filter the class without @inject, @resources
+            //filter the class with @ApplicationScoped,@SessionScoped,@RequestScoped,@Dependent
+            for (String str : allComponentsClassNames) {
+
+                ClassInfo targetClass = webAnnotations.getClassInfo(str);
+                Set<String> impl = annotationTargets.getAllImplementorsOf(str);
+                if (!impl.isEmpty()) {
+                    if (shouldConsiderInjection(targetClass)) {
+                        allComponentsClassNamesFinal.addAll(impl);
                     }
+
                 } else {
-                    // Select the implementers of an interface if the interface has
-                    // injection annotations.
-                    Set<String> implementerNames = annotationTargets.getAllImplementorsOf(candidateClassName);
-                    if ( !implementerNames.isEmpty() ) {
-                        if ( selectForInjection(candidateClassInfo) ) {
-                            selectedClassNames.addAll(implementerNames);
+                    if (!targetClass.isInterface()) {
+                        if (shouldConsiderInjection(targetClass)) {
+                            allComponentsClassNamesFinal.add(str);
                         }
                     }
+
                 }
+
             }
 
-            return new ArrayList<String>(selectedClassNames);
-
-        } finally {
-            try {
-                webAnnotations.closeInfoStore();
-            } catch ( Exception e ) {
-                // FFDC
-            }
+            webAnnotations.closeInfoStore();
+            return new ArrayList<String>(allComponentsClassNamesFinal);
+        } catch (Exception e) {
+//            LOG.log(Level.FINE, "Exception when retrieve the JAX-RS components: ", e);
         }
-    }
-
-    private static final String INJECT_CLASS_NAME = "javax.inject.Inject";
-
-    private static List<String> EXPLICIT_LIFECYCLE_CLASS_NAMES = new ArrayList<String>();
-    static {
-        EXPLICIT_LIFECYCLE_CLASS_NAMES.add("javax.enterprise.context.RequestScoped");
-        EXPLICIT_LIFECYCLE_CLASS_NAMES.add("javax.enterprise.context.ApplicationScoped");
-        EXPLICIT_LIFECYCLE_CLASS_NAMES.add("javax.enterprise.context.SessionScoped");
-        EXPLICIT_LIFECYCLE_CLASS_NAMES.add("javax.enterprise.context.Dependent");
+        return Collections.<String> emptyList();
     }
 
     /**
-     * Tell if a class should be selected for injection.
-     *
-     * A class is selected for injection if it or one of its superclasses
-     * has {@link javax.inject.Inject} as a class, method, field, or constructor
-     * annotation.  Except, {@link java.inject.Inject} is ignored as a class
-     * annotations if the class has an explicit lifecycle class annotation.
-     * Lifecycle annotations are {@link javax.enterprise.context.ApplicationScoped},
-     * {@link javax.enterprise.context.SessionScoped},
-     * {@link javax.enterprise.context.RequestScoped}, and
-     * {@link javax.enterprise.context.Dependent}.
-     *
-     * Note: This test is implemented using the raw class information.
-     * Annotations are detected on the target class regardless of where the
-     * class is present.  Annotations on classes in metadata-complete
-     * regions detected.  Annotations on classes which are external to a
-     * target module are detected.
-     *
-     * @param classInfo Information for the class which is to be tested.
-     *
-     * @return True or false telling if the class should be selected for
-     *     injection.
+     * @param targetClass
      */
-    private static boolean selectForInjection(ClassInfo classInfo) {
-        if ( classInfo.isAnnotationPresent(INJECT_CLASS_NAME) &&
-             !classInfo.isAnnotationWithin(EXPLICIT_LIFECYCLE_CLASS_NAMES) ) {
+    private static boolean shouldConsiderInjection(ClassInfo clazz) {
+//        if (targetClass.getAnnotation("javax.inject.Inject") != null || targetClass.getAnnotation("javax.annotation.ManagedBean") != null
+//            || targetClass.getAnnotation("javax.annotation.Resource") != null) {
+
+        if (clazz.isAnnotationPresent("javax.inject.Inject") && !clazz.isAnnotationWithin(explicitLifcycle)) {
             return true;
-
         } else {
-            // Examine declared fields, methods and constructors.  Inherited
-            // field, methods, and constructors are examined when testing the
-            // superclass.
-            //
-            // Note that this defines a very different semantic for
-            // annotation inheritance: Annotations on superclass methods
-            // which are overridden by the target class are not masked
-            // because the method is overridden.
 
-            for ( com.ibm.wsspi.anno.info.FieldInfo fieldInfo : classInfo.getDeclaredFields() ) {
-                if ( fieldInfo.isAnnotationPresent(INJECT_CLASS_NAME) ) {
+            List<? extends com.ibm.wsspi.anno.info.FieldInfo> fields = clazz.getDeclaredFields();
+            Iterator<? extends com.ibm.wsspi.anno.info.FieldInfo> fieldToCheck = fields.iterator();
+            while (fieldToCheck.hasNext()) {
+                if (fieldToCheck.next().isAnnotationPresent("javax.inject.Inject")) {
                     return true;
                 }
             }
-            for ( MethodInfo methodInfo : classInfo.getDeclaredMethods() ) {
-                if ( methodInfo.isAnnotationPresent(INJECT_CLASS_NAME) ) {
+
+            List<? extends MethodInfo> methods = clazz.getDeclaredMethods();
+            Iterator<? extends MethodInfo> methodToCheck = methods.iterator();
+            while (methodToCheck.hasNext()) {
+                if (methodToCheck.next().isAnnotationPresent("javax.inject.Inject")) {
                     return true;
                 }
             }
-            for ( MethodInfo constructorInfo : classInfo.getDeclaredConstructors() ) {
-                if ( constructorInfo.isAnnotationPresent(INJECT_CLASS_NAME) ) {
+
+            List<? extends MethodInfo> c = clazz.getDeclaredConstructors();
+            Iterator<? extends MethodInfo> constructorToCheck = c.iterator();
+            while (constructorToCheck.hasNext()) {
+                if (constructorToCheck.next().isAnnotationPresent("javax.inject.Inject")) {
                     return true;
                 }
             }
         }
-
-        // Null is answered when the target class is an interface.
-        ClassInfo superClassInfo = classInfo.getSuperclass();
-        if ( superClassInfo != null ) {
-            return selectForInjection(superClassInfo);
+        ClassInfo cls = clazz.getSuperclass();
+        if (cls != null) {
+            return shouldConsiderInjection(cls);
         } else {
             return false;
         }
