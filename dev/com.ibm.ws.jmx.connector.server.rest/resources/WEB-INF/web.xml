@@ -71,6 +71,9 @@
     <web-resource-collection id="WebResourceCollection_4">
         <web-resource-name>REST Connector URL</web-resource-name>
         <url-pattern>/mbeans</url-pattern>
+        <url-pattern>/mbeans/WebSphere%3Afeature=restConnector,type=FileService,name=FileService/operations/getMetaData</url-pattern>
+        <url-pattern>/mbeans/WebSphere%3Aname=com.ibm.websphere.config.mbeans.FeatureListMBean/operations/generate</url-pattern>
+        <url-pattern>/mbeans/WebSphere%3Aname=com.ibm.ws.config.serverSchemaGenerator/operations/generateInstallSchema</url-pattern>
         <http-method>POST</http-method>
     </web-resource-collection>
     <auth-constraint>
