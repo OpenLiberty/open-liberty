@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2018 IBM Corporation and others.
+# Copyright (c) 2017, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -153,7 +153,7 @@ Import-Package: \
   com.ibm.websphere.javaee.jstl.1.2;version=latest,\
   com.ibm.websphere.javaee.persistence.2.1;version=latest,\
   com.ibm.ws.org.apache.commons.digester.1.8;version=latest,\
-  com.ibm.ws.org.apache.commons.beanutils.1.8.3;version=latest,\
+  com.ibm.ws.org.apache.commons.beanutils.1.9.4;version=latest,\
   com.ibm.ws.com.google.guice.2.0;version=latest,\
   com.ibm.ws.classloading;version=latest,\
   com.ibm.ws.webcontainer;version=latest,\
