@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2019 IBM Corporation and others.
+# Copyright (c) 2017 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -11,48 +11,17 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion: 1.1
 
-javac.source: 1.8
-javac.target: 1.8
-
 Bundle-Name: WebSphere Annotations SPI
 Bundle-Description: WebSphere Annotations SPI, version ${bVersion}
 Bundle-SymbolicName: com.ibm.websphere.appserver.spi.anno
 
-Import-Package: \
-  com.ibm.wsspi.anno.classsource, \
-  com.ibm.wsspi.anno.info, \
-  com.ibm.wsspi.anno.service, \
-  com.ibm.wsspi.anno.targets, \
-  com.ibm.wsspi.anno.util, \
-  com.ibm.ws.anno.classsource.specification, \
-  com.ibm.wsspi.annocache.classsource, \
-  com.ibm.wsspi.annocache.info, \
-  com.ibm.wsspi.annocache.service, \
-  com.ibm.wsspi.annocache.targets, \
-  com.ibm.wsspi.annocache.targets.cache, \
-  com.ibm.wsspi.annocache.util, \
-  com.ibm.ws.annocache.classsource.specification
+Import-Package: com.ibm.wsspi.anno.classsource,com.ibm.wsspi.anno.info,com.ibm.wsspi.anno.service,com.ibm.wsspi.anno.targets,com.ibm.wsspi.anno.util
 
-Export-Package: \
-  com.ibm.wsspi.anno.classsource, \
-  com.ibm.wsspi.anno.info, \
-  com.ibm.wsspi.anno.service, \
-  com.ibm.wsspi.anno.targets, \
-  com.ibm.wsspi.anno.util, \
-  com.ibm.ws.anno.classsource.specification, \
-  com.ibm.wsspi.annocache.classsource, \
-  com.ibm.wsspi.annocache.info, \
-  com.ibm.wsspi.annocache.service, \
-  com.ibm.wsspi.annocache.targets, \
-  com.ibm.wsspi.annocache.targets.cache, \
-  com.ibm.wsspi.annocache.util, \
-  com.ibm.ws.annocache.classsource.specification
+Export-Package: com.ibm.wsspi.anno.classsource,com.ibm.wsspi.anno.info,com.ibm.wsspi.anno.service,com.ibm.wsspi.anno.targets,com.ibm.wsspi.anno.util
 
--includeresource:  \
-  {META-INF/maven/com.ibm.websphere.appserver.spi/com.ibm.websphere.appserver.spi.anno/pom.xml=com.ibm.websphere.appserver.spi.anno.pom}
+-includeresource: {META-INF/maven/com.ibm.websphere.appserver.spi/com.ibm.websphere.appserver.spi.anno/pom.xml=com.ibm.websphere.appserver.spi.anno.pom}
 
-publish.wlp.jar.suffix: \
-  dev/spi/ibm
+publish.wlp.jar.suffix: dev/spi/ibm
 
 -buildpath: \
-  com.ibm.ws.anno
+	com.ibm.ws.anno

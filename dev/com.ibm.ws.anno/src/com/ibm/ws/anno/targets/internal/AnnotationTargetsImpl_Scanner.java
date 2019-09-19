@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 IBM Corporation and others.
+ * Copyright (c) 2011, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -273,9 +273,9 @@ public class AnnotationTargetsImpl_Scanner {
 
     protected void scanReferencedClasses() {
 
-        AnnotationTargetsImpl_Targets useAnnotationTargets = getAnnotationTargets();
+        AnnotationTargetsImpl_Targets annotationTargets = getAnnotationTargets();
 
-        Set<String> scannedClassNames = useAnnotationTargets.getScannedClassNames();
+        Set<String> scannedClassNames = annotationTargets.getScannedClassNames();
 
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, MessageFormat.format("[ {0} ] Initial scan found [ {1} ] classes",
@@ -311,11 +311,11 @@ public class AnnotationTargetsImpl_Scanner {
                 }
 
                 if (!didScan) {
-                    useAnnotationTargets.recordUnresolvedClass(referencedClassName);
+                    annotationTargets.recordUnresolvedClass(referencedClassName);
                 }
             }
 
-            scannedClassNames = useAnnotationTargets.getScannedClassNames();
+            scannedClassNames = annotationTargets.getScannedClassNames();
 
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, MessageFormat.format("[ {0} ] Reference pass [ {1} ] scan found [ {2} ] classes",

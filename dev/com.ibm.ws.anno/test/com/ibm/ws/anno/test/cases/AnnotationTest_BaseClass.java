@@ -12,6 +12,7 @@
 package com.ibm.ws.anno.test.cases;
 
 import java.io.File;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.HashSet;
@@ -89,46 +90,14 @@ public abstract class AnnotationTest_BaseClass {
 
     //
 
-    public String selectProjectPath(String partialPath) {
-        System.out.println("Placing project folder [ " + partialPath + " ]:");
-
-        File eclipseFile = new File(partialPath);
-        String eclipsePath = eclipseFile.getAbsolutePath();
-        System.out.println("Trying eclipse location [ " + eclipsePath + " ]");
-
-        if ( eclipseFile.exists() ) {
-            return partialPath;
-        }
-
-        File repoRootFile = new File(TestConstants.REPOSITORY_TEST_ROOT);
-        String repoRootPath = repoRootFile.getAbsolutePath();
-        System.out.println("Trying repository location [ " + repoRootPath + " ]");
-
-        if ( !repoRootFile.exists() ) {
-            String errorMessage =
-                "Unable to locate eclipse file [ " + eclipsePath + " ]" +
-                " or repository root file [ " + repoRootPath + " ]";
-            throw new IllegalArgumentException(errorMessage);
-        }
-
-        File repoFile = new File(repoRootFile, partialPath);
-        String repoPath = repoFile.getAbsolutePath();
-        System.out.println("Verifying target location [ " + repoPath + " ]");
-
-        if ( repoFile.exists() ) {
-            return repoPath;
-        }
-
-        String errorMessage =
-            "Unable to locate eclipse file [ " + eclipsePath + " ]" +
-            "; located repository root file [ " + repoRootPath + " ]" +
-            " but failed to locate target file [ " + repoPath + " ]";
-        throw new IllegalArgumentException(errorMessage);
-    }
-
     @Before
     public void setUp() throws Exception {
-        setProjectPath( selectProjectPath("publish" + File.separator + "appData") );
+
+        setProjectPath("publish" + File.separator +
+                       "files" + File.separator +
+                       "data" + File.separator +
+                       "anno_tests");
+
         setFactories(); // throws Exception
     }
 
@@ -154,6 +123,18 @@ public abstract class AnnotationTest_BaseClass {
 
     public void setDataPath(String dataPath) {
         this.dataPath = dataPath;
+    }
+
+    //
+
+    protected OutputStream logStream;
+
+    public OutputStream getLogStream() {
+        return logStream;
+    }
+
+    public void setLogStream(OutputStream logStream) {
+        this.logStream = logStream;
     }
 
     //
@@ -458,7 +439,6 @@ public abstract class AnnotationTest_BaseClass {
         }
     }
 
-    @SuppressWarnings("unused")
     protected void verifyInfoStore(PrintWriter writer,
                                    ClassSource_Aggregate classSource,
                                    AnnotationTargetsImpl_Targets annotationTargets,

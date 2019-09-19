@@ -71,7 +71,7 @@ public interface ClassInfo extends Info {
      * @return True if the class object is implemented as a delayed class. False if the
      *         class object is implemented as a non-delayed class.
      * 
-     * {@link #isNonDelayedClass}
+     * @see #isNonDelayedClass
      */
     public boolean isDelayedClass();
 
@@ -82,7 +82,7 @@ public interface ClassInfo extends Info {
      * @return True if the class object is implemented as a non-delayed class. False if the
      *         class object is implemented as a delayed class.
      * 
-     * {@link #isDelayedClass}
+     * @see #isDelayedClass
      */
     public boolean isNonDelayedClass();
 
@@ -96,7 +96,7 @@ public interface ClassInfo extends Info {
      * 
      * @return The name of the package of this class object.
      * 
-     * {@link #getPackage()}
+     * @see #getPackage()
      */
     public String getPackageName();
 
@@ -108,7 +108,7 @@ public interface ClassInfo extends Info {
      * 
      * @return The package object of this class object.
      * 
-     * {@link #getPackageName()}
+     * @see #getPackageName()
      */
     public PackageInfo getPackage();
 
@@ -143,7 +143,11 @@ public interface ClassInfo extends Info {
      * @return The names of the immediately declared interfaces of this
      *         class object as a set.
      * 
-     * {@link #getInterfaces()}
+     * @see #getInterfaceNamesArray()
+     * @see #getInterfaces()
+     * 
+     * @see #getAllInterfaceNames()
+     * @see #getAllInterfaces()
      */
     public List<String> getInterfaceNames();
 
@@ -156,7 +160,11 @@ public interface ClassInfo extends Info {
      * @return The names of the immediately declared interfaces of this
      *         class object as a set.
      * 
-     * {@link #getInterfaceNames()}
+     * @see #getInterfaceNamesArray()
+     * @see #getInterfaceNames()
+     * 
+     * @see #getAllInterfaceNames()
+     * @see #getAllInterfaces()
      */
     public List<? extends ClassInfo> getInterfaces();
 
@@ -184,8 +192,8 @@ public interface ClassInfo extends Info {
      * @return The superclass name of this class. Null for interfaces and for
      *         <code>java.lang.Object</code>
      * 
-     * {@link #isInterface()}
-     * {@link #getSuperclass()}
+     * @see #isInterface()
+     * @see #getSuperclass()
      */
     public String getSuperclassName();
 
@@ -201,8 +209,8 @@ public interface ClassInfo extends Info {
      * @return The superclass of this class. Null for interfaces and for
      *         <code>java.lang.Object</code>
      * 
-     * {@link #isInterface()}
-     * {@link #getSuperclassName()}
+     * @see #isInterface()
+     * @see #getSuperclassName()
      */
     public ClassInfo getSuperclass();
 
@@ -219,13 +227,17 @@ public interface ClassInfo extends Info {
      * if type X is assignable from type Y, then Y is an instance of X.
      * Conversely, if Y is an instance of X, then X is assignable from Y.</p>
      * 
-     * @param className The name of the type which is to be tested.
+     * @param The name of the type which is to be tested.
      * 
      * @return True if a variable of this type can be assigned a value of
      *         the specified type. Otherwise, false.
      * 
-     * {@link #isInstanceOf(String)}
-     * {@link #isInstanceOf(Class)}
+     * @see #isAssignableFrom(ClassInfo)
+     * @see #isAssignableFrom(Class)
+     * 
+     * @see #isInstanceOf(String)
+     * @see #isInstanceOf(ClassInfo)
+     * @see #isInstanceOf(Class)
      */
     public boolean isAssignableFrom(String className);
 
@@ -240,12 +252,15 @@ public interface ClassInfo extends Info {
      * if type X is an instance of type Y, then Y is assignable from of X.
      * Conversely, if Y is assignable from X, then X is an instance of Y.</p>
      * 
-     * @param className The name of the type which is to be tested.
+     * @param The name of the type which is to be tested.
      * 
      * @return True if this type is an instance (sub-type) of
      *         the specified type. Otherwise, false.
      * 
-     * {@link #isAssignableFrom(String)}
+     * @see #isAssignableFrom(String)
+     * @see #isAssignableFrom(ClassInfo)
+     * @see #isAssignableFrom(Class)
+     * 
      */
     public boolean isInstanceOf(String className);
 
@@ -257,7 +272,9 @@ public interface ClassInfo extends Info {
      * <p>The result collection does not support additions.</p>
      * 
      * @return The declared fields of the receiver.
-o     */
+     * 
+     * @see #getFields()
+     */
     public List<? extends FieldInfo> getDeclaredFields();
 
     /**
@@ -265,7 +282,12 @@ o     */
      * 
      * <p>The result collection does not support additions.</p>
      * 
+     * <p>Note: The difference between {@link #getDeclaredConstructor()} and {@link #getConstructors()} is not clear, as constructors are not
+     * inherited.</p>
+     * 
      * @return The declared constructors of the receiver.
+     * 
+     * @see #getConstructors()
      */
     public List<? extends MethodInfo> getDeclaredConstructors();
 
@@ -276,7 +298,7 @@ o     */
      * 
      * @return The declared methods of the receiver.
      * 
-     * {@link #getMethods()}
+     * @see #getMethods()
      */
     public List<? extends MethodInfo> getDeclaredMethods();
 
@@ -288,7 +310,7 @@ o     */
      * 
      * @return The methods of the receiver.
      * 
-     * {@link #getDeclaredFields()}
+     * @see #getDeclaredFields()
      */
     public List<? extends MethodInfo> getMethods();
 
@@ -300,7 +322,7 @@ o     */
      * @return True if any field of this class has an annotation.
      *         Otherwise, false.
      * 
-     * {@link #isMethodAnnotationPresent()}
+     * @see #isMethodAnnotationPresent()
      */
     public boolean isFieldAnnotationPresent();
 
@@ -312,7 +334,7 @@ o     */
      * @return True if any method of this class has an annotation.
      *         Otherwise, false.
      * 
-     * {@link #isFieldAnnotationPresent()}
+     * @see #isFieldAnnotationPresent()
      */
     public boolean isMethodAnnotationPresent();
 }

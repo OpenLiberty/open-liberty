@@ -124,6 +124,7 @@ import com.ibm.ws.anno.info.internal.InfoVisitor_Annotation.AnnotationInfoVisito
 public class InfoVisitor extends ClassVisitor {
     private static final TraceComponent tc = Tr.register(InfoVisitor.class);
     public static final String CLASS_NAME = InfoVisitor.class.getName();
+    static final AnnotationInfoImpl[] emptyAnnotationInfoArray = new AnnotationInfoImpl[] {};
 
     //
     class InfoMethodVisitor extends MethodVisitor {
@@ -135,7 +136,6 @@ public class InfoVisitor extends ClassVisitor {
             super(Opcodes.ASM7);
         }
 
-        @SuppressWarnings("unchecked")
         void setMethodInfo(MethodInfoImpl mii) {
             methodInfo = mii;
             annotations = new LinkedList<AnnotationInfoImpl>();
@@ -206,8 +206,23 @@ public class InfoVisitor extends ClassVisitor {
                 logParms[2] = methodInfo.getDeclaringClass().getHashText();
             }
 
-            methodInfo.setParameterAnnotations(paramAnnotations);
-            methodInfo.setDeclaredAnnotations(annotations);
+            List<AnnotationInfoImpl>[] arrAnnos = new List[paramAnnotations.length];
+
+            for (int i = 0; i < paramAnnotations.length; ++i) {
+                List<AnnotationInfoImpl> annos = paramAnnotations[i];
+
+                List<AnnotationInfoImpl> aAnnos;
+                if (annos == null || annos.isEmpty()) {
+                    aAnnos = new ArrayList<AnnotationInfoImpl>(0);
+                } else {
+                    aAnnos = new ArrayList<AnnotationInfoImpl>(annos);
+                }
+
+                arrAnnos[i] = aAnnos;
+            }
+            methodInfo.setParameterAnnotations(arrAnnos);
+
+            methodInfo.setDeclaredAnnotations(new ArrayList<AnnotationInfoImpl>(annotations));
 
             this.methodInfo = null;
             paramAnnotations = null;
@@ -248,7 +263,7 @@ public class InfoVisitor extends ClassVisitor {
                 logParms[2] = fieldInfo.getDeclaringClass().getHashText();
             }
 
-            fieldInfo.setDeclaredAnnotations(annotations);
+            fieldInfo.setDeclaredAnnotations(new ArrayList<AnnotationInfoImpl>(annotations));
 
             fieldInfo = null;
             annotations = null;
@@ -523,7 +538,7 @@ public class InfoVisitor extends ClassVisitor {
             Tr.debug(tc, MessageFormat.format("[ {0} ] Package [ {1} ]", logParms));
         }
 
-        packageInfo.setDeclaredAnnotations(annotationInfos);
+        packageInfo.setDeclaredAnnotations(new ArrayList<AnnotationInfoImpl>(annotationInfos));
 
         packageInfo = null;
     }

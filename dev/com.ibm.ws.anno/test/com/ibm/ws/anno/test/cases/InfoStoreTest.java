@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringTokenizer;
 
 import javax.annotation.Resource;
 import javax.annotation.Resource.AuthenticationType;
@@ -47,6 +48,7 @@ import com.ibm.ws.anno.test.data.CIntf;
 import com.ibm.ws.anno.test.data.DerivedBase;
 import com.ibm.ws.anno.test.data.sub.InheritAnno;
 import com.ibm.ws.anno.test.data.sub.SubBase;
+import com.ibm.wsspi.anno.classsource.ClassSource;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate.ScanPolicy;
 import com.ibm.wsspi.anno.classsource.ClassSource_Exception;
@@ -68,7 +70,6 @@ import test.common.SharedOutputManager;
 /**
  *
  */
-@SuppressWarnings("deprecation")
 public class InfoStoreTest {
     static InfoStore infoStore;
     private static final String SELF_ANNO_TARGET = "com.ibm.ws.anno.test.data.SelfAnnoTarget";
@@ -86,7 +87,7 @@ public class InfoStoreTest {
         ClassSourceImpl_Factory factory = annoService.getClassSourceFactory();
 
         ClassSource_Aggregate classSource = factory.createAggregateClassSource("AnnoInfoTest");
-        String testClassesDir = System.getProperty("test.classesDir", "bin");
+        String testClassesDir = System.getProperty("test.classesDir", "bin_test");
         factory.addDirectoryClassSource(classSource, testClassesDir, testClassesDir, ScanPolicy.SEED);
 
         InfoStoreFactoryImpl infoFactory = annoService.getInfoStoreFactory();
@@ -322,7 +323,8 @@ public class InfoStoreTest {
 
         String expectedMessage = "CWWKC0022W:";
 
-        // String msgs = outputMgr.getCapturedOut();
+        String msgs = outputMgr.getCapturedOut();
+        StringTokenizer st = new StringTokenizer(msgs, "\n");
 
         // capture any failures and dump the captured messages for diagnosis
         try {
@@ -575,7 +577,7 @@ public class InfoStoreTest {
     /**
      * Create a test ClassSource that can be used to generate errors to drive unit tests
      */
-    private class TestClassSource extends ClassSourceImpl {
+    private class TestClassSource extends ClassSourceImpl implements ClassSource {
 
         private final TraceComponent tc = Tr.register(TestClassSource.class, null, "com.ibm.ws.anno.resources.internal.AnnoMessages");
 

@@ -31,8 +31,7 @@ public class ClassSourceImpl_ClassLoader
     extends ClassSourceImpl
     implements ClassSource_ClassLoader {
 
-    @SuppressWarnings("hiding")
-	public static final String CLASS_NAME = ClassSourceImpl_ClassLoader.class.getName();
+    public static final String CLASS_NAME = ClassSourceImpl_ClassLoader.class.getName();
     private static final TraceComponent tc = Tr.register(ClassSourceImpl_ClassLoader.class);
 
     // Top O' the world
