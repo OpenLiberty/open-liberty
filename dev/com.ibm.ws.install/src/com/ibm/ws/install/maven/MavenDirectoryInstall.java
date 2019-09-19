@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 import com.ibm.ws.install.InstallException;
 import com.ibm.ws.install.internal.InstallKernelMap;
 import com.ibm.ws.install.internal.InstallLogUtils;
+import com.ibm.ws.install.internal.InstallLogUtils.Messages;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
 
 /**
@@ -147,12 +148,11 @@ public class MavenDirectoryInstall {
 			logger.log(Level.FINE, "The list of resolved features is empty.");
 			String exceptionMessage = (String) map.get("action.error.message");
 			if (exceptionMessage == null) {
-				logger.log(Level.FINE, "Resolved features was empty but the install kernel did not issue any messages");
-				logger.log(Level.INFO, "The features are already installed, so no action is needed.");
+				logger.log(Level.INFO, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ALREADY_INSTALLED",
+						map.get("features.to.resolve")));
 				return;
 			} else if (exceptionMessage.contains("CWWKF1250I")) {
 				logger.log(Level.INFO, exceptionMessage);
-				logger.log(Level.INFO, "The features are already installed, so no action is needed.");
 				return;
 			} else {
 				throw new InstallException(exceptionMessage);
@@ -166,8 +166,10 @@ public class MavenDirectoryInstall {
 		artifacts.addAll(retrieveEsas(resolvedFeaturesMap.get("closedLiberty")));
 
 		Collection<String> actionReturnResult = new ArrayList<String>();
+
 		for (File esaFile : artifacts) {
-			logger.log(Level.FINE, "Installing ESA: " + esaFile.getName());
+			logger.log(Level.INFO, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_INSTALLING",
+					extractFeatureName(esaFile.getName())));
 			map.put("license.accept", true);
 			map.put("action.install", esaFile);
 			if (toExtension != null) {
@@ -186,13 +188,13 @@ public class MavenDirectoryInstall {
 				throw new InstallException(exceptionMessage);
 			} else if (map.get("action.install.result") != null) {
 				// installation was successful
-				logger.log(Level.FINE, "Installing " + esaFile.getName() + " was successful.");
+				logger.log(Level.FINE, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("LOG_INSTALLED_FEATURE",
+						extractFeatureName(esaFile.getName())));
 				actionReturnResult.addAll((Collection<String>) map.get("action.install.result"));
 			}
 		}
-		StringBuilder installedFeaturesBuilder = new StringBuilder();
-		actionReturnResult.forEach(feature -> installedFeaturesBuilder.append(feature + " "));
-		logger.log(Level.INFO, "The following features have been installed: " + installedFeaturesBuilder.toString());
+
+		logger.log(Level.INFO, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("TOOL_FEATURES_INSTALLATION_COMPLETED"));
 	}
 
 	/**
