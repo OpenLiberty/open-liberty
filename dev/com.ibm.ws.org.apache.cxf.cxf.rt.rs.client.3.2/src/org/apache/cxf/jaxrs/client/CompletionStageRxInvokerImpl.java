@@ -29,7 +29,6 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 
 //Liberty code change start
-import org.eclipse.microprofile.context.ManagedExecutor;
 import com.ibm.ws.jaxrs21.clientconfig.JAXRSClientCompletionStageFactoryConfig;
 
 import com.ibm.ws.concurrent.mp.spi.CompletionStageFactory;
@@ -39,14 +38,10 @@ public class CompletionStageRxInvokerImpl implements CompletionStageRxInvoker {
     private WebClient wc;
     private ExecutorService ex;    
   //Liberty code change start
-    private boolean isManagedExecutor = false;
     private CompletionStageFactory completionStageFactory = JAXRSClientCompletionStageFactoryConfig.getCompletionStageFactory();
         
     CompletionStageRxInvokerImpl(WebClient wc, ExecutorService ex) {
         this.ex = ex;        
-        if (this.ex instanceof ManagedExecutor) {            
-            isManagedExecutor = true;
-        }
         this.wc = wc;
     }   
   //Liberty code change end
@@ -187,9 +182,6 @@ public class CompletionStageRxInvokerImpl implements CompletionStageRxInvoker {
 
   //Liberty code change start
     private <T> CompletionStage<T> supplyAsync(Supplier<T> supplier) {      
-         if (isManagedExecutor) {
-             return ((ManagedExecutor) ex).supplyAsync(supplier);
-         }        
         return completionStageFactory.supplyAsync(supplier, ex); 
     }
   //Liberty code change end
