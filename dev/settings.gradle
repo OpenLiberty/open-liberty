@@ -15,6 +15,11 @@ pluginManagement {
    */
   File usrHomeProps = (System.properties['build.properties.path'] != null) ? file(System.properties['build.properties.path']) : file(System.properties['user.home'] + '/gradle.startup.properties')
 
+  Properties props = new Properties()	
+  if (usrHomeProps.exists()) {	
+    usrHomeProps.withInputStream { props.load(it) }	
+  }
+  
   // Artifactory connections fail if a user accidentally adds whitespace to tokens.
   def stripTrailingWhitespace = [
           'artifactory.download.user',
