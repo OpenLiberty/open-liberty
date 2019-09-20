@@ -170,7 +170,6 @@ Include-Resource.zh: ${if;${include.zh};com/ibm/ws/security/oauth20/resources/Pr
 	com.ibm.ws.security.wim.core;version=latest,\
 	com.ibm.ws.security;version=latest,\
 	com.ibm.ws.ssl;version=latest,\
-	com.ibm.ws.webcontainer.security.provider;version=latest,\
 	com.ibm.ws.webcontainer.security;version=latest,\
 	com.ibm.ws.webcontainer;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\

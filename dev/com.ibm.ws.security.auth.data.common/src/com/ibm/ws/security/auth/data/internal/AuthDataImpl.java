@@ -24,10 +24,7 @@ import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
 /**
  * The auth data from server.xml.
  */
-@Component(service = com.ibm.websphere.security.auth.data.AuthData.class,
-                configurationPid = "com.ibm.ws.security.jca.internal.authdata.config",
-                configurationPolicy = ConfigurationPolicy.REQUIRE,
-                property = { "service.vendor=IBM" })
+@Component(service = com.ibm.websphere.security.auth.data.AuthData.class, configurationPid = "com.ibm.ws.security.jca.internal.authdata.config", configurationPolicy = ConfigurationPolicy.REQUIRE, immediate = true, property = { "service.vendor=IBM" })
 public class AuthDataImpl implements AuthData {
 
     protected static final String CFG_KEY_ID = "id";
@@ -48,7 +45,7 @@ public class AuthDataImpl implements AuthData {
 
     /**
      * Gets the user name as defined in the configuration.
-     * 
+     *
      * @return the user name.
      */
     @Override
@@ -58,7 +55,7 @@ public class AuthDataImpl implements AuthData {
 
     /**
      * Gets the password as a char[] as defined in the configuration.
-     * 
+     *
      * @return the char[] representation of the password.
      */
     @Override

@@ -57,7 +57,6 @@ import com.ibm.ws.webcontainer.security.WebAuthenticator;
 import com.ibm.ws.webcontainer.security.WebAuthenticatorFactory;
 import com.ibm.ws.webcontainer.security.WebAuthenticatorProxy;
 import com.ibm.ws.webcontainer.security.WebProviderAuthenticatorProxy;
-import com.ibm.ws.webcontainer.security.extended.WebAuthenticatorFactoryExtended;
 import com.ibm.ws.webcontainer.security.internal.CertificateLoginAuthenticator;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
@@ -271,9 +270,9 @@ public class UserAuthentication {
         java.util.HashMap<String, Object> props = new java.util.HashMap<String, Object>();
         props.put("authType", "com.ibm.ws.security.spnego");
         WebAuthenticatorFactory webAuthenticatorFactory = WebAppSecurityCollaboratorImpl.getWebAuthenticatorFactory();
-        if (webAuthenticatorFactory != null && webAuthenticatorFactory instanceof WebAuthenticatorFactoryExtended) {
+        if (webAuthenticatorFactory != null) {
             try {
-                WebProviderAuthenticatorProxy webProviderAuthenticatorProxy = ((WebAuthenticatorFactoryExtended) webAuthenticatorFactory).getWebProviderAuthenticatorProxy();
+                WebProviderAuthenticatorProxy webProviderAuthenticatorProxy = webAuthenticatorFactory.getWebProviderAuthenticatorProxy();
                 if (webProviderAuthenticatorProxy != null) {
                     authResult = webProviderAuthenticatorProxy.authenticate(request, response, props);
                 }
@@ -547,7 +546,7 @@ public class UserAuthentication {
         response.addCookie(c);
 
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "_SSO OP redirecting to login page [" + loginURL +"]");
+            Tr.debug(tc, "_SSO OP redirecting to login page [" + loginURL + "]");
         }
         request.getSession(true).setAttribute(Constants.ATTR_AFTERLOGIN, Boolean.TRUE);
         response.sendRedirect(loginURL);

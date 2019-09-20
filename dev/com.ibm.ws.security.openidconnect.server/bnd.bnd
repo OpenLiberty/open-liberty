@@ -153,7 +153,6 @@ Include-Resource: \
 	com.ibm.ws.ssl;version=latest,\
 	com.ibm.websphere.security;version=latest,\
 	com.ibm.ws.webcontainer;version=latest,\
-	com.ibm.ws.webcontainer.security.provider;version=latest,\
 	com.ibm.ws.org.jose4j;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
 	

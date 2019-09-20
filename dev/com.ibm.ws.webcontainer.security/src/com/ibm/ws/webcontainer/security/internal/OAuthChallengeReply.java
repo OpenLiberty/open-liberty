@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.webcontainer.security.internal.extended;
+package com.ibm.ws.webcontainer.security.internal;
 
 import java.io.IOException;
 
@@ -16,8 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.webcontainer.security.internal.ChallengeReply;
-import com.ibm.ws.webcontainer.security.internal.WebReply;
 
 public class OAuthChallengeReply extends WebReply {
     private static final TraceComponent tc = Tr.register(OAuthChallengeReply.class);
