@@ -37,8 +37,8 @@ public class MavenDirectoryInstall {
 	private Logger logger;
 
 	private final String OPEN_LIBERTY_PRODUCT_ID = "io.openliberty";
-	private final String OPEN_LIBERTY_MAVEN_COORDINATES = "io.openliberty.features";
-	private final String CLOSED_LIBERTY_MAVEN_COORDINATES = "com.ibm.websphere.appserver.features";
+	private final String OPEN_LIBERTY_GROUP_ID = "io.openliberty.features";
+	private final String CLOSED_LIBERTY_GROUP_ID = "com.ibm.websphere.appserver.features";
 
 
 	/**
@@ -159,18 +159,18 @@ public class MavenDirectoryInstall {
 			}
 		}
 
-		HashMap<String, List<String>> resolvedFeaturesMap = parseResolvedFeatures(resolvedFeatures);
-
 		Collection<File> artifacts = new ArrayList<File>();
-		artifacts.addAll(retrieveEsas(resolvedFeaturesMap.get("openLiberty")));
-		artifacts.addAll(retrieveEsas(resolvedFeaturesMap.get("closedLiberty")));
+		artifacts.addAll(findEsas(resolvedFeatures, fromDir));
+
 
 		Collection<String> actionReturnResult = new ArrayList<String>();
+		Collection<String> currentReturnResult;
 
 		logger.log(Level.INFO, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_STARTING_INSTALL"));
 		for (File esaFile : artifacts) {
+
 			logger.log(Level.FINE, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_INSTALLING",
-					extractFeatureName(esaFile.getName())));
+					extractFeature(esaFile.getName())));
 			map.put("license.accept", true);
 			map.put("action.install", esaFile);
 			if (toExtension != null) {
@@ -182,86 +182,65 @@ public class MavenDirectoryInstall {
 			logger.log(Level.FINE, "action.result:" + ac);
 			logger.log(Level.FINE, "action.error.message:" + map.get("action.error.message"));
 
+
 			if (map.get("action.error.message") != null) {
 				// error with installation
 				logger.log(Level.FINE, "action.exception.stacktrace: " + map.get("action.error.stacktrace"));
 				String exceptionMessage = (String) map.get("action.error.message");
 				throw new InstallException(exceptionMessage);
-			} else if (map.get("action.install.result") != null) {
+			} else if ((currentReturnResult = (Collection<String>) map.get("action.install.result")) != null) {
 				// installation was successful
-				actionReturnResult.addAll((Collection<String>) map.get("action.install.result"));
-				Collection<String> returnResult;
-				if (!(returnResult = (Collection<String>) map.get("action.install.result")).isEmpty()) {
+				if (!currentReturnResult.isEmpty()) {
+					actionReturnResult.addAll((Collection<String>) map.get("action.install.result"));
 					logger.log(Level.INFO,
-							(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("LOG_INSTALLED_FEATURE", String.join(", ", returnResult))
+							(Messages.INSTALL_KERNEL_MESSAGES
+									.getLogMessage("LOG_INSTALLED_FEATURE", String.join(", ", currentReturnResult))
 									.replace("CWWKF1304I: ", ""))); // TODO: come up with new message for successfully
 																	// installed feature
+
 				}
 			}
 		}
-
 		logger.log(Level.INFO, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("TOOL_INSTALLATION_COMPLETED"));
 	}
 
-	/**
-	 * Return a HashMap separating the maven coordinates from feature names given a
-	 * list of resolved features. The open liberty features will be stored under key
-	 * "openLiberty" and the closed liberty features will be under the
-	 * "closedLiberty" key.
-	 * 
-	 * @param resolvedFeatures the master list of features to be resolved
-	 * @return
-	 */
-	private HashMap<String, List<String>> parseResolvedFeatures(Collection<String> resolvedFeatures) {
-		List<String> openLibertyFeatures = new ArrayList<String>();
-		List<String> closedLibertyFeatures = new ArrayList<String>();
 
-		HashMap<String, List<String>> featureMap = new HashMap<>();
-
-		for (String feature : resolvedFeatures) {
-			String mavenCoordinate = feature.split(":")[0];
-			String featureEsa = feature.split(":")[1];
-
-			if (mavenCoordinate.equals(OPEN_LIBERTY_MAVEN_COORDINATES)) {
-				openLibertyFeatures.add(featureEsa);
-			} else if (mavenCoordinate.equals(CLOSED_LIBERTY_MAVEN_COORDINATES)) {
-				closedLibertyFeatures.add(featureEsa);
-			}
-		}
-
-		featureMap.put("openLiberty", openLibertyFeatures);
-		featureMap.put("closedLiberty", closedLibertyFeatures);
-		return featureMap;
-	}
-
-	/**
-	 * Retrieves the esa files from a local maven repo given the list of features of
-	 * to resolve
-	 *
-	 * @param resolvedFeatures
-	 * @return
-	 * @throws IOException
-	 * @throws InstallException
-	 */
-	private Collection<File> retrieveEsas(Collection<String> resolvedFeatures) throws IOException, InstallException {
+	private Collection<File> findEsas(Collection<String> resolvedFeatures, File rootDir) throws InstallException {
 		Collection<File> foundEsas = new HashSet<>();
-		try (Stream<Path> files = Files.walk(Paths.get(fromDir.toURI()))) {
-			foundEsas.addAll(files.filter(f -> f.getFileName().toString().endsWith("esa"))
-					.filter(f -> f.getFileName().toString().contains(openLibertyVersion) && resolvedFeatures.removeIf(
-							featureName -> featureName.equals(extractFeatureName(f.getFileName().toString()))))
-					.map(f -> f.toFile()).collect(Collectors.toList()));
+		Collection<String> featuresClone = new ArrayList<>(resolvedFeatures);
+		
+		for (String feature : resolvedFeatures) {
+			logger.log(Level.FINE, "Processing feature: " + feature);
+			File groupDir;
+			String mavenCoordinate = feature.split(":")[0];
+			String featureName = feature.split(":")[1];
+
+			if (mavenCoordinate.equals(OPEN_LIBERTY_GROUP_ID)) {
+				groupDir = new File(rootDir, "io/openliberty/features/");
+			} else if (mavenCoordinate.equals(CLOSED_LIBERTY_GROUP_ID)) {
+				groupDir = new File(rootDir, "com/ibm/websphere/appserver/features/");
+			} else {
+				throw new InstallException("Invalid maven coordinate");
+			}
+
+			Path featurePath = Paths.get(groupDir.getAbsolutePath().toString(), featureName, openLibertyVersion,
+					featureName + "-" + openLibertyVersion + ".esa");
+			logger.log(Level.FINE, featurePath.toString());
+			if (Files.isRegularFile(featurePath)) {
+				foundEsas.add(featurePath.toFile());
+				featuresClone.remove(feature);
+			}
+			
+		}
+		logger.log(Level.FINE, "ESAs not found:" + featuresClone);
+		if (!featuresClone.isEmpty()) {
+			throw new InstallException("Could not find ESA files for: " + featuresClone);
 
 		}
-		// the remaining features in resolvedFeatures were not found in the local maven
-		// repository. if there were any features not found, then use the maven artifact
-		// downloader to download those ESAs
-		logger.log(Level.FINE, "ESAs not found:" + resolvedFeatures);
-		if (!resolvedFeatures.isEmpty()) {
-			throw new InstallException("Could not find ESA files for: " + resolvedFeatures);
-		}
+		
 		return foundEsas;
-	}
 
+	}
 
 	/**
 	 * Extracts the feature name and version from an ESA filepath, such as
@@ -272,7 +251,7 @@ public class MavenDirectoryInstall {
 	 * @param filename
 	 * @return
 	 */
-	private String extractFeatureName(String filename) {
+	private String extractFeature(String filename) {
 		String[] split = filename.split("-");
 
 		return split[0] + "-" + split[1];
