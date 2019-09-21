@@ -125,6 +125,7 @@ public class UserAuthenticationTest {
 
     @Before
     public void setUp() throws Exception {
+
         InputStream inStream = new FileInputStream("test" + File.separator + "resources" + File.separator + "gooduser.cer");
         CertificateFactory cf = CertificateFactory.getInstance("X.509");
         cert = (X509Certificate) cf.generateCertificate(inStream);
@@ -194,6 +195,8 @@ public class UserAuthenticationTest {
                     will(returnValue(new SSOCookieHelperImpl(config)));
                     allowing(authenticationService).authenticate(with(equal(thisAuthMech)), with(matchingAuthenticationData(authenticationData)), with(equal((Subject) null)));
                     will(returnValue(subject));
+                    allowing(request).getAttribute(SSOCookieHelperImpl.SSO_COOKIE_ADDED);
+                    will(returnValue(null));
                 }
             });
 
@@ -254,6 +257,8 @@ public class UserAuthenticationTest {
                     will(returnValue(true));
                     one(request).isUserInRole(userRole);
                     will(returnValue(true));
+                    allowing(request).getAttribute(SSOCookieHelperImpl.SSO_COOKIE_ADDED);
+                    will(returnValue(null));
                 }
             });
 
@@ -365,6 +370,8 @@ public class UserAuthenticationTest {
                     will(returnValue(true));
                     allowing(provider).isAllowCertAuthentication();
                     will(returnValue(true));
+                    allowing(request).getAttribute(SSOCookieHelperImpl.SSO_COOKIE_ADDED);
+                    will(returnValue(null));
                 }
             });
 
@@ -542,6 +549,9 @@ public class UserAuthenticationTest {
                     one(response).sendError(HttpServletResponse.SC_FORBIDDEN);
                     never(response).addCookie(with(any(Cookie.class)));
                     never(response).sendRedirect(with(any(String.class)));
+                    allowing(request).getAttribute(SSOCookieHelperImpl.SSO_COOKIE_ADDED);
+                    will(returnValue(null));
+
                 }
             });
 
@@ -676,6 +686,9 @@ public class UserAuthenticationTest {
                     will(returnValue(new SSOCookieHelperImpl(config)));
                     allowing(authenticationService).authenticate(with(equal(thisAuthMech)), with(matchingAuthenticationData(authenticationData)), with(equal((Subject) null)));
                     will(returnValue(subject));
+                    allowing(request).getAttribute(SSOCookieHelperImpl.SSO_COOKIE_ADDED);
+                    will(returnValue(null));
+
                 }
             });
 
@@ -748,6 +761,8 @@ public class UserAuthenticationTest {
                     will(returnValue(new ReferrerURLCookieHandler(config)));
                     allowing(authenticationService).authenticate(with(equal(thisAuthMech)), with(matchingAuthenticationData(authenticationData)), with(equal((Subject) null)));
                     will(returnValue(subject));
+                    allowing(request).getAttribute(SSOCookieHelperImpl.SSO_COOKIE_ADDED);
+                    will(returnValue(null));
                 }
             });
 
@@ -818,6 +833,8 @@ public class UserAuthenticationTest {
                     will(returnValue(new SSOCookieHelperImpl(config)));
                     allowing(authenticationService).authenticate(with(equal(thisAuthMech)), with(matchingAuthenticationData(authenticationData)), with(equal((Subject) null)));
                     will(returnValue(subject));
+                    allowing(request).getAttribute(SSOCookieHelperImpl.SSO_COOKIE_ADDED);
+                    will(returnValue(null));
                 }
             });
 
@@ -898,6 +915,8 @@ public class UserAuthenticationTest {
                     one(response).sendError(HttpServletResponse.SC_FORBIDDEN);
                     never(response).addCookie(with(any(Cookie.class)));
                     never(response).sendRedirect(with(any(String.class)));
+                    allowing(request).getAttribute(SSOCookieHelperImpl.SSO_COOKIE_ADDED);
+                    will(returnValue(null));
                 }
             });
 
@@ -974,6 +993,8 @@ public class UserAuthenticationTest {
                     one(response).sendError(HttpServletResponse.SC_FORBIDDEN);
                     never(response).addCookie(with(any(Cookie.class)));
                     never(response).sendRedirect(with(any(String.class)));
+                    allowing(request).getAttribute(SSOCookieHelperImpl.SSO_COOKIE_ADDED);
+                    will(returnValue(null));
                 }
             });
 
@@ -1181,6 +1202,8 @@ public class UserAuthenticationTest {
                     allowing(authenticationService).authenticate(with(equal(JaasLoginConfigConstants.SYSTEM_WEB_INBOUND)), with(matchingAuthenticationData(authenticationData)),
                             with(equal((Subject) null)));
                     will(returnValue(subject));
+                    allowing(request).getAttribute(SSOCookieHelperImpl.SSO_COOKIE_ADDED);
+                    will(returnValue(null));
                 }
             });
 
@@ -1311,6 +1334,8 @@ public class UserAuthenticationTest {
                     allowing(authenticationService).authenticate(with(equal(JaasLoginConfigConstants.SYSTEM_WEB_INBOUND)), with(matchingAuthenticationData(authenticationData)),
                             with(equal((Subject) null)));
                     will(returnValue(subject));
+                    allowing(request).getAttribute(SSOCookieHelperImpl.SSO_COOKIE_ADDED);
+                    will(returnValue(null));
                 }
             });
 

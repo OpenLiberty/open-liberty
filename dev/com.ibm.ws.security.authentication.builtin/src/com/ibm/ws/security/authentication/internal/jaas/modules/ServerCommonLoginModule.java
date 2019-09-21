@@ -25,6 +25,8 @@ import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.UnsupportedCallbackException;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -45,7 +47,13 @@ import com.ibm.ws.security.registry.EntryNotFoundException;
 import com.ibm.ws.security.registry.RegistryException;
 import com.ibm.ws.security.registry.UserRegistry;
 import com.ibm.ws.security.token.TokenManager;
+import com.ibm.ws.webcontainer.security.SSOCookieHelper;
+import com.ibm.ws.webcontainer.security.SSOCookieHelperImpl;
+import com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl;
+import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 import com.ibm.wsspi.security.auth.callback.Constants;
+import com.ibm.wsspi.security.auth.callback.WSServletRequestCallback;
+import com.ibm.wsspi.security.auth.callback.WSServletResponseCallback;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
 import com.ibm.wsspi.security.token.SingleSignonToken;
 
@@ -391,6 +399,47 @@ public abstract class ServerCommonLoginModule extends CommonLoginModule implemen
         }
 
         return false;
+    }
+
+    protected void addSSOCookiesToResponseForProgrammaticJaasLogin() {
+        WebAppSecurityConfig webAppSecurityConfig = WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig();
+        if (webAppSecurityConfig != null && webAppSecurityConfig.isAddSsoCookieToResponseForProgrammaticJaasLogin()) {
+            Callback[] callbacks = getOptionalCallbacks();
+            WSServletRequestCallback wsServletRequestCallback = (WSServletRequestCallback) callbacks[0];
+            WSServletResponseCallback wsServletResponseCallback = (WSServletResponseCallback) callbacks[1];
+            HttpServletRequest req = null;
+            HttpServletResponse resp = null;
+            if (wsServletRequestCallback != null) {
+                req = wsServletRequestCallback.getHttpServletRequest();
+            }
+
+            if (req != null && wsServletResponseCallback != null) {
+                resp = wsServletResponseCallback.getHttpServletResponse();
+            }
+            if (req != null && resp != null) {
+                SSOCookieHelper ssoCookieHelper = new SSOCookieHelperImpl(webAppSecurityConfig);
+                ssoCookieHelper.addSSOCookiesToResponse(subject, req, resp);
+                req.setAttribute(SSOCookieHelperImpl.SSO_COOKIE_ADDED, "true");
+            }
+        }
+    }
+
+    /**
+     * Gets the optional Callback objects that may needed by login module.
+     *
+     * @param callbackHandler
+     * @return
+     */
+    protected Callback[] getOptionalCallbacks() {
+        Callback[] callbacks = new Callback[2];
+        callbacks[0] = new WSServletRequestCallback("HttpServletRequest: ");
+        callbacks[1] = new WSServletResponseCallback("HttpServletResponse: ");
+        try {
+            callbackHandler.handle(callbacks);
+        } catch (IOException | UnsupportedCallbackException e) {
+            // ignore it?
+        }
+        return callbacks;
     }
 
 }

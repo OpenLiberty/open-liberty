@@ -47,6 +47,7 @@ class FeatureWebSecurityConfigImpl implements WebAppSecurityConfig {
     private final Boolean includePathInWASReqURL = false;
     private final Boolean trackLoggedOutSSOCookies = false;
     private final Boolean useOnlyCustomCookieName = false;
+    private final Boolean addSsoCookieToResponseForProgrammaticJaasLogin   = false;
 
     FeatureWebSecurityConfigImpl(Map<String, Object> newProperties) {
         //nothing to do, values are hard-coded
@@ -398,5 +399,11 @@ class FeatureWebSecurityConfigImpl implements WebAppSecurityConfig {
             return WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig().getBasicAuthRealmName();
         else
             return null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isAddSsoCookieToResponseForProgrammaticJaasLogin () {
+        return addSsoCookieToResponseForProgrammaticJaasLogin  ;
     }
 }

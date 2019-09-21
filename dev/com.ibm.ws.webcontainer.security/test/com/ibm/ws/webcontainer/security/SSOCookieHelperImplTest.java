@@ -121,6 +121,8 @@ public class SSOCookieHelperImplTest {
                 will(returnValue(true));
                 one(config).getSSORequiresSSL();
                 will(returnValue(false));
+                allowing(req).getAttribute(SSOCookieHelperImpl.SSO_COOKIE_ADDED);
+                will(returnValue(null));
             }
         });
         ssoCookieHelper.addSSOCookiesToResponse(null, req, resp);
@@ -140,6 +142,8 @@ public class SSOCookieHelperImplTest {
                 will(returnValue(true));
                 one(config).getSSORequiresSSL();
                 will(returnValue(false));
+                one(req).getAttribute(SSOCookieHelperImpl.SSO_COOKIE_ADDED);
+                will(returnValue(null));
             }
         });
         ssoCookieHelper.addSSOCookiesToResponse(new Subject(), req, resp);
@@ -173,6 +177,8 @@ public class SSOCookieHelperImplTest {
                 allowing(config).getSSOUseDomainFromURL();
                 allowing(req).getRequestURL();
                 will(returnValue(new StringBuffer(TEST_URL_STRING)));
+                one(req).getAttribute(SSOCookieHelperImpl.SSO_COOKIE_ADDED);
+                will(returnValue(null));
             }
         });
         Subject subject = new Subject();
@@ -220,6 +226,8 @@ public class SSOCookieHelperImplTest {
                 one(config).getSSOUseDomainFromURL();
                 one(req).getRequestURL();
                 will(returnValue(new StringBuffer(TEST_URL_STRING)));
+                allowing(req).getAttribute(SSOCookieHelperImpl.SSO_COOKIE_ADDED);
+                will(returnValue(null));
             }
         });
         Cookie ssoCookie = ssoCookieHelper.createCookie(req, cookieValue);
@@ -278,6 +286,8 @@ public class SSOCookieHelperImplTest {
                 will(returnValue(true));
                 one(config).getSSORequiresSSL();
                 will(returnValue(false));
+                one(req).getAttribute(SSOCookieHelperImpl.SSO_COOKIE_ADDED);
+                will(returnValue(null));
             }
         });
         assertTrue(ssoCookieHelper.allowToAddCookieToResponse(req));
@@ -299,6 +309,8 @@ public class SSOCookieHelperImplTest {
                 will(returnValue(true));
                 one(config).getSSORequiresSSL();
                 will(returnValue(true));
+                one(req).getAttribute(SSOCookieHelperImpl.SSO_COOKIE_ADDED);
+                will(returnValue(null));
             }
         });
         assertTrue(ssoCookieHelper.allowToAddCookieToResponse(req));

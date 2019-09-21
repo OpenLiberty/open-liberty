@@ -150,4 +150,10 @@ public interface WebAppSecurityConfig {
      * Returns the value of basicAuthRealmName
      */
     String getBasicAuthRealmName();
+
+    /**
+     * Is add coolie to the response for LoginContext.login() method call.
+     */
+    boolean isAddSsoCookieToResponseForProgrammaticJaasLogin ();
+
 }
