@@ -221,15 +221,17 @@ public class BatchStatusValidator {
                     logger.fine(msg);
                     throw new JobRestartException(msg);
                 } else {
-                    //for (WSPartitionStepAggregate partitionStepAggregate : stepExecutionAggregate.getPartitionAggregate()) {
-                    //    WSPartitionStepThreadExecution partitionExec = partitionStepAggregate.getPartitionStepThread();
+                    /*
+                     * 222050 - Backout 205106
+                     * for(WSPartitionStepAggregate partitionStepAggregate : stepExecutionAggregate.getPartitionAggregate()){
+                     * WSPartitionStepThreadExecution partitionExec = partitionStepAggregate.getPartitionStepThread();
+                     */
                     for (WSPartitionStepThreadExecution partitionExec : stepExecutionAggregate.getPartitionLevelStepExecutions()) {
                         if (!checkIfStatusMatchesFromList(partitionExec.getBatchStatus(), RESTARTABLE_STEP_STATES)) {
                             String msg = "The job instance " + jobInstance.getInstanceId() + " cannot be restarted because step " +
                                          partitionExec.getStepName() + " partition " + partitionExec.getPartitionNumber() + " is still in a non-final state.";
                             logger.fine(msg);
                             throw new JobRestartException(msg);
-
                         }
                     }
                 }

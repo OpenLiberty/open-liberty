@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.Properties;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -39,7 +40,7 @@ import com.ibm.jbatch.container.ws.WSStepThreadExecutionAggregate;
  */
 public class MemoryPersistenceManagerImplTest {
 
-    @Before
+    //222050 @Before
     public void mockitoSetup() {
         MockitoAnnotations.initMocks(this);
 
@@ -80,32 +81,36 @@ public class MemoryPersistenceManagerImplTest {
     private BatchLocationService mockBatchLocationService;
 
     @Test
+    @Ignore //222050
     public void testGetStepExecutionAggregate() {
 
         WSStepThreadExecutionAggregate steps = service.getStepExecutionAggregate(topLevelStepExecution.getStepExecutionId());
 
-        validateStepAggregate(steps);
+        //222050 validateStepAggregate(steps);
 
     }
 
     @Test
+    @Ignore //222050
     public void testGetStepExecutionAggregateFromJobExecutionNumberAndStepName() {
 
         WSStepThreadExecutionAggregate steps = service.getStepExecutionAggregateFromJobExecutionNumberAndStepName(jobInstanceEntity.getInstanceId(), 0, "mockStep");
 
-        validateStepAggregate(steps);
+        //222050 validateStepAggregate(steps);
 
     }
 
     @Test
+    @Ignore //222050
     public void testGetStepExecutionAggregateFromJobExecutionId() {
 
         WSStepThreadExecutionAggregate steps = service.getStepExecutionAggregateFromJobExecutionId(jobExecutionEntity.getExecutionId(), "mockStep");
 
-        validateStepAggregate(steps);
+        //222050 validateStepAggregate(steps);
 
     }
 
+    /* 222050 - Backout 205106
     private void validateStepAggregate(WSStepThreadExecutionAggregate steps) {
         assertTrue(steps.getTopLevelStepExecution() == topLevelStepExecution);
         assertEquals(topLevelStepExecution.getStepExecutionId(), steps.getTopLevelStepExecution().getStepExecutionId());
@@ -123,5 +128,5 @@ public class MemoryPersistenceManagerImplTest {
             assertEquals("mockRestUrl", partition.getRemotablePartition().getRestUrl());
             assertEquals("mockServerId", partition.getRemotablePartition().getServerId());
         }
-    }
+    }*/
 }
