@@ -14,6 +14,7 @@
    }
 
 task copyBundles {
+  mustRunAfter assemble
   enabled project.file('test-bundles').exists()
   doFirst {
     new File(project.buildDir, 'buildfiles').eachLine { String line ->

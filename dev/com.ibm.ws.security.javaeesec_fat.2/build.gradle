@@ -24,6 +24,7 @@ dependencies {
 }
 
 task copyCommonFiles {
+  mustRunAfter assemble
   doLast {
     /*
      * Copy test application resources.

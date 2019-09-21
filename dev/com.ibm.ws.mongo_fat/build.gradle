@@ -24,6 +24,7 @@ dependencies {
 }
 
 task addMongoDriver {
+  mustRunAfter assemble
   doLast {
     // Put the version of Mongo we want on the classpath into autoFVT/build/lib/
     copy {

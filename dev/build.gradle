@@ -34,6 +34,7 @@ ext {
   }
 }
 
+
 /**
  * Apply Java plugin to all subprojects.
  * See: https://docs.gradle.org/current/userguide/java_plugin.html

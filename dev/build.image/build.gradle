@@ -167,6 +167,7 @@ task packageOpenLiberty(type: PackageLibertyWithFeatures) {
     enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
     dependsOn parent.subprojects.assemble
     dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
+    dependsOn ':wlp.lib.extract:publishExtract'
     withFeatures this.&gaPublicFeatures
     outputTo packageDir
 }
@@ -175,6 +176,7 @@ task packageOpenLibertyKernel(type: PackageLibertyWithFeatures) {
     enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
     dependsOn parent.subprojects.assemble
     dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
+    dependsOn ':wlp.lib.extract:publishExtract'
     withFeatures { '' }
     outputTo packageDir
 }
@@ -206,6 +208,7 @@ task packageOpenLibertyWebProfile8(type: PackageLibertyWithFeatures) {
     enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
     dependsOn parent.subprojects.assemble
     dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
+    dependsOn ':wlp.lib.extract:publishExtract'
     withFeatures this.&webProfile8Features
     outputTo packageDir
     doLast {
@@ -233,6 +236,7 @@ task packageOpenLibertyJavaee8(type: PackageLibertyWithFeatures) {
     enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
     dependsOn parent.subprojects.assemble
     dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
+    dependsOn ':wlp.lib.extract:publishExtract'
     withFeatures this.&javaee8Features
     outputTo packageDir
     doLast {
@@ -260,6 +264,7 @@ task packageOpenLibertyMicroProfile3(type: PackageLibertyWithFeatures) {
     enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
     dependsOn parent.subprojects.assemble
     dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
+    dependsOn ':wlp.lib.extract:publishExtract'
     withFeatures this.&microProfile3Features
     outputTo packageDir
     doLast {
@@ -277,6 +282,7 @@ task packageOpenLibertyMicroProfile3(type: PackageLibertyWithFeatures) {
 task zipOpenLibertyAll(type: Zip) {
     dependsOn parent.subprojects.assemble
     dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
+    dependsOn ':wlp.lib.extract:publishExtract'
     baseName 'openliberty-all'
     from projectDir
     include 'wlp/**'
@@ -395,8 +401,16 @@ publishing {
             version project.version
             artifact zipOpenLibertyJavaee8
         }
+        openLibertyMicroProfile3(MavenPublication) {
+            groupId 'io.openliberty'
+            artifactId 'openliberty-microProfile3'
+            version project.version
+            artifact zipOpenLibertyMicroProfile3
+        }
     }
 }
+
+//tasks.getByName("publishOpenLibertyJavaee8PublicationToMavenRepository") { it.dependsOn zipOpenLibertyJavaee8 }
 
 task createOLRuntimePoms {
     dependsOn packageOpenLiberty
@@ -539,6 +553,7 @@ task zipOpenLibertyMaven(type: Zip) {
 }
 if (isRelease) {
     publish.dependsOn zipOpenLibertyMaven
+
 }
 
 task zipTestReport(type: Zip) {

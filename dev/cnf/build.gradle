@@ -80,6 +80,8 @@ task initialize {
     doLast {
         println "Gradle Initialized"
     }
+    copyMavenLibs.mustRunAfter cleanRepos
+    updatePluginClasses.mustRunAfter cleanRepos
 }
 
 clean {
@@ -120,11 +122,17 @@ String getVersionFromReleaseRepo(String org, String name) {
 }
 
 task everythingElseHasBeenReleased {
-    dependsOn parent.subprojects.minus(project).release
+
+
+    parent.subprojects.minus(project).each { pr -> dependsOn("${pr.path}:release")
+                                        project.logger.info("${pr.name} release dep applied") }
+    
 }
 
 task createGradleBootstrap {
     dependsOn everythingElseHasBeenReleased
+
+
     doLast {
         println 'Generating gradle bootstrap'
 
@@ -298,6 +306,7 @@ task zipGradleBootstrap(type: Zip) {
 }
 
 task libertyReleaseVersions {
+  dependsOn zipGradleBootstrap
   inputs.file('resources/bnd/liberty-release.props')
   outputs.file('build/liberty-versions.props')
   doLast {
@@ -313,10 +322,6 @@ task libertyReleaseVersions {
   }
 }
 
-publish {
-  dependsOn libertyReleaseVersions
-}
-
 publishing {
   publications {
     gradle(MavenPublication) {
@@ -330,6 +335,11 @@ publishing {
         artifact project.file('build/liberty-versions.props')
     }
   }
+}
+
+publish {
+  dependsOn libertyReleaseVersions
+  publishLibertyVersionsPublicationToMavenRepository.mustRunAfter libertyReleaseVersions
 }
 
 task printProjectDependencies() {

@@ -28,6 +28,7 @@ addRequiredLibraries.dependsOn addDerby
  * com.ibm.ws.security.javaeesec_fat not used for now, maybe requried once jsr375/jaspi coexisting test. 
  **/
 task copyFeatureBundle {
+  mustRunAfter assemble
   doLast {
     copy {
       from new File(buildDir, 'com.ibm.ws.security.jaspi.test.jar')
