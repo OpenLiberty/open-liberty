@@ -316,12 +316,12 @@ public class H2StreamResultManager {
             //this is to process all the frame in stream id 0. These don't set end of stream flag nor RST_STREAM
             else if (lookupStreamResult(streamId).getStreamId() == 0) {
                 if (!lookupStreamResult(streamId).receivedAtLeastExpectedNumberOfFrames()) {
-                    if (LOGGER.isLoggable(Level.INFO))
-                        LOGGER.logp(Level.INFO, CLASS_NAME, "receivedAllFrames", "StreamID: " + lookupStreamResult(streamId).getStreamId() + " has not finished.");
+                    if (LOGGER.isLoggable(Level.FINEST))
+                        LOGGER.logp(Level.FINEST, CLASS_NAME, "receivedAllFrames", "StreamID: " + lookupStreamResult(streamId).getStreamId() + " has not finished.");
                     return false;
                 } else if (lookupStreamResult(streamId).isgoawayExpected() && !lookupStreamResult(streamId).goawayReceived()) {
-                    if (LOGGER.isLoggable(Level.INFO))
-                        LOGGER.logp(Level.INFO, CLASS_NAME, "receivedAllFrames", "StreamID: " + lookupStreamResult(streamId).getStreamId() + " has not received goaway.");
+                    if (LOGGER.isLoggable(Level.FINEST))
+                        LOGGER.logp(Level.FINEST, CLASS_NAME, "receivedAllFrames", "StreamID: " + lookupStreamResult(streamId).getStreamId() + " has not received goaway.");
                     return false;
                 }
             }
