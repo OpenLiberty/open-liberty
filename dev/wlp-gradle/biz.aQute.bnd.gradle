@@ -18,7 +18,7 @@
 subprojects {
   def bndProject = bndWorkspace.getProject(name)
   if (bndProject != null) {
-    apply plugin: 'biz.aQute.bnd'
+    apply plugin: bndPlugin
 
     // Configure repositories.	
     apply from: rootProject.file('wlp-gradle/subprojects/repos.gradle')
