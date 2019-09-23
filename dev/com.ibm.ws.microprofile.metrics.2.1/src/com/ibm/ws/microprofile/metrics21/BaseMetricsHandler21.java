@@ -19,7 +19,6 @@ import com.ibm.ws.microprofile.metrics.Constants;
 import com.ibm.ws.microprofile.metrics.exceptions.HTTPMethodNotAllowedException;
 import com.ibm.ws.microprofile.metrics.exceptions.HTTPNotAcceptableException;
 import com.ibm.ws.microprofile.metrics.writer.JSONMetadataWriter;
-import com.ibm.ws.microprofile.metrics.writer.JSONMetricWriter;
 import com.ibm.ws.microprofile.metrics.writer.OutputWriter;
 import com.ibm.ws.microprofile.metrics21.writer.JSONMetricWriter21;
 import com.ibm.ws.microprofile.metrics21.writer.PrometheusMetricWriter21;

@@ -10,12 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.metrics21;
 
-import java.lang.management.ManagementFactory;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.management.MBeanServer;
-import javax.management.ObjectInstance;
 import javax.management.ObjectName;
 import javax.management.openmbean.CompositeData;
 
@@ -26,15 +20,12 @@ import org.eclipse.microprofile.metrics.MetricType;
 import org.eclipse.microprofile.metrics.MetricUnits;
 import org.eclipse.microprofile.metrics.Tag;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.microprofile.metrics.BaseMetricConstants;
 import com.ibm.ws.microprofile.metrics.BaseMetrics;
 import com.ibm.ws.microprofile.metrics.impl.CounterImpl;
 import com.ibm.ws.microprofile.metrics.impl.SharedMetricRegistries;
 
 public class BaseMetrics21 extends BaseMetrics {
-    private static final TraceComponent tc = Tr.register(BaseMetrics21.class);
     protected static BaseMetrics21 baseMetrics21 = null;
 
     public static synchronized BaseMetrics21 getInstance21(SharedMetricRegistries sharedMetricRegistry) {

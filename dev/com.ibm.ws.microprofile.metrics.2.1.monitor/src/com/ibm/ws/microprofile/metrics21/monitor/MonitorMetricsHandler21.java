@@ -10,24 +10,12 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.metrics21.monitor;
 
-import java.lang.management.ManagementFactory;
-
-
-import javax.management.MBeanServer;
-import javax.management.MBeanServerDelegate;
-
-import org.eclipse.microprofile.metrics.MetricRegistry;
-import org.osgi.service.component.ComponentContext;
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.microprofile.metrics.impl.SharedMetricRegistries;
-import com.ibm.ws.microprofile.metrics.monitor.MappingTable;
 import com.ibm.ws.microprofile.metrics.monitor.MonitorMetrics;
 import com.ibm.ws.microprofile.metrics.monitor.MonitorMetricsHandler;
 

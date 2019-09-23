@@ -10,21 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.metrics21.helper;
 
-import org.eclipse.microprofile.metrics.ConcurrentGauge;
-import org.eclipse.microprofile.metrics.Counter;
-import org.eclipse.microprofile.metrics.Counting;
 import org.eclipse.microprofile.metrics.Gauge;
-import org.eclipse.microprofile.metrics.Histogram;
-import org.eclipse.microprofile.metrics.Meter;
-import org.eclipse.microprofile.metrics.Metered;
-import org.eclipse.microprofile.metrics.MetricUnits;
-import org.eclipse.microprofile.metrics.Sampling;
-import org.eclipse.microprofile.metrics.Timer;
-
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.microprofile.metrics.Constants;
 import com.ibm.ws.microprofile.metrics.helper.PrometheusBuilder;
 
 /**

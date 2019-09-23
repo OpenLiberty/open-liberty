@@ -41,8 +41,6 @@ import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.osgi.service.component.annotations.Component;
 
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
-import com.ibm.ws.microprofile.metrics.cdi.producer.MetricRegistryFactory;
-import com.ibm.ws.microprofile.metrics.impl.SharedMetricRegistries;
 
 import io.astefanutti.metrics.cdi.AnnotatedTypeDecorator;
 import io.astefanutti.metrics.cdi.MetricProducer;
@@ -54,11 +52,6 @@ import io.astefanutti.metrics.cdi.MetricsExtension;
 public class MetricsExtension21 extends MetricsExtension implements Extension, WebSphereCDIExtension {
     protected static final AnnotationLiteral<MetricsBinding21> METRICS_BINDING21 = new AnnotationLiteral<MetricsBinding21>() {
     };
-
-    @Override
-    public void getSharedMetricRegistries(SharedMetricRegistries sharedMetricRegistry) {
-        MetricRegistryFactory.SHARED_METRIC_REGISTRIES = sharedMetricRegistry;
-    }
 
     @Override
     protected <X> void metricsAnnotations(@Observes @WithAnnotations({ Counted.class, Gauge.class, Metered.class, Timed.class,

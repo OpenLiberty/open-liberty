@@ -55,7 +55,6 @@ import com.ibm.ws.microprofile.metrics.cdi.producer.MetricRegistryFactory;
 
 import io.astefanutti.metrics.cdi.MetricResolver;
 import io.astefanutti.metrics.cdi.MetricsExtension;
-import io.astefanutti.metrics.cdi.MetricsInterceptor;
 
 @Interceptor
 @MetricsBinding21
@@ -63,7 +62,7 @@ import io.astefanutti.metrics.cdi.MetricsInterceptor;
 // See http://docs.oracle.com/javaee/7/tutorial/doc/interceptors.htm
 /* package-private */ public class MetricsInterceptor21 {
 
-    private static final TraceComponent tc = Tr.register(MetricsInterceptor.class);
+    private static final TraceComponent tc = Tr.register(MetricsInterceptor21.class);
 
     protected final MetricRegistry registry;
 
@@ -152,7 +151,7 @@ import io.astefanutti.metrics.cdi.MetricsInterceptor;
         }
     }
 
-    protected static final class ForwardingGauge<T extends Number> implements org.eclipse.microprofile.metrics.Gauge<T> {
+    private static final class ForwardingGauge<T extends Number> implements org.eclipse.microprofile.metrics.Gauge<T> {
 
         private final Method method;
 
