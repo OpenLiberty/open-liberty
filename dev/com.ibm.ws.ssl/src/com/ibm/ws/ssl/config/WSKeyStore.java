@@ -237,43 +237,41 @@ public class WSKeyStore extends Properties {
 
         this.isDefault = LibertyConstants.DEFAULT_KEYSTORE_REF_ID.equals(name);
 
-        if (this.isDefault) {
+        boolean storeFileExists = defaultFileExists(this.location);
+
+        if (this.isDefault && !storeFileExists) {
+
+            // if a type is specified in server.xml, and it's JKS, use the default location for the key.jks keystore; else we'll use PKCS12
+
+            // check if we have an existing key.jks.  If so, use that instead of creating a PKCS12 keystore
+            File f = new File(res);
 
             //location from metatype sometimes has a extra slashes, need to normalize it
             this.location = this.location.replaceAll("/+", "/");
 
-            boolean checkForFallback = checkForFallback(this.location, default_location);
-
-            if (checkForFallback) {
-                // if a type is specified in server.xml, and it's JKS, use the default location for the key.jks keystore; else we'll use PKCS12
-
-                // check if we have an existing key.jks.  If so, use that instead of creating a PKCS12 keystore
-                File f = new File(res);
-
-                if (f.exists() && this.location.toLowerCase().equals(default_location.toLowerCase())) {
-                    // use the JKS file instead, as it exists
-                    this.location = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_FALLBACK_KEY_STORE_FILE;
-                    specifiedType = Constants.KEYSTORE_TYPE_JKS;
-                    this.type = Constants.KEYSTORE_TYPE_JKS;
-                }
-
-                // check if they've specified a type, and create the corresponding key.jks or key.p12
-                if (type.equals(Constants.KEYSTORE_TYPE_JKS) && this.location.toLowerCase().endsWith("/key.p12")) {
-                    this.location = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_FALLBACK_KEY_STORE_FILE;
-                    specifiedType = Constants.KEYSTORE_TYPE_JKS;
-                    this.type = Constants.KEYSTORE_TYPE_JKS;
-
-                } else if (type.equals(Constants.KEYSTORE_TYPE_PKCS12) && this.location.toLowerCase().endsWith("/key.p12")) {
-                    specifiedType = Constants.KEYSTORE_TYPE_PKCS12;
-                    this.type = Constants.KEYSTORE_TYPE_PKCS12;
-                } else if (!type.equals(Constants.KEYSTORE_TYPE_JKS)) {
-                    if (this.location.toLowerCase().endsWith(".jks")) {
-                        this.type = LibertyConstants.DEFAULT_FALLBACK_TYPE;
-                        specifiedType = type;
-                    }
-                }
-
+            if (f.exists() && this.location.toLowerCase().equals(default_location.toLowerCase())) {
+                // use the JKS file instead, as it exists
+                this.location = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_FALLBACK_KEY_STORE_FILE;
+                specifiedType = Constants.KEYSTORE_TYPE_JKS;
+                this.type = Constants.KEYSTORE_TYPE_JKS;
             }
+
+            // check if they've specified a type, and create the corresponding key.jks or key.p12
+            if (type.equals(Constants.KEYSTORE_TYPE_JKS) && this.location.toLowerCase().endsWith("/key.p12")) {
+                this.location = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_FALLBACK_KEY_STORE_FILE;
+                specifiedType = Constants.KEYSTORE_TYPE_JKS;
+                this.type = Constants.KEYSTORE_TYPE_JKS;
+
+            } else if (type.equals(Constants.KEYSTORE_TYPE_PKCS12) && this.location.toLowerCase().endsWith("/key.p12")) {
+                specifiedType = Constants.KEYSTORE_TYPE_PKCS12;
+                this.type = Constants.KEYSTORE_TYPE_PKCS12;
+            } else if (!type.equals(Constants.KEYSTORE_TYPE_JKS)) {
+                if (this.location.toLowerCase().endsWith(".jks")) {
+                    this.type = LibertyConstants.DEFAULT_FALLBACK_TYPE;
+                    specifiedType = type;
+                }
+            }
+
         } else {
             // this is not the default keystore, but a location has been specified.  If the keystore is JKS type, set the type to JKS
             if (this.location.toUpperCase().endsWith(Constants.KEYSTORE_TYPE_JKS)) {
@@ -306,32 +304,18 @@ public class WSKeyStore extends Properties {
      * @param location2
      * @return
      */
-    private boolean checkForFallback(String ksFile, String def_loc) {
+    private boolean defaultFileExists(String ksFile) {
 
-        boolean locIsDefault = false;
         boolean exists = false;
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Looking at keystores: ", new Object[] { ksFile, def_loc });
-        }
-
-        //If the keystore is not in the default location an it exists then use it
-        if (ksFile.toLowerCase().equals(def_loc.toLowerCase())) {
-            locIsDefault = true;
-        }
-
         // check if the file from the configuration exists.
-        File f = new File(ksFile);
+        if (ksFile != null) {
+            File f = new File(ksFile);
 
-        if (f.exists()) {
-            exists = true;
+            if (f.exists()) {
+                exists = true;
+            }
         }
-
-        if (!locIsDefault && exists)
-            return false;
-
-        return true;
-
+        return exists;
     }
 
     /**
