@@ -484,6 +484,8 @@ org.testcontainers:database-commons:1.12.0
 org.testcontainers:db2:1.12.0
 org.testcontainers:jdbc:1.12.0
 org.testcontainers:kafka:1.12.0
+org.testcontainers:mssqlserver:1.12.0
+org.testcontainers:oracle-xe:1.12.0
 org.testcontainers:postgresql:1.12.0
 org.testcontainers:mssqlserver:1.12.0
 org.testcontainers:oracle-xe:1.12.0
