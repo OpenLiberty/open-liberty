@@ -728,8 +728,16 @@ public class AuditPE implements ProbeExtension {
         String applid = (String) varargs[8];
         String accessLevel = (String) varargs[9];
         String errorMessage = (String) varargs[10];
-		String methodName = (String) varargs[11];
-		System.out.println("MethodName: " + methodName);
+
+		// Case where WS-CD may have this field but OL may not. This check will make
+		// sure there is no IndexOutOfBoundsException. Since methodName the last
+		// argument, the size of varargs should be at least 12 for us to get the value
+		// of the methodName
+        String methodName = null;
+		if (varargs.length >= 12) {
+        	methodName = (String) varargs[11];
+		}
+
         if (auditServiceRef.getService() != null && auditServiceRef.getService().isAuditRequired(AuditConstants.SECURITY_SAF_AUTHZ, AuditConstants.SUCCESS)) {
 			SAFAuthorizationEvent safAuth = new SAFAuthorizationEvent(safReturnCode, racfReturnCode, racfReasonCode,
 					userSecurityName, applid, safProfile, safClass, authDecision, principleName, accessLevel,
