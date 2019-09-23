@@ -62,8 +62,8 @@ import com.ibm.ws.security.audit.event.JMXMBeanEvent;
 import com.ibm.ws.security.audit.event.JMXMBeanRegisterEvent;
 import com.ibm.ws.security.audit.event.JMXNotificationEvent;
 import com.ibm.ws.security.audit.event.MemberManagementEvent;
-import com.ibm.ws.security.audit.event.SAFAuthorizationEvent;
 import com.ibm.ws.security.audit.event.SAFAuthorizationDetailsEvent;
+import com.ibm.ws.security.audit.event.SAFAuthorizationEvent;
 //import com.ibm.ws.security.audit.utils.AuditConstants;
 import com.ibm.ws.webcontainer.security.AuthenticationResult;
 import com.ibm.ws.webcontainer.security.WebRequest;
@@ -728,8 +728,12 @@ public class AuditPE implements ProbeExtension {
         String applid = (String) varargs[8];
         String accessLevel = (String) varargs[9];
         String errorMessage = (String) varargs[10];
+		String methodName = (String) varargs[11];
+		System.out.println("MethodName: " + methodName);
         if (auditServiceRef.getService() != null && auditServiceRef.getService().isAuditRequired(AuditConstants.SECURITY_SAF_AUTHZ, AuditConstants.SUCCESS)) {
-            SAFAuthorizationEvent safAuth = new SAFAuthorizationEvent(safReturnCode, racfReturnCode, racfReasonCode, userSecurityName, applid, safProfile, safClass, authDecision, principleName, accessLevel, errorMessage);
+			SAFAuthorizationEvent safAuth = new SAFAuthorizationEvent(safReturnCode, racfReturnCode, racfReasonCode,
+					userSecurityName, applid, safProfile, safClass, authDecision, principleName, accessLevel,
+					errorMessage, methodName);
             auditServiceRef.getService().sendEvent(safAuth);
         }
     }
