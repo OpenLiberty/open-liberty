@@ -83,6 +83,9 @@ public class DiscoveryTest {
     private final static String REVOCATION_URI = ISSUER_URI + "/revoke";
     private final static String APP_PASSWORDS_URI = ISSUER_URI + "/app_passwords";
     private final static String APP_TOKENS_URI = ISSUER_URI + "/app_tokens";
+    private final static String CLIENT_MGMT_URI = ISSUER_URI + "/clientManagement";
+    private final static String PERSONAL_TOKEN_MGMT_URI = ISSUER_URI + "/personalTokenManagement";
+    private final static String USERS_TOKEN_MGMT_URI = ISSUER_URI + "/usersTokenManagement";
     private static String expectedDiscoveryModelJsonString;
     private static HttpServletRequest request;
     private static OidcServerConfig provider;
@@ -184,6 +187,9 @@ public class DiscoveryTest {
             assertEquals("Discovery model property should have matched.", expectedDiscoveryModel.getRevocationEndpoint(), REVOCATION_URI);
             assertEquals("Discovery model property should have matched.", expectedDiscoveryModel.getAppPasswordsEndpoint(), APP_PASSWORDS_URI);
             assertEquals("Discovery model property should have matched.", expectedDiscoveryModel.getAppTokensEndpoint(), APP_TOKENS_URI);
+            assertEquals("Discovery model property should have matched.", expectedDiscoveryModel.getClientMgmtEndpoint(), CLIENT_MGMT_URI);
+            assertEquals("Discovery model property should have matched.", expectedDiscoveryModel.getPersonalTokenMgmtEndpoint(), PERSONAL_TOKEN_MGMT_URI);
+            assertEquals("Discovery model property should have matched.", expectedDiscoveryModel.getUsersTokenMgmtEndpoint(), USERS_TOKEN_MGMT_URI);
 
         } catch (Throwable t) {
             outputMgr.failWithThrowable(methodName, t);
@@ -301,6 +307,9 @@ public class DiscoveryTest {
         model.setRevocationEndpoint(REVOCATION_URI);
         model.setAppPasswordsEndpoint(APP_PASSWORDS_URI);
         model.setAppTokensEndpoint(APP_TOKENS_URI);
+        model.setClientMgmtEndpoint(CLIENT_MGMT_URI);
+        model.setPersonalTokenMgmtEndpoint(PERSONAL_TOKEN_MGMT_URI);
+        model.setUsersTokenMgmtEndpoint(USERS_TOKEN_MGMT_URI);
 
         return model;
     }

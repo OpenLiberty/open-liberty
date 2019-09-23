@@ -14,6 +14,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -42,6 +45,8 @@ public class DefaultJKSExistsSSLTest extends CommonSSLTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
+        if (!isIBMJVM() && isVersion6())
+            isOracle6 = true;
     }
 
     @Override
@@ -62,6 +67,7 @@ public class DefaultJKSExistsSSLTest extends CommonSSLTest {
     public void testSSLFeatureNoSSLConfigExistingJKSUsesJKSKeyStore() throws Exception {
 
         Log.info(c, name.getMethodName(), "Entering " + name.getMethodName());
+        String protocol = isOracle6 ? TLS_PROTOCOL : TLSV11_PROTOCOL;
 
         server.setServerConfigurationFile(NO_SSL_CONFIG_BUT_DOES_INCLUDE_SSL_FEATURE);
         server.startServer(name.getMethodName() + ".log");
@@ -86,7 +92,7 @@ public class DefaultJKSExistsSSLTest extends CommonSSLTest {
         SSLBasicAuthClient sslClient = null;
         String response = null;
         try {
-            sslClient = createSSLClientWithTrust("resources/security/key.jks", DEFAULT_GENERATED_KEY_PASSWORD);
+            sslClient = createSSLClientWithTrust("resources/security/key.jks", DEFAULT_GENERATED_KEY_PASSWORD, protocol);
             response = sslClient.accessUnprotectedServlet(SSLBasicAuthClient.UNPROTECTED_NO_SECURITY_CONSTRAINT);
         } catch (Exception e) {
         }
@@ -121,6 +127,7 @@ public class DefaultJKSExistsSSLTest extends CommonSSLTest {
     public void testDefaultMinimalSSLCertificateFileKeyJKSFileDoesExist() throws Exception {
 
         Log.info(c, name.getMethodName(), "Entering " + name.getMethodName());
+        String protocol = isOracle6 ? TLS_PROTOCOL : TLSV11_PROTOCOL;
 
         server.setServerConfigurationFile(DEFAULT_MINIMAL_SSL_CONFIG);
         server.startServer(name.getMethodName() + ".log");
@@ -144,7 +151,7 @@ public class DefaultJKSExistsSSLTest extends CommonSSLTest {
         SSLBasicAuthClient sslClient = null;
         String response = null;
         try {
-            sslClient = createSSLClientWithTrust("resources/security/key.jks", DEFAULT_GENERATED_KEY_PASSWORD);
+            sslClient = createSSLClientWithTrust("resources/security/key.jks", DEFAULT_GENERATED_KEY_PASSWORD, protocol);
             response = sslClient.accessUnprotectedServlet(SSLBasicAuthClient.UNPROTECTED_NO_SECURITY_CONSTRAINT);
         } catch (Exception e) {
         }
@@ -163,57 +170,24 @@ public class DefaultJKSExistsSSLTest extends CommonSSLTest {
 
     }
 
-    /**
-     * Using a minimal SSL default configuration, if both a key.p12 and key.jks file both exist
-     * then the key.jks should be used.
-     */
-    @Test
-    @AllowedFFDC("java.lang.NoClassDefFoundError")
-    public void testDefaultMinimalSSLCertificateFileKeyJKSAndP12Exists() throws Exception {
-
-        Log.info(c, name.getMethodName(), "Entering " + name.getMethodName());
-
-        server.setServerConfigurationFile(DEFAULT_MINIMAL_SSL_CONFIG);
-
-        //Create a key.p12 file in the and make sure it exists
-        createTestCert(server, "CN=bothkstest", null);
-
-        // Check to see if the file has been generated; it should already exist and not be generated
-        assertTrue("The expected key file " + "resources/security/key.p12" + " was not generated",
-                   fileExists(server, "resources/security/key.p12"));
-
-        server.startServer(name.getMethodName() + ".log");
-
-        // Requires info trace
-        server.addInstalledAppForValidation("basicauth");
-        assertNotNull("SSL TCP Channel did not start in time.",
-                      server.waitForStringInLog("CWWKO0219I.*ssl"));
-        assertNotNull("Need to wait for 'smarter planet' message (server is ready).",
-                      server.waitForStringInLog("CWWKF0011I"));
-
-        // Check to see if the file has been generated; it should already exist and not be generated
-        assertTrue("The expected key file " + "resources/security/key.jks" + " was not generated",
-                   fileExists(server, "resources/security/key.jks"));
-
-        // Need to verify the certificate
-        assertTrue("Default certificate not created correctly",
-                   verifyDefaultCert(server, "resources/security/key.jks"));
-
-        // Hit the servlet on the SSL port and validate it requires SSL
-        SSLBasicAuthClient sslClient = null;
-        String response = null;
-        try {
-            sslClient = createSSLClientWithTrust("resources/security/key.jks", DEFAULT_GENERATED_KEY_PASSWORD);
-            response = sslClient.accessUnprotectedServlet(SSLBasicAuthClient.UNPROTECTED_NO_SECURITY_CONSTRAINT);
-        } catch (Exception e) {
-        }
-        if (response != null)
-            assertTrue("Did not get the expected response",
-                       sslClient.verifyUnauthenticatedResponse(response));
-        else
-            assertTrue("Did not get the expected response", false);
-
-        Log.info(c, name.getMethodName(), "Exiting " + name.getMethodName());
-
+    private static boolean isIBMJVM() {
+        String vendorName = AccessController.doPrivileged(new PrivilegedAction<String>() {
+            @Override
+            public String run() {
+                return System.getProperty("java.vendor");
+            }
+        });
+        return (vendorName != null && vendorName.toLowerCase().contains("ibm"));
     }
+
+    private static boolean isVersion6() {
+        String version = AccessController.doPrivileged(new PrivilegedAction<String>() {
+            @Override
+            public String run() {
+                return System.getProperty("java.version");
+            }
+        });
+        return (version != null && version.startsWith("1.6"));
+    }
+
 }

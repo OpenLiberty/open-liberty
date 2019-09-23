@@ -139,6 +139,12 @@ public class H2InboundLink extends HttpInboundLink {
     private final Object oneTimeEntrySync = new Object() {};
     private boolean oneTimeEntry = false;
 
+    private final H2RateState rateState = new H2RateState();
+
+    public H2RateState getH2RateState() {
+        return this.rateState;
+    }
+
     public boolean isContinuationExpected() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "isContinuationExpected: " + continuationFrameExpected);
