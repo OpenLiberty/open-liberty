@@ -23,7 +23,7 @@ Import-Package: \
 	*
 
 Export-Package: \
-	io.astefanutti.metrics21.cdi,\
+	com.ibm.ws.microprofile.metrics21.cdi,\
 	io.astefanutti.metrics.cdi,\
 	com.ibm.ws.microprofile.metrics.cdi.producer,\
 	com.ibm.ws.microprofile.metrics.cdi.helper
@@ -39,7 +39,7 @@ WS-TraceGroup: METRICS
 
 -dsannotations-inherit: true
 -dsannotations: \
-	io.astefanutti.metrics21.cdi.MetricsExtension21
+	com.ibm.ws.microprofile.metrics21.cdi.MetricsExtension21
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 

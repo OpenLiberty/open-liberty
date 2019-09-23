@@ -21,24 +21,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package io.astefanutti.metrics21.cdi;
+package com.ibm.ws.microprofile.metrics21.cdi;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.Specializes;
-import javax.enterprise.inject.spi.BeanManager;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import io.astefanutti.metrics.cdi.MetricName;
-import io.astefanutti.metrics.cdi.MetricNameFactory;
-import io.astefanutti.metrics.cdi.SeMetricName;
+import javax.interceptor.InterceptorBinding;
 
-@Dependent
-/* package-private */ public class MetricNameFactory21 extends MetricNameFactory {
-    @Override
-    @Produces
-    @Specializes
-    // TODO: should be declared @ApplicationScoped when WELD-2083 is fixed
-    protected MetricName metricName(BeanManager manager) {
-        return new SeMetricName(manager.getExtension(MetricsExtension21.class).getParameters());
-    }
+@InterceptorBinding
+@Target({ ElementType.TYPE })
+@Retention(RetentionPolicy.RUNTIME)
+/* package-private */ @interface MetricsBinding21 {
 }

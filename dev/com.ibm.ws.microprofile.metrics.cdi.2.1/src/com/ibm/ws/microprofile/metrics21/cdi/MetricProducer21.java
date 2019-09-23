@@ -21,7 +21,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package io.astefanutti.metrics21.cdi;
+package com.ibm.ws.microprofile.metrics21.cdi;
 
 import javax.annotation.Priority;
 import javax.enterprise.context.Dependent;

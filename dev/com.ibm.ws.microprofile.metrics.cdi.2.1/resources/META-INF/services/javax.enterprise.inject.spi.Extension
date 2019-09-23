@@ -1,1 +1,1 @@
-io.astefanutti.metrics21.cdi.MetricsExtension21
+com.ibm.ws.microprofile.metrics21.cdi.MetricsExtension21

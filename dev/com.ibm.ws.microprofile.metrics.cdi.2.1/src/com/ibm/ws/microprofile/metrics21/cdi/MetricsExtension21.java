@@ -1,4 +1,4 @@
-package io.astefanutti.metrics21.cdi;
+package com.ibm.ws.microprofile.metrics21.cdi;
 /*******************************************************************************
  * Copyright (c) 2017, 2019 IBM Corporation and others.
  *
