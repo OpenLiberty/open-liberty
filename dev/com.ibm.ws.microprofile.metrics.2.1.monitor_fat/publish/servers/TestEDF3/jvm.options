@@ -1,0 +1,2 @@
+-Djdk.tls.allowUnsafeServerCertChange=true
+-Dsun.security.ssl.allowUnsafeRenegotiation=true

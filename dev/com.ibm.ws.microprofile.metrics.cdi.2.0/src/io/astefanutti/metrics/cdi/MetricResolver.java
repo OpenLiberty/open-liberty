@@ -59,23 +59,23 @@ public class MetricResolver {
     @Inject
     protected MetricName metricName;
 
-    <E extends Member & AnnotatedElement> Of<Counted> counted(Class<?> topClass, E element) {
+    public <E extends Member & AnnotatedElement> Of<Counted> counted(Class<?> topClass, E element) {
         return resolverOf(topClass, element, Counted.class);
     }
 
-    <E extends Member & AnnotatedElement> Of<ConcurrentGauge> concurentGauged(Class<?> topClass, E element) {
+    public <E extends Member & AnnotatedElement> Of<ConcurrentGauge> concurentGauged(Class<?> topClass, E element) {
         return resolverOf(topClass, element, ConcurrentGauge.class);
     }
 
-    Of<Gauge> gauge(Class<?> topClass, Method method) {
+    public Of<Gauge> gauge(Class<?> topClass, Method method) {
         return resolverOf(topClass, method, Gauge.class);
     }
 
-    <E extends Member & AnnotatedElement> Of<Metered> metered(Class<?> topClass, E element) {
+    public <E extends Member & AnnotatedElement> Of<Metered> metered(Class<?> topClass, E element) {
         return resolverOf(topClass, element, Metered.class);
     }
 
-    <E extends Member & AnnotatedElement> Of<Timed> timed(Class<?> bean, E element) {
+    public <E extends Member & AnnotatedElement> Of<Timed> timed(Class<?> bean, E element) {
         return resolverOf(bean, element, Timed.class);
     }
 
@@ -400,7 +400,8 @@ public class MetricResolver {
     @Vetoed
     protected static final class DoesNotHaveMetric<T extends Annotation> implements Of<T> {
 
-        private DoesNotHaveMetric() {}
+        private DoesNotHaveMetric() {
+        }
 
         @Override
         public boolean isPresent() {

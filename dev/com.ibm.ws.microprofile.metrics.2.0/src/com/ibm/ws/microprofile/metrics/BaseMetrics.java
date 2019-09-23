@@ -30,6 +30,7 @@ import com.ibm.ws.microprofile.metrics.impl.CounterImpl;
 import com.ibm.ws.microprofile.metrics.impl.SharedMetricRegistries;
 
 public class BaseMetrics {
+
     protected static BaseMetrics baseMetrics = null;
     protected static String BASE = MetricRegistry.Type.BASE.getName();
     public MBeanServer mbs;

@@ -45,7 +45,7 @@ import com.ibm.ws.microprofile.metrics.cdi.helper.Utils;
 @Alternative
 @Dependent
 @Priority(Interceptor.Priority.LIBRARY_BEFORE)
-/* package-private */ final class MetricProducer {
+/* package-private */ public class MetricProducer {
 
     @Produces
     private static Counter counter(InjectionPoint ip, MetricRegistry registry, MetricName metricName, MetricsExtension extension) {

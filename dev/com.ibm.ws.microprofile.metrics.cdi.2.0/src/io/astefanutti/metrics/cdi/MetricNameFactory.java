@@ -28,11 +28,11 @@ import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.BeanManager;
 
 @Dependent
-/* package-private */ class MetricNameFactory {
+/* package-private */ public class MetricNameFactory {
 
     @Produces
     // TODO: should be declared @ApplicationScoped when WELD-2083 is fixed
-    private MetricName metricName(BeanManager manager) {
+    protected MetricName metricName(BeanManager manager) {
         return new SeMetricName(manager.getExtension(MetricsExtension.class).getParameters());
     }
 }
