@@ -143,7 +143,7 @@ public class MavenDirectoryInstall {
         Collection<String> resolvedFeatures = (Collection<String>) map.get("action.result");
         logger.log(Level.FINE, "Resolved features: " + resolvedFeatures);
         if (resolvedFeatures == null) {
-            throw new InstallException((String) map.get("action.error.message")); // TODO: appropriate message
+            throw new InstallException((String) map.get("action.error.message"));
         } else if (resolvedFeatures.isEmpty()) {
             logger.log(Level.FINE, "The list of resolved features is empty.");
             String exceptionMessage = (String) map.get("action.error.message");
@@ -220,12 +220,25 @@ public class MavenDirectoryInstall {
 
         if (!resolvedFeatures.isEmpty()) {
             logger.log(Level.FINE, "Could not find ESA's for " + resolvedFeatures);
-            // use artifact downloader to find the missing ESA now
+            List<File> downloadedEsas = downloadMissingFeatureEsas((List<String>) resolvedFeatures);
+
+            logger.log(Level.FINE, "Downloaded the following features from maven central:" + downloadedEsas);
+            foundEsas.addAll(downloadedEsas);
         }
 
-
-
         return foundEsas;
+    }
+
+    /**
+     * 
+     */
+    private List<File> downloadMissingFeatureEsas(List<String> features) {
+        ArtifactDownloader artifactDownloader = new ArtifactDownloader();
+        artifactDownloader.synthesizeAndDownloadFeatures(features, Utils.getInstallDir() + "/tmp/maven-repository/",
+                "http://repo.maven.apache.org/maven2/");
+
+        return artifactDownloader.getDownloadedEsas();
+
     }
 
     /**
