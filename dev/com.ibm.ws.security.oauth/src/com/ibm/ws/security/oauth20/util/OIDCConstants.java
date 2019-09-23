@@ -128,6 +128,9 @@ public interface OIDCConstants extends OAuth20Constants {
     public static final String OIDC_DISC_REVOKE_EP = "revocation_endpoint";
     public static final String OIDC_DISC_APP_PASSWORDS_EP = "app_passwords_endpoint";
     public static final String OIDC_DISC_APP_TOKENS_EP = "app_tokens_endpoint";
+    public static final String OIDC_DISC_PERSONAL_TOKEN_MGMT_EP = "personal_token_mgmt_endpoint";
+    public static final String OIDC_DISC_USERS_TOKEN_MGMT_EP = "users_token_mgmt_endpoint";
+    public static final String OIDC_DISC_CLIENT_MGMT_EP = "client_mgmt_endpoint";
 
     /* parameters for oidc discovery response with origins from session management */
     public static final String OIDC_SESS_CHECK_SESSION_IFRAME = "check_session_iframe";
@@ -233,6 +236,9 @@ public interface OIDCConstants extends OAuth20Constants {
     public static final String KEY_OIDC_REVOKE_EP = "revocationEndpoint";
     public static final String KEY_OIDC_APP_PASSWORDS_EP = "appPasswordsEndpoint";
     public static final String KEY_OIDC_APP_TOKENS_EP = "appTokensEndpoint";
+    public static final String KEY_OIDC_PERSONAL_TOKEN_MGMT_EP = "personalTokenMgmtEndpoint";
+    public static final String KEY_OIDC_USERS_TOKEN_MGMT_EP = "usersTokenMgmtEndpoint";
+    public static final String KEY_OIDC_CLIENT_MGMT_EP = "clientMgmtEndpoint";
 
     // Server config property for coverageMap
     static final String JSA_QUAL = "jsa.provider.";
@@ -270,6 +276,9 @@ public interface OIDCConstants extends OAuth20Constants {
     public static final String KEY_OIDC_REVOKE_EP_QUAL = OIDC_QUAL + KEY_OIDC_REVOKE_EP;
     public static final String KEY_OIDC_APP_PASSWORDS_EP_QUAL = OIDC_QUAL + KEY_OIDC_APP_PASSWORDS_EP;
     public static final String KEY_OIDC_APP_TOKENS_EP_QUAL = OIDC_QUAL + KEY_OIDC_APP_TOKENS_EP;
+    public static final String KEY_OIDC_PERSONAL_TOKEN_MGMT_EP_QUAL = OIDC_QUAL + KEY_OIDC_PERSONAL_TOKEN_MGMT_EP;
+    public static final String KEY_OIDC_USERS_TOKEN_MGMT_EP_QUAL = OIDC_QUAL + KEY_OIDC_USERS_TOKEN_MGMT_EP;
+    public static final String KEY_OIDC_CLIENT_MGMT_EP_QUAL = OIDC_QUAL + KEY_OIDC_CLIENT_MGMT_EP;
 
     /**
      * Supported OIDC client registration parameter names
