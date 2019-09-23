@@ -265,7 +265,6 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
      *              don't override this method and lose the common library classloader support.
      */
     @Override
-    @FFDCIgnore(ClassNotFoundException.class)
     protected final Class<?> findClass(String name) throws ClassNotFoundException {
         if (transformers.isEmpty()) {
             Class<?> clazz = null;
@@ -280,22 +279,22 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
                     clazz = findLoadedClass(name);
                     if (clazz == null) {
                         ByteResourceInformation byteResInfo = this.findClassBytes(name);
-                        clazz = definePackageAndClass(name, byteResInfo, byteResInfo.getBytes());
+                        if (byteResInfo != null) {
+                            clazz = definePackageAndClass(name, byteResInfo, byteResInfo.getBytes());
+                        } else {
+                            // Check the common libraries.
+                            clazz = findClassCommonLibraryClassLoaders(name);
+                        }
                     }
                 }
-            } catch (ClassNotFoundException cnfe) {
-                // Check the common libraries.
-                clazz = findClassCommonLibraryClassLoaders(name);
             } finally {
                 ThreadIdentityManager.reset(token);
             }
             return clazz;
         }
 
-        ByteResourceInformation byteResourceInformation;
-        try {
-            byteResourceInformation = findClassBytes(name);
-        } catch (ClassNotFoundException cnfe) {
+        ByteResourceInformation byteResourceInformation = findClassBytes(name);
+        if (byteResourceInformation == null) {
             // Check the common libraries.
             return findClassCommonLibraryClassLoaders(name);
         }
@@ -399,7 +398,7 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
 
     }
 
-    private ProtectionDomain getClassSpecificProtectionDomainPrivileged(String className, URL resourceUrl) {
+    ProtectionDomain getClassSpecificProtectionDomainPrivileged(String className, URL resourceUrl) {
         ProtectionDomain pdFromConfig = config.getProtectionDomain();
         ProtectionDomain pd;
 
@@ -456,15 +455,10 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
         }
     }
 
-    final ByteResourceInformation findClassBytes(String className) throws ClassNotFoundException {
+    final ByteResourceInformation findClassBytes(String className) {
         String resourceName = Util.convertClassNameToResourceName(className);
         try {
-            ByteResourceInformation result = findClassBytes(className, resourceName, hook);
-            if (result == null) {
-                String message = String.format("Could not find class '%s' as resource '%s'", className, resourceName);
-                throw new ClassNotFoundException(message);
-            }
-            return result;
+            return findClassBytes(className, resourceName, hook);
         } catch (IOException e) {
             Tr.error(tc, "cls.class.file.not.readable", className, resourceName);
             String message = String.format("Could not read class '%s' as resource '%s'", className, resourceName);

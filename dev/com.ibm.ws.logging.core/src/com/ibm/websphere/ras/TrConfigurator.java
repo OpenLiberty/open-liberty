@@ -236,8 +236,11 @@ public class TrConfigurator {
      *            the {@link TraceComponent} that was registered
      */
     static void traceComponentRegistered(TraceComponent tc) {
-        for (TraceComponentChangeListener listener : registeredListeners.get()) {
-            listener.traceComponentRegistered(tc);
+        Set<TraceComponentChangeListener> listeners = registeredListeners.get();
+        if (!listeners.isEmpty()) {
+            for (TraceComponentChangeListener listener : listeners) {
+                listener.traceComponentRegistered(tc);
+            }
         }
     }
 
@@ -249,8 +252,11 @@ public class TrConfigurator {
      *            the {@link TraceComponent} that was updated
      */
     static void traceComponentUpdated(TraceComponent tc) {
-        for (TraceComponentChangeListener listener : registeredListeners.get()) {
-            listener.traceComponentUpdated(tc);
+        Set<TraceComponentChangeListener> listeners = registeredListeners.get();
+        if (!listeners.isEmpty()) {
+            for (TraceComponentChangeListener listener : listeners) {
+                listener.traceComponentUpdated(tc);
+            }
         }
     }
 

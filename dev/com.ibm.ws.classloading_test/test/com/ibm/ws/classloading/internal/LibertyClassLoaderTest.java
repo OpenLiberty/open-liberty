@@ -15,6 +15,7 @@ import static com.ibm.ws.classloading.internal.TestUtil.createAppClassloader;
 import static com.ibm.ws.classloading.internal.TestUtil.getClassLoadingService;
 import static com.ibm.ws.classloading.internal.TestUtil.getOtherClassesURL;
 import static com.ibm.ws.classloading.internal.TestUtil.getServletJarURL;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -54,12 +55,7 @@ public class LibertyClassLoaderTest {
 
     @Test
     public void testClassNotFound() {
-        try {
-            loader.findClassBytes("non.existent.Class");
-            fail("call should have thrown an exception");
-        } catch (ClassNotFoundException e) {
-            assertTrue("Should have thrown exception for non.existent.Class, but exception was:" + e, e.getMessage().contains("non.existent.Class"));
-        }
+        assertNull(loader.findClassBytes("non.existent.Class"));
     }
 
     @Test

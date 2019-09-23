@@ -72,7 +72,7 @@ public class PermissionManagerTest {
     @SuppressWarnings("unchecked")
     private final ServiceReference<URLStreamHandlerService> urlStreamHandlerServiceRef = mock.mock(ServiceReference.class, "urlStreamHandlerServiceRef");
 
-    private PermissionManager permissionManager = new PermissionManager();
+    private PermissionManager permissionManager = new PermissionManager(true);
     private final ComponentContext componentContext = mock.mock(ComponentContext.class);
     private final BundleContext bundleContext = mock.mock(BundleContext.class);
     private final ClassLoadingService classLoadingService = mock.mock(ClassLoadingService.class, "classLoadingService");
@@ -90,10 +90,10 @@ public class PermissionManagerTest {
         withSystemBundleAndCapabilities();
 
         savedPolicy = Policy.getPolicy();
-        permissionManager = new PermissionManager();
+        permissionManager = new PermissionManager(true);
         permissionManager.setWsjarURLStreamHandler(urlStreamHandlerServiceRef);
         permissionManager.setClassLoadingService(classLoadingService);
-        permissionManager.activate(componentContext, null);
+        permissionManager.activate(componentContext);
     }
 
     private void inServerProcess() {
@@ -273,7 +273,7 @@ public class PermissionManagerTest {
 
     @Test
     public void activateDeactivateSetsAndRemovesSelfInWLPDynamicPolicy() throws Exception {
-        final PermissionManager anotherPermissionManager = new PermissionManager();
+        final PermissionManager anotherPermissionManager = new PermissionManager(true);
         Policy.setPolicy(wlpDynamicPolicy);
         mock.checking(new Expectations() {
             {
@@ -284,7 +284,7 @@ public class PermissionManagerTest {
 
         withSharedLibraryProtectionDomains();
         anotherPermissionManager.setClassLoadingService(classLoadingService);
-        anotherPermissionManager.activate(componentContext, null);
+        anotherPermissionManager.activate(componentContext);
         anotherPermissionManager.deactivate(componentContext);
     }
 
@@ -387,7 +387,7 @@ public class PermissionManagerTest {
         }
 
         permissionManager.deactivate(componentContext);
-        permissionManager.activate(componentContext, null);
+        permissionManager.activate(componentContext);
     }
 
     private void usesBundleClassLoaderToLoadPermissionClass(final String bundlePermissionClassName) throws ClassNotFoundException {
