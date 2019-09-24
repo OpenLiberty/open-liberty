@@ -12,12 +12,12 @@ public class TypedElement {
     private final AnnotatedType javaType;
     private final List<? extends AnnotatedElement> elements;
 
-    TypedElement(AnnotatedType javaType, AnnotatedElement element) {
+    public TypedElement(AnnotatedType javaType, AnnotatedElement element) {
         this.javaType = javaType;
         this.elements = Utils.singletonList(element);
     }
 
-    TypedElement(AnnotatedType javaType, List<? extends AnnotatedElement> elements) {
+    public TypedElement(AnnotatedType javaType, List<? extends AnnotatedElement> elements) {
         this.javaType = javaType;
         this.elements = elements;
     }

@@ -23,10 +23,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.AnnotatedType;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -40,10 +45,7 @@ public class NonNullMapper implements TypeMapper, Comparator<AnnotatedType>, Sch
     private static final Logger log = LoggerFactory.getLogger(NonNullMapper.class);
 
     private static final String[] COMMON_NON_NULL_ANNOTATIONS = {
-            "javax.annotation.Nonnull",
-            "javax.validation.constraints.NotNull",
-            "javax.validation.constraints.NotEmpty",
-            "javax.validation.constraints.NotBlank"
+            "org.eclipse.microprofile.graphql.NonNull"
     };
 
     @SuppressWarnings("unchecked")
@@ -135,10 +137,38 @@ public class NonNullMapper implements TypeMapper, Comparator<AnnotatedType>, Sch
     }
 
     private boolean shouldWrap(GraphQLType type, TypedElement typedElement) {
-        return !(type instanceof GraphQLNonNull) && nonNullAnnotations.stream().anyMatch(typedElement::isAnnotationPresent);
+        TypedElement typedElementIncludingField = addField(typedElement);
+        return !(type instanceof GraphQLNonNull) && nonNullAnnotations.stream().anyMatch(typedElementIncludingField::isAnnotationPresent);
     }
 
     private boolean shouldUnwrap(Object defaultValue, GraphQLType type) {
         return defaultValue != null && type instanceof GraphQLNonNull;
+    }
+    
+    private TypedElement addField(TypedElement typedElement) {
+        List<AnnotatedElement> annotatedElements = new ArrayList<>();
+
+        for (AnnotatedElement annoElement : typedElement.getElements()) {
+            annotatedElements.add(annoElement);
+            if (annoElement instanceof Method) {
+                Method m = (Method) annoElement;
+                Class<?> cls = (Class<?>) m.getDeclaringClass();
+                String methodName = m.getName();
+                if (methodName.length() > 3 && (methodName.startsWith("set") || methodName.startsWith("get"))) {
+                    String fieldName = methodName.substring(3,4).toLowerCase() + methodName.substring(4);
+                    try {
+                        Field field = cls.getDeclaredField(fieldName);
+                        annotatedElements.add(field);
+                    } catch (Exception ex) {
+                        //no-op, but it means we can't add the field
+                        if (log.isDebugEnabled()) {
+                            log.debug("Caught (expected?) exception looking for field " + fieldName + " on " + cls, ex);
+                        }
+                    }
+                }
+            }
+        }
+
+        return new TypedElement(typedElement.getJavaType(), annotatedElements);
     }
 }
