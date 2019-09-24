@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2018 IBM Corporation and others.
+ * Copyright (c) 2012, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1954,7 +1954,7 @@ public class LdapConfigManager {
      * Return the sub-list of properties, for the given entity, supported by this repository, from a given list of properties.
      *
      * @param inEntityTypes : List of entity types
-     * @param propNames     : List of property names read from data object
+     * @param propNames : List of property names read from data object
      * @return list of properties supported by repository for given entity type
      *         If the list propNames contain VALUE_ALL_PROPERTIES i.e '*', then return the list of properties without any modification
      *         Code will handle '*' later on
@@ -1996,7 +1996,7 @@ public class LdapConfigManager {
      * This is an overloaded method to support getSupportedProperties(String, List)
      *
      * @param ldapEntity : A given LDAP entity
-     * @param propNames  : List of property names read from data object
+     * @param propNames : List of property names read from data object
      * @return list of properties supported by repository for given LDAP entity
      *         If the list propNames contain VALUE_ALL_PROPERTIES i.e '*', then return the list of properties without any modification
      *         Code will handle '*' later on
@@ -2470,19 +2470,25 @@ public class LdapConfigManager {
 
     public String getEntityTypesFilter(Set<String> entityTypes) {
         StringBuffer filter = new StringBuffer();
-        if (entityTypes.size() > 1) {
-            filter.append("(|");
-        }
-        for (Iterator<String> iter = entityTypes.iterator(); iter.hasNext();) {
-            LdapEntity ldapEntity = getLdapEntity(iter.next());
-            if (ldapEntity != null) {
-                String str = ldapEntity.getSearchFilter();
-                if (filter.indexOf(str) == -1)
-                    filter.append(ldapEntity.getSearchFilter());
+
+        if (isRacf()) {
+            // RACF (SDBM) only supports wildcard objectclass filter.
+            filter.append("(objectclass=*)");
+        } else {
+            if (entityTypes.size() > 1) {
+                filter.append("(|");
             }
-        }
-        if (entityTypes.size() > 1) {
-            filter.append(")");
+            for (Iterator<String> iter = entityTypes.iterator(); iter.hasNext();) {
+                LdapEntity ldapEntity = getLdapEntity(iter.next());
+                if (ldapEntity != null) {
+                    String str = ldapEntity.getSearchFilter();
+                    if (filter.indexOf(str) == -1)
+                        filter.append(ldapEntity.getSearchFilter());
+                }
+            }
+            if (entityTypes.size() > 1) {
+                filter.append(")");
+            }
         }
         return filter.toString();
     }
@@ -2742,10 +2748,15 @@ public class LdapConfigManager {
 
         // Handle RACF(SDBM) types separately
         if (isRacf()) {
-            if (dn.toLowerCase().contains("profiletype=user"))
+            if (dn.toLowerCase().contains("profiletype=user")) {
                 return SchemaConstants.DO_PERSON_ACCOUNT;
-            else if (dn.toLowerCase().contains("profiletype=group"))
+            } else if (dn.toLowerCase().contains("profiletype=group")) {
                 return SchemaConstants.DO_GROUP;
+            } else {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "RACF entity " + dn + " is not recognized as either a PersonAccount or Group.");
+                }
+            }
         }
 
         Attribute objClsAttr = attrs.get(LdapConstants.LDAP_ATTR_OBJECTCLASS);
