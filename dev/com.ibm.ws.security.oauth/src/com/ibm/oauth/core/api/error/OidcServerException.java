@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.ibm.oauth.core.api.error;
 
+import java.util.Enumeration;
+import java.util.Locale;
+
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.ibm.oauth.core.api.error.oauth20.OAuth20Exception;
@@ -65,12 +68,6 @@ public class OidcServerException extends OAuth20Exception {
         // TODO
         super(code, null, null);
 
-        // super(code, description, null); //$NON-NLS-1$
-        /*
-         * BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, locales, "OAUTH_UNSUPPORTED_METHOD", new Object[] { request.getMethod(), "Registration Endpoint Service" });
-         * Tr.error(tc, errorMsg.getServerErrorMessage());
-         * throw new OidcServerException(errorMsg.getBrowserErrorMessage(), OIDCConstants.ERROR_SERVER_ERROR, HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-         */
         _errorDescription = null;
         _errorCode = code;
         _httpStatus = httpStatus;
@@ -78,14 +75,8 @@ public class OidcServerException extends OAuth20Exception {
     }
 
     public OidcServerException(BrowserAndServerLogMessage browserServerLogMsg, String code, int httpStatus, Throwable cause) {
-        super(code, null, null);
+        super(code, null, cause);
 
-        // super(code, description, null); //$NON-NLS-1$
-        /*
-         * BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, locales, "OAUTH_UNSUPPORTED_METHOD", new Object[] { request.getMethod(), "Registration Endpoint Service" });
-         * Tr.error(tc, errorMsg.getServerErrorMessage());
-         * throw new OidcServerException(errorMsg.getBrowserErrorMessage(), OIDCConstants.ERROR_SERVER_ERROR, HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-         */
         _errorDescription = null;
         _errorCode = code;
         _httpStatus = httpStatus;
@@ -99,6 +90,16 @@ public class OidcServerException extends OAuth20Exception {
      */
     public String getErrorDescription() {
         return _errorDescription;
+    }
+
+    public String getErrorDescription(Enumeration<Locale> locales) {
+        if (_browserServerLog == null) {
+            return getErrorDescription();
+        } else {
+            _browserServerLog.setLocales(locales);
+            return _browserServerLog.getBrowserErrorMessage();
+        }
+
     }
 
     /**

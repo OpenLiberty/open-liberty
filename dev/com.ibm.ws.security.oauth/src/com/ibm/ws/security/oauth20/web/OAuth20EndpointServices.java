@@ -349,8 +349,8 @@ public class OAuth20EndpointServices {
              */
 
             // BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(e.getBrowserServerLogMessage().getTraceComponent(), request.getLocales(), e.getBrowserServerLogMessage().getMessageKey());
-            e.getBrowserServerLogMessage().setTraceComponent(tc);
-            WebUtils.sendErrorJSON(response, e.getHttpStatus(), e.getErrorCode(), e.getBrowserServerLogMessage().getBrowserErrorMessage(), suppressBasicAuthChallenge);
+            // e.getBrowserServerLogMessage().setTraceComponent(tc);
+            WebUtils.sendErrorJSON(response, e.getHttpStatus(), e.getErrorCode(), e.getErrorDescription(request.getLocales()), suppressBasicAuthChallenge);
         }
 
     }

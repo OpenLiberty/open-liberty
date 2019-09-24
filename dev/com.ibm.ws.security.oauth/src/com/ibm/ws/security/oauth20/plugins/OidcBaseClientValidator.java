@@ -23,7 +23,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.oauth.core.api.error.OidcServerException;
 import com.ibm.oauth.core.internal.oauth20.OAuth20Constants;
 import com.ibm.websphere.ras.Tr;
@@ -141,17 +140,7 @@ public class OidcBaseClientValidator {
         }
         for (int i = 0; i < illegalChars.length; i++) {
             if (s.contains(illegalChars[i])) {
-                /*
-                 * BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, locales, "OAUTH_CLIENT_REGISTRATION_MISSING_CLIENTID", new Object[] { request.getMethod(), OAuth20Constants.CLIENT_ID });
-                 * Tr.error(tc, errorMsg.getServerErrorMessage());
-                 * throw new OidcServerException(errorMsg.getBrowserErrorMessage(), OIDCConstants.ERROR_INVALID_REQUEST, HttpServletResponse.SC_BAD_REQUEST);
-                 */
-                BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, locale, "OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR", new Object[] { illegalChars[i] });
-                // String description = TraceNLS.getFormattedMessage(OidcBaseClientValidator.class,
-                // MESSAGE_BUNDLE,
-                // "OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR", // CWWKS1423E
-                // new Object[] { illegalChars[i] }, "");
-                throw new OidcServerException(errorMsg, OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
+                throw new OidcServerException(new BrowserAndServerLogMessage(tc, "OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR", new Object[] { illegalChars[i] }), OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
             }
         }
     }
@@ -396,15 +385,7 @@ public class OidcBaseClientValidator {
         if (!OidcOAuth20Util.isNullEmpty(appType) &&
                 !appType.equals(OIDCConstants.OIDC_CLIENTREG_PARM_NATIVE) &&
                 !appType.equals(OIDCConstants.OIDC_CLIENTREG_PARM_WEB)) {
-
-            BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, locale, "OAUTH_CLIENT_REGISTRATION_VALUE_NOT_SUPPORTED", new Object[] { appType, OIDCConstants.OIDC_CLIENTREG_APP_TYPE });
-            throw new OidcServerException(errorMsg, OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
-
-            // String description = TraceNLS.getFormattedMessage(OidcBaseClientValidator.class,
-            // MESSAGE_BUNDLE,
-            // "OAUTH_CLIENT_REGISTRATION_VALUE_NOT_SUPPORTED",
-            // new Object[] { appType, OIDCConstants.OIDC_CLIENTREG_APP_TYPE },
-            // "CWWKS1442E: The value {0} is not a supported value for the {1} client registration metadata field.");
+            throw new OidcServerException(new BrowserAndServerLogMessage(tc, "OAUTH_CLIENT_REGISTRATION_VALUE_NOT_SUPPORTED", new Object[] { appType, OIDCConstants.OIDC_CLIENTREG_APP_TYPE }), OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
         }
     }
 
@@ -417,25 +398,13 @@ public class OidcBaseClientValidator {
 
             for (JsonElement response : responseTypes) {
                 if (!OIDCConstants.OIDC_SUPP_RESP_TYPES_SET.contains(response.getAsString())) {
-
-                    // String description = TraceNLS.getFormattedMessage(OidcBaseClientValidator.class,
-                    // MESSAGE_BUNDLE,
-                    // "OAUTH_CLIENT_REGISTRATION_VALUE_NOT_SUPPORTED",
-                    // new Object[] { response.getAsString(), OAuth20Constants.RESPONSE_TYPE },
-                    // "CWWKS1442E: The value {0} is not a supported value for the {1} client registration metadata field.");
-                    BrowserAndServerLogMessage browserServerMsg = new BrowserAndServerLogMessage(tc, locale, "OAUTH_CLIENT_REGISTRATION_VALUE_NOT_SUPPORTED", new Object[] { response.getAsString(), OAuth20Constants.RESPONSE_TYPE });
-                    throw new OidcServerException(browserServerMsg, OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
+                    throw new OidcServerException(new BrowserAndServerLogMessage(tc, "OAUTH_CLIENT_REGISTRATION_VALUE_NOT_SUPPORTED", new Object[] { response.getAsString(), OAuth20Constants.RESPONSE_TYPE }),
+                            OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
                 }
 
                 if (!dupeCheckerSet.add(response.getAsString())) {
-
-                    String description = TraceNLS.getFormattedMessage(OidcBaseClientValidator.class,
-                            MESSAGE_BUNDLE,
-                            "OAUTH_CLIENT_REGISTRATION_VALUE_DUPE",
-                            new Object[] { response.getAsString(), OAuth20Constants.RESPONSE_TYPE },
-                            "CWWKS1443E: The value {0} is a duplicate for the {1} client registration metadata field.");
-
-                    throw new OidcServerException(description, OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
+                    throw new OidcServerException(new BrowserAndServerLogMessage(tc, "OAUTH_CLIENT_REGISTRATION_VALUE_DUPE", new Object[] { response.getAsString(), OAuth20Constants.RESPONSE_TYPE }),
+                            OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
                 }
             }
         }
@@ -449,25 +418,13 @@ public class OidcBaseClientValidator {
         if (!OidcOAuth20Util.isNullEmpty(grantTypes)) {
             for (JsonElement grant : grantTypes) {
                 if (!OAuth20Constants.ALL_GRANT_TYPES_SET.contains(grant.getAsString())) {
-
-                    String description = TraceNLS.getFormattedMessage(OidcBaseClientValidator.class,
-                            MESSAGE_BUNDLE,
-                            "OAUTH_CLIENT_REGISTRATION_VALUE_NOT_SUPPORTED",
-                            new Object[] { grant.getAsString(), OAuth20Constants.GRANT_TYPE },
-                            "CWWKS1442E: The value {0} is not a supported value for the {1} client registration metadata field.");
-
-                    throw new OidcServerException(description, OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
+                    throw new OidcServerException(new BrowserAndServerLogMessage(tc, "OAUTH_CLIENT_REGISTRATION_VALUE_NOT_SUPPORTED", new Object[] { grant.getAsString(), OAuth20Constants.GRANT_TYPE }),
+                            OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
                 }
 
                 if (!grantTypeSet.add(grant.getAsString())) {
-
-                    String description = TraceNLS.getFormattedMessage(OidcBaseClientValidator.class,
-                            MESSAGE_BUNDLE,
-                            "OAUTH_CLIENT_REGISTRATION_VALUE_DUPE",
-                            new Object[] { grant.getAsString(), OAuth20Constants.GRANT_TYPE },
-                            "CWWKS1443E: The value {0} is a duplicate for the {1} client registration metadata field.");
-
-                    throw new OidcServerException(description, OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
+                    throw new OidcServerException(new BrowserAndServerLogMessage(tc, "OAUTH_CLIENT_REGISTRATION_VALUE_DUPE", new Object[] { grant.getAsString(), OAuth20Constants.GRANT_TYPE }),
+                            OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
                 }
             }
         }
@@ -481,24 +438,15 @@ public class OidcBaseClientValidator {
         if (!OidcOAuth20Util.isNullEmpty(responseTypes)) {
             for (JsonElement responseType : responseTypes) {
                 if (responseType.getAsString().equals(OAuth20Constants.RESPONSE_TYPE_CODE) && !grantTypeSet.contains(OAuth20Constants.GRANT_TYPE_AUTHORIZATION_CODE)) {
+                    throw new OidcServerException(new BrowserAndServerLogMessage(tc, "OAUTH_CLIENT_REGISTRATION_GRANT_RESPONSE_VALIDATION", new Object[] { responseType.getAsString(), OAuth20Constants.GRANT_TYPE_AUTHORIZATION_CODE }),
+                            OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
 
-                    String description = TraceNLS.getFormattedMessage(OidcBaseClientValidator.class,
-                            MESSAGE_BUNDLE,
-                            "OAUTH_CLIENT_REGISTRATION_GRANT_RESPONSE_VALIDATION",
-                            new Object[] { responseType.getAsString(), OAuth20Constants.GRANT_TYPE_AUTHORIZATION_CODE },
-                            "CWWKS1444E: The client registration metadata field response_type contains value {0}, which requires at least a matching grant_type value {1}.");
-
-                    throw new OidcServerException(description, OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
                 } else if ((responseType.getAsString().equals(OIDCConstants.OIDC_DISC_RESP_TYPES_SUPP_ID_TOKEN_TOKEN) || responseType.getAsString().equals(OIDCConstants.OIDC_DISC_RESP_TYPES_SUPP_TOKEN_ID_TOKEN))
                         && !grantTypeSet.contains(OAuth20Constants.GRANT_TYPE_IMPLICIT)) {
 
-                    String description = TraceNLS.getFormattedMessage(OidcBaseClientValidator.class,
-                            MESSAGE_BUNDLE,
-                            "OAUTH_CLIENT_REGISTRATION_GRANT_RESPONSE_VALIDATION",
-                            new Object[] { responseType.getAsString(), OAuth20Constants.GRANT_TYPE_IMPLICIT },
-                            "CWWKS1444E: The client registration metadata field response_type contains value {0}, which requires at least a matching grant_type value {1}.");
+                    throw new OidcServerException(new BrowserAndServerLogMessage(tc, "OAUTH_CLIENT_REGISTRATION_GRANT_RESPONSE_VALIDATION", new Object[] { responseType.getAsString(), OAuth20Constants.GRANT_TYPE_IMPLICIT }),
+                            OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
 
-                    throw new OidcServerException(description, OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
                 }
             }
         }
@@ -523,36 +471,18 @@ public class OidcBaseClientValidator {
                 try {
                     uri = new URI(redirectUriEle.getAsString());
                 } catch (URISyntaxException e) {
-
-                    String description = TraceNLS.getFormattedMessage(OidcBaseClientValidator.class,
-                            MESSAGE_BUNDLE,
-                            "OAUTH_CLIENT_REGISTRATION_VALUE_MALFORMED_URI",
-                            new Object[] { redirectUriString, OIDCConstants.OIDC_CLIENTREG_REDIRECT_URIS },
-                            "CWWKS1445E: The value {0} for the client registration metadata field {1} contains a malformed URI syntax.");
-
-                    throw new OidcServerException(description, OIDCConstants.ERROR_INVALID_REDIRECT_URI, HttpServletResponse.SC_BAD_REQUEST, e);
+                    throw new OidcServerException(new BrowserAndServerLogMessage(tc, "OAUTH_CLIENT_REGISTRATION_VALUE_MALFORMED_URI", new Object[] { redirectUriString, OIDCConstants.OIDC_CLIENTREG_REDIRECT_URIS }),
+                            OIDCConstants.ERROR_INVALID_REDIRECT_URI, HttpServletResponse.SC_BAD_REQUEST, e);
                 }
 
                 if ((client.getApplicationType() == null || client.getApplicationType().equals(OIDCConstants.OIDC_CLIENTREG_PARM_WEB)) && !uri.isAbsolute()) {
-
-                    String description = TraceNLS.getFormattedMessage(OidcBaseClientValidator.class,
-                            MESSAGE_BUNDLE,
-                            "OAUTH_CLIENT_REGISTRATION_VALUE_NOT_ABSOLUTE_URI",
-                            new Object[] { redirectUriString, OIDCConstants.OIDC_CLIENTREG_REDIRECT_URIS },
-                            "CWWKS1446E: The value {0} for the client registration metadata field {1} is not an absolute URI.");
-
-                    throw new OidcServerException(description, OIDCConstants.ERROR_INVALID_REDIRECT_URI, HttpServletResponse.SC_BAD_REQUEST);
+                    throw new OidcServerException(new BrowserAndServerLogMessage(tc, "OAUTH_CLIENT_REGISTRATION_VALUE_NOT_ABSOLUTE_URI", new Object[] { redirectUriString, OIDCConstants.OIDC_CLIENTREG_REDIRECT_URIS }),
+                            OIDCConstants.ERROR_INVALID_REDIRECT_URI, HttpServletResponse.SC_BAD_REQUEST);
                 }
 
                 if (!dupeCheckerSet.add(redirectUriEle.getAsString())) {
-
-                    String description = TraceNLS.getFormattedMessage(OidcBaseClientValidator.class,
-                            MESSAGE_BUNDLE,
-                            "OAUTH_CLIENT_REGISTRATION_VALUE_DUPE",
-                            new Object[] { redirectUriEle.getAsString(), OIDCConstants.OIDC_CLIENTREG_REDIRECT_URIS },
-                            "CWWKS1443E: The value {0} is a duplicate for the {1} client registration metadata field.");
-
-                    throw new OidcServerException(description, OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
+                    throw new OidcServerException(new BrowserAndServerLogMessage(tc, "OAUTH_CLIENT_REGISTRATION_VALUE_DUPE", new Object[] { redirectUriString, OIDCConstants.OIDC_CLIENTREG_REDIRECT_URIS }),
+                            OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
                 }
             }
         }
@@ -570,14 +500,8 @@ public class OidcBaseClientValidator {
 
         // Liberty presently only supports subject_type public and not pairwise
         if (!OidcOAuth20Util.isNullEmpty(subjectType) && !subjectType.equals(OIDCConstants.OIDC_DISC_SUB_TYPES_SUPP_PUBLIC)) {
-
-            String description = TraceNLS.getFormattedMessage(OidcBaseClientValidator.class,
-                    MESSAGE_BUNDLE,
-                    "OAUTH_CLIENT_REGISTRATION_VALUE_NOT_SUPPORTED",
-                    new Object[] { subjectType, OIDCConstants.OIDC_CLIENTREG_SUB_TYPE },
-                    "CWWKS1442E: The value {0} is not a supported value for the {1} client registration metadata field.");
-
-            throw new OidcServerException(description, OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
+            throw new OidcServerException(new BrowserAndServerLogMessage(tc, "OAUTH_CLIENT_REGISTRATION_VALUE_NOT_SUPPORTED", new Object[] { subjectType, OIDCConstants.OIDC_CLIENTREG_SUB_TYPE }),
+                    OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
         }
     }
 
@@ -590,14 +514,8 @@ public class OidcBaseClientValidator {
                 // !tokenEndpointAuthMethod.equals(OIDCConstants.OIDC_DISC_TOKEN_EP_AUTH_METH_SUPP_CLIENT_SECRET_JWT) &&
                 // !tokenEndpointAuthMethod.equals(OIDCConstants.OIDC_DISC_TOKEN_EP_AUTH_METH_SUPP_PRIVATE_KEY_JWT) &&
                 !tokenEndpointAuthMethod.equals(OIDCConstants.OIDC_DISC_TOKEN_EP_AUTH_METH_SUPP_NONE)) {
-
-            String description = TraceNLS.getFormattedMessage(OidcBaseClientValidator.class,
-                    MESSAGE_BUNDLE,
-                    "OAUTH_CLIENT_REGISTRATION_VALUE_NOT_SUPPORTED",
-                    new Object[] { tokenEndpointAuthMethod, OIDCConstants.OIDC_CLIENTREG_TOKEN_EP_AUTH_METH },
-                    "CWWKS1442E: The value {0} is not a supported value for the {1} client registration metadata field.");
-
-            throw new OidcServerException(description, OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
+            throw new OidcServerException(new BrowserAndServerLogMessage(tc, "OAUTH_CLIENT_REGISTRATION_VALUE_NOT_SUPPORTED", new Object[] { tokenEndpointAuthMethod, OIDCConstants.OIDC_CLIENTREG_TOKEN_EP_AUTH_METH }),
+                    OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
         }
     }
 
@@ -670,50 +588,26 @@ public class OidcBaseClientValidator {
         for (JsonElement groupIdEle : functionalUserGroupIds) {
             String groupIdString = groupIdEle.getAsString();
             if (!dupeCheckerSet.add(groupIdString)) {
-
-                String description = TraceNLS.getFormattedMessage(OidcBaseClientValidator.class,
-                        MESSAGE_BUNDLE,
-                        "OAUTH_CLIENT_REGISTRATION_VALUE_DUPE",
-                        new Object[] { groupIdString, "functional_user_groupIds" },
-                        "CWWKS1443E: The value {0} is a duplicate for the {1} client registration metadata field.");
-
-                throw new OidcServerException(description, OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
+                throw new OidcServerException(new BrowserAndServerLogMessage(tc, "OAUTH_CLIENT_REGISTRATION_VALUE_DUPE", new Object[] { groupIdString, "functional_user_groupIds" }),
+                        OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
             }
         }
     }
 
     protected void validateOutputParameters() throws OidcServerException {
         if (client.getClientIdIssuedAt() != 0) {
-
-            String description = TraceNLS.getFormattedMessage(OidcBaseClientValidator.class,
-                    MESSAGE_BUNDLE,
-                    "OAUTH_CLIENT_REGISTRATION_VALUE_OUT_NOT_ALLOWED",
-                    new Object[] { OIDCConstants.OIDC_CLIENTREG_ISSUED_AT },
-                    "CWWKS1447E: The client registration metadata field {0} cannot be specified for a create or update action because it is an output parameter.");
-
-            throw new OidcServerException(description, OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
+            throw new OidcServerException(new BrowserAndServerLogMessage(tc, "OAUTH_CLIENT_REGISTRATION_VALUE_OUT_NOT_ALLOWED", new Object[] { OIDCConstants.OIDC_CLIENTREG_ISSUED_AT }),
+                    OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
         }
 
         if (client.getClientSecretExpiresAt() != 0) {
-
-            String description = TraceNLS.getFormattedMessage(OidcBaseClientValidator.class,
-                    MESSAGE_BUNDLE,
-                    "OAUTH_CLIENT_REGISTRATION_VALUE_OUT_NOT_ALLOWED",
-                    new Object[] { OIDCConstants.OIDC_CLIENTREG_SECRET_EXPIRES_AT },
-                    "CWWKS1447E: The client registration metadata field {0} cannot be specified for a create or update action because it is an output parameter.");
-
-            throw new OidcServerException(description, OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
+            throw new OidcServerException(new BrowserAndServerLogMessage(tc, "OAUTH_CLIENT_REGISTRATION_VALUE_OUT_NOT_ALLOWED", new Object[] { OIDCConstants.OIDC_CLIENTREG_SECRET_EXPIRES_AT }),
+                    OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
         }
 
         if (client.getRegistrationClientUri() != null && !client.getRegistrationClientUri().isEmpty()) {
-
-            String description = TraceNLS.getFormattedMessage(OidcBaseClientValidator.class,
-                    MESSAGE_BUNDLE,
-                    "OAUTH_CLIENT_REGISTRATION_VALUE_OUT_NOT_ALLOWED",
-                    new Object[] { OIDCConstants.OIDC_CLIENTREG_REGISTRATION_CLIENT_URI },
-                    "CWWKS1447E: The client registration metadata field {0} cannot be specified for a create or update action because it is an output parameter.");
-
-            throw new OidcServerException(description, OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
+            throw new OidcServerException(new BrowserAndServerLogMessage(tc, "OAUTH_CLIENT_REGISTRATION_VALUE_OUT_NOT_ALLOWED", new Object[] { OIDCConstants.OIDC_CLIENTREG_REGISTRATION_CLIENT_URI }),
+                    OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
         }
     }
 
@@ -728,36 +622,18 @@ public class OidcBaseClientValidator {
                 try {
                     uri = new URI(uriString);
                 } catch (URISyntaxException e) {
-
-                    String description = TraceNLS.getFormattedMessage(OidcBaseClientValidator.class,
-                            MESSAGE_BUNDLE,
-                            "OAUTH_CLIENT_REGISTRATION_VALUE_MALFORMED_URI",
-                            new Object[] { uriString, clientMetadataField },
-                            "CWWKS1445E: The value {0} for the client registration metadata field {1} contains a malformed URI syntax.");
-
-                    throw new OidcServerException(description, OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST, e);
+                    throw new OidcServerException(new BrowserAndServerLogMessage(tc, "OAUTH_CLIENT_REGISTRATION_VALUE_MALFORMED_URI", new Object[] { uriString, clientMetadataField }),
+                            OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST, e);
                 }
 
                 if (!uri.isAbsolute()) {
-
-                    String description = TraceNLS.getFormattedMessage(OidcBaseClientValidator.class,
-                            MESSAGE_BUNDLE,
-                            "OAUTH_CLIENT_REGISTRATION_VALUE_NOT_ABSOLUTE_URI",
-                            new Object[] { uriString, clientMetadataField },
-                            "CWWKS1446E: The value {0} for the client registration metadata field {1} is not an absolute URI.");
-
-                    throw new OidcServerException(description, OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
+                    throw new OidcServerException(new BrowserAndServerLogMessage(tc, "OAUTH_CLIENT_REGISTRATION_VALUE_NOT_ABSOLUTE_URI", new Object[] { uriString, clientMetadataField }),
+                            OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
                 }
 
                 if (!dupeCheckerSet.add(uriString)) {
-
-                    String description = TraceNLS.getFormattedMessage(OidcBaseClientValidator.class,
-                            MESSAGE_BUNDLE,
-                            "OAUTH_CLIENT_REGISTRATION_VALUE_DUPE",
-                            new Object[] { uriString, clientMetadataField },
-                            "CWWKS1443E: The value {0} is a duplicate for the {1} client registration metadata field.");
-
-                    throw new OidcServerException(description, OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
+                    throw new OidcServerException(new BrowserAndServerLogMessage(tc, "OAUTH_CLIENT_REGISTRATION_VALUE_DUPE", new Object[] { uriString, clientMetadataField }),
+                            OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
                 }
             }
         }

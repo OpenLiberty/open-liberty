@@ -38,6 +38,7 @@ import com.ibm.ws.security.oauth20.api.Constants;
 import com.ibm.ws.security.oauth20.api.OAuth20EnhancedTokenCache;
 import com.ibm.ws.security.oauth20.api.OAuth20Provider;
 import com.ibm.ws.security.oauth20.api.OidcOAuth20ClientProvider;
+import com.ibm.ws.security.oauth20.error.impl.BrowserAndServerLogMessage;
 import com.ibm.ws.security.oauth20.plugins.OidcBaseClient;
 import com.ibm.ws.security.oauth20.util.OIDCConstants;
 import com.ibm.ws.security.oauth20.web.OAuth20Request.EndpointType;
@@ -162,9 +163,9 @@ public class ClientAuthentication {
             // For the basic auth case, a null password means a password was not included, not that the password was empty.
             password = "";
         }
-        // adding check to see whether the client config specifies that it is a public client 
+        // adding check to see whether the client config specifies that it is a public client
         boolean clientSpecifiesPublic = isPublicClient(clientProvider, data);
-        
+
         if (provider.isAllowPublicClients() || clientSpecifiesPublic) {
             isClientAuthenticationDataValid = isValidPublicClient(response, password, clientProvider, data, endpointType, grantType, authScheme);
         } else {
@@ -194,7 +195,7 @@ public class ClientAuthentication {
         try {
             client = clientProvider.get(data.getUserName());
         } catch (OidcServerException e) {
-            
+
         }
         if (client != null && client.isPublicClient()) {
             return true;
@@ -443,7 +444,8 @@ public class ClientAuthentication {
             throw e;
         } catch (Exception e1) {
             Tr.error(tc, "security.oauth20.endpoint.resowner.auth.error", userName);
-            throw new OidcServerException("invalid_resource_owner_credential", OIDCConstants.ERROR_SERVER_ERROR, HttpServletResponse.SC_BAD_REQUEST, e1);
+            throw new OidcServerException(new BrowserAndServerLogMessage(tc, "security.oauth20.endpoint.resowner.auth.error", userName), OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
+
         }
 
         return valid;
@@ -491,7 +493,7 @@ public class ClientAuthentication {
             throw e;
         } catch (Exception e1) {
             Tr.error(tc, "security.oauth20.endpoint.resowner.apppassword.error", userName);
-            throw new OidcServerException("invalid_resource_owner_credential", OIDCConstants.ERROR_SERVER_ERROR, HttpServletResponse.SC_BAD_REQUEST, e1);
+            throw new OidcServerException(new BrowserAndServerLogMessage(tc, "security.oauth20.endpoint.resowner.apppassword.error", userName), OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
         }
 
         return valid;

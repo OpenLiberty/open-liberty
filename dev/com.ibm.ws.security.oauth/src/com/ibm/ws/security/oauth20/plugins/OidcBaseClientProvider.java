@@ -28,7 +28,6 @@ import com.ibm.ejs.ras.TraceComponent;
 import com.ibm.oauth.core.api.config.OAuthComponentConfiguration;
 import com.ibm.oauth.core.api.error.OidcServerException;
 import com.ibm.ws.security.oauth20.api.OidcOAuth20ClientProvider;
-import com.ibm.ws.security.oauth20.error.impl.BrowserAndServerLogMessage;
 import com.ibm.ws.security.oauth20.util.ClientUtils;
 import com.ibm.ws.security.oauth20.util.ConfigUtils;
 import com.ibm.ws.security.oauth20.util.OIDCConstants;
@@ -191,7 +190,7 @@ public class OidcBaseClientProvider implements OidcOAuth20ClientProvider {
         if (tc.isEntryEnabled()) {
             Tr.exit(tc, "update");
         }
-        throw new OidcServerException(new BrowserAndServerLogMessage(tc, null, ERROR_DESCRIPTION_UNIMPLEMENTED), OIDCConstants.ERROR_SERVER_ERROR, HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+        throw new OidcServerException(ERROR_DESCRIPTION_UNIMPLEMENTED, OIDCConstants.ERROR_SERVER_ERROR, HttpServletResponse.SC_METHOD_NOT_ALLOWED);
     }
 
     protected String getKey(String clientId) {
@@ -271,8 +270,7 @@ public class OidcBaseClientProvider implements OidcOAuth20ClientProvider {
         if (tc.isEntryEnabled()) {
             Tr.exit(tc, "delete");
         }
-        // TODO
-        throw new OidcServerException(new BrowserAndServerLogMessage(tc, null, ERROR_DESCRIPTION_UNIMPLEMENTED), OIDCConstants.ERROR_SERVER_ERROR, HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+        throw new OidcServerException(ERROR_DESCRIPTION_UNIMPLEMENTED, OIDCConstants.ERROR_SERVER_ERROR, HttpServletResponse.SC_METHOD_NOT_ALLOWED);
     }
 
     public boolean deleteOverride(String clientIdentifier) throws OidcServerException {
@@ -294,7 +292,6 @@ public class OidcBaseClientProvider implements OidcOAuth20ClientProvider {
         if (tc.isEntryEnabled()) {
             Tr.exit(tc, "put");
         }
-
-        throw new OidcServerException(new BrowserAndServerLogMessage(tc, null, ERROR_DESCRIPTION_UNIMPLEMENTED), OIDCConstants.ERROR_SERVER_ERROR, HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+        throw new OidcServerException(ERROR_DESCRIPTION_UNIMPLEMENTED, OIDCConstants.ERROR_SERVER_ERROR, HttpServletResponse.SC_METHOD_NOT_ALLOWED);
     }
 }

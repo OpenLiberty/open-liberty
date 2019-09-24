@@ -35,6 +35,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.common.internal.encoder.Base64Coder;
 import com.ibm.ws.security.oauth20.api.OAuth20Provider;
 import com.ibm.ws.security.oauth20.api.OidcOAuth20ClientProvider;
+import com.ibm.ws.security.oauth20.error.impl.BrowserAndServerLogMessage;
 import com.ibm.ws.security.oauth20.plugins.OidcBaseClient;
 import com.ibm.ws.security.oauth20.util.Base64;
 import com.ibm.ws.security.oauth20.util.OIDCConstants;
@@ -50,14 +51,7 @@ public class CoverageMapEndpointServices extends AbstractOidcEndpointServices {
         if (request.getMethod().equalsIgnoreCase(HTTP_METHOD_GET) || request.getMethod().equalsIgnoreCase(HTTP_METHOD_HEAD)) {
             processHeadOrGet(provider, request, response);
         } else {
-            String errorMsg = TraceNLS.getFormattedMessage(this.getClass(),
-                    MESSAGE_BUNDLE,
-                    "OAUTH_UNSUPPORTED_METHOD",
-                    new Object[] { request.getMethod(), this.getClass().getSimpleName() },
-                    "CWWKS1433E: The HTTP method {0} is not supported for the service {1}.");
-            Tr.error(tc, errorMsg);
-
-            throw new OidcServerException(errorMsg, OIDCConstants.ERROR_SERVER_ERROR, HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+            throw new OidcServerException(new BrowserAndServerLogMessage(tc, "OAUTH_UNSUPPORTED_METHOD", new Object[] { request.getMethod(), this.getClass().getSimpleName() }), OIDCConstants.ERROR_SERVER_ERROR, HttpServletResponse.SC_METHOD_NOT_ALLOWED);
         }
     }
 
@@ -86,14 +80,14 @@ public class CoverageMapEndpointServices extends AbstractOidcEndpointServices {
             String description = "Unable to retrieve OIDC provider id for this request.";
             throw new OidcServerException(description, OIDCConstants.ERROR_INVALID_REQUEST, HttpServletResponse.SC_BAD_REQUEST);
         }
-        
+
         JsonPrimitive registrationEndpoint = new JsonPrimitive(addTrailingSlash(getCalculatedIssuerId(oidcServerCfg.getProviderId(), request) + OAuth20RequestFilter.SLASH_PATH_REGISTRATION));
         members.add(registrationEndpoint);
         **/
 
         // Set ETag headers
         String eTag = getETag(members);
-        response.addHeader(HDR_ETAG, String.format("\"%s\"", eTag)); //$NON-NLS-1$        
+        response.addHeader(HDR_ETAG, String.format("\"%s\"", eTag)); //$NON-NLS-1$
 
         // Set Cache-Control Max Age
         response.setHeader(OAuthConstants.HEADER_CACHE_CONTROL, constructCacheControlHeaderWithMaxAge(true, String.valueOf(provider.getCoverageMapSessionMaxAge())));
@@ -133,7 +127,7 @@ public class CoverageMapEndpointServices extends AbstractOidcEndpointServices {
     /**
      * Validates and returns the token_type specified with the referenced request. Returns <code>null</code> if token_type parameter was incorrectly specified
      * on the request, with the response object updated with the appropriate error message.
-     * 
+     *
      * @param request
      *            The request to parse query parms from. Must not be <code>null</code>.
      * @param response
@@ -147,35 +141,16 @@ public class CoverageMapEndpointServices extends AbstractOidcEndpointServices {
             throws IOException, OidcServerException {
         String queryString = request.getQueryString();
         if (queryString == null) {
-            String errorMsg = TraceNLS.getFormattedMessage(this.getClass(),
-                    MESSAGE_BUNDLE,
-                    "OAUTH_COVERAGE_MAP_MISSING_PARAMS",
-                    new Object[] { OAuth20Constants.TOKEN_TYPE },
-                    "CWWKS1434E: Missing required parameters in request.");
-            Tr.error(tc, errorMsg);
-
-            throw new OidcServerException(errorMsg, OIDCConstants.ERROR_INVALID_REQUEST, HttpServletResponse.SC_BAD_REQUEST);
+            throw new OidcServerException(new BrowserAndServerLogMessage(tc, "OAUTH_COVERAGE_MAP_MISSING_PARAMS", new Object[] { OAuth20Constants.TOKEN_TYPE }), OIDCConstants.ERROR_INVALID_REQUEST, HttpServletResponse.SC_BAD_REQUEST);
         }
 
         Map<String, String[]> queryParms = parseQueryParameters(queryString);
         String[] tokenTypes = queryParms.get(OAuth20Constants.TOKEN_TYPE);
         if (tokenTypes == null) {
-            String errorMsg = TraceNLS.getFormattedMessage(this.getClass(),
-                    MESSAGE_BUNDLE,
-                    "OAUTH_COVERAGE_MAP_MISSING_TOKEN_PARAM",
-                    new Object[] { OAuth20Constants.TOKEN_TYPE },
-                    "CWWKS1435E: Missing {0} parameter in request.");
-            Tr.error(tc, errorMsg);
-            throw new OidcServerException(errorMsg, OIDCConstants.ERROR_INVALID_REQUEST, HttpServletResponse.SC_BAD_REQUEST);
+            throw new OidcServerException(new BrowserAndServerLogMessage(tc, "OAUTH_COVERAGE_MAP_MISSING_TOKEN_PARAM", new Object[] { OAuth20Constants.TOKEN_TYPE }), OIDCConstants.ERROR_INVALID_REQUEST, HttpServletResponse.SC_BAD_REQUEST);
         }
         if (tokenTypes.length > 1) {
-            String errorMsg = TraceNLS.getFormattedMessage(this.getClass(),
-                    MESSAGE_BUNDLE,
-                    "OAUTH_COVERAGE_MAP_MULTIPLE_TOKEN_PARAM",
-                    new Object[] { OAuth20Constants.TOKEN_TYPE },
-                    "CWWKS1436E: Request contains multiple {0} parameters.");
-            Tr.error(tc, errorMsg);
-            throw new OidcServerException(errorMsg, OIDCConstants.ERROR_INVALID_REQUEST, HttpServletResponse.SC_BAD_REQUEST);
+            throw new OidcServerException(new BrowserAndServerLogMessage(tc, "OAUTH_COVERAGE_MAP_MULTIPLE_TOKEN_PARAM", new Object[] { OAuth20Constants.TOKEN_TYPE }), OIDCConstants.ERROR_INVALID_REQUEST, HttpServletResponse.SC_BAD_REQUEST);
         }
 
         String tokenType = decode(tokenTypes[0]);
@@ -188,12 +163,14 @@ public class CoverageMapEndpointServices extends AbstractOidcEndpointServices {
                 new Object[] { tokenType },
                 "CWWKS1437E: Request contains unrecognized token type parameter {0}.");
         Tr.error(tc, errorMsg);
+        throw new OidcServerException(new BrowserAndServerLogMessage(tc, "OAUTH_COVERAGE_MAP_UNRECOGNIZED_TOKEN_PARAM", new Object[] { tokenType }), OIDCConstants.ERROR_INVALID_REQUEST, HttpServletResponse.SC_BAD_REQUEST);
+
         throw new OidcServerException(errorMsg, OIDCConstants.ERROR_INVALID_REQUEST, HttpServletResponse.SC_BAD_REQUEST);
     }
 
     /**
      * Compute an ETag from the referenced list of appRoots.
-     * 
+     *
      * @param results
      *            the list of JSON consumer objects
      * @return the ETag for the list of objects
@@ -205,7 +182,7 @@ public class CoverageMapEndpointServices extends AbstractOidcEndpointServices {
         MessageDigest digest;
 
         try {
-            digest = MessageDigest.getInstance(ALG_MD5); //$NON-NLS-1$
+            digest = MessageDigest.getInstance(ALG_MD5);
 
             for (Object appRoot : appRootsList) {
                 digest.update((Base64Coder.getBytes((String) appRoot)));

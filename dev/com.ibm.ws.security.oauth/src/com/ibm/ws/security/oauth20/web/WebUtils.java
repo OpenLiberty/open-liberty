@@ -26,6 +26,7 @@ import com.ibm.oauth.core.internal.oauth20.OAuth20Constants;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.oauth20.api.Constants;
+import com.ibm.ws.security.oauth20.error.impl.BrowserAndServerLogMessage;
 import com.ibm.ws.security.oauth20.util.OIDCConstants;
 
 /**
@@ -93,7 +94,6 @@ public class WebUtils {
                             "realm=\"\"";
                     // Per section 1.2 of the HTTP Authentication: Basic and Digest Access Authentication spec (RFC 2617), "the
                     // realm directive (case-insensitive) is required for all authentication schemes that issue a challenge."
-
 
                     if (tc.isDebugEnabled()) {
                         Tr.debug(tc, "Error code:" + statusCode + " errMsg=" + errMsg + " response already committed: " + response.isCommitted());
@@ -359,6 +359,7 @@ public class WebUtils {
         String encoding = request.getCharacterEncoding() != null ? request.getCharacterEncoding() : "utf-8";
         String errorMsg = e.formatSelf(request.getLocale(), encoding);
         Tr.error(tc, errorMsg, new Object[] {});
-        throw new OidcServerException(errorMsg, OIDCConstants.ERROR_INVALID_REQUEST, HttpServletResponse.SC_BAD_REQUEST);
+
+        throw new OidcServerException(new BrowserAndServerLogMessage(tc, errorMsg, new Object[] {}), OIDCConstants.ERROR_INVALID_REQUEST, HttpServletResponse.SC_BAD_REQUEST);
     }
 }
