@@ -42,7 +42,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 public class WebAuthenticatorProxy implements WebAuthenticator {
 
     private static final TraceComponent tc = Tr.register(WebAuthenticatorProxy.class);
-    private AtomicServiceReference<OidcServer> oidcServerRef = null;
+    public AtomicServiceReference<OidcServer> oidcServerRef = null;
     private static final String AUTH_TYPE = "AUTH_TYPE";
     protected final AtomicServiceReference<SecurityService> securityServiceRef;
     protected volatile WebAppSecurityConfig webAppSecurityConfig;

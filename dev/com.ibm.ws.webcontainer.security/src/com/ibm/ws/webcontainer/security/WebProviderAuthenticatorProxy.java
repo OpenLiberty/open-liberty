@@ -70,7 +70,7 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
     AuthenticationResult OIDC_CLIENT_CONT = new AuthenticationResult(AuthResult.CONTINUE, "OpenID Connect client said continue...");
     AuthenticationResult SPNEGO_CONT = new AuthenticationResult(AuthResult.CONTINUE, "SPNEGO said continue...");
 
-    private final AtomicServiceReference<OAuth20Service> oauthServiceRef;
+    protected final AtomicServiceReference<OAuth20Service> oauthServiceRef;
     private final AtomicServiceReference<OpenidClientService> openIdClientServiceRef;
     private final AtomicServiceReference<OidcServer> oidcServerRef;
     private final AtomicServiceReference<OidcClient> oidcClientRef;

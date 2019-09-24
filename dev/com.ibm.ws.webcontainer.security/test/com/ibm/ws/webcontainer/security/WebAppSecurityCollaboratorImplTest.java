@@ -1564,6 +1564,8 @@ public class WebAppSecurityCollaboratorImplTest {
                 will(returnValue(request)); //
                 one(commonWebRequest).hasAuthenticationData();
                 will(returnValue(false));
+                allowing(commonWebRequest).getHttpServletRequest();
+                will(returnValue(request));
             }
         });
         secColl = new WebAppSecurityCollaboratorImpl(null, null, null, webAppSecurityConfig);
@@ -1624,6 +1626,8 @@ public class WebAppSecurityCollaboratorImplTest {
 
                 one(commonWebRequest).disableFormLoginRedirect();
                 one(commonWebRequest).setUnprotectedURI(true);
+                allowing(commonWebRequest).getHttpServletRequest();
+                will(returnValue(request));
             }
         });
         secColl = new WebAppSecurityCollaboratorImplTestDouble2(webAppSecurityConfig);
@@ -1660,6 +1664,8 @@ public class WebAppSecurityCollaboratorImplTest {
 
                 one(commonWebRequest).disableFormLoginRedirect();
                 one(commonWebRequest).setUnprotectedURI(true);
+                allowing(commonWebRequest).getHttpServletRequest();
+                will(returnValue(request));
             }
         });
 
@@ -1831,7 +1837,7 @@ public class WebAppSecurityCollaboratorImplTest {
 
         public WebAuthenticatorProxyTestDouble(WebAppSecurityConfig webAppSecurityConfig, PostParameterHelper postParameterHelper,
                                                AtomicServiceReference<SecurityService> securityServiceRef, AtomicServiceReference<TAIService> taiServiceRef) {
-            super(webAppSecurityConfig, postParameterHelper, securityServiceRef, providerAuthenticatorProxy);
+            super(webAppSecurityConfig, postParameterHelper, securityServiceRef, providerAuthenticatorProxy, null);
         }
 
         @Override

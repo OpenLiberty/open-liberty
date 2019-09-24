@@ -230,17 +230,6 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
      * 2) If we have the custom cookie name but no cookie found, then will delete the default cookie name LTPAToken2
      * 3) If jwtsso is active, clean up those cookies too.
      */
-//    @Override
-//    public void createLogoutCookies(HttpServletRequest req, HttpServletResponse res) {
-//        createLogoutCookies(req, res, true);
-//    }
-
-    /** {@inheritDoc} */
-    /*
-     * 1) If we have the custom cookie name, then delete just the custom cookie name
-     * 2) If we have the custom cookie name but no cookie found, then will delete the default cookie name LTPAToken2
-     * 3) If jwtsso is active, clean up those cookies too.
-     */
     @Override
     public void createLogoutCookies(HttpServletRequest req, HttpServletResponse res, boolean deleteJwtCookies) {
         Cookie[] cookies = req.getCookies();
