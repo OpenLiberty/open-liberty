@@ -12,7 +12,7 @@
  * @version 1.0
  */
 @org.osgi.annotation.versioning.Version("1.0")
-@TraceOptions(traceGroup = "METRICS", messageBundle = "com.ibm.ws.microprofile.metrics.monitor.resources.MonitorMetrics")
+@TraceOptions(traceGroup = "METRICS", messageBundle = "com.ibm.ws.microprofile.metrics21.monitor.resources.MonitorMetrics")
 package com.ibm.ws.microprofile.metrics21.monitor;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;
