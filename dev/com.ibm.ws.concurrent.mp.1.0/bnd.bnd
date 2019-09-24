@@ -27,11 +27,10 @@ Import-Package:\
   *
 
 Export-Package: \
-  !com.ibm.ws.concurrent.mp.resources, \
-  com.ibm.ws.concurrent.mp.*
-      
+  com.ibm.ws.concurrent.mp.spi.*
+
 Private-Package:\
-  com.ibm.ws.concurrent.mp.resources
+  com.ibm.ws.concurrent.mp.*
 
 instrument.classesExcludes: com/ibm/ws/concurrent/mp/resources/*.class
 

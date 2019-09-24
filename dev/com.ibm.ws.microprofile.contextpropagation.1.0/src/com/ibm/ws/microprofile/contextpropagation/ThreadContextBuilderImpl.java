@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -24,6 +23,7 @@ import org.eclipse.microprofile.context.spi.ThreadContextProvider;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.concurrent.mp.spi.MPContextPropagation;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
@@ -75,7 +75,7 @@ public class ThreadContextBuilderImpl implements ThreadContext.Builder {
         } else
             remaining = unchanged.contains(ThreadContext.ALL_REMAINING) ? ContextOp.UNCHANGED : ContextOp.CLEARED;
 
-        LinkedHashMap<ThreadContextProvider, ContextOp> configPerProvider = new LinkedHashMap<ThreadContextProvider, ContextOp>();
+        ThreadContextConfigImpl configPerProvider = new ThreadContextConfigImpl(contextManager.cmProvider);
 
         for (ThreadContextProvider provider : contextProviders) {
             String contextType = provider.getThreadContextType();
@@ -114,7 +114,7 @@ public class ThreadContextBuilderImpl implements ThreadContext.Builder {
 
         String threadContextName = nameBuilder.toString();
 
-        return new ThreadContextImpl(threadContextName, hash, contextManager.cmProvider, configPerProvider);
+        return MPContextPropagation.createThreadContext(threadContextName, hash, configPerProvider);
     }
 
     @Override
