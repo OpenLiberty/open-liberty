@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -36,7 +37,9 @@ public class MavenDirectoryInstall {
     private String toExtension;
     private String openLibertyVersion;
     private Logger logger;
+    private boolean tempCleanupRequired;
 
+    private final String TEMP_DIRECTORY =  Utils.getInstallDir() + "/tmp/";
     private final String OPEN_LIBERTY_PRODUCT_ID = "io.openliberty";
     private final String OPEN_LIBERTY_GROUP_ID = "io.openliberty.features";
     private final String CLOSED_LIBERTY_GROUP_ID = "com.ibm.websphere.appserver.features";
@@ -54,6 +57,7 @@ public class MavenDirectoryInstall {
 
         this.fromDir = fromDir;
         this.logger = InstallLogUtils.getInstallLogger();
+        this.tempCleanupRequired = false;
 
         logger.log(Level.FINE, "The features to install from local maven repository are:" + featuresToInstall);
         logger.log(Level.FINE, "The local maven repository is: " + fromDir.getAbsolutePath());
@@ -199,6 +203,10 @@ public class MavenDirectoryInstall {
             }
         }
         logger.log(Level.INFO, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("TOOL_INSTALLATION_COMPLETED"));
+
+        // clean up tmp now
+        cleanUp();
+        
     }
 
     private Collection<File> findFeatureEsas(Collection<String> resolvedFeatures, File rootDir)
@@ -234,8 +242,9 @@ public class MavenDirectoryInstall {
      */
     private List<File> downloadMissingFeatureEsas(List<String> features) {
         ArtifactDownloader artifactDownloader = new ArtifactDownloader();
-        artifactDownloader.synthesizeAndDownloadFeatures(features, Utils.getInstallDir() + "/tmp/maven-repository/",
+        artifactDownloader.synthesizeAndDownloadFeatures(features, TEMP_DIRECTORY,
                 "http://repo.maven.apache.org/maven2/");
+        this.tempCleanupRequired = true;
 
         return artifactDownloader.getDownloadedEsas();
 
@@ -280,6 +289,25 @@ public class MavenDirectoryInstall {
                     .collect(Collectors.toList()));
         }
         return jsonFiles;
+    }
+
+    /**
+     * Clean up the temp directory used for storing features downloaded from online
+     * 
+     * @throws IOException
+     */
+    private void cleanUp() throws IOException {
+        File temp = new File(TEMP_DIRECTORY);
+        if (tempCleanupRequired) {
+            Files.walk(Paths.get(temp.toURI())).sorted(Comparator.reverseOrder()).map(Path::toFile)
+                    .forEach(File::delete);
+        }
+        if (!temp.exists()) {
+            logger.log(Level.FINE, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("MSG_CLEANUP_SUCCESS"));
+        } else {
+            logger.log(Level.FINE, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("LOG_CANNOT_CLOSE_OBJECT"));
+        }
+
     }
 
 }
