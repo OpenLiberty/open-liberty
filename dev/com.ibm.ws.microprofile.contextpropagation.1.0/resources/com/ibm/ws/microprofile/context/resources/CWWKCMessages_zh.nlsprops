@@ -1,0 +1,51 @@
+###############################################################################
+# Copyright (c) 2018,2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.microprofile.contextpropagation.1.0/resources/com/ibm/ws/microprofile/context/resources/CWWKCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC MicroProfile Context Propagation
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWCK1150 to CWWCK1189 except those specifically identified as moved
+
+CWWKC1150.duplicate.context=CWWKC1150E: \u591a\u4e2a\u53ef\u7528\u4e8e\u5e94\u7528\u7a0b\u5e8f\u7684\u7ebf\u7a0b\u4e0a\u4e0b\u6587\u63d0\u4f9b\u7a0b\u5e8f\u63d0\u4f9b\u4e86\u76f8\u540c\u7ebf\u7a0b\u4e0a\u4e0b\u6587\u7c7b\u578b {0}\u3002\u7ebf\u7a0b\u4e0a\u4e0b\u6587\u63d0\u4f9b\u7a0b\u5e8f\u662f\uff1a{1} \u548c {2}\u3002
+CWWKC1150.duplicate.context.explanation=MicroProfile Context Propagation \u89c4\u8303\u4e0d\u5141\u8bb8\u5c06\u591a\u4e2a ThreadContextProvider \u7528\u4e8e\u6bcf\u79cd\u4e0a\u4e0b\u6587\u7c7b\u578b\u3002
+CWWKC1150.duplicate.context.useraction=\u8bf7\u66f4\u65b0\u5e94\u7528\u7a0b\u5e8f\u548c/\u6216\u5e93\uff0c\u4ee5\u4fbf\u4e0d\u5b58\u5728\u6307\u5b9a\u7684\u7c7b\u578b\u5177\u6709\u591a\u4e2a ThreadContextProvider \u7684\u60c5\u51b5\u3002
+
+# do not translate: cleared, propagated
+CWWKC1151.context.lists.overlap=CWWKC1151E: ManagedExecutor \u914d\u7f6e\u5305\u542b\u4ee5\u4e0b\u5df2\u914d\u7f6e\u4e3a\u8981\u540c\u65f6\u6e05\u9664\u548c\u4f20\u64ad\u7684\u7ebf\u7a0b\u4e0a\u4e0b\u6587\u7c7b\u578b\uff1a{0}
+CWWKC1151.context.lists.overlap.explanation=\u6784\u5efa\u6216\u63d2\u5165 ManagedExecutor \u65f6\uff0c\u4e0d\u80fd\u5728\u591a\u79cd\u7c7b\u522b\u4e2d\u914d\u7f6e\u7ebf\u7a0b\u4e0a\u4e0b\u6587\u7c7b\u578b\u3002
+CWWKC1151.context.lists.overlap.useraction=\u8bf7\u590d\u67e5 ManagedExecutor \u6784\u5efa\u5668\u6216 ManagedExecutorConfig \u6ce8\u91ca\u4e2d\u7ebf\u7a0b\u4e0a\u4e0b\u6587\u7c7b\u578b\u7684\u5206\u7c7b\uff0c\u5e76\u8fdb\u884c\u66f4\u6b63\u3002
+
+# do not translate: cleared, propagated, unchanged
+CWWKC1152.context.lists.overlap=CWWKC1152E: \u5728\u591a\u4e2a\u7c7b\u522b\uff08\u6e05\u9664\u3001\u4f20\u64ad\u548c\u53d6\u6d88\u66f4\u6539\uff09\u4e2d\u914d\u7f6e\u4e86\u4ee5\u4e0b\u7ebf\u7a0b\u4e0a\u4e0b\u6587\u7c7b\u578b\uff1a{0}\u3002
+CWWKC1152.context.lists.overlap.explanation=\u6784\u5efa\u6216\u63d2\u5165 ThreadContext \u5b9e\u4f8b\u65f6\uff0c\u4e0d\u80fd\u5728\u591a\u79cd\u7c7b\u522b\u4e2d\u914d\u7f6e\u7ebf\u7a0b\u4e0a\u4e0b\u6587\u7c7b\u578b\u3002
+CWWKC1152.context.lists.overlap.useraction=\u8bf7\u590d\u67e5 ThreadContext \u6784\u5efa\u5668\u6216 ThreadContextConfig \u6ce8\u91ca\u4e2d\u7ebf\u7a0b\u4e0a\u4e0b\u6587\u7c7b\u578b\u7684\u5206\u7c7b\uff0c\u5e76\u8fdb\u884c\u66f4\u6b63\u3002
+
+CWWKC1155.unknown.context=CWWKC1155E: \u7ebf\u7a0b\u4e0a\u4e0b\u6587\u7c7b\u578b {0} \u5df2\u914d\u7f6e\u4e3a\u8981\u6e05\u9664\u6216\u4f20\u64ad\uff0c\u4f46\u6b64\u7c7b\u578b\u7684\u4efb\u4f55\u7ebf\u7a0b\u4e0a\u4e0b\u6587\u63d0\u4f9b\u7a0b\u5e8f\u90fd\u4e0d\u53ef\u7528\u4e8e\u5e94\u7528\u7a0b\u5e8f\u3002\u53ef\u7528\u7684\u7ebf\u7a0b\u4e0a\u4e0b\u6587\u7c7b\u578b\u662f\uff1a{1}\u3002
+CWWKC1155.unknown.context.explanation=\u5bf9\u4e8e\u670d\u52a1\u5668\u672a\u63d0\u4f9b\u7684\u6bcf\u79cd\u5df2\u914d\u7f6e\u7ebf\u7a0b\u4e0a\u4e0b\u6587\u7c7b\u578b\uff0c\u7ebf\u7a0b\u4e0a\u4e0b\u6587\u63d0\u4f9b\u7a0b\u5e8f\u5fc5\u987b\u5728\u5e94\u7528\u7a0b\u5e8f\u7684\u7ebf\u7a0b\u4e0a\u4e0b\u6587\u7c7b\u88c5\u5165\u5668\u4e0a\u53ef\u7528\u3002\u670d\u52a1\u5668\u63d0\u4f9b\u7684\u7ebf\u7a0b\u4e0a\u4e0b\u6587\u7c7b\u578b\u5305\u62ec\uff1a\u5e94\u7528\u7a0b\u5e8f\u3001CDI\u3001\u5b89\u5168\u6027\u548c\u4e8b\u52a1\u3002
+CWWKC1155.unknown.context.useraction=\u8bf7\u66f4\u65b0\u5e94\u7528\u7a0b\u5e8f\u548c/\u6216\u5e93\uff0c\u4ee5\u5305\u62ec\u670d\u52a1\u5668\u672a\u63d0\u4f9b\u7684\u6bcf\u79cd\u5df2\u914d\u7f6e\u7ebf\u7a0b\u4e0a\u4e0b\u6587\u7c7b\u578b\u7684\u7ebf\u7a0b\u4e0a\u4e0b\u6587\u63d0\u4f9b\u7a0b\u5e8f\u3002\u6216\u8005\uff0c\u66f4\u65b0\u5e94\u7528\u7a0b\u5e8f\uff0c\u4ee5\u4ec5\u4f7f\u7528\u53ef\u7528\u7684\u4e0a\u4e0b\u6587\u7c7b\u578b\u3002
+
+# CWWKC1156E used by com.ibm.ws.concurrent.mp.1.0 bundle
+
+CWWKC1157.cannot.propagate.tx=CWWKC1157E: \u4e0d\u652f\u6301\u5c06\u4e8b\u52a1\u4f20\u64ad\u81f3\u4e0a\u4e0b\u6587\u64cd\u4f5c\u548c\u4efb\u52a1\u3002
+CWWKC1157.cannot.propagate.tx.explanation=\u914d\u7f6e\u4e3a\u4f20\u64ad\u4e8b\u52a1\u4e0a\u4e0b\u6587\u7684 ManagedExecutor \u6216 ThreadContext \u53ea\u80fd\u4f20\u64ad\u7a7a\u4e8b\u52a1\u4e0a\u4e0b\u6587\u3002\u56e0\u6b64\uff0c\u4e0d\u80fd\u5728\u4e8b\u52a1\u4e2d\u521b\u5efa\u4e0a\u4e0b\u6587\u64cd\u4f5c\u548c\u4efb\u52a1\u3002
+CWWKC1157.cannot.propagate.tx.useraction=\u5728\u4e8b\u52a1\u5916\u90e8\u521b\u5efa\u4e0a\u4e0b\u6587\u64cd\u4f5c\u6216\u4efb\u52a1\u3002\u6216\u8005\uff0c\u5c06 ManagedExecutor \u6216 ThreadContext \u914d\u7f6e\u4e3a\u4e0d\u4f20\u64ad\u4e8b\u52a1\u4e0a\u4e0b\u6587\u3002
+
+# CWWKC1158E used by com.ibm.ws.cdi.mp.context bundle

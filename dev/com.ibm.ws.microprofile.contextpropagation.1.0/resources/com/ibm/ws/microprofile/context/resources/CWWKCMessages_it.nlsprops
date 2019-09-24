@@ -1,0 +1,51 @@
+###############################################################################
+# Copyright (c) 2018,2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.microprofile.contextpropagation.1.0/resources/com/ibm/ws/microprofile/context/resources/CWWKCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC MicroProfile Context Propagation
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWCK1150 to CWWCK1189 except those specifically identified as moved
+
+CWWKC1150.duplicate.context=CWWKC1150E: Lo stesso tipo di contesto thread, {0}, \u00e8 fornito da pi\u00f9 provider di contesto di thread disponibili per l''applicazione. I provider di contesto thread sono: {1}, {2}.
+CWWKC1150.duplicate.context.explanation=La specifica di Propagazione contesto microprofilo non consente pi\u00f9 di un ThreadContextProvider per ogni tipo di contesto.
+CWWKC1150.duplicate.context.useraction=Aggiornare l'applicazione o le librerie  disponibile o entrambe in modo che non esista pi\u00f9 di un ThreadContextProvider del tipo specificato.
+
+# do not translate: cleared, propagated
+CWWKC1151.context.lists.overlap=CWWKC1151E: La configurazione ManagedExecutor include i seguenti tipi di contesto thread che sono configurati per essere eliminati e propagati: {0}
+CWWKC1151.context.lists.overlap.explanation=Un tipo di contesto thread pu\u00f2 essere configurato in non pi\u00f9 di una categoria quando si crea o si inserisce un ManagedExecutor.
+CWWKC1151.context.lists.overlap.useraction=Esaminare e correggere la categorizzazione dei tipi di contesto thread nel builder ManagedExecutor o nell'annotazione ManagedExecutorConfig.
+
+# do not translate: cleared, propagated, unchanged
+CWWKC1152.context.lists.overlap=CWWKC1152E: I seguenti tipi di contesto thread sono configurati in pi\u00f9 di una categoria (eliminato, propagato, immutato): {0}.
+CWWKC1152.context.lists.overlap.explanation=Un tipo di contesto thread pu\u00f2 essere configurato in non pi\u00f9 di una categoria quando si crea o si inserisce un'istanza ThreadContext.
+CWWKC1152.context.lists.overlap.useraction=Esaminare e correggere la categorizzazione dei tipi di contesto thread nel builder ThreadContext o nell'annotazione ThreadContextConfig.
+
+CWWKC1155.unknown.context=CWWKC1155E: I tipi di contesto thread {0} sono configurati per essere eliminati o propagati, ma nessun provider di contesto thread per questi tipi \u00e8 disponibile per l''applicazione. I tipi di contesto thread disponibili sono: {1}.
+CWWKC1155.unknown.context.explanation=Per ogni tipo di contesto thread configurato che non \u00e8 fornito dal server, \u00e8 necessario che sia disponibile un provider di contesto thread sul programma di caricamento classi del contesto thread dell'applicazione. I tipi di contesto thread forniti dal server includono: Applicazione, CDI, Sicurezza, Transazione.
+CWWKC1155.unknown.context.useraction=Aggiornare l'applicazione, le librerie o entrambe per includere un provider di contesto thread per ogni tipo di contesto thread configurato che non \u00e8 fornito dal server. In alternativa, aggiornare l'applicazione per utilizzare solo i tipi di contesto disponibili.
+
+# CWWKC1156E used by com.ibm.ws.concurrent.mp.1.0 bundle
+
+CWWKC1157.cannot.propagate.tx=CWWKC1157E: La propagazione delle transazioni ad azioni e attivit\u00e0 contestuali non \u00e8 supportata.
+CWWKC1157.cannot.propagate.tx.explanation=Un ManagedExecutor o ThreadContext configurato per propagare i contesti delle transazioni pu\u00f2 propagare solo contesti di transazione vuoti. Di conseguenza, non \u00e8 possibile creare azioni e attivit\u00e0 contestuali all'interno di una transazione.
+CWWKC1157.cannot.propagate.tx.useraction=Creare l'azione o l'attivit\u00e0 contestuale al di fuori di una transazione. In alternativa, configurare ManagedExecutor o ThreadContext per non propagare i contesti di transazione.
+
+# CWWKC1158E used by com.ibm.ws.cdi.mp.context bundle

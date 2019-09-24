@@ -39,12 +39,12 @@ import com.ibm.ws.concurrent.mp.spi.CompletionStageFactory;
 
 public class CompletionStageRxInvokerImpl implements CompletionStageRxInvoker {
     private WebClient wc;
-    private ExecutorService ex;    
+    private ExecutorService ex;
     //Liberty code change start
     private static final Logger LOG = LogUtils.getL7dLogger(CompletionStageRxInvokerImpl.class);
     private CompletionStageFactory completionStageFactory = JAXRSClientCompletionStageFactoryConfig.getCompletionStageFactory();
     //Liberty code change end        
-    CompletionStageRxInvokerImpl(WebClient wc, ExecutorService ex) {
+    CompletionStageRxInvokerImpl(WebClient wc, ExecutorService ex) {       
         this.ex = ex;
         this.wc = wc;
     }
@@ -194,7 +194,7 @@ public class CompletionStageRxInvokerImpl implements CompletionStageRxInvoker {
                 return CompletableFuture.supplyAsync(supplier);
             }
             return CompletableFuture.supplyAsync(supplier, ex);
-        }        
+        }
 
         return completionStageFactory.supplyAsync(supplier, ex); 
     }

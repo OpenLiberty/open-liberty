@@ -1,0 +1,51 @@
+###############################################################################
+# Copyright (c) 2018,2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.microprofile.contextpropagation.1.0/resources/com/ibm/ws/microprofile/context/resources/CWWKCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC MicroProfile Context Propagation
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWCK1150 to CWWCK1189 except those specifically identified as moved
+
+CWWKC1150.duplicate.context=CWWKC1150E: The same thread context type, {0}, is provided by multiple thread context providers which are available to the application. Thread context providers are: {1}, {2}.
+CWWKC1150.duplicate.context.explanation=The MicroProfile Context Propagation specification permits no more than one ThreadContextProvider for each context type.
+CWWKC1150.duplicate.context.useraction=Update the available application, libraries, or both so that no more than one ThreadContextProvider of the specified type exists.
+
+# do not translate: cleared, propagated
+CWWKC1151.context.lists.overlap=CWWKC1151E: The ManagedExecutor configuration includes the following thread context types that are configured to be both cleared and propagated: {0}
+CWWKC1151.context.lists.overlap.explanation=A thread context type can be configured in no more than one category when building or injecting a ManagedExecutor.
+CWWKC1151.context.lists.overlap.useraction=Review and correct the categorization of thread context types in your ManagedExecutor builder or ManagedExecutorConfig annotation.
+
+# do not translate: cleared, propagated, unchanged
+CWWKC1152.context.lists.overlap=CWWKC1152E: The following thread context types are configured in more than one category of (cleared, propagated, unchanged): {0}.
+CWWKC1152.context.lists.overlap.explanation=A thread context type can be configured in no more than one category when building or injecting a ThreadContext instance.
+CWWKC1152.context.lists.overlap.useraction=Review and correct the categorization of thread context types in your ThreadContext builder or ThreadContextConfig annotation.
+
+CWWKC1155.unknown.context=CWWKC1155E: Thread context types {0} are configured to be cleared or propagated, but no thread context providers for these types are available to the application. Available thread context types are: {1}.
+CWWKC1155.unknown.context.explanation=For each configured thread context type that is not provided by the server, a thread context provider must be available on the application's thread context class loader. Thread context types provided by the server include: Application, CDI, Security, Transaction.
+CWWKC1155.unknown.context.useraction=Update the application, libraries or both to include a thread context provider for each configured thread context type that is not provided by the server. Alternatively, update the application to only use the context types that are available.
+
+# CWWKC1156E used by com.ibm.ws.concurrent.mp.1.0 bundle
+
+CWWKC1157.cannot.propagate.tx=CWWKC1157E: Propagating transactions to contextual actions and tasks is not supported.
+CWWKC1157.cannot.propagate.tx.explanation=A ManagedExecutor or ThreadContext that is configured to propagate transaction contexts can propagate empty transaction contexts only. Therefore, you cannot create contextual actions and tasks within a transaction.
+CWWKC1157.cannot.propagate.tx.useraction=Create the contextual action or task outside of a transaction. Alternatively, configure the ManagedExecutor or ThreadContext to not propagate transaction contexts.
+
+# CWWKC1158E used by com.ibm.ws.cdi.mp.context bundle
