@@ -23,3 +23,4 @@ IBM-App-ForceRestart: uninstall, \
 -bundles=com.ibm.ws.jpa.container.v22, \
  com.ibm.ws.jpa.container, \
  com.ibm.ws.jpa.container.thirdparty
+WLP-Activation-Type: parallel

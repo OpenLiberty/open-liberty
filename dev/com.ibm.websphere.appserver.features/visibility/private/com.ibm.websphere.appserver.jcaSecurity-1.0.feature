@@ -7,3 +7,4 @@ symbolicName=com.ibm.websphere.appserver.jcaSecurity-1.0
  com.ibm.websphere.security
 kind=ga
 edition=core
+WLP-Activation-Type: parallel
