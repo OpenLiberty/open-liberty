@@ -908,6 +908,7 @@ public class CachedDBOidcClientProvider extends OAuthJDBCImpl implements OidcOAu
         // Use an empty string as the last insert to avoid an unused insert (e.g. "{2}") showing up in the exception message
         updatedMsgArgs = appendStringMessageToArgs("", msgArgs);
         String exceptionMsg = Tr.formatMessage(tc, msgKey, updatedMsgArgs);
+
         throw new OidcServerException(exceptionMsg, OIDCConstants.ERROR_SERVER_ERROR, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
     }
 

@@ -13,6 +13,7 @@ package com.ibm.oauth.core.api.error;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.ibm.oauth.core.api.error.oauth20.OAuth20Exception;
+import com.ibm.ws.security.oauth20.error.impl.BrowserAndServerLogMessage;
 import com.ibm.ws.security.oauth20.util.OidcOAuth20Util;
 
 /**
@@ -27,38 +28,73 @@ public class OidcServerException extends OAuth20Exception {
 
     private final String _errorCode;
     private final String _errorDescription;
+    private final BrowserAndServerLogMessage _browserServerLog;
     private int _httpStatus = -1;
 
     /**
      * Constructs an instance of this exception with the referenced arguments.
-     * 
+     *
      * @param desription
      *            The error description for this exception. Can be <code>null</code> if the code is null
-     * 
+     *
      * @param code
      *            The error code for this exception. Specify <code>null</code> if the code is unknown.
      * @param cause
-     *            exception causing the problem 
+     *            exception causing the problem
      * @param httpStatus
      *            The HTTP status code to associate to this exception.
      */
     public OidcServerException(String description, String code, int httpStatus, Throwable cause) {
-        super(code, description, cause); //$NON-NLS-1$
+        super(code, description, cause);
         _errorDescription = description;
         _errorCode = code;
         _httpStatus = httpStatus;
+        _browserServerLog = null;
     }
 
     public OidcServerException(String description, String code, int httpStatus) {
-        super(code, description, null); //$NON-NLS-1$
+        super(code, description, null);
         _errorDescription = description;
         _errorCode = code;
         _httpStatus = httpStatus;
+        _browserServerLog = null;
+
+    }
+
+    public OidcServerException(BrowserAndServerLogMessage browserServerLogMsg, String code, int httpStatus) {
+        // TODO
+        super(code, null, null);
+
+        // super(code, description, null); //$NON-NLS-1$
+        /*
+         * BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, locales, "OAUTH_UNSUPPORTED_METHOD", new Object[] { request.getMethod(), "Registration Endpoint Service" });
+         * Tr.error(tc, errorMsg.getServerErrorMessage());
+         * throw new OidcServerException(errorMsg.getBrowserErrorMessage(), OIDCConstants.ERROR_SERVER_ERROR, HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+         */
+        _errorDescription = null;
+        _errorCode = code;
+        _httpStatus = httpStatus;
+        _browserServerLog = browserServerLogMsg;
+    }
+
+    public OidcServerException(BrowserAndServerLogMessage browserServerLogMsg, String code, int httpStatus, Throwable cause) {
+        super(code, null, null);
+
+        // super(code, description, null); //$NON-NLS-1$
+        /*
+         * BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, locales, "OAUTH_UNSUPPORTED_METHOD", new Object[] { request.getMethod(), "Registration Endpoint Service" });
+         * Tr.error(tc, errorMsg.getServerErrorMessage());
+         * throw new OidcServerException(errorMsg.getBrowserErrorMessage(), OIDCConstants.ERROR_SERVER_ERROR, HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+         */
+        _errorDescription = null;
+        _errorCode = code;
+        _httpStatus = httpStatus;
+        _browserServerLog = browserServerLogMsg;
     }
 
     /**
      * Returns the error description for this exception, as an English string.
-     * 
+     *
      * @return The OAuth error description.
      */
     public String getErrorDescription() {
@@ -67,7 +103,7 @@ public class OidcServerException extends OAuth20Exception {
 
     /**
      * Returns the error code associated to this exception.
-     * 
+     *
      * @return The error code for this exception.
      */
     public String getErrorCode() {
@@ -76,11 +112,15 @@ public class OidcServerException extends OAuth20Exception {
 
     /**
      * Returns the HTTP status code associated to this exception.
-     * 
+     *
      * @return The HTTP status code. Will be -1 if no code was specified.
      */
     public int getHttpStatus() {
         return _httpStatus;
+    }
+
+    public BrowserAndServerLogMessage getBrowserServerLogMessage() {
+        return _browserServerLog;
     }
 
     public boolean isComplete() {
@@ -89,7 +129,7 @@ public class OidcServerException extends OAuth20Exception {
 
     /**
      * Constructs an OAuth 2.0 error response from the exception state, per RFC6749 section 5.2.
-     * 
+     *
      * @return An error JSON string - never <code>null</code>.
      */
     public String toJSON() {

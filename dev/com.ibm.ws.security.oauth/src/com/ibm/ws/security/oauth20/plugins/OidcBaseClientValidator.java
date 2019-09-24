@@ -26,11 +26,14 @@ import com.google.gson.JsonElement;
 import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.oauth.core.api.error.OidcServerException;
 import com.ibm.oauth.core.internal.oauth20.OAuth20Constants;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.security.oauth20.error.impl.BrowserAndServerLogMessage;
 import com.ibm.ws.security.oauth20.util.OIDCConstants;
 import com.ibm.ws.security.oauth20.util.OidcOAuth20Util;
 import com.ibm.ws.security.oauth20.web.AbstractOidcEndpointServices;
+import com.ibm.ws.security.oauth20.web.TraceConstants;
 
 /**
  * Client Registration utilizes this class to perform parameter validation of property values
@@ -41,6 +44,8 @@ public class OidcBaseClientValidator {
 
     private final OidcBaseClient client; // Defensive copy of OidcBaseClient reference used in constructor
     private Enumeration<Locale> locale = null;
+
+    private static TraceComponent tc = Tr.register(OidcBaseClientValidator.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 
     private OidcBaseClientValidator(OidcBaseClient client, Enumeration<Locale> locale) {
         this.client = client.getDeepCopy();
@@ -141,12 +146,12 @@ public class OidcBaseClientValidator {
                  * Tr.error(tc, errorMsg.getServerErrorMessage());
                  * throw new OidcServerException(errorMsg.getBrowserErrorMessage(), OIDCConstants.ERROR_INVALID_REQUEST, HttpServletResponse.SC_BAD_REQUEST);
                  */
-                BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, locales, "OAUTH_CLIENT_REGISTRATION_MISSING_CLIENTID", new Object[] { request.getMethod(), OAuth20Constants.CLIENT_ID });
-                String description = TraceNLS.getFormattedMessage(OidcBaseClientValidator.class,
-                        MESSAGE_BUNDLE,
-                        "OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR", // CWWKS1423E
-                        new Object[] { illegalChars[i] }, "");
-                throw new OidcServerException(description, OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
+                BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, locale, "OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR", new Object[] { illegalChars[i] });
+                // String description = TraceNLS.getFormattedMessage(OidcBaseClientValidator.class,
+                // MESSAGE_BUNDLE,
+                // "OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR", // CWWKS1423E
+                // new Object[] { illegalChars[i] }, "");
+                throw new OidcServerException(errorMsg, OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
             }
         }
     }
@@ -391,12 +396,15 @@ public class OidcBaseClientValidator {
         if (!OidcOAuth20Util.isNullEmpty(appType) &&
                 !appType.equals(OIDCConstants.OIDC_CLIENTREG_PARM_NATIVE) &&
                 !appType.equals(OIDCConstants.OIDC_CLIENTREG_PARM_WEB)) {
-            String description = TraceNLS.getFormattedMessage(OidcBaseClientValidator.class,
-                    MESSAGE_BUNDLE,
-                    "OAUTH_CLIENT_REGISTRATION_VALUE_NOT_SUPPORTED",
-                    new Object[] { appType, OIDCConstants.OIDC_CLIENTREG_APP_TYPE },
-                    "CWWKS1442E: The value {0} is not a supported value for the {1} client registration metadata field.");
-            throw new OidcServerException(description, OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
+
+            BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, locale, "OAUTH_CLIENT_REGISTRATION_VALUE_NOT_SUPPORTED", new Object[] { appType, OIDCConstants.OIDC_CLIENTREG_APP_TYPE });
+            throw new OidcServerException(errorMsg, OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
+
+            // String description = TraceNLS.getFormattedMessage(OidcBaseClientValidator.class,
+            // MESSAGE_BUNDLE,
+            // "OAUTH_CLIENT_REGISTRATION_VALUE_NOT_SUPPORTED",
+            // new Object[] { appType, OIDCConstants.OIDC_CLIENTREG_APP_TYPE },
+            // "CWWKS1442E: The value {0} is not a supported value for the {1} client registration metadata field.");
         }
     }
 
@@ -410,13 +418,13 @@ public class OidcBaseClientValidator {
             for (JsonElement response : responseTypes) {
                 if (!OIDCConstants.OIDC_SUPP_RESP_TYPES_SET.contains(response.getAsString())) {
 
-                    String description = TraceNLS.getFormattedMessage(OidcBaseClientValidator.class,
-                            MESSAGE_BUNDLE,
-                            "OAUTH_CLIENT_REGISTRATION_VALUE_NOT_SUPPORTED",
-                            new Object[] { response.getAsString(), OAuth20Constants.RESPONSE_TYPE },
-                            "CWWKS1442E: The value {0} is not a supported value for the {1} client registration metadata field.");
-
-                    throw new OidcServerException(description, OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
+                    // String description = TraceNLS.getFormattedMessage(OidcBaseClientValidator.class,
+                    // MESSAGE_BUNDLE,
+                    // "OAUTH_CLIENT_REGISTRATION_VALUE_NOT_SUPPORTED",
+                    // new Object[] { response.getAsString(), OAuth20Constants.RESPONSE_TYPE },
+                    // "CWWKS1442E: The value {0} is not a supported value for the {1} client registration metadata field.");
+                    BrowserAndServerLogMessage browserServerMsg = new BrowserAndServerLogMessage(tc, locale, "OAUTH_CLIENT_REGISTRATION_VALUE_NOT_SUPPORTED", new Object[] { response.getAsString(), OAuth20Constants.RESPONSE_TYPE });
+                    throw new OidcServerException(browserServerMsg, OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
                 }
 
                 if (!dupeCheckerSet.add(response.getAsString())) {

@@ -193,7 +193,7 @@ public class OAuth20EndpointServices {
             ServletContext servletContext) throws ServletException, IOException {
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "Checking if OAuth20 Provider should process the request.");
-            Tr.debug(tc, "Inbound request "+com.ibm.ws.security.common.web.WebUtils.getRequestStringForTrace(request,"client_secret"));
+            Tr.debug(tc, "Inbound request " + com.ibm.ws.security.common.web.WebUtils.getRequestStringForTrace(request, "client_secret"));
         }
         OAuth20Request oauth20Request = getAuth20Request(request, response);
         OAuth20Provider oauth20Provider = null;
@@ -204,7 +204,7 @@ public class OAuth20EndpointServices {
                 AttributeList optionalParams = new AttributeList();
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "OAUTH20 _SSO OP PROCESS IS STARTING.");
-                    Tr.debug(tc, "OAUTH20 _SSO OP inbound URL "+com.ibm.ws.security.common.web.WebUtils.getRequestStringForTrace(request,"client_secret"));
+                    Tr.debug(tc, "OAUTH20 _SSO OP inbound URL " + com.ibm.ws.security.common.web.WebUtils.getRequestStringForTrace(request, "client_secret"));
                 }
                 handleEndpointRequest(request, response, servletContext, oauth20Provider, endpointType, optionalParams);
             }
@@ -236,7 +236,7 @@ public class OAuth20EndpointServices {
         boolean isBrowserWithBasicAuth = false;
         UIAccessTokenBuilder uitb = null;
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "endpointType["+endpointType+"]");
+            Tr.debug(tc, "endpointType[" + endpointType + "]");
         }
         try {
             switch (endpointType) {
@@ -342,7 +342,15 @@ public class OAuth20EndpointServices {
                         "com.ibm.ws.security.oauth20.web.OAuth20EndpointServices", "324", this);
             }
             boolean suppressBasicAuthChallenge = isBrowserWithBasicAuth; // ui must NOT log in using basic auth, so logout function will work.
-            WebUtils.sendErrorJSON(response, e.getHttpStatus(), e.getErrorCode(), e.getErrorDescription(), suppressBasicAuthChallenge);
+            /*
+             * BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, locales, "OAUTH_CLIENT_REGISTRATION_MALFORMED_REQUEST");
+             * Tr.error(tc, errorMsg.getServerErrorMessage());
+             * throw new OidcServerException(errorMsg.getBrowserErrorMessage(), OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
+             */
+
+            // BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(e.getBrowserServerLogMessage().getTraceComponent(), request.getLocales(), e.getBrowserServerLogMessage().getMessageKey());
+            e.getBrowserServerLogMessage().setTraceComponent(tc);
+            WebUtils.sendErrorJSON(response, e.getHttpStatus(), e.getErrorCode(), e.getBrowserServerLogMessage().getBrowserErrorMessage(), suppressBasicAuthChallenge);
         }
 
     }
@@ -458,7 +466,7 @@ public class OAuth20EndpointServices {
         try {
             if (logoutRedirectURL != null) {
                 if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "OAUTH20 _SSO OP redirecting to [" + logoutRedirectURL +"]");
+                    Tr.debug(tc, "OAUTH20 _SSO OP redirecting to [" + logoutRedirectURL + "]");
                 }
                 response.sendRedirect(logoutRedirectURL);
                 return;
@@ -485,11 +493,11 @@ public class OAuth20EndpointServices {
         String reqConsentNonce = getReqConsentNonce(request);
         boolean afterLogin = isAfterLogin(request); // we've been to login.jsp or it's replacement.
 
-        if (reqConsentNonce == null) { // validate request for initial authorization request only 
+        if (reqConsentNonce == null) { // validate request for initial authorization request only
             oauthResult = clientAuthorization.validateAuthorization(provider, request, response);
             if (oauthResult.getStatus() != OAuthResult.STATUS_OK) {
                 if (tc.isDebugEnabled()) {
-                    Tr.debug(tc,"Status is OK, returning result");
+                    Tr.debug(tc, "Status is OK, returning result");
                 }
                 return oauthResult;
             }

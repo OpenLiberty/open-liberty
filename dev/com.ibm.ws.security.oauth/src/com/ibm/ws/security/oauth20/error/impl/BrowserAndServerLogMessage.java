@@ -25,10 +25,16 @@ public class BrowserAndServerLogMessage {
 
     private final String browserMsg;
     private final String serverMsg;
+    private final Enumeration<Locale> requestLocales;
+    private TraceComponent tc;
+    private final String msgKey;
 
     public BrowserAndServerLogMessage(TraceComponent tc, Enumeration<Locale> requestLocales, String msgKey, Object... inserts) {
         browserMsg = Tr.formatMessage(tc, requestLocales, msgKey, inserts);
         serverMsg = Tr.formatMessage(tc, msgKey, inserts);
+        this.tc = tc;
+        this.requestLocales = requestLocales;
+        this.msgKey = msgKey;
     }
 
     public String getBrowserErrorMessage() {
@@ -37,6 +43,22 @@ public class BrowserAndServerLogMessage {
 
     public String getServerErrorMessage() {
         return serverMsg;
+    }
+
+    public TraceComponent getTraceComponent() {
+        return tc;
+    }
+
+    public Enumeration<Locale> getRequestLocales() {
+        return requestLocales;
+    }
+
+    public String getMessageKey() {
+        return msgKey;
+    }
+
+    public void setTraceComponent(TraceComponent tc) {
+        this.tc = tc;
     }
 
 }
