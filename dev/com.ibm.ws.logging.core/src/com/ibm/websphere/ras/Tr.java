@@ -27,6 +27,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import com.ibm.websphere.ras.annotation.TraceOptions;
 import com.ibm.ws.logging.internal.TraceNLSResolver;
 import com.ibm.ws.logging.internal.TraceSpecification;
+import com.ibm.ws.logging.internal.TraceSpecification.TraceElement;
 import com.ibm.wsspi.logprovider.TrService;
 
 /**
@@ -117,11 +118,21 @@ import com.ibm.wsspi.logprovider.TrService;
 
 public class Tr {
 
+    static final TraceSpecification defaultTraceSpec;
+
+    static {
+        defaultTraceSpec = new TraceSpecification("", null, false);
+        List<TraceElement> elements = defaultTraceSpec.getSpecs();
+        if (elements.size() == 1) {
+            elements.get(0).setMatched(true);
+        }
+    }
+    
     /**
      * The current active trace specification. Initialize to the default trace
      * specification (should be *=info, but leave that to TraceSpecification).
      */
-    static volatile TraceSpecification activeTraceSpec = new TraceSpecification("", null, false);
+    static volatile TraceSpecification activeTraceSpec = defaultTraceSpec;
 
     /** Set of all trace components */
     static final Set<TraceComponent> allTraceComponents = Collections.newSetFromMap(new WeakHashMap<TraceComponent, Boolean>());
@@ -813,6 +824,10 @@ public class Tr {
                 return;
             }
             activeTraceSpec = spec;
+
+            if (activeTraceSpec != defaultTraceSpec && activeTraceSpec.equals(defaultTraceSpec)) {
+                activeTraceSpec = defaultTraceSpec;
+            }
 
             // update all of the current trace components
             for (TraceComponent t : allTraceComponents) {

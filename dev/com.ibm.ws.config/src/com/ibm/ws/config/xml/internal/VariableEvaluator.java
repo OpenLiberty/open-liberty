@@ -243,7 +243,8 @@ public class VariableEvaluator {
         if (rawValue instanceof List) {
             List<Object> returnList = new ArrayList<Object>();
             List<Object> values = (List<Object>) rawValue;
-            for (Object o : values) {
+            for (int i = 0, size = values.size(); i < size; ++i) {
+                Object o = values.get(i);
                 Object processed = processVariableLists(o, attributeDef, context, ignoreWarnings);
                 if (processed instanceof List)
                     returnList.addAll((List<Object>) processed);

@@ -246,7 +246,7 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
         return sharedClassCacheURL;
     }
 
-    private static byte[] getClassBytesFromHook(UniversalContainer.UniversalResource resource, String className, String resourceName, ClassLoaderHook hook) {
+    static byte[] getClassBytesFromHook(UniversalContainer.UniversalResource resource, String className, String resourceName, ClassLoaderHook hook) {
         byte[] bytes = null;
         if (hook != null) {
             final URL resourceURL = resource.getResourceURL("jar");

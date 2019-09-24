@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejbbnd:EJBJarBinding xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ejbbnd="ejbbnd.xmi" xmlns:ejb="ejb.xmi" xmi:id="EJBJarBinding_1">
+  <ejbJar href="META-INF/ejb-jar.xml#ejb-jar_ID"/>
+  <ejbBindings xmi:id="EnterpriseBeanBinding_1" jndiName="com/ibm/ws/ejbcontainer/timer/persistent/core/ejb/StatelessHome">
+    <enterpriseBean xmi:type="ejb:Session" href="META-INF/ejb-jar.xml#Session_1"/>
+  </ejbBindings>
+  <ejbBindings xmi:id="EnterpriseBeanBinding_2" jndiName="com/ibm/ws/ejbcontainer/timer/persistent/core/ejb/StatelessTimedHome">
+    <enterpriseBean xmi:type="ejb:Session" href="META-INF/ejb-jar.xml#Session_2"/>
+  </ejbBindings>
+  <ejbBindings xmi:id="EnterpriseBeanBinding_6" jndiName="com/ibm/ws/ejbcontainer/timer/persistent/core/ejb/StatefulHome">
+    <enterpriseBean xmi:type="ejb:Session" href="META-INF/ejb-jar.xml#Session_6"/>
+  </ejbBindings>
+  <ejbBindings xmi:id="EnterpriseBeanBinding_7" jndiName="com/ibm/ws/ejbcontainer/timer/persistent/core/ejb/LateWarningHome">
+    <enterpriseBean xmi:type="ejb:Session" href="META-INF/ejb-jar.xml#Session_7"/>
+  </ejbBindings>
+</ejbbnd:EJBJarBinding>

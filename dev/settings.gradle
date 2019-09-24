@@ -13,77 +13,93 @@ pluginManagement {
   /**
    * Load properties before initializing in order to use credentials to configure repositories.
    */
-  File usrHomeProps = file(System.properties['user.home'] + '/gradle.startup.properties')
-  if (System.properties['build.properties.path'] != null) {
-    usrHomeProps = file(System.properties['build.properties.path'])
+  File usrHomeProps = (System.properties['build.properties.path'] != null) ? file(System.properties['build.properties.path']) : file(System.properties['user.home'] + '/gradle.startup.properties')
+
+  Properties props = new Properties()	
+  if (usrHomeProps.exists()) {	
+    usrHomeProps.withInputStream { props.load(it) }	
   }
-
-  Properties props = new Properties()
-  if (usrHomeProps.exists()) {
-    usrHomeProps.withInputStream { props.load(it) }
-  }
-
-  def isUsingArtifactory = false
-
-  def fetchRepoPublic = ('aQute.bnd.repository.maven.provider.MavenBndRepository;'+
-          'name = RemotePublic;'+
-          'releaseUrl=https://repo.maven.apache.org/maven2/'+
-          ';index=${build}/oss_dependencies.maven')
-
-  def fetchRepoIBM = ('aQute.bnd.repository.maven.provider.MavenBndRepository'+
-          ';name = RemoteIBM'+
-          ';local=~/.ibmdhe/repository'+
-          ';releaseUrl=http://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo/'+
-          ';index=${build}/oss_ibm.maven')
-
-  // Not yet supported to not have this set via gradle.startup.properties
-  def fetchRepoIBMJava = ('aQute.bnd.repository.maven.provider.MavenBndRepository'
-          +';name = DummyRepo')
-
-  def pushRepoIBM = ('aQute.bnd.repository.maven.provider.MavenBndRepository'+
-          ';name = RemotePublish')
-
-  if (usrHomeProps.exists() && !props.getProperty('artifactory.force.external.repo')) {
-    if (props.getProperty('artifactory.download.server') != null) {
-      // This is to support more controlled dependency management if we are able to access particular internal systems.
-      isUsingArtifactory = true
-      def repoURL = ('https://' + props.getProperty('artifactory.download.server') + '/artifactory/wasliberty-open-liberty')
-      fetchRepoPublic = ('aQute.bnd.repository.maven.provider.MavenBndRepository'+
-              ';name = RemotePublic'+
-              ';local=~/.ibmartifactory/repository'+
-              ';releaseUrl=' + repoURL +
-              ';snapshotUrl=' + repoURL +
-              ';index=${build}/oss_dependencies.maven')
-
-      fetchRepoIBM = ('aQute.bnd.repository.maven.provider.MavenBndRepository'+
-              ';name = RemoteIBM'+
-              ';local=~/.ibmartifactory/repository'+
-              ';releaseUrl=' + repoURL +
-              ';snapshotUrl=' + repoURL +
-              ';index=${build}/oss_ibm.maven')
-
-      fetchRepoIBMJava = ('aQute.bnd.repository.maven.provider.MavenBndRepository'+
-              ';local=~/.ibmjava/repository'+
-              ';name = IBMInternalJava'+
-              ';releaseUrl=' + repoURL +
-              ';snapshotUrl=' + repoURL +
-              ';index=${build}/ibm_java.maven')
-    }
-    if (props.getProperty('artifactory.upload.server') != null) {
-      def uploadRepoURL = ('https://' + props.getProperty('artifactory.upload.server') + '/artifactory/wasliberty-open-liberty')
-      pushRepoIBM = ('aQute.bnd.repository.maven.provider.MavenBndRepository'+
-              ';name = RemotePublish'+
-              ';releaseUrl=' + uploadRepoURL +
-              ';snapshotUrl=' + uploadRepoURL +
-              ';index=${build}/openliberty.maven')
+  
+  // Artifactory connections fail if a user accidentally adds whitespace to tokens.
+  def stripTrailingWhitespace = [
+          'artifactory.download.user',
+          'artifactory.download.token',
+          'artifactory.download.server',
+          'artifactory.upload.user',
+          'artifactory.upload.token',
+          'artifactory.upload.server',
+  ]
+  stripTrailingWhitespace.each { key ->
+    if (props.get(key) != null) {
+      String value = props.get(key)
+      props.setProperty(key, value.trim())
     }
   }
 
-  props.setProperty('is.using.artifactory',      isUsingArtifactory.toString())
-  props.setProperty('fetch.oss.repository',      fetchRepoPublic)
-  props.setProperty('fetch.oss.ibm.repository',  fetchRepoIBM)
+  // This is to support more controlled dependency management if we are able to access particular internal systems.
+  boolean isUsingArtifactory = (usrHomeProps.exists() && !props.getProperty('artifactory.force.external.repo') && props.getProperty('artifactory.download.server') != null)
+  props.setProperty('is.using.artifactory', isUsingArtifactory.toString())
+
+  String repoURL = ('https://' + props.getProperty('artifactory.download.server') + '/artifactory/wasliberty-open-liberty')
+
+  // Bnd configuration for where to download open source software binaries from.
+  String fetchRepoPublic = !isUsingArtifactory ?
+          ('aQute.bnd.repository.maven.provider.MavenBndRepository;'
+                  +'name = RemotePublic;'
+                  +'releaseUrl=https://repo.maven.apache.org/maven2/'
+                  +';index=${build}/oss_dependencies.maven') :
+
+          ('aQute.bnd.repository.maven.provider.MavenBndRepository'
+                  +';name = RemotePublic'
+                  +';local=~/.ibmartifactory/repository'
+                  +';releaseUrl=' + repoURL
+                  +';snapshotUrl=' + repoURL
+                  +';index=${build}/oss_dependencies.maven')
+  props.setProperty('fetch.oss.repository', fetchRepoPublic)
+
+  // Bnd configuration for where to download IBM released binaries from.
+  String fetchRepoIBM = !isUsingArtifactory ?
+          ('aQute.bnd.repository.maven.provider.MavenBndRepository'
+                  +';name = RemoteIBM'
+                  +';local=~/.ibmdhe/repository'
+                  +';releaseUrl=http://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo/'
+                  +';index=${build}/oss_ibm.maven') :
+
+          ('aQute.bnd.repository.maven.provider.MavenBndRepository'
+                  +';name = RemoteIBM'
+                  +';local=~/.ibmartifactory/repository'
+                  +';releaseUrl=' + repoURL
+                  +';snapshotUrl=' + repoURL
+                  +';index=${build}/oss_ibm.maven')
+  props.setProperty('fetch.oss.ibm.repository', fetchRepoIBM)
+
+  // Bnd configuration for where to download IBM Java binaries from.
+  String fetchRepoIBMJava = !isUsingArtifactory ?
+          ('aQute.bnd.repository.maven.provider.MavenBndRepository'
+                  +';name = DummyRepo') :
+
+          ('aQute.bnd.repository.maven.provider.MavenBndRepository'
+                  +';local=~/.ibmjava/repository'
+                  +';name = IBMInternalJava'
+                  +';releaseUrl=' + repoURL
+                  +';snapshotUrl=' + repoURL
+                  +';index=${build}/ibm_java.maven')
   props.setProperty('fetch.ibm.java.repository', fetchRepoIBMJava)
-  props.setProperty('push.ibm.repository',       pushRepoIBM)
+
+  def uploadRepoURL = ('https://' + props.getProperty('artifactory.upload.server') + '/artifactory/wasliberty-open-liberty')
+
+  // Bnd configuration for where to upload release artifacts to.
+  String pushRepoIBM = (!isUsingArtifactory && props.getProperty('artifactory.upload.server') != null) ?
+          ('aQute.bnd.repository.maven.provider.MavenBndRepository'
+                  +';name = RemotePublish') :
+
+          ('aQute.bnd.repository.maven.provider.MavenBndRepository'
+                  +';name = RemotePublish'
+                  +';releaseUrl=' + uploadRepoURL
+                  +';snapshotUrl=' + uploadRepoURL
+                  +';index=${build}/openliberty.maven')
+  props.setProperty('push.ibm.repository', pushRepoIBM)
+
   gradle.ext.userProps = props
 
   repositories {

@@ -66,17 +66,31 @@ public class BurstDateFormat {
      */
     boolean invalidFormat = false;
 
+    private StringBuffer sb;
+
     /**
      * Constructs a BurstDateFormat
      *
      * @param formatter
      */
     public BurstDateFormat(SimpleDateFormat formatter) {
-        this.formatter = formatter;
+        this(formatter, isFormatInvalid(formatter));
+    }
 
+    public BurstDateFormat(SimpleDateFormat formatter, boolean isInvalid) {
+        this.formatter = formatter;
+        this.invalidFormat = isInvalid;
+        if (!invalidFormat) {
+            sb = new StringBuffer();
+        }
+    }
+
+    static boolean isFormatInvalid(SimpleDateFormat formatter) {
         /**
          * Setup the date formatter, determine if the format is valid
          */
+        FieldPosition position = new FieldPosition(Field.MILLISECOND);
+        boolean invalidFormat = false;
         try {
             StringBuffer refTime = new StringBuffer();
 
@@ -105,6 +119,7 @@ public class BurstDateFormat {
         } catch (Exception e) {
             invalidFormat = true;
         }
+        return invalidFormat;
     }
 
     /**
@@ -122,23 +137,22 @@ public class BurstDateFormat {
 
         try {
             long delta = timestamp - refTimestamp;
+            sb.setLength(0);
 
             // If we need to reformat
             if (delta >= pdiff || delta < ndiff) {
-                StringBuffer refTime = new StringBuffer();
                 refTimestamp = timestamp;
-                formatter.format(timestamp, refTime, position);
+                formatter.format(timestamp, sb, position);
 
-                refMilli = Long.parseLong(refTime.substring(position.getBeginIndex(), position.getEndIndex()));
+                refMilli = Long.parseLong(sb.substring(position.getBeginIndex(), position.getEndIndex()));
 
-                refBeginning = refTime.substring(0, position.getBeginIndex());
-                refEnding = refTime.substring(position.getEndIndex());
+                refBeginning = sb.substring(0, position.getBeginIndex());
+                refEnding = sb.substring(position.getEndIndex());
 
                 pdiff = 1000 - refMilli;
                 ndiff = -refMilli;
-                return refTime.toString();
+                return sb.toString();
             } else {
-                StringBuffer sb = new StringBuffer();
                 long newMilli = delta + refMilli;
                 if (newMilli >= 100)
                     sb.append(refBeginning).append(newMilli).append(refEnding);
@@ -153,6 +167,7 @@ public class BurstDateFormat {
             // Throw FFDC in case anything goes wrong
             // Still generate the date via the SimpleDateFormat
             invalidFormat = true;
+            sb = null;
             return formatter.format(timestamp);
         }
     }

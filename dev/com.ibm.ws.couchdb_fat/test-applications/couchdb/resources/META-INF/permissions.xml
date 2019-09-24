@@ -6,22 +6,22 @@
     version="7">
 
     <permission>
-   	    <class-name>java.util.PropertyPermission</class-name>
-   	    <name>*</name>
-   	    <actions>read</actions>
+        <class-name>java.util.PropertyPermission</class-name>
+        <name>*</name>
+        <actions>read</actions>
     </permission>
     <permission>
-   	    <class-name>java.net.SocketPermission</class-name>
-   	    <name>*</name>
-   	    <actions>connect,resolve</actions>
+        <class-name>java.net.SocketPermission</class-name>
+        <name>*</name>
+        <actions>connect,resolve</actions>
     </permission>
     <permission>
-   	    <class-name>java.lang.RuntimePermission</class-name>
-   	    <name>accessDeclaredMembers</name>
+        <class-name>java.lang.RuntimePermission</class-name>
+        <name>accessDeclaredMembers</name>
     </permission>
     <permission>
-   	    <class-name>java.lang.reflect.ReflectPermission</class-name>
-   	    <name>suppressAccessChecks</name>
+        <class-name>java.lang.reflect.ReflectPermission</class-name>
+        <name>suppressAccessChecks</name>
     </permission>
 
 </permissions>

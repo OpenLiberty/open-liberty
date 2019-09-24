@@ -44,10 +44,9 @@ import com.ibm.wsspi.timer.QuickApproxTime;
  */
 public class SSLChannelProvider implements ChannelFactoryProvider, ManagedServiceFactory {
     /** Trace service */
-    private static final TraceComponent tc =
-                    Tr.register(SSLChannelProvider.class,
-                                SSLChannelConstants.SSL_TRACE_NAME,
-                                SSLChannelConstants.SSL_BUNDLE);
+    private static final TraceComponent tc = Tr.register(SSLChannelProvider.class,
+                                                         SSLChannelConstants.SSL_TRACE_NAME,
+                                                         SSLChannelConstants.SSL_BUNDLE);
 
     static final String SSL_CFG_SUPPRESS_HANDSHAKE_ERRORS = "suppressHandshakeErrors";
     static final String SSL_CFG_SUPPRESS_HANDSHAKE_ERRORS_COUNT = "suppressHandshakeErrorsCount";
@@ -86,7 +85,7 @@ public class SSLChannelProvider implements ChannelFactoryProvider, ManagedServic
 
     /**
      * DS method for activating this component.
-     * 
+     *
      * @param context
      */
     protected synchronized void activate(ComponentContext context) {
@@ -102,7 +101,7 @@ public class SSLChannelProvider implements ChannelFactoryProvider, ManagedServic
 
     /**
      * DS method for deactivating this component.
-     * 
+     *
      * @param context
      */
     protected synchronized void deactivate(ComponentContext context) {
@@ -192,12 +191,12 @@ public class SSLChannelProvider implements ChannelFactoryProvider, ManagedServic
 
     /**
      * Required service: this is not dynamic, and so is called before activate
-     * 
+     *
      * @param ref reference to the service
      */
     protected void setSslSupport(SSLSupport service, Map<String, Object> props) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.entry(tc, "setSslSupport", service);
+            Tr.entry(tc, "setSslSupport", props);
         }
 
         sslSupport = service;
@@ -210,7 +209,7 @@ public class SSLChannelProvider implements ChannelFactoryProvider, ManagedServic
 
     /**
      * This is called if the service is updated.
-     * 
+     *
      * @param ref reference to the service
      */
     protected void updatedSslSupport(SSLSupport service, Map<String, Object> props) {
@@ -222,7 +221,7 @@ public class SSLChannelProvider implements ChannelFactoryProvider, ManagedServic
 
         // If the default pid has changed.. we need to go hunting for who was using the default.
         String id = (String) props.get(SSL_CFG_REF);
-        if (!defaultId.equals(id)) {
+        if ((id != null && defaultId == null) || (id != null && !defaultId.equals(id))) {
             for (SSLChannelOptions options : sslOptions.values()) {
                 options.updateRefId(id);
                 options.updateRegistration(bContext, sslConfigs);
@@ -236,7 +235,7 @@ public class SSLChannelProvider implements ChannelFactoryProvider, ManagedServic
 
     /**
      * Required service: this is not dynamic, and so is called after deactivate
-     * 
+     *
      * @param ref reference to the service
      */
     protected void unsetSslSupport(SSLSupport service) {
@@ -248,14 +247,14 @@ public class SSLChannelProvider implements ChannelFactoryProvider, ManagedServic
 
     /**
      * dynamic/optional/multiple. May be called at any time and in any order
-     * 
+     *
      * @param ref reference to the service
      */
     protected void setSslConfig(ServiceReference<SSLConfiguration> service) {
         String id = (String) service.getProperty(SSL_CFG_ID);
         sslConfigs.putReference(id, service);
 
-        // any options that needed this id need to refresh... 
+        // any options that needed this id need to refresh...
         for (SSLChannelOptions options : sslOptions.values()) {
             options.updateRegistration(bContext, sslConfigs);
         }
@@ -267,14 +266,14 @@ public class SSLChannelProvider implements ChannelFactoryProvider, ManagedServic
 
     /**
      * dynamic/optional/multiple. May be called at any time and in any order
-     * 
+     *
      * @param ref reference to the service
      */
     protected void unsetSslConfig(ServiceReference<SSLConfiguration> service) {
         String id = (String) service.getProperty(SSL_CFG_ID);
         sslConfigs.removeReference(id, service);
 
-        // any options that needed this id need to stop... 
+        // any options that needed this id need to stop...
         for (SSLChannelOptions options : sslOptions.values()) {
             options.updateRegistration(bContext, sslConfigs);
         }
@@ -286,7 +285,7 @@ public class SSLChannelProvider implements ChannelFactoryProvider, ManagedServic
 
     /**
      * DS method for setting the event reference.
-     * 
+     *
      * @param service
      */
     protected void setEventService(EventEngine service) {
@@ -296,14 +295,14 @@ public class SSLChannelProvider implements ChannelFactoryProvider, ManagedServic
     /**
      * DS method for removing the event reference.
      * Required service, do nothing. We should be deactivated before this is invoked.
-     * 
+     *
      * @param service
      */
     protected void unsetEventService(EventEngine service) {}
 
     /**
      * DS method for setting the event reference.
-     * 
+     *
      * @param service
      */
     protected void setChfwBundle(CHFWBundle service) {
@@ -313,7 +312,7 @@ public class SSLChannelProvider implements ChannelFactoryProvider, ManagedServic
     /**
      * DS method for removing the cfw bundle reference.
      * Required service, do nothing. We should be deactivated before this is invoked.
-     * 
+     *
      * @param service
      */
     protected void unsetChfwBundle(ServiceReference<CHFWBundle> service) {}
@@ -322,7 +321,7 @@ public class SSLChannelProvider implements ChannelFactoryProvider, ManagedServic
      * Set the approximate time service reference.
      * This is a required reference: will be called before activation.
      * It is also dynamic: it may be replaced-- but we will always have one.
-     * 
+     *
      * @param ref new ApproximateTime service instance/provider
      */
     protected void setApproxTime(ApproximateTime ref) {
@@ -332,7 +331,7 @@ public class SSLChannelProvider implements ChannelFactoryProvider, ManagedServic
     /**
      * Remove the reference to the approximate time service.
      * This is a required reference, will be called after deactivate.
-     * 
+     *
      * @param ref ApproximateTime service instance/provider to remove
      */
     protected void unsetApproxTime(ApproximateTime ref) {
@@ -352,7 +351,7 @@ public class SSLChannelProvider implements ChannelFactoryProvider, ManagedServic
 
     /**
      * Access the JSSE provider factory service.
-     * 
+     *
      * @return JSSEProviderService - null if not set
      */
     public static JSSEProvider getJSSEProvider() {
@@ -365,7 +364,7 @@ public class SSLChannelProvider implements ChannelFactoryProvider, ManagedServic
 
     /**
      * Access the JSSEHelper service.
-     * 
+     *
      * @return JSSEHelperService - null if not set
      */
     public static JSSEHelper getJSSEHelper() {
@@ -378,7 +377,7 @@ public class SSLChannelProvider implements ChannelFactoryProvider, ManagedServic
 
     /**
      * Access the event service.
-     * 
+     *
      * @return EventEngine - null if not found
      */
     public static EventEngine getEventService() {
@@ -391,7 +390,7 @@ public class SSLChannelProvider implements ChannelFactoryProvider, ManagedServic
 
     /**
      * Access the channel framework's {@link ApproximateTime} service.
-     * 
+     *
      * @return the approximate time service instance to use within the channel framework
      */
     public static long getApproxTime() {

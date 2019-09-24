@@ -117,7 +117,6 @@ public class FeatureDefinitionUtils {
         final File featureFile;
         final long lastModified;
         final long length;
-        public File checksumFile;
 
         ImmutableAttributes(String repoType,
                             String symbolicName,
@@ -155,9 +154,6 @@ public class FeatureDefinitionUtils {
             this.isSingleton = isSingleton;
 
             this.featureFile = featureFile;
-            if (featureFile != null) {
-                this.checksumFile = new File(featureFile.getParentFile(), "checksums/" + symbolicName + ".cs");
-            }
             this.lastModified = lastModified;
             this.length = fileSize;
         }
@@ -188,6 +184,13 @@ public class FeatureDefinitionUtils {
 
                 return s.toString();
             }
+        }
+
+        File getChecksumFile() {
+            if (featureFile == null) {
+                return null;
+            }
+            return new File(featureFile.getParentFile(), "checksums/" + symbolicName + ".cs");
         }
 
         File getLocalizationDirectory() {
@@ -259,7 +262,7 @@ public class FeatureDefinitionUtils {
      * manifest.
      *
      * @param details ManifestDetails containing manifest parser and accessor methods
-     *                    for retrieving information from the manifest.
+     *            for retrieving information from the manifest.
      * @return new ImmutableAttributes
      */
     static ImmutableAttributes loadAttributes(String repoType, File featureFile, ProvisioningDetails details) throws IOException {

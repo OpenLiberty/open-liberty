@@ -461,11 +461,10 @@ public class BaseTraceService implements TrService {
     }
 
     public static void applyJsonFields(String value) {
-        if (value == null || value == "") {
+        if (value == null || value == "" || value.isEmpty()) {
             //if no property is set, return
             return;
         }
-
         TraceComponent tc = Tr.register(LogTraceData.class, NLSConstants.GROUP, NLSConstants.LOGGING_NLS);
         boolean valueFound = false;
         Map<String, String> messageMap = new HashMap<>();
