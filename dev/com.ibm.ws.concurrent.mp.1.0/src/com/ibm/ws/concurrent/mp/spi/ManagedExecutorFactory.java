@@ -11,7 +11,6 @@
 package com.ibm.ws.concurrent.mp.spi;
 
 import org.eclipse.microprofile.context.ManagedExecutor;
-import org.eclipse.microprofile.context.ThreadContext;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.mp.ManagedExecutorImpl;
@@ -20,11 +19,11 @@ import com.ibm.ws.threading.PolicyExecutor;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
 /**
- * Provides static methods to enable the ManagedExecutorBuilderImpl and ThreadContextBuilderImpl,
- * (both of which are from another bundle) to create ManagedExecutor and ThreadContext instances.
+ * Provides a static method to enable the ManagedExecutorBuilderImpl,
+ * which is in a different bundle, to create ManagedExecutor instances.
  */
 @Trivial
-public class MPContextPropagation {
+public class ManagedExecutorFactory {
     /**
      * Creates a new MicroProfile ManagedExecutor instance.
      *
@@ -41,17 +40,5 @@ public class MPContextPropagation {
                                                         @SuppressWarnings("deprecation") AtomicServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> tranContextProviderRef) {
         ThreadContextImpl mpThreadContext = new ThreadContextImpl(threadContextName, hash, config);
         return new ManagedExecutorImpl(managedExecutorName, hash, policyExecutor, mpThreadContext, tranContextProviderRef);
-    }
-
-    /**
-     * Creates a new MicroProfile ThreadContext instance.
-     *
-     * @param name   unique name for the new instance.
-     * @param hash   hash code for the new instance.
-     * @param config represents thread context propagation configuration.
-     * @return the new instance.
-     */
-    public static ThreadContext createThreadContext(String name, int hash, ThreadContextConfig config) {
-        return new ThreadContextImpl(name, hash, config);
     }
 }

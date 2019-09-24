@@ -23,7 +23,7 @@ import org.eclipse.microprofile.context.spi.ThreadContextProvider;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.concurrent.mp.spi.MPContextPropagation;
+import com.ibm.ws.concurrent.mp.spi.ThreadContextFactory;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
@@ -114,7 +114,7 @@ public class ThreadContextBuilderImpl implements ThreadContext.Builder {
 
         String threadContextName = nameBuilder.toString();
 
-        return MPContextPropagation.createThreadContext(threadContextName, hash, configPerProvider);
+        return ThreadContextFactory.createThreadContext(threadContextName, hash, configPerProvider);
     }
 
     @Override

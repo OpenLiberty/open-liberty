@@ -25,7 +25,7 @@ import org.eclipse.microprofile.context.spi.ThreadContextProvider;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.concurrent.mp.spi.MPContextPropagation;
+import com.ibm.ws.concurrent.mp.spi.ManagedExecutorFactory;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.ws.threading.PolicyExecutor;
@@ -128,8 +128,8 @@ public class ManagedExecutorBuilderImpl implements ManagedExecutor.Builder {
                         .maxConcurrency(maxAsync) //
                         .maxQueueSize(maxQueued);
 
-        return MPContextPropagation.createManagedExecutor(executorName, threadContextName, hash, policyExecutor, configPerProvider,
-                                                          cmProvider.transactionContextProvider.transactionContextProviderRef);
+        return ManagedExecutorFactory.createManagedExecutor(executorName, threadContextName, hash, policyExecutor, configPerProvider,
+                                                            cmProvider.transactionContextProvider.transactionContextProviderRef);
     }
 
     @Override
