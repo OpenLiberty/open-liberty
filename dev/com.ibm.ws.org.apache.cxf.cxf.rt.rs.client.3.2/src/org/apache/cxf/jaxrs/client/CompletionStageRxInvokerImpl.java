@@ -184,8 +184,7 @@ public class CompletionStageRxInvokerImpl implements CompletionStageRxInvoker {
     }
 
   //Liberty code change start
-    private <T> CompletionStage<T> supplyAsync(Supplier<T> supplier) {
-         
+    private <T> CompletionStage<T> supplyAsync(Supplier<T> supplier) {         
         if (completionStageFactory == null) {
             // completionStageFactory should only be null when running in a Java SE environment like the TCK.      
             
