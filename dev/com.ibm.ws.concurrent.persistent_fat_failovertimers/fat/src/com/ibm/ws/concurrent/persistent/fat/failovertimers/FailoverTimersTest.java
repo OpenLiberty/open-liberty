@@ -10,19 +10,13 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.persistent.fat.failovertimers;
 
-import static org.junit.Assert.fail;
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -30,17 +24,20 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.config.PersistentExecutor;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import failovertimers.web.FailoverTimersTestServlet;
-import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 
+/**
+ * This test bucket will cover scenarios where EJB persistent timers are shared across multiple servers,
+ * by pointing at the same database.  When the instance that has been running the timer goes down, it should
+ * fail over to another server and continue running there.
+ */
 @RunWith(FATRunner.class)
 public class FailoverTimersTest extends FATServletClient {
 	private static final String APP_NAME = "failoverTimersApp";
