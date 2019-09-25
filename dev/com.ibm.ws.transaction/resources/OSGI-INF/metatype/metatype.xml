@@ -18,6 +18,9 @@
     </Designate>
           
     <OCD description="%transaction.config.desc" name="%transaction.config" id="com.ibm.ws.transaction" ibm:alias="transaction">
+        <AD name="%OnePCOptimization" description="%OnePCOptimization.desc"
+            id="OnePCOptimization" required="false" type="Boolean" default="true" />
+
         <AD name="%recover.on.startup" description="%recover.on.startup.desc"
             id="recoverOnStartup" required="false" type="Boolean" default="false" />
 

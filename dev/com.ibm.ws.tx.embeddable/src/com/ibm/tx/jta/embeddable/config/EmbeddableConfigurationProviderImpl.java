@@ -41,6 +41,7 @@ public class EmbeddableConfigurationProviderImpl implements ConfigurationProvide
     public static final String ENABLE_LOGGING_FOR_HEURISTIC_REPORTING = PROPERTY_NAME_PREFIX + "enableLoggingForHeuristicReporting";
     public static final String ACCEPT_HEURISTIC_HAZARD = PROPERTY_NAME_PREFIX + "acceptHeuristicHazard";
     public static final String RECOVER_ON_STARTUP = PROPERTY_NAME_PREFIX + "recoverOnStartup";
+    public static final String ONEPC_OPTIMIZATION = PROPERTY_NAME_PREFIX + "OnePCOptimization";
     public static final String WAIT_FOR_RECOVERY = PROPERTY_NAME_PREFIX + "waitForRecovery";
     public static final String TRAN_LOG_DIRECTORY = PROPERTY_NAME_PREFIX + "tranLogDirectory";
     public static final String TRAN_LOG_SIZE = PROPERTY_NAME_PREFIX + "tranLogSize";
@@ -55,6 +56,7 @@ public class EmbeddableConfigurationProviderImpl implements ConfigurationProvide
     private static boolean _enableLoggingForHeuristicReporting;
     private static boolean _acceptHeuristicHazard;
     private static boolean _recoverOnStartup;
+    private static boolean _OnePCOptimization;
     private static boolean _waitForRecovery;
     private static int _totalTranLifetimeTimeout;
     private static int _maximumTransactionTimeout;
@@ -79,6 +81,10 @@ public class EmbeddableConfigurationProviderImpl implements ConfigurationProvide
         _recoverOnStartup = Boolean.valueOf((String) properties.get(RECOVER_ON_STARTUP));
         if (traceOn && tc.isDebugEnabled())
             Tr.debug(tc, RECOVER_ON_STARTUP + " = " + _recoverOnStartup);
+
+        _OnePCOptimization = Boolean.valueOf((String) properties.get(ONEPC_OPTIMIZATION));
+        if (traceOn && tc.isDebugEnabled())
+            Tr.debug(tc, ONEPC_OPTIMIZATION + " = " + _OnePCOptimization);
 
         _waitForRecovery = Boolean.valueOf((String) properties.get(WAIT_FOR_RECOVERY));
         if (traceOn && tc.isDebugEnabled())
@@ -239,6 +245,13 @@ public class EmbeddableConfigurationProviderImpl implements ConfigurationProvide
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "isRecoverOnStartup", _recoverOnStartup);
         return _recoverOnStartup;
+    }
+
+    @Override
+    public boolean isOnePCOptimization() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "isOnePCOptimization", _OnePCOptimization);
+        return _OnePCOptimization;
     }
 
     @Override
