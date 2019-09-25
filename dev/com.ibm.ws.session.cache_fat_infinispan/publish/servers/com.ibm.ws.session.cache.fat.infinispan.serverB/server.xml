@@ -26,29 +26,17 @@
     <library id="InfinispanLib">
         <fileset dir="${shared.resource.dir}/infinispan" includes="*.jar"/>
     </library>
-    
-    <!-- Perms needed because the application uses Hazelcast directly   -->
-    <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.io.FilePermission" actions="read" name="${shared.resource.dir}/hazelcast/*"/>
-    <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.management"/>
-    <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.misc"/>
-    <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.nio.ch"/>
+
+	<!-- Perms needed because the application uses OSGi reflectively to access the same caches as HTTP Session persistence. -->
+	<!-- Applications should never do this. We are only granting it to the test app for purposes of verifying cached values. -->
     <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
-    <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.lang.RuntimePermission" name="enableContextClassLoaderOverride"/>
-    <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.lang.RuntimePermission" name="getClassLoader"/>
-    <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.lang.RuntimePermission" name="getenv.HZ_PHONE_HOME_ENABLED"/>
-    <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.lang.RuntimePermission" name="setContextClassLoader"/>
-    <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.lang.RuntimePermission" name="shutdownHooks"/>
     <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
-    <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.net.NetPermission" name="getNetworkInformation"/>
-    <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.net.SocketPermission" actions="accept,connect,listen,resolve" name="*"/>
-    <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.net.URLPermission" actions="GET:User-Agent" name="http://phonehome.hazelcast.com/ping"/>
-    
+    <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="org.osgi.framework.AdminPermission" actions="context" name="*"/>
+    <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="org.osgi.framework.ServicePermission" actions="get" name="*"/>
+
     <!-- Needed for missing doPriv in JCache 1.1 API (see https://github.com/jsr107/jsr107spec/issues/398) -->
     <javaPermission className="java.util.PropertyPermission" actions="read,write" name="*"/>
-    <!-- Needed for hazelcast JVM shutdown hook -->
-    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.sun.net.www.protocol.wsjar"/>
     
-    <javaPermission codebase="${shared.resource.dir}/hazelcast/hazelcast.jar" className="java.security.AllPermission"/>
     <javaPermission codebase="${shared.resource.dir}/infinispan/*" className="java.security.AllPermission"/>
 
     <!--  Permissions for application to access mbeans -->
