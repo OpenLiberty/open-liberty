@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.Set;
 
 import org.eclipse.microprofile.context.ManagedExecutor;
@@ -26,7 +25,7 @@ import org.eclipse.microprofile.context.spi.ThreadContextProvider;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.concurrent.mp.ManagedExecutorImpl;
+import com.ibm.ws.concurrent.mp.spi.ManagedExecutorFactory;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.ws.threading.PolicyExecutor;
@@ -79,7 +78,8 @@ public class ManagedExecutorBuilderImpl implements ManagedExecutor.Builder {
         } else
             remaining = ContextOp.CLEARED;
 
-        LinkedHashMap<ThreadContextProvider, ContextOp> configPerProvider = new LinkedHashMap<ThreadContextProvider, ContextOp>();
+        ContextManagerProviderImpl cmProvider = contextManager.cmProvider;
+        ThreadContextConfigImpl configPerProvider = new ThreadContextConfigImpl(cmProvider);
 
         for (ThreadContextProvider provider : contextProviders) {
             String contextType = provider.getThreadContextType();
@@ -124,14 +124,12 @@ public class ManagedExecutorBuilderImpl implements ManagedExecutor.Builder {
         String executorName = nameBuilder.toString();
         String threadContextName = nameBuilder.replace(2, 15, "ThreadContext").substring(2);
 
-        ContextManagerProviderImpl cmProvider = contextManager.cmProvider;
         PolicyExecutor policyExecutor = cmProvider.policyExecutorProvider.create(executorName, appName) //
                         .maxConcurrency(maxAsync) //
                         .maxQueueSize(maxQueued);
 
-        ThreadContextImpl mpThreadContext = new ThreadContextImpl(threadContextName, hash, cmProvider, configPerProvider);
-
-        return new ManagedExecutorImpl(executorName, hash, policyExecutor, mpThreadContext, cmProvider.transactionContextProvider.transactionContextProviderRef);
+        return ManagedExecutorFactory.createManagedExecutor(executorName, threadContextName, hash, policyExecutor, configPerProvider,
+                                                            cmProvider.transactionContextProvider.transactionContextProviderRef);
     }
 
     @Override

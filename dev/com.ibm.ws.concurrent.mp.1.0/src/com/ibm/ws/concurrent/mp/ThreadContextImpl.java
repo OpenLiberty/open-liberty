@@ -26,12 +26,12 @@ import org.eclipse.microprofile.context.ThreadContext;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.concurrent.mp.spi.ThreadContextConfig;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 import com.ibm.wsspi.threadcontext.WSContextService;
 
 /**
- * Programmatically built ThreadContext instance - either via ThreadContextBuilder
- * or injected by CDI and possibly annotated by <code>@ThreadContextConfig</code>
+ * Programmatically built ThreadContext instance - via ThreadContextBuilder.
  *
  * TODO eventually this should be merged with ContextServiceImpl such that it also
  * implements EE Concurrency ContextService. However, because the MP Context Propagation spec
@@ -39,8 +39,13 @@ import com.ibm.wsspi.threadcontext.WSContextService;
  * this to the future. In the mean time, there will be duplication of the MP Context Propagation
  * method implementations between the two.
  */
-public abstract class AbstractThreadContext implements ThreadContext, WSContextService {
-    private static final TraceComponent tc = Tr.register(AbstractThreadContext.class);
+public class ThreadContextImpl implements ThreadContext, WSContextService {
+    private static final TraceComponent tc = Tr.register(ThreadContextImpl.class);
+
+    /**
+     * Represents the configured context propagation settings.
+     */
+    private final ThreadContextConfig config;
 
     /**
      * Hash code for this instance.
@@ -57,20 +62,18 @@ public abstract class AbstractThreadContext implements ThreadContext, WSContextS
      *
      * @param name unique name for this instance.
      * @param int hash hash code for this instance.
-     * @param cmProvider the context manager provider
-     * @param configPerProvider
+     * @param config represents thread context propagation configuration.
      */
-    protected AbstractThreadContext(String name, int hash) {
+    public ThreadContextImpl(String name, int hash, ThreadContextConfig config) {
+        this.config = config;
         this.name = name;
         this.hash = hash;
     }
 
-    protected abstract ThreadContextDescriptor createThreadContextDescriptor();
-
     @Override
     public final ThreadContextDescriptor captureThreadContext(Map<String, String> executionProperties,
                                                               @SuppressWarnings("unchecked") Map<String, ?>... additionalThreadContextConfig) {
-        return createThreadContextDescriptor();
+        return config.captureThreadContext();
     }
 
     @Override
@@ -78,7 +81,7 @@ public abstract class AbstractThreadContext implements ThreadContext, WSContextS
         if (callable instanceof ContextualCallable)
             throw new IllegalArgumentException(ContextualCallable.class.getSimpleName());
 
-        ThreadContextDescriptor contextDescriptor = createThreadContextDescriptor();
+        ThreadContextDescriptor contextDescriptor = config.captureThreadContext();
         return new ContextualCallable<R>(contextDescriptor, callable);
     }
 
@@ -87,7 +90,7 @@ public abstract class AbstractThreadContext implements ThreadContext, WSContextS
         if (consumer instanceof ContextualBiConsumer)
             throw new IllegalArgumentException(ContextualBiConsumer.class.getSimpleName());
 
-        ThreadContextDescriptor contextDescriptor = createThreadContextDescriptor();
+        ThreadContextDescriptor contextDescriptor = config.captureThreadContext();
         return new ContextualBiConsumer<T, U>(contextDescriptor, consumer);
     }
 
@@ -96,7 +99,7 @@ public abstract class AbstractThreadContext implements ThreadContext, WSContextS
         if (consumer instanceof ContextualConsumer)
             throw new IllegalArgumentException(ContextualConsumer.class.getSimpleName());
 
-        ThreadContextDescriptor contextDescriptor = createThreadContextDescriptor();
+        ThreadContextDescriptor contextDescriptor = config.captureThreadContext();
         return new ContextualConsumer<T>(contextDescriptor, consumer);
     }
 
@@ -105,7 +108,7 @@ public abstract class AbstractThreadContext implements ThreadContext, WSContextS
         if (function instanceof ContextualBiFunction)
             throw new IllegalArgumentException(ContextualBiFunction.class.getSimpleName());
 
-        ThreadContextDescriptor contextDescriptor = createThreadContextDescriptor();
+        ThreadContextDescriptor contextDescriptor = config.captureThreadContext();
         return new ContextualBiFunction<T, U, R>(contextDescriptor, function);
     }
 
@@ -114,7 +117,7 @@ public abstract class AbstractThreadContext implements ThreadContext, WSContextS
         if (function instanceof ContextualFunction)
             throw new IllegalArgumentException(ContextualFunction.class.getSimpleName());
 
-        ThreadContextDescriptor contextDescriptor = createThreadContextDescriptor();
+        ThreadContextDescriptor contextDescriptor = config.captureThreadContext();
         return new ContextualFunction<T, R>(contextDescriptor, function);
     }
 
@@ -123,7 +126,7 @@ public abstract class AbstractThreadContext implements ThreadContext, WSContextS
         if (runnable instanceof ContextualRunnable)
             throw new IllegalArgumentException(ContextualRunnable.class.getSimpleName());
 
-        ThreadContextDescriptor contextDescriptor = createThreadContextDescriptor();
+        ThreadContextDescriptor contextDescriptor = config.captureThreadContext();
         return new ContextualRunnable(contextDescriptor, runnable);
     }
 
@@ -132,7 +135,7 @@ public abstract class AbstractThreadContext implements ThreadContext, WSContextS
         if (supplier instanceof ContextualSupplier)
             throw new IllegalArgumentException(ContextualSupplier.class.getSimpleName());
 
-        ThreadContextDescriptor contextDescriptor = createThreadContextDescriptor();
+        ThreadContextDescriptor contextDescriptor = config.captureThreadContext();
         return new ContextualSupplier<R>(contextDescriptor, supplier);
     }
 
@@ -143,7 +146,7 @@ public abstract class AbstractThreadContext implements ThreadContext, WSContextS
 
     @Override
     public final Executor currentContextExecutor() {
-        ThreadContextDescriptor contextDescriptor = createThreadContextDescriptor();
+        ThreadContextDescriptor contextDescriptor = config.captureThreadContext();
         return new ContextualExecutor(contextDescriptor);
     }
 
