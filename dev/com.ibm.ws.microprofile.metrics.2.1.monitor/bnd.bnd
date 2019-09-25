@@ -27,7 +27,7 @@ Export-Package: \
     com.ibm.ws.microprofile.metrics.monitor
 
 Private-Package: \
-    com.ibm.ws.microprofile.metrics.monitor.resources
+    com.ibm.ws.microprofile.metrics21.monitor.resources
 
 #Include-Resource: \
 #    META-INF=resources/META-INF
