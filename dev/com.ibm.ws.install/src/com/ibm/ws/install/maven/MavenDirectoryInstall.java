@@ -11,14 +11,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import com.ibm.ws.install.InstallException;
@@ -41,8 +38,6 @@ public class MavenDirectoryInstall {
 
     private final String TEMP_DIRECTORY =  Utils.getInstallDir() + "/tmp/";
     private final String OPEN_LIBERTY_PRODUCT_ID = "io.openliberty";
-    private final String OPEN_LIBERTY_GROUP_ID = "io.openliberty.features";
-    private final String CLOSED_LIBERTY_GROUP_ID = "com.ibm.websphere.appserver.features";
 
     /**
      * Initialize a map based install kernel with a local maven directory
@@ -72,7 +67,6 @@ public class MavenDirectoryInstall {
             throws IOException, InstallException {
         this(featuresToInstall, fromDir);
         this.toExtension = toExtension;
-
     }
 
     /**
@@ -85,7 +79,11 @@ public class MavenDirectoryInstall {
         map.put("runtime.install.dir", Utils.getInstallDir());
         map.put("target.user.directory", new File(Utils.getInstallDir(), "tmp"));
         map.put("install.local.esa", true);
-        map.put("single.json.file", (getSingleJsonPaths(fromDir)));
+
+        ArrayList<File> jsonPaths = new ArrayList<>();
+        getSingleJsonPaths(fromDir, jsonPaths);
+        map.put("single.json.file", jsonPaths);
+
         map.put("features.to.resolve", new ArrayList<>(featuresToInstall));
         map.put("license.accept", true); // TODO: discuss later
         map.get("install.kernel.init.code");
@@ -163,7 +161,7 @@ public class MavenDirectoryInstall {
             }
         }
 
-        Collection<File> artifacts = findFeatureEsas(resolvedFeatures, fromDir);
+        Collection<File> artifacts = findEsas(resolvedFeatures, fromDir);
 
         Collection<String> actionReturnResult = new ArrayList<String>();
         Collection<String> currentReturnResult;
@@ -209,33 +207,38 @@ public class MavenDirectoryInstall {
         
     }
 
-    private Collection<File> findFeatureEsas(Collection<String> resolvedFeatures, File rootDir)
-            throws InstallException {
+    private Collection<File> findEsas(Collection<String> resolvedFeatures, File rootDir) throws InstallException {
         Collection<File> foundEsas = new HashSet<>();
-        try (Stream<Path> files = Files.walk(Paths.get(rootDir.toURI()))) {
-            foundEsas.addAll(files
-                    .filter(f -> f.getFileName().toString().endsWith(".esa")
-                            && f.getFileName().toString().contains(openLibertyVersion)
-                            && resolvedFeatures.removeIf(featureCoordinate -> parseMavenCoordinate(featureCoordinate)
-                                    .get("artifactId").equals(extractFeature(f.getFileName().toString()))))
-                    .map(f -> f.toFile())
-                    .collect(Collectors.toList()));
+        Collection<String> featuresClone = new ArrayList<>(resolvedFeatures);
 
-        } catch (IOException e) {
-            throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES
-                    .getLogMessage("ERROR_TOOL_INVALID_DOWNLOAD_DIRECTORY", rootDir.getAbsolutePath()));
+        for (String feature : resolvedFeatures) {
+            logger.log(Level.FINE, "Processing feature: " + feature);
+            String mavenCoordinate = feature.split(":")[0];
+            String featureName = feature.split(":")[1];
+
+            File groupDir = new File(rootDir, mavenCoordinate.replace(".", "/"));
+
+            Path featurePath = Paths.get(groupDir.getAbsolutePath().toString(), featureName, openLibertyVersion,
+                    featureName + "-" + openLibertyVersion + ".esa");
+
+            logger.log(Level.FINE, featurePath.toString());
+            if (Files.isRegularFile(featurePath)) {
+                foundEsas.add(featurePath.toFile());
+                featuresClone.remove(feature);
+            }
+
         }
-
-        if (!resolvedFeatures.isEmpty()) {
+        if (!featuresClone.isEmpty()) {
             logger.log(Level.FINE, "Could not find ESA's for " + resolvedFeatures);
             List<File> downloadedEsas = downloadMissingFeatureEsas((List<String>) resolvedFeatures);
 
             logger.log(Level.FINE, "Downloaded the following features from maven central:" + downloadedEsas);
             foundEsas.addAll(downloadedEsas);
         }
-
         return foundEsas;
+
     }
+
 
     /**
      * 
@@ -248,22 +251,6 @@ public class MavenDirectoryInstall {
 
         return artifactDownloader.getDownloadedEsas();
 
-    }
-
-    /**
-     * Retrieve the individual components from a maven coordinate.
-     * 
-     * @param coordinate a maven coordinate with groupId, artifactId, and version
-     * @return map that maps each component to its value
-     */
-    private Map<String, String> parseMavenCoordinate(String coordinate) {
-        Map<String, String> coordinateMap = new HashMap<>();
-        String[] split = coordinate.split(":");
-        coordinateMap.put("groupId", split[0]);
-        coordinateMap.put("artifactId", split[1]);
-        coordinateMap.put("version", split[2]);
-
-        return coordinateMap;
     }
 
     /**
@@ -282,13 +269,28 @@ public class MavenDirectoryInstall {
 
     }
 
-    private ArrayList<File> getSingleJsonPaths(File dir) throws IOException {
-        ArrayList<File> jsonFiles = new ArrayList<>();
-        try (Stream<Path> files = Files.walk(Paths.get(dir.toURI()))) {
-            jsonFiles.addAll(files.filter(f -> f.getFileName().toString().endsWith(".json")).map(f -> f.toFile())
-                    .collect(Collectors.toList()));
+    /**
+     * Populate found with the single json files
+     * 
+     * @param filepath
+     * @param found
+     */
+    private void getSingleJsonPaths(File filepath, ArrayList<File> found) {
+        File[] list = filepath.listFiles();
+        if (list == null) {
+            return;
         }
-        return jsonFiles;
+
+        for (File f : list) {
+            if (f.isDirectory()) {
+                getSingleJsonPaths(f, found);
+            } else if (f.isFile()) {
+                if (f.getName().endsWith(".json")) {
+                    found.add(f);
+                }
+            }
+        }
+
     }
 
     /**
@@ -298,15 +300,27 @@ public class MavenDirectoryInstall {
      */
     private void cleanUp() throws IOException {
         File temp = new File(TEMP_DIRECTORY);
+        boolean deleted = true;
+
         if (tempCleanupRequired) {
-            Files.walk(Paths.get(temp.toURI())).sorted(Comparator.reverseOrder()).map(Path::toFile)
-                    .forEach(File::delete);
+            deleted = cleanUpHelper(temp);
         }
-        if (!temp.exists()) {
+        if (deleted) {
             logger.log(Level.FINE, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("MSG_CLEANUP_SUCCESS"));
         } else {
             logger.log(Level.FINE, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("LOG_CANNOT_CLOSE_OBJECT"));
         }
+
+    }
+
+    private boolean cleanUpHelper(File file) {
+        if (file == null)
+            return true;
+
+        for (File f : file.listFiles()) {
+            cleanUpHelper(f);
+        }
+        return file.delete();
 
     }
 
