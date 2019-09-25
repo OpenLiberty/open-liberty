@@ -3,6 +3,7 @@ package com.ibm.ws.install.maven;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -24,7 +25,7 @@ public class ArtifactDownloaderUtils {
 
     public static List<String> getMissingFiles(List<String> featureURLs) {
         List<String> result = new ArrayList<String>();
-        for (String url: featureURLs) {
+        for (String url : featureURLs) {
             if (!(exists(url) == HttpURLConnection.HTTP_OK)) {
                 result.add(url);
             }
@@ -32,7 +33,7 @@ public class ArtifactDownloaderUtils {
         return result;
     }
 
-    public static int exists(String URLName){
+    public static int exists(String URLName) {
 
         try {
             HttpURLConnection.setFollowRedirects(false);
@@ -59,8 +60,7 @@ public class ArtifactDownloaderUtils {
         return 0;
     }
 
-
-    public static List<String> acquireFeatureURLs(List<String> mavenCoords, String repo){
+    public static List<String> acquireFeatureURLs(List<String> mavenCoords, String repo) {
         List<String> result = new ArrayList<String>();
         for (String coord : mavenCoords) {
             String groupId = getGroupId(coord).replace(".", "/") + "/";
@@ -78,14 +78,14 @@ public class ArtifactDownloaderUtils {
         byte[] b = createChecksum(filename, format);
         String result = "";
 
-        for (int i=0; i < b.length; i++) {
-            result += Integer.toString( ( b[i] & 0xff ) + 0x100, 16).substring( 1 );
+        for (int i = 0; i < b.length; i++) {
+            result += Integer.toString((b[i] & 0xff) + 0x100, 16).substring(1);
         }
         return result;
     }
 
     public static byte[] createChecksum(String filename, String format) throws IOException, NoSuchAlgorithmException {
-        InputStream fis =  new FileInputStream(filename);
+        InputStream fis = new FileInputStream(filename);
 
         byte[] buffer = new byte[1024];
         MessageDigest complete = MessageDigest.getInstance(format);
@@ -112,7 +112,7 @@ public class ArtifactDownloaderUtils {
                 result += inputLine;
             in.close();
         } catch (IOException e) {
-            System.out.println("failed to download checksum file at " + url.toString() ); //TODO proper error message
+            System.out.println("failed to download checksum file at " + url.toString()); //TODO proper error message
             e.printStackTrace();
             return null;
         }
@@ -125,16 +125,21 @@ public class ArtifactDownloaderUtils {
     }
 
     public static void deleteFiles(List<File> fileList, String dLocation, String groupId, String version, String filename) {
-        for (File f: fileList) {
-            if(!f.delete()) {
+        for (File f : fileList) {
+            if (!f.delete()) {
                 System.out.println("failed to delete file");
             }
         }
-        File file = (new File (getFileLocation(dLocation, groupId, version, filename))).getParentFile();
+        File file = (new File(getFileLocation(dLocation, groupId, version, filename))).getParentFile();
         while (!(file.toString() + "/").equals(dLocation)) {
-            File[] files = file.listFiles((dir, name) -> !name.equals(".DS_Store"));
+            File[] files = file.listFiles(new FilenameFilter() {
+                @Override
+                public boolean accept(File dir, String name) {
+                    return !name.equals(".DS_Store");
+                }
+            });
             File newFile = file.getParentFile();
-            if (files.length == 0 ) {
+            if (files.length == 0) {
                 file.delete();
             }
             file = newFile;
