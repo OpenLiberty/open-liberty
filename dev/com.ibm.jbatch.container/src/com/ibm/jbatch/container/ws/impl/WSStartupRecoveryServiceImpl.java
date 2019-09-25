@@ -29,7 +29,7 @@ import com.ibm.wsspi.persistence.PersistenceServiceUnit;
 /**
  * Perform recovery of jobs that were running when a previous instance of this server
  * shutdown abruptly and left them in an "in-flight" state in the DB.
- * 
+ *
  */
 public class WSStartupRecoveryServiceImpl {
 
@@ -53,7 +53,7 @@ public class WSStartupRecoveryServiceImpl {
 
     /**
      * inject
-     * 
+     *
      * @return this
      */
     public WSStartupRecoveryServiceImpl setIPersistenceManagerService(JPAPersistenceManagerImpl pms) {
@@ -63,7 +63,7 @@ public class WSStartupRecoveryServiceImpl {
 
     /**
      * injection
-     * 
+     *
      * @return this
      */
     public WSStartupRecoveryServiceImpl setPersistenceServiceUnit(PersistenceServiceUnit psu) {
@@ -101,7 +101,10 @@ public class WSStartupRecoveryServiceImpl {
                 Date markFailedTime = new Date();
                 try {
                     persistenceManagerService.updateStepExecutionOnRecovery(psu, stepExecution.getStepExecutionId(), BatchStatus.FAILED, newExitStatus, markFailedTime);
-                    persistenceManagerService.updateRemotablePartitionOnRecovery(psu, partition);
+
+                    // Though this seems like something to do, it's not doing anything except updating a timestamp on the RemotablePartition.   That seems less useful than leaving the timestamp alone.
+                    //  persistenceManagerService.updateRemotablePartitionOnRecovery(psu, partition);
+
                 } catch (Exception updateExc) {
                     logger.log(Level.WARNING, "partition.recovery.failed", new Object[] { key, updateExc });
                 }

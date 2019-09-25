@@ -281,28 +281,32 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
      * Creates a PersistenceServiceUnit using the specified entity versions.
      */
     private PersistenceServiceUnit createPsu(int jobInstanceVersion, int jobExecutionVersion, int partitionVersion) throws Exception {
-        List<String> entityClasses = new ArrayList<String>(Arrays.asList(JobExecutionEntity.class.getName(),
-                                                                         JobInstanceEntity.class.getName(),
-                                                                         StepThreadExecutionEntity.class.getName(),
+        List<String> entityClasses = new ArrayList<String>(Arrays.asList(
                                                                          StepThreadInstanceEntity.class.getName(),
                                                                          TopLevelStepExecutionEntity.class.getName(),
                                                                          TopLevelStepInstanceEntity.class.getName()));
-
-        if (jobExecutionVersion >= 2)
+        if (jobExecutionVersion <= 1) {
+            entityClasses.add(JobExecutionEntity.class.getName());
+        } else if (jobExecutionVersion == 2) {
             entityClasses.add(JobExecutionEntityV2.class.getName());
-        if (jobExecutionVersion >= 3)
+        } else if (jobExecutionVersion >= 3) {
             entityClasses.add(JobExecutionEntityV3.class.getName());
+        }
 
-        if (jobInstanceVersion >= 2)
+        if (jobInstanceVersion <= 1) {
+            JobInstanceEntity.class.getName();
+        } else if (jobInstanceVersion == 2) {
             entityClasses.add(JobInstanceEntityV2.class.getName());
-        if (jobInstanceVersion >= 3)
+        } else if (jobInstanceVersion >= 3) {
             entityClasses.add(JobInstanceEntityV3.class.getName());
+        }
 
-        if (partitionVersion >= 2)
+        if (partitionVersion <= 1) {
+            entityClasses.add(StepThreadExecutionEntity.class.getName());
+        } else if (partitionVersion >= 2) {
             entityClasses.add(StepThreadExecutionEntityV2.class.getName());
-
-        if (partitionVersion >= 2)
             entityClasses.add(RemotablePartitionEntity.class.getName());
+        }
 
         return databaseStore.createPersistenceServiceUnit(JobInstanceEntity.class.getClassLoader(),
                                                           entityClasses.toArray(new String[0]));
@@ -1537,28 +1541,78 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
 
     @Override
     public RemotablePartitionEntity updateRemotablePartitionInternalState(final long jobExecId, final String stepName, final int partitionNum,
-                                                                          final RemotablePartitionState internalStatus) {
+                                                                          final RemotablePartitionState toStatus) throws BatchIllegalJobStatusTransitionException {
         // Just ignore if we don't have the remotable partition table
         if (partitionVersion < 2) {
             return null;
         }
 
+        if (toStatus.equals(RemotablePartitionState.CONSUMED)) {
+            return updateRemotablePartitionStateOnConsumed(jobExecId, stepName, partitionNum);
+        } else if (toStatus.equals(RemotablePartitionState.DISPATCHED)) {
+            return updateRemotablePartitionInternalStateOnDispatched(jobExecId, stepName, partitionNum);
+        } else { // QUEUED gets set as initial state, not later update
+            // maybe should use BatchIllegalJobStatusTransitionException but don't want to change signature
+            throw new BatchIllegalJobStatusTransitionException("Can't update to RemotablePartitionState = " + toStatus);
+        }
+    }
+
+    private RemotablePartitionEntity updateRemotablePartitionInternalStateOnDispatched(final long jobExecId, final String stepName,
+                                                                                       final int partitionNum) throws BatchIllegalJobStatusTransitionException {
         EntityManager em = getPsu().createEntityManager();
         try {
             return new TranRequest<RemotablePartitionEntity>(em) {
                 @Override
-                public RemotablePartitionEntity call() {
+                public RemotablePartitionEntity call() throws BatchIllegalJobStatusTransitionException {
 
                     RemotablePartitionKey partitionKey = new RemotablePartitionKey(jobExecId, stepName, partitionNum);
                     RemotablePartitionEntity partition = entityMgr.find(RemotablePartitionEntity.class, partitionKey);
 
                     //For backward compatibility, this can be null
+                    //It can be null because if the partition dispatcher is older version, there won't be any remotable partition
                     if (partition != null) {
-                        //It can be null because if the partition dispatcher is older version, there won't be any remotable partition
-                        partition.setRestUrl(batchLocationService.getBatchRestUrl());
-                        partition.setServerId(batchLocationService.getServerId());
-                        partition.setInternalStatus(internalStatus);
-                        partition.setLastUpdated(new Date());
+                        if (partition.getInternalStatus().equals(RemotablePartitionState.CONSUMED)) {
+                            partition.setInternalStatus(RemotablePartitionState.DISPATCHED);
+                            partition.setLastUpdated(new Date());
+                        } else {
+                            throw new BatchIllegalJobStatusTransitionException("Attempt to set to DISPATCHED but found previous status = " + partition.getInternalStatus() +
+                                                                               " instead of CONSUMED, for job exec id: " + jobExecId + ", partitionNum = " + partitionNum
+                                                                               + ", and stepName: " + stepName);
+                        }
+                    }
+                    return partition;
+                }
+            }.runInNewOrExistingGlobalTran();
+        } finally {
+            em.close();
+        }
+    }
+
+    private RemotablePartitionEntity updateRemotablePartitionStateOnConsumed(final long jobExecId, final String stepName,
+                                                                             final int partitionNum) throws BatchIllegalJobStatusTransitionException {
+        EntityManager em = getPsu().createEntityManager();
+        try {
+            return new TranRequest<RemotablePartitionEntity>(em) {
+                @Override
+                public RemotablePartitionEntity call() throws BatchIllegalJobStatusTransitionException {
+
+                    RemotablePartitionKey partitionKey = new RemotablePartitionKey(jobExecId, stepName, partitionNum);
+                    RemotablePartitionEntity partition = entityMgr.find(RemotablePartitionEntity.class, partitionKey);
+
+                    //For backward compatibility, this can be null
+                    //It can be null because if the partition dispatcher is older version, there won't be any remotable partition
+                    if (partition != null) {
+                        if (partition.getInternalStatus().equals(RemotablePartitionState.QUEUED)) {
+                            partition.setRestUrl(batchLocationService.getBatchRestUrl());
+                            partition.setServerId(batchLocationService.getServerId());
+                            partition.setInternalStatus(RemotablePartitionState.CONSUMED);
+                            partition.setLastUpdated(new Date());
+                        } else if (partition.getInternalStatus().equals(RemotablePartitionState.CONSUMED)) {
+                            throw new BatchIllegalJobStatusTransitionException("Attempt to set to CONSUMED but found previous status = CONSUMED, for job exec id: "
+                                                                               + jobExecId + ", partitionNum = " + partitionNum + ", and stepName: " + stepName);
+                        } else {
+                            logger.fine("Exiting by returning existing row in DB, to allow condition handling without resulting in failure, especially for duplicate message consumption");
+                        }
                     }
                     return partition;
                 }

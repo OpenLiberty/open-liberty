@@ -1348,15 +1348,37 @@ public class MemoryPersistenceManagerImpl extends AbstractPersistenceManager imp
     }
 
     @Override
-    public RemotablePartitionEntity updateRemotablePartitionInternalState(
-                                                                          long jobExecId, String stepName, int partitionNum,
-                                                                          RemotablePartitionState internalStatus) {
+    public RemotablePartitionEntity updateRemotablePartitionInternalState(final long jobExecId, final String stepName, final int partitionNum,
+                                                                          final RemotablePartitionState toStatus) throws BatchIllegalJobStatusTransitionException {
+
         RemotablePartitionKey partitionKey = new RemotablePartitionKey(jobExecId, stepName, partitionNum);
         RemotablePartitionEntity partition = data.partitionData.get(partitionKey);
-        partition.setInternalStatus(internalStatus);
-        partition.setRestUrl(batchLocationService.getBatchRestUrl());
-        partition.setServerId(batchLocationService.getServerId());
-        partition.setLastUpdated(new Date());
+
+        if (toStatus.equals(RemotablePartitionState.CONSUMED)) {
+            if (partition.getInternalStatus().equals(RemotablePartitionState.QUEUED)) {
+                partition.setRestUrl(batchLocationService.getBatchRestUrl());
+                partition.setServerId(batchLocationService.getServerId());
+                partition.setInternalStatus(toStatus);
+                partition.setLastUpdated(new Date());
+            } else if (partition.getInternalStatus().equals(RemotablePartitionState.CONSUMED)) {
+                throw new BatchIllegalJobStatusTransitionException("Attempt to set to CONSUMED but found previous status = CONSUMED, for job exec id: "
+                                                                   + jobExecId + ", partitionNum = " + partitionNum + ", and stepName: " + stepName);
+            } else {
+                // return unchanged if already dispatched
+            }
+        } else if (toStatus.equals(RemotablePartitionState.DISPATCHED)) {
+            if (partition.getInternalStatus().equals(RemotablePartitionState.CONSUMED)) {
+                partition.setInternalStatus(toStatus);
+                partition.setLastUpdated(new Date());
+            } else {
+                throw new BatchIllegalJobStatusTransitionException("Attempt to set to DISPATCHED but found previous status = " + partition.getInternalStatus() +
+                                                                   " instead of CONSUMED, for job exec id: " + jobExecId + ", partitionNum = " + partitionNum
+                                                                   + ", and stepName: " + stepName);
+            }
+        } else { // QUEUED gets set as initial state, not later update
+            // maybe should use BatchIllegalJobStatusTransitionException but don't want to change signature
+            throw new BatchIllegalJobStatusTransitionException("Can't update to RemotablePartitionState = " + toStatus);
+        }
 
         return partition;
     }

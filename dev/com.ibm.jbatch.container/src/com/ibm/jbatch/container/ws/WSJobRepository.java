@@ -103,7 +103,7 @@ public interface WSJobRepository {
      *
      * @param jobInstanceId
      * @param jobParameters
-     * @param create time
+     * @param create        time
      * @return jobExecution
      */
     public abstract WSJobExecution createJobExecution(long jobInstanceId, Properties jobParameters);
@@ -262,8 +262,8 @@ public interface WSJobRepository {
      * Creates an entry for this remote partition in the RemotablePartition table
      *
      * @param jobExecutionId the id for the top level job execution that this partition is associated with
-     * @param stepName the name of the step
-     * @param internalState the state of the partition that is being dispatched
+     * @param stepName       the name of the step
+     * @param internalState  the state of the partition that is being dispatched
      * @return
      */
     public abstract WSRemotablePartitionExecution createRemotablePartition(long jobExecutionId,
@@ -274,12 +274,13 @@ public interface WSJobRepository {
      * If the remotable partition is not found, then it just returns
      *
      * @param jobExecutionId the id for the top level job execution that this partition is associated with
-     * @param stepName the name of the step
-     * @param internalState the state of the partition that is being dispatched
+     * @param stepName       the name of the step
+     * @param internalState  the state of the partition that is being dispatched
      * @return
      */
     public abstract WSRemotablePartitionExecution updateRemotablePartitionInternalState(long jobExecutionId,
-                                                                                        String stepName, int partitionNumber, RemotablePartitionState internalState);
+                                                                                        String stepName, int partitionNumber,
+                                                                                        RemotablePartitionState internalState) throws BatchIllegalJobStatusTransitionException;
 
     /**
      * Check the version of the job execution table in the job repository.

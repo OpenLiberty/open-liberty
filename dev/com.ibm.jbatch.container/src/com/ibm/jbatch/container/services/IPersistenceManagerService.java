@@ -31,7 +31,6 @@ import javax.batch.runtime.StepExecution;
 import com.ibm.jbatch.container.exception.BatchIllegalJobStatusTransitionException;
 import com.ibm.jbatch.container.exception.ExecutionAssignedToServerException;
 import com.ibm.jbatch.container.exception.JobStoppedException;
-import com.ibm.jbatch.container.execution.impl.RuntimePartitionExecution;
 import com.ibm.jbatch.container.execution.impl.RuntimeSplitFlowExecution;
 import com.ibm.jbatch.container.execution.impl.RuntimeStepExecution;
 import com.ibm.jbatch.container.persistence.jpa.JobExecutionEntity;
@@ -75,14 +74,14 @@ public interface IPersistenceManagerService extends IBatchServiceBase {
      * Creates a JobIntance
      *
      * @param appName
-     *            The batch application or module name associated with this job
-     *            instance. Null is allowed.
+     *                       The batch application or module name associated with this job
+     *                       instance. Null is allowed.
      * @param jobXMLName
-     *            the JSL file name
+     *                       the JSL file name
      * @param submitter
-     *            the application tag that owns this job
+     *                       the application tag that owns this job
      * @param date
-     *            creation time
+     *                       creation time
      *
      * @return the job instance
      */
@@ -92,16 +91,16 @@ public interface IPersistenceManagerService extends IBatchServiceBase {
      * Creates a JobIntance
      *
      * @param appName
-     *            The batch application or module name associated with this job
-     *            instance. Null is allowed.
+     *                       The batch application or module name associated with this job
+     *                       instance. Null is allowed.
      * @param jobXMLName
-     *            the JSL file name
+     *                       the JSL file name
      * @param jsl
-     *            the entire JSL file String
+     *                       the entire JSL file String
      * @param submitter
-     *            the application tag that owns this job
+     *                       the application tag that owns this job
      * @param date
-     *            creation time
+     *                       creation time
      *
      * @return the job instance
      */
@@ -140,9 +139,9 @@ public interface IPersistenceManagerService extends IBatchServiceBase {
      * TODO - order?
      *
      * @param page
-     *            The page of rows to get (starts at 0)
+     *                     The page of rows to get (starts at 0)
      * @param pageSize
-     *            The number of rows per page
+     *                     The number of rows per page
      *
      * @return a list of (top-level only) job instances, ordered from most-to-least-recent creation time.
      */
@@ -150,13 +149,13 @@ public interface IPersistenceManagerService extends IBatchServiceBase {
 
     /**
      * @param page
-     *            The page of rows to get (starts at 0)
+     *                      The page of rows to get (starts at 0)
      * @param pageSize
-     *            The number of rows per page
+     *                      The number of rows per page
      * @param submitter
-     *            Only return jobs owned by user. User can be null. Specify null
-     *            string to include all users.
-     *            TODO - is null still allowed?
+     *                      Only return jobs owned by user. User can be null. Specify null
+     *                      string to include all users.
+     *                      TODO - is null still allowed?
      *
      * @return a list of (top-level only) job instances owned by given user, ordered in descending order of instance id
      */
@@ -205,11 +204,11 @@ public interface IPersistenceManagerService extends IBatchServiceBase {
      * Update the given jobinstance record with the given jobName and jobXml
      *
      * @param jobInstanceId
-     *            the jobinstance to update
+     *                          the jobinstance to update
      * @param jobName
-     *            the job name
+     *                          the job name
      * @param jobXml
-     *            the job JSL source (XML)
+     *                          the job JSL source (XML)
      */
     public JobInstance updateJobInstanceWithJobNameAndJSL(long jobInstanceId, String jobName, String jobXml);
 
@@ -240,7 +239,7 @@ public interface IPersistenceManagerService extends IBatchServiceBase {
      *
      * @return the updated JobExecution
      *
-     * @throws NoSuchJobExecutionException if the job execution is not located by the find query
+     * @throws NoSuchJobExecutionException        if the job execution is not located by the find query
      * @throws ExecutionAssignedToServerException if the execution has been assigned to a server/endpoint (serverid set)
      */
     JobExecution updateJobExecutionAndInstanceOnStopBeforeServerAssigned(long jobExecutionId,
@@ -259,7 +258,7 @@ public interface IPersistenceManagerService extends IBatchServiceBase {
      *
      * @param jobInstanceId
      * @param jobParameters
-     * @param create time
+     * @param create        time
      * @return
      */
     public JobExecutionEntity createJobExecution(long jobInstanceId, Properties jobParameters, Date createTime);
@@ -289,7 +288,7 @@ public interface IPersistenceManagerService extends IBatchServiceBase {
      *         associated with the given job instance ID.
      *
      * @throws IllegalStateException if no executions are found
-     *             NoSuchJobInstanceException if instance itself isn't found
+     *                                   NoSuchJobInstanceException if instance itself isn't found
      */
     public JobExecutionEntity getJobExecutionMostRecent(long jobInstanceId) throws IllegalStateException, NoSuchJobInstanceException;
 
@@ -327,7 +326,7 @@ public interface IPersistenceManagerService extends IBatchServiceBase {
      * @param execId
      *
      * @throws NoSuchJobExecutionException if this job execution is not located by the find query
-     * @throws JobStoppedException if the specified execution has been stopped at the time this update is attempted
+     * @throws JobStoppedException         if the specified execution has been stopped at the time this update is attempted
      *
      * @return the updated execution
      */
@@ -414,8 +413,8 @@ public interface IPersistenceManagerService extends IBatchServiceBase {
      * @param topLevelStepExecutionId
      * @return
      * @throws IllegalArgumentException if either:
-     *             1) we have no entry at all with id equal to <code>stepExecutionId</code>
-     *             2) we have a partition-level StepThreadExecutionEntity with this id (but not a top-level entry).
+     *                                      1) we have no entry at all with id equal to <code>stepExecutionId</code>
+     *                                      2) we have a partition-level StepThreadExecutionEntity with this id (but not a top-level entry).
      */
     public TopLevelStepExecutionEntity getStepExecutionTopLevel(long topLevelStepExecutionId) throws IllegalArgumentException;
 
@@ -443,8 +442,8 @@ public interface IPersistenceManagerService extends IBatchServiceBase {
      * @param topLevelStepExecutionId
      * @return step exec aggregate
      * @throws IllegalArgumentException if either:
-     *             1) we have no entry at all with id equal to <code>stepExecutionId</code>
-     *             2) we have a partition-level StepThreadExecutionEntity with this id (but not a top-level entry).
+     *                                      1) we have no entry at all with id equal to <code>stepExecutionId</code>
+     *                                      2) we have a partition-level StepThreadExecutionEntity with this id (but not a top-level entry).
      */
     public WSStepThreadExecutionAggregate getStepExecutionAggregate(long topLevelStepExecutionId) throws IllegalArgumentException;
 
@@ -467,7 +466,7 @@ public interface IPersistenceManagerService extends IBatchServiceBase {
      * accessible through standard, public APIs.)
      *
      * @param runtimeStepExecution
-     *            the runtime StepExecution
+     *                                 the runtime StepExecution
      */
     public TopLevelStepExecutionEntity updateStepExecutionWithPartitionAggregate(RuntimeStepExecution runtimeStepExecution);
 
@@ -494,12 +493,6 @@ public interface IPersistenceManagerService extends IBatchServiceBase {
      * @return
      */
     public RemotablePartitionEntity createPartitionExecution(RemotablePartitionKey partitionKey, Date createTime);
-
-    /**
-     * @param runtimePartitionExecution
-     * @param date
-     */
-    public RemotablePartitionEntity updatePartitionExecution(RuntimePartitionExecution runtimePartitionExecution, BatchStatus newBatchStatus, Date date);
 
     /**
      * @param key
@@ -537,7 +530,7 @@ public interface IPersistenceManagerService extends IBatchServiceBase {
      */
     RemotablePartitionEntity updateRemotablePartitionInternalState(
                                                                    long jobExecId, String stepName, int partitionNum,
-                                                                   RemotablePartitionState internalStatus);
+                                                                   RemotablePartitionState internalStatus) throws BatchIllegalJobStatusTransitionException;
 
     /**
      * @return

@@ -38,7 +38,6 @@ import com.ibm.jbatch.container.RASConstants;
 import com.ibm.jbatch.container.context.impl.MetricImpl;
 import com.ibm.jbatch.container.exception.BatchIllegalJobStatusTransitionException;
 import com.ibm.jbatch.container.exception.PersistenceException;
-import com.ibm.jbatch.container.execution.impl.RuntimePartitionExecution;
 import com.ibm.jbatch.container.execution.impl.RuntimeSplitFlowExecution;
 import com.ibm.jbatch.container.execution.impl.RuntimeStepExecution;
 import com.ibm.jbatch.container.persistence.jpa.JobExecutionEntity;
@@ -226,8 +225,8 @@ public abstract class AbstractPersistenceManager implements IPersistenceManagerS
      * @param stepExecutionId
      * @return
      * @throws IllegalArgumentException if either:
-     *             1) we have no entry at all with id equal to <code>stepExecutionId</code>
-     *             2) we have a partition-level StepThreadExecutionEntity with this id (but not a top-level entry).
+     *                                      1) we have no entry at all with id equal to <code>stepExecutionId</code>
+     *                                      2) we have a partition-level StepThreadExecutionEntity with this id (but not a top-level entry).
      */
     @Override
     public TopLevelStepExecutionEntity getStepExecutionTopLevel(long stepExecutionId) throws IllegalArgumentException {
@@ -358,20 +357,21 @@ public abstract class AbstractPersistenceManager implements IPersistenceManagerS
     }
 
     @Override
-    public RemotablePartitionEntity updatePartitionExecution(
-                                                             RuntimePartitionExecution runtimePartitionExecution,
-                                                             BatchStatus newBatchStatus, Date date) {
-        return null;
-    }
-
-    @Override
     public RemotablePartitionEntity updatePartitionExecutionLogDir(
                                                                    RemotablePartitionKey key, String logDirPath) {
         return null;
     }
 
     /**
-     * TODO - The 'verify' methods that follow are a basic ground work to guard against the invalid transition of job Batch Status / instance State.
+     * WARNING: As the comments below mention, there are other invalid state transitions we could guard against. Be very careful about
+     * making any additional changes, since it could have unintended consequences to certain exception handling flows.
+     * E.g. the BatchJmsEndpointListener class is implemented today such that a range of outcomes can result from an exception: consume and
+     * silently ignore, consume and mark failed, rollback onto the queue. By changing the checks we do here we could affect this set of
+     * scenarios in various ways.
+     *
+     * So be careful !!! (And of course, read this comment)
+     *
+     * The 'verify' methods that follow are a basic ground work to guard against the invalid transition of job Batch Status / instance State.
      * For now we are only disallowing updates once batch status or instance state are marked 'COMPLETED'/'ABANDONED'.
      * <p>These checks could potentially be improved. E.g. <p><ul>
      * <li>Should an job execution status ever transition from FAILED (except maybe to ABANDONED)?
@@ -403,6 +403,13 @@ public abstract class AbstractPersistenceManager implements IPersistenceManagerS
     }
 
     /**
+     * WARNING: As the comments below mention, there are other invalid state transitions we could guard against. Be very careful about
+     * making any additional changes, since it could have unintended consequences to certain exception handling flows.
+     * E.g. the BatchJmsEndpointListener class is implemented today such that a range of outcomes can result from an exception: consume and
+     * silently ignore, consume and mark failed, rollback onto the queue. By changing the checks we do here we could affect this set of
+     * scenarios in various ways.
+     *
+     * So be careful !!! (And of course, read this comment)
      * See description of: {@link AbstractPersistenceManager#verifyStatusTransitionIsValid(JobExecutionEntity, BatchStatus)
      *
      * @param instance
@@ -432,6 +439,13 @@ public abstract class AbstractPersistenceManager implements IPersistenceManagerS
     }
 
     /**
+     * WARNING: As the comments below mention, there are other invalid state transitions we could guard against. Be very careful about
+     * making any additional changes, since it could have unintended consequences to certain exception handling flows.
+     * E.g. the BatchJmsEndpointListener class is implemented today such that a range of outcomes can result from an exception: consume and
+     * silently ignore, consume and mark failed, rollback onto the queue. By changing the checks we do here we could affect this set of
+     * scenarios in various ways.
+     *
+     * So be careful !!! (And of course, read this comment)
      *
      * See description of: {@link AbstractPersistenceManager#verifyStatusTransitionIsValid(JobExecutionEntity, BatchStatus)
      *
@@ -462,6 +476,13 @@ public abstract class AbstractPersistenceManager implements IPersistenceManagerS
     }
 
     /**
+     * WARNING: As the comments below mention, there are other invalid state transitions we could guard against. Be very careful about
+     * making any additional changes, since it could have unintended consequences to certain exception handling flows.
+     * E.g. the BatchJmsEndpointListener class is implemented today such that a range of outcomes can result from an exception: consume and
+     * silently ignore, consume and mark failed, rollback onto the queue. By changing the checks we do here we could affect this set of
+     * scenarios in various ways.
+     *
+     * So be careful !!! (And of course, read this comment)
      *
      * See description of: {@link AbstractPersistenceManager#verifyStatusTransitionIsValid(JobExecutionEntity, BatchStatus)
      *
@@ -471,6 +492,18 @@ public abstract class AbstractPersistenceManager implements IPersistenceManagerS
      */
     protected void verifyStateTransitionIsValid(JobInstanceEntity jobInstance, InstanceState toState) throws BatchIllegalJobStatusTransitionException {
 
+        // Just in case we need it
+        String excMsg = "Job Instance: " + jobInstance.getInstanceId() + " cannot be transitioned from Instance State: " + jobInstance.getInstanceState().name() + " to "
+                        + toState.name();
+
+        // Disallow transition to JMS_QUEUED unless we are coming from SUBMITTED
+        if (toState == InstanceState.JMS_QUEUED) {
+            if (!jobInstance.getInstanceState().equals(InstanceState.SUBMITTED)) {
+                throw new BatchIllegalJobStatusTransitionException(excMsg);
+            }
+        }
+
+        // Here we just disallow transitions from COMPLETED (except to ABANDONED) and ABANDONED
         switch (jobInstance.getInstanceState()) {
             case COMPLETED:
                 //COMPLETED to ABANDONED is allowed since it's already allowed in released TCK tests.
@@ -478,12 +511,12 @@ public abstract class AbstractPersistenceManager implements IPersistenceManagerS
                     break;
                 }
             case ABANDONED:
-                throw new BatchIllegalJobStatusTransitionException("Job Instance: " + jobInstance.getInstanceId()
-                                                                   + " cannot be transitioned from Instance State: " + jobInstance.getInstanceState().name()
-                                                                   + " to " + toState.name());
-            case SUBMITTED:
-            case JMS_QUEUED:
+                throw new BatchIllegalJobStatusTransitionException(excMsg);
             case JMS_CONSUMED:
+                // Allow JMS_CONSUMED => JMS_CONSUMED on JMS executor path, in case message rolls back onto queue after being set to JMS_CONSUMED the first time and is then consumed
+                // on a second attempt.
+            case JMS_QUEUED:
+            case SUBMITTED:
             case DISPATCHED:
             case FAILED:
             case STOPPED:
