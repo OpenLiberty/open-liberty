@@ -20,6 +20,9 @@ javac.target: 1.8
 
 fat.project: true
 
+tested.features:\
+    jakartaee-8.0
+
 -buildpath: \
 	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
     com.ibm.websphere.javaee.cdi.2.0;version=latest,\
