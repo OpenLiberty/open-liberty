@@ -11,10 +11,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -57,8 +55,9 @@ public class MavenDirectoryInstall {
         logger.log(Level.FINE, "The features to install from local maven repository are:" + featuresToInstall);
         logger.log(Level.FINE, "The local maven repository is: " + fromDir.getAbsolutePath());
 
+        List<File> jsonPaths = getSingleJsonPaths(fromDir);
         map = new InstallKernelMap();
-        initializeMap(featuresToInstall);
+        initializeMap(featuresToInstall, jsonPaths);
         getLibertyVersions();
 
     }
@@ -75,15 +74,11 @@ public class MavenDirectoryInstall {
      * @param featuresToInstall
      * @throws IOException
      */
-    private void initializeMap(Collection<String> featuresToInstall) throws IOException {
+    private void initializeMap(Collection<String> featuresToInstall, Collection<File> jsonPaths) throws IOException {
         map.put("runtime.install.dir", Utils.getInstallDir());
         map.put("target.user.directory", new File(Utils.getInstallDir(), "tmp"));
         map.put("install.local.esa", true);
-
-        ArrayList<File> jsonPaths = new ArrayList<>();
-        getSingleJsonPaths(fromDir, jsonPaths);
         map.put("single.json.file", jsonPaths);
-
         map.put("features.to.resolve", new ArrayList<>(featuresToInstall));
         map.put("license.accept", true); // TODO: discuss later
         map.get("install.kernel.init.code");
@@ -270,26 +265,24 @@ public class MavenDirectoryInstall {
     }
 
     /**
-     * Populate found with the single json files
+     * Get the single json files
      * 
      * @param filepath
      * @param found
      */
-    private void getSingleJsonPaths(File filepath, ArrayList<File> found) {
+    private List<File> getSingleJsonPaths(File filepath) {
+        ArrayList<File> jsonFilesFound = new ArrayList<>();
         File[] list = filepath.listFiles();
-        if (list == null) {
-            return;
-        }
-
         for (File f : list) {
             if (f.isDirectory()) {
-                getSingleJsonPaths(f, found);
+                jsonFilesFound.addAll(getSingleJsonPaths(f));
             } else if (f.isFile()) {
                 if (f.getName().endsWith(".json")) {
-                    found.add(f);
+                    jsonFilesFound.add(f);
                 }
             }
         }
+        return jsonFilesFound;
 
     }
 
