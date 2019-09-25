@@ -26,3 +26,4 @@ kind=ga
 edition=core
 -jars=com.ibm.websphere.appserver.spi.jaspic; location:=dev/spi/ibm/
 -files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.jaspic_1.1-javadoc.zip
+WLP-Activation-Type: parallel
