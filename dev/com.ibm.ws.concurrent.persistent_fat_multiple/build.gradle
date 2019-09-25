@@ -10,8 +10,6 @@
  *******************************************************************************/
 //TODO this can be moved to the wlp-gradle/subprojects/fat.gradle 
 
-def isOracleAvailable = file("../prereq.dbtest/lib/Oracle/jars/Oracle/18.3.0.0.0/ojdbc8_g.jar").exists()
-
 configurations {
   jdbcDrivers
 }
@@ -37,12 +35,8 @@ dependencies {
   jdbcDrivers 	'com.ibm.db2:jcc:11.1.4.4',
   				'org.postgresql:postgresql:42.2.5',
   				'com.microsoft.sqlserver:mssql-jdbc:7.4.1.jre8',
-  				'org.apache.derby:derby:10.11.1.1'
-  
-  //Oracle JDBC Driver				
-  if (isOracleAvailable) {
-    jdbcDrivers files("../prereq.dbtest/lib/Oracle/jars/Oracle/18.3.0.0.0/ojdbc8_g.jar")
-  }
+  				'org.apache.derby:derby:10.11.1.1',
+  				'com.oracle.ojdbc:ojdbc8_g:19.3.0.0'
 }
 
 task addJdbcDrivers(type: Copy) {
@@ -53,7 +47,7 @@ task addJdbcDrivers(type: Copy) {
   rename 'jcc.*.jar', 'db2jcc.jar'
   rename 'mssql-jdbc.*.jar', 'mssql-jdbc.jar'
   rename 'postgresql.*.jar', 'postgresql.jar'
-  rename 'ojdbc.*.jar', 'ojdbc8_g.jar'
+  rename 'ojdbc8_g.*.jar', 'ojdbc8_g.jar'
 }
 
 addRequiredLibraries {
