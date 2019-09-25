@@ -11,22 +11,23 @@
 package com.ibm.ws.kernel.boot.internal.commands;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
 
-import java.io.BufferedInputStream;
-import java.io.File;
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.zip.ZipEntry;
+import java.util.jar.JarFile;
+import java.util.jar.JarEntry;
 import java.util.zip.ZipFile;
+import java.util.zip.ZipEntry;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -34,63 +35,52 @@ import componenttest.topology.impl.LibertyServerFactory;
 /**
  *
  */
-public class PackageLooseConfigTest extends AbstractPackageTest {
-	private static final String[] CONFIGS = new String[] { 
-			"NestedArchive.war.xml", 
-			"SingleDir.war.xml",
-			"SingleFile.war.xml",
-			"SkipInvalidEntries.war.xml",
-			"FullArchive.war.xml", 
-			};
+public class PackageLooseConfigTest extends AbstractLooseConfigTest {
+
+	LibertyServer server;
+	private static String ARCHIVE = "DefaultArchive.war";
+
+	@Rule
+	public TestName testName = new TestName();
 
 	@Before
 	public void before() throws Exception {
 
 		// Delete previous archive file if it exists
-		LibertyServer server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
+		server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
 		server.deleteFileFromLibertyServerRoot(ARCHIVE_PACKAGE);
+
+		System.out.printf("%n%s%n", testName.getMethodName());
 	}
 
 	/**
-	 * This tests that when --server-root is supplied, and you have a loose
-	 * application that the loose application is output in the archive as a .war
-	 * file as well as in an expanded format in the expanded folder
-	 *
+	 * Packages a loose application with '--include=all' and verifies that the
+	 * resulting package contains the expected entries
 	 */
 	@Test
-	public void testExpandedAndArchiveCreatedFromLooseConfig() throws Exception {
-		LibertyServer server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
+	public void testIncludeAll() throws Exception {
 		try {
-			packageAndTestConfigs(new ExpandedAndArchiveCreatedFromLooseConfigTest(), server, CONFIGS);
-		} catch (FileNotFoundException ex) {
-			assumeTrue(false); // the directory does not exist, so we skip this test.
-		}
-	}
-
-	private class ExpandedAndArchiveCreatedFromLooseConfigTest implements AbstractPackageTest.LooseConfigTest {
-		@Override
-		public void testConfig(LibertyServer server, String config) throws IOException {
-			// Remove .xml from config file name to get loose config archive name
-			String archive = config.substring(0, config.lastIndexOf('.'));
-
+			String[] cmd = new String[] { "--archive=" + ARCHIVE_PACKAGE, "--include=all",
+					"--server-root=" + SERVER_ROOT };
+			packageWithConfig(server, cmd);
 			ZipFile zipFile = new ZipFile(server.getServerRoot() + "/" + ARCHIVE_PACKAGE);
 			try {
+				String serverPath = SERVER_ROOT + "/usr/servers/" + SERVER_NAME;
 				boolean foundServerEntry = false;
 				boolean foundWarFileEntry = false;
 				boolean foundExpandedEntry = false;
 				for (Enumeration<? extends ZipEntry> en = zipFile.entries(); en.hasMoreElements();) {
 					ZipEntry entry = en.nextElement();
-					// Uses String.matches() to ensure exact path is found
-					foundServerEntry |= entry.getName().matches("^" + SERVER_PATH + "/$");
-					foundWarFileEntry |= entry.getName().matches("^" + SERVER_PATH + "/apps/" + archive + "$");
+
+					foundServerEntry |= entry.getName().matches("^" + serverPath + "/$");
+					foundWarFileEntry |= entry.getName().matches("^" + serverPath + "/apps/" + ARCHIVE + "$");
 					foundExpandedEntry |= entry.getName()
-							.matches("^" + SERVER_PATH + "/apps/expanded/" + archive + "/.*$");
+							.matches("^" + serverPath + "/apps/expanded/" + ARCHIVE + "/.*$");
 				}
-				assertTrue("The package did not contain " + SERVER_PATH + "/ as expected.", foundServerEntry);
-				assertTrue("The package did not contain " + SERVER_PATH + "/apps/" + archive + " as expected.",
+				assertTrue("The package did not contain " + serverPath + "/ as expected.", foundServerEntry);
+				assertTrue("The package did not contain " + serverPath + "/apps/" + ARCHIVE + " as expected.",
 						foundWarFileEntry);
-				assertTrue(
-						"The package did not contain " + SERVER_PATH + "/apps/expanded/" + archive + "/ as expected.",
+				assertTrue("The package did not contain " + serverPath + "/apps/expanded/" + ARCHIVE + "/ as expected.",
 						foundExpandedEntry);
 			} finally {
 				try {
@@ -98,102 +88,100 @@ public class PackageLooseConfigTest extends AbstractPackageTest {
 				} catch (IOException ex) {
 				}
 			}
-		}
-	}
-
-	/**
-	 * Tests the contents of the .war and expanded folder created from packaging a loose application
-	 * to ensure they contain the exact same files in the exact same order 
-	 * 
-	 */
-	@Test
-	public void testExpandedFolderMatchesArchiveFromLooseConfig() throws Exception {
-		LibertyServer server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
-		try {
-			packageAndTestConfigs(new ExpandedFolderMatchesArchiveFromLooseConfigTest(), server, CONFIGS);
 		} catch (FileNotFoundException ex) {
 			assumeTrue(false); // the directory does not exist, so we skip this test.
 		}
 	}
 
-	private class ExpandedFolderMatchesArchiveFromLooseConfigTest implements AbstractPackageTest.LooseConfigTest {
+	/**
+	 * 
+	 * Packages a loose application with '--include=runnable' and verifies that the
+	 * resulting package contains the expected entries
+	 *
+	 */
+	@Test
+	public void testIncludeRunnable() throws Exception {
 
-		@Override
-		public void testConfig(LibertyServer server, String config) throws Exception {
-			// Remove .xml from config file name to get loose config archive name
-			String archive = config.substring(0, config.lastIndexOf('.'));
-			
-			// Map every entry found in both the .war and the expanded folder to
-			// the relative order they were found. Add the values from the archive and
-			// subtract the values from the expanded folder. 
-			// Resulting values should all be 0.
-			HashMap<String, Integer> checkMatch = new HashMap<>();
-			int expandedOrder = -1;
-			ZipFile packageZip = new ZipFile(server.getServerRoot() + "/" + ARCHIVE_PACKAGE);
+		try {
+			String archivePackage = "MyPackage.jar";
+			String[] cmd = new String[] { "--archive=" + archivePackage, "--include=runnable" };
+			packageWithConfig(server, cmd);
+			JarFile jarFile = new JarFile(server.getServerRoot() + "/" + archivePackage);
 			try {
-				for (Enumeration<? extends ZipEntry> packageEn = packageZip.entries(); packageEn.hasMoreElements();) {
-					ZipEntry packageEntry = packageEn.nextElement();
-
-					// Found the entry for the .war in the .zip
-					if (packageEntry.getName().matches("^" + SERVER_PATH + "/apps/" + archive + "$")) {
-						// Read the contents of the compressed .war into warFile
-						BufferedInputStream bis = new BufferedInputStream(packageZip.getInputStream(packageEntry));
-						File warFile = new File(server.getServerRoot() + "/packagedWar");
-						FileOutputStream warOutput = new FileOutputStream(warFile);
-						while (bis.available() > 0) {
-							warOutput.write(bis.read());
-						}
-						warOutput.close();
-
-						// Add the index of each extracted entry from the .war into the hashmap using
-						// their name as the key
-						ZipFile warZip = new ZipFile(warFile);
-						int warOrder = 1;
-						for (Enumeration<? extends ZipEntry> warEn = warZip.entries(); warEn.hasMoreElements();) {
-							String warEntry = warEn.nextElement().getName();
-							putMatch(checkMatch, warEntry, warOrder++);
-
-						}
-						warZip.close();
-					}
-
-					// Subtract the index of each entry in the expanded folder from the hashmap
-					// using their name as the key
-					if (packageEntry.getName().matches("^" + SERVER_PATH + "/apps/expanded/" + archive + "/.+$")) {
-						String expandedEntry = packageEntry.getName()
-								.replaceFirst(SERVER_PATH + "/apps/expanded/" + archive + "/", "");
-
-						putMatch(checkMatch, expandedEntry, expandedOrder--);
-					}
+				String serverPath = "wlp/usr/servers/" + SERVER_NAME;
+				boolean foundServerEntry = false;
+				boolean foundWarFileEntry = false;
+				boolean foundExpandedEntry = false;
+				for (Enumeration<? extends JarEntry> en = jarFile.entries(); en.hasMoreElements();) {
+					JarEntry entry = en.nextElement();
+					// Uses String.matches() to ensure exact path is found
+					foundServerEntry |= entry.getName().matches("^" + serverPath + "/$");
+					foundWarFileEntry |= entry.getName().matches("^" + serverPath + "/apps/" + ARCHIVE + "$");
+					foundExpandedEntry |= entry.getName()
+							.matches("^" + serverPath + "/apps/expanded/" + ARCHIVE + "/.*$");
 				}
-
-				// If the archive and the expanded folder contain the same files in the same
-				// order then every entry will have a value of 0
-				Iterator<Map.Entry<String, Integer>> matchSet = checkMatch.entrySet().iterator();
-				while (matchSet.hasNext()) {
-					Map.Entry<String, Integer> match = matchSet.next();
-					assertTrue("The archive does not match the expanded folder at file: " + match.getKey(),
-							match.getValue() == 0);
-				}
+				assertTrue("The package did not contain " + serverPath + "/ as expected.", foundServerEntry);
+				assertTrue("The package did not contain " + serverPath + "/apps/" + ARCHIVE + " as expected.",
+						foundWarFileEntry);
+				assertTrue("The package did not contain " + serverPath + "/apps/expanded/" + ARCHIVE + "/ as expected.",
+						foundExpandedEntry);
 			} finally {
 				try {
-					packageZip.close();
+					jarFile.close();
 				} catch (IOException ex) {
 				}
 			}
+		} catch (FileNotFoundException ex) {
+			assumeTrue(false); // the directory does not exist, so we skip this test.
 		}
+	}
 
-		/**
-		 * Add the given value to the value found in checkMath at the given key if one exists,
-		 * otherwise make a new entry
-		 * @param checkMatch
-		 * @param key
-		 * @param value
-		 */
-		private void putMatch(HashMap<String, Integer> checkMatch, String key, int value) {
-			int match = checkMatch.get(key) == null ? 0 : checkMatch.get(key);
-			checkMatch.put(key, match + value);
+	/**
+	 * Packages a loose application into a .jar with 'include=runnable' and verifies 
+	 * that it starts up properly after being run with 'java -jar packageName.jar'
+	 */
+	@Test
+	public void testCreateAndStartRunnableJar() throws Exception {
+		try {
+			String archivePackage = "runnablePackage.jar";
+			String[] cmd = new String[] { "--archive=" + archivePackage, "--include=runnable" };
+			packageWithConfig(server, cmd);
+
+			// Start a separate process to run the jar
+			Process proc = Runtime.getRuntime()
+					.exec(new String[] { "java", "-jar", server.getServerRoot() + "/" + archivePackage });
+			try {
+				BufferedReader brOutput = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+				BufferedReader brError = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
+
+				// Timeout after 20 seconds if the server still hasn't started
+				long timeStart = System.nanoTime();
+				long timeLimit = 20 * (long) Math.pow(10, 9);
+
+				boolean serverDidLaunch = false;
+				boolean serverIsReady = false;
+				while (!(serverDidLaunch && serverIsReady) && timeLimit - (System.nanoTime() - timeStart) > 0) {
+
+					// If an error is read fail the test
+					if (brError.ready()) {
+						fail("The server package " + archivePackage + " encountered the following error(s):\n\t"
+								+ brError.readLine());
+					}
+
+					if (brOutput.ready()) {
+						String line = brOutput.readLine();
+						serverDidLaunch |= line.matches("^.* CWWKE0001I: .* " + SERVER_NAME + " .*$");
+						serverIsReady |= line.matches(".* CWWKF0011I: .* " + SERVER_NAME + " .*$");
+					}
+				}
+
+				assertTrue("The server package " + archivePackage + " did not launch successfully", serverDidLaunch);
+				assertTrue("The server package " + archivePackage + " was not ready to run in time", serverIsReady);
+			} finally {
+				proc.destroy();
+			}
+		} catch (FileNotFoundException ex) {
+			assumeTrue(false); // the directory does not exist, so we skip this test.
 		}
-
 	}
 }
