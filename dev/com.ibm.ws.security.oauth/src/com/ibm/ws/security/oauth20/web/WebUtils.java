@@ -356,10 +356,8 @@ public class WebUtils {
     }
 
     public static void throwOidcServerException(HttpServletRequest request, OAuth20Exception e) throws OidcServerException {
-        String encoding = request.getCharacterEncoding() != null ? request.getCharacterEncoding() : "utf-8";
-        String errorMsg = e.formatSelf(request.getLocale(), encoding);
-        Tr.error(tc, errorMsg, new Object[] {});
+        Tr.error(tc, e.getMsgKey(), e.getObjects());
+        throw new OidcServerException(new BrowserAndServerLogMessage(tc, e.getMsgKey(), e.getObjects()), OIDCConstants.ERROR_INVALID_REQUEST, HttpServletResponse.SC_BAD_REQUEST);
 
-        throw new OidcServerException(new BrowserAndServerLogMessage(tc, errorMsg, new Object[] {}), OIDCConstants.ERROR_INVALID_REQUEST, HttpServletResponse.SC_BAD_REQUEST);
     }
 }
