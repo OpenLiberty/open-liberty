@@ -4,3 +4,4 @@ visibility=protected
 -bundles=com.ibm.ws.security.authentication.filter
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

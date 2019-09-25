@@ -9,3 +9,4 @@ symbolicName=com.ibm.websphere.appserver.adminSecurity-1.0
  com.ibm.ws.security.authentication.tai
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

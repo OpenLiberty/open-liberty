@@ -16,3 +16,4 @@ IBM-Install-Policy: when-satisfied
 -files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.webcontainer.security.app_1.3-javadoc.zip
 kind=ga
 edition=core
+WLP-Activation-Type: parallel
