@@ -321,7 +321,7 @@ public class OauthClientStore implements OidcOAuth20ClientProvider {
 
         // Use an empty string as the last insert to avoid an unused insert (e.g. "{2}") showing up in the exception message
         updatedMsgArgs = appendStringMessageToArgs("", msgArgs);
-        throw new OidcServerException(new BrowserAndServerLogMessage(tc, msgKey, exceptionMsg), OIDCConstants.ERROR_SERVER_ERROR, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
+        throw new OidcServerException(new BrowserAndServerLogMessage(tc, msgKey, updatedMsgArgs), OIDCConstants.ERROR_SERVER_ERROR, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
 
     }
 

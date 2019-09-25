@@ -38,7 +38,6 @@ import com.ibm.ws.security.oauth20.api.Constants;
 import com.ibm.ws.security.oauth20.api.OAuth20EnhancedTokenCache;
 import com.ibm.ws.security.oauth20.api.OAuth20Provider;
 import com.ibm.ws.security.oauth20.api.OidcOAuth20ClientProvider;
-import com.ibm.ws.security.oauth20.error.impl.BrowserAndServerLogMessage;
 import com.ibm.ws.security.oauth20.plugins.OidcBaseClient;
 import com.ibm.ws.security.oauth20.util.OIDCConstants;
 import com.ibm.ws.security.oauth20.web.OAuth20Request.EndpointType;
@@ -444,8 +443,7 @@ public class ClientAuthentication {
             throw e;
         } catch (Exception e1) {
             Tr.error(tc, "security.oauth20.endpoint.resowner.auth.error", userName);
-            throw new OidcServerException(new BrowserAndServerLogMessage(tc, "security.oauth20.endpoint.resowner.auth.error", userName), OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
-
+            throw new OidcServerException("invalid_resource_owner_credential", OIDCConstants.ERROR_SERVER_ERROR, HttpServletResponse.SC_BAD_REQUEST, e1);
         }
 
         return valid;
@@ -493,9 +491,8 @@ public class ClientAuthentication {
             throw e;
         } catch (Exception e1) {
             Tr.error(tc, "security.oauth20.endpoint.resowner.apppassword.error", userName);
-            throw new OidcServerException(new BrowserAndServerLogMessage(tc, "security.oauth20.endpoint.resowner.apppassword.error", userName), OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
+            throw new OidcServerException("invalid_resource_owner_credential", OIDCConstants.ERROR_SERVER_ERROR, HttpServletResponse.SC_BAD_REQUEST, e1);
         }
-
         return valid;
 
     }

@@ -33,13 +33,6 @@ public class BrowserAndServerLogMessage {
         this.inserts = inserts;
     }
 
-    public BrowserAndServerLogMessage(TraceComponent tc, Enumeration<Locale> locales, String msgKey, Object... inserts) {
-        this.tc = tc;
-        this.msgKey = msgKey;
-        this.inserts = inserts;
-        this.requestLocales = locales;
-    }
-
     public String getBrowserErrorMessage() {
         return Tr.formatMessage(tc, requestLocales, msgKey, inserts);
     }

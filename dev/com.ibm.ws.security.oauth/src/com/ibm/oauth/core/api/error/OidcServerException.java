@@ -120,10 +120,6 @@ public class OidcServerException extends OAuth20Exception {
         return _httpStatus;
     }
 
-    public BrowserAndServerLogMessage getBrowserServerLogMessage() {
-        return _browserServerLog;
-    }
-
     public boolean isComplete() {
         return !OidcOAuth20Util.isNullEmpty(_errorCode) && !OidcOAuth20Util.isNullEmpty(_errorDescription) && _httpStatus != -1;
     }
