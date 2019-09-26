@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import com.ibm.ws.install.InstallException;
@@ -67,10 +68,10 @@ public class MavenDirectoryInstall {
         logger.log(Level.FINE, "The features to install from local maven repository are:" + featuresToInstall);
         logger.log(Level.FINE, "The local maven repository is: " + fromDir.getAbsolutePath());
 
-        List<File> jsonPaths = getSingleJsonPaths(fromDir);
+        getLibertyVersions();
+        List<File> jsonPaths = getJsons(fromDir);
         map = new InstallKernelMap();
         initializeMap(featuresToInstall, jsonPaths);
-        getLibertyVersions();
 
     }
 
@@ -168,7 +169,8 @@ public class MavenDirectoryInstall {
             }
         }
 
-        Collection<File> artifacts = findEsas(resolvedFeatures, fromDir);
+        Collection<File> artifacts = fromDir != null ? findEsas(resolvedFeatures, fromDir)
+                : downloadFeatureEsas((List<String>) resolvedFeatures);
 
         Collection<String> actionReturnResult = new ArrayList<String>();
         Collection<String> currentReturnResult;
@@ -233,7 +235,7 @@ public class MavenDirectoryInstall {
             Path featurePath = Paths.get(groupDir.getAbsolutePath().toString(), featureName, openLibertyVersion,
                     featureName + "-" + openLibertyVersion + ".esa");
 
-            logger.log(Level.FINE, featurePath.toString());
+            logger.log(Level.FINE, "Found feature at path: " + featurePath.toString());
             if (Files.isRegularFile(featurePath)) {
                 foundEsas.add(featurePath.toFile());
                 featuresClone.remove(feature);
@@ -241,10 +243,10 @@ public class MavenDirectoryInstall {
 
         }
         if (!featuresClone.isEmpty()) {
-            logger.log(Level.FINE, "Could not find ESA's for " + resolvedFeatures);
-            List<File> downloadedEsas = downloadMissingFeatureEsas((List<String>) resolvedFeatures);
+            logger.log(Level.INFO, "Could not find ESA's in local maven repo for " + resolvedFeatures);
+            List<File> downloadedEsas = downloadFeatureEsas((List<String>) resolvedFeatures);
 
-            logger.log(Level.FINE, "Downloaded the following features from maven central:" + downloadedEsas);
+            logger.log(Level.INFO, "Downloaded the following features from maven central:" + downloadedEsas);
             foundEsas.addAll(downloadedEsas);
         }
         return foundEsas;
@@ -253,9 +255,9 @@ public class MavenDirectoryInstall {
 
 
     /**
-     * 
+     * Download features from maven central
      */
-    private List<File> downloadMissingFeatureEsas(List<String> features) {
+    private List<File> downloadFeatureEsas(List<String> features) {
         ArtifactDownloader artifactDownloader = new ArtifactDownloader();
         artifactDownloader.synthesizeAndDownloadFeatures(features, TEMP_DIRECTORY,
                 "http://repo.maven.apache.org/maven2/");
@@ -281,31 +283,90 @@ public class MavenDirectoryInstall {
 
     }
 
-    /**
-     * Get the single json files
-     * 
-     * @param filepath
-     * @param found
-     */
-    private List<File> getSingleJsonPaths(File filepath) {
-        ArrayList<File> jsonFilesFound = new ArrayList<>();
-        if (filepath == null || !filepath.exists()) {
-            return jsonFilesFound;
-        }
-        File[] list = filepath.listFiles();
-        for (File f : list) {
+//    /**
+//     * Get the single json files from a local maven repo
+//     * 
+//     * @param filepath
+//     * @param found
+//     */
+//    private List<File> getSingleJsonPaths(File filepath) {
+//        ArrayList<File> jsonFilesFound = new ArrayList<>();
+//        if (filepath == null || !filepath.exists()) {
+//            return jsonFilesFound;
+//        }
+//        File[] list = filepath.listFiles();
+//        for (File f : list) {
+//            if (f.isDirectory()) {
+//                jsonFilesFound.addAll(getSingleJsonPaths(f));
+//            } else if (f.isFile()) {
+//                if (f.getName().endsWith(".json")) {
+//                    jsonFilesFound.add(f);
+//                }
+//            }
+//        }
+//
+//        return jsonFilesFound;
+//
+//    }
+
+    private List<File> getJsons(File file) {
+        List<File> jsonFiles = new ArrayList<File>();
+
+        Stack<File> stack = new Stack<>();
+        stack.push(file);
+
+        while (!stack.empty()) {
+            // check if we're in directory
+            File f = stack.pop();
             if (f.isDirectory()) {
-                jsonFilesFound.addAll(getSingleJsonPaths(f));
-            } else if (f.isFile()) {
-                if (f.getName().endsWith(".json")) {
-                    jsonFilesFound.add(f);
+                // determine if we're in the artifact section of the repository
+                if (looksLikeArtifactSection(f.listFiles())) {
+                    File json = retrieveJsonFileFromArtifact(f);
+                    if (json.exists()) {
+                        jsonFiles.add(json);
+                    }
+                } else {
+                    for (File current : f.listFiles()) {
+                        stack.push(current);
+                    }
                 }
+            } else if (f.isFile() && f.getName().endsWith(".json")) {
+                jsonFiles.add(f);
+            }
+        }
+        logger.log(Level.FINE, "Found the following jsons: " + jsonFiles);
+        
+        return jsonFiles;
+
+    }
+
+    private File retrieveJsonFileFromArtifact(File artifact) {
+        File dir = new File(artifact, "/features/");
+        if (!dir.exists() && !dir.isDirectory()) {
+            return null;
+        }
+       
+        
+        Path jsonPath = Paths.get(artifact.getAbsolutePath(), "features", openLibertyVersion,
+                "features-" + openLibertyVersion + ".json");
+        return jsonPath.toFile();
+
+    }
+
+    private boolean looksLikeArtifactSection(File[] files) {
+        for (File f : files) {
+            if (f.getName().split("-").length == 2) {
+                // likely found a feature
+                return true;
             }
         }
 
-        return jsonFilesFound;
+        return false;
 
     }
+
+
+
 
     /**
      * Fetch the open liberty and closed liberty json files from maven central
@@ -350,13 +411,20 @@ public class MavenDirectoryInstall {
     private boolean cleanUpHelper(File file) {
         if (file == null || !file.exists())
             return true;
+        Stack<File> stack = new Stack<File>();
+        stack.push(file);
 
-        if (file.isDirectory()) {
-            for (File f : file.listFiles()) {
-                cleanUpHelper(f);
+        while (!stack.empty()) {
+            File f = stack.pop();
+            if (f.isDirectory()) {
+                for (File dirFile : f.listFiles()) {
+                    stack.push(dirFile);
+                }
+            } else {
+                f.delete();
             }
-            
         }
+
         return file.delete();
     }
 
