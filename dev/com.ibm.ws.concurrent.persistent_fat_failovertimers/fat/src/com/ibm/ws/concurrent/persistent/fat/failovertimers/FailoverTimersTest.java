@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.persistent.fat.failovertimers;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
@@ -46,15 +49,20 @@ public class FailoverTimersTest extends FATServletClient {
     private static ServerConfiguration originalConfigA;
     private static ServerConfiguration originalConfigB;
 
-    @Server("com.ibm.ws.concurrent.persistent.fat.failovertimers.serverA")
+    private static final String SERVER_A_NAME = "com.ibm.ws.concurrent.persistent.fat.failovertimers.serverA";
+    private static final String SERVER_B_NAME = "com.ibm.ws.concurrent.persistent.fat.failovertimers.serverB";
+
+    @Server(SERVER_A_NAME)
     @TestServlet(servlet = FailoverTimersTestServlet.class, contextRoot = APP_NAME)
     public static LibertyServer serverA;
 
-    @Server("com.ibm.ws.concurrent.persistent.fat.failovertimers.serverB")
+    @Server(SERVER_B_NAME)
     @TestServlet(servlet = FailoverTimersTestServlet.class, contextRoot = APP_NAME)
     public static LibertyServer serverB;
 
     private static final ExecutorService testThreads = Executors.newFixedThreadPool(3);
+
+    private static final String TIMER_LAST_RAN_ON = "Timer last ran on server: ";
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -87,11 +95,28 @@ public class FailoverTimersTest extends FATServletClient {
     }
 
     /**
-     * TODO write a useful test now that test bucket has been created
+     * Determine which server an automatic peristent timer is running on.
+     * Stop that server and verify that the timer starts running on a different server.
      */
     @Test
-    public void testSomething() throws Exception {
-        runTestWithResponse(serverA, APP_NAME + "/FailoverTimersTestServlet", "test1&test=testSomething[A]");
-        runTestWithResponse(serverB, APP_NAME + "/FailoverTimersTestServlet", "test1&test=testSomething[B]");
+    public void testTimerFailsOverWhenServerStops() throws Exception {
+        StringBuilder sb = runTestWithResponse(serverA, APP_NAME + "/FailoverTimersTestServlet",
+                "findServerWhereTimerRuns&timer=AutomaticCountingTimer&test=testTimerFailsOverWhenServerStops[1]");
+        assertEquals(sb.toString(), 0, sb.indexOf(TIMER_LAST_RAN_ON));
+        String serverName = sb.substring(TIMER_LAST_RAN_ON.length(), sb.lastIndexOf("."));
+        assertTrue(serverName, SERVER_A_NAME.equals(serverName) || SERVER_B_NAME.equals(serverName));
+
+        LibertyServer serverToStop = SERVER_A_NAME.equals(serverName) ? serverA : serverB;
+        try {
+            serverToStop.stopServer();
+
+            String nameOfServerForFailover = serverToStop == serverA ? SERVER_B_NAME : SERVER_A_NAME;
+            LibertyServer serverForFailover = serverToStop == serverA ? serverB : serverA;
+
+            runTest(serverForFailover, APP_NAME + "/FailoverTimersTestServlet",
+                    "testTimerFailover&timer=AutomaticCountingTimer&server=" + nameOfServerForFailover + "&test=testTimerFailsOverWhenServerStops[2]");
+        } finally {
+            serverToStop.startServer();
+        }
     }
 }
