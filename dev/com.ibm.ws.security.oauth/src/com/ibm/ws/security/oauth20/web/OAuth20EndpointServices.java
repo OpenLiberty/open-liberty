@@ -342,14 +342,6 @@ public class OAuth20EndpointServices {
                         "com.ibm.ws.security.oauth20.web.OAuth20EndpointServices", "324", this);
             }
             boolean suppressBasicAuthChallenge = isBrowserWithBasicAuth; // ui must NOT log in using basic auth, so logout function will work.
-            /*
-             * BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, locales, "OAUTH_CLIENT_REGISTRATION_MALFORMED_REQUEST");
-             * Tr.error(tc, errorMsg.getServerErrorMessage());
-             * throw new OidcServerException(errorMsg.getBrowserErrorMessage(), OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
-             */
-
-            // BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(e.getBrowserServerLogMessage().getTraceComponent(), request.getLocales(), e.getBrowserServerLogMessage().getMessageKey());
-            // e.getBrowserServerLogMessage().setTraceComponent(tc);
             WebUtils.sendErrorJSON(response, e.getHttpStatus(), e.getErrorCode(), e.getErrorDescription(request.getLocales()), suppressBasicAuthChallenge);
         }
 
