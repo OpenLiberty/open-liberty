@@ -45,7 +45,11 @@ public class CacheEntry implements Serializable {
     public boolean isExpired() {
         Date now = new Date();
         long nowTime = now.getTime();
-        // trace @GK1
+        if (tc.isDebugEnabled()) { // @GK1
+            Tr.debug(tc, "now       : " + nowTime); // @GK1
+            Tr.debug(tc, "expiryTime: " + _expiryTime); // @GK1
+        } // @GK1
+          // trace @GK1
         if (nowTime >= _expiryTime) { // @GK1
             if (tc.isDebugEnabled()) { // @GK1
                 Tr.debug(tc, "token: " + _token + " expired"); // @GK1

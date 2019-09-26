@@ -59,7 +59,7 @@ public class BaseCache implements OAuth20EnhancedTokenCache {
     public BaseCache(int tokenStoreSize) {
         this.tokenStoreSize = tokenStoreSize;
     }
-    
+
     public BaseCache(int tokenStoreSize, String accessTokenEncoding, int accessTokenLength) {
         this.tokenStoreSize = tokenStoreSize;
         this.accessTokenEncoding = accessTokenEncoding;
@@ -202,6 +202,7 @@ public class BaseCache implements OAuth20EnhancedTokenCache {
             _me = me;
         }
 
+        // ( "_me: " + _me.toString());
         @Override
         public void run() {
             String methodName = "run";
@@ -216,7 +217,7 @@ public class BaseCache implements OAuth20EnhancedTokenCache {
                         _log.logp(Level.FINEST, MYCLASS, methodName,
                                 "About to delete all expired tokens");
                     }
-
+                    _log.logp(Level.ALL, MYCLASS, methodName, "_me: " + _me.toString());
                     synchronized (BaseCache._lock) {
                         /*
                          * Not efficient, but this is only a test class. Two
@@ -224,8 +225,10 @@ public class BaseCache implements OAuth20EnhancedTokenCache {
                          * ConcurrentModificationException.
                          */
                         Set<String> keys = _me._cache.keySet();
+                        _log.logp(Level.ALL, MYCLASS, methodName, "number of keys: " + keys.size());
                         Set<String> keysToRemove = new HashSet<String>();
                         synchronized (_me._cache) {
+                            _log.logp(Level.ALL, MYCLASS, methodName, "checking entries _me: " + _me.toString());
                             // find and record keys to remove
                             for (Iterator<String> i = keys.iterator(); i.hasNext();) {
                                 String key = i.next();
@@ -242,6 +245,7 @@ public class BaseCache implements OAuth20EnhancedTokenCache {
                             }
                         }
                     }
+                    _log.logp(Level.ALL, MYCLASS, methodName, "Before Sleep _me: " + _me.toString());
 
                     sleep(CLEANUP_INTERVAL_SECONDS * 1000);
                 }
@@ -340,7 +344,7 @@ public class BaseCache implements OAuth20EnhancedTokenCache {
         }
         return result;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void addByHash(String hash, OAuth20Token entry, int lifetime) {
@@ -361,13 +365,13 @@ public class BaseCache implements OAuth20EnhancedTokenCache {
 
     }
 
- /** {@inheritDoc} */
+    /** {@inheritDoc} */
     @Override
     public Collection<OAuth20Token> getMatchingTokens(String username, String client, String tokenType) {
 
         Collection<OAuth20Token> tokens = getUserAndClientTokens(username, client);
         if (tokens != null && !tokens.isEmpty()) {
-            return getTokensMatchingType(tokens, tokenType);          
+            return getTokensMatchingType(tokens, tokenType);
         }
 
         return Collections.emptyList();
@@ -393,7 +397,7 @@ public class BaseCache implements OAuth20EnhancedTokenCache {
     /**
      * @param tokens
      * @param grantType
-     * @return 
+     * @return
      */
     private static Collection<OAuth20Token> getTokensMatchingType(Collection<OAuth20Token> tokens, String stateId) {
         Iterator<OAuth20Token> it = tokens.iterator();
