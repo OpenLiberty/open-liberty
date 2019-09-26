@@ -1,4 +1,4 @@
-package com.ibm.ws.install.maven;
+package com.ibm.ws.install.internal;
 
 import java.io.BufferedOutputStream;
 import java.io.File;

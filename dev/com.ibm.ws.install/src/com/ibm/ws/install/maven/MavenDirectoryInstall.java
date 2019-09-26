@@ -16,7 +16,9 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import com.ibm.ws.install.InstallException;
+import com.ibm.ws.install.internal.ArtifactDownloader;
 import com.ibm.ws.install.internal.InstallKernelMap;
 import com.ibm.ws.install.internal.InstallLogUtils;
 import com.ibm.ws.install.internal.InstallLogUtils.Messages;
@@ -31,10 +33,10 @@ public class MavenDirectoryInstall {
     private File fromDir;
     private String toExtension;
     private String openLibertyVersion;
-    private Logger logger;
+    private final Logger logger;
     private boolean tempCleanupRequired;
 
-    private final String TEMP_DIRECTORY =  Utils.getInstallDir() + "/tmp/";
+    private final String TEMP_DIRECTORY = Utils.getInstallDir() + "/tmp/";
     private final String OPEN_LIBERTY_PRODUCT_ID = "io.openliberty";
 
     public MavenDirectoryInstall(Collection<String> featuresToInstall) throws IOException, InstallException {
@@ -57,8 +59,7 @@ public class MavenDirectoryInstall {
      * @throws IOException
      * @throws InstallException
      */
-    public MavenDirectoryInstall(Collection<String> featuresToInstall, File fromDir)
-            throws IOException, InstallException {
+    public MavenDirectoryInstall(Collection<String> featuresToInstall, File fromDir) throws IOException, InstallException {
 
         this.fromDir = fromDir;
         this.logger = InstallLogUtils.getInstallLogger();
@@ -74,15 +75,14 @@ public class MavenDirectoryInstall {
 
     }
 
-    public MavenDirectoryInstall(Collection<String> featuresToInstall, File fromDir, String toExtension)
-            throws IOException, InstallException {
+    public MavenDirectoryInstall(Collection<String> featuresToInstall, File fromDir, String toExtension) throws IOException, InstallException {
         this(featuresToInstall, fromDir);
         this.toExtension = toExtension;
     }
 
     /**
      * Initialize the Install kernel map.
-     * 
+     *
      * @param featuresToInstall
      * @throws IOException
      */
@@ -99,10 +99,10 @@ public class MavenDirectoryInstall {
 
     /**
      * Get the open liberty runtime version.
-     * 
+     *
      * @throws IOException
      * @throws InstallException
-     * 
+     *
      */
     private void getLibertyVersions() throws IOException, InstallException {
         File dir = new File(Utils.getInstallDir(), "lib/versions");
@@ -158,7 +158,7 @@ public class MavenDirectoryInstall {
             String exceptionMessage = (String) map.get("action.error.message");
             if (exceptionMessage == null) {
                 logger.log(Level.INFO, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ALREADY_INSTALLED",
-                        map.get("features.to.resolve")));
+                                                                                      map.get("features.to.resolve")));
                 return;
             } else if (exceptionMessage.contains("CWWKF1250I")) {
                 logger.log(Level.INFO, exceptionMessage);
@@ -178,7 +178,7 @@ public class MavenDirectoryInstall {
             for (File esaFile : artifacts) {
 
                 logger.log(Level.FINE, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_INSTALLING",
-                        extractFeature(esaFile.getName())));
+                                                                                      extractFeature(esaFile.getName())));
                 map.put("license.accept", true);
                 map.put("action.install", esaFile);
                 if (toExtension != null) {
@@ -200,11 +200,9 @@ public class MavenDirectoryInstall {
                     if (!currentReturnResult.isEmpty()) {
                         actionReturnResult.addAll((Collection<String>) map.get("action.install.result"));
                         logger.log(Level.INFO,
-                                (Messages.INSTALL_KERNEL_MESSAGES
-                                        .getLogMessage("LOG_INSTALLED_FEATURE", String.join(", ", currentReturnResult))
-                                        .replace("CWWKF1304I: ", ""))); // TODO: come up with new message for
-                                                                        // successfully
-                                                                        // installed feature
+                                   (Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("LOG_INSTALLED_FEATURE", String.join(", ", currentReturnResult)).replace("CWWKF1304I: ", ""))); // TODO: come up with new message for
+                                                                                                                                                                                                          // successfully
+                                                                                                                                                                                                          // installed feature
 
                     }
                 }
@@ -231,7 +229,7 @@ public class MavenDirectoryInstall {
             }
 
             Path featurePath = Paths.get(groupDir.getAbsolutePath().toString(), featureName, openLibertyVersion,
-                    featureName + "-" + openLibertyVersion + ".esa");
+                                         featureName + "-" + openLibertyVersion + ".esa");
 
             logger.log(Level.FINE, featurePath.toString());
             if (Files.isRegularFile(featurePath)) {
@@ -251,14 +249,13 @@ public class MavenDirectoryInstall {
 
     }
 
-
     /**
-     * 
+     *
      */
     private List<File> downloadMissingFeatureEsas(List<String> features) {
         ArtifactDownloader artifactDownloader = new ArtifactDownloader();
         artifactDownloader.synthesizeAndDownloadFeatures(features, TEMP_DIRECTORY,
-                "http://repo.maven.apache.org/maven2/");
+                                                         "http://repo.maven.apache.org/maven2/");
         this.tempCleanupRequired = true;
 
         return artifactDownloader.getDownloadedEsas();
@@ -268,9 +265,9 @@ public class MavenDirectoryInstall {
     /**
      * Extracts the feature name and version from an ESA filepath. Example:
      * extractFeature(appSecurity-3.0-19.0.0.8.esa) returns appSecurity-3.0
-     * 
+     *
      * TODO: extract runtime version
-     * 
+     *
      * @param filename
      * @return
      */
@@ -283,7 +280,7 @@ public class MavenDirectoryInstall {
 
     /**
      * Get the single json files
-     * 
+     *
      * @param filepath
      * @param found
      */
@@ -309,27 +306,27 @@ public class MavenDirectoryInstall {
 
     /**
      * Fetch the open liberty and closed liberty json files from maven central
-     * 
+     *
      * @return
      */
     private List<File> getJsonsFromMavenCentral() {
         // get open liberty json
         ArtifactDownloader artifactDownloader = new ArtifactDownloader();
         artifactDownloader.synthesizeAndDownload("io.openliberty.features:features:" + openLibertyVersion, "json",
-                TEMP_DIRECTORY, "http://repo.maven.apache.org/maven2/");
+                                                 TEMP_DIRECTORY, "http://repo.maven.apache.org/maven2/");
         artifactDownloader.synthesizeAndDownload("io.openliberty.features:features:" + openLibertyVersion, "json",
-                TEMP_DIRECTORY, "http://repo.maven.apache.org/maven2/");
+                                                 TEMP_DIRECTORY, "http://repo.maven.apache.org/maven2/");
         this.tempCleanupRequired = true;
 
         logger.log(Level.FINE,
-                "Downloaded the following jsons from maven central:" + artifactDownloader.getDownloadedFiles());
+                   "Downloaded the following jsons from maven central:" + artifactDownloader.getDownloadedFiles());
         return artifactDownloader.getDownloadedFiles();
 
     }
 
     /**
      * Clean up the temp directory used for storing features downloaded from online
-     * 
+     *
      * @throws IOException
      */
     private void cleanUp() throws IOException {
@@ -355,7 +352,7 @@ public class MavenDirectoryInstall {
             for (File f : file.listFiles()) {
                 cleanUpHelper(f);
             }
-            
+
         }
         return file.delete();
     }
