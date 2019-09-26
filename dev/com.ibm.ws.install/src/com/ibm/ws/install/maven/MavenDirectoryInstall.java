@@ -6,14 +6,18 @@ import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -35,17 +39,18 @@ public class MavenDirectoryInstall {
     private String openLibertyVersion;
     private final Logger logger;
     private boolean tempCleanupRequired;
-
-    private final String TEMP_DIRECTORY = Utils.getInstallDir() + "/tmp/";
+  
+    private final String TEMP_DIRECTORY = Utils.getInstallDir().getAbsolutePath() + File.separatorChar + "tmp"
+            + File.separatorChar;
     private final String OPEN_LIBERTY_PRODUCT_ID = "io.openliberty";
 
     public MavenDirectoryInstall(Collection<String> featuresToInstall) throws IOException, InstallException {
         this.logger = InstallLogUtils.getInstallLogger();
+        this.openLibertyVersion = getLibertyVersion();
         this.tempCleanupRequired = false;
 
-        logger.log(Level.FINE, "The features to install from local maven repository are:" + featuresToInstall);
+        logger.log(Level.FINE, "The features to install from maven central are:" + featuresToInstall);
 
-        getLibertyVersions();
         List<File> jsonPaths = getJsonsFromMavenCentral();
         map = new InstallKernelMap();
         initializeMap(featuresToInstall, jsonPaths);
@@ -63,15 +68,16 @@ public class MavenDirectoryInstall {
 
         this.fromDir = fromDir;
         this.logger = InstallLogUtils.getInstallLogger();
+        this.openLibertyVersion = getLibertyVersion();
         this.tempCleanupRequired = false;
+
 
         logger.log(Level.FINE, "The features to install from local maven repository are:" + featuresToInstall);
         logger.log(Level.FINE, "The local maven repository is: " + fromDir.getAbsolutePath());
 
-        List<File> jsonPaths = getSingleJsonPaths(fromDir);
+        List<File> jsonPaths = getJsons(fromDir);
         map = new InstallKernelMap();
         initializeMap(featuresToInstall, jsonPaths);
-        getLibertyVersions();
 
     }
 
@@ -104,7 +110,7 @@ public class MavenDirectoryInstall {
      * @throws InstallException
      *
      */
-    private void getLibertyVersions() throws IOException, InstallException {
+    private String getLibertyVersion() throws IOException, InstallException {
         File dir = new File(Utils.getInstallDir(), "lib/versions");
         File[] propertiesFiles = dir.listFiles(new FilenameFilter() {
             @Override
@@ -116,6 +122,7 @@ public class MavenDirectoryInstall {
         if (propertiesFiles == null) {
             throw new IOException("Could not find properties files.");
         }
+        String openLibertyVersion = null;
 
         for (File propertiesFile : propertiesFiles) {
             Properties properties = new Properties();
@@ -138,6 +145,7 @@ public class MavenDirectoryInstall {
         } else {
             logger.log(Level.FINE, "The Open Liberty runtime version is " + openLibertyVersion);
         }
+        return openLibertyVersion;
 
     }
 
@@ -168,7 +176,8 @@ public class MavenDirectoryInstall {
             }
         }
 
-        Collection<File> artifacts = findEsas(resolvedFeatures, fromDir);
+        Collection<File> artifacts = fromDir != null ? findEsas(resolvedFeatures, fromDir)
+                : downloadFeatureEsas((List<String>) resolvedFeatures);
 
         Collection<String> actionReturnResult = new ArrayList<String>();
         Collection<String> currentReturnResult;
@@ -231,7 +240,7 @@ public class MavenDirectoryInstall {
             Path featurePath = Paths.get(groupDir.getAbsolutePath().toString(), featureName, openLibertyVersion,
                                          featureName + "-" + openLibertyVersion + ".esa");
 
-            logger.log(Level.FINE, featurePath.toString());
+            logger.log(Level.FINE, "Found feature at path: " + featurePath.toString());
             if (Files.isRegularFile(featurePath)) {
                 foundEsas.add(featurePath.toFile());
                 featuresClone.remove(feature);
@@ -239,10 +248,10 @@ public class MavenDirectoryInstall {
 
         }
         if (!featuresClone.isEmpty()) {
-            logger.log(Level.FINE, "Could not find ESA's for " + resolvedFeatures);
-            List<File> downloadedEsas = downloadMissingFeatureEsas((List<String>) resolvedFeatures);
+            logger.log(Level.INFO, "Could not find ESA's in local maven repo for " + resolvedFeatures);
+            List<File> downloadedEsas = downloadFeatureEsas((List<String>) resolvedFeatures);
 
-            logger.log(Level.FINE, "Downloaded the following features from maven central:" + downloadedEsas);
+            logger.log(Level.INFO, "Downloaded the following features from maven central:" + downloadedEsas);
             foundEsas.addAll(downloadedEsas);
         }
         return foundEsas;
@@ -280,31 +289,97 @@ public class MavenDirectoryInstall {
 
     }
 
-    /**
-     * Get the single json files
-     *
-     * @param filepath
-     * @param found
-     */
-    private List<File> getSingleJsonPaths(File filepath) {
-        ArrayList<File> jsonFilesFound = new ArrayList<>();
-        if (filepath == null || !filepath.exists()) {
-            return jsonFilesFound;
-        }
-        File[] list = filepath.listFiles();
-        for (File f : list) {
+
+//    /**
+//     * Get the single json files from a local maven repo
+//     * 
+//     * @param filepath
+//     * @param found
+//     */
+//    private List<File> getSingleJsonPaths(File filepath) {
+//        ArrayList<File> jsonFilesFound = new ArrayList<>();
+//        if (filepath == null || !filepath.exists()) {
+//            return jsonFilesFound;
+//        }
+//        File[] list = filepath.listFiles();
+//        for (File f : list) {
+//            if (f.isDirectory()) {
+//                jsonFilesFound.addAll(getSingleJsonPaths(f));
+//            } else if (f.isFile()) {
+//                if (f.getName().endsWith(".json")) {
+//                    jsonFilesFound.add(f);
+//                }
+//            }
+//        }
+//
+//        return jsonFilesFound;
+//
+//    }
+
+    private List<File> getJsons(File file) throws InstallException {
+        List<File> jsonFiles = new ArrayList<File>();
+
+        Stack<File> stack = new Stack<>();
+        stack.push(file);
+
+        while (!stack.empty()) {
+            // check if we're in directory
+            File f = stack.pop();
             if (f.isDirectory()) {
-                jsonFilesFound.addAll(getSingleJsonPaths(f));
-            } else if (f.isFile()) {
-                if (f.getName().endsWith(".json")) {
-                    jsonFilesFound.add(f);
+                // determine if we're in the artifact section of the repository
+                if (looksLikeArtifactSection(f.listFiles())) {
+                    File json = retrieveJsonFileFromArtifact(f);
+                    if (json.exists()) {
+                        jsonFiles.add(json);
+                    } else {
+                        for (File current : f.listFiles()) {
+                            stack.push(current);
+                        }
+                    }
+                } else {
+                    for (File current : f.listFiles()) {
+                        stack.push(current);
+                    }
                 }
+            } else if (f.isFile() && f.getName().endsWith(".json")) {
+                jsonFiles.add(f);
+            }
+        }
+        logger.log(Level.FINE, "Found the following jsons: " + jsonFiles);
+        if (jsonFiles.isEmpty()) {
+            throw new InstallException("Could not locate the json file");
+        }
+        return jsonFiles;
+
+    }
+
+    private File retrieveJsonFileFromArtifact(File artifact) {
+        File dir = new File(artifact, "/features/");
+        if (!dir.exists() && !dir.isDirectory()) {
+            return null;
+        }
+       
+        
+        Path jsonPath = Paths.get(artifact.getAbsolutePath(), "features", openLibertyVersion,
+                "features-" + openLibertyVersion + ".json");
+        return jsonPath.toFile();
+
+    }
+
+    private boolean looksLikeArtifactSection(File[] files) {
+        for (File f : files) {
+            if (f.getName().equals("features")) {
+                // likely found a feature
+                return true;
             }
         }
 
-        return jsonFilesFound;
+        return false;
 
     }
+
+
+
 
     /**
      * Fetch the open liberty and closed liberty json files from maven central
@@ -337,7 +412,7 @@ public class MavenDirectoryInstall {
         boolean deleted = true;
 
         if (tempCleanupRequired) {
-            deleted = cleanUpHelper(temp);
+            deleted = deleteFolder(temp);
         }
         if (deleted) {
             logger.log(Level.FINE, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("MSG_CLEANUP_SUCCESS"));
@@ -347,17 +422,23 @@ public class MavenDirectoryInstall {
 
     }
 
-    private boolean cleanUpHelper(File file) {
-        if (file == null || !file.exists())
-            return true;
 
-        if (file.isDirectory()) {
-            for (File f : file.listFiles()) {
-                cleanUpHelper(f);
+    public boolean deleteFolder(File file) throws IOException {
+        Path path = file.toPath();
+        Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                Files.delete(file);
+                return FileVisitResult.CONTINUE;
             }
-
-        }
-        return file.delete();
+          
+            @Override
+            public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                Files.delete(dir);
+                return FileVisitResult.CONTINUE;
+            }
+        });
+        return !file.exists();
     }
 
 }
