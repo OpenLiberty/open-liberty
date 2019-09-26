@@ -1068,7 +1068,7 @@ private final Map<MessageBodyReader<?>, List<MediaType>> readerMediaTypesMap = n
      * rather than calculating the media types for every provider on every request. If there is a cache miss, we
      * will look up the media types by calling JAXRSUtils.getProviderConsumeTypes(mbr).
      */
-    private static List<MediaType> getSortedProviderConsumeTypes(MessageBodyReader<?> mbr, Map<MessageBodyReader<?>, List<MediaType>> cache) {
+    static List<MediaType> getSortedProviderConsumeTypes(MessageBodyReader<?> mbr, Map<MessageBodyReader<?>, List<MediaType>> cache) {
         List<MediaType> mediaTypes = cache.get(mbr);
         if (mediaTypes == null) {
             mediaTypes = JAXRSUtils.getProviderConsumeTypes(mbr);
@@ -1112,7 +1112,7 @@ private final Map<MessageBodyReader<?>, List<MediaType>> readerMediaTypesMap = n
      * rather than calculating the media types for every provider on every request. If there is a cache miss, we
      * will look up the media types by calling JAXRSUtils.getProviderProduceTypes(mbw).
      */
-    private static List<MediaType> getSortedProviderProduceTypes(MessageBodyWriter<?> mbw, Map<MessageBodyWriter<?>, List<MediaType>> cache) {
+    static List<MediaType> getSortedProviderProduceTypes(MessageBodyWriter<?> mbw, Map<MessageBodyWriter<?>, List<MediaType>> cache) {
         List<MediaType> mediaTypes = cache.get(mbw);
         if (mediaTypes == null) {
             mediaTypes = JAXRSUtils.getProviderProduceTypes(mbw);

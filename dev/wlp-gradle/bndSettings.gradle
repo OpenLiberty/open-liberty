@@ -79,6 +79,7 @@ buildscript {
  */
 import aQute.bnd.build.Workspace
 import aQute.bnd.osgi.Constants
+import aQute.bnd.gradle.BndPlugin
 
 Workspace.setDriver(Constants.BNDDRIVER_GRADLE)
 Workspace.addGestalt(Constants.GESTALT_BATCH, null)
@@ -97,30 +98,28 @@ for (def currentDir = startParameter.currentDir; currentDir != rootDir; currentD
 }
 
 // Build a set of project names we need to include from the specified tasks
-def optionsWithArgs = ['--tests']
-def skipNextName = false
-def projectNames = startParameter.taskNames.collect { taskName ->
-    if (skipNextName) {
-        skipNextName = false
-        return
-    } else {
-        if (optionsWithArgs.contains(taskName)) {
-            skipNextName = true
-            return
-        } else {
-            def elements = taskName.split(':')
-            switch (elements.length) {
-                case 1:
-                    return defaultProjectName
-                case 2:
-                    return elements[0].empty ? bnd_build : elements[0]
-                default:
-                    return elements[0].empty ? elements[1] : elements[0]
-            }
+Set<String> projectNames = new LinkedHashSet<>()
+for (Iterator<String> iter = startParameter.taskNames.iterator(); iter.hasNext();) {
+    String taskName = iter.next()
+    if (taskName == '--tests') {
+        if (iter.hasNext()) {
+            iter.next()
         }
+        continue
     }
-}.toSet()
-projectNames.remove(null)
+    String[] elements = taskName.split(':')
+    switch (elements.length) {
+        case 1:
+            projectNames.add(defaultProjectName)
+            break
+        case 2:
+            projectNames.add(elements[0].empty ? bnd_build : elements[0])
+            break
+        default:
+            projectNames.add(elements[0].empty ? elements[1] : elements[0])
+            break
+    }
+}
 
 // Include the default project name if in a subproject or no tasks specified
 if ((startParameter.currentDir != rootDir) || projectNames.empty) {
@@ -190,6 +189,7 @@ private boolean parseBoolean(String value) {
 
 // Pass workspace to root project
 gradle.projectsLoaded { gradle ->
+    gradle.rootProject.ext.bndPlugin = BndPlugin.class
     gradle.rootProject.ext.bndWorkspace = workspace
     gradle.rootProject.ext.gradleBndProjects = allBndProjects
     gradle.rootProject.ext.parseBoolean = { value -> parseBoolean(value) }

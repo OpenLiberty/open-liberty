@@ -27,20 +27,21 @@ public class DateFormatHelper {
      */
     private static final String localeDatePattern;
 
+    private static final boolean localeDateFormatInvald;
+
+    private static final boolean isoDateFormatInvalid;
+
     static {
-        String pattern;
-        int patternLength;
-        int endOfSecsIndex;
         // Retrieve a standard Java DateFormat object with desired format.
         DateFormat formatter = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM);
         if (formatter instanceof SimpleDateFormat) {
             // Retrieve the pattern from the formatter, since we will need to
             // modify it.
             SimpleDateFormat sdFormatter = (SimpleDateFormat) formatter;
-            pattern = sdFormatter.toPattern();
+            String pattern = sdFormatter.toPattern();
             // Append milliseconds and timezone after seconds
-            patternLength = pattern.length();
-            endOfSecsIndex = pattern.lastIndexOf('s') + 1;
+            int patternLength = pattern.length();
+            int endOfSecsIndex = pattern.lastIndexOf('s') + 1;
             StringBuilder newPattern = new StringBuilder(pattern.substring(0, endOfSecsIndex) + ":SSS z");
             if (endOfSecsIndex < patternLength)
                 newPattern.append(pattern.substring(endOfSecsIndex, patternLength));
@@ -49,6 +50,10 @@ public class DateFormatHelper {
         } else {
             localeDatePattern = "dd/MMM/yyyy HH:mm:ss:SSS z";
         }
+
+        localeDateFormatInvald = BurstDateFormat.isFormatInvalid(new SimpleDateFormat(localeDatePattern));
+
+        isoDateFormatInvalid = BurstDateFormat.isFormatInvalid(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ"));
     }
 
     /**
@@ -108,7 +113,7 @@ public class DateFormatHelper {
         }
 
         if (dfs[index] == null) {
-            dfs[index] = new BurstDateFormat(new SimpleDateFormat(useIsoDateFormat ? "yyyy-MM-dd'T'HH:mm:ss.SSSZ" : localeDatePattern));
+            dfs[index] = useIsoDateFormat ? new BurstDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ"), isoDateFormatInvalid) : new BurstDateFormat(new SimpleDateFormat(localeDatePattern), localeDateFormatInvald);
         }
 
         return dfs[index].format(timestamp);

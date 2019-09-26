@@ -37,6 +37,39 @@ import com.ibm.ws.logging.internal.WsLogger;
 public class TraceComponent implements FFDCSelfIntrospectable {
     static final String[] EMPTY_STRING_ARRAY = new String[0];
 
+    private static final int INFO_FINE_LEVEL;
+    private static final int INFO_FINE_LEVELS_ENABLED;
+    private static final int INFO_TRACE_LEVEL;
+
+    static {
+        int infoLevel = 0;
+        for (int level = TrLevelConstants.TRACE_LEVEL_INFO; level < TrLevelConstants.TRACE_LEVEL_OFF; level++) {
+            infoLevel |= 1 << level;
+        }
+        INFO_FINE_LEVELS_ENABLED = infoLevel;
+
+        int found = -1;
+        int traceLevel = 0;
+        int traceLevelCount = 0;
+
+        for (int i = 0; i < TrLevelConstants.traceLevels.length; i++) {
+            final String[] traceLevelsRow = TrLevelConstants.traceLevels[i];
+            for (int j = 0; j < traceLevelsRow.length; j++) {
+                if ("info".equalsIgnoreCase(traceLevelsRow[j])) {
+                    found = i;
+                    traceLevel = traceLevelCount;
+                    break;
+                }
+                traceLevelCount++;
+            }
+            if (found >= 0) {
+                break;
+            }
+        }
+        INFO_FINE_LEVEL = found;
+        INFO_TRACE_LEVEL = traceLevel;
+    }
+
     /**
      * The non-null name either specified or defaulted to the class name.
      */
@@ -339,93 +372,104 @@ public class TraceComponent implements FFDCSelfIntrospectable {
      * set the corresponding trace flags for this trace component.
      */
     private boolean updateTraceSpec(TraceSpecification ts) {
-        List<TraceElement> traceSpecs = ts.getSpecs();
-        Integer minimumLevel = null;
-        if (ts.isSensitiveTraceSuppressed()) {
-            minimumLevel = findMinimumSafeLevel(ts.getSafeLevelsIndex());
-        }
+
 
         int newFineLevel = fineLevel;
         int newFineLevelsEnabled = 0;
         int newSpecTraceLevel = TrLevelConstants.SPEC_TRACE_LEVEL_OFF;
 
-        for (TraceElement spec : traceSpecs) {
-            String clazz = spec.groupName;
-            int traceElementFineLevel = spec.fineLevel;
-            int specTraceLevel = spec.specTraceLevel;
-            boolean setValue = spec.action;
+        // If the trace specification is the default trace specification of *=info
+        // we can skip a lot of logic
+        if (ts == Tr.defaultTraceSpec) {
+            newFineLevel = INFO_FINE_LEVEL;
+            newFineLevelsEnabled = INFO_FINE_LEVELS_ENABLED;
+            newSpecTraceLevel = INFO_TRACE_LEVEL;
+            isTraceOff = true;
+        } else {
+            List<TraceElement> traceSpecs = ts.getSpecs();
+            Integer minimumLevel = null;
+            if (ts.isSensitiveTraceSuppressed()) {
+                minimumLevel = findMinimumSafeLevel(ts.getSafeLevelsIndex());
+            }
 
-            // Do we have a match with our package name?
-            boolean process = false;
+            for (TraceElement spec : traceSpecs) {
+                String clazz = spec.groupName;
+                int traceElementFineLevel = spec.fineLevel;
+                int specTraceLevel = spec.specTraceLevel;
+                boolean setValue = spec.action;
 
-            if (clazz.endsWith("*")) // packages can end with wildcard
-            {
-                if (1 == clazz.length()) {
-                    process = true;
+                // Do we have a match with our package name?
+                boolean process = false;
+
+                if (clazz.endsWith("*")) // packages can end with wildcard
+                {
+                    if (1 == clazz.length()) {
+                        process = true;
+                    } else {
+                        clazz = clazz.substring(0, clazz.length() - 1);
+                        for (String group : groups) {
+                            if (group.startsWith(clazz)) {
+                                process = true;
+                                break;
+                            }
+                        }
+                        process = process || name.startsWith(clazz);
+                    }
                 } else {
-                    clazz = clazz.substring(0, clazz.length() - 1);
+                    // or can be a complete package or parent package
+                    // - look for a full or partial match with the TC package name
+                    int lastDot = name.lastIndexOf('.');
+                    if (lastDot > 0) {
+                        String packageName = name.substring(0, lastDot);
+                        if (packageName.startsWith(clazz))
+                            process = true;
+                    }
+                    // groups may be class names (eg WsLogger impls)
                     for (String group : groups) {
-                        if (group.startsWith(clazz)) {
+                        lastDot = group.lastIndexOf('.');
+                        if (lastDot > 0) {
+                            String packageName = group.substring(0, lastDot);
+                            if (packageName.startsWith(clazz))
+                                process = true;
+                            break;
+                        }
+                    }
+
+                    // could be a straight group name match
+                    for (String group : groups) {
+                        if (group.equalsIgnoreCase(clazz)) {
                             process = true;
                             break;
                         }
                     }
-                    process = process || name.startsWith(clazz);
+                    process = process || name.equalsIgnoreCase(clazz);
                 }
-            } else {
-                // or can be a complete package or parent package
-                // - look for a full or partial match with the TC package name
-                int lastDot = name.lastIndexOf('.');
-                if (lastDot > 0) {
-                    String packageName = name.substring(0, lastDot);
-                    if (packageName.startsWith(clazz))
-                        process = true;
-                }
-                // groups may be class names (eg WsLogger impls)
-                for (String group : groups) {
-                    lastDot = group.lastIndexOf('.');
-                    if (lastDot > 0) {
-                        String packageName = group.substring(0, lastDot);
-                        if (packageName.startsWith(clazz))
-                            process = true;
-                        break;
+
+                if (process) {
+                    newFineLevel = traceElementFineLevel;
+                    newSpecTraceLevel = specTraceLevel;
+                    if (minimumLevel != null && newFineLevel < minimumLevel) {
+                        newFineLevel = minimumLevel;
                     }
-                }
 
-                // could be a straight group name match
-                for (String group : groups) {
-                    if (group.equalsIgnoreCase(clazz)) {
-                        process = true;
-                        break;
+                    for (int level = newFineLevel; level < TrLevelConstants.TRACE_LEVEL_OFF; level++) {
+                        if (setValue) {
+                            newFineLevelsEnabled |= 1 << level;
+                        } else {
+                            newFineLevelsEnabled &= ~(1 << level);
+                        }
                     }
-                }
-                process = process || name.equalsIgnoreCase(clazz);
-            }
-
-            if (process) {
-                newFineLevel = traceElementFineLevel;
-                newSpecTraceLevel = specTraceLevel;
-                if (minimumLevel != null && newFineLevel < minimumLevel) {
-                    newFineLevel = minimumLevel;
-                }
-
-                for (int level = newFineLevel; level < TrLevelConstants.TRACE_LEVEL_OFF; level++) {
-                    if (setValue) {
-                        newFineLevelsEnabled |= 1 << level;
+                    
+                    if (newFineLevel == TrLevelConstants.TRACE_LEVEL_OFF) {
+                        isTraceOff = true;
                     } else {
-                        newFineLevelsEnabled &= ~(1 << level);
+                        isTraceOff = false;
                     }
+                    // Indicate that the trace spec matched something
+                    spec.setMatched(true);
                 }
-                
-                if (newFineLevel == TrLevelConstants.TRACE_LEVEL_OFF) {
-                	isTraceOff = true;
-                } else {
-                	isTraceOff = false;
-                }
-                // Indicate that the trace spec matched something
-                spec.setMatched(true);
-            }
-        } // end for each spec
+            } // end for each spec
+        }
 
         boolean updated = false;
         if (newFineLevel != fineLevel) {

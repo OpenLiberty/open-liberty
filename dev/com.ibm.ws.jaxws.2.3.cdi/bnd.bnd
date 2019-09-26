@@ -15,11 +15,13 @@ Bundle-Name: JAX-WS CDI
 Bundle-SymbolicName: com.ibm.ws.jaxws.2.3.cdi
 Bundle-Description: IBM JAX-WS CDI support; version=${bVersion}
 
-# jaxws-cdi is part of EE7 and therefore requires java 1.7
+javac.source: 1.8
+javac.target: 1.8
+
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))" 
 
 Import-Package: \
-  javax.enterprise.inject.spi; version="[1.1,3)",\
+  javax.enterprise.inject.spi; version="[2.0,3)",\
    *
 
 # If you need use MESSAGE, you must enable this Private-Package, or message will translate wrong

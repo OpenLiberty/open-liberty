@@ -1357,7 +1357,10 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
     }
 
     protected boolean canOptimise() {
-        return !_subordinate;
+        final boolean ret = (!_subordinate && _configProvider.isOnePCOptimization());
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "canOptimise", ret);
+        return ret;
     }
 
     protected void perfPreparing() {

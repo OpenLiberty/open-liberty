@@ -139,6 +139,12 @@ public class H2InboundLink extends HttpInboundLink {
     private final Object oneTimeEntrySync = new Object() {};
     private boolean oneTimeEntry = false;
 
+    private final H2RateState rateState = new H2RateState();
+
+    public H2RateState getH2RateState() {
+        return this.rateState;
+    }
+
     public boolean isContinuationExpected() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "isContinuationExpected: " + continuationFrameExpected);
@@ -771,6 +777,13 @@ public class H2InboundLink extends HttpInboundLink {
                 synchronized (OutstandingWriteCountSync) {
                     lastWriteTime = System.nanoTime();
                 }
+            }
+
+            if (e.getIOException() != null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "writeSync - IOException recived while writing: " + e);
+                }
+                throw (e.getIOException());
             }
 
         } finally {

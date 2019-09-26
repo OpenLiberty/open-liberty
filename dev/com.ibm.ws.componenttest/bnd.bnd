@@ -15,13 +15,20 @@ Bundle-Name: FAT infrastructure
 Bundle-SymbolicName: com.ibm.ws.componenttest
 Bundle-Description: FAT infrastructure; version=${bVersion}
 
+-dsannotations: \
+  componenttest.serverinfo.impl.FATServerInfoMBeanImpl
+  
 Export-Package: \
   componenttest.app;version=1.0.16, \
   componenttest.matchers;version=1.0.16, \
+  componenttest.serverinfo;version=1.0.16, \
   junit.*;version=1.0.16, \
   org.jmock.*;version=1.0.16, \
   org.junit.*;version=1.0.16, \
   org.hamcrest.*;version=1.0.16
+  
+Private-Package: \
+  componenttest.serverinfo.impl
 
 # componenttest.app depends on javax.servlet, but we don't want to include it in
 # the componenttest-1.0 feature since we want tests to fail if a product feature
@@ -61,4 +68,7 @@ test.project: true
     com.ibm.websphere.javaee.servlet.3.0;version=latest,\
     com.ibm.websphere.org.osgi.core;version=latest,\
     com.ibm.websphere.org.osgi.service.component;version=latest,\
-    com.ibm.wsspi.org.osgi.service.component.annotations;version=latest
+    com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+    com.ibm.ws.kernel.feature.core;version=latest,\
+    com.ibm.ws.kernel.service;version=latest
+    

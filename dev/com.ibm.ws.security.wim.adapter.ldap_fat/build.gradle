@@ -27,11 +27,14 @@ dependencies {
     project(':com.ibm.ws.com.unboundid'),
     project(':com.ibm.websphere.security.wim.base'),
     project(':com.ibm.ws.security.registry'),
+    project(':com.ibm.ws.security.registry_test.custom'),
     project(':com.ibm.ws.security.registry_test.servlet'),
     project(':com.ibm.ws.security.wim.core'),
     project(':com.ibm.ws.security.wim_test.servlet'),
     project(':com.ibm.ws.webcontainer.security_test.servlets')
 }
+
+autoFVT.dependsOn ':com.ibm.ws.security.registry_test.custom:jar'
 autoFVT.dependsOn ':com.ibm.ws.security.registry_test.servlet:war'
 autoFVT.dependsOn ':com.ibm.ws.security.wim_test.servlet:war'
 autoFVT.dependsOn ':com.ibm.ws.webcontainer.security_test.servlets:war'
@@ -124,7 +127,8 @@ autoFVT.doLast {
     'com.ibm.ws.security.wim.adapter.ldap.fat.tworealms',
     'com.ibm.ws.security.wim.adapter.ldap.fat.ids.allIbmGroups',
     'com.ibm.ws.security.registry.ldap.fat.regression',
-    'com.ibm.ws.security.wim.adapter.ldap.fat.readtimeout'
+    'com.ibm.ws.security.wim.adapter.ldap.fat.readtimeout',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.racf.sdbm'
   ]
   servers.each { server ->
     copy { 

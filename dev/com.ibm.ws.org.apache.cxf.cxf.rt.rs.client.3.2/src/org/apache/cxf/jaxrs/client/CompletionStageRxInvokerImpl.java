@@ -22,33 +22,32 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Supplier;
+import java.util.logging.Logger;
 
 import javax.ws.rs.HttpMethod;
-import javax.ws.rs.client.CompletionStageRxInvoker; 
+import javax.ws.rs.client.CompletionStageRxInvoker;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
+
 //Liberty code change start
-import org.eclipse.microprofile.context.ManagedExecutor;
+import org.apache.cxf.common.logging.LogUtils;
+
+import com.ibm.ws.jaxrs21.clientconfig.JAXRSClientCompletionStageFactoryConfig;
+import com.ibm.ws.concurrent.mp.spi.CompletionStageFactory;
 //Liberty code change end
 
 public class CompletionStageRxInvokerImpl implements CompletionStageRxInvoker {
     private WebClient wc;
-    private ExecutorService ex;    
-  //Liberty code change start  
-    private boolean isManagedExecutor = false;
-    private boolean isExecutorNull = false;    
-    CompletionStageRxInvokerImpl(WebClient wc, ExecutorService ex) {
-        this.ex = ex;        
-        if (this.ex instanceof ManagedExecutor) {            
-            isManagedExecutor = true;
-        }
-        if (this.ex == null) {
-            isExecutorNull = true;            
-        }
+    private ExecutorService ex;
+    //Liberty code change start
+    private static final Logger LOG = LogUtils.getL7dLogger(CompletionStageRxInvokerImpl.class);
+    private CompletionStageFactory completionStageFactory = JAXRSClientCompletionStageFactoryConfig.getCompletionStageFactory();
+    //Liberty code change end        
+    CompletionStageRxInvokerImpl(WebClient wc, ExecutorService ex) {       
+        this.ex = ex;
         this.wc = wc;
     }
-  //Liberty code change end
 
     @Override
     public CompletionStage<Response> get() {
@@ -185,16 +184,19 @@ public class CompletionStageRxInvokerImpl implements CompletionStageRxInvoker {
     }
 
   //Liberty code change start
-    private <T> CompletionStage<T> supplyAsync(Supplier<T> supplier) {
-        if (isExecutorNull) {
-          // Run on Liberty executor thread and do not propagate the thread context  
-          // TODO use ManagedCompleteableFuture.supplyAsync(supplier, ex) when ready
-            return CompletableFuture.supplyAsync(supplier);
-         }      
-         if (isManagedExecutor) {
-             return ((ManagedExecutor) ex).supplyAsync(supplier);
-         }
-         return CompletableFuture.supplyAsync(supplier, ex);
+    private <T> CompletionStage<T> supplyAsync(Supplier<T> supplier) {         
+        if (completionStageFactory == null) {
+            // completionStageFactory should only be null when running in a Java SE environment like the TCK.      
+            
+            LOG.warning("Running in an Java SE environment.  Using ForkJoinPool.commonPool()");
+            
+            if (ex == null) {
+                return CompletableFuture.supplyAsync(supplier);
+            }
+            return CompletableFuture.supplyAsync(supplier, ex);
+        }
+
+        return completionStageFactory.supplyAsync(supplier, ex); 
     }
   //Liberty code change end
 }

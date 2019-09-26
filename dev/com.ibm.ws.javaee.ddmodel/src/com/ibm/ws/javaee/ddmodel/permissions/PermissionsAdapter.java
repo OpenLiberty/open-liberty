@@ -10,13 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.javaee.ddmodel.permissions;
 
-import org.osgi.framework.ServiceReference;
-import org.osgi.framework.Version;
-
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.javaee.dd.permissions.PermissionsConfig;
 import com.ibm.ws.javaee.ddmodel.DDParser.ParseException;
-import com.ibm.ws.javaee.version.JavaEEVersion;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
@@ -28,21 +24,6 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
  *
  */
 public final class PermissionsAdapter implements ContainerAdapter<PermissionsConfig> {
-
-    private ServiceReference<JavaEEVersion> versionRef;
-    private volatile Version platformVersion = JavaEEVersion.DEFAULT_VERSION;
-
-    public synchronized void setVersion(ServiceReference<JavaEEVersion> reference) {
-        versionRef = reference;
-        platformVersion = Version.parseVersion((String) reference.getProperty("version"));
-    }
-
-    public synchronized void unsetVersion(ServiceReference<JavaEEVersion> reference) {
-        if (reference == this.versionRef) {
-            versionRef = null;
-            platformVersion = JavaEEVersion.DEFAULT_VERSION;
-        }
-    }
 
     @FFDCIgnore(ParseException.class)
     @Override

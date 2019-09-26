@@ -61,11 +61,15 @@
          <AD id="jwkClientId" name="%jwkClientIdentifier" description="%jwkClientIdentifier.desc" required="false"  type="String" />
          <AD id="jwkClientSecret" name="%jwkClientSecret" description="%jwkClientSecret.desc" required="false"  type="String" ibm:type="password"/>
 
+        <!--  use of responseType is preferred -->
          <AD id="grantType" name="%grantType" description="%grantType.desc" required="true" type="String" default="authorization_code">
                 <Option label="%grantType.authorization_code" value="authorization_code" />
             	<Option label="%grantType.implicit" value="implicit" />
          </AD>
+         
+         <!--  sent by the browser to tell the OP what kind of response it wants.  Preferred to grantType -->
          <AD id="responseType" name="%responseType" description="%responseType.desc" required="false" type="String">
+                <!--  code is an authorization code flow, the other three are implicit code flows. -->
                 <Option label="%responseType.code" value="code" />
             	<Option label="%responseType.idToken" value="id_token" />
             	<Option label="%responseType.idTokenToken" value="id_token token" />

@@ -10,6 +10,7 @@
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/rejar.props
 bVersion=1.0
+cxfVersion=3.3.3
 
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.tools.validator.3.2
 
@@ -18,4 +19,4 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 Import-Package: \
 
 Export-Package: \
-  org.apache.cxf.tools.validator
+  org.apache.cxf.tools.validator;version=${cxfVersion}

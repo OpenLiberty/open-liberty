@@ -267,6 +267,10 @@ public class H2StreamResult {
             for (int i = 0; i < len; i++) {
                 LOGGER.logp(Level.INFO, CLASS_NAME, "checkResult", "Frame: " + (i + 1) + oa[i].toString());
             }
+            // log the very last frame
+            if (oa.length > 10) {
+                LOGGER.logp(Level.INFO, CLASS_NAME, "checkResult", "Last Frame: " + (oa.length) + oa[oa.length - 1].toString());
+            }
         }
 
         if (expectedResponse == null && actualResponse != null) {
@@ -292,8 +296,14 @@ public class H2StreamResult {
             for (int i = 0; i < this.expectedResponse.size(); i++) {
                 expectedFrame = expectedResponse.get(i);
 
-                if (LOGGER.isLoggable(Level.INFO)) {
-                    LOGGER.logp(Level.INFO, CLASS_NAME, "checkResult", "***expectedFrame[" + i + "] = " + expectedFrame);
+                if (i < 10) {
+                    if (LOGGER.isLoggable(Level.INFO)) {
+                        LOGGER.logp(Level.INFO, CLASS_NAME, "checkResult", "***expectedFrame[" + i + "] = " + expectedFrame);
+                    }
+                } else if (i == this.expectedResponse.size() - 1) {
+                    if (LOGGER.isLoggable(Level.INFO)) {
+                        LOGGER.logp(Level.INFO, CLASS_NAME, "checkResult", "***last expectedFrame[" + i + "] = " + expectedFrame);
+                    }
                 }
 
                 boolean expectedFrameFound = false;

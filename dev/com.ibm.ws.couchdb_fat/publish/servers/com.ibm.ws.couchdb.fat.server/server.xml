@@ -1,0 +1,44 @@
+<server>
+    <include location="../fatTestPorts.xml" />
+    <applicationMonitor pollingRate="10s" />
+    <!-- Enable features -->
+    <featureManager>
+        <feature>couchdb-1.0</feature>
+        <feature>servlet-3.1</feature>
+        <feature>jndi-1.0</feature>
+        <feature>componenttest-1.0</feature>
+    </featureManager>
+
+    <library id="couchdb-lib">
+        <fileset dir="${server.config.dir}/couchdb"/>
+    </library>
+
+    <couchdb id="couchdb" jndiName="couchdb/testdb" libraryRef="couchdb-lib" host="${couchdb_host}" port="${couchdb_port}" username="${couchdb_username}" password="${couchdb_password}"/>
+    <couchdb id="couchdbJNDI" jndiName="couchdb/testdb-jndi-resource-env-ref" libraryRef="couchdb-lib" host="${couchdb_host}" port="${couchdb_port}" username="${couchdb_username}" password="${couchdb_password}"/>
+
+    <!-- Need port with url due to un-fixable bug (zero migration) that overrides url port with default if port not set -->
+    <couchdb id="couchdbURL" jndiName="couchdb/testdb-url" libraryRef="couchdb-lib" url="${couchdb_url}" port="${couchdb_port}" username="${couchdb_username}" password="${couchdb_password}"/>
+
+    <application name="couchdb" location="couchdb.war">
+        <classloader commonLibraryRef="couchdb-lib" />
+    </application>
+
+    <variable name="EktorpCodebase" value="${server.config.dir}/couchdb/org.ektorp-1.4.1.jar"/>
+
+    <!-- Needed for commons-logging-1.1.1.jar -->
+    <javaPermission codebase="${EktorpCodebase}" className="java.util.PropertyPermission" name="org.apache.commons.logging.*" actions="read"/>
+    <javaPermission codebase="${EktorpCodebase}" className="java.lang.RuntimePermission" name="getClassLoader"/>
+
+    <!-- Needed for jackson-databind-2.2.3.jar & org.ektorp-1.4.1.jar -->
+    <javaPermission codebase="${EktorpCodebase}" className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+
+    <!-- Needed for httpclient-4.3.1.jar -->
+    <javaPermission codebase="${EktorpCodebase}" className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
+
+    <!-- Needed for org.ektorp-1.4.1.jar -->
+    <javaPermission codebase="${EktorpCodebase}" className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
+
+    <!-- Needed for jackson-core-2.2.3.jar -->
+    <javaPermission codebase="${EktorpCodebase}" className="java.util.PropertyPermission" name="line.separator" actions="read"/>
+
+</server>

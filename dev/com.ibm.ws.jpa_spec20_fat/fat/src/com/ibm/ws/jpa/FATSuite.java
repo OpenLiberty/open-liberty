@@ -23,6 +23,7 @@ import componenttest.rules.repeater.RepeatTests;
 @SuiteClasses({
                 componenttest.custom.junit.runner.AlwaysPassesTest.class,
                 JPA20CriteriaAPI_WEB.class,
+//                JPA20EntityManager_WEB.class,
                 JPA20QueryLockMode_EJB.class,
                 JPA20QueryLockMode_WEB.class,
 })

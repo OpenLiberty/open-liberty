@@ -197,6 +197,8 @@ public interface ConfigurationProvider {
 
     public boolean isRecoverOnStartup();
 
+    public boolean isOnePCOptimization();
+
     /**
      * This method is provided for Liberty integration. The Liberty
      * com.ibm.ws.transaction bundle retrieves the resource factory

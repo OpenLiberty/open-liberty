@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2018 IBM Corporation and others.
+ * Copyright (c) 2012, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1899,9 +1899,32 @@ public class LdapConnection {
                 }
 
                 String entityType = iLdapConfigMgr.getEntityType(attrs, null, dn, null, inEntityTypes);
+
                 // Skip if for RACF we found an incorrect entity type
-                if (iLdapConfigMgr.isRacf() && !inEntityTypes.contains(entityType))
-                    continue;
+                if (iLdapConfigMgr.isRacf()) {
+                    boolean entityTypeMatches = false;
+                    for (String inType : inEntityTypes) {
+                        /*
+                         * It would be better if we had a utility method to check if a type is a sub-type of another type.
+                         */
+                        if ("PersonAccount".equals(entityType)) {
+                            entityTypeMatches = inType.equals("LoginAccount") || inType.equals("PersonAccount");
+                        } else if ("Group".equals(entityType)) {
+                            entityTypeMatches = inType.equals("Group");
+                        }
+                        if (entityTypeMatches) {
+                            break;
+                        }
+                    }
+
+                    if (!entityTypeMatches) {
+                        if (tc.isDebugEnabled()) {
+                            Tr.debug(tc, METHODNAME + " Excluding '" + dn + "' from result since it is unexpected entity type.");
+                        }
+                        continue;
+                    }
+                }
+
                 String extId = iLdapConfigMgr.getExtIdFromAttributes(dn, entityType, attrs);
                 String uniqueName = getUniqueName(dn, entityType, attrs);
                 LdapEntry ldapEntry = new LdapEntry(dn, extId, uniqueName, entityType, attrs);
