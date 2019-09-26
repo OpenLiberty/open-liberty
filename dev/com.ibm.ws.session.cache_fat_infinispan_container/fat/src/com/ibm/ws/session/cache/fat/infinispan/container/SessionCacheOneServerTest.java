@@ -39,15 +39,14 @@ public class SessionCacheOneServerTest extends FATServletClient {
 
     public static SessionCacheApp app = null;
 
-    public static final ExecutorService executor = Executors.newFixedThreadPool(12);
+    // TODO this is temporarily set to single-threaded in order to ensure coverage of codepath without actually enabling concurrent use yet (only invokeAll is used)
+    public static final ExecutorService executor = Executors.newFixedThreadPool(1); // TODO Executors.newFixedThreadPool(12);
 
     @BeforeClass
     public static void setUp() throws Exception {
         app = new SessionCacheApp(server, true, "session.cache.infinispan.web", "session.cache.infinispan.web.listener1", "session.cache.infinispan.web.listener2");
 
         server.addEnvVar("INF_SERVERLIST", "127.0.0.1:" + infinispan.getMappedPort(11222));
-        server.addEnvVar("INF_USER", "user");
-        server.addEnvVar("INF_PASS", "pass");
 
         server.startServer();
     }

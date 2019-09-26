@@ -15,8 +15,8 @@
 
 	<httpSessionCache libraryRef="InfinispanLib">
 		<properties infinispan.client.hotrod.server_list="${INF_SERVERLIST}"/>
-		<properties infinispan.client.hotrod.auth_username="${INF_USER}"/>
-		<properties infinispan.client.hotrod.auth_password="${INF_PASS}"/>
+		<properties infinispan.client.hotrod.auth_username="user"/> <!-- set in users.properties -->
+		<properties infinispan.client.hotrod.auth_password="pass"/> <!-- set in users.properties -->
 		<properties infinispan.client.hotrod.auth_realm="default"/>
 		<properties infinispan.client.hotrod.sasl_mechanism="PLAIN"/>
 	</httpSessionCache>
