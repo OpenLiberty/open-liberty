@@ -250,15 +250,17 @@ public class MavenDirectoryInstall {
     }
 
     /**
+     * @throws InstallException
      *
      */
-    private List<File> downloadMissingFeatureEsas(List<String> features) {
-        ArtifactDownloader artifactDownloader = new ArtifactDownloader();
-        artifactDownloader.synthesizeAndDownloadFeatures(features, TEMP_DIRECTORY,
-                                                         "http://repo.maven.apache.org/maven2/");
+    private List<File> downloadMissingFeatureEsas(List<String> features) throws InstallException {
+        map.put("download.artifact.list", features);
+        map.put("download.local.dir.location", TEMP_DIRECTORY);
+        map.put("download.remote.maven.repo", "http://repo.maven.apache.org/maven2/");
+        List<File> result = (List<File>) map.get("download.result");
         this.tempCleanupRequired = true;
 
-        return artifactDownloader.getDownloadedEsas();
+        return result;
 
     }
 
@@ -308,8 +310,9 @@ public class MavenDirectoryInstall {
      * Fetch the open liberty and closed liberty json files from maven central
      *
      * @return
+     * @throws InstallException
      */
-    private List<File> getJsonsFromMavenCentral() {
+    private List<File> getJsonsFromMavenCentral() throws InstallException {
         // get open liberty json
         ArtifactDownloader artifactDownloader = new ArtifactDownloader();
         artifactDownloader.synthesizeAndDownload("io.openliberty.features:features:" + openLibertyVersion, "json",

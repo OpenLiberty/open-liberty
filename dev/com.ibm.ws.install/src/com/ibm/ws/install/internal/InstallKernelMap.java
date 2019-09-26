@@ -105,6 +105,11 @@ public class InstallKernelMap implements Map {
     private static final String MESSAGE_LOCALE = "message.locale";
     private static final String INSTALL_INDIVIDUAL_ESAS = "install.individual.esas";
     private static final String INDIVIDUAL_ESAS = "individual.esas";
+    private static final String DOWNLOAD_RESULT = "download.result";
+    private static final String DOWNLOAD_FILETYPE = "download.filetype";
+    private static final String DOWNLOAD_LOCAL_DIR_LOCATION = "download.local.dir.location";
+    private static final String DOWNLOAD_REMOTE_MAVEN_REPO = "download.remote.maven.repo";
+    private static final String DOWNLOAD_ARTIFACT_LIST = "download.artifact.list";
 
     //Headers in Manifest File
     private static final String SHORTNAME_HEADER_NAME = "IBM-ShortName";
@@ -232,10 +237,15 @@ public class InstallKernelMap implements Map {
                 } else {
                     return singleFileResolve();
                 }
-
             }
         } else if (PROGRESS_MONITOR_SIZE.equals(key)) {
             return getMonitorSize();
+        } else if (DOWNLOAD_RESULT.equals(key)) {
+            if (data.get(DOWNLOAD_FILETYPE) == null) {
+                return downloadFeatures(); //
+            } else {
+                return downloadSingleFeature();
+            }
         }
         return data.get(key);
     }
@@ -304,6 +314,30 @@ public class InstallKernelMap implements Map {
         } else if (TO_EXTENSION.equals(key)) {
             if (value instanceof String) {
                 data.put(TO_EXTENSION, value);
+            } else {
+                throw new IllegalArgumentException();
+            }
+        } else if (DOWNLOAD_FILETYPE.equals(key)) {
+            if (value instanceof String) {
+                data.put(DOWNLOAD_FILETYPE, value);
+            } else {
+                throw new IllegalArgumentException();
+            }
+        } else if (DOWNLOAD_LOCAL_DIR_LOCATION.equals(key)) {
+            if (value instanceof String) {
+                data.put(DOWNLOAD_LOCAL_DIR_LOCATION, value);
+            } else {
+                throw new IllegalArgumentException();
+            }
+        } else if (DOWNLOAD_REMOTE_MAVEN_REPO.equals(key)) {
+            if (value instanceof String) {
+                data.put(DOWNLOAD_REMOTE_MAVEN_REPO, value);
+            } else {
+                throw new IllegalArgumentException();
+            }
+        } else if (DOWNLOAD_ARTIFACT_LIST.equals(key)) {
+            if (value instanceof List || value instanceof String) {
+                data.put(DOWNLOAD_ARTIFACT_LIST, value);
             } else {
                 throw new IllegalArgumentException();
             }
@@ -731,6 +765,53 @@ public class InstallKernelMap implements Map {
             return ERROR;
         }
         return OK;
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<File> downloadFeatures() {
+        data.put(ACTION_RESULT, OK);
+        data.put(ACTION_INSTALL_RESULT, null);
+        data.put(ACTION_ERROR_MESSAGE, null);
+        data.put(ACTION_EXCEPTION_STACKTRACE, null);
+
+        ArtifactDownloader artifactDownloader = new ArtifactDownloader();
+        List<String> featureList = (List<String>) data.get(DOWNLOAD_ARTIFACT_LIST);
+        String downloadDir = (String) data.get(DOWNLOAD_LOCAL_DIR_LOCATION);
+        String repo = (String) data.get(DOWNLOAD_REMOTE_MAVEN_REPO);
+        try {
+            artifactDownloader.synthesizeAndDownloadFeatures(featureList, downloadDir, repo);
+        } catch (InstallException e) {
+            data.put(ACTION_RESULT, ERROR);
+            data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+            data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
+            return null;
+        }
+
+        return artifactDownloader.getDownloadedEsas();
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<File> downloadSingleFeature() {
+        data.put(ACTION_RESULT, OK);
+        data.put(ACTION_INSTALL_RESULT, null);
+        data.put(ACTION_ERROR_MESSAGE, null);
+        data.put(ACTION_EXCEPTION_STACKTRACE, null);
+
+        ArtifactDownloader artifactDownloader = new ArtifactDownloader();
+        String featureList = (String) data.get(DOWNLOAD_ARTIFACT_LIST);
+        String filetype = (String) data.get(DOWNLOAD_FILETYPE);
+        String downloadDir = (String) data.get(DOWNLOAD_LOCAL_DIR_LOCATION);
+        String repo = (String) data.get(DOWNLOAD_REMOTE_MAVEN_REPO);
+        try {
+            artifactDownloader.synthesizeAndDownload(featureList, filetype, downloadDir, repo);
+        } catch (InstallException e) {
+            data.put(ACTION_RESULT, ERROR);
+            data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+            data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
+            return null;
+        }
+
+        return artifactDownloader.getDownloadedEsas();
     }
 
     @SuppressWarnings("unchecked")

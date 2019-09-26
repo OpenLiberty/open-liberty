@@ -21,6 +21,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ibm.ws.install.InstallException;
+import com.ibm.ws.install.internal.InstallLogUtils.Messages;
 
 public class ArtifactDownloader {
 
@@ -28,18 +30,18 @@ public class ArtifactDownloader {
 
     private final int BUFFER_SIZE = 10000;
 
-    private String appName = "artifactDownloader"; //TODO replace with openliberty?
+    private final String appName = "artifactDownloader"; //TODO replace with openliberty?
 
-    private String appVersion = "1.0.0"; //TODO replace with openliberty version?
+    private final String appVersion = "1.0.0"; //TODO replace with openliberty version?
 
-    private List<File> downloadedFiles = new ArrayList<File>();;
+    private final List<File> downloadedFiles = new ArrayList<File>();;
 
-    public void synthesizeAndDownloadFeatures(List<String> mavenCoords, String dLocation, String repo) {
+    public void synthesizeAndDownloadFeatures(List<String> mavenCoords, String dLocation, String repo) throws InstallException {
         configureProxyAuthentication();
         configureAuthentication();
         downloadedFiles.clear();
         int repoResponseCode = ArtifactDownloaderUtils.exists(repo);
-        if (!(repoResponseCode  == HttpURLConnection.HTTP_OK)) { //verify repo exists
+        if (!(repoResponseCode == HttpURLConnection.HTTP_OK)) { //verify repo exists
             if (repoResponseCode == 503) {
                 System.out.println("repo does not exist CWWKF1418E"); //TODO proper error message with exception
                 return;
@@ -52,22 +54,20 @@ public class ArtifactDownloader {
             }
         }
 
-        List<String> featureURLs = ArtifactDownloaderUtils.acquireFeatureURLs(mavenCoords, repo); 
+        List<String> featureURLs = ArtifactDownloaderUtils.acquireFeatureURLs(mavenCoords, repo);
         List<String> missingFeatures = ArtifactDownloaderUtils.getMissingFiles(featureURLs);
         if (!missingFeatures.isEmpty()) { //verify that there are no missing features in the repository
-            System.out.println("ERROR the repo "+ repo + " is missing the following files:\n" + missingFeatures); //TODO proper error message with exception
+            System.out.println("ERROR the repo " + repo + " is missing the following files:\n" + missingFeatures); //TODO proper error message with exception
             return;
         } else {
-            for (String coords: mavenCoords) { //download the corresponding esa and pom files for the features
-                synthesizeAndDownload(coords,"esa",dLocation,repo);
-                synthesizeAndDownload(coords,"pom",dLocation,repo);
+            for (String coords : mavenCoords) { //download the corresponding esa and pom files for the features
+                synthesizeAndDownload(coords, "esa", dLocation, repo);
+                synthesizeAndDownload(coords, "pom", dLocation, repo);
             }
         }
     }
 
-
-
-    public void synthesizeAndDownload(String mavenCoords, String filetype, String dLocation, String repo) {
+    public void synthesizeAndDownload(String mavenCoords, String filetype, String dLocation, String repo) throws InstallException {
 
         String groupId = ArtifactDownloaderUtils.getGroupId(mavenCoords).replace(".", "/") + "/";
         String artifactId = ArtifactDownloaderUtils.getartifactId(mavenCoords);
@@ -84,13 +84,12 @@ public class ArtifactDownloader {
         try {
             download(urlLocation, dLocation, groupId, version, filename, checksumFormats);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } 
+            throw ExceptionUtils.createByKey(e, "ERROR_INVALID_ESA", filename);
+        }
 
     }
 
-    private void download(String urlLocation, String dLocation, String groupId, String version, String filename, String[] checksumFormats) throws IOException {
+    private void download(String urlLocation, String dLocation, String groupId, String version, String filename, String[] checksumFormats) throws IOException, InstallException {
         try {
             URI uriLoc = new URI(urlLocation);
             File fileLoc = new File(ArtifactDownloaderUtils.getFileLocation(dLocation, groupId, version, filename));
@@ -98,24 +97,20 @@ public class ArtifactDownloader {
             downloadInternal(uriLoc, fileLoc);
             downloadedFiles.add(fileLoc);
 
-            for (String checksumFormat: checksumFormats) {
+            for (String checksumFormat : checksumFormats) {
                 String checksumLocal = ArtifactDownloaderUtils.getChecksum(fileLoc.getAbsolutePath(), checksumFormat);
                 String checksumOrigin = ArtifactDownloaderUtils.getMasterChecksum(urlLocation, checksumFormat);
-                if (!checksumLocal.equals(checksumOrigin)) { // ||  filename.equals("jaxb-2.2-19.0.0.8.pom")
+                if (!checksumLocal.equals(checksumOrigin)) {
                     ArtifactDownloaderUtils.deleteFiles(downloadedFiles, dLocation, groupId, version, filename);
                     downloadedFiles.clear();
-                    throw new IOException("ERROR discrepency between "+ checksumFormat + " checksums for file: " + filename); //TODO proper error message with exception
+                    throw ExceptionUtils.createByKey("ERROR_DOWNLOADED_ASSET_INVALID_CHECKSUM", filename, Messages.INSTALL_KERNEL_MESSAGES.getMessage("FEATURE_ASSET"));
                 }
             }
 
-        } catch(URISyntaxException e) {
-            System.out.println("url not in proper format"); //TODO proper error message with exception
-            e.printStackTrace();
-            return;
+        } catch (URISyntaxException e) {
+            throw new InstallException(e.getMessage());
         } catch (NoSuchAlgorithmException e) {
-            System.out.println("no such checksum format found."); //TODO proper error message with exception
-            e.printStackTrace();
-            return;
+            throw new InstallException(e.getMessage());
         }
     }
 
@@ -128,13 +123,13 @@ public class ArtifactDownloader {
     private void configureAuthentication() {
         if (System.getProperty("MVNW_USERNAME") != null && System.getProperty("MVNW_PASSWORD") != null && System.getProperty("http.proxyUser") == null) {
             Authenticator.setDefault(new Authenticator() {
+                @Override
                 protected PasswordAuthentication getPasswordAuthentication() {
                     return new PasswordAuthentication(System.getProperty("MVNW_USERNAME"), System.getProperty("MVNW_PASSWORD").toCharArray());
                 }
             });
         }
     }
-
 
     private void downloadInternal(URI address, File destination) throws IOException {
         OutputStream out = null;
@@ -208,11 +203,11 @@ public class ArtifactDownloader {
             Method getEncoderMethod = loader.loadClass("java.util.Base64").getMethod("getEncoder");
             Method encodeMethod = loader.loadClass("java.util.Base64$Encoder").getMethod("encodeToString", byte[].class);
             Object encoder = getEncoderMethod.invoke(null);
-            return (String) encodeMethod.invoke(encoder, new Object[]{userInfo.getBytes("UTF-8")});
+            return (String) encodeMethod.invoke(encoder, new Object[] { userInfo.getBytes("UTF-8") });
         } catch (Exception java7OrEarlier) {
             try {
                 Method encodeMethod = loader.loadClass("javax.xml.bind.DatatypeConverter").getMethod("printBase64Binary", byte[].class);
-                return (String) encodeMethod.invoke(null, new Object[]{userInfo.getBytes("UTF-8")});
+                return (String) encodeMethod.invoke(null, new Object[] { userInfo.getBytes("UTF-8") });
             } catch (Exception java5OrEarlier) {
                 throw new RuntimeException("Downloading Maven distributions with HTTP Basic Authentication is not supported on your JVM.", java5OrEarlier);
             }
@@ -234,26 +229,26 @@ public class ArtifactDownloader {
         }
     }
 
-    public List<File> getDownloadedEsas(){
+    public List<File> getDownloadedEsas() {
         List<File> esaFiles = new ArrayList<File>();
-        for (File f: downloadedFiles) {
+        for (File f : downloadedFiles) {
             if (f.getName().endsWith(".esa")) {
                 esaFiles.add(f);
             }
         }
         return esaFiles;
     }
-    
-    public List<File> getDownloadedPoms(){
+
+    public List<File> getDownloadedPoms() {
         List<File> pomFiles = new ArrayList<File>();
-        for (File f: downloadedFiles) {
+        for (File f : downloadedFiles) {
             if (f.getName().endsWith(".pom")) {
                 pomFiles.add(f);
             }
         }
         return pomFiles;
     }
-    
+
     public List<File> getDownloadedFiles() {
         return downloadedFiles;
     }
