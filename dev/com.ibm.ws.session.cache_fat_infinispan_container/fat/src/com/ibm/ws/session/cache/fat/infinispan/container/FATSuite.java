@@ -10,17 +10,25 @@
  *******************************************************************************/
 package com.ibm.ws.session.cache.fat.infinispan.container;
 
+import java.io.File;
 import java.net.HttpURLConnection;
+import java.time.Duration;
 import java.util.List;
 import java.util.Locale;
 
 import org.junit.Assert;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.output.OutputFrame;
+import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
+import org.testcontainers.images.builder.ImageFromDockerfile;
 
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
@@ -29,13 +37,34 @@ import componenttest.topology.utils.HttpUtils;
 @SuiteClasses({
                 // TODO enable tests as we get them converted over to infinispan
                 SessionCacheOneServerTest.class,
-                SessionCacheTwoServerTest.class,
-                SessionCacheTimeoutTest.class,
-                SessionCacheTwoServerTimeoutTest.class,
+                //SessionCacheTwoServerTest.class,
+                //SessionCacheTimeoutTest.class,
+                //SessionCacheTwoServerTimeoutTest.class,
                 //HazelcastClientTest.class
 })
 
 public class FATSuite {
+
+    /**
+     * Infinispan container
+     * - Copies config.xml for server config
+     * - Copies user.properties for authentication (user: user, password: pass)
+     * - Starts using a custom command to call server.sh with the copied config.xml
+     */
+    @SuppressWarnings("unchecked")
+    @ClassRule
+    public static GenericContainer infinispan = new GenericContainer(new ImageFromDockerfile()
+                    .withDockerfileFromBuilder(builder -> builder.from("infinispan/server:10.0.0.CR2-1")
+                                    .copy("/opt/infinispan_config/config.xml", "/opt/infinispan_config/config.xml")
+                                    .copy("/opt/infinispan/server/conf/users.properties", "/opt/infinispan/server/conf/users.properties")
+                                    .build())
+                    .withFileFromFile("/opt/infinispan_config/config.xml", new File("lib/LibertyFATTestFiles/infinispan/config.xml"))
+                    .withFileFromFile("/opt/infinispan/server/conf/users.properties", new File("lib/LibertyFATTestFiles/infinispan/users.properties")))
+                                    .withCommand("./bin/server.sh -c /opt/infinispan_config/config.xml")
+                                    .waitingFor(new LogMessageWaitStrategy()
+                                                    .withRegEx(".*ISPN080001: Infinispan Server.*")
+                                                    .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 5 : 15)))
+                                    .withLogConsumer(FATSuite::log);
 
     public static String run(LibertyServer server, String path, String testMethod, List<String> session) throws Exception {
         HttpURLConnection con = HttpUtils.getHttpConnection(server, path + '?' + FATServletClient.TEST_METHOD + '=' + testMethod);
@@ -82,5 +111,13 @@ public class FATSuite {
         String osName = System.getProperty("os.name", "unknown").toLowerCase(Locale.ROOT);
 
         return (multicastDisabledProp || osName.contains("z/os"));
+    }
+
+    private static void log(Object frame) {
+
+        String msg = ((OutputFrame) frame).getUtf8String();
+        if (msg.endsWith("\n"))
+            msg = msg.substring(0, msg.length() - 1);
+        Log.info(GenericContainer.class, "infinispan", msg);
     }
 }
