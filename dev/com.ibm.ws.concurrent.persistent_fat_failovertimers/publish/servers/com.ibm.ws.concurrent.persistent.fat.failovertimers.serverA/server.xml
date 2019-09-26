@@ -1,0 +1,43 @@
+<!--
+    Copyright (c) 2019 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+  <featureManager>
+    <feature>componenttest-1.0</feature>
+    <feature>ejbPersistentTimer-3.2</feature>
+    <feature>jdbc-4.2</feature>
+    <!-- <feature>osgiConsole-1.0</feature> -->
+    <feature>servlet-4.0</feature>
+  </featureManager>
+
+  <include location="../fatTestPorts.xml"/>
+
+  <application location="failoverTimersApp.war"/>
+
+  <persistentExecutor id="DefaultPersistentExecutor" pollInterval="1s400ms" lateTaskThreshold="3s"/>
+
+  <!-- database for persistent EJB timerss -->
+  <dataSource id="DefaultDataSource">
+    <jdbcDriver libraryRef="DerbyClientLib"/>
+    <properties.derby.client createDatabase="create" databaseName="${shared.resource.dir}/data/failovertimersdb" user="dbuser1" password="dbwpd1"/>
+  </dataSource>
+
+  <library id="DerbyClientLib">
+    <file name="${shared.resource.dir}/derbyclient/derbyclient.jar"/>
+  </library>
+  
+  <javaPermission codebase="${shared.resource.dir}/derbyclient/derbyclient.jar" className="java.security.AllPermission"/>
+
+  <!-- application reads these system properties to determine the server name -->
+  <javaPermission codebase="${server.config.dir}/apps/failoverTimersApp.war" className="java.util.PropertyPermission" name="server.config.dir" actions="read"/>
+  <javaPermission codebase="${server.config.dir}/apps/failoverTimersApp.war" className="java.util.PropertyPermission" name="wlp.user.dir" actions="read"/>
+
+  <variable name="onError" value="FAIL"/>
+</server>
