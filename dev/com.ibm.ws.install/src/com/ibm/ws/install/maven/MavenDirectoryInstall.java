@@ -28,7 +28,7 @@ import com.ibm.ws.kernel.boot.cmdline.Utils;
 public class MavenDirectoryInstall {
 
     private final InstallKernelMap map;
-    private final File fromDir;
+    private File fromDir;
     private String toExtension;
     private String openLibertyVersion;
     private Logger logger;
@@ -36,6 +36,18 @@ public class MavenDirectoryInstall {
 
     private final String TEMP_DIRECTORY =  Utils.getInstallDir() + "/tmp/";
     private final String OPEN_LIBERTY_PRODUCT_ID = "io.openliberty";
+
+    public MavenDirectoryInstall(Collection<String> featuresToInstall) throws IOException, InstallException {
+        this.logger = InstallLogUtils.getInstallLogger();
+        this.tempCleanupRequired = false;
+
+        logger.log(Level.FINE, "The features to install from local maven repository are:" + featuresToInstall);
+
+        getLibertyVersions();
+        List<File> jsonPaths = getJsonsFromMavenCentral();
+        map = new InstallKernelMap();
+        initializeMap(featuresToInstall, jsonPaths);
+    }
 
     /**
      * Initialize a map based install kernel with a local maven directory
@@ -162,44 +174,46 @@ public class MavenDirectoryInstall {
         Collection<String> currentReturnResult;
 
         logger.log(Level.INFO, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_STARTING_INSTALL"));
-        for (File esaFile : artifacts) {
+        try {
+            for (File esaFile : artifacts) {
 
-            logger.log(Level.FINE, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_INSTALLING",
-                    extractFeature(esaFile.getName())));
-            map.put("license.accept", true);
-            map.put("action.install", esaFile);
-            if (toExtension != null) {
-                map.put("to.extension", toExtension);
-                logger.log(Level.FINE, "Installing to extension: " + toExtension);
-            }
+                logger.log(Level.FINE, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_INSTALLING",
+                        extractFeature(esaFile.getName())));
+                map.put("license.accept", true);
+                map.put("action.install", esaFile);
+                if (toExtension != null) {
+                    map.put("to.extension", toExtension);
+                    logger.log(Level.FINE, "Installing to extension: " + toExtension);
+                }
 
-            Integer ac = (Integer) map.get("action.result");
-            logger.log(Level.FINE, "action.result:" + ac);
-            logger.log(Level.FINE, "action.error.message:" + map.get("action.error.message"));
+                Integer ac = (Integer) map.get("action.result");
+                logger.log(Level.FINE, "action.result:" + ac);
+                logger.log(Level.FINE, "action.error.message:" + map.get("action.error.message"));
 
-            if (map.get("action.error.message") != null) {
-                // error with installation
-                logger.log(Level.FINE, "action.exception.stacktrace: " + map.get("action.error.stacktrace"));
-                String exceptionMessage = (String) map.get("action.error.message");
-                throw new InstallException(exceptionMessage);
-            } else if ((currentReturnResult = (Collection<String>) map.get("action.install.result")) != null) {
-                // installation was successful
-                if (!currentReturnResult.isEmpty()) {
-                    actionReturnResult.addAll((Collection<String>) map.get("action.install.result"));
-                    logger.log(Level.INFO,
-                            (Messages.INSTALL_KERNEL_MESSAGES
-                                    .getLogMessage("LOG_INSTALLED_FEATURE", String.join(", ", currentReturnResult))
-                                    .replace("CWWKF1304I: ", ""))); // TODO: come up with new message for successfully
-                                                                    // installed feature
+                if (map.get("action.error.message") != null) {
+                    // error with installation
+                    logger.log(Level.FINE, "action.exception.stacktrace: " + map.get("action.error.stacktrace"));
+                    String exceptionMessage = (String) map.get("action.error.message");
+                    throw new InstallException(exceptionMessage);
+                } else if ((currentReturnResult = (Collection<String>) map.get("action.install.result")) != null) {
+                    // installation was successful
+                    if (!currentReturnResult.isEmpty()) {
+                        actionReturnResult.addAll((Collection<String>) map.get("action.install.result"));
+                        logger.log(Level.INFO,
+                                (Messages.INSTALL_KERNEL_MESSAGES
+                                        .getLogMessage("LOG_INSTALLED_FEATURE", String.join(", ", currentReturnResult))
+                                        .replace("CWWKF1304I: ", ""))); // TODO: come up with new message for
+                                                                        // successfully
+                                                                        // installed feature
 
+                    }
                 }
             }
-        }
-        logger.log(Level.INFO, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("TOOL_INSTALLATION_COMPLETED"));
+            logger.log(Level.INFO, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("TOOL_INSTALLATION_COMPLETED"));
+        } finally {
 
-        // clean up tmp now
-        cleanUp();
-        
+            cleanUp();
+        }
     }
 
     private Collection<File> findEsas(Collection<String> resolvedFeatures, File rootDir) throws InstallException {
@@ -212,6 +226,9 @@ public class MavenDirectoryInstall {
             String featureName = feature.split(":")[1];
 
             File groupDir = new File(rootDir, mavenCoordinate.replace(".", "/"));
+            if (!groupDir.exists()) {
+                continue;
+            }
 
             Path featurePath = Paths.get(groupDir.getAbsolutePath().toString(), featureName, openLibertyVersion,
                     featureName + "-" + openLibertyVersion + ".esa");
@@ -272,6 +289,9 @@ public class MavenDirectoryInstall {
      */
     private List<File> getSingleJsonPaths(File filepath) {
         ArrayList<File> jsonFilesFound = new ArrayList<>();
+        if (filepath == null || !filepath.exists()) {
+            return jsonFilesFound;
+        }
         File[] list = filepath.listFiles();
         for (File f : list) {
             if (f.isDirectory()) {
@@ -282,7 +302,28 @@ public class MavenDirectoryInstall {
                 }
             }
         }
+
         return jsonFilesFound;
+
+    }
+
+    /**
+     * Fetch the open liberty and closed liberty json files from maven central
+     * 
+     * @return
+     */
+    private List<File> getJsonsFromMavenCentral() {
+        // get open liberty json
+        ArtifactDownloader artifactDownloader = new ArtifactDownloader();
+        artifactDownloader.synthesizeAndDownload("io.openliberty.features:features:" + openLibertyVersion, "json",
+                TEMP_DIRECTORY, "http://repo.maven.apache.org/maven2/");
+        artifactDownloader.synthesizeAndDownload("io.openliberty.features:features:" + openLibertyVersion, "json",
+                TEMP_DIRECTORY, "http://repo.maven.apache.org/maven2/");
+        this.tempCleanupRequired = true;
+
+        logger.log(Level.FINE,
+                "Downloaded the following jsons from maven central:" + artifactDownloader.getDownloadedFiles());
+        return artifactDownloader.getDownloadedFiles();
 
     }
 
@@ -307,14 +348,16 @@ public class MavenDirectoryInstall {
     }
 
     private boolean cleanUpHelper(File file) {
-        if (file == null)
+        if (file == null || !file.exists())
             return true;
 
-        for (File f : file.listFiles()) {
-            cleanUpHelper(f);
+        if (file.isDirectory()) {
+            for (File f : file.listFiles()) {
+                cleanUpHelper(f);
+            }
+            
         }
         return file.delete();
-
     }
 
 }
