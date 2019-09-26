@@ -42,9 +42,18 @@ kafka.poll.error.CWMRX1002E.useraction=Revise o arquivo message.log do servidor 
 
 # An error occurred when sending a message to the Kafka broker. The error is: {0}.
 kafka.send.error.CWMRX1003E=CWMRX1003E: Ocorreu um erro ao enviar uma mensagem ao broker Kafka. O erro \u00e9: {0}.
-kafka.send.error.CWMRX1003E.explanation=Ocorreu um erro no Conector de Sa\u00edda Kafka que impede a opera\u00e7\u00e3o normal do Sistema de Mensagens Reativo
+kafka.send.error.CWMRX1003E.explanation=Ocorreu um erro no Conector de Sa\u00edda Kafka que impede a opera\u00e7\u00e3o normal do Sistema de Mensagens Reativo.
 kafka.send.error.CWMRX1003E.useraction=Revise o arquivo message.log do servidor e os logs de FFDC para identificar o problema.
 
+# The Reactive Messaging Kafka Outgoing Connector received an error. The error is {0}.
+kafka.output.error.signal.CWMRX1004E=CWMRX1004E: O Conector de Sa\u00edda Kafka do Sistema de Mensagens Reativo recebeu um erro. O erro \u00e9 {0}.
+kafka.output.error.signal.CWMRX1004E.explanation=O Conector de Sa\u00edda Kafka recebeu um sinal de erro que impede a opera\u00e7\u00e3o normal do Sistema de Mensagens Reativo.
+kafka.output.error.signal.CWMRX1004E.useraction=Revise o arquivo message.log do servidor e os logs de FFDC para identificar o problema.
+
+# The group.id property was not set in the configuration for this channel. Set the {0} property in one of the MicroProfile Config Sources for this application.
+kafka.groupid.not.set.CWMRX1005E=CWMRX1005E: A propriedade group.id n\u00e3o foi definida na configura\u00e7\u00e3o para este canal. Configure a propriedade {0} em uma das Origens de Configura\u00e7\u00e3o do MicroProfile para este aplicativo.
+kafka.groupid.not.set.CWMRX1005E.explanation=O ID do grupo do consumidor Kafka deve ser configurado para permitir que o Sistema de Mensagens Reativo funcione corretamente.
+kafka.groupid.not.set.CWMRX1005E.useraction=Configure a propriedade em um dos locais do MicroProfile ConfigSource para este aplicativo, por exemplo, o arquivo microprofile-config.properties.
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Reactive Messaging error message
 #-----------------------------------------------------------------------------------------------------------------------------

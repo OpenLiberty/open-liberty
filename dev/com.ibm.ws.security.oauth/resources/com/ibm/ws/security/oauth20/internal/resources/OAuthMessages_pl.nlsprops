@@ -118,7 +118,7 @@ OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR.explanation=Ten znak nie jest dozwolony w
 OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR.useraction=Usu\u0144 niepoprawny znak i wprowad\u017a ponownie \u017c\u0105danie. 
 
 OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND=CWWKS1424E: Nie znaleziono identyfikatora klienta {0}.
-OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.explanation=\u017b\u0105danie zawiera\u0142o identyfikator klienta, kt\u00f3rego nie znaleziono.
+OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.explanation=\u017b\u0105danie zawiera\u0142o identyfikator klienta, kt\u00f3rego nie znaleziono.  
 OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.useraction=Pon\u00f3w \u017c\u0105danie przy u\u017cyciu poprawnego identyfikatora klienta.
 
 OAUTH_CLIENT_REGISTRATION_INVALID_REQUEST_PATH=CWWKS1425E: \u017b\u0105danie rejestracji zosta\u0142o wykonane do niepoprawnego identyfikatora URI.

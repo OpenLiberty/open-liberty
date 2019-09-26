@@ -337,14 +337,14 @@ security.oauth20.apppwtok.revoke.disallowed=CWOAU0078E: \u5617\u8a66\u5728\u64a4
 security.oauth20.apppwtok.revoke.disallowed.explanation=\u61c9\u7528\u7a0b\u5f0f\u5bc6\u78bc\u6216\u61c9\u7528\u7a0b\u5f0f\u8a18\u865f\u5fc5\u9808\u4f7f\u7528 app-password \u6216 app-token \u7aef\u9ede\u4f86\u64a4\u92b7\u3002
 security.oauth20.apppwtok.revoke.disallowed.useraction=\u8acb\u91cd\u65b0\u767c\u51fa\u8981\u6c42\uff0c\u4e14\u5176\u4e2d\u4f7f\u7528\u4e86\u9069\u7576\u7aef\u9ede\u7684 URI \u4f86\u64a4\u92b7\u61c9\u7528\u7a0b\u5f0f\u5bc6\u78bc\u6216\u61c9\u7528\u7a0b\u5f0f\u8a18\u865f\u3002
 
-security.oauth20.pkce.invalid.method.error=CWOAU0079E: \u8981\u6c42\u53c3\u6578 code_challenge_method \u5305\u542b\u4e0d\u652f\u63f4\u7684\u8f49\u63db\u6f14\u7b97\u6cd5\u3002
+security.oauth20.pkce.invalid.method.error=CWOAU0079E: \u8981\u6c42\u4e2d\u7684 code_challenge_method \u53c3\u6578\u542b\u6709\u4e0d\u652f\u63f4\u7684\u8f49\u63db\u6f14\u7b97\u6cd5\uff1a[{0}]\u3002\u652f\u63f4\u7684\u8f49\u63db\u6f14\u7b97\u6cd5\u70ba\uff1aplain\u3001S256\u3002
 security.oauth20.pkce.invalid.method.error.explanation=OAuth \u63d0\u4f9b\u8005\u4e0d\u652f\u63f4\u6307\u5b9a\u7684\u8f49\u63db\u6f14\u7b97\u6cd5\u3002
-security.oauth20.pkce.invalid.method.error.useraction=\u8acb\u4f7f\u7528 "plain" \u6216 "S256" \u4f5c\u70ba code_challenge_method\u3002
+security.oauth20.pkce.invalid.method.error.useraction=\u8acb\u4f7f\u7528\u8a0a\u606f\u6240\u793a\u7684\u5176\u4e2d\u4e00\u7a2e\u8f49\u63db\u6f14\u7b97\u6cd5\u3002
 
-security.oauth20.pkce.codeverifier.length.error=CWOAU0080E: code_verifier \u9577\u5ea6\u7121\u6548\u3002
+security.oauth20.pkce.codeverifier.length.error=CWOAU0080E: code_verifier \u9577\u5ea6\u662f [{0}]\u3002code_verifier \u9577\u5ea6\u5fc5\u9808\u5728 43 \u5230 128 \u500b\u5b57\u5143\u4e4b\u9593\u3002
 security.oauth20.pkce.codeverifier.length.error.explanation=code_verifier \u6700\u77ed\u61c9\u70ba 43 \u500b\u5b57\u5143\uff0c\u6700\u9577\u61c9\u70ba 128 \u500b\u5b57\u5143\u3002
 security.oauth20.pkce.codeverifier.length.error.useraction=\u8acb\u91cd\u65b0\u50b3\u9001\u6388\u6b0a\u548c\u8a18\u865f\u8981\u6c42\uff0c\u4e14\u5df2\u66f4\u65b0\u7684 updated code_verifier \u7b26\u5408\u6307\u5b9a\u7684\u9577\u5ea6\u3002
 
-security.oauth20.pkce.error.mismatch.codeverifier=CWOAU0081E: code_challenge \u548c code_verifier \u4e0d\u76f8\u7b26\u3002
+security.oauth20.pkce.error.mismatch.codeverifier=CWOAU0081E: code_challenge [{0}] \u548c code_verifier [{1}] \u4e0d\u76f8\u7b26\u3002
 security.oauth20.pkce.error.mismatch.codeverifier.explanation=OAuth \u63d0\u4f9b\u8005\u6703\u4f7f\u7528\u6388\u6b0a\u8981\u6c42\u4e2d\u6307\u5b9a\u7684 code_challenge_method\uff0c\u4e14\u6703\u8f49\u63db code_verifier\uff08\u9664\u975e code_challenge_method \u662f\u7d14\u6587\u5b57\uff09\u3002\u8f49\u63db\u5f8c\u7684\u503c\u61c9\u7b26\u5408\u6388\u6b0a\u8981\u6c42\u4e2d\u7684 code_challenge\u3002
 security.oauth20.pkce.error.mismatch.codeverifier.useraction=\u8acb\u78ba\u5b9a\u5df2\u50b3\u9001\u76f8\u7b26\u7684 code_challenge \u548c code_verifier\uff0c\u4e14\u6388\u6b0a\u548c\u8a18\u865f\u8981\u6c42\u4e2d\u7684\u8f49\u63db\u6f14\u7b97\u6cd5\u6b63\u78ba\u3002

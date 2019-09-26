@@ -118,7 +118,7 @@ OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR.explanation=A karakter \u00fcgyf\u00e9lad
 OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR.useraction=T\u00e1vol\u00edtsa el az illeg\u00e1lis karaktert, majd k\u00fcldje el \u00fajra a k\u00e9r\u00e9st. 
 
 OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND=CWWKS1424E: A(z) {0} \u00fcgyf\u00e9lazonos\u00edt\u00f3 nem tal\u00e1lhat\u00f3.
-OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.explanation=A k\u00e9r\u00e9s olyan \u00fcgyf\u00e9l-azonos\u00edt\u00f3t tartalmazott, amely nem tal\u00e1lhat\u00f3. 
+OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.explanation=A k\u00e9r\u00e9s olyan \u00fcgyf\u00e9l-azonos\u00edt\u00f3t tartalmazott, amely nem tal\u00e1lhat\u00f3.  
 OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.useraction=Pr\u00f3b\u00e1lkozzon \u00fajra a k\u00e9r\u00e9ssel \u00fagy, hogy egy \u00e9rv\u00e9nyes \u00fcgyf\u00e9lazonos\u00edt\u00f3t ad meg.
 
 OAUTH_CLIENT_REGISTRATION_INVALID_REQUEST_PATH=CWWKS1425E: A regisztr\u00e1ci\u00f3s k\u00e9r\u00e9s egy helytelen URI azonos\u00edt\u00f3hoz lett kiadva.
@@ -138,7 +138,7 @@ OAUTH_CLIENT_REGISTRATION_MALFORMED_REQUEST.explanation=A k\u00e9r\u00e9s t\u00f
 OAUTH_CLIENT_REGISTRATION_MALFORMED_REQUEST.useraction=Tekintse \u00e1t a szolg\u00e1ltat\u00e1s API dokument\u00e1ci\u00f3j\u00e1t, majd pr\u00f3b\u00e1lja meg \u00fajra elk\u00fcldeni a k\u00e9r\u00e9st.
 
 OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS=CWWKS1429E: A(z) {0} \u00fcgyf\u00e9lazonos\u00edt\u00f3 m\u00e1r l\u00e9tezik.
-OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS.explanation=A m\u0171velet meghi\u00fasult, mivel az \u00fcgyf\u00e9l-azonos\u00edt\u00f3 m\u00e1r l\u00e9tezik. 
+OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS.explanation=A m\u0171velet meghi\u00fasult, mivel az \u00fcgyf\u00e9l-azonos\u00edt\u00f3 m\u00e1r l\u00e9tezik.  
 OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS.useraction=Tekintse \u00e1t a szolg\u00e1ltat\u00e1s API dokument\u00e1ci\u00f3j\u00e1t, majd pr\u00f3b\u00e1lja meg \u00fajra elk\u00fcldeni a k\u00e9r\u00e9st a megfelel\u0151 param\u00e9terekkel.
 
 OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE=CWWKS1430E: Az \u00fcgyf\u00e9l friss\u00edt\u00e9se meghi\u00fasult. A friss\u00edt\u00e9si k\u00e9r\u00e9s azt jelzi, hogy az \u00fcgyf\u00e9ltitkot meg kell \u0151rizni, azonban a megl\u00e9v\u0151 regisztr\u00e1ci\u00f3hoz nincs be\u00e1ll\u00edtva titkos kulcs.

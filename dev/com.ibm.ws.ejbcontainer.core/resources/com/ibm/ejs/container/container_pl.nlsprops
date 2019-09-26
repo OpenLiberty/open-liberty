@@ -2411,6 +2411,15 @@ ENTITY_NOT_SUPPORTED_CNTR0335W.useraction=Zrezygnuj z u\u017cywania \
 nieobs\u0142ugiwanego komponentu EJB obiektu w aplikacji lub utw\u00f3rz pakiet \
 komponentu bean w aplikacji w wersji 6 lub starszej.
 
+#-------------------------------------------------------------------------------
+NAME_ALREADY_BOUND_WARN_CNTR0336W=CNTR0336W: Interfejs {0} \
+komponentu bean {1} w module {2} aplikacji {3} nie mo\u017ce by\u0107 powi\u0105zany z \
+po\u0142o\u017ceniem nazwy {4}. Interfejs {5} komponentu bean {6} w module {7} aplikacji {8} jest ju\u017c powi\u0105zany z po\u0142o\u017ceniem nazwy {4}. \
+Po\u0142o\u017cenie nazwy {4} jest niedost\u0119pne.
+NAME_ALREADY_BOUND_WARN_CNTR0336W.explanation=Ka\u017cdy interfejs komponentu EJB musi okre\u015bla\u0107 unikalne po\u0142o\u017cenie powi\u0105zania.
+NAME_ALREADY_BOUND_WARN_CNTR0336W.useraction=Popraw plik powi\u0105za\u0144 jednego z tych interfejs\u00f3w komponent\u00f3w w taki spos\u00f3b, aby ka\u017cdy z nich mia\u0142 unikalne po\u0142o\u017cenie powi\u0105zania.
+
+
 
 #-------------------------------------------------------------------------------
 #
