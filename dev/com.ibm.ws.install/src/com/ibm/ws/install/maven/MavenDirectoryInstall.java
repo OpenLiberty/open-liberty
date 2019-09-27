@@ -22,7 +22,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.ibm.ws.install.InstallException;
-import com.ibm.ws.install.internal.ArtifactDownloader;
 import com.ibm.ws.install.internal.InstallKernelMap;
 import com.ibm.ws.install.internal.InstallLogUtils;
 import com.ibm.ws.install.internal.InstallLogUtils.Messages;
@@ -262,7 +261,7 @@ public class MavenDirectoryInstall {
      * @throws InstallException
      *
      */
-    private List<File> downloadMissingFeatureEsas(List<String> features) throws InstallException {
+    private List<File> downloadFeatureEsas(List<String> features) throws InstallException {
         map.put("download.artifact.list", features);
         map.put("download.local.dir.location", TEMP_DIRECTORY);
         map.put("download.remote.maven.repo", "http://repo.maven.apache.org/maven2/");
@@ -392,7 +391,8 @@ public class MavenDirectoryInstall {
         ArtifactDownloader artifactDownloader = new ArtifactDownloader();
         artifactDownloader.synthesizeAndDownload("io.openliberty.features:features:" + openLibertyVersion, "json",
                                                  TEMP_DIRECTORY, "http://repo.maven.apache.org/maven2/");
-        artifactDownloader.synthesizeAndDownload("io.openliberty.features:features:" + openLibertyVersion, "json",
+        artifactDownloader.synthesizeAndDownload("com.ibm.websphere.appserver.features:features:" + openLibertyVersion,
+                "json",
                                                  TEMP_DIRECTORY, "http://repo.maven.apache.org/maven2/");
         this.tempCleanupRequired = true;
 
