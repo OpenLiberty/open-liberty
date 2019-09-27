@@ -17,6 +17,8 @@ Bundle-Description: RequestTiming: Request Timing; version=${bVersion}
 
 WS-TraceGroup: requestTiming
 
+testsrc: test/src
+
 Export-Package:  com.ibm.ws.request.timing.config, \
     com.ibm.ws.request.timing.notification, \
     com.ibm.ws.request.timing.stats
