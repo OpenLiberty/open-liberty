@@ -29,7 +29,6 @@ import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
 import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
 
 @SuppressWarnings("serial")
-//@WebServlet(urlPatterns = "/AppLevelJTADPUFieldInjectionServlet")
 public class AppLevelJTADPUFieldInjectionServlet extends JPATestServlet {
     @SuppressWarnings("unused")
     @PersistenceContext

@@ -17,7 +17,6 @@ import java.util.Map;
 import javax.persistence.EntityManager;
 
 import org.junit.Assert;
-import org.junit.Assume;
 
 import com.ibm.ws.jpa.fvt.injectiondpu.entities.DPUInjectionEntity;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
@@ -62,7 +61,9 @@ public class InjectionDPUTestLogic extends AbstractTestLogic {
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
         final String jdbcDriverVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("jdbcDriverVersion") == null) ? "UNKNOWN" : (String) testProps.get("jdbcDriverVersion"));
 
-        Assume.assumeTrue(isSupportedDatabase(dbProductName, dbProductVersion, jdbcDriverVersion));
+        if (!isSupportedDatabase(dbProductName, dbProductVersion, jdbcDriverVersion)) {
+            return;
+        }
 
         final String lDbProductName = dbProductName.toLowerCase();
         final boolean isAMJTA = PersistenceContextType.APPLICATION_MANAGED_JTA == jpaResource.getPcCtxInfo().getPcType();

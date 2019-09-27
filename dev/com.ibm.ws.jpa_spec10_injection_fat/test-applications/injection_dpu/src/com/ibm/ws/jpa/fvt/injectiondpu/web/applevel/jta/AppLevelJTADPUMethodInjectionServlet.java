@@ -29,7 +29,6 @@ import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
 import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
 
 @SuppressWarnings("serial")
-//@WebServlet(urlPatterns = "/AppLevelJTADPUMethodInjectionServlet")
 public class AppLevelJTADPUMethodInjectionServlet extends JPATestServlet {
     private EntityManager cmtsEM;
     private EntityManagerFactory amjtaEMF;

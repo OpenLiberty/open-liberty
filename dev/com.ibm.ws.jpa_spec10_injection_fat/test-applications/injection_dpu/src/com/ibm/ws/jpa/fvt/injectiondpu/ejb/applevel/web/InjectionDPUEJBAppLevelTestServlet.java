@@ -13,8 +13,6 @@ package com.ibm.ws.jpa.fvt.injectiondpu.ejb.applevel.web;
 
 import java.util.HashMap;
 
-import javax.annotation.PostConstruct;
-
 import org.junit.Test;
 
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
@@ -28,19 +26,6 @@ import com.ibm.ws.testtooling.vehicle.web.EJBTestVehicleServlet;
  */
 public class InjectionDPUEJBAppLevelTestServlet extends EJBTestVehicleServlet {
     private final String testLogicClassName = "com.ibm.ws.jpa.fvt.injectiondpu.testlogic.InjectionDPUTestLogic";
-
-    private final HashMap<String, JPAPersistenceContext> jpaPctxMap = new HashMap<String, JPAPersistenceContext>();
-
-    private final static String ejbJNDIName = "ejb/jndi/AnnotatedJNDISLEJB";
-
-    @PostConstruct
-    private void initFAT() {
-        jpaPctxMap.put("java:comp/env/jpa/InjectionDPU_AMJTA",
-                       new JPAPersistenceContext("java:comp/env/jpa/InjectionDPU_AMJTA", PersistenceContextType.APPLICATION_MANAGED_JTA, PersistenceInjectionType.JNDI, "java:comp/env/jpa/InjectionDPU_AMJTA"));
-
-        jpaPctxMap.put("amjtaEMF",
-                       new JPAPersistenceContext("amjtaEMF", PersistenceContextType.APPLICATION_MANAGED_JTA, PersistenceInjectionType.FIELD, "amjtaEMF"));
-    }
 
     @Test
     public void jpa10_Injection_DPU_AppLevel_JNDI_EJB_SL_AMJTA() throws Exception {

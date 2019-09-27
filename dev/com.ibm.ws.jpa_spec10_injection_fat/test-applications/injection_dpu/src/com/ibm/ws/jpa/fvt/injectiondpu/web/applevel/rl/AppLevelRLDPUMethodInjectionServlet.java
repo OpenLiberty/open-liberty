@@ -27,7 +27,6 @@ import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
 import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
 
 @SuppressWarnings("serial")
-//@WebServlet(urlPatterns = "/AppLevelRLDPUMethodInjectionServlet")
 public class AppLevelRLDPUMethodInjectionServlet extends JPATestServlet {
     private EntityManagerFactory amrlEMF;
 

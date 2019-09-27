@@ -27,7 +27,6 @@ import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
 import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
 
 @SuppressWarnings("serial")
-//@WebServlet(urlPatterns = "/EarLibLevelRLDPUFieldInjectionServlet")
 public class EarLibLevelRLDPUFieldInjectionServlet extends JPATestServlet {
     @SuppressWarnings("unused")
     @PersistenceUnit

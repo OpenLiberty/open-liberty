@@ -25,7 +25,6 @@ import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
 import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
 
 @SuppressWarnings("serial")
-//@WebServlet(urlPatterns = "/InjectionDPUServlet")
 public class InjectionDPUServlet extends JPATestServlet {
     private final String testLogicClassName = InjectionDPUTestLogic.class.getName();
 
