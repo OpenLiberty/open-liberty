@@ -65,7 +65,6 @@ public class OidcServerException extends OAuth20Exception {
     }
 
     public OidcServerException(BrowserAndServerLogMessage browserServerLogMsg, String code, int httpStatus) {
-        // TODO
         super(code, null, null);
 
         _errorDescription = null;

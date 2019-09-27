@@ -81,7 +81,7 @@ public class CoverageMapEndpointServices extends AbstractOidcEndpointServices {
             String description = "Unable to retrieve OIDC provider id for this request.";
             throw new OidcServerException(description, OIDCConstants.ERROR_INVALID_REQUEST, HttpServletResponse.SC_BAD_REQUEST);
         }
-        
+
         JsonPrimitive registrationEndpoint = new JsonPrimitive(addTrailingSlash(getCalculatedIssuerId(oidcServerCfg.getProviderId(), request) + OAuth20RequestFilter.SLASH_PATH_REGISTRATION));
         members.add(registrationEndpoint);
         **/
@@ -168,6 +168,7 @@ public class CoverageMapEndpointServices extends AbstractOidcEndpointServices {
         BrowserAndServerLogMessage updateMsg = new BrowserAndServerLogMessage(tc, "OAUTH_COVERAGE_MAP_UNRECOGNIZED_TOKEN_PARAM", new Object[] { tokenType });
         Tr.error(tc, updateMsg.getServerErrorMessage());
         throw new OidcServerException(updateMsg, OIDCConstants.ERROR_INVALID_REQUEST, HttpServletResponse.SC_BAD_REQUEST);
+    }
 
     /**
      * Compute an ETag from the referenced list of appRoots.
