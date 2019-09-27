@@ -27,7 +27,7 @@ public class ResultsServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         PrintWriter pw = response.getWriter();
 
-        request.getSession().setMaxInactiveInterval(1);
+        request.getSession().setMaxInactiveInterval(10);
 
         pw.println(TestHttpSessionListener.getResults());
 

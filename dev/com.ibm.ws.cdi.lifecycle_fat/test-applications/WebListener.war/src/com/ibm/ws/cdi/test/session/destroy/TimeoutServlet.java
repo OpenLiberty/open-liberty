@@ -28,9 +28,9 @@ public class TimeoutServlet extends HttpServlet {
         TestHttpSessionListener.setTimeoutSession(request.getSession());
         PrintWriter pw = response.getWriter();
 
-        request.getSession().setMaxInactiveInterval(1);
+        request.getSession().setMaxInactiveInterval(10);
 
-        pw.println("called setMaxInactiveInterval(1)");
+        pw.println("called setMaxInactiveInterval(10)");
 
         pw.flush();
         pw.close();
