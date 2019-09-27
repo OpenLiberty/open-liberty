@@ -799,7 +799,7 @@ public class InstallKernelMap implements Map {
     }
 
     @SuppressWarnings("unchecked")
-    public List<File> downloadSingleFeature() {
+    public File downloadSingleFeature() {
         data.put(ACTION_RESULT, OK);
         data.put(ACTION_INSTALL_RESULT, null);
         data.put(ACTION_ERROR_MESSAGE, null);
@@ -819,7 +819,7 @@ public class InstallKernelMap implements Map {
             return null;
         }
 
-        return artifactDownloader.getDownloadedEsas();
+        return artifactDownloader.getDownloadedFiles().get(0);
     }
 
     @SuppressWarnings("unchecked")
