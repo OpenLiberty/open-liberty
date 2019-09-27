@@ -50,8 +50,8 @@ public class MavenDirectoryInstall {
 
         logger.log(Level.FINE, "The features to install from maven central are:" + featuresToInstall);
 
-        List<File> jsonPaths = getJsonsFromMavenCentral();
         map = new InstallKernelMap();
+        List<File> jsonPaths = getJsonsFromMavenCentral();
         initializeMap(featuresToInstall, jsonPaths);
     }
 
