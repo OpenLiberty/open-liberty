@@ -35,12 +35,12 @@ public class MavenDirectoryInstall {
     private final InstallKernelMap map;
     private File fromDir;
     private String toExtension;
-    private String openLibertyVersion;
+    private final String openLibertyVersion;
     private final Logger logger;
     private boolean tempCleanupRequired;
-  
+
     private final String TEMP_DIRECTORY = Utils.getInstallDir().getAbsolutePath() + File.separatorChar + "tmp"
-            + File.separatorChar;
+                                          + File.separatorChar;
     private final String OPEN_LIBERTY_PRODUCT_ID = "io.openliberty";
 
     public MavenDirectoryInstall(Collection<String> featuresToInstall) throws IOException, InstallException {
@@ -69,7 +69,6 @@ public class MavenDirectoryInstall {
         this.logger = InstallLogUtils.getInstallLogger();
         this.openLibertyVersion = getLibertyVersion();
         this.tempCleanupRequired = false;
-
 
         logger.log(Level.FINE, "The features to install from local maven repository are:" + featuresToInstall);
         logger.log(Level.FINE, "The local maven repository is: " + fromDir.getAbsolutePath());
@@ -175,8 +174,7 @@ public class MavenDirectoryInstall {
             }
         }
 
-        Collection<File> artifacts = fromDir != null ? findEsas(resolvedFeatures, fromDir)
-                : downloadFeatureEsas((List<String>) resolvedFeatures);
+        Collection<File> artifacts = fromDir != null ? findEsas(resolvedFeatures, fromDir) : downloadFeatureEsas((List<String>) resolvedFeatures);
 
         Collection<String> actionReturnResult = new ArrayList<String>();
         Collection<String> currentReturnResult;
@@ -265,6 +263,8 @@ public class MavenDirectoryInstall {
         map.put("download.artifact.list", features);
         map.put("download.local.dir.location", TEMP_DIRECTORY);
         map.put("download.remote.maven.repo", "http://repo.maven.apache.org/maven2/");
+        boolean singleArtifactInstall = false;
+        map.put("download.inidividual.artifact", singleArtifactInstall);
         List<File> result = (List<File>) map.get("download.result");
         this.tempCleanupRequired = true;
 
@@ -288,10 +288,9 @@ public class MavenDirectoryInstall {
 
     }
 
-
 //    /**
 //     * Get the single json files from a local maven repo
-//     * 
+//     *
 //     * @param filepath
 //     * @param found
 //     */
@@ -357,10 +356,9 @@ public class MavenDirectoryInstall {
         if (!dir.exists() && !dir.isDirectory()) {
             return null;
         }
-       
-        
+
         Path jsonPath = Paths.get(artifact.getAbsolutePath(), "features", openLibertyVersion,
-                "features-" + openLibertyVersion + ".json");
+                                  "features-" + openLibertyVersion + ".json");
         return jsonPath.toFile();
 
     }
@@ -377,9 +375,6 @@ public class MavenDirectoryInstall {
 
     }
 
-
-
-
     /**
      * Fetch the open liberty and closed liberty json files from maven central
      *
@@ -388,17 +383,26 @@ public class MavenDirectoryInstall {
      */
     private List<File> getJsonsFromMavenCentral() throws InstallException {
         // get open liberty json
-        ArtifactDownloader artifactDownloader = new ArtifactDownloader();
-        artifactDownloader.synthesizeAndDownload("io.openliberty.features:features:" + openLibertyVersion, "json",
-                                                 TEMP_DIRECTORY, "http://repo.maven.apache.org/maven2/");
-        artifactDownloader.synthesizeAndDownload("com.ibm.websphere.appserver.features:features:" + openLibertyVersion,
-                "json",
-                                                 TEMP_DIRECTORY, "http://repo.maven.apache.org/maven2/");
+        List<File> result = new ArrayList<File>();
+        map.put("download.local.dir.location", TEMP_DIRECTORY);
+        map.put("download.remote.maven.repo", "http://repo.maven.apache.org/maven2/");
+        map.put("download.filetype", "json");
+        boolean singleArtifactInstall = true;
+        map.put("download.inidividual.artifact", singleArtifactInstall);
+
+        String OLJsonCoord = "io.openliberty.features:features:" + openLibertyVersion;
+        String CLJsonCoord = "com.ibm.websphere.appserver.features:features:" + openLibertyVersion;
+        map.put("download.artifact.list", OLJsonCoord);
+        File OL = (File) map.get("download.result");
+        map.put("download.artifact.list", CLJsonCoord);
+        File CL = (File) map.get("download.result");
+        result.add(OL);
+        result.add(CL);
         this.tempCleanupRequired = true;
 
         logger.log(Level.FINE,
-                   "Downloaded the following jsons from maven central:" + artifactDownloader.getDownloadedFiles());
-        return artifactDownloader.getDownloadedFiles();
+                   "Downloaded the following jsons from maven central:" + result);
+        return result;
 
     }
 
@@ -422,7 +426,6 @@ public class MavenDirectoryInstall {
 
     }
 
-
     public boolean deleteFolder(File file) throws IOException {
         Path path = file.toPath();
         Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
@@ -431,7 +434,7 @@ public class MavenDirectoryInstall {
                 Files.delete(file);
                 return FileVisitResult.CONTINUE;
             }
-          
+
             @Override
             public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
                 Files.delete(dir);

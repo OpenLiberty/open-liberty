@@ -106,6 +106,7 @@ public class InstallKernelMap implements Map {
     private static final String INSTALL_INDIVIDUAL_ESAS = "install.individual.esas";
     private static final String INDIVIDUAL_ESAS = "individual.esas";
     private static final String DOWNLOAD_RESULT = "download.result";
+    private static final String DOWNLOAD_INDIVIDUAL_ARTIFACT = "download.inidividual.artifact";
     private static final String DOWNLOAD_FILETYPE = "download.filetype";
     private static final String DOWNLOAD_LOCAL_DIR_LOCATION = "download.local.dir.location";
     private static final String DOWNLOAD_REMOTE_MAVEN_REPO = "download.remote.maven.repo";
@@ -241,10 +242,11 @@ public class InstallKernelMap implements Map {
         } else if (PROGRESS_MONITOR_SIZE.equals(key)) {
             return getMonitorSize();
         } else if (DOWNLOAD_RESULT.equals(key)) {
-            if (data.get(DOWNLOAD_FILETYPE) == null) {
-                return downloadFeatures(); //
-            } else {
+            Boolean downloadSingleArtifact = (Boolean) data.get(DOWNLOAD_INDIVIDUAL_ARTIFACT);
+            if (downloadSingleArtifact != null && downloadSingleArtifact) {
                 return downloadSingleFeature();
+            } else {
+                return downloadFeatures();
             }
         }
         return data.get(key);
@@ -338,6 +340,12 @@ public class InstallKernelMap implements Map {
         } else if (DOWNLOAD_ARTIFACT_LIST.equals(key)) {
             if (value instanceof List || value instanceof String) {
                 data.put(DOWNLOAD_ARTIFACT_LIST, value);
+            } else {
+                throw new IllegalArgumentException();
+            }
+        } else if (DOWNLOAD_INDIVIDUAL_ARTIFACT.equals(key)) {
+            if (value instanceof Boolean) {
+                data.put(DOWNLOAD_INDIVIDUAL_ARTIFACT, value);
             } else {
                 throw new IllegalArgumentException();
             }
@@ -791,7 +799,7 @@ public class InstallKernelMap implements Map {
     }
 
     @SuppressWarnings("unchecked")
-    public List<File> downloadSingleFeature() {
+    public File downloadSingleFeature() {
         data.put(ACTION_RESULT, OK);
         data.put(ACTION_INSTALL_RESULT, null);
         data.put(ACTION_ERROR_MESSAGE, null);
@@ -811,7 +819,7 @@ public class InstallKernelMap implements Map {
             return null;
         }
 
-        return artifactDownloader.getDownloadedEsas();
+        return artifactDownloader.getDownloadedFiles().get(0);
     }
 
     @SuppressWarnings("unchecked")
