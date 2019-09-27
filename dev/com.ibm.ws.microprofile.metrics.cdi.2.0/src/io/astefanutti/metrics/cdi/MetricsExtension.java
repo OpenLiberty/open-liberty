@@ -79,24 +79,28 @@ import com.ibm.wsspi.classloading.ClassLoadingService;
 
 @Component(service = WebSphereCDIExtension.class, immediate = true)
 public class MetricsExtension implements Extension, WebSphereCDIExtension {
-    private static final AnnotationLiteral<Nonbinding> NON_BINDING = new AnnotationLiteral<Nonbinding>() {};
+    protected static final AnnotationLiteral<Nonbinding> NON_BINDING = new AnnotationLiteral<Nonbinding>() {
+    };
 
-    private static final AnnotationLiteral<InterceptorBinding> INTERCEPTOR_BINDING = new AnnotationLiteral<InterceptorBinding>() {};
+    protected static final AnnotationLiteral<InterceptorBinding> INTERCEPTOR_BINDING = new AnnotationLiteral<InterceptorBinding>() {
+    };
 
-    private static final AnnotationLiteral<MetricsBinding> METRICS_BINDING = new AnnotationLiteral<MetricsBinding>() {};
+    protected static final AnnotationLiteral<MetricsBinding> METRICS_BINDING = new AnnotationLiteral<MetricsBinding>() {
+    };
 
-    private static final AnnotationLiteral<Default> DEFAULT = new AnnotationLiteral<Default>() {};
+    protected static final AnnotationLiteral<Default> DEFAULT = new AnnotationLiteral<Default>() {
+    };
 
-    private final Map<Bean<?>, AnnotatedMember<?>> metrics = new HashMap<>();
+    protected final Map<Bean<?>, AnnotatedMember<?>> metrics = new HashMap<>();
 
-    private final Set<MetricID> metricIDs = Collections.synchronizedSortedSet(new TreeSet<MetricID>());
+    protected final Set<MetricID> metricIDs = Collections.synchronizedSortedSet(new TreeSet<MetricID>());
 
-    private final MetricsConfigurationEvent configuration = new MetricsConfigurationEvent();
+    protected final MetricsConfigurationEvent configuration = new MetricsConfigurationEvent();
 
     /**
      * Stores the member/annotation that were intercepted to their metric name.
      */
-    private final Map<Member, Map<Annotation, String>> memberMap = Collections.synchronizedMap(new HashMap<Member, Map<Annotation, String>>());
+    protected final Map<Member, Map<Annotation, String>> memberMap = Collections.synchronizedMap(new HashMap<Member, Map<Annotation, String>>());
 
     /**
      * Stores the CDI bean classes that were already visited, so we can skip re-registering them
@@ -112,27 +116,29 @@ public class MetricsExtension implements Extension, WebSphereCDIExtension {
         return configuration.getParameters();
     }
 
-    private <X> void metricsAnnotations(@Observes @WithAnnotations({ Counted.class, Gauge.class, Metered.class, Timed.class, ConcurrentGauge.class }) ProcessAnnotatedType<X> pat) {
+    protected <X> void metricsAnnotations(@Observes @WithAnnotations({ Counted.class, Gauge.class, Metered.class, Timed.class,
+                                                                       ConcurrentGauge.class }) ProcessAnnotatedType<X> pat) {
         pat.setAnnotatedType(new AnnotatedTypeDecorator<>(pat.getAnnotatedType(), METRICS_BINDING));
     }
 
-    private void metricProducerField(@Observes ProcessProducerField<? extends Metric, ?> ppf) {
+    protected void metricProducerField(@Observes ProcessProducerField<? extends Metric, ?> ppf) {
         metrics.put(ppf.getBean(), ppf.getAnnotatedProducerField());
     }
 
-    private void metricProducerMethod(@Observes ProcessProducerMethod<? extends Metric, ?> ppm) {
+    protected void metricProducerMethod(@Observes ProcessProducerMethod<? extends Metric, ?> ppm) {
         // Skip the Metrics CDI alternatives
-        if (!ppm.getBean().getBeanClass().equals(MetricProducer.class))
+        if (!ppm.getBean().getBeanClass().equals(MetricProducer.class)) {
             metrics.put(ppm.getBean(), ppm.getAnnotatedProducerMethod());
+        }
     }
 
-    private void defaultMetricRegistry(@Observes AfterBeanDiscovery abd, BeanManager manager) {
+    protected void defaultMetricRegistry(@Observes AfterBeanDiscovery abd, BeanManager manager) {
         if (manager.getBeans(MetricRegistry.class).isEmpty())
             abd.addBean(new MetricRegistryBean(manager));
     }
 
     @SuppressWarnings("unchecked")
-    private <T extends Metric> void configuration(@Observes AfterDeploymentValidation adv, BeanManager manager) {
+    protected <T extends Metric> void configuration(@Observes AfterDeploymentValidation adv, BeanManager manager) {
 
         // Fire configuration event
         manager.fireEvent(configuration);
@@ -181,7 +187,7 @@ public class MetricsExtension implements Extension, WebSphereCDIExtension {
         metrics.clear();
     }
 
-    private void beforeShutdown(@Observes BeforeShutdown shutdown) {
+    protected void beforeShutdown(@Observes BeforeShutdown shutdown) {
         MetricRegistry registry = MetricRegistryFactory.getApplicationRegistry();
         // Unregister metrics
         for (MetricID mid : metricIDs) {
@@ -189,16 +195,16 @@ public class MetricsExtension implements Extension, WebSphereCDIExtension {
         }
     }
 
-    private static <T> T getReference(BeanManager manager, Class<T> type) {
+    protected static <T> T getReference(BeanManager manager, Class<T> type) {
         return getReference(manager, type, manager.resolve(manager.getBeans(type)));
     }
 
     @SuppressWarnings("unchecked")
-    private static <T> T getReference(BeanManager manager, Type type, Bean<?> bean) {
+    protected static <T> T getReference(BeanManager manager, Type type, Bean<?> bean) {
         return (T) manager.getReference(bean, type, manager.createCreationalContext(bean));
     }
 
-    private static boolean hasInjectionPoints(AnnotatedMember<?> member) {
+    protected static boolean hasInjectionPoints(AnnotatedMember<?> member) {
         if (!(member instanceof AnnotatedMethod))
             return false;
         AnnotatedMethod<?> method = (AnnotatedMethod<?>) member;
