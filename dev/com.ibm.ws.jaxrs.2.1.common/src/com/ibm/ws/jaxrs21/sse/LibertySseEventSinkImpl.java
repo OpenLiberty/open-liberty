@@ -36,8 +36,6 @@ import org.apache.cxf.transport.http.AbstractHTTPDestination;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.jaxrs21.clientconfig.JAXRSClientCompletionStageFactoryConfig;
-import com.ibm.ws.concurrent.mp.spi.CompletionStageFactory;
 
 /**
  * This class implements the <code>SseEventSink</code> that is injected into
@@ -50,8 +48,6 @@ public class LibertySseEventSinkImpl implements SseEventSink {
     private final Message message;
     private final HttpServletResponse response;
     private volatile boolean closed;
-    
-    private CompletionStageFactory completionStageFactory = JAXRSClientCompletionStageFactoryConfig.getCompletionStageFactory();
 
     public LibertySseEventSinkImpl(MessageBodyWriter<OutboundSseEvent> writer, Message message) {
         this.writer = writer;
@@ -170,22 +166,10 @@ public class LibertySseEventSinkImpl implements SseEventSink {
     private CompletableFuture<?> createCompleteableFuture() {
         final SecurityManager sm = System.getSecurityManager();
         if (sm == null) {
-            if (completionStageFactory == null) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Running in an Java SE environment.  Using ForkJoinPool.commonPool()");
-                }
-                return new CompletableFuture<>();
-            }            
-            return completionStageFactory.supplyAsync(null, null).toCompletableFuture();
+            return new CompletableFuture<>();
         }
         return AccessController.doPrivileged((PrivilegedAction<CompletableFuture<?>>)() -> {
-            if (completionStageFactory == null) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Running in an Java SE environment.  Using ForkJoinPool.commonPool()");
-                }
-                return new CompletableFuture<>();
-            } 
-            return completionStageFactory.supplyAsync(null, null).toCompletableFuture();
+            return new CompletableFuture<>();
         });
     }
 }
