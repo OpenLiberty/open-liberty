@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.audit.event;
+package com.ibm.ws.security.audit.event.utils;
 
 import static org.junit.Assert.assertEquals;
 
@@ -85,6 +85,31 @@ public class ParameterUtilsTest {
         assertEquals("The output does not match.", "[item1, [nesteditem1, nesteditem3]]", output.toString());
     }
 
+    @Test
+    public void convertWithNpeClass() throws Exception {
+        StringBuffer output = ParameterUtils.format(new NPEClass());
+        assertEquals("The output does not match.", "com.ibm.ws.security.audit.event.utils.ParameterUtilsTest$NPEClass", output.toString());
+    }
+
+    @Test
+    public void convertWithNpeClassArray() throws Exception {
+        Object[] param = { 1, new NPEClass(), new NPEClass(), "StringObject" };
+        StringBuffer output = ParameterUtils.format(param);
+        assertEquals("The output does not match.",
+                     "[1, com.ibm.ws.security.audit.event.utils.ParameterUtilsTest$NPEClass, com.ibm.ws.security.audit.event.utils.ParameterUtilsTest$NPEClass, StringObject]",
+                     output.toString());
+    }
+
+    @Test
+    public void convertWithNestedNpeClassArray() throws Exception {
+        Object[] nestedparam = { new NPEClass(), new NPEClass(), "StringObject" };
+        Object[] param = { 1, nestedparam };
+        StringBuffer output = ParameterUtils.format(param);
+        assertEquals("The output does not match.",
+                     "[1, [com.ibm.ws.security.audit.event.utils.ParameterUtilsTest$NPEClass, com.ibm.ws.security.audit.event.utils.ParameterUtilsTest$NPEClass, StringObject]]",
+                     output.toString());
+    }
+
     public class TestObject {
         private final String _value;
 
@@ -95,6 +120,14 @@ public class ParameterUtilsTest {
         @Override
         public String toString() {
             return "TestObject-" + _value;
+        }
+    }
+
+    // this class throws a NPE when hashCode() method is invoked.
+    public class NPEClass {
+        @Override
+        public int hashCode() {
+            throw new NullPointerException();
         }
     }
 }

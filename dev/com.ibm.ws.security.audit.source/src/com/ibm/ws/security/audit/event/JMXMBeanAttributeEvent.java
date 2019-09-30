@@ -20,6 +20,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.audit.AuditConstants;
 import com.ibm.websphere.security.audit.AuditEvent;
+import com.ibm.ws.security.audit.event.utils.ParameterUtils;
 import com.ibm.ws.security.audit.utils.AuditUtils;
 
 /**

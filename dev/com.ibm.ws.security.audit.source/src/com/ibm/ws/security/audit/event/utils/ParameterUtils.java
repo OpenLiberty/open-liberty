@@ -8,14 +8,14 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.audit.event;
+package com.ibm.ws.security.audit.event.utils;
 
 /**
  *
  */
 public class ParameterUtils {
 
-    static protected StringBuffer format(Object param) {
+    static public StringBuffer format(Object param) {
         StringBuffer buf = new StringBuffer();
         if (param != null) {
             if (param.getClass().isArray()) {
@@ -34,17 +34,29 @@ public class ParameterUtils {
                             if (element.getClass().isArray()) {
                                 buf.append(format(element));
                             } else {
-                                buf.append(element.toString());
+                                buf.append(ToString(element));
                             }
                         }
                     }
                     buf.append("]");
                 }
             } else {
-                buf.append(param.toString());
+                buf.append(ToString(param));
             }
         }
         return buf;
+    }
+
+    static private String ToString(Object object) {
+	    String value = null;
+	    // it is potential that toString() method throws an exception.
+	    // so if that's the case, catch it and substitution. 
+	    try {
+		    value = object.toString();
+	    } catch (Exception e) {
+		    value = object.getClass().getName();
+	    }
+	    return value;
     }
 
     static private String PrimitiveArrayToString(Object param) {
