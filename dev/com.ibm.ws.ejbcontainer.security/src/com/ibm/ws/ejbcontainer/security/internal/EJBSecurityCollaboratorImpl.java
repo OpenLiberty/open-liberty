@@ -406,7 +406,9 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
         ejbAuditHashMap.put("methodInterface", methodInterface);
         ejbAuditHashMap.put("methodSignature", methodSignature);
         ejbAuditHashMap.put("beanName", beanName);
-        ejbAuditHashMap.put("methodParameters", ParameterUtils.format(methodArguments).toString());
+        String formattedParameters = ParameterUtils.format(methodArguments).toString();
+        // in order to maintain the behavior, if formattedParameters is an empty string, set string "null".
+        ejbAuditHashMap.put("methodParameters", formattedParameters.isEmpty() ? "null" : formattedParameters);
     }
 
     /**
