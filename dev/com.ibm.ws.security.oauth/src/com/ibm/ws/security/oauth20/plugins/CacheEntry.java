@@ -48,6 +48,7 @@ public class CacheEntry implements Serializable {
         if (tc.isDebugEnabled()) { // @GK1
             Tr.debug(tc, "now       : " + nowTime); // @GK1
             Tr.debug(tc, "expiryTime: " + _expiryTime); // @GK1
+            Tr.debug(tc, "instance: " + this.toString());
         } // @GK1
           // trace @GK1
         if (nowTime >= _expiryTime) { // @GK1

@@ -351,6 +351,7 @@ public class BaseCache implements OAuth20EnhancedTokenCache {
 
         // TODO : see if hash is valid before adding
         synchronized (_lock) {
+            _log.logp(Level.ALL, MYCLASS, "addByHash", "baseCache instance: " + this.toString());
             CacheEntry ce = new CacheEntry(entry, lifetime);
             _cache.put(hash, ce);
             List<CacheEntry> entries = null;
