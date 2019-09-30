@@ -117,13 +117,13 @@ ssl.client.handshake.error.CWPKI0022E=CWPKI0022E: SSL HANDSHAKE FAILURE:  A sign
 ssl.client.handshake.error.CWPKI0022E.explanation=An error occurred during the SSL handshake.  It might require a signer export/import from the target host to the client TrustStore.
 ssl.client.handshake.error.CWPKI0022E.useraction=Review the extended error message from the TrustManager to determine what needs to change between the target SSL configuration and the client SSL configuration.
 # -------------------------------------------------------------------------------------------------
-ssl.client.alias.not.found.CWPKI0023E=CWPKI0023E: The certificate alias {0} specified by the property com.ibm.ssl.keyStoreClientAlias is not found in KeyStore {1}.
-ssl.client.alias.not.found.CWPKI0023E.explanation=The certificate alias specified for this SSL configuration is not in the specified KeyStore. 
-ssl.client.alias.not.found.CWPKI0023E.useraction=Either add a certificate into the KeyStore with the specified certificate alias or change the specified certificate alias to match an alias found in the client KeyStore.
+ssl.client.alias.not.found.CWPKI0023E=CWPKI0023E: The {0} certificate alias specified by the attribute clientKeyAlias is either not found in KeyStore {1} or it is invalid.
+ssl.client.alias.not.found.CWPKI0023E.explanation=The certificate alias specified for this SSL configuration is not in the specified KeyStore or it was found to be invalid. An expired certificate is one example of an invalid certificate.
+ssl.client.alias.not.found.CWPKI0023E.useraction=Either add a certificate into the KeyStore with the specified certificate alias, or replace or renew the invalid certificate with the specified certificate alias found in the client KeyStore.
 # -------------------------------------------------------------------------------------------------
-ssl.server.alias.not.found.CWPKI0024E=CWPKI0024E: The certificate alias {0} specified by the property com.ibm.ssl.keyStoreServerAlias is not found in KeyStore {1}.
-ssl.server.alias.not.found.CWPKI0024E.explanation=The certificate alias specified for this SSL configuration is not in the specified KeyStore. 
-ssl.server.alias.not.found.CWPKI0024E.useraction=Either add a certificate into the KeyStore with the specified certificate alias or change the specified certificate alias to match an alias found in the server KeyStore.
+ssl.server.alias.not.found.CWPKI0024E=CWPKI0024E: The {0} certificate alias specified by the attribute serverKeyAlias is either not found in KeyStore {1} or it is invalid.
+ssl.server.alias.not.found.CWPKI0024E.explanation=The certificate alias specified for this SSL configuration is not in the specified KeyStore or it was found to be invalid. An expired certificate is one example of an invalid certificate.
+ssl.server.alias.not.found.CWPKI0024E.useraction=Either add a certificate into the KeyStore with the specified certificate alias, or replace or renew the invalid certificate with the specified certificate alias found in the server KeyStore.
 # -------------------------------------------------------------------------------------------------
 ssl.load.https.stream.handler.CWPKI0025E=CWPKI0025E: The system could not load the https Handler class {0}. Extended error message: {1}
 ssl.load.https.stream.handler.CWPKI0025E.explanation=There was a classloading error trying to load the HTTPS URLStreamHandler class. 
