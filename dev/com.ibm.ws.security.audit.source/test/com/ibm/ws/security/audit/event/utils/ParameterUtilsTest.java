@@ -11,6 +11,7 @@
 package com.ibm.ws.security.audit.event.utils;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -87,27 +88,27 @@ public class ParameterUtilsTest {
 
     @Test
     public void convertWithNpeClass() throws Exception {
-        StringBuffer output = ParameterUtils.format(new NPEClass());
-        assertEquals("The output does not match.", "com.ibm.ws.security.audit.event.utils.ParameterUtilsTest$NPEClass", output.toString());
+        String output = ParameterUtils.format(new NPEClass()).toString();
+        assertTrue("The output does not match.", output.startsWith("com.ibm.ws.security.audit.event.utils.ParameterUtilsTest$NPEClass@"));
     }
 
     @Test
     public void convertWithNpeClassArray() throws Exception {
-        Object[] param = { 1, new NPEClass(), new NPEClass(), "StringObject" };
-        StringBuffer output = ParameterUtils.format(param);
-        assertEquals("The output does not match.",
-                     "[1, com.ibm.ws.security.audit.event.utils.ParameterUtilsTest$NPEClass, com.ibm.ws.security.audit.event.utils.ParameterUtilsTest$NPEClass, StringObject]",
-                     output.toString());
+        Object[] param = { 1, new NPEClass(), "StringObject" };
+        String output = ParameterUtils.format(param).toString();
+        assertTrue("The output does not match.",
+                   output.startsWith("[1, com.ibm.ws.security.audit.event.utils.ParameterUtilsTest$NPEClass@") &&
+                                                 output.endsWith(", StringObject]"));
     }
 
     @Test
     public void convertWithNestedNpeClassArray() throws Exception {
-        Object[] nestedparam = { new NPEClass(), new NPEClass(), "StringObject" };
+        Object[] nestedparam = { new NPEClass(), "StringObject" };
         Object[] param = { 1, nestedparam };
-        StringBuffer output = ParameterUtils.format(param);
-        assertEquals("The output does not match.",
-                     "[1, [com.ibm.ws.security.audit.event.utils.ParameterUtilsTest$NPEClass, com.ibm.ws.security.audit.event.utils.ParameterUtilsTest$NPEClass, StringObject]]",
-                     output.toString());
+        String output = ParameterUtils.format(param).toString();
+        assertTrue("The output does not match.",
+                   output.startsWith("[1, [com.ibm.ws.security.audit.event.utils.ParameterUtilsTest$NPEClass@") &&
+                                                 output.endsWith(", StringObject]]"));
     }
 
     public class TestObject {

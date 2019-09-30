@@ -48,15 +48,15 @@ public class ParameterUtils {
     }
 
     static private String ToString(Object object) {
-	    String value = null;
-	    // it is potential that toString() method throws an exception.
-	    // so if that's the case, catch it and substitution. 
-	    try {
-		    value = object.toString();
-	    } catch (Exception e) {
-		    value = object.getClass().getName();
-	    }
-	    return value;
+        String value = null;
+        // it is potential that toString() method throws an exception.
+        // so if that's the case, catch it and substitution. 
+        try {
+            value = object.toString();
+        } catch (Exception e) {
+            value = object.getClass().getName() + '@' + System.identityHashCode(object);
+        }
+        return value;
     }
 
     static private String PrimitiveArrayToString(Object param) {
