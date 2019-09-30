@@ -13,6 +13,7 @@ import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -34,7 +35,9 @@ public class MavenDirectoryInstall {
 
     private final InstallKernelMap map;
     private File fromDir;
+    private File esaFile;
     private String toExtension;
+    private List<String> featuresToInstall;
     private final String openLibertyVersion;
     private final Logger logger;
     private boolean tempCleanupRequired;
@@ -43,46 +46,61 @@ public class MavenDirectoryInstall {
                                           + File.separatorChar;
     private final String OPEN_LIBERTY_PRODUCT_ID = "io.openliberty";
 
-    public MavenDirectoryInstall(Collection<String> featuresToInstall) throws IOException, InstallException {
+    public MavenDirectoryInstall(MavenDirectoryInstallBuilder builder) throws IOException, InstallException {
         this.logger = InstallLogUtils.getInstallLogger();
         this.openLibertyVersion = getLibertyVersion();
-        this.tempCleanupRequired = false;
 
-        logger.log(Level.FINE, "The features to install from maven central are:" + featuresToInstall);
+        this.fromDir = builder.fromDir;
+        this.toExtension = builder.toExtension;
+        this.featuresToInstall = new ArrayList<>(builder.featuresToInstall);
+        this.esaFile = builder.esaFile;
 
         map = new InstallKernelMap();
-        List<File> jsonPaths = getJsonsFromMavenCentral();
-        initializeMap(featuresToInstall, jsonPaths);
+
+        List<File> jsonPaths = (fromDir != null && fromDir.exists()) ? getJsons(fromDir) : getJsonsFromMavenCentral();
+        initializeMap(jsonPaths);
     }
 
-    /**
-     * Initialize a map based install kernel with a local maven directory
-     *
-     * @param featuresToInstall
-     * @param fromDir
-     * @throws IOException
-     * @throws InstallException
-     */
-    public MavenDirectoryInstall(Collection<String> featuresToInstall, File fromDir) throws IOException, InstallException {
-
-        this.fromDir = fromDir;
-        this.logger = InstallLogUtils.getInstallLogger();
-        this.openLibertyVersion = getLibertyVersion();
-        this.tempCleanupRequired = false;
-
-        logger.log(Level.FINE, "The features to install from local maven repository are:" + featuresToInstall);
-        logger.log(Level.FINE, "The local maven repository is: " + fromDir.getAbsolutePath());
-
-        List<File> jsonPaths = getJsons(fromDir);
-        map = new InstallKernelMap();
-        initializeMap(featuresToInstall, jsonPaths);
-
-    }
-
-    public MavenDirectoryInstall(Collection<String> featuresToInstall, File fromDir, String toExtension) throws IOException, InstallException {
-        this(featuresToInstall, fromDir);
-        this.toExtension = toExtension;
-    }
+//    public MavenDirectoryInstall(Collection<String> featuresToInstall) throws IOException, InstallException {
+//        this.logger = InstallLogUtils.getInstallLogger();
+//        this.openLibertyVersion = getLibertyVersion();
+//        this.tempCleanupRequired = false;
+//
+//        logger.log(Level.FINE, "The features to install from maven central are:" + featuresToInstall);
+//
+//        map = new InstallKernelMap();
+//        List<File> jsonPaths = getJsonsFromMavenCentral();
+//        initializeMap(featuresToInstall, jsonPaths);
+//    }
+//
+//    /**
+//     * Initialize a map based install kernel with a local maven directory
+//     *
+//     * @param featuresToInstall
+//     * @param fromDir
+//     * @throws IOException
+//     * @throws InstallException
+//     */
+//    public MavenDirectoryInstall(Collection<String> featuresToInstall, File fromDir) throws IOException, InstallException {
+//
+//        this.fromDir = fromDir;
+//        this.logger = InstallLogUtils.getInstallLogger();
+//        this.openLibertyVersion = getLibertyVersion();
+//        this.tempCleanupRequired = false;
+//
+//        logger.log(Level.FINE, "The features to install from local maven repository are:" + featuresToInstall);
+//        logger.log(Level.FINE, "The local maven repository is: " + fromDir.getAbsolutePath());
+//
+//        List<File> jsonPaths = getJsons(fromDir);
+//        map = new InstallKernelMap();
+//        initializeMap(jsonPaths);
+//
+//    }
+//
+//    public MavenDirectoryInstall(Collection<String> featuresToInstall, File fromDir, String toExtension) throws IOException, InstallException {
+//        this(featuresToInstall, fromDir);
+//        this.toExtension = toExtension;
+//    }
 
     /**
      * Initialize the Install kernel map.
@@ -90,12 +108,22 @@ public class MavenDirectoryInstall {
      * @param featuresToInstall
      * @throws IOException
      */
-    private void initializeMap(Collection<String> featuresToInstall, Collection<File> jsonPaths) throws IOException {
+    private void initializeMap(Collection<File> jsonPaths) throws IOException {
         map.put("runtime.install.dir", Utils.getInstallDir());
         map.put("target.user.directory", new File(Utils.getInstallDir(), "tmp"));
         map.put("install.local.esa", true);
         map.put("single.json.file", jsonPaths);
-        map.put("features.to.resolve", new ArrayList<>(featuresToInstall));
+
+        if (featuresToInstall != null) {
+            map.put("features.to.resolve", featuresToInstall);
+
+        }
+
+        if (esaFile != null) {
+            map.put("individual.esas", Arrays.asList(esaFile));
+            map.put("install.individual.esas", true);
+        }
+
         map.put("license.accept", true); // TODO: discuss later
         map.get("install.kernel.init.code");
 
@@ -407,7 +435,7 @@ public class MavenDirectoryInstall {
     }
 
     /**
-     * Clean up the temp directory used for storing features downloaded from online
+     * Clean up the temp directory
      *
      * @throws IOException
      */
@@ -426,7 +454,14 @@ public class MavenDirectoryInstall {
 
     }
 
-    public boolean deleteFolder(File file) throws IOException {
+    /**
+     * Delete the folder and all its contents.
+     * 
+     * @param file file or folder to be deleted
+     * @return true if the folder still exists at the end of this operation
+     * @throws IOException
+     */
+    private boolean deleteFolder(File file) throws IOException {
         Path path = file.toPath();
         Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
             @Override
@@ -444,4 +479,39 @@ public class MavenDirectoryInstall {
         return !file.exists();
     }
 
+    public static class MavenDirectoryInstallBuilder {
+        File fromDir;
+        String toExtension;
+        Collection<String> featuresToInstall;
+        File esaFile;
+
+        public MavenDirectoryInstallBuilder setFromDir(String fromDir) {
+            this.fromDir = fromDir != null ? new File(fromDir) : null;
+            return this;
+        }
+
+        public MavenDirectoryInstallBuilder setToExtension(String toExtension) {
+            this.toExtension = toExtension;
+            return this;
+        }
+
+        public MavenDirectoryInstallBuilder setEsaFile(File esaFile) {
+            this.esaFile = esaFile;
+            return this;
+        }
+
+        public MavenDirectoryInstallBuilder setFeaturesToInstall(Collection<String> featuresToInstall) {
+            this.featuresToInstall = featuresToInstall;
+            return this;
+        }
+
+        public MavenDirectoryInstall build() throws IOException, InstallException {
+            return new MavenDirectoryInstall(this);
+        }
+
+
+    }
+
 }
+
+
