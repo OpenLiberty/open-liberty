@@ -678,6 +678,27 @@ public class JSPServerTest extends LoggingTest {
         this.verifyResponse(createWebBrowserForTestCase(), "/PI59436/PI59436.jsp", "Test passed.");
     }
 
+    /**
+     * This test verifies PH13983 (stack no longer appears in JSPG0036E message on remote 
+     * request), assumes url is not using localhost.
+     *
+     * @throws Exception
+     */
+    // No need to run against cdi-2.0 since this test does not use CDI at all.
+    @SkipForRepeat("CDI-2.0")
+    @Mode(TestMode.FULL)
+    @Test
+    public void testPH13983() throws Exception {
+        String[] expectedInResponse = { "HTTP Error Code",
+                                        "404",
+                                        "Error Message",
+                                        "JSPG0036E",
+                                        "Failed to find resource" };
+        String[] notExpectedInResponse = { "Root Cause",
+                                           "at com.ibm.ws.jsp" };
+        this.verifyResponse(createWebBrowserForTestCase(), "/nonesuch.jsp", expectedInResponse, notExpectedInResponse);
+    }
+
     /*
      * (non-Javadoc)
      *
