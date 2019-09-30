@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.jsp23.fat.tests;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,6 +25,11 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.browser.WebBrowser;
+import com.meterware.httpunit.GetMethodWebRequest;
+import com.meterware.httpunit.HttpNotFoundException;
+import com.meterware.httpunit.WebConversation;
+import com.meterware.httpunit.WebRequest;
+import com.meterware.httpunit.WebResponse;
 
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
@@ -82,7 +89,7 @@ public class JSPServerTest extends LoggingTest {
      * Sample test
      *
      * @throws Exception
-     *                       if something goes horribly wrong
+     *             if something goes horribly wrong
      */
     // No need to run against cdi-2.0 since this test does not use CDI at all.
     @SkipForRepeat("CDI-2.0")
@@ -201,7 +208,7 @@ public class JSPServerTest extends LoggingTest {
      * Test Servlet 3.1 request/response API
      *
      * @throws Exception
-     *                       if something goes wrong
+     *             if something goes wrong
      */
     // No need to run against cdi-2.0 since this test does not use CDI at all.
     @SkipForRepeat("CDI-2.0")
@@ -236,7 +243,7 @@ public class JSPServerTest extends LoggingTest {
      * Test EL 3.0 invocations of Method Expressions in a JSP
      *
      * @throws Exception
-     *                       if something goes wrong
+     *             if something goes wrong
      */
     // No need to run against cdi-2.0 since this test does not use CDI at all.
     @SkipForRepeat("CDI-2.0")
@@ -257,7 +264,7 @@ public class JSPServerTest extends LoggingTest {
      * Test EL 3.0 Operator Precedence in a JSP
      *
      * @throws Exception
-     *                       if something goes wrong
+     *             if something goes wrong
      */
     // No need to run against cdi-2.0 since this test does not use CDI at all.
     @SkipForRepeat("CDI-2.0")
@@ -299,7 +306,7 @@ public class JSPServerTest extends LoggingTest {
      * Test EL 3.0 Coercion Rules in a JSP
      *
      * @throws Exception
-     *                       if something goes wrong
+     *             if something goes wrong
      */
     // No need to run against cdi-2.0 since this test does not use CDI at all.
     @SkipForRepeat("CDI-2.0")
@@ -316,7 +323,7 @@ public class JSPServerTest extends LoggingTest {
      * Test EL 3.0 List Operations on Collection Objects in a JSP
      *
      * @throws Exception
-     *                       if something goes wrong
+     *             if something goes wrong
      */
     // No need to run against cdi-2.0 since this test does not use CDI at all.
     @SkipForRepeat("CDI-2.0")
@@ -374,7 +381,7 @@ public class JSPServerTest extends LoggingTest {
      * Test EL 3.0 Set Operations on Collection Objects in a JSP
      *
      * @throws Exception
-     *                       if something goes wrong
+     *             if something goes wrong
      */
     // No need to run against cdi-2.0 since this test does not use CDI at all.
     @SkipForRepeat("CDI-2.0")
@@ -431,7 +438,7 @@ public class JSPServerTest extends LoggingTest {
      * Test EL 3.0 Map Operations on Collection Objects in a JSP
      *
      * @throws Exception
-     *                       if something goes wrong
+     *             if something goes wrong
      */
     // No need to run against cdi-2.0 since this test does not use CDI at all.
     @SkipForRepeat("CDI-2.0")
@@ -489,7 +496,7 @@ public class JSPServerTest extends LoggingTest {
      * Test JSP 2.3 Resolution of Variables and their Properties
      *
      * @throws Exception
-     *                       if something goes wrong
+     *             if something goes wrong
      */
     // No need to run against cdi-2.0 since this test does not use CDI at all.
     @SkipForRepeat("CDI-2.0")
@@ -679,7 +686,7 @@ public class JSPServerTest extends LoggingTest {
     }
 
     /**
-     * This test verifies PH13983 (stack no longer appears in JSPG0036E message on remote 
+     * This test verifies PH13983 (stack no longer appears in JSPG0036E message on remote
      * request), assumes url is not using localhost.
      *
      * @throws Exception
@@ -689,14 +696,27 @@ public class JSPServerTest extends LoggingTest {
     @Mode(TestMode.FULL)
     @Test
     public void testPH13983() throws Exception {
-        String[] expectedInResponse = { "HTTP Error Code",
-                                        "404",
-                                        "Error Message",
-                                        "JSPG0036E",
-                                        "Failed to find resource" };
-        String[] notExpectedInResponse = { "Root Cause",
-                                           "at com.ibm.ws.jsp" };
-        this.verifyResponse(createWebBrowserForTestCase(), "/nonesuch.jsp", expectedInResponse, notExpectedInResponse);
+        /*
+         * String[] expectedInResponse = { "HTTP Error Code",
+         * "404",
+         * "Error Message",
+         * "JSPG0036E",
+         * "Failed to find resource" };
+         * String[] notExpectedInResponse = { "Root Cause",
+         * "at com.ibm.ws.jsp" };
+         * this.verifyResponse(createWebBrowserForTestCase(), "/nonesuch.jsp", expectedInResponse, notExpectedInResponse);
+         */
+        WebConversation wc = new WebConversation();
+        WebRequest request = new GetMethodWebRequest(SHARED_SERVER.getServerUrl(true, "/nonesuch.jsp"));
+        try {
+            WebResponse response = wc.getResponse(request);
+        } catch (HttpNotFoundException e) {
+            assertTrue(response.getResponseCode() == 404);
+            assertTrue(response.getText().contains("JSPG0036E: Failed to find resource"));
+            assertTrue(!response.getText().contains("at com.ibm.ws.jsp"));
+            return;
+        }
+        assertTrue(false); //If we get here, fell through when we shouldn't have
     }
 
     /*
