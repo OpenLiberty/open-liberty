@@ -73,29 +73,39 @@ public class FailoverTimersTest extends FATServletClient {
         originalConfigB = serverB.getServerConfiguration();
         ShrinkHelper.defaultApp(serverB, APP_NAME, "failovertimers.web", "failovertimers.ejb.autotimer");
 
-        testThreads.invokeAll(Arrays.asList(
-                () -> serverA.startServer(),
-                () -> serverB.startServer()
-        )).forEach(f -> {
-            try {
-                f.get();
-            } catch (ExecutionException | InterruptedException x) {
-                throw new CompletionException(x);
-            }
-        });
+        // TODO Test infrastructure is unable to start multiple servers at once. Intermittent errors occur while processing fatFeatureList.xml
+        boolean startInParallel = false;
+
+        if (startInParallel) {
+            testThreads.invokeAll(Arrays.asList(
+                    () -> serverA.startServer(),
+                    () -> serverB.startServer()
+            )).forEach(f -> {
+                try {
+                    f.get();
+                } catch (ExecutionException | InterruptedException x) {
+                    throw new CompletionException(x);
+                }
+            });
+        } else {
+            serverA.startServer();
+            serverB.startServer();
+        }
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         try {
-            serverA.stopServer();
+            if (serverA.isStarted())
+                serverA.stopServer();
         } finally {
-            serverB.stopServer();
+            if (serverB.isStarted())
+                serverB.stopServer();
         }
     }
 
     /**
-     * Determine which server an automatic peristent timer is running on.
+     * Determine which server an automatic persistent timer is running on.
      * Stop that server and verify that the timer starts running on a different server.
      */
     @Test
