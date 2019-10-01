@@ -14,6 +14,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -26,7 +27,6 @@ import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.browser.WebBrowser;
 import com.meterware.httpunit.GetMethodWebRequest;
-import com.meterware.httpunit.HttpNotFoundException;
 import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
@@ -50,6 +50,7 @@ public class JSPServerTest extends LoggingTest {
     private static final String PI44611_APP_NAME = "PI44611";
     private static final String PI59436_APP_NAME = "PI59436";
 
+    private static final Logger LOG = Logger.getLogger(JSPServerTest.class.getName());
     protected static final Map<String, String> testUrlMap = new HashMap<String, String>();
 
     @ClassRule
@@ -707,16 +708,18 @@ public class JSPServerTest extends LoggingTest {
          * this.verifyResponse(createWebBrowserForTestCase(), "/nonesuch.jsp", expectedInResponse, notExpectedInResponse);
          */
         WebConversation wc = new WebConversation();
-        WebRequest request = new GetMethodWebRequest(SHARED_SERVER.getServerUrl(true, "/nonesuch.jsp"));
-        try {
-            WebResponse response = wc.getResponse(request);
-        } catch (HttpNotFoundException e) {
-            assertTrue(response.getResponseCode() == 404);
-            assertTrue(response.getText().contains("JSPG0036E: Failed to find resource"));
-            assertTrue(!response.getText().contains("at com.ibm.ws.jsp"));
-            return;
-        }
-        assertTrue(false); //If we get here, fell through when we shouldn't have
+        WebRequest request = new GetMethodWebRequest(SHARED_SERVER.getServerUrl(true, "/TestJSP2.3/nonesuch.jsp"));
+        wc.setExceptionsThrownOnErrorStatus(false);
+        WebResponse response = wc.getResponse(request);
+        String responseString = response.getText();
+
+        LOG.info("Response: " + responseString);
+        LOG.info("Response Code: " + response.getResponseCode());
+        assertTrue(responseString.contains("JSPG0036E: Failed to find resource"));
+        assertTrue(!responseString.contains("at com.ibm.ws.jsp"));
+        return;
+
+        // assertTrue(false); //If we get here, fell through when we shouldn't have
     }
 
     /*
