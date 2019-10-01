@@ -83,7 +83,7 @@ public class JSPServerTest extends LoggingTest {
     public static void testCleanup() throws Exception {
         // Stop the server
         if (SHARED_SERVER.getLibertyServer() != null && SHARED_SERVER.getLibertyServer().isStarted()) {
-            SHARED_SERVER.getLibertyServer().stopServer("nonesuch.jsp"); //allow the file not found error for the PH13983 test
+            SHARED_SERVER.getLibertyServer().stopServer("nonesuch[.]jsp"); //allow the file not found error for the JSP file not found test
         }
     }
 
@@ -91,7 +91,7 @@ public class JSPServerTest extends LoggingTest {
      * Sample test
      *
      * @throws Exception
-     *             if something goes horribly wrong
+     *                       if something goes horribly wrong
      */
     // No need to run against cdi-2.0 since this test does not use CDI at all.
     @SkipForRepeat("CDI-2.0")
@@ -210,7 +210,7 @@ public class JSPServerTest extends LoggingTest {
      * Test Servlet 3.1 request/response API
      *
      * @throws Exception
-     *             if something goes wrong
+     *                       if something goes wrong
      */
     // No need to run against cdi-2.0 since this test does not use CDI at all.
     @SkipForRepeat("CDI-2.0")
@@ -245,7 +245,7 @@ public class JSPServerTest extends LoggingTest {
      * Test EL 3.0 invocations of Method Expressions in a JSP
      *
      * @throws Exception
-     *             if something goes wrong
+     *                       if something goes wrong
      */
     // No need to run against cdi-2.0 since this test does not use CDI at all.
     @SkipForRepeat("CDI-2.0")
@@ -266,7 +266,7 @@ public class JSPServerTest extends LoggingTest {
      * Test EL 3.0 Operator Precedence in a JSP
      *
      * @throws Exception
-     *             if something goes wrong
+     *                       if something goes wrong
      */
     // No need to run against cdi-2.0 since this test does not use CDI at all.
     @SkipForRepeat("CDI-2.0")
@@ -308,7 +308,7 @@ public class JSPServerTest extends LoggingTest {
      * Test EL 3.0 Coercion Rules in a JSP
      *
      * @throws Exception
-     *             if something goes wrong
+     *                       if something goes wrong
      */
     // No need to run against cdi-2.0 since this test does not use CDI at all.
     @SkipForRepeat("CDI-2.0")
@@ -325,7 +325,7 @@ public class JSPServerTest extends LoggingTest {
      * Test EL 3.0 List Operations on Collection Objects in a JSP
      *
      * @throws Exception
-     *             if something goes wrong
+     *                       if something goes wrong
      */
     // No need to run against cdi-2.0 since this test does not use CDI at all.
     @SkipForRepeat("CDI-2.0")
@@ -383,7 +383,7 @@ public class JSPServerTest extends LoggingTest {
      * Test EL 3.0 Set Operations on Collection Objects in a JSP
      *
      * @throws Exception
-     *             if something goes wrong
+     *                       if something goes wrong
      */
     // No need to run against cdi-2.0 since this test does not use CDI at all.
     @SkipForRepeat("CDI-2.0")
@@ -440,7 +440,7 @@ public class JSPServerTest extends LoggingTest {
      * Test EL 3.0 Map Operations on Collection Objects in a JSP
      *
      * @throws Exception
-     *             if something goes wrong
+     *                       if something goes wrong
      */
     // No need to run against cdi-2.0 since this test does not use CDI at all.
     @SkipForRepeat("CDI-2.0")
@@ -498,7 +498,7 @@ public class JSPServerTest extends LoggingTest {
      * Test JSP 2.3 Resolution of Variables and their Properties
      *
      * @throws Exception
-     *             if something goes wrong
+     *                       if something goes wrong
      */
     // No need to run against cdi-2.0 since this test does not use CDI at all.
     @SkipForRepeat("CDI-2.0")
@@ -688,8 +688,8 @@ public class JSPServerTest extends LoggingTest {
     }
 
     /**
-     * This test verifies PH13983 (stack no longer appears in JSPG0036E message on remote
-     * request), assumes url is not using localhost.
+     * This test verifies a stack no longer appears in JSPG0036E message on remote
+     * request, assumes url is not using localhost.
      *
      * @throws Exception
      */
@@ -697,7 +697,7 @@ public class JSPServerTest extends LoggingTest {
     @SkipForRepeat("CDI-2.0")
     @Mode(TestMode.FULL)
     @Test
-    public void testPH13983() throws Exception {
+    public void testJSPErrMsgUpdate() throws Exception {
 
         WebConversation wc = new WebConversation();
         InetAddress iHostName = InetAddress.getLocalHost(); //need real IP, not "localhost"
@@ -711,7 +711,6 @@ public class JSPServerTest extends LoggingTest {
         LOG.info("Response Code: " + response.getResponseCode());
         assertTrue(responseString.contains("JSPG0036E: Failed to find resource"));
         assertTrue(!responseString.contains("at com.ibm.ws.jsp"));
-        return;
 
     }
 
