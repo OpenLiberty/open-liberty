@@ -164,7 +164,7 @@ public class WSKeyStoreTest {
 
         mock.checking(new Expectations() {
             {
-                one(locMgr).resolveString(defaultKeyStore);
+                allowing(locMgr).resolveString(defaultKeyStore);
                 will(returnValue(defaultKeyStoreJKS.getAbsolutePath()));
                 one(locMgr).resolveString(defaultKeyStoreName);
                 will(returnValue(defaultKeyStorePKCS12.getAbsolutePath()));
@@ -207,6 +207,8 @@ public class WSKeyStoreTest {
 
         final String defaultKeyStoreName = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_KEY_STORE_FILE;
         final File defaultKeyStorePKCS12 = new File(defaultKeyStoreName);
+
+        props.put("location", defaultFileName);
 
         mock.checking(new Expectations() {
             {
@@ -354,7 +356,7 @@ public class WSKeyStoreTest {
 
         mock.checking(new Expectations() {
             {
-                one(locMgr).resolveString(defaultKeyStore);
+                allowing(locMgr).resolveString(defaultKeyStore);
                 will(returnValue(defaultKeyStoreJKS.getAbsolutePath()));
             }
         });
