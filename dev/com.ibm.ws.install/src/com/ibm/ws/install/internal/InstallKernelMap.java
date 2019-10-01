@@ -811,7 +811,7 @@ public class InstallKernelMap implements Map {
         String downloadDir = (String) data.get(DOWNLOAD_LOCAL_DIR_LOCATION);
         String repo = (String) data.get(DOWNLOAD_REMOTE_MAVEN_REPO);
         try {
-            artifactDownloader.synthesizeAndDownload(featureList, filetype, downloadDir, repo);
+            artifactDownloader.synthesizeAndDownload(featureList, filetype, downloadDir, repo, true);
         } catch (InstallException e) {
             data.put(ACTION_RESULT, ERROR);
             data.put(ACTION_ERROR_MESSAGE, e.getMessage());

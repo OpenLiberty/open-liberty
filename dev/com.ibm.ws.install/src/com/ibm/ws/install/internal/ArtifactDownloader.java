@@ -9,7 +9,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
 import java.net.Authenticator;
-import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.PasswordAuthentication;
 import java.net.Proxy;
@@ -37,38 +36,36 @@ public class ArtifactDownloader {
     private final List<File> downloadedFiles = new ArrayList<File>();;
 
     public void synthesizeAndDownloadFeatures(List<String> mavenCoords, String dLocation, String repo) throws InstallException {
+        checkValidProxy();
         configureProxyAuthentication();
         configureAuthentication();
         downloadedFiles.clear();
         int repoResponseCode = ArtifactDownloaderUtils.exists(repo);
-        if (!(repoResponseCode == HttpURLConnection.HTTP_OK)) { //verify repo exists
-            if (repoResponseCode == 503) {
-                System.out.println("repo does not exist CWWKF1418E"); //TODO proper error message with exception
-                return;
-            } else if (repoResponseCode == 407) {
-                System.out.println("proxy authentication failure CWWKF1367E"); //TODO proper error message with exception
-                return;
-            } else {
-                System.out.println("failed to connect to repository error code: " + repoResponseCode); //TODO proper error message with exception (unknown cause maybe)
-                return;
-            }
-        }
-
+        ArtifactDownloaderUtils.checkResponseCode(repoResponseCode, repo);
         List<String> featureURLs = ArtifactDownloaderUtils.acquireFeatureURLs(mavenCoords, repo);
         List<String> missingFeatures = ArtifactDownloaderUtils.getMissingFiles(featureURLs);
-        if (!missingFeatures.isEmpty()) { //verify that there are no missing features in the repository
-            System.out.println("ERROR the repo " + repo + " is missing the following files:\n" + missingFeatures); //TODO proper error message with exception
-            return;
+        if (!missingFeatures.isEmpty()) {
+            List<String> missingFeatureList = new ArrayList<String>();
+            for (String f : missingFeatures) {
+                if (f.endsWith(".esa")) {
+                    missingFeatureList.add(ArtifactDownloaderUtils.getFileNameFromURL(f));
+                }
+            }
+            throw ExceptionUtils.createByKey("ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_REPO", missingFeatureList, "feature(s)", repo);
         } else {
-            for (String coords : mavenCoords) { //download the corresponding esa and pom files for the features
-                synthesizeAndDownload(coords, "esa", dLocation, repo);
-                synthesizeAndDownload(coords, "pom", dLocation, repo);
+            for (String coords : mavenCoords) {
+                synthesizeAndDownload(coords, "esa", dLocation, repo, false);
+                synthesizeAndDownload(coords, "pom", dLocation, repo, false);
             }
         }
     }
 
-    public void synthesizeAndDownload(String mavenCoords, String filetype, String dLocation, String repo) throws InstallException {
-
+    public void synthesizeAndDownload(String mavenCoords, String filetype, String dLocation, String repo, boolean individualDownload) throws InstallException {
+        if (individualDownload) {
+            checkValidProxy();
+            int repoResponseCode = ArtifactDownloaderUtils.exists(repo);
+            ArtifactDownloaderUtils.checkResponseCode(repoResponseCode, repo);
+        }
         String groupId = ArtifactDownloaderUtils.getGroupId(mavenCoords).replace(".", "/") + "/";
         String artifactId = ArtifactDownloaderUtils.getartifactId(mavenCoords);
         String version = ArtifactDownloaderUtils.getVersion(mavenCoords);
@@ -82,7 +79,11 @@ public class ArtifactDownloader {
         configureProxyAuthentication();
         configureAuthentication();
         try {
-            download(urlLocation, dLocation, groupId, version, filename, checksumFormats);
+            if (individualDownload && ArtifactDownloaderUtils.fileIsMissing(urlLocation)) {
+                throw ExceptionUtils.createByKey("ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_REPO", ArtifactDownloaderUtils.getFileNameFromURL(urlLocation), filetype + " file", repo);
+            } else {
+                download(urlLocation, dLocation, groupId, version, filename, checksumFormats);
+            }
         } catch (IOException e) {
             throw ExceptionUtils.createByKey(e, "ERROR_INVALID_ESA", filename);
         }
@@ -131,20 +132,20 @@ public class ArtifactDownloader {
         }
     }
 
-    private void downloadInternal(URI address, File destination) throws IOException {
+    private void downloadInternal(URI address, File destination) throws IOException, InstallException {
         OutputStream out = null;
         URLConnection conn;
         InputStream in = null;
         try {
             URL url = address.toURL();
+            System.out.println();
             try {
                 out = new BufferedOutputStream(new FileOutputStream(destination));
             } catch (FileNotFoundException e) {
-                System.out.println("failed to find/create file at destination: " + destination); //TODO proper error message with exception
-                e.printStackTrace();
-                return;
+                throw ExceptionUtils.createByKey("ERROR_FAILED_TO_DOWNLOAD_FEATURE", ArtifactDownloaderUtils.getFileNameFromURL(address.toString()),
+                                                 destination.toString());
             }
-            if (System.getProperty("http.proxyUser") != null) { //TODO consider https proxy
+            if (System.getProperty("http.proxyUser") != null) {
                 Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(System.getProperty("http.proxyHost"), 8080));
                 conn = url.openConnection(proxy);
             } else {
@@ -160,7 +161,6 @@ public class ArtifactDownloader {
             while ((numRead = in.read(buffer)) != -1) {
                 progressCounter += numRead;
                 if (progressCounter / PROGRESS_CHUNK > 0) {
-                    System.out.println(".");
                     progressCounter = progressCounter - PROGRESS_CHUNK;
                 }
                 out.write(buffer, 0, numRead);
@@ -190,9 +190,6 @@ public class ArtifactDownloader {
         String userInfo = calculateUserInfo(address);
         if (userInfo == null) {
             return;
-        }
-        if (!"https".equals(address.getScheme())) {
-            System.out.println("WARNING Using HTTP Basic Authentication over an insecure connection to download the Maven distribution. Please consider using HTTPS.");
         }
         connection.setRequestProperty("Authorization", "Basic " + base64Encode(userInfo));
     }
@@ -251,6 +248,17 @@ public class ArtifactDownloader {
 
     public List<File> getDownloadedFiles() {
         return downloadedFiles;
+    }
+
+    public void checkValidProxy() throws InstallException {
+        int proxyPort = Integer.parseInt(System.getProperty("http.proxyPort"));
+        if (System.getProperty("http.proxyUser") != null) {
+            if (System.getProperty("http.proxyHost").isEmpty()) {
+                throw ExceptionUtils.createByKey("ERROR_TOOL_PROXY_HOST_MISSING");
+            } else if (proxyPort < 0 || proxyPort > 65535) {
+                throw ExceptionUtils.createByKey("ERROR_TOOL_INVALID_PROXY_PORT", proxyPort);
+            }
+        }
     }
 
 }

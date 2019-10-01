@@ -10,7 +10,6 @@ import java.io.InputStreamReader;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
-import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.SocketTimeoutException;
 import java.net.URL;
@@ -18,6 +17,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.ibm.ws.install.InstallException;
 
 public class ArtifactDownloaderUtils {
 
@@ -31,6 +32,10 @@ public class ArtifactDownloaderUtils {
             }
         }
         return result;
+    }
+
+    public static boolean fileIsMissing(String url) {
+        return !(exists(url) == HttpURLConnection.HTTP_OK);
     }
 
     public static int exists(String URLName) {
@@ -102,33 +107,26 @@ public class ArtifactDownloaderUtils {
         return complete.digest();
     }
 
-    public static String getChecksumFromURL(URL url) {
+    public static String getChecksumFromURL(URL url) throws IOException {
         BufferedReader in;
         String result = "";
-        try {
-            in = new BufferedReader(new InputStreamReader(url.openStream()));
-            String inputLine;
-            while ((inputLine = in.readLine()) != null)
-                result += inputLine;
-            in.close();
-        } catch (IOException e) {
-            System.out.println("failed to download checksum file at " + url.toString()); //TODO proper error message
-            e.printStackTrace();
-            return null;
-        }
+        in = new BufferedReader(new InputStreamReader(url.openStream()));
+        String inputLine;
+        while ((inputLine = in.readLine()) != null)
+            result += inputLine;
+        in.close();
+
         return result;
     }
 
-    public static String getMasterChecksum(String url, String format) throws MalformedURLException {
+    public static String getMasterChecksum(String url, String format) throws IOException {
         URL urlLocation = new URL(url + "." + format.toLowerCase());
         return getChecksumFromURL(urlLocation);
     }
 
     public static void deleteFiles(List<File> fileList, String dLocation, String groupId, String version, String filename) {
         for (File f : fileList) {
-            if (!f.delete()) {
-                System.out.println("failed to delete file");
-            }
+            f.delete();
         }
         File file = (new File(getFileLocation(dLocation, groupId, version, filename))).getParentFile();
         while (!(file.toString() + "/").equals(dLocation)) {
@@ -168,6 +166,25 @@ public class ArtifactDownloaderUtils {
 
     public static String getFileLocation(String dLocation, String groupId, String version, String filename) {
         return dLocation + groupId + version + "/" + filename;
+    }
+
+    public static String getFileNameFromURL(String str) {
+        String[] pathSplit = str.split("/");
+        return pathSplit[pathSplit.length - 3];
+    }
+
+    public static void checkResponseCode(int repoResponseCode, String repo) throws InstallException {
+        if (!(repoResponseCode == HttpURLConnection.HTTP_OK)) { //verify repo exists
+            if (repoResponseCode == 503) {
+                throw ExceptionUtils.createByKey("ERROR_REPO_INVALID_URL", repo);
+            } else if (repoResponseCode == 407) {
+                System.out.println("proxy authentication failure CWWKF1367E"); //TODO proper error message with exception
+                return;
+            } else {
+                System.out.println("failed to connect to repository error code: " + repoResponseCode); //TODO proper error message with exception (unknown cause maybe)
+                return;
+            }
+        }
     }
 
 }
