@@ -11,7 +11,6 @@
 package com.ibm.ws.security.audit.event.utils;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -88,27 +87,28 @@ public class ParameterUtilsTest {
 
     @Test
     public void convertWithNpeClass() throws Exception {
-        String output = ParameterUtils.format(new NPEClass()).toString();
-        assertTrue("The output does not match.", output.startsWith("com.ibm.ws.security.audit.event.utils.ParameterUtilsTest$NPEClass@"));
+        Object npeClass = new NPEClass();
+        String output = ParameterUtils.format(npeClass).toString();
+        assertEquals("The output does not match.", "com.ibm.ws.security.audit.event.utils.ParameterUtilsTest$NPEClass@" + System.identityHashCode(npeClass), output);
     }
 
     @Test
     public void convertWithNpeClassArray() throws Exception {
-        Object[] param = { 1, new NPEClass(), "StringObject" };
+        Object npeClass = new NPEClass();
+        Object[] param = { 1, npeClass, "StringObject" };
         String output = ParameterUtils.format(param).toString();
-        assertTrue("The output does not match.",
-                   output.startsWith("[1, com.ibm.ws.security.audit.event.utils.ParameterUtilsTest$NPEClass@") &&
-                                                 output.endsWith(", StringObject]"));
+        assertEquals("The output does not match.", "[1, com.ibm.ws.security.audit.event.utils.ParameterUtilsTest$NPEClass@" + System.identityHashCode(npeClass) + ", StringObject]",
+                     output);
     }
 
     @Test
     public void convertWithNestedNpeClassArray() throws Exception {
-        Object[] nestedparam = { new NPEClass(), "StringObject" };
+        Object npeClass = new NPEClass();
+        Object[] nestedparam = { npeClass, "StringObject" };
         Object[] param = { 1, nestedparam };
         String output = ParameterUtils.format(param).toString();
-        assertTrue("The output does not match.",
-                   output.startsWith("[1, [com.ibm.ws.security.audit.event.utils.ParameterUtilsTest$NPEClass@") &&
-                                                 output.endsWith(", StringObject]]"));
+        assertEquals("The output does not match.",
+                     "[1, [com.ibm.ws.security.audit.event.utils.ParameterUtilsTest$NPEClass@" + System.identityHashCode(npeClass) + ", StringObject]]", output);
     }
 
     public class TestObject {
