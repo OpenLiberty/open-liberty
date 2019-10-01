@@ -17,3 +17,4 @@ Subsystem-Name: Java RESTful Services API 2.0
 -files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.jaxrs20_1.0-javadoc.zip
 kind=ga
 edition=core
+WLP-Activation-Type: parallel
