@@ -12,6 +12,7 @@ package com.ibm.ws.jsp23.fat.tests;
 
 import static org.junit.Assert.assertTrue;
 
+import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -82,7 +83,7 @@ public class JSPServerTest extends LoggingTest {
     public static void testCleanup() throws Exception {
         // Stop the server
         if (SHARED_SERVER.getLibertyServer() != null && SHARED_SERVER.getLibertyServer().isStarted()) {
-            SHARED_SERVER.getLibertyServer().stopServer();
+            SHARED_SERVER.getLibertyServer().stopServer("nonesuch.jsp"); //allow the file not found error for the PH13983 test
         }
     }
 
@@ -697,29 +698,21 @@ public class JSPServerTest extends LoggingTest {
     @Mode(TestMode.FULL)
     @Test
     public void testPH13983() throws Exception {
-        /*
-         * String[] expectedInResponse = { "HTTP Error Code",
-         * "404",
-         * "Error Message",
-         * "JSPG0036E",
-         * "Failed to find resource" };
-         * String[] notExpectedInResponse = { "Root Cause",
-         * "at com.ibm.ws.jsp" };
-         * this.verifyResponse(createWebBrowserForTestCase(), "/nonesuch.jsp", expectedInResponse, notExpectedInResponse);
-         */
+
         WebConversation wc = new WebConversation();
-        WebRequest request = new GetMethodWebRequest(SHARED_SERVER.getServerUrl(true, "/TestJSP2.3/nonesuch.jsp"));
+        InetAddress iHostName = InetAddress.getLocalHost(); //need real IP, not "localhost"
+        String hostName = iHostName.getHostName();
+        WebRequest request = new GetMethodWebRequest("http://" + hostName + ":" + SHARED_SERVER.getLibertyServer().getHttpDefaultPort() + "/TestJSP2.3/nonesuch.jsp");
         wc.setExceptionsThrownOnErrorStatus(false);
         WebResponse response = wc.getResponse(request);
         String responseString = response.getText();
-
+        LOG.info("hostName: " + hostName);
         LOG.info("Response: " + responseString);
         LOG.info("Response Code: " + response.getResponseCode());
         assertTrue(responseString.contains("JSPG0036E: Failed to find resource"));
         assertTrue(!responseString.contains("at com.ibm.ws.jsp"));
         return;
 
-        // assertTrue(false); //If we get here, fell through when we shouldn't have
     }
 
     /*
