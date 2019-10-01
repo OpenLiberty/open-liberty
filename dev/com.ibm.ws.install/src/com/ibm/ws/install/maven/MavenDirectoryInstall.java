@@ -34,10 +34,10 @@ import com.ibm.ws.kernel.boot.cmdline.Utils;
 public class MavenDirectoryInstall {
 
     private final InstallKernelMap map;
-    private File fromDir;
-    private File esaFile;
-    private String toExtension;
-    private List<String> featuresToInstall;
+    private final File fromDir;
+    private final File esaFile;
+    private final String toExtension;
+    private final List<String> featuresToInstall;
     private final String openLibertyVersion;
     private final Logger logger;
     private boolean tempCleanupRequired;
@@ -294,6 +294,12 @@ public class MavenDirectoryInstall {
         boolean singleArtifactInstall = false;
         map.put("download.inidividual.artifact", singleArtifactInstall);
         List<File> result = (List<File>) map.get("download.result");
+
+        if (map.get("action.error.message") != null) {
+            logger.log(Level.FINE, "action.exception.stacktrace: " + map.get("action.error.stacktrace"));
+            String exceptionMessage = (String) map.get("action.error.message");
+            throw new InstallException(exceptionMessage);
+        }
         this.tempCleanupRequired = true;
 
         return result;
@@ -427,7 +433,11 @@ public class MavenDirectoryInstall {
         result.add(OL);
         result.add(CL);
         this.tempCleanupRequired = true;
-
+        if (map.get("action.error.message") != null) {
+            logger.log(Level.FINE, "action.exception.stacktrace: " + map.get("action.error.stacktrace"));
+            String exceptionMessage = (String) map.get("action.error.message");
+            throw new InstallException(exceptionMessage);
+        }
         logger.log(Level.FINE,
                    "Downloaded the following jsons from maven central:" + result);
         return result;
@@ -456,7 +466,7 @@ public class MavenDirectoryInstall {
 
     /**
      * Delete the folder and all its contents.
-     * 
+     *
      * @param file file or folder to be deleted
      * @return true if the folder still exists at the end of this operation
      * @throws IOException
@@ -509,9 +519,6 @@ public class MavenDirectoryInstall {
             return new MavenDirectoryInstall(this);
         }
 
-
     }
 
 }
-
-

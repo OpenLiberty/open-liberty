@@ -251,11 +251,12 @@ public class ArtifactDownloader {
     }
 
     public void checkValidProxy() throws InstallException {
-        int proxyPort = Integer.parseInt(System.getProperty("http.proxyPort"));
+        String proxyPort = System.getProperty("http.proxyPort");
         if (System.getProperty("http.proxyUser") != null) {
+            int proxyPortnum = Integer.parseInt(proxyPort);
             if (System.getProperty("http.proxyHost").isEmpty()) {
                 throw ExceptionUtils.createByKey("ERROR_TOOL_PROXY_HOST_MISSING");
-            } else if (proxyPort < 0 || proxyPort > 65535) {
+            } else if (proxyPortnum < 0 || proxyPortnum > 65535) {
                 throw ExceptionUtils.createByKey("ERROR_TOOL_INVALID_PROXY_PORT", proxyPort);
             }
         }
