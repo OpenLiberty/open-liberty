@@ -1,5 +1,5 @@
 /*******************************************************************************n * Copyright (c) 2019 IBM Corporation and others.n * All rights reserved. This program and the accompanying materialsn * are made available under the terms of the Eclipse Public License v1.0n * which accompanies this distribution, and is available atn * http://www.eclipse.org/legal/epl-v10.htmln *n * Contributors:n *     IBM Corporation - initial API and implementationn *******************************************************************************/
-package com.ibm.ws.install.maven;
+package com.ibm.ws.install.featureUtility;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -31,7 +31,7 @@ import com.ibm.ws.kernel.boot.cmdline.Utils;
 /**
  *
  */
-public class MavenDirectoryInstall {
+public class FeatureUtility {
 
     private final InstallKernelMap map;
     private final File fromDir;
@@ -46,9 +46,10 @@ public class MavenDirectoryInstall {
                                           + File.separatorChar;
     private final String OPEN_LIBERTY_PRODUCT_ID = "io.openliberty";
 
-    public MavenDirectoryInstall(MavenDirectoryInstallBuilder builder) throws IOException, InstallException {
+    private FeatureUtility(MavenDirectoryInstallBuilder builder) throws IOException, InstallException {
         this.logger = InstallLogUtils.getInstallLogger();
         this.openLibertyVersion = getLibertyVersion();
+        this.tempCleanupRequired = false;
 
         this.fromDir = builder.fromDir;
         this.toExtension = builder.toExtension;
@@ -60,47 +61,6 @@ public class MavenDirectoryInstall {
         List<File> jsonPaths = (fromDir != null && fromDir.exists()) ? getJsons(fromDir) : getJsonsFromMavenCentral();
         initializeMap(jsonPaths);
     }
-
-//    public MavenDirectoryInstall(Collection<String> featuresToInstall) throws IOException, InstallException {
-//        this.logger = InstallLogUtils.getInstallLogger();
-//        this.openLibertyVersion = getLibertyVersion();
-//        this.tempCleanupRequired = false;
-//
-//        logger.log(Level.FINE, "The features to install from maven central are:" + featuresToInstall);
-//
-//        map = new InstallKernelMap();
-//        List<File> jsonPaths = getJsonsFromMavenCentral();
-//        initializeMap(featuresToInstall, jsonPaths);
-//    }
-//
-//    /**
-//     * Initialize a map based install kernel with a local maven directory
-//     *
-//     * @param featuresToInstall
-//     * @param fromDir
-//     * @throws IOException
-//     * @throws InstallException
-//     */
-//    public MavenDirectoryInstall(Collection<String> featuresToInstall, File fromDir) throws IOException, InstallException {
-//
-//        this.fromDir = fromDir;
-//        this.logger = InstallLogUtils.getInstallLogger();
-//        this.openLibertyVersion = getLibertyVersion();
-//        this.tempCleanupRequired = false;
-//
-//        logger.log(Level.FINE, "The features to install from local maven repository are:" + featuresToInstall);
-//        logger.log(Level.FINE, "The local maven repository is: " + fromDir.getAbsolutePath());
-//
-//        List<File> jsonPaths = getJsons(fromDir);
-//        map = new InstallKernelMap();
-//        initializeMap(jsonPaths);
-//
-//    }
-//
-//    public MavenDirectoryInstall(Collection<String> featuresToInstall, File fromDir, String toExtension) throws IOException, InstallException {
-//        this(featuresToInstall, fromDir);
-//        this.toExtension = toExtension;
-//    }
 
     /**
      * Initialize the Install kernel map.
@@ -322,32 +282,6 @@ public class MavenDirectoryInstall {
 
     }
 
-//    /**
-//     * Get the single json files from a local maven repo
-//     *
-//     * @param filepath
-//     * @param found
-//     */
-//    private List<File> getSingleJsonPaths(File filepath) {
-//        ArrayList<File> jsonFilesFound = new ArrayList<>();
-//        if (filepath == null || !filepath.exists()) {
-//            return jsonFilesFound;
-//        }
-//        File[] list = filepath.listFiles();
-//        for (File f : list) {
-//            if (f.isDirectory()) {
-//                jsonFilesFound.addAll(getSingleJsonPaths(f));
-//            } else if (f.isFile()) {
-//                if (f.getName().endsWith(".json")) {
-//                    jsonFilesFound.add(f);
-//                }
-//            }
-//        }
-//
-//        return jsonFilesFound;
-//
-//    }
-
     private List<File> getJsons(File file) throws InstallException {
         List<File> jsonFiles = new ArrayList<File>();
 
@@ -515,8 +449,8 @@ public class MavenDirectoryInstall {
             return this;
         }
 
-        public MavenDirectoryInstall build() throws IOException, InstallException {
-            return new MavenDirectoryInstall(this);
+        public FeatureUtility build() throws IOException, InstallException {
+            return new FeatureUtility(this);
         }
 
     }
