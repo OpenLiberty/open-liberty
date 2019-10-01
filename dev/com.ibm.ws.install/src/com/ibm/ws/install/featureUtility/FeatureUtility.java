@@ -46,7 +46,7 @@ public class FeatureUtility {
                                           + File.separatorChar;
     private final String OPEN_LIBERTY_PRODUCT_ID = "io.openliberty";
 
-    private FeatureUtility(MavenDirectoryInstallBuilder builder) throws IOException, InstallException {
+    private FeatureUtility(FeatureUtilityBuilder builder) throws IOException, InstallException {
         this.logger = InstallLogUtils.getInstallLogger();
         this.openLibertyVersion = getLibertyVersion();
         this.tempCleanupRequired = false;
@@ -423,28 +423,28 @@ public class FeatureUtility {
         return !file.exists();
     }
 
-    public static class MavenDirectoryInstallBuilder {
+    public static class FeatureUtilityBuilder {
         File fromDir;
         String toExtension;
         Collection<String> featuresToInstall;
         File esaFile;
 
-        public MavenDirectoryInstallBuilder setFromDir(String fromDir) {
+        public FeatureUtilityBuilder setFromDir(String fromDir) {
             this.fromDir = fromDir != null ? new File(fromDir) : null;
             return this;
         }
 
-        public MavenDirectoryInstallBuilder setToExtension(String toExtension) {
+        public FeatureUtilityBuilder setToExtension(String toExtension) {
             this.toExtension = toExtension;
             return this;
         }
 
-        public MavenDirectoryInstallBuilder setEsaFile(File esaFile) {
+        public FeatureUtilityBuilder setEsaFile(File esaFile) {
             this.esaFile = esaFile;
             return this;
         }
 
-        public MavenDirectoryInstallBuilder setFeaturesToInstall(Collection<String> featuresToInstall) {
+        public FeatureUtilityBuilder setFeaturesToInstall(Collection<String> featuresToInstall) {
             this.featuresToInstall = featuresToInstall;
             return this;
         }
