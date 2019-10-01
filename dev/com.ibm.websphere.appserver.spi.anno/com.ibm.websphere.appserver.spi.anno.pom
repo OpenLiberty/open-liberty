@@ -25,5 +25,5 @@
   <artifactId>com.ibm.websphere.appserver.spi.anno</artifactId>
   <version>${bFullVersion}</version>
   <name>WebSphere Annotations SPI</name>
-  <description>WebSphere Annotations SPI, version 1.0</description>
+  <description>WebSphere Annotations SPI, version 1.1</description>
 </project>

@@ -1,0 +1,411 @@
+===
+
+(1) Versioning changes:
+
+(1.1) "anno" updated from 1.1 to 2.0.
+(1.2) "container.services" updated from 3.0 to 4.0.
+
+++++ dev/com.ibm.websphere.appserver.features/visibility/private/com.ibm.websphere.appserver.anno-1.0.feature
+
++  com.ibm.wsspi.anno.targets.cache, \
+-  -files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.anno_1.1-javadoc.zip
++  -files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.anno_2.0-javadoc.zip
+
+++++ dev/com.ibm.websphere.appserver.spi.anno/com.ibm.websphere.appserver.spi.anno.pom
+
+- <description>WebSphere Annotations SPI, version 1.0</description>
++ <description>WebSphere Annotations SPI, version 2.0</description>
+
+++++ dev/com.ibm.websphere.appserver.spi.anno/bnd.bnd
+
+- bVersion: 1.1
++ bVersion: 2.0
+
+- Import-Package: \
+-     com.ibm.wsspi.anno.classsource,
+-     com.ibm.wsspi.anno.info,
+-     com.ibm.wsspi.anno.service,
+-     com.ibm.wsspi.anno.targets,
+-     com.ibm.wsspi.anno.util
+
++ Import-Package: \
++     com.ibm.wsspi.anno.classsource;version=2.0, \
++     com.ibm.wsspi.anno.info;version=2.0, \
++     com.ibm.wsspi.anno.service;version=2.0, \
++     com.ibm.wsspi.anno.targets;version=2.0, \
++     com.ibm.wsspi.anno.targets.cache;version=2.0, \
++     com.ibm.wsspi.anno.util;version=2.0
+
+- Export-Package: \
+-     com.ibm.wsspi.anno.classsource,
+-     com.ibm.wsspi.anno.info,
+-     com.ibm.wsspi.anno.service,
+-     com.ibm.wsspi.anno.targets,
+-     com.ibm.wsspi.anno.util
+
++ Export-Package: \
++     com.ibm.wsspi.anno.classsource;version=2.0, \
++     com.ibm.wsspi.anno.info;version=2.0, \
++     com.ibm.wsspi.anno.service;version=2.0, \
++     com.ibm.wsspi.anno.targets;version=2.0, \
++     com.ibm.wsspi.anno.targets.cache;version=2.0, \
++     com.ibm.wsspi.anno.util;version=2.0
+
+++++ dev/com.ibm.websphere.appserver.features/visibility/protected/com.ibm.websphere.appserver.containerServices-1.0.feature
+
++  com.ibm.ws.container.service.annotations.internal, \
+- -files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.containerServices_3.0-javadoc.zip
++ -files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.containerServices_4.0-javadoc.zip
+
+++++ dev/com.ibm.websphere.appserver.spi.containerServices/com.ibm.websphere.appserver.spi.containerServices.pom
+
+-   <description>WebSphere Container Services SPI, version 3.0</description>
++   <description>WebSphere Container Services SPI, version 4.0</description>
+
+++++ dev/com.ibm.websphere.appserver.spi.containerServices/bnd.bnd
+
+- bVersion: 3.0
++ bVersion: 4.0
+
+Import-Package: \
+-    com.ibm.ws.container.service.annotations,
+    com.ibm.ws.container.service.app.deploy,
+    com.ibm.ws.container.service.config,
+    com.ibm.ws.container.service.naming,
+    com.ibm.ws.container.service.security,
+    com.ibm.ws.container.service.state,
+    com.ibm.ws.serialization,
+    com.ibm.wsspi.resource
+
+Import-Package: \
++    com.ibm.ws.container.service.annotations;version=2.0, \
++    com.ibm.ws.container.service.annotations.internal;version=2.0, \
+    com.ibm.ws.container.service.app.deploy, \
+    com.ibm.ws.container.service.config, \
+    com.ibm.ws.container.service.naming, \
+    com.ibm.ws.container.service.security, \
+    com.ibm.ws.container.service.state, \
+    com.ibm.ws.serialization, \
+    com.ibm.wsspi.resource
+
+Export-Package: \
+-    com.ibm.ws.container.service.annotations,
+    com.ibm.ws.container.service.app.deploy,
+    com.ibm.ws.container.service.config,
+    com.ibm.ws.container.service.naming,
+    com.ibm.ws.container.service.security,
+    com.ibm.ws.container.service.state,
+    com.ibm.ws.serialization,com.ibm.wsspi.resource
+
+Export-Package: \
++    com.ibm.ws.container.service.annotations;version=2.0, \
++    com.ibm.ws.container.service.annotations.internal;version=2.0, \
+    com.ibm.ws.container.service.app.deploy, \
+    com.ibm.ws.container.service.config, \
+    com.ibm.ws.container.service.naming, \
+    com.ibm.ws.container.service.security, \
+    com.ibm.ws.container.service.state, \
+    com.ibm.ws.serialization, \
+    com.ibm.wsspi.resource
+
+++++ dev/com.ibm.ws.container.service/bnd.bnd
+
+- bVersion=1.0
++ bVersion: 2.0
+
+@@ -28,7 +28,8 @@ Export-Package: \
+   com.ibm.ejs.util.dopriv, \
+   com.ibm.jtc.adapter;provide:=true, \
+   com.ibm.websphere.csi;-split-package:=merge-last, \
+-   com.ibm.ws.container.service.annotations; provide:=true, \
++   com.ibm.ws.container.service.annotations; provide:=true; version=2.0, \
++   com.ibm.ws.container.service.annotations.internal; provide:=true; version=2.0, \
+   com.ibm.ws.container.service.app.deploy; provide:=true, \
+   com.ibm.ws.container.service.app.deploy.extended; provide:=true, \
+   com.ibm.ws.container.service.config; provide:=true, \
+
+@@ -63,23 +64,31 @@ Private-Package: \
+
+Service-Component: \
+   com.ibm.ws.container.service.annotations.ContainerAnnotationsAdapter; \
+-      implementation:=com.ibm.ws.container.service.annotations.internal.ContainerAnnotationsAdapter; \
++      implementation:=com.ibm.ws.container.service.annotations.internal.ContainerAnnotationsAdapterImpl; \
+
+   com.ibm.ws.container.service.annotations.ModuleAnnotationsAdapter; \
+-      implementation:=com.ibm.ws.container.service.annotations.internal.ModuleAnnotationsAdapter; \
++      implementation:=com.ibm.ws.container.service.annotations.internal.ModuleAnnotationsAdapterImpl; \
+
+   com.ibm.ws.container.service.annotations.WebAnnotationsAdapter; \
+-      implementation:=com.ibm.ws.container.service.annotations.internal.WebAnnotationsAdapter; \
++      implementation:=com.ibm.ws.container.service.annotations.internal.WebAnnotationsAdapterImpl; \
+
+==
+
+(2) API changes:
+
+(2.1) Within "anno", "class source" has the bulk of API changes:
+
+dev/com.ibm.ws.anno/src/com/ibm/wsspi/anno/classsource/ClassSource.java
+
+-- Logging was changed to java logging:
+
+- void log(TraceComponent logger);
++ void log(Logger useLogger);
+
+-- Class sources have a signature API:
+
++ String UNAVAILABLE_STAMP = "** UNAVAILABLE **";
++ String UNRECORDED_STAMP = "** UNRECORDED **";
++ String getStamp();
+
+-- The base scanning API was simplified:
+
+- void scanClasses(ClassSource_Streamer streamer, Set<String> i_seedClassNamesSet, ScanPolicy scanPolicy);
++ void process(ClassSource_Streamer streamer) throws ClassSource_Exception;
+
+- boolean scanSpecificSeedClass(String specificClassName, ClassSource_Streamer streamer) throws ClassSource_Exception;
++ void processSpecific(ClassSource_Streamer streamer, Set<String> i_classNames) throws ClassSource_Exception;
+
+dev/com.ibm.ws.anno/src/com/ibm/wsspi/anno/classsource/ClassSource_Factory.java
+
+-- Several constants are defined for cases of "unnamed" class sources, for modules which are not being processed in a particular mode (for example, CDI), and for modules which are not be accessed with restricted entries (for example, "WEB-INF/classes" under web module containers).
+
++ String UNNAMED_APP = null;
++ String UNNAMED_MOD = null;
++ String UNSET_CATEGORY_NAME = null;
++ String UNUSED_ENTRY_PREFIX = null;
+
+-- Factory methods which previously required only a name now require an application name, a module name, and a mode value (category):
+
+- ClassSource_Aggregate createAggregateClassSource(String name) throws ClassSource_Exception;
+
++ ClassSource_Aggregate createAggregateClassSource(
++     String appName, String modName, String modNameCategory,
++     ClassSource_Options options) throws ClassSource_Exception;
+
+(2.2) "container.services" has considerable changes in the package
+      "com.ibm.ws.container.service.annotations" (and none in other
+      packages).
+
+      Note that "container.services" has additional implementation
+      changes, as the implementation was updated to use the updated
+      "anno" APIs.
+
+open-liberty/dev/com.ibm.ws.container.service/src/com/ibm/ws/container/service/annotations/
+
+-- The annotations service types were refactored to be beneath a single
+-- common type.  This unifies the annotations APIs and considerably
+-- reduces redundances in the API.
+
+-- The refactored API places most operations, both current operations and
+-- new operations, in the new common "Annotations" type.
+
+-- The new API as a whole is considerably different for the purpose of
+-- initializing the annotations objects, but is almost unchanged for the
+-- purpose of querying annotations results.
+
+-- A new type for CDI container annotations was added.
+-- The new type is a subtype of ContainerAnnotations with no added operations,
+-- and exists to enable distinct container annotations instances for CDI.
+
++ Annotations.java
+    ContainerAnnotations.java
++     CDIContainerAnnotations.java
+    ModuleAnnotations.java
+    WebAnnotations.java
+    FragmentAnnotations.java
+    SpecificAnnotations.java
+
+open-liberty/dev/com.ibm.ws.container.service/src/com/ibm/ws/container/service/annotations/internal/
+
+-- The annotation service types were similarly refactored, with common function placed
+-- beneath the new common implementation type "AnnotationsImpl", and with
+-- implementation types were placed into an implementation hierarchy.
+
+-- Several types which occurred anonymously were made into named classes.
+
++ AnnotationsImpl.java
++   ContainerAnnotationsImpl.java
++     CDIContainerAnnotationsImpl.java
+    ModuleAnnotationsImpl.java
+      WebAnnotationsImpl.java
++   FragmentAnnotationsImpl.java
++   SpecificAnnotationsImpl.java
+
+
++ AnnotationsAdapterImpl.java
+-   ContainerAnnotationsAdapter.java
++   ContainerAnnotationsAdapterImpl.java
++     CDIContainerAnnotationsAdapterImpl.java
+-   ModuleAnnotationsAdapter.java
++   ModuleAnnotationsAdapterImpl.java
+-     WebAnnotationsAdapter.java
++     WebAnnotationsAdapterImpl.java
+
+==
+
+(3) API consumer updates:
+
+(3.1) modified:   com.ibm.ws.app.manager.war/bnd.bnd
+      modified:   com.ibm.ws.app.manager.war/src/com/ibm/ws/app/manager/ear/internal/EARDeployedAppInfo.java
+
+dev/com.ibm.ws.app.manager.war/bnd.bnd
+
++ com.ibm.ws.anno;version=latest,\
+
+dev/com.ibm.ws.app.manager.war/src/com/ibm/ws/app/manager/ear/internal/EARDeployedAppInfo.java
+
+-- Significant rewrite.  Adjusted API usage to match API changes.
+
+(3.2) modified:   com.ibm.ws.webcontainer/src/com/ibm/ws/webcontainer/osgi/container/config/WebAppConfiguratorHelper.java
+      modified:   com.ibm.ws.webcontainer/src/com/ibm/ws/webcontainer/osgi/webapp/WebApp.java
+      modified:   com.ibm.ws.webcontainer.security/src/com/ibm/ws/webcontainer/security/metadata/SecurityServletConfiguratorHelper.java
+
+dev/com.ibm.ws.webcontainer/src/com/ibm/ws/webcontainer/osgi/container/config/WebAppConfiguratorHelper.java
+
++ logging additions
+
+dev/com.ibm.ws.webcontainer/src/com/ibm/ws/webcontainer/osgi/webapp/WebApp.java
+
+-  try {
+     webAppAnnotations.openInfoStore();
+-  } catch (UnableToAdaptException e) {
+-      logger.logp(Level.FINE, CLASS_NAME, methodName, "caught UnableToAdaptException: " + e);
+-      return;
+-  }
+
+- try {
+     webAppAnnotations.closeInfoStore();
+- } catch (UnableToAdaptException e) {
+-     logger.logp(Level.FINE, CLASS_NAME, methodName, "caught UnableToAdaptException: " + e);
+- }              
+
+dev/com.ibm.ws.webcontainer.security/src/com/ibm/ws/webcontainer/security/metadata/SecurityServletConfiguratorHelper.java
+
+-- Adjusted API usage to match API changes.
+
+(3.3) modified:   com.ibm.ws.ejbcontainer/src/com/ibm/ws/ejbcontainer/osgi/internal/ModuleMergeData.java
+
+dev/com.ibm.ws.ejbcontainer/src/com/ibm/ws/ejbcontainer/osgi/internal/ModuleMergeData.java
+
+- try {
+    annotationTargets = getModuleAnnotations().getAnnotationTargets();
+- } catch (UnableToAdaptException e) {
+-     throw new IllegalStateException(e);
+- }
+
+- try {
+    infoStore = getModuleAnnotations().getInfoStore();
+- } catch (UnableToAdaptException e) {
+-     throw new IllegalStateException(e);
+- }
+
+(3.4) modified:   com.ibm.ws.cdi.internal/bnd.bnd
+      modified:   com.ibm.ws.cdi.internal/src/com/ibm/ws/cdi/internal/archive/liberty/CDIArchiveImpl.java
+
+dev/com.ibm.ws.cdi.internal/bnd.bnd
+
++ com.ibm.ws.anno;version=latest,\
+
+dev/com.ibm.ws.cdi.internal/src/com/ibm/ws/cdi/internal/archive/liberty/CDIArchiveImpl.java
+
+-- Significant rewrite.  Adjusted API usage to match API changes.
+
+(3.5) modified:   com.ibm.ws.jca.utils/src/com/ibm/ws/jca/utils/metagen/RAAnnotationProcessor.java
+
+dev/com.ibm.ws.jca.utils/src/com/ibm/ws/jca/utils/metagen/RAAnnotationProcessor.java
+
+- AnnotationTargets_Targets targets;
+- try {
+-     targets = raAnnotations.getAnnotationTargets();
+- } catch (UnableToAdaptException e) {
+-     throw new ResourceAdapterInternalException(e);
+- }
++ AnnotationTargets_Targets targets = raAnnotations.getAnnotationTargets();
+
+(3.6) modified:   com.ibm.ws.microprofile.openapi/src/com/ibm/ws/microprofile/openapi/AnnotationScanner.java
+
+dev/com.ibm.ws.microprofile.openapi/src/com/ibm/ws/microprofile/openapi/AnnotationScanner.java
+
+-- Adjusted API usage to match API changes.
+
+(3.7) modified:   com.ibm.ws.webcontainer.servlet.4.0_fat/fat/src/com/ibm/ws/fat/wc/FATSuite.java
+      modified:   com.ibm.ws.webcontainer.security/test/com/ibm/ws/webcontainer/security/metadata/SecurityServletConfiguratorHelperTest.java
+      modified:   com.ibm.ws.logging_fat/fat/src/com/ibm/ws/logging/fat/HandlerTest.java
+
+dev/com.ibm.ws.webcontainer.servlet.4.0_fat/fat/src/com/ibm/ws/fat/wc/FATSuite.java
+
++ // TFB:
++ // Locally, WCTrailersTest fails unless I add '-Dglobal.debug.java2.sec=false' to
++ // the gradlew 'buildandrun' invocation.
++ // And, when WCTrailersTest fails, it causes most of the tests to fail with errors.
++ // I'm still determining if this is purely a local problem.
+
+dev/com.ibm.ws.webcontainer.security/test/com/ibm/ws/webcontainer/security/metadata/SecurityServletConfiguratorHelperTest.java
+
+-- Multiple changes.  In particular, the API to retrieve class information moved.
+
+- allowing(infoStore).getDelayableClassInfo("FooClass");
++ allowing(webAnnotations).getClassInfo("FooClass");
+
+dev/com.ibm.ws.logging_fat/fat/src/com/ibm/ws/logging/fat/HandlerTest.java
+
+-- Updated to more precisely test for expected logging output.
+
+===
+
+WS-CD-Open
+
+===
+
+(3.8) modified:   dev/com.ibm.ws.eba.jpa.container.annotations/bnd.bnd
+      modified:   dev/com.ibm.ws.eba.jpa.container.annotations/bnd.bnd.gradle
+
+      modified:   dev/com.ibm.ws.eba.jpa.container.annotations/src/com/ibm/ws/eba/jpa/annotation/scanning/BlueprintAnnotations.java
+      modified:   dev/com.ibm.ws.eba.jpa.container.annotations/src/com/ibm/ws/eba/jpa/annotation/scanning/BlueprintAnnotationsImpl.java
+
+      deleted:    dev/com.ibm.ws.eba.jpa.container.annotations/src/com/ibm/ws/eba/jpa/annotation/scanning/BlueprintAnnotationsAdapter.java
+      added:      dev/com.ibm.ws.eba.jpa.container.annotations/src/com/ibm/ws/eba/jpa/annotation/scanning/BlueprintAnnotationsAdapterImpl.java
+
+      modified    dev/com.ibm.ws.eba.jpa.container.annotations/src/com/ibm/ws/eba/jpa/annotation/scanning/JpAnnotationSource.java
+
+-- JPA annotations did not require a version update because all of its annotation scanning dependences
+   are hidden as implementation details.
+
+-- JPA package dependencies were update to match changes to the container service published packages.
+
+-- The JPA supplied implementation was updated to match changes to implementation class names.
+
+dev/com.ibm.ws.eba.jpa.container.annotations/bnd.bnd
+
+-    implementation:=com.ibm.ws.eba.jpa.annotation.scanning.BlueprintAnnotationsAdapter; \
++    implementation:=com.ibm.ws.eba.jpa.annotation.scanning.BlueprintAnnotationsAdapterImpl; \
+
++   com.ibm.ws.container.service.annotations,\
++   com.ibm.ws.container.service.annotations.internal,\
+
+dev/com.ibm.ws.eba.jpa.container.annotations/bnd.bnd.gradle
+
++   com.ibm.ws.container.service.annotations,\
++   com.ibm.ws.container.service.annotations.internal,\
+
+dev/com.ibm.ws.eba.jpa.container.annotations/src/com/ibm/ws/eba/jpa/annotation/scanning/BlueprintAnnotations.java
+
+-- Made sub-interface of com.ibm.ws.container.service.annotations.Annotations.
+
+dev/com.ibm.ws.eba.jpa.container.annotations/src/com/ibm/ws/eba/jpa/annotation/scanning/BlueprintAnnotationsImpl.java
+
+-- Made subclass of com.ibm.ws.container.service.annotations.AnnotationsImpl.
+-- Refactored to remove implementation steps provided by the superclass.
+-- Updated implementation to match the updated "anno" "class store" APIs.
+
+
+- dev/com.ibm.ws.eba.jpa.container.annotations/src/com/ibm/ws/eba/jpa/annotation/scanning/BlueprintAnnotationsAdapter.java
++ dev/com.ibm.ws.eba.jpa.container.annotations/src/com/ibm/ws/eba/jpa/annotation/scanning/BlueprintAnnotationsAdapterImpl.java
+
+-- Renamed to match the container services naming pattern.
+-- Updated to use updated APIs.
+
+dev/com.ibm.ws.eba.jpa.container.annotations/src/com/ibm/ws/eba/jpa/annotation/scanning/JpAnnotationSource.java
+
+-- Updated to use updated APIs.

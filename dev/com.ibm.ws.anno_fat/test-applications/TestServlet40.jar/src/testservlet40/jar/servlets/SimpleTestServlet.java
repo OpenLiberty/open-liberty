@@ -12,6 +12,7 @@ package testservlet40.jar.servlets;
 
 import java.io.IOException;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.annotation.WebServlet;
@@ -35,8 +36,11 @@ public class SimpleTestServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ServletOutputStream sos = response.getOutputStream();
+        
+        ServletContext sc = request.getServletContext();
+        String msgFromServletContextInitializer = (String)(sc.getAttribute("SciTestMessage"));
 
-        sos.println("Hello World");
+        sos.println("Hello World" + msgFromServletContextInitializer);
 
     }
 
