@@ -1569,6 +1569,13 @@ Egy alkalmaz\u00e1s akkor tekinthet\u0151 Java EE 7. v\u00e1ltozat\u00fanak, ha 
 7-es v\u00e1ltozat, vagy az alkalmaz\u00e1sba csomagolt b\u00e1rmelyik EJB vagy WAR modul a Java EE a 7. v\u00e1ltozaton van.
 ENTITY_NOT_SUPPORTED_CNTR0335W.useraction=T\u00e1vol\u00edtsa el a nem t\u00e1mogatott egyedi EJB komponenst az alkalmaz\u00e1sb\u00f3l, vagy csomagolja a komponenst 6. vagy r\u00e9gebbi v\u00e1ltozat\u00fa alkalmaz\u00e1sba.
 
+#-------------------------------------------------------------------------------
+NAME_ALREADY_BOUND_WARN_CNTR0336W=CNTR0336W: A(z) {1} komponens {0} fel\u00fclete a(z) {3} alkalmaz\u00e1s {2} modulj\u00e1ban nem k\u00f6thet\u0151 a(z) {4} n\u00e9vhelyhez. A(z) {6} komponens {5} fel\u00fclete a(z) {8} alkalmaz\u00e1s {7} modulj\u00e1ban m\u00e1r k\u00f6tve van a(z) {4} n\u00e9vhelyhez. \
+A(z) {4} n\u00e9vhely nem el\u00e9rhet\u0151.
+NAME_ALREADY_BOUND_WARN_CNTR0336W.explanation=Minden egyes EJB-komponens fel\u00fcletnek egyedi k\u00f6t\u00e9shelyet kell megadnia.
+NAME_ALREADY_BOUND_WARN_CNTR0336W.useraction=Jav\u00edtsa ki a k\u00e9t komponens fel\u00fclet valamelyik\u00e9nek k\u00f6t\u00e9sf\u00e1jlj\u00e1t, hogy minden egyes komponens egyedi k\u00f6t\u00e9shellyel rendelkezzen.
+
+
 
 #-------------------------------------------------------------------------------
 #

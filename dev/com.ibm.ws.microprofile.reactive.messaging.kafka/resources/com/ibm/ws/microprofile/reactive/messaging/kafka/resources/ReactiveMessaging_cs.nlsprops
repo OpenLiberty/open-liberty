@@ -45,6 +45,16 @@ kafka.send.error.CWMRX1003E=CWMRX1003E: Do\u0161lo k chyb\u011b p\u0159i odes\u0
 kafka.send.error.CWMRX1003E.explanation=Do\u0161lo k chyb\u011b v odchoz\u00edm konektoru Kafka, co\u017e br\u00e1n\u00ed v norm\u00e1ln\u00ed \u010dinnosti syst\u00e9mu Reactive Messaging.
 kafka.send.error.CWMRX1003E.useraction=Zkontrolujte soubor message.log serveru a protokoly FFDC a identifikujte probl\u00e9m.
 
+# The Reactive Messaging Kafka Outgoing Connector received an error. The error is {0}.
+kafka.output.error.signal.CWMRX1004E=CWMRX1004E: Odchoz\u00ed konektor Kafka syst\u00e9mu Reactive Messaging p\u0159ijal chybu. Chyba: {0}
+kafka.output.error.signal.CWMRX1004E.explanation=Odchoz\u00ed konektor Kafka p\u0159ijal chybov\u00fd sign\u00e1l, kter\u00fd br\u00e1n\u00ed v norm\u00e1ln\u00ed \u010dinnosti syst\u00e9mu Reactive Messaging.
+kafka.output.error.signal.CWMRX1004E.useraction=Zkontrolujte soubor message.log serveru a protokoly FFDC a identifikujte probl\u00e9m.
+
+# The group.id property was not set in the configuration for this channel. Set the {0} property in one of the MicroProfile Config Sources for this application.
+kafka.groupid.not.set.CWMRX1005E=CWMRX1005E: Vlastnost group.id nebyla nastavena v konfiguraci pro tento kan\u00e1l. Nastavte vlastnost {0} v jednom z konfigura\u010dn\u00edch zdroj\u016f MicroProfile pro tuto aplikaci.
+kafka.groupid.not.set.CWMRX1005E.explanation=ID skupiny z\u00e1kazn\u00edk\u016f Kafka mus\u00ed b\u00fdt nastaveno tak, aby umo\u017e\u0148ovalo spr\u00e1vnou funkci Reactive Messaging.
+kafka.groupid.not.set.CWMRX1005E.useraction=Nastavte vlastnost v jednom z um\u00edst\u011bn\u00ed MicroProfile ConfigSource pro tuto aplikaci, nap\u0159\u00edklad soubor mikroprofile-config.properties.
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Reactive Messaging error message
 #-----------------------------------------------------------------------------------------------------------------------------

@@ -26,8 +26,7 @@
 #-----------------------------------------------------------------------------------------------------------------------------
 
 # An internal error occurred in the Reactive Messaging Kafka Connector. The error is: {0}.
-internal.kafka.connector.error.CWMRX1000E=CWMRX1000E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny w konektorze Reactive Messaging Kafka Connector. B\u0142\u0105d: {0}.
-
+internal.kafka.connector.error.CWMRX1000E=CWMRX1000E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny w konektorze Reactive Messaging Kafka Connector. B\u0142\u0105d: {0}. 
 internal.kafka.connector.error.CWMRX1000E.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d rozszerzenia Reactive Messaging, kt\u00f3ry uniemo\u017cliwia normalne dzia\u0142anie.
 internal.kafka.connector.error.CWMRX1000E.useraction=Przejrzyj plik dziennika serwera message.log oraz dzienniki FFDC, aby zidentyfikowa\u0107 problem.
 
@@ -43,8 +42,18 @@ kafka.poll.error.CWMRX1002E.useraction=Przejrzyj plik dziennika serwera message.
 
 # An error occurred when sending a message to the Kafka broker. The error is: {0}.
 kafka.send.error.CWMRX1003E=CWMRX1003E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas wysy\u0142ania komunikatu do brokera Kafka. B\u0142\u0105d: {0}.
-kafka.send.error.CWMRX1003E.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d w konektorze Kafka Outgoing Connector, kt\u00f3ry uniemo\u017cliwia normalne dzia\u0142anie rozszerzenia Reactive Messaging
+kafka.send.error.CWMRX1003E.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d w konektorze Kafka Outgoing Connector, kt\u00f3ry uniemo\u017cliwia normalne dzia\u0142anie rozszerzenia Reactive Messaging.
 kafka.send.error.CWMRX1003E.useraction=Przejrzyj plik dziennika serwera message.log oraz dzienniki FFDC, aby zidentyfikowa\u0107 problem.
+
+# The Reactive Messaging Kafka Outgoing Connector received an error. The error is {0}.
+kafka.output.error.signal.CWMRX1004E=CWMRX1004E: Konektor Reactive Messaging Kafka Outgoing Connector odebra\u0142 b\u0142\u0105d. B\u0142\u0105d: {0}.
+kafka.output.error.signal.CWMRX1004E.explanation=Konektor Kafka Outgoing Connector odebra\u0142 sygna\u0142 b\u0142\u0119du, kt\u00f3ry uniemo\u017cliwia normalne dzia\u0142anie rozszerzenia Reactive Messaging.
+kafka.output.error.signal.CWMRX1004E.useraction=Przejrzyj plik dziennika serwera message.log oraz dzienniki FFDC, aby zidentyfikowa\u0107 problem.
+
+# The group.id property was not set in the configuration for this channel. Set the {0} property in one of the MicroProfile Config Sources for this application.
+kafka.groupid.not.set.CWMRX1005E=CWMRX1005E: W\u0142a\u015bciwo\u015b\u0107 group.id nie zosta\u0142a ustawiona w konfiguracji dla tego kana\u0142u. Ustaw w\u0142a\u015bciwo\u015b\u0107 {0} w jednym ze \u017ar\u00f3de\u0142 konfiguracji MicroProfile dla tej aplikacji.
+kafka.groupid.not.set.CWMRX1005E.explanation=Nale\u017cy ustawi\u0107 identyfikator grupy konsument\u00f3w Kafka, aby zapewni\u0107 poprawne dzia\u0142anie rozszerzenia Reactive Messaging.
+kafka.groupid.not.set.CWMRX1005E.useraction=Ustaw t\u0119 w\u0142a\u015bciwo\u015b\u0107 w jednej z lokalizacji MicroProfile ConfigSource dla tej aplikacji, na przyk\u0142ad w pliku microprofile-config.properties.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Reactive Messaging error message

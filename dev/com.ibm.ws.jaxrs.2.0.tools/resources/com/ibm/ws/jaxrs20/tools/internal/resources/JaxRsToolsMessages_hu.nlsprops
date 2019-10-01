@@ -20,6 +20,6 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 
-error.badVersion=CWWKW0900E: Nem a megfelel\u0151 Java v\u00e1ltozat fut. A fut\u00e1si k\u00f6rnyezet Java 7 vagy \u00fajabb v\u00e1ltozatot ig\u00e9nyel.
+error.badVersion=CWWKW0900E: Nem a megfelel\u0151 Java v\u00e1ltozat fut. A fut\u00e1si k\u00f6rnyezet Java 8 vagy \u00fajabb v\u00e1ltozatot ig\u00e9nyel.
 error.badVersion.explanation=Egy nem t\u00e1mogatott Java v\u00e1ltozat fut, vagy a JAVA_HOME rendszerv\u00e1ltoz\u00f3 \u00fagy van be\u00e1ll\u00edtva, hogy egy r\u00e9gebbi Java v\u00e1ltozatra mutat.
-error.badVersion.useraction= Friss\u00edtse a Java v\u00e1ltozatot a Java 7-es v\u00e1ltozatra, vagy \u00e1ll\u00edtsa be a JAVA_HOME rendszerv\u00e1ltoz\u00f3t \u00fagy, hogy Java 7 fut\u00e1si k\u00f6rnyezetre mutasson.
+error.badVersion.useraction= Friss\u00edtse a Java v\u00e1ltozatot a Java 8 v\u00e1ltozatra, vagy \u00e1ll\u00edtsa be a JAVA_HOME rendszerv\u00e1ltoz\u00f3t \u00fagy, hogy Java 8 fut\u00e1si k\u00f6rnyezetre mutasson.
