@@ -9,9 +9,12 @@ import java.util.Set;
 
 import org.junit.AfterClass;
 
+import componenttest.annotation.MaximumJavaLevel;
+
 /**
  *
  */
+@MaximumJavaLevel(javaLevel = 8)
 public class ErrorPage15Test extends ErrorPageBaseTest {
 
     @AfterClass

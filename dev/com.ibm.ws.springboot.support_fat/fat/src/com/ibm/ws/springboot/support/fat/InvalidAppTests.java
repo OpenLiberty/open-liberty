@@ -26,6 +26,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.RemoteFile;
 
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import junit.framework.Assert;
@@ -46,7 +47,12 @@ public class InvalidAppTests extends CommonWebServerTests {
 
     @Override
     public Set<String> getFeatures() {
-        return new HashSet<>(Arrays.asList("springBoot-1.5"));
+        String methodName = testName.getMethodName();
+        Set<String> features = new HashSet<>(Arrays.asList("springBoot-2.0"));
+        if (methodName.contains("15")) {
+            features = new HashSet<>(Arrays.asList("springBoot-1.5"));
+        }
+        return features;
     }
 
     @Override
@@ -57,9 +63,9 @@ public class InvalidAppTests extends CommonWebServerTests {
     @Override
     public String getApplication() {
         String methodName = testName.getMethodName();
-        if (TEST_NO_MANIFEST.equals(methodName)) {
+        if (methodName != null && methodName.startsWith(TEST_NO_MANIFEST)) {
             return SPRING_BOOT_NO_MANIFEST;
-        } else if (TEST_NO_START_CLASS.equals(methodName)) {
+        } else if (methodName != null && methodName.startsWith(TEST_NO_START_CLASS)) {
             return SPRING_BOOT_NO_START_CLASS;
         }
         Assert.fail("Unknown test.");
@@ -122,12 +128,24 @@ public class InvalidAppTests extends CommonWebServerTests {
     }
 
     @Test
-    public void testNoManifest() throws Exception {
+    @MaximumJavaLevel(javaLevel = 8)
+    public void testNoManifest15() throws Exception {
         assertNotNull("No error message for missing manifest.", server.waitForStringInLog("CWWKC0256E"));
     }
 
     @Test
-    public void testNoStartCLass() throws Exception {
+    @MaximumJavaLevel(javaLevel = 8)
+    public void testNoStartCLass15() throws Exception {
+        assertNotNull("No error message for missing start class.", server.waitForStringInLog("CWWKC0257E"));
+    }
+
+    @Test
+    public void testNoManifest20() throws Exception {
+        assertNotNull("No error message for missing manifest.", server.waitForStringInLog("CWWKC0256E"));
+    }
+
+    @Test
+    public void testNoStartCLass20() throws Exception {
         assertNotNull("No error message for missing start class.", server.waitForStringInLog("CWWKC0257E"));
     }
 }
