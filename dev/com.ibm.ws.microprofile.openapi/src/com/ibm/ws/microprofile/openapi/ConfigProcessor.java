@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.openapi;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -19,7 +21,7 @@ import java.util.function.Predicate;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.microprofile.config.Config;
-import org.eclipse.microprofile.config.ConfigProvider;
+import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import org.eclipse.microprofile.openapi.OASConfig;
 
 import com.ibm.websphere.ras.Tr;
@@ -58,10 +60,12 @@ public class ConfigProcessor {
     private Map<String, Set<String>> pathsServers = null;
     private Map<String, Set<String>> operationsServers = null;
 
-    private final Config config;
+    private Config config;
 
     public ConfigProcessor(ClassLoader appClassloader) {
-        config = ConfigProvider.getConfig(appClassloader);
+        //this creates a brand new Config instance without using the classloader cache in the ConfigProviderResolver
+        //it must be closed again after use (see close() method).
+        this.config = ConfigProviderResolver.instance().getBuilder().addDefaultSources().addDiscoveredConverters().addDiscoveredSources().build();
 
         modelReaderClassName = getOptionalValue(OASConfig.MODEL_READER, String.class, null);
         scanDisabled = getOptionalValue(OASConfig.SCAN_DISABLE, Boolean.class, false);
@@ -75,6 +79,17 @@ public class ConfigProcessor {
         packagesToExclude = getConfigPropAsSet(OASConfig.SCAN_EXCLUDE_PACKAGES);
 
         retrieveServers();
+    }
+
+    public void close() {
+        try {
+            ((Closeable) this.config).close();
+            this.config = null;
+        } catch (IOException e) {
+            if (OpenAPIUtils.isEventEnabled(tc)) {
+                Tr.event(tc, "Failed to close config: " + e.getMessage());
+            }
+        }
     }
 
     public String getModelReaderClassName() {
