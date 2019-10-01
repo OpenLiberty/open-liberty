@@ -19,9 +19,9 @@ import com.ibm.ws.anno.classsource.specification.ClassSource_Specification_Direc
 import com.ibm.wsspi.anno.classsource.ClassSource_Factory;
 
 public class AppDeployBench_HungryVehicle_war_Data {
-    public static final String EAR_NAME = "AppDeployBench.ear.unpacked";
+    public static final String EAR_NAME = "AppDeployBench.ear";
     public static final String EAR_LIB_PATH = File.separator + "lib";
-    public static final String WAR_NAME = "HungryVehicle.war.unpacked";
+    public static final String WAR_NAME = "HungryVehicle.war";
     public static final List<String> WAR_MANIFEST_PATHS;
 
     static {

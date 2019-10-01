@@ -1,0 +1,61 @@
+timedCleanStarts (Cache Disabled) MAX = 24999
+timedCleanStarts (Cache Disabled) MIN = 22930
+timedCleanStarts (Cache Disabled) AVG = 23647
+
+timedCleanStarts (with Cache) MAX = 24632
+timedCleanStarts (with Cache) MIN = 23757
+timedCleanStarts (with Cache) AVG = 24068
+
+timedDirtyStarts (Cache Disabled) MAX = 23824
+timedDirtyStarts (Cache Disabled) MIN = 21765
+timedDirtyStarts (Cache Disabled) AVG = 22710
+
+timedDirtyStarts (with Cache) MAX = 25264
+timedDirtyStarts (with Cache) MIN = 15739
+timedDirtyStarts (with Cache) AVG = 21929
+Percent improvement [ Dirty Start (With Cache) vs Dirty Start (Cache Disabled) ]: 3.44
+
+timedAppUpdate_CacheDisabled MAX = 15871
+timedAppUpdate_CacheDisabled MIN = 14342
+timedAppUpdate_CacheDisabled AVG = 14766
+
+timedAppUpdate (with Cache) MAX = 11322
+timedAppUpdate (with Cache) MIN = 9784
+timedAppUpdate (with Cache) AVG = 10249
+Percent improvement [ App Update (With Cache) vs App Update (Cache Disabled) ]: 30.59
+
+oneWriteThread_CacheDisabled MAX = 23330
+oneWriteThread_CacheDisabled MIN = 21696
+oneWriteThread_CacheDisabled AVG = 22528
+
+oneWriteThread (with Cache) MAX = 16116
+oneWriteThread (with Cache) MIN = 15556
+oneWriteThread (with Cache) AVG = 15769
+Percent improvement [ One Write Thread (With Cache) vs One Write Thread (Cache Disabled) ]: 30.00
+
+unlimitedWriteThreads_CacheDisabled MAX = 23501
+unlimitedWriteThreads_CacheDisabled MIN = 23087
+unlimitedWriteThreads_CacheDisabled AVG = 23287
+
+unlimitedWriteThreads (with Cache) MAX = 16361
+unlimitedWriteThreads (with Cache) MIN = 15620
+unlimitedWriteThreads (with Cache) AVG = 15883
+Percent improvement [ Unlimited Write Threads (With Cache) vs Unlimited Write Threads (Cache Disabled) ]: 31.79
+
+oneScanThread_CacheDisabled MAX = 24961
+oneScanThread_CacheDisabled MIN = 23359
+oneScanThread_CacheDisabled AVG = 24306
+
+oneScanThread (with Cache) MAX = 20874
+oneScanThread (with Cache) MIN = 17224
+oneScanThread (with Cache) AVG = 18527
+Percent improvement [ One Scan Thread (With Cache) vs One Scan Thread (Cache Disabled) ]: 23.77
+
+unlimitedScanThreads_CacheDisabled MAX = 26424
+unlimitedScanThreads_CacheDisabled MIN = 22430
+unlimitedScanThreads_CacheDisabled AVG = 24319
+
+unlimitedScanThreads (with Cache) MAX = 17682
+unlimitedScanThreads (with Cache) MIN = 17347
+unlimitedScanThreads (with Cache) AVG = 17565
+Percent improvement [ Unlimited Scan Threads (With Cache) vs Unlimited Scan Threads ((Cache Disabled) ]: 27.77

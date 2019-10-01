@@ -66,6 +66,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
 import com.ibm.ws.container.service.annotations.ModuleAnnotations;
 import com.ibm.ws.jca.utils.Utils;
 import com.ibm.ws.jca.utils.Utils.ConstructType;
@@ -510,8 +511,8 @@ public class MetatypeGenerator {
             //   The ConnectionDefinition and ConnectionDefinitions annotations are
             //   applied to the JavaBean class and are restricted to be applied only on JavaBean
             //   classes that implement the ManagedConnectionFactory interface (see
-            //   Section 5.3.2, ‚ÄúManagedConnectionFactory JavaBean and Outbound
-            //   Communication‚Äù on page 5-8).
+            //   Section 5.3.2, ìManagedConnectionFactory JavaBean and Outbound
+            //   Communicationî on page 5-8).
 
             //   The element managedconnectionfactory-class specifies
             //   the fully qualified name of the Java class that
@@ -1390,8 +1391,7 @@ public class MetatypeGenerator {
         }
 
         if (config.useAnnotations()) {
-            moduleAnnotations = config.getRarContainer().adapt(ModuleAnnotations.class);
-
+            moduleAnnotations = getModuleAnnotations();
             if (trace && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "moduleAnnotations: " + moduleAnnotations);
             }
@@ -1421,6 +1421,10 @@ public class MetatypeGenerator {
             // no convenient way to do that.
             processJavaBeanProperties(xmlFileSet.parsedXml);
         }
+    }
+
+    private ModuleAnnotations getModuleAnnotations() throws UnableToAdaptException {
+        return AnnotationsBetaHelper.getModuleAnnotations( config.getRarContainer() );
     }
 
     /**

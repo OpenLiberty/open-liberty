@@ -199,12 +199,19 @@ public class ModuleInitDataFactoryTest {
                 allowing(container).adapt(EJBJarBnd.class);
                 will(returnValue(ejbJarBnd));
 
+                // Note the almost duplicate adapt to the annotation caching module annotations.
                 allowing(container).adapt(ModuleAnnotations.class);
+                will(returnValue(moduleAnno));
+
+                // Handle annotation caching case as well:
+                // Depending on the beta enablement, the adapt call will be either to
+                // com.ibm.ws.container.service.annotations.ModuleAnnotations or to
+                // com.ibm.ws.container.service.annocache.ModuleAnnotations.
+                allowing(container).adapt(com.ibm.ws.container.service.annocache.ModuleAnnotations.class);
                 will(returnValue(moduleAnno));
 
                 allowing(container).adapt(ManagedBeanBnd.class);
                 will(returnValue(null));
-
             }
         });
 
