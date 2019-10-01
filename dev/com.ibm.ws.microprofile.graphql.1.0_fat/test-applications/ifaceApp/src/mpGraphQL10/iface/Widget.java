@@ -11,13 +11,16 @@
 package mpGraphQL10.iface;
 
 import javax.json.bind.annotation.JsonbTypeDeserializer;
+
+import org.eclipse.microprofile.graphql.Description;
 import org.eclipse.microprofile.graphql.Type;
 
 /**
  * This is a client side representation of a Widget.
  */
 @JsonbTypeDeserializer(WidgetDeserializer.class)
-@Type(value="Widget", description="An interface representing an object for sale.")
+@Type(value="Widget")
+@Description("An interface representing an object for sale.")
 public interface Widget {
 
     String getName();
