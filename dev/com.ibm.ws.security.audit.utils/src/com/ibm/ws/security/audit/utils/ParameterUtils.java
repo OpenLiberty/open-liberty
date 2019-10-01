@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.audit.event.utils;
+package com.ibm.ws.security.audit.utils;
 
 /**
  *
@@ -25,17 +25,17 @@ public class ParameterUtils {
                     buf.append("[");
                     boolean first = true;
                     for (Object element : (Object[]) param) {
-                        if (element != null) {
-                            if (first) {
-                                first = false;
-                            } else {
-                                buf.append(", ");
-                            }
-                            if (element.getClass().isArray()) {
-                                buf.append(format(element));
-                            } else {
-                                buf.append(ToString(element));
-                            }
+                        if (first) {
+                            first = false;
+                        } else {
+                            buf.append(", ");
+                        }
+                        if (element == null) {
+                            buf.append("null");
+                        } else if (element.getClass().isArray()) {
+                            buf.append(format(element));
+                        } else {
+                            buf.append(ToString(element));
                         }
                     }
                     buf.append("]");
@@ -43,6 +43,8 @@ public class ParameterUtils {
             } else {
                 buf.append(ToString(param));
             }
+        } else {
+        	buf.append("null");
         }
         return buf;
     }

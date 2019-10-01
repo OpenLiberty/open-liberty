@@ -20,7 +20,6 @@ WS-TraceGroup: audit
 
 Export-Package: \
 	com.ibm.ws.security.audit.event,\
-	com.ibm.ws.security.audit.event.utils,\
 	com.ibm.ws.security.audit.pipeline
 
 Private-Package: \

@@ -19,8 +19,8 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.audit.AuditConstants;
 import com.ibm.websphere.security.audit.AuditEvent;
-import com.ibm.ws.security.audit.event.utils.ParameterUtils;
 import com.ibm.ws.security.audit.utils.AuditUtils;
+import com.ibm.ws.security.audit.utils.ParameterUtils;
 
 /**
  * Class with default values for jmx notification events
@@ -76,9 +76,7 @@ public class JMXMBeanEvent extends AuditEvent {
                  */
                 StringBuffer buf = new StringBuffer();
                 for (Object element : params) {
-                    if (element != null) {
-                        buf.append("[").append(ParameterUtils.format(element)).append("]");
-                    }
+                    buf.append("[").append(ParameterUtils.format(element)).append("]");
                 }
 
                 String siggy = buf.toString();

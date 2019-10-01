@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 IBM Corporation and others.
+ * Copyright (c) 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -50,7 +50,7 @@ import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.MetaData;
 import com.ibm.ws.security.SecurityService;
 import com.ibm.ws.security.audit.Audit;
-import com.ibm.ws.security.audit.event.utils.ParameterUtils;
+import com.ibm.ws.security.audit.utils.ParameterUtils;
 import com.ibm.ws.security.authentication.AuthenticationService;
 import com.ibm.ws.security.authentication.UnauthenticatedSubjectService;
 import com.ibm.ws.security.authentication.principals.WSIdentity;
@@ -406,9 +406,8 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
         ejbAuditHashMap.put("methodInterface", methodInterface);
         ejbAuditHashMap.put("methodSignature", methodSignature);
         ejbAuditHashMap.put("beanName", beanName);
-        String formattedParameters = ParameterUtils.format(methodArguments).toString();
         // in order to maintain the behavior, if formattedParameters is an empty string, set string "null".
-        ejbAuditHashMap.put("methodParameters", formattedParameters.isEmpty() ? "null" : formattedParameters);
+        ejbAuditHashMap.put("methodParameters", ParameterUtils.format(methodArguments).toString());
     }
 
     /**

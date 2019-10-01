@@ -61,4 +61,4 @@ instrument.classesExcludes: com/ibm/ws/ejbcontainer/security/internal/resources/
 	com.ibm.websphere.org.osgi.core,\
 	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-	com.ibm.ws.security.audit.source;version=latest
+	com.ibm.ws.security.audit.utils;version=latest

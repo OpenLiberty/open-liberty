@@ -7,6 +7,7 @@ IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature
 IBM-Install-Policy: when-satisfied
 -features=com.ibm.websphere.appserver.containerServices-1.0
 -bundles=com.ibm.ws.security.appbnd, \
- com.ibm.ws.ejbcontainer.security
+ com.ibm.ws.ejbcontainer.security, \
+ com.ibm.ws.security.audit.utils
 kind=ga
 edition=core
