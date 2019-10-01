@@ -5,4 +5,5 @@ singleton=true
 -bundles=\
   com.ibm.ws.concurrent.mp.0.0.0.noImpl
 kind=ga
-edition=coreWLP-Activation-Type: parallel
+edition=core
+WLP-Activation-Type: parallel
