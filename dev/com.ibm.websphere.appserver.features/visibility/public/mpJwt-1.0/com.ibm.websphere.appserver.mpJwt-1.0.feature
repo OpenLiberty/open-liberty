@@ -18,4 +18,4 @@ Subsystem-Name: MicroProfile JSON Web Token 1.0
   com.ibm.websphere.org.eclipse.microprofile.jwt.1.0; location:="dev/api/stable/,lib/"; mavenCoordinates="org.eclipse.microprofile.jwt:microprofile-jwt-auth-api:1.0",\
   com.ibm.ws.security.mp.jwt.cdi
 kind=ga
-edition=core
+edition=coreWLP-Activation-Type: parallel
