@@ -725,7 +725,6 @@ public final class WSX509TrustManager extends X509ExtendedTrustManager {
         } catch (CertificateException excpt) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "Certificate Exception occurred: " + excpt.getMessage());
-
             processServerTrustError(chain, authType, peerHost, peerPort, excpt);
         }
 
@@ -934,7 +933,6 @@ public final class WSX509TrustManager extends X509ExtendedTrustManager {
         } catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "Certificate Exception occurred while processing exception: " + e.getMessage());
-
             throw new CertificateException(e.getMessage());
         }
     }
