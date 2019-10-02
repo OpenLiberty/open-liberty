@@ -10,7 +10,11 @@
  *******************************************************************************/
 
 configurations {
-  jdbcDrivers
+  //Transitive dependencies in Oracle Maven pom are not necessary when just using
+  //the base JDBC driver.  Excluding these dependencies will speed up test time and reduce clutter.
+  jdbcDrivers {
+    transitive = false
+  }
 }
 
 dependencies {
