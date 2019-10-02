@@ -3,10 +3,15 @@ set -e
 
 case "$1" in
     remove|upgrade)
-        echo "Removing all leftover jar files"
-        if [ -d "/opt/ol/lib" ]; then
-            rm -rf /opt/ol/lib
+        echo "Removing leftover license and run directories"
+        if [ -d "/usr/share/doc/openliberty" ]; then
+            rm -rf /usr/share/doc/openliberty
         fi
+        if [ -d "/var/run/openliberty" ]; then
+            rm -rf /var/run/openliberty
+        fi
+        echo "Reloading systemctl services after uninstall of openliberty"
+        systemctl daemon-reload
         ;;
     abort-install|abort-upgrade|purge)
         ;;
