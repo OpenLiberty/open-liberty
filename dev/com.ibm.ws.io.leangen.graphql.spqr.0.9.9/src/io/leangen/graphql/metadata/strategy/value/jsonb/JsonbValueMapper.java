@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
+import javax.json.bind.annotation.JsonbDateFormat;
 import javax.json.bind.annotation.JsonbProperty;
 
 import io.leangen.graphql.metadata.InputField;
@@ -37,6 +38,7 @@ import io.leangen.graphql.metadata.strategy.value.InputFieldBuilderParams;
 import io.leangen.graphql.metadata.strategy.value.InputParsingException;
 import io.leangen.graphql.metadata.strategy.value.ValueMapper;
 
+import org.eclipse.microprofile.graphql.Description;
 import org.eclipse.microprofile.graphql.DefaultValue;
 
 public class JsonbValueMapper implements ValueMapper, InputFieldBuilder {
@@ -135,14 +137,12 @@ public class JsonbValueMapper implements ValueMapper, InputFieldBuilder {
                 }
 
                 String fieldName = propName;
-                String fieldDesc = "";
                 org.eclipse.microprofile.graphql.InputField inputFieldAnno = setterMethod.getAnnotation(org.eclipse.microprofile.graphql.InputField.class);
                 if (inputFieldAnno == null) {
                     inputFieldAnno = field.getAnnotation(org.eclipse.microprofile.graphql.InputField.class);
                 }
                 if (inputFieldAnno != null) {
                     fieldName = useDefaultIfEmpty(inputFieldAnno.value(), fieldName);
-                    fieldDesc = inputFieldAnno.description();
                 } else {
                     // try JSON-B annotations
                     JsonbProperty jsonbPropAnno = setterMethod.getAnnotation(JsonbProperty.class);
@@ -151,6 +151,26 @@ public class JsonbValueMapper implements ValueMapper, InputFieldBuilder {
                     }
                     if (jsonbPropAnno != null) {
                         fieldName = useDefaultIfEmpty(jsonbPropAnno.value(), fieldName);
+                    }
+                }
+
+                String fieldDesc = "";
+                Description descAnno = setterMethod.getAnnotation(Description.class);
+                if (descAnno == null) {
+                    descAnno = field.getAnnotation(Description.class);
+                }
+                if (descAnno != null) {
+                    fieldDesc = descAnno.value();
+                }
+    
+                // if no description is provided by other annotations, check @JsonbDateFormat and use that as the description
+                if ("".equals(fieldDesc)) {
+                    JsonbDateFormat jsonbDateFormatAnno = setterMethod.getAnnotation(JsonbDateFormat.class);
+                    if (jsonbDateFormatAnno == null) {
+                        jsonbDateFormatAnno = field.getAnnotation(JsonbDateFormat.class);
+                    }
+                    if (jsonbDateFormatAnno != null) {
+                        fieldDesc = useDefaultIfEmpty(jsonbDateFormatAnno.value(), "");
                     }
                 }
 
@@ -166,6 +186,9 @@ public class JsonbValueMapper implements ValueMapper, InputFieldBuilder {
                 }
                 Object defaultValue = defaultValueAnno == null ? null : defaultValueAnno.value();
                 InputField inputField = new InputField(fieldName, fieldDesc, fieldType, null, defaultValue, setterMethod);
+                if (LOG.isLoggable(Level.FINEST)) {
+                    LOG.log(Level.FINEST, "adding field {0} with description {1}", new Object[] {inputField, fieldDesc});
+                }
                 inputFields.add(inputField);
             }
         } catch (Exception ex) {

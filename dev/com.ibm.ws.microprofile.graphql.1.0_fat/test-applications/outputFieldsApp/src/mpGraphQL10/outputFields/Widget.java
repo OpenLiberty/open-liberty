@@ -14,6 +14,7 @@ import java.text.DecimalFormat;
 
 import javax.json.bind.annotation.JsonbProperty;
 
+import org.eclipse.microprofile.graphql.Description;
 import org.eclipse.microprofile.graphql.Query;
 /**
  * This is an implementation class of the interface entity, Widget.
@@ -81,7 +82,8 @@ public class Widget {
         this.quantity = quantity;
     }
 
-    @Query(value = "shippingWeight", description = "Total tonnage to be shipped")
+    @Query("shippingWeight")
+    @Description("Total tonnage to be shipped")
     public double getWeight() {
         return weight;
     }

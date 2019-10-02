@@ -14,6 +14,7 @@ import java.text.DecimalFormat;
 
 import javax.json.bind.annotation.JsonbProperty;
 
+import org.eclipse.microprofile.graphql.Description;
 import org.eclipse.microprofile.graphql.InputField;
 /**
  * This is an implementation class of the interface entity, Widget.
@@ -21,7 +22,8 @@ import org.eclipse.microprofile.graphql.InputField;
 public class Widget {
 
     private String name;
-    @InputField(value = "qty", description = "Number of units to ship")
+    @InputField("qty")
+    @Description("Number of units to ship")
     private int quantity = -1;
     private double weight = -1.0;
 
