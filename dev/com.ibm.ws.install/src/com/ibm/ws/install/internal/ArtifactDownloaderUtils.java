@@ -24,7 +24,7 @@ public class ArtifactDownloaderUtils {
 
     private static boolean isFinished = false;
 
-    public static List<String> getMissingFiles(List<String> featureURLs) {
+    public static List<String> getMissingFiles(List<String> featureURLs) throws IOException {
         List<String> result = new ArrayList<String>();
         for (String url : featureURLs) {
             if (!(exists(url) == HttpURLConnection.HTTP_OK)) {
@@ -34,14 +34,14 @@ public class ArtifactDownloaderUtils {
         return result;
     }
 
-    public static boolean fileIsMissing(String url) {
+    public static boolean fileIsMissing(String url) throws IOException {
         return !(exists(url) == HttpURLConnection.HTTP_OK);
     }
 
-    public static int exists(String URLName) {
+    public static int exists(String URLName) throws IOException {
 
         try {
-            HttpURLConnection.setFollowRedirects(false);
+            HttpURLConnection.setFollowRedirects(true);
             HttpURLConnection conn;
             URL url = new URL(URLName);
             if (System.getProperty("http.proxyUser") != null) {
@@ -60,7 +60,7 @@ public class ArtifactDownloaderUtils {
             System.out.println("connection timeout: " + URLName); //TODO proper error message, maybe make this a method throw
             e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
+            throw e;
         }
         return 0;
     }
@@ -178,11 +178,10 @@ public class ArtifactDownloaderUtils {
             if (repoResponseCode == 503) {
                 throw ExceptionUtils.createByKey("ERROR_REPO_INVALID_URL", repo);
             } else if (repoResponseCode == 407) {
-                System.out.println("proxy authentication failure CWWKF1367E"); //TODO proper error message with exception
-                return;
+                throw ExceptionUtils.createByKey("ERROR_TOOL_INCORRECT_PROXY_CREDENTIALS");
             } else {
-                System.out.println("failed to connect to repository error code: " + repoResponseCode); //TODO proper error message with exception (unknown cause maybe)
-                return;
+                //throw ExceptionUtils.createByKey("ERROR_FAILED_TO_CONNECT_MAVEN"); //TODO
+                throw ExceptionUtils.createByKey("ERROR_FAILED_TO_CONNECT");
             }
         }
     }
