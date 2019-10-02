@@ -65,7 +65,7 @@ public class ConfigProcessor {
     public ConfigProcessor(ClassLoader appClassloader) {
         //this creates a brand new Config instance without using the classloader cache in the ConfigProviderResolver
         //it must be closed again after use (see close() method).
-        this.config = ConfigProviderResolver.instance().getBuilder().addDefaultSources().addDiscoveredConverters().addDiscoveredSources().build();
+        this.config = ConfigProviderResolver.instance().getBuilder().forClassLoader(appClassloader).addDefaultSources().addDiscoveredConverters().addDiscoveredSources().build();
 
         modelReaderClassName = getOptionalValue(OASConfig.MODEL_READER, String.class, null);
         scanDisabled = getOptionalValue(OASConfig.SCAN_DISABLE, Boolean.class, false);
