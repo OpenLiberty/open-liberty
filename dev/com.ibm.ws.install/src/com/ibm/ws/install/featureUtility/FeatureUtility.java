@@ -15,7 +15,6 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.Stack;
@@ -215,35 +214,45 @@ public class FeatureUtility {
     }
 
     private Collection<File> findEsas(Collection<String> resolvedFeatures, File rootDir) throws InstallException {
-        Collection<File> foundEsas = new HashSet<>();
-        Collection<String> featuresClone = new ArrayList<>(resolvedFeatures);
+        List<File> foundEsas = new ArrayList<>();
+        List<String> featuresClone = new ArrayList<>(resolvedFeatures);
+        List<Integer> missingFeatureIndexes = new ArrayList<>();
 
+        int index = 0;
         for (String feature : resolvedFeatures) {
             logger.log(Level.FINE, "Processing feature: " + feature);
-            String mavenCoordinate = feature.split(":")[0];
+            String groupId = feature.split(":")[0];
             String featureName = feature.split(":")[1];
 
-            File groupDir = new File(rootDir, mavenCoordinate.replace(".", "/"));
+            File groupDir = new File(rootDir, groupId.replace(".", "/"));
             if (!groupDir.exists()) {
+                missingFeatureIndexes.add(index);
                 continue;
             }
-
-            Path featurePath = Paths.get(groupDir.getAbsolutePath().toString(), featureName, openLibertyVersion,
-                                         featureName + "-" + openLibertyVersion + ".esa");
+            String featureEsa = featureName + "-" + openLibertyVersion + ".esa";
+            Path featurePath = Paths.get(groupDir.getAbsolutePath().toString(), featureName, openLibertyVersion, featureEsa);
 
             logger.log(Level.FINE, "Found feature at path: " + featurePath.toString());
             if (Files.isRegularFile(featurePath)) {
                 foundEsas.add(featurePath.toFile());
                 featuresClone.remove(feature);
+            } else {
+                missingFeatureIndexes.add(index);
             }
 
-        }
-        if (!featuresClone.isEmpty()) {
-            logger.log(Level.INFO, "Could not find ESA's in local maven repo for " + featuresClone);
-            List<File> downloadedEsas = downloadFeatureEsas((List<String>) featuresClone);
+            index += 1;
 
+        }
+        if (!missingFeatureIndexes.isEmpty() && !featuresClone.isEmpty()) {
+            logger.log(Level.INFO, "Could not find ESAs in local maven repo for " + featuresClone);
+            List<File> downloadedEsas = downloadFeatureEsas(featuresClone);
             logger.log(Level.INFO, "Downloaded the following features from maven central:" + downloadedEsas);
-            foundEsas.addAll(downloadedEsas);
+            index = 0;
+            for (File file : downloadedEsas) {
+                // insert the downloaded esa into its respective position
+                foundEsas.add(missingFeatureIndexes.get(index), file);
+                index += 1;
+            }
         }
         return foundEsas;
 
@@ -259,7 +268,6 @@ public class FeatureUtility {
         map.put("download.local.dir.location", this.usingM2Cache ? fromDir.getAbsolutePath() : TEMP_DIRECTORY);
         if (System.getenv("MAVEN_REPOSITORY") != null) {
             map.put("download.remote.maven.repo", System.getenv("MAVEN_REPOSITORY"));
-            System.out.println(System.getenv("MAVEN_REPOSITORY"));
         } else {
             map.put("download.remote.maven.repo", "http://repo.maven.apache.org/maven2/");
         }
@@ -369,7 +377,6 @@ public class FeatureUtility {
         map.put("download.local.dir.location", this.usingM2Cache ? fromDir.getAbsolutePath() : TEMP_DIRECTORY);
         if (System.getenv("MAVEN_REPOSITORY") != null) {
             map.put("download.remote.maven.repo", System.getenv("MAVEN_REPOSITORY"));
-            System.out.println(System.getenv("MAVEN_REPOSITORY"));
         } else {
             map.put("download.remote.maven.repo", "http://repo.maven.apache.org/maven2/");
         }
@@ -446,7 +453,7 @@ public class FeatureUtility {
     }
 
     private File getM2Cache() {
-        File m2Folder = Paths.get(System.getProperty("user.home"), ".m2", "repository").toFile();
+        File m2Folder = Paths.get(System.getProperty("user.home"), ".m2", "repository", "").toFile();
 
         if (m2Folder.exists() && m2Folder.isDirectory()) {
             return m2Folder;
