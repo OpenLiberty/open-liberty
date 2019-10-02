@@ -24,22 +24,15 @@ import javax.sql.DataSource;
 import failovertimers.web.FailoverTimersTestServlet;
 
 @Singleton
-public class AutoCountingTimer {
-    private int count;
-
+public class AutoCountingSingletonTimer {
     @Resource
     private DataSource ds;
 
     @Resource
     private SessionContext sessionContext;
 
-    public void cancel() {
-        for (Timer timer : sessionContext.getTimerService().getTimers())
-            timer.cancel();
-    }
-
     // Timer runs every other other second
-    @Schedule(info = "AutomaticCountingTimer", hour = "*", minute = "*", second = "*/2")
+    @Schedule(info = "AutomaticCountingSingletonTimer", hour = "*", minute = "*", second = "*/2")
     public void run(Timer timer) {
         String serverConfigDir = System.getProperty("server.config.dir");
         String wlpUserDir = System.getProperty("wlp.user.dir");
