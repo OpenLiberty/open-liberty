@@ -18,6 +18,12 @@ import java.util.stream.IntStream;
  */
 public class ArrayAdapter extends AbstractTypeSubstitutingMapper implements OutputConverter {
 
+    private Scalars scalars;
+
+    public ArrayAdapter(Scalars scalars) {
+        this.scalars = scalars;
+    }
+
     @Override
     public AnnotatedType getSubstituteType(AnnotatedType original) {
         AnnotatedType component = ((AnnotatedArrayType) original).getAnnotatedGenericComponentType();
@@ -37,6 +43,6 @@ public class ArrayAdapter extends AbstractTypeSubstitutingMapper implements Outp
 
     @Override
     public boolean supports(AnnotatedType type) {
-        return !Scalars.isScalar(type.getType()) && type instanceof AnnotatedArrayType;
+        return !scalars.isScalar(type.getType()) && type instanceof AnnotatedArrayType;
     }
 }

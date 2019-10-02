@@ -23,6 +23,8 @@ import org.junit.runners.Suite.SuiteClasses;
                 DeprecationTest.class,
                 IfaceTest.class,
                 IgnoreTest.class,
+                InputFieldsTest.class,
+                OutputFieldsTest.class,
                 TypesTest.class
 })
 public class FATSuite {}

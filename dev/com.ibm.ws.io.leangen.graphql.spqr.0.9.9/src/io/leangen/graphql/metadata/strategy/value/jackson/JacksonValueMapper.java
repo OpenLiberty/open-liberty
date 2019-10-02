@@ -45,7 +45,7 @@ import java.util.stream.Stream;
 public class JacksonValueMapper implements ValueMapper, InputFieldBuilder {
 
     private final ObjectMapper objectMapper;
-    private final InputFieldInfoGenerator inputInfoGen = new InputFieldInfoGenerator();
+    private final static InputFieldInfoGenerator inputInfoGen = new InputFieldInfoGenerator();
 
     private static final Logger log = LoggerFactory.getLogger(JacksonValueMapper.class);
 
@@ -63,8 +63,12 @@ public class JacksonValueMapper implements ValueMapper, InputFieldBuilder {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public <T> T fromString(String json, AnnotatedType type) {
+        return fromJsonString(json, type, objectMapper);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> T fromJsonString(String json, AnnotatedType type, ObjectMapper objectMapper) {
         if (json == null || String.class.equals(type.getType())) {
             return (T) json;
         }
@@ -93,11 +97,11 @@ public class JacksonValueMapper implements ValueMapper, InputFieldBuilder {
         BeanDescription desc = objectMapper.getDeserializationConfig().introspect(javaType);
         return desc.findProperties().stream()
                 .filter(BeanPropertyDefinition::couldDeserialize)
-                .flatMap(prop -> toInputField(params.getType(), prop, params.getEnvironment()))
+                .flatMap(prop -> toInputField(params.getType(), prop, params.getEnvironment(), objectMapper))
                 .collect(Collectors.toSet());
     }
 
-    private Stream<InputField> toInputField(AnnotatedType type, BeanPropertyDefinition prop, GlobalEnvironment environment) {
+    public static Stream<InputField> toInputField(AnnotatedType type, BeanPropertyDefinition prop, GlobalEnvironment environment, ObjectMapper objectMapper) {
         PropertyDescriptorFactory descFactory = new PropertyDescriptorFactory(type, environment.typeTransformer);
         AnnotatedParameter ctorParam = prop.getConstructorParameter();
         if (ctorParam != null) {
@@ -115,17 +119,17 @@ public class JacksonValueMapper implements ValueMapper, InputFieldBuilder {
         throw new TypeMappingException("Unknown input field mapping style encountered");
     }
 
-    private Stream<InputField> toInputField(PropertyDescriptor desc, BeanPropertyDefinition prop, ObjectMapper objectMapper, GlobalEnvironment environment) {
+    private static Stream<InputField> toInputField(PropertyDescriptor desc, BeanPropertyDefinition prop, ObjectMapper objectMapper, GlobalEnvironment environment) {
         if (!environment.inclusionStrategy.includeInputField(desc.declaringClass, desc.element, desc.type)) {
             return Stream.empty();
         }
 
         AnnotatedType deserializableType = resolveDeserializableType(desc.accessor, desc.type, desc.accessor.getType(), objectMapper);
-        Object defaultValue = defaultValue(desc.declaringType, prop, desc.type, environment.typeTransformer, environment);
+        Object defaultValue = defaultValue(desc.declaringType, prop, desc.type, environment.typeTransformer, environment, objectMapper);
         return Stream.of(new InputField(prop.getName(), prop.getMetadata().getDescription(), desc.type, deserializableType, defaultValue, desc.element));
     }
 
-    private AnnotatedType resolveDeserializableType(Annotated accessor, AnnotatedType realType, JavaType baseType, ObjectMapper objectMapper) {
+    private static AnnotatedType resolveDeserializableType(Annotated accessor, AnnotatedType realType, JavaType baseType, ObjectMapper objectMapper) {
         AnnotationIntrospector introspector = objectMapper.getDeserializationConfig().getAnnotationIntrospector();
         try {
             objectMapper.getDeserializationContext().getFactory().mapAbstractType(objectMapper.getDeserializationConfig(), objectMapper.constructType(Map.class));
@@ -149,7 +153,7 @@ public class JacksonValueMapper implements ValueMapper, InputFieldBuilder {
         return realType;
     }
 
-    protected Object defaultValue(AnnotatedType type, BeanPropertyDefinition prop, AnnotatedType fieldType, TypeTransformer typeTransformer, GlobalEnvironment environment) {
+    protected static Object defaultValue(AnnotatedType type, BeanPropertyDefinition prop, AnnotatedType fieldType, TypeTransformer typeTransformer, GlobalEnvironment environment, ObjectMapper objectMapper) {
         List<AnnotatedElement> annotatedCandidates = new ArrayList<>(4);
         PropertyDescriptorFactory descFactory = new PropertyDescriptorFactory(type, typeTransformer);
         AnnotatedParameter ctorParam = prop.getConstructorParameter();
@@ -165,7 +169,7 @@ public class JacksonValueMapper implements ValueMapper, InputFieldBuilder {
         if (prop.getField() != null) {
             annotatedCandidates.add(descFactory.fromField(prop.getField()).element);
         }
-        return inputInfoGen.defaultValue(annotatedCandidates, fieldType, (element, t, val) -> fromString((String) val, t), environment).orElse(null);
+        return inputInfoGen.defaultValue(annotatedCandidates, fieldType, (element, t, val) -> fromJsonString((String) val, t, objectMapper), environment).orElse(null);
     }
 
     @Override

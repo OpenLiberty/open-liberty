@@ -11,10 +11,16 @@ import java.lang.reflect.AnnotatedType;
  * @author Bojan Tomic (kaqqao)
  */
 public class ScalarMapper extends CachingMapper<GraphQLScalarType, GraphQLScalarType> {
+    
+    private final Scalars scalars;
+
+    public ScalarMapper(Scalars scalars) {
+        this.scalars = scalars;
+    }
 
     @Override
     public GraphQLScalarType toGraphQLType(String typeName, AnnotatedType javaType, OperationMapper operationMapper, BuildContext buildContext) {
-        return Scalars.toGraphQLScalarType(javaType.getType());
+        return scalars.toGraphQLScalarType(javaType.getType());
     }
 
     @Override
@@ -24,12 +30,12 @@ public class ScalarMapper extends CachingMapper<GraphQLScalarType, GraphQLScalar
 
     @Override
     public boolean supports(AnnotatedType type) {
-        return Scalars.isScalar(type.getType());
+        return scalars.isScalar(type.getType());
     }
 
     @Override
     protected String getTypeName(AnnotatedType type, BuildContext buildContext) {
-        return Scalars.toGraphQLScalarType(type.getType()).getName();
+        return scalars.toGraphQLScalarType(type.getType()).getName();
     }
 
     @Override
