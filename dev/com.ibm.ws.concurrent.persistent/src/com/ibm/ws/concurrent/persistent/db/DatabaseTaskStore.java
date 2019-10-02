@@ -12,6 +12,7 @@ package com.ibm.ws.concurrent.persistent.db;
 
 import java.security.AccessController;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,6 +28,8 @@ import javax.persistence.LockModeType;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+
+import org.eclipse.persistence.exceptions.DatabaseException;
 
 import com.ibm.websphere.concurrent.persistent.PersistentExecutor;
 import com.ibm.websphere.concurrent.persistent.TaskState;
@@ -276,13 +279,46 @@ public class DatabaseTaskStore implements TaskStore {
             em.persist(property);
             em.flush();
         } catch (EntityExistsException x) {
-            return false;
+            /*
+             * FIXME JPA Spec says em.persist should throw EntityExistsException if entity already exists.
+             * EclipseLink implementation throws PersistanceException during the flush operation.
+             * If EclipseLink changes behavior, this exception will notify us that we need to reactor
+             * this catch to return false, and subsequent PersistenceException can remove extra checks.
+             */
+            throw new UnsupportedOperationException("EntityExistsException thrown during persist operation. "
+                                                    + "This behavior was not previously seen, and needs to be handled by the PersistanceExecutor.", x);
         } catch (PersistenceException x) {
             // Some JPA providers may throw PersistenceException for some scenarios where it can be
             // determined the row really does exist; handle those here
+
+            //TODO Remove later - Caused by Constraint Violation
             if (x.getCause() instanceof SQLIntegrityConstraintViolationException) {
                 return false;
             }
+
+            //TODO Remove later - Caused by Constraint Violation using generic SQLException
+            DatabaseException dbException = x.getCause() instanceof DatabaseException ? (DatabaseException) x.getCause() : null;
+            if (dbException != null) {
+                SQLException sqlException = dbException.getCause() instanceof SQLException ? (SQLException) dbException.getCause() : null;
+                if (sqlException != null) {
+
+                    //Investigate SQL State
+                    String message = sqlException.getLocalizedMessage();
+                    String sqlState = sqlException.getSQLState();
+                    int errorCode = sqlException.getErrorCode();
+
+                    //SQL State 23505 - Unique Constraint Violation
+                    //Suggests that we are trying to insert a row, but the primary key already exists.
+                    if (sqlState.equalsIgnoreCase("23505")) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "createProperty", message, sqlState, errorCode);
+                        }
+                        return false;
+                    }
+                }
+            }
+
+            //Final effort try to find property
             try {
                 em.detach(property); // ensure em.find won't return object from cache
                 if (em.find(Property.class, name) != null) {
