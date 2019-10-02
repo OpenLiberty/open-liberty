@@ -24,7 +24,7 @@
   <persistentExecutor id="persistentExec1" jndiName="persistent/exec1" enableTaskExecution="false"/>
 
   <!-- runs its own tasks and takes late tasks from others -->
-  <persistentExecutor id="persistentExec2" jndiName="persistent/exec2" pollInterval="2s" lateTaskThreshold="3s"/>
+  <persistentExecutor id="persistentExec2" jndiName="persistent/exec2" pollInterval="2s" missedTaskThreshold="3s"/>
 
   <!-- database for scheduled tasks -->
   <dataSource id="DefaultDataSource">
