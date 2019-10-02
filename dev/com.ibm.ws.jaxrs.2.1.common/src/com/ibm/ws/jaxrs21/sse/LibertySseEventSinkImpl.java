@@ -182,7 +182,7 @@ public class LibertySseEventSinkImpl implements SseEventSink {
         if (sm == null) {
             if (JAVA8 || COMPLETION_STAGE_FACTORY_IS_NULL) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Running on Java 8 in an Java SE environment.  Using ForkJoinPool.commonPool()");
+                    Tr.debug(tc, "Running on Java 8 or in an Java SE environment.  Using ForkJoinPool.commonPool()");
                 }
                 return new CompletableFuture<>();
             } 
@@ -192,7 +192,7 @@ public class LibertySseEventSinkImpl implements SseEventSink {
         return AccessController.doPrivileged((PrivilegedAction<CompletableFuture<?>>)() -> {
             if (JAVA8 || COMPLETION_STAGE_FACTORY_IS_NULL) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Running on Java 8 in an Java SE environment.  Using ForkJoinPool.commonPool()");
+                    Tr.debug(tc, "Running on Java 8 or in an Java SE environment.  Using ForkJoinPool.commonPool()");
                 }
                 return new CompletableFuture<>();
             }
