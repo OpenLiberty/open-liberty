@@ -40,10 +40,20 @@ public class ArtifactDownloader {
         configureProxyAuthentication();
         configureAuthentication();
         downloadedFiles.clear();
-        int repoResponseCode = ArtifactDownloaderUtils.exists(repo);
+        int repoResponseCode;
+        try {
+            repoResponseCode = ArtifactDownloaderUtils.exists(repo);
+        } catch (IOException e) {
+            throw new InstallException(e.getMessage());
+        }
         ArtifactDownloaderUtils.checkResponseCode(repoResponseCode, repo);
         List<String> featureURLs = ArtifactDownloaderUtils.acquireFeatureURLs(mavenCoords, repo);
-        List<String> missingFeatures = ArtifactDownloaderUtils.getMissingFiles(featureURLs);
+        List<String> missingFeatures;
+        try {
+            missingFeatures = ArtifactDownloaderUtils.getMissingFiles(featureURLs);
+        } catch (IOException e) {
+            throw new InstallException(e.getMessage());
+        }
         if (!missingFeatures.isEmpty()) {
             List<String> missingFeatureList = new ArrayList<String>();
             for (String f : missingFeatures) {
@@ -63,7 +73,12 @@ public class ArtifactDownloader {
     public void synthesizeAndDownload(String mavenCoords, String filetype, String dLocation, String repo, boolean individualDownload) throws InstallException {
         if (individualDownload) {
             checkValidProxy();
-            int repoResponseCode = ArtifactDownloaderUtils.exists(repo);
+            int repoResponseCode;
+            try {
+                repoResponseCode = ArtifactDownloaderUtils.exists(repo);
+            } catch (IOException e) {
+                throw new InstallException(e.getMessage());
+            }
             ArtifactDownloaderUtils.checkResponseCode(repoResponseCode, repo);
         }
         String groupId = ArtifactDownloaderUtils.getGroupId(mavenCoords).replace(".", "/") + "/";
@@ -138,7 +153,6 @@ public class ArtifactDownloader {
         InputStream in = null;
         try {
             URL url = address.toURL();
-            System.out.println();
             try {
                 out = new BufferedOutputStream(new FileOutputStream(destination));
             } catch (FileNotFoundException e) {
@@ -251,6 +265,7 @@ public class ArtifactDownloader {
     }
 
     public void checkValidProxy() throws InstallException {
+
         String proxyPort = System.getProperty("http.proxyPort");
         if (System.getProperty("http.proxyUser") != null) {
             int proxyPortnum = Integer.parseInt(proxyPort);
@@ -258,6 +273,9 @@ public class ArtifactDownloader {
                 throw ExceptionUtils.createByKey("ERROR_TOOL_PROXY_HOST_MISSING");
             } else if (proxyPortnum < 0 || proxyPortnum > 65535) {
                 throw ExceptionUtils.createByKey("ERROR_TOOL_INVALID_PROXY_PORT", proxyPort);
+            } else if (System.getProperty("http.proxyPassword").isEmpty() ||
+                       System.getProperty("http.proxyPassword") == null) {
+                throw ExceptionUtils.createByKey("ERROR_TOOL_PROXY_PWD_MISSING");
             }
         }
     }

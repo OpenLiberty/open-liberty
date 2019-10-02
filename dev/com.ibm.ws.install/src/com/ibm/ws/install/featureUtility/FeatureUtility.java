@@ -255,9 +255,16 @@ public class FeatureUtility {
      */
     private List<File> downloadFeatureEsas(List<String> features) throws InstallException {
         map.put("download.artifact.list", features);
+
         map.put("download.local.dir.location", this.usingM2Cache ? fromDir.getAbsolutePath() : TEMP_DIRECTORY);
-        map.put("download.remote.maven.repo", "http://repo.maven.apache.org/maven2/");
+        if (System.getenv("MAVEN_REPOSITORY") != null) {
+            map.put("download.remote.maven.repo", System.getenv("MAVEN_REPOSITORY"));
+            System.out.println(System.getenv("MAVEN_REPOSITORY"));
+        } else {
+            map.put("download.remote.maven.repo", "http://repo.maven.apache.org/maven2/");
+        }
         boolean singleArtifactInstall = false;
+
         map.put("download.inidividual.artifact", singleArtifactInstall);
         List<File> result = (List<File>) map.get("download.result");
 
@@ -358,8 +365,14 @@ public class FeatureUtility {
     private List<File> getJsonsFromMavenCentral() throws InstallException {
         // get open liberty json
         List<File> result = new ArrayList<File>();
+
         map.put("download.local.dir.location", this.usingM2Cache ? fromDir.getAbsolutePath() : TEMP_DIRECTORY);
-        map.put("download.remote.maven.repo", "http://repo.maven.apache.org/maven2/");
+        if (System.getenv("MAVEN_REPOSITORY") != null) {
+            map.put("download.remote.maven.repo", System.getenv("MAVEN_REPOSITORY"));
+            System.out.println(System.getenv("MAVEN_REPOSITORY"));
+        } else {
+            map.put("download.remote.maven.repo", "http://repo.maven.apache.org/maven2/");
+        }
         map.put("download.filetype", "json");
         boolean singleArtifactInstall = true;
         map.put("download.inidividual.artifact", singleArtifactInstall);
