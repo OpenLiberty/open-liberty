@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.wim.registry;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -246,7 +247,7 @@ public class WIMUserRegistryTest {
                 cns[index++] = result;
             }
 
-            assertEquals("CN Mismatched", expectedcns, cns);
+            assertArrayEquals("CN Mismatched", expectedcns, cns);
         } catch (Exception e) {
             String errorMessage = e.getMessage();
             assertEquals("Call completed successfully", true, false + " with " + errorMessage);
