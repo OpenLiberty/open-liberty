@@ -12,6 +12,7 @@ package com.ibm.ws.security.fat.common.expectations;
 
 import static org.junit.Assert.fail;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.regex.Pattern;
 
@@ -217,10 +218,15 @@ public class ResponseUrlExpectationTest extends CommonSpecificExpectationTest {
             String searchForRegex = "line1.+line2";
             Expectation exp = new ResponseUrlExpectation(TEST_ACTION, Constants.STRING_MATCHES, searchForRegex, FAILURE_MESSAGE);
             Object content = htmlunitTextPage;
-            URL testUrl = new URL("http://line1\n\rline2");
-            setValidateTestExpectations(content, testUrl);
+            try {
+                URL testUrl = new URL("http://line1\n\rline2");
+                setValidateTestExpectations(content, testUrl);
 
-            runNegativeValidateTestForCheckType_matches(exp, content, testUrl.toString());
+                runNegativeValidateTestForCheckType_matches(exp, content, testUrl.toString());
+            } catch (MalformedURLException e) {
+                // Some JDKs will throw this exception for a URL string with LF or CR characters and other JDKs won't.
+                // Doing nothing in this catch should allow for both behaviors since both could be considered valid.
+            }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
