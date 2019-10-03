@@ -218,12 +218,12 @@ public class CSSCompoundSecMechConfig implements Serializable {
 
                 if (!as_mech.canHandle(requirement.getAs_mech())) {
                     buildAsFailedMsg(requirement);
-                    continue;
+                    return false;
                 }
 
                 if (!sas_mech.canHandle(requirement.getSas_mech(), as_mech.getMechanism())) {
                     cantHandleMsg = sas_mech.getCantHandleMsg();
-                    continue;
+                    return false;
                 }
 
                 // if sslCfgAlias is null don't set it
