@@ -21,7 +21,7 @@
 
   <application location="failoverTimersApp.war"/>
 
-  <persistentExecutor id="DefaultPersistentExecutor" pollInterval="1s400ms" missedTaskThreshold="3s"/>
+  <persistentExecutor id="defaultEJBPersistentTimerExecutor" pollInterval="1s400ms" missedTaskThreshold="3s"/>
 
   <!-- database for persistent EJB timerss -->
   <dataSource id="DefaultDataSource">

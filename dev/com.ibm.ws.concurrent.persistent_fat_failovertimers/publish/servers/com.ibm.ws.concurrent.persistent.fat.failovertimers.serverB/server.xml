@@ -17,16 +17,11 @@
     <feature>servlet-4.0</feature>
   </featureManager>
 
-  <include location="../fatTestPorts.xml"/>
-
-  <httpEndpoint id="defaultHttpEndpoint"
-                host="*"
-                httpPort="${bvt.prop.HTTP_secondary}"
-                httpsPort="${bvt.prop.HTTP_secondary.secure}"/>
+  <include location="../fatTestPorts.xml"/> <!-- see overrides under configDropins/overrides/fatSecondaryPorts.xml -->
 
   <application location="failoverTimersApp.war"/>
 
-  <persistentExecutor id="DefaultPersistentExecutor" pollInterval="1s500ms" missedTaskThreshold="3s"/>
+  <persistentExecutor id="defaultEJBPersistentTimerExecutor" pollInterval="1s500ms" missedTaskThreshold="3s"/>
 
   <!-- database for persistent EJB timerss -->
   <dataSource id="DefaultDataSource">

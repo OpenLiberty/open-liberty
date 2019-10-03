@@ -10,8 +10,6 @@
  *******************************************************************************/
 package failovertimers.web;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 import java.sql.Connection;
@@ -19,13 +17,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
-import javax.ejb.EJB;
 import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -34,9 +29,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import javax.transaction.UserTransaction;
 
-import org.junit.Test;
-
 import componenttest.app.FATServlet;
+import failovertimers.ejb.stateless.StatelessTxSuspendedBean;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/FailoverTimersTestServlet")
@@ -92,6 +86,27 @@ public class FailoverTimersTestServlet extends FATServlet {
     @Override
     public void init(ServletConfig c) throws ServletException {
         createTables(ds);
+    }
+
+    /**
+     * Cancel all timers that were scheduled by the StatelessTxSuspendedBean.
+     */
+    public void testCancelStatelessTxSuspendedTimers(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        StatelessTxSuspendedBean bean = InitialContext.doLookup("java:global/failoverTimersApp/StatelessTxSuspendedBean!failovertimers.ejb.stateless.StatelessTxSuspendedBean");
+        bean.cancelTimers();
+    }
+
+    /**
+     * Programmatically schedule an EJB persistent timer that runs without a global transaction on the thread
+     * at the specified interval and with the specific initial delay.
+     */
+    public void testScheduleStatelessTxSuspendedTimer(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String timerName = request.getParameter("timer");
+        long initialDelayMS = Long.parseLong((String) request.getParameter("initialDelayMS"));
+        long intervalMS = Long.parseLong(request.getParameter("intervalMS"));
+
+        StatelessTxSuspendedBean bean = InitialContext.doLookup("java:global/failoverTimersApp/StatelessTxSuspendedBean!failovertimers.ejb.stateless.StatelessTxSuspendedBean");
+        bean.scheduleTimer(initialDelayMS, intervalMS, timerName);
     }
 
     /**

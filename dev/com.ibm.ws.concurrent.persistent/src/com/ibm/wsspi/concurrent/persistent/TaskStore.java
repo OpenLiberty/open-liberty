@@ -208,6 +208,16 @@ public interface TaskStore {
     TaskRecord getNextExecutionTime(long taskId, String owner) throws Exception;
 
     /**
+     * Returns the identifier of the partition to which the task is assigned.
+     *
+     * @param taskId unique identifier for the task.
+     * @return the identifier of the partition to which the task is assigned.
+     *         If the task is not found then <code>null</code> is returned.
+     * @throws Exception if an error occurs accessing the persistent store.
+     */
+    Long getPartition(long taskId) throws Exception;
+
+    /**
      * Returns name/value pairs for all persisted properties that match the specified name pattern.
      * For example, to find property names that start with "MY_PROP_NAME_",
      * taskStore.getProperties("MY\\_PROP\\_NAME\\_%", '\\');

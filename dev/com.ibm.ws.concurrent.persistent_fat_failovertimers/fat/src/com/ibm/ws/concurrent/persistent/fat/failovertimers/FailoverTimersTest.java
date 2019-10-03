@@ -68,11 +68,11 @@ public class FailoverTimersTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         originalConfigA = serverA.getServerConfiguration();
-        ShrinkHelper.defaultApp(serverA, APP_NAME, "failovertimers.web", "failovertimers.ejb.autotimer");
+        ShrinkHelper.defaultApp(serverA, APP_NAME, "failovertimers.web", "failovertimers.ejb.autotimer", "failovertimers.ejb.stateless");
 
         serverB.useSecondaryHTTPPort();
         originalConfigB = serverB.getServerConfiguration();
-        ShrinkHelper.defaultApp(serverB, APP_NAME, "failovertimers.web", "failovertimers.ejb.autotimer");
+        ShrinkHelper.defaultApp(serverB, APP_NAME, "failovertimers.web", "failovertimers.ejb.autotimer", "failovertimers.ejb.stateless");
 
         // TODO Test infrastructure is unable to start multiple servers at once. Intermittent errors occur while processing fatFeatureList.xml
         boolean startInParallel = false;
@@ -106,6 +106,46 @@ public class FailoverTimersTest extends FATServletClient {
     }
 
     /**
+     * On one of the servers, programmatically start a persistent timer which runs outside of a global transaction.
+     * Stop the application on that server (but not the server itself)
+     * and verify that the timer starts running on the same application on a different server.
+     */
+    @Test
+    public void testProgrammaticTimerWithTxSuspendedFailsOverWhenAppStops() throws Exception {
+        runTest(serverB, APP_NAME + "/FailoverTimersTestServlet",
+                "testScheduleStatelessTxSuspendedTimer&timer=StatelessTxSuspendedTimer_1_2&initialDelayMS=1000&intervalMS=2000&test=testProgrammaticTimerWithTxSuspendedFailsOverWhenAppStops[1]");
+        try {
+            ServerConfiguration newConfig = originalConfigB.clone();
+            newConfig.getApplications().removeBy("location", "failoverTimersApp.war");
+            serverB.setMarkToEndOfLog();
+            serverB.updateServerConfiguration(newConfig);
+            try {
+                runTest(serverA, APP_NAME + "/FailoverTimersTestServlet",
+                        "testTimerFailover&timer=StatelessTxSuspendedTimer_1_2&server=" + SERVER_A_NAME + "&test=testProgrammaticTimerWithTxSuspendedFailsOverWhenAppStops[2]");
+            } finally {
+                Set<String> remainingApps = APP_NAMES.stream().filter(s -> !s.equals(APP_NAME)).collect(Collectors.toSet());
+                serverB.waitForConfigUpdateInLogUsingMark(remainingApps);
+            }
+        } finally {
+            serverB.setMarkToEndOfLog();
+            serverB.updateServerConfiguration(originalConfigB);
+            serverB.waitForConfigUpdateInLogUsingMark(APP_NAMES);
+
+            // The server upon which the application was stopped will try to run the task again
+            // upon seeing that the application has become available.
+            // However, the task now belongs to a different member (paritionId). It should be skipped silently without errors.
+            Thread.sleep(2000);
+
+            // Also restart the server. This allows us to process any expected warning messages that are logged in response
+            // to the application going away while its scheduled tasks remain.
+            serverB.stopServer("CWWKC1556W"); // Execution of tasks from application failoverTimersApp is deferred until the application and modules that scheduled the tasks are available.
+            serverB.startServer("after-testProgrammaticTimerWithTxSuspendedFailsOverWhenAppStops");
+
+            runTest(serverB, APP_NAME + "/FailoverTimersTestServlet", "testCancelStatelessTxSuspendedTimers&test=testProgrammaticTimerWithTxSuspendedFailsOverWhenAppStops[3]");
+        }
+    }
+
+    /**
      * Determine which server an automatic persistent timer, which is a Singleton EJB, is running on.
      * Stop the application on that server (but not the server itself)
      * and verify that the timer starts running on the same application on a different server.
@@ -125,15 +165,16 @@ public class FailoverTimersTest extends FATServletClient {
             newConfig.getApplications().removeBy("location", "failoverTimersApp.war");
             serverOnWhichToStopApp.setMarkToEndOfLog();
             serverOnWhichToStopApp.updateServerConfiguration(newConfig);
+            try {
+                String nameOfServerForFailover = serverOnWhichToStopApp == serverA ? SERVER_B_NAME : SERVER_A_NAME;
+                LibertyServer serverForFailover = serverOnWhichToStopApp == serverA ? serverB : serverA;
 
-            String nameOfServerForFailover = serverOnWhichToStopApp == serverA ? SERVER_B_NAME : SERVER_A_NAME;
-            LibertyServer serverForFailover = serverOnWhichToStopApp == serverA ? serverB : serverA;
-
-            runTest(serverForFailover, APP_NAME + "/FailoverTimersTestServlet",
-                    "testTimerFailover&timer=AutomaticCountingSingletonTimer&server=" + nameOfServerForFailover + "&test=testSingletonTimerFailsOverWhenAppStops[2]");
-
-            Set<String> remainingApps = APP_NAMES.stream().filter(s -> !s.equals(APP_NAME)).collect(Collectors.toSet());
-            serverOnWhichToStopApp.waitForConfigUpdateInLogUsingMark(remainingApps);
+                runTest(serverForFailover, APP_NAME + "/FailoverTimersTestServlet",
+                        "testTimerFailover&timer=AutomaticCountingSingletonTimer&server=" + nameOfServerForFailover + "&test=testSingletonTimerFailsOverWhenAppStops[2]");
+            } finally {
+                Set<String> remainingApps = APP_NAMES.stream().filter(s -> !s.equals(APP_NAME)).collect(Collectors.toSet());
+                serverOnWhichToStopApp.waitForConfigUpdateInLogUsingMark(remainingApps);
+            }
         } finally {
             serverOnWhichToStopApp.setMarkToEndOfLog();
             serverOnWhichToStopApp.updateServerConfiguration(originalConfig);

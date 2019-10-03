@@ -751,6 +751,38 @@ public class DatabaseTaskStore implements TaskStore {
         return taskRecord;
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public Long getPartition(long taskId) throws Exception {
+        String find = "SELECT t.PARTN FROM Task t WHERE t.ID=:i";
+
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "getPartition", taskId, find);
+
+        List<Object[]> resultList;
+        EntityManager em = getPersistenceServiceUnit().createEntityManager();
+        try {
+            TypedQuery<Object[]> query = em.createQuery(find.toString(), Object[].class);
+            query.setParameter("i", taskId);
+            resultList = query.getResultList();
+        } finally {
+            em.close();
+        }
+
+        Long partitionId;
+        if (resultList.isEmpty())
+            partitionId = null;
+        else {
+            Object[] result = resultList.get(0);
+            partitionId = (Long) result[0];
+        }
+
+        if (trace && tc.isEntryEnabled())
+            Tr.exit(this, tc, "getPartition", partitionId);
+        return partitionId;
+    }
+
     /**
      * Returns the persistence service unit, lazily initializing if necessary.
      *
