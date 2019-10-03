@@ -49,16 +49,18 @@ public class TSSUnknownServiceConfigurationConfig extends TSSServiceConfiguratio
     /** {@inheritDoc} */
     @Override
     @FFDCIgnore(UnsupportedEncodingException.class)
-    void toString(String spaces, StringBuilder buf) {
-        String moreSpaces = spaces + "  ";
-        buf.append(spaces).append("TSSUnknownServiceConfigurationConfig: [\n");
+    public String toString() {
+        StringBuilder buf = new StringBuilder();
+        String moreSpaces = "  ";
+        buf.append("TSSUnknownServiceConfigurationConfig: [\n");
         buf.append(moreSpaces).append("syntax VMCID : ").append(Integer.toHexString(syntax >> 12)).append("\n");
         buf.append(moreSpaces).append("syntax organization-scoped syntax identifier : ").append(Integer.toHexString(syntax & 0XFFF)).append("\n");
         try {
             buf.append(moreSpaces).append("name: ").append(Arrays.asList(name)).append(" (").append(new String(name, "ISO-8859-1")).append(")\n");
         } catch (UnsupportedEncodingException e) {
         }
-        buf.append(spaces).append("]\n");
+        buf.append("]\n");
+        return buf.toString();
     }
 
     public int getSyntax() {
