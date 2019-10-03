@@ -36,8 +36,11 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 import org.w3c.dom.TypeInfo;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 import org.apache.cxf.helpers.DOMUtils;
 
+@Trivial
 public class W3CDOMStreamReader extends AbstractDOMStreamReader<Node, Node> {
     private Node content;
 
@@ -421,7 +424,7 @@ public class W3CDOMStreamReader extends AbstractDOMStreamReader<Node, Node> {
         }
         return super.getLocation();
     }
-    
+
     public String toString() {
         if (document == null) {
             return "<null>";

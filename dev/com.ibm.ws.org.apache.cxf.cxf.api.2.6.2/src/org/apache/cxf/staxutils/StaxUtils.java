@@ -77,6 +77,8 @@ import org.w3c.dom.UserDataHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 import org.apache.cxf.common.classloader.ClassLoaderUtils;
 import org.apache.cxf.common.logging.LogUtils;
 import org.apache.cxf.common.util.StringUtils;
@@ -535,15 +537,20 @@ public final class StaxUtils {
         }
         return d;
     }
+
+    @Trivial
     public static void copy(Document doc, XMLStreamWriter writer) throws XMLStreamException {
         XMLStreamReader reader = createXMLStreamReader(doc);
         copy(reader, writer);
     }
+
+    @Trivial
     public static void copy(Element node, XMLStreamWriter writer) throws XMLStreamException {
         XMLStreamReader reader = createXMLStreamReader(node);
         copy(reader, writer);
     }
-    
+
+    @Trivial
     public static void copy(XMLStreamReader reader, OutputStream os)
         throws XMLStreamException {
         XMLStreamWriter xsw = StaxUtils.createXMLStreamWriter(os);
@@ -562,9 +569,12 @@ public final class StaxUtils {
      * @param writer
      * @throws XMLStreamException
      */
+    @Trivial
     public static void copy(XMLStreamReader reader, XMLStreamWriter writer) throws XMLStreamException {
         copy(reader, writer, false);
     }
+
+    @Trivial
     public static void copy(XMLStreamReader reader, XMLStreamWriter writer,
                             boolean fragment) throws XMLStreamException {
         // number of elements read in
@@ -608,6 +618,7 @@ public final class StaxUtils {
         }
     }
 
+    @Trivial
     private static void writeStartElement(XMLStreamReader reader, XMLStreamWriter writer)
         throws XMLStreamException {
         String uri = reader.getNamespaceURI();
@@ -1489,16 +1500,23 @@ public final class StaxUtils {
             returnXMLInputFactory(factory);
         }
     }
-    
+
+    @Trivial
     public static XMLStreamReader createXMLStreamReader(Element el) {
         return new W3CDOMStreamReader(el);
     }
+
+    @Trivial
     public static XMLStreamReader createXMLStreamReader(Document doc) {
         return new W3CDOMStreamReader(doc.getDocumentElement());
     }
+
+    @Trivial
     public static XMLStreamReader createXMLStreamReader(Element el, String sysId) {
         return new W3CDOMStreamReader(el, sysId);
     }
+
+    @Trivial
     public static XMLStreamReader createXMLStreamReader(Document doc, String sysId) {
         return new W3CDOMStreamReader(doc.getDocumentElement(), sysId);
     }
@@ -1775,6 +1793,7 @@ public final class StaxUtils {
         }
     }
 
+    @Trivial
     public static String toString(Document doc) throws XMLStreamException {
         StringWriter sw = new StringWriter(1024);
         XMLStreamWriter writer = null;
@@ -1787,6 +1806,7 @@ public final class StaxUtils {
         }
         return sw.toString();
     }
+    @Trivial
     public static String toString(Element el) throws XMLStreamException {
         StringWriter sw = new StringWriter(1024);
         XMLStreamWriter writer = null;
