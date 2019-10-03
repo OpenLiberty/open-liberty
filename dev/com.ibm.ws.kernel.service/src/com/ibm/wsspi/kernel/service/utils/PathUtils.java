@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
@@ -43,17 +42,7 @@ public class PathUtils {
      * if system property "os.name" contains the text "windows" (using a case-insensitive
      * test). Used by {@link #fixPathString(File)} and related methods.
      */
-    private static final boolean isWindows;
-
-    static {
-        isWindows = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
-            @Override
-            public Boolean run() {
-                return System.getProperty("os.name", "unknown").toUpperCase(Locale.ENGLISH).contains("WINDOWS");
-            }
-
-        });
-    }
+    private static final boolean isWindows = System.getProperty("os.name", "unknown").toUpperCase(Locale.ENGLISH).contains("WINDOWS");
 
     /**
      * Pattern used to determine if a URI is an absolute URI.

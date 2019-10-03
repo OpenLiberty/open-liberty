@@ -21,7 +21,6 @@
 		<feature>servlet-4.0</feature>
 		<feature>mpFaultTolerance-2.0</feature>
 		<feature>mpMetrics-2.0</feature>
-		<feature>mpFT-Metrics-2.0-guard</feature>
 	</featureManager>
 
 </server>

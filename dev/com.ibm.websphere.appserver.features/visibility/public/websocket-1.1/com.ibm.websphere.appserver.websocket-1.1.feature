@@ -17,3 +17,4 @@ Subsystem-Name: Java WebSocket 1.1
 -files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.wsoc_1.0-javadoc.zip
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

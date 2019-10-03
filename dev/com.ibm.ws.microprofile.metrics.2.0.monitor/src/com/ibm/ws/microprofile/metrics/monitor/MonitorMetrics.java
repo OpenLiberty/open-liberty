@@ -31,9 +31,9 @@ public class MonitorMetrics {
 	private static final TraceComponent tc = Tr.register(MonitorMetrics.class);
 	
 	protected String objectName;
-	private String mbeanStatsName;
-	private MBeanServer mbs;
-	private Set<MetricID> metricIDs;
+	protected String mbeanStatsName;
+	protected MBeanServer mbs;
+	protected Set<MetricID> metricIDs;
 
 	public MonitorMetrics(String objectName) {
 		this.mbs = ManagementFactory.getPlatformMBeanServer();
@@ -86,7 +86,7 @@ public class MonitorMetrics {
         }		
 	}
 
-	private String getMBeanStatsString() {
+	protected String getMBeanStatsString() {
     	if (mbeanStatsName == null) {
     		String serviceName = null;
     		String serviceURL = null;

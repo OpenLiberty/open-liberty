@@ -27,16 +27,18 @@ Import-Package: \
 	*
 
 Private-Package: \
-	com.ibm.ws.microprofile.metrics.resources,\
 	com.ibm.ws.microprofile.metrics.exceptions,\
 	com.ibm.ws.microprofile.metrics.helper,\
-	com.ibm.ws.microprofile.metrics.writer
+	com.ibm.ws.microprofile.metrics.writer,\
+	com.ibm.ws.microprofile.metrics.resources
 
 Export-Package: \
 	com.ibm.ws.microprofile.metrics,\
 	com.ibm.ws.microprofile.metrics.impl,\
 	com.ibm.ws.microprofile.metrics.config;thread-context=true,\
-	com.ibm.ws.microprofile.metrics.helper
+	com.ibm.ws.microprofile.metrics.helper,\
+	com.ibm.ws.microprofile.metrics.writer,\
+	com.ibm.ws.microprofile.metrics.exceptions
 
 -dsannotations-inherit: true
 -dsannotations: \
@@ -48,6 +50,7 @@ Export-Package: \
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 WS-TraceGroup: METRICS
+
 
 -buildpath: \
 	com.ibm.websphere.org.osgi.core;version=latest,\
@@ -77,4 +80,6 @@ WS-TraceGroup: METRICS
 	com.ibm.websphere.javaee.cdi.1.2;version=latest, \
 	com.ibm.ws.kernel.service;version=latest,\
 	com.ibm.ws.microprofile.metrics.common;version=latest
+	
+	
  

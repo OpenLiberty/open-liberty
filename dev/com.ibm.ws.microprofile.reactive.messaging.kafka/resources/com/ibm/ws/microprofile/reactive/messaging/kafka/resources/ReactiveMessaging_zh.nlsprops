@@ -45,6 +45,16 @@ kafka.send.error.CWMRX1003E=CWMRX1003E: \u5411 Kafka \u4ee3\u7406\u7a0b\u5e8f\u5
 kafka.send.error.CWMRX1003E.explanation=\u5728 Kafka Outgoing Connector \u4e2d\u53d1\u751f\u4e86\u9519\u8bef\uff0c\u65e0\u6cd5\u6267\u884c Reactive Messaging \u7684\u6b63\u5e38\u64cd\u4f5c\u3002
 kafka.send.error.CWMRX1003E.useraction=\u8bf7\u67e5\u770b\u670d\u52a1\u5668 message.log \u6587\u4ef6\u548c FFDC \u65e5\u5fd7\u4ee5\u786e\u5b9a\u95ee\u9898\u3002
 
+# The Reactive Messaging Kafka Outgoing Connector received an error. The error is {0}.
+kafka.output.error.signal.CWMRX1004E=CWMRX1004E: Reactive Messaging Kafka Outgoing Connector \u63a5\u6536\u5230\u9519\u8bef\u3002\u9519\u8bef\u4e3a {0}\u3002
+kafka.output.error.signal.CWMRX1004E.explanation=Kafka Outgoing Connector \u63a5\u6536\u5230\u9519\u8bef\u4fe1\u53f7\uff0c\u65e0\u6cd5\u6267\u884c Reactive Messaging \u7684\u6b63\u5e38\u64cd\u4f5c\u3002
+kafka.output.error.signal.CWMRX1004E.useraction=\u8bf7\u67e5\u770b\u670d\u52a1\u5668 message.log \u6587\u4ef6\u548c FFDC \u65e5\u5fd7\u4ee5\u786e\u5b9a\u95ee\u9898\u3002
+
+# The group.id property was not set in the configuration for this channel. Set the {0} property in one of the MicroProfile Config Sources for this application.
+kafka.groupid.not.set.CWMRX1005E=CWMRX1005E: \u672a\u5728\u6b64\u901a\u9053\u7684\u914d\u7f6e\u4e2d\u8bbe\u7f6e group.id \u5c5e\u6027\u3002\u8bf7\u5728\u6b64\u5e94\u7528\u7a0b\u5e8f\u7684\u5176\u4e2d\u4e00\u4e2a MicroProfile \u914d\u7f6e\u6e90\u4e2d\u8bbe\u7f6e {0} \u5c5e\u6027\u3002
+kafka.groupid.not.set.CWMRX1005E.explanation=\u5fc5\u987b\u8bbe\u7f6e Kafka \u4f7f\u7528\u8005\u7ec4\u6807\u8bc6\uff0cReactive Messaging \u624d\u80fd\u6b63\u5e38\u5de5\u4f5c\u3002
+kafka.groupid.not.set.CWMRX1005E.useraction=\u8bf7\u5728\u6b64\u5e94\u7528\u7a0b\u5e8f\u7684\u5176\u4e2d\u4e00\u4e2a MicroProfile \u914d\u7f6e\u6e90\u4f4d\u7f6e\uff08\u4f8b\u5982 microprofile-config.properties \u6587\u4ef6\uff09\u4e2d\u8bbe\u7f6e\u8be5\u5c5e\u6027\u3002
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Reactive Messaging error message
 #-----------------------------------------------------------------------------------------------------------------------------

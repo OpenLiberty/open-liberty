@@ -32,7 +32,7 @@ import graphql.schema.idl.SchemaPrinter;
 
 import io.leangen.graphql.GraphQLSchemaGenerator;
 import io.leangen.graphql.metadata.strategy.query.AnnotatedResolverBuilder;
-import io.leangen.graphql.metadata.strategy.value.jackson.JacksonValueMapperFactory;
+import io.leangen.graphql.metadata.strategy.value.jsonb.JsonbValueMapperFactory;
 
 import org.eclipse.microprofile.graphql.GraphQLApi;
 import org.osgi.service.component.annotations.Component;
@@ -42,7 +42,9 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.CDIServiceUtils;
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
+import com.ibm.ws.microprofile.graphql.internal.MPDateTimeScalarMapperExtension;
 import com.ibm.ws.microprofile.graphql.internal.MPDefaultInclusionStrategy;
+import com.ibm.ws.microprofile.graphql.internal.MPOperationBuilder;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
@@ -98,12 +100,15 @@ public class GraphQLExtension implements Extension, WebSphereCDIExtension, Intro
             return null;
         }
 
+        JsonbValueMapperFactory jsonbValueMapperFactory = JsonbValueMapperFactory.instance();
         GraphQLSchemaGenerator schemaGen = new GraphQLSchemaGenerator()
                         .withResolverBuilders(new AnnotatedResolverBuilder())
-                        .withValueMapperFactory(new JacksonValueMapperFactory())
+                        .withValueMapperFactory(jsonbValueMapperFactory)
                         .withInclusionStrategy(new MPDefaultInclusionStrategy())
                         .withResolverInterceptors(new PartialResultsResolverInterceptor())
-                        .withOutputConverters(new DataFetcherResultOutputConverter());
+                        .withOutputConverters(new DataFetcherResultOutputConverter())
+                        .withOperationBuilder(new MPOperationBuilder())
+                        .withScalarMapperExtensions(new MPDateTimeScalarMapperExtension());
 
         for (Bean<?> bean : beans) {
             schemaGen.withOperationsFromSingleton(

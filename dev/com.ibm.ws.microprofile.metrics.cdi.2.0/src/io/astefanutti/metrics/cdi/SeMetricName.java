@@ -47,11 +47,11 @@ import org.eclipse.microprofile.metrics.Timer;
 import org.eclipse.microprofile.metrics.annotation.Metric;
 
 @Vetoed
-/* package-private */ class SeMetricName implements MetricName {
+/* package-private */ public class SeMetricName implements MetricName {
 
     private final Set<MetricsParameter> parameters;
 
-    SeMetricName(Set<MetricsParameter> parameters) {
+    public SeMetricName(Set<MetricsParameter> parameters) {
         this.parameters = parameters;
     }
 

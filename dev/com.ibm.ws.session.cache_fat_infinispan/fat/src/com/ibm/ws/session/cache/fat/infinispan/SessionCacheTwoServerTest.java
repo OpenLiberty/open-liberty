@@ -83,7 +83,7 @@ public class SessionCacheTwoServerTest extends FATServletClient {
                     serverA.stopServer();
             } finally {
                 if (serverB.isStarted())
-                    serverB.stopServer("CWWKL0058W:.*InfinispanLib"); // TODO why does this occur for Infinispan jar, but not Hazelcast?
+                    serverB.stopServer();
             }
         }
     }

@@ -33,16 +33,17 @@ public class SAFAuthorizationEvent extends AuditEvent {
     }
 
     public SAFAuthorizationEvent(int safReturnCode,
-                                        int racfReturnCode,
-                                        int racfReasonCode,
-                                        String userSecurityName,
-                                        String applID,
-                                        String safProfile,
-                                        String safClass,
-                                        Boolean authDecision,
-                                        String principalName,
-                                        String accessLevel,
-                                        String errorMessage) {
+                                 int racfReturnCode,
+                                 int racfReasonCode,
+                                 String userSecurityName,
+                                 String applID,
+                                 String safProfile,
+                                 String safClass,
+                                 Boolean authDecision,
+                                 String principalName,
+                                 String accessLevel,
+                                 String errorMessage,
+                                 String methodName) {
         this();
 
         // This is put in by default from AuditEvent, not needed so removing
@@ -85,6 +86,11 @@ public class SAFAuthorizationEvent extends AuditEvent {
         }
         if (errorMessage != null) {
             set(AuditEvent.TARGET_SAF_ERROR_MESSAGE, errorMessage);
+        }
+        // Used to specify the method name where the audit record was cut
+        // Ex: if cut in SAFPasswordChangeUtility.changePassword, methodName would be 'changePassword'
+        if (methodName != null) {
+            set(AuditEvent.TARGET_METHOD, methodName);
         }
     }
 }

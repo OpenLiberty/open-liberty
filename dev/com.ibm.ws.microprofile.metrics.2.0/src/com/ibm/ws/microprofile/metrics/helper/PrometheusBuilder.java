@@ -208,7 +208,7 @@ public class PrometheusBuilder {
         getPromValueLine(builder, name, value, tags, appendUnit);
     }
 
-    private static void getPromValueLine(StringBuilder builder, String name, Number value, String tags, String appendUnit) {
+    protected static void getPromValueLine(StringBuilder builder, String name, Number value, String tags, String appendUnit) {
 
         String metricName = getPrometheusMetricName(name);
 
@@ -229,7 +229,7 @@ public class PrometheusBuilder {
         getPromHelpLine(builder, name, description, null);
     }
 
-    private static void getPromHelpLine(StringBuilder builder, String name, String description, String appendUnit) {
+    protected static void getPromHelpLine(StringBuilder builder, String name, String description, String appendUnit) {
         String metricName = getPrometheusMetricName(name);
         if (description != null && !description.isEmpty()) {
             builder.append("# HELP ").append(metricName);
@@ -245,7 +245,7 @@ public class PrometheusBuilder {
         getPromTypeLine(builder, name, type, null);
     }
 
-    private static void getPromTypeLine(StringBuilder builder, String name, String type, String appendUnit) {
+    protected static void getPromTypeLine(StringBuilder builder, String name, String type, String appendUnit) {
 
         String metricName = getPrometheusMetricName(name);
         builder.append("# TYPE ").append(metricName);

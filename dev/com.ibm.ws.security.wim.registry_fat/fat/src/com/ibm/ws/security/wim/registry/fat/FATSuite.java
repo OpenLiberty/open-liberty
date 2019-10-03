@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 IBM Corporation and others.
+ * Copyright (c) 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({ DefaultWIMRealmTest.class,
                 DefaultWIMRealmMultipleReposTest.class,
                 WIMURRegressionTest.class,
-                MultiValuedOutputPropMappingTest.class
+                MultiValuedOutputPropMappingTest.class,
+                FederateStandaloneCurTest.class
 })
 /**
  * Purpose: This suite collects and runs all known good test suites.

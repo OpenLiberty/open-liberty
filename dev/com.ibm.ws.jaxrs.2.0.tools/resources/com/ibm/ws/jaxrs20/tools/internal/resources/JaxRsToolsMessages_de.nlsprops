@@ -20,6 +20,6 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 
-error.badVersion=CWWKW0900E: Die aktive Java-Version ist nicht korrekt. Die Laufzeitumgebung setzt Java 7 oder h\u00f6her voraus.
+error.badVersion=CWWKW0900E: Die aktive Java-Version ist nicht korrekt. Die Laufzeitumgebung setzt Java 8 oder h\u00f6her voraus.
 error.badVersion.explanation=Entweder ist eine nicht unterst\u00fctzte Java-Version aktiv oder die Systemvariable JAVA_HOME wurde so definiert, dass sie auf eine \u00e4ltere Version von Java verweist.
-error.badVersion.useraction= F\u00fchren Sie ein Upgrade der Java-Version auf Java 7 durch, oder passen Sie die Systemvariable JAVA_HOME so an, dass sie auf Java 7 verweist.
+error.badVersion.useraction= F\u00fchren Sie ein Upgrade der Java-Version auf Java 8 durch, oder passen Sie die Systemvariable JAVA_HOME so an, dass sie auf Java 8 verweist.

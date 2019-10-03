@@ -14,16 +14,12 @@ import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -54,19 +50,6 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
         appA = new SessionCacheApp(serverA, false, "session.cache.infinispan.web", "session.cache.infinispan.web.listener1");
         appB = new SessionCacheApp(serverB, false, "session.cache.infinispan.web"); // no HttpSessionListeners are registered by this app
         serverB.useSecondaryHTTPPort();
-
-        String hazelcastConfigFile = "hazelcast-localhost-only.xml";
-
-        if (FATSuite.isMulticastDisabled()) {
-            Log.info(SessionCacheTwoServerTimeoutTest.class, "setUp", "Disabling multicast in Hazelcast config.");
-            hazelcastConfigFile = "hazelcast-localhost-only-multicastDisabled.xml";
-        }
-
-        String rand = UUID.randomUUID().toString();
-        serverA.setJvmOptions(Arrays.asList("-Dhazelcast.group.name=" + rand,
-                                            "-Dhazelcast.config.file=" + hazelcastConfigFile));
-        serverB.setJvmOptions(Arrays.asList("-Dhazelcast.group.name=" + rand,
-                                            "-Dhazelcast.config.file=" + hazelcastConfigFile));
 
         serverA.startServer();
 

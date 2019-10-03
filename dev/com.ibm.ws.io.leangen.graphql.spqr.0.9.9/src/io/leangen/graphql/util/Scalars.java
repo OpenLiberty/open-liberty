@@ -18,6 +18,7 @@ import graphql.schema.CoercingSerializeException;
 import graphql.schema.GraphQLDirective;
 import graphql.schema.GraphQLNonNull;
 import graphql.schema.GraphQLScalarType;
+import io.leangen.graphql.generator.mapping.ScalarMapperExtension;
 
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
@@ -43,6 +44,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -296,8 +298,8 @@ public class Scalars {
     private static String dateToString(Date date) {
         if (Date.class.equals(date.getClass())) {
             return date.toInstant().toString();
-        } else if (isScalar(date.getClass())) {
-            return Scalars.toGraphQLScalarType(date.getClass()).getCoercing().serialize(date).toString();
+        } else if (DEFAULT_SCALAR_MAPPING.containsKey(date.getClass())) {
+            return DEFAULT_SCALAR_MAPPING.get(date.getClass()).getCoercing().serialize(date).toString();
         } else {
             throw serializationException(date, Date.class, java.sql.Date.class, Time.class, Timestamp.class);
         }
@@ -340,7 +342,7 @@ public class Scalars {
     private static Coercing OBJECT_SCALAR_COERCION = new Coercing<Object, Object>() {
         @Override
         public Object serialize(Object dataFetcherResult) {
-            GraphQLScalarType scalar = toGraphQLScalarType(dataFetcherResult.getClass());
+            GraphQLScalarType scalar = DEFAULT_SCALAR_MAPPING.get(dataFetcherResult.getClass());
             return scalar != null ? scalar.getCoercing().serialize(dataFetcherResult) : dataFetcherResult;
         }
 
@@ -488,14 +490,23 @@ public class Scalars {
                 types, input == null ? "null" : input.getClass().getSimpleName());
     }
 
-    private static final Map<Type, GraphQLScalarType> SCALAR_MAPPING = getScalarMapping();
+    private final static Map<Type, GraphQLScalarType> DEFAULT_SCALAR_MAPPING = getScalarMapping();
+    private final Map<Type, GraphQLScalarType> scalarMapping;
 
-    public static boolean isScalar(Type javaType) {
-        return SCALAR_MAPPING.containsKey(javaType);
+    public Scalars(List<ScalarMapperExtension> extensions) {
+        Map<Type, GraphQLScalarType> mapping = getScalarMapping();
+        for (ScalarMapperExtension ext : extensions) {
+            mapping = ext.updateScalarMappings(mapping);
+        }
+        scalarMapping = Collections.unmodifiableMap(mapping);
     }
 
-    public static GraphQLScalarType toGraphQLScalarType(Type javaType) {
-        return SCALAR_MAPPING.get(javaType);
+    public boolean isScalar(Type javaType) {
+        return scalarMapping.containsKey(javaType);
+    }
+
+    public GraphQLScalarType toGraphQLScalarType(Type javaType) {
+        return scalarMapping.get(javaType);
     }
 
     private static Map<Type, GraphQLScalarType> getScalarMapping() {
@@ -539,7 +550,7 @@ public class Scalars {
         scalarMapping.put(Duration.class, GraphQLDurationScalar);
         scalarMapping.put(Period.class, GraphQLPeriodScalar);
         scalarMapping.put(Locale.class, GraphQLLocale);
-        return Collections.unmodifiableMap(scalarMapping);
+        return scalarMapping;
     }
 
     @FunctionalInterface

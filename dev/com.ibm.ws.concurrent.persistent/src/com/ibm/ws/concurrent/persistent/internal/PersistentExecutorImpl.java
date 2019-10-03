@@ -2193,14 +2193,14 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
         /**
          * Attempt to claim a late task, and if successful in doing so, submit it to run.
          *
-         * @param taskData          list of task detail, as returned by TaskStore.findLateTasks
-         * @param lateTaskThreshold number of seconds beyond which a task is considered late.
+         * @param taskData            list of task detail, as returned by TaskStore.findLateTasks
+         * @param missedTaskThreshold number of seconds beyond which a task is considered missed.
          * @return true if a claim on the task was registered in the persistent store,
          *         regardless of whether the task was actually transferred to this instance.
          *         Otherwise false.
          * @throws Exception if an error occurs.
          */
-        private boolean claimLateTask(Object[] taskData, long lateTaskThreshold) throws Exception {
+        private boolean claimLateTask(Object[] taskData, long missedTaskThreshold) throws Exception {
             final boolean trace = TraceComponent.isAnyTracingEnabled();
 
             long taskId = (long) taskData[0];
@@ -2214,8 +2214,8 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
             boolean claimed = false;
             String reassignment = ":CLAIM:" + taskId; // starting with non-alphanumeric indicates the property is for internal use
             now = new Date().getTime();
-            long lateTaskThresholdMS = TimeUnit.SECONDS.toMillis(lateTaskThreshold);
-            String validUntil = String.format("%019d", now + lateTaskThresholdMS);
+            long missedTaskThresholdMS = TimeUnit.SECONDS.toMillis(missedTaskThreshold);
+            String validUntil = String.format("%019d", now + missedTaskThresholdMS);
 
             EmbeddableWebSphereTransactionManager tranMgr = tranMgrRef.getServiceWithException();
             tranMgr.begin();
@@ -2315,10 +2315,10 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
                         }
                     }
 
-                    if (config.lateTaskThreshold > 0) {
+                    if (config.missedTaskThreshold > 0) {
                         if (trace && tc.isDebugEnabled())
-                            Tr.debug(PersistentExecutorImpl.this, tc, "Poll for tasks late by " + config.lateTaskThreshold + "s");
-                        long lateTaskThresholdMS = TimeUnit.SECONDS.toMillis(config.lateTaskThreshold);
+                            Tr.debug(PersistentExecutorImpl.this, tc, "Poll for tasks late by " + config.missedTaskThreshold + "s");
+                        long lateTaskThresholdMS = TimeUnit.SECONDS.toMillis(config.missedTaskThreshold);
                         tranMgr.begin();
                         try {
                             results = taskStore.findLateTasks(now - lateTaskThresholdMS, getPartitionId(), config.pollSize);
@@ -2329,10 +2329,10 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
                         }
                         boolean anyClaimed = false;
                         for (Object[] result : results)
-                            anyClaimed |= claimLateTask(result, config.lateTaskThreshold);
+                            anyClaimed |= claimLateTask(result, config.missedTaskThreshold);
                         if (anyClaimed) {
                             // schedule a task to clean up the properties table after claims start to expire
-                            scheduledExecutor.schedule(new PropertyCleanupTask(), config.lateTaskThreshold, TimeUnit.SECONDS);
+                            scheduledExecutor.schedule(new PropertyCleanupTask(), config.missedTaskThreshold, TimeUnit.SECONDS);
                         }
                     }
                 } finally {

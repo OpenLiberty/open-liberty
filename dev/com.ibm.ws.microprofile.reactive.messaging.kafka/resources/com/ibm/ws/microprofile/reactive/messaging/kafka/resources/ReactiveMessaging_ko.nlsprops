@@ -45,6 +45,16 @@ kafka.send.error.CWMRX1003E=CWMRX1003E: Kafka \ube0c\ub85c\ucee4\uc5d0 \uba54\uc
 kafka.send.error.CWMRX1003E.explanation=Kafka \ubc1c\uc2e0 \ucee4\ub125\ud130\uc5d0\uc11c Reactive Messaging\uc758 \uc815\uc0c1 \uc870\uc791\uc744 \ubc29\ud574\ud558\ub294 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
 kafka.send.error.CWMRX1003E.useraction=\uc11c\ubc84 message.log \ud30c\uc77c \ubc0f FFDC \ub85c\uadf8\ub97c \uac80\ud1a0\ud558\uc5ec \ubb38\uc81c\uc810\uc744 \ud30c\uc545\ud558\uc2ed\uc2dc\uc624.
 
+# The Reactive Messaging Kafka Outgoing Connector received an error. The error is {0}.
+kafka.output.error.signal.CWMRX1004E=CWMRX1004E: Reactive Messaging Kafka \ubc1c\uc2e0 \ucee4\ub125\ud130\uc5d0\uc11c \uc624\ub958\ub97c \uc218\uc2e0\ud588\uc2b5\ub2c8\ub2e4. \uc624\ub958\ub294 {0}\uc785\ub2c8\ub2e4.
+kafka.output.error.signal.CWMRX1004E.explanation=Kafka \ubc1c\uc2e0 \ucee4\ub125\ud130\uc5d0\uc11c Reactive Messaging\uc758 \uc815\uc0c1 \uc870\uc791\uc744 \ubc29\ud574\ud558\ub294 \uc624\ub958 \uc2e0\ud638\ub97c \uc218\uc2e0\ud588\uc2b5\ub2c8\ub2e4.
+kafka.output.error.signal.CWMRX1004E.useraction=\uc11c\ubc84 message.log \ud30c\uc77c \ubc0f FFDC \ub85c\uadf8\ub97c \uac80\ud1a0\ud558\uc5ec \ubb38\uc81c\uc810\uc744 \ud30c\uc545\ud558\uc2ed\uc2dc\uc624.
+
+# The group.id property was not set in the configuration for this channel. Set the {0} property in one of the MicroProfile Config Sources for this application.
+kafka.groupid.not.set.CWMRX1005E=CWMRX1005E: group.id \ud2b9\uc131\uc774 \uc774 \ucc44\ub110\uc5d0 \ub300\ud55c \uad6c\uc131\uc5d0 \uc124\uc815\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4. \uc774 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0 \ub300\ud55c MicroProfile \uad6c\uc131 \uc18c\uc2a4 \uc911 \ud558\ub098\uc5d0 {0} \ud2b9\uc131\uc744 \uc124\uc815\ud558\uc2ed\uc2dc\uc624.
+kafka.groupid.not.set.CWMRX1005E.explanation=Reactive Messaging\uc774 \uc62c\ubc14\ub974\uac8c \uc791\ub3d9\ud558\ub3c4\ub85d \ud558\ub824\uba74 Kafka \uc774\uc6a9\uc790 \uadf8\ub8f9 ID\uac00 \uc124\uc815\ub418\uc5b4\uc57c \ud569\ub2c8\ub2e4.
+kafka.groupid.not.set.CWMRX1005E.useraction=\uc774 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0 \ub300\ud55c MicroProfile \uad6c\uc131 \uc18c\uc2a4 \uc704\uce58 \uc911 \ud558\ub098(\uc608: microprofile-config.properties \ud30c\uc77c)\uc5d0 \uc774 \ud2b9\uc131\uc744 \uc124\uc815\ud558\uc2ed\uc2dc\uc624.
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Reactive Messaging error message
 #-----------------------------------------------------------------------------------------------------------------------------
