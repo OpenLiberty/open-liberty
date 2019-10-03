@@ -21,6 +21,7 @@ Subsystem-Name: Internal Java RESTful Services 2.1
  com.ibm.websphere.appserver.api.jaxrs20; location:="dev/api/ibm/,lib/", \
  com.ibm.ws.jaxrs.2.1.common, \
  com.ibm.ws.jaxrs.2.x.config, \
+ com.ibm.ws.jaxrs.2.x.monitor, \
  com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxrs.3.2, \
  com.ibm.ws.org.apache.cxf.cxf.rt.rs.client.3.2, \
  com.ibm.ws.org.apache.cxf.cxf.rt.rs.service.description.3.2, \
