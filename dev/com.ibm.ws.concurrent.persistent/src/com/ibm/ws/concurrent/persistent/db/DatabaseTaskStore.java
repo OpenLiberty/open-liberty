@@ -29,8 +29,6 @@ import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
-import org.eclipse.persistence.exceptions.DatabaseException;
-
 import com.ibm.websphere.concurrent.persistent.PersistentExecutor;
 import com.ibm.websphere.concurrent.persistent.TaskState;
 import com.ibm.websphere.concurrent.persistent.TaskStatus;
@@ -281,44 +279,37 @@ public class DatabaseTaskStore implements TaskStore {
         } catch (EntityExistsException x) {
             /*
              * FIXME JPA Spec says em.persist should throw EntityExistsException if entity already exists.
-             * EclipseLink implementation throws PersistanceException during the flush operation.
-             * If EclipseLink changes behavior, this exception will notify us that we need to reactor
-             * this catch to return false, and subsequent PersistenceException can remove extra checks.
+             * EclipseLink implementation throws PersistanceException during the flush operation instead.
+             * If EclipseLink changes behavior or another JPA Impl is used, this exception will notify the JPA
+             * team so that we can update this code path, and remove extraneous PersistenceException checks.
              */
-            throw new UnsupportedOperationException("EntityExistsException thrown during persist operation. "
-                                                    + "This behavior was not previously seen, and needs to be handled by the PersistanceExecutor.", x);
+            throw new UnsupportedOperationException("EntityExistsException indicates that additional or alternative "
+                                                    + "function has been added.", x);
         } catch (PersistenceException x) {
             // Some JPA providers may throw PersistenceException for some scenarios where it can be
             // determined the row really does exist; handle those here
 
-            //TODO Remove later - Caused by Constraint Violation
-            if (x.getCause() instanceof SQLIntegrityConstraintViolationException) {
-                return false;
-            }
+            //TODO remove later if EntityExistsException starts being thrown
+            Throwable cause = x.getCause();
+            while (cause != null) {
+                if (cause instanceof SQLIntegrityConstraintViolationException)
+                    return false;
+                if (cause instanceof SQLException) {
+                    SQLException sqle = (SQLException) cause;
+                    String sqlState = sqle.getSQLState();
 
-            //TODO Remove later - Caused by Constraint Violation using generic SQLException
-            DatabaseException dbException = x.getCause() instanceof DatabaseException ? (DatabaseException) x.getCause() : null;
-            if (dbException != null) {
-                SQLException sqlException = dbException.getCause() instanceof SQLException ? (SQLException) dbException.getCause() : null;
-                if (sqlException != null) {
-
-                    //Investigate SQL State
-                    String message = sqlException.getLocalizedMessage();
-                    String sqlState = sqlException.getSQLState();
-                    int errorCode = sqlException.getErrorCode();
-
-                    //SQL State 23505 - Unique Constraint Violation
-                    //Suggests that we are trying to insert a row, but the primary key already exists.
-                    if (sqlState.equalsIgnoreCase("23505")) {
+                    //SQL State 23xxx also indicates also indicates an integrity constraint violation
+                    if (sqlState != null && sqlState.length() == 5 && sqlState.startsWith("23")) {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "createProperty", message, sqlState, errorCode);
+                            Tr.debug(tc, "createProperty", sqle.getMessage(), sqlState, sqle.getErrorCode());
                         }
                         return false;
                     }
                 }
+                cause = cause.getCause(); //Eventually will return null when end of exceptions stack is reached.
             }
 
-            //Final effort try to find property
+            //Final effort to try and find property
             try {
                 em.detach(property); // ensure em.find won't return object from cache
                 if (em.find(Property.class, name) != null) {
