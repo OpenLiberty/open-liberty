@@ -150,7 +150,7 @@ public interface TargetCache_Options {
 
     //
 
-    boolean USE_BINARY_FORMAT_DEFAULT = false;
+    boolean USE_BINARY_FORMAT_DEFAULT = true;
     String USE_BINARY_FORMAT_PROPERTY_NAME = "anno.cache.binaryFormat";
 
     boolean getUseBinaryFormat();
