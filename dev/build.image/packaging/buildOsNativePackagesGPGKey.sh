@@ -7,22 +7,23 @@ then
      echo "GPG PASSPHRASE is undefined.  skip signing of rpm/deb packages"
      exit 0
 else 
-     File=/usr/bin/expect
-     if [ -e $File ]; then
-         echo "/usr/bin/expect exist"
-         #!/bin/sh
+     #!/bin/sh
 
-         #add rpm macro for rpm signing to identify key
-         touch .rpmmacros
-         echo "%_gpg_name Open Liberty Project" >> .rpmmacros
+     #add rpm macro for rpm signing to identify key
+     touch .rpmmacros
+     echo "%_gpg_name Open Liberty Project" >> .rpmmacros
 
-         #run the expect script to build the rpm
-         expect -f rpmBuild.expect
+     #run the expect script to build the rpm
+     #expect -f rpmBuild.expect
 
-         #Run the expect script to build the deb
-         expect -f debBuild.expect
-     else 
-         echo "/usr/bin/expect does not exist"
-	 exit 0
+     #run commands to build the deb
+     sudo touch ~/.gnupg/pp.txt 
+     sudo echo "{$GPG_PASS}" >> ~/.gnupg/pp.txt
+     debuild -d -b -p'gpg --passphrase-file ~/.gnupg/pp.txt --batch'  -e"admin@openliberty.io"
+     if gpg -k |grep admin ; then
+         echo gpg key imported correctly
+     else
+     	 echo gpg key not imported correctly
      fi
+     sudo rm -f ~/.gnupg/pp.txt
 fi
