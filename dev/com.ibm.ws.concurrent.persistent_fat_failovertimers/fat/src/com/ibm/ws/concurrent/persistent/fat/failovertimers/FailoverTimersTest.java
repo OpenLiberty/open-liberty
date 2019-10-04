@@ -13,9 +13,10 @@ package com.ibm.ws.concurrent.persistent.fat.failovertimers;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Set;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -23,16 +24,21 @@ import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import failovertimers.web.FailoverTimersTestServlet;
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
@@ -61,6 +67,9 @@ public class FailoverTimersTest extends FATServletClient {
     @TestServlet(servlet = FailoverTimersTestServlet.class, contextRoot = APP_NAME)
     public static LibertyServer serverB;
 
+    @Rule
+    public TestName testName = new TestName();
+
     private static final ExecutorService testThreads = Executors.newFixedThreadPool(3);
 
     private static final String TIMER_LAST_RAN_ON = "Timer last ran on server: ";
@@ -73,15 +82,24 @@ public class FailoverTimersTest extends FATServletClient {
         serverB.useSecondaryHTTPPort();
         originalConfigB = serverB.getServerConfiguration();
         ShrinkHelper.defaultApp(serverB, APP_NAME, "failovertimers.web", "failovertimers.ejb.autotimer", "failovertimers.ejb.stateless");
+    }
 
+    /**
+     * Ensure both servers are started before running each test.
+     */
+    @Before
+    public void setUpPerTest() throws Exception {
         // TODO Test infrastructure is unable to start multiple servers at once. Intermittent errors occur while processing fatFeatureList.xml
         boolean startInParallel = false;
 
         if (startInParallel) {
-            testThreads.invokeAll(Arrays.asList(
-                    () -> serverA.startServer(),
-                    () -> serverB.startServer()
-            )).forEach(f -> {
+            ArrayList<Callable<ProgramOutput>> startActions = new ArrayList<>();
+            if (!serverA.isStarted())
+                startActions.add(() -> serverA.startServer(testName.getMethodName()));
+            if (!serverB.isStarted())
+                startActions.add(() -> serverB.startServer(testName.getMethodName()));
+
+            testThreads.invokeAll(startActions).forEach(f -> {
                 try {
                     f.get();
                 } catch (ExecutionException | InterruptedException x) {
@@ -89,8 +107,10 @@ public class FailoverTimersTest extends FATServletClient {
                 }
             });
         } else {
-            serverA.startServer();
-            serverB.startServer();
+            if (!serverA.isStarted())
+                serverA.startServer(testName.getMethodName());
+            if (!serverB.isStarted())
+                serverB.startServer(testName.getMethodName());
         }
     }
 
@@ -103,6 +123,51 @@ public class FailoverTimersTest extends FATServletClient {
             if (serverB.isStarted())
                 serverB.stopServer();
         }
+    }
+
+    /**
+     * On one of the servers, programmatically start a persistent timer which runs in the same global transaction
+     * as the database operations performed by the EJB Timer Server/persistent executor.
+     * Force the timer to start failing on that server (but keep the application and the server up)
+     * and verify that the timer starts running on the same application on a different server.
+     * This should occur even if a retryInterval is configured on the server where the failure occurs.
+     */
+    @AllowedFFDC({
+        "java.util.concurrent.CompletionException", // intentionally raised by timer to force a rollback
+        "com.ibm.websphere.csi.CSITransactionRolledbackException", // internally raised exception for rollback path
+        "javax.ejb.TransactionRolledbackLocalException" // EJB spec exception for rollback
+        })
+    @Test
+    public void testProgrammaticTimerFailsOverWhenTimerFailsOnOneServer() throws Exception {
+        runTest(serverA, APP_NAME + "/FailoverTimersTestServlet",
+                "testScheduleStatelessTimer&timer=Timer_400_1700&initialDelayMS=400&intervalMS=1700&test=testProgrammaticTimerFailsOverWhenTimerFailsOnOneServer[1]");
+        try {
+            // Make the timer fail when it runs on the server (A) from which it was scheduled
+            runTest(serverA, APP_NAME + "/FailoverTimersTestServlet",
+                    "disallowTimer&timer=Timer_400_1700&test=testProgrammaticTimerFailsOverWhenTimerFailsOnOneServer[2]");
+
+            // Verify that the timer fails over to the other server (B) and runs there
+            runTest(serverA, APP_NAME + "/FailoverTimersTestServlet",
+                    "testTimerFailover&timer=Timer_400_1700&server=" + SERVER_B_NAME + "&test=testProgrammaticTimerFailsOverWhenTimerFailsOnOneServer[3]");
+        } finally {
+            // The server (serverA) upon which the timer failed will initially continue trying to run it.
+            // However, the timer now belongs to a different member (paritionId), so it should be skipped silently
+            // on serverA and then no longer rescheduled there.
+            Thread.sleep(2000);
+
+            runTest(serverA, APP_NAME + "/FailoverTimersTestServlet",
+                    "allowTimer&timer=Timer_400_1700&test=testProgrammaticTimerFailsOverWhenTimerFailsOnOneServer[4]");
+
+            runTest(serverA, APP_NAME + "/FailoverTimersTestServlet",
+                    "testCancelStatelessTxSuspendedTimers&test=testProgrammaticTimerFailsOverWhenTimerFailsOnOneServer[5]");
+        }
+
+        // Also restart the server. This allows us to process any expected warning messages that are logged in response
+        // to the intentionally failed task.
+        serverA.stopServer(
+                "CNTR0020E.*Timer_400_1700", // EJB threw an unexpected (non-declared) exception during invocation of ...
+                "CWWKC1501W.*Timer_400_1700" // Persistent executor defaultEJBPersistentTimerExecutor rolled back task ...
+                );
     }
 
     /**
@@ -136,12 +201,11 @@ public class FailoverTimersTest extends FATServletClient {
             // However, the task now belongs to a different member (paritionId). It should be skipped silently without errors.
             Thread.sleep(2000);
 
+            runTest(serverB, APP_NAME + "/FailoverTimersTestServlet", "testCancelStatelessTxSuspendedTimers&test=testProgrammaticTimerWithTxSuspendedFailsOverWhenAppStops[3]");
+
             // Also restart the server. This allows us to process any expected warning messages that are logged in response
             // to the application going away while its scheduled tasks remain.
             serverB.stopServer("CWWKC1556W"); // Execution of tasks from application failoverTimersApp is deferred until the application and modules that scheduled the tasks are available.
-            serverB.startServer("after-testProgrammaticTimerWithTxSuspendedFailsOverWhenAppStops");
-
-            runTest(serverB, APP_NAME + "/FailoverTimersTestServlet", "testCancelStatelessTxSuspendedTimers&test=testProgrammaticTimerWithTxSuspendedFailsOverWhenAppStops[3]");
         }
     }
 
@@ -188,7 +252,6 @@ public class FailoverTimersTest extends FATServletClient {
             // Also restart the server. This allows us to process any expected warning messages that are logged in response
             // to the application going away while its scheduled tasks remain.
             serverOnWhichToStopApp.stopServer("CWWKC1556W"); // Execution of tasks from application failoverTimersApp is deferred until the application and modules that scheduled the tasks are available.
-            serverOnWhichToStopApp.startServer("after-testSingletonTimerFailsOverWhenAppStops");
         }
     }
 
@@ -205,16 +268,12 @@ public class FailoverTimersTest extends FATServletClient {
         assertTrue(serverName, SERVER_A_NAME.equals(serverName) || SERVER_B_NAME.equals(serverName));
 
         LibertyServer serverToStop = SERVER_A_NAME.equals(serverName) ? serverA : serverB;
-        try {
-            serverToStop.stopServer();
+        serverToStop.stopServer();
 
-            String nameOfServerForFailover = serverToStop == serverA ? SERVER_B_NAME : SERVER_A_NAME;
-            LibertyServer serverForFailover = serverToStop == serverA ? serverB : serverA;
+        String nameOfServerForFailover = serverToStop == serverA ? SERVER_B_NAME : SERVER_A_NAME;
+        LibertyServer serverForFailover = serverToStop == serverA ? serverB : serverA;
 
-            runTest(serverForFailover, APP_NAME + "/FailoverTimersTestServlet",
-                    "testTimerFailover&timer=AutomaticCountingSingletonTimer&server=" + nameOfServerForFailover + "&test=testTimerFailsOverWhenServerStops[2]");
-        } finally {
-            serverToStop.startServer();
-        }
+        runTest(serverForFailover, APP_NAME + "/FailoverTimersTestServlet",
+                "testTimerFailover&timer=AutomaticCountingSingletonTimer&server=" + nameOfServerForFailover + "&test=testTimerFailsOverWhenServerStops[2]");
     }
 }

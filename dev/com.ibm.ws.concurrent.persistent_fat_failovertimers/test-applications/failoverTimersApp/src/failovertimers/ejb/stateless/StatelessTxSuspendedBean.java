@@ -13,6 +13,7 @@ package failovertimers.ejb.stateless;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.concurrent.CompletionException;
 
 import javax.annotation.Resource;
 import javax.ejb.SessionContext;
@@ -47,15 +48,21 @@ public class StatelessTxSuspendedBean {
         String serverConfigDir = System.getProperty("server.config.dir");
         String wlpUserDir = System.getProperty("wlp.user.dir");
         String serverName = serverConfigDir.substring(wlpUserDir.length() + "servers/".length(), serverConfigDir.length() - 1);
+        String timerName = timer.getInfo().toString();
 
-        System.out.println("Running timer " + timer.getInfo() + " on " + serverName);
+        if (FailoverTimersTestServlet.TIMERS_TO_FAIL.contains(timerName)) {
+            System.out.println("Timer " + timerName + " is not allowed to run on " + serverName);
+            throw new CompletionException("Intentionally failing timer " + timerName + " for testing purposes", null);
+        }
+
+        System.out.println("Running timer " + timerName + " on " + serverName);
 
         try (Connection con = ds.getConnection()) {
             boolean found;
             try {
                 PreparedStatement stmt = con.prepareStatement("UPDATE TIMERLOG SET SERVERNAME=?, COUNT=COUNT+1 WHERE TIMERNAME=?");
                 stmt.setString(1, serverName);
-                stmt.setString(2, (String) timer.getInfo());
+                stmt.setString(2, timerName);
                 found = stmt.executeUpdate() == 1;
             } catch (SQLException x) {
                 found = false;
@@ -63,13 +70,13 @@ public class StatelessTxSuspendedBean {
             }
             if (!found) { // insert new entry
                 PreparedStatement stmt = con.prepareStatement("INSERT INTO TIMERLOG VALUES (?,?,?)");
-                stmt.setString(1, (String) timer.getInfo());
+                stmt.setString(1, timerName);
                 stmt.setInt(2, 1);
                 stmt.setString(3, serverName);
                 stmt.executeUpdate();
             }
         } catch (SQLException x) {
-            System.out.println("Timer " + timer.getInfo() + " failed.");
+            System.out.println("Timer " + timerName + " failed.");
             x.printStackTrace(System.out);
             throw new RuntimeException(x);
         }
