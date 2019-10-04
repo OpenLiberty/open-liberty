@@ -22,15 +22,22 @@ package org.apache.cxf.staxutils;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.xml.namespace.NamespaceContext;
 
+import org.apache.cxf.common.logging.LogUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 public class W3CNamespaceContext implements NamespaceContext {
+
+    private static final Logger LOG = LogUtils.getL7dLogger(W3CNamespaceContext.class);
+
     private Element currentNode;
     private NamespaceContext outNamespaceContext;
     
@@ -125,7 +132,10 @@ public class W3CNamespaceContext implements NamespaceContext {
         return currentNode;
     }
 
+    @Trivial
     public void setElement(Element node) {
+        LOG.entering("W3CNamespaceContext", "setElement");
         this.currentNode = node;
+        LOG.exiting("W3CNamespaceContext", "setElement");
     }
 }

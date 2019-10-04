@@ -23,14 +23,20 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.StringTokenizer;
+import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 
 import org.apache.cxf.annotations.SchemaValidation.SchemaValidationType;
+import org.apache.cxf.common.logging.LogUtils;
 import org.apache.cxf.message.Message;
+
+import com.ibm.websphere.ras.annotation.Trivial;
 
 public final class ServiceUtils {
     
+    private static final Logger LOG = LogUtils.getL7dLogger(ServiceUtils.class);
+
     private ServiceUtils() {
     }
     
@@ -41,9 +47,12 @@ public final class ServiceUtils {
      * @param message
      * @param type
      */
+    @Trivial
     public static boolean isSchemaValidationEnabled(SchemaValidationType type, Message message) {
+        LOG.entering("ServiceUtils", "isSchemaValidationEnabled");
         SchemaValidationType messageType = getSchemaValidationType(message);
         
+        LOG.exiting("ServiceUtils", "isSchemaValidationEnabled");
         return messageType.equals(type) 
             || ((SchemaValidationType.IN.equals(type) || SchemaValidationType.OUT.equals(type))
                 && SchemaValidationType.BOTH.equals(messageType));
@@ -58,21 +67,27 @@ public final class ServiceUtils {
      * 
      * @param message
      */
+    @Trivial
     static SchemaValidationType getSchemaValidationType(Message message) {
+        LOG.entering("ServiceUtils", "getSchemaValidationType");
         Object obj = message.getContextualProperty(Message.SCHEMA_VALIDATION_ENABLED);
         if (obj instanceof SchemaValidationType) {
+            LOG.exiting("ServiceUtils", "getSchemaValidationType");
             return (SchemaValidationType)obj;
         } else if (obj != null) { 
             String value = obj.toString().toUpperCase(); // handle boolean values as well
             if ("TRUE".equals(value)) {
+                LOG.exiting("ServiceUtils", "getSchemaValidationType");
                 return SchemaValidationType.BOTH;
             } else if ("FALSE".equals(value)) {
+                LOG.exiting("ServiceUtils", "getSchemaValidationType");
                 return SchemaValidationType.NONE;
             } else if (value.length() > 0) {
+                LOG.exiting("ServiceUtils", "getSchemaValidationType");
                 return SchemaValidationType.valueOf(value);
             }
         }
-        
+        LOG.exiting("ServiceUtils", "getSchemaValidationType");
         // fall through default value
         return SchemaValidationType.NONE;
     }

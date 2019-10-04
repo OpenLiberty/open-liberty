@@ -40,6 +40,7 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
+import com.ibm.websphere.ras.annotation.Trivial;
 
 import org.apache.cxf.common.i18n.Message;
 import org.apache.cxf.common.logging.LogUtils;
@@ -61,11 +62,16 @@ public class XMLStreamDataWriter implements DataWriter<XMLStreamWriter> {
         
     }
     
+    @Trivial
     public void write(Object obj, MessagePartInfo part, XMLStreamWriter output) {
+        LOG.entering("XMLStreamDataWriter", "write");
         write(obj, output);
+        LOG.exiting("XMLStreamDataWriter", "write");
     }
 
+    @Trivial
     public void write(Object obj, XMLStreamWriter writer) {
+        LOG.entering("XMLStreamDataWriter", "write");
         try {
             XMLStreamReader reader = null;
             if (obj instanceof DataSource) {
@@ -106,6 +112,7 @@ public class XMLStreamDataWriter implements DataWriter<XMLStreamWriter> {
                 }
                 if (s instanceof DOMSource
                     && ((DOMSource) s).getNode() == null) {
+                    LOG.exiting("XMLStreamDataWriter", "write");
                     return;
                 }
                 StaxUtils.copy(s, writer);
@@ -119,9 +126,12 @@ public class XMLStreamDataWriter implements DataWriter<XMLStreamWriter> {
             throw new Fault("COULD_NOT_WRITE_XML_STREAM_CAUSED_BY", LOG, e,
                             e.getClass().getCanonicalName(), e.getMessage());
         }
+        LOG.exiting("XMLStreamDataWriter", "write");
     }
 
+    @Trivial
     private void writeNode(Node nd, XMLStreamWriter writer) throws XMLStreamException {
+        LOG.entering("XMLStreamDataWriter", "writeNode");
         if (writer instanceof W3CDOMStreamWriter) {
             W3CDOMStreamWriter dw = (W3CDOMStreamWriter)writer;
 
@@ -136,19 +146,23 @@ public class XMLStreamDataWriter implements DataWriter<XMLStreamWriter> {
                     }
                 } else if (nd.getOwnerDocument() == dw.getCurrentNode().getOwnerDocument()) {
                     dw.getCurrentNode().appendChild(nd);
+                    LOG.exiting("XMLStreamDataWriter", "writeNode");
                     return;
                 } else if (nd instanceof DocumentFragment) {
                     nd = dw.getDocument().importNode(nd, true);
                     dw.getCurrentNode().appendChild(nd);
+                    LOG.exiting("XMLStreamDataWriter", "writeNode");
                     return;
                 }
             } else if (dw.getCurrentFragment() != null) {
                 if (nd.getOwnerDocument() == dw.getCurrentFragment().getOwnerDocument()) {
                     dw.getCurrentFragment().appendChild(nd);
+                    LOG.exiting("XMLStreamDataWriter", "writeNode");
                     return;
                 } else if (nd instanceof DocumentFragment) {
                     nd = dw.getDocument().importNode(nd, true);
                     dw.getCurrentFragment().appendChild(nd);
+                    LOG.exiting("XMLStreamDataWriter", "writeNode");
                     return;
                 }
             }
@@ -159,7 +173,7 @@ public class XMLStreamDataWriter implements DataWriter<XMLStreamWriter> {
         } else {
             StaxUtils.writeNode(nd, writer, true);
         }
-
+        LOG.exiting("XMLStreamDataWriter", "writeNode");
     }
 
     public void setSchema(Schema s) {

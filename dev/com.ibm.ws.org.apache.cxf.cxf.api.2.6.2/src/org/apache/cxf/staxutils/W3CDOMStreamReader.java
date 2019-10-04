@@ -19,6 +19,7 @@
 package org.apache.cxf.staxutils;
 
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
@@ -38,10 +39,13 @@ import org.w3c.dom.TypeInfo;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 
+import org.apache.cxf.common.logging.LogUtils;
 import org.apache.cxf.helpers.DOMUtils;
 
-@Trivial
 public class W3CDOMStreamReader extends AbstractDOMStreamReader<Node, Node> {
+
+    private static final Logger LOG = LogUtils.getL7dLogger(W3CDOMStreamReader.class);
+
     private Node content;
 
     private Document document;
@@ -53,32 +57,47 @@ public class W3CDOMStreamReader extends AbstractDOMStreamReader<Node, Node> {
     /**
      * @param element
      */
+    @Trivial
     public W3CDOMStreamReader(Element element) {
         super(new ElementFrame<Node, Node>(element, null));
+        LOG.entering("W3CDOMStreamReader", "W3CDOMStreamReader");
         content = element;
         newFrame(getCurrentFrame());
                 
         this.document = element.getOwnerDocument();
+        LOG.exiting("W3CDOMStreamReader", "W3CDOMStreamReader");
     }
+
+    @Trivial
     public W3CDOMStreamReader(Element element, String systemId) {
         this(element);
+        LOG.entering("W3CDOMStreamReader", "W3CDOMStreamReader");
         sysId = systemId;
+        LOG.exiting("W3CDOMStreamReader", "W3CDOMStreamReader");
     }
+
+    @Trivial
     public W3CDOMStreamReader(Document doc) {
         super(new ElementFrame<Node, Node>(doc, false) {
             public boolean isDocument() {
                 return true;
             }
         });
+        LOG.entering("W3CDOMStreamReader", "W3CDOMStreamReader");
         this.document = doc;
+        LOG.exiting("W3CDOMStreamReader", "W3CDOMStreamReader");
     }
+
+    @Trivial
     public W3CDOMStreamReader(DocumentFragment docfrag) {
         super(new ElementFrame<Node, Node>(docfrag, true) {
             public boolean isDocumentFragment() {
                 return true;
             }
         });
+        LOG.entering("W3CDOMStreamReader", "W3CDOMStreamReader");
         this.document = docfrag.getOwnerDocument();
+        LOG.exiting("W3CDOMStreamReader", "W3CDOMStreamReader");
     }
 
     /**
@@ -425,7 +444,9 @@ public class W3CDOMStreamReader extends AbstractDOMStreamReader<Node, Node> {
         return super.getLocation();
     }
 
+    @Trivial
     public String toString() {
+        LOG.entering("W3CDOMStreamReader", "toString");
         if (document == null) {
             return "<null>";
         }
@@ -433,11 +454,14 @@ public class W3CDOMStreamReader extends AbstractDOMStreamReader<Node, Node> {
             return "<null document element>";
         }
         try {
+            LOG.exiting("W3CDOMStreamReader", "toString");
             return StaxUtils.toString(document);
         } catch (XMLStreamException e) {
+            LOG.exiting("W3CDOMStreamReader", "toString");
             return super.toString();
         } catch (Throwable t) {
             t.printStackTrace();
+            LOG.exiting("W3CDOMStreamReader", "toString");
             return super.toString();
         }
     }

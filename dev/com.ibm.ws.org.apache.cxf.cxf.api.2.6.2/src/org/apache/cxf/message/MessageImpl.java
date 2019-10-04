@@ -24,8 +24,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import org.apache.cxf.Bus;
+import org.apache.cxf.common.logging.LogUtils;
 import org.apache.cxf.endpoint.Endpoint;
 import org.apache.cxf.helpers.CastUtils;
 import org.apache.cxf.interceptor.InterceptorChain;
@@ -33,7 +35,12 @@ import org.apache.cxf.service.Service;
 import org.apache.cxf.service.model.EndpointInfo;
 import org.apache.cxf.transport.Destination;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 public class MessageImpl extends StringMapImpl implements Message {
+
+    private static final Logger LOG = LogUtils.getL7dLogger(MessageImpl.class);
+
     private static final long serialVersionUID = -3020763696429459865L;
     
     
@@ -95,20 +102,27 @@ public class MessageImpl extends StringMapImpl implements Message {
         return this.interceptorChain;
     }
 
+    @Trivial
     @SuppressWarnings("unchecked")
     public <T> T getContent(Class<T> format) {
+        LOG.entering("MessageImpl", "getContent");
         for (int x = 0; x < index; x += 2) {
             if (contents[x] == format) {
+                LOG.exiting("MessageImpl", "getContent");
                 return (T)contents[x + 1];
             }
         }
+        LOG.exiting("MessageImpl", "getContent");
         return null;
     }
 
+    @Trivial
     public <T> void setContent(Class<T> format, Object content) {
+        LOG.entering("MessageImpl", "setContent");
         for (int x = 0; x < index; x += 2) {
             if (contents[x] == format) {
                 contents[x + 1] = content;
+                LOG.exiting("MessageImpl", "setContent");
                 return;
             }
         }
@@ -122,6 +136,7 @@ public class MessageImpl extends StringMapImpl implements Message {
         contents[index] = format;
         contents[index + 1] = content;
         index += 2;
+        LOG.exiting("MessageImpl", "setContent");
     }
     
     public <T> void removeContent(Class<T> format) {

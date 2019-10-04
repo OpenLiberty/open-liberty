@@ -77,6 +77,8 @@ import org.apache.cxf.ws.addressing.EndpointReferenceType;
 import org.apache.cxf.wsdl.EndpointReferenceUtils;
 import org.apache.cxf.wsdl.WSDLLibrary;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 /**
  * Common base for HTTP Destination implementations.
  */
@@ -448,8 +450,11 @@ public abstract class AbstractHTTPDestination
      * @param inMessage the incoming message
      * @return the inbuilt backchannel
      */
+    @Trivial
     protected Conduit getInbuiltBackChannel(Message inMessage) {
+        LOG.entering("AbstractHTTPDestination", "getInbuiltBackChannel");
         HttpServletResponse response = (HttpServletResponse)inMessage.get(HTTP_RESPONSE);
+        LOG.exiting("AbstractHTTPDestination", "getInbuiltBackChannel");
         return new BackChannelConduit(response);
     }
 
@@ -811,10 +816,13 @@ public abstract class AbstractHTTPDestination
     public void setServer(HTTPServerPolicy server) {
         this.server = server;
     }
-    
+
+    @Trivial
     public void assertMessage(Message message) {
+        LOG.entering("AbstractHTTPDestination", "assertMessage");
         PolicyDataEngine pde = bus.getExtension(PolicyDataEngine.class);
         pde.assertMessage(message, server, new ServerPolicyCalculator());
+        LOG.exiting("AbstractHTTPDestination", "assertMessage");
     }
 
     public boolean canAssert(QName type) {

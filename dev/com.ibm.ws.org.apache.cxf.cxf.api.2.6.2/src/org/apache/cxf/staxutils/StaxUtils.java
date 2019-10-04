@@ -419,7 +419,9 @@ public final class StaxUtils {
         return false;
     }
 
+    @Trivial
     public static boolean toNextElement(DepthXMLStreamReader dr) {
+        LOG.entering("StaxUtils", "toNextElement");
         if (dr.getEventType() == XMLStreamReader.START_ELEMENT) {
             return true;
         }
@@ -437,6 +439,7 @@ public final class StaxUtils {
                 }
             }
 
+            LOG.exiting("StaxUtils", "toNextElement");
             return false;
         } catch (XMLStreamException e) {
             throw new RuntimeException("Couldn't parse stream.", e);
@@ -540,22 +543,28 @@ public final class StaxUtils {
 
     @Trivial
     public static void copy(Document doc, XMLStreamWriter writer) throws XMLStreamException {
+        LOG.entering("StaxUtils", "copy");
         XMLStreamReader reader = createXMLStreamReader(doc);
         copy(reader, writer);
+        LOG.exiting("StaxUtils", "copy");
     }
 
     @Trivial
     public static void copy(Element node, XMLStreamWriter writer) throws XMLStreamException {
+        LOG.entering("StaxUtils", "copy");
         XMLStreamReader reader = createXMLStreamReader(node);
         copy(reader, writer);
+        LOG.exiting("StaxUtils", "copy");
     }
 
     @Trivial
     public static void copy(XMLStreamReader reader, OutputStream os)
         throws XMLStreamException {
+        LOG.entering("StaxUtils", "copy");
         XMLStreamWriter xsw = StaxUtils.createXMLStreamWriter(os);
         StaxUtils.copy(reader, xsw);
         xsw.close();
+        LOG.exiting("StaxUtils", "copy");
     }
     
     
@@ -571,12 +580,15 @@ public final class StaxUtils {
      */
     @Trivial
     public static void copy(XMLStreamReader reader, XMLStreamWriter writer) throws XMLStreamException {
+        LOG.entering("StaxUtils", "copy");
         copy(reader, writer, false);
+        LOG.exiting("StaxUtils", "copy");
     }
 
     @Trivial
     public static void copy(XMLStreamReader reader, XMLStreamWriter writer,
                             boolean fragment) throws XMLStreamException {
+        LOG.entering("StaxUtils", "copy");
         // number of elements read in
         int read = 0;
         int event = reader.getEventType();
@@ -591,6 +603,7 @@ public final class StaxUtils {
                 writer.writeEndElement();
                 read--;
                 if (read <= 0 && !fragment) {
+                    LOG.exiting("StaxUtils", "copy");
                     return;
                 }
                 break;
@@ -616,11 +629,13 @@ public final class StaxUtils {
             }
             event = reader.next();
         }
+        LOG.exiting("StaxUtils", "copy");
     }
 
     @Trivial
     private static void writeStartElement(XMLStreamReader reader, XMLStreamWriter writer)
         throws XMLStreamException {
+        LOG.entering("StaxUtils", "writeStartElement");
         String uri = reader.getNamespaceURI();
         String prefix = reader.getPrefix();
         String local = reader.getLocalName();
@@ -719,6 +734,7 @@ public final class StaxUtils {
             }
 
         }
+        LOG.exiting("StaxUtils", "writeStartElement");
     }
 
     public static void writeDocument(Document d, XMLStreamWriter writer, boolean repairing)
@@ -889,8 +905,10 @@ public final class StaxUtils {
         return sortedAttrs;
     }
 
+    @Trivial
     public static void writeNode(Node n, XMLStreamWriter writer, boolean repairing) 
         throws XMLStreamException {
+        LOG.entering("StaxUtils", "writeNode");
         
         switch (n.getNodeType()) {
         case Node.ELEMENT_NODE:
@@ -936,7 +954,8 @@ public final class StaxUtils {
             break;
         default:
             throw new IllegalStateException("Found type: " + n.getClass().getName());
-        }        
+        }  
+        LOG.exiting("StaxUtils", "writeNode");
     }
 
     public static Document read(Source s) throws XMLStreamException {
@@ -1503,25 +1522,35 @@ public final class StaxUtils {
 
     @Trivial
     public static XMLStreamReader createXMLStreamReader(Element el) {
+        LOG.entering("StaxUtils", "createXMLStreamReader");
+        LOG.exiting("StaxUtils", "createXMLStreamReader");
         return new W3CDOMStreamReader(el);
     }
 
     @Trivial
     public static XMLStreamReader createXMLStreamReader(Document doc) {
+        LOG.entering("StaxUtils", "createXMLStreamReader");
+        LOG.exiting("StaxUtils", "createXMLStreamReader");
         return new W3CDOMStreamReader(doc.getDocumentElement());
     }
 
     @Trivial
     public static XMLStreamReader createXMLStreamReader(Element el, String sysId) {
+        LOG.entering("StaxUtils", "createXMLStreamReader");
+        LOG.exiting("StaxUtils", "createXMLStreamReader");
         return new W3CDOMStreamReader(el, sysId);
     }
 
     @Trivial
     public static XMLStreamReader createXMLStreamReader(Document doc, String sysId) {
+        LOG.entering("StaxUtils", "createXMLStreamReader");
+        LOG.exiting("StaxUtils", "createXMLStreamReader");
         return new W3CDOMStreamReader(doc.getDocumentElement(), sysId);
     }
     
+    @Trivial
     public static XMLStreamReader createXMLStreamReader(Source source) {
+        LOG.entering("StaxUtils", "createXMLStreamReader");
         try {
             if (source instanceof DOMSource) {
                 DOMSource ds = (DOMSource)source;
@@ -1534,6 +1563,7 @@ public final class StaxUtils {
                 }
                 
                 if (null != el) {
+                    LOG.exiting("StaxUtils", "createXMLStreamReader");
                     return new W3CDOMStreamReader(el, source.getSystemId());
                 }
             } else if ("javax.xml.transform.stax.StAXSource".equals(source.getClass().getName())) {
@@ -1546,6 +1576,7 @@ public final class StaxUtils {
             } else if (source instanceof StaxSource) {
                 return ((StaxSource)source).getXMLStreamReader();
             } else if (source instanceof SAXSource) {
+                LOG.exiting("StaxUtils", "createXMLStreamReader");
                 return createXMLStreamReader(((SAXSource)source).getInputSource());
             }
             
@@ -1569,6 +1600,7 @@ public final class StaxUtils {
                                                                ss.getReader());
                     }
                 }
+                LOG.exiting("StaxUtils", "createXMLStreamReader");
                 return reader;
             } finally {
                 returnXMLInputFactory(factory);
@@ -1795,6 +1827,7 @@ public final class StaxUtils {
 
     @Trivial
     public static String toString(Document doc) throws XMLStreamException {
+        LOG.entering("StaxUtils", "toString");
         StringWriter sw = new StringWriter(1024);
         XMLStreamWriter writer = null;
         try {
@@ -1804,10 +1837,12 @@ public final class StaxUtils {
         } finally {
             StaxUtils.close(writer);
         }
+        LOG.exiting("StaxUtils", "toString");
         return sw.toString();
     }
     @Trivial
     public static String toString(Element el) throws XMLStreamException {
+        LOG.entering("StaxUtils", "toString");
         StringWriter sw = new StringWriter(1024);
         XMLStreamWriter writer = null;
         try {
@@ -1817,11 +1852,13 @@ public final class StaxUtils {
         } finally {
             StaxUtils.close(writer);
         }        
+        LOG.exiting("StaxUtils", "toString");
         return sw.toString();
     }
 
-
+    @Trivial
     public static void close(XMLStreamReader reader) {
+        LOG.entering("StaxUtils", "close");
         if (reader != null) {
             try {
                 reader.close();
@@ -1829,9 +1866,12 @@ public final class StaxUtils {
                 //ignore
             }
         }
+        LOG.entering("StaxUtils", "close");
     }
-    
+
+    @Trivial
     public static void close(XMLStreamWriter writer) {
+        LOG.entering("StaxUtils", "close");
         if (writer != null) {
             try {
                 writer.close();
@@ -1839,6 +1879,7 @@ public final class StaxUtils {
                 //ignore
             }
         }
+        LOG.exiting("StaxUtils", "close");
     }
     
     public static class StreamToDOMContext {

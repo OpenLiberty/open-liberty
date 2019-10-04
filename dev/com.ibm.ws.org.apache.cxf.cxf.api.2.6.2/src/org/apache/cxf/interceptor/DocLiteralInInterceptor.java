@@ -48,6 +48,8 @@ import org.apache.cxf.staxutils.DepthXMLStreamReader;
 import org.apache.cxf.staxutils.StaxUtils;
 import org.apache.ws.commons.schema.XmlSchemaElement;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 public class DocLiteralInInterceptor extends AbstractInDatabindingInterceptor {
     public static final String KEEP_PARAMETERS_WRAPPER = DocLiteralInInterceptor.class.getName() 
         + ".DocLiteralInInterceptor.keep-parameters-wrapper";
@@ -60,9 +62,12 @@ public class DocLiteralInInterceptor extends AbstractInDatabindingInterceptor {
         addAfter(URIMappingInterceptor.class.getName());
     }
 
+    @Trivial
     public void handleMessage(Message message) {
+        LOG.entering("DocLiteralInInterceptor", "handleMessage");
         if (isGET(message) && message.getContent(List.class) != null) {
             LOG.fine("DocLiteralInInterceptor skipped in HTTP GET method");
+            LOG.exiting("DocLiteralInInterceptor", "handleMessage");
             return;
         }
 
@@ -79,6 +84,7 @@ public class DocLiteralInInterceptor extends AbstractInDatabindingInterceptor {
         //operation anymore, just return
         if (bop != null && !StaxUtils.toNextElement(xmlReader)) {
             // body may be empty for partial response to decoupled request
+            LOG.exiting("DocLiteralInInterceptor", "handleMessage");
             return;
         }
 
@@ -167,6 +173,7 @@ public class DocLiteralInInterceptor extends AbstractInDatabindingInterceptor {
                             exchange.setOneWay(op.isOneWay());
                         }
                     }
+                    LOG.exiting("DocLiteralInInterceptor", "handleMessage");
                     return;
                 }
     
@@ -180,6 +187,7 @@ public class DocLiteralInInterceptor extends AbstractInDatabindingInterceptor {
                     if (!client && msgInfo != null && msgInfo.getMessageParts() != null 
                         && msgInfo.getMessageParts().size() == 0) {
                         //no input messagePartInfo
+                        LOG.exiting("DocLiteralInInterceptor", "handleMessage");
                         return;
                     }
                     
@@ -224,6 +232,7 @@ public class DocLiteralInInterceptor extends AbstractInDatabindingInterceptor {
             }
             throw f;
         }
+        LOG.exiting("DocLiteralInInterceptor", "handleMessage");
     }
 
     private MessageContentsList checkValidSoap(MessageContentsList parameters, MessagePartInfo p, Object o) {

@@ -45,6 +45,8 @@ import org.apache.cxf.service.model.BindingOperationInfo;
 import org.apache.cxf.service.model.MessageInfo;
 import org.apache.cxf.transport.Conduit;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 public class OutgoingChainInterceptor extends AbstractPhaseInterceptor<Message> {
     private static final Logger LOG = LogUtils.getL7dLogger(OutgoingChainInterceptor.class);
     
@@ -54,7 +56,9 @@ public class OutgoingChainInterceptor extends AbstractPhaseInterceptor<Message> 
         super(Phase.POST_INVOKE);
     }
 
+    @Trivial
     public void handleMessage(Message message) {
+        LOG.entering("OutgoingChainInterceptor", "handleMessage");
         Exchange ex = message.getExchange();
         BindingOperationInfo binding = ex.get(BindingOperationInfo.class);
         //if we get this far, we're going to be outputting some valid content, but we COULD
@@ -63,6 +67,7 @@ public class OutgoingChainInterceptor extends AbstractPhaseInterceptor<Message> 
         message.put("cxf.io.cacheinput", Boolean.TRUE);
         if (null != binding && null != binding.getOperationInfo() && binding.getOperationInfo().isOneWay()) {
             closeInput(message);
+            LOG.exiting("OutgoingChainInterceptor", "handleMessage");
             return;
         }
         Message out = ex.getOutMessage();
@@ -80,6 +85,7 @@ public class OutgoingChainInterceptor extends AbstractPhaseInterceptor<Message> 
             }
             outChain.doIntercept(out);
         }
+        LOG.exiting("OutgoingChainInterceptor", "handleMessage");
     }
     
     private void closeInput(Message message) {
@@ -94,7 +100,9 @@ public class OutgoingChainInterceptor extends AbstractPhaseInterceptor<Message> 
         }
     }
 
+    @Trivial
     protected static Conduit getBackChannelConduit(Message message) {
+        LOG.entering("OutgoingChainInterceptor", "getBackChannelConduit");
         Conduit conduit = null;
         Exchange ex = message.getExchange();
         if (ex.getConduit(message) == null
@@ -108,6 +116,7 @@ public class OutgoingChainInterceptor extends AbstractPhaseInterceptor<Message> 
                 e.printStackTrace();
             }
         }
+        LOG.exiting("OutgoingChainInterceptor", "getBackChannelConduit");
         return conduit;
     }
     
@@ -144,12 +153,20 @@ public class OutgoingChainInterceptor extends AbstractPhaseInterceptor<Message> 
         chain.setFaultObserver(ep.getOutFaultObserver());
         return chain;
     }
+
+    @Trivial
     private static void modifyChain(PhaseInterceptorChain chain, Exchange ex) {
+        LOG.entering("OutgoingChainInterceptor", "modifyChain");
         modifyChain(chain, ex.getInMessage());
         modifyChain(chain, ex.getOutMessage());
+        LOG.exiting("OutgoingChainInterceptor", "modifyChain");
     }
+
+    @Trivial
     private static void modifyChain(PhaseInterceptorChain chain, Message m) {
+        LOG.entering("OutgoingChainInterceptor", "modifyChain");
         if (m == null) {
+            LOG.exiting("OutgoingChainInterceptor", "modifyChain");
             return;
         }
         Collection<InterceptorProvider> providers 
@@ -167,6 +184,7 @@ public class OutgoingChainInterceptor extends AbstractPhaseInterceptor<Message> 
         if (m.getDestination() instanceof InterceptorProvider) {
             chain.add(((InterceptorProvider)m.getDestination()).getOutInterceptors());
         }
+        LOG.exiting("OutgoingChainInterceptor", "modifyChain");
     }
     
     private static PhaseInterceptorChain getChain(Exchange ex, PhaseChainCache chainCache) {

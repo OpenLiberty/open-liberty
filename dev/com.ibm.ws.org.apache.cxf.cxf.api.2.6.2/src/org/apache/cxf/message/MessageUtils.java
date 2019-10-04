@@ -23,6 +23,8 @@ import java.util.logging.Logger;
 
 import org.w3c.dom.Node;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 import org.apache.cxf.common.logging.LogUtils;
 
 /**
@@ -60,8 +62,11 @@ public final class MessageUtils {
      * @param message the current Message
      * @return true if the message direction is outbound
      */
+    @Trivial
     public static boolean isOutbound(Message message) {
+        LOG.entering("MessageUtils", "isOutbound");
         Exchange exchange = message.getExchange();
+        LOG.exiting("MessageUtils", "isOutbound");
         return exchange != null
                && (message == exchange.getOutMessage() || message == exchange.getOutFaultMessage());
     }
@@ -106,8 +111,11 @@ public final class MessageUtils {
      * @param message the current Message
      * @return true if the current messaging role is that of requestor
      */
+    @Trivial
     public static boolean isRequestor(Message message) {
+        LOG.entering("MessageUtils", "isRequestor");
         Boolean requestor = (Boolean)message.get(Message.REQUESTOR_ROLE);
+        LOG.exiting("MessageUtils", "isRequestor");
         return requestor != null && requestor.booleanValue();
     }
     
@@ -117,7 +125,10 @@ public final class MessageUtils {
      * @param message the current message
      * @return true if the current messags is a partial response
      */
+    @Trivial
     public static boolean isPartialResponse(Message message) {
+        LOG.entering("MessageUtils", "isPartialResponse");
+        LOG.exiting("MessageUtils", "isPartialResponse");
         return Boolean.TRUE.equals(message.get(Message.PARTIAL_RESPONSE_MESSAGE));
     }
     
@@ -149,12 +160,14 @@ public final class MessageUtils {
         return false;
     }
     
-    
+    @Trivial
     public static boolean getContextualBoolean(Message m, String key, boolean defaultValue) {
+        LOG.entering("MessageUtils", "getContextualBoolean");
         Object o = m.getContextualProperty(key);
         if (o != null) {
             return isTrue(o);
         }
+        LOG.exiting("MessageUtils", "getContextualBoolean");
         return defaultValue;
     }
     
