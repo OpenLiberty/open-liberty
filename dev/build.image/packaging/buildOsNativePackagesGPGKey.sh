@@ -17,7 +17,7 @@ else
      #expect -f rpmBuild.expect
 
      #run commands to build the deb 
-     echo "${GPG_PASS}" >> ~/.gnupg/pp.txt
+     echo "${GPG_PASS}" > ~/.gnupg/pp.txt
      debuild -d -b -p'gpg --passphrase-file ~/.gnupg/pp.txt --batch'  -e"admin@openliberty.io"
      if gpg -k |grep admin ; then
          echo gpg key imported correctly
