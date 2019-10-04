@@ -77,6 +77,11 @@ public class StatelessProgrammaticTimersBean {
             x.printStackTrace(System.out);
             throw new RuntimeException(x);
         }
+
+        if (FailoverTimersTestServlet.TIMERS_TO_ROLL_BACK.contains(timerName)) {
+            System.out.println("Timer " + timerName + " can only roll back on " + serverName);
+            sessionContext.setRollbackOnly();
+        }
     }
 
     public Timer scheduleTimer(long initialDelayMS, long intervalMS, String name) {

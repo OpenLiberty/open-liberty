@@ -20,6 +20,7 @@ import javax.ejb.Schedule;
 import javax.ejb.SessionContext;
 import javax.ejb.Singleton;
 import javax.ejb.Timer;
+import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
 import failovertimers.web.FailoverTimersTestServlet;
@@ -69,6 +70,11 @@ public class AutoCountingSingletonTimer {
             System.out.println("Timer " + timerName + " failed.");
             x.printStackTrace(System.out);
             throw new RuntimeException(x);
+        }
+
+        if (FailoverTimersTestServlet.TIMERS_TO_ROLL_BACK.contains(timerName)) {
+            System.out.println("Timer " + timerName + " can only roll back on " + serverName);
+            sessionContext.setRollbackOnly();
         }
     }
 }

@@ -55,6 +55,10 @@ public class StatelessTxSuspendedBean {
             throw new CompletionException("Intentionally failing timer " + timerName + " for testing purposes", null);
         }
 
+        if (FailoverTimersTestServlet.TIMERS_TO_ROLL_BACK.contains(timerName)) {
+            throw new AssertionError("Auto rollback option is not supported for the TransactionAttributeType.NOT_SUPPORTED EJB");
+        }
+
         System.out.println("Running timer " + timerName + " on " + serverName);
 
         try (Connection con = ds.getConnection()) {

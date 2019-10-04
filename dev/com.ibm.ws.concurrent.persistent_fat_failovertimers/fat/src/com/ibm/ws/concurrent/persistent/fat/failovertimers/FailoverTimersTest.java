@@ -171,6 +171,45 @@ public class FailoverTimersTest extends FATServletClient {
     }
 
     /**
+     * On one of the servers, programmatically start a persistent timer which runs in the same global transaction
+     * as the database operations performed by the EJB Timer Server/persistent executor.
+     * Force the timer to start rolling back on that server (but keep the application and the server up)
+     * and verify that the timer starts running on the same application on a different server.
+     * This should occur even if a retryInterval is configured on the server where the failure occurs.
+     */
+    @Test
+    public void testProgrammaticTimerFailsOverWhenTimerRollsBackOnOneServer() throws Exception {
+        runTest(serverA, APP_NAME + "/FailoverTimersTestServlet",
+                "testScheduleStatelessTimer&timer=Timer_300_1800&initialDelayMS=300&intervalMS=1800&test=testProgrammaticTimerFailsOverWhenTimerRollsBackOnOneServer[1]");
+        try {
+            // Make the timer roll back when it runs on the server (A) from which it was scheduled
+            runTest(serverA, APP_NAME + "/FailoverTimersTestServlet",
+                    "forceRollbackForTimer&timer=Timer_300_1800&test=testProgrammaticTimerFailsOverWhenTimerRollsBackOnOneServer[2]");
+
+            // Verify that the timer fails over to the other server (B) and runs there
+            runTest(serverA, APP_NAME + "/FailoverTimersTestServlet",
+                    "testTimerFailover&timer=Timer_300_1800&server=" + SERVER_B_NAME + "&test=testProgrammaticTimerFailsOverWhenTimerRollsBackOnOneServer[3]");
+        } finally {
+            // The server (serverA) upon which the timer rolled back will initially continue trying to run it.
+            // However, the timer now belongs to a different member (paritionId), so it should be skipped silently
+            // on serverA and then no longer rescheduled there.
+            Thread.sleep(2000);
+
+            runTest(serverA, APP_NAME + "/FailoverTimersTestServlet",
+                    "allowTimerCommit&timer=Timer_300_1800&test=testProgrammaticTimerFailsOverWhenTimerRollsBackOnOneServer[4]");
+
+            runTest(serverA, APP_NAME + "/FailoverTimersTestServlet",
+                    "testCancelStatelessTxSuspendedTimers&test=testProgrammaticTimerFailsOverWhenTimerRollsBackOnOneServer[5]");
+        }
+
+        // Also restart the server. This allows us to process any expected warning messages that are logged in response
+        // to the intentionally failed task.
+        serverA.stopServer(
+                "CWWKC1500W.*StatelessProgrammaticTimersBean" // Persistent executor defaultEJBPersistentTimerExecutor rolled back task ...
+                );
+    }
+
+    /**
      * On one of the servers, programmatically start a persistent timer which runs outside of a global transaction.
      * Stop the application on that server (but not the server itself)
      * and verify that the timer starts running on the same application on a different server.

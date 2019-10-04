@@ -51,6 +51,11 @@ public class FailoverTimersTestServlet extends FATServlet {
      */
     public static final Set<String> TIMERS_TO_FAIL = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
 
+    /**
+     * List of timers that will roll back their own execution when run on this server.
+     */
+    public static final Set<String> TIMERS_TO_ROLL_BACK = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
+
     @Resource
     private DataSource ds;
 
@@ -63,6 +68,14 @@ public class FailoverTimersTestServlet extends FATServlet {
     public void allowTimer(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String timerName = request.getParameter("timer");
         TIMERS_TO_FAIL.remove(timerName);
+    }
+
+    /**
+     * Allow executions of the specified timer to commit on this server.
+     */
+    public void allowTimerCommit(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String timerName = request.getParameter("timer");
+        TIMERS_TO_ROLL_BACK.remove(timerName);
     }
 
     /**
@@ -106,6 +119,14 @@ public class FailoverTimersTestServlet extends FATServlet {
         }
 
         response.getWriter().println("Timer did not run within allotted interval.");
+    }
+
+    /**
+     * Force executions of the specified timer to roll back on this server.
+     */
+    public void forceRollbackForTimer(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String timerName = request.getParameter("timer");
+        TIMERS_TO_ROLL_BACK.add(timerName);
     }
 
     @Override
