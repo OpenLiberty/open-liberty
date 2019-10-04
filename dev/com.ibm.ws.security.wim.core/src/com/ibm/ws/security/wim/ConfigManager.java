@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -437,15 +437,17 @@ public class ConfigManager {
             validateRealmName(realmName);
             String parent = null;
             RealmConfig realmConfig = getRealmConfig(realmName);
-            Map<String, String> defaultParentsMap = realmConfig.getDefaultParentMapping();
-            if (defaultParentsMap != null) {
-                parent = defaultParentsMap.get(entType);
-                if (parent != null) {
-                    defaultParent = parent;
+            if (realmConfig != null) {
+                Map<String, String> defaultParentsMap = realmConfig.getDefaultParentMapping();
+                if (defaultParentsMap != null) {
+                    parent = defaultParentsMap.get(entType);
+                    if (parent != null) {
+                        defaultParent = parent;
+                    }
                 }
-            }
-            if (parent == null && !isUniqueNameInRealm(defaultParent, realmName)) {
-                defaultParent = null;
+                if (parent == null && !isUniqueNameInRealm(defaultParent, realmName)) {
+                    defaultParent = null;
+                }
             }
         }
         return defaultParent;
