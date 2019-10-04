@@ -168,7 +168,7 @@ public class CacheEnablementTest extends AnnoCachingTest {
         //         Verify that the cache is created.
 
         installServerXml("jandexDefaultsAutoExpandTrue_server.xml");
-        installJvmOptions("JvmOptions_Enabled.txt");
+        installJvmOptions("JvmOptions_Enabled_Text.txt");
 
         startServer(ServerStartType.DO_SCRUB);
         verifyResponse(TEST_URL_1, "Hello World");
