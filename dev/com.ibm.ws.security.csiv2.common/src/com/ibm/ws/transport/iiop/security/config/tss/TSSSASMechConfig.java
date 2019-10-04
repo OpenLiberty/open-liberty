@@ -231,7 +231,7 @@ public class TSSSASMechConfig implements Serializable {
         buf.append(moreSpaces).append("REQUIRES: ").append(ConfigUtil.flags(requires)).append("\n");
         for (Iterator<TSSServiceConfigurationConfig> iterator = privilegeAuthorities.iterator(); iterator.hasNext();) {
             TSSServiceConfigurationConfig tssServiceConfigurationConfig = iterator.next();
-            tssServiceConfigurationConfig.toString();
+            tssServiceConfigurationConfig.toString(moreSpaces, buf);
         }
         buf.append("\n");
         for (Iterator<TSSSASIdentityToken> iterator = idTokens.values().iterator(); iterator.hasNext();) {
