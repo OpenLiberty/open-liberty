@@ -27,6 +27,7 @@ public class FeatureUtilityExecutor {
         String actionName = args.getAction();
         if (actionName == null || actionName.equalsIgnoreCase("help")) {
             System.out.println(helpString);
+            // todo arg processing
         } else {
             InstallKernel installKernel = InstallKernelFactory.getInstance();
 
