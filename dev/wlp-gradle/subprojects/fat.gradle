@@ -22,6 +22,15 @@ task cleanFat(type: Delete) {
   delete autoFvtDir
 }
 
+if (isAutomatedBuild && project.file('fat').exists()) {
+  release {
+    doLast {
+      delete autoFvtDir
+      delete distsDir
+    }
+  }
+}
+
 task cleanBeforeRun(type: Delete) {
   delete new File(autoFvtDir, 'output')
   delete new File(autoFvtDir, 'results')
