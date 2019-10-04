@@ -1,0 +1,9 @@
+Subsystem-ManifestVersion: 1
+Subsystem-SymbolicName: com.ibm.ws.featureUtility-1.0; visibility:=public
+Subsystem-Version: 1.0.0
+Subsystem-Type: osgi.subsystem.feature
+Subsystem-Content: com.ibm.ws.featureUtility; version="[1,1.0.100)",
+  ws-featureUtility.jar; location:="bin/tools/ws-featureUtility.jar"; type="file",
+  featureUtility; location:="bin/featureUtility"; type="file",
+  featureUtility.bat; location:="bin/featureUtility.bat"; type="file"
+IBM-Feature-Version: 2

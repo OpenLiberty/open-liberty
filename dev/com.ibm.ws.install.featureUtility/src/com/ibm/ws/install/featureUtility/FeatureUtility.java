@@ -199,9 +199,9 @@ public class FeatureUtility {
                     if (!currentReturnResult.isEmpty()) {
                         actionReturnResult.addAll((Collection<String>) map.get("action.install.result"));
                         logger.log(Level.INFO,
-                                   (Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("LOG_INSTALLED_FEATURE", String.join(", ", currentReturnResult)).replace("CWWKF1304I: ", ""))); // TODO: come up with new message for
-                                                                                                                                                                                                          // successfully
-                                                                                                                                                                                                          // installed feature
+                                   (Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("LOG_INSTALLED_FEATURE", currentReturnResult)));
+                        // TODO: come up with new message for install feature
+                        // String.join(", ", currentReturnResult)).replace("CWWKF1304I: ", "")
 
                     }
                 }
