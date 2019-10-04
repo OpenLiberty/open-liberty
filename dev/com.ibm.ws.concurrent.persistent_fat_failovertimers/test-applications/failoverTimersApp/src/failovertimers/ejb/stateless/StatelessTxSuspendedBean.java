@@ -8,39 +8,42 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package failovertimers.ejb.autotimer;
+package failovertimers.ejb.stateless;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import javax.annotation.Resource;
-import javax.ejb.Schedule;
 import javax.ejb.SessionContext;
-import javax.ejb.Singleton;
+import javax.ejb.Stateless;
+import javax.ejb.Timeout;
 import javax.ejb.Timer;
+import javax.ejb.TimerConfig;
+import javax.ejb.TimerService;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.sql.DataSource;
 
 import failovertimers.web.FailoverTimersTestServlet;
 
-@Singleton
-public class AutoCountingTimer {
-    private int count;
-
+@Stateless
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+public class StatelessTxSuspendedBean {
     @Resource
     private DataSource ds;
 
     @Resource
     private SessionContext sessionContext;
 
-    public void cancel() {
-        for (Timer timer : sessionContext.getTimerService().getTimers())
-            timer.cancel();
+    public void cancelTimers() {
+        TimerService timerService = sessionContext.getTimerService();
+        for (Timer t : timerService.getTimers())
+            t.cancel();
     }
 
-    // Timer runs every other other second
-    @Schedule(info = "AutomaticCountingTimer", hour = "*", minute = "*", second = "*/2")
-    public void run(Timer timer) {
+    @Timeout
+    public void runTimer(Timer timer) {
         String serverConfigDir = System.getProperty("server.config.dir");
         String wlpUserDir = System.getProperty("wlp.user.dir");
         String serverName = serverConfigDir.substring(wlpUserDir.length() + "servers/".length(), serverConfigDir.length() - 1);
@@ -70,5 +73,10 @@ public class AutoCountingTimer {
             x.printStackTrace(System.out);
             throw new RuntimeException(x);
         }
+    }
+
+    public Timer scheduleTimer(long initialDelayMS, long intervalMS, String name) {
+        TimerService timerService = sessionContext.getTimerService();
+        return timerService.createIntervalTimer(initialDelayMS, intervalMS, new TimerConfig(name, true));
     }
 }

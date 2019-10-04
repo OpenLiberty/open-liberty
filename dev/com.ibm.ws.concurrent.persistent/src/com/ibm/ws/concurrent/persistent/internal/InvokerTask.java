@@ -248,6 +248,7 @@ public class InvokerTask implements Runnable, Synchronization {
 
         String taskName = null;
         String taskIdForPropTable = null;
+        long partitionId;
         TaskLocker ejbSingletonLockCollaborator = null;
         String ownerForDeferredTask = null;
         ClassLoader loader = null;
@@ -259,6 +260,8 @@ public class InvokerTask implements Runnable, Synchronization {
         TransactionManager tranMgr = persistentExecutor.tranMgrRef.getServiceWithException();
         taskIdsOfRunningTasks.set(taskId);
         try {
+            partitionId = persistentExecutor.getPartitionId();
+
             int timeout = txTimeout == 0 && (binaryFlags & TaskRecord.Flags.SUSPEND_TRAN_OF_EXECUTOR_THREAD.bit) != 0 ? DEFAULT_TIMEOUT_FOR_SUSPENDED_TRAN : txTimeout;
             tranMgr.setTransactionTimeout(timeout);
 
@@ -275,8 +278,19 @@ public class InvokerTask implements Runnable, Synchronization {
             // Execution property TRANSACTION=SUSPEND indicates the task should not run in the persistent executor transaction.
             // Lock an entry in a different table to prevent concurrent execution, and run with that transaction suspended.
             if ((binaryFlags & TaskRecord.Flags.SUSPEND_TRAN_OF_EXECUTOR_THREAD.bit) != 0) {
-                if (!taskStore.createProperty(taskIdForPropTable = "{" + taskId + "}", " "))
-                    throw new IllegalStateException(taskIdForPropTable); // Internal error if this path is ever reached
+                if (!taskStore.createProperty(taskIdForPropTable = "{" + taskId + "}", " ")) {
+                    // Determine the partition to which the task is assigned
+                    taskIdForPropTable = null;
+                    tranMgr.rollback(); // PostgreSQL will not permit any further operations after a duplicate key exception
+                    tranMgr.begin();
+                    Long assignedTo = taskStore.getPartition(taskId);
+                    if (assignedTo != null && assignedTo.equals(partitionId)) {
+                        throw new RuntimeException("An attempt to run the task might have been made by a different instance. Retry is needed.");
+                    } else { // the task is no longer assigned to the partition id for this executor instance
+                        if (trace && tc.isEntryEnabled())
+                            Tr.exit(this, tc, "run[" + taskId + ']', "task is assigned to partition " + assignedTo + ", not " + partitionId);
+                    }
+                }
                 Transaction suspendedTran = tranMgr.suspend();
                 try {
                     // We still need the task information, but get it in a new transaction that we can commit right away.
@@ -284,7 +298,7 @@ public class InvokerTask implements Runnable, Synchronization {
                     tranMgr.begin();
                     try {
                         taskRecord = taskStore.find(taskId,
-                                                    persistentExecutor.getPartitionId(),
+                                                    partitionId,
                                                     new Date().getTime(),
                                                     false);
                     } catch (Throwable x) {
@@ -316,7 +330,7 @@ public class InvokerTask implements Runnable, Synchronization {
                 }
 
                 taskRecord = taskStore.find(taskId,
-                                            persistentExecutor.getPartitionId(),
+                                            partitionId,
                                             new Date().getTime(),
                                             true);
             }
@@ -324,7 +338,7 @@ public class InvokerTask implements Runnable, Synchronization {
             if (taskRecord == null || (taskRecord.getState() & TaskState.ENDED.bit) != 0) {
                 if (trace && tc.isEntryEnabled())
                     Tr.exit(this, tc, "run[" + taskId + ']', "not appropriate to run task at this time");
-                return; // Ignore, because the task was canceled or someone else already ran it
+                return; // Ignore, because the task was canceled or has been assigned to someone else or someone else already ran it
             }
 
             taskName = taskRecord.getName();
