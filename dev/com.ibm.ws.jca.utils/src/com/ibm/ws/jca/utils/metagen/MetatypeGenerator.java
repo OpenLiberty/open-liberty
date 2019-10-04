@@ -416,10 +416,6 @@ public class MetatypeGenerator {
             }
         }
 
-        if (!adapter.getSecurityPermissions().isEmpty()) {
-            Tr.info(tc, "J2CA9935.secperm.not.supported", instance.adapterName);
-        }
-
         RaOutboundResourceAdapter outbound = adapter.getOutboundResourceAdapter();
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "outbound is:", outbound);
