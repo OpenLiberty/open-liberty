@@ -269,9 +269,9 @@ org.apache.maven:maven-model:3.5.0
 org.apache.mina:mina-core:2.1.3
 org.apache.myfaces.buildtools:myfaces-builder-annotations:1.0.9
 org.apache.myfaces.core:myfaces-api:2.2.12
-org.apache.myfaces.core:myfaces-api:2.3.3
+org.apache.myfaces.core:myfaces-api:2.3.4
 org.apache.myfaces.core:myfaces-impl:2.2.12
-org.apache.myfaces.core:myfaces-impl:2.3.3
+org.apache.myfaces.core:myfaces-impl:2.3.4
 org.apache.neethi:neethi:3.0.2
 org.apache.servicemix.bundles:org.apache.servicemix.bundles.bcel:5.2_3
 org.apache.thrift:libthrift:0.11.0

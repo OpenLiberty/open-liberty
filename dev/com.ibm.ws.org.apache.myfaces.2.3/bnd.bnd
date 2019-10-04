@@ -16,7 +16,7 @@ Bundle-SymbolicName: com.ibm.ws.org.apache.myfaces.2.3
 Bundle-Description: WAS JSF 2.3, version ${bVersion}
 WLP-ServerName: IBM WebSphere Application Server
 WLP-ServerVersion: ${liberty.beta.version}
-Implementation-Version: 2.3.3
+Implementation-Version: 2.3.4
 
 app-resources= \
   META-INF/services/org.apache.myfaces.config.annotation.LifecycleProviderFactory | \
@@ -77,7 +77,7 @@ instrument.classesExcludes: \
   org/**/*.class
 
 Include-Resource: \
-  @${repo;org.apache.myfaces.core.impl;2.3.3;EXACT}!/META-INF/**, \
+  @${repo;org.apache.myfaces.core.impl;2.3.4;EXACT}!/META-INF/**, \
   @${repo;com.ibm.websphere.javaee.jsf.2.3}!/META-INF/resources/**, \
   @${repo;com.ibm.websphere.javaee.jsf.2.3}!/META-INF/internal-resources/**, \
   META-INF=@src/META-INF
