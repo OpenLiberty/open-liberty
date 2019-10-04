@@ -41,10 +41,10 @@ public class RESTful_Stats extends Meter implements JaxRsStatsMXBean {
         setAppName(aName);
         setMethodName(mName);
         requestCount = new Counter();
-        requestCount.setDescription("This shows number of requests to a resource method");
+        requestCount.setDescription("This shows number of requests to a Restful resource method");
         requestCount.setUnit("ns");
         responseTime = new StatisticsMeter();
-        responseTime.setDescription("Average Response Time for a resource method");
+        responseTime.setDescription("Cumulative Response Time for a Restful resource method");
         responseTime.setUnit("ns");
     }
 
@@ -61,7 +61,7 @@ public class RESTful_Stats extends Meter implements JaxRsStatsMXBean {
      **/
     @Override
     public String getDescription() {
-        return "Report Stats for specified JAX-RS resource method.";
+        return "Report Stats for specified Restful resource method.";
     }
 
     /**
@@ -81,7 +81,7 @@ public class RESTful_Stats extends Meter implements JaxRsStatsMXBean {
      * */
     @Override
     public double getResponseTime() {
-        return responseTime.getMean();
+        return responseTime.getTotal();
     }
 
     /**

@@ -98,7 +98,13 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
         if (stats == null) {
              stats =initJaxRsStats(appName, simpleMethodName);
         }                       
-        stats.incrementCountBy(1);        
+        stats.incrementCountBy(1);
+        Long times = startTimes.get();
+        if (times!=null) {
+            long elapsed = System.nanoTime() - times;
+            stats.updateRT(elapsed < 0 ? 0 : elapsed);
+        }
+
 
     }
     

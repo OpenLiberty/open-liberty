@@ -25,13 +25,13 @@ import com.ibm.ws.pmi.server.PmiRegistry;
 /**
  * Monitor Class for JAXRS.
  */
-@Monitor(group = "JAXRS")
+// @Monitor(group = "JAXRS")
 public class JaxRsMonitor {
 
     private static final String APP_NAME_FROM_CONTEXT = "com.ibm.websphere.servlet.enterprise.application.name";
     private final ThreadLocal<Long> startTimes = new ThreadLocal<Long>();    
 
-    @PublishedMetric
+//    @PublishedMetric
     public MeterCollection<RESTful_Stats> methodCountByName = new MeterCollection<RESTful_Stats>("Resource Method",this);
 
     /**
