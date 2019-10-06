@@ -34,8 +34,8 @@ public class AnnotationsBetaHelper {
      * "com.ibm.websphere.appserver" is tested.  If that product is not
      * available, the product "io.openliberty" is tested instead.
      */
-    public static final boolean IS_LIBERTY_BETA_PRODUCT =
-        setIsLibertyBetaProduct();
+    public static final boolean IS_LIBERTY_BETA_PRODUCT = true;
+        // setIsLibertyBetaProduct();
 
     // TODO: This is quite expensive, especially if there are multiple
     //       product files.  However, this is temporary code which will
