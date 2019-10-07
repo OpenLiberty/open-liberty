@@ -154,6 +154,9 @@ public class JaegerTracerFactory implements OpentracingTracerFactory {
             if (reporterFlushInterval != null) {
                 reporterConfiguration.withFlushInterval(reporterFlushInterval);
             }
+            if (senderConfiguration != null) {
+                reporterConfiguration.withSender(senderConfiguration);
+            }
 
             //CodecConfiguration
             String propagation = getProperty(ENV_JAEGER_PROPAGATION);
