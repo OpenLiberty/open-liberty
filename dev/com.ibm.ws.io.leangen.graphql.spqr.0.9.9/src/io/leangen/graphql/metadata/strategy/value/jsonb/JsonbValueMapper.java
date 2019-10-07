@@ -21,22 +21,29 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
+import javax.json.bind.JsonbConfig;
 import javax.json.bind.annotation.JsonbDateFormat;
 import javax.json.bind.annotation.JsonbProperty;
+import javax.json.bind.config.PropertyNamingStrategy;
 
 import io.leangen.graphql.metadata.InputField;
 import io.leangen.graphql.metadata.strategy.value.InputFieldBuilder;
 import io.leangen.graphql.metadata.strategy.value.InputFieldBuilderParams;
 import io.leangen.graphql.metadata.strategy.value.InputParsingException;
 import io.leangen.graphql.metadata.strategy.value.ValueMapper;
+import io.leangen.graphql.util.ClassUtils;
 
 import org.eclipse.microprofile.graphql.Description;
 import org.eclipse.microprofile.graphql.DefaultValue;
@@ -45,7 +52,8 @@ public class JsonbValueMapper implements ValueMapper, InputFieldBuilder {
 
     private static final Logger LOG = Logger.getLogger(JsonbValueMapper.class.getName());
 
-    private Jsonb jsonb = JsonbBuilder.create();
+    private final Map<Type, Jsonb> inputFieldsJsonbMap = new ConcurrentHashMap<>();
+    private final Jsonb jsonb = JsonbBuilder.create();
     
     JsonbValueMapper() {
     }
@@ -61,7 +69,7 @@ public class JsonbValueMapper implements ValueMapper, InputFieldBuilder {
         String json = null;
         try {
             json = jsonb.toJson(graphQLInput, sourceType);
-            T t = jsonb.fromJson(json, outputTypeActual);
+            T t = getJsonb(outputTypeActual).fromJson(json, outputTypeActual);
             if (LOG.isLoggable(Level.FINEST)) {
                 LOG.finest("fromInput " + graphQLInput + " | " + sourceType + " | " + outputType + " -> " + t);
             }
@@ -80,7 +88,7 @@ public class JsonbValueMapper implements ValueMapper, InputFieldBuilder {
         }
         
         try {
-            T t = jsonb.fromJson(json, type);
+            T t = getJsonb(type).fromJson(json, type);
             if (LOG.isLoggable(Level.FINEST)) {
                 LOG.finest("fromString " + json + " | " + annotatedType + " -> " + t);
             }
@@ -202,7 +210,14 @@ public class JsonbValueMapper implements ValueMapper, InputFieldBuilder {
         }
         return inputFields;
     }
-    
+
+    private Jsonb getJsonb(Type type) {
+        return inputFieldsJsonbMap.computeIfAbsent(type, t -> {
+            return JsonbBuilder.create(new JsonbConfig()
+                                       .withPropertyNamingStrategy(new InputFieldPropertyNamingStrategy(t)));
+        });
+    }
+
     private static Field getDeclaredField(Class<?> declaringClass, String fieldName) {
         try {
             return AccessController.doPrivileged((PrivilegedExceptionAction<Field>) () -> {
@@ -216,5 +231,50 @@ public class JsonbValueMapper implements ValueMapper, InputFieldBuilder {
     
     private static String useDefaultIfEmpty(String s, String defaultValue) {
         return (s == null || "".equals(s.trim())) ? defaultValue : s;
+    }
+
+    private static class InputFieldPropertyNamingStrategy implements PropertyNamingStrategy {
+
+        final Map<String, String> propertyMap = new ConcurrentHashMap<>();
+
+        InputFieldPropertyNamingStrategy(Type type) {
+            Class<?> cls = ClassUtils.getRawType(type);
+            Set<Method> setters = new HashSet<>();
+            Collections.addAll(setters, cls.getMethods());
+            setters.stream()
+                   .filter(m -> m.getName().startsWith("set"))
+                   .forEach(m -> {
+                       String propName = ClassUtils.getFieldNameFromSetter(m);
+                       if (LOG.isLoggable(Level.FINEST)) {
+                           LOG.finest("<init> checking " + propName);
+                       }
+                       if (addMapping(propName, m.getAnnotation(org.eclipse.microprofile.graphql.InputField.class))) {
+                           return;
+                       }
+                       ClassUtils.findFieldBySetter(m).ifPresent(f -> {
+                           addMapping(propName, f.getAnnotation(org.eclipse.microprofile.graphql.InputField.class));
+                       });
+                   });
+        }
+
+        private boolean addMapping(String propName, org.eclipse.microprofile.graphql.InputField inputFieldAnno) {
+            if (LOG.isLoggable(Level.FINEST)) {
+                LOG.finest("addMapping " + propName + " -> " + (inputFieldAnno == null ? "null" : inputFieldAnno.value()));
+            }
+            if (inputFieldAnno != null) {
+                propertyMap.put(propName, inputFieldAnno.value());
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public String translateName(String propertyName) {
+            String translated = propertyMap.getOrDefault(propertyName, propertyName);
+            if (LOG.isLoggable(Level.FINEST)) {
+                LOG.finest("translateName " + propertyName + " -> " + translated);
+            }
+            return translated;
+        }
     }
 }
