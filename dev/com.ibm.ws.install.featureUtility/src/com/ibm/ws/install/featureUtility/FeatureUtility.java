@@ -328,13 +328,15 @@ public class FeatureUtility {
                         stack.push(current);
                     }
                 }
-            } else if (f.isFile() && f.getName().endsWith(".json")) {
+            } else if (f.isFile() && f.getName().endsWith(".json") && !f.getName().endsWith(".jar.json")) {
                 jsonFiles.add(f);
             }
         }
         logger.log(Level.FINE, "Found the following jsons: " + jsonFiles);
         if (jsonFiles.isEmpty()) {
-            throw new InstallException("Could not locate the json file");
+            // TODO throw exception if user does not allow network connection from system
+            // properties, else download from mvn central
+            jsonFiles = getJsonsFromMavenCentral();
         }
         return jsonFiles;
 
