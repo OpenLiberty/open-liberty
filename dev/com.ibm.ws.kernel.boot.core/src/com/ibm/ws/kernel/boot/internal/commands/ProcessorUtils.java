@@ -155,9 +155,7 @@ public class ProcessorUtils {
             }
             return root;
         }
-
         return null;
-
     }
 
     private static LooseConfig createElement(XMLStreamReader reader, LooseType type) {
@@ -183,7 +181,7 @@ public class ProcessorUtils {
      * @param looseFile
      * @param bootProps
      * @param bootProps
-     * @param archiveEntryPrefix 
+     * @param archiveEntryPrefix
      * @param isUsr
      * @return List<ArchiveEntryConfig>
      * @throws IOException
@@ -219,7 +217,7 @@ public class ProcessorUtils {
 
     /**
      * Creates an ArchiveEntryConfig for the LooseConfig at the given entryPath
-     * 
+     *
      * @param entryPath
      * @param config
      * @param bootProps
@@ -227,8 +225,7 @@ public class ProcessorUtils {
      * @throws IllegalArgumentException
      * @throws IOException
      */
-    public static ArchiveEntryConfig processLooseConfig(String entryPath, LooseConfig config, BootstrapConfig bootProps) 
-    		throws IllegalArgumentException, IOException {
+    public static ArchiveEntryConfig processLooseConfig(String entryPath, LooseConfig config, BootstrapConfig bootProps) throws IllegalArgumentException, IOException {
         if (LooseType.ARCHIVE.equals(config.type)) { // archive tag
             File archiveFile = processArchive(config, null, bootProps);
             return new FileEntryConfig(createLooseConfigEntryPath(config, entryPath), archiveFile);
@@ -260,7 +257,7 @@ public class ProcessorUtils {
      * Method creates archive file with resources defined in LooseConfig
      *
      * @param looseConfig
-     * @param LooseFileName 
+     * @param LooseFileName
      * @param bootProps
      * @return File
      * @throws IOException
@@ -287,7 +284,6 @@ public class ProcessorUtils {
             }
 
             thisArchive = ArchiveFactory.create(archiveFile);
-
             Iterator<LooseConfig> configIter = looseConfig.iteration();
 
             while (configIter.hasNext()) {
@@ -325,11 +321,9 @@ public class ProcessorUtils {
         } else {
             entryPath = archiveEntryPrefix + looseFile.getAbsolutePath().substring(len);
         }
-        entryPath = entryPath.replace("\\", "/");
-        entryPath = entryPath.replace("//", "/");
-        entryPath = entryPath.substring(0, entryPath.length() - 4); // trim the .xml
 
-        return entryPath;
+        // Fix path separators if necessary and trim '.xml' from the end
+        return entryPath.replace("\\", "/").replaceAll("/(?=/)|.xml$", "");
     }
 
     /**

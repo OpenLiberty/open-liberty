@@ -479,8 +479,6 @@ public class PackageProcessor implements ArchiveProcessor {
          * Add the archived loose files
          */
         getReferencedResources(entryConfigs);
-        for (ArchiveEntryConfig e : entryConfigs)
-            System.out.println(e);
 
         /*
          * Add process config directory (actually <userRoot>/servers/<processName> or <userRoot>/clients/<processName>)
@@ -622,8 +620,6 @@ public class PackageProcessor implements ArchiveProcessor {
                 looseConfig = ProcessorUtils.convertToLooseConfig(lf);
                 if (looseConfig != null) {
                     try {
-                        //ArchiveEntryConfig looseArchiveEntryConfig = ProcessorUtils.createLooseArchiveEntryConfig(looseConfig, lf, bootProps, packageArchiveEntryPrefix,
-                        //                                                                                          includeUsr(options.get(PackageOption.INCLUDE)));
                         entryConfigs.addAll(ProcessorUtils.createLooseExpandedArchiveEntryConfigs(looseConfig, lf, bootProps, packageArchiveEntryPrefix,
                                                                                                   includeUsr(options.get(PackageOption.INCLUDE))));
 
@@ -637,13 +633,12 @@ public class PackageProcessor implements ArchiveProcessor {
                     it.remove();
                 }
             } catch (Exception e) {
-                // If any exception occurs when parse loose file, just skip it and parse next loose file.
+                // If any exception occurs when parsing a loose file, just skip it and parse next loose file.
                 System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("warn.package.invalid.looseFile"), lf));
                 Debug.printStackTrace(e);
                 it.remove();
             }
         }
-
     }
 
     private ReturnCode restoreWebSphereApplicationServerProperty(File wlpRoot) {
