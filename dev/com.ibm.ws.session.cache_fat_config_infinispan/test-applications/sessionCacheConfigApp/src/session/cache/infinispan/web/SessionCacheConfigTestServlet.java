@@ -315,7 +315,8 @@ public class SessionCacheConfigTestServlet extends FATServlet {
         // CacheStatisticsMXBean for session attributes cache
         name = mbs.queryNames(new ObjectName("javax.cache:type=CacheStatistics,CacheManager=*infinispan.xml,Cache=com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp"), null).iterator().next();
         CacheStatisticsMXBean attrCacheStatsMXBean = JMX.newMBeanProxy(mbs, name, CacheStatisticsMXBean.class);
-        // TODO found value of 1 with Infinispan assertEquals(0, attrCacheStatsMXBean.getCacheRemovals());
+        long removalCount = attrCacheStatsMXBean.getCacheRemovals();
+        assertTrue("Removals: " + removalCount, removalCount >= 0); // depending on order, prior tests may have used sessions
 
         HttpSession session = request.getSession();
         request.getSession().setAttribute("testMXBeans", 12.3f);
