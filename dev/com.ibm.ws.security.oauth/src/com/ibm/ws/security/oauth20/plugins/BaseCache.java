@@ -43,7 +43,7 @@ import com.ibm.ws.security.oauth20.web.EndpointUtils;
  */
 public class BaseCache implements OAuth20EnhancedTokenCache {
 
-    static Thread _cleanupThread;
+    Thread _cleanupThread;
     static Object _lock = new Object();
     Map<String, CacheEntry> _cache;
     static Map<String, List<CacheEntry>> _indexOnUsername;
@@ -351,7 +351,6 @@ public class BaseCache implements OAuth20EnhancedTokenCache {
 
         // TODO : see if hash is valid before adding
         synchronized (_lock) {
-            _log.logp(Level.ALL, MYCLASS, "addByHash", "baseCache instance: " + this.toString());
             CacheEntry ce = new CacheEntry(entry, lifetime);
             _cache.put(hash, ce);
             List<CacheEntry> entries = null;
