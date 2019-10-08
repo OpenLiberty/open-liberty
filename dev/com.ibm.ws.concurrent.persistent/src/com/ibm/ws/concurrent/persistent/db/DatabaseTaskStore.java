@@ -278,8 +278,8 @@ public class DatabaseTaskStore implements TaskStore {
             em.flush();
         } catch (EntityExistsException x) {
             /*
-             * FIXME JPA Spec says em.persist should throw EntityExistsException if entity already exists.
-             * EclipseLink implementation throws PersistanceException during the flush operation instead.
+             * FIXME JPA Spec says em.persist can throw EntityExistsException if entity already exists.
+             * EclipseLink implementation chooses to throw PersistanceException during the flush operation.
              * If EclipseLink changes behavior or another JPA Impl is used, this exception will notify the JPA
              * team so that we can update this code path, and remove extraneous PersistenceException checks.
              */
@@ -298,7 +298,7 @@ public class DatabaseTaskStore implements TaskStore {
                     SQLException sqle = (SQLException) cause;
                     String sqlState = sqle.getSQLState();
 
-                    //SQL State 23xxx also indicates also indicates an integrity constraint violation
+                    //SQL State 23xxx also indicates an integrity constraint violation
                     if (sqlState != null && sqlState.length() == 5 && sqlState.startsWith("23")) {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Tr.debug(tc, "createProperty", sqle.getMessage(), sqlState, sqle.getErrorCode());
