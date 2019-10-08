@@ -609,19 +609,8 @@ public class LDAPUtils {
      * @throws Exception
      */
     public static void addLDAPVariables(LibertyServer server) throws Exception {
-        addLDAPVariables(server, true);
-    }
-
-    /**
-     * Adds LDAP variables for various servers and ports to the bootstrap.properties file for use in server.xml.
-     *
-     * @param server
-     * @param isInMemoryAllowed If false, physical LDAP servers and ports will be used as the property values.
-     * @throws Exception
-     */
-    public static void addLDAPVariables(LibertyServer server, boolean isInMemoryAllowed) throws Exception {
         String method = "addLDAPVariables";
-        Log.entering(c, method, new Object[] { server, isInMemoryAllowed });
+        Log.entering(c, method, new Object[] { server });
 
         Properties props = new Properties();
 
@@ -669,12 +658,11 @@ public class LDAPUtils {
         }
 
         Log.info(c, "addLDAPVariables", "USE_LOCAL_LDAP_SERVER=" + USE_LOCAL_LDAP_SERVER);
-        Log.info(c, "addLDAPVariables", "isInMemoryAllowed=" + isInMemoryAllowed);
 
         /*
          * Create a Properties instance with the remote or the local server properties.
          */
-        if (USE_LOCAL_LDAP_SERVER && isInMemoryAllowed) {
+        if (USE_LOCAL_LDAP_SERVER) {
             Log.info(c, "addLDAPVariables", "Setting in-memory LDAP server properties");
         } else {
             /*
@@ -688,7 +676,7 @@ public class LDAPUtils {
             Log.info(c, "addLDAPVariables", "Setting physical LDAP server properties");
         }
         for (int idx = 1; idx < remoteServers.length; idx++) {
-            setServerProperties(idx, props, isInMemoryAllowed);
+            setServerProperties(idx, props);
         }
 
         // Write above LDAP variables to remote bootstrap properties file
@@ -720,11 +708,11 @@ public class LDAPUtils {
      * @param props
      * @param isInMemoryAllowed
      */
-    private static void setServerProperties(int serverNumber, Properties props, boolean isInMemoryAllowed) {
+    private static void setServerProperties(int serverNumber, Properties props) {
         /*
          * Determine whether we should use the local or remote server.
          */
-        LdapServer server = (USE_LOCAL_LDAP_SERVER && isInMemoryAllowed) ? localServers[serverNumber] : remoteServers[serverNumber];
+        LdapServer server = (USE_LOCAL_LDAP_SERVER) ? localServers[serverNumber] : remoteServers[serverNumber];
 
         if (server != null) {
             setProp(props, "ldap.server." + serverNumber + ".name", server.serverName);
