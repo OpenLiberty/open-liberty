@@ -8,15 +8,7 @@ IBM-SPI-Package: \
  com.ibm.wsspi.anno.info, \
  com.ibm.wsspi.anno.service, \
  com.ibm.wsspi.anno.targets, \
- com.ibm.wsspi.anno.util, \
- com.ibm.ws.anno.classsource.specification, \
- com.ibm.wsspi.annocache.classsource, \
- com.ibm.wsspi.annocache.info, \
- com.ibm.wsspi.annocache.service, \
- com.ibm.wsspi.annocache.targets, \
- com.ibm.wsspi.annocache.targets.cache, \
- com.ibm.wsspi.annocache.util, \
- com.ibm.ws.annocache.classsource.specification
+ com.ibm.wsspi.anno.util
 Manifest-Version: 1.0
 IBM-Process-Types: server, \
  client
@@ -24,7 +16,7 @@ IBM-Process-Types: server, \
  com.ibm.websphere.appserver.javax.annotation-1.1; ibm.tolerates:="1.2, 1.3"
 -bundles=com.ibm.ws.anno
 -jars=com.ibm.websphere.appserver.spi.anno; location:=dev/spi/ibm/
--files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.anno_1.1-javadoc.zip
+-files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.anno_1.0-javadoc.zip
 kind=ga
 edition=core
 WLP-Activation-Type: parallel

@@ -17,9 +17,6 @@ Bundle-SymbolicName: com.ibm.websphere.appserver.spi.containerServices
 
 Import-Package: \
   com.ibm.ws.container.service.annotations, \
-  com.ibm.ws.container.service.annotations.internal, \
-  com.ibm.ws.container.service.annocache, \
-  com.ibm.ws.container.service.annocache.internal, \
   com.ibm.ws.container.service.app.deploy, \
   com.ibm.ws.container.service.config, \
   com.ibm.ws.container.service.naming, \
@@ -29,9 +26,6 @@ Import-Package: \
 
 Export-Package: \
   com.ibm.ws.container.service.annotations, \
-  com.ibm.ws.container.service.annotations.internal, \
-  com.ibm.ws.container.service.annocache, \
-  com.ibm.ws.container.service.annocache.internal, \
   com.ibm.ws.container.service.app.deploy, \
   com.ibm.ws.container.service.config, \
   com.ibm.ws.container.service.naming, \

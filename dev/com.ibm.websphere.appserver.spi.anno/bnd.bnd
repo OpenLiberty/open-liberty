@@ -9,7 +9,7 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
-bVersion: 1.1
+bVersion: 1.0
 
 Bundle-Name: WebSphere Annotations SPI
 Bundle-Description: WebSphere Annotations SPI, version ${bVersion}
@@ -20,30 +20,14 @@ Import-Package: \
   com.ibm.wsspi.anno.info, \
   com.ibm.wsspi.anno.service, \
   com.ibm.wsspi.anno.targets, \
-  com.ibm.wsspi.anno.util, \
-  com.ibm.ws.anno.classsource.specification, \
-  com.ibm.wsspi.annocache.classsource, \
-  com.ibm.wsspi.annocache.info, \
-  com.ibm.wsspi.annocache.service, \
-  com.ibm.wsspi.annocache.targets, \
-  com.ibm.wsspi.annocache.targets.cache, \
-  com.ibm.wsspi.annocache.util, \
-  com.ibm.ws.annocache.classsource.specification
+  com.ibm.wsspi.anno.util
 
 Export-Package: \
   com.ibm.wsspi.anno.classsource, \
   com.ibm.wsspi.anno.info, \
   com.ibm.wsspi.anno.service, \
   com.ibm.wsspi.anno.targets, \
-  com.ibm.wsspi.anno.util, \
-  com.ibm.ws.anno.classsource.specification, \
-  com.ibm.wsspi.annocache.classsource, \
-  com.ibm.wsspi.annocache.info, \
-  com.ibm.wsspi.annocache.service, \
-  com.ibm.wsspi.annocache.targets, \
-  com.ibm.wsspi.annocache.targets.cache, \
-  com.ibm.wsspi.annocache.util, \
-  com.ibm.ws.annocache.classsource.specification
+  com.ibm.wsspi.anno.util
 
 -includeresource:  \
   {META-INF/maven/com.ibm.websphere.appserver.spi/com.ibm.websphere.appserver.spi.anno/pom.xml=com.ibm.websphere.appserver.spi.anno.pom}
