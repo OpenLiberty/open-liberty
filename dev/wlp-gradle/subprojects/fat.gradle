@@ -311,13 +311,15 @@ task zipProjectFVT(type: Zip) {
   into project.name, {from 'build-test.xml'}
 }
 
-publishing {
-  publications {
-    maven(MavenPublication) {
-      artifactId project.name + '_autoFVT'
-      groupId 'test'
-      version project.version
-      artifact zipProjectFVT
+if (isAutomatedBuild || rootProject.projectNames.contains(project.name)) {
+  publishing {
+    publications {
+      maven(MavenPublication) {
+        artifactId project.name + '_autoFVT'
+        groupId 'test'
+        version project.version
+        artifact zipProjectFVT
+      }
     }
   }
 }
