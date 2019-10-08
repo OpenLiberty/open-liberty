@@ -93,7 +93,7 @@ public class Failover1ServerTest extends FATServletClient {
             PersistentExecutor persistentExec1 = config.getPersistentExecutors().getById("persistentExec1");
             persistentExec1.setEnableTaskExecution("true");
             persistentExec1.setPollInterval("1s600ms");
-            persistentExec1.setExtraAttribute("missedTaskThreshold", "6h"); // TODO update simplicity object with proper setter
+            persistentExec1.setMissedTaskThreshold("6h");
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
             server.waitForConfigUpdateInLogUsingMark(APP_NAMES);
@@ -202,21 +202,21 @@ public class Failover1ServerTest extends FATServletClient {
             persistentExec3.setId("persistentExec3");
             persistentExec3.setPollInterval("2s");
             persistentExec3.setPollSize("4");
-            persistentExec3.setExtraAttribute("missedTaskThreshold", "3s"); // TODO update simplicity object with proper setter
+            persistentExec3.setMissedTaskThreshold("3s");
             config.getPersistentExecutors().add(persistentExec3);
 
             PersistentExecutor persistentExec4 = new PersistentExecutor();
             persistentExec4.setId("persistentExec4");
             persistentExec4.setPollInterval("2s");
             persistentExec4.setPollSize("4");
-            persistentExec4.setExtraAttribute("missedTaskThreshold", "3s"); // TODO update simplicity object with proper setter
+            persistentExec4.setMissedTaskThreshold("3s");
             config.getPersistentExecutors().add(persistentExec4);
 
             PersistentExecutor persistentExec5 = new PersistentExecutor();
             persistentExec5.setId("persistentExec5");
             persistentExec5.setPollInterval("2s");
             persistentExec5.setPollSize("4");
-            persistentExec5.setExtraAttribute("missedTaskThreshold", "3s"); // TODO update simplicity object with proper setter
+            persistentExec5.setMissedTaskThreshold("3s");
             config.getPersistentExecutors().add(persistentExec5);
 
             server.setMarkToEndOfLog();
@@ -282,19 +282,19 @@ public class Failover1ServerTest extends FATServletClient {
             PersistentExecutor persistentExec3 = new PersistentExecutor();
             persistentExec3.setId("persistentExec3");
             persistentExec3.setPollInterval("1s500ms");
-            persistentExec3.setExtraAttribute("missedTaskThreshold", "2s"); // TODO update simplicity object with proper setter
+            persistentExec3.setMissedTaskThreshold("2s");
             config.getPersistentExecutors().add(persistentExec3);
 
             PersistentExecutor persistentExec4 = new PersistentExecutor();
             persistentExec4.setId("persistentExec4");
             persistentExec4.setPollInterval("1s500ms");
-            persistentExec4.setExtraAttribute("missedTaskThreshold", "2s"); // TODO update simplicity object with proper setter
+            persistentExec4.setMissedTaskThreshold("2s");
             config.getPersistentExecutors().add(persistentExec4);
 
             PersistentExecutor persistentExec5 = new PersistentExecutor();
             persistentExec5.setId("persistentExec5");
             persistentExec5.setPollInterval("1s500ms");
-            persistentExec5.setExtraAttribute("missedTaskThreshold", "2s"); // TODO update simplicity object with proper setter
+            persistentExec5.setMissedTaskThreshold("2s");
             config.getPersistentExecutors().add(persistentExec5);
 
             server.setMarkToEndOfLog();
@@ -372,7 +372,7 @@ public class Failover1ServerTest extends FATServletClient {
             persistentExec1.setEnableTaskExecution("true");
             persistentExec1.setInitialPollDelay("200ms");
             persistentExec1.setPollInterval("1s500ms");
-            persistentExec1.setExtraAttribute("missedTaskThreshold", "2s"); // TODO update simplicity object with proper setter
+            persistentExec1.setMissedTaskThreshold("2s");
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
             server.waitForConfigUpdateInLogUsingMark(APP_NAMES);
@@ -410,7 +410,7 @@ public class Failover1ServerTest extends FATServletClient {
         // instance which cannot run tasks directly schedules the task onto the instance that can run tasks.
         ServerConfiguration config = originalConfig.clone();
         PersistentExecutor persistentExec2 = config.getPersistentExecutors().getById("persistentExec2");
-        persistentExec2.setExtraAttribute("missedTaskThreshold", "5h"); // TODO update simplicity object with proper setter
+        persistentExec2.setMissedTaskThreshold("5h");
 
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
