@@ -22,15 +22,12 @@ import javax.ejb.Timeout;
 import javax.ejb.Timer;
 import javax.ejb.TimerConfig;
 import javax.ejb.TimerService;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.sql.DataSource;
 
 import failovertimers.web.FailoverTimersTestServlet;
 
 @Stateless
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-public class StatelessTxSuspendedBean {
+public class StatelessProgrammaticTimersBean {
     @Resource
     private DataSource ds;
 
@@ -44,7 +41,7 @@ public class StatelessTxSuspendedBean {
     }
 
     @Timeout
-    public void runTimer(Timer timer) {
+    public void execTimer(Timer timer) {
         String serverConfigDir = System.getProperty("server.config.dir");
         String wlpUserDir = System.getProperty("wlp.user.dir");
         String serverName = serverConfigDir.substring(wlpUserDir.length() + "servers/".length(), serverConfigDir.length() - 1);
@@ -53,10 +50,6 @@ public class StatelessTxSuspendedBean {
         if (FailoverTimersTestServlet.TIMERS_TO_FAIL.contains(timerName)) {
             System.out.println("Timer " + timerName + " is not allowed to run on " + serverName);
             throw new CompletionException("Intentionally failing timer " + timerName + " for testing purposes", null);
-        }
-
-        if (FailoverTimersTestServlet.TIMERS_TO_ROLL_BACK.contains(timerName)) {
-            throw new AssertionError("Auto rollback option is not supported for the TransactionAttributeType.NOT_SUPPORTED EJB");
         }
 
         System.out.println("Running timer " + timerName + " on " + serverName);
@@ -83,6 +76,11 @@ public class StatelessTxSuspendedBean {
             System.out.println("Timer " + timerName + " failed.");
             x.printStackTrace(System.out);
             throw new RuntimeException(x);
+        }
+
+        if (FailoverTimersTestServlet.TIMERS_TO_ROLL_BACK.contains(timerName)) {
+            System.out.println("Timer " + timerName + " can only roll back on " + serverName);
+            sessionContext.setRollbackOnly();
         }
     }
 
