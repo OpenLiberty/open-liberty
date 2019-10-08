@@ -16,7 +16,7 @@ IBM-Process-Types: server, \
  com.ibm.websphere.appserver.javax.annotation-1.1; ibm.tolerates:="1.2, 1.3"
 -bundles=com.ibm.ws.anno
 -jars=com.ibm.websphere.appserver.spi.anno; location:=dev/spi/ibm/
--files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.anno_1.0-javadoc.zip
+-files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.anno_1.1-javadoc.zip
 kind=ga
 edition=core
 WLP-Activation-Type: parallel
