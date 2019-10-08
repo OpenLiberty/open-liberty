@@ -3,59 +3,65 @@ package com.ibm.ws.install.featureUtility;
 
 
 import java.io.IOException;
+
 import java.util.List;
-import java.util.logging.Level;
 
 import com.ibm.ws.install.InstallException;
-import com.ibm.ws.install.InstallKernel;
-import com.ibm.ws.install.InstallKernelFactory;
-import com.ibm.ws.install.internal.InstallKernelImpl;
+import com.ibm.ws.install.featureUtility.cli.FeatureAction;
+import com.ibm.ws.kernel.boot.ReturnCode;
 import com.ibm.ws.kernel.boot.cmdline.Arguments;
+import com.ibm.ws.kernel.boot.cmdline.ExitCode;
 import com.ibm.ws.kernel.feature.internal.cmdline.ArgumentsImpl;
 
 /**
  *
  */
 public class FeatureUtilityExecutor {
-    private static String helpString = "usage: ./featureUtility install featureA";
-
     /**
      * @param args
+     * @throws InstallException
+     * @throws IOException
      */
-    public static void main(String[] argsArray) {
+    public static void main(String[] argsArray) throws IOException, InstallException {
+        ExitCode rc;
+
         Arguments args = new ArgumentsImpl(argsArray);
         String actionName = args.getAction();
         if (actionName == null || actionName.equalsIgnoreCase("help")) {
-            System.out.println(helpString);
-            // todo arg processing
+            rc = FeatureAction.help.handleTask(args);
         } else {
-            InstallKernel installKernel = InstallKernelFactory.getInstance();
-
-            String verboseLevel = args.getOption("verbose");
-            Level logLevel = Level.INFO;
-            if (verboseLevel != null && verboseLevel.isEmpty()) {
-                logLevel = Level.FINE;
-            } else if (verboseLevel != null && verboseLevel.equalsIgnoreCase("debug")) {
-                logLevel = Level.FINEST;
-            }
-            ((InstallKernelImpl) installKernel).enableConsoleLog(logLevel);
-
-            // assume install for now
-            String fromDir = args.getOption("from");
-            String repoType = args.getOption("to");
-            List<String> featuresToInstall = args.getPositionalArguments();
-
             try {
-                FeatureUtility featureUtility = new FeatureUtility.FeatureUtilityBuilder()
-                        .setFeaturesToInstall(featuresToInstall).setFromDir(fromDir).setToExtension(repoType).build();
-                featureUtility.installFeatures();
-            } catch (IOException | InstallException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
+                FeatureAction action = FeatureAction.valueOf(actionName);
+                List<String> invalid = args.findInvalidOptions(action.getCommandOptions());
 
+                if (!!!invalid.isEmpty()) {
+                    // TODO unknown message
+                    FeatureAction.help.handleTask(args);
+                    rc = ReturnCode.BAD_ARGUMENT;
+                } else {
+                    rc = action.handleTask(args);
+                }
+
+
+            } catch (IllegalArgumentException iae) {
+                rc = FeatureAction.help
+                        .handleTask(new ArgumentsImpl(new String[] { FeatureAction.help.toString(), actionName }));
+            }
+
+        }
+        System.exit(rc.getValue());
+    }
+
+    public static ReturnCode returnCode(int rc) {
+        for (ReturnCode r : ReturnCode.values()) {
+            if (r.getValue() == rc)
+                return r;
+        }
+        return ReturnCode.RUNTIME_EXCEPTION;
     }
 
 
 }
+
+
+
