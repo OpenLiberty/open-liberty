@@ -28,7 +28,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
 
-public class ConfigProcessor {
+public class ConfigProcessor implements Closeable {
 
     private static final TraceComponent tc = Tr.register(ConfigProcessor.class);
 
@@ -81,6 +81,7 @@ public class ConfigProcessor {
         retrieveServers();
     }
 
+    @Override
     public void close() {
         try {
             ((Closeable) this.config).close();

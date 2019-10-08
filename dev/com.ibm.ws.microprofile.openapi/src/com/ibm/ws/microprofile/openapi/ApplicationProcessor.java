@@ -121,9 +121,8 @@ public class ApplicationProcessor {
 
         OpenAPI newDocument = null;
 
-        //read and process the MicroProfile config
-        ConfigProcessor configProcessor = new ConfigProcessor(appClassloader);
-        try {
+        //read and process the MicroProfile config. Try with resources will close the ConfigProcessor when done.
+        try (ConfigProcessor configProcessor = new ConfigProcessor(appClassloader)) {
             if (OpenAPIUtils.isEventEnabled(tc)) {
                 Tr.event(tc, "Retrieved configuration values : " + configProcessor);
             }
@@ -285,8 +284,6 @@ public class ApplicationProcessor {
                     }
                 }
             }
-        } finally {
-            configProcessor.close();
         }
 
         if (OpenAPIUtils.isEventEnabled(tc)) {
