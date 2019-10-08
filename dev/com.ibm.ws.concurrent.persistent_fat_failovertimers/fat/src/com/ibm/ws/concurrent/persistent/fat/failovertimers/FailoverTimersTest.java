@@ -159,7 +159,7 @@ public class FailoverTimersTest extends FATServletClient {
                     "allowTimer&timer=Timer_400_1700&test=testProgrammaticTimerFailsOverWhenTimerFailsOnOneServer[4]");
 
             runTest(serverA, APP_NAME + "/FailoverTimersTestServlet",
-                    "testCancelStatelessTxSuspendedTimers&test=testProgrammaticTimerFailsOverWhenTimerFailsOnOneServer[5]");
+                    "testCancelStatelessProgrammaticTimers&test=testProgrammaticTimerFailsOverWhenTimerFailsOnOneServer[5]");
         }
 
         // Also restart the server. This allows us to process any expected warning messages that are logged in response
@@ -199,7 +199,7 @@ public class FailoverTimersTest extends FATServletClient {
                     "allowTimerCommit&timer=Timer_300_1800&test=testProgrammaticTimerFailsOverWhenTimerRollsBackOnOneServer[4]");
 
             runTest(serverA, APP_NAME + "/FailoverTimersTestServlet",
-                    "testCancelStatelessTxSuspendedTimers&test=testProgrammaticTimerFailsOverWhenTimerRollsBackOnOneServer[5]");
+                    "testCancelStatelessProgrammaticTimers&test=testProgrammaticTimerFailsOverWhenTimerRollsBackOnOneServer[5]");
         }
 
         // Also restart the server. This allows us to process any expected warning messages that are logged in response
@@ -291,6 +291,28 @@ public class FailoverTimersTest extends FATServletClient {
             // Also restart the server. This allows us to process any expected warning messages that are logged in response
             // to the application going away while its scheduled tasks remain.
             serverOnWhichToStopApp.stopServer("CWWKC1556W"); // Execution of tasks from application failoverTimersApp is deferred until the application and modules that scheduled the tasks are available.
+        }
+    }
+
+    /**
+     * Schedule a long-running timer, which exceeds the missedTaskThreshold by a significant amount.
+     * Verify that timer is allowed to complete on the same server, and does not cause a failover due to its slowness.
+     * This is not a recommended way of running. In general, a user should increase their missedTaskThreshold to
+     * accommodate the length of their longest timers. However, if it does happen, this test helps to demonstrate
+     * that Liberty deals with it gracefully, apart from the extra locking that is incurred by attempting an
+     * unnecessary failover.
+     */
+    @Test
+    public void testLongRunningTimerLooksLikeAMissedTimer() throws Exception {
+        runTest(serverA, APP_NAME + "/FailoverTimersTestServlet",
+                "testScheduleStatelessTimer&timer=Long_Running_Timer_200_1200&initialDelayMS=200&intervalMS=1200&test=testLongRunningTimerLooksLikeAMissedTimer[1]");
+        try {
+            // Verify that the timer execution on server A (where it was scheduled) succeeds
+            runTest(serverA, APP_NAME + "/FailoverTimersTestServlet",
+                    "testTimerFailover&timer=Long_Running_Timer_200_1200&server=" + SERVER_A_NAME + "&test=testLongRunningTimerLooksLikeAMissedTimer[2]");
+        } finally {
+            runTest(serverA, APP_NAME + "/FailoverTimersTestServlet",
+                    "testCancelStatelessProgrammaticTimers&test=testLongRunningTimerLooksLikeAMissedTimer[3]");
         }
     }
 

@@ -12,7 +12,9 @@ package com.ibm.ws.concurrent.persistent.db;
 
 import java.security.AccessController;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.sql.SQLTimeoutException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -24,8 +26,10 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
+import javax.persistence.LockTimeoutException;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
+import javax.persistence.QueryTimeoutException;
 import javax.persistence.TypedQuery;
 
 import com.ibm.websphere.concurrent.persistent.PersistentExecutor;
@@ -1408,8 +1412,9 @@ public class DatabaseTaskStore implements TaskStore {
     }
 
     /** {@inheritDoc} */
+    @FFDCIgnore({ LockTimeoutException.class, PersistenceException.class, QueryTimeoutException.class })
     @Override
-    public boolean setPartition(long taskId, int version, long newPartitionId) throws Exception {
+    public boolean setPartitionIfNotLocked(long taskId, int version, long newPartitionId) throws Exception {
         String update = "UPDATE Task t SET t.PARTN=:p,t.VERSION=t.VERSION+1 WHERE t.ID=:i AND t.VERSION=:v";
 
         final boolean trace = TraceComponent.isAnyTracingEnabled();
@@ -1419,6 +1424,14 @@ public class DatabaseTaskStore implements TaskStore {
         EntityManager em = getPersistenceServiceUnit().createEntityManager();
         try {
             Query query = em.createQuery(update.toString());
+
+            // We would like the statement to return immediately if the entry is already locked (this means it doesn't need failover),
+            // however EclipseLink says lock timeout isn't valid for this type of query,
+            // query.setHint("javax.persistence.lock.timeout", 0); // milliseconds
+
+            // As a workaround, use a short query timeout,
+            query.setHint("javax.persistence.query.timeout", 5); // seconds
+
             query.setParameter("p", newPartitionId);
             query.setParameter("i", taskId);
             query.setParameter("v", version);
@@ -1427,6 +1440,35 @@ public class DatabaseTaskStore implements TaskStore {
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "setPartition", assigned);
             return assigned;
+        } catch (LockTimeoutException x) {
+            if (trace && tc.isEntryEnabled())
+                Tr.exit(this, tc, "setPartition", "false: lock timeout - still owned by another member");
+            return false;
+        } catch (QueryTimeoutException x) {
+            if (trace && tc.isEntryEnabled())
+                Tr.exit(this, tc, "setPartition", "false: query timeout - still owned by another member");
+            return false;
+        } catch (PersistenceException x) {
+            for (Throwable c = x.getCause(); c != null; c = c.getCause())
+                if (c instanceof SQLTimeoutException) {
+                    if (trace && tc.isEntryEnabled())
+                        Tr.exit(this, tc, "setPartition", "false: SQLTimeoutException still owned by another member");
+                    return false;
+                } else if (c instanceof SQLException) {
+                    String ss = ((SQLException) c).getSQLState();
+                    if ("XCL52".equals(ss) // Derby Network Client SQLState for query timeout
+                    ) {
+                        if (trace && tc.isEntryEnabled())
+                            Tr.exit(this, tc, "setPartition", "false: SQLState + " + ss + " - still owned by another member");
+                        return false;
+                    }
+                }
+            FFDCFilter.processException(x, getClass().getName(), "1466", this);
+            throw x;
+        } catch (Exception x) {
+            throw x; // force FFDC to be logged
+        } catch (Error x) {
+            throw x; // force FFDC to be logged
         } finally {
             em.close();
         }

@@ -2196,7 +2196,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
          * @param taskData            list of task detail, as returned by TaskStore.findLateTasks
          * @param missedTaskThreshold number of seconds beyond which a task is considered missed.
          * @return true if a claim on the task was registered in the persistent store,
-         *         regardless of whether the task was actually transferred to this instance.
+         *         regardless of whether the task actually transfers to this instance (transfer happens asynchronously).
          *         Otherwise false.
          * @throws Exception if an error occurs.
          */
@@ -2239,29 +2239,10 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
             }
 
             if (trace && tc.isDebugEnabled())
-                Tr.debug(PersistentExecutorImpl.this, tc, "Task " + taskId + " claimed? " + claimed);
+                Tr.debug(PersistentExecutorImpl.this, tc, "Claimed task " + taskId + "? " + claimed);
 
-            if (claimed) {
-                int currentVersion = (Integer) taskData[4];
-                long partition = getPartitionId();
-                boolean transferred;
-                tranMgr.begin();
-                try {
-                    transferred = taskStore.setPartition(taskId, currentVersion, partition);
-                } finally {
-                    tranMgr.commit();
-                }
-
-                if (transferred) {
-                    inMemoryTaskIds.put(taskId, Boolean.TRUE);
-                    short mbits = (Short) taskData[1];
-                    int txTimeout = (Integer) taskData[3];
-                    InvokerTask task = new InvokerTask(PersistentExecutorImpl.this, taskId, expectedExecTime, mbits, txTimeout);
-                    if (trace && tc.isDebugEnabled())
-                        Tr.debug(PersistentExecutorImpl.this, tc, "Submit task " + taskId + " for immediate execution");
-                    executor.submit(task);
-                }
-            }
+            if (claimed)
+                executor.submit(new TransferAndInvokeTask(taskData, tranMgr));
 
             return claimed;
         }
@@ -2490,6 +2471,52 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
         void setFailure(Throwable failure) {
             if (this.failure == null)
                 this.failure = failure;
+        }
+    }
+
+    /**
+     * Asynchronously attempts to transfer a task to this partition from another.
+     * Runs the task immediately if successfully transferred.
+     */
+    class TransferAndInvokeTask implements Callable<Boolean> {
+        private final Object[] taskData;
+        private final EmbeddableWebSphereTransactionManager tranMgr;
+
+        TransferAndInvokeTask(Object[] taskData, EmbeddableWebSphereTransactionManager tranMgr) {
+            this.taskData = taskData;
+            this.tranMgr = tranMgr;
+        }
+
+        /**
+         * Attempt to transfer a task to this partition from another.
+         * If successfully transferred, runs the task immediately.
+         *
+         * @return true if the task is transferred, otherwise false.
+         */
+        @Override
+        public Boolean call() throws Exception {
+            long taskId = (long) taskData[0];
+            int currentVersion = (Integer) taskData[4];
+            long partition = getPartitionId();
+            boolean transferred;
+            tranMgr.begin();
+            try {
+                transferred = taskStore.setPartitionIfNotLocked(taskId, currentVersion, partition);
+            } finally {
+                tranMgr.commit();
+            }
+
+            // Run immediately if successfully transferred:
+            if (transferred) {
+                inMemoryTaskIds.put(taskId, Boolean.TRUE);
+                short mbits = (Short) taskData[1];
+                long expectedExecTime = (long) taskData[2];
+                int txTimeout = (Integer) taskData[3];
+                InvokerTask invoker = new InvokerTask(PersistentExecutorImpl.this, taskId, expectedExecTime, mbits, txTimeout);
+                invoker.run();
+            }
+
+            return transferred;
         }
     }
 }
