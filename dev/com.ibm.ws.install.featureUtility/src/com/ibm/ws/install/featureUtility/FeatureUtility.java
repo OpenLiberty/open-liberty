@@ -292,10 +292,6 @@ public class FeatureUtility {
         return file.exists() && file.getName().equals("features-" + openLibertyVersion + ".json");
     }
 
-    private boolean isFeatureJson(File file) {
-        return file.exists() && file.getName().equals("features-" + openLibertyVersion + ".json");
-    }
-
     private File retrieveJsonFileFromArtifact(File artifact) {
         File dir = new File(artifact, "/features/");
         if (!dir.exists() && !dir.isDirectory()) {
