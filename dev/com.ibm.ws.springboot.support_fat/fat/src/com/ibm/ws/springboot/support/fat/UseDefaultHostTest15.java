@@ -18,12 +18,14 @@ import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
+@MaximumJavaLevel(javaLevel = 8)
 public class UseDefaultHostTest15 extends CommonWebServerTests {
 
     @AfterClass
