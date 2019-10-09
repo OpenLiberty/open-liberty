@@ -102,6 +102,16 @@ public abstract class InstallUtilityToolTest {
         ProgramOutput po5= runCommand("listFilesInShared", "sudo", param5s);
         String output = po5.getStdout();
         logger.info(output);
+	String[] param7s = {javaHome+ "/bin/java"};
+        ProgramOutput po7= runCommand("listFilesInJava", "ls -l", param7s);
+        String output2 = po7.getStdout();
+        logger.info(output2);
+        String[] param8s = {"a+x", javaHome+ "/bin/java"};
+        ProgramOutput po8= runCommand("changeJavaPerm", "chmod", param8s);
+        String[] param9s = {javaHome+ "/bin/java"};
+        ProgramOutput po9= runCommand("listFilesInJava", "ls -l", param9s);
+        String output3 = po9.getStdout();
+        logger.info(output3);
         exiting(c, METHOD_NAME);
     }
 
