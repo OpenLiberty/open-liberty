@@ -48,24 +48,15 @@ public class FeatureUtility {
     private final List<String> featuresToInstall;
     private final String openLibertyVersion;
     private final Logger logger;
-    private boolean tempCleanupRequired;
-    private boolean usingM2Cache;
 
-    private final String TEMP_DIRECTORY = Utils.getInstallDir().getAbsolutePath() + File.separatorChar + "tmp"
-                                          + File.separatorChar;
-    private final String OPEN_LIBERTY_PRODUCT_ID = "io.openliberty";
+    
+    private final String OPEN_LIBERTY_PRODUCT_ID = "io.openliberty"; //TODO
 
     private FeatureUtility(FeatureUtilityBuilder builder) throws IOException, InstallException {
         this.logger = InstallLogUtils.getInstallLogger();
         this.openLibertyVersion = getLibertyVersion();
-        this.tempCleanupRequired = false;
-        this.usingM2Cache = false;
-
-        if (builder.fromDir != null) {
-            this.fromDir = builder.fromDir;
-        } else if ((this.fromDir = getM2Cache()) != null) {
-            this.usingM2Cache = true;
-        }
+        
+        this.fromDir = builder.fromDir;
         this.toExtension = builder.toExtension;
         this.featuresToInstall = new ArrayList<>(builder.featuresToInstall);
         this.esaFile = builder.esaFile;
@@ -110,7 +101,7 @@ public class FeatureUtility {
      * @throws InstallException
      *
      */
-    private String getLibertyVersion() throws IOException, InstallException {
+    private String getLibertyVersion() throws IOException, InstallException { //TODO
         File dir = new File(Utils.getInstallDir(), "lib/versions");
         File[] propertiesFiles = dir.listFiles(new FilenameFilter() {
             @Override
@@ -176,7 +167,7 @@ public class FeatureUtility {
             }
         }
 
-        Collection<File> artifacts = fromDir != null ? findEsas(resolvedFeatures, fromDir) : downloadFeatureEsas((List<String>) resolvedFeatures);
+        Collection<File> artifacts = fromDir != null ? downloadFeaturesFrom(resolvedFeatures, fromDir) : downloadFeatureEsas((List<String>) resolvedFeatures);
 
         Collection<String> actionReturnResult = new ArrayList<String>();
         Collection<String> currentReturnResult;
@@ -222,78 +213,24 @@ public class FeatureUtility {
         }
     }
 
-    private Collection<File> findEsas(Collection<String> resolvedFeatures, File rootDir) throws InstallException {
-        List<File> foundEsas = new ArrayList<>();
-        List<String> featuresClone = new ArrayList<>(resolvedFeatures);
-        List<Integer> missingFeatureIndexes = new ArrayList<>();
-
-        int index = 0;
-        for (String feature : resolvedFeatures) {
-            logger.log(Level.FINE, "Processing feature: " + feature);
-            String groupId = feature.split(":")[0];
-            String featureName = feature.split(":")[1];
-
-            File groupDir = new File(rootDir, groupId.replace(".", "/"));
-            if (!groupDir.exists()) {
-                missingFeatureIndexes.add(index);
-                continue;
-            }
-            String featureEsa = featureName + "-" + openLibertyVersion + ".esa";
-            Path featurePath = Paths.get(groupDir.getAbsolutePath().toString(), featureName, openLibertyVersion, featureEsa);
-
-            logger.log(Level.FINE, "Found feature at path: " + featurePath.toString());
-            if (Files.isRegularFile(featurePath)) {
-                foundEsas.add(featurePath.toFile());
-                featuresClone.remove(feature);
-            } else {
-                missingFeatureIndexes.add(index);
-            }
-
-            index += 1;
-
-        }
-        if (!missingFeatureIndexes.isEmpty() && !featuresClone.isEmpty()) {
-            logger.log(Level.INFO, "Could not find ESAs in local maven repo for " + featuresClone);
-            List<File> downloadedEsas = downloadFeatureEsas(featuresClone);
-            logger.log(Level.INFO, "Downloaded the following features from maven central:" + downloadedEsas);
-            index = 0;
-            for (File file : downloadedEsas) {
-                // insert the downloaded esa into its respective position
-                foundEsas.add(missingFeatureIndexes.get(index), file);
-                index += 1;
-            }
-        }
-        return foundEsas;
-
-    }
-
-    /**
-     * @throws InstallException
-     *
-     */
-    private List<File> downloadFeatureEsas(List<String> features) throws InstallException {
-        map.put("download.artifact.list", features);
-
-        map.put("download.local.dir.location", this.usingM2Cache ? fromDir.getAbsolutePath() : TEMP_DIRECTORY);
-        if (System.getenv("MAVEN_REPOSITORY") != null) {
-            map.put("download.remote.maven.repo", System.getenv("MAVEN_REPOSITORY"));
-        } else {
-            map.put("download.remote.maven.repo", "http://repo.maven.apache.org/maven2/");
-        }
-        boolean singleArtifactInstall = false;
+    private List<File> downloadFeaturesFrom(Collection<String> resolvedFeatures, File fromDir) throws InstallException {
+    	map.put("from.dir", fromDir);
+        return downloadFeatureEsas(resolvedFeatures);
+	}
+    
+    private List<File> downloadFeatureEsas(Collection<String> resolvedFeatures) throws InstallException {
+    	map.put("download.artifact.list", resolvedFeatures);
+    	boolean singleArtifactInstall = false;
 
         map.put("download.inidividual.artifact", singleArtifactInstall);
         List<File> result = (List<File>) map.get("download.result");
-
         if (map.get("action.error.message") != null) {
             logger.log(Level.FINE, "action.exception.stacktrace: " + map.get("action.error.stacktrace"));
             String exceptionMessage = (String) map.get("action.error.message");
             throw new InstallException(exceptionMessage);
         }
-        this.tempCleanupRequired = this.usingM2Cache ? false : this.tempCleanupRequired;
 
         return result;
-
     }
 
     /**
@@ -350,7 +287,7 @@ public class FeatureUtility {
         return jsonFiles;
 
     }
-
+    
     private boolean isFeatureJson(File file) {
         return file.exists() && file.getName().equals("features-" + openLibertyVersion + ".json");
     }
@@ -388,13 +325,6 @@ public class FeatureUtility {
     private List<File> getJsonsFromMavenCentral() throws InstallException {
         // get open liberty json
         List<File> result = new ArrayList<File>();
-
-        map.put("download.local.dir.location", this.usingM2Cache ? fromDir.getAbsolutePath() : TEMP_DIRECTORY);
-        if (System.getenv("MAVEN_REPOSITORY") != null) {
-            map.put("download.remote.maven.repo", System.getenv("MAVEN_REPOSITORY"));
-        } else {
-            map.put("download.remote.maven.repo", "http://repo.maven.apache.org/maven2/");
-        }
         map.put("download.filetype", "json");
         boolean singleArtifactInstall = true;
         map.put("download.inidividual.artifact", singleArtifactInstall);
@@ -407,7 +337,6 @@ public class FeatureUtility {
         File CL = (File) map.get("download.result");
         result.add(OL);
         result.add(CL);
-        this.tempCleanupRequired = this.usingM2Cache ? false : true;
         if (map.get("action.error.message") != null) {
             logger.log(Level.FINE, "action.exception.stacktrace: " + map.get("action.error.stacktrace"));
             String exceptionMessage = (String) map.get("action.error.message");
@@ -425,10 +354,11 @@ public class FeatureUtility {
      * @throws IOException
      */
     private void cleanUp() throws IOException {
-        File temp = new File(TEMP_DIRECTORY);
+    	String tempStr = (String) map.get("cleanup.temp.location");
         boolean deleted = true;
 
-        if (tempCleanupRequired) {
+        if (tempStr != null) { //change this to a map.get("cleanup.needed")
+        	File temp = new File(tempStr);
             deleted = deleteFolder(temp);
         }
         if (deleted) {
@@ -469,7 +399,7 @@ public class FeatureUtility {
 
     private File getM2Cache() {
         File m2Folder = Paths.get(System.getProperty("user.home"), ".m2", "repository", "").toFile();
-
+        
         if (m2Folder.exists() && m2Folder.isDirectory()) {
             return m2Folder;
         }
