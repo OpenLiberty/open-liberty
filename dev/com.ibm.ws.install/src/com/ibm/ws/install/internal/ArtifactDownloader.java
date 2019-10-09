@@ -49,6 +49,7 @@ public class ArtifactDownloader {
         ArtifactDownloaderUtils.checkResponseCode(repoResponseCode, repo);
         List<String> featureURLs = ArtifactDownloaderUtils.acquireFeatureURLs(mavenCoords, repo);
         List<String> missingFeatures;
+        dLocation = FormatPathSuffix(dLocation);
         try {
             missingFeatures = ArtifactDownloaderUtils.getMissingFiles(featureURLs);
         } catch (IOException e) {
@@ -70,10 +71,23 @@ public class ArtifactDownloader {
         }
     }
 
+    /**
+     * @param dLocation
+     * @return
+     */
+    private String FormatPathSuffix(String dLocation) {
+        String result = dLocation;
+        if (!dLocation.endsWith(File.separator)) {
+            result += File.separator;
+        }
+        return result;
+    }
+
     public void synthesizeAndDownload(String mavenCoords, String filetype, String dLocation, String repo, boolean individualDownload) throws InstallException {
         if (individualDownload) {
             checkValidProxy();
             int repoResponseCode;
+            dLocation = FormatPathSuffix(dLocation);
             try {
                 repoResponseCode = ArtifactDownloaderUtils.exists(repo);
             } catch (IOException e) {
