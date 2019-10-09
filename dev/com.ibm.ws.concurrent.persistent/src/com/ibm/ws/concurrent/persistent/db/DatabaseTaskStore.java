@@ -12,6 +12,7 @@ package com.ibm.ws.concurrent.persistent.db;
 
 import java.security.AccessController;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -276,13 +277,39 @@ public class DatabaseTaskStore implements TaskStore {
             em.persist(property);
             em.flush();
         } catch (EntityExistsException x) {
-            return false;
+            /*
+             * FIXME JPA Spec says em.persist can throw EntityExistsException if entity already exists.
+             * EclipseLink implementation chooses to throw PersistanceException during the flush operation.
+             * If EclipseLink changes behavior or another JPA Impl is used, this exception will notify the JPA
+             * team so that we can update this code path, and remove extraneous PersistenceException checks.
+             */
+            throw new UnsupportedOperationException("EntityExistsException indicates that additional or alternative "
+                                                    + "function has been added.", x);
         } catch (PersistenceException x) {
             // Some JPA providers may throw PersistenceException for some scenarios where it can be
             // determined the row really does exist; handle those here
-            if (x.getCause() instanceof SQLIntegrityConstraintViolationException) {
-                return false;
+
+            //TODO remove later if EntityExistsException starts being thrown
+            Throwable cause = x.getCause();
+            while (cause != null) {
+                if (cause instanceof SQLIntegrityConstraintViolationException)
+                    return false;
+                if (cause instanceof SQLException) {
+                    SQLException sqle = (SQLException) cause;
+                    String sqlState = sqle.getSQLState();
+
+                    //SQL State 23xxx also indicates an integrity constraint violation
+                    if (sqlState != null && sqlState.length() == 5 && sqlState.startsWith("23")) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "createProperty", sqle.getMessage(), sqlState, sqle.getErrorCode());
+                        }
+                        return false;
+                    }
+                }
+                cause = cause.getCause(); //Eventually will return null when end of exceptions stack is reached.
             }
+
+            //Final effort to try and find property
             try {
                 em.detach(property); // ensure em.find won't return object from cache
                 if (em.find(Property.class, name) != null) {
