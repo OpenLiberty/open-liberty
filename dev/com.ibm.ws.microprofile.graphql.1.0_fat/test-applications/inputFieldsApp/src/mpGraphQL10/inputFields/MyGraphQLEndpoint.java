@@ -43,8 +43,6 @@ public class MyGraphQLEndpoint {
         return allWidgets;
     }
 
-    @org.eclipse.microprofile.graphql.Deprecated("Deprecated mutation, please use \"createWidget\" instead.")
-    @Deprecated
     @Mutation("createWidgetByHand")
     public Widget createNewWidgetByHand(@Argument("widgetString") String widgetString) {
         Widget w = Widget.fromString(widgetString);
