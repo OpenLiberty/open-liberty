@@ -76,11 +76,14 @@ public class PackageRunnableTest {
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        System.out.println("SKSK: afterClass = " + extractAndRunDir);
         String[] entries = extractAndRunDir.list();
         for (String s : entries) {
+            System.out.println("SKSK: afterClass deleting = " + s);
             File currentFile = new File(extractAndRunDir.getPath(), s);
             currentFile.delete();
         }
+        throw new RuntimeException(); // force output collection
     }
 
     private void deleteDir(File file) {
