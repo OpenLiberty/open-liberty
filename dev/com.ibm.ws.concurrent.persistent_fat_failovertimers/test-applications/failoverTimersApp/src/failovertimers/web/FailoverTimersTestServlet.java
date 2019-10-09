@@ -135,6 +135,14 @@ public class FailoverTimersTestServlet extends FATServlet {
     }
 
     /**
+     * Cancel all timers that were scheduled by the StatelessProgrammaticTimersBean.
+     */
+    public void testCancelStatelessProgrammaticTimers(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        StatelessProgrammaticTimersBean bean = InitialContext.doLookup("java:global/failoverTimersApp/StatelessProgrammaticTimersBean!failovertimers.ejb.stateless.StatelessProgrammaticTimersBean");
+        bean.cancelTimers();
+    }
+
+    /**
      * Cancel all timers that were scheduled by the StatelessTxSuspendedBean.
      */
     public void testCancelStatelessTxSuspendedTimers(HttpServletRequest request, HttpServletResponse response) throws Exception {
