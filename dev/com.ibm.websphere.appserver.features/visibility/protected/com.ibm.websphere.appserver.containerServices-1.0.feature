@@ -1,7 +1,8 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.containerServices-1.0
 visibility=protected
-IBM-SPI-Package: com.ibm.ws.container.service.annotations, \
+IBM-SPI-Package: \
+ com.ibm.ws.container.service.annotations, \
  com.ibm.ws.container.service.app.deploy, \
  com.ibm.ws.container.service.config, \
  com.ibm.ws.container.service.naming, \

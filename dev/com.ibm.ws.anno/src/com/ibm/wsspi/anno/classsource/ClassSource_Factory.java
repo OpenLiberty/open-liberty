@@ -134,9 +134,5 @@ public interface ClassSource_Factory {
 
     ClassSource_Specification_Container_WAR newWARContainerSpecification();
 
-    /**
-     * @param useJandex
-     * @return
-     */
     ClassSource_Options createOptions(boolean useJandex);
 }

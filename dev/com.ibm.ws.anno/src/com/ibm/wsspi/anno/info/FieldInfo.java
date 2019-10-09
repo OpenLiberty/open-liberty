@@ -40,7 +40,10 @@ public interface FieldInfo extends Info {
 
     //
 
-    /** <p>Answer the default value of this field. */
+    /**
+     *<p>Answer the default value of this field.</p>
+     *
+     * @return The default value of this field.
+     */
     public Object getDefaultValue();
-
 }

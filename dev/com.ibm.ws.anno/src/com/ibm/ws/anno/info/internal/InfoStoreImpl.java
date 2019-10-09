@@ -81,7 +81,7 @@ public class InfoStoreImpl implements InfoStore {
      * Open the InfoStore for processing. Primarily, this will open the ClassSources attached to this
      * InfoStore which will then allow classes to be accessed.
      * 
-     * @throws InfoStoreException
+     * @throws InfoStoreException Throw if the info store could not be opened.
      */
     @Override
     public void open() throws InfoStoreException {
@@ -103,7 +103,7 @@ public class InfoStoreImpl implements InfoStore {
      * Close the InfoStore to end processing. This will call close on all of the ClassSources attached to this
      * InfoStore.
      * 
-     * @throws InfoStoreException
+     * @throws InfoStoreException Throw if the info store could not be closed.
      */
     @Override
     public void close() throws InfoStoreException {

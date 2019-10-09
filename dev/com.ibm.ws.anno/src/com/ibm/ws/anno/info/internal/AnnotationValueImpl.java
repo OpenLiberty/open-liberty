@@ -21,13 +21,18 @@ import com.ibm.wsspi.anno.info.AnnotationValue;
  * 
  * <p>Several cases are handled:</p>
  * 
- * <ul><li>Primitive cases</li>
- * <ul><li>Primitive values (boolean, char, byte, short, int, float, long, and double)</li>
- * <li>Primitive class values (stored as String)</li>
- * <li>Other (unspecified) cases of Object as a primitive value</li>
- * </ul>
+ * <ul>
+ * <li>Primitive cases</li>
  * <li>Array case</li>
  * <li>Annotation case</li>
+ * </ul>
+ *
+ * <p>Primitive cases include as sub-cases:</p>
+ *
+ * <ul>
+ * <li>Primitive values (boolean, char, byte, short, int, float, long, and double)</li>
+ * <li>Primitive class values (stored as String)</li>
+ * <li>Other (unspecified) cases of Object as a primitive value</li>
  * </ul>
  */
 public class AnnotationValueImpl implements AnnotationValue {
