@@ -106,7 +106,7 @@ public abstract class InstallUtilityToolTest {
         ProgramOutput po7= runCommand("listFilesInJava", "ls -l", param7s);
         String output2 = po7.getStdout();
         logger.info(output2);
-        String[] param8s = {"a+x", javaHome+ "/bin/java"};
+        String[] param8s = {"777", javaHome+ "/bin/java"};
         ProgramOutput po8= runCommand("changeJavaPerm", "chmod", param8s);
         String[] param9s = {javaHome+ "/bin/java"};
         ProgramOutput po9= runCommand("listFilesInJava", "ls -l", param9s);
