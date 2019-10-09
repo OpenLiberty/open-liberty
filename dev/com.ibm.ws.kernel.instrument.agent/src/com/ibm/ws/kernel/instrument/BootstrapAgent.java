@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2018 IBM Corporation and others.
+ * Copyright (c) 2010, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,6 @@
 package com.ibm.ws.kernel.instrument;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
 import java.net.URI;
@@ -59,30 +58,13 @@ public final class BootstrapAgent {
         String targetAgent = separator < 0 ? arg : arg.substring(0, separator);
         String targetAgentArgs = separator < 0 ? "" : arg.substring(separator + 1);
 
-    	try {
-            loadAgentJar(targetAgent, targetAgentArgs);
-    	} catch (FileNotFoundException e) {
-    	    // if the code cannot find the specified jar file, do nothing. This is the original behavior. 
-    	}
-    }
-
-    /**
-     * Loads an agent. Assuming that premain had called before calling this method in order to set Instrumentation object.
-     * @param agentJarName an relative path name from the location of bootstrap agent of jar name which is loaded.
-     * @param arg argument for the agent.
-     */
-    public static void loadAgent(String agentJarName, String arg) throws Exception {
-    	loadAgentJar(agentJarName, arg);
-    }
-
-    private static void loadAgentJar(String agentJarName, String arg) throws Exception {
         // Get the bootstrap agent location
         CodeSource bootstrapCodeSource = BootstrapAgent.class.getProtectionDomain().getCodeSource();
         URI bootstrapLocationURI = bootstrapCodeSource.getLocation().toURI();
         assert ("file".equals(bootstrapLocationURI.getScheme()));
 
         // Build target agent URI relative to our own
-        URI agentURI = bootstrapLocationURI.resolve(agentJarName);
+        URI agentURI = bootstrapLocationURI.resolve(targetAgent);
 
         // Crack open the agent's jar and read the manifest
         File agentFile = new File(agentURI);
@@ -117,13 +99,11 @@ public final class BootstrapAgent {
             // Find and invoke the agent's premain method
             try {
                 Method premain = clazz.getMethod("premain", String.class, Instrumentation.class);
-                premain.invoke(null, arg, BootstrapAgent.instrumentation);
+                premain.invoke(null, targetAgentArgs, inst);
             } catch (NoSuchMethodException e) {
                 Method premain = clazz.getMethod("premain", String.class);
-                premain.invoke(null, arg);
+                premain.invoke(null, targetAgentArgs);
             }
-        } else {
-            throw new FileNotFoundException(agentFile.getAbsolutePath());
         }
     }
 
