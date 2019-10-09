@@ -8,6 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+// Comment to trigger build
 package wlp.lib.extract;
 
 import org.junit.runner.RunWith;
