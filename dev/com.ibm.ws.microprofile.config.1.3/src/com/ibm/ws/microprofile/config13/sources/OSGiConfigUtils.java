@@ -159,7 +159,12 @@ public class OSGiConfigUtils {
         }
 
         if (service == null) {
-            throw new ServiceNotFoundException(serviceClass);
+            //One last check to make sure the framework didn't start to shutdown after we last looked
+            if (!FrameworkState.isValid()) {
+                throw new InvalidFrameworkStateException();
+            } else {
+                throw new ServiceNotFoundException(serviceClass);
+            }
         }
         return service;
     }
