@@ -844,7 +844,7 @@ public class InstallKernelMap implements Map {
         return result;
     }
 
-    private String getM2Cache() {
+    private String getM2Cache() { //check for maven_home specified mirror stuff
         File m2Folder = getM2Path().toFile();
 
         if (m2Folder.exists() && m2Folder.isDirectory()) {
@@ -1048,6 +1048,18 @@ public class InstallKernelMap implements Map {
     private Collection<File> DownloadEsas() {
         File rootDir = (File) data.get(ROOT_DIR);
         Collection<String> resolvedFeatures = (List<String>) data.get(DOWNLOAD_ARTIFACT_LIST);
+        String openLibertyVersion = null;
+        try {
+            openLibertyVersion = getLibertyVersion();
+        } catch (IOException e) {
+            data.put(ACTION_RESULT, ERROR);
+            data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+            data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
+        } catch (InstallException e) {
+            data.put(ACTION_RESULT, ERROR);
+            data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+            data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
+        }
         List<File> foundEsas = new ArrayList<>();
         List<String> featuresClone = new ArrayList<>(resolvedFeatures);
         List<Integer> missingFeatureIndexes = new ArrayList<>();
@@ -1055,29 +1067,16 @@ public class InstallKernelMap implements Map {
         int index = 0;
         for (String feature : resolvedFeatures) {
             //logger.log(Level.FINE, "Processing feature: " + feature);
+
             String groupId = feature.split(":")[0];
             String featureName = feature.split(":")[1];
-
             File groupDir = new File(rootDir, groupId.replace(".", "/"));
             if (!groupDir.exists()) {
                 missingFeatureIndexes.add(index);
                 continue;
             }
-            String featureEsa = null;
-            Path featurePath = null;
-            try {
-                featureEsa = featureName + "-" + getLibertyVersion() + ".esa";
-                featurePath = Paths.get(groupDir.getAbsolutePath().toString(), featureName, getLibertyVersion(), featureEsa);
-
-            } catch (IOException e) {
-                data.put(ACTION_RESULT, ERROR);
-                data.put(ACTION_ERROR_MESSAGE, e.getMessage());
-                data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
-            } catch (InstallException e) {
-                data.put(ACTION_RESULT, ERROR);
-                data.put(ACTION_ERROR_MESSAGE, e.getMessage());
-                data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
-            }
+            String featureEsa = featureName + "-" + openLibertyVersion + ".esa";
+            Path featurePath = Paths.get(groupDir.getAbsolutePath().toString(), featureName, openLibertyVersion, featureEsa);
 
             //logger.log(Level.FINE, "Found feature at path: " + featurePath.toString());
             if (Files.isRegularFile(featurePath)) {

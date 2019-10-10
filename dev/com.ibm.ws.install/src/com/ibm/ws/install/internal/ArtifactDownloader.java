@@ -98,7 +98,7 @@ public class ArtifactDownloader {
         String groupId = ArtifactDownloaderUtils.getGroupId(mavenCoords).replace(".", "/") + "/";
         String artifactId = ArtifactDownloaderUtils.getartifactId(mavenCoords);
         String version = ArtifactDownloaderUtils.getVersion(mavenCoords);
-        new File(dLocation + groupId + version + "/").mkdirs();
+        new File(dLocation + groupId + artifactId + "/" + version + "/").mkdirs();
 
         String filename = ArtifactDownloaderUtils.getfilename(mavenCoords, filetype);
         String urlLocation = ArtifactDownloaderUtils.getUrlLocation(repo, groupId, artifactId, version, filename);
@@ -111,7 +111,7 @@ public class ArtifactDownloader {
             if (individualDownload && ArtifactDownloaderUtils.fileIsMissing(urlLocation)) {
                 throw ExceptionUtils.createByKey("ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_REPO", ArtifactDownloaderUtils.getFileNameFromURL(urlLocation), filetype + " file", repo);
             } else {
-                download(urlLocation, dLocation, groupId, version, filename, checksumFormats);
+                download(urlLocation, dLocation, groupId, artifactId, version, filename, checksumFormats);
             }
         } catch (IOException e) {
             throw ExceptionUtils.createByKey(e, "ERROR_INVALID_ESA", filename);
@@ -119,10 +119,11 @@ public class ArtifactDownloader {
 
     }
 
-    private void download(String urlLocation, String dLocation, String groupId, String version, String filename, String[] checksumFormats) throws IOException, InstallException {
+    private void download(String urlLocation, String dLocation, String groupId, String artifactId, String version, String filename,
+                          String[] checksumFormats) throws IOException, InstallException {
         try {
             URI uriLoc = new URI(urlLocation);
-            File fileLoc = new File(ArtifactDownloaderUtils.getFileLocation(dLocation, groupId, version, filename));
+            File fileLoc = new File(ArtifactDownloaderUtils.getFileLocation(dLocation, groupId, artifactId, version, filename));
 
             downloadInternal(uriLoc, fileLoc);
             downloadedFiles.add(fileLoc);
@@ -131,7 +132,7 @@ public class ArtifactDownloader {
                 String checksumLocal = ArtifactDownloaderUtils.getChecksum(fileLoc.getAbsolutePath(), checksumFormat);
                 String checksumOrigin = ArtifactDownloaderUtils.getMasterChecksum(urlLocation, checksumFormat);
                 if (!checksumLocal.equals(checksumOrigin)) {
-                    ArtifactDownloaderUtils.deleteFiles(downloadedFiles, dLocation, groupId, version, filename);
+                    ArtifactDownloaderUtils.deleteFiles(downloadedFiles, dLocation, groupId, artifactId, version, filename);
                     downloadedFiles.clear();
                     throw ExceptionUtils.createByKey("ERROR_DOWNLOADED_ASSET_INVALID_CHECKSUM", filename, Messages.INSTALL_KERNEL_MESSAGES.getMessage("FEATURE_ASSET"));
                 }

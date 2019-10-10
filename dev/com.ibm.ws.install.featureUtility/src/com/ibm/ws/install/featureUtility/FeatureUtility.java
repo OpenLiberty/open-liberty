@@ -221,7 +221,6 @@ public class FeatureUtility {
     private List<File> downloadFeatureEsas(Collection<String> resolvedFeatures) throws InstallException {
     	map.put("download.artifact.list", resolvedFeatures);
     	boolean singleArtifactInstall = false;
-
         map.put("download.inidividual.artifact", singleArtifactInstall);
         List<File> result = (List<File>) map.get("download.result");
         if (map.get("action.error.message") != null) {
