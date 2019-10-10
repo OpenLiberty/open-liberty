@@ -115,7 +115,6 @@ public class InstallKernelMap implements Map {
     private static final String DOWNLOAD_LOCAL_DIR_LOCATION = "download.local.dir.location";
     private static final String DOWNLOAD_ARTIFACT_LIST = "download.artifact.list";
     private static final String FROM_REPO = "from.repo";
-    private static final String ROOT_DIR = "root.dir";
     private static final String CLEANUP_TEMP_LOCATION = "cleanup.temp.location";
 
     //Headers in Manifest File
@@ -259,7 +258,13 @@ public class InstallKernelMap implements Map {
             if (downloadSingleArtifact != null && downloadSingleArtifact) {
                 return downloadSingleFeature();
             } else {
-                return DownloadEsas();
+                String fromRepo = (String) data.get(FROM_REPO);
+                if (fromRepo == null) {
+                    List<String> resolvedFeatures = (List<String>) data.get(DOWNLOAD_ARTIFACT_LIST);
+                    return downloadFeatures(resolvedFeatures);
+                } else {
+                    return DownloadEsas();
+                }
             }
         }
         return data.get(key);
@@ -365,12 +370,6 @@ public class InstallKernelMap implements Map {
         } else if (DOWNLOAD_INDIVIDUAL_ARTIFACT.equals(key)) {
             if (value instanceof Boolean) {
                 data.put(DOWNLOAD_INDIVIDUAL_ARTIFACT, value);
-            } else {
-                throw new IllegalArgumentException();
-            }
-        } else if (ROOT_DIR.equals(key)) {
-            if (value instanceof File) {
-                data.put(ROOT_DIR, value);
             } else {
                 throw new IllegalArgumentException();
             }
@@ -1046,7 +1045,8 @@ public class InstallKernelMap implements Map {
 
     @SuppressWarnings("unchecked")
     private Collection<File> DownloadEsas() {
-        File rootDir = (File) data.get(ROOT_DIR);
+        String fromRepo = (String) data.get(FROM_REPO);
+        File rootDir = new File(fromRepo);
         Collection<String> resolvedFeatures = (List<String>) data.get(DOWNLOAD_ARTIFACT_LIST);
         String openLibertyVersion = null;
         try {
@@ -1067,7 +1067,6 @@ public class InstallKernelMap implements Map {
         int index = 0;
         for (String feature : resolvedFeatures) {
             //logger.log(Level.FINE, "Processing feature: " + feature);
-
             String groupId = feature.split(":")[0];
             String featureName = feature.split(":")[1];
             File groupDir = new File(rootDir, groupId.replace(".", "/"));
