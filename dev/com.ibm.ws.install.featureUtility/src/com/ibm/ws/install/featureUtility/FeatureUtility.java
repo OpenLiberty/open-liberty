@@ -214,7 +214,7 @@ public class FeatureUtility {
     }
 
     private List<File> downloadFeaturesFrom(Collection<String> resolvedFeatures, File fromDir) throws InstallException {
-    	map.put("from.dir", fromDir);
+    	map.put("from.repo", fromDir.toString());
         return downloadFeatureEsas(resolvedFeatures);
 	}
     
@@ -228,7 +228,6 @@ public class FeatureUtility {
             String exceptionMessage = (String) map.get("action.error.message");
             throw new InstallException(exceptionMessage);
         }
-
         return result;
     }
 
@@ -394,16 +393,6 @@ public class FeatureUtility {
             }
         });
         return !file.exists();
-    }
-
-    private File getM2Cache() {
-        File m2Folder = Paths.get(System.getProperty("user.home"), ".m2", "repository", "").toFile();
-        
-        if (m2Folder.exists() && m2Folder.isDirectory()) {
-            return m2Folder;
-        }
-        return null;
-
     }
 
     public static class FeatureUtilityBuilder {
