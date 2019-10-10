@@ -124,11 +124,11 @@ public class ArtifactDownloaderUtils {
         return getChecksumFromURL(urlLocation);
     }
 
-    public static void deleteFiles(List<File> fileList, String dLocation, String groupId, String version, String filename) {
+    public static void deleteFiles(List<File> fileList, String dLocation, String groupId, String artifactId, String version, String filename) {
         for (File f : fileList) {
             f.delete();
         }
-        File file = (new File(getFileLocation(dLocation, groupId, version, filename))).getParentFile();
+        File file = (new File(getFileLocation(dLocation, groupId, artifactId, version, filename))).getParentFile();
         while (!(file.toString() + "/").equals(dLocation)) {
             File[] files = file.listFiles(new FilenameFilter() {
                 @Override
@@ -164,8 +164,8 @@ public class ArtifactDownloaderUtils {
         return repo + groupId + artifactId + "/" + version + "/" + filename;
     }
 
-    public static String getFileLocation(String dLocation, String groupId, String version, String filename) {
-        return dLocation + groupId + version + "/" + filename;
+    public static String getFileLocation(String dLocation, String groupId, String artifactId, String version, String filename) {
+        return dLocation + groupId + artifactId + "/" + version + "/" + filename;
     }
 
     public static String getFileNameFromURL(String str) {

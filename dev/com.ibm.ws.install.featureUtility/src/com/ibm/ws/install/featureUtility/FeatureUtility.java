@@ -221,9 +221,10 @@ public class FeatureUtility {
     private List<File> downloadFeatureEsas(Collection<String> resolvedFeatures) throws InstallException {
     	map.put("download.artifact.list", resolvedFeatures);
     	boolean singleArtifactInstall = false;
-
+    	System.out.println(resolvedFeatures);
         map.put("download.inidividual.artifact", singleArtifactInstall);
         List<File> result = (List<File>) map.get("download.result");
+        System.out.println(result);
         if (map.get("action.error.message") != null) {
             logger.log(Level.FINE, "action.exception.stacktrace: " + map.get("action.error.stacktrace"));
             String exceptionMessage = (String) map.get("action.error.message");
