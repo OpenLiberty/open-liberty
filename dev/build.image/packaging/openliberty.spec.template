@@ -49,7 +49,7 @@ exit 0
 /usr/lib/systemd/system
 
 %changelog
-* Fri Feb 22 2019 Michael Zhang <michael.zhang@ibm.com> - 19.0.0.1-1
+* @SPEC_TIMESTAMP@ Admin <admin@openliberty.io> - @SPEC_VERSION@-1
 - First Open Liberty package
 
 %preun
