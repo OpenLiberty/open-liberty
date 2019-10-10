@@ -44,7 +44,7 @@ dependencies {
     myfacesLibs 'commons-digester:commons-digester:1.8',
       'commons-collections:commons-collections:3.2.1',
       'commons-logging:commons-logging:1.1.1',
-      'commons-beanutils:commons-beanutils:1.8.3',
+      'commons-beanutils:commons-beanutils:1.9.4',
       'commons-codec:commons-codec:1.11',
       'javax.xml.bind:jaxb-api:2.3.0'
     }
