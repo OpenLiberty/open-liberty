@@ -88,5 +88,6 @@ task addInfinispanClientLibs(type: Copy) {
 }
 
 addRequiredLibraries {
+  dependsOn addDerby
   dependsOn addInfinispanClientLibs
 }

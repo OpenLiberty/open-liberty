@@ -2,7 +2,7 @@
    <server xmlns='urn:infinispan:server:10.0'>
      <interfaces>
       <interface name='public'>
-         <inet-address value='172.17.0.5'/>
+         <inet-address value='0.0.0.0'/>
        </interface>
      </interfaces>
      <socket-bindings default-interface='public' port-offset='0'>

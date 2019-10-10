@@ -46,7 +46,7 @@ public class SessionCacheOneServerTest extends FATServletClient {
     public static void setUp() throws Exception {
         app = new SessionCacheApp(server, true, "session.cache.infinispan.web", "session.cache.infinispan.web.listener1", "session.cache.infinispan.web.listener2");
 
-        server.addEnvVar("INF_SERVERLIST", "127.0.0.1:" + infinispan.getMappedPort(11222));
+        server.addEnvVar("INF_SERVERLIST", infinispan.getContainerIpAddress() + ":" + infinispan.getMappedPort(11222));
 
         server.startServer();
     }

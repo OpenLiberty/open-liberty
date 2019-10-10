@@ -30,6 +30,7 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
 
@@ -45,6 +46,10 @@ import componenttest.topology.utils.HttpUtils;
 
 public class FATSuite {
 
+    static {
+        ExternalTestServiceDockerClientStrategy.clearTestcontainersConfig();
+    }
+
     /**
      * Infinispan container
      * - Copies config.xml for server config
@@ -55,6 +60,7 @@ public class FATSuite {
     @ClassRule
     public static GenericContainer infinispan = new GenericContainer(new ImageFromDockerfile()
                     .withDockerfileFromBuilder(builder -> builder.from("infinispan/server:10.0.0.CR2-1")
+                                    .user("root")
                                     .copy("/opt/infinispan_config/config.xml", "/opt/infinispan_config/config.xml")
                                     .copy("/opt/infinispan/server/conf/users.properties", "/opt/infinispan/server/conf/users.properties")
                                     .build())
@@ -120,4 +126,5 @@ public class FATSuite {
             msg = msg.substring(0, msg.length() - 1);
         Log.info(GenericContainer.class, "infinispan", msg);
     }
+
 }
