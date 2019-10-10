@@ -542,38 +542,49 @@ public class DatabaseTaskStore implements TaskStore {
     /** {@inheritDoc} */
     @Override
     public long findOrCreate(PartitionRecord record) throws Exception {
-        String find = "SELECT p.ID FROM Partition p WHERE p.EXECUTOR=:x AND p.HOSTNAME=:h AND p.LSERVER=:l AND p.USERDIR=:u";
+        String find = "SELECT p.ID,p.STATES FROM Partition p WHERE p.EXECUTOR=:x AND p.HOSTNAME=:h AND p.LSERVER=:l AND p.USERDIR=:u";
 
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
             Tr.entry(this, tc, "findOrCreate", record, find);
 
-        Long result;
+        long partitionId;
         EntityManager em = getPersistenceServiceUnit().createEntityManager();
         try {
             // First look for an existing entry
-            TypedQuery<Long> query = em.createQuery(find, Long.class);
+            TypedQuery<Object[]> query = em.createQuery(find, Object[].class);
             query.setParameter("x", record.getExecutor());
             query.setParameter("h", record.getHostName());
             query.setParameter("l", record.getLibertyServer());
             query.setParameter("u", record.getUserDir());
-            List<Long> results = query.getResultList();
-            if (results.size() > 0)
-                result = results.get(0);
-            else {
+            List<Object[]> results = query.getResultList();
+            if (results.size() > 0) {
+                Object[] idAndStates = results.get(0);
+                partitionId = (Long) idAndStates[0];
+                long states = (Long) idAndStates[1];
+                // Check if existing entry needs an update to states
+                if (record.hasStates() && record.getStates() != states) {
+                    Query update = em.createQuery("UPDATE Partition SET STATES=:s WHERE ID=:i");
+                    update.setParameter("s", record.getStates());
+                    update.setParameter("i", partitionId);
+                    int count = update.executeUpdate();
+                    if (trace && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "update states " + states + " --> " + record.getStates() + "? " + count);
+                }
+            } else {
                 // If not found, create a new entry
                 Partition partition = new Partition(record);
                 em.persist(partition);
                 em.flush();
-                result = partition.ID;
+                partitionId = partition.ID;
             }
         } finally {
             em.close();
         }
 
         if (trace && tc.isEntryEnabled())
-            Tr.exit(this, tc, "findOrCreate", result);
-        return result;
+            Tr.exit(this, tc, "findOrCreate", partitionId);
+        return partitionId;
     }
 
     /** {@inheritDoc} */
@@ -971,6 +982,7 @@ public class DatabaseTaskStore implements TaskStore {
         return consecutiveFailureCount;
     }
 
+    // TODO is this unused? Can we remove it?
     /** {@inheritDoc} */
     @Override
     public int persist(PartitionRecord updates, PartitionRecord expected) throws Exception {

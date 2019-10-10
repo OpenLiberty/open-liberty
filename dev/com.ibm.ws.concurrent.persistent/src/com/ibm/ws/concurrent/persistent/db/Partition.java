@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -58,18 +58,20 @@ public class Partition {
     public String USERDIR;
 
     /**
-     * Currently unused. Reserved for possible future use.
+     * Stores the expiration timestamp for this partition record.
+     * Long.MAX_VALUE indicates that it never expires.
      */
     @Column(nullable = false)
     public long EXPIRY = Long.MAX_VALUE;
 
     /**
-     * Currently unused. Reserved for possible future use.
+     * Bits that represent configured state.
      */
     @Column(nullable = false)
     public long STATES = 0l;
 
-    public Partition() {}
+    public Partition() {
+    }
 
     Partition(PartitionRecord record) {
         if (record.hasExecutor())
@@ -82,5 +84,9 @@ public class Partition {
             LSERVER = record.getLibertyServer();
         if (record.hasUserDir())
             USERDIR = record.getUserDir();
+        if (record.hasExpiry())
+            EXPIRY = record.getExpiry();
+        if (record.hasStates())
+            STATES = record.getStates();
     }
 }
