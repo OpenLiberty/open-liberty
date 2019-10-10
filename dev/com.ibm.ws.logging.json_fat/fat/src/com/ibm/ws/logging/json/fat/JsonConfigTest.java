@@ -323,7 +323,6 @@ public class JsonConfigTest {
     }
 
     private void runApplication(RemoteFile consoleLogFile) throws Exception {
-        server.setMarkToEndOfLog();
         server.setMarkToEndOfLog(consoleLogFile);
         TestUtils.runApp(server, "logServlet");
     }
