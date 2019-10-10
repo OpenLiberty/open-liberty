@@ -38,8 +38,7 @@ import com.ibm.wsspi.anno.util.Util_InternMap;
  * <p>Standard aggregate class source implementation.</p>
  */
 public class ClassSourceImpl_Aggregate extends ClassSourceImpl implements ClassSource_Aggregate {
-    @SuppressWarnings("hiding")
-	public static final String CLASS_NAME = ClassSourceImpl_Aggregate.class.getName();
+    public static final String CLASS_NAME = ClassSourceImpl_Aggregate.class.getName();
     private static final TraceComponent tc = Tr.register(ClassSourceImpl_Aggregate.class);
 
     // Top O' the world
@@ -324,7 +323,7 @@ public class ClassSourceImpl_Aggregate extends ClassSourceImpl implements ClassS
 
     protected void basicAddClassSource(ClassSource classSource, ScanPolicy scanPolicy) {
         classSources.add(classSource);
-        classSourceNames.put( classSource.getName(), classSource.getCanonicalName() );
+        classSourceNames.put(classSource.getName(), classSource.getCanonicalName());
 
         if ( scanPolicy == ScanPolicy.SEED ) {
             seedClassSources.add(classSource);

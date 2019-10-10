@@ -11,6 +11,5 @@
 package com.ibm.ws.anno.test.cases;
 
 public interface TestConstants {
-    static final String BUILD_LOGS = "build/logs/";
-    static final String REPOSITORY_TEST_ROOT = "c:/dev/repos-pub/anno-beta/dev/com.ibm.ws.anno";
+    public static final String BUILD_LOGS = "build/logs/";
 }

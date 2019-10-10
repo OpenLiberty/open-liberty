@@ -18,7 +18,6 @@ import com.ibm.ws.anno.test.data.sub.SubBase;
 /**
  *
  */
-@SuppressWarnings("unused")
 @Resource(name = "/B", authenticationType = AuthenticationType.APPLICATION)
 public class BClass extends SubBase implements CIntf {
     static {
@@ -30,18 +29,14 @@ public class BClass extends SubBase implements CIntf {
     }
 
     @Override
-    public void publicMethod() {
-        // EMPTY
-    }
+    public void publicMethod() {}
 
     @Override
     public Integer publicMethod(int n) {
         return null;
     }
 
-    private void privateMethod() {
-        // EMPTY
-    }
+    private void privateMethod() {}
 
     @Override
     @Resource

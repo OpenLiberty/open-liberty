@@ -117,7 +117,8 @@ public interface AnnotationValue {
      * 
      * @return The name of the class of the stored enumerated value.
      * 
-     * {@link #getEnumValue()}
+     * @see #getEnumValue()
+     * @see #getEnumType()
      */
     public String getEnumClassName();
 
@@ -125,6 +126,8 @@ public interface AnnotationValue {
      * <p>Answer the enumerated value as the value name.</p>
      * 
      * @return The enumerated value as a value name.
+     * 
+     * @see #getEnumType()
      */
     public String getEnumValue();
 

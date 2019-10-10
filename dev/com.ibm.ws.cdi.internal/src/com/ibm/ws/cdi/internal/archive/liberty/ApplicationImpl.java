@@ -39,9 +39,10 @@ import com.ibm.wsspi.adaptable.module.NonPersistentCache;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 
 /**
- * Implementation of CDI application information.
+ *
  */
 public class ApplicationImpl implements Application {
+
     private static final TraceComponent tc = Tr.register(ApplicationImpl.class);
 
     private final ExtendedApplicationInfo applicationInfo;
@@ -51,6 +52,10 @@ public class ApplicationImpl implements Application {
     private final Collection<CDIArchive> moduleArchives;
     private final Collection<CDIArchive> libraryArchives;
 
+    /**
+     * @param applicationInfo
+     * @throws CDIException
+     */
     public ApplicationImpl(ApplicationInfo applicationInfo, RuntimeFactory factory) throws CDIException {
         this.applicationInfo = (ExtendedApplicationInfo) applicationInfo;
         this.factory = factory;
@@ -92,13 +97,16 @@ public class ApplicationImpl implements Application {
         return applicationInfo.getMetaData().getJ2EEName();
     }
 
-    /** {@inheritDoc} */
     @Override
     public ApplicationMetaData getApplicationMetaData() {
         return applicationInfo.getMetaData();
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     *
+     * @throws CDIException
+     */
     @Override
     public boolean hasModules() throws CDIException {
         return getApplicationClassesContainerInfo() != null;
@@ -216,10 +224,9 @@ public class ApplicationImpl implements Application {
         return applicationInfo.getName();
     }
 
-    /** {@inheritDoc} */
     @Override
     public String toString() {
-        return super.toString() + "(" + applicationInfo.getName() + ")";
+        return "ApplicationImpl: " + applicationInfo.getName();
     }
 
     /** {@inheritDoc} */
@@ -228,7 +235,4 @@ public class ApplicationImpl implements Application {
         return applicationInfo.getUseJandex();
     }
 
-    public ExtendedApplicationInfo getApplicationInfo() {
-        return applicationInfo;
-    }
 }

@@ -89,6 +89,7 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
  */
 public class WebAnnotationsImpl implements WebAnnotations {
 
+    @SuppressWarnings("unused")
     private static final TraceComponent tc = Tr.register(WebAnnotationsImpl.class);
 
     // Reference to the underlying annotation service.  That links to the
