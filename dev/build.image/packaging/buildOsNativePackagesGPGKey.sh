@@ -8,14 +8,6 @@ then
      exit 0
 else 
      #!/bin/sh
-
-     #add rpm macro for rpm signing to identify key
-     #touch .rpmmacros
-     #echo "%_gpg_name Open Liberty Project" >> .rpmmacros
-
-     #run the expect script to build the rpm
-     #expect -f rpmBuild.expect
-
      #run commands to build the deb 
      echo "${GPG_PASS}" > ~/.gnupg/pp.txt
      debuild -d -b -p'gpg --passphrase-file ~/.gnupg/pp.txt --batch'  -e"admin@openliberty.io"
