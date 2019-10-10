@@ -15,7 +15,12 @@ import java.util.HashMap;
 
 import com.ibm.wsspi.threading.WorkContext;
 
+//Implements WorkContext class to add context to JCA threads.
 public class JCAWorkContext extends HashMap<String, Serializable> implements WorkContext {
+
+    JCAWorkContext() {
+        super();
+    }
 
     @Override
     public String getWorkType() {

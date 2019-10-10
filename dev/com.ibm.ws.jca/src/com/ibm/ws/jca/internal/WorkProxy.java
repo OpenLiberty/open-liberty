@@ -30,7 +30,6 @@ import javax.resource.spi.work.HintsContext;
 import javax.resource.spi.work.TransactionContext;
 import javax.resource.spi.work.Work;
 import javax.resource.spi.work.WorkCompletedException;
-import javax.resource.spi.work.WorkContext;
 import javax.resource.spi.work.WorkContextErrorCodes;
 import javax.resource.spi.work.WorkContextLifecycleListener;
 import javax.resource.spi.work.WorkContextProvider;
@@ -50,6 +49,7 @@ import com.ibm.wsspi.threadcontext.ThreadContext;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 import com.ibm.wsspi.threadcontext.WSContextService;
 import com.ibm.wsspi.threadcontext.jca.JCAContextProvider;
+import com.ibm.wsspi.threading.WorkContext;
 
 /**
  * A wrapper for Work.
@@ -58,6 +58,7 @@ import com.ibm.wsspi.threadcontext.jca.JCAContextProvider;
  */
 public class WorkProxy implements Callable<Void>, RunnableWithContext {
 
+    //Creates a workContext item we can put the hintsContext into and return
     private static com.ibm.wsspi.threading.WorkContext wc = new JCAWorkContext();
 
     /**
@@ -457,9 +458,9 @@ public class WorkProxy implements Callable<Void>, RunnableWithContext {
      */
     protected WorkListener lsnr;
 
+    //Returns the workContext for this JCA runnable including the hintsContext if it's applicable.
     @Override
     public com.ibm.wsspi.threading.WorkContext getWorkContext() {
-        // TODO Auto-generated method stub
         return this.wc;
     }
 
