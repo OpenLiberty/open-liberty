@@ -320,6 +320,7 @@ public class JsonConfigTest {
     private void checkLine(String message) throws Exception {
         List<String> lines = server.findStringsInLogsUsingMark(message, server.getDefaultLogFile());
         assertTrue(lines.size() > 0);
+        System.out.println(lines.get(0));
     }
 
     private void runApplication(RemoteFile consoleLogFile) throws Exception {
