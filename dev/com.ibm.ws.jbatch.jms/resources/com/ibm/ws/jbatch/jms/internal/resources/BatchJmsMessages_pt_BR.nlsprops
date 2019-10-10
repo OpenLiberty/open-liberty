@@ -1,0 +1,106 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jbatch.jms/resources/com/ibm/ws/jbatch/jms/internal/resources/BatchJmsMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0200 - 0249: com.ibm.ws.jbatch.jms
+# 
+warning.unsupported.message.type=CWWKY0200W: O tipo de mensagem {0} desta mensagem JSM em lote n\u00e3o \u00e9 suportado.  Esta solicita\u00e7\u00e3o n\u00e3o ser\u00e1 processada. O conte\u00fado dessa mensagem \u00e9 {1}
+warning.unsupported.message.type.explanation=Este tipo de mensagem n\u00e3o \u00e9 suportado porque n\u00e3o \u00e9 um tipo JMS MapMessage. 
+warning.unsupported.message.type.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria. 
+ 
+warning.unsupported.operation=CWWKY0201W: A opera\u00e7\u00e3o {0} \u00e9 uma opera\u00e7\u00e3o n\u00e3o suportada de uma mensagem JMS em lote. Esta solicita\u00e7\u00e3o n\u00e3o ser\u00e1 processada. O conte\u00fado dessa mensagem \u00e9 {1}
+warning.unsupported.operation.explanation=Apenas opera\u00e7\u00f5es 'Iniciar' e 'Reiniciar' s\u00e3o suportadas.
+warning.unsupported.operation.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+warning.batch.activation.spec.not.found=CWWKY0202W: O terminal de mensagem para o listener JMS {0} em lote n\u00e3o pode ser ativado porque a especifica\u00e7\u00e3o de ativa\u00e7\u00e3o {1} em lote n\u00e3o existe na configura\u00e7\u00e3o do servidor. O terminal de mensagem n\u00e3o receber\u00e1 mensagens em lote at\u00e9 que a especifica\u00e7\u00e3o de ativa\u00e7\u00e3o em lote esteja dispon\u00edvel. 
+warning.batch.activation.spec.not.found.explanation=O servidor est\u00e1 iniciando o listener JMS em lote, mas n\u00e3o pode ativar o terminal de mensagem, porque n\u00e3o foi poss\u00edvel localizar a especifica\u00e7\u00e3o de ativa\u00e7\u00e3o na configura\u00e7\u00e3o do servidor. O terminal de mensagem n\u00e3o receber\u00e1 mensagens em lote at\u00e9 que o terminal possa ser ativado.
+warning.batch.activation.spec.not.found.useraction=Crie a especifica\u00e7\u00e3o de ativa\u00e7\u00e3o com o nome especificado na configura\u00e7\u00e3o do servidor, manualmente ou usando o Centro de Administra\u00e7\u00e3o.
+
+warning.batch.destination.queue.not.found=CWWKY0203W: O terminal de mensagem para o listener JMS {0} em lote n\u00e3o pode ser ativado porque a fila de destino {1} n\u00e3o existe. O terminal de mensagem n\u00e3o receber\u00e1 mensagens JMS em lote at\u00e9 que a fila de destino esteja dispon\u00edvel.
+warning.batch.destination.queue.not.found.explanation=O servidor est\u00e1 iniciando o listener JMS em lote, mas n\u00e3o pode ativar o terminal de mensagem, porque n\u00e3o foi poss\u00edvel localizar a fila de destino. O terminal de mensagem n\u00e3o receber\u00e1 mensagens JMS em lote at\u00e9 que o terminal possa ser ativado.
+warning.batch.destination.queue.not.found.useraction=Crie a fila de destino com o nome especificado na configura\u00e7\u00e3o do servidor, manualmente ou usando o Centro de Administra\u00e7\u00e3o.
+
+warning.batch.dispatcher.connection.factory.not.found=CWWKY0204W: O dispatcher JMS em lote n\u00e3o pode ser iniciado porque o Connection Factory {0} n\u00e3o existe.  O dispatcher JMS em lote n\u00e3o enviar\u00e1 mensagens JMS em lote at\u00e9 que o Connection Factory fique dispon\u00edvel. 
+warning.batch.dispatcher.connection.factory.not.found.explanation=O servidor est\u00e1 iniciando o dispatcher JMS em lote, mas n\u00e3o pode ser iniciado, porque n\u00e3o foi poss\u00edvel localizar o Connection Factory JMS em lote.  O dispatcher JMS em lote n\u00e3o enviar\u00e1 mensagens JMS em lote at\u00e9 que o Connection Factory fique dispon\u00edvel.
+warning.batch.dispatcher.connection.factory.not.found.useraction=Crie o Connection Factory com o nome especificado na configura\u00e7\u00e3o do servidor, manualmente ou usando o Centro de Administra\u00e7\u00e3o.
+
+warning.batch.dispatcher.queue.not.found=CWWKY0205W: O dispatcher JMS em lote n\u00e3o pode ser iniciado porque a fila {0} n\u00e3o existe.  O dispatcher JMS em lote n\u00e3o enviar\u00e1 mensagens JMS em lote at\u00e9 que a fila fique dispon\u00edvel.
+warning.batch.dispatcher.queue.not.found.explanation=O servidor est\u00e1 iniciando o dispatcher JMS em lote, mas n\u00e3o pode ser iniciado, porque n\u00e3o foi poss\u00edvel localizar a fila JMS em lote.  O dispatcher JMS em lote n\u00e3o enviar\u00e1 mensagens JMS em lote at\u00e9 que a fila fique dispon\u00edvel.
+warning.batch.dispatcher.queue.not.found.useraction=Crie a fila com o nome especificado na configura\u00e7\u00e3o do servidor, manualmente ou usando o Centro de Administra\u00e7\u00e3o.
+
+error.unable.to.rollback.start=CWWKY0206E: O dispatcher JMS em lote encontrou uma exce\u00e7\u00e3o ao despachar a solicita\u00e7\u00e3o de inicializa\u00e7\u00e3o para a inst\u00e2ncia da tarefa {0} e n\u00e3o p\u00f4de retroceder a opera\u00e7\u00e3o.  A exce\u00e7\u00e3o \u00e9 {1}.
+error.unable.to.rollback.start.explanation=O dispatcher JMS em lote n\u00e3o p\u00f4de retroceder sua opera\u00e7\u00e3o.
+error.unable.to.rollback.start.useraction=Envie a tarefa novamente.
+
+error.unable.to.rollback.restart=CWWKY0207E: O dispatcher JMS em lote encontrou uma exce\u00e7\u00e3o ao despachar a execu\u00e7\u00e3o da tarefa de solicita\u00e7\u00e3o de reinicializa\u00e7\u00e3o {0} e n\u00e3o p\u00f4de retroceder a opera\u00e7\u00e3o.  A exce\u00e7\u00e3o \u00e9 {1}.
+error.unable.to.rollback.restart.explanation=O dispatcher JMS em lote n\u00e3o p\u00f4de retroceder sua opera\u00e7\u00e3o.
+error.unable.to.rollback.restart.useraction=Envie a tarefa novamente.
+
+error.endpoint.unable.process.message=CWWKY0208E: O listener JMS em lote encontrou uma exce\u00e7\u00e3o ao processar a mensagem {0}.  A exce\u00e7\u00e3o \u00e9 {1}.
+error.endpoint.unable.process.message.explanation=O listener JMS em lote n\u00e3o p\u00f4de processar a mensagem de solicita\u00e7\u00e3o de JMS em lote.
+error.endpoint.unable.process.message.useraction=Envie a tarefa novamente. 
+
+error.endpoint.unable.process.start.request=CWWKY0209E: O listener JMS em lote encontrou uma exce\u00e7\u00e3o ao processar a opera\u00e7\u00e3o de iniciar tarefa para a inst\u00e2ncia da tarefa {0}.  A exce\u00e7\u00e3o \u00e9 {1}.
+error.endpoint.unable.process.start.request.explanation=O listener JMS em lote n\u00e3o p\u00f4de processar a solicita\u00e7\u00e3o de iniciar a tarefa.
+error.endpoint.unable.process.start.request.useraction=Envie a tarefa novamente.
+
+error.endpoint.unable.process.restart.request=CWWKY0210E: O listener JMS em lote encontrou uma exce\u00e7\u00e3o ao processar a opera\u00e7\u00e3o de rein\u00edcio de tarefa para a execu\u00e7\u00e3o da tarefa {0}.  A exce\u00e7\u00e3o \u00e9 {1}.
+error.endpoint.unable.process.restart.request.explanation=O listener JMS em lote n\u00e3o p\u00f4de processar a solicita\u00e7\u00e3o de rein\u00edcio da tarefa.
+error.endpoint.unable.process.restart.request.useraction=Envie a tarefa novamente.
+
+warning.batch.events.unable.to.publish=CWWKY0211W: O tempo de execu\u00e7\u00e3o do lote n\u00e3o pode publicar evento para o t\u00f3pico {0} para o objeto {1}.  A exce\u00e7\u00e3o \u00e9 {2}.
+warning.batch.events.unable.to.publish.explanation=O evento n\u00e3o pode ser publicado devido a uma exce\u00e7\u00e3o.
+warning.batch.events.unable.to.publish.useraction=Revise os logs do servidor para obter erro relacionado.
+
+error.batch.events.publisher.jms.resource.activate=CWWKY0212E: N\u00e3o \u00e9 poss\u00edvel criar um recurso JMS para o publicador de eventos em lote.  A exce\u00e7\u00e3o foi {0}.
+error.batch.events.publisher.jms.resource.activate.explanation=N\u00e3o \u00e9 poss\u00edvel criar o recurso JMS para ativar o publicador de eventos em lote devido a uma exce\u00e7\u00e3o. 
+error.batch.events.publisher.jms.resource.activate.useraction=Verifique a configura\u00e7\u00e3o do connection factory de JMS configurado pelo elemento batchJmsDispatcher (o batchConnectionFactory padr\u00e3o ou aquele explicitamente referenciado).  Verifique a conectividade de JMS e revise os logs do servidor para verifica\u00e7\u00e3o do erro relacionado.
+
+error.batch.dispatcher.jms.resource.activate=CWWKY0213E: N\u00e3o \u00e9 poss\u00edvel criar o recurso JMS para o dispatcher em lote.  A exce\u00e7\u00e3o era  {0}
+error.batch.dispatcher.jms.resource.activate.explanation=N\u00e3o \u00e9 poss\u00edvel criar o recurso JMS para ativar o dispatcher em lote devido a uma exce\u00e7\u00e3o, portanto o servidor n\u00e3o pode despachar tarefas ou parti\u00e7\u00f5es via JMS.
+error.batch.dispatcher.jms.resource.activate.useraction=Verifique a configura\u00e7\u00e3o do connection factory de JMS e a fila configurada pelo elemento batchJmsDispatcher (o batchConnectionFactory padr\u00e3o ou aquele explicitamente referenciado).  Verifique a conectividade de JMS e revise os logs do servidor para verifica\u00e7\u00e3o do erro relacionado.
+
+warning.endpoint.listener.stale.message=CWWKY0214W: Descartando a mensagem com um ID de execu\u00e7\u00e3o de tarefa associado {0}, visto que n\u00e3o era a execu\u00e7\u00e3o mais recente.
+warning.endpoint.listener.stale.message.explanation=Descartando a mensagem de execu\u00e7\u00e3o de tarefa associada antiga, visto que n\u00e3o era a execu\u00e7\u00e3o mais recente.
+warning.endpoint.listener.stale.message.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+error.start.partition.request=CWWKY0215E: N\u00e3o foi poss\u00edvel iniciar a parti\u00e7\u00e3o de lote devido a uma exce\u00e7\u00e3o.  A exce\u00e7\u00e3o foi {0}.
+error.start.partition.request.explanation=N\u00e3o foi poss\u00edvel iniciar a parti\u00e7\u00e3o de lote devido a uma exce\u00e7\u00e3o.  
+error.start.partition.request.useraction=Pare a tarefa associada e verifique a conectividade de JMS e a configura\u00e7\u00e3o e revise os logs do servidor de revis\u00e3o do erro relacionado.
+
+error.batch.executor.jms.create.failure=CWWKY0216E: N\u00e3o \u00e9 poss\u00edvel criar o connection factory de JMS para a execu\u00e7\u00e3o de parti\u00e7\u00f5es remotas.  A exce\u00e7\u00e3o era  {0}
+error.batch.executor.jms.create.failure.explanation=Falha ao conectar com o Connection Factory de JMS usado para enviar de volta as r\u00e9plicas para execu\u00e7\u00f5es da parti\u00e7\u00e3o remota.  Esse servidor n\u00e3o poder\u00e1 executar as tarefas ou as parti\u00e7\u00f5es despachadas via JMS at\u00e9 que o problema seja resolvido.
+error.batch.executor.jms.create.failure.useraction=Verifique a configura\u00e7\u00e3o do connection factory de JMS configurado pelo elemento batchJmsDispatcher (o batchConnectionFactory padr\u00e3o ou aquele explicitamente referenciado).  Se o usu\u00e1rio n\u00e3o estiver utilizando parti\u00e7\u00f5es, a configura\u00e7\u00e3o relacionada da parti\u00e7\u00e3o JMS remota poder\u00e1 ser removida da configura\u00e7\u00e3o do servidor.
+
+error.batch.executor.activate.failure=CWWKY0217E: N\u00e3o \u00e9 poss\u00edvel ativar o Executor de JMS no terminal devido a uma exce\u00e7\u00e3o {0}
+error.batch.executor.activate.failure.explanation=Falha ao ativar o Executor de JMS no terminal devido a uma Exce\u00e7\u00e3o.
+error.batch.executor.activate.failure.useraction=Esse servidor n\u00e3o poder\u00e1 executar as tarefas ou as parti\u00e7\u00f5es despachadas via JMS at\u00e9 que o problema seja resolvido.  Verifique a configura\u00e7\u00e3o do connection factory de JMS configurado pelo elemento batchJmsDispatcher (o batchConnectionFactory padr\u00e3o ou aquele explicitamente referenciado).  Verifique a conectividade de JMS, a configura\u00e7\u00e3o de terminal e revise os logs do servidor do erro relacionado.
+
+info.batch.events.publish.topic=CWWKY0218I: O tempo de execu\u00e7\u00e3o do lote publicar\u00e1 eventos na raiz do t\u00f3pico JMS {0}.
+info.batch.events.publish.topic.explanation=Informativo. O tempo de execu\u00e7\u00e3o do lote publicar\u00e1 eventos na raiz do t\u00f3pico JMS em lote listada.
+info.batch.events.publish.topic.useraction=A raiz do t\u00f3pico JMS em lote pode ser modificada. Verifique as op\u00e7\u00f5es configuradas que s\u00e3o usadas para batchJmsEvents. 
