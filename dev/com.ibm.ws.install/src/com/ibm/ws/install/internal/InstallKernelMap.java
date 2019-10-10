@@ -33,6 +33,7 @@ import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -136,6 +137,7 @@ public class InstallKernelMap implements Map {
     private final String MAVEN_CENTRAL = "http://repo.maven.apache.org/maven2/";
     private final String TEMP_DIRECTORY = Utils.getInstallDir().getAbsolutePath() + File.separatorChar + "tmp"
                                           + File.separatorChar;
+    private final Logger logger = InstallLogUtils.getInstallLogger();
 
     private enum ActionType {
         install,
@@ -258,13 +260,7 @@ public class InstallKernelMap implements Map {
             if (downloadSingleArtifact != null && downloadSingleArtifact) {
                 return downloadSingleFeature();
             } else {
-                String fromRepo = (String) data.get(FROM_REPO);
-                if (fromRepo == null) {
-                    List<String> resolvedFeatures = (List<String>) data.get(DOWNLOAD_ARTIFACT_LIST);
-                    return downloadFeatures(resolvedFeatures);
-                } else {
-                    return DownloadEsas();
-                }
+                return DownloadEsas();
             }
         }
         return data.get(key);
@@ -1045,7 +1041,7 @@ public class InstallKernelMap implements Map {
 
     @SuppressWarnings("unchecked")
     private Collection<File> DownloadEsas() {
-        String fromRepo = (String) data.get(FROM_REPO);
+        String fromRepo = getDownloadDir((String) data.get(FROM_REPO));
         File rootDir = new File(fromRepo);
         Collection<String> resolvedFeatures = (List<String>) data.get(DOWNLOAD_ARTIFACT_LIST);
         String openLibertyVersion = null;
@@ -1077,7 +1073,7 @@ public class InstallKernelMap implements Map {
             String featureEsa = featureName + "-" + openLibertyVersion + ".esa";
             Path featurePath = Paths.get(groupDir.getAbsolutePath().toString(), featureName, openLibertyVersion, featureEsa);
 
-            //logger.log(Level.FINE, "Found feature at path: " + featurePath.toString());
+            logger.log(Level.FINE, "Found feature at path: " + featurePath.toString());
             if (Files.isRegularFile(featurePath)) {
                 foundEsas.add(featurePath.toFile());
                 featuresClone.remove(feature);
@@ -1089,9 +1085,9 @@ public class InstallKernelMap implements Map {
 
         }
         if (!missingFeatureIndexes.isEmpty() && !featuresClone.isEmpty()) {
-            //logger.log(Level.INFO, "Could not find ESAs in local maven repo for " + featuresClone);
+            logger.log(Level.INFO, "Could not find ESAs in local maven repo for " + featuresClone);
             List<File> downloadedEsas = downloadFeatures(featuresClone);
-            //logger.log(Level.INFO, "Downloaded the following features from maven central:" + downloadedEsas);
+            logger.log(Level.INFO, "Downloaded the following features from maven central:" + downloadedEsas);
             index = 0;
             for (File file : downloadedEsas) {
                 // insert the downloaded esa into its respective position
