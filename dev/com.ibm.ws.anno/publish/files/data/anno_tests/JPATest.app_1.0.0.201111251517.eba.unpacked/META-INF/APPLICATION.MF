@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Application-ManifestVersion: 1.0
+Application-Name: JPATest.app
+Application-Version: 1.0.0.201111251517
+Application-SymbolicName: JPATest.app
+Application-Content: JPATest;version="1.0.0"
+

@@ -238,7 +238,7 @@ public class ClassInfoCache {
     protected static final boolean DO_NOT_FORCE_PACKAGE = false;
 
     protected PackageInfoImpl getPackageInfo(String packageName, boolean doForce) {
-        // String methodName = "getPackageInfo";
+        String methodName = "getPackageInfo";
 
         PackageInfoImpl packageInfo = packageInfos.get(packageName);
 
@@ -463,7 +463,7 @@ public class ClassInfoCache {
     protected HashMap<String, PrimitiveClassInfo> primitiveClassInfos;
 
     public PrimitiveClassInfo getPrimitiveClassInfo(String typeClassName, Type primitiveType) {
-        // String methodName = "getPrimitiveClassInfo";
+        String methodName = "getPrimitiveClassInfo";
 
         PrimitiveClassInfo primitiveClassInfo = primitiveClassInfos.get(typeClassName);
         String primitiveClassInfoCase;
@@ -658,7 +658,7 @@ public class ClassInfoCache {
     }
 
     protected DelayedClassInfo basicPutDelayedClassInfo(String name) {
-        // String methodName = "basicPutDelayedClassInfo";
+        String methodName = "basicPutDelayedClassInfo";
 
         DelayedClassInfo delayedClassInfo = new DelayedClassInfo(name, getInfoStore());
 
@@ -701,7 +701,7 @@ public class ClassInfoCache {
     }
 
     protected ClassInfoImpl associate(NonDelayedClassInfo nonDelayedClassInfo) {
-        // String methodName = "associate(NonDelayedClassInfo)";
+        String methodName = "associate(NonDelayedClassInfo)";
 
         DelayedClassInfo delayedClassInfo = basicGetDelayedClassInfo(nonDelayedClassInfo.getName());
 
@@ -840,7 +840,7 @@ public class ClassInfoCache {
     }
 
     protected boolean basicPutAnnotatedClassInfo(NonDelayedClassInfo classInfo) {
-        // String methodName = "basicPutAnnotatedClassInfo";
+        String methodName = "basicPutAnnotatedClassInfo";
 
         // Use the interned class name.
         String classInfoName = classInfo.getName();
@@ -890,7 +890,7 @@ public class ClassInfoCache {
     }
 
     protected boolean basicPutClassInfo(NonDelayedClassInfo classInfo) {
-        // String methodName = "basicPutClassInfo";
+        String methodName = "basicPutClassInfo";
 
         // Use the interned class name.
         String classInfoName = classInfo.getName();

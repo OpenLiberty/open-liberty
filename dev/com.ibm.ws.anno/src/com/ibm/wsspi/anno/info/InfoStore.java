@@ -63,8 +63,10 @@ public interface InfoStore {
      * 
      * @return The interned copy of a specified string.
      * 
-     * {@link #internPackageName(String)}
-     * {@link #internClassName(String)}
+     * @see #internPackageName(String)
+     * @see #internClassName(String)
+     * @see #internQualifiedFieldName(String)
+     * @see #internQualifiedMethodName(String)
      */
     public String internDescription(String description);
 
@@ -75,8 +77,10 @@ public interface InfoStore {
      * 
      * @return The interned copy of the package name.
      * 
-     * {@link #internDescription(String)}
-     * {@link #internClassName(String)}
+     * @see #internDescription(String)
+     * @see #internClassName(String)
+     * @see #internQualifiedFieldName(String)
+     * @see #internQualifiedMethodName(String)
      */
     public String internPackageName(String packageName);
 
@@ -99,7 +103,9 @@ public interface InfoStore {
      * 
      * @return The interned copy of the class name.
      * 
-     * {@link #internDescription(String)}
+     * @see #internDescription(String)
+     * @see #internQualifiedFieldName(String)
+     * @see #internQualifiedMethodName(String)
      */
     public String internClassName(String className);
 
@@ -108,19 +114,15 @@ public interface InfoStore {
     /**
      * <p>Answer the package info object for a specified package name.</p>
      * 
-     * @param name The fully qualified name of the package.
-     *
      * @return The package info object for a specified package name.
      * 
-     * TODO: What happens if the package is not found?
+     *         TODO What happens if the package is not found?
      */
     public PackageInfo getPackageInfo(String name);
 
     /**
      * <p>Answer (possibly delayed) class info object for a specified class name.</p>
      * 
-     * @param name The fully qualified name of the class.
-     *
      * @return The class info object for a specified class name.
      */
     public ClassInfo getDelayableClassInfo(String name);
@@ -139,7 +141,7 @@ public interface InfoStore {
      * 
      * @return The total time, in milliseconds, doing stream processing.
      * 
-     * {@link #getRuleTime()}
+     * @see #getRuleTime()
      */
     public long getStreamTime();
 
@@ -148,7 +150,7 @@ public interface InfoStore {
      * 
      * @return The total time, in milliseconds, spent scanning classes.
      * 
-     * {@link #getRuleTime()}
+     * @see #getRuleTime()
      */
     public long getScanTime();
 
@@ -157,7 +159,7 @@ public interface InfoStore {
      * 
      * @return The total time, in milliseconds, spent doing rule processing.
      * 
-     * {@link #getScanTime()}
+     * @see #getScanTime()
      */
 
     public long getRuleTime();

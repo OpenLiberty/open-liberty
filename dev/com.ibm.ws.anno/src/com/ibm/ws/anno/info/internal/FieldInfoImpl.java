@@ -21,8 +21,7 @@ import com.ibm.wsspi.anno.info.FieldInfo;
 public class FieldInfoImpl extends InfoImpl implements FieldInfo {
 
     private static final TraceComponent tc = Tr.register(FieldInfoImpl.class);
-    @SuppressWarnings("hiding")
-	public static final String CLASS_NAME = FieldInfoImpl.class.getName();
+    public static final String CLASS_NAME = FieldInfoImpl.class.getName();
 
     @Override
     protected String computeHashText() {
@@ -68,8 +67,8 @@ public class FieldInfoImpl extends InfoImpl implements FieldInfo {
     //
 
     @Override
-    protected String internName(String useName) {
-        return getInfoStore().internFieldName(useName);
+    protected String internName(String name) {
+        return getInfoStore().internFieldName(name);
     }
 
     @Override

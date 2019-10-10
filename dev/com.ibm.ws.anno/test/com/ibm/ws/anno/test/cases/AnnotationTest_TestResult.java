@@ -374,8 +374,7 @@ public class AnnotationTest_TestResult {
      * 
      * @param writer A PrintWriter to be used as the output
      */
-    @SuppressWarnings("deprecation")
-	public void display(PrintWriter writer) {
+    public void display(PrintWriter writer) {
         writer.println("============================================================");
 
         displayConstantResults(writer);
@@ -478,44 +477,44 @@ public class AnnotationTest_TestResult {
 
         writer.println("------------------------------------------------------------");
 
-        long sourceResourceExclusionCount = classSource.getResourceExclusionCount();
-        long sourceClassExclusionCount = classSource.getClassExclusionCount();
-        long sourceClassInclusionCount = classSource.getClassInclusionCount();
+        long resourceExclusionCount = classSource.getResourceExclusionCount();
+        long classExclusionCount = classSource.getClassExclusionCount();
+        long classInclusionCount = classSource.getClassInclusionCount();
 
-        writer.println("Classes scanned [ " + sourceClassInclusionCount + " ]");
-        writer.println("Classes masked  [ " + sourceClassExclusionCount + " ]");
-        writer.println("Non-class resources [ " + sourceResourceExclusionCount + " ]");
+        writer.println("Classes scanned [ " + classInclusionCount + " ]");
+        writer.println("Classes masked  [ " + classExclusionCount + " ]");
+        writer.println("Non-class resources [ " + resourceExclusionCount + " ]");
 
         writer.println("------------------------------------------------------------");
 
         Util_BidirectionalMap packageData = annotationTargets.getPackageAnnotationData();
-        int targetsUniquePackages = packageData.getHolderSet().size();
-        int targetsUniquePackageAnnotations = packageData.getHeldSet().size();
+        int uniquePackages = packageData.getHolderSet().size();
+        int uniquePackageAnnotations = packageData.getHeldSet().size();
 
         Util_BidirectionalMap classData = annotationTargets.getClassAnnotationData();
-        int targetsUniqueClasses = classData.getHolderSet().size();
-        int targetsUniqueClassAnnotations = classData.getHeldSet().size();
+        int uniqueClasses = classData.getHolderSet().size();
+        int uniqueClassAnnotations = classData.getHeldSet().size();
 
-        writer.println("Packages with annotations       [ " + targetsUniquePackages + " ]");
-        writer.println("Unique packages annotations     [ " + targetsUniquePackageAnnotations + " ]");
+        writer.println("Packages with annotations       [ " + uniquePackages + " ]");
+        writer.println("Unique packages annotations     [ " + uniquePackageAnnotations + " ]");
 
-        writer.println("Classes with class annotations  [ " + targetsUniqueClasses + " ]");
-        writer.println("Unique class annotations        [ " + targetsUniqueClassAnnotations + " ]");
+        writer.println("Classes with class annotations  [ " + uniqueClasses + " ]");
+        writer.println("Unique class annotations        [ " + uniqueClassAnnotations + " ]");
 
         if (detailFlag) {
             Util_BidirectionalMap fieldData = annotationTargets.getFieldAnnotationData();
-            int targetsUniqueClassesWithFieldAnnotations = fieldData.getHolderSet().size();
-            int targetsUniqueFieldAnnotations = fieldData.getHeldSet().size();
+            int uniqueClassesWithFieldAnnotations = fieldData.getHolderSet().size();
+            int uniqueFieldAnnotations = fieldData.getHeldSet().size();
 
-            writer.println("Classes with field annotations  [ " + targetsUniqueClassesWithFieldAnnotations + " ]");
-            writer.println("Unique field annotations        [ " + targetsUniqueFieldAnnotations + " ]");
+            writer.println("Classes with field annotations  [ " + uniqueClassesWithFieldAnnotations + " ]");
+            writer.println("Unique field annotations        [ " + uniqueFieldAnnotations + " ]");
 
             Util_BidirectionalMap methodData = annotationTargets.getMethodAnnotationData();
-            int targetsUniqueClassesWithMethodAnnotations = methodData.getHolderSet().size();
-            int targetsUniqueMethodAnnotations = methodData.getHeldSet().size();
+            int uniqueClassesWithMethodAnnotations = methodData.getHolderSet().size();
+            int uniqueMethodAnnotations = methodData.getHeldSet().size();
 
-            writer.println("Classes with method annotations [ " + targetsUniqueClassesWithMethodAnnotations + " ]");
-            writer.println("Unique method annotations       [ " + targetsUniqueMethodAnnotations + " ]");
+            writer.println("Classes with method annotations [ " + uniqueClassesWithMethodAnnotations + " ]");
+            writer.println("Unique method annotations       [ " + uniqueMethodAnnotations + " ]");
         }
 
         writer.println("------------------------------------------------------------");

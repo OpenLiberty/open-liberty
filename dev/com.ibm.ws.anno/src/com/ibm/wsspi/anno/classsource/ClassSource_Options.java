@@ -29,38 +29,40 @@ package com.ibm.wsspi.anno.classsource;
  * container root.
  */
 public interface ClassSource_Options {
-    /**
-     * Answer the default 'use jandex' setting.
-     *
-     * @return The default 'use jandex' setting.
-     */
-    boolean getUseJandexDefault();
+	// JANDEX usags:
 
-    /**
-     * Tell if 'use jandex' is set.  If unset, the
-     * default value is returned from {@link #getUseJandex()}.
-     *
-     * @return Whether 'use jandex' is set.
-     */
-    boolean getIsSetUseJandex();
+	/**
+	 * Answer the default 'use jandex' setting.
+	 * 
+	 * @return The default 'use jandex' setting.
+	 */
+	boolean getUseJandexDefault();
 
-    /**
-     * Set the 'use jandex' value.
-     *
-     * @param useJandex The value to set to 'use jandex'.
-     */
-    void setUseJandex(boolean useJandex);
-    
-    /**
-     * Unset the 'use jandex' value.
-     */
-    void unsetUseJandex();
+	/**
+	 * Tell if 'use jandex' is set.  If unset, the
+	 * default value is returned from {@#getUseJandex()}.
+	 * 
+	 * @return Whether 'use jandex' is set.
+	 */
+	boolean getIsSetUseJandex();
 
-    /**
-     * Answer the 'use jandex' value.  If unset, the
-     * default value will be returned.
-     *
-     * @return The 'use jandex' value.
-     */
-    boolean getUseJandex();
+	/**
+	 * Set the 'use jandex' value.
+	 * 
+	 * @param useJandex The value to set to 'use jandex'.
+	 */
+	void setUseJandex(boolean useJandex);
+	
+	/**
+	 * Unset the 'use jandex' value.
+	 */
+	void unsetUseJandex();
+
+	/**
+	 * Answer the 'use jandex' value.  If unset, the
+	 * default value will be returned.
+	 * 
+	 * @return The 'use jandex' value.
+	 */
+	boolean getUseJandex();
 }
