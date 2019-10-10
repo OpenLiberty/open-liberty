@@ -52,7 +52,7 @@ public class InstallRhelTest extends InstallUtilityToolTest{
        }
     }
 
-    @Test
+    /*@Test
     public void testJavaInstall() throws Exception {
         
         if (openLibExists) {
@@ -73,7 +73,7 @@ public class InstallRhelTest extends InstallUtilityToolTest{
         else {
             logger.info("OpenLiberty did not install successfully");
         }
-    }
+    }*/
 
     @Test
     public void testVerifyRpmInstall() throws Exception {
@@ -92,7 +92,7 @@ public class InstallRhelTest extends InstallUtilityToolTest{
         }
     }
 
-    @Test
+    /*@Test
     public void testServerStartStopRpm() throws Exception {
         
         if (openLibExists) {
@@ -123,7 +123,7 @@ public class InstallRhelTest extends InstallUtilityToolTest{
         else {
             logger.info("OpenLiberty did not install successfully");
         }
-    }
+    }*/
 
     @Test
     public void testUninstallRpm() throws Exception {

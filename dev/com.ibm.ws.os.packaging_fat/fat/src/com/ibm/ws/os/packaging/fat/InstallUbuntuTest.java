@@ -89,7 +89,7 @@ public class InstallUbuntuTest extends InstallUtilityToolTest{
         }
     }
 
-    @Test
+    /*@Test
     public void testServerStartStopDeb() throws Exception {
         
         if (openLibExists) {
@@ -120,7 +120,7 @@ public class InstallUbuntuTest extends InstallUtilityToolTest{
         else {
             logger.info("OpenLiberty did not install successfully");
         }
-    }
+    }*/
 
     @Test
     public void testUninstallDeb() throws Exception {
