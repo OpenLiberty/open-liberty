@@ -61,6 +61,7 @@ public class KeystoreConfigurationFactory implements ManagedServiceFactory, File
     private static final TraceComponent tc = Tr.register(KeystoreConfigurationFactory.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 
     private final AtomicServiceReference<WsLocationAdmin> locSvc = new AtomicServiceReference<WsLocationAdmin>("LocMgr");
+
     private final ConcurrentHashMap<String, KeystoreConfig> keyConfigs = new ConcurrentHashMap<String, KeystoreConfig>();
     private ServiceRegistration<FileMonitor> keyStoreFileMonitorRegistration;
     private ServiceRegistration<KeyringMonitor> keyringMonitorRegistration;

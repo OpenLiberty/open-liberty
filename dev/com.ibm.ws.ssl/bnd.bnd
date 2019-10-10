@@ -47,6 +47,7 @@ Private-Package: \
 -ds-felix-extensions=true
 -dsannotations: \
   com.ibm.ws.ssl.internal.KeyStoreServiceImpl, \
+  com.ibm.ws.ssl.internal.CertificateEnvServiceImpl, \
   com.ibm.ws.ssl.internal.SSLComponent, \
   com.ibm.ws.ssl.internal.SSLConfigValidator, \
   com.ibm.ws.ssl.internal.SSLSupportImpl, \
