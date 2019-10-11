@@ -1,0 +1,34 @@
+<!DOCTYPE HTML PUBLIC "-//W3C/DTD HTML 4.0 Transitional//EN">
+<html>
+<META HTTP-EQUIV = "Pragma" CONTENT="no-cache"> 
+<title> Security FVT Logout Page </title>
+
+<body>
+
+<h2>SecFVTServlet1 Form Logout</h2>
+
+<FORM METHOD=POST ACTION="ibm_security_logout" NAME="logout">
+<p>
+<font size="2">  <strong> Click the button below to logout </strong></font> <BR>
+<BR>
+<BR>
+<font size="2">  <strong> And then click this button: </strong></font>  
+<input type="submit" name="logout" value="Logout">
+</p>
+</form>
+
+
+<FORM METHOD=POST ACTION="ibm_security_logout" NAME="logout2">
+<p>
+<font size="2">  <strong> Click the button below to logout and get return back to the login page</strong></font> <BR>
+<BR>
+<BR>
+<font size="2">  <strong> And then click this button: </strong></font>  
+<input type="submit" name="logout2" value="Logout2">
+<INPUT TYPE="HIDDEN" name="logoutExitPage" VALUE="/login.html">
+</p>
+</form>
+
+</body>
+
+</html>

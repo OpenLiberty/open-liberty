@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<archive>
+	<archive targetInArchive="/LooseWeb1.war">
+	
+		<archive targetInArchive="/WEB-INF/lib/LooseServlet1.jar">
+			<dir sourceOnDisk="${server.config.dir}/apps/looseConfig/LooseServlet1.jar"
+				targetInArchive="/" />
+		</archive>
+		
+		<dir sourceOnDisk="${server.config.dir}/apps/looseConfig/LooseWeb1/WebContent"
+			targetInArchive="/" />
+		<dir sourceOnDisk="${server.config.dir}/apps/looseConfig/LooseWeb1/classes"
+			targetInArchive="/WEB-INF/classes" />
+			
+	</archive>
+
+<!-- 	<archive targetInArchive="/LooseWeb2.war">
+	
+		<archive targetInArchive="/WEB-INF/lib/LooseServlet2.jar">
+			<dir sourceOnDisk="${server.config.dir}/apps/looseConfig/LooseServlet2.jar"
+				targetInArchive="/" />
+		</archive>
+		
+		<dir sourceOnDisk="${server.config.dir}/apps/looseConfig/LooseWeb2/WebContent"
+			targetInArchive="/" />
+		<dir sourceOnDisk="${server.config.dir}/apps/looseConfig/LooseWeb2/classes"
+			targetInArchive="/WEB-INF/classes" />
+			
+	</archive>
+-->
+
+	<dir sourceOnDisk="${server.config.dir}/apps/looseConfig/earContent"
+		targetInArchive="/" />
+</archive>

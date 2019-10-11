@@ -216,8 +216,8 @@ public class AnnotationTargetsVisitor extends ClassVisitor {
 
     protected String i_classSourceName;
 
-    protected void i_setClassSourceName(String i_classSourceName) {
-        this.i_classSourceName = i_classSourceName;
+    protected void i_setClassSourceName(String use_i_classSourceName) {
+        this.i_classSourceName = use_i_classSourceName;
     }
 
     protected String i_getClassSourceName() {
@@ -280,30 +280,30 @@ public class AnnotationTargetsVisitor extends ClassVisitor {
 
     // Main record methods ...
 
-    protected boolean i_recordScannedClassName(String i_className) {
-        boolean didPlaceClass = annotationTargets.i_placeClass(i_getClassSourceName(), i_className);
+    protected boolean i_recordScannedClassName(String use_i_className) {
+        boolean didPlaceClass = annotationTargets.i_placeClass(i_getClassSourceName(), use_i_className);
         if (!didPlaceClass) {
             return false;
         }
 
-        boolean didAddClass = annotationTargets.i_addScannedClassName(i_className, getScanPolicy());
+        boolean didAddClass = annotationTargets.i_addScannedClassName(use_i_className, getScanPolicy());
         return didAddClass;
     }
 
-    protected void i_recordSuperclassName(String i_className, String i_superclassName) {
-        annotationTargets.i_setSuperclassName(i_className, i_superclassName);
+    protected void i_recordSuperclassName(String use_i_className, String use_i_superclassName) {
+        annotationTargets.i_setSuperclassName(use_i_className, use_i_superclassName);
     }
 
-    protected void i_recordInterfaceNames(String i_className, String[] i_interfaceNames) {
-        annotationTargets.i_setInterfaceNames(i_className, i_interfaceNames);
+    protected void i_recordInterfaceNames(String use_i_className, String[] i_interfaceNames) {
+        annotationTargets.i_setInterfaceNames(use_i_className, i_interfaceNames);
     }
 
-    protected void i_recordReferencedClassName(String i_className) {
-        annotationTargets.i_addReferencedClassName(i_className);
+    protected void i_recordReferencedClassName(String use_i_className) {
+        annotationTargets.i_addReferencedClassName(use_i_className);
     }
 
-    protected void i_removeReferencedClassName(String i_className) {
-        annotationTargets.i_removeReferencedClassName(i_className);
+    protected void i_removeReferencedClassName(String use_i_className) {
+        annotationTargets.i_removeReferencedClassName(use_i_className);
     }
 
     protected void recordAnnotation(AnnotationCategory annotationCategory, String desc) {
@@ -388,18 +388,35 @@ public class AnnotationTargetsVisitor extends ClassVisitor {
 
             isClass = true; // Need to remember this for when recording class annotations.
 
-            // Note: The class is NOT recorded as a scanned class when
-            //       the internal name was not valid.  If the class was
-            //       being processed as an referenced class, the class
-            //       will need to be removed from the pending referenced
-            //       classes lists by an alternate step.
+            // Problem here:
+            //
+            // JSP pre-compilation does not create the appropriate directory
+            // structure for generated classes.
+            //
+            // However, when a class is not in its appropriate location, a call to
+            // to detail the class information will fail to locate the class.
+            //
+            // That failure results in null class information, or results in artificial
+            // class information.  Neither will obtain the annotation which is expected
+            // to be present on the class.  That can lead to a null pointer exception
+            // at WebAppConfiguratorHelper.configureServletAnnotation:2414.
+
+            // Leaving this test in causes a failure of the servlet 3.1 tests;
+            // Removing this test cases failures in the EBA WAB fats.
 
             if (!className.equals(getExternalName())) {
-                //  When allowable, we need to add a new message to the repository for the following warning...
-                //Tr.warning(tc, "ANNO_TARGETS_CLASS_MISMATCH", getHashText(), className); // TODO: CWWKC????W
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "Class name mismatch", getHashText(), className);
                 }
+
+                // Disabling the warning for now, as it breaks FAT tests.
+                //
+                // ANNO_TARGETS_CLASS_NAME_MISMATCH=
+                // CWWKC0105W: 
+                // Class scanning internal error: Visitor {0} read class name {1}
+                // from a resource which should have class name {2}.
+                // Tr.warning(tc, "ANNO_TARGETS_CLASS_NAME_MISMATCH",
+                //     getHashText(), className, getExternalName() );
 
                 throw VISIT_ENDED_CLASS_MISMATCH;
             }
@@ -407,7 +424,12 @@ public class AnnotationTargetsVisitor extends ClassVisitor {
             i_className = internClassName(className); // Remember this for recording annotations.
 
             if (!i_recordScannedClassName(i_className)) {
-                Tr.warning(tc, "ANNO_TARGETS_DUPLICATE_CLASS", getHashText(), i_className); // CWWKC0055W
+                // ANNO_TARGETS_DUPLICATE_CLASS=
+                // CWWKC0055W: 
+                // Class scanning internal error: The visitor [ {0} ] 
+                // attempted a second scan of class [ {1} ].
+
+                Tr.warning(tc, "ANNO_TARGETS_DUPLICATE_CLASS", getHashText(), i_className); // CWWKC055W
                 throw VISIT_ENDED_DUPLICATE_CLASS;
             }
 
