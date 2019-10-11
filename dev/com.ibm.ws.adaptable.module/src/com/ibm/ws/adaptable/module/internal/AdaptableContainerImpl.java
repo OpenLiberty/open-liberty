@@ -149,6 +149,10 @@ public class AdaptableContainerImpl implements Container {
         if (adaptTarget.equals(InterpretedContainer.class) && isRoot() && getEnclosingContainer() == null) {
             return (T) new InterpretedContainerImpl(delegate, rootOverlay, factoryHolder);
         }
+        // The delegate is used to test for equivalent adaptable containers.
+        if (adaptTarget.equals(ArtifactContainer.class)) {
+            return (T) delegate;
+        }
         //built in to adapt to entry..
         if (adaptTarget.equals(Entry.class)) {
             return (T) getEntryInEnclosingContainer();
