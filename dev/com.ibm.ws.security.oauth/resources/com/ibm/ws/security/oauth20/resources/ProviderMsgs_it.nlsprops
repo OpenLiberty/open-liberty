@@ -338,6 +338,17 @@ security.oauth20.apppassword.exchange.wrongclient.explanation=La password dell'a
 security.oauth20.apppassword.exchange.wrongclient.useraction=Emettere di nuovo la richiesta con una password dell'applicazione valida per il client specificato.
 
 security.oauth20.apppwtok.revoke.disallowed=CWOAU0078E: \u00c8 stato effettuato un tentativo di revoca di una password dell'applicazione o di un token dell'applicazione sull'endpoint di revoca. Questa azione non \u00e8 consentita.
-security.oauth20.apppwtok.revoke.disallowed.explanation=Le password dell'applicazione o i token dell'applicazione devono essere revocati utilizzando gli endpoint password app o token app.
+security.oauth20.apppwtok.revoke.disallowed.explanation=Le password dell'applicazione o i token dell'applicazione devono essere revocati utilizzando gli endpoint app-password o app-token.
 security.oauth20.apppwtok.revoke.disallowed.useraction=Emettere di nuovo la richiesta con l'URI per l'endpoint appropriato per revocare le password o i token dell'applicazione.
 
+security.oauth20.pkce.invalid.method.error=CWOAU0079E: Il parametro code_challenge_method nella richiesta contiene un algoritmo di trasformazione non supportato: [{0}]. Gli algoritmi di trasformazione supportati sono: plain, S256.
+security.oauth20.pkce.invalid.method.error.explanation=Il provider OAuth non supporta l'algoritmo di trasformazione specificato. 
+security.oauth20.pkce.invalid.method.error.useraction=Utilizzare uno degli algoritmi di trasformazione mostrati nel messaggio.
+
+security.oauth20.pkce.codeverifier.length.error=CWOAU0080E: La lunghezza di code_verifier \u00e8 [{0}]. La lunghezza di code_verifier deve essere compresa tra 43 e 128 caratteri.
+security.oauth20.pkce.codeverifier.length.error.explanation=code_verifier deve avere una lunghezza minima di 43 caratteri e massima di 128 caratteri. 
+security.oauth20.pkce.codeverifier.length.error.useraction=Inviare nuovamente le richieste di autenticazione e token con il code_verifier aggiornato che rispetti la lunghezza specificata.
+
+security.oauth20.pkce.error.mismatch.codeverifier=CWOAU0081E: code_challenge [{0}] e code_verifier [{1}] non corrispondono. 
+security.oauth20.pkce.error.mismatch.codeverifier.explanation=Il provider OAuth utilizza il code_challenge_method specificato nella richiesta di autorizzazione e trasforma il code_verifier a meno che il code_challenge_method non sia in testo chiaro. Il valore trasformato deve corrispondere con il code_challenge nella richiesta di autorizzazione.
+security.oauth20.pkce.error.mismatch.codeverifier.useraction=Assicurarsi di inviare il code_challenge e il code_verifier corrispondenti e il corretto algoritmo di trasformazione con le richieste di autorizzazione e token.

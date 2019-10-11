@@ -55,6 +55,7 @@ public class SRTServletResponse40 extends SRTServletResponse31 implements HttpSe
     ArrayList<Cookie> addedCookies;
 
     private Supplier<Map<String, String>> trailerFieldSupplier;
+    private boolean trailerFieldsSet = false;
 
     public SRTServletResponse40(SRTConnectionContext40 context) {
         super(context);
@@ -182,25 +183,44 @@ public class SRTServletResponse40 extends SRTServletResponse31 implements HttpSe
         return trailerFieldSupplier;
     }
 
-    @Override
-    public void finish() {
-        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) //306998.15
-            logger.entering(CLASS_NAME, "finish", " trailerFieldSupplier = " + trailerFieldSupplier + "[" + this + "]");
+    @Override 
+    public void closeResponseOutput(boolean releaseChannel) {
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+            logger.entering(CLASS_NAME, "closeResponseOutput", " trailerFieldSupplier = " + trailerFieldSupplier + "[" + this + "]");
+        }
+        trailerFieldsSet = true;
+        if (trailerFieldSupplier != null) {
+            if (!trailerFieldSupplier.get().isEmpty()) {
+                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+                    logger.logp(Level.FINE, CLASS_NAME, "closeResponseOutput", " set trailer fields [" + this + "]");
+                }
+                ((IResponse40) _response).setTrailers(trailerFieldSupplier.get());
+            } else {
+                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+                    logger.logp(Level.FINE, CLASS_NAME, "closeResponseOutput", "supplier is empty");
+                }
+            }
+        }
+        super.closeResponseOutput(releaseChannel);
+    }
 
-        if ((trailerFieldSupplier != null)) {
+    @Override 
+    public void finish() {
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+            logger.entering(CLASS_NAME, "finish", " trailerFieldSupplier = " + trailerFieldSupplier + "[" + this + "]");
+        }
+        if (!trailerFieldsSet && trailerFieldSupplier != null) {
             if (!trailerFieldSupplier.get().isEmpty()) {
 
-                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) { //306998.15
+                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
                     logger.logp(Level.FINE, CLASS_NAME, "finish", " set trailer fields [" + this + "]");
                 }
                 ((IResponse40) _response).setTrailers(trailerFieldSupplier.get());
             } else {
-                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) { //306998.15
+                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
                     logger.logp(Level.FINE, CLASS_NAME, "finish", "supplier is empty");
                 }
-
             }
-
         }
         super.finish();
     }

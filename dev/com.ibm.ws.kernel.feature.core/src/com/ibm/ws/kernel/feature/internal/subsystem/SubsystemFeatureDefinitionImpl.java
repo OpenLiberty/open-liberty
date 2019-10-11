@@ -76,7 +76,7 @@ public class SubsystemFeatureDefinitionImpl implements ProvisioningFeatureDefini
     /**
      * Create a new subsystem definition with the specified immutable attributes.
      * Called when rebuilding from a cache.
-     * 
+     *
      * @param attr Immutable attributes
      * @param details Provisioning details (will be cleared when provisioning operation is complete)
      * @see #load(String, SubsystemFeatureDefinitionImpl)
@@ -98,7 +98,7 @@ public class SubsystemFeatureDefinitionImpl implements ProvisioningFeatureDefini
      * backing manifest file is (e.g. we're reading an entry from a zip).
      * <p>
      * Some operations, like finding resource bundles, may not work.
-     * 
+     *
      * @param repoType emtpy/null for core, "usr" for user extension, or the product
      *            extension name
      * @param inputStream The input stream to read from
@@ -119,11 +119,11 @@ public class SubsystemFeatureDefinitionImpl implements ProvisioningFeatureDefini
     /**
      * Create a new subsystem definition by reading information from the
      * specified input stream.
-     * 
+     *
      * @param repoType emtpy/null for core, "usr" for user extension, or the product
      *            extension name
      * @param file Subsystem feature definition manifest file
-     * 
+     *
      * @see ExtensionConstants#CORE_EXTENSION
      * @see ExtensionConstants#USER_EXTENSION
      * @see #load(String, File, InputStream)
@@ -149,7 +149,7 @@ public class SubsystemFeatureDefinitionImpl implements ProvisioningFeatureDefini
     /**
      * Set the provisioning details: used when preparing existing subsystem definition
      * for provisioning operation
-     * 
+     *
      * @param details reconstituted provisioning details
      */
     @Trivial
@@ -178,7 +178,7 @@ public class SubsystemFeatureDefinitionImpl implements ProvisioningFeatureDefini
 
     @Override
     public File getFeatureChecksumFile() {
-        return iAttr.checksumFile;
+        return iAttr.getChecksumFile();
     }
 
     @Override
@@ -268,10 +268,10 @@ public class SubsystemFeatureDefinitionImpl implements ProvisioningFeatureDefini
     protected ResourceBundle getResourceBundle(Locale locale) {
         File dir = iAttr.getLocalizationDirectory();
 
-        //KEEP IN SYNC WITH getLocalizationFiles !!!        
+        //KEEP IN SYNC WITH getLocalizationFiles !!!
         File[] files = new File[] { new File(dir, iAttr.symbolicName + "_" + locale.toString() + ".properties"),
-                                   new File(dir, iAttr.symbolicName + "_" + locale.getLanguage() + ".properties"),
-                                   new File(dir, iAttr.symbolicName + ".properties") };
+                                    new File(dir, iAttr.symbolicName + "_" + locale.getLanguage() + ".properties"),
+                                    new File(dir, iAttr.symbolicName + ".properties") };
 
         for (File file : files) {
             if (file.exists()) {
@@ -302,7 +302,7 @@ public class SubsystemFeatureDefinitionImpl implements ProvisioningFeatureDefini
         try {
             return mfDetails.getMainAttributeValue(header);
         } catch (IOException e) {
-            // We should be well beyond any IOException issues obtaining the manifest.. 
+            // We should be well beyond any IOException issues obtaining the manifest..
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "IOException reading manifest attribute from {0}: {1}", iAttr.featureFile, e);
             }
@@ -321,7 +321,7 @@ public class SubsystemFeatureDefinitionImpl implements ProvisioningFeatureDefini
 
         // If this is a localizable header that indicates it wants to be localized...
         if (value.charAt(0) == '%' && FeatureDefinitionUtils.LOCALIZABLE_HEADERS.contains(header)) {
-            // Find the resource bundle... 
+            // Find the resource bundle...
             ResourceBundle rb = getResourceBundle(locale);
             if (rb != null) {
                 // Find the new value in the resource bundle
@@ -388,7 +388,7 @@ public class SubsystemFeatureDefinitionImpl implements ProvisioningFeatureDefini
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.kernel.feature.FeatureDefinition#isCapabilitySatified(java.util.Collection)
      */
     @Override
@@ -419,7 +419,7 @@ public class SubsystemFeatureDefinitionImpl implements ProvisioningFeatureDefini
                 if (!satisfiedFeatureDefs.contains(featureDef)) {
 
                     // We have a mismatch between the key the filter is using to look up the feature name and the property containing the name in the
-                    // headers. So we need to add a new property for osgi.identity (filter key) that contains the value of the 
+                    // headers. So we need to add a new property for osgi.identity (filter key) that contains the value of the
                     // Subsystem-SymbolicName (manifest header).
                     // We also have to do this for the Subsystem-Type(manifest header) and the type (filter key).
                     Map<String, String> filterProps = new HashMap<String, String>();
@@ -429,7 +429,7 @@ public class SubsystemFeatureDefinitionImpl implements ProvisioningFeatureDefini
                         filterProps.put(FeatureDefinitionUtils.FILTER_TYPE_KEY,
                                         mfDetails.getMainAttributeValue(FeatureDefinitionUtils.TYPE));
                     } catch (IOException e) {
-                        // We should be well beyond any IOException issues.. 
+                        // We should be well beyond any IOException issues..
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Tr.debug(tc, "IOException reading manifest attribute from {0}: {1}", iAttr.featureFile, e);
                         }
@@ -442,7 +442,7 @@ public class SubsystemFeatureDefinitionImpl implements ProvisioningFeatureDefini
                     }
                 }
             }
-            // Once we've checked all the FeatureDefinitions, apply the result to the isCapabilitySatisfied boolean, 
+            // Once we've checked all the FeatureDefinitions, apply the result to the isCapabilitySatisfied boolean,
             // so we stop processing as soon as we know we don't have a match.
             isCapabilitySatisfied = featureMatch;
         }
@@ -466,7 +466,7 @@ public class SubsystemFeatureDefinitionImpl implements ProvisioningFeatureDefini
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition#getIconFiles()
      */
     @Override
@@ -486,7 +486,7 @@ public class SubsystemFeatureDefinitionImpl implements ProvisioningFeatureDefini
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.kernel.feature.LibertyFeature#getBundles()
      */
     @Override
@@ -503,7 +503,7 @@ public class SubsystemFeatureDefinitionImpl implements ProvisioningFeatureDefini
 
             BundleContext ctx = FrameworkUtil.getBundle(FrameworkUtil.class).getBundleContext();
 
-            // symbolic name to bundle map. 
+            // symbolic name to bundle map.
             for (FeatureResource bundle : bundlesInFeature) {
                 String location = bundle.getLocation();
                 Bundle b = ctx.getBundle(location);

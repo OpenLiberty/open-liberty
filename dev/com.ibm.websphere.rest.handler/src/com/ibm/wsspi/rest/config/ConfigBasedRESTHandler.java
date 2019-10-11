@@ -35,7 +35,8 @@ import com.ibm.wsspi.rest.handler.RESTHandler;
 import com.ibm.wsspi.rest.handler.RESTRequest;
 import com.ibm.wsspi.rest.handler.RESTResponse;
 
-// TODO When ready to GA, make this class be SPI in the following feature:
+// TODO When/if we provide an SPI for plugging into the generic resource test capability,
+// make this class be SPI in the following feature:
 // com.ibm.websphere.features.internal.webapp/com.ibm.websphere.appserver.restHandler-1.0.feature
 /**
  * Partial implementation of RESTHandler for API that is based on server configuration.
@@ -158,10 +159,6 @@ public abstract class ConfigBasedRESTHandler implements RESTHandler {
             return;
         }
 
-        // TODO would like to do the following, but cannot figure out how to get path parameters with %2F (/) in values from being considered separate path parameter values
-        //String uid = request.getPathVariable("uid");
-        //String elementName = request.getPathVariable("elementName");
-
         String apiRoot = getAPIRoot();
         String uid = null;
         int endElementName = path.indexOf('/', apiRoot.length() + 1);
@@ -173,6 +170,15 @@ public abstract class ConfigBasedRESTHandler implements RESTHandler {
                 uid = null;
         }
         String elementName = path.length() < (apiRoot.length() + 1) ? "" : URLDecoder.decode(path.substring(apiRoot.length() + 1, endElementName), "UTF-8");
+
+        // Just in case someone tries to do /config/dataSource[DefaultDataSource] missing the config element parameter,
+        // which was somehow getting through and erroneously returning a list of one data source.
+        // TODO it would be preferable to detect this more cleanly, but for now, at least reject it so that
+        // data isn't erroneously returned.
+        if (elementName.indexOf('[') >= 0) {
+            response.sendError(404, Tr.formatMessage(tc, request.getLocale(), "CWWKO1500_NOT_FOUND", elementName));
+            return;
+        }
 
         StringBuilder filter = new StringBuilder("(&");
         if (uid != null && (uid.startsWith(elementName + "[default-") || uid.matches(".*/.*\\[.*\\].*")))
@@ -282,8 +288,11 @@ public abstract class ConfigBasedRESTHandler implements RESTHandler {
                 }
             }
 
-        Object result;
-        if (uid == null) { // apply to all instances of element type
+        Object result = null;
+
+        if (configMap.isEmpty()) {
+            result = null;
+        } else if (uid == null) { // apply to all instances of element type
             ArrayList<Object> results = new ArrayList<Object>();
             for (Map.Entry<String, Dictionary<String, Object>> entry : configMap.entrySet()) {
                 // Filter out entries for nested configurations that we aren't trying to return. Example: dataSource[ds1]/connectionManager[default-0]
@@ -294,13 +303,14 @@ public abstract class ConfigBasedRESTHandler implements RESTHandler {
                     String uniqueId = configDisplayId.endsWith("]") ? getUID(configDisplayId, (String) configProps.get("id")) : null;
                     String id = (String) configProps.get("id");
                     Object r = handleSingleInstance(request, uniqueId, id == null || isGenerated(id) ? null : id, configProps);
-                    if (r != null)
+                    if (r != null) {
                         results.add(r);
+                    }
                 }
             }
-            result = results;
-        } else if (configMap.isEmpty()) {
-            result = null;
+            if (!results.isEmpty()) {
+                result = results;
+            }
         } else if (configMap.size() == 1) {
             Map.Entry<String, Dictionary<String, Object>> entry = configMap.firstEntry();
             String configDisplayId = entry.getKey();
@@ -310,15 +320,18 @@ public abstract class ConfigBasedRESTHandler implements RESTHandler {
                 String id = (String) configProps.get("id");
                 result = handleSingleInstance(request, uid, id == null || isGenerated(id) ? null : id, entry.getValue());
             } else
-                result = handleError(request, null, Tr.formatMessage(tc, "CWWKO1501_INVALID_IDENTIFIER", uid, uniqueId));
+                result = handleError(request, null, Tr.formatMessage(tc, request.getLocale(), "CWWKO1501_INVALID_IDENTIFIER", uid, uniqueId));
         } else {
-            result = handleError(request, null, Tr.formatMessage(tc, "CWWKO1502_MULTIPLE_FOUND", uid));
+            result = handleError(request, null, Tr.formatMessage(tc, request.getLocale(), "CWWKO1502_MULTIPLE_FOUND", uid));
         }
 
-        if (result == null)
-            result = handleError(request, uid, Tr.formatMessage(tc, "CWWKO1500_NOT_FOUND", elementName));
-
-        // TODO use client's locale for above 3 messages
+        if (result == null) {
+            if (uid != null)
+                response.sendError(404, Tr.formatMessage(tc, request.getLocale(), "CWWKO1500_NOT_FOUND", elementName + "(uid: " + uid + ")"));
+            else
+                response.sendError(404, Tr.formatMessage(tc, request.getLocale(), "CWWKO1500_NOT_FOUND", elementName));
+            return;
+        }
 
         populateResponse(response, result);
 

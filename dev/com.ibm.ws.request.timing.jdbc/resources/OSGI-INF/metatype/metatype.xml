@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2019 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+-->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"  
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+    <OCD name="%jdbcTiming.name" description="%jdbcTiming.desc" ibm:parentPid="com.ibm.ws.request.timing.RequestTimingService"
+         id="com.ibm.ws.request.timing.jdbc.metatype" ibm:childAlias="jdbcTiming" >
+    	<AD name="%dataSourceName.name" description="%dataSourceName.desc" id="dataSourceName" required="false" type="String"/>
+    	<AD name="%queryName.name" description="%queryName.desc" id="query" required="false" type="String"/>
+    	<AD name="%slowRequestThreshold.name" description="%slowRequestThreshold.desc" id="slowRequestThreshold" 
+        	required="false" type="String" ibm:type="duration(ms)"/>
+      <AD name="%hungRequestThreshold.name" description="%hungRequestThreshold.desc" id="hungRequestThreshold" 
+        	required="false" type="String" ibm:type="duration(ms)"/>
+		  <AD name="%interruptHungRequest.name" description="%interruptHungRequest.desc" id="interruptHungRequests"
+		      required="false" type="Boolean" default="false"/>
+    </OCD>
+    
+    <Designate factoryPid="com.ibm.ws.request.timing.jdbc.metatype">
+        <Object ocdref="com.ibm.ws.request.timing.jdbc.metatype" />
+    </Designate> 
+  
+</metatype:MetaData>
+
+
+ 

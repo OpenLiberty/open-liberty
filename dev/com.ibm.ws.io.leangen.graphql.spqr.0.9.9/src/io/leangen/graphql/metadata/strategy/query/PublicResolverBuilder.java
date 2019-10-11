@@ -8,9 +8,12 @@ import io.leangen.graphql.metadata.execution.MethodInvoker;
 import io.leangen.graphql.metadata.execution.SingletonMethodInvoker;
 import io.leangen.graphql.util.ClassUtils;
 import io.leangen.graphql.util.Utils;
+import org.eclipse.microprofile.graphql.Description;
 import org.reactivestreams.Publisher;
+import javax.json.bind.annotation.JsonbDateFormat;
 
 import java.lang.reflect.AnnotatedType;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collection;
@@ -37,7 +40,28 @@ public class PublicResolverBuilder extends FilteredResolverBuilder {
     public PublicResolverBuilder(String... basePackages) {
         this.operationNameGenerator = new DefaultOperationNameGenerator();
         this.argumentBuilder = new AnnotatedArgumentBuilder();
-        this.descriptionMapper = method -> "";
+        this.descriptionMapper = method -> {
+            Description desc = method.getAnnotation(Description.class);
+            Field field = ClassUtils.findFieldByGetter(method).orElse(null);
+            if (desc == null) {
+                if (field != null) {
+                    desc = field.getAnnotation(Description.class);
+                }
+            }
+            if (desc != null) {
+                return desc.value();
+            }
+            JsonbDateFormat dateFormat = method.getAnnotation(JsonbDateFormat.class);
+            if (dateFormat == null) {
+                if (field != null) {
+                    dateFormat = field.getAnnotation(JsonbDateFormat.class);
+                }
+            }
+            if (dateFormat != null) {
+                return dateFormat.value();
+            }
+            return "";
+        };
         this.deprecationReasonMapper = method ->
                 javaDeprecationConfig.enabled && method.isAnnotationPresent(Deprecated.class) ? javaDeprecationConfig.deprecationReason : null;
         withBasePackages(basePackages);

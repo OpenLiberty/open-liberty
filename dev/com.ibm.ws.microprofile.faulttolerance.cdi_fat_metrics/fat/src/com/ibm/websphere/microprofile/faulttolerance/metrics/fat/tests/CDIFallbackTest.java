@@ -34,7 +34,8 @@ public class CDIFallbackTest extends LoggingTest {
     public static SharedServer SHARED_SERVER = new SharedServer("CDIFaultToleranceMetrics");
 
     @ClassRule
-    public static RepeatTests rep = RepeatFaultTolerance.repeatAll(SHARED_SERVER.getServerName());
+    public static RepeatTests rep = RepeatFaultTolerance.repeatAll(SHARED_SERVER.getServerName())
+                    .andWith(RepeatFaultTolerance.ft11metrics20Features(SHARED_SERVER.getServerName()));
 
     @Test
     public void testFallback() throws Exception {

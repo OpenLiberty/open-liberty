@@ -20,6 +20,7 @@ var messages = {
     "DELETE": "削除",
     "DONE": "完了",
     "EDIT": "編集",
+    "FALSE": "False",
     "GENERATE": "生成",
     "LOADING": "ロード中",
     "LOGOUT": "ログアウト",
@@ -31,7 +32,10 @@ var messages = {
     "PROCESSING": "処理中",
     "REGENERATE": "再生成",
     "REGISTER": "登録",
-    "TRY_AGAIN": "再試行してください...",
+    "TABLE_FIELD_SORT_ASC": "表は {0} によって昇順でソートされます。",   // {0} - column name (ie. 'Name', 'Client ID')
+    "TABLE_FIELD_SORT_DESC": "表は {0} によって降順でソートされます。", // {0} - column name (ie. 'Name', 'Client ID')
+    "TRUE": "True",
+    "TRY_AGAIN": "再試行...",
     "UPDATE": "更新",
 
     // Common Column Names
@@ -45,10 +49,15 @@ var messages = {
     // name - the user defined name given the app-password or app-token
     "ACCT_MGR_TITLE": "個人用トークンの管理",
     "ACCT_MGR_DESC": "app-password と app-token を作成、削除および再生成します。",
-    "ADD_NEW_AUTHENTICATION": "新規 app-password または app-token の追加",
+    "ADD_NEW_AUTHENTICATION": "新規 app-password または app-token を追加します。",
     "NAME_IDENTIFIER": "名前: {0}",
     "ADD_NEW_TITLE": "新規認証の登録",
     "NOT_GENERATED_PLACEHOLDER": "生成されません",
+    "AUTHENTICAION_GENERATED": "生成された認証",
+    "GENERATED_APP_PASSWORD": "生成された app-password",
+    "GENERATED_APP_TOKEN": "生成された app-token",
+    "COPY_APP_PASSWORD": "app-password をクリップボードにコピー",
+    "COPY_APP_TOKEN": "app-token をクリップボードにコピー",
     "REGENERATE_APP_PASSWORD": "App-Password の再生成",
     "REGENERATE_PW_WARNING": "このアクションにより、現在の app-password が上書きされます。",
     "REGENERATE_PW_PLACEHOLDER": "以前 ({0}) に生成されたパスワード",        // 0 - date

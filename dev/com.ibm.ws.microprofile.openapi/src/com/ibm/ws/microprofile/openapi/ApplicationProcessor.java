@@ -119,167 +119,169 @@ public class ApplicationProcessor {
         ClassLoader appClassloader = moduleInfo.getClassLoader();
         boolean isOASApp = false;
 
-        //read and process the MicroProfile config
-        ConfigProcessor configProcessor = new ConfigProcessor(appClassloader);
-        if (OpenAPIUtils.isEventEnabled(tc)) {
-            Tr.event(tc, "Retrieved configuration values : " + configProcessor);
-        }
-
         OpenAPI newDocument = null;
-        //Retrieve model from model reader
-        OASModelReader modelReader = OpenAPIUtils.getOASModelReader(appClassloader, configProcessor.getModelReaderClassName());
-        if (modelReader != null) {
-            try {
-                OpenAPI model = modelReader.buildModel();
-                if (model != null) {
-                    isOASApp = true;
-                    newDocument = model;
-                    if (OpenAPIUtils.isEventEnabled(tc)) {
-                        Tr.event(tc, "Content from model reader: ", getSerializedJsonDocument(newDocument));
-                    }
-                }
-            } catch (Throwable e) {
-                if (OpenAPIUtils.isEventEnabled(tc)) {
-                    Tr.event(tc, "Failed to construct model from the application: " + e.getMessage());
-                }
-            }
-        }
 
-        //Retrieve OpenAPI document as a string
-        String openAPIStaticFile = StaticFileProcessor.getOpenAPIFile(appContainer);
-        if (OpenAPIUtils.isEventEnabled(tc)) {
-            Tr.event(tc, "Content from static file: ", openAPIStaticFile);
-        }
-        if (openAPIStaticFile != null) {
-            SwaggerParseResult result = new OpenAPIV3Parser().readContents(openAPIStaticFile, newDocument, null, null);
-            if (result.getOpenAPI() != null) {
-                newDocument = result.getOpenAPI();
-                isOASApp = true;
-                if (OpenAPIUtils.isEventEnabled(tc)) {
-                    Tr.event(tc, "Document after merging contents from model reader and static file: ", getSerializedJsonDocument(newDocument));
-                }
-            } else {
-                Tr.error(tc, "OPENAPI_FILE_PARSE_ERROR", moduleInfo.getApplicationInfo().getDeploymentName());
-            }
-        }
-
-        //Scan for annotated classes
-        AnnotationScanner scanner = OpenAPIUtils.creatAnnotationScanner(appClassloader, appContainer);
-        if (!configProcessor.isScanDisabled()) {
-            Set<String> classNamesToScan = new HashSet<>();
-            if (configProcessor.getClassesToScan() != null) {
-                classNamesToScan.addAll(configProcessor.getClassesToScan());
+        //read and process the MicroProfile config. Try with resources will close the ConfigProcessor when done.
+        try (ConfigProcessor configProcessor = new ConfigProcessor(appClassloader)) {
+            if (OpenAPIUtils.isEventEnabled(tc)) {
+                Tr.event(tc, "Retrieved configuration values : " + configProcessor);
             }
 
-            if (configProcessor.getPackagesToScan() != null) {
-                Set<String> foundClasses = scanner.getAnnotatedClassesNames();
-                if (OpenAPIUtils.isEventEnabled(tc)) {
-                    Tr.event(tc, "Found annotated classes (packages to scan): ", foundClasses);
-                }
-                for (String packageName : configProcessor.getPackagesToScan()) {
-                    for (String className : foundClasses) {
-                        if (className.startsWith(packageName)) {
-                            classNamesToScan.add(className);
-                        }
-                    }
-                }
-            }
-
-            if (classNamesToScan.size() == 0 && scanner.anyAnnotatedClasses()) {
-                Set<String> foundClasses = scanner.getAnnotatedClassesNames();
-                if (OpenAPIUtils.isEventEnabled(tc)) {
-                    Tr.event(tc, "Found annotated classes (any annotated classes): ", foundClasses);
-                }
-                classNamesToScan.addAll(foundClasses);
-            }
-            if (configProcessor.getClassesToExclude() != null) {
-                classNamesToScan.removeAll(configProcessor.getClassesToExclude());
-            }
-            if (configProcessor.getPackagesToExclude() != null) {
-                for (String packageToExclude : configProcessor.getPackagesToExclude()) {
-                    Iterator<String> iterator = classNamesToScan.iterator();
-                    while (iterator.hasNext()) {
-                        if (iterator.next().startsWith(packageToExclude)) {
-                            iterator.remove();
-                        }
-                    }
-                }
-            }
-
-            if (classNamesToScan.size() > 0) {
-                isOASApp = true;
-                Set<Class<?>> classes = new HashSet<>();
-                if (OpenAPIUtils.isEventEnabled(tc)) {
-                    Tr.event(tc, "Final list of class names to scan: ", classNamesToScan);
-                }
-
-                for (String clazz : classNamesToScan) {
-                    try {
-                        classes.add(appClassloader.loadClass(clazz));
-                    } catch (ClassNotFoundException e) {
+            //Retrieve model from model reader
+            OASModelReader modelReader = OpenAPIUtils.getOASModelReader(appClassloader, configProcessor.getModelReaderClassName());
+            if (modelReader != null) {
+                try {
+                    OpenAPI model = modelReader.buildModel();
+                    if (model != null) {
+                        isOASApp = true;
+                        newDocument = model;
                         if (OpenAPIUtils.isEventEnabled(tc)) {
-                            Tr.event(tc, "Failed to load class: " + e.getMessage());
+                            Tr.event(tc, "Content from model reader: ", getSerializedJsonDocument(newDocument));
+                        }
+                    }
+                } catch (Throwable e) {
+                    if (OpenAPIUtils.isEventEnabled(tc)) {
+                        Tr.event(tc, "Failed to construct model from the application: " + e.getMessage());
+                    }
+                }
+            }
+
+            //Retrieve OpenAPI document as a string
+            String openAPIStaticFile = StaticFileProcessor.getOpenAPIFile(appContainer);
+            if (OpenAPIUtils.isEventEnabled(tc)) {
+                Tr.event(tc, "Content from static file: ", openAPIStaticFile);
+            }
+            if (openAPIStaticFile != null) {
+                SwaggerParseResult result = new OpenAPIV3Parser().readContents(openAPIStaticFile, newDocument, null, null);
+                if (result.getOpenAPI() != null) {
+                    newDocument = result.getOpenAPI();
+                    isOASApp = true;
+                    if (OpenAPIUtils.isEventEnabled(tc)) {
+                        Tr.event(tc, "Document after merging contents from model reader and static file: ", getSerializedJsonDocument(newDocument));
+                    }
+                } else {
+                    Tr.error(tc, "OPENAPI_FILE_PARSE_ERROR", moduleInfo.getApplicationInfo().getDeploymentName());
+                }
+            }
+
+            //Scan for annotated classes
+            AnnotationScanner scanner = OpenAPIUtils.creatAnnotationScanner(appClassloader, appContainer);
+            if (!configProcessor.isScanDisabled()) {
+                Set<String> classNamesToScan = new HashSet<>();
+                if (configProcessor.getClassesToScan() != null) {
+                    classNamesToScan.addAll(configProcessor.getClassesToScan());
+                }
+
+                if (configProcessor.getPackagesToScan() != null) {
+                    Set<String> foundClasses = scanner.getAnnotatedClassesNames();
+                    if (OpenAPIUtils.isEventEnabled(tc)) {
+                        Tr.event(tc, "Found annotated classes (packages to scan): ", foundClasses);
+                    }
+                    for (String packageName : configProcessor.getPackagesToScan()) {
+                        for (String className : foundClasses) {
+                            if (className.startsWith(packageName)) {
+                                classNamesToScan.add(className);
+                            }
                         }
                     }
                 }
-                Reader reader = new Reader(newDocument);
-                reader.setApplicationPath(scanner.getURLMapping());
-                newDocument = reader.read(classes);
-            }
-        }
 
-        if (!isOASApp) {
+                if (classNamesToScan.size() == 0 && scanner.anyAnnotatedClasses()) {
+                    Set<String> foundClasses = scanner.getAnnotatedClassesNames();
+                    if (OpenAPIUtils.isEventEnabled(tc)) {
+                        Tr.event(tc, "Found annotated classes (any annotated classes): ", foundClasses);
+                    }
+                    classNamesToScan.addAll(foundClasses);
+                }
+                if (configProcessor.getClassesToExclude() != null) {
+                    classNamesToScan.removeAll(configProcessor.getClassesToExclude());
+                }
+                if (configProcessor.getPackagesToExclude() != null) {
+                    for (String packageToExclude : configProcessor.getPackagesToExclude()) {
+                        Iterator<String> iterator = classNamesToScan.iterator();
+                        while (iterator.hasNext()) {
+                            if (iterator.next().startsWith(packageToExclude)) {
+                                iterator.remove();
+                            }
+                        }
+                    }
+                }
+
+                if (classNamesToScan.size() > 0) {
+                    isOASApp = true;
+                    Set<Class<?>> classes = new HashSet<>();
+                    if (OpenAPIUtils.isEventEnabled(tc)) {
+                        Tr.event(tc, "Final list of class names to scan: ", classNamesToScan);
+                    }
+
+                    for (String clazz : classNamesToScan) {
+                        try {
+                            classes.add(appClassloader.loadClass(clazz));
+                        } catch (ClassNotFoundException e) {
+                            if (OpenAPIUtils.isEventEnabled(tc)) {
+                                Tr.event(tc, "Failed to load class: " + e.getMessage());
+                            }
+                        }
+                    }
+                    Reader reader = new Reader(newDocument);
+                    reader.setApplicationPath(scanner.getURLMapping());
+                    newDocument = reader.read(classes);
+                }
+            }
+
+            if (!isOASApp) {
+                if (OpenAPIUtils.isEventEnabled(tc)) {
+                    Tr.event(tc,
+                             "WebModule: Processing ended : Not an OAS application : deploymentName=" + moduleInfo.getApplicationInfo().getDeploymentName() + " : contextRoot="
+                                 + moduleInfo.getContextRoot());
+                }
+                return null;
+            }
+
+            if (newDocument != null) {
+                if (OpenAPIUtils.isEventEnabled(tc)) {
+                    Tr.event(tc, "Document before handling servers: ", getSerializedJsonDocument(newDocument));
+                }
+                // Handle servers specified in configuration (before filtering)
+                handleServers(newDocument, configProcessor);
+            }
+
             if (OpenAPIUtils.isEventEnabled(tc)) {
-                Tr.event(tc,
-                         "WebModule: Processing ended : Not an OAS application : deploymentName=" + moduleInfo.getApplicationInfo().getDeploymentName() + " : contextRoot="
-                             + moduleInfo.getContextRoot());
+                Tr.event(tc, "Document before filtering: ", getSerializedJsonDocument(newDocument));
             }
-            return null;
-        }
 
-        if (newDocument != null) {
-            if (OpenAPIUtils.isEventEnabled(tc)) {
-                Tr.event(tc, "Document before handling servers: ", getSerializedJsonDocument(newDocument));
-            }
-            // Handle servers specified in configuration (before filtering)
-            handleServers(newDocument, configProcessor);
-        }
-
-        if (OpenAPIUtils.isEventEnabled(tc)) {
-            Tr.event(tc, "Document before filtering: ", getSerializedJsonDocument(newDocument));
-        }
-
-        // Filter
-        OASFilter oasFilter = OpenAPIUtils.getOASFilter(appClassloader, configProcessor.getOpenAPIFilterClassName());
-        if (oasFilter != null) {
-            final OpenAPIFilter filter = new OpenAPIFilter(oasFilter);
-            try {
-                filter.filter(newDocument);
-                if (OpenAPIUtils.isEventEnabled(tc)) {
-                    Tr.event(tc, "Document after filtering: ", getSerializedJsonDocument(newDocument));
-                }
-            } catch (Throwable e) {
-                if (OpenAPIUtils.isEventEnabled(tc)) {
-                    Tr.event(tc, "Failed to call OASFilter: " + e.getMessage());
+            // Filter
+            OASFilter oasFilter = OpenAPIUtils.getOASFilter(appClassloader, configProcessor.getOpenAPIFilterClassName());
+            if (oasFilter != null) {
+                final OpenAPIFilter filter = new OpenAPIFilter(oasFilter);
+                try {
+                    filter.filter(newDocument);
+                    if (OpenAPIUtils.isEventEnabled(tc)) {
+                        Tr.event(tc, "Document after filtering: ", getSerializedJsonDocument(newDocument));
+                    }
+                } catch (Throwable e) {
+                    if (OpenAPIUtils.isEventEnabled(tc)) {
+                        Tr.event(tc, "Failed to call OASFilter: " + e.getMessage());
+                    }
                 }
             }
-        }
 
-        if (newDocument != null && newDocument.getInfo() == null) {
-            newDocument.setInfo(new InfoImpl().title("Deployed APIs").version("1.0.0"));
-        }
+            if (newDocument != null && newDocument.getInfo() == null) {
+                newDocument.setInfo(new InfoImpl().title("Deployed APIs").version("1.0.0"));
+            }
 
-        // Validate the document if the validation property has been enabled.
-        final boolean validating = configProcessor.isValidating();
-        if (validating) {
-            try {
-                if (OpenAPIUtils.isEventEnabled(tc)) {
-                    Tr.event(tc, "Validate document");
-                }
-                validateDocument(newDocument);
-            } catch (Throwable e) {
-                if (OpenAPIUtils.isEventEnabled(tc)) {
-                    Tr.event(tc, "Failed to call OASValidator: " + e.getMessage());
+            // Validate the document if the validation property has been enabled.
+            final boolean validating = configProcessor.isValidating();
+            if (validating) {
+                try {
+                    if (OpenAPIUtils.isEventEnabled(tc)) {
+                        Tr.event(tc, "Validate document");
+                    }
+                    validateDocument(newDocument);
+                } catch (Throwable e) {
+                    if (OpenAPIUtils.isEventEnabled(tc)) {
+                        Tr.event(tc, "Failed to call OASValidator: " + e.getMessage());
+                    }
                 }
             }
         }

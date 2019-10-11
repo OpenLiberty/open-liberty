@@ -16,7 +16,7 @@ Fragment-Host: com.ibm.ws.org.apache.myfaces.2.3;bundle-version=1.0
 Bundle-Name: WebSphere JSF MyFaces Third Party API
 Bundle-SymbolicName: com.ibm.websphere.appserver.thirdparty.jsf-2.3
 Bundle-Description: WebSphere JSF 2.3 MyFaces Third Party API
-Implementation-Version: 2.3.3
+Implementation-Version: 2.3.4
 
 javac.source: 1.8
 javac.target: 1.8
@@ -25,59 +25,11 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 # Don't export the org.apache.myfaces.buildtools package as that is only needed for compilation.  The jar that contains the 
 # org.apache.myfaces.buildtools package is javax.j2ee.jsf-2.2/lib/myfaces-builder-annotations-1.0.9.jar
 Export-Package: \
-  !org.apache.myfaces.buildtools.*, \
-  org.apache.myfaces.*;version=${Implementation-Version}, \
-  org.apache.myfaces.application;thread-context=true;mandatory:="thread-context";version=${Implementation-Version}, \
-  org.apache.myfaces.application.viewstate;thread-context=true;mandatory:="thread-context";version=${Implementation-Version}, \
-  org.apache.myfaces.cdi.model;thread-context=true;mandatory:="thread-context";version=${Implementation-Version}, \
-  org.apache.myfaces.cdi.view;thread-context=true;mandatory:="thread-context";version=${Implementation-Version}, \
-  org.apache.myfaces.cdi.util;thread-context=true;mandatory:="thread-context";version=${Implementation-Version}, \
-  org.apache.myfaces.component;thread-context=true;mandatory:="thread-context";version=${Implementation-Version}, \
-  org.apache.myfaces.component.search;thread-context=true;mandatory:="thread-context";version=${Implementation-Version}, \
-  org.apache.myfaces.component.visit;thread-context=true;mandatory:="thread-context";version=${Implementation-Version}, \
-  org.apache.myfaces.context;thread-context=true;mandatory:="thread-context";version=${Implementation-Version}, \
-  org.apache.myfaces.context.servlet;thread-context=true;mandatory:="thread-context";version=${Implementation-Version}, \
-  org.apache.myfaces.config.annotation;thread-context=true;mandatory:="thread-context";version=${Implementation-Version}, \
-  org.apache.myfaces.config.impl.digester.elements;thread-context=true;mandatory:="thread-context";version=${Implementation-Version}, \
-  org.apache.myfaces.flow;thread-context=true;mandatory:="thread-context";version=${Implementation-Version}, \
-  org.apache.myfaces.flow.cdi;thread-context=true;mandatory:="thread-context";version=${Implementation-Version}, \
-  org.apache.myfaces.lifecycle;thread-context=true;mandatory:="thread-context";version=${Implementation-Version}, \
-  org.apache.myfaces.push.cdi;thread-context=true;mandatory:="thread-context";version=${Implementation-Version}, \
-  org.apache.myfaces.renderkit;thread-context=true;mandatory:="thread-context";version=${Implementation-Version}, \
-  org.apache.myfaces.renderkit.html;thread-context=true;mandatory:="thread-context";version=${Implementation-Version}, \
-  org.apache.myfaces.shared.context.flash;thread-context=true;mandatory:="thread-context";version=${Implementation-Version}, \
-  org.apache.myfaces.shared.taglib;thread-context=true;mandatory:="thread-context";version=${Implementation-Version}, \
-  org.apache.myfaces.shared.taglib.core;thread-context=true;mandatory:="thread-context";version=${Implementation-Version}, \
-  org.apache.myfaces.shared.util;thread-context=true;mandatory:="thread-context";version=${Implementation-Version}, \
-  org.apache.myfaces.spi.impl;thread-context=true;mandatory:="thread-context";version=${Implementation-Version}, \
-  org.apache.myfaces.taglib.core;thread-context=true;mandatory:="thread-context";version=${Implementation-Version}, \
-  org.apache.myfaces.taglib.html;thread-context=true;mandatory:="thread-context";version=${Implementation-Version}, \
-  org.apache.myfaces.view;thread-context=true;mandatory:="thread-context";version=${Implementation-Version}, \
-  org.apache.myfaces.view.facelets;thread-context=true;mandatory:="thread-context";version=${Implementation-Version}, \
-  org.apache.myfaces.view.facelets.compiler;thread-context=true;mandatory:="thread-context";version=${Implementation-Version}, \
-  org.apache.myfaces.view.facelets.component;thread-context=true;mandatory:="thread-context";version=${Implementation-Version}, \
-  org.apache.myfaces.view.facelets.el;thread-context=true;mandatory:="thread-context";version=${Implementation-Version}, \
-  org.apache.myfaces.view.facelets.impl;thread-context=true;mandatory:="thread-context";version=${Implementation-Version}, \
-  org.apache.myfaces.view.facelets.pool;thread-context=true;mandatory:="thread-context";version=${Implementation-Version}, \
-  org.apache.myfaces.view.facelets.pool.impl;thread-context=true;mandatory:="thread-context";version=${Implementation-Version}, \
-  org.apache.myfaces.view.facelets.tag;thread-context=true;mandatory:="thread-context";version=${Implementation-Version}, \
-  org.apache.myfaces.view.facelets.tag.composite;thread-context=true;mandatory:="thread-context";version=${Implementation-Version}, \
-  org.apache.myfaces.view.facelets.tag.jsf;thread-context=true;mandatory:="thread-context";version=${Implementation-Version}, \
-  org.apache.myfaces.view.facelets.tag.jsf.core;thread-context=true;mandatory:="thread-context";version=${Implementation-Version}, \
-  org.apache.myfaces.view.facelets.tag.jsf.html;thread-context=true;mandatory:="thread-context";version=${Implementation-Version}, \
-  org.apache.myfaces.view.facelets.tag.jstl.core;thread-context=true;mandatory:="thread-context";version=${Implementation-Version}, \
-  org.apache.myfaces.view.facelets.tag.jstl.fn;thread-context=true;mandatory:="thread-context";version=${Implementation-Version}, \
-  org.apache.myfaces.view.facelets.tag.ui;thread-context=true;mandatory:="thread-context";version=${Implementation-Version}, \
-  org.apache.myfaces.view.facelets.util;thread-context=true;mandatory:="thread-context";version=${Implementation-Version}, \
-  org.apache.myfaces.webapp;thread-context=true;mandatory:="thread-context";version=${Implementation-Version}
-  
-# Import everything we need except for the below exclusions that will not be needed at runtime.
-Import-Package: \
-  !com.google.inject, \
-  !javax.ejb, \
-  !javax.persistence, \
-  !org.apache.tomcat, \
-  *
+  org.apache.myfaces.renderkit.html;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.shared.config;version=${Implementation-Version}, \
+  org.apache.myfaces.shared.renderkit;version=${Implementation-Version}, \
+  org.apache.myfaces.shared.renderkit.html;version=${Implementation-Version}, \
+  org.apache.myfaces.shared.renderkit.html.util;version=${Implementation-Version}
 
 instrument.ffdc: false
 instrument.classesExcludes: \

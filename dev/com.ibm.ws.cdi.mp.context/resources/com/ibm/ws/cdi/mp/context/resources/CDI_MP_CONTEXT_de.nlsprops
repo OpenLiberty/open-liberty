@@ -1,0 +1,33 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.concurrent/resources/com/ibm/ws/concurrent/resources/CWWKCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC MicroProfile Context Propagation
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# This message bundle does not have its own message range, and instead reserves specific error messages from the 
+# com.ibm.ws.concurrent.mp.1.0 message bundle
+
+# do not translate: CDI, CompletionStage
+CWWKC1158.cannot.lazy.enlist.beans=CWWKC1158E: Sie m\u00fcssen auf die CDI-Beans zugreifen, bevor die kontextbezogene Aktion oder Aufgabe erfasst wird, um ordnungsgem\u00e4\u00dfes Verhalten der CDI-Beans beim Zugriff durch die Aktion oder Aufgabe sicherzustellen. \
+Auf die folgenden CDI-Beans wurde nicht zugegriffen, bevor der Kontext erfasst wurde: {0}.
+CWWKC1158.cannot.lazy.enlist.beans.explanation=Wenn der CDI-Kontext erfasst wird, werden von der CDI-Laufzeit nur die CDI-Beans erstellt, auf die zu diesem Zeitpunkt bereits zugegriffen wurde. \
+Daher k\u00f6nnen CDI-Beans, auf die erstmals in kontextuellen Operationen zugegriffen wird, ihren Status nicht korrekt an nachfolgende kontextuelle Operationen weitergeben.
+CWWKC1158.cannot.lazy.enlist.beans.useraction=Die Anwendung muss ge\u00e4ndert werden, damit eine CDI-Beans-Operation, wie beispielsweise eine \u00f6ffentliche Methode, vor der Erfassung des Kontexts f\u00fcr die Operation aufgerufen wird.

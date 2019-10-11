@@ -1,0 +1,41 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.rest.handler.validator/resources/com/ibm/ws/rest/handler/validator/resources/CWWKOMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Validation REST endpoint
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWKO1550 to CWWKO1559
+
+CWWKO1550_VALIDATOR_NOT_FOUND=CWWKO1550E: A valida\u00e7\u00e3o n\u00e3o \u00e9 fornecida para elementos de configura\u00e7\u00e3o do tipo {0}.
+CWWKO1550_VALIDATOR_NOT_FOUND.explanation=O tipo especificado de elemento de configura\u00e7\u00e3o n\u00e3o possui a capacidade de validar sua configura\u00e7\u00e3o.
+CWWKO1550_VALIDATOR_NOT_FOUND.useraction=N\u00e3o tente validar esse tipo de elemento de configura\u00e7\u00e3o.
+
+CWWKO1551_CANNOT_VALIDATE=CWWKO1551E: Uma ou mais depend\u00eancias n\u00e3o foram satisfeitas, o recurso que ativa o recurso n\u00e3o foi ativado ou n\u00e3o \u00e9 poss\u00edvel validar esse tipo de recurso.
+CWWKO1551_CANNOT_VALIDATE.explanation=A solicita\u00e7\u00e3o de valida\u00e7\u00e3o para a configura\u00e7\u00e3o especificada n\u00e3o pode ser conclu\u00edda. Isso pode ser devido a uma depend\u00eancia n\u00e3o satisfeita, um recurso ausente que ativa um elemento de configura\u00e7\u00e3o ou o elemento de configura\u00e7\u00e3o pode n\u00e3o suportar a valida\u00e7\u00e3o.
+CWWKO1551_CANNOT_VALIDATE.useraction=Verifique se o recurso que fornece o elemento de configura\u00e7\u00e3o est\u00e1 ativado, se n\u00e3o h\u00e1 depend\u00eancias ausentes e se o elemento de configura\u00e7\u00e3o suporta a valida\u00e7\u00e3o.
+
+CWWKO1552_MISSING_DELIMITER=CWWKO1552E: O cabe\u00e7alho X-Login-Config-Props requer um caractere de sinal de igual (=) como um delimitador entre o nome da propriedade de configura\u00e7\u00e3o de login e o valor.
+CWWKO1552_MISSING_DELIMITER.explanation=O delimitador de sinal de igual \u00e9 necess\u00e1rio para determinar qual parte do cabe\u00e7alho X-Login-Config-Props \u00e9 o nome da propriedade de configura\u00e7\u00e3o de login e qual parte \u00e9 o valor.
+CWWKO1552_MISSING_DELIMITER.useraction=Atualize o cabe\u00e7alho X-Login-Config-Props para incluir um sinal de igual (=) entre o nome da propriedade de configura\u00e7\u00e3o de login e o valor.
+
+CWWKO1553_HANDLER_NOT_FOUND=CWWKO1553E: N\u00e3o h\u00e1 manipuladores registrados que correspondem \u00e0 URL solicitada {0}.
+CWWKO1553_HANDLER_NOT_FOUND.explanation=Foi feita uma tentativa de acessar uma URL que n\u00e3o corresponde a nenhum dos manipuladores registrados.
+CWWKO1553_HANDLER_NOT_FOUND.useraction=Corrija a URL para corresponder a um manipulador registrado.

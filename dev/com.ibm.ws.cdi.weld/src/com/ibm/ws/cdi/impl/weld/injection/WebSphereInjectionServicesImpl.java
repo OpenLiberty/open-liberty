@@ -16,6 +16,7 @@ import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -82,8 +83,8 @@ public class WebSphereInjectionServicesImpl implements WebSphereInjectionService
      */
     private static final Set<Class<?>> ANNOTATIONS_KNOWN_TO_WELD = new HashSet<Class<?>>(Arrays.asList(Inject.class));
 
-    private final Map<Class<?>, ReferenceContext> referenceContextMap = new HashMap<Class<?>, ReferenceContext>();
-    private final Set<ReferenceContext> referenceContexts = new HashSet<ReferenceContext>();
+    private final Map<Class<?>, ReferenceContext> referenceContextMap = new ConcurrentHashMap<Class<?>, ReferenceContext>();
+    private final Set<ReferenceContext> referenceContexts = Collections.newSetFromMap(new ConcurrentHashMap<ReferenceContext, Boolean>());
 
     private final Map<Object, WebSphereInjectionTargetListener<?>> injectionTargetListeners = new ConcurrentHashMap<>();
 

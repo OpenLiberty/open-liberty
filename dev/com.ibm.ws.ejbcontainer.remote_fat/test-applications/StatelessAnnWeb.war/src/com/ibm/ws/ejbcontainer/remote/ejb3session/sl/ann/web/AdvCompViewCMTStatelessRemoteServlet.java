@@ -98,7 +98,7 @@ public class AdvCompViewCMTStatelessRemoteServlet extends FATServlet {
      * </ol>
      */
     @Test
-    public void testCompIntTxAttribs() throws Exception {
+    public void testCompIntTxAttribs_AdvCompViewCMTStatelessRemote() throws Exception {
         UserTransaction userTran = null;
 
         try {
@@ -155,7 +155,7 @@ public class AdvCompViewCMTStatelessRemoteServlet extends FATServlet {
      * </ol>
      */
     @Test
-    public void testBizIntTxAttribs() throws Exception {
+    public void testBizIntTxAttribs_AdvCompViewCMTStatelessRemote() throws Exception {
         UserTransaction userTran = null;
 
         try {
@@ -215,7 +215,7 @@ public class AdvCompViewCMTStatelessRemoteServlet extends FATServlet {
      * </ol>
      */
     @Test
-    public void testCompIntBizGetters() throws Exception {
+    public void testCompIntBizGetters_AdvCompViewCMTStatelessRemote() throws Exception {
         // --------------------------------------------------------------------
         // Locate SL Remote Home/Factory and execute the test
         // --------------------------------------------------------------------
@@ -244,7 +244,7 @@ public class AdvCompViewCMTStatelessRemoteServlet extends FATServlet {
      * </ol>
      */
     @Test
-    public void testBizIntBizGetters() throws Exception {
+    public void testBizIntBizGetters_AdvCompViewCMTStatelessRemote() throws Exception {
         // --------------------------------------------------------------------
         // Locate SL Remote Home/Factory and execute the test
         // --------------------------------------------------------------------
@@ -267,7 +267,7 @@ public class AdvCompViewCMTStatelessRemoteServlet extends FATServlet {
      * </ol>
      */
     @Test
-    public void testCompIntInjection() throws Exception {
+    public void testCompIntInjection_AdvCompViewCMTStatelessRemote() throws Exception {
         // --------------------------------------------------------------------
         // Locate SL Remote Home/Factory and execute the test
         // --------------------------------------------------------------------

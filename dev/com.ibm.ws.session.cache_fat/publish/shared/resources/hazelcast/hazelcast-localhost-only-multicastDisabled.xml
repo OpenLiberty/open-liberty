@@ -16,6 +16,6 @@
         </join>
     </network>
     <executor-service name="default">
-        <pool-size>5</pool-size>
+        <pool-size>12</pool-size>
     </executor-service>    
 </hazelcast>

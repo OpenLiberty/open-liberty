@@ -12,8 +12,8 @@
 package com.ibm.websphere.security.wim.scim20.exceptions;
 
 /**
- * The specified filter syntax was invalid (does not comply with Figure 1), or
- * the specified attribute and filter comparison combination is not supported.
+ * The specified filter syntax was invalid, or the specified attribute and
+ * filter comparison combination is not supported.
  */
 public class InvalidFilterException extends SCIMException {
 

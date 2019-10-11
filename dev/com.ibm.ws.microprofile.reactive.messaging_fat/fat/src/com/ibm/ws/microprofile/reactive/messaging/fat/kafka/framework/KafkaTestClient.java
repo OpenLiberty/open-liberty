@@ -42,15 +42,33 @@ public class KafkaTestClient {
 
     public static final String TEST_GROUPID = "delivery-test-group";
 
-    private final String kafkaBootstrap;
+    private final Map<String, Object> connectionProperties;
     private final List<AutoCloseable> openClients = new ArrayList<>();
+
+    /**
+     * No-arg constructor to allow CDI proxy, not for general use
+     */
+    KafkaTestClient() {
+        connectionProperties = Collections.emptyMap();
+    }
 
     /**
      * @param kafkaBootstrap the value for the kafka client bootstrap.servers property
      */
     public KafkaTestClient(String kafkaBootstrap) {
-        super();
-        this.kafkaBootstrap = kafkaBootstrap;
+        connectionProperties = new HashMap<>();
+        connectionProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBootstrap);
+    }
+
+    /**
+     * Create a test client with the given set of connection properties
+     * <p>
+     * The connection properties are properties common to every consumer or producer connecting to this broker.
+     *
+     * @param connectionProperties the connection properties
+     */
+    public KafkaTestClient(Map<? extends String, ?> connectionProperties) {
+        this.connectionProperties = new HashMap<>(connectionProperties);
     }
 
     /**
@@ -70,7 +88,7 @@ public class KafkaTestClient {
      * <p>
      * The following properties will be added with default values if they are not set in {@code config}
      * <ul>
-     * <li>{@value ConsumerConfig#BOOTSTRAP_SERVERS_CONFIG} = the test kafka broker</li>
+     * <li>the connectionProperties</li>
      * <li>{@value ConsumerConfig#KEY_DESERIALIZER_CLASS_CONFIG} = StringDeserializer</li>
      * <li>{@value ConsumerConfig#VALUE_DESERIALIZER_CLASS_CONFIG} = StringDeserializer</li>
      * <li>{@value ConsumerConfig#GROUP_ID_CONFIG} = {@value #TEST_GROUPID}</li>
@@ -84,7 +102,7 @@ public class KafkaTestClient {
     public SimpleKafkaReader<String> readerFor(Map<String, Object> config, String topicName) {
         // Set up defaults
         HashMap<String, Object> localConfig = new HashMap<>(config);
-        localConfig.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBootstrap);
+        localConfig.putAll(connectionProperties);
         localConfig.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         localConfig.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         localConfig.put(ConsumerConfig.GROUP_ID_CONFIG, TEST_GROUPID);
@@ -116,26 +134,28 @@ public class KafkaTestClient {
      * <p>
      * The following properties will be added with default values if they are not set in {@code config}
      * <ul>
-     * <li>{@value ProducerConfig#BOOTSTRAP_SERVERS_CONFIG} = the test kafka broker</li>
-     * <li>{@value ProducerConfig#KEY_SERIALIZER_CLASS_CONFIG} = StringDeserializer</li>
-     * <li>{@value ProducerConfig#VALUE_SERIALIZER_CLASS_CONFIG} = StringDeserializer</li>
+     * <li>the connectionProperties</li>
+     * <li>{@value ProducerConfig#KEY_SERIALIZER_CLASS_CONFIG} = StringSerializer</li>
+     * <li>{@value ProducerConfig#VALUE_SERIALIZER_CLASS_CONFIG} = StringSerializer</li>
      * </ul>
      *
+     * @param <T>       the type of the message written to Kafka. This must match the type serialized by the class configured with
+     *                      {@value ProducerConfig#VALUE_SERIALIZER_CLASS_CONFIG}
      * @param config    the producer config
      * @param topicName the topic to write to
      * @return the writer
      */
-    public SimpleKafkaWriter<String> writerFor(Map<String, Object> config, String topicName) {
+    public <T> SimpleKafkaWriter<T> writerFor(Map<String, Object> config, String topicName) {
         Map<String, Object> localConfig = new HashMap<>();
-        localConfig.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBootstrap);
+        localConfig.putAll(connectionProperties);
         localConfig.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         localConfig.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
 
         // Add in provided config (which will overwrite any defaults)
         localConfig.putAll(config);
 
-        KafkaProducer<String, String> kafkaProducer = new KafkaProducer<>(localConfig);
-        SimpleKafkaWriter<String> writer = new SimpleKafkaWriter<String>(kafkaProducer, topicName);
+        KafkaProducer<String, T> kafkaProducer = new KafkaProducer<>(localConfig);
+        SimpleKafkaWriter<T> writer = new SimpleKafkaWriter<T>(kafkaProducer, topicName);
         openClients.add(writer);
         return writer;
     }
@@ -150,7 +170,7 @@ public class KafkaTestClient {
      */
     private KafkaConsumer<?, ?> getKafkaTopicOffsetConsumer(String consumerGroupId) {
         Map<String, Object> consumerConfig = new HashMap<>();
-        consumerConfig.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBootstrap);
+        consumerConfig.putAll(connectionProperties);
         consumerConfig.put(ConsumerConfig.GROUP_ID_CONFIG, consumerGroupId);
         consumerConfig.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         return new KafkaConsumer<String, String>(consumerConfig, new StringDeserializer(), new StringDeserializer());

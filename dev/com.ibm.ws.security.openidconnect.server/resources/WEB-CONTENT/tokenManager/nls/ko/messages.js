@@ -21,6 +21,7 @@ var messages = {
     "DELETE": "삭제",
     "DONE": "완료",
     "EDIT": "편집",
+    "FALSE": "False",
     "GENERATE": "생성",
     "LOADING": "로드 중",
     "LOGOUT": "로그아웃",
@@ -33,7 +34,10 @@ var messages = {
     "REGENERATE": "재생성",
     "REGISTER": "등록",
     "TABLE_BATCH_BAR": "테이블 조치 표시줄",
-    "TRY_AGAIN": "다시 시도하십시오...",
+    "TABLE_FIELD_SORT_ASC": "테이블은 {0}별로 오름차순으로 정렬됩니다.",   // {0} - column name (ie. 'Name', 'Client ID')
+    "TABLE_FIELD_SORT_DESC": "테이블은 {0}별로 내림차순으로 정렬됩니다.", // {0} - column name (ie. 'Name', 'Client ID')
+    "TRUE": "True",
+    "TRY_AGAIN": "다시 시도...",
     "UPDATE": "업데이트",
 
     // Common Column Names
@@ -49,7 +53,8 @@ var messages = {
     "TOKEN_MGR_TITLE": "토큰 삭제",
     "TOKEN_MGR_DESC": "지정된 사용자의 app-password 및 app-token을 삭제합니다.",
     "TOKEN_MGR_SEARCH_PLACEHOLDER": "사용자 ID 입력",
-    "DELETE_SELECTED": "선택한 app-password 및 app-token 삭제",
+    "TABLE_FILLED_WITH": "{1}에 속하는 {0} 인증을 표시하도록 테이블을 업데이트했습니다. ",  // 0 - number of entries in table; 1 - user id
+    "DELETE_SELECTED": "선택한 app-passwords 및 app-tokens 삭제",
     "DELETE_ARIA": "이름이 {1}인 {0} 삭제",         // 0 - 'app-password' or 'app-token'; 1 - name
     "DELETE_PW": "이 app-password 삭제",
     "DELETE_TOKEN": "이 app-token 삭제",
@@ -58,15 +63,15 @@ var messages = {
     "DELETE_WARNING_TOKEN": "이 조치는 현재 지정된 app-token을 제거합니다.",
     "DELETE_MANY": "App-Password/App-Token 삭제",
     "DELETE_MANY_FOR": "{0}에 지정됨",              // 0 - user id
-    "DELETE_ONE_MESSAGE": "이 조치는 선택된 app-password/app-token을 삭제함",
+    "DELETE_ONE_MESSAGE": "이 조치는 선택한 app-password/app-token을 삭제합니다. ",
     "DELETE_MANY_MESSAGE": "이 조치는 {0}개의 선택된 app-password/app-token을 삭제합니다.",  // 0 - number
     "DELETE_ALL_MESSAGE": "이 조치는 {0}에 속한 모든 app-password/app-token을 삭제합니다.", // 0 - user id
     "DELETE_NONE": "삭제하도록 선택",
     "DELETE_NONE_MESSAGE": "삭제할 app-password 또는 app-token을 표시하려면 선택란을 선택하십시오.",
     "SINGLE_ITEM_SELECTED": "1개 항목이 선택됨",
     "ITEMS_SELECTED": "{0}개 항목이 선택됨",            // 0 - number
-    "SELECT_ALL_AUTHS": "이 사용자의 모든 app-password 및 app-token 선택",
-    "SELECT_SPECIFIC": "삭제할, 이름이 {1}인 {0} 선택",  // 0 - 'app-password' or 'app-token; 1 - name
+    "SELECT_ALL_AUTHS": "이 사용자에 대한 모든 app-password 및 app-token 선택",
+    "SELECT_SPECIFIC": "삭제할 이름이 {1}인 {0}을(를) 선택하십시오.",  // 0 - 'app-password' or 'app-token; 1 - name
     "NO_QUERY": "무언가를 찾으려고 하십니까? app-password 및 app-token을 보려면 사용자 ID를 입력하십시오.",
     "GENERIC_FETCH_FAIL": "{0}을(를) 검색하는 중에 오류 발생",      // 0 - 'App-Passwords' or 'App-Tokens'
     "GENERIC_FETCH_FAIL_MSG": "{1}에 속한 {0}의 목록을 가져올 수 없습니다.", // 0 - 'app-passwords' or 'app-tokens; 1 - user id

@@ -238,7 +238,7 @@
             
         <AD id="skipResourceOwnerValidation" name="%skipResourceOwnerValidation" description="%skipResourceOwnerValidation.desc"
             required="false" type="Boolean" default="false"/>
-         <AD id="accessTokenEncoding" type="String" required="false" default="plain" name="internal" description="internal use only" >	        
+         <AD id="accessTokenEncoding" type="String" required="false" default="plain" name="%accessTokenEncoding" description="%accessTokenEncoding.desc" >	        
 	        <Option label="%accessTokenEncoding.plain" value="plain" />
 			<Option label="%accessTokenEncoding.PBKDF2WithHmacSHA512" value="PBKDF2WithHmacSHA512" />	        
 	    </AD>    
@@ -251,10 +251,9 @@
         <!-- max combined quantity allowed per user, per client --> 
         <AD id="appTokenOrPasswordLimit" name="%appTokenOrPasswordLimit" description="%appTokenOrPasswordLimit.desc" required="false" type="Long" default="100" />
         <!-- these next two are used by the app-password UI -->
-        <AD id="internalClientId" name="internal" description="internal use only" required="false" type="String" />
-        <AD id="internalClientSecret" name="internal" description="internal use only" required="false" type="String" ibm:type="password" />
-        <AD id="clientSecretEncoding" type="String" required="false" default="xor" ibm:beta="true" name="internal" description="internal use only">
-        <!-- name="%clientSecretEncoding" description="%clientSecretEncoding.desc" -->	        
+        <AD id="internalClientId" name="%internalClientId" description="%internalClientId.desc" required="false" type="String" />
+        <AD id="internalClientSecret" name="%internalClientSecret" description="%internalClientSecret.desc" required="false" type="String" ibm:type="password" />
+        <AD id="clientSecretEncoding" type="String" required="false" default="xor" name="%clientSecretEncoding" description="%clientSecretEncoding.desc">
 	        <Option label="%clientSecretEncoding.xor" value="xor" />
 		 	<Option label="%clientSecretEncoding.PBKDF2WithHmacSHA512" value="PBKDF2WithHmacSHA512" />	        
         </AD>
@@ -385,6 +384,9 @@
 
            <AD id="appTokenAllowed" name="%appTokenAllowed" description="%appTokenAllowed.desc" required="false" type="Boolean" default="false" />
 
+           <AD id="proofKeyForCodeExchange" name="%proofKeyForCodeExchange" description="%proofKeyForCodeExchange.desc" required="false" type="Boolean" default="false" />
+
+           <AD id="publicClient" name="%publicClient" description="%publicClient.desc" required="false" type="Boolean" default="false" />
 
     </OCD>
     

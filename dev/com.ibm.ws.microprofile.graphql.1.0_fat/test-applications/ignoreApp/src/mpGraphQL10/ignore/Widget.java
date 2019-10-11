@@ -12,6 +12,8 @@ package mpGraphQL10.ignore;
 
 import java.text.DecimalFormat;
 
+import javax.json.bind.annotation.JsonbTransient;
+
 import org.eclipse.microprofile.graphql.Ignore;
 /**
  * This is an implementation class of the interface entity, Widget.
@@ -27,6 +29,15 @@ public class Widget {
     private double length;
     private double height;
     private double depth;
+
+    private int quantity2 = -1;
+    private double weight2 = -1.0;
+    
+    @Ignore // ignore from type and input type
+    private String dimensions2;
+    private double length2;
+    private double height2;
+    private double depth2;
 
 
     static Widget fromWidgetInput(Widget input) {
@@ -129,5 +140,55 @@ public class Widget {
     public String toString() {
         return "Widget(" + name + ", " + quantity + ", " + weight + ", " +
                length + ", " + height + ", " + depth + ", " + dimensions + ")";
+    }
+
+    public String getDimensions2() {
+        return dimensions2;
+    }
+
+    public void setDimensions2(String dimensions2) {
+        this.dimensions2 = dimensions2;
+    }
+
+    public double getLength2() {
+        return length2;
+    }
+
+    public void setLength2(double length2) {
+        this.length2 = length2;
+    }
+
+    public double getHeight2() {
+        return height2;
+    }
+
+    public void setHeight2(double height2) {
+        this.height2 = height2;
+    }
+
+    public double getDepth2() {
+        return depth2;
+    }
+
+    public void setDepth2(double depth2) {
+        this.depth2 = depth2;
+    }
+
+    public int getQuantity2() {
+        return quantity2;
+    }
+
+    @JsonbTransient
+    public void setQuantity2(int quantity2) {
+        this.quantity2 = quantity2;
+    }
+
+    @JsonbTransient
+    public double getWeight2() {
+        return weight2;
+    }
+
+    public void setWeight2(double weight2) {
+        this.weight2 = weight2;
     }
 }

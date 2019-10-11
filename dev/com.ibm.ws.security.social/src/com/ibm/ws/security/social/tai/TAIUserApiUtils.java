@@ -20,6 +20,7 @@ import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.TraceConstants;
 import com.ibm.ws.security.social.UserApiConfig;
 import com.ibm.ws.security.social.error.SocialLoginException;
+import com.ibm.ws.security.social.internal.LinkedinLoginConfigImpl;
 import com.ibm.ws.security.social.internal.utils.OAuthClientUtil;
 
 public class TAIUserApiUtils {
@@ -42,6 +43,9 @@ public class TAIUserApiUtils {
                     false,
                     clientConfig.getUserApiNeedsSpecialHeader(),
                     clientConfig.getUseSystemPropertiesForHttpClientConnections());
+            if (clientConfig instanceof LinkedinLoginConfigImpl) {
+            	return convertLinkedinToJson(userApiResp, clientConfig.getUserNameAttribute());
+            }
             if (userApiResp != null && userApiResp.startsWith("[") && userApiResp.endsWith("]")) {
                 return convertToJson(userApiResp, clientConfig.getUserNameAttribute());
             } else {
@@ -55,6 +59,19 @@ public class TAIUserApiUtils {
             return null;
         }
     }
+    
+    // flatten linkedin's json 
+    // in: {"elements":[{"handle~":{"emailAddress":"abcde@gmail.com"},"handle":"urn:li:emailAddress:688645328"}]}
+    // out: {"emailAddress":"abcde@gmail.com"};
+	 public static String convertLinkedinToJson(String resp, String usernameattr) {
+         int end = 0;
+         int begin = resp.indexOf(usernameattr  ) -1;
+         if (begin >0) {
+             end = resp.indexOf("}", begin);
+             return resp.substring(begin -1, end +1);
+         }
+         return null;
+     }
 
     /**
      * @param userApiResp

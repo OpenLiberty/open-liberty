@@ -191,13 +191,29 @@ public class OAuth20EndpointServices {
     protected void handleOAuthRequest(HttpServletRequest request,
             HttpServletResponse response,
             ServletContext servletContext) throws ServletException, IOException {
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "Checking if OAuth20 Provider should process the request.");
+            Tr.debug(tc, "Inbound request "+com.ibm.ws.security.common.web.WebUtils.getRequestStringForTrace(request,"client_secret"));
+        }
         OAuth20Request oauth20Request = getAuth20Request(request, response);
+        OAuth20Provider oauth20Provider = null;
         if (oauth20Request != null) {
             EndpointType endpointType = oauth20Request.getType();
-            OAuth20Provider oauth20Provider = getProvider(response, oauth20Request);
+            oauth20Provider = getProvider(response, oauth20Request);
             if (oauth20Provider != null) {
                 AttributeList optionalParams = new AttributeList();
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "OAUTH20 _SSO OP PROCESS IS STARTING.");
+                    Tr.debug(tc, "OAUTH20 _SSO OP inbound URL "+com.ibm.ws.security.common.web.WebUtils.getRequestStringForTrace(request,"client_secret"));
+                }
                 handleEndpointRequest(request, response, servletContext, oauth20Provider, endpointType, optionalParams);
+            }
+        }
+        if (tc.isDebugEnabled()) {
+            if (oauth20Provider != null) {
+                Tr.debug(tc, "OAUTH20 _SSO OP WILL NOT PROCESS THE REQUEST");
+            } else {
+                Tr.debug(tc, "OAUTH20 _SSO OP PROCESS HAS ENDED.");
             }
         }
     }
@@ -219,6 +235,9 @@ public class OAuth20EndpointServices {
         }
         boolean isBrowserWithBasicAuth = false;
         UIAccessTokenBuilder uitb = null;
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "endpointType["+endpointType+"]");
+        }
         try {
             switch (endpointType) {
             case authorize:
@@ -421,6 +440,9 @@ public class OAuth20EndpointServices {
             HttpServletRequest request,
             HttpServletResponse response) {
 
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "Processing logout");
+        }
         try {
             request.logout(); // ltpa cookie removed if present. No exception if not.
         } catch (ServletException e) {
@@ -435,6 +457,9 @@ public class OAuth20EndpointServices {
         String logoutRedirectURL = provider.getLogoutRedirectURL();
         try {
             if (logoutRedirectURL != null) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "OAUTH20 _SSO OP redirecting to [" + logoutRedirectURL +"]");
+                }
                 response.sendRedirect(logoutRedirectURL);
                 return;
             } else {
@@ -463,6 +488,9 @@ public class OAuth20EndpointServices {
         if (reqConsentNonce == null) { // validate request for initial authorization request only 
             oauthResult = clientAuthorization.validateAuthorization(provider, request, response);
             if (oauthResult.getStatus() != OAuthResult.STATUS_OK) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc,"Status is OK, returning result");
+                }
                 return oauthResult;
             }
         }
@@ -547,6 +575,9 @@ public class OAuth20EndpointServices {
         Prompt prompt = new Prompt();
         if (request.getUserPrincipal() == null) {
             // authenticate user if not done yet. Send to login page.
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Authenticate user if not done yet");
+            }
             oauthResult = userAuthentication.handleAuthenticationWithOAuthResult(provider, request, response, prompt, securityServiceRef, servletContext, OAuth20EndpointServices.AUTHENTICATED, oauthResult);
         }
 
@@ -618,6 +649,9 @@ public class OAuth20EndpointServices {
 
         if (request.getUserPrincipal() == null || (prompt.hasLogin() && !afterLogin)) {
             // authenticate user if not done yet
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Authenticate user if not done yet");
+            }
             oauthResult = userAuthentication.handleAuthenticationWithOAuthResult(provider, request, response, prompt, securityServiceRef, servletContext, OAuth20EndpointServices.AUTHENTICATED, oauthResult);
         }
 
@@ -669,6 +703,9 @@ public class OAuth20EndpointServices {
             } else {
                 // ask user for approval if not auto authorized, or not approved
                 Nonce nonce = consent.setNonce(request);
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "_SSO OP redirecting for consent");
+                }
                 consent.renderConsentForm(request, response, provider, clientId, nonce, oauthResult.getAttributeList(), servletContext);
             }
             return oauthResult;

@@ -91,7 +91,7 @@ public class AdvCompViewCMTStatelessLocalServlet extends FATServlet {
      * </ol>
      */
     @Test
-    public void testCompIntTxAttribs() throws Exception {
+    public void testCompIntTxAttribs_AdvCompViewCMTStatelessLocal() throws Exception {
         UserTransaction userTran = null;
 
         try {
@@ -144,7 +144,7 @@ public class AdvCompViewCMTStatelessLocalServlet extends FATServlet {
      * </ol>
      */
     @Test
-    public void testCompIntBizGetters() throws Exception {
+    public void testCompIntBizGetters_AdvCompViewCMTStatelessLocal() throws Exception {
         // --------------------------------------------------------------------
         // Locate SL Local Home/Factory and execute the test
         // --------------------------------------------------------------------

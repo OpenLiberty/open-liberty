@@ -20,6 +20,7 @@ var messages = {
     "DELETE": "Törlés",
     "DONE": "Kész",
     "EDIT": "Szerkesztés",
+    "FALSE": "False",
     "GENERATE": "Előállítás",
     "LOADING": "Betöltés",
     "LOGOUT": "Kijelentkezés",
@@ -31,12 +32,15 @@ var messages = {
     "PROCESSING": "Feldolgozás",
     "REGENERATE": "Újragenerálás",
     "REGISTER": "Regisztrálás",
+    "TABLE_FIELD_SORT_ASC": "A tábla {0} szerint növekvő sorrendben van rendezve.",   // {0} - column name (ie. 'Name', 'Client ID')
+    "TABLE_FIELD_SORT_DESC": "A tábla {0} szerint csökkenő sorrendben van rendezve.", // {0} - column name (ie. 'Name', 'Client ID')
+    "TRUE": "True",
     "TRY_AGAIN": "Próbálkozzon újra...",
     "UPDATE": "Frissítés",
 
     // Common Column Names
-    "EXPIRES_COL": "Lejárat dátuma",
-    "ISSUED_COL": "Kibocsátás dátuma",
+    "EXPIRES_COL": "Lejárat",
+    "ISSUED_COL": "Kibocsátva",
     "NAME_COL": "Név",
     "TYPE_COL": "Típus",
 
@@ -45,10 +49,15 @@ var messages = {
     // name - the user defined name given the app-password or app-token
     "ACCT_MGR_TITLE": "Személyes tokenek kezelése",
     "ACCT_MGR_DESC": "App-password és app-token elemek létrehozása, törlése és újra-előállítása.",
-    "ADD_NEW_AUTHENTICATION": "Új app-password vagy app-token hozzáadása",
+    "ADD_NEW_AUTHENTICATION": "Új app-password vagy app-token hozzáadása.",
     "NAME_IDENTIFIER": "Név: {0}",
     "ADD_NEW_TITLE": "Új hitelesítés regisztrálása",
     "NOT_GENERATED_PLACEHOLDER": "Nem kerül előállításra",
+    "AUTHENTICAION_GENERATED": "Előállított hitelesítés",
+    "GENERATED_APP_PASSWORD": "Előállított app-password",
+    "GENERATED_APP_TOKEN": "Előállított app-token",
+    "COPY_APP_PASSWORD": "App-password másolása a vágólapra",
+    "COPY_APP_TOKEN": "App-token másolása a vágólapra",
     "REGENERATE_APP_PASSWORD": "App-Password újra-előállítása",
     "REGENERATE_PW_WARNING": "Ez a művelet felül fogja írni a jelenlegi app-password elemet.",
     "REGENERATE_PW_PLACEHOLDER": "Jelszó előző előállításának dátuma: {0}",        // 0 - date

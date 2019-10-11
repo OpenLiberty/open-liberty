@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.ibm.oauth.core.api.oauth20.token.OAuth20Token;
+import com.ibm.oauth.core.internal.oauth20.OAuth20Constants;
 
 /**
  * This class is the base class for all token objects (access tokens and grants)
@@ -235,6 +236,24 @@ public abstract class OAuth20TokenBase implements OAuth20Token {
     @Override
     public void setLastAccess() {
         _lastAccess = System.currentTimeMillis();
+    }
+    
+    /* (non-Javadoc)
+     * @see com.ibm.oauth.core.api.oauth20.token.OAuth20Token#getCodeChallenge()
+     */
+    @Override
+    public String getCodeChallenge() {  
+        String[] buf = getExtensionProperty(OAuth20Constants.EXTERNAL_CLAIMS_PREFIX + OAuth20Constants.CODE_CHALLENGE);
+        return buf == null ? null : buf[0];
+    }
+
+    /* (non-Javadoc)
+     * @see com.ibm.oauth.core.api.oauth20.token.OAuth20Token#getCodeChallengeMethod()
+     */
+    @Override
+    public String getCodeChallengeMethod() {
+        String[] buf = getExtensionProperty(OAuth20Constants.EXTERNAL_CLAIMS_PREFIX + OAuth20Constants.CODE_CHALLENGE_METHOD);
+        return buf == null ? null : buf[0];
     }
 
     /**

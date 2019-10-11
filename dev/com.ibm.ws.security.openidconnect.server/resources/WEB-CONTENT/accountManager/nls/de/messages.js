@@ -20,6 +20,7 @@ var messages = {
     "DELETE": "Löschen",
     "DONE": "Fertig",
     "EDIT": "Bearbeiten",
+    "FALSE": "False",
     "GENERATE": "Generieren",
     "LOADING": "Wird geladen",
     "LOGOUT": "Anmelden",
@@ -31,12 +32,15 @@ var messages = {
     "PROCESSING": "Wird verarbeitet",
     "REGENERATE": "Neu generieren",
     "REGISTER": "Registrieren",
-    "TRY_AGAIN": "Wiederholen Sie den Vorgang...",
+    "TABLE_FIELD_SORT_ASC": "Die Tabelle ist nach {0} in aufsteigender Reihenfolge sortiert. ",   // {0} - column name (ie. 'Name', 'Client ID')
+    "TABLE_FIELD_SORT_DESC": "Die Tabelle ist nach {0} in absteigender Reihenfolge sortiert. ", // {0} - column name (ie. 'Name', 'Client ID')
+    "TRUE": "True",
+    "TRY_AGAIN": "Vorgang wiederholen...",
     "UPDATE": "Aktualisieren",
 
     // Common Column Names
-    "EXPIRES_COL": "Ablaufzeit",
-    "ISSUED_COL": "Ausgegeben am",
+    "EXPIRES_COL": "Ablaufdatum",
+    "ISSUED_COL": "Austelldatum",
     "NAME_COL": "Name",
     "TYPE_COL": "Typ",
 
@@ -49,6 +53,11 @@ var messages = {
     "NAME_IDENTIFIER": "Name: {0}",
     "ADD_NEW_TITLE": "Neue Authentifizierung registrieren",
     "NOT_GENERATED_PLACEHOLDER": "Nicht generiert",
+    "AUTHENTICAION_GENERATED": "Generierte Authentifizierung",
+    "GENERATED_APP_PASSWORD": "Generiertes app-password",
+    "GENERATED_APP_TOKEN": "Generiertes app-token",
+    "COPY_APP_PASSWORD": "app-password in die Zwischenablage kopieren",
+    "COPY_APP_TOKEN": "app-token in Zwischenablage kopieren",
     "REGENERATE_APP_PASSWORD": "App-Password neu generieren",
     "REGENERATE_PW_WARNING": "Diese Aktion überschreibt das aktuelle app-password.",
     "REGENERATE_PW_PLACEHOLDER": "Das Kennwort wurde zuvor am {0} generiert.",        // 0 - date

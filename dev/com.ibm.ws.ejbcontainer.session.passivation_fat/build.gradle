@@ -28,6 +28,7 @@ dependencies {
 
 
 task addEJBTools(type: Copy) {
+  dependsOn ':com.ibm.ws.ejbcontainer.fat_tools:release'
   from configurations.ejbTools
   into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.ejbcontainer.session.passivation.fat.sfTimeout/lib/global"
 }

@@ -21,6 +21,7 @@ var messages = {
     "DELETE": "Supprimer",
     "DONE": "Terminé",
     "EDIT": "Editer",
+    "FALSE": "False",
     "GENERATE": "Générer",
     "LOADING": "En cours de chargement",
     "LOGOUT": "Déconnexion",
@@ -32,7 +33,10 @@ var messages = {
     "PROCESSING": "Traitement en cours",
     "REGENERATE": "Régénérer",
     "REGISTER": "Enregistrer",
-    "TRY_AGAIN": "Réessayez...",
+    "TABLE_FIELD_SORT_ASC": "La table est triée en fonction de {0} suivant l'ordre croissant.",   // {0} - column name (ie. 'Name', 'Client ID')
+    "TABLE_FIELD_SORT_DESC": "La table est triée en fonction de {0} suivant l'ordre décroissant.", // {0} - column name (ie. 'Name', 'Client ID')
+    "TRUE": "True",
+    "TRY_AGAIN": "Réessayer...",
     "UPDATE": "Mettre à jour",
 
     // Common Column Names
@@ -45,8 +49,8 @@ var messages = {
     // Client Admin
     "CLIENT_ADMIN_TITLE": "Gérer les clients OAuth",
     "CLIENT_ADMIN_DESC": "Utilisez cet outil pour ajouter et éditer des clients, et régénérer les secrets client.",
-    "CLIENT_ADMIN_SEARCH_PLACEHOLDER": "Filtrer en fonction d'un nom de client OAuth",
-    "ADD_NEW_CLIENT": "Ajouter un nouveau client OAuth",
+    "CLIENT_ADMIN_SEARCH_PLACEHOLDER": "Filtrer sur un nom de client OAuth",
+    "ADD_NEW_CLIENT": "Ajoutez un nouveau client OAuth.",
     "CLIENT_NAME": "Nom du client",
     "CLIENT_ID": "ID client",
     "EDIT_ARIA": "Editer le client OAuth {0}",      // {0} - name
@@ -56,30 +60,22 @@ var messages = {
     "SCOPE": "Portée",
     "PREAUTHORIZED_SCOPE": "Portée pré-autorisée (facultatif)",
     "REDIRECT_URLS": "URL de redirection (facultatif)",
-    "ADDITIONAL_PROPS": "Propriétés supplémentaires",
-    "ADDITIONAL_PROPS_OPTIONAL": "Propriétés supplémentaires (facultatif)",
     "CLIENT_SECRET_CHECKBOX": "Régénérer le secret client",
-    "PROPERTY_PLACEHOLDER": "Propriété",
-    "VALUE_PLACEHOLDER": "Valeur",
-    "GRANT_TYPES_SELECTED": "Nombre de types d'octroi sélectionnés",
-    "GRANT_TYPES_NONE_SELECTED": "Aucun élément sélectionné",
+    "NONE_SELECTED": "Aucun élément sélectionné",
     "MODAL_EDIT_TITLE": "Edition du client OAuth",
     "MODAL_REGISTER_TITLE": "Enregistrement d'un nouveau client OAuth",
     "MODAL_SECRET_REGISTER_TITLE": "Enregistrement OAuth sauvegardé",
     "MODAL_SECRET_UPDATED_TITLE": "Enregistrement OAuth mis à jour",
     "MODAL_DELETE_CLIENT_TITLE": "Suppression de ce client OAuth",
-    "VALUE_COL": "Valeur",
-    "ADD": "Ajouter",
-    "DELETE_PROP": "Supprimer la propriété personnalisée",
-    "RESET_GRANT_TYPE": "Effacer tous les types d'octroi sélectionnés",
+    "RESET_GRANT_TYPE": "Effacez tous les types d'octroi sélectionnés. ",
     "SELECT_ONE_GRANT_TYPE": "Sélectionner au moins un type d'octroi",
-    "OPEN_GRANT_TYPE": "Ouvrir la liste des types d'octroi",
-    "CLOSE_GRANT_TYPE": "Fermer la liste des types d'octroi",
     "SPACE_HELPER_TEXT": "Valeurs séparées par un espace",
     "REDIRECT_URL_HELPER_TEXT": "URL de redirection absolues séparées par un espace",
     "DELETE_OAUTH_CLIENT_DESC": "Cette opération supprime le client enregistré du service d'enregistrement des clients.",
     "REGISTRATION_SAVED": "Un ID client et un secret client ont été générés et affectés.",
     "REGISTRATION_UPDATED": "Un nouveau secret client a été généré et affecté pour ce client.",
+    "COPY_CLIENT_ID": "Copier l'ID client dans le presse-papiers",
+    "COPY_CLIENT_SECRET": "Copier le secret client dans le presse-papiers",
     "REGISTRATION_UPDATED_NOSECRET": "Le client OAuth {0} a été mis à jour.",                 // {0} - client name
     "ERR_MULTISELECT_GRANT_TYPES": "Un type d'octroi au moins doit être sélectionné.",
     "ERR_REDIRECT_URIS": "Les valeurs doivent être des URI absolus.",
@@ -93,5 +89,15 @@ var messages = {
     "GENERIC_MISSING_CLIENT_MSG": "Le client OAuth {0} dont l'ID est {1} est introuvable.",     // {0} - client name; {1} - an ID
     "GENERIC_RETRIEVAL_FAIL_MSG": "Une erreur est survenue lors de l'extraction des informations sur le client OAuth {0}.", // {0} - client name
     "GENERIC_GET_CLIENTS_FAIL": "Erreur lors de l'extraction des clients OAuth",
-    "GENERIC_GET_CLIENTS_FAIL_MSG": "Une erreur est survenue lors de l'extraction de la liste des clients OAuth."
+    "GENERIC_GET_CLIENTS_FAIL_MSG": "Une erreur est survenue lors de l'extraction de la liste des clients OAuth.",
+
+    "RESET_SELECTION": "Effacer tous les {0} sélectionnés",     // {0} - field name (ie 'Grant types')
+    "NUMBER_SELECTED": "Nombre de {0} sélectionnés",     // {0} - field name
+    "OPEN_LIST": "Ouvrez la liste de {0}. ",                   // {0} - field name
+    "CLOSE_LIST": "Fermez la liste de {0}. ",                 // {0} - field name
+    "ENTER_PLACEHOLDER": "Entrer une valeur",
+    "ADD_VALUE": "Ajouter un élément",
+    "REMOVE_VALUE": "Supprimer un élément",
+    "REGENERATE_CLIENT_SECRET": "'*' conserve la valeur existante. Une valeur vide génère un nouveau secret client. Une valeur de paramètre non vide remplace la valeur existante par la nouvelle valeur spécifiée.",
+    "ALL_OPTIONAL": "Toutes les zones sont facultatives"
 };

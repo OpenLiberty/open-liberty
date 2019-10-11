@@ -16,8 +16,10 @@
 -nouses=true
 bVersion=1.0
 
-javac.source: 1.6
-javac.target: 1.6
+javac.source: 1.7
+javac.target: 1.7
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
 # We're going to create a bad bundle here: don't want imports
 # or anything else for the launcher. So just swallow the errors.

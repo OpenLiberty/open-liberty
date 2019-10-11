@@ -21,6 +21,7 @@ var messages = {
     "DELETE": "Ştergere",
     "DONE": "Gata",
     "EDIT": "Editare",
+    "FALSE": "Fals",
     "GENERATE": "Generare",
     "LOADING": "Încărcare",
     "LOGOUT": "Delogare",
@@ -32,6 +33,9 @@ var messages = {
     "PROCESSING": "Procesare",
     "REGENERATE": "Regenerare",
     "REGISTER": "Înregistrare",
+    "TABLE_FIELD_SORT_ASC": "Tabelul este sortat după {0} în ordine crescătoare.",   // {0} - column name (ie. 'Name', 'Client ID')
+    "TABLE_FIELD_SORT_DESC": "Tabelul este sortat după {0} în ordine descrescătoare.", // {0} - column name (ie. 'Name', 'Client ID')
+    "TRUE": "Adevărat",
     "TRY_AGAIN": "Reîncercare...",
     "UPDATE": "Actualizare",
 
@@ -56,30 +60,22 @@ var messages = {
     "SCOPE": "Domeniu",
     "PREAUTHORIZED_SCOPE": "Domeniu pre-autorizat (opţional)",
     "REDIRECT_URLS": "URL-uri redirectare (opţional)",
-    "ADDITIONAL_PROPS": "Proprietăţi suplimentare",
-    "ADDITIONAL_PROPS_OPTIONAL": "Proprietăţi suplimentare (opţional)",
     "CLIENT_SECRET_CHECKBOX": "Regenerare secret client",
-    "PROPERTY_PLACEHOLDER": "Proprietate",
-    "VALUE_PLACEHOLDER": "Valoare",
-    "GRANT_TYPES_SELECTED": "Număr de tipuri de acordare selectate",
-    "GRANT_TYPES_NONE_SELECTED": "Niciunul selectat",
+    "NONE_SELECTED": "Niciunul selectat",
     "MODAL_EDIT_TITLE": "Editare client OAuth",
     "MODAL_REGISTER_TITLE": "Înregistrare client OAuth nou",
     "MODAL_SECRET_REGISTER_TITLE": "Înregistrare OAuth salvată",
     "MODAL_SECRET_UPDATED_TITLE": "Înregistrare OAuth actualizată",
     "MODAL_DELETE_CLIENT_TITLE": "Ştergere acest client OAuth",
-    "VALUE_COL": "Valoare",
-    "ADD": "Adăugare",
-    "DELETE_PROP": "Ştergere proprietate personalizată",
-    "RESET_GRANT_TYPE": "Curăţare toate tipurile de acordare selectate",
+    "RESET_GRANT_TYPE": "Curăţaţi toate tipurile de acordare selectate",
     "SELECT_ONE_GRANT_TYPE": "Selectaţi cel puţin un tip de acordare",
-    "OPEN_GRANT_TYPE": "Deschidere listă de tipuri de acordare",
-    "CLOSE_GRANT_TYPE": "Închidere listă de tipuri de acordare",
     "SPACE_HELPER_TEXT": "Valori separate prin spaţiu",
     "REDIRECT_URL_HELPER_TEXT": "URL-uri de redirectare absolute separate prin spaţiu",
-    "DELETE_OAUTH_CLIENT_DESC": "Această operaţie şterge client înregistrat de serviciul de înregistrare clienţi.",
+    "DELETE_OAUTH_CLIENT_DESC": "Această operaţie şterge clientul înregistrat de serviciul de înregistrare clienţi.",
     "REGISTRATION_SAVED": "Au fost generate şi alocate un ID de client şi secret de client.",
     "REGISTRATION_UPDATED": "A fost generat şi alocat un nou Secret client pentru acest client.",
+    "COPY_CLIENT_ID": "Copiere ID client la clipboard",
+    "COPY_CLIENT_SECRET": "Copiere secret client la clipboard",
     "REGISTRATION_UPDATED_NOSECRET": "Clientul OAuth {0} este actualizat.",                 // {0} - client name
     "ERR_MULTISELECT_GRANT_TYPES": "Trebuie selectat cel puţin un tip de acordare.",
     "ERR_REDIRECT_URIS": "Valorile trebuie să fie URL-uri absolute.",
@@ -93,5 +89,15 @@ var messages = {
     "GENERIC_MISSING_CLIENT_MSG": "Nu a fost găsit clientul OAuth {0} cu ID-ul {1}.",     // {0} - client name; {1} - an ID
     "GENERIC_RETRIEVAL_FAIL_MSG": "A apărut o eroarea la extragerea informaţiilor clientului OAuth {0}.", // {0} - client name
     "GENERIC_GET_CLIENTS_FAIL": "Eroare la extragerea clienţilor OAuth",
-    "GENERIC_GET_CLIENTS_FAIL_MSG": "A apărut o eroarea la extragerea listei de clienţi OAuth."
+    "GENERIC_GET_CLIENTS_FAIL_MSG": "A apărut o eroarea la extragerea listei de clienţi OAuth.",
+
+    "RESET_SELECTION": "Curăţare toate {0} selectate",     // {0} - field name (ie 'Grant types')
+    "NUMBER_SELECTED": "Număr de {0} selectate",     // {0} - field name
+    "OPEN_LIST": "Deschideţi lista {0}.",                   // {0} - field name
+    "CLOSE_LIST": "Închideţi lista {0}.",                 // {0} - field name
+    "ENTER_PLACEHOLDER": "Introduceţi valoarea",
+    "ADD_VALUE": "Adăugare element",
+    "REMOVE_VALUE": "Înlăturare element",
+    "REGENERATE_CLIENT_SECRET": "'*' păstrează valoarea existentă. O valoare blanc generează un nou secret client. Un parametru care nu este blanc înlocuieşte valoarea existentă cu valoarea nou specificată. ",
+    "ALL_OPTIONAL": "Toate câmpurile sunt opţionale. "
 };

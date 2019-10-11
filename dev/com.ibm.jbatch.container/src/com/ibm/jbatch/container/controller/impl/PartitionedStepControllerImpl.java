@@ -46,6 +46,7 @@ import com.ibm.jbatch.container.execution.impl.RuntimeWorkUnitExecution;
 import com.ibm.jbatch.container.execution.impl.RuntimeWorkUnitExecution.StopLock;
 import com.ibm.jbatch.container.jsl.CloneUtility;
 import com.ibm.jbatch.container.persistence.jpa.EntityConstants;
+import com.ibm.jbatch.container.persistence.jpa.TopLevelStepExecutionEntity;
 import com.ibm.jbatch.container.persistence.jpa.TopLevelStepInstanceEntity;
 import com.ibm.jbatch.container.persistence.jpa.TopLevelStepInstanceKey;
 import com.ibm.jbatch.container.servicesmanager.ServicesManagerStaticAnchor;
@@ -1058,7 +1059,8 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
     @Override
     protected void updateStepExecution() {
         // Call special aggregating method
-        getPersistenceManagerService().updateStepExecutionWithPartitionAggregate(runtimeStepExecution);
+        TopLevelStepExecutionEntity topLevelStepExecutionEntity = getPersistenceManagerService().updateStepExecutionWithPartitionAggregate(runtimeStepExecution);
+        topLevelStepExecutionEntity.getJobExecution().setLastUpdatedTime(runtimeStepExecution.getLastUpdatedTime());
     }
 
     @Override

@@ -557,6 +557,18 @@ public class HttpPushBuilderTest {
         }
         assertTrue(pb.getHeaders().isEmpty());
 
+        //Verify null headers aren't added
+        pb.addHeader(null, "someValue");
+        pb.addHeader("someValue", null);
+        pb.addHeader(null, null);
+        assertTrue("Expected empty header list, but bad null headers were added.", pb.getHeaders().isEmpty());
+
+        //Verify null header values aren't set on existing headers
+        pb.addHeader("testAddHeader", "testAddValue1");
+        pb.setHeader("testAddHeader", null);
+        assertTrue("Expected testAddHeader not to be overwriten by bad null header.", pb.getHeader("testAddHeader").equals("testAddValue1"));
+        pb.removeHeader("testAddHeader");
+
         pb.addHeader("testAddHeader", "testAddValue1");
         pb.addHeader("testAddHeader", "testAddValue2");
         pb.setHeader("testSetHeader", "testSetValue1");

@@ -1,0 +1,41 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.rest.handler.validator/resources/com/ibm/ws/rest/handler/validator/resources/CWWKOMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Validation REST endpoint
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWKO1550 to CWWKO1559
+
+CWWKO1550_VALIDATOR_NOT_FOUND=CWWKO1550E: Nem \u00e1ll rendelkez\u00e9sre \u00e9rv\u00e9nyes\u00edt\u00e9s a(z) {0} t\u00edpus\u00fa konfigur\u00e1ci\u00f3s elemekhez.
+CWWKO1550_VALIDATOR_NOT_FOUND.explanation=A megadott t\u00edpus\u00fa konfigur\u00e1ci\u00f3s elem nem rendelkezik konfigur\u00e1ci\u00f3\u00e9rv\u00e9nyes\u00edt\u00e9si k\u00e9pess\u00e9ggel.
+CWWKO1550_VALIDATOR_NOT_FOUND.useraction=Ne k\u00eds\u00e9relje meg \u00e9rv\u00e9nyes\u00edteni az ilyen t\u00edpus\u00fa konfigur\u00e1ci\u00f3s elemeket.
+
+CWWKO1551_CANNOT_VALIDATE=CWWKO1551E: Legal\u00e1bb egy f\u00fcgg\u0151s\u00e9g nem teljes\u00fcl, vagy a az er\u0151forr\u00e1st lehet\u0151v\u00e9 tev\u0151 szolg\u00e1ltat\u00e1s nincs enged\u00e9lyezve, vagy az ilyen t\u00edpus\u00fa er\u0151forr\u00e1st nem lehet \u00e9rv\u00e9nyes\u00edteni.
+CWWKO1551_CANNOT_VALIDATE.explanation=A megadott konfigur\u00e1ci\u00f3 \u00e9rv\u00e9nyes\u00edt\u00e9s\u00e9nek k\u00e9r\u00e9se nem hajthat\u00f3 v\u00e9gre. Ezt okozhatja nem teljes\u00fcl\u0151 f\u00fcgg\u0151s\u00e9g, a konfigur\u00e1ci\u00f3s elemet lehet\u0151v\u00e9 tev\u0151 szolg\u00e1ltat\u00e1s hi\u00e1nya, illetve lehet, hogy a konfigur\u00e1ci\u00f3s elem nem t\u00e1mogatja az \u00e9rv\u00e9nyes\u00edt\u00e9st.
+CWWKO1551_CANNOT_VALIDATE.useraction=Ellen\u0151rizze, hogy a konfigur\u00e1ci\u00f3s elemet biztos\u00edt\u00f3 szolg\u00e1ltat\u00e1s enged\u00e9lyezett-e, nincsenek-e hi\u00e1nyz\u00f3 f\u00fcgg\u0151s\u00e9gek, \u00e9s hogy a konfigur\u00e1ci\u00f3s elem t\u00e1mogatja-e az \u00e9rv\u00e9nyes\u00edt\u00e9st.
+
+CWWKO1552_MISSING_DELIMITER=CWWKO1552E: Az X-Login-Config-Props fejl\u00e9c hat\u00e1rol\u00f3k\u00e9nt ig\u00e9nyel egy egyenl\u0151s\u00e9gjelet (=) a bejelentkez\u00e9si konfigur\u00e1ci\u00f3s tulajdons\u00e1g neve \u00e9s \u00e9rt\u00e9ke k\u00f6z\u00f6tt.
+CWWKO1552_MISSING_DELIMITER.explanation=Az egyenl\u0151s\u00e9gjel elv\u00e1laszt\u00f3 annak meg\u00e1llap\u00edt\u00e1s\u00e1hoz sz\u00fcks\u00e9ges, hogy az X-Login-Config-Props fejl\u00e9c melyik r\u00e9sze a bejelentkez\u00e9si konfigur\u00e1ci\u00f3s tulajdons\u00e1g neve, \u00e9s melyik az \u00e9rt\u00e9k.
+CWWKO1552_MISSING_DELIMITER.useraction=Friss\u00edtse az X-Login-Config-Props fejl\u00e9cet \u00fagy, hogy tartalmazzon egy egyenl\u0151s\u00e9gjelet (=) a bejelentkez\u00e9si konfigur\u00e1ci\u00f3s tulajdons\u00e1g neve \u00e9s \u00e9rt\u00e9ke k\u00f6z\u00f6tt.
+
+CWWKO1553_HANDLER_NOT_FOUND=CWWKO1553E: Nincsenek a k\u00e9rt URL c\u00edmnek ({0}) megfelel\u0151 regisztr\u00e1lt kezel\u0151k.
+CWWKO1553_HANDLER_NOT_FOUND.explanation=Olyan URL el\u00e9r\u00e9s\u00e9re t\u00f6rt\u00e9nt k\u00eds\u00e9rlet, amely a regisztr\u00e1lt kezel\u0151k egyik\u00e9nek sem felel meg.
+CWWKO1553_HANDLER_NOT_FOUND.useraction=Jav\u00edtsa az URL c\u00edmet, hogy megfeleljen valamelyik regisztr\u00e1lt kezel\u0151nek.

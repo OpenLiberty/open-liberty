@@ -35,6 +35,7 @@ public class AutoScanAbstractInputHandler implements AbstractInputHandler {
 
     private final Map<Type, Set<Type>> abstractComponents = new HashMap<>();
     private final List<Predicate<ClassInfo>> filters;
+    private Scalars scalars;
 
     private static final Logger log = LoggerFactory.getLogger(AutoScanAbstractInputHandler.class);
 
@@ -45,7 +46,7 @@ public class AutoScanAbstractInputHandler implements AbstractInputHandler {
 
     @Override
     public Set<Type> findConstituentAbstractTypes(AnnotatedType javaType, BuildContext buildContext) {
-        if (Scalars.isScalar(javaType.getType())
+        if (scalars.isScalar(javaType.getType())
                 || ClassUtils.isSubPackage(ClassUtils.getRawType(javaType.getType()).getPackage(), "java.")
                 || buildContext.scalarStrategy.isDirectlyDeserializable(javaType)) {
             return Collections.emptySet();
@@ -74,6 +75,11 @@ public class AutoScanAbstractInputHandler implements AbstractInputHandler {
             log.warn("No concrete subtypes of " + abstractType.getName() + " found");
         }
         return subTypes;
+    }
+
+    @Override
+    public void setScalars(Scalars scalars) {
+        this.scalars = scalars;
     }
 
     public AutoScanAbstractInputHandler withNonPublicClasses() {

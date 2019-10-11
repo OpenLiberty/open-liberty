@@ -23,11 +23,11 @@
 #   (single quote must be coded as one single quote '). 
 
 # This message bundle does not have its own message range, and instead reserves specific error messages from the 
-# com.ibm.ws.concurrent.mp.1.0 message bundle
+# com.ibm.ws.microprofile.contextpropagation.1.0 message bundle
 
 # do not translate: CDI, CompletionStage
-CWWKC1158.cannot.lazy.enlist.beans=CWWKC1158E:You must access CDI beans prior to capturing context for the contextual action or task in order for the CDI \
-beans to behave correctly when accessed from the action or task. The following CDI beans must be accessed before capturing context: {0}.
+CWWKC1158.cannot.lazy.enlist.beans=CWWKC1158E: You must access the CDI beans before context is captured for the contextual action or task so that the CDI \
+beans behave correctly when accessed from the action or task. The following CDI beans were not accessed before the context was captured: {0}.
 CWWKC1158.cannot.lazy.enlist.beans.explanation=When CDI context is captured, only CDI beans that have been accessed at that point in time have been created by \
 the CDI runtime. As a result, CDI beans that are first accessed in contextual operations cannot propagate their state correctly to subsequent contextual operations.
 CWWKC1158.cannot.lazy.enlist.beans.useraction=The application must be changed to invoke some CDI bean operation, such as a public method, before context for \

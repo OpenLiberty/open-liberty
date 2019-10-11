@@ -10,9 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.logging.source;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.LogRecord;
 
+import com.ibm.websphere.logging.hpel.LogRecordContext;
 import com.ibm.websphere.ras.DataFormatHelper;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -160,6 +162,15 @@ public class LogSource implements Source {
             if (wsLogRecord.getExtensions() != null) {
                 extensions = new KeyValuePairList(LogFieldConstants.EXTENSIONS_KVPL);
                 Map<String, String> extMap = wsLogRecord.getExtensions();
+                for (Map.Entry<String, String> entry : extMap.entrySet()) {
+                    CollectorJsonHelpers.handleExtensions(extensions, entry.getKey(), entry.getValue());
+                }
+            }
+        } else {
+            Map<String, String> extMap = new HashMap<String, String>();
+            LogRecordContext.getExtensions(extMap);
+            if (!extMap.isEmpty()) {
+                extensions = new KeyValuePairList(LogFieldConstants.EXTENSIONS_KVPL);
                 for (Map.Entry<String, String> entry : extMap.entrySet()) {
                     CollectorJsonHelpers.handleExtensions(extensions, entry.getKey(), entry.getValue());
                 }

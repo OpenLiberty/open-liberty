@@ -131,5 +131,5 @@ session.invalidatedbyTimeout.total.description=\u81ea\u4ece\u542f\u7528\u6b64\u6
 
 # A Metrics API error has occurred: {0}
 temporary.CWMMC9999E=CWMMC9999E: \u53d1\u751f\u4e86\u6307\u6807 API \u9519\u8bef\uff1a{0}
-temporary.CWMMC9999E.explanation=Metrics API \u9519\u8bef\u5bfc\u81f4\u5e38\u89c4\u64cd\u4f5c\u65e0\u6cd5\u8fdb\u884c\u3002
+temporary.CWMMC9999E.explanation=\u6307\u6807 API \u9519\u8bef\u5bfc\u81f4\u65e0\u6cd5\u6267\u884c\u6b63\u5e38\u64cd\u4f5c\u3002
 temporary.CWMMC9999E.useraction=\u8bf7\u67e5\u770b FFDC \u65e5\u5fd7\u548c\u5f02\u5e38\u6587\u672c\u4ee5\u786e\u5b9a\u95ee\u9898\u3002

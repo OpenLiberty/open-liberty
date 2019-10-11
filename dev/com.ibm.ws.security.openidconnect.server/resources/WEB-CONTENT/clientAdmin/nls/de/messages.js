@@ -21,6 +21,7 @@ var messages = {
     "DELETE": "Löschen",
     "DONE": "Fertig",
     "EDIT": "Bearbeiten",
+    "FALSE": "False",
     "GENERATE": "Generieren",
     "LOADING": "Wird geladen",
     "LOGOUT": "Anmelden",
@@ -32,13 +33,16 @@ var messages = {
     "PROCESSING": "Wird verarbeitet",
     "REGENERATE": "Neu generieren",
     "REGISTER": "Registrieren",
-    "TRY_AGAIN": "Wiederholen Sie den Vorgang...",
+    "TABLE_FIELD_SORT_ASC": "Die Tabelle ist nach {0} in aufsteigender Reihenfolge sortiert. ",   // {0} - column name (ie. 'Name', 'Client ID')
+    "TABLE_FIELD_SORT_DESC": "Die Tabelle ist nach {0} in absteigender Reihenfolge sortiert. ", // {0} - column name (ie. 'Name', 'Client ID')
+    "TRUE": "True",
+    "TRY_AGAIN": "Vorgang wiederholen...",
     "UPDATE": "Aktualisieren",
 
     // Common Column Names
     "CLIENT_NAME_COL": "Clientname",
-    "EXPIRES_COL": "Ablaufzeit",
-    "ISSUED_COL": "Ausgegeben am",
+    "EXPIRES_COL": "Ablaufdatum",
+    "ISSUED_COL": "Austelldatum",
     "NAME_COL": "Name",
     "TYPE_COL": "Typ",
 
@@ -56,30 +60,22 @@ var messages = {
     "SCOPE": "Geltungsbereich",
     "PREAUTHORIZED_SCOPE": "Vorab autorisierter Geltungsbereich (optional)",
     "REDIRECT_URLS": "URLs umleiten (optional)",
-    "ADDITIONAL_PROPS": "Weitere Eigenschaften",
-    "ADDITIONAL_PROPS_OPTIONAL": "Weitere Eigenschaften (optional)",
     "CLIENT_SECRET_CHECKBOX": "Geheimen Clientschlüssel neu generieren",
-    "PROPERTY_PLACEHOLDER": "Eigenschaft",
-    "VALUE_PLACEHOLDER": "Wert",
-    "GRANT_TYPES_SELECTED": "Anzahl der ausgewählten Granttypen",
-    "GRANT_TYPES_NONE_SELECTED": "Keine ausgewählt",
+    "NONE_SELECTED": "Keine ausgewählt",
     "MODAL_EDIT_TITLE": "OAuth-Client bearbeiten",
     "MODAL_REGISTER_TITLE": "Neuen OAuth-Client registrieren",
     "MODAL_SECRET_REGISTER_TITLE": "OAuth-Registrierung gespeichert",
     "MODAL_SECRET_UPDATED_TITLE": "OAuth-Registrierung aktualisiert",
     "MODAL_DELETE_CLIENT_TITLE": "Diesen OAuth-Client löschen",
-    "VALUE_COL": "Wert",
-    "ADD": "Hinzufügen",
-    "DELETE_PROP": "Angepasste Eigenschaft löschen",
     "RESET_GRANT_TYPE": "Alle ausgewählten Granttypen abwählen",
     "SELECT_ONE_GRANT_TYPE": "Mindestens einen Granttypen auswählen",
-    "OPEN_GRANT_TYPE": "Liste mit Granttypen öffnen",
-    "CLOSE_GRANT_TYPE": "Liste mit Granttypen schließen",
     "SPACE_HELPER_TEXT": "Durch Leerschritte getrennte Werte",
     "REDIRECT_URL_HELPER_TEXT": "Absolute Umleitungs-URLs durch Leerschritte voneinander getrennt.",
     "DELETE_OAUTH_CLIENT_DESC": "Diese Operation löscht den registrierten Client aus dem Clientregistrierungsservice.",
     "REGISTRATION_SAVED": "Es wurden eine Client-ID und ein geheimer Clientschlüssel generiert und zugeordnet.",
     "REGISTRATION_UPDATED": "Es wurde ein neuer geheimer Clientschlüssel für diesen Client generiert und ihm zugeordnet. ",
+    "COPY_CLIENT_ID": "Client-ID in Zwischenablage kopieren",
+    "COPY_CLIENT_SECRET": "Geheimen Clientschlüssel in Zwischenablage kopieren",
     "REGISTRATION_UPDATED_NOSECRET": "Der OAuth-Client {0} wurde aktualisiert.",                 // {0} - client name
     "ERR_MULTISELECT_GRANT_TYPES": "Mindestens ein Granttyp muss ausgewählt werden. ",
     "ERR_REDIRECT_URIS": "Werte müssen absolute URIs sein.",
@@ -93,5 +89,15 @@ var messages = {
     "GENERIC_MISSING_CLIENT_MSG": "Der OAuth-Client {0} mit der ID {1} wurde nicht gefunden.",     // {0} - client name; {1} - an ID
     "GENERIC_RETRIEVAL_FAIL_MSG": "Beim Abrufen von Informationen zum OAuth-Client {0} ist ein Fehler aufgetreten.", // {0} - client name
     "GENERIC_GET_CLIENTS_FAIL": "Fehler beim Abrufen von OAuth-Clients",
-    "GENERIC_GET_CLIENTS_FAIL_MSG": "Beim Abrufen der Liste mit den OAuth-Clients ist ein Fehler aufgetreten."
+    "GENERIC_GET_CLIENTS_FAIL_MSG": "Beim Abrufen der Liste mit den OAuth-Clients ist ein Fehler aufgetreten.",
+
+    "RESET_SELECTION": "Alle ausgewählten Felder {0} löschen",     // {0} - field name (ie 'Grant types')
+    "NUMBER_SELECTED": "Anzahl der ausgewählten Felder {0}",     // {0} - field name
+    "OPEN_LIST": "{0}-Liste öffnen",                   // {0} - field name
+    "CLOSE_LIST": "{0}-Liste schließen",                 // {0} - field name
+    "ENTER_PLACEHOLDER": "Wert eingeben",
+    "ADD_VALUE": "Element hinzufügen",
+    "REMOVE_VALUE": "Element entfernen",
+    "REGENERATE_CLIENT_SECRET": "Mit '*' wird der vorhandene Wert beibehalten. Wird kein Wert angegeben, wird ein neuer geheimer Clientschlüssel generiert. Ansonsten überschreibt der neu angegebene Parameterwert den vorhandenen Wert. ",
+    "ALL_OPTIONAL": "Alle Felder sind optional"
 };

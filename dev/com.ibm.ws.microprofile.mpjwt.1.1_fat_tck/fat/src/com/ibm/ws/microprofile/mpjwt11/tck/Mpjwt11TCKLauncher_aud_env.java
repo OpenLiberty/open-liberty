@@ -36,6 +36,7 @@ public class Mpjwt11TCKLauncher_aud_env {
     @BeforeClass
     public static void setUp() throws Exception {
         server.startServer();
+        server.waitForStringInLog("CWWKS4105I", 30000); // wait for ltpa keys to be created and service ready, which can happen after startup.
     }
 
     @AfterClass

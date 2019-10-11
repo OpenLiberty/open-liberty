@@ -20,6 +20,7 @@ var messages = {
     "DELETE": "Odstranit",
     "DONE": "Hotovo",
     "EDIT": "Upravit",
+    "FALSE": "Ne",
     "GENERATE": "Generovat",
     "LOADING": "Načítání",
     "LOGOUT": "Odhlásit",
@@ -31,12 +32,15 @@ var messages = {
     "PROCESSING": "Zpracování",
     "REGENERATE": "Regenerovat",
     "REGISTER": "Registrovat",
-    "TRY_AGAIN": "Zopakujte akci...",
+    "TABLE_FIELD_SORT_ASC": "Tabulka je řazena podle sloupce {0} vzestupném pořadí.",   // {0} - column name (ie. 'Name', 'Client ID')
+    "TABLE_FIELD_SORT_DESC": "Tabulka je řazena podle sloupce {0} sestupném pořadí.", // {0} - column name (ie. 'Name', 'Client ID')
+    "TRUE": "Ano",
+    "TRY_AGAIN": "Zopakovat akci...",
     "UPDATE": "Aktualizovat",
 
     // Common Column Names
     "EXPIRES_COL": "Vypršení platnosti",
-    "ISSUED_COL": "Vydáno v",
+    "ISSUED_COL": "Vydáno",
     "NAME_COL": "Název",
     "TYPE_COL": "Typ",
 
@@ -44,33 +48,38 @@ var messages = {
     // 'app-token' and 'app-password' are keywords - don't translate
     // name - the user defined name given the app-password or app-token
     "ACCT_MGR_TITLE": "Správa osobních tokenů",
-    "ACCT_MGR_DESC": "Vytvořte, odstraňte a znovu vygenerujte hesla aplikací a tokeny aplikací.",
-    "ADD_NEW_AUTHENTICATION": "Přidat nové heslo aplikace nebo token aplikace",
+    "ACCT_MGR_DESC": "Vytvořte, odstraňte a znovu vygenerujte tokeny app-password a app-token.",
+    "ADD_NEW_AUTHENTICATION": "Přidejte nový token app-password nebo app-token.",
     "NAME_IDENTIFIER": "Název: {0}",
     "ADD_NEW_TITLE": "Registrovat nové ověření",
     "NOT_GENERATED_PLACEHOLDER": "Negenerované",
-    "REGENERATE_APP_PASSWORD": "Znovu generovat heslo aplikace",
-    "REGENERATE_PW_WARNING": "Tato akce přepíše aktuální heslo aplikace.",
-    "REGENERATE_PW_PLACEHOLDER": "Heslo dříve generované dne {0}",        // 0 - date
-    "REGENERATE_APP_TOKEN": "Znovu generovat token aplikace",
-    "REGENERATE_TOKEN_WARNING": "Tato akce přepíše aktuální token aplikace.",
-    "REGENERATE_TOKEN_PLACEHOLDER": "Token dříve generovaný dne {0}",        // 0 - date
-    "DELETE_PW": "Odstranit toto heslo aplikace",
-    "DELETE_TOKEN": "Odstranit tento token aplikace",
-    "DELETE_WARNING_PW": "Tato akce odebere aktuálně přiřazené heslo aplikace.",
-    "DELETE_WARNING_TOKEN": "Tato akce odebere aktuálně přiřazený token aplikace.",
-    "REGENERATE_ARIA": "Znovu generovat {0} pro {1}",     // 0 - 'app-password' or 'app-token'; 1 - name
-    "DELETE_ARIA": "Odstranit {0} s názvem {1}",       // 0 - 'app-password' or 'app-token'; 1 - name
-    "GENERIC_GENERATE_FAIL": "Chyba při generování {0}", // 0 - 'App-Password' or 'App-Token'
-    "GENERIC_GENERATE_FAIL_MSG": "Došlo k chybě při generování nového {0} s názvem {1}.",  // 0 - 'app-password' or 'app-token'; 1 - name
-    "ERR_NAME": "Název je již přidružen k {0}, nebo je příliš dlouhý.", // 0 - 'app-password' or 'app-token'
-    "GENERIC_DELETE_FAIL": "Chyba při odstraňování {0}",     // 0 - 'App-Password' or 'App-Token'
-    "GENERIC_DELETE_FAIL_MSG": "Došlo k chybě při odstraňování {0} s názvem {1}.",  // 0 - 'app-password' or 'app-token'; 1 - name
-    "GENERIC_REGENERATE_FAIL": "Chyba při opětném generování {0}",  // 0 - 'App-Password' or 'App-Token'
-    "GENERIC_REGENERATE_FAIL_MSG": "Došlo k chybě při regenerování {0} s názvem {1}.",  // 0 - 'app-password' or 'app-token'; 1 - name
-    "GENERIC_REGENERATE_FAIL_CREATE_MSG": "Došlo k chybě při regenerování {0} s názvem {1}. {0} bylo odstraněno, ale nebylo možné znovuvytvoření.", // 0 - 'app-password' or 'app-token'; 1 - name
+    "AUTHENTICAION_GENERATED": "Generované ověření",
+    "GENERATED_APP_PASSWORD": "Generovaný token app-password",
+    "GENERATED_APP_TOKEN": "Generovaný token app-token",
+    "COPY_APP_PASSWORD": "Zkopírovat token app-password do schránky",
+    "COPY_APP_TOKEN": "Zkopírovat token app-token do schránky",
+    "REGENERATE_APP_PASSWORD": "Znovu generovat token app-password",
+    "REGENERATE_PW_WARNING": "Tato akce přepíše aktuální token app-password.",
+    "REGENERATE_PW_PLACEHOLDER": "Heslo dříve generováno dne {0}",        // 0 - date
+    "REGENERATE_APP_TOKEN": "Znovu generovat token app-token",
+    "REGENERATE_TOKEN_WARNING": "Tato akce přepíše aktuální token app-token.",
+    "REGENERATE_TOKEN_PLACEHOLDER": "Token dříve generován dne {0}",        // 0 - date
+    "DELETE_PW": "Odstranit tento token app-password",
+    "DELETE_TOKEN": "Odstranit tento token app-token",
+    "DELETE_WARNING_PW": "Tato akce odebere aktuálně přiřazený token app-password.",
+    "DELETE_WARNING_TOKEN": "Tato akce odebere aktuálně přiřazený token app-token.",
+    "REGENERATE_ARIA": "Znovu generovat token {0} pro {1}",     // 0 - 'app-password' or 'app-token'; 1 - name
+    "DELETE_ARIA": "Odstranit token {0} s názvem {1}",       // 0 - 'app-password' or 'app-token'; 1 - name
+    "GENERIC_GENERATE_FAIL": "Chyba při generování tokenu {0}", // 0 - 'App-Password' or 'App-Token'
+    "GENERIC_GENERATE_FAIL_MSG": "Došlo k chybě při generování nového tokenu {0} s názvem {1}.",  // 0 - 'app-password' or 'app-token'; 1 - name
+    "ERR_NAME": "Název je již přidružen k tokenu {0}, nebo je příliš dlouhý.", // 0 - 'app-password' or 'app-token'
+    "GENERIC_DELETE_FAIL": "Chyba při odstraňování tokenu {0}",     // 0 - 'App-Password' or 'App-Token'
+    "GENERIC_DELETE_FAIL_MSG": "Došlo k chybě při odstraňování tokenu {0} s názvem {1}.",  // 0 - 'app-password' or 'app-token'; 1 - name
+    "GENERIC_REGENERATE_FAIL": "Chyba při opětném generování tokenu {0}",  // 0 - 'App-Password' or 'App-Token'
+    "GENERIC_REGENERATE_FAIL_MSG": "Došlo k chybě při regenerování tokenu {0} s názvem {1}.",  // 0 - 'app-password' or 'app-token'; 1 - name
+    "GENERIC_REGENERATE_FAIL_CREATE_MSG": "Došlo k chybě při regenerování tokenu {0} s názvem {1}. Token {0} byl odstraněn, ale nebylo možné znovuvytvoření.", // 0 - 'app-password' or 'app-token'; 1 - name
     "GENERIC_FETCH_FAIL": "Chyba při načítání autentizací",
-    "GENERIC_FETCH_FAIL_MSG": "Nelze získat aktuální seznam hesel aplikací nebo tokenů aplikací.",
+    "GENERIC_FETCH_FAIL_MSG": "Nelze získat aktuální seznam tokenů app-password a app-token.",
     "GENERIC_NOT_CONFIGURED": "Klient není nakonfigurován",
     "GENERIC_NOT_CONFIGURED_MSG": "Atributy klienta appPasswordAllowed a appTokenAllowed nejsou nakonfigurovány. Nelze načíst žádná data.",
     "APP_PASSWORD_NOT_CONFIGURED": "Atribut appPasswordAllowed klienta není nakonfigurován.",  // 'appPasswordAllowed' is a config option. Do not translate.

@@ -126,6 +126,10 @@ class ShadowClassLoader extends IdentifiedLoader {
     protected Class<?> findClass(final String name) throws ClassNotFoundException {
         final ByteResourceInformation classBytesResourceInformation = shadowedLoader.findClassBytes(name);
 
+        if (classBytesResourceInformation == null) {
+            throw new ClassNotFoundException(name);
+        }
+
         // Now define a package for this class if it has one
         int lastDotIndex = name.lastIndexOf('.');
         if (lastDotIndex != -1) {

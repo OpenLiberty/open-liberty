@@ -10,6 +10,7 @@
  *******************************************************************************/
 	
 dependencies {
+  requiredLibs project(':com.ibm.ws.microprofile.faulttolerance.cdi_fat') // For RepeatFaultTolerance
 }
 	
 	

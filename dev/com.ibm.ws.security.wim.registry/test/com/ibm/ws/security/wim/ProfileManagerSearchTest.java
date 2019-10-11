@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.wim;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
@@ -186,7 +187,7 @@ public class ProfileManagerSearchTest {
                 cns[index++] = ((PersonAccount) entity).getCn();
             }
 
-            assertEquals("CN Mismatched", expectedcns, cns);
+            assertArrayEquals("CN Mismatched", expectedcns, cns);
         } catch (WIMException e) {
             String errorMessage = e.getMessage();
             assertEquals("Incorrect exception thrown", SearchControlException.class, e.getClass());
@@ -219,7 +220,7 @@ public class ProfileManagerSearchTest {
                 cns[index++] = ((PersonAccount) entity).getCn();
             }
 
-            assertEquals("CN Mismatched", expectedcns, cns);
+            assertArrayEquals("CN Mismatched", expectedcns, cns);
         } catch (WIMException e) {
             String errorMessage = e.getMessage();
             assertEquals("Incorrect exception thrown", SearchControlException.class, e.getClass());
@@ -252,7 +253,7 @@ public class ProfileManagerSearchTest {
                 cns[index++] = ((PersonAccount) entity).getCn();
             }
 
-            assertEquals("CN Mismatched", expectedcns, cns);
+            assertArrayEquals("CN Mismatched", expectedcns, cns);
         } catch (WIMException e) {
             String errorMessage = e.getMessage();
             assertEquals("Incorrect exception thrown", SearchControlException.class, e.getClass());
@@ -425,7 +426,7 @@ public class ProfileManagerSearchTest {
                 cns[index++] = ((PersonAccount) entity).getCn();
             }
 
-            assertEquals("CN Mismatched", expectedcns, cns);
+            assertArrayEquals("CN Mismatched", expectedcns, cns);
         } catch (WIMException e) {
             String errorMessage = e.getMessage();
             assertEquals("Call completed successfully", true, false + " with " + errorMessage);
@@ -469,7 +470,7 @@ public class ProfileManagerSearchTest {
                 cns[index++] = ((PersonAccount) entity).getCn();
             }
 
-            assertEquals("CN Mismatched", expectedcns, cns);
+            assertArrayEquals("CN Mismatched", expectedcns, cns);
         } catch (WIMException e) {
             String errorMessage = e.getMessage();
             assertEquals("Call completed successfully", true, false + " with " + errorMessage);

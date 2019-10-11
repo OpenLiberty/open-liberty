@@ -56,9 +56,8 @@ def setProperties = { props ->
     props.setProperty('is.public.publishing',     isPublicPublishing.toString())
     props.setProperty('disable.run.runUnitTests', isUnittestsDisabled.toString())
 
-    //Set to false for now to avoid zip issues
-    //boolean isBuildOsNativePackages = props.getProperty('build.os.native.packages') == null     ? 'true'.equalsIgnoreCase(props.getProperty('is.release')) : 'true'.equalsIgnoreCase(props.getProperty('build.os.native.packages'))
-    boolean isBuildOsNativePackages = props.getProperty('build.os.native.packages') == null     ? false : 'true'.equalsIgnoreCase(props.getProperty('build.os.native.packages'))
+    //Sets my RPM/DEB flag to true on every release build
+    boolean isBuildOsNativePackages = props.getProperty('build.os.native.packages') == null     ? 'true'.equalsIgnoreCase(props.getProperty('is.release')) : 'true'.equalsIgnoreCase(props.getProperty('build.os.native.packages'))
     props.setProperty('build.os.native.packages', isBuildOsNativePackages.toString())
 
     gradle.rootProject { rootProject ->
@@ -122,13 +121,10 @@ def setProperties = { props ->
      * Properties used for to version build outputs.
      */
     String timestamp = new SimpleDateFormat("yyyyMMddHHmm").format(new java.util.Date())
-    String qualifier = timestamp
 
     // For release builds we use the buildLabel as a consistent qualifier.
     // buildLabel is set by the RTC build engines.
-    if (isRelease && isAutomatedBuild) {
-        qualifier = props.getProperty('buildLabel')
-    }
+    String qualifier = (isRelease && isAutomatedBuild) ? props.getProperty('buildLabel') : timestamp
 
     props.setProperty('version.qualifier', qualifier)
     props.setProperty('buildLabel', timestamp)

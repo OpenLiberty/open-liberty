@@ -47,6 +47,11 @@ public class PropertiesAsset implements Asset {
         return this;
     }
 
+    public PropertiesAsset removeProperty(String key) {
+        props.remove(key);
+        return this;
+    }
+
     public PropertiesAsset include(PropertiesAsset include) {
         included.add(include);
         return this;

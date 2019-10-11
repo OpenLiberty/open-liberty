@@ -14,6 +14,7 @@ package jpahelper.databasemanagement;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.sql.Connection;
@@ -22,6 +23,8 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Base64.Encoder;
+import java.util.Properties;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
@@ -81,15 +84,27 @@ public class DatabaseManagementServlet extends HttpServlet {
     private void getInfo(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Connection conn = null;
         try {
+            System.out.println("DatabaseManagement servicing getInfo request...");
             conn = dsRl.getConnection();
             final DatabaseMetaData dbMeta = conn.getMetaData();
+            Properties properties = new Properties();
+            properties.put("dbproduct_name", dbMeta.getDatabaseProductName());
+            properties.put("dbproduct_version", dbMeta.getDatabaseProductVersion());
+            properties.put("jdbcdriver_version", dbMeta.getDatabaseProductVersion());
+            properties.put("jdbc_url", dbMeta.getURL());
+            properties.put("jdbc_username", dbMeta.getUserName());
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(baos);
+            oos.writeObject(properties);
+            oos.flush();
+            oos.close();
+
+            final Encoder base64Encoder = java.util.Base64.getEncoder();
+            final String base64EncodedData = base64Encoder.encodeToString(baos.toByteArray());
 
             final PrintWriter pw = resp.getWriter();
-            pw.println("dbproduct_name=" + dbMeta.getDatabaseProductName());
-            pw.println("dbproduct_version=" + dbMeta.getDatabaseProductVersion());
-            pw.println("jdbcdriver_version=" + dbMeta.getDriverVersion());
-            pw.println("jdbc_url=" + dbMeta.getURL());
-            pw.println("jdbc_username=" + dbMeta.getUserName());
+            pw.println(base64EncodedData);
         } catch (SQLException e) {
             throw new ServletException(e);
         } finally {
@@ -99,6 +114,7 @@ public class DatabaseManagementServlet extends HttpServlet {
                 } catch (Throwable t) {
                 }
             }
+            System.out.println("DatabaseManagement getInfo request service complete.");
         }
 
     }
@@ -135,7 +151,6 @@ public class DatabaseManagementServlet extends HttpServlet {
         final String ddl = baos.toString();
         final String[] commands = ddl.split(";");
 
-        final long beginTime = System.currentTimeMillis();
         final PrintWriter pw = resp.getWriter();
         try {
             tx.begin();
@@ -182,18 +197,16 @@ public class DatabaseManagementServlet extends HttpServlet {
                     } else {
                         pw.println("Successful execution, update count = " + stmt.getUpdateCount());
                     }
+
                     successCount++;
                 } catch (Exception e) {
                     if (!swallowErrors) {
-                        e.printStackTrace();
                         pw.println("SQL Execution failed: " + e);
                     }
                 }
             }
 
-            final long endTime = System.currentTimeMillis();
-            System.out.println("SQL Executed: Total = " + totalCount + " Successful = " + successCount
-                               + " (total time in ms = " + (endTime - beginTime) + " ms)");
+            System.out.println("SQL Executed: Total = " + totalCount + " Successful = " + successCount);
 
             tx.commit();
         } catch (Exception e) {
@@ -229,12 +242,19 @@ public class DatabaseManagementServlet extends HttpServlet {
         sb.append("DB Username: ").append(dbMeta.getUserName()).append("\n");
 
         sb.append("DB Schemas:\n");
-        ResultSet schemas = dbMeta.getSchemas();
-        while (schemas.next()) {
-            sb.append("  ").append(schemas.getString("TABLE_SCHEM")).append("\n");
+        try {
+            ResultSet schemas = dbMeta.getSchemas();
+            while (schemas.next()) {
+                sb.append("  ").append(schemas.getString("TABLE_SCHEM")).append("\n");
+            }
+        } catch (Throwable t) {
+            // Ouch
+            sb.append("   DB SCHEMAS NOT AVAILABLE -- " + t.getMessage());
+            t.printStackTrace();
         }
 
         sb.append("################################################################################\n");
         System.out.println(sb);
     }
+
 }

@@ -15,4 +15,5 @@ javac.target: 1.8
 
 -buildpath: \
 	org.jboss.weld:weld-osgi-bundle;version=3.1.1.Final, \
+	org.jboss.weld.se:weld-se-core;version=3.1.1.Final, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest

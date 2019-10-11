@@ -19,6 +19,8 @@
 
 package org.apache.cxf.jaxrs.utils;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -87,7 +89,9 @@ import org.apache.cxf.common.util.PropertyUtils;
 import org.apache.cxf.common.util.ReflectionUtil;
 import org.apache.cxf.common.util.StringUtils;
 import org.apache.cxf.helpers.DOMUtils;
+import org.apache.cxf.helpers.IOUtils;
 import org.apache.cxf.interceptor.Fault;
+import org.apache.cxf.io.DelegatingInputStream;
 import org.apache.cxf.io.ReaderInputStream;
 import org.apache.cxf.jaxrs.JAXRSServiceImpl;
 import org.apache.cxf.jaxrs.ext.ContextProvider;
@@ -869,22 +873,31 @@ public final class JAXRSUtils {
                 return new AsyncResponseImpl(message);
             }
 
-            // Liberty change start
-            InputStream is = message.getContent(InputStream.class);
-            if (is == null) {
-                Reader reader = message.getContent(Reader.class);
-                if (reader != null) {
-                    is = new ReaderInputStream(reader);
-                }
-            }
-            // Liberty change end
-
             String contentType = (String) message.get(Message.CONTENT_TYPE);
 
             if (contentType == null) {
                 String defaultCt = (String) message.getContextualProperty(DEFAULT_CONTENT_TYPE);
                 contentType = defaultCt == null ? MediaType.APPLICATION_OCTET_STREAM : defaultCt;
             }
+            
+            // Liberty Change Start
+            MessageContext mc = new MessageContextImpl(message);
+            MediaType mt = mc.getHttpHeaders().getMediaType();
+            
+            InputStream is;
+            if (mt == null || mt.isCompatible(MediaType.APPLICATION_FORM_URLENCODED_TYPE)) {
+                is = copyAndGetEntityStream(message);
+            } else { 
+                is = message.getContent(InputStream.class);
+            }
+            
+            if (is == null) {
+                Reader reader = message.getContent(Reader.class);
+                if (reader != null) {
+                    is = new ReaderInputStream(reader);
+                }
+            }
+            // Liberty Change End
 
             return readFromMessageBody(parameterClass,
                                        parameterType,
@@ -1010,8 +1023,9 @@ public final class JAXRSUtils {
             m.put(FormUtils.FORM_PARAM_MAP, params);
 
             if (mt == null || mt.isCompatible(MediaType.APPLICATION_FORM_URLENCODED_TYPE)) {
+                InputStream entityStream = copyAndGetEntityStream(m); // Liberty change
                 String enc = HttpUtils.getEncoding(mt, StandardCharsets.UTF_8.name());
-                String body = FormUtils.readBody(m.getContent(InputStream.class), enc);
+                String body = FormUtils.readBody(entityStream, enc); // Liberty change
                 FormUtils.populateMapFromStringOrHttpRequest(params, m, body, enc, decode);
             } else {
                 if ("multipart".equalsIgnoreCase(mt.getType())
@@ -1913,5 +1927,19 @@ public final class JAXRSUtils {
     public static JaxRsRuntimeException toJaxRsRuntimeException(Throwable ex) {
         return new JaxRsRuntimeException(ex);
     }
-
+    
+    // Liberty change start
+    // copy the input stream so that it is not inadvertently closed
+    private static InputStream copyAndGetEntityStream(Message m) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            IOUtils.copy(m.getContent(InputStream.class), baos);
+        } catch (IOException e) {
+            throw ExceptionUtils.toInternalServerErrorException(e, null);
+        }
+        final byte[] copiedBytes = baos.toByteArray();
+        m.setContent(InputStream.class, new ByteArrayInputStream(copiedBytes));
+        return new ByteArrayInputStream(copiedBytes);
+    }
+    // Liberty change end
 }

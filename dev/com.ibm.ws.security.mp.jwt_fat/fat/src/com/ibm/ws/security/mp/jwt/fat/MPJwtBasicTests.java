@@ -12,13 +12,16 @@ package com.ibm.ws.security.mp.jwt.fat;
 
 import java.util.Arrays;
 
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
+import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
 import com.ibm.ws.security.fat.common.jwt.JwtTokenForTest;
 import com.ibm.ws.security.fat.common.servers.ServerBootstrapUtils;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
@@ -190,6 +193,38 @@ public class MPJwtBasicTests extends CommonMpJwtFat {
         testMainPath(MpJwtFatConstants.MPJWT_APP_CLAIM_INJECT_SESSION_SCOPE, MpJwtFatConstants.MPJWT_APP_CLASS_CLAIM_INJECT_SESSION_SCOPE);
 
     }
+    
+    /**
+     * this method accesses a protected app with a special url that causes it to 
+     * call HttpServletrequest.logout.  
+     * 
+     * It then accesses it again with the same token.  We should get an error 
+     * message that the token was previously logged out.
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void testLogoutReuseCache() throws Exception {
+        String app = MpJwtFatConstants.MPJWT_APP_SEC_CONTEXT_APP_SCOPE;
+        String token = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer);
+        String testUrl = buildAppUrl(resourceServer, MpJwtFatConstants.MICROPROFILE_SERVLET, app) + "/logout";
+        testUrl = SecurityFatHttpUtils.getServerUrlBase(resourceServer) + MpJwtFatConstants.MICROPROFILE_SERVLET + "/rest/" + app + "/logout";
+        
+        JwtTokenForTest jwtTokenTools = new JwtTokenForTest(token);  // ?????
+        WebClient webClient = actions.createWebClient();
+        Page response = actions.invokeUrlWithBearerToken(_testName, webClient, testUrl, token);
+        Expectations expectations = goodTestExpectations(jwtTokenTools, testUrl, "SecurityContext.ApplicationScoped");
+        validationUtils.validateResult(response, expectations);
+        
+        // now try it again and we should get a 401
+        response = actions.invokeUrlWithBearerToken(_testName, webClient, testUrl, token);
+        int rc = response.getWebResponse().getStatusCode();
+        Assert.assertTrue("expected 401 but got " + rc , rc == 401);
+        expectations = new Expectations();
+        expectations.addExpectation(new ServerMessageExpectation(resourceServer, "CWWKS5527E"));
+        validationUtils.validateResult(response, expectations);
+        
+    }
+
 
     /**
      * This method obtains a (mp)jwt in 2 ways (to validate that we're able to generate and consume the tokens created via various
@@ -242,5 +277,6 @@ public class MPJwtBasicTests extends CommonMpJwtFat {
         Expectations expectations = goodTestExpectations(jwtTokenTools, testUrl, className);
         validationUtils.validateResult(response, expectations);
     }
+    
 
 }

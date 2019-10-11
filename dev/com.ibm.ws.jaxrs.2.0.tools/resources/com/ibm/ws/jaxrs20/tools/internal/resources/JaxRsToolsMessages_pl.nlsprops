@@ -20,6 +20,6 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 
-error.badVersion=CWWKW0900E: Nie jest uruchomiona poprawna wersja \u015brodowiska Java. \u015arodowisko wykonawcze wymaga \u015brodowiska Java 7 lub nowszego.
+error.badVersion=CWWKW0900E: Nie jest uruchomiona poprawna wersja \u015brodowiska Java. \u015arodowisko wykonawcze wymaga \u015brodowiska Java 8 lub nowszego.
 error.badVersion.explanation=Uruchomiona jest nieobs\u0142ugiwana wersja \u015brodowiska Java lub zmienna systemowa JAVA_HOME jest ustawiona tak, \u017ce wskazuje starsz\u0105 wersj\u0119 \u015brodowiska Java.
-error.badVersion.useraction= Zaktualizuj \u015brodowisko Java do wersji 7 lub dopasuj zmienn\u0105 systemow\u0105 JAVA_HOME tak, aby wskazywa\u0142a \u015brodowisko Java 7.
+error.badVersion.useraction= Zaktualizuj \u015brodowisko Java do wersji 8 lub dopasuj zmienn\u0105 systemow\u0105 JAVA_HOME tak, aby wskazywa\u0142a \u015brodowisko Java 8.

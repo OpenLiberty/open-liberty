@@ -10,6 +10,9 @@
  *******************************************************************************/
 package io.openliberty.sse.broadcaster;
 
+import java.lang.reflect.Field;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
@@ -37,6 +40,7 @@ public class Resource extends Application {
 
     static SseBroadcaster broadcaster;
     final static AtomicInteger registeredClients = new AtomicInteger();
+    final static AtomicBoolean closeAfterRegister = new AtomicBoolean(true);
 
     @POST
     @Produces(MediaType.TEXT_PLAIN)
@@ -91,5 +95,38 @@ public class Resource extends Application {
             t.printStackTrace();
         }
         return false;
+    }
+
+    @GET
+    @Path("/numSinks")
+    @Produces(MediaType.TEXT_PLAIN)
+    public int getNumOfSinksInBroadcaster() throws Exception {
+        //this method uses reflection to check the number of event sinks actively registered with the broadcaster
+        // this type of action is unsupported and subject to change
+
+        //Class<?> broadcasterImplClass = Class.forName("org.apache.cxf.jaxrs.sse.SseBroadcasterImpl");
+        Class<?> broadcasterImplClass = broadcaster.getClass();
+        _log.info("broadcasterImplClass " + broadcasterImplClass);
+        Field subscribersField = broadcasterImplClass.getDeclaredField("subscribers");
+        subscribersField.setAccessible(true);
+        Set<SseEventSink> registeredSinks = (Set<SseEventSink>) subscribersField.get(broadcaster);
+        int size = registeredSinks.size();
+        _log.info("getNumOfSinksInBroadcaster " + size);
+        return size;
+    }
+
+    @GET
+    @Produces(MediaType.SERVER_SENT_EVENTS)
+    @Path("/closedSinkTest")
+    public void registerForClosedSinkTest(@Context Sse sse, @Context SseEventSink sink) {  
+        register(sse, sink);
+        synchronized (closeAfterRegister) {
+            if (closeAfterRegister.getAndSet(!closeAfterRegister.get())) {
+                //automatically close every other client sink
+                _log.info("registerForClosedSinkTest - closing new sink: " + sink);
+                sink.close();
+            }
+        }
+        
     }
 }

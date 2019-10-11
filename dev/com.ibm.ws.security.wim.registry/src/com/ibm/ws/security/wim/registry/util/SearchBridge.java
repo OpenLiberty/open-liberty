@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2015 IBM Corporation and others.
+ * Copyright (c) 2012, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,7 @@ import com.ibm.ws.security.wim.registry.dataobject.IDAndRealm;
 import com.ibm.ws.security.wim.util.UniqueNameHelper;
 import com.ibm.wsspi.security.wim.SchemaConstants;
 import com.ibm.wsspi.security.wim.exception.EntityNotFoundException;
+import com.ibm.wsspi.security.wim.exception.EntityNotInRealmScopeException;
 import com.ibm.wsspi.security.wim.exception.InvalidUniqueNameException;
 import com.ibm.wsspi.security.wim.exception.WIMException;
 import com.ibm.wsspi.security.wim.model.Context;
@@ -177,7 +178,9 @@ public class SearchBridge {
         // other cases
         catch (WIMException toCatch) {
             // f113366
-            if (toCatch instanceof EntityNotFoundException) {
+            if (toCatch instanceof EntityNotFoundException
+                || toCatch instanceof InvalidUniqueNameException
+                || toCatch instanceof EntityNotInRealmScopeException) {
                 returnValue = new SearchResult(new ArrayList<String>(), false);
             }
             // log the Exception
@@ -276,6 +279,21 @@ public class SearchBridge {
                     if (index > 0) {
                         attrName = inputPattern.substring(0, index);
                         value = inputPattern.substring(index + 1, endIndex);
+
+                        // OLGH8840: We're comparing the property to WIM properties and not accounting for case or Ldap specific properties.
+                        // If we don't swap the case, we can get error, "CWIML0514W: The user registry operation could not be completed. The CN property is not defined."
+                        // from LdapXPathTranslateHelper. If the user changes their groupSecurity mappings, we can force this down the get() instead of search() path,
+                        // but that can result in unintended changes for the customer (changing their security authorization mappings).
+                        // So we're double checking if it looks like we have a valid property here and sending in the matching case from Group.
+                        List<String> propList = Group.getPropertyNames(null);
+                        for (String prop : propList) {
+                            if (prop.equalsIgnoreCase(attrName)) {
+                                if (tc.isEventEnabled()) {
+                                    Tr.event(tc, methodName + " equalsIgnoreCase match on " + prop + ", swapping out " + attrName);
+                                }
+                                attrName = prop;
+                            }
+                        }
                     }
 
                     String searchBase = null;
@@ -357,11 +375,11 @@ public class SearchBridge {
         catch (WIMException toCatch) {
             // f113366
             // PM37404 Catch the invalid uniqueName exception for get() API
-            if (toCatch instanceof EntityNotFoundException || toCatch instanceof InvalidUniqueNameException) {
+            if (toCatch instanceof EntityNotFoundException
+                || toCatch instanceof InvalidUniqueNameException
+                || toCatch instanceof EntityNotInRealmScopeException) {
                 returnValue = new SearchResult(new ArrayList<String>(), false);
-            }
-            // log the Exception
-            else {
+            } else {
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, methodName + " " + toCatch.getMessage(), toCatch);
                 }

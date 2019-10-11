@@ -19,7 +19,7 @@ import com.ibm.ws.threading.CancellableStage;
  * Abstraction that enables PolicyExecutor to cancel completion stages.
  */
 @Trivial
-public class CancellableStageRef extends AtomicReference<ManagedCompletableFuture<?>> implements CancellableStage {
+class CancellableStageRef extends AtomicReference<ManagedCompletableFuture<?>> implements CancellableStage {
     private static final long serialVersionUID = 1L;
 
     @Override

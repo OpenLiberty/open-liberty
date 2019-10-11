@@ -150,3 +150,8 @@ MP_JWT_FRONT_END_ERROR.useraction=Bitten Sie Ihren Systemadministrator, das Prob
 MPJWT_NOT_FOUND_IN_APPLICATION=CWWKS5526W: Das Feature MicroProfile JWT kann die Authentifizierung nicht durchf\u00fchren, weil es den Authentifizierungstyp [{0}] in der Anwendung erwartet, aber [{1}] gefunden hat. Das Attribut [{2}] ist auf [{3}] gesetzt.  
 MPJWT_NOT_FOUND_IN_APPLICATION.explanation=Damit die Authentifizierung erfolgreich durchgef\u00fchrt werden kann, m\u00fcssen Sie eine der folgenden Aktionen ausf\u00fchren. a) Stellen Sie sicher, dass das Attribut ignoreApplicationAuthMethod in der Anwendung auf "true" gesetzt ist und b) dass die Annotation loginConfig auf MP-JWT gesetzt ist.
 MPJWT_NOT_FOUND_IN_APPLICATION.useraction=Stellen Sie sicher, dass die Server- oder Anwendungskonfiguration aktualisiert wird.
+
+# do not translate HttpServletRequest.logout
+JWT_PREVIOUSLY_LOGGED_OUT=CWWKS5527E: Das MicroProfile-JWT-Feature kann die Authentifizierung nicht durchf\u00fchren, da das in der Anforderung angegebene JWT zuvor abgemeldet wurde.
+JWT_PREVIOUSLY_LOGGED_OUT.explanation=Ein vorheriger Aufruf von HttpServletRequest.logout() wurde f\u00fcr ein Subjekt abgesetzt, das mit diesem JWT authenitifziert wurde. 
+JWT_PREVIOUSLY_LOGGED_OUT.useraction=\u00dcbergeben Sie die Anforderung mit einem anderen JWT erneut.

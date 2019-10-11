@@ -26,6 +26,7 @@ import javax.inject.Inject;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.eclipse.microprofile.reactive.messaging.spi.Connector;
+import org.eclipse.microprofile.reactive.messaging.spi.ConnectorFactory;
 import org.eclipse.microprofile.reactive.messaging.spi.OutgoingConnectorFactory;
 import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
 import org.eclipse.microprofile.reactive.streams.operators.SubscriberBuilder;
@@ -35,14 +36,11 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.KafkaAdapterFactory;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.KafkaProducer;
 
-@Connector("io.openliberty.kafka")
+@Connector(KafkaConnectorConstants.CONNECTOR_NAME)
 @ApplicationScoped
 public class KafkaOutgoingConnector implements OutgoingConnectorFactory {
 
     private static final TraceComponent tc = Tr.register(KafkaOutgoingConnector.class);
-
-    //property from config
-    private static final String TOPIC = "topic";
 
     @Inject
     private KafkaAdapterFactory kafkaAdapterFactory;
@@ -52,11 +50,16 @@ public class KafkaOutgoingConnector implements OutgoingConnectorFactory {
     @Override
     public SubscriberBuilder<Message<Object>, Void> getSubscriberBuilder(Config config) {
         // Pass the config directly through to the kafkaProducer
-        Map<String, Object> producerConfig = StreamSupport.stream(config.getPropertyNames().spliterator(),
-                                                                  false).collect(Collectors.toMap(Function.identity(), (k) -> config.getValue(k, String.class)));
+        Map<String, Object> producerConfig = StreamSupport.stream(config.getPropertyNames().spliterator(), false)
+                                                          .filter(k -> !KafkaConnectorConstants.NON_KAFKA_PROPS.contains(k))
+                                                          .collect(Collectors.toMap(Function.identity(), (k) -> config.getValue(k, String.class)));
 
         KafkaProducer<String, Object> kafkaProducer = this.kafkaAdapterFactory.newKafkaProducer(producerConfig);
-        KafkaOutput<String, Object> kafkaOutput = new KafkaOutput<>(config.getValue(TOPIC, String.class), kafkaProducer);
+
+        String channelName = config.getValue(ConnectorFactory.CHANNEL_NAME_ATTRIBUTE, String.class);
+        String topic = config.getOptionalValue(KafkaConnectorConstants.TOPIC, String.class).orElse(channelName);
+
+        KafkaOutput<String, Object> kafkaOutput = new KafkaOutput<>(topic, kafkaProducer);
         this.kafkaOutputs.add(kafkaOutput);
 
         return ReactiveStreams.<Message<Object>> builder().to(kafkaOutput.getSubscriber());

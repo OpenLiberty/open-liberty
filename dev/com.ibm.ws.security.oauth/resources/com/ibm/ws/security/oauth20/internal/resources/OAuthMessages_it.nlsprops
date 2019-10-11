@@ -113,8 +113,12 @@ OAUTH_LENGTH_TOO_LARGE_AND_CHANGED=CWWKS1422I: Il valore di {0} nella configuraz
 OAUTH_LENGTH_TOO_LARGE_AND_CHANGED.explanation=Il valore per l'attributo indicato \u00e8 troppo elevato.
 OAUTH_LENGTH_TOO_LARGE_AND_CHANGED.useraction=Impostare l'attributo indicato su un valore appropriato.  
 
+OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR=CWWKS1423E: La registrazione o l''aggiornamento del client OAuth non \u00e8 riuscito perch\u00e9 i dati del client contengono il carattere "{0}" non consentito.
+OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR.explanation=Il carattere non \u00e8 consentito nei dati client.
+OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR.useraction=Rimuovere il carattere non consentito e inoltrare nuovamente la richiesta. 
+
 OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND=CWWKS1424E: L''ID client {0} non \u00e8 stato trovato.
-OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.explanation=La richiesta conteneva un ID client {0} che non \u00e8 stato trovato.  
+OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.explanation=La richiesta conteneva un ID client che non \u00e8 stato trovato.  
 OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.useraction=Ritentare la richiesta con un ID client valido.
 
 OAUTH_CLIENT_REGISTRATION_INVALID_REQUEST_PATH=CWWKS1425E: La richiesta di registrazione \u00e8 stata effettuata a un URI non corretto.
@@ -134,19 +138,19 @@ OAUTH_CLIENT_REGISTRATION_MALFORMED_REQUEST.explanation=Il JSON nel corpo della 
 OAUTH_CLIENT_REGISTRATION_MALFORMED_REQUEST.useraction=Riesaminare la documentazione API per questo servizio e ritentare la richiesta.
 
 OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS=CWWKS1429E: L''ID client {0} gi\u00e0 esiste.
-OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS.explanation=L''operazione non \u00e8 riuscita poich\u00e9 l''ID client {0} gi\u00e0 esiste.  
+OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS.explanation=L'operazione non \u00e8 riuscita poich\u00e9 l'ID client gi\u00e0 esiste.  
 OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS.useraction=Riesaminare la documentazione API per questo servizio e ritentare la richiesta con i parametri appropriati.
 
-OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE=CWWKS1430E: Un aggiornamento del client ha avuto esito negativo.
-OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE.explanation=La richiesta di aggiornamento indica che la segretezza del client venga preservata, ma per la registrazione esistente non \u00e8 impostata alcuna segretezza.  
+OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE=CWWKS1430E: Un aggiornamento del client ha avuto esito negativo. La richiesta di aggiornamento indica che la segretezza del client deve essere preservata, ma per la registrazione esistente non \u00e8 impostata alcuna segretezza.
+OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE.explanation=La richiesta di aggiornamento indica che la segretezza del client deve essere preservata, ma per la registrazione esistente non \u00e8 impostata alcuna segretezza.
 OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE.useraction=Riesaminare la documentazione API per questo servizio e ritentare la richiesta con i parametri appropriati.
 
-OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE=CWWKS1431E: Un aggiornamento del client ha avuto esito negativo.
-OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE.explanation=Una richiesta di aggiornamento per un client pubblico non deve specificare una segretezza del client.  
+OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE=CWWKS1431E: Un aggiornamento del client ha avuto esito negativo. Una richiesta di aggiornamento per un client pubblico non deve specificare una segretezza del client.
+OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE.explanation=Una richiesta di aggiornamento per un client pubblico non deve specificare una segretezza del client.
 OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE.useraction=Riesaminare la documentazione API per questo servizio e ritentare la richiesta con i parametri appropriati.
 
-OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG=CWWKS1432E: Un aggiornamento del client ha avuto esito negativo.
-OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG.explanation=La richiesta non pu\u00f2 essere completata perch\u00e9 specifica una configurazione non valida, dato lo stato corrente della registrazione del client.  
+OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG=CWWKS1432E: Un aggiornamento del client ha avuto esito negativo. Il segreto del client non pu\u00f2 essere aggiornato perch\u00e9 la richiesta specifica  una configurazione non valida, dato lo stato corrente della registrazione del client.
+OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG.explanation=La richiesta non pu\u00f2 essere completata perch\u00e9 specifica una configurazione non valida, dato lo stato corrente della registrazione del client.
 OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG.useraction=Riesaminare la documentazione API per questo servizio e ritentare la richiesta con i parametri appropriati.
 
 OAUTH_UNSUPPORTED_METHOD=CWWKS1433E: Il metodo HTTP {0} non \u00e8 supportato per il servizio {1}.
@@ -236,6 +240,10 @@ OAUTH_SERVER_MULTIPLE_TOKEN_INTROSPECT_PROVIDER_CONFIGURED.useraction=Non sono r
 OAUTH_SERVER_INVALID_ACCESS_TOKEN=CWWKS1454E: La richiesta non \u00e8 riuscita perch\u00e9 access_token non \u00e8 valido o \u00e8 scaduto.
 OAUTH_SERVER_INVALID_ACCESS_TOKEN.explanation=Elaborazione richiesta non riuscita perch\u00e9 access_token non \u00e8 valido.
 OAUTH_SERVER_INVALID_ACCESS_TOKEN.useraction=Assicurarsi che access_token sia valido e non sia scaduto.
+
+#This message can be appended to 1455E under some conditions
+# do not translate keyStoreRef
+CHECK_KEYSTORE_REF=L'attributo di configurazione del provider OpenId Connect keyStoreRef potrebbe essere mancante o non corretto.
 
 #This message is intended to be a child of CWWKS1456E
 #0=signatureAlgorithm, 1=exception or error message if any
@@ -385,11 +393,11 @@ OAUTH_SERVER_APPNAME_IN_USE_OR_TOO_LONG.explanation=\u00c8 stata richiesta una p
 OAUTH_SERVER_APPNAME_IN_USE_OR_TOO_LONG.useraction=Eliminare la password o il token applicazione esistente prima di richiederne uno nuovo per questa applicazione, o utilizzare un nome applicazione differente.
 
 # Do not translate user_id or tokenManager
-OAUTH_SERVER_USERNAME_PARAM_NOT_SUPPORTED=CWWKS1483E: La richiesta {0} inviata all''URI {1} non \u00e8 valida.  \u00c8 stato specificato l''attributo user_id, ma l''utente autenticato non ha l''autor izzazione per utilizzarlo.
+OAUTH_SERVER_USERNAME_PARAM_NOT_SUPPORTED=CWWKS1483E: La richiesta {0} inviata all''URI {1} non \u00e8 valida. \u00c8 stato specificato l''attributo user_id, ma l''utente autenticato non ha l''autor izzazione per utilizzarlo.
 OAUTH_SERVER_USERNAME_PARAM_NOT_SUPPORTED.explanation=Solo gli utenti con il ruolo  tokenManager possono fornire l'attributo user_id per questo URI di richiesta.
 OAUTH_SERVER_USERNAME_PARAM_NOT_SUPPORTED.useraction=Emettere di nuovo la richiesta con il ruolo tokenManager richiesto e user_id valido.
 
-OAUTH_INVALID_REQUEST_NO_ID_SECRET=CWWKS1484E: La richiesta {0} inviata all''URI {1} non \u00e8 valida.  Mancano l''ID client, il segreto client o sia l''ID client che il segreto client.
+OAUTH_INVALID_REQUEST_NO_ID_SECRET=CWWKS1484E: La richiesta {0} inviata all''URI {1} non \u00e8 valida. Mancano l''ID client, il segreto client o sia l''ID client che il segreto client.
 OAUTH_INVALID_REQUEST_NO_ID_SECRET.explanation=La richiesta indicata non \u00e8 valida. \u00c8 necessario fornire un ID client e un segreto client validi nell'intestazione Autorizzazione per la richiesta inviata all'URI.
 OAUTH_INVALID_REQUEST_NO_ID_SECRET.useraction=Correggere la richiesta. Emettere di nuovo la richiesta con un ID client e un segreto client validi nell'intestazione Autorizzazione.
 
@@ -415,7 +423,7 @@ OAUTH_INVALID_ATINREQUEST_AUTHN_FAIL=CWWKS1489E: L''autenticazione client non \u
 OAUTH_INVALID_ATINREQUEST_AUTHN_FAIL.explanation=\u00c8 necessario fornire un token di accesso valido con l'URI della richiesta specificato.
 OAUTH_INVALID_ATINREQUEST_AUTHN_FAIL.useraction=Emettere di nuovo la richiesta con un token di accesso valido.
 
-OAUTH_INVALID_REQUEST_NO_TOKEN=CWWKS1490E: La richiesta {0} inviata all''URI {1} non \u00e8 valida.  Il token di accesso \u00e8 mancante.
+OAUTH_INVALID_REQUEST_NO_TOKEN=CWWKS1490E: La richiesta {0} inviata all''URI {1} non \u00e8 valida. Il token di accesso \u00e8 mancante.
 OAUTH_INVALID_REQUEST_NO_TOKEN.explanation=La richiesta specificata deve includere un token di accesso valido.
 OAUTH_INVALID_REQUEST_NO_TOKEN.useraction=Emettere di nuovo la richiesta con un token di accesso valido.
 
@@ -423,7 +431,7 @@ OAUTH_INVALID_REQUEST_NO_AUTHHEADER=CWWKS1491E: Nella richiesta {0} mancano le i
 OAUTH_INVALID_REQUEST_NO_AUTHHEADER.explanation=La richiesta specificata deve includere le informazioni di autenticazione client.
 OAUTH_INVALID_REQUEST_NO_AUTHHEADER.useraction=Emettere di nuovo la richiesta con informazioni di autenticazione client valide nell'intestazione Autorizzazione.
 
-OAUTH_CLIENTINREQ_DONOT_MATCH_AT=CWWKS1492E: La richiesta {0} inviata all''URI {1} non \u00e8 valida.  Il client rappresentato dal token di accesso non corrisponde al client fornito nella richiesta.
+OAUTH_CLIENTINREQ_DONOT_MATCH_AT=CWWKS1492E: La richiesta {0} inviata all''URI {1} non \u00e8 valida. Il client rappresentato dal token di accesso non corrisponde al client fornito nella richiesta.
 OAUTH_CLIENTINREQ_DONOT_MATCH_AT.explanation=La richiesta specificata deve includere un token di accesso per lo stesso client che viene fornito nell'intestazione Autorizzazione.
 OAUTH_CLIENTINREQ_DONOT_MATCH_AT.useraction=Emettere di nuovo la richiesta con un token di accesso per il client che viene fornito nell'intestazione Autorizzazione.
 
@@ -432,9 +440,18 @@ OAUTH_AUTH_HEADER_NOT_BASIC_AUTH.explanation=La richiesta specificata deve conte
 OAUTH_AUTH_HEADER_NOT_BASIC_AUTH.useraction=Assicurarsi che la richiesta utilizzi lo schema di autenticazione di base per includere le credenziali del client OAuth.
 
 # Do not translate internalClientId, internalClientSecret, isEnabled, appPasswordAllowed, or appTokenAllowed
-OAUTH_UI_ENDPOINT_NOT_ENABLED=CWWKS1494E: La richiesta inviata all''URI {0} viene ignorata perch\u00e9 l''URI non \u00e8 abilitato. Uno o pi\u00f9 attributi del client o del provider non sono impostati. Verificare che siano configurati gli attributi provider internalClientId e internalClientSecret. Verificare che siano configurati gli attributi client isEnabled, appPasswordAllowed o appTokenAllowed.
+OAUTH_UI_ENDPOINT_NOT_ENABLED=CWWKS1494W: La richiesta inviata all''URI {0} non pu\u00f2 essere elaborata perch\u00e9 uno o pi\u00f9 attributi del client o del provider non sono impostati. Verificare che siano configurati gli attributi provider internalClientId e internalClientSecret. Verificare che siano configurati gli attributi client isEnabled, appPasswordAllowed o appTokenAllowed.
 OAUTH_UI_ENDPOINT_NOT_ENABLED.explanation=Gli attributi client e provider devono essere impostati affinch\u00e9 l'URI elabori le richieste.
 OAUTH_UI_ENDPOINT_NOT_ENABLED.useraction=Impostare gli attributi client e provider correttamente in modo che il provider possa elaborare la richiesta.
+
+# Java runtime level
+JAVA8_REQUIRED=CWWKS1495W: Il provider OpenID Connect non pu\u00f2 elaborare la richiesta URI [{0}] perch\u00e9 la versione Java \u00e8 inferiore a Java 8. \u00c8 richiesto Java 8 o superiore.
+JAVA8_REQUIRED.explanation=La versione di Java in uso non \u00e8 la 8 o successive.
+JAVA8_REQUIRED.useraction=Installare Java versione 8 o successive.
+
+JAVA8_REQUIRED_FOR_AT_HASHING=CWWKS1496W: Il provider OpenID  Connect {0} ha l''attributo di configurazione {1} impostato per utilizzare l''algoritmo {2}, ci\u00f2 richiede Java 8 o successive. Il provider OpenID Connect specificato ignora l''impostazione {3}.
+JAVA8_REQUIRED_FOR_AT_HASHING.explanation=La versione di Java in uso non \u00e8 la 8 o successive.
+JAVA8_REQUIRED_FOR_AT_HASHING.useraction=Installare Java versione 8 o successive per poter utilizzare l'opzione di configurazione indicata.
 
 # html title of logout page
 LOGOUT_PAGE_TITLE=Uscita

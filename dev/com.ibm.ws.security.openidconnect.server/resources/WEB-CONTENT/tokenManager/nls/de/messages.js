@@ -21,6 +21,7 @@ var messages = {
     "DELETE": "Löschen",
     "DONE": "Fertig",
     "EDIT": "Bearbeiten",
+    "FALSE": "False",
     "GENERATE": "Generieren",
     "LOADING": "Wird geladen",
     "LOGOUT": "Anmelden",
@@ -33,13 +34,16 @@ var messages = {
     "REGENERATE": "Neu generieren",
     "REGISTER": "Registrieren",
     "TABLE_BATCH_BAR": "Tabellenaktionsleiste",
-    "TRY_AGAIN": "Wiederholen Sie den Vorgang...",
+    "TABLE_FIELD_SORT_ASC": "Die Tabelle ist nach {0} in aufsteigender Reihenfolge sortiert. ",   // {0} - column name (ie. 'Name', 'Client ID')
+    "TABLE_FIELD_SORT_DESC": "Die Tabelle ist nach {0} in absteigender Reihenfolge sortiert. ", // {0} - column name (ie. 'Name', 'Client ID')
+    "TRUE": "True",
+    "TRY_AGAIN": "Vorgang wiederholen...",
     "UPDATE": "Aktualisieren",
 
     // Common Column Names
     "CLIENT_NAME_COL": "Clientname",
-    "EXPIRES_COL": "Ablaufzeit",
-    "ISSUED_COL": "Ausgegeben am",
+    "EXPIRES_COL": "Ablaufdatum",
+    "ISSUED_COL": "Austelldatum",
     "NAME_COL": "Name",
     "TYPE_COL": "Typ",
 
@@ -49,6 +53,7 @@ var messages = {
     "TOKEN_MGR_TITLE": "Token löschen",
     "TOKEN_MGR_DESC": "Löscht die app-passwords und app-tokens für einen angegebenen Benutzer. ",
     "TOKEN_MGR_SEARCH_PLACEHOLDER": "Benutzer-ID eingeben",
+    "TABLE_FILLED_WITH": "Die Tabelle wurde aktualisiert, um {0} Authentifizierungen anzuzeigen, die zur Benutzer-ID {1} gehören.",  // 0 - number of entries in table; 1 - user id
     "DELETE_SELECTED": "Ausgewählte app-passwords und app-tokens löschen",
     "DELETE_ARIA": "{0} mit dem Namen {1} löschen",         // 0 - 'app-password' or 'app-token'; 1 - name
     "DELETE_PW": "Dieses app-password löschen",
@@ -66,7 +71,7 @@ var messages = {
     "SINGLE_ITEM_SELECTED": "1 Element ausgewählt",
     "ITEMS_SELECTED": "{0} Elemente ausgewählt",            // 0 - number
     "SELECT_ALL_AUTHS": "Alle app-passwords und app-tokens für diesen Benutzer auswählen",
-    "SELECT_SPECIFIC": "Wählen Sie das {0} mit dem Namen {1} aus, das gelöscht werden soll",  // 0 - 'app-password' or 'app-token; 1 - name
+    "SELECT_SPECIFIC": "Wählen Sie das {0} mit dem Namen {1} aus, das gelöscht werden soll.",  // 0 - 'app-password' or 'app-token; 1 - name
     "NO_QUERY": "Suchen Sie etwas Bestimmtes? Geben Sie eine Benutzer-ID ein, um die zugehörigen app-passwords und app-tokens anzuzeigen.",
     "GENERIC_FETCH_FAIL": "Fehler beim Abrufen von {0}",      // 0 - 'App-Passwords' or 'App-Tokens'
     "GENERIC_FETCH_FAIL_MSG": "Die Liste mit {0}, die zu {1} gehört, konnte nicht abgerufen werden.", // 0 - 'app-passwords' or 'app-tokens; 1 - user id

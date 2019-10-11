@@ -113,8 +113,12 @@ OAUTH_LENGTH_TOO_LARGE_AND_CHANGED=CWWKS1422I: El valor de {0} en la configuraci
 OAUTH_LENGTH_TOO_LARGE_AND_CHANGED.explanation=El valor del atributo indicado es demasiado grande.
 OAUTH_LENGTH_TOO_LARGE_AND_CHANGED.useraction=Establezca el valor del atributo indicado en un valor correcto.  
 
+OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR=CWWKS1423E: El registro o la autenticaci\u00f3n de cliente de OAuth ha fallado porque los datos de cliente contienen el car\u00e1cter "{0}" no permitido.
+OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR.explanation=El car\u00e1cter no est\u00e1 permitido en los datos de cliente.
+OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR.useraction=Elimine el car\u00e1cter no permitido y vuelva a enviar la solicitud. 
+
 OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND=CWWKS1424E: No se ha encontrado el ID de cliente {0}.
-OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.explanation=La solicitud conten\u00eda un ID de cliente {0} que no se ha encontrado.  
+OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.explanation=La solicitud conten\u00eda un ID de cliente que no se ha encontrado.  
 OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.useraction=Repita la solicitud con un ID de cliente v\u00e1lido.
 
 OAUTH_CLIENT_REGISTRATION_INVALID_REQUEST_PATH=CWWKS1425E: Se ha realizado la solicitud de registro de un URI incorrecto.
@@ -134,19 +138,19 @@ OAUTH_CLIENT_REGISTRATION_MALFORMED_REQUEST.explanation=El JSON en el cuerpo de 
 OAUTH_CLIENT_REGISTRATION_MALFORMED_REQUEST.useraction=Revise la documentaci\u00f3n de la API para este servicio y repita la solicitud.
 
 OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS=CWWKS1429E: Ya existe el ID de cliente {0}.
-OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS.explanation=La operaci\u00f3n ha producido un error porque ya existe el ID de cliente {0}.  
+OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS.explanation=La operaci\u00f3n ha fallado porque el ID de cliente ya existe.  
 OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS.useraction=Revise la documentaci\u00f3n de la API para este servicio y repita la solicitud con los par\u00e1metros adecuados.
 
-OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE=CWWKS1430E: Falla una actualizaci\u00f3n del cliente.
-OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE.explanation=La solicitud de actualizaci\u00f3n indica que el secreto de cliente se conservar\u00e1, pero el registro existente no tiene establecido ning\u00fan secreto.  
+OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE=CWWKS1430E: Falla una actualizaci\u00f3n del cliente. La solicitud de actualizaci\u00f3n indica que el secreto de cliente se debe conservar, pero el registro existente no tiene establecido ning\u00fan secreto.
+OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE.explanation=La solicitud de actualizaci\u00f3n indica que el secreto de cliente se debe conservar, pero el registro existente no tiene establecido ning\u00fan secreto.
 OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE.useraction=Revise la documentaci\u00f3n de la API para este servicio y repita la solicitud con los par\u00e1metros adecuados.
 
-OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE=CWWKS1431E: Falla una actualizaci\u00f3n del cliente.
-OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE.explanation=Una solicitud de actualizaci\u00f3n de un cliente p\u00fablico no debe especificar un secreto de cliente.  
+OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE=CWWKS1431E: Falla una actualizaci\u00f3n del cliente. Una solicitud de actualizaci\u00f3n de un cliente p\u00fablico no debe especificar un secreto de cliente.
+OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE.explanation=Una solicitud de actualizaci\u00f3n de un cliente p\u00fablico no debe especificar un secreto de cliente.
 OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE.useraction=Revise la documentaci\u00f3n de la API para este servicio y repita la solicitud con los par\u00e1metros adecuados.
 
-OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG=CWWKS1432E: Falla una actualizaci\u00f3n del cliente.
-OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG.explanation=La solicitud no se puede completar porque especifica una configuraci\u00f3n no v\u00e1lida dado el estado actual del registro del cliente.  
+OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG=CWWKS1432E: Falla una actualizaci\u00f3n del cliente. El secreto de cliente no se puede actualizar porque la solicitud especifica una configuraci\u00f3n no v\u00e1lida dado el estado actual del registro del cliente.
+OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG.explanation=La solicitud no se puede completar porque especifica una configuraci\u00f3n no v\u00e1lida dado el estado actual del registro del cliente.
 OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG.useraction=Revise la documentaci\u00f3n de la API para este servicio y repita la solicitud con los par\u00e1metros adecuados.
 
 OAUTH_UNSUPPORTED_METHOD=CWWKS1433E: El m\u00e9todo HTTP {0} no se admite para el servicio {1}.
@@ -236,6 +240,10 @@ OAUTH_SERVER_MULTIPLE_TOKEN_INTROSPECT_PROVIDER_CONFIGURED.useraction=No es nece
 OAUTH_SERVER_INVALID_ACCESS_TOKEN=CWWKS1454E: La solicitud ha fallado porque la se\u00f1al de acceso no es v\u00e1lida o ha caducado.
 OAUTH_SERVER_INVALID_ACCESS_TOKEN.explanation=No se ha podido procesar la solicitud porque la se\u00f1al de acceso no es v\u00e1lida.
 OAUTH_SERVER_INVALID_ACCESS_TOKEN.useraction=Aseg\u00farese de que la se\u00f1al de acceso es v\u00e1lida y no ha caducado.
+
+#This message can be appended to 1455E under some conditions
+# do not translate keyStoreRef
+CHECK_KEYSTORE_REF=Es posible que el atributo keyStoreRef de la configuraci\u00f3n del proveedor de OpenId Connect no est\u00e9 presente o sea incorrecto.
 
 #This message is intended to be a child of CWWKS1456E
 #0=signatureAlgorithm, 1=exception or error message if any
@@ -432,9 +440,18 @@ OAUTH_AUTH_HEADER_NOT_BASIC_AUTH.explanation=La solicitud especificada debe cont
 OAUTH_AUTH_HEADER_NOT_BASIC_AUTH.useraction=Aseg\u00farese de que la solicitud utiliza el esquema de autenticaci\u00f3n b\u00e1sica para incluir las credenciales del cliente OAuth.
 
 # Do not translate internalClientId, internalClientSecret, isEnabled, appPasswordAllowed, or appTokenAllowed
-OAUTH_UI_ENDPOINT_NOT_ENABLED=CWWKS1494E: La solicitud enviada al URI {0} se ignora porque el URI no est\u00e1 habilitado. Uno o m\u00e1s de los atributos de cliente o proveedor no se han establecido. Verifique que los atributos internalClientId y internalClientSecret se han configurado. Verifique que los atributos de cliente isEnabled, appPasswordAllowed o appTokenAllowed se han configurado.
+OAUTH_UI_ENDPOINT_NOT_ENABLED=CWWKS1494W: La solicitud enviada al URI {0} no se puede procesar porque uno o varios de los atributos de cliente o proveedor no se han establecido. Verifique que los atributos internalClientId y internalClientSecret se han configurado. Verifique que los atributos de cliente isEnabled, appPasswordAllowed o appTokenAllowed se han configurado.
 OAUTH_UI_ENDPOINT_NOT_ENABLED.explanation=Los atributos de cliente y proveedor deben establecerse para que el URI procese solicitudes.
 OAUTH_UI_ENDPOINT_NOT_ENABLED.useraction=Establezca correctamente los atributos de cliente y proveedor para que el proveedor pueda procesar la solicitud.
+
+# Java runtime level
+JAVA8_REQUIRED=CWWKS1495W: El proveedor de OpenID Connect no puede procesar la solicitud de URI [{0}] porque la versi\u00f3n de Java es inferior a Java 8. Se requiere Java 8 o superior.
+JAVA8_REQUIRED.explanation=La versi\u00f3n de Java en uso no es la 8 o superior.
+JAVA8_REQUIRED.useraction=Instale Java versi\u00f3n 8 o superiores.
+
+JAVA8_REQUIRED_FOR_AT_HASHING=CWWKS1496W: El proveedor de OpenID Connect {0} tiene el atributo de configuraci\u00f3n {1} establecido para utilizar el algoritmo {2} que requiere Java 8 o superior. El proveedor de OpenID Connect especificado no tiene en cuenta el valor {3}.
+JAVA8_REQUIRED_FOR_AT_HASHING.explanation=La versi\u00f3n de Java en uso no es la 8 o superior.
+JAVA8_REQUIRED_FOR_AT_HASHING.useraction=Instale Java versi\u00f3n 8 o superior para utilizar la opci\u00f3n de configuraci\u00f3n mencionada.
 
 # html title of logout page
 LOGOUT_PAGE_TITLE=Cierre de sesi\u00f3n

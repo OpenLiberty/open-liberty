@@ -64,12 +64,12 @@ String authHeader = (String) request.getAttribute("ui_authheader");
             </div>
         </div>
     </div>
-    <table id="tm_table" class="tool_table" aria-describedby="tm_desc">
+    <table id="tm_table" role="grid" class="tool_table" aria-labelledby="tm_desc" aria-describedby="tm_desc">
         <thead>
-            <tr>
+            <tr role="row">
                 <th id="table_select_column" class="table_column_checkbox" scope="col">
                     <div class="tool_checkbox_wrapper">
-                        <input id="tm_select_all" class="tool_checkbox" type="checkbox" aria-checked="false" data-externalizedAriaLabel="SELECT_ALL_AUTHS">
+                        <input id="tm_select_all" class="tool_checkbox" type="checkbox" role="checkbox" aria-checked="false" data-externalizedAriaLabel="SELECT_ALL_AUTHS">
                         <div class="tool_checkbox_label" data-externalizedAriaLabel="SELECT_ALL_AUTHS" data-externalizedStringTitle="SELECT_ALL_AUTHS"></div>
                     </div>
                 </th>
@@ -82,7 +82,7 @@ String authHeader = (String) request.getAttribute("ui_authheader");
                 <th id="table_type_column" data-externalizedString="TYPE_COL" scope="col" tabindex='-1'></th>
                 <th id="table_issued_column" data-externalizedString="ISSUED_COL" scope="col" tabindex='-1'></th>
                 <th id="table_expires_column" data-externalizedString="EXPIRES_COL" scope="col" tabindex='-1'></th>
-                <th class="table_button_column" tabindex='-1'></th>
+                <th class="table_button_column" scope="col" tabindex='-1'></th>
             </tr>
         </thead>
         <tbody>

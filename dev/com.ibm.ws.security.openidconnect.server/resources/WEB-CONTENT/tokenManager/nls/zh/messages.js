@@ -21,6 +21,7 @@ var messages = {
     "DELETE": "删除",
     "DONE": "完成",
     "EDIT": "编辑",
+    "FALSE": "False",
     "GENERATE": "生成",
     "LOADING": "正在加载",
     "LOGOUT": "注销",
@@ -33,6 +34,9 @@ var messages = {
     "REGENERATE": "重新生成",
     "REGISTER": "注册",
     "TABLE_BATCH_BAR": "表操作栏",
+    "TABLE_FIELD_SORT_ASC": "表按 {0} 以升序进行排序。",   // {0} - column name (ie. 'Name', 'Client ID')
+    "TABLE_FIELD_SORT_DESC": "表按 {0} 以降序进行排序。", // {0} - column name (ie. 'Name', 'Client ID')
+    "TRUE": "True",
     "TRY_AGAIN": "请重试...",
     "UPDATE": "更新",
 
@@ -47,38 +51,39 @@ var messages = {
     // 'app-token' and 'app-password' are keywords - don't translate
     // name - user defined name given to the app-password/app-token; user id - user's login name
     "TOKEN_MGR_TITLE": "删除令牌",
-    "TOKEN_MGR_DESC": "删除所指定用户的应用程序密码和应用程序令牌。",
+    "TOKEN_MGR_DESC": "删除所指定用户的 app-password 和 app-token。",
     "TOKEN_MGR_SEARCH_PLACEHOLDER": "输入用户标识",
-    "DELETE_SELECTED": "删除所选应用程序密码和应用程序令牌",
+    "TABLE_FILLED_WITH": "表已更新，将显示属于 {1} 的 {0} 项认证。",  // 0 - number of entries in table; 1 - user id
+    "DELETE_SELECTED": "删除所选 app-password 和 app-token。",
     "DELETE_ARIA": "删除名为 {1} 的 {0}",         // 0 - 'app-password' or 'app-token'; 1 - name
-    "DELETE_PW": "删除此应用程序密码",
-    "DELETE_TOKEN": "删除此应用程序令牌",
+    "DELETE_PW": "删除此 app-password",
+    "DELETE_TOKEN": "删除此 app-token",
     "DELETE_FOR_USERID": "对应 {1} 的 {0}",                // 0 - name; 1 - user id
-    "DELETE_WARNING_PW": "此操作将移除当前分配的应用程序密码。",
-    "DELETE_WARNING_TOKEN": "此操作将移除当前分配的应用程序令牌。",
-    "DELETE_MANY": "删除应用程序密码/应用程序令牌",
+    "DELETE_WARNING_PW": "此操作将移除当前分配的 app-password。",
+    "DELETE_WARNING_TOKEN": "此操作将移除当前分配的 app-token。",
+    "DELETE_MANY": "删除 App-Password/App-Token",
     "DELETE_MANY_FOR": "已分配给 {0}",              // 0 - user id
-    "DELETE_ONE_MESSAGE": "此操作将删除所选应用程序密码/应用程序令牌。",
-    "DELETE_MANY_MESSAGE": "此操作将删除 {0} 个所选应用程序密码/应用程序令牌。",  // 0 - number
-    "DELETE_ALL_MESSAGE": "此操作将删除属于 {0} 的所有应用程序密码/应用程序令牌。", // 0 - user id
+    "DELETE_ONE_MESSAGE": "此操作将删除所选 app-password/app-token。",
+    "DELETE_MANY_MESSAGE": "此操作将删除 {0} 个所选 app-password/app-token。",  // 0 - number
+    "DELETE_ALL_MESSAGE": "此操作将删除属于 {0} 的所有 app-password/app-token。", // 0 - user id
     "DELETE_NONE": "选择要删除的项",
-    "DELETE_NONE_MESSAGE": "选中复选框以指示应删除的应用程序密码或应用程序令牌。",
+    "DELETE_NONE_MESSAGE": "选中复选框以指示应删除的 app-password 或 app-token。",
     "SINGLE_ITEM_SELECTED": "已选择 1 项",
     "ITEMS_SELECTED": "已选择 {0} 项",            // 0 - number
-    "SELECT_ALL_AUTHS": "选择对应此用户的所有应用程序密码和应用程序令牌",
-    "SELECT_SPECIFIC": "选择删除名为 {1} 的 {0}",  // 0 - 'app-password' or 'app-token; 1 - name
-    "NO_QUERY": "想查找某些内容？输入用户标识以查看其应用程序密码和应用程序令牌。",
+    "SELECT_ALL_AUTHS": "选择此用户的所有 app-password 和 app-token。",
+    "SELECT_SPECIFIC": "选择删除名为 {1} 的 {0}。",  // 0 - 'app-password' or 'app-token; 1 - name
+    "NO_QUERY": "想查找某些内容？请输入用户标识以查看其 app-password 和 app-token。",
     "GENERIC_FETCH_FAIL": "检索 {0} 时出错",      // 0 - 'App-Passwords' or 'App-Tokens'
     "GENERIC_FETCH_FAIL_MSG": "无法获取属于 {1} 的 {0} 列表。", // 0 - 'app-passwords' or 'app-tokens; 1 - user id
     "GENERIC_DELETE_FAIL": "删除 {0} 时出错",       // 0 - 'App-Password' or 'App-Token'
     "GENERIC_DELETE_FAIL_MSG": "删除名为 {1} 的 {0} 时发生了错误。",  // 0 - 'app-password' or 'app-token'; 1 - name
     "GENERIC_DELETE_ALL_FAIL_MSG": "删除对应 {1} 的 {0} 时发生了错误。",     // 0 - 'app-passwords' or 'app-tokens'; 1 - user id
     "GENERIC_DELETE_FAIL_NOTYPES": "删除时出错",
-    "GENERIC_DELETE_FAIL_NOTYPES_ONE_MSG": "删除以下应用程序密码或应用程序令牌时发生了错误。",
-    "GENERIC_DELETE_FAIL_NOTYPES_MSG": "删除以下 {0} 个应用程序密码和应用程序令牌时发生了错误。",  // 0 - number
+    "GENERIC_DELETE_FAIL_NOTYPES_ONE_MSG": "删除以下 app-password 或 app-token 时发生了错误。",
+    "GENERIC_DELETE_FAIL_NOTYPES_MSG": "删除以下 {0} 个 app-password 和 app-token 时发生了错误。",  // 0 - number
     "IDENTIFY_AUTH": "{0} {1}",   // 0 - 'app-password' or 'app-token'; 1 - name
     "GENERIC_FETCH_ALL_FAIL": "检索认证时出错",
-    "GENERIC_FETCH_ALL_FAIL_MSG": "无法获取属于 {0} 的应用程序密码和应用程序令牌列表。",   // 0 - user id
+    "GENERIC_FETCH_ALL_FAIL_MSG": "无法获取属于 {0} 的 app-password 和 app-token 列表。",   // 0 - user id
     "GENERIC_NOT_CONFIGURED": "未配置客户机",
     "GENERIC_NOT_CONFIGURED_MSG": "未配置 appPasswordAllowed 和 appTokenAllowed 客户机属性。无法检索数据。"
 };

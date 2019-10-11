@@ -10,3 +10,4 @@ visibility=private
 -files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.connectionmanager_1.1-javadoc.zip
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

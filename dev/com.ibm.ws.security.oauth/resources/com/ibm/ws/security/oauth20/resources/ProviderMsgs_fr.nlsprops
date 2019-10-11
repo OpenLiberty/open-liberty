@@ -341,3 +341,14 @@ security.oauth20.apppwtok.revoke.disallowed=CWOAU0078E: Une tentative de r\u00e9
 security.oauth20.apppwtok.revoke.disallowed.explanation=Les mots de passe d'application ou les jetons d'application doivent \u00eatre r\u00e9voqu\u00e9s sur les noeuds finaux des mots de passe d'application (app-passwords) et des jetons d'application (app-tokens) respectivement.
 security.oauth20.apppwtok.revoke.disallowed.useraction=Emettez \u00e0 nouveau la demande avec l'URI du noeud final appropri\u00e9 pour r\u00e9voquer des mots de passe d'application ou des jetons d'application.
 
+security.oauth20.pkce.invalid.method.error=CWOAU0079E: Le param\u00e8tre code_challenge_method dans la demande contient un algorithme de transformation non pris en charge : [{0}]. Les algorithmes de transformation pris en charge sont : plain, S256.
+security.oauth20.pkce.invalid.method.error.explanation=Le fournisseur OAuth ne prend pas en charge l'algorithme de transformation indiqu\u00e9. 
+security.oauth20.pkce.invalid.method.error.useraction=Utilisez l'un des algorithmes de transformation mentionn\u00e9s dans le message.
+
+security.oauth20.pkce.codeverifier.length.error=CWOAU0080E: La longueur du param\u00e8tre code_verifier est [{0}]. Elle doit \u00eatre comprise entre 43 et 128 caract\u00e8res.
+security.oauth20.pkce.codeverifier.length.error.explanation=Le param\u00e8tre code_verifier doit avoir entre 43 et 128 caract\u00e8res. 
+security.oauth20.pkce.codeverifier.length.error.useraction=Envoyez \u00e0 nouveau les demandes d'autorisation et de jeton avec le param\u00e8tre code_verifier mis \u00e0 jour conforme \u00e0 la longueur indiqu\u00e9e.
+
+security.oauth20.pkce.error.mismatch.codeverifier=CWOAU0081E: Les param\u00e8tres code_challenge [{0}] et code_verifier [{1}] ne concordent pas. 
+security.oauth20.pkce.error.mismatch.codeverifier.explanation=Le fournisseur OAuth utilise le param\u00e8tre code_challenge_method indiqu\u00e9 dans la demande d'autorisation et transforme le param\u00e8tre code_verifier, sauf si le param\u00e8tre code_challenge_method est d\u00e9fini sur plain. La valeur transform\u00e9e doit correspondre au param\u00e8tre code_challenge dans la demande d'autorisation.
+security.oauth20.pkce.error.mismatch.codeverifier.useraction=Veillez \u00e0 envoyer les param\u00e8tres code_challenge et code_verifier correspondants ainsi que l'algorithme de transformation appropri\u00e9 avec les demandes d'autorisation et de jeton.

@@ -41,8 +41,8 @@ public class SRTInputStream31 extends SRTInputStream
     private InterChannelCallback callback;
     //The request we use to find out if Async has been started
     private SRTServletRequest31 request;
-    private Object lockObj = new Object() {};
-    private Object completeLockObj = new Object() {};  
+    private final Object lockObj = new Integer(0);
+    private final Object completeLockObj = new Integer(1);  
     private boolean asyncReadOutstanding = false;
     private boolean readLineCall = false;
     private boolean isClosed = false;

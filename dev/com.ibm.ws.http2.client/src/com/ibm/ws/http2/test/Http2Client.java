@@ -53,6 +53,7 @@ public class Http2Client {
     private final AtomicBoolean isTestDone = new AtomicBoolean(false);
     private final AtomicBoolean didTimeout = new AtomicBoolean(false);
     private final AtomicBoolean lockWaitFor = new AtomicBoolean(true);
+    private boolean waitForAck = true;
 
     private final Map<Frame, Frame> sendFrameConditional = new HashMap<Frame, Frame>();
     private final List<SimpleEntry<Frame, Frame>> sendFrameConditionalList = new LinkedList<AbstractMap.SimpleEntry<Frame, Frame>>();
@@ -80,6 +81,32 @@ public class Http2Client {
         TimeoutHelper timeoutHelper = new TimeoutHelper(blockUntilConnectionIsDone, defaultTimeOutToSendFrame);
         timeoutHelper.setPriority(Thread.MIN_PRIORITY);
         timeoutHelper.start();
+    }
+
+    /**
+     * Create an Http2Client with the option to use HTTP/2 with prior knowledge
+     * 
+     * @param hostName
+     * @param httpDefaultPort
+     * @param blockUntilConnectionIsDone
+     * @param defaultTimeOutToSendFrame
+     * @param useHttp2WithPriorKnowledge
+     */
+    public Http2Client(String hostName, int httpDefaultPort, CountDownLatch blockUntilConnectionIsDone, long defaultTimeOutToSendFrame, 
+            boolean useHttp2WithPriorKnowledge) {
+        this(hostName, httpDefaultPort, blockUntilConnectionIsDone, defaultTimeOutToSendFrame);
+        if (useHttp2WithPriorKnowledge) {
+            // tell the connection not to wait for a the 101 switching protocols response since we're not using h2c here
+            h2Connection.setServer101ResponseReceived(true);
+        }
+    }
+
+    /**
+     * By default, this Http2Client will wait for ACK responses when frames are sent that require one.
+     * Invoking this method disables that behavior.
+     */
+    public void doNotWaitForAck() {
+        waitForAck = false;
     }
 
     public void sendUpgradeHeader(String requestUri) {
@@ -490,8 +517,9 @@ public class Http2Client {
          */
         @Override
         public void sentSettingsFrame() {
-            // TODO Auto-generated method stub
-            h2Connection.getWaitingForACK().set(true);
+            if (waitForAck) {
+                h2Connection.getWaitingForACK().set(true);
+            }
         }
 
         /*

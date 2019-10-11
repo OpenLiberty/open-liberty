@@ -19,6 +19,8 @@ src: \
   test-applications/defaultvalueApp/src,\
   test-applications/ifaceApp/src,\
   test-applications/ignoreApp/src,\
+  test-applications/inputFieldsApp/src,\
+  test-applications/outputFieldsApp/src,\
   test-applications/typesApp/src,\
 
 fat.project: true

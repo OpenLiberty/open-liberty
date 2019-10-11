@@ -99,4 +99,53 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
         }
     }
 
+    public void setLatch(HttpServletRequest request,
+                         HttpServletResponse response) throws Exception {
+
+        Connection con = dsTranLog.getConnection();
+        try {
+            // Statement used to drop table
+            Statement stmt = con.createStatement();
+
+            try {
+
+                long latch = 255L;
+                String updateString = "UPDATE " + "WAS_PARTNER_LOGcloud001" +
+                                      " SET RUSECTION_ID = " + latch +
+                                      " WHERE RU_ID = -1";
+                stmt.executeUpdate(updateString);
+            } catch (SQLException x) {
+                System.out.println("setLatch: caught exception - " + x);
+            }
+
+            System.out.println("setLatch: commit changes to database");
+            con.commit();
+        } catch (Exception ex) {
+            System.out.println("setLatch: caught exception in testSetup: " + ex);
+        }
+    }
+
+    public void setPeerOwnership(HttpServletRequest request,
+                                 HttpServletResponse response) throws Exception {
+
+        Connection con = dsTranLog.getConnection();
+        try {
+            // Statement used to drop table
+            Statement stmt = con.createStatement();
+
+            try {
+                String updateString = "UPDATE " + "WAS_PARTNER_LOGcloud001" +
+                                      " SET SERVER_NAME = 'cloud002'" +
+                                      " WHERE RU_ID = -1";
+                stmt.executeUpdate(updateString);
+            } catch (SQLException x) {
+                System.out.println("setPeerOwnership: caught exception - " + x);
+            }
+
+            System.out.println("setPeerOwnership: commit changes to database");
+            con.commit();
+        } catch (Exception ex) {
+            System.out.println("setPeerOwnership: caught exception in testSetup: " + ex);
+        }
+    }
 }

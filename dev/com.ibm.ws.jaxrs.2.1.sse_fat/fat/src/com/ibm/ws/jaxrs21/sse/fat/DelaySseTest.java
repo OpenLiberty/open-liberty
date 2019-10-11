@@ -19,7 +19,6 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
@@ -35,7 +34,6 @@ import jaxrs21sse.delay.DelaySseTestServlet;
  * 4. The SSE event flows resetting the reconnect delay.
  */
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 8)
 public class DelaySseTest extends FATServletClient {
     private static final String SERVLET_PATH = "DelaySseApp/DelaySseTestServlet";
 

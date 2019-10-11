@@ -89,5 +89,8 @@ public interface WebRequest {
 
     public void setDisableClientCertFailOver(boolean isDisable);
 
-}
+    public void setPerformTAIForUnProtectedURI(boolean isPerformTAIForUnProtectedURI);
 
+    public boolean isPerformTAIForUnProtectedURI();
+
+}

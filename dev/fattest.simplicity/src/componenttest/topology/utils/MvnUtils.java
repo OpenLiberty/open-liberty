@@ -12,6 +12,7 @@ package componenttest.topology.utils;
 
 import java.io.File;
 import java.io.FileDescriptor;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -24,6 +25,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -101,9 +103,9 @@ public class MvnUtils {
     /**
      * runs "mvn clean test" in the tck folder
      *
-     * @param server the liberty server which should be used to run the TCK
+     * @param server     the liberty server which should be used to run the TCK
      * @param bucketName the name of the test project
-     * @param testName the name of the method that's being used to launch the TCK
+     * @param testName   the name of the method that's being used to launch the TCK
      */
     public static int runTCKMvnCmd(LibertyServer server, String bucketName, String testName) throws Exception {
         return runTCKMvnCmd(server, bucketName, testName, DEFAULT_SUITE_FILENAME, Collections.<String, String> emptyMap(), Collections.<String> emptySet());
@@ -112,9 +114,9 @@ public class MvnUtils {
     /**
      * runs "mvn clean test" in the tck folder, passing through all the required properties
      *
-     * @param server the liberty server which should be used to run the TCK
-     * @param bucketName the name of the test project
-     * @param testName the name of the method that's being used to launch the TCK
+     * @param server          the liberty server which should be used to run the TCK
+     * @param bucketName      the name of the test project
+     * @param testName        the name of the method that's being used to launch the TCK
      * @param additionalProps java properties to set when running the mvn command
      */
     public static int runTCKMvnCmd(LibertyServer server, String bucketName, String testName, Map<String, String> additionalProps) throws Exception {
@@ -124,14 +126,14 @@ public class MvnUtils {
     /**
      * runs "mvn clean test" in the tck folder, passing through all the required properties
      *
-     * @param server the liberty server which should be used to run the TCK
-     * @param bucketName the name of the test project
-     * @param testName the name of the method that's being used to launch the TCK
-     * @param suiteFileName the name of the suite xml file
-     * @param additionalProps java properties to set when running the mvn command
-     * @param versionedJars A set of versioned jars
-     * @return the integer return code from the mvn command. Anything other than 0 should be regarded as a failure.
-     * @throws Exception occurs if anything goes wrong in setting up and running the mvn command.
+     * @param  server          the liberty server which should be used to run the TCK
+     * @param  bucketName      the name of the test project
+     * @param  testName        the name of the method that's being used to launch the TCK
+     * @param  suiteFileName   the name of the suite xml file
+     * @param  additionalProps java properties to set when running the mvn command
+     * @param  versionedJars   A set of versioned jars
+     * @return                 the integer return code from the mvn command. Anything other than 0 should be regarded as a failure.
+     * @throws Exception       occurs if anything goes wrong in setting up and running the mvn command.
      */
     public static int runTCKMvnCmd(LibertyServer server, String bucketName, String testName, String suiteFileName, Map<String, String> additionalProps,
                                    Set<String> versionedJars) throws Exception {
@@ -142,12 +144,12 @@ public class MvnUtils {
     /**
      * Full constructor for MvnUtils. In most cases one of the static convenience methods should be used instead of calling this directly.
      *
-     * @param server the liberty server which should be used to run the TCK
-     * @param bucketName the name of the test project
-     * @param testName the name of the method that's being used to launch the TCK
-     * @param suiteFileName the name of the suite xml file
+     * @param server          the liberty server which should be used to run the TCK
+     * @param bucketName      the name of the test project
+     * @param testName        the name of the method that's being used to launch the TCK
+     * @param suiteFileName   the name of the suite xml file
      * @param additionalProps java properties to set when running the mvn command
-     * @param versionedJars A set of versioned jars
+     * @param versionedJars   A set of versioned jars
      */
     public MvnUtils(LibertyServer server, String bucketName, String testName, String suiteFileName, Map<String, String> additionalMvnProps,
                     Set<String> versionedJars) {
@@ -175,11 +177,42 @@ public class MvnUtils {
         });
 
         if (resultsFiles == null || resultsFiles.length == 0) {
-            Assert.fail("No TCK test JUnit result files were found in the results directory which suggests the TCK tests did not run - check build logs.\n"
-                        + "ResultsDir: " + surefileResultsDir.getAbsolutePath());
+            Assert.fail("No TCK test JUnit result files were found in the results directory which suggests the TCK tests did not run\n"
+                        + "Errors found in mvnOutput were:\n" +
+                        getErrorsFromMvnOutput());
         }
 
         return Arrays.asList(resultsFiles);
+    }
+
+    private String getErrorsFromMvnOutput() {
+        StringBuilder sb = new StringBuilder();
+        File installOutput = getMvnInstallOutputFile();
+        if (installOutput.exists() && installOutput.canRead()) {
+            sb.append("### maven install output:\n");
+            try (Scanner s = new Scanner(installOutput)) {
+                while (s.hasNextLine() && sb.length() < 20000) {
+                    String line = s.nextLine();
+                    if (line.startsWith("[ERROR]"))
+                        sb.append(line).append("\n");
+                }
+            } catch (FileNotFoundException e) {
+            }
+        }
+
+        File testOutput = getMvnTestOutputFile();
+        if (testOutput.exists() && testOutput.canRead()) {
+            sb.append("### maven test output:\n");
+            try (Scanner s = new Scanner(testOutput)) {
+                while (s.hasNextLine() && sb.length() < 20000) {
+                    String line = s.nextLine();
+                    if (line.startsWith("[ERROR]"))
+                        sb.append(line).append("\n");
+                }
+            } catch (FileNotFoundException e) {
+            }
+        }
+        return sb.toString();
     }
 
     /**
@@ -241,7 +274,7 @@ public class MvnUtils {
      * Generates a list of "-Djarname=path" type strings to add to the CLI. The path is resolved to existing
      * jar names that match the jarName but also include version numbers etc.
      *
-     * @return a list of strings that can be added to a ProcessRunner command
+     * @return           a list of strings that can be added to a ProcessRunner command
      * @throws Exception
      */
     private ArrayList<String> getJarCliProperties() throws Exception {
@@ -259,7 +292,7 @@ public class MvnUtils {
     /**
      * Generate the array of Strings which will be used to run the "mvn clean test" command with all the appropriate parameters
      *
-     * @return an array of Strings representing the command to be run
+     * @return           an array of Strings representing the command to be run
      * @throws Exception thrown if there was a problem assembling the parameters to the mvn command
      */
     private String[] getMvnTestCommandArray() throws Exception {
@@ -433,7 +466,7 @@ public class MvnUtils {
     /**
      * Prepare the TestNg/Junit Result XML files for inclusion in Simplicity html processing and return a list of failing tests
      *
-     * @return A list of non passing tests
+     * @return                                      A list of non passing tests
      * @throws IOException
      * @throws SAXException
      * @throws XPathExpressionException
@@ -470,8 +503,8 @@ public class MvnUtils {
      * in jar names to increment and the FAT bucket to find the jar under the
      * new version.
      *
-     * @param jarName A fragment of a jar file name to be fully resolved
-     * @return The fully resolved path to the jar
+     * @param  jarName A fragment of a jar file name to be fully resolved
+     * @return         The fully resolved path to the jar
      */
     private String resolveJarPath(String jarName) {
         String wlp = getWLPInstallRoot();
@@ -494,7 +527,7 @@ public class MvnUtils {
      *
      * This method looks for those systemPath entries which have ${xxx} variables in them and then tries to find corresponding jars in the Liberty installation
      *
-     * @return a Map that has the jars list parameter as the keySet and the resolved paths as entries.
+     * @return           a Map that has the jars list parameter as the keySet and the resolved paths as entries.
      * @throws Exception thrown if a problem occurs in parsing the pom.xml file
      */
     private Map<String, String> resolveJarPaths() throws Exception {
@@ -549,8 +582,8 @@ public class MvnUtils {
     /**
      * Resolve a given set of jar name fragments to actual jar paths in a Liberty installation
      *
-     * @param jarsFromWlp
-     * @param mavenVersionBindingJarPatches
+     * @param  jarsFromWlp
+     * @param  mavenVersionBindingJarPatches
      * @return
      * @throws Exception
      */
@@ -619,8 +652,8 @@ public class MvnUtils {
     /**
      * Copy a list of result files to the target directory, appending the id string to both the file name and to test names inside the result XML.
      *
-     * @param targetDir the target directory
-     * @param resultFiles the result files to modify and copy
+     * @param  targetDir            the target directory
+     * @param  resultFiles          the result files to modify and copy
      * @throws TransformerException
      */
     private static void copyResultsAndAppendId(File targetDir,
@@ -657,9 +690,9 @@ public class MvnUtils {
     /**
      * This is more easily unit testable and reusable version of guts of resolveJarPath
      *
-     * @param jarName
-     * @param wlpPathName
-     * @return the path to the jar
+     * @param  jarName
+     * @param  wlpPathName
+     * @return             the path to the jar
      */
     private static String genericResolveJarPath(String jarName, String wlpPathName) {
         Log.entering(c, "genericResolveJarPath", new Object[] { jarName, wlpPathName });
@@ -690,7 +723,7 @@ public class MvnUtils {
     /**
      * Return the version from the <repo>/spec/pom.xml
      *
-     * @param repo
+     * @param  repo
      * @return
      */
     public static String getApiSpecVersionAfterClone(File repo) {
@@ -711,7 +744,7 @@ public class MvnUtils {
     }
 
     /**
-     * @return A list of non-PASSing test results
+     * @return                              A list of non-PASSing test results
      * @throws SAXException
      * @throws IOException
      * @throws XPathExpressionException
@@ -730,8 +763,8 @@ public class MvnUtils {
     /**
      * Return the project/version String of a directory's pom.xml file
      *
-     * @param repo
-     * @param subdir
+     * @param  repo
+     * @param  subdir
      * @return
      */
     private static String getPomVersionInDir(File repo, String subdir) {
@@ -757,9 +790,9 @@ public class MvnUtils {
     /**
      * Return the result of a XPath query on a file
      *
-     * @param xml file
-     * @param query as a XPath String
-     * @return result of query into the xml
+     * @param  xml   file
+     * @param  query as a XPath String
+     * @return       result of query into the xml
      */
     private static List<String> getQueryInXml(File xml, String query, Set<String> excludes) {
         ArrayList<String> result = new ArrayList<>();
@@ -821,7 +854,7 @@ public class MvnUtils {
     /**
      * Return the version from the <repo>/tck/pom.xml
      *
-     * @param repo
+     * @param  repo
      * @return
      */
     public static String getTckVersionAfterClone(File repo) {
@@ -831,8 +864,8 @@ public class MvnUtils {
     /**
      * Looks for a path in a directory from a sub set of the filename
      *
-     * @param jarNameFragment
-     * @param dir
+     * @param  jarNameFragment
+     * @param  dir
      * @return
      */
     private static String jarPathInDir(String jarNameFragment, String dir) {
@@ -933,10 +966,10 @@ public class MvnUtils {
     /**
      * Run a command using a ProcessBuilder.
      *
-     * @param cmd
-     * @param workingDirectory
-     * @param outputFile
-     * @return The return code of the process. (TCKs return 0 if all tests pass and !=0 otherwise).
+     * @param  cmd
+     * @param  workingDirectory
+     * @param  outputFile
+     * @return                  The return code of the process. (TCKs return 0 if all tests pass and !=0 otherwise).
      * @throws Exception
      */
     public static int runCmd(String[] cmd, File workingDirectory, File outputFile) throws IOException, InterruptedException {
@@ -953,7 +986,7 @@ public class MvnUtils {
     }
 
     /**
-     * @param version
+     * @param  version
      * @return
      */
     private static String takeOffFinalOrSnapshot(String version) {

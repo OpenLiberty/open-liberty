@@ -16,11 +16,11 @@
 
     <OCD id="com.ibm.ws.messaging.comms.wasJmsOutbound" ibm:alias="wasJmsOutbound" name="%wasJmsOutbound" description="%wasJmsOutbound.desc" >
 
-         <AD id="id" name="%wasJmsOutboundId" description="%wasJmsOutboundId.desc" required="true" type="String"/>
+        <AD id="id" name="%wasJmsOutboundId" description="%wasJmsOutboundId.desc" required="true" type="String"/>
          
-         <AD name="%useSSL" description="%useSSL.desc" id="useSSL" required="false" type="Boolean" default="false" />
+        <AD name="%useSSL" description="%useSSL.desc" id="useSSL" required="false" type="Boolean" default="false" />
 
-         <AD id="tcpOptionsRef" name="%tcpOptions" description="%tcpOptions.desc"
+        <AD id="tcpOptionsRef" name="%tcpOptions" description="%tcpOptions.desc"
             ibm:reference="com.ibm.ws.tcpchannel.options" ibm:type="pid" cardinality="1"
             type="String" required="false" default="defaultTCPOptions" />               
 

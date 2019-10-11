@@ -87,4 +87,27 @@ public class JSF23ThirdPartyApiTests {
         assertTrue("The MyFaces API classes were not accessible by the application:\n" + page.asText(), page.asXml().contains("test passed!"));
         webClient.close();
     }
+
+    /**
+     * Test that the same app cannot access those org.apache.myfaces packages which have not been exposed
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testJSFThirdPartyAPIAccessFails() throws Exception {
+        String contextRoot = "JSF23ThirdPartyApi";
+        WebClient webClient = new WebClient();
+
+        // Construct the URL for the test
+        URL url = JSFUtils.createHttpUrl(jsf23ThirdPartyApiServer, contextRoot, "JSF23ThirdPartyAPIFailure.xhtml");
+
+        HtmlPage page = (HtmlPage) webClient.getPage(url);
+
+        // Log the page for debugging if necessary in the future.
+        Log.info(c, name.getMethodName(), page.asText());
+        Log.info(c, name.getMethodName(), page.asXml());
+
+        assertTrue("org.apache.myfaces classes were accessible when they should not have been:\n" + page.asText(), page.asXml().contains("test passed!"));
+        webClient.close();
+    }
 }

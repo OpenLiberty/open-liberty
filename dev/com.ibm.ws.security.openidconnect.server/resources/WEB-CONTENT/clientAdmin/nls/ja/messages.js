@@ -21,6 +21,7 @@ var messages = {
     "DELETE": "削除",
     "DONE": "完了",
     "EDIT": "編集",
+    "FALSE": "False",
     "GENERATE": "生成",
     "LOADING": "ロード中",
     "LOGOUT": "ログアウト",
@@ -32,7 +33,10 @@ var messages = {
     "PROCESSING": "処理中",
     "REGENERATE": "再生成",
     "REGISTER": "登録",
-    "TRY_AGAIN": "再試行してください...",
+    "TABLE_FIELD_SORT_ASC": "表は {0} によって昇順でソートされます。",   // {0} - column name (ie. 'Name', 'Client ID')
+    "TABLE_FIELD_SORT_DESC": "表は {0} によって降順でソートされます。", // {0} - column name (ie. 'Name', 'Client ID')
+    "TRUE": "True",
+    "TRY_AGAIN": "再試行...",
     "UPDATE": "更新",
 
     // Common Column Names
@@ -46,7 +50,7 @@ var messages = {
     "CLIENT_ADMIN_TITLE": "OAuth クライアントの管理",
     "CLIENT_ADMIN_DESC": "このツールは、クライアントの追加と編集、およびクライアント秘密鍵の再生成に使用します。",
     "CLIENT_ADMIN_SEARCH_PLACEHOLDER": "OAuth クライアント名でのフィルター",
-    "ADD_NEW_CLIENT": "新規 OAuth クライアントの追加",
+    "ADD_NEW_CLIENT": "新規 OAuth クライアントを追加します。",
     "CLIENT_NAME": "クライアント名",
     "CLIENT_ID": "クライアント ID",
     "EDIT_ARIA": "{0} OAuth クライアントの編集",      // {0} - name
@@ -56,31 +60,23 @@ var messages = {
     "SCOPE": "有効範囲",
     "PREAUTHORIZED_SCOPE": "事前許可済み有効範囲 (オプション)",
     "REDIRECT_URLS": "リダイレクト URL (オプション)",
-    "ADDITIONAL_PROPS": "追加プロパティー",
-    "ADDITIONAL_PROPS_OPTIONAL": "追加プロパティー (オプション)",
     "CLIENT_SECRET_CHECKBOX": "クライアント秘密鍵の再生成",
-    "PROPERTY_PLACEHOLDER": "プロパティー",
-    "VALUE_PLACEHOLDER": "値",
-    "GRANT_TYPES_SELECTED": "選択した認可タイプの数",
-    "GRANT_TYPES_NONE_SELECTED": "選択なし",
+    "NONE_SELECTED": "選択なし",
     "MODAL_EDIT_TITLE": "OAuth クライアントの編集",
     "MODAL_REGISTER_TITLE": "新規 OAuth クライアントの登録",
     "MODAL_SECRET_REGISTER_TITLE": "保存された OAuth 登録",
     "MODAL_SECRET_UPDATED_TITLE": "更新された OAuth 登録",
     "MODAL_DELETE_CLIENT_TITLE": "この OAuth クライアントの削除",
-    "VALUE_COL": "値",
-    "ADD": "追加",
-    "DELETE_PROP": "カスタム・プロパティーの削除",
-    "RESET_GRANT_TYPE": "選択したすべての認可タイプのクリア",
+    "RESET_GRANT_TYPE": "選択したすべての認可タイプをクリアします",
     "SELECT_ONE_GRANT_TYPE": "少なくとも 1 つの認可タイプを選択してください",
-    "OPEN_GRANT_TYPE": "認可タイプ・リストを開く",
-    "CLOSE_GRANT_TYPE": "認可タイプ・リストを閉じる",
     "SPACE_HELPER_TEXT": "スペースで区切った値",
     "REDIRECT_URL_HELPER_TEXT": "スペースで区切った絶対リダイレクト URL",
-    "DELETE_OAUTH_CLIENT_DESC": "この操作は、登録済みのクライアントをクライアント登録サービスから削除します。",
+    "DELETE_OAUTH_CLIENT_DESC": "この操作により、登録済みのクライアントはクライアント登録サービスから削除されます。",
     "REGISTRATION_SAVED": "クライアント ID とクライアント秘密鍵が生成され、割り当てられました。",
     "REGISTRATION_UPDATED": "このクライアント用に新規クライアント秘密鍵が生成され、割り当てられました。",
-    "REGISTRATION_UPDATED_NOSECRET": "{0} OAuth クライアントが更新されます。",                 // {0} - client name
+    "COPY_CLIENT_ID": "クライアント ID をクリップボードにコピー",
+    "COPY_CLIENT_SECRET": "クライアント秘密鍵をクリップボードにコピー",
+    "REGISTRATION_UPDATED_NOSECRET": "{0} OAuth クライアントが更新されました。",                 // {0} - client name
     "ERR_MULTISELECT_GRANT_TYPES": "少なくとも 1 つの認可タイプを選択する必要があります。",
     "ERR_REDIRECT_URIS": "値は絶対 URI でなければなりません。",
     "GENERIC_REGISTER_FAIL": "OAuth クライアントの登録エラー",
@@ -93,5 +89,15 @@ var messages = {
     "GENERIC_MISSING_CLIENT_MSG": "ID {1} の OAuth クライアント {0} が見つかりませんでした。",     // {0} - client name; {1} - an ID
     "GENERIC_RETRIEVAL_FAIL_MSG": "{0} OAuth クライアントの情報の取得中にエラーが発生しました。", // {0} - client name
     "GENERIC_GET_CLIENTS_FAIL": "OAuth クライアントの取得エラー",
-    "GENERIC_GET_CLIENTS_FAIL_MSG": "OAuth クライアントのリストの取得中にエラーが発生しました。"
+    "GENERIC_GET_CLIENTS_FAIL_MSG": "OAuth クライアントのリストの取得中にエラーが発生しました。",
+
+    "RESET_SELECTION": "選択したすべての {0} をクリア",     // {0} - field name (ie 'Grant types')
+    "NUMBER_SELECTED": "選択されている {0} の数",     // {0} - field name
+    "OPEN_LIST": "{0} リストをオープンします。",                   // {0} - field name
+    "CLOSE_LIST": "{0} リストをクローズします。",                 // {0} - field name
+    "ENTER_PLACEHOLDER": "値の入力",
+    "ADD_VALUE": "エレメントの追加",
+    "REMOVE_VALUE": "エレメントの削除",
+    "REGENERATE_CLIENT_SECRET": "「*」は既存の値を保持します。ブランク値の場合は、新規 client_secret を生成します。ブランク以外のパラメーター値の場合は、新しく指定された値で既存の値をオーバーライドします。",
+    "ALL_OPTIONAL": "すべてのフィールドはオプションです"
 };

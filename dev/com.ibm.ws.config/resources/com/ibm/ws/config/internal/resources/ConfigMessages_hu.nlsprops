@@ -170,9 +170,12 @@ error.unique.value.conflict=CWWKG0031E: A(z) {0} egyedi attrib\u00fatum sz\u00e1
 error.unique.value.conflict.explanation=A megadott attrib\u00fatum \u00e9rt\u00e9k\u00e9nek egyedinek kell lennie, de m\u00e1r haszn\u00e1latban van.
 error.unique.value.conflict.useraction=M\u00f3dos\u00edtsa az attrib\u00fatum \u00e9rt\u00e9k\u00e9t \u00fagy, hogy az egyedi legyen.
 
-warn.config.invalid.value=CWWKG0032W: V\u00e1ratlan \u00e9rt\u00e9k lett megadva a(z) [{0}] tulajdons\u00e1g sz\u00e1m\u00e1ra, \u00e9rt\u00e9k = [{1}]. A v\u00e1rt \u00e9rt\u00e9k(ek) a k\u00f6vetkez\u0151k: {2}.
+# {3} is either the formatted value of default.value.in.use or an empty string
+warn.config.invalid.value=CWWKG0032W: V\u00e1ratlan \u00e9rt\u00e9k lett megadva a(z) [{0}] tulajdons\u00e1g sz\u00e1m\u00e1ra, \u00e9rt\u00e9k = [{1}]. A v\u00e1rt \u00e9rt\u00e9k(ek) a k\u00f6vetkez\u0151k: {2}. {3} 
 warn.config.invalid.value.explanation=A tulajdons\u00e1g sz\u00e1m\u00e1ra megadott \u00e9rt\u00e9k nem haszn\u00e1lhat\u00f3.
 warn.config.invalid.value.useraction=Jav\u00edtsa ki a tulajdons\u00e1g \u00e9rt\u00e9k\u00e9t egy elv\u00e1rt \u00e9rt\u00e9kre.
+
+default.value.in.use=Haszn\u00e1latban l\u00e9v\u0151 alap\u00e9rtelmezett \u00e9rt\u00e9k: {0}.
 
 warning.pid.not.found=CWWKG0033W: A(z) [{0}] hivatkoz\u00e1s attrib\u00fatum sz\u00e1m\u00e1ra megadott [{1}] \u00e9rt\u00e9k nem tal\u00e1lhat\u00f3 a konfigur\u00e1ci\u00f3ban.
 warning.pid.not.found.explanation=A megadott \u00e9rt\u00e9knek a konfigur\u00e1ci\u00f3 elem\u00e9nek kell lennie.
@@ -292,25 +295,10 @@ error.factoryOnly=CWWKG0061E: A(z) {0} meg\u0151rz\u00f6tt (persisted) azonoss\u
 error.factoryOnly.explanation=Az ibm:extends attrib\u00fatum csak gy\u00e1r meg\u0151rz\u00f6tt azonoss\u00e1gokra alkalmazhat\u00f3.
 error.factoryOnly.useraction=Konfigur\u00e1lja \u00fajra a meg\u0151rz\u00f6tt azonoss\u00e1got \u00fagy, hogy gy\u00e1r meg\u0151rz\u00f6tt azonoss\u00e1got haszn\u00e1ljon, vagy t\u00e1vol\u00edtsa el az ibm:extends attrib\u00fatumot az objektum\u00f6sszetev\u0151 meghat\u00e1roz\u00e1s\u00e1b\u00f3l. Ez egy bels\u0151 hiba. K\u00f6vesse a norm\u00e1l WebSphere hibafelder\u00edt\u00e9si elj\u00e1r\u00e1sokat.
 
-#"ibm:extendsAlias" is an xml attribute name and should not be translated
-error.factoryOnly.extendsAlias=CWWKG0096E: A(z) {0} meg\u0151rz\u00f6tt azonoss\u00e1g nem a gy\u00e1r meg\u0151rz\u00f6tt azonoss\u00e1g, ez\u00e9rt az ibm:extendsAlias attrib\u00fatum nem lehet a(z) {1} attrib\u00fatuma. Konfigur\u00e1lja \u00fajra a meg\u0151rz\u00f6tt azonoss\u00e1got \u00fagy, hogy a gy\u00e1r meg\u0151rz\u00f6tt azonoss\u00e1got haszn\u00e1lja, vagy t\u00e1vol\u00edtsa el az ibm:extendsAlias attrib\u00fatumot a meg\u0151rz\u00f6tt azonoss\u00e1g meghat\u00e1roz\u00e1s\u00e1b\u00f3l.
-error.factoryOnly.extendsAlias.explanation=Az ibm:extendsAlias attrib\u00fatum csak olyan, gy\u00e1r meg\u0151rz\u00f6tt azonoss\u00e1gokra alkalmazhat\u00f3, amely m\u00e1sik, gy\u00e1r meg\u0151rz\u00f6tt azonoss\u00e1got terjeszt ki.
-error.factoryOnly.extendsAlias.useraction=Konfigur\u00e1lja \u00fajra a meg\u0151rz\u00f6tt azonoss\u00e1got \u00fagy, hogy a gy\u00e1r meg\u0151rz\u00f6tt azonoss\u00e1got haszn\u00e1lja, vagy t\u00e1vol\u00edtsa el az ibm:extendsAlias attrib\u00fatumot a meg\u0151rz\u00f6tt azonoss\u00e1g meghat\u00e1roz\u00e1s\u00e1b\u00f3l.
-
 #"ibm:extends" is an xml attribute name and should not be translated
 error.superFactoryOnly=CWWKG0062E: A(z) {0} meg\u0151rz\u00f6tt (persisted) azonoss\u00e1g nem gy\u00e1r meg\u0151rz\u00f6tt azonoss\u00e1g, ez\u00e9rt a(z) {1} meg\u0151rz\u00f6tt azonoss\u00e1g nem terjesztheti ki azt.
 error.superFactoryOnly.explanation=Az ibm:extends attrib\u00fatum csak gy\u00e1r meg\u0151rz\u00f6tt azonoss\u00e1gokra alkalmazhat\u00f3.
 error.superFactoryOnly.useraction=Konfigur\u00e1lja \u00fajra a meg\u0151rz\u00f6tt azonoss\u00e1got \u00fagy, hogy gy\u00e1r meg\u0151rz\u00f6tt azonoss\u00e1got haszn\u00e1ljon, vagy t\u00e1vol\u00edtsa el az ibm:extends attrib\u00fatumot az objektum\u00f6sszetev\u0151 meghat\u00e1roz\u00e1s\u00e1b\u00f3l. Ez egy bels\u0151 hiba. K\u00f6vesse a norm\u00e1l WebSphere hibafelder\u00edt\u00e9si elj\u00e1r\u00e1sokat.
-
-#"ibm:extendsAlias" is an xml attribute name and should not be translated
-error.ExtendsAliasMustExtend=CWWKG0097E: A {0} meg\u0151rz\u00f6tt azonoss\u00e1g megadja a {1} egy ibm:extendsAlias attrib\u00fatum\u00e1t, ez\u00e9rt meg kell hat\u00e1roznia az ibm:extends attrib\u00fatumot.
-error.ExtendsAliasMustExtend.explanation=Amikor meghat\u00e1roz egy ibm:extendsAlias attrib\u00fatumot, akkor egy ibm:extends attrib\u00fatumot is meg kell hat\u00e1roznia.
-error.ExtendsAliasMustExtend.useraction=Adjon meg egy ibm:extends attrib\u00fatumot.
-
-#"ibm:parentPid" and "ibm:childAlias" are xml attribute names and should not be translated
-error.parentpid.and.childalias=CWWKG0098E: A {0} meg\u0151rz\u00f6tt azonoss\u00e1g megadja a(z) {2} {1} attrib\u00fatum\u00e1t, ez\u00e9rt meg kell hat\u00e1roznia a(z) {3}attrib\u00fatumot.
-error.parentpid.and.childalias.explanation=A metat\u00edpus azt jelzi, hogy az els\u0151 be\u00e1gyazott ut\u00f3delem r\u00e9szlegesen lett megadva. Az els\u0151 be\u00e1gyazott ut\u00f3delemeknek meg kell hat\u00e1rozniuk az ibm:parentPid \u00e9s az ibm:childAlias attrib\u00fatumokat is.
-error.parentpid.and.childalias.useraction=Ha a metat\u00edpus egy els\u0151 be\u00e1gyazott ut\u00f3delemre vonatkozik, adja meg a hi\u00e1nyz\u00f3 attrib\u00fatumot. M\u00e1s esetben t\u00e1vol\u00edtsa el a megadott attrib\u00fatumot. 
 
 #"ibm:rename" is an xml attribute name and should not be translated
 schemagen.rename.attribute.missing=CWWKG0063E: Nem nevezhet\u0151 \u00e1t a(z) {1} attrib\u00fatummeghat\u00e1roz\u00e1s, ahogyan a(z) {2} ibm:rename attrib\u00fatum megadja a(z) {0} meg\u0151rz\u00f6tt azonoss\u00e1gon bel\u00fcl.
@@ -447,6 +435,21 @@ warning.unrecognized.merge.behavior.useraction=A kiszolg\u00e1l\u00f3konfigur\u0
 error.missing.required.attribute.singleton=CWWKG0095E: A(z) {0} elem k\u00f6telez\u0151 {1} attrib\u00fatuma hi\u00e1nyzik.
 error.missing.required.attribute.singleton.explanation=A hi\u00e1nyz\u00f3 attrib\u00fatumnak a server.xml konfigur\u00e1ci\u00f3s f\u00e1jlban vagy annak valamelyik hivatkozott konfigur\u00e1ci\u00f3s f\u00e1jlj\u00e1ban kell lennie.
 error.missing.required.attribute.singleton.useraction=Vegye fel a hi\u00e1nyz\u00f3 attrib\u00fatumot a server.xml konfigur\u00e1ci\u00f3s f\u00e1jlba vagy annak valamelyik hivatkozott konfigur\u00e1ci\u00f3s f\u00e1jlj\u00e1ba.
+
+#"ibm:extendsAlias" is an xml attribute name and should not be translated
+error.factoryOnly.extendsAlias=CWWKG0096E: A(z) {0} meg\u0151rz\u00f6tt azonoss\u00e1g nem a gy\u00e1r meg\u0151rz\u00f6tt azonoss\u00e1g, ez\u00e9rt az ibm:extendsAlias attrib\u00fatum nem lehet a(z) {1} attrib\u00fatuma. Konfigur\u00e1lja \u00fajra a meg\u0151rz\u00f6tt azonoss\u00e1got \u00fagy, hogy a gy\u00e1r meg\u0151rz\u00f6tt azonoss\u00e1got haszn\u00e1lja, vagy t\u00e1vol\u00edtsa el az ibm:extendsAlias attrib\u00fatumot a meg\u0151rz\u00f6tt azonoss\u00e1g meghat\u00e1roz\u00e1s\u00e1b\u00f3l.
+error.factoryOnly.extendsAlias.explanation=Az ibm:extendsAlias attrib\u00fatum csak olyan, gy\u00e1r meg\u0151rz\u00f6tt azonoss\u00e1gokra alkalmazhat\u00f3, amely m\u00e1sik, gy\u00e1r meg\u0151rz\u00f6tt azonoss\u00e1got terjeszt ki.
+error.factoryOnly.extendsAlias.useraction=Konfigur\u00e1lja \u00fajra a meg\u0151rz\u00f6tt azonoss\u00e1got \u00fagy, hogy a gy\u00e1r meg\u0151rz\u00f6tt azonoss\u00e1got haszn\u00e1lja, vagy t\u00e1vol\u00edtsa el az ibm:extendsAlias attrib\u00fatumot a meg\u0151rz\u00f6tt azonoss\u00e1g meghat\u00e1roz\u00e1s\u00e1b\u00f3l.
+
+#"ibm:extendsAlias" is an xml attribute name and should not be translated
+error.ExtendsAliasMustExtend=CWWKG0097E: A {0} meg\u0151rz\u00f6tt azonoss\u00e1g megadja a {1} egy ibm:extendsAlias attrib\u00fatum\u00e1t, ez\u00e9rt meg kell hat\u00e1roznia az ibm:extends attrib\u00fatumot.
+error.ExtendsAliasMustExtend.explanation=Amikor meghat\u00e1roz egy ibm:extendsAlias attrib\u00fatumot, akkor egy ibm:extends attrib\u00fatumot is meg kell hat\u00e1roznia.
+error.ExtendsAliasMustExtend.useraction=Adjon meg egy ibm:extends attrib\u00fatumot.
+
+#"ibm:parentPid" and "ibm:childAlias" are xml attribute names and should not be translated
+error.parentpid.and.childalias=CWWKG0098E: A {0} meg\u0151rz\u00f6tt azonoss\u00e1g megadja a(z) {2} {1} attrib\u00fatum\u00e1t, ez\u00e9rt meg kell hat\u00e1roznia a(z) {3}attrib\u00fatumot.
+error.parentpid.and.childalias.explanation=A metat\u00edpus azt jelzi, hogy az els\u0151 be\u00e1gyazott ut\u00f3delem r\u00e9szlegesen lett megadva. Az els\u0151 be\u00e1gyazott ut\u00f3delemeknek meg kell hat\u00e1rozniuk az ibm:parentPid \u00e9s az ibm:childAlias attrib\u00fatumokat is.
+error.parentpid.and.childalias.useraction=Ha a metat\u00edpus egy els\u0151 be\u00e1gyazott ut\u00f3delemre vonatkozik, adja meg a hi\u00e1nyz\u00f3 attrib\u00fatumot. M\u00e1s esetben t\u00e1vol\u00edtsa el a megadott attrib\u00fatumot. 
 
 #"ibm:extendsAlias" is an xml attribute name and should not be translated
 error.extendsAlias.collision=CWWKG0100E: A(z) {2} ibm:extendsAlias attrib\u00fatum t\u00f6bbsz\u00f6r szerepel egyetlen extends hierarchi\u00e1ban. A PID-k {0} \u00e9s {1}. Minden ibm: extendsAlias attrib\u00fatum egyedi a lesz\u00e1rmazotti hierarchi\u00e1ban.

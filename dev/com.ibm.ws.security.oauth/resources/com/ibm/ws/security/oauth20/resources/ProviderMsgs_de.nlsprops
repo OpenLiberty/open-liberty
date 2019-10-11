@@ -341,3 +341,14 @@ security.oauth20.apppwtok.revoke.disallowed=CWOAU0078E: Es wurde versucht, ein A
 security.oauth20.apppwtok.revoke.disallowed.explanation=Anwendungskennw\u00f6rter oder Anwendungstoken m\u00fcssen von den Endpunkten app-passwords bzw. app-tokens widerrufen werden.
 security.oauth20.apppwtok.revoke.disallowed.useraction=Setzen Sie die Anforderung mit dem URI f\u00fcr den entsprechenden Endpunkt erneut ab, um Anwendungskennw\u00f6rter bzw. Anwendungstoken zu widerrufen.
 
+security.oauth20.pkce.invalid.method.error=CWOAU0079E: Der Parameter code_challenge_method in der Anforderung enth\u00e4lt einen nicht unterst\u00fctzten Transformationsalgorithmus: [{0}]. Die unterst\u00fctzten Transformationsalgorithmen sind: plain, S256.
+security.oauth20.pkce.invalid.method.error.explanation=Der OAuth-Provider unterst\u00fctzt nicht den angegebenen Transformationsalgorithmus. 
+security.oauth20.pkce.invalid.method.error.useraction=Verwenden Sie einen in der Nachricht angezeigten Transformationsalgorithmen.
+
+security.oauth20.pkce.codeverifier.length.error=CWOAU0080E: Die L\u00e4nge f\u00fcr code_verifier ist [{0}]. Die L\u00e4nge f\u00fcr code_verifier muss zwischen 43 und 128 Zeichen lang sein.
+security.oauth20.pkce.codeverifier.length.error.explanation=Code_verifier muss eine L\u00e4nge von mindestens 43 Zeichen und maximal 128 Zeichen haben. 
+security.oauth20.pkce.codeverifier.length.error.useraction=Senden Sie die Berechtigungs- und Tokenanforderungen erneut mit dem aktualisierten code_verifier, dessen L\u00e4nge den Vorgaben entspricht.
+
+security.oauth20.pkce.error.mismatch.codeverifier=CWOAU0081E: code_challenge [{0}] und code_verifier [{1}] stimmen nicht \u00fcberein. 
+security.oauth20.pkce.error.mismatch.codeverifier.explanation=Der OAuth-Provider verwendet die code_challenge_method-Angabe in der Berechtigungsanforderung und transformiert den code_verifier, sofern f\u00fcr code_challenge_method 'plain' angegeben wurde. Der transformierte Wert muss der code_challenge-Angabe in der Berechtigungsanforderung entsprechen.
+security.oauth20.pkce.error.mismatch.codeverifier.useraction=Vergewissern Sie sich, dass Sie mit den Berechtigungs- und Tokenanforderungen die entsprechenden code_challenge- und code_verifier-Angaben sowie den richtigen Transformationsalgorithmus senden.

@@ -121,7 +121,10 @@ public final class CustomCSSProcessor implements FileMonitor, ServerQuiesceListe
     }
 
     private synchronized void activateFileMonitor(ComponentContext cc) {
-        final int pollingInterval = new ConfigProcessor(CustomCSSProcessor.class.getClassLoader()).getFilePollingInterval();
+        final int pollingInterval;
+        try (ConfigProcessor configProcessor = new ConfigProcessor(CustomCSSProcessor.class.getClassLoader())) {
+            pollingInterval = configProcessor.getFilePollingInterval();
+        }
         if (OpenAPIUtils.isEventEnabled(tc)) {
             Tr.event(this, tc, OASConfig.EXTENSIONS_PREFIX + "liberty.file.polling.interval=" + pollingInterval);
         }
@@ -308,7 +311,8 @@ public final class CustomCSSProcessor implements FileMonitor, ServerQuiesceListe
     //
 
     @Override
-    public void onBaseline(Collection<File> baseline) {}
+    public void onBaseline(Collection<File> baseline) {
+    }
 
     @Override
     public void onChange(Collection<File> createdFiles, Collection<File> modifiedFiles, Collection<File> deletedFiles) {

@@ -15,7 +15,7 @@ IBM-Process-Types: server, \
  com.ibm.ws.adaptable.module, \
  com.ibm.ws.artifact.url; start-phase:=CONTAINER_EARLY, \
  com.ibm.ws.classloading.configuration, \
- com.ibm.ws.artifact.zip, \
+ com.ibm.ws.artifact.zip; start-phase:=CONTAINER_EARLY, \
  com.ibm.ws.artifact.overlay, \
  com.ibm.ws.artifact.bundle, \
  com.ibm.ws.artifact.equinox.module, \

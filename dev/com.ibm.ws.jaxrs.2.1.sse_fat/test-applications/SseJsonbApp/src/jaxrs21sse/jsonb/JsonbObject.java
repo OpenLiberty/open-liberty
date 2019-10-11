@@ -24,7 +24,7 @@ import java.util.Date;
 import javax.json.bind.annotation.JsonbProperty;
 import javax.json.bind.annotation.JsonbPropertyOrder;
 
-@JsonbPropertyOrder({ "identity", "thecost", "tstamp", "desc" })
+@JsonbPropertyOrder({ "id", "cost", "timeStamp", "description" })
 public class JsonbObject {
     static final String[] EXPECTED_ORDER = { "identity", "thecost", "tstamp", "desc" };
     

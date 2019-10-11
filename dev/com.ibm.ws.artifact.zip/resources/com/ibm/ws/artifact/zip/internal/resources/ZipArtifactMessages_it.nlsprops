@@ -72,12 +72,6 @@ extract.primary.untyped=CWWKM0110E: Impossibile identificare il tipo dell''''est
 extract.primary.untyped.explanation=Un'estrazione di un archivio nidificato ha rilevato un file di cui non \u00e8 possibile determinare il tipo come archivio estratto precedente.
 extract.primary.untyped.useraction=Ripulire e riavviare il server per assicurarsi che non siano presenti contenuti di cache precedenti.
 
-# # {0} A decimal count of seconds.  For example, "0.701005".
-# # {1} A decomal count of seconds.  For example, "0.020000".
-reaper.stall=CWWKM0120W: Si \u00e8 verificato un ritardo eccessivo durante l''''elaborazione delle chiusure archivio in sospeso: il ritardo effettivo era di {0} secondi.  Il ritardo richiesto era di {1} secondi.
-reaper.stall.explanation=Questo messaggio indica che i file di archivio dell'applicazione sono stati mantenuti aperti pi\u00f9 a lungo del necessario.  Come mostrato dal messaggio di avvertenza, i file di archivio non dovrebbero essere tenuti aperti oltre una durata richiesta, ma sono rimasti aperti per una durata effettiva significativamente pi\u00f9 lunga. Tali file di archivio sono stati mantenuti aperti pi\u00f9 a lungo del necessario e possono causare errori durante il tentativo di aggiornare dinamicamente i file dell'applicazione. Questa avvertenza indica che l'attivit\u00e0, esterna o interna, sta negando tempo di elaborazione al server.
-reaper.stall.useraction=Esaminare l'ambiente per determinare se i processi diversi dal processo del server stanno consumando una percentuale eccessiva di tempo di elaborazione.  Esaminare il processo del server generando dump di thread per determinare se particolari thread del server hanno un'attivit\u00e0 eccessiva.
-
 # # {0} A file path.
 # # {1} A print name
 reaper.inactive=CWWKM0121W: Impossibile aprire {0}: la cache di archivio {1} \u00e8 inattiva.
@@ -103,14 +97,14 @@ reaper.pending.path.useraction=Questo messaggio indica un errore di programmazio
 # # {1} An integer representing a file length
 # # {2} An integer representing a file length
 reaper.unexpected.length.change=CWWKM0125W: Archivio {0}: aggiornamento lunghezza da {1} a {2}.
-reaper.unexpected.length.change.explanation=\u00c8 stato effettuato un aggiornamento non previsto in un file di archivio dell'applicazione mentre l'archivio era aperto. Questo di solito si verifica perch\u00e9 \u00e8 stato effettuato un aggiornamento dinamico ai file dell'applicazione.
+reaper.unexpected.length.change.explanation=\u00c8 stato effettuato un aggiornamento non previsto in un file di archivio dell'applicazione mentre l'archivio era aperto.  Questo di solito si verifica perch\u00e9 \u00e8 stato effettuato un aggiornamento dinamico ai file dell'applicazione.
 reaper.unexpected.length.change.useraction=Riavviare il server.  Quando si aggiornano i file dell'applicazione, attendere che il server sia inattivo, inoltre attendere almeno mezzo secondo per consentire la chiusura dei file dell'applicazione.
 
 # # {0} A file path
 # # {1} An integer representing a last modified time
 # # {2} An integer representing a last modified time
 reaper.unexpected.lastmodified.change=CWWKM0126W: Archivio {0}: aggiornamento ultima modifica da {1} a {2}.
-reaper.unexpected.lastmodified.change.explanation=\u00c8 stato effettuato un aggiornamento non previsto in un file di archivio dell'applicazione mentre l'archivio era aperto. Questo di solito si verifica perch\u00e9 \u00e8 stato effettuato un aggiornamento dinamico ai file dell'applicazione.
+reaper.unexpected.lastmodified.change.explanation=\u00c8 stato effettuato un aggiornamento non previsto in un file di archivio dell'applicazione mentre l'archivio era aperto.  Questo di solito si verifica perch\u00e9 \u00e8 stato effettuato un aggiornamento dinamico ai file dell'applicazione.
 reaper.unexpected.lastmodified.change.useraction=Riavviare il server.  Quando si aggiornano i file dell'applicazione, attendere che il server sia inattivo, inoltre attendere almeno mezzo secondo per consentire la chiusura dei file dell'applicazione.
 
 # # {0} A file path

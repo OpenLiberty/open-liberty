@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,12 +14,12 @@ package com.ibm.ws.security.wim.core.fat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
@@ -45,6 +45,10 @@ public class InvalidBaseEntryInRealmTest {
     private static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.wim.core.fat.invalidBaseEntryInRealm");
     private static final Class<?> c = InvalidBaseEntryInRealmTest.class;
     private static UserRegistryServletConnection servlet;
+
+    /** Test rule for testing for expected exceptions. */
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -102,13 +106,7 @@ public class InvalidBaseEntryInRealmTest {
         String password = "testuserpwd";
         Log.info(c, "checkPassword", "No valid participating base entries...");
 
-//        try {
         assertNull(servlet.checkPassword(user, password));
-//            fail("Expected RegistryException.");
-//        } catch (RegistryException re) {
-//            String msg = re.getMessage();
-//            assertTrue("Expected a CWIML0515E exception message. Message: " + msg, msg.contains("CWIML0515E"));
-//        }
     }
 
     @Test
@@ -116,13 +114,10 @@ public class InvalidBaseEntryInRealmTest {
         String user = "invalidUser";
         Log.info(c, "isValidUser", "No valid participating base entries...");
 
-        try {
-            servlet.isValidUser(user);
-            fail("Expected RegistryException.");
-        } catch (RegistryException re) {
-            String msg = re.getMessage();
-            assertTrue("Expected a CWIML0515E exception message. Message: " + msg, msg.contains("CWIML0515E"));
-        }
+        expectedException.expect(RegistryException.class);
+        expectedException.expectMessage("CWIML0515E");
+
+        servlet.isValidUser(user);
     }
 
     @Test
@@ -130,13 +125,7 @@ public class InvalidBaseEntryInRealmTest {
         String user = "testuser";
         Log.info(c, "getUsers", "No valid participating base entries...");
 
-        try {
-            servlet.getUsers(user, 2);
-            fail("Expected RegistryException.");
-        } catch (RegistryException re) {
-            String msg = re.getMessage();
-            assertTrue("Expected a CWIML0515E exception message. Message: " + msg, msg.contains("CWIML0515E"));
-        }
+        assertNotNull(servlet.getUsers(user, 2));
     }
 
     @Test
@@ -144,13 +133,10 @@ public class InvalidBaseEntryInRealmTest {
         String user = "testuser";
         Log.info(c, "getUserDisplayName", "No valid participating base entries...");
 
-        try {
-            servlet.getUserDisplayName(user);
-            fail("Expected RegistryException.");
-        } catch (RegistryException re) {
-            String msg = re.getMessage();
-            assertTrue("Expected a CWIML0515E exception message. Message: " + msg, msg.contains("CWIML0515E"));
-        }
+        expectedException.expect(EntryNotFoundException.class);
+        expectedException.expectMessage("CWIML0515E");
+
+        servlet.getUserDisplayName(user);
     }
 
     @Test
@@ -158,13 +144,10 @@ public class InvalidBaseEntryInRealmTest {
         String user = "testuser";
         Log.info(c, "getUniqueUserId", "No valid participating base entries...");
 
-        try {
-            servlet.getUniqueUserId(user);
-            fail("Expected RegistryException.");
-        } catch (RegistryException re) {
-            String msg = re.getMessage();
-            assertTrue("Expected a CWIML0515E exception message. Message: " + msg, msg.contains("CWIML0515E"));
-        }
+        expectedException.expect(EntryNotFoundException.class);
+        expectedException.expectMessage("CWIML0515E");
+
+        servlet.getUniqueUserId(user);
     }
 
     @Test
@@ -172,13 +155,10 @@ public class InvalidBaseEntryInRealmTest {
         String user = "cn=testuser,o=ibm,c-us";
         Log.info(c, "getUserSecurityName", "No valid participating base entries...");
 
-        try {
-            servlet.getUserSecurityName(user);
-            fail("Expected EntryNotFoundException.");
-        } catch (EntryNotFoundException re) {
-            String msg = re.getMessage();
-            assertTrue("Expected a CWIML4001E exception message. Message: " + msg, msg.contains("CWIML4001E"));
-        }
+        expectedException.expect(EntryNotFoundException.class);
+        expectedException.expectMessage("CWIML4001E");
+
+        servlet.getUserSecurityName(user);
     }
 
     @Test
@@ -186,13 +166,10 @@ public class InvalidBaseEntryInRealmTest {
         String group = "group1";
         Log.info(c, "isValidGroup", "No valid participating base entries...");
 
-        try {
-            servlet.isValidGroup(group);
-            fail("Expected RegistryException.");
-        } catch (RegistryException re) {
-            String msg = re.getMessage();
-            assertTrue("Expected a CWIML0515E exception message. Message: " + msg, msg.contains("CWIML0515E"));
-        }
+        expectedException.expect(RegistryException.class);
+        expectedException.expectMessage("CWIML0515E");
+
+        servlet.isValidGroup(group);
     }
 
     @Test
@@ -200,13 +177,7 @@ public class InvalidBaseEntryInRealmTest {
         String group = "group1";
         Log.info(c, "getGroups", "No valid participating base entries...");
 
-//        try {
         assertNotNull(servlet.getGroups(group, 2));
-//            fail("Expected RegistryException.");
-//        } catch (RegistryException re) {
-//            String msg = re.getMessage();
-//            assertTrue("Expected a CWIML0515E exception message. Message: " + msg, msg.contains("CWIML0515E"));
-//        }
     }
 
     @Test
@@ -214,13 +185,10 @@ public class InvalidBaseEntryInRealmTest {
         String group = "cn=group1,o=o=ibm,c=us";
         Log.info(c, "getGroupDisplayName", "No valid participating base entries...");
 
-        try {
-            servlet.getGroupDisplayName(group);
-            fail("Expected RegistryException.");
-        } catch (RegistryException re) {
-            String msg = re.getMessage();
-            assertTrue("Expected a CWIML0515E exception message. Message: " + msg, msg.contains("CWIML0515E"));
-        }
+        expectedException.expect(EntryNotFoundException.class);
+        expectedException.expectMessage("CWIML0515E");
+
+        servlet.getGroupDisplayName(group);
     }
 
     @Test
@@ -228,13 +196,10 @@ public class InvalidBaseEntryInRealmTest {
         String group = "group1";
         Log.info(c, "getUniqueGroupId", "No valid participating base entries...");
 
-        try {
-            servlet.getUniqueGroupId(group);
-            fail("Expected RegistryException.");
-        } catch (RegistryException re) {
-            String msg = re.getMessage();
-            assertTrue("Expected a CWIML0515E exception message. Message: " + msg, msg.contains("CWIML0515E"));
-        }
+        expectedException.expect(EntryNotFoundException.class);
+        expectedException.expectMessage("CWIML0515E");
+
+        servlet.getUniqueGroupId(group);
     }
 
     @Test
@@ -242,13 +207,10 @@ public class InvalidBaseEntryInRealmTest {
         String uniqueGroupId = "cn=group1,o=ibm,c=us";
         Log.info(c, "getGroupSecurityName", "No valid participating base entries...");
 
-        try {
-            servlet.getGroupSecurityName(uniqueGroupId);
-            fail("Expected EntryNotFoundException.");
-        } catch (EntryNotFoundException re) {
-            String msg = re.getMessage();
-            assertTrue("Expected a CWIML0515E exception message. Message: " + msg, msg.contains("CWIML0515E"));
-        }
+        expectedException.expect(EntryNotFoundException.class);
+        expectedException.expectMessage("CWIML0515E");
+
+        servlet.getGroupSecurityName(uniqueGroupId);
     }
 
     @Test
@@ -256,13 +218,10 @@ public class InvalidBaseEntryInRealmTest {
         String user = "samples";
         Log.info(c, "getGroupsForUser", "No valid participating base entries...");
 
-        try {
-            servlet.getGroupsForUser(user);
-            fail("Expected RegistryException.");
-        } catch (RegistryException re) {
-            String msg = re.getMessage();
-            assertTrue("Expected a CWIML0515E exception message. Message: " + msg, msg.contains("CWIML0515E"));
-        }
+        expectedException.expect(EntryNotFoundException.class);
+        expectedException.expectMessage("CWIML0515E");
+
+        servlet.getGroupsForUser(user);
     }
 
     @Test
@@ -270,12 +229,9 @@ public class InvalidBaseEntryInRealmTest {
         String user = "cn=user1,o=ibm,c=us";
         Log.info(c, "getUniqueGroupIds", "No valid participating base entries...");
 
-        try {
-            servlet.getGroupsForUser(user);
-            fail("Expected RegistryException.");
-        } catch (RegistryException re) {
-            String msg = re.getMessage();
-            assertTrue("Expected a CWIML0515E exception message. Message: " + msg, msg.contains("CWIML0515E"));
-        }
+        expectedException.expect(EntryNotFoundException.class);
+        expectedException.expectMessage("CWIML0515E");
+
+        servlet.getGroupsForUser(user);
     }
 }

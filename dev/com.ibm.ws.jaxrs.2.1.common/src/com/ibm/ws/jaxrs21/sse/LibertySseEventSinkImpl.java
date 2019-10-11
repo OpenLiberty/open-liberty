@@ -13,6 +13,8 @@ package com.ibm.ws.jaxrs21.sse;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
@@ -34,6 +36,9 @@ import org.apache.cxf.transport.http.AbstractHTTPDestination;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.jaxrs21.clientconfig.JAXRSClientCompletionStageFactoryConfig;
+import com.ibm.ws.kernel.service.util.JavaInfo;
+import com.ibm.ws.concurrent.mp.spi.CompletionStageFactory;
 
 /**
  * This class implements the <code>SseEventSink</code> that is injected into
@@ -46,6 +51,17 @@ public class LibertySseEventSinkImpl implements SseEventSink {
     private final Message message;
     private final HttpServletResponse response;
     private volatile boolean closed;
+    
+    private static final CompletionStageFactory completionStageFactory = JAXRSClientCompletionStageFactoryConfig.getCompletionStageFactory();
+    
+    // (From ManagedCompletableFuture)  The Java SE 8 CompletableFuture lacks certain important methods, namely defaultExecutor and newIncompleteFuture.
+    static final boolean JAVA8;
+    static final boolean COMPLETION_STAGE_FACTORY_IS_NULL;
+    static {
+        int version = JavaInfo.majorVersion();
+        JAVA8 = version == 8;        
+        COMPLETION_STAGE_FACTORY_IS_NULL = completionStageFactory == null;
+    }
 
     public LibertySseEventSinkImpl(MessageBodyWriter<OutboundSseEvent> writer, Message message) {
         this.writer = writer;
@@ -75,8 +91,6 @@ public class LibertySseEventSinkImpl implements SseEventSink {
             } finally {
                 ServerProviderFactory.releaseRequestState(message);
             }
-            
-            //TODO: remove from all broadcasters
         }
 
     }
@@ -95,7 +109,7 @@ public class LibertySseEventSinkImpl implements SseEventSink {
     @FFDCIgnore({WebApplicationException.class, IOException.class, NoSuitableMessageBodyWriterException.class})
     @Override
     public CompletionStage<?> send(OutboundSseEvent event) {
-        final CompletableFuture<?> future = new CompletableFuture<>();
+        final CompletableFuture<?> future = createCompleteableFuture();
 
         if (!closed) {
             if (writer != null) {
@@ -161,5 +175,29 @@ public class LibertySseEventSinkImpl implements SseEventSink {
         }
         future.completeExceptionally(t);
         close();
+    }
+
+    private CompletableFuture<?> createCompleteableFuture() {
+        final SecurityManager sm = System.getSecurityManager();
+        if (sm == null) {
+            if (JAVA8 || COMPLETION_STAGE_FACTORY_IS_NULL) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Running on Java 8 or in an Java SE environment.  Using ForkJoinPool.commonPool()");
+                }
+                return new CompletableFuture<>();
+            } 
+            // Use Liberty thread pool
+            return completionStageFactory.supplyAsync(null, null).toCompletableFuture();
+        }
+        return AccessController.doPrivileged((PrivilegedAction<CompletableFuture<?>>)() -> {
+            if (JAVA8 || COMPLETION_STAGE_FACTORY_IS_NULL) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Running on Java 8 or in an Java SE environment.  Using ForkJoinPool.commonPool()");
+                }
+                return new CompletableFuture<>();
+            }
+            // Use Liberty thread pool
+            return completionStageFactory.supplyAsync(null, null).toCompletableFuture();
+        });
     }
 }

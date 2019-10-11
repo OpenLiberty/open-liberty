@@ -40,10 +40,10 @@ public class MonitorMetricsHandler {
 	
 	private static final TraceComponent tc = Tr.register(MonitorMetricsHandler.class);
 	
-    private SharedMetricRegistries sharedMetricRegistry;
-    private MappingTable mappingTable;
-    private Set<MonitorMetrics> metricsSet = new HashSet<MonitorMetrics>();
-	private NotificationListener listener;
+	protected SharedMetricRegistries sharedMetricRegistry;
+    protected MappingTable mappingTable;
+    protected Set<MonitorMetrics> metricsSet = new HashSet<MonitorMetrics>();
+    protected NotificationListener listener;
     
 	@Activate
     protected void activate(ComponentContext context) {
@@ -77,7 +77,7 @@ public class MonitorMetricsHandler {
     	Tr.info(tc, "FEATURE_UNREGISTERED");
     }
 
-    private void addMBeanListener() {
+    protected void addMBeanListener() {
     	listener = new NotificationListener() {
 
 			@Override
@@ -122,12 +122,21 @@ public class MonitorMetricsHandler {
     	metricsSet.removeAll(removeSet);
 	}
 
-    private void register() {
+    protected void register() {
 		MBeanServer	mbs = ManagementFactory.getPlatformMBeanServer();
 		for (String sName : mappingTable.getKeys() ) {
 			Set<ObjectInstance> mBeanObjectInstanceSet;
 			try {
 				mBeanObjectInstanceSet = mbs.queryMBeans(new ObjectName(sName), null);
+				if (sName.contains("ThreadPoolStats")) {
+					final int MAX_TIME_OUT = 5000;
+					int currentTimeOut = 0;
+					while (mBeanObjectInstanceSet.isEmpty() && currentTimeOut <= MAX_TIME_OUT) {
+						Thread.sleep(50);
+						mBeanObjectInstanceSet = mbs.queryMBeans(new ObjectName(sName), null);
+						currentTimeOut+=50;
+					}
+				}
 		        for (ObjectInstance objInstance : mBeanObjectInstanceSet) {
 		            String objectName = objInstance.getObjectName().toString();
 		            String[][] data = mappingTable.getData(objectName);
@@ -157,7 +166,7 @@ public class MonitorMetricsHandler {
 		
 	}
 
-	private boolean containMetrics(String objectName) {
+	protected boolean containMetrics(String objectName) {
     	for (MonitorMetrics mm : metricsSet) {
     		if (mm.objectName.equals(objectName))
     			return true;

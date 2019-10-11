@@ -31,6 +31,7 @@ import io.leangen.graphql.generator.mapping.BaseTypeSynonymComparator;
 import io.leangen.graphql.generator.mapping.ConverterRegistry;
 import io.leangen.graphql.generator.mapping.InputConverter;
 import io.leangen.graphql.generator.mapping.OutputConverter;
+import io.leangen.graphql.generator.mapping.ScalarMapperExtension;
 import io.leangen.graphql.generator.mapping.SchemaTransformer;
 import io.leangen.graphql.generator.mapping.SchemaTransformerRegistry;
 import io.leangen.graphql.generator.mapping.TypeMapper;
@@ -98,6 +99,7 @@ import io.leangen.graphql.module.Module;
 import io.leangen.graphql.util.ClassUtils;
 import io.leangen.graphql.util.Defaults;
 import io.leangen.graphql.util.GraphQLUtils;
+import io.leangen.graphql.util.Scalars;
 import io.leangen.graphql.util.Urls;
 import io.leangen.graphql.util.Utils;
 
@@ -192,6 +194,7 @@ public class GraphQLSchemaGenerator {
     private final List<ExtensionProvider<GeneratorConfiguration, Module>> moduleProviders = new ArrayList<>();
     private final List<ExtensionProvider<GeneratorConfiguration, ResolverInterceptorFactory>> interceptorFactoryProviders = new ArrayList<>();
     private final Collection<GraphQLSchemaProcessor> processors = new HashSet<>();
+    private final List<ScalarMapperExtension> scalarMapperExtensions = new ArrayList<>();
     private final RelayMappingConfig relayMappingConfig = new RelayMappingConfig();
     private final Map<String, GraphQLDirective> additionalDirectives = new HashMap<>();
     private final List<AnnotatedType> additionalDirectiveTypes = new ArrayList<>();
@@ -819,6 +822,15 @@ public class GraphQLSchemaGenerator {
     }
 
     /**
+     * Registers scalar mapping extensions allowing callers to customize scalar-type mappings and add
+     * new custom scalars.
+     */
+    public GraphQLSchemaGenerator withScalarMapperExtensions(ScalarMapperExtension... extensions) {
+        addAll(this.scalarMapperExtensions, extensions);
+        return this;
+    }
+
+    /**
      * Sets the default values for all settings not configured explicitly,
      * ensuring the builder is in a valid state
      */
@@ -865,13 +877,18 @@ public class GraphQLSchemaGenerator {
         checkForEmptyOrDuplicates("nested resolver builders", nestedResolverBuilders);
         operationSourceRegistry.registerGlobalNestedResolverBuilders(nestedResolverBuilders);
 
+        Scalars scalars = new Scalars(scalarMapperExtensions);
+        if (abstractInputHandler != null) {
+            abstractInputHandler.setScalars(scalars);
+        }
+
         ObjectTypeMapper objectTypeMapper = new ObjectTypeMapper();
         PublisherAdapter publisherAdapter = new PublisherAdapter();
         EnumMapper enumMapper = new EnumMapper(javaDeprecationConfig);
         typeMappers = Arrays.asList(
-                new NonNullMapper(), new IdMapper(), new IdAdapter(), new ScalarMapper(), new CompletableFutureMapper(),
+                new NonNullMapper(), new IdMapper(), new IdAdapter(), new ScalarMapper(scalars), new CompletableFutureMapper(),
                 publisherAdapter, new AnnotationMapper(), new OptionalIntAdapter(), new OptionalLongAdapter(), new OptionalDoubleAdapter(),
-                enumMapper, new ArrayAdapter(), new UnionTypeMapper(), new UnionInlineMapper(),
+                enumMapper, new ArrayAdapter(scalars), new UnionTypeMapper(), new UnionInlineMapper(),
                 new StreamToCollectionTypeAdapter(), new DataFetcherResultMapper(), new VoidToBooleanTypeAdapter(),
                 new ListMapper(), new IterableAdapter<>(), new PageMapper(), new OptionalAdapter(), new EnumMapToObjectTypeAdapter(enumMapper),
                 new ObjectScalarMapper(), new InterfaceMapper(interfaceStrategy, objectTypeMapper), objectTypeMapper);
@@ -887,7 +904,7 @@ public class GraphQLSchemaGenerator {
         checkForEmptyOrDuplicates("schema transformers", transformers);
 
         List<OutputConverter> outputConverters = Arrays.asList(
-                new IdAdapter(), new VoidToBooleanTypeAdapter(), new ArrayAdapter(), new CollectionOutputConverter(),
+                new IdAdapter(), new VoidToBooleanTypeAdapter(), new ArrayAdapter(scalars), new CollectionOutputConverter(),
                 new OptionalIntAdapter(), new OptionalLongAdapter(), new OptionalDoubleAdapter(), new OptionalAdapter(),
                 new StreamToCollectionTypeAdapter(), publisherAdapter);
         for (ExtensionProvider<GeneratorConfiguration, OutputConverter> provider : outputConverterProviders) {

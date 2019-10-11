@@ -171,7 +171,7 @@
     letter-spacing: 0;
     text-align: left;
     line-height: 20px;
-    word-break: break-all;
+    word-break: break-word;
     padding: 15px 0px 18px 28px;
 }
 
@@ -628,7 +628,7 @@ th.table_sort_column:hover {      /* ....except for the button in the sortable c
     margin-bottom: 12px;
     font-size: 20px;
     letter-spacing: 0;
-    line-height: 18px;
+    line-height: 22px;
 }
 
 span.tool_modal_body_info_label {

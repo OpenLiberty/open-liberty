@@ -1733,4 +1733,82 @@ public class Http2FullModeTests extends FATServletClient {
     public void testExceedMaxConcurrentStreams() throws Exception {
         runTest(defaultServletPath, testName.getMethodName());
     }
+
+    /**
+     * Test Coverage: Send a POST request with body data, but no content-length header
+     * Test Outcome: The server response contains a string from the request body
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testSendPostRequestWithBody() throws Exception {
+        runTest(defaultServletPath, testName.getMethodName());
+    }
+
+    /**
+     * Test Coverage: Send an excessive number of PING frames to the server
+     * Test Outcome: GOAWAY received from server
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testPingStress() throws Exception {
+        runTest(defaultServletPath, testName.getMethodName());
+    }
+
+    /**
+     * Test Coverage: Send an excessive number of PRIORITY frames to the server
+     * Test Outcome: GOAWAY received from server
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testPriorityStress() throws Exception {
+        runTest(defaultServletPath, testName.getMethodName());
+    }
+
+    /**
+     * Test Coverage: Create an excessive number of streams on the server, each with a malformed 
+     * request. The server should respond to each stream with a reset.
+     * Test Outcome: GOAWAY received from server
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testResetStress() throws Exception {
+        runTest(defaultServletPath, testName.getMethodName());
+    }
+
+    /**
+     * Test Coverage: Send an excessive number of empty data frames on a single stream
+     * Test Outcome: GOAWAY received from server
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testEmptyDataFrameStress() throws Exception {
+        runTest(defaultServletPath, testName.getMethodName());
+    }
+
+    /**
+     * Test Coverage: Send an excessive number of empty header/continuation frames on a single stream
+     * Test Outcome: GOAWAY received from server
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testEmptyHeaderFrameStress() throws Exception {
+        runTest(defaultServletPath, testName.getMethodName());
+    }
+
+    /**
+     * Test Coverage: Send an excessive number of settings frames to the server
+     * Test Outcome: GOAWAY received from server
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testSettingsFrameStress() throws Exception {
+        runTest(defaultServletPath, testName.getMethodName());
+    }
 }

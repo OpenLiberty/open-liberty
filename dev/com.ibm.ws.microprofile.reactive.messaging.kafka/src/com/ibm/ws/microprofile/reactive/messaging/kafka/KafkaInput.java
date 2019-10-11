@@ -25,8 +25,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Function;
 
-import javax.enterprise.concurrent.ManagedScheduledExecutorService;
-
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
 import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
@@ -70,15 +68,16 @@ public class KafkaInput<K, V> {
      */
     private final ReentrantLock lock = new ReentrantLock();
 
-    public KafkaInput(KafkaAdapterFactory kafkaAdapterFactory, KafkaConsumer<K, V> kafkaConsumer, ManagedScheduledExecutorService executor, Collection<String> topics,
-                      int unackedThreshold) {
+    public KafkaInput(KafkaAdapterFactory kafkaAdapterFactory, KafkaConsumer<K, V> kafkaConsumer, ExecutorService executor, String topic, AckTracker ackTracker) {
         super();
         this.kafkaConsumer = kafkaConsumer;
         this.executor = executor;
-        this.topics = topics;
-        this.ackTracker = new AckTracker(kafkaAdapterFactory, executor, unackedThreshold);
+        this.topics = Collections.singleton(topic);
         this.tasks = new ConcurrentLinkedQueue<>();
-        this.ackTracker.setCommitAction(this::commitOffsets);
+        this.ackTracker = ackTracker;
+        if (ackTracker != null) {
+            this.ackTracker.setCommitAction(this::commitOffsets);
+        }
     }
 
     public PublisherBuilder<Message<V>> getPublisher() {
@@ -90,7 +89,20 @@ public class KafkaInput<K, V> {
     }
 
     private PublisherBuilder<Message<V>> createPublisher() {
-        PublisherBuilder<Message<V>> kafkaStream = ReactiveStreams.generate(() -> 0).flatMapCompletionStage(x -> this.ackTracker.waitForAckThreshold().thenCompose(y -> pollKafkaAsync())).flatMap(Function.identity()).map(this::wrapInMessage).takeWhile((record) -> this.running);
+        PublisherBuilder<Message<V>> kafkaStream;
+        if (ackTracker != null) {
+            kafkaStream = ReactiveStreams.generate(() -> 0)
+                                         .flatMapCompletionStage(x -> this.ackTracker.waitForAckThreshold().thenCompose(y -> pollKafkaAsync()))
+                                         .flatMap(Function.identity())
+                                         .map(this::wrapInMessage)
+                                         .takeWhile((record) -> this.running);
+        } else {
+            kafkaStream = ReactiveStreams.generate(() -> 0)
+                                         .flatMapCompletionStage(x -> pollKafkaAsync())
+                                         .flatMap(Function.identity())
+                                         .map(r -> Message.of(r.value()))
+                                         .takeWhile((record) -> this.running);
+        }
         return kafkaStream;
     }
 
@@ -149,14 +161,25 @@ public class KafkaInput<K, V> {
             this.lock.unlock();
         }
 
-        ackTracker.shutdown();
+        if (ackTracker != null) {
+            ackTracker.shutdown();
+        }
     }
 
     @FFDCIgnore(WakeupException.class)
     private CompletionStage<PublisherBuilder<ConsumerRecord<K, V>>> pollKafkaAsync() {
         if (!this.subscribed) {
-            this.kafkaConsumer.subscribe(this.topics, this.ackTracker);
-            this.subscribed = true;
+            this.lock.lock();
+            try {
+                if (ackTracker != null) {
+                    this.kafkaConsumer.subscribe(this.topics, this.ackTracker);
+                } else {
+                    this.kafkaConsumer.subscribe(this.topics);
+                }
+                this.subscribed = true;
+            } finally {
+                this.lock.unlock();
+            }
         }
 
         if (!this.running) {
@@ -173,7 +196,7 @@ public class KafkaInput<K, V> {
 
         while (this.lock.tryLock()) {
             try {
-                records = pollKafka(ZERO);
+                records = this.kafkaConsumer.poll(ZERO);
                 break;
             } catch (WakeupException e) {
                 // Asked to stop polling, probably means there are pending actions to process
@@ -187,38 +210,38 @@ public class KafkaInput<K, V> {
             result.complete(fromIterable(records));
         } else {
             this.executor.submit(() -> {
-                this.lock.lock();
-                try {
-                    while (this.running) {
-                        try {
-                            runPendingActions();
-                            ConsumerRecords<K, V> asyncRecords = pollKafka(FOREVER);
-                            result.complete(fromIterable(asyncRecords));
-                            break;
-                        } catch (WakeupException e) {
-                            // We were asked to stop polling, probably means there are pending actions to
-                            // process
-                        } catch (Throwable t) {
-                            result.completeExceptionally(t);
-                            break;
-                        }
-                    }
-                } finally {
-                    this.lock.unlock();
-                }
-
-                runPendingActions();
+                executePollActions(result);
             });
         }
 
         return result;
     }
 
-    private ConsumerRecords<K, V> pollKafka(Duration duration) {
-        synchronized (this.kafkaConsumer) {
-            ConsumerRecords<K, V> records = this.kafkaConsumer.poll(duration);
-            return records;
+    /**
+     * Run any pending actions and then poll Kafka for messages.
+     */
+    @FFDCIgnore(WakeupException.class)
+    private void executePollActions(CompletableFuture<PublisherBuilder<ConsumerRecord<K, V>>> result) {
+        this.lock.lock();
+        try {
+            while (this.running) {
+                try {
+                    runPendingActions();
+                    ConsumerRecords<K, V> asyncRecords = this.kafkaConsumer.poll(FOREVER);
+                    result.complete(fromIterable(asyncRecords));
+                    break;
+                } catch (WakeupException e) {
+                    // We were asked to stop polling, probably means there are pending actions to
+                    // process
+                } catch (Throwable t) {
+                    result.completeExceptionally(t);
+                    break;
+                }
+            }
+        } finally {
+            this.lock.unlock();
         }
+        runPendingActions();
     }
 
     /**

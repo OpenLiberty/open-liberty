@@ -25,7 +25,7 @@
             <property name="appDeployTimeout">60</property>
             <property name="verifyAppDeployTimeout">60</property>
             <property name="failSafeUndeployment">${tck_failSafeUndeployment}</property>
-            <property name="appUndeployTimeout">${tck_appUndeployTimeout}</property>
+            <property name="appUndeployTimeout">120</property>
             <property name="javaVmArguments">-Dcom.ibm.tools.attach.enable=yes</property> <!-- this goes here because this tck project asks arquillian to start the server -->
         </configuration>
     </container>

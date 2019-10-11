@@ -68,7 +68,7 @@ public class ServerCommandListener extends ServerCommand {
     private final AtomicReference<Thread> responseThread = new AtomicReference<Thread>();
 
     private volatile boolean listenForCommands = false;
-    private volatile Thread listeningThread;
+    private final Thread listeningThread;
 
     /**
      * The server name is read from BootstrapConfig and used when issuing messages.
@@ -84,12 +84,13 @@ public class ServerCommandListener extends ServerCommand {
      * @param bootProps
      * @param uuid
      */
-    public ServerCommandListener(BootstrapConfig bootProps, String uuid, FrameworkManager frameworkManager) {
+    public ServerCommandListener(BootstrapConfig bootProps, String uuid, FrameworkManager frameworkManager, Thread listeningThread) {
 
         super(bootProps);
         this.frameworkManager = frameworkManager;
         this.serverUUID = uuid;
         this.serverName = bootProps.getProcessName();
+        this.listeningThread = listeningThread;
 
         File serverDir = bootProps.getConfigFile(null);
         File serverWorkArea = bootProps.getWorkareaFile(null);
@@ -311,16 +312,8 @@ public class ServerCommandListener extends ServerCommand {
      * Locks are not suspended while waiting for input
      */
     public void startListening() {
-        if (listenForCommands) {
-            listeningThread = new Thread("kernel-command-listener") {
-                @Override
-                public void run() {
-                    while (listenForCommands && acceptAndExecuteCommand()) {
-                        //loop intentionally empty
-                    }
-                }
-            };
-            listeningThread.start();
+        while (listenForCommands && acceptAndExecuteCommand()) {
+            //loop intentionally empty
         }
     }
 

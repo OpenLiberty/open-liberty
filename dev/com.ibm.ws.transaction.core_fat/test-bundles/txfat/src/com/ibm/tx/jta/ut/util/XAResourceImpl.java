@@ -169,6 +169,7 @@ public class XAResourceImpl implements XAResource, Serializable {
     public static final int ROLLEDBACK = 32;
     public static final int FORGOTTEN = 64;
     public static final int RECOVERED = 128;
+    public static final int COMMITTED_ONE_PHASE = 256;
 
     protected static String STATE_FILE = "XAResourceData.dat";
 
@@ -745,6 +746,9 @@ public class XAResourceImpl implements XAResource, Serializable {
         }
 
         setState(COMMITTED);
+        if (onePhase) {
+            setState(COMMITTED_ONE_PHASE);
+        }
         System.out.println("committed(" + _key + ", " + xid + ", " + onePhase
                            + ")");
     }

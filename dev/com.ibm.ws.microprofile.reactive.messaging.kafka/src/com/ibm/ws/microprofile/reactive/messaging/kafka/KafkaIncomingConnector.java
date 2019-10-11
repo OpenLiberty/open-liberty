@@ -11,11 +11,11 @@
 package com.ibm.ws.microprofile.reactive.messaging.kafka;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -29,6 +29,7 @@ import javax.inject.Inject;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.eclipse.microprofile.reactive.messaging.spi.Connector;
+import org.eclipse.microprofile.reactive.messaging.spi.ConnectorFactory;
 import org.eclipse.microprofile.reactive.messaging.spi.IncomingConnectorFactory;
 import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
 import org.osgi.framework.Bundle;
@@ -40,17 +41,11 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.KafkaAdapterFactory;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.KafkaConsumer;
 
-@Connector("io.openliberty.kafka")
+@Connector(KafkaConnectorConstants.CONNECTOR_NAME)
 @ApplicationScoped
 public class KafkaIncomingConnector implements IncomingConnectorFactory {
 
     private static final TraceComponent tc = Tr.register(KafkaIncomingConnector.class);
-
-    //properties extracted from config
-    private static final String TOPICS = "topics";
-    private static final String UNACKED_LIMIT = "unacked.limit";
-    //Kafka property
-    private static final String ENABLE_AUTO_COMMIT = "enable.auto.commit";
 
     ManagedScheduledExecutorService executor;
 
@@ -89,22 +84,42 @@ public class KafkaIncomingConnector implements IncomingConnectorFactory {
     public PublisherBuilder<Message<Object>> getPublisherBuilder(Config config) {
 
         // Extract our config
-        List<String> topics = Arrays.asList(config.getValue(TOPICS, String.class).split(" *, *", -1));
-        int unackedLimit = config.getOptionalValue(UNACKED_LIMIT, Integer.class).orElse(20);
+        String channelName = config.getValue(ConnectorFactory.CHANNEL_NAME_ATTRIBUTE, String.class);
+
+        Optional<String> groupID = config.getOptionalValue(KafkaConnectorConstants.GROUP_ID, String.class);
+        if (!groupID.isPresent()) {
+            String msg = Tr.formatMessage(tc, "kafka.groupid.not.set.CWMRX1005E", ConnectorFactory.INCOMING_PREFIX + channelName + "." + KafkaConnectorConstants.GROUP_ID);
+            throw new IllegalArgumentException(msg);
+        }
+
+        String topic = config.getOptionalValue(KafkaConnectorConstants.TOPIC, String.class).orElse(channelName);
+        int maxPollRecords = config.getOptionalValue(KafkaConnectorConstants.MAX_POLL_RECORDS, Integer.class).orElse(500);
+        int unackedLimit = config.getOptionalValue(KafkaConnectorConstants.UNACKED_LIMIT, Integer.class).orElse(maxPollRecords);
+
+        // Configure our defaults
+        Map<String, Object> consumerConfig = new HashMap<>();
+        // Default behaviour is that connector handles commit in response to ack()
+        consumerConfig.put(KafkaConnectorConstants.ENABLE_AUTO_COMMIT, "false");
 
         // Pass the rest of the config directly through to the kafkaConsumer
-        Map<String, Object> consumerConfig = new HashMap<>(StreamSupport.stream(config.getPropertyNames().spliterator(),
-                                                                                false).collect(Collectors.toMap(Function.identity(), (k) -> config.getValue(k, String.class))));
+        consumerConfig.putAll(StreamSupport.stream(config.getPropertyNames().spliterator(), false)
+                                           .filter(k -> !KafkaConnectorConstants.NON_KAFKA_PROPS.contains(k))
+                                           .collect(Collectors.toMap(Function.identity(), (k) -> config.getValue(k, String.class))));
 
-        // Set the config values which we hard-code
-        consumerConfig.put(ENABLE_AUTO_COMMIT, "false"); // Connector handles commit in response to ack()
-                                                         // automatically
+        boolean enableAutoCommit = "true".equalsIgnoreCase((String) consumerConfig.get(KafkaConnectorConstants.ENABLE_AUTO_COMMIT));
 
         // Create the kafkaConsumer
         KafkaConsumer<String, Object> kafkaConsumer = this.kafkaAdapterFactory.newKafkaConsumer(consumerConfig);
 
+        // Create the AckTracker
+        AckTracker ackTracker = null;
+        if (!enableAutoCommit) {
+            // We only need to track acknowledgments if the user hasn't enabled auto commit
+            ackTracker = new AckTracker(kafkaAdapterFactory, executor, unackedLimit);
+        }
+
         // Create our connector around the kafkaConsumer
-        KafkaInput<String, Object> kafkaInput = new KafkaInput<>(this.kafkaAdapterFactory, kafkaConsumer, this.executor, topics, unackedLimit);
+        KafkaInput<String, Object> kafkaInput = new KafkaInput<>(this.kafkaAdapterFactory, kafkaConsumer, this.executor, topic, ackTracker);
         kafkaInputs.add(kafkaInput);
 
         return kafkaInput.getPublisher();

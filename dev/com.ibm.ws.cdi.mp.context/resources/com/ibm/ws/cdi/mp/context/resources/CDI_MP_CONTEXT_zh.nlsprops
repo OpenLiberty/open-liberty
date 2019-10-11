@@ -1,0 +1,33 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.concurrent/resources/com/ibm/ws/concurrent/resources/CWWKCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC MicroProfile Context Propagation
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# This message bundle does not have its own message range, and instead reserves specific error messages from the 
+# com.ibm.ws.concurrent.mp.1.0 message bundle
+
+# do not translate: CDI, CompletionStage
+CWWKC1158.cannot.lazy.enlist.beans=CWWKC1158E: \u6355\u83b7\u4e0a\u4e0b\u6587\u64cd\u4f5c\u6216\u4efb\u52a1\u7684\u4e0a\u4e0b\u6587\u4e4b\u524d\uff0c\u5fc5\u987b\u8bbf\u95ee CDI bean\uff0c\u4ee5\u4fbf\u4ece\u8be5\u64cd\u4f5c\u6216\u4efb\u52a1\u4e2d\u8bbf\u95ee\u65f6\uff0cCDI bean \u5177\u6709\u6b63\u786e\u7684\u884c\u4e3a\u3002\
+\u6355\u83b7\u4e0a\u4e0b\u6587\u65f6\uff0c\u672a\u8bbf\u95ee\u4ee5\u4e0b CDI bean\uff1a{0}\u3002
+CWWKC1158.cannot.lazy.enlist.beans.explanation=\u6355\u83b7 CDI \u4e0a\u4e0b\u6587\u65f6\uff0cCDI \u8fd0\u884c\u65f6\u4ec5\u521b\u5efa\u4e86\u8be5\u65f6\u95f4\u70b9\u5df2\u8bbf\u95ee\u7684 CDI bean\u3002\
+\u56e0\u6b64\uff0c\u5728\u4e0a\u4e0b\u6587\u64cd\u4f5c\u4e2d\u5148\u8bbf\u95ee\u7684 CDI bean \u65e0\u6cd5\u5c06\u5176\u72b6\u6001\u6b63\u786e\u4f20\u64ad\u81f3\u540e\u7eed\u4e0a\u4e0b\u6587\u64cd\u4f5c\u3002
+CWWKC1158.cannot.lazy.enlist.beans.useraction=\u5fc5\u987b\u66f4\u6539\u5e94\u7528\u7a0b\u5e8f\uff0c\u4ee5\u5728\u6355\u83b7\u8be5\u64cd\u4f5c\u7684\u4e0a\u4e0b\u6587\u4e4b\u524d\u8c03\u7528\u67d0\u4e2a CDI bean \u64cd\u4f5c\uff0c\u4f8b\u5982\u516c\u5171\u65b9\u6cd5\u3002

@@ -20,6 +20,7 @@ var messages = {
     "DELETE": "삭제",
     "DONE": "완료",
     "EDIT": "편집",
+    "FALSE": "False",
     "GENERATE": "생성",
     "LOADING": "로드 중",
     "LOGOUT": "로그아웃",
@@ -31,7 +32,10 @@ var messages = {
     "PROCESSING": "처리 중",
     "REGENERATE": "재생성",
     "REGISTER": "등록",
-    "TRY_AGAIN": "다시 시도하십시오...",
+    "TABLE_FIELD_SORT_ASC": "테이블은 {0}별로 오름차순으로 정렬됩니다.",   // {0} - column name (ie. 'Name', 'Client ID')
+    "TABLE_FIELD_SORT_DESC": "테이블은 {0}별로 내림차순으로 정렬됩니다.", // {0} - column name (ie. 'Name', 'Client ID')
+    "TRUE": "True",
+    "TRY_AGAIN": "다시 시도...",
     "UPDATE": "업데이트",
 
     // Common Column Names
@@ -49,6 +53,11 @@ var messages = {
     "NAME_IDENTIFIER": "이름: {0}",
     "ADD_NEW_TITLE": "새 인증 등록",
     "NOT_GENERATED_PLACEHOLDER": "생성되지 않음",
+    "AUTHENTICAION_GENERATED": "인증이 생성됨",
+    "GENERATED_APP_PASSWORD": "app-password가 생성됨",
+    "GENERATED_APP_TOKEN": "app-token이 생성됨",
+    "COPY_APP_PASSWORD": "클립보드로 app-password 복사",
+    "COPY_APP_TOKEN": "클립보드로 app-token 복사",
     "REGENERATE_APP_PASSWORD": "App-Password 재생성",
     "REGENERATE_PW_WARNING": "이 조치는 현재 app-password를 겹쳐씁니다.",
     "REGENERATE_PW_PLACEHOLDER": "{0}에 이전에 생성된 비밀번호",        // 0 - date

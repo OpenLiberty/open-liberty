@@ -1,0 +1,33 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.concurrent/resources/com/ibm/ws/concurrent/resources/CWWKCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC MicroProfile Context Propagation
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# This message bundle does not have its own message range, and instead reserves specific error messages from the 
+# com.ibm.ws.concurrent.mp.1.0 message bundle
+
+# do not translate: CDI, CompletionStage
+CWWKC1158.cannot.lazy.enlist.beans=CWWKC1158E: Aby zachowanie komponent\u00f3w bean CDI w przypadku uzyskiwania dost\u0119pu z dzia\u0142ania lub zadania by\u0142o poprawne, dost\u0119p do komponent\u00f3w bean CDI nale\u017cy uzyska\u0107 przed przechwyceniem kontekstu dzia\u0142ania lub zadania kontekstowego. \
+Nie uzyskano dost\u0119pu do nast\u0119puj\u0105cych komponent\u00f3w bean CDI przed przechwyceniem kontekstu: {0}.
+CWWKC1158.cannot.lazy.enlist.beans.explanation=Tylko komponenty bean CDI, do kt\u00f3rych dost\u0119p zosta\u0142 uzyskany w momencie przechwytywania kontekstu CDI, s\u0105 tworzone przez \u015brodowisko wykonawcze CDI. \
+W wyniku tego komponenty bean CDI, do kt\u00f3rych dost\u0119p po raz pierwszy uzyskano w operacjach kontekstowych, nie mog\u0105 propagowa\u0107 poprawnie swojego stanu do kolejnych operacji kontekstowych.
+CWWKC1158.cannot.lazy.enlist.beans.useraction=Przed przechwyceniem kontekstu nale\u017cy zmieni\u0107 aplikacj\u0119 w celu wywo\u0142ania niekt\u00f3rych operacji bean CDI, takich jak metoda publiczna.

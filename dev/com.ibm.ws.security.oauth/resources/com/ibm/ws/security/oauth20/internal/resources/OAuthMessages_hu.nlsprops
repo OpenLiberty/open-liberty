@@ -113,8 +113,12 @@ OAUTH_LENGTH_TOO_LARGE_AND_CHANGED=CWWKS1422I: A(z) {0} \u00e9rt\u00e9ke az oaut
 OAUTH_LENGTH_TOO_LARGE_AND_CHANGED.explanation=A jelzett attrib\u00fatum \u00e9rt\u00e9ke t\u00fal nagy.
 OAUTH_LENGTH_TOO_LARGE_AND_CHANGED.useraction=\u00c1ll\u00edtsa be a jelzett attrib\u00fatumot egy megfelel\u0151 \u00e9rt\u00e9kre.  
 
+OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR=CWWKS1423E: Az OAuth \u00fcgyf\u00e9l regisztr\u00e1ci\u00f3ja vagy friss\u00edt\u00e9se meghi\u00fasult, mivel az \u00fcgyf\u00e9ladatok illeg\u00e1lis "{0}" karaktert tartalmaznak.
+OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR.explanation=A karakter \u00fcgyf\u00e9ladatokban nem megengedett.
+OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR.useraction=T\u00e1vol\u00edtsa el az illeg\u00e1lis karaktert, majd k\u00fcldje el \u00fajra a k\u00e9r\u00e9st. 
+
 OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND=CWWKS1424E: A(z) {0} \u00fcgyf\u00e9lazonos\u00edt\u00f3 nem tal\u00e1lhat\u00f3.
-OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.explanation=A k\u00e9r\u00e9s tartalmazott egy {0} \u00fcgyf\u00e9lazonos\u00edt\u00f3t, ami nem tal\u00e1lhat\u00f3.  
+OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.explanation=A k\u00e9r\u00e9s olyan \u00fcgyf\u00e9l-azonos\u00edt\u00f3t tartalmazott, amely nem tal\u00e1lhat\u00f3.  
 OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.useraction=Pr\u00f3b\u00e1lkozzon \u00fajra a k\u00e9r\u00e9ssel \u00fagy, hogy egy \u00e9rv\u00e9nyes \u00fcgyf\u00e9lazonos\u00edt\u00f3t ad meg.
 
 OAUTH_CLIENT_REGISTRATION_INVALID_REQUEST_PATH=CWWKS1425E: A regisztr\u00e1ci\u00f3s k\u00e9r\u00e9s egy helytelen URI azonos\u00edt\u00f3hoz lett kiadva.
@@ -134,19 +138,19 @@ OAUTH_CLIENT_REGISTRATION_MALFORMED_REQUEST.explanation=A k\u00e9r\u00e9s t\u00f
 OAUTH_CLIENT_REGISTRATION_MALFORMED_REQUEST.useraction=Tekintse \u00e1t a szolg\u00e1ltat\u00e1s API dokument\u00e1ci\u00f3j\u00e1t, majd pr\u00f3b\u00e1lja meg \u00fajra elk\u00fcldeni a k\u00e9r\u00e9st.
 
 OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS=CWWKS1429E: A(z) {0} \u00fcgyf\u00e9lazonos\u00edt\u00f3 m\u00e1r l\u00e9tezik.
-OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS.explanation=A m\u0171velet meghi\u00fasult, mivel a(z) {0} \u00fcgyf\u00e9lazonos\u00edt\u00f3 m\u00e1r l\u00e9tezik.  
+OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS.explanation=A m\u0171velet meghi\u00fasult, mivel az \u00fcgyf\u00e9l-azonos\u00edt\u00f3 m\u00e1r l\u00e9tezik.  
 OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS.useraction=Tekintse \u00e1t a szolg\u00e1ltat\u00e1s API dokument\u00e1ci\u00f3j\u00e1t, majd pr\u00f3b\u00e1lja meg \u00fajra elk\u00fcldeni a k\u00e9r\u00e9st a megfelel\u0151 param\u00e9terekkel.
 
-OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE=CWWKS1430E: Az \u00fcgyf\u00e9l friss\u00edt\u00e9se meghi\u00fasult.
-OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE.explanation=A friss\u00edt\u00e9si k\u00e9r\u00e9s azt jelzi, hogy az \u00fcgyf\u00e9l titkot meg kell \u0151rizni, azonban a megl\u00e9v\u0151 regisztr\u00e1ci\u00f3hoz nincs be\u00e1ll\u00edtva titok.  
+OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE=CWWKS1430E: Az \u00fcgyf\u00e9l friss\u00edt\u00e9se meghi\u00fasult. A friss\u00edt\u00e9si k\u00e9r\u00e9s azt jelzi, hogy az \u00fcgyf\u00e9ltitkot meg kell \u0151rizni, azonban a megl\u00e9v\u0151 regisztr\u00e1ci\u00f3hoz nincs be\u00e1ll\u00edtva titkos kulcs.
+OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE.explanation=A friss\u00edt\u00e9si k\u00e9r\u00e9s azt jelzi, hogy az \u00fcgyf\u00e9ltitkot meg kell \u0151rizni, azonban a megl\u00e9v\u0151 regisztr\u00e1ci\u00f3hoz nincs be\u00e1ll\u00edtva titkos kulcs.
 OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE.useraction=Tekintse \u00e1t a szolg\u00e1ltat\u00e1s API dokument\u00e1ci\u00f3j\u00e1t, majd pr\u00f3b\u00e1lja meg \u00fajra elk\u00fcldeni a k\u00e9r\u00e9st a megfelel\u0151 param\u00e9terekkel.
 
-OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE=CWWKS1431E: Az \u00fcgyf\u00e9l friss\u00edt\u00e9se meghi\u00fasult.
-OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE.explanation=Egy nyilv\u00e1nos \u00fcgyf\u00e9lhez kiadott friss\u00edt\u00e9si k\u00e9r\u00e9s nem adhat meg \u00fcgyf\u00e9l titkot.  
+OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE=CWWKS1431E: Az \u00fcgyf\u00e9l friss\u00edt\u00e9se meghi\u00fasult. Egy nyilv\u00e1nos \u00fcgyf\u00e9lhez kiadott friss\u00edt\u00e9si k\u00e9r\u00e9s nem adhat meg \u00fcgyf\u00e9l titkot.
+OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE.explanation=Egy nyilv\u00e1nos \u00fcgyf\u00e9lhez kiadott friss\u00edt\u00e9si k\u00e9r\u00e9s nem adhat meg \u00fcgyf\u00e9l titkot.
 OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE.useraction=Tekintse \u00e1t a szolg\u00e1ltat\u00e1s API dokument\u00e1ci\u00f3j\u00e1t, majd pr\u00f3b\u00e1lja meg \u00fajra elk\u00fcldeni a k\u00e9r\u00e9st a megfelel\u0151 param\u00e9terekkel.
 
-OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG=CWWKS1432E: Az \u00fcgyf\u00e9l friss\u00edt\u00e9se meghi\u00fasult.
-OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG.explanation=A k\u00e9r\u00e9s nem hajthat\u00f3 v\u00e9gre, mert az \u00fcgyf\u00e9l regisztr\u00e1ci\u00f3s \u00e1llapot\u00e1hoz k\u00e9pest \u00e9rv\u00e9nytelen konfigur\u00e1ci\u00f3t ad meg.  
+OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG=CWWKS1432E: Az \u00fcgyf\u00e9l friss\u00edt\u00e9se meghi\u00fasult. Az \u00fcgyf\u00e9ltitok nem friss\u00edthet\u0151, mert a k\u00e9r\u00e9s az \u00fcgyf\u00e9l regisztr\u00e1ci\u00f3s \u00e1llapota alapj\u00e1n \u00e9rv\u00e9nytelen konfigur\u00e1ci\u00f3t ad meg.
+OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG.explanation=A k\u00e9r\u00e9s nem hajthat\u00f3 v\u00e9gre, mert az \u00fcgyf\u00e9l regisztr\u00e1ci\u00f3s \u00e1llapot\u00e1hoz k\u00e9pest \u00e9rv\u00e9nytelen konfigur\u00e1ci\u00f3t ad meg.
 OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG.useraction=Tekintse \u00e1t a szolg\u00e1ltat\u00e1s API dokument\u00e1ci\u00f3j\u00e1t, majd pr\u00f3b\u00e1lja meg \u00fajra elk\u00fcldeni a k\u00e9r\u00e9st a megfelel\u0151 param\u00e9terekkel.
 
 OAUTH_UNSUPPORTED_METHOD=CWWKS1433E: A(z) {0} HTTP met\u00f3dus nem t\u00e1mogatott a(z) {1} szolg\u00e1ltat\u00e1shoz.
@@ -236,6 +240,10 @@ OAUTH_SERVER_MULTIPLE_TOKEN_INTROSPECT_PROVIDER_CONFIGURED.useraction=Nincs teen
 OAUTH_SERVER_INVALID_ACCESS_TOKEN=CWWKS1454E: A k\u00e9r\u00e9s meghi\u00fasult, mert az hozz\u00e1f\u00e9r\u00e9si token nem \u00e9rv\u00e9nyes vagy lej\u00e1rt.
 OAUTH_SERVER_INVALID_ACCESS_TOKEN.explanation=A k\u00e9r\u00e9s feldolgoz\u00e1sa meghi\u00fasult, mert a hozz\u00e1f\u00e9r\u00e9si token \u00e9rv\u00e9nytelen.
 OAUTH_SERVER_INVALID_ACCESS_TOKEN.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a hozz\u00e1f\u00e9r\u00e9si token \u00e9rv\u00e9nyes, \u00e9s nem j\u00e1rt le.
+
+#This message can be appended to 1455E under some conditions
+# do not translate keyStoreRef
+CHECK_KEYSTORE_REF=Az OpenId Connect szolg\u00e1ltat\u00f3 keyStoreRef konfigur\u00e1ci\u00f3s attrib\u00fatuma lehet, hogy hi\u00e1nyzik vagy hib\u00e1s.
 
 #This message is intended to be a child of CWWKS1456E
 #0=signatureAlgorithm, 1=exception or error message if any
@@ -432,9 +440,18 @@ OAUTH_AUTH_HEADER_NOT_BASIC_AUTH.explanation=A megadott k\u00e9r\u00e9snek tarta
 OAUTH_AUTH_HEADER_NOT_BASIC_AUTH.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a k\u00e9r\u00e9s az Alapvet\u0151 hiteles\u00edt\u00e9si s\u00e9m\u00e1t haszn\u00e1lja az OAuth \u00fcgyf\u00e9l hiteles\u00edt\u00e9si adatainak tartalmaz\u00e1s\u00e1hoz.
 
 # Do not translate internalClientId, internalClientSecret, isEnabled, appPasswordAllowed, or appTokenAllowed
-OAUTH_UI_ENDPOINT_NOT_ENABLED=CWWKS1494E: A(z) {0} URI azonos\u00edt\u00f3ra k\u00fcld\u00f6tt k\u00e9r\u00e9s figyelmen k\u00edv\u00fcl marad, mivel az URI nincs enged\u00e9lyezve. Az \u00fcgyf\u00e9l vagy szolg\u00e1ltat\u00f3 attrib\u00fatumok k\u00f6z\u00fcl legal\u00e1bb egy nincs be\u00e1ll\u00edtva. Ellen\u0151rizze, hogy az internalClientId \u00e9s az internalClientSecret szolg\u00e1ltat\u00f3 attrib\u00fatumok be vannak-e \u00e1ll\u00edtva. Ellen\u0151rizze, hogy az isEnabled, appPasswordAllowed vagy appTokenAllowed \u00fcgyf\u00e9l attrib\u00fatumok be vannak-e \u00e1ll\u00edtva.
+OAUTH_UI_ENDPOINT_NOT_ENABLED=CWWKS1494W: A(z) {0} URI azonos\u00edt\u00f3ra k\u00fcld\u00f6tt k\u00e9r\u00e9s nem dolgozhat\u00f3 fel, mert legal\u00e1bb egy \u00fcgyf\u00e9l vagy szolg\u00e1ltat\u00f3attrib\u00fatum nincs be\u00e1ll\u00edtva. Ellen\u0151rizze, hogy az internalClientId \u00e9s az internalClientSecret szolg\u00e1ltat\u00f3 attrib\u00fatumok be vannak-e \u00e1ll\u00edtva. Ellen\u0151rizze, hogy az isEnabled, appPasswordAllowed vagy appTokenAllowed \u00fcgyf\u00e9l attrib\u00fatumok be vannak-e \u00e1ll\u00edtva.
 OAUTH_UI_ENDPOINT_NOT_ENABLED.explanation=Az \u00fcgyf\u00e9l \u00e9s szolg\u00e1ltat\u00f3 attrib\u00fatumokat be kell \u00e1ll\u00edtani az URI azonos\u00edt\u00f3hoz a k\u00e9r\u00e9sek feldolgoz\u00e1s\u00e1hoz.
 OAUTH_UI_ENDPOINT_NOT_ENABLED.useraction=\u00c1ll\u00edtsa be helyesen az \u00fcgyf\u00e9l \u00e9s szolg\u00e1ltat\u00f3 attrib\u00fatumokat, hogy a szolg\u00e1ltat\u00f3 fel tudja dolgozni a k\u00e9r\u00e9st.
+
+# Java runtime level
+JAVA8_REQUIRED=CWWKS1495W: Az OpenID Connect szolg\u00e1ltat\u00f3 nem tudja feldolgozni a [{0}] URI k\u00e9r\u00e9st, mert a Java v\u00e1ltozat a 8-as v\u00e1ltozatn\u00e1l alacsonyabb. Java 8 vagy \u00fajabb sz\u00fcks\u00e9ges.
+JAVA8_REQUIRED.explanation=A haszn\u00e1lt Java v\u00e1ltozat nem V8 vagy \u00fajabb.
+JAVA8_REQUIRED.useraction=Telep\u00edtsen Java 8 vagy \u00fajabb v\u00e1ltozatot.
+
+JAVA8_REQUIRED_FOR_AT_HASHING=CWWKS1496W: A(z) {0} OpenID Connect szolg\u00e1ltat\u00f3 a(z) {1} konfigur\u00e1ci\u00f3s attrib\u00fatummal {2} algoritmus haszn\u00e1lat\u00e1ra van be\u00e1ll\u00edtva, \u00e9s ez Java 8 vagy \u00fajabb v\u00e1ltozatot ig\u00e9nyel. A megadott OpenID Connect szolg\u00e1ltat\u00f3 figyelmen k\u00edv\u00fcl hagyja a(z) {3} be\u00e1ll\u00edt\u00e1st.
+JAVA8_REQUIRED_FOR_AT_HASHING.explanation=A haszn\u00e1lt Java v\u00e1ltozat nem V8 vagy \u00fajabb.
+JAVA8_REQUIRED_FOR_AT_HASHING.useraction=Telep\u00edtse a Java 8 vagy \u00fajabb v\u00e1ltozat\u00e1t az eml\u00edtett konfigur\u00e1ci\u00f3s be\u00e1ll\u00edt\u00e1s haszn\u00e1lat\u00e1hoz.
 
 # html title of logout page
 LOGOUT_PAGE_TITLE=Kijelentkez\u00e9s

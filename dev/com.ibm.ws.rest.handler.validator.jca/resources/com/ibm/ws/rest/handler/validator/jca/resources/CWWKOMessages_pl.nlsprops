@@ -1,0 +1,37 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.rest.handler.validator.jca/resources/com/ibm/ws/rest/handler/validator/jca/resources/CWWKOMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Validation REST endpoint
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWKO1560 to CWWKO1569
+
+CWWKO1560_VALIDATION_NOT_IMPLEMENTED=CWWKO1560E: Dla fabryki po\u0142\u0105cze\u0144 {0} implementuj\u0105cej {1} nie udost\u0119pniono sprawdzania poprawno\u015bci.
+CWWKO1560_VALIDATION_NOT_IMPLEMENTED.explanation=Sprawdzanie poprawno\u015bci jest tylko mo\u017cliwe dla fabryk po\u0142\u0105cze\u0144 adaptera zasob\u00f3w, kt\u00f3re s\u0105 fabrykami po\u0142\u0105cze\u0144 JMS lub implementuj\u0105 interfejsy javax.resource.cci.ConnectionFactory lub javax.sql.DataSource.
+CWWKO1560_VALIDATION_NOT_IMPLEMENTED.useraction=Nie pr\u00f3buj sprawdza\u0107 poprawno\u015bci tego typu fabryki po\u0142\u0105cze\u0144.
+
+CWWKO1561_JMS_NOT_ENABLED=CWWKO1561E: Adapter zasob\u00f3w wymaga us\u0142ugi JMS, ale w konfiguracji serwera nie ma opcji w\u0142\u0105czaj\u0105cej us\u0142ug\u0119 JMS.
+CWWKO1561_JMS_NOT_ENABLED.explanation=Dla tego elementu konfiguracji wymagana jest opcja w\u0142\u0105czaj\u0105ca us\u0142ug\u0119 JMS.
+CWWKO1561_JMS_NOT_ENABLED.useraction=Do konfiguracji serwera do\u0142\u0105cz opcj\u0119 w\u0142\u0105czaj\u0105c\u0105 us\u0142ug\u0119 JMS.
+
+CWWKO1562_NO_CONSPEC=CWWKO1562E: Nie mo\u017cna przeprowadzi\u0107 sprawdzania poprawno\u015bci przy u\u017cyciu podanego u\u017cytkownika i has\u0142a, poniewa\u017c nie ma standardowego sposobu znalezienia poprawnej implementacji specyfikacji ConnectionSpec.
+CWWKO1562_NO_CONSPEC.explanation=Punkt ko\u0144cowy REST sprawdzania poprawno\u015bci nie by\u0142 w stanie okre\u015bli\u0107 nazwy implementacji specyfikacji ConnectionSpec, nie m\u00f3g\u0142 wi\u0119c przekaza\u0107 podanych nazwy u\u017cytkownika i has\u0142a do fabryki po\u0142\u0105cze\u0144.
+CWWKO1562_NO_CONSPEC.useraction=Przy \u017c\u0105daniu sprawdzenia poprawno\u015bci tej fabryki po\u0142\u0105cze\u0144 pomi\u0144 parametry u\u017cytkownika i has\u0142a.

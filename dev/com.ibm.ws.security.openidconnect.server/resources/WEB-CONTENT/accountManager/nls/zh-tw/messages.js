@@ -20,6 +20,7 @@ var messages = {
     "DELETE": "刪除",
     "DONE": "完成",
     "EDIT": "編輯",
+    "FALSE": "False",
     "GENERATE": "產生",
     "LOADING": "正在載入",
     "LOGOUT": "登出",
@@ -31,11 +32,14 @@ var messages = {
     "PROCESSING": "處理中",
     "REGENERATE": "重新產生",
     "REGISTER": "登錄",
+    "TABLE_FIELD_SORT_ASC": "表格依據 {0} 升冪排序。",   // {0} - column name (ie. 'Name', 'Client ID')
+    "TABLE_FIELD_SORT_DESC": "表格依據 {0} 降冪排序。", // {0} - column name (ie. 'Name', 'Client ID')
+    "TRUE": "True",
     "TRY_AGAIN": "重試...",
     "UPDATE": "更新",
 
     // Common Column Names
-    "EXPIRES_COL": "有效期至",
+    "EXPIRES_COL": "到期日",
     "ISSUED_COL": "核發日期",
     "NAME_COL": "名稱",
     "TYPE_COL": "類型",
@@ -44,17 +48,22 @@ var messages = {
     // 'app-token' and 'app-password' are keywords - don't translate
     // name - the user defined name given the app-password or app-token
     "ACCT_MGR_TITLE": "管理個人記號",
-    "ACCT_MGR_DESC": "建立、刪除及重新產生 app-password 和 app-tokens。",
-    "ADD_NEW_AUTHENTICATION": "新增 app-password 或 app-token",
+    "ACCT_MGR_DESC": "建立、刪除及重新產生 app-password 和 app-token。",
+    "ADD_NEW_AUTHENTICATION": "新增 app-password 或 app-token。",
     "NAME_IDENTIFIER": "名稱：{0}",
     "ADD_NEW_TITLE": "登錄新鑑別",
     "NOT_GENERATED_PLACEHOLDER": "未產生",
-    "REGENERATE_APP_PASSWORD": "重新產生 app-password",
+    "AUTHENTICAION_GENERATED": "產生的鑑別",
+    "GENERATED_APP_PASSWORD": "產生的 app-password",
+    "GENERATED_APP_TOKEN": "產生的 app-token",
+    "COPY_APP_PASSWORD": "將 app-password 複製到剪貼簿",
+    "COPY_APP_TOKEN": "將 app-token 複製到剪貼簿",
+    "REGENERATE_APP_PASSWORD": "重新產生 App-Password",
     "REGENERATE_PW_WARNING": "這個動作會改寫現行 app-password。",
-    "REGENERATE_PW_PLACEHOLDER": "先前已在 {0} 產生密碼",        // 0 - date
-    "REGENERATE_APP_TOKEN": "重新產生 app-token",
+    "REGENERATE_PW_PLACEHOLDER": "先前已在 {0}產生密碼",        // 0 - date
+    "REGENERATE_APP_TOKEN": "重新產生 App-Token",
     "REGENERATE_TOKEN_WARNING": "這個動作會改寫現行 app-token。",
-    "REGENERATE_TOKEN_PLACEHOLDER": "先前已在 {0} 產生記號",        // 0 - date
+    "REGENERATE_TOKEN_PLACEHOLDER": "先前已在 {0}產生記號",        // 0 - date
     "DELETE_PW": "刪除這個 app-password",
     "DELETE_TOKEN": "刪除這個 app-token",
     "DELETE_WARNING_PW": "這個動作會移除目前指派的 app-password。",

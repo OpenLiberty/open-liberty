@@ -72,12 +72,6 @@ extract.primary.untyped=CWWKM0110E: P\u0159edchoz\u00ed extrakci {0} nelze zadat
 extract.primary.untyped.explanation=Extrakce vno\u0159en\u00e9ho archivu zjistila netypov\u00fd soubor jako p\u0159edchoz\u00ed extrahovan\u00fd archiv.
 extract.primary.untyped.useraction=Vy\u010dist\u011bte a restartujte server, abyste se ujistili, \u017ee nen\u00ed k dispozici p\u0159edchoz\u00ed obsah mezipam\u011bti.
 
-# # {0} A decimal count of seconds.  For example, "0.701005".
-# # {1} A decomal count of seconds.  For example, "0.020000".
-reaper.stall=CWWKM0120W: P\u0159i zpracov\u00e1n\u00ed nevy\u0159\u00edzen\u00e9ho archivu do\u0161lo k nadm\u011brn\u00e9mu zpo\u017ed\u011bn\u00ed: Skute\u010dn\u00e9 zpo\u017ed\u011bn\u00ed bylo {0} s. Po\u017eadovan\u00e9 zpo\u017ed\u011bn\u00ed bylo {1} s.
-reaper.stall.explanation=Tato zpr\u00e1va ozna\u010duje, \u017ee archivn\u00ed soubory aplikace byly udr\u017eov\u00e1ny otev\u0159en\u00e9 d\u00e9le, ne\u017e bylo nezbytn\u00e9. Jak ukazuje varovn\u00e1 zpr\u00e1va, archivn\u00ed soubory by nem\u011bly b\u00fdt ponech\u00e1ny otev\u0159en\u00e9 d\u00e9le, ne\u017e je po\u017eadovan\u00e1 doba trv\u00e1n\u00ed, ale z\u016fstaly otev\u0159en\u00e9 podstatn\u011b del\u0161\u00ed dobu. V d\u016fsledku toho, \u017ee archivn\u00ed soubory byly otev\u0159en\u00e9 d\u00e9le, ne\u017e bylo nezbytn\u00e9, m\u016f\u017ee doj\u00edt k chyb\u00e1m p\u0159i pokusu o dynamickou aktualizaci soubor\u016f aplikace. Toto varov\u00e1n\u00ed ozna\u010duje, \u017ee aktivita, extern\u00ed nebo intern\u00ed, odep\u00edr\u00e1 serveru dobu zpracov\u00e1n\u00ed.
-reaper.stall.useraction=Prozkoum\u00e1n\u00edm prost\u0159ed\u00ed ur\u010dete, zda jin\u00e9 procesy, ne\u017e je ne\u017e proces serveru, nespot\u0159ebov\u00e1vaj\u00ed nadm\u011brn\u00fd pod\u00edl doby zpracov\u00e1n\u00ed. Zkontrolujte proces serveru vygenerov\u00e1n\u00edm v\u00fdpis\u016f pam\u011bti podprocesu a ur\u010dete, zda konkr\u00e9tn\u00ed podprocesy serveru nemaj\u00ed nadm\u011brnou aktivitu.
-
 # # {0} A file path.
 # # {1} A print name
 reaper.inactive=CWWKM0121W: Nelze otev\u0159\u00edt {0}: Mezipam\u011b\u0165 archivu {1} je neaktivn\u00ed.

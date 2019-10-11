@@ -341,3 +341,14 @@ security.oauth20.apppwtok.revoke.disallowed=CWOAU0078E: K\u00eds\u00e9rlet t\u00
 security.oauth20.apppwtok.revoke.disallowed.explanation=Az alkalmaz\u00e1s jelszavakat vagy alkalmaz\u00e1s tokeneket az app-passwords vagy app-tokens v\u00e9gpontokon kell visszavonni.
 security.oauth20.apppwtok.revoke.disallowed.useraction=Adja ki \u00fajra a k\u00e9r\u00e9st a megfelel\u0151 v\u00e9gpontot tartalmaz\u00f3 URI haszn\u00e1lat\u00e1val alkalmaz\u00e1s jelszavak vagy alkalmaz\u00e1s tokenek visszavon\u00e1s\u00e1hoz.
 
+security.oauth20.pkce.invalid.method.error=CWOAU0079E: A k\u00e9r\u00e9s code_kih\u00edvge_method param\u00e9tere nem t\u00e1mogatott \u00e1talak\u00edt\u00e1si algoritmust tartalmaz: [{0}]. A t\u00e1mogatott \u00e1talak\u00edt\u00e1si algoritmusok: plain, S256.
+security.oauth20.pkce.invalid.method.error.explanation=Az OAuth szolg\u00e1ltat\u00f3 nem t\u00e1mogatja a megadott \u00e1talak\u00edt\u00f3 algoritmust. 
+security.oauth20.pkce.invalid.method.error.useraction=Haszn\u00e1lja az \u00fczenetben l\u00e1that\u00f3 egyik \u00e1talak\u00edt\u00e1si algoritmust.
+
+security.oauth20.pkce.codeverifier.length.error=CWOAU0080E: A code_verifier hossza [{0}]. A code_verifier hossza 43 \u00e9s 128 karakter k\u00f6z\u00e9 eshet.
+security.oauth20.pkce.codeverifier.length.error.explanation=A code_verifier param\u00e9ternek legal\u00e1bb 43 \u00e9s legfeljebb 128 karakter hossz\u00fanak kell lennie. 
+security.oauth20.pkce.codeverifier.length.error.useraction=K\u00fcldje \u00fajra a jogosults\u00e1g- \u00e9s tokenk\u00e9r\u00e9seket a megadott hossznak megfelel\u0151 m\u00f3dos\u00edtott code_verifier param\u00e9terrel.
+
+security.oauth20.pkce.error.mismatch.codeverifier=CWOAU0081E: A code_challenge [{0}] \u00e9s code_verifier [{1}] nem egyezik. 
+security.oauth20.pkce.error.mismatch.codeverifier.explanation=Az OAuth szolg\u00e1ltat\u00f3 a k\u00e9r\u00e9sben megadott code_challenge_method param\u00e9tert haszn\u00e1lja, \u00e9s a code_verifier param\u00e9tert \u00e1talak\u00edtja, kiv\u00e9ve, ha a code_challenge_method egyszer\u0171. Az \u00e1talak\u00edtott \u00e9rt\u00e9knek egyeznie kell a jogosults\u00e1g k\u00e9r\u00e9sben szerepl\u0151 code_challenge \u00e9rt\u00e9k\u00e9vel.
+security.oauth20.pkce.error.mismatch.codeverifier.useraction=Gondoskodj\u00e9k r\u00f3la, hogy egyez\u0151 code_challenge \u00e9s code_verifier \u00e9rt\u00e9keket \u00e9s megfelel\u0151 \u00e1talak\u00edt\u00f3 algoritmust k\u00fcldj\u00f6n a jogosults\u00e1g- \u00e9s tokenk\u00e9r\u00e9sekkel.

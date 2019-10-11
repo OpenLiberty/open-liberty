@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
@@ -41,6 +42,7 @@ import com.ibm.wsspi.kernel.service.utils.PathUtils;
  * Eg, init'ing an overlay from a dir full of data will result in that data being overlaid,
  * and if entries are added they will addto/alter the dir contents.
  */
+@SuppressWarnings( { "deprecation", "rawtypes" } )
 public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
 
     /** ArtifactContainer being wrapped */
@@ -372,7 +374,7 @@ public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
         /** {@inheritDoc} */
         @Override
         public String getPhysicalPath() {
-            String path = delegate.getPhysicalPath();
+            String dpath = delegate.getPhysicalPath();
 
             //if this delegate has an override.. use its path instead.
             ArtifactEntry e = fileContainer.getEntry(getPath());
@@ -381,11 +383,11 @@ public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
                 if (correspondingFileContainer != null) {
                     String cpath = correspondingFileContainer.getPhysicalPath();
                     if (cpath != null)
-                        path = cpath;
+                        dpath = cpath;
                 }
             }
 
-            return path;
+            return dpath;
         }
 
         /** {@inheritDoc} */
@@ -533,17 +535,17 @@ public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
         /** {@inheritDoc} */
         @Override
         public String getPhysicalPath() {
-            String path = delegate.getPhysicalPath();
+            String dpath = delegate.getPhysicalPath();
 
             //if this delegate has an override.. use its path instead
             ArtifactEntry e = fileContainer.getEntry(getPath());
             if (e != null) {
                 String cpath = e.getPhysicalPath();
                 if (cpath != null)
-                    path = cpath;
+                    dpath = cpath;
             }
 
-            return path;
+            return dpath;
         }
 
         @Override
@@ -770,10 +772,14 @@ public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
         }
 
         @Override
-        public void useFastMode() {}
+        public void useFastMode() {
+            // EMPTY
+        }
 
         @Override
-        public void stopUsingFastMode() {}
+        public void stopUsingFastMode() {
+            // EMPTY
+        }
 
         @Override
         public boolean isRoot() {
@@ -1055,6 +1061,7 @@ public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
                 try {
                     i.close();
                 } catch (IOException e1) {
+                    // FFDC
                 }
             }
         }
@@ -1226,9 +1233,9 @@ public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
         //merge the base uri's with the fileoverlay uri, put the base URIs in the front.
         Collection<URL> set = new LinkedHashSet<URL>();
 
-        Collection<URL> base = this.base.getURLs();
-        if (base != null)
-            set.addAll(base);
+        Collection<URL> baseUrls = this.base.getURLs();
+        if (baseUrls != null)
+            set.addAll(baseUrls);
 
         Collection<URL> overlay = this.fileOverlayContainer.getURLs();
         if (overlay != null)
@@ -1270,4 +1277,72 @@ public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
         return this.overlayNotifier;
     }
 
+    /**
+     * Answer the path to an entry from the root-of-roots container.
+     *
+     * @param entry The entry for which to obtain the path.
+     *
+     * @return The path to the entry from the root-of-roots container.
+     */
+    public String getFullPath(ArtifactEntry entry) {
+        String entryPath = entry.getPath();
+
+        // If the immediate root container is the root of roots, just
+        // answer the path to the entry.
+
+        ArtifactEntry entryRootEntry = entry.getRoot().getEntryInEnclosingContainer();
+        if ( entryRootEntry == null ) {
+            return entryPath;
+        }
+
+        // Otherwise, walk upwards, concatenating the enclosing entry
+        // paths.
+
+        StringBuilder builder = new StringBuilder(entry.getPath());
+        while ( entryRootEntry != null ) {
+            builder.insert(0,  '/');
+            builder.insert(0,  entryRootEntry.getPath());
+
+            entryRootEntry = entryRootEntry.getRoot().getEntryInEnclosingContainer();
+        }
+        return builder.toString();
+    }
+
+    private Map<String, Map<Class, Object>> getCacheSnapshot() {
+        return cacheStore.getSnapshot();
+    }
+
+    protected ArtifactContainer getFileOverlay() {
+        return fileOverlayContainer;
+    }
+
+    public void introspect(PrintWriter outputWriter) {
+        outputWriter.println();
+
+        ArtifactEntry useEnclosingEntry = getEntryInEnclosingContainer();
+        String enclosingIntrospect = "Directory Overlay Container [ %s ] [ %s ]";
+        if(useEnclosingEntry == null) {
+            outputWriter.println(String.format(enclosingIntrospect, "ROOT" , this.toString() ));
+        } else {
+            outputWriter.println(String.format(enclosingIntrospect, getFullPath(useEnclosingEntry) , this.toString()));
+        }
+
+        if( cacheStore.isCacheEmpty() ) {
+            outputWriter.println("  ** EMPTY **");
+        } else {
+            Map<String, Map<Class, Object>> snapshot = getCacheSnapshot();
+            for( Map.Entry<String, Map<Class, Object>> pathEntry: snapshot.entrySet() ) {
+                outputWriter.println(String.format("  [ %s ]", pathEntry.getKey()));
+                Map<Class, Object> entriesForPath = pathEntry.getValue();
+                if( entriesForPath.isEmpty() ) {
+                    outputWriter.println("      ** EMPTY **");
+                } else {
+                    String subEntryFormat = "      [ %s ] [ %s ]";
+                    for( Map.Entry<Class, Object> subEntry: entriesForPath.entrySet() ) {
+                        outputWriter.println(String.format(subEntryFormat, subEntry.getKey(), subEntry.getValue() == null ? "** NULL **" : subEntry.getValue()));
+                    }
+                }
+            }
+        }
+    }
 }

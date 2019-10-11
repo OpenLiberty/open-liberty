@@ -108,6 +108,12 @@ public class OidcBaseClient extends BaseClient implements Serializable, OidcOAut
     private JsonArray functionalUserGroupIds = new JsonArray();
 
     @Expose
+    private boolean proofKeyForCodeExchange = false;
+    
+    @Expose
+    private boolean publicClient = false;
+    
+    @Expose
     private boolean appPasswordAllowed = false;
 
     @Expose
@@ -398,6 +404,26 @@ public class OidcBaseClient extends BaseClient implements Serializable, OidcOAut
         this.appTokenAllowed = appTokenAllowed;
     }
 
+    @Override
+    public boolean isProofKeyForCodeExchangeEnabled() {
+        return proofKeyForCodeExchange;
+    }
+
+    @Trivial
+    public void setProofKeyForCodeExchange(boolean proofKeyForCodeExchange) {
+        this.proofKeyForCodeExchange = proofKeyForCodeExchange;
+    }
+
+    @Override
+    public boolean isPublicClient() {
+        return publicClient;
+    }
+
+    @Trivial
+    public void setPublicClient(boolean publicClient) {
+        this.publicClient = publicClient;
+    }
+
     @Trivial
     public OidcBaseClient getDeepCopy() {
         // RTC246290
@@ -427,10 +453,9 @@ public class OidcBaseClient extends BaseClient implements Serializable, OidcOAut
         dc.setTrustedUriPrefixes((copyArray(this.trustedUriPrefixes)));
         dc.setAllowRegexpRedirects(this.getAllowRegexpRedirects());
         dc.setAppPasswordAllowed(this.isAppPasswordAllowed());
-        // dc.setAppPasswordLifetime(this.getAppPasswordLifetime());
         dc.setAppTokenAllowed(this.isAppTokenAllowed());
-        // dc.setAppTokenLifetime(this.getAppTokenLifetime());
-        // dc.setAppTokenOrPasswordLimit(this.getAppTokenOrPasswordLimit());
+        dc.setProofKeyForCodeExchange(this.isProofKeyForCodeExchangeEnabled());
+        dc.setPublicClient(this.isPublicClient());
         dc.setSalt(this.getSalt());
         dc.setAlgorithm(this.getAlgorithm());
         dc.setIterations(this.getIterations());

@@ -338,6 +338,17 @@ security.oauth20.apppassword.exchange.wrongclient.explanation=Heslo aplikace byl
 security.oauth20.apppassword.exchange.wrongclient.useraction=Zadejte po\u017eadavek znovu s pou\u017eit\u00edm hesla aplikace, kter\u00e9 je platn\u00e9 pro uveden\u00e9ho klienta.
 
 security.oauth20.apppwtok.revoke.disallowed=CWOAU0078E: Do\u0161lo k pokusu o zru\u0161en\u00ed hesla aplikace nebo tokenu aplikace v koncov\u00e9m bodu odvol\u00e1n\u00ed. Tato akce nen\u00ed povolena.
-security.oauth20.apppwtok.revoke.disallowed.explanation=Hesla aplikace nebo tokeny aplikac\u00ed mus\u00ed b\u00fdt odvol\u00e1ny pomoc\u00ed hesel aplikac\u00ed nebo koncov\u00fdch bod\u016f aplikac\u00ed.
+security.oauth20.apppwtok.revoke.disallowed.explanation=Hesla aplikace nebo tokeny aplikace mus\u00ed b\u00fdt odvol\u00e1ny pomoc\u00ed koncov\u00fdch bod\u016f app-passwords nebo app-tokens.
 security.oauth20.apppwtok.revoke.disallowed.useraction=Zadejte po\u017eadavek znovu s identifik\u00e1torem URI pro p\u0159\u00edslu\u0161n\u00fd koncov\u00fd bod, chcete-li odvolat hesla aplikace nebo tokeny aplikac\u00ed.
 
+security.oauth20.pkce.invalid.method.error=CWOAU0079E: Parametr code_challenge_method v po\u017eadavku obsahuje nepodporovan\u00fd algoritmus transformace: [{0}]. Podporovan\u00e9 algoritmy transformace: plain, S256.
+security.oauth20.pkce.invalid.method.error.explanation=Poskytovatel OAuth nepodporuje ur\u010den\u00fd algoritmus transformace. 
+security.oauth20.pkce.invalid.method.error.useraction=Pou\u017eijte jeden z algoritm\u016f transformace zobrazen\u00fdch ve zpr\u00e1v\u011b.
+
+security.oauth20.pkce.codeverifier.length.error=CWOAU0080E: D\u00e9lka polo\u017eky code_verifier je [{0}]. D\u00e9lka polo\u017eky code_verifier mus\u00ed b\u00fdt 43 a\u017e 128 znak\u016f.
+security.oauth20.pkce.codeverifier.length.error.explanation=Minim\u00e1ln\u00ed d\u00e9lka polo\u017eky code_verifier by m\u011bla b\u00fdt 43 znak\u016f a maxim\u00e1ln\u00ed d\u00e9lka 128 znak\u016f. 
+security.oauth20.pkce.codeverifier.length.error.useraction=Ode\u0161lete \u017e\u00e1dost o autorizaci a token znovu s aktualizovanou polo\u017ekou code_verifier spl\u0148uj\u00edc\u00ed uveden\u00e9 po\u017eadavky na d\u00e9lku.
+
+security.oauth20.pkce.error.mismatch.codeverifier=CWOAU0081E: Polo\u017eky code_challenge [{0}] a code_verifier [{1}] se neshoduj\u00ed. 
+security.oauth20.pkce.error.mismatch.codeverifier.explanation=Poskytovatel OAuth pou\u017eije polo\u017eku code_challenge_method ur\u010denou v po\u017eadavku na autorizaci a provede transformaci polo\u017eky code_verifier, nem\u00e1-li polo\u017eka code_challenge_method hodnotu plain. Transformovan\u00e1 hodnota by m\u011bla odpov\u00eddat polo\u017ece code_challenge v \u017e\u00e1dosti o autorizaci.
+security.oauth20.pkce.error.mismatch.codeverifier.useraction=Ov\u011b\u0159te, \u017ee jsou spolu s \u017e\u00e1dostmi o autorizaci a token odesl\u00e1ny odpov\u00eddaj\u00edc\u00ed polo\u017eky code_challenge a code_verifier a spr\u00e1vn\u00fd algoritmus transformace.

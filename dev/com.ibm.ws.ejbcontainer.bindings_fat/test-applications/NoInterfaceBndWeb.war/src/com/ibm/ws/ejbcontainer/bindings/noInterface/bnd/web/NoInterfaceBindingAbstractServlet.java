@@ -94,17 +94,6 @@ public abstract class NoInterfaceBindingAbstractServlet extends FATServlet {
     protected boolean supportsComponentInterface = true; // i.e. not singleton
 
     /**
-     * Tests that a unique bean implementation that is only exposed through
-     * the No-Interface view may be looked up by either the short or long
-     * default binding name. <p>
-     *
-     * Since each subclass test will need to provide a specific implementation
-     * class.... and it would be best to call a method on that class, it
-     * is left up to each subclass to fully implement this variation.
-     */
-    public abstract void testUniqueNoInterfaceDefaultBindings() throws Exception;
-
-    /**
      * Tests the default bindings for beans with the following configurations:
      *
      * <ul>

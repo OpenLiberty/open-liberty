@@ -20,6 +20,6 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 
-error.badVersion=CWWKW0900E: Non \u00e8 in esecuzione la versione di Java corretta. L'ambiente di runtime richiede Java 7 o versione successiva.
+error.badVersion=CWWKW0900E: Non \u00e8 in esecuzione la versione di Java corretta. L'ambiente di runtime richiede Java 8 o versione successiva.
 error.badVersion.explanation=\u00c8 in esecuzione una versione di Java non supportata oppure la variabile di sistema JAVA_HOME \u00e8 impostata in modo da puntare ad una versione di Java precedente.
-error.badVersion.useraction= Aggiornare la versione di Java a Java 7 o modificare la variabile di sistema JAVA_HOME in modo che punti a Java 7.
+error.badVersion.useraction= Aggiornare la versione di Java a Java 8 o modificare la variabile di sistema JAVA_HOME in modo che punti a Java 8.

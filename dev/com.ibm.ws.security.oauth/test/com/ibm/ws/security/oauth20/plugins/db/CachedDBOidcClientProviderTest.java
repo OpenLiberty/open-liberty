@@ -46,19 +46,19 @@ import com.ibm.ws.security.oidc.common.AbstractOidcRegistrationBaseTest;
 import test.common.SharedOutputManager;
 
 /**
- * This unit test is running with XOR enabled for the client secret
+ * Common Test
  */
-public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBaseTest {
-    private static SharedOutputManager outputMgr;
+public abstract class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBaseTest {
+    protected static SharedOutputManager outputMgr;
 
     public static final String PROVIDER_NAME = "CachedOidcOP";
     private static final String JDBC_PROVIDER = "jdbc/OAuth2DB";
     private static final String SCHEMA = "OAuthDBSchema";
     private static final String TABLE_NAME = "OAUTH20CLIENTCONFIG";
-    private static final String SCHEMA_TABLE_NAME = SCHEMA + "." + TABLE_NAME;
+    protected static final String SCHEMA_TABLE_NAME = SCHEMA + "." + TABLE_NAME;
     private static final String REQUEST_URL_STRING = "https://localhost:8020/oidc/endpoint/" + PROVIDER_NAME + "/registration";
-    private static final String[] EMPTY_STRING_ARR = new String[0];
-    private static List<OidcBaseClient> SAMPLE_CLIENTS = null;
+    protected static final String[] EMPTY_STRING_ARR = new String[0];
+    protected static List<OidcBaseClient> SAMPLE_CLIENTS = null;
 
     public interface MockInterface {
         void addClientToDB() throws SQLException, OidcServerException;
@@ -93,6 +93,7 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
+        setHash(false);
         outputMgr = SharedOutputManager.getInstance();
         outputMgr.captureStreams();
 
@@ -110,21 +111,7 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
     }
 
     @Before
-    public void setupBefore() {
-        String methodName = "setupBefore";
-        _testName = testName.getMethodName();
-        System.out.println("Entering test: " + _testName);
-        CachedDBOidcClientProvider oidcBaseClientProvider = invokeConstructorAndInitialize();
-
-        instantiateMockProvider();
-        try {
-            deleteAllClientsInDB(oidcBaseClientProvider);
-            insertSampleClientsToDb(oidcBaseClientProvider);
-
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(methodName, t);
-        }
-    }
+    abstract public void setupBefore();
 
     @After
     public void tearDown() throws Exception {
@@ -132,7 +119,7 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
         System.out.println("Exiting test: " + _testName);
     }
 
-    private void instantiateMockProvider() {
+    protected void instantiateMockProvider() {
         mockProvider = new CachedDBOidcClientProvider(PROVIDER_NAME, InitialContextFactoryMock.dsMock, SCHEMA_TABLE_NAME, null, null, EMPTY_STRING_ARR) {
             @Override
             void addClientToDB(Connection conn, OidcBaseClientDBModel clientDbModel) throws SQLException, OidcServerException {
@@ -186,7 +173,7 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
         };
     }
 
-    private void deleteAllClientsInDB(CachedDBOidcClientProvider oidcBaseClientProvider) throws OidcServerException {
+    protected void deleteAllClientsInDB(CachedDBOidcClientProvider oidcBaseClientProvider) throws OidcServerException {
         Collection<OidcBaseClient> clients = oidcBaseClientProvider.getAll();
         if (clients.size() > 0) {
             for (OidcBaseClient client : clients) {
@@ -197,7 +184,7 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
         assertEquals("Task to clean db of all clients failed.", 0, oidcBaseClientProvider.getAll().size());
     }
 
-    private void insertSampleClientsToDb(CachedDBOidcClientProvider oidcBaseClientProvider) throws OidcServerException {
+    protected void insertSampleClientsToDb(CachedDBOidcClientProvider oidcBaseClientProvider) throws OidcServerException {
         for (int i = 0; i < SAMPLE_CLIENTS.size(); i++) {
             if (i == 0) {
                 InitialContextFactoryMock.addEntryToOldOAuth20ClientConfigTable();
@@ -399,7 +386,7 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
     public void testGetAll() {
         CachedDBOidcClientProvider oidcBaseClientProvider = invokeConstructorAndInitialize();
         try {
-            //The @Before test should have hydrated the DB with SAMPLE_CLIENTS
+            // The @Before test should have hydrated the DB with SAMPLE_CLIENTS
             assertEqualsSampleClients(oidcBaseClientProvider.getAll());
         } catch (Throwable t) {
             outputMgr.failWithThrowable(_testName, t);
@@ -451,8 +438,8 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
 
             Map<String, OidcBaseClient> clientsMap = getOidcBaseClientMap(clients);
 
-            //Ensure the clients from the client provider match what was expected (the sample clients)
-            //while adding the modification to check for expected registration uri based on mocked request
+            // Ensure the clients from the client provider match what was expected (the sample clients)
+            // while adding the modification to check for expected registration uri based on mocked request
             for (int i = 0; i < SAMPLE_CLIENTS.size(); i++) {
                 OidcBaseClient clientProviderClient = clientsMap.remove(String.valueOf(i));
 
@@ -462,7 +449,7 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
                     assertClientEquals(InitialContextFactoryMock.getInitializedOidcBaseClientModel(), clientProviderClient);
                 }
 
-                //Add check for checking registration URI which isn't in assertEqualsOidcBaseClients
+                // Add check for checking registration URI which isn't in assertEqualsOidcBaseClients
                 assertEquals(clientProviderClient.getRegistrationClientUri(), REQUEST_URL_STRING + "/" + clientProviderClient.getClientId());
             }
 
@@ -546,7 +533,7 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
         try {
             for (OidcBaseClient sampleClient : SAMPLE_CLIENTS) {
                 assertTrue("The client must be valid.",
-                           oidcBaseClientProvider.validateClient(sampleClient.getClientId(), sampleClient.getClientSecret()));
+                        oidcBaseClientProvider.validateClient(sampleClient.getClientId(), sampleClient.getClientSecret()));
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(_testName, t);
@@ -590,10 +577,10 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
         try {
             Collection<OidcBaseClient> clients = oidcBaseClientProvider.getAll();
 
-            //New scope must contain the preauthorized scope or validator will clear the preauthorized scope value
+            // New scope must contain the preauthorized scope or validator will clear the preauthorized scope value
             String newScopes = "profile picture email";
 
-            //Update each client with new scope...
+            // Update each client with new scope...
             for (OidcBaseClient client : clients) {
                 client.setScope(newScopes);
                 oidcBaseClientProvider.update(client);
@@ -607,7 +594,7 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
                 OidcBaseClient updatedClientProviderClient = updatedClientsMap.remove(String.valueOf(i));
                 OidcBaseClient sampleClient = sampleClientMap.remove(String.valueOf(i)).getDeepCopy();
 
-                //Set new scope on sampleClient before comparison
+                // Set new scope on sampleClient before comparison
                 sampleClient.setScope(newScopes);
 
                 if (i > 0) {
@@ -706,20 +693,15 @@ public class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBase
 
     /*************************************** Helper methods ***************************************/
 
-    private CachedDBOidcClientProvider invokeConstructorAndInitialize() {
-        CachedDBOidcClientProvider oidcBaseClientProvider = new CachedDBOidcClientProvider(PROVIDER_NAME, InitialContextFactoryMock.dsMock, SCHEMA_TABLE_NAME, null, null, EMPTY_STRING_ARR);
-        oidcBaseClientProvider.initialize();
-
-        return oidcBaseClientProvider;
-    }
+    abstract protected CachedDBOidcClientProvider invokeConstructorAndInitialize();
 
     private void assertClientEquals(OidcBaseClientDBModel expectedClient, OidcBaseClient retrievedClient) {
-        //Ensure client retrieve is client expected
+        // Ensure client retrieve is client expected
         assertEquals(expectedClient.getComponentId(), retrievedClient.getComponentId());
         assertEquals(expectedClient.getClientId(), retrievedClient.getClientId());
         assertEquals(expectedClient.getClientSecret(), retrievedClient.getClientSecret());
         assertEquals(expectedClient.getDisplayName(), retrievedClient.getClientName());
-        assertEquals(expectedClient.getRedirectUri(), retrievedClient.getRedirectUris().get(0).getAsString()); //We know only 1 redirect URI was set
+        assertEquals(expectedClient.getRedirectUri(), retrievedClient.getRedirectUris().get(0).getAsString()); // We know only 1 redirect URI was set
         assertEquals(expectedClient.getEnabled(), retrievedClient.isEnabled() ? 1 : 0);
     }
 

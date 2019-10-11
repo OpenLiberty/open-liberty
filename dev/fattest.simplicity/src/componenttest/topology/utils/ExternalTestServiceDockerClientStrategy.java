@@ -52,7 +52,7 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
      * automatically switch between using your local Docker install, or a remote Docker host, call this method
      * in FATSuite beforeClass setup.
      */
-    public static void clearTestcontainersConfig() throws Exception {
+    public static void clearTestcontainersConfig() {
         File testcontainersConfigFile = new File(System.getProperty("user.home"), ".testcontainers.properties");
         Log.info(c, "clearTestcontainersConfig", "Removing testcontainers property file at: " + testcontainersConfigFile.getAbsolutePath());
         try {
@@ -65,8 +65,6 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
     @Override
     public void test() throws InvalidConfigurationException {
         try {
-            System.setOut(new JULPipe(System.out, "java.net"));
-            System.setErr(new JULPipe(System.err, "java.net"));
             ExternalTestService.getService("docker-engine", new AvailableDockerHostFilter());
         } catch (Exception e) {
             throw new InvalidConfigurationException("Unable to localte any healthy docker-engine instances", e);
@@ -111,8 +109,6 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
                     Log.info(c, m, "Attempting to ping docker daemon. Attempt [" + attempt + "]");
                     String dockerHost = config.getDockerHost().toASCIIString().replace("tcp://", "https://");
                     Log.info(c, m, "  Pinging URL: " + dockerHost);
-                    Log.info(c, m, "  javax.net.debug=" + System.getProperty("javax.net.debug"));
-                    Log.info(c, m, "  BEGIN PING >>>>>>>>>>>>>>>>>>>>>>");
                     SocketFactory sslSf = config.getSSLConfig().getSSLContext().getSocketFactory();
                     String resp = new HttpsRequest(dockerHost + "/_ping")
                                     .sslSocketFactory(sslSf)
@@ -136,8 +132,6 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
                         } catch (InterruptedException e) {
                         }
                     }
-                } finally {
-                    Log.info(c, m, "  END PING <<<<<<<<<<<<<<<<<<<<<<");
                 }
             }
             if (firstIssue instanceof InvalidConfigurationException)

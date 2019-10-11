@@ -709,11 +709,14 @@ public abstract class AbstractSingleFileObjectStore
             if (paced) {
                 synchronized (reservationPacingLock) {
 
-                    // TODO not during restart!
-                    // TODO Need to release all waiters at shutdown.
-                    while (newReservedSize > reservationCheckpointThreshold
+                    // Break out of the reservationPacingLock if we are restarting or shutting down.
+                    // Calling flush() during checkpoint will release the first and subsequent paced reservations if there is 
+                    // available space, or we are shutting down.
+                    while (   newReservedSize > reservationCheckpointThreshold
                            && reservationPacing
-                           && paced) {
+                           && paced
+                           && (   objectManagerState.state == ObjectManagerState.stateColdStarted
+                               || objectManagerState.state == ObjectManagerState.stateWarmStarted) ) {
                         if (Tracing.isAnyTracingEnabled() && trace.isDebugEnabled())
                             trace.debug(this, cclass, methodName, new Object[] { "wait:728",
                                                                                 new Long(newReservedSize),

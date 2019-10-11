@@ -11,16 +11,12 @@
 package com.ibm.ws.security.oauth20.plugins.jose4j;
 
 import java.security.Key;
-import java.security.interfaces.RSAPrivateKey;
-
-import org.jose4j.keys.HmacKey;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.security.jwt.utils.JwtDataConfig;
 import com.ibm.ws.security.oauth20.TraceConstants;
-import com.ibm.ws.webcontainer.security.jwk.JSONWebKey;
 import com.ibm.ws.webcontainer.security.openidconnect.OidcServerConfig;
 
 /**
@@ -47,54 +43,42 @@ public class JWTData {
     String signatureAlgorithm = null;
     JWTTokenException noKeyException = null;
 
+    // use common class for openidconnect and jwt features, for consistent behavior
+    com.ibm.ws.security.jwt.utils.JwtData wrappedJwtData;
+
     public JWTData(@Sensitive String sharedKey, OidcServerConfig oidcServerConfig, String tokenType) {
         this.oidcServerConfig = oidcServerConfig;
         this.tokenType = tokenType;
         this.signatureAlgorithm = oidcServerConfig.getSignatureAlgorithm();
-
         bIdToken = TYPE_ID_TOKEN.equals(tokenType);
         bJwtToken = TYPE_JWT_TOKEN.equals(tokenType);
-        initSigningKey(sharedKey);
+        try {
+            // pass null private key so key gets looked up and kid generated
+            JwtDataConfig config = new JwtDataConfig(signatureAlgorithm, oidcServerConfig.getJSONWebKey(), sharedKey,
+                    null, oidcServerConfig.getKeyAliasName(), oidcServerConfig.getKeyStoreRef(), tokenType,
+                    oidcServerConfig.isJwkEnabled());
+            wrappedJwtData = new com.ibm.ws.security.jwt.utils.JwtData(config);
+            _signingKey = wrappedJwtData.getSigningKey();
+            _keyId = wrappedJwtData.getKeyID();
+        } catch (Exception e) {
+            recordException(e);
+        }
     }
 
-    /*
-     * Handle the signingKey here to get the same error messages
-     */
-    @FFDCIgnore(Exception.class)
-    @Sensitive
-    protected void initSigningKey(@Sensitive String sharedKey) {
-        try {
-            if (this.oidcServerConfig.isJwkEnabled() && SIGNATURE_ALG_RS256.equals(signatureAlgorithm)) {
-                JSONWebKey jwk = this.oidcServerConfig.getJSONWebKey();
-                _signingKey = jwk.getPrivateKey();
-                _keyId = jwk.getKeyID();
-            } else {
-                if (SIGNATURE_ALG_HS256.equals(signatureAlgorithm)) {
-                    _signingKey = new HmacKey(sharedKey.getBytes("UTF-8"));
-                } else if (SIGNATURE_ALG_RS256.equals(signatureAlgorithm)) {
-                    _signingKey = this.oidcServerConfig.getPrivateKey();
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "RSAPrivateKey: " + (_signingKey instanceof RSAPrivateKey));
-                    }
-                    if (!(_signingKey instanceof RSAPrivateKey)) {
-                        // error handling
-                        String errorMsg = Tr.formatMessage(tc, "SIGNING_KEY_NOT_RSA", new Object[] { signatureAlgorithm });
-                        Object[] objs = new Object[] { signatureAlgorithm, errorMsg };
-                        noKeyException = JWTTokenException.newInstance(false, "JWT_BAD_SIGNING_KEY", objs);
-                        _signingKey = null; // we will catch this later in jwtSigner
-                    }
-                }
-            }
-        } catch (Exception e) {
-            // UnsupportedEncodingException e (won't happen)
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Exception obtaining the signing key: " + e);
-            }
-            // error messages
-            // JWT_BAD_SIGNING_KEY=CWWKS1455E: A signing key was not available. The signature algorithm is [{0}]. {1}
-            Object[] objs = new Object[] { signatureAlgorithm, e.getLocalizedMessage() }; // let JWTTokenException handle the exception
-            noKeyException = JWTTokenException.newInstance(false, "JWT_BAD_SIGNING_KEY", objs);
+    private void recordException(Exception e) {
+        // UnsupportedEncodingException e (won't happen)
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Exception obtaining the signing key: " + e);
         }
+        // if it's a keystore exception, tell them the likely fix.
+        String extraMsg = "";
+        if (e instanceof java.security.KeyStoreException) {
+            extraMsg = " " + Tr.formatMessage(tc, "CHECK_KEYSTORE_REF", new Object[] {});
+        }
+        // error messages
+        // JWT_BAD_SIGNING_KEY=CWWKS1455E: A signing key was not available. The signature algorithm is [{0}]. {1}
+        Object[] objs = new Object[] { signatureAlgorithm, e.getLocalizedMessage() + extraMsg }; // let JWTTokenException handle the exception
+        noKeyException = JWTTokenException.newInstance(false, "JWT_BAD_SIGNING_KEY", objs);
     }
 
     public String getSignatureAlgorithm() {

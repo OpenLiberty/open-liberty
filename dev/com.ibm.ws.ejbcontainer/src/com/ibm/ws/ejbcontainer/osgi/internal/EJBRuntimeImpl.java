@@ -113,6 +113,7 @@ import com.ibm.ws.ejbcontainer.EJBSecurityCollaborator;
 import com.ibm.ws.ejbcontainer.InternalConstants;
 import com.ibm.ws.ejbcontainer.JCDIHelper;
 import com.ibm.ws.ejbcontainer.diagnostics.IntrospectionWriter;
+import com.ibm.ws.ejbcontainer.diagnostics.TrDumpWriter;
 import com.ibm.ws.ejbcontainer.failover.SfFailoverKey;
 import com.ibm.ws.ejbcontainer.jitdeploy.ClassDefiner;
 import com.ibm.ws.ejbcontainer.osgi.EJBAsyncRuntime;
@@ -141,6 +142,7 @@ import com.ibm.ws.exception.WsRuntimeFwException;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.javaee.dd.DeploymentDescriptor;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 import com.ibm.ws.managedobject.ManagedObjectContext;
 import com.ibm.ws.managedobject.ManagedObjectService;
@@ -162,6 +164,7 @@ import com.ibm.wsspi.injectionengine.InjectionEngine;
 import com.ibm.wsspi.injectionengine.ReferenceContext;
 import com.ibm.wsspi.kernel.feature.LibertyFeature;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
+import com.ibm.wsspi.kernel.service.utils.OnErrorUtil.OnError;
 import com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener;
 
 @Component(service = { ApplicationStateListener.class, DeferredMetaDataFactory.class, EJBRuntimeImpl.class, ServerQuiesceListener.class },
@@ -240,6 +243,12 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
     private static final String POOL_CLEANUP_INTERVAL = "poolCleanupInterval";
     private static final String START_EJBS_AT_APP_START = "startEJBsAtAppStart";
 
+    private static final String BIND_TO_SERVER_ROOT = "bindToServerRoot";
+    private static final String BIND_TO_JAVA_GLOBAL = "bindToJavaGlobal";
+    private static final String DISABLE_SHORT_DEFAULT_BINDINGS = "disableShortDefaultBindings";
+    private static final String IGNORE_DUPLICATE_BINDINGS = "ignoreDuplicateEJBBindings";
+    private static final String CUSTOM_BINDINGS_ON_ERROR = "customBindingsOnError";
+
     @Override
     public void serverStopping() {
         serverStopping = true;
@@ -311,6 +320,8 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
         long inactivePoolCleanupIntervalSeconds = (Long) properties.get(POOL_CLEANUP_INTERVAL);
         Boolean startEjbsAtAppStart = (Boolean) properties.get(START_EJBS_AT_APP_START);
 
+        processCustomBindingsConfig(properties);
+
         EJSContainer container = new EJSContainer();
 
         EJBRuntimeConfig config = new EJBRuntimeConfig();
@@ -359,6 +370,86 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
             }
         }
         ejbRuntimeActive = true;
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            ContainerProperties.introspect(new TrDumpWriter(tc));
+        }
+    }
+
+    private void processCustomBindingsConfig(Map<String, Object> properties) {
+        final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
+        if (isTraceOn && tc.isEntryEnabled())
+            Tr.entry(tc, "processCustomBindingsConfig");
+
+        // TODO: remove ContainerProperties.customBindingsEnabledBeta after custom bindings beta    
+        boolean isBeta = false;
+        try {
+            final Map<String, ProductInfo> productInfos = ProductInfo.getAllProductInfo();
+
+            for (ProductInfo info : productInfos.values()) {
+                if ("EARLY_ACCESS".equals(info.getEdition())) {
+                    isBeta = true;
+                }
+            }
+        } catch (Exception e) {
+            Tr.debug(tc, "Exception getting InstalledProductInfo: ");
+            e.printStackTrace();
+        }
+        boolean customBindingsBetaEnabled = false;
+        if (properties.get(BIND_TO_SERVER_ROOT) != null) {
+            if ((Boolean) properties.get(BIND_TO_SERVER_ROOT)) {
+                if (isTraceOn && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Custom Bindings Beta Enabled: ");
+                }
+                customBindingsBetaEnabled = true;
+            }
+        } else if (isBeta) {
+            if (isTraceOn && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Custom Bindings Beta Enabled: ");
+            }
+            customBindingsBetaEnabled = true;
+        }
+        ContainerProperties.customBindingsEnabledBeta = customBindingsBetaEnabled;
+
+        // End of beta block ------------------------------------------------------------------------
+
+        // Overwrite the JVM properties if config is set, otherwise we will use the JVM props or the JVM property defaults
+        ContainerProperties.BindToServerRoot = properties.get(BIND_TO_SERVER_ROOT) != null ? (Boolean) properties.get(BIND_TO_SERVER_ROOT) : ContainerProperties.BindToServerRoot;
+        ContainerProperties.BindToJavaGlobal = properties.get(BIND_TO_JAVA_GLOBAL) != null ? (Boolean) properties.get(BIND_TO_JAVA_GLOBAL) : ContainerProperties.BindToJavaGlobal;
+        ContainerProperties.IgnoreDuplicateEJBBindings = properties.get(IGNORE_DUPLICATE_BINDINGS) != null ? (Boolean) properties.get(IGNORE_DUPLICATE_BINDINGS) : ContainerProperties.IgnoreDuplicateEJBBindings;
+
+        OnError customBindingsOnError = OnError.WARN;
+        try {
+            customBindingsOnError = (OnError) properties.get(CUSTOM_BINDINGS_ON_ERROR);
+        } catch (IllegalArgumentException iae) {
+            //We'll fall back to default
+        }
+        ContainerProperties.customBindingsOnErr = customBindingsOnError;
+
+        String disableShortBindingsProperty = (String) properties.get(DISABLE_SHORT_DEFAULT_BINDINGS);
+        if (disableShortBindingsProperty != null) {
+            if (isTraceOn && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Disable short default bindings string: " + disableShortBindingsProperty);
+            }
+            ArrayList<String> DisableShortDefaultBindings = new ArrayList<String>();
+            if (!disableShortBindingsProperty.contains("*")) {
+                String[] apps = disableShortBindingsProperty.split(":");
+                for (int i = 0; i < apps.length; i++) {
+                    DisableShortDefaultBindings.add(apps[i]);
+                }
+            }
+            // If they pass in * we will have an empty initialized list and then disable for all apps
+
+            // If JVM prop has something set, merge them
+            if (ContainerProperties.DisableShortDefaultBindings != null) {
+                ContainerProperties.DisableShortDefaultBindings.addAll(DisableShortDefaultBindings);
+            } else {
+                ContainerProperties.DisableShortDefaultBindings = DisableShortDefaultBindings;
+            }
+        }
+
+        if (isTraceOn && tc.isEntryEnabled())
+            Tr.exit(tc, "processCustomBindingsConfig");
     }
 
     private void updateEJSContainerFromRuntimeVersion() {
@@ -374,6 +465,8 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
         long inactivePoolCleanupIntervalSeconds = (Long) properties.get(POOL_CLEANUP_INTERVAL);
         Boolean startEjbsAtAppStart = (Boolean) properties.get(START_EJBS_AT_APP_START);
 
+        processCustomBindingsConfig(properties);
+
         container.setPreferredCacheSize(cacheSize);
 
         container.setInactiveCacheCleanupInterval(TimeUnit.MILLISECONDS.convert(cacheSweepIntervalSeconds,
@@ -383,6 +476,10 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
                                                                                TimeUnit.SECONDS));
 
         updateStartEjbsAtAppStart(startEjbsAtAppStart);
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            ContainerProperties.introspect(new TrDumpWriter(tc));
+        }
     }
 
     @Deactivate

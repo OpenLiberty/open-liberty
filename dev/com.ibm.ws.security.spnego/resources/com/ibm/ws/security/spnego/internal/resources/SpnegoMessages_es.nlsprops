@@ -105,9 +105,9 @@ SPNEGO_CUSTOM_ERROR_PAGE_CONTENT_TYPE_ERROR=CWWKS4319E: No se ha podido obtener 
 SPNEGO_CUSTOM_ERROR_PAGE_CONTENT_TYPE_ERROR.explanation=La p\u00e1gina de errores personalizada no ha podido cargarse debido a una excepci\u00f3n al obtener el tipo de contenido.
 SPNEGO_CUSTOM_ERROR_PAGE_CONTENT_TYPE_ERROR.useraction=Revise el tipo de contenido de la p\u00e1gina de errores personalizada para asegurarse de que es v\u00e1lido.
 
-SPNEGO_CAN_NOT_VALIDATE_TOKEN=CWWKS4320E: La se\u00f1al SPNEGO o Kerberos incluida en la HttpServletRequest no ha podido validarse {0}
-SPNEGO_CAN_NOT_VALIDATE_TOKEN.explanation=La se\u00f1al SPNEGO o Kerberos utilizada para autenticar la solicitud no es v\u00e1lida.
-SPNEGO_CAN_NOT_VALIDATE_TOKEN.useraction=Si no aparece ning\u00fan mensaje de error adicional, habilite la depuraci\u00f3n de JGSS y KRB5. Consulte la documentaci\u00f3n de JDK para ver c\u00f3mo habilitar la depuraci\u00f3n de JGSS y KRB5. Verifique la configuraci\u00f3n de SPNEGO y aseg\u00farese de que los archivos de tabla de claves del cliente, SPN y Kerberos utilicen el mismo tipo de cifrado que el especificado en el archivo de configuraci\u00f3n de Kerberos.
+SPNEGO_CAN_NOT_ESTABLISH_GSSCONTEXT_WITH_VALIDATE_TOKEN=CWWKS4320E: No se puede establecer GSSContext con una se\u00f1al SPNEGO o Kerberos v\u00e1lida incluida en HttpServletRequest de {0}. 
+SPNEGO_CAN_NOT_ESTABLISH_GSSCONTEXT_WITH_VALIDATE_TOKEN.explanation=La se\u00f1al SPNEGO o Kerberos utilizada para autenticar la solicitud es v\u00e1lida, pero no se puede establecer GSSContext.
+SPNEGO_CAN_NOT_ESTABLISH_GSSCONTEXT_WITH_VALIDATE_TOKEN.useraction=Si no aparece ning\u00fan mensaje de error adicional, habilite la depuraci\u00f3n de JGSS y KRB5. Consulte en la documentaci\u00f3n de JDK las instrucciones para habilitar la depuraci\u00f3n de JGSS y KRB5. Verifique la configuraci\u00f3n de SPNEGO y aseg\u00farese de que los archivos de tabla de claves del cliente, SPN y Kerberos utilicen el mismo tipo de cifrado que el especificado en el archivo de configuraci\u00f3n de Kerberos.
 
 SPNEGO_CAN_NOT_GET_DELEGATE_SERVICE_SPN=CWWKS4321E: No se puede obtener el SPN de servicio delegado {0} de la GSSCredential. Se ha recibido una GSSException: {1}
 SPNEGO_CAN_NOT_GET_DELEGATE_SERVICE_SPN.explanation=No se puede obtener el SPN de servicio delegado de la GSSCredential. La GSSCredential del cliente del proxy no estar\u00e1 en el sujeto.

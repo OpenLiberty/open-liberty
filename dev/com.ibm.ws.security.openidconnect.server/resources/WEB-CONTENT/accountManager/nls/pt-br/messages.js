@@ -10,7 +10,7 @@
  *******************************************************************************/
 var messages = {
     // Common Strings
-    "ADD_NEW": "Incluir nova",
+    "ADD_NEW": "Incluir novo",
     "CANCEL": "Cancelar",
     "CLEAR": "Limpar entrada de procura",
     "CLICK_TO_SORT": "Clique para classificar a coluna",
@@ -20,18 +20,22 @@ var messages = {
     "DELETE": "Excluir",
     "DONE": "Pronto",
     "EDIT": "Editar",
+    "FALSE": "Falso",
     "GENERATE": "Gerar",
     "LOADING": "Carregando",
     "LOGOUT": "Logout",
     "NEXT_PAGE": "Próxima página",
-    "NO_RESULTS_FOUND": "Nenhum Resultado Localizado",
-    "PAGES": "{0} de {1} páginas",   // {0} - current page number; {1} - total pages
+    "NO_RESULTS_FOUND": "Nenhum resultado localizado",
+    "PAGES": "{0} de {1} página(s)",   // {0} - current page number; {1} - total pages
     "PAGE_SELECT": "Selecione o número da página para visualização",
     "PREVIOUS_PAGE": "Página anterior",
     "PROCESSING": "Processando",
     "REGENERATE": "Regenerar",
     "REGISTER": "Registrar",
-    "TRY_AGAIN": "Tente novamente ...",
+    "TABLE_FIELD_SORT_ASC": "A tabela é classificada por {0} em ordem crescente. ",   // {0} - column name (ie. 'Name', 'Client ID')
+    "TABLE_FIELD_SORT_DESC": "A tabela é classificada por {0} em ordem decrescente. ", // {0} - column name (ie. 'Name', 'Client ID')
+    "TRUE": "Verdadeiro",
+    "TRY_AGAIN": "Tentar novamente ...",
     "UPDATE": "Atualizar",
 
     // Common Column Names
@@ -45,10 +49,15 @@ var messages = {
     // name - the user defined name given the app-password or app-token
     "ACCT_MGR_TITLE": "Gerenciar tokens pessoais",
     "ACCT_MGR_DESC": "Crie, exclua e gere novamente os app-passwords e app-tokens.",
-    "ADD_NEW_AUTHENTICATION": "Incluir novo app-password ou app-token",
+    "ADD_NEW_AUTHENTICATION": "Incluir novo app-password ou app-token.",
     "NAME_IDENTIFIER": "Nome: {0}",
     "ADD_NEW_TITLE": "Registrar nova autenticação",
     "NOT_GENERATED_PLACEHOLDER": "Não gerado",
+    "AUTHENTICAION_GENERATED": "Autenticação gerada",
+    "GENERATED_APP_PASSWORD": "app-password gerado ",
+    "GENERATED_APP_TOKEN": "app-token gerado ",
+    "COPY_APP_PASSWORD": "Copiar app-password para a área de transferência",
+    "COPY_APP_TOKEN": "Copiar app-token para a área de transferência",
     "REGENERATE_APP_PASSWORD": "Gerar novamente app-password",
     "REGENERATE_PW_WARNING": "Esta ação sobrescreverá o app-password atual.",
     "REGENERATE_PW_PLACEHOLDER": "Senha gerada anteriormente em {0}",        // 0 - date

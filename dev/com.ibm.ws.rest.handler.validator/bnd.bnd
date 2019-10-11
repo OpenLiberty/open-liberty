@@ -20,7 +20,7 @@ Bundle-Description: REST API for validator of configured resources; version=${bV
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
-WS-TraceGroup: validator.rest
+WS-TraceGroup: rest.validation
 
 Export-Package:\
   com.ibm.wsspi.validator

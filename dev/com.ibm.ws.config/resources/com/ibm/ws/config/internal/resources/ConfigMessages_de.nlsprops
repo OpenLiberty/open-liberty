@@ -167,10 +167,13 @@ error.unique.value.conflict=CWWKG0031E: Der Wert {1}, der f\u00fcr das eindeutig
 error.unique.value.conflict.explanation=Der Wert f\u00fcr das angegebene Attribut muss eindeutig sein, es wird jedoch bereits verwendet.
 error.unique.value.conflict.useraction=\u00c4ndern Sie den Attributwert in einen eindeutigen Wert.
 
-warn.config.invalid.value=CWWKG0032W: F\u00fcr die Eigenschaft [{0}] wurde ein unerwarteter Wert angegeben. Wert = [{1}]. Die erwarteten Werte sind {2}.
+# {3} is either the formatted value of default.value.in.use or an empty string
+warn.config.invalid.value=CWWKG0032W: F\u00fcr die Eigenschaft [{0}] wurde ein unerwarteter Wert angegeben. Wert = [{1}]. Die erwarteten Werte sind {2}. \
+{3} 
 warn.config.invalid.value.explanation=Der f\u00fcr die Eigenschaft angegebene Wert kann nicht verwendet werden.
 warn.config.invalid.value.useraction=Korrigieren Sie den Wert der Eigenschaft so, dass ein erwarteter Wert verwendet wird.
 
+default.value.in.use=Der verwendete Standardwert ist {0}. 
 warning.pid.not.found=CWWKG0033W: Der Wert [{1}], der f\u00fcr das Referenzattribut [{0}] angegeben wurde, wurde in der Konfiguration nicht gefunden.
 warning.pid.not.found.explanation=Der angegebene Wert muss ein Element in der Konfiguration sein.
 warning.pid.not.found.useraction=\u00c4ndern Sie den Attributwert so, dass ein g\u00fcltiges Konfigurationselement referenziert wird. 
@@ -289,25 +292,10 @@ error.factoryOnly=CWWKG0061E: Die persistent definierte ID {0} ist keine persist
 error.factoryOnly.explanation=Das Attribut ibm:extends ist nur f\u00fcr persistent definierte Factory-IDs g\u00fcltig.
 error.factoryOnly.useraction=\u00c4ndern Sie die Konfiguration der persistent definierten ID so, dass eine persistent definierte Factory-ID verwendet wird, oder entfernen Sie das Attribut ibm:extends aus der Objektkomponentendefinition. Dies ist ein interner Fehler. Folgen Sie den Standardprozeduren f\u00fcr die Problembestimmung in WebSphere.
 
-#"ibm:extendsAlias" is an xml attribute name and should not be translated
-error.factoryOnly.extendsAlias=CWWKG0096E: Die persistent definierte ID {0} ist keine persistent definierte Factory-ID und kann deshalb kein ibm:extendsAlias-Attribut mit dem Wert {1} haben. \u00c4ndern Sie die Konfiguration der persistent definierten ID so, dass eine persistent definierte Factory-ID verwendet wird, oder entfernen Sie das Attribut ibm:extendsAlias aus der persistent definierten ID.
-error.factoryOnly.extendsAlias.explanation=Das Attribut ibm:extendsAlias ist nur f\u00fcr persistent definierte Factory-IDs g\u00fcltig, die eine andere persistent definierte Factory-ID erweitern.
-error.factoryOnly.extendsAlias.useraction=\u00c4ndern Sie die Konfiguration der persistent definierten ID so, dass eine persistent definierte Factory-ID verwendet wird, oder entfernen Sie das Attribut ibm:extendsAlias aus der persistent definierten ID.
-
 #"ibm:extends" is an xml attribute name and should not be translated
 error.superFactoryOnly=CWWKG0062E: Die persistent definierte ID {0} ist keine persistent definierte Factory-ID und kann deshalb nicht von der persistent definierten ID {1} erweitert werden.
 error.superFactoryOnly.explanation=Das Attribut ibm:extends ist nur f\u00fcr persistent definierte Factory-IDs g\u00fcltig.
 error.superFactoryOnly.useraction=\u00c4ndern Sie die Konfiguration der persistent definierten ID so, dass eine persistent definierte Factory-ID verwendet wird, oder entfernen Sie das Attribut ibm:extends aus der Objektkomponentendefinition. Dies ist ein interner Fehler. Folgen Sie den Standardprozeduren f\u00fcr die Problembestimmung in WebSphere.
-
-#"ibm:extendsAlias" is an xml attribute name and should not be translated
-error.ExtendsAliasMustExtend=CWWKG0097E: Die persistent definierte ID {0} gibt ein Attribut ibm:extendsAlias mit dem Wert {1} an und muss deshalb auch das Attribut ibm:extends angeben.
-error.ExtendsAliasMustExtend.explanation=Wenn Sie das Attribut ibm:extendsAlias angeben, m\u00fcssen Sie auch das Attribut ibm:extends angeben.
-error.ExtendsAliasMustExtend.useraction=Geben Sie das Attribut ibm:extends an.
-
-#"ibm:parentPid" and "ibm:childAlias" are xml attribute names and should not be translated
-error.parentpid.and.childalias=CWWKG0098E: Die persistent definierte ID {0} gibt ein Attribut {1} mit dem Wert {2} an und muss deshalb auch das Attribut {3} angeben.
-error.parentpid.and.childalias.explanation=Der Metatyp gibt an, dass ein verschachteltes Element des Typs child-first nur teilweise angegeben wurde. Verschachtelte Elemente des Typs child-first m\u00fcssen sowohl das Attribut ibm:parentPid als auch das Attribut ibm:childAlias angeben.
-error.parentpid.and.childalias.useraction=Wenn diese Metatyp f\u00fcr ein verschachteltes Element des Typs child-first bestimmt ist, geben Sie das fehlende Attribut an. Andernfalls entfernen Sie das angegebene Attribut. 
 
 #"ibm:rename" is an xml attribute name and should not be translated
 schemagen.rename.attribute.missing=CWWKG0063E: Die Attributdefinition {1}, die mit dem ibm:rename-Attribut {2} in der persistent definierten ID {0} angegeben wurde, kann nicht umbenannt werden.
@@ -443,6 +431,21 @@ warning.unrecognized.merge.behavior.useraction=Aktualisieren Sie die Serverkonfi
 error.missing.required.attribute.singleton=CWWKG0095E: Im Element {0} fehlt das erforderliche Attribut {1}.
 error.missing.required.attribute.singleton.explanation=Das fehlende Attribut ist in der Konfigurationsdatei server.xml oder einer der zugeh\u00f6rigen referenzierten Konfigurationsdateien erforderlich.
 error.missing.required.attribute.singleton.useraction=F\u00fcgen Sie der Konfigurationsdatei server.xml oder einer der referenzierten Konfigurationsdateien das Attribut hinzu.
+
+#"ibm:extendsAlias" is an xml attribute name and should not be translated
+error.factoryOnly.extendsAlias=CWWKG0096E: Die persistent definierte ID {0} ist keine persistent definierte Factory-ID und kann deshalb kein ibm:extendsAlias-Attribut mit dem Wert {1} haben. \u00c4ndern Sie die Konfiguration der persistent definierten ID so, dass eine persistent definierte Factory-ID verwendet wird, oder entfernen Sie das Attribut ibm:extendsAlias aus der persistent definierten ID.
+error.factoryOnly.extendsAlias.explanation=Das Attribut ibm:extendsAlias ist nur f\u00fcr persistent definierte Factory-IDs g\u00fcltig, die eine andere persistent definierte Factory-ID erweitern.
+error.factoryOnly.extendsAlias.useraction=\u00c4ndern Sie die Konfiguration der persistent definierten ID so, dass eine persistent definierte Factory-ID verwendet wird, oder entfernen Sie das Attribut ibm:extendsAlias aus der persistent definierten ID.
+
+#"ibm:extendsAlias" is an xml attribute name and should not be translated
+error.ExtendsAliasMustExtend=CWWKG0097E: Die persistent definierte ID {0} gibt ein Attribut ibm:extendsAlias mit dem Wert {1} an und muss deshalb auch das Attribut ibm:extends angeben.
+error.ExtendsAliasMustExtend.explanation=Wenn Sie das Attribut ibm:extendsAlias angeben, m\u00fcssen Sie auch das Attribut ibm:extends angeben.
+error.ExtendsAliasMustExtend.useraction=Geben Sie das Attribut ibm:extends an.
+
+#"ibm:parentPid" and "ibm:childAlias" are xml attribute names and should not be translated
+error.parentpid.and.childalias=CWWKG0098E: Die persistent definierte ID {0} gibt ein Attribut {1} mit dem Wert {2} an und muss deshalb auch das Attribut {3} angeben.
+error.parentpid.and.childalias.explanation=Der Metatyp gibt an, dass ein verschachteltes Element des Typs child-first nur teilweise angegeben wurde. Verschachtelte Elemente des Typs child-first m\u00fcssen sowohl das Attribut ibm:parentPid als auch das Attribut ibm:childAlias angeben.
+error.parentpid.and.childalias.useraction=Wenn diese Metatyp f\u00fcr ein verschachteltes Element des Typs child-first bestimmt ist, geben Sie das fehlende Attribut an. Andernfalls entfernen Sie das angegebene Attribut. 
 
 #"ibm:extendsAlias" is an xml attribute name and should not be translated
 error.extendsAlias.collision=CWWKG0100E: Das ibm:extendsAlias-Attribut {2} ist in einer einzigen extends-Hierarchie doppelt vorhanden. Die PIDs sind {0} und {1}. Verwenden Sie in der extends-Hierarchie nur eindeutige ibm:extendsAlias-Attribute.

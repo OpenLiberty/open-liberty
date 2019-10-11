@@ -1,14 +1,24 @@
-/**
+/*******************************************************************************
+ * Copyright (c) 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- */
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
 package com.ibm.ws.testtooling.vehicle.web;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Base64.Decoder;
 import java.util.Properties;
 
 import javax.annotation.Resource;
@@ -91,12 +101,20 @@ public abstract class JPATestServlet extends FATServlet {
             }
         }
 
-        System.out.println("DBMeta Request Result: ");
-        System.out.println(sb);
+        System.out.println("JPATestServlet Reading encoded database information.");
 
-        Properties dbProps = new Properties();
-        dbProps.load(new ByteArrayInputStream(sb.toString().getBytes()));
+        final String base64EncodedData = sb.toString();
+        final Decoder base64Decoder = java.util.Base64.getDecoder();
+        final byte[] objectData = base64Decoder.decode(base64EncodedData);
+
+        ByteArrayInputStream bais = new ByteArrayInputStream(objectData);
+        ObjectInputStream ois = new ObjectInputStream(bais);
+        Properties dbProps = (Properties) ois.readObject();
+
         System.out.println("Acquired Database Metadata: " + dbProps);
+        for (Object key : dbProps.keySet()) {
+            System.out.println("   " + key + " = " + dbProps.getProperty((String) key));
+        }
 
         dbProductName = dbProps.getProperty("dbproduct_name");
         dbProductVersion = dbProps.getProperty("dbproduct_version");
@@ -153,4 +171,67 @@ public abstract class JPATestServlet extends FATServlet {
 
         System.out.println("*****");
     }
+
+    /**
+     * @return the dbProductName
+     */
+    public static String getDbProductName() throws Exception {
+        fetchDatabaseMetadata();
+        return dbProductName;
+    }
+
+    /**
+     * @return the dbProductVersion
+     */
+    public static String getDbProductVersion() throws Exception {
+        fetchDatabaseMetadata();
+        return dbProductVersion;
+    }
+
+    /**
+     * @return the jdbcDriverVersion
+     */
+    public static String getJdbcDriverVersion() throws Exception {
+        fetchDatabaseMetadata();
+        return jdbcDriverVersion;
+    }
+
+    // Basing determination off product version using
+    // info from https://www.ibm.com/support/knowledgecenter/en/SSEPEK_11.0.0/java/src/tpc/imjcc_c0053013.html
+    public static boolean isDB2ForZOS() throws Exception {
+        String prodVersion = getDbProductVersion();
+        if (prodVersion != null && prodVersion.toLowerCase().startsWith("dsn")) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public static boolean isDB2ForLUW() throws Exception {
+        String prodVersion = getDbProductVersion();
+        if (prodVersion != null && prodVersion.toLowerCase().startsWith("sql")) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public static boolean isDB2ForISeries() throws Exception {
+        String prodVersion = getDbProductVersion();
+        if (prodVersion != null && prodVersion.toLowerCase().startsWith("qsq")) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public static boolean isDB2ForVM_VSE() throws Exception {
+        String prodVersion = getDbProductVersion();
+        if (prodVersion != null && prodVersion.toLowerCase().startsWith("ari")) {
+            return true;
+        }
+
+        return false;
+    }
+
 }

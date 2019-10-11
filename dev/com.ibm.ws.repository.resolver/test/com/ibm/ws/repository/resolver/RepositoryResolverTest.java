@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,7 +34,9 @@ import org.junit.Test;
 
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
 import com.ibm.ws.repository.common.enums.ResourceType;
+import com.ibm.ws.repository.connections.ProductDefinition;
 import com.ibm.ws.repository.resolver.RepositoryResolutionException.MissingRequirement;
+import com.ibm.ws.repository.resolver.internal.ResolutionMode;
 import com.ibm.ws.repository.resolver.internal.kernel.KernelResolverEsa;
 import com.ibm.ws.repository.resources.EsaResource;
 import com.ibm.ws.repository.resources.RepositoryResource;
@@ -257,14 +259,19 @@ public class RepositoryResolverTest {
     }
 
     private static ResolverBuilder testResolver() {
-        return new ResolverBuilder();
+        return new ResolverBuilder(ResolutionMode.IGNORE_CONFLICTS);
     }
 
     private static class ResolverBuilder {
+        final ResolutionMode resolutionMode;
         List<ProvisioningFeatureDefinition> installedFeatures = new ArrayList<>();
         List<EsaResource> repoFeatures = new ArrayList<>();
         List<SampleResource> repoSamples = new ArrayList<>();
         Map<String, ProvisioningFeatureDefinition> resolvedFeatures = new HashMap<>();
+
+        public ResolverBuilder(ResolutionMode resolutionMode) {
+            this.resolutionMode = resolutionMode;
+        }
 
         public ResolverBuilder withFeature(EsaResource... esa) {
             repoFeatures.addAll(Arrays.asList(esa));
@@ -279,7 +286,7 @@ public class RepositoryResolverTest {
         public ResolverBuilder withResolvedFeature(EsaResource... esas) {
             repoFeatures.addAll(Arrays.asList(esas));
             for (EsaResource esa : esas) {
-                resolvedFeatures.put(esa.getProvideFeature(), new KernelResolverEsa(esa));
+                resolvedFeatures.put(esa.getProvideFeature(), new KernelResolverEsa(esa, resolutionMode));
             }
             return this;
         }
@@ -287,6 +294,7 @@ public class RepositoryResolverTest {
         public RepositoryResolver build() {
             RepositoryResolver resolver = new RepositoryResolver(installedFeatures, repoFeatures, repoSamples);
             resolver.initResolve();
+            resolver.initializeResolverRepository(Collections.<ProductDefinition> emptySet(), resolutionMode);
             resolver.resolvedFeatures = resolvedFeatures;
             return resolver;
         }

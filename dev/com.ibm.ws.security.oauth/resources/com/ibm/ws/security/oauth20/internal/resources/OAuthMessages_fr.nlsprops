@@ -113,8 +113,12 @@ OAUTH_LENGTH_TOO_LARGE_AND_CHANGED=CWWKS1422I: La valeur de {0} dans la configur
 OAUTH_LENGTH_TOO_LARGE_AND_CHANGED.explanation=La valeur de l'attribut indiqu\u00e9 est trop grande.
 OAUTH_LENGTH_TOO_LARGE_AND_CHANGED.useraction=Affectez \u00e0 l'attribut indiqu\u00e9 une valeur appropri\u00e9e.  
 
+OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR=CWWKS1423E: L''enregistrement ou la mise \u00e0 jour du client OAuth a \u00e9chou\u00e9 car les donn\u00e9es client contiennent le caract\u00e8re non autoris\u00e9 "{0}".
+OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR.explanation=Le caract\u00e8re n'est pas admis dans les donn\u00e9es client.
+OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR.useraction=Supprimez le caract\u00e8re non autoris\u00e9 et soumettez \u00e0 nouveau la demande. 
+
 OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND=CWWKS1424E: L''ID client {0} est introuvable.
-OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.explanation=La demande contenait un ID client {0} qui est introuvable.  
+OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.explanation=La demande contenait un ID client introuvable.  
 OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.useraction=Relancez la demande avec un ID client valide.
 
 OAUTH_CLIENT_REGISTRATION_INVALID_REQUEST_PATH=CWWKS1425E: La demande d'enregistrement a \u00e9t\u00e9 soumise \u00e0 une URI incorrecte.
@@ -134,19 +138,19 @@ OAUTH_CLIENT_REGISTRATION_MALFORMED_REQUEST.explanation=L'objet JSON dans le cor
 OAUTH_CLIENT_REGISTRATION_MALFORMED_REQUEST.useraction=Consultez la documentation d'API de ce service et relancez la demande.
 
 OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS=CWWKS1429E: L''ID client {0} existe d\u00e9j\u00e0.
-OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS.explanation=L''op\u00e9ration a \u00e9chou\u00e9 car l''ID client {0} existe d\u00e9j\u00e0.  
+OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS.explanation=L'op\u00e9ration a \u00e9chou\u00e9 car l'ID client existe d\u00e9j\u00e0.  
 OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS.useraction=Consultez la documentation d'API de ce service et relancez la demande avec les param\u00e8tres appropri\u00e9s.
 
-OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE=CWWKS1430E: Une mise \u00e0 jour du client a \u00e9chou\u00e9.
-OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE.explanation=La demande de mise \u00e0 jour indique de pr\u00e9server la valeur secr\u00e8te du client, mais aucune n'a \u00e9t\u00e9 d\u00e9finie dans l'enregistrement existant.  
+OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE=CWWKS1430E: Une mise \u00e0 jour du client a \u00e9chou\u00e9. La demande de mise \u00e0 jour indique que le secret client doit \u00eatre conserv\u00e9, mais aucun secret n'est d\u00e9fini dans l'enregistrement existant.
+OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE.explanation=La demande de mise \u00e0 jour indique que le secret client doit \u00eatre conserv\u00e9, mais aucun secret n'est d\u00e9fini dans l'enregistrement existant.
 OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE.useraction=Consultez la documentation d'API de ce service et relancez la demande avec les param\u00e8tres appropri\u00e9s.
 
-OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE=CWWKS1431E: Une mise \u00e0 jour du client a \u00e9chou\u00e9.
-OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE.explanation=Une demande de mise \u00e0 jour pour un client public ne doit pas sp\u00e9cifier de valeur secr\u00e8te du client.  
+OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE=CWWKS1431E: Une mise \u00e0 jour du client a \u00e9chou\u00e9. Une demande de mise \u00e0 jour pour un client public ne doit pas sp\u00e9cifier de secret client.
+OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE.explanation=Une demande de mise \u00e0 jour pour un client public ne doit pas sp\u00e9cifier de secret client.
 OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE.useraction=Consultez la documentation d'API de ce service et relancez la demande avec les param\u00e8tres appropri\u00e9s.
 
-OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG=CWWKS1432E: Une mise \u00e0 jour du client a \u00e9chou\u00e9.
-OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG.explanation=La requ\u00eate ne peut pas \u00eatre ex\u00e9cut\u00e9e car elle sp\u00e9cifie une configuration non valide compte tenu de l'\u00e9tat actuel de l'enregistrement du client.  
+OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG=CWWKS1432E: Une mise \u00e0 jour du client a \u00e9chou\u00e9. Le secret client ne peut pas \u00eatre mis \u00e0 jour car la demande indique une configuration non valide compte tenu de l'\u00e9tat actuel de l'enregistrement du client.
+OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG.explanation=La requ\u00eate ne peut pas \u00eatre ex\u00e9cut\u00e9e car elle sp\u00e9cifie une configuration non valide compte tenu de l'\u00e9tat actuel de l'enregistrement du client.
 OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG.useraction=Consultez la documentation d'API de ce service et relancez la demande avec les param\u00e8tres appropri\u00e9s.
 
 OAUTH_UNSUPPORTED_METHOD=CWWKS1433E: La m\u00e9thode HTTP {0} n''est pas prise en charge pour le service {1}.
@@ -236,6 +240,10 @@ OAUTH_SERVER_MULTIPLE_TOKEN_INTROSPECT_PROVIDER_CONFIGURED.useraction=Aucune act
 OAUTH_SERVER_INVALID_ACCESS_TOKEN=CWWKS1454E: La requ\u00eate a \u00e9chou\u00e9 car le jeton_d'acc\u00e8s n'est pas valide ou est arriv\u00e9 \u00e0 expiration.
 OAUTH_SERVER_INVALID_ACCESS_TOKEN.explanation=Echec du traitement de la requ\u00eate car le jeton_d'acc\u00e8s n'est pas valide.
 OAUTH_SERVER_INVALID_ACCESS_TOKEN.useraction=V\u00e9rifiez que le jeton_d'acc\u00e8s est valide et n'est pas arriv\u00e9 \u00e0 expiration.
+
+#This message can be appended to 1455E under some conditions
+# do not translate keyStoreRef
+CHECK_KEYSTORE_REF=L'attribut de configuration keyStoreRef du fournisseur OpenId Connect est peut-\u00eatre manquant ou incorrect.
 
 #This message is intended to be a child of CWWKS1456E
 #0=signatureAlgorithm, 1=exception or error message if any
@@ -432,9 +440,18 @@ OAUTH_AUTH_HEADER_NOT_BASIC_AUTH.explanation=Pour pouvoir \u00eatre authentifi\u
 OAUTH_AUTH_HEADER_NOT_BASIC_AUTH.useraction=Assurez-vous que la demande utilise le sch\u00e9ma d'authentification de base permettant d'inclure les donn\u00e9es d'identification du client OAuth.
 
 # Do not translate internalClientId, internalClientSecret, isEnabled, appPasswordAllowed, or appTokenAllowed
-OAUTH_UI_ENDPOINT_NOT_ENABLED=CWWKS1494E: La demande envoy\u00e9e \u00e0 l''URI {0} est ignor\u00e9e car l''URI n''est pas activ\u00e9. Un ou plusieurs des attributs de client ou de fournisseur ne sont pas d\u00e9finis. V\u00e9rifiez que les attributs de fournisseur internalClientId et internalClientSecret sont configur\u00e9s. V\u00e9rifiez que les attributs de client isEnabled, appPasswordAllowed et appTokenAllowed sont configur\u00e9s.
+OAUTH_UI_ENDPOINT_NOT_ENABLED=CWWKS1494W: La demande envoy\u00e9e \u00e0 l''URI {0} ne peut pas \u00eatre trait\u00e9e car un ou plusieurs des attributs de client ou de fournisseur ne sont pas d\u00e9finis. V\u00e9rifiez que les attributs de fournisseur internalClientId et internalClientSecret sont configur\u00e9s. V\u00e9rifiez que les attributs de client isEnabled, appPasswordAllowed et appTokenAllowed sont configur\u00e9s.
 OAUTH_UI_ENDPOINT_NOT_ENABLED.explanation=Les attributs de client et de fournisseur doivent \u00eatre d\u00e9finis pour que l'URI puisse traiter les demandes.
 OAUTH_UI_ENDPOINT_NOT_ENABLED.useraction=D\u00e9finissez les attributs de client et de fournisseur correctement pour que le fournisseur puisse traiter la demande.
+
+# Java runtime level
+JAVA8_REQUIRED=CWWKS1495W: Le fournisseur OpenID Connect ne peut pas traiter la demande d''URI [ {0} ] car la version Java est ant\u00e9rieure \u00e0 Java 8. Java 8 ou ult\u00e9rieur est requis.
+JAVA8_REQUIRED.explanation=La version Java utilis\u00e9e ne correspond pas \u00e0 la version 8 ou une version ult\u00e9rieure.
+JAVA8_REQUIRED.useraction=Installez la version Java 8 ou une version ult\u00e9rieure.
+
+JAVA8_REQUIRED_FOR_AT_HASHING=CWWKS1496W: L''attribut de configuration {1} du fournisseur OpenID Connect {0} est d\u00e9fini pour utiliser l''algorithme {2}, ce qui requiert Java 8 ou ult\u00e9rieur. Le fournisseur OpenID Connect sp\u00e9cifi\u00e9 ignore le param\u00e8tre {3}.
+JAVA8_REQUIRED_FOR_AT_HASHING.explanation=La version Java utilis\u00e9e ne correspond pas \u00e0 la version 8 ou une version ult\u00e9rieure.
+JAVA8_REQUIRED_FOR_AT_HASHING.useraction=Installez la version Java 8 ou une version ult\u00e9rieure pour utiliser l'option de configuration mentionn\u00e9e.
 
 # html title of logout page
 LOGOUT_PAGE_TITLE=D\u00e9connexion

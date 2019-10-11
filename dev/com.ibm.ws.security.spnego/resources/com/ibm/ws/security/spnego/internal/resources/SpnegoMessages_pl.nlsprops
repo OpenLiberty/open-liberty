@@ -183,16 +183,13 @@ SPNEGO_CUSTOM_ERROR_PAGE_CONTENT_TYPE_ERROR.useraction= \
 Przejrzyj typ tre\u015bci niestandardowej strony b\u0142\u0119du, aby upewni\u0107 si\u0119, \u017ce jest on \
 poprawny.
 
-SPNEGO_CAN_NOT_VALIDATE_TOKEN=CWWKS4320E: Nie mo\u017cna \
-sprawdzi\u0107 poprawno\u015bci znacznika SPNEGO lub Kerberos do\u0142\u0105czonego do interfejsu \
-HttpServletRequest {0}
-SPNEGO_CAN_NOT_VALIDATE_TOKEN.explanation=Znacznik mechanizmu SPNEGO lub Kerberos u\u017cywany do uwierzytelniania \u017c\u0105dania jest niepoprawny.
-SPNEGO_CAN_NOT_VALIDATE_TOKEN.useraction=Je\u015bli nie jest \
-wy\u015bwietlany \u017caden dodatkowy komunikat o b\u0142\u0119dzie, w\u0142\u0105cz debugowanie JGSS i KRB5.  \
-Informacje na temat w\u0142\u0105czania debugowania JGSS i KRB5 zawiera dokumentacja \
-pakietu JDK. Sprawd\u017a konfiguracj\u0119 mechanizmu SPNEGO i upewnij si\u0119, \u017ce klient, \
-nazwa SPN i pliki tabeli kluczy protoko\u0142u Kerberos u\u017cywaj\u0105 tego samego typu \
-szyfrowania, kt\u00f3ry jest okre\u015blony w pliku konfiguracyjnym protoko\u0142u Kerberos.
+SPNEGO_CAN_NOT_ESTABLISH_GSSCONTEXT_WITH_VALIDATE_TOKEN=CWWKS4320E: Nie mo\u017cna ustanowi\u0107 kontekstu GSSContext z poprawnym znacznikiem mechanizmu SPNEGO lub protoko\u0142u Kerberos do\u0142\u0105czonym do \u017c\u0105dania HttpServletRequest {0}. 
+SPNEGO_CAN_NOT_ESTABLISH_GSSCONTEXT_WITH_VALIDATE_TOKEN.explanation=Znacznik mechanizmu SPNEGO lub protoko\u0142u Kerberos u\u017cywany do uwierzytelniania \u017c\u0105dania jest poprawny, ale nie mo\u017cna ustanowi\u0107 kontekstu GSSContext.
+SPNEGO_CAN_NOT_ESTABLISH_GSSCONTEXT_WITH_VALIDATE_TOKEN.useraction=Je\u015bli nie jest \
+wy\u015bwietlany \u017caden dodatkowy komunikat o b\u0142\u0119dzie, w\u0142\u0105cz debugowanie JGSS i KRB5. Instrukcje na temat w\u0142\u0105czania debugowania JGSS i KRB5 zawiera dokumentacja pakietu JDK. Sprawd\u017a konfiguracj\u0119 mechanizmu SPNEGO i upewnij si\u0119, \u017ce klient, \
+g\u0142\u00f3wna nazwa us\u0142ugi i pliki tabeli kluczy protoko\u0142u Kerberos u\u017cywaj\u0105 tego \
+samego typu szyfrowania, kt\u00f3ry jest okre\u015blony w pliku konfiguracyjnym protoko\u0142u \
+Kerberos.
 
 SPNEGO_CAN_NOT_GET_DELEGATE_SERVICE_SPN=CWWKS4321E: Z obiektu GSSCredential nie mo\u017cna pobra\u0107 nazwy u\u017cytkownika us\u0142ugi {0} na potrzeby delegowania. Odebrano wyj\u0105tek GSSException: {1}
 SPNEGO_CAN_NOT_GET_DELEGATE_SERVICE_SPN.explanation=Z obiektu GSSCredential nie mo\u017cna pobra\u0107 nazwy u\u017cytkownika us\u0142ugi na potrzeby delegowania. Obiekt GSSCredential klienta dla proxy nie b\u0119dzie uwzgl\u0119dniony w podmiocie.

@@ -437,7 +437,8 @@ public abstract class BaseStepControllerImpl implements IExecutionElementControl
     // Will be overridden for partitioned steps by special method which
     // aggregates partition-level metrics
     protected void updateStepExecution() {
-        getPersistenceManagerService().updateStepExecution(runtimeStepExecution);
+        StepThreadExecutionEntity stepThreadExecutionEntity = getPersistenceManagerService().updateStepExecution(runtimeStepExecution);
+        stepThreadExecutionEntity.getJobExecution().setLastUpdatedTime(runtimeStepExecution.getLastUpdatedTime());
     }
 
     protected void markJobAndStepForFailure() {

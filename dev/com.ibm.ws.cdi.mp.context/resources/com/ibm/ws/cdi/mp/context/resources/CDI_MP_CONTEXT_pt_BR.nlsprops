@@ -1,0 +1,33 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.concurrent/resources/com/ibm/ws/concurrent/resources/CWWKCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC MicroProfile Context Propagation
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# This message bundle does not have its own message range, and instead reserves specific error messages from the 
+# com.ibm.ws.concurrent.mp.1.0 message bundle
+
+# do not translate: CDI, CompletionStage
+CWWKC1158.cannot.lazy.enlist.beans=CWWKC1158E: Deve-se acessar os beans CDI antes de o contexto ser capturado para a a\u00e7\u00e3o ou tarefa contextual para que os beans CDI se comportem da maneira correta quando acessados a partir da a\u00e7\u00e3o ou tarefa. \
+Os beans CDI a seguir n\u00e3o foram acessados antes de o contexto ser capturado: {0}.
+CWWKC1158.cannot.lazy.enlist.beans.explanation=Quando o contexto de CDI \u00e9 capturado, somente os beans CDI que foram acessados nesse momento s\u00e3o criados pelo tempo de execu\u00e7\u00e3o do CDI. \
+Como resultado, os beans CDI que s\u00e3o acessados primeiro em opera\u00e7\u00f5es contextuais n\u00e3o podem propagar seu estado corretamente para opera\u00e7\u00f5es contextuais subsequentes.
+CWWKC1158.cannot.lazy.enlist.beans.useraction=O aplicativo deve ser mudado para chamar alguma opera\u00e7\u00e3o do bean CDI, como um m\u00e9todo p\u00fablico, antes de o contexto para a opera\u00e7\u00e3o ser capturado.

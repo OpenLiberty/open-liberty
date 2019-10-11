@@ -341,3 +341,14 @@ security.oauth20.apppwtok.revoke.disallowed=CWOAU0078E: A fost f\u0103cut\u0103 
 security.oauth20.apppwtok.revoke.disallowed.explanation=Parole de aplica\u0163ie sau jetoanele de aplica\u0163ie trebuie revocate folosind punctele finale app-passwords sau app-tokens.
 security.oauth20.apppwtok.revoke.disallowed.useraction=Lansa\u0163i cerea din nou cu un URI pentru punctul final corespunz\u0103tor pentru a revoca parolele de aplica\u0163ie sau jetoanele de aplica\u0163ie.
 
+security.oauth20.pkce.invalid.method.error=CWOAU0079E: Parametrul code_challenge_method din cerere con\u0163ine un algoritm de transformare nesuportat: [{0}]. Algoritmele de transformare suportate sunt: plain, S256.
+security.oauth20.pkce.invalid.method.error.explanation=Furnizorul OAuth nu suport\u0103 algoritmul de transformare specificat. 
+security.oauth20.pkce.invalid.method.error.useraction=Utiliza\u0163i unul din algoritmele de transformare ar\u0103tate \u00een mesaj.
+
+security.oauth20.pkce.codeverifier.length.error=CWOAU0080E: Lungimea code_verifier este [{0}]. Lungimea code_verifier trebuie s\u0103 fie \u00eentre 43 \u015fi 128 caractere.
+security.oauth20.pkce.codeverifier.length.error.explanation=code_verifier ar trebui s\u0103 aib\u0103 lungimea minim\u0103 de 43 caractere \u015fi maxim\u0103 de 128 caractere. 
+security.oauth20.pkce.codeverifier.length.error.useraction=Trimite\u0163i cererile de autorizare \u015fi de jeton din nou cu un code_verifier actualizat care \u00eendepline\u015fte lungimea specificat\u0103.
+
+security.oauth20.pkce.error.mismatch.codeverifier=CWOAU0081E: code_challenge [{0}] \u015fi code_verifier [{1}] nu se potrivesc. 
+security.oauth20.pkce.error.mismatch.codeverifier.explanation=Furnizorul OAuth utilizeaz\u0103 code_challenge_method specificat \u00een cererea de autentificare \u015fi transform\u0103 code_verifier \u00een afara cazului c\u00e2nd code_challenge_method este plain. Valoarea transformat\u0103 trebuie s\u0103 se potriveasc\u0103 cu code_challenge din cererea de autorizare.
+security.oauth20.pkce.error.mismatch.codeverifier.useraction=Asigura\u0163i-v\u0103 c\u0103 trimite\u0163i cu cererile de autorizare \u015fi de jeton code_challenge \u015fi code_verifier care se potrivesc \u015fi algoritmul de transformare corect.

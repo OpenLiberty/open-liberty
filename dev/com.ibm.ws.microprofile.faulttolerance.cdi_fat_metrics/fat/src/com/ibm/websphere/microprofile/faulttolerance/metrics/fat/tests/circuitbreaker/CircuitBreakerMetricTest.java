@@ -39,7 +39,8 @@ public class CircuitBreakerMetricTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatFaultTolerance.repeatDefault(SERVER_NAME);
+    public static RepeatTests r = RepeatFaultTolerance.repeatDefault(SERVER_NAME)
+                    .andWith(RepeatFaultTolerance.ft11metrics20Features(SERVER_NAME));
 
     @BeforeClass
     public static void setup() throws Exception {

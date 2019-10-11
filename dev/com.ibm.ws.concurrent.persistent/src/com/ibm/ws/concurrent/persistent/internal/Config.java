@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,6 +40,12 @@ class Config {
     final String jndiName;
 
     /**
+     * Amount of time beyond a task's scheduled time after which the task is considered to be missed
+     * and is eligible to be taken over by another member.
+     */
+    final long missedTaskThreshold;
+
+    /**
      * Interval between polling for tasks to run. A value of -1 disables all polling after the initial poll.
      */
     final long pollInterval;
@@ -71,6 +77,7 @@ class Config {
         jndiName = (String) properties.get("jndiName");
         enableTaskExecution = (Boolean) properties.get("enableTaskExecution");
         initialPollDelay = (Long) properties.get("initialPollDelay");
+        missedTaskThreshold = enableTaskExecution ? (Long) properties.get("missedTaskThreshold") : -1;
         pollInterval = enableTaskExecution ? (Long) properties.get("pollInterval") : -1;
         pollSize = enableTaskExecution ? (Integer) properties.get("pollSize") : null;
         retryInterval = (Long) properties.get("retryInterval");
@@ -79,6 +86,8 @@ class Config {
         id = xpathId.contains("]/persistentExecutor[") ? null : (String) properties.get("id");
 
         // Range checking on duration values, which cannot be enforced via metatype
+        if (missedTaskThreshold != -1 && missedTaskThreshold < 1)
+            throw new IllegalArgumentException("missedTaskThreshold: " + missedTaskThreshold + "s");
         if (initialPollDelay < -1)
             throw new IllegalArgumentException("initialPollDelay: " + initialPollDelay + "ms");
         if (pollInterval < -1)
@@ -94,10 +103,11 @@ class Config {
                         .append(",jndiName=").append(jndiName)
                         .append(",enableTaskExecution=").append(enableTaskExecution)
                         .append(",initialPollDelay=").append(initialPollDelay)
-                        .append(",pollInterval=").append(pollInterval)
-                        .append(",pollSize=").append(pollSize)
+                        .append("ms,missedTaskThreshold=").append(missedTaskThreshold)
+                        .append("s,pollInterval=").append(pollInterval)
+                        .append("ms,pollSize=").append(pollSize)
                         .append(",retryInterval=").append(retryInterval)
-                        .append(",retryLimit=").append(retryLimit)
+                        .append("ms,retryLimit=").append(retryLimit)
                         .append(",xpathId=").append(xpathId)
                         .append(",id=").append(id)
                         .toString();

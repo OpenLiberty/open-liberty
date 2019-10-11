@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2015 IBM Corporation and others.
+ * Copyright (c) 2014, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,6 +38,7 @@ public class RequestContext {
 	private volatile int state = -1;
 	private int eventCount = -1;
 	private static final RequestIdGeneratorPUID idgen = new RequestIdGeneratorPUID();
+	private boolean isSlow;
 	
 	/**
 	 * Request states.
@@ -156,6 +157,14 @@ public class RequestContext {
 		return threadId;
 	}
 
+	public boolean isSlow() {
+		return isSlow;
+	}
+	
+	public void setSlow(boolean isSlowStatus) {
+		 isSlow = isSlowStatus;
+	}
+
 	/**
 	 * This method is used to get the stack trace for requested Thread ID. Using
 	 * the Thread class getAllStackTraces() method we get the stack traces for
@@ -191,6 +200,8 @@ public class RequestContext {
 	@Override
 	public String toString() {
 		return "RequestContext [threadId=" + threadId + ", requestId="
-				+ requestId + ", state=" + state + "]";
+				+ requestId + ", state=" + state + ", isSlow=" + isSlow() + ", eventCount=" + eventCount + "]";
 	}
+	
+
 }

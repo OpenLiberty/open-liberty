@@ -43,6 +43,11 @@ public interface RetryClient {
     @Fallback(fallbackMethod="defaultFallback")
     String useDefaultFallbackMethod();
 
+    @GET
+    @Path("/alwaysFail")
+    @Fallback(MyFallback.class)
+    String useDefaultFallbackClass();
+
     default String defaultFallback() {
         return "defaultFallback";
     }

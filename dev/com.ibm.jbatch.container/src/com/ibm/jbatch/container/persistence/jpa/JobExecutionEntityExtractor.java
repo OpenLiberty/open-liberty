@@ -41,7 +41,9 @@ public class JobExecutionEntityExtractor extends ClassExtractor {
             throw new BatchRuntimeException(ex);
         }
 
-        if (tableversion == 2) {
+        if (tableversion == 3) {
+            return JobExecutionEntityV3.class;
+        } else if (tableversion == 2) {
             return JobExecutionEntityV2.class;
         } else {
             return JobExecutionEntity.class;

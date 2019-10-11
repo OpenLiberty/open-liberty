@@ -27,7 +27,11 @@ IBM-API-Package: javax.faces; type="spec", \
  javax.faces.view; type="spec", \
  javax.faces.view.facelets; type="spec", \
  javax.faces.webapp; type="spec", \
- org.apache.myfaces.*; type="third-party"
+ org.apache.myfaces.renderkit.html; type="third-party", \
+ org.apache.myfaces.shared.config; type="third-party", \
+ org.apache.myfaces.shared.renderkit; type="third-party", \
+ org.apache.myfaces.shared.renderkit.html; type="third-party", \
+ org.apache.myfaces.shared.renderkit.html.util; type="third-party"
 IBM-ShortName: jsf-2.3
 Subsystem-Name: JavaServer Faces 2.3
 -features=com.ibm.websphere.appserver.javax.cdi-2.0, \
@@ -36,7 +40,6 @@ Subsystem-Name: JavaServer Faces 2.3
  com.ibm.websphere.appserver.javax.jsf-2.3, \
  com.ibm.websphere.appserver.jsp-2.3, \
  com.ibm.websphere.appserver.internal.optional.jaxb-2.2; ibm.tolerates:=2.3, \
- com.ibm.websphere.appserver.jsfApiStub-2.3, \
  com.ibm.websphere.appserver.jsfProvider-2.3.0.MyFaces, \
  com.ibm.websphere.appserver.javaeeCompatible-8.0
 -bundles=com.ibm.ws.org.apache.myfaces.2.3, \
@@ -48,6 +51,6 @@ Subsystem-Name: JavaServer Faces 2.3
  com.ibm.ws.cdi.interfaces, \
  com.ibm.ws.org.apache.commons.digester.1.8, \
  com.ibm.websphere.javaee.websocket.1.1; apiJar=false; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.websocket:javax.websocket-api:1.1", \
- com.ibm.websphere.appserver.thirdparty.jsf-2.3; location:="dev/api/third-party/"; mavenCoordinates="org.apache.myfaces.core:myfaces-impl:2.3.3"
+ com.ibm.websphere.appserver.thirdparty.jsf-2.3; location:="dev/api/third-party/"
 kind=ga
 edition=core

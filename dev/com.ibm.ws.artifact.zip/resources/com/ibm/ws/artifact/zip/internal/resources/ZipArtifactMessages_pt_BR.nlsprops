@@ -72,12 +72,6 @@ extract.primary.untyped=CWWKM0110E: A extra\u00e7\u00e3o anterior de {0} n\u00e3
 extract.primary.untyped.explanation=Uma extra\u00e7\u00e3o de um archive aninhado detectou um arquivo n\u00e3o tipific\u00e1vel como o archive extra\u00eddo anterior.
 extract.primary.untyped.useraction=Limpe e depois reinicie o servidor para assegurar que n\u00e3o haja qualquer conte\u00fado em cache anterior presente.
 
-# # {0} A decimal count of seconds.  For example, "0.701005".
-# # {1} A decomal count of seconds.  For example, "0.020000".
-reaper.stall=CWWKM0120W: Ocorreu um atraso excessivo durante o processamento de encerramentos de archives pendentes: o atraso real era de {0} segundos.  O atraso solicitado era de {1} segundos.
-reaper.stall.explanation=Esta mensagem indica que os archives de aplicativo foram mantidos abertos por mais tempo do que o necess\u00e1rio. Conforme mostrado pela mensagem de aviso, os archives n\u00e3o deveriam ter sido mantidos abertos por mais tempo do que o solicitado, mas foram mantidos abertos por um per\u00edodo significativamente maior. Esses archives mantidos abertos por mais tempo do que o necess\u00e1rio podem causar erros durante tentativas de atualizar dinamicamente os arquivos de aplicativo. Esse aviso indica que a atividade, externa ou interna, est\u00e1 negando o tempo de processamento para o servidor.
-reaper.stall.useraction=Examine o ambiente para determinar se os processos diferentes do processo do servidor est\u00e3o consumindo uma propor\u00e7\u00e3o excessiva de tempo de processamento. Examine o processo do servidor gerando dumps de encadeamento para determinar se encadeamentos do servidor espec\u00edficos t\u00eam atividade excessiva.
-
 # # {0} A file path.
 # # {1} A print name
 reaper.inactive=CWWKM0121W: N\u00e3o \u00e9 poss\u00edvel abrir {0}: o cache de archive {1} est\u00e1 inativo.

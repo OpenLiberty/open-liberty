@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2018 IBM Corporation and others.
+ * Copyright (c) 2013, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -197,6 +197,8 @@ public interface ConfigurationProvider {
 
     public boolean isRecoverOnStartup();
 
+    public boolean isOnePCOptimization();
+
     /**
      * This method is provided for Liberty integration. The Liberty
      * com.ibm.ws.transaction bundle retrieves the resource factory
@@ -234,15 +236,45 @@ public interface ConfigurationProvider {
 
     /**
      * Return true if the Tran recovery logs are to be stored in a database.
-     * 
+     *
      * @return
      */
     public boolean isSQLRecoveryLog();
 
     /**
      * Return true if this ConfigurationProvider has dependencies on other Declarative Services.
-     * 
+     *
      * @return
      */
     public boolean needToCoordinateServices();
+
+    /**
+     * Return true when the peer locking scheme is to be enabled for the Tran recovery logs that are stored in a database.
+     *
+     * @return
+     */
+    public boolean enableHADBPeerLocking();
+
+    /**
+     * Configures the length of time between heartbeats when the peer locking scheme is enabled for the Tran recovery logs that are stored in a database.
+     *
+     * @return
+     */
+    public int getTimeBetweenHeartbeats();
+
+    /**
+     * Configures the length of time before a peer Tran recovery log is deemed to be stale when the peer locking scheme is enabled for Tran recovery logs that are stored in a
+     * database.
+     *
+     * @return
+     */
+    public int getPeerTimeBeforeStale();
+
+    /**
+     * Configures the length of time before a local Tran recovery log is deemed to be stale when the peer locking scheme is enabled for Tran recovery logs that are stored in a
+     * database.
+     *
+     * @return
+     */
+    public int getLocalTimeBeforeStale();
 }

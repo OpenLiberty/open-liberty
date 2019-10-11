@@ -53,9 +53,11 @@ public class CollectorJsonUtils {
                                       int maxFieldLength) {
 
         if (!collectorVersion.startsWith(("1.0"))) {
-
-            return CollectorJsonUtils1_1.jsonifyEvent(event, eventType, serverName, wlpUserDir, serverHostName, tags, maxFieldLength);
-
+            if (collectorVersion.startsWith("1.1")) {
+                return CollectorJsonUtils1_1.jsonifyEvent(event, eventType, serverName, wlpUserDir, serverHostName, tags, maxFieldLength);
+            } else if (collectorVersion.startsWith("JSON")) {
+                return CollectorJsonUtils_JSON.jsonifyEvent(event, eventType, serverName, wlpUserDir, serverHostName, tags, maxFieldLength);
+            }
         } else {
 
             if (eventType.equals(CollectorConstants.GC_EVENT_TYPE)) {

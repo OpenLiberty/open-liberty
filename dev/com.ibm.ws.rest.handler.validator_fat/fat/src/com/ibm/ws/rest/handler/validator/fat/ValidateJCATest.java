@@ -198,16 +198,9 @@ public class ValidateJCATest extends FATServletClient {
      */
     @Test
     public void testConnectionFactoryNotFound() throws Exception {
-        JsonObject json = new HttpsRequest(server, "/ibm/api/validation/connectionFactory/NotAConfiguredConnectionFactory").run(JsonObject.class);
-        String err = "unexpected response: " + json;
-        assertEquals(err, "NotAConfiguredConnectionFactory", json.getString("uid"));
-        assertNull(err, json.get("id"));
-        assertNull(err, json.get("jndiName"));
-        assertFalse(err, json.getBoolean("successful"));
-        assertNull(err, json.get("info"));
-        assertNotNull(err, json = json.getJsonObject("failure"));
-        String message = json.getString("message");
-        assertTrue(err, message.startsWith("CWWKO1500E") && message.contains("connectionFactory"));
+        String response = new HttpsRequest(server, "/ibm/api/validation/connectionFactory/NotAConfiguredConnectionFactory").expectCode(404).run(String.class);
+        String err = "unexpected response: " + response;
+        assertTrue(err, response.contains("CWWKO1500E") && response.contains("connectionFactory") && response.contains("NotAConfiguredConnectionFactory"));
     }
 
     /**

@@ -20,11 +20,10 @@ import java.util.Set;
 
 import javax.security.auth.Subject;
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
+import javax.servlet.http.Cookie;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
@@ -42,6 +41,7 @@ import com.ibm.ws.security.authentication.cache.AuthCacheService;
 import com.ibm.ws.security.authentication.utility.SubjectHelper;
 import com.ibm.ws.security.collaborator.CollaboratorUtils;
 import com.ibm.ws.security.context.SubjectManager;
+import com.ibm.ws.security.mp.jwt.proxy.MpJwtHelper;
 import com.ibm.ws.webcontainer.security.internal.BasicAuthAuthenticator;
 import com.ibm.ws.webcontainer.security.internal.ChallengeReply;
 import com.ibm.ws.webcontainer.security.internal.DenyReply;
@@ -196,6 +196,13 @@ public class AuthenticateApi {
         ssoCookieHelper.removeSSOCookieFromResponse(res);
         ssoCookieHelper.createLogoutCookies(req, res);
 
+        // if we have jwt, put on mpjwt's list of logged out jwt's so it cannot be reused.
+        // will be null if mpJwt feature not active, or no jwt in principal
+        Principal p = MpJwtHelper.getJsonWebTokenPricipal(subjectManager.getCallerSubject());
+        if (p != null) {
+            MpJwtHelper.addLoggedOutJwtToList(p);
+        }
+
         try {
             if (unauthenticatedSubjectService != null) {
                 ThreadIdentityManager.setAppThreadIdentity(unauthenticatedSubjectService.getUnauthenticatedSubject());
@@ -294,7 +301,7 @@ public class AuthenticateApi {
         authResult.setAuditOutcome(AuditEvent.OUTCOME_SUCCESS);
         Audit.audit(Audit.EventID.SECURITY_API_AUTHN_TERMINATE_01, req, authResult, Integer.valueOf(res.getStatus()));
 
-	removeEntryFromAuthCacheForUser(req, res);
+        removeEntryFromAuthCacheForUser(req, res);
         invalidateSession(req);
         ssoCookieHelper.removeSSOCookieFromResponse(res);
         ssoCookieHelper.createLogoutCookies(req, res);

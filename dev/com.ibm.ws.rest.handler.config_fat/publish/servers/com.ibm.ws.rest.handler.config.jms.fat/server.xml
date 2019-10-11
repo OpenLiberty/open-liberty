@@ -13,7 +13,7 @@
 
   <featureManager>
     <feature>componenttest-1.0</feature>
-    <feature>configValidator-1.0</feature> <!-- TODO replace when functionality is enabled via auto-feature -->
+    <feature>restConnector-2.0</feature>
     <feature>jms-2.0</feature>
   </featureManager>
 

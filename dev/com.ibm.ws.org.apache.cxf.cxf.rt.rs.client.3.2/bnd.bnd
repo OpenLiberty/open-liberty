@@ -26,4 +26,5 @@ javac.target: 1.8
   com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
   com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxrs.3.2;version=latest,\
   com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.3.2;version=latest,\
+  com.ibm.ws.concurrent.mp.1.0;version=latest,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest

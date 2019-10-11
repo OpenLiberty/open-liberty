@@ -300,9 +300,6 @@ public abstract class AbstractPersistenceManager implements IPersistenceManagerS
             throw new PersistenceException(e);
         }
         updateStepExecutionMetrics(stepExec, runtimeStepExecution.getMetrics());
-
-        // Note there's nothing in the spec that says we have to do this, but seems useful.
-        stepExec.getJobExecution().setLastUpdatedTime(runtimeStepExecution.getLastUpdatedTime());
     }
 
     private void updateStepExecutionMetrics(StepThreadExecutionEntity stepData, List<Metric> metrics) {

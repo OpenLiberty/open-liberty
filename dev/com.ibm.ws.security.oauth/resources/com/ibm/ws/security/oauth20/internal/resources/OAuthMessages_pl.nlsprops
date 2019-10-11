@@ -113,8 +113,12 @@ OAUTH_LENGTH_TOO_LARGE_AND_CHANGED=CWWKS1422I: Warto\u015b\u0107 elementu {0} w 
 OAUTH_LENGTH_TOO_LARGE_AND_CHANGED.explanation=Warto\u015b\u0107 wskazanego atrybutu jest zbyt du\u017ca.
 OAUTH_LENGTH_TOO_LARGE_AND_CHANGED.useraction=Ustaw poprawn\u0105 warto\u015b\u0107 wskazanego atrybutu.  
 
+OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR=CWWKS1423E: Rejestracja lub aktualizacja klienta OAuth nie powiod\u0142a si\u0119, poniewa\u017c dane klienta zawieraj\u0105 niedozwolony znak \u201e{0}\u201d.
+OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR.explanation=Ten znak nie jest dozwolony w danych klienta.
+OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR.useraction=Usu\u0144 niepoprawny znak i wprowad\u017a ponownie \u017c\u0105danie. 
+
 OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND=CWWKS1424E: Nie znaleziono identyfikatora klienta {0}.
-OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.explanation=\u017b\u0105danie zawiera\u0142o identyfikator klienta {0}, kt\u00f3rego nie znaleziono.  
+OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.explanation=\u017b\u0105danie zawiera\u0142o identyfikator klienta, kt\u00f3rego nie znaleziono.  
 OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.useraction=Pon\u00f3w \u017c\u0105danie przy u\u017cyciu poprawnego identyfikatora klienta.
 
 OAUTH_CLIENT_REGISTRATION_INVALID_REQUEST_PATH=CWWKS1425E: \u017b\u0105danie rejestracji zosta\u0142o wykonane do niepoprawnego identyfikatora URI.
@@ -134,19 +138,19 @@ OAUTH_CLIENT_REGISTRATION_MALFORMED_REQUEST.explanation=Kod JSON w tre\u015bci \
 OAUTH_CLIENT_REGISTRATION_MALFORMED_REQUEST.useraction=Przejrzyj dokumentacj\u0119 interfejsu API dla tej us\u0142ugi i pon\u00f3w \u017c\u0105danie.
 
 OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS=CWWKS1429E: Identyfikator klienta {0} ju\u017c istnieje.
-OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS.explanation=Operacja nie powiod\u0142a si\u0119, poniewa\u017c identyfikator klienta {0} ju\u017c istnieje.  
+OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS.explanation=Operacja nie powiod\u0142a si\u0119, poniewa\u017c identyfikator klienta ju\u017c istnieje.  
 OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS.useraction=Przejrzyj dokumentacj\u0119 interfejsu API dla tej us\u0142ugi i pon\u00f3w \u017c\u0105danie przy u\u017cyciu odpowiednich parametr\u00f3w.
 
-OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE=CWWKS1430E: Zaktualizowanie klienta nie powiod\u0142o si\u0119.
-OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE.explanation=\u017b\u0105danie aktualizacji wskazuje, \u017ce klucz tajny klienta ma zosta\u0107 utrwalony, ale istniej\u0105ca rejestracja nie ma ustawionego klucza tajnego.  
+OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE=CWWKS1430E: Zaktualizowanie klienta nie powiod\u0142o si\u0119. \u017b\u0105danie aktualizacji wskazuje, \u017ce klucz tajny klienta musi zosta\u0107 utrwalony, ale istniej\u0105ca rejestracja nie ma ustawionego klucza tajnego.
+OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE.explanation=\u017b\u0105danie aktualizacji wskazuje, \u017ce klucz tajny klienta musi zosta\u0107 utrwalony, ale istniej\u0105ca rejestracja nie ma ustawionego klucza tajnego.
 OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE.useraction=Przejrzyj dokumentacj\u0119 interfejsu API dla tej us\u0142ugi i pon\u00f3w \u017c\u0105danie przy u\u017cyciu odpowiednich parametr\u00f3w.
 
-OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE=CWWKS1431E: Zaktualizowanie klienta nie powiod\u0142o si\u0119.
-OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE.explanation=\u017b\u0105danie aktualizacji dla klienta publicznego nie mo\u017ce okre\u015bla\u0107 klucza tajnego klienta.  
+OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE=CWWKS1431E: Zaktualizowanie klienta nie powiod\u0142o si\u0119. \u017b\u0105danie aktualizacji dla klienta publicznego nie mo\u017ce okre\u015bla\u0107 klucza tajnego klienta.
+OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE.explanation=\u017b\u0105danie aktualizacji dla klienta publicznego nie mo\u017ce okre\u015bla\u0107 klucza tajnego klienta.
 OAUTH_CLIENT_REGISTRATION_PUBLIC_CLIENT_UPDATE_FAILURE.useraction=Przejrzyj dokumentacj\u0119 interfejsu API dla tej us\u0142ugi i pon\u00f3w \u017c\u0105danie przy u\u017cyciu odpowiednich parametr\u00f3w.
 
-OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG=CWWKS1432E: Zaktualizowanie klienta nie powiod\u0142o si\u0119.
-OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG.explanation=\u017b\u0105dania nie mo\u017cna wykona\u0107, poniewa\u017c okre\u015bla niepoprawn\u0105 konfiguracj\u0119 w obliczu bie\u017c\u0105cego stanu rejestracji klienta.  
+OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG=CWWKS1432E: Zaktualizowanie klienta nie powiod\u0142o si\u0119. Nie mo\u017cna zaktualizowa\u0107 klucza tajnego klienta, poniewa\u017c \u017c\u0105danie okre\u015bla niepoprawn\u0105 konfiguracj\u0119 w przypadku bie\u017c\u0105cego stanu rejestracji klienta.
+OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG.explanation=\u017b\u0105dania nie mo\u017cna wykona\u0107, poniewa\u017c okre\u015bla niepoprawn\u0105 konfiguracj\u0119 w obliczu bie\u017c\u0105cego stanu rejestracji klienta.
 OAUTH_CLIENT_REGISTRATION_INVALID_CONFIG.useraction=Przejrzyj dokumentacj\u0119 interfejsu API dla tej us\u0142ugi i pon\u00f3w \u017c\u0105danie przy u\u017cyciu odpowiednich parametr\u00f3w.
 
 OAUTH_UNSUPPORTED_METHOD=CWWKS1433E: Metoda HTTP {0} nie jest obs\u0142ugiwana dla us\u0142ugi {1}.
@@ -236,6 +240,10 @@ OAUTH_SERVER_MULTIPLE_TOKEN_INTROSPECT_PROVIDER_CONFIGURED.useraction=Nie jest w
 OAUTH_SERVER_INVALID_ACCESS_TOKEN=CWWKS1454E: \u017b\u0105danie nie powiod\u0142o si\u0119, poniewa\u017c znacznik access_token jest niepoprawny lub utraci\u0142 wa\u017cno\u015b\u0107.
 OAUTH_SERVER_INVALID_ACCESS_TOKEN.explanation=Przetwarzanie \u017c\u0105dania nie powiod\u0142o si\u0119, poniewa\u017c znacznik access_token nie jest poprawny.
 OAUTH_SERVER_INVALID_ACCESS_TOKEN.useraction=Sprawd\u017a, czy znacznik access_token jest poprawny i czy nie utraci\u0142 wa\u017cno\u015bci.
+
+#This message can be appended to 1455E under some conditions
+# do not translate keyStoreRef
+CHECK_KEYSTORE_REF=Brak atrybutu konfiguracji dostawcy OpenId Connect keyStoreRef lub jest on niepoprawny.
 
 #This message is intended to be a child of CWWKS1456E
 #0=signatureAlgorithm, 1=exception or error message if any
@@ -389,7 +397,7 @@ OAUTH_SERVER_USERNAME_PARAM_NOT_SUPPORTED=CWWKS1483E: \u017b\u0105danie {0} wys\
 OAUTH_SERVER_USERNAME_PARAM_NOT_SUPPORTED.explanation=Tylko u\u017cytkownicy o roli tokenManager mog\u0105 poda\u0107 atrybut user_id dla tego identyfikatora URI \u017c\u0105dania.
 OAUTH_SERVER_USERNAME_PARAM_NOT_SUPPORTED.useraction=Wy\u015blij ponownie to \u017c\u0105danie, podaj\u0105c wymagan\u0105 rol\u0119 tokenManager i poprawny identyfikator u\u017cytkownika.
 
-OAUTH_INVALID_REQUEST_NO_ID_SECRET=CWWKS1484E: \u017b\u0105danie {0} wys\u0142ane do identyfikatora URI {1} jest niepoprawne. Brak ID klienta, klucza tajnego klinenta lub obu tych warto\u015bci.
+OAUTH_INVALID_REQUEST_NO_ID_SECRET=CWWKS1484E: \u017b\u0105danie {0} wys\u0142ane do identyfikatora URI {1} jest niepoprawne. Brak ID klienta, klucza tajnego klienta lub obu tych warto\u015bci.
 OAUTH_INVALID_REQUEST_NO_ID_SECRET.explanation=Wskazane \u017c\u0105danie jest niepoprawne. Poprawne warto\u015bci identyfikatora klienta i klucza tajnego klienta musz\u0105 zosta\u0107 podane w nag\u0142\u00f3wku Authorization \u017c\u0105dania wys\u0142anego do tego identyfikatora URI.
 OAUTH_INVALID_REQUEST_NO_ID_SECRET.useraction=Popraw \u017c\u0105danie. Wy\u015blij ponownie to \u017c\u0105danie, podaj\u0105c poprawny identyfikator klienta i klucz tajny klienta w nag\u0142\u00f3wku Authorization.
 
@@ -432,9 +440,18 @@ OAUTH_AUTH_HEADER_NOT_BASIC_AUTH.explanation=Okre\u015blone \u017c\u0105danie mu
 OAUTH_AUTH_HEADER_NOT_BASIC_AUTH.useraction=Sprawd\u017a, czy to \u017c\u0105danie korzysta ze schematu uwierzytelniania podstawowego w celu udost\u0119pnienia referencji klienta OAuth.
 
 # Do not translate internalClientId, internalClientSecret, isEnabled, appPasswordAllowed, or appTokenAllowed
-OAUTH_UI_ENDPOINT_NOT_ENABLED=CWWKS1494E: \u017b\u0105danie wys\u0142ane do identyfikatora URI {0} zosta\u0142o zignorowane, poniewa\u017c ten identyfikator URI nie jest w\u0142\u0105czony. Co najmniej jeden z atrybut\u00f3w klienta lub dostawcy nie jest ustawiony. Upewnij si\u0119, \u017ce skonfigurowano atrybuty dostawcy internalClientId i internalClientSecret. Sprawd\u017a, czy skonfigurowano atrybuty klienta isEnabled, appPasswordAllowed lub appTokenAllowed.
+OAUTH_UI_ENDPOINT_NOT_ENABLED=CWWKS1494W: Nie mo\u017cna przetworzy\u0107 \u017c\u0105dania wys\u0142anego do identyfikatora URI {0}, poniewa\u017c co najmniej jeden z atrybut\u00f3w klienta lub dostawcy nie zosta\u0142 ustawiony. Upewnij si\u0119, \u017ce skonfigurowano atrybuty dostawcy internalClientId i internalClientSecret. Sprawd\u017a, czy skonfigurowano atrybuty klienta isEnabled, appPasswordAllowed lub appTokenAllowed.
 OAUTH_UI_ENDPOINT_NOT_ENABLED.explanation=Atrybuty klienta i dostawcy musz\u0105 by\u0107 ustawione dla tego identyfikatora URI, aby mo\u017cna by\u0142o przetwarza\u0107 \u017c\u0105dania.
 OAUTH_UI_ENDPOINT_NOT_ENABLED.useraction=Ustaw poprawnie atrybuty klienta i dostawcy, aby dostawca m\u00f3g\u0142 przetworzy\u0107 \u017c\u0105danie.
+
+# Java runtime level
+JAVA8_REQUIRED=CWWKS1495W: Dostawca OpenID Connect nie mo\u017ce przetworzy\u0107 \u017c\u0105dania identyfikatora URI [{0}], poniewa\u017c \u015brodowisko Java jest w wersji starszej ni\u017c Java 8. Wymagane jest \u015brodowisko Java 8 lub nowsze.
+JAVA8_REQUIRED.explanation=Nie jest u\u017cywane \u015brodowisko Java w wersji 8 lub nowszej.
+JAVA8_REQUIRED.useraction=Zainstaluj \u015brodowisko Java w wersji 8 lub nowszej.
+
+JAVA8_REQUIRED_FOR_AT_HASHING=CWWKS1496W: Dostawca OpenID Connect {0} zawiera atrybut konfiguracji {1} ustawiony do u\u017cywania algorytmu {2}. Takie ustawienie wymaga \u015brodowiska Java 8 lub nowszego. Podany dostawca OpenID Connect ignoruje ustawienie {3}.
+JAVA8_REQUIRED_FOR_AT_HASHING.explanation=Nie jest u\u017cywane \u015brodowisko Java w wersji 8 lub nowszej.
+JAVA8_REQUIRED_FOR_AT_HASHING.useraction=Zainstaluj \u015brodowisko Java w wersji 8 lub nowszej, aby u\u017cywa\u0107 wspomnianej opcji konfiguracyjnej.
 
 # html title of logout page
 LOGOUT_PAGE_TITLE=Wylogowanie

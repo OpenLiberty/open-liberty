@@ -19,7 +19,6 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
@@ -31,7 +30,6 @@ import jaxrs21sse.basic.BasicSseTestServlet;
  * This test of basic SSE function.
  */
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 8)
 public class BasicSseTest extends FATServletClient {
     private static final String SERVLET_PATH = "BasicSseApp/BasicSseTestServlet";
 

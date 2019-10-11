@@ -16,8 +16,8 @@ Bundle-SymbolicName: com.ibm.websphere.appserver.thirdparty.cdi-2.0
 Bundle-Description: WebSphere CDI 2.0 Weld Third Party API, version 3.1.0.Final
 
 Export-Package:\
- org.jboss.weld.context;version=3.1.0.Final, \
- org.jboss.weld.context.*;version=3.1.0.Final
+ org.jboss.weld.context;version=3.1.1.Final, \
+ org.jboss.weld.context.*;version=3.1.1.Final
 
 Import-Package:*
 

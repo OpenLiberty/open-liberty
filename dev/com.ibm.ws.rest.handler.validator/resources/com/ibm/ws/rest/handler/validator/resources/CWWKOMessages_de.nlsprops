@@ -1,0 +1,41 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.rest.handler.validator/resources/com/ibm/ws/rest/handler/validator/resources/CWWKOMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Validation REST endpoint
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWKO1550 to CWWKO1559
+
+CWWKO1550_VALIDATOR_NOT_FOUND=CWWKO1550E: Es wurde keine Validierung f\u00fcr die Konfigurationselemente des Typs {0} bereitgestellt.
+CWWKO1550_VALIDATOR_NOT_FOUND.explanation=Der angegebene Typ des Konfigurationselements hat nicht die Funktionalit\u00e4t zum Validieren der zugeh\u00f6rigen Konfiguration.
+CWWKO1550_VALIDATOR_NOT_FOUND.useraction=Versuchen Sie nicht, diesen Typ des Konfigurationselements zu validieren.
+
+CWWKO1551_CANNOT_VALIDATE=CWWKO1551E: Eine oder mehrere Abh\u00e4ngigkeiten sind nicht erf\u00fcllt, oder das Feature, das die Ressource aktiviert, ist nicht aktiviert, oder es ist nicht m\u00f6glich, diesen Ressourcentyp zu validieren.
+CWWKO1551_CANNOT_VALIDATE.explanation=Die Validierungsanforderung f\u00fcr die angegebene Konfiguration kann nicht ausgef\u00fchrt werden. Dies kann an einer nicht erf\u00fcllten Abh\u00e4ngigkeit liegen, an einem fehlenden Feature, das ein Konfigurationselement aktiviert, oder das Konfigurationselement unterst\u00fctzt m\u00f6glicherweise keine Validierung.
+CWWKO1551_CANNOT_VALIDATE.useraction=Stellen Sie sicher, dass das Feature, das das Konfigurationselement bereitstellt, aktiviert ist, dass keine Abh\u00e4ngigkeiten fehlen und dass das Konfigurationselement die Validierung unterst\u00fctzt.
+
+CWWKO1552_MISSING_DELIMITER=CWWKO1552E: Der X-Login-Config-Props-Header setzt als Trennzeichen zwischen dem Namen und dem Wert f\u00fcr die Anmeldekonfigurationseigenschaft ein Gleichheitszeichen (=) voraus.
+CWWKO1552_MISSING_DELIMITER.explanation=Das Gleichheitszeichen ist als Trennzeichen erforderlich, um zu ermitteln, welcher Teil des X-Login-Config-Props-Headers der Name der Anmeldekonfigurationseigenschaft und welcher der zugeh\u00f6rige Wert ist.
+CWWKO1552_MISSING_DELIMITER.useraction=Aktualisieren Sie den X-Login-Config-Props-Header, um ein Gleichheitszeichen (=) zwischen dem Namen und dem Wert f\u00fcr die Anmeldekonfigurationseigenschaft einzuschlie\u00dfen.
+
+CWWKO1553_HANDLER_NOT_FOUND=CWWKO1553E: Es sind keine registrierten Handler vorhanden, die der angeforderten URL {0} entsprechen.
+CWWKO1553_HANDLER_NOT_FOUND.explanation=Es wurde versucht, auf eine URL zuzugreifen, die keinem der registrierten Handler entspricht.
+CWWKO1553_HANDLER_NOT_FOUND.useraction=Korrigieren Sie die URL so, dass sie einem registrierten Handler entspricht.
