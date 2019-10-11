@@ -53,6 +53,8 @@ instrument.classesExcludes: com/ibm/ws/rest/handler/internal/resources/*.class
 	com.ibm.websphere.appserver.api.json,\
 	com.ibm.websphere.appserver.api.ssl;version=latest,\
 	com.ibm.websphere.appserver.spi.ssl;version=latest,\
+	com.ibm.websphere.security;version=latest,\
+	com.ibm.ws.security;version=latest,\
 	com.ibm.ws.logging;version=latest, \
 	com.ibm.ws.webcontainer;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
