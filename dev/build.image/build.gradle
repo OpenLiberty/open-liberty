@@ -10,8 +10,6 @@
  *******************************************************************************/
 
 import org.apache.tools.ant.filters.ReplaceTokens
-import groovy.json.*
-import org.gradle.internal.os.OperatingSystem
 
 apply plugin: 'maven'
 
@@ -58,6 +56,11 @@ assemble {
     dependsOn copyLicenseToBuildImage
     dependsOn copySwidTagToBuildImage
 }
+
+import groovy.json.*
+import org.gradle.internal.os.OperatingSystem
+
+
 
 File packageDir = new File(project.buildDir, 'openliberty')
 File mavenDir = new File(project.buildDir, 'maven')
@@ -160,6 +163,22 @@ def microProfile3Features() {
     features
 }
 
+task packageOpenLiberty(type: PackageLibertyWithFeatures) {
+    enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
+    dependsOn parent.subprojects.assemble
+    dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
+    withFeatures this.&gaPublicFeatures
+    outputTo packageDir
+}
+
+task packageOpenLibertyKernel(type: PackageLibertyWithFeatures) {
+    enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
+    dependsOn parent.subprojects.assemble
+    dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
+    withFeatures { '' }
+    outputTo packageDir
+}
+
 def removeFeature(feature) {
     def file = new File("$projectDir/wlp/lib/features/com.ibm.websphere.appserver." + feature + ".mf")
     file.renameTo(new File("$projectDir/wlp/lib/features/com.ibm.websphere.appserver." + feature + ".mf.bak"))
@@ -178,96 +197,78 @@ def excludedFeatures = ['cdi-1.2',
                         'jaxrsClient-2.0',
                         'servlet-3.1']
 
-if (isAutomatedBuild) {
-    task packageOpenLiberty(type: PackageLibertyWithFeatures) {
-        enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
-        dependsOn parent.subprojects.assemble
-        dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
-        withFeatures this.&gaPublicFeatures
-        outputTo packageDir
-    }
-
-    task packageOpenLibertyKernel(type: PackageLibertyWithFeatures) {
-        enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
-        dependsOn parent.subprojects.assemble
-        dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
-        withFeatures { '' }
-        outputTo packageDir
-    }
-
-    task packageOpenLibertyWebProfile8(type: PackageLibertyWithFeatures) {
-        doFirst {
-            excludedFeatures.each {
-                this.&removeFeature("${it}")
-            }
+task packageOpenLibertyWebProfile8(type: PackageLibertyWithFeatures) {
+    doFirst {
+        excludedFeatures.each {
+            this.&removeFeature("${it}")
         }
-        enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
-        dependsOn parent.subprojects.assemble
-        dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
-        withFeatures this.&webProfile8Features
-        outputTo packageDir
-        doLast {
-            copy {
-                from "$packageDir/wlp/templates/servers/webProfile8/server.xml"
-                into "$packageDir/wlp/templates/servers/defaultServer"
-            }
-            copy {
-                from "$packageDir/wlp/templates/clients/javaeeClient8/client.xml"
-                into "$packageDir/wlp/templates/clients/defaultClient"
-            }
-            excludedFeatures.each {
-                this.&restoreFeature("${it}")
-            }
+    }
+    enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
+    dependsOn parent.subprojects.assemble
+    dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
+    withFeatures this.&webProfile8Features
+    outputTo packageDir
+    doLast {
+        copy {
+            from "$packageDir/wlp/templates/servers/webProfile8/server.xml" 
+            into "$packageDir/wlp/templates/servers/defaultServer" 
+        }
+        copy {
+            from "$packageDir/wlp/templates/clients/javaeeClient8/client.xml"
+            into "$packageDir/wlp/templates/clients/defaultClient" 
+        }
+        excludedFeatures.each {
+            this.&restoreFeature("${it}")
+        }
+    }
+}
+
+task packageOpenLibertyJavaee8(type: PackageLibertyWithFeatures) {
+    doFirst {
+        excludedFeatures.each {
+            this.&removeFeature("${it}")
         }
     }
 
-    task packageOpenLibertyJavaee8(type: PackageLibertyWithFeatures) {
-        doFirst {
-            excludedFeatures.each {
-                this.&removeFeature("${it}")
-            }
+    enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
+    dependsOn parent.subprojects.assemble
+    dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
+    withFeatures this.&javaee8Features
+    outputTo packageDir
+    doLast {
+        copy {
+            from "$packageDir/wlp/templates/servers/javaee8/server.xml" 
+            into "$packageDir/wlp/templates/servers/defaultServer" 
         }
+        copy {
+            from "$packageDir/wlp/templates/clients/javaeeClient8/client.xml"
+            into "$packageDir/wlp/templates/clients/defaultClient" 
+        }
+        excludedFeatures.each {
+            this.&restoreFeature("${it}")
+        }
+    }
+}
 
-        enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
-        dependsOn parent.subprojects.assemble
-        dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
-        withFeatures this.&javaee8Features
-        outputTo packageDir
-        doLast {
-            copy {
-                from "$packageDir/wlp/templates/servers/javaee8/server.xml"
-                into "$packageDir/wlp/templates/servers/defaultServer"
-            }
-            copy {
-                from "$packageDir/wlp/templates/clients/javaeeClient8/client.xml"
-                into "$packageDir/wlp/templates/clients/defaultClient"
-            }
-            excludedFeatures.each {
-                this.&restoreFeature("${it}")
-            }
+task packageOpenLibertyMicroProfile3(type: PackageLibertyWithFeatures) {
+    doFirst {
+        excludedFeatures.each {
+            this.&removeFeature("${it}")
         }
     }
 
-    task packageOpenLibertyMicroProfile3(type: PackageLibertyWithFeatures) {
-        doFirst {
-            excludedFeatures.each {
-                this.&removeFeature("${it}")
-            }
+    enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
+    dependsOn parent.subprojects.assemble
+    dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
+    withFeatures this.&microProfile3Features
+    outputTo packageDir
+    doLast {
+        copy {
+            from "$packageDir/wlp/templates/servers/microProfile3/server.xml" 
+            into "$packageDir/wlp/templates/servers/defaultServer" 
         }
-
-        enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
-        dependsOn parent.subprojects.assemble
-        dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
-        withFeatures this.&microProfile3Features
-        outputTo packageDir
-        doLast {
-            copy {
-                from "$packageDir/wlp/templates/servers/microProfile3/server.xml"
-                into "$packageDir/wlp/templates/servers/defaultServer"
-            }
-            excludedFeatures.each {
-                this.&restoreFeature("${it}")
-            }
+        excludedFeatures.each {
+            this.&restoreFeature("${it}")
         }
     }
 }
@@ -289,76 +290,74 @@ task zipOpenLibertyAll(type: Zip) {
 }
 publish.dependsOn zipOpenLibertyAll
 
-if (isAutomatedBuild) {
-    // Includes only kind=ga features.
-    task zipOpenLiberty(type: Zip) {
-        dependsOn packageOpenLiberty
-        baseName 'openliberty'
-        from packageDir
-        destinationDir distsDir
-        version releaseVersion
-        doLast {
-            rootProject.userProps.setProperty('zipopenliberty.runtime.archivename', archivePath.toString())
-            rootProject.storeProps()
-        }
+// Includes only kind=ga features.
+task zipOpenLiberty(type: Zip) {
+    dependsOn packageOpenLiberty
+    baseName 'openliberty'
+    from packageDir
+    destinationDir distsDir
+    version releaseVersion
+    doLast{
+        rootProject.userProps.setProperty('zipopenliberty.runtime.archivename', archivePath.toString())
+        rootProject.storeProps()
     }
-    publish.dependsOn zipOpenLiberty
-
-    // Includes only kind=ga features.
-    task zipOpenLibertyKernel(type: Zip) {
-        dependsOn packageOpenLibertyKernel
-        baseName 'openliberty-kernel'
-        from packageDir
-        destinationDir distsDir
-        version releaseVersion
-        doLast {
-            rootProject.userProps.setProperty('zipopenliberty.kernel.archivename', archivePath.toString())
-            rootProject.storeProps()
-        }
-    }
-    publish.dependsOn zipOpenLibertyKernel
-
-    // Includes only kind=ga features.
-    task zipOpenLibertyWebProfile8(type: Zip) {
-        dependsOn packageOpenLibertyWebProfile8
-        baseName 'openliberty-webProfile8'
-        from packageDir
-        destinationDir distsDir
-        version releaseVersion
-        doLast {
-            rootProject.userProps.setProperty('zipopenliberty.webprofile8.archivename', archivePath.toString())
-            rootProject.storeProps()
-        }
-    }
-    publish.dependsOn zipOpenLibertyWebProfile8
-
-    // Includes only kind=ga features.
-    task zipOpenLibertyJavaee8(type: Zip) {
-        dependsOn packageOpenLibertyJavaee8
-        baseName 'openliberty-javaee8'
-        from packageDir
-        destinationDir distsDir
-        version releaseVersion
-        doLast {
-            rootProject.userProps.setProperty('zipopenliberty.javaee8.archivename', archivePath.toString())
-            rootProject.storeProps()
-        }
-    }
-    publish.dependsOn zipOpenLibertyJavaee8
-
-    task zipOpenLibertyMicroProfile3(type: Zip) {
-        dependsOn packageOpenLibertyMicroProfile3
-        baseName 'openliberty-microProfile3'
-        from packageDir
-        destinationDir distsDir
-        version releaseVersion
-        doLast {
-            rootProject.userProps.setProperty('zipopenliberty.microprofile3.archivename', archivePath.toString())
-            rootProject.storeProps()
-        }
-    }
-    publish.dependsOn zipOpenLibertyMicroProfile3
 }
+publish.dependsOn zipOpenLiberty
+
+// Includes only kind=ga features.
+task zipOpenLibertyKernel(type: Zip) {
+    dependsOn packageOpenLibertyKernel
+    baseName 'openliberty-kernel'
+    from packageDir
+    destinationDir distsDir
+    version releaseVersion
+    doLast{
+        rootProject.userProps.setProperty('zipopenliberty.kernel.archivename', archivePath.toString())
+        rootProject.storeProps()
+    }
+}
+publish.dependsOn zipOpenLibertyKernel
+
+// Includes only kind=ga features.
+task zipOpenLibertyWebProfile8(type: Zip) {
+    dependsOn packageOpenLibertyWebProfile8
+    baseName 'openliberty-webProfile8'
+    from packageDir
+    destinationDir distsDir
+    version releaseVersion
+    doLast{
+        rootProject.userProps.setProperty('zipopenliberty.webprofile8.archivename', archivePath.toString())
+        rootProject.storeProps()
+    }
+}
+publish.dependsOn zipOpenLibertyWebProfile8
+
+// Includes only kind=ga features.
+task zipOpenLibertyJavaee8(type: Zip) {
+    dependsOn packageOpenLibertyJavaee8
+    baseName 'openliberty-javaee8'
+    from packageDir
+    destinationDir distsDir
+    version releaseVersion
+    doLast{
+        rootProject.userProps.setProperty('zipopenliberty.javaee8.archivename', archivePath.toString())
+        rootProject.storeProps()
+    }
+}
+publish.dependsOn zipOpenLibertyJavaee8
+
+task zipOpenLibertyMicroProfile3(type: Zip) {
+    dependsOn packageOpenLibertyMicroProfile3
+    baseName 'openliberty-microProfile3'
+    from packageDir
+    destinationDir distsDir
+    version releaseVersion
+    doLast {
+        rootProject.userProps.setProperty('zipopenliberty.microprofile3.archivename', archivePath.toString())
+        rootProject.storeProps()
+    }
+}
+publish.dependsOn zipOpenLibertyMicroProfile3
 
 clean.doLast {
     file('wlp').deleteDir()
@@ -372,345 +371,344 @@ publishing {
             version project.version
             artifact zipOpenLibertyAll
         }
-        if (isAutomatedBuild) {
-            openLiberty(MavenPublication) {
-                groupId 'io.openliberty'
-                artifactId 'openliberty-runtime'
-                version project.version
-                artifact zipOpenLiberty
-            }
-            openLibertyKernel(MavenPublication) {
-                groupId 'io.openliberty'
-                artifactId 'openliberty-kernel'
-                version project.version
-                artifact zipOpenLibertyKernel
-            }
-            openLibertyWebProfile8(MavenPublication) {
-                groupId 'io.openliberty'
-                artifactId 'openliberty-webProfile8'
-                version project.version
-                artifact zipOpenLibertyWebProfile8
-            }
-            openLibertyJavaee8(MavenPublication) {
-                groupId 'io.openliberty'
-                artifactId 'openliberty-javaee8'
-                version project.version
-                artifact zipOpenLibertyJavaee8
-            }
+        openLiberty(MavenPublication) {
+            groupId 'io.openliberty'
+            artifactId 'openliberty-runtime'
+            version project.version
+            artifact zipOpenLiberty
+        }
+        openLibertyKernel(MavenPublication) {
+            groupId 'io.openliberty'
+            artifactId 'openliberty-kernel'
+            version project.version
+            artifact zipOpenLibertyKernel
+        }
+        openLibertyWebProfile8(MavenPublication) {
+            groupId 'io.openliberty'
+            artifactId 'openliberty-webProfile8'
+            version project.version
+            artifact zipOpenLibertyWebProfile8
+        }
+        openLibertyJavaee8(MavenPublication) {
+            groupId 'io.openliberty'
+            artifactId 'openliberty-javaee8'
+            version project.version
+            artifact zipOpenLibertyJavaee8
         }
     }
 }
 
-if (isAutomatedBuild) {
-    task createOLRuntimePoms {
-        dependsOn packageOpenLiberty
-        pom {
-            project {
-                groupId 'io.openliberty'
-                artifactId 'openliberty-runtime'
-                version bnd.libertyRelease
-                packaging 'zip'
-                name 'Open Liberty Runtime Package'
-                description 'Open Liberty Runtime Package'
-                url 'https://openliberty.io/'
-                licenses {
-                    license {
-                        name 'Eclipse Public License v1.0'
-                        url 'http://www.eclipse.org/legal/epl-v10.html'
-                        distribution 'repo'
-                    }
-                }
-                scm {
-                    connection 'scm:git:git@github.com:OpenLiberty/open-liberty.git'
-                    developerConnection 'scm:git:git@github.com:OpenLiberty/open-liberty.git'
-                    url 'git@github.com:OpenLiberty/open-liberty.git'
-                    tag 'HEAD'
-                }
-                developers {
-                    developer {
-                        id 'cbridgha'
-                        name 'Chuck Bridgham'
-                        email 'cbridgha@us.ibm.com'
-                    }
+task createOLRuntimePoms {
+    dependsOn packageOpenLiberty
+    pom {
+        project {
+            groupId 'io.openliberty'
+            artifactId 'openliberty-runtime'
+            version bnd.libertyRelease
+            packaging 'zip'
+            name 'Open Liberty Runtime Package'
+            description 'Open Liberty Runtime Package'
+            url 'https://openliberty.io/'
+            licenses {
+                license {
+                    name 'Eclipse Public License v1.0'
+                    url 'http://www.eclipse.org/legal/epl-v10.html'
+                    distribution 'repo'
                 }
             }
-        }.writeTo("${mavenDir}/openliberty-runtime-${bnd.libertyRelease}.pom")
-        pom {
-            project {
-                groupId 'io.openliberty'
-                artifactId 'openliberty-webProfile8'
-                version bnd.libertyRelease
-                packaging 'zip'
-                name 'Open Liberty JavaEE 8 Web Profile Package'
-                description 'Open Liberty JavaEE 8 Web Profile Package'
-                url 'https://openliberty.io/'
-                licenses {
-                    license {
-                        name 'Eclipse Public License v1.0'
-                        url 'http://www.eclipse.org/legal/epl-v10.html'
-                        distribution 'repo'
-                    }
-                }
-                scm {
-                    connection 'scm:git:git@github.com:OpenLiberty/open-liberty.git'
-                    developerConnection 'scm:git:git@github.com:OpenLiberty/open-liberty.git'
-                    url 'git@github.com:OpenLiberty/open-liberty.git'
-                    tag 'HEAD'
-                }
-                developers {
-                    developer {
-                        id 'cbridgha'
-                        name 'Chuck Bridgham'
-                        email 'cbridgha@us.ibm.com'
-                    }
+            scm {
+                connection 'scm:git:git@github.com:OpenLiberty/open-liberty.git'
+                developerConnection 'scm:git:git@github.com:OpenLiberty/open-liberty.git'
+                url 'git@github.com:OpenLiberty/open-liberty.git'
+                tag 'HEAD'
+            }
+            developers {
+                developer {
+                    id 'cbridgha'
+                    name 'Chuck Bridgham'
+                    email 'cbridgha@us.ibm.com'
                 }
             }
-        }.writeTo("${mavenDir}/openliberty-webProfile8-${bnd.libertyRelease}.pom")
-        pom {
-            project {
-                groupId 'io.openliberty'
-                artifactId 'openliberty-kernel'
-                version bnd.libertyRelease
-                packaging 'zip'
-                name 'Open Liberty Kernel Package'
-                description 'Open Liberty Kernel Package'
-                url 'https://openliberty.io/'
-                licenses {
-                    license {
-                        name 'Eclipse Public License v1.0'
-                        url 'http://www.eclipse.org/legal/epl-v10.html'
-                        distribution 'repo'
-                    }
-                }
-                scm {
-                    connection 'scm:git:git@github.com:OpenLiberty/open-liberty.git'
-                    developerConnection 'scm:git:git@github.com:OpenLiberty/open-liberty.git'
-                    url 'git@github.com:OpenLiberty/open-liberty.git'
-                    tag 'HEAD'
-                }
-                developers {
-                    developer {
-                        id 'cbridgha'
-                        name 'Chuck Bridgham'
-                        email 'cbridgha@us.ibm.com'
-                    }
-                }
-            }
-        }.writeTo("${mavenDir}/openliberty-kernel-${bnd.libertyRelease}.pom")
-        pom {
-            project {
-                groupId 'io.openliberty'
-                artifactId 'openliberty-javaee8'
-                version bnd.libertyRelease
-                packaging 'zip'
-                name 'Open Liberty JavaEE8 Package'
-                description 'Open Liberty JavaEE8 Package'
-                url 'https://openliberty.io/'
-                licenses {
-                    license {
-                        name 'Eclipse Public License v1.0'
-                        url 'http://www.eclipse.org/legal/epl-v10.html'
-                        distribution 'repo'
-                    }
-                }
-                scm {
-                    connection 'scm:git:git@github.com:OpenLiberty/open-liberty.git'
-                    developerConnection 'scm:git:git@github.com:OpenLiberty/open-liberty.git'
-                    url 'git@github.com:OpenLiberty/open-liberty.git'
-                    tag 'HEAD'
-                }
-                developers {
-                    developer {
-                        id 'cbridgha'
-                        name 'Chuck Bridgham'
-                        email 'cbridgha@us.ibm.com'
-                    }
-                }
-            }
-        }.writeTo("${mavenDir}/openliberty-javaee8-${bnd.libertyRelease}.pom")
-    }
-
-    if (isRelease) {
-        task zipOpenLibertyMaven(type: Zip) {
-            dependsOn createOLRuntimePoms
-            archiveName "openliberty-runtimes-maven-${releaseVersion}.zip"
-            from mavenDir
-            from distsDir
-            include '*.zip'
-            include '*.pom'
-            exclude 'openliberty-all*.zip'
-            destinationDir project.file('build/temp/mavenArtifact')
         }
-        publish.dependsOn zipOpenLibertyMaven
-    }
+    }.writeTo("${mavenDir}/openliberty-runtime-${bnd.libertyRelease}.pom")
+    pom {
+        project {
+            groupId 'io.openliberty'
+            artifactId 'openliberty-webProfile8'
+            version bnd.libertyRelease
+            packaging 'zip'
+            name 'Open Liberty JavaEE 8 Web Profile Package'
+            description 'Open Liberty JavaEE 8 Web Profile Package'
+            url 'https://openliberty.io/'
+            licenses {
+                license {
+                    name 'Eclipse Public License v1.0'
+                    url 'http://www.eclipse.org/legal/epl-v10.html'
+                    distribution 'repo'
+                }
+            }
+            scm {
+                connection 'scm:git:git@github.com:OpenLiberty/open-liberty.git'
+                developerConnection 'scm:git:git@github.com:OpenLiberty/open-liberty.git'
+                url 'git@github.com:OpenLiberty/open-liberty.git'
+                tag 'HEAD'
+            }
+            developers {
+                developer {
+                    id 'cbridgha'
+                    name 'Chuck Bridgham'
+                    email 'cbridgha@us.ibm.com'
+                }
+            }
+        }
+    }.writeTo("${mavenDir}/openliberty-webProfile8-${bnd.libertyRelease}.pom")
+    pom {
+        project {
+            groupId 'io.openliberty'
+            artifactId 'openliberty-kernel'
+            version bnd.libertyRelease
+            packaging 'zip'
+            name 'Open Liberty Kernel Package'
+            description 'Open Liberty Kernel Package'
+            url 'https://openliberty.io/'
+            licenses {
+                license {
+                    name 'Eclipse Public License v1.0'
+                    url 'http://www.eclipse.org/legal/epl-v10.html'
+                    distribution 'repo'
+                }
+            }
+            scm {
+                connection 'scm:git:git@github.com:OpenLiberty/open-liberty.git'
+                developerConnection 'scm:git:git@github.com:OpenLiberty/open-liberty.git'
+                url 'git@github.com:OpenLiberty/open-liberty.git'
+                tag 'HEAD'
+            }
+            developers {
+                developer {
+                    id 'cbridgha'
+                    name 'Chuck Bridgham'
+                    email 'cbridgha@us.ibm.com'
+                }
+            }
+        }
+    }.writeTo("${mavenDir}/openliberty-kernel-${bnd.libertyRelease}.pom")
+    pom {
+        project {
+            groupId 'io.openliberty'
+            artifactId 'openliberty-javaee8'
+            version bnd.libertyRelease
+            packaging 'zip'
+            name 'Open Liberty JavaEE8 Package'
+            description 'Open Liberty JavaEE8 Package'
+            url 'https://openliberty.io/'
+            licenses {
+                license {
+                    name 'Eclipse Public License v1.0'
+                    url 'http://www.eclipse.org/legal/epl-v10.html'
+                    distribution 'repo'
+                }
+            }
+            scm {
+                connection 'scm:git:git@github.com:OpenLiberty/open-liberty.git'
+                developerConnection 'scm:git:git@github.com:OpenLiberty/open-liberty.git'
+                url 'git@github.com:OpenLiberty/open-liberty.git'
+                tag 'HEAD'
+            }
+            developers {
+                developer {
+                    id 'cbridgha'
+                    name 'Chuck Bridgham'
+                    email 'cbridgha@us.ibm.com'
+                }
+            }
+        }
+    }.writeTo("${mavenDir}/openliberty-javaee8-${bnd.libertyRelease}.pom")
+}
 
-    task zipTestReport(type: Zip) {
-        baseName 'openliberty_test_report'
-        from cnf.file('generated/testReports/allUnitTests')
-        destinationDir cnf.file('generated/testReports')
-        rootProject.userProps.setProperty('gradle.test.report.zip', archivePath.toString())
+
+task zipOpenLibertyMaven(type: Zip) {
+    dependsOn createOLRuntimePoms
+    archiveName "openliberty-runtimes-maven-${releaseVersion}.zip"
+    from mavenDir
+    from distsDir
+    include '*.zip'
+    include '*.pom'
+    exclude 'openliberty-all*.zip'
+    destinationDir project.file('build/temp/mavenArtifact')
+}
+if (isRelease) {
+    publish.dependsOn zipOpenLibertyMaven
+}
+
+task zipTestReport(type: Zip) {
+    baseName 'openliberty_test_report'
+    from cnf.file('generated/testReports/allUnitTests')
+    destinationDir cnf.file('generated/testReports')
+    rootProject.userProps.setProperty('gradle.test.report.zip', archivePath.toString())
+    rootProject.storeProps()
+}
+
+
+
+task createJSONForPublicArtifacts {
+    enabled isAutomatedBuild
+    dependsOn zipTestReport
+
+    doLast {
+        println "running createJSONForPublicArtifacts"
+        delete "${buildDir}/info.json"
+        File json = new File("${buildDir}/info.json")
+        json.createNewFile()
+
+        String testsPassed = "0"
+        if (rootProject.userProps.getProperty("tests.total.successful") != null) {
+            testsPassed = rootProject.userProps.getProperty("tests.total.successful")
+	    println "testsPassed is ${testsPassed}"
+        }
+        String testsTotal = "0"
+        if ((rootProject.userProps.getProperty("tests.total.successful") != null) &&
+                (rootProject.userProps.getProperty("tests.total.failed") != null)) {
+            def sum = Integer.valueOf(rootProject.userProps.getProperty("tests.total.successful")) + Integer.valueOf(rootProject.userProps.getProperty("tests.total.failed"))
+            testsTotal = sum.toString()
+	    println "testsTotal is ${testsTotal}"
+        }
+
+        String junitPath = rootProject.userProps.getProperty("junit.report.zip")
+        String testReportPath = rootProject.userProps.getProperty("gradle.test.report.zip");
+        String logPath = rootProject.userProps.getProperty("published.gradle.log")
+        String driverLocation = rootProject.userProps.getProperty("zipopenliberty.archivename")
+        println "junitPath is ${junitPath}"
+        println "testReportPath is ${testReportPath}"
+        println "logPath is ${logPath}"
+        println "driverLocation is ${driverLocation}"
+
+        if (junitPath == null) {
+            raise InvalidUserDataException("Could not find property named 'junit.report.zip'")
+        }
+
+        if (isPersonal && (testReportPath == null)) {
+            raise InvalidUserDataException("Could not find property named 'gradle.test.report.zip'")
+        }
+
+        if (logPath == null) {
+            raise InvalidUserDataException("Could not find property named 'published.gradle.log'")
+        }
+
+        if (driverLocation == null) {
+            raise InvalidUserDataException("Could not find property named 'zipopenliberty.archivename'")
+        }
+
+        String testResultName = null
+        if (isPersonal) {
+            testResultName = new File(testReportPath).getName()
+        } else {
+            testResultName = new File(junitPath).getName()
+        }
+	    println "testResultName is ${testResultName}"
+        String logName = new File(logPath).getName()
+        String driverLocationName = new File(driverLocation).getName()
+
+        def object = [test_passed: "${testsPassed}",
+                      total_tests: "${testsTotal}",
+                      tests_log: "${testResultName}",
+                      build_log: "${logName}"]
+
+        if (isPersonal || isRelease || isContinuousBuild) {
+            object.driver_location = "${driverLocationName}"
+            object.version = "${project.version}"
+        }
+
+        json.text = JsonOutput.prettyPrint(JsonOutput.toJson(object))
+
+        rootProject.userProps.setProperty('published.json', json.toString())
+        println "json output is:"
+        println json.toString()
+
         rootProject.storeProps()
     }
+}
 
-    task createJSONForPublicArtifacts {
-        enabled isAutomatedBuild
-        dependsOn zipTestReport
+task gatherTestResults {
+    dependsOn zipTestReport,createJSONForPublicArtifacts
+}
+
+if (isBuildOsNativePackages){
+    task copyOpenLiberty(type: Sync) {
+       dependsOn zipOpenLiberty
+
+       mkdir("packaging/tempPackagingDir")
+
+       from zipOpenLiberty
+       into 'packaging/tempPackagingDir'
+    }
+
+    task updateSpecTemplate(type: Copy) {
+        from 'packaging'
+        include 'openliberty.spec.template'
+        into 'packaging/rpmbuild/SPECS'
+        filter { line -> line.replaceAll('@SPEC_VERSION@', bnd('libertyServiceVersion', 'Unknown')) }
+        rename { it.replace(".template", "") }
+    }
+
+    task updateChangelogTemplate(type: Copy) {
+        from 'packaging'
+        include 'changelog.template'
+        into 'packaging/debuild/openliberty/debian'
+        filter { line -> line.replaceAll('@CHANGELOG_VERSION@', bnd('libertyServiceVersion', 'Unknown')) }
+        rename { it.replace(".template", "") }
+    }
+
+    task updateBuildPackageScriptTemplate(type: Copy) {
+        from 'packaging'
+        include 'buildOsNativePackages.sh.template'
+        into 'packaging'
+        filter { line -> line.replaceAll('@DRIVER_VERSION@', bnd('libertyServiceVersion', 'Unknown')) }
+        rename { it.replace(".template", "") }
+    }
+
+    task updateRulesTemplate(type: Copy) {
+        from 'packaging'
+        include 'rules.template'
+        into 'packaging/debuild/openliberty/debian'
+        filter { line -> line.replaceAll('@VERSION@', bnd('libertyServiceVersion', 'Unknown')) }
+        rename { it.replace(".template", "") }
+    }
+
+    task buildOsNativePackages(type:Exec) {
+        dependsOn copyOpenLiberty
+        dependsOn updateChangelogTemplate
+        dependsOn updateSpecTemplate
+        dependsOn updateBuildPackageScriptTemplate
+        dependsOn updateRulesTemplate
+
+        workingDir 'packaging'
+        mkdir("packaging/tempPackagingDir/tempTar")
+        
+        def rpms = file("./packaging/rpmbuild/RPMS/noarch/openliberty-" + bnd('libertyServiceVersion') + "-1.noarch.rpm")
+        def debs = file("./packaging/debuild/openliberty_" + bnd('libertyServiceVersion') + "-1ubuntu1_all.deb")
+        
+        inputs.dir('packaging/tempPackagingDir')
+        outputs.file(rpms)
+        outputs.file(debs)
+
+        errorOutput = new ByteArrayOutputStream()
+
+        commandLine 'sh', './buildOsNativePackages.sh'
+
+        ignoreExitValue true
 
         doLast {
-            println "running createJSONForPublicArtifacts"
-            delete "${buildDir}/info.json"
-            File json = new File("${buildDir}/info.json")
-            json.createNewFile()
-
-            String testsPassed = "0"
-            if (rootProject.userProps.getProperty("tests.total.successful") != null) {
-                testsPassed = rootProject.userProps.getProperty("tests.total.successful")
-                println "testsPassed is ${testsPassed}"
+            file('packaging/tempPackagingDir').deleteDir()
+            file('packaging/rpmbuild/SPECS/openliberty.spec').delete()
+            file('packaging/debuild/openliberty/debian/changelog').delete()
+            file('packaging/buildOsNativePackages.sh').delete()
+            file('packaging/debuild/openliberty/debian/rules').delete()
+            if (execResult.getExitValue() != 0) {
+                throw new GradleException("Script buildOsNativePackages.sh failed to run rpmbuild and debuild: " + errorOutput.toString())
             }
-            String testsTotal = "0"
-            if ((rootProject.userProps.getProperty("tests.total.successful") != null) &&
-                    (rootProject.userProps.getProperty("tests.total.failed") != null)) {
-                def sum = Integer.valueOf(rootProject.userProps.getProperty("tests.total.successful")) + Integer.valueOf(rootProject.userProps.getProperty("tests.total.failed"))
-                testsTotal = sum.toString()
-                println "testsTotal is ${testsTotal}"
-            }
-
-            String junitPath = rootProject.userProps.getProperty("junit.report.zip")
-            String testReportPath = rootProject.userProps.getProperty("gradle.test.report.zip");
-            String logPath = rootProject.userProps.getProperty("published.gradle.log")
-            String driverLocation = rootProject.userProps.getProperty("zipopenliberty.archivename")
-            println "junitPath is ${junitPath}"
-            println "testReportPath is ${testReportPath}"
-            println "logPath is ${logPath}"
-            println "driverLocation is ${driverLocation}"
-
-            if (junitPath == null) {
-                raise InvalidUserDataException("Could not find property named 'junit.report.zip'")
-            }
-
-            if (isPersonal && (testReportPath == null)) {
-                raise InvalidUserDataException("Could not find property named 'gradle.test.report.zip'")
-            }
-
-            if (logPath == null) {
-                raise InvalidUserDataException("Could not find property named 'published.gradle.log'")
-            }
-
-            if (driverLocation == null) {
-                raise InvalidUserDataException("Could not find property named 'zipopenliberty.archivename'")
-            }
-
-            String testResultName = null
-            if (isPersonal) {
-                testResultName = new File(testReportPath).getName()
-            } else {
-                testResultName = new File(junitPath).getName()
-            }
-            println "testResultName is ${testResultName}"
-            String logName = new File(logPath).getName()
-            String driverLocationName = new File(driverLocation).getName()
-
-            def object = [test_passed: "${testsPassed}",
-                          total_tests: "${testsTotal}",
-                          tests_log  : "${testResultName}",
-                          build_log  : "${logName}"]
-
-            if (isPersonal || isRelease || isContinuousBuild) {
-                object.driver_location = "${driverLocationName}"
-                object.version = "${project.version}"
-            }
-
-            json.text = JsonOutput.prettyPrint(JsonOutput.toJson(object))
-
-            rootProject.userProps.setProperty('published.json', json.toString())
-            println "json output is:"
-            println json.toString()
-
-            rootProject.storeProps()
         }
+        
     }
-
-    task gatherTestResults {
-        dependsOn zipTestReport, createJSONForPublicArtifacts
-    }
-
-    if (isBuildOsNativePackages) {
-        task copyOpenLiberty(type: Sync) {
-            dependsOn zipOpenLiberty
-
-            mkdir("packaging/tempPackagingDir")
-
-            from zipOpenLiberty
-            into 'packaging/tempPackagingDir'
-        }
-
-        task updateSpecTemplate(type: Copy) {
-            from 'packaging'
-            include 'openliberty.spec.template'
-            into 'packaging/rpmbuild/SPECS'
-            filter { line -> line.replaceAll('@SPEC_VERSION@', bnd('libertyServiceVersion', 'Unknown')) }
-            rename { it.replace(".template", "") }
-        }
-
-        task updateChangelogTemplate(type: Copy) {
-            from 'packaging'
-            include 'changelog.template'
-            into 'packaging/debuild/openliberty/debian'
-            filter { line -> line.replaceAll('@CHANGELOG_VERSION@', bnd('libertyServiceVersion', 'Unknown')) }
-            rename { it.replace(".template", "") }
-        }
-
-        task updateBuildPackageScriptTemplate(type: Copy) {
-            from 'packaging'
-            include 'buildOsNativePackages.sh.template'
-            into 'packaging'
-            filter { line -> line.replaceAll('@DRIVER_VERSION@', bnd('libertyServiceVersion', 'Unknown')) }
-            rename { it.replace(".template", "") }
-        }
-
-        task updateRulesTemplate(type: Copy) {
-            from 'packaging'
-            include 'rules.template'
-            into 'packaging/debuild/openliberty/debian'
-            filter { line -> line.replaceAll('@VERSION@', bnd('libertyServiceVersion', 'Unknown')) }
-            rename { it.replace(".template", "") }
-        }
-
-        task buildOsNativePackages(type: Exec) {
-            dependsOn copyOpenLiberty
-            dependsOn updateChangelogTemplate
-            dependsOn updateSpecTemplate
-            dependsOn updateBuildPackageScriptTemplate
-            dependsOn updateRulesTemplate
-
-            workingDir 'packaging'
-            mkdir("packaging/tempPackagingDir/tempTar")
-
-            def rpms = file("./packaging/rpmbuild/RPMS/noarch/openliberty-" + bnd('libertyServiceVersion') + "-1.noarch.rpm")
-            def debs = file("./packaging/debuild/openliberty_" + bnd('libertyServiceVersion') + "-1ubuntu1_all.deb")
-
-            inputs.dir('packaging/tempPackagingDir')
-            outputs.file(rpms)
-            outputs.file(debs)
-
-            errorOutput = new ByteArrayOutputStream()
-
-            commandLine 'sh', './buildOsNativePackages.sh'
-
-            ignoreExitValue true
-
-            doLast {
-                file('packaging/tempPackagingDir').deleteDir()
-                file('packaging/rpmbuild/SPECS/openliberty.spec').delete()
-                file('packaging/debuild/openliberty/debian/changelog').delete()
-                file('packaging/buildOsNativePackages.sh').delete()
-                file('packaging/debuild/openliberty/debian/rules').delete()
-                if (execResult.getExitValue() != 0) {
-                    throw new GradleException("Script buildOsNativePackages.sh failed to run rpmbuild and debuild: " + errorOutput.toString())
-                }
-            }
-
-        }
-        publish.dependsOn buildOsNativePackages
-    }
+    publish.dependsOn buildOsNativePackages
 }
