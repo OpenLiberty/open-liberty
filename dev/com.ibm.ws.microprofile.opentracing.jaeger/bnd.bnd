@@ -48,5 +48,5 @@ src: src, resources
   com.ibm.ws.microprofile.opentracing.jaeger.adapter;version=latest, \
   com.ibm.ws.microprofile.opentracing.jaeger.adapter.impl;version=latest, \
   com.ibm.ws.crypto.passwordutil;version=latest, \
-  com.ibm.ws.kernel.boot.core
+  com.ibm.ws.kernel.boot.core;version=latest
   
