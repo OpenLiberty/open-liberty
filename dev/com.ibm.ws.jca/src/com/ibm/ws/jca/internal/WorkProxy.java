@@ -29,6 +29,7 @@ import javax.resource.spi.work.ExecutionContext;
 import javax.resource.spi.work.HintsContext;
 import javax.resource.spi.work.TransactionContext;
 import javax.resource.spi.work.Work;
+import javax.resource.spi.work.WorkContext;
 import javax.resource.spi.work.WorkCompletedException;
 import javax.resource.spi.work.WorkContextErrorCodes;
 import javax.resource.spi.work.WorkContextLifecycleListener;
@@ -49,7 +50,7 @@ import com.ibm.wsspi.threadcontext.ThreadContext;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 import com.ibm.wsspi.threadcontext.WSContextService;
 import com.ibm.wsspi.threadcontext.jca.JCAContextProvider;
-import com.ibm.wsspi.threading.WorkContext;
+
 
 /**
  * A wrapper for Work.
