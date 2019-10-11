@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.audit.event;
+package com.ibm.ws.security.audit.utils;
 
 import static org.junit.Assert.assertEquals;
 
@@ -74,7 +74,7 @@ public class ParameterUtilsTest {
     @Test
     public void convertWithNull() throws Exception {
         StringBuffer output = ParameterUtils.format(null);
-        assertEquals("The output does not match.", "", output.toString());
+        assertEquals("The output does not match.", "null", output.toString());
     }
 
     @Test
@@ -82,7 +82,33 @@ public class ParameterUtilsTest {
         String[] nestedparam = { "nesteditem1", null, "nesteditem3" };
         Object[] param = { "item1", nestedparam };
         StringBuffer output = ParameterUtils.format(param);
-        assertEquals("The output does not match.", "[item1, [nesteditem1, nesteditem3]]", output.toString());
+        assertEquals("The output does not match.", "[item1, [nesteditem1, null, nesteditem3]]", output.toString());
+    }
+
+    @Test
+    public void convertWithNpeClass() throws Exception {
+        Object npeClass = new NPEClass();
+        String output = ParameterUtils.format(npeClass).toString();
+        assertEquals("The output does not match.", "com.ibm.ws.security.audit.utils.ParameterUtilsTest$NPEClass@" + System.identityHashCode(npeClass), output);
+    }
+
+    @Test
+    public void convertWithNpeClassArray() throws Exception {
+        Object npeClass = new NPEClass();
+        Object[] param = { 1, npeClass, "StringObject" };
+        String output = ParameterUtils.format(param).toString();
+        assertEquals("The output does not match.", "[1, com.ibm.ws.security.audit.utils.ParameterUtilsTest$NPEClass@" + System.identityHashCode(npeClass) + ", StringObject]",
+                     output);
+    }
+
+    @Test
+    public void convertWithNestedNpeClassArray() throws Exception {
+        Object npeClass = new NPEClass();
+        Object[] nestedparam = { npeClass, "StringObject" };
+        Object[] param = { 1, nestedparam };
+        String output = ParameterUtils.format(param).toString();
+        assertEquals("The output does not match.",
+                     "[1, [com.ibm.ws.security.audit.utils.ParameterUtilsTest$NPEClass@" + System.identityHashCode(npeClass) + ", StringObject]]", output);
     }
 
     public class TestObject {
@@ -95,6 +121,14 @@ public class ParameterUtilsTest {
         @Override
         public String toString() {
             return "TestObject-" + _value;
+        }
+    }
+
+    // this class throws a NPE when hashCode() method is invoked.
+    public class NPEClass {
+        @Override
+        public int hashCode() {
+            throw new NullPointerException();
         }
     }
 }

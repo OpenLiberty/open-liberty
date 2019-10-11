@@ -21,6 +21,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.audit.AuditConstants;
 import com.ibm.websphere.security.audit.AuditEvent;
 import com.ibm.ws.security.audit.utils.AuditUtils;
+import com.ibm.ws.security.audit.utils.ParameterUtils;
 
 /**
  * Class with default values for jmx notification events
@@ -52,9 +53,7 @@ public class JMXMBeanAttributeEvent extends AuditEvent {
                 } else if (action.equals("setAttributes") || action.equals("getAttributes")) {
                     StringBuffer buf = new StringBuffer();
                     for (Object attr : (AttributeList) attrs) {
-                        if (((Attribute) attr).getValue() != null) {
-                            buf.append("[").append(((Attribute) attr).getName()).append(" = ").append(ParameterUtils.format(((Attribute) attr).getValue())).append("]");
-                        }
+                        buf.append("[").append(((Attribute) attr).getName()).append(" = ").append(ParameterUtils.format(((Attribute) attr).getValue())).append("]");
                     }
                     set(AuditEvent.TARGET_JMX_MBEAN_ATTRIBUTE_NAMES, buf.toString());
                 }
