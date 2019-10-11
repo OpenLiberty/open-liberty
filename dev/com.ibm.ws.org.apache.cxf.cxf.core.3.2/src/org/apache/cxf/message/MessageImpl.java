@@ -20,7 +20,6 @@
 package org.apache.cxf.message;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -44,8 +43,6 @@ public class MessageImpl extends StringMapImpl implements Message {
     private Object[] contents = new Object[20];
     private int index;
 
-    private Map<String, Object> contextCache;
-
     // Liberty change - used to avoid resize
     public MessageImpl(int isize, float factor) {
         super(isize, factor);
@@ -64,7 +61,6 @@ public class MessageImpl extends StringMapImpl implements Message {
             interceptorChain = impl.interceptorChain;
             contents = impl.contents;
             index = impl.index;
-            contextCache = impl.contextCache;
         } else {
             throw new RuntimeException("Not a MessageImpl! " + m.getClass());
         }
@@ -181,79 +177,125 @@ public class MessageImpl extends StringMapImpl implements Message {
         this.interceptorChain = ic;
     }
 
-    @Override
-    public Object put(String key, Object value) {
-        if (contextCache != null) {
-            contextCache.put(key, value);
-        }
-        return super.put(key, value);
-    }
-
+    //Liberty code change start
+    // Since these maps can have null value, use the getOrDefault API
+    // to prevent calling get twice under the covers
+    private static final Object NOT_FOUND = new Object();
+    
     @Override
     public Object getContextualProperty(String key) {
-        if (contextCache == null) {
-            calcContextCache();
+        Object o = getOrDefault(key, NOT_FOUND);
+        if (o != NOT_FOUND) {
+            return o;
         }
-        return contextCache.get(key);
+        return getFromExchange(key);
     }
 
-    @Override
-    public Set<String> getContextualPropertyKeys() {
-        return contextCache.keySet();
-    }
+    private Object getFromExchange(String key) {
+        Exchange ex = getExchange();
+        if (ex != null) {
+            Object o = ex.getOrDefault(key, NOT_FOUND);
+            if (o != NOT_FOUND) {
+                return o;
+            }
+            
+            Map<String, Object> p;
+            Endpoint ep = ex.getEndpoint();
+            if (ep != null) {
+                o = ep.getOrDefault(key, NOT_FOUND);
+                if (o != NOT_FOUND) {
+                    return o;
+                }
 
-    private void calcContextCache() {
-        Map<String, Object> o = new HashMap<String, Object>() {
-            private static final long serialVersionUID = 7067290677790419348L;
-
-            @Override
-            public void putAll(Map<? extends String, ? extends Object> m) {
-                if (m != null && !m.isEmpty()) {
-                    super.putAll(m);
+                EndpointInfo ei = ep.getEndpointInfo();
+                if (ei != null) {
+                    if ((p = ei.getProperties()) != null && (o = p.getOrDefault(key, NOT_FOUND)) != NOT_FOUND) {
+                        return o;
+                    }
+                    if ((p = ei.getBinding().getProperties()) != null && (o = p.getOrDefault(key, NOT_FOUND)) != NOT_FOUND) {
+                        return o;
+                    }
                 }
             }
-        };
+            Service sv = ex.getService();
+            if (sv != null && (o = sv.getOrDefault(key, NOT_FOUND)) != NOT_FOUND) {
+                return o;
+            }
+            Bus b = ex.getBus();
+            if (b != null && (p = b.getProperties()) != null) {
+                if ((o = p.getOrDefault(key, NOT_FOUND)) != NOT_FOUND) {
+                    return o;
+                }
+            }
+        }
+        return null;
+    }
+
+    private Set<String> getExchangeKeySet() {
+        HashSet<String> keys = new HashSet<>();
         Exchange ex = getExchange();
         if (ex != null) {
             Bus b = ex.getBus();
-            if (b != null) {
-                o.putAll(b.getProperties());
+            Map<String, Object> p;
+            if (b != null && (p = b.getProperties()) != null) {
+                if (!p.isEmpty()) {
+                    keys.addAll(p.keySet());
+                }
             }
             Service sv = ex.getService();
-            if (sv != null) {
-                o.putAll(sv);
+            if (sv != null && !sv.isEmpty()) {
+                keys.addAll(sv.keySet());
             }
             Endpoint ep = ex.getEndpoint();
             if (ep != null) {
                 EndpointInfo ei = ep.getEndpointInfo();
                 if (ei != null) {
-                    o.putAll(ep.getEndpointInfo().getBinding().getProperties());
-                    o.putAll(ep.getEndpointInfo().getProperties());
+                    if ((p = ei.getBinding().getProperties()) != null) {
+                        if (!p.isEmpty()) {
+                            keys.addAll(p.keySet());
+                        }
+                    }
+                    if ((p = ei.getProperties()) != null) {
+                        if (!p.isEmpty()) {
+                            keys.addAll(p.keySet());
+                        }
+                    }
                 }
-                o.putAll(ep);
+                
+                if (!ep.isEmpty()) {
+                    keys.addAll(ep.keySet());
+                }
+            }
+            if (!ex.isEmpty()) {
+                keys.addAll(ex.keySet());
             }
         }
-        o.putAll(ex);
-        o.putAll(this);
-        contextCache = o;
+        return keys;
     }
 
+    @Override
+    public Set<String> getContextualPropertyKeys() {
+        Set<String> s = getExchangeKeySet();
+        s.addAll(keySet());
+        return s;
+    }
+    //Liberty code change end
+    
     public static void copyContent(Message m1, Message m2) {
         for (Class<?> c : m1.getContentFormats()) {
             m2.setContent(c, m1.getContent(c));
         }
     }
 
+    //Liberty code change start
     @Override
     public void resetContextCache() {
-        if (contextCache != null) {
-            contextCache = null;
-        }
     }
 
     void setContextualProperty(String key, Object v) {
-        if (contextCache != null && !containsKey(key)) {
-            contextCache.put(key, v);
+        if (!containsKey(key)) {
+            put(key, v);
         }
     }
+    //Liberty code change end
 }
