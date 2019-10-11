@@ -202,8 +202,10 @@ public class JaegerTracerFactory {
                 if ((ite.getTargetException() != null) && (ite.getTargetException() instanceof NoClassDefFoundError)) {
                     if (!isErrorPrinted) {
                         // Print error once only
-                        String[] lines = ite.getTargetException().toString().split("\n", 2);
-                        Tr.error(tc, "JAEGER_CLASS_NOT_FOUND", lines[0]);
+                        // Do not print the error since we don't know 
+                        // whether the user want to configure Jaeger or another tracer from a user feature
+                        // String[] lines = ite.getTargetException().toString().split("\n", 2);
+                        // Tr.error(tc, "JAEGER_CLASS_NOT_FOUND", lines[0]);
                         isErrorPrinted = true;
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Tr.debug(tc, "Jaeger library was not found or exception occurred during loading.  Exception:"
