@@ -1,0 +1,53 @@
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: WAS Java Batch Job JMS 
+Bundle-SymbolicName: com.ibm.ws.jbatch.jms
+Bundle-Description: WebSphere Job JMS Dispatcher, JMS Executor and Job Event Publisher for Java Batch (jbatch) ; version=${bVersion}
+
+Import-Package: *
+
+WS-TraceGroup: wsbatch
+ 
+Import-Package: \
+  com.ibm.ws.kernel.boot.security;resolution:=optional, \
+  *
+ 
+Private-Package: \
+ com.ibm.ws.jbatch.jms.resources.*,\
+ com.ibm.ws.jbatch.jms.internal.*
+  
+Include-Resource: \
+  OSGI-INF=resources/OSGI-INF
+
+-dsannotations:\
+ com.ibm.ws.jbatch.jms.internal.events.impl.BatchEventsPublisherImpl, \
+ com.ibm.ws.jbatch.jms.internal.listener.impl.BatchJmsExecutor, \
+ com.ibm.ws.jbatch.jms.internal.dispatcher.BatchJmsDispatcher
+
+-buildpath: \
+	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
+	com.ibm.websphere.appserver.spi.logging;version=latest,\
+	com.ibm.websphere.javaee.batch.1.0;version=latest,\
+	com.ibm.websphere.javaee.jsonp.1.0;version=latest,\
+	com.ibm.websphere.javaee.jms.2.0;version=latest,\
+	com.ibm.websphere.javaee.transaction.1.2;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.jbatch.container;version=latest,\
+	com.ibm.ws.app.manager.lifecycle;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.ejbcontainer.mdb;version=latest,\
+	com.ibm.tx.ltc;version=latest,\
+	com.ibm.tx.jta;version=latest,\
+	com.ibm.ws.tx.embeddable;version=latest,\
+	com.ibm.ws.jbatch.rest;version=latest,\
+	com.ibm.ws.context;version=latest,\
+	com.ibm.ws.kernel.feature;version=latest,\
+	com.ibm.ws.resource;version=latest,\
+	com.ibm.websphere.javaee.connector.1.7;version=latest,\
+	com.ibm.ws.jca;version=latest,\
+        com.ibm.ws.kernel.boot.core;version=latest
+
+instrument.classesExcludes: com/ibm/ws/jbatch/jms/internal/resources/BatchJmsMessages*.class
