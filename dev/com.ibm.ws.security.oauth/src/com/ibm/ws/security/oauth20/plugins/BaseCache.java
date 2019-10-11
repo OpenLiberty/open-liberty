@@ -43,7 +43,7 @@ import com.ibm.ws.security.oauth20.web.EndpointUtils;
  */
 public class BaseCache implements OAuth20EnhancedTokenCache {
 
-    static Thread _cleanupThread;
+    Thread _cleanupThread;
     static Object _lock = new Object();
     Map<String, CacheEntry> _cache;
     static Map<String, List<CacheEntry>> _indexOnUsername;
@@ -59,7 +59,7 @@ public class BaseCache implements OAuth20EnhancedTokenCache {
     public BaseCache(int tokenStoreSize) {
         this.tokenStoreSize = tokenStoreSize;
     }
-    
+
     public BaseCache(int tokenStoreSize, String accessTokenEncoding, int accessTokenLength) {
         this.tokenStoreSize = tokenStoreSize;
         this.accessTokenEncoding = accessTokenEncoding;
@@ -340,7 +340,7 @@ public class BaseCache implements OAuth20EnhancedTokenCache {
         }
         return result;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void addByHash(String hash, OAuth20Token entry, int lifetime) {
@@ -361,13 +361,13 @@ public class BaseCache implements OAuth20EnhancedTokenCache {
 
     }
 
- /** {@inheritDoc} */
+    /** {@inheritDoc} */
     @Override
     public Collection<OAuth20Token> getMatchingTokens(String username, String client, String tokenType) {
 
         Collection<OAuth20Token> tokens = getUserAndClientTokens(username, client);
         if (tokens != null && !tokens.isEmpty()) {
-            return getTokensMatchingType(tokens, tokenType);          
+            return getTokensMatchingType(tokens, tokenType);
         }
 
         return Collections.emptyList();
@@ -393,7 +393,7 @@ public class BaseCache implements OAuth20EnhancedTokenCache {
     /**
      * @param tokens
      * @param grantType
-     * @return 
+     * @return
      */
     private static Collection<OAuth20Token> getTokensMatchingType(Collection<OAuth20Token> tokens, String stateId) {
         Iterator<OAuth20Token> it = tokens.iterator();
