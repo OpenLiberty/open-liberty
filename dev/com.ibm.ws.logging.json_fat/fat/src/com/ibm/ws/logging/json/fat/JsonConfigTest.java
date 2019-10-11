@@ -10,11 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.logging.json.fat;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -101,7 +100,6 @@ public class JsonConfigTest {
         checkConsoleLogUpdate(false, consoleLogFile, "INFO", ALL_SOURCE_LIST, "");
     }
 
-//
     //Test 6 consoleLL="INFO" consoleFormat=basic messageFormat=json
     @Test
     public void testBasicConsoleJsonMessage() throws Exception {
@@ -313,14 +311,13 @@ public class JsonConfigTest {
     }
 
     private void checkLine(String message, RemoteFile remoteFile) throws Exception {
-        List<String> lines = server.findStringsInLogsUsingMark(message, remoteFile);
-        assertTrue(lines.size() > 0);
+        String line = server.waitForStringInLog(message, remoteFile);
+        assertNotNull("Cannot find" + message + "from messages.log", line);
     }
 
     private void checkLine(String message) throws Exception {
-        List<String> lines = server.findStringsInLogsUsingMark(message, server.getDefaultLogFile());
-        assertTrue(lines.size() > 0);
-        System.out.println(lines.get(0));
+        String line = server.waitForStringInLog(message, server.getDefaultLogFile());
+        assertNotNull("Cannot find" + message + "from JsonConfigTest.log", line);
     }
 
     private void runApplication(RemoteFile consoleLogFile) throws Exception {
