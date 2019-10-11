@@ -109,4 +109,40 @@ public interface ConnectionManagerMBean {
      *
      */
     public String showPoolContents();
+
+    /**
+     * Displays the JndiName of the connection pool associated with
+     * this Connection Manager as a human readable string.
+     *
+     * @return A non-localized string displaying the JndiName of the connection pool
+     *
+     */
+    public String getJndiName();
+
+    /**
+     * Displays the maximum size of the connection pool associated with
+     * this Connection Manager as a human readable string.
+     *
+     * @return A non-localized string displaying the maximum size of the connection pool
+     *
+     */
+    public long getMaxSize();
+
+    /**
+     * Displays the size of the connection pool associated with
+     * this Connection Manager as a human readable string.
+     *
+     * @return A non-localized string displaying the size of the connection pool
+     *
+     */
+    public long getSize();
+
+    /**
+     * Displays the free space of the connection pool associated with
+     * this Connection Manager as a human readable string.
+     *
+     * @return A non-localized string displaying the free space of the connection pool
+     *
+     */
+    public long getAvailable();
 }
