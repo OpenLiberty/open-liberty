@@ -1,0 +1,72 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.openapi/resources/com/ibm/ws/openapi31/resources/OpenAPIMessages.nlsprops
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR Open API
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKO1700 - CWWKO1749
+
+OSGI_SERVICE_ERROR=CWWKO1700E: The {0} OSGi service is not available.
+OSGI_SERVICE_ERROR.explanation=The specified service is not available. This is an internal server error.   
+OSGI_SERVICE_ERROR.useraction=Restart the server with the [--clean] option.
+
+OPENAPI_IS_NULL=CWWKO1701W: The provider {0} did not return any Open API document.
+OPENAPI_IS_NULL.explanation=An Open API object created for the OASProvider was null, probably due to a valid error.
+OPENAPI_IS_NULL.useraction=Provide a valid document. Inspect the logs to discover the error.
+
+CUSTOMIZATION_IS_NULL=CWWKO1702W: The OpenAPI object that the server created by using the customization value {0} is null.
+CUSTOMIZATION_IS_NULL.explanation=An OpenAPI object that was created by using the customization value is null.
+CUSTOMIZATION_IS_NULL.useraction=Inspect the logs to find the error. Provide a valid OpenAPI document for the customization attribute.
+
+PUBLIC_URL_INVALID=CWWKO1703W: The public URL cannot be set to {0}. This URL is reserved for use by the application server.
+PUBLIC_URL_INVALID.explanation=The public URL cannot be set to a value that has been reserved for use by the application server.
+PUBLIC_URL_INVALID.useraction=Specify a valid value for the publicURL attribute in the server configuration.
+
+MULTIPLE_DEFAULT_OPENAPI_FILES=CWWKO1704W: Multiple Open API customization files were found: {0}. {1} is being monitored for changes.
+MULTIPLE_DEFAULT_OPENAPI_FILES.explanation=Multiple Open API customization files are in the ${server.config.dir}/openapi-3.1 directory.
+MULTIPLE_DEFAULT_OPENAPI_FILES.useraction=Ensure only one default Open API customization file in the ${server.config.dir}/openapi-3.1 directory.
+
+CSS_NOT_PROCESSED=CWWKO1705W: The server cannot read the specified CSS document {0} due to {1} : {2}.
+CSS_NOT_PROCESSED.explanation=The CSS document cannot be processed due to a valid error.
+CSS_NOT_PROCESSED.useraction=Provide a valid CSS document.
+
+OPENAPI_DOCUMENT_VALIDATION_ERROR=CWWKO1706E: Validation of the OpenAPI document produced the following error(s):
+OPENAPI_DOCUMENT_VALIDATION_ERROR.explanation=The OpenAPI document is invalid.
+OPENAPI_DOCUMENT_VALIDATION_ERROR.useraction=Provide a valid OpenAPI document that resolves the reported error.
+
+OPENAPI_DOCUMENT_VALIDATION_WARNING=CWWKO1707W: Validation of the OpenAPI document produced the following warning(s):
+OPENAPI_DOCUMENT_VALIDATION_WARNING.explanation=The OpenAPI document contains data that is not in the recommended format.
+OPENAPI_DOCUMENT_VALIDATION_WARNING.useraction=Provide a valid OpenAPI document that resolves the reported warning.
+
+CUSTOM_CSS_NOT_PROCESSED=CWWKO1708W: The custom CSS file {0} that was specified for the OpenAPI UI was not processed. The server will restore the default values for the OpenAPI UI. Reason={1} : {2}.
+CUSTOM_CSS_NOT_PROCESSED.explanation=The server cannot process the custom CSS file. The server will restore the default values for the OpenAPI UI.
+CUSTOM_CSS_NOT_PROCESSED.useraction=Provide a valid custom CSS file for the OpenAPI UI along with all the dependencies.
+
+CSS_SECTION_NOT_FOUND=CWWKO1709W: The server read the specified CSS document {0}, but was unable to find <.swagger-ui .headerbar >.
+CSS_SECTION_NOT_FOUND.explanation=The CSS document that is specified does not contain <.swagger-ui .headerbar >, or it is not formatted to meet the constraints that are required by the server.
+CSS_SECTION_NOT_FOUND.useraction=Provide a valid CSS file that contains <.swagger-ui .headerbar > in the required format.
+
+UNSUPPORTED_CSS_VALUE=CWWKO1710W: The value that was specified for the {0} property is not supported. The value must be {1}.
+UNSUPPORTED_CSS_VALUE.explanation=The value of the specified property is either invalid or is not supported by the OpenAPI framework.
+UNSUPPORTED_CSS_VALUE.useraction=Provide a valid value for the property within the custom CSS file for the OpenAPI UI. 
+
+INVALID_CSS_BACKGROUND_IMAGE=CWWKO1711W: The background image that was specified at {0} either does not exist or is invalid.
+INVALID_CSS_BACKGROUND_IMAGE.explanation=The background image either does not exist or is invalid.
+INVALID_CSS_BACKGROUND_IMAGE.useraction=Provide a valid image.
+
+OPENAPI_FILE_PARSE_ERROR=CWWKO1712E: Failed to parse the OpenAPI document for application: {0}.
+OPENAPI_FILE_PARSE_ERROR.explanation=Failed to parse OpenAPI document from META-INF folder.
+OPENAPI_FILE_PARSE_ERROR.useraction=Make sure that the file is in correct YAML or JSON format.
