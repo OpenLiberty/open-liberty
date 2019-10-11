@@ -9,24 +9,6 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-repositories {
-  /**
-   * Prefer a configured Artifactory over plugins.gradle.org.
-   * Do not fall back to plugins.gradle.org when there are Artifactory outages.
-   */
-  if (isUsingArtifactory) {
-    maven {
-      credentials {
-        username gradle.userProps.getProperty("artifactory.download.user")
-        password gradle.userProps.getProperty("artifactory.download.token")
-      }
-      url ("https://" + gradle.userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-maven-remote")
-    }
-  } else {
-    mavenCentral()
-  }
-}
-
 /**
  * Configure 'buildfat', 'runfat', 'buildandrun', and 'cleanFat' tasks on FAT projects.
  */
@@ -311,15 +293,13 @@ task zipProjectFVT(type: Zip) {
   into project.name, {from 'build-test.xml'}
 }
 
-if (isAutomatedBuild || rootProject.projectNames.contains(project.name)) {
-  publishing {
-    publications {
-      maven(MavenPublication) {
-        artifactId project.name + '_autoFVT'
-        groupId 'test'
-        version project.version
-        artifact zipProjectFVT
-      }
+publishing {
+  publications {
+    maven(MavenPublication) {
+      artifactId project.name + '_autoFVT'
+      groupId 'test'
+      version project.version
+      artifact zipProjectFVT
     }
   }
 }

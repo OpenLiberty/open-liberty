@@ -192,6 +192,5 @@ gradle.projectsLoaded { gradle ->
     gradle.rootProject.ext.bndPlugin = BndPlugin.class
     gradle.rootProject.ext.bndWorkspace = workspace
     gradle.rootProject.ext.gradleBndProjects = allBndProjects
-    gradle.rootProject.ext.projectNames = projectNames
     gradle.rootProject.ext.parseBoolean = { value -> parseBoolean(value) }
 }
