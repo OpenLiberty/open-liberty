@@ -19,7 +19,7 @@ import org.eclipse.microprofile.graphql.InputField;
 /**
  * This is an implementation class of the interface entity, Widget.
  */
-public class Widget {
+public class WidgetClientObject {
 
     private String name;
     @InputField("qty")
@@ -32,21 +32,21 @@ public class Widget {
     private double weight2 = -1.0;
 
 
-    static Widget fromWidgetInput(Widget input) {
-        return new Widget(input.getName(),
+    static WidgetClientObject fromWidgetInput(WidgetClientObject input) {
+        return new WidgetClientObject(input.getName(),
                           input.getQuantity(),
                           input.getWeight(),
                           input.getQuantity2(),
                           input.getWeight2());
     }
 
-    static Widget fromString(String s) {
+    static WidgetClientObject fromString(String s) {
         if (!s.startsWith("Widget(") || !s.endsWith(")")) {
             throw new IllegalArgumentException();
         }
         s = s.substring("Widget(".length(), s.length()-1);
         String[] fields = s.split(",");
-        Widget w = new Widget();
+        WidgetClientObject w = new WidgetClientObject();
         w.setName(fields[0]);
         w.setQuantity(Integer.parseInt(fields[1]));
         w.setWeight(Double.parseDouble(fields[2]));
@@ -55,9 +55,9 @@ public class Widget {
         return w;
     }
 
-    public Widget() {}
+    public WidgetClientObject() {}
 
-    public Widget(String name, int quantity, double weight, int quantity2, double weight2) {
+    public WidgetClientObject(String name, int quantity, double weight, int quantity2, double weight2) {
         this.name = name;
         this.quantity = quantity;
         this.weight = weight;
@@ -102,7 +102,7 @@ public class Widget {
         return weight2;
     }
 
-    @JsonbProperty("shippingWeight2")
+    //@JsonbProperty("shippingWeight2") // cannot use JsonbProperty here since we're getting "weight2" back
     public void setWeight2(double weight2) {
         this.weight2 = weight2;
     }
