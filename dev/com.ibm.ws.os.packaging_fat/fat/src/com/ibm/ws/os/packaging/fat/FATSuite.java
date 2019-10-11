@@ -18,8 +18,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
                 SimpleTest.class,
-                //InstallUbuntuTest.class,
-                //InstallRhelTest.class
+                InstallUbuntuTest.class,
+                InstallRhelTest.class
 })
 public class FATSuite {
 
