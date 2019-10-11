@@ -340,7 +340,7 @@ public class SelfExtractRun extends SelfExtract {
         Properties props = System.getProperties();
 
         // Setting this tells us the boostrap to ignore any WLP_USER_DIR that happens to be set from the env
-        props.setProperty("wlp.user.dir.ignore.env", "true");
+        props.setProperty("wlp.ignore.user.dir.from.env", "true");
         props.setProperty("user.dir", new File(extractDirectory, "wlp" + File.separator + "usr" + File.separator + "servers" + File.separator + serverName).getAbsolutePath());
         props.setProperty("LOG_DIR",
                           extractDirectory + File.separator + "wlp" + File.separator + "usr" + File.separator + "servers" + File.separator + serverName + File.separator + "logs");

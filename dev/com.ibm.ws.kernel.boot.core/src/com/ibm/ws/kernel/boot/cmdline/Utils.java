@@ -64,7 +64,7 @@ public class Utils {
             File resultDir = null;
 
             // If this property is set we want to ignore the WLP_USER_DIR env var and use the <install>/usr dir
-            if (Boolean.getBoolean(BootstrapConstants.LOC_PROPERTY_INSTANCE_DIR_IGNORE_ENV)) {
+            if (Boolean.getBoolean(BootstrapConstants.LOC_PROPERTY_IGNORE_INSTANCE_DIR_FROM_ENV)) {
                 resultDir = getDefaultInstallBasedUserDir();
             } else {
                 userDirLoc = System.getenv(BootstrapConstants.ENV_WLP_USER_DIR);
@@ -72,7 +72,7 @@ public class Utils {
                     resultDir = new File(userDirLoc);
                 } else {
 
-                    // PI20344: Check if the Java property is set, which is the normal case when
+                    // Check if the Java property is set, which is the normal case when
                     // the server is embedded; i.e. they didn't launch it from the command line.
                     userDirLoc = System.getProperty(BootstrapConstants.ENV_WLP_USER_DIR);
                     if (userDirLoc != null) {

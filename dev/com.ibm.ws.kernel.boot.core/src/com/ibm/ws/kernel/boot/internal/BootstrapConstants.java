@@ -104,9 +104,9 @@ public final class BootstrapConstants {
      * Used (especially in the runnable JAR case at present) to specify that we should ignore WLP_USER_DIR set from the environment, and use
      * something else as user dir. E.g. we might use: "${wlp.install.dir}/usr"
      */
-    public static final String LOC_PROPERTY_INSTANCE_DIR_IGNORE_ENV = "wlp.user.dir.ignore.env";
+    public static final String LOC_PROPERTY_IGNORE_INSTANCE_DIR_FROM_ENV = "wlp.ignore.user.dir.from.env";
 
-    /** Tracks whether the user dir is set to the default "wlp.install.dir/usr", either via {@link LOC_PROPERTY_INSTANCE_DIR_IGNORE_ENV} or by virtue of being unset */
+    /** Tracks whether the user dir is set to the default "wlp.install.dir/usr", either via {@link LOC_PROPERTY_IGNORE_INSTANCE_DIR_FROM_ENV} or by virtue of being unset */
     public static final String LOC_PROPERTY_INSTANCE_DIR_IS_DEFAULT = "wlp.user.dir.isDefault";
 
     public static final String LOC_PROPERTY_SRVCFG_DIR = "server.config.dir";
