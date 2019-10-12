@@ -16,3 +16,7 @@ dependencies {
 	compile 'org.webjars:bootstrap:3.3.1'
 	compile 'org.webjars:webjars-locator:0.33'
 }
+
+bootJar {
+    duplicatesStrategy 'warn'
+}

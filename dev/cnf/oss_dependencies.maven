@@ -1,6 +1,6 @@
 biz.aQute.bnd:biz.aQute.bnd.annotation:4.1.0
 biz.aQute.bnd:biz.aQute.bnd:4.1.0
-cglib:cglib-nodep:3.2.10
+cglib:cglib-nodep:3.3.0
 com.beust:jcommander:1.72
 com.cloudant:cloudant-client:2.16.0
 com.cloudant:cloudant-client:2.8.0
