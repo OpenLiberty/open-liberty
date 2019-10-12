@@ -83,5 +83,5 @@ instrument.disabled: true
 	com.ibm.ws.junit.extensions;version=latest, \
 	org.jmock:jmock-legacy;version=2.5.0, \
 	com.ibm.ws.org.objenesis:objenesis;version=1.0, \
-	cglib:cglib-nodep;version=3.2.10, \
+	cglib:cglib-nodep;version=3.3.0, \
 	com.ibm.ws.kernel.boot;version=latest
