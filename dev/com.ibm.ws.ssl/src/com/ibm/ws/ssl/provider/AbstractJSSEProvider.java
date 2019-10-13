@@ -458,13 +458,11 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "No password provide so do not create a keymanager");
                 }
-                throw new Exception("No password for key in file '" + keyStoreLocation + "'");
             }
         } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "No key store specified and no hardware crypto defined");
             }
-            throw new IllegalArgumentException("No key store specified and no hardware crypto defined");
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.exit(tc, "getWSKeyManager");
