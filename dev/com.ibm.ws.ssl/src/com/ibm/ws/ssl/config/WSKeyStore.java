@@ -755,6 +755,9 @@ public class WSKeyStore extends Properties {
         if (isDefault)
             Tr.info(tc, "Successfully loaded default keystore: " + this.location + " of type: " + this.type);
 
+        // Check to see if any certificates entries from the environment need to be added to the keystore
+        addCertEntriesFromEnv();
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.exit(tc, "do_getKeyStore", myKeyStore);
         return myKeyStore;
@@ -1401,6 +1404,59 @@ public class WSKeyStore extends Properties {
                 Tr.debug(tc, "getKeyPassword -> null");
         }
         return keyPass;
+    }
+
+    protected void addCertEntriesFromEnv() {
+        //See if there are any certs from the env that need to be added to this keystore
+        String key = "cert_" + name;
+        CertificateEnvHelper certEnv = new CertificateEnvHelper();
+        List<Certificate> certs = certEnv.getCertificatesForKeyStore(name);
+
+        try {
+            for (int i = 0; i < certs.size(); i++) {
+                Certificate cert = certs.get(i);
+                // add the certificate to the keystore with an alias format: envcert-[index]-cert_[keystorename]
+                String alias = "envcert-" + String.valueOf(i) + "-" + key;
+                setCertificateEntryNoStore(alias, cert);
+            }
+
+        } catch (Exception e) {
+            String extendedMsg = e.getMessage();
+            Tr.warning(tc, "ssl.environment.cert.error.CWPKI0826W", key, name, extendedMsg);
+        }
+    }
+
+    /**
+     * Set a new certificate into the keystore and save the updated store.
+     *
+     * @param alias
+     *
+     * @param cert
+     * @throws KeyStoreException
+     *             - if the store is read only or not found
+     * @throws KeyException
+     *             - if an error happens updating the store with the cert
+     */
+    private void setCertificateEntryNoStore(String alias, Certificate cert) throws KeyStoreException, KeyException {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(this, tc, "setCertificateEntryNoStore", new Object[] { alias, cert });
+        }
+        try {
+            if (myKeyStore != null) {
+                myKeyStore.setCertificateEntry(alias, cert);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Certificate " + alias + " set to keystore " + name);
+                }
+            }
+        } catch (KeyStoreException kse) {
+            throw kse;
+        } catch (Exception e) {
+            throw new KeyException(e.getMessage(), e);
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(this, tc, "setCertificateEntryNoStore");
+        }
     }
 
     protected void clearJavaKeyStore() {
