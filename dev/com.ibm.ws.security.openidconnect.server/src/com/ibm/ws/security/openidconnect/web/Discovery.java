@@ -97,6 +97,8 @@ public class Discovery {
 
         discoveryObj.setClientMgmtEndpoint(discoverConfig.getEndpoint(OIDCConstants.KEY_OIDC_CLIENT_MGMT_EP_QUAL));
 
+        discoveryObj.setCodeChallengeMethodsSupported(OIDCConstants.OIDC_DISC_SUPPORTED_CODE_CHALLENGE_METHODS);
+
         String discoverJSONString = discoveryObj.toJSONString();
 
         if (tc.isDebugEnabled()) {

@@ -86,6 +86,7 @@ public class DiscoveryTest {
     private final static String CLIENT_MGMT_URI = ISSUER_URI + "/clientManagement";
     private final static String PERSONAL_TOKEN_MGMT_URI = ISSUER_URI + "/personalTokenManagement";
     private final static String USERS_TOKEN_MGMT_URI = ISSUER_URI + "/usersTokenManagement";
+    private final static String[] supportedPkceCodeChallengeMethods = { "plain", "S256" };
     private static String expectedDiscoveryModelJsonString;
     private static HttpServletRequest request;
     private static OidcServerConfig provider;
@@ -190,6 +191,7 @@ public class DiscoveryTest {
             assertEquals("Discovery model property should have matched.", expectedDiscoveryModel.getClientMgmtEndpoint(), CLIENT_MGMT_URI);
             assertEquals("Discovery model property should have matched.", expectedDiscoveryModel.getPersonalTokenMgmtEndpoint(), PERSONAL_TOKEN_MGMT_URI);
             assertEquals("Discovery model property should have matched.", expectedDiscoveryModel.getUsersTokenMgmtEndpoint(), USERS_TOKEN_MGMT_URI);
+            assertArrayEquals(expectedDiscoveryModel.getCodeChallengeMethodsSupported(), supportedPkceCodeChallengeMethods);
 
         } catch (Throwable t) {
             outputMgr.failWithThrowable(methodName, t);
@@ -310,6 +312,7 @@ public class DiscoveryTest {
         model.setClientMgmtEndpoint(CLIENT_MGMT_URI);
         model.setPersonalTokenMgmtEndpoint(PERSONAL_TOKEN_MGMT_URI);
         model.setUsersTokenMgmtEndpoint(USERS_TOKEN_MGMT_URI);
+        model.setCodeChallengeMethodsSupported(supportedPkceCodeChallengeMethods);
 
         return model;
     }

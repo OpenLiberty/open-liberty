@@ -131,6 +131,7 @@ public interface OIDCConstants extends OAuth20Constants {
     public static final String OIDC_DISC_PERSONAL_TOKEN_MGMT_EP = "personal_token_mgmt_endpoint";
     public static final String OIDC_DISC_USERS_TOKEN_MGMT_EP = "users_token_mgmt_endpoint";
     public static final String OIDC_DISC_CLIENT_MGMT_EP = "client_mgmt_endpoint";
+    public static final String OIDC_DISC_PKCE_CODE_CHALLENGE_METHODS_SUPP = "code_challenge_methods_supported";
 
     /* parameters for oidc discovery response with origins from session management */
     public static final String OIDC_SESS_CHECK_SESSION_IFRAME = "check_session_iframe";
@@ -206,6 +207,13 @@ public interface OIDCConstants extends OAuth20Constants {
     public static final String OIDC_DISC_CLAIM_TYPES_SUPP_AGGREGATED = "aggregated";
     public static final String OIDC_DISC_CLAIM_TYPES_SUPP_DISTRIBUTED = "distributed";
 
+    /* defined values for various oidc pkce discovery response properties */
+    public static final String OIDC_DISC_PKCE_CHALLENGE_METHODS_SUPP_PLAIN = "plain";
+    public static final String OIDC_DISC_PKCE_CHALLENGE_METHODS_SUPP_S256 = "S256";
+
+    public static final String[] OIDC_DISC_SUPPORTED_CODE_CHALLENGE_METHODS = { OIDC_DISC_PKCE_CHALLENGE_METHODS_SUPP_PLAIN,
+            OIDC_DISC_PKCE_CHALLENGE_METHODS_SUPP_S256 };
+
     // OIDC Discovery Properties for use in OAuth20Parameter
     public static final String KEY_OIDC_ISSUER_ID = "issuerIdentifier";
     public static final String KEY_OIDC_AUTHORIZATION_EP = "authorizationEndpoint";
@@ -279,6 +287,7 @@ public interface OIDCConstants extends OAuth20Constants {
     public static final String KEY_OIDC_PERSONAL_TOKEN_MGMT_EP_QUAL = OIDC_QUAL + KEY_OIDC_PERSONAL_TOKEN_MGMT_EP;
     public static final String KEY_OIDC_USERS_TOKEN_MGMT_EP_QUAL = OIDC_QUAL + KEY_OIDC_USERS_TOKEN_MGMT_EP;
     public static final String KEY_OIDC_CLIENT_MGMT_EP_QUAL = OIDC_QUAL + KEY_OIDC_CLIENT_MGMT_EP;
+    public static final String KEY_OIDC_PKCE_ = OIDC_QUAL + KEY_OIDC_CLAIM_TYPES_SUPP;
 
     /**
      * Supported OIDC client registration parameter names
