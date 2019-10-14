@@ -846,9 +846,8 @@ public class DatabaseTaskStore implements TaskStore {
             query.setParameter("r", stateBits);
             query.setParameter("t", System.currentTimeMillis());
             query.setMaxResults(1);
-            query.getSingleResult();
             List<Object[]> results = query.getResultList();
-            partitionInfo = results == null ? null : results.get(0);
+            partitionInfo = results == null || results.isEmpty() ? null : results.get(0);
         } finally {
             em.close();
         }
