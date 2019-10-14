@@ -8,10 +8,9 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-/** @version 1.1 */
-@org.osgi.annotation.versioning.Version("1.1")
+/** @version 1.2 */
+@org.osgi.annotation.versioning.Version("1.2")
 @TraceOptions(traceGroup = "Naming")
 package com.ibm.ws.container.service.naming;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;
-
