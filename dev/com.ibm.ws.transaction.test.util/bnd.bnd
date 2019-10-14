@@ -18,6 +18,9 @@ Bundle-Description: Transactions Test Tools; version=${bVersion}
 Bundle-ActivationPolicy: lazy
 Web-ContextPath: inflow
 
+javac.source: 1.8
+javac.target: 1.8
+
 test.project: true
 generate.replacement: true
 
