@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.batch.operations.JobSecurityException;
@@ -30,6 +31,7 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
+import com.ibm.jbatch.container.RASConstants;
 import com.ibm.jbatch.container.exception.BatchIllegalJobStatusTransitionException;
 import com.ibm.jbatch.container.exception.ExecutionAssignedToServerException;
 import com.ibm.jbatch.container.persistence.jpa.JobInstanceEntity;
@@ -44,8 +46,6 @@ import com.ibm.jbatch.container.ws.WSJobRepository;
 import com.ibm.jbatch.container.ws.WSRemotablePartitionExecution;
 import com.ibm.jbatch.container.ws.WSStepThreadExecutionAggregate;
 import com.ibm.jbatch.spi.BatchSecurityHelper;
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
 
 /**
  * {@inheritDoc}
@@ -54,9 +54,7 @@ import com.ibm.websphere.ras.TraceComponent;
 public class WSJobRepositoryImpl implements WSJobRepository {
 
     private final static String CLASSNAME = WSJobRepositoryImpl.class.getName();
-    private final static Logger logger = Logger.getLogger(CLASSNAME);
-
-    private static final TraceComponent tc = Tr.register(WSJobRepositoryImpl.class);
+    private final static Logger logger = Logger.getLogger(CLASSNAME, RASConstants.BATCH_MSG_BUNDLE);
 
     private IPersistenceManagerService persistenceManagerService;
 
@@ -402,9 +400,8 @@ public class WSJobRepositoryImpl implements WSJobRepository {
     public WSJobInstance updateJobInstanceWithGroupNames(long jobInstanceId, Set<String> groupNames) {
 
         if (authService == null) {
-            //issue a new message indicating security is not available
             // no auth service (ie security feature not present, so cannot perform group security
-            Tr.warning(tc, "BATCH_SECURITY_NOT_ACTIVE", jobInstanceId);
+            logger.log(Level.WARNING, "BATCH_SECURITY_NOT_ACTIVE", new Object[] { jobInstanceId });
 
             // no groups should be persisted - pass in an empty set
             return persistenceManagerService.updateJobInstanceWithGroupNames(jobInstanceId, new HashSet<String>());
