@@ -23,10 +23,6 @@ import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.security.UnrecoverableKeyException;
-import java.security.cert.CertStore;
-import java.security.cert.LDAPCertStoreParameters;
-import java.security.cert.PKIXBuilderParameters;
-import java.security.cert.X509CertSelector;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -36,11 +32,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
-import javax.net.ssl.CertPathTrustManagerParameters;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.ManagerFactoryParameters;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLServerSocketFactory;
 import javax.net.ssl.SSLSocketFactory;
@@ -57,12 +51,12 @@ import com.ibm.websphere.ssl.SSLConfig;
 import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.runtime.util.StreamHandlerUtils;
+import com.ibm.ws.ssl.JSSEProviderFactory;
 import com.ibm.ws.ssl.config.KeyStoreManager;
 import com.ibm.ws.ssl.config.SSLConfigManager;
 import com.ibm.ws.ssl.config.ThreadManager;
 import com.ibm.ws.ssl.config.WSKeyStore;
 import com.ibm.ws.ssl.core.TraceNLSHelper;
-import com.ibm.ws.ssl.core.WSPKCSInKeyStore;
 import com.ibm.ws.ssl.core.WSPKCSInKeyStoreList;
 import com.ibm.ws.ssl.core.WSX509KeyManager;
 import com.ibm.ws.ssl.core.WSX509TrustManager;
@@ -222,7 +216,10 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
 
         List<KeyManager> keyMgrs = new ArrayList<KeyManager>();
         List<TrustManager> trustMgrs = new ArrayList<TrustManager>();
-        getKeyTrustManagers(connectionInfo, sslConfig, keyMgrs, trustMgrs);
+
+        // get Key and trust managers
+        getWSKeyManager(keyMgrs, connectionInfo, sslConfig);
+        getWSTrustmanager(trustMgrs, connectionInfo, sslConfig);
 
         if (!keyMgrs.isEmpty() && !trustMgrs.isEmpty()) {
             KeyManager[] keyManagers = keyMgrs.toArray(new KeyManager[keyMgrs.size()]);
@@ -257,202 +254,196 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
         return sslContext;
     }
 
-    // this provides the SSL context instance
-    private void getKeyTrustManagers(Map<String, Object> connectionInfo, SSLConfig sslConfig, List<KeyManager> kmHolder, List<TrustManager> tmHolder) throws Exception {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.entry(tc, "getKeyTrustManagers", new Object[] { connectionInfo, sslConfig });
+    /**
+     * @param connectionInfo
+     * @param sslConfig
+     * @return
+     * @throws Exception
+     */
+    private void getWSTrustmanager(List<TrustManager> tmHolder, Map<String, Object> connectionInfo, SSLConfig sslConfig) throws Exception {
 
-        TrustManagerFactory trustManagerFactory = null;
-        KeyManagerFactory keyManagerFactory = null;
-        KeyStore keyStore = null;
-        KeyStore trustStore = null;
-        boolean createKeyMgr = true;
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.entry(tc, "getSSLContext", new Object[] { tmHolder, connectionInfo, sslConfig });
 
         String direction = Constants.DIRECTION_UNKNOWN;
+        String ctxtProvider = getSSLContextProperty(Constants.SSLPROP_CONTEXT_PROVIDER, sslConfig);
+        String clientAuthentication = getSSLContextProperty(Constants.SSLPROP_CLIENT_AUTHENTICATION, sslConfig);
+        String trustStoreName = getSSLContextProperty(Constants.SSLPROP_TRUST_STORE_NAME, sslConfig);
+        String trustStoreLocation = getSSLContextProperty(Constants.SSLPROP_TRUST_STORE, sslConfig);
+        String trustMgr = getSSLContextProperty(Constants.SSLPROP_TRUST_MANAGER, sslConfig);
 
         if (connectionInfo != null) {
             direction = (String) connectionInfo.get(Constants.CONNECTION_INFO_DIRECTION);
         }
 
+        KeyStore trustStore = getKeyStoreForManager(sslConfig, Constants.SSLPROP_TRUST_STORE_NAME);
+
+        // ---------------------
+        // Handle Trust Store
+        // ---------------------
+        if (trustStore != null) {
+            // Trust store specified.
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Using trust store: " + trustStoreLocation);
+            }
+        } else {
+            if (direction.equals(Constants.DIRECTION_INBOUND) && (clientAuthentication.equals(Constants.FALSE))) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "trust store permitted to be null since this is inbound and client auth is false");
+                }
+            } else {
+                throw new IllegalArgumentException("Invalid trust file name of null");
+            }
+        }
+
         try {
-            // Access a potentially set contextProvider.
-            String trustFileName = getSSLContextProperty(Constants.SSLPROP_TRUST_STORE_NAME, sslConfig);
-            WSKeyStore wsts = null;
-            if (trustFileName != null)
-                wsts = KeyStoreManager.getInstance().getKeyStore(trustFileName);
+            // Get instance of trust manager factory. Use contextProvider if
+            // available.
+            // Already got trustManagerFactory for crypto
+            TrustManagerFactory trustManagerFactory = getTrustManagerFactoryInstance(trustMgr, ctxtProvider);
+            trustManagerFactory.init(trustStore);
 
-            if (wsts != null) {
-                trustStore = wsts.getKeyStore(false, false);
+            // prepare trust manager wrapper.
+            TrustManager[] defaultTMArray = trustManagerFactory.getTrustManagers();
+            WSX509TrustManager wsTrustManager = new WSX509TrustManager(defaultTMArray, connectionInfo, sslConfig, trustStoreName, trustStoreLocation);
+            tmHolder.add(wsTrustManager);
+
+        } catch (Exception e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "Exception caught during trustmanager init, " + e);
+            FFDCFilter.processException(e, getClass().getName(), "getWSTrustmanager", this);
+            throw e;
+        }
+    }
+
+    /**
+     * @param sslConfig
+     * @return
+     */
+    private KeyStore getKeyStoreForManager(SSLConfig sslConfig, String ksProp) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.entry(tc, "getKeyStoreForManager", new Object[] { sslConfig, ksProp });
+
+        KeyStore ks = null;
+
+        // Access a potentially set contextProvider.
+        String trustFileName = getSSLContextProperty(ksProp, sslConfig);
+        WSKeyStore wsts = null;
+        if (trustFileName != null)
+            wsts = KeyStoreManager.getInstance().getKeyStore(trustFileName);
+
+        if (wsts != null) {
+            try {
+                ks = wsts.getKeyStore(false, false);
+            } catch (Exception e) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "Exception caught getting keystore, " + e);
+                return null;
+            }
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.entry(tc, "getKeyStoreForManager", new Object[] { ks });
+        return ks;
+    }
+
+    /**
+     * Initializes the trustmanager factory with a null to get the JDK's default trustmanageer
+     *
+     */
+    public static TrustManager[] getDefaultTrustManager() throws Exception {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.entry(tc, "getDefaultTrustManager");
+
+        // If the javax.net.ssl.truststore system property is set the JDK uses it as the
+        // default truststore.
+        String tsFileName = System.getenv("javax.net.ssl.truststore");
+        if (tsFileName != null && !tsFileName.isEmpty()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "The javax.net.ssl.truststore property is set to " + tsFileName + " it will used as the JDK default truststore");
+        } else {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "The default truststore will likely be the JDK or System cacerts file.");
+        }
+
+        try {
+            // Get instance of trust manager factory. Use contextProvider if available.
+            // Already got trustManagerFactory for crypto
+            String trustMgr = JSSEProviderFactory.getTrustManagerFactoryAlgorithm();
+            TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(trustMgr);
+
+            if (null != trustManagerFactory) {
+                // A null truststore will give a trustmanager with the default trust,  typically
+                // cacerts file.
+                trustManagerFactory.init((KeyStore) null);
             }
 
-            String keyFileName = getSSLContextProperty(Constants.SSLPROP_KEY_STORE_NAME, sslConfig);
-            WSKeyStore wsks = null;
-            if (keyFileName != null)
-                wsks = KeyStoreManager.getInstance().getKeyStore(keyFileName);
+            // prepare trust manager
+            TrustManager[] cacertTMArray = trustManagerFactory.getTrustManagers();
 
-            if (wsks != null) {
-                keyStore = wsks.getKeyStore(false, false);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                Tr.exit(tc, "getDefaultTrustManager");
+            return cacertTMArray;
+
+        } catch (Exception e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "Exception caught while trying to initialize default trustmanager: " + e);
+            throw e;
+        }
+    }
+
+    /**
+     * @param connectionInfo
+     * @param sslConfig
+     * @return
+     * @throws Exception
+     */
+    private void getWSKeyManager(List<KeyManager> kmHolder, Map<String, Object> connectionInfo, SSLConfig sslConfig) throws Exception {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.entry(tc, "getWSKeyManager", new Object[] { kmHolder, connectionInfo, sslConfig });
+
+        KeyManagerFactory keyManagerFactory = null;
+        String ctxtProvider = getSSLContextProperty(Constants.SSLPROP_CONTEXT_PROVIDER, sslConfig);
+        String keyStoreName = getSSLContextProperty(Constants.SSLPROP_KEY_STORE_NAME, sslConfig);
+        String keyStoreLocation = getSSLContextProperty(Constants.SSLPROP_KEY_STORE, sslConfig);
+        String clientAliasName = getSSLContextProperty(Constants.SSLPROP_KEY_STORE_CLIENT_ALIAS, sslConfig);
+        String serverAliasName = getSSLContextProperty(Constants.SSLPROP_KEY_STORE_SERVER_ALIAS, sslConfig);
+        String keyMgr = getSSLContextProperty(Constants.SSLPROP_KEY_MANAGER, sslConfig);
+
+        KeyStore keyStore = getKeyStoreForManager(sslConfig, Constants.SSLPROP_KEY_STORE_NAME);
+        WSKeyStore wsks = KeyStoreManager.getInstance().getWSKeyStore(keyStoreName);
+
+        if (keyStore != null) {
+            // Key store specified.
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Using software keystore: " + keyStoreLocation);
             }
 
-            boolean usingHwCryptoTrustStore = false;
-            boolean usingHwCryptoKeyStore = false;
-            String ctxtProvider = getSSLContextProperty(Constants.SSLPROP_CONTEXT_PROVIDER, sslConfig);
-            String keyMgr = getSSLContextProperty(Constants.SSLPROP_KEY_MANAGER, sslConfig);
-            String trustMgr = getSSLContextProperty(Constants.SSLPROP_TRUST_MANAGER, sslConfig);
-            String clientAuthentication = getSSLContextProperty(Constants.SSLPROP_CLIENT_AUTHENTICATION, sslConfig);
-            String clientAliasName = getSSLContextProperty(Constants.SSLPROP_KEY_STORE_CLIENT_ALIAS, sslConfig);
-            String serverAliasName = getSSLContextProperty(Constants.SSLPROP_KEY_STORE_SERVER_ALIAS, sslConfig);
-            String tokenLibraryFile = getSSLContextProperty(Constants.SSLPROP_TOKEN_LIBRARY, sslConfig);
-            String tokenPassword = getSSLContextProperty(Constants.SSLPROP_TOKEN_PASSWORD, sslConfig);
-            String tokenType = getSSLContextProperty(Constants.SSLPROP_TOKEN_TYPE, sslConfig);
-            String tokenSlot = getSSLContextProperty(Constants.SSLPROP_TOKEN_SLOT, sslConfig);
-            char[] passPhrase = null;
-
-            // ---------------------
-            // Handle Trust Store
-            // ---------------------
-            if (trustStore != null) {
-                // Trust store specified.
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Using trust store: " + wsts.getLocation());
-                }
-            } else {
-                // No trust store specified. Check if hw crypto is involved.
-                if (tokenLibraryFile != null) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "No trust store specified, but found hardware crypto");
-                    }
-
-                    WSPKCSInKeyStore pKS = pkcsStoreList.insert(tokenType, tokenLibraryFile, tokenPassword, false, ctxtProvider);
-
-                    if (pKS != null) {
-                        trustStore = pKS.getTS();
-                        trustManagerFactory = pKS.getTMF();
-                        usingHwCryptoTrustStore = true;
-                    }
-                } else {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "No trust store specified and no hardware crypto defined");
-                    }
-                    // No hw crypto.
-                    if (direction.equals(Constants.DIRECTION_INBOUND) && (clientAuthentication.equals(Constants.FALSE))) {
+            keyManagerFactory = getKeyManagerFactoryInstance(keyMgr, ctxtProvider);
+            String kspass = wsks.getPassword();
+            if (!kspass.isEmpty()) {
+                try {
+                    SerializableProtectedString keypass = wsks.getKeyPassword();
+                    String decodedPass = WSKeyStore.decodePassword(new String(keypass.getChars()));
+                    synchronized (_lockObj) {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "trust store permitted to be null since this is inbound and client auth is false");
+                            Tr.debug(tc, "Entering synchronized block around key manager factory init.");
                         }
-                    } else {
-                        throw new IllegalArgumentException("Invalid trust file name of null");
-                    }
-                }
-            }
-
-            if (!usingHwCryptoTrustStore) {
-                // Get instance of trust manager factory. Use contextProvider if
-                // available.
-                // Already got trustManagerFactory for crypto
-                trustManagerFactory = getTrustManagerFactoryInstance(trustMgr, ctxtProvider);
-                String ldapCertstoreHost = System.getProperty(Constants.SSLPROP_LDAP_CERT_STORE_HOST);
-                String ldapCertstorePortS = System.getProperty(Constants.SSLPROP_LDAP_CERT_STORE_PORT);
-                int ldapCertstorePort = ldapCertstorePortS == null ? 389 : Integer.parseInt(ldapCertstorePortS);
-
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "certStoreHost: " + ldapCertstoreHost);
-                    Tr.debug(tc, "certStorePort: " + ldapCertstorePort);
-                    Tr.debug(tc, "trustManagerAlgorithm: " + trustManagerFactory.getAlgorithm());
-                }
-
-                if (ldapCertstoreHost != null && trustManagerFactory != null && (trustManagerFactory.getAlgorithm().equals("IbmPKIX"))) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Adding ldap cert store " + ldapCertstoreHost + ":" + ldapCertstorePort + " ");
-                    }
-
-                    PKIXBuilderParameters pkixParams = new PKIXBuilderParameters(trustStore, new X509CertSelector());
-
-                    // create the ldap parms
-                    LDAPCertStoreParameters LDAPParms = new LDAPCertStoreParameters(ldapCertstoreHost, ldapCertstorePort);
-                    pkixParams.addCertStore(CertStore.getInstance("LDAP", LDAPParms));
-
-                    // enable revocation checking
-                    pkixParams.setRevocationEnabled(true);
-
-                    // Wrap them as trust manager parameters
-                    ManagerFactoryParameters trustParams = new CertPathTrustManagerParameters(pkixParams);
-
-                    trustManagerFactory.init(trustParams);
-                } else if (null != trustManagerFactory) {
-                    trustManagerFactory.init(trustStore);
-                }
-            }
-
-            // ---------------------
-            // Handle Key Store
-            // ---------------------
-            if (keyStore != null) {
-                // Key store specified.
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Using software keystore: " + wsks.getLocation());
-                }
-            } else {
-                // No key store specified. Check if hw crypto is involved.
-                if (tokenLibraryFile != null) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "No key store specified, but found hardware crypto");
-                    }
-                    // Hw crypto is involved. Build the trust store in a hw unique way.
-                    // First check to see if the same keystore is used by the trust
-                    // manager.
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Reusing key store from Trust Manager");
-                    }
-
-                    WSPKCSInKeyStore pKS = pkcsStoreList.insert(tokenType, tokenLibraryFile, tokenPassword, true, ctxtProvider);
-                    if (pKS != null) {
-                        keyStore = pKS.getKS();
-                        keyManagerFactory = pKS.getKMF();
-                        usingHwCryptoKeyStore = true;
-                    }
-                } else {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "No key store specified and no hardware crypto defined");
-                    }
-                    throw new IllegalArgumentException("No key store specified and no hardware crypto defined");
-                }
-            }
-
-            if (!usingHwCryptoKeyStore) {
-                // Get an instance of the key manager factory.
-                keyManagerFactory = getKeyManagerFactoryInstance(keyMgr, ctxtProvider);
-                String kspass = wsks.getPassword();
-                if (!kspass.isEmpty()) {
-                    try {
-                        SerializableProtectedString keypass = wsks.getKeyPassword();
-                        String decodedPass = WSKeyStore.decodePassword(new String(keypass.getChars()));
-                        synchronized (_lockObj) {
-                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                Tr.debug(tc, "Entering synchronized block around key manager factory init.");
-                            }
-                            keyManagerFactory.init(keyStore, decodedPass.toCharArray());
-                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                Tr.debug(tc, "Exiting synchronized block around key manager factory init.");
-                            }
-                        }
-                    } catch (UnrecoverableKeyException exc) {
+                        keyManagerFactory.init(keyStore, decodedPass.toCharArray());
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "Error initializing key manager, the password can not be used to recover all keys");
+                            Tr.debug(tc, "Exiting synchronized block around key manager factory init.");
                         }
-                        Tr.error(tc, "ssl.unrecoverablekey.error.CWPKI0813E", new Object[] { wsks.getLocation(), exc.getMessage() });
-                        throw new UnrecoverableKeyException(exc.getMessage() + ": invalid password for key in file '" + wsks.getLocation() + "'");
                     }
-                } else {
+                } catch (UnrecoverableKeyException exc) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "No password provide so do not create a keymanager");
+                        Tr.debug(tc, "Error initializing key manager, the password can not be used to recover all keys");
                     }
-                    createKeyMgr = false;
+                    Tr.error(tc, "ssl.unrecoverablekey.error.CWPKI0813E", new Object[] { keyStoreLocation, exc.getMessage() });
+                    throw new UnrecoverableKeyException(exc.getMessage() + ": invalid password for key in file '" + keyStoreLocation + "'");
                 }
-            }
 
-            if (createKeyMgr) {
                 // Initialize the SSL context with the key and trust manager factories.
-                WSX509KeyManager wsKeyManager = new WSX509KeyManager(keyStore, passPhrase, keyManagerFactory, sslConfig, null);
+                WSX509KeyManager wsKeyManager = new WSX509KeyManager(keyStore, kspass.toCharArray(), keyManagerFactory, sslConfig, null);
 
                 if (serverAliasName != null && serverAliasName.length() > 0)
                     wsKeyManager.setServerAlias(serverAliasName);
@@ -460,24 +451,21 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
                     wsKeyManager.setClientAlias(clientAliasName);
 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(tc, "Initializing WSX509KeyManager.", new Object[] { serverAliasName, clientAliasName, tokenSlot });
+                    Tr.debug(tc, "Initializing WSX509KeyManager.", new Object[] { serverAliasName, clientAliasName });
                 kmHolder.add(wsKeyManager);
+
+            } else {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "No password provide so do not create a keymanager");
+                }
             }
-
-            // prepare trust manager wrapper.
-            TrustManager[] defaultTMArray = trustManagerFactory.getTrustManagers();
-            WSX509TrustManager wsTrustManager = new WSX509TrustManager(defaultTMArray, connectionInfo, sslConfig, trustFileName, wsts.getLocation());
-            tmHolder.add(wsTrustManager);
-
-        } catch (Exception e) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "Exception caught during init, " + e);
-            FFDCFilter.processException(e, getClass().getName(), "getKeyTrustManagers", this);
-            throw e;
+        } else {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "No key store specified and no hardware crypto defined");
+            }
         }
-
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.exit(tc, "getKeyTrustManagers");
+            Tr.exit(tc, "getWSKeyManager");
     }
 
     // returns the property based on system prop, global prop, then properties
