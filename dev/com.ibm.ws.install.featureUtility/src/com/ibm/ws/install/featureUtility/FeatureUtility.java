@@ -31,6 +31,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.ibm.ws.install.InstallException;
+import com.ibm.ws.install.internal.ExceptionUtils;
 import com.ibm.ws.install.internal.InstallKernelMap;
 import com.ibm.ws.install.internal.InstallLogUtils;
 import com.ibm.ws.install.internal.InstallLogUtils.Messages;
@@ -46,7 +47,7 @@ public class FeatureUtility {
     private final File esaFile;
     private final String toExtension;
     private final List<String> featuresToInstall;
-    private final String openLibertyVersion;
+    private String openLibertyVersion;
     private final Logger logger;
 
     
@@ -78,7 +79,6 @@ public class FeatureUtility {
         map.put("target.user.directory", new File(Utils.getInstallDir(), "tmp"));
         map.put("install.local.esa", true);
         map.put("single.json.file", jsonPaths);
-
         if (featuresToInstall != null) {
             map.put("features.to.resolve", featuresToInstall);
 
@@ -101,43 +101,33 @@ public class FeatureUtility {
      * @throws InstallException
      *
      */
-    private String getLibertyVersion() throws IOException, InstallException { //TODO
-        File dir = new File(Utils.getInstallDir(), "lib/versions");
-        File[] propertiesFiles = dir.listFiles(new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name) {
-                return name.endsWith(".properties");
-            }
-        });
-
-        if (propertiesFiles == null) {
-            throw new IOException("Could not find properties files.");
+    private String getLibertyVersion() throws IOException, InstallException {
+        if (this.openLibertyVersion != null) {
+            return this.openLibertyVersion;
         }
+        File propertiesFile = new File(Utils.getInstallDir(), "lib/versions/openliberty.properties");
         String openLibertyVersion = null;
+        Properties properties = new Properties();
+        try (InputStream input = new FileInputStream(propertiesFile)) {
+            properties.load(input);
+            String productId = properties.getProperty("com.ibm.websphere.productId");
+            String productVersion = properties.getProperty("com.ibm.websphere.productVersion");
 
-        for (File propertiesFile : propertiesFiles) {
-            Properties properties = new Properties();
-            try (InputStream input = new FileInputStream(propertiesFile)) {
-                properties.load(input);
-                String productId = properties.getProperty("com.ibm.websphere.productId");
-                String productVersion = properties.getProperty("com.ibm.websphere.productVersion");
-
-                if (productId.equals(OPEN_LIBERTY_PRODUCT_ID)) {
-                    openLibertyVersion = productVersion;
-                }
-
-            } catch (IOException e) {
-                throw new IOException("Could not read the properties file " + propertiesFile.getAbsolutePath());
+            if (productId.equals(OPEN_LIBERTY_PRODUCT_ID)) {
+                openLibertyVersion = productVersion;
             }
+
         }
+
         if (openLibertyVersion == null) {
-            // openliberty.properties file is missing
+            // openliberty.properties file is missing or invalidly formatted
             throw new InstallException("Could not determine the open liberty runtime version.");
+
         } else {
             logger.log(Level.FINE, "The Open Liberty runtime version is " + openLibertyVersion);
         }
+        this.openLibertyVersion = openLibertyVersion;
         return openLibertyVersion;
-
     }
 
     /**

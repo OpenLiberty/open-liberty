@@ -12,7 +12,6 @@ package com.ibm.ws.install.internal;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -150,6 +149,7 @@ public class InstallKernelMap implements Map {
     private InstallEventListener ielistener;
     private ActionType actionType = null;
     private boolean usingM2Cache = false;
+    private String openLibertyVersion = null;
 
     @SuppressWarnings("unchecked")
     public InstallKernelMap() {
@@ -260,7 +260,7 @@ public class InstallKernelMap implements Map {
             if (downloadSingleArtifact != null && downloadSingleArtifact) {
                 return downloadSingleFeature();
             } else {
-                return DownloadEsas();
+                return downloadEsas();
             }
         }
         return data.get(key);
@@ -1040,62 +1040,82 @@ public class InstallKernelMap implements Map {
     }
 
     @SuppressWarnings("unchecked")
-    private Collection<File> DownloadEsas() {
+    private Collection<File> downloadEsas() {
         String fromRepo = getDownloadDir((String) data.get(FROM_REPO));
         File rootDir = new File(fromRepo);
         Collection<String> resolvedFeatures = (List<String>) data.get(DOWNLOAD_ARTIFACT_LIST);
-        String openLibertyVersion = null;
-        try {
-            openLibertyVersion = getLibertyVersion();
-        } catch (IOException e) {
-            data.put(ACTION_RESULT, ERROR);
-            data.put(ACTION_ERROR_MESSAGE, e.getMessage());
-            data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
-        } catch (InstallException e) {
-            data.put(ACTION_RESULT, ERROR);
-            data.put(ACTION_ERROR_MESSAGE, e.getMessage());
-            data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
-        }
-        List<File> foundEsas = new ArrayList<>();
-        List<String> featuresClone = new ArrayList<>(resolvedFeatures);
-        List<Integer> missingFeatureIndexes = new ArrayList<>();
+        String openLibertyVersion = getLibertyVersion();
 
+        Map<String, List> artifactsMap = fetchArtifactsFromLocalRepository(rootDir, resolvedFeatures, openLibertyVersion, ".esa");
+        List<File> foundFeatures = artifactsMap.get("foundArtifacts");
+        List<String> missingFeatures = artifactsMap.get("missingArtifacts");
+        if (foundFeatures.size() != resolvedFeatures.size() && !missingFeatures.isEmpty()) {
+            List<Integer> missingFeatureIndexes = artifactsMap.get("missingArtifactIndexes");
+            List<File> downloadedFeatures = downloadFeatures(missingFeatures);
+            logger.log(Level.INFO, "Downloaded the following features from maven central:" + downloadedFeatures);
+
+            insertElementsIntoList(foundFeatures, downloadedFeatures, missingFeatureIndexes);
+
+        }
+        return foundFeatures;
+
+    }
+
+    /**
+     * Returns a hashmap containing artifacts found as well as the order of the artifacts not found.
+     * The found artifacts can be accessed using key: foundArtifacts
+     * The missing artifacts can be accessed using key: missingArtifacts
+     * The missing artifact indexees can be accessed using key: missingArtifactIndexes
+     *
+     * @param rootDir            the local maven repository
+     * @param artifacts          a list of artifacts in the form groupId:artifactId:version
+     * @param openLibertyVersion open liberty runtime version
+     * @param extension          file extension
+     * @return a map containing the found and not found artifacts.
+     */
+    private Map<String, List> fetchArtifactsFromLocalRepository(File rootDir, Collection<String> artifacts, String openLibertyVersion, String extension) {
+        List<String> artifactsClone = new ArrayList<>(artifacts);
+        List<File> foundArtifacts = new ArrayList<>();
+        List<Integer> missingArtifactIndexes = new ArrayList<>();
         int index = 0;
-        for (String feature : resolvedFeatures) {
+        for (String feature : artifacts) {
             //logger.log(Level.FINE, "Processing feature: " + feature);
             String groupId = feature.split(":")[0];
             String featureName = feature.split(":")[1];
             File groupDir = new File(rootDir, groupId.replace(".", "/"));
             if (!groupDir.exists()) {
-                missingFeatureIndexes.add(index);
+                missingArtifactIndexes.add(index);
                 continue;
             }
-            String featureEsa = featureName + "-" + openLibertyVersion + ".esa";
+            String featureEsa = featureName + "-" + openLibertyVersion + extension;
             Path featurePath = Paths.get(groupDir.getAbsolutePath().toString(), featureName, openLibertyVersion, featureEsa);
 
             logger.log(Level.FINE, "Found feature at path: " + featurePath.toString());
             if (Files.isRegularFile(featurePath)) {
-                foundEsas.add(featurePath.toFile());
-                featuresClone.remove(feature);
+                foundArtifacts.add(featurePath.toFile());
+                artifactsClone.remove(feature);
             } else {
-                missingFeatureIndexes.add(index);
+                missingArtifactIndexes.add(index);
             }
 
             index += 1;
 
         }
-        if (!missingFeatureIndexes.isEmpty() && !featuresClone.isEmpty()) {
-            logger.log(Level.INFO, "Could not find ESAs in local maven repo for " + featuresClone);
-            List<File> downloadedEsas = downloadFeatures(featuresClone);
-            logger.log(Level.INFO, "Downloaded the following features from maven central:" + downloadedEsas);
-            index = 0;
-            for (File file : downloadedEsas) {
-                // insert the downloaded esa into its respective position
-                foundEsas.add(missingFeatureIndexes.get(index), file);
-                index += 1;
-            }
+        Map<String, List> artifactsMap = new HashMap<>();
+        artifactsMap.put("foundArtifacts", foundArtifacts);
+        artifactsMap.put("missingArtifacts", artifactsClone);
+        artifactsMap.put("missingArtifactIndexes", missingArtifactIndexes);
+
+        return artifactsMap;
+    }
+
+    private <T> void insertElementsIntoList(List<T> target, List<T> elements, List<Integer> indexes) {
+        int index = 0;
+        for (T obj : elements) {
+            // insert the element into its respective position
+            target.add(indexes.get(index), obj);
+            index += 1;
         }
-        return foundEsas;
 
     }
 
@@ -1106,41 +1126,40 @@ public class InstallKernelMap implements Map {
      * @throws InstallException
      *
      */
-    private String getLibertyVersion() throws IOException, InstallException {
-        File dir = new File(Utils.getInstallDir(), "lib/versions");
-        File[] propertiesFiles = dir.listFiles(new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name) {
-                return name.endsWith(".properties");
-            }
-        });
-
-        if (propertiesFiles == null) {
-            throw new IOException("Could not find properties files.");
+    @SuppressWarnings("unchecked")
+    private String getLibertyVersion() {
+        if (this.openLibertyVersion != null) {
+            return this.openLibertyVersion;
         }
+        File propertiesFile = new File(Utils.getInstallDir(), "lib/versions/openliberty.properties");
         String openLibertyVersion = null;
+        Properties properties = new Properties();
+        try (InputStream input = new FileInputStream(propertiesFile)) {
+            properties.load(input);
+            String productId = properties.getProperty("com.ibm.websphere.productId");
+            String productVersion = properties.getProperty("com.ibm.websphere.productVersion");
 
-        for (File propertiesFile : propertiesFiles) {
-            Properties properties = new Properties();
-            try (InputStream input = new FileInputStream(propertiesFile)) {
-                properties.load(input);
-                String productId = properties.getProperty("com.ibm.websphere.productId");
-                String productVersion = properties.getProperty("com.ibm.websphere.productVersion");
-
-                if (productId.equals(OPEN_LIBERTY_PRODUCT_ID)) {
-                    openLibertyVersion = productVersion;
-                }
-
-            } catch (IOException e) {
-                throw new IOException("Could not read the properties file " + propertiesFile.getAbsolutePath());
+            if (productId.equals(OPEN_LIBERTY_PRODUCT_ID)) {
+                openLibertyVersion = productVersion;
             }
+
+        } catch (IOException e) {
+            data.put(ACTION_RESULT, ERROR);
+            data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+            data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
         }
+
         if (openLibertyVersion == null) {
-            // openliberty.properties file is missing
-            throw new InstallException("Could not determine the open liberty runtime version.");
+            // openliberty.properties file is missing or invalidly formatted
+            InstallException ie = new InstallException("Could not determine the open liberty runtime version.");
+            data.put(ACTION_RESULT, ERROR);
+            data.put(ACTION_ERROR_MESSAGE, ie.getMessage());
+            data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(ie));
+
         } else {
-            //logger.log(Level.FINE, "The Open Liberty runtime version is " + openLibertyVersion);
+            logger.log(Level.FINE, "The Open Liberty runtime version is " + openLibertyVersion);
         }
+        this.openLibertyVersion = openLibertyVersion;
         return openLibertyVersion;
 
     }
