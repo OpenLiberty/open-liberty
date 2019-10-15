@@ -398,7 +398,7 @@ public class Failover1ServerTest extends FATServletClient {
 
     /**
      * testScheduleToRunOnDifferentServer - Schedule a task using an instance that cannot run tasks.
-     * If it sees another instance that can run tasks polls for missed tasks, then it should schedule
+     * If it sees another instance that can run tasks and polls for missed tasks, then it should schedule
      * the task to run on that server instead.
      */
     @Test
@@ -429,10 +429,9 @@ public class Failover1ServerTest extends FATServletClient {
 
             boolean completed = false;
             try {
-                // TODO enable once the feature code (8406) is written
-                //runTest(server, APP_NAME + "/Failover1ServerTestServlet",
-                //        "testTaskCompleted&taskId=" + taskId + "&expectedResult=1&jndiName=persistent/exec1&test=testScheduleToRunOnDifferentServer[2]");
-                //completed = true;
+                runTest(server, APP_NAME + "/Failover1ServerTestServlet",
+                        "testTaskCompleted&taskId=" + taskId + "&expectedResult=1&jndiName=persistent/exec1&test=testScheduleToRunOnDifferentServer[2]");
+                completed = true;
             } finally {
                 if (!completed)
                     runTest(server, APP_NAME + "/Failover1ServerTestServlet",

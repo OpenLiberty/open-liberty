@@ -344,6 +344,8 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
         if (config.enableTaskExecution)
             readyForPollingTask.add(PollingManager.EXECUTION_ENABLED);
+        else if (config.missedTaskThreshold > 0) // TODO unconditionally supply this information once we are done experimenting and determine how much of it we really need.
+            executor.submit(new UpdatePartitionInfo());
 
         if (readyForPollingTask.addAndCheckIfReady(PollingManager.DS_READY))
             startPollingTask(config);
@@ -428,19 +430,53 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
      *
      * @param context DeclarativeService defined/populated component context
      */
-    protected void deactivate(ComponentContext context) {
+    protected void deactivate(ComponentContext context) throws Exception {
         deactivated = true;
         if (mbean != null)
             mbean.unregister();
-        if (taskStore != null)
-            DatabaseTaskStore.unget(persistentStore);
-        appTrackerRef.deactivate(context);
-        contextSvcRef.deactivate(context);
-        controllerRef.deactivate(context);
-        localTranCurrentRef.deactivate(context);
-        serializationSvcRef.deactivate(context);
-        tranMgrRef.deactivate(context);
 
+        try {
+            Config config = configRef.get();
+            if (config.missedTaskThreshold > 0 || config.pollInterval >= 0) {
+                // Update the persistent store to indicate that this instance can no longer find/run tasks
+                PartitionRecord expected = new PartitionRecord(false);
+
+                partitionIdLock.readLock().lock();
+                if (partitionId != 0)
+                    expected.setId(partitionId);
+                partitionIdLock.readLock().unlock();
+
+                if (!expected.hasId()) {
+                    expected.setExecutor(name);
+                    expected.setLibertyServer(locationAdmin.getServerName());
+                    expected.setUserDir(variableRegistry.resolveString(VariableRegistry.USER_DIR));
+                    expected.setHostName(AccessController.doPrivileged(getHostName));
+                }
+
+                PartitionRecord updates = new PartitionRecord(false);
+                updates.setStates(0);
+
+                EmbeddableWebSphereTransactionManager tranMgr = tranMgrRef.getServiceWithException();
+                tranMgr.begin();
+                try {
+                    taskStore.persist(updates, expected);
+                } finally {
+                    if (tranMgr.getStatus() == Status.STATUS_ACTIVE)
+                        tranMgr.commit();
+                    else
+                        tranMgr.rollback();
+                }
+            }
+        } finally {
+            if (taskStore != null)
+                DatabaseTaskStore.unget(persistentStore);
+            appTrackerRef.deactivate(context);
+            contextSvcRef.deactivate(context);
+            controllerRef.deactivate(context);
+            localTranCurrentRef.deactivate(context);
+            serializationSvcRef.deactivate(context);
+            tranMgrRef.deactivate(context);
+        }
     }
 
     /**
@@ -743,11 +779,17 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
             partitionIdLock.readLock().unlock();
         }
 
+        Config config = configRef.get();
+
         PartitionRecord partitionEntry = new PartitionRecord(false);
         partitionEntry.setExecutor(name);
         partitionEntry.setLibertyServer(locationAdmin.getServerName());
         partitionEntry.setUserDir(variableRegistry.resolveString(VariableRegistry.USER_DIR));
         partitionEntry.setHostName(AccessController.doPrivileged(getHostName));
+        // TODO partitionEntry.setExpiry if heartbeatInterval enabled
+        if (config.missedTaskThreshold > 0) // TODO unconditionally supply this information once we are done experimenting and determine how much of it we really need.
+            partitionEntry.setStates((config.missedTaskThreshold > 0 ? PartitionRecord.States.MISSED_TASK_THRESHOLD_ENABLED.bit : 0) +
+                                     (config.pollInterval >= 0 ? PartitionRecord.States.POLLS_PERIODICALLY.bit : 0));
 
         // Run under a new transaction and commit right away
         EmbeddableWebSphereTransactionManager tranMgr = tranMgrRef.getServiceWithException();
@@ -797,6 +839,64 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
                     throw failure;
             }
         }
+    }
+
+    /**
+     * Returns the partition id of an existing instance that periodically polls for tasks,
+     * which will be able to find new tasks that we assign to it in the persistent store.
+     * This is a best-effort attempt. There is no guarantee that the task will actually be able to
+     * run on that instance. There should always be at least one instance with missedTaskThreshold
+     * configured in order to recover from situations where an assigned instance is no longer able to
+     * run tasks.
+     *
+     * @param missedTaskThreshold the configured missedTaskThreshold value. -1 if not configured.
+     * @return a suitable partition id if found, otherwise null.
+     * @throws Exception if an error occurs while attempting to obtain a suitable partition id.
+     */
+    private Long getPartitionThatPolls(long missedTaskThreshold) throws Exception {
+        // missedTaskThreshold enables the ability to assign tasks to a different instance
+        // and therefore must be configured on at least one of:
+        // - the current instance (as indicated by the parameter to this method), or
+        // - the receiving instance (as indicated within the persistent store)
+        long states = missedTaskThreshold > 0 //
+                        ? PartitionRecord.States.POLLS_PERIODICALLY.bit //
+                        : PartitionRecord.States.POLLS_PERIODICALLY.bit + PartitionRecord.States.MISSED_TASK_THRESHOLD_ENABLED.bit;
+
+        Long partitionId = null;
+
+        // Run under a new transaction and commit right away
+        EmbeddableWebSphereTransactionManager tranMgr = tranMgrRef.getServiceWithException();
+        int tranStatus = tranMgr.getStatus();
+        LocalTransactionCurrent ltcCurrent = tranStatus == Status.STATUS_NO_TRANSACTION ? localTranCurrentRef.getServiceWithException() : null;
+        LocalTransactionCoordinator suspendedLTC = ltcCurrent == null ? null : ltcCurrent.suspend();
+        Transaction suspendedTran = tranStatus == Status.STATUS_ACTIVE ? tranMgr.suspend() : null;
+        Exception failure = null;
+        try {
+            tranMgr.begin();
+            try {
+                partitionId = taskStore.getPartitionWithState(states);
+            } catch (Exception x) {
+                failure = x;
+            } finally {
+                if (tranMgr.getStatus() == Status.STATUS_ACTIVE)
+                    tranMgr.commit();
+                else
+                    tranMgr.rollback();
+            }
+        } finally {
+            try {
+                // resume
+                if (suspendedTran != null)
+                    tranMgr.resume(suspendedTran);
+                else if (suspendedLTC != null)
+                    ltcCurrent.resume(suspendedLTC);
+            } finally {
+                if (failure != null)
+                    throw failure;
+            }
+        }
+
+        return partitionId;
     }
 
     /** {@inheritDoc} */
@@ -1001,6 +1101,9 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
         configRef.set(newConfig);
 
+        if (newConfig.missedTaskThreshold > 0 || oldConfig.missedTaskThreshold > 0) // TODO unconditionally supply this information once we are done experimenting and determine how much of it we really need.
+            executor.submit(new UpdatePartitionInfo());
+
         // If the JNDI name changes, notify the application recycle coordinator and re-register the mbean
         if (newConfig.jndiName == null ? oldConfig.jndiName != null : !newConfig.jndiName.equals(oldConfig.jndiName)) {
             if (!applications.isEmpty()) {
@@ -1054,7 +1157,9 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
             // If the current instance isn't able to run tasks, look for one that is
             if (!config.enableTaskExecution) {
                 Controller controller = controllerRef.getService();
-                if (controller != null)
+                if (controller == null) // use the partition info from the persistent store to find an instance that periodically polls
+                    alternatePartition = getPartitionThatPolls(config.missedTaskThreshold);
+                else // obtain from the controller
                     alternatePartition = controller.getActivePartitionId();
             }
             identifierOfPartition = alternatePartition == null ? getPartitionId() : alternatePartition;
@@ -1900,7 +2005,9 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
      * Updates partition information in the persistent store. The parameters are optional, except at least one new value
      * must be specified.
      *
-     * This method is for the mbean only.
+     * This method is only by tests. TODO should see if we can update tests and remove it.
+     * com.ibm.ws.concurrent.persistent.fat.multiple.MultiplePersistentExecutorsTest.testFailoverWithFourInstances
+     * com.ibm.ws.concurrent.persistent.fat.oneexec.OneExecutorRunsAllTest.testRunTasksOnDifferentExecutor
      *
      * @param oldHostName           the host name to update.
      * @param oldUserDir            wlp.user.dir to update.
@@ -2517,6 +2624,46 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
             }
 
             return transferred;
+        }
+    }
+
+    /**
+     * A task that updates partition info within the persistent store to match the configured state of this instance.
+     */
+    class UpdatePartitionInfo implements Callable<Integer> {
+        @Override
+        public Integer call() throws Exception {
+            PartitionRecord expected = new PartitionRecord(false);
+
+            partitionIdLock.readLock().lock();
+            if (partitionId != 0)
+                expected.setId(partitionId);
+            partitionIdLock.readLock().unlock();
+
+            if (!expected.hasId()) {
+                expected.setExecutor(name);
+                expected.setLibertyServer(locationAdmin.getServerName());
+                expected.setUserDir(variableRegistry.resolveString(VariableRegistry.USER_DIR));
+                expected.setHostName(AccessController.doPrivileged(getHostName));
+            }
+
+            Config config = configRef.get();
+
+            PartitionRecord updates = new PartitionRecord(false);
+            // TODO updates.setExpiry if heartbeatInterval enabled
+            updates.setStates((config.missedTaskThreshold > 0 ? PartitionRecord.States.MISSED_TASK_THRESHOLD_ENABLED.bit : 0) +
+                              (config.pollInterval >= 0 ? PartitionRecord.States.POLLS_PERIODICALLY.bit : 0));
+
+            EmbeddableWebSphereTransactionManager tranMgr = tranMgrRef.getServiceWithException();
+            tranMgr.begin();
+            try {
+                return taskStore.persist(updates, expected);
+            } finally {
+                if (tranMgr.getStatus() == Status.STATUS_ACTIVE)
+                    tranMgr.commit();
+                else
+                    tranMgr.rollback();
+            }
         }
     }
 }
