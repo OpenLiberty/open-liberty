@@ -1,0 +1,7 @@
+#!/usr/bin/expect -f
+
+set timeout 240
+spawn bash -c "rpmbuild -ba --sign rpmbuild/SPECS/openliberty.spec"
+expect "Enter pass phrase:"
+send "%GPG_PASS%\r"
+expect eof

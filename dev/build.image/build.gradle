@@ -676,13 +676,14 @@ if (isBuildOsNativePackages){
     }
 
     task buildOsNativePackages(type:Exec) {
-        dependsOn copyOpenLiberty
         dependsOn updateChangelogTemplate
         dependsOn updateSpecTemplate
         dependsOn updateBuildPackageScriptTemplate
         dependsOn updateRulesTemplate
 
         workingDir 'packaging'
+        environment "GPG_PASS", rootProject.userProps.getProperty('gpgPassphrase')
+
         mkdir("packaging/tempPackagingDir/tempTar")
         
         def rpms = file("./packaging/rpmbuild/RPMS/noarch/openliberty-" + bnd('libertyServiceVersion') + "-1.noarch.rpm")
@@ -696,6 +697,12 @@ if (isBuildOsNativePackages){
 
         commandLine 'sh', './buildOsNativePackages.sh'
 
+        if (isRelease){
+            commandLine 'sh', './buildOsNativePackagesGPGKey.sh'
+        } else{
+            commandLine 'sh', './buildOsNativePackagesNoGPGKey.sh'
+        }
+
         ignoreExitValue true
 
         doLast {
@@ -704,8 +711,8 @@ if (isBuildOsNativePackages){
             file('packaging/debuild/openliberty/debian/changelog').delete()
             file('packaging/buildOsNativePackages.sh').delete()
             file('packaging/debuild/openliberty/debian/rules').delete()
-            if (execResult.getExitValue() != 0) {
-                throw new GradleException("Script buildOsNativePackages.sh failed to run rpmbuild and debuild: " + errorOutput.toString())
+	    if (execResult.getExitValue() != 0) {
+                logger.info("Script buildOsNativePackages.sh failed to run rpmbuild and debuild: " + errorOutput.toString())
             }
         }
         
