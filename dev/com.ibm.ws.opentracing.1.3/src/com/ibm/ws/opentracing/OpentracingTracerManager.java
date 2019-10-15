@@ -16,6 +16,7 @@ import java.util.Map;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.microprofile.opentracing.jaeger.JaegerTracerFactory;
 
 import io.opentracing.Span;
 import io.opentracing.Tracer;
@@ -72,7 +73,10 @@ public class OpentracingTracerManager {
         synchronized (applicationTracersLock) {
             tracer = getTracer(appName);
             if (tracer == null) {
-                tracer = createTracer(appName);
+                tracer = createJaegerTracer(appName);
+                if (tracer == null) {
+                    tracer = createTracer(appName);
+                }
                 putTracer(appName, tracer);
                 tracerCase = "newly created";
             } else {
@@ -84,6 +88,10 @@ public class OpentracingTracerManager {
             Tr.exit(tc, methodName + " (" + tracerCase + ")", OpentracingUtils.getTracerText(tracer));
         }
         return tracer;
+    }
+
+    private static Tracer createJaegerTracer(String appName) {
+        return JaegerTracerFactory.createJaegerTracer(appName);
     }
 
     /**

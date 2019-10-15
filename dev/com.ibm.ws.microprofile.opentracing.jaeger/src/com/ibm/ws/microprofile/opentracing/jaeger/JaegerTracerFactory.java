@@ -20,9 +20,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
-
 import com.ibm.websphere.crypto.InvalidPasswordDecodingException;
 import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.websphere.crypto.UnsupportedCryptoAlgorithmException;
@@ -31,18 +28,17 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.microprofile.opentracing.jaeger.adapter.Configuration;
 import com.ibm.ws.microprofile.opentracing.jaeger.adapter.Configuration.CodecConfiguration;
 import com.ibm.ws.microprofile.opentracing.jaeger.adapter.Configuration.ReporterConfiguration;
 import com.ibm.ws.microprofile.opentracing.jaeger.adapter.Configuration.SamplerConfiguration;
 import com.ibm.ws.microprofile.opentracing.jaeger.adapter.Configuration.SenderConfiguration;
 import com.ibm.ws.microprofile.opentracing.jaeger.adapter.JaegerAdapterException;
-import com.ibm.ws.opentracing.tracer.OpentracingTracerFactory;
 
 import io.opentracing.Tracer;
 
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true, property = { "service.vendor=IBM" })
-public class JaegerTracerFactory implements OpentracingTracerFactory {
+public class JaegerTracerFactory {
 
     private static final TraceComponent tc = Tr.register(JaegerTracerFactory.class);
 
@@ -68,11 +64,21 @@ public class JaegerTracerFactory implements OpentracingTracerFactory {
     private static final int DEFAULT_AGENT_UDP_COMPACT_PORT = 6831;
     
     private static boolean isErrorPrinted = false;
-
+    
+    // This is used to guard the Jaeger to show up in GA builds until it is ready 
+    public static final String ENV_JAEGER_ENABLEMENT= "JAEGER_ENABLEMENT";
+    private static boolean isJaegerEnabled = isBeta() || isEnabledByUser();
+    private static final String EARLY_ACCESS = "EARLY_ACCESS";
+        
     @FFDCIgnore({JaegerAdapterException.class, IllegalArgumentException.class})
-    private static Tracer createJaegerTracer(String appName) {
+    public static Tracer createJaegerTracer(String appName) {
 
         Tracer tracer = null;
+        
+        if (!isJaegerEnabled) {
+            return tracer;
+        }
+        
         AdapterFactoryImpl factory = new AdapterFactoryImpl();
 
         try {
@@ -207,8 +213,10 @@ public class JaegerTracerFactory implements OpentracingTracerFactory {
                 if ((ite.getTargetException() != null) && (ite.getTargetException() instanceof NoClassDefFoundError)) {
                     if (!isErrorPrinted) {
                         // Print error once only
-                        String[] lines = ite.getTargetException().toString().split("\n", 2);
-                        Tr.error(tc, "JAEGER_CLASS_NOT_FOUND", lines[0]);
+                        // Do not print the error since we don't know 
+                        // whether the user want to configure Jaeger or another tracer from a user feature
+                        // String[] lines = ite.getTargetException().toString().split("\n", 2);
+                        // Tr.error(tc, "JAEGER_CLASS_NOT_FOUND", lines[0]);
                         isErrorPrinted = true;
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Tr.debug(tc, "Jaeger library was not found or exception occurred during loading.  Exception:"
@@ -330,8 +338,28 @@ public class JaegerTracerFactory implements OpentracingTracerFactory {
         return value;
     }
 
-    @Override
-    public Tracer newInstance(String appName) {
-        return createJaegerTracer(appName);
+    private static boolean isBeta() {
+        try {
+            final Map<String, ProductInfo> productInfos = ProductInfo.getAllProductInfo();
+
+            for (ProductInfo info : productInfos.values()) {
+                if (EARLY_ACCESS.equals(info.getEdition())) {
+                    return true;
+                }
+            }
+        } catch (Exception e) {
+            Tr.debug(tc, "Exception getting InstalledProductInfo: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return false;
+    }
+    
+    private static boolean isEnabledByUser() {
+        Boolean isEnabled  = getBooleanProperty(ENV_JAEGER_ENABLEMENT);
+        if (isEnabled == null) {
+            return false;
+        } else {
+            return isEnabled;
+        }
     }
 }
