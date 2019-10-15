@@ -132,10 +132,6 @@ public class EJBLocalURLContext extends WSContextBase implements Context {
             return new EJBLocalURLContext(this);
         }
 
-        if (isTraceOn && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Lookup WSName: " + name.toString());
-        }
-
         String lookup = name.toString();
 
         // They could be looking up just our context
