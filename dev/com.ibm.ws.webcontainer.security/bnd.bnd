@@ -95,7 +95,7 @@ instrument.classesExcludes: com/ibm/ws/webcontainer/security/resources/*.class
 	org.jmock:jmock;strategy=exact;version=2.5.1, \
 	org.jmock:jmock-legacy;version=2.5.0, \
 	com.ibm.ws.org.objenesis:objenesis;version=1.0, \
-	cglib:cglib-nodep;version=3.2.10, \
+	cglib:cglib-nodep;version=3.3.0, \
 	com.ibm.ws.junit.extensions;version=latest, \
 	org.apache.httpcomponents:httpclient;version=4.4.5, \
 	org.apache.httpcomponents:httpcore;version=4.4.9, \
