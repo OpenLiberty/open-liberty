@@ -57,10 +57,7 @@
 	        <scanJars entry="entry.point" filesToFind="${filesToFind}">
 	            <fileset dir="${basedir}/build/lib" includes="**.jar" />
 	        </scanJars>
-	        <echo message="entry point: ${entry.point}" />
-	
-	        <property name="test.bucket.class" value="${entry.point}" />
-	        <property name="test.bucket.name" value="${test.bucket.class}" />
+	        <echo message="entry point: ${entry.point}" />	        
 			</else>
 		</iff>
 	</target>
@@ -90,23 +87,68 @@
 			<entry key="preferJIIWSWsAdmin" value="${simplicity.preferJIIWSWsAdmin}" />
 		</propertyfile>
 		
-		<!-- Work out the actual entry point based on the current java level -->
+		<!-- Work out the actual entry point based on the current java level and database properties -->
 		<echo message="Checking min java level for project based on bootstrapping.properties file..." />
-		            
-        <!-- If this test is compiled with a java level higher than the one we're currently running, -->
-        <!-- bypass the tests by invoking the always passes test instead of real FAT tests -->
-        <property file="${basedir}/fat.bnd.properties" />
+
+		<!-- Enforce fat.test.databases.only rule.  If bucket is not enlisted in DB Rotation skip it.-->
+		<property file="${basedir}/fat.db.properties" /> <!-- TODO Remove after done testing -->
+		<property file="${basedir}/fat.bnd.properties"/>
+		
+		<condition property="skip.no.db.tests" value="true">
+			<and>
+				<istrue value="${fat.test.databases.only}" />
+				<not><isTrue value="${fat.test.databases}" /></not>
+			</and>
+		</condition>
+		
+		<!-- If a specific DB is being used, include it in the bucket name -->
+    	<condition property="suite.db.type" value=" with ${fat.bucket.db.type}" else="">
+    		<and>
+    			<istrue value="${fat.test.databases}" />
+    			<isset property="fat.bucket.db.type" />
+    		</and>
+    	</condition>
+				       
+        <!-- If this test is compiled with a java level higher than the one we're currently running -->
 		<script language="javascript"> <![CDATA[
-			var testBucketClassForLowJava = "componenttest.custom.junit.runner.AlwaysPassesTest";
 			var minTestJava = project.getProperty("fat.minimum.java.level");
 			var javaVersion = parseFloat(project.getProperty("java.specification.version"));
 			if(minTestJava != null && javaVersion < parseFloat(minTestJava))
-			  project.setProperty("test.bucket.class", testBucketClassForLowJava);
+			  project.setProperty("skip.java.level", true);
         ]]></script>
+		
+		<echo message="skip.no.db.tests=${skip.no.db.tests}" />
+		<echo message="skip.java.level=${skip.java.level}" />
         <echo message="fat.minimum.java.level=${fat.minimum.java.level}"/>
         <echo message="java.specification.version=${java.specification.version}"/>
-        <echo message="FAT entry point will be: ${test.bucket.class}"/>
 		<echo message="micro.version=${micro.version}"/>
+		
+		<!-- bypass the tests by invoking the always passes test instead of real FAT tests -->
+		<iff>
+			<or>
+				<istrue value="${skip.no.db.tests}" />
+				<istrue value="${skip.java.level}" />
+			</or>
+			<then>
+		        <property name="test.bucket.class" value="componenttest.custom.junit.runner.AlwaysPassesTest" />
+				<property name="test.bucket.name" value="${test.bucket.class}${suite.db.type}"/>
+				<echo message="FAT bucket WILL NOT run, due to the following properties:"/>
+				<echo message="     Only run database rotation buckets:  ${fat.test.databases.only}"/>
+				<echo message="     This bucket uses database rotation:  ${fat.test.databases}"/>
+				<echo message="     This bucket uses java level:         ${skip.java.level}" />
+			</then>
+			<else>
+		        <property name="test.bucket.class" value="${entry.point}" />
+				<property name="test.bucket.name" value="${test.bucket.class}${suite.db.type}"/>
+				<echo message="FAT bucket WILL run, with the following properties:"/>
+				<echo message="     Only run database rotation buckets:  ${fat.test.databases.only}"/>
+				<echo message="     This bucket uses database rotation:  ${fat.test.databases}"/>
+				<echo message="     This bucket will run against:        ${fat.bucket.db.type}" />
+				<echo message="     Test bucket name:                    ${test.bucket.name}"/>
+			</else>
+		</iff>
+		
+		<echo message="FAT entry point will be: ${test.bucket.class}"/>
 	</target>
 
 	<!-- Properties used: test.bucket.name, dir.log, dir.log.xml, dir.log.tmp, local.properties, logging.properties, acute.properties, test.bucket.path, test.bucket.class -->

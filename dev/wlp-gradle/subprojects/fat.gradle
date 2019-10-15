@@ -222,6 +222,26 @@ task autoFVT {
       writer.close()
     }
     
+    // Create fat.db.properties file that contains database configuration information
+    // This is just to replicate what a request from our build infrastructure looks like when testing locally.
+	def dbProps = new Properties()
+	
+	if(System.getProperty('fat.bucket.db.type') != null)
+		dbProps.setProperty('fat.bucket.db.type', System.getProperty('fat.bucket.db.type'))
+	  	
+  	if(System.getProperty('fat.test.databases.only') != null)
+  		dbProps.setProperty('fat.test.databases.only', System.getProperty('fat.test.databases.only'))
+  	
+  	if( !dbProps.isEmpty​ ) {
+  		propsFile = new File(autoFvtDir, 'fat.db.properties')
+	  	writer = new FileWriter(propsFile)
+	    try {
+	      dbProps.store(writer, null)
+	    } finally {
+	      writer.close()
+	    } 
+  	}
+    
     // Copy the component test libs
     // TODO: It looks like the componenttest.app.jar got combined into something else, so this is now way more source in the jar than was there before. This might need changing then.
     copy {
@@ -457,7 +477,6 @@ ext.gitClone = { proj, branch = 'NOT_SET', folder = '', site = 'git@github.com',
       into gitReposDir
     }
   }
-  
 }
 
 def ebcClone(String url, String branch, String repoPath){
