@@ -1,0 +1,72 @@
+.headerbar
+{
+    padding: 8px 30px;
+    background-color: #00649d;
+    .headerbar-wrapper
+    {
+        background-image: url(../img/ibm-logo.png);
+        background-repeat: no-repeat;
+        background-size: contain;
+        padding: 8px 30px 8px 130px;
+        display: flex;
+        align-items: center;
+    }
+    a
+    {
+        font-size: 1.5em;
+        font-weight: bold;
+
+        display: flex;
+
+        max-width: 300px;
+
+        text-decoration: none;
+
+        flex: 1;
+        align-items: center;
+        @include text_headline(#fff);
+
+        span
+        {
+            margin: 0;
+            padding: 0 10px;
+        }
+    }
+
+    .filter-wrapper
+    {
+        display: flex;
+
+        flex: 3;
+
+        input[type=text]
+        {
+            width: 100%;
+            min-width: 150px;
+            max-width: 300px;
+            margin-left: auto;
+            margin-right: 0px;
+            margin-top: auto;
+            margin-bottom: auto;
+            float: right;
+            border: 1px solid #ffffff;
+            border-radius: 4px 0 0 4px;
+            outline: none;
+
+        }
+
+        .filter-button
+        {
+            font-size: 16px;
+            font-weight: bold;
+
+            padding: 4px 40px;
+
+            border: none;
+            border-radius: 0 4px 4px 0;
+            background: #1d3649;
+            color: #ffffff;
+            font-family: 'Open Sans', sans-serif;
+        }
+    }
+}
