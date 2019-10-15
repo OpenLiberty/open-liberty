@@ -46,12 +46,6 @@ public class EJBLocalNamingHelperImpl extends EJBNamingInstancer implements EJBL
     /** {@inheritDoc} */
     @Override
     public Object getObjectInstance(String name) throws NamingException {
-        final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
-
-        if (isTraceOn && tc.isDebugEnabled()) {
-            Tr.debug(tc, "getObjectInstance lookup: " + name);
-        }
-
         Lock readLock = javaColonLock.readLock();
         readLock.lock();
 
@@ -79,8 +73,8 @@ public class EJBLocalNamingHelperImpl extends EJBNamingInstancer implements EJBL
     @Override
     public synchronized void bind(EJBBinding binding, String name) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
-        if (isTraceOn && tc.isDebugEnabled()) {
-            Tr.debug(tc, "bind: " + name);
+        if (isTraceOn && tc.isEntryEnabled()) {
+            Tr.entry(tc, "bind: " + name);
         }
 
         Lock writeLock = javaColonLock.writeLock();
@@ -91,12 +85,16 @@ public class EJBLocalNamingHelperImpl extends EJBNamingInstancer implements EJBL
         } finally {
             writeLock.unlock();
         }
+
+        if (isTraceOn && tc.isEntryEnabled()) {
+            Tr.exit(tc, "bind");
+        }
     }
 
     public void unbind(String name) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
-        if (isTraceOn && tc.isDebugEnabled()) {
-            Tr.debug(tc, "unbinding: " + name);
+        if (isTraceOn && tc.isEntryEnabled()) {
+            Tr.entry(tc, "unbinding: " + name);
         }
 
         Lock writeLock = javaColonLock.writeLock();
@@ -106,6 +104,10 @@ public class EJBLocalNamingHelperImpl extends EJBNamingInstancer implements EJBL
             EJBLocalBindings.remove(name);
         } finally {
             writeLock.unlock();
+        }
+
+        if (isTraceOn && tc.isEntryEnabled()) {
+            Tr.exit(tc, "unbind");
         }
     }
 
