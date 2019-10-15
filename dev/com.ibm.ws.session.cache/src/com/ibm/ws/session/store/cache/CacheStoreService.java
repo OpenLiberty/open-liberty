@@ -140,15 +140,15 @@ public class CacheStoreService implements Introspector, SessionStoreService {
         Properties vendorProperties = new Properties();
         
         String uriValue = (String) configurationProperties.get("uri");
-        final URI uri;
+        final URI configuredURI;
         if (uriValue != null)
             try {
-                uri = new URI(uriValue);
+                configuredURI = new URI(uriValue);
             } catch (URISyntaxException e) {
                 throw new IllegalArgumentException(Tr.formatMessage(tc, "INCORRECT_URI_SYNTAX", e), e);
             }
         else
-            uri = null;
+            configuredURI = null;
         
         for (Map.Entry<String, Object> entry : configurationProperties.entrySet()) {
             String key = entry.getKey();
@@ -175,6 +175,13 @@ public class CacheStoreService implements Introspector, SessionStoreService {
                 cachingProvider = Caching.getCachingProvider(loader);
 
                 tcCachingProvider = "CachingProvider" + Integer.toHexString(System.identityHashCode(cachingProvider));
+
+                // For Infinispan, augment existing config file to recognize cache names used by HTTP Session Persistence,
+                // or create a new config file if absent altogether.
+                URI uri = Boolean.TRUE.equals(configurationProperties.get("enableBetaSupportForInfinispan"))
+                                && "org.infinispan.jcache.embedded.JCachingProvider".equals(cachingProvider.getClass().getName())
+                                ? generateOrUpdateInfinispanConfig(configuredURI)
+                                                : configuredURI;
 
                 if (trace && tc.isDebugEnabled()) {
                     CacheHashMap.tcReturn("Caching", "getCachingProvider", tcCachingProvider, cachingProvider);
@@ -279,6 +286,17 @@ public class CacheStoreService implements Introspector, SessionStoreService {
             cachingProvider = null;
             cacheManager = null;
         }
+    }
+
+    /**
+     * Generates new Infinispan config if absent or lacks replicated-cache-configuration for the caches used by
+     * HTTP session persistence. Otherwise, if no changes are needed, returns the supplied URI.
+     *
+     * @param configuredURI URI (if any) that is configured by the user. Otherwise null.
+     * @return URI for generated Infinispan config. If no changes are needed, returns the original URI.
+     */
+    private URI generateOrUpdateInfinispanConfig(URI configuredURI) {
+        return configuredURI; // TODO implement
     }
 
     @Override
