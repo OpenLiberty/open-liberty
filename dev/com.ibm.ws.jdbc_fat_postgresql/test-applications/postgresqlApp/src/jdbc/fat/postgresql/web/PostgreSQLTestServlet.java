@@ -43,6 +43,7 @@ import org.postgresql.PGConnection;
 import org.postgresql.jdbc.AutoSave;
 import org.postgresql.largeobject.LargeObjectManager;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
@@ -514,6 +515,7 @@ public class PostgreSQLTestServlet extends FATServlet {
 
     // When a connection is involved in a transaction which times out, the transaction will call abort()
     // on any XAResource(s). Verify that upon transaction timeout, the connection is aborted.
+    @AllowedFFDC("org.postgresql.xa.PGXAException")
     @Test
     public void testTransactionTimeoutAbort() throws Exception {
         DataSource ds = InitialContext.doLookup("jdbc/postgres/xa");
