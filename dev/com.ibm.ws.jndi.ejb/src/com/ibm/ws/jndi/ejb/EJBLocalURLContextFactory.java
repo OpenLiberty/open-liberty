@@ -93,6 +93,9 @@ public class EJBLocalURLContextFactory implements ObjectFactory {
     @Override
     public Object getObjectInstance(Object o, Name n, Context c, Hashtable<?, ?> env) throws Exception {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
+        if (isTraceOn && tc.isEntryEnabled()) {
+            Tr.entry(tc, "getObjectInstance:");
+        }
 
         if (isTraceOn && tc.isDebugEnabled()) {
             Tr.debug(tc, "Object: " + o);
@@ -104,17 +107,26 @@ public class EJBLocalURLContextFactory implements ObjectFactory {
         // by OSGi JNDI spec Name and Context should be null
         // if they are not then this code is being called in
         // the wrong way
-        if (n != null || c != null)
+        if (n != null || c != null) {
+            if (isTraceOn && tc.isEntryEnabled()) {
+                Tr.exit(tc, "getObjectInstance: null");
+            }
             return null;
+        }
         // Object is String, String[] or null
         // Hashtable contains any environment properties
+        Object context;
         if (o == null) {
-            return new EJBLocalURLContext(env, helperServices);
+            context = new EJBLocalURLContext(env, helperServices);
         } else if (o instanceof String) {
-            return new EJBLocalURLContext(env, helperServices).lookup((String) o);
+            context = new EJBLocalURLContext(env, helperServices).lookup((String) o);
         } else {
             throw new OperationNotSupportedException();
         }
+        if (isTraceOn && tc.isEntryEnabled()) {
+            Tr.exit(tc, "getObjectInstance: " + context);
+        }
+        return context;
     }
 
 }
