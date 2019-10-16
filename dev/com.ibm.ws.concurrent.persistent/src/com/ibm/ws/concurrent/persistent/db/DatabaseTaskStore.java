@@ -543,7 +543,7 @@ public class DatabaseTaskStore implements TaskStore {
     /** {@inheritDoc} */
     @Override
     public long findOrCreate(PartitionRecord record) throws Exception {
-        String find = "SELECT p.ID,p.STATES FROM Partition p WHERE p.EXECUTOR=:x AND p.HOSTNAME=:h AND p.LSERVER=:l AND p.USERDIR=:u";
+        String find = "SELECT p.ID,p.EXPIRY,p.STATES FROM Partition p WHERE p.EXECUTOR=:x AND p.HOSTNAME=:h AND p.LSERVER=:l AND p.USERDIR=:u";
 
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
@@ -560,17 +560,22 @@ public class DatabaseTaskStore implements TaskStore {
             query.setParameter("u", record.getUserDir());
             List<Object[]> results = query.getResultList();
             if (results.size() > 0) {
-                Object[] idAndStates = results.get(0);
-                partitionId = (Long) idAndStates[0];
-                long states = (Long) idAndStates[1];
-                // Check if existing entry needs an update to states
-                if (record.hasStates() && record.getStates() != states) {
-                    Query update = em.createQuery("UPDATE Partition SET STATES=:s WHERE ID=:i");
-                    update.setParameter("s", record.getStates());
+                Object[] r = results.get(0);
+                partitionId = (Long) r[0];
+                long expiry = (Long) r[1];
+                long states = (Long) r[2];
+                // Check if existing entry needs an update to expiry or states
+                if (record.hasExpiry() && record.getExpiry() != expiry
+                    || record.hasStates() && record.getStates() != states) {
+                    long newExpiry = record.hasExpiry() ? record.getExpiry() : expiry;
+                    long newStates = record.hasStates() ? record.getStates() : states;
+                    Query update = em.createQuery("UPDATE Partition SET EXPIRY=:e, STATES=:s WHERE ID=:i");
+                    update.setParameter("e", newExpiry);
+                    update.setParameter("s", newStates);
                     update.setParameter("i", partitionId);
                     int count = update.executeUpdate();
                     if (trace && tc.isDebugEnabled())
-                        Tr.debug(this, tc, "update states " + states + " --> " + record.getStates() + "? " + count);
+                        Tr.debug(this, tc, "update", expiry + " --> " + newExpiry, states + " --> " + newStates, count);
                 }
             } else {
                 // If not found, create a new entry

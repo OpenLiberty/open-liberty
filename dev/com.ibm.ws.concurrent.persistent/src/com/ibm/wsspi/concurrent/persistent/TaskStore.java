@@ -135,7 +135,8 @@ public interface TaskStore {
      * The invoker is expected to handle this by rolling back and retrying.
      * 
      * @param record partition entry with executor/host/server/userdir to locate, or if not found, add to the persistent store.
-     *            The record must contain the following attributes (Executor, Expiry, Host, Server, State, UserDir).
+     *            If an entry is found, it is updated to match the Expiry and States if either of those is supplied.
+     *            The record must contain the following attributes (Executor, Host, Server, UserDir) and can optionally contain (Expiry, States).
      * @return unique identifier for the partition record which either already exists or was newly created.
      * @throws Exception if an error occurs when attempting to access the persistent task store.
      */
