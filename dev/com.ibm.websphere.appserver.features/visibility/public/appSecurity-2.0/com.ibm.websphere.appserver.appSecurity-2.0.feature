@@ -7,3 +7,4 @@ Subsystem-Name: Application Security 2.0
 -bundles=com.ibm.ws.security.authentication.tai
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

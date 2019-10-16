@@ -13,3 +13,4 @@ visibility=protected
  com.ibm.ws.security.authentication.tai
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

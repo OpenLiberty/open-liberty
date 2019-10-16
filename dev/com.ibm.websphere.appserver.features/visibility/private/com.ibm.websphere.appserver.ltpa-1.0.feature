@@ -9,3 +9,4 @@ symbolicName=com.ibm.websphere.appserver.ltpa-1.0
  com.ibm.ws.crypto.ltpakeyutil
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

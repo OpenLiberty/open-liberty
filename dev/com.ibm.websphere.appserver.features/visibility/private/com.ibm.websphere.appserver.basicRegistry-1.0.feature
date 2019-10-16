@@ -5,3 +5,4 @@ symbolicName=com.ibm.websphere.appserver.basicRegistry-1.0
  com.ibm.ws.security.registry.basic
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

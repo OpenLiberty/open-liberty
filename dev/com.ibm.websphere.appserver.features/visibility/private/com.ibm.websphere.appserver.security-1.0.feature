@@ -18,3 +18,4 @@ IBM-API-Package: com.ibm.wsspi.security.tai; type="ibm-api", \
 -files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.security_1.2-javadoc.zip
 kind=ga
 edition=core
+WLP-Activation-Type: parallel
