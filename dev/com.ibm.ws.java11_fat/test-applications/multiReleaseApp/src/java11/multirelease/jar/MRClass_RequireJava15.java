@@ -14,7 +14,7 @@ public class MRClass_RequireJava15 {
 
     // WARNING: If you need to modify this file, you must manually patch it into the corresponding location in publish/servers/server_MultiReleaseJarTest/lib/multiRelease.jar
 
-    // This class should be in /META-INF/versions/15/java11/cnfe/web/ and only loadable on Java 12+
+    // This class should be in /META-INF/versions/15/java11/cnfe/web/ and only loadable on Java 15+
 
     private static final int JAVA_VERSION = 15;
 

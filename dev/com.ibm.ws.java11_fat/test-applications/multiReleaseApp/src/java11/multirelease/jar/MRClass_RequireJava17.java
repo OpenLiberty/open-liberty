@@ -14,7 +14,7 @@ public class MRClass_RequireJava17 {
 
     // WARNING: If you need to modify this file, you must manually patch it into the corresponding location in publish/servers/server_MultiReleaseJarTest/lib/multiRelease.jar
 
-    // This class should be in /META-INF/versions/17/java11/cnfe/web/ and only loadable on Java 12+
+    // This class should be in /META-INF/versions/17/java11/cnfe/web/ and only loadable on Java 17+
 
     private static final int JAVA_VERSION = 17;
 

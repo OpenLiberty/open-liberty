@@ -14,7 +14,7 @@ public class MRClass_RequireJava14 {
 
     // WARNING: If you need to modify this file, you must manually patch it into the corresponding location in publish/servers/server_MultiReleaseJarTest/lib/multiRelease.jar
 
-    // This class should be in /META-INF/versions/14/java11/cnfe/web/ and only loadable on Java 12+
+    // This class should be in /META-INF/versions/14/java11/cnfe/web/ and only loadable on Java 14+
 
     private static final int JAVA_VERSION = 14;
 
