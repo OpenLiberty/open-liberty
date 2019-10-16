@@ -44,10 +44,4 @@ dependencies {
     requiredLibs project(':com.ibm.ws.crypto.passwordutil');
 }
 
-task addKafkaClientLibs (type: Copy) {
-    into new File(autoFvtDir, 'lib/LibertyFATTestFiles/libs')
-    from configurations.kafkaClient
-    shouldRunAfter autoFVT
-}
-
 zipAutoFVT.dependsOn addKafkaClientLibs
