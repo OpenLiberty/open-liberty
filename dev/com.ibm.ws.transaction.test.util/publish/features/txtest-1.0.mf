@@ -8,4 +8,5 @@ Subsystem-Content: com.ibm.ws.transaction.test.util; version="[1,1.0.100)"; loca
 Subsystem-Type: osgi.subsystem.feature
 IBM-Feature-Version: 2
 IBM-API-Package: com.ibm.tx.jta.ut.util; type="internal",
+ com.ibm.ws.cloudtx.ut.util; type="internal",
  com.ibm.ws.tx.jta.embeddable; type="internal"
