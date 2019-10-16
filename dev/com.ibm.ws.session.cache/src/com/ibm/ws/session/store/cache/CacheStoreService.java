@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,15 +10,26 @@
  *******************************************************************************/
 package com.ibm.ws.session.store.cache;
 
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.lang.management.ManagementFactory;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLConnection;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Properties;
@@ -91,6 +102,12 @@ public class CacheStoreService implements Introspector, SessionStoreService {
      * Trace identifier for the cache manager
      */
     volatile String tcCacheManager; // requires lazy activation
+
+    /**
+     * Temporary config file that is created for Infinispan in the absence of an explicitly specified config file uri
+     * or to augment existing config.
+     */
+    File tempConfigFile;
 
     /**
      * Trace identifier for the caching provider.
@@ -166,7 +183,7 @@ public class CacheStoreService implements Introspector, SessionStoreService {
         final ClassLoader cl = library.getClassLoader();
 
         try {
-            AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
+            AccessController.doPrivileged((PrivilegedExceptionAction<Void>) () -> {
                 ClassLoader loader = new CachingProviderClassLoader(cl);
 
                 if (trace && tc.isDebugEnabled())
@@ -178,8 +195,8 @@ public class CacheStoreService implements Introspector, SessionStoreService {
 
                 // For Infinispan, augment existing config file to recognize cache names used by HTTP Session Persistence,
                 // or create a new config file if absent altogether.
-                URI uri = Boolean.TRUE.equals(configurationProperties.get("enableBetaSupportForInfinispan"))
-                                && "org.infinispan.jcache.embedded.JCachingProvider".equals(cachingProvider.getClass().getName())
+                URI uri = "org.infinispan.jcache.embedded.JCachingProvider".equals(cachingProvider.getClass().getName())
+                                && Boolean.TRUE.equals(configurationProperties.get("enableBetaSupportForInfinispan")) // TODO remove temporary gating code once ready
                                 ? generateOrUpdateInfinispanConfig(configuredURI)
                                                 : configuredURI;
 
@@ -210,14 +227,19 @@ public class CacheStoreService implements Introspector, SessionStoreService {
                 Tr.error(tc, "ERROR_CONFIG_EMPTY_LIBRARY", library.id(), Tr.formatMessage(tc, "SESSION_CACHE_CONFIG_MESSAGE", RuntimeUpdateListenerImpl.sampleConfig));
             }
             throw x;
-        } catch (Error | RuntimeException x) {
+        } catch (Error | RuntimeException | PrivilegedActionException x) {
             // deactivate will not be invoked if activate fails, so ensure CachingProvider is closed on error paths
             if (cachingProvider != null) {
                 CacheHashMap.tcInvoke(tcCachingProvider, "close");
                 cachingProvider.close();
                 CacheHashMap.tcReturn(tcCachingProvider, "close");
             }
-            throw x;
+            if (x instanceof Error)
+                throw (Error) x;
+            else if (x instanceof RuntimeException)
+                throw (RuntimeException) x;
+            else
+                throw new RuntimeException(x);
         }
     }
 
@@ -275,9 +297,9 @@ public class CacheStoreService implements Introspector, SessionStoreService {
             if (trace && tc.isDebugEnabled())
                 CacheHashMap.tcInvoke(tcCachingProvider, "close");
 
-            AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
+            AccessController.doPrivileged((PrivilegedAction<Boolean>) () -> {
                 cachingProvider.close();
-                return null;
+                return tempConfigFile == null ? null : tempConfigFile.delete();
             });
 
             if (trace && tc.isDebugEnabled())
@@ -295,8 +317,47 @@ public class CacheStoreService implements Introspector, SessionStoreService {
      * @param configuredURI URI (if any) that is configured by the user. Otherwise null.
      * @return URI for generated Infinispan config. If no changes are needed, returns the original URI.
      */
-    private URI generateOrUpdateInfinispanConfig(URI configuredURI) {
-        return configuredURI; // TODO implement
+    private URI generateOrUpdateInfinispanConfig(URI configuredURI) throws URISyntaxException, IOException {
+        if (configuredURI == null) {
+            tempConfigFile = File.createTempFile("infinispan", ".xml");
+            tempConfigFile.setReadable(true);
+            tempConfigFile.setWritable(true);
+            // TODO determine correct config to generate based on where/how this is running.
+            try (PrintStream out = new PrintStream(new BufferedOutputStream(new FileOutputStream(tempConfigFile)))) {
+                out.println("<infinispan>");
+                out.println(" <jgroups>");
+                out.println("  <stack-file name=\"jgroups-tcp\" path=\"/default-configs/default-jgroups-tcp.xml\"/>");
+                out.println(" </jgroups>");
+                out.println(" <cache-container>");
+                out.println("  <transport stack=\"jgroups-tcp\"/>");
+                out.println("  <replicated-cache-configuration name=\"com.ibm.ws.session.*\"/>");
+                out.println(" </cache-container>");
+                out.println("</infinispan>");
+            }
+            return tempConfigFile.toURI();
+        }
+
+        // TODO parse the XML to determine if updates are needed
+        List<String> lines = new ArrayList<String>();
+        URLConnection con = configuredURI.toURL().openConnection();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()))) {
+            for (String line; (line = reader.readLine()) != null; )
+                lines.add(line);
+        }
+
+        if (true) { // TODO only write new file if configuration is not already present
+            tempConfigFile = File.createTempFile("infinispan", ".xml");
+            tempConfigFile.setReadable(true);
+            tempConfigFile.setWritable(true);
+            tempConfigFile.deleteOnExit();
+            try (PrintStream out = new PrintStream(new BufferedOutputStream(new FileOutputStream(tempConfigFile)))) {
+                for (String line : lines)
+                    out.println(line);
+            }
+            return tempConfigFile.toURI();
+        }
+
+        return configuredURI;
     }
 
     @Override
