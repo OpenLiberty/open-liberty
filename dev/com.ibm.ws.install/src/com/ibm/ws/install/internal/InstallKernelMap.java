@@ -114,6 +114,7 @@ public class InstallKernelMap implements Map {
     private static final String DOWNLOAD_FILETYPE = "download.filetype";
     private static final String DOWNLOAD_LOCAL_DIR_LOCATION = "download.local.dir.location";
     private static final String DOWNLOAD_ARTIFACT_LIST = "download.artifact.list";
+    private static final String DOWNLOAD_LOCATION = "download.location";
     private static final String FROM_REPO = "from.repo";
     private static final String CLEANUP_TEMP_LOCATION = "cleanup.temp.location";
 
@@ -257,7 +258,10 @@ public class InstallKernelMap implements Map {
             return getMonitorSize();
         } else if (DOWNLOAD_RESULT.equals(key)) {
             Boolean downloadSingleArtifact = (Boolean) data.get(DOWNLOAD_INDIVIDUAL_ARTIFACT);
-            if (downloadSingleArtifact != null && downloadSingleArtifact) {
+            String downloadLocation = (String) data.get(DOWNLOAD_LOCATION);
+            if (downloadLocation != null) {
+                return downloadArtifact();
+            } else if (downloadSingleArtifact != null && downloadSingleArtifact) {
                 return downloadSingleFeature();
             } else {
                 return downloadEsas();
@@ -366,6 +370,12 @@ public class InstallKernelMap implements Map {
         } else if (DOWNLOAD_INDIVIDUAL_ARTIFACT.equals(key)) {
             if (value instanceof Boolean) {
                 data.put(DOWNLOAD_INDIVIDUAL_ARTIFACT, value);
+            } else {
+                throw new IllegalArgumentException();
+            }
+        } else if (DOWNLOAD_LOCATION.equals(key)) {
+            if (value instanceof String) {
+                data.put(DOWNLOAD_LOCATION, value);
             } else {
                 throw new IllegalArgumentException();
             }
@@ -817,6 +827,28 @@ public class InstallKernelMap implements Map {
         return artifactDownloader.getDownloadedEsas();
     }
 
+    @SuppressWarnings("unchecked")
+    public List<File> downloadArtifact() {
+        data.put(ACTION_ERROR_MESSAGE, null);
+        data.put(ACTION_EXCEPTION_STACKTRACE, null);
+
+        ArtifactDownloader artifactDownloader = new ArtifactDownloader();
+        String downloadDir = (String) data.get(DOWNLOAD_LOCATION);
+        List<String> featureList = (List<String>) data.get(DOWNLOAD_ARTIFACT_LIST);
+        String repo = getRepo(null);
+
+        try {
+            artifactDownloader.synthesizeAndDownloadFeatures(featureList, downloadDir, repo);
+        } catch (InstallException e) {
+            data.put(ACTION_RESULT, ERROR);
+            data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+            data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
+            return null;
+        }
+
+        return artifactDownloader.getDownloadedEsas();
+    }
+
     /**
      * @param fromRepo
      * @return
@@ -860,8 +892,8 @@ public class InstallKernelMap implements Map {
         String repo;
         if (fromRepo != null) {
             repo = fromRepo;
-        } else if (System.getenv("MAVEN_REPOSITORY") != null) {
-            repo = System.getenv("MAVEN_REPOSITORY"); //TODO get mirror from settigns.xml if applicable
+        } else if (System.getenv("maven_mirror") != null) {
+            repo = System.getenv("maven_mirror"); //TODO get mirror from settigns.xml if applicable
         } else {
             repo = MAVEN_CENTRAL;
         }
@@ -1078,6 +1110,7 @@ public class InstallKernelMap implements Map {
         List<File> foundArtifacts = new ArrayList<>();
         List<Integer> missingArtifactIndexes = new ArrayList<>();
         int index = 0;
+
         for (String feature : artifacts) {
             //logger.log(Level.FINE, "Processing feature: " + feature);
             String groupId = feature.split(":")[0];

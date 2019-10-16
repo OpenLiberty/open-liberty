@@ -220,6 +220,19 @@ public class FeatureUtility {
         }
         return result;
     }
+    
+    public void downloadFeatures() throws InstallException {
+    	map.put("download.location", fromDir.toString());
+    	map.put("download.artifact.list", featuresToInstall);
+    	boolean singleArtifactInstall = false;
+        map.put("download.inidividual.artifact", singleArtifactInstall);
+        List<File> result = (List<File>) map.get("download.result");
+        if (map.get("action.error.message") != null) {
+            logger.log(Level.FINE, "action.exception.stacktrace: " + map.get("action.error.stacktrace"));
+            String exceptionMessage = (String) map.get("action.error.message");
+            throw new InstallException(exceptionMessage);
+        }
+    }
 
     /**
      * Extracts the feature name and version from an ESA filepath. Example:
@@ -415,6 +428,27 @@ public class FeatureUtility {
             return new FeatureUtility(this);
         }
 
+    }
+    
+    public List<String> getMissingArtifactsFromFolder(List<String> mavenCoords, String location) throws IOException, InstallException{
+    	List<String> result = new ArrayList<String>();
+    	
+    	for (String mavenCoord: mavenCoords) {
+    		String groupId = mavenCoord.split(":")[0];
+            String featureName = mavenCoord.split(":")[1];
+            File groupDir = new File(location, groupId.replace(".", "/"));
+            if (!groupDir.exists()) {
+            	result.add(mavenCoord);
+                continue;
+            }
+            String featureEsa = featureName + "-" + openLibertyVersion + ".esa";
+            Path featurePath = Paths.get(groupDir.getAbsolutePath().toString(), featureName, openLibertyVersion, featureEsa);
+
+            if (!Files.isRegularFile(featurePath)) {
+            	result.add(mavenCoord);
+            }
+    	}
+    	return result;
     }
 
 }
