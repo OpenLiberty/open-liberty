@@ -45,7 +45,7 @@ def setProperties = { props ->
     boolean isAutomatedBuild    = props.getProperty("buildResultUUID") != null && props.getProperty('buildLabel') != null
     boolean isPersonal          = props.getProperty('is.personal') == null              ? false : 'true'.equalsIgnoreCase(props.getProperty('is.personal'))
     boolean isContinuousBuild   = props.getProperty('is.continuous.build') == null      ? false : 'true'.equalsIgnoreCase(props.getProperty('is.continuous.build'))
-    boolean isRelease           = props.getProperty('is.release') == null               ? true : true
+    boolean isRelease           = props.getProperty('is.release') == null               ? false : 'true'.equalsIgnoreCase(props.getProperty('is.release'))
     boolean isPublicPublishing  = props.getProperty('is.public.publishing') == null     ? false : 'true'.equalsIgnoreCase(props.getProperty('is.public.publishing'))
     boolean isUnittestsDisabled = props.getProperty('disable.run.runUnitTests') == null ? false : 'true'.equalsIgnoreCase(props.getProperty('disable.run.runUnitTests'))
 
@@ -59,9 +59,6 @@ def setProperties = { props ->
     //Sets my RPM/DEB flag to true on every release build
     boolean isBuildOsNativePackages = props.getProperty('build.os.native.packages') == null     ? 'true'.equalsIgnoreCase(props.getProperty('is.release')) : 'true'.equalsIgnoreCase(props.getProperty('build.os.native.packages'))
     props.setProperty('build.os.native.packages', isBuildOsNativePackages.toString())
-    //gpg passphrase variable to sign the rpm/deb packages
-    String gpgPassphrase = props.getProperty('build.os.native.packages.gpg.passphrase') == null     ? "" : props.getProperty('build.os.native.packages.gpg.passphrase')
-    props.setProperty('build.os.native.packages.gpg.passphrase', gpgPassphrase)
 
     gradle.rootProject { rootProject ->
         rootProject.ext.isUsingArtifactory  = isUsingArtifactory
@@ -72,7 +69,6 @@ def setProperties = { props ->
         rootProject.ext.isPublicPublishing  = isPublicPublishing
         rootProject.ext.isUnittestsDisabled = isUnittestsDisabled
         rootProject.ext.isBuildOsNativePackages = isBuildOsNativePackages
-        rootProject.ext.gpgPassphrase = gpgPassphrase
 
         // Test results for this run
         rootProject.ext.testCountTotal           = 0
