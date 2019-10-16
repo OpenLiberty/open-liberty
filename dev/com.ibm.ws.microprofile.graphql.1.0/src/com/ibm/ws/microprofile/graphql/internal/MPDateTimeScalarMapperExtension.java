@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 import graphql.language.IntValue;
@@ -53,6 +54,15 @@ public class MPDateTimeScalarMapperExtension implements ScalarMapperExtension {
             public String serialize(Object dataFetcherResult) {
                 if (dataFetcherResult instanceof String) {
                     return (String) dataFetcherResult;
+                }
+                if (dataFetcherResult instanceof LocalDate) {
+                    return DateTimeFormatter.ISO_DATE.format((LocalDate)dataFetcherResult);
+                }
+                if (dataFetcherResult instanceof LocalTime) {
+                    return DateTimeFormatter.ISO_TIME.format((LocalTime)dataFetcherResult);
+                }
+                if (dataFetcherResult instanceof LocalDateTime) {
+                    return DateTimeFormatter.ISO_DATE_TIME.format((LocalDateTime)dataFetcherResult);
                 }
                 throw Scalars.serializationException(dataFetcherResult, type);
             }
