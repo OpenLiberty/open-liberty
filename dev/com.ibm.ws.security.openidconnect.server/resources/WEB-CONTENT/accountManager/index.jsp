@@ -33,6 +33,14 @@ if (request.getAttribute("ui_app_tok_enabled") != null) {
     window.globalAppPasswordsAllowed="<%=isAppPasswordAllowed%>".toLowerCase() === 'true';
     window.globalAppTokensAllowed="<%=isAppTokenAllowed%>".toLowerCase() === 'true';
  </script>
+
+<%
+// Set security headers	
+response.setHeader("X-XSS-Protection", "1");	
+response.setHeader("X-Content-Type-Options", "nosniff");	
+response.setHeader("X-Frame-Options", "SAMEORIGIN");
+%>
+
 <title id="acct_mgr_tool">Manage Personal Tokens</title>
 </head>
 
