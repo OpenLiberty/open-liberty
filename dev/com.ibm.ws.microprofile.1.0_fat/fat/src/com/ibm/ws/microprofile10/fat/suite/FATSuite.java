@@ -8,22 +8,28 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.config.fat.tests.helloworld;
+package com.ibm.ws.microprofile10.fat.suite;
 
-import java.util.HashSet;
-import java.util.Set;
+import org.junit.BeforeClass;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
-import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.core.Application;
+import com.ibm.ws.fat.util.FatLogHandler;
 
-@ApplicationPath("/")
-public class HelloWorldApplication extends Application {
+@RunWith(Suite.class)
+@SuiteClasses({
+                SimpleJAXRSCDITest.class,
+})
 
-    @Override
-    public Set<Class<?>> getClasses() {
-        Set<Class<?>> classes = new HashSet<Class<?>>();
-        classes.add(HelloWorldResource.class);
-        return classes;
+public class FATSuite {
+
+    /**
+     * @see {@link FatLogHandler#generateHelpFile()}
+     */
+    @BeforeClass
+    public static void generateHelpFile() {
+        FatLogHandler.generateHelpFile();
     }
 
 }

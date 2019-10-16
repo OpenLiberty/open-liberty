@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.config.fat.suite;
+package com.ibm.ws.microprofile10.fat.suite;
 
 import static org.junit.Assert.fail;
 
@@ -19,6 +19,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -26,7 +28,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.microprofile.config.fat.tests.helloworld.HelloWorldBean;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
+import com.ibm.ws.microprofile10.fat.tests.helloworld.HelloWorldApplication;
+import com.ibm.ws.microprofile10.fat.tests.helloworld.HelloWorldBean;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -44,19 +48,18 @@ public class SimpleJAXRSCDITest {
     @Server(SERVER_NAME)
     public static LibertyServer server;
 
-    private static final String hellowar = "helloworld";
+    private static final String APP_NAME = "helloworld";
+
+    private static final String MESSAGE = HelloWorldBean.MESSAGE;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        ShrinkHelper.defaultDropinApp(server, hellowar, "com.ibm.ws.microprofile.config.fat.tests.helloworld");
 
-        // Make sure we don't fail because we try to start an
-        // already started server
-        try {
-            server.startServer(true);
-        } catch (Exception e) {
-            System.out.println(e.toString());
-        }
+        WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
+                                   .addPackage(HelloWorldApplication.class.getPackage());
+
+        ShrinkHelper.exportDropinAppToServer(server, war, DeployOptions.SERVER_ONLY);
+        server.startServer();
     }
 
     @AfterClass
@@ -101,7 +104,7 @@ public class SimpleJAXRSCDITest {
 
     @Test
     public void testSimple() throws IOException {
-        runGetMethod(200, "/helloworld/helloworld", HelloWorldBean.MESSAGE);
+        runGetMethod(200, "/helloworld/helloworld", MESSAGE);
     }
 
     private StringBuilder runGetMethod(int exprc, String requestUri, String testOut) throws IOException {

@@ -8,28 +8,22 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.config.fat.tests.helloworld;
+package com.ibm.ws.microprofile10.fat.tests.helloworld;
 
-import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+import java.util.HashSet;
+import java.util.Set;
 
-@Path("/helloworld")
-public class HelloWorldResource {
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.core.Application;
 
-    @Inject
-    HelloWorldBean bean;
+@ApplicationPath("/")
+public class HelloWorldApplication extends Application {
 
-    /**
-     * Processes a GET request and returns the stored message.
-     *
-     * @return the stored message
-     */
-    @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    public String getMessage() {
-        return bean.getMessage();
+    @Override
+    public Set<Class<?>> getClasses() {
+        Set<Class<?>> classes = new HashSet<Class<?>>();
+        classes.add(HelloWorldResource.class);
+        return classes;
     }
+
 }

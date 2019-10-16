@@ -8,16 +8,28 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.config.fat.tests.helloworld;
+package com.ibm.ws.microprofile12.fat.suite;
 
-import javax.enterprise.context.ApplicationScoped;
+import org.junit.BeforeClass;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
-@ApplicationScoped
-public class HelloWorldBean {
+import com.ibm.ws.fat.util.FatLogHandler;
 
-    public static final String MESSAGE = "Hello World!";
+@RunWith(Suite.class)
+@SuiteClasses({
+                SimpleJAXRSCDITest.class,
+})
 
-    public String getMessage() {
-        return MESSAGE;
+public class FATSuite {
+
+    /**
+     * @see {@link FatLogHandler#generateHelpFile()}
+     */
+    @BeforeClass
+    public static void generateHelpFile() {
+        FatLogHandler.generateHelpFile();
     }
+
 }
