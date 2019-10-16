@@ -648,6 +648,7 @@ if (isBuildOsNativePackages){
         include 'openliberty.spec.template'
         into 'packaging/rpmbuild/SPECS'
         filter { line -> line.replaceAll('@SPEC_VERSION@', bnd('libertyServiceVersion', 'Unknown')) }
+        filter { line -> line.replaceAll('@SPEC_TIMESTAMP@', bnd('buildLabel', 'Unknown')) }
         rename { it.replace(".template", "") }
     }
 
@@ -656,6 +657,7 @@ if (isBuildOsNativePackages){
         include 'changelog.template'
         into 'packaging/debuild/openliberty/debian'
         filter { line -> line.replaceAll('@CHANGELOG_VERSION@', bnd('libertyServiceVersion', 'Unknown')) }
+        filter { line -> line.replaceAll('@CHANGELOG_TIMESTAMP@', bnd('buildLabel', 'Unknown')) }
         rename { it.replace(".template", "") }
     }
 
