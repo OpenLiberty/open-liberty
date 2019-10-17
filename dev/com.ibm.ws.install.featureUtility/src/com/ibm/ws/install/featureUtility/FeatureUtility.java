@@ -12,7 +12,6 @@ package com.ibm.ws.install.featureUtility;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.FileVisitResult;
@@ -27,13 +26,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 import java.util.Stack;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.ibm.ws.install.InstallException;
-import com.ibm.ws.install.internal.ExceptionUtils;
 import com.ibm.ws.install.internal.InstallKernelMap;
 import com.ibm.ws.install.internal.InstallLogUtils;
+import com.ibm.ws.install.internal.ProgressBar;
 import com.ibm.ws.install.internal.InstallLogUtils.Messages;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
 
@@ -49,12 +47,16 @@ public class FeatureUtility {
     private final List<String> featuresToInstall;
     private String openLibertyVersion;
     private final Logger logger;
-
+    private ProgressBar progressBar;
     
     private final String OPEN_LIBERTY_PRODUCT_ID = "io.openliberty"; //TODO
 
     private FeatureUtility(FeatureUtilityBuilder builder) throws IOException, InstallException {
         this.logger = InstallLogUtils.getInstallLogger();
+        this.progressBar = ProgressBar.getInstance();
+
+        info("Initializing Feature Utility...");
+
         this.openLibertyVersion = getLibertyVersion();
         
         this.fromDir = builder.fromDir;
@@ -65,7 +67,14 @@ public class FeatureUtility {
         map = new InstallKernelMap();
 
         List<File> jsonPaths = (fromDir != null && fromDir.exists()) ? getJsons(fromDir) : getJsonsFromMavenCentral();
+        updateProgress(progressBar.getMethodIncrement("fetchJsons"));
+        fine("Finished finding jsons");
+
         initializeMap(jsonPaths);
+        updateProgress(progressBar.getMethodIncrement("initializeMap"));
+        fine("Initialized install kernel map");
+
+        info("Feature Utility successfully initialized.");
     }
 
     /**
@@ -124,7 +133,7 @@ public class FeatureUtility {
             throw new InstallException("Could not determine the open liberty runtime version.");
 
         } else {
-            logger.log(Level.FINE, "The Open Liberty runtime version is " + openLibertyVersion);
+            fine("The Open Liberty runtime version is " + openLibertyVersion);
         }
         this.openLibertyVersion = openLibertyVersion;
         return openLibertyVersion;
@@ -138,67 +147,73 @@ public class FeatureUtility {
      */
     @SuppressWarnings("unchecked")
     public void installFeatures() throws InstallException, IOException {
+        fine("Resolving features...");
         Collection<String> resolvedFeatures = (Collection<String>) map.get("action.result");
-        logger.log(Level.FINE, "Resolved features: " + resolvedFeatures);
         if (resolvedFeatures == null) {
             throw new InstallException((String) map.get("action.error.message"));
         } else if (resolvedFeatures.isEmpty()) {
-            logger.log(Level.FINE, "The list of resolved features is empty.");
+            fine("The list of resolved features is empty.");
             String exceptionMessage = (String) map.get("action.error.message");
             if (exceptionMessage == null) {
-                logger.log(Level.INFO, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ALREADY_INSTALLED",
+                info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ALREADY_INSTALLED",
                                                                                       map.get("features.to.resolve")));
                 return;
             } else if (exceptionMessage.contains("CWWKF1250I")) {
-                logger.log(Level.INFO, exceptionMessage);
+                info(exceptionMessage);
                 return;
             } else {
                 throw new InstallException(exceptionMessage);
             }
         }
+        updateProgress(progressBar.getMethodIncrement("resolvedFeatures"));
+        info("Resolved the features");
+
 
         Collection<File> artifacts = fromDir != null ? downloadFeaturesFrom(resolvedFeatures, fromDir) : downloadFeatureEsas((List<String>) resolvedFeatures);
+        updateProgress(progressBar.getMethodIncrement("fetchArtifacts"));
+        info("Found the artifacts");
 
         Collection<String> actionReturnResult = new ArrayList<String>();
         Collection<String> currentReturnResult;
 
-        logger.log(Level.INFO, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_STARTING_INSTALL"));
+        info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_STARTING_INSTALL"));
         try {
+            double increment = ((double) (progressBar.getMethodIncrement("installFeatures")) / (artifacts.size()));
             for (File esaFile : artifacts) {
-
-                logger.log(Level.FINE, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_INSTALLING",
+                fine(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_INSTALLING",
                                                                                       extractFeature(esaFile.getName())));
                 map.put("license.accept", true);
                 map.put("action.install", esaFile);
                 if (toExtension != null) {
                     map.put("to.extension", toExtension);
-                    logger.log(Level.FINE, "Installing to extension: " + toExtension);
+//                    fine("Installing to extension: " + toExtension);
                 }
 
                 Integer ac = (Integer) map.get("action.result");
-                logger.log(Level.FINE, "action.result:" + ac);
-                logger.log(Level.FINE, "action.error.message:" + map.get("action.error.message"));
+//                fine("action.result:" + ac);
+//                fine("action.error.message:" + map.get("action.error.message"));
 
                 if (map.get("action.error.message") != null) {
                     // error with installation
-                    logger.log(Level.FINE, "action.exception.stacktrace: " + map.get("action.error.stacktrace"));
+                    fine("action.exception.stacktrace: " + map.get("action.error.stacktrace"));
                     String exceptionMessage = (String) map.get("action.error.message");
                     throw new InstallException(exceptionMessage);
                 } else if ((currentReturnResult = (Collection<String>) map.get("action.install.result")) != null) {
                     // installation was successful
                     if (!currentReturnResult.isEmpty()) {
                         actionReturnResult.addAll((Collection<String>) map.get("action.install.result"));
-                        logger.log(Level.INFO,
-                                   (Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("LOG_INSTALLED_FEATURE", currentReturnResult)));
+                        updateProgress(increment);
+                        info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("LOG_INSTALLED_FEATURE",
+                                currentReturnResult));
                         // TODO: come up with new message for install feature
                         // String.join(", ", currentReturnResult)).replace("CWWKF1304I: ", "")
 
                     }
                 }
             }
-            logger.log(Level.INFO, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("TOOL_INSTALLATION_COMPLETED"));
-        } finally {
 
+            info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("TOOL_INSTALLATION_COMPLETED"));
+        } finally {
             cleanUp();
         }
     }
@@ -214,7 +229,7 @@ public class FeatureUtility {
         map.put("download.inidividual.artifact", singleArtifactInstall);
         List<File> result = (List<File>) map.get("download.result");
         if (map.get("action.error.message") != null) {
-            logger.log(Level.FINE, "action.exception.stacktrace: " + map.get("action.error.stacktrace"));
+            fine("action.exception.stacktrace: " + map.get("action.error.stacktrace"));
             String exceptionMessage = (String) map.get("action.error.message");
             throw new InstallException(exceptionMessage);
         }
@@ -266,7 +281,7 @@ public class FeatureUtility {
                 jsonFiles.add(f);
             }
         }
-        logger.log(Level.FINE, "Found the following jsons: " + jsonFiles);
+        fine("Found the following jsons: " + jsonFiles);
         if (jsonFiles.isEmpty()) {
             // TODO throw exception if user does not allow network connection from system
             // properties, else download from mvn central
@@ -326,12 +341,11 @@ public class FeatureUtility {
         result.add(OL);
         result.add(CL);
         if (map.get("action.error.message") != null) {
-            logger.log(Level.FINE, "action.exception.stacktrace: " + map.get("action.error.stacktrace"));
+            fine("action.exception.stacktrace: " + map.get("action.error.stacktrace"));
             String exceptionMessage = (String) map.get("action.error.message");
             throw new InstallException(exceptionMessage);
         }
-        logger.log(Level.FINE,
-                   "Downloaded the following jsons from maven central:" + result);
+        fine("Downloaded the following jsons from maven central:" + result);
         return result;
 
     }
@@ -349,10 +363,11 @@ public class FeatureUtility {
         	File temp = new File(tempStr);
             deleted = deleteFolder(temp);
         }
+        updateProgress(progressBar.getMethodIncrement("cleanUp"));
         if (deleted) {
-            logger.log(Level.FINE, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("MSG_CLEANUP_SUCCESS"));
+            fine(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("MSG_CLEANUP_SUCCESS"));
         } else {
-            logger.log(Level.FINE, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("LOG_CANNOT_CLOSE_OBJECT"));
+            fine(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("LOG_CANNOT_CLOSE_OBJECT"));
         }
 
     }
@@ -383,6 +398,32 @@ public class FeatureUtility {
             }
         });
         return !file.exists();
+    }
+
+    private void updateProgress(double increment) {
+        progressBar.updateProgress(increment);
+
+    }
+
+    // log message types
+    private void info(String msg) {
+        System.out.print("\033[2K"); // Erase line content
+        logger.info(msg);
+        progressBar.display();
+    }
+
+    private void fine(String msg) {
+        System.out.print("\033[2K"); // Erase line content
+        logger.fine(msg);
+        progressBar.display();
+
+    }
+
+    private void severe(String msg) {
+        System.out.print("\033[2K"); // Erase line content
+        logger.severe(msg);
+        progressBar.display();
+
     }
 
     public static class FeatureUtilityBuilder {

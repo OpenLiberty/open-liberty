@@ -137,6 +137,7 @@ public class InstallKernelMap implements Map {
     private final String TEMP_DIRECTORY = Utils.getInstallDir().getAbsolutePath() + File.separatorChar + "tmp"
                                           + File.separatorChar;
     private final Logger logger = InstallLogUtils.getInstallLogger();
+    private final ProgressBar progressBar = ProgressBar.getInstance();
 
     private enum ActionType {
         install,
@@ -1052,9 +1053,11 @@ public class InstallKernelMap implements Map {
         if (foundFeatures.size() != resolvedFeatures.size() && !missingFeatures.isEmpty()) {
             List<Integer> missingFeatureIndexes = artifactsMap.get("missingArtifactIndexes");
             List<File> downloadedFeatures = downloadFeatures(missingFeatures);
-            logger.log(Level.INFO, "Downloaded the following features from maven central:" + downloadedFeatures);
-
             insertElementsIntoList(foundFeatures, downloadedFeatures, missingFeatureIndexes);
+            // some increment left over
+            double increment = ((double) (progressBar.getMethodIncrement("fetchArtifacts") / resolvedFeatures.size()) * downloadedFeatures.size());
+            updateProgress(increment);
+            fine("Downloaded the following features from maven central:" + downloadedFeatures);
 
         }
         return foundFeatures;
@@ -1078,8 +1081,10 @@ public class InstallKernelMap implements Map {
         List<File> foundArtifacts = new ArrayList<>();
         List<Integer> missingArtifactIndexes = new ArrayList<>();
         int index = 0;
+
+        double increment = ((double) progressBar.getMethodIncrement("fetchArtifacts") / artifacts.size());
         for (String feature : artifacts) {
-            //logger.log(Level.FINE, "Processing feature: " + feature);
+            fine("Processing feature: " + feature);
             String groupId = feature.split(":")[0];
             String featureName = feature.split(":")[1];
             File groupDir = new File(rootDir, groupId.replace(".", "/"));
@@ -1090,16 +1095,17 @@ public class InstallKernelMap implements Map {
             String featureEsa = featureName + "-" + openLibertyVersion + extension;
             Path featurePath = Paths.get(groupDir.getAbsolutePath().toString(), featureName, openLibertyVersion, featureEsa);
 
-            logger.log(Level.FINE, "Found feature at path: " + featurePath.toString());
             if (Files.isRegularFile(featurePath)) {
                 foundArtifacts.add(featurePath.toFile());
                 artifactsClone.remove(feature);
+                updateProgress(increment);
+                fine("Found feature at path: " + featurePath.toString());
+
             } else {
                 missingArtifactIndexes.add(index);
             }
 
             index += 1;
-
         }
         Map<String, List> artifactsMap = new HashMap<>();
         artifactsMap.put("foundArtifacts", foundArtifacts);
@@ -1157,10 +1163,37 @@ public class InstallKernelMap implements Map {
             data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(ie));
 
         } else {
-            logger.log(Level.FINE, "The Open Liberty runtime version is " + openLibertyVersion);
+
+            fine("The Open Liberty runtime version is " + openLibertyVersion);
         }
         this.openLibertyVersion = openLibertyVersion;
         return openLibertyVersion;
+
+    }
+
+    private void updateProgress(double increment) {
+        progressBar.updateProgress(increment);
+
+    }
+
+    // log message types
+    private void info(String msg) {
+        System.out.print("\033[2K"); // Erase line content
+        logger.info(msg);
+        progressBar.display();
+    }
+
+    private void fine(String msg) {
+        System.out.print("\033[2K"); // Erase line content
+        logger.fine(msg);
+        progressBar.display();
+
+    }
+
+    private void severe(String msg) {
+        System.out.print("\033[2K"); // Erase line content
+        logger.severe(msg);
+        progressBar.display();
 
     }
 

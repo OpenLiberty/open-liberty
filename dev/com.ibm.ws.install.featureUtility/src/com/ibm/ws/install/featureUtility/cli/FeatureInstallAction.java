@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -28,6 +29,7 @@ import com.ibm.ws.install.featureUtility.FeatureUtility;
 import com.ibm.ws.install.featureUtility.FeatureUtilityExecutor;
 import com.ibm.ws.install.internal.InstallLogUtils;
 import com.ibm.ws.install.internal.InstallUtils;
+import com.ibm.ws.install.internal.ProgressBar;
 import com.ibm.ws.install.internal.asset.ServerAsset;
 import com.ibm.ws.kernel.boot.ReturnCode;
 import com.ibm.ws.kernel.boot.cmdline.ActionHandler;
@@ -44,6 +46,7 @@ public class FeatureInstallAction implements ActionHandler {
     private List<String> featureNames;
     private String fromDir;
     private String toDir;
+    private ProgressBar progressBar;
 
     @Override
     public ExitCode handleTask(PrintStream stdout, PrintStream stderr, Arguments args) {
@@ -68,6 +71,20 @@ public class FeatureInstallAction implements ActionHandler {
         this.argList = args.getPositionalArguments();
         this.fromDir = args.getOption("from");
         this.toDir = args.getOption("to");
+
+        this.progressBar = ProgressBar.getInstance();
+
+        HashMap<String, Integer> methodMap = new HashMap<>();
+        // initialize feature utility and install kernel map
+        methodMap.put("initializeMap", 10);
+        methodMap.put("fetchJsons", 10);
+        // in installFeature we have 80 units to work with
+        methodMap.put("resolvedFeatures", 20);
+        methodMap.put("fetchArtifacts", 20);
+        methodMap.put("installFeatures", 30);
+        methodMap.put("cleanUp", 10);
+
+        progressBar.setMethodMap(methodMap);
 
         String arg = argList.get(0);
         try {
@@ -162,8 +179,12 @@ public class FeatureInstallAction implements ActionHandler {
         if (ReturnCode.OK.equals(rc) && !featureNames.isEmpty()) {
             rc = install();
         }
+
+        progressBar.finish();
+
         return rc;
 
     }
+
 
 }
