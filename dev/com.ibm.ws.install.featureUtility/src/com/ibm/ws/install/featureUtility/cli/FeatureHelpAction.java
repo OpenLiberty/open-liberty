@@ -20,7 +20,7 @@ import com.ibm.ws.kernel.boot.cmdline.ExitCode;
 
 public class FeatureHelpAction implements ActionHandler {
     private static final String COMMAND = "featureUtility";
-    private static final String NL = System.getProperty("line,.separator");
+    private static final String NL = System.getProperty("line.separator");
 
     public String getScriptUsage() {
         StringBuffer scriptUsage = new StringBuffer(NL);
@@ -39,7 +39,7 @@ public class FeatureHelpAction implements ActionHandler {
 
     public String getTaskUsage(FeatureAction task) {
         // TODO
-        return "";
+        return getScriptUsage(); // TODO return task usage for each task
     }
 
     @Override
