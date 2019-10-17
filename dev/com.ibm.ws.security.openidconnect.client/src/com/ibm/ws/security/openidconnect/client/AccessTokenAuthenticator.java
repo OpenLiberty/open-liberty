@@ -114,8 +114,11 @@ public class AccessTokenAuthenticator {
         }
 
         String validationMethod = clientConfig.getValidationMethod();
-        if (accessToken.indexOf(".") >= 0) {
-            // found n jwt token
+
+        // if there are 2 or more "." in the token - it's pretty safe to assume we have a JWT
+        String[] parts = accessToken.split(".");
+        if (parts.length > 1) {
+            // found a jwt token
             validationMethod = ClientConstants.VALIDATION_LOCAL;
             oidcClientRequest.setTokenType(OidcClientRequest.TYPE_JWT_TOKEN);
         }
@@ -426,8 +429,8 @@ public class AccessTokenAuthenticator {
         ProviderAuthenticationResult oidcResult = new ProviderAuthenticationResult(AuthResult.FAILURE, HttpServletResponse.SC_UNAUTHORIZED);
 
         oidcClientRequest.setTokenType(OidcClientRequest.TYPE_JWT_TOKEN);
-        
-        // jose4jUtil will log an error if something was wrong with the token and set the PAR to 401. 
+
+        // jose4jUtil will log an error if something was wrong with the token and set the PAR to 401.
         return jose4jUtil.createResultWithJose4JForJwt(accessToken, clientConfig, oidcClientRequest);
     }
 
