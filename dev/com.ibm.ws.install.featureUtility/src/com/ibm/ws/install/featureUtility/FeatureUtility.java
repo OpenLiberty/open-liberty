@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 import java.util.Stack;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.ibm.ws.install.InstallException;
@@ -45,11 +46,11 @@ public class FeatureUtility {
     private final File esaFile;
     private final String toExtension;
     private final List<String> featuresToInstall;
-    private String openLibertyVersion;
+    private static String openLibertyVersion;
     private final Logger logger;
     private ProgressBar progressBar;
     
-    private final String OPEN_LIBERTY_PRODUCT_ID = "io.openliberty"; //TODO
+    private final static String OPEN_LIBERTY_PRODUCT_ID = "io.openliberty"; //TODO
 
     private FeatureUtility(FeatureUtilityBuilder builder) throws IOException, InstallException {
         this.logger = InstallLogUtils.getInstallLogger();
@@ -58,6 +59,7 @@ public class FeatureUtility {
         info("Initializing Feature Utility...");
 
         this.openLibertyVersion = getLibertyVersion();
+
         
         this.fromDir = builder.fromDir;
         this.toExtension = builder.toExtension;
@@ -234,6 +236,28 @@ public class FeatureUtility {
             throw new InstallException(exceptionMessage);
         }
         return result;
+    }
+    
+    public void downloadFeatures(boolean isShortNames) throws InstallException {
+    	map.put("download.location", fromDir.toString());
+    	List<String> mavenCoords = new ArrayList<String>();
+    	if (isShortNames) {
+    		for (String shortName: featuresToInstall) {
+    			mavenCoords.add(OPEN_LIBERTY_PRODUCT_ID + ".features:" + shortName + ":" + openLibertyVersion);
+    		}
+    		featuresToInstall.clear();
+    		featuresToInstall.addAll(mavenCoords);
+    	}
+        info("featuresToInstall: " + featuresToInstall);
+    	map.put("download.artifact.list", featuresToInstall);
+    	boolean singleArtifactInstall = false;
+        map.put("download.inidividual.artifact", singleArtifactInstall);
+        List<File> result = (List<File>) map.get("download.result");
+        if (map.get("action.error.message") != null) {
+            fine("action.exception.stacktrace: " + map.get("action.error.stacktrace"));
+            String exceptionMessage = (String) map.get("action.error.message");
+            throw new InstallException(exceptionMessage);
+        }
     }
 
     /**
@@ -456,6 +480,38 @@ public class FeatureUtility {
             return new FeatureUtility(this);
         }
 
+    }
+    
+    public static List<String> getMissingArtifactsFromFolder(List<String> artifacts, String location, boolean isShortName) throws IOException, InstallException{
+    	List<String> result = new ArrayList<String>();
+    	
+    	for (String id: artifacts) {
+    		Path featurePath;
+    		if (isShortName) {
+    			String groupId = OPEN_LIBERTY_PRODUCT_ID + ".features";
+    			File groupDir = new File(location, groupId.replace(".", "/")); 
+    			if (!groupDir.exists()) {
+                	result.add(id);
+                    continue;
+                }
+    			String featureEsa = id + "-" + openLibertyVersion + ".esa";
+    			featurePath = Paths.get(groupDir.getAbsolutePath().toString(), id, openLibertyVersion, featureEsa);
+    		} else {
+    			String groupId = id.split(":")[0];
+            	String featureName = id.split(":")[1];
+            	File groupDir = new File(location, groupId.replace(".", "/"));
+            	if (!groupDir.exists()) {
+            		result.add(id);
+                	continue;
+            	}
+            	String featureEsa = featureName + "-" + openLibertyVersion + ".esa";
+            	featurePath = Paths.get(groupDir.getAbsolutePath().toString(), featureName, openLibertyVersion, featureEsa);
+    		}
+            if (!Files.isRegularFile(featurePath)) {
+            	result.add(id);
+            }
+    	}
+    	return result;
     }
 
 }

@@ -19,6 +19,7 @@ import java.net.URLConnection;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import com.ibm.ws.install.InstallException;
 import com.ibm.ws.install.internal.InstallLogUtils.Messages;
@@ -33,7 +34,11 @@ public class ArtifactDownloader {
 
     private final String appVersion = "1.0.0"; //TODO replace with openliberty version?
 
-    private final List<File> downloadedFiles = new ArrayList<File>();;
+    private final List<File> downloadedFiles = new ArrayList<File>();
+
+    private final Logger logger = InstallLogUtils.getInstallLogger();
+
+    private final ProgressBar progressBar = ProgressBar.getInstance();
 
     public void synthesizeAndDownloadFeatures(List<String> mavenCoords, String dLocation, String repo) throws InstallException {
         checkValidProxy();
@@ -64,6 +69,7 @@ public class ArtifactDownloader {
             }
             throw ExceptionUtils.createByKey("ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_REPO", missingFeatureList, "feature(s)", repo);
         } else {
+            info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_DOWNLOADING_FEATURES"));
             for (String coords : mavenCoords) {
                 synthesizeAndDownload(coords, "esa", dLocation, repo, false);
                 synthesizeAndDownload(coords, "pom", dLocation, repo, false);
@@ -126,6 +132,7 @@ public class ArtifactDownloader {
             File fileLoc = new File(ArtifactDownloaderUtils.getFileLocation(dLocation, groupId, artifactId, version, filename));
 
             downloadInternal(uriLoc, fileLoc);
+
             downloadedFiles.add(fileLoc);
 
             for (String checksumFormat : checksumFormats) {
@@ -137,6 +144,7 @@ public class ArtifactDownloader {
                     throw ExceptionUtils.createByKey("ERROR_DOWNLOADED_ASSET_INVALID_CHECKSUM", filename, Messages.INSTALL_KERNEL_MESSAGES.getMessage("FEATURE_ASSET"));
                 }
             }
+            info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("MSG_DOWNLOAD_SUCCESS", artifactId));
 
         } catch (URISyntaxException e) {
             throw new InstallException(e.getMessage());
@@ -293,6 +301,27 @@ public class ArtifactDownloader {
                 throw ExceptionUtils.createByKey("ERROR_TOOL_PROXY_PWD_MISSING");
             }
         }
+    }
+
+    // log message types
+    private void info(String msg) {
+        System.out.print("\033[2K"); // Erase line content
+        logger.info(msg);
+        progressBar.display();
+    }
+
+    private void fine(String msg) {
+        System.out.print("\033[2K"); // Erase line content
+        logger.fine(msg);
+        progressBar.display();
+
+    }
+
+    private void severe(String msg) {
+        System.out.print("\033[2K"); // Erase line content
+        logger.severe(msg);
+        progressBar.display();
+
     }
 
 }
