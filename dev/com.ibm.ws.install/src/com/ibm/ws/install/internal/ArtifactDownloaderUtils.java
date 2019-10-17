@@ -44,8 +44,8 @@ public class ArtifactDownloaderUtils {
             HttpURLConnection.setFollowRedirects(true);
             HttpURLConnection conn;
             URL url = new URL(URLName);
-            if (System.getProperty("http.proxyUser") != null) {
-                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(System.getProperty("http.proxyHost"), 8080));
+            if (System.getenv("http.proxyUser") != null) {
+                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(System.getenv("http.proxyHost"), 8080));
                 conn = (HttpURLConnection) url.openConnection(proxy);
             } else {
                 conn = (HttpURLConnection) url.openConnection();
@@ -54,15 +54,12 @@ public class ArtifactDownloaderUtils {
             int responseCode = conn.getResponseCode();
             return responseCode;
         } catch (ConnectException e) {
-            System.out.println("improper proxy host"); //TODO proper error message
-            e.printStackTrace();
+            throw e;
         } catch (SocketTimeoutException e) {
-            System.out.println("connection timeout: " + URLName); //TODO proper error message, maybe make this a method throw
-            e.printStackTrace();
+            throw e;
         } catch (IOException e) {
             throw e;
         }
-        return 0;
     }
 
     public static List<String> acquireFeatureURLs(List<String> mavenCoords, String repo) {

@@ -109,11 +109,9 @@ public class FeatureDownloadAction implements ActionHandler {
             featureUtility = new FeatureUtility.FeatureUtilityBuilder().setFromDir(location)
             		.setFeaturesToInstall(artifactNames).build();
             featureUtility.downloadFeatures(false);
-            logger.log(Level.INFO, "artifactNames: " + artifactNames); //TODO remove
             featureUtility = new FeatureUtility.FeatureUtilityBuilder().setFromDir(location)
             		.setFeaturesToInstall(artifactShortNames).build();
             featureUtility.downloadFeatures(true);
-            logger.log(Level.INFO, "artifactShortNames: " + artifactShortNames); //TODO remove
         } catch (InstallException e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
             return FeatureUtilityExecutor.returnCode(e.getRc());
