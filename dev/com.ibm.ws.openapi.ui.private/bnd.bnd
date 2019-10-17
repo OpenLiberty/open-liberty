@@ -20,5 +20,6 @@ Web-ContextPath: @privateOpenAPIExplorerURL
 IBM-Authorization-Roles: com.ibm.ws.management
 
 Include-Resource: \
-  WEB-INF=build/resources/WEB-INF, \
-  build/resources/WEB-CONTENT
+  WEB-INF=../com.ibm.ws.openapi.ui/resources/WEB-INF, \
+  WEB-INF=resources/WEB-INF, \
+  ../com.ibm.ws.openapi.ui/resources/WEB-CONTENT
