@@ -106,7 +106,7 @@ Include-Resource: \
   @${repo;org.eclipse.persistence.asm;7.1.0.v201909181055;EXACT}!/!META-INF/maven/*,\
   @${repo;org.eclipse.persistence.core;2.6.8.WAS;EXACT}!/!META-INF/maven/*,\
   @${repo;org.eclipse.persistence.jpa.jpql;2.6.8.WAS;EXACT}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence.jpa.modelgen;2.6.8.WAS-v20190923-928b93c;EXACT}!/!META-INF/maven/*,\
+  @${repo;org.eclipse.persistence.jpa.modelgen;2.6.8.WAS-v20191015-5b6c763;EXACT}!/!META-INF/maven/*,\
   @${repo;org.eclipse.persistence.jpa;2.6.8.WAS;EXACT}!/!META-INF/maven/*
 
 publish.wlp.jar.suffix: dev/api/third-party
