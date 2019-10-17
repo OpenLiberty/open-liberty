@@ -17,7 +17,7 @@
 
     <properties>
         <microprofile.metrics.version>2.0.1</microprofile.metrics.version>
-        <arquillian.version>1.1.13.Final</arquillian.version>
+        <arquillian.version>1.4.0.Final</arquillian.version>
 
         <!-- the below is used in arquillian.xml -->
         <wlp>${wlp}</wlp>
@@ -75,7 +75,7 @@
         <dependency>
             <groupId>io.openliberty.arquillian</groupId>
             <artifactId>arquillian-liberty-managed</artifactId>
-            <version>1.0.5</version>
+            <version>1.0.6</version>
             <scope>test</scope>
         </dependency>
         <dependency>

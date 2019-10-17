@@ -24,7 +24,7 @@
         <microprofile.config.version>${default.config.version}</microprofile.config.version>
 
         <!-- Override with, for example, -Darquillian.version=1.4 -->
-        <default.arquillian.version>1.3.0.Final</default.arquillian.version>
+        <default.arquillian.version>1.4.0.Final</default.arquillian.version>
         <arquillian.version>${default.arquillian.version}</arquillian.version>
 
         <!-- The api version is taken from the pom.xml in the top level directory of the repo
@@ -107,7 +107,7 @@
         <dependency>
             <groupId>io.openliberty.arquillian</groupId>
             <artifactId>arquillian-liberty-managed</artifactId>
-            <version>1.0.5</version>
+            <version>1.0.6</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
