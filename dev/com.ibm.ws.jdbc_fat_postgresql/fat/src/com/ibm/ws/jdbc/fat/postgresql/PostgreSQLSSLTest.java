@@ -11,6 +11,10 @@
 package com.ibm.ws.jdbc.fat.postgresql;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.Statement;
 
@@ -38,6 +42,12 @@ import jdbc.fat.postgresql.web.PostgreSQLSSLTestServlet;
 @Mode(TestMode.FULL)
 public class PostgreSQLSSLTest extends FATServletClient {
     private static final Class<?> c = PostgreSQLSSLTest.class;
+
+    static {
+        // Temporary code to debug zOS file permissions issue
+        getUnixFileMode(new File("lib/LibertyFATTestFiles/ssl-certs/server.crt").getAbsolutePath());
+        getUnixFileMode(new File("lib/LibertyFATTestFiles/ssl-certs/server.key").getAbsolutePath());
+    }
 
     public static final String APP_NAME = "postgresqlApp";
     private static final String POSTGRES_DB = "testdb";
@@ -70,6 +80,36 @@ public class PostgreSQLSSLTest extends FATServletClient {
                                     .withConfigOption("ssl_cert_file", "/var/lib/postgresql/server.crt")
                                     .withConfigOption("ssl_key_file", "/var/lib/postgresql/server.key")
                                     .withLogConsumer(PostgreSQLSSLTest::log);
+
+    private static int getUnixFileMode(final String pathAsString) {
+        final String m = "getUnixFileMode";
+        Log.info(c, m, "Debug for path: " + pathAsString);
+        final Path path = Paths.get(pathAsString);
+
+        int mode = 0;
+        try {
+            mode = (int) Files.getAttribute(path, "unix:mode");
+        } catch (IOException | UnsupportedOperationException e) {
+            Log.error(c, m, e, "  Exception obtaining 'unix:mode'");
+            // fallback for non-posix environments
+            mode = 0100644;
+            if (Files.isDirectory(path)) {
+                mode = 040755;
+                Log.info(c, m, "  is a dir");
+            } else if (Files.isExecutable(path)) {
+                mode |= 0111; // equiv to +x for user/group/others
+                Log.info(c, m, "  is executable");
+            } else {
+                Log.info(c, m, "  fallback case");
+            }
+        }
+
+        if (mode > 2097151)
+            Log.info(c, m, "  CAUGHT ERROR CONDITION -- MODE IS TOO BIG: " + mode);
+
+        Log.info(c, m, "  returning mode: " + mode);
+        return mode;
+    }
 
     @BeforeClass
     public static void setUp() throws Exception {
