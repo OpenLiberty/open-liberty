@@ -69,10 +69,11 @@ public class ArtifactDownloader {
             }
             throw ExceptionUtils.createByKey("ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_REPO", missingFeatureList, "feature(s)", repo);
         } else {
-            info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_DOWNLOADING_FEATURES"));
             for (String coords : mavenCoords) {
                 synthesizeAndDownload(coords, "esa", dLocation, repo, false);
                 synthesizeAndDownload(coords, "pom", dLocation, repo, false);
+                updateProgress(progressBar.getMethodIncrement("downloadArtifact"));
+                info("Finished downloading feature: " + coords);
             }
         }
     }
@@ -145,8 +146,6 @@ public class ArtifactDownloader {
                     throw ExceptionUtils.createByKey("ERROR_DOWNLOADED_ASSET_INVALID_CHECKSUM", filename, Messages.INSTALL_KERNEL_MESSAGES.getMessage("FEATURE_ASSET"));
                 }
             }
-            info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("MSG_DOWNLOAD_SUCCESS", artifactId));
-
         } catch (URISyntaxException e) {
             throw new InstallException(e.getMessage());
         } catch (NoSuchAlgorithmException e) {
@@ -302,6 +301,11 @@ public class ArtifactDownloader {
                 throw ExceptionUtils.createByKey("ERROR_TOOL_PROXY_PWD_MISSING");
             }
         }
+    }
+
+    private void updateProgress(double increment) {
+        progressBar.updateProgress(increment);
+
     }
 
     // log message types
