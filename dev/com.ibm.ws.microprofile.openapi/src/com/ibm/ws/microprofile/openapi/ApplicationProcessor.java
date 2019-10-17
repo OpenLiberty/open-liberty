@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.openapi;
 
+import java.security.AccessController;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -60,6 +61,7 @@ import com.ibm.ws.microprofile.openapi.impl.validation.ValidatorUtils;
 import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
 import com.ibm.ws.microprofile.openapi.utils.ProxySupportUtil;
 import com.ibm.ws.microprofile.openapi.utils.ServerInfo;
+import com.ibm.ws.util.ThreadContextAccessor;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
 import com.ibm.wsspi.adaptable.module.NonPersistentCache;
@@ -73,6 +75,8 @@ import com.ibm.wsspi.http.VirtualHost;
 public class ApplicationProcessor {
 
     private static final TraceComponent tc = Tr.register(ApplicationProcessor.class);
+
+    private static final ThreadContextAccessor THREAD_CONTEXT_ACCESSOR = AccessController.doPrivileged(ThreadContextAccessor.getPrivilegedAction());
 
     enum DocType {
         JSON,
@@ -254,6 +258,8 @@ public class ApplicationProcessor {
             OASFilter oasFilter = OpenAPIUtils.getOASFilter(appClassloader, configProcessor.getOpenAPIFilterClassName());
             if (oasFilter != null) {
                 final OpenAPIFilter filter = new OpenAPIFilter(oasFilter);
+
+                Object oldClassLoader = THREAD_CONTEXT_ACCESSOR.pushContextClassLoaderForUnprivileged(appClassloader);
                 try {
                     filter.filter(newDocument);
                     if (OpenAPIUtils.isEventEnabled(tc)) {
@@ -263,6 +269,8 @@ public class ApplicationProcessor {
                     if (OpenAPIUtils.isEventEnabled(tc)) {
                         Tr.event(tc, "Failed to call OASFilter: " + e.getMessage());
                     }
+                } finally {
+                    THREAD_CONTEXT_ACCESSOR.popContextClassLoaderForUnprivileged(oldClassLoader);
                 }
             }
 
