@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.reactive.messaging.fat.suite;
+package com.ibm.websphere.simplicity;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
