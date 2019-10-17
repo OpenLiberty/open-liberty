@@ -253,10 +253,10 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
             }
 
             // wait for 2nd server to attempt (but fail) to perform peer recovery
-            int numStringOccurrences = server2.waitForMultipleStringsInLog(3, "PEER RECOVER server with recovery identity cloud001");
-            if (numStringOccurrences < 3) {
+            int numStringOccurrences = server2.waitForMultipleStringsInLog(2, "PEER RECOVER server with recovery identity cloud001");
+            if (numStringOccurrences < 2) {
                 testFailed = true;
-                testFailureString = "Second server did not attempt peer recovery at least 3 times, attempted " + numStringOccurrences;
+                testFailureString = "Second server did not attempt peer recovery at least 2 times, attempted " + numStringOccurrences;
             }
             if (!testFailed && (server2.waitForStringInLog("HADB Peer locking failed for server") == null)) {
                 testFailed = true;

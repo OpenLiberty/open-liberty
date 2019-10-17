@@ -36,8 +36,6 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 src: src, resources
 
--dsannotations: com.ibm.ws.microprofile.opentracing.jaeger.JaegerTracerFactory
-
 -buildpath: \
   com.ibm.ws.logging;version=latest, \
   com.ibm.ws.logging.core;version=latest, \
@@ -46,9 +44,9 @@ src: src, resources
   com.ibm.websphere.org.osgi.service.component;version=latest, \
   com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
   com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
-  com.ibm.ws.opentracing.1.3;version=latest, \
   com.ibm.ws.io.opentracing.opentracing-api.0.31.0;version=latest, \
   com.ibm.ws.microprofile.opentracing.jaeger.adapter;version=latest, \
   com.ibm.ws.microprofile.opentracing.jaeger.adapter.impl;version=latest, \
-  com.ibm.ws.crypto.passwordutil
+  com.ibm.ws.crypto.passwordutil;version=latest, \
+  com.ibm.ws.kernel.boot.core;version=latest
   

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2012, 2019 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+	<OCD id="com.ibm.ws.jbatch.jms.dispatcher.config" 
+	    name="%com.ibm.ws.jbatch.jms.dispatcher.config"
+		description="%com.ibm.ws.jbatch.jms.dispatcher.config.desc" 
+		ibm:alias="batchJmsDispatcher" 
+		ibmui:localization="OSGI-INF/l10n/metatype">
+
+        <AD id="connectionFactoryRef" type="String" default="batchConnectionFactory" cardinality="1" ibm:type="pid" ibm:reference="com.ibm.ws.jca.jmsConnectionFactory" name="%dispatcher.connection.factory.ref" description="%dispatcher.connection.factory.ref.desc"/>
+        <AD id="JMSConnectionFactory.target" type="String" default="(|(service.pid=${connectionFactoryRef})(ibm.extends.source.pid=${connectionFactoryRef}))" ibm:final="true" name="internal" description="internal use only"/>
+               
+        <AD id="queueRef" type="String" default="batchJobSubmissionQueue" ibm:type="pid" ibm:reference="com.ibm.ws.jca.jmsQueue" name="%dispatcher.queue.ref" description="%dispatcher.queue.ref.desc"/>
+        <AD id="JMSQueueFactory.target" type="String" default="(|(service.pid=${queueRef})(ibm.extends.source.pid=${queueRef}))" ibm:final="true" name="internal" description="internal use only"/>                       
+    </OCD>
+ 
+    <Designate factoryPid="com.ibm.ws.jbatch.jms.dispatcher">
+        <Object ocdref="com.ibm.ws.jbatch.jms.dispatcher.config"/>
+    </Designate>
+	
+	<OCD id="com.ibm.ws.jbatch.jms.executor.config" 
+	    name="%com.ibm.ws.jbatch.jms.executor.config"
+		description="%com.ibm.ws.jbatch.jms.executor.config.desc" 
+		ibm:alias="batchJmsExecutor" 
+		ibmui:localization="OSGI-INF/l10n/metatype">
+ 
+        <AD id="activationSpecRef" type="String" default="batchActivationSpec" ibm:type="pid" ibm:reference="com.ibm.ws.jca.jmsActivationSpec" name="%executor.activation.spec.ref" description="%executor.activation.spec.ref.desc"/>
+        <AD id="JmsActivationSpec.target" type="String" default="(|(service.pid=${activationSpecRef})(ibm.extends.source.pid=${activationSpecRef}))" ibm:final="true" name="internal" description="internal use only"/>
+
+        <AD id="replyConnectionFactoryRef" type="String" default="batchConnectionFactory" cardinality="1" ibm:type="pid" ibm:reference="com.ibm.ws.jca.jmsConnectionFactory" name="%executor.reply.connection.factory.ref" description="%executor.reply.connection.factory.ref.desc" required="false"/>
+        <AD id="JMSConnectionFactory.target" type="String" default="(|(service.pid=${replyConnectionFactoryRef})(ibm.extends.source.pid=${replyConnectionFactoryRef}))" ibm:final="true" name="internal" description="internal use only" required="false"/>
+
+  		<AD id="queueRef" type="String" default="batchJobSubmissionQueue" ibm:type="pid" ibm:reference="com.ibm.ws.jca.jmsQueue" name="%executor.queue.ref" description="%executor.queue.ref.desc"/>
+        <AD id="JmsQueue.target" type="String" default="(|(service.pid=${queueRef})(ibm.extends.source.pid=${queueRef}))" ibm:final="true" name="internal" description="internal use only"/>
+        <AD id="operationGroup" name="%com.ibm.ws.jbatch.group.name" description="%com.ibm.ws.jbatch.group.name.desc" required="false" type="String" cardinality="2147483647"/>
+    </OCD>
+    
+    <Designate factoryPid="com.ibm.ws.jbatch.jms.executor">
+        <Object ocdref="com.ibm.ws.jbatch.jms.executor.config"/>
+    </Designate>
+    
+    <OCD id="com.ibm.ws.jbatch.jms.events.config" 
+	    name="%com.ibm.ws.jbatch.jms.events.config"
+		description="%com.ibm.ws.jbatch.jms.events.config.desc" 
+		ibm:alias="batchJmsEvents" 
+		ibmui:localization="OSGI-INF/l10n/metatype">
+     
+        <AD id="connectionFactoryRef" type="String" default="batchConnectionFactory" cardinality="1" ibm:type="pid" ibm:reference="com.ibm.ws.jca.jmsConnectionFactory" name="%events.connection.factory.ref" description="%events.connection.factory.ref.desc"/>
+        <AD id="JMSConnectionFactory.target" type="String" default="(|(service.pid=${connectionFactoryRef})(ibm.extends.source.pid=${connectionFactoryRef}))" ibm:final="true" name="internal" description="internal use only"/>
+        
+        <AD id="topicRoot" type="String" default="batch" name="%events.topic.root.ref" description="%events.topic.root.ref.desc"/>
+
+    </OCD>
+
+	<Designate factoryPid="com.ibm.ws.jbatch.jms.events">
+        <Object ocdref="com.ibm.ws.jbatch.jms.events.config"/>
+    </Designate>
+    
+
+</metatype:MetaData>

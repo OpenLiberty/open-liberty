@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 IBM Corporation and others.
+ * Copyright (c) 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,7 +13,6 @@ package com.ibm.ws.ejbcontainer.security.internal;
 import java.security.Identity;
 import java.security.Principal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -51,6 +50,7 @@ import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.MetaData;
 import com.ibm.ws.security.SecurityService;
 import com.ibm.ws.security.audit.Audit;
+import com.ibm.ws.security.audit.utils.ParameterUtils;
 import com.ibm.ws.security.authentication.AuthenticationService;
 import com.ibm.ws.security.authentication.UnauthenticatedSubjectService;
 import com.ibm.ws.security.authentication.principals.WSIdentity;
@@ -166,7 +166,7 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
      * delegate to the run-as user, if specified. {@inheritDoc}
      *
      * @throws EJBAccessDeniedException when the caller is not authorized to invoke
-     *             the given request
+     *                                      the given request
      */
     /** {@inheritDoc} */
     @Override
@@ -399,10 +399,6 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
         String methodInterface = methodMetaData.getEJBMethodInterface().specName();
         String methodSignature = methodMetaData.getMethodSignature();
         String beanName = methodMetaData.getEJBComponentMetaData().getJ2EEName().getComponent();
-        List<Object> methodParameters = null;
-        if (methodArguments != null && methodArguments.length > 0) {
-            methodParameters = Arrays.asList(methodArguments);
-        }
 
         ejbAuditHashMap.put("applicationName", applicationName);
         ejbAuditHashMap.put("moduleName", moduleName);
@@ -410,8 +406,7 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
         ejbAuditHashMap.put("methodInterface", methodInterface);
         ejbAuditHashMap.put("methodSignature", methodSignature);
         ejbAuditHashMap.put("beanName", beanName);
-        ejbAuditHashMap.put("methodParameters", methodParameters == null ? "null" : methodParameters.toString());
-
+        ejbAuditHashMap.put("methodParameters", ParameterUtils.format(methodArguments).toString());
     }
 
     /**
@@ -423,7 +418,7 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
      * <li>is the subject authorized to any of the required roles</li>
      *
      * @param EJBRequestData the info on the EJB method to call
-     * @param subject the subject authorize
+     * @param subject        the subject authorize
      * @throws EJBAccessDeniedException when the subject is not authorized to the EJB
      */
     @Override
@@ -553,7 +548,7 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
      * If the run-as subject is null or the deployment descriptor specifies to run as the caller,
      * then the passed-in subject is set as the invocation subject instead.
      *
-     * @param methodMetaData the EJB method info
+     * @param methodMetaData    the EJB method info
      * @param delegationSubject subject to set as the invocation when running as caller
      */
     private void performDelegation(EJBMethodMetaData methodMetaData, Subject delegationSubject) {
@@ -743,5 +738,4 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
     public void componentMetaDataDestroyed(MetaDataEvent<ComponentMetaData> event) {
 
     }
-
 }

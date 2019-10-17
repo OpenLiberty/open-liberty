@@ -116,6 +116,65 @@ public class InputFieldsTestServlet extends FATServlet {
                     snippet.contains("weight2:"));
     }
 
+    @Test
+    public void testMutation(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        GraphQLClient client = builder.build(GraphQLClient.class);
+        GraphQLOperation graphQLOperation = new GraphQLOperation();
+        graphQLOperation.setOperationName("createWidget");
+        graphQLOperation.setQuery("mutation createWidget ($widget: WidgetInput) {" + System.lineSeparator() +
+                                  "  createWidget(widget: $widget) {" + System.lineSeparator() +
+                                  "    name," + System.lineSeparator() +
+                                  "    quantity," + System.lineSeparator() +
+                                  "    weight," + System.lineSeparator() +
+                                  "    qty2," + System.lineSeparator() +
+                                  "    weight2," + System.lineSeparator() +
+                                  "  }" + System.lineSeparator() +
+                                  "}");
+        graphQLOperation.setVariables("{" + System.lineSeparator() +
+                                      "  \"widget\": {" + System.lineSeparator() +
+                                      "    \"name\": \"Earbuds\"," + System.lineSeparator() +
+                                      "    \"qty\": 20," + System.lineSeparator() +
+                                      "    \"weight\": 1.2," + System.lineSeparator() +
+                                      "    \"qty2\": 30," + System.lineSeparator() +
+                                      "    \"shippingWeight2\": 1.5" + System.lineSeparator() +
+                                      "  }" + System.lineSeparator() +
+                                      "}");
+        WidgetQueryResponse response = client.allWidgets(graphQLOperation);
+        LOG.info("Mutation Response: " + response);
+        WidgetClientObject widget = response.getData().getCreateWidget();
+        assertNotNull(widget);
+        assertEquals("Earbuds", widget.getName());
+        assertEquals(20, widget.getQuantity());
+        assertEquals(1.2, widget.getWeight(), 0.1);
+        assertEquals(30, widget.getQuantity2());
+        assertEquals(1.5, widget.getWeight2(), 0.1);
+
+        graphQLOperation = new GraphQLOperation();
+        graphQLOperation.setOperationName("allWidgets");
+        graphQLOperation.setQuery("query allWidgets {" + System.lineSeparator() +
+                       "  allWidgets {" + System.lineSeparator() +
+                       "    name," + System.lineSeparator() +
+                       "    quantity" + System.lineSeparator() +
+                       "  }" + System.lineSeparator() +
+                       "}");
+
+        response = client.allWidgets(graphQLOperation);
+        LOG.info("Query Response: " + response);
+        List<WidgetClientObject> widgets = response.getData().getAllWidgets();
+        assertEquals(2, widgets.size());
+        widget = null;
+        for (WidgetClientObject w : widgets) {
+            LOG.info("Found widget: " + w);
+            if ("Earbuds".equals(w.getName())) {
+                widget = w;
+            }
+        }
+        assertNotNull(widget);
+        assertEquals("Earbuds", widget.getName());
+        assertEquals(20, widget.getQuantity());
+        assertEquals(-1.0, widget.getWeight(), 0.1); // weight wasn't specified in the query
+    }
+
     private String getSchemaInputTypeSnippet() {
         GraphQLClient client = builder.build(GraphQLClient.class);
         String schema = client.schema();

@@ -61,6 +61,36 @@ public class MultiReleaseJarTestServlet extends FATServlet {
     }
 
     @Test
+    @MinimumJavaLevel(javaLevel = 13)
+    public void testRequireJava13Class() throws Exception {
+        checkMRClassAvailable("MRClass_RequireJava13", 13);
+    }
+
+    @Test
+    @MinimumJavaLevel(javaLevel = 14)
+    public void testRequireJava14Class() throws Exception {
+        checkMRClassAvailable("MRClass_RequireJava14", 14);
+    }
+
+    @Test
+    @MinimumJavaLevel(javaLevel = 15)
+    public void testRequireJava15Class() throws Exception {
+        checkMRClassAvailable("MRClass_RequireJava15", 15);
+    }
+
+    @Test
+    @MinimumJavaLevel(javaLevel = 16)
+    public void testRequireJava16Class() throws Exception {
+        checkMRClassAvailable("MRClass_RequireJava16", 16);
+    }
+
+    @Test
+    @MinimumJavaLevel(javaLevel = 17)
+    public void testRequireJava17Class() throws Exception {
+        checkMRClassAvailable("MRClass_RequireJava17", 17);
+    }
+
+    @Test
     @MaximumJavaLevel(javaLevel = 8)
     public void testJava9ClassNOTAvailable() throws Exception {
         checkMRClassNOTAvailable("MRClass_RequireJava09");
@@ -82,6 +112,36 @@ public class MultiReleaseJarTestServlet extends FATServlet {
     @MaximumJavaLevel(javaLevel = 11)
     public void testJava12ClassNOTAvailable() throws Exception {
         checkMRClassNOTAvailable("MRClass_RequireJava12");
+    }
+
+    @Test
+    @MaximumJavaLevel(javaLevel = 12)
+    public void testJava13ClassNOTAvailable() throws Exception {
+        checkMRClassNOTAvailable("MRClass_RequireJava13");
+    }
+
+    @Test
+    @MaximumJavaLevel(javaLevel = 13)
+    public void testJava14ClassNOTAvailable() throws Exception {
+        checkMRClassNOTAvailable("MRClass_RequireJava14");
+    }
+
+    @Test
+    @MaximumJavaLevel(javaLevel = 14)
+    public void testJava15ClassNOTAvailable() throws Exception {
+        checkMRClassNOTAvailable("MRClass_RequireJava15");
+    }
+
+    @Test
+    @MaximumJavaLevel(javaLevel = 15)
+    public void testJava16ClassNOTAvailable() throws Exception {
+        checkMRClassNOTAvailable("MRClass_RequireJava16");
+    }
+
+    @Test
+    @MaximumJavaLevel(javaLevel = 16)
+    public void testJava17ClassNOTAvailable() throws Exception {
+        checkMRClassNOTAvailable("MRClass_RequireJava17");
     }
 
     private void checkMRClassNOTAvailable(String className) throws Exception {

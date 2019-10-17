@@ -16,6 +16,7 @@ import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.SQLTimeoutException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -542,38 +543,49 @@ public class DatabaseTaskStore implements TaskStore {
     /** {@inheritDoc} */
     @Override
     public long findOrCreate(PartitionRecord record) throws Exception {
-        String find = "SELECT p.ID FROM Partition p WHERE p.EXECUTOR=:x AND p.HOSTNAME=:h AND p.LSERVER=:l AND p.USERDIR=:u";
+        String find = "SELECT p.ID,p.STATES FROM Partition p WHERE p.EXECUTOR=:x AND p.HOSTNAME=:h AND p.LSERVER=:l AND p.USERDIR=:u";
 
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
             Tr.entry(this, tc, "findOrCreate", record, find);
 
-        Long result;
+        long partitionId;
         EntityManager em = getPersistenceServiceUnit().createEntityManager();
         try {
             // First look for an existing entry
-            TypedQuery<Long> query = em.createQuery(find, Long.class);
+            TypedQuery<Object[]> query = em.createQuery(find, Object[].class);
             query.setParameter("x", record.getExecutor());
             query.setParameter("h", record.getHostName());
             query.setParameter("l", record.getLibertyServer());
             query.setParameter("u", record.getUserDir());
-            List<Long> results = query.getResultList();
-            if (results.size() > 0)
-                result = results.get(0);
-            else {
+            List<Object[]> results = query.getResultList();
+            if (results.size() > 0) {
+                Object[] idAndStates = results.get(0);
+                partitionId = (Long) idAndStates[0];
+                long states = (Long) idAndStates[1];
+                // Check if existing entry needs an update to states
+                if (record.hasStates() && record.getStates() != states) {
+                    Query update = em.createQuery("UPDATE Partition SET STATES=:s WHERE ID=:i");
+                    update.setParameter("s", record.getStates());
+                    update.setParameter("i", partitionId);
+                    int count = update.executeUpdate();
+                    if (trace && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "update states " + states + " --> " + record.getStates() + "? " + count);
+                }
+            } else {
                 // If not found, create a new entry
                 Partition partition = new Partition(record);
                 em.persist(partition);
                 em.flush();
-                result = partition.ID;
+                partitionId = partition.ID;
             }
         } finally {
             em.close();
         }
 
         if (trace && tc.isEntryEnabled())
-            Tr.exit(this, tc, "findOrCreate", result);
-        return result;
+            Tr.exit(this, tc, "findOrCreate", partitionId);
+        return partitionId;
     }
 
     /** {@inheritDoc} */
@@ -813,6 +825,38 @@ public class DatabaseTaskStore implements TaskStore {
         return partitionId;
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public Long getPartitionWithState(long stateBits) throws Exception {
+        String select = "SELECT p.ID,p.EXECUTOR,p.HOSTNAME,p.ID,p.LSERVER,p.USERDIR,p.EXPIRY,p.STATES FROM Partition p WHERE p.STATES-p.STATES/:d*:d=:r AND p.EXPIRY>:t ORDER BY p.EXPIRY DESC";
+
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "getPartitionWithState", stateBits, select);
+
+        long denominator = stateBits < 2 ? 2 : stateBits < 4 ? 4 : -1;
+        if (denominator == -1)
+            throw new IllegalArgumentException(Long.toString(stateBits)); // internal error: no states > 3 are currently defined
+
+        Object[] partitionInfo;
+        EntityManager em = getPersistenceServiceUnit().createEntityManager();
+        try {
+            TypedQuery<Object[]> query = em.createQuery(select.toString(), Object[].class);
+            query.setParameter("d", denominator);
+            query.setParameter("r", stateBits);
+            query.setParameter("t", System.currentTimeMillis());
+            query.setMaxResults(1);
+            List<Object[]> results = query.getResultList();
+            partitionInfo = results == null || results.isEmpty() ? null : results.get(0);
+        } finally {
+            em.close();
+        }
+
+        if (trace && tc.isEntryEnabled())
+            Tr.exit(this, tc, "getPartitionWithState", partitionInfo == null ? null : Arrays.asList(partitionInfo));
+        return partitionInfo == null ? null : (Long) partitionInfo[0];
+    }
+
     /**
      * Returns the persistence service unit, lazily initializing if necessary.
      *
@@ -986,6 +1030,10 @@ public class DatabaseTaskStore implements TaskStore {
             update.append("LSERVER=:l2,");
         if (updates.hasUserDir())
             update.append("USERDIR=:u2,");
+        if (updates.hasExpiry())
+            update.append("EXPIRY=:e2,");
+        if (updates.hasStates())
+            update.append("STATES=:s2,");
         update.setCharAt(update.length() - 1, ' ');
 
         update.append("WHERE");
@@ -999,6 +1047,10 @@ public class DatabaseTaskStore implements TaskStore {
             update.append(" LSERVER=:l1 AND");
         if (expected.hasUserDir())
             update.append(" USERDIR=:u1 AND");
+        if (expected.hasExpiry())
+            update.append(" EXPIRY=:e1 AND");
+        if (expected.hasStates())
+            update.append(" STATES=:s1 AND");
         int length = update.length();
         update.delete(length - (update.charAt(length - 1) == 'E' ? 6 : 4), length);
 
@@ -1020,6 +1072,10 @@ public class DatabaseTaskStore implements TaskStore {
                 query.setParameter("l2", updates.getLibertyServer());
             if (updates.hasUserDir())
                 query.setParameter("u2", updates.getUserDir());
+            if (updates.hasExpiry())
+                query.setParameter("e2", updates.getExpiry());
+            if (updates.hasStates())
+                query.setParameter("s2", updates.getStates());
 
             if (expected.hasExecutor())
                 query.setParameter("x1", expected.getExecutor());
@@ -1031,6 +1087,10 @@ public class DatabaseTaskStore implements TaskStore {
                 query.setParameter("l1", expected.getLibertyServer());
             if (expected.hasUserDir())
                 query.setParameter("u1", expected.getUserDir());
+            if (expected.hasExpiry())
+                query.setParameter("e1", expected.getExpiry());
+            if (expected.hasStates())
+                query.setParameter("s1", expected.getStates());
 
             int count = query.executeUpdate();
 

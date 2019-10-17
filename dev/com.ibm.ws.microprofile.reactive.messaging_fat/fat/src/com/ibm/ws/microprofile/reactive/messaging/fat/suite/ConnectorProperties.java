@@ -20,6 +20,8 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.testcontainers.containers.KafkaContainer;
 
+import com.ibm.websphere.simplicity.PropertiesAsset;
+
 /**
  * Shrinkwrap asset for an MP reactive connector config
  * <p>

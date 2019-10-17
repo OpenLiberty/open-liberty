@@ -62,6 +62,7 @@ import com.ibm.ws.security.audit.event.JMXMBeanEvent;
 import com.ibm.ws.security.audit.event.JMXMBeanRegisterEvent;
 import com.ibm.ws.security.audit.event.JMXNotificationEvent;
 import com.ibm.ws.security.audit.event.MemberManagementEvent;
+import com.ibm.ws.security.audit.event.RESTAuthorizationEvent;
 import com.ibm.ws.security.audit.event.SAFAuthorizationDetailsEvent;
 import com.ibm.ws.security.audit.event.SAFAuthorizationEvent;
 //import com.ibm.ws.security.audit.utils.AuditConstants;
@@ -243,6 +244,9 @@ public class AuditPE implements ProbeExtension {
 					break;
 				case SECURITY_SAF_AUTHZ:
 					auditEventSafAuth(methodParams);
+					break;
+				case SECURITY_REST_HANDLER_AUTHZ:
+					auditEventRESTAuthz(methodParams);
 					break;
 				default:
 					// TODO: emit error message
@@ -712,6 +716,21 @@ public class AuditPE implements ProbeExtension {
 					principalName);
 			auditServiceRef.getService().sendEvent(safAuthDetails);
 		}
+	}
+
+	private void auditEventRESTAuthz(Object[] methodParams) {
+
+		Object[] varargs = (Object[]) methodParams[1];
+		Object req = varargs[0];
+		Object response = varargs[1];
+		int statusCode = (Integer) varargs[2];
+		if (auditServiceRef.getService() != null && auditServiceRef.getService()
+				.isAuditRequired(AuditConstants.SECURITY_REST_HANDLER_AUTHZ,
+						statusCode == HttpServletResponse.SC_OK ? AuditConstants.SUCCESS : AuditConstants.FAILURE)) {
+			RESTAuthorizationEvent av = new RESTAuthorizationEvent(req, response);
+			auditServiceRef.getService().sendEvent(av);
+		}
+
 	}
 
     private void auditEventSafAuth(Object[] methodParams) {

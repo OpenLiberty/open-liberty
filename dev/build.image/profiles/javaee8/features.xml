@@ -1,4 +1,5 @@
-<feature>javaee-8.0</feature> 
+<feature>javaee-8.0</feature>
+<feature>jakartaee-8.0</feature>
 <feature>javaeeClient-8.0</feature> 
 <feature>appSecurityClient-1.0</feature>
 <feature>monitor-1.0</feature>

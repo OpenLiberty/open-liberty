@@ -12,3 +12,7 @@ sourceCompatibility = 1.8
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter-websocket')
 }
+
+bootJar {
+    duplicatesStrategy 'warn'
+}

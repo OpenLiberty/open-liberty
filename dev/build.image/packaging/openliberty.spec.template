@@ -49,8 +49,8 @@ exit 0
 /usr/lib/systemd/system
 
 %changelog
-* Fri Feb 22 2019 Michael Zhang <michael.zhang@ibm.com> - 19.0.0.1-1
-- First Open Liberty package
+* Fri Oct 11 2019 Admin <admin@openliberty.io> - @SPEC_VERSION@-1
+- Initial Open Liberty rpm package
 
 %preun
 pidDir=/var/run/openliberty

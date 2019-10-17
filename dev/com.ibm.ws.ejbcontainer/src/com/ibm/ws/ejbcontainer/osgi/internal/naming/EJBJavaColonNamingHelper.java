@@ -18,7 +18,6 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.naming.NameClassPair;
-import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
 
 import org.osgi.framework.ServiceReference;
@@ -30,9 +29,6 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
-import com.ibm.ejs.container.EJSHome;
-import com.ibm.ejs.container.EJSWrapperCommon;
-import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
@@ -60,23 +56,20 @@ import com.ibm.ws.runtime.metadata.ModuleMetaData;
  * This {@link JavaColonNamingHelper} implementation provides support for
  * the standard Java EE component naming context for java:global, java:app and
  * java:module. <p>
- * 
+ *
  */
 @Component(service = { JavaColonNamingHelper.class, ModuleMetaDataListener.class, EJBJavaColonNamingHelper.class, RemoteJavaColonNamingHelper.class })
 @Trivial
-public class EJBJavaColonNamingHelper implements JavaColonNamingHelper, JavaColonNamespaceBindings.ClassNameProvider<EJBBinding>, ModuleMetaDataListener, RemoteJavaColonNamingHelper {
+public class EJBJavaColonNamingHelper extends EJBNamingInstancer implements JavaColonNamingHelper, JavaColonNamespaceBindings.ClassNameProvider<EJBBinding>, ModuleMetaDataListener, RemoteJavaColonNamingHelper {
     private static final TraceComponent tc = Tr.register(EJBJavaColonNamingHelper.class);
 
     /**
      * Namespace bindings for java:global.
      */
-    private final JavaColonNamespaceBindings<EJBBinding> javaColonGlobalBindings =
-                    new JavaColonNamespaceBindings<EJBBinding>(NamingConstants.JavaColonNamespace.GLOBAL, this);
+    private final JavaColonNamespaceBindings<EJBBinding> javaColonGlobalBindings = new JavaColonNamespaceBindings<EJBBinding>(NamingConstants.JavaColonNamespace.GLOBAL, this);
 
     private final ReentrantReadWriteLock javaColonLock = new ReentrantReadWriteLock();
     protected MetaDataSlotService metaDataSlotService;
-    protected volatile boolean homeRuntime;
-    protected volatile boolean remoteRuntime;
     private RemoteObjectInstanceFactory roiFactory;
 
     /**
@@ -162,7 +155,7 @@ public class EJBJavaColonNamingHelper implements JavaColonNamingHelper, JavaColo
 
     /**
      * This method process lookup requests for java:global.
-     * 
+     *
      * @param name
      * @param cmd
      * @return the EJB object instance.
@@ -183,12 +176,12 @@ public class EJBJavaColonNamingHelper implements JavaColonNamingHelper, JavaColo
             readLock.unlock();
         }
 
-        return processJavaColon(binding, JavaColonNamespace.GLOBAL, name);
+        return initializeEJB(binding, JavaColonNamespace.GLOBAL.toString() + "/" + name);
     }
 
     /**
      * This method process lookup requests for java:app.
-     * 
+     *
      * @param appName Application name.
      * @param lookupName JNDI lookup name.
      * @param cmd Component metadata.
@@ -214,12 +207,12 @@ public class EJBJavaColonNamingHelper implements JavaColonNamingHelper, JavaColo
             readLock.unlock();
         }
 
-        return processJavaColon(binding, JavaColonNamespace.APP, lookupName);
+        return initializeEJB(binding, JavaColonNamespace.APP.toString() + "/" + lookupName);
     }
 
     /**
      * This method process lookup requests for java:module.
-     * 
+     *
      * @param lookupName JNDI lookup name
      * @param cmd The component metadata
      * @return the EJB object instance.
@@ -231,63 +224,7 @@ public class EJBJavaColonNamingHelper implements JavaColonNamingHelper, JavaColo
         JavaColonNamespaceBindings<EJBBinding> modMap = getModuleBindingMap(mmd);
         EJBBinding binding = modMap.lookup(lookupName);
 
-        return processJavaColon(binding, JavaColonNamespace.MODULE, lookupName);
-    }
-
-    /**
-     * This method process lookup requests for java:
-     * 
-     * @param binding EJBBindings data
-     * @param name JNDI lookup name
-     * @param cmd Component meta data.
-     * @return the EJB object instance.
-     * @throws NamingException
-     */
-    protected Object processJavaColon(EJBBinding binding, JavaColonNamespace jndiType, String lookupName) throws NamingException {
-
-        Object instance = null;
-
-        if (binding == null) {
-            return null;
-        }
-
-        // Home and remote interfaces are not supported in Liberty
-        if (binding.isHome() && !homeRuntime) {
-            throwCannotInstanciateUnsupported(binding, jndiType, lookupName,
-                                              "JNDI_CANNOT_INSTANTIATE_HOME_CNTR4008E");
-        }
-
-        if (!binding.isLocal && !remoteRuntime) {
-            throwCannotInstanciateUnsupported(binding, jndiType, lookupName,
-                                              "JNDI_CANNOT_INSTANTIATE_REMOTE_CNTR4009E");
-        }
-
-        try {
-            EJSHome home = binding.homeRecord.getHomeAndInitialize();
-
-            if (binding.isHome()) {
-                EJSWrapperCommon wc = home.getWrapper();
-                if (binding.isLocal) {
-                    instance = wc.getLocalObject();
-                } else {
-                    instance = home.getContainer().getEJBRuntime().getRemoteReference(wc.getRemoteWrapper());
-                }
-            } else {
-                // Use interface name to create the business object
-                if (binding.isLocal) {
-                    instance = home.createLocalBusinessObject(binding.interfaceIndex, null);
-                } else {
-                    instance = home.createRemoteBusinessObject(binding.interfaceIndex, null);
-                }
-            }
-        } catch (Throwable t) {
-            throwCannotInstanciateObjectException(binding,
-                                                  jndiType,
-                                                  lookupName,
-                                                  t);
-        }
-
-        return instance;
+        return initializeEJB(binding, JavaColonNamespace.MODULE.toString() + "/" + lookupName);
     }
 
     /** {@inheritDoc} */
@@ -339,7 +276,7 @@ public class EJBJavaColonNamingHelper implements JavaColonNamingHelper, JavaColo
 
     /**
      * Add a java:global binding object to the global mapping.
-     * 
+     *
      * @param name lookup name
      * @param bindingObject object to use to instantiate EJB at lookup time.
      * @return
@@ -357,7 +294,7 @@ public class EJBJavaColonNamingHelper implements JavaColonNamingHelper, JavaColo
 
     /**
      * Remove names from the global mapping.
-     * 
+     *
      * @param names List of names to remove.
      */
     public void removeGlobalBindings(List<String> names) {
@@ -375,7 +312,7 @@ public class EJBJavaColonNamingHelper implements JavaColonNamingHelper, JavaColo
 
     /**
      * Add a java:app binding object to the mapping.
-     * 
+     *
      * @param name lookup name
      * @param bindingObject object to use to instantiate EJB at lookup time.
      * @return
@@ -397,7 +334,7 @@ public class EJBJavaColonNamingHelper implements JavaColonNamingHelper, JavaColo
     /**
      * Add a java:module binding to the map.
      * Lock not required since the the map is unique to one module.
-     * 
+     *
      * @param mmd module meta data
      * @param name lookup name
      * @param bindingObject
@@ -410,7 +347,7 @@ public class EJBJavaColonNamingHelper implements JavaColonNamingHelper, JavaColo
     /**
      * Get the EJBBinding map from the application meta data. Initialize if it
      * is null.
-     * 
+     *
      * @param amd
      * @return Map for the lookup names and binding object.
      */
@@ -427,7 +364,7 @@ public class EJBJavaColonNamingHelper implements JavaColonNamingHelper, JavaColo
     /**
      * Get the EJBBinding map from the module meta data. Initialize if it
      * is null.
-     * 
+     *
      * @param mmd
      * @return Map for the lookup names and binding object.
      */
@@ -444,7 +381,7 @@ public class EJBJavaColonNamingHelper implements JavaColonNamingHelper, JavaColo
     /**
      * Remove names from the application mapping. If all the bindings have
      * been removed for an application, remove the application mapping.
-     * 
+     *
      * @param moduleMetaData Name of the application being used.
      * @param names List of names to remove.
      */
@@ -519,65 +456,6 @@ public class EJBJavaColonNamingHelper implements JavaColonNamingHelper, JavaColo
         return JavaJNDIComponentMetaDataAccessor.getComponentMetaData(namespace, name);
     }
 
-    protected J2EEName getJ2EEName(EJBBinding binding) {
-        return binding.homeRecord.getJ2EEName();
-    }
-
-    /**
-     * Internal method that creates a NamingException that contains cause
-     * information regarding why a binding failed to resolve. <p>
-     * 
-     * The returned exception will provide similar information as the
-     * CannotInstantiateObjectException from traditional WAS.
-     */
-    private NamingException throwCannotInstanciateObjectException(EJBBinding binding,
-                                                                  JavaColonNamespace jndiType,
-                                                                  String lookupName,
-                                                                  Throwable cause) throws NamingException {
-        String jndiName = jndiType.toString() + "/" + lookupName;
-        J2EEName j2eeName = getJ2EEName(binding);
-        Object causeMsg = cause.getLocalizedMessage();
-        if (causeMsg == null) {
-            causeMsg = cause.toString();
-        }
-        String msgTxt = Tr.formatMessage(tc, "JNDI_CANNOT_INSTANTIATE_OBJECT_CNTR4007E",
-                                         binding.interfaceName,
-                                         j2eeName.getComponent(),
-                                         j2eeName.getModule(),
-                                         j2eeName.getApplication(),
-                                         jndiName,
-                                         causeMsg);
-        NamingException nex = new NamingException(msgTxt);
-        nex.initCause(cause);
-        throw nex;
-    }
-
-    /**
-     * Internal method to throw a NameNotFoundException for unsupported
-     * Home and Remote interfaces.
-     * 
-     * @param binding
-     * @param jndiType
-     * @param lookupName
-     * @param cmd
-     * @param messageId
-     * @throws NameNotFoundException
-     */
-    private void throwCannotInstanciateUnsupported(EJBBinding binding,
-                                                   JavaColonNamespace jndiType,
-                                                   String lookupName,
-                                                   String messageId) throws NameNotFoundException {
-        J2EEName j2eeName = getJ2EEName(binding);
-        String jndiName = jndiType.toString() + "/" + lookupName;
-        String msgTxt = Tr.formatMessage(tc, messageId,
-                                         binding.interfaceName,
-                                         j2eeName.getComponent(),
-                                         j2eeName.getModule(),
-                                         j2eeName.getApplication(),
-                                         jndiName);
-        throw (new NameNotFoundException(msgTxt));
-    }
-
     /** {@inheritDoc} */
     @Override
     public void moduleMetaDataCreated(MetaDataEvent<ModuleMetaData> event) throws MetaDataException {
@@ -621,7 +499,7 @@ public class EJBJavaColonNamingHelper implements JavaColonNamingHelper, JavaColo
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.container.service.naming.remote.RemoteJavaColonNamingHelper#getRemoteObjectInstance(com.ibm.ws.container.service.naming.NamingConstants.JavaColonNamespace,
      * java.lang.String)
      */
@@ -645,7 +523,7 @@ public class EJBJavaColonNamingHelper implements JavaColonNamingHelper, JavaColo
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.container.service.naming.remote.RemoteJavaColonNamingHelper#hasRemoteObjectWithPrefix(com.ibm.ws.container.service.naming.NamingConstants.JavaColonNamespace,
      * java.lang.String)
      */
@@ -656,7 +534,7 @@ public class EJBJavaColonNamingHelper implements JavaColonNamingHelper, JavaColo
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.container.service.naming.remote.RemoteJavaColonNamingHelper#listRemoteInstances(com.ibm.ws.container.service.naming.NamingConstants.JavaColonNamespace,
      * java.lang.String)
      */

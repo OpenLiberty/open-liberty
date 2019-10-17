@@ -239,70 +239,71 @@ public class WSKeyStore extends Properties {
 
         boolean storeFileExists = defaultFileExists(this.location);
 
-        //if (this.isDefault && !storeFileExists) {
-        if (this.isDefault) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "keystore is default");
-            }
-
-            // if a type is specified in server.xml, and it's JKS, use the default location for the key.jks keystore; else we'll use PKCS12
-            // check if we have an existing key.jks.  If so, use that instead of creating a PKCS12 keystore
-            File f = new File(res);
-
-            //location from metatype sometimes has a extra slashes, need to normalize it
-            this.location = this.location.replaceAll("/+", "/");
-
-            if (f.exists() && this.location.toLowerCase().equals(default_location.toLowerCase())) {
-                // use the JKS file instead, as it exists
-                this.location = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_FALLBACK_KEY_STORE_FILE;
-                specifiedType = Constants.KEYSTORE_TYPE_JKS;
-                this.type = Constants.KEYSTORE_TYPE_JKS;
-            }
-
-            // check if they've specified a type, and create the corresponding key.jks or key.p12, or re-use the
-            // specified one
-            if (type.toUpperCase().equals(Constants.KEYSTORE_TYPE_JKS) && this.location.toLowerCase().endsWith("/key.p12")) {
-                this.location = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_FALLBACK_KEY_STORE_FILE;
-                specifiedType = Constants.KEYSTORE_TYPE_JKS;
-                this.type = Constants.KEYSTORE_TYPE_JKS;
-            } else if (type.toUpperCase().equals(Constants.KEYSTORE_TYPE_PKCS12) && this.location.toLowerCase().endsWith("/key.p12")) {
-                specifiedType = Constants.KEYSTORE_TYPE_PKCS12;
-                this.type = Constants.KEYSTORE_TYPE_PKCS12;
-            } else if (type.toUpperCase().equals(Constants.KEYSTORE_TYPE_PKCS12)) {
-                if (this.location.toLowerCase().endsWith(".jks")) {
-                    this.type = LibertyConstants.DEFAULT_FALLBACK_TYPE;
-                    specifiedType = type;
+        if (this.fileBased) {
+            if (this.isDefault) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "keystore is default");
                 }
-            } else if (type.toUpperCase().equals(Constants.KEYSTORE_TYPE_PKCS12) && this.location.toLowerCase().endsWith(".jks")) {
-                specifiedType = Constants.KEYSTORE_TYPE_JKS;
-                this.type = Constants.KEYSTORE_TYPE_JKS;
-            }
 
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "location: " + location + "type: " + type);
-            }
-        } else {
-            // this is not the default keystore, but a location has been specified.  If the keystore is JKS type, set the type to JKS
-            if (this.location.toUpperCase().endsWith(Constants.KEYSTORE_TYPE_JKS)) {
-                specifiedType = Constants.KEYSTORE_TYPE_JKS;
-                this.type = Constants.KEYSTORE_TYPE_JKS;
-            }
-        }
+                // if a type is specified in server.xml, and it's JKS, use the default location for the key.jks keystore; else we'll use PKCS12
+                // check if we have an existing key.jks.  If so, use that instead of creating a PKCS12 keystore
+                File f = new File(res);
 
-        if (password.isEmpty() && this.isDefault) {
-            String envPassword = System.getenv("keystore_password");
-            if (envPassword != null && !envPassword.isEmpty()) {
-                Tr.audit(tc, "ssl.defaultKeyStore.env.password.CWPKI0820A");
-                password = new SerializableProtectedString(envPassword.toCharArray());
+                //location from metatype sometimes has a extra slashes, need to normalize it
+                this.location = this.location.replaceAll("/+", "/");
+
+                if (f.exists() && this.location.toLowerCase().equals(default_location.toLowerCase())) {
+                    // use the JKS file instead, as it exists
+                    this.location = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_FALLBACK_KEY_STORE_FILE;
+                    specifiedType = Constants.KEYSTORE_TYPE_JKS;
+                    this.type = Constants.KEYSTORE_TYPE_JKS;
+                }
+
+                // check if they've specified a type, and create the corresponding key.jks or key.p12, or re-use the
+                // specified one
+                if (type.toUpperCase().equals(Constants.KEYSTORE_TYPE_JKS) && this.location.toLowerCase().endsWith("/key.p12")) {
+                    this.location = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_FALLBACK_KEY_STORE_FILE;
+                    specifiedType = Constants.KEYSTORE_TYPE_JKS;
+                    this.type = Constants.KEYSTORE_TYPE_JKS;
+                } else if (type.toUpperCase().equals(Constants.KEYSTORE_TYPE_PKCS12) && this.location.toLowerCase().endsWith("/key.p12")) {
+                    specifiedType = Constants.KEYSTORE_TYPE_PKCS12;
+                    this.type = Constants.KEYSTORE_TYPE_PKCS12;
+                } else if (type.toUpperCase().equals(Constants.KEYSTORE_TYPE_PKCS12)) {
+                    if (this.location.toLowerCase().endsWith(".jks")) {
+                        this.type = LibertyConstants.DEFAULT_FALLBACK_TYPE;
+                        specifiedType = type;
+                    }
+                } else if (type.toUpperCase().equals(Constants.KEYSTORE_TYPE_PKCS12) && this.location.toLowerCase().endsWith(".jks")) {
+                    specifiedType = Constants.KEYSTORE_TYPE_JKS;
+                    this.type = Constants.KEYSTORE_TYPE_JKS;
+                }
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "location: " + location + "type: " + type);
+                }
             } else {
-                Tr.info(tc, "ssl.defaultKeyStore.not.created.CWPKI0819I");
-                throw new IllegalArgumentException("Required keystore information is missing, must provide a password for the default keystore");
+                // this is not the default keystore, but a location has been specified.  If the keystore is JKS type, set the type to JKS
+                if (this.location.toUpperCase().endsWith(Constants.KEYSTORE_TYPE_JKS)) {
+                    specifiedType = Constants.KEYSTORE_TYPE_JKS;
+                    this.type = Constants.KEYSTORE_TYPE_JKS;
+                }
             }
-        }
 
-        if (getFileBased().booleanValue() && this.location != null) {
-            // resolve paths now
-            setLocation(this.location);
+            if (password.isEmpty() && this.isDefault) {
+                String envPassword = System.getenv("keystore_password");
+                if (envPassword != null && !envPassword.isEmpty()) {
+                    Tr.audit(tc, "ssl.defaultKeyStore.env.password.CWPKI0820A");
+                    password = new SerializableProtectedString(envPassword.toCharArray());
+                } else {
+                    Tr.info(tc, "ssl.defaultKeyStore.not.created.CWPKI0819I");
+                    throw new IllegalArgumentException("Required keystore information is missing, must provide a password for the default keystore");
+                }
+            }
+
+            if (this.location != null) {
+                // resolve paths now
+                setLocation(this.location);
+            }
         }
 
         setUpInternalProperties();
@@ -754,6 +755,9 @@ public class WSKeyStore extends Properties {
 
         if (isDefault)
             Tr.info(tc, "Successfully loaded default keystore: " + this.location + " of type: " + this.type);
+
+        // Check to see if any certificates entries from the environment need to be added to the keystore
+        addCertEntriesFromEnv();
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.exit(tc, "do_getKeyStore", myKeyStore);
@@ -1401,6 +1405,59 @@ public class WSKeyStore extends Properties {
                 Tr.debug(tc, "getKeyPassword -> null");
         }
         return keyPass;
+    }
+
+    protected void addCertEntriesFromEnv() {
+        //See if there are any certs from the env that need to be added to this keystore
+        String key = "cert_" + name;
+        CertificateEnvHelper certEnv = new CertificateEnvHelper();
+        List<Certificate> certs = certEnv.getCertificatesForKeyStore(name);
+
+        try {
+            for (int i = 0; i < certs.size(); i++) {
+                Certificate cert = certs.get(i);
+                // add the certificate to the keystore with an alias format: envcert-[index]-cert_[keystorename]
+                String alias = "envcert-" + String.valueOf(i) + "-" + key;
+                setCertificateEntryNoStore(alias, cert);
+            }
+
+        } catch (Exception e) {
+            String extendedMsg = e.getMessage();
+            Tr.warning(tc, "ssl.environment.cert.error.CWPKI0826W", key, name, extendedMsg);
+        }
+    }
+
+    /**
+     * Set a new certificate into the keystore and save the updated store.
+     *
+     * @param alias
+     *
+     * @param cert
+     * @throws KeyStoreException
+     *             - if the store is read only or not found
+     * @throws KeyException
+     *             - if an error happens updating the store with the cert
+     */
+    private void setCertificateEntryNoStore(String alias, Certificate cert) throws KeyStoreException, KeyException {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(this, tc, "setCertificateEntryNoStore", new Object[] { alias, cert });
+        }
+        try {
+            if (myKeyStore != null) {
+                myKeyStore.setCertificateEntry(alias, cert);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Certificate " + alias + " set to keystore " + name);
+                }
+            }
+        } catch (KeyStoreException kse) {
+            throw kse;
+        } catch (Exception e) {
+            throw new KeyException(e.getMessage(), e);
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(this, tc, "setCertificateEntryNoStore");
+        }
     }
 
     protected void clearJavaKeyStore() {

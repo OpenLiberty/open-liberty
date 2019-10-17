@@ -1,0 +1,192 @@
+openapi: 3.0.0-rc2
+info:
+ title: "OpenAPI REST APIs"
+ description: "Discover REST APIs"
+ version: "1.0.0"
+paths:
+  /:
+    get:
+      summary: Retrieve all available airlines
+      operationId: getAirlines
+      responses:
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Airline'
+  /availability:
+    get:
+      description: Retrieve all available flights
+      operationId: getFlights
+      parameters:
+      - name: departureDate
+        in: query
+        schema:
+          type: string
+      - name: airportFrom
+        in: query
+        schema:
+          type: string
+      - name: returningDate
+        in: query
+        schema:
+          type: string
+      - name: airportTo
+        in: query
+        schema:
+          type: string
+      - name: numberOfAdults
+        in: query
+        schema:
+          type: integer
+          format: int32
+      - name: numberOfChildren
+        in: query
+        schema:
+          type: integer
+          format: int32
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Flight'
+  /bookings:
+    get:
+      description: Retrieve all bookings for current user
+      operationId: getBookings
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Booking'
+    post:
+      description: Create a booking
+      operationId: createBooking
+      responses:
+        default:
+          description: no description
+  /bookings/{id}:
+    get:
+      description: Get a booking with ID
+      operationId: getBooking
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        200:
+          description: Booking retrieved MUST  BE ARRAY !!!!
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+        404:
+          description: Booking not found
+    put:
+      description: Update a booking with ID
+      operationId: updateBooking
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        200:
+          description: Booking updated
+        404:
+          description: Booking not found
+    delete:
+      description: Delete a booking with ID
+      operationId: deleteBooking
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        200:
+          description: Booking deleted
+        404:
+          description: Booking not found
+components:
+  schemas:
+    Airline:
+      required:
+      - contactPhone
+      - name
+      type: object
+      properties:
+        name:
+          type: string
+        contactPhone:
+          type: string
+    Flight:
+      required:
+      - airportFrom
+      - airportTo
+      - dateTime
+      - number
+      - price
+      - status
+      type: object
+      properties:
+        airline:
+          $ref: '#/components/schemas/Airline'
+        dateTime:
+          type: string
+        number:
+          type: string
+        status:
+          type: string
+        airportFrom:
+          type: string
+        airportTo:
+          type: string
+        price:
+          type: string
+    Booking:
+      required:
+      - airMiles
+      - seatPreference
+      type: object
+      properties:
+        departtureFlight:
+          $ref: '#/components/schemas/Flight'
+        returningFlight:
+          $ref: '#/components/schemas/Flight'
+        creditCard:
+          $ref: '#/components/schemas/CreditCard'
+        airMiles:
+          type: string
+        seatPreference:
+          type: string
+    CreditCard:
+      required:
+      - cardNumber
+      - cardholderName
+      - cvv
+      - expiryDate
+      - issuer
+      type: object
+      properties:
+        issuer:
+          type: string
+        cardholderName:
+          type: string
+        cardNumber:
+          type: string
+        cvv:
+          type: string
+        expiryDate:
+          type: string

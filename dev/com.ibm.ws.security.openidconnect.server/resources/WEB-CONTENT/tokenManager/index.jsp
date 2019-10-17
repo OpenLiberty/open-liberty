@@ -23,6 +23,14 @@ String authHeader = (String) request.getAttribute("ui_authheader");
     window.globalAccessToken="<%=accessToken%>"
     window.globalAuthHeader="<%=authHeader%>"
 </script> 
+
+<%
+// Set security headers	
+response.setHeader("X-XSS-Protection", "1");	
+response.setHeader("X-Content-Type-Options", "nosniff");	
+response.setHeader("X-Frame-Options", "SAMEORIGIN");
+%>
+
 <title id="token_mgr_tool">Delete Tokens</title>
 </head>
 
