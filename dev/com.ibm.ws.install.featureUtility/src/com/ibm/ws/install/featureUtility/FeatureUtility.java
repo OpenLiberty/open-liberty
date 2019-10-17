@@ -44,6 +44,7 @@ public class FeatureUtility {
     private final InstallKernelMap map;
     private final File fromDir;
     private final File esaFile;
+    private Boolean isDownload;
     private final String toExtension;
     private final List<String> featuresToInstall;
     private static String openLibertyVersion;
@@ -65,18 +66,35 @@ public class FeatureUtility {
         this.toExtension = builder.toExtension;
         this.featuresToInstall = new ArrayList<>(builder.featuresToInstall);
         this.esaFile = builder.esaFile;
+        this.isDownload = builder.isDownload;
 
         map = new InstallKernelMap();
+        
+        if (isDownload == null || !isDownload) {
+        	List<File> jsonPaths = (fromDir != null && fromDir.exists()) ? getJsons(fromDir) : getJsonsFromMavenCentral();
+            updateProgress(progressBar.getMethodIncrement("fetchJsons"));
+            fine("Finished finding jsons");
 
-        List<File> jsonPaths = (fromDir != null && fromDir.exists()) ? getJsons(fromDir) : getJsonsFromMavenCentral();
-        updateProgress(progressBar.getMethodIncrement("fetchJsons"));
-        fine("Finished finding jsons");
+            initializeMap(jsonPaths);
+            updateProgress(progressBar.getMethodIncrement("initializeMap"));
+            fine("Initialized install kernel map");
+            info("Feature Utility successfully initialized.");
+        } else {
+        	initializeMap();
+        }
+    }
+    
+    /**
+     * Initialize the Install kernel map.
+     *
+     * @throws IOException
+     */
+    private void initializeMap() throws IOException {
+        map.put("runtime.install.dir", Utils.getInstallDir());
+        map.put("target.user.directory", new File(Utils.getInstallDir(), "tmp"));
+        map.put("license.accept", true); // TODO: discuss later
+        map.get("install.kernel.init.code");
 
-        initializeMap(jsonPaths);
-        updateProgress(progressBar.getMethodIncrement("initializeMap"));
-        fine("Initialized install kernel map");
-
-        info("Feature Utility successfully initialized.");
     }
 
     /**
@@ -454,6 +472,7 @@ public class FeatureUtility {
         String toExtension;
         Collection<String> featuresToInstall;
         File esaFile;
+        boolean isDownload;
 
         public FeatureUtilityBuilder setFromDir(String fromDir) {
             this.fromDir = fromDir != null ? new File(fromDir) : null;
@@ -472,6 +491,11 @@ public class FeatureUtility {
 
         public FeatureUtilityBuilder setFeaturesToInstall(Collection<String> featuresToInstall) {
             this.featuresToInstall = featuresToInstall;
+            return this;
+        }
+        
+        public FeatureUtilityBuilder setIsDownload(boolean isDownload) {
+            this.isDownload = isDownload;
             return this;
         }
 

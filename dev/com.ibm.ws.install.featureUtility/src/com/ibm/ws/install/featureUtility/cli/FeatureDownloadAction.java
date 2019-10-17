@@ -3,6 +3,7 @@ package com.ibm.ws.install.featureUtility.cli;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -11,6 +12,7 @@ import com.ibm.ws.install.InstallException;
 import com.ibm.ws.install.featureUtility.FeatureUtility;
 import com.ibm.ws.install.featureUtility.FeatureUtilityExecutor;
 import com.ibm.ws.install.internal.InstallLogUtils;
+import com.ibm.ws.install.internal.ProgressBar;
 import com.ibm.ws.install.internal.InstallLogUtils.Messages;
 import com.ibm.ws.kernel.boot.ReturnCode;
 import com.ibm.ws.kernel.boot.cmdline.ActionHandler;
@@ -26,6 +28,7 @@ public class FeatureDownloadAction implements ActionHandler {
 	private List<String> argList;
 	private String location;
 	private boolean isOverwrite;
+	private ProgressBar progressBar;
 
 	@Override
     public ExitCode handleTask(PrintStream stdout, PrintStream stderr, Arguments args) {
@@ -46,6 +49,15 @@ public class FeatureDownloadAction implements ActionHandler {
 		this.argList = args.getPositionalArguments();
 		this.location = args.getOption("location");
         this.isOverwrite = args.getOption("overwrite") != null;
+        
+        this.progressBar = ProgressBar.getInstance();
+
+        HashMap<String, Integer> methodMap = new HashMap<>();
+        
+        List<Integer> increments = getIncrementSize(argList.size(), 90);
+        methodMap.put("downloadArtifact", increments.get(0));
+        methodMap.put("downloadedArtifacts", 10 + increments.get(1));
+        progressBar.setMethodMap(methodMap);
         
         if (location == null) {
             InstallLogUtils.getInstallLogger().log(Level.SEVERE,
@@ -87,6 +99,15 @@ public class FeatureDownloadAction implements ActionHandler {
 		return rc;
 	}
 	
+	private List<Integer> getIncrementSize(int numArtifacts, int size) {
+		List<Integer> result = new ArrayList<Integer>();
+		Integer div = size / numArtifacts;
+		Integer leftover = size - (div * numArtifacts);
+		result.add(div);
+		result.add(leftover);
+		return result;
+	}
+
 	private List<String> getNonMavenIds(List<String> assetIds) {
 		List<String> result = new ArrayList<String>();
 		
@@ -101,16 +122,17 @@ public class FeatureDownloadAction implements ActionHandler {
 
 	private ExitCode execute() {
 		ExitCode rc = download();
+		progressBar.finish();
 		return rc;
 	}
 
 	private ExitCode download() {
 		try {
             featureUtility = new FeatureUtility.FeatureUtilityBuilder().setFromDir(location)
-            		.setFeaturesToInstall(artifactNames).build();
+            		.setFeaturesToInstall(artifactNames).setIsDownload(true).build();
             featureUtility.downloadFeatures(false);
             featureUtility = new FeatureUtility.FeatureUtilityBuilder().setFromDir(location)
-            		.setFeaturesToInstall(artifactShortNames).build();
+            		.setFeaturesToInstall(artifactShortNames).setIsDownload(true).build();
             featureUtility.downloadFeatures(true);
         } catch (InstallException e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
@@ -119,6 +141,7 @@ public class FeatureDownloadAction implements ActionHandler {
             logger.log(Level.SEVERE, e.getMessage(), e);
             return FeatureUtilityExecutor.returnCode(InstallException.IO_FAILURE);
         }
+		
         return ReturnCode.OK;
 	}
 
