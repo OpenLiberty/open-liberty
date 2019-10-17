@@ -22,6 +22,7 @@ public class FeatureDownloadAction implements ActionHandler {
 	private FeatureUtility featureUtility;
     private Logger logger;
 	private ArrayList<String> artifactNames;
+	private ArrayList<String> artifactShortNames;
 	private List<String> argList;
 	private String location;
 	private boolean isOverwrite;
@@ -41,6 +42,7 @@ public class FeatureDownloadAction implements ActionHandler {
 		
 		this.logger = InstallLogUtils.getInstallLogger();
 		this.artifactNames = new ArrayList<String>();
+		this.artifactShortNames = new ArrayList<String>();
 		this.argList = args.getPositionalArguments();
 		this.location = args.getOption("location");
         this.isOverwrite = args.getOption("overwrite") != null;
@@ -56,18 +58,21 @@ public class FeatureDownloadAction implements ActionHandler {
             return ReturnCode.BAD_ARGUMENT;
         }
         List<String> assetIds = new ArrayList<String>(argList);
-        List<String> improperIds = checkMavenArtifactFormat(assetIds);
-        if (!improperIds.isEmpty()) {
-        	logger.log(Level.SEVERE, "The following asset IDs are not in proper maven artifact ID format: " + improperIds);
-        	return ReturnCode.BAD_ARGUMENT; 
-        }
+        List<String> nonMavenIds = getNonMavenIds(assetIds);
+        assetIds.removeAll(nonMavenIds);
+        
+        
         if (isOverwrite) {
         	artifactNames.addAll(assetIds);
+        	artifactShortNames.addAll(nonMavenIds);
 		} else {
-			List<String> missingArtifacts;
+			List<String> missingArtifacts = new ArrayList<String>();
+			List<String> missingShortNameArtifacts = new ArrayList<String>();
 			try {
-				featureUtility = new FeatureUtility.FeatureUtilityBuilder().setFromDir(location).setFeaturesToInstall(artifactNames).build();
-				missingArtifacts = featureUtility.getMissingArtifactsFromFolder(assetIds, location);
+				featureUtility = new FeatureUtility.FeatureUtilityBuilder().setFromDir(location)
+	            		.setFeaturesToInstall(artifactNames).build();
+				missingArtifacts.addAll(FeatureUtility.getMissingArtifactsFromFolder(assetIds, location, false));
+				missingShortNameArtifacts.addAll(FeatureUtility.getMissingArtifactsFromFolder(nonMavenIds, location, true));
 			} catch (IOException e) {
 				logger.log(Level.SEVERE, e.getMessage(), e);
 	            return FeatureUtilityExecutor.returnCode(InstallException.IO_FAILURE);
@@ -76,12 +81,13 @@ public class FeatureDownloadAction implements ActionHandler {
 	            return FeatureUtilityExecutor.returnCode(e.getRc());
 			}
 			artifactNames.addAll(missingArtifacts);
+			artifactShortNames.addAll(missingShortNameArtifacts);
 		}
 		
 		return rc;
 	}
 	
-	private List<String> checkMavenArtifactFormat(List<String> assetIds) {
+	private List<String> getNonMavenIds(List<String> assetIds) {
 		List<String> result = new ArrayList<String>();
 		
 		for (String id: assetIds) {
@@ -102,7 +108,12 @@ public class FeatureDownloadAction implements ActionHandler {
 		try {
             featureUtility = new FeatureUtility.FeatureUtilityBuilder().setFromDir(location)
             		.setFeaturesToInstall(artifactNames).build();
-            featureUtility.downloadFeatures();
+            featureUtility.downloadFeatures(false);
+            logger.log(Level.INFO, "artifactNames: " + artifactNames); //TODO remove
+            featureUtility = new FeatureUtility.FeatureUtilityBuilder().setFromDir(location)
+            		.setFeaturesToInstall(artifactShortNames).build();
+            featureUtility.downloadFeatures(true);
+            logger.log(Level.INFO, "artifactShortNames: " + artifactShortNames); //TODO remove
         } catch (InstallException e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
             return FeatureUtilityExecutor.returnCode(e.getRc());
