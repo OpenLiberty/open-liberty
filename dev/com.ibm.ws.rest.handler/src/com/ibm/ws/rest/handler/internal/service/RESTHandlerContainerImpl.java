@@ -478,13 +478,25 @@ public class RESTHandlerContainerImpl implements RESTHandlerContainer {
                         response.setResponseHeader("Allow", e.getAllowedMethods());
                         response.sendError(e.getStatusCode());
                     } catch (RESTHandlerJsonException e) {
-                        if (e.isMessageContentJSON()) {
-                            response.setStatus(e.getStatusCode());
-                            response.setContentType("application/json");
-                            response.setCharacterEncoding("UTF-8");
-                            response.getWriter().write(e.getMessage());
-                        } else {
-                            response.sendError(e.getStatusCode(), e.getMessage());
+                        // If getOutputStream has been called we cannot use getWriter
+                        try {
+                            if (e.isMessageContentJSON()) {
+                                response.setStatus(e.getStatusCode());
+                                response.setContentType("application/json");
+                                response.setCharacterEncoding("UTF-8");
+                                response.getWriter().write(e.getMessage());
+                            } else {
+                                response.sendError(e.getStatusCode(), e.getMessage());
+                            }
+                        } catch (IllegalStateException stateException) {
+                            if (e.isMessageContentJSON()) {
+                                response.setStatus(e.getStatusCode());
+                                response.setContentType("application/json");
+                                response.setCharacterEncoding("UTF-8");
+                                response.getOutputStream().write(e.getMessage().getBytes());
+                            } else {
+                                response.sendError(e.getStatusCode(), e.getMessage());
+                            }
                         }
                     }
                 }
