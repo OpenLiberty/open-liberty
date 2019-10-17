@@ -110,6 +110,14 @@ public interface TaskStore {
     TaskRecord findById(long taskId, String owner, boolean includeTrigger) throws Exception;
 
     /**
+     * Returns information about all partition entries with expired heart beats.
+     *
+     * @return List of expired partition records.
+     * @throws Exception if an error occurs when attempting to access the persistent task store.
+     */
+    List<PartitionRecord> findExpired() throws Exception;
+
+    /**
      * Find all pending tasks which are late beyond the specified expected execution time without a
      * successful execution of the task.
      *

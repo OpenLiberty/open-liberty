@@ -2343,15 +2343,102 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
                 // If the update isn't successful, it means we didn't renew our partition entry in time and another instance removed it.
                 // TODO Try to re-acquire it or just get a new one and reassign tasks?
 
-                // TODO look for expired partitions (expiry < current time).
-                // If found, asynchronously reassign their tasks and finally remove the partition if still expired.
+                // look for expired partitions (expiry < current time).
+                List<PartitionRecord> expired;
+                tranMgr.begin();
+                try {
+                    expired = taskStore.findExpired();
+                } finally {
+                    if (tranMgr.getStatus() == Status.STATUS_ACTIVE)
+                        tranMgr.commit();
+                    else
+                        tranMgr.rollback();
+                }
 
+                // If found, asynchronously remove the partition after reassigning its tasks.
+                for (PartitionRecord e : expired)
+                    executor.submit(new PartitionRemovalTask(e));
             } catch (Throwable x) {
                 result = x;
             }
 
             if (trace && tc.isEntryEnabled())
                 Tr.exit(PersistentExecutorImpl.this, tc, "run[heartbeat]", result);
+        }
+    }
+
+    /**
+     * Remove a partition entry after reassigning all of its tasks.
+     */
+    @Trivial
+    private class PartitionRemovalTask implements Runnable {
+        /**
+         * Partition tuple consisting of (Id, Executor, Host, Server, UserDir, Expiry).
+         */
+        private final PartitionRecord expired;
+
+        private PartitionRemovalTask(PartitionRecord expired) {
+            this.expired = expired;
+        }
+
+        @Override
+        public void run() {
+            final boolean trace = TraceComponent.isAnyTracingEnabled();
+            if (trace && tc.isEntryEnabled())
+                Tr.entry(PersistentExecutorImpl.this, tc, "run[partitionremoval]", expired);
+
+            if (deactivated) {
+                if (trace && tc.isEntryEnabled())
+                    Tr.exit(PersistentExecutorImpl.this, tc, "run[partitionremoval]", "deactivated");
+                return;
+            }
+
+            try {
+                EmbeddableWebSphereTransactionManager tranMgr = tranMgrRef.getServiceWithException();
+
+                // Locate an active partition (could be the current instance) to assign tasks to,
+                Config config = configRef.get();
+                Long alternatePartition = null;
+                // If the current instance isn't able to run tasks, look for one that is
+                if (!config.enableTaskExecution) {
+                    Controller controller = controllerRef.getService();
+                    if (controller == null) // use the partition info from the persistent store to find an instance that periodically polls
+                        alternatePartition = getPartitionThatPolls(config.missedTaskThreshold);
+                    else // obtain from the controller
+                        alternatePartition = controller.getActivePartitionId();
+                }
+                long activePartitionId = alternatePartition == null ? getPartitionId() : alternatePartition;
+
+                int numTransferred;
+                tranMgr.begin();
+                try {
+                    numTransferred = taskStore.transfer(null, expired.getId(), activePartitionId);
+                } finally {
+                    if (tranMgr.getStatus() == Status.STATUS_ACTIVE)
+                        tranMgr.commit();
+                    else
+                        tranMgr.rollback();
+                }
+
+                // TODO information message if > 0: Transferred X tasks from instance I1, which expired at T1, to instance I2.
+
+                int removed;
+                tranMgr.begin();
+                try {
+                    removed = taskStore.remove(expired);
+                } finally {
+                    if (tranMgr.getStatus() == Status.STATUS_ACTIVE)
+                        tranMgr.commit();
+                    else
+                        tranMgr.rollback();
+                }
+
+                if (trace && tc.isEntryEnabled())
+                    Tr.exit(PersistentExecutorImpl.this, tc, "run[partitionremoval]", removed);
+            } catch (Throwable x) {
+                if (trace && tc.isEntryEnabled())
+                    Tr.exit(PersistentExecutorImpl.this, tc, "run[partitionremoval]", x);
+            }
         }
     }
 

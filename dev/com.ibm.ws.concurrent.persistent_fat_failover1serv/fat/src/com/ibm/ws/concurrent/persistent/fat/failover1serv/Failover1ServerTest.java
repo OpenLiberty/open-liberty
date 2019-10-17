@@ -70,7 +70,7 @@ public class Failover1ServerTest extends FATServletClient {
      * testFailoverFromMissedHeartbeats - verify that a task fails over due to missed heartbeats alone,
      * even if the missed task threshold has not yet been reached.
      */
-    //@Test TODO enable once feature code (8406) is written
+    @Test
     public void testFailoverFromMissedHeartbeats() throws Exception {
         StringBuilder result = runTestWithResponse(server, APP_NAME + "/Failover1ServerTestServlet",
                 "testScheduleRepeatingTask&jndiName=persistent/exec2&initialDelayMS=2468&delayMS=600&test=testFailoverFromMissedHeartbeats[1]");

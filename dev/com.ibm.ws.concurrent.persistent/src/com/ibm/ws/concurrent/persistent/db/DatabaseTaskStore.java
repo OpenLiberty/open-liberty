@@ -336,7 +336,7 @@ public class DatabaseTaskStore implements TaskStore {
     /** {@inheritDoc} */
     @Override
     public List<PartitionRecord> find(PartitionRecord expected) throws Exception {
-        StringBuilder select = new StringBuilder(172).append("SELECT p.EXECUTOR,p.HOSTNAME,p.ID,p.LSERVER,p.USERDIR FROM Partition p");
+        StringBuilder select = new StringBuilder(190).append("SELECT p.EXECUTOR,p.HOSTNAME,p.ID,p.LSERVER,p.USERDIR,p.EXPIRY,p.STATES FROM Partition p");
         if (expected != null) {
             select.append(" WHERE");
             if (expected.hasExecutor())
@@ -383,6 +383,8 @@ public class DatabaseTaskStore implements TaskStore {
                 record.setId((Long) result[2]);
                 record.setLibertyServer((String) result[3]);
                 record.setUserDir((String) result[4]);
+                record.setExpiry((Long) result[5]);
+                record.setStates((Long) result[6]);
                 records.add(record);
             }
         } finally {
@@ -498,6 +500,42 @@ public class DatabaseTaskStore implements TaskStore {
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "findById", taskRecord);
         return taskRecord;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public List<PartitionRecord> findExpired() throws Exception {
+        String find = "SELECT p.ID,p.EXECUTOR,p.HOSTNAME,p.LSERVER,p.USERDIR,p.EXPIRY,p.STATES FROM Partition p WHERE p.EXPIRY<:e";
+
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "findExpired", find);
+
+        List<PartitionRecord> records = new ArrayList<PartitionRecord>();
+        EntityManager em = getPersistenceServiceUnit().createEntityManager();
+        try {
+            TypedQuery<Object[]> query = em.createQuery(find.toString(), Object[].class);
+            query.setParameter("e", System.currentTimeMillis());
+            List<Object[]> results = query.getResultList();
+
+            for (Object[] result : results) {
+                PartitionRecord record = new PartitionRecord(true);
+                record.setId((Long) result[0]);
+                record.setExecutor((String) result[1]);
+                record.setHostName((String) result[2]);
+                record.setLibertyServer((String) result[3]);
+                record.setUserDir((String) result[4]);
+                record.setExpiry((Long) result[5]);
+                record.setStates((Long) result[6]);
+                records.add(record);
+            }
+        } finally {
+            em.close();
+        }
+
+        if (trace && tc.isEntryEnabled())
+            Tr.exit(this, tc, "findExpired", records.size());
+        return records;
     }
 
     /** {@inheritDoc} */
