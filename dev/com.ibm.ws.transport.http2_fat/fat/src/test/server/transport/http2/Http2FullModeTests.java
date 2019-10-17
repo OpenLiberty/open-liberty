@@ -759,10 +759,11 @@ public class Http2FullModeTests extends FATServletClient {
      *
      * @throws Exception
      */
-    @Test
-    public void testDataFrameAfterContinuationFrame() throws Exception {
-        runTest(defaultServletPath, testName.getMethodName());
-    }
+    // Moved to tracing, build break 268375
+    // @Test
+    // public void testDataFrameAfterContinuationFrame() throws Exception {
+    //     runTest(defaultServletPath, testName.getMethodName());
+    // }
 
     /**
      * Test Coverage: Send a CONTINUATION frame on stream 0
