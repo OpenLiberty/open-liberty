@@ -90,6 +90,8 @@ public class ArtifactDownloader {
     }
 
     public void synthesizeAndDownload(String mavenCoords, String filetype, String dLocation, String repo, boolean individualDownload) throws InstallException {
+        configureProxyAuthentication();
+        configureAuthentication();
         if (individualDownload) {
             checkValidProxy();
             int repoResponseCode;
@@ -111,8 +113,7 @@ public class ArtifactDownloader {
         String[] checksumFormats = new String[2];
         checksumFormats[0] = "MD5";
         checksumFormats[1] = "SHA1";
-        configureProxyAuthentication();
-        configureAuthentication();
+
         try {
             if (individualDownload && ArtifactDownloaderUtils.fileIsMissing(urlLocation)) {
                 throw ExceptionUtils.createByKey("ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_REPO", ArtifactDownloaderUtils.getFileNameFromURL(urlLocation), filetype + " file", repo);
@@ -154,13 +155,13 @@ public class ArtifactDownloader {
     }
 
     private void configureProxyAuthentication() {
-        if (System.getProperty("http.proxyUser") != null) {
+        if (System.getenv("http.proxyUser") != null) {
             Authenticator.setDefault(new SystemPropertiesProxyAuthenticator());
         }
     }
 
     private void configureAuthentication() {
-        if (System.getProperty("MVNW_USERNAME") != null && System.getProperty("MVNW_PASSWORD") != null && System.getProperty("http.proxyUser") == null) {
+        if (System.getProperty("MVNW_USERNAME") != null && System.getProperty("MVNW_PASSWORD") != null && System.getenv("http.proxyUser") == null) {
             Authenticator.setDefault(new Authenticator() {
                 @Override
                 protected PasswordAuthentication getPasswordAuthentication() {
@@ -182,8 +183,8 @@ public class ArtifactDownloader {
                 throw ExceptionUtils.createByKey("ERROR_FAILED_TO_DOWNLOAD_FEATURE", ArtifactDownloaderUtils.getFileNameFromURL(address.toString()),
                                                  destination.toString());
             }
-            if (System.getProperty("http.proxyUser") != null) {
-                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(System.getProperty("http.proxyHost"), 8080));
+            if (System.getenv("http.proxyUser") != null) {
+                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(System.getenv("http.proxyHost"), 8080));
                 conn = url.openConnection(proxy);
             } else {
                 conn = url.openConnection();
@@ -259,7 +260,7 @@ public class ArtifactDownloader {
     private static class SystemPropertiesProxyAuthenticator extends Authenticator {
         @Override
         protected PasswordAuthentication getPasswordAuthentication() {
-            return new PasswordAuthentication(System.getProperty("http.proxyUser"), System.getProperty("http.proxyPassword", "").toCharArray());
+            return new PasswordAuthentication(System.getenv("http.proxyUser"), System.getenv("http.proxyPassword").toCharArray());
         }
     }
 
@@ -289,15 +290,15 @@ public class ArtifactDownloader {
 
     public void checkValidProxy() throws InstallException {
 
-        String proxyPort = System.getProperty("http.proxyPort");
-        if (System.getProperty("http.proxyUser") != null) {
+        String proxyPort = System.getenv("http.proxyPort");
+        if (System.getenv("http.proxyUser") != null) {
             int proxyPortnum = Integer.parseInt(proxyPort);
-            if (System.getProperty("http.proxyHost").isEmpty()) {
+            if (System.getenv("http.proxyHost").isEmpty()) {
                 throw ExceptionUtils.createByKey("ERROR_TOOL_PROXY_HOST_MISSING");
             } else if (proxyPortnum < 0 || proxyPortnum > 65535) {
                 throw ExceptionUtils.createByKey("ERROR_TOOL_INVALID_PROXY_PORT", proxyPort);
-            } else if (System.getProperty("http.proxyPassword").isEmpty() ||
-                       System.getProperty("http.proxyPassword") == null) {
+            } else if (System.getenv("http.proxyPassword").isEmpty() ||
+                       System.getenv("http.proxyPassword") == null) {
                 throw ExceptionUtils.createByKey("ERROR_TOOL_PROXY_PWD_MISSING");
             }
         }

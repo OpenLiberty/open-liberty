@@ -248,7 +248,6 @@ public class FeatureUtility {
     		featuresToInstall.clear();
     		featuresToInstall.addAll(mavenCoords);
     	}
-        info("featuresToInstall: " + featuresToInstall);
     	map.put("download.artifact.list", featuresToInstall);
     	boolean singleArtifactInstall = false;
         map.put("download.inidividual.artifact", singleArtifactInstall);
