@@ -59,6 +59,8 @@ public class WsLocationAdminImpl implements WsLocationAdmin {
 
     private static final String LOC_INTERNAL_LIB_DIR = "wlp.lib.dir";
 
+    public static final String LOC_INTERNAL_WORKAREA_DIR = "wlp.workarea.dir";
+
     private static final String LOC_AREA_NAME_APPS = "shared/apps/",
                     LOC_AREA_NAME_CONFIG = "shared/config/",
                     LOC_AREA_NAME_RESC = "shared/resources/",
@@ -74,7 +76,7 @@ public class WsLocationAdminImpl implements WsLocationAdmin {
      * Construct the WsLocationAdminService singleton based on a set of initial
      * properties provided by bootstrap or other initialization code (e.g. an
      * initializer in a test environment).
-     * 
+     *
      * @param initProps
      * @return WsLocationAdmin
      */
@@ -97,7 +99,7 @@ public class WsLocationAdminImpl implements WsLocationAdmin {
      * Construct the WsLocationAdminService singleton based on a set of initial
      * properties provided by the bundle context when running in an osgi
      * framework.
-     * 
+     *
      * @param initProps
      * @return WsLocationAdmin
      */
@@ -110,7 +112,7 @@ public class WsLocationAdminImpl implements WsLocationAdmin {
                     return new WsLocationAdminImpl(new BundleContextMap(ctx));
                 }
             };
-            instance = StaticValue.mutateStaticValue(instance,initializer);
+            instance = StaticValue.mutateStaticValue(instance, initializer);
         }
 
         return instance.get();
@@ -120,7 +122,7 @@ public class WsLocationAdminImpl implements WsLocationAdmin {
      * @return
      */
     public static WsLocationAdminImpl getInstance() {
-        WsLocationAdminImpl result  = instance.get();
+        WsLocationAdminImpl result = instance.get();
         if (result == null)
             throw new IllegalStateException("Location manager not initialized");
 
@@ -130,7 +132,7 @@ public class WsLocationAdminImpl implements WsLocationAdmin {
     /**
      * Location of installation; usually the parent of bootstrapLib
      * (e.g. wlp/).
-     * 
+     *
      * @see WsLocationConstants#LOC_INSTALL_DIR
      */
     final protected SymbolicRootResource installRoot;
@@ -138,7 +140,7 @@ public class WsLocationAdminImpl implements WsLocationAdmin {
     /**
      * Parent of installation location.
      * (e.g. parent of wlp)
-     * 
+     *
      * @see WsLocationConstants#LOC_INSTALL_PARENT_DIR
      */
     final protected SymbolicRootResource installParentRoot;
@@ -146,28 +148,28 @@ public class WsLocationAdminImpl implements WsLocationAdmin {
     /**
      * Location of liberty instance; usually a child of the install root
      * (e.g. wlp/usr).
-     * 
+     *
      * @see WsLocationConstants#LOC_INSTANCE_DIR
      */
     final protected SymbolicRootResource userRoot;
 
     /**
      * Root directory of local repository (e.g. wlp/usr/extension).
-     * 
+     *
      * @see WsLocationConstants#LOC_USER_EXTENSION_DIR
      */
     final protected SymbolicRootResource usrExtensionRoot;
 
     /**
      * Location of active/current server configuration (e.g. wlp/usr/servers/serverName).
-     * 
+     *
      * @see WsLocationConstants#LOC_SERVER_DIR
      */
     final protected SymbolicRootResource serverConfigDir;
 
     /**
      * Location of active/current server output (e.g. wlp/usr/servers/serverName).
-     * 
+     *
      * @see WsLocationConstants#LOC_SERVER_DIR
      */
     final protected SymbolicRootResource serverOutputDir;
@@ -183,6 +185,7 @@ public class WsLocationAdminImpl implements WsLocationAdmin {
      * directory (e.g. wlp/usr/servers/serverName/workarea).
      */
     final protected InternalWsResource serverWorkarea;
+
     /**
      * Location of the current servers state directory. Always a child of the server output directory.
      */
@@ -190,28 +193,28 @@ public class WsLocationAdminImpl implements WsLocationAdmin {
 
     /**
      * Root directory of local repository (e.g. wlp/usr/shared/apps).
-     * 
+     *
      * @see WsLocationConstants#LOC_SHARED_APPS_DIR
      */
     final protected SymbolicRootResource sharedAppsRoot;
 
     /**
      * Root directory of local repository (e.g. wlp/usr/shared/config).
-     * 
+     *
      * @see WsLocationConstants#LOC_SHARED_CONFIG_DIR
      */
     final protected SymbolicRootResource sharedConfigRoot;
 
     /**
      * Root directory of local repository (e.g. wlp/usr/shared/resources).
-     * 
+     *
      * @see WsLocationConstants#LOC_SHARED_RESC_DIR
      */
     final protected SymbolicRootResource sharedResourceRoot;
 
     /**
      * Temp directory
-     * 
+     *
      * @see WsLocationConstants#LOC_TMP_DIR
      */
     final protected SymbolicRootResource tmpRoot;
@@ -227,20 +230,21 @@ public class WsLocationAdminImpl implements WsLocationAdmin {
     /**
      * Initialize file locations based on provided initial properties (which
      * includes some set in response to command line argument parsing).
-     * 
+     *
      * @param config
-     *            Map containing location service configuration information
+     *                   Map containing location service configuration information
      * @throws IllegalArgumentException
-     *             if serverName, instanceRootStr, or bootstrapLibStr are empty or
-     *             null
+     *                                      if serverName, instanceRootStr, or bootstrapLibStr are empty or
+     *                                      null
      * @throws IllegalStateException
-     *             if bootstrap library location or instance root don't exist.
+     *                                      if bootstrap library location or instance root don't exist.
      */
     protected WsLocationAdminImpl(Map<String, Object> config) {
         String userRootStr = (String) config.get(WsLocationConstants.LOC_USER_DIR);
         String serverCfgDirStr = (String) config.get(WsLocationConstants.LOC_SERVER_CONFIG_DIR);
         String serverOutDirStr = (String) config.get(WsLocationConstants.LOC_SERVER_OUTPUT_DIR);
         String bootstrapLibStr = (String) config.get(LOC_INTERNAL_LIB_DIR);
+        String workareaDirStr = (String) config.get(LOC_INTERNAL_WORKAREA_DIR);
 
         String processType = (String) config.get(WsLocationConstants.LOC_PROCESS_TYPE);
         boolean isClient = (WsLocationConstants.LOC_PROCESS_TYPE_CLIENT.equals(processType));
@@ -257,7 +261,7 @@ public class WsLocationAdminImpl implements WsLocationAdmin {
 
         commonRoot = new VirtualRootResource();
 
-        // bootstrap file -- the lib dir containing the Launcher.. 
+        // bootstrap file -- the lib dir containing the Launcher..
         File bootstrapFile = new File(bootstrapLibStr);
 
         // the usr dir -- must exist
@@ -275,9 +279,7 @@ public class WsLocationAdminImpl implements WsLocationAdmin {
         if (!bootstrapFile.exists() || !userRoot.exists())
             throwInitializationException(new IllegalStateException("The locations for the bootstrap libraries and the server instance must exist"));
 
-        usrExtensionRoot = new SymbolicRootResource(userRoot.getNormalizedPath() + "/" + LOC_AREA_NAME_EXTENSION,
-                        WsLocationConstants.LOC_USER_EXTENSION_DIR,
-                        commonRoot);
+        usrExtensionRoot = new SymbolicRootResource(userRoot.getNormalizedPath() + "/" + LOC_AREA_NAME_EXTENSION, WsLocationConstants.LOC_USER_EXTENSION_DIR, commonRoot);
 
         String serversRootStr = userRoot.getNormalizedPath() + "/" + (isClient ? LOC_AREA_NAME_CLIENTS : LOC_AREA_NAME_SERVERS);
 
@@ -298,7 +300,9 @@ public class WsLocationAdminImpl implements WsLocationAdmin {
         SymbolRegistry.getRegistry().addStringSymbol(WsLocationConstants.LOC_PROCESS_TYPE, processType);
 
         // Workarea is a child of the server output directory
-        serverWorkarea = serverOutputDir.createDescendantResource(LOC_AREA_NAME_WORKING);
+        if (workareaDirStr == null)
+            workareaDirStr = LOC_AREA_NAME_WORKING;
+        serverWorkarea = serverOutputDir.createDescendantResource(workareaDirStr);
         SymbolRegistry.getRegistry().addResourceSymbol(WsLocationConstants.LOC_SERVER_WORKAREA_DIR, serverWorkarea);
 
         // state dir is a child of the server output directory
@@ -375,7 +379,7 @@ public class WsLocationAdminImpl implements WsLocationAdmin {
 
         if (bundleFile == null) {
             // Unable to create a file in the bundle's private data area, potentially
-            // because we aren't running in a framework at all, or the bundle couldn't 
+            // because we aren't running in a framework at all, or the bundle couldn't
             // be found for the file, or because the bundle was in an invalid state.
             String dir = mockBundlePrivate + id + "/" + filePath;
             bundleFile = new File(serverWorkarea.getNormalizedPath(), dir);
@@ -403,7 +407,7 @@ public class WsLocationAdminImpl implements WsLocationAdmin {
          * <li>If this method is called from a non-OSGi environment, or if the BundleContext can't be found, a random UUID is always returned.</li>
          * </ul>
          * </p>
-         * 
+         *
          * @return an ID that uniquely identifies this server
          * @see java.util.UUID#randomUUID()
          */
@@ -418,7 +422,7 @@ public class WsLocationAdminImpl implements WsLocationAdmin {
         /**
          * Reads a UUID from the serverId file. If the file does not exist,
          * generates a random UUID, writes it to the file, and returns the result.
-         * 
+         *
          * @return the UUID from the serverId file, or null if:<ol>
          *         <li>running in a non-osgi env (<code>FrameworkUtil.getBundle(Cache.class)==null</code>)</li>
          *         <li>the bundle has no context (<code>bundle.getBundleContext()==null</code>)</li>
@@ -923,7 +927,7 @@ public class WsLocationAdminImpl implements WsLocationAdmin {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.kernel.service.location.WsLocationAdmin#addLocation(java.lang.String, java.lang.String)
      */
     @Override
