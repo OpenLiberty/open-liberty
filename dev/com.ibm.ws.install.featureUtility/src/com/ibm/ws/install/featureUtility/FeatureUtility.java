@@ -26,7 +26,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 import java.util.Stack;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.ibm.ws.install.InstallException;
@@ -57,7 +56,7 @@ public class FeatureUtility {
         this.logger = InstallLogUtils.getInstallLogger();
         this.progressBar = ProgressBar.getInstance();
 
-        info("Initializing Feature Utility...");
+        info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_INITIALIZING"));
 
         this.openLibertyVersion = getLibertyVersion();
 
@@ -78,7 +77,6 @@ public class FeatureUtility {
             initializeMap(jsonPaths);
             updateProgress(progressBar.getMethodIncrement("initializeMap"));
             fine("Initialized install kernel map");
-            info("Feature Utility successfully initialized.");
         } else {
         	initializeMap();
         }
@@ -167,7 +165,7 @@ public class FeatureUtility {
      */
     @SuppressWarnings("unchecked")
     public void installFeatures() throws InstallException, IOException {
-        fine("Resolving features...");
+        info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_RESOLVING"));
         Collection<String> resolvedFeatures = (Collection<String>) map.get("action.result");
         if (resolvedFeatures == null) {
             throw new InstallException((String) map.get("action.error.message"));
@@ -186,17 +184,14 @@ public class FeatureUtility {
             }
         }
         updateProgress(progressBar.getMethodIncrement("resolvedFeatures"));
-        info("Resolved the features");
 
-
+        info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_PREPARING_ASSETS"));
         Collection<File> artifacts = fromDir != null ? downloadFeaturesFrom(resolvedFeatures, fromDir) : downloadFeatureEsas((List<String>) resolvedFeatures);
         updateProgress(progressBar.getMethodIncrement("fetchArtifacts"));
-        info("Found the artifacts");
-
-        Collection<String> actionReturnResult = new ArrayList<String>();
-        Collection<String> currentReturnResult;
 
         info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_STARTING_INSTALL"));
+        Collection<String> actionReturnResult = new ArrayList<String>();
+        List<String> currentReturnResult;
         try {
             double increment = ((double) (progressBar.getMethodIncrement("installFeatures")) / (artifacts.size()));
             for (File esaFile : artifacts) {
@@ -218,21 +213,18 @@ public class FeatureUtility {
                     fine("action.exception.stacktrace: " + map.get("action.error.stacktrace"));
                     String exceptionMessage = (String) map.get("action.error.message");
                     throw new InstallException(exceptionMessage);
-                } else if ((currentReturnResult = (Collection<String>) map.get("action.install.result")) != null) {
+                } else if ((currentReturnResult = (List<String>) map.get("action.install.result")) != null) {
                     // installation was successful
                     if (!currentReturnResult.isEmpty()) {
                         actionReturnResult.addAll((Collection<String>) map.get("action.install.result"));
                         updateProgress(increment);
                         info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("LOG_INSTALLED_FEATURE",
-                                currentReturnResult));
-                        // TODO: come up with new message for install feature
-                        // String.join(", ", currentReturnResult)).replace("CWWKF1304I: ", "")
+                                currentReturnResult.get(0)).replace("CWWKF1304I: ", ""));
 
                     }
                 }
             }
-
-            info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("TOOL_INSTALLATION_COMPLETED"));
+            info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("TOOL_FEATURES_INSTALLATION_COMPLETED"));
         } finally {
             cleanUp();
         }
