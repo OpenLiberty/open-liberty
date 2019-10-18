@@ -279,7 +279,54 @@
     <Designate pid="com.ibm.ws.security.social.linkedin">
         <Object ocdref="com.ibm.ws.security.social.linkedin.metatype" />
     </Designate>
-        
+
+    <OCD id="com.ibm.ws.security.social.openshift.metatype" name="%social.openshift.conf" description="%social.openshift.conf.desc"
+         ibm:alias="openshiftLogin" ibm:beta="true" >
+        <AD id="id" name="internal" description="internal use only"
+            required="false" type="String" default="openshiftLogin" ibm:final="true"  ibm:unique="uniqueId"/>
+        <AD id="clientId" name="%clientId" description="%clientId.desc"
+            required="true" type="String" />
+        <AD id="clientSecret" name="%clientSecret" description="%clientSecret.desc"
+            required="true" type="String" ibm:type="password" />
+        <AD id="authorizationEndpoint" name="%authorizationEndpoint" description="%authorizationEndpoint.desc"
+            required="false" type="String" />
+        <AD id="tokenEndpoint" name="%tokenEndpoint" description="%tokenEndpoint.desc"
+            required="false" type="String" />
+        <AD id="userApi" name="%userApi" description="%userApi.desc"
+            required="false" type="String" />
+        <AD id="scope" name="%scope" description="%scope.desc"
+            required="false" type="String" default="user" />
+        <AD id="userNameAttribute" name="%userNameAttribute" description="%userNameAttribute.desc"
+            required="false" type="String" default="email"/>
+        <AD id="mapToUserRegistry" name="%mapToUserRegistry" description="%mapToUserRegistry.desc"
+            required="false" type="Boolean" default="false" />
+        <AD id="sslRef" name="%sslRef" description="%sslRef.desc"
+            required="false" type="String" ibmui:uiReference="com.ibm.ws.ssl.repertoire" />
+        <AD id="authFilterRef" name="%authFilterRef" description="%authFilterRef.desc" ibm:type="pid"
+             ibm:reference="com.ibm.ws.security.authentication.filter" required="false" type="String"  />
+        <AD id="jwt" ibm:type="pid" ibm:reference="com.ibm.ws.security.social.login.jwt"
+             required="false" type="String" />
+        <AD id="isClientSideRedirectSupported" name="%isClientSideRedirectSupported" description="%isClientSideRedirectSupported.desc"
+            required="false" type="Boolean" default="true" />
+        <AD id="displayName" name="%displayName" description="%displayName.desc"
+            required="false" type="String" default="OpenShift" />
+        <AD id="website" name="%website" description="%website.desc" required="false" type="String" ibm:type="token" />
+        <AD id="tokenEndpointAuthMethod" name="%tokenEndpointAuthMethod" description="%tokenEndpointAuthMethod.desc" required="false"
+             type="String" default="client_secret_post" >
+            <Option label="client_secret_basic" value="client_secret_basic" />
+            <Option label="client_secret_post"  value="client_secret_post" />
+        </AD>
+        <AD id="redirectToRPHostAndPort" name="%redirectToRPHostAndPort" description="%redirectToRPHostAndPort.desc" required="false" type="String" />
+        <AD id="useSystemPropertiesForHttpClientConnections" name="%useSystemPropertiesForHttpClientConnections" description="%useSystemPropertiesForHttpClientConnections.desc" required="false" type="Boolean" default="false"/>
+        <AD id="responseType" name="%responseType" description="%responseType.desc" required="false" type="String" default="code">
+            <Option label="%responseType.code" value="code" />
+        </AD>
+    </OCD>
+
+    <Designate pid="com.ibm.ws.security.social.openshift">
+        <Object ocdref="com.ibm.ws.security.social.openshift.metatype" />
+    </Designate>
+
     <OCD id="com.ibm.ws.security.social.oauth2login.metatype" name="%social.oauth2login.conf" description="%social.oauth2login.conf.desc" 
          ibm:alias="oauth2Login">
         <AD id="id" name="%uniqueId" description="%uniqueId.desc"
