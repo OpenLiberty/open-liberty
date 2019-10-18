@@ -14,6 +14,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Enumeration;
@@ -67,7 +68,7 @@ public class ServerStartJavaEnvironmentVariablesTest {
     }
 
     /**
-     * Ensures that OPENJ9_JAVA_OPTIONS and IBM_JAVA_OPTIONS enviroment variables 
+     * Ensures that OPENJ9_JAVA_OPTIONS and IBM_JAVA_OPTIONS enviroment variables
      * are both set and are equal to eachother
      */
     @Test
@@ -101,38 +102,42 @@ public class ServerStartJavaEnvironmentVariablesTest {
         assertTrue("The Dump File was not found", dumpFile.getPath().compareTo("") != 0);
 
         ZipFile zipFile = new ZipFile(dumpFile);
-        for (Enumeration<? extends ZipEntry> en = zipFile.entries(); en.hasMoreElements();) {
-            ZipEntry entry = en.nextElement();
-            if (entry.getName().endsWith("EnvironmentVariables.txt")) {
-                InputStream entryInputStream = zipFile.getInputStream(entry);
-                BufferedReader entryReader = new BufferedReader(new InputStreamReader(entryInputStream));
+        try {
+            for (Enumeration<? extends ZipEntry> en = zipFile.entries(); en.hasMoreElements();) {
+                ZipEntry entry = en.nextElement();
+                if (entry.getName().endsWith("EnvironmentVariables.txt")) {
+                    InputStream entryInputStream = zipFile.getInputStream(entry);
+                    BufferedReader entryReader = new BufferedReader(new InputStreamReader(entryInputStream));
 
-                String[] firstLine = new String[2], secondLine = new String[2];
-                while ((firstLine = entryReader.readLine().split("=", 2)) != null) {
-                    if (firstLine[0].startsWith("IBM_JAVA_OPTIONS")) {
-                        while ((secondLine = entryReader.readLine().split("=", 2)) != null) {
-                            if (secondLine[0].equals("OPENJ9_JAVA_OPTIONS")) {
-                                Log.info(c, testName.getMethodName(), String.format("%-20s=%s", firstLine[0], firstLine[1]));
-                                Log.info(c, testName.getMethodName(), String.format("%-20s=%s", secondLine[0], secondLine[1]));
-                                assertTrue("IBM_JAVA_OPTIONS did not equal OPENJ9_JAVA OPTIONS", firstLine[1].equals(secondLine[1]));
-                                break;
+                    String[] firstLine = new String[2], secondLine = new String[2];
+                    while ((firstLine = entryReader.readLine().split("=", 2)) != null) {
+                        if (firstLine[0].startsWith("IBM_JAVA_OPTIONS")) {
+                            while ((secondLine = entryReader.readLine().split("=", 2)) != null) {
+                                if (secondLine[0].equals("OPENJ9_JAVA_OPTIONS")) {
+                                    Log.info(c, testName.getMethodName(), String.format("%-20s=%s", firstLine[0], firstLine[1]));
+                                    Log.info(c, testName.getMethodName(), String.format("%-20s=%s", secondLine[0], secondLine[1]));
+                                    assertTrue("IBM_JAVA_OPTIONS did not equal OPENJ9_JAVA OPTIONS", firstLine[1].equals(secondLine[1]));
+                                    break;
+                                }
                             }
+                            assertTrue("OPENJ9_JAVA_OPTIONS was not found", secondLine[0].equals("OPENJ9_JAVA_OPTIONS"));
+                            break;
                         }
-                        assertTrue("OPENJ9_JAVA_OPTIONS was not found", secondLine[0].equals("OPENJ9_JAVA_OPTIONS"));
-                        break;
                     }
-                }
-                assertTrue("IBM_JAVA_OPTIONS was not found", firstLine[0].equals("IBM_JAVA_OPTIONS"));
+                    assertTrue("IBM_JAVA_OPTIONS was not found", firstLine[0].equals("IBM_JAVA_OPTIONS"));
 
-                entryReader.close();
-                entryInputStream.close();
+                    entryReader.close();
+                    entryInputStream.close();
+                }
+            }
+        } finally {
+            try {
+                zipFile.close();
+                dumpFile.delete();
+            } catch (IOException ex) {
             }
         }
 
-        zipFile.close();
-        dumpFile.delete();
-
         server.stopServer();
     }
-
 }
