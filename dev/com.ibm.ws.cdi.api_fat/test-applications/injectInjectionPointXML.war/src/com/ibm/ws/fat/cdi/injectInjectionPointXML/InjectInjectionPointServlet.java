@@ -8,19 +8,17 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.fat.cdi.injectInjectionPoint;
+package com.ibm.ws.fat.cdi.injectInjectionPointXML;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet("/")
 public class InjectInjectionPointServlet extends HttpServlet {
 
     @Inject

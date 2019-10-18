@@ -23,6 +23,7 @@ import org.junit.Test;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
@@ -40,10 +41,10 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
 @Mode(TestMode.FULL)
-public class InjectInjectionPointTest extends LoggingTest {
+public class InjectInjectionPointXMLTest extends LoggingTest {
 
     @ClassRule
-    public static ShrinkWrapSharedServer SHARED_SERVER = new ShrinkWrapSharedServer("cdi12InjectInjectionPointServer");
+    public static ShrinkWrapSharedServer SHARED_SERVER = new ShrinkWrapSharedServer("cdi12XMLInjectInjectionPointServer");
 
     /*
      * (non-Javadoc)
@@ -58,16 +59,17 @@ public class InjectInjectionPointTest extends LoggingTest {
     @BuildShrinkWrap
     public static Archive buildShrinkWrap() {
 
-          return ShrinkWrap.create(WebArchive.class, "injectInjectionPoint.war")
-                        .addClass("com.ibm.ws.fat.cdi.injectInjectionPoint.EmptyBean")
-                        .addClass("com.ibm.ws.fat.cdi.injectInjectionPoint.InjectInjectionPointServlet");
+          return ShrinkWrap.create(WebArchive.class, "injectInjectionPointXML.war")
+                        .addClass("com.ibm.ws.fat.cdi.injectInjectionPointXML.InjectInjectionPointServlet")
+                        .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
+                        .add(new FileAsset(new File("test-applications/injectInjectionPointXML.war/resources/WEB-INF/web.xml")), "/WEB-INF/web.xml");
     }
 
     @Test
     @AllowedFFDC("com.ibm.ws.container.service.state.StateChangeException")
-    public void testInjectInjectionPoint() throws Exception {
-                List<String> logs = SHARED_SERVER.getLibertyServer().findStringsInLogs("CWWKZ0002E(?=.*injectInjectionPoint)(?=.*com.ibm.ws.container.service.state.StateChangeException)(?=.*org.jboss.weld.exceptions.DefinitionException)(?=.*WELD-001405)(?=.*BackedAnnotatedField)(?=.*com.ibm.ws.fat.cdi.injectInjectionPoint.InjectInjectionPointServlet.thisShouldFail)");
-        assertEquals("DefinitionException not found", 1, logs.size()); //Unlike the two sibling tests this only emits the message once. 
+    public void testInjectInjectionPointXML() throws Exception {
+                List<String> logs = SHARED_SERVER.getLibertyServer().findStringsInLogs("CWWKZ0002E(?=.*injectInjectionPoint)(?=.*com.ibm.ws.container.service.state.StateChangeException)(?=.*org.jboss.weld.exceptions.DefinitionException)(?=.*WELD-001405)(?=.*BackedAnnotatedField)(?=.*com.ibm.ws.fat.cdi.injectInjectionPointXML.InjectInjectionPointServlet.thisShouldFail)");
+        assertEquals("DefinitionException not found", 1, logs.size()); 
     }
 
     @AfterClass
