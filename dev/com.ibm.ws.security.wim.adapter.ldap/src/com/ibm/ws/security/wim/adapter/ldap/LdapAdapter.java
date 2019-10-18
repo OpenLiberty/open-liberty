@@ -1150,7 +1150,12 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
                 dateFormat = new SimpleDateFormat("yyyyMMddHHmmssZ");
             } else {
                 if (originValue.toString().contains(".")) {
-                    dateFormat = new SimpleDateFormat("yyyyMMddHHmmss.SZ");
+                    String o = originValue.toString();
+                    if (o.contains("-") && o.substring(o.indexOf('.') + 1, o.indexOf('-')).length() > 1) {
+                        dateFormat = new SimpleDateFormat("yyyyMMddHHmmss.SSSZ");
+                    } else {
+                        dateFormat = new SimpleDateFormat("yyyyMMddHHmmss.SZ");
+                    }
                 } else {
                     dateFormat = new SimpleDateFormat("yyyyMMddHHmmssZ");
                 }
