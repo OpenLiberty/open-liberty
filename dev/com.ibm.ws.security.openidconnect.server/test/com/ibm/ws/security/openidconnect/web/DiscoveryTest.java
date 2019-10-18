@@ -63,6 +63,7 @@ public class DiscoveryTest {
     private final static String[] supportedDisplayVals = { "page" };
     private final static String[] supportedClaimTypes = { "normal" };
     private final static String[] supportedSubjectTypes = { "public" };
+    private final static String[] supportedPkceCodeChallengeMethods = { "plain", "S256" };
     private final static String SIGNING_ALG_VALUE = "HS256";
     private final static String ISSUER_URI = "https://localhost:8020/oidc/endpoint/TestProvider";
     private final static String AUTHORIZE_URI = ISSUER_URI + "/authorize";
@@ -190,6 +191,7 @@ public class DiscoveryTest {
             assertEquals("Discovery model property should have matched.", expectedDiscoveryModel.getClientMgmtEndpoint(), CLIENT_MGMT_URI);
             assertEquals("Discovery model property should have matched.", expectedDiscoveryModel.getPersonalTokenMgmtEndpoint(), PERSONAL_TOKEN_MGMT_URI);
             assertEquals("Discovery model property should have matched.", expectedDiscoveryModel.getUsersTokenMgmtEndpoint(), USERS_TOKEN_MGMT_URI);
+            assertArrayEquals(expectedDiscoveryModel.getPkceCodeChallengeMethodsSupported(), supportedPkceCodeChallengeMethods);
 
         } catch (Throwable t) {
             outputMgr.failWithThrowable(methodName, t);
@@ -310,6 +312,7 @@ public class DiscoveryTest {
         model.setClientMgmtEndpoint(CLIENT_MGMT_URI);
         model.setPersonalTokenMgmtEndpoint(PERSONAL_TOKEN_MGMT_URI);
         model.setUsersTokenMgmtEndpoint(USERS_TOKEN_MGMT_URI);
+        model.setPkceCodeChallengeMethodsSupported(supportedPkceCodeChallengeMethods);
 
         return model;
     }
