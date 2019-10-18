@@ -138,8 +138,13 @@ Include-Resource: \
 	com.ibm.ws.webcontainer.security;version=latest,\
 	com.ibm.ws.webcontainer;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+<<<<<<< HEAD
 	com.ibm.ws.security.openidconnect.clients.common;version=latest,\
 	org.glassfish:javax.json;version=1.0
+=======
+    com.ibm.ws.security.openidconnect.clients.common;version=latest,\
+    org.glassfish:javax.json;version=1.0 
+>>>>>>> db7cc7fe7b... rebased with latest changes from integration, added parsing the json response object and tests
 
 -testpath: \
     ../build.sharedResources/lib/junit/old/junit.jar;version=file, \

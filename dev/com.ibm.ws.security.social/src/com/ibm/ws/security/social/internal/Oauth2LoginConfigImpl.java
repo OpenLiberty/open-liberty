@@ -172,6 +172,7 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
     public static final String KEY_USE_SYSPROPS_FOR_HTTPCLIENT_CONNECTONS = "useSystemPropertiesForHttpClientConnections";
     protected boolean useSystemPropertiesForHttpClientConnections = false;
 
+
     public static final String KEY_userApiType = "userApiType";
     protected String userApiType = null;
 
@@ -183,6 +184,7 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
     protected boolean accessTokenSupported = false;
     public static final String KEY_accessTokenHeaderName = "accessTokenHeaderName";
     protected String accessTokenHeaderName = null;
+
 
     protected CommonConfigUtils configUtils = new CommonConfigUtils();
 
@@ -292,6 +294,7 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
         this.clientSecret = configUtils.processProtectedString(props, KEY_clientSecret);
         this.authorizationEndpoint = configUtils.getConfigAttribute(props, KEY_authorizationEndpoint);
         this.scope = configUtils.getConfigAttribute(props, KEY_scope);
+
         this.userApiType = configUtils.getConfigAttribute(props, KEY_userApiType);
         this.accessTokenRequired = configUtils.getBooleanConfigAttribute(props, KEY_accessTokenRequired, this.accessTokenRequired);
         this.accessTokenSupported = configUtils.getBooleanConfigAttribute(props, KEY_accessTokenSupported, this.accessTokenSupported);
@@ -805,6 +808,7 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
         return userApiToken;
     }
 
+
     public boolean isAccessTokenRequired() {
         return accessTokenRequired;
     }
@@ -815,6 +819,7 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
 
     public String getAccessTokenHeaderName() {
         return accessTokenHeaderName;
+
     }
 
 }

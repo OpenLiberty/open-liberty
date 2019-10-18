@@ -13,15 +13,20 @@ package com.ibm.ws.security.social.internal.utils;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+
 import java.net.HttpURLConnection;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.json.Json;
 import javax.json.JsonObjectBuilder;
+
+import java.io.StringReader;
+
+import javax.json.JsonObject;
+import javax.json.JsonValue;
+import javax.json.JsonValue.ValueType;
+import javax.json.stream.JsonParsingException;
 import javax.net.ssl.SSLSocketFactory;
 import javax.servlet.http.HttpServletResponse;
 
@@ -31,7 +36,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.security.common.http.HttpUtils;
-import com.ibm.ws.security.common.jwk.utils.JsonUtils;
 import com.ibm.ws.security.social.TraceConstants;
 import com.ibm.ws.security.social.error.SocialLoginException;
 import com.ibm.ws.security.social.internal.Oauth2LoginConfigImpl;
@@ -47,7 +51,7 @@ public class OpenShiftUserApiUtils {
     public OpenShiftUserApiUtils(Oauth2LoginConfigImpl config) {
         this.config = config;
     }
-
+    
     public String getUserApiResponse(@Sensitive String accessToken, SSLSocketFactory sslSocketFactory) throws SocialLoginException {
         String response = null;
         try {
@@ -95,6 +99,7 @@ public class OpenShiftUserApiUtils {
         return bodyBuilder.build().toString();
     }
 
+
     String readUserApiResponse(HttpURLConnection connection) throws IOException, SocialLoginException, JoseException {
         int responseCode = connection.getResponseCode();
         String response = httpUtils.readConnectionResponse(connection);
@@ -104,42 +109,58 @@ public class OpenShiftUserApiUtils {
         return modifyExistingResponseToJSON(response);
     }
 
-    private String modifyExistingResponseToJSON(String response) throws JoseException {
-
-        String jsonFormatResponse = JsonUtils.toJson(response);
-
-        Map<?, ?> firstMap = JsonUtils.claimsFromJsonObject(jsonFormatResponse);
-
-        Map<?, ?> statusInnerMap = (LinkedHashMap<?, ?>) firstMap.get("status");
-
-        Map<?, ?> userInnerMap = (LinkedHashMap<?, ?>) statusInnerMap.get("user");
-
-        List<?> groupList = (ArrayList<?>) userInnerMap.get("groups");
-
-        StringBuilder correct = new StringBuilder("{\"username\":\"" + userInnerMap.get("username") + "\",");
-
-        StringBuilder buildArray = new StringBuilder("\"groups\":[");
-
-        for (int i = 0; i < groupList.size(); i++) {
-
-            if (i == groupList.size() - 1) {
-
-                buildArray.append("\"" + groupList.get(i) + "\"" + "]}");
-
+    String modifyExistingResponseToJSON(String response) throws JoseException, SocialLoginException{
+    	
+    	if(response==null) {
+            throw new SocialLoginException("OPENSHIFT_USER_API_BAD_RESPONSE", null, null);
+    		//throw new SocialLoginException("The response received from the user response api is null",null,null);
+    	}
+    	if(response.isEmpty()) {
+    		throw new SocialLoginException("OPENSHIFT_USER_API_BAD_RESPONSE",null,null);
+    	}
+    	JsonObject jsonResponse;
+    	try {
+    		jsonResponse = Json.createReader(new StringReader(response)).readObject();
+    	}
+    	catch(JsonParsingException e) {
+    		throw new SocialLoginException("OPENSHIFT_USER_API_BAD_RESPONSE" + response,e,null);
+    	}
+    	
+    	
+    	JsonObject statusInnerMap,userInnerMap;
+    	JsonObjectBuilder modifiedResponse = Json.createObjectBuilder();
+    	if(jsonResponse.containsKey("status")) {
+    	//System.out.println(jsonResponse.get("status"));
+            JsonValue statusValue = jsonResponse.get("status");
+            if (ValueType.STRING == statusValue.getValueType()) {
+        		if(jsonResponse.getString("status").equals("Failure")) {
+        	        
+        			throw new SocialLoginException(jsonResponse.getString("message"),null,null);
+        		
+        		}
             }
-
-            else {
-
-                buildArray.append("\"" + groupList.get(i) + "\"" + ",");
-
-            }
-
-        }
-
-        String current = correct.append(buildArray).toString();
-
-        return current;
-
+    		statusInnerMap = jsonResponse.getJsonObject("status");				
+    	}
+    	else {
+    		throw new SocialLoginException("OPENSHIFT_USER_API_RESPONSE_MISSING_KEY",null, new Object[] {"status"});
+    	}
+    	if(statusInnerMap.containsKey("user")) {
+    		userInnerMap = statusInnerMap.getJsonObject("user");
+    		modifiedResponse.add("username", userInnerMap.getString(config.getUserNameAttribute()));
+    	}
+    	else {
+        	throw new SocialLoginException("OPENSHIFT_USER_API_RESPONSE_MISSING_KEY",null,new Object[] {"user"}); 
+    	}
+    
+    	if(userInnerMap.containsKey("groups")) {
+    		JsonValue groupsValue = userInnerMap.get("groups");
+    		if(groupsValue.getValueType() != ValueType.ARRAY) {
+    			throw new SocialLoginException("CWWKS5374E",null,null); 
+    		}
+    		 modifiedResponse.add("groups", userInnerMap.getJsonArray("groups")); 	
+    	}
+        return modifiedResponse.build().toString();
     }
+
 
 }
