@@ -100,7 +100,7 @@ if not defined SERVER_ARG (
   set SERVER_NAME=defaultServer
 ) else if "%SERVER_NAME%" == "" (
   set SERVER_NAME=defaultServer
-) else if "%SERVER_NAME:~0,1%" == "-" (
+) else if "%SERVER_NAME:~0,2%" == "--" (
   set SERVER_NAME=defaultServer
 )
 

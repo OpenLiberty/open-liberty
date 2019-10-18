@@ -258,7 +258,7 @@ else
   then
     # Only use if it isn't something that looks like an option
     case $1 in
-    -*);;
+    --*);;
     *)
       SERVER_NAME=$1
       shift #consume
@@ -273,7 +273,6 @@ if [ -z "$SERVER_NAME" ]
 then
   SERVER_NAME=defaultServer
 fi
-
 
 ##
 ## Set JAVA_AGENT_QUOTED if WLP_SKIP_BOOTSTRAP_AGENT is unset.
