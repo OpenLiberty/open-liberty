@@ -30,6 +30,8 @@ import javax.persistence.UniqueConstraint;
 import com.ibm.jbatch.container.ws.RemotablePartitionState;
 import com.ibm.jbatch.container.ws.WSRemotablePartitionExecution;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 /**
  * @author skurz
  *
@@ -89,6 +91,7 @@ public class RemotablePartitionEntity implements WSRemotablePartitionExecution {
     @Column(name = "LASTUPDATED")
     private Date lastUpdated;
 
+    @Trivial
     public RemotablePartitionEntity() {
     }
 

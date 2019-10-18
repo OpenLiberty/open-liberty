@@ -18,6 +18,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 @Entity
 public class JobExecutionEntityV3 extends JobExecutionEntityV2 {
 
@@ -28,6 +30,7 @@ public class JobExecutionEntityV3 extends JobExecutionEntityV2 {
     private Collection<RemotablePartitionEntity> remotablePartitions;
 
     // For JPA
+    @Trivial
     public JobExecutionEntityV3() {
         super();
     }

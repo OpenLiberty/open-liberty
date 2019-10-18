@@ -85,6 +85,7 @@ import com.ibm.jbatch.container.ws.WSPartitionStepThreadExecution;
 import com.ibm.jbatch.container.ws.WSStepThreadExecutionAggregate;
 import com.ibm.jbatch.container.ws.impl.WSStartupRecoveryServiceImpl;
 import com.ibm.jbatch.spi.services.IBatchConfig;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
 import com.ibm.ws.LocalTransaction.LocalTransactionCurrent;
 import com.ibm.ws.Transaction.UOWCurrent;
@@ -2842,6 +2843,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
             throw new PersistenceException(caughtThrowable);
         }
 
+        @Trivial
         protected void resumeAnyExistingLTC() {
             logger.fine("Will resume any LTC");
             if (suspendedLTC != null) {
