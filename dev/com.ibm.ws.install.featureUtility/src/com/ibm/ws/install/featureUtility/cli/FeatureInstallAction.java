@@ -30,6 +30,7 @@ import com.ibm.ws.install.featureUtility.FeatureUtilityExecutor;
 import com.ibm.ws.install.internal.InstallLogUtils;
 import com.ibm.ws.install.internal.InstallUtils;
 import com.ibm.ws.install.internal.ProgressBar;
+import com.ibm.ws.install.internal.InstallLogUtils.Messages;
 import com.ibm.ws.install.internal.asset.ServerAsset;
 import com.ibm.ws.kernel.boot.ReturnCode;
 import com.ibm.ws.kernel.boot.cmdline.ActionHandler;
@@ -70,6 +71,11 @@ public class FeatureInstallAction implements ActionHandler {
 
         this.argList = args.getPositionalArguments();
         this.fromDir = args.getOption("from");
+        if ((rc = validateFromDir(this.fromDir)) != ReturnCode.OK) {
+            return rc;
+        }
+        
+        
         this.toDir = args.getOption("to");
 
         this.progressBar = ProgressBar.getInstance();
@@ -118,7 +124,11 @@ public class FeatureInstallAction implements ActionHandler {
                                                                                                                                                   + InstallUtils.SERVER_XML);
 
         if (!serverXML.isFile()) {
-            throw new InstallException("Unable to find server.xml file", InstallException.RUNTIME_EXCEPTION);
+            throw new InstallException(
+                    Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_UNABLE_TO_FIND_SERVER_XML",
+                            serverXML.getParent()));
+            // throw new InstallException("Unable to find server.xml file",
+            // InstallException.RUNTIME_EXCEPTION);
         }
 
         servers.add(new ServerAsset(serverXML));
@@ -129,6 +139,25 @@ public class FeatureInstallAction implements ActionHandler {
     private static boolean isServer(String fileName) {
         return new File(InstallUtils.getServersDir(), fileName).isDirectory()
                || fileName.toLowerCase().endsWith("server.xml");
+    }
+
+    private ReturnCode validateFromDir(String fromDir) {
+        if (fromDir == null) {
+            return ReturnCode.OK;
+        }
+        if(fromDir.isEmpty()) {
+            logger.log(Level.SEVERE,
+                    Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_TOOL_DIRECTORY_REQUIRED", "from"));
+            return ReturnCode.BAD_ARGUMENT;
+        }
+        
+        if(!new File(fromDir).exists()) {
+            logger.log(Level.SEVERE,
+                    Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_TOOL_DIRECTORY_NOT_EXISTS", fromDir));
+            return ReturnCode.BAD_ARGUMENT;
+        }
+        
+        return ReturnCode.OK;
     }
 
     private ExitCode installServerFeatures() {
