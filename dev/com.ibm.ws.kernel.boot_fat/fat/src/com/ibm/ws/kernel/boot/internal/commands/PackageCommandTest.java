@@ -18,7 +18,10 @@ import static org.junit.Assume.assumeTrue;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
@@ -27,6 +30,8 @@ import java.util.zip.ZipFile;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -649,6 +654,62 @@ public class PackageCommandTest {
 
         } catch (FileNotFoundException ex) {
             assumeTrue(false); // the directory does not exist, so we skip this test.
+        }
+    }
+
+    /**
+     * Verify the embedded server instance launched by the package command does not corrupt
+     * the feature cache of the packaged (target) server.
+     */
+    @Test
+    public void testMinifyDoesNotCorruptServerFeatureCache() throws Exception {
+
+        LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.kernel.bootstrap.fat");
+        String jarFileName = server.getServerName() + ".jar";
+        ServerConfiguration config = null;
+        Set<String> features = null;
+        try {
+            config = server.getServerConfiguration();
+            features = config.getFeatureManager().getFeatures();
+            features.addAll(new HashSet<>(Arrays.asList("mpFaultTolerance-1.1", "mpMetrics-1.1", "jsp-2.3")));
+            server.updateServerConfiguration(config);
+
+            server.startServer(true); // --clean
+            String installedFeaturesBefore = server.findStringsInLogs("CWWKF0012I:.*").get(0);
+            System.out.println("installedFeaturesBefore: " + installedFeaturesBefore);
+            server.stopServer();
+
+            String stdout = server.executeServerScript("package", new String[] { "--archive=" + jarFileName, "--include=minify" }).getStdout();
+            System.out.println("Server package command output: " + stdout);
+            assertTrue("Server package command launched an embedded server that computed a feature set : ", stdout.contains("CWWKF0012I:"));
+
+            server.startServer(); // Not --clean
+            String installedFeaturesAfter = server.findStringsInLogs("CWWKF0012I:.*").get(0);
+            System.out.println("installedFeaturesAfter: " + installedFeaturesAfter);
+
+            int i = installedFeaturesBefore.indexOf("CWWKF0012I:"); // Ignore the timestamp
+            int j = installedFeaturesAfter.indexOf("CWWKF0012I:");
+            assertTrue("Server package command did not change the packaged server's feature cache: ",
+                       i > 0 && j > 0 && installedFeaturesBefore.substring(i).equals(installedFeaturesAfter.substring(j)));
+            //Expected: "CWWKF0012I: The server installed the following features: [cdi-1.2, concurrent-1.0, distributedMap-1.0, el-3.0, jndi-1.0, json-1.0, jsp-2.3, mpConfig-1.3, mpFaultTolerance-1.1, mpMetrics-1.1, servlet-3.1, ssl-1.0, timedExit-1.0]";
+        } finally {
+            if (server.isStarted()) {
+                try {
+                    server.stopServer();
+                } catch (Exception e1) {
+                    e1.printStackTrace(System.out);
+                }
+            }
+            // Help tidy up, but likely redundant as getLibertyServer() will reset the server configuration.
+            if (!features.isEmpty() && features.contains("mpFaultTolerance-1.1")) {
+                features.removeAll(new HashSet<>(Arrays.asList("mpFaultTolerance-1.1", "mpMetrics-1.1", "jsp-2.3")));
+                try {
+                    server.updateServerConfiguration(config);
+                } catch (Exception e2) {
+                    e2.printStackTrace(System.out);
+                }
+            }
+
         }
     }
 
