@@ -15,4 +15,7 @@
                   httpPort="9080"
                   httpsPort="9443" />
 
+    <!-- Default SSL configuration enables trust for default certificates from the Java runtime --> 
+    <ssl id="defaultSSLConfig" trustDefaultCerts="true" />
+
 </server>
