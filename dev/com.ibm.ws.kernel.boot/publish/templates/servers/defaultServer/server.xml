@@ -14,6 +14,6 @@
     <!-- Automatically expand WAR files and EAR files -->
     <applicationManager autoExpand="true"/>
 
-    <!-- Default SSL configuration enables trusting default certificates -->
+    <!-- Default SSL configuration enables trust for default certificates from the Java runtime --> 
     <ssl id="defaultSSLConfig" trustDefaultCerts="true" />
 </server>
