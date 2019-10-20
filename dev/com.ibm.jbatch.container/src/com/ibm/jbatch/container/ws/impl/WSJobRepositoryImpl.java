@@ -382,8 +382,8 @@ public class WSJobRepositoryImpl implements WSJobRepository {
      * @throws Exception
      */
     @Override
-    public int getJobExecutionTableVersion() throws Exception {
-        return persistenceManagerService.getJobExecutionTableVersion();
+    public int getJobExecutionEntityVersion() throws Exception {
+        return persistenceManagerService.getJobExecutionEntityVersion();
     }
 
     /**
@@ -392,8 +392,8 @@ public class WSJobRepositoryImpl implements WSJobRepository {
      * @throws Exception
      */
     @Override
-    public int getJobInstanceTableVersion() throws Exception {
-        return persistenceManagerService.getJobInstanceTableVersion();
+    public int getJobInstanceEntityVersion() throws Exception {
+        return persistenceManagerService.getJobInstanceEntityVersion();
     }
 
     @Override

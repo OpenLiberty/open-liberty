@@ -560,7 +560,7 @@ public interface IPersistenceManagerService extends IBatchServiceBase {
      * @return job executions table version number
      * @throws Exception
      */
-    int getJobExecutionTableVersion() throws Exception;
+    int getJobExecutionEntityVersion() throws Exception;
 
     /**
      * Get the job repository table version number. This will initialize the persistent store (database)
@@ -569,20 +569,20 @@ public interface IPersistenceManagerService extends IBatchServiceBase {
      * @return job instances table version number
      * @throws Exception
      */
-    int getJobInstanceTableVersion() throws Exception;
+    int getJobInstanceEntityVersion() throws Exception;
 
     /**
      * @return the job execution version field, initialized or not (may return 'null')
      */
-    Integer getJobExecutionTableVersionField();
+    Integer getJobExecutionEntityVersionField();
 
     /**
      * @return the job instance version field, initialized or not, (may return 'null')
      */
-    Integer getJobInstanceTableVersionField();
+    Integer getJobInstanceEntityVersionField();
 
     /**
      * @return the step thread execution version field, initialized or not (may return 'null')
      */
-    Integer getStepThreadExecutionTableVersionField();
+    Integer getStepThreadExecutionEntityVersionField();
 }

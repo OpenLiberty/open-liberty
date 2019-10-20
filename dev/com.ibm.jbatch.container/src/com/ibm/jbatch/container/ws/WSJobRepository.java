@@ -284,12 +284,12 @@ public interface WSJobRepository {
     /**
      * Check the version of the job execution table in the job repository.
      */
-    int getJobExecutionTableVersion() throws Exception;
+    int getJobExecutionEntityVersion() throws Exception;
 
     /**
      * Check the version of the job instance table in the job repository.
      */
-    int getJobInstanceTableVersion() throws Exception;
+    int getJobInstanceEntityVersion() throws Exception;
 
     public WSJobInstance updateJobInstanceWithGroupNames(long jobInstanceId, Set<String> groupNames);
 

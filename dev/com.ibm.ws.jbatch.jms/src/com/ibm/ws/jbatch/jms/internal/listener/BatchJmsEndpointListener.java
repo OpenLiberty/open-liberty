@@ -489,8 +489,8 @@ public class BatchJmsEndpointListener implements MessageListener {
 
             // get the op group names and create a mapping to each for the job instance id
             if (batchOperationGroup != null) {
-                int instanceTableVersion = jobRepositoryProxy.getJobInstanceTableVersion();
-                if (instanceTableVersion >= 3) {
+                int instanceEntityVersion = jobRepositoryProxy.getJobInstanceEntityVersion();
+                if (instanceEntityVersion >= 3) {
                     if (jobInstance.getGroupNames() == null || jobInstance.getGroupNames().size() == 0) {
                         if(tc.isDebugEnabled()) {
                             Tr.debug(BatchJmsEndpointListener.this, tc, "On restart, null/empty operation group mapping. Give it another chance.");
@@ -503,7 +503,7 @@ public class BatchJmsEndpointListener implements MessageListener {
                     }
                 } else {
                     if(tc.isDebugEnabled()) {
-                        Tr.debug(BatchJmsEndpointListener.this, tc, "Skip group names update because job instance table version = " + instanceTableVersion); 
+                        Tr.debug(BatchJmsEndpointListener.this, tc, "Skip group names update because job instance table version = " + instanceEntityVersion); 
                     }
                 }
             }
@@ -568,12 +568,12 @@ public class BatchJmsEndpointListener implements MessageListener {
 
             // get the op group names and create a mapping to each for the job instance id
             if (batchOperationGroup != null) {
-                int instanceTableVersion = jobRepositoryProxy.getJobInstanceTableVersion();
-                if (instanceTableVersion >= 3) {
+                int instanceEntityVersion = jobRepositoryProxy.getJobInstanceEntityVersion();
+                if (instanceEntityVersion >= 3) {
                     jobRepositoryProxy.updateJobInstanceWithGroupNames(instanceId, batchOperationGroup.getGroupNames());
                 } else {
                     if(tc.isDebugEnabled()) {
-                        Tr.debug(BatchJmsEndpointListener.this, tc, "Skip group names update because job instance table version = " + instanceTableVersion); 
+                        Tr.debug(BatchJmsEndpointListener.this, tc, "Skip group names update because job instance table version = " + instanceEntityVersion); 
                     }
                 }
             }

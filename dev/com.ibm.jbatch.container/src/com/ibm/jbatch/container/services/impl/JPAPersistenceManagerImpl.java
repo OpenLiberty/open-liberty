@@ -337,21 +337,21 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
         partitionVersion = MAX_PARTITION_VERSION;
 
         // If any tables are not up to the current code level, re-load the PSU with backleveled entities.
-        setPartitionTableVersion(retMe);
+        setPartitionEntityVersion(retMe);
         if (partitionVersion < 2) {
             logger.fine("The REMOTABLEPARTITION table could not be found. The persistence service unit will exclude the remotable partition entity.");
             retMe.close();
             retMe = createPsu(instanceVersion, executionVersion, partitionVersion);
         }
 
-        setJobInstanceTableVersion(retMe);
+        setJobInstanceEntityVersion(retMe);
         if (instanceVersion < 3) {
             logger.fine("The GROUPNAMES column could not be found. The persistence service unit will exclude the V3 instance entity.");
             retMe.close();
             retMe = createPsu(instanceVersion, executionVersion, partitionVersion);
         }
 
-        setJobExecutionTableVersion(retMe);
+        setJobExecutionEntityVersion(retMe);
         if (executionVersion < 2) {
             logger.fine("The JOBPARAMETERS table could not be found. The persistence service unit will exclude the V2 execution entity.");
             retMe.close();
@@ -2881,7 +2881,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
      * @throws Exception
      **/
     @Override
-    public Integer getJobExecutionTableVersionField() {
+    public Integer getJobExecutionEntityVersionField() {
         return executionVersion;
     }
 
@@ -2891,15 +2891,15 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
      * @throws Exception
      **/
     @Override
-    public int getJobExecutionTableVersion() throws Exception {
+    public int getJobExecutionEntityVersion() throws Exception {
         if (executionVersion != null) {
-            setJobExecutionTableVersion(getPsu());
+            setJobExecutionEntityVersion(getPsu());
         }
         return executionVersion;
     }
 
     @FFDCIgnore(PersistenceException.class)
-    private void setJobExecutionTableVersion(PersistenceServiceUnit psu) throws Exception {
+    private void setJobExecutionEntityVersion(PersistenceServiceUnit psu) throws Exception {
 
         // If we have the RemotablePartition table, we're up to date and need the V3 execution entity
         if (partitionVersion == 2) {
@@ -2953,7 +2953,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
      * @throws Exception
      **/
     @Override
-    public Integer getJobInstanceTableVersionField() {
+    public Integer getJobInstanceEntityVersionField() {
         return instanceVersion;
     }
 
@@ -2963,15 +2963,15 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
      * @throws Exception
      **/
     @Override
-    public int getJobInstanceTableVersion() throws Exception {
+    public int getJobInstanceEntityVersion() throws Exception {
         if (instanceVersion == null) {
-            setJobInstanceTableVersion(getPsu());
+            setJobInstanceEntityVersion(getPsu());
         }
         return instanceVersion;
     }
 
     @FFDCIgnore(PersistenceException.class)
-    private void setJobInstanceTableVersion(PersistenceServiceUnit psu) throws Exception {
+    private void setJobInstanceEntityVersion(PersistenceServiceUnit psu) throws Exception {
 
         final EntityManager em = psu.createEntityManager();
 
@@ -3085,7 +3085,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
     }
 
     @FFDCIgnore(PersistenceException.class)
-    private void setPartitionTableVersion(PersistenceServiceUnit psu) throws Exception {
+    private void setPartitionEntityVersion(PersistenceServiceUnit psu) throws Exception {
 
         final EntityManager em = psu.createEntityManager();
         try {
@@ -3131,7 +3131,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
 
     // Step thread exec version is tied to partition version with RemotablePartition update, may have to decouple in the future
     @Override
-    public Integer getStepThreadExecutionTableVersionField() {
+    public Integer getStepThreadExecutionEntityVersionField() {
         return partitionVersion;
     }
 

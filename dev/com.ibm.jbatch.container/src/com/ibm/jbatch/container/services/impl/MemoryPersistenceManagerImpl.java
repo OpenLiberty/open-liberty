@@ -1385,31 +1385,31 @@ public class MemoryPersistenceManagerImpl extends AbstractPersistenceManager imp
 
     /** {@inheritDoc} */
     @Override
-    public int getJobExecutionTableVersion() {
-        return getJobExecutionTableVersionField();
+    public int getJobExecutionEntityVersion() {
+        return getJobExecutionEntityVersionField();
     }
 
     /** {@inheritDoc} */
     @Override
-    public int getJobInstanceTableVersion() {
-        return getJobInstanceTableVersionField();
+    public int getJobInstanceEntityVersion() {
+        return getJobInstanceEntityVersionField();
     }
 
     /** {@inheritDoc} */
     @Override
-    public Integer getJobExecutionTableVersionField() {
+    public Integer getJobExecutionEntityVersionField() {
         return 3;
     }
 
     /** {@inheritDoc} */
     @Override
-    public Integer getJobInstanceTableVersionField() {
+    public Integer getJobInstanceEntityVersionField() {
         return 3;
     }
 
     /** {@inheritDoc} */
     @Override
-    public Integer getStepThreadExecutionTableVersionField() {
+    public Integer getStepThreadExecutionEntityVersionField() {
         return 2;
     }
 
