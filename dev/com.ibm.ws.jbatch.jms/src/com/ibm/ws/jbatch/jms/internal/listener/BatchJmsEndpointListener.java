@@ -376,10 +376,6 @@ public class BatchJmsEndpointListener implements MessageListener {
                 return;
             }
 
-            // The RemotablePartitionState is essentially just for monitoring.  We don't have logic conditionally depending on the state.  So there's not really
-            // a need to worry about locking to guard against inconsistencies for now.
-            jobRepositoryProxy.updateRemotablePartitionInternalState(jobExecutionId, config.getStepName(), config.getPartitionNumber(), RemotablePartitionState.CONSUMED);
-             
             // UPDATE: 2019-09-24 - I'm sure this comment below isn't 100% correct or up-to-date, but I'm leaving it
             // because it enumerates a bunch of considerations that we should keep in mind.
             //

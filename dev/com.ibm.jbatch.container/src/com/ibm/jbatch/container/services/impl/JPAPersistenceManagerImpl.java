@@ -1704,6 +1704,10 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                         //It can be null because if the partition dispatcher is older version, there won't be any remotable partition
                         if (remotablePartition != null) {
                             remotablePartition.setStepExecution(stepExecution);
+                            remotablePartition.setRestUrl(batchLocationService.getBatchRestUrl());
+                            remotablePartition.setServerId(batchLocationService.getServerId());
+                            remotablePartition.setInternalStatus(RemotablePartitionState.CONSUMED);
+                            remotablePartition.setLastUpdated(new Date());
                         }
                     }
 
@@ -1842,6 +1846,10 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                         //It can be null because if the partition dispatcher is older version, there won't be any remotable partition
                         if (remotablePartition != null) {
                             remotablePartition.setStepExecution(newStepExecution);
+                            remotablePartition.setRestUrl(batchLocationService.getBatchRestUrl());
+                            remotablePartition.setServerId(batchLocationService.getServerId());
+                            remotablePartition.setInternalStatus(RemotablePartitionState.CONSUMED);
+                            remotablePartition.setLastUpdated(new Date());
                         }
                     }
 
@@ -2208,10 +2216,13 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
      * This method is called during recovery
      *
      * Set the lastUpdated for the given RemotablePartitionEntity
+     *
+     * There should be no need for locking since this happens as the PSU is initialized on component activation
+     * (which is already locked within the JVM), and since the target partition is already known to be
+     * associated with this very server, (from the query we performed to get the list of partitions to recover).
      */
     public RemotablePartitionEntity updateRemotablePartitionOnRecovery(PersistenceServiceUnit psu,
                                                                        final RemotablePartitionEntity partition) {
-        // TODO Auto-generated method stub
         EntityManager em = psu.createEntityManager();
         try {
             return new TranRequest<RemotablePartitionEntity>(em) {
@@ -2219,6 +2230,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                 public RemotablePartitionEntity call() {
                     RemotablePartitionKey key = new RemotablePartitionKey(partition);
                     RemotablePartitionEntity remotablePartition = entityMgr.find(RemotablePartitionEntity.class, key);
+                    remotablePartition.setInternalStatus(RemotablePartitionState.RECOVERED);
                     remotablePartition.setLastUpdated(new Date());
                     return remotablePartition;
                 }

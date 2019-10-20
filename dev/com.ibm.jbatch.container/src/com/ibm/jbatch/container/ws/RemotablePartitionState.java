@@ -15,5 +15,5 @@ package com.ibm.jbatch.container.ws;
  *
  */
 public enum RemotablePartitionState {
- QUEUED, CONSUMED
+    QUEUED, CONSUMED, RECOVERED
 }
