@@ -2932,7 +2932,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                 logger.fine("Next chained JobExecutionEntityV2 persistence exception: exc class = " + causeClassName + "; causeMsg = " + causeMsg);
                 if ((cause instanceof SQLSyntaxErrorException || causeClassName.contains("SqlSyntaxErrorException")) &&
                     causeMsg != null &&
-                    causeMsg.contains("JOBPARAMETER")) {
+                    (causeMsg.contains("JOBPARAMETER") || causeMsg.contains("ORA-00942"))) {
                     // The table isn't there.
                     logger.fine("The JOBPARAMETER table does not exist, job execution entity version = 1");
                     executionVersion = 1;
@@ -2999,7 +2999,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                     logger.fine("Next chained JobInstanceEntityV2 persistence exception: exc class = " + causeClassName + "; causeMsg = " + causeMsg);
                     if ((cause instanceof SQLSyntaxErrorException || causeClassName.contains("SqlSyntaxErrorException")) &&
                         causeMsg != null &&
-                        causeMsg.contains("UPDATETIME")) {
+                        (causeMsg.contains("UPDATETIME") || causeMsg.contains("ORA-00942"))) {
                         // The UPDATETIME column isn't there.
                         logger.fine("The UPDATETIME column does not exist, job instance entity version = 1");
                         instanceVersion = 1;
@@ -3039,7 +3039,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                     logger.fine("Next chained JobInstanceEntityV3 persistence exception: exc class = " + causeClassName + "; causeMsg = " + causeMsg);
                     if ((cause instanceof SQLSyntaxErrorException || causeClassName.contains("SqlSyntaxErrorException")) &&
                         causeMsg != null &&
-                        causeMsg.contains("GROUPASSOCIATION") || causeMsg.contains("GROUPNAMES")) {
+                        (causeMsg.contains("GROUPASSOCIATION") || causeMsg.contains("GROUPNAMES") || causeMsg.contains("ORA-00942"))) {
                         // The GROUPASSOCIATION support isn't there.
                         logger.fine("The GROUPASSOCIATION table does not exist, job instance entity version = 2");
                         instanceVersion = 2;
@@ -3112,7 +3112,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                 logger.fine("Next chained RemotablePartition persistence exception: exc class = " + causeClassName + "; causeMsg = " + causeMsg);
                 if ((cause instanceof SQLSyntaxErrorException || causeClassName.contains("SqlSyntaxErrorException")) &&
                     causeMsg != null &&
-                    causeMsg.contains("REMOTABLEPARTITION")) {
+                    (causeMsg.contains("REMOTABLEPARTITION") || causeMsg.contains("ORA-00942"))) {
                     // The table isn't there.
                     logger.fine("The REMOTABLEPARTITION table does not exist, partition entity version = 1");
                     partitionVersion = 1;
