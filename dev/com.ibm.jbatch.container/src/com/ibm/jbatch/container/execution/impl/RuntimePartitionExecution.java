@@ -137,19 +137,16 @@ public class RuntimePartitionExecution extends RuntimeWorkUnitExecution {
     @Override
     public void workStarted(Date date) {
         batchStatus = BatchStatus.STARTED;
-        getPersistenceManagerService().updatePartitionExecution(this, batchStatus, date);
         publishPartitionEvent();
     }
 
     @Override
     public void workStopping(Date date) {
         batchStatus = BatchStatus.STOPPING;
-        getPersistenceManagerService().updatePartitionExecution(this, batchStatus, date);
     }
 
     @Override
     public void workEnded(Date date) {
-        getPersistenceManagerService().updatePartitionExecution(this, batchStatus, date);
         publishPartitionEvent();
     }
 

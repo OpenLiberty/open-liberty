@@ -25,11 +25,9 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
-import javax.persistence.UniqueConstraint;
 
 import com.ibm.jbatch.container.ws.RemotablePartitionState;
 import com.ibm.jbatch.container.ws.WSRemotablePartitionExecution;
-
 import com.ibm.websphere.ras.annotation.Trivial;
 
 /**
@@ -44,7 +42,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 })
 
 @IdClass(RemotablePartitionKey.class)
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = { "FK_JOBEXECUTIONID", "STEPNAME", "PARTNUM" }))
+@Table
 @Entity
 public class RemotablePartitionEntity implements WSRemotablePartitionExecution {
 

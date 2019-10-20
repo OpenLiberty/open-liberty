@@ -24,9 +24,6 @@ import com.ibm.websphere.ras.annotation.Trivial;
 public class JobExecutionEntityV3 extends JobExecutionEntityV2 {
 
     @OneToMany(mappedBy = "jobExec", cascade = CascadeType.REMOVE)
-    private Collection<RemotablePartitionEntity> partitionExecutions;
-
-    @OneToMany(mappedBy = "jobExec", cascade = CascadeType.REMOVE)
     private Collection<RemotablePartitionEntity> remotablePartitions;
 
     // For JPA
