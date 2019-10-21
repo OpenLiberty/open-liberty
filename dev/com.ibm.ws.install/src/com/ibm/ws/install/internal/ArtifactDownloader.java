@@ -41,9 +41,13 @@ public class ArtifactDownloader {
     private final ProgressBar progressBar = ProgressBar.getInstance();
 
     public void synthesizeAndDownloadFeatures(List<String> mavenCoords, String dLocation, String repo) throws InstallException {
+        info("Establishing a connection to the maven central repository ...\n" +
+             "This process might take several minutes to complete.");
         checkValidProxy();
         configureProxyAuthentication();
         configureAuthentication();
+        updateProgress(progressBar.getMethodIncrement("establishConnection"));
+        info("Successfully connected to all configured repositories.");
         downloadedFiles.clear();
         int repoResponseCode;
         try {
@@ -73,7 +77,7 @@ public class ArtifactDownloader {
                 synthesizeAndDownload(coords, "esa", dLocation, repo, false);
                 synthesizeAndDownload(coords, "pom", dLocation, repo, false);
                 updateProgress(progressBar.getMethodIncrement("downloadArtifact"));
-                info("Finished downloading feature: " + coords);
+                fine("Finished downloading feature: " + coords);
             }
         }
     }

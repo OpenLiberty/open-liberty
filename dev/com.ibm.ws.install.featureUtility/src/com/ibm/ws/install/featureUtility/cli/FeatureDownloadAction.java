@@ -51,13 +51,6 @@ public class FeatureDownloadAction implements ActionHandler {
         this.isOverwrite = args.getOption("overwrite") != null;
         
         this.progressBar = ProgressBar.getInstance();
-
-        HashMap<String, Integer> methodMap = new HashMap<>();
-        
-        List<Integer> increments = getIncrementSize(argList.size(), 90);
-        methodMap.put("downloadArtifact", increments.get(0));
-        methodMap.put("downloadedArtifacts", 10 + increments.get(1));
-        progressBar.setMethodMap(methodMap);
         
         if (location == null) {
             InstallLogUtils.getInstallLogger().log(Level.SEVERE,
@@ -82,7 +75,7 @@ public class FeatureDownloadAction implements ActionHandler {
 			List<String> missingShortNameArtifacts = new ArrayList<String>();
 			try {
 				featureUtility = new FeatureUtility.FeatureUtilityBuilder().setFromDir(location)
-	            		.setFeaturesToInstall(artifactNames).build();
+	            		.setFeaturesToInstall(artifactNames).setIsBasicInit(true).build();
 				missingArtifacts.addAll(FeatureUtility.getMissingArtifactsFromFolder(assetIds, location, false));
 				missingShortNameArtifacts.addAll(FeatureUtility.getMissingArtifactsFromFolder(nonMavenIds, location, true));
 			} catch (IOException e) {
@@ -127,13 +120,27 @@ public class FeatureDownloadAction implements ActionHandler {
 	}
 
 	private ExitCode download() {
+		HashMap<String, Integer> methodMap = new HashMap<>();
 		try {
+			List<String> artifactNamesResolved = new ArrayList<String>();
+			methodMap.put("resolveArtifact", 5);
+			progressBar.setMethodMap(methodMap);
+			if (!artifactShortNames.isEmpty()) {
+				featureUtility = new FeatureUtility.FeatureUtilityBuilder().setFromDir(location)
+            		.setFeaturesToInstall(artifactShortNames).setIsBasicInit(true).build();
+				artifactNames.addAll(featureUtility.getMavenCoords(artifactShortNames));
+			}
+			
             featureUtility = new FeatureUtility.FeatureUtilityBuilder().setFromDir(location)
-            		.setFeaturesToInstall(artifactNames).setIsDownload(true).build();
-            featureUtility.downloadFeatures(false);
-            featureUtility = new FeatureUtility.FeatureUtilityBuilder().setFromDir(location)
-            		.setFeaturesToInstall(artifactShortNames).setIsDownload(true).build();
-            featureUtility.downloadFeatures(true);
+            		.setFeaturesToInstall(artifactNames).setIsBasicInit(true).setIsDownload(true).build();
+            artifactNamesResolved.addAll(featureUtility.resolveFeatures(false));
+            
+            List<Integer> increments = getIncrementSize(artifactNamesResolved.size(), 82);
+            methodMap.put("downloadArtifact", increments.get(0));
+            methodMap.put("establishConnection", 5);
+            methodMap.put("downloadedArtifacts", 2 + increments.get(1));
+            progressBar.setMethodMap(methodMap);
+            featureUtility.downloadFeatures(artifactNamesResolved);
         } catch (InstallException e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
             return FeatureUtilityExecutor.returnCode(e.getRc());
