@@ -1391,6 +1391,32 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
         }
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public List<Integer> getRemotablePartitionsRecoveredForStepExecution(final long topLevelStepExecutionId) {
+        final EntityManager em = psu.createEntityManager();
+
+        try {
+            List<Integer> exec = new TranRequest<List<Integer>>(em) {
+                @Override
+                public List<Integer> call() throws Exception {
+                    TypedQuery<Integer> query = em.createNamedQuery(RemotablePartitionEntity.GET_RECOVERED_REMOTABLE_PARITIONS,
+                                                                    Integer.class);
+                    query.setParameter("topLevelStepExecutionId", topLevelStepExecutionId);
+                    List<Integer> result = query.getResultList();
+                    if (result == null) {
+                        return new ArrayList<Integer>();
+                    }
+                    return result;
+                }
+            }.runInNewOrExistingGlobalTran();
+
+            return exec;
+        } finally {
+            em.close();
+        }
+    }
+
     /**
      * This method is called during recovery processing.
      *
@@ -1398,7 +1424,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
      *
      * @return List<RemotablePartitionEntity> of partitions with a "running" status and this server's serverId
      */
-    public List<RemotablePartitionEntity> getPartitionsRunningLocalToServer(PersistenceServiceUnit psu) {
+    public List<RemotablePartitionEntity> getRemotablePartitionsRunningLocalToServer(PersistenceServiceUnit psu) {
 
         final EntityManager em = psu.createEntityManager();
 

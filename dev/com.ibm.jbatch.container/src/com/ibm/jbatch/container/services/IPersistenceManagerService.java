@@ -585,4 +585,10 @@ public interface IPersistenceManagerService extends IBatchServiceBase {
      * @return the step thread execution version field, initialized or not (may return 'null')
      */
     Integer getStepThreadExecutionEntityVersionField();
+
+    /**
+     * @param topLevelStepExecutionId
+     * @return List of partition numbers, sorted low partition number to high, of related partitions in the recovery state.
+     */
+    public List<Integer> getRemotablePartitionsRecoveredForStepExecution(long topLevelStepExecutionId);
 }

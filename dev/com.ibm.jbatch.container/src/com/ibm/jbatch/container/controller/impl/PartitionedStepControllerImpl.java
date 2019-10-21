@@ -122,14 +122,22 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
      */
     private BatchDispatcher batchJmsDispatcher = null;
 
-    /**
-     * As sub-jobs finish, they're added to this list.
-     */
-    private final List<PartitionReplyMsg> finishedWork = new ArrayList<PartitionReplyMsg>();
+    private PartitionPlanDescriptor currentPlan;
 
-    private final Date createTime = null;
+    private static class FinishedPartition {
+        int partitionNum;
+        BatchStatus batchStatus;
 
-    private PartitionPlanDescriptor plan = null;
+        FinishedPartition(int partitionNum, BatchStatus batchStatus) {
+            this.partitionNum = partitionNum;
+            this.batchStatus = batchStatus;
+        }
+    }
+
+    List<Integer> partitionsToExecute;
+    List<Integer> startedPartitions = new ArrayList<Integer>();
+    List<FinishedPartition> finishedPartitions = new ArrayList<FinishedPartition>();
+    List<Throwable> analyzerExceptions = new ArrayList<Throwable>();
 
     /**
      * CTOR.
@@ -410,10 +418,9 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
     @Override
     protected void invokeCoreStep() {
 
-        PartitionPlanDescriptor currentPlan = buildPartitionPlan();
+        currentPlan = buildPartitionPlan();
 
-        validatePlanNumberOfPartitions(currentPlan);
-        plan = currentPlan;
+        validatePlanNumberOfPartitions();
 
         if (executionType == ExecutionType.RESTART_OVERRIDE) {
             // Justification for doing this is in the spec Javadoc of PartitionPlan#setPartitionsOverride:
@@ -438,14 +445,14 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
         // We could avoid persisting if this is restart with override=false, but not sure that's best
         // Some aspects of this too, e.g. the exact ordering of this in relation to discarding the partition data,
         // are not precisely defined by the spec, and could be considered more carefully maybe if necessary.
-        persistCurrentPlanSize(currentPlan);
+        persistCurrentPlanSize();
 
         // Create the PartitionReplyQueue
         // The sub-job partitions pass back analyzer data, job status, and "partition complete" events on this queue.
         setPartitionReplyQueue(isMultiJvm ? getBatchJmsDispatcher().createPartitionReplyQueue() : new PartitionReplyQueueLocal());
 
         // kick off the threads
-        executeAndWaitForCompletion(currentPlan);
+        executeAndWaitForCompletion();
 
         // Close the PartitionReplyQueue
         // In non multi-JVM mode, this does nothing.
@@ -463,7 +470,7 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
      *
      * @throws IllegalArgumentException if it doesn't make sense.
      */
-    private void validatePlanNumberOfPartitions(PartitionPlanDescriptor currentPlan) {
+    private void validatePlanNumberOfPartitions() {
 
         int numPreviousPartitions = getTopLevelStepInstance().getPartitionPlanSize();
         int numCurrentPartitions = currentPlan.getNumPartitionsInPlan();
@@ -489,7 +496,7 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
     /**
      * Write the plan size to the DB.
      */
-    private void persistCurrentPlanSize(PartitionPlanDescriptor currentPlan) {
+    private void persistCurrentPlanSize() {
         // Don't want to have to think about whether the instance is dirty... just update from key.
         getPersistenceManagerService().updateStepThreadInstanceWithPartitionPlanSize(getTopLevelStepInstanceKey(),
                                                                                      currentPlan.getNumPartitionsInPlan());
@@ -505,7 +512,7 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
     /**
      * @return the PartitionPlanConfig.
      */
-    private PartitionPlanConfig buildPartitionPlanConfig(PartitionPlanDescriptor currentPlan, int partitionNum) {
+    private PartitionPlanConfig buildPartitionPlanConfig(int partitionNum) {
 
         PartitionPlanConfig retMe = new PartitionPlanConfig(partitionNum, currentPlan.getPartitionProperties(partitionNum));
         retMe.setStepName(getStepName());
@@ -522,7 +529,7 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
      * @return the list of partition nums to execute. If this is a fresh start, it'll
      *         return all of them. If it's a restart, only the ones that haven't been executed.
      */
-    private List<Integer> getPartitionNumbersToExecute(PartitionPlanDescriptor currentPlan) {
+    private List<Integer> getPartitionNumbersToExecute() {
         // Note: The logic below works since 'currentPlan' had been validated for RESTART_NORMAL in
         // validatePlanNumberOfPartitions(PartitionPlanDescriptor). Otherwise there would need to be
         // a check to ensure the previous plans were the same size.
@@ -579,33 +586,23 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
      * (a) they've all been started or
      * (b) we reach max threads
      *
+     * @throws JobStoppingException
      */
-    private void startPartitions(List<Integer> partitionsToExecute,
-                                 List<Integer> startedPartitions,
-                                 List<Integer> finishedPartitions,
-                                 PartitionPlanDescriptor currentPlan) {
+    private void startPartitions() throws JobStoppingException {
 
         while (startedPartitions.size() < partitionsToExecute.size()
                && startedPartitions.size() - finishedPartitions.size() < currentPlan.getThreads()) {
 
             int nextPartitionNumber = partitionsToExecute.get(startedPartitions.size());
-            PartitionPlanConfig config = buildPartitionPlanConfig(currentPlan, nextPartitionNumber);
+            PartitionPlanConfig config = buildPartitionPlanConfig(nextPartitionNumber);
 
             Boolean nextPartitionStarted = null;
             StopLock stopLock = getStopLock(); // Store in local variable to facilitate Ctrl+Shift+G search in Eclipse
             synchronized (stopLock) {
-                nextPartitionStarted = startPartition(config);
+                startPartition(config);
             }
 
-            if (nextPartitionStarted) {
-                startedPartitions.add(nextPartitionNumber);
-            } else {
-                // The partition wasn't started (probably because we're stopping).
-                // Add the partitionNumber to both the started and finished lists,
-                // so that the while-loop logic works as expected.
-                startedPartitions.add(nextPartitionNumber);
-                finishedPartitions.add(nextPartitionNumber);
-            }
+            startedPartitions.add(nextPartitionNumber);
         }
     }
 
@@ -638,11 +635,12 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
      * This method is synchronized with stop().
      *
      * @return true if the partition was started; false otherwise (because we're stopping)
+     * @throws JobStoppingException
      */
-    private boolean startPartition(PartitionPlanConfig config) {
+    private boolean startPartition(PartitionPlanConfig config) throws JobStoppingException {
 
         if (isStoppingStoppedOrFailed()) {
-            return false;
+            throw new JobStoppingException();
         }
 
         if (isMultiJvm) {
@@ -662,10 +660,9 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
     }
 
     /**
-     * Issue message for partition finished and add it to the finishedWork list.
+     * Issue message for partition finished and add it to the finishedPartitions list.
      */
     private void partitionFinished(PartitionReplyMsg msg) {
-
         JoblogUtil.logToJobLogAndTraceOnly(Level.FINE, "partition.ended", new Object[] {
                                                                                          msg.getPartitionPlanConfig().getPartitionNumber(),
                                                                                          msg.getBatchStatus(),
@@ -675,13 +672,13 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
                                                                                          msg.getPartitionPlanConfig().getTopLevelNameInstanceExecutionInfo().getExecutionId() },
                                            logger);
 
-        finishedWork.add(msg);
+        finishedPartitions.add(new FinishedPartition(msg.getPartitionPlanConfig().getPartitionNumber(), msg.getBatchStatus()));
     }
 
     /**
      * Call the analyzerProxy (if one was supplied) with the given partition data.
      */
-    private void processPartitionReplyMsg(PartitionReplyMsg msg) {
+    private void analyzePartitionReplyMsg(PartitionReplyMsg msg) {
 
         if (analyzerProxy == null) {
             return;
@@ -739,35 +736,35 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
      *
      * @return data sent back from the partition to the top-level thread or return null
      */
-    private PartitionReplyMsg waitForPartitionReplyMsgNoWait() {
+    private PartitionReplyMsg getPartitionReplyMsgNoWait() {
         return getPartitionReplyQueue().takeWithoutWaiting();
     }
 
     /**
      * Wait and process the data sent back by the partitions.
-     * This method returns as soon as the next partition sends back an "i'm finished" message.
+     * This method returns as soon as the next partition sends back a finished message.
      *
-     * @param analyzerExceptions collects any exceptions thrown by the user-supplied Analyzer
-     * @param finishedPartitions
-     *
-     * @return the partition number of the finished partition
      */
-    private void waitForNextPartitionToFinish(List<Throwable> analyzerExceptions, List<Integer> finishedPartitions) throws JobStoppingException {
+    private void waitForNextPartitionToFinish() throws JobStoppingException {
 
         //Use this counter to count the number of cycles we recieve jms reply message
         boolean isStoppingStoppedOrFailed = false;
         PartitionReplyMsg msg = null;
 
         do {
-            //TODO - We won't worry about local dispatch until we're prepated to code up
-            // the structure necessary to break free from waiting on the BlockingQueue
+
             if (isMultiJvm) {
                 if (isStoppingStoppedOrFailed()) {
                     isStoppingStoppedOrFailed = true;
                 }
+
+                checkForRecoveredRemotePartitions();
             }
 
-            //This will only be triggered when stop issued
+            //TODO - We won't worry about the case when a local dispatch has been stopped until
+            // we're prepared to code up the structure necessary to break free from waiting on
+            // the BlockingQueue
+
             if (isStoppingStoppedOrFailed) {
 
                 //TODO - Crude, and the JVM doesn't have to follow this too closely.
@@ -781,48 +778,95 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
                     // do nothing
                 }
 
+                // Process any reply messages queued up, but in order to not delay stop too long we will
+                // exit the first time we look at the queue and see there is no message.
                 while (true) {
-                    //Get the message from the replyToQueue
-                    msg = waitForPartitionReplyMsgNoWait();
-                    //If no messages left, break the loop
+                    msg = getPartitionReplyMsgNoWait();
                     if (msg != null) {
                         try {
-                            processPartitionReplyMsg(msg);
+                            analyzePartitionReplyMsg(msg);
                         } catch (Throwable t) {
                             // FFDC.
                             // Remember the exception for rollback later.
                             analyzerExceptions.add(t);
                         }
-                        //check if last message received, and process it.
-                        receivedLastMessageForPartition(msg, finishedPartitions);
+                        if (isFinalMessageForPartition(msg)) {
+                            partitionFinished(msg);
+                        }
                     } else {
+                        //If no messages left, break the loop
                         throw new JobStoppingException();
                     }
                 }
             } else {
                 //This is executed when stop has not been issued
                 msg = waitForPartitionReplyMsg();
-                //If waitForPartitionReplyMsg times out after 15 seconds, go back to the top and check
-                //if stop has been issued or not
                 if (msg == null) {
+                    //If waitForPartitionReplyMsg times out after 15 seconds, go back to the top
                     continue;
                 }
             }
-            //This should never be executed while msg == null cause it the loop would have been broken or continued
+
             try {
-                processPartitionReplyMsg(msg);
+                analyzePartitionReplyMsg(msg);
             } catch (Throwable t) {
                 // FFDC.
                 // Remember the exception for rollback later.
                 analyzerExceptions.add(t);
             }
 
-        } while (msg == null || !receivedLastMessageForPartition(msg, finishedPartitions));
+            if (isFinalMessageForPartition(msg)) {
+                partitionFinished(msg);
+                break;
+            }
+            // else keep looping
+        } while (true);
+    }
 
+    /**
+     *
+     */
+    private void checkForRecoveredRemotePartitions() {
+        // We shouldn't be seeing recovered remote partitions too often, so we won't try to optimize either the query itself or the process of matching the results against the list of recovered partitions
+        // that we've already processed.
+        long stepExecId = runtimeStepExecution.getTopLevelStepExecutionId();
+        List<Integer> recoveredPartitions = getPersistenceManagerService().getRemotablePartitionsRecoveredForStepExecution(stepExecId);
+        if (recoveredPartitions.size() > 0) {
+            logger.finer("Found list: " + recoveredPartitions + " of new recovered remote partitions for stepExecId = " + stepExecId);
+        } else {
+            logger.finer("Did not find any recovered partitions for stepExecId = " + stepExecId);
+        }
+        for (int recoveredPartitionNum : recoveredPartitions) {
+            for (FinishedPartition p : finishedPartitions) {
+                if (recoveredPartitionNum == p.partitionNum) {
+                    logger.finer("Recovered remote partition # " + recoveredPartitionNum + " is already marked as finished.");
+                    continue;
+                }
+            }
+            logger.finer("Found new recovered remote partition # " + recoveredPartitionNum);
+            handleRecoveredRemotePartition(recoveredPartitionNum);
+        }
+    }
+
+    /**
+     * @param recoveredPartitionNum
+     */
+    private void handleRecoveredRemotePartition(int recoveredPartitionNum) {
+
+        JoblogUtil.logToJobLogAndTraceOnly(Level.FINE, "partition.ended", new Object[] {
+                                                                                         recoveredPartitionNum,
+                                                                                         BatchStatus.FAILED,
+                                                                                         "FAILED",
+                                                                                         getStepName(),
+                                                                                         runtimeWorkUnitExecution.getTopLevelNameInstanceExecutionInfo().getInstanceId(),
+                                                                                         runtimeWorkUnitExecution.getTopLevelNameInstanceExecutionInfo().getExecutionId() },
+                                           logger);
+
+        finishedPartitions.add(new FinishedPartition(recoveredPartitionNum, BatchStatus.FAILED));
     }
 
     /*
-     * Check if its the last message received for this partition
+     * Check if it's the last message received for a partition
      *
      * We are still checking for THREAD_COMPLETE to maintain compatibility with 8.5.5.7,
      * which sends FINAL_STATUS without a partitionNumber ,and THREAD_COMPLETE with a partitionNumber,
@@ -832,21 +876,16 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
      *
      * @returns false if more messages are to be received for the partition
      */
-    private boolean receivedLastMessageForPartition(PartitionReplyMsg msg, List<Integer> finishedPartitions) {
+    private boolean isFinalMessageForPartition(PartitionReplyMsg msg) {
 
         switch (msg.getMsgType()) {
-
             case PARTITION_FINAL_STATUS:
                 if (msg.getPartitionPlanConfig() != null) {
-                    partitionFinished(msg);
-                    finishedPartitions.add(msg.getPartitionPlanConfig().getPartitionNumber());
                     return true;
                 } else {
                     return false;
                 }
             case PARTITION_THREAD_COMPLETE:
-                partitionFinished(msg);
-                finishedPartitions.add(msg.getPartitionPlanConfig().getPartitionNumber());
                 return true;
             default:
                 return false;
@@ -857,7 +896,7 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
      * Spawn the partitions and wait for them to complete.
      */
     @FFDCIgnore(JobStoppingException.class)
-    private void executeAndWaitForCompletion(PartitionPlanDescriptor currentPlan) throws JobRestartException {
+    private void executeAndWaitForCompletion() throws JobRestartException {
         if (isStoppingStoppedOrFailed()) {
             logger.fine("Job already in "
                         + runtimeWorkUnitExecution.getWorkUnitJobContext().getBatchStatus().toString()
@@ -865,19 +904,19 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
             return;
         }
 
-        List<Integer> partitionsToExecute = getPartitionNumbersToExecute(currentPlan);
+        partitionsToExecute = getPartitionNumbersToExecute();
 
         logger.fine("Partitions to execute in this run: " + partitionsToExecute
                     + ".  Total number of partitions in step: " + currentPlan.getNumPartitionsInPlan());
 
-        List<Integer> startedPartitions = new ArrayList<Integer>();
-        List<Integer> finishedPartitions = new ArrayList<Integer>();
-        List<Throwable> analyzerExceptions = new ArrayList<Throwable>();
-
         // Keep looping until all partitions have finished.
         while (finishedPartitions.size() < partitionsToExecute.size()) {
 
-            startPartitions(partitionsToExecute, startedPartitions, finishedPartitions, currentPlan);
+            try {
+                startPartitions();
+            } catch (JobStoppingException e) {
+                break;
+            }
 
             // Check that there are still un-finished partitions running.
             // If not, break out of the loop.
@@ -885,11 +924,9 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
                 break;
             }
 
-            //Break this loop when nextPartitionFinished is -1
             try {
-                waitForNextPartitionToFinish(analyzerExceptions, finishedPartitions);
+                waitForNextPartitionToFinish();
             } catch (JobStoppingException e) {
-                // break the loop
                 break;
             }
         }
@@ -909,21 +946,24 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
         List<String> failingPartitionSeen = new ArrayList<String>();
         boolean stoppedPartitionSeen = false;
 
-        for (PartitionReplyMsg replyMsg : finishedWork) {
-            BatchStatus batchStatus = replyMsg.getBatchStatus();
+        for (FinishedPartition p : finishedPartitions) {
+
+            int partitionNumber = p.partitionNum;
+            BatchStatus batchStatus = p.batchStatus;
 
             if (logger.isLoggable(Level.FINE)) {
                 logger.fine("For partitioned step: " + getStepName() + ", the partition # " +
-                            replyMsg.getPartitionPlanConfig().getPartitionNumber() + " ended with status '" + batchStatus);
+                            partitionNumber + " ended with status '" + batchStatus);
             }
 
             // Keep looping, just to see the log messages perhaps.
             if (batchStatus.equals(BatchStatus.FAILED)) {
 
                 String msg = "For partitioned step: " + getStepName() + ", the partition # " +
-                             replyMsg.getPartitionPlanConfig().getPartitionNumber() + " ended with status '" + batchStatus;
+                             partitionNumber + " ended with status '" + batchStatus;
                 failingPartitionSeen.add(msg);
             }
+
             // This code seems to suggest it might be valid for a partition to end up in STOPPED state without
             // the "top-level" step having been aware of this.   It's unclear from the spec if this is even possible
             // or a desirable spec interpretation.  Nevertheless, we'll code it as such noting the ambiguity.

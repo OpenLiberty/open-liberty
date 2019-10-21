@@ -1413,4 +1413,10 @@ public class MemoryPersistenceManagerImpl extends AbstractPersistenceManager imp
         return 2;
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public List<Integer> getRemotablePartitionsRecoveredForStepExecution(long topLevelStepExecutionId) {
+        return new ArrayList<Integer>();
+    }
+
 }
