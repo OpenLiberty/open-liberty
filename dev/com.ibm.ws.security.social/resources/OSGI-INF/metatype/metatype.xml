@@ -289,17 +289,15 @@
         <AD id="clientSecret" name="%clientSecret" description="%clientSecret.desc"
             required="true" type="String" ibm:type="password" />
         <AD id="authorizationEndpoint" name="%authorizationEndpoint" description="%authorizationEndpoint.desc"
-            required="false" type="String" />
+            required="true" type="String" />
         <AD id="tokenEndpoint" name="%tokenEndpoint" description="%tokenEndpoint.desc"
-            required="false" type="String" />
+            required="true" type="String" />
         <AD id="userApi" name="%userApi" description="%userApi.desc"
             required="false" type="String" />
         <AD id="scope" name="%scope" description="%scope.desc"
-            required="false" type="String" default="user" />
+            required="false" type="String" />
         <AD id="userNameAttribute" name="%userNameAttribute" description="%userNameAttribute.desc"
             required="false" type="String" default="email"/>
-        <AD id="mapToUserRegistry" name="%mapToUserRegistry" description="%mapToUserRegistry.desc"
-            required="false" type="Boolean" default="false" />
         <AD id="sslRef" name="%sslRef" description="%sslRef.desc"
             required="false" type="String" ibmui:uiReference="com.ibm.ws.ssl.repertoire" />
         <AD id="authFilterRef" name="%authFilterRef" description="%authFilterRef.desc" ibm:type="pid"
