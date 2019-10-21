@@ -56,9 +56,11 @@ public class AppPropertyConfigSource extends InternalConfigSource implements Dyn
     private static final TraceComponent tc = Tr.register(AppPropertyConfigSource.class);
     private BundleContext bundleContext;
     private String applicationName;
+    private final ConfigAction configAction;
 
     public AppPropertyConfigSource() {
         super(Config13Constants.APP_PROPERTY_ORDINAL, Tr.formatMessage(tc, "server.xml.appproperties.config.source"));
+        this.configAction = new ConfigAction();
     }
 
     /** {@inheritDoc} */
@@ -66,7 +68,14 @@ public class AppPropertyConfigSource extends InternalConfigSource implements Dyn
     public Map<String, String> getProperties() {
         Map<String, String> props = new HashMap<String, String>();
 
-        SortedSet<Configuration> osgiConfigs = getOSGiConfigurations();
+        SortedSet<Configuration> osgiConfigs = null;
+
+        if (System.getSecurityManager() == null) {
+            osgiConfigs = getOSGiConfigurations();
+        } else {
+            osgiConfigs = AccessController.doPrivileged(this.configAction);
+        }
+
         if (osgiConfigs != null) {//osgiConfigs could be null if not inside an OSGi framework, e.g. unit test
             for (Configuration osgiConfig : osgiConfigs) {
                 // Locate name/value pairs in the config objects and place them in the map.
@@ -92,28 +101,45 @@ public class AppPropertyConfigSource extends InternalConfigSource implements Dyn
         return props;
     }
 
-    private SortedSet<Configuration> getOSGiConfigurations() {
-        PrivilegedAction<SortedSet<Configuration>> configAction = () -> {
-            SortedSet<Configuration> osgiConfigs = null;
-            if (bundleContext == null) {
-                bundleContext = OSGiConfigUtils.getBundleContext(getClass());
-            }
+    private BundleContext getBundleContext() {
+        if (this.bundleContext == null) {
+            this.bundleContext = OSGiConfigUtils.getBundleContext(getClass());
+        }
+        return this.bundleContext;
+    }
+
+    private String getApplicationName() {
+        if (this.applicationName == null) {
+            BundleContext bundleContext = getBundleContext();
             if (bundleContext != null) { //bundleContext could be null if not inside an OSGi framework, e.g. unit test
-                if (applicationName == null) {
-                    applicationName = OSGiConfigUtils.getApplicationName(bundleContext);
-                }
-
-                //if the Config is being obtained outside the context of an application then the applicationName may be null
-                //in which case there are no applicable application configuration elements to return
-                if (applicationName != null) {
-                    osgiConfigs = OSGiConfigUtils.getConfigurations(bundleContext, applicationName);
-                }
+                this.applicationName = OSGiConfigUtils.getApplicationName(bundleContext);
             }
-            return osgiConfigs;
-        };
+        }
+        return this.applicationName;
+    }
 
-        SortedSet<Configuration> osgiConfigs = AccessController.doPrivileged(configAction);
+    private class ConfigAction implements PrivilegedAction<SortedSet<Configuration>> {
 
+        /** {@inheritDoc} */
+        @Override
+        public SortedSet<Configuration> run() {
+            return getOSGiConfigurations();
+        }
+
+    }
+
+    private SortedSet<Configuration> getOSGiConfigurations() {
+        SortedSet<Configuration> osgiConfigs = null;
+        BundleContext bundleContext = getBundleContext();
+        if (bundleContext != null) { //bundleContext could be null if not inside an OSGi framework, e.g. unit test
+            String applicationName = getApplicationName();
+
+            //if the Config is being obtained outside the context of an application then the applicationName may be null
+            //in which case there are no applicable application configuration elements to return
+            if (applicationName != null) {
+                osgiConfigs = OSGiConfigUtils.getConfigurations(bundleContext, applicationName);
+            }
+        }
         return osgiConfigs;
     }
 }
