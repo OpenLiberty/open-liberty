@@ -12,12 +12,12 @@ package com.ibm.ws.jaxws.support;
 
 import java.util.Map;
 
-import com.ibm.ws.javaee.dd.common.InjectionTarget;
 import com.ibm.ws.jaxws.support.JaxWsInstanceManager.InstanceInterceptor;
 import com.ibm.ws.jaxws.support.JaxWsInstanceManager.InterceptException;
 import com.ibm.ws.jaxws.support.JaxWsInstanceManager.InterceptorContext;
 import com.ibm.wsspi.injectionengine.InjectionException;
 import com.ibm.wsspi.injectionengine.ReferenceContext;
+import com.ibm.wsspi.injectionengine.InjectionTarget;
 
 /**
  *
@@ -35,12 +35,18 @@ public class ReferenceContextInjectionInstanceInterceptor implements InstanceInt
         try {
             Object instance = ctx.getInstance();
             ReferenceContext referenceContext = referenceContextMap.get(instance.getClass());
-            InjectionTarget[] injectionTargets = referenceContext.getInjectionTargets(instance.getClass());
-            if (injectionTargets == null || injectionTargets.length == 0) {
-                return;
-            }
-            for (InjectionTarget injectionTarget : injectionTargets) {
-                injectionTarget.inject(instance, null);
+
+            if (referenceContext != null) {
+
+                InjectionTarget[] injectionTargets = referenceContext.getInjectionTargets(instance.getClass());
+
+                if (injectionTargets == null || injectionTargets.length == 0) {
+                    return;
+                }
+
+                for (InjectionTarget injectionTarget : injectionTargets) {
+                    injectionTarget.inject(instance, null);
+                }
             }
         } catch (InjectionException e) {
             throw new InterceptException(e);

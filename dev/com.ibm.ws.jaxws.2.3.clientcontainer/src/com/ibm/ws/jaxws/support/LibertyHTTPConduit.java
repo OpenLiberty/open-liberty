@@ -513,7 +513,8 @@ public class LibertyHTTPConduit extends HTTPConduit {
     }
 
     @Override
-    protected OutputStream createOutputStream(Message message, boolean needToCacheRequest, boolean isChunking, int chunkThreshold) {
+    // @FFDCIgnore(URISyntaxException.class)
+    protected OutputStream createOutputStream(Message message, boolean needToCacheRequest, boolean isChunking, int chunkThreshold) throws IOException {
         // This method is not implemented in original liberty version
         // It's copied over from URLConnectionHTTPConduit as many of other method implementations
         // With the new CXF, HttpURLConnection class parameter is removed from LibertyWrappedOutputStream class constructor
@@ -524,10 +525,7 @@ public class LibertyHTTPConduit extends HTTPConduit {
             chunkThreshold = 0;
             connection.setChunkedStreamingMode(-1);
         }
-        try {
-            return new LibertyWrappedOutputStream(message, connection, needToCacheRequest, isChunking, chunkThreshold, getConduitName());
-        } catch (URISyntaxException e) {
-            throw new IOException(e);
-        }
+
+        return new LibertyWrappedOutputStream(message, connection, needToCacheRequest, isChunking, chunkThreshold, getConduitName());
     }
 }
