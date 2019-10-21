@@ -44,6 +44,7 @@ public class FeatureUtility {
     private final File fromDir;
     private final File esaFile;
     private Boolean isDownload;
+    private Boolean isBasicInit;
     private final String toExtension;
     private final List<String> featuresToInstall;
     private static String openLibertyVersion;
@@ -56,8 +57,6 @@ public class FeatureUtility {
         this.logger = InstallLogUtils.getInstallLogger();
         this.progressBar = ProgressBar.getInstance();
 
-        info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_INITIALIZING"));
-
         this.openLibertyVersion = getLibertyVersion();
 
         
@@ -65,11 +64,14 @@ public class FeatureUtility {
         this.toExtension = builder.toExtension;
         this.featuresToInstall = new ArrayList<>(builder.featuresToInstall);
         this.esaFile = builder.esaFile;
+        this.isBasicInit = builder.isBasicInit;
         this.isDownload = builder.isDownload;
+        
 
         map = new InstallKernelMap();
         
-        if (isDownload == null || !isDownload) {
+        if (isBasicInit == null || !isBasicInit) {
+        	info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_INITIALIZING"));
         	List<File> jsonPaths = (fromDir != null && fromDir.exists()) ? getJsons(fromDir) : getJsonsFromMavenCentral();
             updateProgress(progressBar.getMethodIncrement("fetchJsons"));
             fine("Finished finding jsons");
@@ -78,7 +80,12 @@ public class FeatureUtility {
             updateProgress(progressBar.getMethodIncrement("initializeMap"));
             fine("Initialized install kernel map");
         } else {
-        	initializeMap();
+        	if (isDownload == null || !isDownload) {
+        		initializeMap();
+        	} else {
+        		List<File> jsonPaths = (fromDir != null && fromDir.exists()) ? getJsons(fromDir) : getJsonsFromMavenCentral();
+            	initializeMap(jsonPaths);
+        	}
         }
     }
     
@@ -167,22 +174,7 @@ public class FeatureUtility {
     public void installFeatures() throws InstallException, IOException {
         info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_RESOLVING"));
         Collection<String> resolvedFeatures = (Collection<String>) map.get("action.result");
-        if (resolvedFeatures == null) {
-            throw new InstallException((String) map.get("action.error.message"));
-        } else if (resolvedFeatures.isEmpty()) {
-            fine("The list of resolved features is empty.");
-            String exceptionMessage = (String) map.get("action.error.message");
-            if (exceptionMessage == null) {
-                info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ALREADY_INSTALLED",
-                                                                                      map.get("features.to.resolve")));
-                return;
-            } else if (exceptionMessage.contains("CWWKF1250I")) {
-                info(exceptionMessage);
-                return;
-            } else {
-                throw new InstallException(exceptionMessage);
-            }
-        }
+        checkResolve(resolvedFeatures);
         updateProgress(progressBar.getMethodIncrement("resolvedFeatures"));
 
         info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_PREPARING_ASSETS"));
@@ -230,7 +222,26 @@ public class FeatureUtility {
         }
     }
 
-    private List<File> downloadFeaturesFrom(Collection<String> resolvedFeatures, File fromDir) throws InstallException {
+    private void checkResolve(Collection<String> resolvedFeatures) throws InstallException {
+    	if (resolvedFeatures == null) {
+            throw new InstallException((String) map.get("action.error.message"));
+        } else if (resolvedFeatures.isEmpty()) {
+            fine("The list of resolved features is empty.");
+            String exceptionMessage = (String) map.get("action.error.message");
+            if (exceptionMessage == null) {
+                info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ALREADY_INSTALLED",
+                                                                                      map.get("features.to.resolve")));
+                return;
+            } else if (exceptionMessage.contains("CWWKF1250I")) {
+                info(exceptionMessage);
+                return;
+            } else {
+                throw new InstallException(exceptionMessage);
+            }
+        }
+	}
+
+	private List<File> downloadFeaturesFrom(Collection<String> resolvedFeatures, File fromDir) throws InstallException {
     	map.put("from.repo", fromDir.toString());
         return downloadFeatureEsas(resolvedFeatures);
 	}
@@ -248,25 +259,36 @@ public class FeatureUtility {
         return result;
     }
     
-    public void downloadFeatures(boolean isShortNames) throws InstallException {
+    public List<String> resolveFeatures(boolean isShortNames) throws InstallException {
     	map.put("download.location", fromDir.toString());
-    	List<String> mavenCoords = new ArrayList<String>();
-    	if (isShortNames) {
-    		for (String shortName: featuresToInstall) {
-    			mavenCoords.add(OPEN_LIBERTY_PRODUCT_ID + ".features:" + shortName + ":" + openLibertyVersion);
+    	
+    	List<String> shortNames = new ArrayList<String>();
+    	if (!isShortNames) {
+    		info("Preparing assets for installation. This process might take several minutes to complete.");
+    		info("Resolving features...");
+    		for (String mavenCoord: featuresToInstall) {
+    			shortNames.add(mavenCoord.split(":")[1]);
     		}
     		featuresToInstall.clear();
-    		featuresToInstall.addAll(mavenCoords);
+    		featuresToInstall.addAll(shortNames);
     	}
-    	map.put("download.artifact.list", featuresToInstall);
-    	boolean singleArtifactInstall = false;
-        map.put("download.inidividual.artifact", singleArtifactInstall);
-        List<File> result = (List<File>) map.get("download.result");
-        if (map.get("action.error.message") != null) {
-            fine("action.exception.stacktrace: " + map.get("action.error.stacktrace"));
-            String exceptionMessage = (String) map.get("action.error.message");
-            throw new InstallException(exceptionMessage);
+        if (featuresToInstall != null) {
+            map.put("features.to.resolve", featuresToInstall);
         }
+        List<String> resolvedFeatures = (List<String>) map.get("action.result");
+        checkResolve(resolvedFeatures);
+        if (!isShortNames) {
+        	updateProgress(progressBar.getMethodIncrement("resolveArtifact"));
+            info("Features resolved.");
+        }
+        return resolvedFeatures;
+    }
+    
+    public void downloadFeatures(List<String> resolvedFeatures) throws InstallException {
+    	info("Starting Download...");
+    	List<File> downloadedEsas = downloadFeaturesFrom(resolvedFeatures, fromDir);
+    	info("\n");
+    	info("All assets were successfully downloaded.");
     }
 
     /**
@@ -465,6 +487,7 @@ public class FeatureUtility {
         Collection<String> featuresToInstall;
         File esaFile;
         boolean isDownload;
+        boolean isBasicInit;
 
         public FeatureUtilityBuilder setFromDir(String fromDir) {
             this.fromDir = fromDir != null ? new File(fromDir) : null;
@@ -488,6 +511,11 @@ public class FeatureUtility {
         
         public FeatureUtilityBuilder setIsDownload(boolean isDownload) {
             this.isDownload = isDownload;
+            return this;
+        }
+        
+        public FeatureUtilityBuilder setIsBasicInit(boolean isBasicInit) {
+            this.isBasicInit = isBasicInit;
             return this;
         }
 
@@ -528,5 +556,13 @@ public class FeatureUtility {
     	}
     	return result;
     }
+
+	public List<String> getMavenCoords(List<String> artifactShortNames) {
+		List<String> result = new ArrayList<String>();
+		for (String shortName: artifactShortNames) {
+			result.add(OPEN_LIBERTY_PRODUCT_ID + ".feature:" + shortName + ":" + openLibertyVersion);
+		}
+		return result;
+	}
 
 }
