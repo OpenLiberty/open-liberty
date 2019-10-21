@@ -116,7 +116,7 @@ public class AccessTokenAuthenticator {
         String validationMethod = clientConfig.getValidationMethod();
 
         // if there are 2 or more "." in the token - it's pretty safe to assume we have a JWT
-        String[] parts = accessToken.split(".");
+        String[] parts = accessToken.split("\\.");
         if (parts.length > 1) {
             // found a jwt token
             validationMethod = ClientConstants.VALIDATION_LOCAL;
