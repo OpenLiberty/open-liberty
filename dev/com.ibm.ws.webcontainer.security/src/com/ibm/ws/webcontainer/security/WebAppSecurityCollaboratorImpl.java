@@ -15,6 +15,7 @@ import java.security.AccessController;
 import java.security.Principal;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,7 @@ import javax.security.auth.login.CredentialExpiredException;
 import javax.servlet.DispatcherType;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 
 import org.osgi.framework.ServiceReference;
@@ -82,6 +84,7 @@ import com.ibm.ws.webcontainer.security.metadata.SecurityConstraintCollection;
 import com.ibm.ws.webcontainer.security.metadata.SecurityMetadata;
 import com.ibm.ws.webcontainer.security.metadata.WebResourceCollection;
 import com.ibm.ws.webcontainer.security.util.WebConfigUtils;
+import com.ibm.ws.webcontainer.srt.SRTServletRequest;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
@@ -556,6 +559,16 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
     @Override
     public Object preInvoke(HttpServletRequest req, HttpServletResponse resp, String servletName, boolean enforceSecurity) throws SecurityViolationException, IOException {
 
+        if (tc.isDebugEnabled() && req != null) {
+            Tr.debug(tc, "Http Header names and values:\n" + debugGetAllHttpHdrs(req));
+
+            StringBuffer sb = new StringBuffer();
+            sb.append(" Request Context Path=").append(req.getContextPath());
+            sb.append(", Servlet Path=").append(req.getServletPath());
+            sb.append(", Path Info=").append(req.getPathInfo());
+            Tr.debug(tc, sb.toString());
+        }
+
         Subject invokedSubject = subjectManager.getInvocationSubject();
         Subject receivedSubject = subjectManager.getCallerSubject();
 
@@ -585,6 +598,60 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         }
 
         return webSecurityContext;
+    }
+
+    /**
+     * Debug method used to collect all the Http header names and values.
+     *
+     * @param req HttpServletRequest
+     * @return Returns a string that contains each parameter and it value(s)
+     *         in the HttpServletRequest object.
+     */
+    private String debugGetAllHttpHdrs(HttpServletRequest req) {
+        StringBuffer sb = new StringBuffer(512);
+        try {
+            Enumeration<String> headerNames = req.getHeaderNames();
+            while (headerNames.hasMoreElements()) {
+                String headerName = headerNames.nextElement();
+                sb.append(headerName).append("=");
+                sb.append("[").append(getHeader(req, headerName)).append("]\n");
+            }
+        } catch (Throwable t) {
+            // do nothing because it probably means the parser was trying to parse
+            // non form data or serialized object data.  This is a trace issue and
+            // has nothing to do with the spec.
+        }
+        return sb.toString();
+    }
+
+    /**
+     * @r5
+     **     This method is called for authenticating users using basic
+     **     user id and password that are stored in the Http request
+     **     headers.
+     **
+     **     The return value of this method cannot be null.
+     */
+    static final String getHeader(HttpServletRequest req, String key) {
+        HttpServletRequest sr = req;
+        if (sr instanceof HttpServletRequestWrapper) {
+            HttpServletRequestWrapper w = (HttpServletRequestWrapper) sr;
+
+            // make sure we drill all the way down to an SRTServletRequest...there
+            // may be multiple proxied objects
+            sr = (HttpServletRequest) w.getRequest();
+
+            while (sr != null && sr instanceof HttpServletRequestWrapper)
+                sr = (HttpServletRequest) ((HttpServletRequestWrapper) sr).getRequest();
+        }
+
+        if (sr != null && sr instanceof SRTServletRequest) {
+            // Cast and return result
+            String header = ((SRTServletRequest) sr).getHeaderDirect(key);
+            return header;
+        }
+
+        return req.getHeader(key);
     }
 
     /**
