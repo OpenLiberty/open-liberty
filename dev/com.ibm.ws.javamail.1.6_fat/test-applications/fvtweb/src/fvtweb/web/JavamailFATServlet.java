@@ -29,12 +29,14 @@ import fvtweb.ejb.JavamailTestLocal;
                        description = "jm2Desc",
                        storeProtocol = "jm2StoreProtocol",
                        transportProtocol = "jm2TransportProtocol",
+                       properties = { "test=jm2Def_MailSession" },
                        user = "jm2test",
                        password = "testJm2test")
 @MailSessionDefinition(name = "javamail/mergeDef",
                        user = "mergeAnnotationUser",
                        from = "mergeAnnotationFrom",
-                       password = "mergePass")
+                       password = "mergePass",
+                       properties = { "test=mergeDef_MailSession" })
 @WebServlet("/*")
 public class JavamailFATServlet extends FATServlet {
 
@@ -99,7 +101,11 @@ public class JavamailFATServlet extends FATServlet {
             if (!("jm2TransportProtocol").equals(tpValue)) {
                 throw new Exception("Did not find the transport.protocol for mail session jm2 defined as an annotation");
             }
-
+            //Vaidate the property "test" returns the value added with the annotation
+            String testValue = jm2.getProperty("test");
+            if (testValue == null || !testValue.equals("jm2Def_MailSession")) {
+                throw new Exception("Did not find the test property for mail session mergeMS defined as an annotation, instead found: " + testValue);
+            }
             return;
         }
         throw new Exception("Annotated jm2 MailSession was null");
@@ -167,6 +173,11 @@ public class JavamailFATServlet extends FATServlet {
                 throw new Exception("Did not find the host for mail session mergeMS defined in web.xml, instead found: " + hostValue);
             }
 
+            //Vaidate the property "test" returns the value added with the annotation
+            String testValue = mergeMS.getProperty("test");
+            if (testValue == null || !testValue.equals("mergeDef_MailSession")) {
+                throw new Exception("Did not find the test property for mail session mergeMS defined as an annotation, instead found: " + testValue);
+            }
             return;
         }
         throw new Exception("Annotated mergeMS MailSession was null");

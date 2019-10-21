@@ -5,6 +5,7 @@
 	<classpathentry kind="src" path="test-applications/basicQueryApp/src"/>
 	<classpathentry kind="src" path="test-applications/defaultvalueApp/src"/>
 	<classpathentry kind="src" path="test-applications/deprecationApp/src"/>
+	<classpathentry kind="src" path="test-applications/graphQLInterfaceApp/src"/>
 	<classpathentry kind="src" path="test-applications/ifaceApp/src"/>
 	<classpathentry kind="src" path="test-applications/ignoreApp/src"/>
 	<classpathentry kind="src" path="test-applications/inputFieldsApp/src"/>
