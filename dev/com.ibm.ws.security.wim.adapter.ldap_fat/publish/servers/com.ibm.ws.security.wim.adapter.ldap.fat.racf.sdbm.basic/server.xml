@@ -7,7 +7,7 @@
 	Contributors: 
 	    IBM Corporation - initial API and implementation
 -->
-<server description="com.ibm.ws.security.wim.adapter.ldap.fat.racf.sdbm">
+<server description="com.ibm.ws.security.wim.adapter.ldap.fat.racf.sdbm.basic">
 
 	<include location="../fatTestPorts.xml" />
 	<featureManager>
@@ -19,7 +19,7 @@
 
 	<ldapRegistry baseDN="cn=racf"
 		bindDN="racfid=some_user,profiletype=user,cn=racf" bindPassword="some_password"
-		host="localhost" id="ldap" ldapType="IBM Tivoli Directory Server"
+		host="localhost" ldapType="IBM Tivoli Directory Server"
 		port="10389" realm="RACFRealm">
 
 		<idsFilters groupFilter="racfid=%v" groupIdMap="*:racfid"
@@ -32,24 +32,32 @@
 		</ldapCache>
 	</ldapRegistry>
 
+	<basicRegistry realm="BasicRealm">
+		<user name="basicuser" password="password" />
+		<group name="basicgroup">
+			<member name="basicuser" />
+		</group>
+	</basicRegistry>
+	
 	<federatedRepository>
-		<extendedProperty dataType="String" name="racfid"
-			entityType="PersonAccount" />
-		<extendedProperty dataType="String" name="racfid"
-			entityType="Group" />
+		<primaryRealm name="FederatedRealm" allowOpIfRepoDown="true">
 
-		<primaryRealm name="FederatedRealm">
+			<participatingBaseEntry name="o=BasicRealm" />
 			<participatingBaseEntry name="cn=racf" />
-			<userDisplayNameMapping inputProperty="racfid"
-				outputProperty="racfid" />
-			<userSecurityNameMapping inputProperty="racfid"
-				outputProperty="racfid" />
 
-			<groupSecurityNameMapping inputProperty="uniqueName"
-				outputProperty="uniqueName" />
-			<uniqueGroupIdMapping inputProperty="uniqueName"
-				outputProperty="uniqueName" />
+			<userDisplayNameMapping
+				inputProperty="uniqueName" outputProperty="uniqueName" />
+			<userSecurityNameMapping
+				inputProperty="uniqueName" outputProperty="uniqueName" />
+
+			<groupDisplayNameMapping 
+			    inputProperty="uniqueName" outputProperty="uniqueName" />
+			<groupSecurityNameMapping
+				inputProperty="uniqueName" outputProperty="uniqueName" />
+			<uniqueGroupIdMapping 
+			    inputProperty="uniqueName" outputProperty="uniqueName" />
 		</primaryRealm>
+
 	</federatedRepository>
 
 </server>
