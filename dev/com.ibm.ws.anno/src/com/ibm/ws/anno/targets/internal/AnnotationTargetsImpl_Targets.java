@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 IBM Corporation and others.
+ * Copyright (c) 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -579,7 +579,8 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
     public Set<String> getUnresolvedPackageNames() {
         scanReferenceClasses();
 
-        return i_unresolvedPackageNames.keySet();
+        // 18994: The result set must not be identity based.
+        return new HashSet<String>( i_unresolvedPackageNames.keySet() );
     }
 
     protected boolean i_addUnresolvedPackageName(String i_packageName) {
@@ -601,7 +602,8 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
     public Set<String> getScannedClassNames() {
         scanReferenceClasses();
 
-        return i_scannedClassNames.keySet();
+        // 18994: The result set must not be identity based.
+        return new HashSet<String>( i_scannedClassNames.keySet() );
     }
 
     public boolean i_containsScannedClassName(String i_className) {
@@ -614,7 +616,8 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
     public Set<String> getSeedClassNames() {
         scanDirectClasses();
 
-        return seedData.getClassNames();
+        // 18994: The result set must not be identity based.
+        return new HashSet<String>( seedData.getClassNames() );
     }
 
     @Override
@@ -633,7 +636,8 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
     public Set<String> getPartialClassNames() {
         scanDirectClasses();
 
-        return partialData.getClassNames();
+        // 18994: The result set must not be identity based.
+        return new HashSet<String>( partialData.getClassNames() );
     }
 
     @Override
@@ -651,7 +655,8 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
     public Set<String> getExcludedClassNames() {
         scanDirectClasses();
 
-        return excludedData.getClassNames();
+        // 18994: The result set must not be identity based.
+        return new HashSet<String>( excludedData.getClassNames() );
     }
 
     @Override
@@ -671,7 +676,8 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
         // scan is performed.        
         scannedReferencedClasses();
 
-        return externalData.getClassNames();
+        // 18994: The result set must not be identity based.
+        return new HashSet<String>( externalData.getClassNames() );
     }
 
     @Override
@@ -772,110 +778,110 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
     public Set<String> getAnnotatedPackages() {
         scanDirectClasses();
 
-        return seedData.getAnnotatedTargets(AnnotationCategory.PACKAGE);
+        return new HashSet<String>( seedData.getAnnotatedTargets(AnnotationCategory.PACKAGE) );
     }
 
     @Override
     public Set<String> getAnnotatedPackages(String annotationName) {
         scanDirectClasses();
 
-        return seedData.getAnnotatedTargets(annotationName, AnnotationCategory.PACKAGE);
+        return new HashSet<String>( seedData.getAnnotatedTargets(annotationName, AnnotationCategory.PACKAGE) );
     }
 
     @Override
     public Set<String> getPackageAnnotations() {
         scanDirectClasses();
 
-        return seedData.getAnnotations(AnnotationCategory.PACKAGE);
+        return new HashSet<String>( seedData.getAnnotations(AnnotationCategory.PACKAGE) );
     }
 
     @Override
     public Set<String> getPackageAnnotations(String packageName) {
         scanDirectClasses();
 
-        return seedData.getAnnotations(packageName, AnnotationCategory.PACKAGE);
+        return new HashSet<String>( seedData.getAnnotations(packageName, AnnotationCategory.PACKAGE) );
     }
 
     @Override
     public Set<String> getAnnotatedClasses() {
         scanDirectClasses();
 
-        return seedData.getAnnotatedTargets(AnnotationCategory.CLASS);
+        return new HashSet<String>( seedData.getAnnotatedTargets(AnnotationCategory.CLASS) );
     }
 
     @Override
     public Set<String> getAnnotatedClasses(String annotationName) {
         scanDirectClasses();
 
-        return seedData.getAnnotatedTargets(annotationName, AnnotationCategory.CLASS);
+        return new HashSet<String>( seedData.getAnnotatedTargets(annotationName, AnnotationCategory.CLASS) );
     }
 
     @Override
     public Set<String> getClassAnnotations() {
         scanDirectClasses();
 
-        return seedData.getAnnotations(AnnotationCategory.CLASS);
+        return new HashSet<String>( seedData.getAnnotations(AnnotationCategory.CLASS) );
     }
 
     @Override
     public Set<String> getClassAnnotations(String className) {
         scanDirectClasses();
 
-        return seedData.getAnnotations(className, AnnotationCategory.CLASS);
+        return new HashSet<String>( seedData.getAnnotations(className, AnnotationCategory.CLASS) );
     }
 
     public Set<String> getClassesWithFieldAnnotations() {
         scanDirectClasses();
 
-        return seedData.getAnnotatedTargets(AnnotationCategory.FIELD);
+        return new HashSet<String>( seedData.getAnnotatedTargets(AnnotationCategory.FIELD) );
     }
 
     @Override
     public Set<String> getClassesWithFieldAnnotation(String annotationName) {
         scanDirectClasses();
 
-        return seedData.getAnnotatedTargets(annotationName, AnnotationCategory.FIELD);
+        return new HashSet<String>( seedData.getAnnotatedTargets(annotationName, AnnotationCategory.FIELD) );
     }
 
     @Override
     public Set<String> getFieldAnnotations() {
         scanDirectClasses();
 
-        return seedData.getAnnotations(AnnotationCategory.FIELD);
+        return new HashSet<String>( seedData.getAnnotations(AnnotationCategory.FIELD) );
     }
 
     @Override
     public Set<String> getFieldAnnotations(String className) {
         scanDirectClasses();
 
-        return seedData.getAnnotations(className, AnnotationCategory.FIELD);
+        return new HashSet<String>( seedData.getAnnotations(className, AnnotationCategory.FIELD) );
     }
 
     public Set<String> getClassesWithMethodAnnotations() {
         scanDirectClasses();
 
-        return seedData.getAnnotatedTargets(AnnotationCategory.METHOD);
+        return new HashSet<String>( seedData.getAnnotatedTargets(AnnotationCategory.METHOD) );
     }
 
     @Override
     public Set<String> getClassesWithMethodAnnotation(String annotationName) {
         scanDirectClasses();
 
-        return seedData.getAnnotatedTargets(annotationName, AnnotationCategory.METHOD);
+        return new HashSet<String>( seedData.getAnnotatedTargets(annotationName, AnnotationCategory.METHOD) );
     }
 
     @Override
     public Set<String> getMethodAnnotations() {
         scanDirectClasses();
 
-        return seedData.getAnnotations(AnnotationCategory.METHOD);
+        return new HashSet<String>( seedData.getAnnotations(AnnotationCategory.METHOD) );
     }
 
     @Override
     public Set<String> getMethodAnnotations(String className) {
         scanDirectClasses();
 
-        return seedData.getAnnotations(className, AnnotationCategory.METHOD);
+        return new HashSet<String>( seedData.getAnnotations(className, AnnotationCategory.METHOD) );
     }
 
     //
@@ -1061,7 +1067,7 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
     public Map<String, String> getSuperclassNames() {
         scanReferenceClasses();
 
-        return i_superclassNameMap;
+        return i_superclassNameMap; // TODO: Should this be un-interned?
     }
 
     // TODO should this clear the subclass names map?
@@ -1093,7 +1099,7 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
     public Map<String, String[]> getInterfaceNames() {
         scanReferenceClasses();
 
-        return i_interfaceNameMap;
+        return i_interfaceNameMap; // TODO: Should this be un-interned?
     }
 
     protected void i_setInterfaceNames(String i_classOrInterfaceName, String[] i_interfaceNames) {
@@ -1128,6 +1134,9 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
         Set<String> result = this.i_allImplementersMap.get(i_interfaceName);
         if (result == null) {
             result = Collections.emptySet();
+        } else {
+            // 18994: The result set must not be identity based.
+            result = new HashSet<String>(result);
         }
 
         return result;
@@ -1195,6 +1204,9 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
         Set<String> result = i_descendantsMap.get(i_superclassName);
         if (result == null) {
             result = Collections.emptySet();
+        } else {
+            // 18994: The result set must not be identity based.
+            result = new HashSet<String>(result);
         }
         return result;
     }
@@ -1584,15 +1596,18 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
             return Collections.emptySet();
 
         } else if (nonEmptyCount == 1) {
+        	Set<String> result;
             if (selected_SEED != null) {
-                return selected_SEED;
+                result = selected_SEED;
             } else if (selected_PARTIAL != null) {
-                return selected_PARTIAL;
+                result = selected_PARTIAL;
             } else if (selected_EXCLUDED != null) {
-                return selected_EXCLUDED;
+                result = selected_EXCLUDED;
             } else {
-                return selected_EXTERNAL;
+                result = selected_EXTERNAL;
             }
+            // 18994: The result set must not be identity based.
+            return new HashSet<String>(result);
 
         } else {
             // Handles both the case when all three are requested and
@@ -1709,15 +1724,18 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
             return Collections.emptySet();
 
         } else if (nonEmptyCount == 1) {
+            Set<String> result;
             if (selected_SEED != null) {
-                return selected_SEED;
+                result = selected_SEED;
             } else if (selected_PARTIAL != null) {
-                return selected_PARTIAL;
+                result = selected_PARTIAL;
             } else if (selected_EXCLUDED != null) {
-                return selected_EXCLUDED;
+                result = selected_EXCLUDED;
             } else {
-                return selected_EXTERNAL;
+                result = selected_EXTERNAL;
             }
+            // 18994: The result set must not be identity based.
+            return new HashSet<String>(result);
 
         } else {
             // Handles both the case when all three are requested and
@@ -1808,15 +1826,18 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
             return Collections.emptySet();
 
         } else if (nonEmptyCount == 1) {
+            Set<String> result;
             if (selected_SEED != null) {
-                return selected_SEED;
+                result = selected_SEED;
             } else if (selected_PARTIAL != null) {
-                return selected_PARTIAL;
+                result = selected_PARTIAL;
             } else if (selected_EXCLUDED != null) {
-                return selected_EXCLUDED;
+                result = selected_EXCLUDED;
             } else {
-                return selected_EXTERNAL;
+                result = selected_EXTERNAL;
             }
+            // 18994: The result set must not be identity based.
+            return new HashSet<String>(result);
 
         } else {
             // Handles both the case when all three are requested and
@@ -1897,15 +1918,18 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
             return Collections.emptySet();
 
         } else if (nonEmptyCount == 1) {
+            Set<String> result;
             if (seed != null) {
-                return seed;
+                result = seed;
             } else if (partial != null) {
-                return partial;
+                result = partial;
             } else if (excluded != null) {
-                return excluded;
+                result = excluded;
             } else {
-                return external;
+                result = external;
             }
+            // 18994: The result set must not be identity based.
+            return new HashSet<String>(result);
 
         } else {
             Set<String> result = new HashSet<String>();
