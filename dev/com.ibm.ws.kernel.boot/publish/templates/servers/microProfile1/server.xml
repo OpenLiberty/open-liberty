@@ -14,7 +14,4 @@
     <!-- Automatically expand WAR files and EAR files -->
     <applicationManager autoExpand="true"/>
 
-    <!-- Default SSL configuration enables trusting default certificates -->
-    <ssl id="defaultSSLConfig" trustDefaultCerts="true" />
-
 </server>
