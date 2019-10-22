@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.security.social.internal;
 
-import java.util.Arrays;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
@@ -18,6 +17,7 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.security.common.config.DiscoveryConfigUtils;
 import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.TraceConstants;
 import com.ibm.ws.security.social.error.SocialLoginException;
@@ -27,27 +27,70 @@ import com.ibm.ws.security.social.internal.utils.ClientConstants;
 public class OpenShiftLoginConfigImpl extends Oauth2LoginConfigImpl {
     public static final TraceComponent tc = Tr.register(OpenShiftLoginConfigImpl.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 
+    public static final String KEY_SERVICE_ACCOUNT_TOKEN = "serviceAccountToken";
+    private String serviceAccountToken = null;
+
+    public static final String KEY_DISCOVERY_ENDPOINT = "discoveryEndpoint";
+    private String discoveryEndpointUrl = null;
+
+    public static final String KEY_TOKEN_HEADER_NAME = "tokenHeaderName";
+    private String tokenHeaderName = null;
+
+    public static final String KEY_HOSTNAME_AND_PORT = "hostnameAndPort";
+    private String hostnameAndPort = null;
+
+    DiscoveryConfigUtils discoveryUtils = new DiscoveryConfigUtils();
+
     @Override
     protected void setRequiredConfigAttributes(Map<String, Object> props) {
         this.clientId = getRequiredConfigAttribute(props, KEY_clientId);
         this.clientSecret = getRequiredSerializableProtectedStringConfigAttribute(props, KEY_clientSecret);
+        this.serviceAccountToken = getRequiredSerializableProtectedStringConfigAttribute(props, KEY_SERVICE_ACCOUNT_TOKEN);
     }
 
     @Override
     protected void setOptionalConfigAttributes(Map<String, Object> props) throws SocialLoginException {
-        this.useSystemPropertiesForHttpClientConnections = configUtils.getBooleanConfigAttribute(props, KEY_USE_SYSPROPS_FOR_HTTPCLIENT_CONNECTONS, false);
-        this.authorizationEndpoint = configUtils.getConfigAttribute(props, KEY_authorizationEndpoint);
-        this.tokenEndpoint = configUtils.getConfigAttribute(props, KEY_tokenEndpoint);
-        this.userApi = configUtils.getConfigAttribute(props, KEY_userApi); // TODO - need to figure this out
+        this.userApi = configUtils.getConfigAttribute(props, KEY_userApi);
         this.scope = configUtils.getConfigAttribute(props, KEY_scope);
         this.userNameAttribute = configUtils.getConfigAttribute(props, KEY_userNameAttribute);
         this.sslRef = configUtils.getConfigAttribute(props, KEY_sslRef);
+        this.tokenHeaderName = configUtils.getConfigAttribute(props, KEY_TOKEN_HEADER_NAME);
         this.authFilterRef = configUtils.getConfigAttribute(props, KEY_authFilterRef);
-        this.isClientSideRedirectSupported = configUtils.getBooleanConfigAttribute(props, KEY_isClientSideRedirectSupported, this.isClientSideRedirectSupported);
-        this.displayName = configUtils.getConfigAttribute(props, KEY_displayName);
-        this.website = configUtils.getConfigAttribute(props, KEY_website);
-        this.tokenEndpointAuthMethod = configUtils.getConfigAttribute(props, KEY_tokenEndpointAuthMethod);
         this.redirectToRPHostAndPort = configUtils.getConfigAttribute(props, KEY_redirectToRPHostAndPort);
+        this.hostnameAndPort = configUtils.getConfigAttribute(props, KEY_HOSTNAME_AND_PORT);
+        this.tokenEndpointAuthMethod = configUtils.getConfigAttributeWithDefaultValue(props, KEY_tokenEndpointAuthMethod, ClientConstants.METHOD_client_secret_post);
+        this.userNameAttribute = configUtils.getConfigAttribute(props, KEY_userNameAttribute);
+        setEndpointUrls(props);
+    }
+
+    private void setEndpointUrls(Map<String, Object> props) {
+        this.discoveryEndpointUrl = configUtils.getConfigAttribute(props, KEY_DISCOVERY_ENDPOINT);
+        // TODO
+        if (discoveryEndpointUrl != null && !discoveryEndpointUrl.isEmpty()) {
+            performDiscovery();
+        } else {
+            this.authorizationEndpoint = buildEndpointUrl(props, KEY_authorizationEndpoint);
+            this.tokenEndpoint = buildEndpointUrl(props, KEY_tokenEndpoint);
+        }
+    }
+
+    private void performDiscovery() {
+        if (!discoveryEndpointUrl.startsWith("http")) {
+            // TODO
+        }
+        // TODO
+    }
+
+    private String buildEndpointUrl(Map<String, Object> props, String configKey) {
+        if (hostnameAndPort == null && hostnameAndPort.isEmpty()) {
+            // TODO
+            System.out.println("Gotta fix the hostnameAndPort value");
+            return null;
+        }
+        // TODO
+        return hostnameAndPort + configUtils.getConfigAttribute(props, configKey);
+        //        if (hostnameAndPort.endsWith("/")) {
+        //        }
     }
 
     @Override
@@ -62,6 +105,8 @@ public class OpenShiftLoginConfigImpl extends Oauth2LoginConfigImpl {
             Tr.debug(tc, "" + this);
             Tr.debug(tc, KEY_clientId + " = " + clientId);
             Tr.debug(tc, KEY_clientSecret + " is null = " + (clientSecret == null));
+            Tr.debug(tc, KEY_SERVICE_ACCOUNT_TOKEN + " is null = " + (serviceAccountToken == null));
+            Tr.debug(tc, KEY_DISCOVERY_ENDPOINT + " = " + discoveryEndpointUrl);
             Tr.debug(tc, KEY_authorizationEndpoint + " = " + authorizationEndpoint);
             Tr.debug(tc, KEY_tokenEndpoint + " = " + tokenEndpoint);
             Tr.debug(tc, KEY_userApi + " = " + userApi);
@@ -69,14 +114,11 @@ public class OpenShiftLoginConfigImpl extends Oauth2LoginConfigImpl {
             Tr.debug(tc, KEY_scope + " = " + scope);
             Tr.debug(tc, KEY_userNameAttribute + " = " + userNameAttribute);
             Tr.debug(tc, KEY_sslRef + " = " + sslRef);
+            Tr.debug(tc, KEY_TOKEN_HEADER_NAME + " = " + tokenHeaderName);
             Tr.debug(tc, KEY_authFilterRef + " = " + authFilterRef);
-            Tr.debug(tc, CFG_KEY_jwtRef + " = " + jwtRef);
-            Tr.debug(tc, CFG_KEY_jwtClaims + " = " + ((jwtClaims == null) ? null : Arrays.toString(jwtClaims)));
-            Tr.debug(tc, KEY_isClientSideRedirectSupported + " = " + isClientSideRedirectSupported);
-            Tr.debug(tc, KEY_displayName + " = " + displayName);
-            Tr.debug(tc, KEY_website + " = " + website);
-            Tr.debug(tc, KEY_tokenEndpointAuthMethod + " = " + tokenEndpointAuthMethod);
             Tr.debug(tc, KEY_redirectToRPHostAndPort + " = " + redirectToRPHostAndPort);
+            Tr.debug(tc, KEY_HOSTNAME_AND_PORT + " = " + hostnameAndPort);
+            Tr.debug(tc, KEY_tokenEndpointAuthMethod + " = " + tokenEndpointAuthMethod);
         }
     }
 

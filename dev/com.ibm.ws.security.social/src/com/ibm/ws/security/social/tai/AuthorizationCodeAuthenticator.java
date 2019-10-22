@@ -47,6 +47,7 @@ public class AuthorizationCodeAuthenticator {
     OAuthClientUtil clientUtil = new OAuthClientUtil();
     TAIWebUtils taiWebUtils = new TAIWebUtils();
     TAIJwtUtils taiJwtUtils = new TAIJwtUtils();
+    TAIUserApiUtils userApiUtils = new TAIUserApiUtils();
 
     public AuthorizationCodeAuthenticator(HttpServletRequest req, HttpServletResponse res, String authzCode, SocialLoginConfig socialConfig) {
         this.request = req;
@@ -150,7 +151,7 @@ public class AuthorizationCodeAuthenticator {
     }
 
     void createUserApiResponseFromAccessToken() throws SocialLoginException {
-        userApiResponse = TAIUserApiUtils.getUserApiResponse(clientUtil, socialConfig, accessToken, sslSocketFactory);
+        userApiResponse = userApiUtils.getUserApiResponse(clientUtil, socialConfig, accessToken, sslSocketFactory);
         if (userApiResponse == null || userApiResponse.isEmpty()) {
             throw createExceptionAndLogMessage(null, "USER_API_RESPONSE_NULL_OR_EMPTY", new Object[] { socialConfig.getUniqueId() });
         }

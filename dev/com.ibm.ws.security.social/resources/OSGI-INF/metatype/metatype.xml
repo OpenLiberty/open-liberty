@@ -283,41 +283,40 @@
     <OCD id="com.ibm.ws.security.social.openshift.metatype" name="%social.openshift.conf" description="%social.openshift.conf.desc"
          ibm:alias="openshiftLogin" ibm:beta="true" >
         <AD id="id" name="internal" description="internal use only"
-            required="false" type="String" default="openshiftLogin" ibm:final="true"  ibm:unique="uniqueId"/>
+            required="false" type="String" default="openshiftLogin" ibm:final="true" ibm:unique="uniqueId"/>
         <AD id="clientId" name="%clientId" description="%clientId.desc"
             required="true" type="String" />
         <AD id="clientSecret" name="%clientSecret" description="%clientSecret.desc"
             required="true" type="String" ibm:type="password" />
+        <AD id="serviceAccountToken" name="%serviceAccountToken" description="%serviceAccountToken.desc"
+            required="true" type="String" ibm:type="password" />
+        <AD id="discoveryEndpoint" name="%discoveryEndpoint" description="%discoveryEndpoint.desc"
+            required="false" type="String" /> <!-- default="https://openshift.default.svc/.well-known/oauth-autorization-server" -->
         <AD id="authorizationEndpoint" name="%authorizationEndpoint" description="%authorizationEndpoint.desc"
-            required="true" type="String" />
+            required="false" type="String" default="/oauth/authorize" />
         <AD id="tokenEndpoint" name="%tokenEndpoint" description="%tokenEndpoint.desc"
-            required="true" type="String" />
+            required="false" type="String" default="/oauth/token" />
         <AD id="userApi" name="%userApi" description="%userApi.desc"
-            required="false" type="String" />
+            required="false" type="String" default="/apis/authentication.k8s.io/v1/tokenreviews" />
         <AD id="scope" name="%scope" description="%scope.desc"
-            required="false" type="String" />
-        <AD id="userNameAttribute" name="%userNameAttribute" description="%userNameAttribute.desc"
-            required="false" type="String" default="email"/>
+            required="false" type="String" default="user:full" />
+        <AD id="userNameAttribute" name="internal" description="internal use only"
+            required="false" type="String" default="username"/>
         <AD id="sslRef" name="%sslRef" description="%sslRef.desc"
             required="false" type="String" ibmui:uiReference="com.ibm.ws.ssl.repertoire" />
+        <AD id="tokenHeaderName" name="%tokenHeaderName" description="%tokenHeaderName.desc"
+            required="false" type="String" default="X-Forwarded-Access-Token"/>
         <AD id="authFilterRef" name="%authFilterRef" description="%authFilterRef.desc" ibm:type="pid"
              ibm:reference="com.ibm.ws.security.authentication.filter" required="false" type="String"  />
+        <!-- jwt needed? -->
         <AD id="jwt" ibm:type="pid" ibm:reference="com.ibm.ws.security.social.login.jwt"
              required="false" type="String" />
-        <AD id="isClientSideRedirectSupported" name="%isClientSideRedirectSupported" description="%isClientSideRedirectSupported.desc"
-            required="false" type="Boolean" default="true" />
-        <AD id="displayName" name="%displayName" description="%displayName.desc"
-            required="false" type="String" default="OpenShift" />
-        <AD id="website" name="%website" description="%website.desc" required="false" type="String" ibm:type="token" />
+        <!-- redirectToRPHostAndPort needed? -->
+        <AD id="redirectToRPHostAndPort" name="%redirectToRPHostAndPort" description="%redirectToRPHostAndPort.desc" required="false" type="String" />
+        <AD id="hostnameAndPort" name="internal" description="internal use only" required="false" type="String" />
+        <!-- tokenEndpointAuthMethod needed? -->
         <AD id="tokenEndpointAuthMethod" name="%tokenEndpointAuthMethod" description="%tokenEndpointAuthMethod.desc" required="false"
              type="String" default="client_secret_post" >
-            <Option label="client_secret_basic" value="client_secret_basic" />
-            <Option label="client_secret_post"  value="client_secret_post" />
-        </AD>
-        <AD id="redirectToRPHostAndPort" name="%redirectToRPHostAndPort" description="%redirectToRPHostAndPort.desc" required="false" type="String" />
-        <AD id="useSystemPropertiesForHttpClientConnections" name="%useSystemPropertiesForHttpClientConnections" description="%useSystemPropertiesForHttpClientConnections.desc" required="false" type="Boolean" default="false"/>
-        <AD id="responseType" name="%responseType" description="%responseType.desc" required="false" type="String" default="code">
-            <Option label="%responseType.code" value="code" />
         </AD>
     </OCD>
 
