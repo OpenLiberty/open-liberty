@@ -27,8 +27,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.junit.Assert;
-
 import com.ibm.ws.http.channel.h2internal.FrameTypes;
 import com.ibm.ws.http.channel.h2internal.frames.FrameData;
 import com.ibm.ws.http.channel.h2internal.frames.FrameGoAway;
@@ -48,6 +46,8 @@ import com.ibm.ws.http2.test.frames.FrameHeadersClient;
 import com.ibm.ws.http2.test.frames.FramePushPromiseClient;
 import com.ibm.ws.http2.test.helpers.HTTPUtils;
 import com.ibm.ws.http2.test.helpers.HeaderEntry;
+
+import org.junit.Assert;
 
 import componenttest.app.FATServlet;
 import test.server.transport.http2.Utils;
@@ -4384,9 +4384,9 @@ public class H2FATDriverServlet extends FATServlet {
         frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
         h2Client.sendFrame(frameHeadersToSend);
 
-        //create a string with 16385 octets, 16384 is the max
+        //create a string with 57344+1 octets, since 56K (57344) is the default max frame size
         StringBuilder testString = new StringBuilder();
-        for (int i = 0; i < 16384 + 1; i++) {
+        for (int i = 0; i < 57344 + 1; i++) {
             testString.append('x');
         }
         FrameDataClient dataFrame = new FrameDataClient(3, testString.toString().getBytes(), 0, true, false, false);
