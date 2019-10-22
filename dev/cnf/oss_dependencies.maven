@@ -498,3 +498,4 @@ xalan:xalan:2.7.2
 xerces:xercesImpl:2.11.0
 xml-apis:xml-apis:1.4.01
 xml-resolver:xml-resolver:1.2
+com.googlecode.java-diff-utils:diffutils:1.2.1
