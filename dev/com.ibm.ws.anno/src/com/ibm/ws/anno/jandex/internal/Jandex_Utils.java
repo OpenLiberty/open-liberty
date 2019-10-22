@@ -67,7 +67,7 @@ public class Jandex_Utils {
         FileOutputStream outputStream =
             new FileOutputStream(jarPath); // throws FileNotFoundException
         try {
-            Jandex_Utils.basicWriteIndex(outputStream, index, "Write [ " + jarPath+ " ]");
+            Jandex_Utils.basicWriteIndex(outputStream, index, "Write [ " + jarPath + " ]");
             // throws IOException
         } finally {
             outputStream.close(); // throws IOException

@@ -246,8 +246,9 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
 
     /**
      * Update the configured value of the writeFrequency attribute from default (END_OF_SERVLET_SERVICE) to MANUAL_UPDATE
-     * while the server is running. The session must remain valid, and must exhibit the new behavior (MANUAL_UPDATE) after
-     * the configuration change.
+     * while the server is running. Whether or not the session persists across restart when there is only a single member
+     * is implementation-specific and not covered by the test case. After the update, however, a session must must exhibit
+     * the MANUAL_UPDATE behavior.
      */
     @Test
     public void testWriteFrequency() throws Exception {
@@ -265,9 +266,9 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
         server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
 
         // Set a new attribute value without performing a manual sync, the value in the cache should not be updated
+        session = new ArrayList<>();
         run("testSetAttribute&attribute=testWriteFrequency&value=2_MANUAL_UPDATE", session);
-        // TODO the Infinispan local cache (no config) is destroyed during the Liberty config update. Enable this once we switch to a cache configured with multicast.
-        // run("testCacheContains&attribute=testWriteFrequency&value=1_END_OF_SERVLET_SERVICE", session);
+        run("testCacheContains&attribute=testWriteFrequency&value=null", session);
 
         // Perform a manual update within the same servlet request
         run("testManualUpdate&attribute=testWriteFrequency&value=3_MANUAL_UPDATE", session);

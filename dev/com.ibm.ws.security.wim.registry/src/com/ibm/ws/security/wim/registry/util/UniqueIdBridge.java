@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2015 IBM Corporation and others.
+ * Copyright (c) 2012, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,7 +29,6 @@ import com.ibm.ws.security.wim.registry.dataobject.IDAndRealm;
 import com.ibm.ws.security.wim.util.SchemaConstantsInternal;
 import com.ibm.wsspi.security.wim.SchemaConstants;
 import com.ibm.wsspi.security.wim.exception.EntityNotFoundException;
-import com.ibm.wsspi.security.wim.exception.InvalidIdentifierException;
 import com.ibm.wsspi.security.wim.exception.WIMException;
 import com.ibm.wsspi.security.wim.model.Context;
 import com.ibm.wsspi.security.wim.model.Control;
@@ -256,19 +255,7 @@ public class UniqueIdBridge {
                 }
             }
         } catch (WIMException toCatch) {
-            // log the Exception
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, methodName + " " + toCatch.getMessage(), toCatch);
-            }
-
-            // the user was not found
-            if (toCatch instanceof EntityNotFoundException || toCatch instanceof InvalidIdentifierException) {
-                throw new EntryNotFoundException(toCatch.getMessage(), toCatch);
-            }
-            // other cases
-            else {
-                throw new RegistryException(toCatch.getMessage(), toCatch);
-            }
+            BridgeUtils.handleExceptions(toCatch);
         }
 
         // Determine if the returned object to check if the context was set.
@@ -410,19 +397,7 @@ public class UniqueIdBridge {
                 }
             }
         } catch (WIMException toCatch) {
-            // log the Exception
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, methodName + " " + toCatch.getMessage(), toCatch);
-            }
-
-            // the group was not found
-            if (toCatch instanceof EntityNotFoundException || toCatch instanceof InvalidIdentifierException) {
-                throw new EntryNotFoundException(toCatch.getMessage(), toCatch);
-            }
-            // other cases
-            else {
-                throw new RegistryException(toCatch.getMessage(), toCatch);
-            }
+            BridgeUtils.handleExceptions(toCatch);
         }
         return returnValue;
     }

@@ -107,10 +107,6 @@ public class AnnotatedResolverBuilder extends FilteredResolverBuilder {
     }
 
     private String deprecationReason(AnnotatedElement element, MessageBundle messageBundle) {
-        if (element.isAnnotationPresent(org.eclipse.microprofile.graphql.Deprecated.class)) {
-            return messageBundle.interpolate(ReservedStrings.decode(
-                element.getAnnotation(org.eclipse.microprofile.graphql.Deprecated.class).value()));
-        }
         if (element.isAnnotationPresent(Deprecated.class)) {
             return messageBundle.interpolate(ReservedStrings.decode(element.getAnnotation(Deprecated.class).value()));
         }

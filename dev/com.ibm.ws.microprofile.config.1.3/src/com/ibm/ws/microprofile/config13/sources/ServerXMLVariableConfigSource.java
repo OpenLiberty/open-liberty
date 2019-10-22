@@ -19,6 +19,8 @@ import org.osgi.framework.BundleContext;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.config.xml.ConfigVariables;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.config.sources.DynamicConfigSource;
 import com.ibm.ws.microprofile.config.sources.InternalConfigSource;
 import com.ibm.ws.microprofile.config13.interfaces.Config13Constants;
@@ -32,10 +34,16 @@ import com.ibm.ws.microprofile.config13.interfaces.Config13Constants;
 public class ServerXMLVariableConfigSource extends InternalConfigSource implements DynamicConfigSource {
 
     private static final TraceComponent tc = Tr.register(ServerXMLVariableConfigSource.class);
+    private final ConfigAction configAction = new ConfigAction();
     private BundleContext bundleContext;
+    private ConfigVariables configVariables;
 
     public ServerXMLVariableConfigSource() {
-        super(Config13Constants.SERVER_XML_VARIABLE_ORDINAL, Tr.formatMessage(tc, "server.xml.variables.config.source"));
+        this(Config13Constants.SERVER_XML_VARIABLE_ORDINAL, Tr.formatMessage(tc, "server.xml.variables.config.source"));
+    }
+
+    protected ServerXMLVariableConfigSource(int ordinal, String id) {
+        super(ordinal, id);
     }
 
     /** {@inheritDoc} */
@@ -43,7 +51,14 @@ public class ServerXMLVariableConfigSource extends InternalConfigSource implemen
     public Map<String, String> getProperties() {
 
         Map<String, String> props = new HashMap<>();
-        Map<String, String> serverXMLVariables = getServerXMLVariables();
+
+        Map<String, String> serverXMLVariables = null;
+        if (System.getSecurityManager() == null) {
+            serverXMLVariables = getServerXMLVariables();
+        } else {
+            serverXMLVariables = AccessController.doPrivileged(configAction);
+        }
+
         if (serverXMLVariables != null) {
             props.putAll(serverXMLVariables);
         }
@@ -51,23 +66,43 @@ public class ServerXMLVariableConfigSource extends InternalConfigSource implemen
         return props;
     }
 
-    private Map<String, String> getServerXMLVariables() {
+    private BundleContext getBundleContext() {
+        if (this.bundleContext == null) {
+            this.bundleContext = OSGiConfigUtils.getBundleContext(getClass());
+        }
+        return this.bundleContext;
+    }
 
-        PrivilegedAction<Map<String, String>> configAction = () -> {
-            if (bundleContext == null) {
-                bundleContext = OSGiConfigUtils.getBundleContext(getClass());
+    @FFDCIgnore(InvalidFrameworkStateException.class)
+    protected ConfigVariables getConfigVariables() {
+        if (this.configVariables == null) {
+            BundleContext bundleContext = getBundleContext();
+            if (bundleContext != null) {
+                try {
+                    this.configVariables = OSGiConfigUtils.getConfigVariables(bundleContext);
+                } catch (InvalidFrameworkStateException e) {
+                    //OSGi framework is shutting down, ignore and return null;
+                }
             }
+        }
+        return this.configVariables;
+    }
 
-            Map<String, String> serverXMLVariables = null;
-            if (bundleContext != null) { //bundleContext could be null if not inside an OSGi framework, e.g. unit test
-                serverXMLVariables = OSGiConfigUtils.getVariableFromServerXML(bundleContext);
-            }
+    private class ConfigAction implements PrivilegedAction<Map<String, String>> {
+        /** {@inheritDoc} */
+        @Override
+        public Map<String, String> run() {
+            return getServerXMLVariables();
+        }
 
-            return serverXMLVariables;
-        };
+    }
 
-        Map<String, String> props = AccessController.doPrivileged(configAction);
-
+    protected Map<String, String> getServerXMLVariables() {
+        Map<String, String> props = new HashMap<>();
+        ConfigVariables configVariables = getConfigVariables();
+        if (configVariables != null) {//configVariables could be null if not inside an OSGi framework (e.g. unit test) or if framework is shutting down
+            props = OSGiConfigUtils.getVariablesFromServerXML(configVariables);
+        }
         return props;
     }
 

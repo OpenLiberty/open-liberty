@@ -244,6 +244,10 @@ public class SessionCacheTestServlet extends FATServlet {
     public void testMXBeansEnabled(HttpServletRequest request, HttpServletResponse response) throws Exception {
         MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
 
+        // Useful to see when the provider changes the value that is used for CacheManager
+        ObjectName name = mbs.queryNames(new ObjectName("javax.cache:type=CacheConfiguration,CacheManager=*,Cache=com.ibm.ws.session.meta.default_host%2FsessionCacheApp"), null).iterator().next();
+        System.out.println("Found with name " + name.toString());
+
         // CacheMXBean for session meta info cache
         CacheMXBean metaInfoCacheMXBean = //
                         JMX.newMBeanProxy(mbs,

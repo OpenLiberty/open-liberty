@@ -73,8 +73,10 @@ public class JSPServerHttpUnit extends LoggingTest {
         //      SRVE0315E: An exception occurred: java.lang.Throwable: javax.el.MethodNotFoundException:
         //      No matching public static method named [nonStaticMethod] found on
         //      class [com.ibm.ws.jsp23.fat.testjsp23.beans.EL30StaticFieldsAndMethodsBean]
+        // SRVE8094W and SRVE8115W...Response already committed...
+        //      Caused by testEL30ReservedWords();
         if (SHARED_SERVER.getLibertyServer() != null && SHARED_SERVER.getLibertyServer().isStarted()) {
-            SHARED_SERVER.getLibertyServer().stopServer("SRVE0315E", "SRVE0777E");
+            SHARED_SERVER.getLibertyServer().stopServer("SRVE0315E", "SRVE0777E", "SRVE8094W", "SRVE8115W");
         }
     }
 

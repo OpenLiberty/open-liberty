@@ -19,9 +19,6 @@ import javax.xml.bind.annotation.XmlList;
 
 import org.junit.Test;
 
-/**
- *
- */
 @InheritAnno(value = { "a", "b" })
 public class SubBase {
     @Id
@@ -29,12 +26,15 @@ public class SubBase {
     public String public2 = "SubBase";
     protected String protected1 = "SubBase";
     protected String protected2 = "SubBase";
-    private final String private1 = "SubBase";
+    @SuppressWarnings("unused")
+	private final String private1 = "SubBase";
     String package1 = "SubBase";
     String package2 = "SubBase";
 
     @Test(timeout = 10000)
-    public void publicMethod() {}
+    public void publicMethod() {
+        // EMPTY
+    }
 
     public Number publicMethod(int n) {
         return null;
@@ -49,9 +49,11 @@ public class SubBase {
     }
 
     protected void annoMethod(int a, String b, @XmlList List<?> c, @XmlAttachmentRef long d) {
-
+        // EMPTY
     }
 
-    private void privateMethod() {}
-
+    @SuppressWarnings("unused")
+	private void privateMethod() {
+    	// EMPTY
+    }
 }

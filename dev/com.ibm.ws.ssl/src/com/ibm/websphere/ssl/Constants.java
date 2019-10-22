@@ -68,6 +68,7 @@ public class Constants {
     public static final String SSLPROP_URL_HOSTNAME_VERIFICATION = "com.ibm.ssl.performURLHostNameVerification";
     public static final String SSLPROP_SKIP_DEFAULT_TM_WHEN_CUSTOM_TM_DEFINED = "com.ibm.ssl.skipDefaultTrustManagerWhenCustomDefined";
     public static final String SSLPROP_HOSTNAME_VERIFICATION = "com.ibm.ws.ssl.verifyHostname";
+    public static final String SSLPROP_USE_DEFAULTCERTS = "com.ibm.ws.ssl.trustDefaultCerts";
 
     public static final String SSLPROP_AUTOACCEPT_SERVER_CERT = "com.ibm.ssl.autoaccept.server.certificates";
     public static final String SSLPROP_AUTOSTORE_SERVER_CERT = "com.ibm.ssl.autostore.server.certificates";

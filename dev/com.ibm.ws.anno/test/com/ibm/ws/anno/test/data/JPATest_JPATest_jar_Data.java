@@ -15,7 +15,7 @@ import com.ibm.ws.anno.classsource.specification.ClassSource_Specification_Direc
 import com.ibm.wsspi.anno.classsource.ClassSource_Factory;
 
 public class JPATest_JPATest_jar_Data {
-    public static final String APP_NAME = "JPATest.app_1.0.0.201111251517.eba.unpacked";
+    public static final String APP_NAME = "JPATest.app_1.0.0.201111251517.eba";
     public static final String EBAJAR_NAME = "JPATest_1.0.0.201111251517.jar";
 
     public static ClassSource_Specification_Direct_Bundle createClassSourceSpecification(ClassSource_Factory classSourceFactory,

@@ -1,0 +1,8 @@
+<server description="Server for testing microProfile">
+
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>microProfile-1.2</feature>
+    </featureManager>
+</server>

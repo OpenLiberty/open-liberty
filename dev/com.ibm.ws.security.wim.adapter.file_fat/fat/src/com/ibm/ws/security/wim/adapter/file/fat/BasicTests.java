@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,19 +15,20 @@ import static componenttest.topology.utils.LDAPFatUtils.assertDNsEqual;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.List;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.registry.EntryNotFoundException;
-import com.ibm.ws.security.registry.RegistryException;
 import com.ibm.ws.security.registry.SearchResult;
 import com.ibm.ws.security.registry.test.UserRegistryServletConnection;
 
@@ -43,6 +44,10 @@ public class BasicTests {
     private static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.wim.adapter.file.fat.allURAPIs");
     private static final Class<?> c = BasicTests.class;
     private static UserRegistryServletConnection servlet;
+
+    /** Test rule for testing for expected exceptions. */
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
 
     /**
      * Updates the sample, which is expected to be at the hard-coded path.
@@ -127,17 +132,12 @@ public class BasicTests {
      * This verifies the various required bundles got installed and are working.
      */
     @Test
-    public void checkPasswordWithInvalidUser() {
+    public void checkPasswordWithInvalidUser() throws Exception {
         String user = "admin123";
         String password = "admin";
         Log.info(c, "checkPassword", "Checking good credentials");
-        try {
-            servlet.checkPassword(user, password);
-        } catch (RegistryException e) {
-            // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            e.printStackTrace();
-        }
-        server.waitForStringInLog("CWIML4537E");
+        assertNull("Authentication should fail.", servlet.checkPassword(user, password));
+        assertNotNull("Expected CWIML4537E message.", server.waitForStringInLog("CWIML4537E"));
         assertTrue("An invalid user should cause RegistryException with No principal is found message", true);
     }
 
@@ -221,21 +221,14 @@ public class BasicTests {
      * This verifies the various required bundles got installed and are working.
      */
     @Test
-    public void getUserDisplayNameWithInvalidUser() {
+    public void getUserDisplayNameWithInvalidUser() throws Exception {
         String user = "invalidUser";
         Log.info(c, "getUserDisplayNameWithInvalidUser", "Checking with an invalid user.");
-        try {
-            servlet.getUserDisplayName(user);
-        } catch (EntryNotFoundException e) {
-            String errorMessage = e.getMessage();
-            if (errorMessage.contains("CWIML4001E")) {
-                assertTrue("An invalid user should cause EntryNotFoundException", true);
-            } else {
-                assertTrue("An invalid user should cause EntryNotFoundException error CWIML4001E", false);
-            }
-        } catch (RegistryException e) {
-            assertTrue("An invalid user should cause EntryNotFoundException", false);
-        }
+
+        expectedException.expect(EntryNotFoundException.class);
+        expectedException.expectMessage("CWIML4001E");
+
+        servlet.getUserDisplayName(user);
     }
 
     /**
@@ -255,21 +248,14 @@ public class BasicTests {
      * This verifies the various required bundles got installed and are working.
      */
     @Test
-    public void getUniqueUserIdWithInvalidUser() {
+    public void getUniqueUserIdWithInvalidUser() throws Exception {
         String user = "invalidUser";
         Log.info(c, "getUniqueUserIdWithInvalidUser", "Checking with an invalid user.");
-        try {
-            servlet.getUniqueUserId(user);
-        } catch (EntryNotFoundException e) {
-            String errorMessage = e.getMessage();
-            if (errorMessage.contains("CWIML4001E")) {
-                assertTrue("An invalid user should cause EntryNotFoundException", true);
-            } else {
-                assertTrue("An invalid user should cause EntryNotFoundException error CWIML4001E", false);
-            }
-        } catch (RegistryException e) {
-            assertTrue("An invalid user should cause EntryNotFoundException", false);
-        }
+
+        expectedException.expect(EntryNotFoundException.class);
+        expectedException.expectMessage("CWIML4001E");
+
+        servlet.getUniqueUserId(user);
     }
 
     /**
@@ -290,21 +276,14 @@ public class BasicTests {
      * This verifies the various required bundles got installed and are working.
      */
     @Test
-    public void getUserSecurityNameWithInvalidUser() {
+    public void getUserSecurityNameWithInvalidUser() throws Exception {
         String user = "uid=invalid,o=defaultWIMFileBasedRealm";
         Log.info(c, "getUserSecurityNameWithInvalidUser", "Checking with an invalid user.");
-        try {
-            servlet.getUserSecurityName(user);
-        } catch (EntryNotFoundException e) {
-            String errorMessage = e.getMessage();
-            if (errorMessage.contains("CWIML4001E")) {
-                assertTrue("An invalid user should cause EntryNotFoundException", true);
-            } else {
-                assertTrue("An invalid user should cause EntryNotFoundException error CWIML4001E", false);
-            }
-        } catch (RegistryException e) {
-            assertTrue("An invalid user should cause EntryNotFoundException", false);
-        }
+
+        expectedException.expect(EntryNotFoundException.class);
+        expectedException.expectMessage("CWIML4001E");
+
+        servlet.getUserSecurityName(user);
     }
 
     /**
@@ -312,17 +291,14 @@ public class BasicTests {
      * This verifies the various required bundles got installed and are working.
      */
     @Test
-    public void getUserSecurityNameWithEntityOutOfRealmScope() {
+    public void getUserSecurityNameWithEntityOutOfRealmScope() throws Exception {
         String user = "uid=invalid";
         Log.info(c, "getUserSecurityNameWithEntityOutOfRealmScope", "Checking with an invalid user.");
-        try {
-            servlet.getUserSecurityName(user);
-        } catch (RegistryException e) {
-            fail("An invalid user should cause EntryNotFoundException error CWIML0515E");
-        } catch (EntryNotFoundException e) {
-            String errorMessage = e.getMessage();
-            assertTrue("An invalid user should cause EntryNotFoundException error CWIML0515E", errorMessage.contains("CWIML0515E"));
-        }
+
+        expectedException.expect(EntryNotFoundException.class);
+        expectedException.expectMessage("CWIML0515E");
+
+        servlet.getUserSecurityName(user);
     }
 
     /**
@@ -359,7 +335,6 @@ public class BasicTests {
         String group = "group1";
         Log.info(c, "getGroups", "Checking with a valid pattern and limit of 2.");
         SearchResult result = servlet.getGroups(group, 2);
-        System.out.println("Groups : " + result.getList().toString());
         assertEquals("There should only be one entry", 1, result.getList().size());
     }
 
@@ -405,21 +380,14 @@ public class BasicTests {
      * This verifies the various required bundles got installed and are working.
      */
     @Test
-    public void getGroupDisplayNameWithInvalidGroup() {
+    public void getGroupDisplayNameWithInvalidGroup() throws Exception {
         String group = "cn=invalidgroup,o=defaultWIMFileBasedRealm";
         Log.info(c, "getGroupDisplayNameWithInvalidGroup", "Checking with an invalid group.");
-        try {
-            servlet.getGroupDisplayName(group);
-        } catch (EntryNotFoundException e) {
-            String errorMessage = e.getMessage();
-            if (errorMessage.contains("CWIML4001E")) {
-                assertTrue("An invalid user should cause EntryNotFoundException", true);
-            } else {
-                assertTrue("An invalid user should cause EntryNotFoundException error CWIML4001E", false);
-            }
-        } catch (RegistryException e) {
-            assertTrue("An invalid user should cause EntryNotFoundException", false);
-        }
+
+        expectedException.expect(EntryNotFoundException.class);
+        expectedException.expectMessage("CWIML4001E");
+
+        servlet.getGroupDisplayName(group);
     }
 
     /**
@@ -427,21 +395,14 @@ public class BasicTests {
      * This verifies the various required bundles got installed and are working.
      */
     @Test
-    public void getGroupDisplayNameWithEntityOutOfRealmScope() {
+    public void getGroupDisplayNameWithEntityOutOfRealmScope() throws Exception {
         String group = "cn=invalidgroup";
         Log.info(c, "getGroupDisplayNameWithEntityOutOfRealmScope", "Checking with an invalid group.");
-        try {
-            servlet.getGroupDisplayName(group);
-        } catch (EntryNotFoundException e) {
-            assertTrue("An invalid user should cause RegistryException", false);
-        } catch (RegistryException e) {
-            String errorMessage = e.getMessage();
-            if (errorMessage.contains("CWIML0515E")) {
-                assertTrue("An invalid user should cause RegistryException", true);
-            } else {
-                assertTrue("An invalid user should cause RegistryException error CWIML0515E", false);
-            }
-        }
+
+        expectedException.expect(EntryNotFoundException.class);
+        expectedException.expectMessage("CWIML0515E");
+
+        servlet.getGroupDisplayName(group);
     }
 
     /**
@@ -461,21 +422,14 @@ public class BasicTests {
      * This verifies the various required bundles got installed and are working.
      */
     @Test
-    public void getUniqueGroupIdWithInvalidGroup() {
+    public void getUniqueGroupIdWithInvalidGroup() throws Exception {
         String group = "invalidGroup";
         Log.info(c, "getUniqueGroupIdWithInvalidGroup", "Checking with an invalid group.");
-        try {
-            servlet.getUniqueGroupId(group);
-        } catch (EntryNotFoundException e) {
-            String errorMessage = e.getMessage();
-            if (errorMessage.contains("CWIML4001E")) {
-                assertTrue("An invalid user should cause EntryNotFoundException", true);
-            } else {
-                assertTrue("An invalid user should cause EntryNotFoundException error CWIML4001E", false);
-            }
-        } catch (RegistryException e) {
-            assertTrue("An invalid user should cause EntryNotFoundException", false);
-        }
+
+        expectedException.expect(EntryNotFoundException.class);
+        expectedException.expectMessage("CWIML4001E");
+
+        servlet.getUniqueGroupId(group);
     }
 
     /**
@@ -494,21 +448,14 @@ public class BasicTests {
      * This verifies the various required bundles got installed and are working.
      */
     @Test
-    public void getGroupSecurityNameWithInvalidGroup() {
+    public void getGroupSecurityNameWithInvalidGroup() throws Exception {
         String group = "cn=invalid,o=defaultWIMFileBasedRealm";
         Log.info(c, "getGroupSecurityNameWithInvalidGroup", "Checking with an invalid group.");
-        try {
-            servlet.getGroupSecurityName(group);
-        } catch (EntryNotFoundException e) {
-            String errorMessage = e.getMessage();
-            if (errorMessage.contains("CWIML4001E")) {
-                assertTrue("An invalid user should cause EntryNotFoundException", true);
-            } else {
-                assertTrue("An invalid user should cause EntryNotFoundException error CWIML4001E", false);
-            }
-        } catch (RegistryException e) {
-            assertTrue("An invalid user should cause EntryNotFoundException", false);
-        }
+
+        expectedException.expect(EntryNotFoundException.class);
+        expectedException.expectMessage("CWIML4001E");
+
+        servlet.getGroupSecurityName(group);
     }
 
     /**
@@ -516,21 +463,14 @@ public class BasicTests {
      * This verifies the various required bundles got installed and are working.
      */
     @Test
-    public void getGroupSecurityNameWithInvalidUniqueName() {
+    public void getGroupSecurityNameWithInvalidUniqueName() throws Exception {
         String group = "invalid";
         Log.info(c, "getGroupSecurityNameWithUniqueName", "Checking with an invalid group.");
-        try {
-            servlet.getGroupSecurityName(group);
-        } catch (EntryNotFoundException e) {
-            String errorMessage = e.getMessage();
-            if (errorMessage.contains("CWIML4001E")) {
-                assertTrue("An invalid user should cause EntryNotFoundException", true);
-            } else {
-                assertTrue("An invalid user should cause EntryNotFoundException error CWIML4001E", false);
-            }
-        } catch (RegistryException e) {
-            assertTrue("An invalid user should cause EntryNotFoundException", false);
-        }
+
+        expectedException.expect(EntryNotFoundException.class);
+        expectedException.expectMessage("CWIML4001E");
+
+        servlet.getGroupSecurityName(group);
     }
 
     /**
@@ -538,21 +478,14 @@ public class BasicTests {
      * This verifies the various required bundles got installed and are working.
      */
     @Test
-    public void getGroupSecurityNameWithEntityOutOfRealmScope() {
+    public void getGroupSecurityNameWithEntityOutOfRealmScope() throws Exception {
         String group = "uid=invalid";
         Log.info(c, "getGroupSecurityNameWithUniqueName", "Checking with an invalid group.");
-        try {
-            servlet.getGroupSecurityName(group);
-        } catch (EntryNotFoundException e) {
-            String errorMessage = e.getMessage();
-            if (errorMessage.contains("CWIML0515E")) {
-                assertTrue("An invalid user should cause EntryNotFoundException", true);
-            } else {
-                assertTrue("An invalid user should cause EntryNotFoundException error CWIML0515E", false);
-            }
-        } catch (RegistryException e) {
-            assertTrue("An invalid user should cause EntryNotFoundException", false);
-        }
+
+        expectedException.expect(EntryNotFoundException.class);
+        expectedException.expectMessage("CWIML0515E");
+
+        servlet.getGroupSecurityName(group);
     }
 
     /**
@@ -584,21 +517,14 @@ public class BasicTests {
      * This verifies the various required bundles got installed and are working.
      */
     @Test
-    public void getGroupsForUserWithInvalidUser() {
+    public void getGroupsForUserWithInvalidUser() throws Exception {
         String user = "invalidUser";
         Log.info(c, "getGroupsForUserWithInvalidUser", "Checking with an invalid user.");
-        try {
-            servlet.getGroupsForUser(user);
-        } catch (EntryNotFoundException e) {
-            String errorMessage = e.getMessage();
-            if (errorMessage.contains("CWIML4001E")) {
-                assertTrue("An invalid user should cause EntryNotFoundException", true);
-            } else {
-                assertTrue("An invalid user should cause EntryNotFoundException error CWIML4001E", false);
-            }
-        } catch (RegistryException e) {
-            assertTrue("An invalid user should cause EntryNotFoundException", false);
-        }
+
+        expectedException.expect(EntryNotFoundException.class);
+        expectedException.expectMessage("CWIML4001E");
+
+        servlet.getGroupsForUser(user);
     }
 
     /**
@@ -618,21 +544,14 @@ public class BasicTests {
      * This verifies the various required bundles got installed and are working.
      */
     @Test
-    public void getUniqueGroupIdsWithInvalidUser() {
+    public void getUniqueGroupIdsWithInvalidUser() throws Exception {
         String user = "uid=invalid,o=defaultWIMFileBasedRealm";
         Log.info(c, "getUniqueGroupIdsForUser", "Checking with a valid user.");
-        try {
-            servlet.getGroupsForUser(user);
-        } catch (EntryNotFoundException e) {
-            String errorMessage = e.getMessage();
-            if (errorMessage.contains("CWIML4001E")) {
-                assertTrue("An invalid user should cause EntryNotFoundException", true);
-            } else {
-                assertTrue("An invalid user should cause EntryNotFoundException error CWIML4001E", false);
-            }
-        } catch (RegistryException e) {
-            assertTrue("An invalid user should cause EntryNotFoundException", false);
-        }
+
+        expectedException.expect(EntryNotFoundException.class);
+        expectedException.expectMessage("CWIML4001E");
+
+        servlet.getGroupsForUser(user);
     }
 
     /**
@@ -640,21 +559,14 @@ public class BasicTests {
      * This verifies the various required bundles got installed and are working.
      */
     @Test
-    public void getUniqueGroupIdsWithInvalidUniqueName() {
+    public void getUniqueGroupIdsWithInvalidUniqueName() throws Exception {
         String user = "invalid";
         Log.info(c, "getUniqueGroupIdsForUser", "Checking with a valid user.");
-        try {
-            servlet.getGroupsForUser(user);
-        } catch (EntryNotFoundException e) {
-            String errorMessage = e.getMessage();
-            if (errorMessage.contains("CWIML4001E")) {
-                assertTrue("An invalid user should cause EntryNotFoundException", true);
-            } else {
-                assertTrue("An invalid user should cause EntryNotFoundException error CWIML4001E", false);
-            }
-        } catch (RegistryException e) {
-            assertTrue("An invalid user should cause EntryNotFoundException", false);
-        }
+
+        expectedException.expect(EntryNotFoundException.class);
+        expectedException.expectMessage("CWIML4001E");
+
+        servlet.getGroupsForUser(user);
     }
 
     /**
@@ -662,21 +574,13 @@ public class BasicTests {
      * This verifies the various required bundles got installed and are working.
      */
     @Test
-    public void getUniqueGroupIdsWithEntityOutOfRealmScope() {
+    public void getUniqueGroupIdsWithEntityOutOfRealmScope() throws Exception {
         String user = "uid=invalid";
         Log.info(c, "getUniqueGroupIdsForUser", "Checking with a valid user.");
-        try {
-            servlet.getGroupsForUser(user);
-        } catch (EntryNotFoundException e) {
-            assertTrue("An invalid user should cause RegistryException", false);
-        } catch (RegistryException e) {
-            String errorMessage = e.getMessage();
-            if (errorMessage.contains("CWIML0515E")) {
-                assertTrue("An invalid user should cause RegistryException", true);
-            } else {
-                assertTrue("An invalid user should cause RegistryException error CWIML0515E", false);
-            }
-        }
-    }
 
+        expectedException.expect(EntryNotFoundException.class);
+        expectedException.expectMessage("CWIML0515E");
+
+        servlet.getGroupsForUser(user);
+    }
 }

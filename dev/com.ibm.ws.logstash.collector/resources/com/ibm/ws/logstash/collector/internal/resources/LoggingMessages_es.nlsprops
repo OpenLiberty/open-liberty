@@ -1,0 +1,41 @@
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.logstash.collector/resources/com/ibm/ws/collector/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+
+# Message prefix block: TRAS0100 - TRAS0210
+# New messages starting December 1, 2016 should use message block TRAS4201 - TRAS4300.
+
+LOGSTASH_CONNECTION_FAILED=TRAS0216W: El recopilador logstash no ha podido conectarse al servidor logstash en el host {0} y n\u00famero de puerto {1} especificados. 
+LOGSTASH_CONNECTION_FAILED.explanation=La conexi\u00f3n con el servidor logstash ha fallado porque el servidor logstash no estaba ejecut\u00e1ndose en el host especificado, la informaci\u00f3n de configuraci\u00f3n, como el nombre de host y el n\u00famero de puerto, no es correcta, o bien la entrada lumberjack no est\u00e1 configurada en el servidor logstash.  
+LOGSTASH_CONNECTION_FAILED.useraction=Compruebe la informaci\u00f3n de configuraci\u00f3n e inicie el servidor logstash en el host especificado. Aseg\u00farese de que la entrada lumberjack est\u00e9 correctamente establecida y que el nombre de host y el n\u00famero de puerto especificados en la configuraci\u00f3n del recopilador logstash en el archivo server.xml con la configuraci\u00f3n del servidor logstash correspondiente.
+
+LOGSTASH_CONNECTION_NOT_AVAILABLE=TRAS0217W: El recopilador logstash no ha podido enviar los sucesos al servidor logstash. La conexi\u00f3n con el servidor logstash es necesaria para enviar sucesos.
+LOGSTASH_CONNECTION_NOT_AVAILABLE.explanation=Los sucesos no se han podido enviar porque la conexi\u00f3n con el servidor logstash no est\u00e1 disponible. La conexi\u00f3n podr\u00eda haberse establecido con anterioridad pero en este momento parece desconectada. El sistema lo seguir\u00e1 intentando y se conectar\u00e1 al servidor logstash cuando est\u00e9 disponible.
+LOGSTASH_CONNECTION_NOT_AVAILABLE.useraction=Aseg\u00farese de que el servidor logstash est\u00e9 ejecut\u00e1ndose en el host.
+
+LOGSTASH_CONNECTION_ESTABLISHED=TRAS0218I: El recopilador logstash est\u00e1 conectado al servidor logstash en el host {0} y n\u00famero de puerto {1} especificados.
+LOGSTASH_CONNECTION_ESTABLISHED.explanation=El recopilador logstash est\u00e1 conectado correctamente al servidor logstash.
+LOGSTASH_CONNECTION_ESTABLISHED.useraction=No se requiere ninguna acci\u00f3n.
+
+LOGSTASH_CONNECTION_CLOSED=TRAS0219I: El recopilador logstash se ha desconectado del servidor logstash.
+LOGSTASH_CONNECTION_CLOSED.explanation=El recopilador logstash cierra y restablece la conexi\u00f3n con el servidor logstash cuando se actualiza la configuraci\u00f3n del recopilador logstash, incluyendo todos los cambios en el repertorio SSL y la configuraci\u00f3n del almac\u00e9n de claves. 
+LOGSTASH_CONNECTION_CLOSED.useraction=No se requiere ninguna acci\u00f3n.
+
+LOGSTASH_SOURCE_UNKNOWN=TRAS4201W: El recopilador logstash no reconoce la fuente {0} especificada.
+LOGSTASH_SOURCE_UNKNOWN.explanation=La fuente especificada no es una de las fuentes predeterminadas que proporciona el entorno de ejecuci\u00f3n Liberty. La fuente puede formar parte de una caracter\u00edstica de Liberty que no se ha a\u00f1adido a la configuraci\u00f3n del servidor.
+LOGSTASH_SOURCE_UNKNOWN.useraction=Compruebe la informaci\u00f3n de configuraci\u00f3n. Aseg\u00farese de haber especificado una de las fuentes admitidas para el recopilador.
+

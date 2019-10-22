@@ -1,0 +1,93 @@
+/*******************************************************************************
+ * Copyright (c) 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+repositories {
+
+}
+
+configurations {
+  //Transitive dependancies that aren't required. Excluding isn't necessary with Artifactory,
+  //but would be beneficial with a mavenCentral cache.
+  infinispanClient {
+      exclude group: 'com.google.code.gson',             module: 'gson'
+      exclude group: 'org.infinispan',                   module: 'infinispan-core'
+      exclude group: 'org.jboss.spec.javax.transaction', module: 'jboss-transaction-api_1.2_spec'
+      exclude group: 'org.jgroups',                      module: 'jgroups'
+      exclude group: 'io.netty',                         module: 'netty-transport-native-epoll'
+      exclude group: 'io.netty',                         module: 'netty-transport-native-unix-common'
+      exclude group: 'com.google.protobuf',              module: 'protobuf-java'
+      exclude group: 'com.squareup',                     module: 'protoparser'
+      exclude group: 'org.infinispan.protostream',       module: 'protostream'
+      exclude group: 'org.reactivestreams',              module: 'reactive-streams'
+      exclude group: 'io.reactivex.rxjava2',             module: 'rxjava'
+      exclude group: 'org.wildfly.common',               module: 'wildfly-common'
+      exclude group: 'org.wildfly.security',             module: 'wildfly-elytron-asn1'
+      exclude group: 'org.wildfly.security',             module: 'wildfly-elytron-auth'
+      exclude group: 'org.wildfly.security',             module: 'wildfly-elytron-auth-server'
+      exclude group: 'org.wildfly.security',             module: 'wildfly-elytron-credential'
+      exclude group: 'org.wildfly.security',             module: 'wildfly-elytron-http'
+      exclude group: 'org.wildfly.security',             module: 'wildfly-elytron-keystore'
+      exclude group: 'org.wildfly.security',             module: 'wildfly-elytron-mechanism'
+      exclude group: 'org.wildfly.security',             module: 'wildfly-elytron-mechanism-digest'
+      exclude group: 'org.wildfly.security',             module: 'wildfly-elytron-mechanism-oauth2'
+      exclude group: 'org.wildfly.security',             module: 'wildfly-elytron-mechanism-scram'
+      exclude group: 'org.wildfly.security',             module: 'wildfly-elytron-permission'
+      exclude group: 'org.wildfly.security',             module: 'wildfly-elytron-provider-util'
+      exclude group: 'org.wildfly.security',             module: 'wildfly-elytron-sasl-digest'
+      exclude group: 'org.wildfly.security',             module: 'wildfly-elytron-sasl-external'
+      exclude group: 'org.wildfly.security',             module: 'wildfly-elytron-sasl-oauth2'
+      exclude group: 'org.wildfly.security',             module: 'wildfly-elytron-sasl-plain'
+      exclude group: 'org.wildfly.security',             module: 'wildfly-elytron-sasl-scram'
+      exclude group: 'org.wildfly.security',             module: 'wildfly-elytron-ssl'
+      exclude group: 'org.wildfly.security',             module: 'wildfly-elytron-util'
+      exclude group: 'org.wildfly.security',             module: 'wildfly-elytron-x500'
+  }
+
+}
+
+// Define G:A:V coordinates of each dependency
+dependencies {
+    requiredLibs 'org.testcontainers:testcontainers:1.12.0',
+                 'org.apache.commons:commons-compress:1.19',
+                 'org.rnorth.duct-tape:duct-tape:1.0.7',
+                 'org.rnorth.visible-assertions:visible-assertions:2.1.2',
+                 'org.rnorth:tcp-unix-socket-proxy:1.0.2',
+                 'net.java.dev.jna:jna:5.2.0',
+                 'org.slf4j:slf4j-api:1.7.7',
+                 'org.slf4j:slf4j-jdk14:1.7.7'
+             
+infinispanClient 'com.github.ben-manes.caffeine:caffeine:2.8.0',
+                 'org.infinispan:infinispan-client-hotrod:10.0.0.CR1',
+                 'org.infinispan:infinispan-commons:10.0.0.CR1',
+                 'org.infinispan:infinispan-jboss-marshalling:10.0.0.CR1',
+                 'org.infinispan:infinispan-jcache-commons:10.0.0.CR1',
+                 'org.infinispan:infinispan-jcache-remote:10.0.0.CR1',
+                 'org.jboss.logging:jboss-logging:3.4.0.Final',		 
+                 'org.jboss.marshalling:jboss-marshalling-osgi:2.0.9.Final',
+                 'io.netty:netty-buffer:4.1.41.Final',
+                 'io.netty:netty-codec:4.1.41.Final',
+                 'io.netty:netty-common:4.1.41.Final',
+                 'io.netty:netty-handler:4.1.41.Final',
+                 'io.netty:netty-resolver:4.1.41.Final',
+                 'io.netty:netty-transport:4.1.41.Final',
+                 'org.wildfly.security:wildfly-elytron-base:1.10.0.CR4',
+                 'org.wildfly.security:wildfly-elytron-sasl:1.10.0.CR4'
+}
+
+task addInfinispanClientLibs(type: Copy) {
+  from configurations.infinispanClient
+  into new File(autoFvtDir, 'publish/shared/resources/infinispan')
+}
+
+addRequiredLibraries {
+  dependsOn addDerby
+  dependsOn addInfinispanClientLibs
+}

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app id="PrivateOpenAPIUI" version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+  <display-name>PrivateOpenAPIUI</display-name>
+  <description>Private OpenAPI User Interface</description>
+
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+  </welcome-file-list>
+
+  <!-- SERVLET SECURITY CONFIGURATION -->
+  <!-- Everything in the PrivateOpenAPIUI should be protected. -->
+  <security-constraint id="SecurityConstraints_PrivateOpenAPIUI">
+    <display-name>PrivateOpenAPIUI Security Constraint</display-name>
+    <web-resource-collection id="WebResourceCollection_PrivateOpenAPIUI">
+      <web-resource-name>PrivateOpenAPIUI URL</web-resource-name>
+      <url-pattern>/*</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>allAuthenticatedUsers</role-name>
+      <role-name>Administrator</role-name>
+    </auth-constraint>
+    <user-data-constraint id="UserDataConstraint_PrivateOpenAPIUI">
+      <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+    </user-data-constraint>
+  </security-constraint>
+
+  <security-constraint id="SecurityConstraints_PrivateOpenAPIUI_MethodOmitted">
+    <display-name>PrivateOpenAPIUI Security Constraint</display-name>
+    <web-resource-collection id="WebResourceCollection_PrivateOpenAPIUI_MethodOmitted">
+      <web-resource-name>PrivateOpenAPIUI URL</web-resource-name>
+      <url-pattern>/*</url-pattern>
+      <http-method>OPTIONS</http-method>
+    </web-resource-collection>
+    <user-data-constraint id="UserDataConstraint_PrivateOpenAPIUI_MethodOmitted">
+      <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+    </user-data-constraint>
+  </security-constraint>
+
+  <security-role id="allAuthenticatedUsers">
+    <description>All Authenticated Users</description>
+    <role-name>allAuthenticatedUsers</role-name>
+  </security-role>
+
+  <security-role id="Administrator">
+    <description>Administrator role</description>
+    <role-name>Administrator</role-name>
+  </security-role>
+
+  <login-config id="LoginConfig_all">
+    <auth-method>BASIC</auth-method>
+    <realm-name>PrivateOpenAPIUI</realm-name>
+  </login-config>
+  
+</web-app>

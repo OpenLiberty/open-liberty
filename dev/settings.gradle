@@ -114,10 +114,18 @@ pluginManagement {
               password gradle.userProps.getProperty("artifactory.download.token")
           }
           url ("https://" + gradle.userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-open-liberty")
+          metadataSources {
+            mavenPom()
+            artifact()
+          }
       }
     } else {
       maven {
         url "https://plugins.gradle.org/m2/"
+        metadataSources {
+          mavenPom()
+          artifact() 
+        }
       }
     }
   }

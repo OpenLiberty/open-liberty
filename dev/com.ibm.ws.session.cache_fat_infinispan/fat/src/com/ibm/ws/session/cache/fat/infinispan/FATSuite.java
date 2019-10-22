@@ -27,12 +27,11 @@ import componenttest.topology.utils.HttpUtils;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                // TODO enable tests as we get them converted over to infinispan
                 SessionCacheOneServerTest.class,
                 SessionCacheTwoServerTest.class,
                 SessionCacheTimeoutTest.class,
-                SessionCacheTwoServerTimeoutTest.class,
-                //HazelcastClientTest.class
+                SessionCacheTwoServerTimeoutTest.class
+                // A separate test suite covers Infinispan client/server scenarios
 })
 
 public class FATSuite {
@@ -68,7 +67,7 @@ public class FATSuite {
     }
 
     /**
-     * Checks if multicast should be disabled in Hazelcast. We want to disable multicase on z/OS,
+     * Checks if multicast should be disabled in Hazelcast. We want to disable multicast on z/OS,
      * and when the environment variable disable_multicast_in_fats=true.
      *
      * If you are seeing a lot of NPE errors while running this FAT bucket you might need to set

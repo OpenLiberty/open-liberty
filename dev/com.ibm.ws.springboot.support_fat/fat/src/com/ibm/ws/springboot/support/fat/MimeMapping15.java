@@ -16,6 +16,9 @@ import java.util.Set;
 
 import org.junit.AfterClass;
 
+import componenttest.annotation.MaximumJavaLevel;
+
+@MaximumJavaLevel(javaLevel = 8)
 public class MimeMapping15 extends MimeMappingBaseTest {
 
     @AfterClass

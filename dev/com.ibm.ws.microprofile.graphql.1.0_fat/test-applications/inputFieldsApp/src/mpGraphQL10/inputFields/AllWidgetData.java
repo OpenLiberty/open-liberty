@@ -14,30 +14,30 @@ import java.util.List;
 
 public class AllWidgetData {
 
-    private List<Widget> allWidgets;
-    private Widget createdWidget;
+    private List<WidgetClientObject> allWidgets;
+    private WidgetClientObject createdWidget;
 
-    public List<Widget> getAllWidgets() {
+    public List<WidgetClientObject> getAllWidgets() {
         return allWidgets;
     }
 
-    public void setAllWidgets(List<Widget> allWidgets) {
+    public void setAllWidgets(List<WidgetClientObject> allWidgets) {
         this.allWidgets = allWidgets;
     }
     
-    public Widget getCreateWidget() {
+    public WidgetClientObject getCreateWidget() {
         return createdWidget;
     }
     
-    public void setCreateWidget(Widget widget) {
+    public void setCreateWidget(WidgetClientObject widget) {
         createdWidget = widget;
     }
 
-    public Widget getCreateWidgetByHand() {
+    public WidgetClientObject getCreateWidgetByHand() {
         return createdWidget;
     }
     
-    public void setCreateWidgetByHand(Widget widget) {
+    public void setCreateWidgetByHand(WidgetClientObject widget) {
         createdWidget = widget;
     }
 }

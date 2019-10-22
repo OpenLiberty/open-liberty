@@ -11,4 +11,8 @@ public interface InterfaceMappingStrategy {
     boolean supports(AnnotatedType interfase);
 
     Collection<AnnotatedType> getInterfaces(AnnotatedType type);
+    
+    default String interfaceName(String typeName, AnnotatedType type) {
+        return typeName;
+    }
 }

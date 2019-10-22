@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,28 @@ import com.ibm.websphere.ras.annotation.Trivial;
 @Trivial
 public class PartitionRecord {
     /**
+     * Queryable bits that are stored in the States field
+     */
+    @Trivial
+    public enum States {
+        /**
+         * Indicates that the instance performs polling of the persistent store on a periodic basis.
+         */
+        POLLS_PERIODICALLY((short) 0x1),
+
+        /**
+         * Indicates that the instance is configured with a positive value for missedTaskThreshold.
+         */
+        MISSED_TASK_THRESHOLD_ENABLED((short) 0x2);
+
+        public final short bit;
+
+        private States(short bit) {
+            this.bit = bit;
+        }
+    }
+
+    /**
      * End of line character.
      */
     private static final String EOLN = String.format("%n");
@@ -25,12 +47,13 @@ public class PartitionRecord {
     /**
      * Bits corresponding to each specified attribute.
      */
-    private static final int
-                    ID = 0x1,
+    private static final int ID = 0x1,
                     EXECUTOR = 0x2,
                     HOSTNAME = 0x4,
                     LSERVER = 0x8,
-                    USERDIR = 0x10;
+                    USERDIR = 0x10,
+                    EXPIRY = 0x20,
+                    STATES = 0x40;
 
     /**
      * Bits indicating which attributes are set.
@@ -41,6 +64,11 @@ public class PartitionRecord {
      * Id, JNDI name, or config.displayId of the persistent executor.
      */
     private String executor;
+
+    /**
+     * Expiry timestamp for the partition entry.
+     */
+    private long expiry;
 
     /**
      * Host name.
@@ -58,13 +86,18 @@ public class PartitionRecord {
     private String libertyServer;
 
     /**
+     * Bits that represent configured state.
+     */
+    private long states;
+
+    /**
      * Value of ${wlp.user.dir}
      */
     private String userDir;
 
     /**
      * Construct an empty partition record.
-     * 
+     *
      * @param allAttributesAreSpecified indicates whether all attributes should be considered specified or unspecified.
      */
     public PartitionRecord(boolean allAttributesAreSpecified) {
@@ -74,7 +107,7 @@ public class PartitionRecord {
     /**
      * Deep comparison of attributes for equality. Only specified attributes are compared.
      * Both instances must specify the same sets of attributes.
-     * 
+     *
      * @param obj instance with which to compare.
      * @return true if equal, otherwise false.
      */
@@ -89,14 +122,16 @@ public class PartitionRecord {
                    && ((attrs & EXECUTOR) == 0 || match(executor, other.executor))
                    && ((attrs & HOSTNAME) == 0 || match(hostName, other.hostName))
                    && ((attrs & LSERVER) == 0 || match(libertyServer, other.libertyServer))
-                   && ((attrs & USERDIR) == 0 || match(userDir, other.userDir));
+                   && ((attrs & USERDIR) == 0 || match(userDir, other.userDir))
+                   && ((attrs & EXPIRY) == 0 || expiry == other.expiry)
+                   && ((attrs & STATES) == 0 || states == other.states);
         }
         return false;
     }
 
     /**
      * Returns the name (Id, JNDI name, or config.displayId) of the persistent executor.
-     * 
+     *
      * @return the name (Id, JNDI name, or config.displayId) of the persistent executor.
      */
     public String getExecutor() {
@@ -107,8 +142,20 @@ public class PartitionRecord {
     }
 
     /**
+     * Returns the expiry timestamp for the partition entry.
+     *
+     * @return the expiry timestamp for the partition entry.
+     */
+    public long getExpiry() {
+        if ((attrs & EXPIRY) == 0)
+            throw new IllegalStateException();
+        else
+            return expiry;
+    }
+
+    /**
      * Returns the host name.
-     * 
+     *
      * @return the host name.
      */
     public String getHostName() {
@@ -120,7 +167,7 @@ public class PartitionRecord {
 
     /**
      * Returns the unique identifier for the partition.
-     * 
+     *
      * @return the unique identifier for the partition.
      */
     public final long getId() {
@@ -132,7 +179,7 @@ public class PartitionRecord {
 
     /**
      * Returns the Liberty server name.
-     * 
+     *
      * @return the Liberty server name.
      */
     public String getLibertyServer() {
@@ -143,8 +190,20 @@ public class PartitionRecord {
     }
 
     /**
+     * Returns bits that represent the configured state of the executor.
+     *
+     * @return bits that represent the configured state of the executor.
+     */
+    public long getStates() {
+        if ((attrs & STATES) == 0)
+            throw new IllegalStateException();
+        else
+            return states;
+    }
+
+    /**
      * Returns the value of ${wlp.user.dir}.
-     * 
+     *
      * @return the value of ${wlp.user.dir}.
      */
     public String getUserDir() {
@@ -156,7 +215,7 @@ public class PartitionRecord {
 
     /**
      * Hash code for the partition record is computed from the id.
-     * 
+     *
      * @return the hash code.
      */
     @Override
@@ -166,7 +225,7 @@ public class PartitionRecord {
 
     /**
      * Returns true if the Executor attribute is set. Otherwise false.
-     * 
+     *
      * @return true if the attribute is set. Otherwise false.
      */
     public final boolean hasExecutor() {
@@ -174,8 +233,17 @@ public class PartitionRecord {
     }
 
     /**
+     * Returns true if the Expiry attribute is set. Otherwise false.
+     *
+     * @return true if the attribute is set. Otherwise false.
+     */
+    public final boolean hasExpiry() {
+        return (attrs & EXPIRY) != 0;
+    }
+
+    /**
      * Returns true if the Host attribute is set. Otherwise false.
-     * 
+     *
      * @return true if the attribute is set. Otherwise false.
      */
     public final boolean hasHostName() {
@@ -184,7 +252,7 @@ public class PartitionRecord {
 
     /**
      * Returns true if the Id attribute is set. Otherwise false.
-     * 
+     *
      * @return true if the attribute is set. Otherwise false.
      */
     public final boolean hasId() {
@@ -193,7 +261,7 @@ public class PartitionRecord {
 
     /**
      * Returns true if the Server attribute is set. Otherwise false.
-     * 
+     *
      * @return true if the attribute is set. Otherwise false.
      */
     public final boolean hasLibertyServer() {
@@ -201,8 +269,17 @@ public class PartitionRecord {
     }
 
     /**
+     * Returns true if the States attribute is set. Otherwise false.
+     *
+     * @return true if the attribute is set. Otherwise false.
+     */
+    public final boolean hasStates() {
+        return (attrs & STATES) != 0;
+    }
+
+    /**
      * Returns true if the UserDir attribute is set. Otherwise false.
-     * 
+     *
      * @return true if the attribute is set. Otherwise false.
      */
     public final boolean hasUserDir() {
@@ -211,7 +288,7 @@ public class PartitionRecord {
 
     /**
      * Utility method to compare for equality.
-     * 
+     *
      * @param obj1 first object.
      * @param obj2 second object.
      * @return true if equal or both null. False otherwise.
@@ -222,7 +299,7 @@ public class PartitionRecord {
 
     /**
      * Sets the name (Id, JNDI name, or config.displayId) of the persistent executor.
-     * 
+     *
      * @param executor the name of the persistent executor.
      */
     public final void setExecutor(String executor) {
@@ -231,8 +308,18 @@ public class PartitionRecord {
     }
 
     /**
+     * Sets the expiry timestamp for the partition entry.
+     *
+     * @param expiry the expiry timestamp for the partition entry.
+     */
+    public final void setExpiry(long expiry) {
+        this.expiry = expiry;
+        attrs |= EXPIRY;
+    }
+
+    /**
      * Sets the host name.
-     * 
+     *
      * @param host the host name.
      */
     public final void setHostName(String host) {
@@ -242,7 +329,7 @@ public class PartitionRecord {
 
     /**
      * Sets the unique identifier for the partition.
-     * 
+     *
      * @param id unique identifier for the partition.
      */
     public final void setId(long id) {
@@ -252,7 +339,7 @@ public class PartitionRecord {
 
     /**
      * Sets the server name.
-     * 
+     *
      * @param server the server name.
      */
     public final void setLibertyServer(String server) {
@@ -261,8 +348,18 @@ public class PartitionRecord {
     }
 
     /**
+     * Sets the bits that represent configured state.
+     *
+     * @param expiry the expiry timestamp for the partition entry.
+     */
+    public final void setStates(long states) {
+        this.states = states;
+        attrs |= STATES;
+    }
+
+    /**
      * Sets the value obtained from ${wlp.user.dir}.
-     * 
+     *
      * @param userDir value obtained from ${wlp.user.dir}.
      */
     public final void setUserDir(String userDir) {
@@ -272,7 +369,7 @@ public class PartitionRecord {
 
     /**
      * Returns a textual representation of this instance.
-     * 
+     *
      * @return a textual representation of this instance.
      */
     @Override
@@ -289,6 +386,10 @@ public class PartitionRecord {
             output.append(EOLN).append("LSERVER=").append(libertyServer);
         if ((attrs & USERDIR) != 0)
             output.append(EOLN).append("USERDIR=").append(userDir);
+        if ((attrs & EXPIRY) != 0)
+            output.append(EOLN).append("EXPIRY=").append(expiry);
+        if ((attrs & STATES) != 0)
+            output.append(EOLN).append("STATES=").append(states);
 
         return output.toString();
     }
@@ -298,6 +399,13 @@ public class PartitionRecord {
      */
     public final void unsetExecutor() {
         attrs &= ~EXECUTOR;
+    }
+
+    /**
+     * Unsets the Expiry attribute.
+     */
+    public final void unsetExpiry() {
+        attrs &= ~EXPIRY;
     }
 
     /**
@@ -319,6 +427,13 @@ public class PartitionRecord {
      */
     public final void unsetLibertyServer() {
         attrs &= ~LSERVER;
+    }
+
+    /**
+     * Unsets the States attribute.
+     */
+    public final void unsetStates() {
+        attrs &= ~STATES;
     }
 
     /**

@@ -53,7 +53,13 @@ public class GraphQLServletContainerInitializer implements ServletContainerIniti
     @Override
     public void onStartup(Set<Class<?>> classes, ServletContext sc) throws ServletException {
         BeanManager beanManager = cdiService.getCurrentBeanManager();
-        GraphQLSchema schema = GraphQLExtension.createSchema(beanManager);
+        GraphQLSchema schema = null;
+        
+        try {
+            schema = GraphQLExtension.createSchema(beanManager);
+        } catch (Throwable t) {
+            throw new ServletException(t);
+        }
 
         if (schema != null) {
 

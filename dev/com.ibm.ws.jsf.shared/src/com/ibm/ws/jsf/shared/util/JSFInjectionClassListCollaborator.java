@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import java.util.logging.Logger;
 import org.osgi.service.component.ComponentContext;
 
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
 import com.ibm.ws.container.service.annotations.WebAnnotations;
 import com.ibm.ws.javaee.dd.common.ParamValue;
 import com.ibm.ws.javaee.dd.jsf.FacesConfigManagedBean;
@@ -36,119 +37,125 @@ import com.ibm.wsspi.webcontainer.collaborator.WebAppInjectionClassListCollabora
  * and pass into the InjectionEngine.
  */
 public class JSFInjectionClassListCollaborator implements WebAppInjectionClassListCollaborator {
-
     protected static final Logger log = Logger.getLogger("com.ibm.ws.jsf");
+
     private static final String CLASS_NAME = JSFInjectionClassListCollaborator.class.getName();
 
+    //
+
     public static final String FACES_CONFIG_NAMES = "javax.faces.CONFIG_FILES";
-    
-    
+
     // List of interfaces in JSF 2.2 for which implementors require support for CDI 1.2
-    private final String[] _InjectionInterfaces = new String[]{"javax.faces.event.ActionListener",
-                                                               "javax.faces.event.SystemEventListener",
-                                                               "javax.faces.event.PhaseListener"};
+    private final String[] _InjectionInterfaces = new String[] {
+        "javax.faces.event.ActionListener",
+        "javax.faces.event.SystemEventListener",
+        "javax.faces.event.PhaseListener" };
+
     // List of abstract classes in JSF 2.2 for which extenders require support for CDI 1.2    
-    private final String[] _InjectionSubClasses = new String[]{"javax.el.ELResolver",
-                                                               "javax.faces.application.ApplicationFactory",
-                                                               "javax.faces.application.NavigationHandler",
-                                                               "javax.faces.application.ResourceHandler",
-                                                               "javax.faces.application.StateManager",
-                                                               "javax.faces.component.visit.VisitContextFactory",
-                                                               "javax.faces.context.ExceptionHandlerFactory",
-                                                               "javax.faces.context.ExternalContextFactory",
-                                                               "javax.faces.context.FacesContextFactory",
-                                                               "javax.faces.context.PartialViewContextFactory",
-                                                               "javax.faces.lifecycle.ClientWindowFactory",
-                                                               "javax.faces.lifecycle.LifecycleFactory",
-                                                               "javax.faces.render.RenderKitFactory",
-                                                               // In JSF 2.2 spec but not in API jar:
-                                                               //"javax.faces.view.ViewDeclarationFactory",
-                                                               // assuming javax.faces.view.ViewDeclarationLanguageFactory instead
-                                                               "javax.faces.view.ViewDeclarationLanguageFactory",
-                                                               "javax.faces.view.facelets.FaceletCacheFactory",
-                                                               // In JSF 2.2 spec but not in API jar:
-                                                               // "javax.faces.view.facelets.FaceletFactory"
-                                                               // so ignored.
-                                                               "javax.faces.view.facelets.TagHandlerDelegateFactory"                                                              
-                                                               };
+    private final String[] _InjectionSubClasses = new String[] {
+        "javax.el.ELResolver",
+        "javax.faces.application.ApplicationFactory",
+        "javax.faces.application.NavigationHandler",
+        "javax.faces.application.ResourceHandler",
+        "javax.faces.application.StateManager",
+        "javax.faces.component.visit.VisitContextFactory",
+        "javax.faces.context.ExceptionHandlerFactory",
+        "javax.faces.context.ExternalContextFactory",
+        "javax.faces.context.FacesContextFactory",
+        "javax.faces.context.PartialViewContextFactory",
+        "javax.faces.lifecycle.ClientWindowFactory",
+        "javax.faces.lifecycle.LifecycleFactory",
+        "javax.faces.render.RenderKitFactory",
+        // In JSF 2.2 spec but not in API jar:
+        //"javax.faces.view.ViewDeclarationFactory",
+        // assuming javax.faces.view.ViewDeclarationLanguageFactory instead
+        "javax.faces.view.ViewDeclarationLanguageFactory",
+        "javax.faces.view.facelets.FaceletCacheFactory",
+        // In JSF 2.2 spec but not in API jar:
+        // "javax.faces.view.facelets.FaceletFactory"
+        // so ignored.
+        "javax.faces.view.facelets.TagHandlerDelegateFactory"                                                              
+    };
 
-    public void activate(ComponentContext compcontext) {}
+    //
 
-    public void deactivate(ComponentContext compcontext) {}
+    public void activate(ComponentContext compcontext) {
+    	// EMPTY
+    }
+
+    public void deactivate(ComponentContext compcontext) {
+    	// EMPTY
+    }
+
+    //
 
     @Override
     public List<String> getInjectionClasses(Container moduleContainer) {
-        ArrayList<String> classList = new ArrayList<String>();
+    	String methodName = "getInjectionClasses";
+
+        List<String> injectionClassNames = new ArrayList<String>();
 
         // First try and find all classes with @javax.faces.bean.ManagedBean
         try {
-            WebAnnotations webAnnotations = moduleContainer.adapt(WebAnnotations.class);
-            AnnotationTargets_Targets annotationTargets = webAnnotations.getAnnotationTargets();
+            WebAnnotations webAnno = AnnotationsBetaHelper.getWebAnnotations(moduleContainer);
+            AnnotationTargets_Targets annoTargets = webAnno.getAnnotationTargets();
 
-            // d95160: Updated to the new 'get' API, and changed to make the SEED parameter explicit.
-            //         The selection parameter is unchanged: These are not the case of ManagedBean annotations
-            //         that are the target of this update.
-            
             // javax.faces.bean.ManagedBean is inherited: use the 'all' version of the selector.
-            Set<String> managedBeanClassNames = annotationTargets.getAllInheritedAnnotatedClasses("javax.faces.bean.ManagedBean",
-                                                                                                  AnnotationTargets_Targets.POLICY_SEED);
-            
+            Set<String> managedBeanClassNames = annoTargets.getAllInheritedAnnotatedClasses("javax.faces.bean.ManagedBean");
+
             if (TraceComponent.isAnyTracingEnabled() && log.isLoggable(Level.FINE)) {
                 Iterator<String> mbcI = managedBeanClassNames.iterator();
                 while (mbcI.hasNext()) {
-                    log.logp(Level.FINE, CLASS_NAME, "getInjectionClasses", "MangagedBean :" + mbcI.next());
+                    log.logp(Level.FINE, CLASS_NAME, methodName, "MangagedBean :" + mbcI.next());
                 }
-            }    
+            }
 
-            classList.addAll(managedBeanClassNames);
-            
+            injectionClassNames.addAll(managedBeanClassNames);
+
             // Look for objects which implement JSF 2.2 interfaces which must support CDI 1.2              
-            for (String injectionInterface : this._InjectionInterfaces) {
-                
-                managedBeanClassNames = annotationTargets.getAllImplementorsOf(injectionInterface);
-                
-                Iterator<String> mbcI = managedBeanClassNames.iterator();
-                while (mbcI.hasNext()) {
-                    String mbcn = mbcI.next();
-                    if (TraceComponent.isAnyTracingEnabled() && log.isLoggable(Level.FINE)) {
-                        log.logp(Level.FINE, CLASS_NAME, "getInjectionClasses", "Found implementor of " + injectionInterface + " : " + mbcn);
-                    }   
-                    // Only add if not previously found
-                    if (!classList.contains(mbcn)) {
-                        classList.add(mbcn);
-                        if (TraceComponent.isAnyTracingEnabled() && log.isLoggable(Level.FINE)) {
-                            log.logp(Level.FINE, CLASS_NAME, "getInjectionClasses", "Add implementor :" + mbcn);
-                        }    
-                    }    
-                }                
-            }
-            
-            
-            // Look for objects which extend JSF 2.2 abstract classes which must support CDI 1.2  
-            for (String injectionSubClass : this._InjectionSubClasses) {
+            for (String injectionInterface : _InjectionInterfaces) {
+                managedBeanClassNames = annoTargets.getAllImplementorsOf(injectionInterface);
 
-                managedBeanClassNames = annotationTargets.getSubclassNames(injectionSubClass);
-                
                 Iterator<String> mbcI = managedBeanClassNames.iterator();
-                
                 while (mbcI.hasNext()) {
                     String mbcn = mbcI.next();
                     if (TraceComponent.isAnyTracingEnabled() && log.isLoggable(Level.FINE)) {
-                        log.logp(Level.FINE, CLASS_NAME, "getInjectionClasses", "Found extender of " + injectionSubClass + " : " + mbcn);
-                    }    
-                    // Only add if not previously found and it not just a wrapper class of the api.
-                    if (!classList.contains(mbcn)  && !mbcn.equals(injectionSubClass+"Wrapper")) {
-                        classList.add(mbcn);
+                        log.logp(Level.FINE, CLASS_NAME, methodName, "Found implementor of " + injectionInterface + " : " + mbcn);
+                    }
+                    // Only add if not previously found
+                    if (!injectionClassNames.contains(mbcn)) {
+                        injectionClassNames.add(mbcn);
                         if (TraceComponent.isAnyTracingEnabled() && log.isLoggable(Level.FINE)) {
-                            log.logp(Level.FINE, CLASS_NAME, "getInjectionClasses", "Add sub class :" + mbcn);
+                            log.logp(Level.FINE, CLASS_NAME, methodName, "Add implementor :" + mbcn);
                         }
-                    }    
-                }                
+                    }
+                }
             }
-                       
+
+            // Look for objects which extend JSF 2.2 abstract classes which must support CDI 1.2  
+            for (String injectionSubClass : _InjectionSubClasses) {
+                managedBeanClassNames = annoTargets.getSubclassNames(injectionSubClass);
+
+                Iterator<String> mbcI = managedBeanClassNames.iterator();
+
+                while (mbcI.hasNext()) {
+                    String mbcn = mbcI.next();
+                    if (TraceComponent.isAnyTracingEnabled() && log.isLoggable(Level.FINE)) {
+                        log.logp(Level.FINE, CLASS_NAME, methodName, "Found extender of " + injectionSubClass + " : " + mbcn);
+                    }
+                    // Only add if not previously found and it not just a wrapper class of the api.
+                    if (!injectionClassNames.contains(mbcn)  && !mbcn.equals(injectionSubClass+"Wrapper")) {
+                        injectionClassNames.add(mbcn);
+                        if (TraceComponent.isAnyTracingEnabled() && log.isLoggable(Level.FINE)) {
+                            log.logp(Level.FINE, CLASS_NAME, methodName, "Add sub class :" + mbcn);
+                        }
+                    }
+                }
+            }
+
         } catch (UnableToAdaptException e) {
             if (log.isLoggable(Level.FINE)) {
-                log.logp(Level.FINE, CLASS_NAME, "getInjectionClasses", "failed to adapt to InfoStore for class annotations", e);
+                log.logp(Level.FINE, CLASS_NAME, methodName, "failed to adapt to InfoStore for class annotations", e);
             }
         }
 
@@ -156,29 +163,35 @@ public class JSFInjectionClassListCollaborator implements WebAppInjectionClassLi
             //Adapt the default faces-config.xml
             com.ibm.ws.javaee.dd.jsf.FacesConfig facesConfig = moduleContainer.adapt(com.ibm.ws.javaee.dd.jsf.FacesConfig.class);
             if (TraceComponent.isAnyTracingEnabled() && log.isLoggable(Level.FINE)) {
-                log.logp(Level.FINE, CLASS_NAME, "getInjectionClasses", "Add managed objects from WEB-INF/faces-config.xml");
-            }            
-            addConfigFileManagedObjects(facesConfig,classList);
-            
+                log.logp(Level.FINE, CLASS_NAME, methodName, "Add managed objects from WEB-INF/faces-config.xml");
+            }
+            addConfigFileManagedObjects(facesConfig,injectionClassNames);
+
         } catch (UnableToAdaptException e) {
             if (log.isLoggable(Level.FINE)) {
-                log.logp(Level.FINE, CLASS_NAME, "getInjectionClasses", "failed to adapt to default faces-config in Container", e);
+                log.logp(Level.FINE, CLASS_NAME, methodName, "failed to adapt to default faces-config in Container", e);
             }
         }
 
         if (TraceComponent.isAnyTracingEnabled() && log.isLoggable(Level.FINE)) {
-            log.logp(Level.FINE, CLASS_NAME, "getInjectionClasses", "Add managed objects from META-INF/faces-config.xml");
-        }            
-        addConfigFileBeans(moduleContainer.getEntry("META-INF/faces-config.xml"), classList);
-        searchJars(moduleContainer, classList);
-        addAlternateNamedFacesConfig(moduleContainer, classList);
-        return classList;
+            log.logp(Level.FINE, CLASS_NAME, methodName, "Add managed objects from META-INF/faces-config.xml");
+        }
+
+        addConfigFileBeans(moduleContainer.getEntry("META-INF/faces-config.xml"), injectionClassNames);
+
+        searchJars(moduleContainer, injectionClassNames);
+
+        addAlternateNamedFacesConfig(moduleContainer, injectionClassNames);
+
+        return injectionClassNames;
     }
 
     /**
      * Look at the web.xml for a context-param javax.faces.CONFIG_FILES, and treat as a comma delimited list
      */
-    private void addAlternateNamedFacesConfig(Container moduleContainer, ArrayList<String> classList) {
+    private void addAlternateNamedFacesConfig(Container moduleContainer, List<String> classList) {
+    	String methodName = "addAlternateNamedFacesConfig";
+
         try {
             WebApp webapp = moduleContainer.adapt(WebApp.class);
 
@@ -208,7 +221,7 @@ public class JSFInjectionClassListCollaborator implements WebAppInjectionClassLi
 
         } catch (UnableToAdaptException e) {
             if (log.isLoggable(Level.FINE)) {
-                log.logp(Level.FINE, CLASS_NAME, "addAlternateNamedFacesConfig", "failed to adapt conatiner to WebApp", e);
+                log.logp(Level.FINE, CLASS_NAME, methodName, "failed to adapt conatiner to WebApp", e);
             }
         }
     }
@@ -217,11 +230,14 @@ public class JSFInjectionClassListCollaborator implements WebAppInjectionClassLi
      * Search inside jars for META-INF/faces-config.xml or META-INF/*.faces-config.xml
      */
     private void searchJars(Container moduleContainer, List<String> classList) {
+        String methodName = "searchJars";
+
         Entry webinfLibEntry = moduleContainer.getEntry("WEB-INF/lib");
 
-        //No need to look for jars if there is no WEB-INF/lib
-        if (webinfLibEntry == null)
+        // No need to look for jars if there is no WEB-INF/lib
+        if (webinfLibEntry == null) {
             return;
+        }
 
         try {
             Container c = webinfLibEntry.adapt(Container.class);
@@ -237,8 +253,9 @@ public class JSFInjectionClassListCollaborator implements WebAppInjectionClassLi
 
                             //Spec says we have to look for any file in META-INF that ends with .faces-config.xml
                             Entry metainf = jarContainer.getEntry("META-INF");
-                            if (metainf == null)
+                            if (metainf == null) {
                                 return;
+                            }
 
                             Container metainfContainer = metainf.adapt(Container.class);
                             Iterator<Entry> metaInfIterator = metainfContainer.iterator();
@@ -249,19 +266,19 @@ public class JSFInjectionClassListCollaborator implements WebAppInjectionClassLi
                                     addConfigFileBeans(currentEntry, classList);
                                 }
                             }
-
                         }
 
                     } catch (UnableToAdaptException e) {
                         if (log.isLoggable(Level.FINE)) {
-                            log.logp(Level.FINE, CLASS_NAME, "searchJars", "unable to adapt jar or META-INF dir in jar named " + current.getName() + " to a container", e);
+                            log.logp(Level.FINE, CLASS_NAME, methodName, "unable to adapt jar or META-INF dir in jar named " + current.getName() + " to a container", e);
                         }
                     }
                 }
             }
+
         } catch (UnableToAdaptException e) {
             if (log.isLoggable(Level.FINE)) {
-                log.logp(Level.FINE, CLASS_NAME, "searchJars", "unable to adapt WEB-INF/lib to a container", e);
+                log.logp(Level.FINE, CLASS_NAME, methodName, "unable to adapt WEB-INF/lib to a container", e);
             }
         }
     }
@@ -271,37 +288,35 @@ public class JSFInjectionClassListCollaborator implements WebAppInjectionClassLi
             return;
         try {
             com.ibm.ws.javaee.dd.jsf.FacesConfig facesConfig = e.adapt(com.ibm.ws.javaee.dd.jsf.FacesConfig.class);
-             
+
             addConfigFileManagedObjects(facesConfig,classList);
-            
+
         } catch (UnableToAdaptException ex) {
             if (log.isLoggable(Level.FINE)) {
-                log.logp(Level.FINE, CLASS_NAME, "getInjectionClasses", "failed to adapt to faces-config from entry:" + e, ex);
+                log.logp(Level.FINE, CLASS_NAME, "addConfigFileBeans", "failed to adapt to faces-config from entry:" + e, ex);
             }
         }
     }
-    
+
     private void addConfigFileManagedObjects(com.ibm.ws.javaee.dd.jsf.FacesConfig facesConfig,List<String> classList) {
         if (facesConfig != null) {
             List<FacesConfigManagedBean> beans = facesConfig.getManagedBeans();
             for (FacesConfigManagedBean bean : beans) {
                 classList.add(bean.getManagedBeanClass());
             }
-            
+
             List<String> objects = facesConfig.getManagedObjects();
             for (String object : objects) {
                 if (TraceComponent.isAnyTracingEnabled() && log.isLoggable(Level.FINE)) {
                     log.logp(Level.FINE, CLASS_NAME, "addConfigFileManagedObjects", "Found config managed object :" + object);
-                }    
+                }
                 if (!classList.contains(object)) {
                     if (TraceComponent.isAnyTracingEnabled() && log.isLoggable(Level.FINE)) {
                         log.logp(Level.FINE, CLASS_NAME, "addConfigFileManagedObjects", "Add config managed object :" + object);
-                    }    
+                    }
                     classList.add(object);
                 }
             }
         }
-
     }
-
 }

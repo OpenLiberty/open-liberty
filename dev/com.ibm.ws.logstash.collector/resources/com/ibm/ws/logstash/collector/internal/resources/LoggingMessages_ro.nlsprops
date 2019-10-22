@@ -1,0 +1,41 @@
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.logstash.collector/resources/com/ibm/ws/collector/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+
+# Message prefix block: TRAS0100 - TRAS0210
+# New messages starting December 1, 2016 should use message block TRAS4201 - TRAS4300.
+
+LOGSTASH_CONNECTION_FAILED=TRAS0216W: Colectorul logstash nu s-a putut conecta la serverul logstash cu gazda specificat\u0103 {0} \u015fi num\u0103rul de port {1}. 
+LOGSTASH_CONNECTION_FAILED.explanation=Conectarea la serverul logstash a e\u015fuat, deoarece serverul logstash nu ruleaz\u0103 pe gazda specificat\u0103, informa\u0163iile de configurare, cum ar fi numele de gazd\u0103 \u015fi num\u0103rul de port, nu sunt corecte sau intrarea lumberjack nu este configurat\u0103 \u00een serverul logstash.  
+LOGSTASH_CONNECTION_FAILED.useraction=Verifica\u0163i informa\u0163iile de configurare \u015fi porni\u0163i serverul logstash pe gazda specificat\u0103. Asigura\u0163i-v\u0103 c\u0103 intrarea lumberjack este setat\u0103 corect \u015fi c\u0103 gazda \u015fi num\u0103rul de port specificate \u00een configura\u0163ia colectorului logstash din fi\u015fierul server.xml se potrivesc cu cele din configura\u0163ia serverului logstash.
+
+LOGSTASH_CONNECTION_NOT_AVAILABLE=TRAS0217W: Colectorul logstash nu a putut trimit evenimentele c\u0103tre serverul logstash. Pentru a trimite evenimente, este necesar\u0103 o conexiune la serverul logstash.
+LOGSTASH_CONNECTION_NOT_AVAILABLE.explanation=A e\u015fuat trimiterea evenimentelor, deoarece nu este disponibil\u0103 conexiunea la serverul logstash. Este posibil s\u0103 fi fost realizat\u0103 anterior conectarea, dar, \u00een prezent, se pare c\u0103 este deconectat. Sistemul va \u00eencerca \u00een continuare \u015fi se va conecta la serverul logstash c\u00e2nd devine disponibil.
+LOGSTASH_CONNECTION_NOT_AVAILABLE.useraction=Asigura\u0163i-v\u0103 c\u0103 serverul logstash ruleaz\u0103 pe gazd\u0103.
+
+LOGSTASH_CONNECTION_ESTABLISHED=TRAS0218I: Colectorul logstash este conectat la serverul logstash cu gazda specificat\u0103 {0} \u015fi num\u0103rul de port {1}.
+LOGSTASH_CONNECTION_ESTABLISHED.explanation=Colectorul logstash este conectat cu succes la serverul logstash.
+LOGSTASH_CONNECTION_ESTABLISHED.useraction=Nu e necesar\u0103 nicio ac\u0163iune.
+
+LOGSTASH_CONNECTION_CLOSED=TRAS0219I: Conectorul Logstash este deconectat de la serverul Logstash.
+LOGSTASH_CONNECTION_CLOSED.explanation=Colectorul Logstash \u00eenchide \u015fi restabile\u015fte conexiunea la serverul Logstas c\u00e2nd configura\u0163ia de colector Logstash este actualizat\u0103, inclusiv orice modific\u0103ri aduse configura\u0163iei de repertoriu SSL dependent \u015fi depozit de chei. 
+LOGSTASH_CONNECTION_CLOSED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+LOGSTASH_SOURCE_UNKNOWN=TRAS4201W: Colectorul logstash nu recunoa\u015fte sursa specificat\u0103 {0}.
+LOGSTASH_SOURCE_UNKNOWN.explanation=Sursa specificat\u0103 nu este una dintre sursele implicite furnizate de mediul de rulare Liberty. Sursa ar putea fi o parte dintr-o caracteristic\u0103 Liberty care nu a fost ad\u0103ugat\u0103 la configura\u0163ia serverului.
+LOGSTASH_SOURCE_UNKNOWN.useraction=Verifica\u0163i informa\u0163iile de configurare. Asigura\u0163i-v\u0103 c\u0103 a\u0163i specificat una dintre sursele suportate pentru colector.
+

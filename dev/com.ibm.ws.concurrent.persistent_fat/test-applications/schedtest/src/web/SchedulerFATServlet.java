@@ -482,8 +482,7 @@ public class SchedulerFATServlet extends HttpServlet {
      * Test that persistent executor properties can be used to coordinate single scheduling of a task
      * across multiple servers. To simulate this, we just invoke the createProperty operation twice.
      */
-    //@Test
-    //FIXME enable test again once improved createProperty method works with all databases
+    @Test
     public void testCoordinateTaskScheduleAndRemove(PrintWriter out) throws Exception {
         DBIncrementTask task = new DBIncrementTask("testCoordinateTaskScheduleAndRemove");
         String taskName = task.getExecutionProperties().get(ManagedTask.IDENTITY_NAME);
@@ -535,8 +534,7 @@ public class SchedulerFATServlet extends HttpServlet {
      * To simulate this, we just invoke the createProperty operation twice
      * and use setProperty to update with the task id within the same transaction.
      */
-    //@Test
-    //FIXME enable test again once improved createProperty method works with all databases
+    @Test
     public void testCoordinateTaskScheduleAndRemoveById(PrintWriter out) throws Exception {
         DBIncrementTask task = new DBIncrementTask("testCoordinateTaskScheduleAndRemoveById");
         String taskName = task.getExecutionProperties().get(ManagedTask.IDENTITY_NAME);
@@ -589,8 +587,7 @@ public class SchedulerFATServlet extends HttpServlet {
      * Use the getProperty interface to simulate querying for existence of a task group.
      * Use the removeProperty interface to simulate removal of a task group.
      */
-    //@Test
-    //FIXME enable test again once improved createProperty method works with all databases
+    @Test
     public void testCreateAndRemoveTaskGroup(PrintWriter out) throws Exception {
         TimersPersistentExecutor timersExecutor = (TimersPersistentExecutor) scheduler;
 
