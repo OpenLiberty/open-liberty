@@ -52,11 +52,6 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
             }
         }
 
-        // TODO: Disable this test for JPA 2.2 testing. But will be fixed when ECL 2.7 is updated
-        if (isUsingJPA22Feature()) {
-            return;
-        }
-
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
@@ -187,11 +182,6 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
             }
         }
 
-        // TODO: Disable this test for JPA 2.2 testing. But will be fixed when ECL 2.7 is updated
-        if (isUsingJPA22Feature()) {
-            return;
-        }
-
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
@@ -294,11 +284,6 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
             for (String key : testProps.keySet()) {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
-        }
-
-        // TODO: Disable this test for JPA 2.2 testing. But will be fixed when ECL 2.7 is updated
-        if (isUsingJPA22Feature()) {
-            return;
         }
 
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
@@ -412,11 +397,6 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
             }
         }
 
-        // TODO: Disable this test for JPA 2.2 testing. But will be fixed when ECL 2.7 is updated
-        if (isUsingJPA22Feature()) {
-            return;
-        }
-
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
@@ -508,12 +488,6 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
             for (String key : testProps.keySet()) {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
-        }
-
-        // TODO: Disable this test for JPA 2.2 testing. But will be fixed when ECL 2.7 is updated
-//        Assume.assumeTrue(!isUsingJPA22Feature());
-        if (isUsingJPA22Feature()) {
-            return;
         }
 
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
@@ -640,11 +614,6 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
             for (String key : testProps.keySet()) {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
-        }
-
-        // TODO: Disable this test for JPA 2.2 testing. But will be fixed when ECL 2.7 is updated
-        if (isUsingJPA22Feature()) {
-            return;
         }
 
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
@@ -813,11 +782,6 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
             }
         }
 
-        // TODO: Disable this test for JPA 2.2 testing. But will be fixed when ECL 2.7 is updated
-        if (isUsingJPA22Feature()) {
-            return;
-        }
-
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
@@ -905,11 +869,6 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
         final JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
-            return;
-        }
-
-        // TODO: Disable this test for JPA 2.2 testing. But will be fixed when ECL 2.7 is updated
-        if (isUsingJPA22Feature()) {
             return;
         }
 

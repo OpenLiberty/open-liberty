@@ -165,13 +165,6 @@ public class EntityManagerUnwrapTestLogic extends AbstractTestLogic {
         // Check that this test is supported on the given database
         Assume.assumeTrue(isSupportedDatabase(dbProductName, dbProductVersion, jdbcDriverVersion));
 
-        // TODO: Skip this test until the Eclipselink 2.7 shipped with Open Liberty has been updated to include this fix
-        // Eclipselink Bug 547173
-        if (isUsingJPA22Feature()) {
-            System.out.println("Detected that the active feature is JPA 2.2, skipping this test until fix is integrated.");
-            return;
-        }
-
         final String lDbProductName = dbProductName.toLowerCase();
         final boolean isAMJTA = PersistenceContextType.APPLICATION_MANAGED_JTA == jpaResource.getPcCtxInfo().getPcType();
 

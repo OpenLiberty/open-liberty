@@ -120,6 +120,7 @@ instrument.classesExcludes: \
   org/eclipse/persistence/internal/helper/*.class
 
 -buildpath: \
+    org.eclipse.persistence.core;version=2.6.8.WAS;strategy=exact,\
 	org.eclipse.persistence.jpa;version=2.6.8.WAS;strategy=exact,\
 	com.ibm.ws.javax.j2ee:persistence;version=2.1,\
 	com.ibm.websphere.org.osgi.core,\

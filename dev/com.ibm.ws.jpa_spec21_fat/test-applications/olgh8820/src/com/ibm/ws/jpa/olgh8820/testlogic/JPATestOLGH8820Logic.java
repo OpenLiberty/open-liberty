@@ -52,11 +52,6 @@ public class JPATestOLGH8820Logic extends AbstractTestLogic {
         }
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
 
-        // TODO: Disable this test for JPA 2.2 testing. But will be fixed when ECL 2.7 is updated
-        if (isUsingJPA22Feature()) {
-            return;
-        }
-
         // TODO: Add support for more database platforms
         if (!isOracle(dbProductName) || !isDB2(dbProductName)) {
             return;
@@ -146,11 +141,6 @@ public class JPATestOLGH8820Logic extends AbstractTestLogic {
             }
         }
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
-
-        // TODO: Disable this test for JPA 2.2 testing. But will be fixed when ECL 2.7 is updated
-        if (isUsingJPA22Feature()) {
-            return;
-        }
 
         // TODO: Add support for more database platforms
         if (!isOracle(dbProductName) || !isDB2(dbProductName)) {

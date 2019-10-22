@@ -63,11 +63,6 @@ public class JPATestOLGH8950Logic extends AbstractTestLogic {
             return;
         }
 
-        // TODO: Disable this test for JPA 2.2 testing. But will be fixed when ECL 2.7 is updated
-        if (isUsingJPA22Feature()) {
-            return;
-        }
-
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
