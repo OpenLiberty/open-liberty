@@ -160,6 +160,11 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
     };
 
     /**
+     * Multiple of the heartbeatInterval after which, absent any heart beats, the partition is eligible for removal.
+     */
+    private static final short HEARTBEAT_EXPIRY_FACTOR = 10;
+
+    /**
      * Names of applications using this ResourceFactory
      */
     private final Set<String> applications = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
@@ -204,6 +209,11 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
      * Common Liberty thread pool.
      */
     ExecutorService executor;
+
+    /**
+     * Reference to the future (if any) for the periodic heart beat task.
+     */
+    private final AtomicReference<Future<?>> heartbeatFutureRef = new AtomicReference<Future<?>>();
 
     /**
      * Set of task ids that are scheduled in memory. When polling for tasks, we can ignore these because they are already scheduled.
@@ -350,6 +360,12 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
         if (readyForPollingTask.addAndCheckIfReady(PollingManager.DS_READY))
             startPollingTask(config);
 
+        if (config.heartbeatInterval > 0)
+            heartbeatFutureRef.set(scheduledExecutor.scheduleWithFixedDelay(new HeartbeatTask(config),
+                                                                            config.heartbeatInterval,
+                                                                            config.heartbeatInterval,
+                                                                            TimeUnit.SECONDS));
+
         mbean = new PersistentExecutorMBeanImpl(this);
         mbean.register(InvokerTask.priv.getBundleContext(context));
 
@@ -434,6 +450,10 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
         deactivated = true;
         if (mbean != null)
             mbean.unregister();
+
+        Future<?> future = heartbeatFutureRef.get();
+        if (future != null)
+            future.cancel(false);
 
         try {
             Config config = configRef.get();
@@ -786,7 +806,9 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
         partitionEntry.setLibertyServer(locationAdmin.getServerName());
         partitionEntry.setUserDir(variableRegistry.resolveString(VariableRegistry.USER_DIR));
         partitionEntry.setHostName(AccessController.doPrivileged(getHostName));
-        // TODO partitionEntry.setExpiry if heartbeatInterval enabled
+        partitionEntry.setExpiry(config.heartbeatInterval > 0 //
+                        ? (System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(config.heartbeatInterval * HEARTBEAT_EXPIRY_FACTOR)) //
+                        : Long.MAX_VALUE);
         if (config.missedTaskThreshold > 0) // TODO unconditionally supply this information once we are done experimenting and determine how much of it we really need.
             partitionEntry.setStates((config.missedTaskThreshold > 0 ? PartitionRecord.States.MISSED_TASK_THRESHOLD_ENABLED.bit : 0) +
                                      (config.pollInterval >= 0 ? PartitionRecord.States.POLLS_PERIODICALLY.bit : 0));
@@ -1085,6 +1107,12 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
         if (previousFuture != null)
             previousFuture.cancel(false);
 
+        if (oldConfig.heartbeatInterval != newConfig.heartbeatInterval) {
+            previousFuture = heartbeatFutureRef.getAndSet(null);
+            if (previousFuture != null)
+                previousFuture.cancel(false);
+        }
+
         if (oldConfig.enableTaskExecution != newConfig.enableTaskExecution)
             if (newConfig.enableTaskExecution)
                 readyForPollingTask.add(PollingManager.EXECUTION_ENABLED);
@@ -1122,6 +1150,13 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
         if (readyForPollingTask.addAndCheckIfReady(PollingManager.DS_READY))
             startPollingTask(newConfig);
+
+        if (oldConfig.heartbeatInterval != newConfig.heartbeatInterval && newConfig.heartbeatInterval > 0) {
+            heartbeatFutureRef.set(scheduledExecutor.scheduleWithFixedDelay(new HeartbeatTask(newConfig),
+                                                                            newConfig.heartbeatInterval,
+                                                                            newConfig.heartbeatInterval,
+                                                                            TimeUnit.SECONDS));
+        }
 
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "modified");
@@ -2258,6 +2293,156 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
     };
 
     /**
+     * Periodically updates the persistent store to indicate that this instance is still running.
+     */
+    @Trivial
+    private class HeartbeatTask implements Runnable {
+        /**
+         * Config instance from when this HeartbeatTask was initially scheduled. We should stop running if we find that it changes.
+         */
+        private final Config initialConfig;
+
+        private HeartbeatTask(Config config) {
+            initialConfig = config;
+        }
+
+        @Override
+        public void run() {
+            final boolean trace = TraceComponent.isAnyTracingEnabled();
+            if (trace && tc.isEntryEnabled())
+                Tr.entry(PersistentExecutorImpl.this, tc, "run[heartbeat]");
+
+            Config config = configRef.get();
+
+            if (deactivated || config.heartbeatInterval < 1 || config.heartbeatInterval != initialConfig.heartbeatInterval) {
+                if (trace && tc.isEntryEnabled())
+                    Tr.exit(PersistentExecutorImpl.this, tc, "run[heartbeat]", deactivated ? "deactivated" : config);
+                return;
+            }
+
+            Object result;
+            try {
+                EmbeddableWebSphereTransactionManager tranMgr = tranMgrRef.getServiceWithException();
+
+                PartitionRecord expected = new PartitionRecord(false);
+                expected.setId(getPartitionId());
+
+                PartitionRecord updates = new PartitionRecord(false);
+                updates.setExpiry(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(config.heartbeatInterval * HEARTBEAT_EXPIRY_FACTOR));
+
+                tranMgr.begin();
+                try {
+                    result = taskStore.persist(updates, expected);
+                } finally {
+                    if (tranMgr.getStatus() == Status.STATUS_ACTIVE)
+                        tranMgr.commit();
+                    else
+                        tranMgr.rollback();
+                }
+
+                // If the update isn't successful, it means we didn't renew our partition entry in time and another instance removed it.
+                // TODO Try to re-acquire it or just get a new one and reassign tasks?
+
+                // look for expired partitions (expiry < current time).
+                List<PartitionRecord> expired;
+                tranMgr.begin();
+                try {
+                    expired = taskStore.findExpired();
+                } finally {
+                    if (tranMgr.getStatus() == Status.STATUS_ACTIVE)
+                        tranMgr.commit();
+                    else
+                        tranMgr.rollback();
+                }
+
+                // If found, asynchronously remove the partition after reassigning its tasks.
+                for (PartitionRecord e : expired)
+                    executor.submit(new PartitionRemovalTask(e));
+            } catch (Throwable x) {
+                result = x;
+            }
+
+            if (trace && tc.isEntryEnabled())
+                Tr.exit(PersistentExecutorImpl.this, tc, "run[heartbeat]", result);
+        }
+    }
+
+    /**
+     * Remove a partition entry after reassigning all of its tasks.
+     */
+    @Trivial
+    private class PartitionRemovalTask implements Runnable {
+        /**
+         * Partition tuple consisting of (Id, Executor, Host, Server, UserDir, Expiry).
+         */
+        private final PartitionRecord expired;
+
+        private PartitionRemovalTask(PartitionRecord expired) {
+            this.expired = expired;
+        }
+
+        @Override
+        public void run() {
+            final boolean trace = TraceComponent.isAnyTracingEnabled();
+            if (trace && tc.isEntryEnabled())
+                Tr.entry(PersistentExecutorImpl.this, tc, "run[partitionremoval]", expired);
+
+            if (deactivated) {
+                if (trace && tc.isEntryEnabled())
+                    Tr.exit(PersistentExecutorImpl.this, tc, "run[partitionremoval]", "deactivated");
+                return;
+            }
+
+            try {
+                EmbeddableWebSphereTransactionManager tranMgr = tranMgrRef.getServiceWithException();
+
+                // Locate an active partition (could be the current instance) to assign tasks to,
+                Config config = configRef.get();
+                Long alternatePartition = null;
+                // If the current instance isn't able to run tasks, look for one that is
+                if (!config.enableTaskExecution) {
+                    Controller controller = controllerRef.getService();
+                    if (controller == null) // use the partition info from the persistent store to find an instance that periodically polls
+                        alternatePartition = getPartitionThatPolls(config.missedTaskThreshold);
+                    else // obtain from the controller
+                        alternatePartition = controller.getActivePartitionId();
+                }
+                long activePartitionId = alternatePartition == null ? getPartitionId() : alternatePartition;
+
+                int numTransferred;
+                tranMgr.begin();
+                try {
+                    numTransferred = taskStore.transfer(null, expired.getId(), activePartitionId);
+                } finally {
+                    if (tranMgr.getStatus() == Status.STATUS_ACTIVE)
+                        tranMgr.commit();
+                    else
+                        tranMgr.rollback();
+                }
+
+                // TODO information message if > 0: Transferred X tasks from instance I1, which expired at T1, to instance I2.
+
+                int removed;
+                tranMgr.begin();
+                try {
+                    removed = taskStore.remove(expired);
+                } finally {
+                    if (tranMgr.getStatus() == Status.STATUS_ACTIVE)
+                        tranMgr.commit();
+                    else
+                        tranMgr.rollback();
+                }
+
+                if (trace && tc.isEntryEnabled())
+                    Tr.exit(PersistentExecutorImpl.this, tc, "run[partitionremoval]", removed);
+            } catch (Throwable x) {
+                if (trace && tc.isEntryEnabled())
+                    Tr.exit(PersistentExecutorImpl.this, tc, "run[partitionremoval]", x);
+            }
+        }
+    }
+
+    /**
      * Polls the persistent task store for tasks that ought to run in the near future and then schedules them.
      *
      * For scenarios where tasks a transferred to a persistent executor where repeated polling is disabled (pollInterval < 0),
@@ -2364,7 +2549,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
             if (deactivated || !config.enableTaskExecution || config != initialConfig) {
                 if (trace && tc.isEntryEnabled())
-                    Tr.exit(PersistentExecutorImpl.this, tc, "run[poll]", deactivated ? deactivated : config);
+                    Tr.exit(PersistentExecutorImpl.this, tc, "run[poll]", deactivated ? "deactivated" : config);
                 return;
             }
 
@@ -2374,12 +2559,13 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
                 try {
                     EmbeddableWebSphereTransactionManager tranMgr = tranMgrRef.getServiceWithException();
 
+                    long partitionId = getPartitionId();
                     long now = new Date().getTime();
                     long maxNextExecTime = config.pollInterval >= 0 ? (config.pollInterval + now) : Long.MAX_VALUE;
                     List<Object[]> results;
                     tranMgr.begin();
                     try {
-                        results = taskStore.findUpcomingTasks(getPartitionId(), maxNextExecTime, config.pollSize);
+                        results = taskStore.findUpcomingTasks(partitionId, maxNextExecTime, config.pollSize);
                     } catch (Throwable x) {
                         throw failure = x;
                     } finally {
@@ -2409,7 +2595,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
                         long lateTaskThresholdMS = TimeUnit.SECONDS.toMillis(config.missedTaskThreshold);
                         tranMgr.begin();
                         try {
-                            results = taskStore.findLateTasks(now - lateTaskThresholdMS, getPartitionId(), config.pollSize);
+                            results = taskStore.findLateTasks(now - lateTaskThresholdMS, partitionId, config.pollSize);
                         } catch (Throwable x) {
                             throw failure = x;
                         } finally {
@@ -2650,7 +2836,9 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
             Config config = configRef.get();
 
             PartitionRecord updates = new PartitionRecord(false);
-            // TODO updates.setExpiry if heartbeatInterval enabled
+            updates.setExpiry(config.heartbeatInterval > 0 //
+                            ? (System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(config.heartbeatInterval * HEARTBEAT_EXPIRY_FACTOR)) //
+                            : Long.MAX_VALUE);
             updates.setStates((config.missedTaskThreshold > 0 ? PartitionRecord.States.MISSED_TASK_THRESHOLD_ENABLED.bit : 0) +
                               (config.pollInterval >= 0 ? PartitionRecord.States.POLLS_PERIODICALLY.bit : 0));
 
