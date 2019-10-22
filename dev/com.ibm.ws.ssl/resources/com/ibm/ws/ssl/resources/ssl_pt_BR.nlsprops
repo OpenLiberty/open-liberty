@@ -133,13 +133,15 @@ exporta\u00e7\u00e3o/importa\u00e7\u00e3o do assinante a partir do host de desti
 cliente.
 ssl.client.handshake.error.CWPKI0022E.useraction=Reveja a mensagem de erro estendida do TrustManager para determinar o que precisa ser alterado entre a configura\u00e7\u00e3o SSL de destino e a configura\u00e7\u00e3o SSL de cliente.
 # -------------------------------------------------------------------------------------------------
-ssl.client.alias.not.found.CWPKI0023E=CWPKI0023E: O alias do certificado {0} especificado por com.ibm.ssl.keyStoreClientAlias n\u00e3o est\u00e1 localizado em KeyStore {1}.
-ssl.client.alias.not.found.CWPKI0023E.explanation=O alias do certificado especificado para essa configura\u00e7\u00e3o SSL n\u00e3o est\u00e1 no KeyStore especificado. 
-ssl.client.alias.not.found.CWPKI0023E.useraction=Inclua um certificado no Armazenamento de chaves com o alias de certificado especificado ou altere o alias de certificado especificado para corresponder a um alias localizado no Armazenamento de chaves de cliente.
+ssl.client.alias.not.found.CWPKI0023E=CWPKI0023E: O alias de certificado {0} especificado pelo atributo clientKeyAlias n\u00e3o \u00e9 encontrado no KeyStore {1} ou ele \u00e9 inv\u00e1lido.
+ssl.client.alias.not.found.CWPKI0023E.explanation=O alias de certificado especificado para esta configura\u00e7\u00e3o de SSL n\u00e3o est\u00e1 no KeyStore especificado ou foi considerado inv\u00e1lido. Um certificado expirado \u00e9 um exemplo de um certificado inv\u00e1lido.
+ssl.client.alias.not.found.CWPKI0023E.useraction=Inclua um certificado no KeyStore com o alias de certificado especificado ou substitua ou renove o certificado inv\u00e1lido com o alias de certificado especificado localizado no \
+cliente KeyStore.
 # -------------------------------------------------------------------------------------------------
-ssl.server.alias.not.found.CWPKI0024E=CWPKI0024E: O alias do certificado {0} especificado por com.ibm.ssl.keyStoreServerAlias n\u00e3o est\u00e1 localizado em KeyStore {1}.
-ssl.server.alias.not.found.CWPKI0024E.explanation=O alias do certificado especificado para essa configura\u00e7\u00e3o SSL n\u00e3o est\u00e1 no KeyStore especificado. 
-ssl.server.alias.not.found.CWPKI0024E.useraction=Inclua um certificado no Armazenamento de chaves com o alias de certificado especificado ou altere o alias de certificado especificado para corresponder a um alias localizado no Armazenamento de chaves de servidor.
+ssl.server.alias.not.found.CWPKI0024E=CWPKI0024E: O alias de certificado {0} especificado pelo atributo serverKeyAlias n\u00e3o est\u00e1 localizado no KeyStore {1} ou ele \u00e9 inv\u00e1lido.
+ssl.server.alias.not.found.CWPKI0024E.explanation=O alias de certificado especificado para esta configura\u00e7\u00e3o de SSL n\u00e3o est\u00e1 no KeyStore especificado ou foi considerado inv\u00e1lido. Um certificado expirado \u00e9 um exemplo de um certificado inv\u00e1lido.
+ssl.server.alias.not.found.CWPKI0024E.useraction=Inclua um certificado no KeyStore com o alias de certificado especificado ou substitua ou renove o certificado inv\u00e1lido com o alias de certificado especificado localizado no \
+servidor KeyStore.
 # -------------------------------------------------------------------------------------------------
 ssl.load.https.stream.handler.CWPKI0025E=CWPKI0025E: O sistema n\u00e3o p\u00f4de carregar a classe manipuladora de https {0}. Mensagem de erro estendida: \
 {1}

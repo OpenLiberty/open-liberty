@@ -119,13 +119,13 @@ ssl.client.handshake.error.CWPKI0022E=CWPKI0022E: FEHLER BEIM SSL-HANDSHAKE: Es 
 ssl.client.handshake.error.CWPKI0022E.explanation=Es ist ein Fehler w\u00e4hrend des SSL-Handshake aufgetreten. Es ist m\u00f6glicherweise ein Export/Import des Unterzeichners vom Zielhost in den Client-Truststore erforderlich.
 ssl.client.handshake.error.CWPKI0022E.useraction=Lesen Sie die erweiterte Nachricht des Trust Manager, um festzustellen, welche \u00c4nderungen zwischen SSL-Zielkonfiguration und SSL-Clientkonfiguration vorgenommen werden m\u00fcssen.
 # -------------------------------------------------------------------------------------------------
-ssl.client.alias.not.found.CWPKI0023E=CWPKI0023E: Der mit der Eigenschaft "com.ibm.ssl.keyStoreClientAlias" angegebene Zertifikatalias {0} wurde nicht im Keystore {1} gefunden.
-ssl.client.alias.not.found.CWPKI0023E.explanation=Der f\u00fcr diese SSL-Konfiguration angegebene Zertifikatsalias ist nicht im angegebenen Keystore vorhanden. 
-ssl.client.alias.not.found.CWPKI0023E.useraction=F\u00fcgen Sie dem Keystore ein Zertifikat mit dem angegebenen Alias hinzu oder \u00e4ndern Sie den angegebenen Zertifikatsalias so, dass der einem Alias im Client-Keystore entspricht.
+ssl.client.alias.not.found.CWPKI0023E=CWPKI0023E: Der Zertifikatsaliasname {0}, der \u00fcber das Attribut clientKeyAlias angegeben ist, wurde entweder nicht im Keystore {1} gefunden oder er ist ung\u00fcltig.
+ssl.client.alias.not.found.CWPKI0023E.explanation=Der f\u00fcr diese SSL-Konfiguration angegebene Zertifikatsalias ist nicht im angegebenen Keystore vorhanden oder er ist ung\u00fcltig. Ein Beispiel f\u00fcr ein ung\u00fcltiges Zertifikat ist ein Zertifikat, das abgelaufen ist.
+ssl.client.alias.not.found.CWPKI0023E.useraction=F\u00fcgen Sie dem Keystore ein Zertifikat mit dem angegebenen Zertifikatsaliasnamen hinzu oder ersetzen oder verl\u00e4ngern Sie das ung\u00fcltige Zertifikat mit dem im Client-Keystore angegebenen Zertifikatsaliasnamen.
 # -------------------------------------------------------------------------------------------------
-ssl.server.alias.not.found.CWPKI0024E=CWPKI0024E: Der mit der Eigenschaft "com.ibm.ssl.keyStoreServerAlias" angegebene Zertifikatalias {0}  wurde nicht im Keystore {1} gefunden.
-ssl.server.alias.not.found.CWPKI0024E.explanation=Der f\u00fcr diese SSL-Konfiguration angegebene Zertifikatsalias ist nicht im angegebenen Keystore vorhanden. 
-ssl.server.alias.not.found.CWPKI0024E.useraction=F\u00fcgen Sie dem Keystore ein Zertifikat mit dem angegebenen Alias hinzu oder \u00e4ndern Sie den angegebenen Zertifikatsalias so, dass der einem Alias im Server-Keystore entspricht.
+ssl.server.alias.not.found.CWPKI0024E=CWPKI0024E: Der Zertifikatsaliasname {0}, der \u00fcber das Attribut serverKeyAlias angegeben ist, wurde entweder nicht im Keystore {1} gefunden oder er ist ung\u00fcltig.
+ssl.server.alias.not.found.CWPKI0024E.explanation=Der f\u00fcr diese SSL-Konfiguration angegebene Zertifikatsalias ist nicht im angegebenen Keystore vorhanden oder er ist ung\u00fcltig. Ein Beispiel f\u00fcr ein ung\u00fcltiges Zertifikat ist ein Zertifikat, das abgelaufen ist.
+ssl.server.alias.not.found.CWPKI0024E.useraction=F\u00fcgen Sie dem Keystore ein Zertifikat mit dem angegebenen Zertifikatsaliasnamen hinzu oder ersetzen oder verl\u00e4ngern Sie das ung\u00fcltige Zertifikat mit dem im Server-Keystore angegebenen Zertifikatsaliasnamen.
 # -------------------------------------------------------------------------------------------------
 ssl.load.https.stream.handler.CWPKI0025E=CWPKI0025E: Das System konnte die HTTPS-Handlerklasse {0} nicht laden. Erweiterte Fehlernachricht: {1}
 ssl.load.https.stream.handler.CWPKI0025E.explanation=Beim Laden der HTTPS-URLStreamHandler-Klasse ist ein Fehler aufgetreten. 

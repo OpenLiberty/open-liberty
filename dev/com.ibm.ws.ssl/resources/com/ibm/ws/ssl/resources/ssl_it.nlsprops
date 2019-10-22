@@ -119,13 +119,13 @@ ssl.client.handshake.error.CWPKI0022E=CWPKI0022E: ERRORE HANDSHAKE SSL:  Un firm
 ssl.client.handshake.error.CWPKI0022E.explanation=Si \u00e8 verificato un errore durante l'handshake SSL.  Potrebbe essere necessaria un'esportazione/importazione del firmatario dall'host di destinazione al TrustStore del client.
 ssl.client.handshake.error.CWPKI0022E.useraction=Esaminare il messaggio di errore esteso da TrustManager per determinare le modifiche da effettuare tra la configurazione SSL di destinazione e la configurazione SSL client.
 # -------------------------------------------------------------------------------------------------
-ssl.client.alias.not.found.CWPKI0023E=CWPKI0023E: L''alias del certificato {0} specificato dalla propriet\u00e0 com.ibm.ssl.keyStoreClientAlias non \u00e8 stato individuato nel KeyStore {1}.
-ssl.client.alias.not.found.CWPKI0023E.explanation=L'alias del certificato specificato per questa configurazione SSL non \u00e8 nel KeyStore specificato. 
-ssl.client.alias.not.found.CWPKI0023E.useraction=Aggiungere un certificato nel KeyStore con l'alias del certificato specificato oppure modificare tale alias in modo che corrisponda a un alias trovato nel KeyStore client.
+ssl.client.alias.not.found.CWPKI0023E=CWPKI0023E: L''alias del certificato {0} specificato dall''attributo clientKeyAlias non \u00e8 stato trovato nel KeyStore {1} o non \u00e8 valido.
+ssl.client.alias.not.found.CWPKI0023E.explanation=L'alias del certificate specificato per questa configurazione SSL non \u00e8 nel KeyStore specificato o \u00e8 presente ma non \u00e8 valido. Un certificato scaduto \u00e8 un esempio di certificato non valido.
+ssl.client.alias.not.found.CWPKI0023E.useraction=Aggiungere un certificato nel KeyStore con l'alias del certificato specificato oppure sostituire o rinnovare il certificato non valido con l'alias del certificato specificato trovato nel KeyStore del client.
 # -------------------------------------------------------------------------------------------------
-ssl.server.alias.not.found.CWPKI0024E=CWPKI0024E: L''alias del certificato {0} specificato dalla propriet\u00e0 com.ibm.ssl.keyStoreServerAlias non \u00e8 stato individuato nel KeyStore {1}.
-ssl.server.alias.not.found.CWPKI0024E.explanation=L'alias del certificate specificato per questa configurazione SSL non \u00e8 nel KeyStore specificato. 
-ssl.server.alias.not.found.CWPKI0024E.useraction=Aggiungere un certificato nel KeyStore con l'alias del certificato specificato oppure modificare tale alias in modo che corrisponda a un alias trovato nel KeyStore server.
+ssl.server.alias.not.found.CWPKI0024E=CWPKI0024E: L''alias del certificato {0} specificato dall''attributo serverKeyAlias non \u00e8 stato trovato nel KeyStore {1} o non \u00e8 valido.
+ssl.server.alias.not.found.CWPKI0024E.explanation=L'alias del certificate specificato per questa configurazione SSL non \u00e8 nel KeyStore specificato o \u00e8 presente ma non \u00e8 valido. Un certificato scaduto \u00e8 un esempio di certificato non valido.
+ssl.server.alias.not.found.CWPKI0024E.useraction=Aggiungere un certificato nel KeyStore con l'alias del certificato specificato oppure sostituire o rinnovare il certificato non valido con l'alias del certificato specificato trovato nel KeyStore del server.
 # -------------------------------------------------------------------------------------------------
 ssl.load.https.stream.handler.CWPKI0025E=CWPKI0025E: Il sistema non \u00e8 stato in grado di caricare la classe del gestore https {0}. Messaggio di errore esteso: {1}
 ssl.load.https.stream.handler.CWPKI0025E.explanation=Si \u00e8 verificato un errore caricamento classe durante il tentativo di caricare la classe HTTPS URLStreamHandler. 

@@ -119,13 +119,27 @@ ssl.client.handshake.error.CWPKI0022E=CWPKI0022E: B\u0142\u0105d uzgadniania pro
 ssl.client.handshake.error.CWPKI0022E.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas uzgadniania protoko\u0142u SSL.  Mo\u017ce by\u0107 wymagany eksport/import osoby podpisuj\u0105cej z docelowego hosta do magazynu zaufanych certyfikat\u00f3w klienta.
 ssl.client.handshake.error.CWPKI0022E.useraction=Aby dowiedzie\u0107 si\u0119, co nale\u017cy zmieni\u0107 w konfiguracjach protoko\u0142u SSL hosta docelowego i klienta, przeczytaj rozszerzony komunikat o b\u0142\u0119dzie z mened\u017cera zaufania.
 # -------------------------------------------------------------------------------------------------
-ssl.client.alias.not.found.CWPKI0023E=CWPKI0023E: Aliasu certyfikatu {0} okre\u015blonego przez w\u0142a\u015bciwo\u015b\u0107 com.ibm.ssl.keyStoreClientAlias nie znaleziono w magazynie kluczy {1}.
-ssl.client.alias.not.found.CWPKI0023E.explanation=Alias certyfikatu okre\u015blony dla danej konfiguracji protoko\u0142u SSL nie znajduje si\u0119 w okre\u015blonym magazynie kluczy. 
-ssl.client.alias.not.found.CWPKI0023E.useraction=Dodaj certyfikat z okre\u015blonym aliasem do magazynu kluczy lub zmodyfikuj okre\u015blony alias w taki spos\u00f3b, aby by\u0142 zgodny z aliasem znajduj\u0105cym si\u0119 w magazynie kluczy klienta.
+ssl.client.alias.not.found.CWPKI0023E=CWPKI0023E: Alias \
+certyfikatu {0} okre\u015blony w atrybucie clientKeyAlias nie znajduje si\u0119 w magazynie kluczy {1} \
+lub jest niepoprawny.
+ssl.client.alias.not.found.CWPKI0023E.explanation=Alias \
+certyfikatu okre\u015blony dla tej konfiguracji SSL nie znajduje si\u0119 w okre\u015blonym \
+magazynie kluczy lub jest niepoprawny. Wygas\u0142y certyfikat to przyk\u0142ad \
+niepoprawnego certyfikatu.
+ssl.client.alias.not.found.CWPKI0023E.useraction=Dodaj \
+do magazynu kluczy certyfikat z okre\u015blonym aliasem albo zast\u0105p lub odn\u00f3w \
+niepoprawny certyfikat przy u\u017cyciu aliasu w magazynie kluczy klienta.
 # -------------------------------------------------------------------------------------------------
-ssl.server.alias.not.found.CWPKI0024E=CWPKI0024E: Aliasu certyfikatu {0} okre\u015blonego przez w\u0142a\u015bciwo\u015b\u0107 com.ibm.ssl.keyStoreServerAlias nie znaleziono w magazynie kluczy {1}.
-ssl.server.alias.not.found.CWPKI0024E.explanation=Alias certyfikatu okre\u015blony dla danej konfiguracji protoko\u0142u SSL nie znajduje si\u0119 w okre\u015blonym magazynie kluczy. 
-ssl.server.alias.not.found.CWPKI0024E.useraction=Dodaj certyfikat z okre\u015blonym aliasem do magazynu kluczy lub zmodyfikuj okre\u015blony alias w taki spos\u00f3b, aby by\u0142 zgodny z aliasem znajduj\u0105cym si\u0119 w magazynie kluczy serwera.
+ssl.server.alias.not.found.CWPKI0024E=CWPKI0024E: Alias \
+certyfikatu {0} okre\u015blony w atrybucie serverKeyAlias nie znajduje si\u0119 w \
+magazynie kluczy {1} lub jest niepoprawny.
+ssl.server.alias.not.found.CWPKI0024E.explanation=Alias \
+certyfikatu okre\u015blony dla tej konfiguracji SSL nie znajduje si\u0119 w okre\u015blonym \
+magazynie kluczy lub jest niepoprawny. Wygas\u0142y certyfikat to przyk\u0142ad \
+niepoprawnego certyfikatu.
+ssl.server.alias.not.found.CWPKI0024E.useraction=Dodaj do \
+magazynu kluczy certyfikat z okre\u015blonym aliasem albo zast\u0105p lub odn\u00f3w \
+niepoprawny certyfikat przy u\u017cyciu aliasu w magazynie kluczy serwera.
 # -------------------------------------------------------------------------------------------------
 ssl.load.https.stream.handler.CWPKI0025E=CWPKI0025E: System nie mo\u017ce za\u0142adowa\u0107 klasy procedury obs\u0142ugi protoko\u0142u HTTPS {0}. Rozszerzony komunikat o b\u0142\u0119dzie: {1}
 ssl.load.https.stream.handler.CWPKI0025E.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d \u0142adowania klasy podczas pr\u00f3by za\u0142adowania klasy URLStreamHandler protoko\u0142u HTTPS. 

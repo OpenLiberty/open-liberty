@@ -144,13 +144,30 @@ ssl.client.handshake.error.CWPKI0022E.useraction=Consultez le message d'erreur d
 gestionnaire de relations de confiance (TrustManager) afin de d\u00e9terminer ce qui doit \u00eatre chang\u00e9 entre la configuration SSL de la cible et la \
 configuration SSL du client.
 # -------------------------------------------------------------------------------------------------
-ssl.client.alias.not.found.CWPKI0023E=CWPKI0023E: L''alias du certificat {0} sp\u00e9cifi\u00e9 par la propri\u00e9t\u00e9 com.ibm.ssl.keyStoreClientAlias n''a pas \u00e9t\u00e9 trouv\u00e9 dans le fichier de cl\u00e9s {1}.
-ssl.client.alias.not.found.CWPKI0023E.explanation=L'alias du certificat sp\u00e9cifi\u00e9 pour cette configuration SSL ne se trouve pas dans le fichier de cl\u00e9s sp\u00e9cifi\u00e9. 
-ssl.client.alias.not.found.CWPKI0023E.useraction=Ajoutez un certificat dans le fichier de cl\u00e9s avec l'alias du certificat sp\u00e9cifi\u00e9 ou changez l'alias du certificat sp\u00e9cifi\u00e9 pour qu'il corresponde \u00e0 un alias se trouvant dans le fichier de cl\u00e9s du client.
+ssl.client.alias.not.found.CWPKI0023E=CWPKI0023E: L''alias de \
+certificat {0} sp\u00e9cifi\u00e9 par l''attribut clientKeyAlias est introuvable dans le magasin de \
+cl\u00e9s {1} ou n''est pas valide.
+ssl.client.alias.not.found.CWPKI0023E.explanation=L'alias de \
+certificat sp\u00e9cifi\u00e9 pour cette configuration SSL ne se trouve pas dans le magasin de cl\u00e9s \
+sp\u00e9cifi\u00e9 ou n'est pas valide. Par exemple, un certificat non valide peut \u00eatre un \
+certificat arriv\u00e9 \
+\u00e0 expiration.
+ssl.client.alias.not.found.CWPKI0023E.useraction=Ajoutez un certificat \
+dans le magasin de cl\u00e9s avec l'alias de certificat sp\u00e9cifi\u00e9, ou remplacez ou renouvelez \
+le certificat non valide avec l'alias de certificat sp\u00e9cifi\u00e9 trouv\u00e9 dans le magasin de \
+cl\u00e9s du client.
 # -------------------------------------------------------------------------------------------------
-ssl.server.alias.not.found.CWPKI0024E=CWPKI0024E: L''alias du certificat {0} sp\u00e9cifi\u00e9 par la propri\u00e9t\u00e9 com.ibm.ssl.keyStoreServerAlias n''a pas \u00e9t\u00e9 trouv\u00e9 dans le fichier de cl\u00e9s {1}.
-ssl.server.alias.not.found.CWPKI0024E.explanation=L'alias du certificat sp\u00e9cifi\u00e9 pour cette configuration SSL ne se trouve pas dans le fichier de cl\u00e9s sp\u00e9cifi\u00e9. 
-ssl.server.alias.not.found.CWPKI0024E.useraction=Ajoutez un certificat dans le fichier de cl\u00e9s avec l'alias du certificat sp\u00e9cifi\u00e9 ou changez l'alias du certificat sp\u00e9cifi\u00e9 pour qu'il corresponde \u00e0 un alias se trouvant dans le fichier de cl\u00e9s du client.
+ssl.server.alias.not.found.CWPKI0024E=CWPKI0024E: L''alias de \
+certificat {0} sp\u00e9cifi\u00e9 par l''attribut serverKeyAlias est introuvable dans le magasin de \
+cl\u00e9s {1} ou n''est pas valide.
+ssl.server.alias.not.found.CWPKI0024E.explanation=L'alias de \
+certificat sp\u00e9cifi\u00e9 pour cette configuration SSL ne se trouve pas dans le magasin de cl\u00e9s \
+sp\u00e9cifi\u00e9 ou n'est pas valide. Par exemple, un certificat non valide peut \u00eatre un \
+certificat arriv\u00e9 \u00e0 expiration.
+ssl.server.alias.not.found.CWPKI0024E.useraction=Ajoutez un certificat \
+dans le magasin de cl\u00e9s avec l'alias de certificat sp\u00e9cifi\u00e9, ou remplacez ou renouvelez \
+le certificat non valide avec l'alias de certificat sp\u00e9cifi\u00e9 trouv\u00e9 dans le magasin de \
+cl\u00e9s du serveur.
 # -------------------------------------------------------------------------------------------------
 ssl.load.https.stream.handler.CWPKI0025E=CWPKI0025E: Le syst\u00e8me n''a pas pu charger la classe gestionnaire https {0}. Message d''erreur \
 d\u00e9taill\u00e9 : {1}
@@ -769,7 +786,7 @@ ssl.defaultKeyStore.loaded.jksAndPKCS12Exist.CWPKI0822W.useraction=Si vous voule
 ssl.client.handshake.error.CWPKI0823E=CWPKI0823E: ECHEC D''ETABLISSEMENT DE LIAISON SSL : un signataire dont l''objet SubjectDN est {0} a \u00e9t\u00e9 envoy\u00e9 depuis l''h\u00f4te cible [{1}].  Il peut \u00eatre n\u00e9cessaire d''ajouter le signataire au magasin de cl\u00e9s de confiance local [{2}], situ\u00e9 dans l''alias de configuration SSL [{3}].  Message d''erreur d\u00e9taill\u00e9 g\u00e9n\u00e9r\u00e9 par l''exception d''\u00e9tablissement de liaison SSL : [{4}].
 ssl.client.handshake.error.CWPKI0823E.explanation=Une erreur s'est produite lors de l'\u00e9tablissement de la liaison SSL.  Il est possible que vous deviez exporter le signataire depuis l'h\u00f4te cible pour le r\u00e9importer ensuite dans le magasin de cl\u00e9s de confiance du client.
 ssl.client.handshake.error.CWPKI0823E.useraction=Consultez le message d'erreur d\u00e9taill\u00e9 \u00e9mis par le \
-gestionnaire de relations de confiance (TrustManager) afin de d\u00e9terminer ce qui doit \u00eatre chang\u00e9 entre la configuration SSL de la cible et la \
+gestionnaire d'accr\u00e9ditation afin de d\u00e9terminer ce qui doit \u00eatre chang\u00e9 entre la configuration SSL de la cible et la \
 configuration SSL du client.
 # -------------------------------------------------------------------------------------------------
 ssl.client.handshake.error.CWPKI0824E=CWPKI0824E: ECHEC D''ETABLISSEMENT DE LIAISON SSL : erreur de v\u00e9rification du nom d''h\u00f4te lors de la connexion \u00e0 l''h\u00f4te [{0}].  Le nom d''h\u00f4te utilis\u00e9 pour acc\u00e9der au serveur ne correspond pas aux informations SubjectDN ou Subject Alternative Name (SAN) du certificat de serveur.  Message d''erreur d\u00e9taill\u00e9 g\u00e9n\u00e9r\u00e9 par l''exception d''\u00e9tablissement de liaison SSL : [{1}].

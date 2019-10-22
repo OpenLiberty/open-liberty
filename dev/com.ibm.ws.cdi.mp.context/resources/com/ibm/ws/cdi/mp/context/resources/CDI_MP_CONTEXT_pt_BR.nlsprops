@@ -23,7 +23,7 @@
 #   (single quote must be coded as one single quote '). 
 
 # This message bundle does not have its own message range, and instead reserves specific error messages from the 
-# com.ibm.ws.concurrent.mp.1.0 message bundle
+# com.ibm.ws.microprofile.contextpropagation.1.0 message bundle
 
 # do not translate: CDI, CompletionStage
 CWWKC1158.cannot.lazy.enlist.beans=CWWKC1158E: Deve-se acessar os beans CDI antes de o contexto ser capturado para a a\u00e7\u00e3o ou tarefa contextual para que os beans CDI se comportem da maneira correta quando acessados a partir da a\u00e7\u00e3o ou tarefa. \
