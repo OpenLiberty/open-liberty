@@ -36,6 +36,7 @@ import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.security.audit.AuditConstants;
 import com.ibm.websphere.security.audit.AuditEvent;
 import com.ibm.websphere.security.audit.context.AuditManager;
@@ -115,6 +116,13 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
     public static final String KEY_WEB_AUTHENTICATOR = "webAuthenticator";
     public static final String KEY_UNPROTECTED_RESOURCE_SERVICE = "unprotectedResourceService";
     static final String KEY_CONFIG_CHANGE_LISTENER = "webAppSecurityConfigChangeListener";
+    static final String AUTHORIZATION_HEADER = "Authorization";
+    static final String MASKED_BASIC_AUTH = "Basic xxxxx";
+    static final String DEBUG_HEADER_EYECATCHER = "Http Header names and values:\\n";
+    static final int DEBUG_REQ_INFO_BUFSIZE = 512;
+    static final String DEBUG_CONTEXT_PATH = " Request Context Path=";
+    static final String DEBUG_SERVLET_PATH = ", Servlet Path=";
+    static final String DEBUG_PATH_INFO = ", Path Info=";
 
     static final String DELEGATION_USERS_LIST = "DELEGATION_USERS_LIST";
     protected final ConcurrentServiceReferenceMap<String, WebAuthenticator> webAuthenticatorRef = new ConcurrentServiceReferenceMap<String, WebAuthenticator>(KEY_WEB_AUTHENTICATOR);
@@ -559,15 +567,8 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
     @Override
     public Object preInvoke(HttpServletRequest req, HttpServletResponse resp, String servletName, boolean enforceSecurity) throws SecurityViolationException, IOException {
 
-        if (tc.isDebugEnabled() && req != null) {
-            Tr.debug(tc, "Http Header names and values:\n" + debugGetAllHttpHdrs(req));
-
-            StringBuffer sb = new StringBuffer();
-            sb.append(" Request Context Path=").append(req.getContextPath());
-            sb.append(", Servlet Path=").append(req.getServletPath());
-            sb.append(", Path Info=").append(req.getPathInfo());
-            Tr.debug(tc, sb.toString());
-        }
+        //if (tc.isDebugEnabled())
+        String s = servletRequestInfo(req);
 
         Subject invokedSubject = subjectManager.getInvocationSubject();
         Subject receivedSubject = subjectManager.getCallerSubject();
@@ -601,25 +602,39 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
     }
 
     /**
-     * Debug method used to collect all the Http header names and values.
+     * Collect all the Http header names and values.
      *
      * @param req HttpServletRequest
      * @return Returns a string that contains each parameter and it value(s)
      *         in the HttpServletRequest object.
      */
-    private String debugGetAllHttpHdrs(HttpServletRequest req) {
-        StringBuffer sb = new StringBuffer(512);
-        try {
-            Enumeration<String> headerNames = req.getHeaderNames();
-            while (headerNames.hasMoreElements()) {
-                String headerName = headerNames.nextElement();
-                sb.append(headerName).append("=");
-                sb.append("[").append(getHeader(req, headerName)).append("]\n");
+    private String servletRequestInfo(HttpServletRequest req) {
+
+        StringBuffer sb = new StringBuffer(DEBUG_REQ_INFO_BUFSIZE);
+        sb.append(DEBUG_HEADER_EYECATCHER);
+
+        if (req != null) {
+            try {
+                Enumeration<String> headerNames = req.getHeaderNames();
+                while (headerNames.hasMoreElements()) {
+                    String headerName = headerNames.nextElement();
+                    sb.append(headerName).append("=");
+                    sb.append("[").append(getHeader(req, headerName)).append("]\n");
+                }
+            } catch (Throwable t) {
+                // do nothing because it probably means the parser was trying to parse
+                // non form data or serialized object data.  This is a trace issue and
+                // has nothing to do with the spec.
             }
-        } catch (Throwable t) {
-            // do nothing because it probably means the parser was trying to parse
-            // non form data or serialized object data.  This is a trace issue and
-            // has nothing to do with the spec.
+
+            if (req.getContextPath() != null)
+                sb.append(DEBUG_CONTEXT_PATH).append(req.getContextPath());
+            if (req.getServletPath() != null)
+                sb.append(DEBUG_SERVLET_PATH).append(req.getServletPath());
+            if (req.getPathInfo() != null)
+                sb.append(DEBUG_PATH_INFO).append(req.getPathInfo());
+        } else {
+            sb.append("Request is null");
         }
         return sb.toString();
     }
@@ -632,26 +647,32 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
      **
      **     The return value of this method cannot be null.
      */
-    static final String getHeader(HttpServletRequest req, String key) {
+    @Trivial
+    private String getHeader(HttpServletRequest req, String key) {
         HttpServletRequest sr = req;
+        String header = null;
+
         if (sr instanceof HttpServletRequestWrapper) {
             HttpServletRequestWrapper w = (HttpServletRequestWrapper) sr;
-
             // make sure we drill all the way down to an SRTServletRequest...there
             // may be multiple proxied objects
             sr = (HttpServletRequest) w.getRequest();
-
             while (sr != null && sr instanceof HttpServletRequestWrapper)
                 sr = (HttpServletRequest) ((HttpServletRequestWrapper) sr).getRequest();
         }
 
         if (sr != null && sr instanceof SRTServletRequest) {
             // Cast and return result
-            String header = ((SRTServletRequest) sr).getHeaderDirect(key);
-            return header;
+            header = ((SRTServletRequest) sr).getHeaderDirect(key);
+        } else {
+            header = req.getHeader(key);
         }
 
-        return req.getHeader(key);
+        if (key != null && key.equalsIgnoreCase(AUTHORIZATION_HEADER) && header != null && header.startsWith("Basic")) {
+            header = MASKED_BASIC_AUTH;
+        }
+
+        return ((header == null) ? "" : header);
     }
 
     /**
