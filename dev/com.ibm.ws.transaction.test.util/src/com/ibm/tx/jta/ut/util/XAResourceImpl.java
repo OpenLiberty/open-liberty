@@ -22,7 +22,7 @@ import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.AccessController;
-import java.security.PrivilegedExceptionAction;
+import java.security.PrivilegedAction;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -1415,16 +1415,17 @@ public class XAResourceImpl implements XAResource, Serializable {
         return _resources.size();
     }
 
-    public static synchronized void clear() throws Exception {
+    public static synchronized void clear() {
         _XAEvents.clear();
         _resources.clear();
         _nextKey.set(0);
-        AccessController.doPrivileged(new PrivilegedExceptionAction<Boolean>() {
 
-            @Override
-            public Boolean run() throws Exception {
-                return new File(STATE_FILE).delete();
-            }
+        AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+
+			@Override
+			public Boolean run() {
+				return new File(STATE_FILE).delete();
+			}
         });
     }
 
