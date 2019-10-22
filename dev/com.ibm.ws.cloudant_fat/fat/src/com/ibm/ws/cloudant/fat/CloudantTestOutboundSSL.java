@@ -41,7 +41,8 @@ public class CloudantTestOutboundSSL extends FATServletClient {
     private static final String DB_NAME = "outboundssldb";
     public static final String JEE_APP = "cloudantfat";
     public static final String SERVLET_NAME = "CloudantTestServlet";
-    public static String[] expectedFailures = { "CWWKG0033W.*does_not_exist" };
+    // CWWKO0801E (SSLHandshakeErrorTracker - no cipher suites in common) : See defect 260787
+    public static String[] expectedFailures = { "CWWKG0033W.*does_not_exist", "CWWKO0801E" };
 
     @BeforeClass
     public static void setUp() throws Exception {
