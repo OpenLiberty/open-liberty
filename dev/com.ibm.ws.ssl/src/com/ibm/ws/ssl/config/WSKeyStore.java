@@ -1418,7 +1418,7 @@ public class WSKeyStore extends Properties {
                 Certificate cert = certs.get(i);
                 // add the certificate to the keystore with an alias format: envcert-[index]-cert_[keystorename]
                 String alias = "envcert-" + String.valueOf(i) + "-" + key;
-                setCertificateEntryNoStore(alias, cert);
+                setCertificateEntryNoStore(alias.toLowerCase(), cert);
             }
 
         } catch (Exception e) {
@@ -1445,6 +1445,7 @@ public class WSKeyStore extends Properties {
         try {
             if (myKeyStore != null) {
                 myKeyStore.setCertificateEntry(alias, cert);
+
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Certificate " + alias + " set to keystore " + name);
                 }
