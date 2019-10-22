@@ -107,13 +107,15 @@ Include-Resource: \
   @${repo;org.eclipse.persistence.core;2.7.4.v20190115-ad5b7c6b2a;EXACT}!/!META-INF/maven/*,\
   @${repo;org.eclipse.persistence.jpa.jpql;2.7.4.v20190115-ad5b7c6b2a;EXACT}!/!META-INF/maven/*,\
   @${repo;org.eclipse.persistence.jpa.modelgen;2.7.4.v20190115-ad5b7c6b2a;EXACT}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence.jpa;2.7.4.v20190115-ad5b7c6b2a;EXACT}!/!META-INF/maven/*
+  @${repo;org.eclipse.persistence.jpa;2.7.4.v20190115-ad5b7c6b2a;EXACT}!/!META-INF/maven/*,\
+  org/eclipse/persistence/internal/helper=${bin}/org/eclipse/persistence/internal/helper
 
 publish.wlp.jar.suffix: dev/api/third-party
 
 instrument.classesExcludes: \
   org/eclipse/persistence/exceptions/i18n/*.class, \
-  org/eclipse/persistence/internal/localization/i18n/*.class
+  org/eclipse/persistence/internal/localization/i18n/*.class, \
+  org/eclipse/persistence/internal/helper/*.class
 
 -buildpath: \
 	org.eclipse.persistence.jpa;version=2.7.4.v20190115-ad5b7c6b2a;strategy=exact,\
