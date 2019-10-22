@@ -30,11 +30,13 @@ import com.ibm.ws.jsf22.fat.tests.JSF22FlashEventsTests;
 import com.ibm.ws.jsf22.fat.tests.JSF22FlowsTests;
 import com.ibm.ws.jsf22.fat.tests.JSF22IncludeTest;
 import com.ibm.ws.jsf22.fat.tests.JSF22InputFileTests;
+import com.ibm.ws.jsf22.fat.tests.JSF22LocalizationTesterTests;
 import com.ibm.ws.jsf22.fat.tests.JSF22MiscLifecycleTests;
 import com.ibm.ws.jsf22.fat.tests.JSF22MiscellaneousTests;
 import com.ibm.ws.jsf22.fat.tests.JSF22ResetValuesAndAjaxDelayTests;
 import com.ibm.ws.jsf22.fat.tests.JSF22ResourceLibraryContractHtmlUnit;
 import com.ibm.ws.jsf22.fat.tests.JSF22StatelessViewTests;
+import com.ibm.ws.jsf22.fat.tests.JSF22ThirdPartyApiTests;
 import com.ibm.ws.jsf22.fat.tests.JSF22ViewActionAndPhaseIdTests;
 import com.ibm.ws.jsf22.fat.tests.JSF22ViewPoolingTests;
 import com.ibm.ws.jsf22.fat.tests.JSFCompELTests;
@@ -43,17 +45,15 @@ import com.ibm.ws.jsf22.fat.tests.JSFHtml5Tests;
 import com.ibm.ws.jsf22.fat.tests.JSFHtmlUnit;
 import com.ibm.ws.jsf22.fat.tests.JSFServerTest;
 import com.ibm.ws.jsf22.fat.tests.JSFSimpleHtmlUnit;
-import com.ibm.ws.jsf22.fat.tests.JSF22LocalizationTesterTests;
 
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
-
-import org.junit.ClassRule;
 
 /**
  * JSF 2.2 Tests
@@ -98,7 +98,8 @@ import org.junit.ClassRule;
                 JSF22IncludeTest.class,
                 JSF22InputFileTests.class,
                 JSF22LocalizationTesterTests.class,
-                JSF22AparTests.class
+                JSF22AparTests.class,
+                JSF22ThirdPartyApiTests.class
 })
 public class FATSuite {
 
