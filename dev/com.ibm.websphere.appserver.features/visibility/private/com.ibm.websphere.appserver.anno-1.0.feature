@@ -3,7 +3,8 @@ symbolicName=com.ibm.websphere.appserver.anno-1.0
 IBM-API-Package: javax.annotation; type="spec", \
  javax.annotation.security; type="spec", \
  javax.annotation.sql; type="spec"
-IBM-SPI-Package: com.ibm.wsspi.anno.classsource, \
+IBM-SPI-Package: \
+ com.ibm.wsspi.anno.classsource, \
  com.ibm.wsspi.anno.info, \
  com.ibm.wsspi.anno.service, \
  com.ibm.wsspi.anno.targets, \

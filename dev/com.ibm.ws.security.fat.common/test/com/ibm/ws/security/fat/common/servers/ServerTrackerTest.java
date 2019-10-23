@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.Arrays;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -26,6 +27,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.ibm.ws.security.fat.common.Constants;
+import com.ibm.ws.security.fat.common.MessageConstants;
 import com.ibm.ws.security.test.common.CommonTestClass;
 
 import componenttest.topology.impl.LibertyServer;
@@ -102,6 +104,7 @@ public class ServerTrackerTest extends CommonTestClass {
             mockery.checking(new Expectations() {
                 {
                     one(server1).addInstalledAppForValidation(Constants.APP_TESTMARKER);
+                    one(server1).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKG0014E_CONFIG_PARSER_XML_SYNTAX_ERROR));
                 }
             });
 
@@ -127,6 +130,7 @@ public class ServerTrackerTest extends CommonTestClass {
             mockery.checking(new Expectations() {
                 {
                     exactly(2).of(server1).addInstalledAppForValidation(Constants.APP_TESTMARKER);
+                    exactly(2).of(server1).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKG0014E_CONFIG_PARSER_XML_SYNTAX_ERROR));
                 }
             });
 
@@ -153,8 +157,11 @@ public class ServerTrackerTest extends CommonTestClass {
             mockery.checking(new Expectations() {
                 {
                     one(server1).addInstalledAppForValidation(Constants.APP_TESTMARKER);
+                    one(server1).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKG0014E_CONFIG_PARSER_XML_SYNTAX_ERROR));
                     one(server2).addInstalledAppForValidation(Constants.APP_TESTMARKER);
+                    one(server2).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKG0014E_CONFIG_PARSER_XML_SYNTAX_ERROR));
                     one(server3).addInstalledAppForValidation(Constants.APP_TESTMARKER);
+                    one(server3).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKG0014E_CONFIG_PARSER_XML_SYNTAX_ERROR));
                 }
             });
 
@@ -218,7 +225,8 @@ public class ServerTrackerTest extends CommonTestClass {
             mockery.checking(new Expectations() {
                 {
                     one(server1).addInstalledAppForValidation(Constants.APP_TESTMARKER);
-                }
+                    one(server1).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKG0014E_CONFIG_PARSER_XML_SYNTAX_ERROR));
+               }
             });
 
             tracker.addServer(server1);
@@ -248,7 +256,8 @@ public class ServerTrackerTest extends CommonTestClass {
             mockery.checking(new Expectations() {
                 {
                     one(server1).addInstalledAppForValidation(Constants.APP_TESTMARKER);
-                }
+                    one(server1).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKG0014E_CONFIG_PARSER_XML_SYNTAX_ERROR));
+               }
             });
 
             tracker.addServer(server1);
@@ -283,8 +292,11 @@ public class ServerTrackerTest extends CommonTestClass {
             mockery.checking(new Expectations() {
                 {
                     one(server1).addInstalledAppForValidation(Constants.APP_TESTMARKER);
+                    one(server1).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKG0014E_CONFIG_PARSER_XML_SYNTAX_ERROR));
                     one(server2).addInstalledAppForValidation(Constants.APP_TESTMARKER);
+                    one(server2).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKG0014E_CONFIG_PARSER_XML_SYNTAX_ERROR));
                     one(server3).addInstalledAppForValidation(Constants.APP_TESTMARKER);
+                    one(server3).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKG0014E_CONFIG_PARSER_XML_SYNTAX_ERROR));
                 }
             });
 
@@ -319,8 +331,11 @@ public class ServerTrackerTest extends CommonTestClass {
             mockery.checking(new Expectations() {
                 {
                     one(server1).addInstalledAppForValidation(Constants.APP_TESTMARKER);
+                    one(server1).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKG0014E_CONFIG_PARSER_XML_SYNTAX_ERROR));
                     one(server2).addInstalledAppForValidation(Constants.APP_TESTMARKER);
+                    one(server2).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKG0014E_CONFIG_PARSER_XML_SYNTAX_ERROR));
                     one(server3).addInstalledAppForValidation(Constants.APP_TESTMARKER);
+                    one(server3).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKG0014E_CONFIG_PARSER_XML_SYNTAX_ERROR));
                 }
             });
 

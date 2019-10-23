@@ -15,6 +15,12 @@
 <link href="${pageContext.request.contextPath}/WEB-CONTENT/clientAdmin/css/clientAdmin.css" rel="stylesheet">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="DC.Rights" content="© Copyright IBM Corp. 2019" />
+<%
+// Set security headers	
+response.setHeader("X-XSS-Protection", "1");	
+response.setHeader("X-Content-Type-Options", "nosniff");	
+response.setHeader("X-Frame-Options", "SAMEORIGIN");
+%>
 <title id="client_admin_tool">Manage OAuth Clients</title>
 </head>
 

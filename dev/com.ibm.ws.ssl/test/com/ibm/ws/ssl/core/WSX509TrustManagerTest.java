@@ -29,6 +29,7 @@ import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.ibm.websphere.ssl.SSLConfig;
@@ -60,7 +61,18 @@ public class WSX509TrustManagerTest {
     private final WSKeyStore WSKS = mock.mock(WSKeyStore.class, "WSKS");
     KeyStoreManager ksMgr = mock.mock(KeyStoreManager.class, "ksMgr");
     private final SSLConfig sslCfg = mock.mock(SSLConfig.class);
-    private WSX509TrustManager tm = new WSX509TrustManager(mockTM1, null, sslCfg, "defaultTrustStore", "\temp\trust.p12");
+    private WSX509TrustManager tm = null;
+
+    @Before
+    public void setUp() {
+        mock.checking(new Expectations() {
+            {
+                one(sslCfg).get("com.ibm.ws.ssl.trustDefaultCerts");
+                will(returnValue("false"));
+            }
+        });
+        tm = new WSX509TrustManager(mockTM1, null, sslCfg, "defaultTrustStore", "\temp\trust.p12");
+    }
 
     @After
     public void tearDown() {
@@ -120,8 +132,6 @@ public class WSX509TrustManagerTest {
      * Test checkServerTrust and is not trusted
      */
     public void checkServerTrusted_notTrusted() throws CertificateException {
-        tm = new WSX509TrustManager(mockTM1, null, sslCfg, "defaultTrustStore", "\temp\trust.p12");
-
         mock.checking(new Expectations() {
             {
 
@@ -136,8 +146,14 @@ public class WSX509TrustManagerTest {
                 one(mockX509Leaf).getNotAfter();
                 will(returnValue(new Date(1896215300)));
 
+                one(sslCfg).get("com.ibm.ws.ssl.trustDefaultCerts");
+                will(returnValue("false"));
+
             }
         });
+
+        tm = new WSX509TrustManager(mockTM1, null, sslCfg, "defaultTrustStore", "\temp\trust.p12");
+
         try {
             tm.checkServerTrusted(mockX509s, AUTH_TYPE);
         } catch (CertificateException e) {
@@ -150,15 +166,18 @@ public class WSX509TrustManagerTest {
      * Test checkServerTrusted, trusted
      */
     public void checkServerTrusted_trusted() throws CertificateException {
-        tm = new WSX509TrustManager(mockTM1, null, sslCfg, "defaultTrustStore", "\temp\trust.p12");
 
         mock.checking(new Expectations() {
             {
 
                 allowing(mockX509TM).checkServerTrusted(mockX509s, AUTH_TYPE);
 
+                one(sslCfg).get("com.ibm.ws.ssl.trustDefaultCerts");
+                will(returnValue("false"));
+
             }
         });
+        tm = new WSX509TrustManager(mockTM1, null, sslCfg, "defaultTrustStore", "\temp\trust.p12");
         tm.checkServerTrusted(mockX509s, AUTH_TYPE);
     }
 
@@ -170,7 +189,7 @@ public class WSX509TrustManagerTest {
         if (!System.getProperty("java.version").startsWith("1."))
             return;
 
-        tm = new WSX509TrustManager(mockTM1, stdin, stdout, false);
+        tm = new WSX509TrustManager(mockTM1, stdin, stdout, false, false);
 
         mock.checking(new Expectations() {
             {
@@ -204,7 +223,7 @@ public class WSX509TrustManagerTest {
         if (!System.getProperty("java.version").startsWith("1."))
             return;
 
-        tm = new WSX509TrustManager(mockTM1, stdin, stdout, false);
+        tm = new WSX509TrustManager(mockTM1, stdin, stdout, false, false);
 
         mock.checking(new Expectations() {
             {
@@ -235,6 +254,13 @@ public class WSX509TrustManagerTest {
      */
     @Test
     public void setCertificateToTruststore_noKeyStore() throws Exception {
+        mock.checking(new Expectations() {
+            {
+                one(sslCfg).get("com.ibm.ws.ssl.trustDefaultCerts");
+                will(returnValue("false"));
+            }
+        });
+
         tm = new WSX509TrustManager(mockTM1, null, sslCfg, "defaultTrustStore", "\temp\trust.p12");
 
         try {

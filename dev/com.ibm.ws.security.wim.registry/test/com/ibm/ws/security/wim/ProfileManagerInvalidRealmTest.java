@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,8 +9,6 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.wim;
-
-import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.text.MessageFormat;
@@ -24,13 +22,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.rules.TestRule;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.component.ComponentContext;
 
 import com.ibm.ws.security.wim.adapter.file.FileAdapter;
 import com.ibm.wsspi.security.wim.exception.EntityNotInRealmScopeException;
-import com.ibm.wsspi.security.wim.exception.WIMException;
 import com.ibm.wsspi.security.wim.model.IdentifierType;
 import com.ibm.wsspi.security.wim.model.PersonAccount;
 import com.ibm.wsspi.security.wim.model.Root;
@@ -52,6 +50,10 @@ public class ProfileManagerInvalidRealmTest {
     private final Configuration baseEntryConfig = mock.mock(Configuration.class, "baseEntryConfig");
 
     private final Configuration dummyBaseEntryConfig = mock.mock(Configuration.class, "dummyBaseEntryConfig");
+
+    /** Test rule for testing for expected exceptions. */
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
 
     private static class FA extends FileAdapter {
 
@@ -103,20 +105,17 @@ public class ProfileManagerInvalidRealmTest {
     public void tearDown() {}
 
     @Test
-    public void testEntityNotInRealmScope() throws IOException {
+    public void testEntityNotInRealmScope() throws Exception {
         Root root = new Root();
         PersonAccount person = new PersonAccount();
         root.getEntities().add(person);
         IdentifierType id = new IdentifierType();
         id.setUniqueName("uid=user1,o=defaultWIMFileBasedRealm");
         person.setIdentifier(id);
-        try {
-            vmmService.get(root);
-            assertEquals("Call completed successfully", false, true);
-        } catch (WIMException e) {
-            String errorMessage = e.getMessage();
-            assertEquals("Incorrect exception thrown", EntityNotInRealmScopeException.class, e.getClass());
-            // assertEquals("The error code for EntityNotInRealmScopeException", "CWIML0515E", errorMessage.substring(0, 10));
-        }
+
+        expectedException.expect(EntityNotInRealmScopeException.class);
+        expectedException.expectMessage("CWIML0515E");
+
+        vmmService.get(root);
     }
 }

@@ -22,6 +22,7 @@ import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import junit.framework.Assert;
@@ -77,6 +78,7 @@ public class EnableSpringBootTraceTests extends CommonWebServerTests {
     }
 
     @Test
+    @MaximumJavaLevel(javaLevel = 8)
     public void testEnableSpringBootTraceFor15() throws Exception {
         testBasicSpringBootApplication();
     }

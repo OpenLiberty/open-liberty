@@ -21,15 +21,15 @@ plugins.apply 'jacoco'
  * POM and therefore can't resolve secondary dependencies.
  */
 dependencies {
-    jacocoAnt "org.jacoco:org.jacoco.agent:0.7.9",
-            "org.jacoco:org.jacoco.ant:0.7.9",
-            "org.jacoco:org.jacoco.core:0.7.9",
-            "org.jacoco:org.jacoco.report:0.7.9",
+    jacocoAnt "org.jacoco:org.jacoco.agent:0.8.4",
+            "org.jacoco:org.jacoco.ant:0.8.4",
+            "org.jacoco:org.jacoco.core:0.8.4",
+            "org.jacoco:org.jacoco.report:0.8.4",
             "org.ow2.asm:asm-all:5.2"
 }
 
 jacoco {
-    toolVersion = "0.7.9"
+    toolVersion = "0.8.4"
 }
 
 test {
@@ -45,7 +45,6 @@ test {
     }
 
     jacoco {
-        append = false
         enabled = enableJacoco
     }
 }

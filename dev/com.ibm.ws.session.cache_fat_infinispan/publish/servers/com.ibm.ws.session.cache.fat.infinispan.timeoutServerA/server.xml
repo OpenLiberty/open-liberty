@@ -11,7 +11,7 @@
     
     <featureManager>
     </featureManager>   
-    <httpSession maxInMemorySessionCount="1" allowOverflow="false" hideSessionValues="false" invalidationTimeout="5s" reaperPollInterval="30"/>
+    <httpSession maxInMemorySessionCount="1" allowOverflow="false" hideSessionValues="false" invalidationTimeout="5" reaperPollInterval="30"/> <!-- "5s" with units causes problem with simplicity object -->
     <httpSessionCache libraryRef="InfinispanLib" writeContents="ALL_SESSION_ATTRIBUTES" uri="file:${shared.resource.dir}/infinispan/infinispan.xml"/>
 
     <application location="sessionCacheApp.war">
@@ -24,10 +24,10 @@
 	
 	<!-- Perms needed because the application uses OSGi reflectively to access the same caches as HTTP Session persistence. -->
 	<!-- Applications should never do this. We are only granting it to the test app for purposes of verifying cached values. -->
-    <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
-    <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
-    <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="org.osgi.framework.AdminPermission" actions="context" name="*"/>
-    <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="org.osgi.framework.ServicePermission" actions="get" name="*"/>
+    <javaPermission codebase="${server.config.dir}/apps/sessionCacheApp.war" className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+    <javaPermission codebase="${server.config.dir}/apps/sessionCacheApp.war" className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
+    <javaPermission codebase="${server.config.dir}/apps/sessionCacheApp.war" className="org.osgi.framework.AdminPermission" actions="context" name="*"/>
+    <javaPermission codebase="${server.config.dir}/apps/sessionCacheApp.war" className="org.osgi.framework.ServicePermission" actions="get" name="*"/>
 
     <javaPermission codebase="${shared.resource.dir}/infinispan/*" className="java.security.AllPermission"/>
 

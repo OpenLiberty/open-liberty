@@ -158,7 +158,7 @@
 		<!-- Made the plural derefAliases to derefAlias for consumability -->	
 		<AD id="derefAlias" name="internal" description="internal use only"
 			required="false" type="Boolean" default="false"/>
-		<AD id="primaryServerQueryTimeInterval" name="internal" description="internal use only"
+		<AD id="primaryServerQueryTimeInterval" name="%primaryServerQueryTimeInterval" description="%primaryServerQueryTimeInterval.desc"
 			required="false" type="Integer" default="15"/>
 		<AD id="returnToPrimaryServer" name="%returnToPrimaryServer" description="%returnToPrimaryServer.desc"
 			required="false" type="Boolean" default="true"/>	

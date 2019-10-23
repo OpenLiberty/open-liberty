@@ -76,7 +76,8 @@ import org.junit.runners.Suite.SuiteClasses;
                 URAPIs_ADWildCardTest.class,
                 LDAPRegressionTest.class,
                 ReadTimeoutTest.class,
-                RacfSdbmLdapTest.class
+                RacfSdbmLdapTest.class,
+                LdapFailoverTest.class
 })
 public class FATSuite extends CommonLocalLDAPServerSuite {
 

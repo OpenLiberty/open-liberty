@@ -17,6 +17,7 @@ src: \
   test-applications/basicQueryApp/src,\
   test-applications/deprecationApp/src,\
   test-applications/defaultvalueApp/src,\
+  test-applications/graphQLInterfaceApp/src,\
   test-applications/ifaceApp/src,\
   test-applications/ignoreApp/src,\
   test-applications/inputFieldsApp/src,\

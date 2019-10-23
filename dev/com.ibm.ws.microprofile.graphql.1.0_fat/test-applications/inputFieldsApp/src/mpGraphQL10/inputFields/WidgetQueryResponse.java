@@ -31,7 +31,7 @@ public class WidgetQueryResponse {
         if (data == null) {
             sb.append("null");
         } else {
-            List<Widget> widgets = data.getAllWidgets();
+            List<WidgetClientObject> widgets = data.getAllWidgets();
             if (widgets == null) {
                 if (data.getCreateWidget() != null) {
                     sb.append("created widget:" + data.getCreateWidget());
@@ -39,7 +39,7 @@ public class WidgetQueryResponse {
                     sb.append("nullList");
                 }
             } else {
-                for (Widget w : widgets) {
+                for (WidgetClientObject w : widgets) {
                     sb.append(" ").append(w);
                 }
             }

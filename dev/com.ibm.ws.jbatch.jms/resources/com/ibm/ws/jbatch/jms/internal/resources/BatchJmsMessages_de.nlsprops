@@ -1,0 +1,107 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jbatch.jms/resources/com/ibm/ws/jbatch/jms/internal/resources/BatchJmsMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0200 - 0249: com.ibm.ws.jbatch.jms
+# 
+warning.unsupported.message.type=CWWKY0200W: Der Nachrichtentyp {0} dieser JMS-Stapelnachricht wird nicht unterst\u00fctzt. Diese Anforderung wird nicht verarbeitet. Der Inhalt dieser Nachricht lautet {1}.
+warning.unsupported.message.type.explanation=Dieser Nachrichtentyp wird nicht unterst\u00fctzt, weil er kein JMS-JMS-MapMessage-Typ ist. 
+warning.unsupported.message.type.useraction=Es ist keine Aktion erforderlich. 
+ 
+warning.unsupported.operation=CWWKY0201W: Die Operation {0} ist eine nicht unterst\u00fctzte Operation f\u00fcr eine JMS-Stapelnachricht. Diese Anforderung wird nicht verarbeitet. Der Inhalt dieser Nachricht lautet {1}.
+warning.unsupported.operation.explanation=Es werden nur die Operationen 'Start' und 'Restart' unterst\u00fctzt.
+warning.unsupported.operation.useraction=Es ist keine Aktion erforderlich.
+
+warning.batch.activation.spec.not.found=CWWKY0202W: Der Nachrichtenendpunkt f\u00fcr den JMS-Stapellistener {0} kann nicht aktiviert werden, weil die Stapelaktivierungsspezifikation {1} nicht in der Serverkonfiguration vorhanden ist. Der Nachrichtenendpunkt empf\u00e4ngt so lange keine Stapelnachrichten, bis die Stapelaktivierungsspezifikation verf\u00fcgbar ist. 
+warning.batch.activation.spec.not.found.explanation=Der Server startet den JMS-Stapellistener zwar, kann aber den Nachrichtenendpunkt nicht aktivieren, weil die Aktivierungsspezifikation nicht in der Serverkonfiguration gefunden wurde. Der Nachrichtenendpunkt empf\u00e4ngt erst dann Stapelnachrichten, wenn der Endpunkt aktiviert werden kann.
+warning.batch.activation.spec.not.found.useraction=Erstellen Sie die Aktivierungsspezifikation mit dem angegebenen Namen in der Serverkonfiguration manuell oder \u00fcber das Admin Center.
+
+warning.batch.destination.queue.not.found=CWWKY0203W: Der Nachrichtenendpunkt f\u00fcr den JMS-Stapellistener {0} kann nicht aktiviert werden, weil die Zielwarteschlange {1} nicht vorhanden ist. Der Nachrichtenendpunkt empf\u00e4ngt so lange keine JMS-Stapelnachrichten, bis die Zielwarteschlange verf\u00fcgbar ist.
+warning.batch.destination.queue.not.found.explanation=Der Server startet den JMS-Stapellistener zwar, kann aber den Nachrichtenendpunkt nicht aktivieren, weil die Zielwarteschlange nicht gefunden wurde. Der Nachrichtenendpunkt empf\u00e4ngt erst dann JMS-Stapelnachrichten, wenn der Endpunkt aktiviert werden kann.
+warning.batch.destination.queue.not.found.useraction=Erstellen Sie die Zielwarteschlange mit dem angegebenen Namen in der Serverkonfiguration manuell oder \u00fcber das Admin Center.
+
+warning.batch.dispatcher.connection.factory.not.found=CWWKY0204W: Der JMS-Stapeldispatcher kann nicht gestartet werden, weil die Verbindungsfactory {0} nicht vorhanden ist. Der JMS-Stapeldispatcher sendet erst dann JMS-Stapelnachrichten, wenn die Verbindungsfactory verf\u00fcgbar ist. 
+warning.batch.dispatcher.connection.factory.not.found.explanation=Der Server kann den JMS-Stapeldispatcher nicht starten, weil die JMS-Stapelverbindungsfactory nicht gefunden wurde. Der JMS-Stapeldispatcher sendet erst dann JMS-Stapelnachrichten, wenn die Verbindungsfactory verf\u00fcgbar ist.
+warning.batch.dispatcher.connection.factory.not.found.useraction=Erstellen Sie die Verbindungsfactory mit dem angegebenen Namen in der Serverkonfiguration manuell oder \u00fcber das Admin Center.
+
+warning.batch.dispatcher.queue.not.found=CWWKY0205W: Der JMS-Stapeldispatcher kann nicht gestartet werden, weil die Warteschlange {0} nicht vorhanden ist. Der JMS-Stapeldispatcher sendet erst dann JMS-Stapelnachrichten, wenn die Warteschlange verf\u00fcgbar ist.
+warning.batch.dispatcher.queue.not.found.explanation=Der Server kann den JMS-Stapeldispatcher nicht starten, weil die JMS-Stapelwarteschlange nicht gefunden wurde. Der JMS-Stapeldispatcher sendet erst dann JMS-Stapelnachrichten, wenn die Warteschlange verf\u00fcgbar ist.
+warning.batch.dispatcher.queue.not.found.useraction=Erstellen Sie die Warteschlange mit dem angegebenen Namen in der Serverkonfiguration manuell oder \u00fcber das Admin Center.
+
+error.unable.to.rollback.start=CWWKY0206E: Im JMS-Stapeldispatcher ist beim Zuteilen der Startanforderung f\u00fcr die Jobinstanz {0} eine Ausnahme eingetreten. Deshalb konnte kein Rollback der Operation durchgef\u00fchrt werden. Ausnahme: {1}
+error.unable.to.rollback.start.explanation=Der JMS-Stapeldispatcher konnte kein Rollback der Transaktion durchf\u00fchren.
+error.unable.to.rollback.start.useraction=\u00dcbergeben Sie den Job erneut.
+
+error.unable.to.rollback.restart=CWWKY0207E: Im JMS-Stapeldispatcher ist beim Zuteilen der Neustartanforderung f\u00fcr den Job {0} eine Ausnahme eingetreten. Deshalb konnte kein Rollback der Operation durchgef\u00fchrt werden. Ausnahme: {1}
+error.unable.to.rollback.restart.explanation=Der JMS-Stapeldispatcher konnte kein Rollback der Transaktion durchf\u00fchren.
+error.unable.to.rollback.restart.useraction=\u00dcbergeben Sie den Job erneut.
+
+error.endpoint.unable.process.message=CWWKY0208E: Im JMS-Stapellistener ist bei der Verarbeitung der Nachricht {0} eine Ausnahme eingetreten. Ausnahme: {1}
+error.endpoint.unable.process.message.explanation=Der JMS-Stapellistener konnte die JMS-Stapelanforderungsnachricht nicht verarbeiten.
+error.endpoint.unable.process.message.useraction=\u00dcbergeben Sie den Job erneut.
+
+
+error.endpoint.unable.process.start.request=CWWKY0209E: Im JMS-Stapellistener ist bei der Verarbeitung der Operation zum Starten des Jobs f\u00fcr die Jobinstanz {0} eine Ausnahme eingetreten. Ausnahme: {1}
+error.endpoint.unable.process.start.request.explanation=Der JMS-Stapellistener konnte die Anforderung zum Starten des Jobs nicht verarbeiten.
+error.endpoint.unable.process.start.request.useraction=\u00dcbergeben Sie den Job erneut.
+
+error.endpoint.unable.process.restart.request=CWWKY0210E: Im JMS-Stapellistener ist bei der Verarbeitung der Operation zum erneuten Starten des Jobs f\u00fcr die Jobausf\u00fchrung {0} eine Ausnahme eingetreten. Ausnahme: {1}
+error.endpoint.unable.process.restart.request.explanation=Der JMS-Stapellistener konnte die Anforderung zum erneuten Starten des Jobs nicht verarbeiten.
+error.endpoint.unable.process.restart.request.useraction=\u00dcbergeben Sie den Job erneut.
+
+warning.batch.events.unable.to.publish=CWWKY0211W: Die Stapellaufzeit kann ein Ereignis nicht im Topic {0} f\u00fcr das Objekt {1} ver\u00f6ffentlichen. Ausnahme: {2}
+warning.batch.events.unable.to.publish.explanation=Das Ereignis kann aufgrund einer Ausnahme nicht ver\u00f6ffentlicht werden.
+warning.batch.events.unable.to.publish.useraction=Suchen Sie in den Serverprotokollen nach dem entsprechenden Fehler.
+
+error.batch.events.publisher.jms.resource.activate=CWWKY0212E: Es kann keine JMS-Ressource f\u00fcr den Stapelereignispublisher erstellt werden. Ausnahme: {0}
+error.batch.events.publisher.jms.resource.activate.explanation=Es konnte keine JMS-Ressource erstellt werden, um den Stapelereignispublisher zu aktivieren, weil eine Ausnahme eingetreten ist. 
+error.batch.events.publisher.jms.resource.activate.useraction=\u00dcberpr\u00fcfen Sie die Konfiguration der mit dem Element batchJmsDispatcher konfigurierten JMS-Verbindungsfactory (Standardfactory batchConnectionFactory oder explizit referenzierte Factory). \u00dcberpr\u00fcfen Sie die JMS-Konnektivit\u00e4t und suchen Sie in den Serverprotokollen nach zugeh\u00f6rigen Fehlern.
+
+error.batch.dispatcher.jms.resource.activate=CWWKY0213E: Es kann keine JMS-Ressource f\u00fcr den Stapeldispatcher erstellt werden. Ausnahme: {0}
+error.batch.dispatcher.jms.resource.activate.explanation=Es konnte keine JMS-Ressource erstellt werden, um den Stapeldispatcher zu aktivieren, weil eine Ausnahme eingetreten ist. Deshalb kann der Server keine Jobs oder Partitionen \u00fcber JMS zuteilen.
+error.batch.dispatcher.jms.resource.activate.useraction=\u00dcberpr\u00fcfen Sie die Konfiguration der mit dem Element batchJmsDispatcher konfigurierten JMS-Verbindungsfactory und Warteschlange (Standardfactory batchConnectionFactory oder explizit referenzierte Factory). \u00dcberpr\u00fcfen Sie die JMS-Konnektivit\u00e4t und suchen Sie in den Serverprotokollen nach zugeh\u00f6rigen Fehlern.
+
+warning.endpoint.listener.stale.message=CWWKY0214W: Die Nachricht mit der zugeordneten Jobausf\u00fchrungs-ID {0} wird verworfen, weil sie nicht die neueste Ausf\u00fchrung ist.
+warning.endpoint.listener.stale.message.explanation=Die veraltete zugeordnete Jobausf\u00fchrungsnachricht wird verworfen, weil sie nicht die neuste Ausf\u00fchrung ist.
+warning.endpoint.listener.stale.message.useraction=Es ist keine Aktion erforderlich.
+
+error.start.partition.request=CWWKY0215E: Die Partition f\u00fcr Stapelverarbeitung konnte nicht gestartet werden, weil eine Ausnahme eingetreten ist. Ausnahme: {0}
+error.start.partition.request.explanation=Die Partition f\u00fcr Stapelverarbeitung konnte nicht gestartet werden, weil eine Ausnahme eingetreten ist. 
+error.start.partition.request.useraction=Stoppen Sie den zugeordneten Job, \u00fcberpr\u00fcfen Sie die JMS-Konnektivit\u00e4t und die JMS-Konfiguration und suchen Sie in den Serverprotokollen nach zugeh\u00f6rigen Fehlern.
+
+error.batch.executor.jms.create.failure=CWWKY0216E: Es kann keine JMS-Verbindungsfactory f\u00fcr die Ausf\u00fchrung ferner Partitionen erstellt werden. Ausnahme: {0}
+error.batch.executor.jms.create.failure.explanation=Die Herstellung der Verbindung zur JMS-Verbindungsfactory, die zum Zur\u00fccksenden von Antworten zur Ausf\u00fchrung ferner Partitionen verwendet wird, ist fehlgeschlagen. Dieser Server kann so lange keine \u00fcber JMS verteilten Jobs oder Partitionen ausf\u00fchren, bis das Problem behoben wurde.
+error.batch.executor.jms.create.failure.useraction=\u00dcberpr\u00fcfen Sie die Konfiguration der mit dem Element batchJmsDispatcher konfigurierten JMS-Verbindungsfactory (Standardfactory batchConnectionFactory oder explizit referenzierte Factory). Wenn der Benutzer keine Partitionen verwendet, kann die zugeh\u00f6rige Konfiguration f\u00fcr die ferne JMS-Partition aus der Serverkonfiguration entfernt werden.
+
+error.batch.executor.activate.failure=CWWKY0217E: Das JMS-Steuerprogramm am Endpunkt kann nicht aktiviert werden, weil die folgende Ausnahme eingetreten ist: {0}
+error.batch.executor.activate.failure.explanation=Das JMS-Steuerprogramm am Endpunkt kann wegen einer Ausnahme nicht aktiviert werden.
+error.batch.executor.activate.failure.useraction=Dieser Server kann so lange keine \u00fcber JMS verteilten Jobs oder Partitionen ausf\u00fchren, bis das Problem behoben wurde. \u00dcberpr\u00fcfen Sie die Konfiguration der mit dem Element batchJmsDispatcher konfigurierten JMS-Verbindungsfactory (Standardfactory batchConnectionFactory oder explizit referenzierte Factory). \u00dcberpr\u00fcfen Sie die JMS-Konnektivit\u00e4t und die Endpunktkkonfiguration und suchen Sie in den Serverprotokollen nach zugeh\u00f6rigen Fehlern.
+
+info.batch.events.publish.topic=CWWKY0218I: Die Stapellaufzeit ver\u00f6ffentlicht Ereignisse an das JMS-Topic-Stammverzeichnis {0}.
+info.batch.events.publish.topic.explanation=Nur f\u00fcr Informationszwecke. Die Stapellaufzeit ver\u00f6ffentlicht Ereignisse an das aufgelistete JMS-Topic-Stammverzeichnis.
+info.batch.events.publish.topic.useraction=Das JMS-Topic-Stammverzeichnis f\u00fcr den Stapel kann ge\u00e4ndert werden. \u00dcberpr\u00fcfen Sie die konfigurierten Optionen, die f\u00fcr batchJmsEvents verwendet werden.

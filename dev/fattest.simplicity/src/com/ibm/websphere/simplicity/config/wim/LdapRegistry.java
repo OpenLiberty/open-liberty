@@ -51,6 +51,7 @@ public class LdapRegistry extends ConfigElement {
     private String name; // PRIVATE
     private LdapFilters netscapeFilters;
     private String port; // Integer in metatype, but need to support properties.
+    private Integer primaryServerQueryTimeInterval;
     private String realm;
     private Boolean recursiveSearch;
     private String referal; // PRIVATE
@@ -246,6 +247,13 @@ public class LdapRegistry extends ConfigElement {
      */
     public String getPort() {
         return port;
+    }
+
+    /**
+     * @return the primaryServerQueryTimeInterval
+     */
+    public Integer getPrimaryServerQueryTimeInterval() {
+        return primaryServerQueryTimeInterval;
     }
 
     /**
@@ -558,6 +566,14 @@ public class LdapRegistry extends ConfigElement {
     }
 
     /**
+     * @param primaryServerQueryTimeInterval the primaryServerQueryTimeInterval to set
+     */
+    @XmlAttribute(name = "primaryServerQueryTimeInterval")
+    public void setPrimaryServerQueryTimeInterval(Integer primaryServerQueryTimeInterval) {
+        this.primaryServerQueryTimeInterval = primaryServerQueryTimeInterval;
+    }
+
+    /**
      * @param realm the realm to set
      */
     @XmlAttribute(name = "realm")
@@ -744,6 +760,9 @@ public class LdapRegistry extends ConfigElement {
         }
         if (port != null) {
             sb.append("port=\"").append(port).append("\" ");;
+        }
+        if (primaryServerQueryTimeInterval != null) {
+            sb.append("primaryServerQueryTimeInterval=\"").append(primaryServerQueryTimeInterval).append("\" ");;
         }
         if (realm != null) {
             sb.append("realm=\"").append(realm).append("\" ");;

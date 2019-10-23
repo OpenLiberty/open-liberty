@@ -61,13 +61,11 @@ public class TSSGeneralNameConfig extends TSSServiceConfigurationConfig {
 
     @Override
     @Trivial
-    public String toString() {
-        StringBuilder buf = new StringBuilder();
-        String moreSpaces = "  ";
-        buf.append("TSSGeneralNameConfig: [\n");
+    void toString(String spaces, StringBuilder buf) {
+        String moreSpaces = spaces + "  ";
+        buf.append(spaces).append("TSSGeneralNameConfig: [\n");
         buf.append(moreSpaces).append("name: ").append(name).append("\n");
-        buf.append("]\n");
-        return buf.toString();
+        buf.append(spaces).append("]\n");
     }
 
 }

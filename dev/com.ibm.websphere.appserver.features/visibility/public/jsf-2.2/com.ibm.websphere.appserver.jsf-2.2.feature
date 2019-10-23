@@ -38,7 +38,7 @@ Subsystem-Name: JavaServer Faces 2.2
  com.ibm.websphere.appserver.jsp-2.3, \
  com.ibm.websphere.appserver.jsfProvider-2.2.0.MyFaces, \
  com.ibm.websphere.appserver.javaeeCompatible-7.0
--bundles=com.ibm.ws.org.apache.commons.beanutils.1.8.3, \
+-bundles=com.ibm.ws.org.apache.commons.beanutils.1.9.4, \
  com.ibm.ws.org.apache.commons.collections, \
  com.ibm.ws.jsf.2.2, \
  com.ibm.ws.jsf.shared, \

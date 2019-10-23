@@ -42,4 +42,15 @@ public abstract class TSSServiceConfigurationConfig implements Serializable {
 
         return result;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder buf = new StringBuilder();
+        toString("", buf);
+        return buf.toString();
+    }
+
+    @Trivial
+    abstract void toString(String spaces, StringBuilder buf);
+
 }

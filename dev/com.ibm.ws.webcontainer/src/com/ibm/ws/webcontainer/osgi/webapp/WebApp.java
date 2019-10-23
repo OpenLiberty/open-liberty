@@ -36,6 +36,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
@@ -51,6 +52,7 @@ import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.csi.J2EENameFactory;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
 import com.ibm.ws.container.service.annotations.WebAnnotations;
 import com.ibm.ws.container.service.metadata.MetaDataException;
 import com.ibm.ws.container.service.metadata.MetaDataService;
@@ -308,57 +310,45 @@ public class WebApp extends com.ibm.ws.webcontainer.webapp.WebApp implements Com
     return compNSConfig;
   }
 
-  private List<Class<?>> getInjectionClasses()
-  {
-    if (config.isMetadataComplete())
-    {
+  private List<Class<?>> getInjectionClasses() {
+    if (config.isMetadataComplete()) {
       return Collections.emptyList();
     }
     
     Set<String> classNames = new TreeSet<String>();
     
-    try
-    {
+    try {
       WebAppInjectionClassList injectionClassList = container.adapt(WebAppInjectionClassList.class);
       classNames.addAll(injectionClassList.getClassNames());
-    }
-    catch (UnableToAdaptException e)
-    {
-      if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-      {
+    } catch (UnableToAdaptException e) {
+      if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
         Tr.debug(tc, "getInjectionClasses: failed to adapt to WebAppInjectionClassList ", e);
       }
     }
 
-    for (Iterator<IServletConfig> it = config.getServletInfos(); it.hasNext();)
-    {
+    for (Iterator<IServletConfig> it = config.getServletInfos(); it.hasNext();) {
       IServletConfig servletInfo = it.next();
       addInjectionClassName(classNames, servletInfo.getClassName());
     }
 
-    for (Iterator<IFilterConfig> it = config.getFilterInfos(); it.hasNext();)
-    {
+    for (Iterator<IFilterConfig> it = config.getFilterInfos(); it.hasNext();) {
       IFilterConfig filterInfo = it.next();
       addInjectionClassName(classNames, filterInfo.getClassName());
     }
 
     classNames.addAll(config.getListeners());
     
-    try
-    {
-      WebAnnotations webAnnotations = this.container.adapt(WebAnnotations.class);
+    try {
+      WebAnnotations webAnnotations = getWebAnnotations();
       AnnotationTargets_Targets webModuleTargets = webAnnotations.getAnnotationTargets();
 
       // d95160: Servlet and Filter classes are obtained only from SEED (non-metadata-complete) regions.
       classNames.addAll(webModuleTargets.getAnnotatedClasses(WebServlet.class.getName(), AnnotationTargets_Targets.POLICY_SEED));
       classNames.addAll(webModuleTargets.getAnnotatedClasses(WebFilter.class.getName(), AnnotationTargets_Targets.POLICY_SEED));
 
-    }
-    catch (Exception e)
-    {
+    } catch (Exception e) {
       // debug and swallow
-      if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-      {
+      if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
         Tr.debug(tc, "getInjectionClasses: got exception looking for annotations of servlets and filters", e);
       }
     }
@@ -894,173 +884,168 @@ public class WebApp extends com.ibm.ws.webcontainer.webapp.WebApp implements Com
       }
   }
 
+  private WebAnnotations getWebAnnotations() throws UnableToAdaptException {
+      return AnnotationsBetaHelper.getWebAnnotations( getModuleContainer() );
+  }
+
   /*
    * F743-31926
-   * 
-   * Scan for the classes 
    */
   @Override
-  protected void scanForHandlesTypesClasses(com.ibm.ws.container.DeployedModule deployedModule,
-                                            HashMap<ServletContainerInitializer, Class[]> handleTypesHashMap,
-                                            HashMap<ServletContainerInitializer, HashSet<Class<?>>> onStartupHashMap) {
+  protected void scanForHandlesTypesClasses(
+      com.ibm.ws.container.DeployedModule deployedModule,
+      HashMap<ServletContainerInitializer, Class[]> handleTypesMap,
+      HashMap<ServletContainerInitializer, HashSet<Class<?>>> onStartupMap) {
 
       String methodName = "scanForHandlesTypesClasses";
-      
-      boolean enableTrace = ( com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable (Level.FINE) );
 
-      WebAnnotations webAppAnnotations;
-      AnnotationTargets_Targets annotationTargets;
+      boolean enableTrace =
+          ( com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable (Level.FINE) );
+
+      WebAnnotations webAppAnnos;
+      AnnotationTargets_Targets annoTargets;
       InfoStore infoStore;
-      
       try {
-          com.ibm.wsspi.adaptable.module.Container moduleContainer = this.getModuleContainer();
-          webAppAnnotations = moduleContainer.adapt(WebAnnotations.class);
-          annotationTargets = webAppAnnotations.getAnnotationTargets();
-          infoStore = webAppAnnotations.getInfoStore();
-
-      } catch (UnableToAdaptException e) {
-          logger.logp(Level.FINE, CLASS_NAME, methodName, "caught UnableToAdaptException: " + e);
-          return;
+          webAppAnnos = getWebAnnotations();
+          annoTargets = webAppAnnos.getAnnotationTargets();
+          infoStore = webAppAnnos.getInfoStore();
+      } catch ( UnableToAdaptException e ) {
+          return; // FFDC
       }
 
       boolean didOpen = false;
-      
+
       try {
-          for (java.util.Map.Entry<ServletContainerInitializer, Class[]> sciEntry : handleTypesHashMap.entrySet() ) {
+          for ( Map.Entry<ServletContainerInitializer, Class[]> sciEntry : handleTypesMap.entrySet() ) {
               ServletContainerInitializer sci = sciEntry.getKey();
-              Class[] handlesTypesAnnotationClasses = sciEntry.getValue();
-              
-              HashSet<Class<?>> handlesTypesOnStartupSet = onStartupHashMap.get(sci);
+              Class[] handledTypes = sciEntry.getValue();
+              Set<Class<?>> startupTypes = onStartupMap.get(sci);
     
-              for ( Class<?> handlesTypesAnnotationClass : handlesTypesAnnotationClasses) {
-                  String handlesTypesAnnotationClassName = handlesTypesAnnotationClass.getName();
-                  
-                  boolean isAnnotation = handlesTypesAnnotationClass.isAnnotation();
-                  boolean isClassAnnotation = isAnnotation && WebAppSCIHelper.isClassTarget(handlesTypesAnnotationClass);   // 'isClassAnnotation' and 'isMethodAnnotation'
-                  boolean isInherited = isClassAnnotation && handlesTypesAnnotationClass.isAnnotationPresent(java.lang.annotation.Inherited.class);
-                  boolean isMethodAnnotation = isAnnotation && WebAppSCIHelper.isMethodTarget(handlesTypesAnnotationClass); // can both be true.
+              for ( Class<?> handledType : handledTypes ) {
+                  String handledTypeName = handledType.getName();
+
+                  boolean isAnnotation = handledType.isAnnotation();
                   if ( enableTrace ) {
-                      logger.logp(Level.FINE, CLASS_NAME, methodName, "Select on class [ {0} ]", handlesTypesAnnotationClassName);
-                      logger.logp(Level.FINE, CLASS_NAME, methodName,"  isAnnotation() [ {0} ]", Boolean.valueOf(isAnnotation));
-                      if (isAnnotation) {
-                          logger.logp(Level.FINE, CLASS_NAME, methodName,"  isClassAnno()  [ {0} ]", Boolean.valueOf(isClassAnnotation));
-                          logger.logp(Level.FINE, CLASS_NAME, methodName,"  isInherited()  [ {0} ]", Boolean.valueOf(isInherited));
-                          logger.logp(Level.FINE, CLASS_NAME, methodName,"  isMethodAnno() [ {0} ]", Boolean.valueOf(isMethodAnnotation));
-                      }
+                      logger.logp(Level.FINE, CLASS_NAME, methodName, "Handled Type      [ {0} ]", handledTypeName);
+                      logger.logp(Level.FINE, CLASS_NAME, methodName,"  isAnnotation     [ {0} ]", Boolean.valueOf(isAnnotation));
                   }
-                  
+
                   if ( isAnnotation ) {
-                      if (enableTrace) {
-                          logger.logp(Level.FINE, CLASS_NAME, methodName, "Selection Annotation: [ {0} ]", handlesTypesAnnotationClassName);
+                      boolean isClassAnnotation = WebAppSCIHelper.isClassTarget(handledType);
+                      boolean isInheritedAnnotation = isClassAnnotation && handledType.isAnnotationPresent(java.lang.annotation.Inherited.class);
+                      boolean isMethodAnnotation = WebAppSCIHelper.isMethodTarget(handledType);
+
+                      if ( enableTrace ) {
+                          logger.logp(Level.FINE, CLASS_NAME, methodName,"  isClassAnno      [ {0} ]", Boolean.valueOf(isClassAnnotation));
+                          logger.logp(Level.FINE, CLASS_NAME, methodName,"  isInherited      [ {0} ]", Boolean.valueOf(isInheritedAnnotation));
+                          logger.logp(Level.FINE, CLASS_NAME, methodName,"  isMethodAnno     [ {0} ]", Boolean.valueOf(isMethodAnnotation));
                       }
+
                       if ( isClassAnnotation ) {
-                          Set<String> annotatedClassNames;
-                          
                           // d95160: Injection classes are obtained from metadata-complete and metadata-incomplete
                           //         regions, but not from excluded regions.
-                          
-                          // Note: This is different from TWAS, which also obtains injection classes from EXCLUDED regions.
-                          
-                          if ( isInherited ) { // If the annotation is inherited, we need all of its subclasses, too.
-                              annotatedClassNames = annotationTargets.getAllInheritedAnnotatedClasses(handlesTypesAnnotationClassName,
-                                                                                                      AnnotationTargets_Targets.POLICY_SEED_AND_PARTIAL);
 
+                          // Note: This is different from TWAS, which also obtains injection classes from EXCLUDED regions.
+
+                          Set<String> targetClassNames;
+                          if ( isInheritedAnnotation ) {
+                              targetClassNames = annoTargets.getAllInheritedAnnotatedClasses(handledTypeName,
+                                                                                                AnnotationTargets_Targets.POLICY_SEED_AND_PARTIAL);
                           } else {
-                              annotatedClassNames = annotationTargets.getAnnotatedClasses(handlesTypesAnnotationClassName,
-                                                                                          AnnotationTargets_Targets.POLICY_SEED_AND_PARTIAL);
+                              targetClassNames = annoTargets.getAnnotatedClasses(handledTypeName,
+                                                                                    AnnotationTargets_Targets.POLICY_SEED_AND_PARTIAL);
                           }
-                          
-                          String classReasonText = "Selection on class annotation [ " + handlesTypesAnnotationClassName + " ]";     
-                          for ( String annotatedClassName : annotatedClassNames ) {
-                              addClassToHandlesTypesStartupSet(annotatedClassName, handlesTypesOnStartupSet, classReasonText);
+
+                          String classReason = "Selection on class annotation [ " + handledTypeName + " ]";
+                          for ( String targetClassName : targetClassNames ) {
+                              addClassToHandlesTypesStartupSet(targetClassName, startupTypes, classReason);
                           }                      
                       }
-                      
+
                       if ( isMethodAnnotation ) {
                           Set<String> testedClassNames = new HashSet<String>();
                           Set<String> foundClassNames = new HashSet<String>();
-                          
+
                           // d95160: Injection classes are obtained from metadata-complete and metadata-incomplete
                           //         regions, but not from excluded regions.
 
                           // Note: This is different from TWAS, which also obtains injection classes from EXCLUDED regions.
-                          
-                          Set<String> selectedClassNames = annotationTargets.getClassesWithMethodAnnotation(handlesTypesAnnotationClassName,
-                                                                                                            AnnotationTargets_Targets.POLICY_SEED_AND_PARTIAL);
-                          
-                          for ( String selectedClassName : selectedClassNames ) {
-                              if ( testedClassNames.contains(selectedClassName) ) {
+
+                          Set<String> targetClassNames = annoTargets.getClassesWithMethodAnnotation(handledTypeName,
+                                                                                                    AnnotationTargets_Targets.POLICY_SEED_AND_PARTIAL);
+
+                          for ( String targetClassName : targetClassNames ) {
+                              if ( testedClassNames.contains(targetClassName) ) {
                                   continue;
                               } else {
-                                  testedClassNames.add(selectedClassName);
+                                  testedClassNames.add(targetClassName);
                               }
-                              
-                              foundClassNames.add(selectedClassName); // The annotation was found directly on this class.
-                              
+
+                              foundClassNames.add(targetClassName);
+
                               // d95160: An API should be added to obtain subclasses from a specified region,
                               //         as with the annotations access.
-                              
-                              Set<String> allSubclassNames = annotationTargets.getSubclassNames(selectedClassName);
-                              
-                              for ( String subclassName : allSubclassNames ) {
-                                  if ( testedClassNames.contains(subclassName)) { 
+
+                              Set<String> targetSubclassNames = annoTargets.getSubclassNames(targetClassName);
+
+                              for ( String targetSubclassName : targetSubclassNames ) {
+                                  if ( testedClassNames.contains(targetSubclassName)) { 
                                       continue;
                                   } else {
-                                      testedClassNames.add(subclassName);
+                                      testedClassNames.add(targetSubclassName);
                                   }
-                                  
+
                                   if ( !didOpen ) {
                                       try {
-                                          webAppAnnotations.openInfoStore();
-                                      } catch (UnableToAdaptException e) {
-                                          logger.logp(Level.FINE, CLASS_NAME, methodName, "caught UnableToAdaptException: " + e);
-                                          return;
+                                          webAppAnnos.openInfoStore();
+                                      } catch ( UnableToAdaptException e ) {
+                                          return; // FFDC
                                       }
                                       didOpen = true;
                                   }
-                                  
-                                  ClassInfo subclassInfo = infoStore.getDelayableClassInfo(subclassName);                              
-                                  if ( WebAppSCIHelper.anyMethodHasAnnotation(subclassInfo, handlesTypesAnnotationClassName) ) {
-                                      foundClassNames.add(subclassName); // The annotation was found on an inherited method.
+
+                                  ClassInfo subclassInfo = infoStore.getDelayableClassInfo(targetSubclassName);
+                                  if ( WebAppSCIHelper.anyMethodHasAnnotation(subclassInfo, handledTypeName) ) {
+                                      foundClassNames.add(targetSubclassName);
                                   }
                               }
                           }
-                          
-                          String methodReasonText = "Selection on method annotation [ " + handlesTypesAnnotationClassName + " ]";
+
+                          String methodReason = "Selection on method annotation [ " + handledTypeName + " ]";
                           for ( String foundClassName : foundClassNames ) {
-                              addClassToHandlesTypesStartupSet(foundClassName, handlesTypesOnStartupSet, methodReasonText);                          
-                          }                      
-                      }   
-                     
+                              addClassToHandlesTypesStartupSet(foundClassName, startupTypes, methodReason);                          
+                          }
+                      }
+
                   } else {
-                      if (enableTrace) {
-                          logger.logp(Level.FINE, CLASS_NAME, methodName, "Selection Type: [ {0} ]", handlesTypesAnnotationClass.getName() );
+                      if ( enableTrace ) {
+                          logger.logp(Level.FINE, CLASS_NAME, methodName, "Selection Type: [ {0} ]", handledType.getName() );
                       }
-                      //exclude java/javax classes
-                      
-                      String actualClassReasonText = "Selection of handlesType class [ " + handlesTypesAnnotationClassName + " ]";
-                      addClassToHandlesTypesStartupSet(handlesTypesAnnotationClassName, handlesTypesOnStartupSet, actualClassReasonText);
-                      
-                      String classesReasonText = "Selection on sub-classes of [ " + handlesTypesAnnotationClassName + " ]";
-                      for ( String targetClassName : annotationTargets.getSubclassNames(handlesTypesAnnotationClassName)) {
-                          addClassToHandlesTypesStartupSet(targetClassName, handlesTypesOnStartupSet, classesReasonText);
+
+                      String actualClassReason = "Selection of handlesType class [ " + handledTypeName + " ]";
+                      addClassToHandlesTypesStartupSet(handledTypeName, startupTypes, actualClassReason);
+
+                      String classesReason = "Selection on sub-classes of [ " + handledTypeName + " ]";
+                      for ( String targetClassName : annoTargets.getSubclassNames(handledTypeName)) {
+                          addClassToHandlesTypesStartupSet(targetClassName, startupTypes, classesReason);
                       }
-                      
-                      String interfaceReasonText = "Selection on interface [ " + handlesTypesAnnotationClassName + " ]";
-                      Set<String> implementerClassNames = annotationTargets.getAllImplementorsOf(handlesTypesAnnotationClassName);   
+
+                      String interfaceReason = "Selection on interface [ " + handledTypeName + " ]";
+                      Set<String> implementerClassNames = annoTargets.getAllImplementorsOf(handledTypeName);   
                       for ( String implementerClassName : implementerClassNames ) {
-                          addClassToHandlesTypesStartupSet(implementerClassName, handlesTypesOnStartupSet, interfaceReasonText);
+                          addClassToHandlesTypesStartupSet(implementerClassName, startupTypes, interfaceReason);
                       }                  
                   }
               }
           }
+
       } finally {
-          if (didOpen) {
+          if ( didOpen ) {
               try {
-                  webAppAnnotations.closeInfoStore();
-              } catch (UnableToAdaptException e) {
-                  logger.logp(Level.FINE, CLASS_NAME, methodName, "caught UnableToAdaptException: " + e);
-              }              
+                  webAppAnnos.closeInfoStore();
+              } catch ( UnableToAdaptException e ) {
+                  // FFDC
+              }
           }
       }
   }
@@ -1083,8 +1068,7 @@ public class WebApp extends com.ibm.ws.webcontainer.webapp.WebApp implements Com
           }
       }
       try {
-          com.ibm.wsspi.adaptable.module.Container moduleContainer = this.getModuleContainer();
-          WebAnnotations webAppAnnotations = moduleContainer.adapt(WebAnnotations.class);
+          WebAnnotations webAppAnnotations = getWebAnnotations();
           AnnotationTargets_Targets table = webAppAnnotations.getAnnotationTargets();
           //means that the scanner went from an included jar to an excluded jar (because of class heirarchy)
           //in order to get the complete set of scan data.  
@@ -1546,31 +1530,20 @@ public class WebApp extends com.ibm.ws.webcontainer.webapp.WebApp implements Com
       return false;
   }
   
-  /*
-   * (non-Javadoc)
-   * @see com.ibm.ws.webcontainer.webapp.WebApp#checkForSessionIdListenerAndAdd(java.lang.Object)
-   */
   @Override
   protected void checkForSessionIdListenerAndAdd(Object listener){
      return; // do nothing for Servlet 3.0.
- }
-  
+  }
   
   public void registerWebSocketHandler(WsocHandler wsocServHandler) {
-      //NO-OP
-      return;
+      return; // NO-OP
   }
   
   public WsocHandler getWebSocketHandler() {
-      //NO-OP
-      return null;
+      return null; // NO-OP
   }
   
-  /**
-   * Get an http2 handler
-   */
   public H2Handler getH2Handler() {
-      //NO-OP
-      return null;
+      return null; // NO-OP
   }   
 }

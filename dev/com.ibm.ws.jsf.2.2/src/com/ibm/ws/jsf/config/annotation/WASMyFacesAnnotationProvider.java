@@ -27,7 +27,9 @@ import javax.servlet.ServletContext;
 import org.apache.myfaces.shared.util.ClassUtils;
 import org.apache.myfaces.spi.AnnotationProvider;
 
+import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
 import com.ibm.ws.container.service.annotations.WebAnnotations;
+
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
@@ -76,8 +78,9 @@ public class WASMyFacesAnnotationProvider extends AnnotationProvider {
         Container moduleContainer = servletContext.getModuleContainer();
 
         try {
-            WebAnnotations webAnnotations = moduleContainer.adapt(WebAnnotations.class);
-            AnnotationTargets_Targets annotationTargets = webAnnotations.getAnnotationTargets();
+            WebAnnotations webAnno = AnnotationsBetaHelper.getWebAnnotations(moduleContainer);
+            AnnotationTargets_Targets annoTargets = webAnno.getAnnotationTargets();
+
             ClassLoader cl = ClassUtils.getContextClassLoader();
 
             for (Class<? extends Annotation> annotation : annotationClasses) {
@@ -86,8 +89,7 @@ public class WASMyFacesAnnotationProvider extends AnnotationProvider {
                 //         That implementation is not changed by d95160.
 
                 //Get all classes with this annotation on them
-                Set<String> classNames = annotationTargets.getAllInheritedAnnotatedClasses(annotation.getCanonicalName(),
-                                                                                           AnnotationTargets_Targets.POLICY_SEED);
+                Set<String> classNames = annoTargets.getAllInheritedAnnotatedClasses(annotation.getCanonicalName());
 
                 //To satisfy MyFaces interface, we have to load them and populate the Set
                 Set<Class<?>> classSet = new HashSet<Class<?>>();

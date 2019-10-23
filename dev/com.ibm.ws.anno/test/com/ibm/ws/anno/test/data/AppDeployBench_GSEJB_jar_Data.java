@@ -19,7 +19,7 @@ import com.ibm.ws.anno.classsource.specification.ClassSource_Specification_Direc
 import com.ibm.wsspi.anno.classsource.ClassSource_Factory;
 
 public class AppDeployBench_GSEJB_jar_Data {
-    public static final String EAR_NAME = "AppDeployBench.ear.unpacked";
+    public static final String EAR_NAME = "AppDeployBench.ear";
     public static final String EAR_LIB_PATH = File.separator + "lib";
     public static final String EJBJAR_NAME = "GSEJB.jar";
 
@@ -29,7 +29,6 @@ public class AppDeployBench_GSEJB_jar_Data {
         EJBJAR_MANIFEST_PATHS = new ArrayList<String>();
 
         EJBJAR_MANIFEST_PATHS.add("GarageSaleUtils.jar");
-        EJBJAR_MANIFEST_PATHS.add("WSNClient.jar");
     }
 
     public static ClassSource_Specification_Direct_EJB createClassSourceSpecification(ClassSource_Factory classSourceFactory,

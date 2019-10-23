@@ -24,11 +24,19 @@ repositories {
                 password userProps.getProperty("artifactory.download.token")
             }
             url ("https://" + userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-open-liberty")
+            metadataSources {
+                mavenPom()
+                artifact()
+            }
         }
     } else {
         mavenCentral()
         maven {
             url ("http://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo/")
+            metadataSources {
+                mavenPom()
+                artifact()
+            }
         }
     }
 }

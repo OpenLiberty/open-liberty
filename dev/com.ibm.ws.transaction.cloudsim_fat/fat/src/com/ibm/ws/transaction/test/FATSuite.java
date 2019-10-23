@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.transaction.test;
 
-import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -30,20 +29,4 @@ public class FATSuite {
 
     private static LibertyServer server1 = LibertyServerFactory.getLibertyServer("com.ibm.ws.transaction_FSCLOUD001");
     private static LibertyServer server2 = LibertyServerFactory.getLibertyServer("com.ibm.ws.transaction_FSCLOUD002");
-    // We don't repeat these tests, when they run in full mode doubling the number of tests can mean that the whole
-    // suite can take longer than the 3 hour threshold for a FAT suite.
-    //
-    // So run the suite with the EE8 Feature set only.
-
-    @BeforeClass
-    public static void beforeSuite() throws Exception {
-
-        // Install user feature
-        server1.copyFileToLibertyInstallRoot("lib/features/", "features/txfat-1.0.mf");
-        server2.copyFileToLibertyInstallRoot("lib/features/", "features/txfat-1.0.mf");
-
-        // Install bundle for txfat feature
-        server1.copyFileToLibertyInstallRoot("lib/", "bundles/com.ibm.ws.transactions.fat.utils.jar");
-        server2.copyFileToLibertyInstallRoot("lib/", "bundles/com.ibm.ws.transactions.fat.utils.jar");
-    }
 }

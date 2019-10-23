@@ -1,0 +1,282 @@
+
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+﻿<?xml version="1.0" encoding="UTF-8"?>
+   <web-app id="WebApp_ID" version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+      <display-name>Servlet 30 Test Application </display-name>
+      <servlet id="Servlet_1">
+      	<description></description>
+		    <display-name>Servlet30api_secure</display-name>
+		    <servlet-name>Servlet30api_secure</servlet-name>
+		    <servlet-class>com.ibm.ws.secfvt.servlet.Servlet30secure</servlet-class>
+      </servlet>
+      <servlet id="Servlet_2">
+      	<description></description>
+		    <display-name>Servlet30api_unsecure</display-name>
+		    <servlet-name>Servlet30api_unsecure</servlet-name>
+		    <servlet-class>com.ibm.ws.secfvt.servlet.Servlet30unsecure</servlet-class>
+      </servlet>
+      <servlet id="Servlet_3">
+      	<description></description>
+		    <display-name>Servlet30api_login</display-name>
+		    <servlet-name>Servlet30api_login</servlet-name>
+		    <servlet-class>com.ibm.ws.secfvt.servlet.Servlet30login</servlet-class>
+      </servlet>
+       <servlet id="Servlet_4">
+      	<description></description>
+		    <display-name>Servlet30api_logout</display-name>
+		    <servlet-name>Servlet30api_logout</servlet-name>
+		    <servlet-class>com.ibm.ws.secfvt.servlet.Servlet30logout</servlet-class>
+      </servlet>
+      <servlet id="Servlet_5">
+      	<description></description>
+		    <display-name>Servlet30api_secureAuth</display-name>
+		    <servlet-name>Servlet30api_secureAuth</servlet-name>
+		    <servlet-class>com.ibm.ws.secfvt.servlet.Servlet30secureAuth</servlet-class>
+      </servlet>
+      <servlet id="Servlet_6">
+      	<description></description>
+		    <display-name>Servlet30api_secureAuthRedirectToSecure</display-name>
+		    <servlet-name>Servlet30api_secureAuthRedirectToSecure</servlet-name>
+		    <servlet-class>com.ibm.ws.secfvt.servlet.Servlet30secureAuthRedirectToSecure</servlet-class>
+      </servlet>      
+      <servlet id="Servlet_7">
+      	<description></description>
+		    <display-name>Servlet30api_secureAuthRedirectToSecureWithRole</display-name>
+		    <servlet-name>Servlet30api_secureAuthRedirectToSecureWithRole</servlet-name>
+		    <servlet-class>com.ibm.ws.secfvt.servlet.Servlet30secureAuthRedirectToSecureWithRole</servlet-class>
+      </servlet>      
+      <servlet id="Servlet_8">
+      	<description></description>
+		    <display-name>Servlet30api_secureAuthRedirectToUnsecure</display-name>
+		    <servlet-name>Servlet30api_secureAuthRedirectToUnsecure</servlet-name>
+		    <servlet-class>com.ibm.ws.secfvt.servlet.Servlet30secureAuthRedirectToUnsecure</servlet-class>
+      </servlet>      
+      <servlet id="Servlet_9">
+      	<description></description>
+		    <display-name>Servlet30api_secureSimple</display-name>
+		    <servlet-name>Servlet30api_secureSimple</servlet-name>
+		    <servlet-class>com.ibm.ws.secfvt.servlet.Servlet30secureSimple</servlet-class>
+      </servlet>      
+      <servlet id="Servlet_10">
+      	<description></description>
+		    <display-name>Servlet30api_secureWithRole</display-name>
+		    <servlet-name>Servlet30api_secureWithRole</servlet-name>
+		    <servlet-class>com.ibm.ws.secfvt.servlet.Servlet30secureSimple</servlet-class>
+      </servlet>      
+      <servlet id="Servlet_11">
+      	<description></description>
+		    <display-name>Servlet30api_unsecureAuth</display-name>
+		    <servlet-name>Servlet30api_unsecureAuth</servlet-name>
+		    <servlet-class>com.ibm.ws.secfvt.servlet.Servlet30unsecureAuth</servlet-class>
+      </servlet>
+      <servlet id="Servlet_12">
+      	<description></description>
+		    <display-name>Servlet30api_unsecureAuthRedirectToSecure</display-name>
+		    <servlet-name>Servlet30api_unsecureAuthRedirectToSecure</servlet-name>
+		    <servlet-class>com.ibm.ws.secfvt.servlet.Servlet30unsecureAuthRedirectToSecure</servlet-class>
+      </servlet>      
+      <servlet id="Servlet_13">
+      	<description></description>
+		    <display-name>Servlet30api_unsecureAuthRedirectToSecureWithRole</display-name>
+		    <servlet-name>Servlet30api_unsecureAuthRedirectToSecureWithRole</servlet-name>
+		    <servlet-class>com.ibm.ws.secfvt.servlet.Servlet30unsecureAuthRedirectToSecureWithRole</servlet-class>
+      </servlet>      
+      <servlet id="Servlet_14">
+      	<description></description>
+		    <display-name>Servlet30api_unsecureAuthRedirectToUnsecure</display-name>
+		    <servlet-name>Servlet30api_unsecureAuthRedirectToUnsecure</servlet-name>
+		    <servlet-class>com.ibm.ws.secfvt.servlet.Servlet30unsecureAuthRedirectToUnsecure</servlet-class>
+      </servlet>      
+      <servlet id="Servlet_15">
+      	<description></description>
+		    <display-name>Servlet30api_unsecureSimple</display-name>
+		    <servlet-name>Servlet30api_unsecureSimple</servlet-name>
+		    <servlet-class>com.ibm.ws.secfvt.servlet.Servlet30unsecureSimple</servlet-class>
+      </servlet>      
+      <servlet-mapping id="ServletMapping_1">
+         <servlet-name>Servlet30api_secure</servlet-name>
+         <url-pattern>/secure</url-pattern>
+      </servlet-mapping>
+      <servlet-mapping id="ServletMapping_2">
+         <servlet-name>Servlet30api_unsecure</servlet-name>
+         <url-pattern>/unsecure</url-pattern>
+      </servlet-mapping>
+      <servlet-mapping id="ServletMapping_3">
+         <servlet-name>Servlet30api_login</servlet-name>
+         <url-pattern>/unsecurelogin</url-pattern>
+      </servlet-mapping>
+      <servlet-mapping id="ServletMapping_4">
+         <servlet-name>Servlet30api_logout</servlet-name>
+         <url-pattern>/securelogout</url-pattern>
+      </servlet-mapping>
+      <servlet-mapping id="ServletMapping_5">
+         <servlet-name>Servlet30api_secureAuth</servlet-name>
+         <url-pattern>/secureAuth</url-pattern>
+      </servlet-mapping>
+      <servlet-mapping id="ServletMapping_6">
+         <servlet-name>Servlet30api_secureAuthRedirectToSecure</servlet-name>
+         <url-pattern>/secureAuthRedirectToSecure</url-pattern>
+      </servlet-mapping>      
+      <servlet-mapping id="ServletMapping_7">
+         <servlet-name>Servlet30api_secureAuthRedirectToSecureWithRole</servlet-name>
+         <url-pattern>/secureAuthRedirectToSecureWithRole</url-pattern>
+      </servlet-mapping>      
+      <servlet-mapping id="ServletMapping_8">
+         <servlet-name>Servlet30api_secureAuthRedirectToUnsecure</servlet-name>
+         <url-pattern>/secureAuthRedirectToUnsecure</url-pattern>
+      </servlet-mapping>      
+      <servlet-mapping id="ServletMapping_9">
+         <servlet-name>Servlet30api_secureSimple</servlet-name>
+         <url-pattern>/secureSimple</url-pattern>
+      </servlet-mapping>   
+      <servlet-mapping id="ServletMapping_10">
+         <servlet-name>Servlet30api_secureWithRole</servlet-name>
+         <url-pattern>/secureWithRole</url-pattern>
+      </servlet-mapping>      
+      <servlet-mapping id="ServletMapping_11">
+         <servlet-name>Servlet30api_unsecureAuth</servlet-name>
+         <url-pattern>/unsecureAuth</url-pattern>
+      </servlet-mapping>
+      <servlet-mapping id="ServletMapping_12">
+         <servlet-name>Servlet30api_unsecureAuthRedirectToSecure</servlet-name>
+         <url-pattern>/unsecureAuthRedirectToSecure</url-pattern>
+      </servlet-mapping>      
+      <servlet-mapping id="ServletMapping_13">
+         <servlet-name>Servlet30api_unsecureAuthRedirectToSecureWithRole</servlet-name>
+         <url-pattern>/unsecureAuthRedirectToSecureWithRole</url-pattern>
+      </servlet-mapping>      
+      <servlet-mapping id="ServletMapping_14">
+         <servlet-name>Servlet30api_unsecureAuthRedirectToUnsecure</servlet-name>
+         <url-pattern>/unsecureAuthRedirectToUnsecure</url-pattern>
+      </servlet-mapping>      
+      <servlet-mapping id="ServletMapping_15">
+         <servlet-name>Servlet30api_unsecureSimple</servlet-name>
+         <url-pattern>/unsecureSimple</url-pattern>
+      </servlet-mapping>      
+      <security-constraint>
+         <display-name>SecurityConstraint_01</display-name>
+         <web-resource-collection>
+           <web-resource-name>WebResourceCollection_01</web-resource-name>
+           <url-pattern>/secure</url-pattern>
+           <http-method>GET</http-method>
+           <http-method>POST</http-method>
+         </web-resource-collection>
+         <auth-constraint id="AuthConstraint_1">
+            <role-name>AllAuthenticated</role-name>
+         </auth-constraint>
+      </security-constraint>
+      <security-constraint>
+         <display-name>SecurityConstraint_02</display-name>
+         <web-resource-collection>
+           <web-resource-name>WebResourceCollection_02</web-resource-name>
+           <url-pattern>/securelogout</url-pattern>
+           <http-method>GET</http-method>
+           <http-method>POST</http-method>
+         </web-resource-collection>
+         <auth-constraint id="AuthConstraint_1">
+            <role-name>AllAuthenticated</role-name>
+         </auth-constraint>
+      </security-constraint>
+      <security-constraint>
+         <display-name>SecurityConstraint_03</display-name>
+         <web-resource-collection>
+           <web-resource-name>WebResourceCollection_01</web-resource-name>
+           <url-pattern>/secureAuth</url-pattern>
+           <http-method>GET</http-method>
+           <http-method>POST</http-method>
+         </web-resource-collection>
+         <auth-constraint id="AuthConstraint_1">
+            <role-name>AllAuthenticated</role-name>
+         </auth-constraint>
+      </security-constraint>
+      <security-constraint>
+         <display-name>SecurityConstraint_04</display-name>
+         <web-resource-collection>
+           <web-resource-name>WebResourceCollection_01</web-resource-name>
+           <url-pattern>/secureAuthRedirectToSecure</url-pattern>
+           <http-method>GET</http-method>
+           <http-method>POST</http-method>
+         </web-resource-collection>
+         <auth-constraint id="AuthConstraint_1">
+            <role-name>AllAuthenticated</role-name>
+         </auth-constraint>
+      </security-constraint>
+      <security-constraint>
+         <display-name>SecurityConstraint_05</display-name>
+         <web-resource-collection>
+           <web-resource-name>WebResourceCollection_01</web-resource-name>
+           <url-pattern>/secureAuthRedirectToSecureWithRole</url-pattern>
+           <http-method>GET</http-method>
+           <http-method>POST</http-method>
+         </web-resource-collection>
+         <auth-constraint id="AuthConstraint_5">
+            <role-name>Employee</role-name>
+            <role-name>Manager</role-name>
+         </auth-constraint>
+      </security-constraint>            
+      <security-constraint>
+         <display-name>SecurityConstraint_06</display-name>
+         <web-resource-collection>
+           <web-resource-name>WebResourceCollection_01</web-resource-name>
+           <url-pattern>/secureAuthRedirectToUnsecure</url-pattern>
+           <http-method>GET</http-method>
+           <http-method>POST</http-method>
+         </web-resource-collection>
+         <auth-constraint id="AuthConstraint_1">
+            <role-name>AllAuthenticated</role-name>
+         </auth-constraint>
+      </security-constraint>
+      <security-constraint>
+         <display-name>SecurityConstraint_07</display-name>
+         <web-resource-collection>
+           <web-resource-name>WebResourceCollection_01</web-resource-name>
+           <url-pattern>/secureSimple</url-pattern>
+           <http-method>GET</http-method>
+           <http-method>POST</http-method>
+         </web-resource-collection>
+         <auth-constraint id="AuthConstraint_1">
+            <role-name>AllAuthenticated</role-name>
+         </auth-constraint>
+      </security-constraint>
+      <security-constraint>
+         <display-name>SecurityConstraint_08</display-name>
+         <web-resource-collection>
+           <web-resource-name>WebResourceCollection_01</web-resource-name>
+           <url-pattern>/secureWithRole</url-pattern>
+           <http-method>GET</http-method>
+           <http-method>POST</http-method>
+         </web-resource-collection>
+         <auth-constraint id="AuthConstraint_8">
+            <role-name>Manager</role-name>
+         </auth-constraint>
+      </security-constraint>          
+      <login-config id="LoginConfig_1">
+         <auth-method>FORM</auth-method>
+         <realm-name>Example Form-Based Authentication Area</realm-name>
+         <form-login-config id="FormLoginConfig_1">
+            <form-login-page>/login.html</form-login-page>
+            <form-error-page>/error.jsp</form-error-page>
+         </form-login-config>
+      </login-config>
+        <security-role id="SecurityRole_1">
+           <description>All authenticated users in an enterprise</description>
+           <role-name>AllAuthenticated</role-name>
+        </security-role>
+        <security-role id="SecurityRole_2">
+           <description>Manager users in an enterprise</description>
+           <role-name>Manager</role-name>
+        </security-role>
+        <security-role id="SecurityRole_3">
+           <description>Employee users in an enterprise</description>
+           <role-name>Employee</role-name>
+        </security-role>        
+   </web-app>

@@ -22,5 +22,5 @@ Subsystem-Name: MicroProfile GraphQL 1.0
  com.ibm.ws.com.graphql.java.11.0, \
  com.ibm.ws.microprofile.graphql.1.0, \
  com.ibm.ws.com.google.guava
-kind=noship
+kind=beta
 edition=core
