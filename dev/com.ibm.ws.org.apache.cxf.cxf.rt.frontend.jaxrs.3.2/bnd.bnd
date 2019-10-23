@@ -42,3 +42,7 @@ javac.target: 1.8
   com.ibm.wsspi.org.osgi.service.component,\
   com.ibm.wsspi.org.osgi.service.component.annotations,\
   javax.activation:activation;version=1.1
+
+-testpath: \
+	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+  
