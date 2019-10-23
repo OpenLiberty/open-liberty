@@ -290,34 +290,22 @@
             required="true" type="String" ibm:type="password" />
         <AD id="serviceAccountToken" name="%serviceAccountToken" description="%serviceAccountToken.desc"
             required="true" type="String" ibm:type="password" />
-        <AD id="discoveryEndpoint" name="%discoveryEndpoint" description="%discoveryEndpoint.desc"
-            required="false" type="String" /> <!-- default="https://openshift.default.svc/.well-known/oauth-autorization-server" -->
-        <AD id="authorizationEndpoint" name="%authorizationEndpoint" description="%authorizationEndpoint.desc"
-            required="false" type="String" default="/oauth/authorize" />
-        <AD id="tokenEndpoint" name="%tokenEndpoint" description="%tokenEndpoint.desc"
-            required="false" type="String" default="/oauth/token" />
-        <AD id="userApi" name="%userApi" description="%userApi.desc"
-            required="false" type="String" default="/apis/authentication.k8s.io/v1/tokenreviews" />
-        <AD id="scope" name="%scope" description="%scope.desc"
-            required="false" type="String" default="user:full" />
-        <AD id="userNameAttribute" name="internal" description="internal use only"
-            required="false" type="String" default="username"/>
-        <AD id="sslRef" name="%sslRef" description="%sslRef.desc"
-            required="false" type="String" ibmui:uiReference="com.ibm.ws.ssl.repertoire" />
+        <AD id="oauthServer" name="%oauthServer" description="%oauthServer.desc"
+            required="false" type="String" default="https://openshift.default.svc" />
+        <AD id="useAccessTokenFromRequest" name="%useAccessTokenFromRequest" description="%useAccessTokenFromRequest.desc"
+            required="false" type="String" default="ifPresent">
+            <Option label="%useAccessTokenFromRequest.no" value="no" />
+            <Option label="%useAccessTokenFromRequest.required" value="required" />
+            <Option label="%useAccessTokenFromRequest.ifPresent" value="ifPresent" />
+        </AD>
         <AD id="tokenHeaderName" name="%tokenHeaderName" description="%tokenHeaderName.desc"
-            required="false" type="String" default="X-Forwarded-Access-Token"/>
+            required="false" type="String" />
         <AD id="authFilterRef" name="%authFilterRef" description="%authFilterRef.desc" ibm:type="pid"
              ibm:reference="com.ibm.ws.security.authentication.filter" required="false" type="String"  />
-        <!-- jwt needed? -->
         <AD id="jwt" ibm:type="pid" ibm:reference="com.ibm.ws.security.social.login.jwt"
              required="false" type="String" />
         <!-- redirectToRPHostAndPort needed? -->
-        <AD id="redirectToRPHostAndPort" name="%redirectToRPHostAndPort" description="%redirectToRPHostAndPort.desc" required="false" type="String" />
-        <AD id="hostnameAndPort" name="internal" description="internal use only" required="false" type="String" />
-        <!-- tokenEndpointAuthMethod needed? -->
-        <AD id="tokenEndpointAuthMethod" name="%tokenEndpointAuthMethod" description="%tokenEndpointAuthMethod.desc" required="false"
-             type="String" default="client_secret_post" >
-        </AD>
+        <AD id="redirectToRPHostAndPort" name="internal" description="internal use only" required="false" type="String" />
     </OCD>
 
     <Designate pid="com.ibm.ws.security.social.openshift">

@@ -40,7 +40,7 @@ public class OpenShiftUserApiUtils {
         String response = null;
         try {
             HttpURLConnection connection = httpUtils.createConnection(HttpUtils.RequestMethod.POST, config.getUserApi(), sslSocketFactory);
-            connection = httpUtils.setHeaders(connection, getUserApiRequestHeaders(config));
+            connection = httpUtils.setHeaders(connection, getUserApiRequestHeaders());
             connection.setDoOutput(true);
 
             OutputStream outputStream = connection.getOutputStream();
@@ -70,7 +70,7 @@ public class OpenShiftUserApiUtils {
     }
 
     @Sensitive
-    private Map<String, String> getUserApiRequestHeaders(OpenShiftLoginConfigImpl config) {
+    private Map<String, String> getUserApiRequestHeaders() {
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("Authorization", "Bearer " + config.getServiceAccountToken());
         headers.put("Accept", "application/json");
