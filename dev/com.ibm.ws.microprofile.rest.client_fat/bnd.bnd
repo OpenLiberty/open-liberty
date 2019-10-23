@@ -23,6 +23,7 @@ src: \
   test-applications/handleresponsesApp/src,\
   test-applications/headerPropagationApp/src,\
   test-applications/headerPropagation12App/src,\
+  test-applications/jsonbContextApp/src,\
   test-applications/multiClientCdiApp/src,\
   test-applications/produceConsumeApp/src,\
   test-applications/propsApp/src

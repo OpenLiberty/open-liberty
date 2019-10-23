@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,19 +17,19 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.List;
 
 import org.junit.AfterClass;
 import org.junit.Assume;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.registry.EntryNotFoundException;
-import com.ibm.ws.security.registry.RegistryException;
 import com.ibm.ws.security.registry.SearchResult;
 import com.ibm.ws.security.registry.test.UserRegistryServletConnection;
 
@@ -48,6 +48,10 @@ public class URAPIs_Federation_2LDAPsTest {
     private static final Class<?> c = URAPIs_Federation_2LDAPsTest.class;
     private static UserRegistryServletConnection servlet;
     private final LeakedPasswordChecker passwordChecker = new LeakedPasswordChecker(server);
+
+    /** Test rule for testing for expected exceptions. */
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
 
     /**
      * Updates the sample, which is expected to be at the hard-coded path.
@@ -118,18 +122,13 @@ public class URAPIs_Federation_2LDAPsTest {
      * This verifies the various required bundles got installed and are working.
      */
     @Test
-    public void checkPasswordWithDuplicateLogOnId() {
+    public void checkPasswordWithDuplicateLogOnId() throws Exception {
         String user = "vmmtestuser";
         String password = "vmmtestuserpwd";
         Log.info(c, "checkPasswordWithDuplicateLogOnId", "Checking good credentials");
-        try {
-            servlet.checkPassword(user, password);
-        } catch (RegistryException e) {
-            // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            e.printStackTrace();
-        }
-        server.waitForStringInLog("CWIML4538E");
-        assertTrue("Two users with same userid should cause DuplicateLogonIdException", true);
+
+        assertNull("Authentication should fail.", servlet.checkPassword(user, password));
+        assertNotNull("Two users with same userid should cause DuplicateLogonIdException", server.waitForStringInLog("CWIML4538E"));
         passwordChecker.checkForPasswordInAnyFormat(password);
     }
 
@@ -138,18 +137,13 @@ public class URAPIs_Federation_2LDAPsTest {
      * This verifies the various required bundles got installed and are working.
      */
     @Test
-    public void checkPasswordWithInvalidUser() {
+    public void checkPasswordWithInvalidUser() throws Exception {
         String user = "invalid";
         String password = "testuserpwd";
         Log.info(c, "checkPasswordWithInvalidUser", "Checking good credentials");
-        try {
-            servlet.checkPassword(user, password);
-        } catch (RegistryException e) {
-            // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            e.printStackTrace();
-        }
-        server.waitForStringInLog("CWIML4537E");
-        assertTrue("An invalid user should cause RegistryException with No principal is found message", true);
+
+        assertNull("Authentication should fail.", servlet.checkPassword(user, password));
+        assertNotNull("An invalid user should cause RegistryException with No principal is found message", server.waitForStringInLog("CWIML4537E"));
     }
 
     /**
@@ -163,7 +157,7 @@ public class URAPIs_Federation_2LDAPsTest {
         Log.info(c, "checkPasswordWithBadCredentials", "Checking bad credentials");
         assertNull("Authentication should not succeed.",
                    servlet.checkPassword(user, password));
-        server.waitForStringInLog("CWIML4529E");
+        assertNotNull("Expected CWIML4529E message.", server.waitForStringInLog("CWIML4529E"));
         passwordChecker.checkForPasswordInAnyFormat(password);
     }
 
@@ -329,13 +323,11 @@ public class URAPIs_Federation_2LDAPsTest {
     public void getUserDisplayNameWithInvalidUser() throws Exception {
         String user = "invalidUser";
         Log.info(c, "getUserDisplayNameWithInvalidUser", "Checking with an invalid user.");
-        try {
-            servlet.getUserDisplayName(user);
-            fail("Expected EntryNotFoundException.");
-        } catch (EntryNotFoundException e) {
-            String errorMessage = e.getMessage();
-            assertTrue("An invalid user should cause EntryNotFoundException error CWIML4001E", errorMessage.contains("CWIML4001E"));
-        }
+
+        expectedException.expect(EntryNotFoundException.class);
+        expectedException.expectMessage("CWIML4001E");
+
+        servlet.getUserDisplayName(user);
     }
 
     /**
@@ -345,15 +337,12 @@ public class URAPIs_Federation_2LDAPsTest {
     @Test
     public void getUserDisplayName() throws Exception {
         String user = "vmmtestuser";
-        String displayName = "vmmtestuser";
         Log.info(c, "getUserDisplayName", "Checking with a valid user.");
-        try {
-            assertEquals(displayName, servlet.getUserDisplayName(user));
-            fail("Expected EntryNotFoundException.");
-        } catch (EntryNotFoundException e) {
-            String errorMessage = e.getMessage();
-            assertTrue("An invalid user should cause EntryNotFoundException error CWIML4538E", errorMessage.contains("CWIML4538E"));
-        }
+
+        expectedException.expect(EntryNotFoundException.class);
+        expectedException.expectMessage("CWIML4538E");
+
+        servlet.getUserDisplayName(user);
     }
 
     /**
@@ -388,13 +377,11 @@ public class URAPIs_Federation_2LDAPsTest {
     public void getUniqueUserIdWithInvalidUser() throws Exception {
         String user = "invalidUser";
         Log.info(c, "getUniqueUserIdWithInvalidUser", "Checking with an invalid user.");
-        try {
-            servlet.getUniqueUserId(user);
-            fail("Expected EntryNotFoundException.");
-        } catch (EntryNotFoundException e) {
-            String errorMessage = e.getMessage();
-            assertTrue("An invalid user should cause EntryNotFoundException error CWIML4001E", errorMessage.contains("CWIML4001E"));
-        }
+
+        expectedException.expect(EntryNotFoundException.class);
+        expectedException.expectMessage("CWIML4001E");
+
+        servlet.getUniqueUserId(user);
     }
 
     /**
@@ -404,19 +391,12 @@ public class URAPIs_Federation_2LDAPsTest {
     @Test
     public void getUniqueUserId() throws Exception {
         String user = "vmmtestuser";
-        String uniqueUserId = "uid=vmmtestuser,o=defaultWIMFileBasedRealm";
         Log.info(c, "getUniqueUserId", "Checking with a valid user.");
-        try {
-            assertDNsEqual("", uniqueUserId, servlet.getUniqueUserId(user));
-            fail("Expected EntryNotFoundException.");
-        } catch (EntryNotFoundException e) {
-            String errorMessage = e.getMessage();
-            if (errorMessage.contains("CWIML4538E")) {
-                assertTrue("An invalid user should cause EntryNotFoundException", true);
-            } else {
-                assertTrue("An invalid user should cause EntryNotFoundException error CWIML4538E", false);
-            }
-        }
+
+        expectedException.expect(EntryNotFoundException.class);
+        expectedException.expectMessage("CWIML4538E");
+
+        servlet.getUniqueUserId(user);
     }
 
     /**
@@ -453,13 +433,11 @@ public class URAPIs_Federation_2LDAPsTest {
     public void getUserSecurityNameWithInvalidUser() throws Exception {
         String user = "cn=invalid,o=ibm,c=us";
         Log.info(c, "getUserSecurityNameWithInvalidUser", "Checking with an invalid user.");
-        try {
-            servlet.getUserSecurityName(user);
-            fail("Expected EntryNotFoundException.");
-        } catch (EntryNotFoundException e) {
-            String errorMessage = e.getMessage();
-            assertTrue("An invalid user should cause EntryNotFoundException error CWIML4527E", errorMessage.contains("CWIML4527E"));
-        }
+
+        expectedException.expect(EntryNotFoundException.class);
+        expectedException.expectMessage("CWIML4527E");
+
+        servlet.getUserSecurityName(user);
     }
 
     /**
@@ -619,13 +597,11 @@ public class URAPIs_Federation_2LDAPsTest {
     public void getGroupDisplayNameWithInvalidGroup() throws Exception {
         String group = "cn=invalidgroup,o=ibm,c=us";
         Log.info(c, "getGroupDisplayNameWithInvalidGroup", "Checking with an invalid group.");
-        try {
-            servlet.getGroupDisplayName(group);
-            fail("Expected EntryNotFoundException.");
-        } catch (EntryNotFoundException e) {
-            String errorMessage = e.getMessage();
-            assertTrue("An invalid group should cause EntryNotFoundException error CWIML4527E", errorMessage.contains("CWIML4527E"));
-        }
+
+        expectedException.expect(EntryNotFoundException.class);
+        expectedException.expectMessage("CWIML4527E");
+
+        servlet.getGroupDisplayName(group);
     }
 
     /**
@@ -636,13 +612,11 @@ public class URAPIs_Federation_2LDAPsTest {
     public void getGroupDisplayNameWithEntityOutOfRealmScope() throws Exception {
         String group = "cn=invalidgroup";
         Log.info(c, "getGroupDisplayNameWithEntityOutOfRealmScope", "Checking with an invalid group.");
-        try {
-            servlet.getGroupDisplayName(group);
-            fail("Expected RegistryException.");
-        } catch (RegistryException e) {
-            String errorMessage = e.getMessage();
-            assertTrue("An invalid group should cause RegistryException error CWIML0515E", errorMessage.contains("CWIML0515E"));
-        }
+
+        expectedException.expect(EntryNotFoundException.class);
+        expectedException.expectMessage("CWIML0515E");
+
+        servlet.getGroupDisplayName(group);
     }
 
     /**
@@ -677,13 +651,11 @@ public class URAPIs_Federation_2LDAPsTest {
     public void getUniqueGroupIdWithInvalidGroup() throws Exception {
         String group = "invalidGroup";
         Log.info(c, "getUniqueGroupIdWithInvalidGroup", "Checking with an invalid group.");
-        try {
-            servlet.getUniqueGroupId(group);
-            fail("Expected EntryNotFoundException.");
-        } catch (EntryNotFoundException e) {
-            String errorMessage = e.getMessage();
-            assertTrue("An invalid group should cause EntryNotFoundException error CWIML4001E", errorMessage.contains("CWIML4001E"));
-        }
+
+        expectedException.expect(EntryNotFoundException.class);
+        expectedException.expectMessage("CWIML4001E");
+
+        servlet.getUniqueGroupId(group);
     }
 
     /**
@@ -693,15 +665,12 @@ public class URAPIs_Federation_2LDAPsTest {
     @Test
     public void getUniqueGroupId() throws Exception {
         String group = "vmmgroup1";
-        String uniqueGroupId = "cn=vmmgroup1,o=ibm,c=us";
         Log.info(c, "getUniqueGroupId", "Checking with a valid group.");
-        try {
-            assertDNsEqual(null, uniqueGroupId, servlet.getUniqueGroupId(group));
-            fail("Expected EntryNotFoundException.");
-        } catch (EntryNotFoundException e) {
-            String errorMessage = e.getMessage();
-            assertTrue("An invalid group should cause EntryNotFoundException error CWIML4538E", errorMessage.contains("CWIML4538E"));
-        }
+
+        expectedException.expect(EntryNotFoundException.class);
+        expectedException.expectMessage("CWIML4538E");
+
+        servlet.getUniqueGroupId(group);
     }
 
     /**
@@ -734,13 +703,11 @@ public class URAPIs_Federation_2LDAPsTest {
     public void getGroupSecurityNameWithInvalidGroup() throws Exception {
         String group = "cn=invalid,o=ibm,c=us";
         Log.info(c, "getGroupSecurityNameWithInvalidGroup", "Checking with an invalid group.");
-        try {
-            servlet.getGroupSecurityName(group);
-            fail("Expected EntryNotFoundException.");
-        } catch (EntryNotFoundException e) {
-            String errorMessage = e.getMessage();
-            assertTrue("An invalid group should cause EntryNotFoundException error CWIML4527E", errorMessage.contains("CWIML4527E"));
-        }
+
+        expectedException.expect(EntryNotFoundException.class);
+        expectedException.expectMessage("CWIML4527E");
+
+        servlet.getGroupSecurityName(group);
     }
 
     /**
@@ -751,13 +718,11 @@ public class URAPIs_Federation_2LDAPsTest {
     public void getGroupSecurityNameWithInvalidUniqueName() throws Exception {
         String group = "invalid";
         Log.info(c, "getGroupSecurityNameWithUniqueName", "Checking with an invalid group.");
-        try {
-            servlet.getGroupSecurityName(group);
-            fail("Expected EntryNotFoundException.");
-        } catch (EntryNotFoundException e) {
-            String errorMessage = e.getMessage();
-            assertTrue("An invalid group should cause EntryNotFoundException error CWIML4001E", errorMessage.contains("CWIML4001E"));
-        }
+
+        expectedException.expect(EntryNotFoundException.class);
+        expectedException.expectMessage("CWIML4001E");
+
+        servlet.getGroupSecurityName(group);
     }
 
     /**
@@ -768,13 +733,11 @@ public class URAPIs_Federation_2LDAPsTest {
     public void getGroupSecurityNameWithEntityOutOfRealmScope() throws Exception {
         String group = "uid=invalid";
         Log.info(c, "getGroupSecurityNameWithUniqueName", "Checking with an invalid group.");
-        try {
-            servlet.getGroupSecurityName(group);
-            fail("Expected EntryNotFoundException.");
-        } catch (EntryNotFoundException e) {
-            String errorMessage = e.getMessage();
-            assertTrue("An invalid group should cause EntryNotFoundException error CWIML0515E", errorMessage.contains("CWIML0515E"));
-        }
+
+        expectedException.expect(EntryNotFoundException.class);
+        expectedException.expectMessage("CWIML0515E");
+
+        servlet.getGroupSecurityName(group);
     }
 
     /**
@@ -821,13 +784,11 @@ public class URAPIs_Federation_2LDAPsTest {
     public void getGroupsForUser() throws Exception {
         String user = "vmmuser1";
         Log.info(c, "getGroupsForUser", "Checking with a valid user.");
-        try {
-            servlet.getGroupsForUser(user);
-            fail("Expected EntryNotFoundException.");
-        } catch (EntryNotFoundException e) {
-            String errorMessage = e.getMessage();
-            assertTrue("An invalid group should cause EntryNotFoundException error CWIML4538E", errorMessage.contains("CWIML4538E"));
-        }
+
+        expectedException.expect(EntryNotFoundException.class);
+        expectedException.expectMessage("CWIML4538E");
+
+        servlet.getGroupsForUser(user);
     }
 
     /**
@@ -838,13 +799,11 @@ public class URAPIs_Federation_2LDAPsTest {
     public void getGroupsForUserWithInvalidUser() throws Exception {
         String user = "invalidUser";
         Log.info(c, "getGroupsForUserWithInvalidUser", "Checking with an invalid user.");
-        try {
-            servlet.getGroupsForUser(user);
-            fail("Expected EntryNotFoundException.");
-        } catch (EntryNotFoundException e) {
-            String errorMessage = e.getMessage();
-            assertTrue("An invalid user should cause EntryNotFoundException error CWIML4001E", errorMessage.contains("CWIML4001E"));
-        }
+
+        expectedException.expect(EntryNotFoundException.class);
+        expectedException.expectMessage("CWIML4001E");
+
+        servlet.getGroupsForUser(user);
     }
 
     /**
@@ -879,13 +838,11 @@ public class URAPIs_Federation_2LDAPsTest {
     public void getUniqueGroupIdsWithInvalidUser() throws Exception {
         String user = "uid=invalid,o=ibm,c=us";
         Log.info(c, "getUniqueGroupIdsForUser", "Checking with a valid user.");
-        try {
-            servlet.getUniqueGroupIdsForUser(user);
-            fail("Expected EntryNotFoundException.");
-        } catch (EntryNotFoundException e) {
-            String errorMessage = e.getMessage();
-            assertTrue("An invalid user should cause EntryNotFoundException error CWIML4527E", errorMessage.contains("CWIML4527E"));
-        }
+
+        expectedException.expect(EntryNotFoundException.class);
+        expectedException.expectMessage("CWIML4527E");
+
+        servlet.getUniqueGroupIdsForUser(user);
     }
 
     /**
@@ -896,13 +853,11 @@ public class URAPIs_Federation_2LDAPsTest {
     public void getUniqueGroupIdsWithInvalidUniqueName() throws Exception {
         String user = "invalid";
         Log.info(c, "getUniqueGroupIdsForUser", "Checking with a valid user.");
-        try {
-            servlet.getUniqueGroupIdsForUser(user);
-            fail("Expected EntryNotFoundException.");
-        } catch (EntryNotFoundException e) {
-            String errorMessage = e.getMessage();
-            assertTrue("An invalid user should cause EntryNotFoundException error CWIML4001E", errorMessage.contains("CWIML4001E"));
-        }
+
+        expectedException.expect(EntryNotFoundException.class);
+        expectedException.expectMessage("CWIML4001E");
+
+        servlet.getUniqueGroupIdsForUser(user);
     }
 
     /**
@@ -913,12 +868,10 @@ public class URAPIs_Federation_2LDAPsTest {
     public void getUniqueGroupIdsWithEntityOutOfRealmScope() throws Exception {
         String user = "cn=invalid";
         Log.info(c, "getUniqueGroupIdsForUser", "Checking with a valid user.");
-        try {
-            servlet.getUniqueGroupIdsForUser(user);
-            fail("Expected EntryNotFoundException.");
-        } catch (EntryNotFoundException e) {
-            String errorMessage = e.getMessage();
-            assertTrue("An invalid user should cause EntryNotFoundException error CWIML0515E", errorMessage.contains("CWIML0515E"));
-        }
+
+        expectedException.expect(EntryNotFoundException.class);
+        expectedException.expectMessage("CWIML0515E");
+
+        servlet.getUniqueGroupIdsForUser(user);
     }
 }

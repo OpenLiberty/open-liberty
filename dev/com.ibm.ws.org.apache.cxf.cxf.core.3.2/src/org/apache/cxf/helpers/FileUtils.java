@@ -399,7 +399,7 @@ public final class FileUtils {
 
     //Liberty change start - no longer needed at CXF 3.3.3
     public static boolean exists(File file) {
-        if (System.getSecurityManager() != null) {
+        if (System.getSecurityManager() == null) {
             return file.exists();
         }
         return AccessController.doPrivileged((PrivilegedAction<Boolean>) () -> {

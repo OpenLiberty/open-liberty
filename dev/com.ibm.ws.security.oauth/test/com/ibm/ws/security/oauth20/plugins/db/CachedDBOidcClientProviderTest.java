@@ -25,13 +25,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import javax.naming.Context;
 import javax.servlet.http.HttpServletRequest;
 
 import org.jmock.Expectations;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.Ignore;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.ibm.oauth.core.api.config.OAuthComponentConfiguration;
@@ -47,7 +48,6 @@ import test.common.SharedOutputManager;
 /**
  * Common Test
  */
-@Ignore
 public abstract class CachedDBOidcClientProviderTest extends AbstractOidcRegistrationBaseTest {
     protected static SharedOutputManager outputMgr;
 
@@ -90,6 +90,17 @@ public abstract class CachedDBOidcClientProviderTest extends AbstractOidcRegistr
     final PreparedStatement preparedStatement = mockery.mock(PreparedStatement.class);
     final HttpServletRequest request = mockery.mock(HttpServletRequest.class);
     final OidcBaseClient baseClient = mockery.mock(OidcBaseClient.class);
+
+    @BeforeClass
+    public static void setUpBeforeClass() throws Exception {
+        setHash(false);
+        outputMgr = SharedOutputManager.getInstance();
+        outputMgr.captureStreams();
+
+        System.setProperty(Context.INITIAL_CONTEXT_FACTORY, InitialContextFactoryMock.class.getName());
+
+        SAMPLE_CLIENTS = getsampleOidcBaseClients(5, PROVIDER_NAME);
+    }
 
     @AfterClass
     public static void setUpAfterClass() throws Exception {

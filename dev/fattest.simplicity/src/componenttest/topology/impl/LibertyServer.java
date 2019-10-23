@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -249,6 +249,8 @@ public class LibertyServer implements LogMonitorClient {
     protected boolean isStartedConsoleLogLevelOff = false;
 
     protected int osgiConsolePort = 5678; // The port number of the OSGi Console
+
+    protected static final String OSGI_DIR_NAME = "org.eclipse.osgi";
 
     // Use port 0 if the property can't be found, these should be picked up from a properties file
     // if not then the test may create a liberty server and get the ports from a bootstrap port.
@@ -2665,7 +2667,7 @@ public class LibertyServer implements LogMonitorClient {
         logs = listDirectoryContents(remoteDirectory);
         for (String l : logs) {
             if (remoteDirectory.getName().equals("workarea")) {
-                if (l.equals("org.eclipse.osgi") || l.startsWith(".s")) {
+                if (l.equals(OSGI_DIR_NAME) || l.startsWith(".s")) {
                     // skip the osgi framework cache, and runtime artifacts: too big / too racy
                     Log.finest(c, "recursivelyCopyDirectory", "Skipping workarea element " + l);
                     continue;
@@ -2791,6 +2793,10 @@ public class LibertyServer implements LogMonitorClient {
 
     public String getServerRoot() {
         return serverRoot;
+    }
+
+    public String getOsgiWorkAreaRoot() {
+        return serverRoot + "/workarea" + "/" + OSGI_DIR_NAME;
     }
 
     public String getServerSharedPath() {
@@ -6180,5 +6186,4 @@ public class LibertyServer implements LogMonitorClient {
     public String toString() {
         return serverToUse + " : " + super.toString();
     }
-
 }

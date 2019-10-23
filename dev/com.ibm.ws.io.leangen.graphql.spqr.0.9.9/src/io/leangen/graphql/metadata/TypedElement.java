@@ -12,12 +12,12 @@ public class TypedElement {
     private final AnnotatedType javaType;
     private final List<? extends AnnotatedElement> elements;
 
-    TypedElement(AnnotatedType javaType, AnnotatedElement element) {
+    public TypedElement(AnnotatedType javaType, AnnotatedElement element) {
         this.javaType = javaType;
         this.elements = Utils.singletonList(element);
     }
 
-    TypedElement(AnnotatedType javaType, List<? extends AnnotatedElement> elements) {
+    public TypedElement(AnnotatedType javaType, List<? extends AnnotatedElement> elements) {
         this.javaType = javaType;
         this.elements = elements;
     }
@@ -43,5 +43,16 @@ public class TypedElement {
             return elements.get(0);
         }
         throw new IllegalStateException("Multiple mappable elements found when a single was expected");
+    }
+    
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder(super.toString());
+        sb.append(" [ ").append(javaType);
+        for (AnnotatedElement element : elements) {
+            sb.append(", ").append(element);
+        }
+        sb.append(" ]");
+        return sb.toString();
     }
 }

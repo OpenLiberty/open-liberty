@@ -114,6 +114,11 @@ public class JSFServerTest {
     @Test
     @SkipForRepeat("JSF-2.3")
     public void testLibertyWebConfigProvider() throws Exception {
+        WebClient webClient = new WebClient();
+        URL url = JSFUtils.createHttpUrl(jsfTestServer1, contextRoot, "");
+        // Ensure the isErrorPagePresent message is logged in the trace during the RESTORE_VIEW phase.
+        HtmlPage page = (HtmlPage) webClient.getPage(url);
+
         String msgToSearchFor = "isErrorPagePresent ENTRY";
 
         // Check the trace.log to see if the LibertyWebConfigProvider has any entry trace.

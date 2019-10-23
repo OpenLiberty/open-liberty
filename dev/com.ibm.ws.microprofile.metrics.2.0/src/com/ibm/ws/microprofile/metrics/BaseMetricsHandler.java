@@ -38,7 +38,7 @@ public abstract class BaseMetricsHandler implements RESTHandler {
     private static final TraceComponent tc = Tr.register(BaseMetricsHandler.class);
 
     protected BaseMetrics bm;
-    protected SharedMetricRegistries sharedMetricRegistry;
+    public SharedMetricRegistries sharedMetricRegistry;
 
     @Override
     @FFDCIgnore({ EmptyRegistryException.class, NoSuchMetricException.class, NoSuchRegistryException.class, HTTPNotAcceptableException.class, HTTPMethodNotAllowedException.class })
@@ -103,7 +103,8 @@ public abstract class BaseMetricsHandler implements RESTHandler {
         }
     }
 
-    private OutputWriter getOutputWriter(RESTRequest request, RESTResponse response, Locale locale) throws IOException, HTTPNotAcceptableException, HTTPMethodNotAllowedException {
+    protected OutputWriter getOutputWriter(RESTRequest request, RESTResponse response,
+                                           Locale locale) throws IOException, HTTPNotAcceptableException, HTTPMethodNotAllowedException {
         String method = request.getMethod();
         String accept = request.getHeader(Constants.ACCEPT_HEADER);
         Writer writer = response.getWriter();
@@ -166,7 +167,7 @@ public abstract class BaseMetricsHandler implements RESTHandler {
     }
 
     //MPM2-REVIEW
-    private AcceptableFormat compareAF(AcceptableFormat theAcceptableFormat, String acceptHeaderElement, String curAcceptHeaderConstant) {
+    protected AcceptableFormat compareAF(AcceptableFormat theAcceptableFormat, String acceptHeaderElement, String curAcceptHeaderConstant) {
         double q = resolveQFactor(acceptHeaderElement);
 
         if (theAcceptableFormat == null ||
@@ -200,7 +201,7 @@ public abstract class BaseMetricsHandler implements RESTHandler {
         return s;
     }
 
-    private class AcceptableFormat {
+    public class AcceptableFormat {
         private final String acceptableFormat;
         private final double acceptableFormatWeight;
 

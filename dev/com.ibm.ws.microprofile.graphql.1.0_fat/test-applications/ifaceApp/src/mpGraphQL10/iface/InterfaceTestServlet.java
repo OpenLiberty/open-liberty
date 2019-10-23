@@ -72,7 +72,7 @@ public class InterfaceTestServlet extends FATServlet {
         assertNotNull(schema);
         assertTrue(schema.contains("Widget"));
         //TODO: uncomment after resolving schema generation issues:
-        //assertTrue(schema.contains("An interface representing an object for sale."));
+        assertTrue(schema.contains("An interface representing an object for sale."));
     }
 
     @Test

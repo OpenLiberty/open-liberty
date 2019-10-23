@@ -70,7 +70,7 @@ public class Failover1ServerTest extends FATServletClient {
      * testFailoverFromMissedHeartbeats - verify that a task fails over due to missed heartbeats alone,
      * even if the missed task threshold has not yet been reached.
      */
-    //@Test TODO enable once feature code (8406) is written
+    @Test
     public void testFailoverFromMissedHeartbeats() throws Exception {
         StringBuilder result = runTestWithResponse(server, APP_NAME + "/Failover1ServerTestServlet",
                 "testScheduleRepeatingTask&jndiName=persistent/exec2&initialDelayMS=2468&delayMS=600&test=testFailoverFromMissedHeartbeats[1]");
@@ -93,7 +93,7 @@ public class Failover1ServerTest extends FATServletClient {
             PersistentExecutor persistentExec1 = config.getPersistentExecutors().getById("persistentExec1");
             persistentExec1.setEnableTaskExecution("true");
             persistentExec1.setPollInterval("1s600ms");
-            persistentExec1.setExtraAttribute("lateTaskThreshold", "6h"); // TODO update simplicity object with proper setter
+            persistentExec1.setMissedTaskThreshold("6h");
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
             server.waitForConfigUpdateInLogUsingMark(APP_NAMES);
@@ -202,21 +202,21 @@ public class Failover1ServerTest extends FATServletClient {
             persistentExec3.setId("persistentExec3");
             persistentExec3.setPollInterval("2s");
             persistentExec3.setPollSize("4");
-            persistentExec3.setExtraAttribute("lateTaskThreshold", "3s"); // TODO update simplicity object with proper setter
+            persistentExec3.setMissedTaskThreshold("3s");
             config.getPersistentExecutors().add(persistentExec3);
 
             PersistentExecutor persistentExec4 = new PersistentExecutor();
             persistentExec4.setId("persistentExec4");
             persistentExec4.setPollInterval("2s");
             persistentExec4.setPollSize("4");
-            persistentExec4.setExtraAttribute("lateTaskThreshold", "3s"); // TODO update simplicity object with proper setter
+            persistentExec4.setMissedTaskThreshold("3s");
             config.getPersistentExecutors().add(persistentExec4);
 
             PersistentExecutor persistentExec5 = new PersistentExecutor();
             persistentExec5.setId("persistentExec5");
             persistentExec5.setPollInterval("2s");
             persistentExec5.setPollSize("4");
-            persistentExec5.setExtraAttribute("lateTaskThreshold", "3s"); // TODO update simplicity object with proper setter
+            persistentExec5.setMissedTaskThreshold("3s");
             config.getPersistentExecutors().add(persistentExec5);
 
             server.setMarkToEndOfLog();
@@ -282,19 +282,19 @@ public class Failover1ServerTest extends FATServletClient {
             PersistentExecutor persistentExec3 = new PersistentExecutor();
             persistentExec3.setId("persistentExec3");
             persistentExec3.setPollInterval("1s500ms");
-            persistentExec3.setExtraAttribute("lateTaskThreshold", "2s"); // TODO update simplicity object with proper setter
+            persistentExec3.setMissedTaskThreshold("2s");
             config.getPersistentExecutors().add(persistentExec3);
 
             PersistentExecutor persistentExec4 = new PersistentExecutor();
             persistentExec4.setId("persistentExec4");
             persistentExec4.setPollInterval("1s500ms");
-            persistentExec4.setExtraAttribute("lateTaskThreshold", "2s"); // TODO update simplicity object with proper setter
+            persistentExec4.setMissedTaskThreshold("2s");
             config.getPersistentExecutors().add(persistentExec4);
 
             PersistentExecutor persistentExec5 = new PersistentExecutor();
             persistentExec5.setId("persistentExec5");
             persistentExec5.setPollInterval("1s500ms");
-            persistentExec5.setExtraAttribute("lateTaskThreshold", "2s"); // TODO update simplicity object with proper setter
+            persistentExec5.setMissedTaskThreshold("2s");
             config.getPersistentExecutors().add(persistentExec5);
 
             server.setMarkToEndOfLog();
@@ -372,7 +372,7 @@ public class Failover1ServerTest extends FATServletClient {
             persistentExec1.setEnableTaskExecution("true");
             persistentExec1.setInitialPollDelay("200ms");
             persistentExec1.setPollInterval("1s500ms");
-            persistentExec1.setExtraAttribute("lateTaskThreshold", "2s"); // TODO update simplicity object with proper setter
+            persistentExec1.setMissedTaskThreshold("2s");
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
             server.waitForConfigUpdateInLogUsingMark(APP_NAMES);
@@ -398,7 +398,7 @@ public class Failover1ServerTest extends FATServletClient {
 
     /**
      * testScheduleToRunOnDifferentServer - Schedule a task using an instance that cannot run tasks.
-     * If it sees another instance that can run tasks polls for missed tasks, then it should schedule
+     * If it sees another instance that can run tasks and polls for missed tasks, then it should schedule
      * the task to run on that server instead.
      */
     @Test
@@ -410,7 +410,7 @@ public class Failover1ServerTest extends FATServletClient {
         // instance which cannot run tasks directly schedules the task onto the instance that can run tasks.
         ServerConfiguration config = originalConfig.clone();
         PersistentExecutor persistentExec2 = config.getPersistentExecutors().getById("persistentExec2");
-        persistentExec2.setExtraAttribute("lateTaskThreshold", "5h"); // TODO update simplicity object with proper setter
+        persistentExec2.setMissedTaskThreshold("5h");
 
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
@@ -429,10 +429,9 @@ public class Failover1ServerTest extends FATServletClient {
 
             boolean completed = false;
             try {
-                // TODO enable once the feature code (8406) is written
-                //runTest(server, APP_NAME + "/Failover1ServerTestServlet",
-                //        "testTaskCompleted&taskId=" + taskId + "&expectedResult=1&jndiName=persistent/exec1&test=testScheduleToRunOnDifferentServer[2]");
-                //completed = true;
+                runTest(server, APP_NAME + "/Failover1ServerTestServlet",
+                        "testTaskCompleted&taskId=" + taskId + "&expectedResult=1&jndiName=persistent/exec1&test=testScheduleToRunOnDifferentServer[2]");
+                completed = true;
             } finally {
                 if (!completed)
                     runTest(server, APP_NAME + "/Failover1ServerTestServlet",

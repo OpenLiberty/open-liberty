@@ -1,0 +1,72 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.openapi/resources/com/ibm/ws/openapi31/resources/OpenAPIMessages.nlsprops
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR Open API
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKO1700 - CWWKO1749
+
+OSGI_SERVICE_ERROR=CWWKO1700E: A(z) {0} OSGi szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el.
+OSGI_SERVICE_ERROR.explanation=A megadott szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el. Ez bels\u0151 kiszolg\u00e1l\u00f3hiba.   
+OSGI_SERVICE_ERROR.useraction=Ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t a [--clean] param\u00e9terrel.
+
+OPENAPI_IS_NULL=CWWKO1701W: A(z) {0} szolg\u00e1ltat\u00f3 nem adott vissza Open API dokumentumot.
+OPENAPI_IS_NULL.explanation=Az OASProvider sz\u00e1m\u00e1ra l\u00e9trehozott Open API objektum, val\u00f3sz\u00edn\u0171leg \u00e9rv\u00e9nyes\u00edt\u00e9si hiba miatt, null\u00e9rt\u00e9k\u0171 volt.
+OPENAPI_IS_NULL.useraction=Adjon meg \u00e9rv\u00e9nyes dokumentumot. A napl\u00f3k vizsg\u00e1lat\u00e1val tal\u00e1lja meg a hib\u00e1t.
+
+CUSTOMIZATION_IS_NULL=CWWKO1702W: Az OpenAPI objektum, amelyet a kiszolg\u00e1l\u00f3 a(z) {0} szem\u00e9lyre szab\u00e1si \u00e9rt\u00e9k haszn\u00e1lat\u00e1val hozott l\u00e9tre, null\u00e9rt\u00e9k\u0171.
+CUSTOMIZATION_IS_NULL.explanation=A szem\u00e9lyre szab\u00e1si \u00e9rt\u00e9k haszn\u00e1lat\u00e1val l\u00e9trehozott OpenAPI objektum null\u00e9rt\u00e9k\u0171.
+CUSTOMIZATION_IS_NULL.useraction=A napl\u00f3k vizsg\u00e1lat\u00e1val \u00e1llap\u00edtsa meg a hib\u00e1t. Adjon meg \u00e9rv\u00e9nyes OpenAPI dokumentumot a szem\u00e9lyre szab\u00e1si attrib\u00fatumhoz.
+
+PUBLIC_URL_INVALID=CWWKO1703W: A nyilv\u00e1nos URL nem lehet {0} \u00e9rt\u00e9k\u0171. Ez az URL az alkalmaz\u00e1skiszolg\u00e1l\u00f3 \u00e1ltali haszn\u00e1lat\u00e1ra van fenntartva.
+PUBLIC_URL_INVALID.explanation=A nyilv\u00e1nos URL nem \u00e1ll\u00edthat\u00f3 olyan \u00e9rt\u00e9kre, ami az alkalmaz\u00e1skiszolg\u00e1l\u00f3 \u00e1ltali haszn\u00e1latra van fenntartva.
+PUBLIC_URL_INVALID.useraction=Adjon meg \u00e9rv\u00e9nyes \u00e9rt\u00e9ket a publicURL attrib\u00fatumhoz a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3j\u00e1ban.
+
+MULTIPLE_DEFAULT_OPENAPI_FILES=CWWKO1704W: T\u00f6bb Open API szem\u00e9lyre szab\u00e1si f\u00e1jl tal\u00e1lhat\u00f3: {0}. {1} m\u00f3dos\u00edt\u00e1sai megfigyel\u00e9s alatt \u00e1llnak.
+MULTIPLE_DEFAULT_OPENAPI_FILES.explanation=T\u00f6bb Open API szem\u00e9lyre szab\u00e1si f\u00e1jl tal\u00e1lhat\u00f3 a ${server.config.dir}/openapi-3.1 k\u00f6nyvt\u00e1rban.
+MULTIPLE_DEFAULT_OPENAPI_FILES.useraction=Biztos\u00edtsa, hogy csak egy alap\u00e9rtelmezett Open API szem\u00e9lyre szab\u00e1si f\u00e1jl legyen a ${server.config.dir}/openapi-3.1 k\u00f6nyvt\u00e1rban.
+
+CSS_NOT_PROCESSED=CWWKO1705W: A kiszolg\u00e1l\u00f3 nem tudja olvasni a megadott {0} CSS dokumentumot a k\u00f6vetkez\u0151 miatt: {1} : {2}.
+CSS_NOT_PROCESSED.explanation=A CSS dokumentum nem dolgozhat\u00f3 fel egy \u00e9rv\u00e9nyes hiba miatt.
+CSS_NOT_PROCESSED.useraction=Adjon meg \u00e9rv\u00e9nyes CSS dokumentumot.
+
+OPENAPI_DOCUMENT_VALIDATION_ERROR=CWWKO1706E: Az OpenAPI dokumentum \u00e9rv\u00e9nyes\u00edt\u00e9se a k\u00f6vetkez\u0151 hib\u00e1kat eredm\u00e9nyezte:
+OPENAPI_DOCUMENT_VALIDATION_ERROR.explanation=Az OpenAPI dokumentum \u00e9rv\u00e9nytelen.
+OPENAPI_DOCUMENT_VALIDATION_ERROR.useraction=Biztos\u00edtson egy \u00e9rv\u00e9nyes OpenAPI dokumentumot, amely megoldja a jelentett hib\u00e1t.
+
+OPENAPI_DOCUMENT_VALIDATION_WARNING=CWWKO1707W: Az OpenAPI dokumentum \u00e9rv\u00e9nyes\u00edt\u00e9se a k\u00f6vetkez\u0151 figyelmeztet\u00e9seket eredm\u00e9nyezte:
+OPENAPI_DOCUMENT_VALIDATION_WARNING.explanation=Az OpenAPI dokumentum olyan adatokat tartalmaz, amelyek nem az aj\u00e1nlott form\u00e1tumban vannak.
+OPENAPI_DOCUMENT_VALIDATION_WARNING.useraction=Biztos\u00edtson egy \u00e9rv\u00e9nyes OpenAPI dokumentumot, amely megoldja a jelentett figyelmeztet\u00e9seket.
+
+CUSTOM_CSS_NOT_PROCESSED=CWWKO1708W: Az OpenAPI UI-hez megadott egy\u00e9ni {0} CSS f\u00e1jl feldolgoz\u00e1s\u00e1ra nem ker\u00fclt sor. A kiszolg\u00e1l\u00f3 vissza\u00e1ll\u00edtja az OpenAPI UI alap\u00e9rtelmezett \u00e9rt\u00e9keit. Ok={1} : {2}.
+CUSTOM_CSS_NOT_PROCESSED.explanation=A kiszolg\u00e1l\u00f3 nem tudja feldolgozni az egy\u00e9ni CSS f\u00e1jlt. A kiszolg\u00e1l\u00f3 vissza\u00e1ll\u00edtja az OpenAPI UI alap\u00e9rtelmezett \u00e9rt\u00e9keit.
+CUSTOM_CSS_NOT_PROCESSED.useraction=Adjon meg az \u00f6sszes f\u00fcgg\u0151s\u00e9ggel egy\u00fctt egy \u00e9rv\u00e9nyes egy\u00e9ni CSS f\u00e1jlt az OpenAPI UI-hoz.
+
+CSS_SECTION_NOT_FOUND=CWWKO1709W: A kiszolg\u00e1l\u00f3 beolvasta a megadott {0} CSS dokumentumot, de nem tal\u00e1lt <.swagger-ui .headerbar > fejl\u00e9cet.
+CSS_SECTION_NOT_FOUND.explanation=A megadott CSS dokumentum nem tartalmaz <.swagger-ui .headerbar > fejl\u00e9cet, vagy annak form\u00e1tuma nem felel meg a kiszolg\u00e1l\u00f3 \u00e1ltal megk\u00f6vetelteknek.
+CSS_SECTION_NOT_FOUND.useraction=Adjon meg \u00e9rv\u00e9nyes CSS f\u00e1jlt, ami megfelel\u0151 form\u00e1tum\u00fa <.swagger-ui .headerbar > fejl\u00e9cet tartalmaz.
+
+UNSUPPORTED_CSS_VALUE=CWWKO1710W: A(z) {0} tulajdons\u00e1ghoz megadott \u00e9rt\u00e9k nem t\u00e1mogatott. Az \u00e9rt\u00e9k csak {1} lehet.
+UNSUPPORTED_CSS_VALUE.explanation=A megadott tulajdons\u00e1g \u00e9rt\u00e9ke vagy \u00e9rv\u00e9nytelen, vagy azt nem t\u00e1mogatja az OpenAPI keretrendszer.
+UNSUPPORTED_CSS_VALUE.useraction=Adjon meg \u00e9rv\u00e9nyes \u00e9rt\u00e9ket a tulajdons\u00e1ghoz az OpenAPI UI egy\u00e9ni CSS f\u00e1jlj\u00e1ban. 
+
+INVALID_CSS_BACKGROUND_IMAGE=CWWKO1711W: A megadott h\u00e1tt\u00e9rk\u00e9p ({0}) vagy nem l\u00e9tezik, vagy \u00e9rv\u00e9nytelen.
+INVALID_CSS_BACKGROUND_IMAGE.explanation=A h\u00e1tt\u00e9rk\u00e9p vagy nem l\u00e9tezik, vagy \u00e9rv\u00e9nytelen.
+INVALID_CSS_BACKGROUND_IMAGE.useraction=Adjon meg \u00e9rv\u00e9nyes k\u00e9pet.
+
+OPENAPI_FILE_PARSE_ERROR=CWWKO1712E: A k\u00f6vetkez\u0151 alkalmaz\u00e1s OpenAPI dokumentum\u00e1nak \u00e9rtelmez\u00e9se meghi\u00fasult: {0}.
+OPENAPI_FILE_PARSE_ERROR.explanation=Az OpenAPI dokumentum nem \u00e9rtelmezhet\u0151 a META-INF mapp\u00e1b\u00f3l.
+OPENAPI_FILE_PARSE_ERROR.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a f\u00e1jl a megfelel\u0151 YAML vagy JSON form\u00e1tumban van.

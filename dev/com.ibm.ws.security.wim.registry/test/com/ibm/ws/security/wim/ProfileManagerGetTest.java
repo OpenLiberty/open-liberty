@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.wim;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -247,7 +248,7 @@ public class ProfileManagerGetTest {
                 String cn = person.getCn();
                 cns[index++] = cn;
             }
-            assertEquals("CN Mismatched", expectedcns, cns);
+            assertArrayEquals("CN Mismatched", expectedcns, cns);
         } catch (WIMException e) {
             String errorMessage = e.getMessage();
             assertEquals("Call completed successfully", true, false + " with " + errorMessage);
@@ -334,7 +335,7 @@ public class ProfileManagerGetTest {
             for (Group group : person.getGroups())
                 cns[index++] = group.getIdentifier().getUniqueName();
 
-            assertEquals("CN Mismatched", expectedcns, cns);
+            assertArrayEquals("CN Mismatched", expectedcns, cns);
         } catch (WIMException e) {
             String errorMessage = e.getMessage();
             assertEquals("Call completed successfully", true, false + " with " + errorMessage);
@@ -421,7 +422,7 @@ public class ProfileManagerGetTest {
             for (Group innerGroup : group.getGroups())
                 cns[index++] = innerGroup.getIdentifier().getUniqueName();
 
-            assertEquals("CN Mismatched", expectedcns, cns);
+            assertArrayEquals("CN Mismatched", expectedcns, cns);
         } catch (WIMException e) {
             String errorMessage = e.getMessage();
             assertEquals("Call completed successfully", true, false + " with " + errorMessage);
@@ -510,7 +511,7 @@ public class ProfileManagerGetTest {
             for (Entity entity : group.getMembers())
                 cns[index++] = entity.getIdentifier().getUniqueName();
 
-            assertEquals("CN Mismatched", expectedcns, cns);
+            assertArrayEquals("CN Mismatched", expectedcns, cns);
         } catch (WIMException e) {
             String errorMessage = e.getMessage();
             assertEquals("Call completed successfully", true, false + " with " + errorMessage);

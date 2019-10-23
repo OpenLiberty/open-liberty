@@ -440,7 +440,7 @@ error.create.unknownJavaLevel.useraction=Ensure that you are using a supported J
 
 error.create.java8serverenv=CWWKE0103E: Unable to create a server.env file in the following location: {0}
 error.create.java8serverenv.explanation=The process that is attempting to create the server was not able to generate a server.env file in the specified location.  This file provides the required JVM arguments for the server to function properly.
-error.create.java8serverenv.useraction=Ensure that you have write access to the server directory and that you have sufficient disk space.  Additionally, you can manually create the server.env file with the following value:  WLP_SKIP_MAXPERMSIZE=true.  You must ensure that the server process has read access to this file.
+error.create.java8serverenv.useraction=Ensure that you have write access to the server directory and that you have sufficient disk space. You must ensure that the server process has read access to this file.
 
 audit.licenseRestriction.early_access.ilar=CWWKE0104I: This product is a beta and cannot be used in production. The full license terms can be viewed here: {0}
 audit.licenseRestriction.early_access.ilar.explanation=This product is a beta and must be used according to the terms of the beta license.

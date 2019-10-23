@@ -45,6 +45,15 @@ kafka.send.error.CWMRX1003E=CWMRX1003E: Hiba t\u00f6rt\u00e9nt egy \u00fczenet K
 kafka.send.error.CWMRX1003E.explanation=Hiba t\u00f6rt\u00e9nt a Kafka kimen\u0151 csatol\u00f3ban, amely megakad\u00e1lyozza a reakt\u00edv \u00fczenetkezel\u00e9s norm\u00e1l m\u0171k\u00f6d\u00e9s\u00e9t.
 kafka.send.error.CWMRX1003E.useraction=A kiszolg\u00e1l\u00f3 message.log f\u00e1jlj\u00e1t \u00e9s FFDC napl\u00f3it \u00e1ttekintve azonos\u00edtsa be a probl\u00e9m\u00e1t.
 
+# The Reactive Messaging Kafka Outgoing Connector received an error. The error is {0}.
+kafka.output.error.signal.CWMRX1004E=CWMRX1004E: A reakt\u00edv \u00fczenetkezel\u00e9s Kafka kimen\u0151 csatol\u00f3 hib\u00e1t \u00e9szlelt. A hiba: {0}.
+kafka.output.error.signal.CWMRX1004E.explanation=A Kafka kimen\u0151 csatol\u00f3 olyan hibajelz\u00e9st kapott, amely megakad\u00e1lyozza a reakt\u00edv \u00fczenetkezel\u00e9s norm\u00e1l m\u0171k\u00f6d\u00e9s\u00e9t.
+kafka.output.error.signal.CWMRX1004E.useraction=A kiszolg\u00e1l\u00f3 message.log f\u00e1jlj\u00e1t \u00e9s FFDC napl\u00f3it \u00e1ttekintve azonos\u00edtsa be a probl\u00e9m\u00e1t.
+
+# The group.id property was not set in the configuration for this channel. Set the {0} property in one of the MicroProfile Config Sources for this application.
+kafka.groupid.not.set.CWMRX1005E=CWMRX1005E: A group.id tulajdons\u00e1g nincs be\u00e1ll\u00edtva a csatorna konfigur\u00e1ci\u00f3j\u00e1ban. \u00c1ll\u00edtsa be a(z) {0} tulajdons\u00e1got az alkalmaz\u00e1s egyik MicroProfile konfigur\u00e1ci\u00f3s forr\u00e1s\u00e1ban.
+kafka.groupid.not.set.CWMRX1005E.explanation=A Kafka fogyaszt\u00f3i csoport azonos\u00edt\u00f3j\u00e1t \u00fagy kell be\u00e1ll\u00edtani, hogy lehet\u0151v\u00e9 tegye a reakt\u00edv \u00fczenetkezel\u00e9s megfelel\u0151 m\u0171k\u00f6d\u00e9s\u00e9t.
+kafka.groupid.not.set.CWMRX1005E.useraction=\u00c1ll\u00edtsa be a tulajdons\u00e1got az alkalmaz\u00e1s egyik MicroProfile konfigur\u00e1ci\u00f3s forr\u00e1s hely\u00e9n, p\u00e9ld\u00e1ul a microprofile-config.properties f\u00e1jlban.
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Reactive Messaging error message
 #-----------------------------------------------------------------------------------------------------------------------------

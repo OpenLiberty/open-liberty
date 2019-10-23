@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 IBM Corporation and others.
+ * Copyright (c) 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -374,17 +374,61 @@ public class OSGiInjectionScopeData extends InjectionScopeData implements Deferr
      * calling {@link #processDeferredReferenceData}.
      */
     public InjectionBinding<?> getInjectionBinding(NamingConstants.JavaColonNamespace namespace, String name) throws NamingException {
+        InjectionBinding<?> retValue = null;
+        NonCompBinding nonCompBinding = null;
+
+        // In a web module, the java:comp and java:module namespaces are the same
+        // so look for InjectionBindings in both as needed
         if (namespace == NamingConstants.JavaColonNamespace.COMP) {
-            return lookup(compLock, compBindings, name);
+            retValue = lookup(compLock, compBindings, name);
+
+            if (this.namespace == NamingConstants.JavaColonNamespace.MODULE) {
+                if (retValue == null && nonCompBindings != null) {
+                    nonCompBinding = lookup(nonCompEnvLock, nonCompBindings, name);
+                    retValue = nonCompBinding == null ? null : nonCompBinding.binding;
+                }
+            }
+
+            return retValue;
         }
+
         if (namespace == NamingConstants.JavaColonNamespace.COMP_ENV) {
-            return lookup(compLock, compEnvBindings, name);
+            retValue = lookup(compLock, compEnvBindings, name);
+
+            if (this.namespace == NamingConstants.JavaColonNamespace.MODULE) {
+                if (retValue == null && nonCompBindings != null) {
+                    String envName = "env/" + name;
+                    nonCompBinding = lookup(nonCompEnvLock, nonCompBindings, envName);
+                    retValue = nonCompBinding == null ? null : nonCompBinding.binding;
+                }
+            }
+
+            return retValue;
         }
+
         if (namespace == this.namespace) {
-            NonCompBinding nonCompBinding = lookup(nonCompEnvLock, nonCompBindings, name);
-            return nonCompBinding == null ? null : nonCompBinding.binding;
+            nonCompBinding = lookup(nonCompEnvLock, nonCompBindings, name);
+            retValue = nonCompBinding == null ? null : nonCompBinding.binding;
+
+            if (this.namespace == NamingConstants.JavaColonNamespace.MODULE) {
+                if (retValue == null) {
+                    if (name.contains("env/")) {
+                        if (compEnvBindings != null) {
+                            String compEnvName = name.replace("env/", "");
+                            retValue = lookup(compLock, compEnvBindings, compEnvName);
+                        }
+                    } else {
+                        if (compBindings != null) {
+                            retValue = lookup(compLock, compBindings, name);
+                        }
+                    }
+                }
+            }
+
+            return retValue;
         }
-        return null;
+
+        return retValue;
     }
 
     private <T> T lookup(ReadWriteLock lock, JavaColonNamespaceBindings<T> bindings, String name) throws NamingException {

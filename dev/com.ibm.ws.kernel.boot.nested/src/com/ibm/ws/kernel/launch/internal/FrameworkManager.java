@@ -187,11 +187,11 @@ public class FrameworkManager {
      * Create and launch the OSGi framework
      *
      * @param config
-     *                        BootstrapConfig object encapsulating active initial framework
-     *                        properties
+     *            BootstrapConfig object encapsulating active initial framework
+     *            properties
      * @param logProvider
-     *                        The initialized/active log provider that must be included in
-     *                        framework management activities (start/stop/.. ), or null
+     *            The initialized/active log provider that must be included in
+     *            framework management activities (start/stop/.. ), or null
      * @param callback
      */
     public void launchFramework(BootstrapConfig config, LogProvider logProvider) {
@@ -472,9 +472,9 @@ public class FrameworkManager {
      * launch the platform/runtime.
      *
      * @param systemBundleCtx
-     *                            The framework system bundle context
+     *            The framework system bundle context
      * @param config
-     *                            The active bootstrap config
+     *            The active bootstrap config
      */
     private void registerLibertyProcessService(BundleContext systemBundleCtx, BootstrapConfig config) {
         List<String> cmds = config.getCmdArgs();
@@ -489,7 +489,7 @@ public class FrameworkManager {
      * Register the instrumentation class as a service in the OSGi registry
      *
      * @param systemBundleCtx
-     *                            The framework system bundle context
+     *            The framework system bundle context
      */
     protected void registerInstrumentationService(BundleContext systemContext) {
         Instrumentation inst = config.getInstrumentation();
@@ -507,7 +507,7 @@ public class FrameworkManager {
      * Register the PauseableComponentController class as a service in the OSGi registry
      *
      * @param systemBundleCtx
-     *                            The framework system bundle context
+     *            The framework system bundle context
      */
     protected void registerPauseableComponentController(BundleContext systemContext) {
         PauseableComponentControllerImpl pauseableComponentController = new PauseableComponentControllerImpl(systemContext);
@@ -890,11 +890,11 @@ public class FrameworkManager {
      * the elapsed time, in milliseconds, to format
      *
      * @param factor
-     *                   If true, the elapsed time will be factored into more detailed
-     *                   units: days/hours/minutes/seconds
-     *                   The decimal format of the seconds is #.### or #.## or #.# or # or 0
-     *                   If false it will be returned as the total of seconds
-     *                   The decimal format of the seconds is #.### or #.## or #.# or # or 0
+     *            If true, the elapsed time will be factored into more detailed
+     *            units: days/hours/minutes/seconds
+     *            The decimal format of the seconds is #.### or #.## or #.# or # or 0
+     *            If false it will be returned as the total of seconds
+     *            The decimal format of the seconds is #.### or #.## or #.# or # or 0
      *
      * @return A String containing the formatted elapsed time.
      *         Examples when the English language 'en' is the 'Locale':
@@ -905,9 +905,6 @@ public class FrameworkManager {
      */
     protected String getElapsedTime(boolean factor, long... testMilliseconds) {
         long elapsedTime;
-        String info_days = BootstrapConstants.messages.getString("info.days");
-        String info_hours = BootstrapConstants.messages.getString("info.hours");
-        String info_minutes = BootstrapConstants.messages.getString("info.minutes");
         String info_seconds = BootstrapConstants.messages.getString("info.seconds");
 
         if (testMilliseconds.length == 0) {
@@ -940,16 +937,22 @@ public class FrameworkManager {
             // losing some accuracy when we convert between 'Long' & 'Double'.
             long days = mod / dayMillis;
             mod = mod % dayMillis;
-            if (days > 0)
+            if (days > 0) {
+                String info_days = BootstrapConstants.messages.getString("info.days");
                 timeString.append(MessageFormat.format(info_days, days)).append(", ");
+            }
             long hours = mod / hourMillis;
             mod = mod % hourMillis;
-            if (hours > 0)
+            if (hours > 0) {
+                String info_hours = BootstrapConstants.messages.getString("info.hours");
                 timeString.append(MessageFormat.format(info_hours, hours)).append(", ");
+            }
             long minutes = mod / minuteMillis;
             mod = mod % minuteMillis;
-            if (minutes > 0)
+            if (minutes > 0) {
+                String info_minutes = BootstrapConstants.messages.getString("info.minutes");
                 timeString.append(MessageFormat.format(info_minutes, minutes)).append(", ");
+            }
             double seconds = mod / secMillis;
             mod = mod % (long) secMillis;
             if (mod == 0)
@@ -1068,9 +1071,9 @@ public class FrameworkManager {
      * server status from them.
      *
      * @param timestamp
-     *                            Create a unique dump folder based on the time stamp string.
+     *            Create a unique dump folder based on the time stamp string.
      * @param javaDumpActions
-     *                            The java dumps to create, or null for the default set.
+     *            The java dumps to create, or null for the default set.
      */
     public void introspectFramework(String timestamp, Set<JavaDumpAction> javaDumpActions) {
         Tr.audit(tc, "info.introspect.request.received");

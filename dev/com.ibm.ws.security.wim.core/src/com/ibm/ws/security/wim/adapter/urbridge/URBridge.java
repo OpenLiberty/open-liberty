@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2018 IBM Corporation and others.
+ * Copyright (c) 2012, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -397,6 +397,8 @@ public class URBridge implements Repository {
     public Root get(Root root) throws WIMException {
         Root returnRoot = new Root();
         String uniqueName = null;
+        String uniqueId = null;
+        String externalId = null;
         String auditName = null;
         AuditManager auditManager = new AuditManager();
 
@@ -423,12 +425,14 @@ public class URBridge implements Repository {
             List<Entity> entities = root.getEntities();
             for (Entity entity : entities) {
                 uniqueName = entity.getIdentifier().getUniqueName();
+                uniqueId = entity.getIdentifier().getUniqueId();
+                externalId = entity.getIdentifier().getExternalId();
                 if (uniqueName == null) { // find a name that we can use for audit purposes
-                    if (entity.getIdentifier().getUniqueId() != null) {
-                        auditName = entity.getIdentifier().getUniqueId();
+                    if (uniqueId != null) {
+                        auditName = uniqueId;
                     } else if (entity.getIdentifier().getExternalName() != null) {
                         auditName = entity.getIdentifier().getExternalName();
-                    } else if (entity.getIdentifier().getExternalId() != null) {
+                    } else if (externalId != null) {
                         auditName = entity.getIdentifier().getExternalId();
                     }
                 }
@@ -450,7 +454,18 @@ public class URBridge implements Repository {
                 URBridgeEntityFactory osEntityFactory = new URBridgeEntityFactory();
                 URBridgeEntity osEntity = osEntityFactory.createObject(returnEntity, this,
                                                                        propsMap, baseEntryName, entityConfigMap);
-                osEntity.setSecurityNameProp(uniqueName);
+
+                /*
+                 * To retrieve the entity, we need 1 of 2 properties set: securityName or uniqueId.
+                 */
+                if (uniqueName != null) {
+                    osEntity.setSecurityNameProp(uniqueName);
+                } else if (uniqueId != null) {
+                    osEntity.setUniqueIdProp(uniqueId);
+                } else if (externalId != null) {
+                    /* The URBridgeEntity class sets externalId from uniqueId, so do the same here. */
+                    osEntity.setUniqueIdProp(externalId);
+                }
 
                 // Get the attributes and populate the entity.
                 attrList = getAttributes(propertyCtrl, memberType);
@@ -642,6 +657,7 @@ public class URBridge implements Repository {
      * @return
      * @throws WIMException
      */
+    @FFDCIgnore({ EntryNotFoundException.class, RegistryException.class })
     private String getSecNameFromUniqueID(String uniqueId) throws WIMException {
         String METHODNAME = "getSecNameFromUniqueID";
         String secName = null;
@@ -650,7 +666,7 @@ public class URBridge implements Repository {
         } catch (EntryNotFoundException e) {
             try {
                 secName = getGroupSecurityName(uniqueId);
-            } catch (com.ibm.ws.security.registry.EntryNotFoundException renf) {
+            } catch (EntryNotFoundException renf) {
                 throw new EntityNotFoundException(WIMMessageKey.ENTITY_NOT_FOUND, Tr.formatMessage(tc, WIMMessageKey.ENTITY_NOT_FOUND,
                                                                                                    WIMMessageHelper.generateMsgParms(uniqueId)));
             } catch (RegistryException re) {

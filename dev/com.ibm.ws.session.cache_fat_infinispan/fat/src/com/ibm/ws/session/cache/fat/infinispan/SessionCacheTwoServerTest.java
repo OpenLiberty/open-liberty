@@ -47,20 +47,6 @@ public class SessionCacheTwoServerTest extends FATServletClient {
         appB = new SessionCacheApp(serverB, true, "session.cache.infinispan.web", "session.cache.infinispan.web.cdi", "session.cache.infinispan.web.listener1");
         serverB.useSecondaryHTTPPort();
 
-        //String hazelcastConfigFile = "hazelcast-localhost-only.xml";
-
-        //if (FATSuite.isMulticastDisabled()) {
-        //    Log.info(SessionCacheTwoServerTest.class, "setUp", "Disabling multicast in Hazelcast config.");
-        //    hazelcastConfigFile = "hazelcast-localhost-only-multicastDisabled.xml";
-        //}
-
-        //String configLocation = new File(serverB.getUserDir() + "/shared/resources/hazelcast/" + hazelcastConfigFile).getAbsolutePath();
-        //String rand = UUID.randomUUID().toString();
-        //serverA.setJvmOptions(Arrays.asList("-Dhazelcast.group.name=" + rand,
-        //                                    "-Dhazelcast.config.file=" + hazelcastConfigFile));
-        //serverB.setJvmOptions(Arrays.asList("-Dhazelcast.group.name=" + rand,
-        //                                    "-Dhazelcast.config=" + configLocation));
-
         serverA.startServer();
 
         // Since we initialize the JCache provider lazily, use an HTTP session on serverA before starting serverB,
@@ -83,7 +69,7 @@ public class SessionCacheTwoServerTest extends FATServletClient {
                     serverA.stopServer();
             } finally {
                 if (serverB.isStarted())
-                    serverB.stopServer("CWWKL0058W:.*InfinispanLib"); // TODO why does this occur for Infinispan jar, but not Hazelcast?
+                    serverB.stopServer();
             }
         }
     }

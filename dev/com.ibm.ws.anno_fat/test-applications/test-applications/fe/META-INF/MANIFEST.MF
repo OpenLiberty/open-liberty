@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.8.2
+Created-By: pxi3260sr10-20111208_01 (SR10) (IBM Corporation)
+Specification-Title: fragmentOrderedAnnotations.ear
+Specification-Version: 1.0
+Specification-Vendor: IBM Corp.
+Implementation-Title: fragmentOrderedAnnotations.ear
+Implementation-Version: 1.0
+Implementation-Vendor: IBM Corp.
+Class-Path: 
+

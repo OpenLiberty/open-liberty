@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.security.oauth20.error.impl;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -45,6 +47,23 @@ public class BrowserAndServerLogMessageTest extends CommonTestClass {
     @After
     public void afterTest() {
         System.out.println("Exiting test " + testName.getMethodName());
+    }
+
+    @Test
+    public void testUnknownMessageBundle() {
+        TraceComponent tcUnknownBundle = Tr.register(BrowserAndServerLogMessageTest.class, "SOMEGROUP", "com.ibm.ws.unknown.bundle");
+        Enumeration<Locale> requestLocales = getLocales("en");
+        BrowserAndServerLogMessage msg = new BrowserAndServerLogMessage(tcUnknownBundle, requestLocales, MSG_KEY_NO_INSERTS);
+        assertEquals("Server error message should have just been the message key since the registered message bundle is unknown.", MSG_KEY_NO_INSERTS, msg.getServerErrorMessage());
+        assertEquals("Browser error message should have just been the message key since the registered message bundle is unknown.", MSG_KEY_NO_INSERTS, msg.getBrowserErrorMessage());
+    }
+
+    @Test
+    public void testNullLocales() {
+        Enumeration<Locale> requestLocales = null;
+        BrowserAndServerLogMessage msg = new BrowserAndServerLogMessage(tc, requestLocales, MSG_KEY_NO_INSERTS);
+        verifyPattern(msg.getServerErrorMessage(), MSG_REGEX_NO_INSERTS_EN, "Server error message did not match expected regex.");
+        verifyPattern(msg.getBrowserErrorMessage(), MSG_REGEX_NO_INSERTS_EN, "Browser error message did not match expected regex.");
     }
 
     @Test

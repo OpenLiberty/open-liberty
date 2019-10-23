@@ -33,17 +33,17 @@ import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedType;
 
-/* package-private */ final class AnnotatedTypeDecorator<X> extends AnnotatedDecorator implements AnnotatedType<X> {
+/* package-private */ public final class AnnotatedTypeDecorator<X> extends AnnotatedDecorator implements AnnotatedType<X> {
 
     private final AnnotatedType<X> decoratedType;
 
     private final Set<AnnotatedMethod<? super X>> decoratedMethods;
 
-    AnnotatedTypeDecorator(AnnotatedType<X> decoratedType, Annotation decoratingAnnotation) {
+    public AnnotatedTypeDecorator(AnnotatedType<X> decoratedType, Annotation decoratingAnnotation) {
         this(decoratedType, decoratingAnnotation, Collections.<AnnotatedMethod<? super X>> emptySet());
     }
 
-    AnnotatedTypeDecorator(AnnotatedType<X> decoratedType, Annotation decoratingAnnotation, Set<AnnotatedMethod<? super X>> decoratedMethods) {
+    public AnnotatedTypeDecorator(AnnotatedType<X> decoratedType, Annotation decoratingAnnotation, Set<AnnotatedMethod<? super X>> decoratedMethods) {
         super(decoratedType, Collections.singleton(decoratingAnnotation));
         this.decoratedType = decoratedType;
         this.decoratedMethods = decoratedMethods;

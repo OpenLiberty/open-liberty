@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.mp;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
@@ -23,17 +22,16 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.eclipse.microprofile.context.ThreadContext;
-import org.eclipse.microprofile.context.spi.ThreadContextProvider;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.concurrent.mp.spi.ThreadContextConfig;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 import com.ibm.wsspi.threadcontext.WSContextService;
 
 /**
- * Programmatically built ThreadContext instance - either via ThreadContextBuilder
- * or injected by CDI and possibly annotated by <code>@ThreadContextConfig</code>
+ * Programmatically built ThreadContext instance - via ThreadContextBuilder.
  *
  * TODO eventually this should be merged with ContextServiceImpl such that it also
  * implements EE Concurrency ContextService. However, because the MP Context Propagation spec
@@ -41,20 +39,13 @@ import com.ibm.wsspi.threadcontext.WSContextService;
  * this to the future. In the mean time, there will be duplication of the MP Context Propagation
  * method implementations between the two.
  */
-class ThreadContextImpl implements ThreadContext, WSContextService {
+public class ThreadContextImpl implements ThreadContext, WSContextService {
     private static final TraceComponent tc = Tr.register(ThreadContextImpl.class);
 
     /**
-     * The context manager provider.
+     * Represents the configured context propagation settings.
      */
-    private final ContextManagerProviderImpl cmProvider;
-
-    /**
-     * Map of thread context provider to type of instruction for applying context to threads.
-     * The values are either PROPAGATED or CLEARED. Contexts types that should be left on the
-     * thread UNCHANGED are omitted from this map.
-     */
-    private final LinkedHashMap<ThreadContextProvider, ContextOp> configPerProvider;
+    private final ThreadContextConfig config;
 
     /**
      * Hash code for this instance.
@@ -71,110 +62,108 @@ class ThreadContextImpl implements ThreadContext, WSContextService {
      *
      * @param name unique name for this instance.
      * @param int hash hash code for this instance.
-     * @param cmProvider the context manager provider
-     * @param configPerProvider
+     * @param config represents thread context propagation configuration.
      */
-    ThreadContextImpl(String name, int hash, ContextManagerProviderImpl cmProvider, LinkedHashMap<ThreadContextProvider, ContextOp> configPerProvider) {
-        this.cmProvider = cmProvider;
-        this.configPerProvider = configPerProvider;
+    public ThreadContextImpl(String name, int hash, ThreadContextConfig config) {
+        this.config = config;
         this.name = name;
         this.hash = hash;
     }
 
     @Override
-    public ThreadContextDescriptor captureThreadContext(Map<String, String> executionProperties,
-                                                        @SuppressWarnings("unchecked") Map<String, ?>... additionalThreadContextConfig) {
-        return new ThreadContextDescriptorImpl(cmProvider, configPerProvider);
+    public final ThreadContextDescriptor captureThreadContext(Map<String, String> executionProperties,
+                                                              @SuppressWarnings("unchecked") Map<String, ?>... additionalThreadContextConfig) {
+        return config.captureThreadContext();
     }
 
     @Override
-    public <R> Callable<R> contextualCallable(Callable<R> callable) {
+    public final <R> Callable<R> contextualCallable(Callable<R> callable) {
         if (callable instanceof ContextualCallable)
             throw new IllegalArgumentException(ContextualCallable.class.getSimpleName());
 
-        ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(cmProvider, configPerProvider);
+        ThreadContextDescriptor contextDescriptor = config.captureThreadContext();
         return new ContextualCallable<R>(contextDescriptor, callable);
     }
 
     @Override
-    public <T, U> BiConsumer<T, U> contextualConsumer(BiConsumer<T, U> consumer) {
+    public final <T, U> BiConsumer<T, U> contextualConsumer(BiConsumer<T, U> consumer) {
         if (consumer instanceof ContextualBiConsumer)
             throw new IllegalArgumentException(ContextualBiConsumer.class.getSimpleName());
 
-        ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(cmProvider, configPerProvider);
+        ThreadContextDescriptor contextDescriptor = config.captureThreadContext();
         return new ContextualBiConsumer<T, U>(contextDescriptor, consumer);
     }
 
     @Override
-    public <T> Consumer<T> contextualConsumer(Consumer<T> consumer) {
+    public final <T> Consumer<T> contextualConsumer(Consumer<T> consumer) {
         if (consumer instanceof ContextualConsumer)
             throw new IllegalArgumentException(ContextualConsumer.class.getSimpleName());
 
-        ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(cmProvider, configPerProvider);
+        ThreadContextDescriptor contextDescriptor = config.captureThreadContext();
         return new ContextualConsumer<T>(contextDescriptor, consumer);
     }
 
     @Override
-    public <T, U, R> BiFunction<T, U, R> contextualFunction(BiFunction<T, U, R> function) {
+    public final <T, U, R> BiFunction<T, U, R> contextualFunction(BiFunction<T, U, R> function) {
         if (function instanceof ContextualBiFunction)
             throw new IllegalArgumentException(ContextualBiFunction.class.getSimpleName());
 
-        ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(cmProvider, configPerProvider);
+        ThreadContextDescriptor contextDescriptor = config.captureThreadContext();
         return new ContextualBiFunction<T, U, R>(contextDescriptor, function);
     }
 
     @Override
-    public <T, R> Function<T, R> contextualFunction(Function<T, R> function) {
+    public final <T, R> Function<T, R> contextualFunction(Function<T, R> function) {
         if (function instanceof ContextualFunction)
             throw new IllegalArgumentException(ContextualFunction.class.getSimpleName());
 
-        ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(cmProvider, configPerProvider);
+        ThreadContextDescriptor contextDescriptor = config.captureThreadContext();
         return new ContextualFunction<T, R>(contextDescriptor, function);
     }
 
     @Override
-    public Runnable contextualRunnable(Runnable runnable) {
+    public final Runnable contextualRunnable(Runnable runnable) {
         if (runnable instanceof ContextualRunnable)
             throw new IllegalArgumentException(ContextualRunnable.class.getSimpleName());
 
-        ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(cmProvider, configPerProvider);
+        ThreadContextDescriptor contextDescriptor = config.captureThreadContext();
         return new ContextualRunnable(contextDescriptor, runnable);
     }
 
     @Override
-    public <R> Supplier<R> contextualSupplier(Supplier<R> supplier) {
+    public final <R> Supplier<R> contextualSupplier(Supplier<R> supplier) {
         if (supplier instanceof ContextualSupplier)
             throw new IllegalArgumentException(ContextualSupplier.class.getSimpleName());
 
-        ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(cmProvider, configPerProvider);
+        ThreadContextDescriptor contextDescriptor = config.captureThreadContext();
         return new ContextualSupplier<R>(contextDescriptor, supplier);
     }
 
     @Override
-    public <T> T createContextualProxy(ThreadContextDescriptor threadContextDescriptor, T instance, Class<T> intf) {
+    public final <T> T createContextualProxy(ThreadContextDescriptor threadContextDescriptor, T instance, Class<T> intf) {
         throw new UnsupportedOperationException(); // not needed by ManagedCompletableFuture or ManagedExecutorServiceImpl
     }
 
     @Override
-    public Executor currentContextExecutor() {
-        ThreadContextDescriptor contextDescriptor = new ThreadContextDescriptorImpl(cmProvider, configPerProvider);
+    public final Executor currentContextExecutor() {
+        ThreadContextDescriptor contextDescriptor = config.captureThreadContext();
         return new ContextualExecutor(contextDescriptor);
     }
 
     @Override
     @Trivial
-    public int hashCode() {
+    public final int hashCode() {
         return hash;
     }
 
     @Override
     @Trivial
-    public String toString() {
+    public final String toString() {
         return name;
     }
 
     @Override
-    public <T> CompletableFuture<T> withContextCapture(CompletableFuture<T> stage) {
+    public final <T> CompletableFuture<T> withContextCapture(CompletableFuture<T> stage) {
         CompletableFuture<T> newCompletableFuture;
 
         UnusableExecutor executor = new UnusableExecutor(this);
@@ -196,7 +185,7 @@ class ThreadContextImpl implements ThreadContext, WSContextService {
     }
 
     @Override
-    public <T> CompletionStage<T> withContextCapture(CompletionStage<T> stage) {
+    public final <T> CompletionStage<T> withContextCapture(CompletionStage<T> stage) {
         ManagedCompletionStage<T> newStage;
 
         UnusableExecutor executor = new UnusableExecutor(this);

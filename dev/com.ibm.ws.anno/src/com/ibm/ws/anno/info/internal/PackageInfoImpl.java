@@ -20,7 +20,8 @@ import com.ibm.wsspi.anno.info.PackageInfo;
 public class PackageInfoImpl extends InfoImpl implements PackageInfo {
 
     private static final TraceComponent tc = Tr.register(PackageInfoImpl.class);
-    public static final String CLASS_NAME = PackageInfoImpl.class.getName();
+    @SuppressWarnings("hiding")
+	public static final String CLASS_NAME = PackageInfoImpl.class.getName();
 
     //
 
@@ -52,8 +53,8 @@ public class PackageInfoImpl extends InfoImpl implements PackageInfo {
     }
 
     @Override
-    protected String internName(String name) {
-        return getInfoStore().internPackageName(name);
+    protected String internName(String useName) {
+        return getInfoStore().internPackageName(useName);
     }
 
     @Override

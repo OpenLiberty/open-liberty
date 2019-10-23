@@ -1,0 +1,41 @@
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.logstash.collector/resources/com/ibm/ws/collector/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+
+# Message prefix block: TRAS0100 - TRAS0210
+# New messages starting December 1, 2016 should use message block TRAS4201 - TRAS4300.
+
+LOGSTASH_CONNECTION_FAILED=TRAS0216W: Kolektor Logstash se nedok\u00e1zal p\u0159ipojit k serveru Logstash se zadan\u00fdm hostitelem {0} a \u010d\u00edslem portu {1}. 
+LOGSTASH_CONNECTION_FAILED.explanation=P\u0159ipojen\u00ed k serveru Logstash se nezda\u0159ilo, proto\u017ee server Logstash nebyl spu\u0161t\u011bn na uveden\u00e9m hostiteli, nebyly spr\u00e1vn\u00e9 informace o konfiguraci, jako nap\u0159. n\u00e1zev hostitele a \u010d\u00edslo portu, nebo nen\u00ed na serveru Logstash nakonfigurov\u00e1n vstup Lumberjack. 
+LOGSTASH_CONNECTION_FAILED.useraction=Zkontrolujte informace o konfiguraci a spus\u0165te server Logstash na uveden\u00e9m hostiteli. Zkontrolujte, zda je spr\u00e1vn\u011b nastaven vstup Lumberjack a hostitel i \u010d\u00edslo portu uveden\u00e9 v konfiguraci kolektoru Logstash v souboru server.xml odpov\u00eddaj\u00ed p\u0159\u00edslu\u0161n\u00e9 konfiguraci serveru Logstash.
+
+LOGSTASH_CONNECTION_NOT_AVAILABLE=TRAS0217W: Kolektor Logstash nemohl odeslat ud\u00e1losti serveru Logstash. Pro odesl\u00e1n\u00ed ud\u00e1lost\u00ed je nutn\u00e9 p\u0159ipojen\u00ed k serveru Logstash.
+LOGSTASH_CONNECTION_NOT_AVAILABLE.explanation=Ud\u00e1losti se nezda\u0159ilo odeslat, proto\u017ee nen\u00ed k dispozici p\u0159ipojen\u00ed k serveru Logstash. Toto p\u0159ipojen\u00ed ji\u017e mo\u017en\u00e1 bylo z\u0159\u00edzeno, ale nyn\u00ed se zd\u00e1, \u017ee je odpojen\u00e9. Syst\u00e9m se bude i nad\u00e1le sna\u017eit p\u0159ipojit k serveru Logstash, dokud nebude dostupn\u00fd.
+LOGSTASH_CONNECTION_NOT_AVAILABLE.useraction=Zkontrolujte, zda je na dan\u00e9m hostiteli spu\u0161t\u011bn server Logstash.
+
+LOGSTASH_CONNECTION_ESTABLISHED=TRAS0218I: Kolektor Logstash je p\u0159ipojen k serveru Logstash se zadan\u00fdm hostitelem {0} a \u010d\u00edslem portu {1}.
+LOGSTASH_CONNECTION_ESTABLISHED.explanation=Kolektor Logstash je \u00fasp\u011b\u0161n\u011b p\u0159ipojen k serveru Logstash.
+LOGSTASH_CONNECTION_ESTABLISHED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+LOGSTASH_CONNECTION_CLOSED=TRAS0219I: Kolektor Logstash je odpojen od serveru Logstash.
+LOGSTASH_CONNECTION_CLOSED.explanation=Kolektor Logstash ukon\u010duje a znovu navazuje p\u0159ipojen\u00ed k serveru Logstash, kdy\u017e se aktualizuje konfigurace kolektoru Logstash, v\u010detn\u011b jak\u00fdchkoli zm\u011bn v z\u00e1visl\u00e9m reperto\u00e1ru SSL a konfiguraci \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f. 
+LOGSTASH_CONNECTION_CLOSED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+LOGSTASH_SOURCE_UNKNOWN=TRAS4201W: Kolektor Logstash nerozpoznal uveden\u00fd zdroj {0}.
+LOGSTASH_SOURCE_UNKNOWN.explanation=Uveden\u00fd zdroj nen\u00ed jedn\u00edm z v\u00fdchoz\u00edch zdroj\u016f poskytovan\u00fdch b\u011bhov\u00fdm prost\u0159ed\u00edm Liberty. Zdroj m\u016f\u017ee b\u00fdt sou\u010d\u00e1st\u00ed n\u011bkter\u00e9 funkce Liberty, kter\u00e1 nebyla p\u0159id\u00e1na do konfigurace serveru.
+LOGSTASH_SOURCE_UNKNOWN.useraction=Zkontrolujte informace o konfiguraci. Ujist\u011bte se, \u017ee jste zadali jeden z kolektorem podporovan\u00fdch zdroj\u016f.
+

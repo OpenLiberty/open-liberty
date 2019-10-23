@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,11 +12,15 @@
 package com.ibm.ws.security.wim;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -31,8 +35,8 @@ import com.ibm.ws.security.registry.UserRegistry;
 import com.ibm.ws.security.wim.adapter.urbridge.URBridge;
 import com.ibm.ws.security.wim.util.UniqueNameHelper;
 import com.ibm.wsspi.security.wim.CustomRepository;
+import com.ibm.wsspi.security.wim.exception.EntityNotInRealmScopeException;
 import com.ibm.wsspi.security.wim.exception.InitializationException;
-import com.ibm.wsspi.security.wim.exception.InvalidUniqueNameException;
 import com.ibm.wsspi.security.wim.exception.WIMException;
 
 /**
@@ -53,6 +57,21 @@ public class RepositoryManager {
     private volatile int numRepos = 0; // short cut for error checking on how many repos we have
 
     private final Map<String, RepositoryWrapper> repositories = new ConcurrentHashMap<String, RepositoryWrapper>();
+
+    /**
+     * The stack of realmNames stored in stack for this thread.
+     *
+     * Technically, there probably would never be a need to have a stack, as the realm
+     * name for an operation is unlikely to change, but it operates as a counter for how
+     * many times the realm name has been set so that reentrant calls don't end up clearing
+     * the realm name prematurely.
+     */
+    private static ThreadLocal<LinkedList<String>> realmNameTLStack = new ThreadLocal<LinkedList<String>>() {
+        @Override
+        protected LinkedList<String> initialValue() {
+            return new LinkedList<String>();
+        }
+    };
 
     public RepositoryManager(VMMService service) {
         vmmService = service;
@@ -116,26 +135,51 @@ public class RepositoryManager {
         return repos;
     }
 
-    public String getRepositoryId(String uniqueName) throws WIMException {
-        String reposId = getRepositoryIdByUniqueName(uniqueName);
-        return reposId;
-    }
-
     /**
-     * Returns the id of the repository to which the uniqueName belongs to.
+     * Returns the ID of the repository to which the uniqueName belongs to.
      *
-     * @throws InvalidUniqueNameException
+     * @param uniqueName
+     *            The uniqueName to retrieve the repository ID for.
+     * @return The repository that best matches the uniqueName.
+     * @throws WIMException
+     *             If the uniqueName is not found in any of the repositories.
      */
     protected String getRepositoryIdByUniqueName(String uniqueName) throws WIMException {
+
         boolean isDn = UniqueNameHelper.isDN(uniqueName) != null;
-        if (isDn)
+        if (isDn) {
             uniqueName = UniqueNameHelper.getValidUniqueName(uniqueName).trim();
+        }
 
         String repo = null;
         int repoMatch = -1;
         int bestMatch = -1;
+        String realmName = getRealmOnThread();
 
-        for (Map.Entry<String, RepositoryWrapper> entry : repositories.entrySet()) {
+        /*
+         * Restrict matches to the repositories that are participating in the
+         * specified realm.
+         */
+        Collection<Entry<String, RepositoryWrapper>> baseEntries = new HashSet<Entry<String, RepositoryWrapper>>();
+        RealmConfig realmConfig = vmmService.getConfigManager().getRealmConfig(realmName);
+        if (realmConfig != null) {
+            List<String> participatingBaseEntries = Arrays.asList(realmConfig.getParticipatingBaseEntries());
+
+            for (Entry<String, RepositoryWrapper> entry : repositories.entrySet()) {
+                for (String repoBaseEntry : entry.getValue().getRepositoryBaseEntries().keySet()) {
+                    if (participatingBaseEntries.contains(repoBaseEntry)) {
+                        baseEntries.add(entry);
+                    }
+                }
+            }
+        } else {
+            /*
+             * There is no explicitly configured realm. Use all base entries.
+             */
+            baseEntries = repositories.entrySet();
+        }
+
+        for (Entry<String, RepositoryWrapper> entry : baseEntries) {
             repoMatch = entry.getValue().isUniqueNameForRepository(uniqueName, isDn);
             if (repoMatch == Integer.MAX_VALUE) {
                 return entry.getKey();
@@ -150,12 +194,10 @@ public class RepositoryManager {
 
         AuditManager auditManager = new AuditManager();
         Audit.audit(Audit.EventID.SECURITY_MEMBER_MGMT_01, auditManager.getRESTRequest(), auditManager.getRequestType(), auditManager.getRepositoryId(), uniqueName,
-                    vmmService.getConfigManager().getConfiguredPrimaryRealmName(), null, Integer.valueOf("204"));
+                    realmName, null, Integer.valueOf("204"));
 
-        throw new InvalidUniqueNameException(WIMMessageKey.ENTITY_NOT_IN_REALM_SCOPE, Tr.formatMessage(
-                                                                                                       tc,
-                                                                                                       WIMMessageKey.ENTITY_NOT_IN_REALM_SCOPE,
-                                                                                                       WIMMessageHelper.generateMsgParms(uniqueName, "defined")));
+        String msg = Tr.formatMessage(tc, WIMMessageKey.ENTITY_NOT_IN_REALM_SCOPE, WIMMessageHelper.generateMsgParms(uniqueName, realmName));
+        throw new EntityNotInRealmScopeException(WIMMessageKey.ENTITY_NOT_IN_REALM_SCOPE, msg);
     }
 
     public Map<String, List<String>> getRepositoriesBaseEntries() {
@@ -243,20 +285,6 @@ public class RepositoryManager {
         return reposBaseEntries;
     }
 
-    //TODO not tested.
-    public boolean isReadOnly(String reposId) throws WIMException {
-        // return readOnlyMap.get(reposId).booleanValue();
-        // As property is not defined in the metatype, always return false.
-        return false;
-    }
-
-    //TODO not tested.
-    public boolean isSortingSupported(String reposId) {
-        // return sortSupportMap.get(reposId).booleanValue();
-        // As property is not defined in the metatype, always return false.
-        return false;
-    }
-
     private Map<String, Set<String>> getRepositoriesForGroup() {
         //TODO this appears to be backwards, but also seems to match the original (untested) code.
         //Perhaps the map needs to be inverted?
@@ -340,13 +368,13 @@ public class RepositoryManager {
      * @param uniqueName
      * @return
      */
-    public List<String> getFederationUREntityType(String data) {
+    public List<String> getFederationUREntityType(String uniqueName) {
         List<String> result = null;
 
         for (RepositoryWrapper rw : repositories.values()) {
             if (rw instanceof UserRegistryWrapper) {
                 URBridge bridge = (URBridge) ((UserRegistryWrapper) rw).getRepository();
-                result = bridge.getEntityType(data);
+                result = bridge.getEntityType(uniqueName);
                 if (result != null) {
                     break;
                 }
@@ -354,5 +382,54 @@ public class RepositoryManager {
         }
 
         return result;
+    }
+
+    /**
+     * Get the realm set for the current thread.
+     *
+     * @return The realm set for the current thread.
+     */
+    public static String getRealmOnThread() {
+        return realmNameTLStack.get().peek();
+    }
+
+    /**
+     * Set the realm for the current thread.
+     *
+     * This should always be used in conjunction with the
+     * {@link #clearRealmOnThread()} method in a finally block that ensures that
+     * the realm name gets cleared.
+     *
+     * @param realmName
+     *            The realm to set on the current thread.
+     * @see #clearRealmOnThread()
+     */
+    public static void setRealmOnThread(String realmName) {
+        final String METHODNAME = "setRealmOnThread";
+
+        LinkedList<String> stack = realmNameTLStack.get();
+        stack.push(realmName);
+
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, METHODNAME + " realmName=" + realmName + ", size=" + stack.size());
+        }
+    }
+
+    /**
+     * Clear the realm set on the current thread. Whenever the method
+     * {@link #setRealmOnThread(String)} is called this should be called in a
+     * finally block to ensure the realm name is unset.
+     *
+     * @see #setRealmOnThread(String)
+     */
+    public static void clearRealmOnThread() {
+        final String METHODNAME = "clearRealmOnThread";
+
+        LinkedList<String> stack = realmNameTLStack.get();
+        String realmName = stack.pop();
+
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, METHODNAME + " Realm popped from stack= " + realmName + ", size=" + stack.size());
+        }
     }
 }

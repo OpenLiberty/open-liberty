@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -142,6 +142,19 @@ public abstract class URBridgeEntity {
     public void setSecurityNameProp(String securityName) {
         if (securityName != null)
             entity.getIdentifier().set(securityNameProp, securityName);
+    }
+
+    /**
+     * Sets the uniqueIdProp. This is useful when creating a new object
+     * and wanting to populate its attributes. Mainly because you need 1 attribute
+     * before you can retrieve others.
+     *
+     * @param uniqueId used to set the uniqueId property
+     * @Exception an error occurred in the underlying repository.
+     */
+    public void setUniqueIdProp(String uniqueId) {
+        if (uniqueId != null)
+            entity.getIdentifier().set(uniqueIdProp, uniqueId);
     }
 
     public void setPrincipalName(String securityName) {

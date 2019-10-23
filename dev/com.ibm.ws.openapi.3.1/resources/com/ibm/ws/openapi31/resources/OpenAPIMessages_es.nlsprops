@@ -1,0 +1,72 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.openapi/resources/com/ibm/ws/openapi31/resources/OpenAPIMessages.nlsprops
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR Open API
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKO1700 - CWWKO1749
+
+OSGI_SERVICE_ERROR=CWWKO1700E: El servicio OSGi {0} no est\u00e1 disponible.
+OSGI_SERVICE_ERROR.explanation=El servicio especificado no est\u00e1 disponible. Se trata de un error interno del servidor.   
+OSGI_SERVICE_ERROR.useraction=Reinicie el servidor con la opci\u00f3n [--clean].
+
+OPENAPI_IS_NULL=CWWKO1701W: El proveedor {0} no ha devuelto ning\u00fan documento de la Open API.
+OPENAPI_IS_NULL.explanation=Un objeto de Open API creado para OASProvider era nulo, probablemente debido a un error v\u00e1lido.
+OPENAPI_IS_NULL.useraction=Proporcione un documento v\u00e1lido. Examine los registros para encontrar el error.
+
+CUSTOMIZATION_IS_NULL=CWWKO1702W: El objeto OpenAPI que ha creado el servidor utilizando el valor de personalizaci\u00f3n {0} es nulo.
+CUSTOMIZATION_IS_NULL.explanation=El objeto OpenAPI creado utilizando el valor de personalizaci\u00f3n es nulo.
+CUSTOMIZATION_IS_NULL.useraction=Examine los registros para encontrar el error. Proporcione un documento OpenAPI v\u00e1lido para el atributo de personalizaci\u00f3n.
+
+PUBLIC_URL_INVALID=CWWKO1703W: El URL p\u00fablico no se puede establecer en {0}. Este URL est\u00e1 reservado para que lo utilice el servidor de aplicaciones.
+PUBLIC_URL_INVALID.explanation=El URL p\u00fablico no se puede establecer en un valor reservado para que lo utilice el servidor de aplicaciones.
+PUBLIC_URL_INVALID.useraction=Especifique un valor v\u00e1lido para el atributo publicURL en la configuraci\u00f3n de servidor.
+
+MULTIPLE_DEFAULT_OPENAPI_FILES=CWWKO1704W: Se han encontrado varios archivos personalizados de Open API: {0}. Se est\u00e1 supervisando {1} para ver si hay cambios.
+MULTIPLE_DEFAULT_OPENAPI_FILES.explanation=Hay varios archivos personalizados de Open API en el directorio ${server.config.dir}/openapi-3.1.
+MULTIPLE_DEFAULT_OPENAPI_FILES.useraction=Aseg\u00farese de que solo se encuentra el archivo personalizado de Open API predeterminado en el directorio ${server.config.dir}/openapi-3.1.
+
+CSS_NOT_PROCESSED=CWWKO1705W: El servidor no puede leer el documento CSS {0} especificado debido a {1} : {2}.
+CSS_NOT_PROCESSED.explanation=El documento CSS no se puede procesar debido a un error v\u00e1lido.
+CSS_NOT_PROCESSED.useraction=Proporcione un documento CSS v\u00e1lido.
+
+OPENAPI_DOCUMENT_VALIDATION_ERROR=CWWKO1706E: La validaci\u00f3n del documento OpenAPI ha producido el error o los errores siguientes:
+OPENAPI_DOCUMENT_VALIDATION_ERROR.explanation=El documento OpenAPI no es v\u00e1lido.
+OPENAPI_DOCUMENT_VALIDATION_ERROR.useraction=Proporcione un documento OpenAPI v\u00e1lido que resuelva el error indicado.
+
+OPENAPI_DOCUMENT_VALIDATION_WARNING=CWWKO1707W: La validaci\u00f3n del documento OpenAPI ha producido el aviso o los avisos siguientes:
+OPENAPI_DOCUMENT_VALIDATION_WARNING.explanation=El documento OpenAPI contiene datos que no est\u00e1n en el formato recomendado.
+OPENAPI_DOCUMENT_VALIDATION_WARNING.useraction=Proporcione un documento OpenAPI v\u00e1lido que resuelva el aviso indicado.
+
+CUSTOM_CSS_NOT_PROCESSED=CWWKO1708W: No se ha procesado el archivo CSS personalizado {0} para la IU de OpenAPI. El servidor restaurar\u00e1 los valores predeterminados para la IU de OpenAPI. Raz\u00f3n={1} : {2}.
+CUSTOM_CSS_NOT_PROCESSED.explanation=El servidor no puede procesar el archivo CSS personalizado. El servidor restaurar\u00e1 los valores predeterminados para la IU de OpenAPI.
+CUSTOM_CSS_NOT_PROCESSED.useraction=Proporcione un archivo CSS personalizado v\u00e1lido para la IU de OpenAPI con todas las dependencias.
+
+CSS_SECTION_NOT_FOUND=CWWKO1709W: El servidor ha le\u00eddo el documento CSS especificado {0}, pero no ha podido encontrar <.swagger-ui .headerbar >.
+CSS_SECTION_NOT_FOUND.explanation=El documento CSS especificado no contiene <.swagger-ui .headerbar > o su formato no cumple con las restricciones que requiere el servidor.
+CSS_SECTION_NOT_FOUND.useraction=Proporcione un archivo CSS v\u00e1lido que contenga <.swagger-ui .headerbar > con el formato necesario.
+
+UNSUPPORTED_CSS_VALUE=CWWKO1710W: El valor especificado para la propiedad {0} no est\u00e1 soportado. El valor debe ser {1}.
+UNSUPPORTED_CSS_VALUE.explanation=El valor de la propiedad especificada no es v\u00e1lido o no est\u00e1 soportado en la infraestructura OpenAPI.
+UNSUPPORTED_CSS_VALUE.useraction=Proporcione un valor v\u00e1lido para la propiedad en el archivo CSS personalizado para la IU de OpenAPI. 
+
+INVALID_CSS_BACKGROUND_IMAGE=CWWKO1711W: La imagen de fondo especificada en {0} no existe o no es v\u00e1lida.
+INVALID_CSS_BACKGROUND_IMAGE.explanation=La imagen de fondo no existe o no es v\u00e1lida.
+INVALID_CSS_BACKGROUND_IMAGE.useraction=Proporcione una imagen v\u00e1lida.
+
+OPENAPI_FILE_PARSE_ERROR=CWWKO1712E: No se ha podido analizar el documento OpenAPI para la aplicaci\u00f3n: {0}.
+OPENAPI_FILE_PARSE_ERROR.explanation=No se ha podido analizar el documento OpenAPI de la carpeta META-INF.
+OPENAPI_FILE_PARSE_ERROR.useraction=Aseg\u00farese de que el archivo est\u00e1 en formato YAML o JSON correcto.

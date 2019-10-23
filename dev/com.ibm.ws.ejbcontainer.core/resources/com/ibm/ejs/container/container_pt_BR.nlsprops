@@ -981,7 +981,6 @@ NP_TIMER_RETRY_LIMIT_REACHED_CNTR0179W.useraction=Determine a causa da falha do 
 MDB_ACTIVATION_SPEC_INFO_CNTR0180I=CNTR0180I: O bean acionado por mensagens {0} no m\u00f3dulo {1} do aplicativo {2} est\u00e1 ligado \u00e0 especifica\u00e7\u00e3o de ativa\u00e7\u00e3o {3}.
 MDB_ACTIVATION_SPEC_INFO_CNTR0180I.explanation=Quando o bean acionado por mensagens \u00e9 iniciado, a especifica\u00e7\u00e3o de ativa\u00e7\u00e3o especificada ser\u00e1 usada para ativar o terminal de mensagens.
 MDB_ACTIVATION_SPEC_INFO_CNTR0180I.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
-
 #-------------------------------------------------------------------------------
 # Do NOT translate "EJBTimer"
 TIMERSERVICE_TIMERMANAGER_NOT_FOUND_CNTR0183E=CNTR0183E: O gerenciador do cron\u00f4metro utilizado pelo servi\u00e7o de cron\u00f4metro do EJB n\u00e3o p\u00f4de ser obtido.\n\
@@ -1578,6 +1577,12 @@ DUPLICATE_REF_BINDING_WEB_CNTR0334E.useraction=Remova todas, exceto uma das, lig
 ENTITY_NOT_SUPPORTED_CNTR0335W=CNTR0335W: O enterprise bean {0} no m\u00f3dulo {1} no aplicativo {2} \u00e9 um bean de entidade declarado em um aplicativo Java EE vers\u00e3o 7 ou mais recente. Beans de entidade n\u00e3o s\u00e3o suportados em aplicativos Java EE 7 ou mais recente. A configura\u00e7\u00e3o do bean de entidade ser\u00e1 ignorada e n\u00e3o ser\u00e1 vinculada a um local de nomenclatura.
 ENTITY_NOT_SUPPORTED_CNTR0335W.explanation=Enterprise beans de entidade declarados em qualquer m\u00f3dulo de vers\u00e3o n\u00e3o s\u00e3o suportados quando o m\u00f3dulo \u00e9 empacotado em um aplicativo Java EE vers\u00e3o 7 ou mais recente. Um aplicativo \u00e9 considerado como Java EE vers\u00e3o 7 se o arquivo application.xml \u00e9 declarado como sendo da vers\u00e3o 7 ou qualquer m\u00f3dulo EJB ou WAR empacotado dentro desse aplicativo estiver em uma vers\u00e3o correspondente ao Java EE vers\u00e3o 7.
 ENTITY_NOT_SUPPORTED_CNTR0335W.useraction=Remova o uso do enterprise bean da entidade do aplicativo ou empacote o bean em um aplicativo vers\u00e3o 6 ou mais antigo.
+
+#-------------------------------------------------------------------------------
+NAME_ALREADY_BOUND_WARN_CNTR0336W=CNTR0336W: A interface {0} do bean {1} no m\u00f3dulo {2} do aplicativo {3} j\u00e1 foi ligada ao local de nome {4}. A interface {5} do bean {6} no m\u00f3dulo {7} do aplicativo {8} j\u00e1 est\u00e1 ligada ao local do nome {4}. O local do nome {4} n\u00e3o est\u00e1 acess\u00edvel.
+NAME_ALREADY_BOUND_WARN_CNTR0336W.explanation=Cada interface de enterprise bean deve especificar um local de liga\u00e7\u00e3o exclusivo.
+NAME_ALREADY_BOUND_WARN_CNTR0336W.useraction=Corrija o arquivo de liga\u00e7\u00e3o de uma dessas duas interfaces de bean para que cada interface tenha um local de liga\u00e7\u00e3o exclusivo.
+
 
 
 #-------------------------------------------------------------------------------

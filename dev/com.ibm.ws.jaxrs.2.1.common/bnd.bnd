@@ -176,6 +176,7 @@ instrument.classesExcludes: com/ibm/ws/jaxrs20/internal/resources/*.class
   com.ibm.ws.org.apache.cxf.cxf.tools.wadlto.jaxrs.3.2;version=latest,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   com.ibm.ws.webservices.handler;version=latest,\
+  com.ibm.ws.concurrent.mp.1.0;version=latest,\
   com.ibm.wsspi.org.osgi.service.component.annotations
 
 -testpath: \

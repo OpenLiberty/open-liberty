@@ -106,4 +106,10 @@ public class SystemNameSpaceBinderImpl implements NameSpaceBinder<String> {
 
     @Override
     public void end() throws NamingException {}
+
+    @Override
+    public void bindDefaultEJBLocal(String bindingObject, HomeRecord hr) {}
+
+    @Override
+    public void unbindEJBLocal(List<String> names) throws NamingException {}
 }

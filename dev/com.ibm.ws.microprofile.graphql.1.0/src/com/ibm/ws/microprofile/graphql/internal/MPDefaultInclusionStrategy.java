@@ -109,16 +109,10 @@ public class MPDefaultInclusionStrategy implements InclusionStrategy {
     private static boolean fieldHasAnnotation(AnnotatedElement methodElement, Class<? extends Annotation> annotation) {
         if (methodElement instanceof Method) {
             Method m = (Method) methodElement;
-            Class<?> cls = m.getDeclaringClass();
-            String methodName = m.getName();
-            String fieldName = null;
-            if (methodName.length() > 3 && (methodName.startsWith("get") || methodName.startsWith("set"))) {
-                fieldName = methodName.substring(3, 4).toLowerCase() + methodName.substring(4);
-            } else if (methodName.length() > 2 && methodName.startsWith("is")) {
-                fieldName = methodName.substring(2, 3).toLowerCase() + methodName.substring(3);
-            }
+            String fieldName = MethodUtils.getPropertyName(m);
             if (fieldName != null) {
                 try {
+                    Class<?> cls = m.getDeclaringClass();
                     Field f = cls.getDeclaredField(fieldName);
                     return ClassUtils.hasAnnotation(f, annotation);
                 } catch (NoSuchFieldException nsfe) {
@@ -128,4 +122,6 @@ public class MPDefaultInclusionStrategy implements InclusionStrategy {
         }
         return false;
     }
+
+    
 }

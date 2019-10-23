@@ -32,13 +32,11 @@ import java.util.concurrent.TimeUnit;
 
 import javax.cache.Cache;
 import javax.cache.CacheManager;
-import javax.cache.Caching;
 import javax.cache.management.CacheMXBean;
 import javax.cache.management.CacheStatisticsMXBean;
 import javax.management.JMX;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
-import javax.naming.InitialContext;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -105,7 +103,7 @@ public class SessionCacheConfigTestServlet extends FATServlet {
 
         byte[] bytes;
         CacheManager cacheManager = getCacheManager();
-        Cache<String, byte[]> cache = cacheManager.getCache("com.ibm.ws.session.attr.default_host.sessionCacheConfigApp", String.class, byte[].class);
+        Cache<String, byte[]> cache = cacheManager.getCache("com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp", String.class, byte[].class);
         bytes = cache.get(key);
 
         Object value = toObject(bytes);
@@ -172,7 +170,7 @@ public class SessionCacheConfigTestServlet extends FATServlet {
 
         byte[] bytes;
         CacheManager cacheManager = getCacheManager();
-        Cache<String, byte[]> cache = cacheManager.getCache("com.ibm.ws.session.attr.default_host.sessionCacheConfigApp", String.class, byte[].class);
+        Cache<String, byte[]> cache = cacheManager.getCache("com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp", String.class, byte[].class);
         bytes = cache.get(key);
 
         assertTrue("Expected cache entry " + key + " to have value " + expectedValue + ", not " + toObject(bytes) + ". " + EOLN +
@@ -192,7 +190,7 @@ public class SessionCacheConfigTestServlet extends FATServlet {
 
         byte[] bytes;
         CacheManager cacheManager = getCacheManager();
-        Cache<String, byte[]> cache = cacheManager.getCache("com.ibm.ws.session.attr.default_host.sessionCacheConfigApp", String.class, byte[].class);
+        Cache<String, byte[]> cache = cacheManager.getCache("com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp", String.class, byte[].class);
         if (cache == null) // cache can be null if test case disables the sessionCache-1.0 feature
             bytes = null;
         else
@@ -213,7 +211,7 @@ public class SessionCacheConfigTestServlet extends FATServlet {
         System.out.println("as a byte array, this is: " + Arrays.toString(expectedBytes));
 
         CacheManager cacheManager = getCacheManager();
-        Cache<String, byte[]> cache = cacheManager.getCache("com.ibm.ws.session.attr.default_host.sessionCacheConfigApp", String.class, byte[].class);
+        Cache<String, byte[]> cache = cacheManager.getCache("com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp", String.class, byte[].class);
         byte[] bytes = cache.get(key);
 
         assertTrue("Expected cache entry " + key + " to have value " + expectedValue + ", not " + toObject(bytes) + ". " + EOLN +
@@ -286,41 +284,39 @@ public class SessionCacheConfigTestServlet extends FATServlet {
      */
     public void testMXBeansEnabled(HttpServletRequest request, HttpServletResponse response) throws Exception {
         MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+        ObjectName name;
+
+        // Useful to see when the provider changes the value that is used for CacheManager
+        name = mbs.queryNames(new ObjectName("javax.cache:type=CacheConfiguration,CacheManager=*,Cache=com.ibm.ws.session.meta.default_host%2FsessionCacheConfigApp"), null).iterator().next();
+        System.out.println("Found with name " + name.toString());
 
         // CacheMXBean for session meta info cache
-        CacheMXBean metaInfoCacheMXBean = //
-                        JMX.newMBeanProxy(mbs,
-                                          new ObjectName("javax.cache:type=CacheConfiguration,CacheManager=org.infinispan.jcache.embedded.JCachingProvider,Cache=com.ibm.ws.session.meta.default_host.sessionCacheConfigApp"),
-                                          CacheMXBean.class);
+        name = mbs.queryNames(new ObjectName("javax.cache:type=CacheConfiguration,CacheManager=*infinispan.xml,Cache=com.ibm.ws.session.meta.default_host%2FsessionCacheConfigApp"), null).iterator().next();
+        CacheMXBean metaInfoCacheMXBean = JMX.newMBeanProxy(mbs, name, CacheMXBean.class);
         assertEquals(String.class.getName(), metaInfoCacheMXBean.getKeyType());
         assertEquals(ArrayList.class.getName(), metaInfoCacheMXBean.getValueType());
         assertTrue(metaInfoCacheMXBean.isManagementEnabled());
         assertTrue(metaInfoCacheMXBean.isStatisticsEnabled());
 
         // CacheMXBean for session attributes cache
-        CacheMXBean attrCacheMXBean = //
-                        JMX.newMBeanProxy(mbs,
-                                          new ObjectName("javax.cache:type=CacheConfiguration,CacheManager=org.infinispan.jcache.embedded.JCachingProvider,Cache=com.ibm.ws.session.attr.default_host.sessionCacheConfigApp"),
-                                          CacheMXBean.class);
+        name = mbs.queryNames(new ObjectName("javax.cache:type=CacheConfiguration,CacheManager=*infinispan.xml,Cache=com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp"), null).iterator().next();
+        CacheMXBean attrCacheMXBean = JMX.newMBeanProxy(mbs, name, CacheMXBean.class);
         assertEquals(String.class.getName(), attrCacheMXBean.getKeyType());
         assertEquals("[B", attrCacheMXBean.getValueType()); // byte[]
         assertTrue(attrCacheMXBean.isManagementEnabled());
         assertTrue(attrCacheMXBean.isStatisticsEnabled());
 
         // CacheStatisticsMXBean for session meta info cache
-        CacheStatisticsMXBean metaInfoCacheStatsMXBean = //
-                        JMX.newMBeanProxy(mbs,
-                                          new ObjectName("javax.cache:type=CacheStatistics,CacheManager=org.infinispan.jcache.embedded.JCachingProvider,Cache=com.ibm.ws.session.meta.default_host.sessionCacheConfigApp"),
-                                          CacheStatisticsMXBean.class);
+        name = mbs.queryNames(new ObjectName("javax.cache:type=CacheStatistics,CacheManager=*infinispan.xml,Cache=com.ibm.ws.session.meta.default_host%2FsessionCacheConfigApp"), null).iterator().next();
+        CacheStatisticsMXBean metaInfoCacheStatsMXBean = JMX.newMBeanProxy(mbs, name, CacheStatisticsMXBean.class);
         metaInfoCacheStatsMXBean.clear();
         assertEquals(0, metaInfoCacheStatsMXBean.getCacheEvictions());
 
         // CacheStatisticsMXBean for session attributes cache
-        CacheStatisticsMXBean attrCacheStatsMXBean = //
-                        JMX.newMBeanProxy(mbs,
-                                          new ObjectName("javax.cache:type=CacheStatistics,CacheManager=org.infinispan.jcache.embedded.JCachingProvider,Cache=com.ibm.ws.session.attr.default_host.sessionCacheConfigApp"),
-                                          CacheStatisticsMXBean.class);
-        // TODO found value of 1 with Infinispan assertEquals(0, attrCacheStatsMXBean.getCacheRemovals());
+        name = mbs.queryNames(new ObjectName("javax.cache:type=CacheStatistics,CacheManager=*infinispan.xml,Cache=com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp"), null).iterator().next();
+        CacheStatisticsMXBean attrCacheStatsMXBean = JMX.newMBeanProxy(mbs, name, CacheStatisticsMXBean.class);
+        long removalCount = attrCacheStatsMXBean.getCacheRemovals();
+        assertTrue("Removals: " + removalCount, removalCount >= 0); // depending on order, prior tests may have used sessions
 
         HttpSession session = request.getSession();
         request.getSession().setAttribute("testMXBeans", 12.3f);
@@ -377,7 +373,7 @@ public class SessionCacheConfigTestServlet extends FATServlet {
         boolean found = false;
         byte[] bytes = null;
         CacheManager cacheManager = getCacheManager();
-        Cache<String, byte[]> cache = cacheManager.getCache("com.ibm.ws.session.attr.default_host.sessionCacheConfigApp", String.class, byte[].class);
+        Cache<String, byte[]> cache = cacheManager.getCache("com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp", String.class, byte[].class);
         for (long start = System.nanoTime(); !found && System.nanoTime() - start < TIMEOUT_NS; TimeUnit.MILLISECONDS.sleep(500)) {
             bytes = cache.get(key);
             found = Arrays.equals(expectedBytes, bytes);

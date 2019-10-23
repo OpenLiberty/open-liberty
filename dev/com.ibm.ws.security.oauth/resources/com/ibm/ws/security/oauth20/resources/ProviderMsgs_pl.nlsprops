@@ -341,14 +341,14 @@ security.oauth20.apppwtok.revoke.disallowed=CWOAU0078E: Podj\u0119to pr\u00f3b\u
 security.oauth20.apppwtok.revoke.disallowed.explanation=Has\u0142a aplikacji lub znaczniki aplikacji musz\u0105 zosta\u0107 uniewa\u017cnione przy u\u017cyciu punkt\u00f3w ko\u0144cowych app-passwords lub app-tokens.
 security.oauth20.apppwtok.revoke.disallowed.useraction=Wy\u015blij ponownie to \u017c\u0105danie, podaj\u0105c identyfikator URI odpowiedniego punktu ko\u0144cowego w celu uniewa\u017cnienia hase\u0142 aplikacji lub znacznik\u00f3w aplikacji.
 
-security.oauth20.pkce.invalid.method.error=CWOAU0079E: Parametr \u017c\u0105dania code_challenge_method zawiera nieobs\u0142ugiwany algorytm transformacji.
+security.oauth20.pkce.invalid.method.error=CWOAU0079E: Parametr code_challenge_method w \u017c\u0105daniu zawiera nieobs\u0142ugiwany algorytm transformacji: [{0}]. Obs\u0142ugiwane s\u0105 nast\u0119puj\u0105ce algorytmy transformacji: plain i S256.
 security.oauth20.pkce.invalid.method.error.explanation=Dostawca OAuth nie obs\u0142uguje okre\u015blonego algorytmu transformacji. 
-security.oauth20.pkce.invalid.method.error.useraction=U\u017cyj \u0142a\u0144cucha "plain" lub "S256" jako warto\u015bci parametru code_challenge_method.
+security.oauth20.pkce.invalid.method.error.useraction=U\u017cyj jednego z algorytm\u00f3w podanych w komunikacie.
 
-security.oauth20.pkce.codeverifier.length.error=CWOAU0080E: D\u0142ugo\u015b\u0107 parametru code_verifier length jest niepoprawna.
+security.oauth20.pkce.codeverifier.length.error=CWOAU0080E: D\u0142ugo\u015b\u0107 parametru code_verifier to [{0}]. Parametr code_verifier musi mie\u0107 d\u0142ugo\u015b\u0107 od 43 do 128 znak\u00f3w.
 security.oauth20.pkce.codeverifier.length.error.explanation=Parametr code_verifier powinien zawiera\u0107 co najmniej 43 znaki i nie wi\u0119cej ni\u017c 128 znak\u00f3w. 
 security.oauth20.pkce.codeverifier.length.error.useraction=Wy\u015blij ponownie \u017c\u0105dania autoryzacji i znacznik\u00f3w, u\u017cywaj\u0105c zaktualizowanej warto\u015bci parametru code_verifier, kt\u00f3ra spe\u0142nia wymagania dotycz\u0105ce d\u0142ugo\u015bci.
 
-security.oauth20.pkce.error.mismatch.codeverifier=CWOAU0081E: Warto\u015bci parametr\u00f3w code_challenge i code_verifier nie s\u0105 zgodne.
+security.oauth20.pkce.error.mismatch.codeverifier=CWOAU0081E: Parametry code_challenge [{0}] i code_verifier [{1}] nie s\u0105 zgodne. 
 security.oauth20.pkce.error.mismatch.codeverifier.explanation=Dostawca OAuth u\u017cywa parametru code_challenge_method podanego w \u017c\u0105daniu autoryzacji i przekszta\u0142ca parametr code_verifier, chyba \u017ce parametr code_challenge_method ma warto\u015b\u0107 plain. Przekszta\u0142cona warto\u015b\u0107 powinna by\u0107 zgodna z warto\u015bci\u0105 parametru code_challenge w \u017c\u0105daniu autoryzacji.
 security.oauth20.pkce.error.mismatch.codeverifier.useraction=Nale\u017cy wys\u0142a\u0107 zgodne warto\u015bci parametr\u00f3w code_challenge i code_verifier i poprawi\u0107 algorytm transformacji w \u017c\u0105daniach autoryzacji i znacznik\u00f3w.

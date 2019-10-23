@@ -41,7 +41,7 @@ import com.ibm.wsspi.ssl.KeyManagerExtendedInfo;
  * This class is the KeyManager wrapper that delegates to the "real" KeyManager
  * configured for the system.
  * </p>
- * 
+ *
  * @author IBM Corporation
  * @version WAS 7.0
  * @since WAS 7.0
@@ -62,7 +62,7 @@ public final class WSX509KeyManager extends X509ExtendedKeyManager implements X5
 
     /**
      * Constructor.
-     * 
+     *
      * @param keystore
      * @param passPhrase
      * @param kmf
@@ -110,7 +110,7 @@ public final class WSX509KeyManager extends X509ExtendedKeyManager implements X5
 
     /**
      * Set the client alias value for the given slot number.
-     * 
+     *
      * @param alias
      * @param slotnum
      * @throws Exception
@@ -124,7 +124,7 @@ public final class WSX509KeyManager extends X509ExtendedKeyManager implements X5
             String location = keyFileName != null ? keyFileName : tokenLibraryFile;
 
             String message = TraceNLSHelper.getInstance().getFormattedMessage("ssl.client.alias.not.found.CWPKI0023E", new Object[] { alias, location },
-                                                                              "Client alias " + alias + " not found in keystore.");
+                                                                              "Client alias " + alias + " is invalid or not found in keystore.");
             Tr.error(tc, "ssl.client.alias.not.found.CWPKI0023E", new Object[] { alias, location });
             throw new IllegalArgumentException(message);
         }
@@ -139,7 +139,7 @@ public final class WSX509KeyManager extends X509ExtendedKeyManager implements X5
 
     /**
      * Set the server alias for the given slot number.
-     * 
+     *
      * @param alias
      * @param slotnum
      * @throws Exception
@@ -153,7 +153,7 @@ public final class WSX509KeyManager extends X509ExtendedKeyManager implements X5
             String location = keyFileName != null ? keyFileName : tokenLibraryFile;
 
             String message = TraceNLSHelper.getInstance().getFormattedMessage("ssl.server.alias.not.found.CWPKI0024E", new Object[] { alias, location },
-                                                                              "Server alias " + alias + " not found in keystore.");
+                                                                              "Server alias " + alias + " is invalid or not found in keystore.");
             Tr.error(tc, "ssl.server.alias.not.found.CWPKI0024E", new Object[] { alias, location });
             throw new IllegalArgumentException(message);
         }
@@ -240,7 +240,7 @@ public final class WSX509KeyManager extends X509ExtendedKeyManager implements X5
 
     /**
      * Choose a client alias.
-     * 
+     *
      * @param keyType
      * @param issuers
      * @return String
@@ -274,7 +274,8 @@ public final class WSX509KeyManager extends X509ExtendedKeyManager implements X5
                     // JCERACFKS and JCECCARACFKS support mixed case, if we see that type,
                     // do not lowercase the alias
                     if (ks.getType() != null
-                        && (ks.getType().equals(Constants.KEYSTORE_TYPE_JCERACFKS) || ks.getType().equals(Constants.KEYSTORE_TYPE_JCECCARACFKS) || ks.getType().equals(Constants.KEYSTORE_TYPE_JCEHYBRIDRACFKS))) {
+                        && (ks.getType().equals(Constants.KEYSTORE_TYPE_JCERACFKS) || ks.getType().equals(Constants.KEYSTORE_TYPE_JCECCARACFKS)
+                            || ks.getType().equals(Constants.KEYSTORE_TYPE_JCEHYBRIDRACFKS))) {
                         return clientAlias;
                     }
                     return clientAlias.toLowerCase();
@@ -292,7 +293,8 @@ public final class WSX509KeyManager extends X509ExtendedKeyManager implements X5
             // JCERACFKS and JCECCARACFKS support mixed case, if we see that type, do
             // not lowercase the alias
             if (ks.getType() != null
-                && (!ks.getType().equals(Constants.KEYSTORE_TYPE_JCERACFKS) && !ks.getType().equals(Constants.KEYSTORE_TYPE_JCECCARACFKS) && !ks.getType().equals(Constants.KEYSTORE_TYPE_JCEHYBRIDRACFKS))) {
+                && (!ks.getType().equals(Constants.KEYSTORE_TYPE_JCERACFKS) && !ks.getType().equals(Constants.KEYSTORE_TYPE_JCECCARACFKS)
+                    && !ks.getType().equals(Constants.KEYSTORE_TYPE_JCEHYBRIDRACFKS))) {
                 if (alias != null) {
                     alias = alias.toLowerCase();
                 }
@@ -307,7 +309,7 @@ public final class WSX509KeyManager extends X509ExtendedKeyManager implements X5
     /**
      * Handshakes that use the SSLEngine and not an SSLSocket require this method
      * from the extended X509KeyManager.
-     * 
+     *
      * @see javax.net.ssl.X509ExtendedKeyManager#chooseEngineServerAlias(java.lang.String, java.security.Principal[], javax.net.ssl.SSLEngine)
      */
     @Override
@@ -331,7 +333,7 @@ public final class WSX509KeyManager extends X509ExtendedKeyManager implements X5
     /**
      * Handshakes that use the SSLEngine and not an SSLSocket require this method
      * from the extended X509KeyManager.
-     * 
+     *
      * @see javax.net.ssl.X509ExtendedKeyManager#chooseEngineClientAlias(java.lang.String[], java.security.Principal[], javax.net.ssl.SSLEngine)
      */
     @Override
@@ -355,7 +357,7 @@ public final class WSX509KeyManager extends X509ExtendedKeyManager implements X5
 
     /**
      * Choose a server alias.
-     * 
+     *
      * @param keyType
      * @param issuers
      * @return String
@@ -394,7 +396,8 @@ public final class WSX509KeyManager extends X509ExtendedKeyManager implements X5
                         // JCERACFKS and JCECCARACFKS support mixed case, if we see that
                         // type, do not lowercase the alias
                         if (ks.getType() != null
-                            && (ks.getType().equals(Constants.KEYSTORE_TYPE_JCERACFKS) || ks.getType().equals(Constants.KEYSTORE_TYPE_JCECCARACFKS) || ks.getType().equals(Constants.KEYSTORE_TYPE_JCEHYBRIDRACFKS))) {
+                            && (ks.getType().equals(Constants.KEYSTORE_TYPE_JCERACFKS) || ks.getType().equals(Constants.KEYSTORE_TYPE_JCECCARACFKS)
+                                || ks.getType().equals(Constants.KEYSTORE_TYPE_JCEHYBRIDRACFKS))) {
                             return serverAlias;
                         }
                         return serverAlias.toLowerCase();
@@ -410,7 +413,8 @@ public final class WSX509KeyManager extends X509ExtendedKeyManager implements X5
             // JCERACFKS and JCECCARACFKS support mixed case, if we see that type, do
             // not lowercase the alias
             if (ks.getType() != null
-                && (!ks.getType().equals(Constants.KEYSTORE_TYPE_JCERACFKS) && !ks.getType().equals(Constants.KEYSTORE_TYPE_JCECCARACFKS) && !ks.getType().equals(Constants.KEYSTORE_TYPE_JCEHYBRIDRACFKS))) {
+                && (!ks.getType().equals(Constants.KEYSTORE_TYPE_JCERACFKS) && !ks.getType().equals(Constants.KEYSTORE_TYPE_JCECCARACFKS)
+                    && !ks.getType().equals(Constants.KEYSTORE_TYPE_JCEHYBRIDRACFKS))) {
                 if (alias != null) {
                     alias = alias.toLowerCase();
                 }
@@ -490,7 +494,7 @@ public final class WSX509KeyManager extends X509ExtendedKeyManager implements X5
 
     /**
      * Get the appropriate X509KeyManager for this instance.
-     * 
+     *
      * @return X509KeyManager
      */
     public X509KeyManager getX509KeyManager() {

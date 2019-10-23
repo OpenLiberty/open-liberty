@@ -71,11 +71,8 @@ public class BasicMutationTestServlet extends FATServlet {
         assertTrue(schema.contains("Widget"));
         assertTrue(schema.contains("createWidget"));
         assertTrue(schema.contains("Create a new widget for sale."));
-        //TODO: uncomment after resolving schema generation issues:
-//        assertTrue(schema.contains("InputWidget"));
-//        assertFalse(schema.contains("WidgetInput"));
-//        assertTrue(schema.contains("A for-sale item object used for input."));
-//        assertTrue(schema.contains("An object that is for sale."));
+        assertTrue(schema.contains("WidgetInput"));
+        assertTrue(schema.contains("A for-sale item."));
     }
 
     @Test

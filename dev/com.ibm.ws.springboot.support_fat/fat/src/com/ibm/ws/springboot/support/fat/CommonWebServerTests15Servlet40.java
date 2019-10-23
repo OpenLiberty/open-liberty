@@ -20,11 +20,13 @@ import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 
 @RunWith(FATRunner.class)
 @Mode(FULL)
+@MaximumJavaLevel(javaLevel = 8)
 public class CommonWebServerTests15Servlet40 extends CommonWebServerTests {
 
     @After

@@ -17,3 +17,4 @@ Subsystem-Name: Java Database Connectivity 4.2
  com.ibm.ws.jdbc.4.2.feature
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

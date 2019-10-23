@@ -42,7 +42,7 @@ instrument.disabled: true
     org.jmock:jmock;strategy=exact;version=2.5.1, \
     org.jmock:jmock-legacy;version=2.5.0, \
     org.objenesis:objenesis;version=1.0, \
-    cglib:cglib-nodep;version=3.2.10, \
+    cglib:cglib-nodep;version=3.3.0, \
 	org.apache.ant:ant;version=1.9.6,\
 	org.apache.ant:ant-junit;version=1.9.6
     

@@ -1,0 +1,11 @@
+Subsystem-ManifestVersion: 1
+IBM-ShortName: timerInterfacesTestFeature-1.0
+Subsystem-SymbolicName: test.concurrent.persistent.timerInterfacesTestFeature-1.0; visibility:=public
+Subsystem-Version: 1.0
+Subsystem-Content: com.ibm.websphere.appserver.persistentExecutor-1.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.transaction-1.2; type="osgi.subsystem.feature",
+ test.feature.sim.ejb.timer; version="[1,1.0.100)"
+Subsystem-Type: osgi.subsystem.feature
+IBM-Feature-Version: 2
+IBM-API-Package: com.ibm.ws.concurrent.persistent.ejb,
+ test.feature.sim.ejb.timer

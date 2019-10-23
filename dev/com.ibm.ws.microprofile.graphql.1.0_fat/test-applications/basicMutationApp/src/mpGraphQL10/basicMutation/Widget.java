@@ -10,10 +10,13 @@
  *******************************************************************************/
 package mpGraphQL10.basicMutation;
 
+import org.eclipse.microprofile.graphql.Description;
+
 /**
  * Basic model object on the client side. This class is the client side
  * "replica" of the server side's <code>remoteApp.basic.Widget</code>
  */
+@Description("A for-sale item.")
 public class Widget {
 
     private String name;

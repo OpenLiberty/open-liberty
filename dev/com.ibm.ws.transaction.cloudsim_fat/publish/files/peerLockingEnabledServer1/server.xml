@@ -7,7 +7,7 @@
        <feature>jdbc-4.2</feature>
        <feature>jndi-1.0</feature>
        <feature>componentTest-1.0</feature>
-       <feature>txfat-1.0</feature>
+       <feature>txtest-1.0</feature>
        <feature>cdi-2.0</feature>
        <feature>timedexit-1.0</feature>
     </featureManager>

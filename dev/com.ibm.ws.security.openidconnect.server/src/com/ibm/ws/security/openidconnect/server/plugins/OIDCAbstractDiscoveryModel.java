@@ -48,6 +48,10 @@ public abstract class OIDCAbstractDiscoveryModel {
     private String revocation_endpoint;
     private String app_passwords_endpoint;
     private String app_tokens_endpoint;
+    private String personal_token_mgmt_endpoint;
+    private String users_token_mgmt_endpoint;
+    private String client_mgmt_endpoint;
+    private String[] code_challenge_methods_supported;
 
     /**
      * OIDC Properties not utilized in implementation
@@ -419,6 +423,62 @@ public abstract class OIDCAbstractDiscoveryModel {
      */
     public void setAppTokensEndpoint(String appTokensEndpoint) {
         this.app_tokens_endpoint = appTokensEndpoint;
+    }
+
+    /**
+     * @return the personalTokenMgmtEndpoint
+     */
+    public String getPersonalTokenMgmtEndpoint() {
+        return personal_token_mgmt_endpoint;
+    }
+
+    /**
+     * @param personalTokenMgmtEndpoint the personalTokenMgmtEndpoint to set
+     */
+    public void setPersonalTokenMgmtEndpoint(String personalTokenMgmtEndpoint) {
+        this.personal_token_mgmt_endpoint = personalTokenMgmtEndpoint;
+    }
+
+    /**
+     * @return the usersTokenMgmtEndpoint
+     */
+    public String getUsersTokenMgmtEndpoint() {
+        return users_token_mgmt_endpoint;
+    }
+
+    /**
+     * @param usersTokenMgmtEndpoint the usersTokenMgmtEndpoint to set
+     */
+    public void setUsersTokenMgmtEndpoint(String usersTokenMgmtEndpoint) {
+        this.users_token_mgmt_endpoint = usersTokenMgmtEndpoint;
+    }
+
+    /**
+     * @return the clientMgmtEndpoint
+     */
+    public String getClientMgmtEndpoint() {
+        return client_mgmt_endpoint;
+    }
+
+    /**
+     * @param clientMgmtEndpoint the clientMgmtEndpoint to set
+     */
+    public void setClientMgmtEndpoint(String clientMgmtEndpoint) {
+        this.client_mgmt_endpoint = clientMgmtEndpoint;
+    }
+
+    /**
+     * @return the pkceCodeChallengeMethodsSupported
+     */
+    public String[] getPkceCodeChallengeMethodsSupported() {
+        return defensiveCopy(code_challenge_methods_supported);
+    }
+
+    /**
+     * @param pkceCodeChallengeMethodsSupported the pkceCodeChallengeMethodsSupported to set
+     */
+    public void setPkceCodeChallengeMethodsSupported(String[] pkceCodeChallengeMethodsSupported) {
+        this.code_challenge_methods_supported = defensiveCopy(pkceCodeChallengeMethodsSupported);
     }
 
     private String[] defensiveCopy(String[] strArr) {

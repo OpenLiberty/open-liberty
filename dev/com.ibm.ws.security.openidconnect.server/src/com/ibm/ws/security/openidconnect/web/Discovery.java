@@ -91,6 +91,14 @@ public class Discovery {
 
         discoveryObj.setAppTokensEndpoint(discoverConfig.getEndpoint(OIDCConstants.KEY_OIDC_APP_TOKENS_EP_QUAL));
 
+        discoveryObj.setPersonalTokenMgmtEndpoint(discoverConfig.getEndpoint(OIDCConstants.KEY_OIDC_PERSONAL_TOKEN_MGMT_EP_QUAL));
+
+        discoveryObj.setUsersTokenMgmtEndpoint(discoverConfig.getEndpoint(OIDCConstants.KEY_OIDC_USERS_TOKEN_MGMT_EP_QUAL));
+
+        discoveryObj.setClientMgmtEndpoint(discoverConfig.getEndpoint(OIDCConstants.KEY_OIDC_CLIENT_MGMT_EP_QUAL));
+
+        discoveryObj.setPkceCodeChallengeMethodsSupported(OIDCConstants.OIDC_DISC_PKCE_CODE_CHALLENGE_METHODS_SUPPORTED);
+
         String discoverJSONString = discoveryObj.toJSONString();
 
         if (tc.isDebugEnabled()) {

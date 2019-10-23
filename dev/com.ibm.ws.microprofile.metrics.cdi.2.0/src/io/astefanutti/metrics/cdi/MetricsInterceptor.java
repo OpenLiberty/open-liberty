@@ -56,6 +56,7 @@ import com.ibm.ws.microprofile.metrics.cdi.producer.MetricRegistryFactory;
 @Interceptor
 @MetricsBinding
 @Priority(Interceptor.Priority.LIBRARY_BEFORE)
+public
 // See http://docs.oracle.com/javaee/7/tutorial/doc/interceptors.htm
 /* package-private */ class MetricsInterceptor {
 

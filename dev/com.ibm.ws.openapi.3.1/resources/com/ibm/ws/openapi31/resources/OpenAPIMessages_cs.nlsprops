@@ -1,0 +1,72 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.openapi/resources/com/ibm/ws/openapi31/resources/OpenAPIMessages.nlsprops
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR Open API
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKO1700 - CWWKO1749
+
+OSGI_SERVICE_ERROR=CWWKO1700E: Slu\u017eba OSGi {0} je nedostupn\u00e1.
+OSGI_SERVICE_ERROR.explanation=Uveden\u00e1 slu\u017eba je nedostupn\u00e1. Jedn\u00e1 se o vnit\u0159n\u00ed chybu serveru. 
+OSGI_SERVICE_ERROR.useraction=Restartujte server s volbou [--clean].
+
+OPENAPI_IS_NULL=CWWKO1701W: Poskytovatel {0} nevr\u00e1til \u017e\u00e1dn\u00fd dokument Open API.
+OPENAPI_IS_NULL.explanation=Objekt Open API vytvo\u0159en\u00fd pro poskytovatele OASProvider m\u011bl hodnotu Null, pravd\u011bpodobn\u011b kv\u016fli platn\u00e9 chyb\u011b.
+OPENAPI_IS_NULL.useraction=Poskytn\u011bte platn\u00fd dokument. Vyhledejte chybu v protokolech.
+
+CUSTOMIZATION_IS_NULL=CWWKO1702W: Objekt OpenAPI, kter\u00fd server vytvo\u0159il pomoc\u00ed hodnoty p\u0159izp\u016fsoben\u00ed {0} je null.
+CUSTOMIZATION_IS_NULL.explanation=Objekt OpenAPI, kter\u00fd byl vytvo\u0159en pomoc\u00ed hodnoty p\u0159izp\u016fsoben\u00ed je null.
+CUSTOMIZATION_IS_NULL.useraction=Vyhledejte chybu v protokolech. Zadejte platn\u00fd dokument OpenAPI pro atribut p\u0159izp\u016fsoben\u00ed.
+
+PUBLIC_URL_INVALID=CWWKO1703W: Ve\u0159ejnou adresu URL nelze nastavit na hodnotu {0}. Tato adresa URL je vyhrazena pro pou\u017eit\u00ed aplika\u010dn\u00edm serverem.
+PUBLIC_URL_INVALID.explanation=Ve\u0159ejnou adresu URL nelze nastavit na hodnotu, kter\u00e1 byla vyhrazena pro pou\u017eit\u00ed aplika\u010dn\u00edm serverem.
+PUBLIC_URL_INVALID.useraction=Zadejte v konfiguraci serveru platnou hodnotu atributu publicURL.
+
+MULTIPLE_DEFAULT_OPENAPI_FILES=CWWKO1704W: Bylo nalezeno v\u00edce soubor\u016f p\u0159izp\u016fsoben\u00ed otev\u0159en\u00e9ho rozhran\u00ed API: {0}. {1} monitoruje zm\u011bny.
+MULTIPLE_DEFAULT_OPENAPI_FILES.explanation=V adres\u00e1\u0159i ${server.config.dir}/openapi-3.1 je v\u00edce soubor\u016f p\u0159izp\u016fsoben\u00ed otev\u0159en\u00e9ho rozhran\u00ed API.
+MULTIPLE_DEFAULT_OPENAPI_FILES.useraction=Zajist\u011bte, aby byl v adres\u00e1\u0159i ${server.config.dir}/openapi-3.1 pouze jeden soubor p\u0159izp\u016fsoben\u00ed otev\u0159en\u00e9ho rozhran\u00ed API.
+
+CSS_NOT_PROCESSED=CWWKO1705W: Server nem\u016f\u017ee p\u0159e\u010d\u00edst uveden\u00fd dokument CSS {0} v d\u016fsledku {1} : {2}.
+CSS_NOT_PROCESSED.explanation=Dokument CSS nelze zpracovat kv\u016fli platn\u00e9 chyb\u011b.
+CSS_NOT_PROCESSED.useraction=Poskytn\u011bte platn\u00fd dokument CSS.
+
+OPENAPI_DOCUMENT_VALIDATION_ERROR=CWWKO1706E: P\u0159i ov\u011b\u0159en\u00ed dokumentu OpenAPI do\u0161lo k n\u00e1sleduj\u00edc\u00edm chyb\u00e1m:
+OPENAPI_DOCUMENT_VALIDATION_ERROR.explanation=Dokument OpenAPI je neplatn\u00fd.
+OPENAPI_DOCUMENT_VALIDATION_ERROR.useraction=Zadejte platn\u00fd dokument OpenAPI, kter\u00fd \u0159e\u0161\u00ed nahl\u00e1\u0161enou chybu.
+
+OPENAPI_DOCUMENT_VALIDATION_WARNING=CWWKO1707W: P\u0159i ov\u011b\u0159en\u00ed dokumentu OpenAPI do\u0161lo k n\u00e1sleduj\u00edc\u00edm varov\u00e1n\u00edm:
+OPENAPI_DOCUMENT_VALIDATION_WARNING.explanation=Dokument OpenAPI obsahuje data, kter\u00e1 nejsou v doporu\u010den\u00e9m form\u00e1tu.
+OPENAPI_DOCUMENT_VALIDATION_WARNING.useraction=Zadejte platn\u00fd dokument OpenAPI, kter\u00fd \u0159e\u0161\u00ed nahl\u00e1\u0161en\u00e9 varov\u00e1n\u00ed.
+
+CUSTOM_CSS_NOT_PROCESSED=CWWKO1708W: Vlastn\u00ed soubor CSS {0} poskytnut\u00fd pro u\u017eivatelsk\u00e9 rozhran\u00ed OpenAPI nebyl zpracov\u00e1n. Server obnov\u00ed platn\u00e9 hodnoty pro u\u017eivatelsk\u00e9 rozhran\u00ed OpenAPI. P\u0159\u00ed\u010dina={1} : {2}.
+CUSTOM_CSS_NOT_PROCESSED.explanation=Server nem\u016f\u017ee zpracovat vlastn\u00ed soubor CSS. Server obnov\u00ed platn\u00e9 hodnoty pro u\u017eivatelsk\u00e9 rozhran\u00ed OpenAPI.
+CUSTOM_CSS_NOT_PROCESSED.useraction=Poskytn\u011bte platn\u00fd vlastn\u00ed soubor CSS pro u\u017eivatelsk\u00e9 rozhran\u00ed OpenAPI spolu se v\u0161emi z\u00e1vislostmi.
+
+CSS_SECTION_NOT_FOUND=CWWKO1709W: Server p\u0159e\u010detl uveden\u00fd dokument CSS {0}, ale nepoda\u0159ilo se mu naj\u00edt \u010d\u00e1st <.swagger-ui .headerbar >.
+CSS_SECTION_NOT_FOUND.explanation=Uveden\u00fd dokument CSS neobsahuje < .swagger-ui .headerbar >, nebo nen\u00ed form\u00e1tov\u00e1n tak, aby spl\u0148oval omezen\u00ed po\u017eadovan\u00e1 serverem.
+CSS_SECTION_NOT_FOUND.useraction=Poskytn\u011bte platn\u00fd soubor CSS, kter\u00fd obsahuje \u010d\u00e1st <.swagger-ui .headerbar > v po\u017eadovan\u00e9m form\u00e1tu.
+
+UNSUPPORTED_CSS_VALUE=CWWKO1710W: Hodnota zadan\u00e1 pro vlastnost {0} nen\u00ed podporov\u00e1na. Hodnota mus\u00ed b\u00fdt {1}.
+UNSUPPORTED_CSS_VALUE.explanation=Hodnota uveden\u00e9 vlastnosti je bu\u010f neplatn\u00e1, nebo ji r\u00e1mec OpenAPI nepodporuje.
+UNSUPPORTED_CSS_VALUE.useraction=Zadejte platnou hodnotu vlastnosti ve vlastn\u00edm souboru CSS pro u\u017eivatelsk\u00e9 rozhran\u00ed OpenAPI. 
+
+INVALID_CSS_BACKGROUND_IMAGE=CWWKO1711W: Obr\u00e1zek pozad\u00ed zadan\u00fd v {0} bu\u010f neexistuje, nebo je neplatn\u00fd.
+INVALID_CSS_BACKGROUND_IMAGE.explanation=Obr\u00e1zek pozad\u00ed bu\u010f neexistuje, nebo je neplatn\u00fd.
+INVALID_CSS_BACKGROUND_IMAGE.useraction=Poskytn\u011bte platn\u00fd obr\u00e1zek.
+
+OPENAPI_FILE_PARSE_ERROR=CWWKO1712E: Nezda\u0159ilo se zanalyzovat dokument OpenAPI pro aplikaci: {0}.
+OPENAPI_FILE_PARSE_ERROR.explanation=Nezda\u0159ila se zanalyzovat dokument OpenAPI ze slo\u017eky META-INF.
+OPENAPI_FILE_PARSE_ERROR.useraction=Ujist\u011bte se, \u017ee soubor je ve spr\u00e1vn\u00e9m form\u00e1tu YAML nebo JSON.

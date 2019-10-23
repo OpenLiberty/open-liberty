@@ -1,0 +1,2 @@
+-Danno.beta=true
+-Danno.scan.threads=8

@@ -30,12 +30,13 @@ import com.ibm.ws.microprofile.metrics.impl.CounterImpl;
 import com.ibm.ws.microprofile.metrics.impl.SharedMetricRegistries;
 
 public class BaseMetrics {
-    private static BaseMetrics baseMetrics = null;
-    private static String BASE = MetricRegistry.Type.BASE.getName();
-    MBeanServer mbs;
-    private static Set<String> gcObjectNames = new HashSet<String>();
 
-    private static SharedMetricRegistries SHARED_METRIC_REGISTRY;
+    protected static BaseMetrics baseMetrics = null;
+    protected static String BASE = MetricRegistry.Type.BASE.getName();
+    public MBeanServer mbs;
+    protected static Set<String> gcObjectNames = new HashSet<String>();
+
+    protected static SharedMetricRegistries SHARED_METRIC_REGISTRY;
 
     public static synchronized BaseMetrics getInstance(SharedMetricRegistries sharedMetricRegistry) {
         SHARED_METRIC_REGISTRY = sharedMetricRegistry;

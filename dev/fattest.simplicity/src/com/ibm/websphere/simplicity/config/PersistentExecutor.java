@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,6 +43,9 @@ public class PersistentExecutor extends ConfigElement {
 
     /** JNDI Name attribute. */
     private String jndiName;
+
+    /** Missed task threshold attribute. */
+    private String missedTaskThreshold;
 
     /** Server polling interval attribute. */
     private String pollInterval;
@@ -196,6 +199,25 @@ public class PersistentExecutor extends ConfigElement {
     }
 
     /**
+     * Sets the missedTaskThreshold attribute value.
+     *
+     * @param missedTaskThreshold The missedTaskThreshold attribute value.
+     */
+    @XmlAttribute
+    public void setMissedTaskThreshold(String missedTaskThreshold) {
+        this.missedTaskThreshold = missedTaskThreshold;
+    }
+
+    /**
+     * Returns the missedTaskThreshold attribute value
+     *
+     * @return The missedTaskThreshold attribute value
+     */
+    public String getMissedTaskThreshold() {
+        return missedTaskThreshold;
+    }
+
+    /**
      * Sets the pollInterval attribute value.
      * 
      * @param schema The pollInterval attribute value.
@@ -243,6 +265,8 @@ public class PersistentExecutor extends ConfigElement {
             buf.append("initialPollDelay=\"" + initialPollDelay + "\", ");
         if (jndiName != null)
             buf.append("jndiName=\"" + jndiName + "\", ");
+        if (missedTaskThreshold != null)
+            buf.append("missedTaskThreshold=\"" + missedTaskThreshold + "\", ");
         if (pollInterval != null)
             buf.append("pollInterval=\"" + pollInterval + "\", ");
         if (pollSize != null)
