@@ -24,7 +24,7 @@ public abstract class FeatureUtilityToolTest {
     public static String installRoot;
     protected static List<String> cleanFiles;
     protected static List<String> cleanDirectories;
-    private static Logger logger;
+    private static Logger logger = Logger.getLogger("com.ibm.ws.install.featureUtility_fat");
     private static Properties wlpVersionProps;
     private static String originalWlpVersion;
     private static String originalWlpEdition;
@@ -34,7 +34,6 @@ public abstract class FeatureUtilityToolTest {
 
     protected static void setupEnv() throws Exception {
         final String methodName = "setup";
-        logger = Logger.getLogger("com.ibm.ws.install.featureUtility_fat");
         server = LibertyServerFactory.getLibertyServer("com.ibm.ws.install.featureUtility_fat");
         installRoot = server.getInstallRoot();
         info(c, methodName, "install root: " + installRoot);
