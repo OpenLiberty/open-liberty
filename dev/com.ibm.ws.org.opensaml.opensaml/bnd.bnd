@@ -8,10 +8,10 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.opensaml:opensaml;2.6.1}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;${repo;org.opensaml:opensaml;2.6.6}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 -buildpath: \
-    org.opensaml:opensaml;version=2.6.1,\
+    org.opensaml:opensaml;version=2.6.6,\
     com.ibm.ws.org.opensaml.openws.1.5.6;version=latest,\
     com.ibm.ws.org.opensaml.xmltooling.1.4.4;version=latest
 
