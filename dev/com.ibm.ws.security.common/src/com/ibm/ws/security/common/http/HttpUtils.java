@@ -18,6 +18,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSocketFactory;
@@ -289,6 +291,16 @@ public class HttpUtils {
             responseStream = con.getErrorStream();
         }
         return responseStream;
+    }
+
+    public HttpURLConnection setHeaders(HttpURLConnection con, Map<String, String> headers) {
+        if (headers == null) {
+            return con;
+        }
+        for (Entry<String, String> entry : headers.entrySet()) {
+            con.setRequestProperty(entry.getKey(), entry.getValue());
+        }
+        return con;
     }
 
 }

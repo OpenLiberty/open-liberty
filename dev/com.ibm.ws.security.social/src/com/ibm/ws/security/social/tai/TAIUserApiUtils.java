@@ -6,25 +6,16 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- * IBM Corporation - initial API and implementation
+ *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.social.tai;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-
-import javax.json.Json;
-import javax.json.JsonObjectBuilder;
 import javax.net.ssl.SSLSocketFactory;
-import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.security.common.http.HttpUtils;
 import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.TraceConstants;
 import com.ibm.ws.security.social.UserApiConfig;
@@ -32,12 +23,11 @@ import com.ibm.ws.security.social.error.SocialLoginException;
 import com.ibm.ws.security.social.internal.LinkedinLoginConfigImpl;
 import com.ibm.ws.security.social.internal.OpenShiftLoginConfigImpl;
 import com.ibm.ws.security.social.internal.utils.OAuthClientUtil;
+import com.ibm.ws.security.social.internal.utils.OpenShiftUserApiUtils;
 
 public class TAIUserApiUtils {
 
     public static final TraceComponent tc = Tr.register(TAIUserApiUtils.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
-
-    HttpUtils httpUtils = new HttpUtils();
 
     @FFDCIgnore(SocialLoginException.class)
     public String getUserApiResponse(OAuthClientUtil clientUtil, SocialLoginConfig clientConfig, @Sensitive String accessToken, SSLSocketFactory sslSocketFactory) {
@@ -50,7 +40,7 @@ public class TAIUserApiUtils {
         String userinfoApi = userApiConfig.getApi();
         try {
             if (clientConfig instanceof OpenShiftLoginConfigImpl) {
-                return getUserApiResponseFromOpenShift(userinfoApi, (OpenShiftLoginConfigImpl) clientConfig, accessToken, sslSocketFactory);
+                return getUserApiResponseFromOpenShift((OpenShiftLoginConfigImpl) clientConfig, accessToken, sslSocketFactory);
             }
             String userApiResp = clientUtil.getUserApiResponse(userinfoApi,
                     accessToken,
@@ -75,43 +65,9 @@ public class TAIUserApiUtils {
         }
     }
 
-    private String getUserApiResponseFromOpenShift(String userinfoApi, OpenShiftLoginConfigImpl config, @Sensitive String accessToken, SSLSocketFactory sslSocketFactory) {
-        String response = null;
-        try {
-            HttpURLConnection connection = httpUtils.createConnection(HttpUtils.RequestMethod.POST, userinfoApi, sslSocketFactory);
-            connection.setDoOutput(true);
-            connection.setRequestProperty("Authorization", "Bearer " + config.getServiceAccountToken());
-            connection.setRequestProperty("Accept", "application/json");
-            connection.setRequestProperty("Content-Type", "application/json");
-
-            OutputStream outputStream = connection.getOutputStream();
-            OutputStreamWriter streamWriter = new OutputStreamWriter(outputStream, "UTF-8");
-
-            JsonObjectBuilder bodyBuilder = Json.createObjectBuilder();
-            bodyBuilder.add("kind", "TokenReview");
-            bodyBuilder.add("apiVersion", "authentication.k8s.io/v1");
-            bodyBuilder.add("spec", Json.createObjectBuilder().add("token", accessToken));
-            String bodyString = bodyBuilder.build().toString();
-            System.out.println("AYOHO Writing body [" + bodyString + "]");
-            streamWriter.write(bodyString);
-            // TODO
-            streamWriter.close();
-            outputStream.close();
-            connection.connect();
-
-            int responseCode = connection.getResponseCode();
-            response = httpUtils.readConnectionResponse(connection);
-            System.out.println("AYOHO Response [" + responseCode + "]: [" + response + "]");
-            if (responseCode != HttpServletResponse.SC_CREATED) {
-                // TODO - error condition
-            }
-            response = response.replaceFirst("^\\{", "{\"username\":\"ayoho-edited-username\",");
-            System.out.println("AYOHO Edited response: [" + response + "]");
-        } catch (IOException e) {
-            // TODO
-            e.printStackTrace();
-        }
-        return response;
+    private String getUserApiResponseFromOpenShift(OpenShiftLoginConfigImpl config, @Sensitive String accessToken, SSLSocketFactory sslSocketFactory) {
+        OpenShiftUserApiUtils openShiftUtils = new OpenShiftUserApiUtils(config);
+        return openShiftUtils.getUserApiResponse(accessToken, sslSocketFactory);
     }
 
     // flatten linkedin's json 

@@ -17,6 +17,7 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.security.common.config.DiscoveryConfigUtils;
 import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.TraceConstants;
@@ -127,6 +128,7 @@ public class OpenShiftLoginConfigImpl extends Oauth2LoginConfigImpl {
         }
     }
 
+    @Sensitive
     public String getServiceAccountToken() {
         return serviceAccountToken;
     }
