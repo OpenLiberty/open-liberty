@@ -50,7 +50,6 @@ public class OpenShiftLoginConfigImpl extends Oauth2LoginConfigImpl {
 
     @Override
     protected void setOptionalConfigAttributes(Map<String, Object> props) throws SocialLoginException {
-        this.userApi = configUtils.getConfigAttribute(props, KEY_userApi);
         this.scope = configUtils.getConfigAttribute(props, KEY_scope);
         this.userNameAttribute = configUtils.getConfigAttribute(props, KEY_userNameAttribute);
         this.sslRef = configUtils.getConfigAttribute(props, KEY_sslRef);
@@ -64,6 +63,7 @@ public class OpenShiftLoginConfigImpl extends Oauth2LoginConfigImpl {
     }
 
     private void setEndpointUrls(Map<String, Object> props) {
+        setUserApiUrl(props);
         this.discoveryEndpointUrl = configUtils.getConfigAttribute(props, KEY_DISCOVERY_ENDPOINT);
         // TODO
         if (discoveryEndpointUrl != null && !discoveryEndpointUrl.isEmpty()) {
@@ -72,6 +72,11 @@ public class OpenShiftLoginConfigImpl extends Oauth2LoginConfigImpl {
             this.authorizationEndpoint = buildEndpointUrl(props, KEY_authorizationEndpoint);
             this.tokenEndpoint = buildEndpointUrl(props, KEY_tokenEndpoint);
         }
+    }
+
+    private void setUserApiUrl(Map<String, Object> props) {
+        // TODO
+        this.userApi = hostnameAndPort + configUtils.getConfigAttribute(props, KEY_userApi);
     }
 
     private void performDiscovery() {
@@ -120,6 +125,22 @@ public class OpenShiftLoginConfigImpl extends Oauth2LoginConfigImpl {
             Tr.debug(tc, KEY_HOSTNAME_AND_PORT + " = " + hostnameAndPort);
             Tr.debug(tc, KEY_tokenEndpointAuthMethod + " = " + tokenEndpointAuthMethod);
         }
+    }
+
+    public String getServiceAccountToken() {
+        return serviceAccountToken;
+    }
+
+    public String getDiscoveryEndpoint() {
+        return discoveryEndpointUrl;
+    }
+
+    public String getTokenHeaderName() {
+        return tokenHeaderName;
+    }
+
+    public String getGostnameAndPort() {
+        return hostnameAndPort;
     }
 
 }
