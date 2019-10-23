@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -26,10 +27,13 @@ import org.testcontainers.containers.output.OutputFrame;
 import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
 import org.testcontainers.images.builder.ImageFromDockerfile;
 
+import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
@@ -48,6 +52,15 @@ public class FATSuite {
 
     static {
         ExternalTestServiceDockerClientStrategy.clearTestcontainersConfig();
+    }
+
+    @BeforeClass
+    public static void beforeSuite() throws Exception {
+        // Delete the Infinispan jars that might have been left around by previous test buckets.
+        LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.session.cache.fat.infinispan.container.server");
+        Machine machine = server.getMachine();
+        String installRoot = server.getInstallRoot();
+        LibertyFileManager.deleteLibertyDirectoryAndContents(machine, installRoot + "/usr/shared/resources/infinispan");
     }
 
     /**
