@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 IBM Corporation and others.
+ * Copyright (c) 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -108,8 +108,65 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
     protected final ClassLoader parent;
     private final ClassLoaderHook hook;
 
+    // Protection added for issue 
+    // https://github.com/OpenLiberty/open-liberty/issues/7345
+    //
+    // The problem is an unexpected NPE:
+    //
+    // Caused by: java.lang.NullPointerException: null
+    //   at com.ibm.ws.classloading.internal.AppClassLoader.getClassSpecificProtectionDomainPrivileged(AppClassLoader.java:367)
+    //   at com.ibm.ws.classloading.internal.AppClassLoader.access$000(AppClassLoader.java:64)
+    //   at com.ibm.ws.classloading.internal.AppClassLoader$2.run(AppClassLoader.java:351)
+    //   at com.ibm.ws.classloading.internal.AppClassLoader$2.run(AppClassLoader.java:348)
+    //   at java.security.AccessController.doPrivileged(Native Method)
+    //   at com.ibm.ws.classloading.internal.AppClassLoader.getClassSpecificProtectionDomain(AppClassLoader.java:348)
+    //   at com.ibm.ws.classloading.internal.AppClassLoader.definePackageAndClass(AppClassLoader.java:325)
+    //   at com.ibm.ws.classloading.internal.AppClassLoader.findClass(AppClassLoader.java:271)
+    //   at com.ibm.ws.classloading.internal.ParentLastClassLoader.findOrDelegateLoadClass(ParentLastClassLoader.java:80)
+    //   at com.ibm.ws.classloading.internal.AppClassLoader.loadClass(AppClassLoader.java:443)
+    //   at com.ibm.ws.classloading.internal.ParentLastClassLoader.loadClass(ParentLastClassLoader.java:50)
+    //   at java.lang.Class.getDeclaredMethods0(Native Method)
+    //
+    // Direct code updates have been added to detect invalid access patterns:
+    //
+    // (1) Creation of the class loader via ClassLoaderFactory.createClassLoader ensures that the
+    //     configuration is not null.  A test is added here as 'verifyConfig' which ensures that no
+    //     other code path reaches AppClassLoader.init with a null configuration.
+    //
+    // (2) Access to AppClassLoader APIs before the class loader construction has completed (an initialization
+    //     reference leak) could also cause a null configuration value.  Access to the configuration value before
+    //     initialization completes is tested by 'verifyNoAccess'.
+
+    private static final GlobalClassloadingConfiguration verifyConfig(
+        GlobalClassloadingConfiguration globalConfig,
+        ClassLoaderConfiguration config) {
+
+        if ( globalConfig == null ) {
+            throw new IllegalArgumentException("Null global classloading configuration");
+        }
+
+        if ( config == null ) {
+            throw new IllegalArgumentException("Null classloading configuration");
+        }
+
+        return globalConfig;
+    }
+
+    private volatile boolean notedAccess;
+
+    protected void noteAccess() {
+        notedAccess = true;
+    }
+
+    private void verifyNoAccess() {
+        if ( notedAccess ) {
+            throw new IllegalArgumentException("Access occurring before initialization completed");
+        }
+    }
+
     AppClassLoader(ClassLoader parent, ClassLoaderConfiguration config, List<Container> containers, DeclaredApiAccess access, ClassRedefiner redefiner, ClassGenerator generator, GlobalClassloadingConfiguration globalConfig) {
-        super(containers, parent, redefiner, globalConfig);
+        super(containers, parent, redefiner, verifyConfig(globalConfig, config) );
+
         this.parent = parent;
         this.config = config;
         this.apiAccess = access;
@@ -118,7 +175,9 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
         this.privateLibraries = Providers.getPrivateLibraries(config);
         this.delegateLoaders = Providers.getDelegateLoaders(config, apiAccess);
         this.generator = generator;
-        hook = ClassLoaderHookFactory.getClassLoaderHook(this);
+        this.hook = ClassLoaderHookFactory.getClassLoaderHook(this);
+
+        this.verifyNoAccess();
     }
 
     /** Provides the delegate loaders so the {@link ShadowClassLoader} can mimic the structure. */
@@ -306,6 +365,8 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
     }
 
     byte[] transformClassBytes(final byte[] originalBytes, String name) throws ClassNotFoundException {
+        noteAccess();
+
         byte[] bytes = originalBytes;
         for (ClassFileTransformer transformer : transformers) {
             try {
@@ -382,6 +443,8 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
 
     @Trivial // injected trace calls ProtectedDomain.toString() which requires privileged access
     private ProtectionDomain getClassSpecificProtectionDomain(final String name, final URL resourceUrl) {
+        noteAccess();
+
         ProtectionDomain pd = config.getProtectionDomain();
         try {
             pd = AccessController.doPrivileged(new PrivilegedExceptionAction<ProtectionDomain>() {
@@ -398,7 +461,9 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
 
     }
 
-    ProtectionDomain getClassSpecificProtectionDomainPrivileged(String className, URL resourceUrl) {
+ProtectionDomain getClassSpecificProtectionDomainPrivileged(String className, URL resourceUrl) {
+        noteAccess();
+
         ProtectionDomain pdFromConfig = config.getProtectionDomain();
         ProtectionDomain pd;
 
@@ -493,6 +558,8 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
 
     @Trivial
     Class<?> generateClass(String name) throws ClassNotFoundException {
+        noteAccess();
+
         Class<?> generatedClass = null;
         if (generator != null) {
             byte[] bytes = generator.generateClass(name, this);
@@ -667,6 +734,8 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
 
     @Override
     public ClassLoaderIdentity getKey() {
+        noteAccess();
+
         return config.getId();
     }
 
