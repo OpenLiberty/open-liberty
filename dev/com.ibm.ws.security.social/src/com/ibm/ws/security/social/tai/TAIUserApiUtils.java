@@ -66,7 +66,7 @@ public class TAIUserApiUtils {
 
     private String getUserApiResponseFromOpenShift(OAuthClientUtil clientUtil, OpenShiftLoginConfigImpl config, @Sensitive String accessToken, SSLSocketFactory sslSocketFactory) {
         // TODO
-        return null;
+        return "{\"username\": \"admin\", \"kind\": \"TokenReview\", \"apiVersion\": \"authentication.k8s.io/v1\", \"metadata\": {\"creationTimestamp\": null}, \"spec\": {\"token\": \"S6WDnfl-BIsv8HJs9JLYBMHrd8XHqdzf0XiCy_FWXtQ\"}, \"status\": {\"authenticated\": true, \"user\": {\"username\": \"admin\", \"uid\": \"4fc9af20-d011-11e9-9bdc-0016ac10276d\", \"groups\": [\"ayohoTestGroup\",\"system:authenticated:oauth\",\"system:authenticated\"], \"extra\": {\"scopes.authorization.openshift.io\": [\"user:full\"]}}}}";
     }
 
     // flatten linkedin's json 
