@@ -43,4 +43,8 @@
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+<<<<<<< HEAD
   
+=======
+  
+>>>>>>> Performance improvements to cxf code
