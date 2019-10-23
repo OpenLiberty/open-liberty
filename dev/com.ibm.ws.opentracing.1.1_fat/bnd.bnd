@@ -25,7 +25,7 @@ src: \
 
 fat.project: true
 
-tested.features: opentracing-1.1
+tested.features: mpOpenTracing-1.1, mpOpenTracing-1.2, mpOpenTracing-1.3, jsonb-1.0, microProfile-2.1
 
 -buildpath: \
     com.ibm.websphere.org.eclipse.microprofile.opentracing.1.1;version=latest,\

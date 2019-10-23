@@ -93,7 +93,7 @@ public class FATOpentracing implements FATOpentracingConstants {
     // OpenTrace FAT server ...
 
     private static LibertyServer server;
-    private static final boolean usingMicroProfile = false;
+    private static final boolean usingMicroProfile = true;
 
     private static void setUpServer() throws Exception {
         server = LibertyServerFactory.getLibertyServer(OPENTRACING_FAT_SERVER1_NAME);
