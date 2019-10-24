@@ -1396,6 +1396,11 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
     public List<Integer> getRemotablePartitionsRecoveredForStepExecution(final long topLevelStepExecutionId) {
         final EntityManager em = psu.createEntityManager();
 
+        // Just ignore if we don't have the remotable partition table
+        if (partitionVersion < 2) {
+            return new ArrayList<Integer>();
+        }
+
         try {
             List<Integer> exec = new TranRequest<List<Integer>>(em) {
                 @Override
