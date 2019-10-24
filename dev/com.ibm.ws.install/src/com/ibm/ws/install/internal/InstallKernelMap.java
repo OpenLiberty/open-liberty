@@ -867,10 +867,11 @@ public class InstallKernelMap implements Map {
         } else if ((fromDir = getM2Cache()) != null) {
             usingM2Cache = true;
             result = getM2Cache();
-        } else if (checkUserHomeWritable()) {
+        } else if (checkM2Writable()) {
             File newM2 = new File(getM2Path().toString());
             result = newM2.toString();
         } else {
+            fine("Using temp location");
             data.put(CLEANUP_TEMP_LOCATION, TEMP_DIRECTORY);
             result = TEMP_DIRECTORY;
         }
@@ -890,14 +891,13 @@ public class InstallKernelMap implements Map {
         return Paths.get(System.getProperty("user.home"), ".m2", "repository", "");
     }
 
-    private boolean checkUserHomeWritable() {
+    private boolean checkM2Writable() {
         String userhome = System.getProperty("user.home");
-        if (userhome == null) {//user did not define user home
+        if (userhome == null || !Files.isWritable(Paths.get(userhome))) {//user did not define user home or not writable
             return false;
         }
 
-        return Files.isWritable(Paths.get(userhome));
-
+        return new File(userhome, ".m2/repository").mkdirs();
     }
 
     /**
