@@ -56,7 +56,7 @@ dependencies {
 	'javax.validation:validation-api:1.1.0.Final'
   mockserver 'org.mock-server:mockserver-netty:3.10.7',
 	'org.mock-server:mockserver-client-java:3.10.7',
-    'org.mock-server:mockserver-core:3.10.7',
+    'org.mock-server:mockserver-core:3.10.7-IBM20191022',
 	'com.google.guava:guava:18.0',
 	'io.netty:netty-buffer:4.1.8.Final',
 	'io.netty:netty-codec:4.1.8.Final',
