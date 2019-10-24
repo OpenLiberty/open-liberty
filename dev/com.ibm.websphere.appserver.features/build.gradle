@@ -9,13 +9,6 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-  // Start building feature resources after all other assemble artifacts are done being published
-  //dependsOn {
-  //  bndWorkspace.getProject(project.name)?.getDependson()*.getName().collect {
-  //    rootProject.project(it).tasks.getByName 'prereqFeatureResources'
-  //  }
-  //}
-
 def featurePropertiesMap
 def gaFeatures
 def betaFeatures
@@ -315,81 +308,96 @@ publishing {
   }
 }
 
-def singleOpenLibertyJsonRepo = project.file('build/temp/SingleJson.json')
 def modifiedgaFeatureList = project.file('build/temp/gaFeaturesList.txt')
-task generateSingleJsonRepo {
+task generateModifiedGAFeatureList {
     dependsOn publishFeatureResources
     inputs.dir new File(project.buildDir, 'repo')
-    outputs.file singleOpenLibertyJsonRepo
     outputs.file modifiedgaFeatureList
     doLast {
-        project.delete('build/temp')
         project.mkdir('build/temp')
-
-        repositoryGeneratorTaskdef(ant)
-		
-	String features = ""     
+        String features = ""
         getGaFeatures().each { gaFeature ->
-        	features += gaFeature + "*.esa\n"
-            ant.singleJsonRepo(assetFile: project.file("build/libs/repo/${gaFeature}.esa"),
-                assetType: 'FEATURE',
-                metadataFile: project.file("build/libs/repo/${gaFeature}.esa.metadata.zip"),
-                jsonFile: singleOpenLibertyJsonRepo)
-            
+            features += gaFeature + "*.esa\n"
+
         }
         modifiedgaFeatureList.text = features
     }
 }
 
 publishing {
-  publications {
-    newJsonArtifact(MavenPublication) {
-      artifactId 'openliberty-singleJson'
-      version project.version
-      artifact(singleOpenLibertyJsonRepo) {
-        extension 'json'
-        builtBy generateSingleJsonRepo
-      }
-    }
-    
-   modifiedFeatureList(MavenPublication){
-   	artifactId 'openliberty-modifiedgaFeatureList'
-   	version project.version
-   	artifact(modifiedgaFeatureList){
-   		extension 'txt'
-   		builtBy generateSingleJsonRepo
-   	}
-   }
-  }
-}
-
-task generateMavenArtifact {
-    dependsOn generateSingleJsonRepo
-    doLast {
-        mavenRepoTaskdef(ant)
-
-        project.delete('build/temp/mavenArtifact')
-        project.mkdir('build/temp/mavenArtifact')
-        ant.libertyFeaturesToMavenRepo(inputDirPath: project.file('build/libs/repo'),
-                   outputDirPath: project.file('build/temp/mavenArtifact'),
-                   openLibertyJson: singleOpenLibertyJsonRepo)
+    publications {
+        modifiedFeatureList(MavenPublication) {
+            artifactId 'openliberty-modifiedgaFeatureList'
+            version project.version
+            artifact(modifiedgaFeatureList) {
+                extension 'txt'
+                builtBy generateModifiedGAFeatureList
+            }
+        }
     }
 }
 
-task zipOpenLibertyMavenRepo(type: Zip) {
-     dependsOn generateMavenArtifact
-     from project.file('build/temp/mavenArtifact')
-     include "io/**"
-     archiveName 'openliberty-mavenArtifact.zip'
-     destinationDir distsDir
- }
+if (isAutomatedBuild) {
+    def singleOpenLibertyJsonRepo = project.file('build/temp/SingleJson.json')
+    task generateSingleJsonRepo {
+        dependsOn publishFeatureResources
+        inputs.dir new File(project.buildDir, 'repo')
+        outputs.file singleOpenLibertyJsonRepo
+        doLast {
+            project.mkdir('build/temp')
 
-publishing {
-  publications {
-    newMavenArtifact(MavenPublication) {
-      artifactId 'openliberty-MavenArtifact'
-      version project.version
-      artifact zipOpenLibertyMavenRepo
+            repositoryGeneratorTaskdef(ant)
+
+            getGaFeatures().each { gaFeature ->
+                ant.singleJsonRepo(assetFile: project.file("build/libs/repo/${gaFeature}.esa"),
+                        assetType: 'FEATURE',
+                        metadataFile: project.file("build/libs/repo/${gaFeature}.esa.metadata.zip"),
+                        jsonFile: singleOpenLibertyJsonRepo)
+            }
+        }
     }
-  }
+
+    publishing {
+        publications {
+            newJsonArtifact(MavenPublication) {
+                artifactId 'openliberty-singleJson'
+                version project.version
+                artifact(singleOpenLibertyJsonRepo) {
+                    extension 'json'
+                    builtBy generateSingleJsonRepo
+                }
+            }
+        }
+    }
+
+    task generateMavenArtifact {
+        dependsOn generateSingleJsonRepo
+        doLast {
+            mavenRepoTaskdef(ant)
+
+            project.delete('build/temp/mavenArtifact')
+            project.mkdir('build/temp/mavenArtifact')
+            ant.libertyFeaturesToMavenRepo(inputDirPath: project.file('build/libs/repo'),
+                    outputDirPath: project.file('build/temp/mavenArtifact'),
+                    openLibertyJson: singleOpenLibertyJsonRepo)
+        }
+    }
+
+    task zipOpenLibertyMavenRepo(type: Zip) {
+        dependsOn generateMavenArtifact
+        from project.file('build/temp/mavenArtifact')
+        include "io/**"
+        archiveName 'openliberty-mavenArtifact.zip'
+        destinationDir distsDir
+    }
+
+    publishing {
+        publications {
+            newMavenArtifact(MavenPublication) {
+                artifactId 'openliberty-MavenArtifact'
+                version project.version
+                artifact zipOpenLibertyMavenRepo
+            }
+        }
+    }
 }
