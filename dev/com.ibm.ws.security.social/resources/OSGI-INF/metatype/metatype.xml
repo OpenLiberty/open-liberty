@@ -292,6 +292,7 @@
             required="true" type="String" ibm:type="password" />
         <AD id="oauthServer" name="%oauthServer" description="%oauthServer.desc"
             required="false" type="String" default="https://openshift.default.svc" />
+        <AD id="redirectToRPHostAndPort" name="%redirectToRPHostAndPort" description="%redirectToRPHostAndPort.desc" required="false" type="String" />
         <AD id="useAccessTokenFromRequest" name="%useAccessTokenFromRequest" description="%useAccessTokenFromRequest.desc"
             required="false" type="String" default="ifPresent">
             <Option label="%useAccessTokenFromRequest.no" value="no" />
@@ -304,8 +305,8 @@
              ibm:reference="com.ibm.ws.security.authentication.filter" required="false" type="String"  />
         <AD id="jwt" ibm:type="pid" ibm:reference="com.ibm.ws.security.social.login.jwt"
              required="false" type="String" />
-        <!-- redirectToRPHostAndPort needed? -->
-        <AD id="redirectToRPHostAndPort" name="internal" description="internal use only" required="false" type="String" />
+        <AD id="mapToUserRegistry" name="internal" description="internal use only"
+            required="false" type="Boolean" default="false" />
     </OCD>
 
     <Designate pid="com.ibm.ws.security.social.openshift">

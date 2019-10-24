@@ -23,6 +23,8 @@ import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.TraceConstants;
 import com.ibm.ws.security.social.error.SocialLoginException;
 import com.ibm.ws.security.social.internal.utils.ClientConstants;
+import com.ibm.ws.security.social.internal.utils.SocialHashUtils;
+import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
 
 @Component(name = "com.ibm.ws.security.social.openshift", configurationPolicy = ConfigurationPolicy.REQUIRE, immediate = true, service = SocialLoginConfig.class, property = { "service.vendor=IBM", "type=openshiftLogin" })
 public class OpenShiftLoginConfigImpl extends Oauth2LoginConfigImpl {
@@ -32,6 +34,7 @@ public class OpenShiftLoginConfigImpl extends Oauth2LoginConfigImpl {
     public static final String TOKEN_ENDPOINT_PATH = "/oauth/token";
     public static final String DISCOVERY_ENDPOINT_PATH = "/.well-known/oauth-autorization-server";
     public static final String USER_API_ENDPOINT_PATH = "/apis/authentication.k8s.io/v1/tokenreviews";
+    public static final String OAUTH_SERVER_DEFAULT_VALUE = "https://openshift.default.svc";
 
     public static final String KEY_SERVICE_ACCOUNT_TOKEN = "serviceAccountToken";
     private String serviceAccountToken = null;
@@ -57,20 +60,57 @@ public class OpenShiftLoginConfigImpl extends Oauth2LoginConfigImpl {
     }
 
     @Override
+    protected String getRequiredConfigAttribute(Map<String, Object> props, String key) {
+        String value = configUtils.getConfigAttribute(props, key);
+        if (value == null || value.isEmpty()) {
+            logErrorForMissingRequiredAttribute(key);
+        }
+        return value;
+    }
+
+    @Sensitive
+    protected String getRequiredSerializableProtectedStringConfigAttribute(Map<String, Object> props, String key) {
+        String result = SocialHashUtils.decodeString((SerializableProtectedString) props.get(key));
+        if (result == null || result.isEmpty()) {
+            logErrorForMissingRequiredAttribute(key);
+        }
+        return result;
+    }
+
+    @Override
     protected void setOptionalConfigAttributes(Map<String, Object> props) throws SocialLoginException {
-        this.oauthServer = configUtils.getConfigAttribute(props, KEY_OAUTH_SERVER);
+        this.oauthServer = getOAuthServerValue(props);
+        this.redirectToRPHostAndPort = configUtils.getConfigAttribute(props, KEY_redirectToRPHostAndPort);
         this.useAccessTokenFromRequest = configUtils.getConfigAttribute(props, KEY_USE_ACCESS_TOKEN_FROM_REQUEST);
         this.tokenHeaderName = configUtils.getConfigAttribute(props, KEY_TOKEN_HEADER_NAME);
         this.authFilterRef = configUtils.getConfigAttribute(props, KEY_authFilterRef);
-        this.redirectToRPHostAndPort = configUtils.getConfigAttribute(props, KEY_redirectToRPHostAndPort);
+        this.mapToUserRegistry = configUtils.getBooleanConfigAttribute(props, KEY_mapToUserRegistry, this.mapToUserRegistry);
         hardCodeAttributeValues();
         setEndpointUrls(props);
+    }
+
+    String getOAuthServerValue(Map<String, Object> props) {
+        String oauthServer = configUtils.getConfigAttribute(props, KEY_OAUTH_SERVER);
+        if (oauthServer == null || oauthServer.isEmpty()) {
+            Tr.warning(tc, "SOCIAL_LOGIN_CONFIG_ATTRIBUTE_EMPTY", new Object[] { KEY_OAUTH_SERVER, getUniqueId(), OAUTH_SERVER_DEFAULT_VALUE });
+            oauthServer = OAUTH_SERVER_DEFAULT_VALUE;
+        }
+        if (!oauthServer.toLowerCase().startsWith("http")) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Updating the configured oauthServer value [" + oauthServer + "] to add HTTPS scheme");
+            }
+            oauthServer = "https://" + oauthServer;
+        }
+        if (oauthServer.endsWith("/")) {
+            oauthServer = oauthServer.substring(0, oauthServer.length() - 1);
+        }
+        return oauthServer;
     }
 
     /**
      * Hard-codes some values that don't have an associated configuration attribute in the openshiftLogin element.
      */
-    protected void hardCodeAttributeValues() {
+    private void hardCodeAttributeValues() {
         this.scope = "user:full";
         this.tokenEndpointAuthMethod = ClientConstants.METHOD_client_secret_post;
         this.userNameAttribute = "username";
@@ -83,29 +123,16 @@ public class OpenShiftLoginConfigImpl extends Oauth2LoginConfigImpl {
         this.tokenEndpoint = buildEndpointUrl(TOKEN_ENDPOINT_PATH);
         this.discoveryEndpointUrl = buildEndpointUrl(DISCOVERY_ENDPOINT_PATH);
         this.userApi = buildEndpointUrl(USER_API_ENDPOINT_PATH);
-        // TODO
-        if (discoveryEndpointUrl != null && !discoveryEndpointUrl.isEmpty()) {
-            performDiscovery();
-        } else {
-        }
-    }
-
-    private String buildEndpointUrl(String endpointPath) {
-        if (oauthServer == null && oauthServer.isEmpty()) {
-            // TODO
-            System.out.println("Gotta fix the hostnameAndPort value");
-            return null;
-        }
-        // TODO
-        return oauthServer + endpointPath;
-        //        if (hostnameAndPort.endsWith("/")) {
+        //        if (discoveryEndpointUrl != null && !discoveryEndpointUrl.isEmpty()) {
+        //            performDiscovery();
         //        }
     }
 
+    private String buildEndpointUrl(String endpointPath) {
+        return oauthServer + (endpointPath.startsWith("/") ? "" : "/") + endpointPath;
+    }
+
     private void performDiscovery() {
-        if (!discoveryEndpointUrl.startsWith("http")) {
-            // TODO
-        }
         // TODO
     }
 
