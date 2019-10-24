@@ -62,26 +62,39 @@ public class Utils {
         // when the server is started from the command line.
         if (userDir.get() == null) {
             File resultDir = null;
-            userDirLoc = System.getenv(BootstrapConstants.ENV_WLP_USER_DIR);
-            if (userDirLoc != null) {
-                resultDir = new File(userDirLoc);
-            } else {
 
-                // PI20344: Check if the Java property is set, which is the normal case when
-                // the server is embedded; i.e. they didn't launch it from the command line.
-                userDirLoc = System.getProperty(BootstrapConstants.ENV_WLP_USER_DIR);
+            // If this property is set we want to ignore the WLP_USER_DIR env var and use the <install>/usr dir
+            if (Boolean.getBoolean(BootstrapConstants.LOC_PROPERTY_IGNORE_INSTANCE_DIR_FROM_ENV)) {
+                resultDir = getDefaultInstallBasedUserDir();
+            } else {
+                userDirLoc = System.getenv(BootstrapConstants.ENV_WLP_USER_DIR);
                 if (userDirLoc != null) {
                     resultDir = new File(userDirLoc);
                 } else {
-                    File installDir = Utils.getInstallDir();
-                    if (installDir != null) {
-                        resultDir = new File(installDir, "usr");
+
+                    // Check if the Java property is set, which is the normal case when
+                    // the server is embedded; i.e. they didn't launch it from the command line.
+                    userDirLoc = System.getProperty(BootstrapConstants.ENV_WLP_USER_DIR);
+                    if (userDirLoc != null) {
+                        resultDir = new File(userDirLoc);
+                    } else {
+                        resultDir = getDefaultInstallBasedUserDir();
                     }
                 }
             }
             userDir = StaticValue.mutateStaticValue(userDir, new FileInitializer(resultDir));
         }
         return userDir.get();
+    }
+
+    private static File getDefaultInstallBasedUserDir() {
+        File resultDir = null;
+
+        File installDir = Utils.getInstallDir();
+        if (installDir != null) {
+            resultDir = new File(installDir, "usr");
+        }
+        return resultDir;
     }
 
     /**
@@ -205,7 +218,7 @@ public class Utils {
      * to the value of ${server.output.dir} variable in server.xml configuration file.
      *
      * @param serverName server's name
-     * @param isClient true if the current process is client.
+     * @param isClient   true if the current process is client.
      * @return instance of the server output directory or 'null' if installation directory
      *         can't be determined.
      */
