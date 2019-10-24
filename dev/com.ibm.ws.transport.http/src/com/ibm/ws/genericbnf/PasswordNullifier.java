@@ -19,12 +19,14 @@ public class PasswordNullifier {
     /** Search patterns to use for passwords */
     private static final String PASSWORD_PATTERN = "password=";
     private static final String CLIENT_SECRET_PATTERN = "client_secret=";
+    private static final String BASICAUTH_PATTERN = "basic ";
+    private static final String AUTHORIZATION_HEADER = "Authorization";
 
     /**
      * Scan the input value for the "password=" and "client_secret=" key markers
      * and convert the password value to a series of *s. The delimiter value '&'
      * is used for the expected input format of "key=value&key2=value2".
-     * 
+     *
      * @param value
      * @return String
      */
@@ -34,10 +36,22 @@ public class PasswordNullifier {
 
     /**
      * Scan the input value for the "password=" and "client_secret=" key markers
+     * and convert the password value to a series of *s. The delimiter value '&'
+     * is used for the expected input format of "key=value&key2=value2".
+     *
+     * @param header, value
+     * @return String
+     */
+    public static String nullifyParams(String header, String value) {
+        return nullify(header, value, (byte) '&');
+    }
+
+    /**
+     * Scan the input value for the "password=" and "client_secret=" key markers
      * and convert the password value to a series of *s. The delimiter value
      * can be used if the search string is a sequence like
      * "key=value<delim>key2=value2".
-     * 
+     *
      * @param value
      * @param delimiter
      * @return String
@@ -52,6 +66,36 @@ public class PasswordNullifier {
         StringBuilder b = new StringBuilder(value);
         boolean modified = optionallyMaskChars(b, source, delimiter, PASSWORD_PATTERN);
         modified = optionallyMaskChars(b, source, delimiter, CLIENT_SECRET_PATTERN) || modified;
+
+        if (modified) {
+            return b.toString();
+        }
+        return value;
+    }
+
+    /**
+     * Scan the input value for the "password=" and "client_secret=" key markers
+     * and convert the password value to a series of *s. The delimiter value
+     * can be used if the search string is a sequence like
+     * "key=value<delim>key2=value2".
+     *
+     * @param value
+     * @param delimiter
+     * @return String
+     */
+    public static String nullify(String header, String value, byte delimiter) {
+        // check to see if we need to null out passwords
+        if (null == value) {
+            return null;
+        }
+
+        String source = value.toLowerCase();
+        StringBuilder b = new StringBuilder(value);
+        boolean modified = optionallyMaskChars(b, source, delimiter, PASSWORD_PATTERN);
+        modified = optionallyMaskChars(b, source, delimiter, CLIENT_SECRET_PATTERN) || modified;
+        if (header.equalsIgnoreCase(AUTHORIZATION_HEADER)) {
+            modified = optionallyMaskChars(b, source, delimiter, BASICAUTH_PATTERN) || modified;
+        }
 
         if (modified) {
             return b.toString();

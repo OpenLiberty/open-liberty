@@ -118,9 +118,9 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
     static final String KEY_CONFIG_CHANGE_LISTENER = "webAppSecurityConfigChangeListener";
     static final String AUTHORIZATION_HEADER = "Authorization";
     static final String MASKED_BASIC_AUTH = "Basic xxxxx";
-    static final String DEBUG_HEADER_EYECATCHER = "Http Header names and values:\\n";
+    static final String DEBUG_HEADER_EYECATCHER = "Http Header names and values:";
     static final int DEBUG_REQ_INFO_BUFSIZE = 512;
-    static final String DEBUG_CONTEXT_PATH = " Request Context Path=";
+    static final String DEBUG_CONTEXT_PATH = "Request Context Path=";
     static final String DEBUG_SERVLET_PATH = ", Servlet Path=";
     static final String DEBUG_PATH_INFO = ", Path Info=";
 
@@ -567,8 +567,10 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
     @Override
     public Object preInvoke(HttpServletRequest req, HttpServletResponse resp, String servletName, boolean enforceSecurity) throws SecurityViolationException, IOException {
 
-        //if (tc.isDebugEnabled())
-        String s = servletRequestInfo(req);
+        if (tc.isDebugEnabled() && req != null) {
+
+            Tr.debug(tc, servletRequestInfo(req));
+        }
 
         Subject invokedSubject = subjectManager.getInvocationSubject();
         Subject receivedSubject = subjectManager.getCallerSubject();
@@ -608,34 +610,31 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
      * @return Returns a string that contains each parameter and it value(s)
      *         in the HttpServletRequest object.
      */
+    @Trivial
     private String servletRequestInfo(HttpServletRequest req) {
 
         StringBuffer sb = new StringBuffer(DEBUG_REQ_INFO_BUFSIZE);
-        sb.append(DEBUG_HEADER_EYECATCHER);
+        sb.append(DEBUG_HEADER_EYECATCHER).append("\n");
 
-        if (req != null) {
-            try {
-                Enumeration<String> headerNames = req.getHeaderNames();
-                while (headerNames.hasMoreElements()) {
-                    String headerName = headerNames.nextElement();
-                    sb.append(headerName).append("=");
-                    sb.append("[").append(getHeader(req, headerName)).append("]\n");
-                }
-            } catch (Throwable t) {
-                // do nothing because it probably means the parser was trying to parse
-                // non form data or serialized object data.  This is a trace issue and
-                // has nothing to do with the spec.
+        try {
+            Enumeration<String> headerNames = req.getHeaderNames();
+            while (headerNames.hasMoreElements()) {
+                String headerName = headerNames.nextElement();
+                sb.append(headerName).append("=");
+                sb.append("[").append(getHeader(req, headerName)).append("]\n");
             }
-
-            if (req.getContextPath() != null)
-                sb.append(DEBUG_CONTEXT_PATH).append(req.getContextPath());
-            if (req.getServletPath() != null)
-                sb.append(DEBUG_SERVLET_PATH).append(req.getServletPath());
-            if (req.getPathInfo() != null)
-                sb.append(DEBUG_PATH_INFO).append(req.getPathInfo());
-        } else {
-            sb.append("Request is null");
+        } catch (Throwable t) {
+            // do nothing because it probably means the parser was trying to parse
+            // non form data or serialized object data.  This is a trace issue and
+            // has nothing to do with the spec.
         }
+
+        if (req.getContextPath() != null)
+            sb.append(DEBUG_CONTEXT_PATH).append(req.getContextPath());
+        if (req.getServletPath() != null)
+            sb.append(DEBUG_SERVLET_PATH).append(req.getServletPath());
+        if (req.getPathInfo() != null)
+            sb.append(DEBUG_PATH_INFO).append(req.getPathInfo());
         return sb.toString();
     }
 
