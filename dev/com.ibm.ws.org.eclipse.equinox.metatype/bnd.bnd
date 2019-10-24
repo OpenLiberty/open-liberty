@@ -8,12 +8,12 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;com.ibm.ws.org.eclipse.platform:org.eclipse.equinox.metatype;1.5.0.v20190328-1408}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;${repo;com.ibm.ws.org.eclipse.platform:org.eclipse.equinox.metatype;1.5.200.v20191008-0645}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 -includeresource: \
-   @${repo;com.ibm.ws.org.eclipse.platform:org.eclipse.equinox.metatype;1.5.0.v20190328-1408}!/org/eclipse/equinox/metatype/*,\
+   @${repo;com.ibm.ws.org.eclipse.platform:org.eclipse.equinox.metatype;1.5.200.v20191008-0645}!/org/eclipse/equinox/metatype/*,\
    @${repo;com.ibm.wsspi.org.osgi.service.metatype}!/org/osgi/service/metatype/*
 
 -buildpath: \
-	com.ibm.ws.org.eclipse.platform:org.eclipse.equinox.metatype;version=1.5.0.v20190328-1408,\
+	com.ibm.ws.org.eclipse.platform:org.eclipse.equinox.metatype;version=1.5.200.v20191008-0645,\
 	com.ibm.wsspi.org.osgi.service.metatype;version=latest
