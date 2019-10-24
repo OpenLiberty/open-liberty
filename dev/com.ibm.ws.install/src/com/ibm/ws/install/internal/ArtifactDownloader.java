@@ -39,6 +39,7 @@ public class ArtifactDownloader {
     private final Logger logger = InstallLogUtils.getInstallLogger();
 
     private final ProgressBar progressBar = ProgressBar.getInstance();
+    private final boolean isWindows = (System.getProperty("os.name").toLowerCase()).indexOf("win") >= 0;
 
     public void synthesizeAndDownloadFeatures(List<String> mavenCoords, String dLocation, String repo) throws InstallException {
         info("Establishing a connection to the maven central repository ...\n" +
@@ -314,24 +315,35 @@ public class ArtifactDownloader {
 
     // log message types
     private void info(String msg) {
-        System.out.print("\033[2K"); // Erase line content
-        logger.info(msg);
-        progressBar.display();
+        if (isWindows) {
+            logger.info(msg);
+        } else {
+            System.out.print("\033[2K"); // Erase line content
+            logger.info(msg);
+            progressBar.display();
+        }
+
     }
 
     private void fine(String msg) {
-        System.out.print("\033[2K"); // Erase line content
-        logger.fine(msg);
-        progressBar.display();
-
+        if (isWindows) {
+            logger.fine(msg);
+        } else {
+            System.out.print("\033[2K"); // Erase line content
+            logger.fine(msg);
+            progressBar.display();
+        }
     }
 
     private void severe(String msg) {
-        System.out.print("\033[2K"); // Erase line content
-        logger.severe(msg);
-        progressBar.display();
+        if (isWindows) {
+            logger.severe(msg);
+        } else {
+            System.out.print("\033[2K"); // Erase line content
+            logger.severe(msg);
+            progressBar.display();
+        }
 
     }
-
 
 }

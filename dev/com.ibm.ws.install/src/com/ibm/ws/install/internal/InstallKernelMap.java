@@ -110,7 +110,7 @@ public class InstallKernelMap implements Map {
     private static final String INSTALL_INDIVIDUAL_ESAS = "install.individual.esas";
     private static final String INDIVIDUAL_ESAS = "individual.esas";
     private static final String DOWNLOAD_RESULT = "download.result";
-    private static final String DOWNLOAD_INDIVIDUAL_ARTIFACT = "download.inidividual.artifact";
+    private static final String DOWNLOAD_INDIVIDUAL_ARTIFACT = "download.individual.artifact";
     private static final String DOWNLOAD_FILETYPE = "download.filetype";
     private static final String DOWNLOAD_LOCAL_DIR_LOCATION = "download.local.dir.location";
     private static final String DOWNLOAD_ARTIFACT_LIST = "download.artifact.list";
@@ -133,12 +133,12 @@ public class InstallKernelMap implements Map {
     private static final String LICENSE_FEATURE_TERMS_RESTRICTED = "http://www.ibm.com/licenses/wlp-featureterms-restricted-v1";
 
     // Maven downloader
+    private final String OPEN_LIBERTY_GROUP_ID = "io.openliberty.features";
+    private final String JSON_ARTIFACT_ID = "features";
     private final String OPEN_LIBERTY_PRODUCT_ID = "io.openliberty";
     private final String MAVEN_CENTRAL = "http://repo.maven.apache.org/maven2/";
     private final String TEMP_DIRECTORY = Utils.getInstallDir().getAbsolutePath() + File.separatorChar + "tmp"
                                           + File.separatorChar;
-    private final Logger logger = InstallLogUtils.getInstallLogger();
-    private final ProgressBar progressBar = ProgressBar.getInstance();
 
     private enum ActionType {
         install,
@@ -152,6 +152,10 @@ public class InstallKernelMap implements Map {
     private ActionType actionType = null;
     private boolean usingM2Cache = false;
     private String openLibertyVersion = null;
+    private final Logger logger = InstallLogUtils.getInstallLogger();
+    private final ProgressBar progressBar = ProgressBar.getInstance();
+    private final boolean isWindows = (System.getProperty("os.name").toLowerCase()).indexOf("win") >= 0;
+    // TODO remove this need for windwos chewcking for progress bar
 
     @SuppressWarnings("unchecked")
     public InstallKernelMap() {
@@ -260,6 +264,7 @@ public class InstallKernelMap implements Map {
         } else if (DOWNLOAD_RESULT.equals(key)) {
             Boolean downloadSingleArtifact = (Boolean) data.get(DOWNLOAD_INDIVIDUAL_ARTIFACT);
             String downloadLocation = (String) data.get(DOWNLOAD_LOCATION);
+
             if (downloadLocation != null) {
                 return downloadArtifact();
             } else if (downloadSingleArtifact != null && downloadSingleArtifact) {
@@ -727,7 +732,7 @@ public class InstallKernelMap implements Map {
         } catch (RepositoryResolutionException e) {
             data.put(ACTION_RESULT, ERROR);
             InstallException ie = ExceptionUtils.create(e, e.getTopLevelFeaturesNotResolved(), (File) data.get(RUNTIME_INSTALL_DIR), false, isOpenLiberty);
-            data.put(ACTION_ERROR_MESSAGE, ie.toString());
+            data.put(ACTION_ERROR_MESSAGE, ie.getMessage());
             data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(ie));
         } catch (InstallException e) {
             data.put(ACTION_RESULT, ERROR);
@@ -862,7 +867,7 @@ public class InstallKernelMap implements Map {
         } else if ((fromDir = getM2Cache()) != null) {
             usingM2Cache = true;
             result = getM2Cache();
-        } else if (Files.isWritable(getM2Path())) {
+        } else if (checkUserHomeWritable()) {
             File newM2 = new File(getM2Path().toString());
             result = newM2.toString();
         } else {
@@ -874,7 +879,6 @@ public class InstallKernelMap implements Map {
 
     private String getM2Cache() { //check for maven_home specified mirror stuff
         File m2Folder = getM2Path().toFile();
-
         if (m2Folder.exists() && m2Folder.isDirectory()) {
             return m2Folder.toString();
         }
@@ -884,6 +888,16 @@ public class InstallKernelMap implements Map {
 
     private Path getM2Path() {
         return Paths.get(System.getProperty("user.home"), ".m2", "repository", "");
+    }
+
+    private boolean checkUserHomeWritable() {
+        String userhome = System.getProperty("user.home");
+        if (userhome == null) {//user did not define user home
+            return false;
+        }
+
+        return Files.isWritable(Paths.get(userhome));
+
     }
 
     /**
@@ -912,6 +926,7 @@ public class InstallKernelMap implements Map {
 
         String fromRepo = (String) data.get(FROM_REPO);
         String downloadDir = getDownloadDir(fromRepo);
+
         String repo = getRepo(fromRepo);
         try {
             artifactDownloader.synthesizeAndDownload(featureList, filetype, downloadDir, repo, true);
@@ -1194,12 +1209,52 @@ public class InstallKernelMap implements Map {
             data.put(ACTION_ERROR_MESSAGE, ie.getMessage());
             data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(ie));
 
-        } else {
-
-            fine("The Open Liberty runtime version is " + openLibertyVersion);
         }
         this.openLibertyVersion = openLibertyVersion;
         return openLibertyVersion;
+
+    }
+
+    // TODO make these methods private, hiding them behind map.put and map.get
+    public List<File> getOpenLibertyJson() throws InstallException {
+        String fromRepo = getDownloadDir((String) data.get(FROM_REPO));
+        File fromDir = new File(fromRepo);
+        String openLibertyVersion = getLibertyVersion();
+        String jsonFilePath = fromDir.getAbsolutePath() + "/" + OPEN_LIBERTY_GROUP_ID.replace(".", "/") + "/"
+                              + JSON_ARTIFACT_ID.replace(".", "/") + "/" + openLibertyVersion + "/" + "features-" + openLibertyVersion + ".json";
+
+        File openLibertyJson = new File(jsonFilePath);
+
+        List<File> jsons = new ArrayList<>();
+        if (openLibertyJson.exists()) {
+            jsons.add(openLibertyJson);
+        }
+
+        return jsons;
+
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<File> getJsonsFromMavenCentral() throws InstallException {//
+        String openLibertyVersion = getLibertyVersion();
+        // get open liberty json
+        List<File> result = new ArrayList<File>();
+        this.put("download.filetype", "json");
+        boolean singleArtifactInstall = true;
+        this.put("download.individual.artifact", singleArtifactInstall);
+
+        String OLJsonCoord = "io.openliberty.features:features:" + openLibertyVersion;
+        data.put("download.artifact.list", OLJsonCoord);
+        File OL = (File) this.get("download.result");
+
+        result.add(OL);
+        if (this.get("action.error.message") != null) {
+            fine("action.exception.stacktrace: " + this.get("action.error.stacktrace"));
+            String exceptionMessage = (String) this.get("action.error.message");
+            throw new InstallException(exceptionMessage);
+        }
+        fine("Downloaded the following jsons from maven central:" + result);
+        return result;
 
     }
 
@@ -1210,23 +1265,34 @@ public class InstallKernelMap implements Map {
 
     // log message types
     private void info(String msg) {
-        System.out.print("\033[2K"); // Erase line content
-        logger.info(msg);
-        progressBar.display();
+        if (isWindows) {
+            logger.info(msg);
+        } else {
+            System.out.print("\033[2K"); // Erase line content
+            logger.info(msg);
+            progressBar.display();
+        }
+
     }
 
     private void fine(String msg) {
-        System.out.print("\033[2K"); // Erase line content
-        logger.fine(msg);
-        progressBar.display();
-
+        if (isWindows) {
+            logger.fine(msg);
+        } else {
+            System.out.print("\033[2K"); // Erase line content
+            logger.fine(msg);
+            progressBar.display();
+        }
     }
 
     private void severe(String msg) {
-        System.out.print("\033[2K"); // Erase line content
-        logger.severe(msg);
-        progressBar.display();
+        if (isWindows) {
+            logger.severe(msg);
+        } else {
+            System.out.print("\033[2K"); // Erase line content
+            logger.severe(msg);
+            progressBar.display();
+        }
 
     }
-
 }

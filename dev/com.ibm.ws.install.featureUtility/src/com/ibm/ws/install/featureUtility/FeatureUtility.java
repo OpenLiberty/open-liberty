@@ -52,6 +52,8 @@ public class FeatureUtility {
     private ProgressBar progressBar;
     
     private final static String OPEN_LIBERTY_PRODUCT_ID = "io.openliberty"; //TODO
+    private boolean isWindows = (System.getProperty("os.name").toLowerCase()).indexOf("win") >= 0;
+    // TODO remove this need for windwos chewcking for progress bar
 
     private FeatureUtility(FeatureUtilityBuilder builder) throws IOException, InstallException {
         this.logger = InstallLogUtils.getInstallLogger();
@@ -59,7 +61,6 @@ public class FeatureUtility {
 
         this.openLibertyVersion = getLibertyVersion();
 
-        
         this.fromDir = builder.fromDir;
         this.toExtension = builder.toExtension;
         this.featuresToInstall = new ArrayList<>(builder.featuresToInstall);
@@ -72,7 +73,7 @@ public class FeatureUtility {
         
         if (isBasicInit == null || !isBasicInit) {
         	info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_INITIALIZING"));
-        	List<File> jsonPaths = (fromDir != null && fromDir.exists()) ? getJsons(fromDir) : getJsonsFromMavenCentral();
+            List<File> jsonPaths = getJsonFiles(fromDir, new ArrayList<File>());
             updateProgress(progressBar.getMethodIncrement("fetchJsons"));
             fine("Finished finding jsons");
 
@@ -83,7 +84,9 @@ public class FeatureUtility {
         	if (isDownload == null || !isDownload) {
         		initializeMap();
         	} else {
-        		List<File> jsonPaths = (fromDir != null && fromDir.exists()) ? getJsons(fromDir) : getJsonsFromMavenCentral();
+
+                List<File> jsonPaths = getJsonFiles(fromDir, new ArrayList<File>());
+
             	initializeMap(jsonPaths);
         	}
         }
@@ -108,7 +111,7 @@ public class FeatureUtility {
      * @param featuresToInstall
      * @throws IOException
      */
-    private void initializeMap(Collection<File> jsonPaths) throws IOException {
+    private void initializeMap(List<File> jsonPaths) throws IOException {
         map.put("runtime.install.dir", Utils.getInstallDir());
         map.put("target.user.directory", new File(Utils.getInstallDir(), "tmp"));
         map.put("install.local.esa", true);
@@ -117,7 +120,6 @@ public class FeatureUtility {
             map.put("features.to.resolve", featuresToInstall);
 
         }
-
         if (esaFile != null) {
             map.put("individual.esas", Arrays.asList(esaFile));
             map.put("install.individual.esas", true);
@@ -157,8 +159,6 @@ public class FeatureUtility {
             // openliberty.properties file is missing or invalidly formatted
             throw new InstallException("Could not determine the open liberty runtime version.");
 
-        } else {
-            fine("The Open Liberty runtime version is " + openLibertyVersion);
         }
         this.openLibertyVersion = openLibertyVersion;
         return openLibertyVersion;
@@ -174,7 +174,8 @@ public class FeatureUtility {
     public void installFeatures() throws InstallException, IOException {
         info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_RESOLVING"));
         Collection<String> resolvedFeatures = (Collection<String>) map.get("action.result");
-        checkResolve(resolvedFeatures);
+        fine("resolved features are: " + resolvedFeatures);
+        checkResolvedFeatures(resolvedFeatures);
         updateProgress(progressBar.getMethodIncrement("resolvedFeatures"));
 
         info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_PREPARING_ASSETS"));
@@ -222,19 +223,24 @@ public class FeatureUtility {
         }
     }
 
-    private void checkResolve(Collection<String> resolvedFeatures) throws InstallException {
+    /**
+     * Check for any errors with the list of resolved features
+     * 
+     * @param resolvedFeatures list of resolved features returned by the resolver
+     * @throws InstallException
+     */
+    private void checkResolvedFeatures(Collection<String> resolvedFeatures) throws InstallException {
     	if (resolvedFeatures == null) {
             throw new InstallException((String) map.get("action.error.message"));
         } else if (resolvedFeatures.isEmpty()) {
-            fine("The list of resolved features is empty.");
             String exceptionMessage = (String) map.get("action.error.message");
             if (exceptionMessage == null) {
-                info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ALREADY_INSTALLED",
+                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ALREADY_INSTALLED",
                                                                                       map.get("features.to.resolve")));
-                return;
+
             } else if (exceptionMessage.contains("CWWKF1250I")) {
-                info(exceptionMessage);
-                return;
+                throw new InstallException(exceptionMessage);
+
             } else {
                 throw new InstallException(exceptionMessage);
             }
@@ -249,7 +255,7 @@ public class FeatureUtility {
     private List<File> downloadFeatureEsas(Collection<String> resolvedFeatures) throws InstallException {
     	map.put("download.artifact.list", resolvedFeatures);
     	boolean singleArtifactInstall = false;
-        map.put("download.inidividual.artifact", singleArtifactInstall);
+        map.put("download.individual.artifact", singleArtifactInstall);
         List<File> result = (List<File>) map.get("download.result");
         if (map.get("action.error.message") != null) {
             fine("action.exception.stacktrace: " + map.get("action.error.stacktrace"));
@@ -276,7 +282,7 @@ public class FeatureUtility {
             map.put("features.to.resolve", featuresToInstall);
         }
         List<String> resolvedFeatures = (List<String>) map.get("action.result");
-        checkResolve(resolvedFeatures);
+        checkResolvedFeatures(resolvedFeatures);
         if (!isShortNames) {
         	updateProgress(progressBar.getMethodIncrement("resolveArtifact"));
             info("Features resolved.");
@@ -307,102 +313,23 @@ public class FeatureUtility {
 
     }
 
-    private List<File> getJsons(File file) throws InstallException {
-        List<File> jsonFiles = new ArrayList<File>();
-
-        Stack<File> stack = new Stack<>();
-        stack.push(file);
-
-        while (!stack.empty()) {
-            // check if we're in directory
-            File f = stack.pop();
-            if (f.isDirectory()) {
-                // determine if we're in the artifact section of the repository
-                if (looksLikeArtifactSection(f.listFiles())) {
-                    File json = retrieveJsonFileFromArtifact(f);
-                    if (json.exists()) {
-                        jsonFiles.add(json);
-                    } else {
-                        for (File current : f.listFiles()) {
-                            stack.push(current);
-                        }
-                    }
-                } else {
-                    for (File current : f.listFiles()) {
-                        stack.push(current);
-                    }
-                }
-            } else if (f.isFile() && isFeatureJson(f)) {
-                jsonFiles.add(f);
-            }
+    private List<File> getJsonFiles(File fromDir, List<File> userFeatureJsons) throws InstallException {
+        List<File> jsonFiles = new ArrayList<>();
+        if (fromDir != null) {
+            map.put("from.repo", fromDir.toString());
         }
-        fine("Found the following jsons: " + jsonFiles);
+
+        
+        jsonFiles.addAll(map.getOpenLibertyJson());
         if (jsonFiles.isEmpty()) {
-            // TODO throw exception if user does not allow network connection from system
-            // properties, else download from mvn central
-            jsonFiles = getJsonsFromMavenCentral();
+            fine("Could not find json files from local directories, now downloading from Maven..");
+            jsonFiles.addAll(map.getJsonsFromMavenCentral());
+        }
+        if (jsonFiles.isEmpty() || jsonFiles.contains(null)) {
+            throw new InstallException(
+                    "Could not find or download the necessary JSON files on your system needed for resolving features.");
         }
         return jsonFiles;
-
-    }
-    
-    private boolean isFeatureJson(File file) {
-        return file.exists() && file.getName().equals("features-" + openLibertyVersion + ".json");
-    }
-
-    private File retrieveJsonFileFromArtifact(File artifact) {
-        File dir = new File(artifact, "/features/");
-        if (!dir.exists() && !dir.isDirectory()) {
-            return null;
-        }
-
-        Path jsonPath = Paths.get(artifact.getAbsolutePath(), "features", openLibertyVersion,
-                                  "features-" + openLibertyVersion + ".json");
-        return jsonPath.toFile();
-
-    }
-
-    private boolean looksLikeArtifactSection(File[] files) {
-        for (File f : files) {
-            if (f.getName().equals("features")) {
-                // likely found a feature
-                return true;
-            }
-        }
-
-        return false;
-
-    }
-
-    /**
-     * Fetch the open liberty and closed liberty json files from maven central
-     *
-     * @return
-     * @throws InstallException
-     */
-    private List<File> getJsonsFromMavenCentral() throws InstallException {
-        // get open liberty json
-        List<File> result = new ArrayList<File>();
-        map.put("download.filetype", "json");
-        boolean singleArtifactInstall = true;
-        map.put("download.inidividual.artifact", singleArtifactInstall);
-
-        String OLJsonCoord = "io.openliberty.features:features:" + openLibertyVersion;
-        String CLJsonCoord = "com.ibm.websphere.appserver.features:features:" + openLibertyVersion;
-        map.put("download.artifact.list", OLJsonCoord);
-        File OL = (File) map.get("download.result");
-        map.put("download.artifact.list", CLJsonCoord);
-        File CL = (File) map.get("download.result");
-        result.add(OL);
-        result.add(CL);
-        if (map.get("action.error.message") != null) {
-            fine("action.exception.stacktrace: " + map.get("action.error.stacktrace"));
-            String exceptionMessage = (String) map.get("action.error.message");
-            throw new InstallException(exceptionMessage);
-        }
-        fine("Downloaded the following jsons from maven central:" + result);
-        return result;
-
     }
 
     /**
@@ -455,6 +382,13 @@ public class FeatureUtility {
         return !file.exists();
     }
 
+    private File getM2Cache() { // check for maven_home specified mirror stuff
+        // File m2Folder = getM2Path().toFile();
+
+        return Paths.get(System.getProperty("user.home"), ".m2", "repository", "").toFile();
+
+    }
+
     private void updateProgress(double increment) {
         progressBar.updateProgress(increment);
 
@@ -462,22 +396,34 @@ public class FeatureUtility {
 
     // log message types
     private void info(String msg) {
-        System.out.print("\033[2K"); // Erase line content
-        logger.info(msg);
-        progressBar.display();
+        if (isWindows) {
+            logger.info(msg);
+        } else {
+            System.out.print("\033[2K"); // Erase line content
+            logger.info(msg);
+            progressBar.display();
+        }
+
     }
 
     private void fine(String msg) {
-        System.out.print("\033[2K"); // Erase line content
-        logger.fine(msg);
-        progressBar.display();
-
+        if (isWindows) {
+            logger.fine(msg);
+        } else {
+            System.out.print("\033[2K"); // Erase line content
+            logger.fine(msg);
+            progressBar.display();
+        }
     }
 
     private void severe(String msg) {
-        System.out.print("\033[2K"); // Erase line content
-        logger.severe(msg);
-        progressBar.display();
+        if (isWindows) {
+            logger.severe(msg);
+        } else {
+            System.out.print("\033[2K"); // Erase line content
+            logger.severe(msg);
+            progressBar.display();
+        }
 
     }
 
@@ -516,6 +462,11 @@ public class FeatureUtility {
         
         public FeatureUtilityBuilder setIsBasicInit(boolean isBasicInit) {
             this.isBasicInit = isBasicInit;
+            return this;
+        }
+
+        public FeatureUtilityBuilder setUserFeatures(List<String> userFeatures) {
+            // TODO handle maven coordinates of user features and jsons
             return this;
         }
 
