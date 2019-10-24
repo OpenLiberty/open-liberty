@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,13 +14,13 @@ import com.ibm.websphere.monitor.jmx.Counter;
 import com.ibm.websphere.monitor.jmx.StatisticsMeter;
 
 /**
- * Management12 interface for MBeans with names of the form "WebSphere:type=JaxRsStats,name=*"
- * where * is the name of a JAX-RS resource method within an application under the Liberty profile of the form <appName>.<resourceMethodName>. For example, myApp.DemoResource. One such MBean for each resource method in the system is available
+ * Management12 interface for MBeans with names of the form "WebSphere:type=RestfulStats,name=*"
+ * where * is the name of a RESTful resource method within an application under the Liberty profile of the form <appName>.<resourceMethodName>. For example, myApp.DemoResource. One such MBean for each resource method in the system is available
  * from the Liberty profile platform MBean server when the monitor-1.0 feature is enabled. This interface can be used to request a proxy object via the {@link javax.management.JMX#newMMBeanProxy} method.
  * 
  * @ibm-api
  */
-public interface JaxRsStatsMXBean {
+public interface RestfulStatsMXBean {
 
     /**
      * Retrieves the value of the read-only attribute Description, which is a description of the MBean itself.

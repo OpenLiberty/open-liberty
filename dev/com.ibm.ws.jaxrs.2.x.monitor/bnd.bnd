@@ -29,21 +29,12 @@ Export-Package: \
 Private-Package: \
 	com.ibm.websphere.jaxrs
 
-Include-Resource: \
-    com/ibm/ws/jaxrs/pmi/servletStats.xml=resources/com/ibm/ws/jaxrs/pmi/servletStats.xml, \
-    com/ibm/ws/jaxrs/pmi/resourceMethodStats.xml=resources/com/ibm/ws/jaxrs/pmi/resourceMethodStats.xml
-
 
 DynamicImport-Package: com.ibm.websphere.monitor.meters;version="1.0.0", \
  com.ibm.websphere.monitor.annotation;version="1.0.0", \
- com.ibm.websphere.monitor.jmx;version="1.0.0", \
- com.ibm.ws.pmi.server;version="[1.1,2)", \
- com.ibm.ws.pmi.stat;version="[1.1,2)", \
- com.ibm.websphere.pmi;version="[1.1,2)", \
- com.ibm.wsspi.pmi.factory;version="[1.1,2)", \
- com.ibm.wsspi.pmi.stat;version="[1.1,2)" 
+ com.ibm.websphere.monitor.jmx;version="1.0.0"
  
-Liberty-Monitoring-Components: com.ibm.ws.jaxrs.monitor.JaxRsMonitor
+Liberty-Monitoring-Components: 
 
 instrument.disabled: true
 
@@ -52,14 +43,10 @@ instrument.disabled: true
 
 -buildpath: \
 	com.ibm.ws.monitor,\
-	com.ibm.ws.webcontainer,\
-	com.ibm.websphere.appserver.spi.logging,\
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+	com.ibm.websphere.javaee.jaxrs.2.0,\
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
-	com.ibm.websphere.javaee.jaxrs.2.0,\
-	com.ibm.websphere.org.osgi.core,\
-	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.wsspi.org.osgi.service.component.annotations,\
-	com.ibm.websphere.javaee.cdi.1.0,\
 	com.ibm.ws.jaxrs.2.0.common
+	

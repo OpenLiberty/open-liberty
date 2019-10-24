@@ -15,36 +15,36 @@ import com.ibm.websphere.monitor.meters.Meter;
 import com.ibm.websphere.monitor.meters.StatisticsMeter;
 
 /**
- * This is used to report Servlet Related Statistics.
- * Each Servlet will have one instance of ServletStatsMXBean.
+ * This is used to report RESTful Resource Method Related Statistics.
+ * Each Restful resource method will have one instance of RestfulStatsMXBean.
  * Statistic reported :
- * 1) Application Name
- * 2) Servlet Name
- * 3) Request Count for sevlet
- * 4) Average Response Time in nano seconds.
+ * 1) Application Name (Ear (when available)  and War)
+ * 2) Resource Method Name
+ * 3) Request Count for resource method
+ * 4) Cumulative Response Time in nano seconds.
  * 
  */
-public class RESTful_Stats extends Meter implements JaxRsStatsMXBean {
+public class RESTful_Stats extends Meter implements RestfulStatsMXBean {
 
     private String appName;
     private String methodName;
 
-    //Following is the stats we are reporting for Servlets.
+    //Following is the stats we are reporting for Resource Methods.
     private Counter requestCount;
     private final StatisticsMeter responseTime;
 
     /**
      * Constructor.
-     * We will store AppName and Servlet Name
+     * We will store AppName and Resource Method Name
      */
     public RESTful_Stats(String aName, String mName) {
         setAppName(aName);
         setMethodName(mName);
         requestCount = new Counter();
         requestCount.setDescription("This shows number of requests to a Restful resource method");
-        requestCount.setUnit("ns");
+//        requestCount.setUnit("ns");
         responseTime = new StatisticsMeter();
-        responseTime.setDescription("Cumulative Response Time for a Restful resource method");
+        responseTime.setDescription("Cumulative Response Time (NanoSeconds) for a Restful resource method");
         responseTime.setUnit("ns");
     }
 
@@ -65,7 +65,7 @@ public class RESTful_Stats extends Meter implements JaxRsStatsMXBean {
     }
 
     /**
-     * Demonstrate Number of Requests, recieved for this servlet.
+     * Demonstrate Number of Requests, received for this resource method.
      * 
      **/
     @Override
@@ -75,7 +75,7 @@ public class RESTful_Stats extends Meter implements JaxRsStatsMXBean {
 
     /**
      * Reports Average Response Time.
-     * We store Cummulative Time (total service time for specified servlet)
+     * We store Cumulative Time (total service time for specified resource method)
      * responseTime = CummulativeTime / number of requests.
      * 
      * */
@@ -85,7 +85,7 @@ public class RESTful_Stats extends Meter implements JaxRsStatsMXBean {
     }
 
     /**
-     * Getter for Servlet Name
+     * Getter for Resource Method Name
      * */
     @Override
     public String getMethodName() {
@@ -100,7 +100,7 @@ public class RESTful_Stats extends Meter implements JaxRsStatsMXBean {
     }
 
     /**
-     * @param servletName the servletName to set
+     * @param methodName the resource method name to set
      */
     public void setMethodName(String methodName) {
         this.methodName = methodName;
@@ -129,7 +129,7 @@ public class RESTful_Stats extends Meter implements JaxRsStatsMXBean {
      * This is responsible for updating Response Time.
      * We already have valid serviceStartTime.
      * Now we should take (current time - serviceStartTime).
-     * Add it to cummulative time.
+     * Add it to cumulative time.
      * 
      * @param elapsed
      * 
@@ -137,6 +137,7 @@ public class RESTful_Stats extends Meter implements JaxRsStatsMXBean {
      */
     public void updateRT(long elapsed) {
         this.responseTime.addDataPoint(elapsed);
+        System.out.println("Jim555, total = " + this.responseTime.getTotal());
 
     }
 

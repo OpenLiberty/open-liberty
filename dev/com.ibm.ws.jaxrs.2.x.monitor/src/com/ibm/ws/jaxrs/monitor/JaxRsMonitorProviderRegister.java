@@ -14,24 +14,64 @@ import java.util.List;
 import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
 
+import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
+import com.ibm.ws.container.service.state.ApplicationStateListener;
+import com.ibm.ws.jaxrs.monitor.JaxRsMonitorFilter.RestfulMetricInfo;
 import com.ibm.ws.jaxrs20.providers.api.JaxRsProviderRegister;
 
-@Component(immediate = true)
-public class JaxRsMonitorProviderRegister implements JaxRsProviderRegister {
+@Component(immediate = true, property = { "service.vendor=IBM" }, configurationPolicy = ConfigurationPolicy.IGNORE, service = {JaxRsProviderRegister.class, ApplicationStateListener.class})
+public class JaxRsMonitorProviderRegister implements JaxRsProviderRegister, ApplicationStateListener {
 
+	private JaxRsMonitorFilter monitorFilter = new JaxRsMonitorFilter();
+	
     @Override
     public void installProvider(boolean clientSide, List<Object> providers, Set<String> features) {
-
-    	System.out.println("Jim... JaxRsMonitorProviderRegister.installProvider:  " + clientSide);
-    	System.out.println("Jim... features = " + features.toString());
+        
+    	// Register the metrics monitor filter class if we are not on the client and if using the monitor
+    	// feature with or without the mpMetrics feature.
         if (!clientSide) {
-            if (features.contains("monitor-1.0") || features.contains("mpMetrics-1.1")) {
-                //add one built-in ContainerRequestFilter/ContainerResponseFilter to enable metric collection.
-                JaxRsMonitorFilter jmf = new JaxRsMonitorFilter();
-                providers.add(jmf);
+            if (features.contains("monitor-1.0")) {
+                // Add  built-in ContainerRequestFilter/ContainerResponseFilter to enable metric collection.
+                providers.add(monitorFilter);
             }
         }
     }
+    
+    @Override
+    public void applicationStarting(ApplicationInfo appInfo) {
+    	// When the application is starting we will create
+    	// the application's metrics info object to store
+    	// information such as whether the application is
+    	// contained within an ear file or not.
+    	String appName = appInfo.getDeploymentName();
+    	RestfulMetricInfo metricInfo = monitorFilter.getMetricInfo(appName);
+    	
+    	// Determine if the application is packaged within an ear file.  This is 
+    	// useful since a key created in the monitorFilter class will be 
+    	// prefixed with the earname + warname or just the warname.
+    	// See JaxRsMonitorFilter class for more information.
+    	if (appInfo.getClass().getName().endsWith("EARApplicationInfoImpl")) {
+    		metricInfo.setIsEar();
+    	}
+    }
 
+    @Override
+    public void applicationStarted(ApplicationInfo appInfo) {
+    }
+
+    @Override
+    public void applicationStopping(ApplicationInfo appInfo) {
+    }
+
+    @Override
+    public void applicationStopped(ApplicationInfo appInfo) {
+    	// Allow the JaxRsMonitorFilter instance to clean up when the application
+    	// is stopped.
+    	monitorFilter.cleanApplication(appInfo.getDeploymentName());
+    }
+
+    
+    
 }

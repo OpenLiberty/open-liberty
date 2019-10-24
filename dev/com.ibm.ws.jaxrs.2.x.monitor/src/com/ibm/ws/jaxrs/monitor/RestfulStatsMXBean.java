@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,10 +14,10 @@ import com.ibm.websphere.monitor.meters.Counter;
 import com.ibm.websphere.monitor.meters.StatisticsMeter;
 
 /**
- * Servlet Stats MXBean
+ * RESTful Stats MXBean
  * 
  */
-public interface JaxRsStatsMXBean extends com.ibm.websphere.jaxrs.JaxRsStatsMXBean {
+public interface RestfulStatsMXBean extends com.ibm.websphere.jaxrs.RestfulStatsMXBean {
 
     @Override
     public Counter getRequestCountDetails();
