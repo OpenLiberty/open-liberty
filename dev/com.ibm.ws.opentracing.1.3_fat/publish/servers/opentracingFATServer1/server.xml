@@ -16,7 +16,7 @@
 	<!-- Turn this on for the FAT: That provides good diagnostics in case -->
 	<!-- of a failure, and means that trace code is tested. -->
 	<logging
-		traceSpecification="*=info:com.ibm.ws.opentracing*=all:com.ibm.ws.microprofile.opentracing*=all"
+		traceSpecification="*=info:com.ibm.ws.opentracing.*=all:com.ibm.ws.microprofile.opentracing.*=all"
 		maxFileSize="100" maxFiles="1" />
 
 	<opentracing>
