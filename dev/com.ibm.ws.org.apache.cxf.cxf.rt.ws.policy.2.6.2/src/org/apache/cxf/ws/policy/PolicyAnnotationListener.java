@@ -20,6 +20,8 @@
 package org.apache.cxf.ws.policy;
 
 import java.lang.reflect.Method;
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -424,7 +426,12 @@ public class PolicyAnnotationListener implements FactoryBeanListener {
         
     private Element loadRemotePolicy(String uri, String defName) {
         ExtendedURIResolver resolver = new ExtendedURIResolver();
-        InputSource src = resolver.resolve(uri, "classpath:");
+        InputSource src = null;
+        try {
+            src = resolver.resolve(uri, "classpath:");
+        } catch(ConnectException | SocketTimeoutException e1) {
+            
+        }
         
         if (null == src) {
             return null;
