@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.session.cache.fat.infinispan.container;
 
+import static com.ibm.ws.session.cache.fat.infinispan.container.FATSuite.infinispan;
 import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
@@ -52,6 +53,8 @@ public class SessionCacheTimeoutTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         app = new SessionCacheApp(server, false, "session.cache.infinispan.web", "session.cache.infinispan.web.listener1");
+
+        server.addEnvVar("INF_SERVERLIST", infinispan.getContainerIpAddress() + ":" + infinispan.getMappedPort(11222));
 
         //String hazelcastConfigFile = "hazelcast-localhost-only.xml";
 
