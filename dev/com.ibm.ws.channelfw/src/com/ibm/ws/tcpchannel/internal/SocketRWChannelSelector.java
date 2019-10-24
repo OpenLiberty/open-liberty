@@ -399,14 +399,15 @@ public class SocketRWChannelSelector extends ChannelSelector implements Runnable
                         continue;
                     }
                     if (req.getTimeoutTime() <= now) {
-                        if (bTrace && tc.isEventEnabled()) {
-                            Tr.event(this, tc, "Inactivity timeout on channel " + req.getTCPConnLink().getSocketIOChannel().getChannel());
-                        }
+                        
 
                         // create timeout exception to pass to callback error method
                         // Add local and remote address information
                         String ioeMessage = "Socket operation timed out before it could be completed";
                         try {
+                            if (bTrace && tc.isEventEnabled()) {
+                                Tr.event(this, tc, "Inactivity timeout on channel " + req.getTCPConnLink().getSocketIOChannel().getChannel());
+                            }
                             SocketAddress iaLocal = req.getTCPConnLink().getSocketIOChannel().getSocket().getLocalSocketAddress();
                             SocketAddress iaRemote = req.getTCPConnLink().getSocketIOChannel().getSocket().getRemoteSocketAddress();
                             ioeMessage = ioeMessage + " local=" + iaLocal + " remote=" + iaRemote;
