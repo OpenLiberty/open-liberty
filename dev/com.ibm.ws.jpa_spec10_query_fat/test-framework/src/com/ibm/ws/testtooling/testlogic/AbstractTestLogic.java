@@ -17,6 +17,7 @@ import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.persistence.EntityManager;
 import javax.persistence.FlushModeType;
@@ -325,35 +326,19 @@ public abstract class AbstractTestLogic {
     // Basing determination off product version using
     // info from https://www.ibm.com/support/knowledgecenter/en/SSEPEK_11.0.0/java/src/tpc/imjcc_c0053013.html
     protected boolean isDB2ForZOS(String prodVersion) throws Exception {
-        if (prodVersion != null && prodVersion.toLowerCase().startsWith("dsn")) {
-            return true;
-        }
-
-        return false;
+        return containsIgnoreCase(prodVersion, "dsn");
     }
 
     protected boolean isDB2ForLUW(String prodVersion) throws Exception {
-        if (prodVersion != null && prodVersion.toLowerCase().startsWith("sql")) {
-            return true;
-        }
-
-        return false;
+        return containsIgnoreCase(prodVersion, "sql");
     }
 
     protected boolean isDB2ForISeries(String prodVersion) throws Exception {
-        if (prodVersion != null && prodVersion.toLowerCase().startsWith("qsq")) {
-            return true;
-        }
-
-        return false;
+        return containsIgnoreCase(prodVersion, "qsq");
     }
 
     protected boolean isDB2ForVM_VSE(String prodVersion) throws Exception {
-        if (prodVersion != null && prodVersion.toLowerCase().startsWith("ari")) {
-            return true;
-        }
-
-        return false;
+        return containsIgnoreCase(prodVersion, "ari");
     }
 
     protected boolean isDB2(String prodVersion) throws Exception {
@@ -361,6 +346,23 @@ public abstract class AbstractTestLogic {
     }
 
     protected boolean isDerby(String lDbProductName) throws Exception {
-        return (lDbProductName == null) ? false : lDbProductName.contains("derby");
+        return containsIgnoreCase(lDbProductName, "derby");
+    }
+
+    protected boolean isOracle(String lDbProductName) throws Exception {
+        return containsIgnoreCase(lDbProductName, "oracle");
+    }
+
+    protected boolean isMySQL(String lDbProductName) throws Exception {
+        return containsIgnoreCase(lDbProductName, "mysql");
+    }
+
+    protected boolean isHana(String lDbProductName) throws Exception {
+        return containsIgnoreCase(lDbProductName, "hdb");
+    }
+
+    private boolean containsIgnoreCase(String input, String regex) {
+        return input != null
+               && Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(input).find();
     }
 }

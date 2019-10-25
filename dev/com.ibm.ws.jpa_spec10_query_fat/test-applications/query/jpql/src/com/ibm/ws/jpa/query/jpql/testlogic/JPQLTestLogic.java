@@ -20,6 +20,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import org.junit.Assert;
+import org.junit.Assume;
 
 import com.ibm.ws.jpa.query.jpql.model.SimpleJPQLEntity;
 import com.ibm.ws.jpa.query.sqlcapture.SQLListener;
@@ -62,10 +63,8 @@ public class JPQLTestLogic extends AbstractTestLogic {
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
         final String jdbcDriverVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("jdbcDriverVersion") == null) ? "UNKNOWN" : (String) testProps.get("jdbcDriverVersion"));
 
-        if (isSupportedDatabase(dbProductName, dbProductVersion, jdbcDriverVersion) == false) {
-            // This test does not currently support the target database vendor.
-            return;
-        }
+        // This test does not currently support the target database vendor.
+        Assume.assumeTrue(isSupportedDatabase(dbProductName, dbProductVersion, jdbcDriverVersion));
 
         final String lDbProductName = dbProductName.toLowerCase();
         final boolean isAMJTA = PersistenceContextType.APPLICATION_MANAGED_JTA == jpaResource.getPcCtxInfo().getPcType();
@@ -141,10 +140,8 @@ public class JPQLTestLogic extends AbstractTestLogic {
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
         final String jdbcDriverVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("jdbcDriverVersion") == null) ? "UNKNOWN" : (String) testProps.get("jdbcDriverVersion"));
 
-        if (isSupportedDatabase(dbProductName, dbProductVersion, jdbcDriverVersion) == false) {
-            // This test does not currently support the target database vendor.
-            return;
-        }
+        // This test does not currently support the target database vendor.
+        Assume.assumeTrue(isSupportedDatabase(dbProductName, dbProductVersion, jdbcDriverVersion));
 
         final String lDbProductName = dbProductName.toLowerCase();
         final boolean isAMJTA = PersistenceContextType.APPLICATION_MANAGED_JTA == jpaResource.getPcCtxInfo().getPcType();

@@ -103,12 +103,12 @@ Private-Package: com.ibm.ws.eclipselink.osgi
 
 Include-Resource: \
   @${repo;org.eclipse.persistence.antlr;3.2.0.v201302191141;EXACT}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence.asm;7.0.0.v201811131354;EXACT}!/!META-INF/maven/*,\
+  @${repo;org.eclipse.persistence.asm;7.1.0.v201909181055;EXACT}!/!META-INF/maven/*,\
   @${repo;org.eclipse.persistence.core;2.6.8.WAS;EXACT}!/!META-INF/maven/*,\
   @${repo;org.eclipse.persistence.jpa.jpql;2.6.8.WAS;EXACT}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence.jpa.modelgen;2.6.8.WAS-v20190716-31d7cf7;EXACT}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence.jpa;2.6.8.WAS;EXACT}!/!META-INF/maven/*
-
+  @${repo;org.eclipse.persistence.jpa.modelgen;2.6.8.WAS-v20191015-5b6c763;EXACT}!/!META-INF/maven/*,\
+  @${repo;org.eclipse.persistence.jpa;2.6.8.WAS;EXACT}!/!META-INF/maven/*,\
+  org/eclipse/persistence/internal/helper=${bin}/org/eclipse/persistence/internal/helper
 
 publish.wlp.jar.suffix: dev/api/third-party
 
@@ -116,9 +116,11 @@ publish.wlp.jar.suffix: dev/api/third-party
 
 instrument.classesExcludes: \
   org/eclipse/persistence/exceptions/i18n/*.class, \
-  org/eclipse/persistence/internal/localization/i18n/*.class
+  org/eclipse/persistence/internal/localization/i18n/*.class, \
+  org/eclipse/persistence/internal/helper/*.class
 
 -buildpath: \
+    org.eclipse.persistence.core;version=2.6.8.WAS;strategy=exact,\
 	org.eclipse.persistence.jpa;version=2.6.8.WAS;strategy=exact,\
 	com.ibm.ws.javax.j2ee:persistence;version=2.1,\
 	com.ibm.websphere.org.osgi.core,\
