@@ -26,3 +26,7 @@ instrument.disabled: true
 
 -buildpath: \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+
+-testpath: \
+	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+	../build.sharedResources/lib/ws-junit/ws-junit.jar;version=file

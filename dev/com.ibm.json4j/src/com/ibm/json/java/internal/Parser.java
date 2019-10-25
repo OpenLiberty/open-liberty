@@ -33,10 +33,10 @@ public class Parser
      *
      * @throws IOException Thrown if an error occurs in tokenizing the JSON string.
      */
-    public Parser(Reader reader) throws IOException {
+    public Parser(Reader reader, boolean largeNumbers) throws IOException {
         super();
 
-        this.tokenizer = new Tokenizer(reader);
+        this.tokenizer = new Tokenizer(reader, largeNumbers);
     }
 
     /**
