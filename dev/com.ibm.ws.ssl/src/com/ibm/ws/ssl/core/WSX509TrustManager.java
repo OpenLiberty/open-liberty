@@ -298,7 +298,7 @@ public final class WSX509TrustManager extends X509ExtendedTrustManager {
                         if (certPathError) {
                             if (useCACertFile) {
                                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                                    Tr.debug(tc, "Establising trust in the server with the configured truststore did not succeed, trying the cacerts trustmanager");
+                                    Tr.debug(tc, "Establishing trust in the server with the configured truststore did not succeed, trying the cacerts trustmanager");
                                 callCertFileTrustManager(chain, authType, null, 0, excpt);
                             } else {
                                 processCertPathException(chain, authType, excpt, null, 0, null);
@@ -901,7 +901,7 @@ public final class WSX509TrustManager extends X509ExtendedTrustManager {
     private void processClientTrustError(X509Certificate[] chain, String authType, Exception configTrustEx) throws CertificateException {
         if (useCACertFile) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "Establishing trust in the client with the configured truststore did not succeed, trying the cacerts trustmanager");
+                Tr.debug(tc, "Establishing trust in the client with the configured truststore did not succeed, trying the JSSE default trustmanager");
             callCertFileTrustManagerClient(chain, authType, configTrustEx);
         } else {
 
@@ -920,7 +920,7 @@ public final class WSX509TrustManager extends X509ExtendedTrustManager {
             if (isCertPathError(ex)) {
                 if (useCACertFile) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                        Tr.debug(tc, "Establising trust in the server with the configured truststore did not succeed, trying the cacerts trustmanager");
+                        Tr.debug(tc, "Establishing trust in the server with the configured truststore did not succeed, trying the cacerts trustmanager");
                     callCertFileTrustManager(chain, authType, peerHost, peerPort, ex);
                 } else {
                     processCertPathException(chain, authType, ex, peerHost, peerPort, null);
