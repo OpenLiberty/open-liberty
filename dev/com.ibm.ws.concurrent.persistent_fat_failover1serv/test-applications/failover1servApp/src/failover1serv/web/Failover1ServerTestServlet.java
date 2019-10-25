@@ -12,6 +12,7 @@ package failover1serv.web;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.sql.Connection;
@@ -85,14 +86,61 @@ public class Failover1ServerTestServlet extends FATServlet {
     }
 
     /**
+     * testHeartbeatsAreRepeatedlySent - verifies that heart beats are being sent periodically, with an increasing expiry timestamp.
+     */
+    @Test
+    public void testHeartbeatsAreRepeatedlySent() throws Exception {
+        // Ensure the database tables are present
+        PersistentExecutor executor = InitialContext.doLookup("persistent/exec2");
+        executor.getProperty("testHeartbeatsAreRepeatedlySent");
+
+        DataSource ds = InitialContext.doLookup("java:comp/DefaultDataSource");
+        try (Connection con = ds.getConnection()) {
+            PreparedStatement st = con.prepareStatement("SELECT EXPIRY FROM WLPPART WHERE EXECUTOR=?");
+            st.setString(1, "persistentExec2");
+            ResultSet result = st.executeQuery();
+            assertTrue(result.next());
+            long expiry1 = result.getLong(1);
+            st.close();
+            System.out.println("Found heartbeat from persistentExec2 with expiry at " + expiry1);
+
+            // Poll for the expiry to be updated by a subsequent heartbeat
+            st = con.prepareStatement("SELECT EXPIRY FROM WLPPART WHERE EXECUTOR=? AND EXPIRY>?");
+            st.setString(1, "persistentExec2");
+            st.setLong(2, expiry1);
+
+            boolean found = false;
+            for (long start = System.nanoTime();
+                    !(found = (result = st.executeQuery()).next()) && System.nanoTime() - start < TIMEOUT_NS;
+                    Thread.sleep(POLL_INTERVAL_MS))
+                ;
+
+            assertTrue(found);
+            long expiry2 = result.getLong(1);
+            System.out.println("Found heartbeat from persistentExec2 with expiry at " + expiry2);
+            st.setLong(2, expiry2);
+
+            found = false;
+            for (long start = System.nanoTime();
+                    !(found = (result = st.executeQuery()).next()) && System.nanoTime() - start < TIMEOUT_NS;
+                    Thread.sleep(POLL_INTERVAL_MS))
+                ;
+
+            assertTrue(found);
+            long expiry3 = result.getLong(1);
+            System.out.println("Found heartbeat from persistentExec2 with expiry at " + expiry3);
+        }
+    }
+
+    /**
      * testMissedHeartbeatsClearOldPartitionData - insert entries representing missed heartbeats directly into the
      * database. Verify that they are automatically removed (happens when heartbeat information is checked).
      */
-    //@Test TODO enable once function (8407) is implemented
+    @Test
     public void testMissedHeartbeatsClearOldPartitionData(HttpServletRequest request, HttpServletResponse response) throws Exception {
         // Ensure the database tables are present
         PersistentExecutor executor = InitialContext.doLookup("persistent/exec2");
-        executor.getProperty("whatever");
+        executor.getProperty("testMissedHeartbeatsClearOldPartitionData");
 
         DataSource ds = InitialContext.doLookup("java:comp/DefaultDataSource");
         try (Connection con = ds.getConnection()) {
