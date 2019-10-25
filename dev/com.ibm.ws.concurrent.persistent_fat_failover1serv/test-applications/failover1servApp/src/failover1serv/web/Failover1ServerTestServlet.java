@@ -12,6 +12,7 @@ package failover1serv.web;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -57,6 +58,30 @@ public class Failover1ServerTestServlet extends FATServlet {
         PersistentExecutor executor = (PersistentExecutor) new InitialContext().lookup(jndiName);
 
         executor.getStatus(taskId).cancel(false);
+    }
+
+    /**
+     * testGetPartitionId - verify that a partition id for the specified executor can be found within an allotted interval.
+     */
+    public void testGetPartitionId(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String executor = request.getParameter("executor");
+
+        DataSource ds = InitialContext.doLookup("java:comp/DefaultDataSource");
+        try (Connection con = ds.getConnection()) {
+            PreparedStatement st = con.prepareStatement("SELECT ID FROM WLPPART WHERE EXECUTOR=?");
+            st.setString(1, executor);
+
+            ResultSet result;
+            boolean hasNext;
+            for (long start = System.nanoTime(); !(hasNext = (result = st.executeQuery()).next()) && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL_MS))
+                ;
+
+            if (hasNext) {
+                long partitionId = result.getLong(1);
+                response.getWriter().println("Partition id is " + partitionId + ".");
+            } else
+                fail("Partition id for " + executor + " is not found.");
+        }
     }
 
     /**
@@ -119,6 +144,20 @@ public class Failover1ServerTestServlet extends FATServlet {
     }
 
     /**
+     * testRemovePartition - removes the specified partition entry.
+     */
+    public void testRemovePartition(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String executor = request.getParameter("executor");
+
+        DataSource ds = InitialContext.doLookup("java:comp/DefaultDataSource");
+        try (Connection con = ds.getConnection()) {
+            PreparedStatement st = con.prepareStatement("DELETE FROM WLPPART WHERE EXECUTOR=?");
+            st.setString(1, executor);
+            assertEquals(1, st.executeUpdate());
+        }
+    }
+
+    /**
      * Schedules a one-time task. The task id is written to the servlet output
      */
     public void testScheduleOneTimeTask(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -151,6 +190,17 @@ public class Failover1ServerTestServlet extends FATServlet {
         long taskId = status.getTaskId();
 
         response.getWriter().println("Task id is " + taskId + ".");
+    }
+
+    /**
+     * testTablesExist - ensure that tables within the persistent task store exist by looking up a persistent executor
+     * and performing a simple operation on it.
+     */
+    public void testTablesExist(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        // Ensure the database tables are present
+        String jndiName = request.getParameter("jndiName");
+        PersistentExecutor executor = InitialContext.doLookup(jndiName);
+        executor.getProperty("testTablesExist");
     }
 
     /**

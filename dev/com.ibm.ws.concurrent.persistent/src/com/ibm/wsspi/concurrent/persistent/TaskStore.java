@@ -52,6 +52,17 @@ public interface TaskStore {
     int cancel(String pattern, Character escape, TaskState state, boolean inState, String owner) throws Exception;
 
     /**
+     * Create a partition entry in the persistent store having the Id of the specified partitionRecord.
+     *
+     * @param partitionRecord a new partition entry. The record must contain the following attributes (Id, Executor, Host, Server, UserDir)
+     *                            and can optionally contain (Expiry, States).
+     * @throws Exception if an error occurs when attempting to update the persistent task store.
+     * @return true if a partition entry with the specified Id was created by this method.
+     *         Otherwise false, in which case it is recommended to roll back the transaction.
+     */
+    boolean create(PartitionRecord partitionRecord) throws Exception;
+
+    /**
      * Create an entry in the persistent store for a new task.
      * This method assigns a unique identifier to the task and updates the Id attribute of the TaskRecord with the value.
      * 

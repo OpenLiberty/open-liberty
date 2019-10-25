@@ -245,6 +245,56 @@ public class DatabaseTaskStore implements TaskStore {
         }
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public boolean create(PartitionRecord record) throws Exception {
+        StringBuilder update = new StringBuilder(111)
+                        .append("UPDATE Partition SET ID=:i1,EXECUTOR=:exec,HOSTNAME=:h,LSERVER=:l,USERDIR=:u");
+        if (record.hasExpiry())
+            update.append(",EXPIRY=:exp");
+        if (record.hasStates())
+            update.append(",STATES=:s");
+        update.append(" WHERE ID=:i2");
+
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "create", record, update);
+
+        boolean created = false;
+        EntityManager em = getPersistenceServiceUnit().createEntityManager();
+        try {
+            Partition partition = new Partition();
+            partition.EXECUTOR = "?";
+            partition.HOSTNAME = "?";
+            partition.LSERVER = "?";
+            partition.USERDIR = "?";
+            em.persist(partition);
+            em.flush();
+
+            Query query = em.createQuery(update.toString());
+            query.setParameter("i1", record.getId());
+            query.setParameter("exec", record.getExecutor());
+            query.setParameter("h", record.getHostName());
+            query.setParameter("l", record.getLibertyServer());
+            query.setParameter("u", record.getUserDir());
+            if (record.hasExpiry())
+                query.setParameter("exp", record.getExpiry());
+            if (record.hasStates())
+                query.setParameter("s", record.getStates());
+            query.setParameter("i2", partition.ID);
+
+            created = query.executeUpdate() > 0;
+            if (trace && tc.isDebugEnabled())
+                Tr.debug(this, tc, "update", partition.ID + " --> " + record.getId(), created);
+        } finally {
+            em.close();
+        }
+
+        if (trace && tc.isEntryEnabled())
+            Tr.exit(this, tc, "create", created);
+        return created;
+    }
+
     /**
      * Create an entry in the persistent store for a new task.
      *
