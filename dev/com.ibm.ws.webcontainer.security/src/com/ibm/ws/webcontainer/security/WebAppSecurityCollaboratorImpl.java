@@ -639,9 +639,13 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
     }
 
     /**
-     **
-     ** This method returns header information of the incoming HttpServletRequest
-     **
+     *
+     * This method returns header information of the incoming HttpServletRequest
+     *
+     * @param req HttpServletRequest
+     * @param key String (header name)
+     * @return Returns a string value for the given header in the HttpServletRequest object.
+     *
      **/
     @Trivial
     private String getHeader(HttpServletRequest req, String key) {
