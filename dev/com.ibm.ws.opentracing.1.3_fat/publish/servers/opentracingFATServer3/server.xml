@@ -12,6 +12,6 @@
     <classloader apiTypeVisibility="spec, ibm-api, third-party, stable"/>
   </application>
 
-  <logging traceSpecification="*=info:com.ibm.ws.opentracing*=all:com.ibm.ws.microprofile.opentracing*=all:CDI=all:com.ibm.ws.cdi*=all" maxFileSize="100" maxFiles="1" />
+  <logging traceSpecification="*=info:com.ibm.ws.opentracing.*=all:com.ibm.ws.microprofile.opentracing.*=all:CDI=all:com.ibm.ws.cdi*=all" maxFileSize="100" maxFiles="1" />
 
 </server>
