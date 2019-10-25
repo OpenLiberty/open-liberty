@@ -20,7 +20,6 @@ public class PasswordNullifier {
     private static final String PASSWORD_PATTERN = "password=";
     private static final String CLIENT_SECRET_PATTERN = "client_secret=";
     private static final String BASICAUTH_PATTERN = "basic ";
-    private static final String AUTHORIZATION_HEADER = "Authorization";
 
     /**
      * Scan the input value for the "password=" and "client_secret=" key markers
@@ -93,7 +92,7 @@ public class PasswordNullifier {
         StringBuilder b = new StringBuilder(value);
         boolean modified = optionallyMaskChars(b, source, delimiter, PASSWORD_PATTERN);
         modified = optionallyMaskChars(b, source, delimiter, CLIENT_SECRET_PATTERN) || modified;
-        if (header.equalsIgnoreCase(AUTHORIZATION_HEADER)) {
+        if (header.equalsIgnoreCase(com.ibm.wsspi.http.channel.values.HttpHeaderKeys.HDR_AUTHORIZATION.getName())) {
             modified = optionallyMaskChars(b, source, delimiter, BASICAUTH_PATTERN) || modified;
         }
 
