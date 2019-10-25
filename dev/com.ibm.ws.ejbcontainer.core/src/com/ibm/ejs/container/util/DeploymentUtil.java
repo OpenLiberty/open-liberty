@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1998, 2016 IBM Corporation and others.
+ * Copyright (c) 1998, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -56,7 +56,7 @@ public final class DeploymentUtil
 
     /**
      * Get method name string of form:
-     * 
+     *
      * methodName(<class name of arg1>,<class name of arg2>,...)
      */
     public static String methodKey(Method m)
@@ -79,10 +79,10 @@ public final class DeploymentUtil
      * its super interfaces). Filters out methods belonging to the
      * javax.ejb.EJBObject interface (except remove) and method synonyms
      * (in case method overrides are present in the inheritance hierarchy).
-     * 
+     *
      * The same as getMethods(), except including remove method of
      * interface javax.ejb.EJBObject
-     * 
+     *
      * This method used only by EJBDeploy.
      */
     public static Method[] getAllMethods(Class<?> intf)
@@ -136,7 +136,7 @@ public final class DeploymentUtil
      * its super interfaces except the EJBObject and EJBLocal
      * interface). Filters out method synonyms (in case method
      * overrides are present in the inheritance hierarchy).
-     * 
+     *
      * This method returns the same method array as calling
      * getMethods(intf, null), but this method signature must
      * be maintained to support EJBDeploy.
@@ -150,18 +150,18 @@ public final class DeploymentUtil
      * Returns all the methods belonging to a component interface and the
      * corresponding (local or remote) business interfaces (including the
      * super interfaces, except the EJBObject and EJBLocal interface). <p>
-     * 
+     *
      * Also, filters out static methods and method synonyms (in case method
      * overrides are present in the inheritance hierarchy). <p>
-     * 
+     *
      * A combined list of methods from both the component and business
      * interfaces is desired, since any configured attributes (like
      * transaction or security) must apply to both the component and
      * busintess interfaces of the same type (local or remote). <p>
-     * 
+     *
      * @param componentInterface Local or Remote Component interface
      * @param businessInterfaces Array of Local or Remote Business interfaces
-     * 
+     *
      * @return all methods belonging to the component and business interfaces.
      */
     // d366807
@@ -301,13 +301,13 @@ public final class DeploymentUtil
 
     /**
      * Sort an ArrayList of methods using a simple insertion sort. <p>
-     * 
+     *
      * Replaced prior version of sortMethods(Method methods[]) to improve
      * performance by allowing the caller to avoid creating an intermediate
      * array object.... and just pass an ArrayList directly. <p>
-     * 
+     *
      * @param methods list of methods to be sorted.
-     * 
+     *
      * @return array of sorted methods.
      */
     // d366807.3
@@ -346,13 +346,13 @@ public final class DeploymentUtil
      * Returns a list of the non-public (and non-static) methods declared
      * on the EJB class, or inherited from a super class (excluding those
      * methods from java.lang.Object). <p>
-     * 
+     *
      * For methods which have been overriden (i.e. same name and parameters),
      * only the override will be included. <p>
-     * 
+     *
      * @param ejbClass the EJB implementation class.
      * @param publicMethods list of previously identified public methods
-     * 
+     *
      * @return List of non-public (non-static) methods declared on or inherited
      *         by the EJB implementation class.
      **/
@@ -473,11 +473,11 @@ public final class DeploymentUtil
     /**
      * Returns a list of 'checked'/Application exceptions, and also
      * performs validation. <p>
-     * 
+     *
      * RemoteException is never a 'checked' exception, and exceptions that
      * are subclasses of other 'checked' exceptios will either be eliminated,
      * or sorted in parent-last order to avoid 'unreachable' code. <p>
-     * 
+     *
      * The following rules from the EJB Specification will be checked:
      * <ul>
      * <li> Only Remote interfaces that implement java.rmi.Remote may
@@ -488,16 +488,16 @@ public final class DeploymentUtil
      * <li> All methods on an interface that implements java.rmi.Remote
      * must throw RemoteException.
      * </ul>
-     * 
+     *
      * This method is designed for use when generating the EJB Wrappers,
      * to determine which exceptions will require 'catch' blocks, and
      * when generating Ties and Stubs, to properly add code that
      * returns the 'checked' exceptions to the client. <p>
-     * 
+     *
      * @param method Java method to determine checked exceptions for.
      * @param isRmiRemote true if the interface implements java.rmi.Remote.
      * @param target the deployment target for generating code
-     * 
+     *
      * @return an array of checked/application exceptions that must be
      *         handled by the generated wrapper.
      **/
@@ -513,11 +513,11 @@ public final class DeploymentUtil
     /**
      * Returns a list of 'checked'/Application exceptions, and also
      * performs validation. <p>
-     * 
+     *
      * RemoteException is never a 'checked' exception, and exceptions that
      * are subclasses of other 'checked' exceptios will either be eliminated,
      * or sorted in parent-last order to avoid 'unreachable' code. <p>
-     * 
+     *
      * The following rules from the EJB Specification will be checked:
      * <ul>
      * <li> Only Remote interfaces that implement java.rmi.Remote may
@@ -529,18 +529,18 @@ public final class DeploymentUtil
      * <li> All methods on an interface that implements java.rmi.Remote
      * must throw RemoteException.
      * </ul>
-     * 
+     *
      * This method is designed for use when generating the EJB Wrappers,
      * to determine which exceptions will require 'catch' blocks, and
      * when generating Ties and Stubs, to properly add code that
      * returns the 'checked' exceptions to the client. <p>
-     * 
+     *
      * @param method Java method to determine checked exceptions for.
      * @param isRmiRemote true if the interface implements java.rmi.Remote.
      * @param target the deployment target for generating code
      * @param wrapperType wrapper type if target is WRAPPER and validation is
      *            required, or null otherwise
-     * 
+     *
      * @return an array of checked/application exceptions that must be
      *         handled by the generated wrapper.
      **/
@@ -559,11 +559,11 @@ public final class DeploymentUtil
     /**
      * Returns a list of 'checked'/Application exceptions, and also
      * performs validation. <p>
-     * 
+     *
      * RemoteException is never a 'checked' exception, and exceptions that
      * are subclasses of other 'checked' exceptios will either be eliminated,
      * or sorted in parent-last order to avoid 'unreachable' code. <p>
-     * 
+     *
      * The following rules from the EJB Specification will be checked:
      * <ul>
      * <li> Only Remote interfaces that implement java.rmi.Remote may
@@ -575,12 +575,12 @@ public final class DeploymentUtil
      * <li> All methods on an interface that implements java.rmi.Remote
      * must throw RemoteException.
      * </ul>
-     * 
+     *
      * This method is designed for use when generating the EJB Wrappers,
      * to determine which exceptions will require 'catch' blocks, and
      * when generating Ties and Stubs, to properly add code that
      * returns the 'checked' exceptions to the client. <p>
-     * 
+     *
      * @param method Java method to determine checked exceptions for.
      * @param isRmiRemote true if the interface implements java.rmi.Remote.
      * @param target the deployment target for generating code
@@ -590,7 +590,7 @@ public final class DeploymentUtil
      *            on the throws clause should be considered as system exceptions
      * @param declaredRemoteAreApplicationExceptions true if RemoteExceptions
      *            on the throws clause should be considered as application exceptions
-     * 
+     *
      * @return an array of checked/application exceptions that must be
      *         handled by the generated wrapper.
      **/
@@ -690,6 +690,11 @@ public final class DeploymentUtil
                     continue;
                 }
             }
+
+            // --------------------------------------------------------------------
+            // Per the spec, application exceptions must subclass Exception
+            // (not Throwable or Error)
+            // --------------------------------------------------------------------
             else if (!Exception.class.isAssignableFrom(exception)) // d608631
             {
                 String className = method.getDeclaringClass().getName();
@@ -702,6 +707,15 @@ public final class DeploymentUtil
                                                     " application exception defined on the " + method.getName() +
                                                     " method of the " + className +
                                                     " class must be defined as a subclass of the java.lang.Exception class.");
+            }
+
+            // --------------------------------------------------------------------
+            // Per the RMI specification, Remote interface methods must throw
+            // RemoteException or any superclass, so Exception and IOException
+            // count as throwing RemoteException.
+            // --------------------------------------------------------------------
+            else if (exception.isAssignableFrom(RemoteException.class)) {
+                throwsRemoteException = true;
             }
 
             // --------------------------------------------------------------------

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2016 IBM Corporation and others.
+ * Copyright (c) 2006, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.ejbcontainer.jitdeploy;
 
+import static com.ibm.ejs.container.ContainerProperties.DeclaredRemoteAreApplicationExceptions;
 import static com.ibm.ws.ejbcontainer.jitdeploy.EJBUtils.getMethodId;
 import static com.ibm.ws.ejbcontainer.jitdeploy.EJBWrapperType.BUSINESS_LOCAL;
 import static com.ibm.ws.ejbcontainer.jitdeploy.EJBWrapperType.BUSINESS_REMOTE;
@@ -1334,6 +1335,47 @@ public final class EJBWrapper
             mg.visitJumpInsn(GOTO, main_tcf_exit); // Skip to very end
         }
 
+        // For RMI Remote interfaces, if the throws clause contains Exception (and not
+        // RemoteException), then we need a special catch block for RemoteException so
+        // that it is not treated as an application exception. Legacy behavior did
+        // not add this catch if RemotException is on the throws clause, so maintaining
+        // that behavior for compatibility.
+        boolean catchRemoteException = false;
+        if (isRmiRemote && !DeclaredRemoteAreApplicationExceptions) {
+            for (Class<?> checkedException : checkedExceptions) {
+                catchRemoteException |= checkedException == Exception.class;
+            }
+            if (catchRemoteException) {
+                for (Class<?> methodException : methodExceptions) {
+                    if (methodException == RemoteException.class) {
+                        catchRemoteException = false;
+                        break;
+                    }
+                }
+
+            }
+        }
+        Label main_catch_remote_exception = null;
+        if (catchRemoteException) {
+            // -----------------------------------------------------------------------
+            // catch (RemoteException th)
+            // {
+            //   s.setUncheckedException(th);
+            // }
+            // -----------------------------------------------------------------------
+            main_catch_remote_exception = new Label();
+            mg.visitLabel(main_catch_remote_exception);
+            int remote_th = mg.newLocal(TYPE_RemoteException);
+            mg.storeLocal(remote_th);
+            loadEJSDeployedSupport(mg, className, wrapperType, s);
+            mg.loadLocal(remote_th);
+            mg.visitMethodInsn(INVOKEVIRTUAL, "com/ibm/ejs/container/EJSDeployedSupport",
+                               setUncheckedException, "(Ljava/lang/Throwable;)V");
+
+            mg.visitJumpInsn(JSR, main_finally_begin); // execute the finally
+            mg.visitJumpInsn(GOTO, main_tcf_exit); // Skip to very end
+        }
+
         // -----------------------------------------------------------------------
         // catch (<checked exception> <ex>)  ->  for each <checked exception>
         // {
@@ -1489,6 +1531,11 @@ public final class EJBWrapper
         {
             mg.visitTryCatchBlock(main_try_begin, main_try_end,
                                   main_catch_runtime_exception, "java/lang/RuntimeException");
+        }
+        if (main_catch_remote_exception != null)
+        {
+            mg.visitTryCatchBlock(main_try_begin, main_try_end,
+                                  main_catch_remote_exception, "java/rmi/RemoteException");
         }
         for (int i = 0; i < checkedExceptions.length; i++)
         {
