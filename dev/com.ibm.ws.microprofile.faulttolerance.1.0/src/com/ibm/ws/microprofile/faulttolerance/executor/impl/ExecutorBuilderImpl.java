@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 IBM Corporation and others.
+ * Copyright (c) 2017,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,35 +8,39 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.faulttolerance20.impl;
+package com.ibm.ws.microprofile.faulttolerance.executor.impl;
 
-import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 
+import com.ibm.ws.microprofile.faulttolerance.executor.impl.async.AsyncOuterExecutorImpl;
+import com.ibm.ws.microprofile.faulttolerance.executor.impl.sync.SynchronousExecutorImpl;
 import com.ibm.ws.microprofile.faulttolerance.impl.AbstractExecutorBuilderImpl;
 import com.ibm.ws.microprofile.faulttolerance.spi.Executor;
+import com.ibm.ws.microprofile.faulttolerance.spi.ExecutorBuilder;
 import com.ibm.ws.threading.PolicyExecutorProvider;
 import com.ibm.wsspi.threadcontext.WSContextService;
 
-public class ExecutorBuilderImpl20<R> extends AbstractExecutorBuilderImpl<R> {
+public class ExecutorBuilderImpl<R> extends AbstractExecutorBuilderImpl<R> implements ExecutorBuilder<R> {
 
-    public ExecutorBuilderImpl20(WSContextService contextService, PolicyExecutorProvider policyExecutorProvider, ScheduledExecutorService scheduledExecutorService) {
+    public ExecutorBuilderImpl(WSContextService contextService, PolicyExecutorProvider policyExecutorProvider, ScheduledExecutorService scheduledExecutorService) {
         super(contextService, policyExecutorProvider, scheduledExecutorService);
     }
 
+    /** {@inheritDoc} */
     @Override
     public Executor<R> build() {
-        return new SyncExecutor<>(retryPolicy, circuitBreakerPolicy, timeoutPolicy, fallbackPolicy, bulkheadPolicy, scheduledExecutorService, metricRecorder);
+        Executor<R> executor = new SynchronousExecutorImpl<R>(this.retryPolicy, this.circuitBreakerPolicy, this.timeoutPolicy, this.bulkheadPolicy, this.fallbackPolicy, this.scheduledExecutorService, this.metricRecorder);
+
+        return executor;
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public <W> Executor<W> buildAsync(Class<?> asyncResultWrapperType) {
         if (asyncResultWrapperType == Future.class) {
-            return (Executor<W>) new AsyncFutureExecutor<Object>(retryPolicy, circuitBreakerPolicy, timeoutPolicy, fallbackPolicy, bulkheadPolicy, scheduledExecutorService, contextService, metricRecorder);
-        } else if (asyncResultWrapperType == CompletionStage.class) {
-            return (Executor<W>) new AsyncCompletionStageExecutor<Object>(retryPolicy, circuitBreakerPolicy, timeoutPolicy, fallbackPolicy, bulkheadPolicy, scheduledExecutorService, contextService, metricRecorder);
+            Executor<Future<R>> executor = new AsyncOuterExecutorImpl<R>(this.retryPolicy, this.circuitBreakerPolicy, this.timeoutPolicy, this.bulkheadPolicy, this.fallbackPolicy, this.contextService, this.policyExecutorProvider, this.scheduledExecutorService, this.metricRecorder);
+            return (Executor<W>) executor;
         } else {
             throw new IllegalArgumentException("Invalid return type for async execution: " + asyncResultWrapperType);
         }
