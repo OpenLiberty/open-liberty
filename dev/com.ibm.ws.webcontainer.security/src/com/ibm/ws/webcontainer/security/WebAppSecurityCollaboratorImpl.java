@@ -639,13 +639,10 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
     }
 
     /**
-     * @r5
-     **     This method is called for authenticating users using basic
-     **     user id and password that are stored in the Http request
-     **     headers.
      **
-     **     The return value of this method cannot be null.
-     */
+     ** This method returns header information of the incoming HttpServletRequest
+     **
+     **/
     @Trivial
     private String getHeader(HttpServletRequest req, String key) {
         HttpServletRequest sr = req;
