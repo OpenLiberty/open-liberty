@@ -9,6 +9,8 @@ public class ProgressBar {
     private HashMap<String, Integer> methodMap;
     private static final StringBuilder res = new StringBuilder();;
     private static double counter;
+    private final boolean isWindows = (System.getProperty("os.name").toLowerCase()).indexOf("win") >= 0;
+    // TODO remove this need for windwos chewcking for progress bar
 
     public static ProgressBar getInstance() {
         if (progressBar == null) {
@@ -78,7 +80,8 @@ public class ProgressBar {
     }
 
     public void finish() {
-        System.out.print("\033[2K"); // Erase line content
+        if (!isWindows)
+            System.out.print("\033[2K"); // Erase line content
 
     }
 

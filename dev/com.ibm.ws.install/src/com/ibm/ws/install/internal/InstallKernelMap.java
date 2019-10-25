@@ -871,7 +871,7 @@ public class InstallKernelMap implements Map {
             File newM2 = new File(getM2Path().toString());
             result = newM2.toString();
         } else {
-            fine("Using temp location");
+            fine("Using temp location: " + TEMP_DIRECTORY);
             data.put(CLEANUP_TEMP_LOCATION, TEMP_DIRECTORY);
             result = TEMP_DIRECTORY;
         }
@@ -880,7 +880,7 @@ public class InstallKernelMap implements Map {
 
     private String getM2Cache() { //check for maven_home specified mirror stuff
         File m2Folder = getM2Path().toFile();
-        if (m2Folder.exists() && m2Folder.isDirectory()) {
+        if (m2Folder.exists() && m2Folder.isDirectory() && m2Folder.canRead() && m2Folder.canWrite()) {
             return m2Folder.toString();
         }
         return null;
@@ -893,10 +893,13 @@ public class InstallKernelMap implements Map {
 
     private boolean checkM2Writable() {
         String userhome = System.getProperty("user.home");
-        if (userhome == null || !Files.isWritable(Paths.get(userhome))) {//user did not define user home or not writable
+        if (userhome == null) {
             return false;
         }
-
+        File userhomeFile = new File(userhome);
+        if (!userhomeFile.exists() || !userhomeFile.canWrite()) {
+            return false;
+        }
         return new File(userhome, ".m2/repository").mkdirs();
     }
 
@@ -1242,13 +1245,13 @@ public class InstallKernelMap implements Map {
         this.put("download.filetype", "json");
         boolean singleArtifactInstall = true;
         this.put("download.individual.artifact", singleArtifactInstall);
-
         String OLJsonCoord = "io.openliberty.features:features:" + openLibertyVersion;
         data.put("download.artifact.list", OLJsonCoord);
         File OL = (File) this.get("download.result");
 
         result.add(OL);
         if (this.get("action.error.message") != null) {
+
             fine("action.exception.stacktrace: " + this.get("action.error.stacktrace"));
             String exceptionMessage = (String) this.get("action.error.message");
             throw new InstallException(exceptionMessage);

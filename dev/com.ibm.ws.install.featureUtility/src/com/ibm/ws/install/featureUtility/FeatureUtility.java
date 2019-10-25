@@ -174,7 +174,6 @@ public class FeatureUtility {
     public void installFeatures() throws InstallException, IOException {
         info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_RESOLVING"));
         Collection<String> resolvedFeatures = (Collection<String>) map.get("action.result");
-        fine("resolved features are: " + resolvedFeatures);
         checkResolvedFeatures(resolvedFeatures);
         updateProgress(progressBar.getMethodIncrement("resolvedFeatures"));
 
