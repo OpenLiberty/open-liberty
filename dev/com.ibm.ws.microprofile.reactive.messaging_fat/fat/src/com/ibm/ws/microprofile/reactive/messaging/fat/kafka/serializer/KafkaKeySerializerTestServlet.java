@@ -10,8 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.serializer;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
+import static org.junit.Assert.assertEquals;
 
 import java.time.Duration;
 import java.util.HashMap;
@@ -21,40 +20,43 @@ import java.util.Map;
 import javax.servlet.annotation.WebServlet;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.common.serialization.StringDeserializer;
-import org.apache.kafka.common.serialization.StringSerializer;
 import org.junit.Test;
 
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractKafkaTestServlet;
-import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.SimpleKafkaReader;
-import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.SimpleKafkaWriter;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.ExtendedKafkaReader;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.ExtendedKafkaWriter;
 
 /**
  * Test that the kafka connector acknowledges messages and commits partition offsets correctly
  */
-@WebServlet("/kafkaSerializerTest")
-public class KafkaSerializerTestServlet extends AbstractKafkaTestServlet {
+@WebServlet("/kafkaKeySerializerTest")
+public class KafkaKeySerializerTestServlet extends AbstractKafkaTestServlet {
 
     private static final long serialVersionUID = 1L;
 
     private static final String TEST_GROUPID = "test-group";
 
     @Test
-    public void testMyData() throws Exception {
+    public void testMyDataKey() throws Exception {
 
-        SimpleKafkaReader<MyData> reader = readerFor(MyDataMessagingBean.OUT_CHANNEL);
-        SimpleKafkaWriter<MyData> writer = writerFor(MyDataMessagingBean.IN_CHANNEL);
+        ExtendedKafkaReader<MyData, MyData> reader = extReaderFor(MyDataMessagingBean.OUT_CHANNEL);
+        ExtendedKafkaWriter<MyData, MyData> writer = extWriterFor(MyDataMessagingBean.IN_CHANNEL);
 
         try {
-            writer.sendMessage(new MyData("abc", "123"));
-            writer.sendMessage(new MyData("xyz", "456"));
+            writer.sendMessage(new MyData("abc", "123"), new MyData("abc", "123"));
+            writer.sendMessage(new MyData("xyz", "456"), new MyData("xyz", "456"));
 
-            List<MyData> msgs = reader.waitForMessages(2, Duration.ofSeconds(5));
+            List<ConsumerRecord<MyData, MyData>> records = reader.waitForRecords(2, Duration.ofSeconds(5));
+            for (ConsumerRecord<MyData, MyData> r : records) {
+                //since MP Reactive Messaging does not handle keys, they will get passed through as null but to prove
+                //that the key serializer and deserializer is properly configured, they have special case code for null
+                assertEquals(MyData.NULL, r.key());
+            }
 
-            assertThat(msgs, contains(new MyData("cba", "321"), new MyData("zyx", "654")));
         } finally {
             try {
                 reader.close();
@@ -72,14 +74,14 @@ public class KafkaSerializerTestServlet extends AbstractKafkaTestServlet {
      * @param topicName the topic to read from
      * @return the reader
      */
-    public SimpleKafkaReader<MyData> readerFor(String topicName) {
+    public ExtendedKafkaReader<MyData, MyData> extReaderFor(String topicName) {
         Map<String, Object> consumerConfig = new HashMap<>();
         consumerConfig.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, getKafkaBootstrap());
         consumerConfig.put(ConsumerConfig.GROUP_ID_CONFIG, TEST_GROUPID);
         consumerConfig.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 
-        KafkaConsumer<String, MyData> kafkaConsumer = new KafkaConsumer<>(consumerConfig, new StringDeserializer(), new MyDataDeserializer());
-        SimpleKafkaReader<MyData> reader = new SimpleKafkaReader<MyData>(kafkaConsumer, topicName);
+        KafkaConsumer<MyData, MyData> kafkaConsumer = new KafkaConsumer<>(consumerConfig, new MyDataDeserializer(), new MyDataDeserializer());
+        ExtendedKafkaReader<MyData, MyData> reader = new ExtendedKafkaReader<MyData, MyData>(kafkaConsumer, topicName);
         return reader;
     }
 
@@ -91,12 +93,12 @@ public class KafkaSerializerTestServlet extends AbstractKafkaTestServlet {
      * @param topicName the topic to write to
      * @return the writer
      */
-    public SimpleKafkaWriter<MyData> writerFor(String topicName) {
+    public ExtendedKafkaWriter<MyData, MyData> extWriterFor(String topicName) {
         Map<String, Object> producerConfig = new HashMap<>();
         producerConfig.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, getKafkaBootstrap());
 
-        KafkaProducer<String, MyData> kafkaProducer = new KafkaProducer<>(producerConfig, new StringSerializer(), new MyDataSerializer());
-        SimpleKafkaWriter<MyData> writer = new SimpleKafkaWriter<MyData>(kafkaProducer, topicName);
+        KafkaProducer<MyData, MyData> kafkaProducer = new KafkaProducer<>(producerConfig, new MyDataSerializer(), new MyDataSerializer());
+        ExtendedKafkaWriter<MyData, MyData> writer = new ExtendedKafkaWriter<MyData, MyData>(kafkaProducer, topicName);
         return writer;
     }
 

@@ -10,13 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
-
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -26,18 +22,14 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
  * <p>
  * This reader is very basic, it only reads string messages and it doesn't commit any offsets so each new reader will start reading from the start of the topic.
  */
-public class SimpleKafkaReader<T> implements AutoCloseable {
-
-    private final KafkaConsumer<String, T> kafkaConsumer;
+public class SimpleKafkaReader<T> extends ExtendedKafkaReader<String, T> implements AutoCloseable {
 
     /**
      * @param kafkaConsumer
      * @param topic
      */
     public SimpleKafkaReader(KafkaConsumer<String, T> kafkaConsumer, String topic) {
-        super();
-        this.kafkaConsumer = kafkaConsumer;
-        kafkaConsumer.subscribe(Collections.singleton(topic));
+        super(kafkaConsumer, topic);
     }
 
     /**
@@ -50,32 +42,8 @@ public class SimpleKafkaReader<T> implements AutoCloseable {
      * @return the list of records received
      */
     public List<T> waitForMessages(int count, Duration timeout) {
-        ArrayList<T> result = new ArrayList<>();
-        Duration remaining = timeout;
-        long startTime = System.nanoTime();
-        while (!remaining.isNegative() && result.size() < count) {
-            for (ConsumerRecord<String, T> record : kafkaConsumer.poll(remaining)) {
-                result.add(record.value());
-            }
-            Duration elapsed = Duration.ofNanos(System.nanoTime() - startTime);
-            remaining = timeout.minus(elapsed);
-        }
-        assertThat("Wrong number of records fetched from kafka", result, hasSize(count));
+        List<ConsumerRecord<String, T>> records = waitForRecords(count, timeout);
+        List<T> result = records.stream().map((r) -> r.value()).collect(Collectors.toList());
         return result;
     }
-
-    /**
-     * Get the underlying Kafka Consumer
-     *
-     * @return the consumer
-     */
-    public KafkaConsumer<String, T> getConsumer() {
-        return kafkaConsumer;
-    }
-
-    @Override
-    public void close() throws Exception {
-        kafkaConsumer.close();
-    }
-
 }
