@@ -1219,44 +1219,67 @@ public class InstallKernelMap implements Map {
     }
 
     // TODO make these methods private, hiding them behind map.put and map.get
-    public List<File> getOpenLibertyJson() throws InstallException {
+    public List<File> getLocalJsonFiles(Set<String> jsonsRequired) throws InstallException {
         String fromRepo = getDownloadDir((String) data.get(FROM_REPO));
         File fromDir = new File(fromRepo);
         String openLibertyVersion = getLibertyVersion();
-        String jsonFilePath = fromDir.getAbsolutePath() + "/" + OPEN_LIBERTY_GROUP_ID.replace(".", "/") + "/"
-                              + JSON_ARTIFACT_ID.replace(".", "/") + "/" + openLibertyVersion + "/" + "features-" + openLibertyVersion + ".json";
-
-        File openLibertyJson = new File(jsonFilePath);
-
+        String artifactId = "features";
         List<File> jsons = new ArrayList<>();
-        if (openLibertyJson.exists()) {
-            jsons.add(openLibertyJson);
+        for (String json : jsonsRequired) {
+            String mavenCoordinateDirectory = json.replace(".", "/") + "/" + artifactId + "/" + openLibertyVersion + "/";
+            String jsonFilePath = mavenCoordinateDirectory + "features-" + openLibertyVersion + ".json";
+            File openLibertyJson = new File(fromDir, jsonFilePath);
+
+            if (openLibertyJson.exists()) {
+                jsons.add(openLibertyJson);
+            }
+
         }
 
         return jsons;
 
     }
 
+    /**
+     *
+     * @param jsonsRequired a list of group id's for which a JSON file is required, i.e [io.openliberty.features, com.ibm.websphere.appserver.features]
+     * @return list of the downloaded JSON files
+     * @throws InstallException
+     */
     @SuppressWarnings("unchecked")
-    public List<File> getJsonsFromMavenCentral() throws InstallException {//
+    public List<File> getJsonsFromMavenCentral(Set<String> jsonsRequired) throws InstallException {//
         String openLibertyVersion = getLibertyVersion();
         // get open liberty json
         List<File> result = new ArrayList<File>();
         this.put("download.filetype", "json");
         boolean singleArtifactInstall = true;
         this.put("download.individual.artifact", singleArtifactInstall);
-        String OLJsonCoord = "io.openliberty.features:features:" + openLibertyVersion;
-        data.put("download.artifact.list", OLJsonCoord);
-        File OL = (File) this.get("download.result");
 
-        result.add(OL);
-        if (this.get("action.error.message") != null) {
+        String artifactId = "features";
+        for (String jsonGroupId : jsonsRequired) {
+            String jsonCoord = jsonGroupId + ":" + artifactId + ":" + openLibertyVersion;
+            data.put("download.artifact.list", jsonCoord);
+            File jsonFile = (File) this.get("download.result");
 
-            fine("action.exception.stacktrace: " + this.get("action.error.stacktrace"));
-            String exceptionMessage = (String) this.get("action.error.message");
-            throw new InstallException(exceptionMessage);
+            result.add(jsonFile);
+            if (this.get("action.error.message") != null) {
+                fine("action.exception.stacktrace: " + this.get("action.error.stacktrace"));
+                String exceptionMessage = (String) this.get("action.error.message");
+                throw new InstallException(exceptionMessage);
+            }
         }
-        fine("Downloaded the following jsons from maven central:" + result);
+
+//        String OLJsonCoord = "io.openliberty.features:features:" + openLibertyVersion;
+//        data.put("download.artifact.list", OLJsonCoord);
+//        File OL = (File) this.get("download.result");
+
+        // for debugging purposes (closed liberty json)
+//        String CLJsonCoord = "com.ibm.websphere.appserver.features:features:" + openLibertyVersion;
+//        data.put("download.artifact.list", CLJsonCoord);
+//        File CL = (File) this.get("download.result");
+//        result.add(CL);
+
+        fine("Downloaded the following json files from remote: " + result);
         return result;
 
     }
