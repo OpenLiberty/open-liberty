@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jsf23.fat.thirdpartyapi;
+package com.ibm.ws.jsf22.fat.thirdpartyapi;
 
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.renderkit.html.HtmlListboxRenderer;

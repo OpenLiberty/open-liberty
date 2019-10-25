@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jsf23.fat.tests;
+package com.ibm.ws.jsf22.fat.tests;
 
 import static org.junit.Assert.assertTrue;
 
@@ -25,7 +25,7 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.jsf23.fat.JSFUtils;
+import com.ibm.ws.jsf22.fat.JSFUtils;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -38,30 +38,30 @@ import componenttest.topology.impl.LibertyServer;
  */
 @Mode(TestMode.LITE)
 @RunWith(FATRunner.class)
-public class JSF23ThirdPartyApiTests {
+public class JSF22ThirdPartyApiTests {
 
-    protected static final Class<?> c = JSF23ThirdPartyApiTests.class;
+    protected static final Class<?> c = JSF22ThirdPartyApiTests.class;
 
     @Rule
     public TestName name = new TestName();
 
-    @Server("jsf23ThirdPartyAPIServer")
-    public static LibertyServer jsf23ThirdPartyApiServer;
+    @Server("jsf22ThirdPartyAPIServer")
+    public static LibertyServer jsf22ThirdPartyApiServer;
 
     @BeforeClass
     public static void setup() throws Exception {
-        ShrinkHelper.defaultApp(jsf23ThirdPartyApiServer, "JSF23ThirdPartyApi.war", "com.ibm.ws.jsf23.fat.thirdpartyapi");
+        ShrinkHelper.defaultApp(jsf22ThirdPartyApiServer, "JSF22ThirdPartyApi.war", "com.ibm.ws.jsf22.fat.thirdpartyapi");
 
         // Start the server and use the class name so we can find logs easily.
         // Many tests use the same server.
-        jsf23ThirdPartyApiServer.startServer(JSF23ThirdPartyApiTests.class.getSimpleName() + ".log");
+        jsf22ThirdPartyApiServer.startServer(JSF22ThirdPartyApiTests.class.getSimpleName() + ".log");
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         // Stop the server
-        if (jsf23ThirdPartyApiServer != null && jsf23ThirdPartyApiServer.isStarted()) {
-            jsf23ThirdPartyApiServer.stopServer();
+        if (jsf22ThirdPartyApiServer != null && jsf22ThirdPartyApiServer.isStarted()) {
+            jsf22ThirdPartyApiServer.stopServer();
         }
     }
 
@@ -72,11 +72,11 @@ public class JSF23ThirdPartyApiTests {
      */
     @Test
     public void testJSFThirdPartyAPIAccess() throws Exception {
-        String contextRoot = "JSF23ThirdPartyApi";
+        String contextRoot = "JSF22ThirdPartyApi";
         WebClient webClient = new WebClient();
 
         // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23ThirdPartyApiServer, contextRoot, "JSF23ThirdPartyAPI.xhtml");
+        URL url = JSFUtils.createHttpUrl(jsf22ThirdPartyApiServer, contextRoot, "JSF22ThirdPartyAPI.xhtml");
 
         HtmlPage page = (HtmlPage) webClient.getPage(url);
 
@@ -95,11 +95,11 @@ public class JSF23ThirdPartyApiTests {
      */
     @Test
     public void testJSFThirdPartyAPIAccessFails() throws Exception {
-        String contextRoot = "JSF23ThirdPartyApi";
+        String contextRoot = "JSF22ThirdPartyApi";
         WebClient webClient = new WebClient();
 
         // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(jsf23ThirdPartyApiServer, contextRoot, "JSF23ThirdPartyAPIFailure.xhtml");
+        URL url = JSFUtils.createHttpUrl(jsf22ThirdPartyApiServer, contextRoot, "JSF22ThirdPartyAPIFailure.xhtml");
 
         HtmlPage page = (HtmlPage) webClient.getPage(url);
 

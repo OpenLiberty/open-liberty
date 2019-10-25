@@ -8,15 +8,15 @@
     Contributors:
         IBM Corporation - initial API and implementation
  -->
-<server description="Server for testing jsf-2.3 third-party API access">
+<server description="Server for testing jsf-2.2 third-party API access">
     <include location="../fatTestPorts.xml"/>
     
     <featureManager>
-        <feature>jsf-2.3</feature>
-        <feature>cdi-2.0</feature>
+        <feature>jsf-2.2</feature>
+        <feature>cdi-1.2</feature>
     </featureManager>
 
-    <application id="JSF23ThirdPartyApi" name="JSF23ThirdPartyApi" type="war" location="JSF23ThirdPartyApi.war">
+    <application id="JSF22ThirdPartyApi" name="JSF22ThirdPartyApi" type="war" location="JSF22ThirdPartyApi.war">
         <classloader apiTypeVisibility="spec, ibm-api, stable, third-party"/>
     </application>
      
