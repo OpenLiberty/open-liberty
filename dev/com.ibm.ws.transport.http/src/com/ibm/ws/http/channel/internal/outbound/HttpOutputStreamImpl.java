@@ -264,7 +264,7 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
      *
      * @param value
      * @param start - offset into value
-     * @param len - length from that offset to write
+     * @param len   - length from that offset to write
      * @throws IOException
      */
     private void writeToBuffers(byte[] value, int start, int len) throws IOException {
@@ -427,10 +427,25 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
     @Override
     @FFDCIgnore({ IOException.class })
     public void flushHeaders() throws IOException {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "flushHeaders: committed=" + this.isc.getResponse().isCommitted());
+        // Try to figure out what is causing an NPE - defect 264444
+        if (null == this.isc) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "flushHeaders: isc is null");
+            }
+        } else if (null == this.isc.getResponse()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "flushHeaders: isc.getResponse() is null, isc is " + this.isc);
+            }
+        } else {
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "flushHeaders: committed=" + this.isc.getResponse().isCommitted(), this.isc, this.isc.getResponse());
+            }
         }
+
+        // Run validate to check if the stream is already closed, if so exit
         validate();
+
         this.ignoreFlush = false;
         if (!this.isc.getResponse().isCommitted()) {
             this.isc.getResponse().setCommitted();
@@ -620,7 +635,7 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
         } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "flush hasFinished=true; skipping flushBuffers() on " + this.hashCode() + " details: " + this);
-            }    
+            }
         }
     }
 
