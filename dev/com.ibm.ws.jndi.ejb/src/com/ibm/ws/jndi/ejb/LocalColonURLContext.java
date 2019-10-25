@@ -28,42 +28,52 @@ import javax.naming.OperationNotSupportedException;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.container.service.naming.EJBLocalNamingHelper;
+import com.ibm.ws.container.service.naming.LocalColonEJBNamingHelper;
 import com.ibm.ws.jndi.WSContextBase;
 import com.ibm.ws.jndi.WSName;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
 
 /**
- * A URL {@link Context} for the "ejblocal:" namespace. This is a read-only
+ * A URL {@link Context} for the "local:" namespace. This is a read-only
  * namespace so many {@link Context} operations are not supported and will throw {@link OperationNotSupportedException}s. There is no binding in this
- * implementation, the equivalent action is for a container to register a {@link EJBLocalNamingHelper} with information about JNDI objects. This
+ * implementation, the equivalent action is for a container to register a {@link LocalColonEJBNamingHelper} with information about JNDI objects. This
  * implementation checks the helper services for non-null information about a
  * JNDI name and then calls the specified resource factory to retrieve the named
  * Object.
  */
-public class EJBLocalURLContext extends WSContextBase implements Context {
-    static final TraceComponent tc = Tr.register(EJBLocalURLContext.class);
+public class LocalColonURLContext extends WSContextBase implements Context {
+    static final TraceComponent tc = Tr.register(LocalColonURLContext.class);
 
     // The environment for this instance of the Context
     private final Map<String, Object> environment = new ConcurrentHashMap<String, Object>();
-    private final ConcurrentServiceReferenceSet<EJBLocalNamingHelper> helperServices;
+    private final ConcurrentServiceReferenceSet<LocalColonEJBNamingHelper> helperServices;
+
+    // We're faking a local:ejb subcontext with a boolean
+    private boolean ejbSubContext = false;
 
     /**
-     * Constructor for use by the EJBLocalURLContextFactory.
+     * Constructor for use by the LocalColonURLContextFactory.
      *
      * @param env
      *            Map<String,Object> of environment parameters for this Context
      */
     @SuppressWarnings("unchecked")
-    public EJBLocalURLContext(Hashtable<?, ?> environment, ConcurrentServiceReferenceSet<EJBLocalNamingHelper> helperServices) {
+    public LocalColonURLContext(Hashtable<?, ?> environment, ConcurrentServiceReferenceSet<LocalColonEJBNamingHelper> helperServices) {
         this.environment.putAll((Map<? extends String, ? extends Object>) environment);
         this.helperServices = helperServices;
     }
 
-    // Copy constructor for when the lookup string is blank or just ejblocal namespace
-    public EJBLocalURLContext(EJBLocalURLContext copy) {
+    // Copy constructor for when the lookup string is blank or just local namespace
+    public LocalColonURLContext(LocalColonURLContext copy) {
         this.environment.putAll(copy.environment);
         this.helperServices = copy.helperServices;
+    }
+
+    // Copy constructor for subcontext when the lookup string is local:ejb
+    public LocalColonURLContext(LocalColonURLContext copy, boolean ejbSubContext) {
+        this.environment.putAll(copy.environment);
+        this.helperServices = copy.helperServices;
+        this.ejbSubContext = ejbSubContext;
     }
 
     /**
@@ -97,7 +107,7 @@ public class EJBLocalURLContext extends WSContextBase implements Context {
      */
     @Override
     public String getNameInNamespace() throws NamingException {
-        return "ejblocal:";
+        return "local:";
     }
 
     /**
@@ -109,10 +119,10 @@ public class EJBLocalURLContext extends WSContextBase implements Context {
     }
 
     /**
-     * Since the ejblocal: URL {@link Context} in this implementation does not
+     * Since the local: URL {@link Context} in this implementation does not
      * support binding, the lookup is lazy and performs as follows.
      * <OL>
-     * <LI>Call all the helper services which have registered under the {@link EJBLocalNamingHelper} interface in the SR.
+     * <LI>Call all the helper services which have registered under the {@link LocalColonEJBNamingHelper} interface in the SR.
      * <LI>If a non-null object is returned from a helper then return
      * that object, as it is the resource being looked up.
      * </OL>
@@ -129,7 +139,7 @@ public class EJBLocalURLContext extends WSContextBase implements Context {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
         if (name.isEmpty()) {
-            return new EJBLocalURLContext(this);
+            return new LocalColonURLContext(this);
         }
 
         String lookup = name.toString();
@@ -147,12 +157,16 @@ public class EJBLocalURLContext extends WSContextBase implements Context {
             Tr.debug(tc, "namespace parsed lookup: " + lookup);
         }
 
-        // They could be looking up just our context
-        if (lookup.equals("ejblocal:")) {
-            return new EJBLocalURLContext(this);
+        // They could be looking up just namespace contexts
+        if (lookup.equals("local:")) {
+            return new LocalColonURLContext(this);
         }
 
-        if (lookup.startsWith("local:")) {
+        if (lookup.equals("local:ejb")) {
+            return new LocalColonURLContext(this, true);
+        }
+
+        if (lookup.startsWith("ejblocal:")) {
             return new InitialContext().lookup(lookup);
         }
 
@@ -160,16 +174,29 @@ public class EJBLocalURLContext extends WSContextBase implements Context {
 
         /**
          * if they are doing a lookup from our context they don't have to have
-         * ejblocal: in front, but they can also look us up from the initial context
-         * with ejblocal: in front. Our helper service stores the binding without
+         * local: in front, but they can also look us up from the initial context
+         * with local: in front. Our helper service stores the binding without
          * the namespace context in front so just remove it if present.
          */
         String lookupModified = lookup;
-        if (lookupModified.startsWith("ejblocal:"))
-            lookupModified = lookupModified.substring(9);
+        boolean startedWithLocal = false;
+        if (lookupModified.startsWith("local:")) {
+            lookupModified = lookupModified.substring(6);
+            startedWithLocal = true;
+        }
 
-        for (Iterator<EJBLocalNamingHelper> it = helperServices.getServices(); it.hasNext();) {
-            EJBLocalNamingHelper helperService = it.next();
+        /**
+         * if we're in the local:ejb add ejb/ in front of the lookup
+         */
+        if (ejbSubContext && !startedWithLocal)
+            lookupModified = "ejb/" + lookupModified;
+
+        if (isTraceOn && tc.isDebugEnabled()) {
+            Tr.debug(tc, "parsed lookup: " + lookupModified);
+        }
+
+        for (Iterator<LocalColonEJBNamingHelper> it = helperServices.getServices(); it.hasNext();) {
+            LocalColonEJBNamingHelper helperService = it.next();
             toReturn = helperService.getObjectInstance(lookupModified);
 
             if (toReturn != null) {
@@ -248,5 +275,4 @@ public class EJBLocalURLContext extends WSContextBase implements Context {
     protected NameParser getNameParser(WSName name) throws NamingException {
         return null;
     }
-
 }

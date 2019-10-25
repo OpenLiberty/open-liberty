@@ -25,20 +25,20 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.container.service.naming.EJBLocalNamingHelper;
+import com.ibm.ws.container.service.naming.LocalColonEJBNamingHelper;
 import com.ibm.ws.ejbcontainer.osgi.EJBHomeRuntime;
 
 /**
- * This {@link EJBLocalNamingHelper} implementation provides support for
- * the standard Java EE component naming context for ejblocal: <p>
+ * This {@link LocalColonEJBNamingHelper} implementation provides support for
+ * the standard Java EE component naming context for local: <p>
  *
  */
-@Component(service = { EJBLocalNamingHelper.class, EJBLocalNamingHelperImpl.class })
-public class EJBLocalNamingHelperImpl extends EJBNamingInstancer implements EJBLocalNamingHelper<EJBBinding> {
+@Component(service = { LocalColonEJBNamingHelper.class, LocalColonEJBNamingHelperImpl.class })
+public class LocalColonEJBNamingHelperImpl extends EJBNamingInstancer implements LocalColonEJBNamingHelper<EJBBinding> {
 
-    private static final TraceComponent tc = Tr.register(EJBLocalNamingHelperImpl.class);
+    private static final TraceComponent tc = Tr.register(LocalColonEJBNamingHelperImpl.class);
 
-    private final HashMap<String, EJBBinding> EJBLocalBindings = new HashMap<String, EJBBinding>();
+    private final HashMap<String, EJBBinding> localColonEJBBindings = new HashMap<String, EJBBinding>();
 
     private final ReentrantReadWriteLock javaColonLock = new ReentrantReadWriteLock();
 
@@ -50,12 +50,12 @@ public class EJBLocalNamingHelperImpl extends EJBNamingInstancer implements EJBL
 
         EJBBinding binding;
         try {
-            binding = EJBLocalBindings.get(name);
+            binding = localColonEJBBindings.get(name);
         } finally {
             readLock.unlock();
         }
 
-        return initializeEJB(binding, "ejblocal:" + name);
+        return initializeEJB(binding, "local:" + name);
     }
 
     @Reference(service = EJBHomeRuntime.class,
@@ -79,8 +79,9 @@ public class EJBLocalNamingHelperImpl extends EJBNamingInstancer implements EJBL
         Lock writeLock = javaColonLock.writeLock();
         writeLock.lock();
         try {
-            //TODO: If EJBLocalBindings already contains name, bind ambiguous reference exception
-            EJBLocalBindings.put(name, binding);
+
+            //TODO: If LocalColonEJBBindings already contains name, bind ambiguous reference exception
+            localColonEJBBindings.put(name, binding);
         } finally {
             writeLock.unlock();
         }
@@ -100,7 +101,7 @@ public class EJBLocalNamingHelperImpl extends EJBNamingInstancer implements EJBL
         writeLock.lock();
 
         try {
-            EJBLocalBindings.remove(name);
+            localColonEJBBindings.remove(name);
         } finally {
             writeLock.unlock();
         }
@@ -122,7 +123,7 @@ public class EJBLocalNamingHelperImpl extends EJBNamingInstancer implements EJBL
                 if (isTraceOn && tc.isDebugEnabled()) {
                     Tr.debug(tc, "unbinding: " + name);
                 }
-                EJBLocalBindings.remove(name);
+                localColonEJBBindings.remove(name);
             }
         } finally {
             writeLock.unlock();

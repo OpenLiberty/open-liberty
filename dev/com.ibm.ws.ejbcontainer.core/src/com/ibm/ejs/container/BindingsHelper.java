@@ -57,6 +57,11 @@ public class BindingsHelper {
     public final List<String> ivEJBLocalBindings = new ArrayList<String>();
 
     /**
+     * Per home record list of local: bindings
+     */
+    public final List<String> ivLocalColonBindings = new ArrayList<String>();
+
+    /**
      * HomeRecord this BindingsHelper is associated with.
      **/
     private final HomeRecord ivHomeRecord;
