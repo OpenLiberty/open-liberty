@@ -1,0 +1,42 @@
+
+// Converted Variables
+
+
+// Custom Media Query Variables
+
+
+/*
+
+  TABLES
+  Docs: http://tachyons.io/docs/elements/tables/
+
+*/
+
+.collapse {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+.striped--light-silver:nth-child(odd) {
+  background-color: $light-silver;
+}
+
+.striped--moon-gray:nth-child(odd) {
+  background-color: $moon-gray;
+}
+
+.striped--light-gray:nth-child(odd) {
+  background-color: $light-gray;
+}
+
+.striped--near-white:nth-child(odd) {
+  background-color: $near-white;
+}
+
+.stripe-light:nth-child(odd) {
+  background-color: $white-10;
+}
+
+.stripe-dark:nth-child(odd) {
+  background-color: $black-10;
+}

@@ -1,0 +1,16 @@
+name:            yaml-js
+version:         0.2.0
+description:     Pure Javascript YAML loader and dumper, ported from PyYAML
+main:            ./lib/yaml
+repository:
+  type:          git
+  url:           http://github.com/connec/yaml-js.git
+devDependencies:
+  chai:          ^2.3.0
+  coffee-script: ^1.9.0
+  mocha:         ^2.5.3
+  plantation:    0.0.16
+  sinon:         ^1.17.6
+  sinon-chai:    ^2.8.0
+  squash:        0.0.14
+license:         WTFPL

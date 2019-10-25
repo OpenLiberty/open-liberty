@@ -1,0 +1,225 @@
+- input: |
+    écarlate: this is the voice of the Mysterons
+  output: !!omap
+  - ? {}
+    : |
+      {écarlate: this is the voice of the Mysterons}
+  - ? allow_unicode: true
+    : |
+      {écarlate: this is the voice of the Mysterons}
+  - ? allow_unicode: false
+    : |
+      {"\xe9carlate": this is the voice of the Mysterons}
+  - ? canonical: true
+    : |
+      ---
+      !!map {
+        ? !!str "écarlate"
+        : !!str "this is the voice of the Mysterons",
+      }
+  - ? canonical: false
+    : |
+      {écarlate: this is the voice of the Mysterons}
+  - ? default_flow_style: true
+    : |
+      {écarlate: this is the voice of the Mysterons}
+  - ? default_flow_style: false
+    : |
+      écarlate: this is the voice of the Mysterons
+  - ? default_style: "'"
+    : |
+      {'écarlate': 'this is the voice of the Mysterons'}
+  - ? default_style: '"'
+    : |
+      {"écarlate": "this is the voice of the Mysterons"}
+  - ? { default_style: '>', default_flow_style: false }
+    : |
+      "écarlate": >-
+        this is the voice of the Mysterons
+  - ? { default_style: '|', default_flow_style: false }
+    : |
+      "écarlate": |-
+        this is the voice of the Mysterons
+  - ? explicit_start: true
+    : |
+      --- {écarlate: this is the voice of the Mysterons}
+  - ? explicit_start: false
+    : |
+      {écarlate: this is the voice of the Mysterons}
+  - ? explicit_end: true
+    : |
+      {écarlate: this is the voice of the Mysterons}
+      ...
+  - ? explicit_end: false
+    : |
+      {écarlate: this is the voice of the Mysterons}
+  - ? { indent: 2, canonical: true }
+    : |
+      ---
+      !!map {
+        ? !!str "écarlate"
+        : !!str "this is the voice of the Mysterons",
+      }
+  - ? { indent: 4, canonical: true }
+    : |
+      ---
+      !!map {
+          ? !!str "écarlate"
+          : !!str "this is the voice of the Mysterons",
+      }
+  - ? { line_break: "\n", canonical: true }
+    : |
+      ---
+      !!map {
+        ? !!str "écarlate"
+        : !!str "this is the voice of the Mysterons",
+      }
+  - ? { line_break: "\r\n", canonical: true }
+    : "---\r\n!!map {\r\n  ? !!str \"écarlate\"\r\n  : !!str \"this is the voice of the Mysterons\",\r\n}\r\n"
+  - ? tags: { '!': 'foo', '!hello!': 'world' }
+    : |
+      %TAG ! foo
+      %TAG !hello! world
+      --- {écarlate: this is the voice of the Mysterons}
+  - ? version: [1, 0]
+    : |
+      %YAML 1.0
+      --- {écarlate: this is the voice of the Mysterons}
+  - ? version: [1, 3]
+    : |
+      %YAML 1.3
+      --- {écarlate: this is the voice of the Mysterons}
+  - ? width: 20
+    : |
+      {écarlate: this is the
+          voice of the Mysterons}
+
+- input: |
+    empty: []
+  output: !!omap
+  - ? {}
+    : |
+      empty: []
+  - ? default_flow_style: false
+    : |
+      empty: []
+
+- input: |
+    ---
+    invoice: 34843
+    date   : !!str 2001-01-23
+    bill-to: &id001
+        given  : Chris
+        family : Dumars
+        address:
+            lines: |
+                458 Walkman Dr.
+                Suite #292
+            city    : Royal Oak
+            state   : MI
+            postal  : 48046
+    ship-to: *id001
+    product:
+        - sku         : BL394D
+          quantity    : 4
+          description : Basketball
+          price       : 450.00
+        - sku         : BL4438H
+          quantity    : 1
+          description : Super Hoop
+          price       : 2392.00
+    tax  : 251.42
+    total: 4443.52
+    comments:
+        Late afternoon is best.
+        Backup contact is Nancy
+        Billsmer @ 338-4338.
+
+  output: !!omap
+  # - ? {}
+  #   : |
+  #     invoice:       34843
+  #     date:          '2001-01-23'
+  #     bill-to:       &id0001
+  #       given:       Chris
+  #       family:      Dumars
+  #       address:
+  #         lines:     |
+  #                    458 Walkman Dr.
+  #                    Suite #292
+  #         city:      Royal Oak
+  #         state:     MI
+  #         postal:    48046
+  #     ship-to:       *id0001
+  #     product:
+  #     - sku:         BL394D
+  #       quantity:    4
+  #       description: Basketball
+  #       price:       450
+  #     - sku:         BL4438H
+  #       quantity:    1
+  #       description: Super Hoop
+  #       price:       2392
+  #     tax:           251.42
+  #     total:         4443.52
+  #     comments:      Late afternoon is best. Backup contact is Nancy Billsmer @
+  #                    338-4338.
+
+  - ? canonical: true
+    : |
+      ---
+      !!map {
+        ? !!str "invoice"
+        : !!int "34843",
+        ? !!str "date"
+        : !!str "2001-01-23",
+        ? !!str "bill-to"
+        : &id0001 !!map {
+          ? !!str "given"
+          : !!str "Chris",
+          ? !!str "family"
+          : !!str "Dumars",
+          ? !!str "address"
+          : !!map {
+            ? !!str "lines"
+            : !!str "458 Walkman Dr.\nSuite #292\n",
+            ? !!str "city"
+            : !!str "Royal Oak",
+            ? !!str "state"
+            : !!str "MI",
+            ? !!str "postal"
+            : !!int "48046",
+          },
+        },
+        ? !!str "ship-to"
+        : *id0001,
+        ? !!str "product"
+        : !!seq [
+          !!map {
+            ? !!str "sku"
+            : !!str "BL394D",
+            ? !!str "quantity"
+            : !!int "4",
+            ? !!str "description"
+            : !!str "Basketball",
+            ? !!str "price"
+            : !!int "450",
+          },
+          !!map {
+            ? !!str "sku"
+            : !!str "BL4438H",
+            ? !!str "quantity"
+            : !!int "1",
+            ? !!str "description"
+            : !!str "Super Hoop",
+            ? !!str "price"
+            : !!int "2392",
+          },
+        ],
+        ? !!str "tax"
+        : !!float "251.42",
+        ? !!str "total"
+        : !!float "4443.52",
+        ? !!str "comments"
+        : !!str "Late afternoon is best. Backup contact is Nancy Billsmer @ 338-4338.",
+      }

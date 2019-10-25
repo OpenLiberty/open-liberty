@@ -1,0 +1,13 @@
+#!/usr/bin/env node
+const path = require("path");
+const spawn = require("child_process").spawn;
+const binPath = require(path.join(__dirname, "..", "lib", "chromedriver")).path;
+const args = process.argv.slice(2);
+const cp = spawn(binPath, args);
+cp.stdout.pipe(process.stdout);
+cp.stderr.pipe(process.stderr);
+cp.on("exit", process.exit);
+process.on("SIGTERM", function() {
+  cp.kill("SIGTERM");
+  process.exit(1);
+});

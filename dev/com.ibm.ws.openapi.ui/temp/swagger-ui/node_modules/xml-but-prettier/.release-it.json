@@ -1,0 +1,16 @@
+{
+  "github": {
+    "tokenRef": "GITHUB_TOKEN",
+    "release": true,
+    "assets": "dist/index.js"
+  },
+  "npm": {
+    "publish": true
+  },
+  "prompt": {
+    "src": {
+      "status": true
+    }
+  },
+  "buildCommand": "npm run build"
+}

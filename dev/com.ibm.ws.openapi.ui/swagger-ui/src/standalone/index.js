@@ -1,15 +1,15 @@
 import StandaloneLayout from "./layout"
-import HeaderbarPlugin from "plugins/headerbar"
+import TopbarPlugin from "plugins/topbar"
+import ConfigsPlugin from "corePlugins/configs"
 
 // the Standalone preset
 
-let preset = [
-  HeaderbarPlugin,
+export default [
+  TopbarPlugin,
+  ConfigsPlugin,
   () => {
     return {
       components: { StandaloneLayout }
     }
   }
 ]
-
-module.exports = preset

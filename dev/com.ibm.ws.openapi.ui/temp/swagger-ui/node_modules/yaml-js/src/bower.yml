@@ -1,0 +1,9 @@
+name:            yaml-js
+version:         0.1.1
+description:     Pure Javascript YAML loader and dumper, ported from PyYAML
+main:            yaml.js
+ignore:          [ '**/*', '!yaml.*' ]
+repository:
+  type:          git
+  url:           http://github.com/connec/yaml-js.git
+license:         WTFPL

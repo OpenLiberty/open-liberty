@@ -1,0 +1,328 @@
+// ==========================================================================
+// Base – Mobile-First Grid
+// ==========================================================================
+
+// Micro Clearfix - http://nicolasgallagher.com/micro-clearfix-hack/
+.clear:before, .clear:after { content: " "; display: table; } .clear:after { clear: both; }
+.row:before, .row:after { content: ""; display: table; } .row:after { clear: both; }
+
+.row {
+  position: relative;
+  margin-left: -$grid-gutter;
+  margin-right: -$grid-gutter;
+}
+
+// Mobile Container
+.container {
+  padding-left: $grid-gutter;
+  padding-right: $grid-gutter;
+  margin-left: auto;
+  margin-right: auto;
+}
+.container-full {
+  padding-left: 0;
+  padding-right: 0;
+  margin-left: auto;
+  margin-right: auto;
+}
+// Tablet Container
+@media only screen and (min-width: $breakpoint-tablet) {
+  .container, .container-full {
+    width: $container-tablet;
+  }
+  .container-tablet {
+    width: $container-tablet;
+    padding-left: $grid-gutter-tablet;
+    padding-right: $grid-gutter-tablet;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .container-full-tablet {
+    width: $container-tablet;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+// Desktop Container
+@media only screen and (min-width: $breakpoint-desktop) {
+  .container, .container-full {
+    width: $container-desktop;
+  }
+  .container-desktop {
+    width: $container-desktop;
+    padding-left: $grid-gutter-desktop;
+    padding-right: $grid-gutter-desktop;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .container-full-desktop {
+    width: $container-desktop;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+// HD Container
+@media only screen and (min-width: $breakpoint-hd) {
+  .container, .container-full {
+    width: $container-hd;
+  }
+  .container-hd {
+    width: $container-hd;
+    padding-left: $grid-gutter-hd;
+    padding-right: $grid-gutter-hd;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .container-full-hd {
+    width: $container-hd;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+// Mobile-first Grid Columns - Global Rules
+.col-1,
+.col-2,
+.col-3,
+.col-4,
+.col-5,
+.col-6,
+.col-7,
+.col-8,
+.col-9,
+.col-10,
+.col-11,
+.col-12 {
+  padding-left: $grid-gutter;
+  padding-right: $grid-gutter;
+  position: relative;
+  float: left;
+}
+
+// Mobile-first Grid
+$columns: 12;
+@for $i from 1 through $columns {
+  .col-#{$i} {
+    width: ($i / $columns) * 100%;
+  }
+}
+
+// Mobile Push Offsets
+@for $i from 1 through $columns - 1 {
+  .push-#{$i} {
+    left: ($i / $columns) * 100%;
+  }
+}
+
+// Mobile Pull Offsets
+@for $i from 1 through $columns - 1 {
+  .pull-#{$i} {
+    left: -($i / $columns) * 100%;
+  }
+}
+
+// Mobile Rows
+$i: 0;
+@while $i < 60 {
+  $i: $i + 5;
+  .row-top-#{$i} {
+    padding-top: $i * 1px;
+  }
+}
+$i: 0;
+@while $i < 60 {
+  $i: $i + 5;
+  .row-bottom-#{$i} {
+    padding-bottom: $i * 1px;
+  }
+}
+
+
+// Tablet Grid
+@media only screen and (min-width: $breakpoint-tablet) {
+  
+  // Tablet Grid Columns - Global Rules
+  .col-1-tablet,
+  .col-2-tablet,
+  .col-3-tablet,
+  .col-4-tablet,
+  .col-5-tablet,
+  .col-6-tablet,
+  .col-7-tablet,
+  .col-8-tablet,
+  .col-9-tablet,
+  .col-10-tablet,
+  .col-11-tablet,
+  .col-12-tablet {
+    padding-left: $grid-gutter-tablet;
+    padding-right: $grid-gutter-tablet;
+    position: relative;
+    float: left;
+  }
+
+  // Tablet Grid
+  $columns: 12;
+  @for $i from 1 through $columns {
+    .col-#{$i}-tablet {
+      width: ($i / $columns) * 100%;
+    }
+  }
+
+  // Tablet Push Offsets
+  @for $i from 1 through $columns - 1 {
+    .push-#{$i}-tablet {
+      left: ($i / $columns) * 100%;
+    }
+  }
+
+  // Tablet Pull Offsets
+  @for $i from 1 through $columns - 1 {
+    .pull-#{$i}-tablet {
+      left: -($i / $columns) * 100%;
+    }
+  }
+
+  // Tablet Rows
+  $i: 0;
+  @while $i < 60 {
+    $i: $i + 5;
+    .row-top-#{$i}-tablet {
+      padding-top: $i * 1px;
+    }
+  }
+  $i: 0;
+  @while $i < 60 {
+    $i: $i + 5;
+    .row-bottom-#{$i}-tablet {
+      padding-bottom: $i * 1px;
+    }
+  }
+}
+
+// Desktop Grid
+@media only screen and (min-width: $breakpoint-desktop) {
+  
+  // Desktop Grid Columns - Global Rules
+  .col-1-desktop,
+  .col-2-desktop,
+  .col-3-desktop,
+  .col-4-desktop,
+  .col-5-desktop,
+  .col-6-desktop,
+  .col-7-desktop,
+  .col-8-desktop,
+  .col-9-desktop,
+  .col-10-desktop,
+  .col-11-desktop,
+  .col-12-desktop {
+    padding-left: $grid-gutter-desktop;
+    padding-right: $grid-gutter-desktop;
+    position: relative;
+    float: left;
+  }
+
+  // Desktop Grid
+  $columns: 12;
+  @for $i from 1 through $columns {
+    .col-#{$i}-desktop {
+      width: ($i / $columns) * 100%;
+    }
+  }
+
+  // Desktop Push Offsets
+  @for $i from 1 through $columns - 1 {
+    .push-#{$i}-desktop {
+      left: ($i / $columns) * 100%;
+    }
+  }
+
+  // Desktop Pull Offsets
+  @for $i from 1 through $columns - 1 {
+    .pull-#{$i}-desktop {
+      left: -($i / $columns) * 100%;
+    }
+  }
+
+  // Desktop Rows
+  $i: 0;
+  @while $i < 60 {
+    $i: $i + 5;
+    .row-top-#{$i}-desktop {
+      padding-top: $i * 1px;
+    }
+  }
+  $i: 0;
+  @while $i < 60 {
+    $i: $i + 5;
+    .row-bottom-#{$i}-desktop {
+      padding-bottom: $i * 1px;
+    }
+  }
+}
+
+// HD Grid
+@media only screen and (min-width: $breakpoint-hd) {
+  
+  // HD Grid Columns - Global Rules
+  .col-1-hd,
+  .col-2-hd,
+  .col-3-hd,
+  .col-4-hd,
+  .col-5-hd,
+  .col-6-hd,
+  .col-7-hd,
+  .col-8-hd,
+  .col-9-hd,
+  .col-10-hd,
+  .col-11-hd,
+  .col-12-hd {
+    padding-left: $grid-gutter-hd;
+    padding-right: $grid-gutter-hd;
+    position: relative;
+    float: left;
+  }
+
+  // HD Grid
+  $columns: 12;
+  @for $i from 1 through $columns {
+    .col-#{$i}-hd {
+      width: ($i / $columns) * 100%;
+    }
+  }
+
+  // HD Push Offsets
+  @for $i from 1 through $columns - 1 {
+    .push-#{$i}-hd {
+      left: ($i / $columns) * 100%;
+    }
+  }
+
+  // HD Pull Offsets
+  @for $i from 1 through $columns - 1 {
+    .pull-#{$i}-hd {
+      left: -($i / $columns) * 100%;
+    }
+  }
+
+  // HD Rows
+  $i: 0;
+  @while $i < 60 {
+    $i: $i + 5;
+    .row-top-#{$i}-hd {
+      padding-top: $i * 1px;
+    }
+  }
+  $i: 0;
+  @while $i < 60 {
+    $i: $i + 5;
+    .row-bottom-#{$i}-hd {
+      padding-bottom: $i * 1px;
+    }
+  }
+}

@@ -1,0 +1,51 @@
+// ==========================================================================
+// Base – Mixins
+// ==========================================================================
+// Font sizes (primary sizing in `rem` units with a fallback of `px`)
+// Example usage @include font-size(18);
+@mixin font-size ($size) {
+  $remValue: $size / 16;
+  $pxValue: ($size);
+  font-size: $pxValue + px; 
+  font-size: $remValue + rem;
+}
+
+// Line height sizes (primary sizing in `rem` units with a fallback of `px`)
+// Example usage @include line-height(22);
+@mixin line-height ($size) {
+  $remValue: $size / 16;
+  $pxValue: ($size);
+  line-height: $pxValue + px; 
+  line-height: $remValue + rem;
+}
+
+// SVG background with PNG fallback
+// Example Usage @include svg-bg("img/banner.svg", "img/banner.png", 50%, 50%, no-repeat);
+@mixin bg-svg($svg, $png, $x: 0, $y: 0, $repeat: no-repeat) {
+  background: url(@svg) $x $y $repeat;
+  .no-svg & {
+    background: url(@png) $x $y $repeat;
+  }
+}
+
+// Background Color with Opacity
+// Example Usage: @include bg-rgba(#111, 50%);
+@mixin bg-rgba($color, $alpha) {
+  $opacity: $alpha / 100%;
+  $rgba: rgba($color, $opacity);
+  background: $color;
+  background: rgba($color, $opacity);
+}
+
+// Animations
+// Example Usage @mixin animate(1s);
+@mixin animate($duration: 1s) {
+  animation-duration: $duration;
+  animation-fill-mode: both;
+}
+
+// SVG Fill - TO DO
+// Example usage: .svg-fill("img/icon.svg", "#555");
+// https://github.com/lagden/sass-inline-svg-image
+
+// Not enough mixins? – Please make some suggestions or contribute more! :)

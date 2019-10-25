@@ -1,0 +1,4 @@
+exclude_paths:
+- lib
+- yaml.js
+- yaml.min.js

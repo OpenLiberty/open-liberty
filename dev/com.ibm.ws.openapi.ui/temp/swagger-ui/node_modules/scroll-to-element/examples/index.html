@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>ScrollToElement</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="../build/scrollToElement.js"></script>
+</head>
+<body>
+  <button id="scroll-button" style="position: absolute;">Click to Scroll</button>
+  <div style="padding-top: 1000px;"></div>
+  <div id="scroll-to-element" >Scroll To Here</div>
+</body>
+<script>
+  const button = document.querySelector('#scroll-button')
+  button.addEventListener('click', e => {
+    scrollToElement('#scroll-to-element')
+  })
+</script>
+</html>
