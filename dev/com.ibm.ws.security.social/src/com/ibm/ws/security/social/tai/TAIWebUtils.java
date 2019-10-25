@@ -18,11 +18,13 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.web.WebUtils;
+import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
 import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.TraceConstants;
 import com.ibm.ws.security.social.error.ErrorHandlerImpl;
 import com.ibm.ws.security.social.error.SocialLoginException;
 import com.ibm.ws.security.social.internal.Oauth2LoginConfigImpl;
+import com.ibm.ws.security.social.internal.OpenShiftLoginConfigImpl;
 import com.ibm.ws.security.social.internal.utils.ClientConstants;
 import com.ibm.ws.security.social.internal.utils.SocialUtil;
 import com.ibm.ws.security.social.web.utils.SocialWebUtils;
@@ -36,7 +38,10 @@ import com.ibm.wsspi.security.tai.TAIResult;
 public class TAIWebUtils {
 
     public static final TraceComponent tc = Tr.register(TAIWebUtils.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
-
+    private static final String JWT_SEGMENTS = "-segments";
+    private static final String JWT_SEGMENT_INDEX = "-";
+    private static final String Authorization_Header = "Authorization";
+    private static final String ACCESS_TOKEN = "access_token";
     WebUtils webUtils = new WebUtils();
     SocialWebUtils socialWebUtils = new SocialWebUtils();
     ReferrerURLCookieHandler referrerURLCookieHandler = null;
@@ -138,6 +143,70 @@ public class TAIWebUtils {
             Tr.debug(tc, "hostAndPort=" + hostAndPort);
         }
         return hostAndPort;
+    }
+    
+    public String getBearerAccessToken(HttpServletRequest req, OpenShiftLoginConfigImpl clientConfig) {
+
+        String headerName = clientConfig.getTokenHeaderName();
+        if (headerName != null) {
+            String hdrValue = req.getHeader(headerName);
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, headerName + " content=", hdrValue);
+            }
+            if (hdrValue != null) {
+                if (hdrValue.startsWith("Bearer ")) {
+                    hdrValue = hdrValue.substring(7);
+                }
+                return hdrValue.trim();
+            } else {
+                StringBuffer sb1 = new StringBuffer(headerName);
+                sb1.append(JWT_SEGMENTS);
+                String headerSegments = req.getHeader(sb1.toString());
+                if (headerSegments != null) {
+                    try {
+                        int iSegs = Integer.parseInt(headerSegments);
+                        StringBuffer sb3 = new StringBuffer();
+                        for (int i = 1; i < iSegs + 1; i++) {
+                            StringBuffer sb2 = new StringBuffer(headerName);
+                            sb2.append(JWT_SEGMENT_INDEX).append(i);
+                            String segHdrValue = req.getHeader(sb2.toString());
+                            if (segHdrValue != null) {
+                                sb3.append(segHdrValue.trim());
+                            }
+                        }
+                        hdrValue = sb3.toString();
+                        if (hdrValue != null && hdrValue.isEmpty()) {
+                            hdrValue = null;
+                        }
+                    } catch (Exception e) {
+                        //can be ignored
+                        if (tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Fail to read Header Segments:", e.getMessage());
+                        }
+                    }
+                    return hdrValue;
+                } else {
+                    return null;
+                }
+            }
+        } else {
+            String hdrValue = req.getHeader(Authorization_Header);
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Authorization header=", hdrValue);
+            }
+            if (hdrValue != null && hdrValue.startsWith("Bearer ")) {
+                hdrValue = hdrValue.substring(7);
+            } else {
+                String reqMethod = req.getMethod();
+                if (ClientConstants.REQ_METHOD_POST.equalsIgnoreCase(reqMethod)) {
+                    String contentType = req.getHeader(ClientConstants.REQ_CONTENT_TYPE_NAME);
+                    if (ClientConstants.REQ_CONTENT_TYPE_APP_FORM_URLENCODED.equals(contentType)) {
+                        hdrValue = req.getParameter(ACCESS_TOKEN);
+                    }
+                }
+            }
+            return hdrValue;
+        }
     }
 
 }

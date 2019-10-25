@@ -14,7 +14,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.json.Json;
@@ -22,8 +25,11 @@ import javax.json.JsonObjectBuilder;
 import javax.net.ssl.SSLSocketFactory;
 import javax.servlet.http.HttpServletResponse;
 
+import org.jose4j.lang.JoseException;
+
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.security.common.http.HttpUtils;
+import com.ibm.ws.security.common.jwk.utils.JsonUtils;
 import com.ibm.ws.security.social.internal.OpenShiftLoginConfigImpl;
 
 public class OpenShiftUserApiUtils {
@@ -36,7 +42,7 @@ public class OpenShiftUserApiUtils {
         this.config = config;
     }
 
-    public String getUserApiResponse(@Sensitive String accessToken, SSLSocketFactory sslSocketFactory) {
+    public String getUserApiResponse(@Sensitive String accessToken, SSLSocketFactory sslSocketFactory) throws IOException, JoseException{
         String response = null;
         try {
             HttpURLConnection connection = httpUtils.createConnection(HttpUtils.RequestMethod.POST, config.getUserApi(), sslSocketFactory);
@@ -56,15 +62,19 @@ public class OpenShiftUserApiUtils {
 
             int responseCode = connection.getResponseCode();
             response = httpUtils.readConnectionResponse(connection);
-            System.out.println("AYOHO Response [" + responseCode + "]: [" + response + "]");
+            // System.out.println("AYOHO Response [" + responseCode + "]: [" + response + "]");
             if (responseCode != HttpServletResponse.SC_CREATED) {
                 // TODO - error condition
             }
-            response = response.replaceFirst("^\\{", "{\"username\":\"ayoho-edited-username\",");
-            System.out.println("AYOHO Edited response: [" + response + "]");
+            // response = response.replaceFirst("^\\{", "{\"username\":\"ayoho-edited-username\",");
+            response = modifyExistingResponseToJSON(response);
+            // System.out.println("AYOHO response after formatting : [" + response + "]");
         } catch (IOException e) {
-            // TODO
-            e.printStackTrace();
+            // TODO - error logging
+            throw e;
+        }  catch (JoseException e) {
+            // TODO - error logging
+            throw e;
         }
         return response;
     }
@@ -84,6 +94,50 @@ public class OpenShiftUserApiUtils {
         bodyBuilder.add("apiVersion", "authentication.k8s.io/v1");
         bodyBuilder.add("spec", Json.createObjectBuilder().add("token", accessToken));
         return bodyBuilder.build().toString();
+    }
+    
+    private String modifyExistingResponseToJSON(String response) throws JoseException{
+
+        String jsonFormatResponse = JsonUtils.toJson(response);
+
+        Map<?, ?> firstMap = JsonUtils.claimsFromJsonObject(jsonFormatResponse);
+
+        Map<?, ?> statusInnerMap = (LinkedHashMap<?, ?>)firstMap.get("status");
+
+        Map<?, ?> userInnerMap = (LinkedHashMap<?, ?>)statusInnerMap.get("user");
+
+       
+
+        List<?> groupList = (ArrayList<?>) userInnerMap.get("groups");
+
+        StringBuilder correct = new StringBuilder("{\"username\":\"" + userInnerMap.get("username")+ "\",");
+
+        StringBuilder buildArray = new StringBuilder("\"groups\":[");
+
+        for(int i=0;i<groupList.size();i++) {
+
+            
+
+            if(i==groupList.size()-1) {
+
+                buildArray.append("\"" + groupList.get(i)+ "\""+ "]}");
+
+            }
+
+            else {
+
+                buildArray.append("\""  + groupList.get(i)+ "\""+ ",");
+
+            }
+
+        }
+
+        String current = correct.append(buildArray).toString();
+
+       
+
+        return current;
+
     }
 
 }

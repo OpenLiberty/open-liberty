@@ -31,6 +31,10 @@ public class ClientConstants {
     public static final String RESPONSE_TYPE = "response_type";
     public static final String RESPONSE_MODE = "response_mode";
     public static final String FORM_POST = "form_post";
+    
+    public final static String REQ_METHOD_POST = "POST";
+    public final static String REQ_CONTENT_TYPE_NAME = "Content-Type";
+    public final static String REQ_CONTENT_TYPE_APP_FORM_URLENCODED = "application/x-www-form-urlencoded";
 
     public final static String USER_ID = "user_id";
     public final static String USER_NAME = "user_name";

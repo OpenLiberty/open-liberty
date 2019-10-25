@@ -74,6 +74,8 @@ public class OpenShiftLoginConfigImpl extends Oauth2LoginConfigImpl {
         this.scope = "user:full";
         this.tokenEndpointAuthMethod = ClientConstants.METHOD_client_secret_post;
         this.userNameAttribute = "username";
+        this.groupNameAttribute = "groups";
+        //this.userApiResponseIdentifier = "status";
     }
 
     private void setEndpointUrls(Map<String, Object> props) {

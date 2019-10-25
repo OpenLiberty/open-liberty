@@ -10,7 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.security.social.tai;
 
+import java.io.IOException;
+
 import javax.net.ssl.SSLSocketFactory;
+
+import org.jose4j.lang.JoseException;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -40,6 +44,7 @@ public class TAIUserApiUtils {
         String userinfoApi = userApiConfig.getApi();
         try {
             if (clientConfig instanceof OpenShiftLoginConfigImpl) {
+                //return convertLinkedinToJson(getUserApiResponseFromOpenShift((OpenShiftLoginConfigImpl) clientConfig, accessToken, sslSocketFactory), clientConfig.getUserNameAttribute());
                 return getUserApiResponseFromOpenShift((OpenShiftLoginConfigImpl) clientConfig, accessToken, sslSocketFactory);
             }
             String userApiResp = clientUtil.getUserApiResponse(userinfoApi,
@@ -65,7 +70,7 @@ public class TAIUserApiUtils {
         }
     }
 
-    private String getUserApiResponseFromOpenShift(OpenShiftLoginConfigImpl config, @Sensitive String accessToken, SSLSocketFactory sslSocketFactory) {
+    private String getUserApiResponseFromOpenShift(OpenShiftLoginConfigImpl config, @Sensitive String accessToken, SSLSocketFactory sslSocketFactory) throws IOException, JoseException{
         OpenShiftUserApiUtils openShiftUtils = new OpenShiftUserApiUtils(config);
         return openShiftUtils.getUserApiResponse(accessToken, sslSocketFactory);
     }

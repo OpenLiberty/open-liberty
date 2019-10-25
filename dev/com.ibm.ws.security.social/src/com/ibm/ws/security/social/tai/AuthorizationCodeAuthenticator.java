@@ -62,6 +62,13 @@ public class AuthorizationCodeAuthenticator {
         this.tokens = tokens;
         this.accessToken = getAccessTokenFromTokens();
     }
+    
+    public AuthorizationCodeAuthenticator(HttpServletRequest req, HttpServletResponse res, SocialLoginConfig socialConfig, String accessToken, boolean openShift) {
+        this.request = req;
+        this.response = res; 
+        this.socialConfig = socialConfig;
+        this.tokens.put(ClientConstants.ACCESS_TOKEN, accessToken);
+    }
 
     public Map<String, Object> getTokens() {
         return tokens;
@@ -86,6 +93,11 @@ public class AuthorizationCodeAuthenticator {
     public void generateJwtAndTokenInformation() throws SocialLoginException {
         createSslSocketFactory();
         getTokensFromTokenEndpoint();
+        createJwtUserApiResponseAndIssuedJwtWithAppropriateToken();
+    }
+    
+    public void generateJwtAndTokensFromTokenReviewResult() throws SocialLoginException {
+        createSslSocketFactory();
         createJwtUserApiResponseAndIssuedJwtWithAppropriateToken();
     }
 
