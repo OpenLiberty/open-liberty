@@ -247,11 +247,13 @@ goto:eof
   if %RC% == 2 goto:eof
 
   call:serverWorkingDirectory
-  set SAVE_IBM_JAVA_OPTIONS=!IBM_JAVA_OPTIONS!
+  set SAVE_IBM_JAVA_OPTIONS=!OPENJ9_JAVA_OPTIONS!
   set IBM_JAVA_OPTIONS=!SERVER_IBM_JAVA_OPTIONS!
+  set OPENJ9_JAVA_OPTIONS=!SERVER_IBM_JAVA_OPTIONS!
   !JAVA_CMD_QUOTED! !JAVA_AGENT_QUOTED! !JVM_OPTIONS! !JAVA_PARAMS_QUOTED! --batch-file !PARAMS_QUOTED!
   set RC=%errorlevel%
   set IBM_JAVA_OPTIONS=!SAVE_IBM_JAVA_OPTIONS!
+  set OPENJ9_JAVA_OPTIONS=!SAVE_IBM_JAVA_OPTIONS!
   call:javaCmdResult
 goto:eof
 
@@ -262,11 +264,13 @@ goto:eof
   if %RC% == 2 goto:eof
 
   call:serverWorkingDirectory
-  set SAVE_IBM_JAVA_OPTIONS=!IBM_JAVA_OPTIONS!
+  set SAVE_IBM_JAVA_OPTIONS=!OPENJ9_JAVA_OPTIONS!
   set IBM_JAVA_OPTIONS=!SERVER_IBM_JAVA_OPTIONS!
+  set OPENJ9_JAVA_OPTIONS=!SERVER_IBM_JAVA_OPTIONS!
   !JAVA_CMD_QUOTED! !JAVA_AGENT_QUOTED! !JVM_OPTIONS! !JAVA_PARAMS_QUOTED! --batch-file !PARAMS_QUOTED!
   set RC=%errorlevel%
   set IBM_JAVA_OPTIONS=!SAVE_IBM_JAVA_OPTIONS!
+  set OPENJ9_JAVA_OPTIONS=!SAVE_IBM_JAVA_OPTIONS!
   call:javaCmdResult
 goto:eof
 
@@ -306,13 +310,15 @@ goto:eof
     )
 
     set X_CMD=!JAVA_CMD_QUOTED! !JAVA_AGENT_QUOTED! !JVM_OPTIONS! !JAVA_PARAMS_QUOTED! --batch-file !PARAMS_QUOTED!
-    set SAVE_IBM_JAVA_OPTIONS=!IBM_JAVA_OPTIONS!
+    set SAVE_IBM_JAVA_OPTIONS=!OPENJ9_JAVA_OPTIONS!
     set IBM_JAVA_OPTIONS=!SERVER_IBM_JAVA_OPTIONS!
+    set OPENJ9_JAVA_OPTIONS=!SERVER_IBM_JAVA_OPTIONS!
 
     @REM Use javaw so command windows can be closed.
     start /min /b "" !JAVA_CMD_QUOTED!w !JAVA_AGENT_QUOTED! !JVM_OPTIONS! !JAVA_PARAMS_QUOTED! --batch-file !PARAMS_QUOTED! >> "%X_LOG_DIR%\%X_LOG_FILE%" 2>&1
 
     set IBM_JAVA_OPTIONS=!SAVE_IBM_JAVA_OPTIONS!
+    set OPENJ9_JAVA_OPTIONS=!SAVE_IBM_JAVA_OPTIONS!
 
     !JAVA_CMD_QUOTED! !JAVA_PARAMS_QUOTED! "!SERVER_NAME!" --status:start
     set RC=!errorlevel!
@@ -501,15 +507,16 @@ goto:eof
 
   @REM Command-line parsing of -Xshareclasses does not allow "," in cacheDir.
   if "!WLP_OUTPUT_DIR:,=!" == "!WLP_OUTPUT_DIR!" (
-    set SERVER_IBM_JAVA_OPTIONS=-Xshareclasses:name=liberty-%%u,nonfatal,cacheDir="%WLP_OUTPUT_DIR%\.classCache" -XX:ShareClassesEnableBCI -Xscmx80m !IBM_JAVA_OPTIONS!
+    set SERVER_IBM_JAVA_OPTIONS=-Xshareclasses:name=liberty-%%u,nonfatal,cacheDir="%WLP_OUTPUT_DIR%\.classCache" -XX:ShareClassesEnableBCI -Xscmx80m !OPENJ9_JAVA_OPTIONS!
   ) else (
-    set SERVER_IBM_JAVA_OPTIONS=!IBM_JAVA_OPTIONS!
+    set SERVER_IBM_JAVA_OPTIONS=!OPENJ9_JAVA_OPTIONS!
   )
 
   @REM Add -Xquickstart -Xnoaot for client JVMs only.  AOT is ineffective if
   @REM JVMs have conflicting options, and it's more important that server JVMs
   @REM be able to use AOT.
-  set IBM_JAVA_OPTIONS=-Xquickstart -Xnoaot !IBM_JAVA_OPTIONS!
+  set IBM_JAVA_OPTIONS=-Xquickstart -Xnoaot !OPENJ9_JAVA_OPTIONS!
+  set OPENJ9_JAVA_OPTIONS=-Xquickstart -Xnoaot !OPENJ9_JAVA_OPTIONS!
 goto:eof
 
 @REM
