@@ -23,8 +23,8 @@
     	
 	<dir sourceOnDisk="${server.config.dir}\looseConfig\testWeb0\WebContent"
 		targetInArchive="/" />
-<!--
-	  <dir sourceOnDisk="${server.config.dir}\looseConfig\testWeb0\classes"
-		targetInArchive="/WEB-INF/classes" />
--->
+	<archive targetInArchive="ArchivedFile.war">
+		<file targetInArchive="file/file.jar"
+				sourceOnDisk="${server.config.dir}\looseConfig\testWeb0\WebContent\index.jsp"/>
+	</archive>
 </archive>
