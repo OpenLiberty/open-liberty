@@ -23,8 +23,12 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.Stack;
 import java.util.logging.Logger;
 
@@ -63,7 +67,14 @@ public class FeatureUtility {
 
         this.fromDir = builder.fromDir;
         this.toExtension = builder.toExtension;
-        this.featuresToInstall = new ArrayList<>(builder.featuresToInstall);
+        // this.featuresToInstall = new ArrayList<>(builder.featuresToInstall);
+
+        List<String> rawFeatures = new ArrayList<>(builder.featuresToInstall);
+        Map<String, Set<String>> jsonsAndFeatures = getJsonsAndFeatures(rawFeatures);
+
+        this.featuresToInstall = new ArrayList<>(jsonsAndFeatures.get("features"));
+        Set<String> jsonsRequired = jsonsAndFeatures.get("jsons");
+
         this.esaFile = builder.esaFile;
         this.isBasicInit = builder.isBasicInit;
         this.isDownload = builder.isDownload;
@@ -73,7 +84,8 @@ public class FeatureUtility {
         
         if (isBasicInit == null || !isBasicInit) {
         	info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_INITIALIZING"));
-            List<File> jsonPaths = getJsonFiles(fromDir, new ArrayList<File>());
+
+            List<File> jsonPaths = getJsonFiles(fromDir, jsonsRequired);
             updateProgress(progressBar.getMethodIncrement("fetchJsons"));
             fine("Finished finding jsons");
 
@@ -85,7 +97,7 @@ public class FeatureUtility {
         		initializeMap();
         	} else {
 
-                List<File> jsonPaths = getJsonFiles(fromDir, new ArrayList<File>());
+                List<File> jsonPaths = getJsonFiles(fromDir, jsonsRequired);
 
             	initializeMap(jsonPaths);
         	}
@@ -129,6 +141,55 @@ public class FeatureUtility {
         map.get("install.kernel.init.code");
 
     }
+
+    private Map<String, Set<String>> getJsonsAndFeatures(List<String> featureNames)
+            throws IOException, InstallException {
+        Map<String, Set<String>> jsonsAndFeatures = new HashMap<>();
+
+        Set<String> jsonsRequired = new HashSet<>();
+        Set<String> featuresRequired = new HashSet<>();
+
+        String openLibertyVersion = getLibertyVersion();
+        String groupId, artifactId, version;
+
+        for (String feature : featureNames) {
+            groupId = null;
+            artifactId = null;
+            version = null;
+            String[] mavenCoords = feature.split(":");
+            if (mavenCoords.length == 1) {
+                // simply feature shortname, add to open liberty group id
+                groupId = "io.openliberty.features";
+                artifactId = mavenCoords[0];
+                version = openLibertyVersion;
+            } else if (mavenCoords.length == 2) { // groupId:artifactId
+                groupId = mavenCoords[0];
+                artifactId = mavenCoords[1];
+                version = openLibertyVersion;
+            } else if (mavenCoords.length == 3) { // groupId:artifactId:version
+                groupId = mavenCoords[0];
+                artifactId = mavenCoords[1];
+                version = mavenCoords[2];
+
+                // verify feature version matches runtime
+                if (!version.equals(openLibertyVersion)) {
+                    throw new InstallException(
+                            "Cannot install feature " + feature + " on a " + openLibertyVersion + " runtime.");
+                }
+
+            } else {
+                throw new InstallException("Invalid feature provided: " + feature);
+            }
+            jsonsRequired.add(groupId);
+            featuresRequired.add(artifactId);
+        }
+        jsonsAndFeatures.put("jsons", jsonsRequired);
+        jsonsAndFeatures.put("features", featuresRequired);
+        
+        return jsonsAndFeatures;
+
+    }
+
 
     /**
      * Get the open liberty runtime version.
@@ -174,6 +235,7 @@ public class FeatureUtility {
     public void installFeatures() throws InstallException, IOException {
         info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_RESOLVING"));
         Collection<String> resolvedFeatures = (Collection<String>) map.get("action.result");
+        // fine("resolved features: " + resolvedFeatures);
         checkResolvedFeatures(resolvedFeatures);
         updateProgress(progressBar.getMethodIncrement("resolvedFeatures"));
 
@@ -236,7 +298,6 @@ public class FeatureUtility {
             if (exceptionMessage == null) {
                 throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ALREADY_INSTALLED",
                                                                                       map.get("features.to.resolve")));
-
             } else if (exceptionMessage.contains("CWWKF1250I")) {
                 throw new InstallException(exceptionMessage);
 
@@ -255,6 +316,7 @@ public class FeatureUtility {
     	map.put("download.artifact.list", resolvedFeatures);
     	boolean singleArtifactInstall = false;
         map.put("download.individual.artifact", singleArtifactInstall);
+
         List<File> result = (List<File>) map.get("download.result");
         if (map.get("action.error.message") != null) {
             fine("action.exception.stacktrace: " + map.get("action.error.stacktrace"));
@@ -312,17 +374,21 @@ public class FeatureUtility {
 
     }
 
-    private List<File> getJsonFiles(File fromDir, List<File> userFeatureJsons) throws InstallException {
+    private List<File> getJsonFiles(File fromDir, Set<String> jsonsRequired) throws InstallException, IOException {
+        if(jsonsRequired.isEmpty()) {
+            throw new InstallException("Cannot detect which jsons to install with."); // TODO make new msg
+        }
         List<File> jsonFiles = new ArrayList<>();
         if (fromDir != null) {
-            map.put("from.repo", fromDir.toString());
+            map.put("download.location", fromDir.toString());
         }
 
-        
-        jsonFiles.addAll(map.getOpenLibertyJson());
-        if (jsonFiles.isEmpty()) {
-            fine("Could not find json files from local directories, now downloading from Maven..");
-            jsonFiles.addAll(map.getJsonsFromMavenCentral());
+        fine("JSONs required: " + jsonsRequired.toString());
+        jsonFiles.addAll(map.getLocalJsonFiles(jsonsRequired));
+        fine("Found the following jsons locally: " + jsonFiles);
+        if (jsonFiles.isEmpty() || jsonFiles.size() != jsonsRequired.size()) {
+            fine("Could not find all json files from local directories, now downloading from Maven..");
+            jsonFiles.addAll(map.getJsonsFromMavenCentral(jsonsRequired));
         }
         if (jsonFiles.isEmpty() || jsonFiles.contains(null)) {
             throw new InstallException(

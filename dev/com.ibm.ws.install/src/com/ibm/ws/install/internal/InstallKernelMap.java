@@ -113,6 +113,7 @@ public class InstallKernelMap implements Map {
     private static final String DOWNLOAD_INDIVIDUAL_ARTIFACT = "download.individual.artifact";
     private static final String DOWNLOAD_FILETYPE = "download.filetype";
     private static final String DOWNLOAD_LOCAL_DIR_LOCATION = "download.local.dir.location";
+    private static final String DOWNLOAD_ARTIFACT_SINGLE = "download.artifact.single";
     private static final String DOWNLOAD_ARTIFACT_LIST = "download.artifact.list";
     private static final String DOWNLOAD_LOCATION = "download.location";
     private static final String FROM_REPO = "from.repo";
@@ -367,9 +368,31 @@ public class InstallKernelMap implements Map {
             } else {
                 throw new IllegalArgumentException();
             }
-        } else if (DOWNLOAD_ARTIFACT_LIST.equals(key)) {
+        } else if (DOWNLOAD_ARTIFACT_SINGLE.equals(key)) {
+            if (value instanceof String) {
+                data.put(DOWNLOAD_ARTIFACT_SINGLE, value);
+            } else {
+                throw new IllegalArgumentException();
+            }
+        }
+        // TODO remove this later?
+        else if (DOWNLOAD_ARTIFACT_LIST.equals(key)) {
             if (value instanceof List || value instanceof String) {
                 data.put(DOWNLOAD_ARTIFACT_LIST, value);
+//                if (data.containsKey(DOWNLOAD_ARTIFACT_LIST)) {
+//                    if (value instanceof List) {
+//                        ((List<String>) data.get(DOWNLOAD_ARTIFACT_LIST)).addAll((List<String>) value);
+//                    } else {
+//                        // value is string
+//                        ((List<String>) data.get(DOWNLOAD_ARTIFACT_LIST)).add((String) value);
+//                    }
+//                } else {
+//                    if (value instanceof List) {
+//                        data.put(DOWNLOAD_ARTIFACT_LIST, value);
+//                    } else {
+//                        data.put(DOWNLOAD_ARTIFACT_LIST, new ArrayList<String>(Arrays.asList((String) value)));
+//                    }
+//                }
             } else {
                 throw new IllegalArgumentException();
             }
@@ -839,20 +862,23 @@ public class InstallKernelMap implements Map {
         data.put(ACTION_EXCEPTION_STACKTRACE, null);
 
         ArtifactDownloader artifactDownloader = new ArtifactDownloader();
-        String downloadDir = (String) data.get(DOWNLOAD_LOCATION);
-        List<String> featureList = (List<String>) data.get(DOWNLOAD_ARTIFACT_LIST);
+        String downloadDir = getDownloadDir((String) data.get(DOWNLOAD_LOCATION));
+//        fine("artifact list is: " + this.get(DOWNLOAD_ARTIFACT_LIST).toString());
+//        List<String> featureList = (List<String>) data.get(DOWNLOAD_ARTIFACT_LIST);
+        String feature = (String) this.get(DOWNLOAD_ARTIFACT_SINGLE);
+        String filetype = (String) this.get(DOWNLOAD_FILETYPE);
         String repo = getRepo(null);
-
         try {
-            artifactDownloader.synthesizeAndDownloadFeatures(featureList, downloadDir, repo);
+            artifactDownloader.synthesizeAndDownload(feature, filetype, downloadDir, repo, true);
+            data.put(DOWNLOAD_LOCATION, null);
         } catch (InstallException e) {
-            data.put(ACTION_RESULT, ERROR);
-            data.put(ACTION_ERROR_MESSAGE, e.getMessage());
-            data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
+            this.put(ACTION_RESULT, ERROR);
+            this.put(ACTION_ERROR_MESSAGE, e.getMessage());
+            this.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
             return null;
         }
 
-        return artifactDownloader.getDownloadedEsas();
+        return artifactDownloader.getDownloadedFiles();
     }
 
     /**
@@ -1220,7 +1246,7 @@ public class InstallKernelMap implements Map {
 
     // TODO make these methods private, hiding them behind map.put and map.get
     public List<File> getLocalJsonFiles(Set<String> jsonsRequired) throws InstallException {
-        String fromRepo = getDownloadDir((String) data.get(FROM_REPO));
+        String fromRepo = getDownloadDir((String) data.get(DOWNLOAD_LOCATION));
         File fromDir = new File(fromRepo);
         String openLibertyVersion = getLibertyVersion();
         String artifactId = "features";
@@ -1247,26 +1273,35 @@ public class InstallKernelMap implements Map {
      * @throws InstallException
      */
     @SuppressWarnings("unchecked")
-    public List<File> getJsonsFromMavenCentral(Set<String> jsonsRequired) throws InstallException {//
+    public List<File> getJsonsFromMavenCentral(Set<String> jsonsRequired) throws InstallException {
         String openLibertyVersion = getLibertyVersion();
         // get open liberty json
         List<File> result = new ArrayList<File>();
-        this.put("download.filetype", "json");
+        this.put(DOWNLOAD_FILETYPE, "json");
         boolean singleArtifactInstall = true;
-        this.put("download.individual.artifact", singleArtifactInstall);
+        this.put(DOWNLOAD_INDIVIDUAL_ARTIFACT, singleArtifactInstall);
 
         String artifactId = "features";
         for (String jsonGroupId : jsonsRequired) {
             String jsonCoord = jsonGroupId + ":" + artifactId + ":" + openLibertyVersion;
-            data.put("download.artifact.list", jsonCoord);
-            File jsonFile = (File) this.get("download.result");
 
-            result.add(jsonFile);
+            // TODO TODO TODO TODO TODO TODO TODO clean this spaghetti code
+            this.put(DOWNLOAD_ARTIFACT_SINGLE, jsonCoord);
+            this.put(DOWNLOAD_ARTIFACT_LIST, jsonCoord);
+
+            Object downloaded = this.get(DOWNLOAD_RESULT);
             if (this.get("action.error.message") != null) {
                 fine("action.exception.stacktrace: " + this.get("action.error.stacktrace"));
                 String exceptionMessage = (String) this.get("action.error.message");
                 throw new InstallException(exceptionMessage);
             }
+            if (downloaded instanceof List) {
+                result.addAll((List<File>) downloaded);
+            } else if (downloaded instanceof File) {
+                result.add((File) downloaded);
+            }
+            // TODO TODO TODO TODO TODO TODO TODO
+
         }
 
 //        String OLJsonCoord = "io.openliberty.features:features:" + openLibertyVersion;

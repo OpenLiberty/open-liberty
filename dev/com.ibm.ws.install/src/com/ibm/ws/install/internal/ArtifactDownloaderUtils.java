@@ -58,8 +58,7 @@ public class ArtifactDownloaderUtils {
         } catch (SocketTimeoutException e) {
             throw e;
         } catch (IOException e) {
-            throw new IOException("Error: Cannot access server: " + e.getMessage() + ". Please verify that"
-                                  + " you are connected to the internet and the server is not down.");
+            throw new IOException("Cannot establish a connection to the server:" + e.getMessage() + ". Verify that the system can access the internet.");
         }
     }
 
