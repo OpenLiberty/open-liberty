@@ -18,7 +18,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.jar.JarFile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,11 +29,13 @@ import com.ibm.ws.install.InstallKernelFactory;
 import com.ibm.ws.install.InstallKernelInteractive;
 import com.ibm.ws.install.featureUtility.FeatureUtility;
 import com.ibm.ws.install.featureUtility.FeatureUtilityExecutor;
+import com.ibm.ws.install.internal.ArchiveUtils;
 import com.ibm.ws.install.internal.InstallLogUtils;
 import com.ibm.ws.install.internal.InstallUtils;
 import com.ibm.ws.install.internal.ProgressBar;
 import com.ibm.ws.install.internal.InstallLogUtils.Messages;
 import com.ibm.ws.install.internal.asset.ServerAsset;
+import com.ibm.ws.install.internal.asset.ServerPackageAsset;
 import com.ibm.ws.kernel.boot.ReturnCode;
 import com.ibm.ws.kernel.boot.cmdline.ActionHandler;
 import com.ibm.ws.kernel.boot.cmdline.Arguments;
@@ -53,6 +57,7 @@ public class FeatureInstallAction implements ActionHandler {
     private String fromDir;
     private String toDir;
     private ProgressBar progressBar;
+    private InstallPackage installPackage = null;
 
     @Override
     public ExitCode handleTask(PrintStream stdout, PrintStream stderr, Arguments args) {
@@ -99,7 +104,13 @@ public class FeatureInstallAction implements ActionHandler {
 
         String arg = argList.get(0);
         try {
-            if(isServer(arg)) {
+            if (isPackage(arg)) {
+                installPackage = new InstallPackage(arg);
+                if (installPackage.isServerPackage()) {
+                    // return getServerPackageFeatureLicense(installPackage.getPackageFile());
+                }
+            }
+            else if (isServer(arg)) {
                 serverInit(arg);
             } else {
                 Collection<String> assetIds = new HashSet<String>(argList);
@@ -117,6 +128,104 @@ public class FeatureInstallAction implements ActionHandler {
         return rc;
         
     }
+    private static enum JarContentType {
+        ADDON(ArchiveUtils.ArchiveContentType.ADDON, false), INSTALL(ArchiveUtils.ArchiveContentType.INSTALL, true),
+        SAMPLE(ArchiveUtils.ArchiveContentType.SAMPLE, true),
+        OPENSOURCE(ArchiveUtils.ArchiveContentType.OPENSOURCE, false), UNKNOWN(null, false);
+
+        private final ArchiveUtils.ArchiveContentType type;
+        private final boolean supported;
+
+        private JarContentType(ArchiveUtils.ArchiveContentType type, boolean supported) {
+            this.type = type;
+            this.supported = supported;
+        }
+
+        boolean isServerPackage() {
+            return (null == this.type) ? false : this.type.isServerPackage();
+        }
+
+        boolean isSupported() {
+            return this.supported;
+        }
+    }
+
+    class InstallPackage {
+
+        private File packageFile = null;
+        private boolean serverPackage = false;
+
+        InstallPackage(String fileName) throws InstallException, Throwable {
+            initialize(fileName);
+        }
+
+        ReturnCode initialize(String fileName) throws InstallException, Throwable {
+            packageFile = getValidPackageFile(fileName);
+
+            if (ArchiveUtils.ArchiveFileType.JAR.isType(fileName)) {
+                Map<String, String> manifestAttrs = ArchiveUtils.processArchiveManifest(packageFile);
+                JarContentType jarType = determineJarContentType(manifestAttrs);
+
+                if (!jarType.isSupported()) {
+                    throw new InstallException("ERROR_ARCHIVE_NOT_SUPPORT: " + packageFile.getAbsolutePath()); // TODO
+                                                                                                               // msg?
+                }
+
+                serverPackage = jarType.isServerPackage();
+
+                if (JarContentType.SAMPLE.equals(jarType)) {
+                    String license = ArchiveUtils.getLicenseAgreement(new JarFile(packageFile), manifestAttrs);
+
+//                    if (license != null) {
+//                        sampleLicenses = new HashSet<String>();
+//                        sampleLicenses.add(license);
+//                    }
+                }
+
+            } else if (ArchiveUtils.ArchiveFileType.ZIP.isType(fileName)
+                    || ArchiveUtils.ArchiveFileType.PAX.isType(fileName)) {
+                serverPackage = true;
+            }
+
+            return ReturnCode.OK;
+        }
+
+        private File getValidPackageFile(String fileName) throws InstallException {
+            File f = new File(fileName);
+            if (!f.exists())
+                throw new InstallException(
+                        "ERROR_DEPOLY_SERVER_PACKAGE_FILE_NOTEXIST: " + f.getAbsolutePath());
+            if (f.isDirectory())
+                throw new InstallException("ERROR_DEPOLY_DIRECTORY: " + f.getAbsolutePath());
+            if (isPackage(fileName))
+                return f;
+            throw new InstallException("ERROR_ARCHIVE_NOT_SUPPORT: " + f.getAbsolutePath());
+        }
+
+        boolean isServerPackage() {
+            return this.serverPackage;
+        }
+
+        File getPackageFile() {
+            return this.packageFile;
+        }
+
+        private JarContentType determineJarContentType(Map<String, String> manifestAttrs) {
+            String archiveContentType = manifestAttrs.get(ArchiveUtils.ARCHIVE_CONTENT_TYPE);
+
+            if (ArchiveUtils.ArchiveContentType.INSTALL.isContentType(archiveContentType)) {
+                return JarContentType.INSTALL;
+            } else if (ArchiveUtils.ArchiveContentType.SAMPLE.isContentType(archiveContentType)) {
+                return JarContentType.SAMPLE;
+            } else if (ArchiveUtils.ArchiveContentType.ADDON.isContentType(archiveContentType)) {
+                return JarContentType.ADDON;
+            } else if (ArchiveUtils.ArchiveContentType.OPENSOURCE.isContentType(archiveContentType)) {
+                return JarContentType.OPENSOURCE;
+            } else {
+                return JarContentType.UNKNOWN;
+            }
+        }
+    }
 
     private ExitCode assetInstallInit(Collection<String> assetIds) {
         featureNames.addAll(assetIds);
@@ -125,13 +234,12 @@ public class FeatureInstallAction implements ActionHandler {
 
     private ReturnCode serverInit(String fileName) throws InstallException, IOException {
 
-        File serverXML = (fileName.toLowerCase().endsWith(InstallUtils.SERVER_XML)) ? new File(fileName) : new File(InstallUtils.getServersDir(), fileName + File.separator
-                                                                                                                                                  + InstallUtils.SERVER_XML);
+        File serverXML = (fileName.toLowerCase().endsWith(InstallUtils.SERVER_XML)) ? new File(fileName)
+                : new File(InstallUtils.getServersDir(), fileName + File.separator + InstallUtils.SERVER_XML);
 
         if (!serverXML.isFile()) {
-            throw new InstallException(
-                    Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_UNABLE_TO_FIND_SERVER_XML",
-                            serverXML.getParent()));
+            throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_UNABLE_TO_FIND_SERVER_XML",
+                    serverXML.getParent()));
             // throw new InstallException("Unable to find server.xml file",
             // InstallException.RUNTIME_EXCEPTION);
         }
@@ -140,28 +248,33 @@ public class FeatureInstallAction implements ActionHandler {
 
         return ReturnCode.OK;
     }
-    
+
     private static boolean isServer(String fileName) {
         return new File(InstallUtils.getServersDir(), fileName).isDirectory()
-               || fileName.toLowerCase().endsWith("server.xml");
+                || fileName.toLowerCase().endsWith("server.xml");
+    }
+
+    private boolean isPackage(String fileName) {
+        return ArchiveUtils.ArchiveFileType.ZIP.isType(fileName) || ArchiveUtils.ArchiveFileType.PAX.isType(fileName)
+                || ArchiveUtils.ArchiveFileType.JAR.isType(fileName);
     }
 
     private ReturnCode validateFromDir(String fromDir) {
         if (fromDir == null) {
             return ReturnCode.OK;
         }
-        if(fromDir.isEmpty()) {
+        if (fromDir.isEmpty()) {
             logger.log(Level.SEVERE,
                     Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_TOOL_DIRECTORY_REQUIRED", "from"));
             return ReturnCode.BAD_ARGUMENT;
         }
-        
-        if(!new File(fromDir).exists()) {
+
+        if (!new File(fromDir).exists()) {
             logger.log(Level.SEVERE,
                     Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_TOOL_DIRECTORY_NOT_EXISTS", fromDir));
             return ReturnCode.BAD_ARGUMENT;
         }
-        
+
         return ReturnCode.OK;
     }
 
@@ -189,6 +302,22 @@ public class FeatureInstallAction implements ActionHandler {
         return rc;
     }
 
+    private ReturnCode deployServerPackage() {
+        ReturnCode rc = ReturnCode.OK;
+        try {
+            ServerPackageAsset spa = installKernel.deployServerPackage(installPackage.getPackageFile(), toDir, true);
+            servers.addAll(spa.getServers());
+        } catch (InstallException ie) {
+            logger.log(Level.SEVERE, ie.getMessage(), ie);
+            return FeatureUtilityExecutor.returnCode(ie.getRc());
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, e.getMessage(), e);
+            return ReturnCode.RUNTIME_EXCEPTION;
+        }
+
+        return rc;
+    }
+
     private ExitCode install() {
         try {
             featureUtility = new FeatureUtility.FeatureUtilityBuilder().setFromDir(fromDir).setToExtension(toDir)
@@ -206,7 +335,12 @@ public class FeatureInstallAction implements ActionHandler {
 
     private ExitCode execute() {
         ExitCode rc = ReturnCode.OK;
-        // Second check any newly deployed servers for missing required features
+
+        if (null != installPackage) {
+            rc = deployServerPackage();
+        }
+
+        // check any newly deployed servers for missing required features
         if (!servers.isEmpty()) {
             rc = installServerFeatures();
         }
@@ -214,9 +348,17 @@ public class FeatureInstallAction implements ActionHandler {
             rc = install();
         }
         progressBar.finish();
-        if (!!!validateProduct()) {
-            rc = ReturnCode.INVALID;
+
+        if (ReturnCode.OK.equals(rc)) {
+            if (null != installPackage && installPackage.isServerPackage()) {
+                logger.info("The server package deployed successfully"); // TODO msg
+            }
+
+            if (!!!validateProduct()) {
+                rc = ReturnCode.INVALID;
+            }
         }
+
 
 
 
