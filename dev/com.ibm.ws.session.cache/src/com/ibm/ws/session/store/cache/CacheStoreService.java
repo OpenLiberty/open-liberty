@@ -326,7 +326,7 @@ public class CacheStoreService implements Introspector, SessionStoreService {
             try (PrintStream out = new PrintStream(new BufferedOutputStream(new FileOutputStream(tempConfigFile)))) {
                 out.println("<infinispan>");
                 out.println(" <jgroups>");
-                out.println("  <stack-file name=\"jgroups-tcp\" path=\"/default-configs/default-jgroups-tcp.xml\"/>");
+                out.println("  <stack-file name=\"jgroups-tcp\" path=\"/default-configs/default-jgroups-udp.xml\"/>");
                 out.println(" </jgroups>");
                 out.println(" <cache-container>");
                 out.println("  <transport stack=\"jgroups-tcp\"/>");
