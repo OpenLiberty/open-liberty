@@ -1,0 +1,11 @@
+<infinispan>
+  <jgroups>
+     <stack-file name="jgroups-tcp" path="/default-configs/default-jgroups-tcp.xml"/>
+  </jgroups>
+  
+  <cache-container>
+    <transport stack="jgroups-tcp" />
+    <replicated-cache-configuration name="MyReplicatedCache"/>
+    <invalidation-cache-configuration name="MyInvalidationCache"/>
+  </cache-container>
+</infinispan>
