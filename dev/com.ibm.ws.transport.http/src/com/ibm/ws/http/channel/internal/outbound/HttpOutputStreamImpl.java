@@ -427,18 +427,13 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
     @Override
     @FFDCIgnore({ IOException.class })
     public void flushHeaders() throws IOException {
-        // Try to figure out what is causing an NPE - defect 264444
-        if (null == this.isc) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+        // Extra NPE tracing - defect 264444
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            if (null == this.isc) {
                 Tr.debug(tc, "flushHeaders: isc is null");
-            }
-        } else if (null == this.isc.getResponse()) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            } else if (null == this.isc.getResponse()) {
                 Tr.debug(tc, "flushHeaders: isc.getResponse() is null, isc is " + this.isc);
-            }
-        } else {
-
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            } else {
                 Tr.debug(tc, "flushHeaders: committed=" + this.isc.getResponse().isCommitted(), this.isc, this.isc.getResponse());
             }
         }
