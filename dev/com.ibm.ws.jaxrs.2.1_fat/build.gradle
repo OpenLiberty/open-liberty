@@ -8,15 +8,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-Properties props = new Properties()
-rootProject.file('generated.properties').withInputStream { props.load(it) }
 
 repositories {
-  if ((props.getProperty("artifactory.download.server") != null) && !props.getProperty('artifactory.force.external.repo')) {
+  if (isUsingArtifactory) {
     maven {
       credentials {
-        username props.getProperty("artifactory.download.user")
-        password props.getProperty("artifactory.download.token")
+        username userProps.getProperty("artifactory.download.user")
+        password userProps.getProperty("artifactory.download.token")
       }
       url ("https://na.artifactory.swg-devops.com/artifactory/wasliberty-maven-remote")
     }
