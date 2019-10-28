@@ -76,6 +76,10 @@
         <!-- NO DEFAULT PORT VALUE FOR HTTPS PORT: SPECIFICATION IS OPTIONAL -->
         <AD name="%endpoint.httpsPort" description="%endpoint.httpsPort.desc"
             id="httpsPort" required="false" type="Integer" min="-1" max="65535" />
+            
+        <!-- NO DEFAULT PROTOCOL VERSION VALUE: SPECIFICATION IS OPTIONAL -->
+        <AD name="%endpoint.protocolVersion" description="%endpoint.protocolVersion.desc"
+        	id="protocolVersion" required="false" type="String"/>    
 
         <!--  What should happen if there is a configuration error or the port is already bound? -->    
         <AD id="onError" ibm:variable="onError" name="%onError.name" description="%onError.desc" type="String" ibm:type="onError" default="WARN"> 
