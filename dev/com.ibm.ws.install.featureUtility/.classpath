@@ -10,5 +10,6 @@
 	<classpathentry kind="src" path="/com.ibm.ws.kernel.boot.core"/>
 	<classpathentry kind="src" path="/com.ibm.ws.kernel.feature.cmdline"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.repository.resolver"/>
+	<classpathentry kind="src" path="/com.ibm.ws.product.utility"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

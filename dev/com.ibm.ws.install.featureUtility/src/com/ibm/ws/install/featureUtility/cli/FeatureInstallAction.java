@@ -36,6 +36,11 @@ import com.ibm.ws.kernel.boot.ReturnCode;
 import com.ibm.ws.kernel.boot.cmdline.ActionHandler;
 import com.ibm.ws.kernel.boot.cmdline.Arguments;
 import com.ibm.ws.kernel.boot.cmdline.ExitCode;
+import com.ibm.ws.kernel.provisioning.BundleRepositoryRegistry;
+import com.ibm.ws.product.utility.CommandConsole;
+import com.ibm.ws.product.utility.CommandTaskRegistry;
+import com.ibm.ws.product.utility.ExecutionContext;
+import com.ibm.ws.product.utility.extension.ValidateCommandTask;
 
 public class FeatureInstallAction implements ActionHandler {
 
@@ -208,11 +213,111 @@ public class FeatureInstallAction implements ActionHandler {
         if (ReturnCode.OK.equals(rc) && !featureNames.isEmpty()) {
             rc = install();
         }
-
         progressBar.finish();
+        if (!!!validateProduct()) {
+            rc = ReturnCode.INVALID;
+        }
+
+
 
         return rc;
 
+    }
+
+    private boolean validateProduct() {
+        logger.log(Level.INFO, "");
+        BundleRepositoryRegistry.disposeAll();
+        BundleRepositoryRegistry.initializeDefaults(null, false);
+        ValidateCommandTask vcTask = new ValidateCommandTask();
+        vcTask.setPrintErrorOnly(true);
+        vcTask.setPrintStartMessage(true);
+        vcTask.doExecute(new ExecutionContext() {
+
+            @Override
+            public CommandConsole getCommandConsole() {
+                return new CommandConsole() {
+
+                    @Override
+                    public boolean isInputStreamAvailable() {
+                        return false;
+                    }
+
+                    @Override
+                    public String readMaskedText(String prompt) {
+                        return null;
+                    }
+
+                    @Override
+                    public String readText(String prompt) {
+                        return null;
+                    }
+
+                    @Override
+                    public void printInfoMessage(String message) {
+                        logger.log(Level.INFO, message);
+                    }
+
+                    @Override
+                    public void printlnInfoMessage(String message) {
+                        logger.log(Level.INFO, message);
+                    }
+
+                    @Override
+                    public void printErrorMessage(String errorMessage) {
+                        logger.log(Level.SEVERE, errorMessage);
+                    }
+
+                    @Override
+                    public void printlnErrorMessage(String errorMessage) {
+                        logger.log(Level.SEVERE, errorMessage);
+                    }
+                };
+            }
+
+            @Override
+            public String[] getArguments() {
+                return null;
+            }
+
+            @Override
+            public Set<String> getOptionNames() {
+                return new HashSet<String>();
+            }
+
+            @Override
+            public String getOptionValue(String option) {
+                return null;
+            }
+
+            @Override
+            public boolean optionExists(String option) {
+                return false;
+            }
+
+            @Override
+            public CommandTaskRegistry getCommandTaskRegistry() {
+                return null;
+            }
+
+            @Override
+            public <T> T getAttribute(String name, Class<T> cls) {
+                return null;
+            }
+
+            @Override
+            public Object getAttribute(String name) {
+                return null;
+            }
+
+            @Override
+            public void setAttribute(String name, Object value) {
+            }
+
+            @Override
+            public void setOverrideOutputStream(PrintStream outputStream) {
+            }
+        });
+        return vcTask.isSuccessful();
     }
 
 
