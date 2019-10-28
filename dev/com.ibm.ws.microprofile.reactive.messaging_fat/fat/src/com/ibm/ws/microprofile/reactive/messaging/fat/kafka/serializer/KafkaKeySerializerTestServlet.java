@@ -31,7 +31,7 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.ExtendedKa
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.ExtendedKafkaWriter;
 
 /**
- * Test that the kafka connector acknowledges messages and commits partition offsets correctly
+ * Test that the kafka connector correctly passes on the configured custom serializers and deserializers
  */
 @WebServlet("/kafkaKeySerializerTest")
 public class KafkaKeySerializerTestServlet extends AbstractKafkaTestServlet {
@@ -67,9 +67,9 @@ public class KafkaKeySerializerTestServlet extends AbstractKafkaTestServlet {
     }
 
     /**
-     * Obtain a SimpleKafkaReader for the given topic name
+     * Obtain a ExtendedKafkaReader for the given topic name
      * <p>
-     * The returned reader expects String messages and uses the {@value #TEST_GROUPID} consumer group
+     * The returned reader expects MyData keys and messages and uses the {@value #TEST_GROUPID} consumer group
      *
      * @param topicName the topic to read from
      * @return the reader
@@ -86,9 +86,9 @@ public class KafkaKeySerializerTestServlet extends AbstractKafkaTestServlet {
     }
 
     /**
-     * Obtain a SimpleKafkaWriter for the given topic name
+     * Obtain a ExtendedKafkaReader for the given topic name
      * <p>
-     * The returned writer writes String messages.
+     * The returned writer writes MyData keys and messages.
      *
      * @param topicName the topic to write to
      * @return the writer

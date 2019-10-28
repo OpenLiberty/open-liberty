@@ -22,7 +22,7 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 
 /**
- * An interface for writing messages to a kafka topic.
+ * An interface for writing messages to a kafka topic. The key and message types are dependent on the KafkaProducer which is passed in.
  */
 public class ExtendedKafkaWriter<K, V> implements AutoCloseable {
 

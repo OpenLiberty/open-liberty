@@ -16,9 +16,7 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.RecordMetadata;
 
 /**
- * A simple interface for writing String messages to a kafka topic.
- * <p>
- * This writer is very basic, it only writes String messages.
+ * A simple interface for writing messages to a kafka topic. Although the key type is declared to be String, the keys are always null.
  */
 public class SimpleKafkaWriter<T> extends ExtendedKafkaWriter<String, T> implements AutoCloseable {
 

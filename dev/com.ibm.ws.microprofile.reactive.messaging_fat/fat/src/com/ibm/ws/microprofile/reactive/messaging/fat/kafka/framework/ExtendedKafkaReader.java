@@ -22,7 +22,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 
 /**
- * An interface for reading messages from a Kafka topic
+ * An interface for reading ConsumerRecords from a Kafka topic. The key and message types are dependent on the KafkaConsumer which is passed in.
  * <p>
  * This reader doesn't commit any offsets so each new reader will start reading from the start of the topic.
  */

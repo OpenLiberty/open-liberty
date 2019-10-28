@@ -18,9 +18,9 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 
 /**
- * A simple interface for reading String messages from a Kafka topic
+ * A simple interface for reading messages from a Kafka topic. The keys are assumed to always be Strings.
  * <p>
- * This reader is very basic, it only reads string messages and it doesn't commit any offsets so each new reader will start reading from the start of the topic.
+ * This does not commit any offsets so each new reader will start reading from the start of the topic.
  */
 public class SimpleKafkaReader<T> extends ExtendedKafkaReader<String, T> implements AutoCloseable {
 
@@ -33,13 +33,13 @@ public class SimpleKafkaReader<T> extends ExtendedKafkaReader<String, T> impleme
     }
 
     /**
-     * Poll Kafka until the desired number of records is received
+     * Poll Kafka until the desired number of messages is received
      * <p>
      * May throw an error if there are more than the expected number of records on the topic
      *
      * @param count   the number of records expected
      * @param timeout the amount of time to wait for the expected number of records to be received
-     * @return the list of records received
+     * @return the list of messages received
      */
     public List<T> waitForMessages(int count, Duration timeout) {
         List<ConsumerRecord<String, T>> records = waitForRecords(count, timeout);
