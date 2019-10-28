@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,4 +31,15 @@ import componenttest.topology.impl.LibertyServerFactory;
     OpentracingTCKLauncherMicroProfile.class,
     OpentracingRestClientTCKLauncher.class
 })
-public class FATSuite {}
+public class FATSuite {
+    private static final Class<? extends FATSuite> CLASS = FATSuite.class;
+    private static final String FEATURE_NAME = "com.ibm.ws.opentracing.mock-1.3.mf";
+    private static final String BUNDLE_NAME = "com.ibm.ws.opentracing.mock-1.3.jar";
+
+    @BeforeClass
+    public static void setUp() throws Exception {
+        LibertyServer server = LibertyServerFactory.getLibertyServer("OpentracingTCKServer");
+        server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/" + FEATURE_NAME);
+        server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/" + BUNDLE_NAME);
+    }
+}

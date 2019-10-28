@@ -34,15 +34,16 @@ import componenttest.topology.impl.LibertyServerFactory;
 })
 
 public class FATSuite {
-//    private static final Class<? extends FATSuite> CLASS = FATSuite.class;
-//    private static final String FEATURE_NAME = "com.ibm.ws.opentracing.mock-1.1.mf";
-//    private static final String BUNDLE_NAME = "com.ibm.ws.opentracing.mock-1.1.jar";
-//
-//    @BeforeClass
-//    public static void setUp() throws Exception {
-//        LibertyServer server = LibertyServerFactory.getLibertyServer("OpentracingTCKServer");
-//        server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/" + FEATURE_NAME);
-//        server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/" + BUNDLE_NAME);
-//    }
+    private static final Class<? extends FATSuite> CLASS = FATSuite.class;
+    
+    private static final String FEATURE_NAME = "com.ibm.ws.opentracing.mock-1.1.mf";
+    private static final String BUNDLE_NAME = "com.ibm.ws.opentracing.mock-1.1.jar";
+
+    @BeforeClass
+    public static void setUp() throws Exception {
+        LibertyServer server = LibertyServerFactory.getLibertyServer("OpentracingTCKServer");
+        server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/" + FEATURE_NAME);
+        server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/" + BUNDLE_NAME);
+    }
     
 }
