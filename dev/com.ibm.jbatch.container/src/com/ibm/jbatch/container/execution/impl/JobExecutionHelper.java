@@ -1,13 +1,13 @@
 /*
  * Copyright 2012 International Business Machines Corp.
- * 
+ *
  * See the NOTICE file distributed with this work for additional information
- * regarding copyright ownership. Licensed under the Apache License, 
+ * regarding copyright ownership. Licensed under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -57,7 +57,7 @@ public class JobExecutionHelper {
 
     /**
      * BatchKernelImpl delegates some operations to this class.
-     * 
+     *
      * The ref back is needed to resolve DS service refs maintained by BatchKernelImpl.
      */
     private final BatchKernelImpl batchKernelImpl;
@@ -78,9 +78,9 @@ public class JobExecutionHelper {
 
     /**
      * Note: this method is called on the job submission thread.
-     * 
+     *
      * Updates the jobinstance record with the jobXML and jobname (jobid in jobxml).
-     * 
+     *
      * @return a new RuntimeJobExecution record, ready to be dispatched.
      */
     public RuntimeJobExecution createJobStartExecution(final WSJobInstance jobInstance,
@@ -107,7 +107,7 @@ public class JobExecutionHelper {
             }
 
         } catch (IllegalStateException ie) {
-            // If no execution exists, request came from old dispatch path.  
+            // If no execution exists, request came from old dispatch path.
             jobExec = getPersistenceManagerService().createJobExecution(instanceId, jobParameters, new Date());
             BatchEventsPublisher eventsPublisher = batchKernelImpl.getBatchEventsPublisher();
             if (eventsPublisher != null) {
@@ -121,12 +121,12 @@ public class JobExecutionHelper {
         return new RuntimeJobExecution(topLevelInfo, jobParameters, navigator);
     }
 
-    public RuntimeJobExecution createJobRestartExecution(long jobInstanceId, IJobXMLSource jobXML, Properties restartJobParameters, long executionId)
-                    throws JobRestartException, JobExecutionAlreadyCompleteException, JobExecutionNotMostRecentException, NoSuchJobExecutionException {
+    public RuntimeJobExecution createJobRestartExecution(long jobInstanceId, IJobXMLSource jobXML, Properties restartJobParameters,
+                                                         long executionId) throws JobRestartException, JobExecutionAlreadyCompleteException, JobExecutionNotMostRecentException, NoSuchJobExecutionException {
 
         JobInstanceEntity jobInstance = getPersistenceManagerService().getJobInstance(jobInstanceId);
 
-        // Check if the job XML has not been persisted yet. Could happen if job was stopped before 
+        // Check if the job XML has not been persisted yet. Could happen if job was stopped before
         // any executions were created.
         if (StringUtils.isEmpty(jobInstance.getJobXml())) {
             createFirstExecution(jobInstance, jobXML, restartJobParameters);
@@ -140,7 +140,7 @@ public class JobExecutionHelper {
             logger.fine("On restart execution with jobInstance Id = " + jobInstanceId + ", batchStatus = " + jobInstance.getBatchStatus().name());
         }
 
-        // TODO: we never check the state of the most-recent executionId. if it's still running (STARTED), 
+        // TODO: we never check the state of the most-recent executionId. if it's still running (STARTED),
         //       then we'll end up creating an invalid execution record for the restart.  the invalid execution record will forever remain in state STARTING.
         // Timestamp now = new Timestamp(System.currentTimeMillis());
         JobExecutionEntity newExecution = null;
@@ -156,7 +156,7 @@ public class JobExecutionHelper {
         } else {
             newExecution = getPersistenceManagerService().getJobExecutionMostRecent(jobInstanceId);
             // Check to make sure the executionId belongs to the most recent execution.
-            // If not, another restart may have occurred. So, fail this restart.	
+            // If not, another restart may have occurred. So, fail this restart.
             // Also check to make sure a stop did not come in while the start was on the queue.
             BatchStatus currentBatchStatus = newExecution.getBatchStatus();
             if (newExecution.getExecutionId() != executionId ||
@@ -169,9 +169,7 @@ public class JobExecutionHelper {
             logger.fine("On restartExecution got new execution id = " + newExecution.getExecutionId());
         }
 
-        TopLevelNameInstanceExecutionInfo topLevelInfo = new TopLevelNameInstanceExecutionInfo(navigator.getRootModelElement().getId(),
-                        jobInstanceId,
-                        newExecution.getExecutionId());
+        TopLevelNameInstanceExecutionInfo topLevelInfo = new TopLevelNameInstanceExecutionInfo(navigator.getRootModelElement().getId(), jobInstanceId, newExecution.getExecutionId());
 
         return new RuntimeJobExecution(topLevelInfo, restartJobParameters, restartOnFromLastExecution, navigator);
     }
@@ -213,11 +211,8 @@ public class JobExecutionHelper {
                                                               JSLJob partitionJobModel,
                                                               boolean isRemoteDispatch) throws JobStartException {
 
-        RemotablePartitionKey partitionKey = new RemotablePartitionKey(partitionPlanConfig.getTopLevelNameInstanceExecutionInfo().getExecutionId(),
-                        partitionPlanConfig.getStepName(),
-                        partitionPlanConfig.getPartitionNumber());
+        RemotablePartitionKey partitionKey = new RemotablePartitionKey(partitionPlanConfig.getTopLevelNameInstanceExecutionInfo().getExecutionId(), partitionPlanConfig.getStepName(), partitionPlanConfig.getPartitionNumber());
 
-        getPersistenceManagerService().createPartitionExecution(partitionKey, new Date());
         ModelNavigator<JSLJob> navigator = getResolvedPartitionNavigator(partitionJobModel, partitionPlanConfig.getPartitionPlanProperties());
 
         return new RuntimePartitionExecution(partitionPlanConfig, navigator, isRemoteDispatch);

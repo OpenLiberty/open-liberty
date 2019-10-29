@@ -42,6 +42,7 @@ import com.ibm.jbatch.container.exception.BatchContainerRuntimeException;
 import com.ibm.jbatch.container.exception.BatchIllegalIDPersistedException;
 import com.ibm.jbatch.container.exception.BatchIllegalJobStatusTransitionException;
 import com.ibm.jbatch.container.exception.PersistenceException;
+import com.ibm.jbatch.container.persistence.jpa.RemotablePartitionKey;
 import com.ibm.jbatch.container.ws.BatchInternalDispatcher;
 import com.ibm.jbatch.container.ws.BatchStatusValidator;
 import com.ibm.jbatch.container.ws.BatchSubmitInvalidParametersException;
@@ -50,7 +51,7 @@ import com.ibm.jbatch.container.ws.JobStoppedOnStartException;
 import com.ibm.jbatch.container.ws.PartitionPlanConfig;
 import com.ibm.jbatch.container.ws.PartitionReplyMsg;
 import com.ibm.jbatch.container.ws.PartitionReplyMsg.PartitionReplyMsgType;
-import com.ibm.jbatch.container.ws.RemotablePartitionState;
+import com.ibm.jbatch.container.ws.WSRemotablePartitionState;
 import com.ibm.jbatch.container.ws.WSJobExecution;
 import com.ibm.jbatch.container.ws.WSJobInstance;
 import com.ibm.jbatch.container.ws.WSJobOperator;
@@ -100,7 +101,6 @@ public class BatchJmsEndpointListener implements MessageListener {
      */
     private ConnectionFactory connectionFactory ;
     private BatchOperationGroup batchOperationGroup;
-    private WSJobRepository jobRepository;
    
     /*
      * @param ConnectionFactory configured to use the partition queue
@@ -109,7 +109,6 @@ public class BatchJmsEndpointListener implements MessageListener {
         
         // track the batch operation group name(s)
         this.batchOperationGroup = batchOpGrp;
-        this.jobRepository = jobRepo;
         this.connectionFactory = cf;
     }
     
@@ -372,6 +371,23 @@ public class BatchJmsEndpointListener implements MessageListener {
             if (!isJobExecutionMostRecent(jobExecutionId)) {
                 if(tc.isDebugEnabled()) {
                     Tr.debug(BatchJmsEndpointListener.this, tc, "Exiting since execution Id = " + jobExecutionId + " was not the newest.");
+                }
+                return;
+            }
+
+            RemotablePartitionKey rpKey = new RemotablePartitionKey(jobExecutionId, config.getStepName(), config.getPartitionNumber());
+            WSRemotablePartitionState rpState = jobRepositoryProxy.getRemotablePartitionInternalState(rpKey);
+            if (rpState == null) {
+                if(tc.isDebugEnabled()) {
+                    Tr.debug(BatchJmsEndpointListener.this, tc, "Ignore, RP table maybe not created");
+                }
+            } else if (!rpState.equals(WSRemotablePartitionState.QUEUED)) {
+                // It might seem like we should have more locking around the state transition.  However even if we were to let two
+                // threads through, the DB constraint would only allow one to create the partition-level STEPTHREADEXECUTION entry.
+                // So there would be some noise and possible failure even, but not the double execution of this partition.   So we do
+                // this simple check.
+                if(tc.isDebugEnabled()) {
+                    Tr.debug(BatchJmsEndpointListener.this, tc, "Exiting since WSRemotablePartitionState = " + rpState);
                 }
                 return;
             }

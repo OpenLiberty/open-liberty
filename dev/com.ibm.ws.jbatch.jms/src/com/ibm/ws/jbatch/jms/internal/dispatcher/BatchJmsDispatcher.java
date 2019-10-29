@@ -54,7 +54,7 @@ import com.ibm.jbatch.container.ws.BatchJobNotLocalException;
 import com.ibm.jbatch.container.ws.InstanceState;
 import com.ibm.jbatch.container.ws.PartitionPlanConfig;
 import com.ibm.jbatch.container.ws.PartitionReplyQueue;
-import com.ibm.jbatch.container.ws.RemotablePartitionState;
+import com.ibm.jbatch.container.ws.WSRemotablePartitionState;
 import com.ibm.jbatch.container.ws.WSJobExecution;
 import com.ibm.jbatch.container.ws.WSJobInstance;
 import com.ibm.jbatch.container.ws.WSJobRepository;
@@ -744,7 +744,7 @@ public class BatchJmsDispatcher implements BatchDispatcher {
                                       securityContext,
                                       (PartitionReplyQueueJms)partitionReplyQueue);
             
-            jobRepository.createRemotablePartition(partitionPlanConfig.getTopLevelExecutionId(), partitionPlanConfig.getStepName(), partitionPlanConfig.getPartitionNumber(), RemotablePartitionState.QUEUED);
+            jobRepository.createRemotablePartition(partitionKey);
             
             // TODO: publish partition event?
 

@@ -348,12 +348,6 @@ public abstract class AbstractPersistenceManager implements IPersistenceManagerS
     }
 
     @Override
-    public RemotablePartitionEntity createPartitionExecution(
-                                                             RemotablePartitionKey partitionKey, Date createTime) {
-        return null;
-    }
-
-    @Override
     public RemotablePartitionEntity updatePartitionExecutionLogDir(
                                                                    RemotablePartitionKey key, String logDirPath) {
         return null;

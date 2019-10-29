@@ -14,6 +14,6 @@ package com.ibm.jbatch.container.ws;
  * @author skurz
  *
  */
-public enum RemotablePartitionState {
+public enum WSRemotablePartitionState {
     QUEUED, CONSUMED, RECOVERED
 }

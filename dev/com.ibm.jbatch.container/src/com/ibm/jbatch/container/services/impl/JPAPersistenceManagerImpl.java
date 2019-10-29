@@ -78,9 +78,9 @@ import com.ibm.jbatch.container.util.WSStepThreadExecutionAggregateImpl;
 import com.ibm.jbatch.container.validation.IdentifierValidator;
 import com.ibm.jbatch.container.ws.BatchLocationService;
 import com.ibm.jbatch.container.ws.InstanceState;
-import com.ibm.jbatch.container.ws.RemotablePartitionState;
 import com.ibm.jbatch.container.ws.WSPartitionStepAggregate;
 import com.ibm.jbatch.container.ws.WSPartitionStepThreadExecution;
+import com.ibm.jbatch.container.ws.WSRemotablePartitionState;
 //import com.ibm.jbatch.container.ws.WSSearchObject;
 import com.ibm.jbatch.container.ws.WSStepThreadExecutionAggregate;
 import com.ibm.jbatch.container.ws.impl.WSStartupRecoveryServiceImpl;
@@ -1608,40 +1608,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
     }
 
     @Override
-    public RemotablePartitionEntity updateRemotablePartitionInternalState(final long jobExecId, final String stepName, final int partitionNum,
-                                                                          final RemotablePartitionState internalStatus) {
-        // Just ignore if we don't have the remotable partition table
-        if (partitionVersion < 2) {
-            return null;
-        }
-
-        EntityManager em = getPsu().createEntityManager();
-        try {
-            return new TranRequest<RemotablePartitionEntity>(em) {
-                @Override
-                public RemotablePartitionEntity call() {
-
-                    RemotablePartitionKey partitionKey = new RemotablePartitionKey(jobExecId, stepName, partitionNum);
-                    RemotablePartitionEntity partition = entityMgr.find(RemotablePartitionEntity.class, partitionKey);
-
-                    //For backward compatibility, this can be null
-                    if (partition != null) {
-                        //It can be null because if the partition dispatcher is older version, there won't be any remotable partition
-                        partition.setRestUrl(batchLocationService.getBatchRestUrl());
-                        partition.setServerId(batchLocationService.getServerId());
-                        partition.setInternalStatus(internalStatus);
-                        partition.setLastUpdated(new Date());
-                    }
-                    return partition;
-                }
-            }.runInNewOrExistingGlobalTran();
-        } finally {
-            em.close();
-        }
-    }
-
-    @Override
-    public RemotablePartitionEntity createRemotablePartition(final long jobExecId, final String stepName, final int partitionNum, final RemotablePartitionState partitionState) {
+    public RemotablePartitionEntity createRemotablePartition(final RemotablePartitionKey remotablePartitionKey) {
 
         // Simply ignore if we don't have the remotable partition table
         if (partitionVersion < 2) {
@@ -1656,14 +1623,14 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                 @Override
                 public RemotablePartitionEntity call() {
 
-                    final JobExecutionEntity jobExecution = entityMgr.find(JobExecutionEntity.class, jobExecId);
+                    final JobExecutionEntity jobExecution = entityMgr.find(JobExecutionEntity.class, remotablePartitionKey.getJobExec());
                     if (jobExecution == null) {
-                        throw new IllegalStateException("Didn't find JobExecutionEntity associated with value: " + jobExecId);
+                        throw new IllegalArgumentException("Didn't find JobExecutionEntity associated with value: " + remotablePartitionKey.getJobExec());
                     }
 
                     // 2. Construct and initialize new entity instances
-                    final RemotablePartitionEntity remotablePartition = new RemotablePartitionEntity(jobExecution, stepName, partitionNum);
-                    remotablePartition.setInternalStatus(partitionState);
+                    final RemotablePartitionEntity remotablePartition = new RemotablePartitionEntity(jobExecution, remotablePartitionKey);
+                    remotablePartition.setInternalStatus(WSRemotablePartitionState.QUEUED);
                     remotablePartition.setLastUpdated(new Date());
                     entityMgr.persist(remotablePartition);
                     return remotablePartition;
@@ -1737,7 +1704,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                             remotablePartition.setStepExecution(stepExecution);
                             remotablePartition.setRestUrl(batchLocationService.getBatchRestUrl());
                             remotablePartition.setServerId(batchLocationService.getServerId());
-                            remotablePartition.setInternalStatus(RemotablePartitionState.CONSUMED);
+                            remotablePartition.setInternalStatus(WSRemotablePartitionState.CONSUMED);
                             remotablePartition.setLastUpdated(new Date());
                         }
                     }
@@ -1879,7 +1846,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                             remotablePartition.setStepExecution(newStepExecution);
                             remotablePartition.setRestUrl(batchLocationService.getBatchRestUrl());
                             remotablePartition.setServerId(batchLocationService.getServerId());
-                            remotablePartition.setInternalStatus(RemotablePartitionState.CONSUMED);
+                            remotablePartition.setInternalStatus(WSRemotablePartitionState.CONSUMED);
                             remotablePartition.setLastUpdated(new Date());
                         }
                     }
@@ -2261,7 +2228,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                 public RemotablePartitionEntity call() {
                     RemotablePartitionKey key = new RemotablePartitionKey(partition);
                     RemotablePartitionEntity remotablePartition = entityMgr.find(RemotablePartitionEntity.class, key);
-                    remotablePartition.setInternalStatus(RemotablePartitionState.RECOVERED);
+                    remotablePartition.setInternalStatus(WSRemotablePartitionState.RECOVERED);
                     remotablePartition.setLastUpdated(new Date());
                     return remotablePartition;
                 }
@@ -3176,6 +3143,34 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
     @Override
     public Integer getStepThreadExecutionEntityVersionField() {
         return partitionVersion;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public WSRemotablePartitionState getRemotablePartitionInternalState(final RemotablePartitionKey remotablePartitionKey) {
+
+        // Simply ignore if we don't have the remotable partition table
+        if (partitionVersion < 2) {
+            return null;
+        }
+
+        final EntityManager em = getPsu().createEntityManager();
+        try {
+            RemotablePartitionEntity rp = new TranRequest<RemotablePartitionEntity>(em) {
+                @Override
+                public RemotablePartitionEntity call() throws Exception {
+                    RemotablePartitionEntity rp = em.find(RemotablePartitionEntity.class, remotablePartitionKey);
+                    if (rp == null) {
+                        throw new IllegalArgumentException("No remotable partition found for rp key = " + remotablePartitionKey);
+                    }
+                    return rp;
+                }
+            }.runInNewOrExistingGlobalTran();
+
+            return rp.getInternalStatus();
+        } finally {
+            em.close();
+        }
     }
 
 }

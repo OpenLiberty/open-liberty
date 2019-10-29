@@ -35,15 +35,16 @@ import com.ibm.jbatch.container.RASConstants;
 import com.ibm.jbatch.container.exception.BatchIllegalJobStatusTransitionException;
 import com.ibm.jbatch.container.exception.ExecutionAssignedToServerException;
 import com.ibm.jbatch.container.persistence.jpa.JobInstanceEntity;
+import com.ibm.jbatch.container.persistence.jpa.RemotablePartitionKey;
 import com.ibm.jbatch.container.services.IJPAQueryHelper;
 import com.ibm.jbatch.container.services.IPersistenceManagerService;
 import com.ibm.jbatch.container.ws.InstanceState;
-import com.ibm.jbatch.container.ws.RemotablePartitionState;
 import com.ibm.jbatch.container.ws.WSBatchAuthService;
 import com.ibm.jbatch.container.ws.WSJobExecution;
 import com.ibm.jbatch.container.ws.WSJobInstance;
 import com.ibm.jbatch.container.ws.WSJobRepository;
 import com.ibm.jbatch.container.ws.WSRemotablePartitionExecution;
+import com.ibm.jbatch.container.ws.WSRemotablePartitionState;
 import com.ibm.jbatch.container.ws.WSStepThreadExecutionAggregate;
 import com.ibm.jbatch.spi.BatchSecurityHelper;
 
@@ -365,15 +366,13 @@ public class WSJobRepositoryImpl implements WSJobRepository {
     }
 
     @Override
-    public WSRemotablePartitionExecution createRemotablePartition(long jobExecutionId, String stepName,
-                                                                  int partitionNumber, RemotablePartitionState internalState) {
-        return persistenceManagerService.createRemotablePartition(jobExecutionId, stepName, partitionNumber, internalState);
+    public WSRemotablePartitionExecution createRemotablePartition(RemotablePartitionKey remotablePartitionKey) {
+        return persistenceManagerService.createRemotablePartition(remotablePartitionKey);
     }
 
     @Override
-    public WSRemotablePartitionExecution updateRemotablePartitionInternalState(long jobExecutionId, String stepName,
-                                                                               int partitionNumber, RemotablePartitionState internalState) {
-        return persistenceManagerService.updateRemotablePartitionInternalState(jobExecutionId, stepName, partitionNumber, internalState);
+    public WSRemotablePartitionState getRemotablePartitionInternalState(RemotablePartitionKey remotablePartitionKey) {
+        return persistenceManagerService.getRemotablePartitionInternalState(remotablePartitionKey);
     }
 
     /**

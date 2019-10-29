@@ -46,7 +46,8 @@ import com.ibm.jbatch.container.persistence.jpa.TopLevelStepExecutionEntity;
 import com.ibm.jbatch.container.persistence.jpa.TopLevelStepInstanceEntity;
 import com.ibm.jbatch.container.persistence.jpa.TopLevelStepInstanceKey;
 import com.ibm.jbatch.container.ws.InstanceState;
-import com.ibm.jbatch.container.ws.RemotablePartitionState;
+import com.ibm.jbatch.container.ws.WSRemotablePartitionExecution;
+import com.ibm.jbatch.container.ws.WSRemotablePartitionState;
 import com.ibm.jbatch.container.ws.WSStepThreadExecutionAggregate;
 import com.ibm.jbatch.spi.services.IBatchServiceBase;
 
@@ -489,12 +490,6 @@ public interface IPersistenceManagerService extends IBatchServiceBase {
     public RemotableSplitFlowEntity updateSplitFlowExecutionLogDir(RemotableSplitFlowKey key, String logDirPath);
 
     /**
-     * @param partitionKey
-     * @return
-     */
-    public RemotablePartitionEntity createPartitionExecution(RemotablePartitionKey partitionKey, Date createTime);
-
-    /**
      * @param key
      * @param logDirPath
      */
@@ -517,20 +512,6 @@ public interface IPersistenceManagerService extends IBatchServiceBase {
      *
      */
     public List<JobInstanceEntity> getJobInstances(IJPAQueryHelper queryHelper, int page, int pageSize);
-
-    /**
-     * Creates an entry for this remote partition in the RemotablePartition table
-     */
-    RemotablePartitionEntity createRemotablePartition(long jobExecId,
-                                                      String stepName, int partitionNum,
-                                                      RemotablePartitionState partitionState);
-
-    /**
-     * updates an entry for this remote partition in the RemotablePartition table with given internalStatus
-     */
-    RemotablePartitionEntity updateRemotablePartitionInternalState(
-                                                                   long jobExecId, String stepName, int partitionNum,
-                                                                   RemotablePartitionState internalStatus);
 
     /**
      * @return
@@ -591,4 +572,16 @@ public interface IPersistenceManagerService extends IBatchServiceBase {
      * @return List of partition numbers, sorted low partition number to high, of related partitions in the recovery state.
      */
     public List<Integer> getRemotablePartitionsRecoveredForStepExecution(long topLevelStepExecutionId);
+
+    /**
+     * @param remotablePartitionKey
+     * @return
+     */
+    public WSRemotablePartitionExecution createRemotablePartition(RemotablePartitionKey remotablePartitionKey);
+
+    /**
+     * @param remotablePartitionKey
+     * @return
+     */
+    public WSRemotablePartitionState getRemotablePartitionInternalState(RemotablePartitionKey remotablePartitionKey);
 }
