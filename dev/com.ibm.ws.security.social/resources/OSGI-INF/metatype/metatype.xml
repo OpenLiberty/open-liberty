@@ -279,7 +279,39 @@
     <Designate pid="com.ibm.ws.security.social.linkedin">
         <Object ocdref="com.ibm.ws.security.social.linkedin.metatype" />
     </Designate>
-        
+
+    <OCD id="com.ibm.ws.security.social.openshift.metatype" name="%social.openshift.conf" description="%social.openshift.conf.desc"
+         ibm:alias="openshiftLogin" ibm:beta="true" >
+        <AD id="id" name="internal" description="internal use only"
+            required="false" type="String" default="openshiftLogin" ibm:final="true" ibm:unique="uniqueId"/>
+        <AD id="clientId" name="%clientId" description="%clientId.desc"
+            required="true" type="String" />
+        <AD id="clientSecret" name="%clientSecret" description="%clientSecret.desc"
+            required="true" type="String" ibm:type="password" />
+        <AD id="serviceAccountToken" name="%serviceAccountToken" description="%serviceAccountToken.desc"
+            required="true" type="String" ibm:type="password" />
+        <AD id="oauthServer" name="%oauthServer" description="%oauthServer.desc"
+            required="false" type="String" default="https://openshift.default.svc" />
+        <AD id="useAccessTokenFromRequest" name="%useAccessTokenFromRequest" description="%useAccessTokenFromRequest.desc"
+            required="false" type="String" default="ifPresent">
+            <Option label="%useAccessTokenFromRequest.no" value="no" />
+            <Option label="%useAccessTokenFromRequest.required" value="required" />
+            <Option label="%useAccessTokenFromRequest.ifPresent" value="ifPresent" />
+        </AD>
+        <AD id="tokenHeaderName" name="%tokenHeaderName" description="%tokenHeaderName.desc"
+            required="false" type="String" />
+        <AD id="authFilterRef" name="%authFilterRef" description="%authFilterRef.desc" ibm:type="pid"
+             ibm:reference="com.ibm.ws.security.authentication.filter" required="false" type="String"  />
+        <AD id="jwt" ibm:type="pid" ibm:reference="com.ibm.ws.security.social.login.jwt"
+             required="false" type="String" />
+        <!-- redirectToRPHostAndPort needed? -->
+        <AD id="redirectToRPHostAndPort" name="internal" description="internal use only" required="false" type="String" />
+    </OCD>
+
+    <Designate pid="com.ibm.ws.security.social.openshift">
+        <Object ocdref="com.ibm.ws.security.social.openshift.metatype" />
+    </Designate>
+
     <OCD id="com.ibm.ws.security.social.oauth2login.metatype" name="%social.oauth2login.conf" description="%social.oauth2login.conf.desc" 
          ibm:alias="oauth2Login">
         <AD id="id" name="%uniqueId" description="%uniqueId.desc"
