@@ -22,14 +22,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.config.ConfigElementList;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.wim.ContextPool;
 import com.ibm.websphere.simplicity.config.wim.FailoverServers;
 import com.ibm.websphere.simplicity.config.wim.LdapCache;
 import com.ibm.websphere.simplicity.config.wim.LdapRegistry;
 import com.ibm.websphere.simplicity.config.wim.SearchResultsCache;
-import com.ibm.websphere.simplicity.config.wim.Server;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.com.unboundid.InMemoryLDAPServer;
 import com.ibm.ws.security.registry.test.UserRegistryServletConnection;
@@ -71,7 +69,7 @@ public class LdapFailoverTest {
     public static void setupClass() throws Exception {
         setupLibertyServer();
         setupLdapServers();
-        updateLibertyServer();
+        updateLibertyServer(true, 1);
     }
 
     /**
@@ -164,7 +162,7 @@ public class LdapFailoverTest {
         }
     }
 
-    private static void updateLibertyServer() throws Exception {
+    private static void updateLibertyServer(Boolean returnToPrimaryServer, Integer PrimaryServerQueryTimeInterval) throws Exception {
         ServerConfiguration server = emptyConfiguration.clone();
 
         LdapRegistry ldap = new LdapRegistry();
@@ -178,16 +176,13 @@ public class LdapFailoverTest {
         ldap.setBindPassword(InMemoryLDAPServer.getBindPassword());
         ldap.setLdapType("Custom");
         ldap.setContextPool(new ContextPool(true, 1, 0, 3, "0s", "3000s"));
-        FailoverServers failover = new FailoverServers();
-        failover.setName("failoverLdapServers");
-        ConfigElementList<Server> servers = new ConfigElementList<Server>();
-        servers.add(new Server("localhost", String.valueOf(ds2.getLdapPort())));
-        failover.setServers(servers);
+        FailoverServers failover = new FailoverServers("failoverLdapServers", new String[][] { { "localhost", String.valueOf(ds2.getListenPort()) } });
         ldap.setFailoverServer(failover);
+        ldap.setReturnToPrimaryServer(returnToPrimaryServer);
         SearchResultsCache src = new SearchResultsCache();
         src.setEnabled(false); // disable search cache so we can look up the same user over and over again
         ldap.setLdapCache(new LdapCache(null, src));
-        ldap.setPrimaryServerQueryTimeInterval(1);
+        ldap.setPrimaryServerQueryTimeInterval(PrimaryServerQueryTimeInterval);
         server.getLdapRegistries().add(0, ldap);
         updateConfigDynamically(libertyServer, server);
 
@@ -216,16 +211,90 @@ public class LdapFailoverTest {
         ds1.shutDown();
         String returnUser = servlet.checkPassword(USER_DN, PWD);
         assertNotNull("Should find user on checkPassword using " + USER_DN, returnUser);
-
         /* restarting the primary server */
         ds1.getLdapServer().startListening();
-        Thread.sleep(61000L);
+        Thread.sleep(120000L);
         libertyServer.setMarkToEndOfLog(libertyServer.getMostRecentTraceFile());
         returnUser = servlet.checkPassword(USER_DN, PWD);
         assertNotNull("Should find user on checkPassword using " + USER_DN, returnUser);
         List<String> trMsgs = libertyServer.findStringsInLogsAndTraceUsingMark(primaryServerJNDICall);
         System.out.println("errMsgs: " + trMsgs.toString());
         assertFalse("Should find: " + primaryServerJNDICall, trMsgs.isEmpty());
+    }
+
+    /**
+     * Check if the returnPrimaryServer and primaryServerQueryInterval are working as designed. This test will shut
+     * down the primary server, wait for the time interval specified in the PrimaryServerQueryInterval, then turn the
+     * primary server back on
+     *
+     * @throws Exception If there was an unexpected exception.
+     */
+    @Test
+    @ExpectedFFDC(value = "javax.naming.CommunicationException")
+    public void testNotReturnToPrimaryServer() throws Exception {
+        updateLibertyServer(false, 1);
+        String primaryServerJNDICall = "JNDI_CALL search\\(Name,String,SearchControls\\) \\[ldap://localhost:" + String.valueOf(ds2.getListenPort()) + "\\]";
+
+//        ServerConfiguration config = libertyServer.getServerConfiguration();
+//        ConfigElementList<LdapRegistry> ldaps = config.getLdapRegistries();
+//        LdapRegistry ldap = null;
+//        if (!ldaps.isEmpty() && ldaps.size() == 1) {
+//            ldap = ldaps.get(0);
+//        }
+
+        /* shutting the primary server down */
+        ds1.shutDown();
+        String returnUser = servlet.checkPassword(USER_DN, PWD);
+        assertNotNull("Should find user on checkPassword using " + USER_DN, returnUser);
+
+        /* restarting the primary server */
+        ds1.getLdapServer().startListening();
+        Thread.sleep(120000L);
+        libertyServer.setMarkToEndOfLog(libertyServer.getMostRecentTraceFile());
+        returnUser = servlet.checkPassword(USER_DN, PWD);
+        assertNotNull("Should find user on checkPassword using " + USER_DN, returnUser);
+        List<String> trMsgs = libertyServer.findStringsInLogsAndTraceUsingMark(primaryServerJNDICall);
+        System.out.println("errMsgs: " + trMsgs.toString());
+        assertFalse("Should find: " + primaryServerJNDICall, trMsgs.isEmpty());
+        updateLibertyServer(true, 1);
+    }
+
+    /**
+     * Check if the returnPrimaryServer and primaryServerQueryInterval are working as designed. This test will shut
+     * down the primary server, wait for the time interval specified in the PrimaryServerQueryInterval, then turn the
+     * primary server back on
+     *
+     * @throws Exception If there was an unexpected exception.
+     */
+    @Test
+    @ExpectedFFDC(value = "javax.naming.CommunicationException")
+    public void testNotReturnEarly() throws Exception {
+        updateLibertyServer(true, 15);
+        String primaryServerJNDICall = "JNDI_CALL search\\(Name,String,SearchControls\\) \\[ldap://localhost:" + String.valueOf(ds2.getListenPort()) + "\\]";
+
+//        ServerConfiguration config = libertyServer.getServerConfiguration();
+//        ConfigElementList<LdapRegistry> ldaps = config.getLdapRegistries();
+//        LdapRegistry ldap = null;
+//        if (!ldaps.isEmpty() && ldaps.size() == 1) {
+//            ldap = ldaps.get(0);
+//        }
+
+        /* shutting the primary server down */
+        ds1.shutDown();
+        String returnUser = servlet.checkPassword(USER_DN, PWD);
+        assertNotNull("Should find user on checkPassword using " + USER_DN, returnUser);
+
+        /* restarting the primary server */
+        ds1.getLdapServer().startListening();
+        Thread.sleep(61000L);
+        libertyServer.setMarkToEndOfLog(libertyServer.getMostRecentTraceFile());
+        Thread.sleep(5000L);
+        returnUser = servlet.checkPassword(USER_DN, PWD);
+        assertNotNull("Should find user on checkPassword using " + USER_DN, returnUser);
+        List<String> trMsgs = libertyServer.findStringsInLogsAndTraceUsingMark(primaryServerJNDICall);
+        System.out.println("errMsgs: " + trMsgs.toString());
+        assertFalse("Should find: " + primaryServerJNDICall, trMsgs.isEmpty());
+        updateLibertyServer(true, 1);
     }
 
 }
