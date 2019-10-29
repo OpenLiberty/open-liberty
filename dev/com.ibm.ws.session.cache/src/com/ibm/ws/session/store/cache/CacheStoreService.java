@@ -11,13 +11,12 @@
 package com.ibm.ws.session.store.cache;
 
 import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.management.ManagementFactory;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -29,7 +28,7 @@ import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Properties;
@@ -54,9 +53,24 @@ import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 import javax.servlet.ServletContext;
 import javax.transaction.UserTransaction;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -318,11 +332,13 @@ public class CacheStoreService implements Introspector, SessionStoreService {
      * @return URI for generated Infinispan config. If no changes are needed, returns the original URI.
      */
     private URI generateOrUpdateInfinispanConfig(URI configuredURI) throws URISyntaxException, IOException {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+
         if (configuredURI == null) {
             tempConfigFile = File.createTempFile("infinispan", ".xml");
             tempConfigFile.setReadable(true);
             tempConfigFile.setWritable(true);
-            // TODO determine correct config to generate based on where/how this is running.
+            // TODO determine the best config to generate based on where/how this is running?
             try (PrintStream out = new PrintStream(new BufferedOutputStream(new FileOutputStream(tempConfigFile)))) {
                 out.println("<infinispan>");
                 out.println(" <jgroups>");
@@ -337,27 +353,88 @@ public class CacheStoreService implements Introspector, SessionStoreService {
             return tempConfigFile.toURI();
         }
 
-        // TODO parse the XML to determine if updates are needed
-        List<String> lines = new ArrayList<String>();
-        URLConnection con = configuredURI.toURL().openConnection();
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()))) {
-            for (String line; (line = reader.readLine()) != null; )
-                lines.add(line);
-        }
+        // Determine if changes are needed to provided Infinispan configuration
+        try {
+            URLConnection con = configuredURI.toURL().openConnection();
+            DocumentBuilder docbuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            Document doc = docbuilder.parse(con.getInputStream());
 
-        if (true) { // TODO only write new file if configuration is not already present
+            LinkedList<Node> cacheContainers = new LinkedList<Node>();
+            LinkedList<Node> elements = new LinkedList<Node>();
+            elements.add(doc);
+            for (Node element; (element = elements.poll()) != null;) {
+                NodeList children = element.getChildNodes();
+                for (int i = children.getLength() - 1; i >= 0; i--) {
+                    Node child = children.item(i);
+                    if (child.getNodeType() == Node.ELEMENT_NODE)
+                        elements.add(child);
+                }
+
+                String elementName = element.getNodeName().toLowerCase();
+                if ("cache-container".equalsIgnoreCase(elementName))
+                    cacheContainers.add(element);
+
+                NamedNodeMap attributes = element.getAttributes();
+                if (attributes != null)
+                    for (int i = attributes.getLength() - 1; i >= 0; i--) {
+                        // Leave existing Infinispan config as is if already configured for the com.ibm.ws.session cache names.
+                        Node attribute = attributes.getNamedItem("name");
+                        if (attribute != null) {
+                            String attributeValue = attribute.getNodeValue();
+                            if (attributeValue != null
+                                        && (elementName.endsWith("-cache") || elementName.endsWith("-cache-configuration"))
+                                        && attributeValue.contains("com.ibm.ws.session.")) {
+                                if (trace && tc.isDebugEnabled())
+                                    Tr.debug(this, tc, "No changes due to " + elementName + " name=" + attributeValue);
+                                return configuredURI;
+                            }
+                            // TODO other wild-carded values that match any of:
+                            // com.ibm.ws.session.attr.???
+                            // com.ibm.ws.session.meta.???
+                        }
+                    }
+            }
+
+            // A cache name matching com.ibm.ws.session.* was not found in the provided configuration. Add it to cache-container.
+            for (Node cacheContainer : cacheContainers) {
+                // TODO determine the best config to generate based on where/how this is running?
+                Element replicatedCacheConfig = doc.createElement("replicated-cache-configuration");
+                Attr nameAttribute = doc.createAttribute("name");
+                nameAttribute.setNodeValue("com.ibm.ws.session.*");
+                replicatedCacheConfig.setAttributeNode(nameAttribute);
+                cacheContainer.appendChild(replicatedCacheConfig);
+            }
+
+            if (cacheContainers.isEmpty()) {
+                // Infinispan config is likely invalid. Let Infinispan deal with this.
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "No cache-container was found");
+                return configuredURI;
+            }
+
             tempConfigFile = File.createTempFile("infinispan", ".xml");
             tempConfigFile.setReadable(true);
             tempConfigFile.setWritable(true);
             tempConfigFile.deleteOnExit();
-            try (PrintStream out = new PrintStream(new BufferedOutputStream(new FileOutputStream(tempConfigFile)))) {
-                for (String line : lines)
-                    out.println(line);
+
+            StreamResult uriResult = new StreamResult(new FileOutputStream(tempConfigFile));
+            Transformer transformer = TransformerFactory.newInstance().newTransformer();
+            DOMSource source = new DOMSource(doc);
+            transformer.transform(source, uriResult);
+
+            if (trace && tc.isDebugEnabled()) {
+                // TODO: will likely need to stop tracing this due to concern about passwords or other sensitive information being logged
+                StringWriter sw = new StringWriter();
+                StreamResult loggableResult = new StreamResult(sw);
+                transformer.transform(source, loggableResult);
+                Tr.debug(this, tc, "generateOrUpdateInfinispanConfig", tempConfigFile, sw.toString());
             }
             return tempConfigFile.toURI();
+        } catch (ParserConfigurationException | SAXException | TransformerException x) {
+            if (trace && tc.isDebugEnabled())
+                Tr.debug(this, tc, "unable to enhance Infinispan config", x);
+            return configuredURI;
         }
-
-        return configuredURI;
     }
 
     @Override
