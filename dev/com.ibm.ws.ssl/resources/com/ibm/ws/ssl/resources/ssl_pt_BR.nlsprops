@@ -763,3 +763,19 @@ ssl.client.handshake.error.CWPKI0824E.useraction=Quando a verifica\u00e7\u00e3o 
 ativada, o servidor que est\u00e1 sendo acessado precisa ser configurado com um certificado que contenha as \
 informa\u00e7\u00f5es apropriadas necess\u00e1rias para verificar a identidade do servidor.
 # -------------------------------------------------------------------------------------------------
+ssl.cacerts.error.CWPKI0825W=CWPKI0825W: O atributo trustDefaultCerts est\u00e1 ativado, mas o armazenamento confi\u00e1vel padr\u00e3o falhou ao inicializar. Como o armazenamento confi\u00e1vel padr\u00e3o n\u00e3o foi inicializado, apenas o armazenamento confi\u00e1vel configurado pela configura\u00e7\u00e3o de SSL {0} \u00e9 usado. A exce\u00e7\u00e3o que \u00e9 retornada \u00e9: {1}. 
+ssl.cacerts.error.CWPKI0825W.explanation=O armazenamento confi\u00e1vel padr\u00e3o n\u00e3o foi inicializado porque ele n\u00e3o p\u00f4de ser recuperado do gerenciador de confian\u00e7a. O armazenamento confi\u00e1vel padr\u00e3o n\u00e3o \u00e9 usado para confian\u00e7a. Somente a configura\u00e7\u00e3o SSL definida \u00e9 usada.
+ssl.cacerts.error.CWPKI0825W.useraction=Assegure-se de que o arquivo de armazenamento confi\u00e1vel padr\u00e3o exista e esteja acess\u00edvel
+# -------------------------------------------------------------------------------------------------
+ssl.environment.cert.error.CWPKI0826W=CWPKI0826W: O certificado n\u00e3o foi recuperado da vari\u00e1vel de ambiente {0}. O certificado n\u00e3o foi inclu\u00eddo no armazenamento confi\u00e1vel do {1}.  A exce\u00e7\u00e3o que \u00e9 retornada \u00e9: {2}.
+ssl.environment.cert.error.CWPKI0826W.explanation=O certificado que \u00e9 especificado na vari\u00e1vel de ambiente n\u00e3o pode ser acessado e n\u00e3o est\u00e1 inclu\u00eddo no armazenamento confi\u00e1vel. Esse problema pode ser causado pela vari\u00e1vel de ambiente, pelo nome do arquivo ou pelo certificado. Uma falha ao incluir o certificado n\u00e3o invalida a configura\u00e7\u00e3o do SSL, mas pode causar problemas ao estabelecer confian\u00e7a nas conex\u00f5es de sa\u00edda.
+ssl.environment.cert.error.CWPKI0826W.useraction=Esse problema pode resultar de v\u00e1rias causas. Verifique se a vari\u00e1vel de ambiente ou o arquivo est\u00e1 preenchido com um certificado b\u00e1sico de 64 bits.
+# -------------------------------------------------------------------------------------------------
+ssl.using.cacerts.CWPKI0827I=CWPKI0827I: A configura\u00e7\u00e3o de SSL {0} usa o armazenamento confi\u00e1vel padr\u00e3o, al\u00e9m do armazenamento confi\u00e1vel configurado.
+ssl.using.cacerts.CWPKI0827I.explanation=O armazenamento confi\u00e1vel padr\u00e3o e o armazenamento confi\u00e1vel que est\u00e1 configurado para a configura\u00e7\u00e3o SSL s\u00e3o ambos usados para confian\u00e7a.
+ssl.using.cacerts.CWPKI0827I.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+# -------------------------------------------------------------------------------------------------
+ssl.client.handshake.cacerts.error.CWPKI0828E=CWPKI0828E: O atributo trustDefaultCerts est\u00e1 ativado, mas a confian\u00e7a n\u00e3o foi estabelecida usando o armazenamento confi\u00e1vel padr\u00e3o. A mensagem de erro estendida da exce\u00e7\u00e3o de handshake SSL \u00e9: {0}.
+ssl.client.handshake.cacerts.error.CWPKI0828E.explanation=O armazenamento confi\u00e1vel padr\u00e3o n\u00e3o est\u00e1 configurado corretamente para estabelecer confian\u00e7a.  
+ssl.client.handshake.cacerts.error.CWPKI0828E.useraction=Revise a mensagem de erro estendida para determinar o que mudar na configura\u00e7\u00e3o.
+# -------------------------------------------------------------------------------------------------
