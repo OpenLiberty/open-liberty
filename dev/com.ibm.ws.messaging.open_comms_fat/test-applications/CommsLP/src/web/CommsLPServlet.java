@@ -89,8 +89,6 @@ public class CommsLPServlet extends FATServlet {
 
   public void createConnectionandSendMessage() throws NamingException, JMSException {
     util.ENTRY();
-util.TRACE(new Exception("test exception"));
-    String expectedExceptionClass = "com.ibm.websphere.sib.exception.SIResourceException";
 
     util.CODEPATH();
     QueueConnectionFactory cf1 = (QueueConnectionFactory) new InitialContext().lookup("java:comp/env/jndi_JMS_BASE_QCF");
