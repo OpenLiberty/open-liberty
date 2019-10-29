@@ -5,7 +5,7 @@
   
   <cache-container>
     <transport stack="jgroups-tcp" />
-    <replicated-cache-configuration name="MyReplicatedCache"/>
-    <invalidation-cache-configuration name="MyInvalidationCache"/>
+    <replicated-cache-configuration name="com.ibm.ws.MyCache.attr"/>
+    <invalidation-cache-configuration name="*.session.*.inval"/>
   </cache-container>
 </infinispan>
