@@ -620,9 +620,9 @@ public class PackageProcessor implements ArchiveProcessor {
                 looseConfig = ProcessorUtils.convertToLooseConfig(lf);
                 if (looseConfig != null) {
                     try {
-                        entryConfigs.addAll(ProcessorUtils.createLooseExpandedArchiveEntryConfigs(looseConfig, lf, bootProps, packageArchiveEntryPrefix,
-                                                                                                  includeUsr(options.get(PackageOption.INCLUDE))));
-
+                        ArchiveEntryConfig looseArchiveEntryConfig = ProcessorUtils.createLooseArchiveEntryConfig(looseConfig, lf, bootProps, packageArchiveEntryPrefix,
+                                                                                                                  includeUsr(options.get(PackageOption.INCLUDE)));
+                        entryConfigs.add(looseArchiveEntryConfig);
                     } catch (FileNotFoundException e) {
                         // If any exception occurs when creating loose file archive, just skip it and create the next one.
                         System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("warning.unableToPackageLooseConfigFileMissingPath"), lf));
@@ -633,12 +633,13 @@ public class PackageProcessor implements ArchiveProcessor {
                     it.remove();
                 }
             } catch (Exception e) {
-                // If any exception occurs when parsing a loose file, just skip it and parse next loose file.
+                // If any exception occurs when parse loose file, just skip it and parse next loose file.
                 System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("warn.package.invalid.looseFile"), lf));
                 Debug.printStackTrace(e);
                 it.remove();
             }
         }
+
     }
 
     private ReturnCode restoreWebSphereApplicationServerProperty(File wlpRoot) {
