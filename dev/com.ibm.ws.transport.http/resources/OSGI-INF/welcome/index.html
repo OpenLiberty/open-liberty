@@ -7,6 +7,16 @@
 				box-sizing: border-box;
 			}
 
+			@font-face {
+					font-family: BunueloLight;
+					src: url("/fonts/BunueloCleanPro-Light.otf");
+			}
+
+			@font-face {
+					font-family: BunueloBold;
+					src: url("/fonts/BunueloCleanPro-SemiBold.otf");
+			}
+
 			body {
 				background-color: #1d1e3c;
 				margin: 0;
@@ -32,6 +42,7 @@
 				line-height: 1.5;
 				margin: 0px;
 				text-align: left;
+				font-family: BunueloLight;
 			}
 
 			@media (min-width: 600px) {
@@ -97,6 +108,41 @@
 
 			.column {
   			flex: 50%;
+			}
+
+			#inner-hero__welcome {
+    		padding-top: 60px;
+			}
+
+			#inner-hero__logo {
+				width: max-content;
+			}
+
+			#inner-hero__title {
+				font-family: BunueloBold, Arial Narrow, Helvetica, Arial;
+				white-space: nowrap;
+				/* font-size: calc([minimum size] + ([maximum size] - [minimum size]) * ((100vw - [minimum viewport width]) / ([maximum viewport width] - [minimum viewport width]))); */
+				font-size: calc(76px + (100 - 76) * ((100vw - 300px) / (2560 - 300)));
+			}
+
+			#inner-hero__open_source {
+				float: right;
+				position: relative;
+				top: -52px;
+				right: 40px;
+				margin-bottom: -20px;
+			}
+
+			@media (min-width: 1180px) {
+				#inner-hero__open_source {
+					top: -53px;
+				}
+			}
+
+			@media (min-width: 1558px) {
+				#inner-hero__open_source {
+					top: -54px;
+				}
 			}
 
 			.img_container {
@@ -199,8 +245,13 @@
 				}
 			}
 
-			.inner-hero__title {
+			#inner-hero__subtitle {
 				margin-top: 2rem;
+				font-size: 24px;
+    		font-family: BunueloBold, Arial Narrow, Helvetica, Arial;
+				color: #ffffff;
+				line-height: 1.2;
+				margin-top: 15px;
 			}
 
 			.inner-hero__beam {
@@ -424,8 +475,12 @@
 				<span id="star5" class="star"></span>
 				<div class="inner-hero__message row">
 						<div class="column">
-							<img class="inner-hero__img" src="welcome-message.png">
-							<h2 class="inner-hero__title">Open Liberty Application Server</h2>
+							<h2 id="inner-hero__welcome">Welcome to</h2>
+							<div id="inner-hero__logo">
+								<h1 id="inner-hero__title">Open Liberty</h1>
+								<p id="inner-hero__open_source">An IBM Open Source Project</p>
+							</div>
+							<p id="inner-hero__subtitle">A lightweight open framework for building fast and efficient cloud-native Java microservices.</p>
 						</div>
 						<div class="column img_container">
 							<img class="inner-hero__beam" src="beam.png" alt="ufo and beam">
