@@ -1,7 +1,7 @@
 Source: openliberty
 Section: java
 Priority: optional
-Maintainer: Michael Zhang <Michael.Zhang@ibm.com>
+Maintainer: Admin <admin@openliberty.io>
 Standards-Version: 4.3.0
 Build-Depends: debhelper (>= 9)
 Homepage: https://openliberty.io
