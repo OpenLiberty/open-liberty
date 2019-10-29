@@ -37,6 +37,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -107,7 +108,8 @@ public class InstallUtils {
     public static final String DEFAULT_TO_EXTENSION = "default";
 
     private static boolean isServerXmlInstallation = false;
-    
+    private static Set<String> serverFeatures = new HashSet<>();
+
     public static final File getServersDir() {
         return new File(Utils.getUserDir(), SERVER_DIR_NAME);
     }
@@ -537,16 +539,20 @@ public class InstallUtils {
         }
 
         @Override
-        public void printInfoMessage(String message) {}
+        public void printInfoMessage(String message) {
+        }
 
         @Override
-        public void printlnInfoMessage(String message) {}
+        public void printlnInfoMessage(String message) {
+        }
 
         @Override
-        public void printErrorMessage(String errorMessage) {}
+        public void printErrorMessage(String errorMessage) {
+        }
 
         @Override
-        public void printlnErrorMessage(String errorMessage) {}
+        public void printlnErrorMessage(String errorMessage) {
+        }
 
     }
 
@@ -1198,14 +1204,30 @@ public class InstallUtils {
         }
         return licensesToAccept;
     }
-    
-    public static void setIsServerXmlInstall(boolean val) {
-        isServerXmlInstallation = val;
+
+    protected static void setIsServerXmlInstall(Set<String> allServerFeatures) {
+        isServerXmlInstallation = true;
+        serverFeatures = allServerFeatures;
+
     }
 
-     public static boolean getIsServerXmlInstall() {
+    /**
+     * Return true if installing from server.xml
+     *
+     * @return
+     */
+    protected static boolean getIsServerXmlInstall() {
         return isServerXmlInstallation;
     }
 
+    /**
+     * Get the set of all features from a server.xml, including the ones that have been already been installed. Note that this set remains empty
+     * until it is triggered by a method that verifies a server.xml install.
+     *
+     * @return
+     */
+    protected static Set<String> getAllServerFeatures() {
+        return serverFeatures;
+    }
 
 }
