@@ -3161,13 +3161,17 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                 public RemotablePartitionEntity call() throws Exception {
                     RemotablePartitionEntity rp = em.find(RemotablePartitionEntity.class, remotablePartitionKey);
                     if (rp == null) {
-                        throw new IllegalArgumentException("No remotable partition found for rp key = " + remotablePartitionKey);
+                        logger.finer("No RemotablePartition found for key = " + remotablePartitionKey
+                                     + ", maybe because it was dispatched from a JVM configured to use the older table/entity versions.");
+                        // This can be null because if the partition dispatcher uses an older version, and so never created the remotable partition
+                        return null;
                     }
                     return rp;
                 }
             }.runInNewOrExistingGlobalTran();
 
-            return rp.getInternalStatus();
+            return rp != null ? rp.getInternalStatus() : null;
+
         } finally {
             em.close();
         }
