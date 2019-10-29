@@ -48,8 +48,6 @@ public class ServletCacheEngine implements CacheManager {
 	protected static List<String> staticContentPolicies = new ArrayList<String>();
 	public static Set<String> excludedServlets = new HashSet<String>(9);
 	public static Set<String> contextRootsWithCachespecXMLs = new ConcurrentSkipListSet<String>();
-	private static boolean allowDefaultContextRoot = false;
-	private static boolean allowDefaultContextRootChecked = false;
 
 	static {
 		excludedServlets.add("org.apache.jasper.runtime.JspServlet");
@@ -76,14 +74,8 @@ public class ServletCacheEngine implements CacheManager {
 			}
 			
 			if (null != s.getServletConfig()){
-				if (!allowDefaultContextRootChecked) 
-					allowDefaultContextRoot = isAllowDefaultContextRoot();
-				String contextRoot = null;
-				if (allowDefaultContextRoot)
-					contextRoot = s.getServletConfig().getServletContext().getContextPath().isEmpty() ? 
+				String contextRoot = s.getServletConfig().getServletContext().getContextPath().isEmpty() ? 
 		                    "/" : s.getServletConfig().getServletContext().getContextPath();
-				else 
-					contextRoot = s.getServletConfig().getServletContext().getContextPath(); 
 				if (null != getServletCache() || !excludedServlets.contains(name)) {
 					if (contextRootsWithCachespecXMLs.contains(contextRoot)) {
 						s = new ServletWrapper(s);
@@ -139,20 +131,6 @@ public class ServletCacheEngine implements CacheManager {
 	@Override
 	public boolean isStaticFileCachingEnabled(String contextRoot) {
 		return staticContentPolicies.contains(contextRoot);
-	}
-	
-	private boolean isAllowDefaultContextRoot () {
-		if (tc.isEntryEnabled())
-			Tr.entry(tc, "isAllowDefaultContextRoot");
-        String systemProperty = System.getProperty("com.ibm.ws.cache.CacheConfig.allowDefaultContextRoot");
-        boolean allowDefaultContextRoot = false;
-        if (systemProperty != null && systemProperty.equalsIgnoreCase("true")) {
-            allowDefaultContextRoot = true;
-        }
-		if (tc.isEntryEnabled())
-			Tr.exit(tc, "isAllowDefaultContextRoot", allowDefaultContextRoot);
-		allowDefaultContextRootChecked = true;
-        return allowDefaultContextRoot;
 	}
 
 }
