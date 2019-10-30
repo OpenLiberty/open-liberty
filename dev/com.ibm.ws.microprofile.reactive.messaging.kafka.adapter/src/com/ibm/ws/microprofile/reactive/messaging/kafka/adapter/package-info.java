@@ -12,7 +12,7 @@
  * @version 1.0
  */
 @org.osgi.annotation.versioning.Version("1.0")
-@TraceOptions(traceGroup = "REACTIVEMESSAGE")
+@TraceOptions(traceGroup = "REACTIVEMESSAGE", messageBundle = "com.ibm.ws.microprofile.reactive.messaging.kafka.resources.ReactiveMessaging")
 package com.ibm.ws.microprofile.reactive.messaging.kafka.adapter;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;
