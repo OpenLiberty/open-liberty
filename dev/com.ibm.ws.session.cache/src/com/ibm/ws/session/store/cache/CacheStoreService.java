@@ -36,6 +36,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.regex.Pattern;
 
 import javax.cache.Cache;
 import javax.cache.Cache.Entry;
@@ -378,19 +379,18 @@ public class CacheStoreService implements Introspector, SessionStoreService {
                 if (attributes != null)
                     for (int i = attributes.getLength() - 1; i >= 0; i--) {
                         // Leave existing Infinispan config as is if already configured for the com.ibm.ws.session cache names.
-                        Node attribute = attributes.getNamedItem("name");
-                        if (attribute != null) {
-                            String attributeValue = attribute.getNodeValue();
-                            if (attributeValue != null
-                                        && (elementName.endsWith("-cache") || elementName.endsWith("-cache-configuration"))
-                                        && attributeValue.contains("com.ibm.ws.session.")) {
-                                if (trace && tc.isDebugEnabled())
-                                    Tr.debug(this, tc, "No changes due to " + elementName + " name=" + attributeValue);
-                                return configuredURI;
+                        Node nameAttribute = attributes.getNamedItem("name");
+                        if (nameAttribute != null) {
+                            String nameValue = nameAttribute.getNodeValue();
+                            if (nameValue != null && (elementName.endsWith("-cache") || elementName.endsWith("-cache-configuration"))) {
+                                String regex = infinispanCacheNameToRegEx(nameValue);
+                                Pattern pattern = Pattern.compile(regex);
+                                if (pattern.matcher("com.ibm.ws.session.attr.").matches() || pattern.matcher("com.ibm.ws.session.meta.").matches()) {
+                                    if (trace && tc.isDebugEnabled())
+                                        Tr.debug(this, tc, "No changes due to " + elementName + " name=" + nameValue);
+                                    return configuredURI;
+                                }
                             }
-                            // TODO other wild-carded values that match any of:
-                            // com.ibm.ws.session.attr.???
-                            // com.ibm.ws.session.meta.???
                         }
                     }
             }
@@ -456,6 +456,31 @@ public class CacheStoreService implements Introspector, SessionStoreService {
     @Override
     public String getIntrospectorName() {
         return "SessionCacheIntrospector";
+    }
+
+    /**
+     * Convert an Infinispan cache name that might include wild cards (*) into a Java regular expression,
+     * so that we can determine if it would match the cache names used by HTTP session persistence.
+     *
+     * @param s configured cache name value, possibly including wild card characters (*).
+     * @return Java regular expression that can be used to match the HTTP session persistence cache names.
+     */
+    private String infinispanCacheNameToRegEx(String s) {
+        int len = s.length();
+        StringBuilder regex = new StringBuilder(len + 5);
+
+        int start = 0;
+        for (int i = 0; (i = s.indexOf('*', i)) >= 0; start = i + 1, i++) {
+            String part = s.substring(start, i);
+            if (part.length() > 0)
+                regex.append("\\Q").append(part).append("\\E");
+            regex.append(".*");
+        }
+
+        if (start < len)
+            regex.append("\\Q").append(s.substring(start)).append("\\E");
+
+        return regex.toString();
     }
 
     /**
