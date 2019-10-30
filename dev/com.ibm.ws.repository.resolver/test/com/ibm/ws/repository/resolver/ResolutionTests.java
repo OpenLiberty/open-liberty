@@ -11,12 +11,12 @@
 package com.ibm.ws.repository.resolver;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.core.AllOf.allOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -2143,6 +2143,45 @@ public class ResolutionTests {
                                                 Matchers.<RepositoryResource> contains(featureI11, featureX, featureA),
                                                 Matchers.<RepositoryResource> contains(featureI11, featureY, featureB)));
 
+    }
+
+    /**
+     * Test that an auto-feature which depends on a kernel feature can be installed correctly.
+     * <p>
+     * Kernel features are special because they're private, always installed and always started. They can't be referenced as a thing to resolve (because they're private) but must
+     * always be considered present when checking whether the requirements of autofeatures are met.
+     * <p>
+     * kernelFeature is a kernel feature, is private and is already installed
+     * <p>
+     * featureA-1.0 is a public feature which is being installed
+     * <p>
+     * autoFeature is an auto-feature which depends on kernelFeature and featureA-1.0
+     * <p>
+     * Expected: featureA-1.0 and autoFeature are both resolved
+     */
+    @Test
+    public void testAutofeatureDependsOnKernelFeature() throws RepositoryException {
+        Mockery mockery = new Mockery();
+        String symbolicName = "com.example.kernelFeature-1.0";
+        ProvisioningFeatureDefinition kernelFeature = ResolverTestUtils.mockSimpleFeatureDefinition(mockery, symbolicName, null, null, symbolicName,
+                                                                                                    com.ibm.ws.kernel.feature.Visibility.PRIVATE, true);
+
+        EsaResourceWritable featureA = WritableResourceFactory.createEsa(null);
+        featureA.setProvideFeature("com.example.featureA-1.0");
+        featureA.setVisibility(Visibility.PUBLIC);
+        repoFeatures.add(featureA);
+
+        EsaResourceWritable autoFeature = WritableResourceFactory.createEsa(null);
+        autoFeature.setProvideFeature("com.example.autoFeature");
+        autoFeature.setInstallPolicy(InstallPolicy.WHEN_SATISFIED);
+        autoFeature.setProvisionCapability("osgi.identity; filter:=\"(&(type=osgi.subsystem.feature)(osgi.identity=com.example.featureA-1.0))\","
+                                           + "osgi.identity; filter:=\"(&(type=osgi.subsystem.feature)(osgi.identity=com.example.kernelFeature-1.0))\"");
+        repoFeatures.add(autoFeature);
+
+        RepositoryResolver resolver = createResolver(Collections.singleton(kernelFeature));
+        Collection<List<RepositoryResource>> resolved = resolver.resolve(Collections.singleton(featureA.getProvideFeature()));
+        assertThat(resolved, containsInAnyOrder(Matchers.<RepositoryResource> contains(featureA),
+                                                Matchers.<RepositoryResource> contains(featureA, autoFeature)));
     }
 
     /**
