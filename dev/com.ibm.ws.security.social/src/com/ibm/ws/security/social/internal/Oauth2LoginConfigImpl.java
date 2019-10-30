@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.social.internal;
 
@@ -168,9 +168,19 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
 
     public static final String DEFAULT_CONTEXT_ROOT = "/ibm/api/social-login";
     static String contextRoot = DEFAULT_CONTEXT_ROOT;
-    
-    public static final String KEY_USE_SYSPROPS_FOR_HTTPCLIENT_CONNECTONS="useSystemPropertiesForHttpClientConnections";
+
+    public static final String KEY_USE_SYSPROPS_FOR_HTTPCLIENT_CONNECTONS = "useSystemPropertiesForHttpClientConnections";
     protected boolean useSystemPropertiesForHttpClientConnections = false;
+
+    // OpenShift-specific configuration
+    public static final String KEY_k8sTokenReviewEndpoint = "k8sTokenReviewEndpoint";
+    protected String k8sTokenReviewEndpoint = null;
+    public static final String KEY_serviceAccountTokenForK8sTokenreview = "serviceAccountTokenForK8sTokenreview";
+    protected String serviceAccountTokenForK8sTokenreview = null;
+    public static final String KEY_useAccessTokenFromRequest = "useAccessTokenFromRequest";
+    protected String useAccessTokenFromRequest = null;
+    public static final String KEY_tokenHeaderName = "tokenHeaderName";
+    protected String tokenHeaderName = null;
 
     protected CommonConfigUtils configUtils = new CommonConfigUtils();
 
@@ -253,6 +263,19 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
         this.isClientSideRedirectSupported = configUtils.getBooleanConfigAttribute(props, KEY_isClientSideRedirectSupported, this.isClientSideRedirectSupported);
         this.nonce = configUtils.getBooleanConfigAttribute(props, KEY_nonce, this.nonce);
         this.userApiNeedsSpecialHeader = configUtils.getBooleanConfigAttribute(props, KEY_userApiNeedsSpecialHeader, this.userApiNeedsSpecialHeader);
+
+        this.k8sTokenReviewEndpoint = configUtils.getConfigAttribute(props, KEY_k8sTokenReviewEndpoint);
+        if (k8sTokenReviewEndpoint != null && !k8sTokenReviewEndpoint.isEmpty()) {
+            // A service account token is required if the Kubernetes TokenReview API will be used to retrieve user info
+            this.serviceAccountTokenForK8sTokenreview = getRequiredSerializableProtectedStringConfigAttribute(props, KEY_serviceAccountTokenForK8sTokenreview);
+            this.userApi = k8sTokenReviewEndpoint;
+            //            this.userNameAttribute = "username";
+            //            this.groupNameAttribute = "groups";
+        } else {
+            this.serviceAccountTokenForK8sTokenreview = configUtils.processProtectedString(props, KEY_serviceAccountTokenForK8sTokenreview);
+        }
+        this.useAccessTokenFromRequest = configUtils.getConfigAttribute(props, KEY_useAccessTokenFromRequest);
+        this.tokenHeaderName = configUtils.getConfigAttribute(props, KEY_tokenHeaderName);
     }
 
     protected void initializeMembersAfterConfigAttributesPopulated(Map<String, Object> props) throws SocialLoginException {
@@ -265,15 +288,15 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
     protected void initializeUserApiConfigs() throws SocialLoginException {
         this.userApiConfigs = initUserApiConfigs(this.userApi);
     }
-    
+
     protected Configuration getCustomConfiguration(String customParam) {
-    	if (this.socialLoginServiceRef.getService() != null) {
-    		try {
-				return this.socialLoginServiceRef.getService().getConfigAdmin().getConfiguration(customParam, "");
-			} catch (IOException e) {		
-			}
-    	}
-    	return null;
+        if (this.socialLoginServiceRef.getService() != null) {
+            try {
+                return this.socialLoginServiceRef.getService().getConfigAdmin().getConfiguration(customParam, "");
+            } catch (IOException e) {
+            }
+        }
+        return null;
     }
 
     protected void initializeJwt(Map<String, Object> props) {
@@ -743,9 +766,26 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
     public String getResponseMode() {
         return null;
     }
-    
-    public boolean getUseSystemPropertiesForHttpClientConnections(){
+
+    public boolean getUseSystemPropertiesForHttpClientConnections() {
         return useSystemPropertiesForHttpClientConnections;
+    }
+
+    public String getK8sTokenReviewEndpoint() {
+        return k8sTokenReviewEndpoint;
+    }
+
+    @Sensitive
+    public String getServiceAccountTokenForK8sTokenreview() {
+        return serviceAccountTokenForK8sTokenreview;
+    }
+
+    public String getUseAccessTokenFromRequest() {
+        return useAccessTokenFromRequest;
+    }
+
+    public String getTokenHeaderName() {
+        return tokenHeaderName;
     }
 
 }

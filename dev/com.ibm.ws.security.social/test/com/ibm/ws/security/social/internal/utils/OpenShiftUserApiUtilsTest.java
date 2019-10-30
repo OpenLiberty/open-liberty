@@ -30,7 +30,7 @@ import org.junit.Test;
 import com.ibm.ws.security.common.http.HttpUtils;
 import com.ibm.ws.security.common.http.HttpUtils.RequestMethod;
 import com.ibm.ws.security.social.error.SocialLoginException;
-import com.ibm.ws.security.social.internal.OpenShiftLoginConfigImpl;
+import com.ibm.ws.security.social.internal.Oauth2LoginConfigImpl;
 import com.ibm.ws.security.social.test.CommonTestClass;
 
 import test.common.SharedOutputManager;
@@ -39,7 +39,7 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
 
     private static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("com.ibm.ws.security.social.*=all");
 
-    private final OpenShiftLoginConfigImpl config = mockery.mock(OpenShiftLoginConfigImpl.class);
+    private final Oauth2LoginConfigImpl config = mockery.mock(Oauth2LoginConfigImpl.class);
     private final HttpUtils httpUtils = mockery.mock(HttpUtils.class);
     private final SSLSocketFactory sslSocketFactory = mockery.mock(SSLSocketFactory.class);
     private final HttpURLConnection httpUrlConnection = mockery.mock(HttpURLConnection.class);
@@ -86,7 +86,7 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
                     will(returnValue(userApi));
                     one(httpUtils).createConnection(RequestMethod.POST, userApi, sslSocketFactory);
                     one(httpUtils).setHeaders(with(any(HttpURLConnection.class)), with(any(Map.class)));
-                    one(config).getServiceAccountToken();
+                    one(config).getServiceAccountTokenForK8sTokenreview();
                     will(returnValue(serviceAccountToken));
                 }
             });
@@ -117,7 +117,7 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
                     one(httpUrlConnection).setDoOutput(true);
                     one(httpUrlConnection).getOutputStream();
                     will(returnValue(outputStream));
-                    one(config).getServiceAccountToken();
+                    one(config).getServiceAccountTokenForK8sTokenreview();
                     will(returnValue(serviceAccountToken));
                 }
             });
@@ -148,7 +148,7 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
                     one(httpUrlConnection).setDoOutput(true);
                     one(httpUrlConnection).getOutputStream();
                     will(returnValue(outputStream));
-                    one(config).getServiceAccountToken();
+                    one(config).getServiceAccountTokenForK8sTokenreview();
                     will(returnValue(serviceAccountToken));
                     one(outputStream).write(with(any(byte[].class)), with(any(int.class)), with(any(int.class)));
                     allowing(outputStream).close();
@@ -177,7 +177,7 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
                     one(httpUrlConnection).setDoOutput(true);
                     one(httpUrlConnection).getOutputStream();
                     will(returnValue(outputStream));
-                    one(config).getServiceAccountToken();
+                    one(config).getServiceAccountTokenForK8sTokenreview();
                     will(returnValue(serviceAccountToken));
                     one(outputStream).write(with(any(byte[].class)), with(any(int.class)), with(any(int.class)));
                     allowing(outputStream).close();

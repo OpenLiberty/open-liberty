@@ -34,17 +34,17 @@ import com.ibm.ws.security.common.http.HttpUtils;
 import com.ibm.ws.security.common.jwk.utils.JsonUtils;
 import com.ibm.ws.security.social.TraceConstants;
 import com.ibm.ws.security.social.error.SocialLoginException;
-import com.ibm.ws.security.social.internal.OpenShiftLoginConfigImpl;
+import com.ibm.ws.security.social.internal.Oauth2LoginConfigImpl;
 
 public class OpenShiftUserApiUtils {
 
     public static final TraceComponent tc = Tr.register(OpenShiftUserApiUtils.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 
-    OpenShiftLoginConfigImpl config = null;
+    Oauth2LoginConfigImpl config = null;
 
     HttpUtils httpUtils = new HttpUtils();
 
-    public OpenShiftUserApiUtils(OpenShiftLoginConfigImpl config) {
+    public OpenShiftUserApiUtils(Oauth2LoginConfigImpl config) {
         this.config = config;
     }
 
@@ -78,7 +78,7 @@ public class OpenShiftUserApiUtils {
     @Sensitive
     Map<String, String> getUserApiRequestHeaders() {
         Map<String, String> headers = new HashMap<String, String>();
-        headers.put("Authorization", "Bearer " + config.getServiceAccountToken());
+        headers.put("Authorization", "Bearer " + config.getServiceAccountTokenForK8sTokenreview());
         headers.put("Accept", "application/json");
         headers.put("Content-Type", "application/json");
         return headers;
