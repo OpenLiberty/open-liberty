@@ -11,8 +11,8 @@
 <server description="JPA Diagnostics">
 
     <featureManager>
-        <feature>jpa-2.2</feature>
         <feature>servlet-4.0</feature>
+        <feature>jpa-2.2</feature>
         <feature>componenttest-1.0</feature>
         <!-- 
            <feature>servlet-3.1</feature>
@@ -22,6 +22,11 @@
 
     <include location="../fatTestPorts.xml"/>
 
+    <dataSource id="jdbc/JPA_DS" jndiName="jdbc/JPA_DS" fat.modify="true">
+            <jdbcDriver libraryRef="DerbyLib"/>
+            <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
+    </dataSource>
+    
     <dataSource id="DefaultDataSource" fat.modify="true">
         <jdbcDriver libraryRef="DerbyLib"/>
         <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
@@ -38,5 +43,5 @@
              maxFiles="10" 
              traceFileName="trace.log" 
              traceFormat="BASIC" 
-             traceSpecification="JPA=all:eclipselink=all:openjpa=all:JPAORM=all"/> 
+             traceSpecification="JPA=all:JPA_Transformer=all:JPA_BytecodeCapture=all:eclipselink=all:openjpa=all:JPAORM=all"/> 
 </server>

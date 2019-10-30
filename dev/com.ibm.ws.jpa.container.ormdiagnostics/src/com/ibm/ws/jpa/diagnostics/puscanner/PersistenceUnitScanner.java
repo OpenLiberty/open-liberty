@@ -115,7 +115,7 @@ public class PersistenceUnitScanner {
                 scannedClassesMap.put(url, citSet);
             }
         } catch (Exception e) {
-            FFDCFilter.processException(e, PersistenceUnitScanner.class.getName() + ".scanClasses", "118");
+//            FFDCFilter.processException(e, PersistenceUnitScanner.class.getName() + ".scanClasses", "118");
             throw new PersistenceUnitScannerException(e);
         }
     }
@@ -231,7 +231,7 @@ public class PersistenceUnitScanner {
                 }
             }
         } catch (Throwable t) {
-            FFDCFilter.processException(t, PersistenceUnitScanner.class.getName() + ".processJarFormatInputStreamURL", "247");
+//            FFDCFilter.processException(t, PersistenceUnitScanner.class.getName() + ".processJarFormatInputStreamURL", "247");
             throw new ClassScannerException(t);
         }
 
@@ -257,7 +257,7 @@ public class PersistenceUnitScanner {
 
             return AsmClassAnalyzer.analyzeClass(cName, classByteCode, ioResolver);
         } catch (Throwable t) {
-            FFDCFilter.processException(t, PersistenceUnitScanner.class.getName() + ".scanByteCodeFromInputStream", "273");
+            // FFDCFilter.processException(t, PersistenceUnitScanner.class.getName() + ".scanByteCodeFromInputStream", "273");
             throw new ClassScannerException(t);
         }
     }

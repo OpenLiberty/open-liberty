@@ -44,4 +44,17 @@ public class TestJPASimpleServlet extends FATServlet {
         Assert.assertNotSame(entity, findEntity);
         Assert.assertEquals(entity.getId(), findEntity.getId());
     }
+
+    public void testInvalidFormatClassError() throws Exception {
+        // Try to load empty.classx.BadClass -- should fail because it's a file containing 0 values.
+        String cName = "empty.classx.BadClass";
+        try {
+            this.getClass().getClassLoader().loadClass(cName);
+            Assert.fail("No java.lang.ClassFormatError was thrown.");
+        } catch (java.lang.ClassFormatError cnfe) {
+            // Expected
+        } catch (Throwable t) {
+            Assert.fail("Unexpected Exception " + t);
+        }
+    }
 }

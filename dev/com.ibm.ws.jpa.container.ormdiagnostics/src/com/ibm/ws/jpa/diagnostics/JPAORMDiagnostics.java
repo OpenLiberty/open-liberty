@@ -51,7 +51,7 @@ public class JPAORMDiagnostics {
             PersistenceUnitScannerResults results = PersistenceUnitScanner.scan(puiList, pxmlMap);
             return results;
         } catch (PersistenceUnitScannerException e) {
-            FFDCFilter.processException(e, JPAORMDiagnostics.class.getName() + ".performJPAORMDiagnostics", "64");
+//            FFDCFilter.processException(e, JPAORMDiagnostics.class.getName() + ".performJPAORMDiagnostics", "64");
             return null;
         }
     }
