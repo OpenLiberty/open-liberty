@@ -20,3 +20,4 @@ Subsystem-Name: MicroProfile Fault Tolerance 2.0
  com.ibm.ws.microprofile.faulttolerance.cdi.2.0; apiJar=false; location:="lib/",
 kind=ga
 edition=core
+WLP-Activation-Type: parallel
