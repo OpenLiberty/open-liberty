@@ -100,6 +100,9 @@ public class KafkaIncomingConnector implements IncomingConnectorFactory {
         Map<String, Object> consumerConfig = new HashMap<>();
         // Default behaviour is that connector handles commit in response to ack()
         consumerConfig.put(KafkaConnectorConstants.ENABLE_AUTO_COMMIT, "false");
+        //default the key and value deserializers to String
+        consumerConfig.put(KafkaConnectorConstants.KEY_DESERIALIZER, KafkaConnectorConstants.STRING_DESERIALIZER);
+        consumerConfig.put(KafkaConnectorConstants.VALUE_DESERIALIZER, KafkaConnectorConstants.STRING_DESERIALIZER);
 
         // Pass the rest of the config directly through to the kafkaConsumer
         consumerConfig.putAll(StreamSupport.stream(config.getPropertyNames().spliterator(), false)

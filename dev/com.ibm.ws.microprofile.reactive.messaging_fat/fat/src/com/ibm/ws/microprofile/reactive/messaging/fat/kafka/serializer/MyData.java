@@ -18,6 +18,8 @@ public class MyData {
     private final String dataA;
     private final String dataB;
 
+    public static final MyData NULL = new MyData("===NULL===", "===NULL===");
+
     /**
      * @param string
      */

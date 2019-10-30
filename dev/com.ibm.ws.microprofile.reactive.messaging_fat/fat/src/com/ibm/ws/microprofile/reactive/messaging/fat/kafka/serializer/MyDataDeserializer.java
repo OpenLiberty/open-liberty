@@ -26,7 +26,12 @@ public class MyDataDeserializer implements Deserializer<MyData> {
         String[] dataArr = dataStr.split(":");
         String dataA = dataArr[0];
         String dataB = dataArr[1];
-        return new MyData(dataA, dataB);
+        MyData myData = new MyData(dataA, dataB);
+
+        if (myData.equals(MyData.NULL)) {
+            myData = MyData.NULL;
+        }
+        return myData;
     }
 
 }
