@@ -304,7 +304,7 @@ public class RequestProbeTestDynamicFeatureChange {
 
     @After
     public void tearDown() throws Exception {
-        server.setServerConfigurationFile("server_NoFeatures.xml");
+        //server.setServerConfigurationFile("server_NoFeatures.xml");
         if (server != null && server.isStarted()) {
             server.stopServer("TRAS0112W");
         }
