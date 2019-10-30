@@ -21,9 +21,11 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -125,10 +127,10 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
     private PartitionPlanDescriptor currentPlan;
 
     private static class FinishedPartition {
-        int partitionNum;
+        Integer partitionNum;
         BatchStatus batchStatus;
 
-        FinishedPartition(int partitionNum, BatchStatus batchStatus) {
+        FinishedPartition(Integer partitionNum, BatchStatus batchStatus) {
             this.partitionNum = partitionNum;
             this.batchStatus = batchStatus;
         }
@@ -137,6 +139,7 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
     List<Integer> partitionsToExecute;
     List<Integer> startedPartitions = new ArrayList<Integer>();
     List<FinishedPartition> finishedPartitions = new ArrayList<FinishedPartition>();
+    Set<Integer> finishedPartitionNumbers = new HashSet<Integer>();
     List<Throwable> analyzerExceptions = new ArrayList<Throwable>();
 
     /**
@@ -596,7 +599,6 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
             int nextPartitionNumber = partitionsToExecute.get(startedPartitions.size());
             PartitionPlanConfig config = buildPartitionPlanConfig(nextPartitionNumber);
 
-            Boolean nextPartitionStarted = null;
             StopLock stopLock = getStopLock(); // Store in local variable to facilitate Ctrl+Shift+G search in Eclipse
             synchronized (stopLock) {
                 startPartition(config);
@@ -672,7 +674,12 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
                                                                                          msg.getPartitionPlanConfig().getTopLevelNameInstanceExecutionInfo().getExecutionId() },
                                            logger);
 
-        finishedPartitions.add(new FinishedPartition(msg.getPartitionPlanConfig().getPartitionNumber(), msg.getBatchStatus()));
+        addToFinishedPartitions(msg.getPartitionPlanConfig().getPartitionNumber(), msg.getBatchStatus());
+    }
+
+    private void addToFinishedPartitions(Integer partitionNumber, BatchStatus batchStatus) {
+        finishedPartitions.add(new FinishedPartition(partitionNumber, batchStatus));
+        finishedPartitionNumbers.add(partitionNumber);
     }
 
     /**
@@ -758,7 +765,14 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
                     isStoppingStoppedOrFailed = true;
                 }
 
-                checkForRecoveredRemotePartitions();
+                // The caller has the loop that determines when all the partitions are done.
+                // Our job is just to exit this method when any partition has finished.  In the
+                // case of recovery it could actually be more than one that has finished at once.
+                // But we're not returning back anything to the caller of this method;  it's OK if
+                // more than one partition has finished.
+                if (checkForRecoveredRemotePartitions()) {
+                    break;
+                }
             }
 
             //TODO - We won't worry about the case when a local dispatch has been stopped until
@@ -825,8 +839,12 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
 
     /**
      *
+     * @return true if we recovered a partition, false otherwise
      */
-    private void checkForRecoveredRemotePartitions() {
+    private boolean checkForRecoveredRemotePartitions() {
+
+        boolean retVal = false;
+
         // We shouldn't be seeing recovered remote partitions too often, so we won't try to optimize either the query itself or the process of matching the results against the list of recovered partitions
         // that we've already processed.
         long stepExecId = runtimeStepExecution.getTopLevelStepExecutionId();
@@ -836,16 +854,18 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
         } else {
             logger.finer("Did not find any recovered partitions for stepExecId = " + stepExecId);
         }
-        for (int recoveredPartitionNum : recoveredPartitions) {
-            for (FinishedPartition p : finishedPartitions) {
-                if (recoveredPartitionNum == p.partitionNum) {
-                    logger.finer("Recovered remote partition # " + recoveredPartitionNum + " is already marked as finished.");
-                    continue;
-                }
+        for (Integer recoveredPartitionNum : recoveredPartitions) {
+            if (finishedPartitionNumbers.contains(recoveredPartitionNum)) {
+                logger.finer("Recovered remote partition # " + recoveredPartitionNum + " is already marked as finished.");
+                continue;
+            } else {
+                retVal = true;
+                logger.finer("Found new recovered remote partition # " + recoveredPartitionNum);
+                handleRecoveredRemotePartition(recoveredPartitionNum);
             }
-            logger.finer("Found new recovered remote partition # " + recoveredPartitionNum);
-            handleRecoveredRemotePartition(recoveredPartitionNum);
         }
+
+        return retVal;
     }
 
     /**
@@ -862,7 +882,7 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
                                                                                          runtimeWorkUnitExecution.getTopLevelNameInstanceExecutionInfo().getExecutionId() },
                                            logger);
 
-        finishedPartitions.add(new FinishedPartition(recoveredPartitionNum, BatchStatus.FAILED));
+        addToFinishedPartitions(recoveredPartitionNum, BatchStatus.FAILED);
     }
 
     /*
@@ -938,7 +958,7 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
     }
 
     /**
-     * check the batch status of each subJob after it's done to see if we need to issue a rollback
+     * check the batch status of each partition after it's done to see if we need to issue a rollback
      * start rollback if any have stopped or failed
      */
     private void checkFinishedPartitions() {
