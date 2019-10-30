@@ -71,7 +71,6 @@ public class TimingRequestTiming {
     @After
     public void tearDown() throws Exception {
         if (server != null && server.isStarted()) {
-            server.setServerConfigurationFile("server_original.xml");
             server.stopServer("TRAS0112W", "TRAS0115W", "TRAS0114W");
         }
     }
