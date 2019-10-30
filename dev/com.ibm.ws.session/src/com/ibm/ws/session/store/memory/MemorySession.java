@@ -212,12 +212,13 @@ public class MemorySession implements ISession {
             return;
         }
         
-        if (!_isValid)
+        if (!_isValid) {
             if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
                 LoggingUtil.SESSION_LOGGER_CORE.logp(Level.FINE, methodClassName, methodNames[INVALIDATE], "isInProcessOfStopping: " + ((MemoryStore)_store).isInProcessOfStopping());
             }
             if (!((MemoryStore)_store).isInProcessOfStopping()) {
                 throw new IllegalStateException();
+            }
         }
             
         invalInProgress = true;
