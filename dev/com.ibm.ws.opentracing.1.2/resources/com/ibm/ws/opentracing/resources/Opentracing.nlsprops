@@ -74,6 +74,11 @@ OPENTRACING_NO_TRACERFACTORY=CWMOT0008E: OpenTracing cannot track JAX-RS request
 OPENTRACING_NO_TRACERFACTORY.explanation=OpenTracing will not function properly because an OpentracingTracerFactory class was not provided. JAX-RS requests will execute normally, but they will not be tracked.
 OPENTRACING_NO_TRACERFACTORY.useraction=For more information, see the documentation about how to enable OpenTracing distributed tracing.
 
+OPENTRACING_UNHANDLED_JAXRS_EXCEPTION=CWMOT0009W: The OpenTracing exception mapper has detected and is handling an unhandled exception from the JAX-RS application.
+OPENTRACING_UNHANDLED_JAXRS_EXCEPTION.explanation=The JAX-RS-based application has experienced and exception that is not handled within the application. The OpenTracing code will handle it by logging the exception stack trace and returning a 500 Internal Server Error response.
+OPENTRACING_UNHANDLED_JAXRS_EXCEPTION.useraction=This may be acceptable behavior.  To handle the exception differently, the application developer can add an ExceptionMapper that handles the exception and maps it to a different response.
+
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Opentracing error message
 #-----------------------------------------------------------------------------------------------------------------------------
