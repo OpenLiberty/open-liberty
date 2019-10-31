@@ -40,6 +40,7 @@ src: \
   test-applications/resourcealgorithm/src,\
   test-applications/resourcepkg/src,\
   test-applications/responseAPI/src,\
+  test-applications/restmetrics/src,\
   test-applications/security/src,\
   test-applications/servicescope/src,\
   test-applications/servletcoexist1/src,\
