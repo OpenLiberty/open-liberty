@@ -90,9 +90,9 @@ public class InstallServerAction implements ActionHandler {
                 String arg = argList.get(0);
                 try {
                         if (isServer(arg)) {
-                                serverInit(arg);
+                                return serverInit(arg);
                         } else {
-                               throw new InstallException("Did not enter a server.xml"); //TODO
+                               throw new InstallException(InstallLogUtils.Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_SERVER_NOT_EXIST", arg));
                         }
                 } catch (InstallException e) {
                         logger.log(Level.SEVERE, e.getMessage(), e);
@@ -160,9 +160,9 @@ public class InstallServerAction implements ActionHandler {
                 }
 
                 if (featuresToInstall.isEmpty()) {
-                        logger.log(Level.INFO, "Additional server features not required");
+                        logger.log(Level.FINE, "Additional server features are not required.");
                 } else {
-                        logger.log(Level.INFO, "New server features required");
+                        logger.log(Level.FINE, "Additional server features required.");
                         rc = assetInstallInit(featuresToInstall);
                 }
 

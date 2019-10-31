@@ -210,6 +210,8 @@ ERROR_UNINSTALL_FAILED_USR=CWWKF1247E: The following features cannot be uninstal
 ERROR_UNINSTALL_FAILED_USR.explanation=The specified features are user features and cannot be uninstalled.
 ERROR_UNINSTALL_FAILED_USR.useraction=Do not uninstall user features.
 
+ERROR_SERVER_NOT_EXIST=The server {0} does not exist. Please enter a valid server name and try again.
+
 ERROR_FAILED_TO_CONNECT_REPOS=CWWKF1248E: One of the repositories that is specified in the configuration cannot be reached. Verify that your computer has network access and firewalls are configured correctly, then try the action again. If the connection still fails, the repository server might be temporarily unavailable.
 ERROR_FAILED_TO_CONNECT_REPOS.explanation=An error occurred when connecting to a repository.
 ERROR_FAILED_TO_CONNECT_REPOS.useraction=Ensure that the system can access the internet and the appropriate repository.

@@ -55,7 +55,7 @@ public class FeatureUtility {
     private final Logger logger;
     private ProgressBar progressBar;
     
-    private final static String OPEN_LIBERTY_PRODUCT_ID = "io.openliberty"; //TODO
+    private final static String OPEN_LIBERTY_PRODUCT_ID = "io.openliberty";
     private boolean isWindows = (System.getProperty("os.name").toLowerCase()).indexOf("win") >= 0;
     // TODO remove this need for windwos chewcking for progress bar
 
@@ -112,7 +112,7 @@ public class FeatureUtility {
     private void initializeMap() throws IOException {
         map.put("runtime.install.dir", Utils.getInstallDir());
         map.put("target.user.directory", new File(Utils.getInstallDir(), "tmp"));
-        map.put("license.accept", true); // TODO: discuss later
+        map.put("license.accept", true);
         map.get("install.kernel.init.code");
 
     }
@@ -137,7 +137,7 @@ public class FeatureUtility {
             map.put("install.individual.esas", true);
         }
 
-        map.put("license.accept", true); // TODO: discuss later
+        map.put("license.accept", true);
         map.get("install.kernel.init.code");
 
     }
@@ -362,7 +362,7 @@ public class FeatureUtility {
      * Extracts the feature name and version from an ESA filepath. Example:
      * extractFeature(appSecurity-3.0-19.0.0.8.esa) returns appSecurity-3.0
      *
-     * TODO: extract runtime version
+     *
      *
      * @param filename
      * @return
@@ -376,7 +376,7 @@ public class FeatureUtility {
 
     private List<File> getJsonFiles(File fromDir, Set<String> jsonsRequired) throws InstallException, IOException {
         if(jsonsRequired.isEmpty()) {
-            throw new InstallException("Cannot detect which jsons to install with."); // TODO make new msg
+            throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_FEATURES_LIST_INVALID")); //
         }
         List<File> jsonFiles = new ArrayList<>();
         if (fromDir != null) {
@@ -517,21 +517,6 @@ public class FeatureUtility {
 
         public FeatureUtilityBuilder setFeaturesToInstall(Collection<String> featuresToInstall) {
             this.featuresToInstall = featuresToInstall;
-            return this;
-        }
-        
-        public FeatureUtilityBuilder setIsDownload(boolean isDownload) {
-            this.isDownload = isDownload;
-            return this;
-        }
-        
-        public FeatureUtilityBuilder setIsBasicInit(boolean isBasicInit) {
-            this.isBasicInit = isBasicInit;
-            return this;
-        }
-
-        public FeatureUtilityBuilder setUserFeatures(List<String> userFeatures) {
-            // TODO handle maven coordinates of user features and jsons
             return this;
         }
 
