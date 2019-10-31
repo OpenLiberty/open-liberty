@@ -54,12 +54,16 @@ import org.apache.cxf.transport.https.HttpsURLConnectionInfo;
 import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 /**
  *
  */
 public class URLConnectionHTTPConduit extends HTTPConduit {
+    
+    private static final TraceComponent tc = Tr.register(URLConnectionHTTPConduit.class);
     public static final String HTTPURL_CONNECTION_METHOD_REFLECTION = "use.httpurlconnection.method.reflection";
     public static final String SET_REASON_PHRASE_NOT_NULL = "set.reason.phrase.not.null";
 
@@ -424,6 +428,12 @@ public class URLConnectionHTTPConduit extends HTTPConduit {
 
                     @Override
                     public Integer run() throws IOException {
+                        
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "ConnectionTimeout = " + connection.getConnectTimeout());
+                            Tr.debug(tc, "ReadTimeout = " + connection.getReadTimeout());
+                        }
+                        
                         return connection.getResponseCode();
                     }
                 });
