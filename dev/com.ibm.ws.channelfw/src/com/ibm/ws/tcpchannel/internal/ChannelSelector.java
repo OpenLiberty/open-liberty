@@ -187,7 +187,7 @@ public abstract class ChannelSelector implements Runnable, FFDCSelfIntrospectabl
                         if (lastEmptySelectorFFDCTime != 0) {
                             if (currentTime < (firstEmptySelectorTime + 10000L) && selector.keys().size() == numKeysOnEmptySelect) {
                                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                                    Tr.event(this, tc, "Selector fired 20 times in a row with no keys selected - possible loop in JDK detected");
+                                    Tr.event(this, tc, "Selector fired 40 times in a row with no keys selected - possible loop in JDK detected");
                                 }
                                 // TODO seems to happen sometimes if the socket is closed but not
                                 // removed from the keys (Windows JDK 1.6 SR7 at least)... could scan and remove
@@ -214,6 +214,9 @@ public abstract class ChannelSelector implements Runnable, FFDCSelfIntrospectabl
                                 }
                             }
                         } else {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                                Tr.event(this, tc, "Selector fired 40 times in a row with no keys selected - possible loop in JDK detected");
+                            }
                             lastEmptySelectorFFDCTime = currentTime;
                         }
                         numEmptySelects = 0;
