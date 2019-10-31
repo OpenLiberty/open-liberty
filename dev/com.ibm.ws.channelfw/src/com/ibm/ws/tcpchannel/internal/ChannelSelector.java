@@ -77,7 +77,7 @@ public abstract class ChannelSelector implements Runnable, FFDCSelfIntrospectabl
 
     /**
      * Create a new ChannelSelector.
-     * 
+     *
      * @param _checkCancel
      * @throws IOException
      */
@@ -91,7 +91,7 @@ public abstract class ChannelSelector implements Runnable, FFDCSelfIntrospectabl
 
     /**
      * Loops, servicing requests
-     * 
+     *
      * @see java.lang.Runnable#run()
      */
     @Override
@@ -181,39 +181,46 @@ public abstract class ChannelSelector implements Runnable, FFDCSelfIntrospectabl
                     }
                     numEmptySelects++;
                     if (numEmptySelects == 40) {
-                        // selector fired 40 times with nothing selected, see if it was in
-                        // quick succession
-                        // and key set hasn't changed
-                        if (currentTime < (firstEmptySelectorTime + 10000L) && selector.keys().size() == numKeysOnEmptySelect) {
-                            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                                Tr.event(this, tc, "Selector fired 20 times in a row with no keys selected - possible loop in JDK detected");
-                            }
-                            // TODO seems to happen sometimes if the socket is closed but not
-                            // removed from the keys (Windows JDK 1.6 SR7 at least)... could scan and remove
-                            // closed sockets the SocketChannel.close() is supposed to remove it from
-                            // selectors but TCP has a checkcancel config option to manually do it (since it's
-                            // been broken in the past apparently)
+                        // selector fired 40 times with nothing selected, see if it was in quick succession and key set hasn't changed
 
-                            // create an exception to be logged in FFDC, but limit to once
-                            // every 5 minutes
-                            if (currentTime > (lastEmptySelectorFFDCTime + 300000L)) {
-                                ChannelException e = new ChannelException("TCP Channel detected a possible loop on thread: " + Thread.currentThread().getName());
-                                FFDCFilter.processException(e,
-                                                            getClass().getName(),
-                                                            "186",
-                                                            this,
-                                                            new Object[] { "Last FFDC time=" + lastEmptySelectorFFDCTime, "Current time=" + currentTime,
-                                                                          "Next timeout time=" + nextTimeoutTime,
-                                                                          "First empty select time=" + firstEmptySelectorTime, "First empty select keys=" + numKeysOnEmptySelect,
-                                                                          "Number empty selects=" + numEmptySelects, "Thread interrupted=" + Thread.interrupted(), this.workQueue1,
-                                                                          this.workQueue2 });
-                                lastEmptySelectorFFDCTime = currentTime;
+                        // don't ffdc until it has been going on for a while
+                        if (lastEmptySelectorFFDCTime != 0) {
+                            if (currentTime < (firstEmptySelectorTime + 10000L) && selector.keys().size() == numKeysOnEmptySelect) {
+                                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                                    Tr.event(this, tc, "Selector fired 20 times in a row with no keys selected - possible loop in JDK detected");
+                                }
+                                // TODO seems to happen sometimes if the socket is closed but not
+                                // removed from the keys (Windows JDK 1.6 SR7 at least)... could scan and remove
+                                // closed sockets the SocketChannel.close() is supposed to remove it from
+                                // selectors but TCP has a checkcancel config option to manually do it (since it's
+                                // been broken in the past apparently)
+
+                                // create an exception to be logged in FFDC, but limit to once
+                                // every 5 minutes
+                                if (currentTime > (lastEmptySelectorFFDCTime + 300000L)) {
+                                    ChannelException e = new ChannelException("TCP Channel detected a possible loop on thread: " + Thread.currentThread().getName());
+                                    FFDCFilter.processException(e,
+                                                                getClass().getName(),
+                                                                "186",
+                                                                this,
+                                                                new Object[] { "Last FFDC time=" + lastEmptySelectorFFDCTime, "Current time=" + currentTime,
+                                                                               "Next timeout time=" + nextTimeoutTime,
+                                                                               "First empty select time=" + firstEmptySelectorTime,
+                                                                               "First empty select keys=" + numKeysOnEmptySelect,
+                                                                               "Number empty selects=" + numEmptySelects, "Thread interrupted=" + Thread.interrupted(),
+                                                                               this.workQueue1,
+                                                                               this.workQueue2 });
+                                    lastEmptySelectorFFDCTime = currentTime;
+                                }
                             }
+                        } else {
+                            lastEmptySelectorFFDCTime = currentTime;
                         }
                         numEmptySelects = 0;
                     } // end-if-20
                 } else {
                     numEmptySelects = 0;
+                    lastEmptySelectorFFDCTime = 0;
                 }
                 // end of loop detection code
 
@@ -296,7 +303,7 @@ public abstract class ChannelSelector implements Runnable, FFDCSelfIntrospectabl
 
     /**
      * Check whether the pending work queue(s) are empty or not.
-     * 
+     *
      * @return boolean
      */
     private boolean areQueuesEmpty() {
@@ -307,7 +314,7 @@ public abstract class ChannelSelector implements Runnable, FFDCSelfIntrospectabl
 
     /**
      * Add a work item to the proper queue of pending updates.
-     * 
+     *
      * @param work
      */
     protected void addToWorkQueue(Object work) {
@@ -319,7 +326,7 @@ public abstract class ChannelSelector implements Runnable, FFDCSelfIntrospectabl
     /**
      * Access the possible SelectionKey on this selector for the provided
      * channel.
-     * 
+     *
      * @param channel
      * @return SelectionKey, null if not registered
      */
@@ -334,7 +341,7 @@ public abstract class ChannelSelector implements Runnable, FFDCSelfIntrospectabl
      * Access the current work queue of pending updates for the selector. This
      * will cause further updates to go onto another queue until this method
      * is called again.
-     * 
+     *
      * @return Queue<Object>
      */
     protected Queue<Object> getWorkQueue() {
@@ -356,7 +363,7 @@ public abstract class ChannelSelector implements Runnable, FFDCSelfIntrospectabl
     /**
      * Process the keys that returned from a select, as appropriate to the
      * individual selector type.
-     * 
+     *
      * @return true if a key was cancelled, false if no keys were cancelled.
      */
     abstract boolean performRequest();
@@ -400,7 +407,7 @@ public abstract class ChannelSelector implements Runnable, FFDCSelfIntrospectabl
     /**
      * Add a new work item to the update queues waiting for the selector
      * to process.
-     * 
+     *
      * @param toAdd
      */
     protected void addWork(Object toAdd) {
@@ -437,7 +444,7 @@ public abstract class ChannelSelector implements Runnable, FFDCSelfIntrospectabl
      * Process the actual key cancel requests now. This does not
      * remove the item from the list as it needs a second pass
      * through select() before notifyCancelRequests handles that step.
-     * 
+     *
      * @return boolean, true if any key was cancelled
      */
     private boolean processCancelRequests() {
@@ -468,7 +475,7 @@ public abstract class ChannelSelector implements Runnable, FFDCSelfIntrospectabl
 
     /**
      * Add a request to cancel a specific key.
-     * 
+     *
      * @param cr
      */
     protected void addCancelRequest(CancelRequest cr) {
@@ -489,7 +496,7 @@ public abstract class ChannelSelector implements Runnable, FFDCSelfIntrospectabl
 
     /**
      * Set the next timeout marker to the provided value if appropriate.
-     * 
+     *
      * @param newTimeoutTime
      */
     protected void resetTimeout(long newTimeoutTime) {
