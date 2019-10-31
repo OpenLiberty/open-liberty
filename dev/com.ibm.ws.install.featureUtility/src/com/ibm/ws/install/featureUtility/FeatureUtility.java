@@ -120,7 +120,7 @@ public class FeatureUtility {
     /**
      * Initialize the Install kernel map.
      *
-     * @param featuresToInstall
+     * @param jsonPaths
      * @throws IOException
      */
     private void initializeMap(List<File> jsonPaths) throws IOException {

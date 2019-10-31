@@ -17,8 +17,10 @@ import com.ibm.ws.kernel.feature.internal.cmdline.ReturnCode;
 
 
 public enum FeatureAction implements ActionDefinition {
-    install(new FeatureInstallAction(), -1, "--from", "--to", "--verbose", "name"),
-    download(new FeatureDownloadAction(), -1, "--location", "--overwrite", "--verbose", "name"), help(new FeatureHelpAction(), 0);
+    installFeature(new InstallFeatureAction(), -1, "--no-cache", "--from-", "--to", "--verbose"),
+    installServer(new InstallServerAction(), -1, "--no-cache","--from", "--verbose"),
+    help(new FeatureHelpAction(), 0);
+//    install(new FeatureInstallAction(), -1, "--from", "--to", "--verbose", "name"),
 
     private List<String> commandOptions;
     private ActionHandler action;

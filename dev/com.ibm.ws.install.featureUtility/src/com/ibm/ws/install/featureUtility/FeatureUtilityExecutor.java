@@ -27,7 +27,7 @@ import com.ibm.ws.kernel.feature.internal.cmdline.ArgumentsImpl;
  */
 public class FeatureUtilityExecutor {
     /**
-     * @param args
+     * @param argsArray
      * @throws InstallException
      * @throws IOException
      */
