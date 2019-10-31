@@ -33,8 +33,8 @@ import componenttest.topology.utils.HttpUtils;
 @SuiteClasses({
                 SessionCacheOneServerTest.class,
                 SessionCacheTwoServerTest.class,
-                //SessionCacheTimeoutTest.class, // TODO enable once working for Infinispan 10.0.0.Final
-                //SessionCacheTwoServerTimeoutTest.class // TODO enable once working for Infinispan 10.0.0.Final
+                SessionCacheTimeoutTest.class,
+                SessionCacheTwoServerTimeoutTest.class
                 // A separate test suite covers Infinispan client/server scenarios
 })
 

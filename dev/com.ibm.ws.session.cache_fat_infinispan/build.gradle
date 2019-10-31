@@ -12,15 +12,12 @@
 configurations {
   caffeine
   gson
-  infinispanCDICommon
-  infinispanCDIEmbedded
   infinispanCommons
   infinispanCore
   infinispanJCache
   infinispanJCacheCommons
   jbossLogging
   jGroups
-  protoparser
   protostream
   reactiveStreams
   rxjava
@@ -31,13 +28,10 @@ configurations {
 dependencies {
   caffeine 'com.github.ben-manes.caffeine:caffeine:2.8.0'
   gson 'com.google.code.gson:gson:2.8.2'
-  infinispanCDICommon 'org.infinispan:infinispan-cdi-common:10.0.0.Final'
-  infinispanCDIEmbedded 'org.infinispan:infinispan-cdi-embedded:10.0.0.Final'
   infinispanCommons 'org.infinispan:infinispan-commons:10.0.0.Final'
   infinispanCore 'org.infinispan:infinispan-core:10.0.0.Final'
   infinispanJCache 'org.infinispan:infinispan-jcache:10.0.0.Final'
   infinispanJCacheCommons 'org.infinispan:infinispan-jcache-commons:10.0.0.Final'
-  protoparser 'com.squareup:protoparser:4.0.3'
   protostream 'org.infinispan.protostream:protostream:4.3.0.Alpha13'
   jbossLogging 'org.jboss.logging:jboss-logging:3.4.1.Final'
   jGroups 'org.jgroups:jgroups:4.1.6.Final'
@@ -56,18 +50,6 @@ task addGSONToSharedDir(type: Copy) {
   from configurations.gson
   into new File(autoFvtDir, 'publish/shared/resources/infinispan')
   rename 'gson-*.jar', 'gson.jar'
-}
-
-task addInfinispanCDICommonToSharedDir(type: Copy) {
-  from configurations.infinispanCDICommon
-  into new File(autoFvtDir, 'publish/shared/resources/infinispan')
-  rename 'infinispan-cdi-common-10.*.jar', 'infinispan-cdi-common.jar'
-}
-
-task addInfinispanCDIEmbeddedToSharedDir(type: Copy) {
-  from configurations.infinispanCDIEmbedded
-  into new File(autoFvtDir, 'publish/shared/resources/infinispan')
-  rename 'infinispan-cdi-embedded-10.*.jar', 'infinispan-cdi-embedded.jar'
 }
 
 task addInfinispanCommonsToSharedDir(type: Copy) {
@@ -106,12 +88,6 @@ task addJGroupsToSharedDir(type: Copy) {
   rename 'jgroups-*.jar', 'jgroups.jar'
 }
 
-task addProtoParserToSharedDir(type: Copy) {
-  from configurations.protoparser
-  into new File(autoFvtDir, 'publish/shared/resources/infinispan')
-  rename 'protoparser-*.jar', 'protoparser.jar'
-}
-
 task addProtoStreamToSharedDir(type: Copy) {
   from configurations.protostream
   into new File(autoFvtDir, 'publish/shared/resources/infinispan')
@@ -140,15 +116,12 @@ addRequiredLibraries {
   dependsOn addDerby
   dependsOn addCaffeineToSharedDir
   dependsOn addGSONToSharedDir
-  dependsOn addInfinispanCDICommonToSharedDir
-  dependsOn addInfinispanCDIEmbeddedToSharedDir
   dependsOn addInfinispanCommonsToSharedDir
   dependsOn addInfinispanCoreToSharedDir
   dependsOn addInfinispanJCacheToSharedDir
   dependsOn addInfinispanJCacheCommonsToSharedDir
   dependsOn addJbossLoggingToSharedDir
   dependsOn addJGroupsToSharedDir
-  dependsOn addProtoParserToSharedDir
   dependsOn addProtoStreamToSharedDir
   dependsOn addReactiveStreamsToSharedDir
   dependsOn addRxJavaToSharedDir
