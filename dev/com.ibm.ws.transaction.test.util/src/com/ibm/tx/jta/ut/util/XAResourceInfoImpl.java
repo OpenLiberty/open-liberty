@@ -25,6 +25,10 @@ public class XAResourceInfoImpl implements Serializable {
         _stateFile = XAResourceImpl.STATE_FILE;
         System.out.println("XAResourceInfo " + _i + " created. State file is " + _stateFile);
     }
+    
+    public String toString() {
+    	return "XAResourceInfo: " + _i;
+    }
 
     public int getKey() {
         return _i;
