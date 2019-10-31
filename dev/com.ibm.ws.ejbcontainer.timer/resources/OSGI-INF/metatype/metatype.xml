@@ -29,7 +29,18 @@
 
         <AD name="%persistentExecutorRef" description="%persistentExecutorRef.desc"
             id="persistentExecutorRef" type="String" required="false" ibm:type="pid" ibm:reference="com.ibm.ws.concurrent.persistent.executor"/>
-        <AD id="persistentExecutor.target" type="String"  ibm:final="true" default="(service.pid=${persistentExecutorRef})" name="internal" description="internal use only"/>
+            
+        <AD id="persistentExecutor.target" type="String"  ibm:final="true" 
+            default="(service.pid=${persistentExecutorRef})" 
+            name="internal" description="internal use only"/>
+        					
+        <AD name="%nonPersistentContextServiceRef" description="%nonPersistentContextServiceRef.desc"
+            id="nonPersistentContextServiceRef" type="String" required="false" ibm:type="pid" 
+            ibm:reference="com.ibm.ws.context.service" ibmui:group="Advanced" ibm:beta="true" />
+
+        <AD id="nonPersistentContextService.target" type="String"  ibm:final="true" required="false"
+            default="(service.pid=${nonPersistentContextServiceRef})" 
+            name="internal" description="internal use only"/>
     </OCD>
 
     <Designate factoryPid="com.ibm.ws.ejbcontainer.timer.runtime">

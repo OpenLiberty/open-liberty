@@ -35,7 +35,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.Callable;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -43,7 +42,6 @@ import org.osgi.framework.FrameworkUtil;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.staticvalue.StaticValue;
 import com.ibm.wsspi.kernel.service.location.MalformedLocationException;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
@@ -70,7 +68,7 @@ public class WsLocationAdminImpl implements WsLocationAdmin {
                     LOC_AREA_NAME_WORKING = "workarea/",
                     LOC_AREA_NAME_EXTENSION = "extension/";
 
-    private volatile static StaticValue<WsLocationAdminImpl> instance = StaticValue.createStaticValue(null);
+    private volatile static WsLocationAdminImpl instance;
 
     /**
      * Construct the WsLocationAdminService singleton based on a set of initial
@@ -80,19 +78,13 @@ public class WsLocationAdminImpl implements WsLocationAdmin {
      * @param initProps
      * @return WsLocationAdmin
      */
-    public static WsLocationAdminImpl createLocations(final Map<String, Object> initProps) {
-        if (instance.get() == null) {
+    public static WsLocationAdminImpl createLocations(Map<String, Object> initProps) {
+        if (instance == null) {
             SymbolRegistry.getRegistry().clear();
-            Callable<WsLocationAdminImpl> initializer = new Callable<WsLocationAdminImpl>() {
-                @Override
-                public WsLocationAdminImpl call() throws Exception {
-                    return new WsLocationAdminImpl(initProps);
-                }
-            };
-            instance = StaticValue.mutateStaticValue(instance, initializer);
+            instance = new WsLocationAdminImpl(initProps);
         }
 
-        return instance.get();
+        return instance;
     }
 
     /**
@@ -103,30 +95,23 @@ public class WsLocationAdminImpl implements WsLocationAdmin {
      * @param initProps
      * @return WsLocationAdmin
      */
-    public static WsLocationAdminImpl createLocations(final BundleContext ctx) {
-        if (instance.get() == null) {
+    public static WsLocationAdminImpl createLocations(BundleContext ctx) {
+        if (instance == null) {
             SymbolRegistry.getRegistry().clear();
-            Callable<WsLocationAdminImpl> initializer = new Callable<WsLocationAdminImpl>() {
-                @Override
-                public WsLocationAdminImpl call() throws Exception {
-                    return new WsLocationAdminImpl(new BundleContextMap(ctx));
-                }
-            };
-            instance = StaticValue.mutateStaticValue(instance, initializer);
+            instance = new WsLocationAdminImpl(new BundleContextMap(ctx));
         }
 
-        return instance.get();
+        return instance;
     }
 
     /**
      * @return
      */
     public static WsLocationAdminImpl getInstance() {
-        WsLocationAdminImpl result = instance.get();
-        if (result == null)
+        if (instance == null)
             throw new IllegalStateException("Location manager not initialized");
 
-        return result;
+        return instance;
     }
 
     /**

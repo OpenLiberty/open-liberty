@@ -30,7 +30,6 @@ import org.osgi.framework.ServiceReference;
 
 import com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink;
 import com.ibm.ws.http.dispatcher.internal.channel.HttpRequestImpl;
-import com.ibm.ws.staticvalue.StaticValue;
 import com.ibm.wsspi.http.VirtualHostListener;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 
@@ -70,11 +69,11 @@ public class HttpDispatcherTest {
     }
 
     private static void clearDispatcher() throws Exception {
-        ((StaticValue<AtomicReference<HttpDispatcher>>) dispatcherInstance.get(null)).get().set(null);
+        ((AtomicReference<HttpDispatcher>) dispatcherInstance.get(null)).set(null);
     }
 
     private static HttpDispatcher getDispatcher() throws Exception {
-        return ((StaticValue<AtomicReference<HttpDispatcher>>) dispatcherInstance.get(null)).get().get();
+        return ((AtomicReference<HttpDispatcher>) dispatcherInstance.get(null)).get();
     }
 
     @Rule

@@ -109,7 +109,7 @@ public class InstallUtils {
 
     private static boolean isServerXmlInstallation = false;
     private static Set<String> serverFeatures = new HashSet<>();
-    
+
     public static final File getServersDir() {
         return new File(Utils.getUserDir(), SERVER_DIR_NAME);
     }
@@ -1200,6 +1200,7 @@ public class InstallUtils {
         }
         return licensesToAccept;
     }
+
     
     protected static void setIsServerXmlInstall(Set<String> allServerFeatures) {
         isServerXmlInstallation = true;
@@ -1225,5 +1226,6 @@ public class InstallUtils {
     protected static Set<String> getAllServerFeatures() {
         return serverFeatures;
     }
+
 
 }

@@ -171,8 +171,8 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.17</version> <!-- Any changes to the surefire version must be tested against ZOS -->
                 <configuration>
+                    <argLine>-Dfile.encoding=${project.build.sourceEncoding}</argLine><!-- Needed for ZOS becuase arquillian calls string.getBtytes() -->
                     <systemPropertyVariables>
-                        <argLine>-Dfile.encoding=${project.build.sourceEncoding}</argLine><!-- Needed for ZOS becuase arquillian calls string.getBtytes() -->
                         <wlp>${wlp}</wlp>
                         <tck_server>${tck_server}</tck_server>
                         <tck_port>${tck_port}</tck_port>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2018 IBM Corporation and others.
+ * Copyright (c) 2014, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.cdi12.fat.tests;
 
+
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
+import java.util.List;
 
 import org.junit.AfterClass;
 import org.junit.ClassRule;
@@ -32,7 +36,10 @@ import com.ibm.ws.fat.util.ShrinkWrapSharedServer;
 import com.ibm.ws.fat.util.browser.WebBrowser;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 
+@Mode(TestMode.FULL)
 public class InjectInjectionPointTest extends LoggingTest {
 
     @ClassRule
@@ -52,14 +59,15 @@ public class InjectInjectionPointTest extends LoggingTest {
     public static Archive buildShrinkWrap() {
 
           return ShrinkWrap.create(WebArchive.class, "injectInjectionPoint.war")
-                        .addClass("com.ibm.ws.fat.cdi.injectInjectionPoint.InjectInjectionPointServlet")
-                        .add(new FileAsset(new File("test-applications/injectInjectionPoint.war/resources/WEB-INF/beans.xml")), "/WEB-INF/beans.xml");
+                        .addClass("com.ibm.ws.fat.cdi.injectInjectionPoint.EmptyBean")
+                        .addClass("com.ibm.ws.fat.cdi.injectInjectionPoint.InjectInjectionPointServlet");
     }
 
     @Test
     @AllowedFFDC("com.ibm.ws.container.service.state.StateChangeException")
     public void testInjectInjectionPoint() throws Exception {
-        SHARED_SERVER.getLibertyServer().findStringsInLogs("CWWKZ0002E(?=.*injectInjectionPoint)(?=.*com.ibm.ws.container.service.state.StateChangeException)(?=.*javax.enterprise.inject.spi.DefinitionException)(?=.*org.jboss.weld.exceptions.IllegalArgumentException)(?=.*WELD-001405)(?=.*BackedAnnotatedField)(?=.*com.ibm.ws.fat.cdi.injectInjectionPoint.InjectInjectionPointServlet.thisShouldFail)");
+                List<String> logs = SHARED_SERVER.getLibertyServer().findStringsInLogs("CWWKZ0002E(?=.*injectInjectionPoint)(?=.*com.ibm.ws.container.service.state.StateChangeException)(?=.*org.jboss.weld.exceptions.DefinitionException)(?=.*WELD-001405)(?=.*BackedAnnotatedField)(?=.*com.ibm.ws.fat.cdi.injectInjectionPoint.InjectInjectionPointServlet.thisShouldFail)");
+        assertEquals("DefinitionException not found", 1, logs.size()); //Unlike the two sibling tests this only emits the message once. 
     }
 
     @AfterClass

@@ -154,24 +154,28 @@ public class EmbeddedServerTest {
         // and build script copy does not pick them up.
         outputAutoFVTDirectory.mkdirs();
         Log.info(c, METHOD_NAME, "Copying directory from " +
-                                 ls.getUserDir() + "/../NonDefaultUser" + " to " +
-                                 outputAutoFVTDirectory.getAbsolutePath());
+                        ls.getUserDir() + "/../NonDefaultUser" + " to " +
+                        outputAutoFVTDirectory.getAbsolutePath());
 
         File srcDir = new File(ls.getUserDir() + "/../NonDefaultUser");
         copyDirectory(srcDir, outputAutoFVTDirectory.getAbsoluteFile());
     }
 
     @Test
-    public void testStoppingAStoppedServer() throws Throwable {}
+    public void testStoppingAStoppedServer() throws Throwable {
+    }
 
     @Test
-    public void testStartingAStoppedServer() throws Throwable {}
+    public void testStartingAStoppedServer() throws Throwable {
+    }
 
     @Test
-    public void testStartingAStartedServer() throws Throwable {}
+    public void testStartingAStartedServer() throws Throwable {
+    }
 
     @Test
-    public void testStoppingAStartedServer() throws Throwable {}
+    public void testStoppingAStartedServer() throws Throwable {
+    }
 
     @Test
     public void testForceStoppingAStartedServer() throws Throwable {}
@@ -180,10 +184,12 @@ public class EmbeddedServerTest {
     public void testBadArgument() throws Throwable {}
 
     @Test
-    public void testLaunchException() throws Throwable {}
+    public void testLaunchException() throws Throwable {
+    }
 
-    //@Test
-    //public void testLocationException() throws Throwable {}
+    @Test
+    public void testServerDoesNotExist() throws Throwable {
+    }
 
     private static void embeddedServerTestHelper(final String REMOTE_METHOD_NAME) throws Throwable {
         final String METHOD_NAME = "testEmbeddedServer";
@@ -198,7 +204,6 @@ public class EmbeddedServerTest {
         Method getFailuresMethod = driverClazz.getDeclaredMethod("getFailures");
 
         try {
-
             initMethod.invoke(driver, new Object[] { REMOTE_METHOD_NAME });
             testMethod.invoke(driver);
             tearDownMethod.invoke(driver);

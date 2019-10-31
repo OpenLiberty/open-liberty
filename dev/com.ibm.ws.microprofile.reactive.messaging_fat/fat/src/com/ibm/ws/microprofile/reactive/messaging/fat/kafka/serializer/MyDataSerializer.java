@@ -22,6 +22,9 @@ public class MyDataSerializer implements Serializer<MyData> {
     /** {@inheritDoc} */
     @Override
     public byte[] serialize(String topic, MyData data) {
+        if (data == null) {
+            data = MyData.NULL;
+        }
         String dataStr = data.getDataA() + ":" + data.getDataB();
         return dataStr.getBytes(Charset.forName("UTF-8"));
     }
