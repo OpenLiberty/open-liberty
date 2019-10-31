@@ -18,7 +18,6 @@
 			}
 
 			body {
-				background-color: #1d1e3c;
 				margin: 0;
 				padding: 0;
 				font-family: 'Helvetica', 'Arial', sans-serif;
@@ -28,6 +27,7 @@
 
 			h1 {
 				color: white;
+				font-family: BunueloBold, Arial Narrow, Helvetica, Arial;
 				font-size: 1.75rem;
 				line-height: 1.5;
 				font-weight: 300;
@@ -36,13 +36,24 @@
 			}
 
 			h2 {
+				color: #3F4664;
+				font-family: BunueloBold, Arial Narrow, Helvetica, Arial;
+				font-size: 30px;
+				font-size: 1.5rem;
+				margin: 0px;
+				text-align: center;
+				padding-top: 30px;
+			}
+
+			h3 {
 				color: white;
-				font-weight: 300;
+				font-family: BunueloLight;
 				font-size: 1.25rem;
 				line-height: 1.5;
+				font-weight: 300;
 				margin: 0px;
 				text-align: left;
-				font-family: BunueloLight;
+				padding-top: 60px;
 			}
 
 			@media (min-width: 600px) {
@@ -51,28 +62,24 @@
 				}
 
 				h2 {
+					font-size: 1.75rem;
+				}
+
+				h3 {
 					font-size: 1.25rem;
 				}
 			}
 
 			@media (min-width: 900px) {
-				h2 {
+				h3 {
 					font-size: 1.5rem;
 				}
 			}
 
 			@media (min-width: 1200px) {
-				h2 {
+				h3 {
 					font-size: 1.75rem;
 				}
-			}
-
-			h3 {
-				font-size: 1rem;
-				font-weight: 300;
-				line-height: 1.7rem;
-				margin: 0px;
-				text-align: left;
 			}
 
 			a {
@@ -89,7 +96,7 @@
 
 			p {
 				font-size: 14px;
-				color: #c8d2d2;
+				color: #3F4664;
 				line-height: 21px;
 				font-weight: 300;
 			}
@@ -110,67 +117,12 @@
   			flex: 50%;
 			}
 
-			#inner-hero__welcome {
-    		padding-top: 60px;
-			}
-
-			#inner-hero__logo {
-				width: max-content;
-			}
-
-			#inner-hero__title {
-				font-family: BunueloBold, Arial Narrow, Helvetica, Arial;
-				white-space: nowrap;
-				/* font-size: calc([minimum size] + ([maximum size] - [minimum size]) * ((100vw - [minimum viewport width]) / ([maximum viewport width] - [minimum viewport width]))); */
-				font-size: calc(76px + (100 - 76) * ((100vw - 300px) / (2560 - 300)));
-			}
-
-			#inner-hero__open_source {
-				float: right;
-				position: relative;
-				top: -52px;
-				right: 40px;
-				margin-bottom: -20px;
-			}
-
-			@media (min-width: 1180px) {
-				#inner-hero__open_source {
-					top: -53px;
-				}
-			}
-
-			@media (min-width: 1558px) {
-				#inner-hero__open_source {
-					top: -54px;
-				}
-			}
-
-			.img_container {
-				position: relative;
-			}
-
-			.list {
-				margin: 0;
-				padding: 0;
-				text-align: center;
-			}
-
-			@media (min-width: 600px) {
-				.list {
-					text-align: left;
-				}
-			}
-
-			.list--unordered {
-				list-style: none;
-			}
-
-			.list__item {
-				margin-bottom: 18px;
-			}
-
-      .hero {
+			.hero {
 				background-image: radial-gradient(circle at top right, #5E6B8D, #2C2E50);
+			}
+
+			.inner-hero {
+				position: relative;
 			}
 
 			.star {
@@ -226,22 +178,44 @@
 				}
 			}
 
-			.inner-hero {
-				position: relative;
-			}
-
-			.inner-hero__img {
-				max-width: 100%;
-				padding-top: 60px;
-			}
-
 			.inner-hero__message {
 				padding-top: 125px;
 			}
 
 			@media (min-width: 600px) {
 				.inner-hero__message {
-					padding-top: 85px;
+					padding-top: 80px;
+				}
+			}
+
+			#inner-hero__logo {
+				width: max-content;
+			}
+
+			#inner-hero__title {
+				white-space: nowrap;
+				/* font-size: calc([minimum size] + ([maximum size] - [minimum size]) * ((100vw - [minimum viewport width]) / ([maximum viewport width] - [minimum viewport width]))); */
+				font-size: calc(76px + (100 - 76) * ((100vw - 300px) / (2560 - 300)));
+			}
+
+			#inner-hero__open_source {
+				color: #c8d2d2;
+				float: right;
+				position: relative;
+				top: -52px;
+				right: 40px;
+				margin-bottom: -20px;
+			}
+
+			@media (min-width: 1180px) {
+				#inner-hero__open_source {
+					top: -53px;
+				}
+			}
+
+			@media (min-width: 1558px) {
+				#inner-hero__open_source {
+					top: -54px;
 				}
 			}
 
@@ -252,6 +226,10 @@
 				color: #ffffff;
 				line-height: 1.2;
 				margin-top: 15px;
+			}
+
+			.img_container {
+				position: relative;
 			}
 
 			.inner-hero__beam {
@@ -266,33 +244,83 @@
     		left: 0;
     		bottom: 0;
 			}
+			
+
+
+			.logos {
+				padding: 0% 5% 2% 5%;
+			}
+
+			.logos .row {
+				justify-content: center;
+			}
+
+			.logos__title {
+				padding-bottom: 30px;
+			}
+
+			#microprofile_logo {
+				padding-right: 50px;
+				height: 78px;
+			}
+
+			#jakarta_ee_logo {
+				padding-left: 50px;
+			}
+
+
+
+			.logos, .resources {
+				width: 100%;
+				max-width: 1150px;
+				margin: 0 auto;
+				box-shadow: 0 2px 4px 0 rgba(63,70,89,0.31);
+    		border-radius: 3px;
+				margin-bottom: 30px;
+				margin-top: 5px;
+			}
 
 			.resources {
-				background-color: #ffffff;
-				height: 300px;
-				padding: 3.5rem 0;
+				padding: 0% 5% 1% 5%;
 			}
 
-			.resources__title {
-				font-size: 1rem;
-				color: #24243B;
-				margin-bottom: 1.5rem;
+			.resource {
+				width: 20%;
 				text-align: center;
+				padding-top: 30px;
+    		padding-bottom: 10px;
+				cursor: pointer;
 			}
 
-			@media (min-width: 600px) {
-				.resources__title {
-					text-align: left;
-				}
+			.resource:hover {
+				background-color: #F1F4FE;
 			}
+
+			.resource__logo {
+				height: 80px;
+			}
+
+			.circle {
+				border-radius: 50%;
+				border: 1px solid #C8D2D2;
+				padding: 6px;
+				background-color: #ffffff;
+			}
+			
+
 
 			.footer {
 				background-color: #1d1e3c;
 				padding: 70px 0;
 			}
 
+			.footer p {
+				color: #c8d2d2;
+			}
+
 			.footer__content {
 				text-align: center;
+				justify-content: center;
 			}
 
 			@media (min-width: 600px) {
@@ -325,6 +353,8 @@
 				}
 			}
 
+
+
 			#update-banner {
 			  background-color: #E6EDA8;
 			  display: block;
@@ -342,8 +372,6 @@
 			    flex-direction: row-reverse;
 			  }
 			}
-
-
 
 			#banner-container {
 			  margin: 0;
@@ -426,10 +454,6 @@
 
 			.x-close:hover {
 			  cursor: pointer;
-			}
-
-
-			.x-close:hover{
 				opacity: 0.8;
 			}
 
@@ -475,7 +499,7 @@
 				<span id="star5" class="star"></span>
 				<div class="inner-hero__message row">
 						<div class="column">
-							<h2 id="inner-hero__welcome">Welcome to</h2>
+							<h3>Welcome to</h3>
 							<div id="inner-hero__logo">
 								<h1 id="inner-hero__title">Open Liberty</h1>
 								<p id="inner-hero__open_source">An IBM Open Source Project</p>
@@ -490,6 +514,7 @@
 				<img class="inner-hero__clouds" src="clouds.png" alt="clouds">
 			</div>
 		</section>
+<<<<<<< HEAD
 		<section class="resources" data-externalizedAriaLabel="RESOURCES">
 			<div class="row">
 				<h2 class="resources__title" data-externalizedString="RESOURCES"></h2>
@@ -498,6 +523,50 @@
 					<li class="list__item"><a href="https://groups.io/g/openliberty" data-externalizedString="GROUPS_IO_FORUM"></a></li>
 					<li class="list__item"><a href="https://twitter.com/OpenLibertyIO">@OpenLibertyIO</a></li>
 				</ul>
+=======
+
+		<section class="logos">
+			<h2 class="logos__title">Open Liberty integrates with the Open Source community</h2>
+			<div class="row">
+					<img id="microprofile_logo" src="/microprofile_logo.png" alt="MicroProfile Logo">
+					<img id="jakarta_ee_logo" src="/jakarta_ee_logo.png" alt="Jakarta EE logo">
+			</div>
+		</section>
+
+		<section class="resources">
+			<h2>Resources</h2>
+			<div class="row">
+				<div class="resource">
+					<a href="https://openliberty.io/support/" target="_blank" rel="noopener">
+						<img class="resource__logo" src="/open_liberty_logo.png" alt="open liberty logo">
+						<p>Support</p>
+					</a>				
+				</div>
+				<div class="resource">
+					<a href="https://github.com/OpenLiberty/open-liberty" target="_blank" rel="noopener">
+						<img class="resource__logo" src="/github_logo.png" alt="github logo">
+						<p>Github</p>
+					</a>
+				</div>
+				<div class="resource">
+					<a href="https://twitter.com/OpenLibertyIO" target="_blank" rel="noopener">
+						<img class="resource__logo" src="/twitter_logo.png" alt="twitter logo">
+						<p>Twitter</p>
+					</a>
+				</div>
+				<div class="resource">
+					<a href="https://stackoverflow.com/questions/tagged/open-liberty" target="_blank" rel="noopener">
+						<img class="resource__logo circle" src="/stack_overflow_logo.png" alt="stack overflow logo">
+						<p>Stack Overflow</p>
+					</a>
+				</div>
+				<div class="resource">
+					<a href="https://groups.io/g/openliberty" target="_blank" rel="noopener">
+						<img class="resource__logo circle" src="/groups_io_logo.jpeg" alt="groups io logo">
+						<p>Groups.io</p>
+					</a>
+				</div>
+>>>>>>> Add resources and logos sections, clean up code
 			</div>
 		</section>
         </main>
