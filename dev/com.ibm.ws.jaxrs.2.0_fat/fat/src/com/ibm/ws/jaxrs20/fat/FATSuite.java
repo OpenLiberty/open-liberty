@@ -46,6 +46,7 @@ import com.ibm.ws.jaxrs20.fat.providercache.ProviderCacheTest;
 import com.ibm.ws.jaxrs20.fat.readerwriterprovider.ReaderWriterProvidersTest;
 import com.ibm.ws.jaxrs20.fat.resourcealgorithm.SearchPolicyTest;
 import com.ibm.ws.jaxrs20.fat.response.ResponseAPITest;
+import com.ibm.ws.jaxrs20.fat.restmetrics.RestMetricsTest;
 import com.ibm.ws.jaxrs20.fat.security.annotations.SecurityAnnotationsTest;
 import com.ibm.ws.jaxrs20.fat.security.ssl.SecuritySSLTest;
 import com.ibm.ws.jaxrs20.fat.securitycontext.SecurityContextTest;
@@ -96,6 +97,7 @@ import componenttest.rules.repeater.RepeatTests;
                 ProviderCacheTest.class,
                 ReaderWriterProvidersTest.class,
                 ResponseAPITest.class,
+                RestMetricsTest.class,
                 SameClassAsProviderAndResourceTest.class,
                 SameClassInGetClassesAndGetSingletonsTest.class,
                 SearchPolicyTest.class,

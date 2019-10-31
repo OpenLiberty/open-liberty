@@ -1,0 +1,12 @@
+<server>
+    <featureManager>
+        <feature>jaxrs-2.0</feature>
+        <feature>mpMetrics-2.0</feature>
+        <feature>monitor-1.0</feature>
+    </featureManager>
+
+    <mpMetrics authentication = "false"/>
+
+
+  	<include location="../fatTestPorts.xml"/>
+</server>
