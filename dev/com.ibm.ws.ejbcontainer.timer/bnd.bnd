@@ -18,20 +18,23 @@ Bundle-Description: EJB Timer Service; version=${bVersion}
 WS-TraceGroup: EJBContainer
 
 Private-Package: \
-  com.ibm.ws.ejbcontainer.timer.*
+	com.ibm.ws.ejbcontainer.timer.*
 
 Include-Resource: \
-    OSGI-INF=resources/OSGI-INF
+	OSGI-INF=resources/OSGI-INF
 
 -dsannotations: \
-  com.ibm.ws.ejbcontainer.timer.osgi.internal.EJBTimerRuntimeImpl
+	com.ibm.ws.ejbcontainer.timer.osgi.internal.EJBTimerRuntimeImpl
 
 -buildpath: \
 	com.ibm.ws.context;version=latest,\
 	com.ibm.ws.ejbcontainer;version=latest,\
 	com.ibm.ws.ejbcontainer.core;version=latest,\
-	com.ibm.ws.kernel.service,\
+	com.ibm.ws.kernel.service;version=latest,\
 	com.ibm.ws.logging,\
+	com.ibm.ws.container.service;version=latest,\
 	com.ibm.websphere.org.osgi.core,\
 	com.ibm.websphere.org.osgi.service.component,\
-	com.ibm.wsspi.org.osgi.service.component.annotations
+	com.ibm.wsspi.org.osgi.service.component.annotations,\
+	com.ibm.websphere.javaee.ejb.3.1;version=latest
+

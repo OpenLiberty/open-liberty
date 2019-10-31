@@ -11,38 +11,33 @@
 package com.ibm.ws.http.internal;
 
 import java.util.Iterator;
-import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.staticvalue.StaticValue;
 
 /**
  *
  */
 public class HttpEndpointList implements Iterable<HttpEndpointImpl> {
 
-    private final static StaticValue<HttpEndpointList> instance = StaticValue.createStaticValue(new Callable<HttpEndpointList>() {
-        @Override
-        public HttpEndpointList call() {
-            return new HttpEndpointList();
-        }
-    });
+    static final class Singleton {
+        private static final HttpEndpointList instance = new HttpEndpointList();
+    }
 
     /**
      * @return the singleton HttpEndpointMap instance.
      */
     @Trivial
     public static HttpEndpointList getInstance() {
-        return instance.get();
+        return Singleton.instance;
     }
 
     public static void registerEndpoint(HttpEndpointImpl h) {
-        instance.get().add(h);
+        Singleton.instance.add(h);
     }
 
     public static void unregisterEndpoint(HttpEndpointImpl h) {
-        instance.get().remove(h);
+        Singleton.instance.remove(h);
     }
 
     /**
@@ -53,7 +48,7 @@ public class HttpEndpointList implements Iterable<HttpEndpointImpl> {
      * @return The endpoint associated with the id, or null.
      */
     public static HttpEndpointImpl findEndpoint(String endpointId) {
-        for (HttpEndpointImpl i : instance.get()) {
+        for (HttpEndpointImpl i : Singleton.instance) {
             if (i.getName().equals(endpointId))
                 return i;
         }

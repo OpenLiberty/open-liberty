@@ -448,8 +448,7 @@ class ResolveDirector extends AbstractDirector {
         try {
             if (downloadOption == DownloadOption.all || downloadOption == DownloadOption.none) {
                 resolver = new RepositoryResolver(productDefinitions, Collections.<ProvisioningFeatureDefinition> emptySet(), Collections.<IFixInfo> emptySet(), loginInfo);
-                 installResources = resolver.resolve(featureNamesProcessed);
-
+                installResources = resolver.resolve(featureNamesProcessed);
             } else {
                 Collection<String> featuresToInstall = getFeaturesToInstall(featureNamesProcessed, false);
 
@@ -458,8 +457,8 @@ class ResolveDirector extends AbstractDirector {
                 }
                 resolver = new RepositoryResolver(productDefinitions, product.getFeatureDefinitions().values(), FixAdaptor.getInstalledIFixes(product.getInstallDir()), loginInfo);
                 installResources = resolver.resolve(featuresToInstall);
-               
             }
+
         } catch (RepositoryResolutionException e) {
 
             throw ExceptionUtils.create(e, featureNamesProcessed, product.getInstallDir(), false, isOpenLiberty);
@@ -648,6 +647,7 @@ class ResolveDirector extends AbstractDirector {
                 log(Level.FINE, "Using old resolve API");
                 installResources = resolver.resolve(assetsToInstall);
             }
+
         } catch (RepositoryResolutionException e) {
 
             throw ExceptionUtils.create(e, assetNamesProcessed, product.getInstallDir(), true, isOpenLiberty);

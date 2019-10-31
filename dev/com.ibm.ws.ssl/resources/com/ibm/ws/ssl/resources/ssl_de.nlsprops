@@ -119,13 +119,13 @@ ssl.client.handshake.error.CWPKI0022E=CWPKI0022E: FEHLER BEIM SSL-HANDSHAKE: Es 
 ssl.client.handshake.error.CWPKI0022E.explanation=Es ist ein Fehler w\u00e4hrend des SSL-Handshake aufgetreten. Es ist m\u00f6glicherweise ein Export/Import des Unterzeichners vom Zielhost in den Client-Truststore erforderlich.
 ssl.client.handshake.error.CWPKI0022E.useraction=Lesen Sie die erweiterte Nachricht des Trust Manager, um festzustellen, welche \u00c4nderungen zwischen SSL-Zielkonfiguration und SSL-Clientkonfiguration vorgenommen werden m\u00fcssen.
 # -------------------------------------------------------------------------------------------------
-ssl.client.alias.not.found.CWPKI0023E=CWPKI0023E: Der mit der Eigenschaft "com.ibm.ssl.keyStoreClientAlias" angegebene Zertifikatalias {0} wurde nicht im Keystore {1} gefunden.
-ssl.client.alias.not.found.CWPKI0023E.explanation=Der f\u00fcr diese SSL-Konfiguration angegebene Zertifikatsalias ist nicht im angegebenen Keystore vorhanden. 
-ssl.client.alias.not.found.CWPKI0023E.useraction=F\u00fcgen Sie dem Keystore ein Zertifikat mit dem angegebenen Alias hinzu oder \u00e4ndern Sie den angegebenen Zertifikatsalias so, dass der einem Alias im Client-Keystore entspricht.
+ssl.client.alias.not.found.CWPKI0023E=CWPKI0023E: Der Zertifikatsaliasname {0}, der \u00fcber das Attribut clientKeyAlias angegeben ist, wurde entweder nicht im Keystore {1} gefunden oder er ist ung\u00fcltig.
+ssl.client.alias.not.found.CWPKI0023E.explanation=Der f\u00fcr diese SSL-Konfiguration angegebene Zertifikatsalias ist nicht im angegebenen Keystore vorhanden oder er ist ung\u00fcltig. Ein Beispiel f\u00fcr ein ung\u00fcltiges Zertifikat ist ein Zertifikat, das abgelaufen ist.
+ssl.client.alias.not.found.CWPKI0023E.useraction=F\u00fcgen Sie dem Keystore ein Zertifikat mit dem angegebenen Zertifikatsaliasnamen hinzu oder ersetzen oder verl\u00e4ngern Sie das ung\u00fcltige Zertifikat mit dem im Client-Keystore angegebenen Zertifikatsaliasnamen.
 # -------------------------------------------------------------------------------------------------
-ssl.server.alias.not.found.CWPKI0024E=CWPKI0024E: Der mit der Eigenschaft "com.ibm.ssl.keyStoreServerAlias" angegebene Zertifikatalias {0}  wurde nicht im Keystore {1} gefunden.
-ssl.server.alias.not.found.CWPKI0024E.explanation=Der f\u00fcr diese SSL-Konfiguration angegebene Zertifikatsalias ist nicht im angegebenen Keystore vorhanden. 
-ssl.server.alias.not.found.CWPKI0024E.useraction=F\u00fcgen Sie dem Keystore ein Zertifikat mit dem angegebenen Alias hinzu oder \u00e4ndern Sie den angegebenen Zertifikatsalias so, dass der einem Alias im Server-Keystore entspricht.
+ssl.server.alias.not.found.CWPKI0024E=CWPKI0024E: Der Zertifikatsaliasname {0}, der \u00fcber das Attribut serverKeyAlias angegeben ist, wurde entweder nicht im Keystore {1} gefunden oder er ist ung\u00fcltig.
+ssl.server.alias.not.found.CWPKI0024E.explanation=Der f\u00fcr diese SSL-Konfiguration angegebene Zertifikatsalias ist nicht im angegebenen Keystore vorhanden oder er ist ung\u00fcltig. Ein Beispiel f\u00fcr ein ung\u00fcltiges Zertifikat ist ein Zertifikat, das abgelaufen ist.
+ssl.server.alias.not.found.CWPKI0024E.useraction=F\u00fcgen Sie dem Keystore ein Zertifikat mit dem angegebenen Zertifikatsaliasnamen hinzu oder ersetzen oder verl\u00e4ngern Sie das ung\u00fcltige Zertifikat mit dem im Server-Keystore angegebenen Zertifikatsaliasnamen.
 # -------------------------------------------------------------------------------------------------
 ssl.load.https.stream.handler.CWPKI0025E=CWPKI0025E: Das System konnte die HTTPS-Handlerklasse {0} nicht laden. Erweiterte Fehlernachricht: {1}
 ssl.load.https.stream.handler.CWPKI0025E.explanation=Beim Laden der HTTPS-URLStreamHandler-Klasse ist ein Fehler aufgetreten. 
@@ -641,4 +641,20 @@ ssl.client.handshake.error.CWPKI0824E=CWPKI0824E: FEHLER BEIM SSL-HANDSHAKE: Feh
 Die erweiterte Fehlernachricht aus der SSL-Handshake-Ausnahme lautet wie folgt: [{1}].
 ssl.client.handshake.error.CWPKI0824E.explanation=Es ist ein Fehler w\u00e4hrend des SSL-Handshake aufgetreten. Die \u00dcberpr\u00fcfung des Hostnamens ist aktiviert und die die Serveridentit\u00e4t kann nicht \u00fcberpr\u00fcft werden. Der Hostname, der f\u00fcr den Zugriff auf den Server verwendet wurde, stimmt nicht mit den Informationen im registrierter Namen des Zertifikatsinhabers des Serverzertifikats oder dem zugeh\u00f6rigen alternativen Namen \u00fcberein.
 ssl.client.handshake.error.CWPKI0824E.useraction=Wenn die \u00dcberpr\u00fcfung des Hostnamens aktiviert ist, muss der Server, auf den zugegriffen wird, ein Zertifikat mit den ordnungsgem\u00e4\u00dfen Informationen konfiguriert sein, die erforderlich sind, um die Identit\u00e4t des Servers \u00fcberpr\u00fcfen zu k\u00f6nnen.
+# -------------------------------------------------------------------------------------------------
+ssl.cacerts.error.CWPKI0825W=CWPKI0825W: Das Attribut trustDefaultCerts ist aktiviert, aber der Standardtruststore konnte nicht initialisiert werden. Da der Standardtruststore nicht initialisiert wurde, wird nur der Truststore verwendet, der mit der {0}-SSL-Konfiguration konfiguriert wurde. Die zur\u00fcckgegebene Ausnahme ist: {1}. 
+ssl.cacerts.error.CWPKI0825W.explanation=Der Standardtruststore wurde nicht initialisiert, weil er nicht aus dem Trust-Manager abgerufen werden konnte. Der Standardtruststore wird nicht zum Herstellen einer Vertrauensbeziehung verwendet. Es wird nur die konfigurierte SSL-Konfiguration verwendet.
+ssl.cacerts.error.CWPKI0825W.useraction=Stellen Sie sicher, dass die Standardtruststoredatei vorhanden und zug\u00e4nglich ist.
+# -------------------------------------------------------------------------------------------------
+ssl.environment.cert.error.CWPKI0826W=CWPKI0826W: Das Zertifikat wurde nicht \u00fcber die Umgebungsvariable {0} abgerufen. Das Zertifikat wurde dem Truststore {1} nicht hinzugef\u00fcgt. Die zur\u00fcckgegebene Ausnahme ist: {2}.
+ssl.environment.cert.error.CWPKI0826W.explanation=Das in der Umgebungsvariablen angegebene Zertifikat ist nicht zug\u00e4nglich und nicht im Truststore enthalten. Die Ursache f\u00fcr das Problem ist m\u00f6glicherweise die Umgebungsvariable, der Dateiname oder das Zertifikat. Wenn das Zertifikat nicht hinzugef\u00fcgt werden kann, bedeutet das nicht, dass die SSL-Konfiguration ung\u00fcltig wird. Es kann jedoch m\u00f6glicherweise zu Problemen beim Herstellen der Vertrauensbeziehung f\u00fcr abgehende Verbindungen kommen.
+ssl.environment.cert.error.CWPKI0826W.useraction=Dieses Problem kann auf verschiedene Ursachen zur\u00fcckzuf\u00fchren sein. Stellen Sie sicher, dass die Umgebungsvariable oder Datei mit einem 64-Bit-Basiszertifikat gef\u00fcllt wird.
+# -------------------------------------------------------------------------------------------------
+ssl.using.cacerts.CWPKI0827I=CWPKI0827I: Die SSL-Konfiguration {0} verwendet den Standardtruststore zus\u00e4tzlich zum konfigurierten Truststore.
+ssl.using.cacerts.CWPKI0827I.explanation=Der Standardtruststore und der Truststore, der f\u00fcr die SSL-Konfiguration konfiguriert wurde, werden f\u00fcr die Herstellung der Vertrauensbeziehung verwendet.
+ssl.using.cacerts.CWPKI0827I.useraction=Es ist keine Aktion erforderlich.
+# -------------------------------------------------------------------------------------------------
+ssl.client.handshake.cacerts.error.CWPKI0828E=CWPKI0828E: Das Attibut trustDefaultCerts ist aktiviert, aber es konnte keine Vertrauensbeziehung mithilfe des Standardtruststores hergestellt werden. Die erweiterte Fehlernachricht aus der SSL-Handshake-Ausnahme lautet wie folgt: {0}.
+ssl.client.handshake.cacerts.error.CWPKI0828E.explanation=Der Standardtruststore ist nicht ordnungsgem\u00e4\u00df zum Herstellen der Vertrauensstellung konfiguriert. 
+ssl.client.handshake.cacerts.error.CWPKI0828E.useraction=\u00dcberpr\u00fcfen Sie die erweiterte Fehlernachricht, um zu ermitteln, was in der Konfiguration ge\u00e4ndert werden muss.
 # -------------------------------------------------------------------------------------------------
