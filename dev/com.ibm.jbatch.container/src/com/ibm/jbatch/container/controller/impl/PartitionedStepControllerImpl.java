@@ -593,10 +593,13 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
      */
     private void startPartitions() throws JobStoppingException {
 
+        logger.fine("startedPartitions = " + startedPartitions + ", numThreads = " + currentPlan.getThreads());
+
         while (startedPartitions.size() < partitionsToExecute.size()
                && startedPartitions.size() - finishedPartitions.size() < currentPlan.getThreads()) {
 
             int nextPartitionNumber = partitionsToExecute.get(startedPartitions.size());
+            logger.finer("nextPartitionNumber = " + nextPartitionNumber);
             PartitionPlanConfig config = buildPartitionPlanConfig(nextPartitionNumber);
 
             StopLock stopLock = getStopLock(); // Store in local variable to facilitate Ctrl+Shift+G search in Eclipse
@@ -764,15 +767,6 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
                 if (isStoppingStoppedOrFailed()) {
                     isStoppingStoppedOrFailed = true;
                 }
-
-                // The caller has the loop that determines when all the partitions are done.
-                // Our job is just to exit this method when any partition has finished.  In the
-                // case of recovery it could actually be more than one that has finished at once.
-                // But we're not returning back anything to the caller of this method;  it's OK if
-                // more than one partition has finished.
-                if (checkForRecoveredRemotePartitions()) {
-                    break;
-                }
             }
 
             //TODO - We won't worry about the case when a local dispatch has been stopped until
@@ -816,6 +810,22 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
                 //This is executed when stop has not been issued
                 msg = waitForPartitionReplyMsg();
                 if (msg == null) {
+
+                    // Since we're not aggressively failing the top-level step when an individual partition fails, there's no
+                    // need to be too proactive in looking for recovery failures.   Let's wait until we fail to get any reply messages
+                    // back and save the trips to the DB.   Even if we have a bunch of collector messages piled up, it's not as if we
+                    // have any waits each time we iterate through this loop, so we should clear them soon, I'd think.
+                    if (isMultiJvm) {
+                        // The caller has the loop that determines when all the partitions are done.
+                        // Our job is just to exit this method when any partition has finished.  In the
+                        // case of recovery it could actually be more than one that has finished at once.
+                        // But we're not returning back anything to the caller of this method;  it's OK if
+                        // more than one partition has finished.
+                        if (checkForRecoveredRemotePartitions()) {
+                            break;
+                        }
+                    }
+
                     //If waitForPartitionReplyMsg times out after 15 seconds, go back to the top
                     continue;
                 }
@@ -931,6 +941,8 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
 
         // Keep looping until all partitions have finished.
         while (finishedPartitions.size() < partitionsToExecute.size()) {
+
+            logger.fine("Iterate through loop with finishedPartitions = " + finishedPartitions);
 
             try {
                 startPartitions();
