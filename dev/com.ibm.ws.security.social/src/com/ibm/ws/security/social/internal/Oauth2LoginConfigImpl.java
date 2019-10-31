@@ -236,10 +236,27 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
     }
 
     protected void setRequiredConfigAttributes(Map<String, Object> props) {
-        this.clientId = getRequiredConfigAttribute(props, KEY_clientId);
-        this.clientSecret = getRequiredSerializableProtectedStringConfigAttribute(props, KEY_clientSecret);
-        this.authorizationEndpoint = getRequiredConfigAttribute(props, KEY_authorizationEndpoint);
-        this.scope = getRequiredConfigAttribute(props, KEY_scope);
+        if (isOpenShiftConfiguration(props)) {
+            setRequiredConfigAttributesForOpenShift(props);
+        } else {
+            this.clientId = getRequiredConfigAttribute(props, KEY_clientId);
+            this.clientSecret = getRequiredSerializableProtectedStringConfigAttribute(props, KEY_clientSecret);
+            this.authorizationEndpoint = getRequiredConfigAttribute(props, KEY_authorizationEndpoint);
+            this.scope = getRequiredConfigAttribute(props, KEY_scope);
+        }
+    }
+
+    boolean isOpenShiftConfiguration(Map<String, Object> props) {
+        String tokenReviewEndpoint = configUtils.getConfigAttribute(props, KEY_k8sTokenReviewEndpoint);
+        if (tokenReviewEndpoint != null && !tokenReviewEndpoint.isEmpty()) {
+            return true;
+        }
+        return false;
+    }
+
+    protected void setRequiredConfigAttributesForOpenShift(Map<String, Object> props) {
+        this.serviceAccountTokenForK8sTokenreview = getRequiredSerializableProtectedStringConfigAttribute(props, KEY_serviceAccountTokenForK8sTokenreview);
+        this.k8sTokenReviewEndpoint = configUtils.getRequiredConfigAttribute(props, KEY_k8sTokenReviewEndpoint);
     }
 
     protected void setOptionalConfigAttributes(Map<String, Object> props) throws SocialLoginException {
@@ -263,17 +280,17 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
         this.isClientSideRedirectSupported = configUtils.getBooleanConfigAttribute(props, KEY_isClientSideRedirectSupported, this.isClientSideRedirectSupported);
         this.nonce = configUtils.getBooleanConfigAttribute(props, KEY_nonce, this.nonce);
         this.userApiNeedsSpecialHeader = configUtils.getBooleanConfigAttribute(props, KEY_userApiNeedsSpecialHeader, this.userApiNeedsSpecialHeader);
-
-        this.k8sTokenReviewEndpoint = configUtils.getConfigAttribute(props, KEY_k8sTokenReviewEndpoint);
-        if (k8sTokenReviewEndpoint != null && !k8sTokenReviewEndpoint.isEmpty()) {
-            // A service account token is required if the Kubernetes TokenReview API will be used to retrieve user info
-            this.serviceAccountTokenForK8sTokenreview = getRequiredSerializableProtectedStringConfigAttribute(props, KEY_serviceAccountTokenForK8sTokenreview);
-            this.userApi = k8sTokenReviewEndpoint;
-            //            this.userNameAttribute = "username";
-            //            this.groupNameAttribute = "groups";
-        } else {
-            this.serviceAccountTokenForK8sTokenreview = configUtils.processProtectedString(props, KEY_serviceAccountTokenForK8sTokenreview);
+        if (isOpenShiftConfiguration(props)) {
+            setOptionalConfigAttributesForOpenShift(props);
         }
+    }
+
+    protected void setOptionalConfigAttributesForOpenShift(Map<String, Object> props) {
+        this.clientId = configUtils.getConfigAttribute(props, KEY_clientId);
+        this.clientSecret = configUtils.processProtectedString(props, KEY_clientSecret);
+        this.authorizationEndpoint = configUtils.getConfigAttribute(props, KEY_authorizationEndpoint);
+        this.scope = configUtils.getConfigAttribute(props, KEY_scope);
+        this.userApi = k8sTokenReviewEndpoint;
         this.useAccessTokenFromRequest = configUtils.getConfigAttribute(props, KEY_useAccessTokenFromRequest);
         this.tokenHeaderName = configUtils.getConfigAttribute(props, KEY_tokenHeaderName);
     }

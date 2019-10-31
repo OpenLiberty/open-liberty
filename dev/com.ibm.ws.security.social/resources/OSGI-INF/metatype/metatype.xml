@@ -287,7 +287,7 @@
         <AD id="displayName" name="%displayName" description="%displayName.desc" required="false" type="String" />
         <AD id="website" name="%website" description="%website.desc" required="false" type="String" ibm:type="token" />
         <AD id="authorizationEndpoint" name="%authorizationEndpoint" description="%authorizationEndpoint.desc"
-            required="true" type="String" ibm:type="token" /> <!-- trim the beginning and ending spaces-->
+            required="false" type="String" ibm:type="token" /> <!-- trim the beginning and ending spaces-->
         <AD id="tokenEndpoint" name="%tokenEndpoint" description="%tokenEndpoint.desc"
             required="false" type="String" ibm:type="token" /> <!-- trim the beginning and ending spaces-->
         <AD id="jwksUri" name="internal" description="internal use only"
@@ -295,24 +295,24 @@
         <AD id="responseType" name="%responseType" description="%responseType.desc" required="false" type="String" default="code">
                 <Option label="%responseType.code" value="code" />
             <!-- future
-            	<Option label="%responseType.token" value="token" />
-           	-->
-		</AD>
-       
+                <Option label="%responseType.token" value="token" />
+               -->
+        </AD>
+
         <AD id="tokenEndpointAuthMethod" name="%tokenEndpointAuthMethod" description="%tokenEndpointAuthMethod.desc" required="false"
              type="String" default="client_secret_post" >
                 <Option label="client_secret_basic" value="client_secret_basic" />
-                <Option label="client_secret_post"  value="client_secret_post" />               
+                <Option label="client_secret_post"  value="client_secret_post" />
         </AD>
-        <AD id="sslRef" name="%sslRef" description="%sslRef.desc" 
+        <AD id="sslRef" name="%sslRef" description="%sslRef.desc"
             required="false" type="String" ibmui:uiReference="com.ibm.ws.ssl.repertoire" />
         <AD id="scope" name="%scope" description="%scope.desc"
-            required="true" type="String" />
-        <AD id="authFilterRef" name="%authFilterRef" description="%authFilterRef.desc" ibm:type="pid" 
+            required="false" type="String" />
+        <AD id="authFilterRef" name="%authFilterRef" description="%authFilterRef.desc" ibm:type="pid"
             ibm:reference="com.ibm.ws.security.authentication.filter" required="false" type="String"  />
-        <AD id="redirectToRPHostAndPort" name="%redirectToRPHostAndPort" description="%redirectToRPHostAndPort.desc" required="false" type="String" />             
-        <AD id="clientId" name="%clientId" description="%clientId.desc"  required="true" type="String" /> 
-        <AD id="clientSecret" name="%clientSecret" description="%clientSecret.desc" required="true" type="String" ibm:type="password" />
+        <AD id="redirectToRPHostAndPort" name="%redirectToRPHostAndPort" description="%redirectToRPHostAndPort.desc" required="false" type="String" />
+        <AD id="clientId" name="%clientId" description="%clientId.desc" required="false" type="String" />
+        <AD id="clientSecret" name="%clientSecret" description="%clientSecret.desc" required="false" type="String" ibm:type="password" />
         <AD id="userNameAttribute" name="%userNameAttribute" description="%userNameAttribute.desc" required="false" type="String" ibm:type="token" default="email"/>
         <AD id="userApi" name="%userApi" description="%userApi.desc" required="false" type="String"/>
         <AD id="realmName" name="%realmName" description="%realmName.desc" required="false" type="String" ibm:type="token" />
@@ -320,17 +320,17 @@
         <AD id="groupNameAttribute" name="%groupNameAttribute" description="%groupNameAttribute.desc" required="false" type="String" ibm:type="token" />
         <AD id="userUniqueIdAttribute" name="%userUniqueIdAttribute" description="%userUniqueIdAttribute.desc" required="false" type="String" ibm:type="token" />
         <AD id="mapToUserRegistry" name="%mapToUserRegistry" description="%mapToUserRegistry.desc" required="false" type="Boolean" default="false" />
-        <AD id="jwt" ibm:type="pid" ibm:reference="com.ibm.ws.security.social.login.jwt" 
+        <AD id="jwt" ibm:type="pid" ibm:reference="com.ibm.ws.security.social.login.jwt"
              required="false" type="String" />
         <AD id="isClientSideRedirectSupported" name="%isClientSideRedirectSupported" description="%isClientSideRedirectSupported.desc"
-            required="false" type="Boolean" default="true" /> 
-  		<AD id="nonce" name="internal" description="internal use only" required="false" type="Boolean" default="false"/>     
-  		<AD id="userApiNeedsSpecialHeader" name="internal" description="internal use only" required="false" 
-             type="Boolean" default="false" />
-        <AD id="useSystemPropertiesForHttpClientConnections" name="%useSystemPropertiesForHttpClientConnections" description="%useSystemPropertiesForHttpClientConnections.desc" required="false" type="Boolean" default="false"/>        
+            required="false" type="Boolean" default="true" />
+        <AD id="nonce" name="internal" description="internal use only" required="false" type="Boolean" default="false"/>
+        <AD id="userApiNeedsSpecialHeader" name="internal" description="internal use only" required="false"
+            type="Boolean" default="false" />
+        <AD id="useSystemPropertiesForHttpClientConnections" name="%useSystemPropertiesForHttpClientConnections" description="%useSystemPropertiesForHttpClientConnections.desc" required="false" type="Boolean" default="false"/>
         <!-- Start of OpenShift-specific config -->
         <AD id="k8sTokenReviewEndpoint" name="%k8sTokenReviewEndpoint" description="%k8sTokenReviewEndpoint.desc"
-            required="false" type="String" />
+            required="false" type="String" ibm:type="token" />
         <AD id="serviceAccountTokenForK8sTokenreview" name="%serviceAccountTokenForK8sTokenreview" description="%serviceAccountTokenForK8sTokenreview.desc"
             required="false" type="String" ibm:type="password" />
         <AD id="useAccessTokenFromRequest" name="%useAccessTokenFromRequest" description="%useAccessTokenFromRequest.desc"
@@ -343,11 +343,11 @@
             required="false" type="String" />
         <!-- End of OpenShift-specific config -->
     </OCD>
-    
+
     <Designate factoryPid="com.ibm.ws.security.social.oauth2login">
         <Object ocdref="com.ibm.ws.security.social.oauth2login.metatype" />
     </Designate>
-    
+
       <!-- Default for use with other OIDC services.  Like google except most of the defaults
            have been removed. If you add to or change this, consider changing google conf too -->                             
      <Designate factoryPid="com.ibm.ws.security.social.oidclogin">
