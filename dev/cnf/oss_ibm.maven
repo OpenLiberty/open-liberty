@@ -99,6 +99,7 @@ org.eclipse.persistence:org.eclipse.persistence.jpa.jpql:2.7.5-ea124dd
 org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen:2.7.5-ea124dd
 org.eclipse.persistence:org.eclipse.persistence.jpa:2.7.5-ea124dd
 org.openid4java:openid4java:0.9.7-ibm-s20130624-1827
+org.opensaml:opensaml:2.6.6
 org.opensaml:openws:1.5.6
 org.owasp.esapi:esapi:2.1.0
 org.mock-server:mockserver-core:3.10.7-IBM20191022
