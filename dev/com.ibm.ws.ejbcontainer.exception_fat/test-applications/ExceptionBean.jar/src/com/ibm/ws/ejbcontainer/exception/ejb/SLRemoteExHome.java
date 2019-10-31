@@ -8,19 +8,18 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.ejbcontainer.exception.fat;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+package com.ibm.ws.ejbcontainer.exception.ejb;
 
-import com.ibm.ws.ejbcontainer.exception.fat.tests.ExceptionTest;
-import com.ibm.ws.ejbcontainer.exception.fat.tests.InheritedApplicationExceptionTest;
+import java.rmi.RemoteException;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                ExceptionTest.class,
-                InheritedApplicationExceptionTest.class
-})
-public class FATSuite {
+import javax.ejb.CreateException;
+import javax.ejb.EJBHome;
+
+/**
+ * Remote Home interface for Enterprise Bean: SLRemoteEx
+ */
+public interface SLRemoteExHome extends EJBHome {
+
+    SLRemoteEx create() throws CreateException, RemoteException;
 }
