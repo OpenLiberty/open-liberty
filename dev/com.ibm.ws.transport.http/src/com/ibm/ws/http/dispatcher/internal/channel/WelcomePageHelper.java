@@ -26,7 +26,6 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import com.ibm.wsspi.http.WelcomePage;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.staticvalue.StaticValue;
 
 /**
  * Component that handles managing the WelcomePage for the HttpDispatcherLink
@@ -35,21 +34,16 @@ import com.ibm.ws.staticvalue.StaticValue;
            immediate = true,
            property = { "service.vendor=IBM" })
 public class WelcomePageHelper {
-  private static StaticValue<ConcurrentServiceReferenceSet<WelcomePage>> welcomePages = StaticValue.createStaticValue(new Callable<ConcurrentServiceReferenceSet<WelcomePage>>(){
-    @Override
-    public ConcurrentServiceReferenceSet<WelcomePage> call() throws Exception {
-        return new ConcurrentServiceReferenceSet<WelcomePage>("welcomePage");
-    }
-  });
+  private static ConcurrentServiceReferenceSet<WelcomePage> welcomePages = new ConcurrentServiceReferenceSet<WelcomePage>("welcomePage");
 
   @Activate
   protected void activeate(ComponentContext ctx) {
-    welcomePages.get().activate(ctx);
+    welcomePages.activate(ctx);
   }
 
   @Deactivate
   protected void deactiveate(ComponentContext ctx) {
-    welcomePages.get().deactivate(ctx);
+    welcomePages.deactivate(ctx);
   }
 
   @Trivial
@@ -59,16 +53,16 @@ public class WelcomePageHelper {
              cardinality = ReferenceCardinality.MULTIPLE,
              name="welcomePage")
   protected void setWelcomePage(ServiceReference<WelcomePage> ref) {
-    welcomePages.get().addReference(ref);
+    welcomePages.addReference(ref);
   }
 
   protected void unsetWelcomePage(ServiceReference<WelcomePage> ref) {
-    welcomePages.get().removeReference(ref);
+    welcomePages.removeReference(ref);
   }
 
   public static InputStream getWelcomePageStream(String url) {
-    if (!welcomePages.get().isEmpty()) {
-      WelcomePage page = welcomePages.get().getHighestRankedService();
+    if (!welcomePages.isEmpty()) {
+      WelcomePage page = welcomePages.getHighestRankedService();
       if (page != null) {
         return page.openWelcomePage(url);
       }
@@ -77,8 +71,8 @@ public class WelcomePageHelper {
   }
 
   public static InputStream getNotFoundStream() {
-    if (!welcomePages.get().isEmpty()) {
-      WelcomePage page = welcomePages.get().getHighestRankedService();
+    if (!welcomePages.isEmpty()) {
+      WelcomePage page = welcomePages.getHighestRankedService();
       if (page != null) {
         return page.openNotFoundPage();
       }

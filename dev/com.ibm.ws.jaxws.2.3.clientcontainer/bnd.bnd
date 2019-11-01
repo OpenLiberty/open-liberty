@@ -16,6 +16,11 @@ Bundle-Name: JAX-WS ClientContainer
 Bundle-SymbolicName: com.ibm.ws.jaxws.2.3.clientcontainer
 Bundle-Description: IBM JAX-WS ClientContainer; version=${bVersion}
 
+javac.source: 1.8
+javac.target: 1.8
+
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+
 # in cxf-rt-frontend-jaxws-2.6.2 bundle, we exposed: 
 # META-INF/services/javax.xml.ws.spi.Provider = com.ibm.ws.jaxws.client.LibertyProviderImpl
 # so we need make com.ibm.ws.jaxws.client;thread-context=true
@@ -113,6 +118,7 @@ instrument.classesExcludes: com/ibm/ws/jaxws/clientcontainer/internal/resources/
 	com.ibm.ws.org.apache.cxf.cxf.rt.frontend.simple.3.2;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxws.3.2;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.3.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.wsdl.3.2;version=latest,\
 	com.ibm.websphere.appserver.spi.logging;version=latest,\
 	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
 	com.ibm.ws.adaptable.module;version=latest,\

@@ -12,7 +12,7 @@
 bVersion=1.0
 
 Bundle-Name: org.opensaml.opensaml
-Bundle-Description: org.opensaml opensaml; version=2.6.1
+Bundle-Description: org.opensaml opensaml; version=2.6.6
 Bundle-SymbolicName: com.ibm.ws.org.opensaml.opensaml.2.6.1
 
 WS-TraceGroup: SAML20
@@ -29,7 +29,7 @@ Export-Package: \
 Private-Package: templates,schema
 
 Import-Package: \
- !org.apache.commons.httpclient.*;resolution:=optional,\
+ org.apache.commons.*;resolution:=optional,\
  !org.apache.velocity.*,\
  !org.bouncycastle.*,\
  !org.owasp.esapi.*,\
@@ -42,7 +42,7 @@ Import-Package: \
  *
 
 Include-Resource: \
- @${repo;org.opensaml:opensaml;2.6.1}!/!META-INF/MANIFEST.MF|META-INF/maven/*|org/opensaml/saml2/binding/decoding/HTTPPostDecoder.class, \
+ @${repo;org.opensaml:opensaml;2.6.6}!/!META-INF/MANIFEST.MF|META-INF/maven/*|org/opensaml/saml2/binding/decoding/HTTPPostDecoder.class, \
  @${repo;com.ibm.ws.org.opensaml.openws.1.5.6}!/*xml, \
  @${repo;com.ibm.ws.org.opensaml.xmltooling.1.4.4}!/*xml
 

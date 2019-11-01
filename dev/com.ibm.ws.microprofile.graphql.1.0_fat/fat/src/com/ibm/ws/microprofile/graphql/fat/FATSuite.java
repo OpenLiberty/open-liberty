@@ -25,6 +25,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 IfaceTest.class,
                 IgnoreTest.class,
                 InputFieldsTest.class,
+                MetricsTest.class,
                 OutputFieldsTest.class,
                 TypesTest.class
 })

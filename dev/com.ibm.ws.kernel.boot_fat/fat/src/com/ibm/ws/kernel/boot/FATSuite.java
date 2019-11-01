@@ -56,9 +56,11 @@ import com.ibm.wsspi.kernel.embeddable.EmbeddedServerTest;
                 StartCommandTest.class,
                 ServerClasspathTest.class,
                 ServerStartJVMOptionsTest.class,
+                ServerStartJavaEnvironmentVariablesTest.class,
                 PauseResumeCommandTest.class,
                 EmbeddedServerMergeProductExtensionTest.class,
                 ServerEndpointControlMBeanTest.class,
                 OSGiEmbedManagerTest.class
 })
-public class FATSuite {}
+public class FATSuite {
+}

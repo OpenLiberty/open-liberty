@@ -55,6 +55,7 @@ public class RepositoryResolver {
     // Static data which won't change after initialization
     KernelResolverRepository resolverRepository;
     Collection<ProvisioningFeatureDefinition> installedFeatures;
+    Collection<ProvisioningFeatureDefinition> kernelFeatures;
     Map<String, SampleResource> sampleIndex;
     Collection<EsaResource> repoFeatures;
     Collection<SampleResource> repoSamples;
@@ -160,6 +161,7 @@ public class RepositoryResolver {
         this.installDefinition = installDefinition;
         fetchFromRepository(installDefinition);
         this.installedFeatures = installedFeatures;
+        this.kernelFeatures = getKernelFeatures(installedFeatures);
         indexSamples();
     }
 
@@ -174,6 +176,7 @@ public class RepositoryResolver {
         this.repoFeatures = new ArrayList<>(repoFeatures);
         this.repoSamples = new ArrayList<>(repoSamples);
         this.installedFeatures = installedFeatures;
+        this.kernelFeatures = getKernelFeatures(installedFeatures);
         this.installDefinition = Collections.emptySet();
 
         indexSamples();
@@ -215,6 +218,16 @@ public class RepositoryResolver {
         resolverRepository = new KernelResolverRepository(installDefintion, repoConnections, mode);
         resolverRepository.addInstalledFeatures(installedFeatures);
         resolverRepository.addFeatures(repoFeatures);
+    }
+
+    Collection<ProvisioningFeatureDefinition> getKernelFeatures(Collection<ProvisioningFeatureDefinition> installedFeatures) {
+        List<ProvisioningFeatureDefinition> kernelFeatures = new ArrayList<>();
+        for (ProvisioningFeatureDefinition feature : installedFeatures) {
+            if (feature.isKernel()) {
+                kernelFeatures.add(feature);
+            }
+        }
+        return kernelFeatures;
     }
 
     /**
@@ -430,7 +443,7 @@ public class RepositoryResolver {
     void resolveFeatures(ResolutionMode mode) {
         boolean allowMultipleVersions = mode == ResolutionMode.IGNORE_CONFLICTS ? true : false;
         FeatureResolver resolver = new FeatureResolverImpl();
-        Result result = resolver.resolveFeatures(resolverRepository, featureNamesToResolve, Collections.<String> emptySet(), allowMultipleVersions);
+        Result result = resolver.resolveFeatures(resolverRepository, kernelFeatures, featureNamesToResolve, Collections.<String> emptySet(), allowMultipleVersions);
 
         featureConflicts.putAll(result.getConflicts());
 

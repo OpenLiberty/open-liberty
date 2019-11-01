@@ -17,6 +17,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.jpa.spec10.query.aggregatefunctions.TestQueryAggregateFunctions_Web;
 import com.ibm.ws.jpa.spec10.query.apars.TestAggregateFunctionAPARs_Web;
+import com.ibm.ws.jpa.spec10.query.apars.TestBindParametersAPARs_Web;
 import com.ibm.ws.jpa.spec10.query.apars.TestDB2OnZSpecificAPARs_Web;
 import com.ibm.ws.jpa.spec10.query.jpql.TestQueryJPQL_Web;
 
@@ -24,7 +25,7 @@ import com.ibm.ws.jpa.spec10.query.jpql.TestQueryJPQL_Web;
 @SuiteClasses({
                 TestQueryAggregateFunctions_Web.class,
                 TestAggregateFunctionAPARs_Web.class,
-//                TestForceBindParametersAPARs_Web.class,
+                TestBindParametersAPARs_Web.class,
                 TestQueryJPQL_Web.class,
                 TestDB2OnZSpecificAPARs_Web.class,
                 componenttest.custom.junit.runner.AlwaysPassesTest.class

@@ -34,7 +34,6 @@ import com.ibm.ws.jsf23.fat.tests.JSF23JPA22Test;
 import com.ibm.ws.jsf23.fat.tests.JSF23JSF22SingletonFeatureTest;
 import com.ibm.ws.jsf23.fat.tests.JSF23MapSupportTests;
 import com.ibm.ws.jsf23.fat.tests.JSF23SelectOneRadioGroupTests;
-import com.ibm.ws.jsf23.fat.tests.JSF23ThirdPartyApiTests;
 import com.ibm.ws.jsf23.fat.tests.JSF23UIRepeatConditionTests;
 import com.ibm.ws.jsf23.fat.tests.JSF23UISelectManyTests;
 import com.ibm.ws.jsf23.fat.tests.JSF23ViewParametersTests;
@@ -89,8 +88,7 @@ import com.ibm.ws.jsf23.fat.tests.JSF23WebSocketTests;
                 CDIInjectionTests.class,
                 CDIFacesInMetaInfTests.class,
                 CDIFacesInWebXMLTests.class,
-                CDIConfigByACPTests.class,
-                JSF23ThirdPartyApiTests.class
+                CDIConfigByACPTests.class
 })
 public class FATSuite {
 

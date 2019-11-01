@@ -757,7 +757,12 @@ public class WSKeyStore extends Properties {
             Tr.info(tc, "Successfully loaded default keystore: " + this.location + " of type: " + this.type);
 
         // Check to see if any certificates entries from the environment need to be added to the keystore
-        addCertEntriesFromEnv();
+        if (!this.readOnly)
+            addCertEntriesFromEnv();
+        else {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "The " + name + " keystore is read only will not look for an environment variable cert_" + name + " to be set");
+        }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.exit(tc, "do_getKeyStore", myKeyStore);

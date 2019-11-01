@@ -20,6 +20,7 @@ src: \
 	test-applications/common/src,\
 	test-applications/criteriaapi/src,\
 	test-applications/entitymanager/src,\
+    test-applications/olgh9339/src,\
 	test-applications/querylockmode/src,\
 	test-framework/src
 

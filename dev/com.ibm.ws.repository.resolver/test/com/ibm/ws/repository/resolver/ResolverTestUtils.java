@@ -38,7 +38,7 @@ public class ResolverTestUtils {
      * Mocks a {@link ProvisioningFeatureDefinition}, explicitly setting the value for featureName
      */
     public static ProvisioningFeatureDefinition mockSimpleFeatureDefinition(Mockery mockery, final String provideFeature, final Version version, final String shortName,
-                                                                            final String featureName) {
+                                                                            final String featureName, final Visibility visibility, final boolean isKernel) {
         final ProvisioningFeatureDefinition featureDefinition = mockery.mock(ProvisioningFeatureDefinition.class, provideFeature);
         mockery.checking(new Expectations() {
             {
@@ -50,7 +50,7 @@ public class ResolverTestUtils {
                 will(returnValue(version));
                 allowing(featureDefinition).getHeader(with(any(String.class)));
                 allowing(featureDefinition).getVisibility();
-                will(returnValue(Visibility.PUBLIC));
+                will(returnValue(visibility));
                 allowing(featureDefinition).isAutoFeature();
                 will(returnValue(false));
                 allowing(featureDefinition).getProcessTypes();
@@ -61,6 +61,8 @@ public class ResolverTestUtils {
                 will(returnValue(featureName));
                 allowing(featureDefinition).isSingleton();
                 will(returnValue(true));
+                allowing(featureDefinition).isKernel();
+                will(returnValue(isKernel));
             }
         });
         return featureDefinition;
@@ -71,14 +73,14 @@ public class ResolverTestUtils {
      */
     public static ProvisioningFeatureDefinition mockSimpleFeatureDefinition(Mockery mockery, final String provideFeature, final Version version, final String shortName) {
         final String featureName = shortName == null ? provideFeature : shortName;
-        return mockSimpleFeatureDefinition(mockery, provideFeature, version, shortName, featureName);
+        return mockSimpleFeatureDefinition(mockery, provideFeature, version, shortName, featureName, Visibility.PUBLIC, false);
     }
 
     /**
-     * @param id required
-     * @param edition required
-     * @param version required
-     * @param license optional
+     * @param id          required
+     * @param edition     required
+     * @param version     required
+     * @param license     optional
      * @param installType optional
      * @return
      * @throws IOException

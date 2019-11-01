@@ -23,8 +23,7 @@ Bundle-Description: WebSphere Liberty kernel command line, version ${bVersion}
 Private-Package: com.ibm.ws.kernel.boot.cmdline;-split-package:=merge-last, \
  com.ibm.ws.kernel.boot.cmdline.resources, \
  com.ibm.ws.kernel.provisioning, \
- com.ibm.ws.kernel.boot.resources.*,\
- com.ibm.ws.staticvalue
+ com.ibm.ws.kernel.boot.resources.*
 
 -includeresource: \
  @${repo;com.ibm.websphere.org.osgi.core}!/org/osgi/framework/Version*.class
