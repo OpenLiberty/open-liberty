@@ -637,7 +637,17 @@ class ResolveDirector extends AbstractDirector {
                                                                           && System.getProperty("INTERNAL_DOWNLOAD_FROM_FOR_BUILD") == null ? Collections.<ProvisioningFeatureDefinition> emptySet() : installedFeatureDefinitions.values();
             Collection<IFixInfo> installedIFixes = download ? Collections.<IFixInfo> emptySet() : FixAdaptor.getInstalledIFixes(product.getInstallDir());
             resolver = new RepositoryResolver(productDefinitions, installedFeatures, installedIFixes, loginInfo);
-            installResources = resolver.resolve(assetsToInstall);
+            if (InstallUtils.getIsServerXmlInstall()) {
+                Set<String> allServerFeatures = new HashSet<>(InstallUtils.getAllServerFeatures());
+                allServerFeatures.addAll(assetsToInstall);
+
+                log(Level.FINE, "Using resolveAsSet to resolve features");
+                installResources = resolver.resolveAsSet(allServerFeatures); // use new api
+            } else {
+                log(Level.FINE, "Using old resolve API");
+                installResources = resolver.resolve(assetsToInstall);
+            }
+
         } catch (RepositoryResolutionException e) {
 
             throw ExceptionUtils.create(e, assetNamesProcessed, product.getInstallDir(), true, isOpenLiberty);
