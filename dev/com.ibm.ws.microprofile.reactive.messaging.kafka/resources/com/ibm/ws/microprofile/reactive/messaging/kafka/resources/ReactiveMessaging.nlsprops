@@ -56,9 +56,9 @@ kafka.groupid.not.set.CWMRX1005E.explanation=The Kafka consumer group ID must be
 kafka.groupid.not.set.CWMRX1005E.useraction=Set the property in one of the MicroProfile ConfigSource locations for this application, for example, the microprofile-config.properties file.
 
 #Do not translate "kafka-clients", "Apache Kafka" or "Maven Central"
-kafka.library.not.present.CWMRX1006E=CWMRX1006E: Classes from the kafka-clients jar could not be loaded. Ensure that the kafka-clients jar and its dependencies are available as libraries to your application.
-kafka.library.not.present.CWMRX1006E.explanation=Applications which use the Reactive Messaging Kafka Client must provide the Apache Kafka clients jar and its dependencies, either by packaging it as a library within the application, or by providing it as a shared library.
-kafka.library.not.present.CWMRX1006E.useraction=Package the kafka-clients jar and its dependencies as libraries in your application, or as a shared library. The kafka-clients jar can be downloaded from the Apache Kafka website or from Maven Central.
+kafka.library.not.present.CWMRX1006E=CWMRX1006E: Classes from the kafka-clients JAR file could not be loaded. Ensure that the kafka-clients JAR file and its dependencies are available as libraries to your application.
+kafka.library.not.present.CWMRX1006E.explanation=Applications that use the Reactive Messaging Kafka Client must provide the kafka-clients JAR file and its dependencies. They can provide this file and its dependencies either by packaging it as a library within the application or by providing it as a shared library.
+kafka.library.not.present.CWMRX1006E.useraction=Package the kafka-clients JAR file and its dependencies as libraries in your application or as a shared library. The kafka-clients JAR file can be downloaded from the Apache Kafka website or from Maven Central.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Reactive Messaging error message
