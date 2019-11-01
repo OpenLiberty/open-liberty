@@ -302,9 +302,9 @@ NOT_COMPLIANT_WITH_JPA21_CWWJP0054E=CWWJP0054E: The {0} implementation, {1}, is 
 NOT_COMPLIANT_WITH_JPA21_CWWJP0054E.explanation=The JPA persistence provider cannot be used because it lacks implementation of methods that are required by the JPA 2.1 specification.
 NOT_COMPLIANT_WITH_JPA21_CWWJP0054E.useraction=Obtain a newer version of the JPA persistence provider that complies with the JPA 2.1 specification.
 
-ERROR_TRANSFORMING_CLASS_CWWJP0055E=CWWJP0055E: An error occurred while attempting to transform the {0} Java Class.  The following failure detail has been gathered: {1}
-ERROR_TRANSFORMING_CLASS_CWWJP0055E.explanation=An unexpected error occurred while transforming the class, which is usually attributable to invalid Java bytecode.
-ERROR_TRANSFORMING_CLASS_CWWJP0055E.useraction=The class cache may be corrupted, or the application may have been improperly packaged.  If clearing the class cache does not resolve the problem, review the application archive for packaging mistakes.
+ERROR_TRANSFORMING_CLASS_CWWJP0055E=CWWJP0055E: An error occurred while attempting to transform the {0} Java Class.  The following failure detail was gathered: {1}
+ERROR_TRANSFORMING_CLASS_CWWJP0055E.explanation=An unexpected error occurred while transforming the Java class. This error is usually caused by invalid Java bytecode.
+ERROR_TRANSFORMING_CLASS_CWWJP0055E.useraction=The class cache might be corrupted or the application might be packaged incorrectly. First, clear the class cache. If that action does not resolve the problem, then review the application archive for packaging mistakes.
 
 #-------------------------------------------------------------------------------
 # Error messages from the JPA Provider below this point
