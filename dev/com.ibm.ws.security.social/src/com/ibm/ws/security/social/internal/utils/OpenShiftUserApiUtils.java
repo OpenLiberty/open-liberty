@@ -27,114 +27,116 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.jose4j.lang.JoseException;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.security.common.http.HttpUtils;
 import com.ibm.ws.security.common.jwk.utils.JsonUtils;
-import com.ibm.ws.security.social.internal.OpenShiftLoginConfigImpl;
+import com.ibm.ws.security.social.TraceConstants;
+import com.ibm.ws.security.social.error.SocialLoginException;
+import com.ibm.ws.security.social.internal.Oauth2LoginConfigImpl;
 
 public class OpenShiftUserApiUtils {
 
-    OpenShiftLoginConfigImpl config = null;
+    public static final TraceComponent tc = Tr.register(OpenShiftUserApiUtils.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
+
+    Oauth2LoginConfigImpl config = null;
 
     HttpUtils httpUtils = new HttpUtils();
 
-    public OpenShiftUserApiUtils(OpenShiftLoginConfigImpl config) {
+    public OpenShiftUserApiUtils(Oauth2LoginConfigImpl config) {
         this.config = config;
     }
 
-    public String getUserApiResponse(@Sensitive String accessToken, SSLSocketFactory sslSocketFactory) throws IOException, JoseException{
+    public String getUserApiResponse(@Sensitive String accessToken, SSLSocketFactory sslSocketFactory) throws SocialLoginException {
         String response = null;
         try {
-            HttpURLConnection connection = httpUtils.createConnection(HttpUtils.RequestMethod.POST, config.getUserApi(), sslSocketFactory);
-            connection = httpUtils.setHeaders(connection, getUserApiRequestHeaders());
-            connection.setDoOutput(true);
-
-            OutputStream outputStream = connection.getOutputStream();
-            OutputStreamWriter streamWriter = new OutputStreamWriter(outputStream, "UTF-8");
-
-            String bodyString = createUserApiRequestBody(accessToken);
-            System.out.println("AYOHO Writing body [" + bodyString + "]");
-            streamWriter.write(bodyString);
-            // TODO
-            streamWriter.close();
-            outputStream.close();
-            connection.connect();
-
-            int responseCode = connection.getResponseCode();
-            response = httpUtils.readConnectionResponse(connection);
-            // System.out.println("AYOHO Response [" + responseCode + "]: [" + response + "]");
-            if (responseCode != HttpServletResponse.SC_CREATED) {
-                // TODO - error condition
-            }
-            // response = response.replaceFirst("^\\{", "{\"username\":\"ayoho-edited-username\",");
-            response = modifyExistingResponseToJSON(response);
-            // System.out.println("AYOHO response after formatting : [" + response + "]");
-        } catch (IOException e) {
-            // TODO - error logging
-            throw e;
-        }  catch (JoseException e) {
-            // TODO - error logging
-            throw e;
+            HttpURLConnection connection = sendUserApiRequest(accessToken, sslSocketFactory);
+            response = readUserApiResponse(connection);
+        } catch (Exception e) {
+            throw new SocialLoginException("OPENSHIFT_ERROR_GETTING_USER_INFO", e, new Object[] { e });
         }
         return response;
     }
 
+    HttpURLConnection sendUserApiRequest(@Sensitive String accessToken, SSLSocketFactory sslSocketFactory) throws IOException, SocialLoginException {
+        HttpURLConnection connection = httpUtils.createConnection(HttpUtils.RequestMethod.POST, config.getUserApi(), sslSocketFactory);
+        connection = httpUtils.setHeaders(connection, getUserApiRequestHeaders());
+        connection.setDoOutput(true);
+
+        OutputStream outputStream = connection.getOutputStream();
+        OutputStreamWriter streamWriter = new OutputStreamWriter(outputStream, "UTF-8");
+
+        String bodyString = createUserApiRequestBody(accessToken);
+        streamWriter.write(bodyString);
+        streamWriter.close();
+        outputStream.close();
+        connection.connect();
+        return connection;
+    }
+
     @Sensitive
-    private Map<String, String> getUserApiRequestHeaders() {
+    Map<String, String> getUserApiRequestHeaders() {
         Map<String, String> headers = new HashMap<String, String>();
-        headers.put("Authorization", "Bearer " + config.getServiceAccountToken());
+        headers.put("Authorization", "Bearer " + config.getServiceAccountTokenForK8sTokenreview());
         headers.put("Accept", "application/json");
         headers.put("Content-Type", "application/json");
         return headers;
     }
 
-    private String createUserApiRequestBody(@Sensitive String accessToken) {
+    String createUserApiRequestBody(@Sensitive String accessToken) throws SocialLoginException {
+        if (accessToken == null) {
+            throw new SocialLoginException("OPENSHIFT_ACCESS_TOKEN_MISSING", null, null);
+        }
         JsonObjectBuilder bodyBuilder = Json.createObjectBuilder();
         bodyBuilder.add("kind", "TokenReview");
         bodyBuilder.add("apiVersion", "authentication.k8s.io/v1");
         bodyBuilder.add("spec", Json.createObjectBuilder().add("token", accessToken));
         return bodyBuilder.build().toString();
     }
-    
-    private String modifyExistingResponseToJSON(String response) throws JoseException{
+
+    String readUserApiResponse(HttpURLConnection connection) throws IOException, SocialLoginException, JoseException {
+        int responseCode = connection.getResponseCode();
+        String response = httpUtils.readConnectionResponse(connection);
+        if (responseCode != HttpServletResponse.SC_CREATED) {
+            throw new SocialLoginException("OPENSHIFT_USER_API_BAD_STATUS", null, new Object[] { responseCode, response });
+        }
+        return modifyExistingResponseToJSON(response);
+    }
+
+    private String modifyExistingResponseToJSON(String response) throws JoseException {
 
         String jsonFormatResponse = JsonUtils.toJson(response);
 
         Map<?, ?> firstMap = JsonUtils.claimsFromJsonObject(jsonFormatResponse);
 
-        Map<?, ?> statusInnerMap = (LinkedHashMap<?, ?>)firstMap.get("status");
+        Map<?, ?> statusInnerMap = (LinkedHashMap<?, ?>) firstMap.get("status");
 
-        Map<?, ?> userInnerMap = (LinkedHashMap<?, ?>)statusInnerMap.get("user");
-
-       
+        Map<?, ?> userInnerMap = (LinkedHashMap<?, ?>) statusInnerMap.get("user");
 
         List<?> groupList = (ArrayList<?>) userInnerMap.get("groups");
 
-        StringBuilder correct = new StringBuilder("{\"username\":\"" + userInnerMap.get("username")+ "\",");
+        StringBuilder correct = new StringBuilder("{\"username\":\"" + userInnerMap.get("username") + "\",");
 
         StringBuilder buildArray = new StringBuilder("\"groups\":[");
 
-        for(int i=0;i<groupList.size();i++) {
+        for (int i = 0; i < groupList.size(); i++) {
 
-            
+            if (i == groupList.size() - 1) {
 
-            if(i==groupList.size()-1) {
-
-                buildArray.append("\"" + groupList.get(i)+ "\""+ "]}");
+                buildArray.append("\"" + groupList.get(i) + "\"" + "]}");
 
             }
 
             else {
 
-                buildArray.append("\""  + groupList.get(i)+ "\""+ ",");
+                buildArray.append("\"" + groupList.get(i) + "\"" + ",");
 
             }
 
         }
 
         String current = correct.append(buildArray).toString();
-
-       
 
         return current;
 

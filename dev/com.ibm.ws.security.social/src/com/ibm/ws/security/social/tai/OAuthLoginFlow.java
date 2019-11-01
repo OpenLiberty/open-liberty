@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2018 IBM Corporation and others.
+ * Copyright (c) 2016, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,7 +25,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.TraceConstants;
 import com.ibm.ws.security.social.error.SocialLoginException;
-import com.ibm.ws.security.social.internal.OpenShiftLoginConfigImpl;
+import com.ibm.ws.security.social.internal.Oauth2LoginConfigImpl;
 import com.ibm.ws.security.social.internal.utils.ClientConstants;
 import com.ibm.ws.security.social.internal.utils.SocialUtil;
 import com.ibm.ws.security.social.web.utils.SocialWebUtils;
@@ -45,9 +45,9 @@ public class OAuthLoginFlow {
     }
 
     TAIResult handleOAuthRequest(HttpServletRequest request, HttpServletResponse response, SocialLoginConfig clientConfig) throws WebTrustAssociationFailedException {
-        if (clientConfig instanceof OpenShiftLoginConfigImpl && useAccessTokenFromRequest((OpenShiftLoginConfigImpl) clientConfig)) {
-            return handleAccessTokenFlow(request, response, (OpenShiftLoginConfigImpl) clientConfig);
-            
+        if (clientConfig instanceof Oauth2LoginConfigImpl && useAccessTokenFromRequest((Oauth2LoginConfigImpl) clientConfig)) {
+            return handleAccessTokenFlow(request, response, (Oauth2LoginConfigImpl) clientConfig);
+
         }
         String code = webUtils.getAndClearCookie(request, response, ClientConstants.COOKIE_NAME_STATE_KEY);
         if (code == null) {
@@ -57,8 +57,8 @@ public class OAuthLoginFlow {
         }
     }
 
-    private boolean useAccessTokenFromRequest(OpenShiftLoginConfigImpl clientConfig) {
-        
+    private boolean useAccessTokenFromRequest(Oauth2LoginConfigImpl clientConfig) {
+
         if ("no".equals(clientConfig.getUseAccessTokenFromRequest())) {
             return false;
         } else {
@@ -67,19 +67,19 @@ public class OAuthLoginFlow {
         }
     }
 
-    private TAIResult handleAccessTokenFlow(HttpServletRequest request, HttpServletResponse response, OpenShiftLoginConfigImpl clientConfig) throws WebTrustAssociationFailedException {
+    private TAIResult handleAccessTokenFlow(HttpServletRequest request, HttpServletResponse response, Oauth2LoginConfigImpl clientConfig) throws WebTrustAssociationFailedException {
         TAIResult result = null;
         //request should have token
-        String tokenFromRequest = taiWebUtils.getBearerAccessToken(request, clientConfig);;
-        if(requestShouldHaveToken((OpenShiftLoginConfigImpl) clientConfig)) {
-            if (!validAccessToken(tokenFromRequest)) { 
+        String tokenFromRequest = taiWebUtils.getBearerAccessToken(request, clientConfig);
+        if (requestShouldHaveToken((Oauth2LoginConfigImpl) clientConfig)) {
+            if (!validAccessToken(tokenFromRequest)) {
                 // TODO: print error about required token being null or not valid
                 return taiWebUtils.sendToErrorPage(response, TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED));
             }
             return handleAccessToken(tokenFromRequest, request, response, clientConfig);
         } else if (validAccessToken(tokenFromRequest)) {
             // request may have token
-            result = handleAccessToken(tokenFromRequest, request, response, (OpenShiftLoginConfigImpl) clientConfig);
+            result = handleAccessToken(tokenFromRequest, request, response, (Oauth2LoginConfigImpl) clientConfig);
             // if good result return
             if (result != null && result.getSubject() != null) {
                 return result;
@@ -90,7 +90,7 @@ public class OAuthLoginFlow {
             return handleRedirectToServer(request, response, clientConfig);
         } else {
             return handleAuthorizationCode(request, response, code, clientConfig);
-        }      
+        }
     }
 
     private boolean validAccessToken(String result) {
@@ -100,11 +100,11 @@ public class OAuthLoginFlow {
         return false;
     }
 
-    private TAIResult handleAccessToken(String tokenFromRequest, HttpServletRequest request, HttpServletResponse response, OpenShiftLoginConfigImpl clientConfig) throws WebTrustAssociationFailedException {
-        
-//        if (!validAccessToken(tokenFromRequest)) { 
-//            return taiWebUtils.sendToErrorPage(response, TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED));
-//        }
+    private TAIResult handleAccessToken(String tokenFromRequest, HttpServletRequest request, HttpServletResponse response, Oauth2LoginConfigImpl clientConfig) throws WebTrustAssociationFailedException {
+
+        //        if (!validAccessToken(tokenFromRequest)) { 
+        //            return taiWebUtils.sendToErrorPage(response, TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED));
+        //        }
         AuthorizationCodeAuthenticator authzCodeAuthenticator = new AuthorizationCodeAuthenticator(request, response, clientConfig, tokenFromRequest, true);
         try {
             authzCodeAuthenticator.generateJwtAndTokensFromTokenReviewResult();
@@ -122,11 +122,10 @@ public class OAuthLoginFlow {
         }
         taiWebUtils.restorePostParameters(request);
         return authnResult;
-        
-        
+
     }
 
-    private boolean requestShouldHaveToken(OpenShiftLoginConfigImpl clientConfig) {
+    private boolean requestShouldHaveToken(Oauth2LoginConfigImpl clientConfig) {
         if ("required".equals(clientConfig.getUseAccessTokenFromRequest())) {
             return true;
         } else {

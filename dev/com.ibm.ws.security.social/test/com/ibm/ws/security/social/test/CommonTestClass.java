@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2018 IBM Corporation and others.
+ * Copyright (c) 2016, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,6 +45,9 @@ public class CommonTestClass extends com.ibm.ws.security.test.common.CommonTestC
 
     protected final static String MSG_BASE = "CWWKS";
     protected final static String MSG_BASE_ERROR_WARNING = "CWWKS[0-9]{4}(E|W)";
+    protected final static String CWWKS5371E_OPENSHIFT_ERROR_GETTING_USER_INFO = "CWWKS5371E";
+    protected final static String CWWKS5372E_OPENSHIFT_ACCESS_TOKEN_MISSING = "CWWKS5372E";
+    protected final static String CWWKS5373E_OPENSHIFT_USER_API_BAD_STATUS = "CWWKS5373E";
     protected final static String CWWKS5400I_SOCIAL_LOGIN_CONFIG_PROCESSED = "CWWKS5400I";
     protected final static String CWWKS5403E_SOCIAL_LOGIN_SERVER_INTERNAL_LOG_ERROR = "CWWKS5403E";
     protected final static String CWWKS5405E_SOCIAL_LOGIN_NO_SUCH_PROVIDER = "CWWKS5405E";
