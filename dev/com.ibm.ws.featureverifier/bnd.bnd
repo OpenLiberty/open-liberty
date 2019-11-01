@@ -28,9 +28,9 @@ Import-Package: !org.osgi.service.framework,\
 
 Include-Resource: \
     OSGI-INF=resources/OSGI-INF,\
-    asm.jar=../com.ibm.ws.org.objectweb.asm/build/libs/com.ibm.ws.org.objectweb.asm.jar,\
-    ariesutils.jar=../com.ibm.ws.org.apache.aries.util/build/libs/com.ibm.ws.org.apache.aries.util.jar,\
-    commonslang.jar=../com.ibm.ws.org.apache.commons.lang3/build/libs/com.ibm.ws.org.apache.commons.lang3.jar,\
+    asm.jar=../com.ibm.ws.org.objectweb.asm/${target-dir}/com.ibm.ws.org.objectweb.asm.jar,\
+    ariesutils.jar=../com.ibm.ws.org.apache.aries.util/${target-dir}/com.ibm.ws.org.apache.aries.util.jar,\
+    commonslang.jar=../com.ibm.ws.org.apache.commons.lang3/${target-dir}/com.ibm.ws.org.apache.commons.lang3.jar,\
     diffutils.jar=@${repo;com.googlecode.java-diff-utils:diffutils;1.2.1;EXACT},\
     xmlunit.jar=@${repo;org.xmlunit:xmlunit-core;2.0.0.ibm;EXACT}
 
