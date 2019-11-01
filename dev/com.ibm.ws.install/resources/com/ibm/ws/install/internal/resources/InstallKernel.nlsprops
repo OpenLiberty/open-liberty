@@ -562,6 +562,8 @@ STATE_PREPARING_ASSETS=Preparing assets for installation. This process might tak
 STATE_INITIALIZING=Initializing ...
 STATE_CONTACTING_REPO=Contacting IBM WebSphere Liberty Repository ...
 STATE_DOWNLOAD_FILES_OK=\nAll assets were successfully downloaded.
+STATE_CONTACTING_MAVEN_REPO=Establishing a connection to the configured Maven repository ...\nThis process might take several minutes to complete.
+STATE_MAVEN_REPO_CONNECTION_SUCCESSFUL=Successfully connected to the configured repository.
 PROGRESS_STEP=Step {0} of {1}
 
 MSG_DOWNLOAD_SUCCESS=Successfully downloaded feature {0}.
@@ -780,6 +782,14 @@ ERROR_ESA_NOT_FOUND.useraction=Ensure that the individual ESA file provided is v
 ERROR_SINGLE_REPO_CONNECTION_FAILED=CWWKF1389E: Unable to create a JSON file at {0} for the ESA file {1}.
 ERROR_SINGLE_REPO_CONNECTION_FAILED.explanation=The feature in the ESA file will not be installed.
 ERROR_SINGLE_REPO_CONNECTION_FAILED.useraction=Ensure that write access is available for the directory where the JSON file will be created.
+
+ERROR_FAILED_TO_CONNECT_MAVEN=CWWKF1390E: The configured Maven Repository cannot be reached. Verify that your computer has network access and firewalls are configured correctly, then try the action again. If the connection still fails, the repository server might be temporarily unavailable.
+ERROR_FAILED_TO_CONNECT_MAVEN.explanation=An error occurred when connecting to the configured Maven Repository.
+ERROR_FAILED_TO_CONNECT_MAVEN.useraction=Ensure that the system can access the internet and the appropriate repository.
+
+ERROR_CHECKSUM_FAILED_MAVEN=CWWKF1391E: Failed to validate available checksums for file: {0}
+ERROR_CHECKSUM_FAILED_MAVEN.explanation=The checksum of the downloaded asset is not correct. The content of the downloaded asset is not the same as the content from the repository, so the asset cannot be installed.
+ERROR_CHECKSUM_FAILED_MAVEN.useraction=Run the command again.
 
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: The feature has been successfully downloaded.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=The feature was downloaded.

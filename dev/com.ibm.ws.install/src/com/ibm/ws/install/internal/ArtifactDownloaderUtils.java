@@ -52,13 +52,14 @@ public class ArtifactDownloaderUtils {
             }
             conn.setRequestMethod("HEAD");
             int responseCode = conn.getResponseCode();
+            conn.setInstanceFollowRedirects(true);
             return responseCode;
         } catch (ConnectException e) {
             throw e;
         } catch (SocketTimeoutException e) {
             throw e;
         } catch (IOException e) {
-            throw new IOException("Cannot establish a connection to the server:" + e.getMessage() + ". Verify that the system can access the internet.");
+            throw e;
         }
     }
 
@@ -77,6 +78,9 @@ public class ArtifactDownloaderUtils {
     }
 
     public static String getChecksum(String filename, String format) throws NoSuchAlgorithmException, IOException {
+        if (format.equals("SHA256")) {
+            format = "SHA-256";
+        }
         byte[] b = createChecksum(filename, format);
         String result = "";
 
@@ -173,12 +177,13 @@ public class ArtifactDownloaderUtils {
     public static void checkResponseCode(int repoResponseCode, String repo) throws InstallException {
         if (!(repoResponseCode == HttpURLConnection.HTTP_OK)) { //verify repo exists
             if (repoResponseCode == 503) {
-                throw ExceptionUtils.createByKey("ERROR_REPO_INVALID_URL", repo);
+                throw new InstallException("Repository is unavaiable: " + repo);
             } else if (repoResponseCode == 407) {
                 throw ExceptionUtils.createByKey("ERROR_TOOL_INCORRECT_PROXY_CREDENTIALS");
+            } else if (repoResponseCode == 401) {
+                throw new InstallException("Incorrect credentials provided for the following repository: " + repo);
             } else {
-                //throw ExceptionUtils.createByKey("ERROR_FAILED_TO_CONNECT_MAVEN"); //TODO
-                throw ExceptionUtils.createByKey("ERROR_FAILED_TO_CONNECT");
+                throw new InstallException("The following maven repository can not be reached: " + repo);
             }
         }
     }
