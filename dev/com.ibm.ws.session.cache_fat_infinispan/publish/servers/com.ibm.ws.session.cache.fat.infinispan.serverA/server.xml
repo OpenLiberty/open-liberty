@@ -4,6 +4,7 @@
         <!-- This server provides coverage for minimal feature set. Do not add more features. -->
         <feature>servlet-4.0</feature>
         <feature>componenttest-1.0</feature>
+        <feature>mpMetrics-2.0</feature> <!-- one of the Infinispan JARs has a hard dependency on MicroProfile Metrics API -->
         <feature>sessionCache-1.0</feature>
     </featureManager>
     
