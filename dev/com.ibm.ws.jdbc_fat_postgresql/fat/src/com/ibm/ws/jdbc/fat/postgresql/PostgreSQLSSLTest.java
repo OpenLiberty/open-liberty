@@ -43,11 +43,11 @@ import jdbc.fat.postgresql.web.PostgreSQLSSLTestServlet;
 public class PostgreSQLSSLTest extends FATServletClient {
     private static final Class<?> c = PostgreSQLSSLTest.class;
 
-    static {
-        // Temporary code to debug zOS file permissions issue
-        getUnixFileMode(new File("lib/LibertyFATTestFiles/ssl-certs/server.crt").getAbsolutePath());
-        getUnixFileMode(new File("lib/LibertyFATTestFiles/ssl-certs/server.key").getAbsolutePath());
-    }
+//    static {
+//        // Temporary code to debug zOS file permissions issue
+//        getUnixFileMode(new File("lib/LibertyFATTestFiles/ssl-certs/server.crt").getAbsolutePath());
+//        getUnixFileMode(new File("lib/LibertyFATTestFiles/ssl-certs/server.key").getAbsolutePath());
+//    }
 
     public static final String APP_NAME = "postgresqlApp";
     private static final String POSTGRES_DB = "testdb";
@@ -70,16 +70,18 @@ public class PostgreSQLSSLTest extends FATServletClient {
                                     .run("chown postgres /var/lib/postgresql/server.key && chmod 600 /var/lib/postgresql/server.key && " +
                                          "chown postgres /var/lib/postgresql/server.crt && chmod 600 /var/lib/postgresql/server.crt")
                                     .build())
-                    .withFileFromFile("/var/lib/postgresql/server.crt", new File("lib/LibertyFATTestFiles/ssl-certs/server.crt"))
-                    .withFileFromFile("/var/lib/postgresql/server.key", new File("lib/LibertyFATTestFiles/ssl-certs/server.key")))
-                                    .withDatabaseName(POSTGRES_DB)
-                                    .withUsername(POSTGRES_USER)
-                                    .withPassword(POSTGRES_PASS)
-                                    .withExposedPorts(5432)
-                                    .withConfigOption("ssl", "on")
-                                    .withConfigOption("ssl_cert_file", "/var/lib/postgresql/server.crt")
-                                    .withConfigOption("ssl_key_file", "/var/lib/postgresql/server.key")
-                                    .withLogConsumer(PostgreSQLSSLTest::log);
+                    .withFileFromFile("/var/lib/postgresql/server.crt", new File("lib/LibertyFATTestFiles/ssl-certs/server.crt"),
+                                      getUnixFileMode(new File("lib/LibertyFATTestFiles/ssl-certs/server.crt").getAbsolutePath()))
+                    .withFileFromFile("/var/lib/postgresql/server.key", new File("lib/LibertyFATTestFiles/ssl-certs/server.key"),
+                                      getUnixFileMode(new File("lib/LibertyFATTestFiles/ssl-certs/server.key").getAbsolutePath())))
+                                                      .withDatabaseName(POSTGRES_DB)
+                                                      .withUsername(POSTGRES_USER)
+                                                      .withPassword(POSTGRES_PASS)
+                                                      .withExposedPorts(5432)
+                                                      .withConfigOption("ssl", "on")
+                                                      .withConfigOption("ssl_cert_file", "/var/lib/postgresql/server.crt")
+                                                      .withConfigOption("ssl_key_file", "/var/lib/postgresql/server.key")
+                                                      .withLogConsumer(PostgreSQLSSLTest::log);
 
     private static int getUnixFileMode(final String pathAsString) {
         final String m = "getUnixFileMode";
@@ -88,7 +90,17 @@ public class PostgreSQLSSLTest extends FATServletClient {
 
         int mode = 0;
         try {
-            mode = (int) Files.getAttribute(path, "unix:mode");
+            int unixMode = (int) Files.getAttribute(path, "unix:mode");
+            // Truncate mode bits for z/OS
+            if ("OS/390".equals(System.getProperty("os.name")) ||
+                "z/OS".equals(System.getProperty("os.name")) ||
+                "zOS".equals(System.getProperty("os.name"))) {
+                Log.info(c, m, "  on z/OS with file perms: " + unixMode);
+                unixMode &= 07777777L;
+                unixMode |= Files.isDirectory(path) ? 040000 : 0100000;
+            }
+            Log.info(c, m, "  resulting file perms: " + unixMode);
+            return unixMode;
         } catch (IOException | UnsupportedOperationException e) {
             Log.error(c, m, e, "  Exception obtaining 'unix:mode'");
             // fallback for non-posix environments
