@@ -14,6 +14,7 @@ import javax.servlet.http.Cookie;
 
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 import com.ibm.ws.webcontainer.security.internal.WebSecurityHelperImpl;
+import com.ibm.wsspi.security.token.AttributeNameConstants;
 
 /**
  * Provides methods to perform security functions for web applications.
@@ -24,6 +25,7 @@ import com.ibm.ws.webcontainer.security.internal.WebSecurityHelperImpl;
  * @ibm-api
  */
 public class WebSecurityHelper {
+    static final String[] cache_key = { AttributeNameConstants.WSCREDENTIAL_CACHE_KEY };
 
     /**
      * Extracts the SSO token from the subject of current thread
@@ -38,6 +40,26 @@ public class WebSecurityHelper {
      */
     public static Cookie getSSOCookieFromSSOToken() throws Exception {
         return WebSecurityHelperImpl.getSSOCookieFromSSOToken();
+    }
+
+    /**
+     * Extracts the SSO token from the subject of current thread
+     * and builds an SSO cookie out of it without a list of attributes for use on downstream web invocations.
+     * The caller must check for null return value.
+     * <p>
+     * When the returned value is not null use Cookie methods getName() and getValue()
+     * to set the Cookie header on an HTTP request with header value of
+     * Cookie.getName()=Cookie.getValue()
+     *
+     * @param attributes A list of attributes. If attributes is null, then default is AttributeNameConstants.WSCREDENTIAL_CACHE_KEY
+     * @return an object of type javax.servlet.http.Cookie. May return {@code null}.
+     */
+    public static Cookie getSSOCookieFromSSOTokenWithOutAttrs(String[] attributes) throws Exception {
+        if (attributes == null || attributes.length < 1) {
+            attributes = cache_key;
+        }
+
+        return WebSecurityHelperImpl.getSSOCookieFromSSOTokenWithOutAttrs(attributes);
     }
 
     /**

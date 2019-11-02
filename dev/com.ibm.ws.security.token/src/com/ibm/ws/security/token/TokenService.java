@@ -25,7 +25,7 @@ public interface TokenService {
 
     /**
      * Creates a Token object from the specified token data properties.
-     * 
+     *
      * @param tokenData
      * @return
      * @throws TokenCreationFailedException
@@ -34,10 +34,19 @@ public interface TokenService {
 
     /**
      * Recreates a Token object based on previous token bytes.
-     * 
+     *
      * @param tokenBytes
      * @return
      */
     public Token recreateTokenFromBytes(byte[] tokenBytes) throws InvalidTokenException, TokenExpiredException;
+
+    /**
+     * Recreates a Token object based on previous token bytes without a list of attributes.
+     *
+     * @param tokenBytes
+     * @param attributes A list of attributes will be removed from the token
+     * @return
+     */
+    public Token recreateTokenFromBytes(byte[] tokenBytes, String[] attributes) throws InvalidTokenException, TokenExpiredException;
 
 }

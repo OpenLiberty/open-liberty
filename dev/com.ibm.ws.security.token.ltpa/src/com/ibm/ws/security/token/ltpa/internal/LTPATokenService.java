@@ -43,7 +43,7 @@ public class LTPATokenService implements TokenService {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @throws TokenCreationFailedException
      */
     @Override
@@ -59,6 +59,17 @@ public class LTPATokenService implements TokenService {
     public Token recreateTokenFromBytes(byte[] tokenBytes) throws InvalidTokenException, TokenExpiredException {
         TokenFactory tokenFactory = ltpaConfig.getTokenFactory();
         Token token = tokenFactory.validateTokenBytes(tokenBytes);
+        validateRecreatedToken(token);
+        return token;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Token recreateTokenFromBytes(byte[] tokenBytes, String[] attributes) throws InvalidTokenException, TokenExpiredException {
+        TokenFactory tokenFactory = ltpaConfig.getTokenFactory();
+        Token token = tokenFactory.validateTokenBytes(tokenBytes, attributes);
         validateRecreatedToken(token);
         return token;
     }

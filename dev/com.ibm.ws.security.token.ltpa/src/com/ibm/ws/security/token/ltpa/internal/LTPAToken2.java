@@ -106,6 +106,28 @@ public class LTPAToken2 implements Token, Serializable {
     /**
      * An LTPA2 token constructor.
      *
+     * @param tokenBytes The byte representation of the LTPA2 token
+     * @param sharedKey The LTPA shared key
+     * @param privateKey The LTPA private key
+     * @param publicKey The LTPA public key
+     * @param attributes The list of attributes will be removed from the LTPA2 token
+     */
+    public LTPAToken2(byte[] tokenBytes, @Sensitive byte[] sharedKey, LTPAPrivateKey privateKey, LTPAPublicKey publicKey, String[] attributes) throws InvalidTokenException {
+        checkTokenBytes(tokenBytes);
+        this.signature = null;
+        this.encryptedBytes = tokenBytes.clone();
+        this.sharedKey = sharedKey.clone();
+        this.privateKey = privateKey;
+        this.publicKey = publicKey;
+        this.expirationInMilliseconds = 0;
+        this.cipher = AES_CBC_CIPHER;
+        decrypt();
+        userData.removeAttributes(attributes);
+    }
+
+    /**
+     * An LTPA2 token constructor.
+     *
      * @param accessID The unique user identifier
      * @param expirationInMinutes Expiration limit of the LTPA2 token in minutes
      * @param sharedKey The LTPA shared key
@@ -412,7 +434,7 @@ public class LTPAToken2 implements Token, Serializable {
      * @param expirationInMinutes the expiration limit of the LTPA2 token in minutes
      */
     private final void setExpiration(long expirationInMinutes) {
-	expirationInMilliseconds = System.currentTimeMillis()+ expirationInMinutes * 60 * 1000;
+        expirationInMilliseconds = System.currentTimeMillis() + expirationInMinutes * 60 * 1000;
         signature = null;
         if (userData != null) {
             encryptedBytes = null;
