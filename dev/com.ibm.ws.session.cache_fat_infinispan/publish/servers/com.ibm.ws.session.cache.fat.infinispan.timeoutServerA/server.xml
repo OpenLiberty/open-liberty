@@ -6,6 +6,7 @@
         <feature>componenttest-1.0</feature>
         <feature>jndi-1.0</feature>
         <feature>mpMetrics-2.0</feature> <!-- one of the Infinispan JARs has a hard dependency on MicroProfile Metrics API -->
+        <feature>mpReactiveStreams-1.0</feature> <!-- Infinispan JARs have a hard dependency on Reactive Streams API -->
     </featureManager>
     
     <include location="../fatTestPorts.xml"/>

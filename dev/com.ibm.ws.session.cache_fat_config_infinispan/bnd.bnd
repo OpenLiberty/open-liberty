@@ -13,10 +13,10 @@ bVersion=1.0
 
 src: \
 	fat/src,\
-	test-applications/jcacheApp/src,\
 	test-applications/sessionCacheConfigApp/src
 
 fat.project: true
+tested.features: cdi-2.0
 
 javac.source: 1.8
 javac.target: 1.8
