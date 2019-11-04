@@ -9,10 +9,6 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-repositories {
-
-}
-
 configurations {
   //Transitive dependancies that aren't required. Excluding isn't necessary with Artifactory,
   //but would be beneficial with a mavenCentral cache.

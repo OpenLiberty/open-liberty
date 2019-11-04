@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,8 +33,7 @@ import componenttest.topology.utils.FATServletClient;
 
 /**
  * Test suite:
- * One liberty server acting as a cache client
- * One infinispan cache
+ * One liberty server acting as a cache client, and one infinispan server acting as cache server.
  */
 @RunWith(FATRunner.class)
 public class SessionCacheOneServerTest extends FATServletClient {
@@ -61,7 +60,7 @@ public class SessionCacheOneServerTest extends FATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         executor.shutdownNow();
-        server.stopServer("CWWKL0058W:.*InfinispanLib"); // TODO why does occur for Infinispan jar, but not Hazelcast?
+        server.stopServer();
     }
 
     /**
@@ -435,8 +434,8 @@ public class SessionCacheOneServerTest extends FATServletClient {
      * Error Thrown: ISPN021011: Incompatible cache value types specified, expected class java.lang.String but class java.lang.Object was specified
      */
     @Test
-    public void testInfinispanClassCastExpection() throws Exception {
+    public void testInfinispanClassCastException() throws Exception {
         //This should not fail here as this is the first test suite running.
-        app.invokeServlet("testInfinispanClassCastExpection&shouldFail=false", null);
+        app.invokeServlet("testInfinispanClassCastException&shouldFail=false", null);
     }
 }
