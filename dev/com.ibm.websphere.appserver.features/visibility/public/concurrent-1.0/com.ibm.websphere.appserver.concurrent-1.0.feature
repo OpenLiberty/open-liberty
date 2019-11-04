@@ -18,3 +18,4 @@ Subsystem-Name: Concurrency Utilities for Java EE 1.0
  com.ibm.ws.concurrent
 kind=ga
 edition=core
+WLP-Activation-Type: parallel
