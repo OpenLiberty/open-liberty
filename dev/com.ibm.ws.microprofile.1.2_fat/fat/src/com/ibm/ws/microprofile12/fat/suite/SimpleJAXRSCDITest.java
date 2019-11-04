@@ -72,8 +72,8 @@ public class SimpleJAXRSCDITest {
         }
     }
 
-    private static final String[] MP_VERSIONS = { "1.2", "1.3", "1.4", "2.0", "2.1", "2.2", "3.0", "3.1" };
-    private static final String LITE_MODE = "3.1";
+    private static final String[] MP_VERSIONS = { "1.2", "1.3", "1.4", "2.0", "2.1", "2.2", "3.0", "3.2" };
+    private static final String LITE_MODE = "3.2";
 
     @ClassRule
     public static RepeatTests r = getMPRepeat();
