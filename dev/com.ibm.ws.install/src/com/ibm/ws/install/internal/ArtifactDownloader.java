@@ -122,7 +122,7 @@ public class ArtifactDownloader {
         checksumFormats[2] = "SHA256";
         try {
             if (individualDownload && ArtifactDownloaderUtils.fileIsMissing(urlLocation)) {
-                throw ExceptionUtils.createByKey("ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_REPO", ArtifactDownloaderUtils.getFileNameFromURL(urlLocation), filetype + " file", repo);
+                throw ExceptionUtils.createByKey("ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_REPO", ArtifactDownloaderUtils.getFileNameFromURL(urlLocation), filetype + " file", repo); //ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_MAVEN_REPO
             } else {
                 download(urlLocation, dLocation, groupId, artifactId, version, filename, checksumFormats);
             }
@@ -160,7 +160,7 @@ public class ArtifactDownloader {
                 if (checksumFail) {
                     ArtifactDownloaderUtils.deleteFiles(downloadedFiles, dLocation, groupId, artifactId, version, filename);
                     downloadedFiles.clear();
-                    throw new InstallException("Failed to validate available checksums for file: " + filename); //
+                    throw new InstallException("Failed to validate available checksums for file: " + filename); //ERROR_CHECKSUM_FAILED_MAVEN
                 }
             } else {
                 fine("No checksums found for file in remote repository");

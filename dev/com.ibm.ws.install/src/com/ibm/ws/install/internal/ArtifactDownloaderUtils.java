@@ -177,13 +177,13 @@ public class ArtifactDownloaderUtils {
     public static void checkResponseCode(int repoResponseCode, String repo) throws InstallException {
         if (!(repoResponseCode == HttpURLConnection.HTTP_OK)) { //verify repo exists
             if (repoResponseCode == 503) {
-                throw new InstallException("Repository is unavaiable: " + repo);
+                throw new InstallException("Repository is unavaiable: " + repo); //ERROR_FAILED_TO_CONNECT_MAVEN
             } else if (repoResponseCode == 407) {
                 throw ExceptionUtils.createByKey("ERROR_TOOL_INCORRECT_PROXY_CREDENTIALS");
             } else if (repoResponseCode == 401) {
-                throw new InstallException("Incorrect credentials provided for the following repository: " + repo);
+                throw new InstallException("Incorrect credentials provided for the following repository: " + repo); //ERROR_FAILED_TO_AUTHENICATE
             } else {
-                throw new InstallException("The following maven repository can not be reached: " + repo);
+                throw new InstallException("The following maven repository can not be reached: " + repo); //ERROR_FAILED_TO_CONNECT_MAVEN
             }
         }
     }
