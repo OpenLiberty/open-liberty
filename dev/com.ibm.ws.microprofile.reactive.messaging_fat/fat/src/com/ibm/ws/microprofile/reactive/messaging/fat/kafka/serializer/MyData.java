@@ -65,4 +65,16 @@ public class MyData {
         return (dataA + dataB).hashCode();
     }
 
+    public MyData reverse() {
+        return reverse(this);
+    }
+
+    public static final MyData reverse(MyData in) {
+        StringBuilder sbA = new StringBuilder(in.getDataA());
+        sbA.reverse();
+        StringBuilder sbB = new StringBuilder(in.getDataB());
+        sbB.reverse();
+        return new MyData(sbA.toString(), sbB.toString());
+    }
+
 }

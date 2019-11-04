@@ -16,11 +16,11 @@ import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.eclipse.microprofile.reactive.messaging.Outgoing;
 
 @ApplicationScoped
-public class MyDataMessagingBean {
+public class MyDataMessagingBean2 {
 
-    public static final String IN_CHANNEL = "data-in";
-    public static final String OUT_CHANNEL = "data-out";
-    public static final String GROUP_ID = "data-consumer";
+    public static final String IN_CHANNEL = "data-in-2";
+    public static final String OUT_CHANNEL = "data-out-2";
+    public static final String GROUP_ID = "data-consumer-2";
 
     @Incoming(IN_CHANNEL)
     @Outgoing(OUT_CHANNEL)

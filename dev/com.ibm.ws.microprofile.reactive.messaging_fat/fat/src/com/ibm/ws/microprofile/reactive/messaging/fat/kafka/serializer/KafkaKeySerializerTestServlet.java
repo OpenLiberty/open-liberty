@@ -40,22 +40,31 @@ public class KafkaKeySerializerTestServlet extends AbstractKafkaTestServlet {
 
     private static final String TEST_GROUPID = "test-group";
 
+    private static final MyData KEY1 = new MyData("key1a", "key1b");
+    private static final MyData VALUE1 = new MyData("value1a", "value1b");
+    private static final MyData KEY2 = new MyData("key2a", "key2b");
+    private static final MyData VALUE2 = new MyData("value2a", "value2b");
+
     @Test
     public void testMyDataKey() throws Exception {
 
-        ExtendedKafkaReader<MyData, MyData> reader = extReaderFor(MyDataMessagingBean.OUT_CHANNEL);
-        ExtendedKafkaWriter<MyData, MyData> writer = extWriterFor(MyDataMessagingBean.IN_CHANNEL);
+        ExtendedKafkaReader<MyData, MyData> reader = extReaderFor(MyDataMessagingBean2.OUT_CHANNEL);
+        ExtendedKafkaWriter<MyData, MyData> writer = extWriterFor(MyDataMessagingBean2.IN_CHANNEL);
 
         try {
-            writer.sendMessage(new MyData("abc", "123"), new MyData("abc", "123"));
-            writer.sendMessage(new MyData("xyz", "456"), new MyData("xyz", "456"));
+            writer.sendMessage(KEY1, VALUE1);
+            writer.sendMessage(KEY2, VALUE2);
 
             List<ConsumerRecord<MyData, MyData>> records = reader.waitForRecords(2, Duration.ofSeconds(5));
-            for (ConsumerRecord<MyData, MyData> r : records) {
-                //since MP Reactive Messaging does not handle keys, they will get passed through as null but to prove
-                //that the key serializer and deserializer is properly configured, they have special case code for null
-                assertEquals(MyData.NULL, r.key());
-            }
+            //since MP Reactive Messaging does not handle keys, they will get passed through as null but to prove
+            //that the key serializer and deserializer is properly configured, they have special case code for null
+            ConsumerRecord<MyData, MyData> r1 = records.get(0);
+            assertEquals(MyData.NULL, r1.key());
+            assertEquals(VALUE1.reverse(), r1.value());
+
+            ConsumerRecord<MyData, MyData> r2 = records.get(1);
+            assertEquals(MyData.NULL, r2.key());
+            assertEquals(VALUE2.reverse(), r2.value());
 
         } finally {
             try {
@@ -64,6 +73,17 @@ public class KafkaKeySerializerTestServlet extends AbstractKafkaTestServlet {
                 writer.close();
             }
         }
+    }
+
+    @Test
+    public void testReverseMyData() {
+        MyData expected = new MyData("a1yek", "b1yek");
+
+        MyData reversed1 = MyData.reverse(KEY1);
+        assertEquals(expected, reversed1);
+
+        MyData reversed2 = KEY1.reverse();
+        assertEquals(expected, reversed2);
     }
 
     /**
