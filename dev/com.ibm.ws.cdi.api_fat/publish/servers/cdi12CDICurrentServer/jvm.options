@@ -1,1 +1,0 @@
--Xtrace:iprint=mt,methods={src/com/ibm/ws/cdi/impl/AbstractCDIRuntime.getCurrentBeanManager},trigger=method{src/com/ibm/ws/cdi/impl/AbstractCDIRuntime.getCurrentBeanManager,jstacktrace}
