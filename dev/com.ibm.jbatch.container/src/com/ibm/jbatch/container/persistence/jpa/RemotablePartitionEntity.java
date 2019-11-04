@@ -39,7 +39,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
                 @NamedQuery(name = RemotablePartitionEntity.GET_ALL_RELATED_REMOTABLE_PARTITIONS, query = "SELECT r FROM RemotablePartitionEntity r WHERE r.stepExecutionEntity.stepExecutionId IN (SELECT s.stepExecutionId FROM StepThreadExecutionEntity s WHERE s.topLevelStepExecution.stepExecutionId = :topLevelStepExecutionId AND TYPE(s) = StepThreadExecutionEntity ) ORDER BY r.stepExecutionEntity.partitionNumber ASC"),
 
                 @NamedQuery(name = RemotablePartitionEntity.GET_PARTITION_STEP_THREAD_EXECUTIONIDS_BY_SERVERID_AND_STATUSES_QUERY, query = "SELECT r FROM RemotablePartitionEntity r WHERE r.serverId = :serverid AND r.stepExecutionEntity.batchStatus IN :status ORDER BY r.stepExecutionEntity.startTime DESC"),
-                @NamedQuery(name = RemotablePartitionEntity.GET_RECOVERED_REMOTABLE_PARITIONS, query = "SELECT r.partitionNumber FROM RemotablePartitionEntity r WHERE r.internalStatus = com.ibm.jbatch.container.ws.WSRemotablePartitionState.RECOVERED AND r.stepExecutionEntity.topLevelStepExecution.stepExecutionId = :topLevelStepExecutionId ORDER BY r.stepExecutionEntity.partitionNumber ASC"),
+                @NamedQuery(name = RemotablePartitionEntity.GET_RECOVERED_REMOTABLE_PARTITIONS, query = "SELECT r.partitionNumber FROM RemotablePartitionEntity r WHERE r.internalStatus = com.ibm.jbatch.container.ws.WSRemotablePartitionState.RECOVERED AND r.stepExecutionEntity.topLevelStepExecution.stepExecutionId = :topLevelStepExecutionId ORDER BY r.stepExecutionEntity.partitionNumber ASC"),
 })
 
 @IdClass(RemotablePartitionKey.class)
@@ -57,7 +57,7 @@ public class RemotablePartitionEntity implements WSRemotablePartitionExecution {
 
     public static final String GET_ALL_RELATED_REMOTABLE_PARTITIONS = "RemotablePartitionEntity.getAllRelatedRemotablePartitions";
     public static final String GET_PARTITION_STEP_THREAD_EXECUTIONIDS_BY_SERVERID_AND_STATUSES_QUERY = "RemotablePartitionEntity.getPartitionStepExecutionByServerIdAndStatusesQuery";
-    public static final String GET_RECOVERED_REMOTABLE_PARITIONS = "RemotablePartitionEntity.getRecoveredRemotablePartitions";
+    public static final String GET_RECOVERED_REMOTABLE_PARTITIONS = "RemotablePartitionEntity.getRecoveredRemotablePartitions";
 
     @Id
     @ManyToOne()

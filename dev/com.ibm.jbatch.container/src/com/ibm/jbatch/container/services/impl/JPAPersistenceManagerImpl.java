@@ -1405,7 +1405,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
             List<Integer> exec = new TranRequest<List<Integer>>(em) {
                 @Override
                 public List<Integer> call() throws Exception {
-                    TypedQuery<Integer> query = em.createNamedQuery(RemotablePartitionEntity.GET_RECOVERED_REMOTABLE_PARITIONS,
+                    TypedQuery<Integer> query = em.createNamedQuery(RemotablePartitionEntity.GET_RECOVERED_REMOTABLE_PARTITIONS,
                                                                     Integer.class);
                     query.setParameter("topLevelStepExecutionId", topLevelStepExecutionId);
                     List<Integer> result = query.getResultList();

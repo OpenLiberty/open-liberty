@@ -464,7 +464,7 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
         getPartitionReplyQueue().close();
 
         // Deal with the results.
-        checkFinishedPartitions();
+        checkFinishedPartitionsForFailures();
 
     }
 
@@ -667,7 +667,7 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
     /**
      * Issue message for partition finished and add it to the finishedPartitions list.
      */
-    private void partitionFinished(PartitionReplyMsg msg) {
+    private void partitionFinishedReplyMessageReceived(PartitionReplyMsg msg) {
         JoblogUtil.logToJobLogAndTraceOnly(Level.FINE, "partition.ended", new Object[] {
                                                                                          msg.getPartitionPlanConfig().getPartitionNumber(),
                                                                                          msg.getBatchStatus(),
@@ -799,7 +799,7 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
                             analyzerExceptions.add(t);
                         }
                         if (isFinalMessageForPartition(msg)) {
-                            partitionFinished(msg);
+                            partitionFinishedReplyMessageReceived(msg);
                         }
                     } else {
                         //If no messages left, break the loop
@@ -840,7 +840,7 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
             }
 
             if (isFinalMessageForPartition(msg)) {
-                partitionFinished(msg);
+                partitionFinishedReplyMessageReceived(msg);
                 break;
             }
             // else keep looping
@@ -973,7 +973,7 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
      * check the batch status of each partition after it's done to see if we need to issue a rollback
      * start rollback if any have stopped or failed
      */
-    private void checkFinishedPartitions() {
+    private void checkFinishedPartitionsForFailures() {
 
         List<String> failingPartitionSeen = new ArrayList<String>();
         boolean stoppedPartitionSeen = false;
