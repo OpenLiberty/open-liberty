@@ -14,9 +14,9 @@ bVersion=1.0
 javac.source: 1.8
 javac.target: 1.8
 
-Bundle-Name: com.ibm.ws.microprofile.faulttolerance.cdi.2.0.services
-Bundle-SymbolicName: com.ibm.ws.microprofile.faulttolerance.cdi.2.0.services
-Bundle-Description: MicroProfile Fault Tolerance CDI Integration, version ${bVersion} services
+Bundle-Name: com.ibm.ws.microprofile.faulttolerance.2.0.cdi.services
+Bundle-SymbolicName: com.ibm.ws.microprofile.faulttolerance.2.0.cdi.services
+Bundle-Description: MicroProfile Fault Tolerance 2.0 CDI Integration services, version ${bVersion}
 
 WS-TraceGroup: FAULTTOLERANCE
 
