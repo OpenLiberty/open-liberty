@@ -44,7 +44,7 @@ import componenttest.topology.utils.HttpUtils;
                 SessionCacheOneServerTest.class,
                 //SessionCacheTwoServerTest.class,
                 SessionCacheTimeoutTest.class,
-                //SessionCacheTwoServerTimeoutTest.class,
+                SessionCacheTwoServerTimeoutTest.class,
                 //HazelcastClientTest.class
 })
 
@@ -72,7 +72,7 @@ public class FATSuite {
      */
     @ClassRule
     public static GenericContainer<?> infinispan = new GenericContainer<>(new ImageFromDockerfile()
-                    .withDockerfileFromBuilder(builder -> builder.from("infinispan/server:10.0.0.CR3-4")
+                    .withDockerfileFromBuilder(builder -> builder.from("infinispan/server:10.0.1.Final")
                                     .user("root")
                                     .copy("/opt/infinispan_config/config.xml", "/opt/infinispan_config/config.xml")
                                     .copy("/opt/infinispan/server/conf/users.properties", "/opt/infinispan/server/conf/users.properties")
