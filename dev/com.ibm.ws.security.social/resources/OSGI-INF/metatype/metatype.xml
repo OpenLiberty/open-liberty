@@ -328,17 +328,17 @@
         <AD id="userApiNeedsSpecialHeader" name="internal" description="internal use only" required="false"
             type="Boolean" default="false" />
         <AD id="useSystemPropertiesForHttpClientConnections" name="%useSystemPropertiesForHttpClientConnections" description="%useSystemPropertiesForHttpClientConnections.desc" required="false" type="Boolean" default="false"/>
-        <AD id="k8sTokenReviewEndpoint" name="internal" description="internal use only"
-            required="false" type="String" ibm:type="token" />
-        <AD id="serviceAccountTokenForK8sTokenreview" name="internal" description="internal use only"
-            required="false" type="String" ibm:type="password" />
-        <AD id="useAccessTokenFromRequest" name="internal" description="internal use only"
-            required="false" type="String" default="ifPresent">
-            <Option label="%useAccessTokenFromRequest.no" value="no" />
-            <Option label="%useAccessTokenFromRequest.required" value="required" />
-            <Option label="%useAccessTokenFromRequest.ifPresent" value="ifPresent" />
+        <AD id="userApiSpec" name="internal" description="internal use only"
+            required="false" type="String" default="TokenReview">
+            <Option label="TokenReview" value="TokenReview" />
         </AD>
-        <AD id="tokenHeaderName" name="internal" description="internal use only"
+        <AD id="userApiToken" name="internal" description="internal use only"
+            required="false" type="String" ibm:type="password" />
+        <AD id="accessTokenAuthentication" name="internal" description="internal use only"
+            required="false" type="Boolean" default="false" />
+        <AD id="accessTokenAuthenticationSupported" name="internal" description="internal use only"
+            required="false" type="Boolean" default="false" />
+        <AD id="accessTokenName" name="internal" description="internal use only"
             required="false" type="String" />
     </OCD>
 
