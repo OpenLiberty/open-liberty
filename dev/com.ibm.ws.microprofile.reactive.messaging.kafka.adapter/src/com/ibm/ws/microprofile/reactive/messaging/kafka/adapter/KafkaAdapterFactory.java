@@ -15,10 +15,15 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.Optional;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+
 /**
  *
  */
 public abstract class KafkaAdapterFactory {
+
+    private static final TraceComponent tc = Tr.register(KafkaAdapterFactory.class);
 
     private static final String KAFKA_CONSUMER_IMPL = "com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.impl.KafkaConsumerImpl";
     private static final Class<?>[] KAFKA_CONSUMER_ARG_TYPES = { Map.class };
@@ -34,6 +39,11 @@ public abstract class KafkaAdapterFactory {
 
     private static final String COMMIT_FAILED_EXCEPTION = "org.apache.kafka.clients.consumer.CommitFailedException";
     private static final Class<?>[] COMMIT_FAILED_EXCEPTION_ARG_TYPES = {};
+
+    /**
+     * Class from the Kafka client jar which we use to test whether the client library is present
+     */
+    private static final String KAFKA_TEST_CLASS = "org.apache.kafka.clients.producer.KafkaProducer";
 
     protected abstract ClassLoader getClassLoader();
 
@@ -87,6 +97,21 @@ public abstract class KafkaAdapterFactory {
     public Exception newCommitFailedException() {
         Exception e = getInstance(getClassLoader(), Exception.class, COMMIT_FAILED_EXCEPTION, COMMIT_FAILED_EXCEPTION_ARG_TYPES);
         return e;
+    }
+
+    /**
+     * Validate that the adapter factory is able to load Kafka classes
+     * <p>
+     *
+     * @throws KafkaAdapterException if kafka classes cannot be loaded
+     */
+    protected void validate() throws KafkaAdapterException {
+        try {
+            getClassLoader().loadClass(KAFKA_TEST_CLASS);
+        } catch (ClassNotFoundException e) {
+            // We couldn't load the KafkaConsumer class, Kafka library appears not to be present
+            throw new KafkaAdapterException(Tr.formatMessage(tc, "kafka.library.not.present.CWMRX1006E"));
+        }
     }
 
     protected static final <T> T getInstance(ClassLoader classloader, Class<T> interfaceClass, String implClassName, Class<?>[] parameterTypes, Object... parameters) {

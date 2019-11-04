@@ -29,7 +29,8 @@ WS-TraceGroup: REACTIVEMESSAGE
 
 Export-Package: com.ibm.ws.microprofile.reactive.messaging.kafka.adapter
 
-Import-Package: *
+Import-Package: com.ibm.ws.microprofile.reactive.messaging.kafka.resources,\
+                *
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
