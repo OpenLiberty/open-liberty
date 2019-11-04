@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2018 IBM Corporation and others.
+ * Copyright (c) 2004, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -915,7 +915,19 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 setLocalAddr(getTSC().getLocalAddress());
                 setRemoteAddr(getTSC().getRemoteAddress());
             } catch (Throwable t) {
-                FFDCFilter.processException(t, getClass().getName() + ".init", "1", this);
+                // check if we're on an HTTP2 connection in the closed state
+                HttpInboundServiceContextImpl context = (HttpInboundServiceContextImpl) this;
+                H2HttpInboundLinkWrap link = (H2HttpInboundLinkWrap) context.getLink();
+                boolean h2Closing = false;
+                if (link instanceof H2HttpInboundLinkWrap) {
+                    H2HttpInboundLinkWrap h2link = (H2HttpInboundLinkWrap) context.getLink();
+                    if (h2link.muxLink.checkIfGoAwaySendingOrClosing()) {
+                        h2Closing = true;
+                    }
+                }
+                if (!h2Closing) {
+                    FFDCFilter.processException(t, getClass().getName() + ".init", "1", this);
+                }
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                     Tr.event(tc, "Received exception from JDK socket calls; " + t);
                 }
