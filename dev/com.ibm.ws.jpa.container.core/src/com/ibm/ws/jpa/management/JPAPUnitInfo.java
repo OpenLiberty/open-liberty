@@ -15,6 +15,8 @@ import static com.ibm.ws.jpa.management.JPAConstants.JNDI_NAMESPACE_JAVA_COMP_EN
 import static com.ibm.ws.jpa.management.JPAConstants.JPA_RESOURCE_BUNDLE_NAME;
 import static com.ibm.ws.jpa.management.JPAConstants.JPA_TRACE_GROUP;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.lang.instrument.IllegalClassFormatException;
 import java.net.URL;
 import java.security.AccessController;
@@ -1265,18 +1267,17 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
                                      "After Class Transform: Bytecode for class " + className + " (size = " + ((classBytes == null) ? 0 : classBytes.length) + ")",
                                      "Hex:\n" + dumpByteCode(classBytes));
                         }
-                    } catch (Throwable t) {
+                    } catch (IllegalClassFormatException icfe) {
+                        FFDCFilter.processException(icfe, CLASS_NAME + ".transformClass",
+                                                    "1169", this);
                         // Ignore the exception and the original classBytes is returned.
-                        // The transform() method should only throw IllegalClassFormatException but some
-                        // providers may allow a RuntimeException to bubble through, so we have to deal with that
-                        // possibility.
-                        //
-                        // Either way, log the Exception and return the original classBytes.
-                        FFDCFilter.processException(t, CLASS_NAME + ".transformClass", "1256", this);
                         Tr.error(tc,
                                  "ILLEGAL_CLASS_FORMAT_IN_CLASS_TRANSFORMATION_CWWJP0014E",
                                  className);
-
+                    } catch (RuntimeException t) {
+                        // The transform() method should only throw IllegalClassFormatException but some
+                        // providers may allow a RuntimeException to bubble through, so we have to deal with that
+                        // possibility.
                         final StringBuilder sb = new StringBuilder();
                         try {
                             sb.append("\n----------\n");
@@ -1284,13 +1285,10 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
                             sb.append(") for class ").append(className).append(" :\n");
                             sb.append(dumpByteCode(classBytes));
 
-                            if (!(t instanceof IllegalClassFormatException)) {
-                                sb.append("\nRuntimeException thrown by transformer:\n");
-                                final StackTraceElement strArr[] = t.getStackTrace();
-                                for (StackTraceElement ste : strArr) {
-                                    sb.append(ste).append("\n");
-                                }
-                            }
+                            sb.append("\nRuntime Exception thrown by transformer:\n");
+                            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                            t.printStackTrace(new PrintStream(baos));
+                            sb.append(baos.toString());
 
                             sb.append("\n----------\n");
                         } catch (Throwable t2) {
@@ -1298,6 +1296,8 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
                         } finally {
                             Tr.error(tc, "ERROR_TRANSFORMING_CLASS_CWWJP0055E", className, sb.toString());
                         }
+
+                        throw t;
                     }
                 }
             }

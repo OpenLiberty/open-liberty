@@ -72,7 +72,7 @@ public class TestEnhancementErrorLogging extends FATServletClient {
 
         FATServletClient.runTest(server1, APP_NAME + "/TestJPASimple", "testInvalidFormatClassError");
 
-        String hexText = "CA FE BA BE 00 00 00 34 01 40 0A 00 0F 00 2F 09 00 0E 00 30 09 00 0E 00 31 09 00 0E 00 32 07 00 33 0A 00 05 00 2F 08 00";
+        String hexText = "Before Class Transform: Bytecode for class empty.classx.BadClass";
 
         List<String> traceEntry = server1.findStringsInTrace(hexText);
         Assert.assertTrue(traceEntry.size() > 0);
