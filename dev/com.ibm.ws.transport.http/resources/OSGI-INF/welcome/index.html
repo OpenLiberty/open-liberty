@@ -42,7 +42,6 @@
 				font-size: 1.5rem;
 				margin: 0px;
 				text-align: center;
-				padding-top: 30px;
 			}
 
 			h3 {
@@ -111,10 +110,22 @@
 				max-width: 1150px;
 				margin: 0 auto;
 				display: flex;
+				flex-wrap: wrap;
 			}
 
 			.column {
-  			flex: 50%;
+  			flex: 100%;
+			}
+
+			@media (min-width: 767px) {
+				.row {
+					flex-wrap: nowrap;
+				}
+				
+				.column {
+					flex: 50%;
+					max-width: 50%;
+				}
 			}
 
 			.hero {
@@ -192,28 +203,65 @@
 				width: max-content;
 			}
 
+			@media (max-width: 767.98px) {
+				#inner-hero__logo {
+					margin: 0 auto;
+				}
+			}
+
 			#inner-hero__title {
 				white-space: nowrap;
-				/* font-size: calc([minimum size] + ([maximum size] - [minimum size]) * ((100vw - [minimum viewport width]) / ([maximum viewport width] - [minimum viewport width]))); */
-				font-size: calc(76px + (100 - 76) * ((100vw - 300px) / (2560 - 300)));
+				font-size: 94px;
+			}
+
+			@media (min-width: 767px) {
+				#inner-hero__title {
+					/* font-size: calc([minimum size] + ([maximum size] - [minimum size]) * ((100vw - [minimum viewport width]) / ([maximum viewport width] - [minimum viewport width]))); */
+					font-size: calc(60px + (100 - 60) * ((100vw - 300px) / (2560 - 300)));
+				}
 			}
 
 			#inner-hero__open_source {
 				color: #c8d2d2;
 				float: right;
 				position: relative;
-				top: -52px;
+				top: -47px;
 				right: 40px;
+				right: 9%;
 				margin-bottom: -20px;
 			}
 
-			@media (min-width: 1180px) {
+			@media (min-width: 900px) {
+				#inner-hero__open_source {
+					top: -48px;
+				}
+			}
+
+			@media (min-width: 1053px) {
+				#inner-hero__open_source {
+					top: -49px;
+				}
+			}
+
+			@media (min-width: 1129px) {
+				#inner-hero__open_source {
+					top: -50px;
+				}
+			}
+
+			@media (min-width: 1354px) {
+				#inner-hero__open_source {
+					top: -51px;
+				}
+			}
+
+			@media (min-width: 1581px) {
 				#inner-hero__open_source {
 					top: -53px;
 				}
 			}
 
-			@media (min-width: 1558px) {
+			@media (min-width: 1732px) {
 				#inner-hero__open_source {
 					top: -54px;
 				}
@@ -226,6 +274,37 @@
 				color: #ffffff;
 				line-height: 1.2;
 				margin-top: 15px;
+				text-align: center;
+			}
+
+			@media (min-width: 767px) {
+				#inner-hero__subtitle {
+					text-align: left;
+				}
+			}
+
+			@media (min-width: 900px) {
+				#inner-hero__subtitle {
+					width: 80%;
+				}
+			}
+
+			@media (min-width: 1200px) {
+				#inner-hero__subtitle {
+					width: 85%;
+				}
+			}
+
+			@media (min-width: 1350px) {
+				#inner-hero__subtitle {
+					width: 90%;
+				}
+			}
+
+			@media (min-width: 1750px) {
+				#inner-hero__subtitle {
+					width: 100%;
+				}
 			}
 
 			.img_container {
@@ -233,9 +312,15 @@
 			}
 
 			.inner-hero__beam {
-				max-width: 150%;
 				position: relative;
-    		left: -35%;
+				max-width: 100%;
+			}
+
+			@media (min-width: 767px) {
+				.inner-hero__beam {
+					max-width: 150%;
+    			left: -35%;
+				}
 			}
 
 			.inner-hero__clouds {
@@ -248,40 +333,98 @@
 
 
 			.logos {
-				padding: 0% 5% 2% 5%;
+				padding: 40px;
 			}
 
 			.logos .row {
 				justify-content: center;
+				flex-direction: column;
+			}
+
+			@media (min-width: 992px) {
+				.logos .row{
+					flex-direction: row;
+				}
 			}
 
 			.logos__title {
 				padding-bottom: 30px;
 			}
 
-			#microprofile_logo {
-				padding-right: 50px;
-				height: 78px;
+			#microprofile_logo, #jakarta_ee_logo {
+				align-self: center;
 			}
 
-			#jakarta_ee_logo {
-				padding-left: 50px;
+			@media (min-width: 992px) {
+				#microprofile_logo {
+					padding-right: 50px;
+				}
+			}
+
+			@media (min-width: 992px) {
+				#jakarta_ee_logo {
+					padding-left: 50px;
+				}
 			}
 
 
 
 			.logos, .resources {
-				width: 100%;
-				max-width: 1150px;
 				margin: 0 auto;
-				box-shadow: 0 2px 4px 0 rgba(63,70,89,0.31);
+				box-shadow: 0 2px 4px 1px rgba(63,70,89,0.31);
     		border-radius: 3px;
 				margin-bottom: 30px;
 				margin-top: 5px;
 			}
 
+			@media (min-width: 576px) {
+				.logos, .resources {
+					max-width: 640px;
+				}
+			}
+
+			@media (min-width: 768px) {
+				.logos, .resources {
+					max-width: 720px;
+				}
+			}
+
+			@media (min-width: 992px) {
+				.logos, .resources {
+					max-width: 960px;
+				}
+			}
+
+			@media (min-width: 1200px) {
+				.logos, .resources {
+					max-width: 1140px;
+				}
+			}
+
 			.resources {
-				padding: 0% 5% 1% 5%;
+				padding: 20px;
+				padding-left: 0px;
+				padding-right: 0px;
+				padding-bottom: 15px;
+				padding: 20px 0px 15px 0px;
+			}
+
+			@media (min-width: 1200px) {
+				.resources {
+					padding: 40px;
+					padding-bottom: 20px;
+				}
+			}
+
+			.resources .row {
+				flex-direction: column;
+				flex-direction: row;
+			}
+
+			@media (min-width: 767px) {
+				.resources .row {
+					flex-direction: row;
+				}
 			}
 
 			.resource {
@@ -292,12 +435,39 @@
 				cursor: pointer;
 			}
 
+			@media (min-width: 767px) {
+				.resource {
+					width: 20%;
+				}
+			}
+
 			.resource:hover {
 				background-color: #F1F4FE;
 			}
 
 			.resource__logo {
 				height: 80px;
+			}
+
+			@media (min-width: 300px) {
+				#ol_logo {
+					position: relative;
+					left: -14px;
+				}
+			}
+
+			@media (min-width: 768px) {
+				#ol_logo {
+					position: relative;
+					left: -8px;
+				}
+			}
+
+			@media (min-width: 992px) {
+				#ol_logo {
+					position: relative;
+					left: 0px;
+				}
 			}
 
 			.circle {
@@ -537,12 +707,6 @@
 			<h2>Resources</h2>
 			<div class="row">
 				<div class="resource">
-					<a href="https://openliberty.io/support/" target="_blank" rel="noopener">
-						<img class="resource__logo" src="/open_liberty_logo.png" alt="open liberty logo">
-						<p>Support</p>
-					</a>				
-				</div>
-				<div class="resource">
 					<a href="https://github.com/OpenLiberty/open-liberty" target="_blank" rel="noopener">
 						<img class="resource__logo" src="/github_logo.png" alt="github logo">
 						<p>Github</p>
@@ -566,7 +730,16 @@
 						<p>Groups.io</p>
 					</a>
 				</div>
+<<<<<<< HEAD
 >>>>>>> Add resources and logos sections, clean up code
+=======
+				<div class="resource">
+					<a href="https://openliberty.io/support/" target="_blank" rel="noopener">
+						<img id="ol_logo" class="resource__logo" src="/open_liberty_logo.png" alt="open liberty logo">
+						<p>Support</p>
+					</a>		
+				</div>		
+>>>>>>> Improve scalability
 			</div>
 		</section>
         </main>
