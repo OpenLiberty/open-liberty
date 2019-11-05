@@ -52,11 +52,11 @@ public class KafkaCustomKeySerializerTest {
 
     @BeforeClass
     public static void setup() throws Exception {
-        ConnectorProperties outgoingProperties = simpleOutgoingChannel(PlaintextTests.kafkaContainer, MyDataMessagingBean.OUT_CHANNEL);
+        ConnectorProperties outgoingProperties = simpleOutgoingChannel(PlaintextTests.kafkaContainer, MyDataMessagingBean2.OUT_CHANNEL);
         outgoingProperties.addProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, MyDataSerializer.class.getName());
         outgoingProperties.addProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, MyDataSerializer.class.getName());
 
-        ConnectorProperties incomingProperties = simpleIncomingChannel(PlaintextTests.kafkaContainer, MyDataMessagingBean.IN_CHANNEL, MyDataMessagingBean.GROUP_ID);
+        ConnectorProperties incomingProperties = simpleIncomingChannel(PlaintextTests.kafkaContainer, MyDataMessagingBean2.IN_CHANNEL, MyDataMessagingBean2.GROUP_ID);
         incomingProperties.addProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, MyDataDeserializer.class.getName());
         incomingProperties.addProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, MyDataDeserializer.class.getName());
 
