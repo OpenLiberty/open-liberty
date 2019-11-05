@@ -461,10 +461,10 @@ public class Http2Client {
             if (sendGoAway) {
 
                 // wait to allow stress connection to finish up sending all the frames, if needed
-                try {
-                    Thread.sleep(2000);
-                } catch (Exception x) {
-                }
+                // try {
+                //     Thread.sleep(2000);
+                // } catch (Exception x) {
+                // }
 
                 if (LOGGER.isLoggable(Level.INFO)) {
                     LOGGER.logp(Level.INFO, CLASS_NAME + "$FATFramesListener", "receivedLastFrame", "Sending GoAway");
@@ -602,7 +602,11 @@ public class Http2Client {
             //keep looping until timeout or until the test is done
             while ((System.currentTimeMillis() - startTime) < timeoutToFinishTest && !isTestDone.get()) {
                 try {
-                    Thread.sleep(1000);
+                    if (LOGGER.isLoggable(Level.INFO)) {
+                        LOGGER.logp(Level.INFO, CLASS_NAME + "$TimeoutHelper", "run", "Timeout helper sleeping!");
+                    }
+        
+                    Thread.sleep(10);
                 } catch (Exception x) {
                 }
             }

@@ -302,22 +302,47 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
 
         //At this point our side should be in the close state, as we have sent out our data
         //Should probably check if the connection is closed, if so issue the destroy up the chain
-        //Then call the close on the underlying muxLink so we can close the connection if everything has been closed
+        //If a non-connection-error Exception was passed in, we'll reset the stream.
+        //Otherwise, call the close on the underlying muxLink so we can close the connection if everything has been closed
         //Additionally, don't close the underlying link if this is a push stream
         if (streamID == 0 || streamID % 2 == 1) {
             // if this isn't an http/2 exception, don't pass it down, since that will cause a GOAWAY to be sent immediately
             if (e == null || e instanceof Http2Exception) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "close: closing with exception: " + e);
-                }
-                if (httpInboundServiceContextImpl != null) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "close: (1)httpInboundServiceContextImpl.clear()");
+                Http2Exception h2ex = (Http2Exception) e;
+                if (e != null && !h2ex.isConnectionError()) {
+                    H2StreamProcessor h2sp = muxLink.getStreamProcessor(streamID);
+                    if (h2sp != null && !h2sp.isStreamClosed()) {
+                        try {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "close: attempting to reset stream: " + streamID + " with exception: " + e);
+                            }
+                            Frame reset = new FrameRstStream(streamID, h2ex.getErrorCode(), false);
+                            h2sp.processNextFrame(reset, Constants.Direction.WRITING_OUT);
+                        } catch (Http2Exception h2e) {
+                            // if we can't write out RST frame, throw the original exception
+                            if (httpInboundServiceContextImpl != null) {
+                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                    Tr.debug(tc, "close: (1)httpInboundServiceContextImpl.clear()");
+                                }
+                                httpInboundServiceContextImpl.clear();
+                                httpInboundServiceContextImpl = null;
+                            }
+                            this.muxLink.close(inVC, e);
+                        }
                     }
-                    httpInboundServiceContextImpl.clear();
-                    httpInboundServiceContextImpl = null;
+                } else {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "close: closing with exception: " + e);
+                    }
+                    if (httpInboundServiceContextImpl != null) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "close: (2)httpInboundServiceContextImpl.clear()");
+                        }
+                        httpInboundServiceContextImpl.clear();
+                        httpInboundServiceContextImpl = null;
+                    }
+                    this.muxLink.close(inVC, e);
                 }
-                this.muxLink.close(inVC, e);
             } else {
                 H2StreamProcessor h2sp = muxLink.getStreamProcessor(streamID);
                 if (h2sp != null && !h2sp.isStreamClosed()) {
@@ -332,7 +357,7 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
                         // if we can't write out RST frame, throw the original exception
                         if (httpInboundServiceContextImpl != null) {
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                Tr.debug(tc, "close: (2)httpInboundServiceContextImpl.clear()");
+                                Tr.debug(tc, "close: (3)httpInboundServiceContextImpl.clear()");
                             }
                             httpInboundServiceContextImpl.clear();
                             httpInboundServiceContextImpl = null;
@@ -342,7 +367,7 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
                 }
                 if (httpInboundServiceContextImpl != null) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "close: (3)httpInboundServiceContextImpl.clear()");
+                        Tr.debug(tc, "close: (4)httpInboundServiceContextImpl.clear()");
                     }
                     httpInboundServiceContextImpl.clear();
                     httpInboundServiceContextImpl = null;
