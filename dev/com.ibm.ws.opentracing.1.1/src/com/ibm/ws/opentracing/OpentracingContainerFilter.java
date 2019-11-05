@@ -274,6 +274,7 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
     /** {@inheritDoc} */
     @Override
     public Response toResponse(Throwable exception) {
+        Tr.warning(tc, "OPENTRACING_UNHANDLED_JAXRS_EXCEPTION", exception);
         return Response.serverError().header(EXCEPTION_KEY, exception).build();
     }
 }
