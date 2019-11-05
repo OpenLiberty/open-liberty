@@ -238,4 +238,4 @@ option-desc.no-password=\
 option-key.server-root=\
 \ \ \ \ --server-root="root server folder in archive"
 option-desc.package.server-root=\
-\tSpecifies the root server folder name in the archive file.           \n\
+\tSpecifies the root server folder name in the archive file.           
