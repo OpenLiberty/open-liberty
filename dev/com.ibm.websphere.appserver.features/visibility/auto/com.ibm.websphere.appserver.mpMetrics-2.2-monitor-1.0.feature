@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=com.ibm.websphere.appserver.mpMetrics-2.0-monitor-1.0
+symbolicName=com.ibm.websphere.appserver.mpMetrics-2.2-monitor-1.0
 visibility=private
 singleton=true
 IBM-Provision-Capability: \
