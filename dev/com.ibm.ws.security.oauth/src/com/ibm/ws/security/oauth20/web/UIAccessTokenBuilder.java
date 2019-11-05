@@ -103,7 +103,7 @@ public class UIAccessTokenBuilder {
     String[] getScopes(String clientId) {
         try {
             String scopes = _provider.getClientProvider().get(clientId).getPreAuthorizedScope();
-            return scopes == null ? null : scopes.split("\\s+"); // one or more spaces
+            return scopes == null ? null : scopes.trim().split("\\s+"); // one or more spaces
         } catch (OidcServerException e) {
             // ffdc
             return null;
