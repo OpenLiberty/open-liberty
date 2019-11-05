@@ -226,8 +226,7 @@ public class SessionCacheTwoServerTest extends FATServletClient {
     /**
      * Verify that SessionScoped CDI bean preserves its state across session calls.
      */
-    //@Test
-    // ISPN021011: Incompatible cache value types specified, expected class java.lang.String but class java.lang.Object was specified
+    @Test
     public void testSessionScopedBean() throws Exception {
         List<String> session = new ArrayList<>();
         String sessionId = appB.sessionPut("testSessionScopedBean-key", 123.4f, session, true);
@@ -302,5 +301,14 @@ public class SessionCacheTwoServerTest extends FATServletClient {
             }
         }
         fail("The session was not invalidated after 5 attempts.  This is likely due to a slow machine.");
+    }
+
+    /**
+     * Ensure that if Infinispan exception is ever resolved, that we are notified and can switch our tests back.
+     * Error Thrown: ISPN021011: Incompatible cache value types specified, expected class java.lang.String but class java.lang.Object was specified
+     */
+    @Test
+    public void testInfinispanClassCastExpection() throws Exception {
+        appA.invokeServlet("testInfinispanClassCastExpection&shouldFail=true", null);
     }
 }

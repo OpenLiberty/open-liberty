@@ -107,8 +107,7 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
      *
      * (This test is for ensuring Session Database parity)
      */
-    //@Test
-    // ISPN021011: Incompatible cache value types specified, expected class java.lang.String but class java.lang.Object was specified
+    @Test
     @Mode(FULL)
     public void testInvalidationServletNoLocalCacheTwoServer() throws Exception {
         List<String> session = new ArrayList<>();
@@ -123,8 +122,7 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
      *
      * (This test is for ensuring Session Database parity)
      */
-    //@Test
-    // ISPN021011: Incompatible cache value types specified, expected class java.lang.String but class java.lang.Object was specified
+    @Test
     @Mode(FULL)
     public void testInvalidationServletLocalCacheTwoServer() throws Exception {
         List<String> session = new ArrayList<>();
@@ -137,8 +135,7 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
     /**
      * Test that a session which is created on Server A is removed from the Session Cache once timed out on server B
      */
-    //@Test
-    // ISPN021011: Incompatible cache value types specified, expected class java.lang.String but class java.lang.Object was specified
+    @Test
     @Mode(FULL)
     public void testCacheInvalidationServletNoLocalCacheTwoServer() throws Exception {
         List<String> session = new ArrayList<>();
@@ -151,8 +148,7 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
      * Test that a session which is created on Server A is removed from the Session Cache once timed out on server B,
      * even if it has been locally cached.
      */
-    //@Test
-    // ISPN021011: Incompatible cache value types specified, expected class java.lang.String but class java.lang.Object was specified
+    @Test
     @Mode(FULL)
     public void testCacheInvalidationLocalCacheTwoServer() throws Exception {
         List<String> session = new ArrayList<>();
@@ -164,8 +160,7 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
     /**
      * Test that after a session is invalidated it is removed from both caches.
      */
-    //@Test
-    // ISPN021011: Incompatible cache value types specified, expected class java.lang.String but class java.lang.Object was specified
+    @Test
     @Mode(FULL)
     public void testCacheInvalidationTwoServer() throws Exception {
         List<String> session = new ArrayList<>();
@@ -176,4 +171,12 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
         appA.invokeServlet("cacheCheck&key=testCacheInvalidationTwoServer-foo&sid=" + sessionID, session);
     }
 
+    /**
+     * Ensure that if Infinispan exception is ever resolved, that we are notified and can switch our tests back.
+     * Error Thrown: ISPN021011: Incompatible cache value types specified, expected class java.lang.String but class java.lang.Object was specified
+     */
+    @Test
+    public void testInfinispanClassCastExpection() throws Exception {
+        appA.invokeServlet("testInfinispanClassCastExpection&shouldFail=true", null);
+    }
 }

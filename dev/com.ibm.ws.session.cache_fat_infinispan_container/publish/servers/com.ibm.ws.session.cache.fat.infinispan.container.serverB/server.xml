@@ -9,7 +9,7 @@
     
     <include location="../fatTestCommon.xml"/>
 
-    <!-- This server runs at the same time as com.ibm.ws.session.cache.fat.infinispan.serverA, so use a different set of ports -->    
+    <!-- This server runs at the same time as com.ibm.ws.session.cache.fat.infinispan.container.serverA, so use a different set of ports -->    
     <httpEndpoint id="defaultHttpEndpoint"
                   httpPort="${bvt.prop.HTTP_secondary}"
                   httpsPort="${bvt.prop.HTTP_secondary.secure}"/>

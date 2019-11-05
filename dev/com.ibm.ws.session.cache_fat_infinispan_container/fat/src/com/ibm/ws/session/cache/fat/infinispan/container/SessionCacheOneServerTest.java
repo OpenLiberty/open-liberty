@@ -429,4 +429,14 @@ public class SessionCacheOneServerTest extends FATServletClient {
             app.invalidateSession(session);
         }
     }
+
+    /**
+     * Ensure that if Infinispan exception is ever resolved, that we are notified and can switch our tests back.
+     * Error Thrown: ISPN021011: Incompatible cache value types specified, expected class java.lang.String but class java.lang.Object was specified
+     */
+    @Test
+    public void testInfinispanClassCastExpection() throws Exception {
+        //This should not fail here as this is the first test suite running.
+        app.invokeServlet("testInfinispanClassCastExpection&shouldFail=false", null);
+    }
 }
