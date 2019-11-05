@@ -369,7 +369,7 @@ public class DigestUtils {
 					cnonce, uri, algorithm, sipMethod, body});        	
 		}
         MessageDigest digester = ThreadLocalStorage.getMessageDigest();
-        if (algorithm.equals(DigestConstants.ALG_MD5_SESS)) {
+        if (algorithm != null && algorithm.equals(DigestConstants.ALG_MD5_SESS)) {
         	String A1 = createA1MD5Sess(ha1, nonce, cnonce, digester);
 			ha1 = textDigest(A1, digester);
 		}

@@ -28,10 +28,10 @@ WS-TraceGroup: REACTIVEMESSAGE
 -dsannotations: com.ibm.ws.microprofile.reactive.messaging.kafka.KafkaConnectorCDIExtension
 
 Export-Package: com.ibm.ws.microprofile.reactive.messaging.kafka,\
-                com.ibm.ws.kafka.security
+                com.ibm.ws.kafka.security,\
+                com.ibm.ws.microprofile.reactive.messaging.kafka.resources;version=1.0
 
-Private-Package: com.ibm.ws.microprofile.reactive.messaging.kafka.classloader,\
-                com.ibm.ws.microprofile.reactive.messaging.kafka.resources
+Private-Package: com.ibm.ws.microprofile.reactive.messaging.kafka.classloader
 
 Import-Package: *
 

@@ -19,7 +19,6 @@ configurations {
   jbossLogging
   jGroups
   protostream
-  reactiveStreams
   rxjava
   smallryeMetrics
 }
@@ -35,7 +34,6 @@ dependencies {
   protostream 'org.infinispan.protostream:protostream:4.3.0.Alpha13'
   jbossLogging 'org.jboss.logging:jboss-logging:3.4.1.Final'
   jGroups 'org.jgroups:jgroups:4.1.6.Final'
-  reactiveStreams 'org.reactivestreams:reactive-streams:1.0.2'
   rxjava 'io.reactivex.rxjava2:rxjava:2.2.9'
   smallryeMetrics 'io.smallrye:smallrye-metrics:2.1.5'
 }
@@ -94,12 +92,6 @@ task addProtoStreamToSharedDir(type: Copy) {
   rename 'protostream-*.jar', 'protostream.jar'
 }
 
-task addReactiveStreamsToSharedDir(type: Copy) {
-  from configurations.reactiveStreams
-  into new File(autoFvtDir, 'publish/shared/resources/infinispan')
-  rename 'reactive-streams-*.jar', 'reactive-streams.jar'
-}
-
 task addRxJavaToSharedDir(type: Copy) {
   from configurations.rxjava
   into new File(autoFvtDir, 'publish/shared/resources/infinispan')
@@ -123,7 +115,6 @@ addRequiredLibraries {
   dependsOn addJbossLoggingToSharedDir
   dependsOn addJGroupsToSharedDir
   dependsOn addProtoStreamToSharedDir
-  dependsOn addReactiveStreamsToSharedDir
   dependsOn addRxJavaToSharedDir
   dependsOn addSmallRyeMetricsToSharedDir
 }

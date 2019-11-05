@@ -206,281 +206,287 @@ public class JNDINameTestServlet extends FATServlet {
 
         // default context ejblocal lookups -------------------------------------------------------------
         Context context = new InitialContext();
+        String contextString = "Initial";
 
         // com/ibm/ejb2x/jndiName/ejb/JNDINameHome# should always fail
         String lookupName = "com/ibm/ejb2x/jndiName/ejb/JNDINameHome" + beanNum;
-        testLookupCombinationsHelper(context, lookupName, jndiName, Integer.toString(beanNum), "none");
+        testLookupCombinationsHelper(context, contextString, lookupName, jndiName, Integer.toString(beanNum), "none");
 
         // ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome# should always fail
         lookupName = "ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome" + beanNum;
-        testLookupCombinationsHelper(context, lookupName, jndiName, Integer.toString(beanNum), "none");
+        testLookupCombinationsHelper(context, contextString, lookupName, jndiName, Integer.toString(beanNum), "none");
 
         // ejblocal:com/ibm/ejb2x/jndiName/ejb/JNDINameHome# should work for
         // jndiName="com/ibm/ejb2x/jndiName/ejb/JNDINameHome1">
         // jndiName="ejblocal:com/ibm/ejb2x/jndiName/ejb/JNDINameHome3">
         lookupName = "ejblocal:com/ibm/ejb2x/jndiName/ejb/JNDINameHome" + beanNum;
-        testLookupCombinationsHelper(context, lookupName, jndiName, Integer.toString(beanNum), "1,3");
+        testLookupCombinationsHelper(context, contextString, lookupName, jndiName, Integer.toString(beanNum), "1,3");
 
         // ejblocal:ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome# should work for
         // jndiName="ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome2">
         lookupName = "ejblocal:ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome" + beanNum;
-        testLookupCombinationsHelper(context, lookupName, jndiName, Integer.toString(beanNum), "2");
+        testLookupCombinationsHelper(context, contextString, lookupName, jndiName, Integer.toString(beanNum), "2");
 
         // ejblocal:ejb/ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome# should always fail
         lookupName = "ejblocal:ejb/ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome" + beanNum;
-        testLookupCombinationsHelper(context, lookupName, jndiName, Integer.toString(beanNum), "none");
+        testLookupCombinationsHelper(context, contextString, lookupName, jndiName, Integer.toString(beanNum), "none");
 
         // ejblocal:local:com/ibm/ejb2x/jndiName/ejb/JNDINameHome# should work for
         // jndiName="local:com/ibm/ejb2x/jndiName/ejb/JNDINameHome4">
         // jndiName="ejblocal:local:com/ibm/ejb2x/jndiName/ejb/JNDINameHome6">
         lookupName = "ejblocal:local:com/ibm/ejb2x/jndiName/ejb/JNDINameHome" + beanNum;
-        testLookupCombinationsHelper(context, lookupName, jndiName, Integer.toString(beanNum), "4,6");
+        testLookupCombinationsHelper(context, contextString, lookupName, jndiName, Integer.toString(beanNum), "4,6");
 
         // ejblocal:local:ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome# should work for
         // jndiName="com/ibm/ejb2x/jndiName/ejb/JNDINameHome1">
         // jndiName="local:ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome5">
         // jndiName="ejblocal:local:ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome7">
         lookupName = "ejblocal:local:ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome" + beanNum;
-        testLookupCombinationsHelper(context, lookupName, jndiName, Integer.toString(beanNum), "1,5,7");
+        testLookupCombinationsHelper(context, contextString, lookupName, jndiName, Integer.toString(beanNum), "1,5,7");
 
         // ejblocal:local:ejb/ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome# should work for
         // jndiName="ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome2">
         lookupName = "ejblocal:local:ejb/ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome" + beanNum;
-        testLookupCombinationsHelper(context, lookupName, jndiName, Integer.toString(beanNum), "2");
+        testLookupCombinationsHelper(context, contextString, lookupName, jndiName, Integer.toString(beanNum), "2");
 
         // ejblocal context lookups -------------------------------------------------------------
         context = (Context) new InitialContext().lookup("ejblocal:");
+        contextString = "ejblocal:";
 
         // ejblocal: context + com/ibm/ejb2x/jndiName/ejb/JNDINameHome# should work for
         // jndiName="com/ibm/ejb2x/jndiName/ejb/JNDINameHome1">
         // jndiName="ejblocal:com/ibm/ejb2x/jndiName/ejb/JNDINameHome3">
         lookupName = "com/ibm/ejb2x/jndiName/ejb/JNDINameHome" + beanNum;
-        testLookupCombinationsHelper(context, lookupName, jndiName, Integer.toString(beanNum), "1,3");
+        testLookupCombinationsHelper(context, contextString, lookupName, jndiName, Integer.toString(beanNum), "1,3");
 
         // ejblocal: context + ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome# should work for
         // jndiName="ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome2">
         lookupName = "ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome" + beanNum;
-        testLookupCombinationsHelper(context, lookupName, jndiName, Integer.toString(beanNum), "2");
+        testLookupCombinationsHelper(context, contextString, lookupName, jndiName, Integer.toString(beanNum), "2");
 
         // ejblocal: context + ejb/ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome# should always fail
         lookupName = "ejb/ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome" + beanNum;
-        testLookupCombinationsHelper(context, lookupName, jndiName, Integer.toString(beanNum), "none");
+        testLookupCombinationsHelper(context, contextString, lookupName, jndiName, Integer.toString(beanNum), "none");
 
         // ejblocal: context + ejblocal:com/ibm/ejb2x/jndiName/ejb/JNDINameHome# should work for
         // jndiName="com/ibm/ejb2x/jndiName/ejb/JNDINameHome1">
         // jndiName="ejblocal:com/ibm/ejb2x/jndiName/ejb/JNDINameHome3">
         lookupName = "ejblocal:com/ibm/ejb2x/jndiName/ejb/JNDINameHome" + beanNum;
-        testLookupCombinationsHelper(context, lookupName, jndiName, Integer.toString(beanNum), "1,3");
+        testLookupCombinationsHelper(context, contextString, lookupName, jndiName, Integer.toString(beanNum), "1,3");
 
         // ejblocal: context + ejblocal:ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome# should work for
         // jndiName="ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome2">
         lookupName = "ejblocal:ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome" + beanNum;
-        testLookupCombinationsHelper(context, lookupName, jndiName, Integer.toString(beanNum), "2");
+        testLookupCombinationsHelper(context, contextString, lookupName, jndiName, Integer.toString(beanNum), "2");
 
         // ejblocal: context + ejblocal:ejb/ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome# should always fail
         lookupName = "ejblocal:ejb/ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome" + beanNum;
-        testLookupCombinationsHelper(context, lookupName, jndiName, Integer.toString(beanNum), "none");
+        testLookupCombinationsHelper(context, contextString, lookupName, jndiName, Integer.toString(beanNum), "none");
 
         // ejblocal: context + local:com/ibm/ejb2x/jndiName/ejb/JNDINameHome# should work for
         // jndiName="local:com/ibm/ejb2x/jndiName/ejb/JNDINameHome4">
         // jndiName="ejblocal:local:com/ibm/ejb2x/jndiName/ejb/JNDINameHome6">
         lookupName = "local:com/ibm/ejb2x/jndiName/ejb/JNDINameHome" + beanNum;
-        testLookupCombinationsHelper(context, lookupName, jndiName, Integer.toString(beanNum), "4,6");
+        testLookupCombinationsHelper(context, contextString, lookupName, jndiName, Integer.toString(beanNum), "4,6");
 
         // ejblocal: context + local:ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome# should work for
         // jndiName="com/ibm/ejb2x/jndiName/ejb/JNDINameHome1">
         // jndiName="local:ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome5">
         // jndiName="ejblocal:local:ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome7">
         lookupName = "local:ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome" + beanNum;
-        testLookupCombinationsHelper(context, lookupName, jndiName, Integer.toString(beanNum), "1,5,7");
+        testLookupCombinationsHelper(context, contextString, lookupName, jndiName, Integer.toString(beanNum), "1,5,7");
 
         // ejblocal: context + local:ejb/ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome# should work for
         // jndiName="ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome2">
         lookupName = "local:ejb/ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome" + beanNum;
-        testLookupCombinationsHelper(context, lookupName, jndiName, Integer.toString(beanNum), "2");
+        testLookupCombinationsHelper(context, contextString, lookupName, jndiName, Integer.toString(beanNum), "2");
 
         // default context local lookups -------------------------------------------------------------
         context = new InitialContext();
+        contextString = "Initial";
 
         // local:com/ibm/ejb2x/jndiName/ejb/JNDINameHome# should work for
         // jndiName="local:com/ibm/ejb2x/jndiName/ejb/JNDINameHome4">
         // jndiName="ejblocal:local:com/ibm/ejb2x/jndiName/ejb/JNDINameHome6">
         lookupName = "local:com/ibm/ejb2x/jndiName/ejb/JNDINameHome" + beanNum;
-        testLookupCombinationsHelper(context, lookupName, jndiName, Integer.toString(beanNum), "4,6");
+        testLookupCombinationsHelper(context, contextString, lookupName, jndiName, Integer.toString(beanNum), "4,6");
 
         // local:ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome# should work for
         // jndiName="com/ibm/ejb2x/jndiName/ejb/JNDINameHome1">
         // jndiName="local:ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome5">
         // jndiName="ejblocal:local:ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome7">
         lookupName = "local:ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome" + beanNum;
-        testLookupCombinationsHelper(context, lookupName, jndiName, Integer.toString(beanNum), "1,5,7");
+        testLookupCombinationsHelper(context, contextString, lookupName, jndiName, Integer.toString(beanNum), "1,5,7");
 
         // local:ejb/ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome# should work for
         // jndiName="ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome2">
         lookupName = "local:ejb/ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome" + beanNum;
-        testLookupCombinationsHelper(context, lookupName, jndiName, Integer.toString(beanNum), "2");
+        testLookupCombinationsHelper(context, contextString, lookupName, jndiName, Integer.toString(beanNum), "2");
 
         // local:local:com/ibm/ejb2x/jndiName/ejb/JNDINameHome# should work for
         // jndiName="local:com/ibm/ejb2x/jndiName/ejb/JNDINameHome4">
         // jndiName="ejblocal:local:com/ibm/ejb2x/jndiName/ejb/JNDINameHome6">
         lookupName = "local:local:com/ibm/ejb2x/jndiName/ejb/JNDINameHome" + beanNum;
-        testLookupCombinationsHelper(context, lookupName, jndiName, Integer.toString(beanNum), "4,6");
+        testLookupCombinationsHelper(context, contextString, lookupName, jndiName, Integer.toString(beanNum), "4,6");
 
         // local:local:ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome# should work for
         // jndiName="com/ibm/ejb2x/jndiName/ejb/JNDINameHome1">
         // jndiName="local:ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome5">
         // jndiName="ejblocal:local:ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome7">
         lookupName = "local:local:ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome" + beanNum;
-        testLookupCombinationsHelper(context, lookupName, jndiName, Integer.toString(beanNum), "1,5,7");
+        testLookupCombinationsHelper(context, contextString, lookupName, jndiName, Integer.toString(beanNum), "1,5,7");
 
         // local:local:ejb/ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome# should work for
         // jndiName="ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome2">
         lookupName = "local:local:ejb/ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome" + beanNum;
-        testLookupCombinationsHelper(context, lookupName, jndiName, Integer.toString(beanNum), "2");
+        testLookupCombinationsHelper(context, contextString, lookupName, jndiName, Integer.toString(beanNum), "2");
 
         // local:ejblocal:com/ibm/ejb2x/jndiName/ejb/JNDINameHome# should work for
         // jndiName="com/ibm/ejb2x/jndiName/ejb/JNDINameHome1">
         // jndiName="ejblocal:com/ibm/ejb2x/jndiName/ejb/JNDINameHome3">
         lookupName = "local:ejblocal:com/ibm/ejb2x/jndiName/ejb/JNDINameHome" + beanNum;
-        testLookupCombinationsHelper(context, lookupName, jndiName, Integer.toString(beanNum), "1,3");
+        testLookupCombinationsHelper(context, contextString, lookupName, jndiName, Integer.toString(beanNum), "1,3");
 
         // local:ejblocal:ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome# should work for
         // jndiName="ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome2">
         lookupName = "local:ejblocal:ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome" + beanNum;
-        testLookupCombinationsHelper(context, lookupName, jndiName, Integer.toString(beanNum), "2");
+        testLookupCombinationsHelper(context, contextString, lookupName, jndiName, Integer.toString(beanNum), "2");
 
         // local context lookups -------------------------------------------------------------
         context = (Context) new InitialContext().lookup("local:");
+        contextString = "local:";
 
         // local: context + com/ibm/ejb2x/jndiName/ejb/JNDINameHome# should work for
         // jndiName="local:com/ibm/ejb2x/jndiName/ejb/JNDINameHome4">
         // jndiName="ejblocal:local:com/ibm/ejb2x/jndiName/ejb/JNDINameHome6">
         lookupName = "com/ibm/ejb2x/jndiName/ejb/JNDINameHome" + beanNum;
-        testLookupCombinationsHelper(context, lookupName, jndiName, Integer.toString(beanNum), "4,6");
+        testLookupCombinationsHelper(context, contextString, lookupName, jndiName, Integer.toString(beanNum), "4,6");
 
         // local: context + ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome# should work for
         // jndiName="com/ibm/ejb2x/jndiName/ejb/JNDINameHome1">
         // jndiName="local:ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome5">
         // jndiName="ejblocal:local:ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome7">
         lookupName = "ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome" + beanNum;
-        testLookupCombinationsHelper(context, lookupName, jndiName, Integer.toString(beanNum), "1,5,7");
+        testLookupCombinationsHelper(context, contextString, lookupName, jndiName, Integer.toString(beanNum), "1,5,7");
 
         // local: context + ejb/ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome# should work for
         // jndiName="ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome2">
         lookupName = "ejb/ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome" + beanNum;
-        testLookupCombinationsHelper(context, lookupName, jndiName, Integer.toString(beanNum), "2");
+        testLookupCombinationsHelper(context, contextString, lookupName, jndiName, Integer.toString(beanNum), "2");
 
         // local: context + ejblocal:com/ibm/ejb2x/jndiName/ejb/JNDINameHome# should work for
         // jndiName="com/ibm/ejb2x/jndiName/ejb/JNDINameHome1">
         // jndiName="ejblocal:com/ibm/ejb2x/jndiName/ejb/JNDINameHome3">
         lookupName = "ejblocal:com/ibm/ejb2x/jndiName/ejb/JNDINameHome" + beanNum;
-        testLookupCombinationsHelper(context, lookupName, jndiName, Integer.toString(beanNum), "1,3");
+        testLookupCombinationsHelper(context, contextString, lookupName, jndiName, Integer.toString(beanNum), "1,3");
 
         // local: context + ejblocal:ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome# should work for
         // jndiName="ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome2">
         lookupName = "ejblocal:ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome" + beanNum;
-        testLookupCombinationsHelper(context, lookupName, jndiName, Integer.toString(beanNum), "2");
+        testLookupCombinationsHelper(context, contextString, lookupName, jndiName, Integer.toString(beanNum), "2");
 
         // local: context + ejblocal:ejb/ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome# should always fail
         lookupName = "ejblocal:ejb/ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome" + beanNum;
-        testLookupCombinationsHelper(context, lookupName, jndiName, Integer.toString(beanNum), "none");
+        testLookupCombinationsHelper(context, contextString, lookupName, jndiName, Integer.toString(beanNum), "none");
 
         // local: context + local:com/ibm/ejb2x/jndiName/ejb/JNDINameHome# should work for
         // jndiName="local:com/ibm/ejb2x/jndiName/ejb/JNDINameHome4">
         // jndiName="ejblocal:local:com/ibm/ejb2x/jndiName/ejb/JNDINameHome6">
         lookupName = "local:com/ibm/ejb2x/jndiName/ejb/JNDINameHome" + beanNum;
-        testLookupCombinationsHelper(context, lookupName, jndiName, Integer.toString(beanNum), "4,6");
+        testLookupCombinationsHelper(context, contextString, lookupName, jndiName, Integer.toString(beanNum), "4,6");
 
         // local: context + local:ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome# should work for
         // jndiName="com/ibm/ejb2x/jndiName/ejb/JNDINameHome1">
         // jndiName="local:ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome5">
         // jndiName="ejblocal:local:ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome7">
         lookupName = "local:ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome" + beanNum;
-        testLookupCombinationsHelper(context, lookupName, jndiName, Integer.toString(beanNum), "1,5,7");
+        testLookupCombinationsHelper(context, contextString, lookupName, jndiName, Integer.toString(beanNum), "1,5,7");
 
         // local: context + local:ejb/ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome# should work for
         // jndiName="ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome2">
         lookupName = "local:ejb/ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome" + beanNum;
-        testLookupCombinationsHelper(context, lookupName, jndiName, Integer.toString(beanNum), "2");
+        testLookupCombinationsHelper(context, contextString, lookupName, jndiName, Integer.toString(beanNum), "2");
 
         // local:ejb context lookups -------------------------------------------------------------
         context = (Context) new InitialContext().lookup("local:ejb");
+        contextString = "local:ejb";
 
         // local:ejb context + com/ibm/ejb2x/jndiName/ejb/JNDINameHome# should work for
         // jndiName="com/ibm/ejb2x/jndiName/ejb/JNDINameHome1">
-        // jndiName="local:com/ibm/ejb2x/jndiName/ejb/JNDINameHome4">
-        // jndiName="ejblocal:local:com/ibm/ejb2x/jndiName/ejb/JNDINameHome6">
+        // jndiName="local:ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome5">
+        // jndiName="ejblocal:local:ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome7">
         lookupName = "com/ibm/ejb2x/jndiName/ejb/JNDINameHome" + beanNum;
-        testLookupCombinationsHelper(context, lookupName, jndiName, Integer.toString(beanNum), "1,4,6");
+        testLookupCombinationsHelper(context, contextString, lookupName, jndiName, Integer.toString(beanNum), "1,5,7");
 
         // local:ejb context + ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome# should work for
         // jndiName="ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome2">
         lookupName = "ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome" + beanNum;
-        testLookupCombinationsHelper(context, lookupName, jndiName, Integer.toString(beanNum), "2");
+        testLookupCombinationsHelper(context, contextString, lookupName, jndiName, Integer.toString(beanNum), "2");
 
         // local:ejb context + ejb/ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome# should always fail
         lookupName = "ejb/ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome" + beanNum;
-        testLookupCombinationsHelper(context, lookupName, jndiName, Integer.toString(beanNum), "none");
+        testLookupCombinationsHelper(context, contextString, lookupName, jndiName, Integer.toString(beanNum), "none");
 
         // local:ejb context + ejblocal:com/ibm/ejb2x/jndiName/ejb/JNDINameHome# should work for
         // jndiName="com/ibm/ejb2x/jndiName/ejb/JNDINameHome1">
         // jndiName="ejblocal:com/ibm/ejb2x/jndiName/ejb/JNDINameHome3">
         lookupName = "ejblocal:com/ibm/ejb2x/jndiName/ejb/JNDINameHome" + beanNum;
-        testLookupCombinationsHelper(context, lookupName, jndiName, Integer.toString(beanNum), "1,3");
+        testLookupCombinationsHelper(context, contextString, lookupName, jndiName, Integer.toString(beanNum), "1,3");
 
         // local:ejb context + ejblocal:ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome# should work for
         // jndiName="ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome2">
         lookupName = "ejblocal:ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome" + beanNum;
-        testLookupCombinationsHelper(context, lookupName, jndiName, Integer.toString(beanNum), "2");
+        testLookupCombinationsHelper(context, contextString, lookupName, jndiName, Integer.toString(beanNum), "2");
 
         // local:ejb context + ejblocal:ejb/ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome# should always fail
         lookupName = "ejblocal:ejb/ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome" + beanNum;
-        testLookupCombinationsHelper(context, lookupName, jndiName, Integer.toString(beanNum), "none");
+        testLookupCombinationsHelper(context, contextString, lookupName, jndiName, Integer.toString(beanNum), "none");
 
         // local:ejb context + local:com/ibm/ejb2x/jndiName/ejb/JNDINameHome# should work for
         // jndiName="local:com/ibm/ejb2x/jndiName/ejb/JNDINameHome4">
         // jndiName="ejblocal:local:com/ibm/ejb2x/jndiName/ejb/JNDINameHome6">
         lookupName = "local:com/ibm/ejb2x/jndiName/ejb/JNDINameHome" + beanNum;
-        testLookupCombinationsHelper(context, lookupName, jndiName, Integer.toString(beanNum), "4,6");
+        testLookupCombinationsHelper(context, contextString, lookupName, jndiName, Integer.toString(beanNum), "4,6");
 
         // local:ejb context + local:ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome# should work for
         // jndiName="com/ibm/ejb2x/jndiName/ejb/JNDINameHome1">
         // jndiName="local:ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome5">
         // jndiName="ejblocal:local:ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome7">
         lookupName = "local:ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome" + beanNum;
-        testLookupCombinationsHelper(context, lookupName, jndiName, Integer.toString(beanNum), "1,5,7");
+        testLookupCombinationsHelper(context, contextString, lookupName, jndiName, Integer.toString(beanNum), "1,5,7");
 
         // local:ejb context + local:ejb/ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome# should work for
         // jndiName="ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome2">
         lookupName = "local:ejb/ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome" + beanNum;
-        testLookupCombinationsHelper(context, lookupName, jndiName, Integer.toString(beanNum), "2");
+        testLookupCombinationsHelper(context, contextString, lookupName, jndiName, Integer.toString(beanNum), "2");
 
         // default context 3 nested lookups -------------------------------------------------------------
         context = new InitialContext();
+        contextString = "Initial";
 
         // ejblocal:local:ejblocal:com/ibm/ejb2x/jndiName/ejb/JNDINameHome# should work for
         // jndiName="com/ibm/ejb2x/jndiName/ejb/JNDINameHome1">
         // jndiName="ejblocal:com/ibm/ejb2x/jndiName/ejb/JNDINameHome3">
         lookupName = "ejblocal:local:ejblocal:com/ibm/ejb2x/jndiName/ejb/JNDINameHome" + beanNum;
-        testLookupCombinationsHelper(context, lookupName, jndiName, Integer.toString(beanNum), "1,3");
+        testLookupCombinationsHelper(context, contextString, lookupName, jndiName, Integer.toString(beanNum), "1,3");
 
         // ejblocal:local:ejblocal:ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome# should work for
         // jndiName="ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome2">
         lookupName = "ejblocal:local:ejblocal:ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome" + beanNum;
-        testLookupCombinationsHelper(context, lookupName, jndiName, Integer.toString(beanNum), "2");
+        testLookupCombinationsHelper(context, contextString, lookupName, jndiName, Integer.toString(beanNum), "2");
 
         // local:ejblocal:local:com/ibm/ejb2x/jndiName/ejb/JNDINameHome# should work for
         // jndiName="local:com/ibm/ejb2x/jndiName/ejb/JNDINameHome4">
         // jndiName="ejblocal:local:com/ibm/ejb2x/jndiName/ejb/JNDINameHome6">
         lookupName = "local:ejblocal:local:com/ibm/ejb2x/jndiName/ejb/JNDINameHome" + beanNum;
-        testLookupCombinationsHelper(context, lookupName, jndiName, Integer.toString(beanNum), "4,6");
+        testLookupCombinationsHelper(context, contextString, lookupName, jndiName, Integer.toString(beanNum), "4,6");
 
         // local:ejblocal:local:ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome# should work for
         // jndiName="com/ibm/ejb2x/jndiName/ejb/JNDINameHome1">
         // jndiName="local:ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome5">
         // jndiName="ejblocal:local:ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome7">
         lookupName = "local:ejblocal:local:ejb/com/ibm/ejb2x/jndiName/ejb/JNDINameHome" + beanNum;
-        testLookupCombinationsHelper(context, lookupName, jndiName, Integer.toString(beanNum), "1,5,7");
+        testLookupCombinationsHelper(context, contextString, lookupName, jndiName, Integer.toString(beanNum), "1,5,7");
     }
 
     /**
@@ -494,28 +500,29 @@ public class JNDINameTestServlet extends FATServlet {
      * @param beanNum - which bean we are testing against
      * @param passingCases - list of beans this lookupName should work on
      */
-    private void testLookupCombinationsHelper(Context context, String lookupName, String jndiName, String beanNum, String passingCases) {
+    private void testLookupCombinationsHelper(Context context, String contextString, String lookupName, String jndiName, String beanNum, String passingCases) {
         try {
+            System.out.print("Testing " + lookupName + " with context " + contextString + " against " + jndiName);
             JNDINameHome beanHome = (JNDINameHome) context.lookup(lookupName);
             if (passingCases.contains(beanNum)) {
                 if (beanHome == null) {
-                    fail("lookup " + lookupName + " should have worked for " + jndiName);
+                    fail("lookup " + lookupName + " should have worked for " + jndiName + " and context " + contextString);
                 }
                 try {
                     if (beanHome.create() == null) {
-                        fail("home.create() for lookup " + lookupName + " should have worked for " + jndiName);
+                        fail("home.create() for lookup " + lookupName + " should have worked for " + jndiName + " and context " + contextString);
                     }
                 } catch (Exception e) {
-                    fail("home.create() for lookup " + lookupName + " should have worked for " + jndiName);
+                    fail("home.create() for lookup " + lookupName + " should have worked for " + jndiName + " and context " + contextString);
                 }
             } else {
                 if (beanHome != null) {
-                    fail("lookup " + lookupName + " should have failed for " + jndiName);
+                    fail("lookup " + lookupName + " should have failed for " + jndiName + " and context " + contextString);
                 }
             }
         } catch (NamingException e) {
             if (passingCases.contains(beanNum)) {
-                fail("lookup " + lookupName + " should have worked for " + jndiName);
+                fail("lookup " + lookupName + " should have worked for " + jndiName + " and context " + contextString);
             } else {
                 // expected to fail in other cases
             }
