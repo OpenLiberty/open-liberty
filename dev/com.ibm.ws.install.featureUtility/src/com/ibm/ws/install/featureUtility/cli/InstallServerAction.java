@@ -102,7 +102,6 @@ public class InstallServerAction implements ActionHandler {
                         return FeatureUtilityExecutor.returnCode(InstallException.IO_FAILURE);
                 }
 
-                return rc;
         }
         private ReturnCode serverInit(String fileName) throws InstallException, IOException {
 

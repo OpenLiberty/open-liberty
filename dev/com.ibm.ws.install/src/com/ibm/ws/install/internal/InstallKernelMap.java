@@ -935,10 +935,13 @@ public class InstallKernelMap implements Map {
     private String getRepo(String fromRepo) {
         String repo;
         if (fromRepo != null) {
+            fine("Connecting to the following repository: " + fromRepo);
             repo = fromRepo;
-        } else if (System.getenv("maven_mirror") != null) {
-            repo = System.getenv("maven_mirror"); //TODO get mirror from settigns.xml if applicable
+        } else if (System.getenv("openliberty_feature_repository") != null) {
+            fine("Connecting to the following repository: " + System.getenv("openliberty_feature_repository"));
+            repo = System.getenv("openliberty_feature_repository");
         } else {
+            fine("Connecting to the following repository: " + MAVEN_CENTRAL);
             repo = MAVEN_CENTRAL;
         }
         return repo;
@@ -1133,7 +1136,7 @@ public class InstallKernelMap implements Map {
             // some increment left over
             double increment = ((double) (progressBar.getMethodIncrement("fetchArtifacts") / resolvedFeatures.size()) * downloadedFeatures.size());
             updateProgress(increment);
-            fine("Downloaded the following features from maven central:" + downloadedFeatures);
+            fine("Downloaded the following features from the remote maven repository:" + downloadedFeatures);
 
         }
         return foundFeatures;

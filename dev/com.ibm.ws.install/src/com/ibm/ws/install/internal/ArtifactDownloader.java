@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import com.ibm.ws.install.InstallException;
-import com.ibm.ws.install.internal.InstallLogUtils.Messages;
 
 public class ArtifactDownloader {
 
@@ -42,19 +41,20 @@ public class ArtifactDownloader {
     private final boolean isWindows = (System.getProperty("os.name").toLowerCase()).indexOf("win") >= 0;
 
     public void synthesizeAndDownloadFeatures(List<String> mavenCoords, String dLocation, String repo) throws InstallException {
-        info("Establishing a connection to the maven central repository ...\n" +
-             "This process might take several minutes to complete.");
+        info("Establishing a connection to the configured Maven repository ...\n" +
+             "This process might take several minutes to complete."); //STATE_CONTACTING_MAVEN_REPO
         checkValidProxy();
         configureProxyAuthentication();
         configureAuthentication();
         updateProgress(progressBar.getMethodIncrement("establishConnection"));
-        info("Successfully connected to all configured repositories.");
+        info("Successfully connected to the configured repository."); //STATE_MAVEN_REPO_CONNECTION_SUCCESSFUL
         downloadedFiles.clear();
         int repoResponseCode;
         try {
             repoResponseCode = ArtifactDownloaderUtils.exists(repo);
         } catch (IOException e) {
             throw new InstallException(e.getMessage());
+            //throw ExceptionUtils.createByKey("ERROR_FAILED_TO_CONNECT_MAVEN"); //ERROR_FAILED_TO_CONNECT_MAVEN
         }
         ArtifactDownloaderUtils.checkResponseCode(repoResponseCode, repo);
         List<String> featureURLs = ArtifactDownloaderUtils.acquireFeatureURLs(mavenCoords, repo);
@@ -78,7 +78,7 @@ public class ArtifactDownloader {
                 synthesizeAndDownload(coords, "esa", dLocation, repo, false);
                 synthesizeAndDownload(coords, "pom", dLocation, repo, false);
                 updateProgress(progressBar.getMethodIncrement("downloadArtifact"));
-                fine("Finished downloading feature: " + coords);
+                fine("Finished downloading artifact: " + coords);
             }
         }
     }
@@ -116,18 +116,18 @@ public class ArtifactDownloader {
 
         String filename = ArtifactDownloaderUtils.getfilename(mavenCoords, filetype);
         String urlLocation = ArtifactDownloaderUtils.getUrlLocation(repo, groupId, artifactId, version, filename);
-        String[] checksumFormats = new String[2];
+        String[] checksumFormats = new String[3];
         checksumFormats[0] = "MD5";
         checksumFormats[1] = "SHA1";
-
+        checksumFormats[2] = "SHA256";
         try {
             if (individualDownload && ArtifactDownloaderUtils.fileIsMissing(urlLocation)) {
-                throw ExceptionUtils.createByKey("ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_REPO", ArtifactDownloaderUtils.getFileNameFromURL(urlLocation), filetype + " file", repo);
+                throw ExceptionUtils.createByKey("ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_REPO", ArtifactDownloaderUtils.getFileNameFromURL(urlLocation), filetype + " file", repo); //ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_MAVEN_REPO
             } else {
                 download(urlLocation, dLocation, groupId, artifactId, version, filename, checksumFormats);
             }
         } catch (IOException e) {
-            throw ExceptionUtils.createByKey(e, "ERROR_INVALID_ESA", filename);
+            throw new InstallException(e.getMessage());
         }
 
     }
@@ -141,21 +141,65 @@ public class ArtifactDownloader {
             downloadInternal(uriLoc, fileLoc);
 
             downloadedFiles.add(fileLoc);
-
+            boolean someChecksumExists = false;
+            boolean checksumFail = false;
             for (String checksumFormat : checksumFormats) {
-                String checksumLocal = ArtifactDownloaderUtils.getChecksum(fileLoc.getAbsolutePath(), checksumFormat);
-                String checksumOrigin = ArtifactDownloaderUtils.getMasterChecksum(urlLocation, checksumFormat);
-                if (!checksumLocal.equals(checksumOrigin)) {
+                if (checksumIsAvailable(urlLocation, checksumFormat)) {
+                    someChecksumExists = true;
+                    if (isIncorrectChecksum(fileLoc.getAbsolutePath(), urlLocation, checksumFormat)) {
+                        fine("Failed to validate " + checksumFormat + " checksum for file: " + filename);
+                        checksumFail = true;
+                    } else {
+                        fine("Successfully validated " + checksumFormat + " checksum for file: " + filename);
+                    }
+                } else {
+                    fine("Failed to find " + checksumFormat + " checksum for file: " + filename);
+                }
+            }
+            if (someChecksumExists) {
+                if (checksumFail) {
                     ArtifactDownloaderUtils.deleteFiles(downloadedFiles, dLocation, groupId, artifactId, version, filename);
                     downloadedFiles.clear();
-                    throw ExceptionUtils.createByKey("ERROR_DOWNLOADED_ASSET_INVALID_CHECKSUM", filename, Messages.INSTALL_KERNEL_MESSAGES.getMessage("FEATURE_ASSET"));
+                    throw new InstallException("Failed to validate available checksums for file: " + filename); //ERROR_CHECKSUM_FAILED_MAVEN
                 }
+            } else {
+                fine("No checksums found for file in remote repository");
             }
         } catch (URISyntaxException e) {
             throw new InstallException(e.getMessage());
         } catch (NoSuchAlgorithmException e) {
             throw new InstallException(e.getMessage());
         }
+    }
+
+    private boolean checksumIsAvailable(String urlLocation, String checksumFormat) {
+        boolean result = true;
+        try {
+            ArtifactDownloaderUtils.getMasterChecksum(urlLocation, checksumFormat);
+        } catch (IOException e) {
+            result = false;
+        }
+        return result;
+    }
+
+    private boolean isIncorrectChecksum(String localFile, String urlLocation, String checksumFormat) throws NoSuchAlgorithmException {
+        boolean result = false;
+        String checksumLocal;
+        try {
+            checksumLocal = ArtifactDownloaderUtils.getChecksum(localFile, checksumFormat);
+        } catch (IOException e) {
+            return true;
+        }
+        String checksumOrigin;
+        try {
+            checksumOrigin = ArtifactDownloaderUtils.getMasterChecksum(urlLocation, checksumFormat);
+        } catch (IOException e) {
+            return true;
+        }
+        if (!checksumLocal.equals(checksumOrigin)) {
+            result = true;
+        }
+        return result;
     }
 
     private void configureProxyAuthentication() {
@@ -165,11 +209,12 @@ public class ArtifactDownloader {
     }
 
     private void configureAuthentication() {
-        if (System.getProperty("MVNW_USERNAME") != null && System.getProperty("MVNW_PASSWORD") != null && System.getenv("http.proxyUser") == null) {
+        if (System.getenv("openliberty_feature_repository_user") != null && System.getenv("openliberty_feature_repository_password") != null
+            && System.getenv("http.proxyUser") == null) {
             Authenticator.setDefault(new Authenticator() {
                 @Override
                 protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication(System.getProperty("MVNW_USERNAME"), System.getProperty("MVNW_PASSWORD").toCharArray());
+                    return new PasswordAuthentication(System.getenv("openliberty_feature_repository_user"), System.getenv("openliberty_feature_repository_password").toCharArray());
                 }
             });
         }
@@ -255,8 +300,8 @@ public class ArtifactDownloader {
 
     private String calculateUserInfo(URI uri) {
 
-        if (System.getProperty("MVNW_USERNAME") != null && System.getProperty("MVNW_PASSWORD") != null) {
-            return System.getProperty("MVNW_USERNAME") + ':' + System.getProperty("MVNW_PASSWORD");
+        if (System.getenv("openliberty_feature_repository_user") != null && System.getenv("openliberty_feature_repository_password") != null) {
+            return System.getenv("openliberty_feature_repository_user") + ':' + System.getenv("openliberty_feature_repository_password");
         }
         return uri.getUserInfo();
     }
