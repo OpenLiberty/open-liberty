@@ -78,6 +78,8 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
         PARENT, SELF, DELEGATES
     };
 
+    private static final boolean disableSharedClassesCache = Boolean.getBoolean("liberty.disableApplicationClassSharing");
+
     static final List<SearchLocation> PARENT_FIRST_SEARCH_ORDER = freeze(list(PARENT, SELF, DELEGATES));
 
     static final String CLASS_LOADING_TRACE_PREFIX = "com.ibm.ws.class.load.";
@@ -118,7 +120,7 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
         this.privateLibraries = Providers.getPrivateLibraries(config);
         this.delegateLoaders = Providers.getDelegateLoaders(config, apiAccess);
         this.generator = generator;
-        hook = ClassLoaderHookFactory.getClassLoaderHook(this);
+        hook = disableSharedClassesCache ? null : ClassLoaderHookFactory.getClassLoaderHook(this);
     }
 
     /** Provides the delegate loaders so the {@link ShadowClassLoader} can mimic the structure. */
@@ -299,8 +301,23 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
             return findClassCommonLibraryClassLoaders(name);
         }
 
-        byte[] bytes = transformClassBytes(byteResourceInformation.getBytes(), name);
-        
+        // If a class is loaded from the shared classes cache it cannot be transformed.  The bytes are not in 
+        // the normal class bytes format, but rather a cookie to where the bytes are stored in the classes cache.
+        // Since the class was put into the classes cache, it was not transformed previously.  We are
+        // inferring it will not be transformed this time either.  If there is a change requiring the class
+        // to be transformed the user will need to delete the shared classes cache.  If we do not make this
+        // inference, the transform code will fail to process the class bytes resulting in a number of different
+        // types of exceptions or quitting out of the transformation code which will result in the class not being
+        // transformed anyway.
+        byte[] bytes;
+        if (byteResourceInformation.foundInClassCache()) {
+            bytes = byteResourceInformation.getBytes(); 
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Not transforming class " + name + " because it was found in the shared classes cache.");
+            }
+        } else {
+            bytes = transformClassBytes(byteResourceInformation.getBytes(), name);
+        }
 
         return definePackageAndClass(name, byteResourceInformation, bytes);
     }
