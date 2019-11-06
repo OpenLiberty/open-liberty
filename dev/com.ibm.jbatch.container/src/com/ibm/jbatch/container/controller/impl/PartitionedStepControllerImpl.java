@@ -349,8 +349,13 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
 
             List<JSLProperties> jslProperties = partitionPlan.getProperties();
             for (JSLProperties props : jslProperties) {
-                int targetPartition = Integer.parseInt(props.getPartition());
-
+                Integer targetPartition = null;
+                try {
+                    targetPartition = Integer.parseInt(props.getPartition());
+                } catch (NumberFormatException nfe) {
+                    throw new IllegalArgumentException("Partition <properties> element should have an attributed  named 'partition' like <properties partition=\"2\">" +
+                                                       " , but instead found <null> or non-Integer value of: " + props.getPartition());
+                }
                 try {
                     partitionProps[targetPartition] = CloneUtility.jslPropertiesToJavaProperties(props);
                 } catch (ArrayIndexOutOfBoundsException e) {
