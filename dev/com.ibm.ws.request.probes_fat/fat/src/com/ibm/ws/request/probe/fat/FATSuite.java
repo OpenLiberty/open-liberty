@@ -14,11 +14,16 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import componenttest.custom.junit.runner.AlwaysPassesTest;
+
 @RunWith(Suite.class)
 @SuiteClasses({
                 RequestProbeTest.class,
                 RequestProbeTestDynamicFeatureChange.class,
-                RequestProbeTestEnableDisable.class
+                RequestProbeTestEnableDisable.class,
+                AlwaysPassesTest.class,
+                EventLoggingEE7.class,
+                RequestTimingEE7.class
 })
 
 public class FATSuite {}
