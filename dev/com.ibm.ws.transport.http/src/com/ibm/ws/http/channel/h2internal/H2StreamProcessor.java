@@ -1501,7 +1501,9 @@ public class H2StreamProcessor {
                         if (pseudoHeaders.get(current.getName()) != null) {
                             this.muxLink.getReadTable().setDynamicTableValidity(false);
                             buf.release();
-                            throw new CompressionException("Invalid pseudo-header for decompression context: " + current.toString());
+                            ProtocolException pe = new ProtocolException("Invalid pseudo-header for decompression context: " + current.toString()); 
+                            pe.setConnectionError(false); // mark this as a stream error so we'll generate an RST_STREAM
+                            throw pe;
                         }
                         pseudoHeaders.put(current.getName(), current.getValue());
                     }

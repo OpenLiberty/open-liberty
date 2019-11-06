@@ -36,19 +36,15 @@ import com.ibm.ws.fat.wc.tests.WCTrailersTest;
  * Make sure to add any new test classes to the @SuiteClasses
  * annotation.
  *
- * Make sure to distinguish full mode tests using
+ * Make sure to distinguish FULL mode tests using
  * <code>@Mode(TestMode.FULL)</code>. Tests default to
- * use lite mode (<code>@Mode(TestMode.LITE)</code>).
+ * use LITE mode (<code>@Mode(TestMode.LITE)</code>).
  *
- * By default only lite mode tests are run. To also run
- * full mode tests a property must be specified to ant:
+ * By default only LITE mode tests are run. To also run
+ * full mode tests a property must be specified:
  *
- * Select the target build file (usually "build-test.xml").
- * Right click and chose "Run As>Ant Build". Add
- * "fat.test.mode=full" to the properties tab, then launch the
- * build.
+ * -Dfat.test.mode=FULL.
  *
- * Alternatively, for a command line launch, add "-Dfat.test.mode=full".
  */
 @RunWith(Suite.class)
 @SuiteClasses({

@@ -42,15 +42,15 @@ import componenttest.topology.utils.HttpUtils;
 @SuiteClasses({
                 // TODO enable tests as we get them converted over to infinispan
                 SessionCacheOneServerTest.class,
-                //SessionCacheTwoServerTest.class,
-                //SessionCacheTimeoutTest.class,
-                //SessionCacheTwoServerTimeoutTest.class,
+                SessionCacheTwoServerTest.class,
+                SessionCacheTimeoutTest.class,
+                SessionCacheTwoServerTimeoutTest.class,
                 //HazelcastClientTest.class
 })
 
 public class FATSuite {
 
-    // Used in conjunction with fat.test.use.remote.docker property to user a remote docker host for testing.
+    // Used in conjunction with fat.test.use.remote.docker property to use a remote docker host for testing.
     static {
         ExternalTestServiceDockerClientStrategy.clearTestcontainersConfig();
     }
@@ -72,7 +72,7 @@ public class FATSuite {
      */
     @ClassRule
     public static GenericContainer<?> infinispan = new GenericContainer<>(new ImageFromDockerfile()
-                    .withDockerfileFromBuilder(builder -> builder.from("infinispan/server:10.0.0.CR3-4")
+                    .withDockerfileFromBuilder(builder -> builder.from("infinispan/server:10.0.1.Final")
                                     .user("root")
                                     .copy("/opt/infinispan_config/config.xml", "/opt/infinispan_config/config.xml")
                                     .copy("/opt/infinispan/server/conf/users.properties", "/opt/infinispan/server/conf/users.properties")
@@ -88,7 +88,7 @@ public class FATSuite {
     /**
      * Custom runner used by test classes.
      *
-     * Creates HTTP connection, adds cookie request, makes connection, analyses response, and finally returns response
+     * Creates HTTP connection, adds cookie request, makes connection, analyzes response, and finally returns response
      *
      * @param server     - The liberty server that is hosting the URL
      * @param path       - The path to the URL with the output to test (excluding port and server information). For instance "/someContextRoot/servlet1"

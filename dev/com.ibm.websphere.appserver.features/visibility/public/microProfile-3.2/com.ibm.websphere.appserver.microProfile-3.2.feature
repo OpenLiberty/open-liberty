@@ -1,12 +1,12 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=com.ibm.websphere.appserver.microProfile-3.1
+symbolicName=com.ibm.websphere.appserver.microProfile-3.2
 visibility=public
 singleton=true
 IBM-App-ForceRestart: install, \
  uninstall
-IBM-ShortName: microProfile-3.1
+IBM-ShortName: microProfile-3.2
 Subsystem-Version: 7.0.0
-Subsystem-Name: MicroProfile 3.1
+Subsystem-Name: MicroProfile 3.2
 -features=\
   com.ibm.websphere.appserver.servlet-4.0, \
   com.ibm.websphere.appserver.javax.annotation-1.3, \
