@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package app.deserialize;
+package web;
 
 import java.util.Properties;
 import java.util.logging.Logger;
@@ -24,8 +24,8 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import fat.util.JobWaiter;
 
 @SuppressWarnings("serial")
-@WebServlet(urlPatterns = "/ArrayDeserializeServlet")
-public class ArrayDeserializeServlet extends FATServlet {
+@WebServlet(urlPatterns = "/FATServlet")
+public class BatchFATServlet extends FATServlet {
 
     public static Logger logger = Logger.getLogger("test");
 
@@ -62,4 +62,23 @@ public class ArrayDeserializeServlet extends FATServlet {
         new JobWaiter(60000).completeNewJob("ArrayUserDataDeserialize", null);
     }
 
+    @Test
+    public void testParameterizedCollectorMapper() throws Exception {
+        logger.fine("Running test = testParameterizedCollectorMapper");
+
+        Properties params = new Properties();
+        params.put("numPartitions", "4");
+        params.put("jobParam1", "jpValAA");
+        new JobWaiter(60000).completeNewJob("CollectorPropertiesMapper", params);
+    }
+
+    @Test
+    public void testParameterizedCollectorPlan() throws Exception {
+        logger.fine("Running test = testParameterizedCollectorPlan");
+
+        Properties params = new Properties();
+        params.put("numPartitions", "3");
+        params.put("jobParam1", "jpValBB");
+        new JobWaiter(60000).completeNewJob("CollectorPropertiesPlan", params);
+    }
 }
