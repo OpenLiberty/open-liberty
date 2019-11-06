@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.social.tai;
 
@@ -45,34 +45,9 @@ public class OAuthLoginFlow {
     }
 
     TAIResult handleOAuthRequest(HttpServletRequest request, HttpServletResponse response, SocialLoginConfig clientConfig) throws WebTrustAssociationFailedException {
-        if (clientConfig instanceof Oauth2LoginConfigImpl && SocialUtil.useAccessTokenFromRequest((Oauth2LoginConfigImpl) clientConfig)) {
-            return handleAccessTokenFlow(request, response, (Oauth2LoginConfigImpl) clientConfig);
-
-        }
-        String code = webUtils.getAndClearCookie(request, response, ClientConstants.COOKIE_NAME_STATE_KEY);
-        if (code == null) {
-            return handleRedirectToServer(request, response, clientConfig);
-        } else {
-            return handleAuthorizationCode(request, response, code, clientConfig);
-        }
-    }
-
-
-    private TAIResult handleAccessTokenFlow(HttpServletRequest request, HttpServletResponse response, Oauth2LoginConfigImpl clientConfig) throws WebTrustAssociationFailedException {
-        TAIResult result = null;
-        //request should have token
-        String tokenFromRequest = taiWebUtils.getBearerAccessToken(request, clientConfig);
-        if (requestShouldHaveToken((Oauth2LoginConfigImpl) clientConfig)) {
-            if (!validAccessToken(tokenFromRequest)) {
-                Tr.error(tc,  "OPENSHIFT_ACCESS_TOKEN_MISSING");
-                return taiWebUtils.sendToErrorPage(response, TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED));
-            }
-            return handleAccessToken(tokenFromRequest, request, response, clientConfig);
-        } else if (validAccessToken(tokenFromRequest)) {
-            // request may have token
-            result = handleAccessToken(tokenFromRequest, request, response, (Oauth2LoginConfigImpl) clientConfig);
-            // if good result return
-            if (result != null && result.getSubject() != null) {
+        if (clientConfig instanceof Oauth2LoginConfigImpl && SocialUtil.useAccessTokenFromRequest(clientConfig)) {
+            TAIResult result = handleAccessTokenFlow(request, response, (Oauth2LoginConfigImpl) clientConfig);
+            if (result != null) {
                 return result;
             }
         }
@@ -84,8 +59,29 @@ public class OAuthLoginFlow {
         }
     }
 
-    private boolean validAccessToken(String result) {
-        if (result != null && !result.isEmpty()) {
+    private TAIResult handleAccessTokenFlow(HttpServletRequest request, HttpServletResponse response, Oauth2LoginConfigImpl clientConfig) throws WebTrustAssociationFailedException {
+        TAIResult result = null;
+        //request should have token
+        String tokenFromRequest = taiWebUtils.getBearerAccessToken(request, clientConfig);
+        if (requestShouldHaveToken(clientConfig)) {
+            if (!isAccessTokenNonEmpty(tokenFromRequest)) {
+                Tr.error(tc, "OPENSHIFT_ACCESS_TOKEN_MISSING");
+                return taiWebUtils.sendToErrorPage(response, TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED));
+            }
+            return handleAccessToken(tokenFromRequest, request, response, clientConfig);
+        } else if (isAccessTokenNonEmpty(tokenFromRequest)) {
+            // request may have token
+            result = handleAccessToken(tokenFromRequest, request, response, clientConfig);
+            // if good result return
+            if (result != null && result.getSubject() != null) {
+                return result;
+            }
+        }
+        return result;
+    }
+
+    private boolean isAccessTokenNonEmpty(String tokenFromRequest) {
+        if (tokenFromRequest != null && !tokenFromRequest.isEmpty()) {
             return true;
         }
         return false;
