@@ -21,6 +21,8 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaTestConstants;
+
 /**
  * An interface for writing messages to a kafka topic. The key and message types are dependent on the KafkaProducer which is passed in.
  */
@@ -28,7 +30,6 @@ public class ExtendedKafkaWriter<K, V> implements AutoCloseable {
 
     private final KafkaProducer<K, V> kafkaProducer;
     private final String topic;
-    private static final Duration DEFAULT_SEND_TIMEOUT = Duration.ofSeconds(10);
 
     /**
      * @param kafkaProducer the configured KafkaProducer to use
@@ -41,7 +42,7 @@ public class ExtendedKafkaWriter<K, V> implements AutoCloseable {
     }
 
     public RecordMetadata sendMessage(K key, V message) {
-        return sendMessage(key, message, DEFAULT_SEND_TIMEOUT);
+        return sendMessage(key, message, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
     }
 
     public RecordMetadata sendMessage(K key, V message, Duration timeout) {
