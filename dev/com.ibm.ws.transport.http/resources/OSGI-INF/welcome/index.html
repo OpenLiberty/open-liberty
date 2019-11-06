@@ -3,762 +3,769 @@
   <head>
     <title>Open Liberty</title>
     <style>
-			* {
-				box-sizing: border-box;
-			}
+		* {
+			box-sizing: border-box;
+		}
 
-			@font-face {
-					font-family: BunueloLight;
-					src: url("/fonts/BunueloCleanPro-Light.otf");
-			}
+		@font-face {
+			font-family: BunueloLight;
+			src: url("/fonts/BunueloCleanPro-Light.otf");
+		}
 
-			@font-face {
-					font-family: BunueloBold;
-					src: url("/fonts/BunueloCleanPro-SemiBold.otf");
-			}
+		@font-face {
+			font-family: BunueloBold;
+			src: url("/fonts/BunueloCleanPro-SemiBold.otf");
+		}
 
-			body {
-				margin: 0;
-				padding: 0;
-				font-family: 'Helvetica', 'Arial', sans-serif;
-				font-size: 16px;
-				overflow-x: hidden;
-			}
+		body {
+			margin: 0;
+			padding: 0;
+			font-family: 'Helvetica', 'Arial', sans-serif;
+			font-size: 16px;
+			overflow-x: hidden;
+		}
 
+		h1 {
+			color: white;
+			font-family: BunueloBold, Arial Narrow, Helvetica, Arial;
+			font-size: 1.75rem;
+			line-height: 1.5;
+			font-weight: 300;
+			margin: 0px;
+			text-align: left;
+		}
+
+		h2 {
+			color: #3F4664;
+			font-family: BunueloBold, Arial Narrow, Helvetica, Arial;
+			font-size: 30px;
+			font-size: 1.5rem;
+			margin: 0px;
+			text-align: center;
+		}
+
+		h3 {
+			color: white;
+			font-family: BunueloLight;
+			font-size: 1.25rem;
+			line-height: 1.5;
+			font-weight: 300;
+			margin: 0px;
+			text-align: left;
+		}
+
+		@media (min-width: 600px) {
 			h1 {
-				color: white;
-				font-family: BunueloBold, Arial Narrow, Helvetica, Arial;
-				font-size: 1.75rem;
-				line-height: 1.5;
-				font-weight: 300;
-				margin: 0px;
-				text-align: left;
+				font-size: 2.25rem;
 			}
 
 			h2 {
-				color: #3F4664;
-				font-family: BunueloBold, Arial Narrow, Helvetica, Arial;
-				font-size: 30px;
-				font-size: 1.5rem;
-				margin: 0px;
-				text-align: center;
+				font-size: 1.75rem;
 			}
 
 			h3 {
-				color: white;
-				font-family: BunueloLight;
 				font-size: 1.25rem;
-				line-height: 1.5;
-				font-weight: 300;
-				margin: 0px;
-				text-align: left;
+			}
+		}
+
+		@media (min-width: 900px) {
+			h3 {
+				font-size: 1.5rem;
+			}
+		}
+
+		@media (min-width: 1200px) {
+			h3 {
+				font-size: 1.75rem;
+			}
+		}
+
+		a {
+			color: #546FB5;
+			font-size: 20px;
+			line-height: 23px;
+			text-decoration: none;
+			font-weight: 300;
+		}
+
+		a:hover {
+			color: #6787D9;
+		}
+
+		p {
+			font-size: 14px;
+			color: #3F4664;
+			line-height: 21px;
+			font-weight: 300;
+		}
+
+		.bolded {
+			font-weight: 700;
+		}
+
+		.row {
+			padding: 0px 40px;
+			width: 100%;
+			max-width: 1150px;
+			margin: 0 auto;
+			display: flex;
+			flex-wrap: wrap;
+		}
+
+		.column {
+			flex: 100%;
+		}
+
+		@media (min-width: 767px) {
+			.row {
+				flex-wrap: nowrap;
+				padding: 0px 80px;
+			}
+			
+			.column {
+				flex: 50%;
+				max-width: 50%;
+			}
+		}
+
+
+		.hero {
+			background-image: radial-gradient(circle at top right, #5E6B8D, #2C2E50);
+		}
+
+		.inner-hero {
+			position: relative;
+		}
+
+		.star {
+			width: 4px;
+			height: 4px;
+			background-color: #C8D2D2;
+			border-radius: 50%;
+			position: absolute;
+		}
+
+		#star1 {
+			top: 430px;
+			right: calc(50% - 650px);
+			animation: blink 3s infinite;
+		}
+
+		#star2 {
+			top: 240px;
+			right: calc(50% - 150px);
+			animation: blink 4s infinite;
+		}
+
+		#star3 {
+			top: 110px;
+			right: calc(50% + 420px);
+			animation: blink 5s infinite;
+		}
+
+		#star4 {
+			top: 520px;
+			right: calc(50% + 385px);
+			animation: blink 6s infinite;
+		}
+
+		#star5 {
+			top: 330px;
+			right: calc(50% + 630px);
+			animation: blink 7s infinite;
+		}
+
+		@keyframes blink {
+			0% {
+				opacity: 0;
+			}
+			10% {
+				opacity: 1;
+			}
+			40% {
+				opacity: 1;
+			}
+			100% {
+				opacity: 0;
+			}
+		}
+
+		.inner-hero__message {
+			padding-top: 125px;
+		}
+
+		@media (min-width: 600px) {
+			.inner-hero__message {
+				padding-top: 80px;
+			}
+		}
+
+		.inner-hero__message h3 {
+			padding-top: 0px;
+		}
+
+		@media (min-width: 767px) {
+			.inner-hero__message h3 {
 				padding-top: 60px;
 			}
+		}
 
-			@media (min-width: 600px) {
-				h1 {
-					font-size: 2.25rem;
-				}
+		#inner-hero__logo {
+			width: max-content;
+		}
 
-				h2 {
-					font-size: 1.75rem;
-				}
-
-				h3 {
-					font-size: 1.25rem;
-				}
-			}
-
-			@media (min-width: 900px) {
-				h3 {
-					font-size: 1.5rem;
-				}
-			}
-
-			@media (min-width: 1200px) {
-				h3 {
-					font-size: 1.75rem;
-				}
-			}
-
-			a {
-				color: #546FB5;
-				font-size: 20px;
-				line-height: 23px;
-				text-decoration: none;
-				font-weight: 300;
-			}
-
-			a:hover {
-				color: #6787D9;
-			}
-
-			p {
-				font-size: 14px;
-				color: #3F4664;
-				line-height: 21px;
-				font-weight: 300;
-			}
-
-			.bolded {
-				font-weight: 700;
-			}
-
-			.row {
-				padding: 0% 5%;
-				width: 100%;
-				max-width: 1150px;
-				margin: 0 auto;
-				display: flex;
-				flex-wrap: wrap;
-			}
-
-			.column {
-  			flex: 100%;
-			}
-
-			@media (min-width: 767px) {
-				.row {
-					flex-wrap: nowrap;
-				}
-				
-				.column {
-					flex: 50%;
-					max-width: 50%;
-				}
-			}
-
-			.hero {
-				background-image: radial-gradient(circle at top right, #5E6B8D, #2C2E50);
-			}
-
-			.inner-hero {
-				position: relative;
-			}
-
-			.star {
-				width: 4px;
-				height: 4px;
-				background-color: #C8D2D2;
-				border-radius: 50%;
-				position: absolute;
-			}
-
-			#star1 {
-			  top: 430px;
-				right: calc(50% - 650px);
-				animation: blink 3s infinite;
-			}
-
-			#star2 {
-				top: 240px;
-				right: calc(50% - 150px);
-				animation: blink 4s infinite;
-			}
-
-			#star3 {
-			  top: 110px;
-				right: calc(50% + 420px);
-				animation: blink 5s infinite;
-			}
-
-			#star4 {
-				top: 520px;
-				right: calc(50% + 385px);
-				animation: blink 6s infinite;
-			}
-
-			#star5 {
-				top: 330px;
-				right: calc(50% + 630px);
-				animation: blink 7s infinite;
-			}
-
-			@keyframes blink {
-				0% {
-						opacity: 0;
-				}
-				10% {
-						opacity: 1;
-				}
-				40% {
-						opacity: 1;
-				}
-				100% {
-						opacity: 0;
-				}
-			}
-
-			.inner-hero__message {
-				padding-top: 125px;
-			}
-
-			@media (min-width: 600px) {
-				.inner-hero__message {
-					padding-top: 80px;
-				}
-			}
-
+		@media (max-width: 767.98px) {
 			#inner-hero__logo {
-				width: max-content;
+				margin: 0 auto;
 			}
+		}
 
-			@media (max-width: 767.98px) {
-				#inner-hero__logo {
-					margin: 0 auto;
-				}
-			}
+		#inner-hero__title {
+			font-size: 46px;
+		}
 
+		#inner-hero__open_source {
+			color: #c8d2d2;
+			float: right;
+			position: relative;
+			top: -37px;
+			right: 9%;
+			margin-bottom: -20px;
+			font-size: 11px;
+		}
+
+		@media (min-width: 400px) {
 			#inner-hero__title {
-				white-space: nowrap;
-				font-size: 94px;
-			}
-
-			@media (min-width: 767px) {
-				#inner-hero__title {
-					/* font-size: calc([minimum size] + ([maximum size] - [minimum size]) * ((100vw - [minimum viewport width]) / ([maximum viewport width] - [minimum viewport width]))); */
-					font-size: calc(60px + (100 - 60) * ((100vw - 300px) / (2560 - 300)));
-				}
+				font-size: 60px;
 			}
 
 			#inner-hero__open_source {
-				color: #c8d2d2;
-				float: right;
-				position: relative;
+				top: -40px;
+			}
+		}
+
+		@media (min-width: 530px) {
+			#inner-hero__title {
+				font-size: 70px;
+			}
+
+			#inner-hero__open_source {
 				top: -47px;
-				right: 40px;
-				right: 9%;
-				margin-bottom: -20px;
+				font-size: 14px;
+			}
+		}
+
+		@media (min-width: 600px) {
+			#inner-hero__title {
+				font-size: 80px;
 			}
 
-			@media (min-width: 900px) {
-				#inner-hero__open_source {
-					top: -48px;
-				}
+			#inner-hero__open_source {
+				top: -50px;
+			}
+		}
+		
+		@media (min-width: 767px) {
+			#inner-hero__title {
+				font-size: 60px;
 			}
 
-			@media (min-width: 1053px) {
-				#inner-hero__open_source {
-					top: -49px;
-				}
+			#inner-hero__open_source {
+				top: -44px;
+			}
+		}
+
+		@media (min-width: 860px) {
+			#inner-hero__title {
+				font-size: 70px;
 			}
 
-			@media (min-width: 1129px) {
-				#inner-hero__open_source {
-					top: -50px;
-				}
+			#inner-hero__open_source {
+				top: -48px;
+			}
+		}
+
+		@media (min-width: 950px) {
+			#inner-hero__title {
+				font-size: 80px;
 			}
 
-			@media (min-width: 1354px) {
-				#inner-hero__open_source {
-					top: -51px;
-				}
+			#inner-hero__open_source {
+				top: -51px;
+			}
+		}
+
+		@media (min-width: 1074px) {
+			#inner-hero__title {
+				font-size: 90px
 			}
 
-			@media (min-width: 1581px) {
-				#inner-hero__open_source {
-					top: -53px;
-				}
+			#inner-hero__open_source {
+				top: -53px;
 			}
+		}
 
-			@media (min-width: 1732px) {
-				#inner-hero__open_source {
-					top: -54px;
-				}
-			}
+		#inner-hero__subtitle {
+			font-size: 20px;
+			font-family: BunueloBold, Arial Narrow, Helvetica, Arial;
+			color: #ffffff;
+			line-height: 1.2;
+			margin-top: 15px;
+			text-align: center;
+		}
 
+		@media (min-width: 767px) {
 			#inner-hero__subtitle {
-				margin-top: 2rem;
-				font-size: 24px;
-    		font-family: BunueloBold, Arial Narrow, Helvetica, Arial;
-				color: #ffffff;
-				line-height: 1.2;
-				margin-top: 15px;
-				text-align: center;
+				text-align: left;
 			}
-
-			@media (min-width: 767px) {
-				#inner-hero__subtitle {
-					text-align: left;
-				}
+		}
+		@media (min-width: 1015px) {
+			#inner-hero__subtitle {
+				font-size: 22px;
 			}
+		}
 
-			@media (min-width: 900px) {
-				#inner-hero__subtitle {
-					width: 80%;
-				}
-			}
+		.img_container {
+			position: relative;
+		}
 
-			@media (min-width: 1200px) {
-				#inner-hero__subtitle {
-					width: 85%;
-				}
-			}
+		.inner-hero__beam {
+			position: relative;
+			max-width: 100%;
+			top: 25px;
+		}
 
-			@media (min-width: 1350px) {
-				#inner-hero__subtitle {
-					width: 90%;
-				}
-			}
-
-			@media (min-width: 1750px) {
-				#inner-hero__subtitle {
-					width: 100%;
-				}
-			}
-
-			.img_container {
-				position: relative;
-			}
-
+		@media (min-width: 767px) {
 			.inner-hero__beam {
-				position: relative;
-				max-width: 100%;
+				max-width: 150%;
+				top: auto;
+				left: -35%;
 			}
+		}
 
-			@media (min-width: 767px) {
-				.inner-hero__beam {
-					max-width: 150%;
-    			left: -35%;
-				}
-			}
-
+		.inner-hero__clouds {
+			width: 100%;
+			position: absolute;
+			bottom: -20px;
+		}
+		
+		@media (min-width: 767px) {
 			.inner-hero__clouds {
-				width: 100%;
-				position: absolute;
-    		left: 0;
-    		bottom: 0;
+				left: 0;
+				bottom: 0;
 			}
-			
+		}
 
 
+		.logos {
+			padding: 40px;
+			margin-top: 30px;
+		}
+
+		@media (min-width: 1100px) {
 			.logos {
-				padding: 40px;
+				margin-top: 10px;
 			}
+		}
 
+		.logos .row {
+			justify-content: center;
+			flex-direction: column;
+			padding: 0px 20px;
+		}
+
+		@media (min-width: 992px) {
 			.logos .row {
-				justify-content: center;
-				flex-direction: column;
-			}
-
-			@media (min-width: 992px) {
-				.logos .row{
-					flex-direction: row;
-				}
-			}
-
-			.logos__title {
-				padding-bottom: 30px;
-			}
-
-			#microprofile_logo, #jakarta_ee_logo {
-				align-self: center;
-			}
-
-			@media (min-width: 992px) {
-				#microprofile_logo {
-					padding-right: 50px;
-				}
-			}
-
-			@media (min-width: 992px) {
-				#jakarta_ee_logo {
-					padding-left: 50px;
-				}
-			}
-
-
-
-			.logos, .resources {
-				margin: 0 auto;
-				box-shadow: 0 2px 4px 1px rgba(63,70,89,0.31);
-    		border-radius: 3px;
-				margin-bottom: 30px;
-				margin-top: 5px;
-			}
-
-			@media (min-width: 576px) {
-				.logos, .resources {
-					max-width: 640px;
-				}
-			}
-
-			@media (min-width: 768px) {
-				.logos, .resources {
-					max-width: 720px;
-				}
-			}
-
-			@media (min-width: 992px) {
-				.logos, .resources {
-					max-width: 960px;
-				}
-			}
-
-			@media (min-width: 1200px) {
-				.logos, .resources {
-					max-width: 1140px;
-				}
-			}
-
-			.resources {
-				padding: 20px;
-				padding-left: 0px;
-				padding-right: 0px;
-				padding-bottom: 15px;
-				padding: 20px 0px 15px 0px;
-			}
-
-			@media (min-width: 1200px) {
-				.resources {
-					padding: 40px;
-					padding-bottom: 20px;
-				}
-			}
-
-			.resources .row {
-				flex-direction: column;
 				flex-direction: row;
 			}
+		}
 
-			@media (min-width: 767px) {
-				.resources .row {
-					flex-direction: row;
-				}
+		.logos__title {
+			padding-bottom: 30px;
+		}
+
+		#microprofile_logo, #jakarta_ee_logo {
+			align-self: center;
+		}
+
+		@media (max-width: 767.98px) {
+			#microprofile_logo {
+				max-width: 100%;
+				min-width: 205px;
 			}
 
+			#jakarta_ee_logo {
+				max-width: 60%;
+				min-width: 150px;
+			}
+		}
+
+		@media (min-width: 992px) {
+			#microprofile_logo {
+				padding-right: 50px;
+			}
+
+			#jakarta_ee_logo {
+				padding-left: 50px;
+			}
+		}
+
+
+		.logos, .resources {
+			margin: 0 auto;
+			box-shadow: 0 2px 4px 1px rgba(63,70,89,0.31);
+			border-radius: 3px;
+			margin-bottom: 30px;
+			margin-top: 30px;
+		}
+
+		@media (min-width: 576px) {
+			.logos, .resources {
+				max-width: 640px;
+			}
+		}
+
+		@media (min-width: 768px) {
+			.logos, .resources {
+				max-width: 720px;
+			}
+		}
+
+		@media (min-width: 992px) {
+			.logos, .resources {
+				max-width: 960px;
+			}
+		}
+
+		@media (min-width: 1200px) {
+			.logos, .resources {
+				max-width: 1140px;
+			}
+		}
+
+		.resources {
+			padding: 20px 0px 15px 0px;
+		}
+
+		@media (min-width: 1200px) {
+			.resources {
+				padding: 40px;
+				padding-bottom: 20px;
+			}
+		}
+
+		.resources .row {
+			flex-direction: column;
+			padding: 0px 20px;
+		}
+
+		@media (min-width: 600px) {
+			.resources .row {
+				flex-direction: row;
+			}
+		}
+
+		@media (min-width: 991px) {
+			.resources .row {
+				padding: 0px 80px;
+			}
+		}
+
+		.resource {
+			width: 150px;
+			text-align: center;
+			padding-top: 30px;
+			padding-bottom: 10px;
+			cursor: pointer;
+			margin: 0 auto;
+		}
+
+		@media (min-width: 600px) {
 			.resource {
 				width: 20%;
-				text-align: center;
-				padding-top: 30px;
-    		padding-bottom: 10px;
-				cursor: pointer;
 			}
+		}
 
-			@media (min-width: 767px) {
-				.resource {
-					width: 20%;
-				}
+		.resource:hover {
+			background-color: #F1F4FE;
+		}
+
+		.resource__logo {
+			height: 80px;
+		}
+
+		#ol_logo {
+			position: relative;
+			left: 0px;
+		}
+
+		@media (min-width: 600px) and (max-width: 991px) {
+			#ol_logo {
+				left: -12px;
 			}
+		}
 
-			.resource:hover {
-				background-color: #F1F4FE;
-			}
-
-			.resource__logo {
-				height: 80px;
-			}
-
-			@media (min-width: 300px) {
-				#ol_logo {
-					position: relative;
-					left: -14px;
-				}
-			}
-
-			@media (min-width: 768px) {
-				#ol_logo {
-					position: relative;
-					left: -8px;
-				}
-			}
-
-			@media (min-width: 992px) {
-				#ol_logo {
-					position: relative;
-					left: 0px;
-				}
-			}
-
-			.circle {
-				border-radius: 50%;
-				border: 1px solid #C8D2D2;
-				padding: 6px;
-				background-color: #ffffff;
-			}
-			
+		.circle {
+			border-radius: 50%;
+			border: 1px solid #C8D2D2;
+			padding: 6px;
+			background-color: #ffffff;
+		}
+		
 
 
-			.footer {
-				background-color: #1d1e3c;
-				padding: 70px 0;
-			}
+		.footer {
+			background-color: #1d1e3c;
+			padding: 70px 0;
+		}
 
-			.footer p {
-				color: #c8d2d2;
-			}
+		.footer p {
+			color: #c8d2d2;
+		}
 
+		.footer__content {
+			text-align: center;
+			justify-content: center;
+		}
+
+		@media (min-width: 600px) {
 			.footer__content {
-				text-align: center;
-				justify-content: center;
+				display: flex;
+				align-items: center;
+				text-align: left;
 			}
+		}
 
-			@media (min-width: 600px) {
-				.footer__content {
-					display: flex;
-					align-items: center;
-					text-align: left;
-				}
-			}
+		.footer__img {
+			margin-bottom: 35px;
+			max-width: auto;
+		}
 
+		@media (min-width: 600px) {
 			.footer__img {
-				margin-bottom: 35px;
-				max-width: auto;
+				margin-bottom: 0;
+				margin-right: 35px;
 			}
+		}
 
-			@media (min-width: 600px) {
-				.footer__img {
-					margin-bottom: 0;
-					margin-right: 35px;
-				}
-			}
+		.footer__copy {
+			padding: 0 16px;
+		}
 
+		@media (min-width: 600px) {
 			.footer__copy {
-				padding: 0 16px;
+				max-width: 60%;
 			}
-
-			@media (min-width: 600px) {
-				.footer__copy {
-					max-width: 60%;
-				}
-			}
+		}
 
 
+		#update-banner {
+			background-color: #E6EDA8;
+			display: block;
+			float: left;
+			margin: 0px auto;
+			opacity: 0.98;
+			position: fixed;
+			width: 100vw;
+			z-index: 50;
+		}
 
+		@media (min-width: 850px) {
 			#update-banner {
-			  background-color: #E6EDA8;
-			  display: block;
-			  float: left;
-			  margin: 0px auto;
-			  opacity: 0.98;
-			  position: fixed;
-			  width: 100vw;
-			  z-index: 50;
+				height: 50px;
+				flex-direction: row-reverse;
 			}
+		}
 
-			@media (min-width: 850px) {
-			  #update-banner {
-			    height: 50px;
-			    flex-direction: row-reverse;
-			  }
-			}
+		#banner-container {
+			margin: 0;
+			position: relative;
+			display: flex;
+			align-items: center;
+			padding: 56px 40px 16px;
+		}
 
+		@media (min-width: 600px) {
 			#banner-container {
-			  margin: 0;
-			  position: relative;
-			  display: flex;
-			  align-items: center;
-			  padding: 56px 40px 16px;
+				padding: 14px 0px;
+				left: 20px;
 			}
+		}
 
-			@media (min-width: 600px) {
-			  #banner-container {
-			    padding: 14px 0px;
-					left: 20px;
-			  }
+		@media (min-width: 1240px) {
+			#banner-container {
+				left: calc(50% - 600px);
 			}
+		}
 
-			@media (min-width: 1240px) {
-			  #banner-container {
-					left: calc(50% - 600px);
-			  }
-			}
+		.banner-text{
+			color: #1A304C;
+			display: inline-block;
+			font-weight: 300;
+			position: relative;
+			text-align: center;
+			margin-left: 0;
+			width: 100%;
+			font-size: 14px;
+		}
 
-			.banner-text{
-				color: #1A304C;
-			  display: inline-block;
-			  font-weight: 300;
-				position: relative;
-			  text-align: center;
-			  margin-left: 0;
-			  width: auto;
-			  font-size: 14px;
+		.banner-text a {
+			color: #110f16;
+			font-size: 14px;
+			letter-spacing: .5px;
+			text-transform: uppercase;
+			text-decoration: underline;
+		}
+
+		@media (min-width: 600px) {
+			.banner-text {
+				text-align: left;
+				font-size: 16px;
+				padding-right: 16px;
 			}
 
 			.banner-text a {
-			  color: #110f16;
-			  font-size: 14px;
-			  letter-spacing: .5px;
-			  text-transform: uppercase;
-			  text-decoration: underline;
+				font-size: 1rem;
 			}
+		}
 
-			@media (min-width: 600px) {
-			  .banner-text {
-			    text-align: left;
-			    font-size: 16px;
-			    padding-right: 16px;
-			  }
+		.x-close {
+			background-color: transparent;
+			border: none;
+			cursor: pointer;
+			width: 30px;
+			height: 30px;
+			z-index: 60;
+			position: absolute;
+			top: 5px;
+			right: 50%;
+			margin-right: -15px;
+		}
 
-			  .banner-text a {
-			    font-size: 1rem;
-			  }
-			}
-
+		@media (min-width: 600px) {
 			.x-close {
-			  background-color: transparent;
-			  border: none;
-				cursor: pointer;
-			  width: 30px;
-			  height: 30px;
-			  z-index: 60;
-			  position: absolute;
-			  top: 5px;
-			  right: 50%;
-			  margin-right: -15px;
-			}
-
-			@media (min-width: 600px) {
-			  .x-close {
-			    position: absolute;
-			    right: 20px;
-			    margin-right: 0;
-			  }
-			}
-
-			@media (min-width: 1240px) {
-			  .x-close {
-					right: calc(50% - 600px);
-			  }
-			}
-
-			.x-close:hover {
-			  cursor: pointer;
-				opacity: 0.8;
-			}
-
-			.x-close:active{
-				opacity: 0.6;
-			}
-
-
-			.x-close-right-tilt,
-			.x-close-left-tilt {
-				background-color: #1A304C;
-				height: 25px;
 				position: absolute;
-				right: 49%;
-				top: 7px;
-				width: 2px;
-				z-index: 40;
-			    -ms-transform: rotate(45deg);
-			    -webkit-transform: rotate(45deg);
-			    transform: rotate(45deg);
+				right: 20px;
+				margin-right: 0;
 			}
+		}
 
-			.x-close-left-tilt{
-			    -ms-transform: rotate(-45deg);
-			    -webkit-transform: rotate(-45deg);
-			    transform: rotate(-45deg);
+		@media (min-width: 1240px) {
+			.x-close {
+				right: calc(50% - 600px);
 			}
+		}
+
+		.x-close:hover {
+			cursor: pointer;
+			opacity: 0.8;
+		}
+
+		.x-close:active{
+			opacity: 0.6;
+		}
+
+		.x-close-right-tilt,
+		.x-close-left-tilt {
+			background-color: #1A304C;
+			height: 25px;
+			position: absolute;
+			right: 49%;
+			top: 7px;
+			width: 2px;
+			z-index: 40;
+			-ms-transform: rotate(45deg);
+			-webkit-transform: rotate(45deg);
+			transform: rotate(45deg);
+		}
+
+		.x-close-left-tilt{
+			-ms-transform: rotate(-45deg);
+			-webkit-transform: rotate(-45deg);
+			transform: rotate(-45deg);
+		}
     </style>
   </head>
+
   <body>
-        <main>
-        <section class="hero" data-externalizedAriaLabel="WELCOME_SECTION">
-			<div class="inner-hero">
-<<<<<<< HEAD
-				<div class="inner-hero__message row" data-externalizedAriaLabel="WELCOME_SECTION_CONTENT">
-					<img class="inner-hero__img" src="welcome-message.png" data-externalizedAlt="OPEN_LIBERTY_LOGO">
-					<h2 class="inner-hero__title" data-externalizedString="OPEN_LIBERTY_APP_SERVER"></h2>
-=======
-				<span id="star1" class="star"></span>
-				<span id="star2" class="star"></span>
-				<span id="star3" class="star"></span>
-				<span id="star4" class="star"></span>
-				<span id="star5" class="star"></span>
-				<div class="inner-hero__message row">
-						<div class="column">
-							<h3>Welcome to</h3>
-							<div id="inner-hero__logo">
-								<h1 id="inner-hero__title">Open Liberty</h1>
-								<p id="inner-hero__open_source">An IBM Open Source Project</p>
-							</div>
-							<p id="inner-hero__subtitle">A lightweight open framework for building fast and efficient cloud-native Java microservices.</p>
-						</div>
-						<div class="column img_container">
-							<img class="inner-hero__beam" src="beam.png" alt="ufo and beam">
-						</div>
->>>>>>> Add new images, update banner
+    <section class="hero">
+		<div class="inner-hero">
+			<span id="star1" class="star"></span>
+			<span id="star2" class="star"></span>
+			<span id="star3" class="star"></span>
+			<span id="star4" class="star"></span>
+			<span id="star5" class="star"></span>
+			<div class="inner-hero__message row">
+				<div class="column">
+					<h3>Welcome to</h3>
+					<div id="inner-hero__logo">
+						<h1 id="inner-hero__title">Open Liberty</h1>
+						<p id="inner-hero__open_source">An IBM Open Source Project</p>
+					</div>
+					<h2 id="inner-hero__subtitle">A lightweight open framework for building fast and efficient cloud-native Java microservices.</h2>
 				</div>
-				<img class="inner-hero__clouds" src="clouds.png" alt="clouds">
+				<div class="column img_container">
+					<img class="inner-hero__beam" src="/img/beam.png" alt="ufo and beam">
+				</div>
 			</div>
-		</section>
-<<<<<<< HEAD
-		<section class="resources" data-externalizedAriaLabel="RESOURCES">
-			<div class="row">
-				<h2 class="resources__title" data-externalizedString="RESOURCES"></h2>
-				<ul class="list list--unordered">
-					<li class="list__item"><a href="http://openliberty.io">openliberty.io</a></li>
-					<li class="list__item"><a href="https://groups.io/g/openliberty" data-externalizedString="GROUPS_IO_FORUM"></a></li>
-					<li class="list__item"><a href="https://twitter.com/OpenLibertyIO">@OpenLibertyIO</a></li>
-				</ul>
-=======
+		</div>
+	</section>
 
-		<section class="logos">
-			<h2 class="logos__title">Open Liberty integrates with the Open Source community</h2>
-			<div class="row">
-					<img id="microprofile_logo" src="/microprofile_logo.png" alt="MicroProfile Logo">
-					<img id="jakarta_ee_logo" src="/jakarta_ee_logo.png" alt="Jakarta EE logo">
-			</div>
-		</section>
 
-		<section class="resources">
-			<h2>Resources</h2>
-			<div class="row">
-				<div class="resource">
-					<a href="https://github.com/OpenLiberty/open-liberty" target="_blank" rel="noopener">
-						<img class="resource__logo" src="/github_logo.png" alt="github logo">
-						<p>Github</p>
-					</a>
-				</div>
-				<div class="resource">
-					<a href="https://twitter.com/OpenLibertyIO" target="_blank" rel="noopener">
-						<img class="resource__logo" src="/twitter_logo.png" alt="twitter logo">
-						<p>Twitter</p>
-					</a>
-				</div>
-				<div class="resource">
-					<a href="https://stackoverflow.com/questions/tagged/open-liberty" target="_blank" rel="noopener">
-						<img class="resource__logo circle" src="/stack_overflow_logo.png" alt="stack overflow logo">
-						<p>Stack Overflow</p>
-					</a>
-				</div>
-				<div class="resource">
-					<a href="https://groups.io/g/openliberty" target="_blank" rel="noopener">
-						<img class="resource__logo circle" src="/groups_io_logo.jpeg" alt="groups io logo">
-						<p>Groups.io</p>
-					</a>
-				</div>
-<<<<<<< HEAD
->>>>>>> Add resources and logos sections, clean up code
-=======
-				<div class="resource">
-					<a href="https://openliberty.io/support/" target="_blank" rel="noopener">
-						<img id="ol_logo" class="resource__logo" src="/open_liberty_logo.png" alt="open liberty logo">
-						<p>Support</p>
-					</a>		
-				</div>		
->>>>>>> Improve scalability
+	<section class="logos">
+		<h2 class="logos__title">Open Liberty integrates with the Open Source community</h2>
+		<div class="row">
+				<img id="microprofile_logo" src="/microprofile_logo.png" alt="MicroProfile Logo">
+				<img id="jakarta_ee_logo" src="/jakarta_ee_logo.png" alt="Jakarta EE logo">
+		</div>
+	</section>
+
+	<section class="resources">
+		<h2>Resources</h2>
+		<div class="row">
+			<div class="resource">
+				<a href="https://github.com/OpenLiberty/open-liberty" target="_blank" rel="noopener">
+					<img class="resource__logo" src="/github_logo.png" alt="github logo">
+					<p>Github</p>
+				</a>
 			</div>
-		</section>
-        </main>
-		<footer class="footer">
-<<<<<<< HEAD
-			<div class="footer__content row" data-externalizedAriaLabel="COPYRIGHT">
-				<img class="footer__img" src="footer-img.png" data-externalizedAlt="OPEN_LIBERTY_FOOTER">
-				<p class="footer__copy" data-externalizedString="COPYRIGHT_OPEN_LIBERTY"></p>
-=======
-			<div class="footer__content row">
-				<img class="footer__img" src="footer-img.png" alt="Open Liberty logo">
-				<p class="footer__copy">
-					Licensed Materials &#8212 Property of the Open Liberty project, Copyright
-					IBM Corp and others 1997, 2019. Project is distributed under the terms
-					of the Eclipse Public License v1.
-				</p>
->>>>>>> Add new images, update banner
+			<div class="resource">
+				<a href="https://twitter.com/OpenLibertyIO" target="_blank" rel="noopener">
+					<img class="resource__logo" src="/twitter_logo.png" alt="twitter logo">
+					<p>Twitter</p>
+				</a>
 			</div>
-		</footer>
+			<div class="resource">
+				<a href="https://stackoverflow.com/questions/tagged/open-liberty" target="_blank" rel="noopener">
+					<img class="resource__logo circle" src="/stack_overflow_logo.png" alt="stack overflow logo">
+					<p>Stack Overflow</p>
+				</a>
+			</div>
+			<div class="resource">
+				<a href="https://groups.io/g/openliberty" target="_blank" rel="noopener">
+					<img class="resource__logo circle" src="/groups_io_logo.jpeg" alt="groups io logo">
+					<p>Groups.io</p>
+				</a>
+			</div>
+			<div class="resource">
+				<a href="https://openliberty.io/support/" target="_blank" rel="noopener">
+					<img id="ol_logo" class="resource__logo" src="/open_liberty_logo.png" alt="open liberty logo">
+					<p>Support</p>
+				</a>		
+			</div>		
+		</div>
+	</section>
+	
+	<footer class="footer">
+		<div class="footer__content row">
+			<img class="footer__img" src="footer-img.png" alt="Open Liberty logo">
+			<p class="footer__copy">
+				Licensed Materials &#8212 Property of the Open Liberty project, Copyright
+				IBM Corp and others 1997, 2019. Project is distributed under the terms
+				of the Eclipse Public License v1.
+			</p>
+		</div>
+	</footer>
 
 
 		<script type="text/javascript" src="js/externalize-string.js"></script>
