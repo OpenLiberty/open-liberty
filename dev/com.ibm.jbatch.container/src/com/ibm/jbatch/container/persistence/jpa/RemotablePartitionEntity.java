@@ -25,7 +25,6 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
-import javax.persistence.UniqueConstraint;
 
 import com.ibm.jbatch.container.ws.RemotablePartitionState;
 import com.ibm.jbatch.container.ws.WSRemotablePartitionExecution;
@@ -42,7 +41,7 @@ import com.ibm.jbatch.container.ws.WSRemotablePartitionExecution;
 })
 
 @IdClass(RemotablePartitionKey.class)
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = { "FK_JOBEXECUTIONID", "STEPNAME", "PARTNUM" }))
+@Table
 @Entity
 public class RemotablePartitionEntity implements WSRemotablePartitionExecution {
 
@@ -135,6 +134,11 @@ public class RemotablePartitionEntity implements WSRemotablePartitionExecution {
 
     public void setPartitionNumber(int partitionNumber) {
         this.partitionNumber = partitionNumber;
+    }
+
+    @Override
+    public RemotablePartitionState getRemotablePartitionState() {
+        return getInternalStatus();
     }
 
     public RemotablePartitionState getInternalStatus() {

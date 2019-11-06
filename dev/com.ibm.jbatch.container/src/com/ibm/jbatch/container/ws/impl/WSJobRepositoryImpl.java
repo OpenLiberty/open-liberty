@@ -374,7 +374,8 @@ public class WSJobRepositoryImpl implements WSJobRepository {
 
     @Override
     public WSRemotablePartitionExecution updateRemotablePartitionInternalState(long jobExecutionId, String stepName,
-                                                                               int partitionNumber, RemotablePartitionState internalState) {
+                                                                               int partitionNumber,
+                                                                               RemotablePartitionState internalState) throws BatchIllegalJobStatusTransitionException {
         return persistenceManagerService.updateRemotablePartitionInternalState(jobExecutionId, stepName, partitionNumber, internalState);
     }
 

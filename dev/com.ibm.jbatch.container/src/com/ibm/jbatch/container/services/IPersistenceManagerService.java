@@ -31,7 +31,6 @@ import javax.batch.runtime.StepExecution;
 import com.ibm.jbatch.container.exception.BatchIllegalJobStatusTransitionException;
 import com.ibm.jbatch.container.exception.ExecutionAssignedToServerException;
 import com.ibm.jbatch.container.exception.JobStoppedException;
-import com.ibm.jbatch.container.execution.impl.RuntimePartitionExecution;
 import com.ibm.jbatch.container.execution.impl.RuntimeSplitFlowExecution;
 import com.ibm.jbatch.container.execution.impl.RuntimeStepExecution;
 import com.ibm.jbatch.container.persistence.jpa.JobExecutionEntity;
@@ -496,12 +495,6 @@ public interface IPersistenceManagerService extends IBatchServiceBase {
     public RemotablePartitionEntity createPartitionExecution(RemotablePartitionKey partitionKey, Date createTime);
 
     /**
-     * @param runtimePartitionExecution
-     * @param date
-     */
-    public RemotablePartitionEntity updatePartitionExecution(RuntimePartitionExecution runtimePartitionExecution, BatchStatus newBatchStatus, Date date);
-
-    /**
      * @param key
      * @param logDirPath
      */
@@ -537,7 +530,7 @@ public interface IPersistenceManagerService extends IBatchServiceBase {
      */
     RemotablePartitionEntity updateRemotablePartitionInternalState(
                                                                    long jobExecId, String stepName, int partitionNum,
-                                                                   RemotablePartitionState internalStatus);
+                                                                   RemotablePartitionState internalStatus) throws BatchIllegalJobStatusTransitionException;
 
     /**
      * @return

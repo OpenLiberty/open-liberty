@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import com.ibm.jbatch.container.exception.BatchIllegalJobStatusTransitionException;
 import com.ibm.jbatch.container.persistence.jpa.JobExecutionEntity;
 import com.ibm.jbatch.container.persistence.jpa.JobInstanceEntity;
 import com.ibm.jbatch.container.persistence.jpa.RemotablePartitionEntity;
@@ -40,7 +41,7 @@ import com.ibm.jbatch.container.ws.WSStepThreadExecutionAggregate;
 public class MemoryPersistenceManagerImplTest {
 
     @Before
-    public void mockitoSetup() {
+    public void mockitoSetup() throws BatchIllegalJobStatusTransitionException {
         MockitoAnnotations.initMocks(this);
 
         this.service = new MemoryPersistenceManagerImpl();

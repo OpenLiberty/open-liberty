@@ -22,9 +22,12 @@ import java.util.logging.Logger;
 
 import javax.batch.runtime.BatchStatus;
 
+import com.ibm.jbatch.container.exception.BatchContainerRuntimeException;
+import com.ibm.jbatch.container.exception.BatchIllegalJobStatusTransitionException;
 import com.ibm.jbatch.container.navigator.ModelNavigator;
 import com.ibm.jbatch.container.persistence.jpa.RemotablePartitionKey;
 import com.ibm.jbatch.container.ws.PartitionPlanConfig;
+import com.ibm.jbatch.container.ws.RemotablePartitionState;
 import com.ibm.jbatch.container.ws.events.BatchEventsPublisher;
 import com.ibm.jbatch.jsl.model.JSLJob;
 import com.ibm.websphere.ras.annotation.Trivial;
@@ -137,19 +140,24 @@ public class RuntimePartitionExecution extends RuntimeWorkUnitExecution {
     @Override
     public void workStarted(Date date) {
         batchStatus = BatchStatus.STARTED;
-        getPersistenceManagerService().updatePartitionExecution(this, batchStatus, date);
+        if (isRemotePartitionDispatch()) {
+            try {
+                getPersistenceManagerService().updateRemotablePartitionInternalState(getTopLevelExecutionId(), getStepName(), getPartitionNumber(),
+                                                                                     RemotablePartitionState.DISPATCHED);
+            } catch (BatchIllegalJobStatusTransitionException e) {
+                throw new BatchContainerRuntimeException("Illegal transition when starting partition", e);
+            }
+        }
         publishPartitionEvent();
     }
 
     @Override
     public void workStopping(Date date) {
         batchStatus = BatchStatus.STOPPING;
-        getPersistenceManagerService().updatePartitionExecution(this, batchStatus, date);
     }
 
     @Override
     public void workEnded(Date date) {
-        getPersistenceManagerService().updatePartitionExecution(this, batchStatus, date);
         publishPartitionEvent();
     }
 
