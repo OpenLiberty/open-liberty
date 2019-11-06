@@ -14,6 +14,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,6 +39,7 @@ public class JSONFieldsTest {
     private static LibertyServer server_xml;
     private static LibertyServer server_env;
     private static LibertyServer server_bootstrap;
+    private static LibertyServer serverInUse;  // hold on to the server currently used so cleanUp knows which server to stop
 
     @BeforeClass
     public static void initialSetup() throws Exception {
@@ -52,6 +54,7 @@ public class JSONFieldsTest {
     }
 
     public void setUp(LibertyServer server) throws Exception {
+    	serverInUse = server;
         if (server != null && !server.isStarted()) {
             // Restore the original server configuration, before starting the server for each test case.
             server.restoreServerConfiguration();
@@ -59,9 +62,10 @@ public class JSONFieldsTest {
         }
     }
 
-    public void cleanUp(LibertyServer server) throws Exception {
-        if (server != null && server.isStarted()) {
-            server.stopServer("com.ibm.ws.logging.fat.ffdc.servlet.FFDCServlet.doGet", "ArithmeticException",
+    @After
+    public void cleanUp() throws Exception {
+        if (serverInUse != null && serverInUse.isStarted()) {
+            serverInUse.stopServer("com.ibm.ws.logging.fat.ffdc.servlet.FFDCServlet.doGet", "ArithmeticException",
                               "CWWKG0081E", "CWWKG0083W");
         }
     }
@@ -74,7 +78,6 @@ public class JSONFieldsTest {
         setUp(server_env);
         List<String> lines = server_env.findStringsInFileInLibertyServerRoot("log3", MESSAGE_LOG);
         assertTrue("The message field name was not formatted in the new configuration in messages.log.", lines.size() > 0);
-        cleanUp(server_env);
     }
 
     /*
@@ -85,7 +88,6 @@ public class JSONFieldsTest {
         setUp(server_bootstrap);
         List<String> lines = server_bootstrap.findStringsInFileInLibertyServerRoot("log2", MESSAGE_LOG);
         assertTrue("The message field name was not formatted in the new configuration in messages.log.", lines.size() > 0);
-        cleanUp(server_bootstrap);
     }
 
     /*
@@ -101,7 +103,6 @@ public class JSONFieldsTest {
         setServerConfiguration(true, "message:test2", server_xml);
         lines = server_xml.findStringsInFileInLibertyServerRoot("test2", MESSAGE_LOG);
         assertTrue("The message field name was not updated in messages.log.", lines.size() > 0);
-        cleanUp(server_xml);
     }
 
     @Test
@@ -114,7 +115,6 @@ public class JSONFieldsTest {
         //the default field name should be used
         List<String> lines = server_xml.findStringsInFileInLibertyServerRoot("ibm_datetime", MESSAGE_LOG);
         assertTrue("The default field name was not returned", lines.size() > 0);
-        cleanUp(server_xml);
     }
 
     @Test
@@ -127,7 +127,6 @@ public class JSONFieldsTest {
         //a warning should be given when a non-recognized key is provided
         List<String> lines = server_xml.findStringsInFileInLibertyServerRoot("TRAS3009W", MESSAGE_LOG);
         assertTrue("The default field name was not returned", lines.size() > 0);
-        cleanUp(server_xml);
     }
 
     @Test
@@ -140,7 +139,6 @@ public class JSONFieldsTest {
         //a warning should be given when an entry with too many or too few tokens is provided
         List<String> lines = server_xml.findStringsInFileInLibertyServerRoot("TRAS3008W", MESSAGE_LOG);
         assertTrue("The default field name was not returned", lines.size() > 0);
-        cleanUp(server_xml);
     }
 
     @Test
@@ -153,7 +151,6 @@ public class JSONFieldsTest {
         //a warning should be given when an entry with too many or too few tokens is provided
         List<String> lines = server_xml.findStringsInFileInLibertyServerRoot("TRAS3010W", MESSAGE_LOG);
         assertTrue("The default field name was not returned", lines.size() > 0);
-        cleanUp(server_xml);
     }
 
     private static void setServerConfiguration(boolean isjsonFields, String newFieldName, LibertyServer server) throws Exception {
