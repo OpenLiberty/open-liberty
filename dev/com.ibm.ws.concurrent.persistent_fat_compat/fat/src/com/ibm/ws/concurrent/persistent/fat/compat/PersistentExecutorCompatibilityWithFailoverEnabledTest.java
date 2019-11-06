@@ -18,6 +18,8 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.PersistentExecutor;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -30,8 +32,10 @@ import web.PersistentExecCompatibilityTestServlet;
  * Tests for persistent scheduled executor with task execution disabled
  */
 @RunWith(FATRunner.class)
-public class PersistentExecutorCompatibilityTest {
+public class PersistentExecutorCompatibilityWithFailoverEnabledTest {
     public static final String APP_NAME = "persistentcompattest";
+
+    private static ServerConfiguration originalConfig;
 
     @Server("com.ibm.ws.concurrent.persistent.fat.compat")
     @TestServlet(servlet = PersistentExecCompatibilityTestServlet.class, contextRoot = APP_NAME)
@@ -52,6 +56,20 @@ public class PersistentExecutorCompatibilityTest {
         String installRoot = server.getInstallRoot();
         LibertyFileManager.deleteLibertyDirectoryAndContents(machine, installRoot + "/usr/shared/resources/data/persistcompat");
 
+        // configure server.xml to enable failover
+        originalConfig = server.getServerConfiguration();
+        ServerConfiguration config = originalConfig.clone();
+
+        PersistentExecutor myExecutor = config.getPersistentExecutors().getBy("jndiName", "concurrent/myExecutor");
+        myExecutor.setExtraAttribute("missedTaskThreshold2", "4s");
+
+        PersistentExecutor mySchedulerWithContext = config.getPersistentExecutors().getBy("jndiName", "concurrent/mySchedulerWithContext");
+        mySchedulerWithContext.setExtraAttribute("missedTaskThreshold2", "1m14s");
+
+        // config.getEJBContainer().getTimerService() lacks a way to get to the nested persistentExecutor, so this is left as is.
+
+        server.updateServerConfiguration(config);
+
         ShrinkHelper.defaultDropinApp(server, APP_NAME, "web", "ejb");
         server.startServer();
     }
@@ -63,7 +81,13 @@ public class PersistentExecutorCompatibilityTest {
      */
     @AfterClass
     public static void tearDown() throws Exception {
-        if (server != null && server.isStarted())
-            server.stopServer("CNTR0333W","CWWKC1511W");
+        if (server != null)
+            try {
+                if (server.isStarted())
+                    server.stopServer("CNTR0333W","CWWKC1511W");
+            } finally {
+                if (originalConfig != null)
+                    server.updateServerConfiguration(originalConfig);
+            }
     }
 }

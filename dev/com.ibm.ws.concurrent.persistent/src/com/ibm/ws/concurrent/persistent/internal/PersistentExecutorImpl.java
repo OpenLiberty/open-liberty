@@ -457,7 +457,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
         try {
             Config config = configRef.get();
-            if (config.missedTaskThreshold > 0 || config.pollInterval >= 0) {
+            if (config.missedTaskThreshold > 0 || config.pollInterval >= 0 && config.missedTaskThreshold2 < 1) {
                 // Update the persistent store to indicate that this instance can no longer find/run tasks
                 PartitionRecord expected = new PartitionRecord(false);
 
@@ -1911,6 +1911,10 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
      * @return count of transferred tasks.
      */
     int transfer(Long maxTaskId, long oldPartitionId) throws Exception {
+        Config config = configRef.get();
+        if (config.missedTaskThreshold2 > 0)
+            throw new UnsupportedOperationException("The transfer operation is not supported when missedTaskThreshold >= 1"); // TODO message
+
         long partitionId = getPartitionId();
 
         TransactionController tranController = new TransactionController();
@@ -1920,7 +1924,6 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
             count = taskStore.transfer(maxTaskId, oldPartitionId, partitionId);
 
-            Config config = configRef.get();
             if (config.enableTaskExecution && count > 0 && config.pollInterval < 0) {
                 // Schedule a poll to find the transferred tasks
                 Synchronization autoPoll = new PollingTask(config);

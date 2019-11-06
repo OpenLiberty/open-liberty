@@ -16,22 +16,28 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
+import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.PersistentExecutor;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.database.DerbyEmbeddedUtilities;
+import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
 import web.SchedulerFATServlet;
 
 @RunWith(FATRunner.class)
-public class SchedulerTest extends FATServletClient {
+public class PersistentExecutorWithFailoverEnabledTest extends FATServletClient {
 
     private static final String APP_NAME = "schedtest";
     private static final String DB_NAME = "${shared.resource.dir}/data/scheddb";
+
+    private static ServerConfiguration originalConfig;
 
     @Server("com.ibm.ws.concurrent.persistent.fat")
     @TestServlet(servlet = SchedulerFATServlet.class, path = APP_NAME)
@@ -47,6 +53,19 @@ public class SchedulerTest extends FATServletClient {
      */
     @BeforeClass
     public static void setUp() throws Exception {
+        // Delete the Derby database that might be used by the persistent scheduled executor and the Derby-only test database
+        Machine machine = server.getMachine();
+        String installRoot = server.getInstallRoot();
+        LibertyFileManager.deleteLibertyDirectoryAndContents(machine, installRoot + "/usr/shared/resources/data/scheddb");
+        LibertyFileManager.deleteLibertyDirectoryAndContents(machine, installRoot + "/usr/shared/resources/data/testdb");
+
+        originalConfig = server.getServerConfiguration();
+        ServerConfiguration config = originalConfig.clone();
+        PersistentExecutor myScheduler = config.getPersistentExecutors().getBy("jndiName", "concurrent/myScheduler");
+        myScheduler.setPollInterval("3h"); // the test case does not expect polling, so set a large value that will never be reached
+        myScheduler.setExtraAttribute("missedTaskThreshold2", "1m"); // TODO rename to missedTaskThreshold and use normal setter if this approach is chosen
+        server.updateServerConfiguration(config);
+
     	//Get type
 		DatabaseContainerType dbContainerType = DatabaseContainerType.valueOf(testContainer);
 
@@ -80,10 +99,16 @@ public class SchedulerTest extends FATServletClient {
         try {
             runTest(server, APP_NAME, "verifyNoTasksRunning");
         } finally {
-            if (server != null && server.isStarted())
-                server.stopServer("CWWKC1500W", //Persistent Executor Rollback
-                                  "CWWKC1510W", //Persistent Executor Rollback and Failed
-                                  "DSRA0174W"); //Generic Datasource Helper
+            if (server != null)
+                try {
+                    if (server.isStarted())
+                    server.stopServer("CWWKC1500W", //Persistent Executor Rollback
+                                      "CWWKC1510W", //Persistent Executor Rollback and Failed
+                                      "DSRA0174W"); //Generic Datasource Helper
+                } finally {
+                    if (originalConfig != null)
+                        server.updateServerConfiguration(originalConfig);
+                }
         }
     }
 }

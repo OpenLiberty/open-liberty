@@ -94,7 +94,7 @@ public interface TaskStore {
      * Returns the data contained within a task record in the persistent store if the task is in a SCHEDULED state.
      *
      * @param taskId               unique identifier for a task.
-     * @param partitionId          unique identifier for a partition.
+     * @param partitionId          unique identifier for a partition. Null to ignore the partition.
      * @param maxNextExecutionTime milliseconds at (or before) which the task must be scheduled in order to run.
      * @param forUpdate            indicates if a write lock should be obtained on the task record.
      * @return the task record if found and possible to lock it, otherwise null.
@@ -104,7 +104,7 @@ public interface TaskStore {
      *         Result, ConsecutiveFailureCount, State, Task, TaskInfo, Trigger, Version)
      * @throws Exception if an error occurs when attempting to access the persistent task store.
      */
-    TaskRecord find(long taskId, long partitionId, long maxNextExecTime, boolean forUpdate) throws Exception;
+    TaskRecord find(long taskId, Long partitionId, long maxNextExecTime, boolean forUpdate) throws Exception;
 
     /**
      * Returns a snapshot of task state for the task with the specified unique identifier.

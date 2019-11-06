@@ -448,9 +448,12 @@ public class DatabaseTaskStore implements TaskStore {
 
     /** {@inheritDoc} */
     @Override
-    public TaskRecord find(long taskId, long partitionId, long maxNextExecTime, boolean forUpdate) throws Exception {
-        StringBuilder find = new StringBuilder(237)
-                        .append("SELECT t.LOADER,t.OWNR,t.MBITS,t.INAME,t.NEXTEXEC,t.ORIGSUBMT,t.PREVSCHED,t.PREVSTART,t.PREVSTOP,t.RESLT,t.RFAILS,t.STATES,t.TASKB,t.TASKINFO,t.TRIG,t.VERSION FROM Task t WHERE t.ID=:i AND t.PARTN=:p AND t.STATES<")
+    public TaskRecord find(long taskId, Long partitionId, long maxNextExecTime, boolean forUpdate) throws Exception {
+        StringBuilder find = new StringBuilder(245)
+                        .append("SELECT t.LOADER,t.OWNR,t.PARTN,t.MBITS,t.INAME,t.NEXTEXEC,t.ORIGSUBMT,t.PREVSCHED,t.PREVSTART,t.PREVSTOP,t.RESLT,t.RFAILS,t.STATES,t.TASKB,t.TASKINFO,t.TRIG,t.VERSION FROM Task t WHERE t.ID=:i");
+        if (partitionId != null)
+            find.append(" AND t.PARTN=:p");
+        find.append(" AND t.STATES<")
                         .append(TaskState.SUSPENDED.bit)
                         .append(" AND t.NEXTEXEC<=:m");
 
@@ -464,7 +467,8 @@ public class DatabaseTaskStore implements TaskStore {
             if (forUpdate)
                 query.setLockMode(LockModeType.PESSIMISTIC_WRITE);
             query.setParameter("i", taskId);
-            query.setParameter("p", partitionId);
+            if (partitionId != null)
+                query.setParameter("p", partitionId);
             query.setParameter("m", maxNextExecTime);
             List<Object[]> resultList = query.getResultList();
             if (resultList.isEmpty()) {
@@ -478,21 +482,21 @@ public class DatabaseTaskStore implements TaskStore {
             taskRecord.setId(taskId);
             taskRecord.setIdentifierOfClassLoader((String) result[0]);
             taskRecord.setIdentifierOfOwner((String) result[1]);
-            taskRecord.setIdentifierOfPartition(partitionId);
-            taskRecord.setMiscBinaryFlags((Short) result[2]);
-            taskRecord.setName((String) result[3]);
-            taskRecord.setNextExecutionTime((Long) result[4]);
-            taskRecord.setOriginalSubmitTime((Long) result[5]);
-            taskRecord.setPreviousScheduledStartTime((Long) result[6]);
-            taskRecord.setPreviousStartTime((Long) result[7]);
-            taskRecord.setPreviousStopTime((Long) result[8]);
-            taskRecord.setResult((byte[]) result[9]);
-            taskRecord.setConsecutiveFailureCount((Short) result[10]);
-            taskRecord.setState((Short) result[11]);
-            taskRecord.setTask((byte[]) result[12]);
-            taskRecord.setTaskInformation((byte[]) result[13]);
-            taskRecord.setTrigger((byte[]) result[14]);
-            taskRecord.setVersion((Integer) result[15]);
+            taskRecord.setIdentifierOfPartition((Long) result[2]);
+            taskRecord.setMiscBinaryFlags((Short) result[3]);
+            taskRecord.setName((String) result[4]);
+            taskRecord.setNextExecutionTime((Long) result[5]);
+            taskRecord.setOriginalSubmitTime((Long) result[6]);
+            taskRecord.setPreviousScheduledStartTime((Long) result[7]);
+            taskRecord.setPreviousStartTime((Long) result[8]);
+            taskRecord.setPreviousStopTime((Long) result[9]);
+            taskRecord.setResult((byte[]) result[10]);
+            taskRecord.setConsecutiveFailureCount((Short) result[11]);
+            taskRecord.setState((Short) result[12]);
+            taskRecord.setTask((byte[]) result[13]);
+            taskRecord.setTaskInformation((byte[]) result[14]);
+            taskRecord.setTrigger((byte[]) result[15]);
+            taskRecord.setVersion((Integer) result[16]);
 
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "find", taskRecord);

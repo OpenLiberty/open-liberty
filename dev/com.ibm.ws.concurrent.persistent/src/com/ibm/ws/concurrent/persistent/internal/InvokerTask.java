@@ -250,7 +250,7 @@ public class InvokerTask implements Runnable, Synchronization {
 
         String taskName = null;
         String taskIdForPropTable = null;
-        long partitionId;
+        Long partitionId;
         TaskLocker ejbSingletonLockCollaborator = null;
         String ownerForDeferredTask = null;
         ClassLoader loader = null;
@@ -263,7 +263,7 @@ public class InvokerTask implements Runnable, Synchronization {
         TransactionManager tranMgr = persistentExecutor.tranMgrRef.getServiceWithException();
         taskIdsOfRunningTasks.set(taskId);
         try {
-            partitionId = persistentExecutor.getPartitionId();
+            partitionId = config.missedTaskThreshold2 < 1 ? persistentExecutor.getPartitionId() : null;
 
             int timeout = txTimeout == 0 && (binaryFlags & TaskRecord.Flags.SUSPEND_TRAN_OF_EXECUTOR_THREAD.bit) != 0 ? DEFAULT_TIMEOUT_FOR_SUSPENDED_TRAN : txTimeout;
             tranMgr.setTransactionTimeout(timeout);
@@ -282,6 +282,8 @@ public class InvokerTask implements Runnable, Synchronization {
             // Lock an entry in a different table to prevent concurrent execution, and run with that transaction suspended.
             if ((binaryFlags & TaskRecord.Flags.SUSPEND_TRAN_OF_EXECUTOR_THREAD.bit) != 0) {
                 if (!taskStore.createProperty(taskIdForPropTable = "{" + taskId + "}", " ")) {
+                    if (config.missedTaskThreshold2 > 0)
+                        throw new RuntimeException("An attempt to run the task might have been made by a different instance. Retry is needed.");
                     // Determine the partition to which the task is assigned
                     taskIdForPropTable = null;
                     tranMgr.rollback(); // PostgreSQL will not permit any further operations after a duplicate key exception
@@ -302,7 +304,7 @@ public class InvokerTask implements Runnable, Synchronization {
                     try {
                         taskRecord = taskStore.find(taskId,
                                                     partitionId,
-                                                    new Date().getTime(),
+                                                    System.currentTimeMillis(),
                                                     false);
                     } catch (Throwable x) {
                         throw failed = x;
@@ -334,7 +336,7 @@ public class InvokerTask implements Runnable, Synchronization {
 
                 taskRecord = taskStore.find(taskId,
                                             partitionId,
-                                            new Date().getTime(),
+                                            System.currentTimeMillis(),
                                             true);
             }
 
