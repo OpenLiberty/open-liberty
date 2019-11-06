@@ -450,7 +450,7 @@ public abstract class SipServletResponseImpl
 			if (getStatus() == SC_PROXY_AUTHENTICATION_REQUIRED) {
 				authHeader = response.getProxyAuthenticateHeader();
 				String headerRealm = 
-				   authHeader.getParameter(DigestConstants.DIGEST);
+				   authHeader.getParameter(DigestConstants.PROPERTY_REALM);
 				// If a realm is defined, only return matching 
 				if (wantedRealm != null && !wantedRealm.equals(headerRealm)) 
 				{
@@ -597,7 +597,7 @@ public abstract class SipServletResponseImpl
 			if (getStatus() == SC_PROXY_AUTHENTICATION_REQUIRED) {
 				authHeader = response.getProxyAuthenticateHeader();
 				if (authHeader != null) {
-					String headerRealm = authHeader.getParameter(DigestConstants.DIGEST);
+					String headerRealm = authHeader.getParameter(DigestConstants.PROPERTY_REALM);
 					realms = new ArrayList<String>(1);
 					realms.add(headerRealm);
 				}
