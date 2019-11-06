@@ -17,21 +17,27 @@
 	version="1.0">
 	<properties>
 		<property name="chunkSize" value="10" />
+		<property name="sp" value="#{jobParameters['sp']}" />
 	</properties>
 
 	<step id="step1">
 		<properties>
-			<property name="stepProperty" value="sp" />
+			<property name="stepProperty" value="#{jobProperties['sp']}" />
 		</properties>
 		<listeners>
 			<listener ref="app.misc1.Artifacts$StepListener">
 				<properties>
 					<property name="numPartitions" value="#{jobParameters['numPartitions']}" />
+					<property name="doEndOfStepValidation" value="#{jobParameters['doEndOfStepValidation']}?:true;" />
 				</properties>
 			</listener>
 		</listeners>
 		<chunk item-count="#{jobProperties['chunkSize']}">
-			<reader ref="app.misc1.Artifacts$Reader"/>
+			<reader ref="app.misc1.Artifacts$Reader">
+				<properties>
+					<property name="failOn" value="#{jobParameters['failOn']}?:skip;" />
+				</properties>
+			</reader>
 			<writer ref="app.misc1.Artifacts$NoOpWriter" />
 		</chunk>
 		<partition>
@@ -61,6 +67,11 @@
 					<property name="stepProp" value="#{jobProperties['stepProperty']}" />
 				</properties>
 			</analyzer>
+			<reducer ref="app.misc1.Artifacts$Reducer">
+				<properties>
+					<property name="stepProp" value="#{jobProperties['stepProperty']}" />
+				</properties>
+			</reducer>
 		</partition>
 	</step>
 	

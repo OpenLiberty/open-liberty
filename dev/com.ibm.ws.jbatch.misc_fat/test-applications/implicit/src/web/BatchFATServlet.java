@@ -10,9 +10,12 @@
  *******************************************************************************/
 package web;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Properties;
 import java.util.logging.Logger;
 
+import javax.batch.runtime.JobExecution;
 import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
@@ -44,7 +47,7 @@ public class BatchFATServlet extends FATServlet {
         logger.fine("Running test = testParameterizedCollectorPlan");
 
         Properties params = new Properties();
-        params.put("numPartitions", "3");
+        params.put("numPartitions", "3"); // For artifacts validating against number of partitions
         params.put("jobParam1", "jpValBB");
         new JobWaiter(60000).completeNewJob("CollectorPropertiesPlan", params);
     }
@@ -102,6 +105,39 @@ public class BatchFATServlet extends FATServlet {
         params.put("jobParam1", "jpValAA");
         params.put("numPartitions", "0"); // For the other artifacts like the StepListener validating against number of partitions
         new JobWaiter(60000).completeNewJob("ZeroPartitionPlan", params);
+    }
+
+    @Test
+    @Mode(TestMode.FULL)
+    public void testReducerCommit() throws Exception {
+        logger.fine("Running test = testReducerCommit");
+
+        String SP_VAL = "spVal";
+
+        Properties params = new Properties();
+        params.put("jobParam1", "jpValAA");
+        params.put("sp", SP_VAL);
+        params.put("numPartitions", "3"); // For artifacts validating against number of partitions
+        JobExecution jobExec = new JobWaiter(60000).completeNewJob("CollectorPropertiesPlan", params);
+        assertEquals("Unexpected exit status", SP_VAL + "," + "COMMIT", jobExec.getExitStatus());
+    }
+
+    @Test
+    @Mode(TestMode.FULL)
+    @ExpectedFFDC({ "com.ibm.jbatch.container.exception.BatchContainerRuntimeException", "java.lang.IllegalStateException" })
+    public void testReducerRollback() throws Exception {
+        logger.fine("Running test = testReducerRollback");
+
+        String SP_VAL = "spVal";
+
+        Properties params = new Properties();
+        params.put("jobParam1", "jpValAA");
+        params.put("sp", SP_VAL);
+        params.put("numPartitions", "3"); // For artifacts validating against number of partitions
+        params.put("failOn", "2");
+        params.put("doEndOfStepValidation", "false"); // Since we're forcing a failure we don't want to do this validation
+        JobExecution jobExec = new JobWaiter(60000).submitExpectedFailingJob("CollectorPropertiesPlan", params);
+        assertEquals("Unexpected exit status", SP_VAL + "," + "ROLLBACK", jobExec.getExitStatus());
     }
 
 }

@@ -1,6 +1,13 @@
-/**
+/*******************************************************************************
+ * Copyright (c) 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- */
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package app.misc1;
 
 import static org.junit.Assert.assertEquals;
@@ -23,13 +30,11 @@ import javax.batch.api.partition.PartitionCollector;
 import javax.batch.api.partition.PartitionMapper;
 import javax.batch.api.partition.PartitionPlan;
 import javax.batch.api.partition.PartitionPlanImpl;
+import javax.batch.runtime.context.JobContext;
 import javax.batch.runtime.context.StepContext;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-/**
- *
- */
 public class Artifacts {
 
     private final static Logger logger = Logger.getLogger("test");
@@ -41,14 +46,34 @@ public class Artifacts {
         // Smaller than 1 chunk
         String numToRead = "3";
 
+        @Inject
+        @BatchProperty(name = "failOn")
+        String failOnStr;
+
         int i = 0;
 
         @Override
         public Object readItem() {
-            if (i++ <= Integer.parseInt(numToRead) - 1) {
+
+            i++;
+
+            if (i <= Integer.parseInt(numToRead)) {
+                possiblyFail(i);
                 return i;
             } else {
                 return null;
+            }
+        }
+
+        private void possiblyFail(int i) {
+            if (failOnStr.equals("skip")) {
+                logger.finest("skip force failure");
+                return;
+            }
+            int failOn = Integer.parseInt(failOnStr);
+            logger.finer("i = " + i + ", failOn = " + failOn);
+            if (i == failOn) {
+                throw new IllegalStateException("Forcing failure in reader on item # : " + i);
             }
         }
     }
@@ -103,6 +128,10 @@ public class Artifacts {
         String numPartitionsStr;
 
         @Inject
+        @BatchProperty(name = "doEndOfStepValidation")
+        String doEndOfStepValidationStr;
+
+        @Inject
         StepContext stepCtx;
 
         @Override
@@ -112,6 +141,14 @@ public class Artifacts {
 
         @Override
         public void afterStep() throws Exception {
+
+            boolean doEndOfStepValidation = Boolean.parseBoolean(doEndOfStepValidationStr);
+
+            if (!doEndOfStepValidation) {
+                logger.fine("Returning without doing validation, prop = " + doEndOfStepValidationStr);
+                return;
+            }
+
             Set<String> expected = new HashSet<String>();
             for (int i = 0; i < Integer.parseInt(numPartitionsStr); i++) {
                 expected.add("part" + new Integer(i).toString());
@@ -176,11 +213,15 @@ public class Artifacts {
     public static class Reducer extends AbstractPartitionReducer {
 
         @Inject
-        StepContext stepCtx;
+        JobContext ctx;
+
+        @Inject
+        @BatchProperty
+        String stepProp;
 
         @Override
         public void afterPartitionedStepCompletion(PartitionStatus status) throws Exception {
-
+            ctx.setExitStatus(stepProp + "," + status.name());
         }
 
     }
