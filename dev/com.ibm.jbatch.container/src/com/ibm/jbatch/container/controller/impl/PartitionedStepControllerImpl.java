@@ -131,6 +131,9 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
 
     private PartitionPlanDescriptor plan = null;
 
+    // Better to keep track of whether we called rollback instead of having to check the status later on.
+    private boolean rollbackPartitionedStepInvoked = false;
+
     /**
      * CTOR.
      */
@@ -968,6 +971,9 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
      *
      */
     private void rollbackPartitionedStep() {
+
+        rollbackPartitionedStepInvoked = true;
+
         if (this.partitionReducerProxy != null) {
             this.partitionReducerProxy.rollbackPartitionedStep();
         }
@@ -1045,10 +1051,10 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
     protected void invokePostStepArtifacts() {
         // Invoke the reducer after all parallel steps are done
         if (this.partitionReducerProxy != null) {
-            if ((BatchStatus.COMPLETED).equals(runtimeStepExecution.getBatchStatus())) {
-                this.partitionReducerProxy.afterPartitionedStepCompletion(PartitionStatus.COMMIT);
-            } else {
+            if (rollbackPartitionedStepInvoked) {
                 this.partitionReducerProxy.afterPartitionedStepCompletion(PartitionStatus.ROLLBACK);
+            } else {
+                this.partitionReducerProxy.afterPartitionedStepCompletion(PartitionStatus.COMMIT);
             }
         }
 
