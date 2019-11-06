@@ -18,6 +18,7 @@ import javax.batch.api.chunk.AbstractItemReader;
 import javax.batch.api.chunk.AbstractItemWriter;
 import javax.batch.api.listener.AbstractStepListener;
 import javax.batch.api.partition.AbstractPartitionAnalyzer;
+import javax.batch.api.partition.AbstractPartitionReducer;
 import javax.batch.api.partition.PartitionCollector;
 import javax.batch.api.partition.PartitionMapper;
 import javax.batch.api.partition.PartitionPlan;
@@ -170,4 +171,18 @@ public class Artifacts {
             return plan;
         }
     }
+
+    @Dependent
+    public static class Reducer extends AbstractPartitionReducer {
+
+        @Inject
+        StepContext stepCtx;
+
+        @Override
+        public void afterPartitionedStepCompletion(PartitionStatus status) throws Exception {
+
+        }
+
+    }
+
 }

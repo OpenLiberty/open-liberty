@@ -319,8 +319,8 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
                                                    + ", with instances=" + partitionsAttr, e);
             }
             partitionProps = new Properties[numPartitions];
-            if (numPartitions < 1) {
-                throw new IllegalArgumentException("Partition instances value must be 1 or greater in stepId: " + getStepName()
+            if (numPartitions < 0) {
+                throw new IllegalArgumentException("Partition instances value must be 0 or greater in stepId: " + getStepName()
                                                    + ", with instances=" + partitionsAttr);
             }
         }
@@ -486,8 +486,8 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
             }
         }
 
-        if (numCurrentPartitions < 1) {
-            throw new IllegalArgumentException("Partition plan size is calculated as " + numCurrentPartitions + ", but at least one partition is needed.");
+        if (numCurrentPartitions < 0) {
+            throw new IllegalArgumentException("Partition plan size is calculated as " + numCurrentPartitions + ", must be greater than or equal to 0.");
         }
     }
 

@@ -30,6 +30,26 @@ public class BatchFATServlet extends FATServlet {
     public static Logger logger = Logger.getLogger("test");
 
     @Test
+    public void testParameterizedCollectorMapper() throws Exception {
+        logger.fine("Running test = testParameterizedCollectorMapper");
+
+        Properties params = new Properties();
+        params.put("numPartitions", "4");
+        params.put("jobParam1", "jpValAA");
+        new JobWaiter(60000).completeNewJob("CollectorPropertiesMapper", params);
+    }
+
+    @Test
+    public void testParameterizedCollectorPlan() throws Exception {
+        logger.fine("Running test = testParameterizedCollectorPlan");
+
+        Properties params = new Properties();
+        params.put("numPartitions", "3");
+        params.put("jobParam1", "jpValBB");
+        new JobWaiter(60000).completeNewJob("CollectorPropertiesPlan", params);
+    }
+
+    @Test
     @Mode(TestMode.FULL)
     @ExpectedFFDC({ "com.ibm.jbatch.container.exception.BatchContainerRuntimeException", "java.lang.IllegalStateException" })
     public void testDeserializeArrayCheckpoint() throws Exception {
@@ -63,22 +83,25 @@ public class BatchFATServlet extends FATServlet {
     }
 
     @Test
-    public void testParameterizedCollectorMapper() throws Exception {
-        logger.fine("Running test = testParameterizedCollectorMapper");
+    @Mode(TestMode.FULL)
+    public void testMapperZeroPartitions() throws Exception {
+        logger.fine("Running test = testMapperZeroPartitions");
 
         Properties params = new Properties();
-        params.put("numPartitions", "4");
+        params.put("numPartitions", "0");
         params.put("jobParam1", "jpValAA");
         new JobWaiter(60000).completeNewJob("CollectorPropertiesMapper", params);
     }
 
     @Test
-    public void testParameterizedCollectorPlan() throws Exception {
-        logger.fine("Running test = testParameterizedCollectorPlan");
+    @Mode(TestMode.FULL)
+    public void testPlanZeroPartitions() throws Exception {
+        logger.fine("Running test = testPlanZeroPartitions");
 
         Properties params = new Properties();
-        params.put("numPartitions", "3");
-        params.put("jobParam1", "jpValBB");
-        new JobWaiter(60000).completeNewJob("CollectorPropertiesPlan", params);
+        params.put("jobParam1", "jpValAA");
+        params.put("numPartitions", "0"); // For the other artifacts like the StepListener validating against number of partitions
+        new JobWaiter(60000).completeNewJob("ZeroPartitionPlan", params);
     }
+
 }

@@ -76,6 +76,7 @@ public class FATTest extends FATServletClient {
         addBatchJob(implicit, "ArrayUserDataDeserialize.xml");
         addBatchJob(implicit, "CollectorPropertiesMapper.xml");
         addBatchJob(implicit, "CollectorPropertiesPlan.xml");
+        addBatchJob(implicit, "ZeroPartitionPlan.xml");
 
         // Write the WebArchive to 'publish/servers/<server>/apps' and print the contents
         ShrinkHelper.exportAppToServer(server1, implicit);
