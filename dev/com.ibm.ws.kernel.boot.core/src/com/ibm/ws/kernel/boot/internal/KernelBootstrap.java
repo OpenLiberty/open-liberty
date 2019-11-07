@@ -439,42 +439,23 @@ public class KernelBootstrap {
         if (bootProps.get(BootstrapConstants.JAVA_2_SECURITY_PROPERTY) != null) {
 
             NameBasedLocalBundleRepository repo = new NameBasedLocalBundleRepository(bootProps.getInstallRoot());
-            urlList.add(getJarFileFromBundleName(repo, "com.ibm.ws.org.eclipse.equinox.region", "[1.0,1.0.100)"));
-            // the following three jar files are for serialfilter which are loaded by URLClassloader by bootstrap agent.
-            urlList.add(getJarFileFromBundleName(repo, "com.ibm.ws.kernel.instrument.serialfilter", "[1.0,1.0.100)"));
-            addJarFileIfExist(urlList, bootProps.getInstallRoot() + "/bin/tools/ws-javaagent.jar");
-            addJarFileIfExist(urlList, bootProps.getInstallRoot() + "/lib/bootstrap-agent.jar");
+            File bestMatchFile = repo.selectBundle("com.ibm.ws.org.eclipse.equinox.region",
+                                                   VersionUtility.stringToVersionRange("[1.0,1.0.100)"));
+            if (bestMatchFile == null) {
+                throw new LaunchException("Could not find bundle for " + "com.ibm.ws.org.eclipse.equinox.region"
+                                          + ".", BootstrapConstants.messages.getString("error.missingBundleException"));
+            } else {
+                // Add to the list of boot jars...
+                try {
+                    urlList.add(bestMatchFile.toURI().toURL());
+                } catch (MalformedURLException e) {
+                    throw new LaunchException("Failure to set the default Security Manager due to exception ", BootstrapConstants.messages.getString("error.set.securitymanager"), e);
+                }
+            }
             Policy wlpPolicy = new WLPDynamicPolicy(Policy.getPolicy(), urlList);
             Policy.setPolicy(wlpPolicy);
         }
 
-    }
-
-    private static URL getJarFileFromBundleName(NameBasedLocalBundleRepository repo, String bundleName, String versionRange) {
-        File bestMatchFile = repo.selectBundle(bundleName,
-                                               VersionUtility.stringToVersionRange(versionRange));
-        if (bestMatchFile == null) {
-            throw new LaunchException("Could not find bundle for " + bundleName
-                                      + ".", BootstrapConstants.messages.getString("error.missingBundleException"));
-        } else {
-            // Add to the list of boot jars...
-            try {
-                return bestMatchFile.toURI().toURL();
-            } catch (MalformedURLException e) {
-                throw new LaunchException("Failure to set the default Security Manager due to exception ", BootstrapConstants.messages.getString("error.set.securitymanager"), e);
-            }
-        }
-    }
-
-    private static void addJarFileIfExist(List<URL> urlList, String name) {
-        try {
-            File file = new File(name);
-            if (file.exists()) {
-                urlList.add(file.toURI().toURL());
-            }
-        } catch (MalformedURLException e) {
-            throw new LaunchException("Failure to set the default Security Manager due to exception ", BootstrapConstants.messages.getString("error.set.securitymanager"), e);
-        }
     }
 
     /**
