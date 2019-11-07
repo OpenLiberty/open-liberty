@@ -15,14 +15,14 @@ import java.text.DecimalFormat;
 import javax.json.bind.annotation.JsonbProperty;
 
 import org.eclipse.microprofile.graphql.Description;
-import org.eclipse.microprofile.graphql.InputField;
+import org.eclipse.microprofile.graphql.SchemaName;
 /**
  * This is an implementation class of the interface entity, Widget.
  */
 public class Widget {
 
     private String name;
-    @InputField("qty")
+    @SchemaName("qty")
     @Description("Number of units to ship")
     private int quantity = -1;
     private double weight = -1.0;
@@ -85,7 +85,7 @@ public class Widget {
         return weight;
     }
 
-//    @InputField(value = "shippingWeight", description = "Total tonnage to be shipped")
+//    @SchemaName(value = "shippingWeight", description = "Total tonnage to be shipped")
     public void setWeight(double weight) {
         this.weight = weight;
     }

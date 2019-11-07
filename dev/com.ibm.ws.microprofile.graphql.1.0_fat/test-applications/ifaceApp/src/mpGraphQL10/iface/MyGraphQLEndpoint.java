@@ -16,10 +16,10 @@ import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.eclipse.microprofile.graphql.Argument;
 import org.eclipse.microprofile.graphql.GraphQLApi;
 import org.eclipse.microprofile.graphql.Mutation;
 import org.eclipse.microprofile.graphql.Query;
+import org.eclipse.microprofile.graphql.SchemaName;
 
 @GraphQLApi
 @ApplicationScoped
@@ -38,7 +38,7 @@ public class MyGraphQLEndpoint {
     }
     
     @Mutation("createWidget")
-    public Widget createNewWidget(@Argument("widget") WidgetInput input) {
+    public Widget createNewWidget(@SchemaName("widget") WidgetInput input) {
         if (!(input instanceof WidgetInput)) {
             String msg = String.format("Unexpected input type; expected WidgetInput, got {0}\n",
                                        input.getClass().getName());
