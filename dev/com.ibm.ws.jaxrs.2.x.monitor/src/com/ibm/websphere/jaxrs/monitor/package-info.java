@@ -12,4 +12,4 @@
  * @version 1.0
  */
 @org.osgi.annotation.versioning.Version("1.0")
-package com.ibm.ws.jaxrs.monitor;
+package com.ibm.websphere.jaxrs.monitor;

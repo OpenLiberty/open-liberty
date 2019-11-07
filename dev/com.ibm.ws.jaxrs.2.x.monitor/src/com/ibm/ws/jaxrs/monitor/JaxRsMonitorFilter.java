@@ -16,8 +16,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.servlet.GenericServlet;
-import javax.servlet.ServletContext;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.ContainerResponseContext;
@@ -46,13 +44,13 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
     ResourceInfo resourceInfo;
     
     // jaxRSCountByName is a MeterCollection that will hold the RESTfulStats MXBean for each RESTful
-    // resoure method
+    // resource method
     @PublishedMetric
     public MeterCollection<RESTful_Stats> jaxRsCountByName = new MeterCollection<RESTful_Stats>("RESTful",this);
     
     // appMetricInfos is a hashmap used to store information for runtime and cleanup at 
     // application stop time.
-    protected ConcurrentHashMap<String,RestfulMetricInfo> appMetricInfos = new ConcurrentHashMap<String,RestfulMetricInfo>();
+    ConcurrentHashMap<String,RestfulMetricInfo> appMetricInfos = new ConcurrentHashMap<String,RestfulMetricInfo>();
     
     private final ThreadLocal<Long> startTimes = new ThreadLocal<Long>();    
 
@@ -88,24 +86,42 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
 
     @Override
     public void filter(ContainerRequestContext reqCtx, ContainerResponseContext respCtx) throws IOException {
-        Class<?> resourceClass = resourceInfo.getResourceClass();
+    	long elapsedTime = 0;
+        //Calculate the response time for the resource method.
+        Long times = startTimes.get();
+        if (times!=null) {
+            elapsedTime = System.nanoTime() - times;
+        }
+
+    	Class<?> resourceClass = resourceInfo.getResourceClass();
+        
         if (resourceClass != null) {
             Method resourceMethod = resourceInfo.getResourceMethod();
-            String resourceMethodString = resourceMethod.toGenericString();
             
-            //Spit to obtain just the fully qualified method name (without app and mod information).
-            String[] methodParts = resourceMethodString.split(" ");
-            String simpleMethodName = methodParts[methodParts.length -1];
-                        
+            Class<?>[] parameterClasses = resourceMethod.getParameterTypes();
+            int i = 0;
+            String parameter;
+            String fullMethodName = resourceClass.getName() + "." + resourceMethod.getName() + "(";
+            for (Class<?> p : parameterClasses) {
+             	parameter = p.getName(); 
+            	if (i > 0) {
+            		fullMethodName = fullMethodName + "_" + parameter;
+            	} else {
+            		fullMethodName = fullMethodName + parameter;
+            	}
+            	i++;
+            }
+            fullMethodName = fullMethodName + ")";
+                                    
             ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
             String appName = getAppName(cmd);
             String modName = getModName(cmd);
             String keyPrefix = createKeyPrefix(appName,modName);
-            String key = keyPrefix + "/" + simpleMethodName;        
+            String key = keyPrefix + "/" + fullMethodName;        
 
             RESTful_Stats stats = jaxRsCountByName.get(key);
             if (stats == null) {
-                 stats =initJaxRsStats(key, keyPrefix, simpleMethodName);
+                 stats =initJaxRsStats(key, keyPrefix, fullMethodName);
             }
             // Save key in appMetricInfos for cleanup on application stop.
             addKeyToMetricInfo(appName,key);
@@ -113,12 +129,8 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
             //Increment the request count for the resource method.
             stats.incrementCountBy(1);
             
-            //Calculate and store the response time for the resource method.
-            Long times = startTimes.get();
-            if (times!=null) {
-                long elapsed = System.nanoTime() - times;
-                stats.updateRT(elapsed < 0 ? 0 : elapsed);
-            }
+            //Store the response time for the resource method.
+            stats.updateRT(elapsedTime < 0 ? 0 : elapsedTime);
         	
         }
 

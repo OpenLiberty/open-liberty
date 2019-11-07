@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -137,8 +137,6 @@ public class RESTful_Stats extends Meter implements RestfulStatsMXBean {
      */
     public void updateRT(long elapsed) {
         this.responseTime.addDataPoint(elapsed);
-        System.out.println("Jim555, total = " + this.responseTime.getTotal());
-
     }
 
     /**
@@ -161,7 +159,6 @@ public class RESTful_Stats extends Meter implements RestfulStatsMXBean {
 
     @Override
     public StatisticsMeter getResponseTimeDetails() {
-        // TODO Auto-generated method stub
         return this.responseTime;
     }
 

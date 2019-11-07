@@ -24,6 +24,7 @@ Import-Package: \
     !*.internal.*,*
 
 Export-Package: \
+    com.ibm.websphere.jaxrs.monitor; type="ibm-api", \
     com.ibm.ws.jaxrs.monitor
     
 Private-Package: \

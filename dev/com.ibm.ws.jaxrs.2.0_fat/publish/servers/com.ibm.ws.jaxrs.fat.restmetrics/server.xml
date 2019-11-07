@@ -9,4 +9,6 @@
 
 
   	<include location="../fatTestPorts.xml"/>
+  	
+  	<javaPermission className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
 </server>

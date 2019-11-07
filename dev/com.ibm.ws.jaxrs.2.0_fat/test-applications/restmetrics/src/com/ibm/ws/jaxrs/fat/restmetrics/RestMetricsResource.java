@@ -10,15 +10,23 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs.fat.restmetrics;
 
+import java.lang.management.ManagementFactory;
+
+import javax.management.JMX;
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import com.ibm.websphere.jaxrs.monitor.RestfulStatsMXBean;
 
 /**
  * <code>RestMetricsResource</code> is a simple POJO which is annotated with
@@ -40,10 +48,12 @@ public class RestMetricsResource {
      */
     private static volatile String message = "Metrics!";
 
+    private final int sleepTime = 1000;
+
     /**
      * Processes a GET request and returns the stored message.
      *
-     * @return the stored message
+     * @return sting indicating success
      */
     @GET
     @Produces(MediaType.TEXT_PLAIN)
@@ -51,7 +61,78 @@ public class RestMetricsResource {
         // Note that if null is returned from a resource method, a HTTP 204 (No
         // Content) status code response is sent.
         try {
-            Thread.sleep(2000);
+            Thread.sleep(sleepTime);
+        } catch (Exception e) {
+            // no-op
+        }
+        return RestMetricsResource.message;
+    }
+
+    /**
+     * Processes a GET request to test exception mapping.
+     *
+     * @return sting indicating success
+     */
+    @GET
+    @Path("/exception/npe")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String checkExceptionNpe() {
+        //force an NPE
+        Object o = null;
+        o.toString(); // should create an NPE
+        return "Failed!";
+    }
+
+    /**
+     * Processes a GET request with single parameters.
+     *
+     * @param one simple sting
+     * @return string indicating success
+     */
+    @GET
+    @Path("{param1}")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String getMultiParamMessage(@PathParam("param1") String p1) throws MetricsMappedCheckedException, MetricsUnmappedCheckedException {
+        try {
+            Thread.sleep(sleepTime);
+        } catch (Exception e) {
+            // no-op
+        }
+        // Option to check NPE exception mapper
+        if (p1.equals("mappedChecked")) {
+            throw new MetricsMappedCheckedException("Mapped Checked");
+        }
+        // Option to check an unmapped checked exception
+        if (p1.equals("unmappedChecked")) {
+            throw new MetricsUnmappedCheckedException("Exception Caught");
+        }
+        // Option to check an unmapped unchecked exception
+        if (p1.equals("mappedUnchecked")) {
+            throw new MetricsMappedUncheckedException("Mapped Unchecked");
+        }
+        // Option to check an unmapped unchecked exception
+        if (p1.equals("unmappedUnchecked")) {
+            throw new MetricsUnmappedUncheckedException("Exception Caught");
+        }
+        return RestMetricsResource.message;
+    }
+
+    /**
+     * Processes a GET request with multiple parameters.
+     *
+     * @param two simple stings
+     * @return string indicating success
+     */
+    @GET
+    @Path("{param1}/{param2}")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String getMultiParamMessage(
+                                         @PathParam("param1") String p1,
+                                       @PathParam("param2") String p3) {
+        // Note that if null is returned from a resource method, a HTTP 204 (No
+        // Content) status code response is sent.
+        try {
+            Thread.sleep(sleepTime);
         } catch (Exception e) {
             // no-op
         }
@@ -61,9 +142,8 @@ public class RestMetricsResource {
     /**
      * Processes a POST request and returns the incoming request message.
      *
-     * @param incomingMessage the request body is mapped to the String by the
-     *            JAX-RS runtime using a built-in entity provider
-     * @return the original request body
+     * @param incomingMessage containing simple string
+     * @return the original message sent indicating successful execution
      */
     @Path("/post1")
     @POST
@@ -73,7 +153,7 @@ public class RestMetricsResource {
         // A plain Java parameter is used to represent the request body. The
         // JAX-RS runtime will map the request body to a String.
         try {
-            Thread.sleep(2000);
+            Thread.sleep(sleepTime);
         } catch (Exception e) {
             // no-op
         }
@@ -84,17 +164,17 @@ public class RestMetricsResource {
     /**
      * Processes a PUT request and returns the incoming request message.
      *
-     * @param incomingMessage the request body is mapped to the byte[] by the
-     *            JAX-RS runtime using a built-in entity provider
-     * @return the original request body in a JAX-RS Response object
+     * @param incomingMessage containing simple string
+     * @throws exception to test having an exception in the signature
+     * @return the original message sent indicating successful execution
      */
     @Path("/put1")
     @PUT
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.TEXT_PLAIN)
-    public String putMessage(String incomingMessage) {
+    public String putMessage(String incomingMessage) throws Exception {
         try {
-            Thread.sleep(2000);
+            Thread.sleep(sleepTime);
         } catch (Exception e) {
             // no-op
         }
@@ -112,7 +192,7 @@ public class RestMetricsResource {
     @DELETE
     public Response deleteMessage() {
         try {
-            Thread.sleep(2000);
+            Thread.sleep(sleepTime);
         } catch (Exception e) {
             // no-op
         }
@@ -121,4 +201,52 @@ public class RestMetricsResource {
         // method a HTTP 204 status code (No Content) is returned.
         return Response.noContent().build();
     }
+
+    String[] monitorStrings = { "WebSphere:type=RESTful_Stats,name=restmetrics/com.ibm.ws.jaxrs.fat.restmetrics."
+                                + "RestMetricsResource.getMessage()",
+                                "WebSphere:type=RESTful_Stats,name=restmetrics/com.ibm.ws.jaxrs.fat.restmetrics."
+                                                                      + "RestMetricsResource.getMultiParamMessage(java.lang.String)",
+                                "WebSphere:type=RESTful_Stats,name=restmetrics/com.ibm.ws.jaxrs.fat.restmetrics."
+                                                                                                                                      + "RestMetricsResource.getMultiParamMessage(java.lang.String_java.lang.String)",
+                                "WebSphere:type=RESTful_Stats,name=restmetrics/com.ibm.ws.jaxrs.fat.restmetrics."
+                                                                                                                                                                                                                       + "RestMetricsResource.postMessage(java.lang.String)",
+                                "WebSphere:type=RESTful_Stats,name=restmetrics/com.ibm.ws.jaxrs.fat.restmetrics."
+                                                                                                                                                                                                                                                                              + "RestMetricsResource.putMessage(java.lang.String)",
+                                "WebSphere:type=RESTful_Stats,name=restmetrics/com.ibm.ws.jaxrs.fat.restmetrics."
+                                                                                                                                                                                                                                                                                                                                    + "RestMetricsResource.deleteMessage()" };
+
+    /**
+     * Resource method to verify the monitor 1.0 data is correct.
+     *
+     * @return the stored message
+     */
+    @GET
+    @Path("{p1}/{p2}/{p3}")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String checkMonitorValues(
+                                     @PathParam("p1") int index,
+                                     @PathParam("p2") int count,
+                                     @PathParam("p3") double responseTime) throws Exception {
+
+        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+
+        ObjectName monitorObject = new ObjectName(monitorStrings[index]);
+
+        // Check monitor stats
+        RestfulStatsMXBean restfulStats = JMX.newMXBeanProxy(mbs, monitorObject, RestfulStatsMXBean.class);
+        long monitorCount = restfulStats.getRequestCount();
+        double monitorResponseTime = restfulStats.getResponseTime();
+        if (monitorCount != count) {
+            return "Failed:  Expected method count " + count + ", received " + monitorCount;
+
+        }
+        double threshold = .0001;
+        monitorResponseTime /= 1000000000;
+        if (Math.abs(monitorResponseTime - responseTime) > threshold) {
+            return "Failed:  Expected response time " + responseTime + ", received " + monitorResponseTime;
+        }
+
+        return "Passed!";
+    }
+
 }

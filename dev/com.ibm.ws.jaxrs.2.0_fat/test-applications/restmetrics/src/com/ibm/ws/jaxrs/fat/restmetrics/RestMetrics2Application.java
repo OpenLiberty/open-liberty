@@ -32,6 +32,8 @@ public class RestMetrics2Application extends Application {
     public Set<Class<?>> getClasses() {
         Set<Class<?>> classes = new HashSet<Class<?>>();
         classes.add(RestMetricsResource.class);
+        classes.add(MetricsCheckedExceptionMapper.class);
+        classes.add(MetricsUncheckedExceptionMapper.class);
         return classes;
     }
 }

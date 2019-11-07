@@ -8,8 +8,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-/**
- * @version 1.0
- */
-@org.osgi.annotation.versioning.Version("1.0")
-package com.ibm.ws.jaxrs.monitor;
+package com.ibm.ws.jaxrs.fat.restmetrics;
+
+@SuppressWarnings("serial")
+public class MetricsMappedUncheckedException extends RuntimeException {
+
+    MetricsMappedUncheckedException(String message) {
+        super(message);
+    }
+}
