@@ -18,8 +18,10 @@ Bundle-Description: Feature Utility; version=${bVersion}
 Main-Class: com.ibm.ws.install.featureUtility.FeatureUtilityExecutor
 
 Private-Package: \
-  com.ibm.ws.install.featureUtility.*
+  com.ibm.ws.install.featureUtility.*,\
+  com.ibm.ws.install.featureUtility.internal.*
   
+
 instrument.disabled: true
 
 -buildpath: \
