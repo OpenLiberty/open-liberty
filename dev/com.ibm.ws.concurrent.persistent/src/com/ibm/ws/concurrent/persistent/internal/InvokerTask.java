@@ -93,7 +93,8 @@ public class InvokerTask implements Runnable, Synchronization {
 
     @Override
     @Trivial
-    public void beforeCompletion() {}
+    public void beforeCompletion() {
+    }
 
     @Override
     public boolean equals(Object other) {
@@ -115,11 +116,11 @@ public class InvokerTask implements Runnable, Synchronization {
      * In the future, when there is support for a controller, we might want to give up the task and
      * ask another instance to try it.
      *
-     * @param failure failure of the task itself or of processing related to the task, such as Trigger.getNextRunTime
-     * @param loader class loader that can load the task and any exceptions that it might raise
+     * @param failure                 failure of the task itself or of processing related to the task, such as Trigger.getNextRunTime
+     * @param loader                  class loader that can load the task and any exceptions that it might raise
      * @param consecutiveFailureCount number of consecutive task failures
-     * @param config snapshot of persistent executor configuration
-     * @param taskName identity name for the task
+     * @param config                  snapshot of persistent executor configuration
+     * @param taskName                identity name for the task
      */
     private void processRetryableTaskFailure(Throwable failure, ClassLoader loader, short consecutiveFailureCount, Config config, String taskName) {
         taskName = taskName == null || taskName.length() == 0 || taskName.length() == 1 && taskName.charAt(0) == ' ' ? String.valueOf(taskId) // empty task name
@@ -164,7 +165,8 @@ public class InvokerTask implements Runnable, Synchronization {
                         else
                             Tr.warning(tc, "CWWKC1511.retry.limit.reached.failed", persistentExecutor.name, taskName, consecutiveFailureCount, failure);
 
-                        TaskFailure taskFailure = new TaskFailure(failure, failure == null ? null : loader, persistentExecutor, TaskFailure.FAILURE_LIMIT_REACHED, Short.toString(consecutiveFailureCount));
+                        TaskFailure taskFailure = new TaskFailure(failure, failure == null ? null : loader, persistentExecutor, TaskFailure.FAILURE_LIMIT_REACHED, Short
+                                        .toString(consecutiveFailureCount));
                         // Update database with the result and state if we reached the limit
                         TaskRecord updates = new TaskRecord(false);
                         updates.setConsecutiveFailureCount(consecutiveFailureCount);
@@ -255,6 +257,7 @@ public class InvokerTask implements Runnable, Synchronization {
         Throwable failure = null;
         Short prevFailureCount = null, nextFailureCount = null;
         Long nextExecTime = null;
+        boolean claimNextExecution = false;
         TaskStore taskStore = persistentExecutor.taskStore;
         ApplicationTracker appTracker = persistentExecutor.appTrackerRef.getServiceWithException();
         TransactionManager tranMgr = persistentExecutor.tranMgrRef.getServiceWithException();
@@ -364,8 +367,9 @@ public class InvokerTask implements Runnable, Synchronization {
             byte[] triggerBytes = taskRecord.getTrigger();
             Trigger trigger = triggerBytes == null ? null : ejbSingletonRecord != null
                                                             && Arrays.equals(triggerBytes,
-                                                                             ejbSingletonRecord.getTrigger()) ? ejbSingletonLockCollaborator : (Trigger) persistentExecutor.deserialize(triggerBytes,
-                                                                                                                                                                                        loader);
+                                                                             ejbSingletonRecord.getTrigger()) ? ejbSingletonLockCollaborator : (Trigger) persistentExecutor
+                                                                                             .deserialize(triggerBytes,
+                                                                                                          loader);
             if (trigger == null) {
                 String triggerClassName = info.getClassNameForNonSerializableTrigger();
                 if (triggerClassName != null)
@@ -397,7 +401,8 @@ public class InvokerTask implements Runnable, Synchronization {
                 if (trigger != null) {
                     Long prevScheduledStart = taskRecord.getPreviousScheduledStartTime();
                     if (prevScheduledStart != null)
-                        lastExecution = new LastExecutionImpl(persistentExecutor, taskId, taskName, resultBytes, taskRecord.getPreviousStopTime(), taskRecord.getPreviousStartTime(), prevScheduledStart, loader);
+                        lastExecution = new LastExecutionImpl(persistentExecutor, taskId, taskName, resultBytes, taskRecord.getPreviousStopTime(), taskRecord
+                                        .getPreviousStartTime(), prevScheduledStart, loader);
                     try {
                         skipped = trigger.skipRun(lastExecution, new Date(taskRecord.getNextExecutionTime()));
                     } catch (RuntimeException x) {
@@ -495,7 +500,8 @@ public class InvokerTask implements Runnable, Synchronization {
                         if (updatedResultBytes == null || !Arrays.equals(resultBytes, updatedResultBytes))
                             updates.setResult(updatedResultBytes);
                     } else {
-                        updates.setResult(persistentExecutor.serialize(new TaskFailure(failure, loader, persistentExecutor, TaskFailure.FAILURE_LIMIT_REACHED, Short.toString(nextFailureCount))));
+                        updates.setResult(persistentExecutor
+                                        .serialize(new TaskFailure(failure, loader, persistentExecutor, TaskFailure.FAILURE_LIMIT_REACHED, Short.toString(nextFailureCount))));
                         state = (short) (TaskState.ENDED.bit | TaskState.FAILURE_LIMIT_REACHED.bit);
                     }
                 }
@@ -511,6 +517,17 @@ public class InvokerTask implements Runnable, Synchronization {
                     if (!Arrays.equals(triggerBytes, updatedTriggerBytes))
                         updates.setTrigger(updatedTriggerBytes);
                 }
+
+                // When updating the task entry, determine whether or not to keep a claim on the task.
+                config = persistentExecutor.configRef.get();
+                if (config.missedTaskThreshold2 > 0)
+                    if (config.enableTaskExecution && config.pollInterval > 0 && nextExecTime != null && nextExecTime <= System.currentTimeMillis() + config.pollInterval) {
+                        updates.setIdentifierOfPartition(nextExecTime + config.missedTaskThreshold2 * 1000);
+                        claimNextExecution = true;
+                    } else {
+                        updates.setIdentifierOfPartition(-1);
+                    }
+
                 TaskRecord expected = new TaskRecord(false);
                 expected.setId(taskId);
                 expected.setVersion(taskRecord.getVersion());
@@ -572,11 +589,15 @@ public class InvokerTask implements Runnable, Synchronization {
 
                     // Immediately reschedule tasks that should run in the near future if the transaction commits
                     config = persistentExecutor.configRef.get();
-                    if (config.enableTaskExecution && nextExecTime != null
-                        && (config.pollInterval < 0 || nextExecTime <= new Date().getTime() + config.pollInterval)) {
-
+                    boolean scheduleNextExecution = config.missedTaskThreshold2 > 0 //
+                                    ? claimNextExecution //
+                                    : config.enableTaskExecution && nextExecTime != null
+                                      && config.missedTaskThreshold2 < 1 // claim on next execution did not need to be written to the persistent store
+                                      && (config.pollInterval < 0
+                                          || nextExecTime <= System.currentTimeMillis() + config.pollInterval);
+                    if (scheduleNextExecution) {
                         expectedExecTime = nextExecTime;
-                        long delay = nextExecTime - new Date().getTime();
+                        long delay = nextExecTime - System.currentTimeMillis();
 
                         ScheduledExecutorService executor = persistentExecutor.scheduledExecutor;
                         if (executor == null) {

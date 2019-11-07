@@ -51,6 +51,14 @@ class Config {
     final long missedTaskThreshold;
 
     /**
+     * Amount of time (in seconds) beyond a task's scheduled start time to reserve for running the next execution of the task.
+     * Other executor instances are prevented from claiming ownership of the task prior to the expiration of this interval,
+     * but if the interval elapses without successful execution of the task, then the task execution is considered to have been missed,
+     * enabling another instance to attempt to run it.
+     */
+    final long missedTaskThreshold2;
+
+    /**
      * Interval between polling for tasks to run. A value of -1 disables all polling after the initial poll.
      */
     final long pollInterval;
@@ -84,6 +92,7 @@ class Config {
         heartbeatInterval = (Long) properties.get("heartbeatInterval");
         initialPollDelay = (Long) properties.get("initialPollDelay");
         missedTaskThreshold = enableTaskExecution ? (Long) properties.get("missedTaskThreshold") : -1;
+        missedTaskThreshold2 = (Long) properties.get("missedTaskThreshold2");
         pollInterval = enableTaskExecution ? (Long) properties.get("pollInterval") : -1;
         pollSize = enableTaskExecution ? (Integer) properties.get("pollSize") : null;
         retryInterval = (Long) properties.get("retryInterval");
@@ -96,6 +105,8 @@ class Config {
             throw new IllegalArgumentException("heartbeatInterval: " + heartbeatInterval + "s");
         if (missedTaskThreshold != -1 && missedTaskThreshold < 1)
             throw new IllegalArgumentException("missedTaskThreshold: " + missedTaskThreshold + "s");
+        if ((missedTaskThreshold2 != -1 && missedTaskThreshold2 < 1) || missedTaskThreshold2 > 86400) // disallowing above 1 day. What is a reasonable upper bound?
+            throw new IllegalArgumentException("missedTaskThreshold2: " + missedTaskThreshold2 + "s");
         if (initialPollDelay < -1)
             throw new IllegalArgumentException("initialPollDelay: " + initialPollDelay + "ms");
         if (pollInterval < -1)
@@ -113,6 +124,7 @@ class Config {
                         .append(",heartbeatInterval=").append(heartbeatInterval)
                         .append("s,initialPollDelay=").append(initialPollDelay)
                         .append("ms,missedTaskThreshold=").append(missedTaskThreshold)
+                        .append("s,missedTaskThreshold2=").append(missedTaskThreshold2)
                         .append("s,pollInterval=").append(pollInterval)
                         .append("ms,pollSize=").append(pollSize)
                         .append(",retryInterval=").append(retryInterval)

@@ -200,9 +200,9 @@ public class DatabaseTaskStore implements TaskStore {
     /** {@inheritDoc} */
     @Override
     public int cancel(String pattern, Character escape, TaskState state, boolean inState, String owner) throws Exception {
-        StringBuilder update = new StringBuilder(133).append("UPDATE Task t SET t.STATES=")
+        StringBuilder update = new StringBuilder(155).append("UPDATE Task t SET t.STATES=")
                         .append(TaskState.CANCELED.bit + TaskState.ENDED.bit)
-                        .append(" WHERE t.STATES<")
+                        .append(",t.VERSION=t.VERSION+1 WHERE t.STATES<")
                         .append(TaskState.ENDED.bit); // cannot cancel already-ended tasks
         if (owner != null)
             update.append(" AND t.OWNR=:o");
@@ -817,6 +817,39 @@ public class DatabaseTaskStore implements TaskStore {
 
     /** {@inheritDoc} */
     @Override
+    public List<Object[]> findUnclaimedTasks(long missedTaskThreshold, long maxNextExecTime, Integer maxResults) throws Exception {
+        StringBuilder find = new StringBuilder(150)
+                        .append("SELECT t.ID,t.MBITS,t.NEXTEXEC,t.TXTIMEOUT,t.VERSION FROM Task t WHERE t.STATES<")
+                        .append(TaskState.SUSPENDED.bit)
+                        .append(" AND t.NEXTEXEC<=:nx AND t.PARTN<t.NEXTEXEC+:tt");
+        if (maxResults != null)
+            find.append(" ORDER BY t.NEXTEXEC");
+
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "findUnclaimedTasks", Utils.appendDate(new StringBuilder(30), maxNextExecTime), missedTaskThreshold, maxResults, find);
+
+        List<Object[]> resultList;
+        EntityManager em = getPersistenceServiceUnit().createEntityManager();
+        try {
+            TypedQuery<Object[]> query = em.createQuery(find.toString(), Object[].class);
+            query.setParameter("nx", maxNextExecTime);
+            query.setParameter("tt", missedTaskThreshold * 1000);
+            if (maxResults != null)
+                query.setMaxResults(maxResults);
+            List<Object[]> results = query.getResultList();
+            resultList = results;
+        } finally {
+            em.close();
+        }
+
+        if (trace && tc.isEntryEnabled())
+            Tr.exit(this, tc, "findUnclaimedTasks", resultList.size());
+        return resultList;
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public List<Object[]> findUpcomingTasks(long partition, long maxNextExecTime, Integer maxResults) throws Exception {
         StringBuilder find = new StringBuilder(129)
                         .append("SELECT t.ID,t.MBITS,t.NEXTEXEC,t.TXTIMEOUT FROM Task t WHERE t.PARTN=:p AND t.STATES<")
@@ -1083,7 +1116,7 @@ public class DatabaseTaskStore implements TaskStore {
     /** {@inheritDoc} */
     @Override
     public short incrementFailureCount(long taskId) throws Exception {
-        String update = "UPDATE Task t SET t.RFAILS=t.RFAILS+1 WHERE t.ID=:i AND t.RFAILS<" + Short.MAX_VALUE;
+        String update = "UPDATE Task t SET t.RFAILS=t.RFAILS+1,t.VERSION=t.VERSION+1 WHERE t.ID=:i AND t.RFAILS<" + Short.MAX_VALUE;
         String find = "SELECT t.RFAILS FROM Task t WHERE t.ID=:i";
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
@@ -1707,11 +1740,11 @@ public class DatabaseTaskStore implements TaskStore {
     /** {@inheritDoc} */
     @Override
     public int transfer(Long maxTaskId, long oldPartitionId, long newPartitionId) throws Exception {
-        StringBuilder update = new StringBuilder(69)
-                        .append("UPDATE Task SET PARTN=:p2 WHERE ");
+        StringBuilder update = new StringBuilder(101)
+                        .append("UPDATE Task t SET t.PARTN=:p2,t.VERSION=t.VERSION+1 WHERE ");
         if (maxTaskId != null && maxTaskId != Long.MAX_VALUE)
-            update.append("ID<=:i AND ");
-        update.append("PARTN=:p1 AND STATES<").append(TaskState.ENDED.bit);
+            update.append("t.ID<=:i AND ");
+        update.append("t.PARTN=:p1 AND t.STATES<").append(TaskState.ENDED.bit);
 
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
