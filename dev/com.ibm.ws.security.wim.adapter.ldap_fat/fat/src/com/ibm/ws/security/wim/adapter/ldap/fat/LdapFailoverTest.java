@@ -37,6 +37,8 @@ import com.unboundid.ldap.sdk.Entry;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.LDAPUtils;
@@ -45,6 +47,7 @@ import componenttest.topology.utils.LDAPUtils;
  * Ensure we're timing out the LDAP context pool when expected.
  */
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class LdapFailoverTest {
 
     private static LibertyServer libertyServer = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.wim.adapter.ldap.fat.return.to.primary");
