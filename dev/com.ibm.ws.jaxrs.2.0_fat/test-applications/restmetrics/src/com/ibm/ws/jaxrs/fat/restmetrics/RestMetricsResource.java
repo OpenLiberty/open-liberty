@@ -50,6 +50,11 @@ public class RestMetricsResource {
     public String getMessage() {
         // Note that if null is returned from a resource method, a HTTP 204 (No
         // Content) status code response is sent.
+        try {
+            Thread.sleep(2000);
+        } catch (Exception e) {
+            // no-op
+        }
         return RestMetricsResource.message;
     }
 
@@ -60,12 +65,18 @@ public class RestMetricsResource {
      *            JAX-RS runtime using a built-in entity provider
      * @return the original request body
      */
+    @Path("/post1")
     @POST
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.TEXT_PLAIN)
     public String postMessage(String incomingMessage) {
         // A plain Java parameter is used to represent the request body. The
         // JAX-RS runtime will map the request body to a String.
+        try {
+            Thread.sleep(2000);
+        } catch (Exception e) {
+            // no-op
+        }
         RestMetricsResource.message = incomingMessage;
         return incomingMessage;
     }
@@ -77,16 +88,19 @@ public class RestMetricsResource {
      *            JAX-RS runtime using a built-in entity provider
      * @return the original request body in a JAX-RS Response object
      */
+    @Path("/put1")
     @PUT
-    public Response putMessage(byte[] incomingMessage) {
-        // Note that different Java types can be used to map the
-        // incoming request body to a Java type.
-        RestMetricsResource.message = new String(incomingMessage);
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.TEXT_PLAIN)
+    public String putMessage(String incomingMessage) {
+        try {
+            Thread.sleep(2000);
+        } catch (Exception e) {
+            // no-op
+        }
 
-        // Note that a javax.ws.rs.core.Response object is returned. A Response
-        // object can be built which contains additional HTTP headers, a status
-        // code, and the entity body.
-        return Response.ok(incomingMessage).type(MediaType.TEXT_PLAIN).build();
+        RestMetricsResource.message = incomingMessage;
+        return incomingMessage;
     }
 
     /**
@@ -94,8 +108,14 @@ public class RestMetricsResource {
      *
      * @return an empty response with a 204 status code
      */
+    @Path("/delete1")
     @DELETE
     public Response deleteMessage() {
+        try {
+            Thread.sleep(2000);
+        } catch (Exception e) {
+            // no-op
+        }
         RestMetricsResource.message = null;
         // Note that a javax.ws.rs.core.Response object is returned. In this
         // method a HTTP 204 status code (No Content) is returned.
