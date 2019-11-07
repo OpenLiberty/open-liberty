@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -46,14 +46,8 @@ public class OSGiInjectionScopeDataTest {
                                                                                 NamingConstants.JavaColonNamespace.APP,
                                                                                 NamingConstants.JavaColonNamespace.GLOBAL);
         for (NamingConstants.JavaColonNamespace bindNamespace : bindNamespaces) {
-            NamingConstants.JavaColonNamespace createNamespace =
-                            bindNamespace == NamingConstants.JavaColonNamespace.COMP_ENV ?
-                                            NamingConstants.JavaColonNamespace.COMP :
-                                            bindNamespace;
-            ReentrantReadWriteLock nonCompLock =
-                            createNamespace == NamingConstants.JavaColonNamespace.COMP ?
-                                            null :
-                                            new ReentrantReadWriteLock();
+            NamingConstants.JavaColonNamespace createNamespace = bindNamespace == NamingConstants.JavaColonNamespace.COMP_ENV ? NamingConstants.JavaColonNamespace.COMP : bindNamespace;
+            ReentrantReadWriteLock nonCompLock = createNamespace == NamingConstants.JavaColonNamespace.COMP ? null : new ReentrantReadWriteLock();
             OSGiInjectionScopeData scopeData = new OSGiInjectionScopeData(null, createNamespace, null, nonCompLock);
             scopeData.compLock();
 
@@ -113,7 +107,13 @@ public class OSGiInjectionScopeDataTest {
 
                 for (NamingConstants.JavaColonNamespace namespace : NamingConstants.JavaColonNamespace.values()) {
                     if (namespace != bindNamespace) {
-                        Assert.assertNull(bindNamespace + "+" + namespace, scopeData.getInjectionBinding(namespace, "name"));
+                        // In a web module, the java:comp and java:module namespaces are the same
+                        // so the same InjectionBinding will be found in either namespace
+                        if (namespace == NamingConstants.JavaColonNamespace.COMP && bindNamespace == NamingConstants.JavaColonNamespace.MODULE) {
+                            Assert.assertSame(bindNamespace + "+" + namespace, binding, scopeData.getInjectionBinding(namespace, "name"));
+                        } else {
+                            Assert.assertNull(bindNamespace + "+" + namespace, scopeData.getInjectionBinding(namespace, "name"));
+                        }
                         Assert.assertNull(bindNamespace + "+" + namespace, scopeData.getInjectionBinding(namespace, "doesnotexist"));
                         Assert.assertFalse(bindNamespace + "+" + namespace, scopeData.hasObjectWithPrefix(namespace, ""));
                         Assert.assertTrue(bindNamespace + "+" + namespace, scopeData.listInstances(namespace, "").isEmpty());

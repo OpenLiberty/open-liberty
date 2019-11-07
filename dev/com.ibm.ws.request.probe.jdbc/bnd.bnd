@@ -1,0 +1,72 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: JDBC Request Probe
+Bundle-SymbolicName: com.ibm.ws.request.probe.jdbc
+Bundle-Description: JDBC Request Probe: JDBC Request Probe; version=${bVersion}
+
+WS-TraceGroup: com.ibm.ws.request.probe.jdbc
+
+Import-Package: com.ibm.wsspi.probeExtension, \
+    com.ibm.ws.jdbc.timedoperations, \
+    com.ibm.wsspi.request.probe.bci, \
+    com.ibm.wsspi.requestContext
+    
+Private-Package: com.ibm.ws.request.probe.jdbc
+
+Service-Component= com.ibm.ws.request.probe.jdbc.JDBC_TO_BRIDGE_EXECUTE_UPDATE; \
+        implementation:=com.ibm.ws.request.probe.jdbc.JdbcTOBridgeExecuteUpdate; \
+        provide:=com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor; \
+        properties:="service.vendor=IBM", \
+        com.ibm.ws.request.probe.jdbc.JDBC_TO_BRIDGE_EXECUTE; \
+        implementation:=com.ibm.ws.request.probe.jdbc.JdbcTOBridgeExecute; \
+        provide:=com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor; \
+        properties:="service.vendor=IBM", \
+        com.ibm.ws.request.probe.jdbc.JDBC_TO_BRIDGE_EXECUTE_QUERY; \
+        implementation:=com.ibm.ws.request.probe.jdbc.JdbcTOBridgeExecuteQuery; \
+        provide:=com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor; \
+        properties:="service.vendor=IBM", \
+        com.ibm.ws.request.probe.jdbc.JDBC_TO_BRIDGE_PS_EXECUTE; \
+        implementation:=com.ibm.ws.request.probe.jdbc.JdbcTOBridgePSExecute; \
+        provide:=com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor; \
+        properties:="service.vendor=IBM", \
+        com.ibm.ws.request.probe.jdbc.JDBC_TO_BRIDGE_PS_EXECUTE_QUERY; \
+        implementation:=com.ibm.ws.request.probe.jdbc.JdbcTOBridgePSExecuteQuery; \
+        provide:=com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor; \
+        properties:="service.vendor=IBM", \
+        com.ibm.ws.request.probe.jdbc.JDBC_TO_BRIDGE_PS_EXECUTE_UPDATE; \
+        implementation:=com.ibm.ws.request.probe.jdbc.JdbcTOBridgePSExecuteUpdate; \
+        provide:=com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor; \
+        properties:="service.vendor=IBM", \
+        com.ibm.ws.request.probe.jdbc.JDBC_TO_BRIDGE_RS_CANCEL_ROW_UPDATES; \
+        implementation:=com.ibm.ws.request.probe.jdbc.JdbcTOBridgeRSCancelRowUpdates; \
+        provide:=com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor; \
+        properties:="service.vendor=IBM", \
+        com.ibm.ws.request.probe.jdbc.JDBC_TO_BRIDGE_RS_DELETE_ROW; \
+        implementation:=com.ibm.ws.request.probe.jdbc.JdbcTOBridgeRSDeleteRow; \
+        provide:=com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor; \
+        properties:="service.vendor=IBM", \
+        com.ibm.ws.request.probe.jdbc.JDBC_TO_BRIDGE_RS_INSERT_ROW; \
+        implementation:=com.ibm.ws.request.probe.jdbc.JdbcTOBridgeRSInsertRow; \
+        provide:=com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor; \
+        properties:="service.vendor=IBM", \
+        com.ibm.ws.request.probe.jdbc.JDBC_TO_BRIDGE_RS_UPDATE_ROW; \
+        implementation:=com.ibm.ws.request.probe.jdbc.JdbcTOBridgeRSUpdateRow; \
+        provide:=com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor; \
+        properties:="service.vendor=IBM"
+
+instrument.disabled: true
+
+-buildpath: \
+	com.ibm.ws.request.probes;version=latest,\
+	com.ibm.ws.jdbc;version=latest

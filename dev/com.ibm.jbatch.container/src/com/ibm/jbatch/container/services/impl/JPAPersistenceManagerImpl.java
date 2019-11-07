@@ -1291,15 +1291,14 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
         }
     }
 
-    @Override
-    public List<Long> getJobExecutionsRunning(final String jobName) {
+    protected List<Long> getJobInstancesRunning(final String jobName) {
         final EntityManager em = getPsu().createEntityManager();
         try {
             List<Long> exec = new TranRequest<List<Long>>(em) {
 
                 @Override
                 public List<Long> call() throws Exception {
-                    TypedQuery<Long> query = em.createNamedQuery(JobExecutionEntity.GET_JOB_EXECUTIONIDS_BY_NAME_AND_STATUSES_QUERY,
+                    TypedQuery<Long> query = em.createNamedQuery(JobInstanceEntity.GET_JOBINSTANCEIDS_BY_NAME_AND_STATUSES_QUERY,
                                                                  Long.class);
                     query.setParameter("name", jobName);
                     query.setParameter("status", RUNNING_STATUSES);
@@ -1307,6 +1306,43 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                     if (result == null) {
                         return new ArrayList<Long>();
                     }
+                    return result;
+                }
+            }.runInNewOrExistingGlobalTran();
+
+            return exec;
+
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public List<Long> getJobExecutionsRunning(final String jobName) {
+
+        final List<Long> runningInstances = getJobInstancesRunning(jobName);
+
+        final EntityManager em = getPsu().createEntityManager();
+        try {
+            List<Long> exec = new TranRequest<List<Long>>(em) {
+
+                @Override
+                public List<Long> call() throws Exception {
+
+                    List<Long> result = null;
+
+                    if (runningInstances.size() > 0) {
+                        TypedQuery<Long> query = em.createNamedQuery(JobExecutionEntity.GET_JOB_EXECUTIONIDS_BY_JOB_INST_ID,
+                                                                     Long.class);
+                        query.setParameter("instanceList", runningInstances);
+
+                        result = query.getResultList();
+                    }
+
+                    if (result == null) {
+                        return new ArrayList<Long>();
+                    }
+
                     return result;
                 }
             }.runInNewOrExistingGlobalTran();

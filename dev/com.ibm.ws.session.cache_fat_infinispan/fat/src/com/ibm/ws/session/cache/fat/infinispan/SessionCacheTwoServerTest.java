@@ -14,18 +14,13 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -52,20 +47,6 @@ public class SessionCacheTwoServerTest extends FATServletClient {
         appB = new SessionCacheApp(serverB, true, "session.cache.infinispan.web", "session.cache.infinispan.web.cdi", "session.cache.infinispan.web.listener1");
         serverB.useSecondaryHTTPPort();
 
-        //String hazelcastConfigFile = "hazelcast-localhost-only.xml";
-
-        //if (FATSuite.isMulticastDisabled()) {
-        //    Log.info(SessionCacheTwoServerTest.class, "setUp", "Disabling multicast in Hazelcast config.");
-        //    hazelcastConfigFile = "hazelcast-localhost-only-multicastDisabled.xml";
-        //}
-
-        //String configLocation = new File(serverB.getUserDir() + "/shared/resources/hazelcast/" + hazelcastConfigFile).getAbsolutePath();
-        //String rand = UUID.randomUUID().toString();
-        //serverA.setJvmOptions(Arrays.asList("-Dhazelcast.group.name=" + rand,
-        //                                    "-Dhazelcast.config.file=" + hazelcastConfigFile));
-        //serverB.setJvmOptions(Arrays.asList("-Dhazelcast.group.name=" + rand,
-        //                                    "-Dhazelcast.config=" + configLocation));
-
         serverA.startServer();
 
         // Since we initialize the JCache provider lazily, use an HTTP session on serverA before starting serverB,
@@ -81,14 +62,14 @@ public class SessionCacheTwoServerTest extends FATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         try {
-            // TODO testFailover();
+            testFailover();
         } finally {
             try {
                 if (serverA.isStarted())
                     serverA.stopServer();
             } finally {
                 if (serverB.isStarted())
-                    serverB.stopServer("CWWKL0058W:.*InfinispanLib"); // TODO why does this occur for Infinispan jar, but not Hazelcast?
+                    serverB.stopServer();
             }
         }
     }
@@ -122,7 +103,7 @@ public class SessionCacheTwoServerTest extends FATServletClient {
      * serialized when the session is evicted from memory, and deserialized
      * when the session is accessed again.
      */
-    // TODO @Test
+    @Test
     public void testBasicSerialization() throws Exception {
         List<String> session = new ArrayList<>();
         try {
@@ -138,7 +119,7 @@ public class SessionCacheTwoServerTest extends FATServletClient {
      * Test that calling session.invalidate() on one server will propagate the
      * invalidation to the other server
      */
-    // TODO @Test
+    @Test
     public void testCrossServerInvalidation() throws Exception {
         List<String> session = new ArrayList<>();
         appA.invokeServlet("testSerialization", session);
@@ -208,7 +189,7 @@ public class SessionCacheTwoServerTest extends FATServletClient {
      * App A on server A uses GET_AND_SET_ATTRIBUTES, which means that an update made locally to an attribute after getting it
      * without performing a putAttribute will be written to the persistent store.
      */
-    // TODO @Test
+    @Test
     public void testModifyWithoutPut() throws Exception {
         List<String> session = new ArrayList<>();
         appA.sessionPut("testModifyWithoutPut-key", new StringBuffer("MyValue"), session, true);
@@ -297,7 +278,7 @@ public class SessionCacheTwoServerTest extends FATServletClient {
      * that that value overrides the invalidation time configured in server.xml
      * for the given session.
      */
-    // TODO @Test
+    @Test
     public void testMaxInactiveInterval() throws Exception {
         List<String> session = new ArrayList<>();
         appA.sessionPut("testMaxInactiveInterval-key", 55901, session, true);

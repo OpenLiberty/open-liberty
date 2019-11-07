@@ -11,7 +11,9 @@
 package com.ibm.ws.security.fat.common.expectations;
 
 import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeTrue;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.regex.Pattern;
 
@@ -23,7 +25,9 @@ import org.junit.Test;
 
 import com.ibm.ws.security.fat.common.Constants;
 
+import componenttest.annotation.MaximumJavaLevel;
 import test.common.SharedOutputManager;
+import test.common.junit.rules.JavaInfo;
 
 public class ResponseUrlExpectationTest extends CommonSpecificExpectationTest {
 
@@ -213,14 +217,21 @@ public class ResponseUrlExpectationTest extends CommonSpecificExpectationTest {
 
     @Test
     public void test_validate_checkTypeMatches_matchSpansMultipleLines() {
+        // In Java 13 trying to construct a new URL() with a line break param is rejected
+        assumeTrue(JavaInfo.JAVA_VERSION < 13);
         try {
             String searchForRegex = "line1.+line2";
             Expectation exp = new ResponseUrlExpectation(TEST_ACTION, Constants.STRING_MATCHES, searchForRegex, FAILURE_MESSAGE);
             Object content = htmlunitTextPage;
-            URL testUrl = new URL("http://line1\n\rline2");
-            setValidateTestExpectations(content, testUrl);
+            try {
+                URL testUrl = new URL("http://line1\n\rline2");
+                setValidateTestExpectations(content, testUrl);
 
-            runNegativeValidateTestForCheckType_matches(exp, content, testUrl.toString());
+                runNegativeValidateTestForCheckType_matches(exp, content, testUrl.toString());
+            } catch (MalformedURLException e) {
+                // Some JDKs will throw this exception for a URL string with LF or CR characters and other JDKs won't.
+                // Doing nothing in this catch should allow for both behaviors since both could be considered valid.
+            }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }

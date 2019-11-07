@@ -12,12 +12,14 @@ import io.leangen.graphql.metadata.messages.MessageBundle;
 import io.leangen.graphql.metadata.strategy.InclusionStrategy;
 import io.leangen.graphql.util.ClassUtils;
 import io.leangen.graphql.util.ReservedStrings;
+import org.eclipse.microprofile.graphql.Description;
 import org.eclipse.microprofile.graphql.Mutation;
 import org.eclipse.microprofile.graphql.Query;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.AnnotatedType;
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
@@ -50,7 +52,7 @@ public class AnnotatedResolverBuilder extends FilteredResolverBuilder {
                 .map(field -> new Resolver(
                         operationNameGenerator.generateQueryName(
                                 new OperationNameGeneratorParams<>(field, beanType, params.getQuerySourceBean(), messageBundle)),
-                        messageBundle.interpolate(field.getAnnotation(Query.class).description()),
+                        messageBundle.interpolate(field.getAnnotation(Description.class).value()),
                         deprecationReason(field, messageBundle),
                         false,
                         new FieldAccessor(field, beanType),
@@ -83,7 +85,7 @@ public class AnnotatedResolverBuilder extends FilteredResolverBuilder {
                 .filter(method -> inclusionStrategy.includeOperation(method, getReturnType(method, params)))
                 .map(method -> new Resolver(
                         nameGenerator.apply(new OperationNameGeneratorParams<>(method, beanType, querySourceBean, messageBundle)),
-                        description(method.getAnnotation(annotation), messageBundle),
+                        description(method, method.getAnnotation(annotation), messageBundle),
                         ReservedStrings.decode(deprecationReason(method, messageBundle)),
                         batchable && method.isAnnotationPresent(Batched.class),
                         querySourceBean == null ? new MethodInvoker(method, beanType) : new SingletonMethodInvoker(querySourceBean, method, beanType),
@@ -93,24 +95,18 @@ public class AnnotatedResolverBuilder extends FilteredResolverBuilder {
                 )).collect(Collectors.toSet());
     }
 
-    private String description(Annotation annotation, MessageBundle messageBundle) {
-        if (annotation instanceof Query) {
-            return messageBundle.interpolate(((Query) annotation).description());
+    private String description(Method method, Annotation annotation, MessageBundle messageBundle) {
+        if (!(annotation instanceof Query) && !(annotation instanceof Mutation) && !(annotation instanceof Subscription)) {
+            throw new IllegalArgumentException("Invalid operation annotations " + annotation);
         }
-        if (annotation instanceof Mutation) {
-            return messageBundle.interpolate(((Mutation) annotation).description());
+        Description desc = method.getAnnotation(Description.class);
+        if (desc != null) {
+            return messageBundle.interpolate(desc.value());
         }
-        if (annotation instanceof Subscription) {
-            return messageBundle.interpolate(((Subscription) annotation).description());
-        }
-        throw new IllegalArgumentException("Invalid operation annotations " + annotation);
+        return "";
     }
 
     private String deprecationReason(AnnotatedElement element, MessageBundle messageBundle) {
-        if (element.isAnnotationPresent(org.eclipse.microprofile.graphql.Deprecated.class)) {
-            return messageBundle.interpolate(ReservedStrings.decode(
-                element.getAnnotation(org.eclipse.microprofile.graphql.Deprecated.class).value()));
-        }
         if (element.isAnnotationPresent(Deprecated.class)) {
             return messageBundle.interpolate(ReservedStrings.decode(element.getAnnotation(Deprecated.class).value()));
         }
@@ -128,5 +124,10 @@ public class AnnotatedResolverBuilder extends FilteredResolverBuilder {
         AnnotatedResolverBuilder that = (AnnotatedResolverBuilder) other;
         return this.operationNameGenerator.getClass().equals(that.operationNameGenerator.getClass())
                 && this.argumentBuilder.getClass().equals(that.argumentBuilder.getClass());
+    }
+
+    protected String extractDescription(AnnotatedType annoType, MessageBundle messageBundle) {
+        Description descAnno = annoType.getAnnotation(Description.class);
+        return descAnno != null ? descAnno.value() : "";
     }
 }

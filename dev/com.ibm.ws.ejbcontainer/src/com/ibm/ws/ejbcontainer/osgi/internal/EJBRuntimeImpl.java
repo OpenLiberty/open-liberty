@@ -105,6 +105,8 @@ import com.ibm.ws.container.service.metadata.MetaDataException;
 import com.ibm.ws.container.service.metadata.MetaDataService;
 import com.ibm.ws.container.service.metadata.MetaDataSlotService;
 import com.ibm.ws.container.service.metadata.extended.DeferredMetaDataFactory;
+import com.ibm.ws.container.service.naming.EJBLocalNamingHelper;
+import com.ibm.ws.container.service.naming.LocalColonEJBNamingHelper;
 import com.ibm.ws.container.service.state.ApplicationStateListener;
 import com.ibm.ws.container.service.state.StateChangeException;
 import com.ibm.ws.ejbcontainer.EJBComponentMetaData;
@@ -129,6 +131,7 @@ import com.ibm.ws.ejbcontainer.osgi.internal.metadata.OSGiBeanMetaData;
 import com.ibm.ws.ejbcontainer.osgi.internal.metadata.OSGiEJBApplicationMetaData;
 import com.ibm.ws.ejbcontainer.osgi.internal.metadata.OSGiEJBModuleMetaDataImpl;
 import com.ibm.ws.ejbcontainer.osgi.internal.metadata.WCCMMetaDataImpl;
+import com.ibm.ws.ejbcontainer.osgi.internal.naming.EJBBinding;
 import com.ibm.ws.ejbcontainer.osgi.internal.naming.EJBJavaColonNamingHelper;
 import com.ibm.ws.ejbcontainer.osgi.internal.passivator.StatefulPassivatorImpl;
 import com.ibm.ws.ejbcontainer.runtime.AbstractEJBRuntime;
@@ -208,6 +211,8 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
     private final AtomicServiceReference<InjectionEngine> injectionEngineSRRef = new AtomicServiceReference<InjectionEngine>(REFERENCE_INJECTION_ENGINE);
     private EJBSecurityCollaborator<?> securityCollaborator;
     private EJBJavaColonNamingHelper javaColonHelper;
+    private EJBLocalNamingHelper<EJBBinding> ejbLocalNamingHelper;
+    private LocalColonEJBNamingHelper<EJBBinding> localColonNamingHelper;
     private ScheduledExecutorService scheduledExecutorService;
     private ScheduledExecutorService deferrableScheduledExecutorService;
     private J2EENameFactory j2eeNameFactory;
@@ -381,7 +386,7 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "processCustomBindingsConfig");
 
-        // TODO: remove ContainerProperties.customBindingsEnabledBeta after custom bindings beta    
+        // TODO: remove ContainerProperties.customBindingsEnabledBeta after custom bindings beta
         boolean isBeta = false;
         try {
             final Map<String, ProductInfo> productInfos = ProductInfo.getAllProductInfo();
@@ -899,7 +904,7 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
             NameSpaceBinder<?> binder = osgiMMD.systemModuleNameSpaceBinder;
             return binder != null ? binder : new SystemNameSpaceBinderImpl(ejbRemoteRuntimeServiceRef.getService());
         }
-        return new NameSpaceBinderImpl(mmd, getJavaColonHelper(), ejbRemoteRuntimeServiceRef.getService());
+        return new NameSpaceBinderImpl(mmd, getJavaColonHelper(), getEJBLocalNamingHelper(), getLocalColonEJBNamingHelper(), ejbRemoteRuntimeServiceRef.getService());
     }
 
     @Override
@@ -1338,6 +1343,32 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
 
     protected void unsetJavaColonHelper(EJBJavaColonNamingHelper jcnh) {
         this.javaColonHelper = jcnh;
+    }
+
+    public EJBLocalNamingHelper getEJBLocalNamingHelper() {
+        return this.ejbLocalNamingHelper;
+    }
+
+    @Reference
+    protected void setEJBLocalNamingHelper(EJBLocalNamingHelper ejblocnh) {
+        this.ejbLocalNamingHelper = ejblocnh;
+    }
+
+    protected void unsetEJBLocalNamingHelper(EJBLocalNamingHelper ejblocnh) {
+        this.ejbLocalNamingHelper = ejblocnh;
+    }
+
+    public LocalColonEJBNamingHelper getLocalColonEJBNamingHelper() {
+        return this.localColonNamingHelper;
+    }
+
+    @Reference
+    protected void setLocalColonNamingHelper(LocalColonEJBNamingHelper localnh) {
+        this.localColonNamingHelper = localnh;
+    }
+
+    protected void unsetLocalColonNamingHelper(LocalColonEJBNamingHelper localnh) {
+        this.localColonNamingHelper = localnh;
     }
 
     @Reference(target = "(&" +

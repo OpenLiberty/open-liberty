@@ -198,6 +198,13 @@ public class DefaultConfigurationProvider implements ConfigurationProvider {
         return _recoverOnStartup;
     }
 
+    protected static boolean _OnePCOptimization;
+
+    @Override
+    public boolean isOnePCOptimization() {
+        return _OnePCOptimization;
+    }
+
     protected static boolean _waitForRecovery;
 
     @Override
@@ -303,7 +310,7 @@ public class DefaultConfigurationProvider implements ConfigurationProvider {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.tx.config.ConfigurationProvider#getTimeBetweenHeartbeats()
      */
     @Override
@@ -314,7 +321,7 @@ public class DefaultConfigurationProvider implements ConfigurationProvider {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.tx.config.ConfigurationProvider#getPeerTimeBeforeStale()
      */
     @Override
@@ -325,7 +332,7 @@ public class DefaultConfigurationProvider implements ConfigurationProvider {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.tx.config.ConfigurationProvider#getLocalTimeBeforeStale()
      */
     @Override

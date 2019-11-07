@@ -35,5 +35,4 @@ instrument.disabled: true
 	com.ibm.ws.logging.core;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
 	com.ibm.ws.logging;version=latest, \
-	com.ibm.ws.kernel.boot.java7;version=latest, \
 	org.apache.commons:commons-compress;version=1.19

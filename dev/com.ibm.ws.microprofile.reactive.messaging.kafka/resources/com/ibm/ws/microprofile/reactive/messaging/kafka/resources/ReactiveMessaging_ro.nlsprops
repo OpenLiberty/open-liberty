@@ -41,9 +41,19 @@ kafka.poll.error.CWMRX1002E.explanation=A ap\u0103rut o eroare \u00een Kafka Inc
 kafka.poll.error.CWMRX1002E.useraction=Examina\u0163i fi\u015fierul message.log \u015fi istoricele FFDC pentru a identifica problema.
 
 # An error occurred when sending a message to the Kafka broker. The error is: {0}.
-kafka.send.error.CWMRX1003E=CWMRX1003E: A ap\u0103rut o eroare la trimiterea unui mesaj la brokerul Kafka .Eroarea este: {0}.
+kafka.send.error.CWMRX1003E=CWMRX1003E: A ap\u0103rut o eroare la trimiterea unui mesaj la brokerul Kafka . Eroarea este: {0}.
 kafka.send.error.CWMRX1003E.explanation=A ap\u0103rut o eroare \u00een Kafka Outgoing Connector care \u00eempiedic\u0103 operarea normal\u0103 pentru Reactive Messaging.
 kafka.send.error.CWMRX1003E.useraction=Examina\u0163i fi\u015fierul message.log \u015fi istoricele FFDC pentru a identifica problema.
+
+# The Reactive Messaging Kafka Outgoing Connector received an error. The error is {0}.
+kafka.output.error.signal.CWMRX1004E=CWMRX1004E: Reactive Messaging Kafka Outgoing Connector a primit o eroare. Eroarea este {0}.
+kafka.output.error.signal.CWMRX1004E.explanation=Kafka Outgoing Connector a primit un semnal de eroare care \u00eempiedic\u0103 operarea normal\u0103 pentru Reactive Messaging.
+kafka.output.error.signal.CWMRX1004E.useraction=Examina\u0163i fi\u015fierul message.log \u015fi istoricele FFDC pentru a identifica problema.
+
+# The group.id property was not set in the configuration for this channel. Set the {0} property in one of the MicroProfile Config Sources for this application.
+kafka.groupid.not.set.CWMRX1005E=CWMRX1005E: Proprietatea group.id nu a fost setat\u0103 \u00een configura\u0163ia pentru acest canal. Seta\u0163i proprietatea {0} \u00een una din sursele de configura\u0163ie MicroProfile pentru aceast\u0103 aplica\u0163ie.
+kafka.groupid.not.set.CWMRX1005E.explanation=Trebuie setat ID-ul de grup consumatori Kafka pentru a permite func\u0163ionarea corespunz\u0103toare pentru Reactive Messaging.
+kafka.groupid.not.set.CWMRX1005E.useraction=Seta\u0163i proprietatea \u00eentr-una din loca\u0163iile MicroProfile ConfigSource pentru aceast\u0103 aplica\u0163ie, de exemplu, fi\u015fierul microprofile-config.properties.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Reactive Messaging error message

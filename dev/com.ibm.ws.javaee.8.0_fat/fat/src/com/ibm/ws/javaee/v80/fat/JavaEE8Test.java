@@ -37,6 +37,10 @@ public class JavaEE8Test extends FATServletClient {
     public static RepeatTests repeat = RepeatTests.withoutModification()
                     .andWith(new FeatureReplacementAction()
                                     .removeFeature("javaee-8.0")
+                                    .addFeature("jakartaee-8.0")
+                                    .withID("jakarta8"))
+                    .andWith(new FeatureReplacementAction()
+                                    .removeFeature("jakartaee-8.0")
                                     .addFeature("webProfile-8.0")
                                     .withID("webProfile8"));
 

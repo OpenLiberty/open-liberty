@@ -18,7 +18,6 @@ IBM-SPI-Package: com.ibm.wsspi.webservices.handler
   com.ibm.websphere.appserver.containerServices-1.0, \
   com.ibm.websphere.appserver.servlet-3.1, \
   com.ibm.websphere.appserver.classloading-1.0, \
-  com.ibm.websphere.appserver.javax.mail-1.5, \
   com.ibm.websphere.appserver.globalhandler-1.0, \
   com.ibm.websphere.appserver.optional.jaxb-2.2; ibm.tolerates:=2.3, \
   com.ibm.websphere.appserver.json-1.0
@@ -29,8 +28,8 @@ IBM-SPI-Package: com.ibm.wsspi.webservices.handler
   com.ibm.ws.org.apache.neethi.3.0.2, \
   com.ibm.ws.jaxrs.2.0.common, \
   com.ibm.ws.jaxrs.2.x.config, \
-  com.ibm.ws.org.apache.ws.xmlschema.core.2.0.3, \
-  com.ibm.ws.jaxrs.2.0.tools
+  com.ibm.ws.org.apache.ws.xmlschema.core.2.0.3
+-jars=com.ibm.ws.jaxrs.2.0.tools
 -files=\
   bin/jaxrs/wadl2java, \
   bin/jaxrs/wadl2java.bat, \

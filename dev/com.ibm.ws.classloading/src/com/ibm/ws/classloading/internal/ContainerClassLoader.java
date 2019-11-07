@@ -198,6 +198,15 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
          * Map is keyed by the hashcode of the package string.
          */
         void updatePackageMap(Map<Integer, List<UniversalContainer>> map);
+        
+        /**
+         * Returns a collection of URLs represented by the underlying
+         * Container or ArtifactContainer.  Depending on the instance of
+         * this UniversalContainer, this will return either
+         * <code>Container.getURLs()</code> or 
+         * <code>ArtifactContainer.getURLs()</code>.
+         */
+        Collection<URL> getContainerURLs();
     }
 
     /**
@@ -246,7 +255,7 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
         return sharedClassCacheURL;
     }
 
-    private static byte[] getClassBytesFromHook(UniversalContainer.UniversalResource resource, String className, String resourceName, ClassLoaderHook hook) {
+    static byte[] getClassBytesFromHook(UniversalContainer.UniversalResource resource, String className, String resourceName, ClassLoaderHook hook) {
         byte[] bytes = null;
         if (hook != null) {
             final URL resourceURL = resource.getResourceURL("jar");
@@ -455,6 +464,11 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
         }
 
         @Override
+        public Collection<URL> getContainerURLs() {
+            return container == null ? null : container.getURLs();
+        }
+
+        @Override
         public String toString() {
             if (debugString == null) {
                 String physicalPath = this.container.getPhysicalPath();
@@ -616,6 +630,11 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
             }
             processContainer(container, map, chop);
         }
+        
+        @Override
+        public Collection<URL> getContainerURLs() {
+            return container == null ? null : container.getURLs();
+        }
     }
 
     private static class ArtifactContainerUniversalResource implements UniversalContainer.UniversalResource {
@@ -668,6 +687,8 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
         Collection<URL> getResourceURLs(String path, String jarProtocol);
 
         boolean containsContainer(Container container);
+
+        Collection<Collection<URL>> getClassPath();
     }
 
     /**
@@ -1065,6 +1086,15 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
         public boolean containsContainer(Container container) {
             return containers.contains(container);
         }
+
+        @Override
+        public Collection<Collection<URL>> getClassPath() {
+            List<Collection<URL>> containerURLs = new ArrayList<>();
+            for (UniversalContainer uc : classPath) {
+                containerURLs.add(uc.getContainerURLs());
+            }
+            return containerURLs;
+        }
     }
 
     /**
@@ -1140,6 +1170,11 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
         @Override
         public boolean containsContainer(Container container) {
             return delegate.containsContainer(container);
+        }
+
+        @Override
+        public Collection<Collection<URL>> getClassPath() {
+            return delegate.getClassPath();
         }
     }
 
@@ -1795,5 +1830,9 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
                 throw new RuntimeException(cause);
             }
         }
+    }
+
+    Collection<Collection<URL>> getClassPath() {
+        return smartClassPath.getClassPath();
     }
 }

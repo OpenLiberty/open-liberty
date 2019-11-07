@@ -10,14 +10,20 @@
  *******************************************************************************/
 package com.ibm.ws.testtooling.testlogic;
 
+import java.lang.management.ManagementFactory;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.regex.Pattern;
 
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
 import javax.persistence.EntityManager;
 import javax.persistence.FlushModeType;
 import javax.persistence.Query;
@@ -34,6 +40,20 @@ public abstract class AbstractTestLogic {
     // Can switch the value of this constant to enable validation of @preUpdate
     // on exception paths if EclipseLink is ever updated to support this behavior.
     public static final boolean ECLIPSELINK_VALIDATE_PREUPDATE_ON_EXCEPTION = false;
+
+    public final static MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
+    public final static ObjectName fatServerInfoMBeanObjectName;
+
+    static {
+        ObjectName on = null;
+        try {
+            on = new ObjectName("WebSphereFAT:name=ServerInfo");
+        } catch (Throwable t) {
+            t.printStackTrace();
+        } finally {
+            fatServerInfoMBeanObjectName = on;
+        }
+    }
 
     protected Class<?> resolveEntityClass(JPAEntityClassEnum enumerationRef) throws ClassNotFoundException {
         if (enumerationRef == null) {
@@ -324,43 +344,86 @@ public abstract class AbstractTestLogic {
 
     // Basing determination off product version using
     // info from https://www.ibm.com/support/knowledgecenter/en/SSEPEK_11.0.0/java/src/tpc/imjcc_c0053013.html
-    protected boolean isDB2ForZOS(String prodVersion) throws Exception {
-        if (prodVersion != null && prodVersion.toLowerCase().startsWith("dsn")) {
-            return true;
-        }
-
-        return false;
+    protected boolean isDB2ForZOS(String prodVersion) {
+        return containsIgnoreCase(prodVersion, "dsn");
     }
 
-    protected boolean isDB2ForLUW(String prodVersion) throws Exception {
-        if (prodVersion != null && prodVersion.toLowerCase().startsWith("sql")) {
-            return true;
-        }
-
-        return false;
+    protected boolean isDB2ForLUW(String prodVersion) {
+        return containsIgnoreCase(prodVersion, "sql");
     }
 
-    protected boolean isDB2ForISeries(String prodVersion) throws Exception {
-        if (prodVersion != null && prodVersion.toLowerCase().startsWith("qsq")) {
-            return true;
-        }
-
-        return false;
+    protected boolean isDB2ForISeries(String prodVersion) {
+        return containsIgnoreCase(prodVersion, "qsq");
     }
 
-    protected boolean isDB2ForVM_VSE(String prodVersion) throws Exception {
-        if (prodVersion != null && prodVersion.toLowerCase().startsWith("ari")) {
-            return true;
-        }
-
-        return false;
+    protected boolean isDB2ForVM_VSE(String prodVersion) {
+        return containsIgnoreCase(prodVersion, "ari");
     }
 
-    protected boolean isDB2(String prodVersion) throws Exception {
+    protected boolean isDB2(String prodVersion) {
         return isDB2ForLUW(prodVersion) || isDB2ForZOS(prodVersion) || isDB2ForISeries(prodVersion);
     }
 
-    protected boolean isDerby(String lDbProductName) throws Exception {
-        return (lDbProductName == null) ? false : lDbProductName.contains("derby");
+    protected boolean isDerby(String lDbProductName) {
+        return containsIgnoreCase(lDbProductName, "derby");
+    }
+
+    protected boolean isOracle(String lDbProductName) {
+        return containsIgnoreCase(lDbProductName, "oracle");
+    }
+
+    protected boolean isMySQL(String lDbProductName) {
+        return containsIgnoreCase(lDbProductName, "mysql");
+    }
+
+    protected boolean isHana(String lDbProductName) {
+        return containsIgnoreCase(lDbProductName, "hdb");
+    }
+
+    private boolean containsIgnoreCase(String input, String regex) {
+        return input != null
+               && Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(input).find();
+    }
+
+    protected Set<String> getInstalledFeatures() {
+        HashSet<String> retVal = new HashSet<String>();
+
+        try {
+            Set<String> instFeatureSet = (Set<String>) mbeanServer.getAttribute(fatServerInfoMBeanObjectName, "InstalledFeatures");
+            if (instFeatureSet != null) {
+                retVal.addAll(instFeatureSet);
+            }
+        } catch (Throwable t) {
+        }
+        return retVal;
+    }
+
+    protected boolean isUsingJPA20Feature() {
+        Set<String> instFeatureSet = getInstalledFeatures();
+        return instFeatureSet.contains("jpa-2.0");
+    }
+
+    protected boolean isUsingJPA21Feature() {
+        Set<String> instFeatureSet = getInstalledFeatures();
+        return instFeatureSet.contains("jpa-2.1");
+    }
+
+    protected boolean isUsingJPA22Feature() {
+        Set<String> instFeatureSet = getInstalledFeatures();
+        return instFeatureSet.contains("jpa-2.2");
+    }
+
+    protected boolean isUsingJPA21ContainerFeature(boolean onlyContainerFeature) {
+        Set<String> instFeatureSet = getInstalledFeatures();
+        if (onlyContainerFeature && instFeatureSet.contains("jpa-2.1"))
+            return false;
+        return instFeatureSet.contains("jpaContainer-2.1");
+    }
+
+    protected boolean isUsingJPA22ContainerFeature(boolean onlyContainerFeature) {
+        Set<String> instFeatureSet = getInstalledFeatures();
+        if (onlyContainerFeature && instFeatureSet.contains("jpa-2.2"))
+            return false;
+        return instFeatureSet.contains("jpaContainer-2.2");
     }
 }

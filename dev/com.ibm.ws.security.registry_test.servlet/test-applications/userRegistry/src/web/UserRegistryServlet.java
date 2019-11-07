@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -159,6 +159,8 @@ public class UserRegistryServlet extends HttpServlet {
         try {
             if ("getRealm".equals(method)) {
                 response = ur.getRealm();
+            } else if ("getType".equals(method)) {
+                response = ur.getType();
             } else if ("checkPassword".equals(method)) {
                 String userSecurityName = req.getParameter("userSecurityName");
                 String password = req.getParameter("password");
@@ -279,7 +281,7 @@ public class UserRegistryServlet extends HttpServlet {
      * @return The {@link List} as a String list.
      */
     private static String convertFromList(List<?> results) {
-        System.out.println("UserRegistryServlet.converFromList(): " + results.getClass() + " " + results);
+        System.out.println("UserRegistryServlet.convertFromList(): " + results.getClass() + " " + results);
 
         if (results.isEmpty()) {
             return results.toString();

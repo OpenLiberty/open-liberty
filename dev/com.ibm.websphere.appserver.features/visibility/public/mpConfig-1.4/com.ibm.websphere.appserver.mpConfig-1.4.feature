@@ -25,3 +25,4 @@ Subsystem-Name: MicroProfile Config 1.4
  com.ibm.ws.org.apache.commons.lang3
 kind=noship
 edition=full
+WLP-Activation-Type: parallel

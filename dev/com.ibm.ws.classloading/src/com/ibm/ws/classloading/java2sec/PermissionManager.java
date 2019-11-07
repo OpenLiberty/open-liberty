@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -127,14 +126,27 @@ public class PermissionManager implements PermissionsCombiner {
 
     private Map<String, ArrayList<Permission>> permissionXMLPermissionMap = new HashMap<String, ArrayList<Permission>>();
 
+    private final boolean java2SecurityEnabled;
+
+    public PermissionManager() {
+        this (System.getSecurityManager() != null);
+    }
+
+    // Used for test to force java2SecurityEnabled path
+    PermissionManager(boolean java2SecurityEnabled) {
+        this.java2SecurityEnabled = java2SecurityEnabled;
+    }
+
     @Activate
-    protected void activate(ComponentContext cc, Map<String, Object> properties) {
+    protected void activate(ComponentContext cc) {
         bundleContext = cc.getBundleContext();
         isServer = "server".equals(bundleContext.getProperty("wlp.process.type"));
 
-        permissions.activate(cc);
-        initializePermissions();
-        setAsDynamicPolicyPermissionCombiner(this);
+        if (java2SecurityEnabled) {
+            permissions.activate(cc);
+            initializePermissions();
+            setAsDynamicPolicyPermissionCombiner(this);
+        }
     }
 
     private void setAsDynamicPolicyPermissionCombiner(PermissionsCombiner effectivePolicy) {
@@ -152,9 +164,11 @@ public class PermissionManager implements PermissionsCombiner {
 
     @Deactivate
     protected void deactivate(ComponentContext cc) {
-        permissions.deactivate(cc);
-        clearPermissions();
-        setAsDynamicPolicyPermissionCombiner(null);
+        if (java2SecurityEnabled) {
+            permissions.deactivate(cc);
+            clearPermissions();
+            setAsDynamicPolicyPermissionCombiner(null);
+        }
     }
 
     protected void setPermission(ServiceReference<JavaPermissionsConfiguration> permission) {
@@ -166,9 +180,11 @@ public class PermissionManager implements PermissionsCombiner {
      */
     protected synchronized void unsetPermission(ServiceReference<JavaPermissionsConfiguration> permission) {
         permissions.removeReference(permission);
-        if (wsjarUrlStreamHandlerAvailable) {
-            clearPermissions();
-            initializePermissions();
+        if (java2SecurityEnabled) {
+            if (wsjarUrlStreamHandlerAvailable) {
+                clearPermissions();
+                initializePermissions();
+            }
         }
     }
 
@@ -183,9 +199,11 @@ public class PermissionManager implements PermissionsCombiner {
     protected synchronized void updatedConfiguration(ServiceReference<JavaPermissionsConfiguration> permission) {
         permissions.removeReference(permission);
         permissions.addReference(permission);
-        if (wsjarUrlStreamHandlerAvailable) {
-            clearPermissions();
-            initializePermissions();
+        if (java2SecurityEnabled) {
+            if (wsjarUrlStreamHandlerAvailable) {
+                clearPermissions();
+                initializePermissions();
+            }
         }
     }
 
@@ -352,7 +370,7 @@ public class PermissionManager implements PermissionsCombiner {
     private ProtectionDomain createProtectionDomain(CodeSource codeSource, ArrayList<Permission> permissions) {
         PermissionCollection perms = new Permissions();
 
-        if (!java2SecurityEnabled()) {
+        if (!java2SecurityEnabled) {
             perms.add(new AllPermission());
         } else {
             for (Permission permission : permissions) {
@@ -588,15 +606,6 @@ public class PermissionManager implements PermissionsCombiner {
             }
         }
         return false;
-    }
-
-    private boolean java2SecurityEnabled() {
-        SecurityManager sm = System.getSecurityManager();
-        if (sm != null) {
-            return true;
-        } else {
-            return false;
-        }
     }
 
     /**

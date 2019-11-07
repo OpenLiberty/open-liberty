@@ -23,8 +23,11 @@ import componenttest.rules.repeater.RepeatTests;
 @SuiteClasses({
                 componenttest.custom.junit.runner.AlwaysPassesTest.class,
                 JPA20CriteriaAPI_WEB.class,
+//                JPA20EntityManager_WEB.class,
                 JPA20QueryLockMode_EJB.class,
                 JPA20QueryLockMode_WEB.class,
+                TestOLGH9339_EJB.class,
+                TestOLGH9339_WEB.class,
 })
 public class FATSuite {
     public final static String[] JAXB_PERMS = { "permission java.lang.RuntimePermission \"accessClassInPackage.com.sun.xml.internal.bind.v2.runtime.reflect\";",

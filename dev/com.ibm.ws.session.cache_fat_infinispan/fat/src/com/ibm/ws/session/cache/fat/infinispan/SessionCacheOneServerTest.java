@@ -10,13 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.session.cache.fat.infinispan;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -26,8 +23,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -42,30 +37,19 @@ public class SessionCacheOneServerTest extends FATServletClient {
 
     public static SessionCacheApp app = null;
 
-    public static final ExecutorService executor = Executors.newFixedThreadPool(12);
+    // TODO this is temporarily set to single-threaded in order to ensure coverage of codepath without actually enabling concurrent use yet (only invokeAll is used)
+    public static final ExecutorService executor = Executors.newFixedThreadPool(1); // TODO Executors.newFixedThreadPool(12);
 
     @BeforeClass
     public static void setUp() throws Exception {
         app = new SessionCacheApp(server, true, "session.cache.infinispan.web", "session.cache.infinispan.web.listener1", "session.cache.infinispan.web.listener2");
-
-        // String hazelcastConfigFile = "hazelcast-localhost-only.xml";
-
-        // if (FATSuite.isMulticastDisabled()) {
-        //     Log.info(SessionCacheOneServerTest.class, "setUp", "Disabling multicast in Hazelcast config.");
-        //     hazelcastConfigFile = "hazelcast-localhost-only-multicastDisabled.xml";
-        // }
-
-        // String configLocation = new File(server.getUserDir() + "/shared/resources/hazelcast/" + hazelcastConfigFile).getAbsolutePath();
-        // server.setJvmOptions(Arrays.asList("-Dhazelcast.group.name=" + UUID.randomUUID(),
-        //                                    "-Dhazelcast.config=" + configLocation));
-
         server.startServer();
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         executor.shutdownNow();
-        server.stopServer("CWWKL0058W:.*InfinispanLib"); // TODO why does occur for Infinispan jar, but not Hazelcast?
+        server.stopServer();
     }
 
     /**
@@ -73,7 +57,7 @@ public class SessionCacheOneServerTest extends FATServletClient {
      * Verify that all of the attributes (and no others) are added to the session, with their respective values.
      * After attributes have been added, submit concurrent requests to remove some of them.
      */
-    // TODO enable @Test
+    @Test
     public void testConcurrentPutNewAttributesAndRemove() throws Exception {
         final int NUM_THREADS = 9;
 
@@ -153,7 +137,7 @@ public class SessionCacheOneServerTest extends FATServletClient {
     /**
      * Submit concurrent requests to replace the value of the same attributes within a single session.
      */
-    // TODO enable @Test
+    @Test
     public void testConcurrentReplaceAttributes() throws Exception {
         final int NUM_ATTRS = 2;
         final int NUM_THREADS = 8;
@@ -215,7 +199,7 @@ public class SessionCacheOneServerTest extends FATServletClient {
      * There will be no guarantee whether or not the session attribute exists at the end of the test,
      * but if it does exist, it must have one of the values that was set during the test.
      */
-    // TODO enable @Test
+    @Test
     public void testConcurrentSetGetAndRemove() throws Exception {
         final int NUM_THREADS = 12;
 

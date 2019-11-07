@@ -25,4 +25,11 @@ public class KafkaAdapterException extends RuntimeException {
         super(cause);
     }
 
+    /**
+     * @param message
+     */
+    public KafkaAdapterException(String message) {
+        super(message);
+    }
+
 }

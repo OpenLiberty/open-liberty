@@ -34,6 +34,7 @@ import com.ibm.ws.http.channel.h2internal.H2HttpInboundLinkWrap;
 import com.ibm.ws.http.channel.h2internal.H2StreamProcessor;
 import com.ibm.ws.http.channel.h2internal.exceptions.CompressionException;
 import com.ibm.ws.http.channel.h2internal.exceptions.Http2Exception;
+import com.ibm.ws.http.channel.h2internal.exceptions.ProtocolException;
 import com.ibm.ws.http.channel.h2internal.frames.FramePPHeaders;
 import com.ibm.ws.http.channel.h2internal.frames.FramePushPromise;
 import com.ibm.ws.http.channel.h2internal.hpack.H2HeaderField;
@@ -318,7 +319,9 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         for (Entry<String, String> entry : pseudoHeaders.entrySet()) {
             H2HeaderField header = new H2HeaderField(entry.getKey(), entry.getValue());
             if (!isValidPseudoHeader(header)) {
-                throw new CompressionException("Invalid pseudo-header for decompression context: " + header.toString());
+                ProtocolException pe = new ProtocolException("Invalid pseudo-header for decompression context: " + header.toString()); 
+                pe.setConnectionError(false); // mark this as a stream error so we'll generate an RST_STREAM
+                throw pe;
             }
         }
 

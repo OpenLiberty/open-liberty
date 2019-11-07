@@ -12,7 +12,6 @@ package com.ibm.websphere.ras;
 
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -23,7 +22,6 @@ import com.ibm.ws.logging.internal.DisabledTraceService;
 import com.ibm.ws.logging.internal.SafeTraceLevelIndexFactory;
 import com.ibm.ws.logging.internal.TraceSpecification;
 import com.ibm.ws.logging.internal.TraceSpecification.TraceSpecificationException;
-import com.ibm.ws.staticvalue.StaticValue;
 import com.ibm.wsspi.logging.MessageRouter;
 import com.ibm.wsspi.logging.TextFileOutputStreamFactory;
 import com.ibm.wsspi.logprovider.LogProviderConfig;
@@ -40,23 +38,13 @@ public class TrConfigurator {
     }
 
     /** Mark the initialization of the Tr */
-    static final StaticValue<AtomicReference<LogProviderConfig>> loggingConfig = StaticValue.createStaticValue(new Callable<AtomicReference<LogProviderConfig>>() {
-        @Override
-        public AtomicReference<LogProviderConfig> call() throws Exception {
-            return new AtomicReference<LogProviderConfig>(null);
-        }
-    });
+    static final AtomicReference<LogProviderConfig> loggingConfig = new AtomicReference<LogProviderConfig>(null);
 
     /** Active configuration */
-    static StaticValue<TrService> delegate = StaticValue.createStaticValue(null);
+    static TrService delegate = null;
 
     /** List of registered trace component change listeners */
-    final static StaticValue<Set<TraceComponentChangeListener>> registeredListeners = StaticValue.createStaticValue(new Callable<Set<TraceComponentChangeListener>>() {
-        @Override
-        public Set<TraceComponentChangeListener> call() throws Exception {
-            return new CopyOnWriteArraySet<TraceComponentChangeListener>();
-        }
-    });
+    static Set<TraceComponentChangeListener> registeredListeners = new CopyOnWriteArraySet<TraceComponentChangeListener>();
 
     private static boolean instrumentationAvailable;
 
@@ -85,7 +73,7 @@ public class TrConfigurator {
         if (config == null)
             throw new NullPointerException("LogProviderConfig must not be null");
 
-        if (loggingConfig.get().compareAndSet(null, config)) {
+        if (loggingConfig.compareAndSet(null, config)) {
             // Only initialize Tr once -- all subsequent changes go through update
             // The synchronization of this method is gratuitous (just makes us feel better), 
             // it is called while the system is single threaded at startup. 
@@ -93,17 +81,11 @@ public class TrConfigurator {
             // config.getTrDelegate() must not return null -- it should either
             // return a dummy/disabled delegate, or throw an exception so that startup
             // does not proceed.
-            final TrService tr = config.getTrDelegate();
-            if (tr == null)
+            delegate = config.getTrDelegate();
+            if (delegate == null)
                 throw new NullPointerException("LogProviderConfig must provide a TrService delegate");
-            Callable<TrService> result = new Callable<TrService>() {
-                @Override
-                public TrService call() throws Exception {
-                    return tr;
-                }
-            };
-            delegate = StaticValue.mutateStaticValue(delegate, result);
-            delegate.get().init(config);
+
+            delegate.init(config);
 
             // Validate and propagate the initial trace specification 
             setTraceSpec(config.getTraceString());
@@ -129,7 +111,7 @@ public class TrConfigurator {
         boolean traceWasDisabled = !TraceComponent.isAnyTracingEnabled();
 
         // Update the logging configuration
-        LogProviderConfig config = loggingConfig.get().get();
+        LogProviderConfig config = loggingConfig.get();
         if (config != null) {
             config.update(newConfig);
 
@@ -204,24 +186,18 @@ public class TrConfigurator {
      * @return active delegate
      */
     static TrService getDelegate() {
-        TrService result = delegate.get();
+        TrService result = delegate;
         if (result != null) {
             return result;
         }
 
-        LogProviderConfig config = loggingConfig.get().get();
+        LogProviderConfig config = loggingConfig.get();
         if (config != null) {
-            final TrService tr = config.getTrDelegate();
-            if (tr != null) {
-                Callable<TrService> initializer = new Callable<TrService>() {
-                    @Override
-                    public TrService call() throws Exception {
-                        return tr;
-                    }
-                };
-                delegate = StaticValue.mutateStaticValue(delegate, initializer);
-                delegate.get().init(config);
-                return delegate.get();
+            result = config.getTrDelegate();
+            if (result != null) {
+                delegate = result;
+                delegate.init(config);
+                return result;
             }
         }
 
@@ -236,8 +212,10 @@ public class TrConfigurator {
      *            the {@link TraceComponent} that was registered
      */
     static void traceComponentRegistered(TraceComponent tc) {
-        for (TraceComponentChangeListener listener : registeredListeners.get()) {
-            listener.traceComponentRegistered(tc);
+        if (!registeredListeners.isEmpty()) {
+            for (TraceComponentChangeListener listener : registeredListeners) {
+                listener.traceComponentRegistered(tc);
+            }
         }
     }
 
@@ -249,17 +227,19 @@ public class TrConfigurator {
      *            the {@link TraceComponent} that was updated
      */
     static void traceComponentUpdated(TraceComponent tc) {
-        for (TraceComponentChangeListener listener : registeredListeners.get()) {
-            listener.traceComponentUpdated(tc);
+        if (!registeredListeners.isEmpty()) {
+            for (TraceComponentChangeListener listener : registeredListeners) {
+                listener.traceComponentUpdated(tc);
+            }
         }
     }
 
     public static void addTraceComponentListener(TraceComponentChangeListener tcl) {
-        registeredListeners.get().add(tcl);
+        registeredListeners.add(tcl);
     }
 
     public static void removeTraceComponentListener(TraceComponentChangeListener tcl) {
-        registeredListeners.get().remove(tcl);
+        registeredListeners.remove(tcl);
     }
 
     /**
@@ -319,7 +299,7 @@ public class TrConfigurator {
      * @return
      */
     public static String getLogLocation() {
-        LogProviderConfig cfg = loggingConfig.get().get();
+        LogProviderConfig cfg = loggingConfig.get();
         if (cfg == null)
             throw new IllegalStateException("Tr not initialized");
 
@@ -388,7 +368,7 @@ public class TrConfigurator {
      * @return
      */
     public static TextFileOutputStreamFactory getFileOutputStreamFactory() {
-        LogProviderConfig cfg = loggingConfig.get().get();
+        LogProviderConfig cfg = loggingConfig.get();
         if (cfg == null)
             throw new IllegalStateException("Tr not initialized");
 

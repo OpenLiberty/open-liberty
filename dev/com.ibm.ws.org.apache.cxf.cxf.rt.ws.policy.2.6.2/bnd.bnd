@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -8,35 +8,34 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= ~../cnf/resources/bnd/bundle.props
-bVersion=1.0
+-include= jar:${fileuri;${repo;org.apache.cxf:cxf-rt-ws-policy;2.6.2;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
 
-Bundle-Name: Apache CXF Runtime WS Policy
-Bundle-Description: Apache CXF Runtime WS Policy, version 2.6.2
-Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.2.6.2
+instrument.ffdc: false
+javac.source: 1.7
+javac.target: 1.7
 
-Export-Package: \
-  org.apache.cxf.*;version=2.6.2
+cxfVersion=2.6.2
 
-Import-Package: \
- javax.xml.bind.*;version="[2.2,3)", \
- !org.springframework.*;resolution:=optional;version="[2.5,4)", \
- !org.apache.aries.*;version="[0.3,2)", \
- !org.osgi.service.blueprint.*, \
- org.apache.cxf.*;version="[2.6.2,2.6.3)", \
- *
+Include-Resource: \
+  @${repo;org.apache.cxf:cxf-rt-ws-policy;${cxfVersion};EXACT}!/META-INF/cxf/**, \
+  @${repo;org.apache.cxf:cxf-rt-ws-policy;${cxfVersion};EXACT}!/META-INF/DEPENDENCIES, \
+  @${repo;org.apache.cxf:cxf-rt-ws-policy;${cxfVersion};EXACT}!/META-INF/LICENSE, \
+  @${repo;org.apache.cxf:cxf-rt-ws-policy;${cxfVersion};EXACT}!/META-INF/NOTICE, \
+  @${repo;org.apache.cxf:cxf-rt-ws-policy;${cxfVersion};EXACT}!/META-INF/spring.handlers, \
+  @${repo;org.apache.cxf:cxf-rt-ws-policy;${cxfVersion};EXACT}!/META-INF/spring.schemas, \
+  @${repo;org.apache.cxf:cxf-rt-ws-policy;${cxfVersion};EXACT}!/org/apache/cxf/**
+  @${repo;org.apache.cxf:cxf-rt-ws-policy;${cxfVersion};EXACT}!/schemas/**, \
+  com/ibm/ws=${bin}/com/ibm/ws, \
+  org/apache/cxf=${bin}/org/apache/cxf
 
-Include-Resource:\
- @${repo;org.apache.cxf.cxf-rt-ws-policy;2.6.2.ibm-s20190515-1254;EXACT}!/META-INF/cxf/**, \
- @${repo;org.apache.cxf.cxf-rt-ws-policy;2.6.2.ibm-s20190515-1254;EXACT}!/META-INF/spring.handlers, \
- @${repo;org.apache.cxf.cxf-rt-ws-policy;2.6.2.ibm-s20190515-1254;EXACT}!/META-INF/spring.schemas, \
- @${repo;org.apache.cxf.cxf-rt-ws-policy;2.6.2.ibm-s20190515-1254;EXACT}!/schemas/**, \
- @${repo;org.apache.cxf.cxf-rt-ws-policy;2.6.2.ibm-s20190515-1254;EXACT}!/META-INF/DEPENDENCIES, \
- @${repo;org.apache.cxf.cxf-rt-ws-policy;2.6.2.ibm-s20190515-1254;EXACT}!/META-INF/LICENSE, \
- @${repo;org.apache.cxf.cxf-rt-ws-policy;2.6.2.ibm-s20190515-1254;EXACT}!/META-INF/NOTICE, \
- @${repo;org.apache.cxf.cxf-rt-ws-policy;2.6.2.ibm-s20190515-1254;EXACT}!/org/apache/cxf/**
-
-
-# Remove the resources (blueprint/metadata configuration files) in the OSGI-INF directory
-# As we have no plan to support that, will add these things back with NLS support in the future
-# @lib/cxf-rt-ws-policy-2.6.2.jar!/OSGI-INF/blueprint/**, \
+-buildpath: org.apache.cxf:cxf-rt-ws-policy;strategy=exact;version=${cxfVersion}, \
+  com.ibm.websphere.javaee.wsdl4j.1.2;version=latest, \
+  com.ibm.websphere.org.osgi.core, \
+  com.ibm.ws.logging.core, \
+  com.ibm.ws.org.apache.cxf.cxf.api.2.6.2;version=latest, \
+  com.ibm.ws.org.apache.cxf.cxf.rt.core.2.6.2;version=latest, \
+  com.ibm.ws.org.apache.neethi.3.0.2;version=latest, \
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+  org.apache.aries.blueprint:org.apache.aries.blueprint;version=latest, \
+  org.springframework:spring-core;version=3.0.7.RELEASE
+	

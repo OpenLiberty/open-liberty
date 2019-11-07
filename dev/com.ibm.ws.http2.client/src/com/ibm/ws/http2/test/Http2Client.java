@@ -53,6 +53,7 @@ public class Http2Client {
     private final AtomicBoolean isTestDone = new AtomicBoolean(false);
     private final AtomicBoolean didTimeout = new AtomicBoolean(false);
     private final AtomicBoolean lockWaitFor = new AtomicBoolean(true);
+    private boolean waitForAck = true;
 
     private final Map<Frame, Frame> sendFrameConditional = new HashMap<Frame, Frame>();
     private final List<SimpleEntry<Frame, Frame>> sendFrameConditionalList = new LinkedList<AbstractMap.SimpleEntry<Frame, Frame>>();
@@ -98,6 +99,14 @@ public class Http2Client {
             // tell the connection not to wait for a the 101 switching protocols response since we're not using h2c here
             h2Connection.setServer101ResponseReceived(true);
         }
+    }
+
+    /**
+     * By default, this Http2Client will wait for ACK responses when frames are sent that require one.
+     * Invoking this method disables that behavior.
+     */
+    public void doNotWaitForAck() {
+        waitForAck = false;
     }
 
     public void sendUpgradeHeader(String requestUri) {
@@ -452,10 +461,10 @@ public class Http2Client {
             if (sendGoAway) {
 
                 // wait to allow stress connection to finish up sending all the frames, if needed
-                try {
-                    Thread.sleep(2000);
-                } catch (Exception x) {
-                }
+                // try {
+                //     Thread.sleep(2000);
+                // } catch (Exception x) {
+                // }
 
                 if (LOGGER.isLoggable(Level.INFO)) {
                     LOGGER.logp(Level.INFO, CLASS_NAME + "$FATFramesListener", "receivedLastFrame", "Sending GoAway");
@@ -508,8 +517,9 @@ public class Http2Client {
          */
         @Override
         public void sentSettingsFrame() {
-            // TODO Auto-generated method stub
-            h2Connection.getWaitingForACK().set(true);
+            if (waitForAck) {
+                h2Connection.getWaitingForACK().set(true);
+            }
         }
 
         /*
@@ -592,7 +602,11 @@ public class Http2Client {
             //keep looping until timeout or until the test is done
             while ((System.currentTimeMillis() - startTime) < timeoutToFinishTest && !isTestDone.get()) {
                 try {
-                    Thread.sleep(1000);
+                    if (LOGGER.isLoggable(Level.INFO)) {
+                        LOGGER.logp(Level.INFO, CLASS_NAME + "$TimeoutHelper", "run", "Timeout helper sleeping!");
+                    }
+        
+                    Thread.sleep(10);
                 } catch (Exception x) {
                 }
             }

@@ -597,7 +597,6 @@ public final class FreePool implements JCAPMIHelper {
         if (mcWrapperTemp1 != null) {
 
             if (hashCode == mcWrapperTemp1.getSubjectCRIHashCode()) {
-                mcWrapper = getMCWrapperFromMatch(subject, cri, managedConnectionFactory, mcWrapperTemp1);
                 if (((com.ibm.ejs.j2c.MCWrapper) mcWrapperTemp1).do_not_reuse_mcw) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(this, tc, "Connection error occurred for this mcw " + mcWrapperTemp1 + ", mcw will not be reuse");
@@ -612,7 +611,8 @@ public final class FreePool implements JCAPMIHelper {
                             pm.waiterFreePoolLock.notify();
                         }
                     }
-                }
+                } else
+                    mcWrapper = getMCWrapperFromMatch(subject, cri, managedConnectionFactory, mcWrapperTemp1);
             }
 
             if (mcWrapper == null) {

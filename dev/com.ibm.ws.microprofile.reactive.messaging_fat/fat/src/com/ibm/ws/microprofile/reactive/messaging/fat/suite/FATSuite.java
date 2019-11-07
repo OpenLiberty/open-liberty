@@ -15,6 +15,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.tests.KafkaTestClientProviderTest;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.invalid.nolib.KafkaNoLibTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.loginModuleClassloading.LoginModuleClassloadingTest;
 
 @RunWith(Suite.class)
@@ -24,6 +25,7 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.loginModuleClassloading.Lo
                 SaslPlainTests.class,
                 KafkaTestClientProviderTest.class,
                 LoginModuleClassloadingTest.class,
+                KafkaNoLibTest.class
 })
 public class FATSuite {
 

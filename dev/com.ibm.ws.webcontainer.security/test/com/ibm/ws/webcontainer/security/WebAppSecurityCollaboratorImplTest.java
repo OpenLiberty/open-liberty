@@ -835,7 +835,7 @@ public class WebAppSecurityCollaboratorImplTest {
     private void withEveryoneGranted(final boolean everyoneGranted) {
         mock.checking(new Expectations() {
             {
-                one(authzService).isEveryoneGranted(APP_NAME, requiredRoles);
+                allowing(authzService).isEveryoneGranted(APP_NAME, requiredRoles);
                 will(returnValue(everyoneGranted));
             }
         });

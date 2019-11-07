@@ -54,9 +54,9 @@ public class MockEJBJavaColonNamingHelper extends EJBJavaColonNamingHelper {
     }
 
     @Override
-    protected Object processJavaColon(EJBBinding bindings, JavaColonNamespace jndiType, String jndiName) throws NamingException {
+    protected Object initializeEJB(EJBBinding bindings, String jndiName) throws NamingException {
         try {
-            Object o = super.processJavaColon(bindings, jndiType, jndiName);
+            Object o = super.initializeEJB(bindings, jndiName);
             return o;
         } catch (NamingException ne) {
             if (testingException) {

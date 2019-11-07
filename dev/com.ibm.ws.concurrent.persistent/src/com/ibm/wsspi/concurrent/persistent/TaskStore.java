@@ -52,6 +52,17 @@ public interface TaskStore {
     int cancel(String pattern, Character escape, TaskState state, boolean inState, String owner) throws Exception;
 
     /**
+     * Create a partition entry in the persistent store having the Id of the specified partitionRecord.
+     *
+     * @param partitionRecord a new partition entry. The record must contain the following attributes (Id, Executor, Host, Server, UserDir)
+     *                            and can optionally contain (Expiry, States).
+     * @throws Exception if an error occurs when attempting to update the persistent task store.
+     * @return true if a partition entry with the specified Id was created by this method.
+     *         Otherwise false, in which case it is recommended to roll back the transaction.
+     */
+    boolean create(PartitionRecord partitionRecord) throws Exception;
+
+    /**
      * Create an entry in the persistent store for a new task.
      * This method assigns a unique identifier to the task and updates the Id attribute of the TaskRecord with the value.
      * 
@@ -110,6 +121,14 @@ public interface TaskStore {
     TaskRecord findById(long taskId, String owner, boolean includeTrigger) throws Exception;
 
     /**
+     * Returns information about all partition entries with expired heart beats.
+     *
+     * @return List of expired partition records.
+     * @throws Exception if an error occurs when attempting to access the persistent task store.
+     */
+    List<PartitionRecord> findExpired() throws Exception;
+
+    /**
      * Find all pending tasks which are late beyond the specified expected execution time without a
      * successful execution of the task.
      *
@@ -135,7 +154,8 @@ public interface TaskStore {
      * The invoker is expected to handle this by rolling back and retrying.
      * 
      * @param record partition entry with executor/host/server/userdir to locate, or if not found, add to the persistent store.
-     *            The record must contain the following attributes (Executor, Expiry, Host, Server, State, UserDir).
+     *            If an entry is found, it is updated to match the Expiry and States if either of those is supplied.
+     *            The record must contain the following attributes (Executor, Host, Server, UserDir) and can optionally contain (Expiry, States).
      * @return unique identifier for the partition record which either already exists or was newly created.
      * @throws Exception if an error occurs when attempting to access the persistent task store.
      */
@@ -206,6 +226,27 @@ public interface TaskStore {
      * @throws Exception if an error occurs accessing the persistent store.
      */
     TaskRecord getNextExecutionTime(long taskId, String owner) throws Exception;
+
+    /**
+     * Returns the identifier of the partition to which the task is assigned.
+     *
+     * @param taskId unique identifier for the task.
+     * @return the identifier of the partition to which the task is assigned.
+     *         If the task is not found then <code>null</code> is returned.
+     * @throws Exception if an error occurs accessing the persistent store.
+     */
+    Long getPartition(long taskId) throws Exception;
+
+    /**
+     * Returns the identifier of a partition whose STATE field's rightmost bits matches the specified value.
+     * This method assumes that the sign bit of the persisted STATES field is always positive (0),
+     * so as to be able to compute the remainder when dividing by the next highest power of 2.
+     *
+     * @param stateBits desired state bits to match.
+     * @return a matching partition identifier, otherwise null.
+     * @throws Exception if an error occurs accessing the persistent store.
+     */
+    Long getPartitionWithState(long stateBits) throws Exception;
 
     /**
      * Returns name/value pairs for all persisted properties that match the specified name pattern.
@@ -343,6 +384,11 @@ public interface TaskStore {
 
     /**
      * Assigns a task to the specified partition.
+     * The implementation should aim to return as quickly as possible with a false value if the entry is already locked
+     * by another member, rather than waiting to make the update.  A locked task entry indicates that failover is not needed
+     * - a false positive occurred because the task was taking too long to run.  This could be caused by a lengthy timer/task
+     * that is otherwise behaving properly, in which case the customer ought to be using a larger value for missedTaskThreshold
+     * so as to avoid triggering failover logic/overhead when there is no outage.
      *
      * @param taskId         id of the task to reassign.
      * @param version        version number of the task entry which must match in order for the task to be transferred.
@@ -350,7 +396,7 @@ public interface TaskStore {
      * @return true if the task was assigned. Otherwise false.
      * @throws Exception if an error occurs when attempting to update the persistent task store.
      */
-    boolean setPartition(long taskId, int version, long newPartitionId) throws Exception;
+    boolean setPartitionIfNotLocked(long taskId, int version, long newPartitionId) throws Exception;
 
     /**
      * Assigns the value of the property if it exists in the persistent store.

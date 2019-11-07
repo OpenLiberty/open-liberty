@@ -63,7 +63,8 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     private TransactionManagerService tmsRef = null;
     private byte[] _applId;
 
-    public JTMConfigurationProvider() {}
+    public JTMConfigurationProvider() {
+    }
 
     /*
      * Called by DS to activate service
@@ -328,6 +329,14 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
         if (tc.isDebugEnabled())
             Tr.debug(tc, "isRecoverOnStartup set to " + isRoS);
         return isRoS;
+    }
+
+    @Override
+    public boolean isOnePCOptimization() {
+        Boolean is1PC = (Boolean) _props.get("OnePCOptimization");
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "OnePCOptimization set to " + is1PC);
+        return is1PC;
     }
 
     @Override

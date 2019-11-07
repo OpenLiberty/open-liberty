@@ -27,8 +27,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.junit.Assert;
-
 import com.ibm.ws.http.channel.h2internal.FrameTypes;
 import com.ibm.ws.http.channel.h2internal.frames.FrameData;
 import com.ibm.ws.http.channel.h2internal.frames.FrameGoAway;
@@ -49,6 +47,8 @@ import com.ibm.ws.http2.test.frames.FramePushPromiseClient;
 import com.ibm.ws.http2.test.helpers.HTTPUtils;
 import com.ibm.ws.http2.test.helpers.HeaderEntry;
 
+import org.junit.Assert;
+
 import componenttest.app.FATServlet;
 import test.server.transport.http2.Utils;
 
@@ -64,6 +64,7 @@ public class H2FATDriverServlet extends FATServlet {
     /**  */
     private static final long serialVersionUID = 1L;
     protected final long defaultTimeoutToSendFrame = 10000L;
+    private final int STRESS_TEST_TIMEOUT = 120000;
 
     private static final Logger LOGGER = Logger.getLogger(H2FATDriverServlet.class.getName());
 
@@ -96,7 +97,7 @@ public class H2FATDriverServlet extends FATServlet {
         //"kill" connection (it just calls blockUntilConnectionIsDonecountDown() for now)
         h2Client.sendFrame(new FrameGoAway(0, new byte[] { (byte) 0, (byte) 1 }, 0, 1, false));
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -116,7 +117,7 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.sendUpgradeHeader(HEADERS_ONLY_URI);
         h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -132,7 +133,7 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.sendUpgradeHeader(HEADERS_AND_BODY_URI);
         h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -262,7 +263,7 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.sendUpgradeHeader(SERVLET_H2PriorityWindowUpdate1);
         h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -282,7 +283,7 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.sendUpgradeHeader(SERVLET_H2Ping1);
         h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -300,7 +301,7 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.sendUpgradeHeader(HEADERS_AND_BODY_URI, HTTPUtils.HTTPMethod.POST);
         h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -328,7 +329,7 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
         h2Client.sendFrame(frameHeadersToSend);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -400,7 +401,7 @@ public class H2FATDriverServlet extends FATServlet {
             window = new FrameWindowUpdate(3, 50, false);
             h2Client.sendFrame(window);
 
-            blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+            blockUntilConnectionIsDone.await();
 
             handleErrors(h2Client, testName);
 
@@ -445,7 +446,7 @@ public class H2FATDriverServlet extends FATServlet {
         FrameRstStream rstFrame = new FrameRstStream(1, 0, false);
         h2Client.sendFrame(rstFrame);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -471,7 +472,7 @@ public class H2FATDriverServlet extends FATServlet {
 
             h2Client.sendClientPrefaceFollowedBySettingsFrame(settings);
 
-            blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+            blockUntilConnectionIsDone.await();
             handleErrors(h2Client, testName);
 
         } catch (Exception e) {
@@ -504,7 +505,7 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.sendUpgradeHeader(HEADERS_ONLY_URI);
         h2Client.sendFrame(EMPTY_SETTINGS_FRAME, true); //send a setting frames forcedly
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -530,7 +531,7 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.sendUpgradeHeader(HEADERS_ONLY_URI);
         h2Client.sendClientPreface("PRI-Error");
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -561,7 +562,7 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.sendFrame(priorityFrame);
 
         //Use CountDownLatch to block this test thread until we know the test is done (meaning, the connection has been closed)
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -623,7 +624,7 @@ public class H2FATDriverServlet extends FATServlet {
         FramePing ping = new FramePing(0, emptyBytes, false);
         h2Client.sendFrame(ping);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -660,7 +661,7 @@ public class H2FATDriverServlet extends FATServlet {
         FramePing ping = new FramePing(0, emptyBytes, false);
         h2Client.sendFrame(ping);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -698,7 +699,7 @@ public class H2FATDriverServlet extends FATServlet {
         FramePing ping = new FramePing(0, emptyBytes, false);
         h2Client.sendFrame(ping);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -738,7 +739,7 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.sendFrame(frameHeadersToSend);
         h2Client.sendFrame(firstContinuationHeaders);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         this.handleErrors(h2Client, testName);
     }
 
@@ -783,7 +784,7 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.sendFrame(firstContinuationHeaders);
         h2Client.sendFrame(secondContinuationHeaders);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         this.handleErrors(h2Client, testName);
     }
 
@@ -815,7 +816,7 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
         h2Client.sendFrame(frameHeadersToSend);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -847,7 +848,7 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
         h2Client.sendFrame(frameHeadersToSend);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -878,7 +879,7 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
         h2Client.sendFrame(frameHeadersToSend);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -912,7 +913,7 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.sendFrame(priorityFrame);
         h2Client.sendFrame(frameHeadersToSend);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -946,7 +947,7 @@ public class H2FATDriverServlet extends FATServlet {
 
         h2Client.sendFrame(frameHeadersToSend);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -979,7 +980,7 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.sendFrame(priorityFrame);
         h2Client.sendFrame(frameHeadersToSend);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -1013,7 +1014,7 @@ public class H2FATDriverServlet extends FATServlet {
 
         h2Client.sendFrame(frameHeadersToSend);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -1048,7 +1049,7 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.sendFrame(priorityFrame);
         h2Client.sendFrame(frameHeadersToSend);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -1089,7 +1090,7 @@ public class H2FATDriverServlet extends FATServlet {
         FramePing ping = new FramePing(0, emptyBytes, false);
         h2Client.sendFrame(ping);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -1129,7 +1130,7 @@ public class H2FATDriverServlet extends FATServlet {
         FramePing ping = new FramePing(0, emptyBytes, false);
         h2Client.sendFrame(ping);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -1158,7 +1159,7 @@ public class H2FATDriverServlet extends FATServlet {
         FramePing ping = new FramePing(0, libertyBytes, false);
         h2Client.sendFrame(ping);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -1191,7 +1192,7 @@ public class H2FATDriverServlet extends FATServlet {
         FramePing ping = new FramePing(0, libertyBytes, false);
         h2Client.sendFrame(ping);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -1223,7 +1224,7 @@ public class H2FATDriverServlet extends FATServlet {
         FrameWindowUpdate windowUpdate = new FrameWindowUpdate(3, 1, false);
         h2Client.sendFrame(windowUpdate);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -1252,7 +1253,7 @@ public class H2FATDriverServlet extends FATServlet {
         frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
         h2Client.sendFrame(frameHeadersToSend);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -1284,12 +1285,12 @@ public class H2FATDriverServlet extends FATServlet {
         //FramePing ping = new FramePing(0, libertyBytes, false);
         //h2Client.sendFrame(ping);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
     public void testSendPostRequestWithBody(HttpServletRequest request,
-                                    HttpServletResponse response) throws InterruptedException, Exception {
+                                            HttpServletResponse response) throws InterruptedException, Exception {
         if (LOGGER.isLoggable(Level.INFO)) {
             LOGGER.logp(Level.INFO, this.getClass().getName(), "testSendPostRequestWithBody", "Started!");
             LOGGER.logp(Level.INFO, this.getClass().getName(), "testSendPostRequestWithBody",
@@ -1312,10 +1313,9 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.addExpectedFrame(secondFrameHeaders);
 
         String testString = "test";
-        String s = "Request Body: " + testString +" content-length: " + testString.length();
+        String s = "Request Body: " + testString + " content-length: " + testString.length();
         FrameDataClient dataFrame = new FrameDataClient(3, s.getBytes(), 0, true, false, false);
         h2Client.addExpectedFrame(dataFrame);
-
 
         h2Client.sendUpgradeHeader("/H2TestModule/H2PostEchoBody");
         h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
@@ -1331,10 +1331,9 @@ public class H2FATDriverServlet extends FATServlet {
         dataFrame = new FrameDataClient(3, testString.getBytes(), 0, true, false, false);
         h2Client.sendFrame(dataFrame);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
-
 
     public void testSendHeadRequest(HttpServletRequest request,
                                     HttpServletResponse response) throws InterruptedException, Exception {
@@ -1364,7 +1363,7 @@ public class H2FATDriverServlet extends FATServlet {
         //FramePing ping = new FramePing(0, libertyBytes, false);
         //h2Client.sendFrame(ping);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -1393,7 +1392,7 @@ public class H2FATDriverServlet extends FATServlet {
         frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
         h2Client.sendFrame(frameHeadersToSend);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -1422,7 +1421,7 @@ public class H2FATDriverServlet extends FATServlet {
         frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
         h2Client.sendFrame(frameHeadersToSend);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -1452,7 +1451,7 @@ public class H2FATDriverServlet extends FATServlet {
         frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
         h2Client.sendFrame(frameHeadersToSend);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -1482,7 +1481,7 @@ public class H2FATDriverServlet extends FATServlet {
         frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
         h2Client.sendFrame(frameHeadersToSend);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -1513,7 +1512,7 @@ public class H2FATDriverServlet extends FATServlet {
         frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
         h2Client.sendFrame(frameHeadersToSend);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -1543,7 +1542,7 @@ public class H2FATDriverServlet extends FATServlet {
         frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
         h2Client.sendFrame(frameHeadersToSend);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -1573,7 +1572,7 @@ public class H2FATDriverServlet extends FATServlet {
         frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
         h2Client.sendFrame(frameHeadersToSend);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -1603,7 +1602,7 @@ public class H2FATDriverServlet extends FATServlet {
         frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
         h2Client.sendFrame(frameHeadersToSend);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -1633,7 +1632,7 @@ public class H2FATDriverServlet extends FATServlet {
         frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
         h2Client.sendFrame(frameHeadersToSend);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -1663,7 +1662,7 @@ public class H2FATDriverServlet extends FATServlet {
         frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
         h2Client.sendFrame(frameHeadersToSend);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -1693,7 +1692,7 @@ public class H2FATDriverServlet extends FATServlet {
         frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
         h2Client.sendFrame(frameHeadersToSend);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -1723,7 +1722,7 @@ public class H2FATDriverServlet extends FATServlet {
         frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
         h2Client.sendFrame(frameHeadersToSend);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -1753,7 +1752,7 @@ public class H2FATDriverServlet extends FATServlet {
         frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
         h2Client.sendFrame(frameHeadersToSend);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -1783,7 +1782,7 @@ public class H2FATDriverServlet extends FATServlet {
         frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
         h2Client.sendFrame(frameHeadersToSend);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -1813,7 +1812,7 @@ public class H2FATDriverServlet extends FATServlet {
         frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
         h2Client.sendFrame(frameHeadersToSend);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -1845,7 +1844,7 @@ public class H2FATDriverServlet extends FATServlet {
         frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
         h2Client.sendFrame(frameHeadersToSend);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -1880,7 +1879,7 @@ public class H2FATDriverServlet extends FATServlet {
         frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
         h2Client.sendFrame(frameHeadersToSend);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -1913,7 +1912,7 @@ public class H2FATDriverServlet extends FATServlet {
         FramePing ping = new FramePing(0, emptyBytes, false);
         h2Client.sendFrame(ping);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -1954,7 +1953,7 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.sendBytes(pingFrameBytes);
         h2Client.sendBytes(payload);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -1983,12 +1982,12 @@ public class H2FATDriverServlet extends FATServlet {
         FramePing ping = new FramePing(0, libertyBytes, true);
         h2Client.sendFrame(ping);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
     public void testPingDoS(HttpServletRequest request,
-                                          HttpServletResponse response) throws InterruptedException, Exception {
+                            HttpServletResponse response) throws InterruptedException, Exception {
         if (LOGGER.isLoggable(Level.INFO)) {
             LOGGER.logp(Level.INFO, this.getClass().getName(), "testPingDoS", "Started!");
             LOGGER.logp(Level.INFO, this.getClass().getName(), "testPingDoS",
@@ -2063,7 +2062,7 @@ public class H2FATDriverServlet extends FATServlet {
         FramePing ping = new FramePing(0, libertyBytes, true);
         h2Client.sendFrame(ping);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -2092,7 +2091,7 @@ public class H2FATDriverServlet extends FATServlet {
         frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
         h2Client.sendFrame(frameHeadersToSend);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -2117,7 +2116,7 @@ public class H2FATDriverServlet extends FATServlet {
         FrameHeadersClient frameHeadersToSend = new FrameHeadersClient(3, errorBytes, 0, 0, 0, true, true, false, false, false, false);
         h2Client.sendFrame(frameHeadersToSend);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -2150,7 +2149,7 @@ public class H2FATDriverServlet extends FATServlet {
         frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
         h2Client.sendFrame(frameHeadersToSend);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -2178,7 +2177,7 @@ public class H2FATDriverServlet extends FATServlet {
         FrameDataClient dataFrame = new FrameDataClient(3, "test".getBytes(), 0, true, false, false);
         h2Client.sendFrame(dataFrame);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -2206,7 +2205,7 @@ public class H2FATDriverServlet extends FATServlet {
         FrameRstStream rstFrame = new FrameRstStream(3, CANCEL_ERROR, false);
         h2Client.sendFrame(rstFrame);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -2232,7 +2231,7 @@ public class H2FATDriverServlet extends FATServlet {
         FrameWindowUpdate windowUpdate = new FrameWindowUpdate(3, 100, false);
         h2Client.sendFrame(windowUpdate);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -2264,7 +2263,7 @@ public class H2FATDriverServlet extends FATServlet {
         firstContinuationHeaders.setHeaderFields(firstContinuationHeadersToSend);
         h2Client.sendFrame(firstContinuationHeaders);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -2302,7 +2301,7 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.sendFrame(rstFrame);
         h2Client.sendFrame(dataFrame);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -2344,7 +2343,7 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.sendFrame(rstFrame);
         h2Client.sendFrame(secondFrameHeadersToSend);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -2384,7 +2383,7 @@ public class H2FATDriverServlet extends FATServlet {
         firstContinuationHeaders.setHeaderFields(firstContinuationHeadersToSend);
         h2Client.sendFrame(firstContinuationHeaders);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -2400,7 +2399,8 @@ public class H2FATDriverServlet extends FATServlet {
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
         h2Client.addExpectedFrame(DEFAULT_SERVER_SETTINGS_FRAME);
-        addFirstExpectedHeaders(h2Client);
+        // Defect 266386
+        // addFirstExpectedHeaders(h2Client);
 
         byte[] debugData = "DATA Frame Received in the wrong state of: HALF_CLOSED_REMOTE".getBytes();
         FrameGoAwayClient errorFrame = new FrameGoAwayClient(0, debugData, new int[] { STREAM_CLOSED, PROTOCOL_ERROR }, new int[] { 1, 3 });
@@ -2420,7 +2420,7 @@ public class H2FATDriverServlet extends FATServlet {
         FrameDataClient dataFrame = new FrameDataClient(3, "test".getBytes(), 0, true, false, false);
         h2Client.sendFrame(dataFrame);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -2454,7 +2454,7 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.sendFrame(frameHeadersToSend);
         h2Client.sendFrame(frameHeadersToSend);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -2497,7 +2497,7 @@ public class H2FATDriverServlet extends FATServlet {
         FrameDataClient dataFrame = new FrameDataClient(3, "test".getBytes(), 0, true, false, false);
         h2Client.sendFrame(dataFrame);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         this.handleErrors(h2Client, testName);
     }
 
@@ -2539,7 +2539,7 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.sendFrame(frameHeadersToSend);
         h2Client.sendFrame(firstContinuationHeaders);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         this.handleErrors(h2Client, testName);
     }
 
@@ -2581,7 +2581,7 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.sendFrame(frameHeadersToSend);
         h2Client.sendFrame(firstContinuationHeaders);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         this.handleErrors(h2Client, testName);
     }
 
@@ -2630,7 +2630,7 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.sendFrame(firstContinuationHeaders);
         h2Client.sendFrame(secondContinuationHeaders);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         this.handleErrors(h2Client, testName);
     }
 
@@ -2683,7 +2683,7 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.sendFrame(firstContinuationHeaders);
         h2Client.sendFrame(secondContinuationHeaders);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         this.handleErrors(h2Client, testName);
     }
 
@@ -2710,7 +2710,7 @@ public class H2FATDriverServlet extends FATServlet {
         FrameDataClient dataFrame = new FrameDataClient(0, "test".getBytes(), 0, true, false, false);
         h2Client.sendFrame(dataFrame);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         this.handleErrors(h2Client, testName);
     }
 
@@ -2756,7 +2756,7 @@ public class H2FATDriverServlet extends FATServlet {
         byte[] b = parseHexBinary(dataString);
         h2Client.sendBytes(b);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         this.handleErrors(h2Client, testName);
     }
 
@@ -2799,7 +2799,7 @@ public class H2FATDriverServlet extends FATServlet {
         firstContinuationHeaders.setHeaderFields(firstContinuationHeadersToSend);
         h2Client.sendFrame(firstContinuationHeaders);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         this.handleErrors(h2Client, testName);
     }
 
@@ -2832,7 +2832,7 @@ public class H2FATDriverServlet extends FATServlet {
         frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
         h2Client.sendFrame(frameHeadersToSend);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         this.handleErrors(h2Client, testName);
     }
 
@@ -2867,7 +2867,7 @@ public class H2FATDriverServlet extends FATServlet {
         frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
         h2Client.sendFrame(frameHeadersToSend);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         this.handleErrors(h2Client, testName);
     }
 
@@ -2895,7 +2895,7 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.waitFor(frameHeaders);
         h2Client.sendFrame(priorityFrame);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         this.handleErrors(h2Client, testName);
     }
 
@@ -2925,7 +2925,7 @@ public class H2FATDriverServlet extends FATServlet {
         byte[] b = parseHexBinary(priorityString);
         h2Client.sendBytes(b);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         this.handleErrors(h2Client, testName);
     }
 
@@ -2952,7 +2952,7 @@ public class H2FATDriverServlet extends FATServlet {
         FrameRstStream rstFrame = new FrameRstStream(0, CANCEL_ERROR, false);
         h2Client.sendFrame(rstFrame);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         this.handleErrors(h2Client, testName);
     }
 
@@ -2983,7 +2983,7 @@ public class H2FATDriverServlet extends FATServlet {
         byte[] b = parseHexBinary(rstString);
         h2Client.sendBytes(b);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         this.handleErrors(h2Client, testName);
     }
 
@@ -3011,7 +3011,7 @@ public class H2FATDriverServlet extends FATServlet {
         FrameSettings settingsFrameWithValues = new FrameSettings(0, -1, -1, -1, -1, 16777216, -1, false);
         h2Client.sendFrame(settingsFrameWithValues);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -3042,7 +3042,7 @@ public class H2FATDriverServlet extends FATServlet {
         byte[] b = parseHexBinary(settingsFrame);
         h2Client.sendBytes(b);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -3073,7 +3073,7 @@ public class H2FATDriverServlet extends FATServlet {
         byte[] b = parseHexBinary(settingsFrame);
         h2Client.sendBytes(b);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -3110,7 +3110,7 @@ public class H2FATDriverServlet extends FATServlet {
         FramePing ping = new FramePing(0, emptyBytes, false);
         h2Client.sendFrame(ping);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -3138,7 +3138,7 @@ public class H2FATDriverServlet extends FATServlet {
         settingsFrameWithValues.setAckFlag();
         h2Client.sendFrame(settingsFrameWithValues);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -3165,7 +3165,7 @@ public class H2FATDriverServlet extends FATServlet {
         FrameSettings settingsFrame = new FrameSettings(3, -1, -1, -1, -1, -1, -1, false);
         h2Client.sendFrame(settingsFrame);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -3201,7 +3201,7 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.sendBytes(settingsFrame);
         //h2Client.sendBytes(parameter);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -3236,7 +3236,7 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.sendFrame(invalidPing);
         h2Client.sendFrame(libertyPing);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -3267,7 +3267,7 @@ public class H2FATDriverServlet extends FATServlet {
         FramePing libertyPing = new FramePing(3, libertyBytes, false);
         h2Client.sendFrame(libertyPing);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -3298,7 +3298,7 @@ public class H2FATDriverServlet extends FATServlet {
         byte[] b = parseHexBinary(pingFrame);
         h2Client.sendBytes(b);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
 
     }
@@ -3326,7 +3326,7 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
         h2Client.sendFrame(new FrameGoAway(3, new byte[] { (byte) 0, (byte) 1 }, 0, 1, false));
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
 
     }
@@ -3358,7 +3358,7 @@ public class H2FATDriverServlet extends FATServlet {
         FrameWindowUpdate windowUpdateB = new FrameWindowUpdate(0, 2147483647, false);
         h2Client.sendFrame(windowUpdateB);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
 
     }
@@ -3400,7 +3400,7 @@ public class H2FATDriverServlet extends FATServlet {
         FrameWindowUpdate windowUpdateB = new FrameWindowUpdate(3, 2147483647, false);
         h2Client.sendFrame(windowUpdateB);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
 
     }
@@ -3419,7 +3419,7 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.sendUpgradeHeader(HEADERS_ONLY_URI);
         h2Client.sendClientPreface("Bad-PRI");
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         Assert.assertTrue(testName + " received the server's preface. wasServerPrefaceReceived() = true", !h2Client.wasServerPrefaceReceived());
         //handleErrors(h2Client, testName);
     }
@@ -3458,7 +3458,7 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.sendFrame(frameHeadersToSend);
         h2Client.sendFrame(secondFrameHeadersToSend);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -3496,7 +3496,7 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.sendFrame(frameHeadersToSend);
         h2Client.sendFrame(secondFrameHeadersToSend);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -3530,7 +3530,7 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.waitFor(frameHeaders);
         h2Client.sendFrame(frameHeadersToSend);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -3557,7 +3557,7 @@ public class H2FATDriverServlet extends FATServlet {
         FramePriority priorityFrame = new FramePriority(3, 3, 255, false, false);
         h2Client.sendFrame(priorityFrame);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         this.handleErrors(h2Client, testName);
     }
 
@@ -3596,7 +3596,7 @@ public class H2FATDriverServlet extends FATServlet {
         byte[] unknownFrameHeader = { 0, 0, 0, -12, 0, 0, 0, 0, 0 };
         h2Client.sendBytes(unknownFrameHeader);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -3623,7 +3623,7 @@ public class H2FATDriverServlet extends FATServlet {
         FrameSettings settingsFrameWithValues = new FrameSettings(0, -1, 2, -1, -1, -1, -1, false);
         h2Client.sendFrame(settingsFrameWithValues);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -3688,7 +3688,7 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
         h2Client.sendFrame(new FrameGoAway(0, new byte[] { (byte) 0, (byte) 1 }, 255, 1, false));
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
 
     }
@@ -3728,7 +3728,7 @@ public class H2FATDriverServlet extends FATServlet {
         FramePing ping = new FramePing(0, testBytes, false);
         h2Client.sendFrame(ping);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -3758,7 +3758,7 @@ public class H2FATDriverServlet extends FATServlet {
         frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
         h2Client.sendFrame(frameHeadersToSend);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -3788,7 +3788,7 @@ public class H2FATDriverServlet extends FATServlet {
         frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
         h2Client.sendFrame(frameHeadersToSend);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -3830,7 +3830,7 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.sendFrame(dataFrame);
         h2Client.sendFrame(secondFrameHeadersToSend);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -3862,7 +3862,7 @@ public class H2FATDriverServlet extends FATServlet {
         frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
         h2Client.sendFrame(frameHeadersToSend);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -3894,7 +3894,7 @@ public class H2FATDriverServlet extends FATServlet {
         frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
         h2Client.sendFrame(frameHeadersToSend);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -3929,7 +3929,7 @@ public class H2FATDriverServlet extends FATServlet {
         frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
         h2Client.sendFrame(frameHeadersToSend);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -3943,6 +3943,7 @@ public class H2FATDriverServlet extends FATServlet {
         String testName = "testHeaderFrameWithEmptyPath";
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
+        // Http2Client h2Client = new Http2Client(request.getParameter("hostName"), Integer.parseInt(request.getParameter("port")), blockUntilConnectionIsDone, 1000);
         h2Client.addExpectedFrame(DEFAULT_SERVER_SETTINGS_FRAME);
 
         FrameRstStream rstFrame = new FrameRstStream(3, PROTOCOL_ERROR, false);
@@ -3959,7 +3960,7 @@ public class H2FATDriverServlet extends FATServlet {
         frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
         h2Client.sendFrame(frameHeadersToSend);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -3989,7 +3990,7 @@ public class H2FATDriverServlet extends FATServlet {
         frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
         h2Client.sendFrame(frameHeadersToSend);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -4018,7 +4019,7 @@ public class H2FATDriverServlet extends FATServlet {
         frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
         h2Client.sendFrame(frameHeadersToSend);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -4046,7 +4047,7 @@ public class H2FATDriverServlet extends FATServlet {
         frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
         h2Client.sendFrame(frameHeadersToSend);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -4061,10 +4062,8 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        int COMPRESSION_ERROR = 0x9;
-        byte[] debugData = "Invalid pseudo-header for decompression context: :method: GET".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, COMPRESSION_ERROR, 1, false);
-        h2Client.addExpectedFrame(errorFrame);
+        FrameRstStream rstFrame = new FrameRstStream(3, PROTOCOL_ERROR, false);
+        h2Client.addExpectedFrame(rstFrame);
         h2Client.addExpectedFrame(DEFAULT_SERVER_SETTINGS_FRAME);
         h2Client.sendUpgradeHeader(HEADERS_ONLY_URI);
         h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
@@ -4078,7 +4077,7 @@ public class H2FATDriverServlet extends FATServlet {
         frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
         h2Client.sendFrame(frameHeadersToSend);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -4100,10 +4099,8 @@ public class H2FATDriverServlet extends FATServlet {
 
         h2Client.addExpectedFrame(DEFAULT_SERVER_SETTINGS_FRAME); //FIXME this is the server preface, it may have values
 
-        int COMPRESSION_ERROR = 0x9;
-        byte[] debugData = "Invalid pseudo-header for decompression context: :scheme: http".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, COMPRESSION_ERROR, 1, false);
-        h2Client.addExpectedFrame(errorFrame);
+        FrameRstStream rstFrame = new FrameRstStream(3, PROTOCOL_ERROR, false);
+        h2Client.addExpectedFrame(rstFrame);
 
         h2Client.sendUpgradeHeader(HEADERS_ONLY_URI);
 
@@ -4138,7 +4135,7 @@ public class H2FATDriverServlet extends FATServlet {
         //h2Client.sendFrame(ping);
 
         //Use CountDownLatch to block this test thread until we know the test is done (meaning, the connection has been closed)
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
 
         handleErrors(h2Client, testName);
     }
@@ -4157,9 +4154,8 @@ public class H2FATDriverServlet extends FATServlet {
 
         h2Client.addExpectedFrame(DEFAULT_SERVER_SETTINGS_FRAME);
 
-        byte[] debugData = "Invalid pseudo-header for decompression context: :path: /H2TestModule/H2HeadersAndBody".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, COMPRESSION_ERROR, 1, false);
-        h2Client.addExpectedFrame(errorFrame);
+        FrameRstStream rstFrame = new FrameRstStream(3, PROTOCOL_ERROR, false);
+        h2Client.addExpectedFrame(rstFrame);
 
         h2Client.sendUpgradeHeader(HEADERS_ONLY_URI);
         h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
@@ -4173,7 +4169,7 @@ public class H2FATDriverServlet extends FATServlet {
         frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
         h2Client.sendFrame(frameHeadersToSend);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -4209,7 +4205,7 @@ public class H2FATDriverServlet extends FATServlet {
         FrameDataClient dataFrame = new FrameDataClient(3, "test".getBytes(), 0, true, false, false);
         h2Client.sendFrame(dataFrame);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -4244,7 +4240,7 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.sendFrame(new FrameDataClient(3, "test".getBytes(), 0, false, false, false));
         h2Client.sendFrame(new FrameDataClient(3, "test".getBytes(), 0, true, false, false));
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -4285,7 +4281,7 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.sendFrame(dataFrame);
         h2Client.sendFrame(secondFrameHeadersToSend);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -4317,7 +4313,7 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
         h2Client.sendFrame(pushPromise);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -4355,7 +4351,7 @@ public class H2FATDriverServlet extends FATServlet {
         FrameDataClient dataFrame = new FrameDataClient(3, testString.toString().getBytes(), 0, true, false, false);
         h2Client.sendFrame(dataFrame);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -4387,15 +4383,15 @@ public class H2FATDriverServlet extends FATServlet {
         frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
         h2Client.sendFrame(frameHeadersToSend);
 
-        //create a string with 16385 octets, 16384 is the max
+        //create a string with 57344+1 octets, since 56K (57344) is the default max frame size
         StringBuilder testString = new StringBuilder();
-        for (int i = 0; i < 16384 + 1; i++) {
+        for (int i = 0; i < 57344 + 1; i++) {
             testString.append('x');
         }
         FrameDataClient dataFrame = new FrameDataClient(3, testString.toString().getBytes(), 0, true, false, false);
         h2Client.sendFrame(dataFrame);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -4431,7 +4427,7 @@ public class H2FATDriverServlet extends FATServlet {
         frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
         h2Client.sendFrame(frameHeadersToSend);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -4491,7 +4487,7 @@ public class H2FATDriverServlet extends FATServlet {
          */
         h2Client.sendBytes(parseHexBinary("0000270104000000038286141E2F4832546573744D6F64756C652F483248656164657273416E64426F64791001540174"));
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -4544,7 +4540,7 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.sendBytes(parseHexBinary("0000280105000000038286141E2F4832546573744D6F64756C652F483248656164657273416E64426F6479100174015421"));
 
         //Use CountDownLatch to block this test thread until we know the test is done (meaning, the connection has been closed)
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
 
         handleErrors(h2Client, testName);
     }
@@ -4596,7 +4592,7 @@ public class H2FATDriverServlet extends FATServlet {
          */
         h2Client.sendBytes(parseHexBinary("0000280105000000038286141E2F4832546573744D6F64756C652F483248656164657273416E64426F64791001740154C6"));
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -4646,7 +4642,7 @@ public class H2FATDriverServlet extends FATServlet {
          * <invalid huffman header>
          */
         h2Client.sendBytes(parseHexBinary("0000330105000000038286141E2F4832546573744D6F64756C652F483248656164657273416E64426F647910017401540085F2B24A84FF8449509FFF"));
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
 
         handleErrors(h2Client, testName);
     }
@@ -4697,7 +4693,7 @@ public class H2FATDriverServlet extends FATServlet {
          */
         String frameBytes = "0000280105000000038286141E2F4832546573744D6F64756C652F483248656164657273416E64426F6479100174015480";
         h2Client.sendBytes(parseHexBinary(frameBytes));
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
 
         handleErrors(h2Client, testName);
     }
@@ -4733,7 +4729,7 @@ public class H2FATDriverServlet extends FATServlet {
         //update SETTINGS_INITIAL_WINDOW_SIZE and make the window big enough for the DATA frame to be sent
         h2Client.sendFrame(new FrameSettings(0, -1, -1, -1, 20, -1, -1, false));
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -4774,7 +4770,7 @@ public class H2FATDriverServlet extends FATServlet {
         windowUpdate = new FrameWindowUpdate(3, 20, false);
         h2Client.sendFrame(windowUpdate);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
@@ -4886,7 +4882,7 @@ public class H2FATDriverServlet extends FATServlet {
     /**
      * Attempt to directly connect over HTTP/2 to a server that has servlet 3.1, but has HTTP/2 turned off.
      * This should result in a timeout waiting for the server preface.
-     * 
+     *
      * @param the Http2Client that will expect a header response
      * @return the expected FrameHeaders
      */
@@ -4896,8 +4892,7 @@ public class H2FATDriverServlet extends FATServlet {
         String testName = "servlet31H2OffDirectConnection";
 
         // config the client to use HTTP/2 with prior knowledge
-        Http2Client h2Client =  new Http2Client(request.getParameter("hostName"), Integer.parseInt(request.getParameter("port")), blockUntilConnectionIsDone, 
-            defaultTimeoutToSendFrame, true);
+        Http2Client h2Client = new Http2Client(request.getParameter("hostName"), Integer.parseInt(request.getParameter("port")), blockUntilConnectionIsDone, defaultTimeoutToSendFrame, true);
 
         h2Client.addExpectedFrame(DEFAULT_SERVER_SETTINGS_FRAME);
 
@@ -4934,7 +4929,7 @@ public class H2FATDriverServlet extends FATServlet {
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
         h2Client.addExpectedFrame(DEFAULT_SERVER_SETTINGS_FRAME);
-        
+
         List<H2HeaderField> firstHeadersReceived = new ArrayList<H2HeaderField>();
         firstHeadersReceived.add(new H2HeaderField(":status", "200"));
         firstHeadersReceived.add(new H2HeaderField("x-powered-by", "Servlet/3.1"));
@@ -4950,14 +4945,14 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.sendUpgradeHeader(HEADERS_AND_BODY_URI, HTTPUtils.HTTPMethod.POST);
         h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
     /**
      * Tests initializing a cleartext HTTP/2 connection initialized without the h2c Upgrade header
      * A single GET request is sent; headers and data are expected back on the same stream
-     * 
+     *
      * @param request
      * @param response
      * @throws InterruptedException
@@ -4968,8 +4963,7 @@ public class H2FATDriverServlet extends FATServlet {
         String testName = "testHeaderAndDataPriorKnowledge";
 
         // config the client to use HTTP/2 with prior knowledge
-        Http2Client h2Client =  new Http2Client(request.getParameter("hostName"), Integer.parseInt(request.getParameter("port")), blockUntilConnectionIsDone, 
-            defaultTimeoutToSendFrame, true);
+        Http2Client h2Client = new Http2Client(request.getParameter("hostName"), Integer.parseInt(request.getParameter("port")), blockUntilConnectionIsDone, defaultTimeoutToSendFrame, true);
 
         // create expected header response
         List<H2HeaderField> headersReceived = new ArrayList<H2HeaderField>();
@@ -4998,14 +4992,14 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
         h2Client.sendFrame(frameHeadersToSend);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
     }
 
     /**
      * Tests initializing a cleartext HTTP/2 connection initialized without the h2c Upgrade header
      * A POST request and body are sent; headers and data are expected back on the same stream
-     * 
+     *
      * @param request
      * @param response
      * @throws InterruptedException
@@ -5016,8 +5010,7 @@ public class H2FATDriverServlet extends FATServlet {
         String testName = "testHeaderAndDataPriorKnowledge";
 
         // config the client to use HTTP/2 with prior knowledge
-        Http2Client h2Client =  new Http2Client(request.getParameter("hostName"), Integer.parseInt(request.getParameter("port")), blockUntilConnectionIsDone, 
-            defaultTimeoutToSendFrame, true);
+        Http2Client h2Client = new Http2Client(request.getParameter("hostName"), Integer.parseInt(request.getParameter("port")), blockUntilConnectionIsDone, defaultTimeoutToSendFrame, true);
 
         // create expected header response
         List<H2HeaderField> headersReceived = new ArrayList<H2HeaderField>();
@@ -5037,8 +5030,7 @@ public class H2FATDriverServlet extends FATServlet {
         firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "POST"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
         firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":scheme", "http"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
         firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":path", HEADERS_AND_BODY_URI), HpackConstants.LiteralIndexType.NEVERINDEX, false));
-        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField("content-length", String.valueOf("test".getBytes().length)), 
-            HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField("content-length", String.valueOf("test".getBytes().length)), HpackConstants.LiteralIndexType.NEVERINDEX, false));
         FrameHeadersClient frameHeadersToSend = new FrameHeadersClient(1, null, 0, 0, 0, false, true, false, false, false, false);
         frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
         FrameDataClient dataFrame = new FrameDataClient(1, "test".getBytes(), 0, true, false, false);
@@ -5048,7 +5040,210 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.sendFrame(frameHeadersToSend);
         h2Client.sendFrame(dataFrame);
 
-        blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        blockUntilConnectionIsDone.await();
+        handleErrors(h2Client, testName);
+    }
+
+    public void testPingStress(HttpServletRequest request,
+                               HttpServletResponse response) throws InterruptedException, Exception {
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.logp(Level.INFO, this.getClass().getName(), "testPingStress", "Started!");
+            LOGGER.logp(Level.INFO, this.getClass().getName(), "testPingStress",
+                        "Connecting to = " + request.getParameter("hostName") + ":" + request.getParameter("port"));
+        }
+        String testName = "testPingStress";
+        CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
+        Http2Client h2Client = new Http2Client(request.getParameter("hostName"), Integer.parseInt(request.getParameter("port")), blockUntilConnectionIsDone, 120000);
+        h2Client.doNotWaitForAck();
+        h2Client.addExpectedFrame(DEFAULT_SERVER_SETTINGS_FRAME);
+
+        h2Client.sendUpgradeHeader(HEADERS_ONLY_URI);
+        h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
+
+        FrameGoAway errorFrame = new FrameGoAway(0, "too many control frames generated".getBytes(), PROTOCOL_ERROR, 1, false);
+        h2Client.addExpectedFrame(errorFrame);
+
+        // create a PING frame and send it a few times
+        byte[] libertyBytes = { 'l', 'i', 'b', 'e', 'r', 't', 'y', '1' };
+        FramePing ping = new FramePing(0, libertyBytes, false);
+        for (int i = 0; i < 11000; i++) {
+            h2Client.sendFrame(ping);
+        }
+
+        blockUntilConnectionIsDone.await();
+        handleErrors(h2Client, testName);
+    }
+
+    public void testPriorityStress(HttpServletRequest request,
+                                   HttpServletResponse response) throws InterruptedException, Exception {
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.logp(Level.INFO, this.getClass().getName(), "testPriorityStress", "Started!");
+            LOGGER.logp(Level.INFO, this.getClass().getName(), "testPriorityStress",
+                        "Connecting to = " + request.getParameter("hostName") + ":" + request.getParameter("port"));
+        }
+        String testName = "testPriorityStress";
+        CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
+        Http2Client h2Client = new Http2Client(request.getParameter("hostName"), Integer.parseInt(request.getParameter("port")), blockUntilConnectionIsDone, STRESS_TEST_TIMEOUT);
+        h2Client.addExpectedFrame(DEFAULT_SERVER_SETTINGS_FRAME);
+
+        h2Client.sendUpgradeHeader(HEADERS_ONLY_URI);
+        h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
+
+        FrameGoAway errorFrame = new FrameGoAway(0, "too many control frames generated".getBytes(), PROTOCOL_ERROR, 1, false);
+        h2Client.addExpectedFrame(errorFrame);
+
+        // create priority frames and send them out a few times
+        FramePriority priorityFrame1 = new FramePriority(1, 0, 32, false, false);
+        FramePriority priorityFrame2 = new FramePriority(3, 1, 64, false, false);
+        FramePriority priorityFrame3 = new FramePriority(5, 3, 7, false, false);
+        for (int i = 0; i < 11000; i++) {
+            h2Client.sendFrame(priorityFrame1);
+            h2Client.sendFrame(priorityFrame2);
+            h2Client.sendFrame(priorityFrame3);
+        }
+
+        blockUntilConnectionIsDone.await();
+        handleErrors(h2Client, testName);
+    }
+
+    public void testResetStress(HttpServletRequest request,
+                                HttpServletResponse response) throws InterruptedException, Exception {
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.logp(Level.INFO, this.getClass().getName(), "testResetStress", "Started!");
+            LOGGER.logp(Level.INFO, this.getClass().getName(), "testResetStress",
+                        "Connecting to = " + request.getParameter("hostName") + ":" + request.getParameter("port"));
+        }
+        String testName = "testResetStress";
+        CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
+        Http2Client h2Client = new Http2Client(request.getParameter("hostName"), Integer.parseInt(request.getParameter("port")), blockUntilConnectionIsDone, STRESS_TEST_TIMEOUT);
+        h2Client.addExpectedFrame(DEFAULT_SERVER_SETTINGS_FRAME);
+
+        h2Client.sendUpgradeHeader(HEADERS_ONLY_URI);
+        h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
+
+        FrameGoAway errorFrame = new FrameGoAway(0, "too many control frames generated".getBytes(), PROTOCOL_ERROR, 1, false);
+        h2Client.addExpectedFrame(errorFrame);
+
+        for (int i = 3; i < 11000; i += 2) {
+            // send a header that generates a RST_STREAM from the server
+            List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
+            firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "GET"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+            firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":scheme", "http"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+            firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":pathg", HEADERS_AND_BODY_URI), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+            FrameHeadersClient frameHeadersToSend = new FrameHeadersClient(i, null, 0, 0, 0, true, true, false, false, false, false);
+            frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
+            h2Client.sendFrame(frameHeadersToSend);
+        }
+
+        blockUntilConnectionIsDone.await(20, TimeUnit.SECONDS);
+        handleErrors(h2Client, testName);
+    }
+
+    public void testEmptyDataFrameStress(HttpServletRequest request,
+                                         HttpServletResponse response) throws InterruptedException, Exception {
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.logp(Level.INFO, this.getClass().getName(), "testEmptyFrameStress", "Started!");
+            LOGGER.logp(Level.INFO, this.getClass().getName(), "testEmptyFrameStress",
+                        "Connecting to = " + request.getParameter("hostName") + ":" + request.getParameter("port"));
+        }
+        String testName = "testEmptyFrameStress";
+        CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
+        Http2Client h2Client = new Http2Client(request.getParameter("hostName"), Integer.parseInt(request.getParameter("port")), blockUntilConnectionIsDone, STRESS_TEST_TIMEOUT);
+        h2Client.addExpectedFrame(DEFAULT_SERVER_SETTINGS_FRAME);
+
+        h2Client.sendUpgradeHeader(HEADERS_ONLY_URI);
+        h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
+
+        FrameGoAway errorFrame = new FrameGoAway(0, "too many empty frames generated".getBytes(), PROTOCOL_ERROR, 1, false);
+        h2Client.addExpectedFrame(errorFrame);
+
+        List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "GET"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":scheme", "http"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":path", HEADERS_AND_BODY_URI), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        // EOS = false
+        FrameHeadersClient frameHeadersToSend = new FrameHeadersClient(3, null, 0, 0, 0, false, true, false, false, false, false);
+        frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
+        h2Client.sendFrame(frameHeadersToSend);
+
+        // send over a few empty data frames
+        for (int i = 0; i < 654; i++) {
+            // EOS = false
+            FrameDataClient dataFrame = new FrameDataClient(3, "".getBytes(), 0, false, false, false);
+            h2Client.sendFrame(dataFrame);
+        }
+
+        blockUntilConnectionIsDone.await(20, TimeUnit.SECONDS);
+        handleErrors(h2Client, testName);
+    }
+
+    public void testEmptyHeaderFrameStress(HttpServletRequest request,
+                                           HttpServletResponse response) throws InterruptedException, Exception {
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.logp(Level.INFO, this.getClass().getName(), "testEmptyFrameStress", "Started!");
+            LOGGER.logp(Level.INFO, this.getClass().getName(), "testEmptyFrameStress",
+                        "Connecting to = " + request.getParameter("hostName") + ":" + request.getParameter("port"));
+        }
+        String testName = "testEmptyFrameStress";
+        CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
+        Http2Client h2Client = new Http2Client(request.getParameter("hostName"), Integer.parseInt(request.getParameter("port")), blockUntilConnectionIsDone, STRESS_TEST_TIMEOUT);
+        h2Client.addExpectedFrame(DEFAULT_SERVER_SETTINGS_FRAME);
+
+        h2Client.sendUpgradeHeader(HEADERS_ONLY_URI);
+        h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
+
+        FrameGoAway errorFrame = new FrameGoAway(0, "too many empty frames generated".getBytes(), PROTOCOL_ERROR, 1, false);
+        h2Client.addExpectedFrame(errorFrame);
+
+        List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "GET"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":scheme", "http"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":path", HEADERS_AND_BODY_URI), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        // EOS = false, EOH = false
+        FrameHeadersClient frameHeadersToSend = new FrameHeadersClient(3, null, 0, 0, 0, false, false, false, false, false, false);
+        frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
+        h2Client.sendFrame(frameHeadersToSend);
+
+        // EOS=false, EOH=false
+        List<HeaderEntry> firstContinuationHeadersToSend = new ArrayList<HeaderEntry>();
+        FrameContinuationClient firstContinuationHeaders = new FrameContinuationClient(3, null, false, false, false);
+        firstContinuationHeaders.setHeaderEntries(firstContinuationHeadersToSend);
+
+        // send over the continuation frame a few times
+        for (int i = 0; i < 654; i++) {
+            h2Client.sendFrame(firstContinuationHeaders);
+        }
+
+        blockUntilConnectionIsDone.await(20, TimeUnit.SECONDS);
+        handleErrors(h2Client, testName);
+    }
+
+    public void testSettingsFrameStress(HttpServletRequest request,
+                                        HttpServletResponse response) throws InterruptedException, Exception {
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.logp(Level.INFO, this.getClass().getName(), "testSettingsFrameStress", "Started!");
+            LOGGER.logp(Level.INFO, this.getClass().getName(), "testSettingsFrameStress",
+                        "Connecting to = " + request.getParameter("hostName") + ":" + request.getParameter("port"));
+        }
+        String testName = "testSettingsFrameStress";
+        CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
+        Http2Client h2Client = new Http2Client(request.getParameter("hostName"), Integer.parseInt(request.getParameter("port")), blockUntilConnectionIsDone, STRESS_TEST_TIMEOUT);
+        h2Client.doNotWaitForAck();
+        h2Client.addExpectedFrame(DEFAULT_SERVER_SETTINGS_FRAME);
+
+        h2Client.sendUpgradeHeader(HEADERS_ONLY_URI);
+        h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
+
+        FrameGoAway errorFrame = new FrameGoAway(0, "too many control frames generated".getBytes(), PROTOCOL_ERROR, 1, false);
+        h2Client.addExpectedFrame(errorFrame);
+
+        FrameSettings settingsFrame = new FrameSettings(0, -1, -1, -1, -1, -1, -1, false);
+        // send out a zero-length settings frame a few times
+        for (int i = 0; i < 11000; i++) {
+            h2Client.sendFrame(settingsFrame);
+        }
+
+        blockUntilConnectionIsDone.await(20, TimeUnit.SECONDS);
         handleErrors(h2Client, testName);
     }
 

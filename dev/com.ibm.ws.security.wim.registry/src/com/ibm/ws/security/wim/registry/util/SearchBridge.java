@@ -27,6 +27,7 @@ import com.ibm.ws.security.wim.registry.dataobject.IDAndRealm;
 import com.ibm.ws.security.wim.util.UniqueNameHelper;
 import com.ibm.wsspi.security.wim.SchemaConstants;
 import com.ibm.wsspi.security.wim.exception.EntityNotFoundException;
+import com.ibm.wsspi.security.wim.exception.EntityNotInRealmScopeException;
 import com.ibm.wsspi.security.wim.exception.InvalidUniqueNameException;
 import com.ibm.wsspi.security.wim.exception.WIMException;
 import com.ibm.wsspi.security.wim.model.Context;
@@ -177,7 +178,9 @@ public class SearchBridge {
         // other cases
         catch (WIMException toCatch) {
             // f113366
-            if (toCatch instanceof EntityNotFoundException) {
+            if (toCatch instanceof EntityNotFoundException
+                || toCatch instanceof InvalidUniqueNameException
+                || toCatch instanceof EntityNotInRealmScopeException) {
                 returnValue = new SearchResult(new ArrayList<String>(), false);
             }
             // log the Exception
@@ -372,11 +375,11 @@ public class SearchBridge {
         catch (WIMException toCatch) {
             // f113366
             // PM37404 Catch the invalid uniqueName exception for get() API
-            if (toCatch instanceof EntityNotFoundException || toCatch instanceof InvalidUniqueNameException) {
+            if (toCatch instanceof EntityNotFoundException
+                || toCatch instanceof InvalidUniqueNameException
+                || toCatch instanceof EntityNotInRealmScopeException) {
                 returnValue = new SearchResult(new ArrayList<String>(), false);
-            }
-            // log the Exception
-            else {
+            } else {
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, methodName + " " + toCatch.getMessage(), toCatch);
                 }

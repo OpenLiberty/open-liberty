@@ -14,10 +14,12 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import componenttest.custom.junit.runner.AlwaysPassesTest;
+import com.ibm.ws.ejbcontainer.legacy.fat.tests.SFLocalTest;
+import com.ibm.ws.ejbcontainer.legacy.fat.tests.SLLocalTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                AlwaysPassesTest.class
+                SFLocalTest.class,
+                SLLocalTest.class
 })
 public class FATSuite {}

@@ -1,0 +1,9 @@
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+	version="3.0">
+
+	<resource-env-ref>
+		<resource-env-ref-name>couchdb/testdb-jndi-resource-env-ref</resource-env-ref-name>
+		<resource-env-ref-type>org.ektorp.CouchDbInstance</resource-env-ref-type>
+	</resource-env-ref>
+</web-app>

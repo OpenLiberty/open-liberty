@@ -117,13 +117,13 @@ ssl.client.handshake.error.CWPKI0022E=CWPKI0022E: SSL HANDSHAKE FAILURE:  A sign
 ssl.client.handshake.error.CWPKI0022E.explanation=An error occurred during the SSL handshake.  It might require a signer export/import from the target host to the client TrustStore.
 ssl.client.handshake.error.CWPKI0022E.useraction=Review the extended error message from the TrustManager to determine what needs to change between the target SSL configuration and the client SSL configuration.
 # -------------------------------------------------------------------------------------------------
-ssl.client.alias.not.found.CWPKI0023E=CWPKI0023E: The certificate alias {0} specified by the property com.ibm.ssl.keyStoreClientAlias is not found in KeyStore {1}.
-ssl.client.alias.not.found.CWPKI0023E.explanation=The certificate alias specified for this SSL configuration is not in the specified KeyStore. 
-ssl.client.alias.not.found.CWPKI0023E.useraction=Either add a certificate into the KeyStore with the specified certificate alias or change the specified certificate alias to match an alias found in the client KeyStore.
+ssl.client.alias.not.found.CWPKI0023E=CWPKI0023E: The {0} certificate alias specified by the attribute clientKeyAlias is either not found in KeyStore {1} or it is invalid.
+ssl.client.alias.not.found.CWPKI0023E.explanation=The certificate alias specified for this SSL configuration is not in the specified KeyStore or it was found to be invalid. An expired certificate is one example of an invalid certificate.
+ssl.client.alias.not.found.CWPKI0023E.useraction=Either add a certificate into the KeyStore with the specified certificate alias, or replace or renew the invalid certificate with the specified certificate alias found in the client KeyStore.
 # -------------------------------------------------------------------------------------------------
-ssl.server.alias.not.found.CWPKI0024E=CWPKI0024E: The certificate alias {0} specified by the property com.ibm.ssl.keyStoreServerAlias is not found in KeyStore {1}.
-ssl.server.alias.not.found.CWPKI0024E.explanation=The certificate alias specified for this SSL configuration is not in the specified KeyStore. 
-ssl.server.alias.not.found.CWPKI0024E.useraction=Either add a certificate into the KeyStore with the specified certificate alias or change the specified certificate alias to match an alias found in the server KeyStore.
+ssl.server.alias.not.found.CWPKI0024E=CWPKI0024E: The {0} certificate alias specified by the attribute serverKeyAlias is either not found in KeyStore {1} or it is invalid.
+ssl.server.alias.not.found.CWPKI0024E.explanation=The certificate alias specified for this SSL configuration is not in the specified KeyStore or it was found to be invalid. An expired certificate is one example of an invalid certificate.
+ssl.server.alias.not.found.CWPKI0024E.useraction=Either add a certificate into the KeyStore with the specified certificate alias, or replace or renew the invalid certificate with the specified certificate alias found in the server KeyStore.
 # -------------------------------------------------------------------------------------------------
 ssl.load.https.stream.handler.CWPKI0025E=CWPKI0025E: The system could not load the https Handler class {0}. Extended error message: {1}
 ssl.load.https.stream.handler.CWPKI0025E.explanation=There was a classloading error trying to load the HTTPS URLStreamHandler class. 
@@ -632,4 +632,20 @@ ssl.client.handshake.error.CWPKI0823E.useraction=Review the extended error messa
 ssl.client.handshake.error.CWPKI0824E=CWPKI0824E: SSL HANDSHAKE FAILURE:  Host name verification error while connecting to host [{0}].  The host name used to access the server does not match the server certificate''s SubjectDN or Subject Alternative Name information.  The extended error message from the SSL handshake exception is: [{1}].
 ssl.client.handshake.error.CWPKI0824E.explanation=An error occurred during the SSL handshake.  Host name verification is enabled and server's identity can not be verified.  The host name used to access the server does not match the server certificate's SubjectDN or Subject Alternative Name information.
 ssl.client.handshake.error.CWPKI0824E.useraction=When host name verification is enable the server's being accessed needs to be setup with a certificate contain the proper information needed to verify the server's identity.
+# -------------------------------------------------------------------------------------------------
+ssl.cacerts.error.CWPKI0825W=CWPKI0825W: The trustDefaultCerts attribute is enabled but the default truststore failed to initialize. Because the default truststore did not initialize, only the truststore that is configured by the {0} SSL configuration is used. The exception that is returned is: {1}. 
+ssl.cacerts.error.CWPKI0825W.explanation=The default truststore did not initialize because it could not be retrieved from the trust manager. The default truststore is not used for trust. Only the configured SSL configuration is used.
+ssl.cacerts.error.CWPKI0825W.useraction=Ensure that the default truststore file exists and is accessible
+# -------------------------------------------------------------------------------------------------
+ssl.environment.cert.error.CWPKI0826W=CWPKI0826W: The certificate was not retrieved from the {0} environment variable. The certificate was not added to the {1} truststore.  The exception that is returned is: {2}.
+ssl.environment.cert.error.CWPKI0826W.explanation=The certificate that is specified in the environment variable cannot be accessed and is not included in the truststore. This problem might be caused by the environment variable, the file name, or the certificate. A failure to add the certificate does not invalidate the SSL configuration, but it might cause problems with establishing trust for outbound connections.
+ssl.environment.cert.error.CWPKI0826W.useraction=This problem might result from various causes. Ensure that the environment variable or file is populated with a base 64-bit certificate.
+# -------------------------------------------------------------------------------------------------
+ssl.using.cacerts.CWPKI0827I=CWPKI0827I: The {0} SSL configuration uses the default truststore in addition to the configured truststore.
+ssl.using.cacerts.CWPKI0827I.explanation=The default truststore and the truststore that is configured for the SSL configuration are both used for trust.
+ssl.using.cacerts.CWPKI0827I.useraction=No action is required.
+# -------------------------------------------------------------------------------------------------
+ssl.client.handshake.cacerts.error.CWPKI0828E=CWPKI0828E: The trustDefaultCerts attribute is enabled but trust was not established by using the default truststore. The extended error message from the SSL handshake exception is: {0}.
+ssl.client.handshake.cacerts.error.CWPKI0828E.explanation=The default truststore is not properly configured to establish trust.  
+ssl.client.handshake.cacerts.error.CWPKI0828E.useraction=Review the extended error message to determine what to change in the configuration.
 # -------------------------------------------------------------------------------------------------

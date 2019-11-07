@@ -23,7 +23,7 @@
 #   (single quote must be coded as one single quote '). 
 
 # This message bundle does not have its own message range, and instead reserves specific error messages from the 
-# com.ibm.ws.concurrent.mp.1.0 message bundle
+# com.ibm.ws.microprofile.contextpropagation.1.0 message bundle
 
 # do not translate: CDI, CompletionStage
 CWWKC1158.cannot.lazy.enlist.beans=CWWKC1158E: CDI Bean\uc774 \uc870\uce58 \ub610\ub294 \ud0dc\uc2a4\ud06c\uc5d0\uc11c \uc561\uc138\uc2a4\ub420 \ub54c \uc62c\ubc14\ub974\uac8c \uc791\ub3d9\ud558\ub3c4\ub85d \ucee8\ud14d\uc2a4\ud2b8 \uc870\uce58 \ub610\ub294 \ud0dc\uc2a4\ud06c\uc5d0 \ub300\ud574 \ucee8\ud14d\uc2a4\ud2b8\ub97c \ucea1\ucc98\ud558\uae30 \uc804\uc5d0 CDI Bean\uc5d0 \uc561\uc138\uc2a4\ud574\uc57c \ud569\ub2c8\ub2e4. \

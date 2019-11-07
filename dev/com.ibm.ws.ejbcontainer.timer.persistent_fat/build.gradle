@@ -9,13 +9,13 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 repositories {
-
-   ivy {
-
-       url "../cnf/local"
-
-   }
-
+  ivy {
+    url "../cnf/local"
+    metadataSources {
+      ivyDescriptor()
+      artifact()
+    }
+  }
 }
 
 configurations {
@@ -37,6 +37,11 @@ task addEJBTools {
     copy {
       from configurations.ejbTools
       into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.ejbcontainer.timer.persistent.fat.NoTablesServer/lib/global"
+      rename 'com.ibm.ws.ejbcontainer.fat_tools-(.*).jar', 'com.ibm.ws.ejbcontainer.fat_tools.jar'
+    }
+    copy {
+      from configurations.ejbTools
+      into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.ejbcontainer.timer.persistent.fat.PersistentTimerServer/lib/global"
       rename 'com.ibm.ws.ejbcontainer.fat_tools-(.*).jar', 'com.ibm.ws.ejbcontainer.fat_tools.jar'
     }
   }

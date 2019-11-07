@@ -17,6 +17,7 @@ import static jaxrs21sse.basic.JaxbObject.JAXB_OBJECTS;
 import static jaxrs21sse.basic.JsonObject.JSON_OBJECTS;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -44,7 +45,7 @@ import javax.ws.rs.sse.SseEventSink;
 @Path("/basic")
 public class BasicSseResource extends Application {
     private volatile static String port = null;
-    private volatile static List<String> names = new ArrayList<String>();
+    private volatile static List<String> names = Collections.synchronizedList(new ArrayList<String>());
 
     @GET
     @Path("/plain3")
@@ -310,7 +311,11 @@ public class BasicSseResource extends Application {
     @Path("/getNames")
     @Produces("application/json")
     public List<String> getNames() {
-        System.out.print("BasicSseResource.getNames: " + BasicSseResource.names);
-        return BasicSseResource.names;
+        List<String> myList = null;
+        synchronized(names) {
+            myList = new ArrayList<String>(BasicSseResource.names);
+            System.out.print("BasicSseResource.getNames: " + myList);
+        }
+        return myList;
     }
 }

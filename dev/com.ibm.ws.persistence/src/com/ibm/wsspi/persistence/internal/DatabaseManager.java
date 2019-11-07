@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -141,35 +141,53 @@ public class DatabaseManager {
         SessionLog traceLogger = new TraceLog();
 
         Properties properties = pui.getProperties();
-        String productName = properties.getProperty(PersistenceUnitProperties.SCHEMA_DATABASE_PRODUCT_NAME);
 
-        String vendorNameAndVersion = null;
+        String vendorName = null;
+        String minorVersion = null;
+        String majorVersion = null;
         // check persistent properties
-        if (productName != null) {
-            vendorNameAndVersion = productName;
+        if (properties.containsKey(PersistenceUnitProperties.SCHEMA_DATABASE_PRODUCT_NAME)) {
+            vendorName = properties.getProperty(PersistenceUnitProperties.SCHEMA_DATABASE_PRODUCT_NAME);
+            minorVersion = properties.getProperty(PersistenceUnitProperties.SCHEMA_DATABASE_MINOR_VERSION);
+            majorVersion = properties.getProperty(PersistenceUnitProperties.SCHEMA_DATABASE_MAJOR_VERSION);
+        } else {
+            DataSource ds = pui.getJtaDataSource();
+            if (ds == null) {
+                ds = pui.getNonJtaDataSource();
+            }
 
-            String majorVersion = properties.getProperty(PersistenceUnitProperties.SCHEMA_DATABASE_MAJOR_VERSION);
-            if (majorVersion != null) {
-                vendorNameAndVersion += majorVersion;
-                String minorVersion = properties.getProperty(PersistenceUnitProperties.SCHEMA_DATABASE_MINOR_VERSION);
-                if (minorVersion != null) {
-                    vendorNameAndVersion += minorVersion;
+            if(ds != null) {
+                Connection conn = null;
+                try {
+                    conn = ds.getConnection();
+                    DatabaseMetaData dmd = conn.getMetaData();
+                    vendorName = dmd.getDatabaseProductName();
+                    minorVersion = dmd.getDatabaseProductVersion();
+                    majorVersion = Integer.toString(dmd.getDatabaseMajorVersion());
+                } catch (SQLException sqle) {
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Unable to retrieve connection in getDatabasePlatformClassName", sqle);
+                    }
+                } finally {
+                    try {
+                        if (conn != null) {
+                            conn.close();
+                        }
+                    } catch (SQLException sqlee) {
+                        if (tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Unable to retrieve connection in getDatabasePlatformClassName", sqlee);
+                        }
+                    }
                 }
             }
-        } else {
-            vendorNameAndVersion = getVendorNameAndVersion(pui.getJtaDataSource());
-            if (vendorNameAndVersion == null) {
-                getVendorNameAndVersion(pui.getNonJtaDataSource());
-            }
         }
-
-        return DBPlatformHelper.getDBPlatform(vendorNameAndVersion, traceLogger);
+        return DBPlatformHelper.getDBPlatform(vendorName, minorVersion, majorVersion, traceLogger);
     }
 
     /**
      * Consults the static collections contained within this class and attempts to determine
      * whether the provided DataSource supports unicode.
-     * 
+     *
      * @return True if ds supports unicode. False if ds doesn't support unicode. null if unknown.
      */
     @FFDCIgnore(SQLException.class)
@@ -210,32 +228,5 @@ public class DatabaseManager {
             }
         }
         return res;
-    }
-
-    private String getVendorNameAndVersion(DataSource ds) {
-        if (ds == null) {
-            return null;
-        }
-        Connection conn = null;
-        try {
-            conn = ds.getConnection();
-            DatabaseMetaData dmd = conn.getMetaData();
-            return dmd.getDatabaseProductName() + dmd.getDatabaseMajorVersion();
-        } catch (SQLException sqle) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Unable to retrieve connection in getDatabasePlatformClassName", sqle);
-            }
-        } finally {
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException sqlee) {
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Unable to retrieve connection in getDatabasePlatformClassName", sqlee);
-                }
-            }
-        }
-        return null;
     }
 }

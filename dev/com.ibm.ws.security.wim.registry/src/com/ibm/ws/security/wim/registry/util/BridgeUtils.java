@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,12 +24,18 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.security.wim.Service;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.security.registry.EntryNotFoundException;
+import com.ibm.ws.security.registry.RegistryException;
 import com.ibm.ws.security.wim.ConfigManager;
 import com.ibm.ws.security.wim.VMMService;
 import com.ibm.ws.security.wim.registry.WIMUserRegistryDefines;
 import com.ibm.ws.security.wim.registry.dataobject.IDAndRealm;
 import com.ibm.ws.security.wim.util.UniqueNameHelper;
 import com.ibm.wsspi.security.wim.SchemaConstants;
+import com.ibm.wsspi.security.wim.exception.EntityNotFoundException;
+import com.ibm.wsspi.security.wim.exception.EntityNotInRealmScopeException;
+import com.ibm.wsspi.security.wim.exception.InvalidIdentifierException;
+import com.ibm.wsspi.security.wim.exception.InvalidUniqueNameException;
 import com.ibm.wsspi.security.wim.exception.WIMException;
 import com.ibm.wsspi.security.wim.model.Context;
 import com.ibm.wsspi.security.wim.model.Control;
@@ -562,5 +568,29 @@ public class BridgeUtils implements WIMUserRegistryDefines {
     public void removeAllFederatedRegistries() {
         getWimService().removeAllFederatedRegistries();
         hasFederatedRegistry = false;
+    }
+
+    static void handleExceptions(Exception e) throws EntryNotFoundException, RegistryException {
+        String methodName = "handleExceptions(Exception)";
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, methodName + " " + e.getMessage(), e);
+        }
+
+        if (e instanceof EntityNotFoundException
+            || e instanceof InvalidUniqueNameException
+            || e instanceof InvalidIdentifierException
+            || e instanceof EntityNotInRealmScopeException) {
+
+            /*
+             * We couldn't find the entity. Wrap to EntryNotFoundException.
+             */
+            throw new EntryNotFoundException(e.getMessage(), e);
+
+        } else {
+            /*
+             * Wrap all other exceptions in a RegistryException.
+             */
+            throw new RegistryException(e.getMessage(), e);
+        }
     }
 }

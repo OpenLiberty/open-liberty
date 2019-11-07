@@ -17,14 +17,20 @@ src: \
   test-applications/basicQueryApp/src,\
   test-applications/deprecationApp/src,\
   test-applications/defaultvalueApp/src,\
+  test-applications/graphQLInterfaceApp/src,\
   test-applications/ifaceApp/src,\
   test-applications/ignoreApp/src,\
+  test-applications/metricsApp/src,\
+  test-applications/inputFieldsApp/src,\
+  test-applications/outputFieldsApp/src,\
   test-applications/typesApp/src,\
 
 fat.project: true
 
 javac.source: 1.8
 javac.target: 1.8
+
+tested.features: mpMetrics-2.0
 
 -buildpath: \
   com.ibm.websphere.javaee.annotation.1.2;version=latest,\

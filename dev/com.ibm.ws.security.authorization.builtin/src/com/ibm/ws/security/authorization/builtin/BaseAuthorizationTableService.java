@@ -59,7 +59,7 @@ public abstract class BaseAuthorizationTableService implements UserRegistryChang
     protected String bundleLocation;
 
     @Reference(service = SecurityService.class, name = KEY_SECURITY_SERVICE,
-               cardinality = ReferenceCardinality.OPTIONAL,
+               cardinality = ReferenceCardinality.MANDATORY,
                policy = ReferencePolicy.DYNAMIC)
     protected void setSecurityService(ServiceReference<SecurityService> reference) {
         securityServiceRef.setReference(reference);

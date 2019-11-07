@@ -19,6 +19,9 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.Callback;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.ConsumerRebalanceListener;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.ConsumerRecord;
@@ -39,9 +42,12 @@ import com.ibm.ws.microprofile.reactive.messaging.kafka.classloader.AppLibraryCl
 @ApplicationScoped
 public class AdapterFactoryImpl extends KafkaAdapterFactory {
 
+    private static final TraceComponent tc = Tr.register(AdapterFactoryImpl.class);
+
     private ClassLoader appLibLoader;
 
     @PostConstruct
+    @FFDCIgnore(KafkaAdapterException.class)
     private void init() {
         this.appLibLoader = AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> {
             List<Class<?>> interfaces = Arrays.asList(KafkaAdapterFactory.class,
@@ -63,6 +69,13 @@ public class AdapterFactoryImpl extends KafkaAdapterFactory {
 
             return new AppLibraryClassLoader(urls, interfaces, Thread.currentThread().getContextClassLoader());
         });
+
+        try {
+            validate();
+        } catch (KafkaAdapterException e) {
+            Tr.error(tc, e.getMessage());
+            throw e;
+        }
     }
 
     @Override

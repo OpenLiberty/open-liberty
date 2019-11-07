@@ -17,6 +17,8 @@ Bundle-Description: RequestTiming: Request Timing; version=${bVersion}
 
 WS-TraceGroup: requestTiming
 
+testsrc: test/src
+
 Export-Package:  com.ibm.ws.request.timing.config, \
     com.ibm.ws.request.timing.notification, \
     com.ibm.ws.request.timing.stats
@@ -90,3 +92,7 @@ instrument.disabled: true
 	com.ibm.ws.request.interrupt;version=latest,\
 	com.ibm.ws.request.probes;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest
+	
+-testpath: \
+	../build.sharedResources/lib/junit/old/junit.jar;version=file
+

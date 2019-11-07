@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
-//import java.util.function.Consumer;
 
 import org.junit.Test;
 
@@ -160,7 +159,7 @@ public class ZipFileReaperTest {
         runProfile(iterations, maxTestDuration, profile, allTestOps); // throws Exception
     }
 
-    public static final int TEST_ITERATIONS = 3;
+    public static final int TEST_ITERATIONS = 2;
 
     @Test
     public void testDefaultReaper_Simple() throws Exception {
@@ -204,12 +203,12 @@ public class ZipFileReaperTest {
         runProfile(TEST_ITERATIONS, noQuickProfile, scatterWorkerData_One_Short); // throws Exception
     }
 
-    @Test
+    //@Test
     public void testDefaultReaper_Scatter_One_Long() throws Exception {
         runProfile(TEST_ITERATIONS, defaultProfile, scatterWorkerData_One_Long); // throws Exception
     }
 
-    @Test
+    //@Test
     public void testNoQuick_Scatter_One_Long() throws Exception {
         runProfile(TEST_ITERATIONS, noQuickProfile, scatterWorkerData_One_Long); // throws Exception
     }
@@ -224,12 +223,12 @@ public class ZipFileReaperTest {
         runProfile(TEST_ITERATIONS, noQuickProfile, scatterWorkerData_Many_Short); // throws Exception
     }
 
-    @Test
+    //@Test
     public void testDefaultReaper_Scatter_Many_Long() throws Exception {
         runProfile(TEST_ITERATIONS, defaultProfile, scatterWorkerData_Many_Long); // throws Exception
     }
 
-    @Test
+    //@Test
     public void testNoQuick_Scatter_Many_Long() throws Exception {
         runProfile(TEST_ITERATIONS, noQuickProfile, scatterWorkerData_Many_Long); // throws Exception
     }
@@ -270,7 +269,7 @@ public class ZipFileReaperTest {
 
     @Test
     public void testDefault_Tiny_One() throws Exception {
-        runProfile(TEST_ITERATIONS * 100, tinyTestDuration, defaultProfile, tinyWorkerData_One); // throws Exception
+        runProfile(TEST_ITERATIONS, tinyTestDuration, defaultProfile, tinyWorkerData_One); // throws Exception
     }
 
     @Test

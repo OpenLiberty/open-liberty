@@ -15,9 +15,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
@@ -26,6 +24,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
@@ -55,15 +54,11 @@ public class SessionCacheTimeoutTest extends FATServletClient {
     public static void setUp() throws Exception {
         app = new SessionCacheApp(server, false, "session.cache.infinispan.web", "session.cache.infinispan.web.listener1");
 
-        //String hazelcastConfigFile = "hazelcast-localhost-only.xml";
+        if (FATSuite.isMulticastDisabled()) {
+            ServerConfiguration config = server.getServerConfiguration();
+            config.getHttpSessionCaches().get(0).setUri(null);
+        }
 
-        //if (FATSuite.isMulticastDisabled()) {
-        //    Log.info(SessionCacheTimeoutTest.class, "setUp", "Disabling multicast in Hazelcast config.");
-        //    hazelcastConfigFile = "hazelcast-localhost-only-multicastDisabled.xml";
-        //}
-
-        //server.setJvmOptions(Arrays.asList("-Dhazelcast.group.name=" + UUID.randomUUID(),
-        //                                   "-Dhazelcast.config.file=" + hazelcastConfigFile));
         server.startServer();
 
         // Access a session before the main test logic to ensure that delays caused by lazy initialization

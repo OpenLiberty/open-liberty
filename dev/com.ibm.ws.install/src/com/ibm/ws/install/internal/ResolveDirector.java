@@ -448,8 +448,7 @@ class ResolveDirector extends AbstractDirector {
         try {
             if (downloadOption == DownloadOption.all || downloadOption == DownloadOption.none) {
                 resolver = new RepositoryResolver(productDefinitions, Collections.<ProvisioningFeatureDefinition> emptySet(), Collections.<IFixInfo> emptySet(), loginInfo);
-                 installResources = resolver.resolve(featureNamesProcessed);
-
+                installResources = resolver.resolve(featureNamesProcessed);
             } else {
                 Collection<String> featuresToInstall = getFeaturesToInstall(featureNamesProcessed, false);
 
@@ -458,8 +457,8 @@ class ResolveDirector extends AbstractDirector {
                 }
                 resolver = new RepositoryResolver(productDefinitions, product.getFeatureDefinitions().values(), FixAdaptor.getInstalledIFixes(product.getInstallDir()), loginInfo);
                 installResources = resolver.resolve(featuresToInstall);
-               
             }
+
         } catch (RepositoryResolutionException e) {
 
             throw ExceptionUtils.create(e, featureNamesProcessed, product.getInstallDir(), false, isOpenLiberty);
@@ -639,12 +638,16 @@ class ResolveDirector extends AbstractDirector {
             Collection<IFixInfo> installedIFixes = download ? Collections.<IFixInfo> emptySet() : FixAdaptor.getInstalledIFixes(product.getInstallDir());
             resolver = new RepositoryResolver(productDefinitions, installedFeatures, installedIFixes, loginInfo);
             if (InstallUtils.getIsServerXmlInstall()) {
-                log(Level.FINE, "Using new resolveAsSet API");
-                installResources = resolver.resolveAsSet(assetsToInstall); // use new api
+                Set<String> allServerFeatures = new HashSet<>(InstallUtils.getAllServerFeatures());
+                allServerFeatures.addAll(assetsToInstall);
+
+                log(Level.FINE, "Using resolveAsSet to resolve features");
+                installResources = resolver.resolveAsSet(allServerFeatures); // use new api
             } else {
                 log(Level.FINE, "Using old resolve API");
                 installResources = resolver.resolve(assetsToInstall);
             }
+
         } catch (RepositoryResolutionException e) {
 
             throw ExceptionUtils.create(e, assetNamesProcessed, product.getInstallDir(), true, isOpenLiberty);

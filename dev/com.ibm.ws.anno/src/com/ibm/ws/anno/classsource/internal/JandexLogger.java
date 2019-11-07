@@ -20,20 +20,20 @@ import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 
 public class JandexLogger {
     private static final Logger logger = Logger.getLogger("com.ibm.ws.jandex");
-    
+
     @Trivial
     protected static boolean doLog() {
-    	return ( logger.isLoggable(Level.FINER) );
+        return ( logger.isLoggable(Level.FINER) );
     }
 
     @Trivial
     protected static void log(String sourceClass, String sourceMethod, String message) {
-    	logger.logp(Level.FINER, sourceClass, sourceMethod, message);
+        logger.logp(Level.FINER, sourceClass, sourceMethod, message);
     }
 
     @Trivial
     protected static void log(String sourceClass, String sourceMethod, String message, Object...parms) {
-    	logger.logp(Level.FINER, sourceClass, sourceMethod, message, parms);
+        logger.logp(Level.FINER, sourceClass, sourceMethod, message, parms);
     }
 
     public static String getProperty(final String propertyName) {
@@ -50,12 +50,16 @@ public class JandexLogger {
         }
     }
 
+    public static boolean isPropertySet(String propertyName) {
+        return ( getProperty(propertyName) != null );
+    }
+
     public static boolean getProperty(
-    	String sourceClass, String sourceMethod,
-    	String propertyName, boolean propertyDefaultValue) {
+        String sourceClass, String sourceMethod,
+        String propertyName, boolean propertyDefaultValue) {
 
         String propertyText = getProperty(propertyName);
-        
+
         boolean propertyValue;
         boolean propertyDefaulted;
         if ( propertyDefaulted = (propertyText == null) ) {

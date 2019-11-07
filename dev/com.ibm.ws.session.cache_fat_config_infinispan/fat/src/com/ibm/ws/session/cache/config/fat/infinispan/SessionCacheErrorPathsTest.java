@@ -16,13 +16,11 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedInputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
-import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -37,7 +35,6 @@ import com.ibm.websphere.simplicity.config.File;
 import com.ibm.websphere.simplicity.config.Fileset;
 import com.ibm.websphere.simplicity.config.Library;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
-import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
@@ -48,7 +45,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
-// TODO @Mode(TestMode.FULL)
+@Mode(TestMode.FULL)
 public class SessionCacheErrorPathsTest extends FATServletClient {
 
     private static final String APP_NAME = "sessionCacheConfigApp";
@@ -57,7 +54,7 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
     private static final String SERVLET_NAME = "SessionCacheConfigTestServlet";
 
     private static ServerConfiguration savedConfig;
-    //private static String hazelcastConfigFile = "hazelcast-localhost-only.xml";
+    private static String infinispanConfigFile = "infinispan.xml";
 
     @Server("com.ibm.ws.session.cache.fat.config.infinispan")
     public static LibertyServer server;
@@ -80,16 +77,6 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         ShrinkHelper.defaultApp(server, APP_NAME, "session.cache.infinispan.web");
-
-        //if (FATSuite.isMulticastDisabled()) {
-        //    Log.info(SessionCacheErrorPathsTest.class, "setUp", "Disabling multicast in Hazelcast config.");
-        //    hazelcastConfigFile = "hazelcast-localhost-only-multicastDisabled.xml";
-        //}
-
-        //String configLocation = new java.io.File(server.getUserDir() + "/shared/resources/hazelcast/" + hazelcastConfigFile).getAbsolutePath();
-        //server.setJvmOptions(Arrays.asList("-Dhazelcast.config=" + configLocation,
-        //                                   "-Dhazelcast.config.file=" + hazelcastConfigFile,
-        //                                   "-Dhazelcast.group.name=" + UUID.randomUUID()));
 
         savedConfig = server.getServerConfiguration().clone();
     }
@@ -192,16 +179,16 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
     }
 
     /**
-     * Start the server with an invalid Hazelcast uri configured on httpSessionCache.
+     * Start the server with an invalid Infinispan uri configured on httpSessionCache.
      * Verify that after correcting the uri, session data is persisted.
      */
-    // @AllowedFFDC(value = { "javax.cache.CacheException" }) // for invalid uri
-    // TODO @Test
+    @AllowedFFDC(value = { "javax.cache.CacheException", "org.infinispan.commons.CacheConfigurationException" }) // for invalid uri
+    @Test
     public void testInvalidURI() throws Exception {
         // Start the server with invalid httpSessionCache uri
-        String invalidHazelcastURI = "file:" + new java.io.File(server.getUserDir() + "/servers/com.ibm.ws.session.cache.fat.config.infinispan/server.xml").getAbsolutePath();
+        String invalidInfinispanURI = "file:" + new java.io.File(server.getUserDir() + "/servers/com.ibm.ws.session.cache.fat.config.infinispan/server.xml").getAbsolutePath();
         ServerConfiguration config = savedConfig.clone();
-        config.getHttpSessionCaches().get(0).setUri(invalidHazelcastURI);
+        config.getHttpSessionCaches().get(0).setUri(invalidInfinispanURI);
         server.updateServerConfiguration(config);
         server.startServer(testName.getMethodName() + ".log");
 
@@ -210,8 +197,8 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
             run("testSessionCacheNotAvailable", session);
 
             // Correct the URI
-            // TODO String validHazelcastURI = "file:" + new java.io.File(server.getUserDir() + "/shared/resources/hazelcast/" + hazelcastConfigFile).getAbsolutePath();
-            // TODO config.getHttpSessionCaches().get(0).setUri(validHazelcastURI);
+            String validInfinispanURI = "file:" + new java.io.File(server.getUserDir() + "/shared/resources/infinispan10/" + infinispanConfigFile).getAbsolutePath();
+            config.getHttpSessionCaches().get(0).setUri(validInfinispanURI);
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
             server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
@@ -381,19 +368,18 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
 
             assertTrue(dumpInfo, lines.contains("JCache provider diagnostics for HTTP Sessions"));
             assertTrue(dumpInfo, lines.contains("CachingProvider implementation: org.infinispan.jcache.embedded.JCachingProvider"));
-            assertTrue(dumpInfo, lines.contains("Cache manager URI: org.infinispan.jcache.embedded.JCachingProvider"));
+            assertTrue(dumpInfo, lines.parallelStream().anyMatch(line -> line.matches(".*Cache manager URI: .*infinispan.xml.*")));
             assertTrue(dumpInfo, lines.contains("Cache manager is closed? false"));
             assertFalse(dumpInfo, lines.contains("Cache manager is closed? true"));
 
             assertTrue(dumpInfo, (i = lines.indexOf("Cache names:")) > 0);
 
-            Set<String> expectedCaches = new HashSet<String>();
-            expectedCaches.add("com.ibm.ws.session.meta.default_host.sessionCacheConfigApp");
-            expectedCaches.add("com.ibm.ws.session.attr.default_host.sessionCacheConfigApp");
             Set<String> caches = new HashSet<String>();
             for (int c = i + 1; c < lines.size() && lines.get(c).startsWith("  "); c++) // add all subsequent indented lines
                 caches.add(lines.get(c).trim());
-            assertEquals(dumpInfo, expectedCaches, caches);
+            // Other caches might be created for JAX-RS apps from enabled Liberty features. Ignore those, and look for the ones for our test app:
+            assertTrue(dumpInfo, caches.contains("com.ibm.ws.session.meta.default_host%2FsessionCacheConfigApp"));
+            assertTrue(dumpInfo, caches.contains("com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp"));
 
             assertTrue(dumpInfo, lines.contains("  closed? false"));
             assertFalse(dumpInfo, lines.contains("  closed? true"));
@@ -405,22 +391,22 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
             assertFalse(dumpInfo, lines.contains("  is statistics enabled? false"));
 
             assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
-                                            .matches("  average put time:    \\d+\\.\\d+ms")));
+                            .matches("  average put time:    \\d+\\.\\d+ms")));
 
             assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
-                                            .matches("  cache gets:      \\d+")));
+                            .matches("  cache gets:      \\d+")));
 
             assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
-                                            .matches("  cache hit percentage:  \\d+\\.\\d+%")));
+                            .matches("  cache hit percentage:  \\d+\\.\\d+%")));
 
             assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
-                                            .matches("  cache miss percentage: \\d+\\.\\d+%")));
+                            .matches("  cache miss percentage: \\d+\\.\\d+%")));
 
             assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
-                                            .matches("    session \\S+: SessionInfo for anonymous created \\d+ accessed \\d+ listeners 0 maxInactive 2100 \\[testServerDumpWithMonitoring1\\]")));
+                            .matches("    session \\S+: SessionInfo for anonymous created \\d+ accessed \\d+ listeners 0 maxInactive 2100 \\[testServerDumpWithMonitoring1\\]")));
 
             assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
-                                            .matches("    session \\S+: SessionInfo for anonymous created \\d+ accessed \\d+ listeners 0 maxInactive 2200 \\[testServerDumpWithMonitoring2\\]")));
+                            .matches("    session \\S+: SessionInfo for anonymous created \\d+ accessed \\d+ listeners 0 maxInactive 2200 \\[testServerDumpWithMonitoring2\\]")));
         } finally {
             run("invalidateSession", session1);
             run("invalidateSession", session2);
@@ -449,19 +435,18 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
 
             assertTrue(dumpInfo, lines.contains("JCache provider diagnostics for HTTP Sessions"));
             assertTrue(dumpInfo, lines.contains("CachingProvider implementation: org.infinispan.jcache.embedded.JCachingProvider"));
-            assertTrue(dumpInfo, lines.contains("Cache manager URI: org.infinispan.jcache.embedded.JCachingProvider"));
+            assertTrue(dumpInfo, lines.parallelStream().anyMatch(line -> line.matches(".*Cache manager URI: .*infinispan.xml.*")));
             assertTrue(dumpInfo, lines.contains("Cache manager is closed? false"));
             assertFalse(dumpInfo, lines.contains("Cache manager is closed? true"));
 
             assertTrue(dumpInfo, (i = lines.indexOf("Cache names:")) > 0);
 
-            Set<String> expectedCaches = new HashSet<String>();
-            expectedCaches.add("com.ibm.ws.session.meta.default_host.sessionCacheConfigApp");
-            expectedCaches.add("com.ibm.ws.session.attr.default_host.sessionCacheConfigApp");
             Set<String> caches = new HashSet<String>();
             for (int c = i + 1; c < lines.size() && lines.get(c).startsWith("  "); c++) // add all subsequent indented lines
                 caches.add(lines.get(c).trim());
-            assertEquals(dumpInfo, expectedCaches, caches);
+            // Other caches might be created for JAX-RS apps from enabled Liberty features. Ignore those, and look for the ones for our test app:
+            assertTrue(dumpInfo, caches.contains("com.ibm.ws.session.meta.default_host%2FsessionCacheConfigApp"));
+            assertTrue(dumpInfo, caches.contains("com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp"));
 
             assertTrue(dumpInfo, lines.contains("  closed? false"));
             assertFalse(dumpInfo, lines.contains("  closed? true"));
@@ -471,13 +456,13 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
             assertFalse(dumpInfo, lines.contains("  is statistics enabled? true"));
 
             assertFalse(dumpInfo, lines.parallelStream().anyMatch(s -> s
-                                            .matches("  average put time:.*")));
+                            .matches("  average put time:.*")));
 
             assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
-                                            .matches("    session \\S+: SessionInfo for anonymous created \\d+ accessed \\d+ listeners 0 maxInactive 1900 \\[testServerDumpWithoutMonitoring1\\]")));
+                            .matches("    session \\S+: SessionInfo for anonymous created \\d+ accessed \\d+ listeners 0 maxInactive 1900 \\[testServerDumpWithoutMonitoring1\\]")));
 
             assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
-                                            .matches("    session \\S+: SessionInfo for anonymous created \\d+ accessed \\d+ listeners 0 maxInactive 2000 \\[testServerDumpWithoutMonitoring2\\]")));
+                            .matches("    session \\S+: SessionInfo for anonymous created \\d+ accessed \\d+ listeners 0 maxInactive 2000 \\[testServerDumpWithoutMonitoring2\\]")));
         } finally {
             run("invalidateSession", session1);
             run("invalidateSession", session2);

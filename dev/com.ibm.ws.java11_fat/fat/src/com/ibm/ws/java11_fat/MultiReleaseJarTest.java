@@ -62,6 +62,9 @@ public class MultiReleaseJarTest extends FATServletClient {
         server.startServer();
 
         EXPECTED_JAVA = JavaInfo.forServer(server).majorVersion();
+        if (EXPECTED_JAVA > 17)
+            // don't bother updating past Java 17, we get the point after that many releases
+            EXPECTED_JAVA = 17;
     }
 
     @AfterClass

@@ -5,6 +5,7 @@ import io.leangen.graphql.metadata.messages.MessageBundle;
 import io.leangen.graphql.util.ReservedStrings;
 import io.leangen.graphql.util.Utils;
 import org.eclipse.microprofile.graphql.DefaultValue;
+import org.eclipse.microprofile.graphql.Description;
 import org.eclipse.microprofile.graphql.InputField;
 import org.eclipse.microprofile.graphql.Query;
 
@@ -29,13 +30,14 @@ public class InputFieldInfoGenerator {
 
     public Optional<String> getDescription(List<AnnotatedElement> candidates, MessageBundle messageBundle) {
         Optional<String> explicit = candidates.stream()
-                .filter(element -> element.isAnnotationPresent(InputField.class))
+                .filter(element -> element.isAnnotationPresent(Description.class))
                 .findFirst()
-                .map(element -> element.getAnnotation(InputField.class).description());
-        Optional<String> implicit = candidates.stream()
-                .filter(element -> element.isAnnotationPresent(Query.class))
-                .findFirst()
-                .map(element -> element.getAnnotation(Query.class).description());
+                .map(element -> element.getAnnotation(Description.class).value());
+        Optional<String> implicit = Optional.of("");
+//        Optional<String> implicit = candidates.stream()
+//                .filter(element -> element.isAnnotationPresent(Query.class))
+//                .findFirst()
+//                .map(element -> element.getAnnotation(Query.class).description());
         return Utils.or(explicit, implicit).filter(Utils::isNotEmpty).map(messageBundle::interpolate);
     }
 

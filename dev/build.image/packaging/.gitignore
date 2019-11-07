@@ -3,3 +3,6 @@ debuild/openliberty/debian/changelog
 debuild/openliberty/debian/rules
 rpmbuild/SPECS/openliberty.spec
 tempPackagingDir/
+debuild/openliberty-*.tar.gz
+debuild/openliberty_*.orig.tar.gz
+rpmbuild/SOURCES/openliberty-*.tar.gz

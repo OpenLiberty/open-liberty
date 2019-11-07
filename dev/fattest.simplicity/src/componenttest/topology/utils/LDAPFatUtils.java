@@ -15,6 +15,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
+import java.util.List;
+
 import javax.naming.InvalidNameException;
 import javax.naming.ldap.LdapName;
 
@@ -63,6 +65,51 @@ public class LDAPFatUtils {
         }
 
         assertEquals(msg, ln1, ln2);
+    }
+
+    /**
+     * Assert two strings are equals, ignoring case.
+     *
+     * @param message Message to print if the assertion fails.
+     * @param expected The expected value.
+     * @param actual The actual value.
+     */
+    public static void assertEqualsIgnoreCase(String message, String expected, String actual) {
+
+        if (expected == null && actual == null) {
+            return;
+        } else if (expected == null || actual == null) {
+            String msg = "One of either the expected values (" + expected + ") or actual values (" + actual + ") is null.";
+            if (message == null) {
+                fail(msg);
+            } else {
+                fail(message + " " + msg);
+            }
+        }
+
+        expected = expected.toLowerCase();
+        actual = actual.toLowerCase();
+
+        if (message != null) {
+            assertEquals(message, expected, actual);
+        } else {
+            assertEquals(expected, actual);
+        }
+    }
+
+    /**
+     * Assert that a list contains the expected value, ignoring case.
+     *
+     * @param expected The expected value.
+     * @param actual The list containing the actual values.
+     */
+    public static void assertContainsIgnoreCase(String expected, List<String> actual) {
+        for (String actualValue : actual) {
+            if (actualValue.equalsIgnoreCase(expected)) {
+                return;
+            }
+        }
+        fail("Could not find '" + expected + "' in list: " + actual);
     }
 
     /**

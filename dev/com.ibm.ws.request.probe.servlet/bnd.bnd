@@ -1,0 +1,96 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: Servlet Request Probe
+Bundle-SymbolicName: com.ibm.ws.request.probe.servlet
+Bundle-Description: ServletRequestProbe: Servlet Request Probe; version=${bVersion}
+
+WS-TraceGroup: com.ibm.ws.request.probe.servlet
+
+Import-Package: com.ibm.wsspi.probeExtension, \
+    javax.servlet, \
+    com.ibm.wsspi.request.probe.bci, \
+    com.ibm.wsspi.requestContext, \
+    javax.servlet.http, \
+
+Private-Package: com.ibm.ws.request.probe.servlet, \
+	com.ibm.ws.request.probe.session
+
+Service-Component=com.ibm.ws.request.probe.servlet.ServletWrapperServiceTransformDescriptor; \
+        implementation:=com.ibm.ws.request.probe.servlet.ServletWrapperServiceTransformDescriptor; \
+        provide:=com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor; \
+        properties:="service.vendor=IBM", \
+     com.ibm.ws.request.probe.servlet.ServletWrapperDestroyTransformDescriptor; \
+        implementation:=com.ibm.ws.request.probe.servlet.ServletWrapperDestroyTransformDescriptor; \
+        provide:=com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor; \
+        properties:="service.vendor=IBM", \
+     com.ibm.ws.request.probe.session.SessionGetAttributeTransformDescriptor; \
+        implementation:=com.ibm.ws.request.probe.session.SessionGetAttributeTransformDescriptor; \
+        provide:=com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor; \
+        properties:="service.vendor=IBM", \
+     com.ibm.ws.request.probe.session.SessionSetAttributeTransformDescriptor; \
+        implementation:=com.ibm.ws.request.probe.session.SessionSetAttributeTransformDescriptor; \
+        provide:=com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor; \
+        properties:="service.vendor=IBM", \
+     com.ibm.ws.request.probe.session.SessionAccessedTransformDescriptor; \
+        implementation:=com.ibm.ws.request.probe.session.SessionAccessedTransformDescriptor; \
+        provide:=com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor; \
+        properties:="service.vendor=IBM", \
+     com.ibm.ws.request.probe.session.SessionCreatedTransformDescriptor; \
+        implementation:=com.ibm.ws.request.probe.session.SessionCreatedTransformDescriptor; \
+        provide:=com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor; \
+        properties:="service.vendor=IBM", \
+     com.ibm.ws.request.probe.session.SessionDestroyedByTimeoutTransformDescriptor; \
+        implementation:=com.ibm.ws.request.probe.session.SessionDestroyedByTimeoutTransformDescriptor; \
+        provide:=com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor; \
+        properties:="service.vendor=IBM", \
+     com.ibm.ws.request.probe.session.SessionDestroyedTransformDescriptor; \
+        implementation:=com.ibm.ws.request.probe.session.SessionDestroyedTransformDescriptor; \
+        provide:=com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor; \
+        properties:="service.vendor=IBM", \
+     com.ibm.ws.request.probe.session.SessionLiveCountDecTransformDescriptor; \
+        implementation:=com.ibm.ws.request.probe.session.SessionLiveCountDecTransformDescriptor; \
+        provide:=com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor; \
+        properties:="service.vendor=IBM", \
+     com.ibm.ws.request.probe.session.SessionLiveCountIncTransformDescriptor; \
+        implementation:=com.ibm.ws.request.probe.session.SessionLiveCountIncTransformDescriptor; \
+        provide:=com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor; \
+        properties:="service.vendor=IBM", \
+     com.ibm.ws.request.probe.session.SessionReleasedTransformDescriptor; \
+        implementation:=com.ibm.ws.request.probe.session.SessionReleasedTransformDescriptor; \
+        provide:=com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor; \
+        properties:="service.vendor=IBM", \
+     com.ibm.ws.request.probe.session.DBSessionDestroyedByTimeoutTransformDescriptor; \
+        implementation:=com.ibm.ws.request.probe.session.DBSessionDestroyedByTimeoutTransformDescriptor; \
+        provide:=com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor; \
+        properties:="service.vendor=IBM", \
+     com.ibm.ws.request.probe.session.DBSessionDestroyedTransformDescriptor; \
+        implementation:=com.ibm.ws.request.probe.session.DBSessionDestroyedTransformDescriptor; \
+        provide:=com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor; \
+        properties:="service.vendor=IBM", \
+        
+        
+DynamicImport-Package: javax.servlet.GenericServlet, \
+ javax.servlet.http.HttpSession, \
+ com.ibm.wsspi.session
+
+instrument.disabled: true
+
+-buildpath: \
+	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.ws.logging;version=latest,\
+	com.ibm.ws.request.probes;version=latest,\
+	com.ibm.ws.session;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest
