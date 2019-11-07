@@ -12,10 +12,13 @@ package com.ibm.ws.testing.opentracing.test;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -31,10 +34,15 @@ import componenttest.topology.impl.LibertyServerFactory;
     FATOpentracing.class,
     FATOpentracingHelloWorld.class,
     FATMPOpenTracing.class,
-    OpentracingTCKLauncher.class,
     MicroProfile14NoTracer.class
 })
 public class FATSuite implements FATOpentracingConstants {
+    
+//    @ClassRule
+//    public static RepeatTests r = RepeatTests.withoutModification()
+//                    .andWith(new FeatureReplacementAction("opentracing-1.2", "opentracing-1.1")
+//                             .forceAddFeatures(false));
+    
     private static final Class<? extends FATSuite> CLASS = FATSuite.class;
     private static final String FEATURE_NAME = "com.ibm.ws.opentracing.mock-1.1.mf";
     private static final String BUNDLE_NAME = "com.ibm.ws.opentracing.mock-1.1.jar";
