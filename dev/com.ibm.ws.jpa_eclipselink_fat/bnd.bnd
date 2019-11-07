@@ -15,10 +15,15 @@ javac.target: 1.8
 javac.source: 1.8
 
 src: \
-	fat/src,\
-	test-applications/helpers/DatabaseManagement/src,\
-	test-applications/example/src,\
-	test-framework/src
+    fat/src,\
+    test-applications/common/src,\
+    test-applications/helpers/DatabaseManagement/src,\
+    test-applications/olgh8294/src,\
+    test-applications/olgh8461/src,\
+    test-applications/olgh8950/src,\
+    test-applications/olgh9035/src,\
+    test-applications/example/src,\
+    test-framework/src
 
 fat.project: true
 

@@ -23,6 +23,8 @@
 *******************************************************************************/
 package com.ibm.ws.microprofile.metrics.impl;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -71,6 +73,8 @@ public class MetricRegistryImpl extends MetricRegistry {
     protected final ConcurrentMap<String, Metadata> metadataMID;
     protected final ConcurrentHashMap<String, ConcurrentLinkedQueue<MetricID>> applicationMap;
     private final ConfigProviderResolver configResolver;
+
+    private final static boolean usingJava2Security = System.getSecurityManager() != null;
 
     /**
      * Creates a new {@link MetricRegistry}.
@@ -208,7 +212,7 @@ public class MetricRegistryImpl extends MetricRegistry {
 
         //Append global tags to the metric
         //rf-rm
-        Config config = configResolver.getConfig(Thread.currentThread().getContextClassLoader());
+        Config config = configResolver.getConfig(getThreadContextClassLoader());
         try {
             String[] globaltags = config.getValue("MP_METRICS_TAGS", String.class).split("(?<!\\\\),");
             for (String tag : globaltags) {
@@ -853,5 +857,14 @@ public class MetricRegistryImpl extends MetricRegistry {
     @Override
     public SortedMap<MetricID, ConcurrentGauge> getConcurrentGauges(MetricFilter filter) {
         return getMetrics(ConcurrentGauge.class, filter);
+    }
+
+    private ClassLoader getThreadContextClassLoader() {
+        if (usingJava2Security) {
+            return AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> {
+                return Thread.currentThread().getContextClassLoader();
+            });
+        }
+        return Thread.currentThread().getContextClassLoader();
     }
 }

@@ -12,6 +12,8 @@ package failover1serv.web;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -60,14 +62,85 @@ public class Failover1ServerTestServlet extends FATServlet {
     }
 
     /**
+     * testGetPartitionId - verify that a partition id for the specified executor can be found within an allotted interval.
+     */
+    public void testGetPartitionId(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String executor = request.getParameter("executor");
+
+        DataSource ds = InitialContext.doLookup("java:comp/DefaultDataSource");
+        try (Connection con = ds.getConnection()) {
+            PreparedStatement st = con.prepareStatement("SELECT ID FROM WLPPART WHERE EXECUTOR=?");
+            st.setString(1, executor);
+
+            ResultSet result;
+            boolean hasNext;
+            for (long start = System.nanoTime(); !(hasNext = (result = st.executeQuery()).next()) && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL_MS))
+                ;
+
+            if (hasNext) {
+                long partitionId = result.getLong(1);
+                response.getWriter().println("Partition id is " + partitionId + ".");
+            } else
+                fail("Partition id for " + executor + " is not found.");
+        }
+    }
+
+    /**
+     * testHeartbeatsAreRepeatedlySent - verifies that heart beats are being sent periodically, with an increasing expiry timestamp.
+     */
+    @Test
+    public void testHeartbeatsAreRepeatedlySent() throws Exception {
+        // Ensure the database tables are present
+        PersistentExecutor executor = InitialContext.doLookup("persistent/exec2");
+        executor.getProperty("testHeartbeatsAreRepeatedlySent");
+
+        DataSource ds = InitialContext.doLookup("java:comp/DefaultDataSource");
+        try (Connection con = ds.getConnection()) {
+            PreparedStatement st = con.prepareStatement("SELECT EXPIRY FROM WLPPART WHERE EXECUTOR=?");
+            st.setString(1, "persistentExec2");
+            ResultSet result = st.executeQuery();
+            assertTrue(result.next());
+            long expiry1 = result.getLong(1);
+            st.close();
+            System.out.println("Found heartbeat from persistentExec2 with expiry at " + expiry1);
+
+            // Poll for the expiry to be updated by a subsequent heartbeat
+            st = con.prepareStatement("SELECT EXPIRY FROM WLPPART WHERE EXECUTOR=? AND EXPIRY>?");
+            st.setString(1, "persistentExec2");
+            st.setLong(2, expiry1);
+
+            boolean found = false;
+            for (long start = System.nanoTime();
+                    !(found = (result = st.executeQuery()).next()) && System.nanoTime() - start < TIMEOUT_NS;
+                    Thread.sleep(POLL_INTERVAL_MS))
+                ;
+
+            assertTrue(found);
+            long expiry2 = result.getLong(1);
+            System.out.println("Found heartbeat from persistentExec2 with expiry at " + expiry2);
+            st.setLong(2, expiry2);
+
+            found = false;
+            for (long start = System.nanoTime();
+                    !(found = (result = st.executeQuery()).next()) && System.nanoTime() - start < TIMEOUT_NS;
+                    Thread.sleep(POLL_INTERVAL_MS))
+                ;
+
+            assertTrue(found);
+            long expiry3 = result.getLong(1);
+            System.out.println("Found heartbeat from persistentExec2 with expiry at " + expiry3);
+        }
+    }
+
+    /**
      * testMissedHeartbeatsClearOldPartitionData - insert entries representing missed heartbeats directly into the
      * database. Verify that they are automatically removed (happens when heartbeat information is checked).
      */
-    //@Test TODO enable once function (8407) is implemented
+    @Test
     public void testMissedHeartbeatsClearOldPartitionData(HttpServletRequest request, HttpServletResponse response) throws Exception {
         // Ensure the database tables are present
         PersistentExecutor executor = InitialContext.doLookup("persistent/exec2");
-        executor.getProperty("whatever");
+        executor.getProperty("testMissedHeartbeatsClearOldPartitionData");
 
         DataSource ds = InitialContext.doLookup("java:comp/DefaultDataSource");
         try (Connection con = ds.getConnection()) {
@@ -119,6 +192,20 @@ public class Failover1ServerTestServlet extends FATServlet {
     }
 
     /**
+     * testRemovePartition - removes the specified partition entry.
+     */
+    public void testRemovePartition(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String executor = request.getParameter("executor");
+
+        DataSource ds = InitialContext.doLookup("java:comp/DefaultDataSource");
+        try (Connection con = ds.getConnection()) {
+            PreparedStatement st = con.prepareStatement("DELETE FROM WLPPART WHERE EXECUTOR=?");
+            st.setString(1, executor);
+            assertEquals(1, st.executeUpdate());
+        }
+    }
+
+    /**
      * Schedules a one-time task. The task id is written to the servlet output
      */
     public void testScheduleOneTimeTask(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -151,6 +238,17 @@ public class Failover1ServerTestServlet extends FATServlet {
         long taskId = status.getTaskId();
 
         response.getWriter().println("Task id is " + taskId + ".");
+    }
+
+    /**
+     * testTablesExist - ensure that tables within the persistent task store exist by looking up a persistent executor
+     * and performing a simple operation on it.
+     */
+    public void testTablesExist(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        // Ensure the database tables are present
+        String jndiName = request.getParameter("jndiName");
+        PersistentExecutor executor = InitialContext.doLookup(jndiName);
+        executor.getProperty("testTablesExist");
     }
 
     /**

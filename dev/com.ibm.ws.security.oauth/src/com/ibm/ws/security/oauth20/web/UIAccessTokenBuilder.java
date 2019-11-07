@@ -75,7 +75,7 @@ public class UIAccessTokenBuilder {
         return client;
     }
 
-    private OAuth20Token createAccessTokenForAuthenticatedUser() {
+    OAuth20Token createAccessTokenForAuthenticatedUser() {
         // todo: should we check that provider supports implicit grant type? that's the closest to what this does,
         // but some customers that want this might not want external implicit gth support.
         if (_component == null || _provider == null || _req == null) {
@@ -91,12 +91,23 @@ public class UIAccessTokenBuilder {
             Tr.error(tc, "OAUATH_BASIC_AUTH_FAIL", new Object[] {}); // CWWKS1440E
             return null;
         }
-        // clientId, username, redirectUri, stateId, scope, token, grantType
-        Map<String, String[]> tokenAttributesMap = tokenFactory.buildTokenMap(clientId, user, null, null, null, null, OAuth20Constants.GRANT_TYPE_IMPLICIT_INTERNAL);
-
+        Map<String, String[]> tokenAttributesMap = getTokenAttributesMap(tokenFactory, clientId, user);
         OAuth20Token token = tokenFactory.createAccessToken(tokenAttributesMap);
         return token;
+    }
 
+    Map<String, String[]> getTokenAttributesMap(OAuth20TokenFactory factory, String clientId, String user) {
+        return factory.buildTokenMap(clientId, user, null, null, getScopes(clientId), null, OAuth20Constants.GRANT_TYPE_IMPLICIT_INTERNAL);
+    }
+
+    String[] getScopes(String clientId) {
+        try {
+            String scopes = _provider.getClientProvider().get(clientId).getPreAuthorizedScope();
+            return scopes == null ? null : scopes.trim().split("\\s+"); // one or more spaces
+        } catch (OidcServerException e) {
+            // ffdc
+            return null;
+        }
     }
 
     private String createAuthHeaderValueFromClientIdAndSecret() {

@@ -1,5 +1,5 @@
 <server>
-
+	<!-- Used for SessionCacheOneServerTest -->
     <featureManager>
         <feature>servlet-3.1</feature>
         <feature>componenttest-1.0</feature>

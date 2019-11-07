@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
+import java.net.ConnectException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -221,13 +222,20 @@ public final class EndpointReferenceUtils {
                 systemId = publicId;
             }
             if (systemId != null) {
-                InputSource source = resolver.resolve(systemId, baseURI);
-                if (source != null) {
-                    impl = new LSInputImpl();
-                    impl.setByteStream(source.getByteStream());
-                    impl.setSystemId(source.getSystemId());
-                    impl.setPublicId(source.getPublicId());
+                try {
+                    InputSource source = resolver.resolve(systemId, baseURI);
+                    if (source != null) {
+                        impl = new LSInputImpl();
+                        impl.setByteStream(source.getByteStream());
+                        impl.setSystemId(source.getSystemId());
+                        impl.setPublicId(source.getPublicId());
+                    }
+                // Liberty Change:
+                // Catch the Exception now being thrown in TransportURIResolver and log it
+                } catch (Exception e) {
+                    LOG.log(Level.FINEST, "Conduit initiator could not resolve " + baseURI + " " + systemId, e);
                 }
+
             }
             LOG.warning("Could not resolve Schema for " + systemId);
             return impl;

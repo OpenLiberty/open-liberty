@@ -31,7 +31,6 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.staticvalue.StaticValue;
 import com.ibm.ws.webcontainer.osgi.osgi.WebContainerConstants;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
 
@@ -49,27 +48,17 @@ public class RegisterRequestInterceptor {
     protected static final String CLASS_NAME = "com.ibm.ws.webcontainer.osgi.interceptor.RegisterRequestInterceptor";
     
     // Use ConcurrentServiceReferenceSet to observe service.ranking associated with services
-    private static final StaticValue<ConcurrentServiceReferenceSet<RequestInterceptor>> _FileNotFoundInterceptors = StaticValue.createStaticValue(new Callable<ConcurrentServiceReferenceSet<RequestInterceptor>>(){
-        @Override
-        public ConcurrentServiceReferenceSet<RequestInterceptor> call() throws Exception {
-            return new ConcurrentServiceReferenceSet<RequestInterceptor>("RequestInterceptor");
-        }
-    });
+    private static final ConcurrentServiceReferenceSet<RequestInterceptor> _FileNotFoundInterceptors = new ConcurrentServiceReferenceSet<RequestInterceptor>("RequestInterceptor");
 
-    private static final StaticValue<ConcurrentServiceReferenceSet<RequestInterceptor>> _AfterFilterInterceptors = StaticValue.createStaticValue(new Callable<ConcurrentServiceReferenceSet<RequestInterceptor>>(){
-        @Override
-        public ConcurrentServiceReferenceSet<RequestInterceptor> call() throws Exception {
-            return new ConcurrentServiceReferenceSet<RequestInterceptor>("RequestInterceptor");
-        }
-    });
+    private static final ConcurrentServiceReferenceSet<RequestInterceptor> _AfterFilterInterceptors = new ConcurrentServiceReferenceSet<RequestInterceptor>("RequestInterceptor");
 
     @Activate
     protected void activate(ComponentContext context) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "RegisterRequestInterceptor activated. context:"+context);
         }     
-        _FileNotFoundInterceptors.get().activate(context);
-        _AfterFilterInterceptors.get().activate(context);
+        _FileNotFoundInterceptors.activate(context);
+        _AfterFilterInterceptors.activate(context);
     }
 
     @Deactivate
@@ -77,8 +66,8 @@ public class RegisterRequestInterceptor {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "RegisterRequestInterceptor de-activated.");
         }    
-        _FileNotFoundInterceptors.get().deactivate(context);
-        _AfterFilterInterceptors.get().deactivate(context);
+        _FileNotFoundInterceptors.deactivate(context);
+        _AfterFilterInterceptors.deactivate(context);
     }
 
     
@@ -92,12 +81,12 @@ public class RegisterRequestInterceptor {
             List<String> IPs = Arrays.asList(IPKey.split("\\s*, \\s*"));
             for (String IP : IPs) {
                 if (IP.equals(RequestInterceptor.INTERCEPT_POINT_AFTER_FILTERS)) {
-                    _AfterFilterInterceptors.get().addReference(reference);
+                    _AfterFilterInterceptors.addReference(reference);
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "RegisterRequestInterceptor.setRequestInterceptor(), register for after-filter intercept point.");
                     }
                 } else if(IP.equals(RequestInterceptor.INTERCEPT_POINT_FNF)) {
-                    _FileNotFoundInterceptors.get().addReference(reference);
+                    _FileNotFoundInterceptors.addReference(reference);
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "RegisterRequestInterceptor.setRequestInterceptor(), register for on-filenotfound intercept point.");
                     }
@@ -120,9 +109,9 @@ public class RegisterRequestInterceptor {
             List<String> IPs = Arrays.asList(IPKey.split("\\s*, \\s*"));
             for (String IP : IPs) {
                 if (IP.equals(RequestInterceptor.INTERCEPT_POINT_AFTER_FILTERS)) {
-                    _AfterFilterInterceptors.get().removeReference(reference);
+                    _AfterFilterInterceptors.removeReference(reference);
                 } else if(IP.equals(RequestInterceptor.INTERCEPT_POINT_FNF)) {
-                    _FileNotFoundInterceptors.get().removeReference(reference);
+                    _FileNotFoundInterceptors.removeReference(reference);
                 } else if  (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "RegisterRequestInterceptor.unsetRequestInterceptor(), InterceptPoint not recognized : " + IP);
                 } 
@@ -140,9 +129,9 @@ public class RegisterRequestInterceptor {
         
         boolean result = false;
         if (interceptPoint.equals(RequestInterceptor.INTERCEPT_POINT_AFTER_FILTERS)) {
-            if (!_AfterFilterInterceptors.get().isEmpty()) { 
+            if (!_AfterFilterInterceptors.isEmpty()) { 
                 
-                Iterator<RequestInterceptor> afps = _AfterFilterInterceptors.get().getServices();
+                Iterator<RequestInterceptor> afps = _AfterFilterInterceptors.getServices();
                 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "RegisterRequestInterceptor.notifyRequestInterceptors() afps.hasNext() : " + afps.hasNext());
@@ -167,9 +156,9 @@ public class RegisterRequestInterceptor {
             }            
 
         } else if (interceptPoint.equals(RequestInterceptor.INTERCEPT_POINT_FNF)) {
-            if (!_FileNotFoundInterceptors.get().isEmpty()) { 
+            if (!_FileNotFoundInterceptors.isEmpty()) { 
                 
-                Iterator<RequestInterceptor> fnfps = _FileNotFoundInterceptors.get().getServices();
+                Iterator<RequestInterceptor> fnfps = _FileNotFoundInterceptors.getServices();
                 
                 while(fnfps.hasNext() && !result) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

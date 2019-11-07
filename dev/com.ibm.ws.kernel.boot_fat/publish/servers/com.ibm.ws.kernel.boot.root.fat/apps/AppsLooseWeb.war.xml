@@ -23,6 +23,8 @@
     	
 	<dir sourceOnDisk="${server.config.dir}\looseConfig\testWeb0\WebContent"
 		targetInArchive="/" />
-	<dir sourceOnDisk="${server.config.dir}\looseConfig\testWeb0\classes"
+<!--
+	  <dir sourceOnDisk="${server.config.dir}\looseConfig\testWeb0\classes"
 		targetInArchive="/WEB-INF/classes" />
+-->
 </archive>

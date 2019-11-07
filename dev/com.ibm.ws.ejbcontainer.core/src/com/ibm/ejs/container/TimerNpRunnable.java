@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2018 IBM Corporation and others.
+ * Copyright (c) 2009, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -192,11 +192,25 @@ public abstract class TimerNpRunnable implements Runnable {
     }
 
     /**
+     * Getter for non-persistent EJB timer
+     */
+    public TimerNpImpl getNpTimer() {
+        return this.ivTimer;
+    }
+
+    /**
+     * Getter for method id
+     */
+    public int getMethodId() {
+        return ivMethodId;
+    }
+
+    /**
      * Schedules the first expiration for a non-persistent timer.
      *
      * @param expiration the point in time at which the first scheduled
-     *            expiration must occur; specified in milliseconds since
-     *            the standard base time (the epoch).
+     *                       expiration must occur; specified in milliseconds since
+     *                       the standard base time (the epoch).
      */
     protected abstract void schedule(long expiration);
 
@@ -204,8 +218,8 @@ public abstract class TimerNpRunnable implements Runnable {
      * Schedules recurring timers for the next scheduled expiration.
      *
      * @param nextExpiration the point in time at which the next scheduled
-     *            expiration must occur; specified in milliseconds since
-     *            the standard base time (the epoch).
+     *                           expiration must occur; specified in milliseconds since
+     *                           the standard base time (the epoch).
      */
     protected abstract void scheduleNext(long nextExpiration);
 
@@ -213,7 +227,7 @@ public abstract class TimerNpRunnable implements Runnable {
      * Schedules a timer that has failed to run to be retried.
      *
      * @param retryInterval the time in milliseconds from the current time when
-     *            the timer should expire and attempt to run again.
+     *                          the timer should expire and attempt to run again.
      */
     protected abstract void scheduleRetry(long retryInterval);
 

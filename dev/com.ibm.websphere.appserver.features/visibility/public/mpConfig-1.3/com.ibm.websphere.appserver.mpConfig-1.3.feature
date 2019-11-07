@@ -24,3 +24,4 @@ Subsystem-Name: MicroProfile Config 1.3
  com.ibm.ws.org.apache.commons.lang3
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

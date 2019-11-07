@@ -173,8 +173,7 @@ public class HuffmanDecoder {
                     foundChar = check30(register32, huffmanChar);
                     if (foundChar == RESULT.EOS) {
                         // System.out.println("found: EOS");
-                        // found last char of EOS, which is not to be decoded into an ASCII char
-                        return Arrays.copyOf(results, rIndex);
+                        throw new CompressionException("Huffman-encoded String literal must not contain EOS symbol");
                     }
                     break;
 

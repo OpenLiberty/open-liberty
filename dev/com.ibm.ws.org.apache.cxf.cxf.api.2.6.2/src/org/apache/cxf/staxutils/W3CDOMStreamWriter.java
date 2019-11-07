@@ -18,6 +18,8 @@
  */
 package org.apache.cxf.staxutils;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Stack;
@@ -131,7 +133,13 @@ public class W3CDOMStreamWriter implements XMLStreamWriter {
         }
         ((W3CNamespaceContext)context).setElement(element);
         if (appendedChildNode != null) {
-            currentNode = org.apache.cxf.helpers.DOMUtils.getDomElement(appendedChildNode);
+            final Node appChildNode = appendedChildNode;
+            currentNode = AccessController.doPrivileged(new PrivilegedAction<Node>() {
+                @Override
+                public Node run() { 
+                    return org.apache.cxf.helpers.DOMUtils.getDomElement(appChildNode);
+                }
+            });
         } else {
             currentNode = element;
         }
