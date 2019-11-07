@@ -363,10 +363,12 @@ public class ContextManager {
                 }
             } else if (tc.isDebugEnabled()) {
                 Tr.debug(tc, METHODNAME + " Pool has already been purged within past second... skipping purge");
+				setActiveURL(providerURL);
             }
         } else {
             setActiveURL(providerURL);
         }
+		Tr.debug(tc, METHODNAME + " Active Provider URL: " + getActiveURL()); 
     }
 
     /**
