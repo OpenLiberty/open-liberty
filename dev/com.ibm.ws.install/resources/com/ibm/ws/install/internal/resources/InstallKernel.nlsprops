@@ -61,6 +61,18 @@ ERROR_FEATURE_NOT_INSTALLED=CWWKF1207E: The feature {0} is not installed.
 ERROR_FEATURE_NOT_INSTALLED.explanation=The specified feature does not exists and cannot be uninstalled. 
 ERROR_FEATURE_NOT_INSTALLED.useraction=No action is required.
 
+ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE=Could not determine the Liberty runtime version.
+ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE.explanation=The properties file {0} may be missing or corrupted.
+ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE.useraction=Ensure the properties file exists.
+
+ERROR_MAVEN_COORDINATE_WRONG_VERSION=Cannot install feature with maven coordinate {0} onto a {1} Liberty runtime version.
+ERROR_MAVEN_COORDINATE_WRONG_VERSION.explanation=The feature is incompatible with the Liberty runtime.
+ERROR_MAVEN_COORDINATE_WRONG_VERSION.useraction=Specify a valid version for the feature.
+
+ERROR_MAVEN_COORDINATE_INVALID=Invalid maven coordinate provided: {0}
+ERROR_MAVEN_COORDINATE_INVALID.explanation=The maven coordinated provided is not in the correct format.
+ERROR_MAVEN_COORDINATE_INVALID.useraction=Enter a valid maven coordinate.
+
 ERROR_OTHER_FEATURE_DEPEND_ON=CWWKF1208E: The features that you are uninstalling are required by the following other feature or features {0}.
 ERROR_OTHER_FEATURE_DEPEND_ON.explanation=The specified feature cannot be removed while another feature still requires it.
 ERROR_OTHER_FEATURE_DEPEND_ON.useraction=No action is required.

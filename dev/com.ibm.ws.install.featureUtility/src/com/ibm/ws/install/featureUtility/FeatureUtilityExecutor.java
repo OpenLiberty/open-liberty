@@ -54,7 +54,7 @@ public class FeatureUtilityExecutor {
 
             } catch (IllegalArgumentException iae) {
                 rc = FeatureAction.help
-                        .handleTask(new ArgumentsImpl(new String[] { FeatureAction.help.toString(), actionName }));
+                                .handleTask(new ArgumentsImpl(new String[] { FeatureAction.help.toString(), actionName }));
             }
 
         }

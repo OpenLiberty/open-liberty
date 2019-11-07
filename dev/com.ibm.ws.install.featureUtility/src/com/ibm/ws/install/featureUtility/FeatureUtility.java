@@ -54,7 +54,7 @@ public class FeatureUtility {
     private static String openLibertyVersion;
     private final Logger logger;
     private ProgressBar progressBar;
-    
+
     private final static String OPEN_LIBERTY_PRODUCT_ID = "io.openliberty";
     private boolean isWindows = (System.getProperty("os.name").toLowerCase()).indexOf("win") >= 0;
     // TODO remove this need for windwos chewcking for progress bar
@@ -78,12 +78,12 @@ public class FeatureUtility {
         this.esaFile = builder.esaFile;
         this.isBasicInit = builder.isBasicInit;
         this.isDownload = builder.isDownload;
-        
+
 
         map = new InstallKernelMap();
-        
+
         if (isBasicInit == null || !isBasicInit) {
-        	info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_INITIALIZING"));
+            info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_INITIALIZING"));
 
             List<File> jsonPaths = getJsonFiles(fromDir, jsonsRequired);
             updateProgress(progressBar.getMethodIncrement("fetchJsons"));
@@ -93,17 +93,17 @@ public class FeatureUtility {
             updateProgress(progressBar.getMethodIncrement("initializeMap"));
             fine("Initialized install kernel map");
         } else {
-        	if (isDownload == null || !isDownload) {
-        		initializeMap();
-        	} else {
+            if (isDownload == null || !isDownload) {
+                initializeMap();
+            } else {
 
                 List<File> jsonPaths = getJsonFiles(fromDir, jsonsRequired);
 
-            	initializeMap(jsonPaths);
-        	}
+                initializeMap(jsonPaths);
+            }
         }
     }
-    
+
     /**
      * Initialize the Install kernel map.
      *
@@ -143,7 +143,7 @@ public class FeatureUtility {
     }
 
     private Map<String, Set<String>> getJsonsAndFeatures(List<String> featureNames)
-            throws IOException, InstallException {
+                    throws IOException, InstallException {
         Map<String, Set<String>> jsonsAndFeatures = new HashMap<>();
 
         Set<String> jsonsRequired = new HashSet<>();
@@ -174,18 +174,18 @@ public class FeatureUtility {
                 // verify feature version matches runtime
                 if (!version.equals(openLibertyVersion)) {
                     throw new InstallException(
-                            "Cannot install feature " + feature + " on a " + openLibertyVersion + " runtime.");
+                                    Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_MAVEN_COORDINATE_WRONG_VERSION", feature, version));
                 }
 
             } else {
-                throw new InstallException("Invalid feature provided: " + feature);
+                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_MAVEN_COORDINATE_INVALID", feature));
             }
             jsonsRequired.add(groupId);
             featuresRequired.add(artifactId);
         }
         jsonsAndFeatures.put("jsons", jsonsRequired);
         jsonsAndFeatures.put("features", featuresRequired);
-        
+
         return jsonsAndFeatures;
 
     }
@@ -218,7 +218,7 @@ public class FeatureUtility {
 
         if (openLibertyVersion == null) {
             // openliberty.properties file is missing or invalidly formatted
-            throw new InstallException("Could not determine the open liberty runtime version.");
+            throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE", propertiesFile.getAbsolutePath()));
 
         }
         this.openLibertyVersion = openLibertyVersion;
@@ -250,7 +250,7 @@ public class FeatureUtility {
             double increment = ((double) (progressBar.getMethodIncrement("installFeatures")) / (artifacts.size()));
             for (File esaFile : artifacts) {
                 fine(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_INSTALLING",
-                                                                                      extractFeature(esaFile.getName())));
+                                                                    extractFeature(esaFile.getName())));
                 map.put("license.accept", true);
                 map.put("action.install", esaFile);
                 if (toExtension != null) {
@@ -273,7 +273,7 @@ public class FeatureUtility {
                         actionReturnResult.addAll((Collection<String>) map.get("action.install.result"));
                         updateProgress(increment);
                         info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("LOG_INSTALLED_FEATURE",
-                                currentReturnResult.get(0)).replace("CWWKF1304I: ", ""));
+                                                                            currentReturnResult.get(0)).replace("CWWKF1304I: ", ""));
 
                     }
                 }
@@ -286,18 +286,18 @@ public class FeatureUtility {
 
     /**
      * Check for any errors with the list of resolved features
-     * 
+     *
      * @param resolvedFeatures list of resolved features returned by the resolver
      * @throws InstallException
      */
     private void checkResolvedFeatures(Collection<String> resolvedFeatures) throws InstallException {
-    	if (resolvedFeatures == null) {
+        if (resolvedFeatures == null) {
             throw new InstallException((String) map.get("action.error.message"));
         } else if (resolvedFeatures.isEmpty()) {
             String exceptionMessage = (String) map.get("action.error.message");
             if (exceptionMessage == null) {
                 throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ALREADY_INSTALLED",
-                                                                                      map.get("features.to.resolve")));
+                                                                                          map.get("features.to.resolve")));
             } else if (exceptionMessage.contains("CWWKF1250I")) {
                 throw new InstallException(exceptionMessage);
 
@@ -305,16 +305,16 @@ public class FeatureUtility {
                 throw new InstallException(exceptionMessage);
             }
         }
-	}
+    }
 
-	private List<File> downloadFeaturesFrom(Collection<String> resolvedFeatures, File fromDir) throws InstallException {
-    	map.put("from.repo", fromDir.toString());
+    private List<File> downloadFeaturesFrom(Collection<String> resolvedFeatures, File fromDir) throws InstallException {
+        map.put("from.repo", fromDir.toString());
         return downloadFeatureEsas(resolvedFeatures);
-	}
-    
+    }
+
     private List<File> downloadFeatureEsas(Collection<String> resolvedFeatures) throws InstallException {
-    	map.put("download.artifact.list", resolvedFeatures);
-    	boolean singleArtifactInstall = false;
+        map.put("download.artifact.list", resolvedFeatures);
+        boolean singleArtifactInstall = false;
         map.put("download.individual.artifact", singleArtifactInstall);
 
         List<File> result = (List<File>) map.get("download.result");
@@ -325,37 +325,37 @@ public class FeatureUtility {
         }
         return result;
     }
-    
+
     public List<String> resolveFeatures(boolean isShortNames) throws InstallException {
-    	map.put("download.location", fromDir.toString());
-    	
-    	List<String> shortNames = new ArrayList<String>();
-    	if (!isShortNames) {
-    		info("Preparing assets for installation. This process might take several minutes to complete.");
-    		info("Resolving features...");
-    		for (String mavenCoord: featuresToInstall) {
-    			shortNames.add(mavenCoord.split(":")[1]);
-    		}
-    		featuresToInstall.clear();
-    		featuresToInstall.addAll(shortNames);
-    	}
+        map.put("download.location", fromDir.toString());
+
+        List<String> shortNames = new ArrayList<String>();
+        if (!isShortNames) {
+            info("Preparing assets for installation. This process might take several minutes to complete.");
+            info("Resolving features...");
+            for (String mavenCoord: featuresToInstall) {
+                shortNames.add(mavenCoord.split(":")[1]);
+            }
+            featuresToInstall.clear();
+            featuresToInstall.addAll(shortNames);
+        }
         if (featuresToInstall != null) {
             map.put("features.to.resolve", featuresToInstall);
         }
         List<String> resolvedFeatures = (List<String>) map.get("action.result");
         checkResolvedFeatures(resolvedFeatures);
         if (!isShortNames) {
-        	updateProgress(progressBar.getMethodIncrement("resolveArtifact"));
+            updateProgress(progressBar.getMethodIncrement("resolveArtifact"));
             info("Features resolved.");
         }
         return resolvedFeatures;
     }
-    
+
     public void downloadFeatures(List<String> resolvedFeatures) throws InstallException {
-    	info("Starting Download...");
-    	List<File> downloadedEsas = downloadFeaturesFrom(resolvedFeatures, fromDir);
-    	info("\n");
-    	info("All assets were successfully downloaded.");
+        info("Starting Download...");
+        List<File> downloadedEsas = downloadFeaturesFrom(resolvedFeatures, fromDir);
+        info("\n");
+        info("All assets were successfully downloaded.");
     }
 
     /**
@@ -390,10 +390,6 @@ public class FeatureUtility {
             fine("Could not find all json files from local directories, now downloading from Maven..");
             jsonFiles.addAll(map.getJsonsFromMavenCentral(jsonsRequired));
         }
-        if (jsonFiles.isEmpty() || jsonFiles.contains(null)) {
-            throw new InstallException(
-                    "Could not find or download the necessary JSON files on your system needed for resolving features.");
-        }
         return jsonFiles;
     }
 
@@ -403,11 +399,11 @@ public class FeatureUtility {
      * @throws IOException
      */
     private void cleanUp() throws IOException {
-    	String tempStr = (String) map.get("cleanup.temp.location");
+        String tempStr = (String) map.get("cleanup.temp.location");
         boolean deleted = true;
 
         if (tempStr != null) { //change this to a map.get("cleanup.needed")
-        	File temp = new File(tempStr);
+            File temp = new File(tempStr);
             deleted = deleteFolder(temp);
         }
         updateProgress(progressBar.getMethodIncrement("cleanUp"));
@@ -525,45 +521,45 @@ public class FeatureUtility {
         }
 
     }
-    
+
     public static List<String> getMissingArtifactsFromFolder(List<String> artifacts, String location, boolean isShortName) throws IOException, InstallException{
-    	List<String> result = new ArrayList<String>();
-    	
-    	for (String id: artifacts) {
-    		Path featurePath;
-    		if (isShortName) {
-    			String groupId = OPEN_LIBERTY_PRODUCT_ID + ".features";
-    			File groupDir = new File(location, groupId.replace(".", "/")); 
-    			if (!groupDir.exists()) {
-                	result.add(id);
+        List<String> result = new ArrayList<String>();
+
+        for (String id: artifacts) {
+            Path featurePath;
+            if (isShortName) {
+                String groupId = OPEN_LIBERTY_PRODUCT_ID + ".features";
+                File groupDir = new File(location, groupId.replace(".", "/"));
+                if (!groupDir.exists()) {
+                    result.add(id);
                     continue;
                 }
-    			String featureEsa = id + "-" + openLibertyVersion + ".esa";
-    			featurePath = Paths.get(groupDir.getAbsolutePath().toString(), id, openLibertyVersion, featureEsa);
-    		} else {
-    			String groupId = id.split(":")[0];
-            	String featureName = id.split(":")[1];
-            	File groupDir = new File(location, groupId.replace(".", "/"));
-            	if (!groupDir.exists()) {
-            		result.add(id);
-                	continue;
-            	}
-            	String featureEsa = featureName + "-" + openLibertyVersion + ".esa";
-            	featurePath = Paths.get(groupDir.getAbsolutePath().toString(), featureName, openLibertyVersion, featureEsa);
-    		}
-            if (!Files.isRegularFile(featurePath)) {
-            	result.add(id);
+                String featureEsa = id + "-" + openLibertyVersion + ".esa";
+                featurePath = Paths.get(groupDir.getAbsolutePath().toString(), id, openLibertyVersion, featureEsa);
+            } else {
+                String groupId = id.split(":")[0];
+                String featureName = id.split(":")[1];
+                File groupDir = new File(location, groupId.replace(".", "/"));
+                if (!groupDir.exists()) {
+                    result.add(id);
+                    continue;
+                }
+                String featureEsa = featureName + "-" + openLibertyVersion + ".esa";
+                featurePath = Paths.get(groupDir.getAbsolutePath().toString(), featureName, openLibertyVersion, featureEsa);
             }
-    	}
-    	return result;
+            if (!Files.isRegularFile(featurePath)) {
+                result.add(id);
+            }
+        }
+        return result;
     }
 
-	public List<String> getMavenCoords(List<String> artifactShortNames) {
-		List<String> result = new ArrayList<String>();
-		for (String shortName: artifactShortNames) {
-			result.add(OPEN_LIBERTY_PRODUCT_ID + ".feature:" + shortName + ":" + openLibertyVersion);
-		}
-		return result;
-	}
+    public List<String> getMavenCoords(List<String> artifactShortNames) {
+        List<String> result = new ArrayList<String>();
+        for (String shortName: artifactShortNames) {
+            result.add(OPEN_LIBERTY_PRODUCT_ID + ".feature:" + shortName + ":" + openLibertyVersion);
+        }
+        return result;
+    }
 
 }
