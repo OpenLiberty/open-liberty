@@ -688,14 +688,15 @@
   </head>
 
   <body>
-    <section class="hero">
+	<main>
+    <section class="hero" data-externalizedAriaLabel="WELCOME_SECTION">
 		<div class="inner-hero">
 			<span id="star1" class="star"></span>
 			<span id="star2" class="star"></span>
 			<span id="star3" class="star"></span>
 			<span id="star4" class="star"></span>
 			<span id="star5" class="star"></span>
-			<div class="inner-hero__message row">
+			<div class="inner-hero__message row" data-externalizedAriaLabel="WELCOME_SECTION_CONTENT">
 				<div class="column">
 					<h3>Welcome to</h3>
 					<div id="inner-hero__logo">
@@ -720,8 +721,8 @@
 		</div>
 	</section>
 
-	<section class="resources">
-		<h2>Resources</h2>
+	<section class="resources" data-externalizedAriaLabel="RESOURCES">
+		<h2 data-externalizedString="RESOURCES"></h2>
 		<div class="row">
 			<div class="resource">
 				<a href="https://github.com/OpenLiberty/open-liberty" target="_blank" rel="noopener">
@@ -755,15 +756,12 @@
 			</div>		
 		</div>
 	</section>
+	</main>
 	
 	<footer class="footer">
-		<div class="footer__content row">
-			<img class="footer__img" src="/img/footer-img.png" alt="Open Liberty logo">
-			<p class="footer__copy">
-				Licensed Materials &#8212 Property of the Open Liberty project, Copyright
-				IBM Corp and others 1997, 2019. Project is distributed under the terms
-				of the Eclipse Public License v1.
-			</p>
+		<div class="footer__content row" data-externalizedAriaLabel="COPYRIGHT">
+			<img class="footer__img" src="/img/footer-img.png" alt="Open Liberty logo" data-externalizedAlt="OPEN_LIBERTY_FOOTER">
+			<p class="footer__copy" data-externalizedString="COPYRIGHT_OPEN_LIBERTY"></p>
 		</div>
 	</footer>
 

@@ -1,7 +1,5 @@
 var messages = {
     WELCOME_OPEN_LIBERTY: "Welcome to Open Liberty",
-    OPEN_LIBERTY_APP_SERVER: "Open Liberty Application Server",
-    OPEN_LIBERTY_LOGO: "Liberty Logo",
     WELCOME_LIBERTY_SECTION: "Welcome to ",
     WELCOME_IBM_OPEN_SOURCE: "An IBM Open Source Project",
     RESOURCES: "Resources",
