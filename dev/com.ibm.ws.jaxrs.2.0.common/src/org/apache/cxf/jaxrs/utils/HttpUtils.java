@@ -467,17 +467,16 @@ public final class HttpUtils {
         String endpointAddress = getEndpointAddress(m);
         //Liberty code change start
         String[] addr = parseURI(endpointAddress, false);
-        if (addr != null) {
-            String scheme = addr[0];
-            String path = addr[1];
-            if (scheme != null && !scheme.startsWith(HttpUtils.HTTP_SCHEME)
-                    && HttpUtils.isHttpRequest(m)) {
-                path = HttpUtils.toAbsoluteUri(path, m).getRawPath();
-            }
-            return (path == null || path.length() == 0) ? "/" : path;
-        } else {
-            return endpointAddress == null ? "/" : endpointAddress;
+        if (addr == null) {
+            return endpointAddress;
         }
+        String scheme = addr[0];
+        String path = addr[1];
+        if (scheme != null && !scheme.startsWith(HttpUtils.HTTP_SCHEME)
+                && HttpUtils.isHttpRequest(m)) {
+            path = HttpUtils.toAbsoluteUri(path, m).getRawPath();
+        }
+        return (path == null || path.length() == 0) ? "/" : path;
     }
 
     public static String[] parseURI(String addr, boolean parseAuthority) {

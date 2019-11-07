@@ -92,6 +92,7 @@ public class URIParseTest {
         u = ":http://00:10:23:45:9080/abc&zyx";
         try {
             parse(u);
+            Assert.fail();
         } catch (IllegalArgumentException e) {
             // caught proper exception, now need to make sure we get null from parseURI call
             Assert.assertNull(HttpUtils.parseURI(u, true));
@@ -100,6 +101,7 @@ public class URIParseTest {
         u = "http://";
         try {
             parse(u);
+            Assert.fail();
         } catch (IllegalArgumentException e) {
             // caught proper exception, now need to make sure we get null from parseURI call
             Assert.assertNull(HttpUtils.parseURI(u, true));
@@ -107,6 +109,17 @@ public class URIParseTest {
         }
         u = "http://user@2001:db8:1234::/48/?abc&zyx";
         parse(u);
+        u = null;
+        try {
+            parse(u);
+            Assert.fail();
+        } catch (NullPointerException e) {
+            try {
+                HttpUtils.parseURI(u, true);
+                Assert.fail();
+            } catch (NullPointerException ex) {
+            }
+        }
     }
 
     private void parse(String u) {
