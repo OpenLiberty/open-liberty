@@ -19,6 +19,7 @@ import java.net.URLConnection;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import com.ibm.ws.install.InstallException;
@@ -39,6 +40,7 @@ public class ArtifactDownloader {
 
     private final ProgressBar progressBar = ProgressBar.getInstance();
     private final boolean isWindows = (System.getProperty("os.name").toLowerCase()).indexOf("win") >= 0;
+    private final Map<String, String> envMap = ArtifactDownloaderUtils.getEnvMap();
 
     public void synthesizeAndDownloadFeatures(List<String> mavenCoords, String dLocation, String repo) throws InstallException {
         info("Establishing a connection to the configured Maven repository ...\n" +
@@ -203,18 +205,18 @@ public class ArtifactDownloader {
     }
 
     private void configureProxyAuthentication() {
-        if (System.getenv("http.proxyUser") != null) {
+        if (envMap.get("http.proxyUser") != null) {
             Authenticator.setDefault(new SystemPropertiesProxyAuthenticator());
         }
     }
 
     private void configureAuthentication() {
-        if (System.getenv("openliberty_feature_repository_user") != null && System.getenv("openliberty_feature_repository_password") != null
-            && System.getenv("http.proxyUser") == null) {
+        if (envMap.get("openliberty_feature_repository_user") != null && envMap.get("openliberty_feature_repository_password") != null
+            && envMap.get("http.proxyUser") == null) {
             Authenticator.setDefault(new Authenticator() {
                 @Override
                 protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication(System.getenv("openliberty_feature_repository_user"), System.getenv("openliberty_feature_repository_password").toCharArray());
+                    return new PasswordAuthentication(envMap.get("openliberty_feature_repository_user"), envMap.get("openliberty_feature_repository_password").toCharArray());
                 }
             });
         }
@@ -232,8 +234,8 @@ public class ArtifactDownloader {
                 throw ExceptionUtils.createByKey("ERROR_FAILED_TO_DOWNLOAD_FEATURE", ArtifactDownloaderUtils.getFileNameFromURL(address.toString()),
                                                  destination.toString());
             }
-            if (System.getenv("http.proxyUser") != null) {
-                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(System.getenv("http.proxyHost"), 8080));
+            if (envMap.get("http.proxyUser") != null) {
+                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(envMap.get("http.proxyHost"), 8080));
                 conn = url.openConnection(proxy);
             } else {
                 conn = url.openConnection();
@@ -300,8 +302,8 @@ public class ArtifactDownloader {
 
     private String calculateUserInfo(URI uri) {
 
-        if (System.getenv("openliberty_feature_repository_user") != null && System.getenv("openliberty_feature_repository_password") != null) {
-            return System.getenv("openliberty_feature_repository_user") + ':' + System.getenv("openliberty_feature_repository_password");
+        if (envMap.get("openliberty_feature_repository_user") != null && envMap.get("openliberty_feature_repository_password") != null) {
+            return envMap.get("openliberty_feature_repository_user") + ':' + envMap.get("openliberty_feature_repository_password");
         }
         return uri.getUserInfo();
     }
@@ -309,7 +311,8 @@ public class ArtifactDownloader {
     private static class SystemPropertiesProxyAuthenticator extends Authenticator {
         @Override
         protected PasswordAuthentication getPasswordAuthentication() {
-            return new PasswordAuthentication(System.getenv("http.proxyUser"), System.getenv("http.proxyPassword").toCharArray());
+            Map<String, String> envMap = ArtifactDownloaderUtils.getEnvMap();
+            return new PasswordAuthentication(envMap.get("http.proxyUser"), envMap.get("http.proxyPassword").toCharArray());
         }
     }
 
@@ -339,15 +342,15 @@ public class ArtifactDownloader {
 
     public void checkValidProxy() throws InstallException {
 
-        String proxyPort = System.getenv("http.proxyPort");
-        if (System.getenv("http.proxyUser") != null) {
+        String proxyPort = envMap.get("http.proxyPort");
+        if (envMap.get("http.proxyUser") != null) {
             int proxyPortnum = Integer.parseInt(proxyPort);
-            if (System.getenv("http.proxyHost").isEmpty()) {
+            if (envMap.get("http.proxyHost").isEmpty()) {
                 throw ExceptionUtils.createByKey("ERROR_TOOL_PROXY_HOST_MISSING");
             } else if (proxyPortnum < 0 || proxyPortnum > 65535) {
                 throw ExceptionUtils.createByKey("ERROR_TOOL_INVALID_PROXY_PORT", proxyPort);
-            } else if (System.getenv("http.proxyPassword").isEmpty() ||
-                       System.getenv("http.proxyPassword") == null) {
+            } else if (envMap.get("http.proxyPassword").isEmpty() ||
+                       envMap.get("http.proxyPassword") == null) {
                 throw ExceptionUtils.createByKey("ERROR_TOOL_PROXY_PWD_MISSING");
             }
         }

@@ -16,13 +16,17 @@ import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.ibm.ws.install.InstallException;
 
 public class ArtifactDownloaderUtils {
 
     private static boolean isFinished = false;
+
+    private static final Map<String, String> envMap = ArtifactDownloaderUtils.getEnvMap();
 
     public static List<String> getMissingFiles(List<String> featureURLs) throws IOException {
         List<String> result = new ArrayList<String>();
@@ -44,8 +48,8 @@ public class ArtifactDownloaderUtils {
             HttpURLConnection.setFollowRedirects(true);
             HttpURLConnection conn;
             URL url = new URL(URLName);
-            if (System.getenv("http.proxyUser") != null) {
-                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(System.getenv("http.proxyHost"), 8080));
+            if (envMap.get("http.proxyUser") != null) {
+                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(envMap.get("http.proxyHost"), 8080));
                 conn = (HttpURLConnection) url.openConnection(proxy);
             } else {
                 conn = (HttpURLConnection) url.openConnection();
@@ -186,6 +190,31 @@ public class ArtifactDownloaderUtils {
                 throw new InstallException("The following maven repository can not be reached: " + repo); //ERROR_FAILED_TO_CONNECT_MAVEN
             }
         }
+    }
+
+    public static Map<String, String> getEnvMap() {
+        Map<String, String> envMap = new HashMap<String, String>();
+
+        //parse through httpProxy variables TODO
+
+        //load the required enviroment variables into the map
+        envMap.put("http.proxyUser", System.getenv("http.proxyUser"));
+        envMap.put("http.proxyHost", System.getenv("http.proxyHost"));
+        envMap.put("http.proxyPort", System.getenv("http.proxyPort"));
+        envMap.put("http.proxyPassword", System.getenv("http.proxyPassword"));
+
+        envMap.put("https.proxyUser", System.getenv("https.proxyUser"));
+        envMap.put("https.proxyHost", System.getenv("https.proxyHost"));
+        envMap.put("https.proxyPort", System.getenv("https.proxyPort"));
+        envMap.put("https.proxyPassword", System.getenv("https.proxyPassword"));
+
+        envMap.put("openliberty_feature_repository", System.getenv("openliberty_feature_repository"));
+        envMap.put("openliberty_feature_repository_user", System.getenv("openliberty_feature_repository_user"));
+        envMap.put("openliberty_feature_repository_password", System.getenv("openliberty_feature_repository_password"));
+
+        //search through the properties file to look for overrides if they exist TODO
+
+        return envMap;
     }
 
 }

@@ -934,12 +934,13 @@ public class InstallKernelMap implements Map {
      */
     private String getRepo(String fromRepo) {
         String repo;
+        Map<String, String> envMap = ArtifactDownloaderUtils.getEnvMap();
         if (fromRepo != null) {
             fine("Connecting to the following repository: " + fromRepo);
             repo = fromRepo;
-        } else if (System.getenv("openliberty_feature_repository") != null) {
-            fine("Connecting to the following repository: " + System.getenv("openliberty_feature_repository"));
-            repo = System.getenv("openliberty_feature_repository");
+        } else if (envMap.get("openliberty_feature_repository") != null) {
+            fine("Connecting to the following repository: " + envMap.get("openliberty_feature_repository"));
+            repo = envMap.get("openliberty_feature_repository");
         } else {
             fine("Connecting to the following repository: " + MAVEN_CENTRAL);
             repo = MAVEN_CENTRAL;
