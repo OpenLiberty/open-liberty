@@ -821,24 +821,24 @@ public class DatabaseTaskStore implements TaskStore {
 
     /** {@inheritDoc} */
     @Override
-    public List<Object[]> findUnclaimedTasks(long missedTaskThreshold, long maxNextExecTime, Integer maxResults) throws Exception {
-        StringBuilder find = new StringBuilder(150)
+    public List<Object[]> findUnclaimedTasks(long maxNextExecTime, Integer maxResults) throws Exception {
+        StringBuilder find = new StringBuilder(161)
                         .append("SELECT t.ID,t.MBITS,t.NEXTEXEC,t.TXTIMEOUT,t.VERSION FROM Task t WHERE t.STATES<")
                         .append(TaskState.SUSPENDED.bit)
-                        .append(" AND t.NEXTEXEC<=:nx AND t.PARTN<t.NEXTEXEC+:tt");
+                        .append(" AND t.NEXTEXEC<=:m AND (t.PARTN<t.NEXTEXEC OR t.PARTN<:c)");
         if (maxResults != null)
             find.append(" ORDER BY t.NEXTEXEC");
 
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "findUnclaimedTasks", Utils.appendDate(new StringBuilder(30), maxNextExecTime), missedTaskThreshold, maxResults, find);
+            Tr.entry(this, tc, "findUnclaimedTasks", Utils.appendDate(new StringBuilder(30), maxNextExecTime), maxResults, find);
 
         List<Object[]> resultList;
         EntityManager em = getPersistenceServiceUnit().createEntityManager();
         try {
             TypedQuery<Object[]> query = em.createQuery(find.toString(), Object[].class);
-            query.setParameter("nx", maxNextExecTime);
-            query.setParameter("tt", missedTaskThreshold * 1000);
+            query.setParameter("m", maxNextExecTime);
+            query.setParameter("c", System.currentTimeMillis());
             if (maxResults != null)
                 query.setMaxResults(maxResults);
             List<Object[]> results = query.getResultList();

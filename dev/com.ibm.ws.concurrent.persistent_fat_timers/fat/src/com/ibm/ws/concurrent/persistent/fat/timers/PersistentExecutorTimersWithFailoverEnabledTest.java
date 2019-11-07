@@ -18,6 +18,8 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.PersistentExecutor;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
@@ -31,10 +33,12 @@ import web.PersistentTimersTestServlet;
  * Tests for persistent scheduled executor via persistent EJB timers
  */
 @RunWith(FATRunner.class)
-public class PersistentExecutorTimersTest extends FATServletClient {
+public class PersistentExecutorTimersWithFailoverEnabledTest extends FATServletClient {
 
     private static final String APP_NAME = "timersapp";
     private static final String DB_NAME = "persisttimers";
+
+    private static ServerConfiguration originalConfig;
 
     @TestServlet(servlet = PersistentTimersTestServlet.class, path = APP_NAME)
     public static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.concurrent.persistent.fat.timers");
@@ -51,6 +55,18 @@ public class PersistentExecutorTimersTest extends FATServletClient {
         Machine machine = server.getMachine();
         String installRoot = server.getInstallRoot();
         LibertyFileManager.deleteLibertyDirectoryAndContents(machine, installRoot + "/usr/shared/resources/data/persisttimers");
+
+        // configure server.xml to enable failover
+        originalConfig = server.getServerConfiguration();
+        ServerConfiguration config = originalConfig.clone();
+
+        PersistentExecutor defaultEJBPersistentTimerExecutor = new PersistentExecutor();
+        defaultEJBPersistentTimerExecutor.setId("defaultEJBPersistentTimerExecutor");
+        defaultEJBPersistentTimerExecutor.setPollInterval("5h"); // polling should not be required by the test, but the fail over capability needs it enabled
+        defaultEJBPersistentTimerExecutor.setExtraAttribute("missedTaskThreshold2", "4s"); // TODO rename if the code path being tested is chosen
+        config.getPersistentExecutors().add(defaultEJBPersistentTimerExecutor);
+
+        server.updateServerConfiguration(config);
 
     	//Get type
 		DatabaseContainerType dbContainerType = DatabaseContainerType.valueOf(testContainer);
@@ -78,7 +94,13 @@ public class PersistentExecutorTimersTest extends FATServletClient {
      */
     @AfterClass
     public static void tearDown() throws Exception {
-        if (server != null && server.isStarted())
-            server.stopServer("CWWKZ0022W");
+        if (server != null)
+            try {
+                if (server.isStarted())
+                    server.stopServer("CWWKZ0022W");
+            } finally {
+                if (originalConfig != null)
+                    server.updateServerConfiguration(originalConfig);
+            }
     }
 }
