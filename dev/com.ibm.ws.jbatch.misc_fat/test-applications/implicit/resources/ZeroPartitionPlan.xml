@@ -20,9 +20,6 @@
 	</properties>
 
 	<step id="step1">
-		<properties>
-			<property name="stepProperty" value="sp" />
-		</properties>
 		<listeners>
 			<listener ref="app.misc1.Artifacts$StepListener">
 				<properties>
@@ -51,7 +48,11 @@
 					<property name="stepProp" value="#{jobProperties['stepProperty']}" />
 				</properties>
 			</analyzer>
+			<reducer ref="app.misc1.Artifacts$Reducer">
+				<properties>
+					<property name="stepProp" value="#{jobParameters['sp']}" />
+				</properties>
+			</reducer>
 		</partition>
 	</step>
-	
 </job>

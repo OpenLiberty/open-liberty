@@ -32,6 +32,8 @@ public class BatchFATServlet extends FATServlet {
 
     public static Logger logger = Logger.getLogger("test");
 
+    public static final String SP_VAL = "spVal";
+
     @Test
     public void testParameterizedCollectorMapper() throws Exception {
         logger.fine("Running test = testParameterizedCollectorMapper");
@@ -103,16 +105,16 @@ public class BatchFATServlet extends FATServlet {
 
         Properties params = new Properties();
         params.put("jobParam1", "jpValAA");
+        params.put("sp", SP_VAL);
         params.put("numPartitions", "0"); // For the other artifacts like the StepListener validating against number of partitions
-        new JobWaiter(60000).completeNewJob("ZeroPartitionPlan", params);
+        JobExecution jobExec = new JobWaiter(60000).completeNewJob("ZeroPartitionPlan", params);
+        assertEquals("Unexpected exit status", SP_VAL + "," + "COMMIT", jobExec.getExitStatus());
     }
 
     @Test
     @Mode(TestMode.FULL)
     public void testReducerCommit() throws Exception {
         logger.fine("Running test = testReducerCommit");
-
-        String SP_VAL = "spVal";
 
         Properties params = new Properties();
         params.put("jobParam1", "jpValAA");
@@ -127,8 +129,6 @@ public class BatchFATServlet extends FATServlet {
     @ExpectedFFDC({ "com.ibm.jbatch.container.exception.BatchContainerRuntimeException", "java.lang.IllegalStateException" })
     public void testReducerRollback() throws Exception {
         logger.fine("Running test = testReducerRollback");
-
-        String SP_VAL = "spVal";
 
         Properties params = new Properties();
         params.put("jobParam1", "jpValAA");

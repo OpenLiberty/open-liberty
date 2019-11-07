@@ -149,8 +149,11 @@ public class Artifacts {
                 return;
             }
 
+            int numPartitions = Integer.parseInt(numPartitionsStr);
+            logger.fine("Doing validation, for " + numPartitions + " # of partitions");
+
             Set<String> expected = new HashSet<String>();
-            for (int i = 0; i < Integer.parseInt(numPartitionsStr); i++) {
+            for (int i = 0; i < numPartitions; i++) {
                 expected.add("part" + new Integer(i).toString());
             }
             assertEquals("Expected set doesn't match set of data collected via collector->analyzer", expected, stepCtx.getTransientUserData());
