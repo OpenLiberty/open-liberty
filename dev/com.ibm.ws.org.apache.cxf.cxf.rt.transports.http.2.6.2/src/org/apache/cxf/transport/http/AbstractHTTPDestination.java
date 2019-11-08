@@ -502,7 +502,7 @@ public abstract class AbstractHTTPDestination
                 }
             }
             if (in != null) {
-                in.cacheInput();
+                //in.cacheInput();
             }
         } else if (in != null) {
             //We don't need to cache it, but we may need to consume it in order for the client 
