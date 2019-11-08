@@ -1,0 +1,88 @@
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+#CMVCPATHNAME com.ibm.ws.install.featureUtility/resources/com/ibm/ws/install/featureUtility/internal/resources/FeatureUtilityToolOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#--------- ACTIONS ----------------------------------------------------#
+# List of descriptive text for actions. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+usage=\
+Usage: {0}
+
+global.description=Description:
+global.actions=Actions:
+global.options=Options:
+global.options.lower=options
+global.usage=Usage:
+global.options.statement=\
+\tUse help [actionName] for detailed option information of each action.
+task.unknown=Unknown action: {0}
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+help.desc=\
+\tPrint help information for the specified action.
+
+#--------- INSTALLFEATURE ACTION ---------------------------------------------#
+installFeature.desc=\
+\tInstall a feature to the runtime.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.name...=\
+\ \ \ \ name ...
+installFeature.option-desc.name...=\
+\t - One or more asset names separated by a space. For features        \n\
+\t   you can specify the short name (featureName-1.0) or               \n\
+\t   the maven coordinate (groupId:featureName:version)
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--to=\
+\ \ \ \ --to=[usr|extension]
+installFeature.option-desc.--to=\
+\tSpecify where to install the feature. The feature can be installed to\n\
+\tany configured product extension location, or as a user feature. If  \n\
+\tthis option is not specified the feature will be installed as a user \n\
+\tfeature.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--from=\
+\ \ \ \ --from=filePath
+installFeature.option-desc.--from=\
+\tUse this option to specify the file path of a Maven artifact         \n\
+\trepository as a source for featureUtility to install assets.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--verbose=\
+\ \ \ \ --verbose
+installFeature.option-desc.--verbose=\
+\tUse this option to display any available additional information while\n\
+\tthe action runs.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--no-cache=\
+\ \ \ \ --no-cache
+installFeature.option-desc.--no-cache=\
+\tUse this option to delete any downloaded Maven artifacts             \n\
+\tafter the features are installed.
+
+#--------- INSTALLSERVER ACTION ---------------------------------------------#
+installServer.desc=\
+\tInstall a server to the runtime.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServer.option-key.name...=\
+\ \ \ \ name ...
+installServer.option-desc.name...=\
+\tSpecify a server name.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServer.option-key.--from=\
+\ \ \ \ --from=filePath
+installServer.option-desc.--from=\
+\tUse this option to specify the file path of a Maven artifact         \n\
+\trepository as a source for featureUtility to install assets.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServer.option-key.--verbose=\
+\ \ \ \ --verbose
+installServer.option-desc.--verbose=\
+\tUse this option to display any available additional information while\n\
+\tthe action runs.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServer.option-key.--no-cache=\
+\ \ \ \ --no-cache
+installServer.option-desc.--no-cache=\
+\tUse this option to delete any downloaded Maven artifacts             \n\
+\tafter the features are installed.

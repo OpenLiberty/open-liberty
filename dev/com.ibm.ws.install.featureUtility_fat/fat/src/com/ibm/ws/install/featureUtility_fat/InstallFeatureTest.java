@@ -35,7 +35,7 @@ public class InstallTest extends FeatureUtilityToolTest {
         final String METHOD_NAME = "testInstallFromMavenCentral";
         entering(c, METHOD_NAME);
 
-        String[] param1s = { "install", "jsp-2.3" };
+        String[] param1s = { "installFeature", "jsp-2.3" };
 
         ProgramOutput po;
         po = runFeatureUtility(METHOD_NAME, param1s);
@@ -55,7 +55,7 @@ public class InstallTest extends FeatureUtilityToolTest {
         final String METHOD_NAME = "testInstallFromLocalRepo";
         entering(c, METHOD_NAME);
 
-        String[] param1s = { "install", "mpHealth-2.0" };
+        String[] param1s = { "installFeature", "mpHealth-2.0" };
 
         ProgramOutput po;
         po = runFeatureUtility(METHOD_NAME, param1s);
@@ -65,10 +65,11 @@ public class InstallTest extends FeatureUtilityToolTest {
 
     @Test
     public void testInstallWithMirrorRepository() throws Exception {
+        // TODO
         final String METHOD_NAME = "testInstallWithMirrorRepository";
         entering(c, METHOD_NAME);
 
-        String[] param1s = { "install", "webProfile-8.0" };
+        String[] param1s = { "installFeature", "webProfile-8.0" };
 
 
         ProgramOutput po;
