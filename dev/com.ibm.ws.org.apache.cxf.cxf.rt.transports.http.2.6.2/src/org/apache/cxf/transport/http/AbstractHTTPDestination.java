@@ -525,9 +525,13 @@ public abstract class AbstractHTTPDestination
         }
 
         cacheInput(outMessage);
+        //Liberty code change start
+        Headers headers = null;
         if (server != null) {
-            new Headers(outMessage).setFromServerPolicy(server);
+            headers = new Headers(outMessage);
+            headers.setFromServerPolicy(server);
         }
+        //Liberty code change end
 
         OutputStream responseStream = null;
         boolean oneWay = isOneWay(outMessage);
@@ -536,10 +540,15 @@ public abstract class AbstractHTTPDestination
 
         int responseCode = getReponseCodeFromMessage(outMessage);
         response.setStatus(responseCode);
-        if (HttpURLConnection.HTTP_INTERNAL_ERROR == responseCode) {
-            new Headers(outMessage).removeContentType();
+        //Liberty code change start
+        if (headers == null) {
+            headers = new Headers(outMessage);
         }
-        new Headers(outMessage).copyToResponse(response);
+        if (HttpURLConnection.HTTP_INTERNAL_ERROR == responseCode) {
+            headers.removeContentType();
+        }
+        headers.copyToResponse(response);
+        //Liberty code change end
 
         outMessage.put(RESPONSE_HEADERS_COPIED, "true");
         

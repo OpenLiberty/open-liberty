@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -120,7 +120,7 @@ public class SessionCacheTestServlet extends FATServlet {
     /**
      * Progressive test to ensure that when/if the ISPN021011 error stops being thrown we can get rid of our workaround
      */
-    public void testInfinispanClassCastExpection(HttpServletRequest request, HttpServletResponse response) throws PrivilegedActionException {
+    public void testInfinispanClassCastException(HttpServletRequest request, HttpServletResponse response) throws PrivilegedActionException {
         Boolean shouldFail = Boolean.parseBoolean(request.getParameter("shouldFail"));
         CacheManager cacheManager = AccessController.doPrivileged(getCacheManager);
 

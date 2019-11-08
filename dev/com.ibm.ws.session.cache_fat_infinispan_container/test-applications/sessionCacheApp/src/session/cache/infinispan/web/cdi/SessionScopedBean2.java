@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,8 @@ public class SessionScopedBean2 implements Serializable {
     private static final long serialVersionUID = 8257261434327004664L;
     private String str;
 
-    public SessionScopedBean2() {}
+    public SessionScopedBean2() {
+    }
 
     public String getStr() {
         return str;
