@@ -38,6 +38,7 @@ public class EmbeddedServerDriver implements ServerEventListener {
     private static final long SERVER_START_TIMEOUT = 30;
     private static final TimeUnit SERVER_START_TIMEOUT_UNIT = TimeUnit.SECONDS;
 
+    private static String bogusName = "bOgUsSeRvErNaMe";
     private final Class<?> c = EmbeddedServerDriver.class;
     private String CURRENT_METHOD_NAME = null;
 
@@ -72,7 +73,6 @@ public class EmbeddedServerDriver implements ServerEventListener {
         this.props3 = new Properties();
         this.props3.setProperty("com.ibm.websphere.productId", "com.ibm.cicsts");
         this.props3.setProperty("com.ibm.websphere.productInstall", "wlp/usr/servers/com.ibm.wsspi.kernel.embeddable.add.product.extension.multiple.fat/producttest");
-        init("EmbeddedServerDriver");
     }
 
     public void init(String CURRENT_METHOD_NAME) throws UnsupportedEncodingException {
@@ -91,19 +91,18 @@ public class EmbeddedServerDriver implements ServerEventListener {
         System.setOut(new PrintStream(baos, true, "UTF-8"));
 
         sb = new ServerBuilder();
+        sb.setName(serverName).setOutputDir(new File(outputDir)).setUserDir(new File(userDir)).setServerEventListener(this);
         if (CURRENT_METHOD_NAME.equals("testAddProductExtension")) {
             Log.info(c, "init", "current method name is testAddProductExtension ");
-            server = sb.setName(serverName).setOutputDir(new File(outputDir)).setUserDir(new File(userDir)).addProductExtension("productA",
-                                                                                                                                props).setServerEventListener(this).build();
+            sb.addProductExtension("productA", props);
         } else if (CURRENT_METHOD_NAME.equals("testAddProductExtensionMultiple")) {
             Log.info(c, "init", "current method name is testAddProductExtensionMultiple ");
-            server = sb.setName(serverName).setOutputDir(new File(outputDir)).setUserDir(new File(userDir)).addProductExtension("productA",
-                                                                                                                                props3).addProductExtension("productB",
-                                                                                                                                                            props2).setServerEventListener(this).build();
-
-        } else {
-            server = sb.setName(serverName).setOutputDir(new File(outputDir)).setUserDir(new File(userDir)).setServerEventListener(this).build();
+            sb.addProductExtension("productA", props3).addProductExtension("productB", props2);
+        } else if (CURRENT_METHOD_NAME.equals("testServerDoesNotExist")) {
+            sb.setName(bogusName);
         }
+
+        server = sb.build();
 
         String serverConsoleOutput = new String(baos.toByteArray(), "UTF-8");
         Log.info(c, "init", "consoleOutput = " + serverConsoleOutput);
@@ -255,8 +254,8 @@ public class EmbeddedServerDriver implements ServerEventListener {
         int leftBracketIndex = msgString.indexOf("[");
         int rightBracketIndex = msgString.indexOf("]");
         if ((leftBracketIndex == -1) ||
-            (rightBracketIndex == -1) ||
-            (rightBracketIndex < leftBracketIndex)) {
+                        (rightBracketIndex == -1) ||
+                        (rightBracketIndex < leftBracketIndex)) {
             return false;
         }
 
@@ -443,11 +442,7 @@ public class EmbeddedServerDriver implements ServerEventListener {
         checkServerRunning(false); // server should not be started
     }
 
-    public void testLocationException() {
-
-        String bogusName = "bOgUsSeRvErNaMe";
-        server = sb.setName(bogusName).setOutputDir(new File(outputDir)).setUserDir(new File(userDir)).setServerEventListener(this).build();
-
+    public void testServerDoesNotExist() {
         (new File(outputDir + "/" + bogusName, "server.xml")).delete(); // delete the server from the hfs, so start() throws a LocationException
 
         Future<Result> startFuture = server.start();
@@ -458,8 +453,8 @@ public class EmbeddedServerDriver implements ServerEventListener {
 
             result = startFuture.get();
             dumpResult("Starting a server with a bogus name", result);
-            Assert.assertFalse("Result of LocationException should be failure", result.successful());
-            Assert.assertEquals("Should have a LOCATION_EXCEPTION return code", ReturnCode.LOCATION_EXCEPTION.getValue(), result.getReturnCode());
+            Assert.assertFalse("Result of LaunchException should be failure", result.successful());
+            Assert.assertEquals("Should have a SERVER_NOT_EXIST_STATUS return code", ReturnCode.SERVER_NOT_EXIST_STATUS.getValue(), result.getReturnCode());
         } catch (AssertionFailedError e) {
             failures.add(e);
             Log.error(c, CURRENT_METHOD_NAME, e);

@@ -11,7 +11,10 @@
 package fat.concurrent.spec.app;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -735,6 +738,26 @@ public class EEConcurrencyTestServlet extends FATServlet {
                 return null;
             }
         }).get(TIMEOUT * 5, TimeUnit.MILLISECONDS);
+    }
+
+    /**
+     * Tests that a contextual proxy method can raise an exception without causing an FFDC to be logged.
+     */
+    @Test
+    public void testExceptionOnContextualProxyMethod() throws Exception {
+        Closeable contextualCloseable = contextSvcDefault.createContextualProxy(new Closeable() {
+            @Override
+            public void close() throws IOException {
+                throw new IOException("intentional failure");
+            }
+        }, Closeable.class);
+
+        try {
+            contextualCloseable.close();
+            fail("Exception from contextal proxy method was lost.");
+        } catch (IOException x) {
+            assertEquals("intentional failure", x.getMessage());
+        }
     }
 
     /**

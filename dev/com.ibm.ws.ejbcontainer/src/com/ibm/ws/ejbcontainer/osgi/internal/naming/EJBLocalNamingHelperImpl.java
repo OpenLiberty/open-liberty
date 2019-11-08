@@ -40,7 +40,6 @@ public class EJBLocalNamingHelperImpl extends EJBNamingInstancer implements EJBL
 
     private final HashMap<String, EJBBinding> EJBLocalBindings = new HashMap<String, EJBBinding>();
 
-    //
     private final ReentrantReadWriteLock javaColonLock = new ReentrantReadWriteLock();
 
     /** {@inheritDoc} */

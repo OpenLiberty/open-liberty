@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ import java.util.Set;
 import java.util.concurrent.RejectedExecutionException;
 
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.threadcontext.ThreadContext;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 import com.ibm.wsspi.threadcontext.WSContextService;
@@ -82,6 +83,7 @@ public class ContextualInvocationHandler extends ContextualObject<Object> implem
     /** {@inheritDoc} */
     @Override
     @Trivial
+    @FFDCIgnore(InvocationTargetException.class)
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 
         // A list of contextual method names can be specified to limit the methods to

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.session.cache.fat.infinispan.container;
 
+import static com.ibm.ws.session.cache.fat.infinispan.container.FATSuite.infinispan;
 import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
@@ -35,7 +36,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
 /**
- * Tests related to Session Cache Timeouts, using a server with the following session settings:
+ * Tests related to Session Cache Timeouts, using an Infinispan server with the following session settings:
  * invalidationTimeout="5s"
  * reaperPollInterval="30" //Min allowed to not receive random poll interval between 30-60s
  */
@@ -51,17 +52,11 @@ public class SessionCacheTimeoutTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        //Dropin web, and listener1 apps
         app = new SessionCacheApp(server, false, "session.cache.infinispan.web", "session.cache.infinispan.web.listener1");
 
-        //String hazelcastConfigFile = "hazelcast-localhost-only.xml";
+        server.addEnvVar("INF_SERVERLIST", infinispan.getContainerIpAddress() + ":" + infinispan.getMappedPort(11222));
 
-        //if (FATSuite.isMulticastDisabled()) {
-        //    Log.info(SessionCacheTimeoutTest.class, "setUp", "Disabling multicast in Hazelcast config.");
-        //    hazelcastConfigFile = "hazelcast-localhost-only-multicastDisabled.xml";
-        //}
-
-        //server.setJvmOptions(Arrays.asList("-Dhazelcast.group.name=" + UUID.randomUUID(),
-        //                                   "-Dhazelcast.config.file=" + hazelcastConfigFile));
         server.startServer();
 
         // Access a session before the main test logic to ensure that delays caused by lazy initialization
@@ -199,6 +194,15 @@ public class SessionCacheTimeoutTest extends FATServletClient {
         // Verify the session is still around and has the 500s timeout set, along with other session properties
         app.invokeServlet("testTimeoutExtensionB", session);
         app.sessionGet("testTimeoutExtension-foo", "bar", session);
+    }
+
+    /**
+     * Ensure that if Infinispan exception is ever resolved, that we are notified and can switch our tests back.
+     * Error Thrown: ISPN021011: Incompatible cache value types specified, expected class java.lang.String but class java.lang.Object was specified
+     */
+    @Test
+    public void testInfinispanClassCastException() throws Exception {
+        app.invokeServlet("testInfinispanClassCastException&shouldFail=true", null);
     }
 
     /**

@@ -232,22 +232,22 @@ public class RemoteTransactionControllerService implements RemoteTransactionCont
         final DistributableTransaction tx = getTransactionForID(globalId);
 
         if (tx != null) {
-                // Check the transaction state and action as appropriate
-                switch (tx.getStatus()) {
-                    case Status.STATUS_ACTIVE:
-                    case Status.STATUS_MARKED_ROLLBACK:
-                        tx.enlistAsyncResource(xaResFactoryFilter, xaResInfo, tx.getXid());
-                        break;
+            // Check the transaction state and action as appropriate
+            switch (tx.getStatus()) {
+                case Status.STATUS_ACTIVE:
+                case Status.STATUS_MARKED_ROLLBACK:
+                    tx.enlistAsyncResource(xaResFactoryFilter, xaResInfo, tx.getXid());
+                    break;
 
-                    case Status.STATUS_PREPARING:
-                        tx.setRollbackOnly();
-                        // NOTE no break
+                case Status.STATUS_PREPARING:
+                    tx.setRollbackOnly();
+                    // NOTE no break
 
-                    default:
-                        retval = false; // caller sends InvalidState
-                        break;
+                default:
+                    retval = false; // caller sends InvalidState
+                    break;
 
-                } // end switch
+            } // end switch
         } else {
             retval = false;
         }
@@ -265,7 +265,7 @@ public class RemoteTransactionControllerService implements RemoteTransactionCont
             if (globalId.equals(((DistributableTransaction) tx).getGlobalId())) {
                 return (DistributableTransaction) tx;
             } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Non matching GlobalId: " + ((DistributableTransaction) tx).getGlobalId());
+                Tr.debug(tc, "Non matching tid: " + tx.getLocalTID() + ", globalId: " + ((DistributableTransaction) tx).getGlobalId());
             }
         }
 

@@ -106,6 +106,7 @@ import com.ibm.ws.container.service.metadata.MetaDataService;
 import com.ibm.ws.container.service.metadata.MetaDataSlotService;
 import com.ibm.ws.container.service.metadata.extended.DeferredMetaDataFactory;
 import com.ibm.ws.container.service.naming.EJBLocalNamingHelper;
+import com.ibm.ws.container.service.naming.LocalColonEJBNamingHelper;
 import com.ibm.ws.container.service.state.ApplicationStateListener;
 import com.ibm.ws.container.service.state.StateChangeException;
 import com.ibm.ws.ejbcontainer.EJBComponentMetaData;
@@ -211,6 +212,7 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
     private EJBSecurityCollaborator<?> securityCollaborator;
     private EJBJavaColonNamingHelper javaColonHelper;
     private EJBLocalNamingHelper<EJBBinding> ejbLocalNamingHelper;
+    private LocalColonEJBNamingHelper<EJBBinding> localColonNamingHelper;
     private ScheduledExecutorService scheduledExecutorService;
     private ScheduledExecutorService deferrableScheduledExecutorService;
     private J2EENameFactory j2eeNameFactory;
@@ -902,7 +904,7 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
             NameSpaceBinder<?> binder = osgiMMD.systemModuleNameSpaceBinder;
             return binder != null ? binder : new SystemNameSpaceBinderImpl(ejbRemoteRuntimeServiceRef.getService());
         }
-        return new NameSpaceBinderImpl(mmd, getJavaColonHelper(), getEJBLocalNamingHelper(), ejbRemoteRuntimeServiceRef.getService());
+        return new NameSpaceBinderImpl(mmd, getJavaColonHelper(), getEJBLocalNamingHelper(), getLocalColonEJBNamingHelper(), ejbRemoteRuntimeServiceRef.getService());
     }
 
     @Override
@@ -1354,6 +1356,19 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
 
     protected void unsetEJBLocalNamingHelper(EJBLocalNamingHelper ejblocnh) {
         this.ejbLocalNamingHelper = ejblocnh;
+    }
+
+    public LocalColonEJBNamingHelper getLocalColonEJBNamingHelper() {
+        return this.localColonNamingHelper;
+    }
+
+    @Reference
+    protected void setLocalColonNamingHelper(LocalColonEJBNamingHelper localnh) {
+        this.localColonNamingHelper = localnh;
+    }
+
+    protected void unsetLocalColonNamingHelper(LocalColonEJBNamingHelper localnh) {
+        this.localColonNamingHelper = localnh;
     }
 
     @Reference(target = "(&" +

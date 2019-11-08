@@ -10,9 +10,6 @@
  */
 package com.ibm.ws.jsf22.fat.tests;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.jsf22.fat.CDITestBase;
-
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -20,6 +17,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
+
+import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.jsf22.fat.CDITestBase;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
@@ -76,9 +76,6 @@ public class CDIFacesInWebXMLTests extends CDITestBase {
      * Field, Method and Constructor Injection, and Interceptors. Also
      * tested are use of request and session scope and use of qualifiers.
      *
-     * We have a single source location of test-application-common for all application classes. build-test.xml contains the logic that
-     * compiles this source directory and copies half the managed classes into the app's jar file and half into the app's war files.
-     *
      * @throws Exception. Content of the response should show if a specific injection failed.
      *
      */
@@ -91,9 +88,6 @@ public class CDIFacesInWebXMLTests extends CDITestBase {
      * Test to ensure that CDI 1.2 injection works for a custom Navigation Handler
      * Field, Method and Constructor Injection, and Interceptors. Also
      * tested are use of request and session scope and use of qualifiers.
-     *
-     * We have a single source location of test-application-common for all application classes. build-test.xml contains the logic that
-     * compiles this source directory and copies half the managed classes into the app's jar file and half into the app's war files.
      *
      * @throws Exception. Content of the response should show if a specific injection failed.
      *
@@ -108,9 +102,6 @@ public class CDIFacesInWebXMLTests extends CDITestBase {
      * Field, Method and Constructor Injection, and Interceptors. Also
      * tested are use of request scope and use of qualifiers.
      *
-     * We have a single source location of test-application-common for all application classes. build-test.xml contains the logic that
-     * compiles this source directory and copies half the managed classes into the app's jar file and half into the app's war files.
-     *
      * @throws Exception. Content of the response should show if a specific injection failed.
      *
      */
@@ -123,9 +114,6 @@ public class CDIFacesInWebXMLTests extends CDITestBase {
      * Test method and field injection for Custom resource handler. No intercepter or constructor injection on this.
      *
      * Would like to do something more than look for message in logs, a future improvement.
-     *
-     * We have a single source in test-application-common for all application classes. build-test.xml contains the logic that
-     * compiles this source directory and splits the copying managec classes the class files into app's jar/war files.
      *
      * @throws Exception
      */
@@ -140,9 +128,6 @@ public class CDIFacesInWebXMLTests extends CDITestBase {
      *
      * Would like to do something more than look for message in logs, a future improvement.
      *
-     * We have a single source in test-application-common for all application classes. build-test.xml contains the logic that
-     * compiles this source directory and splits the copying managec classes the class files into app's jar/war files.
-     *
      * @throws Exception
      */
     @Test
@@ -154,9 +139,6 @@ public class CDIFacesInWebXMLTests extends CDITestBase {
      * Test that hits most of the managed factory classes, and system-event listener, and phase-listener. See faces-config.xml for details.
      * Most factories use delegate constructor method, so they are limited to tested basic field and method injection. Tests also use app scope as
      * request/session are not available to these managed classes that I can tell.
-     *
-     * We have a single source location of test-application-common for all application classes. build-test.xml contains the logic that
-     * compiles this source directory and copies half the managed classes into the app's jar file and half into the app's war files.
      *
      * @throws Exception
      */

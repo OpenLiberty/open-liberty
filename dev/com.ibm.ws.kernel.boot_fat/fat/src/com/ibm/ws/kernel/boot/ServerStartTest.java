@@ -11,6 +11,7 @@
 package com.ibm.ws.kernel.boot;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 import java.io.File;
 import java.util.Properties;
@@ -21,6 +22,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
+import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.log.Log;
 
@@ -142,15 +144,21 @@ public class ServerStartTest {
      * BundleExceptions due to empty package-info.class files (defect 177872).
      */
     public void testServerStartWithDashXFutureCmdArg() throws Exception {
-        server.copyFileToTempDir("server.xml", "origServer.xml");
-        try {
-            server.setServerConfigurationFile("Xfuture/server.xml");
-            server.copyFileToLibertyServerRoot("Xfuture/jvm.options");
 
-            server.startServer();
-        } finally {
-            server.deleteDirectoryFromLibertyServerRoot("jvm.options");
-            server.setServerConfigurationFile("tmp/origServer.xml");
+        if (server.getMachine().getOperatingSystem() != OperatingSystem.WINDOWS) {
+            server.copyFileToTempDir("server.xml", "origServer.xml");
+            try {
+                server.setServerConfigurationFile("Xfuture/server.xml");
+                server.copyFileToLibertyServerRoot("Xfuture/jvm.options");
+
+                server.startServer();
+            } finally {
+                server.deleteDirectoryFromLibertyServerRoot("jvm.options");
+                server.setServerConfigurationFile("tmp/origServer.xml");
+            }
+        } else {
+            // Windows, so we skip this test.
+            assumeTrue(false);
         }
     }
 }

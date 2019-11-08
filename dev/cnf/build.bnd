@@ -21,6 +21,9 @@ bin: ${if;${driver;gradle};build/classes/java/main;bin}
 testbin: ${if;${driver;gradle};build/classes/java/test;bin_test}
 target-dir: ${if;${driver;gradle};build/libs;generated}
 
+# Set paths to ignore so eclipse and gradle ignore each other's build output directories.
+-builderignore: ${if;${driver;gradle};bin,bin_test,generated;build}
+
 # Show warning messages when Gradle is driving the build.
 -pedantic: ${if;${driver;gradle};true;false}
 -fixupmessages.javac17: "The .JRE container is set to JavaSE-1.8 but bnd is compiling against 1.7";is:=ignore

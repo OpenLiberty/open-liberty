@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.session.cache.fat.infinispan.container;
 
+import static com.ibm.ws.session.cache.fat.infinispan.container.FATSuite.infinispan;
 import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
 import static org.junit.Assert.assertNotNull;
 
@@ -28,7 +29,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
 /**
- * Tests related to Session Cache Timeouts, using a server with the following session settings:
+ * Tests related to Session Cache Timeouts, using two servers with the following session settings:
  * invalidationTimeout="5s"
  * reaperPollInterval="30" //Min allowed to not receive random poll interval between 30-60s
  */
@@ -51,12 +52,14 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
         appB = new SessionCacheApp(serverB, false, "session.cache.infinispan.web"); // no HttpSessionListeners are registered by this app
         serverB.useSecondaryHTTPPort();
 
-        serverA.startServer();
+        serverA.addEnvVar("INF_SERVERLIST", infinispan.getContainerIpAddress() + ":" + infinispan.getMappedPort(11222));
+        serverB.addEnvVar("INF_SERVERLIST", infinispan.getContainerIpAddress() + ":" + infinispan.getMappedPort(11222));
 
         // Use HTTP session on serverA before running any tests, so that the time it takes to initialize
         // the JCache provider does not interfere with timing of tests. Invoking this before starting
         // serverB, also ensures the JCache provider cluster in serverA is ready to accept a node from
         // serverB. Otherwise, serverB could start up its own separate cluster.
+        serverA.startServer();
         List<String> sessionA = new ArrayList<>();
         appA.sessionPut("init-app-A", "A", sessionA, true);
         appA.invalidateSession(sessionA);
@@ -168,4 +171,12 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
         appA.invokeServlet("cacheCheck&key=testCacheInvalidationTwoServer-foo&sid=" + sessionID, session);
     }
 
+    /**
+     * Ensure that if Infinispan exception is ever resolved, that we are notified and can switch our tests back.
+     * Error Thrown: ISPN021011: Incompatible cache value types specified, expected class java.lang.String but class java.lang.Object was specified
+     */
+    @Test
+    public void testInfinispanClassCastException() throws Exception {
+        appA.invokeServlet("testInfinispanClassCastException&shouldFail=true", null);
+    }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.session.cache.fat.infinispan.container;
 
+import static com.ibm.ws.session.cache.fat.infinispan.container.FATSuite.infinispan;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -24,11 +25,13 @@ import org.junit.runner.RunWith;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.custom.junit.runner.TestModeFilter;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
+/**
+ * Test suite:
+ * Two liberty servers acting as a cache clients, and one infinispan server acting as cache server.
+ */
 @RunWith(FATRunner.class)
 public class SessionCacheTwoServerTest extends FATServletClient {
 
@@ -47,25 +50,13 @@ public class SessionCacheTwoServerTest extends FATServletClient {
         appB = new SessionCacheApp(serverB, true, "session.cache.infinispan.web", "session.cache.infinispan.web.cdi", "session.cache.infinispan.web.listener1");
         serverB.useSecondaryHTTPPort();
 
-        //String hazelcastConfigFile = "hazelcast-localhost-only.xml";
-
-        //if (FATSuite.isMulticastDisabled()) {
-        //    Log.info(SessionCacheTwoServerTest.class, "setUp", "Disabling multicast in Hazelcast config.");
-        //    hazelcastConfigFile = "hazelcast-localhost-only-multicastDisabled.xml";
-        //}
-
-        //String configLocation = new File(serverB.getUserDir() + "/shared/resources/hazelcast/" + hazelcastConfigFile).getAbsolutePath();
-        //String rand = UUID.randomUUID().toString();
-        //serverA.setJvmOptions(Arrays.asList("-Dhazelcast.group.name=" + rand,
-        //                                    "-Dhazelcast.config.file=" + hazelcastConfigFile));
-        //serverB.setJvmOptions(Arrays.asList("-Dhazelcast.group.name=" + rand,
-        //                                    "-Dhazelcast.config=" + configLocation));
-
-        serverA.startServer();
+        serverA.addEnvVar("INF_SERVERLIST", infinispan.getContainerIpAddress() + ":" + infinispan.getMappedPort(11222));
+        serverB.addEnvVar("INF_SERVERLIST", infinispan.getContainerIpAddress() + ":" + infinispan.getMappedPort(11222));
 
         // Since we initialize the JCache provider lazily, use an HTTP session on serverA before starting serverB,
         // so that the JCache provider has fully initialized on serverA. Otherwise, serverB might start up its own
         // cluster and not join to the cluster created on serverA.
+        serverA.startServer();
         List<String> sessionA = new ArrayList<>();
         appA.sessionPut("init-app-A", "A", sessionA, true);
         appA.invalidateSession(sessionA);
@@ -83,7 +74,7 @@ public class SessionCacheTwoServerTest extends FATServletClient {
                     serverA.stopServer();
             } finally {
                 if (serverB.isStarted())
-                    serverB.stopServer("CWWKL0058W:.*InfinispanLib"); // TODO why does this occur for Infinispan jar, but not Hazelcast?
+                    serverB.stopServer();
             }
         }
     }
@@ -103,13 +94,6 @@ public class SessionCacheTwoServerTest extends FATServletClient {
         // Now verify the cache failed over to Server B
         appB.sessionGet("testFailover-1", "foo", session);
         serverB.stopServer();
-
-        if (TestModeFilter.FRAMEWORK_TEST_MODE == TestMode.FULL) {
-            // Starting server A again should result in a fresh cache that does not contain the original stuff
-            serverA.startServer("testFailover.log");
-            appA.sessionGet("testFailover-1", null, session);
-            serverA.stopServer();
-        }
     }
 
     /**
@@ -309,5 +293,14 @@ public class SessionCacheTwoServerTest extends FATServletClient {
             }
         }
         fail("The session was not invalidated after 5 attempts.  This is likely due to a slow machine.");
+    }
+
+    /**
+     * Ensure that if Infinispan exception is ever resolved, that we are notified and can switch our tests back.
+     * Error Thrown: ISPN021011: Incompatible cache value types specified, expected class java.lang.String but class java.lang.Object was specified
+     */
+    @Test
+    public void testInfinispanClassCastException() throws Exception {
+        appA.invokeServlet("testInfinispanClassCastException&shouldFail=true", null);
     }
 }

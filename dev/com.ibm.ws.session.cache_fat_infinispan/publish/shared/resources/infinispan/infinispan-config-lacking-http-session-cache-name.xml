@@ -1,0 +1,11 @@
+<infinispan>
+  <jgroups>
+     <stack-file name="jgroups-tcp" path="/default-configs/default-jgroups-tcp.xml"/>
+  </jgroups>
+  
+  <cache-container>
+    <transport stack="jgroups-tcp" />
+    <replicated-cache-configuration name="com.ibm.ws.MyCache.attr"/>
+    <invalidation-cache-configuration name="*.session.*.inval"/>
+  </cache-container>
+</infinispan>

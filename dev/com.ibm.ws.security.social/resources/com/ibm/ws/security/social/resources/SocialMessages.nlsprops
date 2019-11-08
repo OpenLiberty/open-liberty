@@ -36,6 +36,30 @@ SELECTION_PAGE_PASSWORD=Password
 
 SELECTION_PAGE_SUBMIT=Submit
 
+# 0=Social login configuration attribute name, 1=ID of the social login configuration element, 2=Default value for the configuration attribute
+SOCIAL_LOGIN_CONFIG_ATTRIBUTE_EMPTY=CWWKS5370W: The value for the [{0}] configuration attribute in the [{1}] social login configuration is empty. The default value [{2}] for the configuration attribute is used.
+SOCIAL_LOGIN_CONFIG_ATTRIBUTE_EMPTY.explanation=The value for this configuration attribute must not be empty.
+SOCIAL_LOGIN_CONFIG_ATTRIBUTE_EMPTY.useraction=Ensure that the value for this configuration attribute is not empty, or remove the configuration attribute to use the default value.
+
+# 0=Exception message
+OPENSHIFT_ERROR_GETTING_USER_INFO=CWWKS5371E: The response from the OpenShift user API cannot be processed: {0}
+OPENSHIFT_ERROR_GETTING_USER_INFO.explanation=Information about the authenticated user cannot be obtained because another error occurred.
+OPENSHIFT_ERROR_GETTING_USER_INFO.useraction=If the message contains another error message, see the user action for that message. Otherwise, check the server logs for additional error messages that might indicate where the other error occurred.
+
+OPENSHIFT_ACCESS_TOKEN_MISSING=CWWKS5372E: The access token that is used to retrieve user information from the OpenShift API is missing. Verify that an access token was returned from the token endpoint of the OpenShift OAuth provider.
+OPENSHIFT_ACCESS_TOKEN_MISSING.explanation=An access token is required to retrieve information about the authenticated user. The token endpoint of the OpenShift OAuth provider might not have returned the access token.
+OPENSHIFT_ACCESS_TOKEN_MISSING.useraction=Verify that the access token was returned from the token endpoint of the OpenShift OAuth provider.
+
+# 0=HTTP response code, 1=Response body
+OPENSHIFT_USER_API_BAD_STATUS=CWWKS5373E: The OpenShift user API returned an unexpected [{0}] response code. Verify that the request to the API contains all of the required information and that the OpenShift service account token was created in the correct OpenShift project. The response from the API is [{1}].
+OPENSHIFT_USER_API_BAD_STATUS.explanation=The OpenShift user API did not return the expected status code.
+OPENSHIFT_USER_API_BAD_STATUS.useraction=Check the API response that is in the error message for more information. Verify that the request to the API contains all of the required information. Ensure that the OpenShift service account token was created in the correct OpenShift project and has the correct permissions.
+
+# 0=JSON key string, 1=User API response string
+OPENSHIFT_USER_API_RESPONSE_MISSING_KEY=CWWKS5374E: The OpenShift user API response is missing an expected key: [{0}]. The full response is [{1}]
+OPENSHIFT_USER_API_RESPONSE_MISSING_KEY.explanation=The key that is specified in the message is expected to be within the API response. The key might be missing, or it might be in an unexpected location.
+OPENSHIFT_USER_API_RESPONSE_MISSING_KEY.useraction=Check the API response to determine whether the key is missing from the response.
+
 SOCIAL_LOGIN_CONFIG_PROCESSED=CWWKS5400I: The social login configuration [{0}] was successfully processed.
 SOCIAL_LOGIN_CONFIG_PROCESSED.explanation=The indicated social login configuration has been successfully processed.
 SOCIAL_LOGIN_CONFIG_PROCESSED.useraction=No action is required.

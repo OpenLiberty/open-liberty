@@ -1666,8 +1666,12 @@ public class SchedulerFATServlet extends HttpServlet {
 
     /**
      * Attempt to remove a task (which autopurges on successful completion) while it is running.
+     * This test relies on being in the default mode where task execution locks the task entry,
+     * which cause the remove operation to always return false because the transaction that is
+     * running the task includes the autopurge and blocks the manually attempted remove from
+     * completing.  For this reason, this test cannot be annotated with @Test and instead
+     * is conditionally invoked based on which mode is used.
      */
-    @Test
     public void testRemoveRunningTaskAutoPurge(PrintWriter out) throws Exception {
         CancelableTask task = new CancelableTask("testRemoveRunningTaskAutoPurge", false);
         String taskName = task.getExecutionProperties().get(ManagedTask.IDENTITY_NAME);

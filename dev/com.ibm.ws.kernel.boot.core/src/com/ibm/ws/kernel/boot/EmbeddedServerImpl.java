@@ -154,7 +154,7 @@ public class EmbeddedServerImpl implements Server {
      */
     public EmbeddedServerImpl(String serverName, File userDir, File outputDir, File logDir, ServerEventListener listener, HashMap<String, Properties> extraProductExtensions,
                               ExecutorService executor) {
-        this(serverName, userDir, outputDir, logDir, listener, extraProductExtensions, null, null);
+        this(serverName, userDir, outputDir, logDir, listener, extraProductExtensions, executor, null);
     }
 
     /**
@@ -169,6 +169,7 @@ public class EmbeddedServerImpl implements Server {
      * @param serverName             ServerName: defaultServer will be used if this is null
      * @param userDir                WLP_USER_DIR equivalent, may be null
      * @param outputDir              WLP_OUTPUT_DIR equivalent, may be null
+     * @param logDir                 Server log file directory, may be null
      * @param listener               ServerEventListener that should receive notifications of Server lifecycle changes, may be null.
      * @param extraProductExtensions HashMap of Properties, may be null
      * @param executor               The executor service to use for start and stop operations

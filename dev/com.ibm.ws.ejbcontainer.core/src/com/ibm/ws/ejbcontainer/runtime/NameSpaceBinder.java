@@ -172,7 +172,7 @@ public interface NameSpaceBinder<T> {
 
     /**
      * Binds the default form of an object to the ejblocal naming context
-     * 
+     *
      * @param bindingObject the EJBBinding
      * @param hr the bean home record
      */
@@ -182,4 +182,18 @@ public interface NameSpaceBinder<T> {
      * Undoes the bindings from ejblocal namespace.
      */
     void unbindEJBLocal(List<String> names) throws NamingException;
+
+    /**
+     * Binds the simpleBindingName custom binding
+     *
+     * @param bindingObject - the EJBBinding
+     * @param hr - the bean home record
+     * @param local - if it is a local bean
+     */
+    void bindSimpleBindingName(T bindingObject, HomeRecord hr, boolean local);
+
+    /**
+     * Undoes the bindings from local namespace.
+     */
+    void unbindLocalColonEJB(List<String> names) throws NamingException;
 }

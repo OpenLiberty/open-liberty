@@ -11,7 +11,6 @@
 package com.ibm.ws.jaxrs20.endpoint;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -20,6 +19,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.cxf.jaxrs.utils.HttpUtils;
 import org.apache.cxf.transport.http.AbstractHTTPDestination;
 import org.apache.cxf.transport.servlet.BaseUrlHelper;
 
@@ -233,7 +233,13 @@ public abstract class AbstractJaxRsWebEndpoint implements JaxRsWebEndpoint {
 //        }
 
         String reqPrefix = request.getRequestURL().toString();
-        String pathInfo = request.getPathInfo() == null ? "" : request.getPathInfo();
+        //Liberty code change start
+        String pathInfo = request.getPathInfo();
+        if (pathInfo == null) {
+            pathInfo = "";
+        }
+        //Liberty code change end
+
         //fix for CXF-898
         if (!"/".equals(pathInfo) || reqPrefix.endsWith("/")) {
             StringBuilder sb = new StringBuilder();
@@ -242,8 +248,13 @@ public abstract class AbstractJaxRsWebEndpoint implements JaxRsWebEndpoint {
             // return the actual name used in request URI as opposed to localhost
             // consistently across the Servlet stacks
 
-            URI uri = URI.create(reqPrefix);
-            sb.append(uri.getScheme()).append("://").append(uri.getRawAuthority());
+            //Liberty code change start
+            String[] uri = HttpUtils.parseURI(reqPrefix, true);
+            if (uri == null) {
+                throw new IllegalArgumentException(reqPrefix + " contains illegal arguments");
+            }
+            sb.append(uri[0]).append("://").append(uri[1]);
+            //Liberty code change end
 
             //No servletPath will be appended, as in Liberty, each endpoint will be served by one servlet instance
             sb.append(request.getContextPath());

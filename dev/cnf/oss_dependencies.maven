@@ -312,6 +312,7 @@ org.eclipse.microprofile.metrics:microprofile-metrics-api:1.0
 org.eclipse.microprofile.metrics:microprofile-metrics-api:1.1.1
 org.eclipse.microprofile.metrics:microprofile-metrics-api:2.0.0
 org.eclipse.microprofile.metrics:microprofile-metrics-api:2.1.0
+org.eclipse.microprofile.metrics:microprofile-metrics-api:2.2
 org.eclipse.microprofile.openapi:microprofile-openapi-api:1.1.1
 org.eclipse.microprofile.opentracing:microprofile-opentracing-api:1.0.1
 org.eclipse.microprofile.opentracing:microprofile-opentracing-api:1.1
@@ -393,7 +394,6 @@ org.mongodb:mongo-java-driver:2.10.1
 org.mongodb:mongo-java-driver:2.13.3
 org.mongodb:mongo-java-driver:2.9.3
 org.objenesis:objenesis:1.0
-org.opensaml:opensaml:2.6.1
 org.opensaml:xmltooling:1.4.4
 org.osgi:org.osgi.annotation.versioning:1.1.0
 org.osgi:org.osgi.compendium:4.2.0

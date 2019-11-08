@@ -9,16 +9,12 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-audit {
-    failOnError = false
-}
-
 configurations {
     opensaml
 }
 
 dependencies {
-    opensaml 'org.opensaml:opensaml:2.6.1'
+    opensaml 'org.opensaml:opensaml:2.6.6'
 }
 
 task extractInjectedClasses(type: Copy) {
