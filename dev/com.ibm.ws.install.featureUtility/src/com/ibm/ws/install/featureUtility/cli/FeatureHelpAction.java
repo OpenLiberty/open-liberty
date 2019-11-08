@@ -31,7 +31,7 @@ public class FeatureHelpAction implements ActionHandler {
     public String getScriptUsage() {
         StringBuffer scriptUsage = new StringBuffer(NL);
         scriptUsage.append(getHelpPart("usage", COMMAND));
-        scriptUsage.append("{");
+        scriptUsage.append(" {");
 
         FeatureAction [] tasks = FeatureAction.values();
         for(int i =0; i < tasks.length; i ++){
