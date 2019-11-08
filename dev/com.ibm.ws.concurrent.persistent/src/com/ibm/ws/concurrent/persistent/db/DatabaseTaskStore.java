@@ -825,7 +825,7 @@ public class DatabaseTaskStore implements TaskStore {
         StringBuilder find = new StringBuilder(161)
                         .append("SELECT t.ID,t.MBITS,t.NEXTEXEC,t.TXTIMEOUT,t.VERSION FROM Task t WHERE t.STATES<")
                         .append(TaskState.SUSPENDED.bit)
-                        .append(" AND t.NEXTEXEC<=:m AND (t.PARTN<t.NEXTEXEC OR t.PARTN<:c)");
+                        .append(" AND t.NEXTEXEC<=:m AND t.PARTN<:c");
         if (maxResults != null)
             find.append(" ORDER BY t.NEXTEXEC");
 
