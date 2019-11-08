@@ -1597,3 +1597,9 @@ uncaught.exception.during.AsyncListener.onComplete.useraction=Verify the AsyncLi
 exception.occurred.while.running.ServletContainerInitializers.onStartup=CWWWC0001W: The [{0}] ServletContainerInitializer, located in the following application [{2}], produced the following error while invoking the onStartup method: [{1}]
 exception.occurred.while.running.ServletContainerInitializers.onStartup.explanation=An exception was thrown from a ServletContainerInitializer while invoking the onStartup method.
 exception.occurred.while.running.ServletContainerInitializers.onStartup.useraction=Review the Exception to determine the cause of the error.
+
+# {0} Servlet name used in the servlet name filter mapping
+# {1} Filter name which is used to map a servlet name. 
+no.servlet.defined.for.servlet.filter.name.mapping=CWWWC0002W: No servlet definition is found for the {0} servlet name in the {1} filter mapping.
+no.servlet.defined.for.servlet.filter.name.mapping.explanation=The servlet name is used in filter mapping, but its definition has not been defined.
+no.servlet.defined.for.servlet.filter.name.mapping.useraction=Define the servlet which is used in the servlet name filter mapping.

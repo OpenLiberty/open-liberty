@@ -18,7 +18,9 @@ src: \
 	test-applications/EJB31AppExMixBean.jar/src, \
 	test-applications/EJB31AppExMixWeb.war/src, \
 	test-applications/EJB31AppExXmlBean.jar/src, \
-	test-applications/EJB31AppExXmlWeb.war/src
+	test-applications/EJB31AppExXmlWeb.war/src, \
+	test-applications/ExceptionBean.jar/src, \
+	test-applications/ExceptionWeb.war/src
 
 fat.project: true
 

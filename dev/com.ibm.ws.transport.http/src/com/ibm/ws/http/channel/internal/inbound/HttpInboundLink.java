@@ -24,6 +24,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.http.channel.h2internal.H2HttpInboundLinkWrap;
 import com.ibm.ws.http.channel.h2internal.exceptions.CompressionException;
+import com.ibm.ws.http.channel.h2internal.exceptions.Http2Exception;
 import com.ibm.ws.http.channel.internal.CallbackIDs;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.HttpMessages;
@@ -419,12 +420,12 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
             }
             handleGenericHNIError(iae, sc);
             return true;
-        } catch (CompressionException ce) {
+        } catch (Http2Exception h2e) {
             //no FFDC required
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "parseMessage encountered a CompressionException : " + ce);
+                Tr.debug(tc, "parseMessage encountered an Http2Exception : " + h2e);
             }
-            handleGenericHNIError(ce, sc);
+            this.myInterface.getLink().close(getVirtualConnection(), h2e);
             return true;
         } catch (Throwable t) {
             FFDCFilter.processException(t,

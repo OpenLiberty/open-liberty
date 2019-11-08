@@ -240,7 +240,7 @@ public class LoggingConfigurationService implements ManagedService {
         traceMapToLevel.put("fine", LogLevel.DEBUG);
         traceMapToLevel.put("event", LogLevel.DEBUG);
 
-        traceMapToLevel.put("detail", LogLevel.DEBUG);
+        traceMapToLevel.put("detail", LogLevel.INFO);
 
         traceMapToLevel.put("info", LogLevel.INFO);
 

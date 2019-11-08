@@ -75,7 +75,10 @@ Service-Component: \
     	modified:='modified';\
     	immediate:=true;\
     	properties:="service.vendor=IBM,service.ranking:Integer=0,type:String=RemoteIp"
-  
+
+Provide-Capability: \
+    welcome.translation.provider; \
+    welcome.translation.provider="OSGi-INF/welcome/js/externalize-string.js"  
 
 Include-Resource: \
     OSGI-INF=resources/OSGI-INF, \

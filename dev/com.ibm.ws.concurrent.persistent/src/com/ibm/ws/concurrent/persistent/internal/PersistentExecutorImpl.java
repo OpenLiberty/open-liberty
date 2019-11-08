@@ -2340,8 +2340,29 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
                         tranMgr.rollback();
                 }
 
-                // If the update isn't successful, it means we didn't renew our partition entry in time and another instance removed it.
-                // TODO Try to re-acquire it or just get a new one and reassign tasks?
+                // If the update isn't successful, it means we didn't renew our partition entry in time
+                // and another instance removed it. Attempt to re-create it.
+                if (Integer.valueOf(0).equals(result)) {
+                    updates.setId(getPartitionId());
+                    updates.setExecutor(name);
+                    updates.setLibertyServer(locationAdmin.getServerName());
+                    updates.setUserDir(variableRegistry.resolveString(VariableRegistry.USER_DIR));
+                    updates.setHostName(AccessController.doPrivileged(getHostName));
+                    updates.setExpiry(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(config.heartbeatInterval * HEARTBEAT_EXPIRY_FACTOR));
+                    if (config.missedTaskThreshold > 0) // TODO unconditionally supply this information once we are done experimenting and determine how much of it we really need.
+                        updates.setStates((config.missedTaskThreshold > 0 ? PartitionRecord.States.MISSED_TASK_THRESHOLD_ENABLED.bit : 0) +
+                                          (config.pollInterval >= 0 ? PartitionRecord.States.POLLS_PERIODICALLY.bit : 0));
+                    tranMgr.begin();
+                    try {
+                        if (!taskStore.create(updates))
+                            tranMgr.setRollbackOnly();
+                    } finally {
+                        if (tranMgr.getStatus() == Status.STATUS_ACTIVE)
+                            tranMgr.commit();
+                        else
+                            tranMgr.rollback();
+                    }
+                }
 
                 // look for expired partitions (expiry < current time).
                 List<PartitionRecord> expired;

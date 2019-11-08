@@ -215,7 +215,9 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
         BeanManager beanMgr = beanManagers.get(cmd);
         if (beanMgr == null) {
             beanMgr = cdiService.getCurrentModuleBeanManager();
-            beanManagers.put(cmd, beanMgr);
+            synchronized (beanManagers) {
+                beanManagers.put(cmd, beanMgr);
+            }
         }
         return beanMgr;
     }
@@ -721,18 +723,20 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
 
         for (ModuleMetaData mmd : jaxRsModuleMetaData.getEnclosingModuleMetaDatas()) {
             managedObjectFactoryCache.remove(mmd);
-            Iterator<ComponentMetaData> iter = beanManagers.keySet().iterator();
-            while (iter.hasNext()) {
-                ComponentMetaData cmd = iter.next();
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "destroyApplicationScopeResources - is " + cmd + " a child of " + mmd + "?");
-                }
-
-                if (mmd.equals(cmd.getModuleMetaData())) {
+            synchronized (beanManagers) {
+                Iterator<ComponentMetaData> iter = beanManagers.keySet().iterator();
+                while (iter.hasNext()) {
+                    ComponentMetaData cmd = iter.next();
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "destroyApplicationScopeResources - yes");
+                        Tr.debug(tc, "destroyApplicationScopeResources - is " + cmd + " a child of " + mmd + "?");
                     }
-                    iter.remove();
+
+                    if (mmd.equals(cmd.getModuleMetaData())) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "destroyApplicationScopeResources - yes");
+                        }
+                        iter.remove();
+                    }
                 }
             }
         }
@@ -804,7 +808,9 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
     @Override
     public void applicationStopped(ApplicationInfo appInfo) {
         // clear out bean managers cache on app shutdown to avoid memory leak
-        beanManagers.clear();
+        synchronized(beanManagers) {
+            beanManagers.clear();
+        }
 
     }
 

@@ -17,3 +17,4 @@ Subsystem-Name: MicroProfile Fault Tolerance 1.0
  com.ibm.ws.microprofile.faulttolerance.spi; apiJar=false; location:="lib/"
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

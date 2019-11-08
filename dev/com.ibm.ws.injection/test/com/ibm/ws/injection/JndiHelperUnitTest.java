@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 IBM Corporation and others.
+ * Copyright (c) 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,8 +28,6 @@ import javax.naming.NamingException;
 import org.junit.Rule;
 import org.junit.Test;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.ws.container.service.naming.NamingConstants;
 import com.ibm.ws.container.service.naming.NamingConstants.JavaColonNamespace;
 import com.ibm.ws.injection.mock.MockInjectionBinding;
@@ -37,6 +35,8 @@ import com.ibm.ws.injection.mock.MockInjectionJavaColonHelper;
 import com.ibm.ws.injectionengine.osgi.internal.naming.InjectionJavaColonHelper;
 import com.ibm.wsspi.injectionengine.InjectionBinding;
 import com.ibm.wsspi.injectionengine.InjectionException;
+
+import test.common.SharedOutputManager;
 
 /**
  * Tests InjectionJavaColonHelper.
@@ -150,7 +150,7 @@ public class JndiHelperUnitTest {
     @Test
     public void testJndiForJavaModule() throws Exception {
         InjectionJavaColonHelper helper = new MockInjectionJavaColonHelper(NamingConstants.JavaColonNamespace.MODULE, createNonCompBindings(NamingConstants.JavaColonNamespace.MODULE));
-        assertNull(helper.getObjectInstance(NamingConstants.JavaColonNamespace.COMP, "jdbc/hello"));
+        assertEquals("Hello", helper.getObjectInstance(NamingConstants.JavaColonNamespace.COMP, "jdbc/hello"));
         assertNull(helper.getObjectInstance(NamingConstants.JavaColonNamespace.COMP_ENV, "jdbc/hello"));
         assertEquals("Hello", helper.getObjectInstance(NamingConstants.JavaColonNamespace.MODULE, "jdbc/hello"));
     }

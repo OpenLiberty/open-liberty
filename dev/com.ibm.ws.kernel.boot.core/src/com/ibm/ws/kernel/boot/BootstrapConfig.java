@@ -91,6 +91,8 @@ public class BootstrapConfig {
      */
     protected File workarea = null;
 
+    protected String workareaDirStr = null;
+
     /** Name of server instance */
     protected String processName;
 
@@ -142,13 +144,13 @@ public class BootstrapConfig {
      * Light processing: find main locations
      *
      * @param initProps
-     *                              Initial set of properties we're working with, contains some
-     *                              properties populated by command line parser
-     * @param instanceDirStr    Value of WLP_USER_DIR environment variable
-     * @param outputDirStr      Value of WLP_OUTPUT_DIR environment variable
-     * @param logDirStr         Value of X_LOG_DIR or LOG_DIR environment variable
-     * @param consoleLogFileStr Value of X_LOG_FILE or LOG_FILE environment variable
-     * @param workareaDirStr    Value of alternate workarea subpath or null for default
+     *                                   Initial set of properties we're working with, contains some
+     *                                   properties populated by command line parser
+     * @param instanceDirStr         Value of WLP_USER_DIR environment variable
+     * @param outputDirStr           Value of WLP_OUTPUT_DIR environment variable
+     * @param logDirStr              Value of X_LOG_DIR or LOG_DIR environment variable
+     * @param consoleLogFileStr      Value of X_LOG_FILE or LOG_FILE environment variable
+     * @param embeddedWorkareaDirStr Value of embedded workarea subpath or null for default
      *
      * @throws LocationException
      */
@@ -157,7 +159,7 @@ public class BootstrapConfig {
                                  String outputDirStr,
                                  String logDirStr,
                                  String consoleLogFileStr,
-                                 String workareaDirStr) throws LocationException {
+                                 String embeddedWorkareaDirStr) throws LocationException {
 
         // Server name only found via command line
         setProcessName(newServerName);
@@ -240,10 +242,11 @@ public class BootstrapConfig {
         consoleLogFile = new File(logDir, consoleLogFileStr != null ? consoleLogFileStr : BootstrapConstants.CONSOLE_LOG);
 
         // Server workarea always a child of outputDir
-        if (workareaDirStr == null)
-            workarea = new File(outputDir, BootstrapConstants.LOC_AREA_NAME_WORKING);
+        if (embeddedWorkareaDirStr == null)
+            this.workareaDirStr = BootstrapConstants.LOC_AREA_NAME_WORKING;
         else
-            workarea = new File(outputDir, BootstrapConstants.LOC_AREA_NAME_WORKING + "/" + workareaDirStr);
+            this.workareaDirStr = BootstrapConstants.LOC_AREA_NAME_WORKING + "/" + embeddedWorkareaDirStr;
+        workarea = new File(outputDir, this.workareaDirStr);
     }
 
     /**
@@ -329,16 +332,21 @@ public class BootstrapConfig {
         initProps.put(BootstrapConstants.LOC_PROPERTY_INSTANCE_DIR, getPathProperty(userRoot));
         initProps.put(BootstrapConstants.LOC_PROPERTY_INSTANCE_DIR_IS_DEFAULT, Boolean.toString(userRootIsDefault));
 
+        initProps.put(BootstrapConstants.LOC_INTERNAL_WORKAREA_DIR, workareaDirStr + "/");
+
         initProps.put(BootstrapConstants.LOC_PROPERTY_SRVCFG_DIR, getPathProperty(configDir));
         initProps.put(BootstrapConstants.LOC_PROPERTY_SRVOUT_DIR, getPathProperty(outputDir));
         initProps.put(BootstrapConstants.LOC_PROPERTY_SRVTMP_DIR, getPathProperty(outputDir,
-                                                                                  BootstrapConstants.LOC_AREA_NAME_WORKING,
+                                                                                  workareaDirStr,
                                                                                   BootstrapConstants.LOC_AREA_NAME_TMP));
+
         if (BootstrapConstants.LOC_PROCESS_TYPE_CLIENT.equals(getProcessType())) {
             initProps.put(BootstrapConstants.LOC_PROPERTY_CLIENTCFG_DIR, getPathProperty(configDir));
             initProps.put(BootstrapConstants.LOC_PROPERTY_CLIENTOUT_DIR, getPathProperty(outputDir));
             initProps.put(BootstrapConstants.LOC_PROPERTY_CLIENTTMP_DIR, getPathProperty(outputDir,
-                                                                                         BootstrapConstants.LOC_AREA_NAME_WORKING,
+                                                                                         workareaDirStr,
+                                                                                         BootstrapConstants.LOC_AREA_NAME_TMP));
+            initProps.put(BootstrapConstants.LOC_PROPERTY_CLIENTTMP_DIR, getPathProperty(workarea,
                                                                                          BootstrapConstants.LOC_AREA_NAME_TMP));
         }
 
@@ -355,7 +363,6 @@ public class BootstrapConfig {
 
         // Wait to look for symbols until we have location properties set
         substituteSymbols(initProps);
-
     }
 
     protected String getPathProperty(File file, String... dirs) {
