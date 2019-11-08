@@ -11,7 +11,6 @@
 package com.ibm.ws.microprofile.opentracing.jaeger_fat;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -118,7 +117,8 @@ public class JaegerTraceTest {
     protected List<String> executeWebService(LibertyServer server, String method) throws Exception {
         String requestUrl = "http://" +
                             server.getHostname() +
-                            ":9081/" + method;
+                            ":" + server.getHttpSecondaryPort() + 
+                            "/" + method;
 
         return FATUtilsServer.gatherHttpRequest(FATUtilsServer.HttpRequestMethod.GET, requestUrl);
     }

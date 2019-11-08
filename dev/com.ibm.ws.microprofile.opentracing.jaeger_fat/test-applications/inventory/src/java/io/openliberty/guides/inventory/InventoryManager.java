@@ -37,7 +37,7 @@ public class InventoryManager {
     // end::custom-tracer[]
 
     public Properties get(String hostname) {
-        systemClient.init(hostname, 9080);
+        systemClient.init(hostname, Integer.getInteger("bvt.prop.HTTP_default"));
         Properties properties = systemClient.getProperties();
         
         return properties;

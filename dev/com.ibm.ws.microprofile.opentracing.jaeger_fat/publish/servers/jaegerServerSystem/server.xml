@@ -4,9 +4,9 @@
         <feature>mpOpenTracing-1.3</feature>
     </featureManager>
 
-    <include location="../fatTestCommon.xml" />
-
-	<httpEndpoint httpPort="9080" httpsPort="9443"
+    <include location="../fatTestPorts.xml" />
+    
+    <httpEndpoint httpPort="${bvt.prop.HTTP_default}" httpsPort="${bvt.prop.HTTP_default.secure}"
       id="defaultHttpEndpoint" host="*" />
 	
     <webApplication contextRoot="/" location="system.war">
