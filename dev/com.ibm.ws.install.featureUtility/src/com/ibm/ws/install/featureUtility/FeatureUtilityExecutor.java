@@ -21,6 +21,7 @@ import com.ibm.ws.kernel.boot.ReturnCode;
 import com.ibm.ws.kernel.boot.cmdline.Arguments;
 import com.ibm.ws.kernel.boot.cmdline.ExitCode;
 import com.ibm.ws.kernel.feature.internal.cmdline.ArgumentsImpl;
+import com.ibm.ws.kernel.feature.internal.cmdline.NLS;
 
 /**
  *
@@ -33,24 +34,28 @@ public class FeatureUtilityExecutor {
      */
     public static void main(String[] argsArray) {
         ExitCode rc;
-
         Arguments args = new ArgumentsImpl(argsArray);
         String actionName = args.getAction();
-        if (actionName == null || actionName.equalsIgnoreCase("help")) {
+        if (actionName == null) {
             rc = FeatureAction.help.handleTask(args);
         } else {
             try {
+                if (looksLikeHelp(actionName))
+                    actionName = FeatureAction.help.toString();
                 FeatureAction action = FeatureAction.valueOf(actionName);
                 List<String> invalid = args.findInvalidOptions(action.getCommandOptions());
 
                 if (!!!invalid.isEmpty()) {
-                    // TODO unknown message
-                    FeatureAction.help.handleTask(args);
+                    System.out.println(NLS.getMessage("unknown.options", action, invalid));
+                    FeatureAction.help.handleTask(new ArgumentsImpl(new String[] { "help", actionName }));
                     rc = ReturnCode.BAD_ARGUMENT;
-                } else {
+                } else if(action != FeatureAction.help && action.numPositionalArgs() >= 0 && args.getPositionalArguments().size() != action.numPositionalArgs()) {
+                    // NLS messages go to system out. Other exceptions/stack traces go to System.err
+                    System.out.println(NLS.getMessage("missing.args", action, action.numPositionalArgs(), args.getPositionalArguments().size()));
+                    rc = ReturnCode.BAD_ARGUMENT;
+                } else{
                     rc = action.handleTask(args);
                 }
-
 
             } catch (IllegalArgumentException iae) {
                 rc = FeatureAction.help
@@ -68,6 +73,18 @@ public class FeatureUtilityExecutor {
         }
         return ReturnCode.RUNTIME_EXCEPTION;
     }
+
+    // strip off any punctuation or other noise, see if the rest appears to be a help request.
+    // note that the string is already trim()'d by command-line parsing unless user explicitly escaped a space
+    private static boolean looksLikeHelp(String taskname) {
+        if (taskname == null)
+            return false; // applied paranoia, since this isn't in a performance path
+        int start = 0, len = taskname.length();
+        while (start < len && !Character.isLetter(taskname.charAt(start)))
+            ++start;
+        return FeatureAction.help.toString().equalsIgnoreCase(taskname.substring(start).toLowerCase());
+    }
+
 
 
 }
