@@ -38,7 +38,7 @@ public abstract class FeatureUtilityToolTest {
         installRoot = server.getInstallRoot();
         info(c, methodName, "install root: " + installRoot);
         
-        setOriginalWlpVersionVariables();
+//        setOriginalWlpVersionVariables();
         cleanDirectories = new ArrayList<String>();
         cleanFiles = new ArrayList<String>();
 

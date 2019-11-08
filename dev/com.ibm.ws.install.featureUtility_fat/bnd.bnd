@@ -29,9 +29,43 @@ fat.project: true
 #      or binaries from Artifactory (e.g. commons-logging:commons-logging)
 # For all project names that match the pattern "*_fat*", dependencies for junit,
 # fattest.simplicity, and componenttest-1.0 will be automatically added to the buildpath
+
 -buildpath: \
+	com.ibm.ws.repository.resolver;version=latest,\
 	com.ibm.ws.install.featureUtility;version=latest,\
-	com.ibm.ws.install;version=latest
-	
-	
-                                   
+	com.ibm.ws.install;version=latest,\
+	com.ibm.ws.install.featureUtility.featureutil;version=latest,\
+	com.ibm.ws.kernel.boot.core;version=latest,\
+	com.ibm.ws.kernel.feature.cmdline;version=latest,\
+	com.ibm.ws.install.map;version=latest, \
+	com.ibm.ws.kernel.boot.core;version=latest,\
+	com.ibm.ws.kernel.feature;version=latest,\
+	com.ibm.ws.product.utility;version=latest,\
+	com.ibm.ws.repository;version=latest,\
+	com.ibm.ws.repository.liberty;version=latest,\
+	com.ibm.ws.repository.parsers;version=latest,\
+	com.ibm.ws.org.apache.aries.util;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.kernel.feature.cmdline;version=latest,\
+	com.ibm.ws.kernel.feature.core;version=latest,\
+	wlp.lib.extract;version=latest
+
+-testpath: \
+    com.ibm.ws.repository.resolver;version=latest,\
+	com.ibm.ws.install.featureUtility;version=latest,\
+	com.ibm.ws.install;version=latest,\
+	com.ibm.ws.install.featureUtility.featureutil;version=latest,\
+	com.ibm.ws.kernel.boot.core;version=latest,\
+	com.ibm.ws.kernel.feature.cmdline;version=latest,\
+	com.ibm.ws.install.map;version=latest, \
+	com.ibm.ws.kernel.boot.core;version=latest,\
+	com.ibm.ws.kernel.feature;version=latest,\
+	com.ibm.ws.product.utility;version=latest,\
+	com.ibm.ws.repository;version=latest,\
+	com.ibm.ws.repository.liberty;version=latest,\
+	com.ibm.ws.repository.parsers;version=latest,\
+	com.ibm.ws.org.apache.aries.util;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.kernel.feature.cmdline;version=latest,\
+	com.ibm.ws.kernel.feature.core;version=latest,\
+	wlp.lib.extract;version=latest

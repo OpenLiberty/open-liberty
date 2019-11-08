@@ -8,7 +8,7 @@ import org.junit.Test;
 import com.ibm.websphere.simplicity.ProgramOutput;
 
 
-public class InstallTest extends FeatureUtilityToolTest {
+public class InstallFeatureTest extends FeatureUtilityToolTest {
 
     private static final Class<?> c = FeatureUtilityToolTest.class;
 
@@ -35,11 +35,11 @@ public class InstallTest extends FeatureUtilityToolTest {
         final String METHOD_NAME = "testInstallFromMavenCentral";
         entering(c, METHOD_NAME);
 
-        String[] param1s = { "installFeature", "jsp-2.3" };
+        String[] param1s = { "installFeature", "jsp-2.3", "--verbose=DEBUG"};
 
         ProgramOutput po;
         po = runFeatureUtility(METHOD_NAME, param1s);
-        assertEquals("Exit code should be 0", po.getReturnCode(), 0);
+        assertEquals("Exit code should be 0",0, po.getReturnCode());
         exiting(c, METHOD_NAME);
 
     }
@@ -55,26 +55,26 @@ public class InstallTest extends FeatureUtilityToolTest {
         final String METHOD_NAME = "testInstallFromLocalRepo";
         entering(c, METHOD_NAME);
 
-        String[] param1s = { "installFeature", "mpHealth-2.0" };
+        String[] param1s = { "installFeature", "mpHealth-2.0", "--verbose=DEBUG"};
 
         ProgramOutput po;
         po = runFeatureUtility(METHOD_NAME, param1s);
-        assertEquals("Exit code should be 0", po.getReturnCode(), 0);
+        assertEquals("Exit code should be 0", 0, po.getReturnCode());
         exiting(c, METHOD_NAME);
     }
 
     @Test
     public void testInstallWithMirrorRepository() throws Exception {
-        // TODO
+        // TODO actually use mirror repo
         final String METHOD_NAME = "testInstallWithMirrorRepository";
         entering(c, METHOD_NAME);
 
-        String[] param1s = { "installFeature", "webProfile-8.0" };
+        String[] param1s = { "installFeature", "webProfile-8.0", "--verbose=DEBUG"};
 
 
         ProgramOutput po;
         po = runFeatureUtility(METHOD_NAME, param1s);
-        assertEquals("Exit code should be 0", po.getReturnCode(), 0);
+        assertEquals("Exit code should be 0", 0, po.getReturnCode());
         exiting(c, METHOD_NAME);
     }
 

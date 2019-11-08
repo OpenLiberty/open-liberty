@@ -1,9 +1,14 @@
 package com.ibm.ws.install.featureUtility_fat;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Test;
 
-public class DownloadTest extends FeatureUtilityToolTest {
+import com.ibm.websphere.simplicity.ProgramOutput;
+
+public class InstallServerTest extends FeatureUtilityToolTest {
     private static final Class<?> c = FeatureUtilityToolTest.class;
 
     @BeforeClass
@@ -19,5 +24,15 @@ public class DownloadTest extends FeatureUtilityToolTest {
         // TODO
     }
 
-    // @Test
+    @Test
+    public void testInstallFromMavenCentral() throws Exception {
+        // TODO actualy use server.xml here
+        final String METHOD_NAME = "testInstallFromMavenCentral";
+        entering(c, METHOD_NAME);
+
+        assertEquals("TODO", 1+1, 2);
+        exiting(c, METHOD_NAME);
+
+    }
+
 }
