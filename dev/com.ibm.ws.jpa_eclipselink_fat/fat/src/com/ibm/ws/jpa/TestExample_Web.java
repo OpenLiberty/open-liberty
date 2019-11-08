@@ -86,7 +86,7 @@ public class TestExample_Web extends JPAFATServletClient {
 
         final Set<String> ddlSet = new HashSet<String>();
 
-        System.out.println("TestExample_Web Setting up database tables...");
+        System.out.println(TestExample_Web.class.getName() + " Setting up database tables...");
 
         ddlSet.clear();
         for (String ddlName : dropSet) {
@@ -100,11 +100,11 @@ public class TestExample_Web extends JPAFATServletClient {
         }
         executeDDL(server, ddlSet, false);
 
-//        ddlSet.clear();
-//        for (String ddlName : populateSet) {
-//            ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
-//        }
-//        executeDDL(server, ddlSet, false);
+        ddlSet.clear();
+        for (String ddlName : populateSet) {
+            ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
+        }
+        executeDDL(server, ddlSet, false);
 
         setupTestApplication();
     }
@@ -115,14 +115,14 @@ public class TestExample_Web extends JPAFATServletClient {
         webApp.addPackages(true, "com.ibm.ws.jpa.example.testlogic");
         webApp.addPackages(true, "com.ibm.ws.jpa.example.web");
 
-        ShrinkHelper.addDirectory(webApp, RESOURCE_ROOT + "web/" + appName + ".war");
+        ShrinkHelper.addDirectory(webApp, RESOURCE_ROOT + appFolder + "/" + appName + ".war");
 
         final JavaArchive testApiJar = buildTestAPIJar();
 
         final EnterpriseArchive app = ShrinkWrap.create(EnterpriseArchive.class, appNameEar);
         app.addAsModule(webApp);
         app.addAsLibrary(testApiJar);
-        ShrinkHelper.addDirectory(app, RESOURCE_ROOT + "web", new org.jboss.shrinkwrap.api.Filter<ArchivePath>() {
+        ShrinkHelper.addDirectory(app, RESOURCE_ROOT + appFolder, new org.jboss.shrinkwrap.api.Filter<ArchivePath>() {
 
             @Override
             public boolean include(ArchivePath arg0) {

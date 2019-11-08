@@ -40,13 +40,14 @@ import com.ibm.ws.microprofile.metrics.cdi.producer.MetricRegistryFactory;
 @Priority(Interceptor.Priority.PLATFORM_AFTER)
 public class MetricsInterceptor {
 
+    private final static String PREFIX = "mp_graphql_";
     private final static TraceComponent tc = Tr.register(MetricsInterceptor.class);
     private final static MetricRegistry metrics = MetricRegistryFactory.getVendorRegistry();
 
     @AroundInvoke
     public Object captureMetrics(InvocationContext ctx) throws Exception {
         Method m = ctx.getMethod();
-        String fqMethodName = m.getDeclaringClass().getName() + "." + m.getName();
+        String fqMethodName = PREFIX + m.getDeclaringClass().getName() + "." + m.getName();
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "invoking " + fqMethodName );
         }

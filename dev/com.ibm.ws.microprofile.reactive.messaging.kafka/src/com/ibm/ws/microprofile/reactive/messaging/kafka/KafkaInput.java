@@ -22,6 +22,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Function;
 
@@ -166,7 +167,7 @@ public class KafkaInput<K, V> {
         }
     }
 
-    @FFDCIgnore(WakeupException.class)
+    @FFDCIgnore({ WakeupException.class, RejectedExecutionException.class })
     private CompletionStage<PublisherBuilder<ConsumerRecord<K, V>>> pollKafkaAsync() {
         if (!this.subscribed) {
             this.lock.lock();
@@ -209,9 +210,17 @@ public class KafkaInput<K, V> {
         if ((records != null) && !records.isEmpty()) {
             result.complete(fromIterable(records));
         } else {
-            this.executor.submit(() -> {
-                executePollActions(result);
-            });
+            try {
+                this.executor.submit(() -> {
+                    executePollActions(result);
+                });
+            } catch (RejectedExecutionException e) {
+                //by far the most likely reason for this exception is the server is being shutdown
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(tc, "Asynchronous execution rejected, returning incomplete future");
+                }
+                return new CompletableFuture<>();
+            }
         }
 
         return result;

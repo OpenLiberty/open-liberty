@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -303,7 +303,7 @@ public class CacheHashMap extends BackedHashMap {
                 if (trace && tc.isDebugEnabled())
                     tcReturn(tcSessionMetaCache, "_iterator.next", id, value);
 
-                if (id != null && !INVAL_KEY.equals(id)) {
+                if (id != null && !INVAL_KEY.equals(id) && value != null) { // null value and non-null id is possible when remove & iterator overlap in Infinispan
                     SessionInfo sessionInfo = new SessionInfo(value);
                     long lastAccessTime = sessionInfo.getLastAccess();
                     short listenerTypes = sessionInfo.getListenerTypes();
@@ -723,13 +723,26 @@ public class CacheHashMap extends BackedHashMap {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         boolean contains = false;
         try {
+            // HTTP sessions code can end up checking an old instance that was closed due to a config update.
+            // Return false for the old cache instance to bypass this so that it can continue on to the new, valid cache instance.
+            boolean isClosed;
             if (trace && tc.isDebugEnabled())
-                tcInvoke(tcSessionMetaCache, "containsKey", id);
+                tcInvoke(tcSessionMetaCache, "isClosed");
 
-            contains = sessionMetaCache.containsKey(id);
+            isClosed = sessionMetaCache.isClosed();
 
             if (trace && tc.isDebugEnabled())
-                tcReturn(tcSessionMetaCache, "containsKey", contains);
+                tcReturn(tcSessionMetaCache, "isClosed", isClosed);
+
+            if (!isClosed) {
+                if (trace && tc.isDebugEnabled())
+                    tcInvoke(tcSessionMetaCache, "containsKey", id);
+
+                contains = sessionMetaCache.containsKey(id);
+
+                if (trace && tc.isDebugEnabled())
+                    tcReturn(tcSessionMetaCache, "containsKey", contains);
+            }
         } catch(Exception ex) {
             FFDCFilter.processException(ex, "com.ibm.ws.session.store.cache.CacheHashMap.isPresent", "709", this, new Object[] { id });
             Tr.error(tc, "ERROR_CACHE_ACCESS", ex);
@@ -889,6 +902,18 @@ public class CacheHashMap extends BackedHashMap {
     @Override
     protected void performInvalidation() {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
+
+        // HTTP sessions code can end up checking an old instance that was closed due to a config update. If so, skip this method.
+        boolean isClosed;
+        if (trace && tc.isDebugEnabled())
+            tcInvoke(tcSessionMetaCache, "isClosed");
+
+        isClosed = sessionMetaCache.isClosed();
+
+        if (trace && tc.isDebugEnabled())
+            tcReturn(tcSessionMetaCache, "isClosed", isClosed);
+        if (isClosed)
+            return;
 
         long now = System.currentTimeMillis();
 
@@ -1092,7 +1117,7 @@ public class CacheHashMap extends BackedHashMap {
             if (trace && tc.isDebugEnabled())
                 tcReturn(tcSessionMetaCache, "_iterator.next", id, value);
 
-            if (id != null && !INVAL_KEY.equals(id)) {
+            if (id != null && !INVAL_KEY.equals(id) && value != null) { // null value and non-null id is possible when remove & iterator overlap in Infinispan
                 SessionInfo sessionInfo = new SessionInfo(value);
                 long lastAccess = sessionInfo.getLastAccess();
                 short listenerTypes = sessionInfo.getListenerTypes();

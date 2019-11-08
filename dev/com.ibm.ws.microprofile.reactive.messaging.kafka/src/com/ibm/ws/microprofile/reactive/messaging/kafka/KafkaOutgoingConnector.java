@@ -13,6 +13,7 @@ package com.ibm.ws.microprofile.reactive.messaging.kafka;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -31,16 +32,12 @@ import org.eclipse.microprofile.reactive.messaging.spi.OutgoingConnectorFactory;
 import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
 import org.eclipse.microprofile.reactive.streams.operators.SubscriberBuilder;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.KafkaAdapterFactory;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.KafkaProducer;
 
 @Connector(KafkaConnectorConstants.CONNECTOR_NAME)
 @ApplicationScoped
 public class KafkaOutgoingConnector implements OutgoingConnectorFactory {
-
-    private static final TraceComponent tc = Tr.register(KafkaOutgoingConnector.class);
 
     @Inject
     private KafkaAdapterFactory kafkaAdapterFactory;
@@ -49,10 +46,18 @@ public class KafkaOutgoingConnector implements OutgoingConnectorFactory {
 
     @Override
     public SubscriberBuilder<Message<Object>, Void> getSubscriberBuilder(Config config) {
+
+        // Configure our defaults
+        Map<String, Object> producerConfig = new HashMap<>();
+
+        //default the key and value serializers to String
+        producerConfig.put(KafkaConnectorConstants.KEY_SERIALIZER, KafkaConnectorConstants.STRING_SERIALIZER);
+        producerConfig.put(KafkaConnectorConstants.VALUE_SERIALIZER, KafkaConnectorConstants.STRING_SERIALIZER);
+
         // Pass the config directly through to the kafkaProducer
-        Map<String, Object> producerConfig = StreamSupport.stream(config.getPropertyNames().spliterator(), false)
-                                                          .filter(k -> !KafkaConnectorConstants.NON_KAFKA_PROPS.contains(k))
-                                                          .collect(Collectors.toMap(Function.identity(), (k) -> config.getValue(k, String.class)));
+        producerConfig.putAll(StreamSupport.stream(config.getPropertyNames().spliterator(), false)
+                                           .filter(k -> !KafkaConnectorConstants.NON_KAFKA_PROPS.contains(k))
+                                           .collect(Collectors.toMap(Function.identity(), (k) -> config.getValue(k, String.class))));
 
         KafkaProducer<String, Object> kafkaProducer = this.kafkaAdapterFactory.newKafkaProducer(producerConfig);
 

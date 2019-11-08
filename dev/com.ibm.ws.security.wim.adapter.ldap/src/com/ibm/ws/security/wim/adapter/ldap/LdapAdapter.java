@@ -3505,6 +3505,12 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
             } else if (SchemaConstants.DATA_TYPE_LANG_TYPE.equals(dataType)) {
                 LangType langDO = (LangType) value;
                 ldapValue = langDO.getValue();
+            } else if (SchemaConstants.DATA_TYPE_BOOLEAN.equals(dataType)) {
+                /*
+                 * Some servers (OpenLDAP, Micorosoft Active Directory, among others) won't accept lower-case Boolean values
+                 * according to RFC 4517, section 3.3.3, where the ABNF is: Boolean = "TRUE" / "FALSE"
+                 */
+                ldapValue = value.toString().toUpperCase();
             } else {
                 ldapValue = value.toString();
             }

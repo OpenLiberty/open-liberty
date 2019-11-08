@@ -3,6 +3,8 @@
     <feature>componenttest-1.0</feature>
     <feature>jcacheContainer-1.1</feature>
     <feature>jndi-1.0</feature>
+    <feature>mpMetrics-2.0</feature> <!-- Infinispan JARs have a hard dependency on MicroProfile Metrics API -->
+    <feature>mpReactiveStreams-1.0</feature> <!-- Infinispan JARs have a hard dependency on Reactive Streams API -->
     <feature>servlet-4.0</feature>
     <feature>sessionCache-1.0</feature>
   </featureManager>
@@ -10,7 +12,7 @@
   <include location="../fatTestPorts.xml"/>
 
   <application location="sessionCacheConfigApp.war">
-    <classloader commonLibraryRef="InfinispanLib"/>
+    <!-- <classloader commonLibraryRef="InfinispanLib"/> causes Weld to process CDI annotations within Infinispan JARs, which causes failures -->
   </application>
 
   <httpSessionCache libraryRef="InfinispanLib" uri="file:${shared.resource.dir}/infinispan10/infinispan.xml"/>

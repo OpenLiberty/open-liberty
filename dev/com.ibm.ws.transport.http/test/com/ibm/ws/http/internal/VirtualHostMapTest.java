@@ -40,7 +40,6 @@ import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
 
 import com.ibm.ws.http.internal.VirtualHostMap.RequestHelper;
-import com.ibm.ws.staticvalue.StaticValue;
 import com.ibm.wsspi.http.HttpContainer;
 import com.ibm.wsspi.http.VirtualHost;
 import com.ibm.wsspi.http.VirtualHostListener;
@@ -97,11 +96,11 @@ public class VirtualHostMapTest {
         // Clear the alternateHostSelector and defaultHost
         Field f = VirtualHostMap.class.getDeclaredField("alternateHostSelector");
         f.setAccessible(true);
-        f.set(null, StaticValue.createStaticValue(null));
+        f.set(null, null);
 
         f = VirtualHostMap.class.getDeclaredField("defaultHost");
         f.setAccessible(true);
-        f.set(null, StaticValue.createStaticValue(null));
+        f.set(null, null);
     }
 
     @After
@@ -559,7 +558,7 @@ public class VirtualHostMapTest {
         // Clear the alternateHostSelector..
         Field f = VirtualHostMap.class.getDeclaredField("alternateHostSelector");
         f.setAccessible(true);
-        f.set(null, StaticValue.createStaticValue(null));
+        f.set(null, null);
 
         HttpEndpointList.registerEndpoint(mockEndpoint);
         VirtualHostImpl vhost = new VirtualHostImpl();
@@ -795,8 +794,8 @@ public class VirtualHostMapTest {
                 atLeast(1).of(mockListener).contextRootAdded("/x", vhost1);
                 atLeast(1).of(mockListener).contextRootRemoved("/x", vhost1);
 
-                // We now notify context root listeners even if there are zero associated 
-                // ports; that can cause additional (new) notifications for /y and /z 
+                // We now notify context root listeners even if there are zero associated
+                // ports; that can cause additional (new) notifications for /y and /z
                 atLeast(1).of(mockListener).contextRootAdded("/y", vhost2);
                 atLeast(1).of(mockListener).contextRootRemoved("/y", vhost2);
 
@@ -808,7 +807,7 @@ public class VirtualHostMapTest {
         // Clear the alternateHostSelector..
         Field f = VirtualHostMap.class.getDeclaredField("alternateHostSelector");
         f.setAccessible(true);
-        f.set(null, StaticValue.createStaticValue(null));
+        f.set(null, null);
 
         final Runnable r1 = new Runnable() {
             @Override

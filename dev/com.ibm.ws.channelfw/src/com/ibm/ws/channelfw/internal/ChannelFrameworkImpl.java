@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Timer;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -45,7 +44,6 @@ import com.ibm.ws.channelfw.internal.chains.OutboundChain;
 import com.ibm.ws.channelfw.internal.chains.StopChainTask;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.FFDCSelfIntrospectable;
-import com.ibm.ws.staticvalue.StaticValue;
 import com.ibm.wsspi.channelfw.BoundRegion;
 import com.ibm.wsspi.channelfw.ChainEventListener;
 import com.ibm.wsspi.channelfw.Channel;
@@ -185,21 +183,12 @@ public class ChannelFrameworkImpl implements ChannelFramework, FFDCSelfIntrospec
     private AsyncIOHelper asyncIOHelper = null;
 
     /** Singleton instance of the framework */
-    private volatile static StaticValue<ChannelFrameworkImpl> singleton = StaticValue.createStaticValue(new Callable<ChannelFrameworkImpl>() {
-        @Override
-        public ChannelFrameworkImpl call() {
-            return new ChannelFrameworkImpl(false);
-        }
-    });
+    private volatile static ChannelFrameworkImpl singleton = null;
 
     /**
      * Constructor for the channel framework.
      */
     public ChannelFrameworkImpl() {
-        this(true);
-    }
-
-    private ChannelFrameworkImpl(boolean store) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "constructor");
         }
@@ -218,14 +207,8 @@ public class ChannelFrameworkImpl implements ChannelFramework, FFDCSelfIntrospec
         this.providers = new HashMap<String, ChannelFactoryProvider>();
         this.activatedProviders = new LinkedList<ChannelFactoryProvider>();
 
-        if (store) {
-            singleton = StaticValue.mutateStaticValue(singleton, new Callable<ChannelFrameworkImpl>() {
-                @Override
-                public ChannelFrameworkImpl call() throws Exception {
-                    return ChannelFrameworkImpl.this;
-                }
-            });
-        }
+        singleton = this;
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "constructor");
         }
@@ -237,7 +220,14 @@ public class ChannelFrameworkImpl implements ChannelFramework, FFDCSelfIntrospec
      * @return ChannelFrameworkImpl
      */
     public static ChannelFrameworkImpl getRef() {
-        return singleton.get();
+        if (null == singleton) {
+            synchronized (ChannelFrameworkImpl.class) {
+                if (null == singleton) {
+                    new ChannelFrameworkImpl();
+                }
+            }
+        }
+        return singleton;
     }
 
     /**
@@ -245,7 +235,7 @@ public class ChannelFrameworkImpl implements ChannelFramework, FFDCSelfIntrospec
      *
      * @param value
      * @throws NumberFormatException
-     *             if the value is not a number or is less than zero
+     *                                   if the value is not a number or is less than zero
      */
     public void setChainStartRetryInterval(Object value) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
@@ -272,7 +262,7 @@ public class ChannelFrameworkImpl implements ChannelFramework, FFDCSelfIntrospec
      *
      * @param value
      * @throws NumberFormatException
-     *             if the value is not a number or is less than zero
+     *                                   if the value is not a number or is less than zero
      */
     public void setChainStartRetryAttempts(Object value) throws NumberFormatException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
@@ -585,7 +575,7 @@ public class ChannelFrameworkImpl implements ChannelFramework, FFDCSelfIntrospec
      * multiplex outbound connections.
      *
      * @param channelName
-     *            internal channel name of a current runtime channel.
+     *                        internal channel name of a current runtime channel.
      * @return a virtual connection composed of channels beneath the one specified
      * @throws ChannelException
      * @throws ChainException
@@ -785,9 +775,9 @@ public class ChannelFrameworkImpl implements ChannelFramework, FFDCSelfIntrospec
      * necessary.
      *
      * @param type
-     *            The class of the factory being queried
+     *                         The class of the factory being queried
      * @param isPersistent
-     *            flag to indicate whether factory should be saved in framework
+     *                         flag to indicate whether factory should be saved in framework
      * @return ChannelFactory
      * @throws ChannelFactoryException
      */
@@ -1110,7 +1100,7 @@ public class ChannelFrameworkImpl implements ChannelFramework, FFDCSelfIntrospec
      * Update all running channels using the input channel data.
      *
      * @param channelData
-     *            (parent)
+     *                        (parent)
      */
     private void updateRunningChannels(ChannelDataImpl channelData) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
@@ -1273,9 +1263,9 @@ public class ChannelFrameworkImpl implements ChannelFramework, FFDCSelfIntrospec
      * This method is invoked from the chain implementation.
      *
      * @param channel
-     *            being initialized
+     *                    being initialized
      * @param chain
-     *            the channel is in
+     *                    the channel is in
      * @return if the chain was initialized. Note, it may already be initialized.
      * @throws ChannelException
      */
@@ -1347,9 +1337,9 @@ public class ChannelFrameworkImpl implements ChannelFramework, FFDCSelfIntrospec
      * the channel will be started.
      *
      * @param targetChannel
-     *            being started
+     *                          being started
      * @param chain
-     *            the channel is in.
+     *                          the channel is in.
      * @return if the channel was started or not. Note, it may have already been
      *         started.
      * @throws ChannelException
@@ -1409,9 +1399,9 @@ public class ChannelFrameworkImpl implements ChannelFramework, FFDCSelfIntrospec
      * chain.
      *
      * @param targetChannel
-     *            being stopped
+     *                          being stopped
      * @param chain
-     *            the channel is in
+     *                          the channel is in
      * @return if the channel was disabled
      * @throws ChannelException
      * @throws ChainException
@@ -1472,7 +1462,7 @@ public class ChannelFrameworkImpl implements ChannelFramework, FFDCSelfIntrospec
      * change to INITIALIZED.
      *
      * @param channel
-     *            to stop
+     *                    to stop
      */
     private void stopChannel(Channel channel) throws ChannelException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
@@ -1510,11 +1500,11 @@ public class ChannelFrameworkImpl implements ChannelFramework, FFDCSelfIntrospec
      * state of the chain will go to DESTROYED.
      *
      * @param targetChannel
-     *            being destroyed
+     *                          being destroyed
      * @param chain
-     *            of the channel
+     *                          of the channel
      * @param channelData
-     *            associated with channel
+     *                          associated with channel
      * @throws ChannelException
      * @throws ChainException
      */
@@ -2317,7 +2307,7 @@ public class ChannelFrameworkImpl implements ChannelFramework, FFDCSelfIntrospec
      * chains.
      *
      * @param inputChainData
-     *            that already exists in the framework.
+     *                           that already exists in the framework.
      * @throws ChannelException
      * @throws ChainException
      */
@@ -2523,9 +2513,9 @@ public class ChannelFrameworkImpl implements ChannelFramework, FFDCSelfIntrospec
      * created as opposed to reused from an existing chain.
      *
      * @param parentChannelData
-     *            array of channel data objects representing parents
+     *                              array of channel data objects representing parents
      * @param childrenCreated
-     *            array to track where new children are created
+     *                              array to track where new children are created
      * @return ChannelData[]
      */
     public ChannelData[] generateChildDataArray(ChannelData[] parentChannelData, boolean[] childrenCreated) {
@@ -2732,7 +2722,7 @@ public class ChannelFrameworkImpl implements ChannelFramework, FFDCSelfIntrospec
      *
      * @param targetChainData
      * @param startMode
-     *            - indicate how to handle failure conditions
+     *                            - indicate how to handle failure conditions
      * @throws ChannelException
      * @throws ChainException
      */
@@ -3754,10 +3744,10 @@ public class ChannelFrameworkImpl implements ChannelFramework, FFDCSelfIntrospec
      * since a socket from a previous chain stop is still wrapping up.
      *
      * @param chainData
-     *            specification of chain to be started
+     *                      specification of chain to be started
      * @param e
-     *            Exception that occured which caused this retry attempt to take
-     *            place
+     *                      Exception that occured which caused this retry attempt to take
+     *                      place
      */
     protected void retryChainStart(ChainData chainData, Exception e) {
         // Do nothing in the core implementation. This method is overloaded in the
@@ -3959,7 +3949,7 @@ public class ChannelFrameworkImpl implements ChannelFramework, FFDCSelfIntrospec
      * child channel data lists) that are using the input parent channel.
      *
      * @param parent
-     *            The parent channel data object
+     *                   The parent channel data object
      * @return an arraylist of the runtime chains that include the channel
      */
     public synchronized List<ChainData> getRunningChains(ChannelDataImpl parent) {
@@ -4040,9 +4030,9 @@ public class ChannelFrameworkImpl implements ChannelFramework, FFDCSelfIntrospec
      * Fetch the input channel from the runtime.
      *
      * @param inputChannelName
-     *            of the (parent) channel requested.
+     *                             of the (parent) channel requested.
      * @param chain
-     *            in which channel is running.
+     *                             in which channel is running.
      * @return Channel requested, or null if not found.
      */
     public synchronized Channel getRunningChannel(String inputChannelName, Chain chain) {
@@ -4069,7 +4059,7 @@ public class ChannelFrameworkImpl implements ChannelFramework, FFDCSelfIntrospec
      *
      * @param channelName
      * @param chain
-     *            that includes this channel
+     *                        that includes this channel
      * @return state of channel, or -1 if the channel cannot be found.
      */
     public synchronized RuntimeState getChannelState(String channelName, Chain chain) {
@@ -5046,9 +5036,9 @@ public class ChannelFrameworkImpl implements ChannelFramework, FFDCSelfIntrospec
      * the second Map.
      *
      * @param inputMap
-     *            of properties to search for.
+     *                        of properties to search for.
      * @param existingMap
-     *            of properties to search in.
+     *                        of properties to search in.
      * @return true if all properties of first Map are found in second Map
      */
     private boolean propertiesIncluded(Map<Object, Object> inputMap, Map<Object, Object> existingMap) {

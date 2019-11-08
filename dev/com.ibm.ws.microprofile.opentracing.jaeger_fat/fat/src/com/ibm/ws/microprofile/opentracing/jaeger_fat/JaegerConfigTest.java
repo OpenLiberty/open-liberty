@@ -80,7 +80,7 @@ public class JaegerConfigTest {
     @After
     public void tearDown() throws Exception {
     	if (currentServer != null && currentServer.isStarted()) {
-        	currentServer.stopServer("CWMOT0008E");
+        	currentServer.stopServer("CWMOT0008E", "CWMOT0009W");
         }
     }
     

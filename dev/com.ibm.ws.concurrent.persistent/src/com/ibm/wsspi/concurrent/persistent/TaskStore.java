@@ -23,7 +23,7 @@ import com.ibm.websphere.concurrent.persistent.TaskStatus;
 public interface TaskStore {
     /**
      * Update the record for a task in the persistent store to indicate that the task is canceled.
-     * 
+     *
      * @param taskId unique identifier for a persistent task
      * @return true if the state of the task was updated as a result of this method, otherwise false.
      * @throws Exception if an error occurs when attempting to update the persistent task store.
@@ -40,21 +40,32 @@ public interface TaskStore {
      * When using this method, tasks are canceled (not removed) regardless of the autopurge setting.
      * It is not possible to cancel tasks that have already ended. Any tasks that meet the criteria which are
      * also in an ended state are ignored.
-     * 
+     *
      * @param pattern task name pattern similar to the LIKE clause in SQL (% matches any characters, _ matches one character)
-     * @param escape escape character that indicates when matching characters like % and _ should be interpreted literally.
-     * @param state a task state. For example, TaskRecord.State.SCHEDULED.
+     * @param escape  escape character that indicates when matching characters like % and _ should be interpreted literally.
+     * @param state   a task state. For example, TaskRecord.State.SCHEDULED.
      * @param inState indicates whether to cancel tasks with or without the specified state
-     * @param owner name of owner to match as the task submitter. Null to ignore.
+     * @param owner   name of owner to match as the task submitter. Null to ignore.
      * @return count of tasks canceled.
      * @throws Exception if an error occurs updating the persistent store.
      */
     int cancel(String pattern, Character escape, TaskState state, boolean inState, String owner) throws Exception;
 
     /**
+     * Create a partition entry in the persistent store having the Id of the specified partitionRecord.
+     *
+     * @param partitionRecord a new partition entry. The record must contain the following attributes (Id, Executor, Host, Server, UserDir)
+     *                            and can optionally contain (Expiry, States).
+     * @throws Exception if an error occurs when attempting to update the persistent task store.
+     * @return true if a partition entry with the specified Id was created by this method.
+     *         Otherwise false, in which case it is recommended to roll back the transaction.
+     */
+    boolean create(PartitionRecord partitionRecord) throws Exception;
+
+    /**
      * Create an entry in the persistent store for a new task.
      * This method assigns a unique identifier to the task and updates the Id attribute of the TaskRecord with the value.
-     * 
+     *
      * @param task a new persistent task entry. All attributes of the task record must be specified except for the id.
      * @throws Exception if an error occurs when attempting to update the persistent task store.
      */
@@ -62,8 +73,8 @@ public interface TaskStore {
 
     /**
      * Create a property entry in the persistent store.
-     * 
-     * @param name unique name for the property.
+     *
+     * @param name  unique name for the property.
      * @param value value of the property.
      * @return true if the property was created. False if a property with the same name already exists.
      * @throws Exception if an error occurs when attempting to update the persistent task store.
@@ -72,7 +83,7 @@ public interface TaskStore {
 
     /**
      * Returns all partition entries that match the specified criteria.
-     * 
+     *
      * @param partitionRecord contains the criteria against which to compare.
      * @return all partition entries that match the specified criteria.
      * @throws Exception if an error occurs when attempting to access the persistent task store.
@@ -81,11 +92,11 @@ public interface TaskStore {
 
     /**
      * Returns the data contained within a task record in the persistent store if the task is in a SCHEDULED state.
-     * 
-     * @param taskId unique identifier for a task.
-     * @param partitionId unique identifier for a partition.
+     *
+     * @param taskId               unique identifier for a task.
+     * @param partitionId          unique identifier for a partition. Null to ignore the partition.
      * @param maxNextExecutionTime milliseconds at (or before) which the task must be scheduled in order to run.
-     * @param forUpdate indicates if a write lock should be obtained on the task record.
+     * @param forUpdate            indicates if a write lock should be obtained on the task record.
      * @return the task record if found and possible to lock it, otherwise null.
      *         The resulting record must contain the attributes
      *         (IdentityOfClassLoader, IdentityOfOwner, MiscBinaryFlags, Name,
@@ -93,13 +104,13 @@ public interface TaskStore {
      *         Result, ConsecutiveFailureCount, State, Task, TaskInfo, Trigger, Version)
      * @throws Exception if an error occurs when attempting to access the persistent task store.
      */
-    TaskRecord find(long taskId, long partitionId, long maxNextExecTime, boolean forUpdate) throws Exception;
+    TaskRecord find(long taskId, Long partitionId, long maxNextExecTime, boolean forUpdate) throws Exception;
 
     /**
      * Returns a snapshot of task state for the task with the specified unique identifier.
-     * 
-     * @param taskId unique identifier for a task
-     * @param owner name of owner to match as the task submitter. Null to ignore.
+     *
+     * @param taskId         unique identifier for a task
+     * @param owner          name of owner to match as the task submitter. Null to ignore.
      * @param includeTrigger indicates whether to include the Trigger in the status.
      * @return snapshot of task state for the task with the specified unique identifier.
      *         The resulting record must contain the attributes:
@@ -141,10 +152,10 @@ public interface TaskStore {
      * thread1 creates the entry
      * thread2 attempts to create and fails because it already exists
      * The invoker is expected to handle this by rolling back and retrying.
-     * 
+     *
      * @param record partition entry with executor/host/server/userdir to locate, or if not found, add to the persistent store.
-     *            If an entry is found, it is updated to match the Expiry and States if either of those is supplied.
-     *            The record must contain the following attributes (Executor, Host, Server, UserDir) and can optionally contain (Expiry, States).
+     *                   If an entry is found, it is updated to match the Expiry and States if either of those is supplied.
+     *                   The record must contain the following attributes (Executor, Host, Server, UserDir) and can optionally contain (Expiry, States).
      * @return unique identifier for the partition record which either already exists or was newly created.
      * @throws Exception if an error occurs when attempting to access the persistent task store.
      */
@@ -156,15 +167,15 @@ public interface TaskStore {
      * For example, to find taskIDs for the first 100 tasks belonging to app1 in partition 12 that have not completed all executions
      * and have a name that starts with "PAYROLL_TASK_",
      * taskStore.findTaskIds("PAYROLL\\_TASK\\_%", '\\', TaskState.ENDED, false, null, 100, "app1", 12);
-     * 
-     * @param pattern task name pattern similar to the LIKE clause in SQL (% matches any characters, _ matches one character). Null to ignore.
-     * @param escape escape character that indicates when matching characters like % and _ should be interpreted literally. Null to ignore.
-     * @param state a task state. For example, TaskState.CANCELED
-     * @param inState indicates whether to include or exclude results with the specified state
-     * @param minId minimum value for task id to be returned in the results. A null value means no minimum.
+     *
+     * @param pattern    task name pattern similar to the LIKE clause in SQL (% matches any characters, _ matches one character). Null to ignore.
+     * @param escape     escape character that indicates when matching characters like % and _ should be interpreted literally. Null to ignore.
+     * @param state      a task state. For example, TaskState.CANCELED
+     * @param inState    indicates whether to include or exclude results with the specified state
+     * @param minId      minimum value for task id to be returned in the results. A null value means no minimum.
      * @param maxResults limits the number of results to return to the specified maximum value. A null value means no limit.
-     * @param owner name of owner to match as the task submitter. Null to ignore.
-     * @param partition identifier of the partition in which to search for tasks. Null to ignore.
+     * @param owner      name of owner to match as the task submitter. Null to ignore.
+     * @param partition  identifier of the partition in which to search for tasks. Null to ignore.
      * @return in-memory, ordered list of task ID.
      * @throws Exception if an error occurs when attempting to access the persistent task store.
      */
@@ -176,16 +187,16 @@ public interface TaskStore {
      * (as determined by the inState attribute) of the specified state.
      * For example, to find tasks that have not completed all executions and have a name that starts with "PAYROLL_TASK_",
      * taskStore.findTaskStatus("PAYROLL\\_TASK\\_%", '\\', TaskState.ENDED, false, "app1", executor1, false);
-     * 
-     * @param pattern task name pattern similar to the LIKE clause in SQL (% matches any characters, _ matches one character)
-     * @param escape escape character that indicates when matching characters like % and _ should be interpreted literally.
-     * @param state a task state. For example, TaskState.CANCELED
-     * @param inState indicates whether to include or exclude results with the specified state
-     * @param minId minimum value for task id to be returned in the results. A null value means no minimum.
-     * @param maxResults limits the number of results to return to the specified maximum value. A null value means no limit.
-     * @param owner name of owner to match as the task submitter. Null to ignore.
+     *
+     * @param pattern        task name pattern similar to the LIKE clause in SQL (% matches any characters, _ matches one character)
+     * @param escape         escape character that indicates when matching characters like % and _ should be interpreted literally.
+     * @param state          a task state. For example, TaskState.CANCELED
+     * @param inState        indicates whether to include or exclude results with the specified state
+     * @param minId          minimum value for task id to be returned in the results. A null value means no minimum.
+     * @param maxResults     limits the number of results to return to the specified maximum value. A null value means no limit.
+     * @param owner          name of owner to match as the task submitter. Null to ignore.
      * @param includeTrigger indicates whether to include the Trigger in the status.
-     * @param executor persistent executor instance.
+     * @param executor       persistent executor instance.
      * @return list of task status matching the criteria, ordered by task id.
      * @throws Exception if an error occurs when attempting to access the persistent task store.
      */
@@ -195,10 +206,23 @@ public interface TaskStore {
 
     /**
      * Find all tasks to execute on or before maxNextExecTime (up to a maximum of maxResults).
-     * 
-     * @param partition partition number
+     * Only tasks which are not currently claimed are returned.
+     *
+     * @param missedTaskThreshold number of seconds beyond which a task is considered missed and can be claimed by a different instance.
+     * @param maxNextExecTime     maximum next execution time (in milliseconds)
+     * @param maxResults          maximum number of results to return. Null means unlimited.
+     * @return List of (Id, MiscBinaryFlags, NextExecutionTime, TransactionTimeout, Version) pairs.
+     * @throws Exception if an error occurs when attempting to access the persistent task store.
+     */
+    List<Object[]> findUnclaimedTasks(long missedTaskThreshold, long maxNextExecTime, Integer maxResults) throws Exception;
+
+    /**
+     * Find all tasks to execute on or before maxNextExecTime (up to a maximum of maxResults).
+     * Only tasks that are owned by the specified partition are returned.
+     *
+     * @param partition       partition number
      * @param maxNextExecTime maximum next execution time (in milliseconds)
-     * @param maxResults maximum number of results to return. Null means unlimited.
+     * @param maxResults      maximum number of results to return. Null means unlimited.
      * @return List of (Id, MiscBinaryFlags, NextExecutionTime, TransactionTimeout) pairs, ordered by next execution time.
      * @throws Exception if an error occurs when attempting to access the persistent task store.
      */
@@ -206,9 +230,9 @@ public interface TaskStore {
 
     /**
      * Returns a task record with information about the expected next execution time for the task with the specified id.
-     * 
+     *
      * @param taskId unique identifier for the task.
-     * @param owner name of owner (if any) to match as the task submitter.
+     * @param owner  name of owner (if any) to match as the task submitter.
      * @return task record containing information about the expected next execution time for the task with the specified id.
      *         The resulting record must contain the attributes (MiscBinaryFlags, NextExecutionTime, State).
      *         If the task is not found then <code>null</code> is returned.
@@ -241,10 +265,10 @@ public interface TaskStore {
      * Returns name/value pairs for all persisted properties that match the specified name pattern.
      * For example, to find property names that start with "MY_PROP_NAME_",
      * taskStore.getProperties("MY\\_PROP\\_NAME\\_%", '\\');
-     * 
+     *
      * @param pattern name pattern similar to the LIKE clause in SQL (% matches any characters, _ matches one character)
-     * @param escape escape character that indicates when matching characters like % and _ should be interpreted literally.
-     *            A value of null avoids designating an escape character, in which case the behavior depends on the persistent store.
+     * @param escape  escape character that indicates when matching characters like % and _ should be interpreted literally.
+     *                    A value of null avoids designating an escape character, in which case the behavior depends on the persistent store.
      * @return in-memory map of name/value pairs matching the criteria.
      * @throws Exception if an error occurs when attempting to update the persistent task store.
      */
@@ -252,7 +276,7 @@ public interface TaskStore {
 
     /**
      * Returns the value of the persisted property with the specified name. Null if the property does not exist.
-     * 
+     *
      * @param name property name.
      * @return property value.
      */
@@ -260,7 +284,7 @@ public interface TaskStore {
 
     /**
      * Returns a task record with information about the <code>Trigger</code> for the task with the specified id.
-     * 
+     *
      * @param taskId unique identifier for the task.
      * @return task record containing information about the <code>Trigger</code> for the task with the specified id.
      *         The resulting record must contain the attributes (IdOfOwner, State, Trigger).
@@ -272,7 +296,7 @@ public interface TaskStore {
     /**
      * Increment and return the consecutive failure count for a task.
      * The consecutive failure count is not incremented beyond Short.MAX_VALUE.
-     * 
+     *
      * @param taskId id of the task.
      * @return the new consecutive failure count. -1 if the task is not found in the persistent store.
      * @throws Exception if an error occurs accessing the persistent store.
@@ -281,8 +305,8 @@ public interface TaskStore {
 
     /**
      * Persist updates to a partition record in the persistent store.
-     * 
-     * @param updates updates to make to the partition entry. Only the specified fields are persisted.
+     *
+     * @param updates  updates to make to the partition entry. Only the specified fields are persisted.
      * @param expected criteria that must be matched for update to succeed.
      * @return count of entries that were updated.
      * @throws Exception if an error occurs when attempting to update the persistent store.
@@ -291,8 +315,8 @@ public interface TaskStore {
 
     /**
      * Persist updates to a task record in the persistent store.
-     * 
-     * @param updates updates to make to the task. Only the specified fields are persisted.
+     *
+     * @param updates  updates to make to the task. Only the specified fields are persisted.
      * @param expected criteria that must be matched for optimistic update to succeed. Must include Id.
      * @return true if persistent task store was updated, otherwise false.
      * @throws Exception if an error occurs when attempting to update the persistent task store.
@@ -301,9 +325,9 @@ public interface TaskStore {
 
     /**
      * Remove the record for a task from the persistent store.
-     * 
-     * @param taskId unique identifier for a persistent task
-     * @param owner name of owner to match as the task submitter. Null to ignore.
+     *
+     * @param taskId        unique identifier for a persistent task
+     * @param owner         name of owner to match as the task submitter. Null to ignore.
      * @param removeIfEnded indicates whether or not tasks that have ended can be removed.
      * @return true if the record was removed as a result of this method, otherwise false.
      * @throws Exception if an error occurs when attempting to update the persistent task store.
@@ -312,7 +336,7 @@ public interface TaskStore {
 
     /**
      * Remove partition entries matching the specified criteria.
-     * 
+     *
      * @param criteria criteria that must be matched for entries to be removed.
      * @return count of entries that were removed.
      * @throws Exception if an error occurs when attempting to update the persistent store.
@@ -324,12 +348,12 @@ public interface TaskStore {
      * (as determined by the inState attribute) of the specified state.
      * For example, to remove all canceled tasks that have a name that starts with "PAYROLL_TASK_",
      * taskStore.remove("PAYROLL\\_TASK\\_%", '\\', TaskState.CANCELED, true, "app1");
-     * 
+     *
      * @param pattern task name pattern similar to the LIKE clause in SQL (% matches any characters, _ matches one character)
-     * @param escape escape character that indicates when matching characters like % and _ should be interpreted literally.
-     * @param state a task state. For example, TaskState.UNATTEMPTED.
+     * @param escape  escape character that indicates when matching characters like % and _ should be interpreted literally.
+     * @param state   a task state. For example, TaskState.UNATTEMPTED.
      * @param inState indicates whether to remove tasks with or without the specified state
-     * @param owner name of owner to match as the task submitter. Null to ignore.
+     * @param owner   name of owner to match as the task submitter. Null to ignore.
      * @return count of tasks removed.
      * @throws Exception if an error occurs when attempting to update the persistent task store.
      */
@@ -339,10 +363,10 @@ public interface TaskStore {
      * Removes all persisted properties that match the specified name pattern.
      * For example, to remove properties with names that start with "MY_PROP_NAME_",
      * taskStore.removeProperties("MY\\_PROP\\_NAME\\_%", '\\');
-     * 
+     *
      * @param pattern name pattern similar to the LIKE clause in SQL (% matches any characters, _ matches one character)
-     * @param escape escape character that indicates when matching characters like % and _ should be interpreted literally.
-     *            A value of null avoids designating an escape character, in which case the behavior depends on the persistent store.
+     * @param escape  escape character that indicates when matching characters like % and _ should be interpreted literally.
+     *                    A value of null avoids designating an escape character, in which case the behavior depends on the persistent store.
      * @return number of properties removed.
      * @throws Exception if an error occurs when attempting to update the persistent task store.
      */
@@ -364,7 +388,7 @@ public interface TaskStore {
 
     /**
      * Removes the property with the specified name from the persistent store.
-     * 
+     *
      * @param name name of the entry.
      * @return true if removed. False if it was not found in the persistent store.
      * @throws Exception if an error occurs when attempting to update the persistent task store.
@@ -374,8 +398,8 @@ public interface TaskStore {
     /**
      * Assigns a task to the specified partition.
      * The implementation should aim to return as quickly as possible with a false value if the entry is already locked
-     * by another member, rather than waiting to make the update.  A locked task entry indicates that failover is not needed
-     * - a false positive occurred because the task was taking too long to run.  This could be caused by a lengthy timer/task
+     * by another member, rather than waiting to make the update. A locked task entry indicates that failover is not needed
+     * - a false positive occurred because the task was taking too long to run. This could be caused by a lengthy timer/task
      * that is otherwise behaving properly, in which case the customer ought to be using a larger value for missedTaskThreshold
      * so as to avoid triggering failover logic/overhead when there is no outage.
      *
@@ -389,8 +413,8 @@ public interface TaskStore {
 
     /**
      * Assigns the value of the property if it exists in the persistent store.
-     * 
-     * @param name property name.
+     *
+     * @param name  property name.
      * @param value new value for the property.
      * @return true if the property exists and was updated or already has the value.
      *         False if the property does not exist in the persistent store.
@@ -412,9 +436,9 @@ public interface TaskStore {
 
     /**
      * Transfers tasks that have not yet completed all executions to another partition.
-     * 
-     * @param taskId task id including and up to which all non-ended tasks in the partition are reassigned.
-     *            If null, all non-ended tasks in the partition are reassigned.
+     *
+     * @param taskId         task id including and up to which all non-ended tasks in the partition are reassigned.
+     *                           If null, all non-ended tasks in the partition are reassigned.
      * @param oldPartitionId partition id from which to take tasks.
      * @param newPartitionId partition id to which to assign tasks.
      * @return number of tasks updated.

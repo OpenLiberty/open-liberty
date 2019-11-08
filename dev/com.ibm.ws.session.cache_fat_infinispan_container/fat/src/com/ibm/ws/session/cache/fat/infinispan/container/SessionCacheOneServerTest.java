@@ -31,6 +31,11 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
+/**
+ * Test suite:
+ * One liberty server acting as a cache client
+ * One infinispan cache
+ */
 @RunWith(FATRunner.class)
 public class SessionCacheOneServerTest extends FATServletClient {
 
@@ -40,10 +45,12 @@ public class SessionCacheOneServerTest extends FATServletClient {
     public static SessionCacheApp app = null;
 
     // TODO this is temporarily set to single-threaded in order to ensure coverage of codepath without actually enabling concurrent use yet (only invokeAll is used)
-    public static final ExecutorService executor = Executors.newFixedThreadPool(1); // TODO Executors.newFixedThreadPool(12);
+    // TODO Executors.newFixedThreadPool(12);
+    public static final ExecutorService executor = Executors.newFixedThreadPool(1);
 
     @BeforeClass
     public static void setUp() throws Exception {
+        //Dropin web, listener1, and listener2 apps
         app = new SessionCacheApp(server, true, "session.cache.infinispan.web", "session.cache.infinispan.web.listener1", "session.cache.infinispan.web.listener2");
 
         server.addEnvVar("INF_SERVERLIST", infinispan.getContainerIpAddress() + ":" + infinispan.getMappedPort(11222));
@@ -62,7 +69,7 @@ public class SessionCacheOneServerTest extends FATServletClient {
      * Verify that all of the attributes (and no others) are added to the session, with their respective values.
      * After attributes have been added, submit concurrent requests to remove some of them.
      */
-    // TODO enable @Test
+    @Test
     public void testConcurrentPutNewAttributesAndRemove() throws Exception {
         final int NUM_THREADS = 9;
 
@@ -142,7 +149,7 @@ public class SessionCacheOneServerTest extends FATServletClient {
     /**
      * Submit concurrent requests to replace the value of the same attributes within a single session.
      */
-    // TODO enable @Test
+    @Test
     public void testConcurrentReplaceAttributes() throws Exception {
         final int NUM_ATTRS = 2;
         final int NUM_THREADS = 8;
@@ -204,7 +211,7 @@ public class SessionCacheOneServerTest extends FATServletClient {
      * There will be no guarantee whether or not the session attribute exists at the end of the test,
      * but if it does exist, it must have one of the values that was set during the test.
      */
-    // TODO enable @Test
+    @Test
     public void testConcurrentSetGetAndRemove() throws Exception {
         final int NUM_THREADS = 12;
 
@@ -269,10 +276,9 @@ public class SessionCacheOneServerTest extends FATServletClient {
             app.invokeServlet("testSessionPropertyCache&sessionId=" + sessionId + "&type=java.lang.Integer&key=testConcurrentSetGetAndRemove-key&values=" + expectedValues,
                               session);
 
-            // The following fails intermittently and is being investigated. // TODO re-enable
             // verify the property name is present in the session info cache
-            //if (!"null".equals(value))
-            //    app.invokeServlet("testSessionInfoCache&sessionId=" + sessionId + "&attributes=testConcurrentSetGetAndRemove-key", session);
+            if (!"null".equals(value))
+                app.invokeServlet("testSessionInfoCache&sessionId=" + sessionId + "&attributes=testConcurrentSetGetAndRemove-key", session);
         } finally {
             app.invalidateSession(session);
         }
@@ -385,7 +391,7 @@ public class SessionCacheOneServerTest extends FATServletClient {
      * Verify that CacheMXBean and CacheStatisticsMXBean provided for each of the caches created by the sessionCache feature
      * can be obtained and report statistics about the cache.
      */
-    //TODO renable @Test
+    @Test
     public void testMXBeansEnabled() throws Exception {
         app.invokeServlet("testMXBeansEnabled", new ArrayList<>());
     }
@@ -422,5 +428,15 @@ public class SessionCacheOneServerTest extends FATServletClient {
         } finally {
             app.invalidateSession(session);
         }
+    }
+
+    /**
+     * Ensure that if Infinispan exception is ever resolved, that we are notified and can switch our tests back.
+     * Error Thrown: ISPN021011: Incompatible cache value types specified, expected class java.lang.String but class java.lang.Object was specified
+     */
+    @Test
+    public void testInfinispanClassCastExpection() throws Exception {
+        //This should not fail here as this is the first test suite running.
+        app.invokeServlet("testInfinispanClassCastExpection&shouldFail=false", null);
     }
 }

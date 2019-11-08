@@ -133,13 +133,15 @@ exporta\u00e7\u00e3o/importa\u00e7\u00e3o do assinante a partir do host de desti
 cliente.
 ssl.client.handshake.error.CWPKI0022E.useraction=Reveja a mensagem de erro estendida do TrustManager para determinar o que precisa ser alterado entre a configura\u00e7\u00e3o SSL de destino e a configura\u00e7\u00e3o SSL de cliente.
 # -------------------------------------------------------------------------------------------------
-ssl.client.alias.not.found.CWPKI0023E=CWPKI0023E: O alias do certificado {0} especificado por com.ibm.ssl.keyStoreClientAlias n\u00e3o est\u00e1 localizado em KeyStore {1}.
-ssl.client.alias.not.found.CWPKI0023E.explanation=O alias do certificado especificado para essa configura\u00e7\u00e3o SSL n\u00e3o est\u00e1 no KeyStore especificado. 
-ssl.client.alias.not.found.CWPKI0023E.useraction=Inclua um certificado no Armazenamento de chaves com o alias de certificado especificado ou altere o alias de certificado especificado para corresponder a um alias localizado no Armazenamento de chaves de cliente.
+ssl.client.alias.not.found.CWPKI0023E=CWPKI0023E: O alias de certificado {0} especificado pelo atributo clientKeyAlias n\u00e3o \u00e9 encontrado no KeyStore {1} ou ele \u00e9 inv\u00e1lido.
+ssl.client.alias.not.found.CWPKI0023E.explanation=O alias de certificado especificado para esta configura\u00e7\u00e3o de SSL n\u00e3o est\u00e1 no KeyStore especificado ou foi considerado inv\u00e1lido. Um certificado expirado \u00e9 um exemplo de um certificado inv\u00e1lido.
+ssl.client.alias.not.found.CWPKI0023E.useraction=Inclua um certificado no KeyStore com o alias de certificado especificado ou substitua ou renove o certificado inv\u00e1lido com o alias de certificado especificado localizado no \
+cliente KeyStore.
 # -------------------------------------------------------------------------------------------------
-ssl.server.alias.not.found.CWPKI0024E=CWPKI0024E: O alias do certificado {0} especificado por com.ibm.ssl.keyStoreServerAlias n\u00e3o est\u00e1 localizado em KeyStore {1}.
-ssl.server.alias.not.found.CWPKI0024E.explanation=O alias do certificado especificado para essa configura\u00e7\u00e3o SSL n\u00e3o est\u00e1 no KeyStore especificado. 
-ssl.server.alias.not.found.CWPKI0024E.useraction=Inclua um certificado no Armazenamento de chaves com o alias de certificado especificado ou altere o alias de certificado especificado para corresponder a um alias localizado no Armazenamento de chaves de servidor.
+ssl.server.alias.not.found.CWPKI0024E=CWPKI0024E: O alias de certificado {0} especificado pelo atributo serverKeyAlias n\u00e3o est\u00e1 localizado no KeyStore {1} ou ele \u00e9 inv\u00e1lido.
+ssl.server.alias.not.found.CWPKI0024E.explanation=O alias de certificado especificado para esta configura\u00e7\u00e3o de SSL n\u00e3o est\u00e1 no KeyStore especificado ou foi considerado inv\u00e1lido. Um certificado expirado \u00e9 um exemplo de um certificado inv\u00e1lido.
+ssl.server.alias.not.found.CWPKI0024E.useraction=Inclua um certificado no KeyStore com o alias de certificado especificado ou substitua ou renove o certificado inv\u00e1lido com o alias de certificado especificado localizado no \
+servidor KeyStore.
 # -------------------------------------------------------------------------------------------------
 ssl.load.https.stream.handler.CWPKI0025E=CWPKI0025E: O sistema n\u00e3o p\u00f4de carregar a classe manipuladora de https {0}. Mensagem de erro estendida: \
 {1}
@@ -760,4 +762,20 @@ Subject do certificado do servidor.
 ssl.client.handshake.error.CWPKI0824E.useraction=Quando a verifica\u00e7\u00e3o do nome do host est\u00e1 \
 ativada, o servidor que est\u00e1 sendo acessado precisa ser configurado com um certificado que contenha as \
 informa\u00e7\u00f5es apropriadas necess\u00e1rias para verificar a identidade do servidor.
+# -------------------------------------------------------------------------------------------------
+ssl.cacerts.error.CWPKI0825W=CWPKI0825W: O atributo trustDefaultCerts est\u00e1 ativado, mas o armazenamento confi\u00e1vel padr\u00e3o falhou ao inicializar. Como o armazenamento confi\u00e1vel padr\u00e3o n\u00e3o foi inicializado, apenas o armazenamento confi\u00e1vel configurado pela configura\u00e7\u00e3o de SSL {0} \u00e9 usado. A exce\u00e7\u00e3o que \u00e9 retornada \u00e9: {1}. 
+ssl.cacerts.error.CWPKI0825W.explanation=O armazenamento confi\u00e1vel padr\u00e3o n\u00e3o foi inicializado porque ele n\u00e3o p\u00f4de ser recuperado do gerenciador de confian\u00e7a. O armazenamento confi\u00e1vel padr\u00e3o n\u00e3o \u00e9 usado para confian\u00e7a. Somente a configura\u00e7\u00e3o SSL definida \u00e9 usada.
+ssl.cacerts.error.CWPKI0825W.useraction=Assegure-se de que o arquivo de armazenamento confi\u00e1vel padr\u00e3o exista e esteja acess\u00edvel
+# -------------------------------------------------------------------------------------------------
+ssl.environment.cert.error.CWPKI0826W=CWPKI0826W: O certificado n\u00e3o foi recuperado da vari\u00e1vel de ambiente {0}. O certificado n\u00e3o foi inclu\u00eddo no armazenamento confi\u00e1vel do {1}.  A exce\u00e7\u00e3o que \u00e9 retornada \u00e9: {2}.
+ssl.environment.cert.error.CWPKI0826W.explanation=O certificado que \u00e9 especificado na vari\u00e1vel de ambiente n\u00e3o pode ser acessado e n\u00e3o est\u00e1 inclu\u00eddo no armazenamento confi\u00e1vel. Esse problema pode ser causado pela vari\u00e1vel de ambiente, pelo nome do arquivo ou pelo certificado. Uma falha ao incluir o certificado n\u00e3o invalida a configura\u00e7\u00e3o do SSL, mas pode causar problemas ao estabelecer confian\u00e7a nas conex\u00f5es de sa\u00edda.
+ssl.environment.cert.error.CWPKI0826W.useraction=Esse problema pode resultar de v\u00e1rias causas. Verifique se a vari\u00e1vel de ambiente ou o arquivo est\u00e1 preenchido com um certificado b\u00e1sico de 64 bits.
+# -------------------------------------------------------------------------------------------------
+ssl.using.cacerts.CWPKI0827I=CWPKI0827I: A configura\u00e7\u00e3o de SSL {0} usa o armazenamento confi\u00e1vel padr\u00e3o, al\u00e9m do armazenamento confi\u00e1vel configurado.
+ssl.using.cacerts.CWPKI0827I.explanation=O armazenamento confi\u00e1vel padr\u00e3o e o armazenamento confi\u00e1vel que est\u00e1 configurado para a configura\u00e7\u00e3o SSL s\u00e3o ambos usados para confian\u00e7a.
+ssl.using.cacerts.CWPKI0827I.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+# -------------------------------------------------------------------------------------------------
+ssl.client.handshake.cacerts.error.CWPKI0828E=CWPKI0828E: O atributo trustDefaultCerts est\u00e1 ativado, mas a confian\u00e7a n\u00e3o foi estabelecida usando o armazenamento confi\u00e1vel padr\u00e3o. A mensagem de erro estendida da exce\u00e7\u00e3o de handshake SSL \u00e9: {0}.
+ssl.client.handshake.cacerts.error.CWPKI0828E.explanation=O armazenamento confi\u00e1vel padr\u00e3o n\u00e3o est\u00e1 configurado corretamente para estabelecer confian\u00e7a.  
+ssl.client.handshake.cacerts.error.CWPKI0828E.useraction=Revise a mensagem de erro estendida para determinar o que mudar na configura\u00e7\u00e3o.
 # -------------------------------------------------------------------------------------------------

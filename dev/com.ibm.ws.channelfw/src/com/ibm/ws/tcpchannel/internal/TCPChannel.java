@@ -17,7 +17,6 @@ import java.nio.channels.SocketChannel;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Queue;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
@@ -28,7 +27,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.FFDCSelfIntrospectable;
-import com.ibm.ws.staticvalue.StaticValue;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.channelfw.ChannelFrameworkFactory;
 import com.ibm.wsspi.channelfw.ConnectionLink;
@@ -52,7 +50,7 @@ import com.ibm.wsspi.tcpchannel.TCPConnectionContext;
 @SuppressWarnings("unchecked")
 public abstract class TCPChannel implements InboundChannel, OutboundChannel, FFDCSelfIntrospectable {
 
-    volatile protected static StaticValue<NBAccept> acceptReqProcessor = StaticValue.createStaticValue(null);
+    volatile protected static NBAccept acceptReqProcessor = null;
 
     private String channelName = null;
     protected String externalName = null;
@@ -78,7 +76,8 @@ public abstract class TCPChannel implements InboundChannel, OutboundChannel, FFD
     protected TCPChannelFactory channelFactory = null;
 
     private int connectionCount = 0; // inbound connection count
-    private final Object connectionCountSync = new Object() {}; // sync object for above counter
+    private final Object connectionCountSync = new Object() {
+    }; // sync object for above counter
 
     protected StatisticsLogger statLogger = null;
     protected final AtomicLong totalSyncReads = new AtomicLong(0);
@@ -139,14 +138,8 @@ public abstract class TCPChannel implements InboundChannel, OutboundChannel, FFD
 
         this.alists = AccessLists.getInstance(this.config);
 
-        if (this.config.isInbound() && acceptReqProcessor.get() == null) {
-            acceptReqProcessor = StaticValue.mutateStaticValue(acceptReqProcessor, new Callable<NBAccept>() {
-                @Override
-                public NBAccept call() throws Exception {
-                    return new NBAccept(TCPChannel.this.config);
-                }
-
-            });
+        if (this.config.isInbound() && acceptReqProcessor == null) {
+            acceptReqProcessor = new NBAccept(this.config);
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
@@ -264,7 +257,7 @@ public abstract class TCPChannel implements InboundChannel, OutboundChannel, FFD
                     if (null == this.endPoint.getServerSocket()) {
                         initializePort();
                     }
-                    acceptReqProcessor.get().registerPort(this.endPoint);
+                    acceptReqProcessor.registerPort(this.endPoint);
                     this.preparingToStop = false;
 
                     String IPvType = "IPv4";
@@ -390,8 +383,8 @@ public abstract class TCPChannel implements InboundChannel, OutboundChannel, FFD
             Tr.entry(tc, "stop (" + millisec + ") " + getExternalName());
         }
         // Stop accepting new connections on the inbound channels
-        if (!this.preparingToStop && acceptReqProcessor.get() != null && this.config.isInbound()) {
-            acceptReqProcessor.get().removePort(this.endPoint);
+        if (!this.preparingToStop && acceptReqProcessor != null && this.config.isInbound()) {
+            acceptReqProcessor.removePort(this.endPoint);
             // PK60924 - stop the listening port now
             this.endPoint.destroyServerSocket();
             Tr.info(tc, TCPChannelMessageConstants.TCP_CHANNEL_STOPPED, getExternalName(), this.displayableHostName, String.valueOf(this.endPoint.getListenPort()));
@@ -575,7 +568,7 @@ public abstract class TCPChannel implements InboundChannel, OutboundChannel, FFD
      * Sets the lastConnExceededTime.
      *
      * @param lastConnExceededTime
-     *            The lastConnExceededTime to set
+     *                                 The lastConnExceededTime to set
      */
     protected void setLastConnExceededTime(long lastConnExceededTime) {
         this.lastConnExceededTime = lastConnExceededTime;

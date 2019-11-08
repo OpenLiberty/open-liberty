@@ -49,7 +49,7 @@ public class OpentracingTCKLauncherMicroProfile {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        server.stopServer("CWMOT0009W");
     }
 
     @Test

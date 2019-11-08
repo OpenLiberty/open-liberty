@@ -305,7 +305,7 @@ public class KernelResolverRepositoryTest {
     public void testGetFeatureByFeatureName() {
         Mockery mockery = new Mockery();
         ProvisioningFeatureDefinition installedFeature = ResolverTestUtils.mockSimpleFeatureDefinition(mockery, "com.example.featureA", Version.valueOf("1.0.0"), "featureA",
-                                                                                                       "foo:featureA");
+                                                                                                       "foo:featureA", com.ibm.ws.kernel.feature.Visibility.PUBLIC, false);
 
         KernelResolverRepository repo = new KernelResolverRepository(null, null, IGNORE_CONFLICTS);
         repo.addFeature(installedFeature);

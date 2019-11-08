@@ -17,10 +17,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
-import java.util.concurrent.Callable;
 
 import com.ibm.ws.logging.internal.impl.LogProviderConfigImpl;
-import com.ibm.ws.staticvalue.StaticValue;
 import com.ibm.wsspi.logging.TextFileOutputStreamFactory;
 import com.ibm.wsspi.logprovider.TrService;
 
@@ -96,22 +94,16 @@ public class TrConfigZapper extends TrConfigurator {
      */
     public static void revert() {
         stop();
-        delegate = StaticValue.mutateStaticValue(delegate, null);
-        loggingConfig.get().set(null);
+        delegate = null;
+        loggingConfig.set(null);
     }
 
     public TrService getTrDelegate() {
-        return delegate.get();
+        return delegate;
     }
 
     public void setTrDelegate(final TrService newDelegate) {
-        Callable<TrService> c = new Callable<TrService>() {
-            @Override
-            public TrService call() throws Exception {
-                return newDelegate;
-            }
-        };
-        delegate = StaticValue.mutateStaticValue(delegate, c);
+        delegate = newDelegate;
     }
 
 }

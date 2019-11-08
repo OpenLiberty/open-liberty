@@ -35,7 +35,7 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.SimpleKafk
 /**
  * Test that the kafka connector acknowledges messages and commits partition offsets correctly
  */
-@WebServlet("/kafkaAcknowledgementTest")
+@WebServlet("/kafkaSerializerTest")
 public class KafkaSerializerTestServlet extends AbstractKafkaTestServlet {
 
     private static final long serialVersionUID = 1L;

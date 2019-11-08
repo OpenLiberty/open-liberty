@@ -99,6 +99,14 @@ public final class BootstrapConstants {
     public static final String LOC_INTERNAL_LIB_DIR = "wlp.lib.dir";
 
     public static final String LOC_PROPERTY_INSTANCE_DIR = "wlp.user.dir";
+
+    /**
+     * Used (especially in the runnable JAR case at present) to specify that we should ignore WLP_USER_DIR set from the environment, and use
+     * something else as user dir. E.g. we might use: "${wlp.install.dir}/usr"
+     */
+    public static final String LOC_PROPERTY_IGNORE_INSTANCE_DIR_FROM_ENV = "wlp.ignore.user.dir.from.env";
+
+    /** Tracks whether the user dir is set to the default "wlp.install.dir/usr", either via {@link LOC_PROPERTY_IGNORE_INSTANCE_DIR_FROM_ENV} or by virtue of being unset */
     public static final String LOC_PROPERTY_INSTANCE_DIR_IS_DEFAULT = "wlp.user.dir.isDefault";
 
     public static final String LOC_PROPERTY_SRVCFG_DIR = "server.config.dir";
@@ -124,7 +132,7 @@ public final class BootstrapConstants {
     public static final String LOC_AREA_NAME_SHARED = "shared";
     public static final String LOC_AREA_NAME_EXTENSION = "extension";
     public static final String LOC_AREA_NAME_LIB = "lib";
-    public static final String LOC_AREA_NAME_WORKING = "workarea";
+    public static final String LOC_AREA_NAME_WORKING = "workarea"; // default
     public static final String LOC_AREA_NAME_WORKING_UTILS = "workarea-utils";
     public static final String LOC_AREA_NAME_APP = "apps";
     public static final String LOC_AREA_NAME_RES = "resources";
@@ -139,6 +147,9 @@ public final class BootstrapConstants {
     /** Server and Client names are not configurable via bootstrap property: it is specified on the command line only */
     public static final String INTERNAL_SERVER_NAME = "wlp.server.name";
     public static final String INTERNAL_CLIENT_NAME = "wlp.client.name";
+
+    /** The workarea for Embedded servers may be specified by utility commands (i.e. not by the user) */
+    public static final String LOC_INTERNAL_WORKAREA_DIR = "wlp.workarea.dir";
 
     /**
      * Indicates whether or not the server needs to be verified for existence.
@@ -186,7 +197,7 @@ public final class BootstrapConstants {
 
     public static final String S_COMMAND_FILE = ".sCommand";
 
-    /** name of the directory for server command authoriazation checks */
+    /** name of the directory for server command authorization checks */
     public static final String S_COMMAND_AUTH_DIR = ".sCommandAuth";
 
     /** name of the bootstrap / jvm property that specifies the command listener port */

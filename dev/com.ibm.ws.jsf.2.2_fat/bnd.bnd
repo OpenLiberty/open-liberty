@@ -57,8 +57,9 @@ src: \
     test-applications/PI67525.war/src,\
     test-applications/PI90507.war/src,\
     test-applications/PH01566.war/src,\
-    test-applications/JSF22LocalizationTester.war/src
-    
+    test-applications/JSF22LocalizationTester.war/src,\
+    test-applications/JSF22ThirdPartyApi.war/src
+
 fat.project: true
 tested.features: servlet-4.0, jsf-2.3, cdi-2.0, beanValidation-2.0
 
@@ -69,11 +70,13 @@ javac.target: 1.7
 	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
     net.sourceforge.htmlunit:htmlunit;version=2.20,\
     xml-apis:xml-apis;version=1.4.01,\
+    com.ibm.websphere.appserver.thirdparty.jsf-2.2;version=latest,\
     com.ibm.websphere.javaee.cdi.1.2;version=latest,\
     com.ibm.websphere.javaee.jsf.2.2;version=latest,\
     com.ibm.websphere.javaee.validation.1.1;version=latest,\
     com.ibm.websphere.javaee.servlet.3.1;version=latest,\
     com.ibm.websphere.javaee.el.3.0;version=latest,\
     com.ibm.ws.jsp.2.3;version=latest,\
+    com.ibm.ws.jsf.2.2;version=latest,\
     com.ibm.websphere.javaee.jsp.2.3;version=latest,\
     com.ibm.websphere.javaee.interceptor.1.2;version=latest

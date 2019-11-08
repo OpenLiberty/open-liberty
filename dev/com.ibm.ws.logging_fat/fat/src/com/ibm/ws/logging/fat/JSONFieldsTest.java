@@ -14,6 +14,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,6 +39,7 @@ public class JSONFieldsTest {
     private static LibertyServer server_xml;
     private static LibertyServer server_env;
     private static LibertyServer server_bootstrap;
+    private static LibertyServer serverInUse;  // hold on to the server currently used so cleanUp knows which server to stop
 
     @BeforeClass
     public static void initialSetup() throws Exception {
@@ -52,6 +54,7 @@ public class JSONFieldsTest {
     }
 
     public void setUp(LibertyServer server) throws Exception {
+    	serverInUse = server;
         if (server != null && !server.isStarted()) {
             // Restore the original server configuration, before starting the server for each test case.
             server.restoreServerConfiguration();
@@ -59,10 +62,10 @@ public class JSONFieldsTest {
         }
     }
 
-//    @After
-    public void cleanUp(LibertyServer server) throws Exception {
-        if (server != null && server.isStarted()) {
-            server.stopServer("com.ibm.ws.logging.fat.ffdc.servlet.FFDCServlet.doGet", "ArithmeticException",
+    @After
+    public void cleanUp() throws Exception {
+        if (serverInUse != null && serverInUse.isStarted()) {
+            serverInUse.stopServer("com.ibm.ws.logging.fat.ffdc.servlet.FFDCServlet.doGet", "ArithmeticException",
                               "CWWKG0081E", "CWWKG0083W");
         }
     }
