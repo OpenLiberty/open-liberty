@@ -4,6 +4,6 @@
 	<classpathentry including="com/ibm/ws/kernel/feature/AppForceRestart.java|com/ibm/ws/kernel/feature/FeatureDefinition.java|com/ibm/ws/kernel/feature/ProcessType.java|com/ibm/ws/kernel/feature/Visibility.java|com/ibm/ws/kernel/feature/internal/FeatureResolverImpl.java|com/ibm/ws/kernel/feature/internal/ProvisionerConstants.java|com/ibm/ws/kernel/feature/provisioning/|com/ibm/ws/kernel/feature/resolver/" kind="src" path="com.ibm.ws.kernel.feature.core"/>
 	<classpathentry including="com/ibm/ws/kernel/provisioning/ExtensionConstants.java|com/ibm/ws/kernel/provisioning/package-info.java" kind="src" path="com.ibm.ws.kernel.boot.core"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

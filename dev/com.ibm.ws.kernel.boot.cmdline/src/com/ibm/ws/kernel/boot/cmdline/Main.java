@@ -14,11 +14,11 @@ import java.util.ResourceBundle;
 
 /**
  * Check's the version of the Java running before starting the server or running commands,
- * if Java 7 (or below) is being used a translated error message is thrown.
+ * if Java 5 (or below) is being used a translated error message is thrown.
  */
 public class Main {
 
-    private static final int CLASS_MAJOR_VERSION_JAVA8 = 52;
+    private static final int CLASS_MAJOR_VERSION_JAVA6 = 50;
 
     // See Launcher.ReturnCode.
     private static final int ERROR_BAD_JAVA_VERSION = 30;
@@ -26,8 +26,7 @@ public class Main {
     // See Launcher.ReturnCode.
     private static final int ERROR_BAD_JAVA_BITMODE = 31;
 
-    protected static void invokeMain(String[] args) {
-    }
+    protected static void invokeMain(String[] args) {}
 
     /**
      * @param args - will just get passed onto Launcher if version check is successful
@@ -36,11 +35,11 @@ public class Main {
         // gij (GNU libgcj) is installed as "java" on some Linux machines.
         // This interpreter really only supports Java 5, but unhelpfully fails
         // to throw UnsupportedClassVersionError for Java 6 classes.
-        if (getClassMajorVersion() < CLASS_MAJOR_VERSION_JAVA8) {
+        if (getClassMajorVersion() < CLASS_MAJOR_VERSION_JAVA6) {
             badVersion();
         }
 
-        // On z/OS only 64-bit Java is supported
+        // On z/OS only 64-bit Java is supported  
         String osName = System.getProperty("os.name");
         if (osName.equals("z/OS")) {
             String bitmode = System.getProperty("com.ibm.vm.bitmode");
@@ -77,7 +76,7 @@ public class Main {
         if (classVersion == null) {
             // JVM didn't supply the system property.  Let's hope it throws
             // UnsupportedClassVersionError if necessary.
-            return CLASS_MAJOR_VERSION_JAVA8;
+            return CLASS_MAJOR_VERSION_JAVA6;
         }
 
         int index = classVersion.indexOf('.');
@@ -88,7 +87,7 @@ public class Main {
         } catch (NumberFormatException ex) {
             // We couldn't parse the version string.  Let's hope the JVM throws
             // UnsupportedClassVersionError if necessary.
-            return CLASS_MAJOR_VERSION_JAVA8;
+            return CLASS_MAJOR_VERSION_JAVA6;
         }
     }
 }

@@ -18,7 +18,6 @@ import static org.junit.Assert.assertTrue;
 
 import javax.security.auth.Subject;
 
-import org.hamcrest.Matcher;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -429,8 +428,7 @@ public class ThreadIdentityManagerTest {
                     one(tis).isAppThreadIdentityEnabled();
                     will(returnValue(appThreadEnabled));
                     never(tis).set(invocationSubject);
-                    Matcher<Double> matcher = anything();
-                    never(tis).reset(with(matcher));
+                    never(tis).reset(with(anything()));
                 }
             });
         }
@@ -454,8 +452,7 @@ public class ThreadIdentityManagerTest {
                     one(j2cIdentityService).isJ2CThreadIdentityEnabled();
                     will(returnValue(j2cThreadEnabled));
                     never(j2cIdentityService).set(invocationSubject);
-                    Matcher<Double> matcher = anything();
-                    never(j2cIdentityService).reset(with(matcher));
+                    never(j2cIdentityService).reset(with(anything()));
                 }
             });
         }
@@ -475,8 +472,7 @@ public class ThreadIdentityManagerTest {
             mockery.checking(new Expectations() {
                 {
                     never(tis).runAsServer();
-                    Matcher<Double> matcher = anything();
-                    never(tis).reset(with(matcher));
+                    never(tis).reset(with(anything()));
                 }
             });
         }
@@ -498,8 +494,7 @@ public class ThreadIdentityManagerTest {
                 will(returnValue(true));
                 one(tis).set(invocationSubject);
                 will(throwException(new RuntimeException("ThreadIdentityService.set() blew up.")));
-                Matcher<Double> matcher = anything();
-                never(tis).reset(with(matcher));
+                never(tis).reset(with(anything()));
             }
         });
     }
@@ -511,8 +506,7 @@ public class ThreadIdentityManagerTest {
                 will(returnValue(true));
                 one(j2cIdentityService).set(invocationSubject);
                 will(throwException(new RuntimeException("J2CIdentityService.set() blew up.")));
-                Matcher<Double> matcher = anything();
-                never(j2cIdentityService).reset(with(matcher));
+                never(j2cIdentityService).reset(with(anything()));
             }
         });
     }
@@ -522,8 +516,7 @@ public class ThreadIdentityManagerTest {
             {
                 never(tis).isAppThreadIdentityEnabled();
                 never(tis).set(with(any(Subject.class)));
-                Matcher<Double> matcher = anything();
-                never(tis).reset(with(matcher));
+                never(tis).reset(with(anything()));
             }
         });
     }
@@ -533,8 +526,7 @@ public class ThreadIdentityManagerTest {
             {
                 never(jis).isJ2CThreadIdentityEnabled();
                 never(jis).set(with(any(Subject.class)));
-                Matcher<Double> matcher = anything();
-                never(jis).reset(with(matcher));
+                never(jis).reset(with(anything()));
             }
         });
     }
