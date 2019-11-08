@@ -146,12 +146,14 @@ class UserData implements Serializable, Cloneable {
     protected final void removeAttributes(String[] attributes) {
         this._toString = null; // reset toString variable
         int i = 0;
-        while (i < attributes.length) {
-            ArrayList<String> array = this._attributes.get(attributes[i]);
-            if (array != null) {
-                this._attributes.remove(attributes[i]);
+        if (attributes != null) {
+            while (i < attributes.length) {
+                ArrayList<String> array = this._attributes.get(attributes[i]);
+                if (array != null) {
+                    this._attributes.remove(attributes[i]);
+                }
+                i++;
             }
-            i++;
         }
     }
 

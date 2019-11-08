@@ -27,6 +27,7 @@ import com.ibm.websphere.security.auth.InvalidTokenException;
 import com.ibm.websphere.security.auth.TokenExpiredException;
 import com.ibm.websphere.security.auth.WSSubject;
 import com.ibm.ws.common.internal.encoder.Base64Coder;
+import com.ibm.ws.security.jaas.common.callback.AuthenticationHelper;
 import com.ibm.ws.security.jwtsso.token.proxy.JwtSSOTokenHelper;
 import com.ibm.ws.security.token.TokenManager;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
@@ -34,114 +35,13 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.security.ltpa.Token;
 import com.ibm.wsspi.security.token.SingleSignonToken;
 
-/**
- *
- */
 public class WebSecurityHelperImpl {
     private static final TraceComponent tc = Tr.register(WebSecurityHelperImpl.class);
     private static WebAppSecurityConfig webAppSecConfig = null;
+    private static final AtomicServiceReference<TokenManager> tokenManagerRef = new AtomicServiceReference<TokenManager>("tokenManager");
 
     public static void setWebAppSecurityConfig(WebAppSecurityConfig webAppSecConfig) {
         WebSecurityHelperImpl.webAppSecConfig = webAppSecConfig;
-    }
-
-    private static final AtomicServiceReference<TokenManager> tokenManagerRef = new AtomicServiceReference<TokenManager>("tokenManager");
-
-    protected void setTokenManager(ServiceReference<TokenManager> ref) {
-        tokenManagerRef.setReference(ref);
-    }
-
-    protected void unsetTokenManager(ServiceReference<TokenManager> ref) {
-        tokenManagerRef.setReference(ref);
-    }
-
-    protected void activate(ComponentContext cc, Map<String, Object> properties) {
-        tokenManagerRef.activate(cc);
-    }
-
-    protected void deactivate(ComponentContext cc) {
-        tokenManagerRef.deactivate(cc);
-    }
-
-    /**
-     * builds an LTPACookie object
-     **/
-    private static Cookie constructLTPACookieObj(SingleSignonToken ssoToken) {
-        byte[] ssoTokenBytes = ssoToken.getBytes();
-        return createCookie(ssoTokenBytes);
-    }
-
-    /**
-     * builds an LTPACookie object without a list of attributes
-     **/
-    private static Cookie constructLTPACookieObj(SingleSignonToken ssoToken, String[] attributes) {
-        byte[] ssoTokenBytes = ssoToken.getBytes();
-        Token token = null;
-        try {
-            TokenManager tokenManager = tokenManagerRef.getService();
-            token = tokenManager.recreateTokenFromBytes(ssoTokenBytes, attributes);
-            ssoTokenBytes = token.getBytes();
-        } catch (InvalidTokenException e) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Token is not valid" + e.getMessage());
-            }
-            return null;
-        } catch (TokenExpiredException e) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Token is exipired" + e.getMessage());
-            }
-            return null;
-        }
-
-        return createCookie(ssoTokenBytes);
-    }
-
-    /**
-     * @param ssoTokenBytes
-     * @return
-     */
-    private static Cookie createCookie(byte[] ssoTokenBytes) {
-        String ssoCookieString = Base64Coder.base64EncodeToString(ssoTokenBytes);
-        Cookie cookie = new Cookie(webAppSecConfig.getSSOCookieName(), ssoCookieString);
-        return cookie;
-    }
-
-    static Cookie getLTPACookie(final Subject subject) throws Exception {
-        return getLTPACookie(subject, null);
-    }
-
-    /**
-     * Gets the LTPA cookie from the given subject
-     *
-     * @param subject
-     * @param attributes
-     * @return
-     * @throws Exception
-     */
-    static Cookie getLTPACookie(final Subject subject, String[] attributes) throws Exception {
-        Cookie ltpaCookie = null;
-        SingleSignonToken ssoToken = null;
-        Set<SingleSignonToken> ssoTokens = subject.getPrivateCredentials(SingleSignonToken.class);
-        Iterator<SingleSignonToken> ssoTokensIterator = ssoTokens.iterator();
-        if (ssoTokensIterator.hasNext()) {
-            ssoToken = ssoTokensIterator.next();
-            if (ssoTokensIterator.hasNext()) {
-                throw new WSSecurityException("More than one ssotoken found in subject");
-            }
-        }
-        if (ssoToken != null) {
-            if (attributes == null || attributes.length < 1) {
-                ltpaCookie = constructLTPACookieObj(ssoToken);
-            } else {
-                ltpaCookie = constructLTPACookieObj(ssoToken, attributes);
-            }
-
-        } else {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "No ssotoken found for this subject");
-            }
-        }
-        return ltpaCookie;
     }
 
     /**
@@ -170,14 +70,13 @@ public class WebSecurityHelperImpl {
      *         on an http request with header value of Cookie.getName()=Cookie.getValue()
      */
     public static Cookie getSSOCookieFromSSOTokenWithOutAttrs(String[] attributes) throws Exception {
-        Subject subject = null;
         Cookie ltpaCookie = null;
         if (webAppSecConfig == null) {
             // if we don't have the config, we can't construct the cookie
             return null;
         }
         try {
-            subject = WSSubject.getRunAsSubject();
+            Subject subject = WSSubject.getRunAsSubject();
             if (subject == null) {
                 subject = WSSubject.getCallerSubject();
             }
@@ -212,5 +111,153 @@ public class WebSecurityHelperImpl {
      */
     public static String getJwtCookieName() {
         return JwtSSOTokenHelper.getJwtCookieName();
+    }
+
+    /**
+     * Extracts the access ID from the SSO LTPA token. Return null if the token is not valid.
+     *
+     * @return a String.
+     */
+    public static String getAcessIdFromSSOToken(byte[] ssoToken) throws Exception {
+        String accessId = null;
+        if (ssoToken != null) {
+            try {
+                Token recreatedToken = recreateTokenFromBytes(ssoToken, null);
+                if (recreatedToken != null) {
+                    accessId = recreatedToken.getAttributes("u")[0];
+                }
+            } catch (WSSecurityException e) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "getAcessIdFromSSOToken caught exception: " + e.getMessage());
+                }
+                throw e;
+            }
+        }
+        return accessId;
+    }
+
+    /**
+     * builds an LTPACookie object
+     **/
+    private static Cookie constructLTPACookieObj(SingleSignonToken ssoToken) {
+        byte[] ssoTokenBytes = ssoToken.getBytes();
+        return createCookie(ssoTokenBytes);
+    }
+
+    /**
+     * builds an LTPACookie object without a list of attributes
+     **/
+    private static Cookie constructLTPACookieObj(SingleSignonToken ssoToken, String[] attributes) {
+        byte[] ssoTokenBytes = ssoToken.getBytes();
+
+        try {
+            Token token = recreateTokenFromBytes(ssoTokenBytes, attributes);
+            ssoTokenBytes = token.getBytes();
+        } catch (InvalidTokenException e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Token is not valid" + e.getMessage());
+            }
+            return null;
+        } catch (TokenExpiredException e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Token is expired" + e.getMessage());
+            }
+            return null;
+        }
+
+        return createCookie(ssoTokenBytes);
+    }
+
+    /**
+     * @param attributes
+     * @param ssoToken
+     * @return
+     * @throws InvalidTokenException
+     * @throws TokenExpiredException
+     */
+    private static Token recreateTokenFromBytes(byte[] ssoToken, String[] attributes) throws InvalidTokenException, TokenExpiredException {
+        Token token = null;
+        TokenManager tokenManager = tokenManagerRef.getService();
+        if (tokenManager != null) {
+            byte[] credToken = AuthenticationHelper.copyCredToken(ssoToken);
+            if (attributes != null) {
+                token = tokenManager.recreateTokenFromBytes(credToken, attributes);
+            } else {
+                token = tokenManager.recreateTokenFromBytes(credToken);
+            }
+        }
+        return token;
+
+    }
+
+    /**
+     * @param ssoTokenBytes
+     * @return
+     */
+    private static Cookie createCookie(byte[] ssoTokenBytes) {
+        String ssoCookieString = Base64Coder.base64EncodeToString(ssoTokenBytes);
+        Cookie cookie = new Cookie(webAppSecConfig.getSSOCookieName(), ssoCookieString);
+        return cookie;
+    }
+
+    /**
+     * Gets the LTPA cookie from the given subject
+     *
+     * @param subject
+     * @return
+     * @throws Exception
+     */
+    static Cookie getLTPACookie(final Subject subject) throws Exception {
+        return getLTPACookie(subject, null);
+    }
+
+    /**
+     * Gets the LTPA cookie from the given subject
+     *
+     * @param subject
+     * @param attributes
+     * @return
+     * @throws Exception
+     */
+    private static Cookie getLTPACookie(final Subject subject, String[] attributes) throws Exception {
+        Cookie ltpaCookie = null;
+        SingleSignonToken ssoToken = null;
+        Set<SingleSignonToken> ssoTokens = subject.getPrivateCredentials(SingleSignonToken.class);
+        Iterator<SingleSignonToken> ssoTokensIterator = ssoTokens.iterator();
+        if (ssoTokensIterator.hasNext()) {
+            ssoToken = ssoTokensIterator.next();
+            if (ssoTokensIterator.hasNext()) {
+                throw new WSSecurityException("More than one ssotoken found in subject");
+            }
+        }
+        if (ssoToken != null) {
+            if (attributes == null || attributes.length < 1) {
+                ltpaCookie = constructLTPACookieObj(ssoToken);
+            } else {
+                ltpaCookie = constructLTPACookieObj(ssoToken, attributes);
+            }
+
+        } else {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "No ssotoken found for this subject");
+            }
+        }
+        return ltpaCookie;
+    }
+
+    protected void setTokenManager(ServiceReference<TokenManager> ref) {
+        tokenManagerRef.setReference(ref);
+    }
+
+    protected void unsetTokenManager(ServiceReference<TokenManager> ref) {
+        tokenManagerRef.setReference(ref);
+    }
+
+    protected void activate(ComponentContext cc, Map<String, Object> properties) {
+        tokenManagerRef.activate(cc);
+    }
+
+    protected void deactivate(ComponentContext cc) {
+        tokenManagerRef.deactivate(cc);
     }
 }
