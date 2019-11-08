@@ -303,7 +303,7 @@ public class CacheHashMap extends BackedHashMap {
                 if (trace && tc.isDebugEnabled())
                     tcReturn(tcSessionMetaCache, "_iterator.next", id, value);
 
-                if (id != null && !INVAL_KEY.equals(id)) {
+                if (id != null && !INVAL_KEY.equals(id) && value != null) { // null value and non-null id is possible when remove & iterator overlap in Infinispan
                     SessionInfo sessionInfo = new SessionInfo(value);
                     long lastAccessTime = sessionInfo.getLastAccess();
                     short listenerTypes = sessionInfo.getListenerTypes();
