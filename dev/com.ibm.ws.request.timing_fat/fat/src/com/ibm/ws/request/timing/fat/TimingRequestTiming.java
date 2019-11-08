@@ -52,8 +52,6 @@ public class TimingRequestTiming {
     @Rule
     public TestName name = new TestName();
 
-    Machine localMachine;
-
     @Before
     public void setupTestStart() throws Exception {
         if (server != null && !server.isStarted()) {

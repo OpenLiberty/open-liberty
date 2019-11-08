@@ -8,7 +8,7 @@
     <httpEndpoint id="defaultHttpEndpoint" host="*" />
    
  	<include location="../fatTestPorts.xml"/>
-  	<logging traceSpecification="*=fine"/>
+  	<logging traceSpecification="com.ibm.ws.request.timing.*=all:com.ibm.ws.request.probe.*=all"/>
   
   
 </server>

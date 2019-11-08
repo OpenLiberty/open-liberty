@@ -14,7 +14,6 @@
     <library filesetRef="DerbyFileset" id="DerbyLib"/>
     <fileset dir="${shared.resource.dir}/derby" id="DerbyFileset" includes="derby.jar"/>
 	<javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
-	<javaPermission codebase="derby.jar" className="java.security.AllPermission"/>
 	
 	<!-- The following configures in-memory Derby.  For Derby on disk, which is needed if the database
    	is required beyond a single server start, configure the databaseName with a file location such as:

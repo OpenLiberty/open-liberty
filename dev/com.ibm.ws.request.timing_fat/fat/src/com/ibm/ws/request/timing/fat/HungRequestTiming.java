@@ -63,11 +63,8 @@ public class HungRequestTiming {
     @Rule
     public TestName name = new TestName();
 
-    static Machine localMachine;
-
     @BeforeClass
     public static void setUp() throws Exception {
-        localMachine = server.getMachine();
         ShrinkHelper.defaultDropinApp(server, "TestWebApp", "com.ibm.testwebapp");
         CommonTasks.writeLogMsg(Level.INFO, " starting server..");
         server.startServer();

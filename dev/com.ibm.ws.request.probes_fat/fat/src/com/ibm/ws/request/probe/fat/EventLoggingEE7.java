@@ -36,6 +36,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
 // The following test is originally from com.ibm.ws.request.probes_fat_java7
+@MinimumJavaLevel(javaLevel = 7)  // Test will only work with Java 7+
 @RunWith(FATRunner.class)
 public class EventLoggingEE7 {
     @Server("EventLoggingEE7Server")
@@ -48,8 +49,6 @@ public class EventLoggingEE7 {
     private static URL url;
 
     private static final String APP_NAME = "jdbcTestPrj_3_EE7";
-
-    @MinimumJavaLevel(javaLevel = 7)  // Test will only work with Java 7+
 
     @BeforeClass
     public static void beforeClass() throws Exception {

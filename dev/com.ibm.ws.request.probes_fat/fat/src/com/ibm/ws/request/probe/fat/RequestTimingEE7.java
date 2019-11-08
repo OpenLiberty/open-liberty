@@ -37,6 +37,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
 // The following test is originally from com.ibm.ws.request.probes_fat_java7
+@MinimumJavaLevel(javaLevel = 7)
 @RunWith(FATRunner.class)
 public class RequestTimingEE7 {
     @Server("RequestTimingEE7Server")
@@ -46,8 +47,6 @@ public class RequestTimingEE7 {
     private final Class<?> c = RequestTimingEE7.class;
 
     private static final String APP_NAME = "jdbcTestPrj_3_EE7";
-
-    @MinimumJavaLevel(javaLevel = 7)
 
     @BeforeClass
     public static void beforeClass() throws Exception {

@@ -52,8 +52,6 @@ public class RequestProbeJDBCTest {
     @Rule
     public TestName name = new TestName();
 
-    Machine localMachine;
-
     @BeforeClass
     public static void setUp() throws Exception {
         ShrinkHelper.defaultDropinApp(server, "jdbcTestPrj_All", "com.ibm.ws.request.timing");

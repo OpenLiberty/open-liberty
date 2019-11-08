@@ -54,8 +54,6 @@ public class RequestProbeServletRegTDTest {
     @Rule
     public TestName name = new TestName();
 
-    Machine localMachine;
-
     @BeforeClass
     public static void setUp() throws Exception {
         ShrinkHelper.defaultDropinApp(server, "ServletTest", "com.ibm.ws.request.timing");

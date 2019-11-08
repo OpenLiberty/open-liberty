@@ -47,8 +47,6 @@ public class RequestProbeTestEnableDisable {
     @Rule
     public TestName name = new TestName();
 
-    Machine localMachine;
-
     @BeforeClass
     public static void setUp() throws Exception {
         ShrinkHelper.defaultDropinApp(server, "jdbcTestPrj_3", "com.ibm.ws.request.timing");

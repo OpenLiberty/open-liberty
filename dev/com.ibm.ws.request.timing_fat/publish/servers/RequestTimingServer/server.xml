@@ -24,7 +24,6 @@
     </dataSource>
 
 	<javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
-	<javaPermission codebase="derby.jar" className="java.security.AllPermission"/>
 	<include location="../fatTestPorts.xml"/>
    
   
