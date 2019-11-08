@@ -481,12 +481,16 @@ public class OAuth20EndpointServices {
         String sep = "?";
         String encodedURL = UrlStr;
         int index = UrlStr.indexOf(sep);
-        if (index > -1) {
+        // if encoded url in server.xml, don't encode it again.
+        boolean alreadyEncoded = UrlStr.contains("%");
+        if (index > -1 && !alreadyEncoded) {
             index += 3;
             String prefix = UrlStr.substring(0, index);
             String suffix = UrlStr.substring(index);
             try {
                 encodedURL = prefix + java.net.URLEncoder.encode(suffix, StandardCharsets.UTF_8.toString());
+                // some sites can't handle encoded = in queries, so flip those back
+                encodedURL = encodedURL.replace("%3D", "=");
             } catch (UnsupportedEncodingException e) {
                 // ffdc
             }
