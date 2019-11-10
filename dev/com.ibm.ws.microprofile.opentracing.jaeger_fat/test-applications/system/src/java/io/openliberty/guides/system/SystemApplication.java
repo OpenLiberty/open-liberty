@@ -1,25 +1,22 @@
+// tag::copyright[]
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ *     IBM Corporation - Initial implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.opentracing.jaeger_fat;
+// end::copyright[]
+package io.openliberty.guides.system;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+// JAX-RS
+import javax.ws.rs.core.Application;
+import javax.ws.rs.ApplicationPath;
 
-
-@RunWith(Suite.class)
-@SuiteClasses({
-                JaegerConfigTest.class,
-                JaegerTraceTest.class
-})
-public class FATSuite {
+@ApplicationPath("system")
+public class SystemApplication extends Application {
 
 }
