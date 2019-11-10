@@ -72,7 +72,7 @@ public class OAuthLoginFlow {
         String tokenFromRequest = taiWebUtils.getBearerAccessToken(request, clientConfig);
         if (requestShouldHaveToken((Oauth2LoginConfigImpl) clientConfig)) {
             if (!validAccessToken(tokenFromRequest)) {
-                // TODO: print error about required token being null or not valid
+                Tr.error(tc,  "OPENSHIFT_ACCESS_TOKEN_MISSING");
                 return taiWebUtils.sendToErrorPage(response, TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED));
             }
             return handleAccessToken(tokenFromRequest, request, response, clientConfig);

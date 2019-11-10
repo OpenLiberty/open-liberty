@@ -34,6 +34,7 @@ import com.ibm.ws.security.openidconnect.clients.common.UserInfoHelper;
 import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.TraceConstants;
 import com.ibm.ws.security.social.error.SocialLoginException;
+import com.ibm.ws.security.social.internal.Oauth2LoginConfigImpl;
 import com.ibm.ws.security.social.internal.utils.CacheToken;
 import com.ibm.ws.security.social.internal.utils.ClientConstants;
 import com.ibm.ws.security.social.internal.utils.SocialHashUtils;
@@ -183,17 +184,91 @@ public class TAISubjectUtils {
     String getRealm(AttributeToSubject attributeToSubject, SocialLoginConfig config) throws SettingCustomPropertiesException {
         String realm = attributeToSubject.getMappedRealm();
         if (realm == null) {
+            realm = getDefaultRealm(config);
+            //realm = getDefaultRealmFromAuthorizationEndpoint(config);
+        }
+        return realm;
+    }
+
+    private String getDefaultRealm(SocialLoginConfig config) throws SettingCustomPropertiesException {
+        String realm = null;
+        if (isOpenShiftConfig(config) && useAccessTokenFromRequest(config)) {
+            String ep = getUserApiEndpoint(config);
+            if (ep == null) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "User api endpoint [" + config.getUserApi() + "] is either empty or too short to be a valid URL");
+                }
+                Tr.error(tc, "REALM_NOT_FOUND");
+                throw new SettingCustomPropertiesException();
+            } else {
+                realm = ep;
+            }
+        } else {
+            // original behavior before adding the support for kube type
             realm = getDefaultRealmFromAuthorizationEndpoint(config);
         }
         return realm;
+        
+    }
+
+    private String getUserApiEndpoint(SocialLoginConfig config) {
+        
+        String defaultKubeService = "https://kubernetes.default.svc";  
+        String ep = config.getUserApi();
+        
+        if (isDefaultKubeTokenReviewEndpoint(ep)) {
+            return defaultKubeService;
+        } else {
+            return trimKubeTokenReviewEndpoint(ep);
+        }
+    }
+
+    private String trimKubeTokenReviewEndpoint(String ep) {
+        String kubeTokenReviewApiExt = "/apis/authentication.k8s.io/v1/tokenreviews";
+        if (ep != null) {
+           int index = ep.indexOf(kubeTokenReviewApiExt);
+           if (index > 0) {
+               return ep.substring(0, index);
+           }
+        }
+        return ep;
+    }
+
+    private boolean isDefaultKubeTokenReviewEndpoint(String ep) {
+        String defaultKubeTokenReview = "https://kubernetes.default.svc/apis/authentication.k8s.io/v1/tokenreviews";
+        return defaultKubeTokenReview.equals(ep);
     }
 
     String getRealm(SocialLoginConfig config) throws SettingCustomPropertiesException {
         String realm = config.getRealmName();
         if (realm == null) {
-            realm = getDefaultRealmFromAuthorizationEndpoint(config);
+            realm = getDefaultRealm(config);
+            //realm = getDefaultRealmFromAuthorizationEndpoint(config);
         }
         return realm;
+    }
+    
+    private boolean isOpenShiftConfig(SocialLoginConfig clientConfig) {
+        boolean isOpenShiftConfig = false;
+        if (clientConfig instanceof Oauth2LoginConfigImpl) {
+            Oauth2LoginConfigImpl config = (Oauth2LoginConfigImpl) clientConfig;
+            String userApiType = config.getUserApiType();
+            return (userApiType != null && ClientConstants.USER_API_TYPE_KUBE.equals(userApiType));
+        }
+        return isOpenShiftConfig;
+    }
+    
+    private boolean useAccessTokenFromRequest(SocialLoginConfig clientConfig) {
+        
+        if (clientConfig instanceof Oauth2LoginConfigImpl) {
+            Oauth2LoginConfigImpl config = (Oauth2LoginConfigImpl) clientConfig;
+            if (config.isAccessTokenRequired() || config.isAccessTokenSupported()) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        return false;
     }
 
     String getDefaultRealmFromAuthorizationEndpoint(SocialLoginConfig config) throws SettingCustomPropertiesException {
