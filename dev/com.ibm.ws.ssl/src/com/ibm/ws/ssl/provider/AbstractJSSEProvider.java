@@ -357,13 +357,13 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
 
         // If the javax.net.ssl.truststore system property is set the JDK uses it as the
         // default truststore.
-        String tsFileName = System.getenv("javax.net.ssl.truststore");
+        String tsFileName = System.getProperty("javax.net.ssl.trustStore");
         if (tsFileName != null && !tsFileName.isEmpty()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "The javax.net.ssl.truststore property is set to " + tsFileName + " it will used as the JDK default truststore");
+                Tr.debug(tc, "The javax.net.ssl.trustStore property is set to " + tsFileName + " it will used as the JDK default truststore");
         } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "The default truststore will likely be the JDK or System cacerts file.");
+                Tr.debug(tc, "The default truststore will likely be the jssecacerts or cacerts file.");
         }
 
         try {

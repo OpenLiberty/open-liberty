@@ -90,7 +90,7 @@ public class TestExample_EJB extends JPAFATServletClient {
 
         final Set<String> ddlSet = new HashSet<String>();
 
-        System.out.println("TestExample_EJB Setting up database tables...");
+        System.out.println(TestExample_EJB.class.getName() + " Setting up database tables...");
 
         ddlSet.clear();
         for (String ddlName : dropSet) {
@@ -104,11 +104,11 @@ public class TestExample_EJB extends JPAFATServletClient {
         }
         executeDDL(server, ddlSet, false);
 
-//        ddlSet.clear();
-//        for (String ddlName : populateSet) {
-//            ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
-//        }
-//        executeDDL(server, ddlSet, false);
+        ddlSet.clear();
+        for (String ddlName : populateSet) {
+            ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
+        }
+        executeDDL(server, ddlSet, false);
 
         setupTestApplication();
     }
@@ -122,7 +122,7 @@ public class TestExample_EJB extends JPAFATServletClient {
 
         WebArchive webApp = ShrinkWrap.create(WebArchive.class, appName + ".war");
         webApp.addPackages(true, "com.ibm.ws.jpa.example.ejb");
-        ShrinkHelper.addDirectory(webApp, RESOURCE_ROOT + "ejb/" + appName + ".war");
+        ShrinkHelper.addDirectory(webApp, RESOURCE_ROOT + appFolder + "/" + appName + ".war");
 
         final JavaArchive testApiJar = buildTestAPIJar();
 
@@ -130,7 +130,7 @@ public class TestExample_EJB extends JPAFATServletClient {
         app.addAsModule(ejbApp);
         app.addAsModule(webApp);
         app.addAsLibrary(testApiJar);
-        ShrinkHelper.addDirectory(app, RESOURCE_ROOT + "ejb", new org.jboss.shrinkwrap.api.Filter<ArchivePath>() {
+        ShrinkHelper.addDirectory(app, RESOURCE_ROOT + appFolder, new org.jboss.shrinkwrap.api.Filter<ArchivePath>() {
 
             @Override
             public boolean include(ArchivePath arg0) {

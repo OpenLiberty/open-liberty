@@ -52,6 +52,17 @@ public interface TaskStore {
     int cancel(String pattern, Character escape, TaskState state, boolean inState, String owner) throws Exception;
 
     /**
+     * Create a partition entry in the persistent store having the Id of the specified partitionRecord.
+     *
+     * @param partitionRecord a new partition entry. The record must contain the following attributes (Id, Executor, Host, Server, UserDir)
+     *                            and can optionally contain (Expiry, States).
+     * @throws Exception if an error occurs when attempting to update the persistent task store.
+     * @return true if a partition entry with the specified Id was created by this method.
+     *         Otherwise false, in which case it is recommended to roll back the transaction.
+     */
+    boolean create(PartitionRecord partitionRecord) throws Exception;
+
+    /**
      * Create an entry in the persistent store for a new task.
      * This method assigns a unique identifier to the task and updates the Id attribute of the TaskRecord with the value.
      * 
@@ -110,6 +121,14 @@ public interface TaskStore {
     TaskRecord findById(long taskId, String owner, boolean includeTrigger) throws Exception;
 
     /**
+     * Returns information about all partition entries with expired heart beats.
+     *
+     * @return List of expired partition records.
+     * @throws Exception if an error occurs when attempting to access the persistent task store.
+     */
+    List<PartitionRecord> findExpired() throws Exception;
+
+    /**
      * Find all pending tasks which are late beyond the specified expected execution time without a
      * successful execution of the task.
      *
@@ -135,7 +154,8 @@ public interface TaskStore {
      * The invoker is expected to handle this by rolling back and retrying.
      * 
      * @param record partition entry with executor/host/server/userdir to locate, or if not found, add to the persistent store.
-     *            The record must contain the following attributes (Executor, Expiry, Host, Server, State, UserDir).
+     *            If an entry is found, it is updated to match the Expiry and States if either of those is supplied.
+     *            The record must contain the following attributes (Executor, Host, Server, UserDir) and can optionally contain (Expiry, States).
      * @return unique identifier for the partition record which either already exists or was newly created.
      * @throws Exception if an error occurs when attempting to access the persistent task store.
      */

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" xml:lang="en">
   <head>
     <title>Open Liberty</title>
     <style>
@@ -325,38 +325,36 @@
     </style>
   </head>
   <body>
-
-    <section class="hero">
+        <main>
+        <section class="hero" data-externalizedAriaLabel="WELCOME_SECTION">
 			<div class="inner-hero">
-				<div class="inner-hero__message row">
-					<img class="inner-hero__img" src="welcome-message.png">
-					<h2 class="inner-hero__title">Open Liberty Application Server</h2>
+				<div class="inner-hero__message row" data-externalizedAriaLabel="WELCOME_SECTION_CONTENT">
+					<img class="inner-hero__img" src="welcome-message.png" data-externalizedAlt="OPEN_LIBERTY_LOGO">
+					<h2 class="inner-hero__title" data-externalizedString="OPEN_LIBERTY_APP_SERVER"></h2>
 				</div>
 			</div>
 		</section>
-		<section class="resources">
+		<section class="resources" data-externalizedAriaLabel="RESOURCES">
 			<div class="row">
-				<h2 class="resources__title">Resources</h2>
+				<h2 class="resources__title" data-externalizedString="RESOURCES"></h2>
 				<ul class="list list--unordered">
 					<li class="list__item"><a href="http://openliberty.io">openliberty.io</a></li>
-					<li class="list__item"><a href="https://groups.io/g/openliberty">Groups.io forum</a></li>
+					<li class="list__item"><a href="https://groups.io/g/openliberty" data-externalizedString="GROUPS_IO_FORUM"></a></li>
 					<li class="list__item"><a href="https://twitter.com/OpenLibertyIO">@OpenLibertyIO</a></li>
 				</ul>
 			</div>
 		</section>
-
+        </main>
 		<footer class="footer">
-			<div class="footer__content row">
-				<img class="footer__img" src="footer-img.png">
-				<p class="footer__copy">
-					Licensed Materials &#8212 Property of the Open Liberty project, Copyright
-					IBM Corp and others 1997, 2019. Project is distributed under the terms
-					of the Eclipse Public License v1.
-				</p>
+			<div class="footer__content row" data-externalizedAriaLabel="COPYRIGHT">
+				<img class="footer__img" src="footer-img.png" data-externalizedAlt="OPEN_LIBERTY_FOOTER">
+				<p class="footer__copy" data-externalizedString="COPYRIGHT_OPEN_LIBERTY"></p>
 			</div>
 		</footer>
 
 
+		<script type="text/javascript" src="js/externalize-string.js"></script>
+		<script type="text/javascript" src="js/banner.js"></script>
 		<!-- The call below attempts to get a latest release marker file from a specific location. -->
 		<!-- It's expected that the returned object will be a piece of JavaScript defining a       -->
 		<!-- variable called latestReleasedVersion that contains the following fields:             -->
@@ -367,6 +365,9 @@
 		<script type="text/javascript" src="version.js"></script>
 
 		<script type="text/javascript">
+		    //replace all externalized strings with nls
+		    retrieveExternalizedStrings();
+
 			var urlForCssEnhancements = "banner-welcome.css";
 			var isLibertyUpdateAvailable = false;
 			function doVersionCheck(latestVersion) {
@@ -383,7 +384,17 @@
 				}
 			}
 			doVersionCheck(latestReleasedVersion);
+
+            var script = document.createElement('script');   
+            var nlsFile = "messages.js";
+            var languageCode = getLanguageCode();
+            nlsFile = (languageCode !== "en") ? "nls/" + languageCode + "/" + nlsFile : "nls/" + nlsFile;
+			
+            script.src = nlsFile;
+            document.getElementsByTagName('head')[0].appendChild(script);
+            script.onload = function() {
+                buildUpdateBanner(messages);
+            };
 		</script>
-		<script type="text/javascript" src="banner.js"></script>
   </body>
 </html>

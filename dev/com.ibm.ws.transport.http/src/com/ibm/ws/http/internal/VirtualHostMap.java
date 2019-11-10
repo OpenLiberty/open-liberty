@@ -19,12 +19,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.staticvalue.StaticValue;
 
 /**
  * This map bridges between independent dynamic components: HttpEndpoints (with their Chains), and
@@ -65,8 +63,8 @@ import com.ibm.ws.staticvalue.StaticValue;
 public class VirtualHostMap {
     static final TraceComponent tc = Tr.register(VirtualHostMap.class);
 
-    private static volatile StaticValue<VirtualHostConfig> defaultHost = StaticValue.createStaticValue(null);
-    private static volatile StaticValue<AlternateHostSelector> alternateHostSelector = StaticValue.createStaticValue(null);
+    private static volatile VirtualHostConfig defaultHost = null;
+    private static volatile AlternateHostSelector alternateHostSelector = null;
 
     /**
      * Simple interface to allow deferred retrieval of host/port information
@@ -91,47 +89,36 @@ public class VirtualHostMap {
      */
     public synchronized static void addVirtualHost(final VirtualHostConfig oldConfig, final VirtualHostConfig newConfig) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(tc, "Add virtual host: " + newConfig.getVirtualHost(), oldConfig, newConfig, defaultHost.get(), alternateHostSelector.get());
+            Tr.event(tc, "Add virtual host: " + newConfig.getVirtualHost(), oldConfig, newConfig, defaultHost, alternateHostSelector);
         }
 
         // If the "default/catch-all-ness" of the host was modified,
         // the virtual host was removed before calling this method.
         if (newConfig.isDefaultHost()) {
-            defaultHost = StaticValue.mutateStaticValue(defaultHost, new Callable<VirtualHostConfig>() {
-                @Override
-                public VirtualHostConfig call() {
-                    return newConfig;
-                }
-            });
+            defaultHost = newConfig;
 
-            if (alternateHostSelector.get() != null) {
-                alternateHostSelector.get().alternateAddDefaultHost(newConfig);
+            if (alternateHostSelector != null) {
+                alternateHostSelector.alternateAddDefaultHost(newConfig);
             } else {
                 // notify default host of  active listeners
                 for (HttpEndpointImpl e : HttpEndpointList.getInstance()) {
                     int ePort = e.getListeningHttpPort();
                     if (ePort > 0) {
-                        defaultHost.get().listenerStarted(e, e.getResolvedHostName(), ePort, false);
+                        defaultHost.listenerStarted(e, e.getResolvedHostName(), ePort, false);
                     }
 
                     ePort = e.getListeningSecureHttpPort();
                     if (ePort > 0) {
-                        defaultHost.get().listenerStarted(e, e.getResolvedHostName(), ePort, true);
+                        defaultHost.listenerStarted(e, e.getResolvedHostName(), ePort, true);
                     }
 
                 }
             }
         } else {
-            if (alternateHostSelector.get() == null) {
-                alternateHostSelector = StaticValue.mutateStaticValue(alternateHostSelector, new Callable<AlternateHostSelector>() {
-                    @Override
-                    public AlternateHostSelector call() throws Exception {
-                        return new AlternateHostSelector();
-                    }
-
-                });
+            if (alternateHostSelector == null) {
+                alternateHostSelector = new AlternateHostSelector();
             }
-            AlternateHostSelector current = alternateHostSelector.get();
+            AlternateHostSelector current = alternateHostSelector;
             // Figure out which host aliases should be removed
             List<HostAlias> toRemove = new ArrayList<HostAlias>(oldConfig.getHostAliases());
             toRemove.removeAll(newConfig.getHostAliases());
@@ -154,17 +141,12 @@ public class VirtualHostMap {
      */
     public synchronized static void removeVirtualHost(VirtualHostConfig config) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(tc, "Remove virtual host: " + config.getVirtualHost(), config, defaultHost.get(), alternateHostSelector);
+            Tr.event(tc, "Remove virtual host: " + config.getVirtualHost(), config, defaultHost, alternateHostSelector);
         }
         if (config.isDefaultHost()) {
-            defaultHost = StaticValue.mutateStaticValue(defaultHost, new Callable<VirtualHostConfig>() {
-                @Override
-                public VirtualHostConfig call() {
-                    return null;
-                }
-            });
-            if (alternateHostSelector.get() != null) {
-                alternateHostSelector.get().alternateRemoveDefaultHost(config);
+            defaultHost = null;
+            if (alternateHostSelector != null) {
+                alternateHostSelector.alternateRemoveDefaultHost(config);
             } else {
                 // notify default host of  active listeners
                 for (HttpEndpointImpl e : HttpEndpointList.getInstance()) {
@@ -180,32 +162,32 @@ public class VirtualHostMap {
 
                 }
             }
-        } else if (alternateHostSelector.get() != null) {
+        } else if (alternateHostSelector != null) {
             // remove all configured host aliases.
-            alternateHostSelector.get().alternateRemoveVirtualHost(config, config.getHostAliases());
+            alternateHostSelector.alternateRemoveVirtualHost(config, config.getHostAliases());
         }
     }
 
     /**
      * Add an endpoint that has started listening, and notify associated virtual hosts
      *
-     * @param endpoint The HttpEndpointImpl that owns the started chain/listener
+     * @param endpoint         The HttpEndpointImpl that owns the started chain/listener
      * @param resolvedHostName A hostname that can be used in messages (based on endpoint configuration, something other than *)
-     * @param port The port the endpoint is listening on
-     * @param isHttps True if this is an SSL port
+     * @param port             The port the endpoint is listening on
+     * @param isHttps          True if this is an SSL port
      * @see HttpChain#chainStarted(com.ibm.websphere.channelfw.ChainData)
      */
     public static synchronized void notifyStarted(HttpEndpointImpl endpoint, String resolvedHostName, int port, boolean isHttps) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(tc, "Notify endpoint started: " + endpoint, resolvedHostName, port, isHttps, defaultHost.get(), alternateHostSelector);
+            Tr.event(tc, "Notify endpoint started: " + endpoint, resolvedHostName, port, isHttps, defaultHost, alternateHostSelector);
         }
-        if (alternateHostSelector.get() == null) {
-            if (defaultHost.get() != null) {
-                defaultHost.get().listenerStarted(endpoint, resolvedHostName, port, isHttps);
+        if (alternateHostSelector == null) {
+            if (defaultHost != null) {
+                defaultHost.listenerStarted(endpoint, resolvedHostName, port, isHttps);
             }
 
         } else {
-            alternateHostSelector.get().alternateNotifyStarted(endpoint, resolvedHostName, port, isHttps);
+            alternateHostSelector.alternateNotifyStarted(endpoint, resolvedHostName, port, isHttps);
         }
     }
 
@@ -213,24 +195,24 @@ public class VirtualHostMap {
      * Remove a port associated with an endpoint that has stopped listening,
      * and notify associated virtual hosts.
      *
-     * @param endpoint The HttpEndpointImpl that owns the stopped chain/listener
+     * @param endpoint         The HttpEndpointImpl that owns the stopped chain/listener
      * @param resolvedHostName A hostname that can be used in messages (based on endpoint configuration, something other than *)
-     * @param port The port the endpoint has stopped listening on
-     * @param isHttps True if this is an SSL port
+     * @param port             The port the endpoint has stopped listening on
+     * @param isHttps          True if this is an SSL port
      * @see HttpChain#chainQuiesced(com.ibm.websphere.channelfw.ChainData)
      * @see HttpChain#chainStopped(com.ibm.websphere.channelfw.ChainData)
      */
     public static synchronized void notifyStopped(HttpEndpointImpl endpoint, String resolvedHostName, int port, boolean isHttps) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(tc, "Notify endpoint stopped: " + endpoint, resolvedHostName, port, isHttps, defaultHost.get(), alternateHostSelector);
+            Tr.event(tc, "Notify endpoint stopped: " + endpoint, resolvedHostName, port, isHttps, defaultHost, alternateHostSelector);
         }
-        if (alternateHostSelector.get() == null) {
-            if (defaultHost.get() != null) {
-                defaultHost.get().listenerStopped(endpoint, resolvedHostName, port, isHttps);
+        if (alternateHostSelector == null) {
+            if (defaultHost != null) {
+                defaultHost.listenerStopped(endpoint, resolvedHostName, port, isHttps);
             }
 
         } else {
-            alternateHostSelector.get().alternateNotifyStopped(endpoint, resolvedHostName, port, isHttps);
+            alternateHostSelector.alternateNotifyStopped(endpoint, resolvedHostName, port, isHttps);
         }
     }
 
@@ -238,7 +220,7 @@ public class VirtualHostMap {
      * Find the virtual host that should be used for the given host/port..
      *
      * @param endpointPid The endpoint the request came in on
-     * @param helper a RequestHelper allows deferred processing of request header information.
+     * @param helper      a RequestHelper allows deferred processing of request header information.
      *
      * @return the VirtualHostImpl that should service the request
      */
@@ -247,9 +229,9 @@ public class VirtualHostMap {
         // defer retrieval of headers until we need them:
         // if we don't have virtual hosts to select from, we don't care what the
         // headers are, there is only one answer.
-        AlternateHostSelector selector = alternateHostSelector.get();
+        AlternateHostSelector selector = alternateHostSelector;
         if (selector == null) {
-            VirtualHostConfig defHostCfg = defaultHost.get();
+            VirtualHostConfig defHostCfg = defaultHost;
             if (defHostCfg != null) {
                 return defHostCfg.getVirtualHost();
             }
@@ -297,8 +279,8 @@ public class VirtualHostMap {
          * Find the right virtual host to process a given request
          *
          * @param endpointPid The endpoint/origin of the request
-         * @param hostName The requested hostname, from the Host header..
-         * @param port The requested port, from the Host header..
+         * @param hostName    The requested hostname, from the Host header..
+         * @param port        The requested port, from the Host header..
          *
          * @return the virtual host that should handle the request, or null
          *         if there was no match.
@@ -311,7 +293,7 @@ public class VirtualHostMap {
             if (d != null) {
                 target = d.selectVirtualHost(hostName.toLowerCase(Locale.ENGLISH));
             } else {
-                target = defaultHost.get();
+                target = defaultHost;
             }
 
             // Make sure the target is ready to accept request from the selected endpoint..
@@ -509,7 +491,7 @@ public class VirtualHostMap {
          *
          * @see #selectVirtualHost(String)
          */
-        volatile HostTuple currentHosts = new HostTuple(null, defaultHost.get());
+        volatile HostTuple currentHosts = new HostTuple(null, defaultHost);
 
         VirtualHostDiscriminator(int port) {
             this.port = port;
@@ -523,7 +505,7 @@ public class VirtualHostMap {
          * Change the tuple all at once: any threads doing lookups will see
          * the most current tuple, rather than partial changes.
          *
-         * @param hostName host portion of the alias: * or somehost.whatever
+         * @param hostName       host portion of the alias: * or somehost.whatever
          * @param vhost
          * @param newDefaultHost - is this the default/catch-all host
          *
@@ -592,8 +574,8 @@ public class VirtualHostMap {
          * Change the tuple all at once: any threads doing lookups will see
          * the most current tuple, rather than partial changes.
          *
-         * @param hostName host portion of the alias: * or somehost.whatever
-         * @param vhost VirtualHost to remove
+         * @param hostName       host portion of the alias: * or somehost.whatever
+         * @param vhost          VirtualHost to remove
          * @param oldDefaultHost - was this the default/catch-all host
          * @see #selectVirtualHost(String)
          */
@@ -610,8 +592,8 @@ public class VirtualHostMap {
 
                     // if we're removing a non-default host, and there is a default host around.. add the default host
                     // as the catch-all for this alias
-                    if (!config.isDefaultHost() && defaultHost.get() != null) {
-                        addVirtualHost(hostName, defaultHost.get());
+                    if (!config.isDefaultHost() && defaultHost != null) {
+                        addVirtualHost(hostName, defaultHost);
                     }
                 }
             } else {
@@ -638,8 +620,8 @@ public class VirtualHostMap {
          * Notify the indicated virtual host of existing endpoints
          *
          * @param targetVHost VirtualHost to notify
-         * @param added true if listening/started endpoints should be added (new virtual host arrived),
-         *            false if they should be removed (virtual host removal).
+         * @param added       true if listening/started endpoints should be added (new virtual host arrived),
+         *                        false if they should be removed (virtual host removal).
          */
         void notifyVHostExistingEndpoints(VirtualHostConfig config, String aliasHost, boolean added) {
             if (config != null) {
@@ -696,7 +678,7 @@ public class VirtualHostMap {
          *
          * @param endpoint
          * @param resolvedHostName Hostname suitable for use in a message (a real hostname, not *)
-         * @param isHttps true if this is an https port.
+         * @param isHttps          true if this is an https port.
          */
         void addEndpoint(HttpEndpointImpl endpoint, String resolvedHostName, boolean isHttps) {
             if (endpoints.add(endpoint)) {
@@ -775,8 +757,8 @@ public class VirtualHostMap {
          * @return true if this element should be cleaned up.
          */
         boolean cleanup() {
-            if ((currentHosts.wildcardHost == null || currentHosts.wildcardHost == defaultHost.get())
-                && currentHosts.otherHosts == null && endpoints.isEmpty()) {
+            if ((currentHosts.wildcardHost == null || currentHosts.wildcardHost == defaultHost)
+                            && currentHosts.otherHosts == null && endpoints.isEmpty()) {
                 return true;
             }
 
@@ -821,7 +803,7 @@ public class VirtualHostMap {
             }
 
             // no dice. Return the default host if we have one.
-            return defaultHost.get();
+            return defaultHost;
         }
 
         @Override
@@ -840,10 +822,10 @@ public class VirtualHostMap {
      *
      */
     protected synchronized static void dump(PrintStream ps) {
-        ps.println("Default host: " + defaultHost.get());
-        ps.println("Alternate hosts: " + (alternateHostSelector.get() != null));
-        if (alternateHostSelector.get() != null)
-            ps.println(alternateHostSelector.get());
+        ps.println("Default host: " + defaultHost);
+        ps.println("Alternate hosts: " + (alternateHostSelector != null));
+        if (alternateHostSelector != null)
+            ps.println(alternateHostSelector);
     }
 
 }

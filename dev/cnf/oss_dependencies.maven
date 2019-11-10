@@ -393,7 +393,6 @@ org.mongodb:mongo-java-driver:2.10.1
 org.mongodb:mongo-java-driver:2.13.3
 org.mongodb:mongo-java-driver:2.9.3
 org.objenesis:objenesis:1.0
-org.opensaml:opensaml:2.6.1
 org.opensaml:xmltooling:1.4.4
 org.osgi:org.osgi.annotation.versioning:1.1.0
 org.osgi:org.osgi.compendium:4.2.0
@@ -498,3 +497,4 @@ xalan:xalan:2.7.2
 xerces:xercesImpl:2.11.0
 xml-apis:xml-apis:1.4.01
 xml-resolver:xml-resolver:1.2
+com.googlecode.java-diff-utils:diffutils:1.2.1

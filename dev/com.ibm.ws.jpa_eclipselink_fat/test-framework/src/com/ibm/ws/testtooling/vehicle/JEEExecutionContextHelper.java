@@ -406,14 +406,15 @@ public class JEEExecutionContextHelper {
         } catch (InvocationTargetException ete) {
             final Throwable cause = ete.getCause();
             if (cause instanceof java.lang.AssertionError) {
-                System.out.println("Assertion Failed: " + cause);
                 throw (java.lang.AssertionError) cause;
+//            } else if (cause instanceof org.junit.internal.AssumptionViolatedException) {
+//                throw (org.junit.internal.AssumptionViolatedException) cause;
             } else {
                 ete.printStackTrace();
                 Assert.fail("JEEExecutionContextHelper: Unexpected Exception caught while executing test: " +
                             testExecCtx.getTestLogicClassName() + "." + testExecCtx.getTestLogicMethod() + " " + cause);
             }
-        } catch (java.lang.AssertionError ae) {
+        } catch (java.lang.AssertionError /* | org.junit.internal.AssumptionViolatedException */ ae) {
             throw ae;
         } catch (Throwable t) {
             t.printStackTrace();

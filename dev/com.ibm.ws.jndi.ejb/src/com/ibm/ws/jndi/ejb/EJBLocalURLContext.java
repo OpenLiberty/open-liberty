@@ -18,6 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.naming.Binding;
 import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.naming.NameClassPair;
 import javax.naming.NameNotFoundException;
 import javax.naming.NameParser;
@@ -28,7 +29,6 @@ import javax.naming.OperationNotSupportedException;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.naming.EJBLocalNamingHelper;
-import com.ibm.ws.container.service.naming.JavaColonNamingHelper;
 import com.ibm.ws.jndi.WSContextBase;
 import com.ibm.ws.jndi.WSName;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
@@ -36,7 +36,7 @@ import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
 /**
  * A URL {@link Context} for the "ejblocal:" namespace. This is a read-only
  * namespace so many {@link Context} operations are not supported and will throw {@link OperationNotSupportedException}s. There is no binding in this
- * implementation, the equivalent action is for a container to register a {@link JavaColonNamingHelper} with information about JNDI objects. This
+ * implementation, the equivalent action is for a container to register a {@link EJBLocalNamingHelper} with information about JNDI objects. This
  * implementation checks the helper services for non-null information about a
  * JNDI name and then calls the specified resource factory to retrieve the named
  * Object.
@@ -134,9 +134,26 @@ public class EJBLocalURLContext extends WSContextBase implements Context {
 
         String lookup = name.toString();
 
+        // Clean up lookups with multiple namespaces in front.
+        boolean endsInNamespace = lookup.endsWith(":");
+        String[] lookupArray = lookup.split(":");
+        if (endsInNamespace) {
+            lookup = lookupArray[lookupArray.length - 1] + ":";
+        } else if (lookupArray.length > 1) {
+            lookup = lookupArray[lookupArray.length - 2] + ":" + lookupArray[lookupArray.length - 1];
+        }
+
+        if (isTraceOn && tc.isDebugEnabled()) {
+            Tr.debug(tc, "namespace parsed lookup: " + lookup);
+        }
+
         // They could be looking up just our context
         if (lookup.equals("ejblocal:")) {
             return new EJBLocalURLContext(this);
+        }
+
+        if (lookup.startsWith("local:")) {
+            return new InitialContext().lookup(lookup);
         }
 
         Object toReturn = null;

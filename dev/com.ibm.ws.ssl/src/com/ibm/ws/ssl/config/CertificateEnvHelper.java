@@ -92,7 +92,6 @@ public class CertificateEnvHelper {
         // If env_Value starts with the certificate tag assume a certificate otherwise treat like a file
         if (env_Value.startsWith(certBeginTag)) {
             inputStream = new ByteArrayInputStream(env_Value.getBytes(Charset.forName("UTF-8")));
-            System.out.println("inputStream is " + inputStream.toString());
         } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
                 Tr.debug(this, tc, "The value from the environment did not start with -----BEGIN CERTIFICATE----- so treating it like a file");

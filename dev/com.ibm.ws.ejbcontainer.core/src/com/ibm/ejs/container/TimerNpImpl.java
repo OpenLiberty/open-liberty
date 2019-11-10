@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2016 IBM Corporation and others.
+ * Copyright (c) 2009, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -278,6 +278,10 @@ public final class TimerNpImpl implements Timer, PassivatorSerializable
     public BeanId getIvBeanId()
     {
         return ivBeanId;
+    }
+
+    public BeanMetaData getBeanMetaData() {
+        return this.ivBMD;
     }
 
     /** @return ivDestroyed; not synchronized */

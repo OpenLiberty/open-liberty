@@ -34,7 +34,6 @@ import com.ibm.ws.jsf23.fat.tests.JSF23JPA22Test;
 import com.ibm.ws.jsf23.fat.tests.JSF23JSF22SingletonFeatureTest;
 import com.ibm.ws.jsf23.fat.tests.JSF23MapSupportTests;
 import com.ibm.ws.jsf23.fat.tests.JSF23SelectOneRadioGroupTests;
-import com.ibm.ws.jsf23.fat.tests.JSF23ThirdPartyApiTests;
 import com.ibm.ws.jsf23.fat.tests.JSF23UIRepeatConditionTests;
 import com.ibm.ws.jsf23.fat.tests.JSF23UISelectManyTests;
 import com.ibm.ws.jsf23.fat.tests.JSF23ViewParametersTests;
@@ -47,23 +46,15 @@ import com.ibm.ws.jsf23.fat.tests.JSF23WebSocketTests;
  * Make sure to add any new test classes to the @SuiteClasses
  * annotation.
  *
- * Make sure to distinguish full mode tests using
+ * Make sure to distinguish FULL mode tests using
  * <code>@Mode(TestMode.FULL)</code>. Tests default to
- * use lite mode (<code>@Mode(TestMode.LITE)</code>).
+ * use LITE mode (<code>@Mode(TestMode.LITE)</code>).
  *
- * By default only lite mode tests are run. To also run
- * full mode tests a property must be specified to ant:
+ * By default only LITE mode tests are run. To also run
+ * full mode tests a property must be specified:
  *
- * Select the target build file (usually "build-test.xml").
- * Right click and chose "Run As>Ant Build…". Add
- * "fat.test.mode=full" to the properties tab, then launch the
- * build.
+ * -Dfat.test.mode=FULL.
  *
- * Alternatively, for a command line launch, add "-Dfat.test.mode=full".
- *
- * For additional information see:
- *
- * http://was.pok.ibm.com/xwiki/bin/view/Liberty/Test-FAT
  */
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -89,8 +80,7 @@ import com.ibm.ws.jsf23.fat.tests.JSF23WebSocketTests;
                 CDIInjectionTests.class,
                 CDIFacesInMetaInfTests.class,
                 CDIFacesInWebXMLTests.class,
-                CDIConfigByACPTests.class,
-                JSF23ThirdPartyApiTests.class
+                CDIConfigByACPTests.class
 })
 public class FATSuite {
 

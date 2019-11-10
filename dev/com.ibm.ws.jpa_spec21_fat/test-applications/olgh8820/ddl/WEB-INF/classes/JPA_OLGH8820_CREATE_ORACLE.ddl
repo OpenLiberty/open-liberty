@@ -1,0 +1,1 @@
+CREATE PROCEDURE ${schemaname}.simple_order_procedure ( in_param_one VARCHAR2, in_param_two VARCHAR2, in_param_three VARCHAR2, out_param_one OUT VARCHAR2) AS BEGIN out_param_one := 'One: ' || in_param_one || ' Two: ' || in_param_two || ' Three: ' || in_param_three; END;

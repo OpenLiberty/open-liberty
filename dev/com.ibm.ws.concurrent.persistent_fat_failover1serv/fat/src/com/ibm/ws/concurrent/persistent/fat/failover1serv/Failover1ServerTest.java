@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.persistent.fat.failover1serv;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
@@ -48,6 +49,8 @@ public class Failover1ServerTest extends FATServletClient {
 
     private static ServerConfiguration originalConfig;
 
+    private static final String PARTITION_ID_MESSAGE = "Partition id is ";
+
     @Server("com.ibm.ws.concurrent.persistent.fat.failover1serv")
     @TestServlet(servlet = Failover1ServerTestServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
@@ -70,7 +73,7 @@ public class Failover1ServerTest extends FATServletClient {
      * testFailoverFromMissedHeartbeats - verify that a task fails over due to missed heartbeats alone,
      * even if the missed task threshold has not yet been reached.
      */
-    //@Test TODO enable once feature code (8406) is written
+    @Test
     public void testFailoverFromMissedHeartbeats() throws Exception {
         StringBuilder result = runTestWithResponse(server, APP_NAME + "/Failover1ServerTestServlet",
                 "testScheduleRepeatingTask&jndiName=persistent/exec2&initialDelayMS=2468&delayMS=600&test=testFailoverFromMissedHeartbeats[1]");
@@ -114,6 +117,41 @@ public class Failover1ServerTest extends FATServletClient {
             runTest(server, APP_NAME + "/Failover1ServerTestServlet",
                     "testCancelTask&taskId=" + taskId + "&jndiName=persistent/exec1&test=testFailoverFromMissedHeartbeats[4]");
         }
+    }
+
+    /**
+     * testHeartbeatRestoresLostPartitionInfo - simulates the scenario where one server detects missed heart beats and removes partition
+     * info of another server which is still active, but slow in recording its heart beat.  When that other server tries to send its
+     * heart beat and finds its partition info absent, it should re-create it under the same partition id.
+     */
+    @Test
+    public void testHeartbeatRestoresLostPartitionInfo() throws Exception {
+        runTestWithResponse(server, APP_NAME + "/Failover1ServerTestServlet",
+                "testTablesExist&jndiName=persistent/exec2&test=testHeartbeatRestoresLostPartitionInfo[1]");
+
+        StringBuilder result;
+        result = runTestWithResponse(server, APP_NAME + "/Failover1ServerTestServlet",
+                "testGetPartitionId&executor=persistentExec2&test=testHeartbeatRestoresLostPartitionInfo[2]");
+
+        int start = result.indexOf(PARTITION_ID_MESSAGE);
+        if (start < 0)
+            fail("Partition id not found in servlet output: " + result);
+        String partitionId1 = result.substring(start += PARTITION_ID_MESSAGE.length(), result.indexOf(".", start));
+
+        System.out.println("Partition id " + partitionId1);
+
+        runTestWithResponse(server, APP_NAME + "/Failover1ServerTestServlet",
+                "testRemovePartition&executor=persistentExec2&test=testHeartbeatRestoresLostPartitionInfo[3]");
+
+        result = runTestWithResponse(server, APP_NAME + "/Failover1ServerTestServlet",
+                "testGetPartitionId&executor=persistentExec2&test=testHeartbeatRestoresLostPartitionInfo[4]");
+
+        start = result.indexOf(PARTITION_ID_MESSAGE);
+        if (start < 0)
+            fail("Partition id not found in servlet output: " + result);
+        String partitionId2 = result.substring(start += PARTITION_ID_MESSAGE.length(), result.indexOf(".", start));
+
+        assertEquals(partitionId1, partitionId2);
     }
 
     /**

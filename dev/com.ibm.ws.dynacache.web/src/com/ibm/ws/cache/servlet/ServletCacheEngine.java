@@ -74,7 +74,8 @@ public class ServletCacheEngine implements CacheManager {
 			}
 			
 			if (null != s.getServletConfig()){
-				String contextRoot = s.getServletConfig().getServletContext().getContextPath(); 
+				String contextRoot = s.getServletConfig().getServletContext().getContextPath().isEmpty() ? 
+		                    "/" : s.getServletConfig().getServletContext().getContextPath();
 				if (null != getServletCache() || !excludedServlets.contains(name)) {
 					if (contextRootsWithCachespecXMLs.contains(contextRoot)) {
 						s = new ServletWrapper(s);

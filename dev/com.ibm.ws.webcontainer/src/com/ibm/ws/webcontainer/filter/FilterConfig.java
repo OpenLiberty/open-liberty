@@ -24,6 +24,7 @@ import javax.servlet.Filter;
 import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.webcontainer.filter.extended.IFilterMappingExtended;
 import com.ibm.ws.webcontainer.osgi.osgi.WebContainerConstants;
 import com.ibm.ws.webcontainer.servlet.ServletConfig;
 import com.ibm.ws.webcontainer.servlet.TargetConfig;
@@ -166,6 +167,11 @@ public class FilterConfig extends TargetConfig implements IFilterConfig {
             IServletConfig sConfig = this.webAppConfig.getServletInfo(servletName);
             IFilterMapping fmapping = new FilterMapping(null, this, sConfig);
             
+            //issue#9386
+            if (sConfig == null) {
+                ((IFilterMappingExtended) fmapping).saveServletFilterMappingName(servletName);
+            }
+
             if (dispatcherTypes!=null){ // will default to REQUEST
 	            DispatcherType [] dispatcherType = {};
 	            fmapping.setDispatchMode(dispatcherTypes.toArray(dispatcherType));

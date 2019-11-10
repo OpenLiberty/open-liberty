@@ -236,7 +236,7 @@ fi
 
 # Set a default file encoding if needed
 if [ -n "$defaultFileEncoding" ]; then
-  if ! expr "${JVM_ARGS} ${IBM_JAVA_OPTIONS}" : '.*\(-Dfile\.encoding\=[^[:space:]]\)' > /dev/null; then
+  if ! expr "${JVM_ARGS} ${OPENJ9_JAVA_OPTIONS}" : '.*\(-Dfile\.encoding\=[^[:space:]]\)' > /dev/null; then
     JVM_ARGS="${JVM_ARGS} -Dfile.encoding=$defaultFileEncoding"
   fi
 fi

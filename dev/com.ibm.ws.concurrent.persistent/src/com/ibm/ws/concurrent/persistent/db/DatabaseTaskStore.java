@@ -245,6 +245,56 @@ public class DatabaseTaskStore implements TaskStore {
         }
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public boolean create(PartitionRecord record) throws Exception {
+        StringBuilder update = new StringBuilder(111)
+                        .append("UPDATE Partition SET ID=:i1,EXECUTOR=:exec,HOSTNAME=:h,LSERVER=:l,USERDIR=:u");
+        if (record.hasExpiry())
+            update.append(",EXPIRY=:exp");
+        if (record.hasStates())
+            update.append(",STATES=:s");
+        update.append(" WHERE ID=:i2");
+
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "create", record, update);
+
+        boolean created = false;
+        EntityManager em = getPersistenceServiceUnit().createEntityManager();
+        try {
+            Partition partition = new Partition();
+            partition.EXECUTOR = "?";
+            partition.HOSTNAME = "?";
+            partition.LSERVER = "?";
+            partition.USERDIR = "?";
+            em.persist(partition);
+            em.flush();
+
+            Query query = em.createQuery(update.toString());
+            query.setParameter("i1", record.getId());
+            query.setParameter("exec", record.getExecutor());
+            query.setParameter("h", record.getHostName());
+            query.setParameter("l", record.getLibertyServer());
+            query.setParameter("u", record.getUserDir());
+            if (record.hasExpiry())
+                query.setParameter("exp", record.getExpiry());
+            if (record.hasStates())
+                query.setParameter("s", record.getStates());
+            query.setParameter("i2", partition.ID);
+
+            created = query.executeUpdate() > 0;
+            if (trace && tc.isDebugEnabled())
+                Tr.debug(this, tc, "update", partition.ID + " --> " + record.getId(), created);
+        } finally {
+            em.close();
+        }
+
+        if (trace && tc.isEntryEnabled())
+            Tr.exit(this, tc, "create", created);
+        return created;
+    }
+
     /**
      * Create an entry in the persistent store for a new task.
      *
@@ -336,7 +386,7 @@ public class DatabaseTaskStore implements TaskStore {
     /** {@inheritDoc} */
     @Override
     public List<PartitionRecord> find(PartitionRecord expected) throws Exception {
-        StringBuilder select = new StringBuilder(172).append("SELECT p.EXECUTOR,p.HOSTNAME,p.ID,p.LSERVER,p.USERDIR FROM Partition p");
+        StringBuilder select = new StringBuilder(190).append("SELECT p.EXECUTOR,p.HOSTNAME,p.ID,p.LSERVER,p.USERDIR,p.EXPIRY,p.STATES FROM Partition p");
         if (expected != null) {
             select.append(" WHERE");
             if (expected.hasExecutor())
@@ -383,6 +433,8 @@ public class DatabaseTaskStore implements TaskStore {
                 record.setId((Long) result[2]);
                 record.setLibertyServer((String) result[3]);
                 record.setUserDir((String) result[4]);
+                record.setExpiry((Long) result[5]);
+                record.setStates((Long) result[6]);
                 records.add(record);
             }
         } finally {
@@ -502,6 +554,42 @@ public class DatabaseTaskStore implements TaskStore {
 
     /** {@inheritDoc} */
     @Override
+    public List<PartitionRecord> findExpired() throws Exception {
+        String find = "SELECT p.ID,p.EXECUTOR,p.HOSTNAME,p.LSERVER,p.USERDIR,p.EXPIRY,p.STATES FROM Partition p WHERE p.EXPIRY<:e";
+
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "findExpired", find);
+
+        List<PartitionRecord> records = new ArrayList<PartitionRecord>();
+        EntityManager em = getPersistenceServiceUnit().createEntityManager();
+        try {
+            TypedQuery<Object[]> query = em.createQuery(find.toString(), Object[].class);
+            query.setParameter("e", System.currentTimeMillis());
+            List<Object[]> results = query.getResultList();
+
+            for (Object[] result : results) {
+                PartitionRecord record = new PartitionRecord(true);
+                record.setId((Long) result[0]);
+                record.setExecutor((String) result[1]);
+                record.setHostName((String) result[2]);
+                record.setLibertyServer((String) result[3]);
+                record.setUserDir((String) result[4]);
+                record.setExpiry((Long) result[5]);
+                record.setStates((Long) result[6]);
+                records.add(record);
+            }
+        } finally {
+            em.close();
+        }
+
+        if (trace && tc.isEntryEnabled())
+            Tr.exit(this, tc, "findExpired", records.size());
+        return records;
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public List<Object[]> findLateTasks(long maxNextExecTime, long excludePartition, Integer maxResults) throws Exception {
         StringBuilder find = new StringBuilder(138)
                         .append("SELECT t.ID,t.MBITS,t.NEXTEXEC,t.TXTIMEOUT,t.VERSION FROM Task t WHERE t.PARTN<>:p AND t.STATES<")
@@ -543,7 +631,7 @@ public class DatabaseTaskStore implements TaskStore {
     /** {@inheritDoc} */
     @Override
     public long findOrCreate(PartitionRecord record) throws Exception {
-        String find = "SELECT p.ID,p.STATES FROM Partition p WHERE p.EXECUTOR=:x AND p.HOSTNAME=:h AND p.LSERVER=:l AND p.USERDIR=:u";
+        String find = "SELECT p.ID,p.EXPIRY,p.STATES FROM Partition p WHERE p.EXECUTOR=:x AND p.HOSTNAME=:h AND p.LSERVER=:l AND p.USERDIR=:u";
 
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
@@ -560,17 +648,22 @@ public class DatabaseTaskStore implements TaskStore {
             query.setParameter("u", record.getUserDir());
             List<Object[]> results = query.getResultList();
             if (results.size() > 0) {
-                Object[] idAndStates = results.get(0);
-                partitionId = (Long) idAndStates[0];
-                long states = (Long) idAndStates[1];
-                // Check if existing entry needs an update to states
-                if (record.hasStates() && record.getStates() != states) {
-                    Query update = em.createQuery("UPDATE Partition SET STATES=:s WHERE ID=:i");
-                    update.setParameter("s", record.getStates());
+                Object[] r = results.get(0);
+                partitionId = (Long) r[0];
+                long expiry = (Long) r[1];
+                long states = (Long) r[2];
+                // Check if existing entry needs an update to expiry or states
+                if (record.hasExpiry() && record.getExpiry() != expiry
+                    || record.hasStates() && record.getStates() != states) {
+                    long newExpiry = record.hasExpiry() ? record.getExpiry() : expiry;
+                    long newStates = record.hasStates() ? record.getStates() : states;
+                    Query update = em.createQuery("UPDATE Partition SET EXPIRY=:e, STATES=:s WHERE ID=:i");
+                    update.setParameter("e", newExpiry);
+                    update.setParameter("s", newStates);
                     update.setParameter("i", partitionId);
                     int count = update.executeUpdate();
                     if (trace && tc.isDebugEnabled())
-                        Tr.debug(this, tc, "update states " + states + " --> " + record.getStates() + "? " + count);
+                        Tr.debug(this, tc, "update", expiry + " --> " + newExpiry, states + " --> " + newStates, count);
                 }
             } else {
                 // If not found, create a new entry

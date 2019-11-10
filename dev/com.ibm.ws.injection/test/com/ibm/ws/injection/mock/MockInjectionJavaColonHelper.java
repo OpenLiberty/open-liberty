@@ -54,11 +54,13 @@ public class MockInjectionJavaColonHelper extends InjectionJavaColonHelper {
             }
             compLock.writeLock().unlock();
         }
+
         if (compEnvBindings != null) {
             compLock.writeLock().lock();
             isd.addCompEnvBindings(compEnvBindings);
             compLock.writeLock().unlock();
         }
+
         if (nonCompBindings != null) {
             OSGiInjectionScopeData compScopeData = new OSGiInjectionScopeData(null, NamingConstants.JavaColonNamespace.COMP, null, null);
 
@@ -66,6 +68,7 @@ public class MockInjectionJavaColonHelper extends InjectionJavaColonHelper {
             isd.addNonCompBindings(nonCompBindings, compScopeData);
             nonCompLock.writeLock().unlock();
         }
+
         return isd;
     }
 }
