@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,15 +10,25 @@
  *******************************************************************************/
 package com.ibm.ws.session.store.cache;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.management.ManagementFactory;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLConnection;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Properties;
@@ -26,6 +36,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.regex.Pattern;
 
 import javax.cache.Cache;
 import javax.cache.Cache.Entry;
@@ -43,9 +54,24 @@ import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 import javax.servlet.ServletContext;
 import javax.transaction.UserTransaction;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -91,6 +117,12 @@ public class CacheStoreService implements Introspector, SessionStoreService {
      * Trace identifier for the cache manager
      */
     volatile String tcCacheManager; // requires lazy activation
+
+    /**
+     * Temporary config file that is created for Infinispan in the absence of an explicitly specified config file uri
+     * or to augment existing config.
+     */
+    File tempConfigFile;
 
     /**
      * Trace identifier for the caching provider.
@@ -140,15 +172,15 @@ public class CacheStoreService implements Introspector, SessionStoreService {
         Properties vendorProperties = new Properties();
         
         String uriValue = (String) configurationProperties.get("uri");
-        final URI uri;
+        final URI configuredURI;
         if (uriValue != null)
             try {
-                uri = new URI(uriValue);
+                configuredURI = new URI(uriValue);
             } catch (URISyntaxException e) {
                 throw new IllegalArgumentException(Tr.formatMessage(tc, "INCORRECT_URI_SYNTAX", e), e);
             }
         else
-            uri = null;
+            configuredURI = null;
         
         for (Map.Entry<String, Object> entry : configurationProperties.entrySet()) {
             String key = entry.getKey();
@@ -166,7 +198,7 @@ public class CacheStoreService implements Introspector, SessionStoreService {
         final ClassLoader cl = library.getClassLoader();
 
         try {
-            AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
+            AccessController.doPrivileged((PrivilegedExceptionAction<Void>) () -> {
                 ClassLoader loader = new CachingProviderClassLoader(cl);
 
                 if (trace && tc.isDebugEnabled())
@@ -175,6 +207,13 @@ public class CacheStoreService implements Introspector, SessionStoreService {
                 cachingProvider = Caching.getCachingProvider(loader);
 
                 tcCachingProvider = "CachingProvider" + Integer.toHexString(System.identityHashCode(cachingProvider));
+
+                // For Infinispan, augment existing config file to recognize cache names used by HTTP Session Persistence,
+                // or create a new config file if absent altogether.
+                URI uri = "org.infinispan.jcache.embedded.JCachingProvider".equals(cachingProvider.getClass().getName())
+                                && Boolean.TRUE.equals(configurationProperties.get("enableBetaSupportForInfinispan")) // TODO remove temporary gating code once ready
+                                ? generateOrUpdateInfinispanConfig(configuredURI)
+                                                : configuredURI;
 
                 if (trace && tc.isDebugEnabled()) {
                     CacheHashMap.tcReturn("Caching", "getCachingProvider", tcCachingProvider, cachingProvider);
@@ -203,14 +242,19 @@ public class CacheStoreService implements Introspector, SessionStoreService {
                 Tr.error(tc, "ERROR_CONFIG_EMPTY_LIBRARY", library.id(), Tr.formatMessage(tc, "SESSION_CACHE_CONFIG_MESSAGE", RuntimeUpdateListenerImpl.sampleConfig));
             }
             throw x;
-        } catch (Error | RuntimeException x) {
+        } catch (Error | RuntimeException | PrivilegedActionException x) {
             // deactivate will not be invoked if activate fails, so ensure CachingProvider is closed on error paths
             if (cachingProvider != null) {
                 CacheHashMap.tcInvoke(tcCachingProvider, "close");
                 cachingProvider.close();
                 CacheHashMap.tcReturn(tcCachingProvider, "close");
             }
-            throw x;
+            if (x instanceof Error)
+                throw (Error) x;
+            else if (x instanceof RuntimeException)
+                throw (RuntimeException) x;
+            else
+                throw new RuntimeException(x);
         }
     }
 
@@ -268,9 +312,9 @@ public class CacheStoreService implements Introspector, SessionStoreService {
             if (trace && tc.isDebugEnabled())
                 CacheHashMap.tcInvoke(tcCachingProvider, "close");
 
-            AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
+            AccessController.doPrivileged((PrivilegedAction<Boolean>) () -> {
                 cachingProvider.close();
-                return null;
+                return tempConfigFile == null ? null : tempConfigFile.delete();
             });
 
             if (trace && tc.isDebugEnabled())
@@ -278,6 +322,118 @@ public class CacheStoreService implements Introspector, SessionStoreService {
 
             cachingProvider = null;
             cacheManager = null;
+        }
+    }
+
+    /**
+     * Generates new Infinispan config if absent or lacks replicated-cache-configuration for the caches used by
+     * HTTP session persistence. Otherwise, if no changes are needed, returns the supplied URI.
+     *
+     * @param configuredURI URI (if any) that is configured by the user. Otherwise null.
+     * @return URI for generated Infinispan config. If no changes are needed, returns the original URI.
+     */
+    private URI generateOrUpdateInfinispanConfig(URI configuredURI) throws URISyntaxException, IOException {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+
+        if (configuredURI == null) {
+            tempConfigFile = File.createTempFile("infinispan", ".xml");
+            tempConfigFile.setReadable(true);
+            tempConfigFile.setWritable(true);
+            // TODO determine the best config to generate based on where/how this is running?
+            try (PrintStream out = new PrintStream(new BufferedOutputStream(new FileOutputStream(tempConfigFile)))) {
+                out.println("<infinispan>");
+                out.println(" <jgroups>");
+                out.println("  <stack-file name=\"jgroups-tcp\" path=\"/default-configs/default-jgroups-udp.xml\"/>");
+                out.println(" </jgroups>");
+                out.println(" <cache-container>");
+                out.println("  <transport stack=\"jgroups-tcp\"/>");
+                out.println("  <replicated-cache-configuration name=\"com.ibm.ws.session.*\"/>");
+                out.println(" </cache-container>");
+                out.println("</infinispan>");
+            }
+            return tempConfigFile.toURI();
+        }
+
+        // Determine if changes are needed to provided Infinispan configuration
+        try {
+            URLConnection con = configuredURI.toURL().openConnection();
+            DocumentBuilder docbuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            Document doc = docbuilder.parse(con.getInputStream());
+
+            LinkedList<Node> cacheContainers = new LinkedList<Node>();
+            LinkedList<Node> elements = new LinkedList<Node>();
+            elements.add(doc);
+            for (Node element; (element = elements.poll()) != null;) {
+                NodeList children = element.getChildNodes();
+                for (int i = children.getLength() - 1; i >= 0; i--) {
+                    Node child = children.item(i);
+                    if (child.getNodeType() == Node.ELEMENT_NODE)
+                        elements.add(child);
+                }
+
+                String elementName = element.getNodeName().toLowerCase();
+                if ("cache-container".equalsIgnoreCase(elementName))
+                    cacheContainers.add(element);
+
+                NamedNodeMap attributes = element.getAttributes();
+                if (attributes != null)
+                    for (int i = attributes.getLength() - 1; i >= 0; i--) {
+                        // Leave existing Infinispan config as is if already configured for the com.ibm.ws.session cache names.
+                        Node nameAttribute = attributes.getNamedItem("name");
+                        if (nameAttribute != null) {
+                            String nameValue = nameAttribute.getNodeValue();
+                            if (nameValue != null && (elementName.endsWith("-cache") || elementName.endsWith("-cache-configuration"))) {
+                                String regex = infinispanCacheNameToRegEx(nameValue);
+                                Pattern pattern = Pattern.compile(regex);
+                                if (pattern.matcher("com.ibm.ws.session.attr.").matches() || pattern.matcher("com.ibm.ws.session.meta.").matches()) {
+                                    if (trace && tc.isDebugEnabled())
+                                        Tr.debug(this, tc, "No changes due to " + elementName + " name=" + nameValue);
+                                    return configuredURI;
+                                }
+                            }
+                        }
+                    }
+            }
+
+            // A cache name matching com.ibm.ws.session.* was not found in the provided configuration. Add it to cache-container.
+            for (Node cacheContainer : cacheContainers) {
+                // TODO determine the best config to generate based on where/how this is running?
+                Element replicatedCacheConfig = doc.createElement("replicated-cache-configuration");
+                Attr nameAttribute = doc.createAttribute("name");
+                nameAttribute.setNodeValue("com.ibm.ws.session.*");
+                replicatedCacheConfig.setAttributeNode(nameAttribute);
+                cacheContainer.appendChild(replicatedCacheConfig);
+            }
+
+            if (cacheContainers.isEmpty()) {
+                // Infinispan config is likely invalid. Let Infinispan deal with this.
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "No cache-container was found");
+                return configuredURI;
+            }
+
+            tempConfigFile = File.createTempFile("infinispan", ".xml");
+            tempConfigFile.setReadable(true);
+            tempConfigFile.setWritable(true);
+            tempConfigFile.deleteOnExit();
+
+            StreamResult uriResult = new StreamResult(new FileOutputStream(tempConfigFile));
+            Transformer transformer = TransformerFactory.newInstance().newTransformer();
+            DOMSource source = new DOMSource(doc);
+            transformer.transform(source, uriResult);
+
+            if (trace && tc.isDebugEnabled()) {
+                // TODO: will likely need to stop tracing this due to concern about passwords or other sensitive information being logged
+                StringWriter sw = new StringWriter();
+                StreamResult loggableResult = new StreamResult(sw);
+                transformer.transform(source, loggableResult);
+                Tr.debug(this, tc, "generateOrUpdateInfinispanConfig", tempConfigFile, sw.toString());
+            }
+            return tempConfigFile.toURI();
+        } catch (ParserConfigurationException | SAXException | TransformerException x) {
+            if (trace && tc.isDebugEnabled())
+                Tr.debug(this, tc, "unable to enhance Infinispan config", x);
+            return configuredURI;
         }
     }
 
@@ -300,6 +456,31 @@ public class CacheStoreService implements Introspector, SessionStoreService {
     @Override
     public String getIntrospectorName() {
         return "SessionCacheIntrospector";
+    }
+
+    /**
+     * Convert an Infinispan cache name that might include wild cards (*) into a Java regular expression,
+     * so that we can determine if it would match the cache names used by HTTP session persistence.
+     *
+     * @param s configured cache name value, possibly including wild card characters (*).
+     * @return Java regular expression that can be used to match the HTTP session persistence cache names.
+     */
+    private String infinispanCacheNameToRegEx(String s) {
+        int len = s.length();
+        StringBuilder regex = new StringBuilder(len + 5);
+
+        int start = 0;
+        for (int i = 0; (i = s.indexOf('*', i)) >= 0; start = i + 1, i++) {
+            String part = s.substring(start, i);
+            if (part.length() > 0)
+                regex.append("\\Q").append(part).append("\\E");
+            regex.append(".*");
+        }
+
+        if (start < len)
+            regex.append("\\Q").append(s.substring(start)).append("\\E");
+
+        return regex.toString();
     }
 
     /**

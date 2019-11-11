@@ -45,7 +45,7 @@ public abstract class AbstractProviderResolver extends ConfigProviderResolver im
 
     private static final TraceComponent tc = Tr.register(AbstractProviderResolver.class);
 
-    private final AtomicServiceReference<ScheduledExecutorService> scheduledExecutorServiceRef = new AtomicServiceReference<ScheduledExecutorService>("scheduledExecutorService");
+    private final AtomicServiceReference<ScheduledExecutorService> scheduledExecutorServiceRef = new AtomicServiceReference<>("scheduledExecutorService");
 
     //NOTE: a lock must be held on the configCache whenever reading or writing to the configCache, the appClassLoaderMap or any of the contained ConfigWrappers.
     //map from classloader to config
@@ -60,7 +60,7 @@ public abstract class AbstractProviderResolver extends ConfigProviderResolver im
      */
     @Reference(name = "scheduledExecutorService", service = ScheduledExecutorService.class, target = "(deferrable=false)")
     protected void setScheduledExecutorService(ServiceReference<ScheduledExecutorService> ref) {
-        scheduledExecutorServiceRef.setReference(ref);
+        this.scheduledExecutorServiceRef.setReference(ref);
     }
 
     /**
@@ -69,7 +69,7 @@ public abstract class AbstractProviderResolver extends ConfigProviderResolver im
      * @param ref
      */
     protected void unsetScheduledExecutorService(ServiceReference<ScheduledExecutorService> ref) {
-        scheduledExecutorServiceRef.unsetReference(ref);
+        this.scheduledExecutorServiceRef.unsetReference(ref);
     }
 
     /**
@@ -78,7 +78,7 @@ public abstract class AbstractProviderResolver extends ConfigProviderResolver im
      * @param cc
      */
     public void activate(ComponentContext cc) {
-        scheduledExecutorServiceRef.activate(cc);
+        this.scheduledExecutorServiceRef.activate(cc);
         ConfigProviderResolver.setInstance(this);
     }
 
@@ -90,7 +90,7 @@ public abstract class AbstractProviderResolver extends ConfigProviderResolver im
     public void deactivate(ComponentContext cc) throws IOException {
         ConfigProviderResolver.setInstance(null);
         shutdown();
-        scheduledExecutorServiceRef.deactivate(cc);
+        this.scheduledExecutorServiceRef.deactivate(cc);
     }
 
     /** {@inheritDoc} */
@@ -108,7 +108,11 @@ public abstract class AbstractProviderResolver extends ConfigProviderResolver im
     /** {@inheritDoc} */
     @Override
     public void applicationStopped(ApplicationInfo appInfo) {
-        //no-op
+        // Repeat shutdown logic here because applicationStopping is not called for applications which fail to start
+        ExtendedApplicationInfo extendedAppInfo = (ExtendedApplicationInfo) appInfo;
+        String applicationName = extendedAppInfo.getMetaData().getJ2EEName().getApplication();
+
+        shutdown(applicationName);
     }
 
     /** {@inheritDoc} */
@@ -142,15 +146,15 @@ public abstract class AbstractProviderResolver extends ConfigProviderResolver im
      * Close down all the configs
      */
     public void shutdown() {
-        synchronized (configCache) {
+        synchronized (this.configCache) {
             Set<ClassLoader> allClassLoaders = new HashSet<>();
-            allClassLoaders.addAll(configCache.keySet()); //create a copy of the keys so that we avoid a ConcurrentModificationException
+            allClassLoaders.addAll(this.configCache.keySet()); //create a copy of the keys so that we avoid a ConcurrentModificationException
             for (ClassLoader classLoader : allClassLoaders) {
                 close(classLoader);
             }
             //caches should be empty now but clear them anyway
-            configCache.clear();
-            appClassLoaderMap.clear();
+            this.configCache.clear();
+            this.appClassLoaderMap.clear();
         }
     }
 
@@ -158,8 +162,8 @@ public abstract class AbstractProviderResolver extends ConfigProviderResolver im
      * Close down all the configs used by a specified application (that are not also still in use by other applications)
      */
     private void shutdown(String applicationName) {
-        synchronized (configCache) {
-            Set<ClassLoader> appClassLoaders = appClassLoaderMap.remove(applicationName);
+        synchronized (this.configCache) {
+            Set<ClassLoader> appClassLoaders = this.appClassLoaderMap.remove(applicationName);
             if (appClassLoaders != null) {
                 for (ClassLoader classLoader : appClassLoaders) {
                     shutdown(applicationName, classLoader);
@@ -172,8 +176,8 @@ public abstract class AbstractProviderResolver extends ConfigProviderResolver im
      * Close down a specific config used by a specified application (that is not also still in use by other applications)
      */
     private void shutdown(String applicationName, ClassLoader classLoader) {
-        synchronized (configCache) {
-            ConfigWrapper configWrapper = configCache.get(classLoader);
+        synchronized (this.configCache) {
+            ConfigWrapper configWrapper = this.configCache.get(classLoader);
             boolean close = configWrapper.removeApplication(applicationName);
             if (close) {
                 close(classLoader);
@@ -185,12 +189,12 @@ public abstract class AbstractProviderResolver extends ConfigProviderResolver im
      * Completely close a config for a given classloader
      */
     private void close(ClassLoader classLoader) {
-        synchronized (configCache) {
-            ConfigWrapper config = configCache.remove(classLoader);
+        synchronized (this.configCache) {
+            ConfigWrapper config = this.configCache.remove(classLoader);
             if (config != null) {
                 Set<String> applicationNames = config.getApplications();
                 for (String app : applicationNames) {
-                    appClassLoaderMap.remove(app);
+                    this.appClassLoaderMap.remove(app);
                 }
 
                 config.close();
@@ -215,7 +219,7 @@ public abstract class AbstractProviderResolver extends ConfigProviderResolver im
      * @return the scheduledExecutorServiceRef service
      */
     public ScheduledExecutorService getScheduledExecutorService() {
-        return scheduledExecutorServiceRef.getService();
+        return this.scheduledExecutorServiceRef.getService();
     }
 
     /** {@inheritDoc} */
@@ -227,12 +231,7 @@ public abstract class AbstractProviderResolver extends ConfigProviderResolver im
     }
 
     private ClassLoader getThreadContextClassLoader() {
-        ClassLoader classloader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
-            @Override
-            public ClassLoader run() {
-                return Thread.currentThread().getContextClassLoader();
-            }
-        });
+        ClassLoader classloader = AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> Thread.currentThread().getContextClassLoader());
         return classloader;
     }
 
@@ -245,8 +244,8 @@ public abstract class AbstractProviderResolver extends ConfigProviderResolver im
         }
 
         Config config = null;
-        synchronized (configCache) {
-            ConfigWrapper configWrapper = configCache.get(classLoader);
+        synchronized (this.configCache) {
+            ConfigWrapper configWrapper = this.configCache.get(classLoader);
             if (configWrapper == null) {
                 AbstractConfigBuilder builder = newBuilder(classLoader);
                 //add all default and discovered sources and converters
@@ -272,7 +271,7 @@ public abstract class AbstractProviderResolver extends ConfigProviderResolver im
     /** {@inheritDoc} */
     @Override
     public void registerConfig(Config config, ClassLoader classLoader) {
-        synchronized (configCache) {
+        synchronized (this.configCache) {
             ConfigWrapper configWrapper = newConfigWrapper(config, classLoader);
             registerApplication(configWrapper, classLoader);
         }
@@ -280,15 +279,15 @@ public abstract class AbstractProviderResolver extends ConfigProviderResolver im
 
     private ConfigWrapper newConfigWrapper(Config config, ClassLoader classLoader) {
         ConfigWrapper configWrapper = null;
-        synchronized (configCache) {
+        synchronized (this.configCache) {
             configWrapper = null;
-            ConfigWrapper previous = configCache.get(classLoader);
+            ConfigWrapper previous = this.configCache.get(classLoader);
             if (previous != null) {
                 throw new IllegalStateException(Tr.formatMessage(tc, "config.already.exists.CWMCG0003E"));
             }
             //create a new ConfigWrapper and put it in the cache
             configWrapper = new ConfigWrapper((WebSphereConfig) config);
-            configCache.put(classLoader, configWrapper);
+            this.configCache.put(classLoader, configWrapper);
         }
         return configWrapper;
     }
@@ -302,11 +301,11 @@ public abstract class AbstractProviderResolver extends ConfigProviderResolver im
      */
     private void registerApplication(ConfigWrapper configWrapper, ClassLoader classLoader) {
         String applicationName = getApplicationName();
-        synchronized (configCache) {
-            Set<ClassLoader> appClassLoaders = appClassLoaderMap.get(applicationName);
+        synchronized (this.configCache) {
+            Set<ClassLoader> appClassLoaders = this.appClassLoaderMap.get(applicationName);
             if (appClassLoaders == null) {
                 appClassLoaders = new HashSet<>();
-                appClassLoaderMap.put(applicationName, appClassLoaders);
+                this.appClassLoaderMap.put(applicationName, appClassLoaders);
 
                 appClassLoaders.add(classLoader);
                 configWrapper.addApplication(applicationName);
@@ -320,7 +319,7 @@ public abstract class AbstractProviderResolver extends ConfigProviderResolver im
     /** {@inheritDoc} */
     @Override
     public void releaseConfig(Config config) {
-        synchronized (configCache) {
+        synchronized (this.configCache) {
             ClassLoader classloader = findClassloaderForRegisteredConfig(config);
             if (classloader != null) {
                 close(classloader);
@@ -331,14 +330,14 @@ public abstract class AbstractProviderResolver extends ConfigProviderResolver im
     }
 
     private ClassLoader findClassloaderForRegisteredConfig(Config config) {
-        synchronized (configCache) {
+        synchronized (this.configCache) {
             //look through the cache and find the classloader which corresponds to the specified config
-            for (Map.Entry<ClassLoader, ConfigWrapper> entry : configCache.entrySet()) {
+            for (Map.Entry<ClassLoader, ConfigWrapper> entry : this.configCache.entrySet()) {
                 ClassLoader classLoader = entry.getKey();
                 ConfigWrapper configWrapper = entry.getValue();
                 if (configWrapper != null) {
                     Config cachedConfig = configWrapper.getConfig();
-                    if (cachedConfig != null && config == cachedConfig) {
+                    if ((cachedConfig != null) && (config == cachedConfig)) {
                         return classLoader;
                     }
                 }
@@ -362,8 +361,8 @@ public abstract class AbstractProviderResolver extends ConfigProviderResolver im
     public String getConfigCacheDetails() {
         StringBuilder builder = new StringBuilder("[");
         boolean first1 = true;
-        synchronized (configCache) {
-            for (Map.Entry<ClassLoader, ConfigWrapper> entry : configCache.entrySet()) {
+        synchronized (this.configCache) {
+            for (Map.Entry<ClassLoader, ConfigWrapper> entry : this.configCache.entrySet()) {
                 if (!first1) {
                     builder.append(", ");
                 } else {
@@ -392,8 +391,8 @@ public abstract class AbstractProviderResolver extends ConfigProviderResolver im
     @Trivial
     public int getConfigCacheSize() {
         int size = 0;
-        synchronized (configCache) {
-            size = configCache.size();
+        synchronized (this.configCache) {
+            size = this.configCache.size();
         }
         return size;
     }

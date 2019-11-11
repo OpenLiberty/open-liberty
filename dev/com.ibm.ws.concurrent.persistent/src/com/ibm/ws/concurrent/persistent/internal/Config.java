@@ -30,6 +30,11 @@ class Config {
     final String id;
 
     /**
+     * Amount of time (in seconds) between updating the partition table to indicate that this instance is still running.
+     */
+    final long heartbeatInterval;
+
+    /**
      * Initial delay for starting the polling task.
      */
     final long initialPollDelay;
@@ -40,7 +45,7 @@ class Config {
     final String jndiName;
 
     /**
-     * Amount of time beyond a task's scheduled time after which the task is considered to be missed
+     * Amount of time (in seconds) beyond a task's scheduled time after which the task is considered to be missed
      * and is eligible to be taken over by another member.
      */
     final long missedTaskThreshold;
@@ -76,6 +81,7 @@ class Config {
     Config(Dictionary<String, ?> properties) {
         jndiName = (String) properties.get("jndiName");
         enableTaskExecution = (Boolean) properties.get("enableTaskExecution");
+        heartbeatInterval = (Long) properties.get("heartbeatInterval");
         initialPollDelay = (Long) properties.get("initialPollDelay");
         missedTaskThreshold = enableTaskExecution ? (Long) properties.get("missedTaskThreshold") : -1;
         pollInterval = enableTaskExecution ? (Long) properties.get("pollInterval") : -1;
@@ -86,6 +92,8 @@ class Config {
         id = xpathId.contains("]/persistentExecutor[") ? null : (String) properties.get("id");
 
         // Range checking on duration values, which cannot be enforced via metatype
+        if (heartbeatInterval != -1 && heartbeatInterval < 1)
+            throw new IllegalArgumentException("heartbeatInterval: " + heartbeatInterval + "s");
         if (missedTaskThreshold != -1 && missedTaskThreshold < 1)
             throw new IllegalArgumentException("missedTaskThreshold: " + missedTaskThreshold + "s");
         if (initialPollDelay < -1)
@@ -102,7 +110,8 @@ class Config {
                         .append("instance=").append(Integer.toHexString(System.identityHashCode(this)))
                         .append(",jndiName=").append(jndiName)
                         .append(",enableTaskExecution=").append(enableTaskExecution)
-                        .append(",initialPollDelay=").append(initialPollDelay)
+                        .append(",heartbeatInterval=").append(heartbeatInterval)
+                        .append("s,initialPollDelay=").append(initialPollDelay)
                         .append("ms,missedTaskThreshold=").append(missedTaskThreshold)
                         .append("s,pollInterval=").append(pollInterval)
                         .append("ms,pollSize=").append(pollSize)

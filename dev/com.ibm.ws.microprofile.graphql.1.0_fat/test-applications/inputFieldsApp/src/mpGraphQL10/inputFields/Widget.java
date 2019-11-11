@@ -106,7 +106,7 @@ public class Widget {
     public void setWeight2(double weight2) {
         this.weight2 = weight2;
     }
-    
+
     @Override
     public String toString() {
         return "Widget(" + name + ", " + quantity + ", " + weight + ", " +

@@ -40,6 +40,9 @@ import javax.transaction.UserTransaction;
  */
 @WebServlet(urlPatterns = { "/DMS" })
 public class DatabaseManagementServlet extends HttpServlet {
+
+    private static final long serialVersionUID = 1L;
+
     @Resource
     private UserTransaction tx;
 

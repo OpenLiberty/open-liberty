@@ -14,6 +14,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.concurrent.CompletionException;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
 import javax.ejb.SessionContext;
@@ -82,6 +83,15 @@ public class StatelessProgrammaticTimersBean {
             System.out.println("Timer " + timerName + " can only roll back on " + serverName);
             sessionContext.setRollbackOnly();
         }
+
+        if (timerName.startsWith("Long_Running_Timer_"))
+            try {
+                long delay = 8;
+                System.out.println("Timer " + timerName + " about to wait " + delay + " seconds before ending.");
+                TimeUnit.SECONDS.sleep(delay);
+            } catch (InterruptedException x) {
+                throw new CompletionException(x);
+            }
     }
 
     public Timer scheduleTimer(long initialDelayMS, long intervalMS, String name) {

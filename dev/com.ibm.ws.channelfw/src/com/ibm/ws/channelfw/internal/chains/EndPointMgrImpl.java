@@ -16,7 +16,6 @@ import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -33,7 +32,6 @@ import com.ibm.websphere.channelfw.EndPointMgr;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.channelfw.internal.ChannelFrameworkConstants;
-import com.ibm.ws.staticvalue.StaticValue;
 
 /**
  * Temporary version of the WAS runtimefw EndPointMgr.
@@ -50,17 +48,16 @@ public class EndPointMgrImpl implements EndPointMgr {
 
     /** Singleton reference */
     private static class EndpointManagerHolder {
-        private static StaticValue<EndPointMgr> singleton = StaticValue.createStaticValue(new Callable<EndPointMgr>() {
-            @Override
-            public EndPointMgr call() throws Exception {
-                BundleContext bundleContext = null;
-                Bundle b = FrameworkUtil.getBundle(EndpointManagerHolder.class);
-                if (b != null) {
-                    bundleContext = b.getBundleContext();
-                }
-                return new EndPointMgrImpl(bundleContext);
+        private static EndPointMgr singleton;
+
+        static {
+            BundleContext bundleContext = null;
+            Bundle b = FrameworkUtil.getBundle(EndpointManagerHolder.class);
+            if (b != null) {
+                bundleContext = b.getBundleContext();
             }
-        });
+            singleton = new EndPointMgrImpl(bundleContext);
+        }
     }
 
     /** BundleContext for registering the MBeans */
@@ -87,23 +84,18 @@ public class EndPointMgrImpl implements EndPointMgr {
      * @return EndPointMgrImpl
      */
     public static EndPointMgr getRef() {
-        return EndpointManagerHolder.singleton.get();
+        return EndpointManagerHolder.singleton;
     }
 
     public static void setRef(final EndPointMgr singleton) {
-        EndpointManagerHolder.singleton = StaticValue.mutateStaticValue(EndpointManagerHolder.singleton, new Callable<EndPointMgr>() {
-            @Override
-            public EndPointMgr call() throws Exception {
-                return singleton;
-            }
-        });
+        EndpointManagerHolder.singleton = singleton;
     }
 
     /**
      * Construct the endpoint MBean object name.
      *
      * @param name endpoint name
-     *            WebSphere:feature=channelfw,type=endpoint,name=name
+     *                 WebSphere:feature=channelfw,type=endpoint,name=name
      * @return the value used in jmx.objectname property
      */
     private String getMBeanObjectName(String name) {
@@ -119,7 +111,7 @@ public class EndPointMgrImpl implements EndPointMgr {
     }
 
     /**
-     * @param name endpoint name of the mbean to be registered
+     * @param name     endpoint name of the mbean to be registered
      * @param endpoint instance of an EndPointInfo containing the endpoint info
      */
     private ServiceRegistration<DynamicMBean> registerMBeanAsService(String name, EndPointInfoImpl endpoint) {

@@ -153,7 +153,15 @@ public class ServletConfigMock {
                 allowing(webAnnotations).getOrderedItems();
                 will(returnValue(orderedItems));
 
+                // Note the almost duplicate adapt to the annotation caching web annotations.
                 allowing(moduleContainer).adapt(WebAnnotations.class);
+                will(returnValue(webAnnotations));
+
+                // Handle annotation caching case as well:
+                // Depending on the beta enablement, the adapt call will be either to
+                // com.ibm.ws.container.service.annotations.WebAnnotations or to
+                // com.ibm.ws.container.service.annocache.WebAnnotations.
+                allowing(moduleContainer).adapt(com.ibm.ws.container.service.annocache.WebAnnotations.class);
                 will(returnValue(webAnnotations));
 
                 //Mock up the DD object to be returned from our mock container.

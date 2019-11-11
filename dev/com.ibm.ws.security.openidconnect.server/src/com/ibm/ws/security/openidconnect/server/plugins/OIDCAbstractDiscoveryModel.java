@@ -51,6 +51,7 @@ public abstract class OIDCAbstractDiscoveryModel {
     private String personal_token_mgmt_endpoint;
     private String users_token_mgmt_endpoint;
     private String client_mgmt_endpoint;
+    private String[] code_challenge_methods_supported;
 
     /**
      * OIDC Properties not utilized in implementation
@@ -464,6 +465,20 @@ public abstract class OIDCAbstractDiscoveryModel {
      */
     public void setClientMgmtEndpoint(String clientMgmtEndpoint) {
         this.client_mgmt_endpoint = clientMgmtEndpoint;
+    }
+
+    /**
+     * @return the pkceCodeChallengeMethodsSupported
+     */
+    public String[] getPkceCodeChallengeMethodsSupported() {
+        return defensiveCopy(code_challenge_methods_supported);
+    }
+
+    /**
+     * @param pkceCodeChallengeMethodsSupported the pkceCodeChallengeMethodsSupported to set
+     */
+    public void setPkceCodeChallengeMethodsSupported(String[] pkceCodeChallengeMethodsSupported) {
+        this.code_challenge_methods_supported = defensiveCopy(pkceCodeChallengeMethodsSupported);
     }
 
     private String[] defensiveCopy(String[] strArr) {

@@ -67,7 +67,8 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
         try {
             ExternalTestService.getService("docker-engine", new AvailableDockerHostFilter());
         } catch (Exception e) {
-            throw new InvalidConfigurationException("Unable to localte any healthy docker-engine instances", e);
+            Log.error(c, "test", e, "Unable to locate any healthy docker-engine instances");
+            throw new InvalidConfigurationException("Unable to locate any healthy docker-engine instances", e);
         }
     }
 

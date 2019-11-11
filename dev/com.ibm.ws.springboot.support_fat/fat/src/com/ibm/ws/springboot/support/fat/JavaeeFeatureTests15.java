@@ -24,12 +24,14 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.config.KeyStore;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.topology.utils.HttpUtils;
 
 @Mode(FULL)
 @RunWith(FATRunner.class)
+@MaximumJavaLevel(javaLevel = 8)
 public class JavaeeFeatureTests15 extends AbstractSpringTests {
     @AfterClass
     public static void stopTestServer() throws Exception {

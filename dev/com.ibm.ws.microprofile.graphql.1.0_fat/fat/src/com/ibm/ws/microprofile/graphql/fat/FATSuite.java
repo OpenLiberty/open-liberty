@@ -21,9 +21,11 @@ import org.junit.runners.Suite.SuiteClasses;
                 BasicQueryWithConfigTest.class,
                 DefaultValueTest.class,
                 DeprecationTest.class,
+                GraphQLInterfaceTest.class,
                 IfaceTest.class,
                 IgnoreTest.class,
                 InputFieldsTest.class,
+                MetricsTest.class,
                 OutputFieldsTest.class,
                 TypesTest.class
 })

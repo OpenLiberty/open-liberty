@@ -25,12 +25,7 @@ public class MyDataMessagingBean {
     @Incoming(IN_CHANNEL)
     @Outgoing(OUT_CHANNEL)
     public MyData reverseString(MyData in) {
-        System.out.println("Processing message " + in);
-        StringBuilder sbA = new StringBuilder(in.getDataA());
-        sbA.reverse();
-        StringBuilder sbB = new StringBuilder(in.getDataB());
-        sbB.reverse();
-        return new MyData(sbA.toString(), sbB.toString());
+        return in.reverse();
     }
 
 }

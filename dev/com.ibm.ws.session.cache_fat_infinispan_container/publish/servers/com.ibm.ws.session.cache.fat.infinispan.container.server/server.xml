@@ -1,0 +1,59 @@
+<server>
+	<!-- Used for SessionCacheOneServerTest -->
+    <featureManager>
+        <feature>servlet-3.1</feature>
+        <feature>componenttest-1.0</feature>
+        <feature>jdbc-4.1</feature>
+        <feature>jndi-1.0</feature>
+        <feature>monitor-1.0</feature>
+        <feature>sessionCache-1.0</feature>
+    </featureManager>
+    
+    <include location="../fatTestPorts.xml"/>
+    
+    <httpSession maxInMemorySessionCount="1" allowOverflow="false" hideSessionValues="false"/>
+
+	<httpSessionCache libraryRef="InfinispanLib">
+		<properties infinispan.client.hotrod.server_list="${INF_SERVERLIST}"/>
+		<properties infinispan.client.hotrod.auth_username="user"/> <!-- set in users.properties -->
+		<properties infinispan.client.hotrod.auth_password="pass"/> <!-- set in users.properties -->
+		<properties infinispan.client.hotrod.auth_realm="default"/>
+		<properties infinispan.client.hotrod.sasl_mechanism="PLAIN"/>
+	</httpSessionCache>
+	
+    <library id="InfinispanLib">
+        <fileset dir="${shared.resource.dir}/infinispan" includes="*.jar"/>
+    </library>
+
+	<library id="DerbyLib">
+	    <file name="${shared.resource.dir}/derby/derby.jar"/>
+	</library>
+
+    <!-- Used for testing that data source can be stored in a session -->
+	<authData id="DerbyAuth" user="userName" password="userPassword"/>    
+    <dataSource id="DerbyDS" jndiName="jdbc/derby" containerAuthDataRef="DerbyAuth">
+	    <jdbcDriver libraryRef="DerbyLib"/>
+	    <properties.derby.embedded createDatabase="create" databaseName="memory:testdb"/>
+	</dataSource>
+	
+	<!-- Perms needed because the application uses OSGi reflectively to access the same caches as HTTP Session persistence. -->
+	<!-- Applications should never do this. We are only granting it to the test app for purposes of verifying cached values. -->
+    <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+    <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
+    <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="org.osgi.framework.AdminPermission" actions="context" name="*"/>
+    <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="org.osgi.framework.ServicePermission" actions="get" name="*"/>
+
+    <!-- Needed for the test application to invoke IBMSessionExt.invalidateAll -->
+    <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="com.ibm.websphere.security.WebSphereRuntimePermission" name="accessInvalidateAll"/>
+
+    <!-- Needed for missing doPriv in JCache 1.1 API (see https://github.com/jsr107/jsr107spec/issues/398) -->
+    <javaPermission className="java.util.PropertyPermission" actions="read,write" name="*"/>
+
+	<javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+	<javaPermission codebase="${shared.resource.dir}/infinispan/*" className="java.security.AllPermission"/>
+
+    <!--  Permissions for application to access mbeans -->
+    <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
+    <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="javax.management.MBeanPermission" actions="registerMBean,queryNames" name="*"/>
+
+</server>

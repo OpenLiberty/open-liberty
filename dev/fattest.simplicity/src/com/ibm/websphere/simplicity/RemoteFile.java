@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
+import com.ibm.websphere.simplicity.RemoteFile.Operation;
 import com.ibm.websphere.simplicity.log.Log;
 //open-liberty uses 'LocalProvider', where-as WS-CD-Open uses 'RXAProvider'.
 import componenttest.common.apiservices.cmdline.LocalProvider;
@@ -41,16 +42,34 @@ public class RemoteFile {
     // Retry utility ...
 
     /**
-     * Sleep a specified interval, measured in nanoseconds.
-     * See {@link TimeUnit#NANOSECONDS}.
+     * A more accurate version of {@link Thread#sleep}: Use nano-second units,
+     * and do not rely on the actual sleep duration being at least the requested
+     * duration.
      *
-     * @param ns The interval, in nanoseconds.
+     * Thread.sleep() is repeated until System.nanoTime() shows that the thread
+     * has waited at least the specified time in milliseconds.
+     *
+     * @param requestedNs The requested sleep time, in nano-seconds.
+     *
+     * @return The time slept, in nano-seconds.
      *
      * @throws InterruptedException Thrown if if the sleep is
      *     interrupted.
      */
-    public static void sleep(long ns) throws InterruptedException {
-        TimeUnit.NANOSECONDS.sleep(ns); // throws InterruptedException
+    public static long sleep(long requestedNs) throws InterruptedException {
+        long startNs = System.nanoTime();
+
+        long elapsedNs = 0L;
+        long remainingNs = requestedNs;
+
+        while ( remainingNs > 0 ) {
+            TimeUnit.NANOSECONDS.sleep(remainingNs); // throws InterruptedException
+
+            elapsedNs = System.nanoTime() - startNs;
+            remainingNs = requestedNs - elapsedNs;
+       }
+
+        return elapsedNs;
     }
 
     /**
@@ -80,41 +99,61 @@ public class RemoteFile {
     public static final long STANDARD_RETRY_INTERVAL_NS =
         TimeUnit.MILLISECONDS.toNanos(200 * 2);
 
+    // Increase this to 0.1s instead of 0.05s.  The sleep granularity
+    // on windows is too small to reliably handle 0.05s. 
+
     public static final long STANDARD_RETRY_PARTIAL_INTERVAL_NS =
-        TimeUnit.MILLISECONDS.toNanos(50);
+        TimeUnit.MILLISECONDS.toNanos(100); // 0.1s
 
     public interface Operation {
         public boolean act() throws Exception;
     }
 
-    public boolean retry(Operation op, long retryNs) throws Exception {
-        String methodName = "retry";
-
-        boolean didAct = op.act();
-        if ( didAct ) {
+    /**
+     * Attempt an operation.  Retry the operation, possibly several times,
+     * across a specified retry interval.
+     *
+     * @param op The operation which is being performed.
+     * @param fullRetryNs The full retry duration.
+     *
+     * @return True or false telling if the operation was successful.
+     *
+     * @throws Exception
+     */
+    private boolean retry(Operation op, long fullRetryNs) throws Exception {
+        // First try is immediate. 
+        if ( op.act() ) {
             return true;
         }
 
-        if ( retryNs < 0 ) {
-            Log.info(c, methodName, "Retry interval [ " + retryNs + " ] for [ " + getAbsolutePath() + " ] is less then 0"); 
-            retryNs = 0;
-        }
-
-        if ( retryNs == 0 ) {
+        // Don't retry unless a retry interval was specified.
+        if ( fullRetryNs == 0 ) {
             return false;
         }
 
-        int retryCount = ((int) (retryNs / STANDARD_RETRY_PARTIAL_INTERVAL_NS));
-        if ( (retryNs % STANDARD_RETRY_PARTIAL_INTERVAL_NS) > 0 ) {
-            retryCount++;
+        // Make sure the retry interval is usable.
+        if ( fullRetryNs < 0 ) {
+            throw new IllegalArgumentException("Full retry interval [ " + fullRetryNs + " ] for [ " + getAbsolutePath() + " ] is less then 0"); 
         }
 
-        for ( int retryNo = 0; !didAct && retryNo < retryCount; retryNo++ ) {
-            sleep(STANDARD_RETRY_PARTIAL_INTERVAL_NS);
-            didAct = op.act();
-        }
+        // Delay and retry, in increments of the partial retry interval, until
+        // at least the full retry interval has elapsed.
 
-        return didAct;
+        // Time accounting here has ambiguity: Should operation time be considered a part of
+        // the time slept?
+        //
+        // For the intended cases, file deletion and file renaming, the operation time can be
+        // considerable.
+
+        long finalNs = System.nanoTime() + fullRetryNs;
+        do {
+            sleep(STANDARD_RETRY_PARTIAL_INTERVAL_NS); // throws InterruptedException
+            if ( op.act() ) {
+                return true;
+            }
+        } while ( System.nanoTime() < finalNs );
+
+        return false;
     }
 
     //

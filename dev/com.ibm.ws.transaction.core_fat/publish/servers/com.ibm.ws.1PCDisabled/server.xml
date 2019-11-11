@@ -14,7 +14,7 @@
     
     <featureManager>
       <feature>servlet-3.1</feature>
-      <feature>txfat-1.0</feature>
+      <feature>txtest-1.0</feature>
       <feature>componentTest-1.0</feature>
       <feature>osgiconsole-1.0</feature>
       <feature>jndi-1.0</feature>

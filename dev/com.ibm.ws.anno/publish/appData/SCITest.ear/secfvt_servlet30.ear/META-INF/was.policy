@@ -1,0 +1,99 @@
+//
+// Dynamic Policy - Enterprise Application Templates
+//
+// J2EE 1.3 Specification
+//
+
+grant codeBase "file:${application}" {
+//   permission java.util.PropertyPermission "java.home", "read";
+ //  permission java.util.PropertyPermission "user.home", "read";
+ //  permission javax.security.auth.AuthPermission "createLoginContext";
+  permission java.io.FilePermission "${/}temp${/}xyz_LoadPolicy.txt", "read, write, delete";
+  permission java.util.PropertyPermission "com.ibm.jsse2.checkRevocation", "write";
+  permission java.util.PropertyPermission "com.ibm.security.enableCRLDP", "write";
+  permission java.lang.ReflectPermission "suppressAccessChecks";
+  permission javax.security.auth.AuthPermission "modifyPrincipals";
+  permission javax.security.auth.AuthPermission "doAsPrivileged";
+
+  permission java.lang.RuntimePermission "getClassLoader";
+  permission java.io.FilePermission "${was.install.root}${/}lib${/}security.jar", "read, write, delete";
+  permission javax.security.auth.AuthPermission "createLoginContext";
+  permission javax.security.auth.AuthPermission "doAs";
+//  permission javax.security.auth.PrivateCredentialPermission "* com.ibm.ws.security.common.auth.WSPrincipalImpl \"secnt6.austin.ibm.com:389/user1\"","read";
+//  permission javax.security.auth.PrivateCredentialPermission "* com.ibm.ws.security.common.auth.WSPrincipalImpl \"secnt6.austin.ibm.com:389/user2\"","read";
+  permission java.net.SocketPermission "*:1-", "accept,listen,connect,resolve";
+  permission java.lang.RuntimePermission "modifyThread";
+  permission java.lang.RuntimePermission "modifyThreadGroup";
+  permission java.io.FilePermission "${/}temp${/}xyz", "read, write, delete";
+  permission java.io.FilePermission "${/}temp${/}xyz_CustomPermission", "read, write, delete";
+  permission com.ibm.ws.secfvt.ejb.MyPermission "hasCustomPermission";
+//  permission com.ibm.ws.secfvt.ejb.MyPermission "hasCustomPermissionNegative";
+  permission java.io.FilePermission "${was.install.root}${/}etc${/}ws-security${/}samples${/}enc-receiver.jceks", "read, write, delete";
+//  permission java.security.SecurityPermission "setPolicy"
+  permission java.security.SecurityPermission "getPolicy";
+  permission java.security.SecurityPermission "printIdentity";
+  permission java.lang.RuntimePermission "createSecurityManager";
+//  permission java.lang.RuntimePermission "setSecurityManager";
+  permission javax.security.auth.AuthPermission "wssecurity.getRunAsSubject";
+  permission javax.security.auth.AuthPermission "wssecurity.getCallerSubject";
+  permission javax.security.auth.AuthPermission "wssecurity.setCallerSubject";
+  permission javax.security.auth.AuthPermission "wssecurity.setRunAsSubject";
+  permission javax.security.auth.PrivateCredentialPermission "com.ibm.ws.security.token.AuthenticationTokenImpl com.ibm.ws.security.common.auth.WSPrincipalImpl "*"", "read";
+// NEW for AuthnToken fix
+  permission javax.security.auth.PrivateCredentialPermission "com.ibm.ws.secfvt.testutils.customToken.CustomAuthenticationTokenImpl * \"*\"", "read";
+  permission javax.security.auth.PrivateCredentialPermission "com.ibm.ws.security.token.AuthorizationTokenImpl com.ibm.ws.security.common.auth.WSPrincipalImpl "*"", "read";
+//  permission javax.security.auth.PrivateCredentialPermission "com.ibm.ws.security.token.AuthorizationTokenImpl com.ibm.ws.security.common.auth.WSPrincipalImpl \"chiawang.austin.ibm.com:389/user2\"", "read";
+  permission javax.security.auth.PrivateCredentialPermission "com.ibm.ws.security.token.SingleSignonTokenImpl com.ibm.ws.security.common.auth.WSPrincipalImpl "*"", "read";
+  permission javax.security.auth.PrivateCredentialPermission "com.ibm.ws.wssecurity.platform.websphere.token.KRBAuthnTokenImpl * \"*\"", "read";
+  permission javax.security.auth.AuthPermission "wssecurity.applicationReadCredential";
+  permission javax.security.auth.AuthPermission "wssecurity.applicationUpdateCredential";
+  permission javax.security.auth.AuthPermission "wssecurity.addPropagationAttribute";
+  permission javax.security.auth.AuthPermission "wssecurity.getPropagationAttributes";
+  permission com.ibm.websphere.security.WebSphereRuntimePermission "accessRuntimeClasses";
+  permission com.ibm.websphere.security.WebSphereRuntimePermission "createPrincipal";
+  permission com.ibm.websphere.security.WebSphereRuntimePermission "com.ibm.wsspi.security.common.auth.module.IdentityAssertionLoginModule.initialize";
+  permission com.ibm.websphere.security.WebSphereRuntimePermission "com.ibm.wsspi.security.common.auth.module.IdentityAssertionLoginModule.login";
+  permission com.ibm.websphere.security.WebSphereRuntimePermission "getSSLConfig";
+  permission com.ibm.websphere.security.WebSphereRuntimePermission "setSSLConfig";
+ permission com.ibm.websphere.security.WebSphereRuntimePermission "getKeySets";
+  permission com.ibm.websphere.security.WebSphereRuntimePermission "GetKeySets.NodeLTPAKeyPair";
+  permission com.ibm.websphere.security.WebSphereRuntimePermission "GetKeySets.FAKE_SET";
+ permission com.ibm.websphere.security.WebSphereRuntimePermission "getKeySetGroups";
+ permission com.ibm.websphere.security.WebSphereRuntimePermission "GetKeySetsGroups.NodeLTPAKeySetGroup";
+ permission java.io.FilePermission "${was.install.root}${/}temp${/}fn3118.ctx", "read, write, delete";
+ permission java.io.FilePermission "${was.install.root}${/}temp${/}fn3118-1.ctx", "read, write, delete"; 
+ permission javax.security.auth.AuthPermission "wssecurity.readCredential";
+ permission com.ibm.websphere.security.WebSphereRuntimePermission "modifySecurityContext";
+ permission com.ibm.websphere.security.WebSphereRuntimePermission "runWithSecurityContext";
+ permission com.ibm.websphere.security.WebSphereRuntimePermission "readSecurityContext";
+ permission com.ibm.websphere.security.WebSphereRuntimePermission "setSecurityContext";
+ permission com.ibm.websphere.security.WebSphereRuntimePermission "restoreSecurityContext";
+ permission com.ibm.websphere.security.WebSphereRuntimePermission "accessLTPAServerObject";
+ permission com.ibm.websphere.security.WebSphereRuntimePermission "WSSecureMap"; 
+ permission com.ibm.websphere.security.WebSphereRuntimePermission "getPasswordCredential";
+ permission com.ibm.websphere.security.WebSphereRuntimePermission "ContextManager.getServerCredential";
+ permission com.ibm.websphere.security.WebSphereRuntimePermission "wssecurity.getOpaqueTokenFromMBean";
+ permission com.ibm.websphere.security.WebSphereRuntimePermission "WSSecureMapNotShared";
+  permission javax.security.auth.AuthPermission "modifyPrivateCredentials";
+  permission javax.security.auth.PrivateCredentialPermission "javax.resource.spi.security.PasswordCredential * \"*\"","read";
+  permission javax.security.auth.PrivateCredentialPermission "com.tivoli.pd.jazn.a * \"*\"","read";
+ permission javax.security.auth.PrivateCredentialPermission "javax.security.auth.kerberos.KerberosTicket * \"*\"","read";
+ permission javax.security.auth.PrivateCredentialPermission "javax.security.auth.kerberos.KerberosKey * \"*\"","read";
+ permission javax.security.auth.PrivateCredentialPermission "com.ibm.security.jgss.GSSCredentialImpl * \"*\"","read";
+ permission javax.security.auth.PrivateCredentialPermission "com.ibm.ws.security.token.KRBAuthnTokenImpl * \"*\"","read";  
+ 
+ //javax.security.auth.kerberos.ServicePermission WAS101/gomab.secfvt.austin.ibm.com@SECFVT.AUSTIN.IBM.COM initiate
+ permission javax.security.auth.kerberos.ServicePermission "*", "initiate";
+ //permission javax.security.auth.kerberos.DelegationPermission "\"WAS101/gomab.austin.ibm.com@SECFVT2.AUSTIN.IBM.COM\" \"krbtgt/SECFVT2.AUSTIN.IBM.COM@SECFVT2.AUSTIN.IBM.COM\"";
+ permission javax.security.auth.kerberos.DelegationPermission "\"*\" \"*\"";
+ permission javax.security.auth.PrivateCredentialPermission "com.ibm.wsspi.security.token.TokenHolder * \"*\"", "read";
+ permission javax.security.auth.PrivateCredentialPermission "com.ibm.ws.wssecurity.platform.websphere.token.KRB5TokenImpl * \"*\"", "read";
+ permission javax.security.auth.AuthPermission "modifyPublicCredentials";
+ };
+
+grant codeBase "file:${webComponent}" {
+  permission java.lang.RuntimePermission "loadLibrary.*";
+  permission java.lang.RuntimePermission "queuePrintJob";
+  permission java.net.SocketPermission "*", "connect";
+  permission java.util.PropertyPermission "*", "read";
+};

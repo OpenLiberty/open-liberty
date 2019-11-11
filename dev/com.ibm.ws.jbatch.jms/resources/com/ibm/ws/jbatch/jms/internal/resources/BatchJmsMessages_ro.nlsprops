@@ -1,0 +1,106 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jbatch.jms/resources/com/ibm/ws/jbatch/jms/internal/resources/BatchJmsMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0200 - 0249: com.ibm.ws.jbatch.jms
+# 
+warning.unsupported.message.type=CWWKY0200W: Tipul de mesaj {0} al acestui mesaj JMS de batch JMS nu este suportat.  Aceast\u0103 cerere nu va fi procesat\u0103. Con\u0163inutul acestui mesaj este {1}
+warning.unsupported.message.type.explanation=Acest tip de mesaj nu a fost suportat deoarece nu este un tip JMS MapMessage. 
+warning.unsupported.message.type.useraction=Nu este necesar\u0103 nici o ac\u0163iune. 
+ 
+warning.unsupported.operation=CWWKY0201W: Opera\u0163ia {0} este o opera\u0163ie nesuportat\u0103 dintr-un mesaj JMS de batch. Aceast\u0103 cerere nu va fi procesat\u0103. Con\u0163inutul acestui mesaj este {1}
+warning.unsupported.operation.explanation=Sunt suportate numai opera\u0163iile 'Start' \u015fi 'Restart'.
+warning.unsupported.operation.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+warning.batch.activation.spec.not.found=CWWKY0202W: Punctul final de mesaj pentru ascult\u0103torul {0} JMS de batch nu poate fi activat specifica\u0163ia de activare batch {1} nu exist\u0103 \u00een configura\u0163ia de server. Punctul final de mesaj nu va primi mesaje batch p\u00e2n\u0103 c\u00e2nd nu devine disponibil\u0103 specifica\u0163ia de activare batch. 
+warning.batch.activation.spec.not.found.explanation=Serverul porne\u015fte ascult\u0103torul JMS de batch dar nu poate activa punctul final de mesaj deoarece specifica\u0163ia de activare nu a putut fi g\u0103sit\u0103 \u00een configura\u0163ia de server. Punctul final de mesaj nu va primi mesaje batch p\u00e2n\u0103 c\u00e2nd nu poate fi activat punctul final.
+warning.batch.activation.spec.not.found.useraction=Crea\u0163i specifica\u0163ia de activare cu numele specificat \u00een configura\u0163ia de server manual sau prin utilizarea Admin Center.
+
+warning.batch.destination.queue.not.found=CWWKY0203W: Punctul final de mesaj pentru ascult\u0103torul {0} JMS de batch nu poate fi activat deoarece nu exist\u0103 coada de destina\u0163ii {1}. Punctul final de mesaj nu va primi mesaje batch JMS p\u00e2n\u0103 c\u00e2nd nu devine disponibil\u0103 coada de destina\u0163ii.
+warning.batch.destination.queue.not.found.explanation=Serverul porne\u015fte ascult\u0103torul JMS de batch dar nu poate activa punctul final de mesaj deoarece nu a putut fi g\u0103sit\u0103 coada de destina\u0163ii. Punctul final de mesaj nu va primi mesaje batch JMS p\u00e2n\u0103 c\u00e2nd nu poate fi activat punctul final.
+warning.batch.destination.queue.not.found.useraction=Crea\u0163i coada de destina\u0163ii cu numele specificat \u00een configura\u0163ia de server manual sau prin utilizarea Admin Center.
+
+warning.batch.dispatcher.connection.factory.not.found=CWWKY0204W: Dispecerul JMS de batch nu poate fi pornit deoarece nu exist\u0103 fabrica de conexiuni {0}.  Dispecerul JMS de batch nu va trimite mesaje JMS batch p\u00e2n\u0103 c\u00e2nd nu devine disponibil\u0103 fabrica de conexiuni. 
+warning.batch.dispatcher.connection.factory.not.found.explanation=Serverul porne\u015fte dispecerul JMS de batch dar nu poate porni deoarece nu a putut fi g\u0103sit\u0103 fabrica de conexiuni JMS batch.  Dispecerul JMS de batch nu va trimite mesaje JMS batch p\u00e2n\u0103 c\u00e2nd nu devine disponibil\u0103 fabrica de conexiuni.
+warning.batch.dispatcher.connection.factory.not.found.useraction=Crea\u0163i fabrica de conexiuni cu numele specificat \u00een configura\u0163ia de server manual sau prin utilizarea Admin Center.
+
+warning.batch.dispatcher.queue.not.found=CWWKY0205W: Dispecerul JMS de batch nu poate fi pornit deoarece nu exist\u0103 coada {0}.  Dispecerul JMS de batch nu va trimite mesaje JMS batch p\u00e2n\u0103 c\u00e2nd nu devine disponibil\u0103 coada.
+warning.batch.dispatcher.queue.not.found.explanation=Serverul porne\u015fte dispecerul JMS de batch dar nu poate porni deoarece nu a putut fi g\u0103sit\u0103 coada JMS de batch.  Dispecerul JMS de batch nu va trimite mesaje JMS batch p\u00e2n\u0103 c\u00e2nd nu devine disponibil\u0103 coada.
+warning.batch.dispatcher.queue.not.found.useraction=Crea\u0163i coada cu numele specificat \u00een configura\u0163ia de server manual sau prin utilizarea Admin Center.
+
+error.unable.to.rollback.start=CWWKY0206E: Dispecerul JMS de batch-uri a \u00eent\u00e2lnit o excep\u0163ie la dispecerizarea cererii de pornire pentru instan\u0163a de job {0} \u015fi nu a putut derula \u00eenapoi opera\u0163ia.  Excep\u0163ia este {1}.
+error.unable.to.rollback.start.explanation=Dispecerul JMS de batch-uri nu a putut derula \u00eenapoi opera\u0163ia.
+error.unable.to.rollback.start.useraction=Lansa\u0163i jobul din nou.
+
+error.unable.to.rollback.restart=CWWKY0207E: Dispecerul JMS de batch-uri a \u00eent\u00e2lnit o excep\u0163ie la dispecerizarea repornirii execu\u0163iei cererii de job {0} \u015fi nu a putut derula \u00eenapoi opera\u0163ia.  Excep\u0163ia este {1}.
+error.unable.to.rollback.restart.explanation=Dispecerul JMS de batch-uri nu a putut derula \u00eenapoi opera\u0163ia.
+error.unable.to.rollback.restart.useraction=Lansa\u0163i jobul din nou.
+
+error.endpoint.unable.process.message=CWWKY0208E: Ascult\u0103torul JMS de batch a \u00eent\u00e2lnit o excep\u0163ie la procesarea mesajului {0}.  Excep\u0163ia este {1}.
+error.endpoint.unable.process.message.explanation=Ascult\u0103torul JMS de batch nu a putut procesa mesajul de cerere JMS de batch.
+error.endpoint.unable.process.message.useraction=Lansa\u0163i jobul din nou. 
+
+error.endpoint.unable.process.start.request=CWWKY0209E: Ascult\u0103torul JMS de batch a \u00eent\u00e2lnit o excep\u0163ie la procesarea opera\u0163iei de joburi de pornire pentru instan\u0163a de joburi {0}.  Excep\u0163ia este {1}.
+error.endpoint.unable.process.start.request.explanation=Ascult\u0103torul JMS de batch nu a putut procesa cererea jobului de start.
+error.endpoint.unable.process.start.request.useraction=Lansa\u0163i jobul din nou.
+
+error.endpoint.unable.process.restart.request=CWWKY0210E: Ascult\u0103torul JMS de batch a \u00eent\u00e2lnit o excep\u0163ie la procesarea opera\u0163iei de joburi de repornire pentru execu\u0163ia jobului {0}.  Excep\u0163ia este {1}.
+error.endpoint.unable.process.restart.request.explanation=Ascult\u0103torul JMS de batch nu a putut procesa cererea jobului de repornire.
+error.endpoint.unable.process.restart.request.useraction=Lansa\u0163i jobul din nou.
+
+warning.batch.events.unable.to.publish=CWWKY0211W: Runtime-ul de batch nu poate publica evenimentul la subiectul {0} pentru obiectul {1}.  Excep\u0163ia este {2}.
+warning.batch.events.unable.to.publish.explanation=Evenimentul nu poate fi publicat din cauza unei excep\u0163ii.
+warning.batch.events.unable.to.publish.useraction=Examina\u0163i istoricele de server pentru erori \u00eenrudite.
+
+error.batch.events.publisher.jms.resource.activate=CWWKY0212E: Nu se poate crea resursa JMS pentru editorul de evenimente batch.  Excep\u0163ia este {0}.
+error.batch.events.publisher.jms.resource.activate.explanation=Nu se poate crea resursa JMS pentru activarea editorului batch-ului de evenimente din cauza unei excep\u0163ii. 
+error.batch.events.publisher.jms.resource.activate.useraction=Verifica\u0163i configura\u0163ia fabricii de conexiuni JMS configurate de elementul batchJmsDispatcher (fie batchConnectionFactory implicit fie unul referen\u0163iat explicit).  Verifica\u0163i conectivitatea JMS \u015fi examina\u0163i istoricele de server pentru erori \u00eenrudite.
+
+error.batch.dispatcher.jms.resource.activate=CWWKY0213E: Nu se poate crea resursa JMS pentru dispecerul de batch.  Excep\u0163ia este {0}
+error.batch.dispatcher.jms.resource.activate.explanation=Nu se poate crea resursa JMS pentru activarea dispecerului de batch din cauza unei excep\u0163ii, astfel serverul nu poate dispeceriza joburi sau parti\u0163ii via JMS.
+error.batch.dispatcher.jms.resource.activate.useraction=Verifica\u0163i configura\u0163ia fabricii de conexiuni JMS \u015fi coada configurat\u0103 de elementul batchJmsDispatcher (fie batchConnectionFactory implicit fie unul referen\u0163iat explicit).  Verifica\u0163i conectivitatea JMS \u015fi examina\u0163i istoricele de server pentru erori \u00eenrudite.
+
+warning.endpoint.listener.stale.message=CWWKY0214W: Ignorarea mesajului cu ID-ul de execu\u0163ie asociat {0} de vreme ce acesta nu a fost cea mai recent\u0103 execu\u0163ie.
+warning.endpoint.listener.stale.message.explanation=Ignorarea mesajului mai vechi de executare job asociat de vreme ce nu este cea mai nou\u0103 execu\u0163ie.
+warning.endpoint.listener.stale.message.useraction=Nu e necesar\u0103 nicio ac\u0163iune.
+
+error.start.partition.request=CWWKY0215E: Nu a putut fi pornit\u0103 parti\u0163ia de batch din cauza unei excep\u0163ii.  Excep\u0163ia este {0}.
+error.start.partition.request.explanation=Parti\u0163ia de batch nu a putut fi pornit\u0103 datorit\u0103 unei excep\u0163ii.  
+error.start.partition.request.useraction=Opri\u0163i jobul asociat \u015fi verifica\u0163i conectivitatea JMS, configurarea \u015fi examina\u0163i istoricele de server pentru erori \u00eenrudite.
+
+error.batch.executor.jms.create.failure=CWWKY0216E: Nu s-a putut crea o fabric\u0103 de conexiuni JMS pentru executarea parti\u0163iilor la distan\u0163\u0103. Excep\u0163ia este {0}
+error.batch.executor.jms.create.failure.explanation=Eroare la conectarea la fabrica de conexiuni JMS de r\u0103spune folosit\u0103 pentru trimiterea \u00eenapoi a r\u0103spunsurilor pentru executarea parti\u0163iilor la distan\u0163\u0103.  Acest server nu va putea executa joburi sau parti\u0163ii dispecerizate via JMS p\u00e2n\u0103 c\u00e2nd nu este rezolvat\u0103 problema.
+error.batch.executor.jms.create.failure.useraction=Verifica\u0163i configura\u0163ia fabricii de conexiuni JMS configurate de elementul batchJmsDispatcher (fie batchConnectionFactory implicit fie unul referen\u0163iat explicit).  Dac\u0103 utilizatorul nu utilizeaz\u0103 parti\u0163ii, configura\u0163ia \u00eenrudit\u0103 cu parti\u0163ia JMS la distan\u0163\u0103 poate fi \u00eenl\u0103turat\u0103 din configura\u0163ia de server.
+
+error.batch.executor.activate.failure=CWWKY0217E: Nu s-a putut activa JMS Executor pe punctul final din cauza unei excep\u0163ii {0}
+error.batch.executor.activate.failure.explanation=Nu se poate activa JMS Executor pe punctul final din cauza unei excep\u0163ii.
+error.batch.executor.activate.failure.useraction=Acest server nu va putea executa joburi sau parti\u0163ii dispecerizate via JMS p\u00e2n\u0103 c\u00e2nd nu este rezolvat\u0103 problema. Verifica\u0163i configura\u0163ia fabricii de conexiuni JMS configurate de elementul batchJmsDispatcher (fie batchConnectionFactory implicit fie unul referen\u0163iat explicit).  Verifica\u0163i conectivitatea JMS, configura\u0163ia punctelor finale \u015fi examina\u0163i istoricele de server pentru erori \u00eenrudite.
+
+info.batch.events.publish.topic=CWWKY0218I: Runtime-ul batch va publica evenimente \u00een r\u0103d\u0103cina de subiecte JMS {0}.
+info.batch.events.publish.topic.explanation=Informativ. Runtime-ul batch va publica evenimente \u00een r\u0103d\u0103cina de subiecte JMS listat\u0103.
+info.batch.events.publish.topic.useraction=R\u0103d\u0103cina de subiecte JMS poate fi modificat\u0103. Verifica\u0163i op\u0163iunile configurate care sunt utilizate pentru batchJmsEvents.

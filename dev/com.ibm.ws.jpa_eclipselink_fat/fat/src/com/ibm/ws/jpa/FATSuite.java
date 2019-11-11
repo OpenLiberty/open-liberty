@@ -23,7 +23,15 @@ import componenttest.rules.repeater.RepeatTests;
 @SuiteClasses({
                 componenttest.custom.junit.runner.AlwaysPassesTest.class,
                 TestExample_EJB.class,
-                TestExample_Web.class
+                TestExample_Web.class,
+                TestOLGH8294_EJB.class,
+                TestOLGH8294_Web.class,
+                TestOLGH8461_EJB.class,
+                TestOLGH8461_Web.class,
+                TestOLGH8950_EJB.class,
+                TestOLGH8950_Web.class,
+                TestOLGH9035_EJB.class,
+                TestOLGH9035_Web.class
 })
 public class FATSuite {
     public final static String[] JAXB_PERMS = { "permission java.lang.RuntimePermission \"accessClassInPackage.com.sun.xml.internal.bind.v2.runtime.reflect\";",

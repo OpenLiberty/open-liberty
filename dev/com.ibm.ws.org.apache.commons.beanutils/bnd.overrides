@@ -3,8 +3,8 @@
 bVersion=1.0
 
 Bundle-Name: Apache Commons BeanUtils
-Bundle-SymbolicName: com.ibm.ws.org.apache.commons.beanutils.1.8.3
-Bundle-Description: Apache Commons BeanUtils; version=1.8.3
+Bundle-SymbolicName: com.ibm.ws.org.apache.commons.beanutils.1.9.4
+Bundle-Description: Apache Commons BeanUtils; version=1.9.4
 
 Private-Package:
 

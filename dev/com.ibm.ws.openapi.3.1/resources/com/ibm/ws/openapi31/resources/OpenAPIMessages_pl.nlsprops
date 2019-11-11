@@ -1,0 +1,72 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.openapi/resources/com/ibm/ws/openapi31/resources/OpenAPIMessages.nlsprops
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR Open API
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKO1700 - CWWKO1749
+
+OSGI_SERVICE_ERROR=CWWKO1700E: Us\u0142uga OSGi {0} jest niedost\u0119pna.
+OSGI_SERVICE_ERROR.explanation=Podana us\u0142uga nie jest dost\u0119pna. Jest to wewn\u0119trzny b\u0142\u0105d serwera.   
+OSGI_SERVICE_ERROR.useraction=Zrestartuj serwer za pomoc\u0105 opcji [--clean].
+
+OPENAPI_IS_NULL=CWWKO1701W: Dostawca {0} nie zwr\u00f3ci\u0142 \u017cadnego dokumentu Open API.
+OPENAPI_IS_NULL.explanation=Obiekt Open API utworzony dla interfejsu OASProvider mia\u0142 warto\u015b\u0107 NULL, prawdopodobnie z powodu wyst\u0119puj\u0105cego b\u0142\u0119du.
+OPENAPI_IS_NULL.useraction=Podaj poprawny dokument. Sprawd\u017a dzienniki, aby wykry\u0107 b\u0142\u0105d.
+
+CUSTOMIZATION_IS_NULL=CWWKO1702W: Obiekt OpenAPI, kt\u00f3ry zosta\u0142 utworzony przez serwer za pomoc\u0105 warto\u015bci dostosowania {0}, ma warto\u015b\u0107 NULL.
+CUSTOMIZATION_IS_NULL.explanation=Obiekt OpenAPI, kt\u00f3ry zosta\u0142 utworzony za pomoc\u0105 danej warto\u015bci dostosowania, ma warto\u015b\u0107 NULL.
+CUSTOMIZATION_IS_NULL.useraction=Sprawd\u017a dzienniki, aby znale\u017a\u0107 b\u0142\u0105d. Podaj poprawny dokument OpenAPI dla atrybutu dostosowania.
+
+PUBLIC_URL_INVALID=CWWKO1703W: Nie mo\u017cna ustawia\u0107 publicznego adresu URL na warto\u015b\u0107 {0}. Ten adres URL jest zarezerwowany do u\u017cytku przez serwer aplikacji.
+PUBLIC_URL_INVALID.explanation=Nie mo\u017cna ustawia\u0107 w publicznym adresie URL warto\u015bci, kt\u00f3ra zosta\u0142a zarezerwowana do u\u017cytku przez serwer aplikacji.
+PUBLIC_URL_INVALID.useraction=Podaj poprawn\u0105 warto\u015b\u0107 atrybutu publicURL w konfiguracji serwera.
+
+MULTIPLE_DEFAULT_OPENAPI_FILES=CWWKO1704W: Znaleziono wiele plik\u00f3w dostosowania Open API: {0}. Element {1} jest monitorowany pod k\u0105tem zmian.
+MULTIPLE_DEFAULT_OPENAPI_FILES.explanation=Wiele plik\u00f3w dostosowania Open API znajduje si\u0119 w katalogu ${server.config.dir}/openapi-3.1.
+MULTIPLE_DEFAULT_OPENAPI_FILES.useraction=Upewnij si\u0119, \u017ce w katalogu ${server.config.dir}/openapi-3.1 dost\u0119pny jest tylko jeden domy\u015blny plik dostosowania Open API.
+
+CSS_NOT_PROCESSED=CWWKO1705W: Serwer nie mo\u017ce odczyta\u0107 okre\u015blonego dokumentu CSS {0} z powodu b\u0142\u0119du {1} : {2}.
+CSS_NOT_PROCESSED.explanation=Dokument CSS nie mo\u017ce zosta\u0107 przetworzony z powodu b\u0142\u0119du.
+CSS_NOT_PROCESSED.useraction=Podaj poprawny dokument CSS.
+
+OPENAPI_DOCUMENT_VALIDATION_ERROR=CWWKO1706E: Podczas sprawdzania poprawno\u015bci dokumentu OpenAPI zosta\u0142y zwr\u00f3cone nast\u0119puj\u0105ce b\u0142\u0119dy:
+OPENAPI_DOCUMENT_VALIDATION_ERROR.explanation=Dokument OpenAPI jest niepoprawny.
+OPENAPI_DOCUMENT_VALIDATION_ERROR.useraction=Podaj poprawny dokument OpenAPI, w kt\u00f3rym zosta\u0142y usuni\u0119te zg\u0142oszone b\u0142\u0119dy.
+
+OPENAPI_DOCUMENT_VALIDATION_WARNING=CWWKO1707W: Podczas sprawdzania poprawno\u015bci dokumentu OpenAPI zosta\u0142y zwr\u00f3cone nast\u0119puj\u0105ce ostrze\u017cenia:
+OPENAPI_DOCUMENT_VALIDATION_WARNING.explanation=Dokument OpenAPI zawiera dane w formacie innym, ni\u017c zalecany.
+OPENAPI_DOCUMENT_VALIDATION_WARNING.useraction=Podaj poprawny dokument OpenAPI, w kt\u00f3rym zosta\u0142y usuni\u0119te zg\u0142oszone ostrze\u017cenia.
+
+CUSTOM_CSS_NOT_PROCESSED=CWWKO1708W: Nie przetworzono niestandardowego pliku CSS {0} podanego dla interfejsu u\u017cytkownika \u015brodowiska OpenAPI. Serwer odtworzy warto\u015bci domy\u015blne interfejsu u\u017cytkownika \u015brodowiska OpenAPI. Przyczyna: {1} \u2013 {2}.
+CUSTOM_CSS_NOT_PROCESSED.explanation=Serwer nie mo\u017ce przetworzy\u0107 niestandardowego pliku CSS. Serwer odtworzy warto\u015bci domy\u015blne interfejsu u\u017cytkownika \u015brodowiska OpenAPI.
+CUSTOM_CSS_NOT_PROCESSED.useraction=Podaj poprawny niestandardowy plik CSS dla interfejsu u\u017cytkownika \u015brodowiska OpenAPI razem ze wszystkimi zale\u017cno\u015bciami.
+
+CSS_SECTION_NOT_FOUND=CWWKO1709W: Serwer dokona\u0142 odczytu z podanego dokumentu CSS {0}, ale nie m\u00f3g\u0142 znale\u017a\u0107 elementu <.swagger-ui .headerbar >.
+CSS_SECTION_NOT_FOUND.explanation=Podany dokument CSS nie zawiera elementu <.swagger-ui .headerbar > lub nie jest sformatowany zgodnie z ograniczeniami wymaganymi przez serwer.
+CSS_SECTION_NOT_FOUND.useraction=Podaj poprawny plik CSS zawieraj\u0105cy element <.swagger-ui .headerbar > w wymaganym formacie.
+
+UNSUPPORTED_CSS_VALUE=CWWKO1710W: Podana warto\u015b\u0107 w\u0142a\u015bciwo\u015bci {0} nie jest obs\u0142ugiwana. Wymagana warto\u015b\u0107: {1}.
+UNSUPPORTED_CSS_VALUE.explanation=Warto\u015b\u0107 wskazanej w\u0142a\u015bciwo\u015bci jest niepoprawna lub nie jest obs\u0142ugiwana przez \u015brodowisko OpenAPI.
+UNSUPPORTED_CSS_VALUE.useraction=W niestandardowym pliku CSS interfejsu u\u017cytkownika \u015brodowiska OpenAPI podaj poprawn\u0105 warto\u015b\u0107 w\u0142a\u015bciwo\u015bci. 
+
+INVALID_CSS_BACKGROUND_IMAGE=CWWKO1711W: Obraz t\u0142a podany w pliku {0} nie istnieje lub jest niepoprawny.
+INVALID_CSS_BACKGROUND_IMAGE.explanation=Obraz t\u0142a nie istnieje lub jest niepoprawny.
+INVALID_CSS_BACKGROUND_IMAGE.useraction=Podaj poprawny obraz.
+
+OPENAPI_FILE_PARSE_ERROR=CWWKO1712E: Nie powiod\u0142a si\u0119 pr\u00f3ba przeanalizowania dokumentu OpenAPI aplikacji: {0}.
+OPENAPI_FILE_PARSE_ERROR.explanation=Nie powiod\u0142a si\u0119 pr\u00f3ba przeanalizowania dokumentu OpenAPI z folderu META-INF.
+OPENAPI_FILE_PARSE_ERROR.useraction=Upewnij si\u0119, \u017ce ten plik ma poprawny format YAML lub JSON.

@@ -100,7 +100,7 @@ if not defined SERVER_ARG (
   set SERVER_NAME=defaultServer
 ) else if "%SERVER_NAME%" == "" (
   set SERVER_NAME=defaultServer
-) else if "%SERVER_NAME:~0,1%" == "-" (
+) else if "%SERVER_NAME:~0,2%" == "--" (
   set SERVER_NAME=defaultServer
 )
 
@@ -247,11 +247,13 @@ goto:eof
   if %RC% == 2 goto:eof
 
   call:serverWorkingDirectory
-  set SAVE_IBM_JAVA_OPTIONS=!IBM_JAVA_OPTIONS!
+  set SAVE_IBM_JAVA_OPTIONS=!OPENJ9_JAVA_OPTIONS!
   set IBM_JAVA_OPTIONS=!SERVER_IBM_JAVA_OPTIONS!
+  set OPENJ9_JAVA_OPTIONS=!SERVER_IBM_JAVA_OPTIONS!
   !JAVA_CMD_QUOTED! !JAVA_AGENT_QUOTED! !JVM_OPTIONS! !JAVA_PARAMS_QUOTED! --batch-file !PARAMS_QUOTED!
   set RC=%errorlevel%
   set IBM_JAVA_OPTIONS=!SAVE_IBM_JAVA_OPTIONS!
+  set OPENJ9_JAVA_OPTIONS=!SAVE_IBM_JAVA_OPTIONS!
   call:javaCmdResult
 goto:eof
 
@@ -262,11 +264,13 @@ goto:eof
   if %RC% == 2 goto:eof
 
   call:serverWorkingDirectory
-  set SAVE_IBM_JAVA_OPTIONS=!IBM_JAVA_OPTIONS!
+  set SAVE_IBM_JAVA_OPTIONS=!OPENJ9_JAVA_OPTIONS!
   set IBM_JAVA_OPTIONS=!SERVER_IBM_JAVA_OPTIONS!
+  set OPENJ9_JAVA_OPTIONS=!SERVER_IBM_JAVA_OPTIONS!
   !JAVA_CMD_QUOTED! !JAVA_AGENT_QUOTED! !JVM_OPTIONS! !JAVA_PARAMS_QUOTED! --batch-file !PARAMS_QUOTED!
   set RC=%errorlevel%
   set IBM_JAVA_OPTIONS=!SAVE_IBM_JAVA_OPTIONS!
+  set OPENJ9_JAVA_OPTIONS=!SAVE_IBM_JAVA_OPTIONS!
   call:javaCmdResult
 goto:eof
 
@@ -306,13 +310,15 @@ goto:eof
     )
 
     set X_CMD=!JAVA_CMD_QUOTED! !JAVA_AGENT_QUOTED! !JVM_OPTIONS! !JAVA_PARAMS_QUOTED! --batch-file !PARAMS_QUOTED!
-    set SAVE_IBM_JAVA_OPTIONS=!IBM_JAVA_OPTIONS!
+    set SAVE_IBM_JAVA_OPTIONS=!OPENJ9_JAVA_OPTIONS!
     set IBM_JAVA_OPTIONS=!SERVER_IBM_JAVA_OPTIONS!
+    set OPENJ9_JAVA_OPTIONS=!SERVER_IBM_JAVA_OPTIONS!
 
     @REM Use javaw so command windows can be closed.
     start /min /b "" !JAVA_CMD_QUOTED!w !JAVA_AGENT_QUOTED! !JVM_OPTIONS! !JAVA_PARAMS_QUOTED! --batch-file !PARAMS_QUOTED! >> "%X_LOG_DIR%\%X_LOG_FILE%" 2>&1
 
     set IBM_JAVA_OPTIONS=!SAVE_IBM_JAVA_OPTIONS!
+    set OPENJ9_JAVA_OPTIONS=!SAVE_IBM_JAVA_OPTIONS!
 
     !JAVA_CMD_QUOTED! !JAVA_PARAMS_QUOTED! "!SERVER_NAME!" --status:start
     set RC=!errorlevel!
@@ -490,7 +496,6 @@ goto:eof
           set WLP_DEFAULT_JAVA_HOME=!WLP_INSTALL_DIR!!WLP_DEFAULT_JAVA_HOME:~17!
         )
         set JAVA_CMD_QUOTED="!WLP_DEFAULT_JAVA_HOME!\bin\java"
-        set WLP_SKIP_MAXPERMSIZE=!WLP_DEFAULT_SKIP_MAXPERMSIZE!
       )
     ) else (
       set JAVA_CMD_QUOTED="%JRE_HOME%\bin\java"
@@ -502,15 +507,16 @@ goto:eof
 
   @REM Command-line parsing of -Xshareclasses does not allow "," in cacheDir.
   if "!WLP_OUTPUT_DIR:,=!" == "!WLP_OUTPUT_DIR!" (
-    set SERVER_IBM_JAVA_OPTIONS=-Xshareclasses:name=liberty-%%u,nonfatal,cacheDir="%WLP_OUTPUT_DIR%\.classCache" -XX:ShareClassesEnableBCI -Xscmx80m !IBM_JAVA_OPTIONS!
+    set SERVER_IBM_JAVA_OPTIONS=-Xshareclasses:name=liberty-%%u,nonfatal,cacheDir="%WLP_OUTPUT_DIR%\.classCache" -XX:ShareClassesEnableBCI -Xscmx80m !OPENJ9_JAVA_OPTIONS!
   ) else (
-    set SERVER_IBM_JAVA_OPTIONS=!IBM_JAVA_OPTIONS!
+    set SERVER_IBM_JAVA_OPTIONS=!OPENJ9_JAVA_OPTIONS!
   )
 
   @REM Add -Xquickstart -Xnoaot for client JVMs only.  AOT is ineffective if
   @REM JVMs have conflicting options, and it's more important that server JVMs
   @REM be able to use AOT.
-  set IBM_JAVA_OPTIONS=-Xquickstart -Xnoaot !IBM_JAVA_OPTIONS!
+  set IBM_JAVA_OPTIONS=-Xquickstart -Xnoaot !OPENJ9_JAVA_OPTIONS!
+  set OPENJ9_JAVA_OPTIONS=-Xquickstart -Xnoaot !OPENJ9_JAVA_OPTIONS!
 goto:eof
 
 @REM
@@ -531,13 +537,7 @@ goto:eof
 :serverEnvAndJVMOptions
   call:serverEnv
 
-  @REM By default, set -XX:MaxPermSize.  This option should be ignored by JVMs
-  @REM that don't support the option.
-  if not defined WLP_SKIP_MAXPERMSIZE (
-    set JVM_OPTIONS=-XX:MaxPermSize=256m
-  ) else (
-    set JVM_OPTIONS=
-  )
+  set JVM_OPTIONS=
   @REM Avoid HeadlessException.
   set JVM_OPTIONS=-Djava.awt.headless=true !JVM_OPTIONS!
   @REM allow late self attach for when the localConnector-1.0 feature is enabled

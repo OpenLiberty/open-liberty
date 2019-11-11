@@ -52,8 +52,7 @@ public class InMemoryLDAPServer {
      * service.
      *
      * @param bases The base entries to create for this in-memory LDAP server.
-     * @throws Exception
-     *             If something went wrong
+     * @throws Exception If something went wrong
      */
     public InMemoryLDAPServer(String... bases) throws Exception {
 
@@ -174,5 +173,19 @@ public class InMemoryLDAPServer {
      */
     public void delete(DeleteRequest dr) throws LDAPException {
         ds.delete(dr);
+    }
+
+    /**
+     * Delete an entry from the LDAP server. Eat any exceptions.
+     * Use on test clean up if the user may have already been deleted.
+     *
+     * @param dn
+     */
+    public void silentDelete(String dn) {
+        try {
+            ds.delete(dn);
+        } catch (Exception e) {
+            // if the user or group doesn't exist, that's fine.
+        }
     }
 }

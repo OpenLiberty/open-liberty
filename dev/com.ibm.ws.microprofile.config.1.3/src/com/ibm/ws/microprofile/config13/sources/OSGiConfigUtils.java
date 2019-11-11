@@ -90,7 +90,7 @@ public class OSGiConfigUtils {
      * @return the bundle context
      */
     static BundleContext getBundleContext(Class<?> clazz) {
-        BundleContext context = null; //we'll return null if not running inside an OSGi framework (e.g. unit test)
+        BundleContext context = null; //we'll return null if not running inside an OSGi framework (e.g. unit test) or framework is shutting down
         if (FrameworkState.isValid()) {
             Bundle bundle = FrameworkUtil.getBundle(clazz);
 
@@ -109,7 +109,7 @@ public class OSGiConfigUtils {
      * @throws InvalidFrameworkStateException if the server OSGi framework is being shutdown
      * @throws ServiceNotFoundException       if an instance of the requested service can not be found
      */
-    private static ConfigurationAdmin getConfigurationAdmin(BundleContext bundleContext) throws InvalidFrameworkStateException {
+    static ConfigurationAdmin getConfigurationAdmin(BundleContext bundleContext) throws InvalidFrameworkStateException {
         return getService(bundleContext, ConfigurationAdmin.class);
     }
 
@@ -121,7 +121,7 @@ public class OSGiConfigUtils {
      * @throws InvalidFrameworkStateException if the server OSGi framework is being shutdown
      * @throws ServiceNotFoundException       if an instance of the requested service can not be found
      */
-    private static CDIService getCDIService(BundleContext bundleContext) throws InvalidFrameworkStateException {
+    static CDIService getCDIService(BundleContext bundleContext) throws InvalidFrameworkStateException {
         return getService(bundleContext, CDIService.class);
     }
 
@@ -133,7 +133,7 @@ public class OSGiConfigUtils {
      * @throws InvalidFrameworkStateException if the server OSGi framework is being shutdown
      * @throws ServiceNotFoundException       if an instance of the requested service can not be found
      */
-    private static ConfigVariables getConfigVariables(BundleContext bundleContext) throws InvalidFrameworkStateException {
+    static ConfigVariables getConfigVariables(BundleContext bundleContext) throws InvalidFrameworkStateException {
         return getService(bundleContext, ConfigVariables.class);
     }
 
@@ -343,43 +343,30 @@ public class OSGiConfigUtils {
     /**
      * Get a Map that represents the name/value pairs of <variable name="x" value="y"> elements in the server.xml
      *
-     * @param bundleContext the context to use in looking up OSGi service references
+     * @param configVariables the ConfigVariables service
      * @return
      */
-    @FFDCIgnore(InvalidFrameworkStateException.class)
-    static Map<String, String> getVariableFromServerXML(BundleContext bundleContext) {
+    static Map<String, String> getVariablesFromServerXML(ConfigVariables configVariables) {
         Map<String, String> theMap = new HashMap<>();
         if (FrameworkState.isValid()) {
-            try {
-                ConfigVariables configVars = getConfigVariables(bundleContext);
-
-                // Retrieve the Map of variables that have been defined in the server.xml
-                theMap.putAll(configVars.getUserDefinedVariables());
-            } catch (InvalidFrameworkStateException e) {
-                //ignore ... the framework is shutting down
-            }
+            // Retrieve the Map of variables that have been defined in the server.xml
+            theMap.putAll(configVariables.getUserDefinedVariables());
         }
+
         return theMap;
     }
 
     /**
      * Get a Map that represents the name/value pairs of <variable name="x" defaultValue="y"> elements in the server.xml
      *
-     * @param bundleContext the context to use in looking up OSGi service references
+     * @param configVariables the ConfigVariables service
      * @return
      */
-    @FFDCIgnore(InvalidFrameworkStateException.class)
-    static Map<String, String> getDefaultVariablesFromServerXML(BundleContext bundleContext) {
+    static Map<String, String> getDefaultVariablesFromServerXML(ConfigVariables configVariables) {
         Map<String, String> theMap = new HashMap<>();
         if (FrameworkState.isValid()) {
-            try {
-                ConfigVariables configVars = getConfigVariables(bundleContext);
-
-                // Retrieve the Map of variables that have been defined in the server.xml
-                theMap.putAll(configVars.getUserDefinedVariableDefaults());
-            } catch (InvalidFrameworkStateException e) {
-                //ignore ... the framework is shutting down
-            }
+            // Retrieve the Map of variables that have been defined in the server.xml
+            theMap.putAll(configVariables.getUserDefinedVariableDefaults());
         }
         return theMap;
     }

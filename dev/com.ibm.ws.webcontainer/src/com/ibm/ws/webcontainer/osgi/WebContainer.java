@@ -62,7 +62,6 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.javaee.version.ServletVersion;
 import com.ibm.ws.managedobject.ManagedObjectService;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
-import com.ibm.ws.staticvalue.StaticValue;
 import com.ibm.ws.threading.FutureMonitor;
 import com.ibm.ws.webcontainer.SessionRegistry;
 import com.ibm.ws.webcontainer.async.AsyncContextFactory;
@@ -229,12 +228,7 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
     private static final int DEFAULT_MAX_VERSION = 30;
     private ServiceReference<ServletVersion> versionRef;
     
-    private static StaticValue<AtomicBoolean> serverStopping = StaticValue.createStaticValue(new Callable<AtomicBoolean>() {
-        @Override
-        public AtomicBoolean call() throws Exception {
-            return new AtomicBoolean();
-        }
-    });
+    private static boolean serverStopping = false;
 
     private volatile int modulesStarting=0;
     
@@ -324,14 +318,14 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
     
     
     public static void setServerStopping(boolean serverStop) {
-        serverStopping.get().set(serverStop);
+        serverStopping = serverStop;
     }
     
     public static boolean isServerStopping() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "serverStopping = " + serverStopping );
         }    
-       return serverStopping.get().get();
+       return serverStopping;
     }
     
     public void waitForApplicationInitialization(){

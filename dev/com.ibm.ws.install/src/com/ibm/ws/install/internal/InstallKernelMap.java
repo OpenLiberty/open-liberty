@@ -11,9 +11,12 @@
 package com.ibm.ws.install.internal;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -29,6 +32,7 @@ import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -105,6 +109,14 @@ public class InstallKernelMap implements Map {
     private static final String MESSAGE_LOCALE = "message.locale";
     private static final String INSTALL_INDIVIDUAL_ESAS = "install.individual.esas";
     private static final String INDIVIDUAL_ESAS = "individual.esas";
+    private static final String DOWNLOAD_RESULT = "download.result";
+    private static final String DOWNLOAD_INDIVIDUAL_ARTIFACT = "download.inidividual.artifact";
+    private static final String DOWNLOAD_FILETYPE = "download.filetype";
+    private static final String DOWNLOAD_LOCAL_DIR_LOCATION = "download.local.dir.location";
+    private static final String DOWNLOAD_ARTIFACT_LIST = "download.artifact.list";
+    private static final String DOWNLOAD_LOCATION = "download.location";
+    private static final String FROM_REPO = "from.repo";
+    private static final String CLEANUP_TEMP_LOCATION = "cleanup.temp.location";
 
     //Headers in Manifest File
     private static final String SHORTNAME_HEADER_NAME = "IBM-ShortName";
@@ -120,6 +132,14 @@ public class InstallKernelMap implements Map {
     private static final String LICENSE_FEATURE_TERMS = "http://www.ibm.com/licenses/wlp-featureterms-v1";
     private static final String LICENSE_FEATURE_TERMS_RESTRICTED = "http://www.ibm.com/licenses/wlp-featureterms-restricted-v1";
 
+    // Maven downloader
+    private final String OPEN_LIBERTY_PRODUCT_ID = "io.openliberty";
+    private final String MAVEN_CENTRAL = "http://repo.maven.apache.org/maven2/";
+    private final String TEMP_DIRECTORY = Utils.getInstallDir().getAbsolutePath() + File.separatorChar + "tmp"
+                                          + File.separatorChar;
+    private final Logger logger = InstallLogUtils.getInstallLogger();
+    private final ProgressBar progressBar = ProgressBar.getInstance();
+
     private enum ActionType {
         install,
         uninstall,
@@ -130,6 +150,8 @@ public class InstallKernelMap implements Map {
     private InstallKernelInteractive installKernel;
     private InstallEventListener ielistener;
     private ActionType actionType = null;
+    private boolean usingM2Cache = false;
+    private String openLibertyVersion = null;
 
     @SuppressWarnings("unchecked")
     public InstallKernelMap() {
@@ -232,10 +254,19 @@ public class InstallKernelMap implements Map {
                 } else {
                     return singleFileResolve();
                 }
-
             }
         } else if (PROGRESS_MONITOR_SIZE.equals(key)) {
             return getMonitorSize();
+        } else if (DOWNLOAD_RESULT.equals(key)) {
+            Boolean downloadSingleArtifact = (Boolean) data.get(DOWNLOAD_INDIVIDUAL_ARTIFACT);
+            String downloadLocation = (String) data.get(DOWNLOAD_LOCATION);
+            if (downloadLocation != null) {
+                return downloadArtifact();
+            } else if (downloadSingleArtifact != null && downloadSingleArtifact) {
+                return downloadSingleFeature();
+            } else {
+                return downloadEsas();
+            }
         }
         return data.get(key);
     }
@@ -293,6 +324,12 @@ public class InstallKernelMap implements Map {
             } else {
                 throw new IllegalArgumentException();
             }
+        } else if (CLEANUP_TEMP_LOCATION.equals(key)) {
+            if (value instanceof String) {
+                data.put(CLEANUP_TEMP_LOCATION, value);
+            } else {
+                throw new IllegalArgumentException();
+            }
         } else if (USER_AGENT.equals(key)) {
             if (value instanceof String) {
                 data.put(USER_AGENT, value);
@@ -304,6 +341,42 @@ public class InstallKernelMap implements Map {
         } else if (TO_EXTENSION.equals(key)) {
             if (value instanceof String) {
                 data.put(TO_EXTENSION, value);
+            } else {
+                throw new IllegalArgumentException();
+            }
+        } else if (DOWNLOAD_FILETYPE.equals(key)) {
+            if (value instanceof String) {
+                data.put(DOWNLOAD_FILETYPE, value);
+            } else {
+                throw new IllegalArgumentException();
+            }
+        } else if (DOWNLOAD_LOCAL_DIR_LOCATION.equals(key)) {
+            if (value instanceof String) {
+                data.put(DOWNLOAD_LOCAL_DIR_LOCATION, value);
+            } else {
+                throw new IllegalArgumentException();
+            }
+        } else if (FROM_REPO.equals(key)) {
+            if (value instanceof String) {
+                data.put(FROM_REPO, value);
+            } else {
+                throw new IllegalArgumentException();
+            }
+        } else if (DOWNLOAD_ARTIFACT_LIST.equals(key)) {
+            if (value instanceof List || value instanceof String) {
+                data.put(DOWNLOAD_ARTIFACT_LIST, value);
+            } else {
+                throw new IllegalArgumentException();
+            }
+        } else if (DOWNLOAD_INDIVIDUAL_ARTIFACT.equals(key)) {
+            if (value instanceof Boolean) {
+                data.put(DOWNLOAD_INDIVIDUAL_ARTIFACT, value);
+            } else {
+                throw new IllegalArgumentException();
+            }
+        } else if (DOWNLOAD_LOCATION.equals(key)) {
+            if (value instanceof String) {
+                data.put(DOWNLOAD_LOCATION, value);
             } else {
                 throw new IllegalArgumentException();
             }
@@ -734,6 +807,125 @@ public class InstallKernelMap implements Map {
     }
 
     @SuppressWarnings("unchecked")
+    public List<File> downloadFeatures(List<String> featureList) {
+        data.put(ACTION_ERROR_MESSAGE, null);
+        data.put(ACTION_EXCEPTION_STACKTRACE, null);
+
+        ArtifactDownloader artifactDownloader = new ArtifactDownloader();
+        String fromRepo = (String) data.get(FROM_REPO);
+        String downloadDir = getDownloadDir(fromRepo);
+        String repo = getRepo(fromRepo);
+
+        try {
+            artifactDownloader.synthesizeAndDownloadFeatures(featureList, downloadDir, repo);
+        } catch (InstallException e) {
+            data.put(ACTION_RESULT, ERROR);
+            data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+            data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
+            return null;
+        }
+
+        return artifactDownloader.getDownloadedEsas();
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<File> downloadArtifact() {
+        data.put(ACTION_ERROR_MESSAGE, null);
+        data.put(ACTION_EXCEPTION_STACKTRACE, null);
+
+        ArtifactDownloader artifactDownloader = new ArtifactDownloader();
+        String downloadDir = (String) data.get(DOWNLOAD_LOCATION);
+        List<String> featureList = (List<String>) data.get(DOWNLOAD_ARTIFACT_LIST);
+        String repo = getRepo(null);
+
+        try {
+            artifactDownloader.synthesizeAndDownloadFeatures(featureList, downloadDir, repo);
+        } catch (InstallException e) {
+            data.put(ACTION_RESULT, ERROR);
+            data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+            data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
+            return null;
+        }
+
+        return artifactDownloader.getDownloadedEsas();
+    }
+
+    /**
+     * @param fromRepo
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    private String getDownloadDir(String fromDir) {
+        String result;
+        if (fromDir != null) {
+            result = fromDir;
+        } else if ((fromDir = getM2Cache()) != null) {
+            usingM2Cache = true;
+            result = getM2Cache();
+        } else if (Files.isWritable(getM2Path())) {
+            File newM2 = new File(getM2Path().toString());
+            result = newM2.toString();
+        } else {
+            data.put(CLEANUP_TEMP_LOCATION, TEMP_DIRECTORY);
+            result = TEMP_DIRECTORY;
+        }
+        return result;
+    }
+
+    private String getM2Cache() { //check for maven_home specified mirror stuff
+        File m2Folder = getM2Path().toFile();
+
+        if (m2Folder.exists() && m2Folder.isDirectory()) {
+            return m2Folder.toString();
+        }
+        return null;
+
+    }
+
+    private Path getM2Path() {
+        return Paths.get(System.getProperty("user.home"), ".m2", "repository", "");
+    }
+
+    /**
+     * @return
+     */
+    private String getRepo(String fromRepo) {
+        String repo;
+        if (fromRepo != null) {
+            repo = fromRepo;
+        } else if (System.getenv("maven_mirror") != null) {
+            repo = System.getenv("maven_mirror"); //TODO get mirror from settigns.xml if applicable
+        } else {
+            repo = MAVEN_CENTRAL;
+        }
+        return repo;
+    }
+
+    @SuppressWarnings("unchecked")
+    public File downloadSingleFeature() {
+        data.put(ACTION_ERROR_MESSAGE, null);
+        data.put(ACTION_EXCEPTION_STACKTRACE, null);
+
+        ArtifactDownloader artifactDownloader = new ArtifactDownloader();
+        String featureList = (String) data.get(DOWNLOAD_ARTIFACT_LIST);
+        String filetype = (String) data.get(DOWNLOAD_FILETYPE);
+
+        String fromRepo = (String) data.get(FROM_REPO);
+        String downloadDir = getDownloadDir(fromRepo);
+        String repo = getRepo(fromRepo);
+        try {
+            artifactDownloader.synthesizeAndDownload(featureList, filetype, downloadDir, repo, true);
+        } catch (InstallException e) {
+            data.put(ACTION_RESULT, ERROR);
+            data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+            data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
+            return null;
+        }
+
+        return artifactDownloader.getDownloadedFiles().get(0);
+    }
+
+    @SuppressWarnings("unchecked")
     public Integer localESAInstall() {
         data.put(ACTION_RESULT, OK);
         data.put(ACTION_INSTALL_RESULT, null);
@@ -877,6 +1069,163 @@ public class InstallKernelMap implements Map {
         }
 
         return singleJson;
+
+    }
+
+    @SuppressWarnings("unchecked")
+    private Collection<File> downloadEsas() {
+        String fromRepo = getDownloadDir((String) data.get(FROM_REPO));
+        File rootDir = new File(fromRepo);
+        Collection<String> resolvedFeatures = (List<String>) data.get(DOWNLOAD_ARTIFACT_LIST);
+        String openLibertyVersion = getLibertyVersion();
+
+        Map<String, List> artifactsMap = fetchArtifactsFromLocalRepository(rootDir, resolvedFeatures, openLibertyVersion, ".esa");
+        List<File> foundFeatures = artifactsMap.get("foundArtifacts");
+        List<String> missingFeatures = artifactsMap.get("missingArtifacts");
+        if (foundFeatures.size() != resolvedFeatures.size() && !missingFeatures.isEmpty()) {
+            List<Integer> missingFeatureIndexes = artifactsMap.get("missingArtifactIndexes");
+            List<File> downloadedFeatures = downloadFeatures(missingFeatures);
+            insertElementsIntoList(foundFeatures, downloadedFeatures, missingFeatureIndexes);
+            // some increment left over
+            double increment = ((double) (progressBar.getMethodIncrement("fetchArtifacts") / resolvedFeatures.size()) * downloadedFeatures.size());
+            updateProgress(increment);
+            fine("Downloaded the following features from maven central:" + downloadedFeatures);
+
+        }
+        return foundFeatures;
+
+    }
+
+    /**
+     * Returns a hashmap containing artifacts found as well as the order of the artifacts not found.
+     * The found artifacts can be accessed using key: foundArtifacts
+     * The missing artifacts can be accessed using key: missingArtifacts
+     * The missing artifact indexees can be accessed using key: missingArtifactIndexes
+     *
+     * @param rootDir            the local maven repository
+     * @param artifacts          a list of artifacts in the form groupId:artifactId:version
+     * @param openLibertyVersion open liberty runtime version
+     * @param extension          file extension
+     * @return a map containing the found and not found artifacts.
+     */
+    private Map<String, List> fetchArtifactsFromLocalRepository(File rootDir, Collection<String> artifacts, String openLibertyVersion, String extension) {
+        List<String> artifactsClone = new ArrayList<>(artifacts);
+        List<File> foundArtifacts = new ArrayList<>();
+        List<Integer> missingArtifactIndexes = new ArrayList<>();
+        int index = 0;
+        double increment = ((double) progressBar.getMethodIncrement("fetchArtifacts") / artifacts.size());
+
+        for (String feature : artifacts) {
+            fine("Processing feature: " + feature);
+            String groupId = feature.split(":")[0];
+            String featureName = feature.split(":")[1];
+            File groupDir = new File(rootDir, groupId.replace(".", "/"));
+            if (!groupDir.exists()) {
+                missingArtifactIndexes.add(index);
+                continue;
+            }
+            String featureEsa = featureName + "-" + openLibertyVersion + extension;
+            Path featurePath = Paths.get(groupDir.getAbsolutePath().toString(), featureName, openLibertyVersion, featureEsa);
+
+            if (Files.isRegularFile(featurePath)) {
+                foundArtifacts.add(featurePath.toFile());
+                artifactsClone.remove(feature);
+                updateProgress(increment);
+                fine("Found feature at path: " + featurePath.toString());
+
+            } else {
+                missingArtifactIndexes.add(index);
+            }
+
+            index += 1;
+        }
+        Map<String, List> artifactsMap = new HashMap<>();
+        artifactsMap.put("foundArtifacts", foundArtifacts);
+        artifactsMap.put("missingArtifacts", artifactsClone);
+        artifactsMap.put("missingArtifactIndexes", missingArtifactIndexes);
+
+        return artifactsMap;
+    }
+
+    private <T> void insertElementsIntoList(List<T> target, List<T> elements, List<Integer> indexes) {
+        int index = 0;
+        for (T obj : elements) {
+            // insert the element into its respective position
+            target.add(indexes.get(index), obj);
+            index += 1;
+        }
+
+    }
+
+    /**
+     * Get the open liberty runtime version.
+     *
+     * @throws IOException
+     * @throws InstallException
+     *
+     */
+    @SuppressWarnings("unchecked")
+    private String getLibertyVersion() {
+        if (this.openLibertyVersion != null) {
+            return this.openLibertyVersion;
+        }
+        File propertiesFile = new File(Utils.getInstallDir(), "lib/versions/openliberty.properties");
+        String openLibertyVersion = null;
+        Properties properties = new Properties();
+        try (InputStream input = new FileInputStream(propertiesFile)) {
+            properties.load(input);
+            String productId = properties.getProperty("com.ibm.websphere.productId");
+            String productVersion = properties.getProperty("com.ibm.websphere.productVersion");
+
+            if (productId.equals(OPEN_LIBERTY_PRODUCT_ID)) {
+                openLibertyVersion = productVersion;
+            }
+
+        } catch (IOException e) {
+            data.put(ACTION_RESULT, ERROR);
+            data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+            data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
+        }
+
+        if (openLibertyVersion == null) {
+            // openliberty.properties file is missing or invalidly formatted
+            InstallException ie = new InstallException("Could not determine the open liberty runtime version.");
+            data.put(ACTION_RESULT, ERROR);
+            data.put(ACTION_ERROR_MESSAGE, ie.getMessage());
+            data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(ie));
+
+        } else {
+
+            fine("The Open Liberty runtime version is " + openLibertyVersion);
+        }
+        this.openLibertyVersion = openLibertyVersion;
+        return openLibertyVersion;
+
+    }
+
+    private void updateProgress(double increment) {
+        progressBar.updateProgress(increment);
+
+    }
+
+    // log message types
+    private void info(String msg) {
+        System.out.print("\033[2K"); // Erase line content
+        logger.info(msg);
+        progressBar.display();
+    }
+
+    private void fine(String msg) {
+        System.out.print("\033[2K"); // Erase line content
+        logger.fine(msg);
+        progressBar.display();
+
+    }
+
+    private void severe(String msg) {
+        System.out.print("\033[2K"); // Erase line content
+        logger.severe(msg);
+        progressBar.display();
 
     }
 

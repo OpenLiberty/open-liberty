@@ -73,10 +73,6 @@ public class EnumMapper extends CachingMapper<GraphQLEnumType, GraphQLEnumType> 
 
     @SuppressWarnings("WeakerAccess")
     protected String getValueDeprecationReason(Enum<?> value, MessageBundle messageBundle) {
-        org.eclipse.microprofile.graphql.Deprecated mpAnnotation = ClassUtils.getEnumConstantField(value).getAnnotation(org.eclipse.microprofile.graphql.Deprecated.class);
-        if (mpAnnotation != null) {
-            return ReservedStrings.decode(messageBundle.interpolate(mpAnnotation.value()));
-        }
         io.leangen.graphql.annotations.Deprecated annotation = ClassUtils.getEnumConstantField(value).getAnnotation(io.leangen.graphql.annotations.Deprecated.class);
         if (annotation != null) {
             return ReservedStrings.decode(messageBundle.interpolate(annotation.value()));

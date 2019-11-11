@@ -211,9 +211,16 @@ public class MemorySession implements ISession {
             }
             return;
         }
+        
         if (!_isValid) {
-            throw new IllegalStateException();
+            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
+                LoggingUtil.SESSION_LOGGER_CORE.logp(Level.FINE, methodClassName, methodNames[INVALIDATE], "isInProcessOfStopping: " + ((MemoryStore)_store).isInProcessOfStopping());
+            }
+            if (!((MemoryStore)_store).isInProcessOfStopping()) {
+                throw new IllegalStateException();
+            }
         }
+            
         invalInProgress = true;
         
         // PM03375: Remove duplicate call to sessionCacheDiscard for persistence case
@@ -952,7 +959,9 @@ public class MemorySession implements ISession {
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
             LoggingUtil.SESSION_LOGGER_CORE.logp(Level.FINE, methodClassName, "callInvalidateFromInternalInvalidate", "calling invalidate");
         }
-        this.invalidate();
+        if (_isValid) {
+            this.invalidate();
+        }
     }
 
     //XD methods - don't need to implement

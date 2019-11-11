@@ -60,7 +60,7 @@ import com.ibm.wsspi.threadcontext.jca.JCAContextProvider;
 public class WorkProxy implements Callable<Void>, RunnableWithContext {
 
     //Creates a workContext item we can put the hintsContext into and return
-    private static com.ibm.wsspi.threading.WorkContext wc = new JCAWorkContext();
+    private com.ibm.wsspi.threading.WorkContext wc = new JCAWorkContext();
 
     /**
      * Constructor for WorkProxy.

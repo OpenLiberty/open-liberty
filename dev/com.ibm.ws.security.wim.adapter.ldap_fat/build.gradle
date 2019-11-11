@@ -128,7 +128,9 @@ autoFVT.doLast {
     'com.ibm.ws.security.wim.adapter.ldap.fat.ids.allIbmGroups',
     'com.ibm.ws.security.registry.ldap.fat.regression',
     'com.ibm.ws.security.wim.adapter.ldap.fat.readtimeout',
-    'com.ibm.ws.security.wim.adapter.ldap.fat.racf.sdbm'
+    'com.ibm.ws.security.wim.adapter.ldap.fat.racf.sdbm',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.return.to.primary',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.racf.sdbm.basic'
   ]
   servers.each { server ->
     copy { 

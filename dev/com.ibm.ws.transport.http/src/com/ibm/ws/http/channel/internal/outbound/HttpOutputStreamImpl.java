@@ -264,7 +264,7 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
      *
      * @param value
      * @param start - offset into value
-     * @param len - length from that offset to write
+     * @param len   - length from that offset to write
      * @throws IOException
      */
     private void writeToBuffers(byte[] value, int start, int len) throws IOException {
@@ -427,10 +427,20 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
     @Override
     @FFDCIgnore({ IOException.class })
     public void flushHeaders() throws IOException {
+        // Extra NPE tracing - defect 264444
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "flushHeaders: committed=" + this.isc.getResponse().isCommitted());
+            if (null == this.isc) {
+                Tr.debug(tc, "flushHeaders: isc is null");
+            } else if (null == this.isc.getResponse()) {
+                Tr.debug(tc, "flushHeaders: isc.getResponse() is null, isc is " + this.isc);
+            } else {
+                Tr.debug(tc, "flushHeaders: committed=" + this.isc.getResponse().isCommitted(), this.isc, this.isc.getResponse());
+            }
         }
+
+        // Run validate to check if the stream is already closed, if so exit
         validate();
+
         this.ignoreFlush = false;
         if (!this.isc.getResponse().isCommitted()) {
             this.isc.getResponse().setCommitted();
@@ -620,7 +630,7 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
         } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "flush hasFinished=true; skipping flushBuffers() on " + this.hashCode() + " details: " + this);
-            }    
+            }
         }
     }
 

@@ -101,7 +101,9 @@ Include-Resource: \
   com.ibm.ws.ejbcontainer.osgi.internal.injection.OSGiEJBFactoryImpl, \
   com.ibm.ws.ejbcontainer.osgi.internal.naming.ContextJavaColonNamingHelper, \
   com.ibm.ws.ejbcontainer.osgi.internal.naming.TimerServiceJavaColonNamingHelper, \
-  com.ibm.ws.ejbcontainer.osgi.internal.naming.EJBJavaColonNamingHelper
+  com.ibm.ws.ejbcontainer.osgi.internal.naming.EJBJavaColonNamingHelper, \
+  com.ibm.ws.ejbcontainer.osgi.internal.naming.EJBLocalNamingHelperImpl, \
+  com.ibm.ws.ejbcontainer.osgi.internal.naming.LocalColonEJBNamingHelperImpl
 
 Service-Component: \
   com.ibm.ws.ejb.injection.processor.EJBProcessorProvider;\

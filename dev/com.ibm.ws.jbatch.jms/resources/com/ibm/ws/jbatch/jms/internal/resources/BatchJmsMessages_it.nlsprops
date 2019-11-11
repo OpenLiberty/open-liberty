@@ -1,0 +1,106 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jbatch.jms/resources/com/ibm/ws/jbatch/jms/internal/resources/BatchJmsMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0200 - 0249: com.ibm.ws.jbatch.jms
+# 
+warning.unsupported.message.type=CWWKY0200W: Il tipo di messaggio {0} di questo messaggio JMS batch non \u00e8 supportato.  La richiesta non verr\u00e0 elaborata. Il contenuto di questo messaggio \u00e8 {1}
+warning.unsupported.message.type.explanation=Questo tipo di messaggio non \u00e8 supportato perch\u00e9 non \u00e8 di tipo JMS MapMessage. 
+warning.unsupported.message.type.useraction=Non sono richieste azioni. 
+ 
+warning.unsupported.operation=CWWKY0201W: L''operazione {0} \u00e8 un''operazione non supportata di un messaggio JMS batch. La richiesta non verr\u00e0 elaborata. Il contenuto di questo messaggio \u00e8 {1}
+warning.unsupported.operation.explanation=Sono supportate solo le operazioni 'Avvia' e 'Riavvia'.
+warning.unsupported.operation.useraction=Non sono richieste azioni.
+
+warning.batch.activation.spec.not.found=CWWKY0202W: L''endpoint messaggi per il listener JMS {0} batch non pu\u00f2 essere attivato poich\u00e9 la specifica di attivazione {1} batch non esiste nella configurazione del server. L''endpoint messaggi non ricever\u00e0 messaggi batch fino a quando la specifica di attivazione batch non diventa disponibile. 
+warning.batch.activation.spec.not.found.explanation=Il server sta avviando il listener JMS batch ma non \u00e8 in grado di attivare l'endpoint messaggi, in quanto non \u00e8 stato possibile trovare la specifica di attivazione nella configurazione del server. L'endpoint messaggi non ricever\u00e0 messaggi batch fino a quando non sar\u00e0 possibile attivarlo.
+warning.batch.activation.spec.not.found.useraction=Creare la specifica di attivazione con il nome specificato nella configurazione del server manualmente o tramite il centro di gestione.
+
+warning.batch.destination.queue.not.found=CWWKY0203W: L''endpoint messaggi per il listener JMS {0} batch non pu\u00f2 essere attivato poich\u00e9 la coda di destinazione {1} non esiste. L''endpoint messaggi non ricever\u00e0 messaggi JMS batch fino a quando la coda di destinazione non diventa disponibile.
+warning.batch.destination.queue.not.found.explanation=Il server sta avviando il listener JMS batch ma non \u00e8 in grado di attivare l'endpoint messaggi, in quanto non \u00e8 stato possibile trovare la coda di destinazione. L'endpoint messaggi non ricever\u00e0 messaggi JMS batch fino a quando non sar\u00e0 possibile attivarlo.
+warning.batch.destination.queue.not.found.useraction=Creare la coda di destinazione con il nome specificato nella configurazione del server manualmente o tramite il centro di gestione.
+
+warning.batch.dispatcher.connection.factory.not.found=CWWKY0204W: Il dispatcher JMS batch non pu\u00f2 essere avviato poich\u00e9 il factory di connessione {0} non esiste.  Il dispatcher JMS batch non invier\u00e0 messaggi JMS batch fino a quando il factory di connessione non diventa disponibile. 
+warning.batch.dispatcher.connection.factory.not.found.explanation=Il server sta avviando il dispatcher JMS batch ma non \u00e8 in grado di avviarsi poich\u00e9 il factory di connessione JMS batch non \u00e8 stato trovato.  Il dispatcher JMS batch non invier\u00e0 messaggi JMS batch fino a quando il factory di connessione non diventa disponibile.
+warning.batch.dispatcher.connection.factory.not.found.useraction=Creare il factory di connessione con il nome specificato nella configurazione del server manualmente o tramite il centro di gestione.
+
+warning.batch.dispatcher.queue.not.found=CWWKY0205W: Il dispatcher JMS batch non pu\u00f2 essere avviato poich\u00e9 la coda {0} non esiste.  Il dispatcher JMS batch non invier\u00e0 messaggi JMS batch fino a quando la coda non diventa disponibile.
+warning.batch.dispatcher.queue.not.found.explanation=Il server sta avviando il dispatcher JMS batch ma non \u00e8 in grado di avviarsi poich\u00e9 la coda JMS batch non \u00e8 stata trovata.  Il dispatcher JMS batch non invier\u00e0 messaggi JMS batch fino a quando la coda non diventa disponibile.
+warning.batch.dispatcher.queue.not.found.useraction=Creare la coda con il nome specificato nella configurazione del server manualmente o tramite il centro di gestione.
+
+error.unable.to.rollback.start=CWWKY0206E: Il dispatcher JMSbatch ha rilevato un''eccezione durante la distribuzione della richiesta di avvio per l''istanza lavoro {0} e non \u00e8 stato in grado di eseguire il rollback dell''operazione.  L''eccezione \u00e8 {1}.
+error.unable.to.rollback.start.explanation=Il dispatcher JMS batch non \u00e8 stato in grado di eseguire il rollback delle operazioni.
+error.unable.to.rollback.start.useraction=Inoltrare di nuovo il lavoro.
+
+error.unable.to.rollback.restart=CWWKY0207E: Il dispatcher JMSbatch ha rilevato un''eccezione durante la distribuzione dell''esecuzione lavoro richiesta di riavvio {0} e non \u00e8 stato in grado di eseguire il rollback dell''operazione.  L''eccezione \u00e8 {1}.
+error.unable.to.rollback.restart.explanation=Il dispatcher JMS batch non \u00e8 stato in grado di eseguire il rollback delle operazioni.
+error.unable.to.rollback.restart.useraction=Inoltrare di nuovo il lavoro.
+
+error.endpoint.unable.process.message=CWWKY0208E: Il listener JMS batch ha rilevato un''eccezione durante l''elaborazione del messaggio {0}.  L''eccezione \u00e8 {1}.
+error.endpoint.unable.process.message.explanation=Il listener JMS batch non \u00e8 stato in grado di elaborare il messaggio di richiesta JMS batch.
+error.endpoint.unable.process.message.useraction=Inoltrare di nuovo il lavoro. 
+
+error.endpoint.unable.process.start.request=CWWKY0209E: Il listener JMS batch ha rilevato un''eccezione durante l''elaborazione dell''operazione di avvio lavoro per l''istanza lavoro {0}.  L''eccezione \u00e8 {1}.
+error.endpoint.unable.process.start.request.explanation=Il listener JMS batch non \u00e8 stato in grado di elaborare la richiesta di avvio lavoro.
+error.endpoint.unable.process.start.request.useraction=Inoltrare di nuovo il lavoro.
+
+error.endpoint.unable.process.restart.request=CWWKY0210E: Il listener JMS batch ha rilevato un''eccezione durante l''elaborazione dell''operazione di riavvio lavoro per l''esecuzione lavoro {0}.  L''eccezione \u00e8 {1}.
+error.endpoint.unable.process.restart.request.explanation=Il listener JMS batch non \u00e8 stato in grado di elaborare la richiesta di riavvio lavoro.
+error.endpoint.unable.process.restart.request.useraction=Inoltrare di nuovo il lavoro.
+
+warning.batch.events.unable.to.publish=CWWKY0211W: Il runtime batch non pu\u00f2 pubblicare l''evento nell''argomento {0} per l''oggetto {1}.  L''eccezione \u00e8 {2}.
+warning.batch.events.unable.to.publish.explanation=L'evento non pu\u00f2 essere pubblicato a causa di un'eccezione.
+warning.batch.events.unable.to.publish.useraction=Esaminare i log del server per l'errore correlato.
+
+error.batch.events.publisher.jms.resource.activate=CWWKY0212E: Impossibile creare la risorsa JMS per il publisher eventi batch.  L''eccezione \u00e8 {0}.
+error.batch.events.publisher.jms.resource.activate.explanation=Impossibile creare la risorsa JMS per attivare il publisher eventi batch a causa di un'eccezione. 
+error.batch.events.publisher.jms.resource.activate.useraction=Controllare la configurazione del factory di connessione JMS configurata dall'elemento batchJmsDispatcher (il batchConnectionFactory predefinito o quello indicato esplicitamente).  Verificare la connettivit\u00e0 di JMS ed esaminare i log del server per l'errore correlato.
+
+error.batch.dispatcher.jms.resource.activate=CWWKY0213E: Impossibile creare la risorsa JMS per il dispatcher batch.  L''eccezione \u00e8 {0}
+error.batch.dispatcher.jms.resource.activate.explanation=Impossibile creare la risorsa JMS per attivare il dispatcher a causa di un'eccezione, pertanto il server non \u00e8 in grado di distribuire i lavori o le partizioni tramite JMS.
+error.batch.dispatcher.jms.resource.activate.useraction=Controllare la configurazione del factory di connessione JMS e della coda configurate dall'elemento batchJmsDispatcher (il batchConnectionFactory predefinito o quello indicato esplicitamente).  Verificare la connettivit\u00e0 di JMS ed esaminare i log del server per l'errore correlato.
+
+warning.endpoint.listener.stale.message=CWWKY0214W: Viene eliminato il messaggio con id esecuzione lavoro associato {0} perch\u00e9 non era l''esecuzione pi\u00f9 recente.
+warning.endpoint.listener.stale.message.explanation=Viene eliminato il messaggio di esecuzione lavoro associato obsoleto perch\u00e9 non era l'esecuzione pi\u00f9 recente.
+warning.endpoint.listener.stale.message.useraction=Nessuna azione richiesta.
+
+error.start.partition.request=CWWKY0215E: Impossibile avviare la partizione batch a causa di un''eccezione.  L''eccezione \u00e8 {0}.
+error.start.partition.request.explanation=Impossibile avviare la partizione batch a causa di un'eccezione.  
+error.start.partition.request.useraction=Arrestare il lavoro associato e verificare la connettivit\u00e0 di JMS, la configurazione, ed esaminare i log del server per l'errore correlato.
+
+error.batch.executor.jms.create.failure=CWWKY0216E: Impossibile creare il factory di connessione JMSper l''esecuzione di partizioni remote.  L''eccezione \u00e8 {0}
+error.batch.executor.jms.create.failure.explanation=Errore nella connessione al factory di connessione JMS di risposta utilizzato per mandare le risposte per le esecuzioni di partizioni remote.  Questo server non sar\u00e0 in grado di eseguire lavori o partizioni distribuite tramite JMS finch\u00e9 non si risolve il problema.
+error.batch.executor.jms.create.failure.useraction=Controllare la configurazione del factory di connessione JMS configurata dall'elemento batchJmsDispatcher (il batchConnectionFactory predefinito o quello indicato esplicitamente).  Se l'utente non sta utilizzando le partizioni, la configurazione correlata alla partizione remota JMS pu\u00f2 essere rimossa dalla configurazione del server.
+
+error.batch.executor.activate.failure=CWWKY0217E: Impossibile attivare l''executor JMS sull''endpoint a causa di un''eccezione {0}
+error.batch.executor.activate.failure.explanation=Errore durante l'attivazione dell'executor JMS sull'endpoint a causa di un'eccezione.
+error.batch.executor.activate.failure.useraction=Questo server non sar\u00e0 in grado di eseguire lavori o partizioni distribuite tramite JMS finch\u00e9 non si risolve il problema.  Controllare la configurazione del factory di connessione JMS configurata dall'elemento batchJmsDispatcher (il batchConnectionFactory predefinito o quello indicato esplicitamente).  Verificare la connettivit\u00e0 di JMS, la configurazione dell'endpoint, ed esaminare i log del server per l'errore correlato.
+
+info.batch.events.publish.topic=CWWKY0218I: Il runtime batch pubblicher\u00e0 gli eventi sulla root del topic JMS {0}.
+info.batch.events.publish.topic.explanation=Messaggio informativo. Il runtime batch pubblicher\u00e0 gli eventi sulla root del topic JMS batch elencati.
+info.batch.events.publish.topic.useraction=La root del topic JMS batch pu\u00f2 essere modificato. Controllare le opzioni di configurazione utilizzate per batchJmsEvents.
