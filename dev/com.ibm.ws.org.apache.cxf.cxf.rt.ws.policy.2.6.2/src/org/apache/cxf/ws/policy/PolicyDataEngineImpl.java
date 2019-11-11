@@ -36,6 +36,10 @@ import org.apache.cxf.transport.Destination;
 import org.apache.cxf.ws.policy.builder.jaxb.JaxbAssertion;
 import org.apache.neethi.Assertion;
 
+
+import com.ibm.websphere.ras.annotation.Trivial;
+
+@Trivial 
 public class PolicyDataEngineImpl implements PolicyDataEngine {
     private static final Logger LOG = LogUtils.getL7dLogger(PolicyDataEngineImpl.class);
     private Bus bus;
@@ -113,6 +117,7 @@ public class PolicyDataEngineImpl implements PolicyDataEngine {
         return policies;
     }
 
+    @Trivial
     public <T> void assertMessage(Message message, T confPol,
                                   PolicyCalculator<T> policyCalculator) {
         T messagePol = message.get(policyCalculator.getDataClass());

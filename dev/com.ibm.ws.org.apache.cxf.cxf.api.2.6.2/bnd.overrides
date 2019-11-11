@@ -11,7 +11,7 @@ DynamicImport-Package: \
   javax.xml.ws, \
   javax.xml.ws.*, \
   org.apache.cxf.bus;version="[2.6.2,2.6.3)", \
-  org.apache.cxf.*;version="[2.6.2,2.6.3)", \
+  org.apache.cxf.*;version="[2.6.2,2.6.3)"
 
 Export-Package: \
   !org.apache.cxf.internal, \
