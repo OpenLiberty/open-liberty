@@ -16,6 +16,8 @@ import org.testcontainers.utility.TestcontainersConfiguration;
  */
 public class KafkaSaslPlainContainer extends GenericContainer<KafkaSaslPlainContainer> {
 
+    private final Network network;
+
     private static final String KEYSTORE_PASSWORD = "kafka-teststore";
     private static final String NETWORK_ALIAS = generateSecret("kafka");
     private static final String ADMIN_USER = "admin";
@@ -50,6 +52,9 @@ public class KafkaSaslPlainContainer extends GenericContainer<KafkaSaslPlainCont
     public KafkaSaslPlainContainer(String confluentPlatformVersion) {
         super(TestcontainersConfiguration.getInstance().getKafkaImage() + ":" + confluentPlatformVersion);
 
+        network = Network.newNetwork();
+
+        withNetwork(network);
         withNetwork(Network.newNetwork());
         withNetworkAliases(NETWORK_ALIAS);
         withExposedPorts(KAFKA_PORT, ZOOKEEPER_PORT);
@@ -154,7 +159,9 @@ public class KafkaSaslPlainContainer extends GenericContainer<KafkaSaslPlainCont
     @Override
     public void stop() {
         // Shut down both the proxy and the container
-        Stream.<Runnable> of(proxy::stop, super::stop).parallel().forEach(Runnable::run);
+        proxy.stop();
+        super.stop();
+        network.close();
     }
 
     private String getZookeeperProperties() {

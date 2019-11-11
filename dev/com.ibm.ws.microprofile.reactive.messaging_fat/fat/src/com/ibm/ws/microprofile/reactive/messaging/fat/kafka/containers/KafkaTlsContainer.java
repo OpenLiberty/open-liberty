@@ -16,6 +16,8 @@ import org.testcontainers.utility.TestcontainersConfiguration;
  */
 public class KafkaTlsContainer extends GenericContainer<KafkaTlsContainer> {
 
+    private final Network network;
+
     private static final String KEYSTORE_PASSWORD = "kafka-teststore";
 
     private static final String SECRETS_PREFIX = "/etc/kafka/secrets/";
@@ -40,7 +42,9 @@ public class KafkaTlsContainer extends GenericContainer<KafkaTlsContainer> {
     public KafkaTlsContainer(String confluentPlatformVersion) {
         super(TestcontainersConfiguration.getInstance().getKafkaImage() + ":" + confluentPlatformVersion);
 
-        withNetwork(Network.newNetwork());
+        network = Network.newNetwork();
+
+        withNetwork(network);
         withNetworkAliases("kafka-" + Base58.randomString(6));
         withExposedPorts(KAFKA_PORT, ZOOKEEPER_PORT);
         withEnv("KAFKA_ZOOKEEPER_CONNECT", "localhost:2181");
@@ -109,7 +113,9 @@ public class KafkaTlsContainer extends GenericContainer<KafkaTlsContainer> {
     @Override
     public void stop() {
         // Shut down both the proxy and the container
-        Stream.<Runnable> of(proxy::stop, super::stop).parallel().forEach(Runnable::run);
+        proxy.stop();
+        super.stop();
+        network.close();
     }
 
     private String getCertGenerationCommand(String filepath, String password, String ipAddress) {
