@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2006, 2011 IBM Corporation and others.
+# Copyright (c) 2006, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -301,6 +301,10 @@ JPA_THIRD_PARTY_PROV_INFO_CWWJP0053I.useraction=No action is required.
 NOT_COMPLIANT_WITH_JPA21_CWWJP0054E=CWWJP0054E: The {0} implementation, {1}, is not compliant with the JPA 2.1 specification and cannot be used. Obtain a newer version of the JPA persistence provider that implements JPA 2.1.
 NOT_COMPLIANT_WITH_JPA21_CWWJP0054E.explanation=The JPA persistence provider cannot be used because it lacks implementation of methods that are required by the JPA 2.1 specification.
 NOT_COMPLIANT_WITH_JPA21_CWWJP0054E.useraction=Obtain a newer version of the JPA persistence provider that complies with the JPA 2.1 specification.
+
+ERROR_TRANSFORMING_CLASS_CWWJP0055E=CWWJP0055E: An error occurred while attempting to transform the {0} Java Class.  The following failure detail was gathered: {1}
+ERROR_TRANSFORMING_CLASS_CWWJP0055E.explanation=An unexpected error occurred while transforming the Java class. This error is usually caused by invalid Java bytecode.
+ERROR_TRANSFORMING_CLASS_CWWJP0055E.useraction=The class cache might be corrupted or the application might be packaged incorrectly. First, clear the class cache. If that action does not resolve the problem, then review the application archive for packaging mistakes.
 
 #-------------------------------------------------------------------------------
 # Error messages from the JPA Provider below this point
