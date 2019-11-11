@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.social.tai;
 
@@ -70,7 +70,6 @@ public class TAIUserApiUtils {
         }
     }
 
-
     private boolean isOpenShiftConfig(SocialLoginConfig clientConfig) {
         boolean isOpenShiftConfig = false;
         if (clientConfig instanceof Oauth2LoginConfigImpl) {
@@ -80,7 +79,6 @@ public class TAIUserApiUtils {
         }
         return isOpenShiftConfig;
     }
-
 
     private String getUserApiResponseFromOpenShift(Oauth2LoginConfigImpl config, @Sensitive String accessToken, SSLSocketFactory sslSocketFactory) throws IOException, SocialLoginException, JoseException {
         OpenShiftUserApiUtils openShiftUtils = new OpenShiftUserApiUtils(config);
