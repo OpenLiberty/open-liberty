@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.ConfigElementList;
 import com.ibm.websphere.simplicity.config.PersistentExecutor;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
@@ -42,12 +43,12 @@ import componenttest.topology.impl.LibertyServer;
  * Tests for one persistent executor instance running tasks, with multiple instances scheduling tasks.
  */
 @RunWith(FATRunner.class)
-public class OneExecutorRunsAllTest {
+public class OneExecutorRunsAllWithFailoverEnabledTest {
     private static final Set<String> appNames = Collections.singleton("persistoneexectest");
     
     private static final String APP_NAME = "persistoneexectest";
 
-    private static ServerConfiguration originalConfig;
+    private static ServerConfiguration originalConfig, failoverConfig;
 
     private static final LibertyServer server = FATSuite.server;
 
@@ -112,6 +113,13 @@ public class OneExecutorRunsAllTest {
 
         ShrinkHelper.defaultDropinApp(server, APP_NAME, "web");
         originalConfig = server.getServerConfiguration();
+        failoverConfig = originalConfig.clone();
+        ConfigElementList<PersistentExecutor> executors = failoverConfig.getPersistentExecutors();
+        executors.getById("executorA").setExtraAttribute("missedTaskThreshold2", "21s");
+        executors.getById("executorB").setExtraAttribute("missedTaskThreshold2", "22s");
+        executors.getById("executorC").setExtraAttribute("missedTaskThreshold2", "23s");
+        server.updateServerConfiguration(failoverConfig);
+
         server.startServer();
     }
 
@@ -122,15 +130,21 @@ public class OneExecutorRunsAllTest {
      */
     @AfterClass
     public static void tearDown() throws Exception {
-        if (server != null && server.isStarted())
-            server.stopServer();
+        if (server != null)
+            try {
+                if (server.isStarted())
+                    server.stopServer();
+            } finally {
+                if (originalConfig != null)
+                    server.updateServerConfiguration(originalConfig);
+            }
     }
 
     /**
      * Simulate a scenario where we need to prevent deadlocks with EJB singletons
      */
     @Test
-    public void testEJBSingletonDeadlockPrevention() throws Exception {
+    public void testEJBSingletonDeadlockPreventionFE() throws Exception {
         runInServlet("test=testEJBSingletonDeadlockPrevention");
     }
 
@@ -138,7 +152,7 @@ public class OneExecutorRunsAllTest {
      * Test interfaces for find and remove that we provide to EJB container for EJB persistent timers.
      */
     @Test
-    public void testEJBTimersFindAndRemove() throws Exception {
+    public void testEJBTimersFindAndRemoveFE() throws Exception {
         runInServlet("test=testEJBTimersFindAndRemove");
     }
 
@@ -149,7 +163,7 @@ public class OneExecutorRunsAllTest {
      * Add an instance with execution enabled, and verify that all tasks run.
      */
     @Test
-    public void testRunTasksOnDifferentExecutor() throws Exception {
+    public void testRunTasksOnDifferentExecutorFE() throws Exception {
         StringBuilder output;
         int start;
 
@@ -169,17 +183,13 @@ public class OneExecutorRunsAllTest {
             throw new Exception("Task id of scheduled task not found in servlet output: " + output);
         String taskIdB1 = output.substring(start += TASK_ID_SEARCH_TEXT.length(), output.indexOf(".", start));
 
-        // Liberty doesn't the ability to coordinate across server instances yet, so we need to manually request that the tasks be transferred
-        runInServlet("test=testTransfer&jndiName=concurrent/executorC&oldExecutorId=executorA&invokedBy=testRunTasksOnDifferentExecutor-3");
-        runInServlet("test=testTransfer&jndiName=concurrent/executorC&oldExecutorId=executorB&invokedBy=testRunTasksOnDifferentExecutor-4");
-
         // Verify both tasks are running
-        runInServlet("test=testTasksAreRunning&jndiName=concurrent/executorC&taskId=" + taskIdA1 + "&taskId=" + taskIdB1 + "&invokedBy=testRunTasksOnDifferentExecutor-5");
+        runInServlet("test=testTasksAreRunning&jndiName=concurrent/executorC&taskId=" + taskIdA1 + "&taskId=" + taskIdB1 + "&invokedBy=testRunTasksOnDifferentExecutor-3");
 
         String taskIdB2;
         try {
             // Remove the executor (C) that is running tasks.
-            ServerConfiguration config = originalConfig.clone();
+            ServerConfiguration config = failoverConfig.clone();
             PersistentExecutor executorC = config.getPersistentExecutors().removeById("executorC");
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
@@ -187,56 +197,49 @@ public class OneExecutorRunsAllTest {
 
             // Schedule a task to executor (B) that can't run tasks, and with no other executors that can run tasks
             output = runInServlet(
-                            "test=testScheduleRepeatingTask&jndiName=concurrent/executorB&initialDelay=0&interval=2000&invokedBy=testRunTasksOnDifferentExecutor-6");
+                            "test=testScheduleRepeatingTask&jndiName=concurrent/executorB&initialDelay=0&interval=2000&invokedBy=testRunTasksOnDifferentExecutor-4");
             start = output.indexOf(TASK_ID_SEARCH_TEXT);
             if (start < 0)
                 throw new Exception("Task id of scheduled task not found in servlet output: " + output);
             taskIdB2 = output.substring(start += TASK_ID_SEARCH_TEXT.length(), output.indexOf(".", start));
 
-            // Make another executor (B) run tasks, but without heart beats.
+            // Make another executor (B) run tasks and allow it to poll for them
             PersistentExecutor executorB = config.getPersistentExecutors().getBy("id", "executorB");
             executorB.setEnableTaskExecution("true");
             executorB.setInitialPollDelay("0s");
+            executorB.setPollInterval("1s200ms");
 
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
             server.waitForConfigUpdateInLogUsingMark(appNames);
 
-            runInServlet("test=testTaskIsRunning&jndiName=concurrent/executorB&taskId=" + taskIdB2 + "&invokedBy=testRunTasksOnDifferentExecutor-7");
+            runInServlet("test=testTaskIsRunning&jndiName=concurrent/executorB&taskId=" + taskIdB2 + "&invokedBy=testRunTasksOnDifferentExecutor-5");
 
-            // Liberty doesn't have the ability to coordinate across server instances yet, so manually switch
-            // the partition info from executorC to the one we are about to create
-            runInServlet("test=testUpdatePartitions&jndiName=concurrent/executorB&executorId=executorC&newExecutorId=executorD&expectedUpdateCount=1&invokedBy=testRunTasksOnDifferentExecutor-8");
-
-            // Add an executor (D) which can run tasks and has heart beats.
+            // Add an executor (D) which can run tasks.
             PersistentExecutor executorD = (PersistentExecutor) executorC.clone();
             executorD.setId("executorD");
             executorD.setJndiName("concurrent/executorD");
-            executorD.setInitialControllerDelay("0");
-
             config.getPersistentExecutors().add(executorD);
+
             // Make executor B stop running tasks, and see if executor D picks up its latest task
             executorB.setEnableTaskExecution("false");
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
             server.waitForConfigUpdateInLogUsingMark(appNames);
 
-            // Liberty doesn't have high availability support yet, so we need to manually trigger the failover from executorB
-            runInServlet("test=testTransfer&jndiName=concurrent/executorD&oldExecutorId=executorB&maxTaskId=" + Long.MAX_VALUE + "&invokedBy=testRunTasksOnDifferentExecutor-9");
-
             // Verify that all tasks are running
             runInServlet("test=testTasksAreRunning&jndiName=concurrent/executorD&taskId="
                          + taskIdA1 + "&taskId=" + taskIdB1 + "&taskId=" + taskIdB2
-                         + "&invokedBy=testRunTasksOnDifferentExecutor-10");
+                         + "&invokedBy=testRunTasksOnDifferentExecutor-6");
         } finally {
             // restore original configuration
             server.setMarkToEndOfLog();
-            server.updateServerConfiguration(originalConfig);
+            server.updateServerConfiguration(failoverConfig);
             server.waitForConfigUpdateInLogUsingMark(appNames);
         }
 
-        runInServlet("test=testRemoveTask&jndiName=concurrent/executorA&taskId=" + taskIdA1 + "&invokedBy=testRunTasksOnDifferentExecutor-11");
-        runInServlet("test=testRemoveTask&jndiName=concurrent/executorA&taskId=" + taskIdB1 + "&invokedBy=testRunTasksOnDifferentExecutor-12");
-        runInServlet("test=testRemoveTask&jndiName=concurrent/executorA&taskId=" + taskIdB2 + "&invokedBy=testRunTasksOnDifferentExecutor-13");
+        runInServlet("test=testRemoveTask&jndiName=concurrent/executorA&taskId=" + taskIdA1 + "&invokedBy=testRunTasksOnDifferentExecutor-7");
+        runInServlet("test=testRemoveTask&jndiName=concurrent/executorA&taskId=" + taskIdB1 + "&invokedBy=testRunTasksOnDifferentExecutor-8");
+        runInServlet("test=testRemoveTask&jndiName=concurrent/executorA&taskId=" + taskIdB2 + "&invokedBy=testRunTasksOnDifferentExecutor-9");
     }
 }

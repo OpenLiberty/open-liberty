@@ -18,6 +18,8 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.PersistentExecutor;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfSysProp;
@@ -29,12 +31,14 @@ import componenttest.topology.utils.FATServletClient;
 import web.LoadTestServlet;
 
 @RunWith(FATRunner.class)
-@SkipIfSysProp(DB_Informix) // persistent executor is not support on Informix
-public class LoadTest extends FATServletClient {
+@SkipIfSysProp(DB_Informix) // persistent executor is not supported on Informix
+public class LoadTestWithFailoverEnabled extends FATServletClient {
 
     private static final String APP_NAME = "schedtest";
 
     public static final String SERVER_NAME = "com.ibm.ws.concurrent.persistent.fat.loadtest";
+
+    private static ServerConfiguration originalConfig;
 
     @Server(SERVER_NAME)
     @TestServlet(servlet = LoadTestServlet.class, path = APP_NAME)
@@ -47,6 +51,13 @@ public class LoadTest extends FATServletClient {
         String installRoot = server.getInstallRoot();
         LibertyFileManager.deleteLibertyDirectoryAndContents(machine, installRoot + "/usr/shared/resources/data/scheddb");
 
+        originalConfig = server.getServerConfiguration();
+        ServerConfiguration config = originalConfig.clone();
+        PersistentExecutor myScheduler = config.getPersistentExecutors().getBy("jndiName", "concurrent/myScheduler");
+        myScheduler.setPollInterval("1m");
+        myScheduler.setExtraAttribute("missedTaskThreshold2", "40s"); // TODO rename
+        server.updateServerConfiguration(config);
+
     	ShrinkHelper.defaultDropinApp(server, APP_NAME, "web", "web.task");
         server.configureForAnyDatabase();
         server.startServer();
@@ -54,8 +65,12 @@ public class LoadTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        if (server.isStarted()) {
-            server.stopServer("CWWKC1501W"); // Ignore failing task warning message
+        try {
+            if (server.isStarted())
+                server.stopServer("CWWKC1501W"); // Ignore failing task warning message
+        } finally {
+            if (originalConfig != null)
+                server.updateServerConfiguration(originalConfig);
         }
     }
 }

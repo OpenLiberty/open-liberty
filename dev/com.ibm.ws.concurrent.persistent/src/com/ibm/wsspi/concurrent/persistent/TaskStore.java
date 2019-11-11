@@ -208,13 +208,12 @@ public interface TaskStore {
      * Find all tasks to execute on or before maxNextExecTime (up to a maximum of maxResults).
      * Only tasks which are not currently claimed are returned.
      *
-     * @param missedTaskThreshold number of seconds beyond which a task is considered missed and can be claimed by a different instance.
-     * @param maxNextExecTime     maximum next execution time (in milliseconds)
-     * @param maxResults          maximum number of results to return. Null means unlimited.
+     * @param maxNextExecTime maximum next execution time (in milliseconds)
+     * @param maxResults      maximum number of results to return. Null means unlimited.
      * @return List of (Id, MiscBinaryFlags, NextExecutionTime, TransactionTimeout, Version) pairs.
      * @throws Exception if an error occurs when attempting to access the persistent task store.
      */
-    List<Object[]> findUnclaimedTasks(long missedTaskThreshold, long maxNextExecTime, Integer maxResults) throws Exception;
+    List<Object[]> findUnclaimedTasks(long maxNextExecTime, Integer maxResults) throws Exception;
 
     /**
      * Find all tasks to execute on or before maxNextExecTime (up to a maximum of maxResults).

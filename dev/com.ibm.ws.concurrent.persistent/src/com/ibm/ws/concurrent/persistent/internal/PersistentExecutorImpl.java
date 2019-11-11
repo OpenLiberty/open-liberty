@@ -2658,7 +2658,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
             List<Object[]> results;
             tranMgr.begin();
             try {
-                results = taskStore.findUnclaimedTasks(config.missedTaskThreshold2, maxNextExecTime, config.pollSize);
+                results = taskStore.findUnclaimedTasks(maxNextExecTime, config.pollSize);
             } finally {
                 tranMgr.commit();
             }

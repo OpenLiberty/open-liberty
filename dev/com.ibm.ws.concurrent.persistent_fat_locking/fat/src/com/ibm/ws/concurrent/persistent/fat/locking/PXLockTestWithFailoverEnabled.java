@@ -32,6 +32,8 @@ import org.junit.rules.TestName;
 
 import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.PersistentExecutor;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.topology.impl.LibertyFileManager;
@@ -40,12 +42,14 @@ import componenttest.topology.impl.LibertyServer;
 /**
  * Lightweight stress test of persistent executor
  */
-public class PXLockTest {
+public class PXLockTestWithFailoverEnabled {
     private static final LibertyServer server = FATSuite.server;
 
     private static final Set<String> appNames = Collections.singleton("pxlocktest");
 
     private static final String APP_NAME = "pxlocktest";
+
+    private static ServerConfiguration originalConfig;
 
     @Rule
     public TestName testName = new TestName();
@@ -59,7 +63,7 @@ public class PXLockTest {
      */
     protected static StringBuilder runInServlet(String test) throws Exception {
         URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/pxlocktest?test=" + test);
-        Log.info(PXLockTest.class, "runInServlet", "URL is " + url);
+        Log.info(PXLockTestWithFailoverEnabled.class, "runInServlet", "URL is " + url);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         try {
             con.setDoInput(true);
@@ -76,26 +80,24 @@ public class PXLockTest {
             // Send output from servlet to console output
             for (String line = br.readLine(); line != null; line = br.readLine()) {
                 lines.append(line).append(sep);
-                Log.info(PXLockTest.class, "runInServlet", line);
+                Log.info(PXLockTestWithFailoverEnabled.class, "runInServlet", line);
             }
 
             // Look for success message, otherwise fail test
             if (lines.indexOf("COMPLETED SUCCESSFULLY") < 0) {
-                Log.info(PXLockTest.class, "runInServlet", "failed to find completed successfully message");
+                Log.info(PXLockTestWithFailoverEnabled.class, "runInServlet", "failed to find completed successfully message");
                 fail("Missing success message in output. " + lines);
             }
 
             return lines;
         } finally {
             con.disconnect();
-            Log.info(PXLockTest.class, "runInServlet", "disconnected from servlet");
+            Log.info(PXLockTestWithFailoverEnabled.class, "runInServlet", "disconnected from servlet");
         }
     }
 
     /**
      * Before running any tests, start the server
-     *
-     * @throws Exception
      */
     @BeforeClass
     public static void setUp() throws Exception {
@@ -103,6 +105,12 @@ public class PXLockTest {
         Machine machine = server.getMachine();
         String installRoot = server.getInstallRoot();
         LibertyFileManager.deleteLibertyDirectoryAndContents(machine, installRoot + "/usr/shared/resources/data/lockdb");
+
+        originalConfig = server.getServerConfiguration();
+        ServerConfiguration config = originalConfig.clone();
+        PersistentExecutor myPersistentExecutor = config.getPersistentExecutors().getBy("jndiName", "concurrent/myPersistentExecutor");
+        myPersistentExecutor.setExtraAttribute("missedTaskThreshold2", "10s"); // TODO rename
+        server.updateServerConfiguration(config);
 
         WebArchive app1 = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addPackages(true, "web");
@@ -120,64 +128,70 @@ public class PXLockTest {
      */
     @AfterClass
     public static void tearDown() throws Exception {
-        if (server != null && server.isStarted())
+        if (server != null)
             try {
-                runInServlet("verifyTasksRunMultipleTimes");
+                if (server.isStarted())
+                    try {
+                        runInServlet("verifyTasksRunMultipleTimes");
+                    } finally {
+                        // wait for tasks to stop running
+                        long waitForTaskCompletions = TimeUnit.SECONDS.toMillis(10);
+                        Thread.sleep(waitForTaskCompletions);
+                        server.stopServer();
+                    }
             } finally {
-                // wait for tasks to stop running
-                long waitForTaskCompletions = TimeUnit.SECONDS.toMillis(10);
-                Thread.sleep(waitForTaskCompletions);
-                server.stopServer();
+                if (originalConfig != null)
+                    server.updateServerConfiguration(originalConfig);
             }
     }
 
     @Test
-    public void testScheduleAtFixedRate() throws Exception {
+    public void testScheduleAtFixedRateFE() throws Exception {
         runInServlet("testScheduleAtFixedRate");
     }
 
     @Test
-    public void testScheduleAtFixedRateCreateProp() throws Exception {
+    public void testScheduleAtFixedRateCreatePropFE() throws Exception {
         runInServlet("testScheduleAtFixedRateCreateProp");
     }
 
     @Test
-    public void testScheduleAtFixedRateSuspend() throws Exception {
+    public void testScheduleAtFixedRateSuspendFE() throws Exception {
         runInServlet("testScheduleAtFixedRateSuspend");
     }
 
     @Test
-    public void testScheduleAtFixedRateSuspendGetStatus() throws Exception {
+    public void testScheduleAtFixedRateSuspendGetStatusFE() throws Exception {
         runInServlet("testScheduleAtFixedRateSuspendGetStatus");
     }
 
     @Test
-    public void testScheduleCallableWithTrigger() throws Exception {
+    public void testScheduleCallableWithTriggerFE() throws Exception {
         runInServlet("testScheduleCallableWithTrigger");
     }
 
     @Test
-    public void testScheduleCallableWithTriggerGetStatus() throws Exception {
+    public void testScheduleCallableWithTriggerGetStatusFE() throws Exception {
         runInServlet("testScheduleCallableWithTriggerGetStatus");
     }
 
     @Test
-    public void testScheduleCallableWithTriggerSuspendGetStatus() throws Exception {
+    public void testScheduleCallableWithTriggerSuspendGetStatusFE() throws Exception {
         runInServlet("testScheduleCallableWithTriggerSuspendGetStatus");
     }
 
     @Test
-    public void testScheduleCallableWithTriggerSuspendGetStatusCreateProp() throws Exception {
+    public void testScheduleCallableWithTriggerSuspendGetStatusCreatePropFE() throws Exception {
         runInServlet("testScheduleCallableWithTriggerSuspendGetStatusCreateProp");
     }
 
     @Test
-    public void testScheduleRunnableWithTrigger() throws Exception {
+    public void testScheduleRunnableWithTriggerFE() throws Exception {
         runInServlet("testScheduleRunnableWithTrigger");
     }
 
     @Test
-    public void testScheduleRunnableWithTriggerCreateProp() throws Exception {
+    public void testScheduleRunnableWithTriggerCreatePropFE() throws Exception {
         runInServlet("testScheduleRunnableWithTriggerCreateProp");
     }
 }
