@@ -13,6 +13,7 @@ package com.ibm.ws.concurrent.persistent.fat;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
@@ -110,5 +111,20 @@ public class PersistentExecutorWithFailoverEnabledTest extends FATServletClient 
                         server.updateServerConfiguration(originalConfig);
                 }
         }
+    }
+
+    @Test
+    public void testCancelRunningTaskFE() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
+    public void testRemoveRunningTaskAutoPurgeFE() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
+    public void testRemoveRunningTaskFE() throws Exception {
+        runTest(server, APP_NAME, testName);
     }
 }
