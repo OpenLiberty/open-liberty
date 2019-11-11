@@ -142,7 +142,6 @@ public class FrameHeadersClient extends com.ibm.ws.http.channel.h2internal.frame
             for (H2HeaderField headerField : getHeaderFields())
                 //Using lambda to simplify check of header values (as we support regex)
                 if (!streamSupplier.get().anyMatch(p -> (p.getName().equals(headerField.getName()) && p.getValue().matches(headerField.getValue())))) {
-                    //if (!receivedHeaderFields.contains(headerField)) {
                     System.out.println("headerField mismatch. headerField: " + headerField);
                     return false;
                 }
