@@ -193,7 +193,7 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
 		} 
     	catch (SocialLoginException e) {
     		//nls 
-			verifyException(e,"com.ibm.ws.security.social.error.SocialLoginException: The response was not a json object. Response was: vlah" );
+			verifyException(e,"OPENSHIFT_USER_API_BAD_RESPONSE" );
 			
 		}
     	catch( Throwable t) {
@@ -215,7 +215,7 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
 		} 
     	catch (SocialLoginException e) {
     		//nls 
-			verifyException(e,"OPENSHIFT_USER_API_BAD_RESPONSE" );
+			verifyException(e,"OPENSHIFT_USER_API_RESPONSE_MISCONFIGURED_KEY" );
 			
 		}
     	catch( Throwable t) {

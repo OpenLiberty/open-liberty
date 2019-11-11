@@ -111,22 +111,18 @@ public class OpenShiftUserApiUtils {
 
     String modifyExistingResponseToJSON(String response) throws JoseException, SocialLoginException{
     	
-    	if(response==null) {
-            throw new SocialLoginException("OPENSHIFT_USER_API_BAD_RESPONSE", null, null);
-    		//throw new SocialLoginException("The response received from the user response api is null",null,null);
-    	}
-    	if(response.isEmpty()) {
-    		throw new SocialLoginException("OPENSHIFT_USER_API_BAD_RESPONSE",null,null);
-    	}
+    	if(response==null || response.isEmpty()) {
+            throw new SocialLoginException("OPENSHIFT_USER_API_BAD_RESPONSE", null, null);    	}
+    	
     	JsonObject jsonResponse;
     	try {
     		jsonResponse = Json.createReader(new StringReader(response)).readObject();
     	}
     	catch(JsonParsingException e) {
-    		throw new SocialLoginException("OPENSHIFT_USER_API_BAD_RESPONSE" + response,e,null);
+    		throw new SocialLoginException("OPENSHIFT_USER_API_BAD_RESPONSE",null, new Object[] {response,e});
     	}
     	
-    	
+    	//The response from the user API is not a valid JSON object. The full response is [{0}]. {1}" where insert {0} would be response and insert {1} would be e
     	JsonObject statusInnerMap,userInnerMap;
     	JsonObjectBuilder modifiedResponse = Json.createObjectBuilder();
     	if(jsonResponse.containsKey("status")) {
@@ -142,20 +138,20 @@ public class OpenShiftUserApiUtils {
     		statusInnerMap = jsonResponse.getJsonObject("status");				
     	}
     	else {
-    		throw new SocialLoginException("OPENSHIFT_USER_API_RESPONSE_MISSING_KEY",null, new Object[] {"status"});
+    		throw new SocialLoginException("OPENSHIFT_USER_API_RESPONSE_MISSING_KEY",null, new Object[] {"status", jsonResponse});
     	}
     	if(statusInnerMap.containsKey("user")) {
     		userInnerMap = statusInnerMap.getJsonObject("user");
     		modifiedResponse.add("username", userInnerMap.getString(config.getUserNameAttribute()));
     	}
     	else {
-        	throw new SocialLoginException("OPENSHIFT_USER_API_RESPONSE_MISSING_KEY",null,new Object[] {"user"}); 
+        	throw new SocialLoginException("OPENSHIFT_USER_API_RESPONSE_MISSING_KEY",null,new Object[] {"user", jsonResponse}); 
     	}
     
     	if(userInnerMap.containsKey("groups")) {
     		JsonValue groupsValue = userInnerMap.get("groups");
     		if(groupsValue.getValueType() != ValueType.ARRAY) {
-    			throw new SocialLoginException("CWWKS5374E",null,null); 
+    			throw new SocialLoginException("OPENSHIFT_USER_API_RESPONSE_MISCONFIGURED_KEY",null,null); 
     		}
     		 modifiedResponse.add("groups", userInnerMap.getJsonArray("groups")); 	
     	}
