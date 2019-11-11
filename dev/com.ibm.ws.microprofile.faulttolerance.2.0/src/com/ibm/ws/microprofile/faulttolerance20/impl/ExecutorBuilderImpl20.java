@@ -14,12 +14,12 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 
-import com.ibm.ws.microprofile.faulttolerance.impl.ExecutorBuilderImpl;
+import com.ibm.ws.microprofile.faulttolerance.impl.AbstractExecutorBuilderImpl;
 import com.ibm.ws.microprofile.faulttolerance.spi.Executor;
 import com.ibm.ws.threading.PolicyExecutorProvider;
 import com.ibm.wsspi.threadcontext.WSContextService;
 
-public class ExecutorBuilderImpl20<R> extends ExecutorBuilderImpl<R> {
+public class ExecutorBuilderImpl20<R> extends AbstractExecutorBuilderImpl<R> {
 
     public ExecutorBuilderImpl20(WSContextService contextService, PolicyExecutorProvider policyExecutorProvider, ScheduledExecutorService scheduledExecutorService) {
         super(contextService, policyExecutorProvider, scheduledExecutorService);
