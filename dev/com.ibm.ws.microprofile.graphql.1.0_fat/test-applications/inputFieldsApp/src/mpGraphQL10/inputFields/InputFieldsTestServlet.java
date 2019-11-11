@@ -79,20 +79,20 @@ public class InputFieldsTestServlet extends FATServlet {
         
         String snippet = getSchemaInputTypeSnippet();
 
-        // check input fields from @InputField on Java fields
-        assertTrue("Schema does not contain field name specified via @InputField on Java field", 
+        // check input fields from @SchemaName on Java fields
+        assertTrue("Schema does not contain field name specified via @SchemaName on Java field", 
                    snippet.contains("qty:"));
-        assertTrue("Schema does not contain field description specified via @InputField on Java field", 
+        assertTrue("Schema does not contain field description specified via @SchemaName on Java field", 
                    snippet.contains("Number of units to ship"));
-        assertFalse("Schema contains Java field name that should have been overwritten by @InputField annotation",
+        assertFalse("Schema contains Java field name that should have been overwritten by @SchemaName annotation",
                     snippet.contains("quantity:"));
 
-        // check input fields from @InputField on Java setters -- currently not allowed to put @InputField on methods
-//        assertTrue("Schema does not contain field name specified via @InputField on Java setter", 
+        // check input fields from @SchemaName on Java setters -- currently not allowed to put @SchemaName on methods
+//        assertTrue("Schema does not contain field name specified via @SchemaName on Java setter", 
 //                   snippet.contains("shippingWeight "));
-//        assertTrue("Schema does not contain field description specified via @InputField on Java setter", 
+//        assertTrue("Schema does not contain field description specified via @SchemaName on Java setter", 
 //                   snippet.contains("Total tonnage to be shipped"));
-//        assertFalse("Schema contains Java property name that should have been overwritten by @InputField annotation",
+//        assertFalse("Schema contains Java property name that should have been overwritten by @SchemaName annotation",
 //                    snippet.contains("weight "));
     }
 
@@ -102,7 +102,7 @@ public class InputFieldsTestServlet extends FATServlet {
         // check input fields from @JsonbProperty on Java fields
         assertTrue("Schema does not contain field name specified via @JsonbProperty on Java field", 
                    snippet.contains("qty2:"));
-        assertFalse("Schema contains Java field name that should have been overwritten by @InputField annotation",
+        assertFalse("Schema contains Java field name that should have been overwritten by @SchemaName annotation",
                     snippet.contains("quantity2"));
     }
 
@@ -112,7 +112,7 @@ public class InputFieldsTestServlet extends FATServlet {
         // check input fields from @JsonbProperty on Java setters
         assertTrue("Schema does not contain field name specified via @JsonbProperty on Java setter", 
                    snippet.contains("shippingWeight2:"));
-        assertFalse("Schema contains Java property name that should have been overwritten by @InputField annotation",
+        assertFalse("Schema contains Java property name that should have been overwritten by @SchemaName annotation",
                     snippet.contains("weight2:"));
     }
 
