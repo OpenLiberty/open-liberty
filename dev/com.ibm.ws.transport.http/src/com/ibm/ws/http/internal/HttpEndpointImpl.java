@@ -148,6 +148,8 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
     private final LinkedList<Runnable> actionQueue = new LinkedList<Runnable>();
     private Future<?> actionFuture = null;
 
+    Object cid = null;
+
     private final Runnable actionsRunner = new Runnable() {
         @Override
         @Trivial
@@ -216,7 +218,7 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
 
     @Activate
     protected void activate(ComponentContext ctx, Map<String, Object> config) {
-        Object cid = config.get(ComponentConstants.COMPONENT_ID);
+        cid = config.get(ComponentConstants.COMPONENT_ID);
         name = (String) config.get("id");
         pid = (String) config.get(Constants.SERVICE_PID);
 
@@ -228,6 +230,7 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(this, tc, "activate HttpEndpoint " + this);
         }
+
         HttpEndpointList.registerEndpoint(this);
         endpointStarted = true;
 
@@ -335,7 +338,13 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         // Store the configuration
         endpointConfig = config;
 
-        processHttpChainWork(endpointEnabled, false);
+        if ((CHFWBundle.isServerCompletelyStarted() != true) && (endpointEnabled == true)) {
+            // SplitStartUp. Enabling during startup need this to stay on the same thread,
+            // or else the port may listen after the server says it is ready
+            processHttpChainWork(endpointEnabled, true);
+        } else {
+            processHttpChainWork(endpointEnabled, false);
+        }
     }
 
     /**

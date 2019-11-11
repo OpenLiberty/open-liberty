@@ -65,7 +65,7 @@ public class NBAcceptChannelSelector extends ChannelSelector implements FFDCSelf
      * @throws IOException
      */
     public NBAcceptChannelSelector(boolean argCheckStartup) throws IOException {
-        super(false);
+        super(false, argCheckStartup);
         this.checkStartup = argCheckStartup;
         this.selectorTimeout = TCPFactoryConfiguration.getChannelSelectorIdleTimeout();
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
@@ -87,32 +87,19 @@ public class NBAcceptChannelSelector extends ChannelSelector implements FFDCSelf
         while (!queue.isEmpty()) {
             work = (EndPointActionInfo) queue.remove();
 
-            // If we are in check for startup mode, we need to see if the server has completely started yet.
-//            if (this.checkStartup) {
-//                // need to get the Channel Framework thread which is starting channels on it's way, so notify now
-//                synchronized (work.syncObject) {
-//                    work.syncObject.notify();
-//                }
-//
-//                // then call into the CHFWBundle and wait till it says the server is all the way started
-//                // before continuing with the normal processing
-//                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-//                    Tr.debug(this, tc, "updateSelector will wait for server to completely start.  this hashcode is: " + this.hashCode());
-//                }
-//
-//                CHFWBundle.waitServerCompletelyStarted();
-//
-//                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-//                    Tr.debug(this, tc, "updateSelector wait completed");
-//                }
-//
-//                // only do this once for acceptor thread startup
-//                this.checkStartup = false;
-//            }
-
             if (work.action == NBAccept.REGISTER_ENDPOINT) {
                 try {
                     ServerSocket serverSocket = work.endPoint.getServerSocket();
+
+                    // because opening a port during startup is now a two step process, the serverSocket
+                    // could have been destroyed before we get here.  Therefore we need to check if it is still valid
+                    if (serverSocket == null) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "ServerSocket for this port has already been destroyed, return");
+                        }
+                        return;
+                    }
+
                     // Configure all inbound channels to be non-blocking
                     serverSocket.getChannel().configureBlocking(false);
 
@@ -136,6 +123,16 @@ public class NBAcceptChannelSelector extends ChannelSelector implements FFDCSelf
             } else if (work.action == NBAccept.REMOVE_ENDPOINT) {
                 try {
                     ServerSocket serverSocket = work.endPoint.getServerSocket();
+
+                    // because opening a port during startup is now a two step process, the serverSocket
+                    // could have been destroyed before we get here.  Therefore we need to check if it is still valid.
+                    if (serverSocket == null) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "ServerSocket for this port has already been destroyed, return");
+                        }
+                        return;
+                    }
+
                     if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                         Tr.event(this, tc, "Removing: " + serverSocket);
                     }
@@ -161,6 +158,7 @@ public class NBAcceptChannelSelector extends ChannelSelector implements FFDCSelf
                 }
             }
         } // process all items on the work queue
+
     }
 
     /**

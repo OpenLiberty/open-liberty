@@ -24,8 +24,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.websphere.channelfw.FlowType;
 import com.ibm.ws.channelfw.internal.ChannelFrameworkImpl;
 import com.ibm.ws.channelfw.internal.RuntimeState;
@@ -36,6 +34,8 @@ import com.ibm.ws.tcpchannel.internal.TCPChannelFactory;
 import com.ibm.wsspi.channelfw.exception.ChainException;
 import com.ibm.wsspi.channelfw.exception.ChannelException;
 import com.ibm.wsspi.channelfw.exception.InvalidRuntimeStateException;
+
+import test.common.SharedOutputManager;
 
 /**
  * The purpose of this class is to test the channel configuration methods

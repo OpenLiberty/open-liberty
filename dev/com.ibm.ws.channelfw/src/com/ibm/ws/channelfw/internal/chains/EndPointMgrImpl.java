@@ -32,6 +32,7 @@ import com.ibm.websphere.channelfw.EndPointMgr;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.channelfw.internal.ChannelFrameworkConstants;
+import com.ibm.wsspi.channelfw.PortsListening;
 
 /**
  * Temporary version of the WAS runtimefw EndPointMgr.
@@ -95,7 +96,7 @@ public class EndPointMgrImpl implements EndPointMgr {
      * Construct the endpoint MBean object name.
      *
      * @param name endpoint name
-     *                 WebSphere:feature=channelfw,type=endpoint,name=name
+     *            WebSphere:feature=channelfw,type=endpoint,name=name
      * @return the value used in jmx.objectname property
      */
     private String getMBeanObjectName(String name) {
@@ -111,7 +112,7 @@ public class EndPointMgrImpl implements EndPointMgr {
     }
 
     /**
-     * @param name     endpoint name of the mbean to be registered
+     * @param name endpoint name of the mbean to be registered
      * @param endpoint instance of an EndPointInfo containing the endpoint info
      */
     private ServiceRegistration<DynamicMBean> registerMBeanAsService(String name, EndPointInfoImpl endpoint) {
@@ -255,6 +256,14 @@ public class EndPointMgrImpl implements EndPointMgr {
         synchronized (this.endpoints) {
             return new ArrayList<EndPointInfo>(endpoints.values());
         }
+    }
+
+    @Override
+    public void signalPortsListening() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "signalPortsListening - call service implementers who are waiting for ports to start");
+        }
+        this.bundleContext.registerService(PortsListening.class, new PortsListening() {}, new Hashtable<String, Object>());
     }
 
 }

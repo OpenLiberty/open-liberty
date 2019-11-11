@@ -58,6 +58,7 @@ instrument.classesExcludes: com/ibm/ws/ejbcontainer/mdb/resources/*.class
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.tx.jta;version=latest,\
 	com.ibm.ws.tx.embeddable;version=latest,\
+	com.ibm.ws.channelfw;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
 
 -testpath: \
