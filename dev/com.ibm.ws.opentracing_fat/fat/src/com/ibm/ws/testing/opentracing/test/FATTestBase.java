@@ -71,9 +71,9 @@ public class FATTestBase {
      */
     protected static void stopHelloWorldServer(LibertyServer server) throws Exception {
         try {
-            Assert.assertNotNull("Expecting CWMOT0010W message", server.waitForStringInLogUsingMark("CWMOT0010W", 0));
+            Assert.assertNotNull("Expecting CWMOT0008E message", server.waitForStringInLogUsingMark("CWMOT0008E", 0));
         } finally {
-            server.stopServer("CWMOT0010W");
+            server.stopServer("CWMOT0008E");
         }
     }
 }

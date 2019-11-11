@@ -46,7 +46,7 @@ public class OpentracingUserFeatureAccessService {
         factoryFirstUse = false;
 
         if (opentracingTracerFactory == null) {
-            Tr.warning(tc, "OPENTRACING_TRACERFACTORY_NOT_PROVIDED");
+            Tr.error(tc, "OPENTRACING_NO_TRACERFACTORY");
         }
     }
 
@@ -88,7 +88,7 @@ public class OpentracingUserFeatureAccessService {
             factoryFirstUse = false;
 
             if (opentracingTracerFactory == null) {
-                Tr.warning(tc, "OPENTRACING_TRACERFACTORY_NOT_PROVIDED");
+                Tr.error(tc, "OPENTRACING_NO_TRACERFACTORY");
             }
         }
 
