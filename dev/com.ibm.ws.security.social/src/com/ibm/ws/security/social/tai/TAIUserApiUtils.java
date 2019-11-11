@@ -26,9 +26,9 @@ import com.ibm.ws.security.social.UserApiConfig;
 import com.ibm.ws.security.social.error.SocialLoginException;
 import com.ibm.ws.security.social.internal.LinkedinLoginConfigImpl;
 import com.ibm.ws.security.social.internal.Oauth2LoginConfigImpl;
-import com.ibm.ws.security.social.internal.utils.ClientConstants;
 import com.ibm.ws.security.social.internal.utils.OAuthClientUtil;
 import com.ibm.ws.security.social.internal.utils.OpenShiftUserApiUtils;
+import com.ibm.ws.security.social.internal.utils.SocialUtil;
 
 public class TAIUserApiUtils {
 
@@ -44,7 +44,7 @@ public class TAIUserApiUtils {
         UserApiConfig userApiConfig = userinfoCfg[0];
         String userinfoApi = userApiConfig.getApi();
         try {
-            if (isOpenShiftConfig(clientConfig)) {
+            if (SocialUtil.isOpenShiftConfig(clientConfig)) {
                 return getUserApiResponseFromOpenShift((Oauth2LoginConfigImpl) clientConfig, accessToken, sslSocketFactory);
             }
             String userApiResp = clientUtil.getUserApiResponse(userinfoApi,
@@ -70,15 +70,6 @@ public class TAIUserApiUtils {
         }
     }
 
-    private boolean isOpenShiftConfig(SocialLoginConfig clientConfig) {
-        boolean isOpenShiftConfig = false;
-        if (clientConfig instanceof Oauth2LoginConfigImpl) {
-            Oauth2LoginConfigImpl config = (Oauth2LoginConfigImpl) clientConfig;
-            String userApiType = config.getUserApiType();
-            return (userApiType != null && ClientConstants.USER_API_TYPE_KUBE.equals(userApiType));
-        }
-        return isOpenShiftConfig;
-    }
 
     private String getUserApiResponseFromOpenShift(Oauth2LoginConfigImpl config, @Sensitive String accessToken, SSLSocketFactory sslSocketFactory) throws IOException, SocialLoginException, JoseException {
         OpenShiftUserApiUtils openShiftUtils = new OpenShiftUserApiUtils(config);

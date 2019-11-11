@@ -38,6 +38,7 @@ import com.ibm.ws.security.social.internal.Oauth2LoginConfigImpl;
 import com.ibm.ws.security.social.internal.utils.CacheToken;
 import com.ibm.ws.security.social.internal.utils.ClientConstants;
 import com.ibm.ws.security.social.internal.utils.SocialHashUtils;
+import com.ibm.ws.security.social.internal.utils.SocialUtil;
 import com.ibm.wsspi.security.tai.TAIResult;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
 
@@ -185,15 +186,14 @@ public class TAISubjectUtils {
         String realm = attributeToSubject.getMappedRealm();
         if (realm == null) {
             realm = getDefaultRealm(config);
-            //realm = getDefaultRealmFromAuthorizationEndpoint(config);
         }
         return realm;
     }
 
     private String getDefaultRealm(SocialLoginConfig config) throws SettingCustomPropertiesException {
         String realm = null;
-        if (isOpenShiftConfig(config) && useAccessTokenFromRequest(config)) {
-            String ep = getUserApiEndpoint(config);
+        if (SocialUtil.isOpenShiftConfig(config) && SocialUtil.useAccessTokenFromRequest(config)) {
+            String ep = getRealmFromUserApiEndpoint(config);
             if (ep == null) {
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "User api endpoint [" + config.getUserApi() + "] is either empty or too short to be a valid URL");
@@ -211,7 +211,7 @@ public class TAISubjectUtils {
         
     }
 
-    private String getUserApiEndpoint(SocialLoginConfig config) {
+    private String getRealmFromUserApiEndpoint(SocialLoginConfig config) {
         
         String defaultKubeService = "https://kubernetes.default.svc";  
         String ep = config.getUserApi();
@@ -243,33 +243,10 @@ public class TAISubjectUtils {
         String realm = config.getRealmName();
         if (realm == null) {
             realm = getDefaultRealm(config);
-            //realm = getDefaultRealmFromAuthorizationEndpoint(config);
         }
         return realm;
     }
     
-    private boolean isOpenShiftConfig(SocialLoginConfig clientConfig) {
-        boolean isOpenShiftConfig = false;
-        if (clientConfig instanceof Oauth2LoginConfigImpl) {
-            Oauth2LoginConfigImpl config = (Oauth2LoginConfigImpl) clientConfig;
-            String userApiType = config.getUserApiType();
-            return (userApiType != null && ClientConstants.USER_API_TYPE_KUBE.equals(userApiType));
-        }
-        return isOpenShiftConfig;
-    }
-    
-    private boolean useAccessTokenFromRequest(SocialLoginConfig clientConfig) {
-        
-        if (clientConfig instanceof Oauth2LoginConfigImpl) {
-            Oauth2LoginConfigImpl config = (Oauth2LoginConfigImpl) clientConfig;
-            if (config.isAccessTokenRequired() || config.isAccessTokenSupported()) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-        return false;
-    }
 
     String getDefaultRealmFromAuthorizationEndpoint(SocialLoginConfig config) throws SettingCustomPropertiesException {
         String authzEndpoint = getAuthorizationEndpoint(config);
