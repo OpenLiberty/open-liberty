@@ -67,6 +67,7 @@ public class JSONFieldsTest {
         if (serverInUse != null && serverInUse.isStarted()) {
             serverInUse.stopServer("com.ibm.ws.logging.fat.ffdc.servlet.FFDCServlet.doGet", "ArithmeticException",
                                    "CWWKG0081E", "CWWKG0083W");
+
         }
     }
 
@@ -76,6 +77,7 @@ public class JSONFieldsTest {
     @Test
     public void testMessageFieldNamesEnv() throws Exception {
         setUp(server_env);
+
         List<String> lines = server_env.findStringsInFileInLibertyServerRoot("log3", MESSAGE_LOG);
         assertTrue("The message field name was not formatted in the new configuration in messages.log.", lines.size() > 0);
     }
