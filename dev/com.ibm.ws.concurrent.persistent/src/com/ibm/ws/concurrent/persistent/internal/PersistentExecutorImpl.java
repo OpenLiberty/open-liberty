@@ -2667,12 +2667,13 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
                 long taskId = (Long) result[0];
                 long nextExecTime = (Long) result[2];
                 int version = (Integer) result[4];
-                long claimUntilTime = nextExecTime + config.missedTaskThreshold2 * 1000;
+                now = System.currentTimeMillis();
+                long claimUntilTime = (now > nextExecTime ? now : nextExecTime) + config.missedTaskThreshold2 * 1000;
 
                 boolean claimed;
                 tranMgr.begin();
                 try {
-                    claimed = taskStore.setPartitionIfNotLocked(taskId, version, claimUntilTime);
+                    claimed = taskStore.claimIfNotLocked(taskId, version, claimUntilTime);
                 } finally {
                     tranMgr.commit();
                 }
@@ -2896,7 +2897,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
             boolean transferred;
             tranMgr.begin();
             try {
-                transferred = taskStore.setPartitionIfNotLocked(taskId, currentVersion, partition);
+                transferred = taskStore.claimIfNotLocked(taskId, currentVersion, partition);
             } finally {
                 tranMgr.commit();
             }
