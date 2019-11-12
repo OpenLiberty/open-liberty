@@ -63,7 +63,7 @@ testsrc: test/src
   com.ibm.ws.context;version=latest, \
   com.ibm.websphere.org.reactivestreams.reactive-streams.1.0;version=latest, \
   com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
-  com.ibm.ws.io.smallrye.reactive.streams.operators.1.0;version=latest, \
+  com.ibm.ws.io.smallrye.reactive.streams-operators;version=latest, \
   com.ibm.ws.io.reactivex.rxjava.2.2;version=latest, \
   com.ibm.websphere.security;version=latest, \
   com.ibm.websphere.javaee.annotation.1.2;version=latest, \
