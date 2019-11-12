@@ -22,12 +22,14 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         final String methodName = "setup";
         Log.entering(c, methodName);
         setupEnv();
+        replaceWlpProperties("19.0.0.11");
         Log.exiting(c, methodName);
     }
     
     @AfterClass
-    public static void cleanUp() {
+    public static void cleanUp() throws Exception {
         // TODO
+        resetOriginalWlpProps();
     }
 
     /**
@@ -73,13 +75,13 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 
     @Test
     public void testInstallAutoFeature() throws Exception {
-        final String METHOD_NAME = "testAutoFeatureInstall";
+        final String METHOD_NAME = "testInstallAutoFeature";
         Log.entering(c, METHOD_NAME);
 
         String[] param1s = { "installFeature", "jsf-2.2", "cdi-1.2"};
-        String [] fileListA = {"lib/features/com.ibm.websphere.appserver.jsf-2.2.mf", "com.ibm.websphere.appserver.cdi1.2-jsf2.2.mf"};
+        String [] fileListA = {"lib/features/com.ibm.websphere.appserver.jsf-2.2.mf", "lib/features/com.ibm.websphere.appserver.cdi1.2-jsf2.2.mf"};
         String [] fileListB = {"lib/features/com.ibm.websphere.appserver.cdi-1.2.mf"};
-        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.jsp-2.3", fileListA);
+        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.jsf-2.2", fileListA);
         deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.cdi-1.2", fileListB);
 
 

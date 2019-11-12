@@ -46,7 +46,7 @@ public abstract class FeatureUtilityToolTest {
         installRoot = server.getInstallRoot();
         Log.info(c, methodName, "install root: " + installRoot);
         
-//        setOriginalWlpVersionVariables();
+        setOriginalWlpVersionVariables();
         cleanDirectories = new ArrayList<String>();
         cleanFiles = new ArrayList<String>();
 
@@ -81,10 +81,13 @@ public abstract class FeatureUtilityToolTest {
             Log.info(c, "getWlpVersion", "com.ibm.websphere.productEdition : " + originalWlpEdition);
             Log.info(c, "getWlpVersion", "com.ibm.websphere.productInstallType : " + originalWlpInstallType);
         } finally {
-            InstallUtils.close(fIn);
+                try {
+                    fIn.close();
+                } catch (IOException e) {
+                    // ignore we are trying to close.
+                }
+            }
         }
-        
-    }
 
     protected static void replaceWlpProperties(String version) throws Exception {
         OutputStream os = null;
@@ -96,8 +99,15 @@ public abstract class FeatureUtilityToolTest {
             wlpVersionProps.store(os, null);
             os.close();
         } finally {
-            InstallUtils.close(os);
+            try {
+                os.close();
+            } catch (IOException e) {
+                // ignore we are trying to close.
+            }
         }
+    }
+    protected static void resetOriginalWlpProps() throws Exception {
+        replaceWlpProperties(originalWlpVersion);
     }
 
     protected ProgramOutput runFeatureUtility(String testcase, String[] params) throws Exception {
