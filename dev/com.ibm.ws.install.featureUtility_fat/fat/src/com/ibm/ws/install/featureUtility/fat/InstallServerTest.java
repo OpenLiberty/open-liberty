@@ -21,7 +21,7 @@ public class InstallServerTest extends FeatureUtilityToolTest {
         Log.entering(c, methodName);
         setupEnv();
         server.copyFileToLibertyInstallRoot("usr/temp", "../../publish/tmp/serverX.zip");
-        replaceWlpProperties("19.0.0.11");
+        replaceWlpProperties(getPreviousWlpVersion());
         Log.exiting(c, methodName);
     }
 

@@ -187,5 +187,29 @@ public abstract class FeatureUtilityToolTest {
         Log.info(c, methodName, "Finished deleting files associated with " + featureName);
     }
 
+    /**
+     *
+     * @return previous wlp version. ex: returns 19.0.0.11 if the current version is 19.0.0.12
+     */
+    protected static String getPreviousWlpVersion(){
+        String version = originalWlpVersion;
+        String [] split = version.split("\\.");
+        String year = split[0];
+        String month = split[3];
+
+        String newYear, newMonth;
+        if(month.equals("01")){
+            // subtract year and go into december
+            newMonth = "12";
+            newYear = String.valueOf(Integer.parseInt(year) - 1);
+        } else {
+            // go back 1 month
+            newMonth = String.valueOf(Integer.parseInt(month) - 1);
+            newYear = year;
+        }
+        return String.format("%s.%s.%s.%s", newYear, split[1], split[2], newMonth);
+
+    }
+
 
 }

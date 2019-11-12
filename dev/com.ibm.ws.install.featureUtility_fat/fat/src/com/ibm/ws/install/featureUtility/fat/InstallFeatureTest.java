@@ -22,7 +22,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         final String methodName = "setup";
         Log.entering(c, methodName);
         setupEnv();
-        replaceWlpProperties("19.0.0.11");
+        replaceWlpProperties(getPreviousWlpVersion());
         Log.exiting(c, methodName);
     }
     
@@ -56,23 +56,9 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
     }
 
     /**
-     * Test the installation of a closed liberty feature (adminCenter-1.0) in Open Liberty
-     * using Feature Utility.
+     * Test the installation of features cdi-1.2 and jsf-2.2 together, which should also install the autofeature cdi1.2-jsf2.2.
      * @throws Exception
      */
-    @Test
-    public void testClosedLibertyFeature() throws Exception {
-        final String METHOD_NAME = "testClosedLibertyFeature";
-        Log.entering(c, METHOD_NAME);
-
-        String[] param1s = { "installFeature", "adminCenter-1.0"};
-        ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
-        assertEquals("Exit code should be 21",21,  po.getReturnCode());
-        String output = po.getStdout();
-        assertTrue("Should contain CWWKF1299E", output.indexOf("CWWKF1299E") >= 0);
-        Log.exiting(c, METHOD_NAME);
-    }
-
     @Test
     public void testInstallAutoFeature() throws Exception {
         final String METHOD_NAME = "testInstallAutoFeature";
@@ -97,6 +83,73 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 
         Log.exiting(c, METHOD_NAME);
     }
+
+
+    /**
+     * Test the installation of a closed liberty feature (adminCenter-1.0) in Open Liberty
+     * using Feature Utility.
+     * @throws Exception
+     */
+    @Test
+    public void testClosedLibertyFeature() throws Exception {
+        final String METHOD_NAME = "testClosedLibertyFeature";
+        Log.entering(c, METHOD_NAME);
+
+        String[] param1s = { "installFeature", "adminCenter-1.0" };
+        ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
+        assertEquals("Exit code should be 21", 21, po.getReturnCode());
+        String output = po.getStdout();
+        assertTrue("Should contain CWWKF1299E", output.indexOf("CWWKF1299E") >= 0);
+        Log.exiting(c, METHOD_NAME);
+    }
+
+
+    /**
+     * Test the installation of a made up feature.
+     * @throws Exception
+     */
+    @Test
+    public void testInvalidFeature() throws Exception {
+        final String METHOD_NAME = "testInvalidFeature";
+        Log.entering(c, METHOD_NAME);
+
+        String[] param1s = { "installFeature", "veryClearlyMadeUpFeatureThatNoOneWillEverThinkToCreateThemselvesAbCxYz-1.0"};
+        ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
+        assertEquals("Exit code should be 21",21,  po.getReturnCode());
+        String output = po.getStdout();
+        assertTrue("Should contain CWWKF1299E", output.indexOf("CWWKF1299E") >= 0);
+        Log.exiting(c, METHOD_NAME);
+    }
+
+    /**
+     * Try to install a feature (mpHealth-2.0) twice. Expected to fail.
+     */
+    @Test
+    public void testAlreadyInstalledFeature() throws Exception {
+        final String METHOD_NAME = "testAlreadyInstalledFeature";
+        Log.entering(c, METHOD_NAME);
+
+        String[] param1s = { "installFeature", "mpHealth-2.0"};
+        String [] fileLists = {"lib/features/com.ibm.websphere.appserver.mpHealth-2.0.mf"};
+        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.mpHealth-2.0", fileLists);
+
+
+        ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
+        assertEquals("Exit code should be 0",0, po.getReturnCode());
+        String output = po.getStdout();
+        assertTrue("Should contain mpHealth-2.0", output.indexOf("mpHealth-2.0") >= 0);
+
+        po = runFeatureUtility(METHOD_NAME, param1s);
+        assertEquals("Exit code should be 21 indicating already  feature",21, po.getReturnCode());
+        output = po.getStdout();
+        assertTrue("Should contain CWWKF1250I", output.indexOf("CWWKF1250I") >= 0);
+
+
+        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.mpHealth-2.0", fileLists);
+        Log.exiting(c, METHOD_NAME);
+
+    }
+
 
 
 }
