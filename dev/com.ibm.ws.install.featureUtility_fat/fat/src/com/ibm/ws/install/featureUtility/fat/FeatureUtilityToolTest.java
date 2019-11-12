@@ -1,7 +1,9 @@
-package com.ibm.ws.install.featureUtility_fat;
+package com.ibm.ws.install.featureUtility.fat;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -9,13 +11,19 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipOutputStream;
+
+import javax.xml.transform.Templates;
 
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.RemoteFile;
+import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.install.internal.InstallUtils;
 
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
+import test.utils.TestUtils;
 
 public abstract class FeatureUtilityToolTest {
 
@@ -36,7 +44,7 @@ public abstract class FeatureUtilityToolTest {
         final String methodName = "setup";
         server = LibertyServerFactory.getLibertyServer("com.ibm.ws.install.featureUtility_fat");
         installRoot = server.getInstallRoot();
-        info(c, methodName, "install root: " + installRoot);
+        Log.info(c, methodName, "install root: " + installRoot);
         
 //        setOriginalWlpVersionVariables();
         cleanDirectories = new ArrayList<String>();
@@ -67,28 +75,24 @@ public abstract class FeatureUtilityToolTest {
             originalWlpVersion = wlpVersionProps.getProperty("com.ibm.websphere.productVersion");
             originalWlpEdition = wlpVersionProps.getProperty("com.ibm.websphere.productEdition");
             originalWlpInstallType = wlpVersionProps.getProperty("com.ibm.websphere.productInstallType");
-            info(c, "getWlpVersion", "com.ibm.websphere.productVersion : " + originalWlpVersion);
-            info(c, "getWlpVersion",
+            Log.info(c, "getWlpVersion", "com.ibm.websphere.productVersion : " + originalWlpVersion);
+            Log.info(c, "getWlpVersion",
                     "com.ibm.websphere.productId : " + wlpVersionProps.getProperty("com.ibm.websphere.productId"));
-            info(c, "getWlpVersion", "com.ibm.websphere.productEdition : " + originalWlpEdition);
-            info(c, "getWlpVersion", "com.ibm.websphere.productInstallType : " + originalWlpInstallType);
+            Log.info(c, "getWlpVersion", "com.ibm.websphere.productEdition : " + originalWlpEdition);
+            Log.info(c, "getWlpVersion", "com.ibm.websphere.productInstallType : " + originalWlpInstallType);
         } finally {
             InstallUtils.close(fIn);
         }
         
     }
 
-    protected static void replaceWlpProperties(String version, String edition, String installType) throws Exception {
+    protected static void replaceWlpProperties(String version) throws Exception {
         OutputStream os = null;
         try {
-            RemoteFile rf = server.getFileFromLibertyInstallRoot("lib/versions/WebSphereApplicationServer.properties");
+            RemoteFile rf = server.getFileFromLibertyInstallRoot("lib/versions/openliberty.properties");
             os = rf.openForWriting(false);
             wlpVersionProps.setProperty("com.ibm.websphere.productVersion", version);
-            wlpVersionProps.setProperty("com.ibm.websphere.productEdition", edition);
-            wlpVersionProps.setProperty("com.ibm.websphere.productInstallType", installType);
-            info(c, "replaceWlpProperties", "Set the version to : " + version);
-            info(c, "replaceWlpProperties", "Set the edition to : " + edition);
-            info(c, "replaceWlpProperties", "Set the installType to : " + installType);
+            Log.info(c, "replaceWlpProperties", "Set the version to : " + version);
             wlpVersionProps.store(os, null);
             os.close();
         } finally {
@@ -123,10 +127,10 @@ public abstract class FeatureUtilityToolTest {
             args = args + " " + param;
         }
 //        Log.info(c, testcase, "repository.description.url: " + TestUtils.repositoryDescriptionUrl);
-        info(c, testcase, "command: " + installRoot + "/bin/" + command + " " + args);
+        Log.info(c, testcase, "command: " + installRoot + "/bin/" + command + " " + args);
         ProgramOutput po = server.getMachine().execute(installRoot + "/bin/" + command, params, installRoot, envProps);
-        info(c, testcase, po.getStdout());
-        info(c, testcase, command + " command exit code: " + po.getReturnCode());
+        Log.info(c, testcase, po.getStdout());
+        Log.info(c, testcase, command + " command exit code: " + po.getReturnCode());
         return po;
     }
 
@@ -137,33 +141,41 @@ public abstract class FeatureUtilityToolTest {
 //
 //    }
 
+    /**
+     * Zips the liberty install root into /tmp/*testClass*
+     * @param testClass
+     * @return
+     */
+    protected static File zipInstallRoot(String testClass, String oldInstallRoot, String destinationFile) throws IOException {
+        String sourceFile = oldInstallRoot;
 
-    protected static void info(Class<?> c, String method, String data) {
-        logger.logp(Level.INFO, c.getCanonicalName(), method, data);
+        FileOutputStream fos = new FileOutputStream(destinationFile);
+        ZipOutputStream zipOut = new ZipOutputStream(fos);
+        File fileToZip = new File(sourceFile);
+
+        TestUtils.zipFile(fileToZip, fileToZip.getName(), zipOut);
+        zipOut.close();
+        fos.close();
+
+        return new File(destinationFile);
     }
 
-    protected static void fine(Class<?> c, String method, String data) {
-        logger.logp(Level.FINE, c.getCanonicalName(), method, data);
+    protected static File unzipInstallRoot(String zipFile, String destinationToUnzip) throws IOException {
+        File destination = new File(destinationToUnzip);
+        TestUtils.unzipFile(zipFile,destination);
+        return destination;
     }
 
-    protected static void severe(Class<?> c, String method, String data) {
-        logger.logp(Level.SEVERE, c.getCanonicalName(), method, data);
+    protected static void deleteFiles(String methodName, String featureName, String[] filePathsToClear) throws Exception {
+        Log.info(c, methodName, "If Exists, Deleting files for " + featureName);
+        for (String filePath : filePathsToClear) {
+            if (server.fileExistsInLibertyInstallRoot(filePath)) {
+                server.deleteFileFromLibertyInstallRoot(filePath);
+            }
+        }
+        server.deleteDirectoryFromLibertyInstallRoot("lafiles/" + featureName);
+        Log.info(c, methodName, "Finished deleting files associated with " + featureName);
     }
 
-    protected static void entering(Class<?> c, String method) {
-        logger.entering(c.getCanonicalName(), method);
-    }
-
-    protected static void entering(Class<?> c, String method, Object value) {
-        logger.entering(c.getCanonicalName(), method, value);
-    }
-
-    protected static void entering(Class<?> c, String method, Object[] values) {
-        logger.entering(c.getCanonicalName(), method, values);
-    }
-
-    protected static void exiting(Class<?> c, String method) {
-        logger.entering(c.getCanonicalName(), method);
-    }
 
 }

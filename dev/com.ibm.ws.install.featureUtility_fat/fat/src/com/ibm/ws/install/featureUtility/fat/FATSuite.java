@@ -1,4 +1,4 @@
-package com.ibm.ws.install.featureUtility_fat;
+package com.ibm.ws.install.featureUtility.fat;
 
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
