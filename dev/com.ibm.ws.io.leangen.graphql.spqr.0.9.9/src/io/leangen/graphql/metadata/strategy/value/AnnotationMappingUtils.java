@@ -2,15 +2,15 @@ package io.leangen.graphql.metadata.strategy.value;
 
 import io.leangen.graphql.util.Utils;
 import org.eclipse.microprofile.graphql.Description;
-import org.eclipse.microprofile.graphql.SchemaName;
+import org.eclipse.microprofile.graphql.Name;
 
 import java.lang.reflect.Method;
 
 public class AnnotationMappingUtils {
 
     public static String inputFieldName(Method method) {
-        if (method.isAnnotationPresent(SchemaName.class)) {
-            return Utils.coalesce(method.getAnnotation(SchemaName.class).value(), method.getName());
+        if (method.isAnnotationPresent(Name.class)) {
+            return Utils.coalesce(method.getAnnotation(Name.class).value(), method.getName());
         }
         return method.getName();
     }

@@ -13,7 +13,7 @@ import io.leangen.graphql.util.ReservedStrings;
 import io.leangen.graphql.util.Urls;
 import org.eclipse.microprofile.graphql.DefaultValue;
 import org.eclipse.microprofile.graphql.Description;
-import org.eclipse.microprofile.graphql.SchemaName;
+import org.eclipse.microprofile.graphql.Name;
 import org.eclipse.microprofile.graphql.Source;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,7 +69,7 @@ public class AnnotatedArgumentBuilder implements ResolverArgumentBuilder {
         if (Optional.ofNullable(parameterType.getAnnotation(GraphQLId.class)).filter(GraphQLId::relayId).isPresent()) {
             return GraphQLId.RELAY_ID_FIELD_NAME;
         }
-        SchemaName meta = parameter.getAnnotation(SchemaName.class);
+        Name meta = parameter.getAnnotation(Name.class);
         if (meta != null && !meta.value().isEmpty()) {
             return messageBundle.interpolate(meta.value());
         } else {
