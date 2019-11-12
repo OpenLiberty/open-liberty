@@ -30,6 +30,7 @@ function createCloseButton(section) {
 	button.setAttribute("class", "x-close");
 	button.setAttribute("onclick", "closeUpdateBanner()");
 	button.setAttribute("aria-label", messages.UPDATE_BANNER_CLOSE_BUTTON);
+	button.setAttribute("title", messages.UPDATE_BANNER_CLOSE_BUTTON);
 
 	var right = document.createElement("div");
 	right.setAttribute("class", "x-close-right-tilt");

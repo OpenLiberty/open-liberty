@@ -119,7 +119,7 @@
 		@media (min-width: 767px) {
 			.row {
 				flex-wrap: nowrap;
-				padding: 0px 80px;
+				padding: 0px 40px;
 			}
 			
 			.column {
@@ -207,6 +207,13 @@
 		@media (min-width: 767px) {
 			.inner-hero__message h3 {
 				padding-top: 60px;
+			}
+		}
+
+		@media (max-width: 1164.98px) {
+			.inner-hero__message {
+				padding-left: 80px;
+				padding-right: 80px;
 			}
 		}
 
@@ -389,12 +396,17 @@
 		}
 
 		@media (max-width: 767.98px) {
-			#microprofile_logo {
+			#microprofile_logo, #jakarta_ee_logo {
+				width: 100%;
+				text-align: center;
+			}
+
+			#microprofile_logo img {
 				max-width: 100%;
 				min-width: 205px;
 			}
 
-			#jakarta_ee_logo {
+			#jakarta_ee_logo img {
 				max-width: 60%;
 				min-width: 150px;
 			}
@@ -402,11 +414,11 @@
 
 		@media (min-width: 992px) {
 			#microprofile_logo {
-				padding-right: 50px;
+				margin-right: 50px;
 			}
 
 			#jakarta_ee_logo {
-				padding-left: 50px;
+				margin-left: 50px;
 			}
 		}
 
@@ -437,21 +449,14 @@
 			}
 		}
 
-		@media (min-width: 1200px) {
+		@media (min-width: 1165px) {
 			.logos, .resources {
-				max-width: 1140px;
+				max-width: 1070px;
 			}
 		}
 
 		.resources {
-			padding: 20px 0px 15px 0px;
-		}
-
-		@media (min-width: 1200px) {
-			.resources {
-				padding: 40px;
-				padding-bottom: 20px;
-			}
+			padding: 20px 40px 15px 40px;
 		}
 
 		.resources .row {
@@ -462,12 +467,6 @@
 		@media (min-width: 600px) {
 			.resources .row {
 				flex-direction: row;
-			}
-		}
-
-		@media (min-width: 991px) {
-			.resources .row {
-				padding: 0px 80px;
 			}
 		}
 
@@ -570,7 +569,7 @@
 			z-index: 50;
 		}
 
-		@media (min-width: 850px) {
+		@media (min-width: 600px) {
 			#update-banner {
 				height: 50px;
 				flex-direction: row-reverse;
@@ -588,13 +587,13 @@
 		@media (min-width: 600px) {
 			#banner-container {
 				padding: 14px 0px;
-				left: 20px;
+				left: 80px;
 			}
 		}
 
-		@media (min-width: 1240px) {
+		@media (min-width: 1165px) {
 			#banner-container {
-				left: calc(50% - 600px);
+				left: calc(50% - 540px);
 			}
 		}
 
@@ -613,7 +612,6 @@
 			color: #110f16;
 			font-size: 14px;
 			letter-spacing: .5px;
-			text-transform: uppercase;
 			text-decoration: underline;
 		}
 
@@ -645,14 +643,14 @@
 		@media (min-width: 600px) {
 			.x-close {
 				position: absolute;
-				right: 20px;
+				right: 80px;
 				margin-right: 0;
 			}
 		}
 
-		@media (min-width: 1240px) {
+		@media (min-width: 1165px) {
 			.x-close {
-				right: calc(50% - 600px);
+				right: calc(50% - 540px);
 			}
 		}
 
@@ -713,14 +711,6 @@
 			</div>
 		</section>
 
-		<section class="logos" data-externalizedAriaLabel="LOGOS_SECTION">
-			<h2 class="logos__title" data-externalizedString="INTEGRATES"></h2>
-			<div class="row">
-				<img id="microprofile_logo" src="/img/microprofile_logo.png" data-externalizedAlt="MICROPROFILE">
-				<img id="jakarta_ee_logo" src="/img/jakarta_ee_logo.png" data-externalizedAlt="JAKARTA_EE">
-			</div>
-		</section>
-
 		<section class="resources" data-externalizedAriaLabel="RESOURCES_SECTION">
 			<h2 data-externalizedString="RESOURCES"></h2>
 			<div class="row">
@@ -756,6 +746,19 @@
 				</div>		
 			</div>
 		</section>
+
+		<section class="logos" data-externalizedAriaLabel="LOGOS_SECTION">
+			<h2 class="logos__title" data-externalizedString="INTEGRATES"></h2>
+			<div class="row">
+				<a id="microprofile_logo" href="https://microprofile.io/" target="_blank" rel="noopener">
+					<img src="/img/microprofile_logo.png" data-externalizedAlt="MICROPROFILE">
+				</a>
+				<a id="jakarta_ee_logo" href="https://jakarta.ee/" target="_blank" rel="noopener">
+					<img src="/img/jakarta_ee_logo.png" data-externalizedAlt="JAKARTA_EE">
+				</a>
+			</div>
+		</section>
+
 	</main>
 	
 	<footer class="footer">
