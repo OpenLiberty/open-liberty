@@ -12,7 +12,6 @@ package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.serializer;
 
 import static org.junit.Assert.assertEquals;
 
-import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +25,7 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.junit.Test;
 
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaTestConstants;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractKafkaTestServlet;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.ExtendedKafkaReader;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.ExtendedKafkaWriter;
@@ -55,7 +55,7 @@ public class KafkaKeySerializerTestServlet extends AbstractKafkaTestServlet {
             writer.sendMessage(KEY1, VALUE1);
             writer.sendMessage(KEY2, VALUE2);
 
-            List<ConsumerRecord<MyData, MyData>> records = reader.waitForRecords(2, Duration.ofSeconds(5));
+            List<ConsumerRecord<MyData, MyData>> records = reader.waitForRecords(2, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
             //since MP Reactive Messaging does not handle keys, they will get passed through as null but to prove
             //that the key serializer and deserializer is properly configured, they have special case code for null
             ConsumerRecord<MyData, MyData> r1 = records.get(0);

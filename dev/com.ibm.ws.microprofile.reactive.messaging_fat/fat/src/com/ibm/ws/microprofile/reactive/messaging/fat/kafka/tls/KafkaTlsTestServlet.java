@@ -13,7 +13,6 @@ package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.tls;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 
-import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +26,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.junit.Test;
 
 import com.ibm.ws.microprofile.reactive.messaging.fat.apps.kafka.BasicMessagingBean;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaTestConstants;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractKafkaTestServlet;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.SimpleKafkaReader;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.SimpleKafkaWriter;
@@ -36,7 +36,6 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.SimpleKafk
 public class KafkaTlsTestServlet extends AbstractKafkaTestServlet {
 
     public static final String TRUSTSTORE_PASSWORD_PROPERTY = "kafka.truststore.password";
-    public static final Duration TIMEOUT = Duration.ofSeconds(30);
 
     @Inject
     @ConfigProperty(name = TRUSTSTORE_PASSWORD_PROPERTY)
@@ -57,7 +56,7 @@ public class KafkaTlsTestServlet extends AbstractKafkaTestServlet {
         writer.sendMessage("abc");
         writer.sendMessage("xyz");
 
-        List<String> msgs = reader.waitForMessages(2, TIMEOUT);
+        List<String> msgs = reader.waitForMessages(2, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
 
         assertThat(msgs, contains("cba", "zyx"));
     }
