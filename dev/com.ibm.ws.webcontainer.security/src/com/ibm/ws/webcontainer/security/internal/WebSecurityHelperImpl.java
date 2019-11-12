@@ -118,7 +118,7 @@ public class WebSecurityHelperImpl {
      *
      * @return a String.
      */
-    public static String getAcessIdFromSSOToken(byte[] ssoToken) throws Exception {
+    public static String validateToken(byte[] ssoToken) throws Exception {
         String accessId = null;
         if (ssoToken != null) {
             try {
@@ -134,6 +134,15 @@ public class WebSecurityHelperImpl {
             }
         }
         return accessId;
+    }
+
+    /**
+     * Extracts the access ID from the SSO LTPA token. Return null if the token is not valid.
+     *
+     * @return a String.
+     */
+    public static String validateToken(String cookieValue) throws Exception {
+        return validateToken(Base64Coder.base64DecodeString(cookieValue));
     }
 
     /**

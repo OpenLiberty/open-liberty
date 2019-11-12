@@ -85,15 +85,4 @@ public class WebSecurityHelper {
     public static String getJwtCookieName() {
         return WebSecurityHelperImpl.getJwtCookieName();
     }
-
-    /**
-     * Extracts the access ID from SSO LTPAToken.
-     * Return null when the LTPAToken is not valid.
-     *
-     * @return a String.
-     * @throws Exception
-     */
-    public static String getAcessIdFromSSOToken(byte[] ssoToken) throws Exception {
-        return WebSecurityHelperImpl.getAcessIdFromSSOToken(ssoToken);
-    }
 }
