@@ -97,7 +97,17 @@ public class PersistentExecutorTest extends FATServletClient {
     }
 
     @Test
+    public void testCancelRunningTask() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
     public void testRemoveRunningTaskAutoPurge() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
+    public void testRemoveRunningTask() throws Exception {
         runTest(server, APP_NAME, testName);
     }
 }
