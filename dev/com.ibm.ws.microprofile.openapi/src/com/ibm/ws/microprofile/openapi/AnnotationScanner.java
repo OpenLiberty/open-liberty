@@ -206,10 +206,16 @@ public class AnnotationScanner {
         return Collections.unmodifiableSet(restAPIClasses);
     }
 
-    public String getURLMapping() {
+    public String getURLMapping(Set<String> classesToScan) {
         this.urlMapping = null;
         try {
-            Set<String> appClassNames = getAllApplicationClasses();
+            Set<String> appClassNames = getAllApplicationClasses().stream()
+                    .filter(classesToScan::contains)
+                    .collect(Collectors.toSet());
+
+            if (OpenAPIUtils.isEventEnabled(tc)) {
+                Tr.event(tc, "Application classes after filtering: ", appClassNames);
+            }
 
             if (appClassNames.size() < 2) {
                 String urlMapping = null;
