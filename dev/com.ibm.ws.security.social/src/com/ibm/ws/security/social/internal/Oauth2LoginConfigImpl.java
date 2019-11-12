@@ -168,7 +168,7 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
 
     public static final String DEFAULT_CONTEXT_ROOT = "/ibm/api/social-login";
     static String contextRoot = DEFAULT_CONTEXT_ROOT;
-
+    
     public static final String KEY_USE_SYSPROPS_FOR_HTTPCLIENT_CONNECTONS = "useSystemPropertiesForHttpClientConnections";
     protected boolean useSystemPropertiesForHttpClientConnections = false;
 
@@ -292,6 +292,7 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
         this.clientSecret = configUtils.processProtectedString(props, KEY_clientSecret);
         this.authorizationEndpoint = configUtils.getConfigAttribute(props, KEY_authorizationEndpoint);
         this.scope = configUtils.getConfigAttribute(props, KEY_scope);
+
         this.userApiType = configUtils.getConfigAttribute(props, KEY_userApiType);
         this.accessTokenRequired = configUtils.getBooleanConfigAttribute(props, KEY_accessTokenRequired, this.accessTokenRequired);
         this.accessTokenSupported = configUtils.getBooleanConfigAttribute(props, KEY_accessTokenSupported, this.accessTokenSupported);
@@ -815,6 +816,7 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
 
     public String getAccessTokenHeaderName() {
         return accessTokenHeaderName;
+
     }
 
 }
