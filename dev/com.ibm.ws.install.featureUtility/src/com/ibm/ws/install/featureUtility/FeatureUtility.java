@@ -58,6 +58,7 @@ public class FeatureUtility {
     private final static String OPEN_LIBERTY_PRODUCT_ID = "io.openliberty";
     private boolean isWindows = (System.getProperty("os.name").toLowerCase()).indexOf("win") >= 0;
     // TODO remove this need for windwos chewcking for progress bar
+    
 
     private FeatureUtility(FeatureUtilityBuilder builder) throws IOException, InstallException {
         this.logger = InstallLogUtils.getInstallLogger();
@@ -81,10 +82,13 @@ public class FeatureUtility {
 
 
         map = new InstallKernelMap();
+        Map<String, String> envMap = (Map<String, String>) map.get("environment.variable.map");
+        fine("Environment variables: "+ envMap);
 
         if (isBasicInit == null || !isBasicInit) {
             info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_INITIALIZING"));
-
+            
+            //log all the env props we find or don't find to debug
             List<File> jsonPaths = getJsonFiles(fromDir, jsonsRequired);
             updateProgress(progressBar.getMethodIncrement("fetchJsons"));
             fine("Finished finding jsons");
@@ -136,6 +140,7 @@ public class FeatureUtility {
             map.put("individual.esas", Arrays.asList(esaFile));
             map.put("install.individual.esas", true);
         }
+        
 
         map.put("license.accept", true);
         map.get("install.kernel.init.code");
@@ -561,5 +566,7 @@ public class FeatureUtility {
         }
         return result;
     }
+    
+
 
 }
