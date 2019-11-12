@@ -30,8 +30,8 @@ Export-Package: \
   org.eclipse.microprofile.reactive.streams.operators.spi;version=1.0
 
 Include-Resource: \
-  @${repo;org.eclipse.microprofile.reactive-streams-operators:microprofile-reactive-streams-operators-api;1.0}, \
-  @${repo;org.eclipse.microprofile.reactive-streams-operators:microprofile-reactive-streams-operators-core;1.0}
+  @${repo;org.eclipse.microprofile.reactive-streams-operators:microprofile-reactive-streams-operators-api;1.0.1}, \
+  @${repo;org.eclipse.microprofile.reactive-streams-operators:microprofile-reactive-streams-operators-core;1.0.1}
 
 
 
