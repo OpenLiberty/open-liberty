@@ -25,23 +25,21 @@ public class ArtifactDownloaderUtils {
 
     private static boolean isFinished = false;
 
-    public static List<String> getMissingFiles(List<String> featureURLs) throws IOException {
+    public static List<String> getMissingFiles(List<String> featureURLs, Map<String, String> envMap) throws IOException {
         List<String> result = new ArrayList<String>();
         for (String url : featureURLs) {
-            if (!(exists(url) == HttpURLConnection.HTTP_OK)) {
+            if (!(exists(url, envMap) == HttpURLConnection.HTTP_OK)) {
                 result.add(url);
             }
         }
         return result;
     }
 
-    public static boolean fileIsMissing(String url) throws IOException {
-        return !(exists(url) == HttpURLConnection.HTTP_OK);
+    public static boolean fileIsMissing(String url, Map<String, String> envMap) throws IOException {
+        return !(exists(url, envMap) == HttpURLConnection.HTTP_OK);
     }
 
-    public static int exists(String URLName) throws IOException {
-        ArtifactDownloader ad = new ArtifactDownloader();
-        Map<String, String> envMap = ad.getEnvMap();
+    public static int exists(String URLName, Map<String, String> envMap) throws IOException {
         try {
             HttpURLConnection.setFollowRedirects(true);
             HttpURLConnection conn;
@@ -53,6 +51,7 @@ public class ArtifactDownloaderUtils {
                 conn = (HttpURLConnection) url.openConnection();
             }
             conn.setRequestMethod("HEAD");
+            conn.setConnectTimeout(5000);
             int responseCode = conn.getResponseCode();
             conn.setInstanceFollowRedirects(true);
             return responseCode;
@@ -182,7 +181,7 @@ public class ArtifactDownloaderUtils {
                 throw new InstallException("Repository is unavaiable: " + repo); //ERROR_FAILED_TO_CONNECT_MAVEN
             } else if (repoResponseCode == 407) {
                 throw ExceptionUtils.createByKey("ERROR_TOOL_INCORRECT_PROXY_CREDENTIALS");
-            } else if (repoResponseCode == 401) {
+            } else if (repoResponseCode == 401 || repoResponseCode == 403) {
                 throw new InstallException("Incorrect credentials provided for the following repository: " + repo); //ERROR_FAILED_TO_AUTHENICATE
             } else {
                 throw new InstallException("The following maven repository can not be reached: " + repo); //ERROR_FAILED_TO_CONNECT_MAVEN
