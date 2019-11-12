@@ -16,7 +16,6 @@ import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,24 +25,21 @@ public class ArtifactDownloaderUtils {
 
     private static boolean isFinished = false;
 
-    private static final Map<String, String> envMap = ArtifactDownloaderUtils.getEnvMap();
-
-    public static List<String> getMissingFiles(List<String> featureURLs) throws IOException {
+    public static List<String> getMissingFiles(List<String> featureURLs, Map<String, String> envMap) throws IOException {
         List<String> result = new ArrayList<String>();
         for (String url : featureURLs) {
-            if (!(exists(url) == HttpURLConnection.HTTP_OK)) {
+            if (!(exists(url, envMap) == HttpURLConnection.HTTP_OK)) {
                 result.add(url);
             }
         }
         return result;
     }
 
-    public static boolean fileIsMissing(String url) throws IOException {
-        return !(exists(url) == HttpURLConnection.HTTP_OK);
+    public static boolean fileIsMissing(String url, Map<String, String> envMap) throws IOException {
+        return !(exists(url, envMap) == HttpURLConnection.HTTP_OK);
     }
 
-    public static int exists(String URLName) throws IOException {
-
+    public static int exists(String URLName, Map<String, String> envMap) throws IOException {
         try {
             HttpURLConnection.setFollowRedirects(true);
             HttpURLConnection conn;
@@ -55,6 +51,7 @@ public class ArtifactDownloaderUtils {
                 conn = (HttpURLConnection) url.openConnection();
             }
             conn.setRequestMethod("HEAD");
+            conn.setConnectTimeout(5000);
             int responseCode = conn.getResponseCode();
             conn.setInstanceFollowRedirects(true);
             return responseCode;
@@ -184,37 +181,12 @@ public class ArtifactDownloaderUtils {
                 throw new InstallException("Repository is unavaiable: " + repo); //ERROR_FAILED_TO_CONNECT_MAVEN
             } else if (repoResponseCode == 407) {
                 throw ExceptionUtils.createByKey("ERROR_TOOL_INCORRECT_PROXY_CREDENTIALS");
-            } else if (repoResponseCode == 401) {
+            } else if (repoResponseCode == 401 || repoResponseCode == 403) {
                 throw new InstallException("Incorrect credentials provided for the following repository: " + repo); //ERROR_FAILED_TO_AUTHENICATE
             } else {
                 throw new InstallException("The following maven repository can not be reached: " + repo); //ERROR_FAILED_TO_CONNECT_MAVEN
             }
         }
-    }
-
-    public static Map<String, String> getEnvMap() {
-        Map<String, String> envMap = new HashMap<String, String>();
-
-        //parse through httpProxy variables TODO
-
-        //load the required enviroment variables into the map
-        envMap.put("http.proxyUser", System.getenv("http.proxyUser"));
-        envMap.put("http.proxyHost", System.getenv("http.proxyHost"));
-        envMap.put("http.proxyPort", System.getenv("http.proxyPort"));
-        envMap.put("http.proxyPassword", System.getenv("http.proxyPassword"));
-
-        envMap.put("https.proxyUser", System.getenv("https.proxyUser"));
-        envMap.put("https.proxyHost", System.getenv("https.proxyHost"));
-        envMap.put("https.proxyPort", System.getenv("https.proxyPort"));
-        envMap.put("https.proxyPassword", System.getenv("https.proxyPassword"));
-
-        envMap.put("openliberty_feature_repository", System.getenv("openliberty_feature_repository"));
-        envMap.put("openliberty_feature_repository_user", System.getenv("openliberty_feature_repository_user"));
-        envMap.put("openliberty_feature_repository_password", System.getenv("openliberty_feature_repository_password"));
-
-        //search through the properties file to look for overrides if they exist TODO
-
-        return envMap;
     }
 
 }

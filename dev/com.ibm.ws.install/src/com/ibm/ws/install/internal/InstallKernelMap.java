@@ -12,6 +12,7 @@ package com.ibm.ws.install.internal;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -28,6 +29,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
@@ -118,6 +120,7 @@ public class InstallKernelMap implements Map {
     private static final String DOWNLOAD_LOCATION = "download.location";
     private static final String FROM_REPO = "from.repo";
     private static final String CLEANUP_TEMP_LOCATION = "cleanup.temp.location";
+    private static final String ENVIRONMENT_VARIABLE_MAP = "environment.variable.map";
 
     //Headers in Manifest File
     private static final String SHORTNAME_HEADER_NAME = "IBM-ShortName";
@@ -140,6 +143,10 @@ public class InstallKernelMap implements Map {
     private final String MAVEN_CENTRAL = "http://repo.maven.apache.org/maven2/";
     private final String TEMP_DIRECTORY = Utils.getInstallDir().getAbsolutePath() + File.separatorChar + "tmp"
                                           + File.separatorChar;
+    private static final String ETC_DIRECTORY = Utils.getInstallDir().getAbsolutePath() + File.separator + "etc"
+                                                + File.separator;
+    private static final String FEATURE_UTILITY_PROPS_FILE = "featureUtility.env";
+    private Map<String, String> envMap = null;
 
     private enum ActionType {
         install,
@@ -273,6 +280,9 @@ public class InstallKernelMap implements Map {
             } else {
                 return downloadEsas();
             }
+        } else if (ENVIRONMENT_VARIABLE_MAP.equals(key)) {
+            envMap = getEnvMap();
+            return envMap;
         }
         return data.get(key);
     }
@@ -365,6 +375,12 @@ public class InstallKernelMap implements Map {
         } else if (FROM_REPO.equals(key)) {
             if (value instanceof String) {
                 data.put(FROM_REPO, value);
+            } else {
+                throw new IllegalArgumentException();
+            }
+        } else if (ENVIRONMENT_VARIABLE_MAP.equals(key)) {
+            if (value instanceof Map<?, ?>) {
+                data.put(ENVIRONMENT_VARIABLE_MAP, value);
             } else {
                 throw new IllegalArgumentException();
             }
@@ -845,6 +861,7 @@ public class InstallKernelMap implements Map {
         String repo = getRepo(fromRepo);
 
         try {
+            artifactDownloader.setEnvMap(envMap);
             artifactDownloader.synthesizeAndDownloadFeatures(featureList, downloadDir, repo);
         } catch (InstallException e) {
             data.put(ACTION_RESULT, ERROR);
@@ -869,6 +886,7 @@ public class InstallKernelMap implements Map {
         String filetype = (String) this.get(DOWNLOAD_FILETYPE);
         String repo = getRepo(null);
         try {
+            artifactDownloader.setEnvMap(envMap);
             artifactDownloader.synthesizeAndDownload(feature, filetype, downloadDir, repo, true);
             data.put(DOWNLOAD_LOCATION, null);
         } catch (InstallException e) {
@@ -934,7 +952,7 @@ public class InstallKernelMap implements Map {
      */
     private String getRepo(String fromRepo) {
         String repo;
-        Map<String, String> envMap = ArtifactDownloaderUtils.getEnvMap();
+
         if (fromRepo != null) {
             fine("Connecting to the following repository: " + fromRepo);
             repo = fromRepo;
@@ -962,6 +980,8 @@ public class InstallKernelMap implements Map {
 
         String repo = getRepo(fromRepo);
         try {
+            artifactDownloader.setEnvMap(envMap);
+            fine("this is the envMap we are sending to artifactDownloader: " + artifactDownloader.getEnvMap());
             artifactDownloader.synthesizeAndDownload(featureList, filetype, downloadDir, repo, true);
         } catch (InstallException e) {
             data.put(ACTION_RESULT, ERROR);
@@ -1321,6 +1341,63 @@ public class InstallKernelMap implements Map {
         fine("Downloaded the following json files from remote: " + result);
         return result;
 
+    }
+
+    private Map<String, String> getEnvMap() {
+        Map<String, String> envMapRet = new HashMap<String, String>();
+
+        //parse through httpProxy variables TODO
+
+        //load the required environment variables into the map
+        envMapRet.put("http.proxyUser", System.getenv("http.proxyUser"));
+        envMapRet.put("http.proxyHost", System.getenv("http.proxyHost"));
+        envMapRet.put("http.proxyPort", System.getenv("http.proxyPort"));
+        envMapRet.put("http.proxyPassword", System.getenv("http.proxyPassword"));
+
+        envMapRet.put("https.proxyUser", System.getenv("https.proxyUser"));
+        envMapRet.put("https.proxyHost", System.getenv("https.proxyHost"));
+        envMapRet.put("https.proxyPort", System.getenv("https.proxyPort"));
+        envMapRet.put("https.proxyPassword", System.getenv("https.proxyPassword"));
+
+        envMapRet.put("openliberty_feature_repository", System.getenv("openliberty_feature_repository"));
+        envMapRet.put("openliberty_feature_repository_user", System.getenv("openliberty_feature_repository_user"));
+        envMapRet.put("openliberty_feature_repository_password", System.getenv("openliberty_feature_repository_password"));
+
+        //search through the properties file to look for overrides if they exist TODO
+        Map<String, String> propsFileMap = getFeatureUtilEnvProps();
+        if (!propsFileMap.isEmpty()) {
+            fine("The following properties were read from the featureUtility.env file: " + propsFileMap.toString());
+            fine("The properties found in featureUtility.env will override latent environment varibles of the same name");
+            Set<String> keys = propsFileMap.keySet();
+            for (String key : keys) {
+                envMapRet.put(key, propsFileMap.get(key));
+            }
+        }
+
+        return envMapRet;
+    }
+
+    /**
+     * @return
+     */
+    private Map<String, String> getFeatureUtilEnvProps() {
+        File featureUtilEnvFile = new File(ETC_DIRECTORY + FEATURE_UTILITY_PROPS_FILE);
+        Map<String, String> propEnvMap = new HashMap<String, String>();
+
+        try {
+            Scanner scanner = new Scanner(featureUtilEnvFile);
+            fine("featureUtility.env exists");
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                String[] splitLine = line.split("=");
+                propEnvMap.put(splitLine[0], splitLine[1]);
+            }
+            scanner.close();
+        } catch (FileNotFoundException e) {
+            fine("feature env doesn't exists");
+        }
+
+        return propEnvMap;
     }
 
     private void updateProgress(double increment) {
