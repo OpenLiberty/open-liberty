@@ -1346,18 +1346,19 @@ public class InstallKernelMap implements Map {
     private Map<String, String> getEnvMap() {
         Map<String, String> envMapRet = new HashMap<String, String>();
 
-        //parse through httpProxy variables TODO
+        //parse through httpProxy env variables
 
-        //load the required environment variables into the map
-        envMapRet.put("http.proxyUser", System.getenv("http.proxyUser"));
-        envMapRet.put("http.proxyHost", System.getenv("http.proxyHost"));
-        envMapRet.put("http.proxyPort", System.getenv("http.proxyPort"));
-        envMapRet.put("http.proxyPassword", System.getenv("http.proxyPassword"));
+        Map<String, String> httpProxyVariables = getProxyVariables("http");
+        Set<String> httpProxyVarKeys = httpProxyVariables.keySet();
+        for (String key : httpProxyVarKeys) {
+            envMapRet.put(key, httpProxyVariables.get(key));
+        }
 
-        envMapRet.put("https.proxyUser", System.getenv("https.proxyUser"));
-        envMapRet.put("https.proxyHost", System.getenv("https.proxyHost"));
-        envMapRet.put("https.proxyPort", System.getenv("https.proxyPort"));
-        envMapRet.put("https.proxyPassword", System.getenv("https.proxyPassword"));
+        Map<String, String> httpsProxyVariables = getProxyVariables("https");
+        Set<String> httpsProxyVarKeys = httpsProxyVariables.keySet();
+        for (String key : httpsProxyVarKeys) {
+            envMapRet.put(key, httpsProxyVariables.get(key));
+        }
 
         envMapRet.put("openliberty_feature_repository", System.getenv("openliberty_feature_repository"));
         envMapRet.put("openliberty_feature_repository_user", System.getenv("openliberty_feature_repository_user"));
@@ -1370,11 +1371,44 @@ public class InstallKernelMap implements Map {
             fine("The properties found in featureUtility.env will override latent environment varibles of the same name");
             Set<String> keys = propsFileMap.keySet();
             for (String key : keys) {
-                envMapRet.put(key, propsFileMap.get(key));
+                //if key is http_proxy or https_proxy then call getProxyVariables
+                if (key.equals("http_proxy") || key.equals("https_proxy")) {
+                    Map<String, String> proxyVar = getProxyVariables(key.split("_")[0]);
+                    Set<String> proxyVarKeys = proxyVar.keySet();
+                    for (String k : proxyVarKeys) {
+                        envMapRet.put(k, proxyVar.get(k));
+                    }
+                } else {
+                    envMapRet.put(key, propsFileMap.get(key));
+                }
             }
         }
 
         return envMapRet;
+    }
+
+    /**
+     * parses the following format for http/https proxy environment variables:
+     * http://user:password@prox-server:3128
+     * and returns a map with proxyUser, proxyHost, proxyPort, and proxyPassword
+     *
+     * @param string
+     * @return
+     */
+    private Map<String, String> getProxyVariables(String protocol) {
+        Map<String, String> result = new HashMap<String, String>();
+        String proxyEnvVar = System.getenv(protocol + "_proxy");
+        if (proxyEnvVar != null) {
+            String[] proxyEnvVarSplit = proxyEnvVar.split("@");
+            String[] proxyCredentials = proxyEnvVarSplit[0].split(":"); //[http, //user, password]
+            String[] proxyHostPort = proxyEnvVarSplit[1].split(":"); //[prox-server, 3128]
+            result.put(protocol + ".proxyHost", proxyHostPort[0]); //prox-server
+            result.put(protocol + ".proxyPort", proxyHostPort[1]); //3128
+            result.put(protocol + ".proxyUser", proxyCredentials[1].replace("/", ""));
+            result.put(protocol + ".proxyPassword", proxyCredentials[2]);
+        }
+
+        return result;
     }
 
     /**
