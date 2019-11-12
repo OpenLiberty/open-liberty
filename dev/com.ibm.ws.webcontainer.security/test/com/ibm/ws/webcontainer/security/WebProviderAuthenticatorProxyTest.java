@@ -18,9 +18,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.ibm.ws.security.SecurityService;  
-import com.ibm.ws.security.authentication.AuthenticationService;
+import com.ibm.ws.security.SecurityService;
 import com.ibm.ws.security.authentication.AuthenticationConstants;
+import com.ibm.ws.security.authentication.AuthenticationService;
 import com.ibm.ws.security.authentication.cache.AuthCacheService;
 import com.ibm.ws.security.authentication.principals.WSPrincipal;
 import com.ibm.ws.security.authentication.tai.TAIService;
@@ -394,7 +394,7 @@ public class WebProviderAuthenticatorProxyTest {
                 allowing(authenticationService).getAuthCacheService();
                 will(returnValue(authCacheService));
                 allowing(authCacheService).remove(realm + ":" + securityName);
-                
+
             }
         });
         WSCredentialImpl credential = new WSCredentialImpl(realm, securityName, "uniqueSecurityName", "UNAUTHENTICATED", "primaryGroupId", "accessId", null, null);
@@ -551,7 +551,7 @@ public class WebProviderAuthenticatorProxyTest {
         public WebProviderAuthenticatorProxyTestDouble(AtomicServiceReference<SecurityService> securityServiceRef, AtomicServiceReference<TAIService> taiServiceRef,
                                                        ConcurrentServiceReferenceMap<String, TrustAssociationInterceptor> interceptorServiceRef,
                                                        WebAppSecurityConfig webAppSecurityConfig, ConcurrentServiceReferenceMap<String, WebAuthenticator> webAuthenticatorRef) {
-            super(securityServiceRef, taiServiceRef, interceptorServiceRef, webAppSecurityConfig, webAuthenticatorRef);
+            super(securityServiceRef, taiServiceRef, interceptorServiceRef, webAppSecurityConfig, null, null, null, null, webAuthenticatorRef);
         }
 
         @Override
