@@ -52,7 +52,6 @@ Service-Component:
 	com.ibm.ws.common.encoder;version=latest, \
 	com.ibm.ws.com.google.gson.2.2.4;version=latest,\
 	com.ibm.ws.webcontainer.security;version=latest,\
-	com.ibm.ws.webcontainer.security.provider;version=latest,\
 	com.ibm.ws.net.oauth.jsontoken.1.1-r42;version=latest,\
 	com.ibm.ws.org.joda.time.1.6.2;version=latest,\
 	com.ibm.ws.org.jose4j;version=latest,\

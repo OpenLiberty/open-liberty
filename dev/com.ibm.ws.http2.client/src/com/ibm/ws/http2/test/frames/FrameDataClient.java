@@ -42,36 +42,28 @@ public class FrameDataClient extends com.ibm.ws.http.channel.h2internal.frames.F
         FrameDataClient frameDataToCompare = (FrameDataClient) receivedFrame;
 
         if (this.flagAckSet() != frameDataToCompare.flagAckSet()) {
-            //System.out.println("this.flagAckSet() = " + this.flagAckSet() + " frameDataToCompare.flagAckSet() = " + frameDataToCompare.flagAckSet());
             return false;
         }
         if (this.flagPrioritySet() != frameDataToCompare.flagPrioritySet()) {
-            //System.out.println("this.flagPrioritySet() = " + this.flagPrioritySet() + " frameDataToCompare.flagPrioritySet() = " + frameDataToCompare.flagPrioritySet());
             return false;
         }
 
         if (this.flagEndHeadersSet() != frameDataToCompare.flagEndHeadersSet()) {
-            //System.out.println("this.flagEndHeadersSet() = " + this.flagEndHeadersSet() + " frameDataToCompare.flagEndHeadersSet() = " + frameDataToCompare.flagEndHeadersSet());
             return false;
         }
         if (this.flagPaddedSet() != frameDataToCompare.flagPaddedSet()) {
-            //System.out.println("this.flagPaddedSet() = " + this.flagPaddedSet() + " frameDataToCompare.flagPaddedSet() = " + frameDataToCompare.flagPaddedSet());
             return false;
         }
         if (this.getFrameType() != frameDataToCompare.getFrameType()) {
-            //System.out.println("getFrameType is false");
             return false;
         }
         if (this.getFrameReserveBit() != frameDataToCompare.getFrameReserveBit()) {
-            //System.out.println("getFrameReserveBit is false");
             return false;
         }
         if (this.getPayloadLength() != frameDataToCompare.getPayloadLength()) {
-            //System.out.println("getPayloadLength is false");
             return false;
         }
         if (this.getStreamId() != frameDataToCompare.getStreamId()) {
-            //System.out.println("getStreamId is false");
             return false;
         }
 

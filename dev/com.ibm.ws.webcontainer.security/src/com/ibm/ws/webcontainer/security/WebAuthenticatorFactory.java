@@ -80,4 +80,8 @@ public interface WebAuthenticatorFactory {
      * @return
      */
     Boolean needToAuthenticateSubject(WebRequest webRequest);
+
+    public WebProviderAuthenticatorProxy getWebProviderAuthenticatorProxy();
+
+    public WebAuthenticatorProxy getWebAuthenticatorProxy();
 }

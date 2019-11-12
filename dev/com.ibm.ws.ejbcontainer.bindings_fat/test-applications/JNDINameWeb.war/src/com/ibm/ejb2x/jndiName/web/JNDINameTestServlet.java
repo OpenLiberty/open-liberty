@@ -502,7 +502,7 @@ public class JNDINameTestServlet extends FATServlet {
      */
     private void testLookupCombinationsHelper(Context context, String contextString, String lookupName, String jndiName, String beanNum, String passingCases) {
         try {
-            System.out.print("Testing " + lookupName + " with context " + contextString + " against " + jndiName);
+            System.out.println("Testing " + lookupName + " with context " + contextString + " against " + jndiName);
             JNDINameHome beanHome = (JNDINameHome) context.lookup(lookupName);
             if (passingCases.contains(beanNum)) {
                 if (beanHome == null) {

@@ -371,7 +371,6 @@ public class H2Connection {
         System.arraycopy(this.myPendingBuffers, this.pendingBufferStart, list, 0, size);
         clearPendingByteBuffers();
         //now we will start where the last buffer was processed/written
-        //this.pendingBufferStart = this.pendingBufferStop;
         return list;
     }
 

@@ -4510,6 +4510,28 @@ public class LibertyServer implements LogMonitorClient {
 
     /**
      * This method will search for the provided expression in the log file
+     * on an incremental basis. It starts with reading the file at the offset where
+     * the last mark was set (or the beginning of the file if no mark has been set)
+     * and reads until the end of the file.
+     *
+     * @param regexp pattern to search for
+     * @return A list of the lines in the log file which contain the matching
+     * pattern. No matches result in an empty list.
+     * @throws Exception
+     */
+    public List<String> findStringsInLogsUsingMark(String regexp, String filePath) throws Exception {
+        final RemoteFile remoteFile;
+        String absolutePath = serverRoot + "/" + filePath;
+        if (machineOS == OperatingSystem.ZOS && absolutePath.equalsIgnoreCase(consoleAbsPath)) {
+            remoteFile = new RemoteFile(machine, absolutePath, Charset.forName(EBCDIC_CHARSET_NAME));
+        } else {
+            remoteFile = LibertyFileManager.getLibertyFile(machine, absolutePath);
+        }
+        return findStringsInLogsUsingMark(regexp, remoteFile);
+    }
+
+    /**
+     * This method will search for the provided expression in the log file
      * on an incremental basis. It starts with reading the
      * file at the offset where the last mark was set (or the beginning of the file
      * if no mark has been set) and reads until the end of the file.

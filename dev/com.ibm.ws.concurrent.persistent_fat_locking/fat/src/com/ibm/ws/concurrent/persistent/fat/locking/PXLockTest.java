@@ -30,9 +30,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
+import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -97,6 +99,10 @@ public class PXLockTest {
      */
     @BeforeClass
     public static void setUp() throws Exception {
+        // Delete the Derby-only database that is used by the persistent scheduled executor
+        Machine machine = server.getMachine();
+        String installRoot = server.getInstallRoot();
+        LibertyFileManager.deleteLibertyDirectoryAndContents(machine, installRoot + "/usr/shared/resources/data/lockdb");
 
         WebArchive app1 = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addPackages(true, "web");

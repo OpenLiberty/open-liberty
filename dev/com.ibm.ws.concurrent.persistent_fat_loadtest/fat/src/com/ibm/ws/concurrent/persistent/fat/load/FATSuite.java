@@ -10,28 +10,14 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.persistent.fat.load;
 
-import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.ibm.websphere.simplicity.Machine;
-
-import componenttest.topology.impl.LibertyFileManager;
-import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.LibertyServerFactory;
-
 @RunWith(Suite.class)
-@SuiteClasses({ LoadTest.class })
+@SuiteClasses({
+    LoadTest.class,
+    LoadTestWithFailoverEnabled.class
+    })
 public class FATSuite {
-    public static final String SERVER_NAME = "com.ibm.ws.concurrent.persistent.fat.loadtest";
-
-    @BeforeClass
-    public static void beforeSuite() throws Exception {
-        // Delete the Derby database that might be used by the persistent scheduled executor and the Derby-only test database
-        LibertyServer server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
-        Machine machine = server.getMachine();
-        String installRoot = server.getInstallRoot();
-        LibertyFileManager.deleteLibertyDirectoryAndContents(machine, installRoot + "/usr/shared/resources/data/scheddb");
-    }
 }
