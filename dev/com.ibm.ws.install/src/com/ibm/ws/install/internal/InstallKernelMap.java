@@ -118,6 +118,7 @@ public class InstallKernelMap implements Map {
     private static final String DOWNLOAD_LOCATION = "download.location";
     private static final String FROM_REPO = "from.repo";
     private static final String CLEANUP_TEMP_LOCATION = "cleanup.temp.location";
+    private static final String ENVIRONMENT_VARIABLE_MAP = "environment.variable.map";
 
     //Headers in Manifest File
     private static final String SHORTNAME_HEADER_NAME = "IBM-ShortName";
@@ -365,6 +366,12 @@ public class InstallKernelMap implements Map {
         } else if (FROM_REPO.equals(key)) {
             if (value instanceof String) {
                 data.put(FROM_REPO, value);
+            } else {
+                throw new IllegalArgumentException();
+            }
+        } else if (ENVIRONMENT_VARIABLE_MAP.equals(key)) {
+            if (value instanceof Map<?, ?>) {
+                data.put(ENVIRONMENT_VARIABLE_MAP, value);
             } else {
                 throw new IllegalArgumentException();
             }
@@ -845,6 +852,7 @@ public class InstallKernelMap implements Map {
         String repo = getRepo(fromRepo);
 
         try {
+            artifactDownloader.setEnvMap((Map<String, String>) data.get(ENVIRONMENT_VARIABLE_MAP));
             artifactDownloader.synthesizeAndDownloadFeatures(featureList, downloadDir, repo);
         } catch (InstallException e) {
             data.put(ACTION_RESULT, ERROR);
@@ -869,6 +877,7 @@ public class InstallKernelMap implements Map {
         String filetype = (String) this.get(DOWNLOAD_FILETYPE);
         String repo = getRepo(null);
         try {
+            artifactDownloader.setEnvMap((Map<String, String>) data.get(ENVIRONMENT_VARIABLE_MAP));
             artifactDownloader.synthesizeAndDownload(feature, filetype, downloadDir, repo, true);
             data.put(DOWNLOAD_LOCATION, null);
         } catch (InstallException e) {
@@ -934,7 +943,8 @@ public class InstallKernelMap implements Map {
      */
     private String getRepo(String fromRepo) {
         String repo;
-        Map<String, String> envMap = ArtifactDownloaderUtils.getEnvMap();
+        Map<String, String> envMap = (Map<String, String>) data.get(ENVIRONMENT_VARIABLE_MAP);
+        fine("this is the install directory: " + Utils.getInstallDir().getAbsolutePath());
         if (fromRepo != null) {
             fine("Connecting to the following repository: " + fromRepo);
             repo = fromRepo;
@@ -962,6 +972,7 @@ public class InstallKernelMap implements Map {
 
         String repo = getRepo(fromRepo);
         try {
+            artifactDownloader.setEnvMap((Map<String, String>) data.get(ENVIRONMENT_VARIABLE_MAP));
             artifactDownloader.synthesizeAndDownload(featureList, filetype, downloadDir, repo, true);
         } catch (InstallException e) {
             data.put(ACTION_RESULT, ERROR);

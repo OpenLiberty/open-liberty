@@ -40,7 +40,7 @@ public class ArtifactDownloader {
 
     private final ProgressBar progressBar = ProgressBar.getInstance();
     private final boolean isWindows = (System.getProperty("os.name").toLowerCase()).indexOf("win") >= 0;
-    private final Map<String, String> envMap = ArtifactDownloaderUtils.getEnvMap();
+    private Map<String, String> envMap = null;
 
     public void synthesizeAndDownloadFeatures(List<String> mavenCoords, String dLocation, String repo) throws InstallException {
         info("Establishing a connection to the configured Maven repository ...\n" +
@@ -311,7 +311,8 @@ public class ArtifactDownloader {
     private static class SystemPropertiesProxyAuthenticator extends Authenticator {
         @Override
         protected PasswordAuthentication getPasswordAuthentication() {
-            Map<String, String> envMap = ArtifactDownloaderUtils.getEnvMap();
+            ArtifactDownloader ad = new ArtifactDownloader();
+            Map<String, String> envMap = ad.getEnvMap();
             return new PasswordAuthentication(envMap.get("http.proxyUser"), envMap.get("http.proxyPassword").toCharArray());
         }
     }
@@ -359,6 +360,14 @@ public class ArtifactDownloader {
     private void updateProgress(double increment) {
         progressBar.updateProgress(increment);
 
+    }
+
+    public void setEnvMap(Map<String, String> envMap) {
+        this.envMap = envMap;
+    }
+
+    public Map<String, String> getEnvMap() {
+        return this.envMap;
     }
 
     // log message types

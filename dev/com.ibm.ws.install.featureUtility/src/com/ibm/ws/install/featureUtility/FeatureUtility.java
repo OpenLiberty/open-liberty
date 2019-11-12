@@ -58,6 +58,10 @@ public class FeatureUtility {
     private final static String OPEN_LIBERTY_PRODUCT_ID = "io.openliberty";
     private boolean isWindows = (System.getProperty("os.name").toLowerCase()).indexOf("win") >= 0;
     // TODO remove this need for windwos chewcking for progress bar
+    
+    private static final String ETC_DIRECTORY = Utils.getInstallDir().getAbsolutePath() + File.separator + "etc"
+            + File.separator;
+    private static final String FEATURE_UTILITY_PROPS_FILE = "featureUtility.env";
 
     private FeatureUtility(FeatureUtilityBuilder builder) throws IOException, InstallException {
         this.logger = InstallLogUtils.getInstallLogger();
@@ -136,6 +140,8 @@ public class FeatureUtility {
             map.put("individual.esas", Arrays.asList(esaFile));
             map.put("install.individual.esas", true);
         }
+        Map<String, String> envMap = getEnvMap();
+        map.put("environment.variable.map", envMap);
 
         map.put("license.accept", true);
         map.get("install.kernel.init.code");
@@ -560,6 +566,51 @@ public class FeatureUtility {
             result.add(OPEN_LIBERTY_PRODUCT_ID + ".feature:" + shortName + ":" + openLibertyVersion);
         }
         return result;
+    }
+    
+    public static Map<String, String> getEnvMap() {
+        Map<String, String> envMap = new HashMap<String, String>();
+
+        //parse through httpProxy variables TODO
+
+        //load the required enviroment variables into the map
+        envMap.put("http.proxyUser", System.getenv("http.proxyUser"));
+        envMap.put("http.proxyHost", System.getenv("http.proxyHost"));
+        envMap.put("http.proxyPort", System.getenv("http.proxyPort"));
+        envMap.put("http.proxyPassword", System.getenv("http.proxyPassword"));
+
+        envMap.put("https.proxyUser", System.getenv("https.proxyUser"));
+        envMap.put("https.proxyHost", System.getenv("https.proxyHost"));
+        envMap.put("https.proxyPort", System.getenv("https.proxyPort"));
+        envMap.put("https.proxyPassword", System.getenv("https.proxyPassword"));
+
+        envMap.put("openliberty_feature_repository", System.getenv("openliberty_feature_repository"));
+        envMap.put("openliberty_feature_repository_user", System.getenv("openliberty_feature_repository_user"));
+        envMap.put("openliberty_feature_repository_password", System.getenv("openliberty_feature_repository_password"));
+
+        //search through the properties file to look for overrides if they exist TODO
+        Map<String, String> propsFileMap = getFeatureUtilEnvProps();
+
+        return envMap;
+    }
+
+    /**
+     * @return
+     */
+    private static Map<String, String> getFeatureUtilEnvProps() {
+        File featureUtilEnvFile = new File(ETC_DIRECTORY + FEATURE_UTILITY_PROPS_FILE);
+        System.out.println(Utils.getInstallDir());
+        System.out.println(ETC_DIRECTORY);
+        System.out.println(FEATURE_UTILITY_PROPS_FILE);
+        System.out.println(featureUtilEnvFile.toString());
+        System.out.println(featureUtilEnvFile.getAbsolutePath());
+        System.out.println(featureUtilEnvFile.exists());
+        if (featureUtilEnvFile.exists()) {
+            System.out.println("feature env exists");
+        } else {
+            System.out.println("feature env doesn't exists");
+        }
+        return null;
     }
 
 }
