@@ -18,8 +18,8 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.eclipse.microprofile.graphql.GraphQLApi;
 import org.eclipse.microprofile.graphql.Mutation;
+import org.eclipse.microprofile.graphql.Name;
 import org.eclipse.microprofile.graphql.Query;
-import org.eclipse.microprofile.graphql.SchemaName;
 
 @GraphQLApi
 @ApplicationScoped
@@ -44,7 +44,7 @@ public class MyGraphQLEndpoint {
     }
 
     @Mutation("createWidgetByHand")
-    public IWidget createNewWidgetByHand(@SchemaName("widgetString") String widgetString) {
+    public IWidget createNewWidgetByHand(@Name("widgetString") String widgetString) {
         Widget w = Widget.fromString(widgetString);
         allWidgets.add(w);
         return w;
@@ -52,7 +52,7 @@ public class MyGraphQLEndpoint {
     }
 
     @Mutation("createWidget")
-    public IWidget createNewWidget(@SchemaName("widget") Widget input) {
+    public IWidget createNewWidget(@Name("widget") Widget input) {
         Widget w = Widget.fromWidgetInput(input);
         allWidgets.add(w);
         return w;

@@ -111,7 +111,7 @@ public class SessionManagerConfig implements Cloneable {
     private String tableNameValue = null; // LIDB2775.25 zOS
     private boolean checkRecentlyInvalidList = true; // not documented, but think
                                                      // people are using this
-    private boolean modifyActiveCountOnInvalidatedSession = false; // PI73188
+    private boolean modifyActiveCountOnInvalidatedSession = true; //was initialized to false for PI73188
     // User was getting a negative activeCount. This prevents WAS
     // from decrementing activeCount multiple times on invalidation.
     private boolean useOracleBlob = false;
