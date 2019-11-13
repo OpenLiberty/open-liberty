@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,12 +18,12 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicReference;
 
+import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLSocketFactory;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ssl.JSSEHelper;
-import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.ssl.SSLSupport;
@@ -52,7 +52,7 @@ public class JaxWsSSLManager {
      * ssl configuration when fallbackOnDefault = true
      *
      * @param sslRef
-     * @param props the additional props to override the properties in SSLConfig
+     * @param props             the additional props to override the properties in SSLConfig
      * @param fallbackOnDefault if true, will fall back on server default ssl configuration
      * @return
      */
