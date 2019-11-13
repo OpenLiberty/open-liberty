@@ -18,7 +18,7 @@ Bundle-Description: JAX-WS Transport Level and Endpoints Security
 Import-Package: \
    com.ibm.ws.jaxws23.webcontainer, \
    com.ibm.ws.jaxws.metadata.builder, \
-   org.apache.cxf.*;version="[2.6.2,2.6.3)", \
+   org.apache.cxf.*;version="[3.2,4)", \
    com.ibm.ws.webcontainer.security.metadata, \
    com.ibm.wsspi.webcontainer.metadata, \
    com.ibm.wsspi.webcontainer.webapp, \
