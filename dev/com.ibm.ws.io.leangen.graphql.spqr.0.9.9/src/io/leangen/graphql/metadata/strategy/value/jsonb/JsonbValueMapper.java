@@ -50,7 +50,7 @@ import io.leangen.graphql.util.ClassUtils;
 
 import org.eclipse.microprofile.graphql.Description;
 import org.eclipse.microprofile.graphql.DefaultValue;
-import org.eclipse.microprofile.graphql.SchemaName;
+import org.eclipse.microprofile.graphql.Name;
 
 public class JsonbValueMapper implements ValueMapper, InputFieldBuilder {
 
@@ -152,12 +152,12 @@ public class JsonbValueMapper implements ValueMapper, InputFieldBuilder {
                 }
 
                 String fieldName = propName;
-                SchemaName schemaNameAnno = null;
+                Name schemaNameAnno = null;
                 if (setterMethod != null) {
-                    schemaNameAnno = setterMethod.getAnnotation(SchemaName.class);
+                    schemaNameAnno = setterMethod.getAnnotation(Name.class);
                 }
                 if (schemaNameAnno == null && field != null) {
-                    schemaNameAnno = field.getAnnotation(SchemaName.class);
+                    schemaNameAnno = field.getAnnotation(Name.class);
                 }
                 if (schemaNameAnno != null) {
                     fieldName = useDefaultIfEmpty(schemaNameAnno.value(), fieldName);
@@ -281,16 +281,16 @@ public class JsonbValueMapper implements ValueMapper, InputFieldBuilder {
                        if (LOG.isLoggable(Level.FINEST)) {
                            LOG.finest("<init> checking " + propName);
                        }
-                       if (addMapping(propName, m.getAnnotation(SchemaName.class))) {
+                       if (addMapping(propName, m.getAnnotation(Name.class))) {
                            return;
                        }
                        ClassUtils.findFieldBySetter(m).ifPresent(f -> {
-                           addMapping(propName, f.getAnnotation(SchemaName.class));
+                           addMapping(propName, f.getAnnotation(Name.class));
                        });
                    });
         }
 
-        private boolean addMapping(String propName, SchemaName schemaNameAnno) {
+        private boolean addMapping(String propName, Name schemaNameAnno) {
             if (LOG.isLoggable(Level.FINEST)) {
                 LOG.finest("addMapping " + propName + " -> " + (schemaNameAnno == null ? "null" : schemaNameAnno.value()));
             }
