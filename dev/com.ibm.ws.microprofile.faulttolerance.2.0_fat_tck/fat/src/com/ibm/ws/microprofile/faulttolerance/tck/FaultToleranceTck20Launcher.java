@@ -50,7 +50,8 @@ public class FaultToleranceTck20Launcher {
 
     @ClassRule
     public static RepeatTests repeat = RepeatTests.with(RepeatFaultTolerance.ft20metrics11Features(SERVER_NAME).fullFATOnly())
-                    .andWith(RepeatFaultTolerance.mp30Features(SERVER_NAME));
+                    .andWith(RepeatFaultTolerance.mp30Features(SERVER_NAME).fullFATOnly())
+                    .andWith(RepeatFaultTolerance.mp32Features(SERVER_NAME));
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -124,11 +125,12 @@ public class FaultToleranceTck20Launcher {
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
     public void launchFaultToleranceTCK() throws Exception {
         boolean isFullMode = TestModeFilter.shouldRun(TestMode.FULL);
-        boolean isMetrics11 = RepeatTestFilter.CURRENT_REPEAT_ACTION == RepeatFaultTolerance.FT20_METRICS11_ID;
+        boolean runMetricsOnly = RepeatTestFilter.CURRENT_REPEAT_ACTION == RepeatFaultTolerance.FT20_METRICS11_ID
+                                 || RepeatTestFilter.CURRENT_REPEAT_ACTION == RepeatFaultTolerance.MP30_FEATURES_ID;
 
         String suiteFileName;
-        if (isMetrics11) {
-            // For the repeat with FT 2.0 and mpMetrics 1.1, run only the metrics tests
+        if (runMetricsOnly) {
+            // For test configurations which only differ my the version of mpMetrics, just run the metrics tests
             suiteFileName = "tck-suite-metrics-only.xml";
         } else {
             suiteFileName = isFullMode ? "tck-suite.xml" : "tck-suite-lite.xml";
@@ -137,5 +139,4 @@ public class FaultToleranceTck20Launcher {
         MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.microprofile.faulttolerance.2.0_fat_tck", this.getClass() + ":launchFaultToleranceTCK", suiteFileName,
                               Collections.emptyMap(), Collections.emptySet());
     }
-
 }
