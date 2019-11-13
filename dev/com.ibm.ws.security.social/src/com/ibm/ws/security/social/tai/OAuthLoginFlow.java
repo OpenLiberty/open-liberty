@@ -45,7 +45,7 @@ public class OAuthLoginFlow {
     }
 
     TAIResult handleOAuthRequest(HttpServletRequest request, HttpServletResponse response, SocialLoginConfig clientConfig) throws WebTrustAssociationFailedException {
-        if (clientConfig instanceof Oauth2LoginConfigImpl && useAccessTokenFromRequest((Oauth2LoginConfigImpl) clientConfig)) {
+        if (clientConfig instanceof Oauth2LoginConfigImpl && SocialUtil.useAccessTokenFromRequest((Oauth2LoginConfigImpl) clientConfig)) {
             return handleAccessTokenFlow(request, response, (Oauth2LoginConfigImpl) clientConfig);
 
         }
@@ -57,14 +57,6 @@ public class OAuthLoginFlow {
         }
     }
 
-    private boolean useAccessTokenFromRequest(Oauth2LoginConfigImpl clientConfig) {
-
-        if (clientConfig.isAccessTokenRequired() || clientConfig.isAccessTokenSupported()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 
     private TAIResult handleAccessTokenFlow(HttpServletRequest request, HttpServletResponse response, Oauth2LoginConfigImpl clientConfig) throws WebTrustAssociationFailedException {
         TAIResult result = null;
@@ -72,7 +64,7 @@ public class OAuthLoginFlow {
         String tokenFromRequest = taiWebUtils.getBearerAccessToken(request, clientConfig);
         if (requestShouldHaveToken((Oauth2LoginConfigImpl) clientConfig)) {
             if (!validAccessToken(tokenFromRequest)) {
-                // TODO: print error about required token being null or not valid
+                Tr.error(tc,  "OPENSHIFT_ACCESS_TOKEN_MISSING");
                 return taiWebUtils.sendToErrorPage(response, TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED));
             }
             return handleAccessToken(tokenFromRequest, request, response, clientConfig);
