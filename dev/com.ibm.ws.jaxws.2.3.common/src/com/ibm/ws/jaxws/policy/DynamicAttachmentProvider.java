@@ -325,54 +325,23 @@ public class DynamicAttachmentProvider extends AbstractPolicyProvider implements
         });
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.apache.cxf.ws.policy.PolicyProvider#getEffectivePolicy(org.apache.cxf.service.model.ServiceInfo, org.apache.cxf.message.Message)
-     */
-    @Override
-    public Policy getEffectivePolicy(ServiceInfo arg0, Message arg1) {
-        return null;
+    public Policy getEffectivePolicy(BindingFaultInfo bfi, Message m) {
+        return bfi.getExtensor(Policy.class);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.apache.cxf.ws.policy.PolicyProvider#getEffectivePolicy(org.apache.cxf.service.model.EndpointInfo, org.apache.cxf.message.Message)
-     */
-    @Override
-    public Policy getEffectivePolicy(EndpointInfo arg0, Message arg1) {
-        return null;
+    public Policy getEffectivePolicy(BindingMessageInfo bmi, Message m) {
+        return bmi.getExtensor(Policy.class);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.apache.cxf.ws.policy.PolicyProvider#getEffectivePolicy(org.apache.cxf.service.model.BindingOperationInfo, org.apache.cxf.message.Message)
-     */
-    @Override
-    public Policy getEffectivePolicy(BindingOperationInfo arg0, Message arg1) {
-        return null;
+    public Policy getEffectivePolicy(BindingOperationInfo bi, Message m) {
+        return bi.getExtensor(Policy.class);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.apache.cxf.ws.policy.PolicyProvider#getEffectivePolicy(org.apache.cxf.service.model.BindingMessageInfo, org.apache.cxf.message.Message)
-     */
-    @Override
-    public Policy getEffectivePolicy(BindingMessageInfo arg0, Message arg1) {
-        return null;
+    public Policy getEffectivePolicy(EndpointInfo ei, Message m) {
+        return ei.getExtensor(Policy.class);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.apache.cxf.ws.policy.PolicyProvider#getEffectivePolicy(org.apache.cxf.service.model.BindingFaultInfo, org.apache.cxf.message.Message)
-     */
-    @Override
-    public Policy getEffectivePolicy(BindingFaultInfo arg0, Message arg1) {
-        return null;
+    public Policy getEffectivePolicy(ServiceInfo si, Message m) {
+        return si.getExtensor(Policy.class);
     }
-
 }
