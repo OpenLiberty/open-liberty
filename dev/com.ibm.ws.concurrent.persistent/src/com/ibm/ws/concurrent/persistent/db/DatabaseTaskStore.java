@@ -983,7 +983,7 @@ public class DatabaseTaskStore implements TaskStore {
         }
 
         if (trace && tc.isEntryEnabled())
-            Tr.exit(this, tc, "getPartitionWithState", partitionInfo == null ? null : Arrays.asList(partitionInfo));
+            Tr.exit(this, tc, "getPartitionWithState", partitionInfo == null ? null : Arrays.toString(partitionInfo));
         return partitionInfo == null ? null : (Long) partitionInfo[0];
     }
 

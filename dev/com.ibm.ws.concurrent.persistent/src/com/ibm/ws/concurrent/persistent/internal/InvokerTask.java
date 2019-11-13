@@ -52,7 +52,12 @@ public class InvokerTask implements Runnable, Synchronization {
     private static final TraceComponent tc = Tr.register(InvokerTask.class);
     final static SecureAction priv = AccessController.doPrivileged(SecureAction.get());
 
-    public final static ThreadLocal<Long> taskIdsOfRunningTasks = new ThreadLocal<Long>();
+    /**
+     * Array position 0 tracks the ID of the task that is currently running on the thread.
+     * Array position 1 tracks whether the task is known to have removed itself. This is not detected for pattern-based remove/cancel.
+     */
+    public final static ThreadLocal<long[]> runningTaskState = new ThreadLocal<long[]>();
+    final static long REMOVED_BY_SELF = 1;
 
     private final static int DEFAULT_TIMEOUT_FOR_SUSPENDED_TRAN = 1800; // 30 minutes
 
@@ -261,7 +266,8 @@ public class InvokerTask implements Runnable, Synchronization {
         TaskStore taskStore = persistentExecutor.taskStore;
         ApplicationTracker appTracker = persistentExecutor.appTrackerRef.getServiceWithException();
         TransactionManager tranMgr = persistentExecutor.tranMgrRef.getServiceWithException();
-        taskIdsOfRunningTasks.set(taskId);
+        long[] runningTaskRemovalState = new long[] { taskId, 0 };
+        runningTaskState.set(runningTaskRemovalState);
         try {
             partitionId = config.missedTaskThreshold2 < 1 ? persistentExecutor.getPartitionId() : null;
 
@@ -476,8 +482,14 @@ public class InvokerTask implements Runnable, Synchronization {
             short autoPurgeBit = failure == null ? TaskRecord.Flags.AUTO_PURGE_ON_SUCCESS.bit : TaskRecord.Flags.AUTO_PURGE_ALWAYS.bit;
 
             if ((nextExecTime == null || !skipped && nextFailureCount > 0) && (binaryFlags & autoPurgeBit) != 0) {
-                // Autopurge the completed task if it hasn't already been ended (removal/cancellation by self or other)
-                taskStore.remove(taskId, null, false);
+                // Autopurge the completed task unless it is known that the task removed/canceled itself during execution
+                if (runningTaskRemovalState[1] != InvokerTask.REMOVED_BY_SELF) {
+                    taskStore.remove(taskId, null, false);
+                    // EJB Persistent Timers requires that we allow in-progress execution of a timer that is
+                    // canceled/removed from another thread to commit. This means we cannot issue a rollback
+                    // when we find the timer/task to have already been removed. If this ever needed to change,
+                    // more work would need to be distinguish self-cancellation/removal for the pattern-based remove operations.
+                }
             } else {
                 // Update state
                 TaskRecord updates = new TaskRecord(false);
@@ -553,7 +565,17 @@ public class InvokerTask implements Runnable, Synchronization {
                             expected.setVersion(taskRecordRefresh.getVersion());
                             taskStore.persist(updates, expected);
                         }
-                    } // else the task removed itself
+                    } else { // the task was removed, either by itself or another thread
+                        if (trace && tc.isDebugEnabled())
+                            Tr.debug(this, tc, "task entry is gone",
+                                     Arrays.toString(runningTaskRemovalState),
+                                     "allows removal by other threads? " + ((binaryFlags & TaskRecord.Flags.SUSPEND_TRAN_OF_EXECUTOR_THREAD.bit) != 0));
+
+                        // EJB Persistent Timers requires that we allow in-progress execution of a timer that is
+                        // canceled/removed from another thread to commit. This means we cannot issue a rollback
+                        // when we find the timer/task to have already been removed. If this ever needed to change,
+                        // more work would need to be distinguish self-cancellation/removal for the pattern-based remove operations.
+                    }
                 }
             }
         } catch (Throwable x) {
@@ -569,7 +591,7 @@ public class InvokerTask implements Runnable, Synchronization {
             if (ejbSingletonLockCollaborator != null)
                 ejbSingletonLockCollaborator.unlock();
 
-            taskIdsOfRunningTasks.remove();
+            runningTaskState.remove();
 
             try {
                 tranMgr.setTransactionTimeout(0); // clear the value so we don't impact subsequent transactions on this thread

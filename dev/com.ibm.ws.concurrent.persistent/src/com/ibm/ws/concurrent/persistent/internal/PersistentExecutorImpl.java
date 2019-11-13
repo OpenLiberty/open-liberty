@@ -1392,10 +1392,10 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
             return false;
 
         TransactionController tranController = new TransactionController();
-        boolean result = false;
+        boolean removed = false;
         try {
             tranController.preInvoke();
-            result = taskStore.remove(taskId, owner, true);
+            removed = taskStore.remove(taskId, owner, true);
         } catch (Throwable x) {
             tranController.setFailure(x);
         } finally {
@@ -1404,7 +1404,12 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
                 throw x;
         }
 
-        return result;
+        if (removed) {
+            long[] runningTaskState = InvokerTask.runningTaskState.get();
+            if (runningTaskState != null && runningTaskState[0] == taskId)
+                runningTaskState[1] = InvokerTask.REMOVED_BY_SELF;
+        }
+        return removed;
     }
 
     /** {@inheritDoc} */
@@ -1518,10 +1523,10 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
     @Override
     public boolean removeTimer(long taskId) throws Exception {
         TransactionController tranController = new TransactionController();
-        boolean result = false;
+        boolean removed = false;
         try {
             tranController.preInvoke();
-            result = taskStore.remove(taskId, null, true);
+            removed = taskStore.remove(taskId, null, true);
         } catch (Throwable x) {
             tranController.setFailure(x);
         } finally {
@@ -1530,7 +1535,12 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
                 throw x;
         }
 
-        return result;
+        if (removed) {
+            long[] runningTaskState = InvokerTask.runningTaskState.get();
+            if (runningTaskState != null && runningTaskState[0] == taskId)
+                runningTaskState[1] = InvokerTask.REMOVED_BY_SELF;
+        }
+        return removed;
     }
 
     /** {@inheritDoc} */
