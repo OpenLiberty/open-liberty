@@ -208,6 +208,27 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
         }
     }
 
+    @Test
+    public void groupsIsEmpty() {
+        try {
+            mockery.checking(new Expectations() {
+                {
+                    allowing(config).getUserNameAttribute();
+                    will(returnValue("username"));
+                }
+            });
+            String returnedString = userApiUtils.modifyExistingResponseToJSON("{\"status\":{\"authenticated\":true,\"user\":{\"username\":\"admin\",\"uid\":\"ef111c43-d33a-11e9-b239-0016ac102af6\",\"groups\":[],\"extra\":{\"scopes.authorization.openshift.io\":[\"user:full\"]}}}}");
+            assertEquals(returnedString, "{\"username\":\"admin\",\"groups\":[]}");
+            
+        } catch (SocialLoginException e) {
+            //nls 
+           // verifyException(e, "OPENSHIFT_USER_API_RESPONSE_MISCONFIGURED_KEY");
+               fail();
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+    
     @SuppressWarnings("unchecked")
     @Test
     public void test_getUserApiResponse_nullAccessToken() {
