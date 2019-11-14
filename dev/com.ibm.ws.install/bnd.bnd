@@ -25,9 +25,12 @@ Private-Package: \
 
 instrument.disabled: true
 
+-includeresource: \ @${repo;org.fusesource.jansi;1.18.0;EXACT}!/!META-INF/MANIFEST.MF|META-INF/maven/*
+
 -buildpath: \
 	com.ibm.ws.crypto.passwordutil;version=latest,\
-	com.ibm.ws.install.map;version=latest, \
+	com.ibm.ws.install.map;version=latest,\
+	org.fusesource.jansi;strategy=exact;version=1.18.0,\
 	com.ibm.ws.kernel.boot.core;version=latest,\
 	com.ibm.ws.kernel.feature;version=latest,\
 	com.ibm.ws.product.utility;version=latest,\
@@ -38,11 +41,11 @@ instrument.disabled: true
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.ws.org.apache.aries.util;version=latest,\
 	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
-	com.ibm.websphere.appserver.spi.logging;version=latest, \
+	com.ibm.websphere.appserver.spi.logging;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.kernel.feature.cmdline;version=latest,\
-	com.ibm.ws.kernel.feature.core;version=latest,\
-	wlp.lib.extract;version=latest
+	com.ibm.ws.kernel.feature.core;version=latest
+
 
 -testpath: \
     com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
