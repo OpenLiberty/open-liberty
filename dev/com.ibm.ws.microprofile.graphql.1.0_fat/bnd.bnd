@@ -24,6 +24,7 @@ src: \
   test-applications/inputFieldsApp/src,\
   test-applications/outputFieldsApp/src,\
   test-applications/typesApp/src,\
+  test-applications/voidQueryApp/src
 
 fat.project: true
 
