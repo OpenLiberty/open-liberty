@@ -58,6 +58,7 @@ public class GraphQLServletContainerInitializer implements ServletContainerIniti
         try {
             schema = GraphQLExtension.createSchema(beanManager);
         } catch (Throwable t) {
+            Tr.error(tc, "ERROR_GENERATING_SCHEMA_CWMGQ0001E", sc.getServletContextName());
             throw new ServletException(t);
         }
 
