@@ -54,6 +54,7 @@ public class BrowserAndServerLogMessageTest extends CommonTestClass {
         TraceComponent tcUnknownBundle = Tr.register(BrowserAndServerLogMessageTest.class, "SOMEGROUP", "com.ibm.ws.unknown.bundle");
         Enumeration<Locale> requestLocales = getLocales("en");
         BrowserAndServerLogMessage msg = new BrowserAndServerLogMessage(tcUnknownBundle, MSG_KEY_NO_INSERTS);
+        msg.setLocales(requestLocales);
         assertEquals("Server error message should have just been the message key since the registered message bundle is unknown.", MSG_KEY_NO_INSERTS, msg.getServerErrorMessage());
         assertEquals("Browser error message should have just been the message key since the registered message bundle is unknown.", MSG_KEY_NO_INSERTS, msg.getBrowserErrorMessage());
     }
@@ -70,6 +71,7 @@ public class BrowserAndServerLogMessageTest extends CommonTestClass {
     public void testUnknownLocales_expectEnglishMessages() {
         Enumeration<Locale> requestLocales = getLocales("xyz", "123", "does not exist");
         BrowserAndServerLogMessage msg = new BrowserAndServerLogMessage(tc, MSG_KEY_NO_INSERTS);
+        msg.setLocales(requestLocales);
         verifyPattern(msg.getServerErrorMessage(), MSG_REGEX_NO_INSERTS_EN, "Server error message did not match expected regex.");
         verifyPattern(msg.getBrowserErrorMessage(), MSG_REGEX_NO_INSERTS_EN, "Browser error message did not match expected regex.");
     }
@@ -78,6 +80,7 @@ public class BrowserAndServerLogMessageTest extends CommonTestClass {
     public void testAllEnglishMessagesExpected_noInserts() {
         Enumeration<Locale> requestLocales = getLocales("en");
         BrowserAndServerLogMessage msg = new BrowserAndServerLogMessage(tc, MSG_KEY_NO_INSERTS);
+        msg.setLocales(requestLocales);
         verifyPattern(msg.getServerErrorMessage(), MSG_REGEX_NO_INSERTS_EN, "Server error message did not match expected regex.");
         verifyPattern(msg.getBrowserErrorMessage(), MSG_REGEX_NO_INSERTS_EN, "Browser error message did not match expected regex.");
     }
@@ -86,6 +89,7 @@ public class BrowserAndServerLogMessageTest extends CommonTestClass {
     public void testFrenchBrowserMessagesExpected_noInserts() {
         Enumeration<Locale> requestLocales = getLocales("fr");
         BrowserAndServerLogMessage msg = new BrowserAndServerLogMessage(tc, MSG_KEY_NO_INSERTS);
+        msg.setLocales(requestLocales);
         verifyPattern(msg.getServerErrorMessage(), MSG_REGEX_NO_INSERTS_EN, "Server error message did not match expected regex.");
         verifyPattern(msg.getBrowserErrorMessage(), MSG_REGEX_NO_INSERTS_FR, "Browser error message did not match expected regex.");
     }
@@ -94,6 +98,7 @@ public class BrowserAndServerLogMessageTest extends CommonTestClass {
     public void testFrenchExtendedBrowserMessagesExpected_noInserts() {
         Enumeration<Locale> requestLocales = getLocales("fr", "fr-FR", "fr-ca", "fr-CA", "en");
         BrowserAndServerLogMessage msg = new BrowserAndServerLogMessage(tc, MSG_KEY_NO_INSERTS);
+        msg.setLocales(requestLocales);
         verifyPattern(msg.getServerErrorMessage(), MSG_REGEX_NO_INSERTS_EN, "Server error message did not match expected regex.");
         verifyPattern(msg.getBrowserErrorMessage(), MSG_REGEX_NO_INSERTS_FR, "Browser error message did not match expected regex.");
     }
@@ -102,6 +107,7 @@ public class BrowserAndServerLogMessageTest extends CommonTestClass {
     public void testChineseBrowserMessagesExpected_noInserts() {
         Enumeration<Locale> requestLocales = getLocales("zh", "fr", "en");
         BrowserAndServerLogMessage msg = new BrowserAndServerLogMessage(tc, MSG_KEY_NO_INSERTS);
+        msg.setLocales(requestLocales);
         verifyPattern(msg.getServerErrorMessage(), MSG_REGEX_NO_INSERTS_EN, "Server error message did not match expected regex.");
         verifyPattern(msg.getBrowserErrorMessage(), MSG_REGEX_NO_INSERTS_ZH, "Browser error message did not match expected regex.");
     }
@@ -112,6 +118,7 @@ public class BrowserAndServerLogMessageTest extends CommonTestClass {
         String insert0 = "insert0";
         String insert1 = "insert1";
         BrowserAndServerLogMessage msg = new BrowserAndServerLogMessage(tc, MSG_KEY_WITH_INSERTS, insert0, insert1);
+        msg.setLocales(requestLocales);
         verifyPattern(msg.getServerErrorMessage(), String.format(MSG_REGEX_WITH_INSERTS_EN, insert0, insert1), "Server error message did not match expected regex.");
         verifyPattern(msg.getBrowserErrorMessage(), String.format(MSG_REGEX_WITH_INSERTS_EN, insert0, insert1), "Browser error message did not match expected regex.");
     }
@@ -122,6 +129,7 @@ public class BrowserAndServerLogMessageTest extends CommonTestClass {
         String insert0 = "insert0";
         String insert1 = "insert1";
         BrowserAndServerLogMessage msg = new BrowserAndServerLogMessage(tc, MSG_KEY_WITH_INSERTS, insert0, insert1);
+        msg.setLocales(requestLocales);
         verifyPattern(msg.getServerErrorMessage(), String.format(MSG_REGEX_WITH_INSERTS_EN, insert0, insert1), "Server error message did not match expected regex.");
         verifyPattern(msg.getBrowserErrorMessage(), String.format(MSG_REGEX_WITH_INSERTS_FR, insert0, insert1), "Browser error message did not match expected regex.");
     }

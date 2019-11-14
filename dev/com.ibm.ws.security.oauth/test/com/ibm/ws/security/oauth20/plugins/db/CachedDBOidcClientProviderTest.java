@@ -307,6 +307,9 @@ public abstract class CachedDBOidcClientProviderTest extends AbstractOidcRegistr
             try {
                 OidcBaseClient result = mockProvider.put(baseClient);
                 fail("Should have thrown exception but did not. Result was " + result);
+            } catch (OidcServerException e) {
+                String operation = "INSERT";
+                verifyExceptionPerformingDBOperationOidc(e, operation, clientId);
             } catch (Exception e) {
                 String operation = "INSERT";
                 verifyExceptionPerformingDBOperation(e, operation, clientId);
@@ -362,6 +365,9 @@ public abstract class CachedDBOidcClientProviderTest extends AbstractOidcRegistr
             try {
                 OidcBaseClient result = mockProvider.get(clientId);
                 fail("Should have thrown exception but did not. Result was " + result);
+            } catch (OidcServerException e) {
+                String operation = "SELECT";
+                verifyExceptionPerformingDBOperationOidc(e, operation, clientId);
             } catch (Exception e) {
                 String operation = "SELECT";
                 verifyExceptionPerformingDBOperation(e, operation, clientId);
@@ -401,6 +407,8 @@ public abstract class CachedDBOidcClientProviderTest extends AbstractOidcRegistr
             try {
                 Collection<OidcBaseClient> result = mockProvider.getAll();
                 fail("Should have thrown exception but did not. Result was " + result);
+            } catch (OidcServerException e) {
+                verifyExceptionGettingAllClientsOidc(e);
             } catch (Exception e) {
                 verifyExceptionGettingAllClients(e);
             }
@@ -467,6 +475,8 @@ public abstract class CachedDBOidcClientProviderTest extends AbstractOidcRegistr
             try {
                 Collection<OidcBaseClient> result = mockProvider.getAll(request);
                 fail("Should have thrown exception but did not. Result was " + result);
+            } catch (OidcServerException e) {
+                verifyExceptionGettingAllClientsOidc(e);
             } catch (Exception e) {
                 verifyExceptionGettingAllClients(e);
             }
@@ -507,6 +517,9 @@ public abstract class CachedDBOidcClientProviderTest extends AbstractOidcRegistr
             try {
                 boolean result = mockProvider.exists(clientId);
                 fail("Should have thrown exception but did not. Result was " + result);
+            } catch (OidcServerException e) {
+                String operation = "SELECT";
+                verifyExceptionPerformingDBOperationOidc(e, operation, clientId);
             } catch (Exception e) {
                 String operation = "SELECT";
                 verifyExceptionPerformingDBOperation(e, operation, clientId);
@@ -550,6 +563,9 @@ public abstract class CachedDBOidcClientProviderTest extends AbstractOidcRegistr
             try {
                 boolean result = mockProvider.validateClient(clientId, clientPwd);
                 fail("Should have thrown exception but did not. Result was " + result);
+            } catch (OidcServerException e) {
+                String operation = "SELECT";
+                verifyExceptionPerformingDBOperationOidc(e, operation, clientId);
             } catch (Exception e) {
                 String operation = "SELECT";
                 verifyExceptionPerformingDBOperation(e, operation, clientId);
@@ -624,6 +640,9 @@ public abstract class CachedDBOidcClientProviderTest extends AbstractOidcRegistr
             try {
                 OidcBaseClient result = mockProvider.update(baseClient);
                 fail("Should have thrown exception but did not. Result was " + result);
+            } catch (OidcServerException e) {
+                String operation = "UPDATE";
+                verifyExceptionPerformingDBOperationOidc(e, operation, clientId);
             } catch (Exception e) {
                 String operation = "UPDATE";
                 verifyExceptionPerformingDBOperation(e, operation, clientId);
@@ -671,6 +690,9 @@ public abstract class CachedDBOidcClientProviderTest extends AbstractOidcRegistr
             try {
                 boolean result = mockProvider.delete(clientId);
                 fail("Should have thrown exception but did not. Result was " + result);
+            } catch (OidcServerException e) {
+                String operation = "DELETE";
+                verifyExceptionPerformingDBOperationOidc(e, operation, clientId);
             } catch (Exception e) {
                 String operation = "DELETE";
                 verifyExceptionPerformingDBOperation(e, operation, clientId);
@@ -713,12 +735,22 @@ public abstract class CachedDBOidcClientProviderTest extends AbstractOidcRegistr
         verifyExceptionAndLogMessages(e, msgRegex);
     }
 
+    void verifyExceptionPerformingDBOperationOidc(OidcServerException e, String operation, final String clientId) {
+        String msgRegex = MessageConstants.CWWKS1460E_ERROR_PERFORMING_DB_OPERATION + ".+" + operation + ".+" + clientId;
+        verifyExceptionAndLogMessagesOidc(e, msgRegex);
+    }
+
     /**
      * Verifies that CWWKS1461E message appears in the exception message and messages.log.
      */
     void verifyExceptionGettingAllClients(Exception e) {
         String msgRegex = MessageConstants.CWWKS1461E_ERROR_GETTING_CLIENTS_FROM_DB;
         verifyExceptionAndLogMessages(e, msgRegex);
+    }
+
+    void verifyExceptionGettingAllClientsOidc(OidcServerException e) {
+        String msgRegex = MessageConstants.CWWKS1461E_ERROR_GETTING_CLIENTS_FROM_DB;
+        verifyExceptionAndLogMessagesOidc(e, msgRegex);
     }
 
     /**
@@ -728,6 +760,12 @@ public abstract class CachedDBOidcClientProviderTest extends AbstractOidcRegistr
     void verifyExceptionAndLogMessages(Exception e, String msgRegex) {
         verifyException(e, msgRegex);
         assertFalse("Exception message should not have contained SQL exception message but did.", e.getLocalizedMessage().contains(defaultExceptionMsg));
+        verifyLogMessage(outputMgr, msgRegex + ".+" + Pattern.quote(defaultExceptionMsg));
+    }
+
+    void verifyExceptionAndLogMessagesOidc(OidcServerException e, String msgRegex) {
+        verifyExceptionString(e.getErrorDescription(), msgRegex);
+        assertFalse("Exception message should not have contained SQL exception message but did.", e.getErrorDescription().contains(defaultExceptionMsg));
         verifyLogMessage(outputMgr, msgRegex + ".+" + Pattern.quote(defaultExceptionMsg));
     }
 

@@ -88,7 +88,10 @@ public class OidcServerException extends OAuth20Exception {
      * @return The OAuth error description.
      */
     public String getErrorDescription() {
-        return _errorDescription;
+        if (_browserServerLog == null) {
+            return _errorDescription;
+        }
+        return _browserServerLog.getBrowserErrorMessage();
     }
 
     public String getErrorDescription(Enumeration<Locale> locales) {
