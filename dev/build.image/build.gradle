@@ -644,30 +644,6 @@ if (isAutomatedBuild) {
             into 'packaging/tempPackagingDir'
         }
 
-        task updateSpecTemplate(type: Copy) {
-            from 'packaging'
-            include 'openliberty.spec.template'
-            into 'packaging/rpmbuild/SPECS'
-            filter { line -> line.replaceAll('@SPEC_VERSION@', bnd('libertyServiceVersion', 'Unknown')) }
-            rename { it.replace(".template", "") }
-        }
-
-        task updateChangelogTemplate(type: Copy) {
-            from 'packaging'
-            include 'changelog.template'
-            into 'packaging/debuild/openliberty/debian'
-            filter { line -> line.replaceAll('@CHANGELOG_VERSION@', bnd('libertyServiceVersion', 'Unknown')) }
-            rename { it.replace(".template", "") }
-        }
-
-        task updateBuildPackageScriptTemplate(type: Copy) {
-            from 'packaging'
-            include 'buildOsNativePackages.sh.template'
-            into 'packaging'
-            filter { line -> line.replaceAll('@DRIVER_VERSION@', bnd('libertyServiceVersion', 'Unknown')) }
-            rename { it.replace(".template", "") }
-        }
-
         task updateRulesTemplate(type: Copy) {
             from 'packaging'
             include 'rules.template'
@@ -677,13 +653,13 @@ if (isAutomatedBuild) {
         }
 
         task buildOsNativePackages(type: Exec) {
+		description 'builds OS Native packages'
+
             dependsOn copyOpenLiberty
-            dependsOn updateChangelogTemplate
-            dependsOn updateSpecTemplate
-            dependsOn updateBuildPackageScriptTemplate
             dependsOn updateRulesTemplate
 
             workingDir 'packaging'
+            environment "GPG_PASS", rootProject.userProps.getProperty('gpgPassphrase')
             mkdir("packaging/tempPackagingDir/tempTar")
 
             def rpms = file("./packaging/rpmbuild/RPMS/noarch/openliberty-" + bnd('libertyServiceVersion') + "-1.noarch.rpm")
@@ -695,7 +671,7 @@ if (isAutomatedBuild) {
 
             errorOutput = new ByteArrayOutputStream()
 
-            commandLine 'sh', './buildOsNativePackages.sh'
+            commandLine 'sh', './buildOsNativePackages.sh', bnd('libertyServiceVersion'), isRelease
 
             ignoreExitValue true
 
@@ -703,7 +679,6 @@ if (isAutomatedBuild) {
                 file('packaging/tempPackagingDir').deleteDir()
                 file('packaging/rpmbuild/SPECS/openliberty.spec').delete()
                 file('packaging/debuild/openliberty/debian/changelog').delete()
-                file('packaging/buildOsNativePackages.sh').delete()
                 file('packaging/debuild/openliberty/debian/rules').delete()
                 if (execResult.getExitValue() != 0) {
                     throw new GradleException("Script buildOsNativePackages.sh failed to run rpmbuild and debuild: " + errorOutput.toString())
