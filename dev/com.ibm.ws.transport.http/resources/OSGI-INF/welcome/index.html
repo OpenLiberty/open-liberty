@@ -8,6 +8,11 @@
 		}
 
 		@font-face {
+			font-family: IBMPlexSans;
+			src: url('fonts/IBMPlexSans-Regular.woff');
+		}
+
+		@font-face {
 			font-family: BunueloLight;
 			src: url("/fonts/BunueloCleanPro-Light.otf");
 		}
@@ -20,7 +25,7 @@
 		body {
 			margin: 0;
 			padding: 0;
-			font-family: 'Helvetica', 'Arial', sans-serif;
+			font-family: IBMPlexSans, 'Helvetica', 'Arial', sans-serif;
 			font-size: 16px;
 			overflow-x: hidden;
 		}
@@ -192,6 +197,8 @@
 
 		.inner-hero__message {
 			padding-top: 125px;
+			padding-left: 20px;
+			padding-right: 20px;
 		}
 
 		@media (min-width: 600px) {
@@ -205,15 +212,20 @@
 		}
 
 		@media (min-width: 767px) {
+			.inner-hero__message {
+				padding-left: 80px;
+				padding-right: 80px;
+			}
+
 			.inner-hero__message h3 {
 				padding-top: 60px;
 			}
 		}
 
-		@media (max-width: 1164.98px) {
+		@media (min-width: 1165px) {
 			.inner-hero__message {
-				padding-left: 80px;
-				padding-right: 80px;
+				padding-left: 40px;
+				padding-right: 40px;
 			}
 		}
 
@@ -229,6 +241,7 @@
 
 		#inner-hero__title {
 			font-size: 46px;
+			margin-top: -10px;
 		}
 
 		#inner-hero__open_source {
@@ -456,7 +469,7 @@
 		}
 
 		.resources {
-			padding: 20px 40px 15px 40px;
+			padding: 25px 20px 15px 20px;
 		}
 
 		.resources .row {
@@ -464,25 +477,13 @@
 			padding: 0px 20px;
 		}
 
-		@media (min-width: 600px) {
-			.resources .row {
-				flex-direction: row;
-			}
-		}
-
 		.resource {
-			width: 150px;
+			width: 90px;
 			text-align: center;
-			padding-top: 30px;
-			padding-bottom: 10px;
+			padding-top: 15px;
+			padding-bottom: 0px;
 			cursor: pointer;
 			margin: 0 auto;
-		}
-
-		@media (min-width: 600px) {
-			.resource {
-				width: 20%;
-			}
 		}
 
 		.resource:hover {
@@ -490,18 +491,7 @@
 		}
 
 		.resource__logo {
-			height: 80px;
-		}
-
-		#ol_logo {
-			position: relative;
-			left: 0px;
-		}
-
-		@media (min-width: 600px) and (max-width: 991px) {
-			#ol_logo {
-				left: -12px;
-			}
+			height: 40px;
 		}
 
 		.circle {
@@ -509,6 +499,95 @@
 			border: 1px solid #C8D2D2;
 			padding: 6px;
 			background-color: #ffffff;
+		}
+
+		#second_row > :first-child {
+			margin-left: 18%;
+		}
+
+		#second_row > :nth-child(2) {
+			margin-right: 18%;
+		}
+
+		@media (min-width: 320px) {
+			.resources .row {
+				flex-direction: row;
+				padding: 0px;
+			}
+		}
+
+		@media (min-width: 400px) {
+			.resource {
+				width: 100px;
+			}
+
+			.resource__logo {
+				height: 50px;
+			}
+
+			#second_row > :first-child {
+				margin-left: 21%;
+			}
+
+			#second_row > :nth-child(2) {
+				margin-right: 21%;
+			}
+		}
+
+		@media (min-width: 500px) {
+			.resource {
+				width: 120px;
+			}
+
+			.resource__logo {
+				height: 70px;
+			}
+		}
+
+		@media (min-width: 768px) {
+			.resources {
+				padding-left: 40px;
+				padding-right: 40px;
+			}
+
+			.resource {
+				width: 130px;
+			}
+
+			.resource__logo {
+				height: 80px;
+			}
+		}
+
+		@media (min-width: 992px) {
+
+			#first_row {
+				float: left;
+				width: 60%;
+			}
+
+			#second_row {
+				float: right;
+				width: 40%;
+			}
+
+			.resources {
+				height: 250px;
+			}
+
+			#second_row > :first-child {
+				margin-left: auto;
+			}
+
+			#second_row > :nth-child(2) {
+				margin-right: auto;
+			}
+
+			.resource {
+				padding-top: 30px;
+				padding-bottom: 10px;
+			}
+
 		}
 		
 
@@ -713,7 +792,7 @@
 
 		<section class="resources" data-externalizedAriaLabel="RESOURCES_SECTION">
 			<h2 data-externalizedString="RESOURCES"></h2>
-			<div class="row">
+			<div id="first_row" class="row">
 				<div class="resource">
 					<a href="https://github.com/OpenLiberty/open-liberty" target="_blank" rel="noopener">
 						<img class="resource__logo" src="/img/github_logo.png" data-externalizedAlt="GITHUB">
@@ -721,9 +800,9 @@
 					</a>
 				</div>
 				<div class="resource">
-					<a href="https://twitter.com/OpenLibertyIO" target="_blank" rel="noopener">
-						<img class="resource__logo" src="/img/twitter_logo.png" data-externalizedAlt="TWITTER">
-						<p>Twitter</p>
+					<a href="https://openliberty.io/support/" target="_blank" rel="noopener">
+						<img class="resource__logo" src="/img/open_liberty_logo.png" data-externalizedAlt="OL_SUPPORT">
+						<p data-externalizedString="SUPPORT"></p>
 					</a>
 				</div>
 				<div class="resource">
@@ -732,6 +811,8 @@
 						<p>Stack Overflow</p>
 					</a>
 				</div>
+			</div>
+			<div id="second_row" class="row">
 				<div class="resource">
 					<a href="https://groups.io/g/openliberty" target="_blank" rel="noopener">
 						<img class="resource__logo circle" src="/img/groups_io_logo.jpeg" data-externalizedAlt="GROUPS_IO">
@@ -739,11 +820,11 @@
 					</a>
 				</div>
 				<div class="resource">
-					<a href="https://openliberty.io/support/" target="_blank" rel="noopener">
-						<img id="ol_logo" class="resource__logo" src="/img/open_liberty_logo.png" data-externalizedAlt="OL_SUPPORT">
-						<p data-externalizedString="SUPPORT"></p>
-					</a>		
-				</div>		
+					<a href="https://twitter.com/OpenLibertyIO" target="_blank" rel="noopener">
+						<img class="resource__logo" src="/img/twitter_logo.png" data-externalizedAlt="TWITTER">
+						<p>Twitter</p>
+					</a>
+				</div>
 			</div>
 		</section>
 
