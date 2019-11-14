@@ -52,9 +52,6 @@ public class JaegerConfigTest {
     @Server("jaegerServerImproper")
     private static LibertyServer server2;
     
-    @Server("jaegerServerNotEnabled")
-    private static LibertyServer server3;
-    
     private static LibertyServer currentServer;
     
     /**
@@ -66,21 +63,18 @@ public class JaegerConfigTest {
     public static void setUp() throws Exception {
         server1 = LibertyServerFactory.getLibertyServer("jaegerServer1");
         server2 = LibertyServerFactory.getLibertyServer("jaegerServer2");
-        server3 = LibertyServerFactory.getLibertyServer("jaegerServer3");
         WebArchive serviceWar = ShrinkWrap.create(WebArchive.class, "mpOpenTracing.war");
         serviceWar.addPackages(true, "com.ibm.ws.testing.mpOpenTracing");
         serviceWar.addAsWebInfResource(
                                        new File("test-applications/mpOpenTracing/resources/beans.xml"));
         ShrinkHelper.exportAppToServer(server1, serviceWar);
         ShrinkHelper.exportAppToServer(server2, serviceWar);
-        ShrinkHelper.exportAppToServer(server3, serviceWar);
         
         File libsDir = new File("lib");
         File[] libs = libsDir.listFiles();
         for (File file : libs) {
             server1.copyFileToLibertyServerRoot(file.getParent(), "jaegerLib", file.getName());
             // We are not copying the library to server2 for improper config test
-            server3.copyFileToLibertyServerRoot(file.getParent(), "jaegerLib", file.getName());
         }
     }
 
@@ -131,28 +125,6 @@ public class JaegerConfigTest {
         Assert.assertNotNull(logMsg);
     }
 
-    /**
-     * Ensure exception is thrown when Jaeger is not enabled in server env.
-     * 
-     * @throws Exception Errors executing the service.
-     */
-    
-    @Test
-    public void testJaegerNotEnabled() throws Exception {
-        server3.startServer();
-        currentServer = server3;
-        String methodName = "testJaegerNotEnabled";
-        try {
-            executeWebService(server3, "helloWorld");
-        } catch (IOException e) {
-            // Error should be thrown when hitting endpoint
-        }
-        String logMsg = server3.waitForStringInLog("CWMOT0008E");
-        FATLogging.info(CLASS, methodName, "Actual Response", logMsg);
-        Assert.assertNotNull(logMsg);
-    }
-    
-    
     protected List<String> executeWebService(LibertyServer server, String method) throws Exception {
         String requestUrl = "http://" +
                             server.getHostname() + ":" +
