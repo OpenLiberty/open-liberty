@@ -65,7 +65,6 @@ import com.ibm.ws.concurrent.persistent.ejb.TimerTrigger;
 import com.ibm.ws.concurrent.persistent.ejb.TimersPersistentExecutor;
 
 import componenttest.annotation.AllowedFFDC;
-import componenttest.annotation.ExpectedFFDC;
 
 @WebServlet("/*")
 public class SchedulerFATServlet extends HttpServlet {
@@ -438,18 +437,8 @@ public class SchedulerFATServlet extends HttpServlet {
         if (!status.isCancelled())
             throw new Exception("Task " + status + " does not show that it was canceled.");
 
-        // Data that was persisted by the task must be rolled back.
-        Connection con = testDB.getConnection();
-        try {
-            PreparedStatement pstmt = con.prepareStatement("UPDATE MYTABLE SET MYVALUE=-1 WHERE MYKEY=?");
-            pstmt.setString(1, "testCancelRunningTaskFE");
-            int updateCount = pstmt.executeUpdate();
-            // TODO need awareness in code of self-removal vs other threads before we can enable this part:
-            //if (updateCount != 0)
-            //    throw new Exception("Cancel operation did not cause task updates to roll back. Found: " + updateCount);
-        } finally {
-            con.close();
-        }
+        // Data that was persisted by the task must be committed despite the cancellation (a requirement from Persistent EJB Timers)
+        pollForTableEntry("testCancelRunningTaskFE", 1);
     }
 
     /**
@@ -471,7 +460,8 @@ public class SchedulerFATServlet extends HttpServlet {
 
         CancelableTask.notifyTaskCanceled(taskName);
 
-        // TODO fix database checking logic
+        // Data that was persisted by the task must be committed despite the cancellation (a requirement from Persistent EJB Timers)
+        pollForTableEntry("testCancelRunningTaskSuspendTransaction", 1);
 
         status = scheduler.getStatus(status.getTaskId());
         if (!status.isCancelled() || !status.isDone())
@@ -1751,18 +1741,8 @@ public class SchedulerFATServlet extends HttpServlet {
         // Allow the blocked task to complete
         CancelableTask.notifyTaskCanceled(taskName);
 
-        // Data that was persisted by the task must be rolled back.
-        Connection con = testDB.getConnection();
-        try {
-            PreparedStatement pstmt = con.prepareStatement("UPDATE MYTABLE SET MYVALUE=-1 WHERE MYKEY=?");
-            pstmt.setString(1, "testRemoveRunningTaskAutoPurgeFE");
-            int updateCount = pstmt.executeUpdate();
-            // TODO need awareness in code of self-removal vs other threads before we can enable this part:
-            //if (updateCount != 0)
-            //    throw new Exception("Remove operation did not cause task updates to roll back. Found: " + updateCount);
-        } finally {
-            con.close();
-        }
+        // Data that was persisted by the task must be committed despite the removal (a requirement from Persistent EJB Timers)
+        pollForTableEntry("testRemoveRunningTaskAutoPurgeFE", 1);
     }
 
     /**
@@ -1784,22 +1764,8 @@ public class SchedulerFATServlet extends HttpServlet {
         // Allow the blocked task to complete
         CancelableTask.notifyTaskCanceled(taskName);
 
-        // Data that was persisted by the task must be rolled back.
-        Connection con = testDB.getConnection();
-        try {
-            PreparedStatement pstmt = con.prepareStatement("UPDATE MYTABLE SET MYVALUE=-1 WHERE MYKEY=?");
-            pstmt.setString(1, "testRemoveRunningTaskFE");
-            int updateCount = pstmt.executeUpdate();
-            // TODO need awareness in code of self-removal vs other threads before we can enable this part:
-            //if (updateCount != 0)
-            //    throw new Exception("Remove operation did not cause task updates to roll back. Found: " + updateCount);
-        } finally {
-            con.close();
-        }
-
-        status = scheduler.getStatus(status.getTaskId());
-        if (status != null)
-            throw new Exception("Task entry was not removed " + status);
+        // Data that was persisted by the task must be committed despite the removal (a requirement from Persistent EJB Timers)
+        pollForTableEntry("testRemoveRunningTaskFE", 1);
     }
 
     /**
@@ -1816,7 +1782,8 @@ public class SchedulerFATServlet extends HttpServlet {
 
         CancelableTask.waitForStart(taskName);
 
-        boolean removed = scheduler.remove(status.getTaskId());
+        long taskId = status.getTaskId();
+        boolean removed = scheduler.remove(taskId);
         if (!removed)
             throw new Exception("Unable to remove task " + status.getTaskId());
 
@@ -1829,7 +1796,8 @@ public class SchedulerFATServlet extends HttpServlet {
         if (status != null)
             throw new Exception("Task entry did not autopurge " + status);
 
-        // TODO: Data that was persisted by the task must be rolled back.
+        // Data that was persisted by the task must be committed despite the removal (a requirement from Persistent EJB Timers)
+        pollForTableEntry("testRemoveRunningTaskSuspendTransaction", 1);
     }
 
     /**

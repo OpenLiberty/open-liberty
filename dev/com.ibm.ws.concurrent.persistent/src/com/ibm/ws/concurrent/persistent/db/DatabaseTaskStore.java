@@ -983,7 +983,7 @@ public class DatabaseTaskStore implements TaskStore {
         }
 
         if (trace && tc.isEntryEnabled())
-            Tr.exit(this, tc, "getPartitionWithState", partitionInfo == null ? null : Arrays.asList(partitionInfo));
+            Tr.exit(this, tc, "getPartitionWithState", partitionInfo == null ? null : Arrays.toString(partitionInfo));
         return partitionInfo == null ? null : (Long) partitionInfo[0];
     }
 
@@ -1630,12 +1630,18 @@ public class DatabaseTaskStore implements TaskStore {
     /** {@inheritDoc} */
     @FFDCIgnore({ LockTimeoutException.class, PersistenceException.class, QueryTimeoutException.class })
     @Override
-    public boolean setPartitionIfNotLocked(long taskId, int version, long newPartitionId) throws Exception {
+    public boolean claimIfNotLocked(long taskId, int version, long claimExpiryOrPartition) throws Exception {
         String update = "UPDATE Task t SET t.PARTN=:p,t.VERSION=t.VERSION+1 WHERE t.ID=:i AND t.VERSION=:v";
 
         final boolean trace = TraceComponent.isAnyTracingEnabled();
-        if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "setPartition", taskId + " v" + version + " assign to " + newPartitionId, update);
+        if (trace && tc.isEntryEnabled()) {
+            StringBuilder b = new StringBuilder().append(taskId).append(" v").append(version);
+            if (claimExpiryOrPartition > 1500000000000l)
+                Utils.appendDate(b.append(" claim until "), claimExpiryOrPartition);
+            else
+                b.append(" assign to partition ").append(claimExpiryOrPartition);
+            Tr.entry(this, tc, "claimIfNotLocked", b, update);
+        }
 
         EntityManager em = getPersistenceServiceUnit().createEntityManager();
         try {
@@ -1646,36 +1652,36 @@ public class DatabaseTaskStore implements TaskStore {
             // query.setHint("javax.persistence.lock.timeout", 0); // milliseconds
 
             // As a workaround, use a short query timeout,
-            query.setHint("javax.persistence.query.timeout", 5); // seconds
+            query.setHint("javax.persistence.query.timeout", 3); // seconds
 
-            query.setParameter("p", newPartitionId);
+            query.setParameter("p", claimExpiryOrPartition);
             query.setParameter("i", taskId);
             query.setParameter("v", version);
             boolean assigned = query.executeUpdate() > 0;
 
             if (trace && tc.isEntryEnabled())
-                Tr.exit(this, tc, "setPartition", assigned);
+                Tr.exit(this, tc, "claimIfNotLocked", assigned);
             return assigned;
         } catch (LockTimeoutException x) {
             if (trace && tc.isEntryEnabled())
-                Tr.exit(this, tc, "setPartition", "false: lock timeout - still owned by another member");
+                Tr.exit(this, tc, "claimIfNotLocked", "false: lock timeout - still owned by another member");
             return false;
         } catch (QueryTimeoutException x) {
             if (trace && tc.isEntryEnabled())
-                Tr.exit(this, tc, "setPartition", "false: query timeout - still owned by another member");
+                Tr.exit(this, tc, "claimIfNotLocked", "false: query timeout - still owned by another member");
             return false;
         } catch (PersistenceException x) {
             for (Throwable c = x.getCause(); c != null; c = c.getCause())
                 if (c instanceof SQLTimeoutException) {
                     if (trace && tc.isEntryEnabled())
-                        Tr.exit(this, tc, "setPartition", "false: SQLTimeoutException still owned by another member");
+                        Tr.exit(this, tc, "claimIfNotLocked", "false: SQLTimeoutException still owned by another member");
                     return false;
                 } else if (c instanceof SQLException) {
                     String ss = ((SQLException) c).getSQLState();
                     if ("XCL52".equals(ss) // Derby Network Client SQLState for query timeout
                     ) {
                         if (trace && tc.isEntryEnabled())
-                            Tr.exit(this, tc, "setPartition", "false: SQLState + " + ss + " - still owned by another member");
+                            Tr.exit(this, tc, "claimIfNotLocked", "false: SQLState + " + ss + " - still owned by another member");
                         return false;
                     }
                 }
