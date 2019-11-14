@@ -462,34 +462,35 @@ public class FeatureUtility {
 
     // log message types
     private void info(String msg) {
-        if (isWindows) {
-            logger.info(msg);
-        } else {
-            System.out.print("\033[2K"); // Erase line content
+//        if (isWindows) {
+//            logger.info(msg);
+//        } else {
+            progressBar.clearProgress(isWindows); // Erase line content
             logger.info(msg);
             progressBar.display();
-        }
+//        }
 
     }
 
     private void fine(String msg) {
-        if (isWindows) {
-            logger.fine(msg);
-        } else {
-            System.out.print("\033[2K"); // Erase line content
+//        if (isWindows) {
+//            logger.fine(msg);
+//        } else {
+            progressBar.clearProgress(isWindows); // Erase line content
             logger.fine(msg);
             progressBar.display();
-        }
+//        }
     }
 
     private void severe(String msg) {
-        if (isWindows) {
-            logger.severe(msg);
-        } else {
-            System.out.print("\033[2K"); // Erase line content
-            logger.severe(msg);
-            progressBar.display();
-        }
+//        if (isWindows) {
+//            logger.severe(msg);
+//        } else {
+//            System.out.print("\033[2K"); // Erase line content
+        progressBar.clearProgress(isWindows); // Erase line content
+        logger.severe(msg);
+        progressBar.display();
+//        }
 
     }
 

@@ -8,9 +8,12 @@ public class ProgressBar {
 
     private HashMap<String, Integer> methodMap;
     private static final StringBuilder res = new StringBuilder();;
+    private static final int MAX_EQUALS = 20;
+    private static final int MAX_LINE_LENGTH = ("[] 100.00%").length() + MAX_EQUALS;
+
     private static double counter;
-    private final boolean isWindows = (System.getProperty("os.name").toLowerCase()).indexOf("win") >= 0;
-    // TODO remove this need for windwos chewcking for progress bar
+    private final boolean isWindows = (System.getProperty("os.name").toLowerCase()).contains("win");
+    // TODO remove this need for windows checking progress bar
 
     public static ProgressBar getInstance() {
         if (progressBar == null) {
@@ -57,6 +60,17 @@ public class ProgressBar {
 
     }
 
+    public void clearProgress(boolean isWindows){
+        if(isWindows){
+            for(int i = 0; i < MAX_LINE_LENGTH;i ++){
+                System.out.print("\b");
+            }
+        } else {
+            System.out.print("\033[2K"); // Erase line content
+        }
+
+    }
+
     public void display() {
         String data = String.format("[%s] %4.2f%%\r", progress(counter), counter);
         try {
@@ -73,7 +87,7 @@ public class ProgressBar {
         for (int i = 0; i < numEquals; i++) {
             res.append('=');
         }
-        while (res.length() < 20) {
+        while (res.length() < MAX_EQUALS) {
             res.append(' ');
         }
         return res.toString();

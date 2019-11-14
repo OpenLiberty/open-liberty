@@ -49,7 +49,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
         assertEquals("Exit code should be 0",0, po.getReturnCode());
         String output = po.getStdout();
-        assertTrue("Should contain jsp-2.3", output.indexOf("jsp-2.3") >= 0);
+        assertTrue("Should contain jsp-2.3", output.contains("jsp-2.3"));
 
         deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.jsp-2.3", fileLists);
         Log.exiting(c, METHOD_NAME);
@@ -99,7 +99,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
         assertEquals("Exit code should be 21", 21, po.getReturnCode());
         String output = po.getStdout();
-        assertTrue("Should contain CWWKF1299E", output.indexOf("CWWKF1299E") >= 0);
+        assertTrue("Should contain CWWKF1299E", output.contains("CWWKF1299E"));
         Log.exiting(c, METHOD_NAME);
     }
 
@@ -117,7 +117,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
         assertEquals("Exit code should be 21",21,  po.getReturnCode());
         String output = po.getStdout();
-        assertTrue("Should contain CWWKF1299E", output.indexOf("CWWKF1299E") >= 0);
+        assertTrue("Should contain CWWKF1299E", output.contains("CWWKF1299E"));
         Log.exiting(c, METHOD_NAME);
     }
 
@@ -137,17 +137,25 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
         assertEquals("Exit code should be 0",0, po.getReturnCode());
         String output = po.getStdout();
-        assertTrue("Should contain mpHealth-2.0", output.indexOf("mpHealth-2.0") >= 0);
+        assertTrue("Should contain mpHealth-2.0", output.contains("mpHealth-2.0"));
 
         po = runFeatureUtility(METHOD_NAME, param1s);
         assertEquals("Exit code should be 21 indicating already  feature",21, po.getReturnCode());
         output = po.getStdout();
-        assertTrue("Should contain CWWKF1250I", output.indexOf("CWWKF1250I") >= 0);
+        assertTrue("Should contain CWWKF1250I", output.contains("CWWKF1250I"));
 
 
         deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.mpHealth-2.0", fileLists);
         Log.exiting(c, METHOD_NAME);
 
+    }
+
+    /**
+     * TODO need to set up environmental variables
+     */
+    @Test
+    public void testProxyFeature(){
+        assertEquals("", 2, 1 + 1);
     }
 
 
