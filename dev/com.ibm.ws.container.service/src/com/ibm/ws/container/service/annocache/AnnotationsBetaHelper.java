@@ -23,50 +23,6 @@ import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 
-/**
- * APSFOUND-1 Liberty Annotation Caching Beta Enablement Helper
- *
- * This helper is used to conditionally enable liberty annotation caching.
- *
- * During the beta period, annotation caching is enabled when the product
- * edition is set to "EARLY_ACCESS".  Alternatively, setting the system
- * property "anno.beta" overrides the product edition test.
- *
- * In addition, the new function can be enabled but with the cache write
- * disabled.  See {@link com.ibm.wsspi.annocache.targets.cache.TargetCache_Options#DISABLED_PROPERTY_NAME}
- * ("anno.cache.disabled").
- *
- * <pre>
- * Iteration: 19.0.0.11
- *
- * Edition              Property Values             New Function Enablement     Cache Enablement
- *
- * EARLY_ACCESS         anno.beta unset             True                        True *
- *                      anno.beta true              True                        True *
- *                      anno.beta false             False                       N/A
- *
- * FULL                 anno.beta unset             False                       N/A
- *                      anno.beta true              True                        True *
- *                      anno.beta false             False                       N/A
- *
- * Iteration: 19.0.0.12
- *
- * Edition              Property Values             New Function Enablement     Cache Enablement
- *
- * N/A                  anno.beta unset             True                        True *
- *                      anno.beta true              True                        True *
- *                      anno.beta false             False                       N/A
- *
- * (*) In all cases where the new function is enabled, cache writes may be independently
- *     controlled:
- *
- *                      Property Value              New Function Enablement     Cache Enablement
- *
- *                      anno.cache.disabled unset   True                        True
- *                      anno.cache.disabled True    True                        False
- *                      anno.cache.disabled False   True                        True
- * </pre>
- */
 public class AnnotationsBetaHelper {
     private static final TraceComponent tc = Tr.register(AnnotationsBetaHelper.class);
 
@@ -77,11 +33,9 @@ public class AnnotationsBetaHelper {
      * product edition is set to "EARLY_ACCESS".  If available, the product
      * "com.ibm.websphere.appserver" is tested.  If that product is not
      * available, the product "io.openliberty" is tested instead.
-     *
-     * Post beta, the product edition test is no longer used.
      */
-    public static final boolean IS_LIBERTY_BETA_PRODUCT = true;
-    //     setIsLibertyBetaProduct();
+    public static final boolean IS_LIBERTY_BETA_PRODUCT =
+        setIsLibertyBetaProduct();
 
     // TODO: This is quite expensive, especially if there are multiple
     //       product files.  However, this is temporary code which will
@@ -219,17 +173,11 @@ public class AnnotationsBetaHelper {
         if ( ANNO_BETA_PROPERTY_VALUE != null ) {
             return ANNO_BETA_PROPERTY_VALUE.booleanValue();
         } else {
-            // Post beta, this test always answers true.
-           return IS_LIBERTY_BETA_PRODUCT;
+            return IS_LIBERTY_BETA_PRODUCT;
         }
     }
 
-    // TODO: This function should be moved into the adapt calls.
-    //       Note that there is additional clean to code areas which
-    //       more extensively use annotation container services.
-    //       See https://github.com/OpenLiberty/open-liberty/issues/9215
-    //       "APSFOUND-1 Followup: Refactor annotation container service
-    //       to consolidate exposed APIs #9215"
+    //
 
     /**
      * Answer module annotations for a container.  Use the caching implementation when enabled
