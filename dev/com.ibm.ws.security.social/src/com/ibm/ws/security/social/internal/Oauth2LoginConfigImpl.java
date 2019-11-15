@@ -173,7 +173,7 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
     protected boolean useSystemPropertiesForHttpClientConnections = false;
 
     public static final String KEY_userApiType = "userApiType";
-    protected String userApiType = null;
+    protected String userApiType = "basic";
 
     public static final String KEY_userApiToken = "userApiToken";
     protected String userApiToken = null;
@@ -258,7 +258,7 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
 
     protected void setRequiredConfigAttributesForOpenShift(Map<String, Object> props) {
         this.userApiToken = getRequiredSerializableProtectedStringConfigAttribute(props, KEY_userApiToken);
-        this.userApi = getRequiredConfigAttribute(props, KEY_userApi);
+        this.userApi = configUtils.getRequiredConfigAttributeWithConfigId(props, KEY_userApi, uniqueId);
     }
 
     protected void setOptionalConfigAttributes(Map<String, Object> props) throws SocialLoginException {
@@ -299,8 +299,8 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
         this.accessTokenHeaderName = configUtils.getConfigAttribute(props, KEY_accessTokenHeaderName);
         if (!accessTokenRequired && !accessTokenSupported) {
             // If we aren't using the OpenShift proxy configuration, we MUST have the authorizationEndpoint and tokenEndpoint
-            this.authorizationEndpoint = configUtils.getRequiredConfigAttribute(props, KEY_authorizationEndpoint);
-            this.tokenEndpoint = configUtils.getRequiredConfigAttribute(props, KEY_tokenEndpoint);
+            this.authorizationEndpoint = configUtils.getRequiredConfigAttributeWithConfigId(props, KEY_authorizationEndpoint, uniqueId);
+            this.tokenEndpoint = configUtils.getRequiredConfigAttributeWithConfigId(props, KEY_tokenEndpoint, uniqueId);
         }
     }
 
