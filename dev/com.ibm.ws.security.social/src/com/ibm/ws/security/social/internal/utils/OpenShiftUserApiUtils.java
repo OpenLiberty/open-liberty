@@ -150,7 +150,7 @@ public class OpenShiftUserApiUtils {
         }
         
       if (statusInnerMap.containsKey("error")) {
-      throw new SocialLoginException("OPENSHIFT_USER_API_RESPONSE_ERROR",null,new Object[] {jsonResponse});
+          throw new SocialLoginException("OPENSHIFT_USER_API_RESPONSE_ERROR",null,new Object[] {jsonResponse});
       }
       
         if (userInnerMap.containsKey("groups")) {
