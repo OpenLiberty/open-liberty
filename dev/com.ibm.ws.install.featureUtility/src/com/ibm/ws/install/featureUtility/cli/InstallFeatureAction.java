@@ -75,8 +75,8 @@ public class InstallFeatureAction implements ActionHandler {
                 // in installFeature we have 80 units to work with
                 methodMap.put("resolvedFeatures", 20);
                 methodMap.put("fetchArtifacts", 20);
-                methodMap.put("installFeatures", 30);
-                methodMap.put("cleanUp", 10);
+                methodMap.put("installFeatures", 35);
+                methodMap.put("cleanUp", 5);
 
                 progressBar.setMethodMap(methodMap);
 

@@ -1,6 +1,7 @@
 package com.ibm.ws.install.featureUtility.fat;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -8,6 +9,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -43,7 +45,17 @@ public abstract class FeatureUtilityToolTest {
     protected static void setupEnv() throws Exception {
         final String methodName = "setup";
         server = LibertyServerFactory.getLibertyServer("com.ibm.ws.install.featureUtility_fat");
+
+        // installRoot is build.image/build/libs/distributions/openliberty-kernel/wlp
         installRoot = server.getInstallRoot();
+
+        Log.info(c, methodName, "install root: " + installRoot);
+
+        // extract the kernel into our installRoot
+        String kernelZipDir = installRoot + "../../";
+        extractOpenLibertyKernelZip(kernelZipDir, installRoot);
+
+
         Log.info(c, methodName, "install root: " + installRoot);
         
         setOriginalWlpVersionVariables();
@@ -51,6 +63,47 @@ public abstract class FeatureUtilityToolTest {
         cleanFiles = new ArrayList<String>();
 
     }
+
+    public static void extractOpenLibertyKernelZip(String kernelZipDir, String destinationDir) throws Exception {
+        String methodName = "extractOpenLibertyKernelZip";
+
+        if(!new File(kernelZipDir).exists()){
+            throw new Exception(kernelZipDir + " doesnt exist!");
+        }
+
+        File dir = new File(kernelZipDir);
+
+        // for debugging purposes - see what files are in kernelZipDir
+        Log.info(c, methodName, Objects.requireNonNull(dir.listFiles()).toString());
+
+
+        // find the files that match openliberty-kernel-*.zip
+        final String id = "XXX"; // needs to be final so the anonymous class can use it
+        File[] matchingFiles = dir.listFiles(new FileFilter() {
+            public boolean accept(File pathname) {
+                return (pathname.getName().contains("openliberty-kernel") && pathname.getName().endsWith("zip"));
+            }
+        });
+
+        Log.info(c, methodName, "Found the following OL kernels: " + matchingFiles.toString());
+        if(matchingFiles.length == 0){
+            throw new Exception(kernelZipDir + " doesnt contain any OL kernels...");
+        }
+
+        // take the first one we find for sake of simplicity.
+        File kernelZip = matchingFiles[0];
+
+        // unzip into destinationDir now
+        // first delete destinationDir
+        File destFile = new File(destinationDir);
+        if(destFile.exists()){
+            destFile.delete();
+        }
+
+        unzipInstallRoot(kernelZip.getAbsolutePath(), destinationDir);
+        Log.exiting(c, methodName, "Unzipped the OL kernel.");
+    }
+
 
     // TODO discuss if we need this. may be useful for certain test cases like
     // mirror repo
@@ -82,6 +135,7 @@ public abstract class FeatureUtilityToolTest {
             Log.info(c, "getWlpVersion", "com.ibm.websphere.productInstallType : " + originalWlpInstallType);
         } finally {
                 try {
+                    assert fIn != null;
                     fIn.close();
                 } catch (IOException e) {
                     // ignore we are trying to close.
@@ -153,10 +207,9 @@ public abstract class FeatureUtilityToolTest {
 
     /**
      * Zips the liberty install root into /tmp/*testClass*
-     * @param testClass
-     * @return
+     *
      */
-    protected static File zipInstallRoot(String testClass, String oldInstallRoot, String destinationFile) throws IOException {
+    protected static File zipInstallRoot(String oldInstallRoot, String destinationFile) throws IOException {
         String sourceFile = oldInstallRoot;
 
         FileOutputStream fos = new FileOutputStream(destinationFile);
