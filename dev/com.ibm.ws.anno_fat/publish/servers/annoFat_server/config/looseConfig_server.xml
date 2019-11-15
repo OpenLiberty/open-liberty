@@ -3,8 +3,8 @@
   <include location="../fatTestPorts.xml"/>
 
   <featureManager>
-    <feature>jsp-2.3</feature>
-    <feature>servlet-4.0</feature>
+    <feature>jsp-2.2</feature>
+    <feature>servlet-3.1</feature>
   </featureManager>
 
   <!-- logging
@@ -13,10 +13,14 @@
     maxFiles="10"
     traceFormat="BASIC"/ -->
     
-	<javaPermission className="java.util.PropertyPermission" name="org.glassfish.web.rfc2109_cookie_names_enforced" actions="read" codebase="${server.config.dir}dropins/TestServlet40.ear"/>
+  <javaPermission className="java.util.PropertyPermission"
+                  name="org.glassfish.web.rfc2109_cookie_names_enforced"
+                  actions="read"
+                  codebase="${server.config.dir}dropins/TestServlet40.ear"/>
 	
-	<application  location="LooseConfig.ear"/>  <!-- LooseConfig.ear.xml will be provided -->
+  <application location="LooseConfig.ear"/>
+  <!-- LooseConfig.ear.xml will be provided -->
 	
-	<applicationManager useJandex="false"/>
+  <applicationManager useJandex="false"/>
 
 </server>
