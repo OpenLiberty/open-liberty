@@ -155,7 +155,7 @@ public class FailoverTimersTest2 extends FATServletClient {
         "com.ibm.websphere.csi.CSITransactionRolledbackException", // internally raised exception for rollback path
         "javax.ejb.TransactionRolledbackLocalException" // EJB spec exception for rollback
         })
-    //TODO update as needed for alternative failover approach and enable @Test
+    @Test
     public void testProgrammaticTimerFailsOverWhenTimerFailsOnOneServer() throws Exception {
         runTest(serverA, APP_NAME + "/FailoverTimersTestServlet",
                 "testScheduleStatelessTimer&timer=Timer_400_1700&initialDelayMS=400&intervalMS=1700&test=testProgrammaticTimerFailsOverWhenTimerFailsOnOneServer[1]");
@@ -169,8 +169,9 @@ public class FailoverTimersTest2 extends FATServletClient {
                     "testTimerFailover&timer=Timer_400_1700&server=" + SERVER_B_NAME + "&test=testProgrammaticTimerFailsOverWhenTimerFailsOnOneServer[3]");
         } finally {
             // The server (serverA) upon which the timer failed will initially continue trying to run it.
-            // However, the timer now belongs to a different member (paritionId), so it should be skipped silently
-            // on serverA and then no longer rescheduled there.
+            // However, the timer was taken over by a different member which is likely continuing to claim executions of it,
+            // in which case it should be skipped silently on serverA and then no longer rescheduled there
+            // unless the other member doesn't claim it.
             Thread.sleep(2000);
 
             runTest(serverA, APP_NAME + "/FailoverTimersTestServlet",
@@ -195,7 +196,7 @@ public class FailoverTimersTest2 extends FATServletClient {
      * and verify that the timer starts running on the same application on a different server.
      * This should occur even if a retryInterval is configured on the server where the failure occurs.
      */
-    //TODO update as needed for alternative failover approach and enable @Test
+    @Test
     public void testProgrammaticTimerFailsOverWhenTimerRollsBackOnOneServer() throws Exception {
         runTest(serverA, APP_NAME + "/FailoverTimersTestServlet",
                 "testScheduleStatelessTimer&timer=Timer_300_1800&initialDelayMS=300&intervalMS=1800&test=testProgrammaticTimerFailsOverWhenTimerRollsBackOnOneServer[1]");
@@ -209,8 +210,9 @@ public class FailoverTimersTest2 extends FATServletClient {
                     "testTimerFailover&timer=Timer_300_1800&server=" + SERVER_B_NAME + "&test=testProgrammaticTimerFailsOverWhenTimerRollsBackOnOneServer[3]");
         } finally {
             // The server (serverA) upon which the timer rolled back will initially continue trying to run it.
-            // However, the timer now belongs to a different member (paritionId), so it should be skipped silently
-            // on serverA and then no longer rescheduled there.
+            // However, the timer was taken over by a different member which is likely continuing to claim executions of it,
+            // in which case it should be skipped silently on serverA and then no longer rescheduled there
+            // unless the other member doesn't claim it.
             Thread.sleep(2000);
 
             runTest(serverA, APP_NAME + "/FailoverTimersTestServlet",
@@ -232,7 +234,7 @@ public class FailoverTimersTest2 extends FATServletClient {
      * Stop the application on that server (but not the server itself)
      * and verify that the timer starts running on the same application on a different server.
      */
-    //TODO update as needed for alternative failover approach and enable @Test
+    @Test
     public void testProgrammaticTimerWithTxSuspendedFailsOverWhenAppStops() throws Exception {
         runTest(serverB, APP_NAME + "/FailoverTimersTestServlet",
                 "testScheduleStatelessTxSuspendedTimer&timer=StatelessTxSuspendedTimer_1_2&initialDelayMS=1000&intervalMS=2000&test=testProgrammaticTimerWithTxSuspendedFailsOverWhenAppStops[1]");
@@ -255,7 +257,8 @@ public class FailoverTimersTest2 extends FATServletClient {
 
             // The server upon which the application was stopped will try to run the task again
             // upon seeing that the application has become available.
-            // However, the task now belongs to a different member (paritionId). It should be skipped silently without errors.
+            // However, the timer was taken over by a different member which is likely continuing to claim executions of it.
+            // It should be skipped silently on the first member without errors.
             Thread.sleep(2000);
 
             runTest(serverB, APP_NAME + "/FailoverTimersTestServlet", "testCancelStatelessTxSuspendedTimers&test=testProgrammaticTimerWithTxSuspendedFailsOverWhenAppStops[3]");
@@ -271,7 +274,7 @@ public class FailoverTimersTest2 extends FATServletClient {
      * Stop the application on that server (but not the server itself)
      * and verify that the timer starts running on the same application on a different server.
      */
-    //TODO update as needed for alternative failover approach and enable @Test
+    @Test
     public void testSingletonTimerFailsOverWhenAppStops() throws Exception {
         StringBuilder sb = runTestWithResponse(serverA, APP_NAME + "/FailoverTimersTestServlet",
                 "findServerWhereTimerRuns&timer=AutomaticCountingSingletonTimer&test=testSingletonTimerFailsOverWhenAppStops[1]");
@@ -303,7 +306,8 @@ public class FailoverTimersTest2 extends FATServletClient {
 
             // The server upon which the application was stopped will try to run the task again
             // upon seeing that the application has become available.
-            // However, the task now belongs to a different member (paritionId). It should be skipped silently without errors.
+            // However, the timer was taken over by a different member which is likely continuing to claim executions of it.
+            // It should be skipped silently on the first member without errors.
             Thread.sleep(2000);
 
             // Also restart the server. This allows us to process any expected warning messages that are logged in response
