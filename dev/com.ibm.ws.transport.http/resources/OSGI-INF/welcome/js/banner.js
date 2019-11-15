@@ -60,7 +60,7 @@ function createDownloadLink(section) {
 	article.appendChild(h3);
 	h3.appendChild(span);
 
-    var hrefLink = "<a href='" + latestReleasedVersion.availableFrom  + "'>" + 
+    var hrefLink = "<a href='" + latestReleasedVersion.availableFrom + "' target='_blank' rel='noopener'>" + 
 		               latestReleasedVersion.productName + 
                    "</a>";
     var msgDownloadLink = formatString(messages.HEADER_DOWNLOAD_LINK, [hrefLink]);
