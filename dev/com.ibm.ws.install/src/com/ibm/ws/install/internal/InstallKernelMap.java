@@ -1444,9 +1444,9 @@ public class InstallKernelMap implements Map {
 //        if (isWindows) {
 //            logger.info(msg);
 //        } else {
-        progressBar.clearProgress(isWindows); // Erase line content
+//            progressBar.clearProgress(); // Erase line content
         logger.info(msg);
-        progressBar.display();
+//            progressBar.display();
 //        }
 
     }
@@ -1455,9 +1455,9 @@ public class InstallKernelMap implements Map {
 //        if (isWindows) {
 //            logger.fine(msg);
 //        } else {
-        progressBar.clearProgress(isWindows); // Erase line content
+//            progressBar.clearProgress(); // Erase line content
         logger.fine(msg);
-        progressBar.display();
+//            progressBar.display();
 //        }
     }
 
@@ -1466,9 +1466,9 @@ public class InstallKernelMap implements Map {
 //            logger.severe(msg);
 //        } else {
 //            System.out.print("\033[2K"); // Erase line content
-        progressBar.clearProgress(isWindows); // Erase line content
+//        progressBar.clearProgress(); // Erase line content
         logger.severe(msg);
-        progressBar.display();
+//        progressBar.display();
 //        }
 
     }

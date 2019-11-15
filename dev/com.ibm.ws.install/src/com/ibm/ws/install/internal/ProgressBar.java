@@ -1,6 +1,5 @@
 package com.ibm.ws.install.internal;
 
-import java.io.IOException;
 import java.util.HashMap;
 
 import org.fusesource.jansi.Ansi;
@@ -9,28 +8,30 @@ import org.fusesource.jansi.AnsiConsole;
 public class ProgressBar {
     private static ProgressBar progressBar;
 
+    private static boolean activated = false;
     private HashMap<String, Integer> methodMap;
     private static final StringBuilder res = new StringBuilder();;
     private static final int MAX_EQUALS = 20;
     private static final int MAX_LINE_LENGTH = ("[] 100.00%").length() + MAX_EQUALS;
-    private static final String ANSI_WHITE_BLINKING = "\033[37;5m";
+    private static final String ANSI_GREEN_BLINKING = "\033[32;5m";
 
     private static double counter;
-    private final boolean isWindows = (System.getProperty("os.name").toLowerCase()).contains("win");
-    // TODO remove this need for windows checking progress bar
 
     public static ProgressBar getInstance() {
         if (progressBar == null) {
             progressBar = new ProgressBar();
         }
+        activated = true;
         return progressBar;
     }
 
+
     private ProgressBar() {
         initMap();
+        counter = 0;
+        InstallLogUtils.activateProgressBar();
         AnsiConsole.systemInstall();
         System.out.println();
-        counter = 0;
     }
 
     // TODO auto scaling with method map
@@ -75,10 +76,9 @@ public class ProgressBar {
 //        }
 //
 //    }
-    public void clearProgress(boolean isWindows) {
-        System.out.print(Ansi.ansi().cursorUp(1).eraseLine().reset()); // Erase line content
-
-}
+    public void clearProgress() {
+            System.out.print(Ansi.ansi().cursorUp(1).eraseLine().reset()); // Erase line content
+        }
 
 //    public void display() {
 //        String data = String.format("[%s] %4.2f%%\r", progress(counter), counter);
@@ -90,6 +90,7 @@ public class ProgressBar {
 //
 //    }
     public void display() {
+
         String equals = progress(counter);
 
         StringBuilder dashes = new StringBuilder();
@@ -98,9 +99,10 @@ public class ProgressBar {
         }
 
         String data = String.format("%s<%s%s> %4.2f%%%s", Ansi.ansi().fg(Ansi.Color.RED),
-                                    Ansi.ansi().a(ANSI_WHITE_BLINKING).a(equals).reset(), Ansi.ansi().fg(Ansi.Color.RED).a(dashes.toString()),
+                                    Ansi.ansi().a(ANSI_GREEN_BLINKING).a(equals).reset(), Ansi.ansi().fg(Ansi.Color.RED).a(dashes.toString()),
                                     counter, Ansi.ansi().reset());
         System.out.println(Ansi.ansi().a(data).reset());
+
 
     }
 
@@ -123,12 +125,18 @@ public class ProgressBar {
 //    }
     public void finish() {
         System.out.println(Ansi.ansi().cursorUp(1).eraseLine().reset()); // Erase line content
+        InstallLogUtils.deactivateProgressBar();
         AnsiConsole.systemUninstall();
-
     }
 
     public double getCounter() {
         return counter;
     }
+
+    public static boolean isActivated(){
+        return activated;
+    }
+
+
 
 }

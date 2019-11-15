@@ -33,6 +33,7 @@ import com.ibm.ws.repository.exceptions.RepositoryBackendException;
 public class InstallLogUtils {
     static class InstallKernelConsoleHandler extends Handler {
         private final boolean verbose;
+        private boolean progressBarActive = false;
 
         public InstallKernelConsoleHandler() {
             this(false);
@@ -53,9 +54,16 @@ public class InstallLogUtils {
         private void logToOutStream(LogRecord record) {
             String strDate = verbose ? DataFormatHelper.formatCurrentTime() : "";
 
-            if (null != record.getMessage())
-                System.out.println(strDate + getFormatter().formatMessage(record));
+            if (null != record.getMessage()) {
+                if(progressBarActive){
+                    ProgressBar.getInstance().clearProgress();
+                    System.out.println(strDate + getFormatter().formatMessage(record));
+                    ProgressBar.getInstance().display();
+                } else {
+                    System.out.println(strDate + getFormatter().formatMessage(record));
+                }
 
+            }
             System.out.flush();
         }
 
@@ -72,6 +80,13 @@ public class InstallLogUtils {
         @Override
         public void flush() {
             System.out.flush();
+        }
+
+        public void activateProgressBar(){
+            progressBarActive = true;
+        }
+        public void deactivateProgressBar(){
+            progressBarActive = false;
         }
     } // InstallKernelConsoleHandler ===========================================================
 
@@ -295,5 +310,31 @@ public class InstallLogUtils {
                 logger.log(Level.FINEST, logLable + "Directory Repository: " + c.getRepositoryLocation());
             }
         }
+    }
+
+    public static void activateProgressBar(){
+        Logger logger = getInstallLogger();
+        Handler[] handlers = logger.getHandlers();
+
+        for (Handler handler : handlers) {
+            if (handler instanceof InstallKernelConsoleHandler)
+                {
+                    ((InstallKernelConsoleHandler) handler).activateProgressBar();
+            }
+        }
+
+    }
+
+    public static void deactivateProgressBar(){
+        Logger logger = getInstallLogger();
+        Handler[] handlers = logger.getHandlers();
+
+        for (Handler handler : handlers) {
+            if (handler instanceof InstallKernelConsoleHandler)
+            {
+                ((InstallKernelConsoleHandler) handler).deactivateProgressBar();
+            }
+        }
+
     }
 }

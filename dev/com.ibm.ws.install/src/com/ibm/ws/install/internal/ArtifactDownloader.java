@@ -39,7 +39,6 @@ public class ArtifactDownloader {
     private final Logger logger = InstallLogUtils.getInstallLogger();
 
     private final ProgressBar progressBar = ProgressBar.getInstance();
-    private final boolean isWindows = (System.getProperty("os.name").toLowerCase()).indexOf("win") >= 0;
     private static Map<String, String> envMap = null;
 
     public void synthesizeAndDownloadFeatures(List<String> mavenCoords, String dLocation, String repo) throws InstallException {
@@ -87,7 +86,7 @@ public class ArtifactDownloader {
     }
 
     /**
-     * @param dLocation
+     * @param path
      * @return
      */
     private String FormatPathSuffix(String path) {
@@ -383,9 +382,9 @@ public class ArtifactDownloader {
 //        if (isWindows) {
 //            logger.info(msg);
 //        } else {
-        progressBar.clearProgress(isWindows); // Erase line content
+//            progressBar.clearProgress(); // Erase line content
         logger.info(msg);
-        progressBar.display();
+//            progressBar.display();
 //        }
 
     }
@@ -394,9 +393,9 @@ public class ArtifactDownloader {
 //        if (isWindows) {
 //            logger.fine(msg);
 //        } else {
-        progressBar.clearProgress(isWindows); // Erase line content
+//            progressBar.clearProgress(); // Erase line content
         logger.fine(msg);
-        progressBar.display();
+//            progressBar.display();
 //        }
     }
 
@@ -405,9 +404,9 @@ public class ArtifactDownloader {
 //            logger.severe(msg);
 //        } else {
 //            System.out.print("\033[2K"); // Erase line content
-        progressBar.clearProgress(isWindows); // Erase line content
+//        progressBar.clearProgress(); // Erase line content
         logger.severe(msg);
-        progressBar.display();
+//        progressBar.display();
 //        }
 
     }

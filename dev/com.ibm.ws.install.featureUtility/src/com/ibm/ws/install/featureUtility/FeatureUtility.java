@@ -56,9 +56,7 @@ public class FeatureUtility {
     private ProgressBar progressBar;
 
     private final static String OPEN_LIBERTY_PRODUCT_ID = "io.openliberty";
-    private boolean isWindows = (System.getProperty("os.name").toLowerCase()).indexOf("win") >= 0;
-    // TODO remove this need for windwos chewcking for progress bar
-    
+
 
     private FeatureUtility(FeatureUtilityBuilder builder) throws IOException, InstallException {
         this.logger = InstallLogUtils.getInstallLogger();
@@ -465,9 +463,9 @@ public class FeatureUtility {
 //        if (isWindows) {
 //            logger.info(msg);
 //        } else {
-            progressBar.clearProgress(isWindows); // Erase line content
+//            progressBar.clearProgress(); // Erase line content
             logger.info(msg);
-            progressBar.display();
+//            progressBar.display();
 //        }
 
     }
@@ -476,9 +474,9 @@ public class FeatureUtility {
 //        if (isWindows) {
 //            logger.fine(msg);
 //        } else {
-            progressBar.clearProgress(isWindows); // Erase line content
+//            progressBar.clearProgress(); // Erase line content
             logger.fine(msg);
-            progressBar.display();
+//            progressBar.display();
 //        }
     }
 
@@ -487,9 +485,9 @@ public class FeatureUtility {
 //            logger.severe(msg);
 //        } else {
 //            System.out.print("\033[2K"); // Erase line content
-        progressBar.clearProgress(isWindows); // Erase line content
+//        progressBar.clearProgress(); // Erase line content
         logger.severe(msg);
-        progressBar.display();
+//        progressBar.display();
 //        }
 
     }
