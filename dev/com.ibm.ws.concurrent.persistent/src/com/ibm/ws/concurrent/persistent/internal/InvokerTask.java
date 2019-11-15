@@ -52,7 +52,12 @@ public class InvokerTask implements Runnable, Synchronization {
     private static final TraceComponent tc = Tr.register(InvokerTask.class);
     final static SecureAction priv = AccessController.doPrivileged(SecureAction.get());
 
-    public final static ThreadLocal<Long> taskIdsOfRunningTasks = new ThreadLocal<Long>();
+    /**
+     * Array position 0 tracks the ID of the task that is currently running on the thread.
+     * Array position 1 tracks whether the task is known to have removed itself. This is not detected for pattern-based remove/cancel.
+     */
+    public final static ThreadLocal<long[]> runningTaskState = new ThreadLocal<long[]>();
+    final static long REMOVED_BY_SELF = 1;
 
     private final static int DEFAULT_TIMEOUT_FOR_SUSPENDED_TRAN = 1800; // 30 minutes
 
@@ -93,7 +98,8 @@ public class InvokerTask implements Runnable, Synchronization {
 
     @Override
     @Trivial
-    public void beforeCompletion() {}
+    public void beforeCompletion() {
+    }
 
     @Override
     public boolean equals(Object other) {
@@ -115,11 +121,11 @@ public class InvokerTask implements Runnable, Synchronization {
      * In the future, when there is support for a controller, we might want to give up the task and
      * ask another instance to try it.
      *
-     * @param failure failure of the task itself or of processing related to the task, such as Trigger.getNextRunTime
-     * @param loader class loader that can load the task and any exceptions that it might raise
+     * @param failure                 failure of the task itself or of processing related to the task, such as Trigger.getNextRunTime
+     * @param loader                  class loader that can load the task and any exceptions that it might raise
      * @param consecutiveFailureCount number of consecutive task failures
-     * @param config snapshot of persistent executor configuration
-     * @param taskName identity name for the task
+     * @param config                  snapshot of persistent executor configuration
+     * @param taskName                identity name for the task
      */
     private void processRetryableTaskFailure(Throwable failure, ClassLoader loader, short consecutiveFailureCount, Config config, String taskName) {
         taskName = taskName == null || taskName.length() == 0 || taskName.length() == 1 && taskName.charAt(0) == ' ' ? String.valueOf(taskId) // empty task name
@@ -164,7 +170,8 @@ public class InvokerTask implements Runnable, Synchronization {
                         else
                             Tr.warning(tc, "CWWKC1511.retry.limit.reached.failed", persistentExecutor.name, taskName, consecutiveFailureCount, failure);
 
-                        TaskFailure taskFailure = new TaskFailure(failure, failure == null ? null : loader, persistentExecutor, TaskFailure.FAILURE_LIMIT_REACHED, Short.toString(consecutiveFailureCount));
+                        TaskFailure taskFailure = new TaskFailure(failure, failure == null ? null : loader, persistentExecutor, TaskFailure.FAILURE_LIMIT_REACHED, Short
+                                        .toString(consecutiveFailureCount));
                         // Update database with the result and state if we reached the limit
                         TaskRecord updates = new TaskRecord(false);
                         updates.setConsecutiveFailureCount(consecutiveFailureCount);
@@ -248,19 +255,21 @@ public class InvokerTask implements Runnable, Synchronization {
 
         String taskName = null;
         String taskIdForPropTable = null;
-        long partitionId;
+        Long partitionId;
         TaskLocker ejbSingletonLockCollaborator = null;
         String ownerForDeferredTask = null;
         ClassLoader loader = null;
         Throwable failure = null;
         Short prevFailureCount = null, nextFailureCount = null;
         Long nextExecTime = null;
+        boolean claimNextExecution = false;
         TaskStore taskStore = persistentExecutor.taskStore;
         ApplicationTracker appTracker = persistentExecutor.appTrackerRef.getServiceWithException();
         TransactionManager tranMgr = persistentExecutor.tranMgrRef.getServiceWithException();
-        taskIdsOfRunningTasks.set(taskId);
+        long[] runningTaskRemovalState = new long[] { taskId, 0 };
+        runningTaskState.set(runningTaskRemovalState);
         try {
-            partitionId = persistentExecutor.getPartitionId();
+            partitionId = config.missedTaskThreshold2 < 1 ? persistentExecutor.getPartitionId() : null;
 
             int timeout = txTimeout == 0 && (binaryFlags & TaskRecord.Flags.SUSPEND_TRAN_OF_EXECUTOR_THREAD.bit) != 0 ? DEFAULT_TIMEOUT_FOR_SUSPENDED_TRAN : txTimeout;
             tranMgr.setTransactionTimeout(timeout);
@@ -279,6 +288,8 @@ public class InvokerTask implements Runnable, Synchronization {
             // Lock an entry in a different table to prevent concurrent execution, and run with that transaction suspended.
             if ((binaryFlags & TaskRecord.Flags.SUSPEND_TRAN_OF_EXECUTOR_THREAD.bit) != 0) {
                 if (!taskStore.createProperty(taskIdForPropTable = "{" + taskId + "}", " ")) {
+                    if (config.missedTaskThreshold2 > 0)
+                        throw new RuntimeException("An attempt to run the task might have been made by a different instance. Retry is needed.");
                     // Determine the partition to which the task is assigned
                     taskIdForPropTable = null;
                     tranMgr.rollback(); // PostgreSQL will not permit any further operations after a duplicate key exception
@@ -299,7 +310,7 @@ public class InvokerTask implements Runnable, Synchronization {
                     try {
                         taskRecord = taskStore.find(taskId,
                                                     partitionId,
-                                                    new Date().getTime(),
+                                                    System.currentTimeMillis(),
                                                     false);
                     } catch (Throwable x) {
                         throw failed = x;
@@ -331,7 +342,7 @@ public class InvokerTask implements Runnable, Synchronization {
 
                 taskRecord = taskStore.find(taskId,
                                             partitionId,
-                                            new Date().getTime(),
+                                            System.currentTimeMillis(),
                                             true);
             }
 
@@ -364,8 +375,9 @@ public class InvokerTask implements Runnable, Synchronization {
             byte[] triggerBytes = taskRecord.getTrigger();
             Trigger trigger = triggerBytes == null ? null : ejbSingletonRecord != null
                                                             && Arrays.equals(triggerBytes,
-                                                                             ejbSingletonRecord.getTrigger()) ? ejbSingletonLockCollaborator : (Trigger) persistentExecutor.deserialize(triggerBytes,
-                                                                                                                                                                                        loader);
+                                                                             ejbSingletonRecord.getTrigger()) ? ejbSingletonLockCollaborator : (Trigger) persistentExecutor
+                                                                                             .deserialize(triggerBytes,
+                                                                                                          loader);
             if (trigger == null) {
                 String triggerClassName = info.getClassNameForNonSerializableTrigger();
                 if (triggerClassName != null)
@@ -397,7 +409,8 @@ public class InvokerTask implements Runnable, Synchronization {
                 if (trigger != null) {
                     Long prevScheduledStart = taskRecord.getPreviousScheduledStartTime();
                     if (prevScheduledStart != null)
-                        lastExecution = new LastExecutionImpl(persistentExecutor, taskId, taskName, resultBytes, taskRecord.getPreviousStopTime(), taskRecord.getPreviousStartTime(), prevScheduledStart, loader);
+                        lastExecution = new LastExecutionImpl(persistentExecutor, taskId, taskName, resultBytes, taskRecord.getPreviousStopTime(), taskRecord
+                                        .getPreviousStartTime(), prevScheduledStart, loader);
                     try {
                         skipped = trigger.skipRun(lastExecution, new Date(taskRecord.getNextExecutionTime()));
                     } catch (RuntimeException x) {
@@ -469,8 +482,14 @@ public class InvokerTask implements Runnable, Synchronization {
             short autoPurgeBit = failure == null ? TaskRecord.Flags.AUTO_PURGE_ON_SUCCESS.bit : TaskRecord.Flags.AUTO_PURGE_ALWAYS.bit;
 
             if ((nextExecTime == null || !skipped && nextFailureCount > 0) && (binaryFlags & autoPurgeBit) != 0) {
-                // Autopurge the completed task if it hasn't already been ended (removal/cancellation by self or other)
-                taskStore.remove(taskId, null, false);
+                // Autopurge the completed task unless it is known that the task removed/canceled itself during execution
+                if (runningTaskRemovalState[1] != InvokerTask.REMOVED_BY_SELF) {
+                    taskStore.remove(taskId, null, false);
+                    // EJB Persistent Timers requires that we allow in-progress execution of a timer that is
+                    // canceled/removed from another thread to commit. This means we cannot issue a rollback
+                    // when we find the timer/task to have already been removed. If this ever needed to change,
+                    // more work would need to be distinguish self-cancellation/removal for the pattern-based remove operations.
+                }
             } else {
                 // Update state
                 TaskRecord updates = new TaskRecord(false);
@@ -495,7 +514,8 @@ public class InvokerTask implements Runnable, Synchronization {
                         if (updatedResultBytes == null || !Arrays.equals(resultBytes, updatedResultBytes))
                             updates.setResult(updatedResultBytes);
                     } else {
-                        updates.setResult(persistentExecutor.serialize(new TaskFailure(failure, loader, persistentExecutor, TaskFailure.FAILURE_LIMIT_REACHED, Short.toString(nextFailureCount))));
+                        updates.setResult(persistentExecutor
+                                        .serialize(new TaskFailure(failure, loader, persistentExecutor, TaskFailure.FAILURE_LIMIT_REACHED, Short.toString(nextFailureCount))));
                         state = (short) (TaskState.ENDED.bit | TaskState.FAILURE_LIMIT_REACHED.bit);
                     }
                 }
@@ -511,6 +531,17 @@ public class InvokerTask implements Runnable, Synchronization {
                     if (!Arrays.equals(triggerBytes, updatedTriggerBytes))
                         updates.setTrigger(updatedTriggerBytes);
                 }
+
+                // When updating the task entry, determine whether or not to keep a claim on the task.
+                config = persistentExecutor.configRef.get();
+                if (config.missedTaskThreshold2 > 0)
+                    if (config.enableTaskExecution && config.pollInterval > 0 && nextExecTime != null && nextExecTime <= System.currentTimeMillis() + config.pollInterval) {
+                        updates.setIdentifierOfPartition(nextExecTime + config.missedTaskThreshold2 * 1000);
+                        claimNextExecution = true;
+                    } else {
+                        updates.setIdentifierOfPartition(-1);
+                    }
+
                 TaskRecord expected = new TaskRecord(false);
                 expected.setId(taskId);
                 expected.setVersion(taskRecord.getVersion());
@@ -534,7 +565,17 @@ public class InvokerTask implements Runnable, Synchronization {
                             expected.setVersion(taskRecordRefresh.getVersion());
                             taskStore.persist(updates, expected);
                         }
-                    } // else the task removed itself
+                    } else { // the task was removed, either by itself or another thread
+                        if (trace && tc.isDebugEnabled())
+                            Tr.debug(this, tc, "task entry is gone",
+                                     Arrays.toString(runningTaskRemovalState),
+                                     "allows removal by other threads? " + ((binaryFlags & TaskRecord.Flags.SUSPEND_TRAN_OF_EXECUTOR_THREAD.bit) != 0));
+
+                        // EJB Persistent Timers requires that we allow in-progress execution of a timer that is
+                        // canceled/removed from another thread to commit. This means we cannot issue a rollback
+                        // when we find the timer/task to have already been removed. If this ever needed to change,
+                        // more work would need to be distinguish self-cancellation/removal for the pattern-based remove operations.
+                    }
                 }
             }
         } catch (Throwable x) {
@@ -550,7 +591,7 @@ public class InvokerTask implements Runnable, Synchronization {
             if (ejbSingletonLockCollaborator != null)
                 ejbSingletonLockCollaborator.unlock();
 
-            taskIdsOfRunningTasks.remove();
+            runningTaskState.remove();
 
             try {
                 tranMgr.setTransactionTimeout(0); // clear the value so we don't impact subsequent transactions on this thread
@@ -572,11 +613,15 @@ public class InvokerTask implements Runnable, Synchronization {
 
                     // Immediately reschedule tasks that should run in the near future if the transaction commits
                     config = persistentExecutor.configRef.get();
-                    if (config.enableTaskExecution && nextExecTime != null
-                        && (config.pollInterval < 0 || nextExecTime <= new Date().getTime() + config.pollInterval)) {
-
+                    boolean scheduleNextExecution = config.missedTaskThreshold2 > 0 //
+                                    ? claimNextExecution //
+                                    : config.enableTaskExecution && nextExecTime != null
+                                      && config.missedTaskThreshold2 < 1 // claim on next execution did not need to be written to the persistent store
+                                      && (config.pollInterval < 0
+                                          || nextExecTime <= System.currentTimeMillis() + config.pollInterval);
+                    if (scheduleNextExecution) {
                         expectedExecTime = nextExecTime;
-                        long delay = nextExecTime - new Date().getTime();
+                        long delay = nextExecTime - System.currentTimeMillis();
 
                         ScheduledExecutorService executor = persistentExecutor.scheduledExecutor;
                         if (executor == null) {

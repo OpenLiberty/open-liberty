@@ -21,7 +21,6 @@ package org.apache.cxf.jaxrs.utils;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -63,7 +62,6 @@ import org.apache.cxf.jaxrs.impl.PathSegmentImpl;
 import org.apache.cxf.jaxrs.impl.RuntimeDelegateImpl;
 import org.apache.cxf.jaxrs.model.ParameterType;
 import org.apache.cxf.message.Message;
-import org.apache.cxf.service.model.EndpointInfo;
 import org.apache.cxf.transport.Destination;
 import org.apache.cxf.transport.http.AbstractHTTPDestination;
 import org.apache.cxf.transport.http.Headers;
@@ -467,30 +465,109 @@ public final class HttpUtils {
 
     public static String getBaseAddress(Message m) {
         String endpointAddress = getEndpointAddress(m);
-        try {
-            URI uri = new URI(endpointAddress);
-            String path = uri.getRawPath();
-            String scheme = uri.getScheme();
-            if (scheme != null && !scheme.startsWith(HttpUtils.HTTP_SCHEME)
-                && HttpUtils.isHttpRequest(m)) {
-                path = HttpUtils.toAbsoluteUri(path, m).getRawPath();
-            }
-            return (path == null || path.length() == 0) ? "/" : path;
-        } catch (URISyntaxException ex) {
-            return endpointAddress == null ? "/" : endpointAddress;
+        //Liberty code change start
+        String[] addr = parseURI(endpointAddress, false);
+        if (addr == null) {
+            return endpointAddress;
         }
+        String scheme = addr[0];
+        String path = addr[1];
+        if (scheme != null && !scheme.startsWith(HttpUtils.HTTP_SCHEME)
+                && HttpUtils.isHttpRequest(m)) {
+            path = HttpUtils.toAbsoluteUri(path, m).getRawPath();
+        }
+        return (path == null || path.length() == 0) ? "/" : path;
     }
+
+    public static String[] parseURI(String addr, boolean parseAuthority) {
+        String scheme = null;
+        String parsedAuthorityOrRawPath = null;
+        int n = addr.length();
+        int p = scan(addr, 0, n, "/?#", ":");
+        try {
+            if ((p >= 0) && at(addr, p, n, ':')) {
+                if (p == 0) {
+                    return null;
+                }    
+                scheme = addr.substring(0, p);
+                p++;
+                if (at(addr, p, n, '/')) {
+                    parsedAuthorityOrRawPath = postSchemeParse(addr, p, n, parseAuthority);
+                } else {
+                    int q = scan(addr, p, n, null, "#");
+                    if (q <= p) {
+                        return null;
+                    }    
+                }
+            } else {
+                parsedAuthorityOrRawPath = postSchemeParse(addr, 0, n, parseAuthority);
+            }
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+        return new String[] { scheme, parsedAuthorityOrRawPath };
+    }
+
+    private static String postSchemeParse(String addr, int start, int n, boolean parseAuthority) {
+        int p = start;
+        int q = -1;
+        if (at(addr, p, n, '/') && at(addr, p + 1, n, '/')) {
+            p += 2;
+            q = scan(addr, p, n, null, "/");
+            if (q > p) {
+                if (!parseAuthority) {
+                    p = q;
+                }
+            } else if (q >= n) {
+                if (parseAuthority || p == n) {
+                    throw new IllegalArgumentException();
+                } else {
+                    return null;
+                }
+            }    
+        }
+        
+        if (!parseAuthority) {
+            q = scan(addr, p, n, null, "?#");
+        } else if (p >= q) {
+            // empty authority should be null
+            return null;
+        }
+        
+        return addr.substring(p, q);
+    }
+    
+    private static boolean at(String addr, int start, int end, char c) {
+        return (start < end) && (addr.charAt(start) == c);
+    }
+    
+    private static int scan(String addr, int start, int end, String err, String stop) {
+        int p = start;
+        while (p < end) {
+            char c = addr.charAt(p);
+            if (err != null && err.indexOf(c) >= 0) {
+                return -1;
+            }
+            if (stop.indexOf(c) >= 0) {
+                break;
+            }    
+            p++;
+        }
+        return p;
+    }
+    //Liberty code change end
 
     public static String getEndpointAddress(Message m) {
         String address = null;
         Destination d = m.getExchange().getDestination();
         if (d != null) {
             if (d instanceof AbstractHTTPDestination) {
-                EndpointInfo ei = ((AbstractHTTPDestination) d).getEndpointInfo();
                 HttpServletRequest request = (HttpServletRequest) m.get(AbstractHTTPDestination.HTTP_REQUEST);
                 Object property = request != null
                     ? request.getAttribute("org.apache.cxf.transport.endpoint.address") : null;
-                address = property != null ? property.toString() : ei.getAddress();
+                //Liberty code change start
+                address = property != null ? property.toString() : ((AbstractHTTPDestination) d).getEndpointInfo().getAddress();
+                //Liberty code change end
             } else {
                 address = m.containsKey(Message.BASE_PATH)
                     ? (String)m.get(Message.BASE_PATH) : d.getAddress().getAddress().getValue();

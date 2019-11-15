@@ -16,11 +16,12 @@ import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.eclipse.microprofile.graphql.Argument;
 import org.eclipse.microprofile.graphql.DefaultValue;
 import org.eclipse.microprofile.graphql.GraphQLApi;
 import org.eclipse.microprofile.graphql.Mutation;
+import org.eclipse.microprofile.graphql.Name;
 import org.eclipse.microprofile.graphql.Query;
+
 
 @GraphQLApi
 @ApplicationScoped
@@ -44,7 +45,7 @@ public class MyGraphQLEndpoint {
     }
 
     @Query("widgetByName")
-    public Widget getWidgetByName(@Argument("name") @DefaultValue("Pencil") String name) {
+    public Widget getWidgetByName(@Name("name") @DefaultValue("Pencil") String name) {
         switch (name) {
             case "Pencil": return new Widget("Pencil", 10, 0.5, 5.5, 0.2, 0.2);
             case "Eraser": return new Widget("Eraser", 5, 0.7, 2.2, 0.2, 0.4);
@@ -53,7 +54,7 @@ public class MyGraphQLEndpoint {
     }
 
     @Mutation("createWidget")
-    public Widget createNewWidget(@Argument("widget") WidgetInput input) {
+    public Widget createNewWidget(@Name("widget") WidgetInput input) {
         Widget w = Widget.fromWidgetInput(input);
         allWidgets.add(w);
         return w;
@@ -61,7 +62,7 @@ public class MyGraphQLEndpoint {
     
     @Mutation("createWidgetByString")
     public Widget createNewWidget(@DefaultValue("Widget(Oven,12,120.1,36.2,3.3,14.0)")
-                                  @Argument("widgetString") String input) {
+                                  @Name("widgetString") String input) {
         Widget w = Widget.fromString(input);
         allWidgets.add(w);
         return w;

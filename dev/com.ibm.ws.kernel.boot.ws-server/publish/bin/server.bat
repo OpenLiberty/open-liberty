@@ -496,6 +496,7 @@ goto:eof
           set WLP_DEFAULT_JAVA_HOME=!WLP_INSTALL_DIR!!WLP_DEFAULT_JAVA_HOME:~17!
         )
         set JAVA_CMD_QUOTED="!WLP_DEFAULT_JAVA_HOME!\bin\java"
+        set WLP_SKIP_MAXPERMSIZE=!WLP_DEFAULT_SKIP_MAXPERMSIZE!
       )
     ) else (
       set JAVA_CMD_QUOTED="%JRE_HOME%\bin\java"
@@ -537,7 +538,13 @@ goto:eof
 :serverEnvAndJVMOptions
   call:serverEnv
 
-  set JVM_OPTIONS=
+  @REM By default, set -XX:MaxPermSize.  This option should be ignored by JVMs
+  @REM that don't support the option.
+  if not defined WLP_SKIP_MAXPERMSIZE (
+    set JVM_OPTIONS=-XX:MaxPermSize=256m
+  ) else (
+    set JVM_OPTIONS=
+  )
   @REM Avoid HeadlessException.
   set JVM_OPTIONS=-Djava.awt.headless=true !JVM_OPTIONS!
   @REM allow late self attach for when the localConnector-1.0 feature is enabled

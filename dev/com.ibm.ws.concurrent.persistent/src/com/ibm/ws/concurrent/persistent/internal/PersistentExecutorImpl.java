@@ -457,7 +457,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
         try {
             Config config = configRef.get();
-            if (config.missedTaskThreshold > 0 || config.pollInterval >= 0) {
+            if (config.missedTaskThreshold > 0 || config.pollInterval >= 0 && config.missedTaskThreshold2 < 1) {
                 // Update the persistent store to indicate that this instance can no longer find/run tasks
                 PartitionRecord expected = new PartitionRecord(false);
 
@@ -1186,24 +1186,26 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
             record.setIdentifierOfOwner(owner);
 
         Config config = configRef.get();
-        long identifierOfPartition;
+
+        long taskAssignmentInfo = -1;
         Long alternatePartition = null;
-        try {
-            // If the current instance isn't able to run tasks, look for one that is
-            if (!config.enableTaskExecution) {
-                Controller controller = controllerRef.getService();
-                if (controller == null) // use the partition info from the persistent store to find an instance that periodically polls
-                    alternatePartition = getPartitionThatPolls(config.missedTaskThreshold);
-                else // obtain from the controller
-                    alternatePartition = controller.getActivePartitionId();
+        if (config.missedTaskThreshold2 < 1) {
+            try {
+                // If the current instance isn't able to run tasks, look for one that is
+                if (!config.enableTaskExecution) {
+                    Controller controller = controllerRef.getService();
+                    if (controller == null) // use the partition info from the persistent store to find an instance that periodically polls
+                        alternatePartition = getPartitionThatPolls(config.missedTaskThreshold);
+                    else // obtain from the controller
+                        alternatePartition = controller.getActivePartitionId();
+                }
+                taskAssignmentInfo = alternatePartition == null ? getPartitionId() : alternatePartition;
+            } catch (RuntimeException x) {
+                throw x;
+            } catch (Exception x) {
+                throw new RejectedExecutionException(x);
             }
-            identifierOfPartition = alternatePartition == null ? getPartitionId() : alternatePartition;
-        } catch (RuntimeException x) {
-            throw x;
-        } catch (Exception x) {
-            throw new RejectedExecutionException(x);
         }
-        record.setIdentifierOfPartition(identifierOfPartition);
 
         Map<String, String> execProps = getExecutionProperties(task);
 
@@ -1216,13 +1218,16 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
         int txTimeout;
         String txTimeoutString = execProps.get(PersistentExecutor.TRANSACTION_TIMEOUT);
-        try {
-            txTimeout = txTimeoutString == null ? 0 : Integer.parseInt(txTimeoutString);
-            if (txTimeout < 0)
-                throw new IllegalArgumentException(PersistentExecutor.TRANSACTION_TIMEOUT + ": " + txTimeoutString);
-        } catch (NumberFormatException x) {
-            throw new IllegalArgumentException(PersistentExecutor.TRANSACTION_TIMEOUT + ": " + txTimeoutString, x);
-        }
+        if (txTimeoutString == null)
+            txTimeout = config.missedTaskThreshold2 > 0 ? (int) config.missedTaskThreshold2 : 0;
+        else
+            try {
+                txTimeout = Integer.parseInt(txTimeoutString);
+                if (txTimeout < 0)
+                    throw new IllegalArgumentException(PersistentExecutor.TRANSACTION_TIMEOUT + ": " + txTimeoutString);
+            } catch (NumberFormatException x) {
+                throw new IllegalArgumentException(PersistentExecutor.TRANSACTION_TIMEOUT + ": " + txTimeoutString, x);
+            }
         record.setTransactionTimeout(txTimeout);
 
         short flags = 0;
@@ -1237,7 +1242,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
             flags |= TaskRecord.Flags.EJB_TIMER.bit;
         if (taskInfo.getInterval() == -1 && taskInfo.getInitialDelay() != -1)
             flags |= TaskRecord.Flags.ONE_SHOT_TASK.bit;
-        if (ManagedTask.SUSPEND.equals(execProps.get(ManagedTask.TRANSACTION)))
+        if (config.missedTaskThreshold2 > 0 || ManagedTask.SUSPEND.equals(execProps.get(ManagedTask.TRANSACTION)))
             flags |= TaskRecord.Flags.SUSPEND_TRAN_OF_EXECUTOR_THREAD.bit;
 
         record.setMiscBinaryFlags(flags);
@@ -1311,6 +1316,17 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
                 throw new IllegalArgumentException(Utils.toString(result), x);
             }
 
+        // Determine whether or not to start out with a claim on the task
+        boolean claimFirstExecution = false;
+        long nextExecTime = record.getNextExecutionTime();
+        if (config.missedTaskThreshold2 > 0 && config.enableTaskExecution
+            && config.pollInterval > 0 && nextExecTime <= System.currentTimeMillis() + config.pollInterval) {
+            taskAssignmentInfo = nextExecTime + config.missedTaskThreshold2 * 1000;
+            claimFirstExecution = true;
+        }
+
+        record.setIdentifierOfPartition(taskAssignmentInfo); // TODO rename the methods on TaskRecord to reflect repurposed usage
+
         TransactionController tranController = new TransactionController();
         try {
             tranController.preInvoke();
@@ -1318,9 +1334,11 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
             taskStore.create(record);
 
             // Immediately schedule tasks that should run in the near future or run on other instances if the transaction commits
-            long nextExecTime = record.getNextExecutionTime();
             Synchronization autoSchedule = null;
-            if (config.enableTaskExecution && (config.pollInterval < 0 || nextExecTime <= new Date().getTime() + config.pollInterval))
+            boolean scheduleToSelf = config.missedTaskThreshold2 > 0 //
+                            ? claimFirstExecution //
+                            : config.enableTaskExecution && (config.pollInterval < 0 || nextExecTime <= System.currentTimeMillis() + config.pollInterval);
+            if (scheduleToSelf)
                 autoSchedule = new InvokerTask(this, record.getId(), nextExecTime, record.getMiscBinaryFlags(), txTimeout);
             else if (alternatePartition != null) {
                 Controller controller = controllerRef.getService();
@@ -1374,10 +1392,10 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
             return false;
 
         TransactionController tranController = new TransactionController();
-        boolean result = false;
+        boolean removed = false;
         try {
             tranController.preInvoke();
-            result = taskStore.remove(taskId, owner, true);
+            removed = taskStore.remove(taskId, owner, true);
         } catch (Throwable x) {
             tranController.setFailure(x);
         } finally {
@@ -1386,7 +1404,12 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
                 throw x;
         }
 
-        return result;
+        if (removed) {
+            long[] runningTaskState = InvokerTask.runningTaskState.get();
+            if (runningTaskState != null && runningTaskState[0] == taskId)
+                runningTaskState[1] = InvokerTask.REMOVED_BY_SELF;
+        }
+        return removed;
     }
 
     /** {@inheritDoc} */
@@ -1500,10 +1523,10 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
     @Override
     public boolean removeTimer(long taskId) throws Exception {
         TransactionController tranController = new TransactionController();
-        boolean result = false;
+        boolean removed = false;
         try {
             tranController.preInvoke();
-            result = taskStore.remove(taskId, null, true);
+            removed = taskStore.remove(taskId, null, true);
         } catch (Throwable x) {
             tranController.setFailure(x);
         } finally {
@@ -1512,7 +1535,12 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
                 throw x;
         }
 
-        return result;
+        if (removed) {
+            long[] runningTaskState = InvokerTask.runningTaskState.get();
+            if (runningTaskState != null && runningTaskState[0] == taskId)
+                runningTaskState[1] = InvokerTask.REMOVED_BY_SELF;
+        }
+        return removed;
     }
 
     /** {@inheritDoc} */
@@ -1893,6 +1921,10 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
      * @return count of transferred tasks.
      */
     int transfer(Long maxTaskId, long oldPartitionId) throws Exception {
+        Config config = configRef.get();
+        if (config.missedTaskThreshold2 > 0)
+            throw new UnsupportedOperationException("The transfer operation is not supported when missedTaskThreshold >= 1"); // TODO message
+
         long partitionId = getPartitionId();
 
         TransactionController tranController = new TransactionController();
@@ -1902,7 +1934,6 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
             count = taskStore.transfer(maxTaskId, oldPartitionId, partitionId);
 
-            Config config = configRef.get();
             if (config.enableTaskExecution && count > 0 && config.pollInterval < 0) {
                 // Schedule a poll to find the transferred tasks
                 Synchronization autoPoll = new PollingTask(config);
@@ -2560,6 +2591,115 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
             return claimed;
         }
 
+        /**
+         * Polls for tasks that are owned by the current partition.
+         * TODO decide if missedTaskThreshold approach under this method, which covers missed tasks from other partitions, should be included or removed.
+         *
+         * @param config configuration of this instance.
+         * @throws Exception if an error occurs.
+         */
+        private void partitionBasedPoll(Config config) throws Exception {
+            final boolean trace = TraceComponent.isAnyTracingEnabled();
+
+            EmbeddableWebSphereTransactionManager tranMgr = tranMgrRef.getServiceWithException();
+
+            long partitionId = getPartitionId();
+            long now = System.currentTimeMillis();
+            long maxNextExecTime = config.pollInterval >= 0 ? (config.pollInterval + now) : Long.MAX_VALUE;
+            List<Object[]> results;
+            tranMgr.begin();
+            try {
+                results = taskStore.findUpcomingTasks(partitionId, maxNextExecTime, config.pollSize);
+            } finally {
+                tranMgr.commit();
+            }
+            for (Object[] result : results) {
+                long taskId = (Long) result[0];
+                Boolean previous = inMemoryTaskIds.put(taskId, Boolean.TRUE);
+                if (previous == null) {
+                    short mbits = (Short) result[1];
+                    long nextExecTime = (Long) result[2];
+                    int txTimeout = (Integer) result[3];
+                    InvokerTask task = new InvokerTask(PersistentExecutorImpl.this, taskId, nextExecTime, mbits, txTimeout);
+                    long delay = nextExecTime - new Date().getTime();
+                    if (trace && tc.isDebugEnabled())
+                        Tr.debug(PersistentExecutorImpl.this, tc, "Found task " + taskId + " for " + delay + "ms from now");
+                    scheduledExecutor.schedule(task, delay, TimeUnit.MILLISECONDS);
+                } else {
+                    if (trace && tc.isDebugEnabled())
+                        Tr.debug(PersistentExecutorImpl.this, tc, "Found task " + taskId + " already scheduled");
+                }
+            }
+
+            if (config.missedTaskThreshold > 0) {
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(PersistentExecutorImpl.this, tc, "Poll for tasks late by " + config.missedTaskThreshold + "s");
+                long lateTaskThresholdMS = TimeUnit.SECONDS.toMillis(config.missedTaskThreshold);
+                tranMgr.begin();
+                try {
+                    results = taskStore.findLateTasks(now - lateTaskThresholdMS, partitionId, config.pollSize);
+                } finally {
+                    tranMgr.commit();
+                }
+                boolean anyClaimed = false;
+                for (Object[] result : results)
+                    anyClaimed |= claimLateTask(result, config.missedTaskThreshold);
+                if (anyClaimed) {
+                    // schedule a task to clean up the properties table after claims start to expire
+                    scheduledExecutor.schedule(new PropertyCleanupTask(), config.missedTaskThreshold, TimeUnit.SECONDS);
+                }
+            }
+        }
+
+        /**
+         * Polls for all tasks that should start within the next poll interval which have not already been
+         * claimed by other executor instances.
+         *
+         * @param config configuration of this instance.
+         * @throws Exception if an error occurs.
+         */
+        private void pollForUnclaimedTasks(Config config) throws Exception {
+            final boolean trace = TraceComponent.isAnyTracingEnabled();
+
+            EmbeddableWebSphereTransactionManager tranMgr = tranMgrRef.getServiceWithException();
+
+            long now = System.currentTimeMillis();
+            long maxNextExecTime = config.pollInterval >= 0 ? (config.pollInterval + now) : Long.MAX_VALUE;
+            List<Object[]> results;
+            tranMgr.begin();
+            try {
+                results = taskStore.findUnclaimedTasks(maxNextExecTime, config.pollSize);
+            } finally {
+                tranMgr.commit();
+            }
+
+            for (Object[] result : results) {
+                long taskId = (Long) result[0];
+                long nextExecTime = (Long) result[2];
+                int version = (Integer) result[4];
+                now = System.currentTimeMillis();
+                long claimUntilTime = (now > nextExecTime ? now : nextExecTime) + config.missedTaskThreshold2 * 1000;
+
+                boolean claimed;
+                tranMgr.begin();
+                try {
+                    claimed = taskStore.claimIfNotLocked(taskId, version, claimUntilTime);
+                } finally {
+                    tranMgr.commit();
+                }
+
+                if (claimed) {
+                    short mbits = (Short) result[1];
+                    int txTimeout = (Integer) result[3];
+                    InvokerTask task = new InvokerTask(PersistentExecutorImpl.this, taskId, nextExecTime, mbits, txTimeout);
+                    long delay = nextExecTime - new Date().getTime();
+                    if (trace && tc.isDebugEnabled())
+                        Tr.debug(PersistentExecutorImpl.this, tc, "Found task " + taskId + " for " + delay + "ms from now");
+                    scheduledExecutor.schedule(task, delay, TimeUnit.MILLISECONDS);
+                }
+            }
+        }
+
         @Override
         public void run() {
             final boolean trace = TraceComponent.isAnyTracingEnabled();
@@ -2578,58 +2718,10 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
             try {
                 long beginPoll = System.nanoTime();
                 try {
-                    EmbeddableWebSphereTransactionManager tranMgr = tranMgrRef.getServiceWithException();
-
-                    long partitionId = getPartitionId();
-                    long now = new Date().getTime();
-                    long maxNextExecTime = config.pollInterval >= 0 ? (config.pollInterval + now) : Long.MAX_VALUE;
-                    List<Object[]> results;
-                    tranMgr.begin();
-                    try {
-                        results = taskStore.findUpcomingTasks(partitionId, maxNextExecTime, config.pollSize);
-                    } catch (Throwable x) {
-                        throw failure = x;
-                    } finally {
-                        tranMgr.commit();
-                    }
-                    for (Object[] result : results) {
-                        long taskId = (Long) result[0];
-                        Boolean previous = inMemoryTaskIds.put(taskId, Boolean.TRUE);
-                        if (previous == null) {
-                            short mbits = (Short) result[1];
-                            long nextExecTime = (Long) result[2];
-                            int txTimeout = (Integer) result[3];
-                            InvokerTask task = new InvokerTask(PersistentExecutorImpl.this, taskId, nextExecTime, mbits, txTimeout);
-                            long delay = nextExecTime - new Date().getTime();
-                            if (trace && tc.isDebugEnabled())
-                                Tr.debug(PersistentExecutorImpl.this, tc, "Found task " + taskId + " for " + delay + "ms from now");
-                            scheduledExecutor.schedule(task, delay, TimeUnit.MILLISECONDS);
-                        } else {
-                            if (trace && tc.isDebugEnabled())
-                                Tr.debug(PersistentExecutorImpl.this, tc, "Found task " + taskId + " already scheduled");
-                        }
-                    }
-
-                    if (config.missedTaskThreshold > 0) {
-                        if (trace && tc.isDebugEnabled())
-                            Tr.debug(PersistentExecutorImpl.this, tc, "Poll for tasks late by " + config.missedTaskThreshold + "s");
-                        long lateTaskThresholdMS = TimeUnit.SECONDS.toMillis(config.missedTaskThreshold);
-                        tranMgr.begin();
-                        try {
-                            results = taskStore.findLateTasks(now - lateTaskThresholdMS, partitionId, config.pollSize);
-                        } catch (Throwable x) {
-                            throw failure = x;
-                        } finally {
-                            tranMgr.commit();
-                        }
-                        boolean anyClaimed = false;
-                        for (Object[] result : results)
-                            anyClaimed |= claimLateTask(result, config.missedTaskThreshold);
-                        if (anyClaimed) {
-                            // schedule a task to clean up the properties table after claims start to expire
-                            scheduledExecutor.schedule(new PropertyCleanupTask(), config.missedTaskThreshold, TimeUnit.SECONDS);
-                        }
-                    }
+                    if (config.missedTaskThreshold2 > 0)
+                        pollForUnclaimedTasks(config);
+                    else
+                        partitionBasedPoll(config);
                 } finally {
                     // Schedule next poll
                     config = configRef.get();
@@ -2815,7 +2907,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
             boolean transferred;
             tranMgr.begin();
             try {
-                transferred = taskStore.setPartitionIfNotLocked(taskId, currentVersion, partition);
+                transferred = taskStore.claimIfNotLocked(taskId, currentVersion, partition);
             } finally {
                 tranMgr.commit();
             }

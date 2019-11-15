@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.social.internal;
 
@@ -169,8 +169,20 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
     public static final String DEFAULT_CONTEXT_ROOT = "/ibm/api/social-login";
     static String contextRoot = DEFAULT_CONTEXT_ROOT;
     
-    public static final String KEY_USE_SYSPROPS_FOR_HTTPCLIENT_CONNECTONS="useSystemPropertiesForHttpClientConnections";
+    public static final String KEY_USE_SYSPROPS_FOR_HTTPCLIENT_CONNECTONS = "useSystemPropertiesForHttpClientConnections";
     protected boolean useSystemPropertiesForHttpClientConnections = false;
+
+    public static final String KEY_userApiType = "userApiType";
+    protected String userApiType = null;
+
+    public static final String KEY_userApiToken = "userApiToken";
+    protected String userApiToken = null;
+    public static final String KEY_accessTokenRequired = "accessTokenRequired";
+    protected boolean accessTokenRequired = false;
+    public static final String KEY_accessTokenSupported = "accessTokenSupported";
+    protected boolean accessTokenSupported = false;
+    public static final String KEY_accessTokenHeaderName = "accessTokenHeaderName";
+    protected String accessTokenHeaderName = null;
 
     protected CommonConfigUtils configUtils = new CommonConfigUtils();
 
@@ -226,10 +238,27 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
     }
 
     protected void setRequiredConfigAttributes(Map<String, Object> props) {
-        this.clientId = getRequiredConfigAttribute(props, KEY_clientId);
-        this.clientSecret = getRequiredSerializableProtectedStringConfigAttribute(props, KEY_clientSecret);
-        this.authorizationEndpoint = getRequiredConfigAttribute(props, KEY_authorizationEndpoint);
-        this.scope = getRequiredConfigAttribute(props, KEY_scope);
+        if (isOpenShiftConfiguration(props)) {
+            setRequiredConfigAttributesForOpenShift(props);
+        } else {
+            this.clientId = getRequiredConfigAttribute(props, KEY_clientId);
+            this.clientSecret = getRequiredSerializableProtectedStringConfigAttribute(props, KEY_clientSecret);
+            this.authorizationEndpoint = getRequiredConfigAttribute(props, KEY_authorizationEndpoint);
+            this.scope = getRequiredConfigAttribute(props, KEY_scope);
+        }
+    }
+
+    boolean isOpenShiftConfiguration(Map<String, Object> props) {
+        String userApiType = configUtils.getConfigAttribute(props, KEY_userApiType);
+        if (userApiType != null && ClientConstants.USER_API_TYPE_KUBE.equals(userApiType)) {
+            return true;
+        }
+        return false;
+    }
+
+    protected void setRequiredConfigAttributesForOpenShift(Map<String, Object> props) {
+        this.userApiToken = getRequiredSerializableProtectedStringConfigAttribute(props, KEY_userApiToken);
+        this.userApi = getRequiredConfigAttribute(props, KEY_userApi);
     }
 
     protected void setOptionalConfigAttributes(Map<String, Object> props) throws SocialLoginException {
@@ -253,6 +282,26 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
         this.isClientSideRedirectSupported = configUtils.getBooleanConfigAttribute(props, KEY_isClientSideRedirectSupported, this.isClientSideRedirectSupported);
         this.nonce = configUtils.getBooleanConfigAttribute(props, KEY_nonce, this.nonce);
         this.userApiNeedsSpecialHeader = configUtils.getBooleanConfigAttribute(props, KEY_userApiNeedsSpecialHeader, this.userApiNeedsSpecialHeader);
+        if (isOpenShiftConfiguration(props)) {
+            setOptionalConfigAttributesForOpenShift(props);
+        }
+    }
+
+    protected void setOptionalConfigAttributesForOpenShift(Map<String, Object> props) {
+        this.clientId = configUtils.getConfigAttribute(props, KEY_clientId);
+        this.clientSecret = configUtils.processProtectedString(props, KEY_clientSecret);
+        this.authorizationEndpoint = configUtils.getConfigAttribute(props, KEY_authorizationEndpoint);
+        this.scope = configUtils.getConfigAttribute(props, KEY_scope);
+
+        this.userApiType = configUtils.getConfigAttribute(props, KEY_userApiType);
+        this.accessTokenRequired = configUtils.getBooleanConfigAttribute(props, KEY_accessTokenRequired, this.accessTokenRequired);
+        this.accessTokenSupported = configUtils.getBooleanConfigAttribute(props, KEY_accessTokenSupported, this.accessTokenSupported);
+        this.accessTokenHeaderName = configUtils.getConfigAttribute(props, KEY_accessTokenHeaderName);
+        if (!accessTokenRequired && !accessTokenSupported) {
+            // If we aren't using the OpenShift proxy configuration, we MUST have the authorizationEndpoint and tokenEndpoint
+            this.authorizationEndpoint = configUtils.getRequiredConfigAttribute(props, KEY_authorizationEndpoint);
+            this.tokenEndpoint = configUtils.getRequiredConfigAttribute(props, KEY_tokenEndpoint);
+        }
     }
 
     protected void initializeMembersAfterConfigAttributesPopulated(Map<String, Object> props) throws SocialLoginException {
@@ -265,15 +314,15 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
     protected void initializeUserApiConfigs() throws SocialLoginException {
         this.userApiConfigs = initUserApiConfigs(this.userApi);
     }
-    
+
     protected Configuration getCustomConfiguration(String customParam) {
-    	if (this.socialLoginServiceRef.getService() != null) {
-    		try {
-				return this.socialLoginServiceRef.getService().getConfigAdmin().getConfiguration(customParam, "");
-			} catch (IOException e) {		
-			}
-    	}
-    	return null;
+        if (this.socialLoginServiceRef.getService() != null) {
+            try {
+                return this.socialLoginServiceRef.getService().getConfigAdmin().getConfiguration(customParam, "");
+            } catch (IOException e) {
+            }
+        }
+        return null;
     }
 
     protected void initializeJwt(Map<String, Object> props) {
@@ -743,9 +792,31 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
     public String getResponseMode() {
         return null;
     }
-    
-    public boolean getUseSystemPropertiesForHttpClientConnections(){
+
+    public boolean getUseSystemPropertiesForHttpClientConnections() {
         return useSystemPropertiesForHttpClientConnections;
+    }
+
+    public String getUserApiType() {
+        return userApiType;
+    }
+
+    @Sensitive
+    public String getUserApiToken() {
+        return userApiToken;
+    }
+
+    public boolean isAccessTokenRequired() {
+        return accessTokenRequired;
+    }
+
+    public boolean isAccessTokenSupported() {
+        return accessTokenSupported;
+    }
+
+    public String getAccessTokenHeaderName() {
+        return accessTokenHeaderName;
+
     }
 
 }

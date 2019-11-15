@@ -22,11 +22,10 @@ Bundle-Description:MicroProfile Fault Tolerance 1.0 impl, version ${bVersion}
 WS-TraceGroup: FAULTTOLERANCE
 
 -dsannotations-inherit: true
--dsannotations: com.ibm.ws.microprofile.faulttolerance.impl.ProviderResolverImpl, \
-                com.ibm.ws.microprofile.faulttolerance.metrics.impl.DummyRecorderProvider
+-dsannotations: com.ibm.ws.microprofile.faulttolerance.metrics.impl.DummyRecorderProvider
 
 Import-Package: \
-  org.eclipse.microprofile.faulttolerance; version="[1.0,1.2)",\
+  org.eclipse.microprofile.faulttolerance; version="[1.0,1.3)", \
   *
 
 Export-Package: com.ibm.ws.microprofile.faulttolerance.impl
@@ -34,17 +33,13 @@ Export-Package: com.ibm.ws.microprofile.faulttolerance.impl
 Private-Package: \
 	com.ibm.ws.microprofile.faulttolerance.resources,\
 	com.ibm.ws.microprofile.faulttolerance.impl.policy, \
-	com.ibm.ws.microprofile.faulttolerance.impl.sync, \
-	com.ibm.ws.microprofile.faulttolerance.impl.async, \
 	com.ibm.ws.microprofile.faulttolerance.metrics.impl
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 src: src,resources
-testsrc: test/src
 
 -buildpath: \
-        com.ibm.ws.net.jodah.failsafe.1.0.4;version=latest, \
         com.ibm.ws.logging;version=latest, \
         com.ibm.ws.logging.core;version=latest, \
         org.eclipse.osgi;version=latest, \
@@ -56,7 +51,6 @@ testsrc: test/src
         com.ibm.ws.microprofile.faulttolerance.spi;version=latest, \
         com.ibm.ws.kernel.service;version=latest, \
         com.ibm.ws.context;version=latest, \
-        com.ibm.websphere.security;version=latest, \
         com.ibm.websphere.javaee.annotation.1.2;version=latest, \
         com.ibm.websphere.javaee.concurrent.1.0;version=latest, \
         com.ibm.ws.org.osgi.annotation.versioning;version=latest, \

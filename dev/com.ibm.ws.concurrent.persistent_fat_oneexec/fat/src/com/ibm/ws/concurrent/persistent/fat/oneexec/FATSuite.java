@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2015, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,24 +17,19 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.ibm.websphere.simplicity.Machine;
-
-import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 @RunWith(Suite.class)
-@SuiteClasses({ OneExecutorRunsAllTest.class })
+@SuiteClasses({
+    OneExecutorRunsAllTest.class,
+    OneExecutorRunsAllWithFailoverEnabledTest.class
+    })
 public class FATSuite {
     static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.concurrent.persistent.fat.oneexec");
 
     @BeforeClass
     public static void beforeSuite() throws Exception {
-        // Delete the Derby-only database that is used by the persistent scheduled executor
-        Machine machine = server.getMachine();
-        String installRoot = server.getInstallRoot();
-        LibertyFileManager.deleteLibertyDirectoryAndContents(machine, installRoot + "/usr/shared/resources/data/persistoneexecdb");
-
         // Install liberty helper feature.
         server.copyFileToLibertyInstallRoot("lib/features/", "features/singletonTestFeature-1.0.mf");
         assertTrue("Helper feature should have been copied to lib/features.",

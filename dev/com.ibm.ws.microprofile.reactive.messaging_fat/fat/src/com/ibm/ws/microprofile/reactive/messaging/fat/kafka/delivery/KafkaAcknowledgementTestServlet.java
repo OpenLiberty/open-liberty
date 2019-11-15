@@ -16,7 +16,6 @@ import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -26,6 +25,7 @@ import javax.servlet.annotation.WebServlet;
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.junit.Test;
 
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaTestConstants;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractKafkaTestServlet;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.SimpleKafkaReader;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.SimpleKafkaWriter;
@@ -45,8 +45,6 @@ public class KafkaAcknowledgementTestServlet extends AbstractKafkaTestServlet {
      */
     public static final String APP_GROUPID = "acknowledgement-app-group";
 
-    private static final Duration TIMEOUT = Duration.ofSeconds(30);
-
     @Inject
     private KafkaDeliveryBean deliveryBean;
 
@@ -60,7 +58,7 @@ public class KafkaAcknowledgementTestServlet extends AbstractKafkaTestServlet {
 
         // Assert that message appears on topic
         SimpleKafkaReader<String> reader = kafkaTestClient.readerFor(KafkaDeliveryBean.CHANNEL_NAME);
-        List<String> messages = reader.waitForMessages(1, TIMEOUT);
+        List<String> messages = reader.waitForMessages(1, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
         assertThat(messages, contains("test1"));
 
         // Assert that message has been acknowledged
@@ -77,7 +75,7 @@ public class KafkaAcknowledgementTestServlet extends AbstractKafkaTestServlet {
         writer.sendMessage("test1");
 
         // Assert that message is received
-        List<Message<String>> messages = receptionBean.getReceivedMessages(1, TIMEOUT);
+        List<Message<String>> messages = receptionBean.getReceivedMessages(1, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
         Message<String> message = messages.get(0);
         assertThat(message.getPayload(), is("test1"));
 
@@ -89,7 +87,7 @@ public class KafkaAcknowledgementTestServlet extends AbstractKafkaTestServlet {
         message.ack();
 
         // Assert that partition offset does get committed
-        kafkaTestClient.assertTopicOffsetAdvancesTo(offset + 1, TIMEOUT, KafkaReceptionBean.CHANNEL_NAME, APP_GROUPID);
+        kafkaTestClient.assertTopicOffsetAdvancesTo(offset + 1, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT, KafkaReceptionBean.CHANNEL_NAME, APP_GROUPID);
     }
 
     @Test
@@ -102,7 +100,7 @@ public class KafkaAcknowledgementTestServlet extends AbstractKafkaTestServlet {
         writer.sendMessage("test3");
 
         // Assert messages are received
-        List<Message<String>> messages = receptionBean.getReceivedMessages(3, TIMEOUT);
+        List<Message<String>> messages = receptionBean.getReceivedMessages(3, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
         List<String> payloads = messages.stream().map(Message::getPayload).collect(toList());
         assertThat(payloads, contains("test1", "test2", "test3"));
 
@@ -111,12 +109,12 @@ public class KafkaAcknowledgementTestServlet extends AbstractKafkaTestServlet {
         messages.get(2).ack();
 
         // Assert that partition offset gets committed to 1
-        kafkaTestClient.assertTopicOffsetAdvancesTo(offset + 1, TIMEOUT, KafkaReceptionBean.CHANNEL_NAME, APP_GROUPID);
+        kafkaTestClient.assertTopicOffsetAdvancesTo(offset + 1, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT, KafkaReceptionBean.CHANNEL_NAME, APP_GROUPID);
 
         // Acknowledge message 2
         messages.get(1).ack();
 
         // Assert that partition offset gets committed to 3
-        kafkaTestClient.assertTopicOffsetAdvancesTo(offset + 3, TIMEOUT, KafkaReceptionBean.CHANNEL_NAME, APP_GROUPID);
+        kafkaTestClient.assertTopicOffsetAdvancesTo(offset + 3, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT, KafkaReceptionBean.CHANNEL_NAME, APP_GROUPID);
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -92,10 +92,10 @@ public class TaskStatusImpl<T> implements TaskStatus<T>, TimerStatus<T> {
     /**
      * Initialize a snapshot of task status.
      *
-     * @param task persistent task.
+     * @param task               persistent task.
      * @param persistentExecutor persistent scheduled executor that obtained this task status.
      * @throws IllegalStateException if any of the following are unspecified in the task record:
-     *             (Id, IdentifierOfClassLoader, MiscBinaryFlags, Name, NextExecutionTime, Result, State)
+     *                                   (Id, IdentifierOfClassLoader, MiscBinaryFlags, Name, NextExecutionTime, Result, State)
      */
     public TaskStatusImpl(TaskRecord task, PersistentExecutorImpl persistentExecutor) {
         classLoaderIdentifier = task.getIdentifierOfClassLoader();
@@ -115,17 +115,23 @@ public class TaskStatusImpl<T> implements TaskStatus<T>, TimerStatus<T> {
     @Override
     public boolean cancel(boolean mayInterruptIfRunning) {
         TransactionController tranController = persistentExecutor.new TransactionController();
-        boolean result = false;
+        boolean result = false, removed = false;
         TaskStore taskStore = persistentExecutor.taskStore;
         try {
             tranController.preInvoke();
-            result = (miscBinaryFlags & TaskRecord.Flags.AUTO_PURGE_ALWAYS.bit) == 0 ? taskStore.cancel(id) : taskStore.remove(id, null, false);
+            result = (miscBinaryFlags & TaskRecord.Flags.AUTO_PURGE_ALWAYS.bit) == 0 ? taskStore.cancel(id) : (removed = taskStore.remove(id, null, false));
         } catch (Throwable x) {
             tranController.setFailure(x);
         } finally {
             PersistentStoreException x = tranController.postInvoke(PersistentStoreException.class); // TODO proposed spec class
             if (x != null)
                 throw x;
+        }
+
+        if (removed) {
+            long[] runningTaskState = InvokerTask.runningTaskState.get();
+            if (runningTaskState != null && runningTaskState[0] == id)
+                runningTaskState[1] = InvokerTask.REMOVED_BY_SELF;
         }
         return result;
     }
@@ -227,7 +233,8 @@ public class TaskStatusImpl<T> implements TaskStatus<T>, TimerStatus<T> {
         Date time = (state & TaskState.ENDED.bit) == 0 ? new Date(nextExecutionTime) : null;
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc, Utils.appendDate(new StringBuilder("getNextExecutionTime "),
-                                                time == null ? null : time.getTime()).toString());
+                                                time == null ? null : time.getTime())
+                            .toString());
         return time;
     }
 

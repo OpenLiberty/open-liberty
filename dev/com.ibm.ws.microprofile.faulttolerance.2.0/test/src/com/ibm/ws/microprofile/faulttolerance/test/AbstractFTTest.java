@@ -15,8 +15,8 @@ import java.lang.reflect.Field;
 import org.junit.After;
 import org.junit.Before;
 
+import com.ibm.ws.microprofile.faulttolerance.impl.AbstractProviderResolverImpl;
 import com.ibm.ws.microprofile.faulttolerance.impl.FTConstants;
-import com.ibm.ws.microprofile.faulttolerance.impl.ProviderResolverImpl;
 import com.ibm.ws.microprofile.faulttolerance.spi.FaultToleranceProviderResolver;
 import com.ibm.ws.microprofile.faulttolerance.test.util.DummyContextService;
 import com.ibm.ws.microprofile.faulttolerance20.impl.ProviderResolverImpl20;
@@ -30,7 +30,7 @@ public abstract class AbstractFTTest {
     public void before() {
         System.setProperty(FTConstants.JSE_FLAG, "true");
         ProviderResolverImpl20 providerResolver = new ProviderResolverImpl20();
-        setField(ProviderResolverImpl.class, "contextService", providerResolver, new DummyContextService());
+        setField(AbstractProviderResolverImpl.class, "contextService", providerResolver, new DummyContextService());
         FaultToleranceProviderResolver.setInstance(providerResolver);
     }
 

@@ -523,6 +523,16 @@ public class RESTHandlerContainerImpl implements RESTHandlerContainer {
      * @param response The generated response.
      */
     private static void auditResponse(RESTRequest request, RESTResponse response) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            int code = response.getStatus();
+            if (code == 403) {
+                Tr.debug(tc, "Auditing REST request for " + request.getMethod() + " at " + request.getCompleteURL() + " for " + request.getUserPrincipal() + " which requires "
+                             + response.getRequiredRoles() + ". Returned status: 403");
+            } else {
+                Tr.debug(tc, "Auditing REST request for " + request.getMethod() + " at " + request.getCompleteURL() + " for " + request.getUserPrincipal() + ". Returned status: "
+                             + code);
+            }
+        }
         Audit.audit(Audit.EventID.SECURITY_REST_HANDLER_AUTHZ, request, response, response.getStatus());
     }
 }

@@ -36,7 +36,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
 /**
- * Tests related to Session Cache Timeouts, using a server with the following session settings:
+ * Tests related to Session Cache Timeouts, using an Infinispan server with the following session settings:
  * invalidationTimeout="5s"
  * reaperPollInterval="30" //Min allowed to not receive random poll interval between 30-60s
  */
@@ -97,8 +97,7 @@ public class SessionCacheTimeoutTest extends FATServletClient {
      * Test that a session can still be used if it was valid when a servlet call began, even after timeout.
      * This mimics SessionDB behavior.
      */
-    //@Test
-    // ISPN021011: Incompatible cache value types specified, expected class java.lang.String but class java.lang.Object was specified
+    @Test
     @Mode(FULL)
     public void testServletTimeout() throws Exception {
         List<String> session = newSession();
@@ -111,8 +110,7 @@ public class SessionCacheTimeoutTest extends FATServletClient {
      * Tests that a locally cached session is still usable to the end of a servlet call after being invalidated,
      * and is no longer valid in a following servlet call.
      */
-    //@Test
-    // ISPN021011: Incompatible cache value types specified, expected class java.lang.String but class java.lang.Object was specified
+    @Test
     @Mode(FULL)
     public void testServletPutTimeout() throws Exception {
         List<String> session = newSession();
@@ -123,8 +121,7 @@ public class SessionCacheTimeoutTest extends FATServletClient {
     /**
      * Tests that after a session times out session attributes are removed from the cache.
      */
-    //@Test
-    // ISPN021011: Incompatible cache value types specified, expected class java.lang.String but class java.lang.Object was specified
+    @Test
     @Mode(FULL)
     public void testCacheInvalidationAfterTimeout() throws Exception {
         List<String> session = newSession();
@@ -138,8 +135,7 @@ public class SessionCacheTimeoutTest extends FATServletClient {
     /**
      * Test that the cache is invalidated after reaching invalidation timeout during a servlet call.
      */
-    //@Test
-    // ISPN021011: Incompatible cache value types specified, expected class java.lang.String but class java.lang.Object was specified
+    @Test
     @Mode(FULL)
     public void testCacheInvalidationAfterServletTimeout() throws Exception {
         List<String> session = newSession();
@@ -198,6 +194,15 @@ public class SessionCacheTimeoutTest extends FATServletClient {
         // Verify the session is still around and has the 500s timeout set, along with other session properties
         app.invokeServlet("testTimeoutExtensionB", session);
         app.sessionGet("testTimeoutExtension-foo", "bar", session);
+    }
+
+    /**
+     * Ensure that if Infinispan exception is ever resolved, that we are notified and can switch our tests back.
+     * Error Thrown: ISPN021011: Incompatible cache value types specified, expected class java.lang.String but class java.lang.Object was specified
+     */
+    @Test
+    public void testInfinispanClassCastException() throws Exception {
+        app.invokeServlet("testInfinispanClassCastException&shouldFail=true", null);
     }
 
     /**

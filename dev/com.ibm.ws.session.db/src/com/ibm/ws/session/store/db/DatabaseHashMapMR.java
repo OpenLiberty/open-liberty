@@ -19,6 +19,7 @@ import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.LinkedList;
@@ -205,6 +206,7 @@ public class DatabaseHashMapMR extends DatabaseHashMap {
 
             if (doWrite) {
                 int enumCount = 0;
+                ArrayList<Integer> writeResults = new ArrayList<Integer>();
                 batchUpdatePS = conn.prepareStatement(upAnyProp);
                 while (vEnum.hasMoreElements()) {
                     enumCount++;
@@ -275,7 +277,7 @@ public class DatabaseHashMapMR extends DatabaseHashMap {
                         batchUpdatePS.setString(4, id);
                         batchUpdatePS.setString(5, propid);
                         batchUpdatePS.setString(6, getAppName());
-                        batchUpdatePS.addBatch();
+                        //batchUpdatePS.addBatch();
                         //in case we need to do an insert on this afterwards
                         //<string, string, byte[]>
                         DatabaseMRHelper helper = new DatabaseMRHelper();
@@ -311,7 +313,7 @@ public class DatabaseHashMapMR extends DatabaseHashMap {
                         batchUpdatePS.setString(5, propid);
                         batchUpdatePS.setString(6, getAppName());
 
-                        batchUpdatePS.addBatch();
+                        //batchUpdatePS.addBatch();
                         DatabaseMRHelper helper = new DatabaseMRHelper();
                         helper.setId(id);
                         helper.setPropId(propid);
@@ -345,7 +347,7 @@ public class DatabaseHashMapMR extends DatabaseHashMap {
                         batchUpdatePS.setString(5, propid);
                         batchUpdatePS.setString(6, getAppName());
 
-                        batchUpdatePS.addBatch();
+                        //batchUpdatePS.addBatch();
 
                         DatabaseMRHelper helper = new DatabaseMRHelper();
                         helper.setId(id);
@@ -372,34 +374,29 @@ public class DatabaseHashMapMR extends DatabaseHashMap {
                         pmiStats.writeTimes(objbuf.length, System.currentTimeMillis() - startTime);
                     }
 
+                    writeResults.add(batchUpdatePS.executeUpdate());
                 }
-                int updateCount = 0; //PM99783
-                int[] results = null;
-                if (enumCount>0) {
-                    results = batchUpdatePS.executeBatch();
-                    if (usingOracle) { //PM99783 when on Oracle DB, executeBatch() returns -2 (SUCCESS_NO_INFO), might be related to BatchPerformanceWorkaround Oracle property, hence we getUpdateCount instead
-                        updateCount = batchUpdatePS.getUpdateCount();
-                    }
-                } else {
-                    results = new int[0]; //skip trying to insert
-                }
+                //int updateCount = 0; //PM99783
+                //int[] results = null;
+                //if (enumCount>0) {
+                //    results = batchUpdatePS.executeBatch();
+                //    if (usingOracle) { //PM99783 when on Oracle DB, executeBatch() returns -2 (SUCCESS_NO_INFO), might be related to BatchPerformanceWorkaround Oracle property, hence we getUpdateCount instead
+                //        updateCount = batchUpdatePS.getUpdateCount();
+                //    }
+                //} else {
+                //    results = new int[0]; //skip trying to insert
+                //}
                 batchUpdatePS.close();
                 updateClose=true;
                 if (com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
-                    LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[HANDLE_PROPERTY_HITS], "after " + results.length + " batch update(s), total update count : " + updateCount);
+                    LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[HANDLE_PROPERTY_HITS], "after " + writeResults.size() + " batch update(s), total update count : " + enumCount);
                 }
                 boolean needToInsert = false;
-                int batchInsertPSCount = results.length;
-                // PI53220 Oracle 11 returns -2 (SUCCESS_NO_INFO); PI57327 Oracle 12 returns successful results.
-                if (results.length > 0 && results[0] == java.sql.Statement.SUCCESS_NO_INFO && updateCount > 0 && (_smc.writeAllProperties() || batchInsertPSCount == updateCount))
-                {
-                    batchInsertPSCount = batchInsertPSCount - updateCount; // Oracle only : when Write All option or no insert cases
-                }
-                for (int i=0;i<batchInsertPSCount;i++) {
+                for (int i=0;i<enumCount;i++) {
                     if (com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
-                        LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[HANDLE_PROPERTY_HITS], "For batch # " + (i+1) + ", update result : " + results[i]);
+                        LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[HANDLE_PROPERTY_HITS], "For batch # " + (i+1) + ", update result : " + writeResults.get(i));
                     }
-                    if (results[i]<=0) { //no rows updated (PM99783)
+                    if (writeResults.get(i)<=0) { //no rows updated (PM99783)
                         if (!needToInsert) {
                             needToInsert = true;
                             batchInsertPS = conn.prepareStatement(insAnyProp);
@@ -459,13 +456,13 @@ public class DatabaseHashMapMR extends DatabaseHashMap {
                     }
                 }
                 //try inserts
-                results = new int[0];
+                int[] results = new int[0];
                 if (needToInsert) {
                     try {
                         results = batchInsertPS.executeBatch();
                     } catch (java.sql.BatchUpdateException e) {
                         if (com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
-                            LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[HANDLE_PROPERTY_HITS], "Continue insert due to BatchPerformanceWorkaround enabled");
+                            LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[HANDLE_PROPERTY_HITS], "BatchUpdateException : batchUpdatePS.executeUpdate results error");
                         }
                     }
                     batchInsertPS.close();

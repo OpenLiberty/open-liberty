@@ -309,7 +309,6 @@ public class H2StreamResult {
                 boolean expectedFrameFound = false;
                 for (int j = 0; j < this.actualResponse.size(); j++) {
                     actualFrame = actualResponse.get(j);
-                    //System.out.println("Comparing = \n" + "Expected frame: " + expectedFrame + "\n" + "Actual frame: " + actualFrame + "\n");
                     if (expectedFrame.equals(actualFrame)) {
                         expectedFrameFound = true;
                         //remove this element so we avoid problems when frames are the same (like Settings frames)

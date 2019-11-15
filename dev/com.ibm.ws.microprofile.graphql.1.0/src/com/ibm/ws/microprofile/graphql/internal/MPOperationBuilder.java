@@ -25,6 +25,7 @@ import io.leangen.graphql.metadata.execution.MethodInvoker;
 import io.leangen.graphql.metadata.messages.MessageBundle;
 import io.leangen.graphql.metadata.strategy.query.DefaultOperationBuilder;
 
+import org.eclipse.microprofile.graphql.Name;
 import org.eclipse.microprofile.graphql.Query;
 
 
@@ -52,7 +53,16 @@ public class MPOperationBuilder extends DefaultOperationBuilder {
                 }
             }
 
-            // if no Query annotation, next check for JsonbProperty annotation
+            // if no Query annotation, next check for @Name
+            Name nameAnno = method.getAnnotation(Name.class);
+            if (nameAnno != null) {
+                String value = nameAnno.value();
+                if (!isEmpty(value)) {
+                    return value;
+                }
+            }
+
+            // still no name, try JsonbProperty annotation
             JsonbProperty jsonbPropAnno = method.getAnnotation(JsonbProperty.class);
             if (jsonbPropAnno == null) {
                 Field field = getFieldFromGetter(method);

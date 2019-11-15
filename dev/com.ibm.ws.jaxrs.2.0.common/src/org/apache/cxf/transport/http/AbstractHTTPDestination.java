@@ -635,10 +635,14 @@ public abstract class AbstractHTTPDestination
         }
 
         cacheInput(outMessage);
+        //Liberty code change start
+        Headers headers = null;
         HTTPServerPolicy sp = calcServerPolicy(outMessage);
         if (sp != null) {
-            new Headers(outMessage).setFromServerPolicy(sp);
+            headers = new Headers(outMessage);
+            headers.setFromServerPolicy(sp);
         }
+        //Liberty code change end
 
         OutputStream responseStream = null;
         boolean oneWay = isOneWay(outMessage);
@@ -654,7 +658,12 @@ public abstract class AbstractHTTPDestination
             }
         }
         response.setStatus(responseCode);
-        new Headers(outMessage).copyToResponse(response);
+        //Liberty code change start
+        if (headers == null) {
+            headers = new Headers(outMessage);
+        }
+        headers.copyToResponse(response);
+        //Liberty code change end
 
         outMessage.put(RESPONSE_HEADERS_COPIED, "true");
 

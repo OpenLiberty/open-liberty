@@ -1,0 +1,36 @@
+<server description="new server">
+
+  <!-- Enable features -->
+    <featureManager>
+        <feature>jsp-2.2</feature>
+		<feature>jdbc-4.0</feature>
+		<feature>requestTiming-1.0</feature>
+    </featureManager>
+
+  
+	<httpEndpoint id="defaultHttpEndpoint" host="*" />
+                   
+    <jdbcDriver id="DerbyEmbedded" libraryRef="DerbyLib"/>
+    <library filesetRef="DerbyFileset" id="DerbyLib"/>
+    <fileset dir="${shared.resource.dir}/derby" id="DerbyFileset" includes="derby.jar"/>
+	<javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+	
+	<!-- The following configures in-memory Derby.  For Derby on disk, which is needed if the database
+   	is required beyond a single server start, configure the databaseName with a file location such as:
+   	databaseName="${shared.config.dir}/data/derbydb" -->	
+
+    <dataSource id="db2" jdbcDriverRef="DerbyEmbedded" jndiName="jdbc/exampleDS" >
+        <properties createDatabase="create" databaseName="memory:DB2ADMIN"/>
+	<connectionManager maxIdleTime="1s" maxPoolSize="100" minPoolSize="1" reapTime="2s"/>
+    </dataSource>
+
+ 	<include location="../fatTestPorts.xml"/>
+ 	
+  	<requestTiming slowRequestThreshold="5s" hungRequestThreshold="10s">
+      <!-- Wild-card the servlet name -->
+   	 	<servletTiming appName="jdbcTestPrj_3"
+    			slowRequestThreshold="120s"
+    			hungRequestThreshold="120s"/>
+	</requestTiming>  
+  
+</server>

@@ -16,9 +16,9 @@ import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.eclipse.microprofile.graphql.Argument;
 import org.eclipse.microprofile.graphql.GraphQLApi;
 import org.eclipse.microprofile.graphql.Mutation;
+import org.eclipse.microprofile.graphql.Name;
 import org.eclipse.microprofile.graphql.Query;
 
 @GraphQLApi
@@ -39,7 +39,7 @@ public class MyGraphQLEndpoint {
     }
     
     @Mutation("createWidget")
-    public WidgetImpl createNewWidget(@Argument("widget") WidgetInput input) {
+    public WidgetImpl createNewWidget(@Name("widget") WidgetInput input) {
         if (!(input instanceof WidgetInput)) {
             String msg = String.format("Unexpected input type; expected WidgetInput, got {0}\n",
                                        input.getClass().getName());
