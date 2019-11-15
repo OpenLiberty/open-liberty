@@ -32,13 +32,21 @@ public class AuthUtils {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, headerName + " header=", hdrValue);
             }
-            String bearerAuthzMethod = "Bearer ";
-            if (hdrValue != null && hdrValue.startsWith(bearerAuthzMethod)) {
-                hdrValue = hdrValue.substring(bearerAuthzMethod.length());
-            }
-            return hdrValue;
+            //if we are looking at custom header, then just return the value
+            if (!isAuthorizationHeader(headerName)) { 
+                return hdrValue;
+            } else {
+                String bearerAuthzMethod = "Bearer ";
+                if (hdrValue != null && hdrValue.startsWith(bearerAuthzMethod)) {
+                    return hdrValue.substring(bearerAuthzMethod.length());
+                }
+            }   
         }
         return null;
+    }
+
+    private boolean isAuthorizationHeader(String headerName) {
+        return ("Authorization".equals(headerName));
     }
 
 }
