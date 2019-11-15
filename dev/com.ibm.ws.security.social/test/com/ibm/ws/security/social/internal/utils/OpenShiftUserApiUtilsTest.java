@@ -229,6 +229,29 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
         }
     }
     
+    @Test
+    public void missingUserKeyFromResponse() {
+        try {
+            mockery.checking(new Expectations() {
+                {
+                    allowing(config).getUserNameAttribute();
+                    will(returnValue("username"));
+                }
+            });
+            String errorResponse = "{\"kind\":\"TokenReview\",\"apiVersion\":\"authentication.k8s.io/v1\",\"metadata\":{\"creationTimestamp\":null},\"spec\":{\"token\":\"somebadvalueForAnAccessToken\"},\"status\":{\"user\":{},\"error\":\"[invalid bearer token, token lookup failed]\"}}";
+            String returnedString = userApiUtils.modifyExistingResponseToJSON(errorResponse);
+            //assertEquals(returnedString, "{\"username\":\"admin\",\"groups\":}");
+            
+        } catch (SocialLoginException e) {
+            //nls 
+            verifyException(e, "CWWKS5374E");
+              // fail()
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+    //("{\"kind\":\"TokenReview\",\"apiVersion\":\"authentication.k8s.io/v1\",\"metadata\":{\"creationTimestamp\":null},\"spec\":{\"token\":\"OR4SdSuy-8NRK8NEiYXxxDu01DZcT6jPj5RJ32CDA_c\"},\"status\":{\"authenticated\":\"true\"}}");
+    //{“kind”:“TokenReview”,“apiVersion”:“authentication.k8s.io/v1",“metadata”:{“creationTimestamp”:null},“spec”:{“token”:“somebadvalueForAnAccessToken”},“status”:{“user”:{},“error”:“[invalid bearer token, token lookup failed]“}}
     @SuppressWarnings("unchecked")
     @Test
     public void test_getUserApiResponse_nullAccessToken() {

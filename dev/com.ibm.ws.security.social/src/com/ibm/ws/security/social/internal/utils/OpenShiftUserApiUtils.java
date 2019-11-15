@@ -129,28 +129,37 @@ public class OpenShiftUserApiUtils {
             JsonValue statusValue = jsonResponse.get("status");
             if (ValueType.STRING == statusValue.getValueType()) {
                 if (jsonResponse.getString("status").equals("Failure")) {
-
                     throw new SocialLoginException(jsonResponse.getString("message"), null, null);
-
                 }
             }
             statusInnerMap = jsonResponse.getJsonObject("status");
         } else {
             throw new SocialLoginException("OPENSHIFT_USER_API_RESPONSE_MISSING_KEY", null, new Object[] { "status", jsonResponse });
         }
+
         if (statusInnerMap.containsKey("user")) {
             userInnerMap = statusInnerMap.getJsonObject("user");
-            modifiedResponse.add("username", userInnerMap.getString(config.getUserNameAttribute()));
+            if(userInnerMap.containsKey(config.getUserNameAttribute())){
+                modifiedResponse.add("username", userInnerMap.getString(config.getUserNameAttribute()));  
+            }
+            else {
+             throw new SocialLoginException("OPENSHIFT_USER_API_RESPONSE_MISSING_KEY", null, new Object[] { "user", jsonResponse });
+            }
         } else {
             throw new SocialLoginException("OPENSHIFT_USER_API_RESPONSE_MISSING_KEY", null, new Object[] { "user", jsonResponse });
         }
-
+        
+      if (statusInnerMap.containsKey("error")) {
+      throw new SocialLoginException("OPENSHIFT_USER_API_RESPONSE_ERROR",null,new Object[] {jsonResponse});
+      }
+      
         if (userInnerMap.containsKey("groups")) {
             JsonValue groupsValue = userInnerMap.get("groups");
             if (groupsValue.getValueType() != ValueType.ARRAY) {
                 throw new SocialLoginException("OPENSHIFT_USER_API_RESPONSE_MISCONFIGURED_KEY", null, null);
             }
-            modifiedResponse.add("groups", userInnerMap.getJsonArray("groups"));
+                modifiedResponse.add("groups", userInnerMap.getJsonArray("groups"));  
+            
         }
         return modifiedResponse.build().toString();
     }
