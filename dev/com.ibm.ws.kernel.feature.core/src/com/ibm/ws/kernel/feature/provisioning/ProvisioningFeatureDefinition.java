@@ -12,6 +12,7 @@ package com.ibm.ws.kernel.feature.provisioning;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
 
 import com.ibm.ws.kernel.feature.FeatureDefinition;
@@ -148,5 +149,17 @@ public interface ProvisioningFeatureDefinition extends FeatureDefinition {
      * @return true if the feature is a singleton, false otherwise
      */
     boolean isSingleton();
+
+    /**
+     * @return A list containing the symbolic name aliases declared in the WLP-SymbolicName-Alias
+     *         header, or null if not present.
+     */
+    List<String> getWlpSymbolicNameAliases();
+
+    /**
+     * @return A list containing the short name aliases declared in the WLP-SymbolicName-Alias
+     *         header, or null if not present.
+     */
+    List<String> getWlpShortNameAliases();
 
 }

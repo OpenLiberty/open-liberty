@@ -231,6 +231,7 @@ public class FeatureDefinitionUtilsTest {
         writer.write("Subsystem-Type: osgi.subsystem.feature \n");
         writer.write("Subsystem-Version: 1.0.0 \n");
         writer.write("IBM-Feature-Version: 2 \n");
+
         writer.flush();
 
         ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
@@ -239,6 +240,7 @@ public class FeatureDefinitionUtilsTest {
 
         Assert.assertEquals("symbolicName should return com.ibm.websphere.public-1.0", "com.ibm.websphere.public-1.0", iAttr.symbolicName);
         Assert.assertEquals("shortName should return public-1.0", "public-1.0", iAttr.shortName);
+
         Assert.assertEquals("featureName should return shortName", iAttr.shortName, iAttr.featureName);
     }
 
@@ -454,4 +456,96 @@ public class FeatureDefinitionUtilsTest {
             Assert.assertNull("Field " + f.getName() + " should have a null value", f.get(o));
         }
     }
+
+    @Test
+    public void testWLPNameAliasesPublic() throws IOException {
+        // WLP-SymbolicName-Alias in mf file (optional)
+        // WLP-ShortName-Alias in mf file (optional)
+
+        // Single symbolic and short alias for public feature
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        PrintWriter writer = new PrintWriter(out, true);
+        // Intentional extra trailing whitespace...
+        writer.write("Manifest-Version: 1.0 \n");
+        writer.write("Subsystem-SymbolicName: com.ibm.websphere.install-1.0; visibility:=public \n");
+        writer.write("Subsystem-Type: osgi.subsystem.feature \n");
+        writer.write("Subsystem-Version: 1.0.0 \n");
+        writer.write("IBM-Feature-Version: 2 \n");
+        writer.write("WLP-SymbolicName-Alias: org.someorg.project.publicAlias-1.0 \n");
+        writer.write("WLP-ShortName-Alias: publicAlias-1.0 \n");
+        writer.flush();
+        ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
+        ProvisioningDetails details = new ProvisioningDetails(null, in);
+        ImmutableAttributes iAttr = FeatureDefinitionUtils.loadAttributes("", null, details);
+        Assert.assertEquals("symbolicName should return com.ibm.websphere.install-1.0", "com.ibm.websphere.install-1.0", iAttr.symbolicName);
+        Assert.assertEquals("symbolicNameAlias(0) should be org.someorg.project.publicAlias-1.0", "org.someorg.project.publicAlias-1.0", iAttr.symbolicNameAliases.get(0));
+        Assert.assertTrue("There should be one symbolicNameAliases", iAttr.symbolicNameAliases.size() == 1);
+        Assert.assertEquals("shortNameAlias(0) should return publicAlias-1.0", "publicAlias-1.0", iAttr.shortNameAliases.get(0));
+        Assert.assertTrue("There should be one shortNameAliases", iAttr.shortNameAliases.size() == 1);
+        Assert.assertEquals("featureName should return symbolicName", iAttr.symbolicName, iAttr.featureName);
+
+        // Multiple symbolic and short alias for public feature
+        out = new ByteArrayOutputStream();
+        writer = new PrintWriter(out, true);
+        // Intentional extra trailing whitespace...
+        writer.write("Manifest-Version: 1.0 \n");
+        writer.write("Subsystem-SymbolicName: com.ibm.websphere.install-1.0; visibility:=public \n");
+        writer.write("Subsystem-Type: osgi.subsystem.feature \n");
+        writer.write("Subsystem-Version: 1.0.0 \n");
+        writer.write("IBM-Feature-Version: 2 \n");
+        writer.write("WLP-SymbolicName-Alias: org.someorg.project.publicAlias-1.0, org.someorg.project.anotherPublicAlias-1.0 \n");
+        writer.write("WLP-ShortName-Alias: publicAlias-1.0, anotherPublicAlias-1.0 \n");
+        writer.flush();
+        in = new ByteArrayInputStream(out.toByteArray());
+        details = new ProvisioningDetails(null, in);
+        iAttr = FeatureDefinitionUtils.loadAttributes("", null, details);
+        Assert.assertEquals("symbolicNameAlias(0) should be org.someorg.project.publicAlias-1.0", "org.someorg.project.publicAlias-1.0", iAttr.symbolicNameAliases.get(0));
+        Assert.assertEquals("symbolicNameAlias(1) should be org.someorg.project.anotherPublicAlias-1.0", "org.someorg.project.anotherPublicAlias-1.0",
+                            iAttr.symbolicNameAliases.get(1));
+        Assert.assertTrue("There should be two symbolicNameAliases", iAttr.symbolicNameAliases.size() == 2);
+        Assert.assertEquals("shortNameAlias(0) should return publicAlias-1.0", "publicAlias-1.0", iAttr.shortNameAliases.get(0));
+        Assert.assertEquals("shortNameAlias(1) should return anotherPublicAlias-1.0", "anotherPublicAlias-1.0", iAttr.shortNameAliases.get(1));
+        Assert.assertTrue("There should be two shortNameAliases", iAttr.shortNameAliases.size() == 2);
+    }
+
+    @Test
+    public void testWLPNameAliasesHidden() throws IOException {
+        // WLP-SymbolicName-Alias in mf file (optional)
+        // WLP-ShortName-Alias in mf file (optional)
+
+        // Symbolic and short aliases hidden (ignored) for non-public features
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        PrintWriter writer = new PrintWriter(out, true);
+        // Intentional extra trailing whitespace...
+        writer.write("Manifest-Version: 1.0 \n");
+        writer.write("Subsystem-SymbolicName: com.ibm.websphere.install-1.0; visibility:=install \n");
+        writer.write("Subsystem-Type: osgi.subsystem.feature \n");
+        writer.write("Subsystem-Version: 1.0.0 \n");
+        writer.write("IBM-Feature-Version: 2 \n");
+        writer.write("WLP-SymbolicName-Alias: org.someorg.project.nonPublicAlias-1.0 \n");
+        writer.write("WLP-ShortName-Alias: nonPublicAlias-1.0 \n");
+        writer.flush();
+        ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
+        ProvisioningDetails details = new ProvisioningDetails(null, in);
+        ImmutableAttributes iAttr = FeatureDefinitionUtils.loadAttributes("", null, details);
+        Assert.assertNull("symbolicNameAliases should return null", iAttr.symbolicNameAliases);
+        Assert.assertNull("shortNameAliases should return null", iAttr.shortNameAliases);
+
+        // Short alias hidden when symbolic alias is missing
+        out = new ByteArrayOutputStream();
+        writer = new PrintWriter(out, true);
+        writer.write("Manifest-Version: 1.0 \n");
+        writer.write("Subsystem-SymbolicName: com.ibm.websphere.install-1.0; visibility:=public \n");
+        writer.write("Subsystem-Type: osgi.subsystem.feature \n");
+        writer.write("Subsystem-Version: 1.0.0 \n");
+        writer.write("IBM-Feature-Version: 2 \n");
+        //writer.write("WLP-SymbolicName-Alias: org.someorg.project.publicAlias-1.0 \n");
+        writer.write("WLP-ShortName-Alias: publicAlias-1.0 \n");
+        writer.flush();
+        in = new ByteArrayInputStream(out.toByteArray());
+        details = new ProvisioningDetails(null, in);
+        iAttr = FeatureDefinitionUtils.loadAttributes("", null, details);
+        Assert.assertNull("shortNameAliases should return null", iAttr.shortNameAliases);
+    }
+
 }

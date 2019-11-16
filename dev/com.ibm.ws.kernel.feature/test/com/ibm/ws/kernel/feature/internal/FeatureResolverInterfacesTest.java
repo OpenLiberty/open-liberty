@@ -209,6 +209,46 @@ public class FeatureResolverInterfacesTest {
 
     }
 
+    @Test
+    public void testToleratesChoosesRenamedFeatures() {
+        FeatureResolver resolver = new FeatureResolverImpl();
+        Result result;
+
+        TestRepository repo = new TestRepository();
+
+        // Presume previous features are aliased with new names
+        //repo.add(TestFeature.create("com.example.jsf-2.2").shortName("jsf-2.2").symbolicAliases("com.example.faces-2.2").shortAliases("faces-2.2").build()); // Singletons, each and every one
+        //repo.add(TestFeature.create("com.example.jsf-2.3").shortName("jsf-2.3").symbolicAliases("com.example.faces-2.3").shortAliases("faces-2.3").build());
+        //repo.add(TestFeature.create("com.example.faces-2.4").shortName("faces-2.4").symbolicAliases("com.example.jsf-2.4").shortAliases("jsf-2.4").build());
+
+        // Presume previous features are renamed and declare aliases.
+        // Singletons, each and every one
+        repo.add(TestFeature.create("com.example.faces-2.2").shortName("faces-2.2").symbolicAliases("com.example.jsf-2.2").shortAliases("jsf-2.2").build());
+        repo.add(TestFeature.create("com.example.faces-2.3").shortName("faces-2.3").symbolicAliases("com.example.jsf-2.3").shortAliases("jsf-2.3").build());
+        repo.add(TestFeature.create("com.example.faces-2.4").shortName("faces-2.4").build());
+
+        repo.add(TestFeature.create("com.example.featureA-1.0").shortName("featureA-1.0").dependency("com.example.faces-2.3").build());
+        result = resolver.resolveFeatures(repo, Arrays.asList("featureA-1.0"), Collections.<String> emptySet(), false);
+        assertThat(result.hasErrors(), is(false));
+        assertThat(result.getResolvedFeatures(), containsInAnyOrder("featureA-1.0", "faces-2.3"));
+
+        repo.add(TestFeature.create("com.example.featureB-1.0").shortName("featureB-1.0").dependency("com.example.faces-2.4", "2.3").build());
+        result = resolver.resolveFeatures(repo, Arrays.asList("featureA-1.0", "featureB-1.0"), Collections.<String> emptySet(), false);
+        assertThat(result.hasErrors(), is(false));
+        assertThat(result.getResolvedFeatures(), containsInAnyOrder("featureA-1.0", "featureB-1.0", "faces-2.3"));
+
+        repo.add(TestFeature.create("com.example.featureC-1.0").shortName("featureC-1.0").dependency("com.example.jsf-2.2").singleton(false).build());
+        result = resolver.resolveFeatures(repo, Arrays.asList("featureB-1.0", "featureC-1.0"), Collections.<String> emptySet(), false);
+        assertThat(result.hasErrors(), is(true));
+        assertThat(result.getResolvedFeatures(), containsInAnyOrder("featureB-1.0", "featureC-1.0")); // Plus conflict on non-resolvable dependency
+
+        repo.add(TestFeature.create("com.example.featureD-1.0").shortName("featureD-1.0").dependency("com.example.jsf-2.3").singleton(false).build());
+        result = resolver.resolveFeatures(repo, Arrays.asList("featureB-1.0", "featureD-1.0"), Collections.<String> emptySet(), false);
+        assertThat(result.hasErrors(), is(false));
+        assertThat(result.getResolvedFeatures(), containsInAnyOrder("featureB-1.0", "featureD-1.0", "faces-2.3"));
+
+    }
+
     /**
      * Test implementation of {@link FeatureResolver.Repository} which holds the features in a map.
      * <p>
@@ -237,6 +277,12 @@ public class FeatureResolverInterfacesTest {
         public void add(ProvisioningFeatureDefinition feature) {
             features.put(feature.getSymbolicName(), feature);
             features.put(feature.getIbmShortName(), feature);
+            if (feature.getWlpSymbolicNameAliases() != null)
+                for (String alias : feature.getWlpSymbolicNameAliases())
+                    features.put(alias, feature);
+            if (feature.getWlpShortNameAliases() != null)
+                for (String alias : feature.getWlpShortNameAliases())
+                    features.put(alias, feature);
 
             if (feature.isAutoFeature()) {
                 autoFeatures.put(feature.getSymbolicName(), feature);
@@ -261,6 +307,8 @@ public class FeatureResolverInterfacesTest {
         private String shortName;
         private boolean isSingleton;
         private Collection<Filter> autofeatureFilters;
+        private List<String> symbolicAliases;
+        private List<String> shortAliases;
 
         public static class Builder {
             private final TestFeature instance = new TestFeature();
@@ -272,6 +320,16 @@ public class FeatureResolverInterfacesTest {
 
             public Builder shortName(String shortName) {
                 instance.shortName = shortName;
+                return this;
+            }
+
+            public Builder symbolicAliases(String... aliases) {
+                instance.symbolicAliases = Arrays.asList(aliases);
+                return this;
+            }
+
+            public Builder shortAliases(String... aliases) {
+                instance.shortAliases = Arrays.asList(aliases);
                 return this;
             }
 
@@ -322,6 +380,8 @@ public class FeatureResolverInterfacesTest {
             builder.instance.symbolicName = symbolicName;
             builder.instance.visibility = Visibility.PUBLIC;
             builder.instance.isSingleton = true;
+            builder.instance.symbolicAliases = null;
+            builder.instance.shortAliases = null;
             return builder;
         }
 
@@ -475,6 +535,26 @@ public class FeatureResolverInterfacesTest {
         @Override
         public Collection<String> getIcons() {
             throw new UnsupportedOperationException();
+        }
+
+        /*
+         * (non-Javadoc)
+         *
+         * @see com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition#getWlpSymbolicNameAliases()
+         */
+        @Override
+        public List<String> getWlpSymbolicNameAliases() {
+            return symbolicAliases;
+        }
+
+        /*
+         * (non-Javadoc)
+         *
+         * @see com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition#getWlpShortNameAliases()
+         */
+        @Override
+        public List<String> getWlpShortNameAliases() {
+            return shortAliases;
         }
 
     }

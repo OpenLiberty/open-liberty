@@ -1,0 +1,9 @@
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0.0
+
+Bundle-SymbolicName: test.alias.auto.internal
+Bundle-Description: auto feature bundle for testing symbolic and short aliases
+
+Private-Package: test.alias
+
+Bundle-Activator: test.alias.Activator

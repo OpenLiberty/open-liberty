@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.kernel.feature.fat;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -27,16 +29,20 @@ import componenttest.topology.impl.LibertyServerFactory;
 public class ActivationTypeTest {
     private static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.kernel.feature.activation.type");
 
+    private static String msg;
+
     @Test
     public void testActivationType() throws Exception {
 
         server.startServer();
-        server.waitForStringInLogUsingMark("test.activation.type.parallel.system: true");
+        msg = server.waitForStringInLogUsingMark("test.activation.type.parallel.system: true");
+        assertNotNull("Feature bundle test.activation.type.parallel.system is parallel activated", msg);
 
         server.setMarkToEndOfLog();
         server.changeFeatures(Arrays.asList("test.activation.sequential.system-1.0"));
         server.waitForConfigUpdateInLogUsingMark(Collections.<String> emptySet());
-        server.waitForStringInLogUsingMark("test.activation.type.sequential.system: false");
+        msg = server.waitForStringInLogUsingMark("test.activation.type.sequential.system: false");
+        assertNotNull("Feature bundle test.activation.type.sequential.system is not parallel activated", msg);
 
         // Note that usr/product features are never parallel activated
         server.setMarkToEndOfLog();
@@ -45,12 +51,14 @@ public class ActivationTypeTest {
         Thread.sleep(2000);
         server.changeFeatures(Arrays.asList("usr:test.activation.parallel.user-1.0"));
         server.waitForConfigUpdateInLogUsingMark(Collections.<String> emptySet());
-        server.waitForStringInLogUsingMark("test.activation.type.parallel.user: false");
+        msg = server.waitForStringInLogUsingMark("test.activation.type.parallel.user: false");
+        assertNotNull("Feature bundle test.activation.type.parallel.user is not parallel activated", msg);
 
         server.setMarkToEndOfLog();
         server.changeFeatures(Arrays.asList("usr:test.activation.sequential.user-1.0"));
         server.waitForConfigUpdateInLogUsingMark(Collections.<String> emptySet());
-        server.waitForStringInLogUsingMark("test.activation.type.sequential.user: false");
+        msg = server.waitForStringInLogUsingMark("test.activation.type.sequential.user: false");
+        assertNotNull("Feature bundle test.activation.type.sequential.user is not parallel activated", msg);
     }
 
     @BeforeClass
