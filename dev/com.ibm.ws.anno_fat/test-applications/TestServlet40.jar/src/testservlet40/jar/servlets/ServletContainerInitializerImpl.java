@@ -14,6 +14,7 @@ import java.util.Set;
 
 import javax.servlet.ServletContainerInitializer;
 import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.HandlesTypes;
 
@@ -24,13 +25,12 @@ public class ServletContainerInitializerImpl implements ServletContainerInitiali
 
     @Override
     public void onStartup(Set<Class<?>> setOfClassesInterestedIn, ServletContext context) throws ServletException {
-        
         System.out.println("--- TestServlet40 CONTAINER INITIALIZER! ---");
         //going to add a context attribute to show the set of classes that were passed in
         if (setOfClassesInterestedIn != null) {
             context.setAttribute("SciTestMessage", "  SCI says Hi!");
-            context.setRequestCharacterEncoding("KSC5601");
-            context.setResponseCharacterEncoding("KSC5601");
+            // context.setRequestCharacterEncoding("KSC5601");
+            // context.setResponseCharacterEncoding("KSC5601");
             //context.setResponseCharacterEncoding("PMDINH"); //causes new message CWWWC0401E: Failed to set response character encoding
             context.setAttribute("SET_OF_SERVLETS_IN_APP", setOfClassesInterestedIn);
         } else {
@@ -38,5 +38,4 @@ public class ServletContainerInitializerImpl implements ServletContainerInitiali
         }
         System.out.println("--- TestServlet40 CONTAINER INITIALIZER! --- EXIT");
     }
-
 }
