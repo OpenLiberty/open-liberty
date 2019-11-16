@@ -371,6 +371,10 @@ public final class FeatureRepository implements FeatureResolver.Repository {
 
         out.writeUTF(iAttr.activationType.toString());
 
+        out.writeUTF(joinStringList(",", iAttr.symbolicNameAliases));
+
+        out.writeUTF(joinStringList(",", iAttr.shortNameAliases));
+
         // these attributes can be large so lets avoid the arbitrary limit of 65535 chars of writeUTF
         if (iAttr.isAutoFeature) {
             writeLongString(out, details.getCachedRawHeader(FeatureDefinitionUtils.IBM_PROVISION_CAPABILITY));
@@ -383,6 +387,19 @@ public final class FeatureRepository implements FeatureResolver.Repository {
         }
         if (iAttr.hasSpiPackages) {
             writeLongString(out, details.getCachedRawHeader(FeatureDefinitionUtils.IBM_SPI_PACKAGE));
+        }
+    }
+
+    static String joinStringList(String delimiter, List<String> strings) {
+        if (strings == null || strings.isEmpty()) {
+            return EMPTY;
+        } else if (strings.size() == 1) {
+            return strings.get(0);
+        } else {
+            StringBuilder sb = new StringBuilder(strings.get(0));
+            for (int i = 1; i < strings.size(); i++)
+                sb.append(delimiter).append(strings.get(i));
+            return sb.toString();
         }
     }
 
@@ -442,8 +459,10 @@ public final class FeatureRepository implements FeatureResolver.Repository {
             processTypes.add(valueOf(in.readUTF(), ProcessType.SERVER));
         }
         ActivationType activationType = valueOf(in.readUTF(), ActivationType.SEQUENTIAL);
+        String symbolicNameAlias = in.readUTF();
+        String shortNameAlias = in.readUTF();
         return new ImmutableAttributes(repositoryType, symbolicName, shortName, featureVersion, visibility, appRestart, version, featureFile, lastModified, fileSize, isAutoFeature,
-                                       hasApiServices, hasApiPackages, hasSpiPackages, isSingleton, processTypes, activationType);
+                                       hasApiServices, hasApiPackages, hasSpiPackages, isSingleton, processTypes, activationType, symbolicNameAlias, shortNameAlias);
     }
 
     /**
@@ -575,6 +594,12 @@ public final class FeatureRepository implements FeatureResolver.Repository {
             // -- knownFeature entry will be replaced by caller
             cachedFeatures.remove(cachedAttr.symbolicName);
             publicFeatureNameToSymbolicName.remove(lowerFeature(cachedAttr.featureName));
+            if (cachedAttr.symbolicNameAliases != null && cachedAttr.bundleRepositoryType.length() == 0)
+                for (String alias : cachedAttr.symbolicNameAliases)
+                    publicFeatureNameToSymbolicName.remove(lowerFeature(alias));
+            if (cachedAttr.shortNameAliases != null && cachedAttr.bundleRepositoryType.length() == 0)
+                for (String alias : cachedAttr.shortNameAliases)
+                    publicFeatureNameToSymbolicName.remove(lowerFeature(alias));
             if (cachedAttr.isAutoFeature)
                 autoFeatures.remove(def);
         }
@@ -613,13 +638,21 @@ public final class FeatureRepository implements FeatureResolver.Repository {
             knownFeatures.put(cachedAttr.featureFile, def);
 
             // If there is a public feature name,
-            // populate the map with down-case featureName to real symbolic name
-            // populate the map with down-case symbolicName to real symbolic name
+            // populate the map with down-case featureName to real symbolic name, including aliases for core features
+            // populate the map with down-case symbolicName to real symbolic name, including aliases for core features
             // Note: we only ignore case when looking up public feature names!
-            if (!cachedAttr.featureName.equals(cachedAttr.symbolicName))
+            if (!cachedAttr.featureName.equals(cachedAttr.symbolicName)) {
                 publicFeatureNameToSymbolicName.put(lowerFeature(cachedAttr.featureName), cachedAttr.symbolicName);
-            if (def.getVisibility() == Visibility.PUBLIC)
+                if (cachedAttr.shortNameAliases != null && cachedAttr.bundleRepositoryType.length() == 0)
+                    for (String shortNameAlias : cachedAttr.shortNameAliases)
+                        publicFeatureNameToSymbolicName.put(lowerFeature(shortNameAlias), cachedAttr.symbolicName);
+            }
+            if (def.getVisibility() == Visibility.PUBLIC) {
                 publicFeatureNameToSymbolicName.put(lowerFeature(cachedAttr.symbolicName), cachedAttr.symbolicName);
+                if (cachedAttr.symbolicNameAliases != null && cachedAttr.bundleRepositoryType.length() == 0)
+                    for (String symbolicNameAlias : cachedAttr.symbolicNameAliases)
+                        publicFeatureNameToSymbolicName.put(lowerFeature(symbolicNameAlias), cachedAttr.symbolicName);
+            }
 
             // If this is an auto-feature, add it to that collection
             // we're going with the bold assertion that
@@ -729,8 +762,8 @@ public final class FeatureRepository implements FeatureResolver.Repository {
     }
 
     /**
-     * @param featureName
-     * @return
+     * @param featureName The symbolic name, short name (public name), of alias of a feature.
+     * @return The feature definition corresponding to the supplied feature name.
      */
     @Override
     public ProvisioningFeatureDefinition getFeature(String featureName) {

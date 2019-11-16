@@ -72,6 +72,8 @@ public class FeatureDefinitionUtils {
     public static final String IBM_PROVISION_CAPABILITY = "IBM-Provision-Capability";
     public static final String IBM_PROCESS_TYPES = "IBM-Process-Types";
     public static final String IBM_ACTIVATION_TYPE = "WLP-Activation-Type";
+    static final String SYMBOLIC_NAME_ALIAS = "WLP-SymbolicName-Alias";
+    static final String SHORT_NAME_ALIAS = "WLP-ShortName-Alias";
 
     static final String FILTER_ATTR_NAME = "filter";
     static final String FILTER_FEATURE_KEY = "osgi.identity";
@@ -117,6 +119,8 @@ public class FeatureDefinitionUtils {
         final File featureFile;
         final long lastModified;
         final long length;
+        final List<String> symbolicNameAliases;
+        final List<String> shortNameAliases;
 
         ImmutableAttributes(String repoType,
                             String symbolicName,
@@ -134,11 +138,15 @@ public class FeatureDefinitionUtils {
                             boolean hasSpiPackages,
                             boolean isSingleton,
                             EnumSet<ProcessType> processType,
-                            ActivationType activationType) {
+                            ActivationType activationType,
+                            String symbolicNameAlias,
+                            String shortNameAlias) {
 
             this.bundleRepositoryType = repoType;
             this.symbolicName = symbolicName;
+            this.symbolicNameAliases = buildAliasList(symbolicNameAlias);
             this.shortName = shortName;
+            this.shortNameAliases = buildAliasList(shortNameAlias);
             this.featureName = buildFeatureName(repoType, symbolicName, shortName);
             this.featureVersion = featureVersion;
             this.visibility = visibility;
@@ -156,6 +164,16 @@ public class FeatureDefinitionUtils {
             this.featureFile = featureFile;
             this.lastModified = lastModified;
             this.length = fileSize;
+        }
+
+        List<String> buildAliasList(String aliases) {
+            if (aliases == null || "".equals(aliases)) {
+                return null;
+            } else {
+                // Split on "," and trim ws
+                String[] aa = aliases.split("\\s*,\\s*");
+                return (aa.length == 0) ? null : Arrays.asList(aa);
+            }
         }
 
         /**
@@ -262,7 +280,7 @@ public class FeatureDefinitionUtils {
      * manifest.
      *
      * @param details ManifestDetails containing manifest parser and accessor methods
-     *            for retrieving information from the manifest.
+     *                    for retrieving information from the manifest.
      * @return new ImmutableAttributes
      */
     static ImmutableAttributes loadAttributes(String repoType, File featureFile, ProvisioningDetails details) throws IOException {
@@ -274,12 +292,16 @@ public class FeatureDefinitionUtils {
         String symbolicName = details.getNameAttribute(null);
         int featureVersion = details.getIBMFeatureVersion();
 
+        String symbolicNameAlias = details.getMainAttributeValue(SYMBOLIC_NAME_ALIAS);
+
         // Directive names are name attributes, but end with a colon
         Visibility visibility = Visibility.fromString(details.getNameAttribute("visibility:"));
         boolean isSingleton = Boolean.parseBoolean(details.getNameAttribute("singleton:"));
 
         // ignore short name for features that are not public
         String shortName = (visibility != Visibility.PUBLIC ? null : details.getMainAttributeValue(SHORT_NAME));
+
+        String shortNameAlias = (visibility != Visibility.PUBLIC ? null : details.getMainAttributeValue(SHORT_NAME_ALIAS));
 
         // retrieve the feature/subsystem version
         Version version = VersionUtility.stringToVersion(details.getMainAttributeValue(VERSION));
@@ -327,7 +349,8 @@ public class FeatureDefinitionUtils {
                                                             isAutoFeature, hasApiServices,
                                                             hasApiPackages, hasSpiPackages, isSingleton,
                                                             processTypes,
-                                                            activationType);
+                                                            activationType,
+                                                            symbolicNameAlias, shortNameAlias);
 
         // Link the details object and immutable attributes (used for diagnostic purposes:
         // the immutable attribute values are necessary for meaningful error messages)

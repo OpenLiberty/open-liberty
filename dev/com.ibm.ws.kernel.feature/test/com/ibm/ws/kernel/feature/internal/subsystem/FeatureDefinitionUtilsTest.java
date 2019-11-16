@@ -216,6 +216,8 @@ public class FeatureDefinitionUtilsTest {
 
         Assert.assertEquals("symbolicName should return com.ibm.websphere.good", "com.ibm.websphere.good", iAttr.symbolicName);
         Assert.assertNull("shortName should be null: " + iAttr.shortName, iAttr.shortName);
+        // Same for WLP-ShortName-Alias
+        Assert.assertNull("shortNameAlias should be null: " + iAttr.shortNameAliases, iAttr.shortNameAliases);
         Assert.assertEquals("featureName should return symbolicName", iAttr.symbolicName, iAttr.featureName);
     }
 
@@ -231,6 +233,7 @@ public class FeatureDefinitionUtilsTest {
         writer.write("Subsystem-Type: osgi.subsystem.feature \n");
         writer.write("Subsystem-Version: 1.0.0 \n");
         writer.write("IBM-Feature-Version: 2 \n");
+        writer.write("WLP-ShortName-Alias: publicAlias-1.0, anotherPublicAlias-1.0 \n");
         writer.flush();
 
         ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
@@ -239,6 +242,10 @@ public class FeatureDefinitionUtilsTest {
 
         Assert.assertEquals("symbolicName should return com.ibm.websphere.public-1.0", "com.ibm.websphere.public-1.0", iAttr.symbolicName);
         Assert.assertEquals("shortName should return public-1.0", "public-1.0", iAttr.shortName);
+        // Same for WLP-ShortName-Alias when declared
+        Assert.assertEquals("shortNameAlias should return publicAlias-1.0", "publicAlias-1.0", iAttr.shortNameAliases.get(0));
+        Assert.assertEquals("shortNameAlias should return anotherPublicAlias-1.0", "anotherPublicAlias-1.0", iAttr.shortNameAliases.get(1));
+        Assert.assertTrue("There must be two shortNameAliases", iAttr.shortNameAliases.size() == 2);
         Assert.assertEquals("featureName should return shortName", iAttr.shortName, iAttr.featureName);
     }
 
@@ -254,6 +261,7 @@ public class FeatureDefinitionUtilsTest {
         writer.write("Subsystem-Type: osgi.subsystem.feature \n");
         writer.write("Subsystem-Version: 1.0.0 \n");
         writer.write("IBM-Feature-Version: 2 \n");
+        writer.write("WLP-ShortName-Alias: publicAlias-1.0, anotherPublicAlias-1.0 \n");
         writer.flush();
 
         ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
@@ -262,6 +270,8 @@ public class FeatureDefinitionUtilsTest {
 
         Assert.assertEquals("symbolicName should return com.ibm.websphere.public-1.0", "com.ibm.websphere.not.public-1.0", iAttr.symbolicName);
         Assert.assertNull("shortName should be null", iAttr.shortName);
+        // Same for WLP-ShortName-Alias
+        Assert.assertNull("shortNameAlias should be null", iAttr.shortNameAliases);
         Assert.assertEquals("featureName should return symbolicName", iAttr.symbolicName, iAttr.featureName);
     }
 
@@ -454,4 +464,29 @@ public class FeatureDefinitionUtilsTest {
             Assert.assertNull("Field " + f.getName() + " should have a null value", f.get(o));
         }
     }
+
+    @Test
+    public void testWLPSymbolicNameAlias() throws IOException {
+        // WLP-SymbolicName-Alias in mf file (optional)
+        // Intentional extra trailing whitespace...
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        PrintWriter writer = new PrintWriter(out, true);
+        writer.write("Manifest-Version: 1.0 \n");
+        writer.write("Subsystem-SymbolicName: com.ibm.websphere.install-1.0; visibility:=install \n");
+        writer.write("Subsystem-Type: osgi.subsystem.feature \n");
+        writer.write("Subsystem-Version: 1.0.0 \n");
+        writer.write("IBM-Feature-Version: 2 \n");
+        writer.write("WLP-SymbolicName-Alias: org.someorg.project.install-1.0 \n");
+        writer.flush();
+
+        ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
+        ProvisioningDetails details = new ProvisioningDetails(null, in);
+        ImmutableAttributes iAttr = FeatureDefinitionUtils.loadAttributes("", null, details);
+
+        Assert.assertEquals("symbolicName should return com.ibm.websphere.install-1.0", "com.ibm.websphere.install-1.0", iAttr.symbolicName);
+        Assert.assertEquals("symbolicNameAlias should be org.someorg.project.install-1.0", "org.someorg.project.install-1.0", iAttr.symbolicNameAliases.get(0));
+        Assert.assertTrue("There must be one symbolicNameAliases", iAttr.symbolicNameAliases.size() == 1);
+        Assert.assertEquals("featureName should return symbolicName", iAttr.symbolicName, iAttr.featureName);
+    }
+
 }

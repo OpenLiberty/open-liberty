@@ -32,7 +32,8 @@ import org.junit.runners.Suite.SuiteClasses;
                 SystemBundleOverrideTest.class,
                 FeatureAPITest.class,
                 RegionProvisioningTest.class,
-                RemoteServerInclude.class
+                RemoteServerInclude.class,
+                AliasTest.class
 })
 /**
  * Purpose: This suite collects and runs all known good test suites.
