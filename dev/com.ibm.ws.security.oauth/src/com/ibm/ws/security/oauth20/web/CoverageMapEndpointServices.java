@@ -43,7 +43,7 @@ import com.ibm.ws.security.oauth20.util.OidcOAuth20Util;
 public class CoverageMapEndpointServices extends AbstractOidcEndpointServices {
 
     protected static final String MESSAGE_BUNDLE = "com.ibm.ws.security.oauth20.internal.resources.OAuthMessages";
-    private static TraceComponent tc = Tr.register(CoverageMapEndpointServices.class);
+    private static TraceComponent tc = Tr.register(CoverageMapEndpointServices.class, null, MESSAGE_BUNDLE);
 
     protected void handleEndpointRequest(OAuth20Provider provider, HttpServletRequest request, HttpServletResponse response)
             throws OidcServerException, IOException {
@@ -81,7 +81,7 @@ public class CoverageMapEndpointServices extends AbstractOidcEndpointServices {
             String description = "Unable to retrieve OIDC provider id for this request.";
             throw new OidcServerException(description, OIDCConstants.ERROR_INVALID_REQUEST, HttpServletResponse.SC_BAD_REQUEST);
         }
-
+        
         JsonPrimitive registrationEndpoint = new JsonPrimitive(addTrailingSlash(getCalculatedIssuerId(oidcServerCfg.getProviderId(), request) + OAuth20RequestFilter.SLASH_PATH_REGISTRATION));
         members.add(registrationEndpoint);
         **/

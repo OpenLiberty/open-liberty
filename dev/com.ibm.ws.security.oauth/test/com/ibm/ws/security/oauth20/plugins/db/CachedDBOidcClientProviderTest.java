@@ -310,9 +310,6 @@ public abstract class CachedDBOidcClientProviderTest extends AbstractOidcRegistr
             } catch (OidcServerException e) {
                 String operation = "INSERT";
                 verifyExceptionPerformingDBOperationOidc(e, operation, clientId);
-            } catch (Exception e) {
-                String operation = "INSERT";
-                verifyExceptionPerformingDBOperation(e, operation, clientId);
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(_testName, t);
@@ -368,9 +365,6 @@ public abstract class CachedDBOidcClientProviderTest extends AbstractOidcRegistr
             } catch (OidcServerException e) {
                 String operation = "SELECT";
                 verifyExceptionPerformingDBOperationOidc(e, operation, clientId);
-            } catch (Exception e) {
-                String operation = "SELECT";
-                verifyExceptionPerformingDBOperation(e, operation, clientId);
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(_testName, t);
@@ -409,8 +403,6 @@ public abstract class CachedDBOidcClientProviderTest extends AbstractOidcRegistr
                 fail("Should have thrown exception but did not. Result was " + result);
             } catch (OidcServerException e) {
                 verifyExceptionGettingAllClientsOidc(e);
-            } catch (Exception e) {
-                verifyExceptionGettingAllClients(e);
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(_testName, t);
@@ -477,8 +469,6 @@ public abstract class CachedDBOidcClientProviderTest extends AbstractOidcRegistr
                 fail("Should have thrown exception but did not. Result was " + result);
             } catch (OidcServerException e) {
                 verifyExceptionGettingAllClientsOidc(e);
-            } catch (Exception e) {
-                verifyExceptionGettingAllClients(e);
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(_testName, t);
@@ -520,9 +510,6 @@ public abstract class CachedDBOidcClientProviderTest extends AbstractOidcRegistr
             } catch (OidcServerException e) {
                 String operation = "SELECT";
                 verifyExceptionPerformingDBOperationOidc(e, operation, clientId);
-            } catch (Exception e) {
-                String operation = "SELECT";
-                verifyExceptionPerformingDBOperation(e, operation, clientId);
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(_testName, t);
@@ -566,9 +553,6 @@ public abstract class CachedDBOidcClientProviderTest extends AbstractOidcRegistr
             } catch (OidcServerException e) {
                 String operation = "SELECT";
                 verifyExceptionPerformingDBOperationOidc(e, operation, clientId);
-            } catch (Exception e) {
-                String operation = "SELECT";
-                verifyExceptionPerformingDBOperation(e, operation, clientId);
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(_testName, t);
@@ -643,9 +627,6 @@ public abstract class CachedDBOidcClientProviderTest extends AbstractOidcRegistr
             } catch (OidcServerException e) {
                 String operation = "UPDATE";
                 verifyExceptionPerformingDBOperationOidc(e, operation, clientId);
-            } catch (Exception e) {
-                String operation = "UPDATE";
-                verifyExceptionPerformingDBOperation(e, operation, clientId);
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(_testName, t);
@@ -693,9 +674,6 @@ public abstract class CachedDBOidcClientProviderTest extends AbstractOidcRegistr
             } catch (OidcServerException e) {
                 String operation = "DELETE";
                 verifyExceptionPerformingDBOperationOidc(e, operation, clientId);
-            } catch (Exception e) {
-                String operation = "DELETE";
-                verifyExceptionPerformingDBOperation(e, operation, clientId);
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(_testName, t);
@@ -730,11 +708,6 @@ public abstract class CachedDBOidcClientProviderTest extends AbstractOidcRegistr
     /**
      * Verifies that CWWKS1460E message appears in the exception message and messages.log.
      */
-    void verifyExceptionPerformingDBOperation(Exception e, String operation, final String clientId) {
-        String msgRegex = MessageConstants.CWWKS1460E_ERROR_PERFORMING_DB_OPERATION + ".+" + operation + ".+" + clientId;
-        verifyExceptionAndLogMessages(e, msgRegex);
-    }
-
     void verifyExceptionPerformingDBOperationOidc(OidcServerException e, String operation, final String clientId) {
         String msgRegex = MessageConstants.CWWKS1460E_ERROR_PERFORMING_DB_OPERATION + ".+" + operation + ".+" + clientId;
         verifyExceptionAndLogMessagesOidc(e, msgRegex);
@@ -743,11 +716,6 @@ public abstract class CachedDBOidcClientProviderTest extends AbstractOidcRegistr
     /**
      * Verifies that CWWKS1461E message appears in the exception message and messages.log.
      */
-    void verifyExceptionGettingAllClients(Exception e) {
-        String msgRegex = MessageConstants.CWWKS1461E_ERROR_GETTING_CLIENTS_FROM_DB;
-        verifyExceptionAndLogMessages(e, msgRegex);
-    }
-
     void verifyExceptionGettingAllClientsOidc(OidcServerException e) {
         String msgRegex = MessageConstants.CWWKS1461E_ERROR_GETTING_CLIENTS_FROM_DB;
         verifyExceptionAndLogMessagesOidc(e, msgRegex);
