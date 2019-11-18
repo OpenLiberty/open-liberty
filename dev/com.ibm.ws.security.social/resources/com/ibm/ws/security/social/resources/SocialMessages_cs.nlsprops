@@ -16,7 +16,7 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
-# Message prefix block: CWWKS5400 - CWWKS5499
+# Message prefix block: CWWKS5370 - CWWKS5499
 ADD_ID={0} ({1})
 ADD_ID.explanation=Pouze pro vnit\u0159n\u00ed pou\u017eit\u00ed.
 ADD_ID.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
@@ -35,6 +35,30 @@ SELECTION_PAGE_USERNAME=Jm\u00e9no u\u017eivatele
 SELECTION_PAGE_PASSWORD=Heslo
 
 SELECTION_PAGE_SUBMIT=Odeslat
+
+# 0=Social login configuration attribute name, 1=ID of the social login configuration element, 2=Default value for the configuration attribute
+SOCIAL_LOGIN_CONFIG_ATTRIBUTE_EMPTY=CWWKS5370W: Hodnota pro atribut konfigurace [{0}] v konfiguraci soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed [{1}] je pr\u00e1zdn\u00e1. Pro atribut konfigurace se pou\u017eije se v\u00fdchoz\u00ed hodnota [{2}].
+SOCIAL_LOGIN_CONFIG_ATTRIBUTE_EMPTY.explanation=Hodnota pro tento atribut konfigurace nesm\u00ed b\u00fdt pr\u00e1zdn\u00e1.
+SOCIAL_LOGIN_CONFIG_ATTRIBUTE_EMPTY.useraction=Ujist\u011bte se, \u017ee hodnota pro tento atribut konfigurace nen\u00ed pr\u00e1zdn\u00e1, nebo odeberte atribut konfigurace pro pou\u017eit\u00ed v\u00fdchoz\u00ed hodnoty.
+
+# 0=Exception message
+OPENSHIFT_ERROR_GETTING_USER_INFO=CWWKS5371E: Odezvu od rozhran\u00ed API u\u017eivatele OpenShift nelze zpracovat: {0}
+OPENSHIFT_ERROR_GETTING_USER_INFO.explanation=Informace o ov\u011b\u0159en\u00e9m u\u017eivatele nelze z\u00edskat, proto\u017ee do\u0161lo k jin\u00e9 chyb\u011b.
+OPENSHIFT_ERROR_GETTING_USER_INFO.useraction=Pokud zpr\u00e1va obsahuje jinou chybovou zpr\u00e1vu, pod\u00edvejte se na akci u\u017eivatele pro tuto zpr\u00e1vu. Jinak zkontrolujte, zda protokoly serveru neobsahuj\u00ed dal\u0161\u00ed chybov\u00e9 zpr\u00e1vy, kter\u00e9 by mohly ozna\u010dovat, kde do\u0161lo k dal\u0161\u00ed chyb\u011b.
+
+OPENSHIFT_ACCESS_TOKEN_MISSING=CWWKS5372E: P\u0159\u00edstupov\u00fd token, kter\u00fd se pou\u017eije k na\u010dten\u00ed informac\u00ed o u\u017eivateli z rozhran\u00ed OpenShift API, chyb\u00ed. Ov\u011b\u0159te, \u017ee se z koncov\u00e9ho bodu tokenu poskytovatele OpenShift OAuth vrac\u00ed p\u0159\u00edstupov\u00fd token.
+OPENSHIFT_ACCESS_TOKEN_MISSING.explanation=P\u0159\u00edstupov\u00fd token je nezbytn\u00fd k na\u010dten\u00ed informac\u00ed o ov\u011b\u0159en\u00e9m u\u017eivateli. Koncov\u00fd bod tokenu poskytovatele OpenShift OAuth mo\u017en\u00e1 nevr\u00e1til p\u0159\u00edstupov\u00fd token.
+OPENSHIFT_ACCESS_TOKEN_MISSING.useraction=Ov\u011b\u0159te, \u017ee se z koncov\u00e9ho bodu tokenu poskytovatele OpenShift OAuth vrac\u00ed p\u0159\u00edstupov\u00fd token.
+
+# 0=HTTP response code, 1=Response body
+OPENSHIFT_USER_API_BAD_STATUS=CWWKS5373E: Rozhran\u00ed API u\u017eivatele OpenShift vr\u00e1tilo neo\u010dek\u00e1van\u00fd k\u00f3d odezvy [{0}]. Ov\u011b\u0159te, \u017ee po\u017eadavek na rozhran\u00ed API obsahuje v\u0161echny nezbytn\u00e9 informace a \u017ee token servisn\u00edho \u00fa\u010dtu OpenShift byl vytvo\u0159en ve spr\u00e1vn\u00e9m projektu OpenShift. Odezva z rozhran\u00ed API je [{1}].
+OPENSHIFT_USER_API_BAD_STATUS.explanation=Rozhran\u00ed API u\u017eivatele OpenShift nevr\u00e1tilo o\u010dek\u00e1van\u00fd stavov\u00fd k\u00f3d.
+OPENSHIFT_USER_API_BAD_STATUS.useraction=Zkontrolujte odezvu rozhran\u00ed API, \u017ee je v chybov\u00e9 zpr\u00e1v\u011b, kde jsou uvedeny dal\u0161\u00ed informace. Ov\u011b\u0159te, \u017ee po\u017eadavek na rozhran\u00ed API obsahuje v\u0161echny nezbytn\u00e9 informace. Ujist\u011bte se, \u017ee token servisn\u00edho \u00fa\u010dtu OpenShift byl vytvo\u0159en ve spr\u00e1vn\u00e9m projektu OpenShift.
+
+# 0=JSON key string, 1=User API response string
+OPENSHIFT_USER_API_RESPONSE_MISSING_KEY=CWWKS5374E: Odezv\u011b rozhran\u00ed API u\u017eivatele OpenShift chyb\u00ed o\u010dek\u00e1van\u00fd kl\u00ed\u010d: [{0}]. \u00dapln\u00e1 odezva je [{1}]
+OPENSHIFT_USER_API_RESPONSE_MISSING_KEY.explanation=O\u010dek\u00e1v\u00e1 se, \u017ee kl\u00ed\u010d uveden\u00fd ve zpr\u00e1v\u011b bude v odezv\u011b rozhran\u00ed API. Kl\u00ed\u010d m\u016f\u017ee chyb\u011bt nebo m\u016f\u017ee b\u00fdt na neo\u010dek\u00e1van\u00e9m m\u00edst\u011b.
+OPENSHIFT_USER_API_RESPONSE_MISSING_KEY.useraction=Zkontrolujte odezvu rozhran\u00ed API a zjist\u011bte, zda v odezv\u011b chyb\u00ed kl\u00ed\u010d.
 
 SOCIAL_LOGIN_CONFIG_PROCESSED=CWWKS5400I: Konfigurace soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed [{0}] byla \u00fasp\u011b\u0161n\u011b zpracov\u00e1na.
 SOCIAL_LOGIN_CONFIG_PROCESSED.explanation=Uveden\u00e1 konfigurace soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed byla \u00fasp\u011b\u0161n\u011b zpracov\u00e1na.
