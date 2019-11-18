@@ -12,7 +12,9 @@ import com.ibm.ws.kernel.boot.cmdline.ActionDefinition;
 import com.ibm.ws.kernel.boot.cmdline.ActionHandler;
 import com.ibm.ws.kernel.boot.cmdline.Arguments;
 import com.ibm.ws.kernel.boot.cmdline.ExitCode;
+import com.ibm.ws.kernel.feature.internal.cmdline.ArgumentsImpl;
 import com.ibm.ws.kernel.feature.internal.cmdline.FeatureToolException;
+import com.ibm.ws.kernel.feature.internal.cmdline.NLS;
 import com.ibm.ws.kernel.feature.internal.cmdline.ReturnCode;
 
 
@@ -51,9 +53,11 @@ public enum FeatureAction implements ActionDefinition {
             String verboseLevel = args.getOption("verbose");
             Level logLevel = Level.INFO;
             if (verboseLevel != null && verboseLevel.isEmpty()) {
-                logLevel = Level.FINE;
-            } else if (verboseLevel != null && verboseLevel.equalsIgnoreCase("debug")) {
                 logLevel = Level.FINEST;
+            } else if (verboseLevel != null && !verboseLevel.isEmpty()) {
+            	System.out.println(NLS.getMessage("unknown.options", args.getAction(), "--verbose=" + verboseLevel));
+                FeatureAction.help.handleTask(new ArgumentsImpl(new String[] { "help", args.getAction() }));
+            	return ReturnCode.BAD_ARGUMENT;
             }
             ((InstallKernelImpl) installKernel).enableConsoleLog(logLevel);
             return action.handleTask(System.out, System.err, args);
