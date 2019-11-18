@@ -88,7 +88,6 @@ public class Failover1ServerTestServlet extends FATServlet {
     /**
      * testHeartbeatsAreRepeatedlySent - verifies that heart beats are being sent periodically, with an increasing expiry timestamp.
      */
-    @Test
     public void testHeartbeatsAreRepeatedlySent() throws Exception {
         // Ensure the database tables are present
         PersistentExecutor executor = InitialContext.doLookup("persistent/exec2");
@@ -136,7 +135,6 @@ public class Failover1ServerTestServlet extends FATServlet {
      * testMissedHeartbeatsClearOldPartitionData - insert entries representing missed heartbeats directly into the
      * database. Verify that they are automatically removed (happens when heartbeat information is checked).
      */
-    @Test
     public void testMissedHeartbeatsClearOldPartitionData(HttpServletRequest request, HttpServletResponse response) throws Exception {
         // Ensure the database tables are present
         PersistentExecutor executor = InitialContext.doLookup("persistent/exec2");
