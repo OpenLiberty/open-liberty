@@ -42,23 +42,33 @@ SOCIAL_LOGIN_CONFIG_ATTRIBUTE_EMPTY.explanation=The value for this configuration
 SOCIAL_LOGIN_CONFIG_ATTRIBUTE_EMPTY.useraction=Ensure that the value for this configuration attribute is not empty, or remove the configuration attribute to use the default value.
 
 # 0=Exception message
-OPENSHIFT_ERROR_GETTING_USER_INFO=CWWKS5371E: The response from the OpenShift user API cannot be processed: {0}
-OPENSHIFT_ERROR_GETTING_USER_INFO.explanation=Information about the authenticated user cannot be obtained because another error occurred.
-OPENSHIFT_ERROR_GETTING_USER_INFO.useraction=If the message contains another error message, see the user action for that message. Otherwise, check the server logs for additional error messages that might indicate where the other error occurred.
+KUBERNETES_ERROR_GETTING_USER_INFO=CWWKS5371E: The response from the Kubernetes user API cannot be processed: {0}
+KUBERNETES_ERROR_GETTING_USER_INFO.explanation=Information about the authenticated user cannot be obtained because another error occurred.
+KUBERNETES_ERROR_GETTING_USER_INFO.useraction=If the message contains another error message, see the user action for that message. Otherwise, check the server logs for additional error messages that might indicate where the other error occurred.
 
-OPENSHIFT_ACCESS_TOKEN_MISSING=CWWKS5372E: The access token that is used to retrieve user information from the OpenShift API is missing. Verify that an access token was returned from the token endpoint of the OpenShift OAuth provider.
-OPENSHIFT_ACCESS_TOKEN_MISSING.explanation=An access token is required to retrieve information about the authenticated user. The token endpoint of the OpenShift OAuth provider might not have returned the access token.
-OPENSHIFT_ACCESS_TOKEN_MISSING.useraction=Verify that the access token was returned from the token endpoint of the OpenShift OAuth provider.
+KUBERNETES_ACCESS_TOKEN_MISSING=CWWKS5372E: The access token that is used to retrieve user information from the Kubernetes API is missing. Verify that an access token was returned from the token endpoint of the OAuth provider.
+KUBERNETES_ACCESS_TOKEN_MISSING.explanation=An access token is required to retrieve information about the authenticated user. The token endpoint of the OAuth provider might not have returned the access token.
+KUBERNETES_ACCESS_TOKEN_MISSING.useraction=Verify that the access token was returned from the token endpoint of the OAuth provider.
 
 # 0=HTTP response code, 1=Response body
-OPENSHIFT_USER_API_BAD_STATUS=CWWKS5373E: The OpenShift user API returned an unexpected [{0}] response code. Verify that the request to the API contains all of the required information and that the OpenShift service account token was created in the correct OpenShift project. The response from the API is [{1}].
-OPENSHIFT_USER_API_BAD_STATUS.explanation=The OpenShift user API did not return the expected status code.
-OPENSHIFT_USER_API_BAD_STATUS.useraction=Check the API response that is in the error message for more information. Verify that the request to the API contains all of the required information. Ensure that the OpenShift service account token was created in the correct OpenShift project and has the correct permissions.
+KUBERNETES_USER_API_BAD_STATUS=CWWKS5373E: The Kubernetes user API returned an unexpected [{0}] response code. Verify that the request to the API contains all of the required information and that the Kubernetes service account token was created with the correct permissions. The response from the API is [{1}].
+KUBERNETES_USER_API_BAD_STATUS.explanation=The Kubernetes user API did not return the expected status code.
+KUBERNETES_USER_API_BAD_STATUS.useraction=Check the API response that is in the error message for more information. Verify that the request to the API contains all of the required information. Ensure that the Kubernetes service account token was created the correct permissions.
 
 # 0=JSON key string, 1=User API response string
-OPENSHIFT_USER_API_RESPONSE_MISSING_KEY=CWWKS5374E: The OpenShift user API response is missing an expected key: [{0}]. The full response is [{1}]
-OPENSHIFT_USER_API_RESPONSE_MISSING_KEY.explanation=The key that is specified in the message is expected to be within the API response. The key might be missing, or it might be in an unexpected location.
-OPENSHIFT_USER_API_RESPONSE_MISSING_KEY.useraction=Check the API response to determine whether the key is missing from the response.
+KUBERNETES_USER_API_RESPONSE_MISSING_KEY=CWWKS5374E: The Kubernetes user API response is missing an expected key: [{0}]. The full response is [{1}]
+KUBERNETES_USER_API_RESPONSE_MISSING_KEY.explanation=The key that is specified in the message is expected to be within the API response. The key might be missing, or it might be in an unexpected location.
+KUBERNETES_USER_API_RESPONSE_MISSING_KEY.useraction=Check the API response to determine whether the key is missing from the response.
+
+# 0=Social login configuration ID
+ACCESS_TOKEN_MISSING_FROM_HEADERS=CWWKS5375E: The social login configuration [{0}] specifies that an access token is required in the request, but an access token is not present.
+ACCESS_TOKEN_MISSING_FROM_HEADERS.explanation=The social login configuration that is specified in the message requires that all incoming requests must contain an access token.
+ACCESS_TOKEN_MISSING_FROM_HEADERS.useraction=If an access token header name is configured in the social login configuration, verify that the header is included in the request. Otherwise, verify that an Authorization header is included in the request. Ensure that the header value conforms to the OAuth bearer token specification. Verify that the OAuth provider is configured to pass an access token.
+
+# 0=Name of the configuration attribute that specifies the access token header name, 1=Social login configuration ID, 2=Custom access token header name
+CUSTOM_ACCESS_TOKEN_HEADER_MISSING=CWWKS5376W: The value for the [{0}] attribute in the social login configuration [{1}] indicates that an access token is expected to be found in the [{2}] request header, but a token cannot be found in that header.
+CUSTOM_ACCESS_TOKEN_HEADER_MISSING.explanation=The header that is specified in the message might be missing from the request, or the value of the header might be empty.
+CUSTOM_ACCESS_TOKEN_HEADER_MISSING.useraction=Verify that the specified header is present in the request. Verify that the value of the header conforms to the OAuth bearer token specification.
 
 SOCIAL_LOGIN_CONFIG_PROCESSED=CWWKS5400I: The social login configuration [{0}] was successfully processed.
 SOCIAL_LOGIN_CONFIG_PROCESSED.explanation=The indicated social login configuration has been successfully processed.
