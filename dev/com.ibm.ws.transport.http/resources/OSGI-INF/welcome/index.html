@@ -489,6 +489,11 @@
 			background-color: #F1F4FE;
 		}
 
+		.resource p {
+			margin-top: 10px;
+			margin-bottom: 10px;
+		}
+
 		.resource__logo {
 			height: 40px;
 		}
@@ -500,12 +505,12 @@
 			background-color: #ffffff;
 		}
 
-		#second_row > :first-child {
-			margin-left: 18%;
+		#gitter_logo {
+			border-radius: 50%;
 		}
 
-		#second_row > :nth-child(2) {
-			margin-right: 18%;
+		#first_row {
+			padding-top: 20px;
 		}
 
 		@media (min-width: 320px) {
@@ -523,14 +528,6 @@
 			.resource__logo {
 				height: 50px;
 			}
-
-			#second_row > :first-child {
-				margin-left: 21%;
-			}
-
-			#second_row > :nth-child(2) {
-				margin-right: 21%;
-			}
 		}
 
 		@media (min-width: 500px) {
@@ -540,6 +537,11 @@
 
 			.resource__logo {
 				height: 70px;
+			}
+
+			.resource p {
+				margin-top: 15px;
+				margin-bottom: 15px;
 			}
 		}
 
@@ -559,37 +561,26 @@
 		}
 
 		@media (min-width: 992px) {
-
 			#first_row {
 				float: left;
-				width: 60%;
+				width: 50%;
+				padding-top: 0px;
 			}
 
 			#second_row {
 				float: right;
-				width: 40%;
+				width: 50%;
 			}
 
 			.resources {
 				height: 250px;
 			}
 
-			#second_row > :first-child {
-				margin-left: auto;
-			}
-
-			#second_row > :nth-child(2) {
-				margin-right: auto;
-			}
-
 			.resource {
 				padding-top: 30px;
 				padding-bottom: 10px;
 			}
-
 		}
-		
-
 
 		.footer {
 			background-color: #1d1e3c;
@@ -822,6 +813,12 @@
 					<a href="https://twitter.com/OpenLibertyIO" target="_blank" rel="noopener">
 						<img class="resource__logo" src="/img/twitter_logo.png" data-externalizedAlt="TWITTER">
 						<p>Twitter</p>
+					</a>
+				</div>
+				<div class="resource">
+					<a href="https://gitter.im/OpenLiberty/" target="_blank" rel="noopener">
+						<img id="gitter_logo" class="resource__logo" src="/img/gitter_logo.png" data-externalizedAlt="GITTER">
+						<p>Gitter</p>
 					</a>
 				</div>
 			</div>

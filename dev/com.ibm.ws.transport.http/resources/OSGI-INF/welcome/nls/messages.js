@@ -14,6 +14,7 @@ var messages = {
     RESOURCES: "Resources and Support",
     GITHUB: "GitHub logo",
     TWITTER: "Twitter logo",
+    GITTER: "Gitter logo",
     STACK_OVERFLOW: "Stack Overflow logo",
     GROUPS_IO: "Groups.io logo",
     OL_SUPPORT: "Open Liberty logo",
