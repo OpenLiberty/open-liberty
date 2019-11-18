@@ -1,4 +1,4 @@
--include= ~${workspace}/cnf/resources/bnd/feature.props
+s-include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.jaxws-2.3
 visibility=public
 singleton=true
