@@ -46,17 +46,25 @@ public abstract class FeatureUtilityToolTest {
         final String methodName = "setup";
         server = LibertyServerFactory.getLibertyServer("com.ibm.ws.install.featureUtility_fat");
 
-        // installRoot is build.image/build/libs/distributions/openliberty-kernel/wlp
+
+        // jbe/build/dev/image/output/wlp
         installRoot = server.getInstallRoot();
 
         Log.info(c, methodName, "install root: " + installRoot);
 
         // extract the kernel into our installRoot
-        String kernelZipDir = installRoot + "../../";
-        extractOpenLibertyKernelZip(kernelZipDir, installRoot);
+        // kernelZipDir : jbe/build/dev/build.image/build/libs/distributions/
+        String kernelZipDir = installRoot + "../../../build.image/build/libs/distributions/";
+        String dest = kernelZipDir + "/openliberty-kernel";
 
+        Log.info(c, methodName,"kernel zip dir: " + new File(kernelZipDir).getAbsolutePath());
 
-        Log.info(c, methodName, "install root: " + installRoot);
+        extractOpenLibertyKernelZip(kernelZipDir, kernelZipDir + dest);
+
+        // change installroot to unzipped kernel
+        installRoot =  dest;
+
+//        Log.info(c, methodName, "install root: " + installRoot);
         
         setOriginalWlpVersionVariables();
         cleanDirectories = new ArrayList<String>();
