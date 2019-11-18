@@ -81,7 +81,15 @@ public class FeatureUtility {
 
         map = new InstallKernelMap();
         Map<String, String> envMap = (Map<String, String>) map.get("environment.variable.map");
-        fine("Environment variables: "+ envMap);
+        fine("Environment variables: ");
+        Set<String> envMapKeys = envMap.keySet();
+        for (String key: envMapKeys) {
+        	if (key.equals("FEATURE_REPO_PASSWORD")) {
+        		fine("FEATURE_REPO_PASSWORD: *********");
+        	} else {
+        		fine(key +": " + envMap.get(key));
+        	}
+        }
 
         if (isBasicInit == null || !isBasicInit) {
             info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_INITIALIZING"));
