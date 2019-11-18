@@ -65,6 +65,7 @@ public class AuditConstants {
     static public final String SECURITY_JMS_AUTHZ = "SECURITY_JMS_AUTHZ";
     static public final String SECURITY_JMS_AUTHN_TERMINATE = "SECURITY_JMS_AUTHN_TERMINATE";
     static public final String SECURITY_JMS_CLOSED_CONNECTION = "SECURITY_JMS_CLOSED_CONNECTION";
+    static public final String SECURITY_REST_HANDLER_AUTHZ = "SECURITY_REST_HANDLER_AUTHZ";
     static public final String SECURITY_SAF_AUTHZ = "SECURITY_SAF_AUTHZ";
     static public final String SECURITY_SAF_AUTHZ_DETAILS = "SECURITY_SAF_AUTHZ_DETAILS";
     static public final String JMX_MBEAN = "JMX_MBEAN";

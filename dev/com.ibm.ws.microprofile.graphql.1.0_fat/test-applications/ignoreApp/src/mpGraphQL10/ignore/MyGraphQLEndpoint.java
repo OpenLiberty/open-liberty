@@ -16,9 +16,9 @@ import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.eclipse.microprofile.graphql.Argument;
 import org.eclipse.microprofile.graphql.GraphQLApi;
 import org.eclipse.microprofile.graphql.Mutation;
+import org.eclipse.microprofile.graphql.Name;
 import org.eclipse.microprofile.graphql.Query;
 
 @GraphQLApi
@@ -43,10 +43,8 @@ public class MyGraphQLEndpoint {
         return allWidgets;
     }
 
-    @org.eclipse.microprofile.graphql.Deprecated("Deprecated mutation, please use \"createWidget\" instead.")
-    @Deprecated
     @Mutation("createWidgetByHand")
-    public Widget createNewWidgetByHand(@Argument("widgetString") String widgetString) {
+    public Widget createNewWidgetByHand(@Name("widgetString") String widgetString) {
         Widget w = Widget.fromString(widgetString);
         allWidgets.add(w);
         return w;
@@ -54,7 +52,7 @@ public class MyGraphQLEndpoint {
     }
 
     @Mutation("createWidget")
-    public Widget createNewWidget(@Argument("widget") Widget input) {
+    public Widget createNewWidget(@Name("widget") Widget input) {
         Widget w = Widget.fromWidgetInput(input);
         allWidgets.add(w);
         return w;

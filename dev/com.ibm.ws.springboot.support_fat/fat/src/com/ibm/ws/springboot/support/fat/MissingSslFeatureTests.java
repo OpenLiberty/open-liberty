@@ -23,6 +23,7 @@ import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import junit.framework.Assert;
@@ -87,6 +88,7 @@ public class MissingSslFeatureTests extends AbstractSpringTests {
     }
 
     @Test
+    @MaximumJavaLevel(javaLevel = 8)
     public void testMissingSslFeatureFor15() throws Exception {
         testMissingSslFeature();
     }

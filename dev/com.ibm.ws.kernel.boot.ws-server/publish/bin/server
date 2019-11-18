@@ -258,7 +258,7 @@ else
   then
     # Only use if it isn't something that looks like an option
     case $1 in
-    -*);;
+    --*);;
     *)
       SERVER_NAME=$1
       shift #consume
@@ -273,7 +273,6 @@ if [ -z "$SERVER_NAME" ]
 then
   SERVER_NAME=defaultServer
 fi
-
 
 ##
 ## Set JAVA_AGENT_QUOTED if WLP_SKIP_BOOTSTRAP_AGENT is unset.
@@ -579,26 +578,28 @@ serverEnvDefaults()
   # Command-line parsing of -Xshareclasses does not allow "," in cacheDir.
   case ${WLP_OUTPUT_DIR} in
   *,*)
-    SERVER_IBM_JAVA_OPTIONS=${IBM_JAVA_OPTIONS}
+    SERVER_IBM_JAVA_OPTIONS=${OPENJ9_JAVA_OPTIONS}
     ;;
   *)
     if $shareclassesCacheDirPerm
     then
-      SERVER_IBM_JAVA_OPTIONS="-Xshareclasses:name=liberty-%u,nonfatal,cacheDir=\"${WLP_OUTPUT_DIR}/.classCache\",cacheDirPerm=1000 -XX:ShareClassesEnableBCI -Xscmx80m ${IBM_JAVA_OPTIONS}"
+      SERVER_IBM_JAVA_OPTIONS="-Xshareclasses:name=liberty-%u,nonfatal,cacheDir=\"${WLP_OUTPUT_DIR}/.classCache\",cacheDirPerm=1000 -XX:ShareClassesEnableBCI -Xscmx80m ${OPENJ9_JAVA_OPTIONS}"
     else
-      SERVER_IBM_JAVA_OPTIONS="-Xshareclasses:name=liberty-%u,nonfatal,cacheDir=\"${WLP_OUTPUT_DIR}/.classCache\" -XX:ShareClassesEnableBCI -Xscmx80m ${IBM_JAVA_OPTIONS}"
+      SERVER_IBM_JAVA_OPTIONS="-Xshareclasses:name=liberty-%u,nonfatal,cacheDir=\"${WLP_OUTPUT_DIR}/.classCache\" -XX:ShareClassesEnableBCI -Xscmx80m ${OPENJ9_JAVA_OPTIONS}"
     fi
   esac
 
   # Add -Xquickstart -Xnoaot for client JVMs only.  AOT is ineffective if JVMs have conflicting
   # options, and it's more important that the server JVMs be able to use AOT.
   # Add -Dcom.ibm.tools.attach.enable=yes to allow self-attach on z/OS
-  IBM_JAVA_OPTIONS="-Xquickstart -Xnoaot -Dcom.ibm.tools.attach.enable=yes ${IBM_JAVA_OPTIONS}"
+  IBM_JAVA_OPTIONS="-Xquickstart -Xnoaot -Dcom.ibm.tools.attach.enable=yes ${OPENJ9_JAVA_OPTIONS}"
   export IBM_JAVA_OPTIONS
+  OPENJ9_JAVA_OPTIONS="-Xquickstart -Xnoaot -Dcom.ibm.tools.attach.enable=yes ${OPENJ9_JAVA_OPTIONS}"
+  export OPENJ9_JAVA_OPTIONS
 
   # Set a default file encoding if needed
   if [ -n "$defaultFileEncoding" ]; then
-    if ! expr "${JVM_OPTIONS_QUOTED} ${JVM_ARGS} ${IBM_JAVA_OPTIONS}" : '.*\(-Dfile\.encoding\=[^[:space:]]\)' > /dev/null; then
+    if ! expr "${JVM_OPTIONS_QUOTED} ${JVM_ARGS} ${OPENJ9_JAVA_OPTIONS}" : '.*\(-Dfile\.encoding\=[^[:space:]]\)' > /dev/null; then
       JVM_ARGS="${JVM_ARGS} -Dfile.encoding=$defaultFileEncoding"
     fi
   fi
@@ -934,8 +935,9 @@ serverCmd()
 
   SAVE_JVM_OPTIONS_QUOTED=${JVM_OPTIONS_QUOTED}
   JVM_OPTIONS_QUOTED=${SERVER_JVM_OPTIONS_QUOTED}
-  SAVE_IBM_JAVA_OPTIONS=${IBM_JAVA_OPTIONS}
+  SAVE_IBM_JAVA_OPTIONS=${OPENJ9_JAVA_OPTIONS}
   IBM_JAVA_OPTIONS=${SERVER_IBM_JAVA_OPTIONS}
+  OPENJ9_JAVA_OPTIONS=${SERVER_IBM_JAVA_OPTIONS}
 
   if $os400lib; then
     serverCmdOS400 "${SERVER_CMD_BACKGROUND_LOG}" "${SERVER_NAME}" "$@"
@@ -943,6 +945,7 @@ serverCmd()
 
     JVM_OPTIONS_QUOTED=${SAVE_JVM_OPTIONS_QUOTED}
     IBM_JAVA_OPTIONS=${SAVE_IBM_JAVA_OPTIONS}
+    OPENJ9_JAVA_OPTIONS=${SAVE_IBM_JAVA_OPTIONS}
 
     if [ -n "${SERVER_CMD_BACKGROUND_LOG}" ]; then
       PID=`cat "${X_PID_FILE}"`
@@ -964,6 +967,7 @@ serverCmd()
 
       JVM_OPTIONS_QUOTED=${SAVE_JVM_OPTIONS_QUOTED}
       IBM_JAVA_OPTIONS=${SAVE_IBM_JAVA_OPTIONS}
+      OPENJ9_JAVA_OPTIONS=${SAVE_IBM_JAVA_OPTIONS}
 
       if [ $rc = 0 ]; then
         # Verify/wait for the process to start
@@ -1024,6 +1028,7 @@ serverCmd()
 
     JVM_OPTIONS_QUOTED=${SAVE_JVM_OPTIONS_QUOTED}
     IBM_JAVA_OPTIONS=${SAVE_IBM_JAVA_OPTIONS}
+    OPENJ9_JAVA_OPTIONS=${SAVE_IBM_JAVA_OPTIONS}
 
     if [ -n "${SERVER_CMD_BACKGROUND_LOG}" ]; then
       # Verify/wait for the process to start

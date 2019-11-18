@@ -10,6 +10,7 @@
  -->
 <server>
   <featureManager>
+    <feature>componenttest-1.0</feature>
     <feature>concurrent-1.0</feature>
     <feature>ejbPersistentTimer-3.2</feature>
     <!-- <feature>osgiConsole-1.0</feature> -->

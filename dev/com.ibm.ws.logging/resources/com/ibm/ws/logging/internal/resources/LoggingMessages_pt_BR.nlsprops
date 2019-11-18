@@ -141,16 +141,16 @@ JSON_FIELDS_FORMAT_WARNING.explanation=O mapeamento do nome do campo de cria\u00
 JSON_FIELDS_FORMAT_WARNING.useraction=Assegure-se de que o formato da propriedade de mapeamento do nome do campo de cria\u00e7\u00e3o de log JSON esteja correto. O mapeamento de nome do campo JSON pode ser especificado de in\u00fameras formas, especificadas na documenta\u00e7\u00e3o de configura\u00e7\u00e3o de cria\u00e7\u00e3o de log.
 
 JSON_FIELDS_FORMAT_WARNING_2=TRAS3008W: A propriedade de mapeamento de nome do campo de cria\u00e7\u00e3o de log JSON tem muitos ou poucos tokens em uma entrada.
-JSON_FIELDS_FORMAT_WARNING_2.explanation=A propriedade de mapeamento de nome do campo de cria\u00e7\u00e3o de log JSON deve ser formatada como knownFieldName:newFieldName ou eventType:knownFieldName:newFieldName.
-JSON_FIELDS_FORMAT_WARNING_2.useraction=A propriedade de mapeamento de nome do campo de cria\u00e7\u00e3o de log JSON deve ser formatada como knownFieldName:newFieldName ou eventType:knownFieldName:newFieldName.
+JSON_FIELDS_FORMAT_WARNING_2.explanation=A propriedade de mapeamento de nome do campo de cria\u00e7\u00e3o de log JSON deve ser formatada como defaultFieldName:newFieldName ou source:defaultFieldName:newFieldName
+JSON_FIELDS_FORMAT_WARNING_2.useraction=A propriedade de mapeamento de nome do campo de cria\u00e7\u00e3o de log JSON deve ser formatada como defaultFieldName:newFieldName ou  source:defaultFieldName:newFieldName
 
-JSON_FIELDS_NO_MATCH=TRAS3009W: O nome do campo de cria\u00e7\u00e3o de log JSON fornecido n\u00e3o corresponde a um dos nomes de campo conhecidos para os eventos especificados
+JSON_FIELDS_NO_MATCH=TRAS3009W: O nome do campo de cria\u00e7\u00e3o de log JSON fornecido n\u00e3o corresponde a um dos nomes de campo conhecidos para a(s) origem(ns) especificada(s)
 JSON_FIELDS_NO_MATCH.explanation=O nome do campo de cria\u00e7\u00e3o de log JSON fornecido n\u00e3o corresponde a um dos nomes de campo conhecidos
 JSON_FIELDS_NO_MATCH.useraction=Forne\u00e7a um nome do campo de cria\u00e7\u00e3o de log JSON que corresponda a um dos campos conhecidos (por exemplo, message, ibm_datetime, ibm_sequence)
 
-JSON_FIELDS_INCORRECT_EVENT_TYPE=TRAS3010W: O tipo de evento fornecido n\u00e3o corresponde a um dos tipos de evento conhecidos
-JSON_FIELDS_INCORRECT_EVENT_TYPE.explanation=Os tipos de evento aceitos s\u00e3o: liberty_message, liberty_trace, liberty_accesslog, liberty_ffdc
-JSON_FIELDS_INCORRECT_EVENT_TYPE.useraction=Os tipos de evento aceitos s\u00e3o: liberty_message, liberty_trace, liberty_accesslog, liberty_ffdc
+JSON_FIELDS_INCORRECT_EVENT_TYPE=TRAS3010W: O identificador de origem de mapeamento do campo de cria\u00e7\u00e3o de log JSON fornecido n\u00e3o corresponde a uma das origens conhecidas
+JSON_FIELDS_INCORRECT_EVENT_TYPE.explanation=As origens aceitas s\u00e3o: message, trace, accessLog, ffdc, audit
+JSON_FIELDS_INCORRECT_EVENT_TYPE.useraction=As origens aceitas s\u00e3o: message, trace, accessLog, ffdc, audit
 
 JSON_FIELDS_INVALID_CHARACHTER=TRAS3011W: Um caractere inv\u00e1lido foi fornecido na propriedade de mapeamento de nome do campo de cria\u00e7\u00e3o de log JSON
 JSON_FIELDS_INVALID_CHARACHTER.explanation= Somente letras, n\u00fameros e : s\u00e3o aceitos na propriedade de mapeamento de nome do campo de cria\u00e7\u00e3o de log JSON

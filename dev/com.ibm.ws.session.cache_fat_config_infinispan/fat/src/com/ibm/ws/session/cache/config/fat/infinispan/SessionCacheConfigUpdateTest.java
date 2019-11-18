@@ -12,15 +12,11 @@ package com.ibm.ws.session.cache.config.fat.infinispan;
 
 import static org.junit.Assert.assertFalse;
 
-import java.io.File;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
@@ -30,12 +26,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.config.Application;
-import com.ibm.websphere.simplicity.config.ClassloaderElement;
 import com.ibm.websphere.simplicity.config.HttpSessionCache;
 import com.ibm.websphere.simplicity.config.Monitor;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
-import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -46,7 +39,6 @@ import componenttest.topology.utils.FATServletClient;
 public class SessionCacheConfigUpdateTest extends FATServletClient {
 
     private static final String APP_DEFAULT = "sessionCacheConfigApp";
-    private static final String APP_JCACHE = "jcacheApp";
     private static final Set<String> APP_NAMES = Collections.singleton(APP_DEFAULT); // jcacheApp not included because it isn't normally configured
     private static final String[] EMPTY_RECYCLE_LIST = new String[0];
     private static final String SERVLET_NAME = "SessionCacheConfigTestServlet";
@@ -73,20 +65,6 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         ShrinkHelper.defaultApp(server, APP_DEFAULT, "session.cache.infinispan.web");
-        ShrinkHelper.defaultApp(server, APP_JCACHE, "test.cache.infinispan.web");
-        server.removeInstalledAppForValidation(APP_JCACHE); // This application is available for tests to add but not configured by default.
-
-        //String hazelcastConfigFile = "hazelcast-localhost-only.xml";
-
-        //if (FATSuite.isMulticastDisabled()) {
-        //    Log.info(SessionCacheConfigUpdateTest.class, "setUp", "Disabling multicast in Hazelcast config.");
-        //    hazelcastConfigFile = "hazelcast-localhost-only-multicastDisabled.xml";
-        //}
-
-        //String configLocation = new File(server.getUserDir() + "/shared/resources/hazelcast/" + hazelcastConfigFile).getAbsolutePath();
-        //server.setJvmOptions(Arrays.asList("-Dhazelcast.config=" + configLocation,
-        //                                   "-Dhazelcast.config.file=" + hazelcastConfigFile,
-        //                                   "-Dhazelcast.group.name=" + UUID.randomUUID()));
 
         savedConfig = server.getServerConfiguration().clone();
         server.startServer();
@@ -102,36 +80,6 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         server.stopServer();
-    }
-
-    /**
-     * Verify that application usage of a caching provider does not interfere with the sessionCache feature.
-     */
-    @Test
-    public void testApplicationClosesCachingProvider() throws Exception {
-        // Add application: jcacheApp
-        ServerConfiguration config = server.getServerConfiguration();
-        Application jcacheApp = new Application();
-        ClassloaderElement jcacheApp_classloader = new ClassloaderElement();
-        jcacheApp_classloader.getCommonLibraryRefs().add("InfinispanLib");
-        jcacheApp.getClassloaders().add(jcacheApp_classloader);
-        jcacheApp.setLocation(APP_JCACHE + ".war");
-        config.getApplications().add(jcacheApp);
-
-        Set<String> appNames = new TreeSet<String>(APP_NAMES);
-        appNames.add(APP_JCACHE);
-
-        server.setMarkToEndOfLog();
-        server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(appNames, EMPTY_RECYCLE_LIST);
-
-        // Application obtains the CachingProvider for the same configured library and closes the provider
-        FATSuite.run(server, APP_JCACHE + "/JCacheConfigTestServlet", "testCloseCachingProvider", null);
-
-        // Access a session - this will only work if sessionCache feature has used a different CachingProvider instance
-        List<String> session = new ArrayList<>();
-        run("getSessionId", session);
-        run("invalidateSession", session);
     }
 
     /**
@@ -246,8 +194,9 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
 
     /**
      * Update the configured value of the writeFrequency attribute from default (END_OF_SERVLET_SERVICE) to MANUAL_UPDATE
-     * while the server is running. The session must remain valid, and must exhibit the new behavior (MANUAL_UPDATE) after
-     * the configuration change.
+     * while the server is running. Whether or not the session persists across restart when there is only a single member
+     * is implementation-specific and not covered by the test case. After the update, however, a session must must exhibit
+     * the MANUAL_UPDATE behavior.
      */
     @Test
     public void testWriteFrequency() throws Exception {
@@ -265,9 +214,9 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
         server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
 
         // Set a new attribute value without performing a manual sync, the value in the cache should not be updated
+        session = new ArrayList<>();
         run("testSetAttribute&attribute=testWriteFrequency&value=2_MANUAL_UPDATE", session);
-        // TODO the Infinispan local cache (no config) is destroyed during the Liberty config update. Enable this once we switch to a cache configured with multicast.
-        // run("testCacheContains&attribute=testWriteFrequency&value=1_END_OF_SERVLET_SERVICE", session);
+        run("testCacheContains&attribute=testWriteFrequency&value=null", session);
 
         // Perform a manual update within the same servlet request
         run("testManualUpdate&attribute=testWriteFrequency&value=3_MANUAL_UPDATE", session);

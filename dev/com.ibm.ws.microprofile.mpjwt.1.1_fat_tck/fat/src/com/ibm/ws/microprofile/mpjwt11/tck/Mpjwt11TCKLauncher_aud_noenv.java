@@ -39,13 +39,15 @@ public class Mpjwt11TCKLauncher_aud_noenv {
     @BeforeClass
     public static void setUp() throws Exception {
         server.startServer();
+        server.waitForStringInLog("CWWKS4105I", 30000); // wait for ltpa keys to be created and service ready, which can happen after startup.
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         // CWWKZ0014W  - we need app listed in server.xml even when it might not there, so allow this "missing app" error.
         // CWWKE0921W, 12w - the harness generates a java2sec socketpermission error, there's no way to suppress it  by itself in server.xml, so suppress this way
-        server.stopServer("CWWKS5524E", "CWWKS6023E", "CWWKS5523E", "CWWKS6031E", "CWWKS5524E", "CWWKZ0014W", "CWWKS5604E", "CWWKE0921W", "CWWKE0912W");
+        // CWWKG0014E - intermittently caused by server.xml being momentarily missing during server reconfig
+        server.stopServer("CWWKG0014E", "CWWKS5524E", "CWWKS6023E", "CWWKS5523E", "CWWKS6031E", "CWWKS5524E", "CWWKZ0014W", "CWWKS5604E", "CWWKE0921W", "CWWKE0912W");
     }
 
     @Test

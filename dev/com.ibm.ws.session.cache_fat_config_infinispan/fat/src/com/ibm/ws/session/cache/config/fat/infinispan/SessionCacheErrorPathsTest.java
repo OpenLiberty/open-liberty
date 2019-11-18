@@ -39,11 +39,13 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
-// TODO @Mode(TestMode.FULL)
+@Mode(TestMode.FULL)
 public class SessionCacheErrorPathsTest extends FATServletClient {
 
     private static final String APP_NAME = "sessionCacheConfigApp";
@@ -75,16 +77,6 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         ShrinkHelper.defaultApp(server, APP_NAME, "session.cache.infinispan.web");
-
-        //if (FATSuite.isMulticastDisabled()) {
-        //    Log.info(SessionCacheErrorPathsTest.class, "setUp", "Disabling multicast in Hazelcast config.");
-        //    hazelcastConfigFile = "hazelcast-localhost-only-multicastDisabled.xml";
-        //}
-
-        //String configLocation = new java.io.File(server.getUserDir() + "/shared/resources/hazelcast/" + hazelcastConfigFile).getAbsolutePath();
-        //server.setJvmOptions(Arrays.asList("-Dhazelcast.config=" + configLocation,
-        //                                   "-Dhazelcast.config.file=" + hazelcastConfigFile,
-        //                                   "-Dhazelcast.group.name=" + UUID.randomUUID()));
 
         savedConfig = server.getServerConfiguration().clone();
     }
@@ -382,13 +374,12 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
 
             assertTrue(dumpInfo, (i = lines.indexOf("Cache names:")) > 0);
 
-            Set<String> expectedCaches = new HashSet<String>();
-            expectedCaches.add("com.ibm.ws.session.meta.default_host%2FsessionCacheConfigApp");
-            expectedCaches.add("com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp");
             Set<String> caches = new HashSet<String>();
             for (int c = i + 1; c < lines.size() && lines.get(c).startsWith("  "); c++) // add all subsequent indented lines
                 caches.add(lines.get(c).trim());
-            assertEquals(dumpInfo, expectedCaches, caches);
+            // Other caches might be created for JAX-RS apps from enabled Liberty features. Ignore those, and look for the ones for our test app:
+            assertTrue(dumpInfo, caches.contains("com.ibm.ws.session.meta.default_host%2FsessionCacheConfigApp"));
+            assertTrue(dumpInfo, caches.contains("com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp"));
 
             assertTrue(dumpInfo, lines.contains("  closed? false"));
             assertFalse(dumpInfo, lines.contains("  closed? true"));
@@ -450,13 +441,12 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
 
             assertTrue(dumpInfo, (i = lines.indexOf("Cache names:")) > 0);
 
-            Set<String> expectedCaches = new HashSet<String>();
-            expectedCaches.add("com.ibm.ws.session.meta.default_host%2FsessionCacheConfigApp");
-            expectedCaches.add("com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp");
             Set<String> caches = new HashSet<String>();
             for (int c = i + 1; c < lines.size() && lines.get(c).startsWith("  "); c++) // add all subsequent indented lines
                 caches.add(lines.get(c).trim());
-            assertEquals(dumpInfo, expectedCaches, caches);
+            // Other caches might be created for JAX-RS apps from enabled Liberty features. Ignore those, and look for the ones for our test app:
+            assertTrue(dumpInfo, caches.contains("com.ibm.ws.session.meta.default_host%2FsessionCacheConfigApp"));
+            assertTrue(dumpInfo, caches.contains("com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp"));
 
             assertTrue(dumpInfo, lines.contains("  closed? false"));
             assertFalse(dumpInfo, lines.contains("  closed? true"));

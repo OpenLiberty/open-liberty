@@ -24,6 +24,8 @@ import org.eclipse.microprofile.metrics.MetricID;
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.eclipse.microprofile.metrics.Timer;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.microprofile.metrics.Constants;
 import com.ibm.ws.microprofile.metrics.exceptions.EmptyRegistryException;
 import com.ibm.ws.microprofile.metrics.exceptions.NoSuchMetricException;
@@ -34,6 +36,7 @@ import com.ibm.ws.microprofile.metrics.impl.SharedMetricRegistries;
  *
  */
 public class Util {
+    private static final TraceComponent tc = Tr.register(Util.class);
 
     public static SharedMetricRegistries SHARED_METRIC_REGISTRIES;
 
@@ -98,6 +101,7 @@ public class Util {
 
     private static MetricRegistry getRegistry(String registryName) throws NoSuchRegistryException {
         if (!Constants.REGISTRY_NAMES_LIST.contains(registryName)) {
+            Tr.event(tc, Constants.REGISTRY_NAMES_LIST.toString());
             throw new NoSuchRegistryException();
         }
         return SHARED_METRIC_REGISTRIES.getOrCreate(registryName);

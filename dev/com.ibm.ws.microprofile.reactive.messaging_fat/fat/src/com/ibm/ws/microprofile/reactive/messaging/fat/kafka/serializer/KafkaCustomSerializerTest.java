@@ -24,11 +24,12 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.PropertiesAsset;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaTestConstants;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractKafkaTestServlet;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ConnectorProperties;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.PlaintextTests;
-import com.ibm.ws.microprofile.reactive.messaging.fat.suite.PropertiesAsset;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -65,6 +66,7 @@ public class KafkaCustomSerializerTest {
                         .addAsManifestResource(kafkaPermissions(), "permissions.xml")
                         .addPackage(KafkaSerializerTestServlet.class.getPackage())
                         .addPackage(AbstractKafkaTestServlet.class.getPackage())
+                        .addPackage(KafkaTestConstants.class.getPackage())
                         .addAsResource(appConfig, "META-INF/microprofile-config.properties");
 
         ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);

@@ -1,0 +1,43 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxws.security/resources/com/ibm/ws/jaxws/security/internal/resources/JaxWsSecurityMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXWS SECURITY Code
+#RANGE 0600 - 0699
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+# ------
+
+#{0} is the ssl configuration id
+err.when.get.ssl.config=CWWKW0600E: A e\u015fuat ob\u0163inerea configura\u0163iei SSL prin sslRef={0}.
+err.when.get.ssl.config.explanation=Atributul sslRef specificat \u00een fi\u015fierul ibm-ws-bnd.xml nu se poate referi la elementul ssl din fi\u015fierul server.xml sau con\u0163inutul elementului ssl referit este invalid.
+err.when.get.ssl.config.useraction=Asigura\u0163i-v\u0103 c\u0103 valoarea atributului sslRef se potriv\u015fte cu ID-ul elementului ssl din fi\u015fierul server.xml sau con\u0163inutul elementului ssl referit este corect.
+
+#{0} is the ssl configuration id
+#{1} is the ssl error message
+err.when.get.ssl.socket.factory=CWWKW0601E: A e\u015fuat ob\u0163inerea SSLSocketFactory prin sslRef={0} pentru {1}.
+err.when.get.ssl.socket.factory.explanation=O conigura\u0163ie invalid\u0103 a depozitului de chei sau a elementului depozit de \u00eencredere \u00een fi\u015fierul server.xml poate duce la o excep\u0163ie pentru c\u0103 atributul sslRef specificat \u00een fi\u015fierul ibm-ws-bnd.xml se refer\u0103 la configura\u0163iile SSL din fi\u015fierul server.xml.
+err.when.get.ssl.socket.factory.useraction=Asigura\u0163i-v\u0103 c\u0103 loca\u0163ia \u015fi parola depozitului de chei sau a elementului depozit de \u00eencredere sunt specificate corect \u00een fi\u015fierul server.xml \u015fi aliasul certificatului este valid \u00een fi\u015fierul ibm-ws-bnd.xml. 
+
+ibm.ws.bnd.login.config.in.war.is.ingnored=CWWKW0602W: Elementul login-config definit \u00een fi\u015fierul ibm-ws-bnd.xml este ignorat \u00eentruc\u00e2t aplica\u0163ia dumneavoastr\u0103 este o aplica\u0163ie web \u015fi ar trebui definit\u0103 \u00een web.xml.
+ibm.ws.bnd.login.config.in.war.is.ingnored.explanation=Elementul login-config poate fi configurat numai \u00een fi\u015fierul web.xml al aplica\u0163iei web \u015fi elementul login-config definit \u00een fi\u015fierul ibm-ws-bnd.xml este ignorat.
+ibm.ws.bnd.login.config.in.war.is.ingnored.useraction=Asigura\u0163i-v\u0103 c\u0103 elementul login-config este configurat doar \u00een fi\u015fierul web.xml al aplica\u0163iei dumneavoastr\u0103 web. 
+
+#{0} is value of auth-method defined in ibm-ws-bnd.xml
+ibm.ws.bnd.auth.method.not.support=CWWKW0603W: Tipul auth-method {0} nu este suportat \u00een fi\u015fierul ibm-ws-bnd.xml.
+ibm.ws.bnd.auth.method.not.support.explanation=Fi\u015fierul ibm-ws-bnd.xml suport\u0103 numai BASIC \u015fi CLIENT_CERT ca tip auth-method.
+ibm.ws.bnd.auth.method.not.support.useraction=Asigura\u0163i-v\u0103 c\u0103 valoarea tipului auth-method definit \u00een fi\u015fierul ibm-ws-bnd.xml este fie BASIC, fie CLIENT_CERT.

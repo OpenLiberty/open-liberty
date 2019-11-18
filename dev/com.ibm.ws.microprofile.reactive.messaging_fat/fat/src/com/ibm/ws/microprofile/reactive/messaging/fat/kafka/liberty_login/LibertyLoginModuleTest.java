@@ -28,11 +28,12 @@ import org.junit.runner.RunWith;
 import org.testcontainers.utility.Base58;
 
 import com.ibm.websphere.crypto.PasswordUtil;
+import com.ibm.websphere.simplicity.PropertiesAsset;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaTestConstants;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaTestClientProvider;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ConnectorProperties;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.KafkaUtils;
-import com.ibm.ws.microprofile.reactive.messaging.fat.suite.PropertiesAsset;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.SaslPlainTests;
 
 import componenttest.annotation.Server;
@@ -82,6 +83,7 @@ public class LibertyLoginModuleTest {
                         .addAsLibraries(kafkaClientLibs())
                         .addAsManifestResource(kafkaPermissions(), "permissions.xml")
                         .addPackage(LibertyLoginModuleTestServlet.class.getPackage())
+                        .addPackage(KafkaTestConstants.class.getPackage())
                         .addPackage(KafkaTestClientProvider.class.getPackage())
                         .addAsResource(appConfig, "META-INF/microprofile-config.properties");
 

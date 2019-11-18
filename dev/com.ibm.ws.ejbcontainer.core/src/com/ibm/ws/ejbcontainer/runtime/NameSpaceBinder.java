@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,13 +25,11 @@ import com.ibm.websphere.csi.HomeWrapperSet;
  * If the begin method completes successfully, then a series of bind or unbind
  * methods may be called, and then {@link #end} must be called.
  */
-public interface NameSpaceBinder<T>
-{
+public interface NameSpaceBinder<T> {
     /**
      * Prepares the binder for subsequent calls to {@link #bindJavaGlobal}, {@link #bindJavaApp}, {@link #bindJavaModule}, {@link #bindBindings}, and {@link #bindEJBFactory}.
      */
-    void beginBind()
-                    throws NamingException;
+    void beginBind() throws NamingException;
 
     /**
      * Create the object to bind for a single interface, or returns null if
@@ -50,10 +48,7 @@ public interface NameSpaceBinder<T>
                           HomeWrapperSet homeSet,
                           String interfaceName,
                           int interfaceIndex,
-                          boolean local)
-                    throws NamingException,
-                    RemoteException,
-                    CreateException;
+                          boolean local) throws NamingException, RemoteException, CreateException;
 
     /**
      * Creates an alternate binding object for java: namespaces.
@@ -82,8 +77,7 @@ public interface NameSpaceBinder<T>
      * @param name the binding name without subcontexts
      * @param bindingObject the result of {@link #createJavaBindingObject}
      */
-    void bindJavaGlobal(String name, T bindingObject)
-                    throws NamingException;
+    void bindJavaGlobal(String name, T bindingObject) throws NamingException;
 
     /**
      * Binds an object to the java:app/modname/ context.
@@ -91,8 +85,7 @@ public interface NameSpaceBinder<T>
      * @param name the binding name without subcontexts
      * @param bindingObject the result of {@link #createJavaBindingObject}
      */
-    void bindJavaApp(String name, T bindingObject)
-                    throws NamingException;
+    void bindJavaApp(String name, T bindingObject) throws NamingException;
 
     /**
      * Binds an object to the java:module/ context.
@@ -100,8 +93,7 @@ public interface NameSpaceBinder<T>
      * @param name the binding name without subcontexts
      * @param bindingObject the result of {@link #createJavaBindingObject}
      */
-    void bindJavaModule(String name, T bindingObject)
-                    throws NamingException;
+    void bindJavaModule(String name, T bindingObject) throws NamingException;
 
     /**
      * Binds the specified object into naming as specified by its configured
@@ -127,15 +119,13 @@ public interface NameSpaceBinder<T>
                       int interfaceIndex,
                       String interfaceName,
                       boolean local,
-                      boolean deferred)
-                    throws NamingException;
+                      boolean deferred) throws NamingException;
 
     /**
      * Bind an EJBFactory reference into the global namespace for the
      * specified application (if not already bound) and module. <p>
      */
-    void bindEJBFactory()
-                    throws NamingException;
+    void bindEJBFactory() throws NamingException;
 
     /**
      * Prepares the binder for subsequent calls to {@link #unbindJavaGlobal}, {@link #unbindJavaApp}, {@link #unbindJavaModule}, {@link #unbindBindings}, and
@@ -144,8 +134,7 @@ public interface NameSpaceBinder<T>
      * @param error true if the call is being made because an error occurred
      *            while starting the module
      */
-    void beginUnbind(boolean error)
-                    throws NamingException;
+    void beginUnbind(boolean error) throws NamingException;
 
     /**
      * Removes a set of names from the java:global/appname/modname/ context.
@@ -153,8 +142,7 @@ public interface NameSpaceBinder<T>
      *
      * @param names the names without subcontexts to unbind
      */
-    void unbindJavaGlobal(List<String> names)
-                    throws NamingException;
+    void unbindJavaGlobal(List<String> names) throws NamingException;
 
     /**
      * Removes a set of names from the java:app/modname/ context. As many names
@@ -162,27 +150,50 @@ public interface NameSpaceBinder<T>
      *
      * @param names the names without subcontexts to unbind
      */
-    void unbindJavaApp(List<String> names)
-                    throws NamingException;
+    void unbindJavaApp(List<String> names) throws NamingException;
 
     /**
      * Undoes the bindings from {@link #bindBindings}.
      *
      * @param hr the bean home record
      */
-    void unbindBindings(HomeRecord hr)
-                    throws NamingException;
+    void unbindBindings(HomeRecord hr) throws NamingException;
 
     /**
      * Undoes the bindings from {@link #bindEJBFactory}.
      */
-    void unbindEJBFactory()
-                    throws NamingException;
+    void unbindEJBFactory() throws NamingException;
 
     /**
      * Ends the module bind or unbind. No methods may be called on this object
      * after this method has been called.
      */
-    void end()
-                    throws NamingException;
+    void end() throws NamingException;
+
+    /**
+     * Binds the default form of an object to the ejblocal naming context
+     *
+     * @param bindingObject the EJBBinding
+     * @param hr the bean home record
+     */
+    void bindDefaultEJBLocal(T bindingObject, HomeRecord hr);
+
+    /**
+     * Undoes the bindings from ejblocal namespace.
+     */
+    void unbindEJBLocal(List<String> names) throws NamingException;
+
+    /**
+     * Binds the simpleBindingName custom binding
+     *
+     * @param bindingObject - the EJBBinding
+     * @param hr - the bean home record
+     * @param local - if it is a local bean
+     */
+    void bindSimpleBindingName(T bindingObject, HomeRecord hr, boolean local);
+
+    /**
+     * Undoes the bindings from local namespace.
+     */
+    void unbindLocalColonEJB(List<String> names) throws NamingException;
 }

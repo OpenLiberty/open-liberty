@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,9 +10,6 @@
  *******************************************************************************/
 
 package com.ibm.ws.security.wim;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -26,6 +23,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.rules.TestRule;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.component.ComponentContext;
@@ -34,9 +32,7 @@ import com.ibm.ws.security.wim.adapter.file.TestFileAdapter;
 import com.ibm.wsspi.security.wim.exception.EntityIdentifierNotSpecifiedException;
 import com.ibm.wsspi.security.wim.exception.EntityNotFoundException;
 import com.ibm.wsspi.security.wim.exception.EntityNotInRealmScopeException;
-import com.ibm.wsspi.security.wim.exception.InvalidUniqueNameException;
 import com.ibm.wsspi.security.wim.exception.OperationNotSupportedException;
-import com.ibm.wsspi.security.wim.exception.WIMException;
 import com.ibm.wsspi.security.wim.model.Context;
 import com.ibm.wsspi.security.wim.model.IdentifierType;
 import com.ibm.wsspi.security.wim.model.PersonAccount;
@@ -60,6 +56,10 @@ public class ProfileManagerUpdateTest {
     private final ComponentContext cc = mock.mock(ComponentContext.class);
 
     private final Configuration baseEntryConfig = mock.mock(Configuration.class, "baseEntryConfig");
+
+    /** Test rule for testing for expected exceptions. */
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
 
     /**
      * Using the test rule will drive capture/restore and will dump on error..
@@ -112,52 +112,43 @@ public class ProfileManagerUpdateTest {
     public void tearDown() {}
 
     @Test
-    public void testNoEntity() {
+    public void testNoEntity() throws Exception {
         Root root = new Root();
-        try {
-            vmmService.update(root);
-            fail("Call completed successfully");
-        } catch (WIMException e) {
-            String errorMessage = e.getMessage();
-            assertEquals("Incorrect exception thrown", EntityNotFoundException.class, e.getClass());
-            assertEquals("The error code for EntityNotFoundException", "CWIML1030E", errorMessage.substring(0, 10));
-        }
+
+        expectedException.expect(EntityNotFoundException.class);
+        expectedException.expectMessage("CWIML1030E");
+
+        vmmService.update(root);
     }
 
     @Test
-    public void testMultipleEntity() {
+    public void testMultipleEntity() throws Exception {
         Root root = new Root();
         PersonAccount p1 = new PersonAccount();
         PersonAccount p2 = new PersonAccount();
         root.getEntities().add(p1);
         root.getEntities().add(p2);
-        try {
-            vmmService.update(root);
-            fail("Call completed successfully");
-        } catch (WIMException e) {
-            String errorMessage = e.getMessage();
-            assertEquals("Incorrect exception thrown", OperationNotSupportedException.class, e.getClass());
-            assertEquals("The error code for OperationNotSupportedException", "CWIML1016E", errorMessage.substring(0, 10));
-        }
+
+        expectedException.expect(OperationNotSupportedException.class);
+        expectedException.expectMessage("CWIML1016E");
+
+        vmmService.update(root);
     }
 
     @Test
-    public void testNoIdentifier() {
+    public void testNoIdentifier() throws Exception {
         Root root = new Root();
         PersonAccount p1 = new PersonAccount();
         root.getEntities().add(p1);
-        try {
-            vmmService.update(root);
-            fail("Call completed successfully");
-        } catch (WIMException e) {
-            String errorMessage = e.getMessage();
-            assertEquals("Incorrect exception thrown", EntityIdentifierNotSpecifiedException.class, e.getClass());
-            assertEquals("The error code for EntityIdentifierNotSpecifiedException", "CWIML1009E", errorMessage.substring(0, 10));
-        }
+
+        expectedException.expect(EntityIdentifierNotSpecifiedException.class);
+        expectedException.expectMessage("CWIML1009E");
+
+        vmmService.update(root);
     }
 
     @Test
-    public void testInvalidUniqueName() {
+    public void testInvalidUniqueName() throws Exception {
         Root root = new Root();
         IdentifierType id = new IdentifierType();
         id.setUniqueName("uid=admin,o=invalid");
@@ -166,18 +157,15 @@ public class ProfileManagerUpdateTest {
         p1.setIdentifier(id);
 
         root.getEntities().add(p1);
-        try {
-            vmmService.update(root);
-            fail("Call completed successfully");
-        } catch (WIMException e) {
-            String errorMessage = e.getMessage();
-            assertEquals("Incorrect exception thrown", InvalidUniqueNameException.class, e.getClass());
-            assertEquals("The error code for InvalidUniqueNameException", "CWIML0515E", errorMessage.substring(0, 10));
-        }
+
+        expectedException.expect(EntityNotInRealmScopeException.class);
+        expectedException.expectMessage("CWIML0515E");
+
+        vmmService.update(root);
     }
 
     @Test
-    public void testEntityNotInRealm() {
+    public void testEntityNotInRealm() throws Exception {
         Root root = new Root();
         IdentifierType id = new IdentifierType();
         id.setUniqueName("uid=admin,o=invalid");
@@ -192,13 +180,9 @@ public class ProfileManagerUpdateTest {
         root.getEntities().add(p1);
         root.getContexts().add(context);
 
-        try {
-            vmmService.update(root);
-            fail("Call completed successfully");
-        } catch (WIMException e) {
-            String errorMessage = e.getMessage();
-            assertEquals("Incorrect exception thrown", EntityNotInRealmScopeException.class, e.getClass());
-            assertEquals("The error code for EntityNotInRealmScopeException", "CWIML0515E", errorMessage.substring(0, 10));
-        }
+        expectedException.expect(EntityNotInRealmScopeException.class);
+        expectedException.expectMessage("CWIML0515E");
+
+        vmmService.update(root);
     }
 }

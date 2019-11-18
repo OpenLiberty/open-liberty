@@ -89,7 +89,7 @@ public class JSONMetricWriter implements OutputWriter {
     private static final TraceComponent tc = Tr.register(JSONMetricWriter.class);
 
     @FFDCIgnore({ IllegalStateException.class })
-    private JSONObject getJsonFromMetricMap(Map<MetricID, Metric> metricMap, Map<String, Metadata> metricMetadataMap) {
+    protected JSONObject getJsonFromMetricMap(Map<MetricID, Metric> metricMap, Map<String, Metadata> metricMetadataMap) {
         JSONObject jsonObject = new JSONObject();
 
         //For each Metric that was returned
@@ -175,7 +175,7 @@ public class JSONMetricWriter implements OutputWriter {
     /*
      * After retrieving a map of metrics from the registry
      */
-    private JSONObject getJsonFromMap(Map<String, Number> metricMap, String metricName, JSONObject parentJSONObject) {
+    protected JSONObject getJsonFromMap(Map<String, Number> metricMap, String metricName, JSONObject parentJSONObject) {
 
         /*
          * Check if parent JsonObject has this "metric" already set in it.

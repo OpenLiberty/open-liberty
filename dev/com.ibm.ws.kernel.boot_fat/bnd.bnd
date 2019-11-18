@@ -21,6 +21,7 @@ src: \
 fat.project: true
 test.classpath.wlp.include: api/spec/*.jar,api/ibm/*.jar
 
+tested.features: mpconfig-1.3, concurrent-1.0, mpfaulttolerance-1.1, mpmetrics-1.1
 
 -buildpath: \
 	com.ibm.websphere.javaee.annotation.1.1;version=latest,\

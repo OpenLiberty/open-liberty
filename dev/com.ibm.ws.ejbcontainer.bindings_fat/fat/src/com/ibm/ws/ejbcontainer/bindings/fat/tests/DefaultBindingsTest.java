@@ -20,6 +20,7 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.ejbcontainer.bindings.defbnd.web.DefaultBindingsServlet;
 import com.ibm.ws.ejbcontainer.bindings.defbnd.web.DefaultJavaColonBindingsServlet;
 
 import componenttest.annotation.Server;
@@ -35,7 +36,8 @@ import componenttest.topology.utils.FATServletClient;
 public class DefaultBindingsTest extends FATServletClient {
 
     @Server("com.ibm.ws.ejbcontainer.bindings.fat.server")
-    @TestServlets({ @TestServlet(servlet = DefaultJavaColonBindingsServlet.class, contextRoot = "EJB3DefBndWeb") })
+    @TestServlets({ @TestServlet(servlet = DefaultJavaColonBindingsServlet.class, contextRoot = "EJB3DefBndWeb"),
+                    @TestServlet(servlet = DefaultBindingsServlet.class, contextRoot = "EJB3DefBndWeb") })
     public static LibertyServer server;
 
 //    @Server("com.ibm.ws.ejbcontainer.bindings.fat.server")

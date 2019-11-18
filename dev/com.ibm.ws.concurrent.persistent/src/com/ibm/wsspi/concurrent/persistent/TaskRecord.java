@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2015 IBM Corporation and others.
+ * Copyright (c) 2014, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -76,8 +76,7 @@ public final class TaskRecord {
     /**
      * Bits corresponding to each specified attribute.
      */
-    private static final int
-                    ID = 0x1,
+    private static final int ID = 0x1,
                     ID_OF_CLASSLOADER = 0x2,
                     ID_OF_OWNER = 0x4,
                     ID_OF_PARTITION = 0x8,
@@ -200,7 +199,7 @@ public final class TaskRecord {
 
     /**
      * Construct an empty task record.
-     * 
+     *
      * @param allAttributesAreSpecified indicates whether all attributes should be considered specified or unspecified.
      */
     public TaskRecord(boolean allAttributesAreSpecified) {
@@ -210,7 +209,7 @@ public final class TaskRecord {
     /**
      * Deep comparison of attributes for equality. Only specified attributes are compared.
      * Both instances must specify the same sets of attributes.
-     * 
+     *
      * @param obj instance with which to compare.
      * @return true if equal, otherwise false.
      */
@@ -246,7 +245,7 @@ public final class TaskRecord {
 
     /**
      * Returns the number of consecutive failed attempts to execute the task.
-     * 
+     *
      * @return the number of consecutive failed attempts to execute the task.
      */
     public final short getConsecutiveFailureCount() {
@@ -258,7 +257,7 @@ public final class TaskRecord {
 
     /**
      * Returns the unique identifier for the task.
-     * 
+     *
      * @return the unique identifier for the task.
      */
     public final long getId() {
@@ -270,7 +269,7 @@ public final class TaskRecord {
 
     /**
      * Returns the identifier of the thread context class loader of the thread from which the task was originally submitted.
-     * 
+     *
      * @return the identifier of the class loader.
      */
     public final String getIdentifierOfClassLoader() {
@@ -282,7 +281,7 @@ public final class TaskRecord {
 
     /**
      * Returns the identifier of the owner of the task.
-     * 
+     *
      * @return the identifier of the owner of the task.
      */
     public final String getIdentifierOfOwner() {
@@ -294,7 +293,7 @@ public final class TaskRecord {
 
     /**
      * Returns the identifier for the partition that this task belongs in.
-     * 
+     *
      * @return identifier for the partition that this task belongs in.
      */
     public final long getIdentifierOfPartition() {
@@ -306,7 +305,7 @@ public final class TaskRecord {
 
     /**
      * Returns a value that represents a combination of miscellaneous boolean flags.
-     * 
+     *
      * @return a value that represents a combination of miscellaneous boolean flags.
      */
     public final short getMiscBinaryFlags() {
@@ -318,7 +317,7 @@ public final class TaskRecord {
 
     /**
      * Returns the name of the task. There is no requirement for the name to be unique.
-     * 
+     *
      * @return the name task name
      */
     public final String getName() {
@@ -330,7 +329,7 @@ public final class TaskRecord {
 
     /**
      * Returns the time at which the next execution of the task should occur.
-     * 
+     *
      * @return milliseconds at which the next execution of the task should occur.
      */
     public final long getNextExecutionTime() {
@@ -342,7 +341,7 @@ public final class TaskRecord {
 
     /**
      * Returns the time at which the task was submitted.
-     * 
+     *
      * @return milliseconds at which the task was submitted.
      */
     public final long getOriginalSubmitTime() {
@@ -354,7 +353,7 @@ public final class TaskRecord {
 
     /**
      * Returns the time at which the task was previously scheduled to start.
-     * 
+     *
      * @return milliseconds at which the task was previously scheduled to start. Can be null if no previous execution.
      */
     public final Long getPreviousScheduledStartTime() {
@@ -366,7 +365,7 @@ public final class TaskRecord {
 
     /**
      * Returns the time at which the task previously started.
-     * 
+     *
      * @return milliseconds at which the task previously started. Can be null if no previous execution.
      */
     public final Long getPreviousStartTime() {
@@ -378,7 +377,7 @@ public final class TaskRecord {
 
     /**
      * Returns the time at which the task previously stopped.
-     * 
+     *
      * @return milliseconds at which the task previously stopped. Can be null if no previous execution.
      */
     public final Long getPreviousStopTime() {
@@ -390,7 +389,7 @@ public final class TaskRecord {
 
     /**
      * Returns the serialized result, if any, for this task.
-     * 
+     *
      * @return the result of the task, serialized as bytes. Can be null if no previous execution or if the result is null or if there is not any result.
      */
     public final byte[] getResult() {
@@ -402,7 +401,7 @@ public final class TaskRecord {
 
     /**
      * Returns the state of the task.
-     * 
+     *
      * @return the state of the task.
      */
     public final short getState() {
@@ -414,7 +413,7 @@ public final class TaskRecord {
 
     /**
      * Returns the serialized callable or runnable, if any, for this task.
-     * 
+     *
      * @return the serialized callable or runnable. Null if the task is not serializable.
      */
     public final byte[] getTask() {
@@ -426,7 +425,7 @@ public final class TaskRecord {
 
     /**
      * Returns the serialized non-queryable persistent task information.
-     * 
+     *
      * @return the serialized non-queryable persistent task information.
      */
     public final byte[] getTaskInformation() {
@@ -438,7 +437,7 @@ public final class TaskRecord {
 
     /**
      * Returns the transaction timeout, if any, for this task record.
-     * 
+     *
      * @return the transaction timeout.
      */
     public int getTransactionTimeout() {
@@ -450,7 +449,7 @@ public final class TaskRecord {
 
     /**
      * Returns the serialized trigger, if any, for this task.
-     * 
+     *
      * @return the trigger, serialized as bytes. Null if there is no trigger or the trigger is not serializable.
      */
     public final byte[] getTrigger() {
@@ -462,7 +461,7 @@ public final class TaskRecord {
 
     /**
      * Returns the row version for this task record.
-     * 
+     *
      * @return the row version.
      */
     public final int getVersion() {
@@ -474,7 +473,7 @@ public final class TaskRecord {
 
     /**
      * Hash code for the task record is computed from the id.
-     * 
+     *
      * @return the hash code.
      */
     @Override
@@ -484,7 +483,7 @@ public final class TaskRecord {
 
     /**
      * Returns true if the ConsecutiveFailureCount attribute is set. Otherwise false.
-     * 
+     *
      * @return true if the attribute is set. Otherwise false.
      */
     public final boolean hasConsecutiveFailureCount() {
@@ -493,7 +492,7 @@ public final class TaskRecord {
 
     /**
      * Returns true if the Id attribute is set. Otherwise false.
-     * 
+     *
      * @return true if the attribute is set. Otherwise false.
      */
     public final boolean hasId() {
@@ -502,7 +501,7 @@ public final class TaskRecord {
 
     /**
      * Returns true if the IdentifierOfClassLoader attribute is set. Otherwise false.
-     * 
+     *
      * @return true if the attribute is set. Otherwise false.
      */
     public final boolean hasIdentifierOfClassLoader() {
@@ -511,7 +510,7 @@ public final class TaskRecord {
 
     /**
      * Returns true if the IdentifierOfOwner attribute is set. Otherwise false.
-     * 
+     *
      * @return true if the attribute is set. Otherwise false.
      */
     public final boolean hasIdentifierOfOwner() {
@@ -520,7 +519,7 @@ public final class TaskRecord {
 
     /**
      * Returns true if the IdentifierOfPartition attribute is set. Otherwise false.
-     * 
+     *
      * @return true if the attribute is set. Otherwise false.
      */
     public final boolean hasIdentifierOfPartition() {
@@ -529,7 +528,7 @@ public final class TaskRecord {
 
     /**
      * Returns true if the MiscBinaryFlags attribute is set. Otherwise false.
-     * 
+     *
      * @return true if the attribute is set. Otherwise false.
      */
     public final boolean hasMiscBinaryFlags() {
@@ -538,7 +537,7 @@ public final class TaskRecord {
 
     /**
      * Returns true if the Name attribute is set. Otherwise false.
-     * 
+     *
      * @return true if the attribute is set. Otherwise false.
      */
     public final boolean hasName() {
@@ -547,7 +546,7 @@ public final class TaskRecord {
 
     /**
      * Returns true if the NextExecutionTime attribute is set. Otherwise false.
-     * 
+     *
      * @return true if the attribute is set. Otherwise false.
      */
     public final boolean hasNextExecutionTime() {
@@ -556,7 +555,7 @@ public final class TaskRecord {
 
     /**
      * Returns true if the OriginalSubmitTime attribute is set. Otherwise false.
-     * 
+     *
      * @return true if the attribute is set. Otherwise false.
      */
     public final boolean hasOriginalSubmitTime() {
@@ -565,7 +564,7 @@ public final class TaskRecord {
 
     /**
      * Returns true if the PreviousScheduledStartTime attribute is set. Otherwise false.
-     * 
+     *
      * @return true if the attribute is set. Otherwise false.
      */
     public final boolean hasPreviousScheduledStartTime() {
@@ -574,7 +573,7 @@ public final class TaskRecord {
 
     /**
      * Returns true if the PreviousStartTime attribute is set. Otherwise false.
-     * 
+     *
      * @return true if the attribute is set. Otherwise false.
      */
     public final boolean hasPreviousStartTime() {
@@ -583,7 +582,7 @@ public final class TaskRecord {
 
     /**
      * Returns true if the PreviousStopTime attribute is set. Otherwise false.
-     * 
+     *
      * @return true if the attribute is set. Otherwise false.
      */
     public final boolean hasPreviousStopTime() {
@@ -592,7 +591,7 @@ public final class TaskRecord {
 
     /**
      * Returns true if the Result attribute is set. Otherwise false.
-     * 
+     *
      * @return true if the attribute is set. Otherwise false.
      */
     public final boolean hasResult() {
@@ -601,7 +600,7 @@ public final class TaskRecord {
 
     /**
      * Returns true if the State attribute is set. Otherwise false.
-     * 
+     *
      * @return true if the attribute is set. Otherwise false.
      */
     public final boolean hasState() {
@@ -610,7 +609,7 @@ public final class TaskRecord {
 
     /**
      * Returns true if the Task attribute is set. Otherwise false.
-     * 
+     *
      * @return true if the attribute is set. Otherwise false.
      */
     public final boolean hasTask() {
@@ -619,7 +618,7 @@ public final class TaskRecord {
 
     /**
      * Returns true if the TaskInformation attribute is set. Otherwise false.
-     * 
+     *
      * @return true if the attribute is set. Otherwise false.
      */
     public final boolean hasTaskInformation() {
@@ -628,7 +627,7 @@ public final class TaskRecord {
 
     /**
      * Returns true if the Transaction Timeout attribute is set. Otherwise false.
-     * 
+     *
      * @return true if the attribute is set. Otherwise false.
      */
     public final boolean hasTransactionTimeout() {
@@ -637,7 +636,7 @@ public final class TaskRecord {
 
     /**
      * Returns true if the Trigger attribute is set. Otherwise false.
-     * 
+     *
      * @return true if the attribute is set. Otherwise false.
      */
     public final boolean hasTrigger() {
@@ -646,7 +645,7 @@ public final class TaskRecord {
 
     /**
      * Returns true if the Version attribute is set. Otherwise false.
-     * 
+     *
      * @return true if the attribute is set. Otherwise false.
      */
     public final boolean hasVersion() {
@@ -655,7 +654,7 @@ public final class TaskRecord {
 
     /**
      * Utility method to compare for equality.
-     * 
+     *
      * @param obj1 first object.
      * @param obj2 second object.
      * @return true if equal or both null. False otherwise.
@@ -666,7 +665,7 @@ public final class TaskRecord {
 
     /**
      * Sets the number of consecutive failed attempts to execute the task.
-     * 
+     *
      * @param consecutiveFailureCount the number of consecutive failed attempts to execute the task.
      */
     public final void setConsecutiveFailureCount(short consecutiveFailureCount) {
@@ -676,7 +675,7 @@ public final class TaskRecord {
 
     /**
      * Sets the unique identifier for the task.
-     * 
+     *
      * @param id unique identifier for the task.
      */
     public final void setId(long id) {
@@ -686,7 +685,7 @@ public final class TaskRecord {
 
     /**
      * Sets the identifier of the thread context class loader of the thread from which the task was originally submitted.
-     * 
+     *
      * @param identifier identifier of the class loader.
      */
     public final void setIdentifierOfClassLoader(String identifier) {
@@ -696,7 +695,7 @@ public final class TaskRecord {
 
     /**
      * Sets the identifier of the owner of the task.
-     * 
+     *
      * @param identifier identifier of the owner of the task.
      */
     public final void setIdentifierOfOwner(String identifier) {
@@ -706,7 +705,7 @@ public final class TaskRecord {
 
     /**
      * Sets the identifier for the partition that this task belongs in.
-     * 
+     *
      * @param partitionId identifier for the partition that this task belongs in.
      */
     public final void setIdentifierOfPartition(long partitionId) {
@@ -716,7 +715,7 @@ public final class TaskRecord {
 
     /**
      * Sets a value that represents a combination of miscellaneous boolean flags.
-     * 
+     *
      * @param miscBinaryFlags value that represents a combination of miscellaneous boolean flags.
      */
     public final void setMiscBinaryFlags(short miscBinaryFlags) {
@@ -726,7 +725,7 @@ public final class TaskRecord {
 
     /**
      * Sets the name of the task. There is no requirement for the name to be unique.
-     * 
+     *
      * @param name name of the task.
      */
     public final void setName(String name) {
@@ -736,7 +735,7 @@ public final class TaskRecord {
 
     /**
      * Sets the time at which the next execution of the task should occur.
-     * 
+     *
      * @param nextExecTime milliseconds at which the next execution of the task should occur.
      */
     public final void setNextExecutionTime(long nextExecTime) {
@@ -746,7 +745,7 @@ public final class TaskRecord {
 
     /**
      * Sets the time at which the task was submitted.
-     * 
+     *
      * @param origSubmitTime milliseconds at which the task was submitted.
      */
     public final void setOriginalSubmitTime(long origSubmitTime) {
@@ -756,7 +755,7 @@ public final class TaskRecord {
 
     /**
      * Sets the time at which the task was previously scheduled to start.
-     * 
+     *
      * @param prevSchedStartTime milliseconds at which the task was previously scheduled to start. Can be null if no previous execution.
      */
     public final void setPreviousScheduledStartTime(Long prevSchedStartTime) {
@@ -766,7 +765,7 @@ public final class TaskRecord {
 
     /**
      * Sets the time at which the task previously started.
-     * 
+     *
      * @param prevStartTime milliseconds at which the task previously started. Can be null if no previous execution.
      */
     public final void setPreviousStartTime(Long prevStartTime) {
@@ -776,7 +775,7 @@ public final class TaskRecord {
 
     /**
      * Sets the time at which the task previously stopped.
-     * 
+     *
      * @param prevStopTime milliseconds at which the task previously stopped. Can be null if no previous execution.
      */
     public final void setPreviousStopTime(Long prevStopTime) {
@@ -786,7 +785,7 @@ public final class TaskRecord {
 
     /**
      * Sets the serialized result of the task, if any.
-     * 
+     *
      * @param result result of the task. Can be null if no previous execution or there is no result or the result is null.
      */
     public final void setResult(byte[] result) {
@@ -796,7 +795,7 @@ public final class TaskRecord {
 
     /**
      * Sets the state of the task.
-     * 
+     *
      * @param state the state of the task.
      */
     public final void setState(short state) {
@@ -806,7 +805,7 @@ public final class TaskRecord {
 
     /**
      * Sets the serialized callable or runnable, if any, for this task.
-     * 
+     *
      * @param task callable or runnable, serialized as bytes. Null indicates the task is not serializable.
      */
     public final void setTask(byte[] task) {
@@ -816,7 +815,7 @@ public final class TaskRecord {
 
     /**
      * Sets the serialized non-queryable persistent task information.
-     * 
+     *
      * @param taskInfo serialized non-queryable persistent task information.
      */
     public final void setTaskInformation(byte[] taskInfo) {
@@ -826,7 +825,7 @@ public final class TaskRecord {
 
     /**
      * Sets the transaction timeout for this task.
-     * 
+     *
      * @param txTimeout the transaction timeout.
      */
     public final void setTransactionTimeout(int txTimeout) {
@@ -836,7 +835,7 @@ public final class TaskRecord {
 
     /**
      * Sets the serialized trigger, if any, for this task.
-     * 
+     *
      * @param trigger the trigger, serialized as bytes. Null if there is no trigger or the trigger is not serializable.
      */
     public final void setTrigger(byte[] trigger) {
@@ -846,7 +845,7 @@ public final class TaskRecord {
 
     /**
      * Sets the row version for this task record.
-     * 
+     *
      * @param version the row version.
      */
     public final void setVersion(int version) {
@@ -856,7 +855,7 @@ public final class TaskRecord {
 
     /**
      * Returns a textual representation of this instance.
-     * 
+     *
      * @return a textual representation of this instance.
      */
     @Override
@@ -869,12 +868,15 @@ public final class TaskRecord {
             output.append(EOLN).append("CLASSLOADER=").append(idOfClassLoader);
         if ((attrs & ID_OF_OWNER) != 0)
             output.append(EOLN).append("OWNER=").append(idOfOwner);
-        if ((attrs & ID_OF_PARTITION) != 0)
-            output.append(EOLN).append("PARTITION=").append(idOfPartition);
         if ((attrs & MISC_BINARY_FLAGS) != 0)
             output.append(EOLN).append("FLAGS=").append(Integer.toBinaryString(miscBinaryFlags));
         if ((attrs & NAME) != 0)
             output.append(EOLN).append("NAME=").append(name);
+        if ((attrs & ID_OF_PARTITION) != 0)
+            if (idOfPartition > 1500000000000l)
+                Utils.appendDate(output.append(EOLN).append("CLAIMTIL="), idOfPartition);
+            else
+                output.append(EOLN).append("PARTITION=").append(idOfPartition);
         if ((attrs & NEXT_EXEC_TIME) != 0)
             Utils.appendDate(output.append(EOLN).append("NEXTEXEC="), nextExecTime);
         if ((attrs & ORIG_SUBMIT_TIME) != 0)
@@ -921,7 +923,7 @@ public final class TaskRecord {
      * Constructs a new TaskStatus instance corresponding to the state of this task record as of the point in time
      * when the method is invoked. The following attributes must be set on the task record before invoking this method:
      * (Id, IdentifierOfClassLoader, MiscBinaryFlags, Name, NextExecutionTime, Result, State, Trigger)
-     * 
+     *
      * @param executor persistent executor instance.
      * @return a new TaskStatus instance corresponding to this task record.
      */

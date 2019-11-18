@@ -44,4 +44,15 @@ public class TypedElement {
         }
         throw new IllegalStateException("Multiple mappable elements found when a single was expected");
     }
+    
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder(super.toString());
+        sb.append(" [ ").append(javaType);
+        for (AnnotatedElement element : elements) {
+            sb.append(", ").append(element);
+        }
+        sb.append(" ]");
+        return sb.toString();
+    }
 }

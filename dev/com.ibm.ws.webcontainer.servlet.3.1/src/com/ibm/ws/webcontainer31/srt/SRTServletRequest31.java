@@ -49,8 +49,7 @@ import com.ibm.wsspi.webcontainer.WebContainerRequestState;
 import com.ibm.wsspi.webcontainer.util.WSServletInputStream;
 import com.ibm.ws.transport.access.TransportConnectionUpgrade;
 
-
-
+@SuppressWarnings("deprecation")
 public class SRTServletRequest31 extends SRTServletRequest implements HttpServletRequest
 {
     // Class level objects

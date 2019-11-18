@@ -25,6 +25,7 @@ import com.ibm.ws.fat.wc.tests.WCPushBuilderTest;
 import com.ibm.ws.fat.wc.tests.WCServerTest;
 import com.ibm.ws.fat.wc.tests.WCServletClarificationTest;
 import com.ibm.ws.fat.wc.tests.WCServletContainerInitializerExceptionTest;
+import com.ibm.ws.fat.wc.tests.WCServletContainerInitializerFilterServletNameMappingTest;
 import com.ibm.ws.fat.wc.tests.WCServletPathForDefaultMappingDefault;
 import com.ibm.ws.fat.wc.tests.WCServletPathForDefaultMappingFalse;
 import com.ibm.ws.fat.wc.tests.WCTrailersTest;
@@ -35,19 +36,15 @@ import com.ibm.ws.fat.wc.tests.WCTrailersTest;
  * Make sure to add any new test classes to the @SuiteClasses
  * annotation.
  *
- * Make sure to distinguish full mode tests using
+ * Make sure to distinguish FULL mode tests using
  * <code>@Mode(TestMode.FULL)</code>. Tests default to
- * use lite mode (<code>@Mode(TestMode.LITE)</code>).
+ * use LITE mode (<code>@Mode(TestMode.LITE)</code>).
  *
- * By default only lite mode tests are run. To also run
- * full mode tests a property must be specified to ant:
+ * By default only LITE mode tests are run. To also run
+ * full mode tests a property must be specified:
  *
- * Select the target build file (usually "build-test.xml").
- * Right click and chose "Run As>Ant Build…". Add
- * "fat.test.mode=full" to the properties tab, then launch the
- * build.
+ * -Dfat.test.mode=FULL.
  *
- * Alternatively, for a command line launch, add "-Dfat.test.mode=full".
  */
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -58,12 +55,18 @@ import com.ibm.ws.fat.wc.tests.WCTrailersTest;
                 WCGetMappingTest.class,
                 WCEncodingTest.class,
                 WCTrailersTest.class,
+                // TFB:
+                // Locally, WCTrailersTest fails unless I add '-Dglobal.debug.java2.sec=false' to
+                // the gradlew 'buildandrun' invocation.
+                // And, when WCTrailersTest fails, it causes most of the tests to fail with errors.
+                // I'm still determining if this is purely a local problem.
 //              WCPushBuilderSecurityTest.class,
                 WCAddJspFileTest.class,
                 WCServletPathForDefaultMappingDefault.class,
                 WCServletPathForDefaultMappingFalse.class,
                 WCGetMappingSlashStarTest.class,
-                WCServletContainerInitializerExceptionTest.class
+                WCServletContainerInitializerExceptionTest.class,
+                WCServletContainerInitializerFilterServletNameMappingTest.class
 })
 public class FATSuite {
 

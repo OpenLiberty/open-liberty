@@ -33,13 +33,14 @@ public class FailoverServers extends ConfigElement {
 
     public FailoverServers(String name, String[][] servers) {
         this.name = name;
-
-        for (String[] server : servers) {
-            if (server.length == 2) {
-                String host = server[0];
-                String port = server[1];
-
-                new Server(host, port);
+        if (servers != null && servers.length != 0) {
+            this.servers = new ConfigElementList<Server>();
+            for (String[] server : servers) {
+                if (server.length == 2) {
+                    String host = server[0];
+                    String port = server[1];
+                    this.servers.add(new Server(host, port));
+                }
             }
         }
     }

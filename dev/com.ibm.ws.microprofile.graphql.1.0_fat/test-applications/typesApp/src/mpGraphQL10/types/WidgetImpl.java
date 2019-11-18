@@ -13,13 +13,15 @@ package mpGraphQL10.types;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.microprofile.graphql.Description;
 import org.eclipse.microprofile.graphql.Id;
 import org.eclipse.microprofile.graphql.Type;
 
 /**
  * This is a server side representation of a Widget.
  */
-@Type(value="Widget", description="An object that is for sale.")
+@Type("Widget")
+@Description("An object that is for sale.")
 public class WidgetImpl {
 
     private Set<Long> usedIds = new HashSet<>();

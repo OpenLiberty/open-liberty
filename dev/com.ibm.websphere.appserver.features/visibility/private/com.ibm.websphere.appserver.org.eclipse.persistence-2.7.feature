@@ -7,3 +7,4 @@ IBM-Process-Types: server, \
 -bundles=com.ibm.websphere.appserver.thirdparty.eclipselink.2.7; apiJar=false; location:=dev/api/third-party/; mavenCoordinates="org.eclipse.persistence:eclipselink:2.7.1"
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

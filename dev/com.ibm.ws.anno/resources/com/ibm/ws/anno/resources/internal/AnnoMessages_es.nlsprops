@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2018 IBM Corporation and others.
+# Copyright (c) 2012, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -563,7 +563,7 @@ ANNO_TARGETS_JANDEX_DUPLICATE_CLASS.useraction=CMSG0002
 # # {4} A string: A module name
 ANNO_JANDEX_USAGE=CWWKC0092I: Cobertura Jandex del m\u00f3dulo {4}: Se han le\u00eddo los \u00edndices de Jandex para {0} de {1} ubicaciones de m\u00f3dulo; los \u00edndices de Jandex han proporcionado {2} de {3} clases de m\u00f3dulo.
 ANNO_JANDEX_USAGE.explanation=Esto muestra la proporci\u00f3n de un m\u00f3dulo explorado en b\u00fasqueda de anotaciones utilizando \u00edndices de Jandex.  Las ubicaciones del m\u00f3dulo son el propio m\u00f3dulo, o, para un m\u00f3dulo web, la carpeta WEB-INF/classes y los archivos jar de WEB-INF/lib del m\u00f3dulo.
-ANNO_JANDEX_USAGE.useraction=No es necesaria ninguna acci\u00f3n si est\u00e1 previsto que la aplicaci\u00f3n lea los \u00edndices de Jandex.  Para omitir los \u00edndices de Jandex en un sola aplicaci\u00f3n, establezca el atributo useJandex="false" en el elemento 'application' de dicha aplicaci\u00f3n en server.xml. Alternativamente, para omitir los \u00edndices de Jandex en todas las aplicaciones, establezca useJandex="false" en el elemento 'applicationManger' en server.xml.
+ANNO_JANDEX_USAGE.useraction=No se requiere ninguna acci\u00f3n si est\u00e1 previsto que la aplicaci\u00f3n lea los \u00edndices de Jandex.  Para omitir los \u00edndices de Jandex en un sola aplicaci\u00f3n, establezca el atributo useJandex="false" en el elemento 'application' de dicha aplicaci\u00f3n en server.xml. Alternativamente, para omitir los \u00edndices de Jandex en todas las aplicaciones, establezca useJandex="false" en el elemento 'applicationManger' en server.xml.
 
 # # {0} A string: An application name.
 # # {1} A string: A module name.
@@ -573,7 +573,7 @@ ANNO_JANDEX_USAGE.useraction=No es necesaria ninguna acci\u00f3n si est\u00e1 pr
 # # {5} A number: The count of module classes which were read from a Jandex index.
 ANNOCACHE_JANDEX_USAGE=CWWKC0093I: Cobertura Jandex del m\u00f3dulo {1} en la aplicaci\u00f3n {0}: Se han le\u00eddo los \u00edndices de Jandex para {3} de {2} ubicaciones de m\u00f3dulo; los \u00edndices de Jandex han proporcionado {5} de {4} clases de m\u00f3dulo.
 ANNOCACHE_JANDEX_USAGE.explanation=Esto muestra la proporci\u00f3n de un m\u00f3dulo explorado en b\u00fasqueda de anotaciones utilizando \u00edndices de Jandex.  Las ubicaciones del m\u00f3dulo son el propio m\u00f3dulo, o, para un m\u00f3dulo web, la carpeta WEB-INF/classes y los archivos jar de WEB-INF/lib del m\u00f3dulo.
-ANNOCACHE_JANDEX_USAGE.useraction=No es necesaria ninguna acci\u00f3n si est\u00e1 previsto que la aplicaci\u00f3n lea los \u00edndices de Jandex.  Para omitir los \u00edndices de Jandex en un sola aplicaci\u00f3n, establezca el atributo useJandex="false" en el elemento 'application' de dicha aplicaci\u00f3n en server.xml. Alternativamente, para omitir los \u00edndices de Jandex en todas las aplicaciones, establezca useJandex="false" en el elemento 'applicationManger' en server.xml.
+ANNOCACHE_JANDEX_USAGE.useraction=No se requiere ninguna acci\u00f3n si est\u00e1 previsto que la aplicaci\u00f3n lea los \u00edndices de Jandex.  Para omitir los \u00edndices de Jandex en un sola aplicaci\u00f3n, establezca el atributo useJandex="false" en el elemento 'application' de dicha aplicaci\u00f3n en server.xml. Alternativamente, para omitir los \u00edndices de Jandex en todas las aplicaciones, establezca useJandex="false" en el elemento 'applicationManger' en server.xml.
 
 # # {0} A string: Message text from an exception.
 ANNO_TARGETS_CACHE_EXCEPTION=CWWKC0101W: Error de memoria cach\u00e9 de proceso de anotaciones: {0}

@@ -10,13 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.session.cache.fat.infinispan;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -26,8 +23,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -48,25 +43,13 @@ public class SessionCacheOneServerTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         app = new SessionCacheApp(server, true, "session.cache.infinispan.web", "session.cache.infinispan.web.listener1", "session.cache.infinispan.web.listener2");
-
-        // String hazelcastConfigFile = "hazelcast-localhost-only.xml";
-
-        // if (FATSuite.isMulticastDisabled()) {
-        //     Log.info(SessionCacheOneServerTest.class, "setUp", "Disabling multicast in Hazelcast config.");
-        //     hazelcastConfigFile = "hazelcast-localhost-only-multicastDisabled.xml";
-        // }
-
-        // String configLocation = new File(server.getUserDir() + "/shared/resources/hazelcast/" + hazelcastConfigFile).getAbsolutePath();
-        // server.setJvmOptions(Arrays.asList("-Dhazelcast.group.name=" + UUID.randomUUID(),
-        //                                    "-Dhazelcast.config=" + configLocation));
-
         server.startServer();
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         executor.shutdownNow();
-        server.stopServer("CWWKL0058W:.*InfinispanLib"); // TODO why does occur for Infinispan jar, but not Hazelcast?
+        server.stopServer();
     }
 
     /**

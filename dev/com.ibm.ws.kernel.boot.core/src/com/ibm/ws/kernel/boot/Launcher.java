@@ -304,8 +304,14 @@ public class Launcher {
      * @param processName Process name to be used
      */
     protected void findLocations(BootstrapConfig bootProps, String processName) {
+
         // Check for environment variables...
-        String userDirStr = getEnv(BootstrapConstants.ENV_WLP_USER_DIR);
+
+        String userDirStr = null;
+        // If this property is set we want to ignore the WLP_USER_DIR env var and leave this as null to default later on.
+        if (!Boolean.getBoolean(BootstrapConstants.LOC_PROPERTY_IGNORE_INSTANCE_DIR_FROM_ENV)) {
+            userDirStr = getEnv(BootstrapConstants.ENV_WLP_USER_DIR);
+        }
         String serversDirStr = getEnv(bootProps.getOutputDirectoryEnvName());
 
         // Check for the variable calculated by the shell script first (X_LOG_DIR)

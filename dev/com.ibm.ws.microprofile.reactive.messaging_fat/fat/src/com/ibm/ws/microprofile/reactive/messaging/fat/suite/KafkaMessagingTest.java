@@ -44,9 +44,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.PropertiesAsset;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.microprofile.reactive.messaging.fat.apps.kafka.BasicMessagingBean;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaTestConstants;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -74,6 +76,7 @@ public class KafkaMessagingTest {
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addPackage(BasicMessagingBean.class.getPackage())
+                        .addPackage(KafkaTestConstants.class.getPackage())
                         .addAsResource(config, "META-INF/microprofile-config.properties")
                         .addAsManifestResource(KafkaUtils.kafkaPermissions(), "permissions.xml")
                         .addAsLibraries(kafkaClientLibs());
@@ -105,7 +108,7 @@ public class KafkaMessagingTest {
         ProducerRecord<String, String> testRecord2 = new ProducerRecord<String, String>("test-in", "xyz");
         kafkaProducer.send(testRecord2).get(30, TimeUnit.SECONDS);
 
-        List<ConsumerRecord<String, String>> records = pollForRecords(kafkaConsumer, 2, Duration.ofSeconds(5));
+        List<ConsumerRecord<String, String>> records = pollForRecords(kafkaConsumer, 2, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
 
         Collection<String> values = records.stream()
                         .map(r -> r.value())

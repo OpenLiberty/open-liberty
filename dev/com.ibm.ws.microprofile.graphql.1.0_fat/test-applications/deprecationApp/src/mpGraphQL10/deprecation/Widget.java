@@ -12,7 +12,7 @@ package mpGraphQL10.deprecation;
 
 import java.text.DecimalFormat;
 
-import org.eclipse.microprofile.graphql.Deprecated;
+//import org.eclipse.microprofile.graphql.Deprecated;
 /**
  * This is an implementation class of the interface entity, Widget.
  */
@@ -22,7 +22,7 @@ public class Widget {
     private int quantity = -1;
     private double weight = -1.0;
     
-    @Deprecated("Deprecated, use length, height, and depth instead.")
+    //@Deprecated("Deprecated, use length, height, and depth instead.")
     private String dimensions;
     private double length;
     private double height;

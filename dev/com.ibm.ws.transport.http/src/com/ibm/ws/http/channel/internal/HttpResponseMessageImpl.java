@@ -24,7 +24,7 @@ import com.ibm.ws.genericbnf.internal.GenericConstants;
 import com.ibm.ws.genericbnf.internal.GenericUtils;
 import com.ibm.ws.genericbnf.internal.HeaderHandler;
 import com.ibm.ws.http.channel.h2internal.H2HttpInboundLinkWrap;
-import com.ibm.ws.http.channel.h2internal.exceptions.CompressionException;
+import com.ibm.ws.http.channel.h2internal.exceptions.ProtocolException;
 import com.ibm.ws.http.channel.h2internal.hpack.H2HeaderField;
 import com.ibm.ws.http.channel.h2internal.hpack.H2HeaderTable;
 import com.ibm.ws.http.channel.h2internal.hpack.H2Headers;
@@ -321,7 +321,9 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
         for (Entry<String, String> entry : pseudoHeaders.entrySet()) {
             H2HeaderField header = new H2HeaderField(entry.getKey(), entry.getValue());
             if (!isValidPseudoHeader(header)) {
-                throw new CompressionException("Invalid pseudo-header for decompression context: " + header.toString());
+                ProtocolException pe = new ProtocolException("Invalid pseudo-header for decompression context: " + header.toString()); 
+                pe.setConnectionError(false); // mark this as a stream error so we'll generate an RST_STREAM
+                throw pe;
             }
         }
         setStatusCode(Integer.getInteger(pseudoHeaders.get(HpackConstants.STATUS)));

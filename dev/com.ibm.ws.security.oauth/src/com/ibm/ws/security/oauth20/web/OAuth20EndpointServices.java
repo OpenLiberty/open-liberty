@@ -11,6 +11,8 @@
 package com.ibm.ws.security.oauth20.web;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.Principal;
 import java.util.Collection;
 import java.util.Hashtable;
@@ -457,10 +459,11 @@ public class OAuth20EndpointServices {
         String logoutRedirectURL = provider.getLogoutRedirectURL();
         try {
             if (logoutRedirectURL != null) {
+                String encodedURL = URLEncodeParams(logoutRedirectURL);
                 if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "OAUTH20 _SSO OP redirecting to [" + logoutRedirectURL + "]");
-                }
-                response.sendRedirect(logoutRedirectURL);
+                    Tr.debug(tc, "OAUTH20 _SSO OP redirecting to [" + logoutRedirectURL + "], url encoded to [" + encodedURL + "]");
+               	}
+                response.sendRedirect(encodedURL);
                 return;
             } else {
                 // send default logout page
@@ -472,6 +475,27 @@ public class OAuth20EndpointServices {
                     new Object[] {});
             new LogoutPages().sendDefaultErrorPage(request, response);
         }
+    }
+
+    String URLEncodeParams(String UrlStr) {
+        String sep = "?";
+        String encodedURL = UrlStr;
+        int index = UrlStr.indexOf(sep);
+        // if encoded url in server.xml, don't encode it again.
+        boolean alreadyEncoded = UrlStr.contains("%");
+        if (index > -1 && !alreadyEncoded) {
+            index++; // don't encode ?
+            String prefix = UrlStr.substring(0, index);
+            String suffix = UrlStr.substring(index);
+            try {
+                encodedURL = prefix + java.net.URLEncoder.encode(suffix, StandardCharsets.UTF_8.toString());
+                // shouldn't encode = in queries, so flip those back
+                encodedURL = encodedURL.replace("%3D", "=");
+            } catch (UnsupportedEncodingException e) {
+                // ffdc
+            }
+        }
+        return encodedURL;
     }
 
     public OAuthResult processAuthorizationRequest(OAuth20Provider provider, HttpServletRequest request, HttpServletResponse response,

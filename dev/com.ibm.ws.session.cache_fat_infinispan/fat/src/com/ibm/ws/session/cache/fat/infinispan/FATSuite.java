@@ -15,27 +15,39 @@ import java.util.List;
 import java.util.Locale;
 
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                // TODO enable tests as we get them converted over to infinispan
                 SessionCacheOneServerTest.class,
                 SessionCacheTwoServerTest.class,
                 SessionCacheTimeoutTest.class,
-                SessionCacheTwoServerTimeoutTest.class,
-                //HazelcastClientTest.class
+                SessionCacheTwoServerTimeoutTest.class
+                // A separate test suite covers Infinispan client/server scenarios
 })
 
 public class FATSuite {
+
+    @BeforeClass
+    public static void beforeSuite() throws Exception {
+        // Delete the Infinispan jars that might have been left around by previous test buckets.
+        LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.session.cache.fat.infinispan.server");
+        Machine machine = server.getMachine();
+        String installRoot = server.getInstallRoot();
+        LibertyFileManager.deleteLibertyDirectoryAndContents(machine, installRoot + "/usr/shared/resources/infinispan");
+    }
 
     public static String run(LibertyServer server, String path, String testMethod, List<String> session) throws Exception {
         HttpURLConnection con = HttpUtils.getHttpConnection(server, path + '?' + FATServletClient.TEST_METHOD + '=' + testMethod);
@@ -68,7 +80,7 @@ public class FATSuite {
     }
 
     /**
-     * Checks if multicast should be disabled in Hazelcast. We want to disable multicase on z/OS,
+     * Checks if multicast should be disabled in Hazelcast. We want to disable multicast on z/OS,
      * and when the environment variable disable_multicast_in_fats=true.
      *
      * If you are seeing a lot of NPE errors while running this FAT bucket you might need to set

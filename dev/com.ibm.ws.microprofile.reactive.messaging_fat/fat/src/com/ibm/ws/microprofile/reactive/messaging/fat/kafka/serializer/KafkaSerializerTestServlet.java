@@ -13,7 +13,6 @@ package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.serializer;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 
-import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +27,7 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.junit.Test;
 
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaTestConstants;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractKafkaTestServlet;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.SimpleKafkaReader;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.SimpleKafkaWriter;
@@ -35,7 +35,7 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.SimpleKafk
 /**
  * Test that the kafka connector acknowledges messages and commits partition offsets correctly
  */
-@WebServlet("/kafkaAcknowledgementTest")
+@WebServlet("/kafkaSerializerTest")
 public class KafkaSerializerTestServlet extends AbstractKafkaTestServlet {
 
     private static final long serialVersionUID = 1L;
@@ -52,7 +52,7 @@ public class KafkaSerializerTestServlet extends AbstractKafkaTestServlet {
             writer.sendMessage(new MyData("abc", "123"));
             writer.sendMessage(new MyData("xyz", "456"));
 
-            List<MyData> msgs = reader.waitForMessages(2, Duration.ofSeconds(5));
+            List<MyData> msgs = reader.waitForMessages(2, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
 
             assertThat(msgs, contains(new MyData("cba", "321"), new MyData("zyx", "654")));
         } finally {

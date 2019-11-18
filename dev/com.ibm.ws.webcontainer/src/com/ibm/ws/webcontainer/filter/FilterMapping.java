@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2006 IBM Corporation and others.
+ * Copyright (c) 1997, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,20 +10,27 @@
  *******************************************************************************/
 package com.ibm.ws.webcontainer.filter;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.DispatcherType;
 
+import com.ibm.ws.webcontainer.filter.extended.IFilterMappingExtended;
 import com.ibm.wsspi.webcontainer.WCCustomProperties;
 import com.ibm.wsspi.webcontainer.filter.IFilterConfig;
 import com.ibm.wsspi.webcontainer.filter.IFilterMapping;
+import com.ibm.wsspi.webcontainer.logging.LoggerFactory;
 import com.ibm.wsspi.webcontainer.servlet.IServletConfig;
 
-public class FilterMapping implements IFilterMapping {
+public class FilterMapping implements IFilterMappingExtended {
+    protected static Logger logger = LoggerFactory.getInstance().getLogger("com.ibm.ws.webcontainer.filter");
+    private static final String CLASS_NAME = "com.ibm.ws.webcontainer.filter.FilterMapping";
     private String urlPattern;
     private DispatcherType[] dispatchMode = { DispatcherType.REQUEST }; // Default is
                                                                    // request
     private IFilterConfig filterConfig;
     private IServletConfig sconfig;
     private int mappingType;
+    private String servletName;
 
     /*
      * (non-Javadoc)
@@ -127,4 +134,36 @@ public class FilterMapping implements IFilterMapping {
         this.dispatchMode = dispatchMode;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.ibm.ws.webcontainer.filter.extended.IFilterMappingExtended#getServletFilterMappingName()
+     */
+    public String getServletFilterMappingName() {
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE))
+            logger.logp(Level.FINE, CLASS_NAME, "getServletFilterMappingName", "servlet name " + servletName + " , filter mapping -> "+ this);
+        return servletName;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.ibm.ws.webcontainer.filter.extended.IFilterMappingExtended#saveServletFilterMappingName(String)
+     */
+    public void saveServletFilterMappingName(String sName) {
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE))
+            logger.logp(Level.FINE, CLASS_NAME, "saveServletFilterMappingName", "servlet name " + sName + " , filter mapping -> "+ this);
+        servletName = sName;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.ibm.ws.webcontainer.filter.extended.IFilterMappingExtended#setServletConfig(IServletConfig)
+     */
+    public void setServletConfig(IServletConfig sconfig) {
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE))
+            logger.logp(Level.FINE, CLASS_NAME, "setServletConfig", "set ServletConfig to {"+ sconfig + "} , filter mapping -> "+ this);
+        this.sconfig = sconfig;   
+    }
 }

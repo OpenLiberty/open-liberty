@@ -13,7 +13,6 @@ package com.ibm.websphere.channelfw.osgi;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicReference;
@@ -45,7 +44,6 @@ import com.ibm.ws.channelfw.internal.ChannelFrameworkImpl;
 import com.ibm.ws.channelfw.internal.chains.EndPointMgrImpl;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.feature.ServerStarted;
-import com.ibm.ws.staticvalue.StaticValue;
 import com.ibm.ws.tcpchannel.internal.TCPChannelFactory;
 import com.ibm.ws.udpchannel.internal.UDPChannelFactory;
 import com.ibm.wsspi.bytebuffer.WsByteBufferPoolManager;
@@ -78,12 +76,7 @@ public class CHFWBundle implements ServerQuiesceListener {
      * Active HttpDispatcher instance. May be null between deactivate and activate
      * calls.
      */
-    private static final StaticValue<AtomicReference<CHFWBundle>> instance = StaticValue.createStaticValue(new Callable<AtomicReference<CHFWBundle>>() {
-        @Override
-        public AtomicReference<CHFWBundle> call() {
-            return new AtomicReference<CHFWBundle>();
-        }
-    });;
+    private static final AtomicReference<CHFWBundle> instance = new AtomicReference<CHFWBundle>();
 
     /** Reference to the channel framework */
     private ChannelFrameworkImpl chfw = null;
@@ -99,7 +92,8 @@ public class CHFWBundle implements ServerQuiesceListener {
     private ExecutorService executorService = null;
 
     private static boolean serverCompletelyStarted = false;
-    private static Object syncStarted = new Object() {}; // use brackets/inner class to make lock appear in dumps using class name
+    private static Object syncStarted = new Object() {
+    }; // use brackets/inner class to make lock appear in dumps using class name
 
     private volatile ServiceReference<HttpProtocolBehavior> protocolBehaviorRef;
     private static volatile String httpVersionSetting = null;
@@ -130,7 +124,7 @@ public class CHFWBundle implements ServerQuiesceListener {
         this.chfw.registerFactory("TCPChannel", TCPChannelFactory.class);
         this.chfw.registerFactory("UDPChannel", UDPChannelFactory.class);
 
-        instance.get().set(this); // required components have been activated
+        instance.set(this); // required components have been activated
     }
 
     /**
@@ -143,7 +137,7 @@ public class CHFWBundle implements ServerQuiesceListener {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(this, tc, "Deactivating");
         }
-        instance.get().compareAndSet(this, null);
+        instance.compareAndSet(this, null);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(this, tc, "Destroying all endpoints");
@@ -168,7 +162,7 @@ public class CHFWBundle implements ServerQuiesceListener {
      * configuration change.
      *
      * @param cfwConfiguration
-     *            the configuration data
+     *                             the configuration data
      */
     @Modified
     protected synchronized void modified(Map<String, Object> cfwConfiguration) {
@@ -295,7 +289,8 @@ public class CHFWBundle implements ServerQuiesceListener {
      *
      * @param service
      */
-    protected void unsetByteBufferConfig(ByteBufferConfiguration bbConfig) {}
+    protected void unsetByteBufferConfig(ByteBufferConfiguration bbConfig) {
+    }
 
     /**
      * Access the event service.
@@ -303,7 +298,7 @@ public class CHFWBundle implements ServerQuiesceListener {
      * @return EventEngine - null if not found
      */
     public static EventEngine getEventService() {
-        CHFWBundle c = instance.get().get();
+        CHFWBundle c = instance.get();
         if (null != c) {
             return c.eventService;
         }
@@ -327,7 +322,8 @@ public class CHFWBundle implements ServerQuiesceListener {
      *
      * @param service
      */
-    protected void unsetEventService(EventEngine service) {}
+    protected void unsetEventService(EventEngine service) {
+    }
 
     /**
      * Access the channel framework's {@link java.util.concurrent.ExecutorService} to
@@ -336,7 +332,7 @@ public class CHFWBundle implements ServerQuiesceListener {
      * @return the executor service instance to use within the channel framework
      */
     public static ExecutorService getExecutorService() {
-        CHFWBundle c = instance.get().get();
+        CHFWBundle c = instance.get();
         if (null != c) {
             return c.executorService;
         }
@@ -347,7 +343,7 @@ public class CHFWBundle implements ServerQuiesceListener {
      * DS method for setting the executor service reference.
      *
      * @param executorService the {@link java.util.concurrent.ExecutorService} to
-     *            queue work to.
+     *                            queue work to.
      */
     @Reference(service = ExecutorService.class,
                cardinality = ReferenceCardinality.MANDATORY)
@@ -361,7 +357,8 @@ public class CHFWBundle implements ServerQuiesceListener {
      *
      * @param executorService the service instance to clear
      */
-    protected void unsetExecutorService(ExecutorService executorService) {}
+    protected void unsetExecutorService(ExecutorService executorService) {
+    }
 
     /**
      * Access the scheduled event service.
@@ -369,7 +366,7 @@ public class CHFWBundle implements ServerQuiesceListener {
      * @return ScheduledEventService - null if not found
      */
     public static ScheduledEventService getScheduleService() {
-        CHFWBundle c = instance.get().get();
+        CHFWBundle c = instance.get();
         if (null != c) {
             return c.scheduler;
         }
@@ -393,7 +390,8 @@ public class CHFWBundle implements ServerQuiesceListener {
      *
      * @param ref
      */
-    protected void unsetScheduledExecutorService(ScheduledExecutorService ref) {}
+    protected void unsetScheduledExecutorService(ScheduledExecutorService ref) {
+    }
 
     /**
      * Access the scheduled executor service.
@@ -401,7 +399,7 @@ public class CHFWBundle implements ServerQuiesceListener {
      * @return ScheduledEventService - null if not found
      */
     public static ScheduledExecutorService getScheduledExecutorService() {
-        CHFWBundle c = instance.get().get();
+        CHFWBundle c = instance.get();
         if (null != c) {
             return c.scheduledExecutor;
         }
@@ -425,7 +423,8 @@ public class CHFWBundle implements ServerQuiesceListener {
      *
      * @param ref
      */
-    protected void unsetScheduledEventService(ScheduledEventService ref) {}
+    protected void unsetScheduledEventService(ScheduledEventService ref) {
+    }
 
     /**
      * DS method to set a factory provider.

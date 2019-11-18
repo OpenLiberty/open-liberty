@@ -692,10 +692,6 @@ warning.package.root.invalid.runnable=CWWKE0948W: A --server-root option with --
 warning.package.root.invalid.runnable.explanation=The user performed a package request with a --server-root option and --include=runnable, which is not an allowed combination. The default server root of wlp is used.
 warning.package.root.invalid.runnable.useraction=No action is required.
 
-error.no.serialfilteragent=CWWKE0949E: The specified serial filter agent jar file {0} does not exist.
-error.no.serialfilteragent.explanation=The specified serial filter agent jar file does not exist, or fail to read.
-error.no.serialfilteragent.useraction= Ensure that the file exists and can be read by the current user.
-
 error.package.extension=CWWKE0950E: The archive filename must end with .jar when the runnable option is used.
 error.package.extension.explanation=The --archive option must include a file extension that ends with .jar when specifying --include=runnable.
 error.package.extension.useraction=Supply a file name to --archive with a file extension of .jar when specifying --include=runnable.

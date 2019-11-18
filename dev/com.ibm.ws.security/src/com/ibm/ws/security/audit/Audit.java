@@ -37,6 +37,7 @@ public class Audit {
         SECURITY_JMS_AUTHZ_01,
         SECURITY_JMS_AUTHN_TERMINATE_01,
         SECURITY_JMS_CLOSED_CONNECTION_01,
+        SECURITY_REST_HANDLER_AUTHZ,
         SECURITY_SAF_AUTHZ,
         SECURITY_SAF_AUTHZ_DETAILS,
         JMX_NOTIFICATION_01,
@@ -63,5 +64,6 @@ public class Audit {
      *                    The objects needed to produce the audit record.
      */
     @Trivial
-    public static void audit(EventID eventId, Object... params) {}
+    public static void audit(EventID eventId, Object... params) {
+    }
 }

@@ -2105,18 +2105,18 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
                 return;
             }
         }
-       if (HttpHeaderKeys.isWasPrivateHeader(key.getName())) {
+        if (HttpHeaderKeys.isWasPrivateHeader(key.getName())) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "checking to see if private header is allowed: " + key.getName());
             }
-           if (!filterAdd(key, elem.asBytes())) {
+            if (!filterAdd(key, elem.asBytes())) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, key.getName() +" is not trusted for this host; not adding header");
+                    Tr.debug(tc, key.getName() + " is not trusted for this host; not adding header");
                 }
-               return;
-           }
-       }
-       
+                return;
+            }
+        }
+
         incrementHeaderCounter();
         HeaderElement root = findHeader(key);
         boolean rc = addInstanceOfElement(root, elem);
@@ -2207,7 +2207,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
         //to see if we have a header with this name already added.
         if (ord > HttpHeaderKeys.ORD_MAX) {
             for (HeaderElement header : storage.values()) {
-                if (header.getKey().getName().equals(key.getName())) {
+                if (header.getKey().getName().equalsIgnoreCase(key.getName())) {
                     elem = header;
                     break;
                 }
@@ -2249,7 +2249,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
         //to see if we have a header with this name already added.
         if (ord > HttpHeaderKeys.ORD_MAX) {
             for (HeaderElement header : storage.values()) {
-                if (header.getKey().getName().equals(key.getName())) {
+                if (header.getKey().getName().equalsIgnoreCase(key.getName())) {
                     elem = header;
                     break;
                 }

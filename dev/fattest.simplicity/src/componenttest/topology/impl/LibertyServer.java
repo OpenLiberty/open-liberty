@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -249,6 +249,8 @@ public class LibertyServer implements LogMonitorClient {
     protected boolean isStartedConsoleLogLevelOff = false;
 
     protected int osgiConsolePort = 5678; // The port number of the OSGi Console
+
+    protected static final String OSGI_DIR_NAME = "org.eclipse.osgi";
 
     // Use port 0 if the property can't be found, these should be picked up from a properties file
     // if not then the test may create a liberty server and get the ports from a bootstrap port.
@@ -2665,7 +2667,7 @@ public class LibertyServer implements LogMonitorClient {
         logs = listDirectoryContents(remoteDirectory);
         for (String l : logs) {
             if (remoteDirectory.getName().equals("workarea")) {
-                if (l.equals("org.eclipse.osgi") || l.startsWith(".s")) {
+                if (l.equals(OSGI_DIR_NAME) || l.startsWith(".s")) {
                     // skip the osgi framework cache, and runtime artifacts: too big / too racy
                     Log.finest(c, "recursivelyCopyDirectory", "Skipping workarea element " + l);
                     continue;
@@ -2791,6 +2793,10 @@ public class LibertyServer implements LogMonitorClient {
 
     public String getServerRoot() {
         return serverRoot;
+    }
+
+    public String getOsgiWorkAreaRoot() {
+        return serverRoot + "/workarea" + "/" + OSGI_DIR_NAME;
     }
 
     public String getServerSharedPath() {
@@ -4504,6 +4510,28 @@ public class LibertyServer implements LogMonitorClient {
 
     /**
      * This method will search for the provided expression in the log file
+     * on an incremental basis. It starts with reading the file at the offset where
+     * the last mark was set (or the beginning of the file if no mark has been set)
+     * and reads until the end of the file.
+     *
+     * @param regexp pattern to search for
+     * @return A list of the lines in the log file which contain the matching
+     * pattern. No matches result in an empty list.
+     * @throws Exception
+     */
+    public List<String> findStringsInLogsUsingMark(String regexp, String filePath) throws Exception {
+        final RemoteFile remoteFile;
+        String absolutePath = serverRoot + "/" + filePath;
+        if (machineOS == OperatingSystem.ZOS && absolutePath.equalsIgnoreCase(consoleAbsPath)) {
+            remoteFile = new RemoteFile(machine, absolutePath, Charset.forName(EBCDIC_CHARSET_NAME));
+        } else {
+            remoteFile = LibertyFileManager.getLibertyFile(machine, absolutePath);
+        }
+        return findStringsInLogsUsingMark(regexp, remoteFile);
+    }
+
+    /**
+     * This method will search for the provided expression in the log file
      * on an incremental basis. It starts with reading the
      * file at the offset where the last mark was set (or the beginning of the file
      * if no mark has been set) and reads until the end of the file.
@@ -6180,5 +6208,4 @@ public class LibertyServer implements LogMonitorClient {
     public String toString() {
         return serverToUse + " : " + super.toString();
     }
-
 }

@@ -42,8 +42,18 @@ kafka.poll.error.CWMRX1002E.useraction=Esaminare il file message.log del server 
 
 # An error occurred when sending a message to the Kafka broker. The error is: {0}.
 kafka.send.error.CWMRX1003E=CWMRX1003E: Si \u00e8 verificato un errore durante l'invio di un messaggio al broker Kafka. L'errore \u00e8: {0}.
-kafka.send.error.CWMRX1003E.explanation=Si \u00e8 verificato un errore in Kafka Outgoing Connector che impedisce le normali operazioni di Reactive Messaging
+kafka.send.error.CWMRX1003E.explanation=Si \u00e8 verificato un errore in Kafka Outgoing Connector che impedisce le normali operazioni di Reactive Messaging.
 kafka.send.error.CWMRX1003E.useraction=Esaminare il file message.log del server e i log FFDC per identificare il problema.
+
+# The Reactive Messaging Kafka Outgoing Connector received an error. The error is {0}.
+kafka.output.error.signal.CWMRX1004E=CWMRX1004E: Il Kafka Outgoing Connector Reactive Messaging ha ricevuto un errore. Errore: {0}.
+kafka.output.error.signal.CWMRX1004E.explanation=Kafka Outgoing Connector ha ricevuto un segnale di errore che impedisce le normali operazioni di Reactive Messaging.
+kafka.output.error.signal.CWMRX1004E.useraction=Esaminare il file message.log del server e i log FFDC per identificare il problema.
+
+# The group.id property was not set in the configuration for this channel. Set the {0} property in one of the MicroProfile Config Sources for this application.
+kafka.groupid.not.set.CWMRX1005E=CWMRX1005E: La propriet\u00e0 group.id non \u00e8 stata impostata nella configurazione per questo canale. Impostare la propriet\u00e0 {0} in una delle origini di configurazione del microprofilo per questa applicazione.
+kafka.groupid.not.set.CWMRX1005E.explanation=L'ID del gruppo di consumer Kafka deve essere impostata in modo da consentire il corretto funzionamento di Reactive Messaging.
+kafka.groupid.not.set.CWMRX1005E.useraction=Impostare la propriet\u00e0 in una delle ubicazioni dell'origine di configurazione del microprofilo per questa applicazione, ad esempio il file microprofile-config.properties.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Reactive Messaging error message

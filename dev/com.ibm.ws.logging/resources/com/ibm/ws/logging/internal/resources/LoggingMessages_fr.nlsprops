@@ -141,16 +141,16 @@ JSON_FIELDS_FORMAT_WARNING.explanation=Le mappage du nom de zone de journalisati
 JSON_FIELDS_FORMAT_WARNING.useraction=V\u00e9rifiez que le format de la propri\u00e9t\u00e9 de mappage du nom de zone de journalisation JSON est correct. Le mappage du nom de zone JSON peut \u00eatre indiqu\u00e9 de diff\u00e9rentes mani\u00e8res dans la documentation de la configuration de journalisation.
 
 JSON_FIELDS_FORMAT_WARNING_2=TRAS3008W: La propri\u00e9t\u00e9 de mappage du nom de zone de journalisation JSON comporte trop ou trop peu de jetons dans une entr\u00e9e.
-JSON_FIELDS_FORMAT_WARNING_2.explanation=La propri\u00e9t\u00e9 de mappage du nom de zone de journalisation JSON doit \u00eatre au format knownFieldName:newFieldName ou eventType:knownFieldName:newFieldName.
-JSON_FIELDS_FORMAT_WARNING_2.useraction=La propri\u00e9t\u00e9 de mappage du nom de zone de journalisation JSON doit \u00eatre au format knownFieldName:newFieldName ou eventType:knownFieldName:newFieldName.
+JSON_FIELDS_FORMAT_WARNING_2.explanation=La propri\u00e9t\u00e9 de mappage du nom de zone de journalisation JSON doit \u00eatre au format nomZoneD\u00e9faut:nouveauNomZone ou source:nomZoneD\u00e9faut:nouveauNomZone.
+JSON_FIELDS_FORMAT_WARNING_2.useraction=La propri\u00e9t\u00e9 de mappage du nom de zone de journalisation JSON doit \u00eatre au format nomZoneD\u00e9faut:nouveauNomZone ou source:nomZoneD\u00e9faut:nouveauNomZone.
 
-JSON_FIELDS_NO_MATCH=TRAS3009W: Le nom de zone de journalisation JSON fourni ne correspond pas \u00e0 l'un des noms de zone connus pour le ou les \u00e9v\u00e9nements indiqu\u00e9s
+JSON_FIELDS_NO_MATCH=TRAS3009W: Le nom de zone de journalisation JSON fourni ne correspond pas \u00e0 l'un des noms de zone connus pour la ou les sources sp\u00e9cifi\u00e9es
 JSON_FIELDS_NO_MATCH.explanation=Le nom de zone de journalisation JSON fourni ne correspond pas \u00e0 l'un des noms de zone connus
 JSON_FIELDS_NO_MATCH.useraction=Veuillez fournir un nom de zone de journalisation JSON qui correspond \u00e0 l'une des zones connues (par exemple, message, ibm_datetime, ibm_sequence)
 
-JSON_FIELDS_INCORRECT_EVENT_TYPE=TRAS3010W: Le type d'\u00e9v\u00e9nement fourni ne correspond pas \u00e0 l'un des types d'\u00e9v\u00e9nement connus
-JSON_FIELDS_INCORRECT_EVENT_TYPE.explanation=Les types d'\u00e9v\u00e9nement accept\u00e9s sont les suivants : liberty_message, liberty_trace, liberty_accesslog, liberty_ffdc
-JSON_FIELDS_INCORRECT_EVENT_TYPE.useraction=Les types d'\u00e9v\u00e9nement accept\u00e9s sont les suivants : liberty_message, liberty_trace, liberty_accesslog, liberty_ffdc
+JSON_FIELDS_INCORRECT_EVENT_TYPE=TRAS3010W: L'identificateur de source de mappage de zone de journalisation JSON ne correspond pas \u00e0 l'une des sources connues
+JSON_FIELDS_INCORRECT_EVENT_TYPE.explanation=Les sources admises sont : message, trace, accessLog, ffdc, audit
+JSON_FIELDS_INCORRECT_EVENT_TYPE.useraction=Les sources admises sont : message, trace, accessLog, ffdc, audit
 
 JSON_FIELDS_INVALID_CHARACHTER=TRAS3011W: Un caract\u00e8re non valide a \u00e9t\u00e9 fourni dans la propri\u00e9t\u00e9 de mappage du nom de zone de journalisation JSON
 JSON_FIELDS_INVALID_CHARACHTER.explanation= Seuls les lettres, les nombres et les caract\u00e8res : sont accept\u00e9s dans la propri\u00e9t\u00e9 de mappage du nom de zone de journalisation JSON

@@ -30,8 +30,10 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.security.cred.WSCredential;
 import com.ibm.ws.security.common.web.CommonWebConstants;
 import com.ibm.ws.security.social.Constants;
+import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.TraceConstants;
 import com.ibm.ws.security.social.error.SocialLoginException;
+import com.ibm.ws.security.social.internal.Oauth2LoginConfigImpl;
 
 /**
  * Collection of utility methods for String to byte[] conversion.
@@ -237,6 +239,29 @@ public class SocialUtil {
         if (!SocialUtil.validateQueryString(query)) {
             throw new SocialLoginException("EXCEPTION_INITIALIZING_URL", null, new Object[] { endpointUrl, "" });
         }
+    }
+    
+    public static boolean isOpenShiftConfig(SocialLoginConfig clientConfig) {
+        boolean isOpenShiftConfig = false;
+        if (clientConfig instanceof Oauth2LoginConfigImpl) {
+            Oauth2LoginConfigImpl config = (Oauth2LoginConfigImpl) clientConfig;
+            String userApiType = config.getUserApiType();
+            return (userApiType != null && ClientConstants.USER_API_TYPE_KUBE.equals(userApiType));
+        }
+        return isOpenShiftConfig;
+    }
+   
+    public static boolean useAccessTokenFromRequest(SocialLoginConfig clientConfig) {
+        
+        if (clientConfig instanceof Oauth2LoginConfigImpl) {
+            Oauth2LoginConfigImpl config = (Oauth2LoginConfigImpl) clientConfig;
+            if (config.isAccessTokenRequired() || config.isAccessTokenSupported()) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        return false;
     }
 
 }

@@ -16,10 +16,12 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
-import org.eclipse.microprofile.graphql.Argument;
+import org.eclipse.microprofile.graphql.Description;
 import org.eclipse.microprofile.graphql.GraphQLApi;
 import org.eclipse.microprofile.graphql.Mutation;
+import org.eclipse.microprofile.graphql.Name;
 import org.eclipse.microprofile.graphql.Query;
+
 
 import mpGraphQL10.types.WidgetImpl;
 import mpGraphQL10.types.WidgetInput;
@@ -40,8 +42,9 @@ public class GraphQLEndpoint {
         return allWidgets;
     }
 
-    @Mutation(value = "createWidget", description = "Create a new widget for sale.")
-    public Widget createNewWidget(@Argument("widget") Widget inputWidget) {
+    @Mutation("createWidget")
+    @Description("Create a new widget for sale.")
+    public Widget createNewWidget(@Name("widget") Widget inputWidget) {
         Widget newWidget = new Widget(inputWidget);
         allWidgets.add(newWidget);
         return newWidget;

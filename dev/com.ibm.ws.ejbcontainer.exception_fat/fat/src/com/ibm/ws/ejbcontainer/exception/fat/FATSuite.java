@@ -14,10 +14,13 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.ejbcontainer.exception.fat.tests.ExceptionTest;
 import com.ibm.ws.ejbcontainer.exception.fat.tests.InheritedApplicationExceptionTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+                ExceptionTest.class,
                 InheritedApplicationExceptionTest.class
 })
-public class FATSuite {}
+public class FATSuite {
+}

@@ -9,13 +9,13 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 repositories {
-
-   ivy {
-
-       url "../cnf/local"
-
-   }
-
+  ivy {
+    url "../cnf/local"
+    metadataSources {
+      ivyDescriptor()
+      artifact()
+    }
+  }
 }
 
 configurations {
@@ -24,6 +24,8 @@ configurations {
 
 dependencies {
   ejbTools 'test:com.ibm.ws.ejbcontainer.fat_tools:1.+'
+  // Dependencies needed for when running on Java 9 (EE-type APIs were removed from JDK)
+  requiredLibs 'com.ibm.ws.org.apache.yoko:yoko-spec-corba:1.5.0.31ef0b15cf'
 }
 
 task addEJBTools {
@@ -32,6 +34,11 @@ task addEJBTools {
     copy {
       from configurations.ejbTools
       into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.ejbcontainer.exception.fat.AppExceptionServer/lib/global"
+      rename 'com.ibm.ws.ejbcontainer.fat_tools-(.*).jar', 'com.ibm.ws.ejbcontainer.fat_tools.jar'
+    }
+    copy {
+      from configurations.ejbTools
+      into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.ejbcontainer.exception.fat.ExceptionServer/lib/global"
       rename 'com.ibm.ws.ejbcontainer.fat_tools-(.*).jar', 'com.ibm.ws.ejbcontainer.fat_tools.jar'
     }
   }

@@ -141,16 +141,15 @@ JSON_FIELDS_FORMAT_WARNING.explanation=A JSON napl\u00f3z\u00e1si mez\u0151n\u00
 JSON_FIELDS_FORMAT_WARNING.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a JSON napl\u00f3z\u00e1si mez\u0151n\u00e9vmegfeleltet\u00e9si tulajdons\u00e1g form\u00e1tuma helyes legyen. A JSON men\u0151n\u00e9v-megfeleltet\u00e9s t\u00f6bb m\u00f3don megadhat\u00f3 a napl\u00f3z\u00e1si konfigur\u00e1ci\u00f3s dokument\u00e1ci\u00f3 ismertet\u00e9se szerint.
 
 JSON_FIELDS_FORMAT_WARNING_2=TRAS3008W: A JSON napl\u00f3z\u00e1si mez\u0151n\u00e9v megfeleltet\u00e9s tulajdons\u00e1g egy bejegyz\u00e9sben t\u00fal sok vagy t\u00fal kev\u00e9s tokent tartalmaz.
-JSON_FIELDS_FORMAT_WARNING_2.explanation=A JSON napl\u00f3z\u00e1si mez\u0151n\u00e9v megfeleltet\u00e9s tulajdons\u00e1g form\u00e1z\u00e1sa a k\u00f6vetkez\u0151 lehet: ismert_mez\u0151n\u00e9v:\u00faj_mez\u0151n\u00e9v vagy esem\u00e9nyt\u00edpus:ismert_mez\u0151n\u00e9v:\u00faj_mez\u0151n\u00e9v.
-JSON_FIELDS_FORMAT_WARNING_2.useraction=A JSON napl\u00f3z\u00e1si mez\u0151n\u00e9v megfeleltet\u00e9s tulajdons\u00e1g form\u00e1z\u00e1sa a k\u00f6vetkez\u0151 lehet: ismert_mez\u0151n\u00e9v:\u00faj_mez\u0151n\u00e9v vagy esem\u00e9nyt\u00edpus:ismert_mez\u0151n\u00e9v:\u00faj_mez\u0151n\u00e9v.
-
-JSON_FIELDS_NO_MATCH=TRAS3009W: A megadott JSON napl\u00f3z\u00e1si mez\u0151n\u00e9v nem felel meg a megadott esem\u00e9ny(ek) egyik ismert mez\u0151nev\u00e9nek sem
+JSON_FIELDS_FORMAT_WARNING_2.explanation=A JSON napl\u00f3z\u00e1si mez\u0151n\u00e9v megfeleltet\u00e9si tulajdons\u00e1g form\u00e1z\u00e1sa a k\u00f6vetkez\u0151: Alap\u00e9rtelmezettMez\u0151n\u00e9v:\u00dajMez\u0151n\u00e9v vagy forr\u00e1s:Alap\u00e9rtelmezettMez\u0151n\u00e9v:\u00dajMez\u0151n\u00e9v.
+JSON_FIELDS_FORMAT_WARNING_2.useraction=A JSON napl\u00f3z\u00e1si mez\u0151n\u00e9v megfeleltet\u00e9si tulajdons\u00e1g form\u00e1z\u00e1sa a k\u00f6vetkez\u0151: Alap\u00e9rtelmezettMez\u0151n\u00e9v:\u00dajMez\u0151n\u00e9v vagy forr\u00e1s:Alap\u00e9rtelmezettMez\u0151n\u00e9v:\u00dajMez\u0151n\u00e9v. 
+JSON_FIELDS_NO_MATCH=TRAS3009W: A megadott JSON napl\u00f3z\u00e1si mez\u0151n\u00e9v nem felel meg a megadott forr\u00e1s(ok) egyik ismert mez\u0151nev\u00e9nek sem
 JSON_FIELDS_NO_MATCH.explanation=A megadott JSON napl\u00f3z\u00e1si mez\u0151n\u00e9v nem felel meg egyik ismert mez\u0151nev\u00e9nek sem
 JSON_FIELDS_NO_MATCH.useraction=Adjon meg olyan JSON napl\u00f3z\u00e1si mez\u0151nevet, amely megfelel valamelyik ismert mez\u0151n\u00e9vnek (p\u00e9ld\u00e1ul:  message, ibm_datetime, ibm_sequence)
 
-JSON_FIELDS_INCORRECT_EVENT_TYPE=TRAS3010W: A megadott esem\u00e9nyt\u00edpus nem felel meg egyetlen ismert esem\u00e9nyt\u00edpusnak sem
-JSON_FIELDS_INCORRECT_EVENT_TYPE.explanation=Az elfogadott esem\u00e9nyt\u00edpusok: liberty_message, liberty_trace, liberty_accesslog, liberty_ffdc
-JSON_FIELDS_INCORRECT_EVENT_TYPE.useraction=Az elfogadott esem\u00e9nyt\u00edpusok: liberty_message, liberty_trace, liberty_accesslog, liberty_ffdc
+JSON_FIELDS_INCORRECT_EVENT_TYPE=TRAS3010W: A megadott JSON napl\u00f3z\u00e1si mez\u0151 megfeleltet\u00e9si forr\u00e1sazonos\u00edt\u00f3 nem felel meg az egyik ismert forr\u00e1snak
+JSON_FIELDS_INCORRECT_EVENT_TYPE.explanation=Az elfogadott forr\u00e1sok: message, trace, accessLog, ffdc, audit
+JSON_FIELDS_INCORRECT_EVENT_TYPE.useraction=Az elfogadott forr\u00e1sok: message, trace, accessLog, ffdc, audit
 
 JSON_FIELDS_INVALID_CHARACHTER=TRAS3011W: \u00c9rv\u00e9nytelen karakter lett megadva a JSON napl\u00f3z\u00e1si mez\u0151n\u00e9v megfeleltet\u00e9s tulajdons\u00e1gban
 JSON_FIELDS_INVALID_CHARACHTER.explanation= Csak bet\u0171k, sz\u00e1mok \u00e9s : elfogadott a JSON napl\u00f3z\u00e1si mez\u0151n\u00e9v megfeleltet\u00e9s tulajdons\u00e1gban

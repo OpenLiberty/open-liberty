@@ -75,6 +75,18 @@ public class LDAPFatUtils {
      * @param actual The actual value.
      */
     public static void assertEqualsIgnoreCase(String message, String expected, String actual) {
+
+        if (expected == null && actual == null) {
+            return;
+        } else if (expected == null || actual == null) {
+            String msg = "One of either the expected values (" + expected + ") or actual values (" + actual + ") is null.";
+            if (message == null) {
+                fail(msg);
+            } else {
+                fail(message + " " + msg);
+            }
+        }
+
         expected = expected.toLowerCase();
         actual = actual.toLowerCase();
 

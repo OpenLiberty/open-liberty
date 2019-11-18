@@ -1562,6 +1562,13 @@ du module {1} dans l''application {2} est un bean entity d\u00e9clar\u00e9 dans 
 ENTITY_NOT_SUPPORTED_CNTR0335W.explanation=Les beans enterprise d\u00e9clar\u00e9s dans n'importe quel module de version ne sont pas pris en charge lorsque le module est empaquet\u00e9 dans une application Java EE version 7 ou ult\u00e9rieure. Une application est consid\u00e9r\u00e9e comme \u00e9tant au niveau Java EE version 7 si le fichier application.xml est d\u00e9clar\u00e9 comme \u00e9tant au niveau version 7 ou si tout module EJB ou WAR empaquet\u00e9 dans cette application est au niveau d'une version correspondant \u00e0 Java EE version 7.
 ENTITY_NOT_SUPPORTED_CNTR0335W.useraction=Retirez l'utilisation du bean enterprise entity non pris en charge de l'application ou empaquetez le bean dans une application version 6 ou ant\u00e9rieure.
 
+#-------------------------------------------------------------------------------
+NAME_ALREADY_BOUND_WARN_CNTR0336W=CNTR0336W: Impossible de lier l''interface {0} du bean {1} dans le module {2} de l''application {3} \u00e0 l''emplacement de nom {4}. L''interface {5} du bean {6} dans le module {7} de l''application {8} est d\u00e9j\u00e0 li\u00e9e \u00e0 l''emplacement de nom {4}. \
+L''emplacement de nom {4} n''est pas accessible.
+NAME_ALREADY_BOUND_WARN_CNTR0336W.explanation=Chaque interface de bean enterprise doit sp\u00e9cifier un emplacement de liaison unique.
+NAME_ALREADY_BOUND_WARN_CNTR0336W.useraction=Corrigez le fichier de liaison de l'une de ces deux interfaces de beans de mani\u00e8re \u00e0 ce que chaque interface ait un emplacement de liaison exclusif.
+
+
 
 #-------------------------------------------------------------------------------
 #

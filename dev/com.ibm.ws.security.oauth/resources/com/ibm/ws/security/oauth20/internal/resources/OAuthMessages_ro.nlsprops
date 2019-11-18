@@ -118,7 +118,7 @@ OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR.explanation=Caracterul nu este permis \u0
 OAUTH_CLIENT_REGISTRATION_ILLEGAL_CHAR.useraction=\u00cenl\u0103tura\u0163i caracterul ilegal \u015fi retrimite\u0163i cererea. 
 
 OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND=CWWKS1424E: ID-ul de client {0} nu a fost g\u0103sit.
-OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.explanation=Cererea a con\u0163inut un ID de client care nu a fost g\u0103sit. 
+OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.explanation=Cererea a con\u0163inut un ID de client care nu a fost g\u0103sit.  
 OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND.useraction=Re\u00eencerca\u0163i cererea cu un ID de client valid.
 
 OAUTH_CLIENT_REGISTRATION_INVALID_REQUEST_PATH=CWWKS1425E: Cererea de \u00eenregistrare a fost f\u0103cut\u0103 la un URI incorect.
@@ -138,7 +138,7 @@ OAUTH_CLIENT_REGISTRATION_MALFORMED_REQUEST.explanation=Valoarea JSON din corpul
 OAUTH_CLIENT_REGISTRATION_MALFORMED_REQUEST.useraction=Examina\u0163i documenta\u0163ia API pentru acest serviciu, \u015fi re\u00eencerca\u0163i cererea.
 
 OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS=CWWKS1429E: ID-ul de client {0} exist\u0103 deja.
-OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS.explanation=Opera\u0163ia a e\u015fuat deoarece ID-ul de client exist\u0103 deja. 
+OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS.explanation=Opera\u0163ia a e\u015fuat deoarece ID-ul de client exist\u0103 deja.  
 OAUTH_CLIENT_REGISTRATION_CLIENTID_EXISTS.useraction=Examina\u0163i documenta\u0163ia API pentru acest serviciu, \u015fi re\u00eencerca\u0163i cererea cu parametrii corespunz\u0103tori.
 
 OAUTH_CLIENT_REGISTRATION_CLIENT_SECRET_UPDATE_FAILURE=CWWKS1430E: O actualizare a clientului e\u015fueaz\u0103. Cererea de actualizare indic\u0103 p\u0103strarea secretului client, dar \u00eenregistrarea existent\u0103 nu are setat niciun secret client.

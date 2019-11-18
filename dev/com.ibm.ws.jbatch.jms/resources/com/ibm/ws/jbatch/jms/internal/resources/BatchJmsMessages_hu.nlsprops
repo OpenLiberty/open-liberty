@@ -1,0 +1,106 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jbatch.jms/resources/com/ibm/ws/jbatch/jms/internal/resources/BatchJmsMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0200 - 0249: com.ibm.ws.jbatch.jms
+# 
+warning.unsupported.message.type=CWWKY0200W: A k\u00f6tegelt JMS \u00fczenet {0} \u00fczenett\u00edpusa nem t\u00e1mogatott.  Ez a k\u00e9r\u00e9s nem ker\u00fcl feldolgoz\u00e1sra. Az \u00fczenet tartalma a k\u00f6vetkez\u0151: {1}
+warning.unsupported.message.type.explanation=Ez az \u00fczenett\u00edpus nem t\u00e1mogatott, mert nem JMS MapMessage t\u00edpus. 
+warning.unsupported.message.type.useraction=Nincs teend\u0151. 
+ 
+warning.unsupported.operation=CWWKY0201W: A(z) {0} m\u0171velet a k\u00f6tegelt JMS \u00fczenet nem t\u00e1mogatott m\u0171velete. Ez a k\u00e9r\u00e9s nem ker\u00fcl feldolgoz\u00e1sra. Az \u00fczenet tartalma a k\u00f6vetkez\u0151: {1}
+warning.unsupported.operation.explanation=Csak az 'Ind\u00edt\u00e1s' \u00e9s az '\u00dajraind\u00edt\u00e1s' m\u0171velet t\u00e1mogatott.
+warning.unsupported.operation.useraction=Nincs teend\u0151.
+
+warning.batch.activation.spec.not.found=CWWKY0202W: A k\u00f6tegelt {0} JMS figyel\u0151 \u00fczenet v\u00e9gpontj\u00e1t nem lehet aktiv\u00e1lni, mert a k\u00f6tegelt {1} aktiv\u00e1l\u00e1si specifik\u00e1ci\u00f3 nem l\u00e9tezik a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3j\u00e1ban. Az \u00fczenetv\u00e9gpont nem fogad k\u00f6tegelt \u00fczeneteket, am\u00edg a k\u00f6tegelt aktiv\u00e1l\u00e1si specifik\u00e1ci\u00f3 el\u00e9rhet\u0151 nem lesz. 
+warning.batch.activation.spec.not.found.explanation=A kiszolg\u00e1l\u00f3 elind\u00edtja a k\u00f6tegelt JMS figyel\u0151t, de nem tudja aktiv\u00e1lni az \u00fczenet v\u00e9gpontot, mert az aktiv\u00e1l\u00e1si specifik\u00e1ci\u00f3 nem tal\u00e1lhat\u00f3 a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3j\u00e1ban. Az \u00fczenetv\u00e9gpont nem fogad k\u00f6tegelt \u00fczeneteket, am\u00edg a v\u00e9gpont nem aktiv\u00e1lhat\u00f3.
+warning.batch.activation.spec.not.found.useraction=Hozza l\u00e9tre saj\u00e1t kez\u0171leg az aktiv\u00e1l\u00e1si specifik\u00e1ci\u00f3t a megadott n\u00e9vvel a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3j\u00e1ban vagy az Adminisztr\u00e1ci\u00f3s k\u00f6zpont seg\u00edts\u00e9g\u00e9vel.
+
+warning.batch.destination.queue.not.found=CWWKY0203W: A k\u00f6tegelt {0} JMS figyel\u0151 \u00fczenetv\u00e9gpontj\u00e1t nem lehet aktiv\u00e1lni, mert a(z) {1} c\u00e9lsor nem l\u00e9tezik. Az \u00fczenetv\u00e9gpont addig nem fogad k\u00f6tegelt JMS \u00fczeneteket, am\u00edg a c\u00e9lsor el\u00e9rhet\u0151 nem lesz.
+warning.batch.destination.queue.not.found.explanation=A kiszolg\u00e1l\u00f3 elind\u00edtja a k\u00f6tegelt JMS figyel\u0151t, se nem tudja aktiv\u00e1lni az \u00fczenetv\u00e9gpontot, mert a c\u00e9lsor nem tal\u00e1lhat\u00f3. Az \u00fczenetv\u00e9gpont addig nem fogad k\u00f6tegelt JMS \u00fczeneteket, am\u00edg a v\u00e9gpont nem aktiv\u00e1lhat\u00f3.
+warning.batch.destination.queue.not.found.useraction=Hozza l\u00e9tre saj\u00e1t kez\u0171leg a c\u00e9lsort a megadott n\u00e9vvel a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3j\u00e1ban vagy az Adminisztr\u00e1ci\u00f3s k\u00f6zpont seg\u00edts\u00e9g\u00e9vel.
+
+warning.batch.dispatcher.connection.factory.not.found=CWWKY0204W: A k\u00f6tegelt JMS ir\u00e1ny\u00edt\u00f3t nem lehet elind\u00edtani, mert a(z) {0} kapcsolatgy\u00e1r nem l\u00e9tezik.  A k\u00f6tegelt JMS ir\u00e1ny\u00edt\u00f3 addig nem k\u00fcld k\u00f6tegelt JMS \u00fczeneteket, am\u00edg a kapcsolatgy\u00e1r el\u00e9rhet\u0151 nem lesz. 
+warning.batch.dispatcher.connection.factory.not.found.explanation=A kiszolg\u00e1l\u00f3 elind\u00edtja a k\u00f6tegelt JMS ir\u00e1ny\u00edt\u00f3t, de nem indul el, mert a k\u00f6tegelt JMS kapcsolatgy\u00e1r nem tal\u00e1lhat\u00f3.  A k\u00f6tegelt JMS ir\u00e1ny\u00edt\u00f3 addig nem k\u00fcld k\u00f6tegelt JMS \u00fczeneteket, am\u00edg a kapcsolatgy\u00e1r el\u00e9rhet\u0151 nem lesz.
+warning.batch.dispatcher.connection.factory.not.found.useraction=Hozza l\u00e9tre saj\u00e1t kez\u0171leg a kapcsolatgy\u00e1rat a megadott n\u00e9vvel a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3j\u00e1ban vagy az Adminisztr\u00e1ci\u00f3s k\u00f6zpont seg\u00edts\u00e9g\u00e9vel.
+
+warning.batch.dispatcher.queue.not.found=CWWKY0205W: A k\u00f6tegelt JMS ir\u00e1ny\u00edt\u00f3t nem lehet elind\u00edtani, mert a(z) {0} sor nem l\u00e9tezik.  A k\u00f6tegelt JMS ir\u00e1ny\u00edt\u00f3 addig nem k\u00fcld k\u00f6tegelt JMS \u00fczeneteket, am\u00edg a sor el\u00e9rhet\u0151 nem lesz.
+warning.batch.dispatcher.queue.not.found.explanation=A kiszolg\u00e1l\u00f3 elind\u00edtja a k\u00f6tegelt JMS ir\u00e1ny\u00edt\u00f3t, de nem indul el, mert a k\u00f6tegelt JMS sor nem tal\u00e1lhat\u00f3.  A k\u00f6tegelt JMS ir\u00e1ny\u00edt\u00f3 addig nem k\u00fcld k\u00f6tegelt JMS \u00fczeneteket, am\u00edg a sor el\u00e9rhet\u0151 nem lesz.
+warning.batch.dispatcher.queue.not.found.useraction=Hozza l\u00e9tre saj\u00e1t kez\u0171leg a sort a megadott n\u00e9vvel a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3j\u00e1ban vagy az Adminisztr\u00e1ci\u00f3s k\u00f6zpont seg\u00edts\u00e9g\u00e9vel.
+
+error.unable.to.rollback.start=CWWKY0206E: A k\u00f6tegelt JMS ir\u00e1ny\u00edt\u00f3 kiv\u00e9telt \u00e9szlelt a(z) {0} feladatp\u00e9ld\u00e1ny ind\u00edt\u00e1si k\u00e9r\u00e9s\u00e9nek elind\u00edt\u00e1sakor \u00e9s nem tudta visszag\u00f6rgetni a m\u0171veletet.  A kiv\u00e9tel: {1}.
+error.unable.to.rollback.start.explanation=A k\u00f6tegelt JMS ir\u00e1ny\u00edt\u00f3 nem tudta visszag\u00f6rgetni saj\u00e1t m\u0171velet\u00e9t.
+error.unable.to.rollback.start.useraction=K\u00fcldje el \u00fajra a feladatot.
+
+error.unable.to.rollback.restart=CWWKY0207E: A k\u00f6tegelt JMS ir\u00e1ny\u00edt\u00f3 kiv\u00e9telt \u00e9szlelt a(z) {0} feladatv\u00e9grehajt\u00e1s \u00fajraind\u00edt\u00e1si k\u00e9r\u00e9s\u00e9nek elind\u00edt\u00e1sakor \u00e9s nem tudta visszag\u00f6rgetni a m\u0171veletet.  A kiv\u00e9tel: {1}.
+error.unable.to.rollback.restart.explanation=A k\u00f6tegelt JMS ir\u00e1ny\u00edt\u00f3 nem tudta visszag\u00f6rgetni saj\u00e1t m\u0171velet\u00e9t.
+error.unable.to.rollback.restart.useraction=K\u00fcldje el \u00fajra a feladatot.
+
+error.endpoint.unable.process.message=CWWKY0208E: A k\u00f6tegelt JMS figyel\u0151 kiv\u00e9telt \u00e9szlelt a(z) {0} \u00fczenet feldolgoz\u00e1sakor.  A kiv\u00e9tel: {1}.
+error.endpoint.unable.process.message.explanation=A k\u00f6tegelt JMS figyel\u0151 nem tudta feldolgozni a k\u00f6tegelt JMS k\u00e9r\u00e9s\u00fczenetet.
+error.endpoint.unable.process.message.useraction=K\u00fcldje el \u00fajra a feladatot. 
+
+error.endpoint.unable.process.start.request=CWWKY0209E: A k\u00f6tegelt JMS figyel\u0151 kiv\u00e9telt \u00e9szlelt a(z) {0} feladatp\u00e9ld\u00e1ny feladatind\u00edt\u00e1si m\u0171velet\u00e9nek feldolgoz\u00e1sa sor\u00e1n.  A kiv\u00e9tel: {1}.
+error.endpoint.unable.process.start.request.explanation=A k\u00f6tegelt JMS figyel\u0151 nem tudta feldolgozni a feladatind\u00edt\u00e1si k\u00e9r\u00e9st.
+error.endpoint.unable.process.start.request.useraction=K\u00fcldje el \u00fajra a feladatot.
+
+error.endpoint.unable.process.restart.request=CWWKY0210E: A k\u00f6tegelt JMS figyel\u0151 kiv\u00e9telt \u00e9szlelt a(z) {0} feladat-v\u00e9grehajt\u00e1s feladat-\u00fajraind\u00edt\u00e1si m\u0171velet\u00e9nek feldolgoz\u00e1sa sor\u00e1n.  A kiv\u00e9tel: {1}.
+error.endpoint.unable.process.restart.request.explanation=A k\u00f6tegelt JMS figyel\u0151 nem tudta feldolgozni a feladat-\u00fajraind\u00edt\u00e1si k\u00e9r\u00e9st.
+error.endpoint.unable.process.restart.request.useraction=K\u00fcldje el \u00fajra a feladatot.
+
+warning.batch.events.unable.to.publish=CWWKY0211W: A parancsf\u00e1jl fut\u00e1si k\u00f6rnyezet nem tud k\u00f6zz\u00e9tenni a(z) {1} objektum {0} t\u00e9mak\u00f6r\u00e9be.  A kiv\u00e9tel: {2}.
+warning.batch.events.unable.to.publish.explanation=Az esem\u00e9nyt kiv\u00e9tel miatt nem lehet k\u00f6zz\u00e9tenni.
+warning.batch.events.unable.to.publish.useraction=N\u00e9zzen ut\u00e1na a kapcsol\u00f3d\u00f3 hib\u00e1nak a kiszolg\u00e1l\u00f3napl\u00f3kban.
+
+error.batch.events.publisher.jms.resource.activate=CWWKY0212E: Nem hozhat\u00f3 l\u00e9tre JMS er\u0151forr\u00e1s a k\u00f6tegelt esem\u00e9ny-k\u00f6zz\u00e9tev\u0151 sz\u00e1m\u00e1ra.  A kiv\u00e9tel: {0}.
+error.batch.events.publisher.jms.resource.activate.explanation=Kiv\u00e9tel miatt nem hozhat\u00f3 l\u00e9tre JMS er\u0151forr\u00e1s a k\u00f6tegelt esem\u00e9ny-k\u00f6zz\u00e9tev\u0151 aktiv\u00e1l\u00e1s\u00e1hoz. 
+error.batch.events.publisher.jms.resource.activate.useraction=Ellen\u0151rizze a batchJmsDispatcher elem (az alap\u00e9rtelmezett batchConnectionFactory vagy egy kifejezetten hivatkozott elem) \u00e1ltal be\u00e1ll\u00edtott JMS kapcsolatgy\u00e1r konfigur\u00e1ci\u00f3j\u00e1t.  Ellen\u0151rizze a JMS kapcsolatot, a kapcsol\u00f3d\u00f3 hib\u00e1\u00e9rt pedig tekintse \u00e1t a kiszolg\u00e1l\u00f3napl\u00f3kat.
+
+error.batch.dispatcher.jms.resource.activate=CWWKY0213E: Nem hozhat\u00f3 l\u00e9tre JMS er\u0151forr\u00e1s a k\u00f6tegelt ir\u00e1ny\u00edt\u00f3 sz\u00e1m\u00e1ra.  A kiv\u00e9tel: {0}
+error.batch.dispatcher.jms.resource.activate.explanation=Kiv\u00e9tel miatt nem hozhat\u00f3 l\u00e9tre JMS er\u0151forr\u00e1s a k\u00f6tegelt ir\u00e1ny\u00edt\u00f3 aktiv\u00e1l\u00e1s\u00e1hoz, \u00edgy a kiszolg\u00e1l\u00f3 nem k\u00e9pes JMS r\u00e9v\u00e9n elind\u00edtani a feladatokat vagy part\u00edci\u00f3kat.
+error.batch.dispatcher.jms.resource.activate.useraction=Ellen\u0151rizze a batchJmsDispatcher elem (az alap\u00e9rtelmezett batchConnectionFactory vagy egy kifejezetten hivatkozott elem) \u00e1ltal be\u00e1ll\u00edtott JMS kapcsolatgy\u00e1r \u00e9s sor konfigur\u00e1ci\u00f3j\u00e1t.  Ellen\u0151rizze a JMS kapcsolatot, a kapcsol\u00f3d\u00f3 hib\u00e1\u00e9rt pedig tekintse \u00e1t a kiszolg\u00e1l\u00f3napl\u00f3kat.
+
+warning.endpoint.listener.stale.message=CWWKY0214W: A rendszer elveti a(z) {0} t\u00e1rs\u00edtott feladat-v\u00e9grehajt\u00e1si azonos\u00edt\u00f3val rendelkez\u0151 \u00fczenetet, mivel ez nem a leg\u00fajabb v\u00e9grehajt\u00e1s volt.
+warning.endpoint.listener.stale.message.explanation=A rendszer elveti az el\u00e9v\u00fclt t\u00e1rs\u00edtott feladat-v\u00e9grehajt\u00e1si \u00fczenetet, mivel ez nem a leg\u00fajabb v\u00e9grehajt\u00e1s volt.
+warning.endpoint.listener.stale.message.useraction=Semmit sem kell tennie.
+
+error.start.partition.request=CWWKY0215E: A k\u00f6tegelt part\u00edci\u00f3 kiv\u00e9tel miatt nem ind\u00edthat\u00f3 el.  A kiv\u00e9tel: {0}.
+error.start.partition.request.explanation=A k\u00f6tegelt part\u00edci\u00f3 kiv\u00e9tel miatt nem ind\u00edthat\u00f3 el.  
+error.start.partition.request.useraction=\u00c1ll\u00edtsa le a t\u00e1rs\u00edtott feladatot, majd ellen\u0151rizze a JMS kapcsolatot \u00e9s konfigur\u00e1ci\u00f3t, a kapcsol\u00f3d\u00f3 hib\u00e1\u00e9rt pedig tekintse \u00e1t a kiszolg\u00e1l\u00f3napl\u00f3kat.
+
+error.batch.executor.jms.create.failure=CWWKY0216E: Nem hozhat\u00f3 l\u00e9tre JMS kapcsolatgy\u00e1r a t\u00e1voli part\u00edci\u00f3k futtat\u00e1s\u00e1hoz.  A kiv\u00e9tel: {0}
+error.batch.executor.jms.create.failure.explanation=Nem siker\u00fclt csatlakozni a v\u00e1lasz JMS kapcsolatgy\u00e1r\u00e1hoz, amely a t\u00e1voli part\u00edci\u00f3-v\u00e9grehajt\u00e1sok v\u00e1laszainak visszak\u00fcld\u00e9s\u00e9re szolg\u00e1l.  Ez a kiszolg\u00e1l\u00f3 a probl\u00e9ma megold\u00e1s\u00e1ig nem tud majd JMS r\u00e9v\u00e9n elind\u00edtott feladatokat vagy part\u00edci\u00f3kat futtatni.
+error.batch.executor.jms.create.failure.useraction=Ellen\u0151rizze a batchJmsDispatcher elem (az alap\u00e9rtelmezett batchConnectionFactory vagy egy kifejezetten hivatkozott elem) \u00e1ltal be\u00e1ll\u00edtott JMS kapcsolatgy\u00e1r konfigur\u00e1ci\u00f3j\u00e1t.  Ha a felhaszn\u00e1l\u00f3 nem haszn\u00e1l part\u00edci\u00f3kat, akkor a t\u00e1voli JMS part\u00edci\u00f3hoz kapcsol\u00f3d\u00f3 konfigur\u00e1ci\u00f3t el lehet t\u00e1vol\u00edtani a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3b\u00f3l.
+
+error.batch.executor.activate.failure=CWWKY0217E: Kiv\u00e9tel miatt nem lehet aktiv\u00e1lni a JMS v\u00e9grehajt\u00f3t a v\u00e9gponton: {0}
+error.batch.executor.activate.failure.explanation=Kiv\u00e9tel miatt a v\u00e9gponton nem siker\u00fclt aktiv\u00e1lni a JMS v\u00e9grehajt\u00f3t.
+error.batch.executor.activate.failure.useraction=Ez a kiszolg\u00e1l\u00f3 a probl\u00e9ma megold\u00e1s\u00e1ig nem tud majd JMS r\u00e9v\u00e9n elind\u00edtott feladatokat vagy part\u00edci\u00f3kat futtatni.  Ellen\u0151rizze a batchJmsDispatcher elem (az alap\u00e9rtelmezett batchConnectionFactory vagy egy kifejezetten hivatkozott elem) \u00e1ltal be\u00e1ll\u00edtott JMS kapcsolatgy\u00e1r konfigur\u00e1ci\u00f3j\u00e1t.  Ellen\u0151rizze a JMS kapcsolatot, a v\u00e9gpont-konfigur\u00e1ci\u00f3t, a kapcsol\u00f3d\u00f3 hib\u00e1\u00e9rt pedig tekintse \u00e1t a kiszolg\u00e1l\u00f3napl\u00f3kat.
+
+info.batch.events.publish.topic=CWWKY0218I: A k\u00f6tegelt fut\u00e1si k\u00f6rnyezet esem\u00e9nyeket fog k\u00f6zz\u00e9tenni a(z) {0} JMS t\u00e9mak\u00f6rgy\u00f6k\u00e9rbe.
+info.batch.events.publish.topic.explanation=Inform\u00e1ci\u00f3s \u00fczenet. A k\u00f6tegelt fut\u00e1si k\u00f6rnyezet esem\u00e9nyeket fog k\u00f6zz\u00e9tenni a figyelt k\u00f6teg t\u00e9mak\u00f6rgy\u00f6ker\u00e9be.
+info.batch.events.publish.topic.useraction=A k\u00f6teg JMS t\u00e9mak\u00f6rgy\u00f6kere m\u00f3dos\u00edthat\u00f3. Ellen\u0151rizze a batchJmsEvents \u00e1ltal haszn\u00e1lt konfigur\u00e1lt be\u00e1ll\u00edt\u00e1sokat.

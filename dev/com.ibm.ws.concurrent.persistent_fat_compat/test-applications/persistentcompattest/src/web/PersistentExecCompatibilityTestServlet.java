@@ -12,13 +12,10 @@ package web;
 
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.NotSerializableException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Blob;
 import java.sql.Connection;
@@ -38,33 +35,30 @@ import javax.enterprise.concurrent.ManagedTask;
 import javax.enterprise.concurrent.SkippedException;
 import javax.enterprise.concurrent.Trigger;
 import javax.naming.InitialContext;
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import javax.transaction.UserTransaction;
 
+import org.junit.Test;
+
 import com.ibm.websphere.concurrent.persistent.AutoPurge;
 import com.ibm.websphere.concurrent.persistent.PersistentExecutor;
 import com.ibm.websphere.concurrent.persistent.TaskStatus;
 
+import componenttest.annotation.AllowedFFDC;
+import componenttest.app.FATServlet;
 import ejb.MyTimerEJBInWAR;
 
-@WebServlet("/*")
-public class PersistentExecCompatibilityTestServlet extends HttpServlet {
+@WebServlet(urlPatterns = "/PersistentExecCompatibilityTestServlet")
+public class PersistentExecCompatibilityTestServlet extends FATServlet {
     private static final long serialVersionUID = 8447513765214641067L;
 
     /**
      * Interval in milliseconds between polling for task results.
      */
     private static final long POLL_INTERVAL = 200;
-
-    /**
-     * Message written to servlet to indicate that is has been successfully invoked.
-     */
-    private static final String SUCCESS_MESSAGE = "COMPLETED SUCCESSFULLY";
 
     /**
      * Maximum number of nanoseconds to wait for a task to finish.
@@ -92,34 +86,6 @@ public class PersistentExecCompatibilityTestServlet extends HttpServlet {
 
     @Resource
     private UserTransaction tran;
-
-    /**
-     * Invokes test name found in "test" parameter passed to servlet.
-     */
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String test = request.getParameter("test");
-        PrintWriter out = response.getWriter();
-
-        try {
-            out.println(getClass().getSimpleName() + " is starting " + test + "<br>");
-            System.out.println("-----> " + test + " starting");
-            getClass().getMethod(test, HttpServletRequest.class, PrintWriter.class).invoke(this, request, out);
-            System.out.println("<----- " + test + " successful");
-            out.println(test + " " + SUCCESS_MESSAGE);
-        } catch (Throwable x) {
-            if (x instanceof InvocationTargetException)
-                x = x.getCause();
-            System.out.println("<----- " + test + " failed:");
-            x.printStackTrace(System.out);
-            out.println("<pre>ERROR in " + test + ":");
-            x.printStackTrace(out);
-            out.println("</pre>");
-        } finally {
-            out.flush();
-            out.close();
-        }
-    }
 
     /**
      * Utility method that reads a task from a file within the application (/WEB-INF/serialized/*.ser)
@@ -212,7 +178,8 @@ public class PersistentExecCompatibilityTestServlet extends HttpServlet {
      * Execute a Callable task that is also a Trigger
      * which was scheduled and persisted with the 8.5.5.6 release.
      */
-    public void testExecuteCallableTrigger_8_5_5_6(HttpServletRequest request, PrintWriter out) throws Exception {
+    @Test
+    public void testExecuteCallableTrigger_8_5_5_6(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String taskName = "CallableTrigger-8.5.5.6";
         long taskId = insertTaskEntry(request, taskName);
 
@@ -235,7 +202,8 @@ public class PersistentExecCompatibilityTestServlet extends HttpServlet {
      * Execute a Callable task that runs according to a Trigger
      * which was scheduled and persisted with the 8.5.5.6 release.
      */
-    public void testExecuteCallableWithTrigger_8_5_5_6(HttpServletRequest request, PrintWriter out) throws Exception {
+    @Test
+    public void testExecuteCallableWithTrigger_8_5_5_6(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String taskName = "CallableWithTrigger-8.5.5.6";
         long taskId = insertTaskEntry(request, taskName);
 
@@ -258,7 +226,8 @@ public class PersistentExecCompatibilityTestServlet extends HttpServlet {
      * Execute an EJB persistent timer
      * which was scheduled and persisted with the 8.5.5.6 release.
      */
-    public void testExecuteEJBTimer_8_5_5_6(HttpServletRequest request, PrintWriter out) throws Exception {
+    @Test
+    public void testExecuteEJBTimer_8_5_5_6(HttpServletRequest request, HttpServletResponse response) throws Exception {
         MyTimerEJBInWAR ejb = (MyTimerEJBInWAR) new InitialContext().lookup("java:global/persistentcompattest/MyTimerEJBInWAR!ejb.MyTimerEJBInWAR");
 
         String name = "EJBTimer-8.5.5.6";
@@ -276,7 +245,8 @@ public class PersistentExecCompatibilityTestServlet extends HttpServlet {
      * Execute a Runnable task with a fixed delay between executions
      * which was scheduled and persisted with the 8.5.5.6 release.
      */
-    public void testExecuteFixedDelayTask_8_5_5_6(HttpServletRequest request, PrintWriter out) throws Exception {
+    @Test
+    public void testExecuteFixedDelayTask_8_5_5_6(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String taskName = "FixedDelayTask-8.5.5.6";
         long taskId = insertTaskEntry(request, taskName);
 
@@ -302,7 +272,8 @@ public class PersistentExecCompatibilityTestServlet extends HttpServlet {
      * Execute a Runnable task at a fixed rate
      * which was scheduled and persisted with the 8.5.5.6 release.
      */
-    public void testExecuteFixedRateTask_8_5_5_6(HttpServletRequest request, PrintWriter out) throws Exception {
+    @Test
+    public void testExecuteFixedRateTask_8_5_5_6(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String taskName = "FixedRateTask-8.5.5.6";
         long taskId = insertTaskEntry(request, taskName);
 
@@ -328,7 +299,8 @@ public class PersistentExecCompatibilityTestServlet extends HttpServlet {
      * Execute a Callable task that runs once
      * which was scheduled and persisted with the 8.5.5.6 release.
      */
-    public void testExecuteOneShotCallable_8_5_5_6(HttpServletRequest request, PrintWriter out) throws Exception {
+    @Test
+    public void testExecuteOneShotCallable_8_5_5_6(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String taskName = "OneShotCallable-8.5.5.6";
         long taskId = insertTaskEntry(request, taskName);
 
@@ -351,7 +323,8 @@ public class PersistentExecCompatibilityTestServlet extends HttpServlet {
      * Query for status of a task that fails when it runs
      * which previously executed on the 8.5.5.6 release.
      */
-    public void testGetFailingRunnable_8_5_5_6(HttpServletRequest request, PrintWriter out) throws Exception {
+    @Test
+    public void testGetFailingRunnable_8_5_5_6(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String taskName = "FailingRunnable-8.5.5.6";
         long taskId = insertTaskEntry(request, taskName);
 
@@ -372,7 +345,8 @@ public class PersistentExecCompatibilityTestServlet extends HttpServlet {
      * Query for status of a task that was skipped
      * which previously attempted on the 8.5.5.6 release.
      */
-    public void testGetSkippedCallable_8_5_5_6(HttpServletRequest request, PrintWriter out) throws Exception {
+    @Test
+    public void testGetSkippedCallable_8_5_5_6(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String taskName = "SkippedCallable-8.5.5.6";
         long taskId = insertTaskEntry(request, taskName);
 
@@ -393,7 +367,8 @@ public class PersistentExecCompatibilityTestServlet extends HttpServlet {
      * Query for status of a task that was skipped due to failure of skipRun
      * which was previously attempted on the 8.5.5.6 release.
      */
-    public void testGetSkipRunFailure_8_5_5_6(HttpServletRequest request, PrintWriter out) throws Exception {
+    @Test
+    public void testGetSkipRunFailure_8_5_5_6(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String taskName = "SkipRunFailure-8.5.5.6";
         long taskId = insertTaskEntry(request, taskName);
 
@@ -414,7 +389,8 @@ public class PersistentExecCompatibilityTestServlet extends HttpServlet {
      * Query for status of task that returns a non-serializable result
      * which was previously executed on the 8.5.5.6 release.
      */
-    public void testGetTaskWithNonSerializableResult_8_5_5_6(HttpServletRequest request, PrintWriter out) throws Exception {
+    @Test
+    public void testGetTaskWithNonSerializableResult_8_5_5_6(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String taskName = "TaskWithNonSerializableResult-8.5.5.6";
         long taskId = insertTaskEntry(request, taskName);
 
@@ -435,7 +411,9 @@ public class PersistentExecCompatibilityTestServlet extends HttpServlet {
      * Schedule and run a task that fails when executed (because we didn't supply an identity name).
      * Persist the task entry to a file.
      */
-    public void testPersistFailingRunnable(HttpServletRequest request, PrintWriter out) throws Exception {
+    @AllowedFFDC("java.lang.NullPointerException") // test intentionally causes NullPointerException by omitting the identity name where a task expects it
+    @Test
+    public void testPersistFailingRunnable(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String taskName = "FailingRunnable-" + VNEXT;
         MapCounterRunnable task = new MapCounterRunnable();
         // Avoid specifying the identity name, which will make this particular task fail when it runs
@@ -465,7 +443,8 @@ public class PersistentExecCompatibilityTestServlet extends HttpServlet {
      * Schedule and skip execution of a task.
      * Persist the task entry to a file.
      */
-    public void testPersistSkippedCallable(HttpServletRequest request, PrintWriter out) throws Exception {
+    @Test
+    public void testPersistSkippedCallable(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String taskName = "SkippedCallable-" + VNEXT;
         CounterCallable task = new CounterCallable();
         task.getExecutionProperties().put(ManagedTask.IDENTITY_NAME, taskName);
@@ -496,7 +475,9 @@ public class PersistentExecCompatibilityTestServlet extends HttpServlet {
      * Schedule and skip execution of a task due to failure of the skipRun method.
      * Persist the task entry to a file.
      */
-    public void testPersistSkipRunFailure(HttpServletRequest request, PrintWriter out) throws Exception {
+    @AllowedFFDC("java.lang.IllegalStateException") // java.lang.IllegalStateException: Intentionally failing skipRun
+    @Test
+    public void testPersistSkipRunFailure(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String taskName = "SkipRunFailure-" + VNEXT;
         CounterCallable task = new CounterCallable();
         task.getExecutionProperties().put(ManagedTask.IDENTITY_NAME, taskName);
@@ -526,7 +507,8 @@ public class PersistentExecCompatibilityTestServlet extends HttpServlet {
     /**
      * Schedule and run a task that produces a non-serializable result. Persist the result to a file.
      */
-    public void testPersistTaskWithNonSerializableResult(HttpServletRequest request, PrintWriter out) throws Exception {
+    @Test
+    public void testPersistTaskWithNonSerializableResult(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String taskName = "TaskWithNonSerializableResult-" + VNEXT;
         NonSerializableResultTask task = new NonSerializableResultTask();
         TaskStatus<ThreadGroup> status = executor.submit(task);
@@ -553,7 +535,8 @@ public class PersistentExecCompatibilityTestServlet extends HttpServlet {
     /**
      * Schedule a Callable task that is also a Trigger.
      */
-    public void testScheduleCallableTrigger(HttpServletRequest request, PrintWriter out) throws Exception {
+    @Test
+    public void testScheduleCallableTrigger(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String taskName = "CallableTrigger-" + VNEXT;
         CounterCallableTriggerTask task = new CounterCallableTriggerTask();
         task.getExecutionProperties().put(ManagedTask.IDENTITY_NAME, taskName);
@@ -565,7 +548,8 @@ public class PersistentExecCompatibilityTestServlet extends HttpServlet {
     /**
      * Schedule a Callable task to run according to a Trigger.
      */
-    public void testScheduleCallableWithTrigger(HttpServletRequest request, PrintWriter out) throws Exception {
+    @Test
+    public void testScheduleCallableWithTrigger(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String taskName = "CallableWithTrigger-" + VNEXT;
         Callable<Date> task = new ExecTimeCallable();
         Trigger trigger = new TwoTimeTrigger();
@@ -576,7 +560,8 @@ public class PersistentExecCompatibilityTestServlet extends HttpServlet {
     /**
      * Schedule a persistent EJB timer.
      */
-    public void testScheduleEJBTimer(HttpServletRequest request, PrintWriter out) throws Exception {
+    @Test
+    public void testScheduleEJBTimer(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String name = "EJBTimer-" + VNEXT;
         MyTimerEJBInWAR ejb = (MyTimerEJBInWAR) new InitialContext().lookup("java:global/persistentcompattest/MyTimerEJBInWAR!ejb.MyTimerEJBInWAR");
         Timer timer = ejb.scheduleTimer(name, 4);
@@ -593,7 +578,8 @@ public class PersistentExecCompatibilityTestServlet extends HttpServlet {
     /**
      * Schedule a Runnable task to run with a fixed delay between executions.
      */
-    public void testScheduleFixedDelayTask(HttpServletRequest request, PrintWriter out) throws Exception {
+    @Test
+    public void testScheduleFixedDelayTask(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String taskName = "FixedDelayTask-" + VNEXT;
         MapCounterRunnable task = new MapCounterRunnable();
         task.getExecutionProperties().put(ManagedTask.IDENTITY_NAME, taskName);
@@ -604,7 +590,8 @@ public class PersistentExecCompatibilityTestServlet extends HttpServlet {
     /**
      * Schedule a Runnable task to run at a fixed rate.
      */
-    public void testScheduleFixedRateTask(HttpServletRequest request, PrintWriter out) throws Exception {
+    @Test
+    public void testScheduleFixedRateTask(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String taskName = "FixedRateTask-" + VNEXT;
         MapCounterRunnable task = new MapCounterRunnable();
         task.getExecutionProperties().put(ManagedTask.IDENTITY_NAME, taskName);
@@ -615,7 +602,8 @@ public class PersistentExecCompatibilityTestServlet extends HttpServlet {
     /**
      * Schedule a Callable task to run once.
      */
-    public void testScheduleOneShotCallable(HttpServletRequest request, PrintWriter out) throws Exception {
+    @Test
+    public void testScheduleOneShotCallable(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String taskName = "OneShotCallable-" + VNEXT;
         CounterCallable task = new CounterCallable();
         task.getExecutionProperties().put(ManagedTask.IDENTITY_NAME, taskName);
@@ -627,7 +615,8 @@ public class PersistentExecCompatibilityTestServlet extends HttpServlet {
     /**
      * Test that the sequence is created with the proper prefix.
      */
-    public void testSequenceCreated(HttpServletRequest request, PrintWriter out) throws Exception {
+    @Test
+    public void testSequenceCreated(HttpServletRequest request, HttpServletResponse response) throws Exception {
         // Use the persistent executor to ensure tables/sequence are lazily created in case this test runs first
         schedulerWithContext.getStatus(1);
 

@@ -20,6 +20,6 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 
-error.badVersion=CWWKW0900E: Nu ruleaz\u0103 versiunea Java corect\u0103. Mediul runtime necesit\u0103 Java 7 sau superior.
+error.badVersion=CWWKW0900E: Nu ruleaz\u0103 versiunea Java corect\u0103. Mediul runtime necesit\u0103 Java 8 sau superior.
 error.badVersion.explanation=Fie ruleaz\u0103 o versiune Java nesuportat\u0103, fie variabila de sistem JAVA_HOME este setat\u0103 s\u0103 indice spre o versiune mai veche de Java.
-error.badVersion.useraction= Moderniza\u0163i versiunea Java la Java 7, sau ajusta\u0163i variabila de sistem JAVA_HOME s\u0103 indice la Java 7.
+error.badVersion.useraction= Moderniza\u0163i versiunea Java la Java 8, sau ajusta\u0163i variabila de sistem JAVA_HOME s\u0103 indice la Java 8.

@@ -45,7 +45,7 @@ public class PrometheusMetricWriter implements OutputWriter {
     private static final TraceComponent tc = Tr.register(PrometheusMetricWriter.class);
 
     private final Writer writer;
-    private final Locale locale;
+    protected final Locale locale;
 
     public PrometheusMetricWriter(Writer writer, Locale locale) {
         this.writer = writer;
@@ -87,16 +87,16 @@ public class PrometheusMetricWriter implements OutputWriter {
         serialize(builder);
     }
 
-    private void writeMetricsAsPrometheus(StringBuilder builder, String registryName) throws NoSuchRegistryException, EmptyRegistryException {
+    protected void writeMetricsAsPrometheus(StringBuilder builder, String registryName) throws NoSuchRegistryException, EmptyRegistryException {
         writeMetricMapAsPrometheus(builder, registryName, Util.getMetricsAsMap(registryName), Util.getMetricsMetadataAsMap(registryName));
     }
 
-    private void writeMetricsAsPrometheus(StringBuilder builder, String registryName,
-                                          String metricName) throws NoSuchRegistryException, NoSuchMetricException, EmptyRegistryException {
+    protected void writeMetricsAsPrometheus(StringBuilder builder, String registryName,
+                                            String metricName) throws NoSuchRegistryException, NoSuchMetricException, EmptyRegistryException {
         writeMetricMapAsPrometheus(builder, registryName, Util.getMetricsAsMap(registryName, metricName), Util.getMetricsMetadataAsMap(registryName));
     }
 
-    private void writeMetricMapAsPrometheus(StringBuilder builder, String registryName, Map<MetricID, Metric> metricMap, Map<String, Metadata> metricMetadataMap) {
+    protected void writeMetricMapAsPrometheus(StringBuilder builder, String registryName, Map<MetricID, Metric> metricMap, Map<String, Metadata> metricMetadataMap) {
         for (Entry<MetricID, Metric> entry : metricMap.entrySet()) {
             Metric metric = entry.getValue();
             MetricID metricID = entry.getKey();
@@ -242,7 +242,7 @@ public class PrometheusMetricWriter implements OutputWriter {
         }
     }
 
-    private void serialize(StringBuilder builder) throws IOException {
+    protected void serialize(StringBuilder builder) throws IOException {
         try {
             writer.write(builder.toString());
         } finally {

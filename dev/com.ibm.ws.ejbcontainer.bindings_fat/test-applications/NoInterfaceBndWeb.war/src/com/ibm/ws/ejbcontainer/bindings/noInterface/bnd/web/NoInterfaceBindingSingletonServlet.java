@@ -15,7 +15,6 @@ import static org.junit.Assert.assertEquals;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
-import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.servlet.annotation.WebServlet;
 
@@ -93,7 +92,9 @@ public class NoInterfaceBindingSingletonServlet extends NoInterfaceBindingAbstra
     public void testUniqueNoInterfaceDefaultBindings_NoInterfaceBindingSingleton() throws Exception {
         String beanName = BasicNoInterfaceSGBean.class.getSimpleName();
         String beanInterface = BasicNoInterfaceSGBean.class.getName();
-        ivContext = (Context) new InitialContext().lookup("");
+        // NOTE: old lookup does not work, JNDI issue raised: #9099
+        //ivContext = (Context) new InitialContext().lookup("");
+        ivContext = new InitialContext();
 
         // Lookup short default of basic No-Interface bean - should find
         BasicNoInterfaceSGBean bbean = (BasicNoInterfaceSGBean) ivContext.lookup("ejblocal:" + beanInterface);

@@ -112,10 +112,12 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
         _failureScopeController = Configuration.getFailureScopeController();
 
         _subordinate = true; /* @LI3187M */
+
+        // Set this BEFORE initializeTran()
+        _globalId = globalID;
+
         final TxPrimaryKey pk = initializeTran(timeout);
         _xid = new XidImpl(pk);
-
-        _globalId = globalID;
 
         if (traceOn) {
             if (tc.isEntryEnabled())
@@ -1163,6 +1165,6 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
     @Override
     public String toString() {
         return super.toString() + ",active=" + _activeAssociations + ",suspended=" + _suspendedAssociations + ","
-               + (_thread != null ? "thread=" + String.format("%08X", _thread.getId()) : "Not on a thread");
+               + (_thread != null ? "thread=" + String.format("%08X", _thread.getId()) : "Not on a thread, globalId=" + _globalId);
     }
 }

@@ -138,13 +138,14 @@ Include-Resource: \
 	com.ibm.ws.webcontainer.security;version=latest,\
 	com.ibm.ws.webcontainer;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
-        com.ibm.ws.security.openidconnect.clients.common;version=latest
-        
+	com.ibm.ws.security.openidconnect.clients.common;version=latest,\
+	org.glassfish:javax.json;version=1.0
+
 -testpath: \
     ../build.sharedResources/lib/junit/old/junit.jar;version=file, \
     com.ibm.ws.junit.extensions;version=latest, \
     org.jmock:jmock-legacy;version=2.5.0, \
-    cglib:cglib-nodep;version=3.2.10, \
+    cglib:cglib-nodep;version=3.3.0, \
     org.hamcrest:hamcrest-all;version=1.3, \
     org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
     org.jmock:jmock;strategy=exact;version=2.5.1, \

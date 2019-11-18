@@ -23,7 +23,10 @@ Export-Package: \
   com.ibm.ws.webcontainer.security.context, \
   com.ibm.ws.webcontainer.security.internal, \
   com.ibm.ws.webcontainer.security.metadata, \
-  com.ibm.ws.webcontainer.security.util
+  com.ibm.ws.webcontainer.security.util, \
+  com.ibm.ws.webcontainer.security.oauth20, \
+  com.ibm.ws.webcontainer.security.openid20, \
+  com.ibm.ws.webcontainer.security.openidconnect
 
 Import-Package: com.ibm.ws.common.internal.encoder, !com.ibm.ws.kernel.boot.cmdline, *
 
@@ -86,7 +89,6 @@ instrument.classesExcludes: com/ibm/ws/webcontainer/security/resources/*.class
 	com.ibm.ws.security.audit.utils;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.security.mp.jwt.proxy;version=latest
-	
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
@@ -95,7 +97,7 @@ instrument.classesExcludes: com/ibm/ws/webcontainer/security/resources/*.class
 	org.jmock:jmock;strategy=exact;version=2.5.1, \
 	org.jmock:jmock-legacy;version=2.5.0, \
 	com.ibm.ws.org.objenesis:objenesis;version=1.0, \
-	cglib:cglib-nodep;version=3.2.10, \
+	cglib:cglib-nodep;version=3.3.0, \
 	com.ibm.ws.junit.extensions;version=latest, \
 	org.apache.httpcomponents:httpclient;version=4.4.5, \
 	org.apache.httpcomponents:httpcore;version=4.4.9, \

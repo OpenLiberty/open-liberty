@@ -33,6 +33,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.rest.handler.internal.ExtendedRESTRequestImpl;
 import com.ibm.ws.rest.handler.internal.helper.HandlerPath;
+import com.ibm.ws.security.audit.Audit;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSetMap;
 import com.ibm.wsspi.kernel.service.utils.ServiceAndServiceReferencePair;
@@ -89,7 +90,8 @@ public class RESTHandlerContainerImpl implements RESTHandlerContainer {
     /**
      * This class is used, rather than a simple Object, as suggested by findbugs if there's ever a deadlock (helps serviceability)
      */
-    private class HandlerKeyMapSync {}
+    private class HandlerKeyMapSync {
+    }
 
     @Activate
     protected void activate(ComponentContext context, Map<String, Object> properties) {
@@ -476,13 +478,25 @@ public class RESTHandlerContainerImpl implements RESTHandlerContainer {
                         response.setResponseHeader("Allow", e.getAllowedMethods());
                         response.sendError(e.getStatusCode());
                     } catch (RESTHandlerJsonException e) {
-                        if (e.isMessageContentJSON()) {
-                            response.setStatus(e.getStatusCode());
-                            response.setContentType("application/json");
-                            response.setCharacterEncoding("UTF-8");
-                            response.getWriter().write(e.getMessage());
-                        } else {
-                            response.sendError(e.getStatusCode(), e.getMessage());
+                        // If getOutputStream has been called we cannot use getWriter
+                        try {
+                            if (e.isMessageContentJSON()) {
+                                response.setStatus(e.getStatusCode());
+                                response.setContentType("application/json");
+                                response.setCharacterEncoding("UTF-8");
+                                response.getWriter().write(e.getMessage());
+                            } else {
+                                response.sendError(e.getStatusCode(), e.getMessage());
+                            }
+                        } catch (IllegalStateException stateException) {
+                            if (e.isMessageContentJSON()) {
+                                response.setStatus(e.getStatusCode());
+                                response.setContentType("application/json");
+                                response.setCharacterEncoding("UTF-8");
+                                response.getOutputStream().write(e.getMessage().getBytes());
+                            } else {
+                                response.sendError(e.getStatusCode(), e.getMessage());
+                            }
                         }
                     }
                 }
@@ -505,17 +519,20 @@ public class RESTHandlerContainerImpl implements RESTHandlerContainer {
     /**
      * Create any required auditing records for the request and response.
      *
-     * @param request The REST request.
+     * @param request  The REST request.
      * @param response The generated response.
      */
     private static void auditResponse(RESTRequest request, RESTResponse response) {
-        if (response.getStatus() == 403) {
-            // TODO AUDIT AUTHORIZATION
-            // Note: It appears that WebAppSecurityCollaborator audits some of these:
-            // [7/2/19 15:43:31:670 CDT] 00000037 id=00000000 .ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl A CWWKS9104A: Authorization failed for user user:MicroProfileMetrics while invoking com.ibm.ws.management.security.resource on /. The user is not granted access to any of the required roles: [Administrator, Reader].
-            // TODO Should have a message like CWWKS9104A (above).
-            Tr.debug(tc, "Authorization failed for user '" + request.getUserPrincipal() + "' while invoking " + request.getMethod() + " on " + request.getContextPath()
-                         + request.getPath() + ". The user is not granted any of the required roles: " + response.getRequiredRoles());
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            int code = response.getStatus();
+            if (code == 403) {
+                Tr.debug(tc, "Auditing REST request for " + request.getMethod() + " at " + request.getCompleteURL() + " for " + request.getUserPrincipal() + " which requires "
+                             + response.getRequiredRoles() + ". Returned status: 403");
+            } else {
+                Tr.debug(tc, "Auditing REST request for " + request.getMethod() + " at " + request.getCompleteURL() + " for " + request.getUserPrincipal() + ". Returned status: "
+                             + code);
+            }
         }
+        Audit.audit(Audit.EventID.SECURITY_REST_HANDLER_AUTHZ, request, response, response.getStatus());
     }
 }

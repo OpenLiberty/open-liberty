@@ -21,8 +21,12 @@ src: \
 	test-applications/EJBinWARBean.jar/src, \
 	test-applications/EJBinWARIntf.jar/src, \
 	test-applications/EJBinWARTest.war/src, \
+	test-applications/JNDINameEJB.jar/src, \
+	test-applications/JNDINameWeb.war/src, \
 	test-applications/NoInterfaceBndBean.jar/src, \
-	test-applications/NoInterfaceBndWeb.war/src
+	test-applications/NoInterfaceBndWeb.war/src, \
+	test-applications/SimpleBindingNameEJB.jar/src, \
+	test-applications/SimpleBindingNameWeb.war/src
 
 fat.project: true
 

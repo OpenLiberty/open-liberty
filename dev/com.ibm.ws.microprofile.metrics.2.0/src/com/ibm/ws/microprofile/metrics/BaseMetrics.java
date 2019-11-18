@@ -30,12 +30,13 @@ import com.ibm.ws.microprofile.metrics.impl.CounterImpl;
 import com.ibm.ws.microprofile.metrics.impl.SharedMetricRegistries;
 
 public class BaseMetrics {
-    private static BaseMetrics baseMetrics = null;
-    private static String BASE = MetricRegistry.Type.BASE.getName();
-    MBeanServer mbs;
-    private static Set<String> gcObjectNames = new HashSet<String>();
 
-    private static SharedMetricRegistries SHARED_METRIC_REGISTRY;
+    protected static BaseMetrics baseMetrics = null;
+    protected static String BASE = MetricRegistry.Type.BASE.getName();
+    public MBeanServer mbs;
+    protected static Set<String> gcObjectNames = new HashSet<String>();
+
+    protected static SharedMetricRegistries SHARED_METRIC_REGISTRY;
 
     public static synchronized BaseMetrics getInstance(SharedMetricRegistries sharedMetricRegistry) {
         SHARED_METRIC_REGISTRY = sharedMetricRegistry;
@@ -114,6 +115,10 @@ public class BaseMetrics {
 
         registry.register(Metadata.builder().withName("cpu.processCpuLoad").withDisplayName("Process CPU Load").withDescription("cpu.processCpuLoad.description").withType(MetricType.GAUGE).withUnit(MetricUnits.PERCENT).build(),
                           new BMGauge<Number>(BaseMetricConstants.OS_OBJECT_TYPE, "ProcessCpuLoad"));
+
+        // Leaving out until new spec is released
+//        registry.register(Metadata.builder().withName("cpu.processCpuTime").withDisplayName("Process CPU Time").withDescription("cpu.processCpuTime.description").withType(MetricType.GAUGE).withUnit(MetricUnits.NANOSECONDS).build(),
+//                          new BMGauge<Number>(BaseMetricConstants.OS_OBJECT_TYPE, "ProcessCpuTime"));
 
         //GARBAGE COLLECTOR METRICS
         for (String gcName : gcObjectNames) {

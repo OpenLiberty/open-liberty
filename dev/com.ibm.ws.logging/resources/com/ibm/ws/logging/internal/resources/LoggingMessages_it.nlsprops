@@ -141,16 +141,16 @@ JSON_FIELDS_FORMAT_WARNING.explanation=L'associazione del nome campo di registra
 JSON_FIELDS_FORMAT_WARNING.useraction=Assicurarsi che il formato della propriet\u00e0 di associazione del nome campo di registrazione JSON sia corretto. L'associazione del nome campo di registrazione JSON pu\u00f2 essere specificata in vari modi, indicati nella documentazione per la configurazione della registrazione.
 
 JSON_FIELDS_FORMAT_WARNING_2=TRAS3008W: La propriet\u00e0 di associazione del nome campo di registrazione JSON ha un numero troppo alto o troppo basso di token in una voce.
-JSON_FIELDS_FORMAT_WARNING_2.explanation=La propriet\u00e0 di associazione del nome campo di registrazione JSON deve essere nel formato knownFieldName:newFieldName o eventType:knownFieldName:newFieldName.
-JSON_FIELDS_FORMAT_WARNING_2.useraction=La propriet\u00e0 di associazione del nome campo di registrazione JSON deve essere nel formato knownFieldName:newFieldName o eventType:knownFieldName:newFieldName.
+JSON_FIELDS_FORMAT_WARNING_2.explanation=La propriet\u00e0 di associazione del nome campo di registrazione JSON deve essere nel formato defaultFieldName:newFieldName o source:defaultFieldName:newFieldName.
+JSON_FIELDS_FORMAT_WARNING_2.useraction=La propriet\u00e0 di associazione del nome campo di registrazione JSON deve essere nel formato defaultFieldName:newFieldName o source:defaultFieldName:newFieldName.
 
-JSON_FIELDS_NO_MATCH=TRAS3009W: Il nome del campo di registrazione JSON fornito non corrisponde a uno dei nomi campo noti per gli eventi specificati.
+JSON_FIELDS_NO_MATCH=TRAS3009W: Il nome del campo di registrazione JSON fornito non corrisponde a uno dei nomi campo noti per le origini specificate
 JSON_FIELDS_NO_MATCH.explanation=Il nome del campo di registrazione JSON fornito non corrisponde a uno dei nomi campo noti.
 JSON_FIELDS_NO_MATCH.useraction=Fornire un nome campo di registrazione JSON che corrisponda a uno dei campi noti (ad es. message, ibm_datetime, ibm_sequence)
 
-JSON_FIELDS_INCORRECT_EVENT_TYPE=TRAS3010W: Il tipo di evento fornito non corrisponde a uno dei tipi di evento noti.
-JSON_FIELDS_INCORRECT_EVENT_TYPE.explanation=I tipi di evento accettati sono: liberty_message, liberty_trace, liberty_accesslog, liberty_ffdc
-JSON_FIELDS_INCORRECT_EVENT_TYPE.useraction=I tipi di evento accettati sono: liberty_message, liberty_trace, liberty_accesslog, liberty_ffdc
+JSON_FIELDS_INCORRECT_EVENT_TYPE=TRAS3010W: L'identificativo dell'origine di associazione del campo di registrazione JSON fornito non corrisponde a una delle origini note
+JSON_FIELDS_INCORRECT_EVENT_TYPE.explanation=Le origini accettate sono: message, trace, accessLog, ffdc, audit
+JSON_FIELDS_INCORRECT_EVENT_TYPE.useraction=Le origini accettate sono: message, trace, accessLog, ffdc, audit
 
 JSON_FIELDS_INVALID_CHARACHTER=TRAS3011W: \u00c8 stato fornito un carattere non valido nella propriet\u00e0 di associazione del nome campo di registrazione JSON.
 JSON_FIELDS_INVALID_CHARACHTER.explanation= Nella propriet\u00e0 di associazione del nome campo di registrazione JSON sono accettati solo le lettere, i numeri e :

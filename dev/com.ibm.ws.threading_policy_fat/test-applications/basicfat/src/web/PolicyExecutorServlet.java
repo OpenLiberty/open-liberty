@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1710,9 +1710,12 @@ public class PolicyExecutorServlet extends FATServlet {
      */
     @Test
     public void testGroupedSubmits() throws Exception {
+        // Do not change these numbers without complete awareness of the consequences.
+        // If not balanced properly, it becomes possible for the tasks from the various groups to overlap sufficiently
+        // such that a timing window is reached where too many parties can arrive at a phase of the phaser.
         final int groupSize = 8;
         final int nextGroupOn = 6;
-        final int numGroups = 5;
+        final int numGroups = 4;
 
         ExecutorService executor = provider.create("testGroupedSubmits")
                         .maxConcurrency(4)

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.kernel.service.location.internal;
 
-import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.regex.Matcher;
@@ -19,7 +18,6 @@ import java.util.regex.Pattern;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.staticvalue.StaticValue;
 import com.ibm.wsspi.kernel.service.location.MalformedLocationException;
 import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
 import com.ibm.wsspi.kernel.service.location.WsResource;
@@ -36,11 +34,7 @@ public class SymbolRegistry {
     final static Pattern SYMBOL_DEF = Pattern.compile("\\$\\{([^\\$\\(\\)]*?)\\}");
 
     /** Singleton instance */
-    private final static StaticValue<SymbolRegistry> instance = StaticValue.createStaticValue(new Callable<SymbolRegistry>() {
-        public SymbolRegistry call() {
-            return new SymbolRegistry();
-        }
-    });
+    private final static SymbolRegistry instance = new SymbolRegistry();
 
     final static int RECURSE_LIMIT = 10;
 
@@ -54,7 +48,7 @@ public class SymbolRegistry {
      */
     @Trivial
     public static SymbolRegistry getRegistry() {
-        return instance.get();
+        return instance;
     }
 
     /**
@@ -123,7 +117,7 @@ public class SymbolRegistry {
         SymRegEntry entry = new SymRegEntry(EntryType.RESOURCE, symbol, value);
         SymRegEntry prev = stringToEntry.putIfAbsent(symbol, entry);
         if (prev == null && TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
-            Tr.event(instance.get(), tc, EVENT_ADDED + symbol + EVENT_ADDED_MIDDLE + value);
+            Tr.event(instance, tc, EVENT_ADDED + symbol + EVENT_ADDED_MIDDLE + value);
 
         return prev == null;
     }
@@ -137,7 +131,7 @@ public class SymbolRegistry {
                 rootPaths.add(entry);
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
-                Tr.event(instance.get(), tc, EVENT_ADDED + symbol + EVENT_ADDED_MIDDLE + value);
+                Tr.event(instance, tc, EVENT_ADDED + symbol + EVENT_ADDED_MIDDLE + value);
 
             return true;
         }
@@ -148,7 +142,7 @@ public class SymbolRegistry {
         SymRegEntry entry = new SymRegEntry(EntryType.STRING, symbol, value);
         SymRegEntry prev = stringToEntry.putIfAbsent(symbol, entry);
         if (prev == null && TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
-            Tr.event(instance.get(), tc, EVENT_ADDED + symbol + EVENT_ADDED_MIDDLE + value);
+            Tr.event(instance, tc, EVENT_ADDED + symbol + EVENT_ADDED_MIDDLE + value);
 
         return prev == null;
     }
@@ -158,9 +152,9 @@ public class SymbolRegistry {
         SymRegEntry prev = stringToEntry.put(symbol, entry);
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             if (prev == null) {
-                Tr.event(instance.get(), tc, EVENT_ADDED + symbol + EVENT_ADDED_MIDDLE + value);
+                Tr.event(instance, tc, EVENT_ADDED + symbol + EVENT_ADDED_MIDDLE + value);
             } else {
-                Tr.event(instance.get(), tc, EVENT_REPLACED + symbol + EVENT_ADDED_MIDDLE + value);
+                Tr.event(instance, tc, EVENT_REPLACED + symbol + EVENT_ADDED_MIDDLE + value);
             }
         }
     }
@@ -175,7 +169,7 @@ public class SymbolRegistry {
         stringToEntry.clear();
         rootPaths.clear();
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
-            Tr.event(instance.get(), tc, "Symbol registry cleared");
+            Tr.event(instance, tc, "Symbol registry cleared");
     }
 
     /**

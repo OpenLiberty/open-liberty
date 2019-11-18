@@ -12,13 +12,23 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <repositories>
+    	<repository>
+    		<id>ibmdhe</id>
+    		<name>IBM_DHE File Server</name>
+    		<url>http://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo</url>
+    		<releases><enabled>true</enabled><updatePolicy>always</updatePolicy></releases>
+            <snapshots><enabled>true</enabled><updatePolicy>always</updatePolicy></snapshots>
+    	</repository>
+    </repositories>
+
     <groupId>com.ibm.ws.microprofile.graphql</groupId>
     <artifactId>tck.runner.tck</artifactId>
     <version>1.0-SNAPSHOT</version>
     <name>MicroProfile GraphQL TCK Runner TCK Module</name>
 
     <properties>
-        <microprofile.graphql.version>1.0-M3</microprofile.graphql.version>
+        <microprofile.graphql.version>1.0.0-20191112</microprofile.graphql.version>
         <arquillian.version>1.1.13.Final</arquillian.version>
 
         <!-- the below is used in arquillian.xml -->

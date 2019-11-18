@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,7 +39,7 @@ class WebAdminSecurityConfigImpl implements WebAppSecurityConfig {
     private final Boolean displayAuthenticationRealm = false;
     private final Boolean httpOnlyCookies = true;
     private final Boolean webAlwaysLogin = false;
-    private final Boolean ssoRequiresSSL = false;
+    private final Boolean ssoRequiresSSL = true;
     private final String ssoDomainNames = null;
     private final Boolean ssoUseDomainFromURL = false;
     private final Boolean useLtpaSSOForJaspic = false;
@@ -50,7 +50,7 @@ class WebAdminSecurityConfigImpl implements WebAppSecurityConfig {
     // it no longer can failover to FORM.
     private final Boolean allowFailOverToAppDefined = false;
     private final Boolean includePathInWASReqURL = false;
-    private final Boolean trackLoggedOutSSOCookies = false;
+    private final Boolean trackLoggedOutSSOCookies = true;
     private final Boolean useOnlyCustomCookieName = false;
 
     WebAdminSecurityConfigImpl(Map<String, Object> newProperties) {

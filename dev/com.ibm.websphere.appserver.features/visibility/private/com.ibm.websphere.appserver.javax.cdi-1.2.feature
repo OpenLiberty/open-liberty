@@ -6,3 +6,4 @@ singleton=true
 -bundles=com.ibm.websphere.javaee.cdi.1.2; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.enterprise:cdi-api:1.2"
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

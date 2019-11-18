@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,7 @@ import javax.xml.ws.WebServiceProvider;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.annotations.WebAnnotations;
+import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedModuleInfo;
 import com.ibm.ws.jaxws.JaxWsConstants;
 import com.ibm.ws.jaxws.metadata.EndpointType;
@@ -70,7 +71,6 @@ public class WebJaxWsModuleInfoBuilder extends AbstractJaxWsModuleInfoBuilder {
 
     @Override
     public ExtendedModuleInfo build(ModuleMetaData moduleMetaData, Container containerToAdapt, JaxWsModuleInfo jaxWsModuleInfo) throws UnableToAdaptException {
-
         // check if it is router web module for EJB based Web services
         if (JaxWsUtils.isEJBModule(JaxWsMetaDataManager.getJaxWsModuleMetaData(moduleMetaData).getModuleContainer())) {
             return null;
@@ -84,60 +84,64 @@ public class WebJaxWsModuleInfoBuilder extends AbstractJaxWsModuleInfoBuilder {
             return null;
         }
 
-        WebAnnotations webAnnotations = containerToAdapt.adapt(WebAnnotations.class);
+        WebAppConfig webAppConfig = containerToAdapt.adapt(WebAppConfig.class);
+
+        WebAnnotations webAnnotations = AnnotationsBetaHelper.getWebAnnotations(containerToAdapt);
         InfoStore infoStore = webAnnotations.getInfoStore();
+
+        AnnotationTargets_Targets annotationTargets;
+        if ( !webAppConfig.isMetadataComplete() ) {
+            annotationTargets = webAnnotations.getAnnotationTargets();
+        } else {
+            annotationTargets = null;
+        }
 
         EndpointInfoBuilderContext endpointInfoBuilderContext = new EndpointInfoBuilderContext(infoStore, containerToAdapt);
         JaxWsModuleInfoBuilderContext jaxWsModuleInfoBuilderContext = new JaxWsModuleInfoBuilderContext(moduleMetaData, containerToAdapt, endpointInfoBuilderContext);
 
-        // Get all servlet name and class pairs in web.xml
         Map<String, String> servletNameClassPairsInWebXML = getServletNameClassPairsInWebXML(containerToAdapt);
         jaxWsModuleInfoBuilderContext.addContextEnv(JaxWsConstants.SERVLET_NAME_CLASS_PAIRS_FOR_EJBSINWAR, servletNameClassPairsInWebXML);
 
-        // call the extensions to extra pre build the jaxWsModuleInfo, eg: endponitInfo for EJBs in War
+        // call the extensions to extra pre build the jaxWsModuleInfo, eg: endpointInfo for EJBs in War
         for (JaxWsModuleInfoBuilderExtension extension : extensions) {
             extension.preBuild(jaxWsModuleInfoBuilderContext, jaxWsModuleInfo);
         }
 
-        try {
-            webAnnotations.openInfoStore();
+        webAnnotations.openInfoStore();
 
+        try {
             Set<String> presentedServices = jaxWsModuleInfo.getEndpointImplBeanClassNames();
-            WebAppConfig webAppConfig = containerToAdapt.adapt(WebAppConfig.class);
             setupContextRoot(moduleMetaData, webAppConfig);
             setupVirtualHostConfig(moduleMetaData, webAppConfig);
-            if (webAppConfig.isMetadataComplete()) {
-                // only scan the classes configured in web.xml
-                processClassesInWebXML(endpointInfoBuilder, endpointInfoBuilderContext, webAppConfig, jaxWsModuleInfo, presentedServices);
-            } else {
-                // scan all the classes in the application's classPath
-                Collection<String> implClassNamesInWebXML = servletNameClassPairsInWebXML.values();
 
-                AnnotationTargets_Targets annotationTargets = webAnnotations.getAnnotationTargets();
-                Set<String> serviceClassNames = new HashSet<String>();
+            if ( !webAppConfig.isMetadataComplete() ) {
+                Collection<String> implClassNamesInWebXML = servletNameClassPairsInWebXML.values();
 
                 // d95160: The prior implementation obtained classes from the SEED location.
                 //         That implementation is not changed by d95160.
 
-                serviceClassNames.addAll(annotationTargets.getAnnotatedClasses(WebService.class.getName(),
-                                                                               AnnotationTargets_Targets.POLICY_SEED));
-                serviceClassNames.addAll(annotationTargets.getAnnotatedClasses(WebServiceProvider.class.getName(),
-                                                                               AnnotationTargets_Targets.POLICY_SEED));
+                Set<String> serviceClassNames = new HashSet<String>();
 
-                for (String serviceImplBeanClassName : serviceClassNames) {
+                serviceClassNames.addAll( annotationTargets.getAnnotatedClasses(WebService.class.getName()) );
+                serviceClassNames.addAll( annotationTargets.getAnnotatedClasses(WebServiceProvider.class.getName()) );
+
+                for ( String serviceImplBeanClassName : serviceClassNames ) {
                     // if the serviceImplBeanClassName is in web.xml, just ignore here.
-                    if (implClassNamesInWebXML.contains(serviceImplBeanClassName)
-                        || presentedServices.contains(serviceImplBeanClassName)
-                        || !JaxWsUtils.isWebService(infoStore.getDelayableClassInfo(serviceImplBeanClassName))) {
+                    if ( implClassNamesInWebXML.contains(serviceImplBeanClassName) ||
+                         presentedServices.contains(serviceImplBeanClassName) ||
+                         !JaxWsUtils.isWebService(infoStore.getDelayableClassInfo(serviceImplBeanClassName)) ) {
                         continue;
                     }
 
                     jaxWsModuleInfo.addEndpointInfo(serviceImplBeanClassName, endpointInfoBuilder.build(endpointInfoBuilderContext, serviceImplBeanClassName, EndpointType.SERVLET));
                 }
-                // now process the serviceImplBeanClassName in web.xml.
-                // maybe the serviceImplBeanClassName is in sharedLibs which can not be read by webAnnotations.getAnnotationTargets().
-                processClassesInWebXML(endpointInfoBuilder, endpointInfoBuilderContext, webAppConfig, jaxWsModuleInfo, presentedServices);
             }
+
+            // now process the serviceImplBeanClassName in web.xml.
+            // maybe the serviceImplBeanClassName is in sharedLibs which
+            // can not be read by webAnnotations.getAnnotationTargets().
+            processClassesInWebXML(endpointInfoBuilder, endpointInfoBuilderContext, webAppConfig, jaxWsModuleInfo, presentedServices);
+
         } finally {
             webAnnotations.closeInfoStore();
         }
@@ -196,10 +200,6 @@ public class WebJaxWsModuleInfoBuilder extends AbstractJaxWsModuleInfoBuilder {
 
     /**
      * Get all the Servlet name and className pairs from web.xml
-     * 
-     * @param webAppConfig
-     * @return
-     * @throws UnableToAdaptException
      */
     private Map<String, String> getServletNameClassPairsInWebXML(Container containerToAdapt) throws UnableToAdaptException {
         Map<String, String> nameClassPairs = new HashMap<String, String>();
@@ -218,11 +218,6 @@ public class WebJaxWsModuleInfoBuilder extends AbstractJaxWsModuleInfoBuilder {
 
     /**
      * Process the serviceImplBean classes in web.xml file.
-     * 
-     * @param ctx
-     * @param webAppConfig
-     * @param jaxWsModuleInfo
-     * @throws Exception
      */
     private void processClassesInWebXML(EndpointInfoBuilder endpointInfoBuilder, EndpointInfoBuilderContext ctx, WebAppConfig webAppConfig,
                                         JaxWsModuleInfo jaxWsModuleInfo, Set<String> presentedServices) throws UnableToAdaptException {

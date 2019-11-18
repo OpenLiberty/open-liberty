@@ -11,8 +11,9 @@ import io.leangen.graphql.metadata.strategy.value.JsonDefaultValueProvider;
 import io.leangen.graphql.util.ClassUtils;
 import io.leangen.graphql.util.ReservedStrings;
 import io.leangen.graphql.util.Urls;
-import org.eclipse.microprofile.graphql.Argument;
 import org.eclipse.microprofile.graphql.DefaultValue;
+import org.eclipse.microprofile.graphql.Description;
+import org.eclipse.microprofile.graphql.Name;
 import org.eclipse.microprofile.graphql.Source;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,7 +69,7 @@ public class AnnotatedArgumentBuilder implements ResolverArgumentBuilder {
         if (Optional.ofNullable(parameterType.getAnnotation(GraphQLId.class)).filter(GraphQLId::relayId).isPresent()) {
             return GraphQLId.RELAY_ID_FIELD_NAME;
         }
-        Argument meta = parameter.getAnnotation(Argument.class);
+        Name meta = parameter.getAnnotation(Name.class);
         if (meta != null && !meta.value().isEmpty()) {
             return messageBundle.interpolate(meta.value());
         } else {
@@ -82,8 +83,8 @@ public class AnnotatedArgumentBuilder implements ResolverArgumentBuilder {
     }
 
     protected String getArgumentDescription(Parameter parameter, AnnotatedType parameterType, MessageBundle messageBundle) {
-        Argument meta = parameter.getAnnotation(Argument.class);
-        return meta != null ? messageBundle.interpolate(meta.description()) : null;
+        Description meta = parameter.getAnnotation(Description.class);
+        return meta != null ? messageBundle.interpolate(meta.value()) : null;
     }
 
     protected Object defaultValue(Parameter parameter, AnnotatedType parameterType, DefaultValueProvider defaultValueProvider, GlobalEnvironment environment) {
