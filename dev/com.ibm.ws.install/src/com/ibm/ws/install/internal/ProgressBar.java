@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import org.fusesource.jansi.Ansi;
 import org.fusesource.jansi.AnsiConsole;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 public class ProgressBar {
     private static ProgressBar progressBar;
@@ -78,6 +79,7 @@ public class ProgressBar {
 //    }
     public void clearProgress() {
             System.out.print(Ansi.ansi().cursorUp(1).eraseLine().reset()); // Erase line content
+            System.out.flush();
         }
 
 //    public void display() {
@@ -102,6 +104,7 @@ public class ProgressBar {
                                     Ansi.ansi().a(ANSI_GREEN_BLINKING).a(equals).reset(), Ansi.ansi().fg(Ansi.Color.RED).a(dashes.toString()),
                                     counter, Ansi.ansi().reset());
         System.out.println(Ansi.ansi().a(data).reset());
+//        System.out.flush();
 
 
     }
@@ -128,6 +131,12 @@ public class ProgressBar {
         InstallLogUtils.deactivateProgressBar();
         AnsiConsole.systemUninstall();
     }
+
+    public void finishWithError(){
+        InstallLogUtils.deactivateProgressBar();
+        AnsiConsole.systemUninstall();
+    }
+    
 
     public double getCounter() {
         return counter;

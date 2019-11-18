@@ -136,7 +136,11 @@ public class InstallFeatureAction implements ActionHandler {
                 if ( !featureNames.isEmpty()) {
                         rc = install();
                 }
-                progressBar.finish();
+                if(ReturnCode.OK.equals(rc)){
+                        progressBar.finish();
+                } else {
+                        progressBar.finishWithError();
+                }
 
                 if (ReturnCode.OK.equals(rc)) {
                         if (!!!validateProduct()) {

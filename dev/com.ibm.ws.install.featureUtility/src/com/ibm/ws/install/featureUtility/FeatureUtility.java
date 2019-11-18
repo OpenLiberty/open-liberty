@@ -177,7 +177,7 @@ public class FeatureUtility {
                 // verify feature version matches runtime
                 if (!version.equals(openLibertyVersion)) {
                     throw new InstallException(
-                                    Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_MAVEN_COORDINATE_WRONG_VERSION", feature, version));
+                                    Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_MAVEN_COORDINATE_WRONG_VERSION", feature, openLibertyVersion));
                 }
 
             } else {
