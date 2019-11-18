@@ -179,6 +179,7 @@ public class TokenExchange {
             String endpoint = isAppPasswordRequest ? OAuth20Constants.APP_PASSWORD_URI : OAuth20Constants.APP_TOKEN_URI;
             BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, "OAUTH_UNSUPPORTED_METHOD", new Object[] { request.getMethod(), endpoint });
             Tr.error(tc, errorMsg.getServerErrorMessage());
+            errorMsg.setLocales(requestLocales);
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, errorMsg.getBrowserErrorMessage());
             auditMap.get().put(AuditConstants.AUDIT_OUTCOME, AuditConstants.FAILURE);
             auditMap.get().put(AuditConstants.DETAILED_ERROR, AuditConstants.BAD_REQUEST_UNSUPPORTED_METHOD);
@@ -281,6 +282,7 @@ public class TokenExchange {
         BrowserAndServerLogMessage errorMsg = checkAppNameValidAndNotInUse(appPasswordRequest, authRes, appName, provider, tokenCollection);
         if (errorMsg != null) {
             Tr.error(tc, errorMsg.getServerErrorMessage());
+            errorMsg.setLocales(requestLocales);
             sendInvalidRequestError(errorMsg.getBrowserErrorMessage(), response);
             Audit.audit(Audit.EventID.APPLICATION_PASSWORD_TOKEN_01, auditMap.get());
             return;
@@ -290,6 +292,7 @@ public class TokenExchange {
         errorMsg = checkTokenQuantityLimit(appPasswordRequest, authRes, provider, tokenCollection);
         if (errorMsg != null) {
             Tr.error(tc, errorMsg.getServerErrorMessage());
+            errorMsg.setLocales(requestLocales);
             sendInvalidRequestError(errorMsg.getBrowserErrorMessage(), response);
             Audit.audit(Audit.EventID.APPLICATION_PASSWORD_TOKEN_01, auditMap.get());
             return;
@@ -400,6 +403,7 @@ public class TokenExchange {
             BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, "OAUTH_INVALID_REQUEST_NO_TOKEN", new Object[] { request.getMethod(), request.getRequestURI() });
             Tr.error(tc, errorMsg.getServerErrorMessage());
             RateLimiter.limit();
+            errorMsg.setLocales(requestLocales);
             sendInvalidRequestError(errorMsg.getBrowserErrorMessage(), response);
             return result;
         }
@@ -410,6 +414,7 @@ public class TokenExchange {
             BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, "OAUTH_INVALID_REQUEST_AUTHN_FAIL", new Object[] { request.getMethod(), request.getRequestURI() });
             Tr.error(tc, errorMsg.getServerErrorMessage());
             RateLimiter.limit();
+            errorMsg.setLocales(requestLocales);
             sendInvalidClientError(errorMsg.getBrowserErrorMessage(), response);
             return result;
         } else {
@@ -425,6 +430,7 @@ public class TokenExchange {
         if (!checkClientAuthorization(appPasswordRequest, provider, clientId, request.getMethod())) {
             BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, "OAUTH_UNAUTHORIZED_CLIENT", new Object[] { clientId });
             Tr.error(tc, errorMsg.getServerErrorMessage());
+            errorMsg.setLocales(requestLocales);
             sendUnauthorizedClientError(errorMsg.getBrowserErrorMessage(), response);
             return result;
         }
@@ -445,6 +451,7 @@ public class TokenExchange {
             if (!isAdmin && !targetUser.equals(user)) { // non-admin requesting processing of somebody else's token is invalid
                 BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, "OAUTH_SERVER_USERNAME_PARAM_NOT_SUPPORTED", new Object[] { request.getMethod(), request.getRequestURI() });
                 Tr.error(tc, errorMsg.getServerErrorMessage());
+                errorMsg.setLocales(requestLocales);
                 sendInvalidRequestError(errorMsg.getBrowserErrorMessage(), response);
                 return result;
             }
@@ -649,6 +656,7 @@ public class TokenExchange {
     private void handleInvalidAccessTokenError(HttpServletRequest request, HttpServletResponse response, String msgKey) {
         BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, msgKey, new Object[] { request.getMethod(), request.getRequestURI() });
         Tr.error(tc, errorMsg.getServerErrorMessage());
+        errorMsg.setLocales(requestLocales);
         sendInvalidRequestError(errorMsg.getBrowserErrorMessage(), response);
 
     }
@@ -729,6 +737,7 @@ public class TokenExchange {
         if (param.length() > PARAM_MAX_LENGTH) {
             BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, "OAUTH_PARAMETER_VALUE_LENGTH_TOO_LONG", new Object[] { paramName, URI, PARAM_MAX_LENGTH });
             Tr.error(tc, errorMsg.getServerErrorMessage());
+            errorMsg.setLocales(requestLocales);
             sendInvalidRequestError(errorMsg.getBrowserErrorMessage(), resp);
             return false;
         }
@@ -884,12 +893,14 @@ public class TokenExchange {
         if (authHeader == null) {
             BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, "OAUTH_INVALID_REQUEST_NO_AUTHHEADER", new Object[] { req.getMethod(), req.getRequestURI() });
             Tr.error(tc, errorMsg.getServerErrorMessage());
+            errorMsg.setLocales(requestLocales);
             sendInvalidClientError(errorMsg.getBrowserErrorMessage(), response);
             return null;
         }
         if (!authHeader.startsWith("Basic ")) {
             BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, "OAUTH_AUTH_HEADER_NOT_BASIC_AUTH", new Object[] { req.getMethod(), req.getRequestURI() });
             Tr.error(tc, errorMsg.getServerErrorMessage());
+            errorMsg.setLocales(requestLocales);
             sendInvalidClientError(errorMsg.getBrowserErrorMessage(), response);
             return null;
         }
@@ -906,6 +917,7 @@ public class TokenExchange {
         if (!valid) {
             BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, "OAUTH_INVALID_REQUEST_NO_ID_SECRET", new Object[] { req.getMethod(), req.getRequestURI() });
             Tr.error(tc, errorMsg.getServerErrorMessage());
+            errorMsg.setLocales(requestLocales);
             sendInvalidClientError(errorMsg.getBrowserErrorMessage(), response);
         }
         return valid ? new String[] { clientId, clientSecret } : null;
