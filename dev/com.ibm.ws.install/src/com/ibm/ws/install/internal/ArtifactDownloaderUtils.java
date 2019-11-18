@@ -51,7 +51,7 @@ public class ArtifactDownloaderUtils {
                 conn = (HttpURLConnection) url.openConnection();
             }
             conn.setRequestMethod("HEAD");
-            conn.setConnectTimeout(5000);
+            conn.setConnectTimeout(10000);
             int responseCode = conn.getResponseCode();
             conn.setInstanceFollowRedirects(true);
             return responseCode;
