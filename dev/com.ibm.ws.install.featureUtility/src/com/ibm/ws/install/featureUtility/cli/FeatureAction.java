@@ -19,19 +19,21 @@ import com.ibm.ws.kernel.feature.internal.cmdline.ReturnCode;
 
 
 public enum FeatureAction implements ActionDefinition {
-    installFeature(new InstallFeatureAction(), -1, "--no-cache", "--to", "--verbose", "name..."),
-    installServer(new InstallServerAction(), -1, "--no-cache", "--verbose", "name..."),
-    help(new FeatureHelpAction(), 0);
+    installFeature(new InstallFeatureAction(), "if",-1, "--no-cache", "--to", "--verbose", "name..."),
+    installServerFeatures(new InstallServerAction(), "isf",-1, "--no-cache", "--verbose", "name..."),
+    help(new FeatureHelpAction(),"", 0);
 //    install(new FeatureInstallAction(), -1, "--from", "--to", "--verbose", "name"),
 
     private List<String> commandOptions;
     private ActionHandler action;
     private int positionalOptions;
+    private String abbreviation;
 
-    private FeatureAction(ActionHandler a, int count, String... args) {
+    private FeatureAction(ActionHandler a, String abbreviationString, int count, String... args) {
         commandOptions = Collections.unmodifiableList(Arrays.asList(args));
         action = a;
         positionalOptions = count;
+        abbreviation = abbreviationString;
     }
 
     @Override
@@ -42,6 +44,20 @@ public enum FeatureAction implements ActionDefinition {
     @Override
     public int numPositionalArgs() {
         return positionalOptions;
+    }
+
+    public String getAbbreviation(){
+        return abbreviation;
+    }
+
+    public static FeatureAction getEnum(String name){
+        for (FeatureAction action : values()){
+            if(action.toString().equals(name) || action.getAbbreviation().equals(name)){
+                return action;
+            }
+        }
+
+        throw new IllegalArgumentException(name);
     }
 
     @Override

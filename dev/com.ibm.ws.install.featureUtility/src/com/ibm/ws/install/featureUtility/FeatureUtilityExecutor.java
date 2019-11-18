@@ -42,8 +42,10 @@ public class FeatureUtilityExecutor {
             try {
                 if (looksLikeHelp(actionName))
                     actionName = FeatureAction.help.toString();
-                FeatureAction action = FeatureAction.valueOf(actionName);
+                FeatureAction action = FeatureAction.getEnum(actionName);
+
                 List<String> invalid = args.findInvalidOptions(action.getCommandOptions());
+
 
                 if (!!!invalid.isEmpty()) {
                     System.out.println(NLS.getMessage("unknown.options", action, invalid));

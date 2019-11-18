@@ -25,14 +25,17 @@ help.desc=\
 
 #--------- INSTALLFEATURE ACTION ---------------------------------------------#
 installFeature.desc=\
-\tInstall a feature to the runtime.
+\tInstall one or a list of space separated features.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.name...=\
 \ \ \ \ name ...
 installFeature.option-desc.name...=\
-\t - One or more asset names separated by a space. For features        \n\
-\t   you can specify the short name (featureName-1.0) or               \n\
-\t   the maven coordinate (groupId:featureName:version)
+\tOne or more features separated by a space. For features, specify     \n\
+\tthe feature shortname or the maven coordinate. If specifying a       \n\
+\tmaven coordinate, it must contain at least the groupId and           \n\
+\tthe artifactId (e.g io.openliberty.features:mpHealth-2.0). The       \n\
+\tversion will default to the current runtime version and the          \n\
+\tpackaging type will be default to "esa" if they are not specified.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--to=\
 \ \ \ \ --to=[usr|extension]
@@ -51,38 +54,36 @@ installFeature.option-desc.--from=\
 installFeature.option-key.--verbose=\
 \ \ \ \ --verbose
 installFeature.option-desc.--verbose=\
-\tUse this option to display any available additional information while\n\
-\tthe action runs.
+\tDisplay additional debug information while the action runs.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--no-cache=\
 \ \ \ \ --no-cache
 installFeature.option-desc.--no-cache=\
-\tUse this option to delete any downloaded Maven artifacts             \n\
-\tafter the features are installed.
+\tFeatures installed from remote repository (e.g. Maven Central) will  \n\
+\tnot be cached locally.
 
-#--------- INSTALLSERVER ACTION ---------------------------------------------#
-installServer.desc=\
-\tInstall a server to the runtime.
+#--------- INSTALLSERVERFEATURES ACTION --------------------------------------#
+installServerFeatures.desc=\
+\tInstall required features for a named server.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-installServer.option-key.name...=\
+installServerFeatures.option-key.name...=\
 \ \ \ \ name ...
-installServer.option-desc.name...=\
-\tSpecify a server name.
+installServerFeatures.option-desc.name...=\
+\tName of an existing server in the same Liberty environment.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-installServer.option-key.--from=\
+installServerFeatures.option-key.--from=\
 \ \ \ \ --from=filePath
-installServer.option-desc.--from=\
+installServerFeatures.option-desc.--from=\
 \tUse this option to specify the file path of a Maven artifact         \n\
 \trepository as a source for featureUtility to install assets.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-installServer.option-key.--verbose=\
+installServerFeatures.option-key.--verbose=\
 \ \ \ \ --verbose
-installServer.option-desc.--verbose=\
-\tUse this option to display any available additional information while\n\
-\tthe action runs.
+installServerFeatures.option-desc.--verbose=\
+\tDisplay additional debug information while the action runs.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-installServer.option-key.--no-cache=\
+installServerFeatures.option-key.--no-cache=\
 \ \ \ \ --no-cache
-installServer.option-desc.--no-cache=\
-\tUse this option to delete any downloaded Maven artifacts             \n\
-\tafter the features are installed.
+installServerFeatures.option-desc.--no-cache=\
+\tFeatures installed from remote repository (e.g. Maven Central) will  \n\
+\tnot be cached locally.

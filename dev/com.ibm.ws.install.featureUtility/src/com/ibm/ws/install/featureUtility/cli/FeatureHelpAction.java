@@ -61,6 +61,9 @@ public class FeatureHelpAction implements ActionHandler {
             verboseHelp.append(NL);
             verboseHelp.append("    ");
             verboseHelp.append(action.toString());
+            if(!action.getAbbreviation().isEmpty()){
+                verboseHelp.append(", ").append(action.getAbbreviation());
+            }
             verboseHelp.append(NL);
             verboseHelp.append(getDescription(action));
             verboseHelp.append(NL);
@@ -96,8 +99,26 @@ public class FeatureHelpAction implements ActionHandler {
                 taskUsage.append(option);
             }
         }
-
         taskUsage.append(NL);
+        if(!task.getAbbreviation().isEmpty()){
+            taskUsage.append('\t');
+            taskUsage.append(COMMAND);
+            taskUsage.append(' ');
+            taskUsage.append(task.getAbbreviation());
+            if (task.showOptions()) {
+                taskUsage.append(" [");
+                taskUsage.append(getHelpPart("global.options.lower"));
+                taskUsage.append("]");
+            }
+            for (String option : options) {
+                if (option.charAt(0) != '-') {
+                    taskUsage.append(' ');
+                    taskUsage.append(option);
+                }
+            }
+            taskUsage.append(NL);
+        }
+
         taskUsage.append(NL);
         taskUsage.append(getHelpPart("global.description"));
         taskUsage.append(NL);
