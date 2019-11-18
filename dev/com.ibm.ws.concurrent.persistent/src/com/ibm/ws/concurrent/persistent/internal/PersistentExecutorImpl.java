@@ -2675,27 +2675,38 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
             for (Object[] result : results) {
                 long taskId = (Long) result[0];
-                long nextExecTime = (Long) result[2];
-                int version = (Integer) result[4];
-                now = System.currentTimeMillis();
-                long claimUntilTime = (now > nextExecTime ? now : nextExecTime) + config.missedTaskThreshold2 * 1000;
+                boolean claimed = false;
+                Boolean previous = inMemoryTaskIds.put(taskId, Boolean.TRUE);
+                if (previous == null)
+                    try {
+                        long nextExecTime = (Long) result[2];
+                        int version = (Integer) result[4];
+                        now = System.currentTimeMillis();
+                        long claimUntilTime = (now > nextExecTime ? now : nextExecTime) + config.missedTaskThreshold2 * 1000;
 
-                boolean claimed;
-                tranMgr.begin();
-                try {
-                    claimed = taskStore.claimIfNotLocked(taskId, version, claimUntilTime);
-                } finally {
-                    tranMgr.commit();
-                }
+                        tranMgr.begin();
+                        try {
+                            claimed = taskStore.claimIfNotLocked(taskId, version, claimUntilTime);
+                        } finally {
+                            tranMgr.commit();
+                        }
 
-                if (claimed) {
-                    short mbits = (Short) result[1];
-                    int txTimeout = (Integer) result[3];
-                    InvokerTask task = new InvokerTask(PersistentExecutorImpl.this, taskId, nextExecTime, mbits, txTimeout);
-                    long delay = nextExecTime - new Date().getTime();
+                        if (claimed) {
+                            short mbits = (Short) result[1];
+                            int txTimeout = (Integer) result[3];
+                            InvokerTask task = new InvokerTask(PersistentExecutorImpl.this, taskId, nextExecTime, mbits, txTimeout);
+                            long delay = nextExecTime - new Date().getTime();
+                            if (trace && tc.isDebugEnabled())
+                                Tr.debug(PersistentExecutorImpl.this, tc, "Found task " + taskId + " for " + delay + "ms from now");
+                            scheduledExecutor.schedule(task, delay, TimeUnit.MILLISECONDS);
+                        }
+                    } finally {
+                        if (!claimed)
+                            inMemoryTaskIds.remove(taskId);
+                    }
+                else {
                     if (trace && tc.isDebugEnabled())
-                        Tr.debug(PersistentExecutorImpl.this, tc, "Found task " + taskId + " for " + delay + "ms from now");
-                    scheduledExecutor.schedule(task, delay, TimeUnit.MILLISECONDS);
+                        Tr.debug(PersistentExecutorImpl.this, tc, "Found task " + taskId + " already scheduled");
                 }
             }
         }

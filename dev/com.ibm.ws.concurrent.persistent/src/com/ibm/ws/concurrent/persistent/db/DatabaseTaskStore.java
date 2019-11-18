@@ -1652,7 +1652,8 @@ public class DatabaseTaskStore implements TaskStore {
             // query.setHint("javax.persistence.lock.timeout", 0); // milliseconds
 
             // As a workaround, use a short query timeout,
-            query.setHint("javax.persistence.query.timeout", 3); // seconds
+            query.setHint("eclipselink.query.timeout.unit", "MILLISECONDS"); // Make EclipseLink follow the JPA spec
+            query.setHint("javax.persistence.query.timeout", 3000); // 3 seconds
 
             query.setParameter("p", claimExpiryOrPartition);
             query.setParameter("i", taskId);
