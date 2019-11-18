@@ -55,6 +55,11 @@ kafka.groupid.not.set.CWMRX1005E=CWMRX1005E: W\u0142a\u015bciwo\u015b\u0107 grou
 kafka.groupid.not.set.CWMRX1005E.explanation=Nale\u017cy ustawi\u0107 identyfikator grupy konsument\u00f3w Kafka, aby zapewni\u0107 poprawne dzia\u0142anie rozszerzenia Reactive Messaging.
 kafka.groupid.not.set.CWMRX1005E.useraction=Ustaw t\u0119 w\u0142a\u015bciwo\u015b\u0107 w jednej z lokalizacji MicroProfile ConfigSource dla tej aplikacji, na przyk\u0142ad w pliku microprofile-config.properties.
 
+#Do not translate "kafka-clients", "Apache Kafka" or "Maven Central"
+kafka.library.not.present.CWMRX1006E=CWMRX1006E: Nie mo\u017cna za\u0142adowa\u0107 klas z pliku JAR kafka-clients. Upewnij si\u0119, \u017ce plik JAR kafka-clients i jego zale\u017cno\u015bci s\u0105 dost\u0119pne jako biblioteki w u\u017cywanej aplikacji.
+kafka.library.not.present.CWMRX1006E.explanation=Aplikacje, kt\u00f3re korzystaj\u0105 z klienta Reactive Messaging Kafka Client musz\u0105 udost\u0119pnia\u0107 plik JAR kafka-clients z zale\u017cno\u015bciami. Plik i jego zale\u017cno\u015bci mog\u0105 zosta\u0107 udost\u0119pnione przez umieszczenie ich w pakiecie jako biblioteki albo przez udost\u0119pnienie ich jako wsp\u00f3\u0142u\u017cytkowanej biblioteki.
+kafka.library.not.present.CWMRX1006E.useraction=Umie\u015b\u0107 w pakiecie plik JAR kafka-clients i jego zale\u017cno\u015bci jako biblioteki w u\u017cywanej aplikacji lub jako wsp\u00f3\u0142u\u017cytkowan\u0105 bibliotek\u0119. Plik JAR kafka-clients mo\u017cna pobra\u0107 z serwisu WWW Apache Kafka lub z serwisu Maven Central.
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Reactive Messaging error message
 #-----------------------------------------------------------------------------------------------------------------------------

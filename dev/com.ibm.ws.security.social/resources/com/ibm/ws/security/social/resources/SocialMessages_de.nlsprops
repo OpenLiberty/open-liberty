@@ -16,7 +16,7 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
-# Message prefix block: CWWKS5400 - CWWKS5499
+# Message prefix block: CWWKS5370 - CWWKS5499
 ADD_ID={0} ({1})
 ADD_ID.explanation=Nur zur internen Verwendung.
 ADD_ID.useraction=Es ist keine Aktion erforderlich.
@@ -34,6 +34,30 @@ SELECTION_PAGE_USERNAME=Benutzername
 SELECTION_PAGE_PASSWORD=Kennwort
 
 SELECTION_PAGE_SUBMIT=\u00dcbergeben
+
+# 0=Social login configuration attribute name, 1=ID of the social login configuration element, 2=Default value for the configuration attribute
+SOCIAL_LOGIN_CONFIG_ATTRIBUTE_EMPTY=CWWKS5370W: Der Wert f\u00fcr das Konfigurationsattribut [{0}] in der Social Login-Konfiguration [{1}] ist leer. Der Standardwert [{2}] f\u00fcr das Konfigurationsattribut wird verwendet.
+SOCIAL_LOGIN_CONFIG_ATTRIBUTE_EMPTY.explanation=Der Wert f\u00fcr dieses Konfigurationsattribut darf nicht leer sein.
+SOCIAL_LOGIN_CONFIG_ATTRIBUTE_EMPTY.useraction=Stellen Sie sicher, dass der Wert f\u00fcr dieses Konfigurationsattribut nicht leer ist, oder entfernen Sie das Konfigurationsattribut, um den Standardwert zu verwenden.
+
+# 0=Exception message
+OPENSHIFT_ERROR_GETTING_USER_INFO=CWWKS5371E: Die Antwort von der OpenShift-Benutzer-API kann nicht verarbeitet werden: {0}
+OPENSHIFT_ERROR_GETTING_USER_INFO.explanation=Informationen zum authentifizierten Benutzer k\u00f6nnen nicht abgerufen werden, weil ein weiterer Fehler aufgetreten ist.
+OPENSHIFT_ERROR_GETTING_USER_INFO.useraction=Wenn die Nachricht eine weitere Fehlernachricht enth\u00e4lt, sehen Sie sich die Benutzeraktion f\u00fcr diese Nachricht an. Suchen Sie andernfalls in den Serverprotokollen nach weiteren Fehlernachrichten, die anzeigen, wo ein weiterer Fehler aufgetreten ist.
+
+OPENSHIFT_ACCESS_TOKEN_MISSING=CWWKS5372E: Das Zugriffstoken, das zum Abrufen von Benutzerinformationen aus der OpenShift-API verwendet wird, fehlt. Vergewissern Sie sich, dass ein Zugriffstoken vom Tokenendpunkt des OpenShift-OAuth-Providers zur\u00fcckgegeben wurde.
+OPENSHIFT_ACCESS_TOKEN_MISSING.explanation=Ein Zugriffstoken ist erforderlich, um Informationen zum authentifizierten Benutzer abzurufen. Der Tokenendpunkt des OpenShift-OAuth-Providers hat m\u00f6glicherweise das Zugriffstoken nicht zur\u00fcckgegeben.
+OPENSHIFT_ACCESS_TOKEN_MISSING.useraction=Vergewissern Sie sich, dass das Zugriffstoken vom Tokenendpunkt des OpenShift-OAuth-Providers zur\u00fcckgegeben wurde.
+
+# 0=HTTP response code, 1=Response body
+OPENSHIFT_USER_API_BAD_STATUS=CWWKS5373E: Die OpenShift-Benutzer-API hat einen nicht erwarteten Antwortcode [{0}] zur\u00fcckgegeben. Vergewissern Sie sich, dass die Anforderung an die API alle erforderlichen Informationen enth\u00e4lt und dass das OpenShift-Servicekonto-Token im richtigen OpenShift-Projekt erstellt wurde. Die Antwort aus der API ist [{1}].
+OPENSHIFT_USER_API_BAD_STATUS.explanation=Die OpenShift-Benutzer-API hat nicht den erwarteten Statuscode zur\u00fcckgegeben.
+OPENSHIFT_USER_API_BAD_STATUS.useraction=\u00dcberpr\u00fcfen Sie die in der Fehlernachricht enthaltene API-Antwort, um weitere Informationen zu erhalten. Vergewissern Sie sich, dass die Anforderung an die API alle erforderlichen Informationen enth\u00e4lt. Stellen Sie sicher, dass das OpenShift-Servicekonto-Token im richtigen OpenShift-Projekt erstellt wurde und die Berechtigungen richtig sind.
+
+# 0=JSON key string, 1=User API response string
+OPENSHIFT_USER_API_RESPONSE_MISSING_KEY=CWWKS5374E: In der OpenShift-Benutzer-API-Antwort fehlt ein erwarteter Schl\u00fcssel: [{0}]. Die vollst\u00e4ndige Antwort ist [{1}]
+OPENSHIFT_USER_API_RESPONSE_MISSING_KEY.explanation=Es wird erwartet, dass der in der Nachricht angegebene Schl\u00fcssel in der API-Antwort enthalten ist. Der Schl\u00fcssel fehlt m\u00f6glicherweise oder er befindet sich an einer nicht erwarteten Position.
+OPENSHIFT_USER_API_RESPONSE_MISSING_KEY.useraction=\u00dcberpr\u00fcfen Sie die API-Antwort, um zu ermitteln, ob der Schl\u00fcssel in der Antwort fehlt.
 
 SOCIAL_LOGIN_CONFIG_PROCESSED=CWWKS5400I: Die Social Login-Konfiguration [{0}] wurde erfolgreich verarbeitet.
 SOCIAL_LOGIN_CONFIG_PROCESSED.explanation=Die angegebene Social Login-Konfiguration wurde erfolgreich verarbeitet.

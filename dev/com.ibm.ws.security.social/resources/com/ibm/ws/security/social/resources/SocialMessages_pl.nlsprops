@@ -16,7 +16,7 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
-# Message prefix block: CWWKS5400 - CWWKS5499
+# Message prefix block: CWWKS5370 - CWWKS5499
 ADD_ID={0} ({1})
 ADD_ID.explanation=Tylko do u\u017cytku wewn\u0119trznego.
 ADD_ID.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
@@ -35,6 +35,30 @@ SELECTION_PAGE_USERNAME=Nazwa u\u017cytkownika
 SELECTION_PAGE_PASSWORD=Has\u0142o
 
 SELECTION_PAGE_SUBMIT=Wy\u015blij
+
+# 0=Social login configuration attribute name, 1=ID of the social login configuration element, 2=Default value for the configuration attribute
+SOCIAL_LOGIN_CONFIG_ATTRIBUTE_EMPTY=CWWKS5370W: Warto\u015b\u0107 atrybutu konfiguracji [{0}] w konfiguracji logowania w serwisach spo\u0142eczno\u015bciowych [{1}] jest pusta. U\u017cywana jest domy\u015blna warto\u015b\u0107 [{2}] atrybutu konfiguracji.
+SOCIAL_LOGIN_CONFIG_ATTRIBUTE_EMPTY.explanation=Warto\u015b\u0107 atrybutu konfiguracji nie mo\u017ce by\u0107 pusta.
+SOCIAL_LOGIN_CONFIG_ATTRIBUTE_EMPTY.useraction=Upewnij si\u0119, \u017ce warto\u015b\u0107 atrybutu konfiguracji nie jest pusta lub usu\u0144 atrybut konfiguracji, aby u\u017cy\u0107 warto\u015bci domy\u015blnej.
+
+# 0=Exception message
+OPENSHIFT_ERROR_GETTING_USER_INFO=CWWKS5371E: Nie mo\u017cna przetworzy\u0107 odpowiedzi interfejsu API u\u017cytkownika us\u0142ugi OpenShift: {0}
+OPENSHIFT_ERROR_GETTING_USER_INFO.explanation=Nie mo\u017cna uzyska\u0107 informacji na temat uwierzytelnionego u\u017cytkownika z powodu wyst\u0105pienia innego b\u0142\u0119du.
+OPENSHIFT_ERROR_GETTING_USER_INFO.useraction=Je\u015bli komunikat zawiera inny komunikat o b\u0142\u0119dzie, zapoznaj si\u0119 z czynno\u015bci\u0105 u\u017cytkownika dla tego komunikatu. W przeciwnym razie sprawd\u017a dzienniki serwera pod k\u0105tem dodatkowych komunikat\u00f3w o b\u0142\u0119dach, kt\u00f3re mog\u0105 wskazywa\u0107 miejsce wyst\u0105pienia innego b\u0142\u0119du.
+
+OPENSHIFT_ACCESS_TOKEN_MISSING=CWWKS5372E: Brak znacznika dost\u0119pu u\u017cywanego do pobierania informacji o u\u017cytkowniku z interfejsu API us\u0142ugi OpenShift. Sprawd\u017a, czy znacznik dost\u0119pu zosta\u0142 zwr\u00f3cony z punktu ko\u0144cowego znacznika dostawcy us\u0142ugi OpenShift OAuth.
+OPENSHIFT_ACCESS_TOKEN_MISSING.explanation=Znacznik dost\u0119pu jest wymagany do pobierania informacji o uwierzytelnionym u\u017cytkowniku. Punkt ko\u0144cowy znacznika dostawcy us\u0142ugi OpenShift OAuth m\u00f3g\u0142 nie zwr\u00f3ci\u0107 znacznika dost\u0119pu.
+OPENSHIFT_ACCESS_TOKEN_MISSING.useraction=Sprawd\u017a, czy znacznik dost\u0119pu zosta\u0142 zwr\u00f3cony z punktu ko\u0144cowego znacznika dostawcy us\u0142ugi OpenShift OAuth.
+
+# 0=HTTP response code, 1=Response body
+OPENSHIFT_USER_API_BAD_STATUS=CWWKS5373E: Interfejs API u\u017cytkownika us\u0142ugi OpenShift zwr\u00f3ci\u0142 nieoczekiwany kod odpowiedzi [{0}]. Sprawd\u017a, czy \u017c\u0105danie do interfejsu API zawiera wszystkie wymagane informacje i czy znacznik konta us\u0142ugi OpenShift zosta\u0142 utworzony w poprawnym projekcie OpenShift. Odpowied\u017a interfejsu API to [{1}].
+OPENSHIFT_USER_API_BAD_STATUS.explanation=Interfejs API u\u017cytkownika us\u0142ugi OpenShift nie zwr\u00f3ci\u0142 oczekiwanego kodu statusu.
+OPENSHIFT_USER_API_BAD_STATUS.useraction=Aby uzyska\u0107 wi\u0119cej informacji, sprawd\u017a odpowied\u017a interfejsu API zawart\u0105 w komunikacie o b\u0142\u0119dzie. Sprawd\u017a, czy \u017c\u0105danie do interfejsu API zawiera wszystkie wymagane informacje. Upewnij si\u0119, \u017ce znacznik konta us\u0142ugi OpenShift zosta\u0142 utworzony w poprawnym projekcie OpenShift i \u017ce ma on poprawne uprawnienia.
+
+# 0=JSON key string, 1=User API response string
+OPENSHIFT_USER_API_RESPONSE_MISSING_KEY=CWWKS5374E: W odpowiedzi interfejsu API u\u017cytkownika us\u0142ugi OpenShift brakuje oczekiwanego klucza: [{0}]. Pe\u0142na odpowied\u017a to [{1}]
+OPENSHIFT_USER_API_RESPONSE_MISSING_KEY.explanation=Podany w komunikacie klucz powinien znajdowa\u0107 si\u0119 w odpowiedzi interfejsu API. Klucza brakuje lub znajduje si\u0119 on w nieoczekiwanym po\u0142o\u017ceniu.
+OPENSHIFT_USER_API_RESPONSE_MISSING_KEY.useraction=Sprawd\u017a odpowied\u017a interfejsu API, aby okre\u015bli\u0107, czy klucza brakuje w odpowiedzi.
 
 SOCIAL_LOGIN_CONFIG_PROCESSED=CWWKS5400I: Konfiguracja logowania w serwisach spo\u0142eczno\u015bciowych [{0}] zosta\u0142a pomy\u015blnie przetworzona.
 SOCIAL_LOGIN_CONFIG_PROCESSED.explanation=Wskazana konfiguracja logowania w serwisach spo\u0142eczno\u015bciowych zosta\u0142a pomy\u015blnie przetworzona.
@@ -547,5 +571,5 @@ INVALID_CONFIG_PARAM.explanation=Kod \u015brodowiska wykonawczego logowania spo\
 INVALID_CONFIG_PARAM.useraction=Sprawd\u017a brakuj\u0105cy parametr w konfiguracji i upewnij si\u0119, \u017ce zosta\u0142 on podany i jest poprawny.
 
 OIDC_CLIENT_DISCOVERY_SSL_ERROR=CWWKS5501E: Klient logowania spo\u0142eczno\u015bciowego [{0}] nie m\u00f3g\u0142 uzyska\u0107 informacji o punkcie ko\u0144cowym dostawcy OpenID Connect za po\u015brednictwem adresu URL punktu ko\u0144cowego wykrywania [{1}]. Zaktualizuj konfiguracj\u0119 logowania spo\u0142eczno\u015bciowego (konfiguracj\u0119 oidcLogin) przy u\u017cyciu poprawnego adresu URL punktu ko\u0144cowego wykrywania HTTPS. 
-OIDC_CLIENT_DISCOVERY_SSL_ERROR.explanation=W konfiguracji oidcLogin ustawiono wykrywanie punkt\u00f3w ko\u0144cowych dostawcy OpenID Connect za po\u015brednictwem adresu URL wykrywania, ale proces wykrywania nie powi\u00f3d\u0142 si\u0119.  Klient nie mo\u017ce przetworzy\u0107 \u017c\u0105da\u0144 uwierzytelniania, dop\u00f3ki konfiguracja punktu ko\u0144cowego wykrywania nie zostanie poprawiona lub wykrywanie nie powiedzie si\u0119.
+OIDC_CLIENT_DISCOVERY_SSL_ERROR.explanation=W konfiguracji oidcLogin ustawiono wykrywanie punkt\u00f3w ko\u0144cowych dostawcy OpenID Connect za po\u015brednictwem adresu URL wykrywania, ale proces wykrywania nie powi\u00f3d\u0142 si\u0119. Klient nie mo\u017ce przetworzy\u0107 \u017c\u0105da\u0144 uwierzytelniania, dop\u00f3ki konfiguracja punktu ko\u0144cowego wykrywania nie zostanie poprawiona lub wykrywanie nie powiedzie si\u0119.
 OIDC_CLIENT_DISCOVERY_SSL_ERROR.useraction=Popraw konfiguracj\u0119 oidcLogin, aby upewni\u0107 si\u0119, \u017ce 1) adres URL punktu ko\u0144cowego wykrywania odwo\u0142uje si\u0119 do poprawnego dostawcy OpenID Connect, 2) adres URL punktu ko\u0144cowego wykrywania jest adresem HTTPS i 3) sk\u0142adniki protoko\u0142u SSL oraz elementy magazynu kluczy s\u0105 poprawnie skonfigurowane i ufaj\u0105 dostawcy OpenID Connect. 4) Upewnij si\u0119, \u017ce punkt ko\u0144cowy wykrywania dostawcy OpenID Connect dzia\u0142a poprawnie.
