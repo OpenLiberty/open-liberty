@@ -36,7 +36,7 @@
         					
         <AD name="%nonPersistentContextServiceRef" description="%nonPersistentContextServiceRef.desc"
             id="nonPersistentContextServiceRef" type="String" required="false" ibm:type="pid" 
-            ibm:reference="com.ibm.ws.context.service" ibmui:group="Advanced" ibm:beta="true" />
+            ibm:reference="com.ibm.ws.context.service" ibmui:group="Advanced"/>
 
         <AD id="nonPersistentContextService.target" type="String"  ibm:final="true" required="false"
             default="(service.pid=${nonPersistentContextServiceRef})" 
