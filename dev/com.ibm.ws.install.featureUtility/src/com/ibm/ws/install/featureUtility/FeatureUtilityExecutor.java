@@ -43,13 +43,12 @@ public class FeatureUtilityExecutor {
                 if (looksLikeHelp(actionName))
                     actionName = FeatureAction.help.toString();
                 FeatureAction action = FeatureAction.getEnum(actionName);
-
                 List<String> invalid = args.findInvalidOptions(action.getCommandOptions());
 
 
                 if (!!!invalid.isEmpty()) {
                     System.out.println(NLS.getMessage("unknown.options", action, invalid));
-                    FeatureAction.help.handleTask(new ArgumentsImpl(new String[] { "help", actionName }));
+                    FeatureAction.help.handleTask(new ArgumentsImpl(new String[] { "help", action.toString() }));
                     rc = ReturnCode.BAD_ARGUMENT;
                 } else if(action != FeatureAction.help && action.numPositionalArgs() >= 0 && args.getPositionalArguments().size() != action.numPositionalArgs()) {
                     // NLS messages go to system out. Other exceptions/stack traces go to System.err
@@ -61,7 +60,7 @@ public class FeatureUtilityExecutor {
 
             } catch (IllegalArgumentException iae) {
                 rc = FeatureAction.help
-                                .handleTask(new ArgumentsImpl(new String[] { FeatureAction.help.toString(), actionName }));
+                                .handleTask(new ArgumentsImpl(new String[] { FeatureAction.help.toString(), actionName}));
             }
 
         }

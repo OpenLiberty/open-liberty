@@ -72,7 +72,7 @@ public enum FeatureAction implements ActionDefinition {
                 logLevel = Level.FINEST;
             } else if (verboseLevel != null && !verboseLevel.isEmpty()) {
             	System.out.println(NLS.getMessage("unknown.options", args.getAction(), "--verbose=" + verboseLevel));
-                FeatureAction.help.handleTask(new ArgumentsImpl(new String[] { "help", args.getAction() }));
+                FeatureAction.help.handleTask(new ArgumentsImpl(new String[] { "help", FeatureAction.getEnum(args.getAction()).toString() }));
             	return ReturnCode.BAD_ARGUMENT;
             }
             ((InstallKernelImpl) installKernel).enableConsoleLog(logLevel);
