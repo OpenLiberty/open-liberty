@@ -100,12 +100,8 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
         try {
             userApiUtils.modifyExistingResponseToJSON(null);
             fail();
-
         } catch (SocialLoginException e) {
-            //nls 
-
-            verifyException(e, "KUBERNETES_USER_API_BAD_RESPONSE");
-
+            verifyException(e, CWWKS5377E_KUBERNETES_USER_API_RESPONSE_NULL_EMPTY);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -117,9 +113,7 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
             userApiUtils.modifyExistingResponseToJSON("");
             fail();
         } catch (SocialLoginException e) {
-            //nls 
-            verifyException(e, "KUBERNETES_USER_API_BAD_RESPONSE");
-
+            verifyException(e, CWWKS5377E_KUBERNETES_USER_API_RESPONSE_NULL_EMPTY);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -131,9 +125,7 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
             userApiUtils.modifyExistingResponseToJSON("{\"kind\":\"TokenReview\",\"apiVersion\":\"authentication.k8s.io/v1\",\"metadata\":{\"creationTimestamp\":null},\"spec\":{\"token\":\"OR4SdSuy-8NRK8NEiYXxxDu01DZcT6jPj5RJ32CDA_c\"},\"status\":{\"authenticated\":\"true\"}}");
             fail();
         } catch (SocialLoginException e) {
-            //nls 
             verifyException(e, "CWWKS5374E");
-
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -179,9 +171,7 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
             userApiUtils.modifyExistingResponseToJSON("vlah");
             fail();
         } catch (SocialLoginException e) {
-            //nls 
-            verifyException(e, "KUBERNETES_USER_API_BAD_RESPONSE");
-
+            verifyException(e, CWWKS5378E_KUBERNETES_USER_API_RESPONSE_NOT_JSON);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }

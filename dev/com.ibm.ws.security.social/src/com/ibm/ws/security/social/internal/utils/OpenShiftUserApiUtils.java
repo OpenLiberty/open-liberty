@@ -108,17 +108,16 @@ public class OpenShiftUserApiUtils {
     String modifyExistingResponseToJSON(String response) throws JoseException, SocialLoginException {
 
         if (response == null || response.isEmpty()) {
-            throw new SocialLoginException("KUBERNETES_USER_API_BAD_RESPONSE", null, null);
+            throw new SocialLoginException("KUBERNETES_USER_API_RESPONSE_NULL_EMPTY", null, null);
         }
 
         JsonObject jsonResponse;
         try {
             jsonResponse = Json.createReader(new StringReader(response)).readObject();
         } catch (JsonParsingException e) {
-            throw new SocialLoginException("KUBERNETES_USER_API_BAD_RESPONSE", null, new Object[] { response, e });
+            throw new SocialLoginException("KUBERNETES_USER_API_RESPONSE_NOT_JSON", null, new Object[] { response, e });
         }
 
-        //The response from the user API is not a valid JSON object. The full response is [{0}]. {1}" where insert {0} would be response and insert {1} would be e
         JsonObject statusInnerMap, userInnerMap;
         JsonObjectBuilder modifiedResponse = Json.createObjectBuilder();
         if (jsonResponse.containsKey("status")) {

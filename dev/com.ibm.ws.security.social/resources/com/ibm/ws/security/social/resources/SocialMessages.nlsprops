@@ -70,6 +70,20 @@ CUSTOM_ACCESS_TOKEN_HEADER_MISSING=CWWKS5376W: The value for the [{0}] attribute
 CUSTOM_ACCESS_TOKEN_HEADER_MISSING.explanation=The header that is specified in the message might be missing from the request, or the value of the header might be empty.
 CUSTOM_ACCESS_TOKEN_HEADER_MISSING.useraction=Verify that the specified header is present in the request. Verify that the value of the header conforms to the OAuth bearer token specification.
 
+KUBERNETES_USER_API_RESPONSE_NULL_EMPTY=CWWKS5377E: The response from the Kubernetes user API is null or empty.
+KUBERNETES_USER_API_RESPONSE_NULL_EMPTY.explanation=The response from the Kubernetes user API cannot be read, the social login feature encountered an error while communicating with the user API, or the body of the response from the user API is empty.
+KUBERNETES_USER_API_RESPONSE_NULL_EMPTY.useraction=Verify that the response from the user API is not empty and that the connection to the user API was successful. Check the server logs to determine if an error occurred while communicating with the user API.
+
+# 0=User API response string, 1=Exception message
+KUBERNETES_USER_API_RESPONSE_NOT_JSON=CWWKS5378E: The response from the Kubernetes user API is not a valid JSON object. The full response is {0}. {1}
+KUBERNETES_USER_API_RESPONSE_NOT_JSON.explanation=The response from the Kubernetes user API is expected to be a valid JSON object that contains information about the authenticated user.
+KUBERNETES_USER_API_RESPONSE_NOT_JSON.useraction=Verify that the user API value in the social login configuration is set to a valid Kubernetes user API URL. Check the response from the user API to see if more information is included.
+
+# 0=JSON key string, 1=JSON value type (e.g. object, string, number), 2=JSON value type, 3=User API response string
+KUBERNETES_USER_API_RESPONSE_WRONG_JSON_TYPE=CWWKS5379E: The value for the key [{0}] in the Kubernetes user API response is expected to be of type {1}, but the value is of type {2}. The full user API response is [{3}]
+KUBERNETES_USER_API_RESPONSE_WRONG_JSON_TYPE.explanation=The value for the specified key did not have the correct type. The response from the user API might be malformed, or the user API returned a response with an unexpected structure.
+KUBERNETES_USER_API_RESPONSE_WRONG_JSON_TYPE.useraction=Check the structure of the response from the user API. Check the response from the user API to see if an error occurred.
+
 SOCIAL_LOGIN_CONFIG_PROCESSED=CWWKS5400I: The social login configuration [{0}] was successfully processed.
 SOCIAL_LOGIN_CONFIG_PROCESSED.explanation=The indicated social login configuration has been successfully processed.
 SOCIAL_LOGIN_CONFIG_PROCESSED.useraction=No action is required.
