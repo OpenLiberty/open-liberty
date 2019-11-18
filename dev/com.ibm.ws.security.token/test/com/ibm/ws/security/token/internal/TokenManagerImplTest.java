@@ -30,13 +30,13 @@ import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.websphere.security.auth.InvalidTokenException;
 import com.ibm.websphere.security.auth.TokenCreationFailedException;
 import com.ibm.websphere.security.auth.TokenExpiredException;
 import com.ibm.ws.security.token.TokenService;
 import com.ibm.wsspi.security.ltpa.Token;
+
+import test.common.SharedOutputManager;
 
 @SuppressWarnings("unchecked")
 public class TokenManagerImplTest {
@@ -99,15 +99,15 @@ public class TokenManagerImplTest {
     public void createToken_noSuchService() {
         String tokenType = "unknownTokenType";
         String expectedExceptionMessage = "CWWKS4000E: A configuration exception has occurred. The requested TokenService instance of type " + tokenType
-                                              + " could not be found.";
+                                          + " could not be found.";
         try {
             tokenManager.createToken(tokenType, testTokenData);
             fail("Expected TokenCreationFailedException since there should be no service of requested type");
         } catch (TokenCreationFailedException e) {
             assertEquals("Expection did not contain expected message",
-                             expectedExceptionMessage, e.getLocalizedMessage());
+                         expectedExceptionMessage, e.getLocalizedMessage());
             assertTrue("Expected message was not logged",
-                           outputMgr.checkForStandardErr(expectedExceptionMessage));
+                       outputMgr.checkForStandardErr(expectedExceptionMessage));
         }
     }
 
@@ -141,7 +141,7 @@ public class TokenManagerImplTest {
             }
         });
         assertNotNull("Mock should return a non-null token",
-                          tokenManager.createToken(TEST_TOKEN_TYPE, testTokenData));
+                      tokenManager.createToken(TEST_TOKEN_TYPE, testTokenData));
     }
 
     /**
@@ -151,7 +151,7 @@ public class TokenManagerImplTest {
     public void createSSOToken_invalidSSOType() throws Exception {
         String tokenType = "unknownTokenType";
         String expectedExceptionMessage = "CWWKS4000E: A configuration exception has occurred. The requested TokenService instance of type " + tokenType
-                                              + " could not be found.";
+                                          + " could not be found.";
         try {
             Map<String, Object> props = new HashMap<String, Object>();
             props.put(TokenManagerImpl.CFG_KEY_SSO_TOKEN_TYPE, tokenType);
@@ -160,9 +160,9 @@ public class TokenManagerImplTest {
             fail("Expected TokenCreationFailedException since there should be no service of configured SSO type");
         } catch (TokenCreationFailedException e) {
             assertEquals("Expection did not contain expected message",
-                             expectedExceptionMessage, e.getLocalizedMessage());
+                         expectedExceptionMessage, e.getLocalizedMessage());
             assertTrue("Expected message was not logged",
-                           outputMgr.checkForStandardErr(expectedExceptionMessage));
+                       outputMgr.checkForStandardErr(expectedExceptionMessage));
         }
     }
 
@@ -196,14 +196,14 @@ public class TokenManagerImplTest {
             }
         });
         assertNotNull("Mock should return a non-null token",
-                          tokenManager.createSSOToken(testTokenData));
+                      tokenManager.createSSOToken(testTokenData));
     }
 
     @Test
     public void createSSOToken_fromLtpa2Token() throws Exception {
         Token ssoLtpaToken = mock.mock(Token.class);
         assertNotNull("There must be an SSO token",
-                          tokenManager.createSSOToken(ssoLtpaToken));
+                      tokenManager.createSSOToken(ssoLtpaToken));
     }
 
     /**
@@ -213,16 +213,16 @@ public class TokenManagerImplTest {
     public void recreateTokenFromBytes_noSuchService() throws Exception {
         String tokenType = "unknownTokenType";
         String expectedCauseMessage = "CWWKS4000E: A configuration exception has occurred. The requested TokenService instance of type " + tokenType
-                                              + " could not be found.";
+                                      + " could not be found.";
         try {
             tokenManager.recreateTokenFromBytes(tokenType, tokenBytes);
             fail("Expected TokenCreationFailedException since there should be no service of requested type");
         } catch (InvalidTokenException e) {
             assertTrue("InvalidTokenException did not contain expected message",
-                        e.getMessage().startsWith("CWWKS4001I: The security token cannot be validated."));
+                       e.getMessage().startsWith("CWWKS4001I: The security token cannot be validated."));
             Throwable cause = e.getCause();
             assertEquals("Expection did not contain expected message",
-                             expectedCauseMessage, cause.getLocalizedMessage());
+                         expectedCauseMessage, cause.getLocalizedMessage());
             assertTrue("Expected message was not logged", outputMgr.checkForStandardErr(expectedCauseMessage));
         }
 
@@ -235,7 +235,8 @@ public class TokenManagerImplTest {
     public void recreateTokenFromBytes_TokenExpiredException() throws Exception {
         mock.checking(new Expectations() {
             {
-                one(testTokenService).recreateTokenFromBytes(tokenBytes);
+                allowing(testTokenService).recreateTokenFromBytes(tokenBytes);
+                one(testTokenService).recreateTokenFromBytes(tokenBytes, null);
                 will(throwException(new TokenExpiredException("Expected test exception")));
             }
         });
@@ -257,6 +258,7 @@ public class TokenManagerImplTest {
         mock.checking(new Expectations() {
             {
                 one(testTokenService).recreateTokenFromBytes(tokenBytes);
+                allowing(testTokenService).recreateTokenFromBytes(tokenBytes, null);
                 will(throwException(new InvalidTokenException("Expected test exception")));
             }
         });
@@ -271,13 +273,13 @@ public class TokenManagerImplTest {
                        outputMgr.checkForMessages(msg));
             msg = "1. The security token was generated on another server using different keys.";
             assertTrue("Unable to find token expiration message part 1",
-                                    outputMgr.checkForMessages(msg));
+                       outputMgr.checkForMessages(msg));
             msg = "2. The token configuration or the security keys of the token service which created the token has been changed.";
             assertTrue("Unable to find token expiration message part 2",
-                                    outputMgr.checkForMessages(msg));
+                       outputMgr.checkForMessages(msg));
             msg = "3. The token service which created the token is no longer available.";
             assertTrue("Unable to find token expiration message part 3",
-                        outputMgr.checkForMessages(msg));
+                       outputMgr.checkForMessages(msg));
         }
 
     }
@@ -289,12 +291,12 @@ public class TokenManagerImplTest {
     public void recreateTokenFromBytes() throws Exception {
         mock.checking(new Expectations() {
             {
-                one(testTokenService).recreateTokenFromBytes(tokenBytes);
+                one(testTokenService).recreateTokenFromBytes(tokenBytes, null);
             }
         });
 
         assertNotNull("Mock should return a non-null token",
-                          tokenManager.recreateTokenFromBytes(tokenBytes));
+                      tokenManager.recreateTokenFromBytes(tokenBytes));
 
     }
 
@@ -305,7 +307,7 @@ public class TokenManagerImplTest {
     public void recreateTokenFromBytesForType_noSuchService() throws Exception {
         String tokenType = "unknownTokenType";
         String expectedCauseMessage = "CWWKS4000E: A configuration exception has occurred. The requested TokenService instance of type " + tokenType
-                                              + " could not be found.";
+                                      + " could not be found.";
         try {
             tokenManager.recreateTokenFromBytes(tokenType, tokenBytes);
             fail("Expected TokenCreationFailedException since there should be no service of requested type");
@@ -314,7 +316,7 @@ public class TokenManagerImplTest {
                        e.getMessage().startsWith("CWWKS4001I: The security token cannot be validated."));
             Throwable cause = e.getCause();
             assertEquals("Expection did not contain expected message",
-                            expectedCauseMessage, cause.getLocalizedMessage());
+                         expectedCauseMessage, cause.getLocalizedMessage());
             assertTrue("Expected message was not logged", outputMgr.checkForStandardErr(expectedCauseMessage));
         }
 
@@ -328,6 +330,8 @@ public class TokenManagerImplTest {
         mock.checking(new Expectations() {
             {
                 one(testTokenService).recreateTokenFromBytes(tokenBytes);
+                will(throwException(new TokenExpiredException("Expected test exception")));
+                one(testTokenService).recreateTokenFromBytes(tokenBytes, null);
                 will(throwException(new TokenExpiredException("Expected test exception")));
             }
         });
@@ -349,6 +353,8 @@ public class TokenManagerImplTest {
         mock.checking(new Expectations() {
             {
                 one(testTokenService).recreateTokenFromBytes(tokenBytes);
+                will(throwException(new InvalidTokenException("Expected test exception")));
+                one(testTokenService).recreateTokenFromBytes(tokenBytes, null);
                 will(throwException(new InvalidTokenException("Expected test exception")));
             }
         });
@@ -374,7 +380,7 @@ public class TokenManagerImplTest {
         });
 
         assertNotNull("Mock should return a non-null token",
-                          tokenManager.recreateTokenFromBytes(TEST_TOKEN_TYPE, tokenBytes));
+                      tokenManager.recreateTokenFromBytes(TEST_TOKEN_TYPE, tokenBytes));
     }
 
 }
