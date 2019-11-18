@@ -499,7 +499,8 @@ public class TokenExchange {
     }
 
     /**
-     * Given an access token, examine it and determine if it is valid and who it represents
+     * Given an access token, examine it and determine if it is valid and who it represents.
+     * Also perform checks of type and clientId to see if token is valid to be used for exchange.
      * @param provider
      * @param accessTokenStr
      * @param request
@@ -534,7 +535,8 @@ public class TokenExchange {
             if (refreshTokenId != null) {
                 refreshToken = provider.getTokenCache().get(refreshTokenId);
             }
-            if (!validateGrantType(grantType, accessToken, refreshToken, request, response)) {
+            // disallow types that might go around a 2-factor flow
+            if (!validateGrantType(grantType, accessToken, refreshToken, request, response)) { // CWWKS1497E
                 return null;
             }
 
@@ -579,17 +581,16 @@ public class TokenExchange {
     private boolean validateGrantType(String grantType, OAuth20Token accessToken, OAuth20Token refreshToken, HttpServletRequest request, HttpServletResponse response) {
 
         if (grantType == null || !isGrantTypeInAllowedGrantTypes(grantType)) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "grantType is not one we accept: " + grantType + ",  return false");
-            }
-            handleInvalidAccessTokenError(request, response, "OAUTH_INVALID_ATINREQUEST_AUTHN_FAIL");
+            Tr.error(tc, "WRONG_TOKEN_GRANTTYPE", grantType, Arrays.toString(ALLOWED_AT_GT)); // CWWKS1497E
+            handleInvalidAccessTokenError(request, response, "OAUTH_INVALID_ATINREQUEST_AUTHN_FAIL"); // CWWKS1489E
             return false;
         }
         if (OAuth20Constants.GRANT_TYPE_REFRESH_TOKEN.equals(grantType)) {
             // refreshed access token
             // do more checking to make sure that refresh token associated with this access token has original grant type set to authorization_code
             if (refreshToken == null || !validateRefreshTokenGrantType(refreshToken)) {
-                handleInvalidAccessTokenError(request, response, "OAUTH_INVALID_ATINREQUEST_AUTHN_FAIL"); // TODO : message update?
+                Tr.error(tc, "WRONG_TOKEN_GRANTTYPE", grantType, Arrays.toString(ALLOWED_RT_GT)); // CWWKS1497E
+                handleInvalidAccessTokenError(request, response, "OAUTH_INVALID_ATINREQUEST_AUTHN_FAIL"); // CWWKS1489E
                 return false;
             }
         }
