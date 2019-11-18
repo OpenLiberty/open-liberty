@@ -220,12 +220,12 @@ public class ArtifactDownloader {
     }
 
     private void configureAuthentication() {
-        if (envMap.get("openliberty_feature_repository_user") != null && envMap.get("openliberty_feature_repository_password") != null
+        if (envMap.get("FEATURE_REPO_USER") != null && envMap.get("FEATURE_REPO_PASSWORD") != null
             && envMap.get("http.proxyUser") == null) {
             Authenticator.setDefault(new Authenticator() {
                 @Override
                 protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication(envMap.get("openliberty_feature_repository_user"), envMap.get("openliberty_feature_repository_password").toCharArray());
+                    return new PasswordAuthentication(envMap.get("FEATURE_REPO_USER"), envMap.get("FEATURE_REPO_PASSWORD").toCharArray());
                 }
             });
         }
@@ -311,8 +311,8 @@ public class ArtifactDownloader {
 
     private String calculateUserInfo(URI uri) {
 
-        if (envMap.get("openliberty_feature_repository_user") != null && envMap.get("openliberty_feature_repository_password") != null) {
-            return envMap.get("openliberty_feature_repository_user") + ':' + envMap.get("openliberty_feature_repository_password");
+        if (envMap.get("FEATURE_REPO_USER") != null && envMap.get("FEATURE_REPO_PASSWORD") != null) {
+            return envMap.get("FEATURE_REPO_USER") + ':' + envMap.get("FEATURE_REPO_PASSWORD");
         }
         return uri.getUserInfo();
     }

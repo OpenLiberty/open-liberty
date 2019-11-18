@@ -956,9 +956,9 @@ public class InstallKernelMap implements Map {
         if (fromRepo != null) {
             fine("Connecting to the following repository: " + fromRepo);
             repo = fromRepo;
-        } else if (envMap.get("openliberty_feature_repository") != null) {
-            fine("Connecting to the following repository: " + envMap.get("openliberty_feature_repository"));
-            repo = envMap.get("openliberty_feature_repository");
+        } else if (envMap.get("FEATURE_REPO_URL") != null) {
+            fine("Connecting to the following repository: " + envMap.get("FEATURE_REPO_URL"));
+            repo = envMap.get("FEATURE_REPO_URL");
         } else {
             fine("Connecting to the following repository: " + MAVEN_CENTRAL);
             repo = MAVEN_CENTRAL;
@@ -981,7 +981,6 @@ public class InstallKernelMap implements Map {
         String repo = getRepo(fromRepo);
         try {
             artifactDownloader.setEnvMap(envMap);
-            fine("this is the envMap we are sending to artifactDownloader: " + artifactDownloader.getEnvMap());
             artifactDownloader.synthesizeAndDownload(featureList, filetype, downloadDir, repo, true);
         } catch (InstallException e) {
             data.put(ACTION_RESULT, ERROR);
@@ -1347,33 +1346,37 @@ public class InstallKernelMap implements Map {
         Map<String, String> envMapRet = new HashMap<String, String>();
 
         //parse through httpProxy env variables
-
-        Map<String, String> httpProxyVariables = getProxyVariables("http");
-        Set<String> httpProxyVarKeys = httpProxyVariables.keySet();
-        for (String key : httpProxyVarKeys) {
-            envMapRet.put(key, httpProxyVariables.get(key));
+        String proxyEnvVarHttp = System.getenv("http_proxy");
+        if (proxyEnvVarHttp != null) {
+            Map<String, String> httpProxyVariables = getProxyVariables(proxyEnvVarHttp, "http");
+            Set<String> httpProxyVarKeys = httpProxyVariables.keySet();
+            for (String key : httpProxyVarKeys) {
+                envMapRet.put(key, httpProxyVariables.get(key));
+            }
         }
 
-        Map<String, String> httpsProxyVariables = getProxyVariables("https");
-        Set<String> httpsProxyVarKeys = httpsProxyVariables.keySet();
-        for (String key : httpsProxyVarKeys) {
-            envMapRet.put(key, httpsProxyVariables.get(key));
+        String proxyEnvVarHttps = System.getenv("https_proxy");
+        if (proxyEnvVarHttps != null) {
+            Map<String, String> httpsProxyVariables = getProxyVariables(proxyEnvVarHttps, "https");
+            Set<String> httpsProxyVarKeys = httpsProxyVariables.keySet();
+            for (String key : httpsProxyVarKeys) {
+                envMapRet.put(key, httpsProxyVariables.get(key));
+            }
         }
 
-        envMapRet.put("openliberty_feature_repository", System.getenv("openliberty_feature_repository"));
-        envMapRet.put("openliberty_feature_repository_user", System.getenv("openliberty_feature_repository_user"));
-        envMapRet.put("openliberty_feature_repository_password", System.getenv("openliberty_feature_repository_password"));
+        envMapRet.put("FEATURE_REPO_URL", System.getenv("FEATURE_REPO_URL"));
+        envMapRet.put("FEATURE_REPO_USER", System.getenv("FEATURE_REPO_USER"));
+        envMapRet.put("FEATURE_REPO_PASSWORD", System.getenv("FEATURE_REPO_PASSWORD"));
 
         //search through the properties file to look for overrides if they exist TODO
         Map<String, String> propsFileMap = getFeatureUtilEnvProps();
         if (!propsFileMap.isEmpty()) {
-            fine("The following properties were read from the featureUtility.env file: " + propsFileMap.toString());
             fine("The properties found in featureUtility.env will override latent environment varibles of the same name");
             Set<String> keys = propsFileMap.keySet();
             for (String key : keys) {
                 //if key is http_proxy or https_proxy then call getProxyVariables
                 if (key.equals("http_proxy") || key.equals("https_proxy")) {
-                    Map<String, String> proxyVar = getProxyVariables(key.split("_")[0]);
+                    Map<String, String> proxyVar = getProxyVariables(propsFileMap.get(key), key.split("_")[0]);
                     Set<String> proxyVarKeys = proxyVar.keySet();
                     for (String k : proxyVarKeys) {
                         envMapRet.put(k, proxyVar.get(k));
@@ -1395,18 +1398,15 @@ public class InstallKernelMap implements Map {
      * @param string
      * @return
      */
-    private Map<String, String> getProxyVariables(String protocol) {
+    private Map<String, String> getProxyVariables(String proxyEnvVar, String protocol) {
         Map<String, String> result = new HashMap<String, String>();
-        String proxyEnvVar = System.getenv(protocol + "_proxy");
-        if (proxyEnvVar != null) {
-            String[] proxyEnvVarSplit = proxyEnvVar.split("@");
-            String[] proxyCredentials = proxyEnvVarSplit[0].split(":"); //[http, //user, password]
-            String[] proxyHostPort = proxyEnvVarSplit[1].split(":"); //[prox-server, 3128]
-            result.put(protocol + ".proxyHost", proxyHostPort[0]); //prox-server
-            result.put(protocol + ".proxyPort", proxyHostPort[1]); //3128
-            result.put(protocol + ".proxyUser", proxyCredentials[1].replace("/", ""));
-            result.put(protocol + ".proxyPassword", proxyCredentials[2]);
-        }
+        String[] proxyEnvVarSplit = proxyEnvVar.split("@");
+        String[] proxyCredentials = proxyEnvVarSplit[0].split(":"); //[http, //user, password]
+        String[] proxyHostPort = proxyEnvVarSplit[1].split(":"); //[prox-server, 3128]
+        result.put(protocol + ".proxyHost", proxyHostPort[0]); //prox-server
+        result.put(protocol + ".proxyPort", proxyHostPort[1]); //3128
+        result.put(protocol + ".proxyUser", proxyCredentials[1].replace("/", "")); //user
+        result.put(protocol + ".proxyPassword", proxyCredentials[2]); //password
 
         return result;
     }
@@ -1428,7 +1428,7 @@ public class InstallKernelMap implements Map {
             }
             scanner.close();
         } catch (FileNotFoundException e) {
-            fine("feature env doesn't exists");
+            fine("featureUtility.env not found");
         }
 
         return propEnvMap;
