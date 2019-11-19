@@ -128,9 +128,10 @@ public class ArtifactDownloader {
         String filename = ArtifactDownloaderUtils.getfilename(mavenCoords, filetype);
         String urlLocation = ArtifactDownloaderUtils.getUrlLocation(repo, groupId, artifactId, version, filename);
         String[] checksumFormats = new String[3];
-        checksumFormats[0] = "MD5";
-        checksumFormats[1] = "SHA1";
-        checksumFormats[2] = "SHA256";
+        checksumFormats[0] = "SHA256";
+        checksumFormats[1] = "MD5";
+        checksumFormats[2] = "SHA1";
+
         try {
             if (individualDownload && ArtifactDownloaderUtils.fileIsMissing(urlLocation, envMap)) {
                 throw ExceptionUtils.createByKey("ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_REPO", ArtifactDownloaderUtils.getFileNameFromURL(urlLocation), filetype + " file", repo); //ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_MAVEN_REPO
@@ -154,17 +155,21 @@ public class ArtifactDownloader {
             downloadedFiles.add(fileLoc);
             boolean someChecksumExists = false;
             boolean checksumFail = false;
+            boolean checksumSuccess = false;
             for (String checksumFormat : checksumFormats) {
-                if (checksumIsAvailable(urlLocation, checksumFormat)) {
-                    someChecksumExists = true;
-                    if (isIncorrectChecksum(fileLoc.getAbsolutePath(), urlLocation, checksumFormat)) {
-                        fine("Failed to validate " + checksumFormat + " checksum for file: " + filename);
-                        checksumFail = true;
+                if (!checksumSuccess) {
+                    if (checksumIsAvailable(urlLocation, checksumFormat)) {
+                        someChecksumExists = true;
+                        if (isIncorrectChecksum(fileLoc.getAbsolutePath(), urlLocation, checksumFormat)) {
+                            fine("Failed to validate " + checksumFormat + " checksum for file: " + filename);
+                            checksumFail = true;
+                        } else {
+                            checksumSuccess = true;
+                            fine("Successfully validated " + checksumFormat + " checksum for file: " + filename);
+                        }
                     } else {
-                        fine("Successfully validated " + checksumFormat + " checksum for file: " + filename);
+                        fine("Failed to find " + checksumFormat + " checksum for file: " + filename);
                     }
-                } else {
-                    fine("Failed to find " + checksumFormat + " checksum for file: " + filename);
                 }
             }
             if (someChecksumExists) {

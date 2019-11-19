@@ -1371,7 +1371,7 @@ public class InstallKernelMap implements Map {
         //search through the properties file to look for overrides if they exist TODO
         Map<String, String> propsFileMap = getFeatureUtilEnvProps();
         if (!propsFileMap.isEmpty()) {
-            fine("The properties found in featureUtility.env will override latent environment varibles of the same name");
+            fine("The properties found in featureUtility.env will override latent environment variables of the same name");
             Set<String> keys = propsFileMap.keySet();
             for (String key : keys) {
                 //if key is http_proxy or https_proxy then call getProxyVariables
