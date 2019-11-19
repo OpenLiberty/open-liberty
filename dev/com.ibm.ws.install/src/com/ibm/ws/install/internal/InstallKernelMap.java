@@ -953,10 +953,7 @@ public class InstallKernelMap implements Map {
     private String getRepo(String fromRepo) {
         String repo;
 
-        if (fromRepo != null) {
-            fine("Connecting to the following repository: " + fromRepo);
-            repo = fromRepo;
-        } else if (envMap.get("FEATURE_REPO_URL") != null) {
+        if (envMap.get("FEATURE_REPO_URL") != null) {
             fine("Connecting to the following repository: " + envMap.get("FEATURE_REPO_URL"));
             repo = envMap.get("FEATURE_REPO_URL");
         } else {
@@ -1367,6 +1364,7 @@ public class InstallKernelMap implements Map {
         envMapRet.put("FEATURE_REPO_URL", System.getenv("FEATURE_REPO_URL"));
         envMapRet.put("FEATURE_REPO_USER", System.getenv("FEATURE_REPO_USER"));
         envMapRet.put("FEATURE_REPO_PASSWORD", System.getenv("FEATURE_REPO_PASSWORD"));
+        envMapRet.put("FEATURE_LOCAL_REPO", System.getenv("FEATURE_LOCAL_REPO"));
 
         //search through the properties file to look for overrides if they exist TODO
         Map<String, String> propsFileMap = getFeatureUtilEnvProps();
