@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.persistent.fat.failover1serv;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
@@ -43,13 +42,11 @@ import failover1serv.web.Failover1ServerTestServlet;
  * We can simulate an instance going down by removing it from the configuration.
  */
 @RunWith(FATRunner.class)
-public class Failover1ServerTest extends FATServletClient {
+public class Failover1ServerTest2 extends FATServletClient {
 	private static final String APP_NAME = "failover1servApp";
 	private static final Set<String> APP_NAMES = Collections.singleton(APP_NAME);
 
-    private static ServerConfiguration originalConfig;
-
-    private static final String PARTITION_ID_MESSAGE = "Partition id is ";
+    private static ServerConfiguration originalConfig, savedConfig;
 
     @Server("com.ibm.ws.concurrent.persistent.fat.failover1serv")
     @TestServlet(servlet = Failover1ServerTestServlet.class, contextRoot = APP_NAME)
@@ -60,6 +57,18 @@ public class Failover1ServerTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         originalConfig = server.getServerConfiguration();
+
+        // TODO remove this and update server.xml instead if we choose the approach that is tested by this class
+        savedConfig = originalConfig.clone();
+        PersistentExecutor persistentExec1 = savedConfig.getPersistentExecutors().getById("persistentExec1");
+        persistentExec1.setExtraAttribute("heartbeatInterval", null);
+        persistentExec1.setExtraAttribute("missedTaskThreshold2", "10h");
+        PersistentExecutor persistentExec2 = savedConfig.getPersistentExecutors().getById("persistentExec2");
+        persistentExec2.setExtraAttribute("missedTaskThreshold2", persistentExec2.getMissedTaskThreshold());
+        persistentExec2.setMissedTaskThreshold(null);
+        persistentExec2.setExtraAttribute("heartbeatInterval", null);
+        server.updateServerConfiguration(savedConfig);
+
         ShrinkHelper.defaultDropinApp(server, APP_NAME, "failover1serv.web");
         server.startServer();
     }
@@ -67,108 +76,7 @@ public class Failover1ServerTest extends FATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         server.stopServer();
-    }
-
-    /**
-     * testFailoverFromMissedHeartbeats - verify that a task fails over due to missed heartbeats alone,
-     * even if the missed task threshold has not yet been reached.
-     */
-    @Test
-    public void testFailoverFromMissedHeartbeats() throws Exception {
-        StringBuilder result = runTestWithResponse(server, APP_NAME + "/Failover1ServerTestServlet",
-                "testScheduleRepeatingTask&jndiName=persistent/exec2&initialDelayMS=2468&delayMS=600&test=testFailoverFromMissedHeartbeats[1]");
-
-        int start = result.indexOf(TASK_ID_MESSAGE);
-        if (start < 0)
-            fail("Task id of scheduled task not found in servlet output: " + result);
-        String taskId = result.substring(start += TASK_ID_MESSAGE.length(), result.indexOf(".", start));
-
-        System.out.println("Scheduled task " + taskId);
-
-        try {
-            // Stop heartbeating on the instance where the task is scheduled to run
-            ServerConfiguration config = originalConfig.clone();
-            config.getPersistentExecutors().removeById("persistentExec2");
-
-            // Update other instance such that it can take over, but not due to the missed task threshold,
-            // which we set higher than the test is willing to wait. It will need to find out by detecting
-            // missed heartbeats.
-            PersistentExecutor persistentExec1 = config.getPersistentExecutors().getById("persistentExec1");
-            persistentExec1.setEnableTaskExecution("true");
-            persistentExec1.setPollInterval("1s600ms");
-            persistentExec1.setMissedTaskThreshold("6h");
-            server.setMarkToEndOfLog();
-            server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(APP_NAMES);
-            try {
-                runTest(server, APP_NAME + "/Failover1ServerTestServlet",
-                        "testTaskIsRunning&taskId=" + taskId + "&jndiName=persistent/exec1&test=testFailoverFromMissedHeartbeats[2]");
-            } finally {
-                // restore original configuration
-                server.setMarkToEndOfLog();
-                server.updateServerConfiguration(originalConfig);
-                server.waitForConfigUpdateInLogUsingMark(APP_NAMES);
-            }
-
-            // fail over back to second instance once first instance is no longer able to run tasks
-            runTest(server, APP_NAME + "/Failover1ServerTestServlet",
-                    "testTaskIsRunning&taskId=" + taskId + "&jndiName=persistent/exec1&test=testFailoverFromMissedHeartbeats[3]");
-        } finally {
-            runTest(server, APP_NAME + "/Failover1ServerTestServlet",
-                    "testCancelTask&taskId=" + taskId + "&jndiName=persistent/exec1&test=testFailoverFromMissedHeartbeats[4]");
-        }
-    }
-
-    /**
-     * testHeartbeatsAreRepeatedlySent - verifies that heart beats are being sent periodically, with an increasing expiry timestamp.
-     */
-    @Test
-    public void testHeartbeatsAreRepeatedlySent() throws Exception {
-        runTest(server, APP_NAME + "/Failover1ServerTestServlet", testName);
-    }
-
-    /**
-     * testHeartbeatRestoresLostPartitionInfo - simulates the scenario where one server detects missed heart beats and removes partition
-     * info of another server which is still active, but slow in recording its heart beat.  When that other server tries to send its
-     * heart beat and finds its partition info absent, it should re-create it under the same partition id.
-     */
-    @Test
-    public void testHeartbeatRestoresLostPartitionInfo() throws Exception {
-        runTestWithResponse(server, APP_NAME + "/Failover1ServerTestServlet",
-                "testTablesExist&jndiName=persistent/exec2&test=testHeartbeatRestoresLostPartitionInfo[1]");
-
-        StringBuilder result;
-        result = runTestWithResponse(server, APP_NAME + "/Failover1ServerTestServlet",
-                "testGetPartitionId&executor=persistentExec2&test=testHeartbeatRestoresLostPartitionInfo[2]");
-
-        int start = result.indexOf(PARTITION_ID_MESSAGE);
-        if (start < 0)
-            fail("Partition id not found in servlet output: " + result);
-        String partitionId1 = result.substring(start += PARTITION_ID_MESSAGE.length(), result.indexOf(".", start));
-
-        System.out.println("Partition id " + partitionId1);
-
-        runTestWithResponse(server, APP_NAME + "/Failover1ServerTestServlet",
-                "testRemovePartition&executor=persistentExec2&test=testHeartbeatRestoresLostPartitionInfo[3]");
-
-        result = runTestWithResponse(server, APP_NAME + "/Failover1ServerTestServlet",
-                "testGetPartitionId&executor=persistentExec2&test=testHeartbeatRestoresLostPartitionInfo[4]");
-
-        start = result.indexOf(PARTITION_ID_MESSAGE);
-        if (start < 0)
-            fail("Partition id not found in servlet output: " + result);
-        String partitionId2 = result.substring(start += PARTITION_ID_MESSAGE.length(), result.indexOf(".", start));
-
-        assertEquals(partitionId1, partitionId2);
-    }
-
-    /**
-     * testMissedHeartbeatsClearOldPartitionData - insert entries representing missed heartbeats directly into the
-     * database. Verify that they are automatically removed (happens when heartbeat information is checked).
-     */
-    @Test
-    public void testMissedHeartbeatsClearOldPartitionData() throws Exception {
-        runTest(server, APP_NAME + "/Failover1ServerTestServlet", testName);
+        server.updateServerConfiguration(originalConfig);
     }
 
     /**
@@ -249,7 +157,7 @@ public class Failover1ServerTest extends FATServletClient {
 
             // Simulate failover by disabling the instance (persistentExec2) to which the tasks were scheduled
             // and allowing other instances to claim ownership
-            ServerConfiguration config = originalConfig.clone();
+            ServerConfiguration config = savedConfig.clone();
             PersistentExecutor persistentExec2 = config.getPersistentExecutors().getById("persistentExec2");
             persistentExec2.setEnableTaskExecution("false");
 
@@ -257,21 +165,21 @@ public class Failover1ServerTest extends FATServletClient {
             persistentExec3.setId("persistentExec3");
             persistentExec3.setPollInterval("2s");
             persistentExec3.setPollSize("4");
-            persistentExec3.setMissedTaskThreshold("3s");
+            persistentExec3.setExtraAttribute("missedTaskThreshold2", "3s");
             config.getPersistentExecutors().add(persistentExec3);
 
             PersistentExecutor persistentExec4 = new PersistentExecutor();
             persistentExec4.setId("persistentExec4");
             persistentExec4.setPollInterval("2s");
             persistentExec4.setPollSize("4");
-            persistentExec4.setMissedTaskThreshold("3s");
+            persistentExec4.setExtraAttribute("missedTaskThreshold2", "3s");
             config.getPersistentExecutors().add(persistentExec4);
 
             PersistentExecutor persistentExec5 = new PersistentExecutor();
             persistentExec5.setId("persistentExec5");
             persistentExec5.setPollInterval("2s");
             persistentExec5.setPollSize("4");
-            persistentExec5.setMissedTaskThreshold("3s");
+            persistentExec5.setExtraAttribute("missedTaskThreshold2", "3s");
             config.getPersistentExecutors().add(persistentExec5);
 
             server.setMarkToEndOfLog();
@@ -285,7 +193,7 @@ public class Failover1ServerTest extends FATServletClient {
             } finally {
                 // restore original configuration
                 server.setMarkToEndOfLog();
-                server.updateServerConfiguration(originalConfig);
+                server.updateServerConfiguration(savedConfig);
                 server.waitForConfigUpdateInLogUsingMark(APP_NAMES);
             }
 
@@ -330,26 +238,26 @@ public class Failover1ServerTest extends FATServletClient {
 
             // Simulate failover by disabling the instance (persistentExec2) to which the task was scheduled
             // and allowing other instances to claim ownership of the task
-            ServerConfiguration config = originalConfig.clone();
+            ServerConfiguration config = savedConfig.clone();
             PersistentExecutor persistentExec2 = config.getPersistentExecutors().getById("persistentExec2");
             persistentExec2.setEnableTaskExecution("false");
 
             PersistentExecutor persistentExec3 = new PersistentExecutor();
             persistentExec3.setId("persistentExec3");
             persistentExec3.setPollInterval("1s500ms");
-            persistentExec3.setMissedTaskThreshold("2s");
+            persistentExec3.setExtraAttribute("missedTaskThreshold2", "2s");
             config.getPersistentExecutors().add(persistentExec3);
 
             PersistentExecutor persistentExec4 = new PersistentExecutor();
             persistentExec4.setId("persistentExec4");
             persistentExec4.setPollInterval("1s500ms");
-            persistentExec4.setMissedTaskThreshold("2s");
+            persistentExec4.setExtraAttribute("missedTaskThreshold2", "2s");
             config.getPersistentExecutors().add(persistentExec4);
 
             PersistentExecutor persistentExec5 = new PersistentExecutor();
             persistentExec5.setId("persistentExec5");
             persistentExec5.setPollInterval("1s500ms");
-            persistentExec5.setMissedTaskThreshold("2s");
+            persistentExec5.setExtraAttribute("missedTaskThreshold2", "2s");
             config.getPersistentExecutors().add(persistentExec5);
 
             server.setMarkToEndOfLog();
@@ -361,7 +269,7 @@ public class Failover1ServerTest extends FATServletClient {
             } finally {
                 // restore original configuration
                 server.setMarkToEndOfLog();
-                server.updateServerConfiguration(originalConfig);
+                server.updateServerConfiguration(savedConfig);
                 server.waitForConfigUpdateInLogUsingMark(APP_NAMES);
             }
 
@@ -377,6 +285,7 @@ public class Failover1ServerTest extends FATServletClient {
 
     /**
      * testScheduleOnOneServerRunOnAnother - Schedule a task on an instance that cannot run tasks. Verify that another instance takes over and runs it.
+     * In this test, the missedTaskThreshold is configured on the instance that cannot run tasks.
      */
     @Test
     public void testScheduleOnOneServerRunOnAnother() throws Exception {
@@ -419,7 +328,7 @@ public class Failover1ServerTest extends FATServletClient {
 
             // Simulate failover by disabling the instance (persistentExec2) to which the task was scheduled
             // and allowing the other instance to run tasks
-            ServerConfiguration config = originalConfig.clone();
+            ServerConfiguration config = savedConfig.clone();
             PersistentExecutor persistentExec2 = config.getPersistentExecutors().getById("persistentExec2");
             persistentExec2.setEnableTaskExecution("false");
 
@@ -427,7 +336,7 @@ public class Failover1ServerTest extends FATServletClient {
             persistentExec1.setEnableTaskExecution("true");
             persistentExec1.setInitialPollDelay("200ms");
             persistentExec1.setPollInterval("1s500ms");
-            persistentExec1.setMissedTaskThreshold("2s");
+            persistentExec1.setExtraAttribute("missedTaskThreshold2", "2s");
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
             server.waitForConfigUpdateInLogUsingMark(APP_NAMES);
@@ -437,7 +346,7 @@ public class Failover1ServerTest extends FATServletClient {
             } finally {
                 // restore original configuration
                 server.setMarkToEndOfLog();
-                server.updateServerConfiguration(originalConfig);
+                server.updateServerConfiguration(savedConfig);
                 server.waitForConfigUpdateInLogUsingMark(APP_NAMES);
             }
 
@@ -452,20 +361,17 @@ public class Failover1ServerTest extends FATServletClient {
     }
 
     /**
-     * testScheduleToRunOnDifferentServer - Schedule a task using an instance that cannot run tasks.
-     * If it sees another instance that can run tasks and polls for missed tasks, then it should schedule
-     * the task to run on that server instead.
+     * testScheduleThenRunOnDifferentServer - Schedule a task using an instance that cannot run tasks.
+     * It will go ahead and schedule the task without any claim to run it, allowing another instance to take over.
+     * In this test, the missedTaskThreshold is not configured on the instance that cannot run tasks.
      */
     @Test
-    public void testScheduleToRunOnDifferentServer() throws Exception {
-        // For this test, we need one instance that cannot run tasks,
-        // and another instance that can, and is able to run missed tasks from another instance,
-        // but is configured such that it will not do so for a longer time into the future
-        // than the test is willing to wait.  The purpose of the test is to ensure that the
-        // instance which cannot run tasks directly schedules the task onto the instance that can run tasks.
-        ServerConfiguration config = originalConfig.clone();
+    public void testScheduleThenRunOnDifferentServer() throws Exception {
+        ServerConfiguration config = savedConfig.clone();
+        PersistentExecutor persistentExec1 = config.getPersistentExecutors().getById("persistentExec1");
+        persistentExec1.setExtraAttribute("missedTaskThreshold2", null);
         PersistentExecutor persistentExec2 = config.getPersistentExecutors().getById("persistentExec2");
-        persistentExec2.setMissedTaskThreshold("5h");
+        persistentExec2.setExtraAttribute("missedTaskThreshold2", "5h"); // even though this value is unreasonably long, it does not impact the ability to take over an unassigned task
 
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
@@ -473,7 +379,7 @@ public class Failover1ServerTest extends FATServletClient {
         try {
             // Schedule on the instance that cannot run tasks
             StringBuilder result = runTestWithResponse(server, APP_NAME + "/Failover1ServerTestServlet",
-                    "testScheduleOneTimeTask&jndiName=persistent/exec1&initialDelayMS=0&test=testScheduleToRunOnDifferentServer[1]");
+                    "testScheduleOneTimeTask&jndiName=persistent/exec1&initialDelayMS=0&test=testScheduleThenRunOnDifferentServer[1]");
 
             int start = result.indexOf(TASK_ID_MESSAGE);
             if (start < 0)
@@ -485,17 +391,17 @@ public class Failover1ServerTest extends FATServletClient {
             boolean completed = false;
             try {
                 runTest(server, APP_NAME + "/Failover1ServerTestServlet",
-                        "testTaskCompleted&taskId=" + taskId + "&expectedResult=1&jndiName=persistent/exec1&test=testScheduleToRunOnDifferentServer[2]");
+                        "testTaskCompleted&taskId=" + taskId + "&expectedResult=1&jndiName=persistent/exec1&test=testScheduleThenRunOnDifferentServer[2]");
                 completed = true;
             } finally {
                 if (!completed)
                     runTest(server, APP_NAME + "/Failover1ServerTestServlet",
-                            "testCancelTask&taskId=" + taskId + "&jndiName=persistent/exec1&test=testScheduleToRunOnDifferentServer[3]");
+                            "testCancelTask&taskId=" + taskId + "&jndiName=persistent/exec1&test=testScheduleThenRunOnDifferentServer[3]");
             }
         } finally {
             // restore original configuration
             server.setMarkToEndOfLog();
-            server.updateServerConfiguration(originalConfig);
+            server.updateServerConfiguration(savedConfig);
             server.waitForConfigUpdateInLogUsingMark(APP_NAMES);
         }
     }
