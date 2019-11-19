@@ -1392,7 +1392,8 @@ public class InstallKernelMap implements Map {
 
     /**
      * parses the following format for http/https proxy environment variables:
-     * http://user:password@prox-server:3128
+     * https://user:password@prox-server:3128
+     * http://prox-server:3128
      * and returns a map with proxyUser, proxyHost, proxyPort, and proxyPassword
      *
      * @param string
@@ -1400,13 +1401,19 @@ public class InstallKernelMap implements Map {
      */
     private Map<String, String> getProxyVariables(String proxyEnvVar, String protocol) {
         Map<String, String> result = new HashMap<String, String>();
-        String[] proxyEnvVarSplit = proxyEnvVar.split("@");
-        String[] proxyCredentials = proxyEnvVarSplit[0].split(":"); //[http, //user, password]
-        String[] proxyHostPort = proxyEnvVarSplit[1].split(":"); //[prox-server, 3128]
-        result.put(protocol + ".proxyHost", proxyHostPort[0]); //prox-server
-        result.put(protocol + ".proxyPort", proxyHostPort[1]); //3128
-        result.put(protocol + ".proxyUser", proxyCredentials[1].replace("/", "")); //user
-        result.put(protocol + ".proxyPassword", proxyCredentials[2]); //password
+        if (protocol.equals("https")) {
+            String[] proxyEnvVarSplit = proxyEnvVar.split("@");
+            String[] proxyCredentials = proxyEnvVarSplit[0].split(":"); //[http, //user, password]
+            String[] proxyHostPort = proxyEnvVarSplit[1].split(":"); //[prox-server, 3128]
+            result.put(protocol + ".proxyHost", proxyHostPort[0]); //prox-server
+            result.put(protocol + ".proxyPort", proxyHostPort[1]); //3128
+            result.put(protocol + ".proxyUser", proxyCredentials[1].replace("/", "")); //user
+            result.put(protocol + ".proxyPassword", proxyCredentials[2]); //password
+        } else if (protocol.equals("http")) {
+            String[] proxyHttpSplit = proxyEnvVar.split(":");
+            result.put(protocol + ".proxyHost", proxyHttpSplit[1].replace("/", "")); //prox-server
+            result.put(protocol + ".proxyPort", proxyHttpSplit[2]); ////3128
+        }
 
         return result;
     }

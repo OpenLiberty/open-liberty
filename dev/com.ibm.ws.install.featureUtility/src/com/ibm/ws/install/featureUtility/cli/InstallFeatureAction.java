@@ -84,12 +84,15 @@ public class InstallFeatureAction implements ActionHandler {
 
                 String arg = argList.get(0);
                 try {
-                        Collection<String> assetIds = new HashSet<String>(argList);
-                        checkAssetsNotInstalled(new ArrayList<String>(assetIds));
-                        return assetInstallInit(assetIds);
+                	Collection<String> assetIds = new HashSet<String>(argList);
+                	checkAssetsNotInstalled(new ArrayList<String>(assetIds));
+                	return assetInstallInit(assetIds);
+                } catch (InstallException e) {
+                	logger.log(Level.SEVERE, e.getMessage(), e);
+                    return FeatureUtilityExecutor.returnCode(e.getRc());
                 } catch (Throwable e) {
-                        logger.log(Level.SEVERE, e.getMessage(), e);
-                        return FeatureUtilityExecutor.returnCode(InstallException.IO_FAILURE);
+                	logger.log(Level.SEVERE, e.getMessage(), e);
+                	return FeatureUtilityExecutor.returnCode(InstallException.IO_FAILURE);
                 }
 
         }

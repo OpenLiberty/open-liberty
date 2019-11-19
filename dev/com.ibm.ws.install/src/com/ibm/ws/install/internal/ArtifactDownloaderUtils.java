@@ -44,8 +44,8 @@ public class ArtifactDownloaderUtils {
             HttpURLConnection.setFollowRedirects(true);
             HttpURLConnection conn;
             URL url = new URL(URLName);
-            if (envMap.get("http.proxyUser") != null) {
-                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(envMap.get("http.proxyHost"), 8080));
+            if (envMap.get("https.proxyUser") != null) {
+                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(envMap.get("https.proxyHost"), 8080));
                 conn = (HttpURLConnection) url.openConnection(proxy);
             } else {
                 conn = (HttpURLConnection) url.openConnection();
