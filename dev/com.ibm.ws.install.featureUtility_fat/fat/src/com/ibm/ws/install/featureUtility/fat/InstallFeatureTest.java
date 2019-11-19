@@ -98,8 +98,8 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         String[] param1s = { "installFeature", "adminCenter-1.0" };
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
         assertEquals("Exit code should be 21", 21, po.getReturnCode());
-//        String output = po.getStdout();
-//        assertTrue("Should contain CWWKF1299E", output.contains("CWWKF1299E"));
+        String output = po.getStdout();
+        assertTrue("Should contain CWWKF1299E", output.contains("CWWKF1299E"));
         Log.exiting(c, METHOD_NAME);
     }
 
@@ -116,8 +116,8 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         String[] param1s = { "installFeature", "veryClearlyMadeUpFeatureThatNoOneWillEverThinkToCreateThemselvesAbCxYz-1.0"};
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
         assertEquals("Exit code should be 21",21,  po.getReturnCode());
-//        String output = po.getStdout();
-//        assertTrue("Should contain CWWKF1299E", output.contains("CWWKF1299E"));
+        String output = po.getStdout();
+        assertTrue("Should contain CWWKF1299E", output.contains("CWWKF1299E"));
         Log.exiting(c, METHOD_NAME);
     }
 
