@@ -33,6 +33,7 @@ public class OAuth20BadParameterException extends OAuth20Exception {
     // TODO deal with OAuth20ExceptionUtil
     public OAuth20BadParameterException(String msgKey, Object[] params) {
         super(INVALID_REQUEST, Tr.formatMessage(tc, msgKey, params), null);
+        _objs = params;
         _msgKey = msgKey;
         _paramName = (String) params[0];
         _paramValue = (String) params[1];

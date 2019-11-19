@@ -344,7 +344,7 @@ public class OAuth20EndpointServices {
                         "com.ibm.ws.security.oauth20.web.OAuth20EndpointServices", "324", this);
             }
             boolean suppressBasicAuthChallenge = isBrowserWithBasicAuth; // ui must NOT log in using basic auth, so logout function will work.
-            WebUtils.sendErrorJSON(response, e.getHttpStatus(), e.getErrorCode(), e.getErrorDescription(), suppressBasicAuthChallenge);
+            WebUtils.sendErrorJSON(response, e.getHttpStatus(), e.getErrorCode(), e.getErrorDescription(request.getLocales()), suppressBasicAuthChallenge);
         }
 
     }
@@ -462,7 +462,7 @@ public class OAuth20EndpointServices {
                 String encodedURL = URLEncodeParams(logoutRedirectURL);
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "OAUTH20 _SSO OP redirecting to [" + logoutRedirectURL + "], url encoded to [" + encodedURL + "]");
-                }
+               	}
                 response.sendRedirect(encodedURL);
                 return;
             } else {
@@ -802,11 +802,6 @@ public class OAuth20EndpointServices {
             // checking resource
             OidcBaseClient client = OAuth20ProviderUtils.getOidcOAuth20Client(provider, clientId);
             if (client == null || !client.isEnabled()) {
-                // String errorMsg = TraceNLS.getFormattedMessage(RegistrationEndpointServices.class,
-                // MSG_RESOURCE_BUNDLE,
-                // "security.oauth20.error.invalid.client",
-                // new Object[] { clientId },
-                // "CWOAU0023E: The OAuth service provider could not find the client " + clientId + ".");
                 throw new OidcServerException("security.oauth20.error.invalid.client", OIDCConstants.ERROR_INVALID_CLIENT_METADATA, HttpServletResponse.SC_BAD_REQUEST);
             }
             OAuth20ProviderUtils.validateResource(request, null, client);
