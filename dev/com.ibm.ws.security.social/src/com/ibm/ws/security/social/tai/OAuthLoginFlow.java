@@ -65,7 +65,7 @@ public class OAuthLoginFlow {
         String tokenFromRequest = taiWebUtils.getBearerAccessToken(request, clientConfig);
         if (requestShouldHaveToken(clientConfig)) {
             if (isAccessTokenNullOrEmpty(tokenFromRequest)) {
-                Tr.error(tc, "ACCESS_TOKEN_MISSING_FROM_HEADERS");
+                Tr.error(tc, "ACCESS_TOKEN_MISSING_FROM_HEADERS", clientConfig.getUniqueId());
                 return taiWebUtils.sendToErrorPage(response, TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED));
             }
             return handleAccessToken(tokenFromRequest, request, response, clientConfig);

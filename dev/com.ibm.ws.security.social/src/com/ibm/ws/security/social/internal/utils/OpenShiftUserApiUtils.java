@@ -139,7 +139,7 @@ public class OpenShiftUserApiUtils {
             if (userInnerMap.containsKey(config.getUserNameAttribute())) {
                 modifiedResponse.add("username", userInnerMap.getString(config.getUserNameAttribute()));
             } else {
-                throw new SocialLoginException("KUBERNETES_USER_API_RESPONSE_MISSING_KEY", null, new Object[] { "user", jsonResponse });
+                throw new SocialLoginException("KUBERNETES_USER_API_RESPONSE_MISSING_KEY", null, new Object[] { config.getUserNameAttribute(), jsonResponse });
             }
         } else {
             throw new SocialLoginException("KUBERNETES_USER_API_RESPONSE_MISSING_KEY", null, new Object[] { "user", jsonResponse });
