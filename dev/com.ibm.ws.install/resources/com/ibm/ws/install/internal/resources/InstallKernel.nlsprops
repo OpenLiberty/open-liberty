@@ -65,9 +65,13 @@ ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE=Could not determine the Libert
 ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE.explanation=The properties file {0} may be missing or corrupted.
 ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE.useraction=Ensure the properties file exists.
 
-ERROR_MAVEN_COORDINATE_WRONG_VERSION=Cannot install feature with maven coordinate {0} onto a {1} Liberty runtime version.
+ERROR_MAVEN_COORDINATE_WRONG_VERSION=Cannot install feature with Maven coordinate {0} onto a {1} Liberty runtime version.
 ERROR_MAVEN_COORDINATE_WRONG_VERSION.explanation=The feature is incompatible with the Liberty runtime.
 ERROR_MAVEN_COORDINATE_WRONG_VERSION.useraction=Specify a valid version for the feature.
+
+ERROR_MAVEN_COORDINATE_WRONG_PACKAGING=Cannot install feature with Maven coordinate {0} because only esa packages are allowed.
+ERROR_MAVEN_COORDINATE_WRONG_PACKAGING.explanation=The feature is incompatible with the Liberty runtime.
+ERROR_MAVEN_COORDINATE_WRONG_PACKAGING.useraction=Specify "esa" for the packaging in the Maven coordinate.
 
 ERROR_MAVEN_COORDINATE_INVALID=Invalid maven coordinate provided: {0}
 ERROR_MAVEN_COORDINATE_INVALID.explanation=The maven coordinated provided is not in the correct format.
