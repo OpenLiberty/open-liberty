@@ -79,7 +79,16 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        // If a config update occurred just prior to this and didn't have subseuqent use of a session,
+        // then http sessions code could be initializing Infinispan asynchronously, which, if that is still ongoing,
+        // can result in errors if a server stop happens at the same time.  To avoid this, first run an operation
+        // that will wait for the intialization to complete.
+        try {
+            List<String> session = new ArrayList<>();
+            run("getSessionId", session);
+        } finally {
+            server.stopServer();
+        }
     }
 
     /**
