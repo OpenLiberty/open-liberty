@@ -47,7 +47,7 @@ import com.ibm.ws.kernel.boot.cmdline.Utils;
 public class FeatureUtility {
 
     private final InstallKernelMap map;
-    private final File fromDir;
+    private File fromDir;
     private final File esaFile;
     private Boolean isDownload;
     private Boolean isBasicInit;
@@ -66,7 +66,7 @@ public class FeatureUtility {
 
         this.openLibertyVersion = getLibertyVersion();
 
-        this.fromDir = builder.fromDir;
+        this.fromDir = builder.fromDir; //this can be overwritten by the env prop
         this.toExtension = builder.toExtension;
         // this.featuresToInstall = new ArrayList<>(builder.featuresToInstall);
 
@@ -88,7 +88,11 @@ public class FeatureUtility {
         for (String key: envMapKeys) {
         	if (key.equals("FEATURE_REPO_PASSWORD")) {
         		fine("FEATURE_REPO_PASSWORD: *********");
-        	} else {
+        	} else if (key.equals("FEATURE_LOCAL_REPO") && envMap.get("FEATURE_LOCAL_REPO") != null) {
+        		fine(key +": " + envMap.get(key));
+        		File local_repo = new File(envMap.get("FEATURE_LOCAL_REPO"));
+        		this.fromDir = local_repo;
+        	}else {
         		fine(key +": " + envMap.get(key));
         	}
         }
