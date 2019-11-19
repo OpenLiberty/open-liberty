@@ -38,7 +38,7 @@ public class TAIUserApiUtils {
     public String getUserApiResponse(OAuthClientUtil clientUtil, SocialLoginConfig clientConfig, @Sensitive String accessToken, SSLSocketFactory sslSocketFactory) {
         UserApiConfig[] userinfoCfg = clientConfig.getUserApis();
         if (userinfoCfg == null || userinfoCfg.length == 0) {
-            Tr.warning(tc, "NO_USER_API_CONFIGS_PRESENT", new Object[] { clientConfig.getUniqueId() });
+            Tr.error(tc, "NO_USER_API_CONFIGS_PRESENT", new Object[] { clientConfig.getUniqueId() });
             return null;
         }
         UserApiConfig userApiConfig = userinfoCfg[0];
@@ -62,10 +62,10 @@ public class TAIUserApiUtils {
                 return userApiResp;
             }
         } catch (SocialLoginException e) {
-            Tr.warning(tc, "ERROR_GETTING_USER_API_RESPONSE", new Object[] { userinfoApi, clientConfig.getUniqueId(), e.getLocalizedMessage() });
+            Tr.error(tc, "ERROR_GETTING_USER_API_RESPONSE", new Object[] { userinfoApi, clientConfig.getUniqueId(), e.getLocalizedMessage() });
             return null;
         } catch (Exception e) {
-            Tr.warning(tc, "ERROR_GETTING_USER_API_RESPONSE", new Object[] { userinfoApi, clientConfig.getUniqueId(), e.getLocalizedMessage() });
+            Tr.error(tc, "ERROR_GETTING_USER_API_RESPONSE", new Object[] { userinfoApi, clientConfig.getUniqueId(), e.getLocalizedMessage() });
             return null;
         }
     }
