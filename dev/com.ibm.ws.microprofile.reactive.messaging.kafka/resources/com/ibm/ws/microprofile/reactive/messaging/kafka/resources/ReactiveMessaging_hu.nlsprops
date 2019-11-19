@@ -54,6 +54,12 @@ kafka.output.error.signal.CWMRX1004E.useraction=A kiszolg\u00e1l\u00f3 message.l
 kafka.groupid.not.set.CWMRX1005E=CWMRX1005E: A group.id tulajdons\u00e1g nincs be\u00e1ll\u00edtva a csatorna konfigur\u00e1ci\u00f3j\u00e1ban. \u00c1ll\u00edtsa be a(z) {0} tulajdons\u00e1got az alkalmaz\u00e1s egyik MicroProfile konfigur\u00e1ci\u00f3s forr\u00e1s\u00e1ban.
 kafka.groupid.not.set.CWMRX1005E.explanation=A Kafka fogyaszt\u00f3i csoport azonos\u00edt\u00f3j\u00e1t \u00fagy kell be\u00e1ll\u00edtani, hogy lehet\u0151v\u00e9 tegye a reakt\u00edv \u00fczenetkezel\u00e9s megfelel\u0151 m\u0171k\u00f6d\u00e9s\u00e9t.
 kafka.groupid.not.set.CWMRX1005E.useraction=\u00c1ll\u00edtsa be a tulajdons\u00e1got az alkalmaz\u00e1s egyik MicroProfile konfigur\u00e1ci\u00f3s forr\u00e1s hely\u00e9n, p\u00e9ld\u00e1ul a microprofile-config.properties f\u00e1jlban.
+
+#Do not translate "kafka-clients", "Apache Kafka" or "Maven Central"
+kafka.library.not.present.CWMRX1006E=CWMRX1006E: Nem t\u00f6lthet\u0151k be oszt\u00e1lyok a kafka-clients JAR f\u00e1jlb\u00f3l. Gondoskodj\u00e9k r\u00f3la, hogy a kafka-clients JAR f\u00e1jl \u00e9s f\u00fcgg\u0151s\u00e9gei k\u00f6nyvt\u00e1rakk\u00e9nt el\u00e9rhet\u0151k legyenek az alkalmaz\u00e1sa sz\u00e1m\u00e1ra.
+kafka.library.not.present.CWMRX1006E.explanation=A Reactive Messaging Kafka \u00fcgyfelet haszn\u00e1l\u00f3 alkalmaz\u00e1soknak biztos\u00edtaniuk kell a kafka-clients JAR f\u00e1jlt \u00e9s f\u00fcgg\u0151s\u00e9geit. A f\u00e1jlt \u00e9s f\u00fcgg\u0151s\u00e9geit biztos\u00edthatj\u00e1k \u00fagy, hogy egy alkalmaz\u00e1son bel\u00fcli k\u00f6nyvt\u00e1rba csomagolj\u00e1k \u0151ket, illetve szabv\u00e1nyos megosztott k\u00f6nyvt\u00e1rk\u00e9nt is.
+kafka.library.not.present.CWMRX1006E.useraction=Csomagolja a kafka-clients JAR f\u00e1jlt \u00e9s f\u00fcgg\u0151s\u00e9geit k\u00f6nyvt\u00e1rakba az alkalmaz\u00e1sban vagy megosztott k\u00f6nyvt\u00e1rk\u00e9nt. A kafka-clients JAR f\u00e1jl let\u00f6lthet\u0151 az Apache Kafka weboldal\u00e1r\u00f3l vagy a Maven Central webhelyr\u0151l.
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Reactive Messaging error message
 #-----------------------------------------------------------------------------------------------------------------------------

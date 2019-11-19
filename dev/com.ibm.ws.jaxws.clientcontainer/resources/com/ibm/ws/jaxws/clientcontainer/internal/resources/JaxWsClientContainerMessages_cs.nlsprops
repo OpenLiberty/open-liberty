@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -85,8 +85,8 @@ error.service.ref.member.level.merge.service.interface.and.service.ref.type.not.
 # Annotation validation messages ----------------------------------------
 
 error.service.ref.annotation.lookup.redundant.attributes=CWWKW0014E: Krom\u011b jin\u00fdch atribut\u016f ur\u010dila anotace @WebServiceRef nespr\u00e1vn\u011b i atribut vyhled\u00e1n\u00ed.
-error.service.ref.annotation.lookup.redundant.attributes.explanation=Pokud je zad\u00e1n atribut vyhled\u00e1n\u00ed anotace @WebServiceRef, nejsou povoleny \u017e\u00e1dn\u00e9 dal\u0161\u00ed atributy.
-error.service.ref.annotation.lookup.redundant.attributes.useraction=Odeberte atribut vyhled\u00e1n\u00ed nebo ostatn\u00ed atributy.
+error.service.ref.annotation.lookup.redundant.attributes.explanation=Pokud je zad\u00e1n vyhled\u00e1vac\u00ed atribut anotace @WebServiceRef, nejsou povoleny \u017e\u00e1dn\u00e9 dal\u0161\u00ed atributy.
+error.service.ref.annotation.lookup.redundant.attributes.useraction=Odeberte vyhled\u00e1vac\u00ed atribut nebo ostatn\u00ed atributy.
 
 error.service.ref.class.level.annotation.name.or.type.absent=CWWKW0015E: Anotace @WebServiceRef na t\u0159\u00edd\u011b {0} neur\u010duje hodnotu pro atribut n\u00e1zvu nebo typu. 
 error.service.ref.class.level.annotation.name.or.type.absent.explanation=Pokud se anotace @WebServiceRef nach\u00e1z\u00ed na \u00farovni t\u0159\u00edd, mus\u00ed b\u00fdt zad\u00e1n atribut n\u00e1zvu a typu.
@@ -133,7 +133,7 @@ error.invalid.handlerChainFile.content.useraction=Zm\u011b\u0148te obor n\u00e1z
 
 #{0}=the unknown exception
 error.unknown.exception=CWWKW0032E: Soubor \u0159et\u011bzu obslu\u017en\u00fdch rutin nelze analyzovat z d\u016fvodu v\u00fdjimky {0}.
-error.unknown.exception.explanation=B\u011bhem anal\u00fdzy souboru \u0159et\u011bzu obslu\u017en\u00fdch rutin byla rozpozn\u00e1na neo\u010dek\u00e1van\u00e1 v\u00fdjimka.
+error.unknown.exception.explanation=B\u011bhem anal\u00fdzy souboru s \u0159et\u011bzci obslu\u017en\u00fdch rutin byla rozpozn\u00e1na neo\u010dek\u00e1van\u00e1 v\u00fdjimka.
 error.unknown.exception.useraction=Ov\u011b\u0159te, \u017ee form\u00e1t souboru obslu\u017en\u00fdch rutin je spr\u00e1vn\u00fd a vyhledejte dal\u0161\u00ed podrobnosti v protokolu ffdc v p\u0159\u00edslu\u0161n\u00e9m adres\u00e1\u0159i logs/ffdc serveru.
 
 #{0}=the qualified name of the class which the handlerChain annotation is on.

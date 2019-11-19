@@ -55,6 +55,11 @@ kafka.groupid.not.set.CWMRX1005E=CWMRX1005E: Die Eigenschaft group.id wurde nich
 kafka.groupid.not.set.CWMRX1005E.explanation=Die Gruppen-ID f\u00fcr den Kafka-Konsumenten muss definiert sein, damit Reactive Messaging ordnungsgem\u00e4\u00df funktioniert.
 kafka.groupid.not.set.CWMRX1005E.useraction=Setzen Sie die Eigenschaft in einem der MicroProfile-ConfigSource-Speicherorte f\u00fcr diese Anwendung, z. B. in der Datei microprofile-config.properties.
 
+#Do not translate "kafka-clients", "Apache Kafka" or "Maven Central"
+kafka.library.not.present.CWMRX1006E=CWMRX1006E: Klassen aus der kafka-clients-JAR-Datei konnten nicht geladen werden. Stellen Sie sicher, dass die kafka-clients-JAR-Datei und die zugeh\u00f6rigen Abh\u00e4ngigkeiten Ihrer Anwendung als Bibliotheken zur Verf\u00fcgung stehen.
+kafka.library.not.present.CWMRX1006E.explanation=Anwendungen, die den Reactive-Messaging-Kafka-Client verwenden, m\u00fcssen die kafka-clients-JAR-Datei und die zugeh\u00f6rigen Abh\u00e4ngigkeiten bereitstellen. Diese Datei und die zugeh\u00f6rigen Abh\u00e4ngigkeiten k\u00f6nnen entweder als gepackte Bibliothek innerhalb der Anwendung oder als gemeinsam genutzte Bibliothek bereitgestellt werden.
+kafka.library.not.present.CWMRX1006E.useraction=Packen Sie die kafka-clients-JAR-Datei und die zugeh\u00f6rigen Abh\u00e4ngigkeiten als Bibliotheken in Ihrer Anwendung oder als gemeinsam genutzte Bibliothek. Die kafka-clients-JAR-Datei kann von der Apache Kafka-Website oder von Maven Central heruntergeladen werden.
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Reactive Messaging error message
 #-----------------------------------------------------------------------------------------------------------------------------
