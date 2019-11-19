@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,11 +16,13 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedInputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -78,6 +80,8 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
     public static void setUp() throws Exception {
         ShrinkHelper.defaultApp(server, APP_NAME, "session.cache.infinispan.web");
 
+        String rand = UUID.randomUUID().toString();
+        server.setJvmOptions(Arrays.asList("-Dinfinispan.cluster.name=" + rand));
         savedConfig = server.getServerConfiguration().clone();
     }
 

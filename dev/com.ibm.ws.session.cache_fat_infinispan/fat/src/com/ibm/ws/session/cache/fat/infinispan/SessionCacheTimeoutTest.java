@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
@@ -24,7 +26,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
@@ -53,12 +54,8 @@ public class SessionCacheTimeoutTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         app = new SessionCacheApp(server, false, "session.cache.infinispan.web", "session.cache.infinispan.web.listener1");
-
-        if (FATSuite.isMulticastDisabled()) {
-            ServerConfiguration config = server.getServerConfiguration();
-            config.getHttpSessionCaches().get(0).setUri(null);
-        }
-
+        String rand = UUID.randomUUID().toString();
+        server.setJvmOptions(Arrays.asList("-Dinfinispan.cluster.name=" + rand));
         server.startServer();
 
         // Access a session before the main test logic to ensure that delays caused by lazy initialization
