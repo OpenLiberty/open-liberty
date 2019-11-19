@@ -38,7 +38,7 @@ public class TAIUserApiUtils {
     public String getUserApiResponse(OAuthClientUtil clientUtil, SocialLoginConfig clientConfig, @Sensitive String accessToken, SSLSocketFactory sslSocketFactory) {
         UserApiConfig[] userinfoCfg = clientConfig.getUserApis();
         if (userinfoCfg == null || userinfoCfg.length == 0) {
-            Tr.error(tc, "NO_USER_API_CONFIGS_PRESENT", new Object[] { clientConfig.getUniqueId() });
+            Tr.warning(tc, "NO_USER_API_CONFIGS_PRESENT", new Object[] { clientConfig.getUniqueId() });
             return null;
         }
         UserApiConfig userApiConfig = userinfoCfg[0];
