@@ -214,14 +214,14 @@ public class ArtifactDownloader {
     }
 
     private void configureProxyAuthentication() {
-        if (envMap.get("http.proxyUser") != null) {
+        if (envMap.get("https.proxyUser") != null) {
             Authenticator.setDefault(new SystemPropertiesProxyAuthenticator());
         }
     }
 
     private void configureAuthentication() {
         if (envMap.get("FEATURE_REPO_USER") != null && envMap.get("FEATURE_REPO_PASSWORD") != null
-            && envMap.get("http.proxyUser") == null) {
+            && envMap.get("https.proxyUser") == null) {
             Authenticator.setDefault(new Authenticator() {
                 @Override
                 protected PasswordAuthentication getPasswordAuthentication() {
@@ -243,8 +243,8 @@ public class ArtifactDownloader {
                 throw ExceptionUtils.createByKey("ERROR_FAILED_TO_DOWNLOAD_FEATURE", ArtifactDownloaderUtils.getFileNameFromURL(address.toString()),
                                                  destination.toString());
             }
-            if (envMap.get("http.proxyUser") != null) {
-                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(envMap.get("http.proxyHost"), 8080));
+            if (envMap.get("https.proxyUser") != null) {
+                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(envMap.get("https.proxyHost"), Integer.parseInt(envMap.get("https.proxyPort"))));
                 conn = url.openConnection(proxy);
             } else {
                 conn = url.openConnection();
@@ -284,27 +284,27 @@ public class ArtifactDownloader {
         return String.format("%s/%s (%s;%s;%s) (%s;%s;%s)", appName, appVersion, osName, osVersion, osArch, javaVendor, javaVersion, javaVendorVersion);
     }
 
-    private void addBasicAuthentication(URI address, URLConnection connection) throws IOException {
+    private void addBasicAuthentication(URI address, URLConnection conn) throws IOException {
         String userInfo = calculateUserInfo(address);
         if (userInfo == null) {
             return;
         }
-        connection.setRequestProperty("Authorization", "Basic " + base64Encode(userInfo));
+        conn.setRequestProperty("Authorization", "Basic " + base64Encode(userInfo));
     }
 
     private String base64Encode(String userInfo) {
         ClassLoader loader = getClass().getClassLoader();
         try {
-            Method getEncoderMethod = loader.loadClass("java.util.Base64").getMethod("getEncoder");
-            Method encodeMethod = loader.loadClass("java.util.Base64$Encoder").getMethod("encodeToString", byte[].class);
-            Object encoder = getEncoderMethod.invoke(null);
-            return (String) encodeMethod.invoke(encoder, new Object[] { userInfo.getBytes("UTF-8") });
-        } catch (Exception java7OrEarlier) {
+            Method getEncoder = loader.loadClass("java.util.Base64").getMethod("getEncoder");
+            Method encode = loader.loadClass("java.util.Base64$Encoder").getMethod("encodeToString", byte[].class);
+            Object encoder = getEncoder.invoke(null);
+            return (String) encode.invoke(encoder, new Object[] { userInfo.getBytes("UTF-8") });
+        } catch (Exception earlierThanJava7) {
             try {
-                Method encodeMethod = loader.loadClass("javax.xml.bind.DatatypeConverter").getMethod("printBase64Binary", byte[].class);
-                return (String) encodeMethod.invoke(null, new Object[] { userInfo.getBytes("UTF-8") });
-            } catch (Exception java5OrEarlier) {
-                throw new RuntimeException("Downloading Maven distributions with HTTP Basic Authentication is not supported on your JVM.", java5OrEarlier);
+                Method enocode = loader.loadClass("javax.xml.bind.DatatypeConverter").getMethod("printBase64Binary", byte[].class);
+                return (String) enocode.invoke(null, new Object[] { userInfo.getBytes("UTF-8") });
+            } catch (Exception earlierThanJava5) {
+                throw new RuntimeException("Downloading with HTTP Basic Authentication is not supported with your JVM.", earlierThanJava5);
             }
         }
     }
@@ -320,7 +320,7 @@ public class ArtifactDownloader {
     private static class SystemPropertiesProxyAuthenticator extends Authenticator {
         @Override
         protected PasswordAuthentication getPasswordAuthentication() {
-            return new PasswordAuthentication(envMap.get("http.proxyUser"), envMap.get("http.proxyPassword").toCharArray());
+            return new PasswordAuthentication(envMap.get("https.proxyUser"), envMap.get("https.proxyPassword").toCharArray());
         }
     }
 
@@ -350,15 +350,15 @@ public class ArtifactDownloader {
 
     public void checkValidProxy() throws InstallException {
 
-        String proxyPort = envMap.get("http.proxyPort");
-        if (envMap.get("http.proxyUser") != null) {
+        String proxyPort = envMap.get("https.proxyPort");
+        if (envMap.get("https.proxyUser") != null) {
             int proxyPortnum = Integer.parseInt(proxyPort);
-            if (envMap.get("http.proxyHost").isEmpty()) {
+            if (envMap.get("https.proxyHost").isEmpty()) {
                 throw ExceptionUtils.createByKey("ERROR_TOOL_PROXY_HOST_MISSING");
             } else if (proxyPortnum < 0 || proxyPortnum > 65535) {
                 throw ExceptionUtils.createByKey("ERROR_TOOL_INVALID_PROXY_PORT", proxyPort);
-            } else if (envMap.get("http.proxyPassword").isEmpty() ||
-                       envMap.get("http.proxyPassword") == null) {
+            } else if (envMap.get("https.proxyPassword").isEmpty() ||
+                       envMap.get("https.proxyPassword") == null) {
                 throw ExceptionUtils.createByKey("ERROR_TOOL_PROXY_PWD_MISSING");
             }
         }
