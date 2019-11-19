@@ -50,6 +50,7 @@ public class OIDCClientAuthenticatorUtil {
     public static final TraceComponent tc = Tr.register(OIDCClientAuthenticatorUtil.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
     SSLSupport sslSupport = null;
     private Jose4jUtil jose4jUtil = null;
+    private static int badStateCount = 0;
     public static final String[] OIDC_COOKIES = { ClientConstants.WAS_OIDC_STATE_KEY, ClientConstants.WAS_REQ_URL_OIDC,
             ClientConstants.WAS_OIDC_CODE, ClientConstants.WAS_OIDC_NONCE };
 
@@ -212,7 +213,27 @@ public class OIDCClientAuthenticatorUtil {
             }
         }
 
-        if (responseState == null) {
+        // auth code flow responseState might be invalid if they sat at OP login panel for > authenticationTimeLimit,
+        // or otherwise messed up the state.  Rather than 401'ing them when we try to process the auth code,
+        // detect it here and just send them back to server to try again.
+        boolean stateValid = true;
+        if (responseState != null) {
+            stateValid = verifyState(req, res, responseState, clientConfig);
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Early check of state returns " + stateValid);
+            }
+            // if we get a bunch of quasi-consecutive bad states, we might be stuck in an endless redirection loop.  Bail out.
+            badStateCount = stateValid ? 0 : badStateCount++;
+            if (badStateCount > 5) {
+                stateValid = true;
+                badStateCount = 0;
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Got too many bad states, set to true and let the flow fail");
+                }
+            }
+        }
+
+        if (responseState == null || !stateValid) {
             oidcResult = handleRedirectToServer(req, res, clientConfig); // first time through, we go here.
         } else if (isImplicit) {
             oidcResult = handleImplicitFlowTokens(req, res, responseState, clientConfig, reqParameters);
