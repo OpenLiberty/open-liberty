@@ -12,10 +12,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.ibm.ws.install.InstallException;
+import com.ibm.ws.install.InstallKernel;
 import com.ibm.ws.install.InstallKernelFactory;
 import com.ibm.ws.install.InstallKernelInteractive;
 import com.ibm.ws.install.featureUtility.FeatureUtility;
 import com.ibm.ws.install.featureUtility.FeatureUtilityExecutor;
+import com.ibm.ws.install.internal.InstallKernelImpl;
 import com.ibm.ws.install.internal.InstallLogUtils;
 import com.ibm.ws.install.internal.ProgressBar;
 import com.ibm.ws.kernel.boot.ReturnCode;
@@ -83,6 +85,7 @@ public class InstallFeatureAction implements ActionHandler {
                 String arg = argList.get(0);
                 try {
                         Collection<String> assetIds = new HashSet<String>(argList);
+                        checkAssetsNotInstalled(new ArrayList<String>(assetIds));
                         return assetInstallInit(assetIds);
                 } catch (Throwable e) {
                         logger.log(Level.SEVERE, e.getMessage(), e);
@@ -113,6 +116,12 @@ public class InstallFeatureAction implements ActionHandler {
                 featureNames.addAll(assetIds);
                 return ReturnCode.OK;
         }
+
+        // call the install kernel to verify we are installing at least 1 new asset
+        private void checkAssetsNotInstalled(List<String> assetIds) throws InstallException {
+                installKernel.checkAssetsNotInstalled(assetIds);
+        }
+
 
         private ExitCode install() {
                 try {

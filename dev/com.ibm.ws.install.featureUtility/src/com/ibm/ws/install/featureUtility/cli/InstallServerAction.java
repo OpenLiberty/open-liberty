@@ -149,7 +149,9 @@ public class InstallServerAction implements ActionHandler {
                 Collection<String> featuresToInstall = new HashSet<String>();
 
                 try {
-                        featuresToInstall.addAll(installKernel.getServerFeaturesToInstall(servers, false));
+                       featuresToInstall.addAll(installKernel.getServerFeaturesToInstall(servers, false));
+                        // get original server features now
+                        featuresToInstall.addAll(InstallUtils.getAllServerFeatures());
                 } catch (InstallException ie) {
                         logger.log(Level.SEVERE, ie.getMessage(), ie);
                         return FeatureUtilityExecutor.returnCode(ie.getRc());

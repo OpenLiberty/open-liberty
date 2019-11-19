@@ -33,6 +33,7 @@ import java.util.Stack;
 import java.util.logging.Logger;
 
 import com.ibm.ws.install.InstallException;
+import com.ibm.ws.install.internal.ExceptionUtils;
 import com.ibm.ws.install.internal.InstallKernelMap;
 import com.ibm.ws.install.internal.InstallLogUtils;
 import com.ibm.ws.install.internal.ProgressBar;
