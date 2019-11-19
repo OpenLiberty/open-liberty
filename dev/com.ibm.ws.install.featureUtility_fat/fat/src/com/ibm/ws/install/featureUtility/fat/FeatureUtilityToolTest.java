@@ -51,18 +51,18 @@ public abstract class FeatureUtilityToolTest {
         installRoot = server.getInstallRoot();
 
         Log.info(c, methodName, "install root: " + installRoot);
-
-        // extract the kernel into our installRoot
-        // kernelZipDir : jbe/build/dev/build.image/build/libs/distributions/
-        String kernelZipDir = installRoot + "../../../build.image/build/libs/distributions/";
-        String dest = kernelZipDir + "/openliberty-kernel";
-
-        Log.info(c, methodName,"kernel zip dir: " + new File(kernelZipDir).getAbsolutePath());
-
-        extractOpenLibertyKernelZip(kernelZipDir, kernelZipDir + dest);
-
-        // change installroot to unzipped kernel
-        installRoot =  dest;
+//
+//        // extract the kernel into our installRoot
+//        // kernelZipDir : jbe/build/dev/build.image/build/libs/distributions/
+//        String kernelZipDir = installRoot + "../../../build.image/build/libs/distributions/";
+//        String dest = kernelZipDir + "/openliberty-kernel";
+//
+//        Log.info(c, methodName,"kernel zip dir: " + new File(kernelZipDir).getAbsolutePath());
+//
+//        extractOpenLibertyKernelZip(kernelZipDir, kernelZipDir + dest);
+//
+//        // change installroot to unzipped kernel
+//        installRoot =  dest;
 
 //        Log.info(c, methodName, "install root: " + installRoot);
         
