@@ -229,98 +229,63 @@
 			}
 		}
 
-		#inner-hero__logo {
-			width: max-content;
-		}
-
-		@media (max-width: 767.98px) {
-			#inner-hero__logo {
-				margin: 0 auto;
-			}
-		}
-
 		#inner-hero__title {
-			font-size: 46px;
-			margin-top: -10px;
-			height: 70px;
+			display: block;
+			margin: 0 auto;
+			max-width: 80%;
+			padding: 15px 0px;
+		}
+
+		@media (min-width: 767px) {
+			#inner-hero__title {
+				width: 100%;
+				max-width: 100%;
+			}
 		}
 
 		#inner-hero__open_source {
 			color: #c8d2d2;
 			float: right;
 			position: relative;
-			top: -37px;
-			right: 9%;
+			top: -39px;
+			right: 18%;
 			margin-bottom: -20px;
 			font-size: 11px;
 		}
 
-		@media (min-width: 400px) {
-			#inner-hero__title {
-				font-size: 60px;
-				height: 80px;
-			}
-
+		@media (min-width: 460px) {
 			#inner-hero__open_source {
-				top: -32px;
+				top: -44px;
+				font-size: 13px;
 			}
 		}
 
-		@media (min-width: 500px) {
-			#inner-hero__title {
-				font-size: 70px;
-				height: 103px;
-			}
-
+		@media (min-width: 630px) {
 			#inner-hero__open_source {
 				top: -46px;
 				font-size: 14px;
 			}
 		}
 
-		@media (min-width: 600px) {
-			#inner-hero__title {
-				font-size: 80px;
-			}
-
-			#inner-hero__open_source {
-				top: -34px;
-			}
-		}
-		
 		@media (min-width: 767px) {
-			#inner-hero__title {
-				font-size: 60px;
-				height: 81px;
-			}
-
 			#inner-hero__open_source {
+				top: -42px;
 				font-size: 12px;
+				right: 9%;
 			}
 		}
 
-		@media (min-width: 860px) {
-			#inner-hero__title {
-				font-size: 70px;
-				height: 92px;
-			}
-		}
-
-		@media (min-width: 950px) {
-			#inner-hero__title {
-				font-size: 80px;
-				height: 103px;
-			}
-
+		@media (min-width: 850px) {
 			#inner-hero__open_source {
-				font-size: 14px;
+				top: -44px;
+				font-size: 13px;
 			}
 		}
 
-		@media (min-width: 1074px) {
-			#inner-hero__title {
-				font-size: 90px;
-				height: 115px;
+		@media (min-width: 1000px) {
+			#inner-hero__open_source {
+				top: -45px;
+				font-size: 14px;
 			}
 		}
 
@@ -329,7 +294,7 @@
 			font-family: BunueloBold, Arial Narrow, Helvetica, Arial;
 			color: #ffffff;
 			line-height: 1.2;
-			margin-top: 20px;
+			margin-top: 15px;
 			text-align: center;
 		}
 
@@ -766,10 +731,8 @@
 				<div class="inner-hero__message row" data-externalizedAriaLabel="WELCOME_SECTION_CONTENT">
 					<div class="column">
 						<h3 data-externalizedString="WELCOME_MESSAGE"></h3>
-						<div id="inner-hero__logo">
-							<h1 id="inner-hero__title">Open Liberty</h1>
-							<p id="inner-hero__open_source" data-externalizedString="WELCOME_IBM_OPEN_SOURCE"></p>
-						</div>
+						<img id="inner-hero__title" src="/img/open_liberty_title.png">
+						<p id="inner-hero__open_source" data-externalizedString="WELCOME_IBM_OPEN_SOURCE"></p>
 						<h2 id="inner-hero__subtitle" data-externalizedString="WELCOME_LIGHTWEIGHT"></h2>
 					</div>
 					<div class="column img_container">
