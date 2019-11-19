@@ -1313,7 +1313,9 @@ public class InstallKernelMap implements Map {
             if (this.get("action.error.message") != null) {
                 fine("action.exception.stacktrace: " + this.get("action.error.stacktrace"));
                 String exceptionMessage = (String) this.get("action.error.message");
-                throw new InstallException(exceptionMessage);
+//                throw new InstallException(exceptionMessage);
+                // convert to json exception msg
+                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_MAVEN_JSON_NOT_FOUND", jsonGroupId));
             }
             if (downloaded instanceof List) {
                 result.addAll((List<File>) downloaded);

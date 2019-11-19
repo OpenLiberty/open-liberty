@@ -405,7 +405,7 @@ public class FeatureUtility {
 
     }
 
-    private List<File> getJsonFiles(File fromDir, Set<String> jsonsRequired) throws InstallException, IOException {
+    private List<File> getJsonFiles(File fromDir, Set<String> jsonsRequired) throws InstallException {
         if(jsonsRequired.isEmpty()) {
             throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_FEATURES_LIST_INVALID")); //
         }
