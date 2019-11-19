@@ -91,6 +91,9 @@ public class InstallServerAction implements ActionHandler {
                 try {
                         if (isServer(arg)) {
                                 return serverInit(arg);
+
+
+
                         } else {
                                throw new InstallException(InstallLogUtils.Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_SERVER_NOT_EXIST", arg));
                         }
@@ -120,7 +123,6 @@ public class InstallServerAction implements ActionHandler {
                 return ReturnCode.OK;
         }
 
-
         private static boolean isServer(String fileName) {
                 return new File(InstallUtils.getServersDir(), fileName).isDirectory()
                        || fileName.toLowerCase().endsWith("server.xml");
@@ -149,9 +151,10 @@ public class InstallServerAction implements ActionHandler {
                 Collection<String> featuresToInstall = new HashSet<String>();
 
                 try {
-                       featuresToInstall.addAll(installKernel.getServerFeaturesToInstall(servers, false));
+                        featuresToInstall.addAll(installKernel.getServerFeaturesToInstall(servers, false));
                         // get original server features now
                         featuresToInstall.addAll(InstallUtils.getAllServerFeatures());
+                        logger.fine("all server features: " + featuresToInstall);
                 } catch (InstallException ie) {
                         logger.log(Level.SEVERE, ie.getMessage(), ie);
                         return FeatureUtilityExecutor.returnCode(ie.getRc());
@@ -159,9 +162,8 @@ public class InstallServerAction implements ActionHandler {
                         logger.log(Level.SEVERE, e.getMessage(), e);
                         rc = ReturnCode.RUNTIME_EXCEPTION;
                 }
-
-                if (featuresToInstall.isEmpty()) {
-                        logger.log(Level.FINE, "Additional server features are not required.");
+                if(featuresToInstall.isEmpty()){
+                        logger.info(InstallLogUtils.Messages.INSTALL_KERNEL_MESSAGES.getMessage("MSG_SERVER_NEW_FEATURES_NOT_REQUIRED"));
                 } else {
                         logger.log(Level.FINE, "Additional server features required.");
                         rc = assetInstallInit(featuresToInstall);

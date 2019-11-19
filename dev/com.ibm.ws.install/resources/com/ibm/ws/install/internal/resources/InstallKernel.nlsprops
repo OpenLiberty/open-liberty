@@ -61,22 +61,6 @@ ERROR_FEATURE_NOT_INSTALLED=CWWKF1207E: The feature {0} is not installed.
 ERROR_FEATURE_NOT_INSTALLED.explanation=The specified feature does not exists and cannot be uninstalled. 
 ERROR_FEATURE_NOT_INSTALLED.useraction=No action is required.
 
-ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE=Could not determine the Liberty runtime version.
-ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE.explanation=The properties file {0} may be missing or corrupted.
-ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE.useraction=Ensure the properties file exists.
-
-ERROR_MAVEN_COORDINATE_WRONG_VERSION=Cannot install feature with Maven coordinate {0} onto a {1} Liberty runtime version.
-ERROR_MAVEN_COORDINATE_WRONG_VERSION.explanation=The feature is incompatible with the Liberty runtime.
-ERROR_MAVEN_COORDINATE_WRONG_VERSION.useraction=Specify a valid version for the feature.
-
-ERROR_MAVEN_COORDINATE_WRONG_PACKAGING=Cannot install feature with Maven coordinate {0} because only esa packages are allowed.
-ERROR_MAVEN_COORDINATE_WRONG_PACKAGING.explanation=The feature is incompatible with the Liberty runtime.
-ERROR_MAVEN_COORDINATE_WRONG_PACKAGING.useraction=Specify "esa" for the packaging in the Maven coordinate.
-
-ERROR_MAVEN_COORDINATE_INVALID=Invalid maven coordinate provided: {0}
-ERROR_MAVEN_COORDINATE_INVALID.explanation=The maven coordinated provided is not in the correct format.
-ERROR_MAVEN_COORDINATE_INVALID.useraction=Enter a valid maven coordinate.
-
 ERROR_OTHER_FEATURE_DEPEND_ON=CWWKF1208E: The features that you are uninstalling are required by the following other feature or features {0}.
 ERROR_OTHER_FEATURE_DEPEND_ON.explanation=The specified feature cannot be removed while another feature still requires it.
 ERROR_OTHER_FEATURE_DEPEND_ON.useraction=No action is required.
@@ -226,7 +210,6 @@ ERROR_UNINSTALL_FAILED_USR=CWWKF1247E: The following features cannot be uninstal
 ERROR_UNINSTALL_FAILED_USR.explanation=The specified features are user features and cannot be uninstalled.
 ERROR_UNINSTALL_FAILED_USR.useraction=Do not uninstall user features.
 
-ERROR_SERVER_NOT_EXIST=The server {0} does not exist. Please enter a valid server name and try again.
 
 ERROR_FAILED_TO_CONNECT_REPOS=CWWKF1248E: One of the repositories that is specified in the configuration cannot be reached. Verify that your computer has network access and firewalls are configured correctly, then try the action again. If the connection still fails, the repository server might be temporarily unavailable.
 ERROR_FAILED_TO_CONNECT_REPOS.explanation=An error occurred when connecting to a repository.
@@ -601,6 +584,8 @@ GENERAL_ASSET=asset
 
 MSG_INVALID_FOR_OS=The feature resource {0} is invalid for the current OS and will not be installed.
 
+MSG_SERVER_NEW_FEATURES_NOT_REQUIRED=The server does not require any additional features.  No features were installed.
+
 # Following are validation messages for viewSettings
 MSG_VALIDATION_EMPTY_KEY=The property name is not specified. Either specify a valid property name, or comment out the property if it is unused.
 MSG_VALIDATION_INVALID_KEY={0} is not a supported property. Either specify a valid property name, or comment out the property if it is unused.
@@ -814,6 +799,26 @@ ERROR_INVALID_MAVEN_CREDENTIALS.useraction=Please supply the correct credentials
 ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_MAVEN_REPO=CWWKF1393I:Failed to download artifacts from the configured repository.
 ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_MAVEN_REPO.explanation=The specified asset was not downloaded from the specified repository because the repository does not contain a valid version of the asset.
 ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_MAVEN_REPO.useraction=Ensure that the repository contains the asset, and run the command again.
+
+ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE=CWWKF1394I: Could not determine the Liberty runtime version.
+ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE.explanation=The properties file {0} may be missing or corrupted.
+ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE.useraction=Ensure the properties file exists.
+
+ERROR_MAVEN_COORDINATE_WRONG_VERSION=CWWKF1395I: Cannot install feature with Maven coordinate {0} onto a {1} Liberty runtime version.
+ERROR_MAVEN_COORDINATE_WRONG_VERSION.explanation=The feature is incompatible with the Liberty runtime.
+ERROR_MAVEN_COORDINATE_WRONG_VERSION.useraction=Specify a valid version for the feature.
+
+ERROR_MAVEN_COORDINATE_WRONG_PACKAGING=CWWKF1396I: The packaging format in feature Maven coordinate {0} is invalid. The valid packaging format is esa.
+ERROR_MAVEN_COORDINATE_WRONG_PACKAGING.explanation=The feature is incompatible with the Liberty runtime.
+ERROR_MAVEN_COORDINATE_WRONG_PACKAGING.useraction=Specify "esa" for the packaging in the Maven coordinate.
+
+ERROR_MAVEN_COORDINATE_INVALID=CWWKF1397I: Invalid maven coordinate provided: {0}
+ERROR_MAVEN_COORDINATE_INVALID.explanation=The maven coordinated provided is not in the correct format.
+ERROR_MAVEN_COORDINATE_INVALID.useraction=Enter a valid maven coordinate.
+
+ERROR_SERVER_NOT_EXIST=CWWKF1398I: The server {0} does not exist. Please enter a valid server name and try again.
+ERROR_SERVER_NOT_EXIST.explanation=The server does not exist.
+ERROR_SERVER_NOT_EXIST.useraction=Create the server and run the command again.
 
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: The feature has been successfully downloaded.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=The feature was downloaded.
