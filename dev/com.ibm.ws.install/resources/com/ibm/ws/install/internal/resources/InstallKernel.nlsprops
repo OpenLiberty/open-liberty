@@ -563,6 +563,7 @@ STATE_CONTACTING_REPO=Contacting IBM WebSphere Liberty Repository ...
 STATE_DOWNLOAD_FILES_OK=\nAll assets were successfully downloaded.
 STATE_CONTACTING_MAVEN_REPO=Establishing a connection to the configured Maven repository ...\nThis process might take several minutes to complete.
 STATE_MAVEN_REPO_CONNECTION_SUCCESSFUL=Successfully connected to the configured repository.
+STATE_READING_ENV_PROPS_FILE=Reading {0}/etc/featureUtility.env...
 PROGRESS_STEP=Step {0} of {1}
 
 MSG_DOWNLOAD_SUCCESS=Successfully downloaded feature {0}.
