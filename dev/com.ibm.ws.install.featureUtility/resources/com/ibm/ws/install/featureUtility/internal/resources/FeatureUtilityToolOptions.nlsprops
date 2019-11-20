@@ -56,9 +56,9 @@ installFeature.option-key.--verbose=\
 installFeature.option-desc.--verbose=\
 \tDisplay additional debug information while the action runs.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-installFeature.option-key.--no-cache=\
-\ \ \ \ --no-cache
-installFeature.option-desc.--no-cache=\
+installFeature.option-key.--noCache=\
+\ \ \ \ --noCache
+installFeature.option-desc.--noCache=\
 \tFeatures installed from remote repository (e.g. Maven Central) will  \n\
 \tnot be cached locally.
 
@@ -82,8 +82,8 @@ installServerFeatures.option-key.--verbose=\
 installServerFeatures.option-desc.--verbose=\
 \tDisplay additional debug information while the action runs.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-installServerFeatures.option-key.--no-cache=\
-\ \ \ \ --no-cache
-installServerFeatures.option-desc.--no-cache=\
+installServerFeatures.option-key.--noCache=\
+\ \ \ \ --noCache
+installServerFeatures.option-desc.--noCache=\
 \tFeatures installed from remote repository (e.g. Maven Central) will  \n\
 \tnot be cached locally.
