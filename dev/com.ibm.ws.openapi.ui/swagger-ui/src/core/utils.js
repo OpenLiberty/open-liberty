@@ -684,6 +684,8 @@ export const parseSearch = () => {
     }
   }
 
+  delete map.url
+
   return map
 }
 

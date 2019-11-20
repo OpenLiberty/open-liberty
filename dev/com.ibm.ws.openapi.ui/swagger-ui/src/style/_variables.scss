@@ -36,20 +36,22 @@ $mango-tango: #e97500;
 
 $color-primary: #89bf04 !default;
 $color-secondary: #9012fe !default;
-$color-info: #4990e2 !default;
-$color-warning: #ff6060 !default;
+$color-info: #2276D8 !default;
+$color-warning: #ea0000 !default;
 $color-danger: #f00 !default;
 
 $color-primary-hover: lighten($color-primary, .5%) !default;
 
-$_color-post: #49cc90 !default;
-$_color-get: #61affe !default;
-$_color-put: #fca130 !default;
-$_color-delete: #f93e3e !default;
+$_color-post: #208050 !default;
+$_color-get: #1F6FF0 !default;
+$_color-put: #B16303 !default;
+$_color-delete: #E00707 !default;
 $_color-head: #9012fe !default;
-$_color-patch: #50e3c2 !default;
+$_color-patch: #166686 !default;
 $_color-disabled: #ebebeb !default;
 $_color-options: #0d5aa7 !default;
+
+$color-green: #007900 !default;
 
 // Authorize
 
@@ -113,7 +115,7 @@ $info-code-font-color: $_color-head !default;
 $info-link-font-color: $color-info !default;
 $info-link-font-color-hover: $info-link-font-color !default;
 
-$info-title-small-background-color: $waterloo-gray !default;
+$info-title-small-background-color: #707785 !default;
 
 $info-title-small-pre-font-color: $white !default;
 

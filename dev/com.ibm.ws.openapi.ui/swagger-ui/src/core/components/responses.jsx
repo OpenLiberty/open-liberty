@@ -114,7 +114,7 @@ export default class Responses extends React.Component {
 
           }
 
-          <table className="responses-table">
+          <table className="responses-table" role="presentation">
             <thead>
               <tr className="responses-header">
                 <td className="col_header response-col_status">Code</td>

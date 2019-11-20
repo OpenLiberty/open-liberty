@@ -290,13 +290,35 @@
 
 
         display: flex;
+        flex: 0 3 auto;
         align-items: center;
 
-        word-break: break-word;
+        word-break: break-all;
 
         padding: 0 10px;
 
         @include text_code();
+
+        .view-line-link
+        {
+            position: relative;
+            top: 2px;
+
+            width: 0;
+            margin: 0;
+
+            cursor: pointer;
+            transition: all .5s;
+        }
+
+        &:hover
+        {
+            .view-line-link
+            {
+                width: 18px;
+                margin: 0 5px;
+            }
+        }
 
     }
 
@@ -314,7 +336,7 @@
     {
         font-size: 13px;
 
-        flex: 1 1 auto;
+        flex: 1;
 
         word-break: break-word;
 
@@ -427,6 +449,7 @@
 {
     display: flex;
 
+    margin: 20px 0 10px 0;
     padding: 0;
 
     list-style: none;
@@ -435,7 +458,8 @@
     {
         font-size: 12px;
 
-        min-width: 60px;
+        min-width: 100px;
+        min-width: 90px;
         padding: 0;
 
         cursor: pointer;
@@ -447,7 +471,7 @@
             position: relative;
 
             padding-left: 0;
-            padding-right: 12px;
+            // padding-right: 12px;
 
             &:after
             {
@@ -585,6 +609,8 @@
     }
 }
 
+
+
 .opblock-body
 {
   .opblock-loading-animation
@@ -596,7 +622,7 @@
   }
 }
 
-.opblock-body pre
+.opblock-body pre.microlight
 {
     font-size: 12px;
 
@@ -644,7 +670,7 @@
   text-align: center;
   padding: 5px;
   border-radius: 4px;
-  font-family: sans-serif;
+  font-family: 'Titillium Web', sans-serif;
   font-weight: 600;
   color: white;
   font-size: 14px;
@@ -663,7 +689,7 @@
     .schemes
     {
         display: flex;
-        align-items: flex-end;
+        align-items: center;
 
          > label
         {
