@@ -84,6 +84,16 @@ KUBERNETES_USER_API_RESPONSE_WRONG_JSON_TYPE=CWWKS5379E: The value for the key [
 KUBERNETES_USER_API_RESPONSE_WRONG_JSON_TYPE.explanation=The value for the specified key did not have the correct type. The response from the user API might be malformed, or the user API returned a response with an unexpected structure.
 KUBERNETES_USER_API_RESPONSE_WRONG_JSON_TYPE.useraction=Check the structure of the response from the user API. Check the response from the user API to see if an error occurred.
 
+# 0=Error string from user API response
+KUBERNETES_USER_API_RESPONSE_ERROR=CWWKS5380E: The Kubernetes user API encountered an error while processing the access token. The error is [{0}]
+KUBERNETES_USER_API_RESPONSE_ERROR.explanation=The response from the Kubernetes user API contains an error. The access token might not be valid, or some other error occurred while processing the token.
+KUBERNETES_USER_API_RESPONSE_ERROR.useraction=Check the error that is displayed in the message. Ensure that the access token is valid and is not malformed.
+
+# 0=Social login configuration ID, 1=Value of the userNameAttribute, 2=userNameAttribute, 3=Alternative key that will be used instead
+KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND=CWWKS5381W: The social login configuration [{0}] specifies [{1}] as the value for the [{2}] attribute, but the user API response does not contain a [{1}] key. The [{3}] key, if present in the user API response, is used to determine the user name instead.
+KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND.explanation=The user API response does not contain a key that corresponds to the value of the configuration attribute that is specified in the message. The social login feature attempts to use a different key instead.
+KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND.useraction=Verify that the configuration attribute that is specified in the message is configured correctly. Ensure that the value of the configuration attribute corresponds to an entry in the user API response that should be used as the user name.
+
 SOCIAL_LOGIN_CONFIG_PROCESSED=CWWKS5400I: The social login configuration [{0}] was successfully processed.
 SOCIAL_LOGIN_CONFIG_PROCESSED.explanation=The indicated social login configuration has been successfully processed.
 SOCIAL_LOGIN_CONFIG_PROCESSED.useraction=No action is required.
@@ -481,8 +491,8 @@ RESPONSE_STATUS_MISSING_OR_ERROR=CWWKS5477E: The response status cannot be found
 RESPONSE_STATUS_MISSING_OR_ERROR.explanation=The request likely failed because it was unauthorized or missing information such as a required request parameter or header. If the response status was not null, the response status code and reason is included in the message.
 RESPONSE_STATUS_MISSING_OR_ERROR.useraction=Check the response status code in the message, if present. Verify that all required parameters and headers were included in the request.
 
-# 0=URL to which the request was submitted, 1=Error message
-RESPONSE_STATUS_UNSUCCESSFUL=CWWKS5478E: The request to the endpoint [{0}] failed. The error was: {1}
+# 0=URL to which the request was submitted, 1=HTTP response status (e.g. 404 Not Found), 2=Error message
+RESPONSE_STATUS_UNSUCCESSFUL=CWWKS5478E: The request to the endpoint [{0}] failed. The response status was [{1}]. The error was: {2}
 RESPONSE_STATUS_UNSUCCESSFUL.explanation=The request likely failed because it was unauthorized or missing information such as a required request parameter or header. The request might have been directed to the wrong endpoint.
 RESPONSE_STATUS_UNSUCCESSFUL.useraction=Verify that the request was directed to the correct endpoint. Verify that all required parameters and headers were included in the request.
 

@@ -25,7 +25,6 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.TraceConstants;
 import com.ibm.ws.security.social.error.SocialLoginException;
-import com.ibm.ws.security.social.internal.Oauth2LoginConfigImpl;
 import com.ibm.ws.security.social.internal.utils.ClientConstants;
 import com.ibm.ws.security.social.internal.utils.SocialUtil;
 import com.ibm.ws.security.social.web.utils.SocialWebUtils;
@@ -46,8 +45,8 @@ public class OAuthLoginFlow {
 
     TAIResult handleOAuthRequest(HttpServletRequest request, HttpServletResponse response, SocialLoginConfig clientConfig) throws WebTrustAssociationFailedException {
         if (SocialUtil.useAccessTokenFromRequest(clientConfig)) {
-            TAIResult result = handleAccessTokenFlow(request, response, (Oauth2LoginConfigImpl) clientConfig);
-            if (result != null) {
+            TAIResult result = handleAccessTokenFlow(request, response, clientConfig);
+            if (result != null && clientConfig.isAccessTokenRequired()) {
                 return result;
             }
         }
@@ -59,7 +58,7 @@ public class OAuthLoginFlow {
         }
     }
 
-    private TAIResult handleAccessTokenFlow(HttpServletRequest request, HttpServletResponse response, Oauth2LoginConfigImpl clientConfig) throws WebTrustAssociationFailedException {
+    private TAIResult handleAccessTokenFlow(HttpServletRequest request, HttpServletResponse response, SocialLoginConfig clientConfig) throws WebTrustAssociationFailedException {
         TAIResult result = null;
         //request should have token
         String tokenFromRequest = taiWebUtils.getBearerAccessToken(request, clientConfig);
@@ -87,32 +86,20 @@ public class OAuthLoginFlow {
         return false;
     }
 
-    private TAIResult handleAccessToken(String tokenFromRequest, HttpServletRequest request, HttpServletResponse response, Oauth2LoginConfigImpl clientConfig) throws WebTrustAssociationFailedException {
-
-        //        if (!validAccessToken(tokenFromRequest)) { 
-        //            return taiWebUtils.sendToErrorPage(response, TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED));
-        //        }
+    @FFDCIgnore(SocialLoginException.class)
+    private TAIResult handleAccessToken(String tokenFromRequest, HttpServletRequest request, HttpServletResponse response, SocialLoginConfig clientConfig) throws WebTrustAssociationFailedException {
         AuthorizationCodeAuthenticator authzCodeAuthenticator = new AuthorizationCodeAuthenticator(request, response, clientConfig, tokenFromRequest, true);
         try {
             authzCodeAuthenticator.generateJwtAndTokensFromTokenReviewResult();
-        } catch (Exception e) {
+        } catch (SocialLoginException e) {
             // Error should have already been logged; simply send to error page
             return taiWebUtils.sendToErrorPage(response, TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED));
         }
-        TAIResult authnResult = null;
-        try {
-            TAISubjectUtils subjectUtils = getTAISubjectUtils(authzCodeAuthenticator);
-            authnResult = subjectUtils.createResult(response, clientConfig);
-        } catch (Exception e) {
-            Tr.error(tc, "AUTH_CODE_ERROR_CREATING_RESULT", new Object[] { clientConfig.getUniqueId(), e.getLocalizedMessage() });
-            return taiWebUtils.sendToErrorPage(response, TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED));
-        }
-        taiWebUtils.restorePostParameters(request);
-        return authnResult;
+        return buildTAIResultFromAuthzCodeAuthenticator(request, response, clientConfig, authzCodeAuthenticator);
 
     }
 
-    private boolean requestShouldHaveToken(Oauth2LoginConfigImpl clientConfig) {
+    private boolean requestShouldHaveToken(SocialLoginConfig clientConfig) {
         return clientConfig.isAccessTokenRequired();
     }
 
@@ -218,28 +205,33 @@ public class OAuthLoginFlow {
         return query;
     }
 
+    @FFDCIgnore(SocialLoginException.class)
     TAIResult handleAuthorizationCode(HttpServletRequest req, HttpServletResponse res, String authzCode, SocialLoginConfig clientConfig) throws WebTrustAssociationFailedException {
         AuthorizationCodeAuthenticator authzCodeAuthenticator = getAuthorizationCodeAuthenticator(req, res, authzCode, clientConfig);
         try {
             authzCodeAuthenticator.generateJwtAndTokenInformation();
-        } catch (Exception e) {
+        } catch (SocialLoginException e) {
             // Error should have already been logged; simply send to error page
             return taiWebUtils.sendToErrorPage(res, TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED));
         }
-        TAIResult authnResult = null;
-        try {
-            TAISubjectUtils subjectUtils = getTAISubjectUtils(authzCodeAuthenticator);
-            authnResult = subjectUtils.createResult(res, clientConfig);
-        } catch (Exception e) {
-            Tr.error(tc, "AUTH_CODE_ERROR_CREATING_RESULT", new Object[] { clientConfig.getUniqueId(), e.getLocalizedMessage() });
-            return taiWebUtils.sendToErrorPage(res, TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED));
-        }
-        taiWebUtils.restorePostParameters(req);
-        return authnResult;
+        return buildTAIResultFromAuthzCodeAuthenticator(req, res, clientConfig, authzCodeAuthenticator);
     }
 
     AuthorizationCodeAuthenticator getAuthorizationCodeAuthenticator(HttpServletRequest req, HttpServletResponse res, String authzCode, SocialLoginConfig clientConfig) {
         return new AuthorizationCodeAuthenticator(req, res, authzCode, clientConfig);
+    }
+
+    TAIResult buildTAIResultFromAuthzCodeAuthenticator(HttpServletRequest request, HttpServletResponse response, SocialLoginConfig clientConfig, AuthorizationCodeAuthenticator authzCodeAuthenticator) throws WebTrustAssociationFailedException {
+        TAIResult authnResult = null;
+        try {
+            TAISubjectUtils subjectUtils = getTAISubjectUtils(authzCodeAuthenticator);
+            authnResult = subjectUtils.createResult(response, clientConfig);
+        } catch (Exception e) {
+            Tr.error(tc, "AUTH_CODE_ERROR_CREATING_RESULT", new Object[] { clientConfig.getUniqueId(), e.getLocalizedMessage() });
+            return taiWebUtils.sendToErrorPage(response, TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED));
+        }
+        taiWebUtils.restorePostParameters(request);
+        return authnResult;
     }
 
     TAISubjectUtils getTAISubjectUtils(AuthorizationCodeAuthenticator authzCodeAuthenticator) {
