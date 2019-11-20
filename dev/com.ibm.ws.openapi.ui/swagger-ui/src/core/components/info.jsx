@@ -124,17 +124,14 @@ export default class Info extends React.Component {
           <h2 className="title" >{ title }
             { version && <VersionStamp version={version}></VersionStamp> }
           </h2>
-          {/* 
           { host || basePath ? <InfoBasePath host={ host } basePath={ basePath } /> : null }
-          { url && <InfoUrl getComponent={getComponent} url={url} /> } 
-          */}
+          { url && <InfoUrl getComponent={getComponent} url={url} /> }
         </hgroup>
 
         <div className="description">
           <Markdown source={ description } />
         </div>
 
-        {/* 
         {
           termsOfService && <div className="info__tos">
             <Link target="_blank" href={ sanitizeUrl(termsOfService) }>Terms of service</Link>
@@ -145,8 +142,7 @@ export default class Info extends React.Component {
         {license && license.size ? <License getComponent={getComponent} license={ license } /> : null }
         { externalDocsUrl ?
             <Link className="info__extdocs" target="_blank" href={sanitizeUrl(externalDocsUrl)}>{externalDocsDescription || externalDocsUrl}</Link>
-        : null } 
-        */}
+        : null }
 
       </div>
     )

@@ -19,8 +19,8 @@ table
 
                     &:first-of-type
                     {
-                        width: 100px;
-                        padding: 0;
+                        width: 174px;
+                        padding: 0 0 0 2em;
                     }
                 }
             }
@@ -52,7 +52,8 @@ table
 
                 &:first-of-type
                 {
-                    width: 20%;
+                    max-width: 20%;
+                    min-width: 6em;
                     padding: 10px 0;
                 }
             }
@@ -73,7 +74,7 @@ table
 
                 text-align: left;
 
-                border-bottom: 1px solid rgba(#3b4151, .2);
+                border-bottom: 1px solid rgba($table-thead-td-border-bottom-color, .2);
 
                 @include text_body();
             }
@@ -83,19 +84,16 @@ table
 
 .parameters-col_description
 {
-    p
-    {
-        font-size: 14px;
-
-        margin: 0;
-
-        @include text_body();
-    }
-
+    width: 99%; // forces other columns to shrink to their content widths
+    margin-bottom: 2em;
     input[type=text]
     {
         width: 100%;
         max-width: 340px;
+    }
+
+    select {
+        border-width: 1px;
     }
 }
 
@@ -103,6 +101,10 @@ table
 {
     font-size: 16px;
     font-weight: normal;
+
+    // hack to give breathing room to the name column
+    // TODO: refactor all of this to flexbox
+    margin-right: .75em;
 
     @include text_headline();
 
@@ -121,17 +123,18 @@ table
 
             content: 'required';
 
-            color: rgba(#c00, .6);
+            color: rgba($table-parameter-name-required-font-color, .6);
         }
     }
 }
 
-.parameter__in
+.parameter__in,
+.parameter__extension
 {
     font-size: 12px;
     font-style: italic;
 
-    @include text_code(#666);
+    @include text_code($table-parameter-in-font-color);
 }
 
 .parameter__deprecated
@@ -139,12 +142,34 @@ table
     font-size: 12px;
     font-style: italic;
 
-    @include text_code(#f00);
+    @include text_code($table-parameter-deprecated-font-color);
 }
 
+.parameter__empty_value_toggle {
+    font-size: 13px;
+    padding-top: 5px;
+    padding-bottom: 12px;
+
+    input {
+        margin-right: 7px;
+    }
+
+    &.disabled {
+        opacity: 0.7;
+    }
+}
 
 
 .table-container
 {
     padding: 20px;
+}
+
+
+.response-col_description {
+    width: 99%; // forces other columns to shrink to their content widths
+}
+
+.response-col_links {
+    min-width: 6em;
 }

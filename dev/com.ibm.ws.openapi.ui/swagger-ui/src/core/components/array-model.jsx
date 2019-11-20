@@ -2,7 +2,7 @@ import React, { Component } from "react"
 import PropTypes from "prop-types"
 import ImPropTypes from "react-immutable-proptypes"
 
-const propStyle = { color: "#666", fontStyle: "italic" }
+const propStyle = { color: "#999", fontStyle: "italic" }
 
 export default class ArrayModel extends Component {
   static propTypes = {

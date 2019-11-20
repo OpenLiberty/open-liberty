@@ -22,7 +22,7 @@ export default class StandaloneLayout extends React.Component {
     let Row = getComponent("Row")
     let Col = getComponent("Col")
 
-    const Headerbar = getComponent("Headerbar", true)
+    const Topbar = getComponent("Topbar", true)
     const BaseLayout = getComponent("BaseLayout", true)
     const OnlineValidatorBadge = getComponent("onlineValidatorBadge", true)
 
@@ -30,7 +30,7 @@ export default class StandaloneLayout extends React.Component {
     return (
 
       <Container className='swagger-ui'>
-        { Headerbar ? <Headerbar/> : null }
+        {Topbar ? <Topbar /> : null}
         <BaseLayout /> 
         <Row>
           <Col>

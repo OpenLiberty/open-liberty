@@ -7,7 +7,7 @@ const Headers = ( { headers } )=>{
   return (
     <div>
       <h5>Response headers</h5>
-      <pre className="microlight">{headers}</pre>
+      <pre>{headers}</pre>
     </div>)
 }
 Headers.propTypes = {
@@ -18,7 +18,7 @@ const Duration = ( { duration } ) => {
   return (
     <div>
       <h5>Request duration</h5>
-      <pre className="microlight">{duration} ms</pre>
+      <pre>{duration} ms</pre>
     </div>
   )
 }
@@ -75,7 +75,7 @@ export default class LiveResponse extends React.Component {
         { url && <div>
             <h4>Request URL</h4>
             <div className="request-url">
-              <pre className="microlight">{url}</pre>
+              <pre>{url}</pre>
             </div>
           </div>
         }

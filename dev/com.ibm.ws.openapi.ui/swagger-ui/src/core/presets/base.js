@@ -59,7 +59,6 @@ import Info, {
   InfoBasePath
 } from "core/components/info"
 import InfoContainer from "core/containers/info"
-import FooterContainer from "core/containers/footer"
 import JumpToPath from "core/components/jump-to-path"
 import Footer from "core/components/footer"
 import FilterContainer from "core/containers/filter"
@@ -110,7 +109,6 @@ export default function() {
       InitializedInput,
       info: Info,
       InfoContainer,
-      FooterContainer,
       JumpToPath,
       onlineValidatorBadge: OnlineValidatorBadge,
       operations: Operations,

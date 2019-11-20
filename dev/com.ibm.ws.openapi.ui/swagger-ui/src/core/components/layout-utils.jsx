@@ -15,7 +15,7 @@ export class Container extends React.Component {
 
     let containerClass = "swagger-container" + (full ? "-full" : "")
     return (
-      <section {...rest} aria-label="swagger container" className={xclass(rest.className, containerClass)}/>
+      <section {...rest} className={xclass(rest.className, containerClass)}/>
     )
   }
 }
@@ -76,7 +76,7 @@ export class Col extends React.Component {
     let classes = xclass(rest.className, ...classesAr)
 
     return (
-      <section {...rest} aria-label="swagger container" style={{display: hide ? "none": null}} className={classes}/>
+      <section {...rest} style={{display: hide ? "none": null}} className={classes}/>
     )
   }
 
