@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import com.ibm.ws.install.InstallException;
+import com.ibm.ws.install.internal.InstallLogUtils.Messages;
 
 public class ArtifactDownloader {
 
@@ -42,21 +43,19 @@ public class ArtifactDownloader {
     private static Map<String, String> envMap = null;
 
     public void synthesizeAndDownloadFeatures(List<String> mavenCoords, String dLocation, String repo) throws InstallException {
-        info("Establishing a connection to the configured Maven repository ...\n" +
-             "This process might take several minutes to complete."); //STATE_CONTACTING_MAVEN_REPO
+        info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_CONTACTING_MAVEN_REPO"));
         checkValidProxy();
         configureProxyAuthentication();
         configureAuthentication();
         updateProgress(progressBar.getMethodIncrement("establishConnection"));
-        info("Successfully connected to the configured repository."); //STATE_MAVEN_REPO_CONNECTION_SUCCESSFUL
+        info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_MAVEN_REPO_CONNECTION_SUCCESSFUL"));
         downloadedFiles.clear();
         int repoResponseCode;
         repo = FormatUrlSuffix(repo);
         try {
             repoResponseCode = ArtifactDownloaderUtils.exists(repo, envMap);
-        } catch (IOException e) {
-            throw new InstallException(e.getMessage());
-            //throw ExceptionUtils.createByKey("ERROR_FAILED_TO_CONNECT_MAVEN"); //ERROR_FAILED_TO_CONNECT_MAVEN
+        } catch (Exception e) {
+            throw ExceptionUtils.createByKey("ERROR_FAILED_TO_CONNECT_MAVEN");
         }
         ArtifactDownloaderUtils.checkResponseCode(repoResponseCode, repo);
         List<String> featureURLs = ArtifactDownloaderUtils.acquireFeatureURLs(mavenCoords, repo);
@@ -115,8 +114,8 @@ public class ArtifactDownloader {
             dLocation = FormatPathSuffix(dLocation);
             try {
                 repoResponseCode = ArtifactDownloaderUtils.exists(repo, envMap);
-            } catch (IOException e) {
-                throw new InstallException(e.getMessage());
+            } catch (Exception e) {
+                throw ExceptionUtils.createByKey("ERROR_FAILED_TO_CONNECT_MAVEN");
             }
             ArtifactDownloaderUtils.checkResponseCode(repoResponseCode, repo);
         }
@@ -176,7 +175,7 @@ public class ArtifactDownloader {
                 if (checksumFail) {
                     ArtifactDownloaderUtils.deleteFiles(downloadedFiles, dLocation, groupId, artifactId, version, filename);
                     downloadedFiles.clear();
-                    throw new InstallException("Failed to validate available checksums for file: " + filename); //ERROR_CHECKSUM_FAILED_MAVEN
+                    throw ExceptionUtils.createByKey("ERROR_CHECKSUM_FAILED_MAVEN", filename);
                 }
             } else {
                 fine("No checksums found for file in remote repository");
