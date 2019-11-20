@@ -46,8 +46,8 @@ public class OAuthLoginFlow {
 
     TAIResult handleOAuthRequest(HttpServletRequest request, HttpServletResponse response, SocialLoginConfig clientConfig) throws WebTrustAssociationFailedException {
         if (SocialUtil.useAccessTokenFromRequest(clientConfig)) {
-            TAIResult result = handleAccessTokenFlow(request, response, (Oauth2LoginConfigImpl) clientConfig);
-            if (result != null) {
+            TAIResult result = handleAccessTokenFlow(request, response, clientConfig);
+            if (result != null && clientConfig.isAccessTokenRequired()) {
                 return result;
             }
         }
@@ -59,7 +59,7 @@ public class OAuthLoginFlow {
         }
     }
 
-    private TAIResult handleAccessTokenFlow(HttpServletRequest request, HttpServletResponse response, Oauth2LoginConfigImpl clientConfig) throws WebTrustAssociationFailedException {
+    private TAIResult handleAccessTokenFlow(HttpServletRequest request, HttpServletResponse response, SocialLoginConfig clientConfig) throws WebTrustAssociationFailedException {
         TAIResult result = null;
         //request should have token
         String tokenFromRequest = taiWebUtils.getBearerAccessToken(request, clientConfig);
@@ -87,7 +87,7 @@ public class OAuthLoginFlow {
         return false;
     }
 
-    private TAIResult handleAccessToken(String tokenFromRequest, HttpServletRequest request, HttpServletResponse response, Oauth2LoginConfigImpl clientConfig) throws WebTrustAssociationFailedException {
+    private TAIResult handleAccessToken(String tokenFromRequest, HttpServletRequest request, HttpServletResponse response, SocialLoginConfig clientConfig) throws WebTrustAssociationFailedException {
 
         //        if (!validAccessToken(tokenFromRequest)) { 
         //            return taiWebUtils.sendToErrorPage(response, TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED));
@@ -112,7 +112,7 @@ public class OAuthLoginFlow {
 
     }
 
-    private boolean requestShouldHaveToken(Oauth2LoginConfigImpl clientConfig) {
+    private boolean requestShouldHaveToken(SocialLoginConfig clientConfig) {
         return clientConfig.isAccessTokenRequired();
     }
 
