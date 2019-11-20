@@ -5,6 +5,6 @@
   
   <cache-container>
     <transport cluster="${infinispan.cluster.name}" stack="jgroups-udp"/>
-    <replicated-cache-configuration name="*"/>
+    <replicated-cache-configuration name="com.*"/>
   </cache-container>
 </infinispan>
