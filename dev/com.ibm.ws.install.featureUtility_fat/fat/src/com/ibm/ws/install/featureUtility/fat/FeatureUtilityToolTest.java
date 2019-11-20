@@ -41,6 +41,7 @@ public abstract class FeatureUtilityToolTest {
     private static String originalWlpInstallType;
     static String os = System.getProperty("os.name").toLowerCase();
     static boolean isWindows = os.indexOf("win") >= 0;
+    static boolean isClosedLiberty = false;
 
     protected static void setupEnv() throws Exception {
         final String methodName = "setup";
@@ -52,19 +53,21 @@ public abstract class FeatureUtilityToolTest {
 
         Log.info(c, methodName, "install root: " + installRoot);
 
-        // extract the kernel into our installRoot
-        // kernelZipDir : jbe/build/dev/build.image/build/libs/distributions/
-        String kernelZipDir = installRoot + "/../../../build.image/build/libs/distributions/";
-        String dest = kernelZipDir + "/openliberty-kernel";
-
-        Log.info(c, methodName,"kernel zip dir: " + new File(kernelZipDir).getAbsolutePath());
-
-        extractOpenLibertyKernelZip(kernelZipDir, kernelZipDir + dest);
-
-        // change installroot to unzipped kernel
-        installRoot =  dest;
-
-//        Log.info(c, methodName, "install root: " + installRoot);
+        isClosedLiberty = isClosedLibertyWlp();
+        Log.info(c, methodName, "Closed liberty wlp?: "+ isClosedLiberty);
+//        // extract the kernel into our installRoot
+//        // kernelZipDir : jbe/build/dev/build.image/build/libs/distributions/
+//        String kernelZipDir = installRoot + "/../../../build.image/build/libs/distributions/";
+//        String dest = kernelZipDir + "/openliberty-kernel";
+//
+//        Log.info(c, methodName,"kernel zip dir: " + new File(kernelZipDir).getAbsolutePath());
+//
+//        extractOpenLibertyKernelZip(kernelZipDir, kernelZipDir + dest);
+//
+//        // change installroot to unzipped kernel
+//        installRoot =  dest;
+//
+////        Log.info(c, methodName, "install root: " + installRoot);
         
         setOriginalWlpVersionVariables();
         cleanDirectories = new ArrayList<String>();
@@ -72,45 +75,49 @@ public abstract class FeatureUtilityToolTest {
 
     }
 
-    public static void extractOpenLibertyKernelZip(String kernelZipDir, String destinationDir) throws Exception {
-        String methodName = "extractOpenLibertyKernelZip";
-
-        if(!new File(kernelZipDir).exists()){
-            throw new Exception(kernelZipDir + " doesnt exist!");
-        }
-
-        File dir = new File(kernelZipDir);
-
-        // for debugging purposes - see what files are in kernelZipDir
-        Log.info(c, methodName, Objects.requireNonNull(dir.listFiles()).toString());
-
-
-        // find the files that match openliberty-kernel-*.zip
-        final String id = "XXX"; // needs to be final so the anonymous class can use it
-        File[] matchingFiles = dir.listFiles(new FileFilter() {
-            public boolean accept(File pathname) {
-                return (pathname.getName().contains("openliberty-kernel") && pathname.getName().endsWith("zip"));
-            }
-        });
-
-        Log.info(c, methodName, "Found the following OL kernels: " + matchingFiles.toString());
-        if(matchingFiles.length == 0){
-            throw new Exception(kernelZipDir + " doesnt contain any OL kernels...");
-        }
-
-        // take the first one we find for sake of simplicity.
-        File kernelZip = matchingFiles[0];
-
-        // unzip into destinationDir now
-        // first delete destinationDir
-        File destFile = new File(destinationDir);
-        if(destFile.exists()){
-            destFile.delete();
-        }
-
-        unzipInstallRoot(kernelZip.getAbsolutePath(), destinationDir);
-        Log.exiting(c, methodName, "Unzipped the OL kernel.");
+    private static boolean isClosedLibertyWlp(){
+        return new File(installRoot + "/lib/versions/openliberty.properties").exists();
     }
+//
+//    public static void extractOpenLibertyKernelZip(String kernelZipDir, String destinationDir) throws Exception {
+//        String methodName = "extractOpenLibertyKernelZip";
+//
+//        if(!new File(kernelZipDir).exists()){
+//            throw new Exception(kernelZipDir + " doesnt exist!");
+//        }
+//
+//        File dir = new File(kernelZipDir);
+//
+//        // for debugging purposes - see what files are in kernelZipDir
+//        Log.info(c, methodName, Objects.requireNonNull(dir.listFiles()).toString());
+//
+//
+//        // find the files that match openliberty-kernel-*.zip
+//        final String id = "XXX"; // needs to be final so the anonymous class can use it
+//        File[] matchingFiles = dir.listFiles(new FileFilter() {
+//            public boolean accept(File pathname) {
+//                return (pathname.getName().contains("openliberty-kernel") && pathname.getName().endsWith("zip"));
+//            }
+//        });
+//
+//        Log.info(c, methodName, "Found the following OL kernels: " + matchingFiles.toString());
+//        if(matchingFiles.length == 0){
+//            throw new Exception(kernelZipDir + " doesnt contain any OL kernels...");
+//        }
+//
+//        // take the first one we find for sake of simplicity.
+//        File kernelZip = matchingFiles[0];
+//
+//        // unzip into destinationDir now
+//        // first delete destinationDir
+//        File destFile = new File(destinationDir);
+//        if(destFile.exists()){
+//            destFile.delete();
+//        }
+//
+//        unzipInstallRoot(kernelZip.getAbsolutePath(), destinationDir);
+//        Log.exiting(c, methodName, "Unzipped the OL kernel.");
+//    }
 
 
     // TODO discuss if we need this. may be useful for certain test cases like

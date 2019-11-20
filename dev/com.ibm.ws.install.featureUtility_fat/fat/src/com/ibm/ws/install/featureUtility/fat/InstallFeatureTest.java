@@ -99,7 +99,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
         assertEquals("Exit code should be 21", 21, po.getReturnCode());
         String output = po.getStdout();
-        assertTrue("Should contain CWWKF1299E", output.contains("CWWKF1299E"));
+        assertTrue("Should contain CWWKF1299E or CWWKF1259E", (output.indexOf("CWWKF1299E")>=0 || output.indexOf("CWWKF1259E") >= 0));
         Log.exiting(c, METHOD_NAME);
     }
 
@@ -117,7 +117,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
         assertEquals("Exit code should be 21",21,  po.getReturnCode());
         String output = po.getStdout();
-        assertTrue("Should contain CWWKF1299E", output.contains("CWWKF1299E"));
+        assertTrue("Should contain CWWKF1299E or CWWKF1259E", output.indexOf("CWWKF1299E")>=0 ||output.indexOf("CWWKF1259E") >= 0);
         Log.exiting(c, METHOD_NAME);
     }
 
@@ -140,7 +140,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         assertTrue("Should contain mpHealth-2.0", output.contains("mpHealth-2.0"));
 
         po = runFeatureUtility(METHOD_NAME, param1s);
-        assertEquals("Exit code should be 21 indicating already  feature",21, po.getReturnCode());
+        assertEquals("Exit code should be 22 indicating already installd feature",22, po.getReturnCode());
         output = po.getStdout();
         assertTrue("Should contain CWWKF1250I", output.contains("CWWKF1250I"));
 

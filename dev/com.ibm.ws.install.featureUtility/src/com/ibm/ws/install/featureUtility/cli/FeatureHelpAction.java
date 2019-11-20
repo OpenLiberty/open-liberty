@@ -163,7 +163,7 @@ public class FeatureHelpAction implements ActionHandler {
             stdout.println(getVerboseHelp());
         } else {
             try {
-                FeatureAction task = FeatureAction.valueOf(args.getPositionalArguments().get(0));
+                FeatureAction task = FeatureAction.getEnum(args.getPositionalArguments().get(0));
                 stdout.println(getTaskUsage(task));
             } catch (IllegalArgumentException e) {
                 stderr.println();

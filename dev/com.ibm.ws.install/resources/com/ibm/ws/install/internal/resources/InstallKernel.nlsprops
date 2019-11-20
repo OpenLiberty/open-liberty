@@ -820,7 +820,7 @@ ERROR_SERVER_NOT_EXIST=CWWKF1398I: The server {0} does not exist. Please enter a
 ERROR_SERVER_NOT_EXIST.explanation=The server does not exist.
 ERROR_SERVER_NOT_EXIST.useraction=Create the server and run the command again.
 
-ERROR_MAVEN_JSON_NOT_FOUND=CWWKF1399I: Could not download the features json file for the group id {0}. Ensure that the group id exists and you are connected to the network.
+ERROR_MAVEN_JSON_NOT_FOUND=CWWKF1399E: The group id {0} is invalid. Ensure that the valid group id for the feature coordinate is provided or the system can access the internet and the configured repository.
 ERROR_MAVEN_JSON_NOT_FOUND.explanation=The features json file could not be found on the Maven repository.
 ERROR_MAVEN_JSON_NOT_FOUND.useraction=Check your network connection and ensure the features json is hosted on the Maven repository.
 

@@ -39,7 +39,7 @@ public class InstallServerTest extends FeatureUtilityToolTest {
         // replace the server.xml
         server.copyFileToLibertyInstallRoot("usr/servers/serverX", "../../publish/tmp/autoFeatureServerXml/server.xml");
 
-        String[] param1s = { "installServer", "serverX"};
+        String[] param1s = { "installServerFeatures", "serverX"};
 
         String [] fileListA = {"lib/features/com.ibm.websphere.appserver.jsf-2.2.mf", "lib/features/com.ibm.websphere.appserver.cdi1.2-jsf2.2.mf"};
         String [] fileListB = {"lib/features/com.ibm.websphere.appserver.cdi-1.2.mf"};
