@@ -51,7 +51,7 @@ public class GraphQLEndpoint {
     }
 
     @Mutation
-    public List<Widget> setQuantityOnAllWidgets(@Name("qty") int newQuantity) {
+    public List<Widget> setQuantityOnAllWidgets(int newQuantity) {
         for (Widget w : allWidgets) {
             w.setQuantity(newQuantity);
         }
