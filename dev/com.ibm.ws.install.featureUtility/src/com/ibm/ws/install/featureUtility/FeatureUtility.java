@@ -49,6 +49,7 @@ public class FeatureUtility {
     private final InstallKernelMap map;
     private File fromDir;
     private final File esaFile;
+    private final Boolean noCache;
     private Boolean isDownload;
     private Boolean isBasicInit;
     private final String toExtension;
@@ -79,6 +80,7 @@ public class FeatureUtility {
         this.esaFile = builder.esaFile;
         this.isBasicInit = builder.isBasicInit;
         this.isDownload = builder.isDownload;
+        this.noCache = builder.noCache;
 
 
         map = new InstallKernelMap();
@@ -99,7 +101,8 @@ public class FeatureUtility {
 
         if (isBasicInit == null || !isBasicInit) {
             info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_INITIALIZING"));
-            
+            fine("this is the value of noCache:"+ noCache);
+            map.put("cleanup.needed", noCache);
             //log all the env props we find or don't find to debug
             List<File> jsonPaths = getJsonFiles(fromDir, jsonsRequired);
             updateProgress(progressBar.getMethodIncrement("fetchJsons"));
@@ -143,6 +146,7 @@ public class FeatureUtility {
         map.put("runtime.install.dir", Utils.getInstallDir());
         map.put("target.user.directory", new File(Utils.getInstallDir(), "tmp"));
         map.put("install.local.esa", true);
+        
         map.put("single.json.file", jsonPaths);
         if (featuresToInstall != null) {
             map.put("features.to.resolve", featuresToInstall);
@@ -431,9 +435,10 @@ public class FeatureUtility {
      */
     private void cleanUp() throws IOException {
         String tempStr = (String) map.get("cleanup.temp.location");
+        Boolean cleaupNeeded = (Boolean) map.get("cleanup.needed");
         boolean deleted = true;
 
-        if (tempStr != null) { //change this to a map.get("cleanup.needed")
+        if (cleaupNeeded != null && cleaupNeeded) { //change this to a map.get("cleanup.needed")
             File temp = new File(tempStr);
             deleted = deleteFolder(temp);
         }
@@ -527,6 +532,7 @@ public class FeatureUtility {
         File esaFile;
         boolean isDownload;
         boolean isBasicInit;
+        boolean noCache;
 
         public FeatureUtilityBuilder setFromDir(String fromDir) {
             this.fromDir = fromDir != null ? new File(fromDir) : null;
@@ -540,6 +546,11 @@ public class FeatureUtility {
 
         public FeatureUtilityBuilder setEsaFile(File esaFile) {
             this.esaFile = esaFile;
+            return this;
+        }
+        
+        public FeatureUtilityBuilder setNoCache(Boolean noCache) {
+            this.noCache = noCache;
             return this;
         }
 

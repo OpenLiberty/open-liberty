@@ -20,8 +20,8 @@ import com.ibm.ws.kernel.feature.internal.cmdline.ReturnCode;
 
 
 public enum FeatureAction implements ActionDefinition {
-    installFeature(new InstallFeatureAction(), "if",-1, "--no-cache", "--to", "--verbose", "name..."),
-    installServerFeatures(new InstallServerAction(), "isf",-1, "--no-cache", "--verbose", "name..."),
+    installFeature(new InstallFeatureAction(), "if",-1, "--noCache", "--to", "--verbose", "name..."),
+    installServerFeatures(new InstallServerAction(), "isf",-1, "--noCache", "--verbose", "name..."),
     help(new FeatureHelpAction(),"", 0);
 //    install(new FeatureInstallAction(), -1, "--from", "--to", "--verbose", "name"),
 
@@ -66,8 +66,8 @@ public enum FeatureAction implements ActionDefinition {
         try {
             // Set log level if --verbose specified
             InstallKernel installKernel = InstallKernelFactory.getInstance();
-
             String verboseLevel = args.getOption("verbose");
+            
             Level logLevel = Level.INFO;
             if (verboseLevel != null && verboseLevel.isEmpty()) {
                 logLevel = Level.FINEST;
