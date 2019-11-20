@@ -261,7 +261,7 @@ export default class ParameterRow extends Component {
         <td className="parameters-col_name">
           <div className={required ? "parameter__name required" : "parameter__name"}>
             { param.get("name") }
-            { !required ? null : <span style={{color: "red"}}>&nbsp;*</span> }
+            { !required ? null : <span style={{color: "darkred"}}>&nbsp;*</span> }
           </div>
           <div className="parameter__type">
             { type }

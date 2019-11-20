@@ -11,6 +11,7 @@ export default function downloadUrlPlugin (toolbox) {
     download: (url)=> ({ errActions, specSelectors, specActions, getConfigs }) => {
       let { fetch } = fn
       const config = getConfigs()
+      console.log(url)
       url = url || specSelectors.url()
       specActions.updateLoadingStatus("loading")
       errActions.clear({source: "fetch"})

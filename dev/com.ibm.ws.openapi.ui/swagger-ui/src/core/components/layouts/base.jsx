@@ -1,5 +1,6 @@
 import React from "react"
 import PropTypes from "prop-types"
+import FooterContainer from "../../containers/footer"
 
 export default class BaseLayout extends React.Component {
 
@@ -17,6 +18,7 @@ export default class BaseLayout extends React.Component {
 
     let SvgAssets = getComponent("SvgAssets")
     let InfoContainer = getComponent("InfoContainer", true)
+    let FooterContainer = getComponent("FooterContainer", true)
     let VersionPragmaFilter = getComponent("VersionPragmaFilter")
     let Operations = getComponent("operations", true)
     let Models = getComponent("Models", true)
@@ -91,7 +93,7 @@ export default class BaseLayout extends React.Component {
           <VersionPragmaFilter isSwagger2={isSwagger2} isOAS3={isOAS3} alsoShow={<Errors/>}>
             <Errors/>
             <Row className="information-container">
-              <Col mobile={12}>
+              <Col aria-label="swagger info container" mobile={12}>
                 <InfoContainer/>
               </Col>
             </Row>
@@ -109,17 +111,20 @@ export default class BaseLayout extends React.Component {
             <FilterContainer/>
 
             <Row>
-              <Col mobile={12} desktop={12} >
+              <Col aria-label="swagger operations container" mobile={12} desktop={12} >
                 <Operations/>
               </Col>
             </Row>
             <Row>
-              <Col mobile={12} desktop={12} >
+              <Col aria-label="swagger models container" mobile={12} desktop={12} >
                 <Models/>
               </Col>
             </Row>
+            <FooterContainer/>  
           </VersionPragmaFilter>
         </div>
+        
       )
+      
   }
 }
