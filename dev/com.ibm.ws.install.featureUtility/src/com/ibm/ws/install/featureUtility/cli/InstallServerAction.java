@@ -41,6 +41,7 @@ public class InstallServerAction implements ActionHandler {
         private List<String> featureNames;
         private String fromDir;
         private String toDir;
+        private Boolean noCache;
         private ProgressBar progressBar;
 
 
@@ -70,7 +71,8 @@ public class InstallServerAction implements ActionHandler {
                         return rc;
                 }
 
-
+                this.noCache = args.getOption("nocache") != null;
+                
                 this.toDir = args.getOption("to");
 
                 this.progressBar = ProgressBar.getInstance();
@@ -181,7 +183,7 @@ public class InstallServerAction implements ActionHandler {
         private ExitCode install() {
                 try {
                         featureUtility = new FeatureUtility.FeatureUtilityBuilder().setFromDir(fromDir).setToExtension(toDir)
-                                        .setFeaturesToInstall(featureNames).build();
+                                        .setFeaturesToInstall(featureNames).setNoCache(noCache).build();
                         featureUtility.installFeatures();
                 } catch (InstallException e) {
                         logger.log(Level.SEVERE, e.getMessage(), e);

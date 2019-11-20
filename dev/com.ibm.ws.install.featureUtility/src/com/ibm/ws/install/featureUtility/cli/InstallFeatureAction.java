@@ -39,6 +39,7 @@ public class InstallFeatureAction implements ActionHandler {
         private List<String> featureNames;
         private String fromDir;
         private String toDir;
+        private Boolean noCache;
         private ProgressBar progressBar;
 
         @Override public ExitCode handleTask(PrintStream stdout, PrintStream stderr, Arguments args) {
@@ -64,8 +65,9 @@ public class InstallFeatureAction implements ActionHandler {
                 if ((rc = validateFromDir(this.fromDir)) != ReturnCode.OK) {
                         return rc;
                 }
-
-
+                
+                this.noCache = args.getOption("nocache") != null;
+                
                 this.toDir = args.getOption("to");
 
                 this.progressBar = ProgressBar.getInstance();
@@ -129,7 +131,7 @@ public class InstallFeatureAction implements ActionHandler {
         private ExitCode install() {
                 try {
                         featureUtility = new FeatureUtility.FeatureUtilityBuilder().setFromDir(fromDir).setToExtension(toDir)
-                                        .setFeaturesToInstall(featureNames).build();
+                                        .setFeaturesToInstall(featureNames).setNoCache(noCache).build();
                         featureUtility.installFeatures();
                 } catch (InstallException e) {
                         logger.log(Level.SEVERE, e.getMessage(), e);

@@ -120,6 +120,7 @@ public class InstallKernelMap implements Map {
     private static final String DOWNLOAD_LOCATION = "download.location";
     private static final String FROM_REPO = "from.repo";
     private static final String CLEANUP_TEMP_LOCATION = "cleanup.temp.location";
+    private static final String CLEANUP_NEEDED = "cleanup.needed";
     private static final String ENVIRONMENT_VARIABLE_MAP = "environment.variable.map";
 
     //Headers in Manifest File
@@ -141,8 +142,8 @@ public class InstallKernelMap implements Map {
     private final String JSON_ARTIFACT_ID = "features";
     private final String OPEN_LIBERTY_PRODUCT_ID = "io.openliberty";
     private final String MAVEN_CENTRAL = "http://repo.maven.apache.org/maven2/";
-    private final String TEMP_DIRECTORY = Utils.getInstallDir().getAbsolutePath() + File.separatorChar + "tmp"
-                                          + File.separatorChar;
+    private final String TEMP_DIRECTORY = Utils.getInstallDir().getAbsolutePath() + File.separator + "tmp"
+                                          + File.separator;
     private static final String ETC_DIRECTORY = Utils.getInstallDir().getAbsolutePath() + File.separator + "etc"
                                                 + File.separator;
     private static final String FEATURE_UTILITY_PROPS_FILE = "featureUtility.env";
@@ -343,6 +344,12 @@ public class InstallKernelMap implements Map {
         } else if (CLEANUP_TEMP_LOCATION.equals(key)) {
             if (value instanceof String) {
                 data.put(CLEANUP_TEMP_LOCATION, value);
+            } else {
+                throw new IllegalArgumentException();
+            }
+        } else if (CLEANUP_NEEDED.equals(key)) {
+            if (value instanceof Boolean) {
+                data.put(CLEANUP_NEEDED, value);
             } else {
                 throw new IllegalArgumentException();
             }
@@ -857,7 +864,15 @@ public class InstallKernelMap implements Map {
 
         ArtifactDownloader artifactDownloader = new ArtifactDownloader();
         String fromRepo = (String) data.get(FROM_REPO);
-        String downloadDir = getDownloadDir(fromRepo);
+        Boolean cleanupNeeded = (Boolean) data.get(CLEANUP_NEEDED);
+        String downloadDir;
+        if (cleanupNeeded != null && cleanupNeeded) {
+            fine("Using temp location: " + TEMP_DIRECTORY);
+            data.put(CLEANUP_TEMP_LOCATION, TEMP_DIRECTORY);
+            downloadDir = TEMP_DIRECTORY;
+        } else {
+            downloadDir = getDownloadDir((String) data.get(DOWNLOAD_LOCATION));
+        }
         String repo = getRepo(fromRepo);
 
         try {
@@ -879,7 +894,15 @@ public class InstallKernelMap implements Map {
         data.put(ACTION_EXCEPTION_STACKTRACE, null);
 
         ArtifactDownloader artifactDownloader = new ArtifactDownloader();
-        String downloadDir = getDownloadDir((String) data.get(DOWNLOAD_LOCATION));
+        Boolean cleanupNeeded = (Boolean) data.get(CLEANUP_NEEDED);
+        String downloadDir;
+        if (cleanupNeeded != null && cleanupNeeded) {
+            fine("Using temp location: " + TEMP_DIRECTORY);
+            data.put(CLEANUP_TEMP_LOCATION, TEMP_DIRECTORY);
+            downloadDir = TEMP_DIRECTORY;
+        } else {
+            downloadDir = getDownloadDir((String) data.get(DOWNLOAD_LOCATION));
+        }
 //        fine("artifact list is: " + this.get(DOWNLOAD_ARTIFACT_LIST).toString());
 //        List<String> featureList = (List<String>) data.get(DOWNLOAD_ARTIFACT_LIST);
         String feature = (String) this.get(DOWNLOAD_ARTIFACT_SINGLE);
@@ -906,6 +929,7 @@ public class InstallKernelMap implements Map {
     @SuppressWarnings("unchecked")
     private String getDownloadDir(String fromDir) {
         String result;
+
         if (fromDir != null) {
             result = fromDir;
         } else if ((fromDir = getM2Cache()) != null) {
@@ -917,6 +941,7 @@ public class InstallKernelMap implements Map {
         } else {
             fine("Using temp location: " + TEMP_DIRECTORY);
             data.put(CLEANUP_TEMP_LOCATION, TEMP_DIRECTORY);
+            data.put(CLEANUP_NEEDED, true);
             result = TEMP_DIRECTORY;
         }
         return result;
@@ -973,8 +998,15 @@ public class InstallKernelMap implements Map {
         String filetype = (String) data.get(DOWNLOAD_FILETYPE);
 
         String fromRepo = (String) data.get(FROM_REPO);
-        String downloadDir = getDownloadDir(fromRepo);
-
+        Boolean cleanupNeeded = (Boolean) data.get(CLEANUP_NEEDED);
+        String downloadDir;
+        if (cleanupNeeded != null && cleanupNeeded) {
+            fine("Using temp location: " + TEMP_DIRECTORY);
+            data.put(CLEANUP_TEMP_LOCATION, TEMP_DIRECTORY);
+            downloadDir = TEMP_DIRECTORY;
+        } else {
+            downloadDir = getDownloadDir((String) data.get(DOWNLOAD_LOCATION));
+        }
         String repo = getRepo(fromRepo);
         try {
             artifactDownloader.setEnvMap(envMap);
