@@ -109,7 +109,6 @@ public class ArtifactDownloader {
         configureAuthentication();
         repo = FormatUrlSuffix(repo);
         if (individualDownload) {
-            fine("here is the download location: " + dLocation); //TODO remove
             checkValidProxy();
             int repoResponseCode;
             dLocation = FormatPathSuffix(dLocation);
