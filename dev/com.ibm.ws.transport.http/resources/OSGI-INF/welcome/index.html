@@ -35,7 +35,6 @@
 			font-family: BunueloBold, Arial Narrow, Helvetica, Arial;
 			font-size: 1.75rem;
 			line-height: 1.5;
-			font-weight: 300;
 			margin: 0px;
 			text-align: left;
 		}
@@ -43,8 +42,8 @@
 		h2 {
 			color: #3F4664;
 			font-family: BunueloBold, Arial Narrow, Helvetica, Arial;
-			font-size: 30px;
 			font-size: 1.5rem;
+			line-height: 1.5;
 			margin: 0px;
 			text-align: center;
 		}
@@ -54,14 +53,14 @@
 			font-family: BunueloLight;
 			font-size: 1.25rem;
 			line-height: 1.5;
-			font-weight: 300;
 			margin: 0px;
 			text-align: left;
+			font-weight: 300;
 		}
 
-		@media (min-width: 600px) {
+		@media (min-width: 767px) {
 			h1 {
-				font-size: 2.25rem;
+				font-size: 2rem;
 			}
 
 			h2 {
@@ -69,17 +68,11 @@
 			}
 
 			h3 {
-				font-size: 1.25rem;
-			}
-		}
-
-		@media (min-width: 900px) {
-			h3 {
 				font-size: 1.5rem;
 			}
 		}
 
-		@media (min-width: 1200px) {
+		@media (min-width: 1165px) {
 			h3 {
 				font-size: 1.75rem;
 			}
@@ -124,7 +117,6 @@
 		@media (min-width: 767px) {
 			.row {
 				flex-wrap: nowrap;
-				padding: 0px 40px;
 			}
 			
 			.column {
@@ -132,6 +124,7 @@
 				max-width: 50%;
 			}
 		}
+
 
 
 		.hero {
@@ -238,7 +231,6 @@
 
 		@media (min-width: 767px) {
 			#inner-hero__title {
-				width: 100%;
 				max-width: 100%;
 			}
 		}
@@ -270,8 +262,8 @@
 		@media (min-width: 767px) {
 			#inner-hero__open_source {
 				top: -42px;
-				font-size: 12px;
 				right: 9%;
+				font-size: 12px;
 			}
 		}
 
@@ -290,8 +282,8 @@
 		}
 
 		#inner-hero__subtitle {
-			font-size: 20px;
 			font-family: BunueloBold, Arial Narrow, Helvetica, Arial;
+			font-size: 20px;
 			color: #ffffff;
 			line-height: 1.2;
 			margin-top: 15px;
@@ -303,134 +295,44 @@
 				text-align: left;
 			}
 		}
-		@media (min-width: 1015px) {
+		@media (min-width: 1165px) {
 			#inner-hero__subtitle {
 				font-size: 22px;
 			}
 		}
 
-		.img_container {
+		#inner-hero__img_container {
 			position: relative;
 		}
 
-		.inner-hero__beam {
+		#inner-hero__beam {
 			position: relative;
 			max-width: 100%;
 			top: 25px;
 		}
 
 		@media (min-width: 767px) {
-			.inner-hero__beam {
+			#inner-hero__beam {
 				max-width: 150%;
 				top: auto;
 				left: -35%;
 			}
 		}
 
-		.inner-hero__clouds {
+		#inner-hero__clouds {
 			width: 100%;
 			position: absolute;
 			bottom: -20px;
 		}
 		
 		@media (min-width: 767px) {
-			.inner-hero__clouds {
+			#inner-hero__clouds {
 				left: 0;
 				bottom: 0;
 			}
 		}
 
 
-		.logos {
-			padding: 40px;
-			margin-top: 30px;
-		}
-
-		@media (min-width: 1100px) {
-			.logos {
-				margin-top: 10px;
-			}
-		}
-
-		.logos .row {
-			justify-content: center;
-			flex-direction: column;
-			padding: 0px 20px;
-		}
-
-		@media (min-width: 992px) {
-			.logos .row {
-				flex-direction: row;
-			}
-		}
-
-		.logos__title {
-			padding-bottom: 30px;
-		}
-
-		#microprofile_logo, #jakarta_ee_logo {
-			align-self: center;
-		}
-
-		@media (max-width: 767.98px) {
-			#microprofile_logo, #jakarta_ee_logo {
-				width: 100%;
-				text-align: center;
-			}
-
-			#microprofile_logo img {
-				max-width: 100%;
-				min-width: 205px;
-			}
-
-			#jakarta_ee_logo img {
-				max-width: 60%;
-				min-width: 150px;
-			}
-		}
-
-		@media (min-width: 992px) {
-			#microprofile_logo {
-				margin-right: 50px;
-			}
-
-			#jakarta_ee_logo {
-				margin-left: 50px;
-			}
-		}
-
-
-		.logos, .resources {
-			margin: 0 auto;
-			box-shadow: 0 2px 4px 1px rgba(63,70,89,0.31);
-			border-radius: 3px;
-			margin-bottom: 30px;
-			margin-top: 30px;
-		}
-
-		@media (min-width: 576px) {
-			.logos, .resources {
-				max-width: 640px;
-			}
-		}
-
-		@media (min-width: 768px) {
-			.logos, .resources {
-				max-width: 720px;
-			}
-		}
-
-		@media (min-width: 992px) {
-			.logos, .resources {
-				max-width: 960px;
-			}
-		}
-
-		@media (min-width: 1165px) {
-			.logos, .resources {
-				max-width: 1070px;
-			}
-		}
 
 		.resources {
 			padding: 25px 20px 15px 20px;
@@ -546,6 +448,98 @@
 				padding-bottom: 10px;
 			}
 		}
+
+
+
+		.logos {
+			padding: 40px;
+			margin-top: 30px;
+		}
+
+		.logos .row {
+			justify-content: center;
+			flex-direction: column;
+			padding: 0px 20px;
+		}
+
+		@media (min-width: 992px) {
+			.logos .row {
+				flex-direction: row;
+			}
+		}
+
+		.logos__title {
+			padding-bottom: 30px;
+		}
+
+		#microprofile_logo, #jakarta_ee_logo {
+			align-self: center;
+		}
+
+		@media (max-width: 767.98px) {
+			#microprofile_logo, #jakarta_ee_logo {
+				width: 100%;
+				text-align: center;
+			}
+
+			#microprofile_logo img {
+				max-width: 100%;
+				min-width: 205px;
+			}
+
+			#jakarta_ee_logo img {
+				max-width: 60%;
+				min-width: 150px;
+			}
+		}
+
+		@media (min-width: 992px) {
+			#microprofile_logo {
+				margin-right: 50px;
+			}
+
+			#jakarta_ee_logo {
+				margin-left: 50px;
+			}
+		}
+
+
+		.logos, .resources {
+			margin: 0 auto;
+			box-shadow: 0 2px 4px 1px rgba(63,70,89,0.31);
+			border-radius: 3px;
+			margin-bottom: 30px;
+			margin-top: 30px;
+		}
+
+		@media (min-width: 576px) {
+			.logos, .resources {
+				max-width: 640px;
+			}
+		}
+
+		@media (min-width: 768px) {
+			.logos, .resources {
+				max-width: 720px;
+			}
+		}
+
+		@media (min-width: 992px) {
+			.logos, .resources {
+				max-width: 960px;
+			}
+		}
+
+		@media (min-width: 1165px) {
+			.logos, .resources {
+				max-width: 1070px;
+			}
+		}
+
+
+
+
+
 
 		.footer {
 			background-color: #1d1e3c;
@@ -735,11 +729,11 @@
 						<p id="inner-hero__open_source" data-externalizedString="WELCOME_IBM_OPEN_SOURCE"></p>
 						<h2 id="inner-hero__subtitle" data-externalizedString="WELCOME_LIGHTWEIGHT"></h2>
 					</div>
-					<div class="column img_container">
-						<img class="inner-hero__beam" src="/img/beam.png" data-externalizedAlt="UFO">
+					<div id="inner-hero__img_container" class="column">
+						<img id="inner-hero__beam" src="/img/beam.png" data-externalizedAlt="UFO">
 					</div>
 				</div>
-				<img class="inner-hero__clouds" src="/img/clouds.png" data-externalizedAlt="CLOUDS">
+				<img id="inner-hero__clouds" src="/img/clouds.png" data-externalizedAlt="CLOUDS">
 			</div>
 		</section>
 
@@ -788,7 +782,7 @@
 		</section>
 
 		<section class="logos" data-externalizedAriaLabel="LOGOS_SECTION">
-			<h2 class="logos__title" data-externalizedString="CERTIFIED"></h2>
+			<h2 class="logos__title" data-externalizedString="COMPATIBLE"></h2>
 			<div class="row">
 				<a id="microprofile_logo" href="https://microprofile.io/" target="_blank" rel="noopener">
 					<img src="/img/microprofile_logo.png" data-externalizedAlt="MICROPROFILE">

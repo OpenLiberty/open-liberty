@@ -7,7 +7,7 @@ var messages = {
     UFO: "Ufo and beam",
     CLOUDS: "Clouds",
     LOGOS_SECTION: "Logos Section",
-    CERTIFIED: "Open Liberty is a certified implementation of:",
+    COMPATIBLE: "Open Liberty is a compatible implementation of:",
     MICROPROFILE: "MicroProfile Logo",
     JAKARTA_EE: "Jakarta EE logo",
     RESOURCES_SECTION: "Resources section",
