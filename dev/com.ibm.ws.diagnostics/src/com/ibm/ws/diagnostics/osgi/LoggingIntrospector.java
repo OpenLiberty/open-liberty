@@ -86,7 +86,7 @@ public class LoggingIntrospector implements Introspector {
         }
         writer.println("");
 
-        // Print all other information
+        // Print logger and handler information
         Enumeration en = lm.getLoggerNames();
         while (en.hasMoreElements()) {
             String loggerName = (String) en.nextElement();
