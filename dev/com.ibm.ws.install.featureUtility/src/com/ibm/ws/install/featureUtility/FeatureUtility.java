@@ -102,7 +102,7 @@ public class FeatureUtility {
         if (isBasicInit == null || !isBasicInit) {
             info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_INITIALIZING"));
             if (noCache != null && noCache) {
-            	fine("Features installed from remote repository will not be cached locally");
+            	fine("Features installed from the remote repository will not be cached locally");
             }
             map.put("cleanup.needed", noCache);
             //log all the env props we find or don't find to debug
