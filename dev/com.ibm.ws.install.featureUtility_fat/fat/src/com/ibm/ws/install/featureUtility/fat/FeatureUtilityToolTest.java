@@ -76,7 +76,7 @@ public abstract class FeatureUtilityToolTest {
     }
 
     private static boolean isClosedLibertyWlp(){
-        return new File(installRoot + "/lib/versions/openliberty.properties").exists();
+        return new File(installRoot + "/lib/versions/WebSphereApplicationServer.properties").exists();
     }
 //
 //    public static void extractOpenLibertyKernelZip(String kernelZipDir, String destinationDir) throws Exception {
