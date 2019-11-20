@@ -43,6 +43,7 @@ public class ArtifactDownloaderUtils {
         try {
             HttpURLConnection.setFollowRedirects(true);
             HttpURLConnection conn;
+
             URL url = new URL(URLName);
             if (envMap.get("https.proxyUser") != null) {
                 Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(envMap.get("https.proxyHost"), 8080));
@@ -177,14 +178,12 @@ public class ArtifactDownloaderUtils {
 
     public static void checkResponseCode(int repoResponseCode, String repo) throws InstallException {
         if (!(repoResponseCode == HttpURLConnection.HTTP_OK)) { //verify repo exists
-            if (repoResponseCode == 503) {
-                throw new InstallException("Repository is unavaiable: " + repo); //ERROR_FAILED_TO_CONNECT_MAVEN
-            } else if (repoResponseCode == 407) {
+            if (repoResponseCode == 407) {
                 throw ExceptionUtils.createByKey("ERROR_TOOL_INCORRECT_PROXY_CREDENTIALS");
             } else if (repoResponseCode == 401 || repoResponseCode == 403) {
-                throw new InstallException("Incorrect credentials provided for the following repository: " + repo); //ERROR_FAILED_TO_AUTHENICATE
+                throw ExceptionUtils.createByKey("ERROR_INVALID_MAVEN_CREDENTIALS", repo);
             } else {
-                throw new InstallException("The following maven repository can not be reached: " + repo); //ERROR_FAILED_TO_CONNECT_MAVEN
+                throw ExceptionUtils.createByKey("ERROR_FAILED_TO_CONNECT_MAVEN"); //503
             }
         }
     }
