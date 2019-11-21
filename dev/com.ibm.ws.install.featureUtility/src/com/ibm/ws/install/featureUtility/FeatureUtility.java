@@ -84,6 +84,7 @@ public class FeatureUtility {
 
 
         map = new InstallKernelMap();
+        info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_INITIALIZING"));
         Map<String, String> envMap = (Map<String, String>) map.get("environment.variable.map");
         fine("Environment variables: ");
         Set<String> envMapKeys = envMap.keySet();
@@ -100,7 +101,7 @@ public class FeatureUtility {
         }
 
         if (isBasicInit == null || !isBasicInit) {
-            info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_INITIALIZING"));
+            
             if (noCache != null && noCache) {
             	fine("Features installed from the remote repository will not be cached locally");
             }
