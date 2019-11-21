@@ -969,7 +969,7 @@ public class InstallKernelMap implements Map {
         if (!userhomeFile.exists() || !userhomeFile.canWrite()) {
             return false;
         }
-        return new File(userhome, ".m2/repository").mkdirs();
+        return new File(userhome, "/.m2/repository").mkdirs();
     }
 
     /**
