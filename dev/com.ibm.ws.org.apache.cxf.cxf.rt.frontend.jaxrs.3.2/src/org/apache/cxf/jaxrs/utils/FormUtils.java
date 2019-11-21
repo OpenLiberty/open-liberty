@@ -53,6 +53,8 @@ import org.apache.cxf.message.MessageUtils;
 import org.apache.cxf.phase.PhaseInterceptorChain;
 import org.apache.cxf.transport.http.AbstractHTTPDestination;
 
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+
 public final class FormUtils {
     public static final String FORM_PARAMS_FROM_HTTP_PARAMS = "set.form.parameters.from.http.parameters";
     public static final String FORM_PARAM_MAP = "org.apache.cxf.form_data";
@@ -113,6 +115,7 @@ public final class FormUtils {
         }
     }
 
+    @FFDCIgnore(value = { Exception.class })
     public static String readBody(InputStream is, String encoding) {
         try {
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -182,6 +185,7 @@ public final class FormUtils {
         }
     }
 
+    @FFDCIgnore(value = { IOException.class })
     public static void logRequestParametersIfNeeded(Map<String, List<String>> params, String enc) {
         if ((PhaseInterceptorChain.getCurrentMessage() == null)
             || (PhaseInterceptorChain.getCurrentMessage().getInterceptorChain() == null)) {
@@ -230,6 +234,7 @@ public final class FormUtils {
         }
     }
 
+    @FFDCIgnore(value = { IllegalArgumentException.class, IOException.class })
     public static void populateMapFromMultipart(MultivaluedMap<String, String> params,
                                                 MultipartBody body,
                                                 Message m,
@@ -265,6 +270,7 @@ public final class FormUtils {
         }
     }
 
+    @FFDCIgnore(value = { NumberFormatException.class })
     private static void checkNumberOfParts(Message m, int numberOfParts) {
         if (m == null || m.getExchange() == null || m.getExchange().getInMessage() == null) {
             return;
@@ -287,15 +293,7 @@ public final class FormUtils {
     public static boolean isFormPostRequest(Message m) {
         // Liberty Change Start
         String contentType = (String) m.get(Message.CONTENT_TYPE);
-        
-        if (contentType != null) {
-            int indx = contentType.indexOf(';');
-            // strip off the charset if it exists
-            if (indx >= 0) {
-                contentType = contentType.substring(0, indx);
-            }
-        }
-        return MediaType.APPLICATION_FORM_URLENCODED.equals(contentType)
+        return (contentType != null && contentType.toLowerCase().startsWith(MediaType.APPLICATION_FORM_URLENCODED))
             && HttpMethod.POST.equals(m.get(Message.HTTP_REQUEST_METHOD));
         // Liberty Change End
     }
