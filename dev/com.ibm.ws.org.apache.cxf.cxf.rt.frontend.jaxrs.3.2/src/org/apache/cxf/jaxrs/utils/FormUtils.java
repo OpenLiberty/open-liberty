@@ -289,8 +289,11 @@ public final class FormUtils {
         String contentType = (String) m.get(Message.CONTENT_TYPE);
         
         if (contentType != null) {
+            int indx = contentType.indexOf(';');
             // strip off the charset if it exists
-            contentType = contentType.split(";")[0];
+            if (indx >= 0) {
+                contentType = contentType.substring(0, indx);
+            }
         }
         return MediaType.APPLICATION_FORM_URLENCODED.equals(contentType)
             && HttpMethod.POST.equals(m.get(Message.HTTP_REQUEST_METHOD));
