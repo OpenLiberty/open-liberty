@@ -5,7 +5,7 @@
   
   <cache-container>
     <transport cluster="${infinispan.cluster.name}" stack="jgroups-udp"/>
-    <replicated-cache-configuration name="com.ibm.ws.MyCache.attr"/>
-    <invalidation-cache-configuration name="*.session.*.inval"/>
+    <replicated-cache-configuration name="com.ibm.ws.session.attr.*"/>
+    <replicated-cache-configuration name="com.ibm.ws.session.meta.*"/>
   </cache-container>
 </infinispan>
