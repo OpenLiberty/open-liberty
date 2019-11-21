@@ -16,25 +16,28 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
+import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.FATServletClient;
 import web.PersistentTimersTestServlet;
 
 /**
- * Tests for persistent scheduled executor with task execution disabled
+ * Tests for persistent scheduled executor via persistent EJB timers
  */
 @RunWith(FATRunner.class)
 public class PersistentExecutorTimersTest extends FATServletClient {
 
     private static final String APP_NAME = "timersapp";
     private static final String DB_NAME = "persisttimers";
-    
+
     @TestServlet(servlet = PersistentTimersTestServlet.class, path = APP_NAME)
-    public static final LibertyServer server = FATSuite.server;
+    public static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.concurrent.persistent.fat.timers");
     
     @ClassRule
     public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create(DB_NAME);
@@ -44,7 +47,11 @@ public class PersistentExecutorTimersTest extends FATServletClient {
      */
     @BeforeClass
     public static void setUp() throws Exception {
-    	
+        // Delete the Derby-only database that is used by the persistent executor
+        Machine machine = server.getMachine();
+        String installRoot = server.getInstallRoot();
+        LibertyFileManager.deleteLibertyDirectoryAndContents(machine, installRoot + "/usr/shared/resources/data/persisttimers");
+
     	//Get type
 		DatabaseContainerType dbContainerType = DatabaseContainerType.valueOf(testContainer);
 

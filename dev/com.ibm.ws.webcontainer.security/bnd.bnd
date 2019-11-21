@@ -23,7 +23,10 @@ Export-Package: \
   com.ibm.ws.webcontainer.security.context, \
   com.ibm.ws.webcontainer.security.internal, \
   com.ibm.ws.webcontainer.security.metadata, \
-  com.ibm.ws.webcontainer.security.util
+  com.ibm.ws.webcontainer.security.util, \
+  com.ibm.ws.webcontainer.security.oauth20, \
+  com.ibm.ws.webcontainer.security.openid20, \
+  com.ibm.ws.webcontainer.security.openidconnect
 
 Import-Package: com.ibm.ws.common.internal.encoder, !com.ibm.ws.kernel.boot.cmdline, *
 
@@ -86,7 +89,6 @@ instrument.classesExcludes: com/ibm/ws/webcontainer/security/resources/*.class
 	com.ibm.ws.security.audit.utils;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.security.mp.jwt.proxy;version=latest
-	
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \

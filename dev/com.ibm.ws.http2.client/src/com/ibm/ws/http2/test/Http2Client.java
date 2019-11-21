@@ -141,23 +141,6 @@ public class Http2Client {
         }
     }
 
-    /*
-     * private boolean received101ResponseCode(String response) {
-     * //response.startsWith("");
-     *
-     * Response Received:
-     * HTTP/1.1 200 OK<CR>
-     * <LF>X-Powered-By: Servlet/3.1<CR>
-     * <LF>Content-Type: text/html;charset=ISO-8859-1<CR>
-     * <LF>Content-Length: 3627<CR>
-     * <LF>Content-Language: en-US<CR>
-     * <LF>Date: Thu, 09 Feb 2017 19:41:52 GMT<CR>
-     * <LF><CR>
-     *
-     * return response.startsWith("HTTP/1.1 101 Switching Protocols<CR>\n<LF>Connection: Upgrade<CR>\n<LF>Upgrade: h2c<CR>");
-     * }
-     */
-
     private void sendClientPreface() {
         // PRI * HTTP/2.0\r\n\r\nSM\r\n\r\n
         // 0x505249202a20485454502f322e300d0a0d0a534d0d0a0d0a
@@ -459,13 +442,6 @@ public class Http2Client {
                 LOGGER.logp(Level.INFO, CLASS_NAME + "$FATFramesListener", "receivedLastFrame", "Received last frame");
             }
             if (sendGoAway) {
-
-                // wait to allow stress connection to finish up sending all the frames, if needed
-                // try {
-                //     Thread.sleep(2000);
-                // } catch (Exception x) {
-                // }
-
                 if (LOGGER.isLoggable(Level.INFO)) {
                     LOGGER.logp(Level.INFO, CLASS_NAME + "$FATFramesListener", "receivedLastFrame", "Sending GoAway");
                 }

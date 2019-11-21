@@ -46,7 +46,7 @@ public class JaegerConfigTest {
 	
     private static final Class<?> CLASS = JaegerConfigTest.class;
 
-    @Server("jaegerServer1")
+    @Server("jaegerProperConfig")
     private static LibertyServer server1;
 
     @Server("jaegerServerImproper")
@@ -74,6 +74,7 @@ public class JaegerConfigTest {
         File[] libs = libsDir.listFiles();
         for (File file : libs) {
             server1.copyFileToLibertyServerRoot(file.getParent(), "jaegerLib", file.getName());
+            // We are not copying the library to server2 for improper config test
         }
     }
 
@@ -115,7 +116,7 @@ public class JaegerConfigTest {
     	currentServer = server2;
         String methodName = "testImproperConfig";
         try {
-        	executeWebService(server1, "helloWorld");
+        	executeWebService(server2, "helloWorld");
         } catch (IOException e) {
         	// Error should be thrown when hitting endpoint
         }

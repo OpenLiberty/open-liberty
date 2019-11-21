@@ -98,6 +98,9 @@ cpu.systemLoadAverage.description=Afi\u015feaz\u0103 valoarea medie a \u00eenc\u
 #Cpu processCpuLoad message
 cpu.processCpuLoad.description=Afi\u015feaz\u0103 'utilizare recent\u0103 cpu' pentru procesul Java Virtual Machine.
 
+#Cpu processCpuTime message
+cpu.processCpuTime.description=Afi\u015feaz\u0103 timpul CPU utilizat de procesul pe care ruleaz\u0103 JVM (ma\u015fina virtual\u0103 Java).
+
 #Garbage collection count message
 garbageCollectionCount.description=Afi\u015feaz\u0103 num\u0103rul total de colec\u0163ii care au ap\u0103rut. Acest atribut listeaz\u0103 -1 dac\u0103 num\u0103rul de colec\u0163ie nu este definit pentru acest colector.
 

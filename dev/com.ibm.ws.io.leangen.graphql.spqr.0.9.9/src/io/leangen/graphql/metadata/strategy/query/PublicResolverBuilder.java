@@ -6,6 +6,7 @@ import io.leangen.graphql.generator.JavaDeprecationMappingConfig;
 import io.leangen.graphql.metadata.Resolver;
 import io.leangen.graphql.metadata.execution.MethodInvoker;
 import io.leangen.graphql.metadata.execution.SingletonMethodInvoker;
+import io.leangen.graphql.metadata.strategy.value.jsonb.JsonbValueMapper;
 import io.leangen.graphql.util.ClassUtils;
 import io.leangen.graphql.util.Utils;
 import org.eclipse.microprofile.graphql.Description;
@@ -15,6 +16,7 @@ import javax.json.bind.annotation.JsonbDateFormat;
 import java.lang.reflect.AnnotatedType;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -60,7 +62,7 @@ public class PublicResolverBuilder extends FilteredResolverBuilder {
             if (dateFormat != null) {
                 return dateFormat.value();
             }
-            return "";
+            return JsonbValueMapper.getDefaultDateDescriptionFor(method.getAnnotatedReturnType());
         };
         this.deprecationReasonMapper = method ->
                 javaDeprecationConfig.enabled && method.isAnnotationPresent(Deprecated.class) ? javaDeprecationConfig.deprecationReason : null;

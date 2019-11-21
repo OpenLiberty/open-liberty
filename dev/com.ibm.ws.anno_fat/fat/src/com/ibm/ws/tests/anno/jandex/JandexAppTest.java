@@ -127,11 +127,11 @@ public abstract class JandexAppTest extends LoggingTest {
     }
 
     /**
-     * Verify that the test application is using Servlet 4.0.
+     * Verify that the test application is using Servlet 3.1.
      */
-    public void testServletIsRunning40() throws Exception {
+    public void testServletIsRunning31() throws Exception {
         WebResponse response = verifyResponse(MY_SERVLET_URL, "Hello World");
-        response.verifyResponseHeaderEquals("X-Powered-By", false, "Servlet/4.0", true, false);
+        response.verifyResponseHeaderEquals("X-Powered-By", false, "Servlet/3.1", true, false);
     }
 
     /**
@@ -139,8 +139,8 @@ public abstract class JandexAppTest extends LoggingTest {
      * major and minor Servlet versions.
      */
     public void testServletVersions() throws Exception {
-        verifyResponse(MY_SERVLET_URL + "?TestMajorMinorVersion=true", "majorVersion: 4");
-        verifyResponse(MY_SERVLET_URL + "?TestMajorMinorVersion=true", "minorVersion: 0");
+        verifyResponse(MY_SERVLET_URL + "?TestMajorMinorVersion=true", "majorVersion: 3");
+        verifyResponse(MY_SERVLET_URL + "?TestMajorMinorVersion=true", "minorVersion: 1");
     }
 
     public static final boolean DO_EXPECT_JANDEX = true;

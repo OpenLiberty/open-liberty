@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,7 +29,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
 /**
- * Tests related to Session Cache Timeouts, using a server with the following session settings:
+ * Tests related to Session Cache Timeouts, using two servers with the following session settings:
  * invalidationTimeout="5s"
  * reaperPollInterval="30" //Min allowed to not receive random poll interval between 30-60s
  */
@@ -78,7 +78,7 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
         try {
             serverA.stopServer();
         } finally {
-            serverB.stopServer("CWWKL0058W:.*InfinispanLib"); // TODO why does occur for Infinispan jar, but not Hazelcast?
+            serverB.stopServer();
         }
     }
 
@@ -176,7 +176,7 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
      * Error Thrown: ISPN021011: Incompatible cache value types specified, expected class java.lang.String but class java.lang.Object was specified
      */
     @Test
-    public void testInfinispanClassCastExpection() throws Exception {
-        appA.invokeServlet("testInfinispanClassCastExpection&shouldFail=true", null);
+    public void testInfinispanClassCastException() throws Exception {
+        appA.invokeServlet("testInfinispanClassCastException&shouldFail=true", null);
     }
 }

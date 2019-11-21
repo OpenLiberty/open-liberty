@@ -6,8 +6,9 @@ import io.leangen.graphql.util.ReservedStrings;
 import io.leangen.graphql.util.Utils;
 import org.eclipse.microprofile.graphql.DefaultValue;
 import org.eclipse.microprofile.graphql.Description;
-import org.eclipse.microprofile.graphql.InputField;
+import org.eclipse.microprofile.graphql.Name;
 import org.eclipse.microprofile.graphql.Query;
+
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.AnnotatedType;
@@ -18,9 +19,9 @@ public class InputFieldInfoGenerator {
 
     public Optional<String> getName(List<AnnotatedElement> candidates, MessageBundle messageBundle) {
         Optional<String> explicit = candidates.stream()
-                .filter(element -> element.isAnnotationPresent(InputField.class))
+                .filter(element -> element.isAnnotationPresent(Name.class))
                 .findFirst()
-                .map(element -> element.getAnnotation(InputField.class).value());
+                .map(element -> element.getAnnotation(Name.class).value());
         Optional<String> implicit = candidates.stream()
                 .filter(element -> element.isAnnotationPresent(Query.class))
                 .findFirst()

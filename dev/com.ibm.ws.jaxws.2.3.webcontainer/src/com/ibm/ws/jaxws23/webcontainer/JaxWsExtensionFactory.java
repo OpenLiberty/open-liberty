@@ -21,6 +21,7 @@ import org.osgi.service.component.ComponentContext;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.annotations.WebAnnotations;
+import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
 import com.ibm.ws.jaxws.JaxWsConstants;
 import com.ibm.ws.jaxws.endpoint.EndpointPublisher;
 import com.ibm.ws.jaxws.endpoint.EndpointPublisherManager;
@@ -39,6 +40,7 @@ import com.ibm.wsspi.webcontainer.extension.ExtensionFactory;
 import com.ibm.wsspi.webcontainer.extension.ExtensionProcessor;
 import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
 import com.ibm.wsspi.webcontainer.servlet.IServletContext;
+import com.ibm.wsspi.anno.info.InfoStore;
 
 public class JaxWsExtensionFactory implements ExtensionFactory {
 
@@ -108,8 +110,12 @@ public class JaxWsExtensionFactory implements ExtensionFactory {
         WebApp webApp = (WebApp) servletContext;
         publisherContext.setAttribute(JaxWsWebContainerConstants.NAMESPACE_COLLABORATOR, webApp.getCollaboratorHelper().getWebAppNameSpaceCollaborator());
 
-        publisherContext.setAttribute(JaxWsConstants.ENDPOINT_INFO_BUILDER_CONTEXT,
-                                      new EndpointInfoBuilderContext(servletContext.getModuleContainer().adapt(WebAnnotations.class).getInfoStore(), servletContext.getModuleContainer()));
+        WebAnnotations webAnnotations = AnnotationsBetaHelper.getWebAnnotations(servletContext.getModuleContainer());
+        InfoStore infoStore = webAnnotations.getInfoStore();
+
+        publisherContext.setAttribute(
+            JaxWsConstants.ENDPOINT_INFO_BUILDER_CONTEXT,
+            new EndpointInfoBuilderContext(infoStore,servletContext.getModuleContainer()));
 
         // get endpoint publisher and do publish
         EndpointPublisher endpointPublisher = endpointPublisherManagerRef.getServiceWithException().getEndpointPublisher(JaxWsConstants.WEB_ENDPOINT_PUBLISHER_TYPE);

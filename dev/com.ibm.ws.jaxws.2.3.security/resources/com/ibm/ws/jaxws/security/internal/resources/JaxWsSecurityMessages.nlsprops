@@ -1,0 +1,43 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxws.security/resources/com/ibm/ws/jaxws/security/internal/resources/JaxWsSecurityMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXWS SECURITY Code
+#RANGE 0600 - 0699
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+# ------
+
+#{0} is the ssl configuration id
+err.when.get.ssl.config=CWWKW0600E: Fail to get the SSL configuration by sslRef={0}.
+err.when.get.ssl.config.explanation=The sslRef attribute specified in the ibm-ws-bnd.xml file cannot refer to the ssl element in the server.xml file, or the content of the referred ssl element is invalid.
+err.when.get.ssl.config.useraction=Ensure that the value of the sslRef attribute matches the id of the ssl element in the server.xml file, or the content of the referred ssl element is correct.
+
+#{0} is the ssl configuration id
+#{1} is the ssl error message
+err.when.get.ssl.socket.factory=CWWKW0601E: Fail to get the SSLSocketFactory by sslRef={0} for {1}.
+err.when.get.ssl.socket.factory.explanation=Invalid configuration of keystore or truststore element in the server.xml file can result in the exception because the sslRef attribute specified in the ibm-ws-bnd.xml file refers to the SSL configurations in the server.xml file.
+err.when.get.ssl.socket.factory.useraction=Ensure that the location and the password of the keystore or the truststore element are correctly specified in the server.xml file, and the certificate alias is valid in the ibm-ws-bnd.xml file. 
+
+ibm.ws.bnd.login.config.in.war.is.ingnored=CWWKW0602W: The login-config element defined in the ibm-ws-bnd.xml file is ignored as your application is a web application and should be defined in the web.xml.
+ibm.ws.bnd.login.config.in.war.is.ingnored.explanation=The login-config element can only be configured in the web.xml file of the web application, and the login-config element defined in the ibm-ws-bnd.xml file is ignored.
+ibm.ws.bnd.login.config.in.war.is.ingnored.useraction=Ensure that the login-config element is only configured in the web.xml file of your web application. 
+
+#{0} is value of auth-method defined in ibm-ws-bnd.xml
+ibm.ws.bnd.auth.method.not.support=CWWKW0603W: The auth-method Type {0} is not supported in the ibm-ws-bnd.xml file.
+ibm.ws.bnd.auth.method.not.support.explanation=The ibm-ws-bnd.xml file only supports BASIC and CLIENT_CERT as auth-method type.
+ibm.ws.bnd.auth.method.not.support.useraction=Ensure that the value of auth-method type defined in the ibm-ws-bnd.xml file is either BASIC or CLIENT_CERT.

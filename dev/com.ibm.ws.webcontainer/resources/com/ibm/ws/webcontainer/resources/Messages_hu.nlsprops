@@ -1594,6 +1594,12 @@ uncaught.exception.during.AsyncListener.onComplete.useraction=Keresse meg az alk
 # {0} is the name of the ServletContainerInitializer that was being invoked at the time of the Exception.
 # {1} is the Exception that was thrown from the onStartup method of the ServletContainerInitializer {0}.
 # {2} is the application name that the ServletContainerInitializer is contained in.
-exception.occurred.while.running.ServletContainerInitializers.onStartup=CWWWC0001W:  A(z) [{0}] ServletContainerInitializer, amely a(z) [{2}] alkalmaz\u00e1sban tal\u00e1lhat\u00f3, a k\u00f6vetkez\u0151 hib\u00e1t \u00e1ll\u00edtotta el\u0151 az onStartup met\u00f3dus felh\u00edv\u00e1sakor: [{1}]
+exception.occurred.while.running.ServletContainerInitializers.onStartup=CWWWC0001W: A(z) [{0}] ServletContainerInitializer, amely a(z) [{2}] alkalmaz\u00e1sban tal\u00e1lhat\u00f3, a k\u00f6vetkez\u0151 hib\u00e1t \u00e1ll\u00edtotta el\u0151 az onStartup met\u00f3dus felh\u00edv\u00e1sakor: [{1}]
 exception.occurred.while.running.ServletContainerInitializers.onStartup.explanation=A ServletContainerInitializer kiv\u00e9telt jelentett az onStartup met\u00f3dus felh\u00edv\u00e1sakor.
 exception.occurred.while.running.ServletContainerInitializers.onStartup.useraction=A hiba ok\u00e1nak meg\u00e1llap\u00edt\u00e1sa \u00e9rdek\u00e9ben tekintse meg a kiv\u00e9telt.
+
+# {0} Servlet name used in the servlet name filter mapping
+# {1} Filter name which is used to map a servlet name. 
+no.servlet.defined.for.servlet.filter.name.mapping=CWWWC0002W: A(z) {0} szervletn\u00e9vre vonatkoz\u00f3an nem tal\u00e1lhat\u00f3 szervletmeghat\u00e1roz\u00e1s a(z) {1} sz\u0171r\u0151lek\u00e9pez\u00e9sben.
+no.servlet.defined.for.servlet.filter.name.mapping.explanation=A szervletnevet haszn\u00e1lja egy sz\u0171r\u0151lek\u00e9pez\u00e9s, de a meghat\u00e1roz\u00e1sa nincs megadva.
+no.servlet.defined.for.servlet.filter.name.mapping.useraction=Hat\u00e1rozza meg a szervletn\u00e9v sz\u0171r\u0151lek\u00e9pez\u00e9s\u00e9ben haszn\u00e1lt szervletet.

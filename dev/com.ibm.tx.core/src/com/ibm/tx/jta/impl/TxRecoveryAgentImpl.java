@@ -31,6 +31,7 @@ import org.osgi.framework.ServiceReference;
 import com.ibm.tx.TranConstants;
 import com.ibm.tx.config.ConfigurationProvider;
 import com.ibm.tx.config.ConfigurationProviderManager;
+import com.ibm.tx.jta.config.DefaultConfigurationProvider;
 import com.ibm.tx.jta.util.TranLogConfiguration;
 import com.ibm.tx.util.logging.FFDCFilter;
 import com.ibm.tx.util.logging.Tr;
@@ -172,8 +173,10 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
             }
             // Determine whether we are dealing with a custom log configuration (e.g. WXS or JDBC)
             boolean isCustom = false;
-            String logDir = ConfigurationProviderManager.getConfigurationProvider().getTransactionLogDirectory();
-            int logSize = ConfigurationProviderManager.getConfigurationProvider().getTransactionLogSize();
+            ConfigurationProvider cp = ConfigurationProviderManager.getConfigurationProvider();
+
+            String logDir = cp.getTransactionLogDirectory();
+            int logSize = cp.getTransactionLogSize();
 
             if (logDir.startsWith("custom")) {
                 isCustom = true;
@@ -328,7 +331,6 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                         // that owns the logs is not able to recover them. The System Property supports the tWAS style
                         // of processing.
                         if (!doNotShutdownOnRecoveryFailure()) {
-                            ConfigurationProvider cp = ConfigurationProviderManager.getConfigurationProvider();
                             cp.shutDownFramework();
                         }
 
@@ -353,12 +355,17 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                 }
             });
 
-            // Set a ThreadContextClassLoader on the recovery thread so SSL classes can be loaded
-            final ClassLoader cl = getThreadContextClassLoader(this.getClass());
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Setting Context ClassLoader on " + t.getName() + " (" + String.format("%08X", t.getId()) + ")", cl);
+            // If we're not unit testing, set a ThreadContextClassLoader on the recovery thread so SSL classes can be loaded
+            if (!(cp instanceof DefaultConfigurationProvider)) {
+                final ClassLoader cl = getThreadContextClassLoader(this.getClass());
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Setting Context ClassLoader on " + t.getName() + " (" + String.format("%08X", t.getId()) + ")", cl);
 
-            t.setContextClassLoader(cl);
+                t.setContextClassLoader(cl);
+            } else {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "unit testing so not setting Context ClassLoader on " + t.getName() + " (" + String.format("%08X", t.getId()) + ")");
+            }
             t.start();
 
             // Once we have got things going on another thread, tell the recovery directory that recovery is "complete". This
@@ -400,7 +407,6 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                     // that owns the logs is not able to recover them. The System Property supports the tWAS style
                     // of processing.
                     if (localRecovery && !doNotShutdownOnRecoveryFailure()) {
-                        ConfigurationProvider cp = ConfigurationProviderManager.getConfigurationProvider();
                         cp.shutDownFramework();
                     }
 

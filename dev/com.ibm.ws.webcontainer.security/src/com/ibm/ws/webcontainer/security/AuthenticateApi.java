@@ -20,10 +20,11 @@ import java.util.Set;
 
 import javax.security.auth.Subject;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.servlet.http.Cookie;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
@@ -45,6 +46,7 @@ import com.ibm.ws.security.mp.jwt.proxy.MpJwtHelper;
 import com.ibm.ws.webcontainer.security.internal.BasicAuthAuthenticator;
 import com.ibm.ws.webcontainer.security.internal.ChallengeReply;
 import com.ibm.ws.webcontainer.security.internal.DenyReply;
+import com.ibm.ws.webcontainer.security.internal.OAuthChallengeReply;
 import com.ibm.ws.webcontainer.security.internal.RedirectReply;
 import com.ibm.ws.webcontainer.security.internal.SRTServletRequestUtils;
 import com.ibm.ws.webcontainer.security.internal.SSOAuthenticator;
@@ -632,11 +634,16 @@ public class AuthenticateApi {
                 return new RedirectReply(authResult.getRedirectURL(), authResult.getCookies());
 
             case UNKNOWN:
+
             case CONTINUE:
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Authentication failed with status [" + authResult.getStatus() + "] and reason [" + authResult.getReason() + "]");
                 }
                 return DENY_AUTHN_FAILED;
+
+            case OAUTH_CHALLENGE:
+                return new OAuthChallengeReply(authResult.getReason());
+
             default:
                 break;
         }

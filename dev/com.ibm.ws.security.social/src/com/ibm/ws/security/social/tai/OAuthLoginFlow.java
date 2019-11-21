@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2018 IBM Corporation and others.
+ * Copyright (c) 2016, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.social.tai;
 
@@ -25,6 +25,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.TraceConstants;
 import com.ibm.ws.security.social.error.SocialLoginException;
+import com.ibm.ws.security.social.internal.Oauth2LoginConfigImpl;
 import com.ibm.ws.security.social.internal.utils.ClientConstants;
 import com.ibm.ws.security.social.internal.utils.SocialUtil;
 import com.ibm.ws.security.social.web.utils.SocialWebUtils;
@@ -44,12 +45,75 @@ public class OAuthLoginFlow {
     }
 
     TAIResult handleOAuthRequest(HttpServletRequest request, HttpServletResponse response, SocialLoginConfig clientConfig) throws WebTrustAssociationFailedException {
+        if (clientConfig instanceof Oauth2LoginConfigImpl && SocialUtil.useAccessTokenFromRequest(clientConfig)) {
+            TAIResult result = handleAccessTokenFlow(request, response, (Oauth2LoginConfigImpl) clientConfig);
+            if (result != null) {
+                return result;
+            }
+        }
         String code = webUtils.getAndClearCookie(request, response, ClientConstants.COOKIE_NAME_STATE_KEY);
         if (code == null) {
             return handleRedirectToServer(request, response, clientConfig);
         } else {
             return handleAuthorizationCode(request, response, code, clientConfig);
         }
+    }
+
+    private TAIResult handleAccessTokenFlow(HttpServletRequest request, HttpServletResponse response, Oauth2LoginConfigImpl clientConfig) throws WebTrustAssociationFailedException {
+        TAIResult result = null;
+        //request should have token
+        String tokenFromRequest = taiWebUtils.getBearerAccessToken(request, clientConfig);
+        if (requestShouldHaveToken(clientConfig)) {
+            if (!isAccessTokenNonEmpty(tokenFromRequest)) {
+                Tr.error(tc, "OPENSHIFT_ACCESS_TOKEN_MISSING");
+                return taiWebUtils.sendToErrorPage(response, TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED));
+            }
+            return handleAccessToken(tokenFromRequest, request, response, clientConfig);
+        } else if (isAccessTokenNonEmpty(tokenFromRequest)) {
+            // request may have token
+            result = handleAccessToken(tokenFromRequest, request, response, clientConfig);
+            // if good result return
+            if (result != null && result.getSubject() != null) {
+                return result;
+            }
+        }
+        return result;
+    }
+
+    private boolean isAccessTokenNonEmpty(String tokenFromRequest) {
+        if (tokenFromRequest != null && !tokenFromRequest.isEmpty()) {
+            return true;
+        }
+        return false;
+    }
+
+    private TAIResult handleAccessToken(String tokenFromRequest, HttpServletRequest request, HttpServletResponse response, Oauth2LoginConfigImpl clientConfig) throws WebTrustAssociationFailedException {
+
+        //        if (!validAccessToken(tokenFromRequest)) { 
+        //            return taiWebUtils.sendToErrorPage(response, TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED));
+        //        }
+        AuthorizationCodeAuthenticator authzCodeAuthenticator = new AuthorizationCodeAuthenticator(request, response, clientConfig, tokenFromRequest, true);
+        try {
+            authzCodeAuthenticator.generateJwtAndTokensFromTokenReviewResult();
+        } catch (Exception e) {
+            // Error should have already been logged; simply send to error page
+            return taiWebUtils.sendToErrorPage(response, TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED));
+        }
+        TAIResult authnResult = null;
+        try {
+            TAISubjectUtils subjectUtils = getTAISubjectUtils(authzCodeAuthenticator);
+            authnResult = subjectUtils.createResult(response, clientConfig);
+        } catch (Exception e) {
+            Tr.error(tc, "AUTH_CODE_ERROR_CREATING_RESULT", new Object[] { clientConfig.getUniqueId(), e.getLocalizedMessage() });
+            return taiWebUtils.sendToErrorPage(response, TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED));
+        }
+        taiWebUtils.restorePostParameters(request);
+        return authnResult;
+
+    }
+
+    private boolean requestShouldHaveToken(Oauth2LoginConfigImpl clientConfig) {
+        return clientConfig.isAccessTokenRequired();
     }
 
     @FFDCIgnore(SocialLoginException.class)

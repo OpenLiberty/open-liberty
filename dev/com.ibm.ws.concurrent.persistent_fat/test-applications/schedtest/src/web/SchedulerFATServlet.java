@@ -65,7 +65,6 @@ import com.ibm.ws.concurrent.persistent.ejb.TimerTrigger;
 import com.ibm.ws.concurrent.persistent.ejb.TimersPersistentExecutor;
 
 import componenttest.annotation.AllowedFFDC;
-import componenttest.annotation.ExpectedFFDC;
 
 @WebServlet("/*")
 public class SchedulerFATServlet extends HttpServlet {
@@ -393,9 +392,8 @@ public class SchedulerFATServlet extends HttpServlet {
     }
 
     /**
-     * Cancel a task while it is running. The task entry does not autopurge.
+     * Attempt to cancel a task while it is running. The task entry does not autopurge.
      */
-    @Test
     public void testCancelRunningTask(PrintWriter out) throws Exception {
         CancelableTask task = new CancelableTask("testCancelRunningTask", false);
         String taskName = task.getExecutionProperties().get(ManagedTask.IDENTITY_NAME);
@@ -411,6 +409,36 @@ public class SchedulerFATServlet extends HttpServlet {
         status = scheduler.getStatus(status.getTaskId());
         if (status != null)
             throw new Exception("Task should be autopurged. Instead " + status);
+    }
+
+    /**
+     * Cancel a task while it is running. The task entry does not autopurge.
+     */
+    public void testCancelRunningTaskFE(PrintWriter out) throws Exception {
+        CancelableTask task = new CancelableTask("testCancelRunningTaskFE", true);
+        String taskName = task.getExecutionProperties().get(ManagedTask.IDENTITY_NAME);
+
+        TaskStatus<Integer> status = scheduler.submit((Callable<Integer>) task);
+
+        CancelableTask.waitForStart(taskName);
+
+        boolean canceled = status.cancel(false);
+        if (!canceled)
+            throw new Exception("Task " + status.getTaskId() + " did not allow cancel operation.");
+
+        // Allow the blocked task to complete
+        CancelableTask.notifyTaskCanceled(taskName);
+
+        long taskId = status.getTaskId();
+        status = scheduler.getStatus(status.getTaskId());
+        if (status == null)
+            throw new Exception("Task " + taskId + " should not be autopurged.");
+
+        if (!status.isCancelled())
+            throw new Exception("Task " + status + " does not show that it was canceled.");
+
+        // Data that was persisted by the task must be committed despite the cancellation (a requirement from Persistent EJB Timers)
+        pollForTableEntry("testCancelRunningTaskFE", 1);
     }
 
     /**
@@ -432,7 +460,7 @@ public class SchedulerFATServlet extends HttpServlet {
 
         CancelableTask.notifyTaskCanceled(taskName);
 
-        // wait for task result in database
+        // Data that was persisted by the task must be committed despite the cancellation (a requirement from Persistent EJB Timers)
         pollForTableEntry("testCancelRunningTaskSuspendTransaction", 1);
 
         status = scheduler.getStatus(status.getTaskId());
@@ -1642,7 +1670,6 @@ public class SchedulerFATServlet extends HttpServlet {
     /**
      * Attempt to remove a task while it is running.
      */
-    @Test
     public void testRemoveRunningTask(PrintWriter out) throws Exception {
         CancelableTask task = new CancelableTask("testRemoveRunningTask", false);
         String taskName = task.getExecutionProperties().get(ManagedTask.IDENTITY_NAME);
@@ -1666,8 +1693,12 @@ public class SchedulerFATServlet extends HttpServlet {
 
     /**
      * Attempt to remove a task (which autopurges on successful completion) while it is running.
+     * This test relies on being in the default mode where task execution locks the task entry,
+     * which cause the remove operation to always return false because the transaction that is
+     * running the task includes the autopurge and blocks the manually attempted remove from
+     * completing.  For this reason, this test cannot be annotated with @Test and instead
+     * is conditionally invoked based on which mode is used.
      */
-    @Test
     public void testRemoveRunningTaskAutoPurge(PrintWriter out) throws Exception {
         CancelableTask task = new CancelableTask("testRemoveRunningTaskAutoPurge", false);
         String taskName = task.getExecutionProperties().get(ManagedTask.IDENTITY_NAME);
@@ -1685,6 +1716,59 @@ public class SchedulerFATServlet extends HttpServlet {
     }
 
     /**
+     * Removes a task (which autopurges on successful completion) while it is running.
+     * This test relies on being in the failover-enabled mode where task execution does not
+     * lock the task entry, which allows the remove operation to succeed while the task is running.
+     * For this reason, this test cannot be annotated with @Test and instead
+     * is conditionally invoked based on which mode is used.
+     */
+    public void testRemoveRunningTaskAutoPurgeFE(PrintWriter out) throws Exception {
+        CancelableTask task = new CancelableTask("testRemoveRunningTaskAutoPurgeFE", true);
+        String taskName = task.getExecutionProperties().get(ManagedTask.IDENTITY_NAME);
+
+        TaskStatus<Integer> status = scheduler.submit((Callable<Integer>) task);
+
+        CancelableTask.waitForStart(taskName);
+
+        boolean removed = scheduler.remove(status.getTaskId());
+        if (!removed)
+            throw new Exception("Unable to remove task while running " + status.getTaskId());
+
+        TaskStatus<Integer> newStatus = scheduler.getStatus(status.getTaskId());
+        if (newStatus != null)
+            throw new Exception("Task was not removed. " + newStatus);
+
+        // Allow the blocked task to complete
+        CancelableTask.notifyTaskCanceled(taskName);
+
+        // Data that was persisted by the task must be committed despite the removal (a requirement from Persistent EJB Timers)
+        pollForTableEntry("testRemoveRunningTaskAutoPurgeFE", 1);
+    }
+
+    /**
+     * Attempt to remove a task while it is running.
+     */
+    public void testRemoveRunningTaskFE(PrintWriter out) throws Exception {
+        CancelableTask task = new CancelableTask("testRemoveRunningTaskFE", true);
+        String taskName = task.getExecutionProperties().get(ManagedTask.IDENTITY_NAME);
+        task.getExecutionProperties().put(AutoPurge.PROPERTY_NAME, AutoPurge.NEVER.name());
+
+        TaskStatus<Integer> status = scheduler.submit((Callable<Integer>) task);
+
+        CancelableTask.waitForStart(taskName);
+
+        boolean removed = scheduler.remove(status.getTaskId());
+        if (!removed)
+            throw new Exception("Unable to remove task " + status.getTaskId());
+
+        // Allow the blocked task to complete
+        CancelableTask.notifyTaskCanceled(taskName);
+
+        // Data that was persisted by the task must be committed despite the removal (a requirement from Persistent EJB Timers)
+        pollForTableEntry("testRemoveRunningTaskFE", 1);
+    }
+
+    /**
      * Remove a task while it is running. The task's transaction must be suspended while running.
      */
     @Test
@@ -1698,7 +1782,8 @@ public class SchedulerFATServlet extends HttpServlet {
 
         CancelableTask.waitForStart(taskName);
 
-        boolean removed = scheduler.remove(status.getTaskId());
+        long taskId = status.getTaskId();
+        boolean removed = scheduler.remove(taskId);
         if (!removed)
             throw new Exception("Unable to remove task " + status.getTaskId());
 
@@ -1710,6 +1795,9 @@ public class SchedulerFATServlet extends HttpServlet {
         status = scheduler.getStatus(status.getTaskId());
         if (status != null)
             throw new Exception("Task entry did not autopurge " + status);
+
+        // Data that was persisted by the task must be committed despite the removal (a requirement from Persistent EJB Timers)
+        pollForTableEntry("testRemoveRunningTaskSuspendTransaction", 1);
     }
 
     /**

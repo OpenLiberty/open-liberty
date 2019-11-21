@@ -55,6 +55,11 @@ kafka.groupid.not.set.CWMRX1005E=CWMRX1005E: Proprietatea group.id nu a fost set
 kafka.groupid.not.set.CWMRX1005E.explanation=Trebuie setat ID-ul de grup consumatori Kafka pentru a permite func\u0163ionarea corespunz\u0103toare pentru Reactive Messaging.
 kafka.groupid.not.set.CWMRX1005E.useraction=Seta\u0163i proprietatea \u00eentr-una din loca\u0163iile MicroProfile ConfigSource pentru aceast\u0103 aplica\u0163ie, de exemplu, fi\u015fierul microprofile-config.properties.
 
+#Do not translate "kafka-clients", "Apache Kafka" or "Maven Central"
+kafka.library.not.present.CWMRX1006E=CWMRX1006E: Clasele de la fi\u015fierul JAR kafka-clients nu pot fi \u00eenc\u0103rcate. Asigura\u0163i-v\u0103 c\u0103 fi\u015fierul JAR kafka-clients \u015fi dependen\u0163ele sale sunt disponibile ca biblioteci pentru aplica\u0163ia dumneavoastr\u0103.
+kafka.library.not.present.CWMRX1006E.explanation=Aplica\u0163iile care folosesc Reactive Messaging Kafka Client trebuie s\u0103 furnizeze fi\u015fierul JAR kafka-clients \u015fi dependen\u0163ele sale. Pot furniza acest fi\u015fier \u015fi dependen\u0163ele sale fie prin \u00eempachetarea lui ca bibliotec\u0103 \u00een cadrul aplica\u0163iei sau prin furnizarea lui ca o bibliotec\u0103 partajat\u0103.
+kafka.library.not.present.CWMRX1006E.useraction=\u00cempacheta\u0163i fi\u015fierul JAR kafka-clients \u015fi dependen\u0163ele sale ca biblioteci \u00een aplica\u0163ia dumneavoastr\u0103 sau ca o bibliotec\u0103 partajat\u0103. Fi\u015fierul JAR kafka-clients poate fi desc\u0103rcat de la site-ul web Apache Kafka sau de la Maven Central.
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Reactive Messaging error message
 #-----------------------------------------------------------------------------------------------------------------------------

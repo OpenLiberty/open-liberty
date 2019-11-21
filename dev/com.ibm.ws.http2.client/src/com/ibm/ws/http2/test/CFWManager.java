@@ -57,12 +57,6 @@ public class CFWManager {
 
     private final boolean chainCreated = false;
 
-    /*
-     * public CFWManager() {
-     * m_chfw = getChfwBundle();
-     * }
-     */
-
     public static CFWManager getInstance() {
         if (singletonCfwManager == null)
             singletonCfwManager = new CFWManager();
@@ -160,12 +154,8 @@ public class CFWManager {
 
     public void createTCPChannelChain(String tcpChannelName, String chainName, ChannelFramework cfw) {
 
-        //if (!chainCreated) //Here to avoid trying to create the same chain multiple times...
         try {
             cfw.addChannel(tcpChannelName, cfw.lookupFactory("TCPChannel"), null);
-            //Class<?> tcpChannFactory = Class.forName("com.ibm.ws.tcpchannel.internal.TCPChannelFactory");
-
-            //cfw.addChannel(tcpChannelName, cfw.lookupFactory("HTTPOutboundChannel"), null);
 
             final String[] chanList;
             chanList = new String[] { tcpChannelName };

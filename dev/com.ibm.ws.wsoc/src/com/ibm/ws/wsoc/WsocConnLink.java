@@ -882,10 +882,10 @@ public class WsocConnLink {
                     }
                     linkWrite.writeBuffer(getBufferManager().wrap(closeData), OpcodeType.CONNECTION_CLOSE, WRITE_TYPE.SYNC, null, WAIT_ON_WRITE_TO_CLOSE);
                     signalNotWriting();
-                } catch (IOException x) {
+                } catch (Exception x) {
                     //just log the message in FFDC and trace. Nothing else can be done at this point since onClose() is already called
                     if (tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Caught IOException: " + x.getMessage());
+                        Tr.debug(tc, "Caught Exception: " + x.getMessage());
                     }
                     signalNotWriting();
 
