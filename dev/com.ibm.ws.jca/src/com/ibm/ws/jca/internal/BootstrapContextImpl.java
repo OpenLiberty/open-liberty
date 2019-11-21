@@ -491,8 +491,8 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
             }
         }
         if (bvalHelper != null) {
-            ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-            if (cmd != null) {
+            ResourceAdapterMetaData raMetaData = resourceAdapterSvc.getResourceAdapterMetaData();
+            if (raMetaData != null) {
                 // Use raMetaData.getModuleMetaData() to make sure we get the RA's MMD when the RA is embedded.
                 bvalHelper.validateInstance(raMetaData.getModuleMetaData(), resourceAdapterSvc.getClassLoader(), instance);
             }
