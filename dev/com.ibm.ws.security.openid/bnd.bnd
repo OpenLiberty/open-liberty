@@ -106,7 +106,6 @@ Include-Resource: \
 	com.ibm.ws.security.token;version=latest,\
 	com.ibm.ws.security;version=latest,\
 	com.ibm.ws.ssl;version=latest,\
-	com.ibm.ws.webcontainer.security.provider;version=latest,\
 	com.ibm.ws.webcontainer.security;version=latest,\
 	com.ibm.ws.webcontainer;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest

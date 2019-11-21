@@ -55,6 +55,11 @@ kafka.groupid.not.set.CWMRX1005E=CWMRX1005E: La propiedad group.id no se ha esta
 kafka.groupid.not.set.CWMRX1005E.explanation=El ID de grupo de consumidores de Kafka debe establecerse para que Reactive Messaging pueda funcionar correctamente.
 kafka.groupid.not.set.CWMRX1005E.useraction=Establezca la propiedad en una de la ubicaciones de MicroProfile ConfigSource, por ejemplo, el archivo microprofile-config.properties.
 
+#Do not translate "kafka-clients", "Apache Kafka" or "Maven Central"
+kafka.library.not.present.CWMRX1006E=CWMRX1006E: Las clases del archivo JAR kafka-clients no se han podido cargar. Aseg\u00farese de que el archivo kafka-clients y sus dependencias est\u00e1n disponibles como bibliotecas en la aplicaci\u00f3n.
+kafka.library.not.present.CWMRX1006E.explanation=Las aplicaciones que utilizan el cliente Reactive Messaging Kafka Client deben proporcionar el archivo JAR kafka-clients y sus dependencias. Pueden proporcionar este archivo y sus dependencias empaquet\u00e1ndolo como una biblioteca o proporcion\u00e1ndolo como una biblioteca compartida.
+kafka.library.not.present.CWMRX1006E.useraction=Empaquete el archivo JAR kafka-clients y sus dependencias como bibliotecas en la aplicaci\u00f3n o como una biblioteca compartida. El archivo JAR kafka-clients se puede descargar desde el sitio web de Apache Kafka o desde Maven Central.
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Reactive Messaging error message
 #-----------------------------------------------------------------------------------------------------------------------------

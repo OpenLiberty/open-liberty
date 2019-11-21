@@ -1599,3 +1599,9 @@ uncaught.exception.during.AsyncListener.onComplete.useraction=Suchen Sie im Asyn
 exception.occurred.while.running.ServletContainerInitializers.onStartup=CWWWC0001W: Der ServletContainerInitializer [{0}], der in der folgenden Anwendung [{2}] gefunden wurde, hat beim Aufrufen der Methode onStartup den folgenden Fehler generiert: [{1}]
 exception.occurred.while.running.ServletContainerInitializers.onStartup.explanation=Es wurde eine Ausnahme von einem ServletContainerInitializer ausgel\u00f6st, w\u00e4hrend die Methode onStartup aufgerufen wurde.
 exception.occurred.while.running.ServletContainerInitializers.onStartup.useraction=Sehen Sie sich die Ausnahme an, um die Fehlerursache zu ermitteln.
+
+# {0} Servlet name used in the servlet name filter mapping
+# {1} Filter name which is used to map a servlet name. 
+no.servlet.defined.for.servlet.filter.name.mapping=CWWWC0002W: Es wurde keine Servletdefinition f\u00fcr den Servletnamen {0} in der Filterzuordnung {1} gefunden.
+no.servlet.defined.for.servlet.filter.name.mapping.explanation=Der Servletname wird in der Filterzuordnung verwendet, aber die zugeh\u00f6rige Definition ist nicht erfolgt.
+no.servlet.defined.for.servlet.filter.name.mapping.useraction=Definieren Sie das Servlet, das in der Servletnamenfilterzuordnung verwendet wird.

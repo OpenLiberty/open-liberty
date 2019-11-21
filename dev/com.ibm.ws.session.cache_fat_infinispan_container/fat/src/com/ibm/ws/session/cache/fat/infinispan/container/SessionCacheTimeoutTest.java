@@ -36,7 +36,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
 /**
- * Tests related to Session Cache Timeouts, using a server with the following session settings:
+ * Tests related to Session Cache Timeouts, using an Infinispan server with the following session settings:
  * invalidationTimeout="5s"
  * reaperPollInterval="30" //Min allowed to not receive random poll interval between 30-60s
  */
@@ -201,8 +201,8 @@ public class SessionCacheTimeoutTest extends FATServletClient {
      * Error Thrown: ISPN021011: Incompatible cache value types specified, expected class java.lang.String but class java.lang.Object was specified
      */
     @Test
-    public void testInfinispanClassCastExpection() throws Exception {
-        app.invokeServlet("testInfinispanClassCastExpection&shouldFail=true", null);
+    public void testInfinispanClassCastException() throws Exception {
+        app.invokeServlet("testInfinispanClassCastException&shouldFail=true", null);
     }
 
     /**

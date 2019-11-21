@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app id="WebApp_ID" version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+	<display-name>TestWebApp</display-name>
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+		<welcome-file>index.htm</welcome-file>
+		<welcome-file>index.jsp</welcome-file>
+		<welcome-file>default.html</welcome-file>
+		<welcome-file>default.htm</welcome-file>
+		<welcome-file>default.jsp</welcome-file>
+	</welcome-file-list>
+	<servlet>
+		<servlet-name>TestServlet</servlet-name>
+		<servlet-class>com.ibm.testwebapp.TestServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>FirstIntrospectorTestServlet</servlet-name>
+		<servlet-class>com.ibm.testwebapp.FirstIntrospectorTestServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>SecondIntrospectorTestServlet</servlet-name>
+		<servlet-class>com.ibm.testwebapp.SecondIntrospectorTestServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>TestServlet</servlet-name>
+		<url-pattern>/TestServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>FirstIntrospectorTestServlet</servlet-name>
+		<url-pattern>/FirstIntrospectorTestServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>SecondIntrospectorTestServlet</servlet-name>
+		<url-pattern>/SecondIntrospectorTestServlet</url-pattern>
+	</servlet-mapping>
+</web-app>

@@ -31,6 +31,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.ExecutionException;
 
 import javax.management.AttributeChangeNotification;
 import javax.management.DynamicMBean;
@@ -1752,6 +1753,10 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
             if (_tc.isEventEnabled()) {
                 Tr.event(_tc, "CCE: failedCompletion: appStopped, future " + future + ", throwable " + t);
             }
+            if (t !=null && t instanceof ExecutionException) {
+                com.ibm.ws.ffdc.FFDCFilter.processException(t, "com.ibm.ws.app.manager.internal.ApplicationConfigurator.UpdateEpisodeState.failedCompletion", "1385");
+            }
+
         }
     }
 

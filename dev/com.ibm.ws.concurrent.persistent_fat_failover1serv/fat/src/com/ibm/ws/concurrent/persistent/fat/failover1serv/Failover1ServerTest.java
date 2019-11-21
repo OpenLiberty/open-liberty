@@ -120,6 +120,14 @@ public class Failover1ServerTest extends FATServletClient {
     }
 
     /**
+     * testHeartbeatsAreRepeatedlySent - verifies that heart beats are being sent periodically, with an increasing expiry timestamp.
+     */
+    @Test
+    public void testHeartbeatsAreRepeatedlySent() throws Exception {
+        runTest(server, APP_NAME + "/Failover1ServerTestServlet", testName);
+    }
+
+    /**
      * testHeartbeatRestoresLostPartitionInfo - simulates the scenario where one server detects missed heart beats and removes partition
      * info of another server which is still active, but slow in recording its heart beat.  When that other server tries to send its
      * heart beat and finds its partition info absent, it should re-create it under the same partition id.
@@ -152,6 +160,15 @@ public class Failover1ServerTest extends FATServletClient {
         String partitionId2 = result.substring(start += PARTITION_ID_MESSAGE.length(), result.indexOf(".", start));
 
         assertEquals(partitionId1, partitionId2);
+    }
+
+    /**
+     * testMissedHeartbeatsClearOldPartitionData - insert entries representing missed heartbeats directly into the
+     * database. Verify that they are automatically removed (happens when heartbeat information is checked).
+     */
+    @Test
+    public void testMissedHeartbeatsClearOldPartitionData() throws Exception {
+        runTest(server, APP_NAME + "/Failover1ServerTestServlet", testName);
     }
 
     /**

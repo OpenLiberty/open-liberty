@@ -56,7 +56,6 @@ DynamicImport-Package: \
 	com.ibm.ws.security.registry;version=latest,\
 	com.ibm.ws.security;version=latest,\
 	com.ibm.ws.ssl;version=latest,\
-	com.ibm.ws.webcontainer.security.provider;version=latest,\
 	com.ibm.ws.webcontainer.security;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest
 

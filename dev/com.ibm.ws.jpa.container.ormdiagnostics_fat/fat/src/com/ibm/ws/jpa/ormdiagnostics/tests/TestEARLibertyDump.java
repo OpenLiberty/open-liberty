@@ -14,6 +14,7 @@ package com.ibm.ws.jpa.ormdiagnostics.tests;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -27,6 +28,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.LocalFile;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.jpa.ormdiagnostics.ORMApplicationBuilder;
 import com.ibm.ws.jpa.ormdiagnostics.ORMIntrospectorHelper;
 import com.ibm.ws.jpa.ormdiagnostics.ORMIntrospectorHelper.JPAClass;
@@ -84,6 +86,13 @@ public class TestEARLibertyDump extends FATServletClient {
 
     @Test
     public void testBasicDump() throws Exception {
+        ServerConfiguration sc = server1.getServerConfiguration();
+        Set<String> fList = sc.getFeatureManager().getFeatures();
+
+        if (fList.contains("jpa-2.0")) {
+            // Auto pass, doesn't support ee7 default datasource
+            return;
+        }
 
         final LocalFile lf = server1.dumpServer("jpa_testBasicDump");
         Assert.assertNotNull(lf);
@@ -94,7 +103,13 @@ public class TestEARLibertyDump extends FATServletClient {
         // Test for some easy and consistent strings that are expected to appear in the introspector text
 
         Assert.assertTrue(introspectorData.contains("JPA Runtime Internal State Information")); // Description
-        Assert.assertTrue(introspectorData.contains("jpaRuntime = com.ibm.ws.jpa.container.v21.internal.JPA21Runtime"));
+        if (fList.contains("jpa-2.1") || fList.contains("jpaContainer-2.1")) {
+            Assert.assertTrue(introspectorData.contains("jpaRuntime = com.ibm.ws.jpa.container.v21.internal.JPA21Runtime"));
+        }
+        if (fList.contains("jpa-2.2") || fList.contains("jpaContainer-2.2")) {
+            Assert.assertTrue(introspectorData.contains("jpaRuntime = com.ibm.ws.jpa.container.v22.internal.JPA22Runtime"));
+        }
+
         Assert.assertTrue(introspectorData.contains("Provider Runtime Integration Service = com.ibm.ws.jpa.container.eclipselink.EclipseLinkJPAProvider"));
 
         ORMIntrospectorHelper.verifyApplications("GuestBookEAR", 0, 4,

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2018 IBM Corporation and others.
+ * Copyright (c) 1997, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -188,7 +188,7 @@ public class H2StreamProcessor {
      * connection setting updates, frame responses, and error processing. Note this method is synchronized.
      *
      * @param Frame
-     * @param Direction.WRITING_OUT or Direction.READING_IN
+     * @param       Direction.WRITING_OUT or Direction.READING_IN
      * @throws ProtocolException
      * @throws StreamClosedException
      */
@@ -1501,7 +1501,7 @@ public class H2StreamProcessor {
                         if (pseudoHeaders.get(current.getName()) != null) {
                             this.muxLink.getReadTable().setDynamicTableValidity(false);
                             buf.release();
-                            ProtocolException pe = new ProtocolException("Invalid pseudo-header for decompression context: " + current.toString()); 
+                            ProtocolException pe = new ProtocolException("Invalid pseudo-header for decompression context: " + current.toString());
                             pe.setConnectionError(false); // mark this as a stream error so we'll generate an RST_STREAM
                             throw pe;
                         }
@@ -1699,7 +1699,7 @@ public class H2StreamProcessor {
     /**
      * Read the HTTP header and data bytes for this stream
      *
-     * @param numBytes the number of bytes to read
+     * @param numBytes       the number of bytes to read
      * @param requestBuffers an array of buffers to copy the read data into
      * @return this stream's VirtualConnection or null if too many bytes were requested
      */
@@ -1768,7 +1768,7 @@ public class H2StreamProcessor {
     /**
      * Read the http header and data bytes for this stream
      *
-     * @param numBytes the number of bytes requested
+     * @param numBytes       the number of bytes requested
      * @param requestBuffers an array of buffers to copy the read data into
      * @return the number of bytes that were actually copied into requestBuffers
      */
@@ -1966,8 +1966,19 @@ public class H2StreamProcessor {
             // the connection isn't initialized yet; wait on the init lock
             boolean rc = muxLink.initLock.await(Constants.H2C_UPGRADE_TIMEOUT, java.util.concurrent.TimeUnit.MILLISECONDS);
             if (rc) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "waitForConnectionInit: stop waiting, H2 connection initialized " + streamId());
+                // We can get here if the link init was successful or if there was a link init error
+                // If there was an error, the link will be shutting down
+                // In this case, we just want to issue a message and exit, letting the other thread complete
+                // the close
+                if (!muxLink.checkIfGoAwaySendingOrClosing()) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "waitForConnectionInit: stop waiting, H2 connection initialized " + streamId());
+                    }
+                } else {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "waitForConnectionInit: stop waiting, h2 initialization error ");
+                    }
+                    rc = false;
                 }
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -2015,17 +2026,23 @@ public class H2StreamProcessor {
     }
 
     /**
-     * @param frame 
+     * @param frame
      * @return true if frame is a control frame
      */
     public static boolean isControlFrame(Frame frame) {
         switch (frame.getFrameType()) {
-            case PRIORITY: return true;
-            case RST_STREAM: return true;
-            case SETTINGS: return true;
-            case PING: return true;
-            case GOAWAY: return true;
-            default: return false;
+            case PRIORITY:
+                return true;
+            case RST_STREAM:
+                return true;
+            case SETTINGS:
+                return true;
+            case PING:
+                return true;
+            case GOAWAY:
+                return true;
+            default:
+                return false;
         }
     }
 }

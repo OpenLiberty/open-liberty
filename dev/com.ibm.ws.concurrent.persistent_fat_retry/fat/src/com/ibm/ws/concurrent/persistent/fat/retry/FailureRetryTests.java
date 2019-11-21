@@ -18,14 +18,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Collections;
 import java.util.Set;
 import java.util.StringTokenizer;
 
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -53,8 +51,6 @@ public class FailureRetryTests {
 	
 	private static final String APP_NAME = "retrytest";
 
-	private static final Set<String> appNames = Collections.singleton(APP_NAME);
-
 	@Rule
 	public TestName testName = new TestName();
 
@@ -66,8 +62,8 @@ public class FailureRetryTests {
 	 * 10ms. The actual product defaults are much larger, and we will not be testing
 	 * those.
 	 */
-	private static void updateConfiguration(String retryLimit, String retryInterval) throws Exception {
-		ServerConfiguration config = server.getServerConfiguration();
+	private static ServerConfiguration updateConfiguration(String retryLimit, String retryInterval) throws Exception {
+		ServerConfiguration config = savedConfig.clone();
 		ConfigElementList<PersistentExecutor> peList = config.getPersistentExecutors();
 		if ((peList == null) || (peList.size() != 1)) {
 			throw new Exception("PersistentExecutor configuration is invalid");
@@ -80,6 +76,7 @@ public class FailureRetryTests {
 			pe.setRetryInterval(retryInterval);
 
 		server.updateServerConfiguration(config);
+		return config;
 	}
 
 	/**
@@ -152,16 +149,6 @@ public class FailureRetryTests {
 	}
 
 	/**
-	 * Before running each test, restore to the original configuration.
-	 * 
-	 * @throws Exception
-	 */
-	@Before
-	public void setUpPerTest() throws Exception {
-		server.updateServerConfiguration(savedConfig);
-	}
-
-	/**
 	 * After running each test, stop the server. Since each test updates the
 	 * configuration, if the test runs too quickly, the configuration updates will
 	 * not be noticed. By restarting the server for each test, we'll ensure we see
@@ -172,6 +159,7 @@ public class FailureRetryTests {
 		if (server.isStarted()) {
 			server.stopServer("CWWKE0701E", "CWWKC1503W", "CWWKE0700W");
 		}
+        server.updateServerConfiguration(savedConfig);
 	}
 
 	/**
@@ -253,6 +241,26 @@ public class FailureRetryTests {
 	}
 
 	/**
+     * With fail over enabled, verify that a task is retried twice when the retry limit is set to 2. Verify
+     * that at least 10ms elapses between the 2nd and 3rd task execution.
+     */
+    @Test
+    public void testRetryTwiceDefaultIntervalWithFailoverEnabled() throws Exception {
+        ServerConfiguration config = updateConfiguration("2", null);
+        PersistentExecutor myScheduler = config.getPersistentExecutors().getBy("jndiName", "concurrent/myScheduler");
+        myScheduler.setPollInterval("3h30m"); // test does not need polling, but the fail over feature requires it, so set to a large value
+        myScheduler.setExtraAttribute("missedTaskThreshold2", "30s"); // TODO rename
+        server.updateServerConfiguration(config);
+
+        server.startServer("testRetryTwiceDefaultIntervalFE.log");
+        try {
+            runInServlet("testRetryTwiceDefaultInterval");
+        } finally {
+            server.stopServer("CWWKC1501W", "CWWKC1511W", "CWWKC1503W");
+        }
+    }
+
+	/**
 	 * Verify that a task is retried twice when the retry limit is set to 2. Verify
 	 * that at least 5s elapses between the 2nd and 3rd task executions.
 	 * 
@@ -316,6 +324,26 @@ public class FailureRetryTests {
 		}
 	}
 
+    /**
+     * With fail over enabled, verify that a task can fail more than the failure limit number of times if
+     * the failures are not consecutive.
+     */
+    @Test
+    public void testRetrySixWithTwoPassesWithFailoverEnabled() throws Exception {
+        ServerConfiguration config = updateConfiguration("3", null);
+        PersistentExecutor myScheduler = config.getPersistentExecutors().getBy("jndiName", "concurrent/myScheduler");
+        myScheduler.setPollInterval("3h31m"); // test does not need polling, but the fail over feature requires it, so set to a large value
+        myScheduler.setExtraAttribute("missedTaskThreshold2", "31s"); // TODO rename
+        server.updateServerConfiguration(config);
+
+        server.startServer("testRetrySixWithTwoPassesFE.log");
+        try {
+            runInServlet("testRetrySixWithTwoPasses");
+        } finally {
+            server.stopServer("CWWKC1501W", "CWWKC1503W");
+        }
+    }
+
 	/**
 	 * Verify that a skip is not counted as a fail.
 	 * 
@@ -333,6 +361,25 @@ public class FailureRetryTests {
 	}
 
 	/**
+     * When fail over is enabled, verify that a skip is not counted as a fail.
+     */
+    @Test
+    public void testRetryFourWithOneSkipWithFailoverEnabled() throws Exception {
+        ServerConfiguration config = updateConfiguration("3", null);
+        PersistentExecutor myScheduler = config.getPersistentExecutors().getBy("jndiName", "concurrent/myScheduler");
+        myScheduler.setPollInterval("3h32m"); // test does not need polling, but the fail over feature requires it, so set to a large value
+        myScheduler.setExtraAttribute("missedTaskThreshold2", "32s"); // TODO rename
+        server.updateServerConfiguration(config);
+
+        server.startServer("testRetryFourWithOneSkipFE.log");
+        try {
+            runInServlet("testRetryFourWithOneSkip");
+        } finally {
+            server.stopServer("CWWKC1501W", "CWWKC1503W");
+        }
+    }
+
+	/**
 	 * Verify that a skip does not stop the 'consecutive failure' count.
 	 * 
 	 * @throws Exception
@@ -347,6 +394,25 @@ public class FailureRetryTests {
 			server.stopServer("CWWKC1501W", "CWWKC1511W", "CWWKC1503W");
 		}
 	}
+
+    /**
+     * When fail over is enabled, verify that a skip does not stop the 'consecutive failure' count.
+     */
+    @Test
+    public void testRetryFourWithOneSkipFailWithFailoverEnabled() throws Exception {
+        ServerConfiguration config = updateConfiguration("3", null);
+        PersistentExecutor myScheduler = config.getPersistentExecutors().getBy("jndiName", "concurrent/myScheduler");
+        myScheduler.setPollInterval("3h33m"); // test does not need polling, but the fail over feature requires it, so set to a large value
+        myScheduler.setExtraAttribute("missedTaskThreshold2", "33s"); // TODO rename
+        server.updateServerConfiguration(config);
+
+        server.startServer("testRetryFourWithOneSkipFailFE.log");
+        try {
+            runInServlet("testRetryFourWithOneSkipFail");
+        } finally {
+            server.stopServer("CWWKC1501W", "CWWKC1511W", "CWWKC1503W");
+        }
+    }
 
 	/**
 	 * Set retry limit to 3. Task with AutoPurge=ALWAYS. First 4 attempts fail.
@@ -364,6 +430,26 @@ public class FailureRetryTests {
 			server.stopServer("CWWKC1501W", "CWWKC1511W", "CWWKC1503W");
 		}
 	}
+
+	/**
+     * When fail over is enabled, set the retry limit to 3. Schedule a task with AutoPurge=ALWAYS. The first 4 attempts fail.
+     * Verify that TaskStatus is null.
+     */
+    @Test
+    public void testRetryFourTimesAutoPurgeAlwaysWithFailoverEnabled() throws Exception {
+        ServerConfiguration config = updateConfiguration("3", null);
+        PersistentExecutor myScheduler = config.getPersistentExecutors().getBy("jndiName", "concurrent/myScheduler");
+        myScheduler.setPollInterval("3h34m"); // test does not need polling, but the fail over feature requires it, so set to a large value
+        myScheduler.setExtraAttribute("missedTaskThreshold2", "34s"); // TODO rename
+        server.updateServerConfiguration(config);
+
+        server.startServer("testRetryFourTimesAutoPurgeAlwaysFE.log");
+        try {
+            runInServlet("testRetryFourTimesAutoPurgeAlways");
+        } finally {
+            server.stopServer("CWWKC1501W", "CWWKC1511W", "CWWKC1503W");
+        }
+    }
 
 	/**
 	 * Verify that failure limit -1 causes unlimited retries (well we'll wait for 5
@@ -441,4 +527,70 @@ public class FailureRetryTests {
 			server.stopServer("CWWKC1501W", "CWWKC1503W");
 		}
 	}
+
+	/**
+     * With fail over enabled, verify that the retry count does not continue to increment (and wrap) when it
+     * reaches its max value. It should remain at the max value for each additional
+     * failure. We'll use a failure limit of -1 to test this.
+     */
+    @Test
+    public void testRetryCountWrapWithFailoverEnabled() throws Exception {
+        ServerConfiguration cfg = updateConfiguration("-1", null);
+        PersistentExecutor myScheduler = cfg.getPersistentExecutors().getBy("jndiName", "concurrent/myScheduler");
+        // In this test, polling matters because task execution might still be claimed by server instance 1 when server instance 3 comes up.
+        myScheduler.setPollInterval("3s");
+        myScheduler.setExtraAttribute("missedTaskThreshold2", "25s"); // TODO rename
+        server.updateServerConfiguration(cfg);
+
+        server.startServer("testRetryCountWrapFE-1.log");
+
+        // First we'll create a task that always fails. We'll let it run at least
+        // once, and then we'll return its ID to this test case.
+        StringBuilder servletOutput = runInServlet("testRetryCountWrap_1");
+        int indexOfTaskId = servletOutput.indexOf("TASK_ID=");
+        if (indexOfTaskId < 0) {
+            throw new Exception("Servlet did not print the task ID into its output.");
+        }
+
+        StringTokenizer st = new StringTokenizer(servletOutput.substring(indexOfTaskId));
+        String idToken = st.nextToken();
+        int indexOfEquals = idToken.indexOf("=");
+        String taskIdString = idToken.substring(indexOfEquals + 1);
+        Log.info(getClass(), "testRetryCountWrap", "read task ID from Servlet: " + taskIdString);
+
+        // Disable the persistent executor feature.
+        server.stopServer("CWWKC1501W", "CWWKC1503W", "J2CA0024E", // extreme test infrastructure slowness (5+ minutes
+                                                                    // to log FFDC) allows server shutdown to occur
+                                                                    // before operation completes
+                "J2CA0081E"); // same reason as above
+        ServerConfiguration config = server.getServerConfiguration();
+        FeatureManager fm = config.getFeatureManager();
+        Set<String> featureList = fm.getFeatures();
+        featureList.remove("persistentExecutor-1.0");
+        featureList.add("jdbc-4.1");
+        server.updateServerConfiguration(config);
+        server.startServer("testRetryCountWrapFE-2.log");
+
+        // Update the row in the backing database to set the retry count to a
+        // value close to the max value. This way we don't have to wait for it
+        // to fail so many times.
+        runInServlet("testRetryCountWrap_2", "UpdateDatabase", taskIdString);
+
+        // Restore the Persistent Executor feature.
+        server.stopServer("CWNEN0047W", "CWNEN0049W", "CWWKC1503W");
+        config = server.getServerConfiguration();
+        fm = config.getFeatureManager();
+        featureList = fm.getFeatures();
+        featureList.remove("jdbc-4.1");
+        featureList.add("persistentExecutor-1.0");
+        server.updateServerConfiguration(config);
+        server.startServer("testRetryCountWrapFE-3.log");
+        try {
+            // Re-start the server and let the task fail some more.
+            // We can check the retry count in the app (I think).
+            runInServlet("testRetryCountWrap_3", null, taskIdString);
+        } finally {
+            server.stopServer("CWWKC1501W", "CWWKC1503W");
+        }
+    }
 }

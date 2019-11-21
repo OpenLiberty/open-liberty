@@ -48,10 +48,6 @@ exit 0
 /usr/share/%{name}
 /usr/lib/systemd/system
 
-%changelog
-* Fri Oct 11 2019 Admin <admin@openliberty.io> - @SPEC_VERSION@-1
-- Initial Open Liberty rpm package
-
 %preun
 pidDir=/var/run/openliberty
 if ( ls $pidDir/*.pid > /dev/null 2>&1 ); then 
@@ -124,3 +120,4 @@ fi
 echo "Reloading systemctl services after uninstall of openliberty"
 systemctl daemon-reload
 exit 0
+

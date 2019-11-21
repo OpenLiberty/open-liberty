@@ -181,7 +181,7 @@ Service-Component: \
 instrument.classesExcludes: com/ibm/ws/jaxws/internal/resources/*.class
 
 -buildpath: \
-	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
+	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
 	javax.jws:jsr181-api;version=latest,\
 	javax.xml.soap:javax.xml.soap-api;version=1.4.0,\
 	com.ibm.websphere.javaee.jaxb.2.3;version=latest,\

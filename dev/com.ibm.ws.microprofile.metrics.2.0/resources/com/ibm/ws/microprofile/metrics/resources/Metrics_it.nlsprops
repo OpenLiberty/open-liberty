@@ -98,6 +98,9 @@ cpu.systemLoadAverage.description=Visualizza il carico medio del sistema nell'ul
 #Cpu processCpuLoad message
 cpu.processCpuLoad.description=Visualizza l'utilizzo recente della CPU per il processo JVM (Java Virtual Machine).
 
+#Cpu processCpuTime message
+cpu.processCpuTime.description=Visualizza il tempo CPU utilizzato dal processo su cui \u00e8 in esecuzione la Java Virtual Machine.
+
 #Garbage collection count message
 garbageCollectionCount.description=Visualizza il numero totale delle raccolte che si sono verificate. Questo attributo visualizza -1 se il conteggio delle raccolte non \u00e8 definito per questo programma di raccolta.
 

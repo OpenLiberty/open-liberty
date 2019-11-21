@@ -16,7 +16,7 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
-# Message prefix block: CWWKS5400 - CWWKS5499
+# Message prefix block: CWWKS5370 - CWWKS5499
 ADD_ID={0} ({1})
 ADD_ID.explanation=Somente uso interno.
 ADD_ID.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
@@ -35,6 +35,30 @@ SELECTION_PAGE_USERNAME=Nome de usu\u00e1rio
 SELECTION_PAGE_PASSWORD=Senha
 
 SELECTION_PAGE_SUBMIT=Enviar
+
+# 0=Social login configuration attribute name, 1=ID of the social login configuration element, 2=Default value for the configuration attribute
+SOCIAL_LOGIN_CONFIG_ATTRIBUTE_EMPTY=CWWKS5370W: O valor para o atributo de configura\u00e7\u00e3o [{0}] na configura\u00e7\u00e3o de login social [{1}] est\u00e1 vazio. O valor padr\u00e3o [{2}] para o atributo de configura\u00e7\u00e3o ser\u00e1 usado.
+SOCIAL_LOGIN_CONFIG_ATTRIBUTE_EMPTY.explanation=O valor para este atributo de configura\u00e7\u00e3o n\u00e3o deve estar vazio.
+SOCIAL_LOGIN_CONFIG_ATTRIBUTE_EMPTY.useraction=Certifique-se de que o valor para este atributo de configura\u00e7\u00e3o n\u00e3o esteja vazio ou remova o atributo de configura\u00e7\u00e3o para usar o valor padr\u00e3o.
+
+# 0=Exception message
+OPENSHIFT_ERROR_GETTING_USER_INFO=CWWKS5371E: A resposta da API do usu\u00e1rio de OpenShift n\u00e3o pode ser processada: {0}
+OPENSHIFT_ERROR_GETTING_USER_INFO.explanation=As informa\u00e7\u00f5es sobre o usu\u00e1rio autenticado n\u00e3o podem ser obtidas porque ocorreu outro erro.
+OPENSHIFT_ERROR_GETTING_USER_INFO.useraction=Se a mensagem contiver outra mensagem de erro, consulte a a\u00e7\u00e3o do usu\u00e1rio para essa mensagem. Caso contr\u00e1rio, verifique os logs do servidor para mensagens de erro adicionais que podem indicar onde ocorreu o outro erro.
+
+OPENSHIFT_ACCESS_TOKEN_MISSING=CWWKS5372E: O token de acesso usado para recuperar informa\u00e7\u00f5es sobre o usu\u00e1rio da API OpenShift est\u00e1 ausente. Verifique se um token de acesso foi retornado do terminal do token do provedor OAuth OpenShift.
+OPENSHIFT_ACCESS_TOKEN_MISSING.explanation=\u00c9 necess\u00e1rio um token de acesso para recuperar informa\u00e7\u00f5es sobre o usu\u00e1rio autenticado. O terminal do token do provedor OAuth OpenShift pode n\u00e3o ter retornado o token de acesso.
+OPENSHIFT_ACCESS_TOKEN_MISSING.useraction=Verifique se o token de acesso foi retornado do terminal do token do provedor OAuth OpenShift.
+
+# 0=HTTP response code, 1=Response body
+OPENSHIFT_USER_API_BAD_STATUS=CWWKS5373E: A API do usu\u00e1rio de OpenShift retornou um c\u00f3digo de resposta [{0}] inesperado. Verifique se a solicita\u00e7\u00e3o para a API cont\u00e9m todas as informa\u00e7\u00f5es necess\u00e1rias e se o token da conta do servi\u00e7o OpenShift foi criado no projeto OpenShift correto. A resposta da API \u00e9 [{1}].
+OPENSHIFT_USER_API_BAD_STATUS.explanation=A API do usu\u00e1rio de OpenShift n\u00e3o retornou o c\u00f3digo de status esperado.
+OPENSHIFT_USER_API_BAD_STATUS.useraction=Verifique a resposta da API que est\u00e1 na mensagem de erro para obter informa\u00e7\u00f5es adicionais. Verifique se a solicita\u00e7\u00e3o para a API cont\u00e9m todas as informa\u00e7\u00f5es necess\u00e1rias. Certifique-se de que o token da conta do servi\u00e7o OpenShift foi criado no projeto OpenShift correto e tenha as permiss\u00f5es corretas.
+
+# 0=JSON key string, 1=User API response string
+OPENSHIFT_USER_API_RESPONSE_MISSING_KEY=CWWKS5374E: A resposta da API do usu\u00e1rio de OpenShift n\u00e3o cont\u00e9m uma chave esperada: [{0}]. A resposta completa \u00e9 [{1}]
+OPENSHIFT_USER_API_RESPONSE_MISSING_KEY.explanation=A chave especificada na mensagem deve estar na resposta da API. A chave pode estar ausente, ou pode estar em um local inesperado.
+OPENSHIFT_USER_API_RESPONSE_MISSING_KEY.useraction=Verifique a resposta da API para determinar se a chave est\u00e1 ausente da resposta.
 
 SOCIAL_LOGIN_CONFIG_PROCESSED=CWWKS5400I: A configura\u00e7\u00e3o de login social [{0}] foi processada com \u00eaxito.
 SOCIAL_LOGIN_CONFIG_PROCESSED.explanation=A configura\u00e7\u00e3o de login social indicada foi processada com \u00eaxito.
@@ -546,6 +570,6 @@ INVALID_CONFIG_PARAM=CWWKS5500E: Um par\u00e2metro de configura\u00e7\u00e3o obr
 INVALID_CONFIG_PARAM.explanation=O c\u00f3digo de tempo de execu\u00e7\u00e3o de login social n\u00e3o localizou um par\u00e2metro obrigat\u00f3rio ao processar a solicita\u00e7\u00e3o do cliente.
 INVALID_CONFIG_PARAM.useraction=Verifique o par\u00e2metro ausente na configura\u00e7\u00e3o e certifique-se de que ele esteja especificado e correto.
 
-OIDC_CLIENT_DISCOVERY_SSL_ERROR=CWWKS5501E: O cliente de login social [{0}] falhou ao obter informa\u00e7\u00f5es do terminal do provedor de conex\u00e3o OpenID por meio da URL do endpoint de descoberta de [{1}]. Atualize a configura\u00e7\u00e3o para o Login Social (configura\u00e7\u00e3o de oidcLogin) com a URL do endpoint de descoberta HTTPS correta. 
-OIDC_CLIENT_DISCOVERY_SSL_ERROR.explanation=A configura\u00e7\u00e3o de oidcLogin est\u00e1 definida para descobrir os terminais do provedor de conex\u00e3o OpenID por meio da URL de descoberta, mas o processo de descoberta falhou. O cliente n\u00e3o \u00e9 capaz de processar as solicita\u00e7\u00f5es de autentica\u00e7\u00e3o at\u00e9 que a configura\u00e7\u00e3o do discoveryEndpoint seja corrigida ou que a descoberta seja bem-sucedida.
+OIDC_CLIENT_DISCOVERY_SSL_ERROR=CWWKS5501E: O cliente de login social [{0}] falhou ao obter informa\u00e7\u00f5es sobre terminais do provedor de conex\u00e3o OpenID por meio da URL do endpoint de descoberta de [{1}]. Atualize a configura\u00e7\u00e3o para o Login Social (configura\u00e7\u00e3o de oidcLogin) com a URL do endpoint de descoberta HTTPS correta. 
+OIDC_CLIENT_DISCOVERY_SSL_ERROR.explanation=A configura\u00e7\u00e3o de oidcLogin est\u00e1 definida para descobrir os terminais do provedor de conex\u00e3o OpenID por meio da URL de descoberta, mas o processo de descoberta falhou. O cliente n\u00e3o \u00e9 capaz de processar as solicita\u00e7\u00f5es de autentica\u00e7\u00e3o at\u00e9 que a configura\u00e7\u00e3o do discoveryEndpoint seja corrigida ou a descoberta seja bem-sucedida.
 OIDC_CLIENT_DISCOVERY_SSL_ERROR.useraction=Corrija a configura\u00e7\u00e3o de oidcLogin para assegurar que 1) a URL do endpoint de descoberta refira-se ao provedor de conex\u00e3o OpenID correto, 2) a URL do endpoint de descoberta seja HTTPS e 3) os elementos de recurso SSL e keystore estejam configurados corretamente com confian\u00e7a para o provedor de conex\u00e3o OpenID 4) assegure-se que o endpoint de descoberta do provedor de conex\u00e3o OpenID esteja funcional.

@@ -441,7 +441,7 @@ error.create.unknownJavaLevel.useraction=Assurez-vous d'utiliser un kit JDK pris
 
 error.create.java8serverenv=CWWKE0103E: Impossible de cr\u00e9er un fichier server.env dans l''emplacement suivant : {0}
 error.create.java8serverenv.explanation=Le processus qui essaie de cr\u00e9er le serveur n'a pas pu g\u00e9n\u00e9rer un fichier server.env dans l'emplacement sp\u00e9cifi\u00e9.  Ce fichier fournit les arguments JVM requis pour que le serveur fonction correctement.
-error.create.java8serverenv.useraction=V\u00e9rifiez que vous disposez d'un acc\u00e8s en \u00e9criture au r\u00e9pertoire du serveur et que vous disposez d'une espace disque suffisant.  Vous pouvez aussi cr\u00e9er manuellement le ficher server.env avec la valeur suivante : WLP_SKIP_MAXPERMSIZE=true.  Vous devez vous assurer que le processus serveur dispose d'un acc\u00e8s en lecture \u00e0 ce fichier.
+error.create.java8serverenv.useraction=V\u00e9rifiez que vous disposez d'un acc\u00e8s en \u00e9criture au r\u00e9pertoire du serveur et que vous disposez d'une espace disque suffisant. Vous devez vous assurer que le processus serveur dispose d'un acc\u00e8s en lecture \u00e0 ce fichier.
 
 audit.licenseRestriction.early_access.ilar=CWWKE0104I: Ce produit est en version b\u00eata et ne peut pas \u00eatre utilis\u00e9 en production. Les dispositions compl\u00e8tes du contrat de licence sont accessibles ici : {0}
 audit.licenseRestriction.early_access.ilar.explanation=Ce produit est en version b\u00eata et doit \u00eatre utilis\u00e9 conform\u00e9ment aux conditions de la licence b\u00eata.

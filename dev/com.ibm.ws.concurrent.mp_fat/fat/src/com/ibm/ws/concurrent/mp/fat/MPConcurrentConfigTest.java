@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.mp.fat;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
@@ -96,6 +97,9 @@ public class MPConcurrentConfigTest extends FATServletClient {
         ShrinkHelper.exportToServer(server, "lib", customContextProviders);
 
         server.startServer();
+
+        // Await an extra message which indicates that security is ready
+        assertNotNull(server.waitForStringInLog("CWWKS0008I"));
     }
 
     @AfterClass
