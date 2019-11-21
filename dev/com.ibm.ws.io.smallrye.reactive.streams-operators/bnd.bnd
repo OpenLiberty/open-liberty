@@ -9,32 +9,30 @@
 #    IBM Corporation 
 # This wraps the external JAR.
 #*******************************************************************************
--include= ~../cnf/resources/bnd/bundle.props
+-include= ~../cnf/resources/bnd/rejar.props
+
 bVersion=1.0
 
 javac.source: 1.8
 javac.target: 1.8
 
-Bundle-SymbolicName: com.ibm.ws.io.smallrye.reactive.streams.operators.1.0; singleton:=true
+Bundle-SymbolicName: com.ibm.ws.io.smallrye.reactive.streams-operators; singleton:=true
                      
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
-Import-Package: \
-  *
-
 # We will whittle this down once it is working
 Export-Package: \
-  io.smallrye.reactive.streams; version="1.0.0", \
-  io.smallrye.reactive.streams.operators; version="1.0.0", \
-  io.smallrye.reactive.streams.spi; version="1.0.0", \
-  io.smallrye.reactive.streams.stages; version="1.0.0", \
-  io.smallrye.reactive.streams.utils; version="1.0.0", \
-
-Include-Resource: \
-  @${repo;io.smallrye.reactive:smallrye-reactive-streams-operators;1.0.0}
+  io.smallrye.reactive.streams; version="1.0.10", \
+  io.smallrye.reactive.streams.operators; version="1.0.10", \
+  io.smallrye.reactive.streams.spi; version="1.0.10", \
+  io.smallrye.reactive.streams.stages; version="1.0.10", \
+  io.smallrye.reactive.streams.utils; version="1.0.10", \
+  io.smallrye.reactive.streams.utils.recovery; version="1.0.10"
 
 WS-TraceGroup: REACTIVESTREAMS
 
 instrument.disabled: true
 
--buildpath: com.ibm.ws.io.reactivex.rxjava.2.2;version=latest
+-buildpath: \
+  com.ibm.ws.io.reactivex.rxjava.2.2;version=latest, \
+  io.smallrye.reactive:smallrye-reactive-streams-operators;version=1.0.10
