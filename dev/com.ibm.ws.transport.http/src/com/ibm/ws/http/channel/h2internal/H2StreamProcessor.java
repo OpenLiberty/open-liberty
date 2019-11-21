@@ -10,9 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.http.channel.h2internal;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 
@@ -40,14 +42,17 @@ import com.ibm.ws.http.channel.h2internal.frames.FrameSettings;
 import com.ibm.ws.http.channel.h2internal.frames.FrameWindowUpdate;
 import com.ibm.ws.http.channel.h2internal.frames.utils;
 import com.ibm.ws.http.channel.h2internal.hpack.H2HeaderField;
+import com.ibm.ws.http.channel.h2internal.hpack.H2HeaderTable;
 import com.ibm.ws.http.channel.h2internal.hpack.H2Headers;
 import com.ibm.ws.http.channel.h2internal.hpack.HpackConstants;
+import com.ibm.ws.http.channel.h2internal.hpack.HpackConstants.LiteralIndexType;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.bytebuffer.WsByteBufferPoolManager;
 import com.ibm.wsspi.channelfw.VirtualConnection;
 import com.ibm.wsspi.http.channel.values.MethodValues;
+import com.ibm.wsspi.http.ee8.Http2Stream;
 import com.ibm.wsspi.tcpchannel.TCPReadRequestContext;
 import com.ibm.wsspi.tcpchannel.TCPRequestContext;
 
@@ -55,7 +60,7 @@ import com.ibm.wsspi.tcpchannel.TCPRequestContext;
  * Represents an independent HTTP/2 stream
  * Thread safety is guaranteed via processNextFrame(), which handles new read or write frames on this stream
  */
-public class H2StreamProcessor {
+public class H2StreamProcessor implements Http2Stream {
 
     /** RAS tracing variable */
     private static final TraceComponent tc = Tr.register(H2StreamProcessor.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
@@ -899,7 +904,6 @@ public class H2StreamProcessor {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "sendGOAWAYFrame: " + " :close: H2InboundLink hc: " + muxLink.hashCode());
         }
-
         boolean doGoAwayFromHere = muxLink.setStatusLinkToGoAwaySending();
         if (!doGoAwayFromHere) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -923,7 +927,6 @@ public class H2StreamProcessor {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "processGOAWAYFrame entry: begin connection shutdown and send reciprocal GOAWAY to client" + " :close: H2InboundLink hc: " + muxLink.hashCode());
         }
-
         boolean doGoAwayFromHere = muxLink.setStatusLinkToGoAwaySending();
         if (!doGoAwayFromHere) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -1509,6 +1512,7 @@ public class H2StreamProcessor {
                     continue;
                 }
                 isFirstHeader = false;
+
                 if (!isFirstLineComplete) {
                     //Is this a Pseudo-Header?
                     if (current.getName().startsWith(":")) {
@@ -1545,6 +1549,7 @@ public class H2StreamProcessor {
                     if (H2Headers.getContentLengthValue(current) > -1) {
                         expectedContentLength = H2Headers.getContentLengthValue(current);
                     }
+
                     headers.add(current);
                 }
             }
@@ -2034,6 +2039,7 @@ public class H2StreamProcessor {
         return count;
     }
 
+    @Override
     public int getId() {
         return myID;
     }
@@ -2060,6 +2066,81 @@ public class H2StreamProcessor {
                 return true;
             default:
                 return false;
+        }
+    }
+
+    @Override
+    public void writeHeaders(Map<String, String> pseudoHeaders, Map<String, String> headers, boolean endOfHeaders, boolean endOfStream) {
+
+        H2HeaderTable h2WriteTable = muxLink.getWriteTable();
+        ByteArrayOutputStream headerStream = new ByteArrayOutputStream();
+
+        // write pseudo headers first
+        for (String header : pseudoHeaders.keySet()) {
+            try {
+                headerStream.write(H2Headers.encodeHeader(h2WriteTable, header, pseudoHeaders.get(header), LiteralIndexType.NOINDEXING));
+            } catch (CompressionException | IOException e) {
+                // TODO Auto-generated catch block
+                // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
+                e.printStackTrace();
+            }
+        }
+
+        for (String header : headers.keySet()) {
+            try {
+                headerStream.write(H2Headers.encodeHeader(h2WriteTable, header, headers.get(header), LiteralIndexType.NOINDEXING));
+            } catch (CompressionException | IOException e) {
+                // TODO Auto-generated catch block
+                // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
+                e.printStackTrace();
+            }
+        }
+        try {
+            // EOH=true, EOS=false
+            FrameHeaders headersFrame = new FrameHeaders(getId(), headerStream.toByteArray(), false, true);
+            processNextFrame(headersFrame, Constants.Direction.WRITING_OUT);
+        } catch (ProtocolException | StreamClosedException | FlowControlException e) {
+            // TODO Auto-generated catch block
+            // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void writeTrailers(Map<String, String> headers) {
+        H2HeaderTable h2WriteTable = muxLink.getWriteTable();
+        ByteArrayOutputStream headerStream = new ByteArrayOutputStream();
+        try {
+            for (String header : headers.keySet()) {
+                headerStream.write(H2Headers.encodeHeader(h2WriteTable, header, headers.get(header), LiteralIndexType.NOINDEXING));
+            }
+            // EOH=true, EOS=true
+            FrameHeaders headersFrame = new FrameHeaders(this.getId(), headerStream.toByteArray(), true, true);
+            processNextFrame(headersFrame, Constants.Direction.WRITING_OUT);
+        } catch (ProtocolException | StreamClosedException | FlowControlException | IOException | CompressionException e) {
+            cancel(e, 1);
+        }
+    }
+
+    @Override
+    public void cancel(Exception reason, int code) {
+        FrameRstStream reset = new FrameRstStream(getId(), code, false);
+        try {
+            processNextFrame(reset, Constants.Direction.WRITING_OUT);
+        } catch (ProtocolException | StreamClosedException | FlowControlException e) {
+            // TODO nuke the connection
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void writeData(byte[] buffer, boolean endOfStream) {
+        FrameData dataFrame = new FrameData(getId(), buffer, 0, endOfStream, false, false);
+        try {
+            processNextFrame(dataFrame, Constants.Direction.WRITING_OUT);
+        } catch (ProtocolException | StreamClosedException | FlowControlException e) {
+            System.out.println("writeData: failed to write data on stream; " + e.getErrorString());
+            cancel(e, e.getErrorCode());
         }
     }
 }
