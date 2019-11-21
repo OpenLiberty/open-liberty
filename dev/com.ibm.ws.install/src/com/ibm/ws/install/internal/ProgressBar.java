@@ -10,7 +10,7 @@ public class ProgressBar {
     private static ProgressBar progressBar;
 
     private static boolean activated = false;
-    private HashMap<String, Integer> methodMap;
+    private HashMap<String, Double> methodMap;
     private static final StringBuilder res = new StringBuilder();;
     private static final int MAX_EQUALS = 20;
     private static final int MAX_LINE_LENGTH = ("[] 100.00%").length() + MAX_EQUALS;
@@ -36,11 +36,11 @@ public class ProgressBar {
     }
 
     // TODO auto scaling with method map
-    public void setMethodMap(HashMap<String, Integer> methodMap) {
+    public void setMethodMap(HashMap<String, Double> methodMap) {
         this.methodMap = methodMap;
     }
 
-    public int getMethodIncrement(String method) {
+    public double getMethodIncrement(String method) {
         if (methodMap.containsKey(method)) {
             return methodMap.get(method);
         }
@@ -53,44 +53,33 @@ public class ProgressBar {
     private void initMap() {
         methodMap = new HashMap<>();
 
-        methodMap.put("initializeMap", 10);
-        methodMap.put("fetchJsons", 10);
+        methodMap.put("initializeMap", 10.00);
+        methodMap.put("fetchJsons", 10.00);
         // in installFeature we have 80 units to work with
-        methodMap.put("resolvedFeatures", 20);
-        methodMap.put("fetchArtifacts", 20);
-        methodMap.put("installFeatures", 30);
-        methodMap.put("cleanUp", 10);
+        methodMap.put("resolvedFeatures", 20.00);
+        methodMap.put("fetchArtifacts", 20.00);
+        methodMap.put("installFeatures", 30.00);
+        methodMap.put("cleanUp", 10.00);
     }
 
+    public void updateMethodMap(String key, double val){
+        methodMap.put(key, val);
+    }
+
+    /**
+     * Update the percentage on the progress by. After updating, log a message to see the progress bar
+     * update itself.
+     * @param increment amount to increment by
+     */
     public void updateProgress(double increment) {
         counter += increment;
 
     }
 
-//    public void clearProgress(boolean isWindows){
-//        if(isWindows){
-//            for(int i = 0; i < MAX_LINE_LENGTH;i ++){
-//                System.out.print("\b");
-//            }
-//        } else {
-//            System.out.print("\033[2K"); // Erase line content
-//        }
-//
-//    }
     public void clearProgress() {
             System.out.print(Ansi.ansi().cursorUp(1).eraseLine().reset()); // Erase line content
             System.out.flush();
         }
-
-//    public void display() {
-//        String data = String.format("[%s] %4.2f%%\r", progress(counter), counter);
-//        try {
-//            System.out.write(data.getBytes());
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//    }
     public void display() {
 
         String equals = progress(counter);
@@ -104,8 +93,6 @@ public class ProgressBar {
                                     Ansi.ansi().a(ANSI_GREEN_BLINKING).a(equals).reset(), Ansi.ansi().fg(Ansi.Color.RED).a(dashes.toString()),
                                     counter, Ansi.ansi().reset());
         System.out.println(Ansi.ansi().a(data).reset());
-//        System.out.flush();
-
 
     }
 
@@ -115,17 +102,9 @@ public class ProgressBar {
         for (int i = 0; i < numEquals; i++) {
             res.append('=');
         }
-//        while (res.length() < MAX_EQUALS) {
-//            res.append(' ');
-//        }
         return res.toString();
     }
 
-//    public void finish() {
-//        if (!isWindows)
-//            System.out.print("\033[2K"); // Erase line content
-//
-//    }
     public void finish() {
         System.out.println(Ansi.ansi().cursorUp(1).eraseLine().reset()); // Erase line content
         // clear newline on current line
@@ -140,6 +119,14 @@ public class ProgressBar {
         AnsiConsole.systemUninstall();
     }
 
+    /**
+     * Update the progress bar visually without having to log a message. Useful if you are doing
+     * a task that requires constant progress bar updating without wanting to log the updates to INFO all the time.
+     */
+    public void manuallyUpdate(){
+        clearProgress();
+        display();
+    }
 
     public double getCounter() {
         return counter;

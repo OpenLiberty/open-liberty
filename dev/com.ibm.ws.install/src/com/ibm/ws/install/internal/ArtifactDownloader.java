@@ -75,10 +75,18 @@ public class ArtifactDownloader {
             }
             throw ExceptionUtils.createByKey("ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_REPO", missingFeatureList, "feature(s)", repo);
         } else {
+            // we have downloaded mavenCoords.length amount of features.
+            double individualSize = progressBar.getMethodIncrement("downloadArtifacts") / mavenCoords.size();
+            progressBar.updateMethodMap("downloadArtifact", individualSize);
+            logger.info(Messages.INSTALL_KERNEL_MESSAGES.getMessage("MSG_BEGINNING_DOWNLOAD_FEATURES"));
             for (String coords : mavenCoords) {
                 synthesizeAndDownload(coords, "esa", dLocation, repo, false);
                 synthesizeAndDownload(coords, "pom", dLocation, repo, false);
-                updateProgress(progressBar.getMethodIncrement("downloadArtifact"));
+
+                // update progress bar, drain the downloadArtifacts total size
+                updateProgress(individualSize);
+                progressBar.updateMethodMap("downloadArtifacts", progressBar.getMethodIncrement("downloadArtifacts") - individualSize);
+                progressBar.manuallyUpdate();
                 fine("Finished downloading artifact: " + coords);
             }
         }
@@ -383,35 +391,19 @@ public class ArtifactDownloader {
 
     // log message types
     private void info(String msg) {
-//        if (isWindows) {
-//            logger.info(msg);
-//        } else {
-//            progressBar.clearProgress(); // Erase line content
         logger.info(msg);
-//            progressBar.display();
-//        }
+
 
     }
 
     private void fine(String msg) {
-//        if (isWindows) {
-//            logger.fine(msg);
-//        } else {
-//            progressBar.clearProgress(); // Erase line content
+
         logger.fine(msg);
-//            progressBar.display();
-//        }
+
     }
 
     private void severe(String msg) {
-//        if (isWindows) {
-//            logger.severe(msg);
-//        } else {
-//            System.out.print("\033[2K"); // Erase line content
-//        progressBar.clearProgress(); // Erase line content
         logger.severe(msg);
-//        progressBar.display();
-//        }
 
     }
 

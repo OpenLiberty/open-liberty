@@ -1196,7 +1196,7 @@ public class InstallKernelMap implements Map {
             List<File> downloadedFeatures = downloadFeatures(missingFeatures);
             insertElementsIntoList(foundFeatures, downloadedFeatures, missingFeatureIndexes);
             // some increment left over
-            double increment = ((double) (progressBar.getMethodIncrement("fetchArtifacts") / resolvedFeatures.size()) * downloadedFeatures.size());
+            double increment = ((progressBar.getMethodIncrement("fetchArtifacts") / resolvedFeatures.size()) * downloadedFeatures.size());
             updateProgress(increment);
             fine("Downloaded the following features from the remote maven repository:" + downloadedFeatures);
 

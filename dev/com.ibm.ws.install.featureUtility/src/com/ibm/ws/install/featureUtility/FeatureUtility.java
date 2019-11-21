@@ -278,13 +278,13 @@ public class FeatureUtility {
 
         info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_PREPARING_ASSETS"));
         Collection<File> artifacts = fromDir != null ? downloadFeaturesFrom(resolvedFeatures, fromDir) : downloadFeatureEsas((List<String>) resolvedFeatures);
-        updateProgress(progressBar.getMethodIncrement("fetchArtifacts"));
+        updateProgress(progressBar.getMethodIncrement("downloadArtifacts")); // expect this to be 0 after download all features
 
         info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_STARTING_INSTALL"));
         Collection<String> actionReturnResult = new ArrayList<String>();
         List<String> currentReturnResult;
         try {
-            double increment = ((double) (progressBar.getMethodIncrement("installFeatures")) / (artifacts.size()));
+            double increment = ((progressBar.getMethodIncrement("installFeatures")) / (artifacts.size()));
             for (File esaFile : artifacts) {
                 fine(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_INSTALLING",
                                                                     extractFeature(esaFile.getName())));
@@ -311,7 +311,10 @@ public class FeatureUtility {
                         updateProgress(increment);
                         info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("LOG_INSTALLED_FEATURE",
                                                                             currentReturnResult.get(0)).replace("CWWKF1304I: ", ""));
-
+                    } else {
+                        //update progress
+                        updateProgress(increment);
+                        progressBar.manuallyUpdate();
                     }
                 }
             }

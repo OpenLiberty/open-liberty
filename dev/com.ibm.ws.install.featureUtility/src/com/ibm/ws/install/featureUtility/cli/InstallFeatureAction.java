@@ -66,21 +66,23 @@ public class InstallFeatureAction implements ActionHandler {
                         return rc;
                 }
                 
-                this.noCache = args.getOption("nocache") != null;
+                this.noCache = args.getOption("noCache") != null;
                 
                 this.toDir = args.getOption("to");
 
                 this.progressBar = ProgressBar.getInstance();
 
-                HashMap<String, Integer> methodMap = new HashMap<>();
+                HashMap<String, Double> methodMap = new HashMap<>();
                 // initialize feature utility and install kernel map
-                methodMap.put("initializeMap", 10);
-                methodMap.put("fetchJsons", 10);
+                methodMap.put("initializeMap", 5.00);//done
+                methodMap.put("fetchJsons", 10.00); //dpne
+                methodMap.put("resolvedFeatures", 10.00); //done
                 // in installFeature we have 80 units to work with
-                methodMap.put("resolvedFeatures", 20);
-                methodMap.put("fetchArtifacts", 20);
-                methodMap.put("installFeatures", 35);
-                methodMap.put("cleanUp", 5);
+                methodMap.put("fetchArtifacts", 10.00);
+                methodMap.put("downloadArtifacts", 25.00);
+                // 10 + 15 = 35 for download artifact
+                methodMap.put("installFeatures", 35.00);
+                methodMap.put("cleanUp", 5.00);
 
                 progressBar.setMethodMap(methodMap);
 
