@@ -949,7 +949,7 @@ public class InstallKernelMap implements Map {
 
     private String getM2Cache() { //check for maven_home specified mirror stuff
         Path m2Path = getM2Path();
-        if(Files.exists(m2Path) && Files.isWritable(m2Path)){
+        if (Files.exists(m2Path) && Files.isWritable(m2Path)) {
             return m2Path.toString();
         }
         return null;
@@ -965,20 +965,20 @@ public class InstallKernelMap implements Map {
     private boolean checkM2Writable() {
         String userhome = System.getProperty("user.home");
         Path userhomePath = Paths.get(userhome);
-        if(!Files.exists(userhomePath) || !Files.isWritable(userhomePath)){
+        if (!Files.exists(userhomePath) || !Files.isWritable(userhomePath)) {
             return false;
         }
 
         Path withM2 = Paths.get(userhome, "/.m2");
         Path withRepository = Paths.get(userhome, "/.m2/repository");
 
-        if(Files.exists(withM2)){
-            if(Files.exists(withRepository)){
+        if (Files.exists(withM2)) {
+            if (Files.exists(withRepository)) {
                 return Files.isWritable(withRepository);
             } else {
                 return withRepository.toFile().mkdir();
             }
-        } else if(withM2.toFile().mkdir()){ //create .m2 and recurse.
+        } else if (withM2.toFile().mkdir()) { //create .m2 and recurse.
             return checkM2Writable();
         } else {
             return false;
@@ -1417,6 +1417,7 @@ public class InstallKernelMap implements Map {
         Map<String, String> propsFileMap = getFeatureUtilEnvProps();
         if (!propsFileMap.isEmpty()) {
             fine("The properties found in featureUtility.env will override latent environment variables of the same name");
+            info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_READING_ENV_PROPS_FILE", Utils.getInstallDir().toString()));
             Set<String> keys = propsFileMap.keySet();
             for (String key : keys) {
                 //if key is http_proxy or https_proxy then call getProxyVariables
