@@ -979,11 +979,10 @@ public class InstallKernelMap implements Map {
                 return withRepository.toFile().mkdir();
             }
         } else if(withM2.toFile().mkdir()){ //create .m2 and recurse.
-            checkM2Writable();
+            return checkM2Writable();
         } else {
             return false;
         }
-        return false;
     }
 
     /**
