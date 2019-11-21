@@ -948,28 +948,42 @@ public class InstallKernelMap implements Map {
     }
 
     private String getM2Cache() { //check for maven_home specified mirror stuff
-        File m2Folder = getM2Path().toFile();
-        if (m2Folder.exists() && m2Folder.isDirectory() && m2Folder.canRead() && m2Folder.canWrite()) {
-            return m2Folder.toString();
+        Path m2Path = getM2Path();
+        if(Files.exists(m2Path) && Files.isWritable(m2Path)){
+            return m2Path.toString();
         }
         return null;
 
     }
 
     private Path getM2Path() {
+//        return Paths.get(System.getProperty("user.home"), ".m2", "repository", "");
         return Paths.get(System.getProperty("user.home"), ".m2", "repository", "");
+
     }
 
     private boolean checkM2Writable() {
         String userhome = System.getProperty("user.home");
-        if (userhome == null) {
+        Path userhomePath = Paths.get(userhome);
+        if(!Files.exists(userhomePath) || !Files.isWritable(userhomePath)){
             return false;
         }
-        File userhomeFile = new File(userhome);
-        if (!userhomeFile.exists() || !userhomeFile.canWrite()) {
+
+        Path withM2 = Paths.get(userhome, "/.m2");
+        Path withRepository = Paths.get(userhome, "/.m2/repository");
+
+        if(Files.exists(withM2)){
+            if(Files.exists(withRepository)){
+                return Files.isWritable(withRepository);
+            } else {
+                return withRepository.toFile().mkdir();
+            }
+        } else if(withM2.toFile().mkdir()){ //create .m2 and recurse.
+            checkM2Writable();
+        } else {
             return false;
         }
-        return new File(userhome, "/.m2/repository").mkdirs();
+        return false;
     }
 
     /**
@@ -1345,9 +1359,9 @@ public class InstallKernelMap implements Map {
             if (this.get("action.error.message") != null) {
                 fine("action.exception.stacktrace: " + this.get("action.error.stacktrace"));
                 String exceptionMessage = (String) this.get("action.error.message");
-//                throw new InstallException(exceptionMessage);
+                throw new InstallException(exceptionMessage);
                 // convert to json exception msg
-                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_MAVEN_JSON_NOT_FOUND", jsonGroupId));
+//                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_MAVEN_JSON_NOT_FOUND", jsonGroupId));
             }
             if (downloaded instanceof List) {
                 result.addAll((List<File>) downloaded);
