@@ -2,25 +2,23 @@
 
 #This script takes the Open Liberty version as it's argument
 #ARGUMENT1 = driver version - eg. 19.0.0.12
+#ARGUMENT2 = RPM Timestamp - eg "Mon Nov 18 2019"
+#ARGUMENT3 = DEB Timestamp - eg "Mon, 18 Nov 2019 07:46:01 -0800"
 
 driverVer=$1
 DEB_CHANGELOG_FILE=$(pwd)/debuild/openliberty/debian/changelog
 RPM_CHANGELOG_FILE=$(pwd)/rpmbuild/SPECS/openliberty.spec
 RPM_TEMPLATE=$(pwd)/openliberty.spec.template
 MAINTAINER="Admin <admin@openliberty.io>"
-#check date command can be run successfully
-date
-RC=$?
-if [ "$RC" -eq "0" ] ; then
+
+#check if ARG2 & ARG3 are set - otherwise fallback to hardcoded timestamp
+if [ $# -eq 3 ]; then
     echo "using date command to generate datestamps"
-    DATE=$(date)
-    DEB_TIMESTAMP=$(date -d "$DATE" +"%a, %d %b %Y %T %z")
-    RPM_TIMESTAMP=$(date -d "$DATE" +"%a %b %d %Y")
+    RPM_TIMESTAMP="$2"
+    DEB_TIMESTAMP="$3"
 else
-    echo "date command executed with RC:$RC"
+    echo "$# arguments passed in, missing either RPM or DEB timestamp"
     echo "falling back to manually set datestamps"
-    which date
-    ls -l /usr/bin/date
     DEB_TIMESTAMP="Mon, 18 Nov 2019 07:46:01 -0800"
     RPM_TIMESTAMP="Mon Nov 18 2019"
 fi
@@ -44,3 +42,6 @@ echo "- This package contains Open Liberty ${driverVer}" >> $RPM_CHANGELOG_FILE
 #update liberty version in rpm spec file
 echo "updating rpm spec"
 sed -i -e "s/@SPEC_VERSION@/${driverVer}/" $RPM_CHANGELOG_FILE
+
+exit 0
+
