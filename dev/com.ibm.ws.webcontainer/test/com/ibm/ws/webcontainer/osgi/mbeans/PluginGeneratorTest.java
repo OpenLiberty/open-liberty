@@ -932,4 +932,69 @@ public class PluginGeneratorTest {
         // rename generated file to leave a clean space for the next test, but keep the file for debug
         testfile.renameTo(new File(testClassesDir + "/serverRole-plugin-cfg.xml"));
     }
+    
+    @Test
+    public void testPersistTimeoutReduction() throws Exception {
+        setCommonVHostExpectations();
+        setXMLGenerateExpectations();
+        setCommentExpectations();
+        
+        // set expectations specific for this test
+        context.checking(new Expectations() {
+            {
+                allowing(mockLocationAdmin).getServerOutputResource("plugin-cfg.xml");
+                will(returnValue(mockWsResource));
+                allowing(mockWsResource).putStream();
+                will(returnValue(new FileOutputStream(new File(testClassesDir + "/plugin-cfg.xml"))));
+                allowing(mockWsResource).asFile();
+                will(returnValue((new File(testClassesDir + "/plugin-cfg.xml"))));
+            }
+        });
+
+        Map<String, Object> config = new HashMap<String, Object>();
+        setDefaultConfig(config);
+        // set config values for this test
+        config.put("persistTimeoutReduction", new Integer(5));
+
+        PluginGenerator pluginGen = new PluginGenerator(config, mockLocationAdmin, mockBundleContext);
+        pluginGen.generateXML("userSpecifiedWebserverLocation", "userSpecifiedServerName", mockWebContainer, mockSessionManager, mockVhostMgr, mockLocationAdmin, false, null);
+
+        // check that the config file was created
+        File testfile = new File(testClassesDir + "/plugin-cfg.xml");
+        assertTrue(testfile.exists());
+    
+     // and that it contains the correct default values
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        Document dom = null;
+        try {
+            //Using factory get an instance of document builder
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            //parse using builder to get DOM representation of the XML file
+            dom = db.parse(testfile);
+            Element docEle = dom.getDocumentElement();
+            //get a nodelist of ServerCluster elements
+            NodeList nl = docEle.getElementsByTagName("ServerCluster");
+            // we're only expecting one ServerCluser
+            assertEquals(1, nl.getLength());
+            Node node = nl.item(0);
+            Element eElement = (Element) node;
+            //we're in the first Server tag of the ServerCluster
+            NodeList nl1 = eElement.getElementsByTagName("Server");
+            Node node1 = nl1.item(0);
+            Element eElement1 = (Element) node1;
+            //we're in the first Transport tag of the Server
+            NodeList nl2 = eElement1.getElementsByTagName("Transport");
+            Node node2 = nl2.item(0);
+            Element eElement2 = (Element) node2;
+            
+            String value = eElement2.getAttribute("ConnectionTTL");
+            assertEquals("25", value); //25 is persistTimeout[30] minus persistTimeoutReduction[specified above as 5]
+        } catch (ParserConfigurationException pce) {
+            pce.printStackTrace();
+        } catch (SAXException se) {
+            se.printStackTrace();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }    
+    }
 }
