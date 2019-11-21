@@ -95,9 +95,6 @@ public class InstallServerAction implements ActionHandler {
                 try {
                         if (isServer(arg)) {
                                 return serverInit(arg);
-
-
-
                         } else {
                                throw new InstallException(InstallLogUtils.Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_SERVER_NOT_EXIST", arg));
                         }
@@ -184,7 +181,7 @@ public class InstallServerAction implements ActionHandler {
 
         private ExitCode install() {
                 try {
-                        featureUtility = new FeatureUtility.FeatureUtilityBuilder().setFromDir(fromDir).setToExtension(toDir)
+                        featureUtility = new FeatureUtility.FeatureUtilityBuilder().setFromDir(fromDir)
                                         .setFeaturesToInstall(featureNames).setNoCache(noCache).build();
                         featureUtility.installFeatures();
                 } catch (InstallException e) {

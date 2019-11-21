@@ -52,7 +52,6 @@ public class FeatureUtility {
     private final Boolean noCache;
     private Boolean isDownload;
     private Boolean isBasicInit;
-    private final String toExtension;
     private final List<String> featuresToInstall;
     private static String openLibertyVersion;
     private final Logger logger;
@@ -68,7 +67,6 @@ public class FeatureUtility {
         this.openLibertyVersion = getLibertyVersion();
 
         this.fromDir = builder.fromDir; //this can be overwritten by the env prop
-        this.toExtension = builder.toExtension;
         // this.featuresToInstall = new ArrayList<>(builder.featuresToInstall);
 
         List<String> rawFeatures = new ArrayList<>(builder.featuresToInstall);
@@ -78,8 +76,6 @@ public class FeatureUtility {
         Set<String> jsonsRequired = jsonsAndFeatures.get("jsons");
 
         this.esaFile = builder.esaFile;
-        this.isBasicInit = builder.isBasicInit;
-        this.isDownload = builder.isDownload;
         this.noCache = builder.noCache;
 
 
@@ -99,31 +95,18 @@ public class FeatureUtility {
         		fine(key +": " + envMap.get(key));
         	}
         }
-
-        if (isBasicInit == null || !isBasicInit) {
-            
-            if (noCache != null && noCache) {
-            	fine("Features installed from the remote repository will not be cached locally");
-            }
-            map.put("cleanup.needed", noCache);
-            //log all the env props we find or don't find to debug
-            List<File> jsonPaths = getJsonFiles(fromDir, jsonsRequired);
-            updateProgress(progressBar.getMethodIncrement("fetchJsons"));
-            fine("Finished finding jsons");
-
-            initializeMap(jsonPaths);
-            updateProgress(progressBar.getMethodIncrement("initializeMap"));
-            fine("Initialized install kernel map");
-        } else {
-            if (isDownload == null || !isDownload) {
-                initializeMap();
-            } else {
-
-                List<File> jsonPaths = getJsonFiles(fromDir, jsonsRequired);
-
-                initializeMap(jsonPaths);
-            }
+        if (noCache != null && noCache) {
+            fine("Features installed from the remote repository will not be cached locally");
         }
+        map.put("cleanup.needed", noCache);
+        //log all the env props we find or don't find to debug
+        List<File> jsonPaths = getJsonFiles(fromDir, jsonsRequired);
+        updateProgress(progressBar.getMethodIncrement("fetchJsons"));
+        fine("Finished finding jsons");
+
+        initializeMap(jsonPaths);
+        updateProgress(progressBar.getMethodIncrement("initializeMap"));
+        fine("Initialized install kernel map");
     }
 
     /**
@@ -291,11 +274,6 @@ public class FeatureUtility {
                                                                     extractFeature(esaFile.getName())));
                 map.put("license.accept", true);
                 map.put("action.install", esaFile);
-                if (toExtension != null) {
-                    map.put("to.extension", toExtension);
-//                    fine("Installing to extension: " + toExtension);
-                }
-
                 Integer ac = (Integer) map.get("action.result");
 //                fine("action.result:" + ac);
 //                fine("action.error.message:" + map.get("action.error.message"));
@@ -449,6 +427,7 @@ public class FeatureUtility {
             deleted = deleteFolder(temp);
         }
         updateProgress(progressBar.getMethodIncrement("cleanUp"));
+        progressBar.manuallyUpdate();
         if (deleted) {
             fine(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("MSG_CLEANUP_SUCCESS"));
         } else {
@@ -510,43 +489,21 @@ public class FeatureUtility {
     }
 
     private void fine(String msg) {
-//        if (isWindows) {
-//            logger.fine(msg);
-//        } else {
-//            progressBar.clearProgress(); // Erase line content
-            logger.fine(msg);
-//            progressBar.display();
-//        }
+        logger.fine(msg);
     }
 
     private void severe(String msg) {
-//        if (isWindows) {
-//            logger.severe(msg);
-//        } else {
-//            System.out.print("\033[2K"); // Erase line content
-//        progressBar.clearProgress(); // Erase line content
         logger.severe(msg);
-//        progressBar.display();
-//        }
-
     }
 
     public static class FeatureUtilityBuilder {
         File fromDir;
-        String toExtension;
         Collection<String> featuresToInstall;
         File esaFile;
-        boolean isDownload;
-        boolean isBasicInit;
         boolean noCache;
 
         public FeatureUtilityBuilder setFromDir(String fromDir) {
             this.fromDir = fromDir != null ? new File(fromDir) : null;
-            return this;
-        }
-
-        public FeatureUtilityBuilder setToExtension(String toExtension) {
-            this.toExtension = toExtension;
             return this;
         }
 

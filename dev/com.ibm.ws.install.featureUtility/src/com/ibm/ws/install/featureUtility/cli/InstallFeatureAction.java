@@ -65,10 +65,7 @@ public class InstallFeatureAction implements ActionHandler {
                 if ((rc = validateFromDir(this.fromDir)) != ReturnCode.OK) {
                         return rc;
                 }
-                
                 this.noCache = args.getOption("noCache") != null;
-                
-                this.toDir = args.getOption("to");
 
                 this.progressBar = ProgressBar.getInstance();
 
@@ -132,7 +129,7 @@ public class InstallFeatureAction implements ActionHandler {
 
         private ExitCode install() {
                 try {
-                        featureUtility = new FeatureUtility.FeatureUtilityBuilder().setFromDir(fromDir).setToExtension(toDir)
+                        featureUtility = new FeatureUtility.FeatureUtilityBuilder().setFromDir(fromDir)
                                         .setFeaturesToInstall(featureNames).setNoCache(noCache).build();
                         featureUtility.installFeatures();
                 } catch (InstallException e) {
