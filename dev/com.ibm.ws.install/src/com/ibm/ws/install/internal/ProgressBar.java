@@ -128,6 +128,9 @@ public class ProgressBar {
 //    }
     public void finish() {
         System.out.println(Ansi.ansi().cursorUp(1).eraseLine().reset()); // Erase line content
+        // clear newline on current line
+        System.out.print(Ansi.ansi().cursorUp(1).eraseLine().reset()); // Erase line content
+        System.out.flush();
         InstallLogUtils.deactivateProgressBar();
         AnsiConsole.systemUninstall();
     }
@@ -136,7 +139,7 @@ public class ProgressBar {
         InstallLogUtils.deactivateProgressBar();
         AnsiConsole.systemUninstall();
     }
-    
+
 
     public double getCounter() {
         return counter;

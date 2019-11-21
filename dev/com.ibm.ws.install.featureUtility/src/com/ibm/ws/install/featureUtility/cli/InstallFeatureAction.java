@@ -167,7 +167,7 @@ public class InstallFeatureAction implements ActionHandler {
         }
 
         private boolean validateProduct() {
-                logger.log(Level.INFO, "");
+//                logger.log(Level.INFO, "");
                 BundleRepositoryRegistry.disposeAll();
                 BundleRepositoryRegistry.initializeDefaults(null, false);
                 ValidateCommandTask vcTask = new ValidateCommandTask();
