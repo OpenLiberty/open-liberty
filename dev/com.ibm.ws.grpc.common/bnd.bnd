@@ -1,0 +1,54 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: gRPC Common Components 1.0
+Bundle-SymbolicName: com.ibm.ws.grpc.common.1.0
+Bundle-Description: gRPC Common Components, version 1.0
+
+Import-Package: !sun.*,\
+  !com.google.code.gson,\
+  !org.checkerframework,\
+  !com.google.*,\
+  *
+	
+Export-Package: io.grpc.*,\
+	google.*,\
+	com.google.*,\
+	io.perfmark,\
+	io.opencensus.*,\
+	org.checkerframework.checker.nullness.compatqual
+	
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=11))"
+
+instrument.disabled: true
+
+-buildpath: \
+  lib/grpc-core-1.24.0-SNAPSHOT.jar;version=file,\
+  com.google.api.grpc:proto-google-common-protos;version=1.12.0, \
+  com.google.guava:guava;version=27.0.1, \
+  com.google.j2objc:j2objc-annotations;version=1.1, \
+  com.google.protobuf:protobuf-java;version=3.9.0, \
+  io.grpc:grpc-api;version=1.24.0, \
+  io.grpc:grpc-context;version=1.24.0, \
+  io.grpc:grpc-protobuf;version=1.24.0, \
+  io.grpc:grpc-protobuf-lite;version=1.24.0, \
+  io.grpc:grpc-stub;version=1.24.0, \
+  io.opencensus:opencensus-api;version=0.21.0, \
+  io.opencensus:opencensus-contrib-grpc-metrics;version=0.21.0, \
+  io.perfmark:perfmark-api;version=0.17.0
+  #org.checkerframework:checker-compat-qual;version=2.5.2
+  #com.google.errorprone:error_prone_annotations;version=2.3.2, \
+  #com.google.code.gson:gson;version=2.2.4, \
+  #io.grpc:grpc-core;version=1.24.0, \
+  
+-fixupmessages.missingexport: "Used bundle version * for exported package";is:=ignore
