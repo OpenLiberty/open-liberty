@@ -9,6 +9,7 @@
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
 @TraceOptions(traceGroup = "FAULTTOLERANCE")
-package com.ibm.ws.microprofile.faulttolerance.cdi21.config.impl;
+@org.osgi.annotation.versioning.Version("1.0")
+package com.ibm.ws.microprofile.faulttolerance21.cdi.config.impl;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;
