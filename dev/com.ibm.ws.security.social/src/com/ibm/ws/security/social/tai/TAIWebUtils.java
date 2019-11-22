@@ -148,7 +148,11 @@ public class TAIWebUtils {
     public String getBearerAccessToken(HttpServletRequest req, Oauth2LoginConfigImpl clientConfig) {
         String headerName = clientConfig.getAccessTokenHeaderName();
         if (headerName != null) {
-            return getBearerTokenFromCustomHeader(req, headerName);
+            String bearerToken = getBearerTokenFromCustomHeader(req, headerName);
+            if (bearerToken == null) {
+                Tr.warning(tc, "CUSTOM_ACCESS_TOKEN_HEADER_MISSING", Oauth2LoginConfigImpl.KEY_accessTokenHeaderName, clientConfig.getUniqueId(), headerName);
+            }
+            return bearerToken;
         } else {
             return getBearerTokenFromAuthzHeaderOrRequestBody(req);
         }
