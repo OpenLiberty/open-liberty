@@ -153,11 +153,12 @@ public class SessionCacheTimeoutTest extends FATServletClient {
         for (int attempt = 0; attempt < 5; attempt++) {
             // Initialize a session attribute
             List<String> session = newSession();
+            long start = 0, prevStart = 0;
+            start = System.nanoTime();
             app.sessionPut("testRefreshInvalidation-foo", "bar", session, true);
 
             // Read the session attribute every 3 seconds, looping several times.  Reading the session attribute will
             // prevent the session from becoming invalid after 5 seconds because it refreshes the timer on each access.
-            long start = 0, prevStart = 0;
             try {
                 for (int i = 0; i < refreshes; i++) {
                     prevStart = start;
