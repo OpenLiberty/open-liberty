@@ -275,10 +275,10 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
                     will(returnValue("groups"));
                 }
             });
-            String errorResponse = "{\"kind\":\"TokenReview\",\"apiVersion\":\"authentication.k8s.io/v1\",\"metadata\":{\"creationTimestamp\":null},\"spec\":{\"token\":\"somebadvalueForAnAccessToken\"},\"status\":{\"user\":{},\"error\":\"[invalid bearer token, token lookup failed]\"}}";
-            userApiUtils.modifyExistingResponseToJSON(errorResponse);
+            //String errorResponse = "{\"kind\":\"TokenReview\",\"apiVersion\":\"authentication.k8s.io/v1\",\"metadata\":{\"creationTimestamp\":null},\"spec\":{\"token\":\"somebadvalueForAnAccessToken\"},\"status\":{\"user\":{},\"error\":\"[invalid bearer token, token lookup failed]\"}}";
+            //userApiUtils.modifyExistingResponseToJSON(errorResponse);
 
-            String returnedString = userApiUtils.modifyExistingResponseToJSON("{\"status\":{\"authenticated\":true,\"user\":{\"uid\":\"ef111c43-d33a-11e9-b239-0016ac102af6\",\"groups\":[],\"extra\":{\"scopes.authorization.openshift.io\":[\"user:full\"]}}}}");
+            userApiUtils.modifyExistingResponseToJSON("{\"status\":{\"authenticated\":true,\"user\":{\"uid\":\"ef111c43-d33a-11e9-b239-0016ac102af6\",\"groups\":[],\"extra\":{\"scopes.authorization.openshift.io\":[\"user:full\"]}}}}");
             fail();
         } catch (SocialLoginException e) {
             verifyException(e, "CWWKS5374E");
