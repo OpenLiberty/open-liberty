@@ -11,7 +11,6 @@
 package com.ibm.ws.microprofile.config14.cdi;
 
 import java.lang.annotation.Annotation;
-import java.time.temporal.ChronoUnit;
 
 import javax.enterprise.util.AnnotationLiteral;
 
@@ -38,28 +37,7 @@ public class Config14PropertyLiteral extends AnnotationLiteral<ConfigProperty> i
     /** {@inheritDoc} */
     @Override
     public String defaultValue() {
-        return "";
-    }
-
-    //introduced in 1.4
-    /** {@inheritDoc} */
-    @Override
-    public boolean evaluateVariables() {
-        return true;
-    }
-
-    //introduced in 1.4
-    /** {@inheritDoc} */
-    @Override
-    public ChronoUnit cacheTimeUnit() {
-        return ChronoUnit.SECONDS;
-    }
-
-    //introduced in 1.4
-    /** {@inheritDoc} */
-    @Override
-    public long cacheFor() {
-        return 0L;
+        return UNCONFIGURED_VALUE;
     }
 
 }

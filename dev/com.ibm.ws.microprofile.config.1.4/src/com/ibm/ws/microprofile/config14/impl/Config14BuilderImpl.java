@@ -17,9 +17,6 @@ import org.eclipse.microprofile.config.spi.ConfigBuilder;
 import org.eclipse.microprofile.config.spi.ConfigSource;
 
 import com.ibm.ws.microprofile.config.converters.PriorityConverterMap;
-import com.ibm.ws.microprofile.config.impl.ConversionManager;
-import com.ibm.ws.microprofile.config.impl.SortedSources;
-import com.ibm.ws.microprofile.config.interfaces.WebSphereConfig;
 import com.ibm.ws.microprofile.config13.impl.Config13BuilderImpl;
 import com.ibm.ws.microprofile.config14.converters.Config14DefaultConverters;
 
@@ -28,21 +25,25 @@ public class Config14BuilderImpl extends Config13BuilderImpl implements ConfigBu
     /**
      * Constructor
      *
-     * @param classLoader the classloader which scopes this config
-     * @param executor    the executor to use for async update threads
+     * @param classLoader           the classloader which scopes this config
+     * @param executor              the executor to use for async update threads
+     * @param internalConfigSources
      */
     public Config14BuilderImpl(ClassLoader classLoader, ScheduledExecutorService executor, Set<ConfigSource> internalConfigSources) {
         super(classLoader, executor, internalConfigSources);
     }
 
-    @Override
-    protected WebSphereConfig buildConfig(ConversionManager conversionManager, SortedSources sources, ScheduledExecutorService executor, long refreshInterval) {
-        WebSphereConfig config = new Config14Impl(conversionManager, sources, executor, refreshInterval);
-        return config;
-    }
+/////////////////////////////////////////////
+// ALL NON-PUBLIC METHODS MUST ONLY BE CALLED FROM WITHIN A 'synchronized(this)' BLOCK
+/////////////////////////////////////////////
 
     @Override
     protected PriorityConverterMap getDefaultConverters() {
         return Config14DefaultConverters.getDefaultConverters();
     }
+
+/////////////////////////////////////////////
+// ALL NON-PUBLIC METHODS MUST ONLY BE CALLED FROM WITHIN A 'synchronized(this)' BLOCK
+/////////////////////////////////////////////
+
 }
