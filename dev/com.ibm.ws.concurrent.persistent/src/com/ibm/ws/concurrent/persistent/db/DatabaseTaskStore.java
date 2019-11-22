@@ -75,6 +75,7 @@ public class DatabaseTaskStore implements TaskStore {
      * Persistence service unit. Must use the init/destroy lock to determine if lazy initialization is needed.
      */
     private PersistenceServiceUnit persistenceServiceUnit;
+    private PersistenceServiceUnit persistenceServiceUnitReadUncommitted; // TRANSACTION_READ_UNCOMMITTED
 
     private DatabaseTaskStore(DatabaseStore dbStore) {
         this.dbStore = dbStore;
@@ -116,6 +117,12 @@ public class DatabaseTaskStore implements TaskStore {
             } catch (Throwable x) {
                 // auto FFDC
             } finally {
+                try {
+                    if (removed.persistenceServiceUnitReadUncommitted != null)
+                        removed.persistenceServiceUnitReadUncommitted.close();
+                } catch (Throwable x) {
+                    // auto FFDC
+                }
                 removed.lock.writeLock().unlock();
             }
         }
@@ -834,13 +841,14 @@ public class DatabaseTaskStore implements TaskStore {
             Tr.entry(this, tc, "findUnclaimedTasks", Utils.appendDate(new StringBuilder(30), maxNextExecTime), maxResults, find);
 
         List<Object[]> resultList;
-        EntityManager em = getPersistenceServiceUnit().createEntityManager();
+        EntityManager em = getPersistenceServiceUnitReadUncommitted().createEntityManager();
         try {
             TypedQuery<Object[]> query = em.createQuery(find.toString(), Object[].class);
             query.setParameter("m", maxNextExecTime);
             query.setParameter("c", System.currentTimeMillis());
             if (maxResults != null)
                 query.setMaxResults(maxResults);
+
             List<Object[]> results = query.getResultList();
             resultList = results;
         } finally {
@@ -991,7 +999,7 @@ public class DatabaseTaskStore implements TaskStore {
      * Returns the persistence service unit, lazily initializing if necessary.
      *
      * @return the persistence service unit.
-     * @throws Exceptin              if an error occurs.
+     * @throws Exception             if an error occurs.
      * @throws IllegalStateException if this instance has been destroyed.
      */
     public final PersistenceServiceUnit getPersistenceServiceUnit() throws Exception {
@@ -1018,6 +1026,50 @@ public class DatabaseTaskStore implements TaskStore {
                 }
             }
             return persistenceServiceUnit;
+        } finally {
+            lock.readLock().unlock();
+        }
+    }
+
+    /**
+     * Returns the persistence service unit with TRANSACTION_READ_COMMITTED isolation, lazily initializing if necessary.
+     *
+     * @return the persistence service unit.
+     * @throws Exception             if an error occurs.
+     * @throws IllegalStateException if this instance has been destroyed.
+     */
+    public final PersistenceServiceUnit getPersistenceServiceUnitReadUncommitted() throws Exception {
+        lock.readLock().lock();
+        try {
+            if (destroyed)
+                throw new IllegalStateException();
+            if (persistenceServiceUnitReadUncommitted == null) {
+                // Switch to write lock for lazy initialization
+                lock.readLock().unlock();
+                lock.writeLock().lock();
+                try {
+                    if (destroyed)
+                        throw new IllegalStateException();
+                    if (persistenceServiceUnitReadUncommitted == null) {
+                        persistenceServiceUnitReadUncommitted = dbStore.createPersistenceServiceUnit(priv.getClassLoader(Task.class),
+                                                                                                     Task.class.getName());
+                        EntityManager em = persistenceServiceUnitReadUncommitted.createEntityManager();
+                        // This seems to apply to every subsequent usage of the persistence service unit. Can we rely on that?
+                        Object dbSession = em.getClass().getMethod("getDatabaseSession").invoke(em);
+                        org.eclipse.persistence.sessions.DatabaseLogin dbLogin = (org.eclipse.persistence.sessions.DatabaseLogin) dbSession.getClass()
+                                        .getMethod("getDatasourceLogin")
+                                        .invoke(dbSession);
+                        if (!dbLogin.isAnyOracleJDBCDriver())
+                            dbLogin.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
+                        em.close();
+                    }
+                } finally {
+                    // Downgrade to read lock for rest of method
+                    lock.readLock().lock();
+                    lock.writeLock().unlock();
+                }
+            }
+            return persistenceServiceUnitReadUncommitted;
         } finally {
             lock.readLock().unlock();
         }

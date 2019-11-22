@@ -427,14 +427,12 @@ public class SchedulerFATServlet extends HttpServlet {
                 throw new Exception("Unable to run task " + statusD + " while another task " + statusA.getTaskId() + " is blocked.");
 
             // It should be possible to find existing tasks that are eligible to be claimed.
+            // For testing purposes, directly force this code path rather than waiting for persistent executor to eventually run it
             Field taskStore = scheduler.getClass().getDeclaredField("taskStore");
             taskStore.setAccessible(true);
             Object dbTaskStore = taskStore.get(scheduler);
             long maxNextExecTime = TimeUnit.DAYS.toMillis(50) + System.currentTimeMillis();
             Method DatabaseTaskStore_findUnclaimedTasks = dbTaskStore.getClass().getMethod("findUnclaimedTasks", long.class, Integer.class);
-
-            if (true) // TODO enable more of this test when locking is improved
-                return;
 
             @SuppressWarnings("unchecked")
             List<Object[]> found = (List<Object[]>) DatabaseTaskStore_findUnclaimedTasks.invoke(dbTaskStore, maxNextExecTime, null);
@@ -442,7 +440,6 @@ public class SchedulerFATServlet extends HttpServlet {
             for (Object[] entry : found)
                 foundIds.add((Long) entry[0]);
             LinkedHashSet<Long> expected = new LinkedHashSet<Long>();
-            expected.add(statusA.getTaskId());
             expected.add(statusB.getTaskId());
             expected.add(statusC.getTaskId());
             if (foundIds.size() < found.size())
@@ -460,6 +457,9 @@ public class SchedulerFATServlet extends HttpServlet {
                 throw new Exception("On the second query, duplicate task entries might have been returned. " + foundIds + " vs " + foundAgain);
             if (!foundIds.containsAll(expected))
                 throw new Exception("On the second query, should have found at least task ids " + expected + " within " + foundIds);
+
+            if (true)
+                return; // TODO determine if the following can be enabled and whether there are locking issues for these paths
 
             // It should be possible to cancel other tasks.
             int numCancelled = scheduler.cancel("DBIncrementTask-testBlockAfterCancelFE-C", null, TaskState.SCHEDULED, true);
