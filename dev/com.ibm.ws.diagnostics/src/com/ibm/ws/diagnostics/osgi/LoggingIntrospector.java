@@ -42,8 +42,6 @@ public class LoggingIntrospector implements Introspector {
     @Override
     public void introspect(PrintWriter writer) {
         LogManager lm = LogManager.getLogManager();
-        writer.println("logManager.getClass() == " + lm.getClass().getName());
-        writer.println("");
 
         // Print system property information
         try {
@@ -87,15 +85,28 @@ public class LoggingIntrospector implements Introspector {
         writer.println("");
 
         // Print logger and handler information
+        if (lm == null) {
+            writer.println("LogManager could not be retrieved. Value is NULL. Logging Introspector will now exit as no further data can be found.");
+            return;
+        }
+
+        writer.println("logManager.getClass() == " + lm.getClass().getName() + "\n");
+
         Enumeration en = lm.getLoggerNames();
         while (en.hasMoreElements()) {
             String loggerName = (String) en.nextElement();
             Logger logger = lm.getLogger(loggerName);
+            
+            if (logger == null) {
+                writer.println("A logger called " + loggerName + " could not be retrieved or does not exist. Skipping... \n");
+                continue;
+            }
+
             writer.println("Logger \"" + loggerName + "\" type: " + logger.getClass().getName() + " level: " + logger.getLevel());
 
             Handler[] handlers = logger.getHandlers();
             for (int i = 0; i < handlers.length; i++) {
-                writer.println("        Handler " + i + handlers[i] + " type: " + handlers[i].getClass().getName() + " level: " + handlers[i].getLevel().getName());
+                writer.println("        Handler " + i + " " + handlers[i] + " type: " + handlers[i].getClass().getName() + " level: " + handlers[i].getLevel().getName());
 
                 if (handlers[i] instanceof Handler) {
                     final Handler h = handlers[i];
@@ -128,6 +139,7 @@ public class LoggingIntrospector implements Introspector {
             }
             writer.println("");
         }
+        writer.println("Logging Introspector has completed.");
     }
 
 }
