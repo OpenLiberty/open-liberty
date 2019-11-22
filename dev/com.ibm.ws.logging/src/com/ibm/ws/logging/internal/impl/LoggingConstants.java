@@ -39,11 +39,12 @@ public interface LoggingConstants {
     int nlen = nl.length();
 
     String DEFAULT_MESSAGE_SOURCE = "message";
-    String DEFAULT_MESSAGE_FORMAT = "basic";
+    String DEFAULT_MESSAGE_FORMAT = "simple";
     String DEFAULT_CONSOLE_SOURCE = "message";
-    String DEFAULT_CONSOLE_FORMAT = "basic";
+    String DEFAULT_CONSOLE_FORMAT = "dev";
     String DEFAULT_TRACE_SOURCE = "trace";
     String JSON_FORMAT = "json";
+    String DEPRECATED_DEFAULT_FORMAT = "basic";
 
     String ENV_WLP_LOGGING_MESSAGE_SOURCE = "WLP_LOGGING_MESSAGE_SOURCE";
     String ENV_WLP_LOGGING_MESSAGE_FORMAT = "WLP_LOGGING_MESSAGE_FORMAT";
