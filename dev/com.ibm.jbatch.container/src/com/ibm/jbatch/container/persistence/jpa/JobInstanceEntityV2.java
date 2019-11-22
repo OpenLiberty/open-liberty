@@ -16,13 +16,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Temporal;
 
-import com.ibm.websphere.ras.annotation.Trivial;
-
 @Entity
 public class JobInstanceEntityV2 extends JobInstanceEntity {
 
     // JPA
-    @Trivial
     public JobInstanceEntityV2() { super(); }
 
     // in-memory

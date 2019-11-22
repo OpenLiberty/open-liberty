@@ -23,7 +23,6 @@ import javax.batch.runtime.BatchStatus;
 
 import com.ibm.jbatch.container.exception.BatchIllegalJobStatusTransitionException;
 import com.ibm.jbatch.container.exception.ExecutionAssignedToServerException;
-import com.ibm.jbatch.container.persistence.jpa.RemotablePartitionKey;
 import com.ibm.jbatch.container.services.IJPAQueryHelper;
 
 /**
@@ -104,7 +103,7 @@ public interface WSJobRepository {
      *
      * @param jobInstanceId
      * @param jobParameters
-     * @param create        time
+     * @param create time
      * @return jobExecution
      */
     public abstract WSJobExecution createJobExecution(long jobInstanceId, Properties jobParameters);
@@ -262,27 +261,35 @@ public interface WSJobRepository {
     /**
      * Creates an entry for this remote partition in the RemotablePartition table
      *
-     * @param remotablePartitionKey
+     * @param jobExecutionId the id for the top level job execution that this partition is associated with
+     * @param stepName the name of the step
+     * @param internalState the state of the partition that is being dispatched
      * @return
      */
-    public abstract WSRemotablePartitionExecution createRemotablePartition(RemotablePartitionKey remotablePartitionKey);
+    public abstract WSRemotablePartitionExecution createRemotablePartition(long jobExecutionId,
+                                                                           String stepName, int partitionNumber, RemotablePartitionState internalState);
 
     /**
-     * @param remotablePartitionKey
+     * Updates an entry for this remote partition in the RemotablePartition table with the given internalStatus
+     * If the remotable partition is not found, then it just returns
+     *
+     * @param jobExecutionId the id for the top level job execution that this partition is associated with
+     * @param stepName the name of the step
+     * @param internalState the state of the partition that is being dispatched
      * @return
-     * @throws IllegalArgumentException if partition isn't found via key
      */
-    public abstract WSRemotablePartitionState getRemotablePartitionInternalState(RemotablePartitionKey remotablePartitionKey);
+    public abstract WSRemotablePartitionExecution updateRemotablePartitionInternalState(long jobExecutionId,
+                                                                                        String stepName, int partitionNumber, RemotablePartitionState internalState);
 
     /**
      * Check the version of the job execution table in the job repository.
      */
-    int getJobExecutionEntityVersion() throws Exception;
+    int getJobExecutionTableVersion() throws Exception;
 
     /**
      * Check the version of the job instance table in the job repository.
      */
-    int getJobInstanceEntityVersion() throws Exception;
+    int getJobInstanceTableVersion() throws Exception;
 
     public WSJobInstance updateJobInstanceWithGroupNames(long jobInstanceId, Set<String> groupNames);
 

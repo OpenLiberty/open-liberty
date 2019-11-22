@@ -20,8 +20,6 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 
-import com.ibm.websphere.ras.annotation.Trivial;
-
 @Entity
 public class JobExecutionEntityV2 extends JobExecutionEntity {
 
@@ -33,7 +31,6 @@ public class JobExecutionEntityV2 extends JobExecutionEntity {
     private Set<JobParameter> jobParameterElements;
 
     // For JPA
-    @Trivial
     public JobExecutionEntityV2() {
         super();
     }

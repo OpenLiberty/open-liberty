@@ -39,7 +39,6 @@ import org.eclipse.persistence.annotations.ClassExtractor;
 
 import com.ibm.jbatch.container.ws.InstanceState;
 import com.ibm.jbatch.container.ws.WSJobInstance;
-import com.ibm.websphere.ras.annotation.Trivial;
 
 @NamedQueries({
                 @NamedQuery(name = JobInstanceEntity.GET_JOBINSTANCEIDS_BY_NAME_AND_STATUSES_QUERY, query = "SELECT i.instanceId FROM JobInstanceEntity i WHERE i.batchStatus IN :status AND i.jobName = :name"),
@@ -76,9 +75,7 @@ public class JobInstanceEntity implements JobInstance, WSJobInstance, EntityCons
     private long instanceId;
 
     // JPA
-    @Trivial
-    public JobInstanceEntity() {
-    }
+    public JobInstanceEntity() {}
 
     // in-memory
     public JobInstanceEntity(long instanceId) {
@@ -271,8 +268,7 @@ public class JobInstanceEntity implements JobInstance, WSJobInstance, EntityCons
         return null;
     }
 
-    public void setLastUpdatedTime(Date lastUpdatedTime) {
-    }
+    public void setLastUpdatedTime(Date lastUpdatedTime) {}
 
     public int getNumberOfExecutions() {
         return numberOfExecutions;

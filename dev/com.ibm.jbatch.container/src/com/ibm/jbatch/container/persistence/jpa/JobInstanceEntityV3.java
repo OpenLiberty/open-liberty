@@ -29,8 +29,6 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 
-import com.ibm.websphere.ras.annotation.Trivial;
-
 /**
  *
  */
@@ -43,7 +41,6 @@ public class JobInstanceEntityV3 extends JobInstanceEntityV2 {
     private Set<String> groupNames;
 
     // For JPA
-    @Trivial
     public JobInstanceEntityV3() {
         super();
     }
