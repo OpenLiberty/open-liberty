@@ -30,21 +30,21 @@ public class JobInstanceEntityExtractor extends ClassExtractor {
 
         //
         // If we understood the lifecycle of ClassExtractor within EclipseLink we
-        // might want to cache the entityVersion here, but to be safe, let's call
+        // might want to cache the tableversion here, but to be safe, let's call
         // each time, (and there's no particular reason to be concerned about performance here).
         //
 
-        Integer entityVersion = null;
+        Integer tableversion = null;
 
         try {
-            entityVersion = ServicesManagerStaticAnchor.getServicesManager().getPersistenceManagerService().getJobInstanceEntityVersionField();
+            tableversion = ServicesManagerStaticAnchor.getServicesManager().getPersistenceManagerService().getJobInstanceTableVersionField();
         } catch (Exception ex) {
             throw new BatchRuntimeException(ex);
         }
 
-        if (entityVersion == 3) {
+        if (tableversion == 3) {
             return JobInstanceEntityV3.class;
-        } else if (entityVersion == 2) {
+        } else if (tableversion == 2) {
             return JobInstanceEntityV2.class;
         } else {
             return JobInstanceEntity.class;

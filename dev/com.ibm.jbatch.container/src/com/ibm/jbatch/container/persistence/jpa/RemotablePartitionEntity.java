@@ -25,10 +25,10 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
+import javax.persistence.UniqueConstraint;
 
+import com.ibm.jbatch.container.ws.RemotablePartitionState;
 import com.ibm.jbatch.container.ws.WSRemotablePartitionExecution;
-import com.ibm.jbatch.container.ws.WSRemotablePartitionState;
-import com.ibm.websphere.ras.annotation.Trivial;
 
 /**
  * @author skurz
@@ -39,11 +39,10 @@ import com.ibm.websphere.ras.annotation.Trivial;
                 @NamedQuery(name = RemotablePartitionEntity.GET_ALL_RELATED_REMOTABLE_PARTITIONS, query = "SELECT r FROM RemotablePartitionEntity r WHERE r.stepExecutionEntity.stepExecutionId IN (SELECT s.stepExecutionId FROM StepThreadExecutionEntity s WHERE s.topLevelStepExecution.stepExecutionId = :topLevelStepExecutionId AND TYPE(s) = StepThreadExecutionEntity ) ORDER BY r.stepExecutionEntity.partitionNumber ASC"),
 
                 @NamedQuery(name = RemotablePartitionEntity.GET_PARTITION_STEP_THREAD_EXECUTIONIDS_BY_SERVERID_AND_STATUSES_QUERY, query = "SELECT r FROM RemotablePartitionEntity r WHERE r.serverId = :serverid AND r.stepExecutionEntity.batchStatus IN :status ORDER BY r.stepExecutionEntity.startTime DESC"),
-                @NamedQuery(name = RemotablePartitionEntity.GET_RECOVERED_REMOTABLE_PARTITIONS, query = "SELECT r.partitionNumber FROM RemotablePartitionEntity r WHERE r.internalStatus = com.ibm.jbatch.container.ws.WSRemotablePartitionState.RECOVERED AND r.stepExecutionEntity.topLevelStepExecution.stepExecutionId = :topLevelStepExecutionId ORDER BY r.stepExecutionEntity.partitionNumber ASC"),
 })
 
 @IdClass(RemotablePartitionKey.class)
-@Table
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = { "FK_JOBEXECUTIONID", "STEPNAME", "PARTNUM" }))
 @Entity
 public class RemotablePartitionEntity implements WSRemotablePartitionExecution {
 
@@ -57,7 +56,6 @@ public class RemotablePartitionEntity implements WSRemotablePartitionExecution {
 
     public static final String GET_ALL_RELATED_REMOTABLE_PARTITIONS = "RemotablePartitionEntity.getAllRelatedRemotablePartitions";
     public static final String GET_PARTITION_STEP_THREAD_EXECUTIONIDS_BY_SERVERID_AND_STATUSES_QUERY = "RemotablePartitionEntity.getPartitionStepExecutionByServerIdAndStatusesQuery";
-    public static final String GET_RECOVERED_REMOTABLE_PARTITIONS = "RemotablePartitionEntity.getRecoveredRemotablePartitions";
 
     @Id
     @ManyToOne()
@@ -76,7 +74,7 @@ public class RemotablePartitionEntity implements WSRemotablePartitionExecution {
     private int partitionNumber;
 
     @Column(name = "INTERNALSTATE")
-    private WSRemotablePartitionState internalStatus;
+    private RemotablePartitionState internalStatus;
 
     @Column(name = "SERVERID", length = 256)
     private String serverId;
@@ -91,7 +89,6 @@ public class RemotablePartitionEntity implements WSRemotablePartitionExecution {
     @Column(name = "LASTUPDATED")
     private Date lastUpdated;
 
-    @Trivial
     public RemotablePartitionEntity() {
     }
 
@@ -140,11 +137,11 @@ public class RemotablePartitionEntity implements WSRemotablePartitionExecution {
         this.partitionNumber = partitionNumber;
     }
 
-    public WSRemotablePartitionState getInternalStatus() {
+    public RemotablePartitionState getInternalStatus() {
         return internalStatus;
     }
 
-    public void setInternalStatus(WSRemotablePartitionState execution) {
+    public void setInternalStatus(RemotablePartitionState execution) {
         this.internalStatus = execution;
     }
 

@@ -29,19 +29,19 @@ public class StepThreadExecutionEntityExtractor extends ClassExtractor {
 
         //
         // If we understood the lifecycle of ClassExtractor within EclipseLink we
-        // might want to cache the entityVersion here, but to be safe, let's call
+        // might want to cache the tableversion here, but to be safe, let's call
         // each time, (and there's no particular reason to be concerned about performance here).
         //
 
-        Integer entityVersion = null;
+        Integer tableversion = null;
 
         try {
-            entityVersion = ServicesManagerStaticAnchor.getServicesManager().getPersistenceManagerService().getStepThreadExecutionEntityVersionField();
+            tableversion = ServicesManagerStaticAnchor.getServicesManager().getPersistenceManagerService().getStepThreadExecutionTableVersionField();
         } catch (Exception ex) {
             throw new BatchRuntimeException(ex);
         }
 
-        if (entityVersion == 2) {
+        if (tableversion == 2) {
             return StepThreadExecutionEntityV2.class;
         } else {
             return StepThreadExecutionEntity.class;

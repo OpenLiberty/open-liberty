@@ -16,7 +16,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.batch.operations.JobSecurityException;
@@ -31,22 +30,22 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
-import com.ibm.jbatch.container.RASConstants;
 import com.ibm.jbatch.container.exception.BatchIllegalJobStatusTransitionException;
 import com.ibm.jbatch.container.exception.ExecutionAssignedToServerException;
 import com.ibm.jbatch.container.persistence.jpa.JobInstanceEntity;
-import com.ibm.jbatch.container.persistence.jpa.RemotablePartitionKey;
 import com.ibm.jbatch.container.services.IJPAQueryHelper;
 import com.ibm.jbatch.container.services.IPersistenceManagerService;
 import com.ibm.jbatch.container.ws.InstanceState;
+import com.ibm.jbatch.container.ws.RemotablePartitionState;
 import com.ibm.jbatch.container.ws.WSBatchAuthService;
 import com.ibm.jbatch.container.ws.WSJobExecution;
 import com.ibm.jbatch.container.ws.WSJobInstance;
 import com.ibm.jbatch.container.ws.WSJobRepository;
 import com.ibm.jbatch.container.ws.WSRemotablePartitionExecution;
-import com.ibm.jbatch.container.ws.WSRemotablePartitionState;
 import com.ibm.jbatch.container.ws.WSStepThreadExecutionAggregate;
 import com.ibm.jbatch.spi.BatchSecurityHelper;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 
 /**
  * {@inheritDoc}
@@ -55,7 +54,9 @@ import com.ibm.jbatch.spi.BatchSecurityHelper;
 public class WSJobRepositoryImpl implements WSJobRepository {
 
     private final static String CLASSNAME = WSJobRepositoryImpl.class.getName();
-    private final static Logger logger = Logger.getLogger(CLASSNAME, RASConstants.BATCH_MSG_BUNDLE);
+    private final static Logger logger = Logger.getLogger(CLASSNAME);
+
+    private static final TraceComponent tc = Tr.register(WSJobRepositoryImpl.class);
 
     private IPersistenceManagerService persistenceManagerService;
 
@@ -366,23 +367,15 @@ public class WSJobRepositoryImpl implements WSJobRepository {
     }
 
     @Override
-    public WSRemotablePartitionExecution createRemotablePartition(RemotablePartitionKey remotablePartitionKey) {
-        return persistenceManagerService.createRemotablePartition(remotablePartitionKey);
+    public WSRemotablePartitionExecution createRemotablePartition(long jobExecutionId, String stepName,
+                                                                  int partitionNumber, RemotablePartitionState internalState) {
+        return persistenceManagerService.createRemotablePartition(jobExecutionId, stepName, partitionNumber, internalState);
     }
 
     @Override
-    public WSRemotablePartitionState getRemotablePartitionInternalState(RemotablePartitionKey remotablePartitionKey) {
-        return persistenceManagerService.getRemotablePartitionInternalState(remotablePartitionKey);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @throws Exception
-     */
-    @Override
-    public int getJobExecutionEntityVersion() throws Exception {
-        return persistenceManagerService.getJobExecutionEntityVersion();
+    public WSRemotablePartitionExecution updateRemotablePartitionInternalState(long jobExecutionId, String stepName,
+                                                                               int partitionNumber, RemotablePartitionState internalState) {
+        return persistenceManagerService.updateRemotablePartitionInternalState(jobExecutionId, stepName, partitionNumber, internalState);
     }
 
     /**
@@ -391,16 +384,27 @@ public class WSJobRepositoryImpl implements WSJobRepository {
      * @throws Exception
      */
     @Override
-    public int getJobInstanceEntityVersion() throws Exception {
-        return persistenceManagerService.getJobInstanceEntityVersion();
+    public int getJobExecutionTableVersion() throws Exception {
+        return persistenceManagerService.getJobExecutionTableVersion();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @throws Exception
+     */
+    @Override
+    public int getJobInstanceTableVersion() throws Exception {
+        return persistenceManagerService.getJobInstanceTableVersion();
     }
 
     @Override
     public WSJobInstance updateJobInstanceWithGroupNames(long jobInstanceId, Set<String> groupNames) {
 
         if (authService == null) {
+            //issue a new message indicating security is not available
             // no auth service (ie security feature not present, so cannot perform group security
-            logger.log(Level.WARNING, "BATCH_SECURITY_NOT_ACTIVE", new Object[] { jobInstanceId });
+            Tr.warning(tc, "BATCH_SECURITY_NOT_ACTIVE", jobInstanceId);
 
             // no groups should be persisted - pass in an empty set
             return persistenceManagerService.updateJobInstanceWithGroupNames(jobInstanceId, new HashSet<String>());
