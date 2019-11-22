@@ -44,6 +44,6 @@
  * @author <a href="mailto:emijiang@uk.ibm.com">Emily Jiang</a>
  * 
  */
-@org.osgi.annotation.versioning.Version("1.4")
+@org.osgi.annotation.versioning.Version("1.1.0")
 package org.eclipse.microprofile.config.inject;
 

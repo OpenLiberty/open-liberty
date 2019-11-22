@@ -18,8 +18,6 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                VariableResolutionTest.class,
-                CacheForTest.class,
                 NullDefaultInjectionTest.class,
                 CharacterInjectionTest.class,
                 AlwaysPassesTest.class //Other test classes are experimental only

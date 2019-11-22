@@ -41,8 +41,8 @@
  * <p>By default there are 3 ConfigSources:
  *
  * <ul>
- * <li>{@code System.getenv()} (ordinal=400)</li>
- * <li>{@code System.getProperties()} (ordinal=300)</li>
+ * <li>{@code System.getProperties()} (ordinal=400)</li>
+ * <li>{@code System.getenv()} (ordinal=300)</li>
  * <li>all {@code META-INF/microprofile-config.properties} files on the ClassPath.
  *  (ordinal=100, separately configurable via a config_ordinal property inside each file)</li>
  * </ul>
@@ -75,6 +75,6 @@
  * 
  */
 
-@org.osgi.annotation.versioning.Version("1.4")
+@org.osgi.annotation.versioning.Version("1.0.1")
 package org.eclipse.microprofile.config;
 

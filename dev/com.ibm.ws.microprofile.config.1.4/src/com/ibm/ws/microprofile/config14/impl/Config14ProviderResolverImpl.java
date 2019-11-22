@@ -20,5 +20,4 @@ public class Config14ProviderResolverImpl extends Config13ProviderResolverImpl {
     protected AbstractConfigBuilder newBuilder(ClassLoader classLoader) {
         return new Config14BuilderImpl(classLoader, getScheduledExecutorService(), getInternalConfigSources());
     }
-
 }

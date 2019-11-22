@@ -13,9 +13,7 @@ bVersion=1.0
 
 src: \
 	fat/src,\
-	test-applications/variableResolutionApp/src,\
 	test-applications/nullDefaultInjectionApp/src,\
-	test-applications/configAccessorCacheForApp/src,\
         test-applications/characterInjectionApp/src
 
 javac.source: 1.8
