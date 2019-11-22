@@ -209,6 +209,10 @@ public class FeatureUtility {
         if(!"esa".equals(packaging)){
             throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_MAVEN_COORDINATE_WRONG_PACKAGING", feature));
         }
+        // block closed liberty features
+        if("com.ibm.websphere.appserver.features".equals(groupId)){
+            throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_FAILED_TO_RESOLVE_FEATURES_FOR_OPEN_LIBERTY", feature));
+        }
 
     }
 
