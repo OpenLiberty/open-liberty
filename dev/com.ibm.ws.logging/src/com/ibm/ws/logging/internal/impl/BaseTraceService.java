@@ -395,13 +395,12 @@ public class BaseTraceService implements TrService {
         commonConsoleLogHandlerUpdates();
 
         /*
-         * If messageFormat has been configured to 'basic' OR if messageFormat is neither basic nor json (default to basic)
+         * If messageFormat has been configured to 'simple' or the deprecated format name 'basic' OR if messageFormat is not a valid format (default to simple)
          * - ensure that we are not connecting conduits/bufferManagers to the handler
-         * otherwise we would have the undesired effect of writing both 'basic' and 'json' formatted message events
+         * otherwise we would have the undesired effect of writing both 'simple' and 'json' formatted message events
          */
-        if (messageFormat.toLowerCase().equals(LoggingConstants.DEFAULT_MESSAGE_FORMAT) ||
-            (!messageFormat.toLowerCase().equals(LoggingConstants.DEFAULT_MESSAGE_FORMAT) &&
-             !messageFormat.toLowerCase().equals(LoggingConstants.JSON_FORMAT))) {
+        if ((messageFormat.toLowerCase().equals(LoggingConstants.DEFAULT_MESSAGE_FORMAT) || messageFormat.toLowerCase().equals(LoggingConstants.DEPRECATED_DEFAULT_FORMAT))
+            || !(LoggingConfigUtils.isMessageFormatValueValid(messageFormat))) {
             if (messageLogHandler != null) {
                 messageLogHandler.setFormat(LoggingConstants.DEFAULT_MESSAGE_FORMAT);
                 messageLogHandler.modified(new ArrayList<String>());
@@ -412,15 +411,20 @@ public class BaseTraceService implements TrService {
         }
 
         /*
-         * If consoleFormat has been configured to 'basic' OR if consoleFormat is neither basic nor json (default to basic)
+         * If consoleFormat has been configured to 'dev' or the deprecated format name 'basic' or the default message format 'simple' OR if consoleFormat is not a valid format
+         * (default to dev)
          * - ensure that we are not connecting conduits/bufferManagers to the handler
-         * otherwise we would have the undesired effect of writing both 'basic' and 'json' formatted message events
+         * otherwise we would have the undesired effect of writing both 'dev'/'simple' and 'json' formatted message events
          */
-        if (consoleFormat.toLowerCase().equals(LoggingConstants.DEFAULT_CONSOLE_FORMAT) ||
-            (!consoleFormat.toLowerCase().equals(LoggingConstants.DEFAULT_CONSOLE_FORMAT) &&
-             !consoleFormat.toLowerCase().equals(LoggingConstants.JSON_FORMAT))) {
+        if ((consoleFormat.toLowerCase().equals(LoggingConstants.DEFAULT_CONSOLE_FORMAT) || consoleFormat.toLowerCase().equals(LoggingConstants.DEPRECATED_DEFAULT_FORMAT)
+             || consoleFormat.toLowerCase().equals(LoggingConstants.DEFAULT_MESSAGE_FORMAT))
+            || !(LoggingConfigUtils.isConsoleFormatValueValid(consoleFormat))) {
             if (consoleLogHandler != null) {
-                consoleLogHandler.setFormat(LoggingConstants.DEFAULT_CONSOLE_FORMAT);
+                if (consoleFormat.toLowerCase().equals(LoggingConstants.DEFAULT_MESSAGE_FORMAT))
+                    consoleLogHandler.setFormat(LoggingConstants.DEFAULT_MESSAGE_FORMAT);
+                else
+                    consoleLogHandler.setFormat(LoggingConstants.DEFAULT_CONSOLE_FORMAT);
+
                 ArrayList<String> filteredList = new ArrayList<String>();
                 filteredList.add(LoggingConstants.DEFAULT_CONSOLE_SOURCE);
                 if (traceLog == systemOut) {
