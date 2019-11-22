@@ -244,6 +244,7 @@ public class CommonMpJwtFat extends CommonSecurityFat {
 //        Log.info(thisClass, "addApiOutputExpectations", "list of values is: " + values);
         if (!values.isEmpty()) {
             for (String value : values) {
+                Log.info(thisClass, "addApiOutputExpectations", "value: " + value);
                 expectations.addExpectation(addApiOutputExpectation(jsonWebTokenApi, claimIdentifier, passKeyName, value));
             }
         } else {
@@ -284,9 +285,9 @@ public class CommonMpJwtFat extends CommonSecurityFat {
             builtString = builtString + ":";
         }
         if (key != null) {
-            builtString = builtString + " key: " + key + " value:.*" + value;
+            builtString = builtString + " key: " + key + " value:.*" + value.replace("\"", "");
         } else {
-            builtString = builtString + " " + value.replace("[", "\\[").replace("]", "\\]");
+            builtString = builtString + " " + value.replace("[", "\\[").replace("]", "\\]").replace("\"", "");
         }
 
         return builtString;
