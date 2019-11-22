@@ -51,7 +51,7 @@ public abstract class FeatureUtilityToolTest {
     protected static void setupEnv() throws Exception {
         final String methodName = "setup";
         server = LibertyServerFactory.getLibertyServer("com.ibm.ws.install.featureUtility_fat");
-        
+
         // jbe/build/dev/image/output/wlp
         installRoot = server.getInstallRoot();
 
