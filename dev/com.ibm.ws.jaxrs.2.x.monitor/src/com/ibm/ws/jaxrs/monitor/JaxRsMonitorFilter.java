@@ -52,7 +52,7 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
     // application stop time.
     ConcurrentHashMap<String,RestfulMetricInfo> appMetricInfos = new ConcurrentHashMap<String,RestfulMetricInfo>();
     
-    private final ThreadLocal<Long> startTimes = new ThreadLocal<Long>();    
+    private static final String START_TIME = "Start_Time";
 
     /**
      * Method : filter(ContainerRequestContext)
@@ -68,8 +68,10 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
     @Override
     public void filter(ContainerRequestContext reqCtx) throws IOException {
     	
-        startTimes.set(System.nanoTime());
-  	
+    	// Store the start time in the ContainerRequestContext that can be accessed
+    	// in the response filter method.  
+        reqCtx.setProperty(START_TIME, System.nanoTime());
+          	
     }
     /**
      * Method : filter(ContainerRequestContext, ContainerResponseContext)
@@ -86,11 +88,12 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
 
     @Override
     public void filter(ContainerRequestContext reqCtx, ContainerResponseContext respCtx) throws IOException {
+    	
     	long elapsedTime = 0;
         //Calculate the response time for the resource method.
-        Long times = startTimes.get();
-        if (times!=null) {
-            elapsedTime = System.nanoTime() - times;
+        Long startTime = (long)reqCtx.getProperty(START_TIME);
+        if (startTime!=null) {
+            elapsedTime = System.nanoTime() - startTime.longValue();
         }
 
     	Class<?> resourceClass = resourceInfo.getResourceClass();
@@ -117,8 +120,8 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
             String appName = getAppName(cmd);
             String modName = getModName(cmd);
             String keyPrefix = createKeyPrefix(appName,modName);
-            String key = keyPrefix + "/" + fullMethodName;        
-
+            String key = keyPrefix + "/" + fullMethodName; 
+            
             RESTful_Stats stats = jaxRsCountByName.get(key);
             if (stats == null) {
                  stats =initJaxRsStats(key, keyPrefix, fullMethodName);

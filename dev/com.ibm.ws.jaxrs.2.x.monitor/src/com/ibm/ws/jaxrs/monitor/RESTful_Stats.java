@@ -42,7 +42,6 @@ public class RESTful_Stats extends Meter implements RestfulStatsMXBean {
         setMethodName(mName);
         requestCount = new Counter();
         requestCount.setDescription("This shows number of requests to a Restful resource method");
-//        requestCount.setUnit("ns");
         responseTime = new StatisticsMeter();
         responseTime.setDescription("Cumulative Response Time (NanoSeconds) for a Restful resource method");
         responseTime.setUnit("ns");

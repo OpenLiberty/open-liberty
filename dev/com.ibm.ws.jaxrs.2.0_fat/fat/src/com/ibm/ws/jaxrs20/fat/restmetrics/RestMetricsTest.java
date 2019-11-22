@@ -38,6 +38,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.jaxrs.fat.restmetrics.MetricsUnmappedCheckedException;
 import com.ibm.ws.jaxrs.fat.restmetrics.MetricsUnmappedUncheckedException;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -45,18 +46,40 @@ import componenttest.topology.impl.LibertyServer;
 @RunWith(FATRunner.class)
 public class RestMetricsTest {
 
-    public static final String ignore_message = "CWWKW1002W";
-    final static String URI_CONTEXT_ROOT = "http://localhost:" + Integer.getInteger("bvt.prop.HTTP_default") +
+     // Array to hold the names that identify the methods in metrics 2.0
+    static final String[] METHOD_STRINGS = {
+                                                   "restmetrics_com_ibm_ws_jaxrs_fat_restmetrics_RestMetricsResource_getMessage__",
+                                                   "restmetrics_com_ibm_ws_jaxrs_fat_restmetrics_RestMetricsResource_asyncMethod_javax_ws_rs_container_AsyncResponse_",
+                                                   "restmetrics_com_ibm_ws_jaxrs_fat_restmetrics_RestMetricsResource_getMultiParamMessage_java_lang_String_",
+                                                   "restmetrics_com_ibm_ws_jaxrs_fat_restmetrics_RestMetricsResource_getMultiParamMessage_java_lang_String_java_lang_String_",
+                                                   "restmetrics_com_ibm_ws_jaxrs_fat_restmetrics_RestMetricsResource_postMessage_java_lang_String_",
+                                                   "restmetrics_com_ibm_ws_jaxrs_fat_restmetrics_RestMetricsResource_putMessage_java_lang_String_",
+                                                   "restmetrics_com_ibm_ws_jaxrs_fat_restmetrics_RestMetricsResource_deleteMessage__",
+                                                   "restmetrics_com_ibm_ws_jaxrs_fat_restmetrics_RestMetricsResource_getCheckedException_java_lang_String_",
+                                                   "restmetrics_com_ibm_ws_jaxrs_fat_restmetrics_RestMetricsResource_getUncheckedException_java_lang_String_"};
+
+    static final String URI_CONTEXT_ROOT = "http://localhost:" + Integer.getInteger("bvt.prop.HTTP_default") +
                     "/restmetrics/rest/";
+
+    private static final String METRICSWAR = "restmetrics";
+
+    private final String MAPPEDURI = getBaseTestUri(METRICSWAR, "rest", "restmetrics");
+
+    private static final int BUFFER = 250; // margin or error in seconds for response times.
+
+    private static final int EXPECTEDRT = 250; //Expected min. response time for a single request.
+
+    private final int[] methodCounts = new int[9];
+
+    private final double[] responseTimes = new double[9];
 
     @Server("com.ibm.ws.jaxrs.fat.restmetrics")
     public static LibertyServer server;
 
-    private static final String metricswar = "restmetrics";
 
     @BeforeClass
     public static void setUp() throws Exception {
-        ShrinkHelper.defaultDropinApp(server, metricswar, "com.ibm.ws.jaxrs.fat.restmetrics");
+        ShrinkHelper.defaultDropinApp(server, METRICSWAR, "com.ibm.ws.jaxrs.fat.restmetrics");
 
         // Make sure we don't fail because we try to start an
         // already started server
@@ -68,10 +91,12 @@ public class RestMetricsTest {
 
     }
 
+
     @AfterClass
     public static void tearDown() throws Exception {
         if (server != null) {
-            server.stopServer();
+            server.stopServer("MetricsUnmappedUncheckedException", "MetricsUnmappedCheckedException",
+                              "Fault: Unmapped Checked","SRVE0777E");
         }
     }
 
@@ -91,77 +116,43 @@ public class RestMetricsTest {
         return server.getHostname();
     }
 
-    private final String mappedUri = getBaseTestUri(metricswar, "rest", "restmetrics");
-
-    private static String[] methodStrings = { "restmetrics_com_ibm_ws_jaxrs_fat_restmetrics_RestMetricsResource_getMessage__",
-                                              "restmetrics_com_ibm_ws_jaxrs_fat_restmetrics_RestMetricsResource_getMultiParamMessage_java_lang_String_",
-                                              "restmetrics_com_ibm_ws_jaxrs_fat_restmetrics_RestMetricsResource_getMultiParamMessage_java_lang_String_java_lang_String_",
-                                              "restmetrics_com_ibm_ws_jaxrs_fat_restmetrics_RestMetricsResource_postMessage_java_lang_String_",
-                                              "restmetrics_com_ibm_ws_jaxrs_fat_restmetrics_RestMetricsResource_putMessage_java_lang_String_",
-                                              "restmetrics_com_ibm_ws_jaxrs_fat_restmetrics_RestMetricsResource_deleteMessage__" };
-
-    private final int[] methodCounts = new int[6];
-
-    private final double[] responseTimes = new double[6];
-
-    int buffer = 1; // margin or error in seconds for response times.
-
-    int expectedRT = 1; //Expected min. response time for a single request.
 
     @Test
-    public void testAll() throws IOException {
-        try {
-            // Execute a get method with varying numbers of parameters.
-            runGetMethod(0, 200, "/restmetrics/rest/restmetrics", "Metrics!");
+    public void testCoreMethods() throws IOException {
 
-            runGetMethod(1, 200, "/restmetrics/rest/restmetrics/test", "Metrics!");
+        // Execute a get method with varying numbers of parameters.
+        runGetMethod(0, 200, "/restmetrics/rest/restmetrics", "Metrics!");
 
-            runGetMethod(2, 200, "/restmetrics/rest/restmetrics/test/test", "Metrics!");
+        runGetMethod(1, 200, "/restmetrics/rest/restmetrics/async", "Metrics!");
 
-            runGetMethod(2, 200, "/restmetrics/rest/restmetrics/mappedChecked", "Mapped Checked");
+        runGetMethod(2, 200, "/restmetrics/rest/restmetrics/test", "Metrics!");
 
-            try {
-                runGetMethod(2, 500, "/restmetrics/rest/restmetrics/unmappedChecked", "Unmapped Checked");
-            } catch (MetricsUnmappedCheckedException e) {
-                System.out.println("Caught expected exception: " + e);
-            }
+        runGetMethod(3, 200, "/restmetrics/rest/restmetrics/test/test", "Metrics!");
 
-            runGetMethod(2, 200, "/restmetrics/rest/restmetrics/mappedUnchecked", "Mapped Unchecked");
-
-            try {
-                runGetMethod(2, 500, "/restmetrics/rest/restmetrics/unmappedUnchecked", "Unmapped Unchecked");
-            } catch (MetricsUnmappedUncheckedException e) {
-                System.out.println("Caught expected exception: " + e);
-            }
-        } catch (MetricsUnmappedCheckedException e1) {
-            //no-op
-        } catch (MetricsUnmappedUncheckedException e2) {
-            //no-op
-        }
         // Execute post method 3 times.
-        runPostMethod(3);
+        runPostMethod(4);
 
-        runPostMethod(3);
+        runPostMethod(4);
 
-        runPostMethod(3);
+        runPostMethod(4);
 
         // Execute put method 4 times.
-        runPutMethod(4);
+        runPutMethod(5);
 
-        runPutMethod(4);
+        runPutMethod(5);
 
-        runPutMethod(4);
+        runPutMethod(5);
 
-        runPutMethod(4);
+        runPutMethod(5);
 
         // Execute delete method once.
-        runDeleteMethod(5);
+        runDeleteMethod(6);
 
         ArrayList<String> countList = getMetricsStrings("/metrics/vendor/RESTful.request.total");
         ArrayList<String> responseList = getMetricsStrings("/metrics/vendor/RESTful.responseTime.total");
         //first lets confirm that the metrics information is correct
         //Now  lets confirm the metrics information is available.
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 7; i++) {
             // Confirm the metrics data
             checkCount(countList, i);
             responseTimes[i] = checkResponseTime(responseList, i);
@@ -169,6 +160,66 @@ public class RestMetricsTest {
             runCheckMonitorStats(200, i);
         }
     }
+
+    //    @AllowedFFDC("com.ibm.ws.jaxrs.fat.restmetrics.MetricsUnmappedCheckedException")
+
+    @Test
+    @AllowedFFDC("org.apache.cxf.interceptor.Fault")
+    public void testCheckedExceptions() throws IOException {
+
+        try {
+
+            runGetCheckedExceptionMethod(7, 200, "/restmetrics/rest/restmetrics/checked/mappedChecked", "Mapped Checked");
+        } catch (MetricsUnmappedCheckedException e) {
+            fail("Unexpected exception thrown: " + e.toString());
+        }
+
+        try {
+            runGetCheckedExceptionMethod(7, 500, "/restmetrics/rest/restmetrics/checked/unmappedChecked", "Unmapped Checked");
+        } catch (MetricsUnmappedCheckedException e) {
+            System.out.println("Caught expected exception: " + e);
+        }
+
+
+        ArrayList<String> countList = getMetricsStrings("/metrics/vendor/RESTful.request.total");
+        ArrayList<String> responseList = getMetricsStrings("/metrics/vendor/RESTful.responseTime.total");
+
+        // Confirm the metrics data
+        checkCount(countList, 7);
+        responseTimes[7] = checkResponseTime(responseList, 7);
+        // Confirm the monitor data
+        runCheckMonitorStats(200, 7);
+    }
+
+    @Test
+    @AllowedFFDC("com.ibm.ws.jaxrs.fat.restmetrics.MetricsUnmappedUncheckedException")
+    public void testUncheckedExceptions() throws IOException {
+
+        try {
+
+            runGetUncheckedExceptionMethod(8, 200, "/restmetrics/rest/restmetrics/unchecked/mappedUnchecked", "Mapped Unchecked");
+        } catch (MetricsUnmappedUncheckedException e) {
+            fail("Unexpected exception thrown: " + e.toString());
+        }
+
+        try {
+            runGetUncheckedExceptionMethod(8, 500, "/restmetrics/rest/restmetrics/unchecked/unmappedUnchecked", "Unmapped Unchecked");
+        } catch (MetricsUnmappedUncheckedException e) {
+            System.out.println("Caught expected exception: " + e);
+        }
+
+
+        ArrayList<String> countList = getMetricsStrings("/metrics/vendor/RESTful.request.total");
+        ArrayList<String> responseList = getMetricsStrings("/metrics/vendor/RESTful.responseTime.total");
+
+        // Confirm the metrics data
+        checkCount(countList, 8);
+        responseTimes[8] = checkResponseTime(responseList, 8);
+        // Confirm the monitor data
+        runCheckMonitorStats(200, 8);
+
+    }
+
 
     private void runCheckMonitorStats(int exprc, int index) throws IOException {
         URL url = new URL("http://" + getHost() + ":" + getPort() +
@@ -207,7 +258,7 @@ public class RestMetricsTest {
         }
     }
 
-    private void runGetMethod(int index, int exprc, String requestUri, String testOut) throws IOException, MetricsUnmappedCheckedException, MetricsUnmappedUncheckedException {
+    private void runGetMethod(int index, int exprc, String requestUri, String testOut) throws IOException {
         URL url = new URL("http://" + getHost() + ":" + getPort() + requestUri);
         int retcode;
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -233,14 +284,101 @@ public class RestMetricsTest {
                 if (lines.indexOf(testOut) < 0)
                     fail("Missing success message in output. " + lines);
 
+                // Increment the count only if successful execution or mapped exception.
+                methodCounts[index]++;
             }
 
             if (retcode != exprc)
                 fail("Bad return Code from Get. Expected: " + exprc + ", Received: "
                      + retcode);
 
-            // Increment the count
-            methodCounts[index]++;
+            return;
+        } finally {
+            con.disconnect();
+        }
+    }
+
+    private void runGetCheckedExceptionMethod(int index, int exprc, String requestUri, String testOut) throws IOException, MetricsUnmappedCheckedException {
+        URL url = new URL("http://" + getHost() + ":" + getPort() + requestUri);
+        int retcode;
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        try {
+            con.setDoInput(true);
+            con.setDoOutput(true);
+            con.setUseCaches(false);
+            con.setRequestMethod("GET");
+
+            retcode = con.getResponseCode();
+
+            if (retcode == 200) {
+                InputStream is = con.getInputStream();
+                InputStreamReader isr = new InputStreamReader(is);
+                BufferedReader br = new BufferedReader(isr);
+
+                String sep = System.getProperty("line.separator");
+                StringBuilder lines = new StringBuilder();
+                for (String line = br.readLine(); line != null; line = br.readLine()) {
+                    lines.append(line).append(sep);
+                }
+
+                if (lines.indexOf(testOut) < 0)
+                    fail("Missing success message in output. Expected: " + testOut
+                         + ", Received:  " + lines);
+
+                // Increment the count only if successful execution.
+                methodCounts[index]++;
+
+
+            }
+
+            if (retcode != exprc) {
+                fail("Bad return Code from Get. Expected: " + exprc + ", Received: "
+                     + retcode);
+            }
+
+            return;
+        } finally {
+            con.disconnect();
+        }
+    }
+
+    private void runGetUncheckedExceptionMethod(int index, int exprc, String requestUri, String testOut) throws IOException, MetricsUnmappedUncheckedException {
+        URL url = new URL("http://" + getHost() + ":" + getPort() + requestUri);
+        int retcode;
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        try {
+            con.setDoInput(true);
+            con.setDoOutput(true);
+            con.setUseCaches(false);
+            con.setRequestMethod("GET");
+
+            retcode = con.getResponseCode();
+
+            if (retcode == 200) {
+                InputStream is = con.getInputStream();
+                InputStreamReader isr = new InputStreamReader(is);
+                BufferedReader br = new BufferedReader(isr);
+
+                String sep = System.getProperty("line.separator");
+                StringBuilder lines = new StringBuilder();
+                for (String line = br.readLine(); line != null; line = br.readLine()) {
+                    lines.append(line).append(sep);
+                }
+
+                if (lines.indexOf(testOut) < 0)
+                    fail("Missing success message in output. Expected: " + testOut
+                         + ", Received:  " + lines);
+
+                // Increment the count only if successful execution.
+                methodCounts[index]++;
+
+            }
+
+            if (retcode != exprc) {
+                fail("Bad return Code from Get. Expected: " + exprc + ", Received: "
+                     + retcode);
+            }
+
             return;
         } finally {
             con.disconnect();
@@ -249,7 +387,7 @@ public class RestMetricsTest {
 
     private void runPostMethod(int index) throws IOException {
 
-        HttpPost postMethod = new HttpPost(mappedUri + "/post1");
+        HttpPost postMethod = new HttpPost(MAPPEDURI + "/post1");
         org.apache.http.entity.
         StringEntity entity = new StringEntity("Post");
         entity.setContentType("text/*");
@@ -270,7 +408,7 @@ public class RestMetricsTest {
     }
 
     private void runPutMethod(int index) throws IOException {
-        HttpPut putMethod = new HttpPut(mappedUri + "/put1");
+        HttpPut putMethod = new HttpPut(MAPPEDURI + "/put1");
         StringEntity entity = new StringEntity("Put");
         entity.setContentType("text/*");
         putMethod.setEntity(entity);
@@ -293,7 +431,7 @@ public class RestMetricsTest {
 
 
     private void runDeleteMethod(int index) throws IOException {
-        HttpDelete deleteMethod = new HttpDelete(mappedUri + "/delete1");
+        HttpDelete deleteMethod = new HttpDelete(MAPPEDURI + "/delete1");
 
         HttpClient client = getHttpClient();
 
@@ -354,13 +492,13 @@ public class RestMetricsTest {
     }
 
     private void checkCount(ArrayList<String> lines, int index) {
-        int value = 0;
+        int value = -1;
 
         // Read the lines from the output looking for one that looks like this:
         // "vendor_RESTful_request_total{restful="restmetrics_com_ibm_ws_jaxrs_fat_restmetrics_
         // RestMetricsResource_getMessage__"} 1" and get the count from the end of it
         for (String line : lines) {
-            if (line.contains(methodStrings[index])) {
+            if (line.contains(METHOD_STRINGS[index])) {
                 String stringValue = line.substring(line.indexOf("}") + 2);
                 value = Integer.parseInt(stringValue);
             }
@@ -368,7 +506,7 @@ public class RestMetricsTest {
 
         if (value != methodCounts[index]) {
             fail("Failure:  Expected Request Count of " + methodCounts[index] +
-                 " but received Request Count of " + value);
+                 " but received Request Count of " + value + ":  index = " + index);
         }
 
         return;
@@ -383,13 +521,13 @@ public class RestMetricsTest {
         // "vendor_RESTful_responseTime_total_seconds{restful="restmetrics_com_ibm_ws_jaxrs_fat_restmetrics_
         // RestMetricsResource_getMessage__"} 5.028664531" and get the responseTime from the end of it
         for (String line : lines) {
-            if (line.contains(methodStrings[index])) {
+            if (line.contains(METHOD_STRINGS[index])) {
                 String stringValue = line.substring(line.indexOf("}") + 2);
-                responseTime = Float.parseFloat(stringValue);
+                responseTime = Float.parseFloat(stringValue) * 1000; //convert to ms
             }
         }
-        int minExpectedResponseTime = expectedRT * methodCounts[index];
-        int maxExpectedResponseTime = minExpectedResponseTime + buffer;
+        int minExpectedResponseTime = EXPECTEDRT * methodCounts[index];
+        int maxExpectedResponseTime = minExpectedResponseTime + BUFFER;
         if (!((minExpectedResponseTime <= responseTime) && (responseTime <= maxExpectedResponseTime))) {
             fail("Failure:  Expected response time >= " + minExpectedResponseTime +
                  " and <= " + maxExpectedResponseTime +

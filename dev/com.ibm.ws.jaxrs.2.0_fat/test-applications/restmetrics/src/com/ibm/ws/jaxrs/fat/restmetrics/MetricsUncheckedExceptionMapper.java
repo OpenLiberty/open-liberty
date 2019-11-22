@@ -27,8 +27,7 @@ public class MetricsUncheckedExceptionMapper implements ExceptionMapper<MetricsM
 
     @Override
     public Response toResponse(MetricsMappedUncheckedException ex) {
-        System.out.println("Jim!!!   in MetricsUncheckedExceptionMapper");
-        return Response.status(200).entity(ex.getMessage()).type("text/plain").build();
+         return Response.status(200).entity(ex.getMessage()).type("text/plain").build();
         }
 
 }

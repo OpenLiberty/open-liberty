@@ -12,6 +12,7 @@ package com.ibm.ws.jaxrs.fat.restmetrics;
 
 import java.lang.management.ManagementFactory;
 
+import javax.ejb.Asynchronous;
 import javax.management.JMX;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
@@ -23,6 +24,8 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -41,6 +44,27 @@ import com.ibm.websphere.jaxrs.monitor.RestfulStatsMXBean;
 @Path("/restmetrics")
 public class RestMetricsResource {
 
+    // Array to hold the names that identify the methods in monitor 1.0
+    public static final String[] MONITOR_STRINGS = {
+                                                   "WebSphere:type=RESTful_Stats,name=restmetrics/com.ibm.ws.jaxrs.fat.restmetrics."
+                                                   + "RestMetricsResource.getMessage()",
+                                                   "WebSphere:type=RESTful_Stats,name=restmetrics/com.ibm.ws.jaxrs.fat.restmetrics."
+                                                   + "RestMetricsResource.asyncMethod(javax.ws.rs.container.AsyncResponse)",
+                                                   "WebSphere:type=RESTful_Stats,name=restmetrics/com.ibm.ws.jaxrs.fat.restmetrics."
+                                                   + "RestMetricsResource.getMultiParamMessage(java.lang.String)",
+                                                   "WebSphere:type=RESTful_Stats,name=restmetrics/com.ibm.ws.jaxrs.fat.restmetrics."
+                                                   + "RestMetricsResource.getMultiParamMessage(java.lang.String_java.lang.String)",
+                                                   "WebSphere:type=RESTful_Stats,name=restmetrics/com.ibm.ws.jaxrs.fat.restmetrics."
+                                                   + "RestMetricsResource.postMessage(java.lang.String)",
+                                                   "WebSphere:type=RESTful_Stats,name=restmetrics/com.ibm.ws.jaxrs.fat.restmetrics."
+                                                   + "RestMetricsResource.putMessage(java.lang.String)",
+                                                   "WebSphere:type=RESTful_Stats,name=restmetrics/com.ibm.ws.jaxrs.fat.restmetrics."
+                                                   + "RestMetricsResource.deleteMessage()",
+                                                   "WebSphere:type=RESTful_Stats,name=restmetrics/com.ibm.ws.jaxrs.fat.restmetrics."
+                                                   + "RestMetricsResource.getCheckedException(java.lang.String)",
+                                                   "WebSphere:type=RESTful_Stats,name=restmetrics/com.ibm.ws.jaxrs.fat.restmetrics."
+                                                   + "RestMetricsResource.getUncheckedException(java.lang.String)"};
+
     /**
      * A static variable to hold a message. Note that for this sample, the field
      * is static because a new <code>RestMetricsResource</code> object is created
@@ -48,7 +72,7 @@ public class RestMetricsResource {
      */
     private static volatile String message = "Metrics!";
 
-    private final int sleepTime = 1000;
+    private final int sleepTime = 250;
 
     /**
      * Processes a GET request and returns the stored message.
@@ -74,14 +98,30 @@ public class RestMetricsResource {
      * @return sting indicating success
      */
     @GET
-    @Path("/exception/npe")
+    @Path("/async")
     @Produces(MediaType.TEXT_PLAIN)
-    public String checkExceptionNpe() {
-        //force an NPE
-        Object o = null;
-        o.toString(); // should create an NPE
-        return "Failed!";
+    @Asynchronous
+    public void asyncMethod(@Suspended final AsyncResponse asyncResponse) {
+        // Returns a response on another thread
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                asyncResponse.resume(testAsync());
+            }
+        });
+        t.start();
     }
+
+    private String testAsync() {
+        try {
+            Thread.sleep(sleepTime);
+        } catch (Exception e) {
+            // no-op
+        }
+
+        return RestMetricsResource.message;
+    }
+
 
     /**
      * Processes a GET request with single parameters.
@@ -92,29 +132,59 @@ public class RestMetricsResource {
     @GET
     @Path("{param1}")
     @Produces(MediaType.TEXT_PLAIN)
-    public String getMultiParamMessage(@PathParam("param1") String p1) throws MetricsMappedCheckedException, MetricsUnmappedCheckedException {
+    public String getMultiParamMessage(@PathParam("param1") String p1) {
         try {
             Thread.sleep(sleepTime);
         } catch (Exception e) {
             // no-op
         }
-        // Option to check NPE exception mapper
+        return RestMetricsResource.message;
+    }
+
+    /**
+     * Processes a GET request throwing a checked exception.
+     */
+    @GET
+    @Path("/checked/{param1}")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String getCheckedException(@PathParam("param1") String p1) throws MetricsMappedCheckedException, MetricsUnmappedCheckedException {
+        try {
+            Thread.sleep(sleepTime);
+        } catch (Exception e) {
+            // no-op
+        }
+        // Option to check mapped checked exception
         if (p1.equals("mappedChecked")) {
             throw new MetricsMappedCheckedException("Mapped Checked");
         }
-        // Option to check an unmapped checked exception
+        // Option to check an mapped unchecked exception
         if (p1.equals("unmappedChecked")) {
-            throw new MetricsUnmappedCheckedException("Exception Caught");
+            throw new MetricsUnmappedCheckedException("Unmapped Checked");
         }
-        // Option to check an unmapped unchecked exception
+        return "FAILED!";
+    }
+
+    /**
+     * Processes a GET throwing an unchecked exception.
+     */
+    @GET
+    @Path("/unchecked/{param1}")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String getUncheckedException(@PathParam("param1") String p1) {
+        try {
+            Thread.sleep(sleepTime);
+        } catch (Exception e) {
+            // no-op
+        }
+        // Option to check an unmapped checked exception
         if (p1.equals("mappedUnchecked")) {
             throw new MetricsMappedUncheckedException("Mapped Unchecked");
         }
         // Option to check an unmapped unchecked exception
         if (p1.equals("unmappedUnchecked")) {
-            throw new MetricsUnmappedUncheckedException("Exception Caught");
+            throw new MetricsUnmappedUncheckedException("Unmapped Unchecked");
         }
-        return RestMetricsResource.message;
+        return "FAILED!";
     }
 
     /**
@@ -202,19 +272,6 @@ public class RestMetricsResource {
         return Response.noContent().build();
     }
 
-    String[] monitorStrings = { "WebSphere:type=RESTful_Stats,name=restmetrics/com.ibm.ws.jaxrs.fat.restmetrics."
-                                + "RestMetricsResource.getMessage()",
-                                "WebSphere:type=RESTful_Stats,name=restmetrics/com.ibm.ws.jaxrs.fat.restmetrics."
-                                                                      + "RestMetricsResource.getMultiParamMessage(java.lang.String)",
-                                "WebSphere:type=RESTful_Stats,name=restmetrics/com.ibm.ws.jaxrs.fat.restmetrics."
-                                                                                                                                      + "RestMetricsResource.getMultiParamMessage(java.lang.String_java.lang.String)",
-                                "WebSphere:type=RESTful_Stats,name=restmetrics/com.ibm.ws.jaxrs.fat.restmetrics."
-                                                                                                                                                                                                                       + "RestMetricsResource.postMessage(java.lang.String)",
-                                "WebSphere:type=RESTful_Stats,name=restmetrics/com.ibm.ws.jaxrs.fat.restmetrics."
-                                                                                                                                                                                                                                                                              + "RestMetricsResource.putMessage(java.lang.String)",
-                                "WebSphere:type=RESTful_Stats,name=restmetrics/com.ibm.ws.jaxrs.fat.restmetrics."
-                                                                                                                                                                                                                                                                                                                                    + "RestMetricsResource.deleteMessage()" };
-
     /**
      * Resource method to verify the monitor 1.0 data is correct.
      *
@@ -230,20 +287,22 @@ public class RestMetricsResource {
 
         MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
 
-        ObjectName monitorObject = new ObjectName(monitorStrings[index]);
+        ObjectName monitorObject = new ObjectName(MONITOR_STRINGS[index]);
 
         // Check monitor stats
         RestfulStatsMXBean restfulStats = JMX.newMXBeanProxy(mbs, monitorObject, RestfulStatsMXBean.class);
         long monitorCount = restfulStats.getRequestCount();
         double monitorResponseTime = restfulStats.getResponseTime();
         if (monitorCount != count) {
-            return "Failed:  Expected method count " + count + ", received " + monitorCount;
+            return "Failed:  Expected method count " + count + ", received " + monitorCount
+                   + ":  index = " + index;
 
         }
         double threshold = .0001;
-        monitorResponseTime /= 1000000000;
+        monitorResponseTime /= 1000000;
         if (Math.abs(monitorResponseTime - responseTime) > threshold) {
-            return "Failed:  Expected response time " + responseTime + ", received " + monitorResponseTime;
+            return "Failed:  Expected response time " + responseTime + ", received " + monitorResponseTime
+                   + ":  index = " + index;
         }
 
         return "Passed!";
