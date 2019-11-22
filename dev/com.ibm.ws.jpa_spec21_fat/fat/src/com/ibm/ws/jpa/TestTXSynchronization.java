@@ -98,7 +98,7 @@ public class TestTXSynchronization extends JPAFATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         PrivHelper.generateCustomPolicy(server, FATSuite.JAXB_PERMS);
-        bannerStart(TestOLGH8820_Web.class);
+        bannerStart(TestTXSynchronization.class);
         timestart = System.currentTimeMillis();
 
         int appStartTimeout = server.getAppStartTimeout();
@@ -245,7 +245,7 @@ public class TestTXSynchronization extends JPAFATServletClient {
             } catch (Throwable t) {
                 t.printStackTrace();
             }
-            bannerEnd(TestOLGH8820_Web.class, timestart);
+            bannerEnd(TestTXSynchronization.class, timestart);
         }
     }
 }
