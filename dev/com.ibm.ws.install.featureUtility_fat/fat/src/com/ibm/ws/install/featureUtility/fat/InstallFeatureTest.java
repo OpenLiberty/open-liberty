@@ -44,14 +44,16 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 
         String[] param1s = { "installFeature", "jsp-2.3"};
         String [] fileLists = {"lib/features/com.ibm.websphere.appserver.jsp-2.3.mf"};
-        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.jsp-2.3", fileLists);
+//        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.jsp-2.3", fileLists);
+        deleteFeaturesAndLafilesFolders(METHOD_NAME);
 
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
         assertEquals("Exit code should be 0",0, po.getReturnCode());
         String output = po.getStdout();
         assertTrue("Should contain jsp-2.3", output.contains("jsp-2.3"));
 
-        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.jsp-2.3", fileLists);
+//        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.jsp-2.3", fileLists);
+        deleteFeaturesAndLafilesFolders(METHOD_NAME);
         Log.exiting(c, METHOD_NAME);
     }
 
@@ -67,8 +69,9 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         String[] param1s = { "installFeature", "jsf-2.2", "cdi-1.2"};
         String [] fileListA = {"lib/features/com.ibm.websphere.appserver.jsf-2.2.mf", "lib/features/com.ibm.websphere.appserver.cdi1.2-jsf2.2.mf"};
         String [] fileListB = {"lib/features/com.ibm.websphere.appserver.cdi-1.2.mf"};
-        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.jsf-2.2", fileListA);
-        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.cdi-1.2", fileListB);
+//        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.jsf-2.2", fileListA);
+//        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.cdi-1.2", fileListB);
+        deleteFeaturesAndLafilesFolders(METHOD_NAME);
 
 
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
@@ -76,10 +79,12 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         String output = po.getStdout();
         assertTrue("Output should contain jsf-2.2", output.indexOf("jsf-2.2") >= 0);
         assertTrue("Output should contain cdi-1.2", output.indexOf("cdi-1.2") >= 0);
-        assertTrue("The autofeature cdi1.2-jsf-2.2 should be installed" , new File(installRoot + "/lib/features/com.ibm.websphere.appserver.cdi1.2-jsf2.2.mf").exists());
+        assertTrue("The autofeature cdi1.2-jsf-2.2 should be installed" , new File(minifiedRoot + "/lib/features/com.ibm.websphere.appserver.cdi1.2-jsf2.2.mf").exists());
 
-        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.jsf-2.2", fileListA);
-        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.cdi-1.2", fileListB);
+//        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.jsf-2.2", fileListA);
+////        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.cdi-1.2", fileListB);
+        deleteFeaturesAndLafilesFolders(METHOD_NAME);
+
 
         Log.exiting(c, METHOD_NAME);
     }
@@ -131,7 +136,9 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 
         String[] param1s = { "installFeature", "mpHealth-2.0"};
         String [] fileLists = {"lib/features/com.ibm.websphere.appserver.mpHealth-2.0.mf"};
-        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.mpHealth-2.0", fileLists);
+//        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.mpHealth-2.0", fileLists);
+        deleteFeaturesAndLafilesFolders(METHOD_NAME);
+
 
 
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
@@ -145,7 +152,9 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         assertTrue("Should contain CWWKF1250I", output.contains("CWWKF1250I"));
 
 
-        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.mpHealth-2.0", fileLists);
+//        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.mpHealth-2.0", fileLists);
+        deleteFeaturesAndLafilesFolders(METHOD_NAME);
+
         Log.exiting(c, METHOD_NAME);
 
     }

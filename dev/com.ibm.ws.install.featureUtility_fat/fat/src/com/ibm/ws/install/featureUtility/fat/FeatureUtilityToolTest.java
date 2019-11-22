@@ -23,18 +23,22 @@ import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.install.internal.InstallUtils;
 
+import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
+import componenttest.topology.utils.FileUtils;
 import test.utils.TestUtils;
 
 public abstract class FeatureUtilityToolTest {
 
     private static final Class<?> c = FeatureUtilityToolTest.class;
     public static LibertyServer server;
-    public static String installRoot;
+    private static String installRoot;
+    public static String minifiedRoot;
     protected static List<String> cleanFiles;
     protected static List<String> cleanDirectories;
     private static Logger logger = Logger.getLogger("com.ibm.ws.install.featureUtility_fat");
+    protected static String serverName = "featureUtility_fat";
     private static Properties wlpVersionProps;
     private static String originalWlpVersion;
     private static String originalWlpEdition;
@@ -42,12 +46,12 @@ public abstract class FeatureUtilityToolTest {
     static String os = System.getProperty("os.name").toLowerCase();
     static boolean isWindows = os.indexOf("win") >= 0;
     static boolean isClosedLiberty = false;
+    public static String pathToAutoFVTTestFiles = "lib/LibertyFATTestFiles/";
 
     protected static void setupEnv() throws Exception {
         final String methodName = "setup";
         server = LibertyServerFactory.getLibertyServer("com.ibm.ws.install.featureUtility_fat");
-
-
+        
         // jbe/build/dev/image/output/wlp
         installRoot = server.getInstallRoot();
 
@@ -55,70 +59,78 @@ public abstract class FeatureUtilityToolTest {
 
         isClosedLiberty = isClosedLibertyWlp();
         Log.info(c, methodName, "Closed liberty wlp?: "+ isClosedLiberty);
-//        // extract the kernel into our installRoot
-//        // kernelZipDir : jbe/build/dev/build.image/build/libs/distributions/
-//        String kernelZipDir = installRoot + "/../../../build.image/build/libs/distributions/";
-//        String dest = kernelZipDir + "/openliberty-kernel";
-//
-//        Log.info(c, methodName,"kernel zip dir: " + new File(kernelZipDir).getAbsolutePath());
-//
-//        extractOpenLibertyKernelZip(kernelZipDir, kernelZipDir + dest);
-//
-//        // change installroot to unzipped kernel
-//        installRoot =  dest;
-//
-////        Log.info(c, methodName, "install root: " + installRoot);
-        
+
+        // minify server package
+        minifiedRoot = transportWlp(installRoot, serverName);
+        Log.info(c, methodName, "minified root: " + minifiedRoot);
+        Log.info(c, methodName, "exists??: " + new File(minifiedRoot).exists());
+
+
+
         setOriginalWlpVersionVariables();
         cleanDirectories = new ArrayList<String>();
         cleanFiles = new ArrayList<String>();
 
     }
 
+    /**
+     * This method minifies the installRoot by creating a server with name @serverName
+     * @param installRoot install root
+     * @param serverName name of the server to create
+     * @return path to minified wlp
+     * @throws Exception
+     */
+    private static String transportWlp(String installRoot, String serverName) throws Exception {
+        String methodName = "transportWlp";
+        // first copy a blank server.xml into a server folder
+        createServer(serverName);
+        String noFeaturesServerXml = "../../publish/tmp/noFeaturesServerXml/server.xml";
+        Log.info(c, methodName,  noFeaturesServerXml);
+        copyNoFeaturesServerXmlToServer(serverName, noFeaturesServerXml);
+        // minify server
+        File minifiedServerPackage = minifyServer(serverName);
+        Log.info(c, methodName, minifiedServerPackage.getAbsolutePath());
+        Log.info(c, methodName, String.valueOf(minifiedServerPackage.exists()));
+        // unzip server package
+        String destination = installRoot + "/../minified/" + serverName + "/";
+        File destinationFile = new File(destination);
+        destinationFile.mkdirs();
+
+        Log.info(c, methodName, "destination: " + destination);
+
+        TestUtils.unzipFileIntoDirectory(new ZipFile(minifiedServerPackage), destinationFile);
+
+//        unzipInstallRoot(minifiedServerPackage.getAbsolutePath(), destination);
+
+        return destination + "wlp";
+
+    }
+
+    /**
+     * Same as LibertyServer.copyFileToLibertyInstallRoot except it uses our own installRoot
+     * @param extendedPath
+     * @param fileName
+     * @throws Exception
+     */
+    private static void copyFileToLibertyInstallRoot(String root, String extendedPath, String fileName) throws Exception {
+        LibertyFileManager.copyFileIntoLiberty(server.getMachine(), root + "/" + extendedPath, (pathToAutoFVTTestFiles + "/" + fileName));
+    }
+
+
+    /**
+     * Same as LibertyServer.copyFileToLibertyInstallRoot except it uses minifedRoot
+     * @param extendedPath
+     * @param fileName
+     * @throws Exception
+     */
+    public static void copyFileToMinifiedRoot(String extendedPath, String fileName) throws Exception {
+        LibertyFileManager.copyFileIntoLiberty(server.getMachine(), minifiedRoot + "/" + extendedPath, (pathToAutoFVTTestFiles + "/" + fileName));
+    }
+
     private static boolean isClosedLibertyWlp(){
         return new File(installRoot + "/lib/versions/WebSphereApplicationServer.properties").exists();
     }
 //
-//    public static void extractOpenLibertyKernelZip(String kernelZipDir, String destinationDir) throws Exception {
-//        String methodName = "extractOpenLibertyKernelZip";
-//
-//        if(!new File(kernelZipDir).exists()){
-//            throw new Exception(kernelZipDir + " doesnt exist!");
-//        }
-//
-//        File dir = new File(kernelZipDir);
-//
-//        // for debugging purposes - see what files are in kernelZipDir
-//        Log.info(c, methodName, Objects.requireNonNull(dir.listFiles()).toString());
-//
-//
-//        // find the files that match openliberty-kernel-*.zip
-//        final String id = "XXX"; // needs to be final so the anonymous class can use it
-//        File[] matchingFiles = dir.listFiles(new FileFilter() {
-//            public boolean accept(File pathname) {
-//                return (pathname.getName().contains("openliberty-kernel") && pathname.getName().endsWith("zip"));
-//            }
-//        });
-//
-//        Log.info(c, methodName, "Found the following OL kernels: " + matchingFiles.toString());
-//        if(matchingFiles.length == 0){
-//            throw new Exception(kernelZipDir + " doesnt contain any OL kernels...");
-//        }
-//
-//        // take the first one we find for sake of simplicity.
-//        File kernelZip = matchingFiles[0];
-//
-//        // unzip into destinationDir now
-//        // first delete destinationDir
-//        File destFile = new File(destinationDir);
-//        if(destFile.exists()){
-//            destFile.delete();
-//        }
-//
-//        unzipInstallRoot(kernelZip.getAbsolutePath(), destinationDir);
-//        Log.exiting(c, methodName, "Unzipped the OL kernel.");
-//    }
-
 
     // TODO discuss if we need this. may be useful for certain test cases like
     // mirror repo
@@ -132,7 +144,7 @@ public abstract class FeatureUtilityToolTest {
     }
 
     private static void setOriginalWlpVersionVariables() throws IOException {
-        File wlpVersionPropFile = new File(installRoot + "/lib/versions/openliberty.properties");
+        File wlpVersionPropFile = new File(minifiedRoot + "/lib/versions/openliberty.properties");
         wlpVersionPropFile.setReadable(true);
 
         FileInputStream fIn = null;
@@ -161,7 +173,8 @@ public abstract class FeatureUtilityToolTest {
     protected static void replaceWlpProperties(String version) throws Exception {
         OutputStream os = null;
         try {
-            RemoteFile rf = server.getFileFromLibertyInstallRoot("lib/versions/openliberty.properties");
+            RemoteFile rf = new RemoteFile(server.getMachine(), minifiedRoot+ "/lib/versions/openliberty.properties");
+//            RemoteFile rf = server.getFileFromLibertyInstallRoot("lib/versions/openliberty.properties");
             os = rf.openForWriting(false);
             wlpVersionProps.setProperty("com.ibm.websphere.productVersion", version);
             Log.info(c, "replaceWlpProperties", "Set the version to : " + version);
@@ -196,64 +209,70 @@ public abstract class FeatureUtilityToolTest {
     }
 
     protected ProgramOutput runFeatureUtility(String testcase, String[] params, Properties envProps) throws Exception {
-        return runCommand(testcase, "featureUtility", params, envProps);
+            // always run feature utility with minified root
+        return runCommand(minifiedRoot, testcase, "featureUtility", params, envProps);
     }
 
-    protected ProgramOutput runCommand(String testcase, String command, String[] params, Properties envProps)
+    protected static ProgramOutput runCommand(String root, String testcase, String command, String[] params, Properties envProps)
             throws Exception {
         String args = "";
         for (String param : params) {
             args = args + " " + param;
         }
 //        Log.info(c, testcase, "repository.description.url: " + TestUtils.repositoryDescriptionUrl);
-        Log.info(c, testcase, "command: " + installRoot + "/bin/" + command + " " + args);
-        ProgramOutput po = server.getMachine().execute(installRoot + "/bin/" + command, params, installRoot, envProps);
+        Log.info(c, testcase, "command: " + root + "/bin/" + command + " " + args);
+        ProgramOutput po = server.getMachine().execute(root + "/bin/" + command, params, root, envProps);
         Log.info(c, testcase, po.getStdout());
         Log.info(c, testcase, command + " command exit code: " + po.getReturnCode());
         return po;
     }
 
-//    protected File getFeatureRepo() {
-//        File featureRepo;
-//
-//        return null;
-//
+
+    private static ProgramOutput runServer(String testcase, String[] params) throws Exception {
+        return runCommand(installRoot, testcase, "server", params, new Properties());
+
+    }
+
+    private static void createServer(String serverName) throws Exception {
+        runServer("createServer", new String[]{"create", serverName});
+    }
+
+    private static void copyNoFeaturesServerXmlToServer(String serverName, String noFeaturesServerXml) throws Exception {
+//        server.copyFileToLibertyInstallRoot("usr/servers/"+ serverName, noFeaturesServerXml.getAbsolutePath());
+//        FileUtils.copyFile(noFeaturesServerXml, new File(installRoot + "/usr/servers/"+serverName));
+        copyFileToLibertyInstallRoot(installRoot, "usr/servers/" + serverName, noFeaturesServerXml);
+    }
+
+    private static File minifyServer(String serverName) throws Exception {
+        runServer("minifyServer", new String[]{"package", serverName, "--include=minify"});
+
+        // return the zipped wlp
+        return new File(installRoot+ "/usr/servers/"+serverName+"/"+serverName+".zip");
+    }
+
+
+//    protected static void deleteFiles(String methodName, String featureName, String[] filePathsToClear) throws Exception {
+//        Log.info(c, methodName, "If Exists, Deleting files for " + featureName);
+//        for (String filePath : filePathsToClear) {
+//            if (server.fileExistsInLibertyInstallRoot(filePath)) {
+//                server.deleteFileFromLibertyInstallRoot(filePath);
+//            }
+//        }
+//        server.deleteDirectoryFromLibertyInstallRoot("lafiles/" + featureName);
+//        Log.info(c, methodName, "Finished deleting files associated with " + featureName);
 //    }
 
-    /**
-     * Zips the liberty install root into /tmp/*testClass*
-     *
-     */
-    protected static File zipInstallRoot(String oldInstallRoot, String destinationFile) throws IOException {
-        String sourceFile = oldInstallRoot;
+    protected static boolean deleteFeaturesAndLafilesFolders(String methodName) throws IOException {
+        // delete /lib/features and /lafiles
+        boolean features = TestUtils.deleteFolder(new File(minifiedRoot + "/lib/features"));
+        boolean lafiles = TestUtils.deleteFolder(new File(minifiedRoot+"/lafiles"));
 
-        FileOutputStream fos = new FileOutputStream(destinationFile);
-        ZipOutputStream zipOut = new ZipOutputStream(fos);
-        File fileToZip = new File(sourceFile);
+        Log.info(c, methodName, "DELETED FOLDERS: /lib/features, /lafiles? VALUES: " + features + ", " + lafiles);
 
-        TestUtils.zipFile(fileToZip, fileToZip.getName(), zipOut);
-        zipOut.close();
-        fos.close();
-
-        return new File(destinationFile);
+        return features && lafiles;
     }
 
-    protected static File unzipInstallRoot(String zipFile, String destinationToUnzip) throws IOException {
-        File destination = new File(destinationToUnzip);
-        TestUtils.unzipFile(zipFile,destination);
-        return destination;
-    }
 
-    protected static void deleteFiles(String methodName, String featureName, String[] filePathsToClear) throws Exception {
-        Log.info(c, methodName, "If Exists, Deleting files for " + featureName);
-        for (String filePath : filePathsToClear) {
-            if (server.fileExistsInLibertyInstallRoot(filePath)) {
-                server.deleteFileFromLibertyInstallRoot(filePath);
-            }
-        }
-        server.deleteDirectoryFromLibertyInstallRoot("lafiles/" + featureName);
-        Log.info(c, methodName, "Finished deleting files associated with " + featureName);
-    }
 
     /**
      *
@@ -278,6 +297,7 @@ public abstract class FeatureUtilityToolTest {
         return String.format("%s.%s.%s.%s", newYear, split[1], split[2], newMonth);
 
     }
+
 
 
 }

@@ -20,7 +20,7 @@ public class InstallServerTest extends FeatureUtilityToolTest {
         final String methodName = "setup";
         Log.entering(c, methodName);
         setupEnv();
-        server.copyFileToLibertyInstallRoot("usr/temp", "../../publish/tmp/serverX.zip");
+        copyFileToMinifiedRoot("usr/temp", "../../publish/tmp/serverX.zip");
         replaceWlpProperties(getPreviousWlpVersion());
         Log.exiting(c, methodName);
     }
@@ -37,14 +37,15 @@ public class InstallServerTest extends FeatureUtilityToolTest {
         Log.entering(c, METHOD_NAME);
 
         // replace the server.xml
-        server.copyFileToLibertyInstallRoot("usr/servers/serverX", "../../publish/tmp/autoFeatureServerXml/server.xml");
+        copyFileToMinifiedRoot("usr/servers/serverX", "../../publish/tmp/autoFeatureServerXml/server.xml");
 
         String[] param1s = { "installServerFeatures", "serverX"};
 
         String [] fileListA = {"lib/features/com.ibm.websphere.appserver.jsf-2.2.mf", "lib/features/com.ibm.websphere.appserver.cdi1.2-jsf2.2.mf"};
         String [] fileListB = {"lib/features/com.ibm.websphere.appserver.cdi-1.2.mf"};
-        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.jsf-2.2", fileListA);
-        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.cdi-1.2", fileListB);
+//        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.jsf-2.2", fileListA);
+//        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.cdi-1.2", fileListB);
+        deleteFeaturesAndLafilesFolders(METHOD_NAME);
 
 
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
@@ -52,10 +53,12 @@ public class InstallServerTest extends FeatureUtilityToolTest {
         String output = po.getStdout();
         assertTrue("Output should contain jsf-2.2", output.indexOf("jsf-2.2") >= 0);
         assertTrue("Output should contain cdi-1.2", output.indexOf("cdi-1.2") >= 0);
-        assertTrue("The autofeature cdi1.2-jsf-2.2 should be installed" , new File(installRoot + "/lib/features/com.ibm.websphere.appserver.cdi1.2-jsf2.2.mf").exists());
+        assertTrue("The autofeature cdi1.2-jsf-2.2 should be installed" , new File(minifiedRoot + "/lib/features/com.ibm.websphere.appserver.cdi1.2-jsf2.2.mf").exists());
 
-        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.jsf-2.2", fileListA);
-        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.cdi-1.2", fileListB);
+//        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.jsf-2.2", fileListA);
+//        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.cdi-1.2", fileListB);
+        deleteFeaturesAndLafilesFolders(METHOD_NAME);
+
 
         Log.exiting(c, METHOD_NAME);
     }
