@@ -112,7 +112,7 @@ public class LTPAToken2 implements Token, Serializable {
      * @param publicKey The LTPA public key
      * @param attributes The list of attributes will be removed from the LTPA2 token
      */
-    public LTPAToken2(byte[] tokenBytes, @Sensitive byte[] sharedKey, LTPAPrivateKey privateKey, LTPAPublicKey publicKey, String[] attributes) throws InvalidTokenException {
+    public LTPAToken2(byte[] tokenBytes, @Sensitive byte[] sharedKey, LTPAPrivateKey privateKey, LTPAPublicKey publicKey, String... attributes) throws InvalidTokenException {
         checkTokenBytes(tokenBytes);
         this.signature = null;
         this.encryptedBytes = tokenBytes.clone();

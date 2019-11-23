@@ -111,7 +111,7 @@ public class TokenManagerImpl implements TokenManager {
     /** {@inheritDoc} */
     @Override
     @FFDCIgnore(InvalidTokenException.class)
-    public Token recreateTokenFromBytes(byte[] tokenBytes, String[] attributes) throws InvalidTokenException, TokenExpiredException {
+    public Token recreateTokenFromBytes(byte[] tokenBytes, String... attributes) throws InvalidTokenException, TokenExpiredException {
         Token token = null;
 
         Iterator<TokenService> availableServices = services.getServices();

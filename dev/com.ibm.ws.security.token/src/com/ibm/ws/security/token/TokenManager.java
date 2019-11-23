@@ -73,7 +73,7 @@ public interface TokenManager {
      * @throws InvalidTokenException
      */
     @FFDCIgnore(InvalidTokenException.class)
-    public abstract Token recreateTokenFromBytes(byte[] tokenBytes, String[] attributes) throws InvalidTokenException, TokenExpiredException;
+    public abstract Token recreateTokenFromBytes(byte[] tokenBytes, String... attributes) throws InvalidTokenException, TokenExpiredException;
 
     /**
      * Recreates the token of the specified token type from the given token bytes.

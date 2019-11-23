@@ -67,7 +67,7 @@ public class LTPATokenService implements TokenService {
      * {@inheritDoc}
      */
     @Override
-    public Token recreateTokenFromBytes(byte[] tokenBytes, String[] attributes) throws InvalidTokenException, TokenExpiredException {
+    public Token recreateTokenFromBytes(byte[] tokenBytes, String... attributes) throws InvalidTokenException, TokenExpiredException {
         TokenFactory tokenFactory = ltpaConfig.getTokenFactory();
         Token token = tokenFactory.validateTokenBytes(tokenBytes, attributes);
         validateRecreatedToken(token);

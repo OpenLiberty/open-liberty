@@ -143,7 +143,7 @@ class UserData implements Serializable, Cloneable {
      *
      * @param attributes The list of a attributes
      **/
-    protected final void removeAttributes(String[] attributes) {
+    protected final void removeAttributes(String... attributes) {
         this._toString = null; // reset toString variable
         int i = 0;
         if (attributes != null) {
