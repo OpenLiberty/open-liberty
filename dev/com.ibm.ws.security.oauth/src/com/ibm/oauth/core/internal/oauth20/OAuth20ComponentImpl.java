@@ -419,7 +419,6 @@ public class OAuth20ComponentImpl extends OAuthComponentImpl implements
 
     @Override
     public OAuthResult processTokenRequest(String authenticatedClient, HttpServletRequest request, HttpServletResponse response) {
-        System.out.println("*** process token request");
         String methodName = "processTokenRequest";
         boolean finestLoggable = _log.isLoggable(Level.FINEST);
         boolean errorOccurred = true;
