@@ -114,12 +114,32 @@ public class PersistentExecutorWithFailoverEnabledTest extends FATServletClient 
     }
 
     @Test
-    public void testBlockAfterCancelFE() throws Exception {
+    public void testBlockAfterCancelByIdFE() throws Exception {
         runTest(server, APP_NAME, testName);
     }
 
     @Test
-    public void testBlockAfterRemoveFE() throws Exception {
+    public void testBlockAfterCancelByNameFE() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
+    public void testBlockAfterFindByIdFE() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
+    public void testBlockAfterFindByNameFE() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
+    public void testBlockAfterRemoveByIdFE() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
+    public void testBlockAfterRemoveByNameFE() throws Exception {
         runTest(server, APP_NAME, testName);
     }
 
