@@ -45,7 +45,7 @@ public class OAuthLoginFlow {
     }
 
     TAIResult handleOAuthRequest(HttpServletRequest request, HttpServletResponse response, SocialLoginConfig clientConfig) throws WebTrustAssociationFailedException {
-        if (clientConfig instanceof Oauth2LoginConfigImpl && SocialUtil.useAccessTokenFromRequest(clientConfig)) {
+        if (SocialUtil.useAccessTokenFromRequest(clientConfig)) {
             TAIResult result = handleAccessTokenFlow(request, response, (Oauth2LoginConfigImpl) clientConfig);
             if (result != null) {
                 return result;
@@ -64,12 +64,12 @@ public class OAuthLoginFlow {
         //request should have token
         String tokenFromRequest = taiWebUtils.getBearerAccessToken(request, clientConfig);
         if (requestShouldHaveToken(clientConfig)) {
-            if (!isAccessTokenNonEmpty(tokenFromRequest)) {
-                Tr.error(tc, "OPENSHIFT_ACCESS_TOKEN_MISSING");
+            if (isAccessTokenNullOrEmpty(tokenFromRequest)) {
+                Tr.error(tc, "ACCESS_TOKEN_MISSING_FROM_HEADERS", clientConfig.getUniqueId());
                 return taiWebUtils.sendToErrorPage(response, TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED));
             }
             return handleAccessToken(tokenFromRequest, request, response, clientConfig);
-        } else if (isAccessTokenNonEmpty(tokenFromRequest)) {
+        } else if (!isAccessTokenNullOrEmpty(tokenFromRequest)) {
             // request may have token
             result = handleAccessToken(tokenFromRequest, request, response, clientConfig);
             // if good result return
@@ -80,8 +80,8 @@ public class OAuthLoginFlow {
         return result;
     }
 
-    private boolean isAccessTokenNonEmpty(String tokenFromRequest) {
-        if (tokenFromRequest != null && !tokenFromRequest.isEmpty()) {
+    private boolean isAccessTokenNullOrEmpty(String tokenFromRequest) {
+        if (tokenFromRequest == null || tokenFromRequest.isEmpty()) {
             return true;
         }
         return false;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,9 +14,11 @@ import static org.junit.Assert.assertFalse;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
@@ -67,6 +69,8 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
         ShrinkHelper.defaultApp(server, APP_DEFAULT, "session.cache.infinispan.web");
 
         savedConfig = server.getServerConfiguration().clone();
+        String rand = UUID.randomUUID().toString();
+        server.setJvmOptions(Arrays.asList("-Dinfinispan.cluster.name=" + rand));
         server.startServer();
 
         // In addition to starting the application, must also wait for asynchronous web module initialization to complete,
@@ -79,7 +83,16 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        // If a config update occurred just prior to this and didn't have subseuqent use of a session,
+        // then http sessions code could be initializing Infinispan asynchronously, which, if that is still ongoing,
+        // can result in errors if a server stop happens at the same time.  To avoid this, first run an operation
+        // that will wait for the intialization to complete.
+        try {
+            List<String> session = new ArrayList<>();
+            run("getSessionId", session);
+        } finally {
+            server.stopServer();
+        }
     }
 
     /**

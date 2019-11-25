@@ -49,7 +49,8 @@
 @REM              The default value is y.
 @REM
 @REM WLP_DEBUG_REMOTE - Whether to allow remote debugging or not. This can be set
-@REM              to y to allow remote debugging. The default value is n. 
+@REM              to y to allow remote debugging. By default, this value is not
+@REM              defined, which does not allow remote debugging on newer JDK/JREs.
 @REM
 @REM ----------------------------------------------------------------------------
 
@@ -239,8 +240,8 @@ goto:eof
 
   if not defined WLP_DEBUG_ADDRESS set WLP_DEBUG_ADDRESS=7777
   if not defined WLP_DEBUG_SUSPEND set WLP_DEBUG_SUSPEND=y
-  if not defined WLP_DEBUG_REMOTE set WLP_DEBUG_REMOTE_HOST="0.0.0.0:"
-  if not defined WLP_DEBUG_REMOTE_HOST set WLP_DEBUG_REMOTE_HOST=""
+  if /I "%WLP_DEBUG_REMOTE%" == "Y" set WLP_DEBUG_REMOTE_HOST="0.0.0.0:"
+  if not defined WLP_DEBUG_REMOTE_HOST set WLP_DEBUG_REMOTE_HOST=
   set JAVA_PARAMS_QUOTED=-Dwas.debug.mode=true -Dsun.reflect.noInflation=true -agentlib:jdwp=transport=dt_socket,server=y,suspend="!WLP_DEBUG_SUSPEND!",address="!WLP_DEBUG_REMOTE_HOST!!WLP_DEBUG_ADDRESS!" !JAVA_PARAMS_QUOTED!
 
   call:serverExists true

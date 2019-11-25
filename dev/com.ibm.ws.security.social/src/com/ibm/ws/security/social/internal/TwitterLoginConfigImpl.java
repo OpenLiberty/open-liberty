@@ -33,13 +33,15 @@ public class TwitterLoginConfigImpl extends Oauth2LoginConfigImpl {
     public static final String KEY_accessTokenUrl = "accessTokenUrl";
 
     @Override
-    protected void setRequiredConfigAttributes(Map<String, Object> props) {
-        this.clientId = getRequiredConfigAttribute(props, KEY_consumerKey);
-        this.clientSecret = getRequiredSerializableProtectedStringConfigAttribute(props, KEY_consumerSecret);
+    protected void checkForRequiredConfigAttributes(Map<String, Object> props) {
+        getRequiredConfigAttribute(props, KEY_consumerKey);
+        getRequiredSerializableProtectedStringConfigAttribute(props, KEY_consumerSecret);
     }
 
     @Override
-    protected void setOptionalConfigAttributes(Map<String, Object> props) throws SocialLoginException {
+    protected void setAllConfigAttributes(Map<String, Object> props) throws SocialLoginException {
+        this.clientId = configUtils.getConfigAttribute(props, KEY_consumerKey);
+        this.clientSecret = configUtils.processProtectedString(props, KEY_consumerSecret);
         this.useSystemPropertiesForHttpClientConnections = configUtils.getBooleanConfigAttribute(props, KEY_USE_SYSPROPS_FOR_HTTPCLIENT_CONNECTONS, false);
         this.requestTokenUrl = configUtils.getConfigAttribute(props, KEY_requestTokenUrl);
         this.authorizationEndpoint = configUtils.getConfigAttribute(props, KEY_userAuthorizationUrl);

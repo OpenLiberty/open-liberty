@@ -133,6 +133,7 @@ public class OpenShiftUserApiUtils {
         }
 
         if (statusInnerMap.containsKey("user")) {
+
             JsonValue userInnerMapValue = statusInnerMap.get("user");
             if (userInnerMapValue.getValueType() != ValueType.OBJECT) {
                 throw new SocialLoginException("KUBERNETES_USER_API_RESPONSE_WRONG_JSON_TYPE", null, new Object[] { ValueType.OBJECT, userInnerMapValue.getValueType(), jsonResponse });
@@ -183,7 +184,6 @@ public class OpenShiftUserApiUtils {
                 throw new SocialLoginException("KUBERNETES_USER_API_RESPONSE_WRONG_JSON_TYPE", null, new Object[] { ValueType.ARRAY, groupsValue.getValueType(), jsonResponse });
             }
             modifiedResponse.add(config.getGroupNameAttribute(), userInnerMap.getJsonArray("groups"));
-
         }
         return modifiedResponse.build().toString();
     }

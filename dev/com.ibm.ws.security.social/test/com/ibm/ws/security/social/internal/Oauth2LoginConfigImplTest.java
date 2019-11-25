@@ -147,7 +147,7 @@ public class Oauth2LoginConfigImplTest extends CommonConfigTestClass {
             minimumProps.put(Oauth2LoginConfigImpl.KEY_USE_SYSPROPS_FOR_HTTPCLIENT_CONNECTONS, new Boolean(true));
 
             configImpl.initProps(cc, minimumProps);
-            configImpl.setOptionalConfigAttributes(minimumProps);
+            configImpl.setAllConfigAttributes(minimumProps);
             assertTrue(configImpl.getUseSystemPropertiesForHttpClientConnections());
 
             verifyNoLogMessage(outputMgr, MSG_BASE);

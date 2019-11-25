@@ -31,7 +31,6 @@ import org.junit.Test;
 import com.ibm.ws.security.common.http.HttpUtils;
 import com.ibm.ws.security.common.http.HttpUtils.RequestMethod;
 import com.ibm.ws.security.social.error.SocialLoginException;
-
 import com.ibm.ws.security.social.internal.Oauth2LoginConfigImpl;
 import com.ibm.ws.security.social.test.CommonTestClass;
 
@@ -267,6 +266,7 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
                     will(returnValue("groups"));
                 }
             });
+
             String returnedString = userApiUtils.modifyExistingResponseToJSON("{\"status\":{\"authenticated\":true,\"user\":{\"uid\":\"ef111c43-d33a-11e9-b239-0016ac102af6\",\"groups\":[],\"extra\":{\"scopes.authorization.openshift.io\":[\"user:full\"]}}}}");
             fail();
         } catch (SocialLoginException e) {
@@ -373,6 +373,7 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
         }
     }
 
+
     @Test
     public void groupsIsEmpty() {
         try {
@@ -431,7 +432,7 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
                 String response = userApiUtils.getUserApiResponse(accessToken, sslSocketFactory);
                 fail("Should have thrown an exception but did not. Got response [" + response + "].");
             } catch (SocialLoginException e) {
-                verifyException(e, CWWKS5371E_OPENSHIFT_ERROR_GETTING_USER_INFO + ".+" + CWWKS5372E_OPENSHIFT_ACCESS_TOKEN_MISSING);
+                verifyException(e, CWWKS5371E_KUBERNETES_ERROR_GETTING_USER_INFO + ".+" + CWWKS5372E_KUBERNETES_ACCESS_TOKEN_MISSING);
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -462,7 +463,7 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
                 userApiUtils.sendUserApiRequest(accessToken, sslSocketFactory);
                 fail("Should have thrown an exception but did not.");
             } catch (SocialLoginException e) {
-                verifyException(e, CWWKS5372E_OPENSHIFT_ACCESS_TOKEN_MISSING);
+                verifyException(e, CWWKS5372E_KUBERNETES_ACCESS_TOKEN_MISSING);
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -535,7 +536,7 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
                 String body = userApiUtils.createUserApiRequestBody(accessToken);
                 fail("Should have thrown an exception but did not. Instead, got: [" + body + "].");
             } catch (SocialLoginException e) {
-                verifyException(e, CWWKS5372E_OPENSHIFT_ACCESS_TOKEN_MISSING);
+                verifyException(e, CWWKS5372E_KUBERNETES_ACCESS_TOKEN_MISSING);
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -572,7 +573,7 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
                 String response = userApiUtils.readUserApiResponse(httpUrlConnection);
                 fail("Should have thrown an exception because we didn't get the right response code, but instead got [" + response + "].");
             } catch (SocialLoginException e) {
-                verifyException(e, CWWKS5373E_OPENSHIFT_USER_API_BAD_STATUS + ".+" + responseCode + ".+" + Pattern.quote(connectionResponse));
+                verifyException(e, CWWKS5373E_KUBERNETES_USER_API_BAD_STATUS + ".+" + responseCode + ".+" + Pattern.quote(connectionResponse));
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);

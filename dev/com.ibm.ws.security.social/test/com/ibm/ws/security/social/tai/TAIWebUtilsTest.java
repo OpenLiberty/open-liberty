@@ -423,6 +423,33 @@ public class TAIWebUtilsTest extends CommonTestClass {
     }
 
     @Test
+    public void test_getBearerAccessToken_customHeaderName_missingCustomHeader() throws Exception {
+        try {
+            final String customHeaderName = "My Header";
+            mockery.checking(new Expectations() {
+                {
+                    one(oauth2Config).getAccessTokenHeaderName();
+                    will(returnValue(customHeaderName));
+                    one(authUtils).getBearerTokenFromHeader(request, customHeaderName);
+                    will(returnValue(null));
+                    one(request).getHeader(customHeaderName + "-segments");
+                    will(returnValue(null));
+                    one(oauth2Config).getUniqueId();
+                    will(returnValue(uniqueId));
+                }
+            });
+
+            String result = utils.getBearerAccessToken(request, oauth2Config);
+            assertNull("Returned bearer token value should have been null but was [" + result + "].", result);
+
+            verifyLogMessageWithInserts(outputMgr, CWWKS5376W_CUSTOM_ACCESS_TOKEN_HEADER_MISSING, Oauth2LoginConfigImpl.KEY_accessTokenHeaderName, uniqueId, customHeaderName);
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
     public void test_getBearerAccessToken_noConfiguredHeaderName_bearerTokenInAuthzHeader() throws Exception {
         try {
             final String expectedTokenValue = "Expected Token Value";
