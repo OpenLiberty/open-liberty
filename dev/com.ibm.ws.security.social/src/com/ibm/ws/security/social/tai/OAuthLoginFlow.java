@@ -22,6 +22,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.WebTrustAssociationFailedException;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.security.social.Constants;
 import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.TraceConstants;
 import com.ibm.ws.security.social.error.SocialLoginException;
@@ -45,11 +46,13 @@ public class OAuthLoginFlow {
     }
 
     TAIResult handleOAuthRequest(HttpServletRequest request, HttpServletResponse response, SocialLoginConfig clientConfig) throws WebTrustAssociationFailedException {
-        if (SocialUtil.useAccessTokenFromRequest(clientConfig)) {
+        if (SocialUtil.useAccessTokenFromRequest(clientConfig) && isBeforeSSO(request)) {
             TAIResult result = handleAccessTokenFlow(request, response, clientConfig);
             if (clientConfig.isAccessTokenRequired() || (result != null && result.getSubject() != null)) {
                 return result;
             }
+            // see if we have a valid LTPA cookie to handle before continue with regular oauth login
+            return TAIResult.create(HttpServletResponse.SC_CONTINUE);   
         }
         String code = webUtils.getAndClearCookie(request, response, ClientConstants.COOKIE_NAME_STATE_KEY);
         if (code == null) {
@@ -57,6 +60,14 @@ public class OAuthLoginFlow {
         } else {
             return handleAuthorizationCode(request, response, code, clientConfig);
         }
+    }
+
+    private boolean isBeforeSSO(HttpServletRequest request) {
+        if (request.getAttribute(Constants.ATTRIBUTE_TAI_BEFORE_SSO_REQUEST) != null) {
+            request.removeAttribute(Constants.ATTRIBUTE_TAI_BEFORE_SSO_REQUEST);
+            return true;
+        }
+        return false;
     }
 
     private TAIResult handleAccessTokenFlow(HttpServletRequest request, HttpServletResponse response, SocialLoginConfig clientConfig) throws WebTrustAssociationFailedException {

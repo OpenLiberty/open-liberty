@@ -75,7 +75,11 @@ public class TAIRequestHelper {
                     }
                 }
                 if (clientConfig != null) {
-                    return SocialUtil.useAccessTokenFromRequest(clientConfig);
+                    boolean useAccessToken = SocialUtil.useAccessTokenFromRequest(clientConfig);
+                    if (useAccessToken) {
+                        request.setAttribute(Constants.ATTRIBUTE_TAI_BEFORE_SSO_REQUEST, true);
+                    }
+                    return useAccessToken;
                 }
             } else {
                 return true;
