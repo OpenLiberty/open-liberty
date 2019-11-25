@@ -11,7 +11,7 @@ var messages = {
     MICROPROFILE: "MicroProfile Logo",
     JAKARTA_EE: "Jakarta EE logo",
     RESOURCES_SECTION: "Resources section",
-    RESOURCES: "Resources and Support",
+    RESOURCES: "Resources and Help",
     GITHUB: "GitHub logo",
     TWITTER: "Twitter logo",
     GITTER: "Gitter logo",
