@@ -33,6 +33,7 @@ public class OAuth20GrantTypeHandlerResourceOwnerCredentialsImpl implements
 
     private static Logger _log = Logger.getLogger(CLASS);
 
+    @Override
     public List<String> getKeysGrantType(AttributeList attributeList)
             throws OAuthException {
         String methodName = "getKeysGrantType";
@@ -54,6 +55,7 @@ public class OAuth20GrantTypeHandlerResourceOwnerCredentialsImpl implements
     /**
      * See the interface for a description of what has already been validated
      */
+    @Override
     public void validateRequestGrantType(AttributeList attributeList,
             List<OAuth20Token> tokens) throws OAuthException {
         String methodName = "validateRequestGrantType";
@@ -88,6 +90,7 @@ public class OAuth20GrantTypeHandlerResourceOwnerCredentialsImpl implements
      * For the resource owner credentials grant type we return an access token
      * and refresh token.
      */
+    @Override
     public List<OAuth20Token> buildTokensGrantType(AttributeList attributeList,
             OAuth20TokenFactory tokenFactory, List<OAuth20Token> tokens) {
         String methodName = "buildTokensGrantType";
@@ -99,6 +102,7 @@ public class OAuth20GrantTypeHandlerResourceOwnerCredentialsImpl implements
                     .getAttributeValueByName(OAuth20Constants.CLIENT_ID);
             String username = attributeList
                     .getAttributeValueByName(OAuth20Constants.USERNAME);
+            System.out.println("*** buildTokensGrantType username:" + username);
             String[] scope = attributeList.getAttributeValuesByNameAndType(
                     OAuth20Constants.SCOPE,
                     OAuth20Constants.ATTRTYPE_PARAM_OAUTH_REQUEST);
@@ -108,7 +112,7 @@ public class OAuth20GrantTypeHandlerResourceOwnerCredentialsImpl implements
                     clientId, username, null, stateId, scope, null, OAuth20Constants.GRANT_TYPE_RESOURCE_OWNER);
             String key = OAuth20Constants.EXTERNAL_CLAIMS_PREFIX + OAuth20Constants.REFRESH_TOKEN_ORIGINAL_GT;
             refreshTokenMap.put(key, new String[] { OAuth20Constants.GRANT_TYPE_RESOURCE_OWNER });
-            
+
             OAuth20Token refresh = tokenFactory.createRefreshToken(refreshTokenMap);
 
             Map<String, String[]> tokenMap = tokenFactory.buildTokenMap(
@@ -148,6 +152,7 @@ public class OAuth20GrantTypeHandlerResourceOwnerCredentialsImpl implements
         return tokenList;
     }
 
+    @Override
     public void buildResponseGrantType(AttributeList attributeList,
             List<OAuth20Token> tokens) {
         String methodName = "buildResponseGrantType";

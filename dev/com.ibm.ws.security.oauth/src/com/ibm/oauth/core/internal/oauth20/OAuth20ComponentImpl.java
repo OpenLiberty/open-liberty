@@ -118,6 +118,10 @@ public class OAuth20ComponentImpl extends OAuthComponentImpl implements
         _allowPublicClients = _config20.isAllowPublicClients();
     }
 
+    OAuth20ComponentImpl() {
+        super(null, null);
+    }
+
     public OAuth20ComponentImpl(OAuthComponentInstance parent,
             OAuthComponentConfiguration config) throws OAuthException {
         super(parent, config);
@@ -415,6 +419,7 @@ public class OAuth20ComponentImpl extends OAuthComponentImpl implements
 
     @Override
     public OAuthResult processTokenRequest(String authenticatedClient, HttpServletRequest request, HttpServletResponse response) {
+        System.out.println("*** process token request");
         String methodName = "processTokenRequest";
         boolean finestLoggable = _log.isLoggable(Level.FINEST);
         boolean errorOccurred = true;
@@ -1197,6 +1202,7 @@ public class OAuth20ComponentImpl extends OAuthComponentImpl implements
             HttpServletRequest request,
             AttributeList attribList) throws OAuthException {
         String methodName = "buildTokenAttributeList";
+        System.out.println("*** buildtokenatrriblist");
         _log.entering(CLASS, methodName);
         // handle resource(jwt audiences)
         String[] resource = (String[]) request.getAttribute(OAuth20Constants.OAUTH20_AUTHEN_PARAM_RESOURCE); // audiences
@@ -1233,6 +1239,7 @@ public class OAuth20ComponentImpl extends OAuthComponentImpl implements
              */
             populateFromQueryString(request, attribList);
             populateFromRequest(request, attribList);
+            overrideUserName(request, attribList);
 
             if (OAuth20Constants.GRANT_TYPE_JWT.equalsIgnoreCase(grantType)) {
                 String client_secret = request.getParameter(OAuth20Constants.CLIENT_SECRET);
@@ -1249,6 +1256,26 @@ public class OAuth20ComponentImpl extends OAuthComponentImpl implements
             _log.exiting(CLASS, methodName, attribList);
         }
         return attribList;
+    }
+
+    /*
+     * If ClientAuthentication.validateResourceOwnerCredentials determined that the
+     * security name did not match what was supplied on the query parameter
+     * (probably due to some fancy ldap configuration)
+     * then switch it here to the security name.
+     */
+    void overrideUserName(HttpServletRequest request, AttributeList attribList) {
+        System.out.println("*** overrideUserName");
+        String override = (String) request.getAttribute(OAuth20Constants.RESOURCE_OWNER_OVERRIDDEN_USERNAME);
+        if (override != null) {
+            String name = attribList.getAttributeValueByName(OAuth20Constants.RESOURCE_OWNER_USERNAME);
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "changing token attribute:" + OAuth20Constants.RESOURCE_OWNER_USERNAME + " from: " + name + " to: " + override);
+            }
+            System.out.println("*** changing token attribute:" + OAuth20Constants.RESOURCE_OWNER_USERNAME + " from: " + name + " to: " + override);
+            attribList.setAttribute(OAuth20Constants.RESOURCE_OWNER_USERNAME, OAuth20Constants.ATTRTYPE_PARAM_BODY, new String[] { override });
+            System.out.println("*** attribute list: " + attribList);
+        }
     }
 
     AttributeList buildResourceAttributeList(HttpServletRequest request)
