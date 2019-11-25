@@ -31,7 +31,7 @@ public class WebSecurityHelper {
     /**
      * Extracts the Single Sign-On (SSO) token from the subject of the current thread
      * and builds an SSO cookie out of it for use on downstream web invocations.
-     * The caller must check for null return value.
+     * The caller must check for a null return value.
      * <p>
      * Return null if there is an invalid or expired SSO token, no subject on the current thread, no SSO token in subject or no webAppSecurityConfig object.
      * When the returned value is not null use Cookie methods getName() and getValue()
@@ -47,8 +47,8 @@ public class WebSecurityHelper {
 
     /**
      * Extracts the Single Sign-On (SSO) token from the subject of the current thread
-     * and builds an SSO cookie out of it without the attributes specified in the ignoreAttributes parameter for use on downstream web invocations.
-     * The caller must check for null return value.
+     * and builds an SSO cookie out of it. The new SSO token does not include the attributes specified in the ignoreAttributes parameter for use on downstream web invocations.
+     * The caller must check for a null return value.
      * The security permission WebSphereRuntimePermission("modify_token") is needed when security manager is enabled.
      * <p>
      * Return null if there is an invalid or expired SSO token, no subject on the current thread, no SSO token in subject or no webAppSecurityConfig object.
@@ -57,7 +57,7 @@ public class WebSecurityHelper {
      * Cookie.getName()=Cookie.getValue()
      *
      * @param String ... A list of attributes to be removed.
-     *            If null is specified, the custom cache key AttributeNameConstants.WSCREDENTIAL_CACHE_KEY will be removed from the SSO token.
+     *            If null is specified, the custom cache key AttributeNameConstants.WSCREDENTIAL_CACHE_KEY is removed from the SSO token.
      *
      * @return An object of type javax.servlet.http.Cookie. May return {@code null}
      * @throws Exception If SecurityManager exists and does not permit token modification.
