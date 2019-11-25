@@ -47,7 +47,7 @@ public class OAuthLoginFlow {
     TAIResult handleOAuthRequest(HttpServletRequest request, HttpServletResponse response, SocialLoginConfig clientConfig) throws WebTrustAssociationFailedException {
         if (SocialUtil.useAccessTokenFromRequest(clientConfig)) {
             TAIResult result = handleAccessTokenFlow(request, response, clientConfig);
-            if (result != null && clientConfig.isAccessTokenRequired()) {
+            if (clientConfig.isAccessTokenRequired() || (result != null && result.getSubject() != null)) {
                 return result;
             }
         }
@@ -71,11 +71,15 @@ public class OAuthLoginFlow {
             return handleAccessToken(tokenFromRequest, request, response, clientConfig);
         } else if (!isAccessTokenNullOrEmpty(tokenFromRequest)) {
             // request may have token
-            result = handleAccessToken(tokenFromRequest, request, response, clientConfig);
-            // if good result return
-            if (result != null && result.getSubject() != null) {
-                return result;
+            try {
+                result = handleAccessToken(tokenFromRequest, request, response, clientConfig);
+            } catch (Exception e) {
+
             }
+//            // if good result return
+//            if (result != null && result.getSubject() != null) {
+//                return result;
+//            }
         }
         return result;
     }
