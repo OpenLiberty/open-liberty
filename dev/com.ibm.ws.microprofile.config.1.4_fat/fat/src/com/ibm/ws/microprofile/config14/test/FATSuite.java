@@ -20,6 +20,7 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 @SuiteClasses({
                 NullDefaultInjectionTest.class,
                 CharacterInjectionTest.class,
+                BadObserverTest.class,
                 AlwaysPassesTest.class //Other test classes are experimental only
 })
 public class FATSuite {

@@ -8,16 +8,31 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.config14.impl;
+package com.ibm.ws.microprofile.config14.test.apps.characterInjection;
 
-import com.ibm.ws.microprofile.config.impl.AbstractConfigBuilder;
-import com.ibm.ws.microprofile.config13.impl.Config13ProviderResolverImpl;
+import javax.inject.Inject;
+import javax.servlet.annotation.WebServlet;
 
-public class Config14ProviderResolverImpl extends Config13ProviderResolverImpl {
+import org.junit.Test;
 
-    /** {@inheritDoc} */
-    @Override
-    protected AbstractConfigBuilder newBuilder(ClassLoader classLoader) {
-        return new Config14BuilderImpl(classLoader, getScheduledExecutorService(), getInternalConfigSources());
+import componenttest.app.FATServlet;
+
+/**
+ *
+ */
+@WebServlet("/")
+public class CharacterInjectionServlet extends FATServlet {
+
+    @Inject
+    CharacterInjectionBean bean;
+
+    @Test
+    public void characterInjectionTest() {
+        bean.characterInjectionTest();
+    }
+
+    @Test
+    public void charInjectionTest() {
+        bean.charInjectionTest();
     }
 }

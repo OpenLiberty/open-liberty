@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.config14.nullDefaultInjection.web;
+package com.ibm.ws.microprofile.config14.test.apps.nullDefaultInjection;
 
 import javax.inject.Inject;
 import javax.servlet.annotation.WebServlet;

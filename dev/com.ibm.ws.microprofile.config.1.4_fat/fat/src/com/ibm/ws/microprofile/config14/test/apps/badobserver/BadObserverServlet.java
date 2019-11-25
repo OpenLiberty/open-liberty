@@ -8,12 +8,10 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.config14.characterInjection.web;
+package com.ibm.ws.microprofile.config14.test.apps.badobserver;
 
 import javax.inject.Inject;
 import javax.servlet.annotation.WebServlet;
-
-import org.junit.Test;
 
 import componenttest.app.FATServlet;
 
@@ -21,18 +19,12 @@ import componenttest.app.FATServlet;
  *
  */
 @WebServlet("/")
-public class CharacterInjectionServlet extends FATServlet {
+public class BadObserverServlet extends FATServlet {
 
     @Inject
-    CharacterInjectionBean bean;
+    BadObserverBean bean;
 
-    @Test
-    public void characterInjectionTest() {
-        bean.characterInjectionTest();
-    }
-
-    @Test
-    public void charInjectionTest() {
-        bean.charInjectionTest();
+    public void dummyTest() {
+        throw new RuntimeException("This test should not have been run");
     }
 }

@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.config14.characterInjection.web;
+package com.ibm.ws.microprofile.config14.test.apps.characterInjection;
 
 import static org.junit.Assert.assertEquals;
 

@@ -20,7 +20,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions;
-import com.ibm.ws.microprofile.config14.nullDefaultInjection.web.NullDefaultInjectionServlet;
+import com.ibm.ws.microprofile.config14.test.apps.nullDefaultInjection.NullDefaultInjectionServlet;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -64,7 +64,7 @@ public class NullDefaultInjectionTest extends FATServletClient {
         // Automatically includes resources under 'test-applications/APP_NAME/resources/' folder
         // Exports the resulting application to the ${server.config.dir}/apps/ directory
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
-                        .addPackages(true, "com.ibm.ws.microprofile.config14.nullDefaultInjection");
+                        .addPackages(true, NullDefaultInjectionServlet.class.getPackage());
 
         ShrinkHelper.exportDropinAppToServer(server, war, DeployOptions.SERVER_ONLY);
 
