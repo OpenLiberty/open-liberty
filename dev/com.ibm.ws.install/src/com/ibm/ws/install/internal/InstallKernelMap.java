@@ -1222,7 +1222,7 @@ public class InstallKernelMap implements Map {
         List<File> foundArtifacts = new ArrayList<>();
         List<Integer> missingArtifactIndexes = new ArrayList<>();
         int index = 0;
-        double increment = ((double) progressBar.getMethodIncrement("fetchArtifacts") / artifacts.size());
+        double increment = (progressBar.getMethodIncrement("fetchArtifacts") / artifacts.size());
 
         for (String feature : artifacts) {
             fine("Processing feature: " + feature);
@@ -1392,7 +1392,15 @@ public class InstallKernelMap implements Map {
         //parse through httpProxy env variables
         String proxyEnvVarHttp = System.getenv("http_proxy");
         if (proxyEnvVarHttp != null) {
-            Map<String, String> httpProxyVariables = getProxyVariables(proxyEnvVarHttp, "http");
+            Map<String, String> httpProxyVariables;
+            try {
+                httpProxyVariables = getProxyVariables(proxyEnvVarHttp, "http");
+            } catch (InstallException e) {
+                data.put(ACTION_RESULT, ERROR);
+                data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+                data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
+                return null;
+            }
             Set<String> httpProxyVarKeys = httpProxyVariables.keySet();
             for (String key : httpProxyVarKeys) {
                 envMapRet.put(key, httpProxyVariables.get(key));
@@ -1401,7 +1409,15 @@ public class InstallKernelMap implements Map {
 
         String proxyEnvVarHttps = System.getenv("https_proxy");
         if (proxyEnvVarHttps != null) {
-            Map<String, String> httpsProxyVariables = getProxyVariables(proxyEnvVarHttps, "https");
+            Map<String, String> httpsProxyVariables;
+            try {
+                httpsProxyVariables = getProxyVariables(proxyEnvVarHttps, "https");
+            } catch (InstallException e) {
+                data.put(ACTION_RESULT, ERROR);
+                data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+                data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
+                return null;
+            }
             Set<String> httpsProxyVarKeys = httpsProxyVariables.keySet();
             for (String key : httpsProxyVarKeys) {
                 envMapRet.put(key, httpsProxyVariables.get(key));
@@ -1422,7 +1438,15 @@ public class InstallKernelMap implements Map {
             for (String key : keys) {
                 //if key is http_proxy or https_proxy then call getProxyVariables
                 if (key.equals("http_proxy") || key.equals("https_proxy")) {
-                    Map<String, String> proxyVar = getProxyVariables(propsFileMap.get(key), key.split("_")[0]);
+                    Map<String, String> proxyVar;
+                    try {
+                        proxyVar = getProxyVariables(propsFileMap.get(key), key.split("_")[0]);
+                    } catch (InstallException e) {
+                        data.put(ACTION_RESULT, ERROR);
+                        data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+                        data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
+                        return null;
+                    }
                     Set<String> proxyVarKeys = proxyVar.keySet();
                     for (String k : proxyVarKeys) {
                         envMapRet.put(k, proxyVar.get(k));
@@ -1438,25 +1462,38 @@ public class InstallKernelMap implements Map {
 
     /**
      * parses the following format for http/https proxy environment variables:
-     * https://user:password@prox-server:3128
-     * http://prox-server:3128
+     * https://user:password@proxy-server:3128
+     * http://proxy-server:3128
      * and returns a map with proxyUser, proxyHost, proxyPort, and proxyPassword
      *
      * @param string
      * @return
+     * @throws InstallException
      */
-    private Map<String, String> getProxyVariables(String proxyEnvVar, String protocol) {
+    private Map<String, String> getProxyVariables(String proxyEnvVar, String protocol) throws InstallException {
         Map<String, String> result = new HashMap<String, String>();
         if (protocol.equals("https")) {
             String[] proxyEnvVarSplit = proxyEnvVar.split("@");
-            String[] proxyCredentials = proxyEnvVarSplit[0].split(":"); //[http, //user, password]
+            if (proxyEnvVarSplit.length != 2) {
+                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_IMPROPER_HTTPSPROXY_FORMAT", proxyEnvVar));
+            }
+            String[] proxyCredentials = proxyEnvVarSplit[0].split(":"); //[https, //user, password]
+            if (proxyCredentials.length != 3) {
+                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_IMPROPER_HTTPSPROXY_FORMAT", proxyEnvVar));
+            }
             String[] proxyHostPort = proxyEnvVarSplit[1].split(":"); //[prox-server, 3128]
+            if (proxyHostPort.length != 2) {
+                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_IMPROPER_HTTPSPROXY_FORMAT", proxyEnvVar));
+            }
             result.put(protocol + ".proxyHost", proxyHostPort[0]); //prox-server
             result.put(protocol + ".proxyPort", proxyHostPort[1]); //3128
             result.put(protocol + ".proxyUser", proxyCredentials[1].replace("/", "")); //user
             result.put(protocol + ".proxyPassword", proxyCredentials[2]); //password
         } else if (protocol.equals("http")) {
             String[] proxyHttpSplit = proxyEnvVar.split(":");
+            if (proxyHttpSplit.length != 3) {
+                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_IMPROPER_HTTPPROXY_FORMAT", proxyEnvVar));
+            }
             result.put(protocol + ".proxyHost", proxyHttpSplit[1].replace("/", "")); //prox-server
             result.put(protocol + ".proxyPort", proxyHttpSplit[2]); ////3128
         }

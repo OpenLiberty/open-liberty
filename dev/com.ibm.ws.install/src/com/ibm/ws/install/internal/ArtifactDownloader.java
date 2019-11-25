@@ -123,6 +123,7 @@ public class ArtifactDownloader {
             try {
                 repoResponseCode = ArtifactDownloaderUtils.exists(repo, envMap);
             } catch (Exception e) {
+                fine(e.getMessage());
                 throw ExceptionUtils.createByKey("ERROR_FAILED_TO_CONNECT_MAVEN");
             }
             ArtifactDownloaderUtils.checkResponseCode(repoResponseCode, repo);
@@ -258,12 +259,16 @@ public class ArtifactDownloader {
             if (envMap.get("https.proxyUser") != null) {
                 Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(envMap.get("https.proxyHost"), Integer.parseInt(envMap.get("https.proxyPort"))));
                 conn = url.openConnection(proxy);
+            } else if (envMap.get("http.proxyUser") != null) {
+                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(envMap.get("http.proxyHost"), Integer.parseInt(envMap.get("http.proxyPort"))));
+                conn = url.openConnection(proxy);
             } else {
                 conn = url.openConnection();
             }
             addBasicAuthentication(address, conn);
             final String userAgentValue = calculateUserAgent();
             conn.setRequestProperty("User-Agent", userAgentValue);
+            conn.connect();
             in = conn.getInputStream();
             byte[] buffer = new byte[BUFFER_SIZE];
             int numRead;
@@ -392,7 +397,6 @@ public class ArtifactDownloader {
     // log message types
     private void info(String msg) {
         logger.info(msg);
-
 
     }
 

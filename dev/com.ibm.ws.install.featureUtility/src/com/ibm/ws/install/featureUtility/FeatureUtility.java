@@ -82,6 +82,9 @@ public class FeatureUtility {
         map = new InstallKernelMap();
         info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_INITIALIZING"));
         Map<String, String> envMap = (Map<String, String>) map.get("environment.variable.map");
+        if (envMap == null) {
+        	throw new InstallException((String) map.get("action.error.message"));
+        }
         fine("Environment variables: ");
         Set<String> envMapKeys = envMap.keySet();
         for (String key: envMapKeys) {
