@@ -80,5 +80,5 @@ function getOAuth2Url() {
 	var path = location.pathname;
 	var index = url.indexOf(path);
 	
-	return url.substring(0, index) + "/openapi/ui/oauth2-redirect.html";
+	return url.substring(0, index) + "/api/explorer/" + "oauth2-redirect.html";
 }
