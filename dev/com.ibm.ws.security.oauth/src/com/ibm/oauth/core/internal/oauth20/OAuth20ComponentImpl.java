@@ -1202,7 +1202,6 @@ public class OAuth20ComponentImpl extends OAuthComponentImpl implements
             HttpServletRequest request,
             AttributeList attribList) throws OAuthException {
         String methodName = "buildTokenAttributeList";
-        System.out.println("*** buildtokenatrriblist");
         _log.entering(CLASS, methodName);
         // handle resource(jwt audiences)
         String[] resource = (String[]) request.getAttribute(OAuth20Constants.OAUTH20_AUTHEN_PARAM_RESOURCE); // audiences
@@ -1265,16 +1264,13 @@ public class OAuth20ComponentImpl extends OAuthComponentImpl implements
      * then switch it here to the security name.
      */
     void overrideUserName(HttpServletRequest request, AttributeList attribList) {
-        System.out.println("*** overrideUserName");
         String override = (String) request.getAttribute(OAuth20Constants.RESOURCE_OWNER_OVERRIDDEN_USERNAME);
         if (override != null) {
             String name = attribList.getAttributeValueByName(OAuth20Constants.RESOURCE_OWNER_USERNAME);
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "changing token attribute:" + OAuth20Constants.RESOURCE_OWNER_USERNAME + " from: " + name + " to: " + override);
             }
-            System.out.println("*** changing token attribute:" + OAuth20Constants.RESOURCE_OWNER_USERNAME + " from: " + name + " to: " + override);
             attribList.setAttribute(OAuth20Constants.RESOURCE_OWNER_USERNAME, OAuth20Constants.ATTRTYPE_PARAM_BODY, new String[] { override });
-            System.out.println("*** attribute list: " + attribList);
         }
     }
 

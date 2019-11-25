@@ -102,7 +102,6 @@ public class OAuth20GrantTypeHandlerResourceOwnerCredentialsImpl implements
                     .getAttributeValueByName(OAuth20Constants.CLIENT_ID);
             String username = attributeList
                     .getAttributeValueByName(OAuth20Constants.USERNAME);
-            System.out.println("*** buildTokensGrantType username:" + username);
             String[] scope = attributeList.getAttributeValuesByNameAndType(
                     OAuth20Constants.SCOPE,
                     OAuth20Constants.ATTRTYPE_PARAM_OAUTH_REQUEST);
