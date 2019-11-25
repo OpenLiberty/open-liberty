@@ -407,7 +407,7 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
             String errorResponse = "{\"kind\":\"TokenReview\",\"apiVersion\":\"authentication.k8s.io/v1\",\"metadata\":{\"creationTimestamp\":null},\"spec\":{\"token\":\"somebadvalueForAnAccessToken\"},\"status\":{\"user\":{},\"error\":\"[invalid bearer token, token lookup failed]\"}}";
             userApiUtils.modifyExistingResponseToJSON(errorResponse);
         } catch (SocialLoginException e) {
-            verifyException(e, "KUBERNETES_USER_API_RESPONSE_USER_EMPTY");
+            verifyException(e, "KUBERNETES_USER_API_RESPONSE_ERROR");
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
