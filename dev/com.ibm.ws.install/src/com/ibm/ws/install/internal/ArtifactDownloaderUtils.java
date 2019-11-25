@@ -45,14 +45,18 @@ public class ArtifactDownloaderUtils {
             HttpURLConnection conn;
 
             URL url = new URL(URLName);
-            if (envMap.get("https.proxyUser") != null) {
-                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(envMap.get("https.proxyHost"), 8080));
+            if (envMap.get("https.proxyHost") != null) {
+                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(envMap.get("https.proxyHost"), Integer.parseInt(envMap.get("https.proxyPort"))));
+                conn = (HttpURLConnection) url.openConnection(proxy);
+            } else if (envMap.get("http.proxyHost") != null) {
+                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(envMap.get("http.proxyHost"), Integer.parseInt(envMap.get("http.proxyPort"))));
                 conn = (HttpURLConnection) url.openConnection(proxy);
             } else {
                 conn = (HttpURLConnection) url.openConnection();
             }
             conn.setRequestMethod("HEAD");
             conn.setConnectTimeout(10000);
+            conn.connect();
             int responseCode = conn.getResponseCode();
             conn.setInstanceFollowRedirects(true);
             return responseCode;
