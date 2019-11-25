@@ -10,6 +10,8 @@
  *******************************************************************************/
 package componenttest.topology.utils;
 
+import static org.junit.Assert.fail;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -68,6 +70,7 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
             ExternalTestService.getService("docker-engine", new AvailableDockerHostFilter());
         } catch (Exception e) {
             Log.error(c, "test", e, "Unable to locate any healthy docker-engine instances");
+            fail("Unable to locate any healthy docker-engine instances");
             throw new InvalidConfigurationException("Unable to locate any healthy docker-engine instances", e);
         }
     }
