@@ -414,7 +414,7 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
     }
 
     @Test
-    public void userAttributeIsEmpty() {
+    public void userResponseApiUserEmpty() {
         try {
             mockery.checking(new Expectations() {
                 {
