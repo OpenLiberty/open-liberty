@@ -12,7 +12,6 @@ package com.ibm.ws.jaxrs.fat.restmetrics;
 
 import java.lang.management.ManagementFactory;
 
-import javax.ejb.Asynchronous;
 import javax.management.JMX;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
@@ -100,7 +99,6 @@ public class RestMetricsResource {
     @GET
     @Path("/async")
     @Produces(MediaType.TEXT_PLAIN)
-    @Asynchronous
     public void asyncMethod(@Suspended final AsyncResponse asyncResponse) {
         // Returns a response on another thread
         Thread t = new Thread(new Runnable() {

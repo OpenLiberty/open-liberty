@@ -35,7 +35,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.jaxrs.fat.restmetrics.MetricsUnmappedCheckedException;
 import com.ibm.ws.jaxrs.fat.restmetrics.MetricsUnmappedUncheckedException;
 
 import componenttest.annotation.AllowedFFDC;
@@ -167,18 +166,10 @@ public class RestMetricsTest {
     @AllowedFFDC("org.apache.cxf.interceptor.Fault")
     public void testCheckedExceptions() throws IOException {
 
-        try {
 
             runGetCheckedExceptionMethod(7, 200, "/restmetrics/rest/restmetrics/checked/mappedChecked", "Mapped Checked");
-        } catch (MetricsUnmappedCheckedException e) {
-            fail("Unexpected exception thrown: " + e.toString());
-        }
 
-        try {
             runGetCheckedExceptionMethod(7, 500, "/restmetrics/rest/restmetrics/checked/unmappedChecked", "Unmapped Checked");
-        } catch (MetricsUnmappedCheckedException e) {
-            System.out.println("Caught expected exception: " + e);
-        }
 
 
         ArrayList<String> countList = getMetricsStrings("/metrics/vendor/RESTful.request.total");
@@ -195,18 +186,10 @@ public class RestMetricsTest {
     @AllowedFFDC("com.ibm.ws.jaxrs.fat.restmetrics.MetricsUnmappedUncheckedException")
     public void testUncheckedExceptions() throws IOException {
 
-        try {
 
             runGetUncheckedExceptionMethod(8, 200, "/restmetrics/rest/restmetrics/unchecked/mappedUnchecked", "Mapped Unchecked");
-        } catch (MetricsUnmappedUncheckedException e) {
-            fail("Unexpected exception thrown: " + e.toString());
-        }
 
-        try {
             runGetUncheckedExceptionMethod(8, 500, "/restmetrics/rest/restmetrics/unchecked/unmappedUnchecked", "Unmapped Unchecked");
-        } catch (MetricsUnmappedUncheckedException e) {
-            System.out.println("Caught expected exception: " + e);
-        }
 
 
         ArrayList<String> countList = getMetricsStrings("/metrics/vendor/RESTful.request.total");
@@ -298,11 +281,12 @@ public class RestMetricsTest {
         }
     }
 
-    private void runGetCheckedExceptionMethod(int index, int exprc, String requestUri, String testOut) throws IOException, MetricsUnmappedCheckedException {
-        URL url = new URL("http://" + getHost() + ":" + getPort() + requestUri);
-        int retcode;
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+    private void runGetCheckedExceptionMethod(int index, int exprc, String requestUri, String testOut) {
+        HttpURLConnection con = null;
         try {
+            URL url = new URL("http://" + getHost() + ":" + getPort() + requestUri);
+            int retcode;
+            con = (HttpURLConnection) url.openConnection();
             con.setDoInput(true);
             con.setDoOutput(true);
             con.setUseCaches(false);
@@ -337,16 +321,23 @@ public class RestMetricsTest {
             }
 
             return;
-        } finally {
-            con.disconnect();
+        }
+        catch (Exception e) {
+            fail ("Unexpected exception thrown:  " + e.getMessage());
+        }
+        finally {
+            if (con != null) {
+                con.disconnect();
+            }
         }
     }
 
     private void runGetUncheckedExceptionMethod(int index, int exprc, String requestUri, String testOut) throws IOException, MetricsUnmappedUncheckedException {
-        URL url = new URL("http://" + getHost() + ":" + getPort() + requestUri);
-        int retcode;
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        HttpURLConnection con = null;
         try {
+            URL url = new URL("http://" + getHost() + ":" + getPort() + requestUri);
+            int retcode;
+            con = (HttpURLConnection) url.openConnection();
             con.setDoInput(true);
             con.setDoOutput(true);
             con.setUseCaches(false);
@@ -380,8 +371,15 @@ public class RestMetricsTest {
             }
 
             return;
-        } finally {
-            con.disconnect();
+        }
+        catch (Exception e) {
+            fail ("Unexpected exception thrown:  " + e.getMessage());
+        }
+
+        finally {
+            if (con != null) {
+                con.disconnect();
+            }
         }
     }
 

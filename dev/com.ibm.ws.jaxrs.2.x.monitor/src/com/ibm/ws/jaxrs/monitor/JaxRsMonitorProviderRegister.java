@@ -29,13 +29,10 @@ public class JaxRsMonitorProviderRegister implements JaxRsProviderRegister, Appl
     @Override
     public void installProvider(boolean clientSide, List<Object> providers, Set<String> features) {
         
-    	// Register the metrics monitor filter class if we are not on the client and if using the monitor
-    	// feature with or without the mpMetrics feature.
+    	// Register the metrics monitor filter class if we are not on the client.
         if (!clientSide) {
-            if (features.contains("monitor-1.0")) {
-                // Add  built-in ContainerRequestFilter/ContainerResponseFilter to enable metric collection.
-                providers.add(monitorFilter);
-            }
+            // Add  built-in ContainerRequestFilter/ContainerResponseFilter to enable metric collection.
+            providers.add(monitorFilter);
         }
     }
     
