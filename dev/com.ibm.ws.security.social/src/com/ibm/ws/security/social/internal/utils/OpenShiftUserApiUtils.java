@@ -145,7 +145,7 @@ public class OpenShiftUserApiUtils {
         if (userInnerMap.containsKey(config.getGroupNameAttribute())) {
             JsonValue groupsValue = userInnerMap.get(config.getGroupNameAttribute());
             if (groupsValue.getValueType() != ValueType.ARRAY) {
-                throw new SocialLoginException("KUBERNETES_USER_API_RESPONSE_WRONG_JSON_TYPE", null, new Object[] { ValueType.ARRAY, groupsValue.getValueType(), userInnerMap });
+                throw new SocialLoginException("KUBERNETES_USER_API_RESPONSE_WRONG_JSON_TYPE", null, new Object[] { config.getGroupNameAttribute(), ValueType.ARRAY, groupsValue.getValueType(), userInnerMap });
             }
             modifiedResponse.add(config.getGroupNameAttribute(), userInnerMap.getJsonArray("groups"));
         }
@@ -155,7 +155,7 @@ public class OpenShiftUserApiUtils {
         if (userInnerMap.containsKey(config.getUserNameAttribute())) {
             JsonValue userInnerMapUsername = userInnerMap.get(config.getUserNameAttribute());
             if (userInnerMapUsername.getValueType() != ValueType.STRING) {
-                throw new SocialLoginException("KUBERNETES_USER_API_RESPONSE_WRONG_JSON_TYPE", null, new Object[] { ValueType.STRING, userInnerMapUsername.getValueType(), userInnerMap });
+                throw new SocialLoginException("KUBERNETES_USER_API_RESPONSE_WRONG_JSON_TYPE", null, new Object[] { config.getUserNameAttribute(), ValueType.STRING, userInnerMapUsername.getValueType(), userInnerMap });
             }
             modifiedResponse.add(config.getUserNameAttribute(), userInnerMap.getString(config.getUserNameAttribute()));
         } else {
@@ -167,7 +167,7 @@ public class OpenShiftUserApiUtils {
         if (userInnerMap.containsKey("email")) {
             JsonValue emailJsonString = userInnerMap.get("email");
             if (emailJsonString.getValueType() != ValueType.STRING) {
-                throw new SocialLoginException("KUBERNETES_USER_API_RESPONSE_WRONG_JSON_TYPE", null, new Object[] { ValueType.STRING, emailJsonString.getValueType(), userInnerMap });
+                throw new SocialLoginException("KUBERNETES_USER_API_RESPONSE_WRONG_JSON_TYPE", null, new Object[] { "email", ValueType.STRING, emailJsonString.getValueType(), userInnerMap });
             }
             modifiedResponse.add(config.getUserNameAttribute(), userInnerMap.getString("email"));
         } else {
@@ -189,10 +189,10 @@ public class OpenShiftUserApiUtils {
 
             JsonValue userInnerMapValue = statusResponse.get("user");
             if (userInnerMapValue.getValueType() != ValueType.OBJECT) {
-                throw new SocialLoginException("KUBERNETES_USER_API_RESPONSE_WRONG_JSON_TYPE", null, new Object[] { ValueType.OBJECT, userInnerMapValue.getValueType(), statusResponse });
+                throw new SocialLoginException("KUBERNETES_USER_API_RESPONSE_WRONG_JSON_TYPE", null, new Object[] { "user", ValueType.OBJECT, userInnerMapValue.getValueType(), statusResponse });
             } else {
                 if (statusResponse.getJsonObject("user").isEmpty()) {
-                    throw new SocialLoginException("KUBERNETES_USER_API_RESPONSE_USER_EMPTY", null, null);
+                    throw new SocialLoginException("KUBERNETES_USER_API_RESPONSE_NULL_EMPTY", null, null);
                 }
                 return statusResponse.getJsonObject("user");
             }
