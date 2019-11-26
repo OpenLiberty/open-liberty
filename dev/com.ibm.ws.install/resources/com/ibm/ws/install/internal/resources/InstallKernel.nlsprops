@@ -793,31 +793,31 @@ ERROR_CHECKSUM_FAILED_MAVEN=CWWKF1391E: Failed to validate available checksums f
 ERROR_CHECKSUM_FAILED_MAVEN.explanation=The checksum of the downloaded asset is not correct. The content of the downloaded asset is not the same as the content from the repository, so the asset cannot be installed.
 ERROR_CHECKSUM_FAILED_MAVEN.useraction=Run the command again. If the problem continues, see the problem determination information on the WebSphere Application Server Support web page: http://www.ibm.com/software/webservers/appserv/was/support.
 
-ERROR_INVALID_MAVEN_CREDENTIALS=CWWKF1392I:Incorrect credentials provided for the following repository: {0}
+ERROR_INVALID_MAVEN_CREDENTIALS=CWWKF1392E:Incorrect credentials provided for the following repository: {0}
 ERROR_INVALID_MAVEN_CREDENTIALS.explanation=Failed to authenticate with the configured repository.
 ERROR_INVALID_MAVEN_CREDENTIALS.useraction=Please supply the correct credentials for the configured repository.
 
-ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_MAVEN_REPO=CWWKF1393I:Failed to download artifacts from the configured repository.
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_MAVEN_REPO=CWWKF1393E:Failed to download artifacts from the configured repository.
 ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_MAVEN_REPO.explanation=The specified asset was not downloaded from the specified repository because the repository does not contain a valid version of the asset.
 ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_MAVEN_REPO.useraction=Ensure that the repository contains the asset, and run the command again.
 
-ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE=CWWKF1394I: Could not determine the Liberty runtime version.
+ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE=CWWKF1394E: Could not determine the Liberty runtime version.
 ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE.explanation=The properties file {0} may be missing or corrupted.
 ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE.useraction=Ensure the properties file exists.
 
-ERROR_MAVEN_COORDINATE_WRONG_VERSION=CWWKF1395I: Cannot install feature with Maven coordinate {0} onto a {1} Liberty runtime version.
+ERROR_MAVEN_COORDINATE_WRONG_VERSION=CWWKF1395E: Cannot install feature with Maven coordinate {0} onto a {1} Liberty runtime version.
 ERROR_MAVEN_COORDINATE_WRONG_VERSION.explanation=The feature is incompatible with the Liberty runtime.
 ERROR_MAVEN_COORDINATE_WRONG_VERSION.useraction=Specify a valid version for the feature.
 
-ERROR_MAVEN_COORDINATE_WRONG_PACKAGING=CWWKF1396I: The packaging format in feature Maven coordinate {0} is invalid. The valid packaging format is esa.
+ERROR_MAVEN_COORDINATE_WRONG_PACKAGING=CWWKF1396E: The packaging format in feature Maven coordinate {0} is invalid. The valid packaging format is esa.
 ERROR_MAVEN_COORDINATE_WRONG_PACKAGING.explanation=The feature is incompatible with the Liberty runtime.
 ERROR_MAVEN_COORDINATE_WRONG_PACKAGING.useraction=Specify "esa" for the packaging in the Maven coordinate.
 
-ERROR_MAVEN_COORDINATE_INVALID=CWWKF1397I: Invalid maven coordinate provided: {0}
+ERROR_MAVEN_COORDINATE_INVALID=CWWKF1397E: Invalid maven coordinate provided: {0}
 ERROR_MAVEN_COORDINATE_INVALID.explanation=The maven coordinated provided is not in the correct format.
 ERROR_MAVEN_COORDINATE_INVALID.useraction=Enter a valid maven coordinate.
 
-ERROR_SERVER_NOT_EXIST=CWWKF1398I: The server {0} does not exist. Please enter a valid server name and try again.
+ERROR_SERVER_NOT_EXIST=CWWKF1398E: The server {0} does not exist. Please enter a valid server name and try again.
 ERROR_SERVER_NOT_EXIST.explanation=The server does not exist.
 ERROR_SERVER_NOT_EXIST.useraction=Create the server and run the command again.
 
