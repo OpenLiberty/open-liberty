@@ -67,6 +67,7 @@ import com.ibm.websphere.concurrent.persistent.TaskStatus;
 import com.ibm.ws.concurrent.persistent.ejb.TimerStatus;
 import com.ibm.ws.concurrent.persistent.ejb.TimerTrigger;
 import com.ibm.ws.concurrent.persistent.ejb.TimersPersistentExecutor;
+import com.ibm.ws.concurrent.persistent.internal.PersistentExecutorImpl;
 
 import componenttest.annotation.AllowedFFDC;
 
@@ -458,6 +459,23 @@ public class SchedulerFATServlet extends HttpServlet {
             if (!foundIds.containsAll(expected))
                 throw new Exception("On the second query, should have found at least task ids " + expected + " within " + foundIds);
 
+            // Simulate another instance trying to claim the same task, but timing out.
+            // This could happen if task execution outlives the missed task threshold (good configuration should avoid this)
+            // TODO enable if we can determine why query timeouts aren't timing out and fix it, then enable the following:
+            //tran.begin();
+            //try {
+            //    Method DatabaseTaskStore_claimIfNotLocked = dbTaskStore.getClass().getMethod("claimIfNotLocked", long.class, int.class, long.class);
+            //    long newClaimExpiry = System.currentTimeMillis() + TimeUnit.HOURS.toMillis(155);
+            //    System.out.println("About to attempt claim");
+            //    long start = System.nanoTime();
+            //    DatabaseTaskStore_claimIfNotLocked.invoke(dbTaskStore, statusO.getTaskId(), 1, newClaimExpiry);
+            //    long duration = System.nanoTime() - start;
+            //    if (duration > TimeUnit.SECONDS.toNanos(20))
+            ///        throw new Exception("Claim attempt on task (" + statusO.getTaskId() + ") did not timeout within a reasonable amount of time. " + duration + " ns.");
+            //}// finally {
+            //    tran.rollback();
+            //}
+
             // It should be possible to cancel other tasks.
             if (!statusM.cancel(false))
                 throw new Exception("Unable to cancel task " + statusM.getTaskId() + " while other task is locked.");
@@ -582,7 +600,7 @@ public class SchedulerFATServlet extends HttpServlet {
     }
 
     /**
-     * Find a tasks based on their Task ID and block for a while without committing to determine if this interferes with other operations.
+     * Find tasks based on their Task ID and block for a while without committing to determine if this interferes with other operations.
      */
     public void testBlockAfterFindByIdFE(PrintWriter out) throws Exception {
         final TaskStatus<Integer> statusE1 = scheduler.schedule((Callable<Integer>) new DBIncrementTask("testBlockAfterFindByIdFE-e1"), 64, TimeUnit.DAYS);
@@ -980,7 +998,7 @@ public class SchedulerFATServlet extends HttpServlet {
      * Schedule a task and block for a while without committing to determine if this interferes with other operations.
      */
     public void testBlockAfterScheduleFE(PrintWriter out) throws Exception {
-        // Block a transaction that performs a cancel.
+        // Block a transaction that schedules a task.
         final Phaser blocker = new Phaser(1);
         Future<TaskStatus<Integer>> scheduleAndBlockFuture = unmanagedExecutor.submit(new Callable<TaskStatus<Integer>>() {
             public TaskStatus<Integer> call() throws Exception {
@@ -1067,6 +1085,73 @@ public class SchedulerFATServlet extends HttpServlet {
                 blocker.arrive();
                 scheduleAndBlockFuture.cancel(true);
             }
+        }
+    }
+
+    /**
+     * Block the execution of a task after it starts running. Simulate another instance attempting to run the task.
+     */
+    public void testBlockRunningTaskFE(PrintWriter out) throws Exception {
+        Callable<Integer> task = new CancelableTask("testBlockRunningTaskFE", true);
+        TaskStatus<Integer> taskStatus = scheduler.submit(task);
+        try {
+            CancelableTask.waitForStart("CancelableTask-testBlockRunningTaskFE");
+
+            System.out.println("Task is running...");
+
+            // The PROP entry for the task will remain locked within a suspended transaction
+
+            // Simulate other instances making attempts to claim the task.
+            // For testing purposes, directly force this code path from a predictable location (here)
+            // rather than waiting for persistent executor to eventually do it
+
+            int version;
+            try (Connection con = schedDB.getConnection(); Statement st = con.createStatement()) {
+                ResultSet result = st.executeQuery("SELECT VERSION FROM WLPTASK WHERE ID=" + taskStatus.getTaskId());
+                if (result.next())
+                    version = result.getInt(1);
+                else
+                    throw new Exception("Task " + taskStatus.getTaskId() + " is not found in the databbase.");
+            }
+
+            // Attempt to claim the task
+
+            tran.begin();
+            try {
+                Field taskStore = scheduler.getClass().getDeclaredField("taskStore");
+                taskStore.setAccessible(true);
+                Object dbTaskStore = taskStore.get(scheduler);
+                Method DatabaseTaskStore_claimIfNotLocked = dbTaskStore.getClass().getMethod("claimIfNotLocked", long.class, int.class, long.class);
+                long newClaimExpiry = System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(7);
+                System.out.println("About to attempt claim");
+                long start = System.nanoTime();
+                DatabaseTaskStore_claimIfNotLocked.invoke(dbTaskStore, taskStatus.getTaskId(), version, newClaimExpiry);
+                long duration = System.nanoTime() - start;
+                if (duration > TimeUnit.SECONDS.toNanos(20))
+                    throw new Exception("Unable to attempt a claim on a task (" + taskStatus.getTaskId() + ") within a reasonable amount of time. " + duration + " ns.");
+            } finally {
+                tran.rollback();
+            }
+
+            // If a task runs for longer than the missed task threshold (ought to never happen if well configured)
+            // then another instance could claim the right to run it and attempt to start it.  That instance will be blocked
+            // on its attempt to lock the {<taskId>} entry in the PROP table.
+            // Simulate this here...
+            Class<?> InvokerTask = scheduler.getClass().getClassLoader().loadClass("com.ibm.ws.concurrent.persistent.internal.InvokerTask");
+            //PersistentExecutorImpl persistentExecutor, long taskId, long expectedExecTime, short binaryFlags, int txTimeout
+            Constructor<?> InvokerTask_init = InvokerTask.getDeclaredConstructor(scheduler.getClass(), long.class, long.class, short.class, int.class);
+            InvokerTask_init.setAccessible(true);
+            Runnable invokerTask = (Runnable) InvokerTask_init.newInstance(scheduler, taskStatus.getTaskId(), System.currentTimeMillis() - 1000, (short) 0b1000100000010, (int) TimeUnit.MINUTES.toSeconds(5));
+            // TODO Ideally, we would like the attempt to time out quickly, that this doesn't happen yet.
+            //System.out.println("About to attempt duplicate run of task");
+            //long start = System.nanoTime();
+            //invokerTask.run(); // catch exception? or expected FFDC?
+            //long duration = System.nanoTime() - start;
+            //if (duration > TimeUnit.SECONDS.toNanos(20))
+            //    throw new Exception("Unable to time out from duplicate attempt of task " + taskStatus.getTaskId() + " within a reasonable amount of time. " + duration + " ns.");
+        } finally {
+            taskStatus.cancel(false);
+            CancelableTask.notifyTaskCanceled("DBIncrementTask-testBlockRunningTaskFE");
         }
     }
 
