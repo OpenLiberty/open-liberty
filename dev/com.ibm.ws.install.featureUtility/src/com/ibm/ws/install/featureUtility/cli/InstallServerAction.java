@@ -147,6 +147,7 @@ public class InstallServerAction implements ActionHandler {
 
                 return ReturnCode.OK;
         }
+
         private ExitCode installServerFeatures() {
                 ExitCode rc = ReturnCode.OK;
                 Collection<String> featuresToInstall = new HashSet<String>();
@@ -175,12 +176,35 @@ public class InstallServerAction implements ActionHandler {
 
 
         private ExitCode assetInstallInit(Collection<String> assetIds) {
-                featureNames.addAll(assetIds);
+                List<String> features = new ArrayList<>();
+                List<String> userFeatures = new ArrayList<>();
+                // find all user features in server.xml
+                for(String asset : assetIds){
+                        if(asset.startsWith("usr:")){
+                                userFeatures.add(asset.substring("usr:".length()));
+                        } else {
+                                features.add(asset);
+                        }
+                }
+                if(!userFeatures.isEmpty()){
+                        logger.info(InstallLogUtils.Messages.INSTALL_KERNEL_MESSAGES.getMessage("MSG_USER_FEATURE_SERVER_XML", userFeatures.toString()));
+
+                        // remove any user features before installation.
+                        for(String feature : features){
+                                if(!userFeatures.contains(feature)){
+                                    featureNames.add(feature);
+                                }
+                        }
+                } else {
+                        featureNames.addAll(features);
+                }
+
                 return ReturnCode.OK;
         }
 
         private ExitCode install() {
                 try {
+                        logger.fine("sending this to feature utility: " + featureNames.toString());
                         featureUtility = new FeatureUtility.FeatureUtilityBuilder().setFromDir(fromDir)
                                         .setFeaturesToInstall(featureNames).setNoCache(noCache).build();
                         featureUtility.installFeatures();
@@ -224,7 +248,7 @@ public class InstallServerAction implements ActionHandler {
         }
 
         private boolean validateProduct() {
-                logger.log(Level.INFO, "");
+//                logger.log(Level.INFO, "");
                 BundleRepositoryRegistry.disposeAll();
                 BundleRepositoryRegistry.initializeDefaults(null, false);
                 ValidateCommandTask vcTask = new ValidateCommandTask();
