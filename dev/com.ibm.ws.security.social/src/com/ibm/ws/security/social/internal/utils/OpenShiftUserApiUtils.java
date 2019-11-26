@@ -191,9 +191,9 @@ public class OpenShiftUserApiUtils {
             if (userInnerMapValue.getValueType() != ValueType.OBJECT) {
                 throw new SocialLoginException("KUBERNETES_USER_API_RESPONSE_WRONG_JSON_TYPE", null, new Object[] { "user", ValueType.OBJECT, userInnerMapValue.getValueType(), statusResponse });
             } else {
-                if (statusResponse.getJsonObject("user").isEmpty()) {
-                    throw new SocialLoginException("KUBERNETES_USER_API_RESPONSE_NULL_EMPTY", null, null);
-                }
+ //               if (statusResponse.getJsonObject("user").isEmpty()) {
+///                    throw new SocialLoginException("KUBERNETES_USER_API_RESPONSE_NULL_EMPTY", null, null);
+//                }
                 return statusResponse.getJsonObject("user");
             }
         } else {

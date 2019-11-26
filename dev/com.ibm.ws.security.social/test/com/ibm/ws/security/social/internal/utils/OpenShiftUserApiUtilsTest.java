@@ -413,6 +413,25 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
         }
     }
 
+    @Test
+    public void userAttributeIsEmpty() {
+        try {
+            mockery.checking(new Expectations() {
+                {
+                    allowing(config).getUserNameAttribute();
+                    will(returnValue("blah"));
+                    allowing(config).getGroupNameAttribute();
+                    will(returnValue("groups"));
+                }
+            });
+            String returnedString = userApiUtils.modifyExistingResponseToJSON("{\"status\":{\"authenticated\":true,\"user\":{}}}");
+        } catch (SocialLoginException e) {
+            verifyException(e, "CWWKS5374E");
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+    
     @SuppressWarnings("unchecked")
     @Test
     public void test_getUserApiResponse_nullAccessToken() {
