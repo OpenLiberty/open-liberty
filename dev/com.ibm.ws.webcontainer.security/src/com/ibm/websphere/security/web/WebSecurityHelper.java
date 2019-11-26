@@ -46,7 +46,7 @@ public class WebSecurityHelper {
 
     /**
      * Extracts the Single Sign-On (SSO) token from the subject of the current thread
-     * and builds an SSO cookie out of it. The new SSO token does not include the attributes specified in the ignoreAttributes parameter for use on downstream web invocations.
+     * and builds an SSO cookie out of it. The new SSO token does not include the attributes specified in the removeAttributes parameter for use on downstream web invocations.
      * The caller must check for a null return value.
      * The security permission WebSphereRuntimePermission("modify_token") is needed when security manager is enabled.
      * <p>
