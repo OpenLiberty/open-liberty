@@ -425,6 +425,7 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
                 }
             });
             String returnedString = userApiUtils.modifyExistingResponseToJSON("{\"status\":{\"authenticated\":true,\"user\":{}}}");
+            fail();
         } catch (SocialLoginException e) {
             verifyException(e, "CWWKS5374E");
         } catch (Throwable t) {
