@@ -68,12 +68,12 @@ public interface TokenManager {
      * TokenServices in an attempt to recreate the token.
      *
      * @param tokenBytes
-     * @param attributes A list of attributes will be removed from the token
+     * @param removeAttributes A list of attributes will be removed from the token
      * @return A non-null Token
      * @throws InvalidTokenException
      */
     @FFDCIgnore(InvalidTokenException.class)
-    public abstract Token recreateTokenFromBytes(byte[] tokenBytes, String... attributes) throws InvalidTokenException, TokenExpiredException;
+    public abstract Token recreateTokenFromBytes(byte[] tokenBytes, String... removeAttributes) throws InvalidTokenException, TokenExpiredException;
 
     /**
      * Recreates the token of the specified token type from the given token bytes.

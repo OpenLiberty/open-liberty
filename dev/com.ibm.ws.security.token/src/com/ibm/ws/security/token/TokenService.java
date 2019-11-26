@@ -44,9 +44,9 @@ public interface TokenService {
      * Recreates a Token object based on previous token bytes without a list of attributes.
      *
      * @param tokenBytes
-     * @param attributes A list of attributes will be removed from the token
+     * @param removeAttributes A list of attributes will be removed from the token
      * @return
      */
-    public Token recreateTokenFromBytes(byte[] tokenBytes, String... attributes) throws InvalidTokenException, TokenExpiredException;
+    public Token recreateTokenFromBytes(byte[] tokenBytes, String... removeAttributes) throws InvalidTokenException, TokenExpiredException;
 
 }

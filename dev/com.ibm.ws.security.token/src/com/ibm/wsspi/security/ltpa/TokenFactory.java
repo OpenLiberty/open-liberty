@@ -52,7 +52,7 @@ public interface TokenFactory {
      * @throws com.ibm.websphere.security.auth.InvalidTokenException
      * @throws com.ibm.websphere.security.auth.TokenExpiredException
      */
-    public Token validateTokenBytes(byte[] encryptedData, String... attributes) throws InvalidTokenException, TokenExpiredException;
+    public Token validateTokenBytes(byte[] encryptedData, String... removeAttributes) throws InvalidTokenException, TokenExpiredException;
 
     /**
      * Returns a Token based on the type of configured token

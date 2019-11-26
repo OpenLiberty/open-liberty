@@ -64,8 +64,8 @@ public class LTPAToken2Factory implements TokenFactory {
 
     /** {@inheritDoc} */
     @Override
-    public Token validateTokenBytes(byte[] tokenBytes, String... attributes) throws InvalidTokenException, TokenExpiredException {
-        return new LTPAToken2(tokenBytes, sharedKey, privateKey, publicKey, attributes);
+    public Token validateTokenBytes(byte[] tokenBytes, String... removeAttributes) throws InvalidTokenException, TokenExpiredException {
+        return new LTPAToken2(tokenBytes, sharedKey, privateKey, publicKey, removeAttributes);
     }
 
 }

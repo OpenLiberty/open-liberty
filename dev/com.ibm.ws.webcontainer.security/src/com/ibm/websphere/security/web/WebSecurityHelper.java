@@ -15,7 +15,6 @@ import javax.servlet.http.Cookie;
 import com.ibm.websphere.security.WebSphereRuntimePermission;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 import com.ibm.ws.webcontainer.security.internal.WebSecurityHelperImpl;
-import com.ibm.wsspi.security.token.AttributeNameConstants;
 
 /**
  * Provides methods to perform security functions for web applications.
@@ -41,9 +40,9 @@ public class WebSecurityHelper {
      *
      * @return An object of type javax.servlet.http.Cookie. May return {@code null}
      */
-    public static Cookie getSSOCookieFromSSOToken() throws Exception {
-        return WebSecurityHelperImpl.getSSOCookieFromSSOToken();
-    }
+//    public static Cookie getSSOCookieFromSSOToken() throws Exception {
+//        return WebSecurityHelperImpl.getSSOCookieFromSSOToken();
+//    }
 
     /**
      * Extracts the Single Sign-On (SSO) token from the subject of the current thread
@@ -56,24 +55,25 @@ public class WebSecurityHelper {
      * to set the Cookie header on an HTTP request with header value of
      * Cookie.getName()=Cookie.getValue()
      *
-     * @param String ... A list of attributes to be removed.
-     *            If null is specified, the custom cache key AttributeNameConstants.WSCREDENTIAL_CACHE_KEY is removed from the SSO token.
+     * @param String ... A list of attributes to be removed from the SSO token. If no attributes is specified, all the attributes are kept.
      *
      * @return An object of type javax.servlet.http.Cookie. May return {@code null}
      * @throws Exception If SecurityManager exists and does not permit token modification.
+     *             <p>
+     *             For example:
+     *             1) To remove the custom cache key AttributeNameConstants.WSCREDENTIAL_CACHE_KEY from SSO token:
+     *             Cookie cookie = getSSOCookieFromSSOToken(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY);
+     *             2) To keep all attributes in SSO token:
+     *             Cookie cookie = getSSOCookieFromSSOToken();
+     *
      */
-    public static Cookie getSSOCookieFromSSOToken(String... ignoreAttributes) throws Exception {
+    public static Cookie getSSOCookieFromSSOToken(String... removeAttributes) throws Exception {
         java.lang.SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
             sm.checkPermission(MODIFY_TOKEN);
         }
 
-        if (ignoreAttributes == null) {
-            return WebSecurityHelperImpl.getSSOCookieFromSSOToken(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY);
-        } else {
-            return WebSecurityHelperImpl.getSSOCookieFromSSOToken(ignoreAttributes);
-        }
-
+        return WebSecurityHelperImpl.getSSOCookieFromSSOToken(removeAttributes);
     }
 
     /**

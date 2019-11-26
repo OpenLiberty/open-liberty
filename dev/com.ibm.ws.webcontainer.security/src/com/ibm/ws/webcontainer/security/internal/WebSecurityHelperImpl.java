@@ -54,9 +54,9 @@ public class WebSecurityHelperImpl {
      *         null use Cookie methods getName() and getValue() to set the Cookie header
      *         on an http request with header value of Cookie.getName()=Cookie.getValue()
      */
-    public static Cookie getSSOCookieFromSSOToken() throws Exception {
-        return getSSOCookieFromSSOToken((String) null);
-    }
+//    public static Cookie getSSOCookieFromSSOToken() throws Exception {
+//        return getSSOCookieFromSSOToken((String) null);
+//    }
 
     /**
      * Extracts an LTPA sso cookie from the subject of current thread
@@ -64,12 +64,12 @@ public class WebSecurityHelperImpl {
      * The caller must check for null return value only when not null
      * that getName and getValue can be invoked on the returned Cookie object
      *
-     * @param ignoreAttributes A list of attributes
+     * @param removeAttributes A list of attributes
      * @return an object of type javax.servlet.http.Cookie. When the returned value is not
      *         null use Cookie methods getName() and getValue() to set the Cookie header
      *         on an http request with header value of Cookie.getName()=Cookie.getValue()
      */
-    public static Cookie getSSOCookieFromSSOToken(String... ignoreAttributes) throws Exception {
+    public static Cookie getSSOCookieFromSSOToken(String... removeAttributes) throws Exception {
         Cookie ltpaCookie = null;
         if (webAppSecConfig == null) {
             // if we don't have the config, we can't construct the cookie
@@ -81,7 +81,7 @@ public class WebSecurityHelperImpl {
                 subject = WSSubject.getCallerSubject();
             }
             if (subject != null) {
-                ltpaCookie = getLTPACookie(subject, ignoreAttributes);
+                ltpaCookie = getLTPACookie(subject, removeAttributes);
             } else {
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "No subjects on the thread");
@@ -156,11 +156,11 @@ public class WebSecurityHelperImpl {
     /**
      * builds an LTPACookie object without a list of attributes
      **/
-    private static Cookie constructLTPACookieObj(SingleSignonToken ssoToken, String[] attributes) {
+    private static Cookie constructLTPACookieObj(SingleSignonToken ssoToken, String... removeAttributes) {
         byte[] ssoTokenBytes = ssoToken.getBytes();
 
         try {
-            Token token = recreateTokenFromBytes(ssoTokenBytes, attributes);
+            Token token = recreateTokenFromBytes(ssoTokenBytes, removeAttributes);
             ssoTokenBytes = token.getBytes();
         } catch (InvalidTokenException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -178,19 +178,19 @@ public class WebSecurityHelperImpl {
     }
 
     /**
-     * @param attributes
+     * @param removeAttributes
      * @param ssoToken
      * @return
      * @throws InvalidTokenException
      * @throws TokenExpiredException
      */
-    private static Token recreateTokenFromBytes(byte[] ssoToken, String[] attributes) throws InvalidTokenException, TokenExpiredException {
+    private static Token recreateTokenFromBytes(byte[] ssoToken, String... removeAttributes) throws InvalidTokenException, TokenExpiredException {
         Token token = null;
         TokenManager tokenManager = tokenManagerRef.getService();
         if (tokenManager != null) {
             byte[] credToken = AuthenticationHelper.copyCredToken(ssoToken);
-            if (attributes != null) {
-                token = tokenManager.recreateTokenFromBytes(credToken, attributes);
+            if (removeAttributes != null) {
+                token = tokenManager.recreateTokenFromBytes(credToken, removeAttributes);
             } else {
                 token = tokenManager.recreateTokenFromBytes(credToken);
             }
@@ -224,11 +224,11 @@ public class WebSecurityHelperImpl {
      * Gets the LTPA cookie from the given subject
      *
      * @param subject
-     * @param ignoreAttributes
+     * @param removeAttributes
      * @return
      * @throws Exception
      */
-    private static Cookie getLTPACookie(final Subject subject, String... ignoreAttributes) throws Exception {
+    private static Cookie getLTPACookie(final Subject subject, String... removeAttributes) throws Exception {
         Cookie ltpaCookie = null;
         SingleSignonToken ssoToken = null;
         Set<SingleSignonToken> ssoTokens = subject.getPrivateCredentials(SingleSignonToken.class);
@@ -240,10 +240,10 @@ public class WebSecurityHelperImpl {
             }
         }
         if (ssoToken != null) {
-            if (ignoreAttributes == null || ignoreAttributes.length < 1) {
+            if (removeAttributes == null) {
                 ltpaCookie = constructLTPACookieObj(ssoToken);
             } else {
-                ltpaCookie = constructLTPACookieObj(ssoToken, ignoreAttributes);
+                ltpaCookie = constructLTPACookieObj(ssoToken, removeAttributes);
             }
 
         } else {
