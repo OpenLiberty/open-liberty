@@ -118,7 +118,6 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
             fail();
         } catch (SocialLoginException e) {
 
-
             verifyException(e, "CWWKS5377E");
 
         } catch (Throwable t) {
@@ -196,7 +195,6 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
             userApiUtils.modifyExistingResponseToJSON("{\"status\":{\"authenticated\":true,\"user\":{\"username\":\"admin\",\"uid\":\"ef111c43-d33a-11e9-b239-0016ac102af6\",\"groups\":\"yes\",\"extra\":{\"scopes.authorization.openshift.io\":[\"user:full\"]}}}}");
             fail();
         } catch (SocialLoginException e) {
-
             verifyException(e, "CWWKS5379E");
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -255,7 +253,6 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
                 }
             });
             String returnedString = userApiUtils.modifyExistingResponseToJSON("{\"status\":{\"authenticated\":true,\"user\":{\"username\":\"admin\",\"uid\":\"ef111c43-d33a-11e9-b239-0016ac102af6\",\"groups\":[],\"extra\":{\"scopes.authorization.openshift.io\":[\"user:full\"]}}}}");
-
             assertEquals(returnedString, "{\"email\":\"admin\",\"groups\":[]}");
         } catch (SocialLoginException e) {
             fail();
@@ -275,10 +272,9 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
                     will(returnValue("groups"));
                 }
             });
-            //String errorResponse = "{\"kind\":\"TokenReview\",\"apiVersion\":\"authentication.k8s.io/v1\",\"metadata\":{\"creationTimestamp\":null},\"spec\":{\"token\":\"somebadvalueForAnAccessToken\"},\"status\":{\"user\":{},\"error\":\"[invalid bearer token, token lookup failed]\"}}";
-            //userApiUtils.modifyExistingResponseToJSON(errorResponse);
-
             userApiUtils.modifyExistingResponseToJSON("{\"status\":{\"authenticated\":true,\"user\":{\"uid\":\"ef111c43-d33a-11e9-b239-0016ac102af6\",\"groups\":[],\"extra\":{\"scopes.authorization.openshift.io\":[\"user:full\"]}}}}");
+
+            String returnedString = userApiUtils.modifyExistingResponseToJSON("{\"status\":{\"authenticated\":true,\"user\":{\"uid\":\"ef111c43-d33a-11e9-b239-0016ac102af6\",\"groups\":[],\"extra\":{\"scopes.authorization.openshift.io\":[\"user:full\"]}}}}");
             fail();
         } catch (SocialLoginException e) {
             verifyException(e, "CWWKS5374E");
@@ -419,13 +415,11 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
             userApiUtils.modifyExistingResponseToJSON(errorResponse);
 
         } catch (SocialLoginException e) {
-            verifyException(e, "KUBERNETES_USER_API_RESPONSE_USER_EMPTY");
-
+            verifyException(e, "KUBERNETES_USER_API_RESPONSE_ERROR");
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
-
 
     @SuppressWarnings("unchecked")
     @Test
