@@ -27,6 +27,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.junit.Assert;
+
 import com.ibm.ws.http.channel.h2internal.FrameTypes;
 import com.ibm.ws.http.channel.h2internal.frames.FrameData;
 import com.ibm.ws.http.channel.h2internal.frames.FrameGoAway;
@@ -46,8 +48,6 @@ import com.ibm.ws.http2.test.frames.FrameHeadersClient;
 import com.ibm.ws.http2.test.frames.FramePushPromiseClient;
 import com.ibm.ws.http2.test.helpers.HTTPUtils;
 import com.ibm.ws.http2.test.helpers.HeaderEntry;
-
-import org.junit.Assert;
 
 import componenttest.app.FATServlet;
 import test.server.transport.http2.Utils;
@@ -4777,8 +4777,8 @@ public class H2FATDriverServlet extends FATServlet {
     public void testExceedMaxConcurrentStreams(HttpServletRequest request,
                                                HttpServletResponse response) throws InterruptedException, Exception {
         if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.logp(Level.INFO, this.getClass().getName(), "testTwoWindowUpdateFrameAboveMaxSizeOnStream3", "Started!");
-            LOGGER.logp(Level.INFO, this.getClass().getName(), "testTwoWindowUpdateFrameAboveMaxSizeOnStream3",
+            LOGGER.logp(Level.INFO, this.getClass().getName(), "testExceedMaxConcurrentStreams", "Started!");
+            LOGGER.logp(Level.INFO, this.getClass().getName(), "testExceedMaxConcurrentStreams",
                         "Connecting to = " + request.getParameter("hostName") + ":" + request.getParameter("port"));
         }
 
