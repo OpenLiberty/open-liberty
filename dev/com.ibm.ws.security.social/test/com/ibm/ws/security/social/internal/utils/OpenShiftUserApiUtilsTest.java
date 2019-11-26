@@ -415,7 +415,7 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
             userApiUtils.modifyExistingResponseToJSON(errorResponse);
 
         } catch (SocialLoginException e) {
-            verifyException(e, "KUBERNETES_USER_API_RESPONSE_ERROR");
+            verifyException(e, "CWWKS5380E");
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
