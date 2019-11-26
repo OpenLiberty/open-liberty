@@ -825,7 +825,7 @@ ERROR_MAVEN_JSON_NOT_FOUND=CWWKF1399E: The group id {0} is invalid. Ensure that 
 ERROR_MAVEN_JSON_NOT_FOUND.explanation=The features json file could not be found on the Maven repository.
 ERROR_MAVEN_JSON_NOT_FOUND.useraction=Check your network connection and ensure the features json is hosted on the Maven repository.
 
-MSG_USER_FEATURE_SERVER_XML=CWWKF1400I: User features are not supported in the server.xml file. The following user features will not be installed: {0}.
+MSG_USER_FEATURE_SERVER_XML=CWWKF1402I: The following user features are specified in the server.xml and they will not be installed: {0}
 
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: The feature has been successfully downloaded.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=The feature was downloaded.
