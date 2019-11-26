@@ -52,6 +52,7 @@ instrument.classesExcludes: com/ibm/ws/concurrent/persistent/resources/*.class
 -buildpath: \
 	com.ibm.websphere.appserver.spi.logging,\
 	com.ibm.websphere.appserver.spi.kernel.service,\
+	com.ibm.websphere.appserver.thirdparty.eclipselink,\
 	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
 	com.ibm.websphere.javaee.persistence.2.1;version=latest,\
 	com.ibm.ws.app.manager;version=latest,\

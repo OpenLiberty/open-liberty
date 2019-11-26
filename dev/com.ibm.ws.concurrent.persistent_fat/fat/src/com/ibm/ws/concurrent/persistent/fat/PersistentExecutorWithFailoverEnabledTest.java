@@ -110,6 +110,21 @@ public class PersistentExecutorWithFailoverEnabledTest extends FATServletClient 
     }
 
     @Test
+    public void testBlockAfterCancelFE() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
+    public void testBlockAfterRemoveFE() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
+    public void testBlockAfterScheduleFE() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
     public void testCancelRunningTaskFE() throws Exception {
         runTest(server, APP_NAME, testName);
     }
