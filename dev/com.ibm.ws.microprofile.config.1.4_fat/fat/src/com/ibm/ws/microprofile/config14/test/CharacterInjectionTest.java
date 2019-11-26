@@ -45,7 +45,7 @@ import componenttest.topology.utils.FATServletClient;
  * servlet referenced by the annotation, and will be run whenever this test class runs.
  */
 @RunWith(FATRunner.class)
-@Mode(TestMode.EXPERIMENTAL)
+@Mode(TestMode.LITE)
 public class CharacterInjectionTest extends FATServletClient {
 
     public static final String APP_NAME = "characterInjectionApp";

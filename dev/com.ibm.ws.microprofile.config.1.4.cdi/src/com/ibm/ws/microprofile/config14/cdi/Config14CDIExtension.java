@@ -11,6 +11,7 @@
 package com.ibm.ws.microprofile.config14.cdi;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
@@ -26,6 +27,8 @@ import javax.enterprise.inject.spi.ProcessObserverMethod;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 import com.ibm.ws.microprofile.config.cdi.ConfigPropertyBean;
 import com.ibm.ws.microprofile.config12.cdi.Config12CDIExtension;
@@ -36,6 +39,8 @@ import com.ibm.ws.microprofile.config14.converters.Config14DefaultConverters;
  * It also registers the ConfigBean itself.
  */
 public class Config14CDIExtension extends Config12CDIExtension implements Extension, WebSphereCDIExtension {
+
+    private static final TraceComponent tc = Tr.register(Config14CDIExtension.class);
 
     @Override
     protected Collection<? extends Type> getDefaultConverterTypes() {
@@ -50,36 +55,24 @@ public class Config14CDIExtension extends Config12CDIExtension implements Extens
 
     void processObserverMethod(@Observes ProcessObserverMethod<?, ?> pot) {
         AnnotatedMethod<?> annotatedMethod = pot.getAnnotatedMethod();
-        System.out.println("AnnotatedMethod: " + annotatedMethod.getJavaMember());
+        Method method = annotatedMethod.getJavaMember();
         List<?> parameters = annotatedMethod.getParameters();
         for (Object p : parameters) {
             AnnotatedParameter<?> parameter = (AnnotatedParameter<?>) p;
             Type type = parameter.getBaseType();
-            System.out.println("AnnotatedParameter: " + type);
             Set<Annotation> annotations = parameter.getAnnotations();
             for (Annotation annotation : annotations) {
-                System.out.println("Annotation: " + annotation);
                 if (ConfigProperty.class.isAssignableFrom(annotation.annotationType())) {
-
                     ConfigProperty configProperty = (ConfigProperty) annotation;
-                    System.out.println("ConfigProperty: " + configProperty);
                     String propertyName = configProperty.name();
                     String defaultValue = configProperty.defaultValue();
 
                     ClassLoader classLoader = annotatedMethod.getDeclaringType().getJavaClass().getClassLoader();
 
                     Throwable configException = validateConfigProperty(type, propertyName, defaultValue, classLoader);
-//                    if (configException != null) {
-//                        Tr.error(tc, "unable.to.resolve.injection.point.CWMCG5003E", injectionPoint, configException);
-//                    }
-
-//                    WebSphereConfig wConfig = (WebSphereConfig) ConfigProvider.getConfig(classLoader);
-//
-//                    try {
-//                        ConfigProducer.newValue(wConfig, propertyName, defaultValue, type, false); //TODO Can it be Optional???
-//                    } catch (Throwable t) {
-//                        addBadInjectionType(type);
-//                    }
+                    if (configException != null) {
+                        Tr.error(tc, "unable.to.resolve.observer.injection.point.CWMCG5005E", method, configException);
+                    }
                 }
             }
         }

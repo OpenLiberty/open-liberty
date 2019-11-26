@@ -8,12 +8,28 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package com.ibm.ws.microprofile.config14.test.apps.optional_observer;
+
+import static org.junit.Assert.assertEquals;
+
+import javax.inject.Inject;
+import javax.servlet.annotation.WebServlet;
+
+import org.junit.Test;
+
+import componenttest.app.FATServlet;
 
 /**
- * @version 1.0
+ *
  */
-@org.osgi.annotation.versioning.Version("1.0")
-@TraceOptions(traceGroup = "APPCONFIG", messageBundle = "com.ibm.ws.microprofile.config.cdi.resources.ConfigCDI")
-package com.ibm.ws.microprofile.config14.cdi;
+@WebServlet("/")
+public class OptionalObserverServlet extends FATServlet {
 
-import com.ibm.websphere.ras.annotation.TraceOptions;
+    @Inject
+    TestObserver bean;
+
+    @Test
+    public void optionalObserverTest() {
+        assertEquals("hello", bean.getProperty());
+    }
+}
