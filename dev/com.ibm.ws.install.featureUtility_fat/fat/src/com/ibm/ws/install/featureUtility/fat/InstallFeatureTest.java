@@ -30,6 +30,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
     public static void cleanUp() throws Exception {
         // TODO
         resetOriginalWlpProps();
+        cleanUpTempFiles();
     }
 
     /**
