@@ -83,7 +83,7 @@ public class OAuthLoginFlow {
         } else if (!isAccessTokenNullOrEmpty(tokenFromRequest)) {
             // request may have token
             try {
-                result = handleAccessToken(tokenFromRequest, request, response, clientConfig);
+                return handleAccessToken(tokenFromRequest, request, response, clientConfig);
             } catch (Exception e) {
 
             }
@@ -104,13 +104,15 @@ public class OAuthLoginFlow {
 
     private TAIResult handleAccessToken(String tokenFromRequest, HttpServletRequest request, HttpServletResponse response, SocialLoginConfig clientConfig) throws WebTrustAssociationFailedException {
 
-        //        if (!validAccessToken(tokenFromRequest)) { 
-        //            return taiWebUtils.sendToErrorPage(response, TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED));
-        //        }
+        
         AuthorizationCodeAuthenticator authzCodeAuthenticator = new AuthorizationCodeAuthenticator(request, response, clientConfig, tokenFromRequest, true);
         try {
             authzCodeAuthenticator.generateJwtAndTokensFromTokenReviewResult();
-        } catch (Exception e) {
+        } catch (Exception e) {  
+            if (clientConfig.isAccessTokenSupported()) {
+                taiWebUtils.restorePostParameters(request); //TODO: make sure that we really need to do this here.
+                return null;
+            }
             // Error should have already been logged; simply send to error page
             return taiWebUtils.sendToErrorPage(response, TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED));
         }
