@@ -26,4 +26,4 @@ Subsystem-Name: MicroProfile 3.3
 -bundles=\
   com.ibm.ws.require.java8
 kind=noship
-edition=core
+edition=full
