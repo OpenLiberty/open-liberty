@@ -26,7 +26,6 @@ import com.ibm.ws.security.social.Constants;
 import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.TraceConstants;
 import com.ibm.ws.security.social.error.SocialLoginException;
-import com.ibm.ws.security.social.internal.Oauth2LoginConfigImpl;
 import com.ibm.ws.security.social.internal.utils.ClientConstants;
 import com.ibm.ws.security.social.internal.utils.SocialUtil;
 import com.ibm.ws.security.social.web.utils.SocialWebUtils;
@@ -87,10 +86,6 @@ public class OAuthLoginFlow {
             } catch (Exception e) {
 
             }
-//            // if good result return
-//            if (result != null && result.getSubject() != null) {
-//                return result;
-//            }
         }
         return result;
     }
@@ -109,7 +104,7 @@ public class OAuthLoginFlow {
         try {
             authzCodeAuthenticator.generateJwtAndTokensFromTokenReviewResult();
         } catch (Exception e) {  
-            if (clientConfig.isAccessTokenSupported()) {
+            if (!clientConfig.isAccessTokenRequired() && clientConfig.isAccessTokenSupported()) {
                 taiWebUtils.restorePostParameters(request); //TODO: make sure that we really need to do this here.
                 return null;
             }
