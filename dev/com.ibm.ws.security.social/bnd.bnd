@@ -94,6 +94,15 @@ Service-Component:\
     greedy:='authFilter,socialLoginConfig,socialLoginWebappConfig'; \
     multiple:='authFilter,socialLoginConfig'; \
     properties:="service.vendor=IBM,id=SocialLoginTAI,TAIName=SocialLoginTAI,invokeAfterSSO:Boolean=true", \
+  com.ibm.ws.security.socialmediawithaccesstoken.tai; \
+    implementation:=com.ibm.ws.security.social.tai.SocialLoginWithAccessToken; \
+    provide:='com.ibm.wsspi.security.tai.TrustAssociationInterceptor'; \
+    configuration-policy:=ignore; \
+    modified:='modified'; \
+    activate:='activate'; \
+    deactivate:='deactivate'; \
+    immediate:=true; \
+    properties:="service.vendor=IBM,id=SocialLoginWtihATTAI,TAIName=SocialLoginWtihATTAI,invokeBeforeSSO:Boolean=true,addLTPACookieToResponse:Boolean=false", \
   com.ibm.ws.security.social.web.EndpointServices; \
     implementation:=com.ibm.ws.security.social.web.EndpointServices; \
     provide:=com.ibm.ws.security.social.web.EndpointServices; \

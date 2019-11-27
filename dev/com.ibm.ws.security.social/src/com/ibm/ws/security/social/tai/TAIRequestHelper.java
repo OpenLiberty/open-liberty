@@ -22,6 +22,7 @@ import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.TraceConstants;
 import com.ibm.ws.security.social.error.SocialLoginException;
 import com.ibm.ws.security.social.internal.utils.SocialTaiRequest;
+import com.ibm.ws.security.social.internal.utils.SocialUtil;
 import com.ibm.ws.security.social.web.utils.SocialWebUtils;
 
 public class TAIRequestHelper {
@@ -58,6 +59,29 @@ public class TAIRequestHelper {
         String loginHint = webUtils.getLoginHint(request);
         socialTaiRequest = setSocialTaiRequestConfigInfo(request, loginHint, socialTaiRequest);
         return socialTaiRequest.hasServices();
+    }
+    
+    public boolean requestShouldBeHandledByTAI(HttpServletRequest request, SocialTaiRequest socialTaiRequest, boolean beforeTAI) {
+        
+        if (requestShouldBeHandledByTAI(request, socialTaiRequest)) {
+            if (beforeTAI) {
+                SocialLoginConfig clientConfig = null;
+                try {
+                    clientConfig = socialTaiRequest.getTheOnlySocialLoginConfig();
+                } catch (SocialLoginException e) {
+                    // Couldn't find a unique social login config to serve this request - redirect to sign in page for user to select
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(tc, "A unique social login config wasn't found for this request. Exception was " + e.getMessage());
+                    }
+                }
+                if (clientConfig != null) {
+                    return SocialUtil.useAccessTokenFromRequest(clientConfig);
+                }
+            } else {
+                return true;
+            } 
+        }
+        return false;
     }
 
     boolean isJmxConnectorRequest(HttpServletRequest request) {
