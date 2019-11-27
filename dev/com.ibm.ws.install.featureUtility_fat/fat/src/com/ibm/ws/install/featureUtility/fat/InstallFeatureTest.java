@@ -170,6 +170,54 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 
     }
 
+    @Test
+    public void testInvalidMavenCoordinateGroupId(){
+        String [] param1s = {"if", "madeUpGroupId:mpHealth-2.0"};
+
+    }
+
+    @Test
+    public void testInvalidMavenCoordinateArtifactId(){
+        String [] param1s = {"if", "io.openliberty.features:mpHealth"};
+    }
+
+    /**
+     * Test the output when passing in poorly formatted feature names or maven coordinates
+     */
+    @Test
+    public void testInvalidMavenCoordinateVersion(){
+        // version mismatch. get the version before we reverted it
+        String oldVersion = "19.0.0.10";
+        String [] param1s = {"if", "io.openliberty.features:mpHealth-2.0:"+oldVersion};
+
+    }
+    /**
+     * The packaging in a maven coordinate can only be "esa", so we must verify that it only works with esa.
+     */
+    @Test
+    public void testInvalidMavenCoordinatePackaging(){
+        String currentVersion = getPreviousWlpVersion();
+        String [] param1s = {"if", "io.openliberty.features:jsp-2.3:"+currentVersion+":jar"};
+
+        String [] param2s = {"if", "io.openliberty.features:jsp-2.3:"+currentVersion+":esa"};
+    }
+
+    @Test
+    public void testInvalidMavenCoordinateFormatting(){
+        String [] param1s = {"if", "groupId:artifactId:19.0.0.11:esa:unsupportedOption"};
+        String [] param2s = {"if", ":::"};
+        String [] param3s = {"if", "groupId::19.0.0.11"};
+        String [] param4s = {"if", "groupId:::esa"};
+
+    }
+
+    @Test
+    public void testEmptyFeatures() {
+        String[] param1s = { "if", " "};
+
+    }
+
+
     /**
      * TODO need to set up environmental variables
      */
@@ -177,7 +225,5 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
     public void testProxyFeature(){
         assertEquals("", 2, 1 + 1);
     }
-
-
 
 }
