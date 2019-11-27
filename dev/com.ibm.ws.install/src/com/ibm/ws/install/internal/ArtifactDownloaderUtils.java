@@ -17,6 +17,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.ibm.ws.install.InstallException;
 
@@ -24,34 +25,40 @@ public class ArtifactDownloaderUtils {
 
     private static boolean isFinished = false;
 
-    public static List<String> getMissingFiles(List<String> featureURLs) throws IOException {
+    public static List<String> getMissingFiles(List<String> featureURLs, Map<String, String> envMap) throws IOException {
         List<String> result = new ArrayList<String>();
         for (String url : featureURLs) {
-            if (!(exists(url) == HttpURLConnection.HTTP_OK)) {
+            if (!(exists(url, envMap) == HttpURLConnection.HTTP_OK)) {
                 result.add(url);
             }
         }
         return result;
     }
 
-    public static boolean fileIsMissing(String url) throws IOException {
-        return !(exists(url) == HttpURLConnection.HTTP_OK);
+    public static boolean fileIsMissing(String url, Map<String, String> envMap) throws IOException {
+        return !(exists(url, envMap) == HttpURLConnection.HTTP_OK);
     }
 
-    public static int exists(String URLName) throws IOException {
-
+    public static int exists(String URLName, Map<String, String> envMap) throws IOException {
         try {
             HttpURLConnection.setFollowRedirects(true);
             HttpURLConnection conn;
+
             URL url = new URL(URLName);
-            if (System.getenv("http.proxyUser") != null) {
-                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(System.getenv("http.proxyHost"), 8080));
+            if (envMap.get("https.proxyHost") != null) {
+                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(envMap.get("https.proxyHost"), Integer.parseInt(envMap.get("https.proxyPort"))));
+                conn = (HttpURLConnection) url.openConnection(proxy);
+            } else if (envMap.get("http.proxyHost") != null) {
+                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(envMap.get("http.proxyHost"), Integer.parseInt(envMap.get("http.proxyPort"))));
                 conn = (HttpURLConnection) url.openConnection(proxy);
             } else {
                 conn = (HttpURLConnection) url.openConnection();
             }
             conn.setRequestMethod("HEAD");
+            conn.setConnectTimeout(10000);
+            conn.connect();
             int responseCode = conn.getResponseCode();
+            conn.setInstanceFollowRedirects(true);
             return responseCode;
         } catch (ConnectException e) {
             throw e;
@@ -77,6 +84,9 @@ public class ArtifactDownloaderUtils {
     }
 
     public static String getChecksum(String filename, String format) throws NoSuchAlgorithmException, IOException {
+        if (format.equals("SHA256")) {
+            format = "SHA-256";
+        }
         byte[] b = createChecksum(filename, format);
         String result = "";
 
@@ -172,13 +182,12 @@ public class ArtifactDownloaderUtils {
 
     public static void checkResponseCode(int repoResponseCode, String repo) throws InstallException {
         if (!(repoResponseCode == HttpURLConnection.HTTP_OK)) { //verify repo exists
-            if (repoResponseCode == 503) {
-                throw ExceptionUtils.createByKey("ERROR_REPO_INVALID_URL", repo);
-            } else if (repoResponseCode == 407) {
+            if (repoResponseCode == 407) {
                 throw ExceptionUtils.createByKey("ERROR_TOOL_INCORRECT_PROXY_CREDENTIALS");
+            } else if (repoResponseCode == 401 || repoResponseCode == 403) {
+                throw ExceptionUtils.createByKey("ERROR_INVALID_MAVEN_CREDENTIALS", repo);
             } else {
-                //throw ExceptionUtils.createByKey("ERROR_FAILED_TO_CONNECT_MAVEN"); //TODO
-                throw ExceptionUtils.createByKey("ERROR_FAILED_TO_CONNECT");
+                throw ExceptionUtils.createByKey("ERROR_FAILED_TO_CONNECT_MAVEN"); //503
             }
         }
     }

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="fat/src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7">
+		<attributes>
+			<attribute name="owner.project.facets" value="java"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" path="/fattest.simplicity"/>
+	<classpathentry kind="src" path="/com.ibm.ws.install"/>
+	<classpathentry kind="lib" path="/Users/tayyab.waqar@ibm.com/.m2/repository/com/ibm/ws/componenttest/public.api/1.0.0/public.api-1.0.0.jar">
+		<attributes>
+			<attribute name="bsn" value="com.ibm.ws.componenttest:public.api"/>
+			<attribute name="type" value="REPO"/>
+			<attribute name="project" value="build.example_fat"/>
+			<attribute name="version" value="1.0.0"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/tayyab.waqar@ibm.com/.p2/pool/plugins/org.junit_4.12.0.v201504281640/junit.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="http://junit.org/junit4/javadoc/latest/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
+	<classpathentry kind="output" path="build/classes"/>
+</classpath>
