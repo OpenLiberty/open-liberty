@@ -86,7 +86,6 @@ public class OAuthLoginFlow {
         return false;
     }
 
-    @FFDCIgnore(SocialLoginException.class)
     private TAIResult handleAccessToken(String tokenFromRequest, HttpServletRequest request, HttpServletResponse response, SocialLoginConfig clientConfig) throws WebTrustAssociationFailedException {
         AuthorizationCodeAuthenticator authzCodeAuthenticator = new AuthorizationCodeAuthenticator(request, response, clientConfig, tokenFromRequest, true);
         try {
@@ -205,7 +204,6 @@ public class OAuthLoginFlow {
         return query;
     }
 
-    @FFDCIgnore(SocialLoginException.class)
     TAIResult handleAuthorizationCode(HttpServletRequest req, HttpServletResponse res, String authzCode, SocialLoginConfig clientConfig) throws WebTrustAssociationFailedException {
         AuthorizationCodeAuthenticator authzCodeAuthenticator = getAuthorizationCodeAuthenticator(req, res, authzCode, clientConfig);
         try {
