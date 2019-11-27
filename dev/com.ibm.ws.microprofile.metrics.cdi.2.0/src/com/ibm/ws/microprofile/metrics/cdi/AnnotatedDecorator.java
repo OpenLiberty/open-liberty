@@ -21,7 +21,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package io.astefanutti.metrics.cdi;
+package com.ibm.ws.microprofile.metrics.cdi;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -31,7 +31,7 @@ import java.util.Set;
 
 import javax.enterprise.inject.spi.Annotated;
 
-/* package-private */ class AnnotatedDecorator implements Annotated {
+public class AnnotatedDecorator implements Annotated {
 
     private final Annotated decorated;
 

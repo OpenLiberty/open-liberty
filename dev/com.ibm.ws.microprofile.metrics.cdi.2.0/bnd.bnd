@@ -24,6 +24,7 @@ Import-Package: \
 
 Export-Package: \
 	io.astefanutti.metrics.cdi,\
+	com.ibm.ws.microprofile.metrics.cdi,\
 	com.ibm.ws.microprofile.metrics.cdi.producer,\
 	com.ibm.ws.microprofile.metrics.cdi.helper
 

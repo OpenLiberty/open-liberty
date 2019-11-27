@@ -21,7 +21,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package io.astefanutti.metrics.cdi;
+package com.ibm.ws.microprofile.metrics.cdi;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -46,15 +46,17 @@ import org.eclipse.microprofile.metrics.MetricRegistry;
 
 import com.ibm.ws.microprofile.metrics.impl.MetricRegistryImpl;
 
-/* package-private */ final class MetricRegistryBean implements Bean<MetricRegistryImpl>, PassivationCapable {
+public final class MetricRegistryBean implements Bean<MetricRegistryImpl>, PassivationCapable {
 
-    private final Set<Annotation> qualifiers = new HashSet<>(Arrays.<Annotation> asList(new AnnotationLiteral<Any>() {}, new AnnotationLiteral<Default>() {}));
+    private final Set<Annotation> qualifiers = new HashSet<>(Arrays.<Annotation> asList(new AnnotationLiteral<Any>() {
+    }, new AnnotationLiteral<Default>() {
+    }));
 
     private final Set<Type> types;
 
     private final InjectionTarget<MetricRegistryImpl> target;
 
-    MetricRegistryBean(BeanManager manager) {
+    public MetricRegistryBean(BeanManager manager) {
         AnnotatedType<MetricRegistryImpl> annotatedType = manager.createAnnotatedType(MetricRegistryImpl.class);
         this.types = annotatedType.getTypeClosure();
         this.target = manager.createInjectionTarget(annotatedType);
