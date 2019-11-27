@@ -131,6 +131,10 @@ public class OpenShiftUserApiUtils {
 
     String createModifiedResponse(JsonObject userInnerMap) throws SocialLoginException {
         JsonObjectBuilder modifiedResponse = Json.createObjectBuilder();
+        
+        if (config.getUserNameAttribute()==null) {
+            throw new SocialLoginException("KUBERNETES_USER_API_RESPONSE_WRONG_JSON_TYPE",  null, new Object[] { config.getGroupNameAttribute(), ValueType.STRING, null, userInnerMap });
+        }
         if (config.getUserNameAttribute().equals("email")) {
             addUserAttributeToResponseWithEmail(userInnerMap, modifiedResponse);
         } else {

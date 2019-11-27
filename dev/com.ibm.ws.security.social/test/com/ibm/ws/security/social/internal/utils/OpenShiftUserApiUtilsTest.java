@@ -414,6 +414,27 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
     }
 
     @Test
+    public void userNameAttributeNull() {
+        try {
+            mockery.checking(new Expectations() {
+                {
+                    allowing(config).getUserNameAttribute();
+                    will(returnValue(null));
+                    allowing(config).getGroupNameAttribute();
+                    will(returnValue("groups"));
+                }
+            });
+            String returnedString = userApiUtils.modifyExistingResponseToJSON("{\"status\":{\"authenticated\":true,\"user\":{\"username\":\"admin\",\"uid\":\"ef111c43-d33a-11e9-b239-0016ac102af6\",\"groups\":[],\"extra\":{\"scopes.authorization.openshift.io\":[\"user:full\"]}}}}");
+            fail();
+            
+        } catch (SocialLoginException e) {
+            verifyException(e, "CWWKS5379E");
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+    
+    @Test
     public void userResponseApiUserEmpty() {
         try {
             mockery.checking(new Expectations() {
@@ -424,7 +445,7 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
                     will(returnValue("groups"));
                 }
             });
-            String returnedString = userApiUtils.modifyExistingResponseToJSON("{\"status\":{\"authenticated\":true,\"user\":{}}}");
+            userApiUtils.modifyExistingResponseToJSON("{\"status\":{\"authenticated\":true,\"user\":{}}}");
             fail();
         } catch (SocialLoginException e) {
             verifyException(e, "CWWKS5374E");
