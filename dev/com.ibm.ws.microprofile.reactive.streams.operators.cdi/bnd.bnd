@@ -53,7 +53,7 @@ testsrc: test/src
 	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
 	com.ibm.websphere.javaee.jaxrs.2.0;version=latest,\
 	com.ibm.ws.cdi.interfaces;version=latest,\
-	com.ibm.ws.io.smallrye.reactive.streams.operators.1.0;version=latest, \
+	com.ibm.ws.io.smallrye.reactive.streams-operators;version=latest, \
 	com.ibm.websphere.org.eclipse.microprofile.rest.client.1.0;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\

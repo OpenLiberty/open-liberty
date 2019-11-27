@@ -30,6 +30,7 @@ import com.ibm.websphere.security.oauth20.store.OAuthStore;
 import com.ibm.websphere.security.oauth20.store.OAuthStoreException;
 import com.ibm.ws.security.oauth20.TraceConstants;
 import com.ibm.ws.security.oauth20.api.OidcOAuth20ClientProvider;
+import com.ibm.ws.security.oauth20.error.impl.BrowserAndServerLogMessage;
 import com.ibm.ws.security.oauth20.plugins.OidcBaseClient;
 import com.ibm.ws.security.oauth20.plugins.OidcBaseClientValidator;
 import com.ibm.ws.security.oauth20.util.HashSecretUtils;
@@ -320,8 +321,8 @@ public class OauthClientStore implements OidcOAuth20ClientProvider {
 
         // Use an empty string as the last insert to avoid an unused insert (e.g. "{2}") showing up in the exception message
         updatedMsgArgs = appendStringMessageToArgs("", msgArgs);
-        String exceptionMsg = Tr.formatMessage(tc, msgKey, updatedMsgArgs);
-        throw new OidcServerException(exceptionMsg, OIDCConstants.ERROR_SERVER_ERROR, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
+        throw new OidcServerException(new BrowserAndServerLogMessage(tc, msgKey, updatedMsgArgs), OIDCConstants.ERROR_SERVER_ERROR, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
+
     }
 
     Object[] appendStringMessageToArgs(String additionalInsert, Object... msgArgs) {

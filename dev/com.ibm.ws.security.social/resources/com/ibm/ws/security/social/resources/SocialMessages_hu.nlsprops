@@ -16,7 +16,7 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
-# Message prefix block: CWWKS5400 - CWWKS5499
+# Message prefix block: CWWKS5370 - CWWKS5499
 ADD_ID={0} ({1})
 ADD_ID.explanation=Csak bels\u0151 haszn\u00e1latra.
 ADD_ID.useraction=Nincs teend\u0151.
@@ -35,6 +35,29 @@ SELECTION_PAGE_USERNAME=Felhaszn\u00e1l\u00f3n\u00e9v
 SELECTION_PAGE_PASSWORD=Jelsz\u00f3
 
 SELECTION_PAGE_SUBMIT=Elk\u00fcld\u00e9s
+
+# 0=Social login configuration attribute name, 1=ID of the social login configuration element, 2=Default value for the configuration attribute
+SOCIAL_LOGIN_CONFIG_ATTRIBUTE_EMPTY=CWWKS5370W: A(z) [{0}] konfigur\u00e1ci\u00f3s attrib\u00fatum \u00e9rt\u00e9ke a(z) [{1}] k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si konfigur\u00e1ci\u00f3ban \u00fcres. A konfigur\u00e1ci\u00f3s attrib\u00fatum alap\u00e9rtelmezett [{2}] \u00e9rt\u00e9ke ker\u00fcl alkalmaz\u00e1sra.
+SOCIAL_LOGIN_CONFIG_ATTRIBUTE_EMPTY.explanation=A konfigur\u00e1ci\u00f3s attrib\u00fatum \u00e9rt\u00e9ke nem lehet \u00fcres.
+SOCIAL_LOGIN_CONFIG_ATTRIBUTE_EMPTY.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a konfigur\u00e1ci\u00f3s attrib\u00fatum \u00e9rt\u00e9ke ne legyen \u00fcres, illetve az alap\u00e9rtelmezett \u00e9rt\u00e9k haszn\u00e1lat\u00e1hoz t\u00e1vol\u00edtsa el a konfigur\u00e1ci\u00f3s attrib\u00fatumot.
+
+# 0=Exception message
+OPENSHIFT_ERROR_GETTING_USER_INFO=CWWKS5371E: Az OpenShift felhaszn\u00e1l\u00f3 API v\u00e1lasza nem dolgozhat\u00f3 fel: {0}
+OPENSHIFT_ERROR_GETTING_USER_INFO.explanation=A hiteles\u00edtett felhaszn\u00e1l\u00f3ra vonatkoz\u00f3 inform\u00e1ci\u00f3k nem k\u00e9rhet\u0151k le egy m\u00e1sik hiba miatt.
+OPENSHIFT_ERROR_GETTING_USER_INFO.useraction=Ha az \u00fczenet m\u00e1sik hiba\u00fczenetet is tartalmaz, akkor n\u00e9zze meg annak az \u00fczenetnek a felhaszn\u00e1l\u00f3i teend\u0151j\u00e9t. Egy\u00e9bk\u00e9nt pedig keressen olyan tov\u00e1bbi hiba\u00fczeneteket a kiszolg\u00e1l\u00f3napl\u00f3kban, amelyek jelzik, hogy hol t\u00f6rt\u00e9nhetett a m\u00e1sik hiba.
+
+OPENSHIFT_ACCESS_TOKEN_MISSING=CWWKS5372E: Hi\u00e1nyzik az OpenShift API-r\u00f3l a felhaszn\u00e1l\u00f3i inform\u00e1ci\u00f3k lek\u00e9r\u00e9s\u00e9re haszn\u00e1lt hozz\u00e1f\u00e9r\u00e9si token. Ellen\u0151rizze, hogy az OpenShift OAuth szolg\u00e1ltat\u00f3 a token v\u00e9gpontr\u00f3l adott-e vissza hozz\u00e1f\u00e9r\u00e9si tokent.
+OPENSHIFT_ACCESS_TOKEN_MISSING.explanation=A hiteles\u00edtett felhaszn\u00e1l\u00f3ra vonatkoz\u00f3 inform\u00e1ci\u00f3k lek\u00e9r\u00e9shez hozz\u00e1f\u00e9r\u00e9si token sz\u00fcks\u00e9ges. Lehet, hogy az OpenShift OAuth szolg\u00e1ltat\u00f3 token v\u00e9gpontja nem adott vissza hozz\u00e1f\u00e9r\u00e9si tokent.
+OPENSHIFT_ACCESS_TOKEN_MISSING.useraction=Ellen\u0151rizze, hogy az OpenShift OAuth szolg\u00e1ltat\u00f3 a token v\u00e9gpontr\u00f3l adott-e vissza hozz\u00e1f\u00e9r\u00e9si tokent.
+
+# 0=HTTP response code, 1=Response body
+OPENSHIFT_USER_API_BAD_STATUS=CWWKS5373E: Az OpenShift felhaszn\u00e1l\u00f3 API v\u00e1ratlan v\u00e1laszk\u00f3dot adott vissza: [{0}]. Ellen\u0151rizze, hogy az API sz\u00e1m\u00e1ra k\u00fcld\u00f6tt k\u00e9r\u00e9s tartalmazza-e az \u00f6sszes sz\u00fcks\u00e9ges inform\u00e1ci\u00f3t, \u00e9s hogy az OpenShift szolg\u00e1ltat\u00e1sfi\u00f3k token l\u00e9trej\u00f6tt-e a megfelel\u0151 OpenShift projektben. Az API v\u00e1lasza: [{1}].
+OPENSHIFT_USER_API_BAD_STATUS.explanation=Az OpenShift felhaszn\u00e1l\u00f3 API nem adta vissza a v\u00e1rt \u00e1llapotk\u00f3dot.
+OPENSHIFT_USER_API_BAD_STATUS.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt keresse meg a hiba\u00fczenetben szerepl\u0151 API v\u00e1laszt. Ellen\u0151rizze, hogy az API sz\u00e1m\u00e1ra k\u00fcld\u00f6tt k\u00e9r\u00e9s tartalmazza-e az \u00f6sszes sz\u00fcks\u00e9ges inform\u00e1ci\u00f3t. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az OpenShift szolg\u00e1ltat\u00e1sfi\u00f3k token l\u00e9trej\u00f6tt-e a megfelel\u0151 OpenShift projektben, \u00e9s rendelkezik-e a megfelel\u0151 enged\u00e9lyekkel. 
+# 0=JSON key string, 1=User API response string
+OPENSHIFT_USER_API_RESPONSE_MISSING_KEY=CWWKS5374E: Hi\u00e1nyzik egy elv\u00e1rt kulcs az OpenShift felhaszn\u00e1l\u00f3 API v\u00e1lasz\u00e1b\u00f3l: [{0}]. A teljes v\u00e1lasz: [{1}]
+OPENSHIFT_USER_API_RESPONSE_MISSING_KEY.explanation=Az API v\u00e1lasz\u00e1ban az \u00fczenetben megadott kulcsnak szerepelnie kellett volna. Lehet, hogy a kulcs hi\u00e1nyzik, illetve lehet, hogy nem v\u00e1rt helyen tal\u00e1lhat\u00f3.
+OPENSHIFT_USER_API_RESPONSE_MISSING_KEY.useraction=Ellen\u0151rizze az API v\u00e1lasz\u00e1t annak meg\u00e1llap\u00edt\u00e1s\u00e1ra, hogy a kulcs hi\u00e1nyzik-e a v\u00e1laszb\u00f3l.
 
 SOCIAL_LOGIN_CONFIG_PROCESSED=CWWKS5400I: A k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s konfigur\u00e1ci\u00f3 [{0}] sikeresen feldolgoz\u00e1sra ker\u00fclt.
 SOCIAL_LOGIN_CONFIG_PROCESSED.explanation=A jelzett k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s konfigur\u00e1ci\u00f3 sikeresen feldolgoz\u00e1sra ker\u00fclt.

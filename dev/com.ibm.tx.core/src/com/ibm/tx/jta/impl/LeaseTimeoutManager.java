@@ -20,7 +20,6 @@ import com.ibm.tx.util.alarm.AlarmListener;
 import com.ibm.tx.util.alarm.AlarmManager;
 import com.ibm.tx.util.logging.Tr;
 import com.ibm.tx.util.logging.TraceComponent;
-import com.ibm.ws.recoverylog.spi.LibertyRecoveryDirectorImpl;
 import com.ibm.ws.recoverylog.spi.RecoveryAgent;
 import com.ibm.ws.recoverylog.spi.RecoveryDirector;
 import com.ibm.ws.recoverylog.spi.RecoveryDirectorImpl;
@@ -117,9 +116,9 @@ public class LeaseTimeoutManager {
             // Check if other servers need recovering
             if (_recoveryAgent != null) {
                 ArrayList<String> peersToRecover = _recoveryAgent.processLeasesForPeers(_recoveryIdentity, _recoveryGroup);
-                if (_recoveryDirector != null && _recoveryDirector instanceof RecoveryDirectorImpl) {
+                if (_recoveryDirector instanceof RecoveryDirectorImpl) {
                     try {
-                        ((LibertyRecoveryDirectorImpl) _recoveryDirector).peerRecoverServers(_recoveryAgent, _recoveryIdentity, peersToRecover);
+                        ((RecoveryDirectorImpl) _recoveryDirector).peerRecoverServers(_recoveryAgent, _recoveryIdentity, peersToRecover);
                     } catch (RecoveryFailedException e) {
                         // The exception will have been reported in peerRecoverServers()
                         if (tc.isDebugEnabled())

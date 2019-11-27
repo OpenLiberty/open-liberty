@@ -31,7 +31,6 @@ import org.junit.Test;
 import com.ibm.ws.security.common.http.HttpUtils;
 import com.ibm.ws.security.common.http.HttpUtils.RequestMethod;
 import com.ibm.ws.security.social.error.SocialLoginException;
-
 import com.ibm.ws.security.social.internal.Oauth2LoginConfigImpl;
 import com.ibm.ws.security.social.test.CommonTestClass;
 
@@ -101,12 +100,8 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
         try {
             userApiUtils.modifyExistingResponseToJSON(null);
             fail();
-
         } catch (SocialLoginException e) {
-            //nls 
-
-            verifyException(e, "OPENSHIFT_USER_API_BAD_RESPONSE");
-
+            verifyException(e, CWWKS5377E_KUBERNETES_USER_API_RESPONSE_NULL_EMPTY);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -118,9 +113,7 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
             userApiUtils.modifyExistingResponseToJSON("");
             fail();
         } catch (SocialLoginException e) {
-            //nls 
-            verifyException(e, "OPENSHIFT_USER_API_BAD_RESPONSE");
-
+            verifyException(e, CWWKS5377E_KUBERNETES_USER_API_RESPONSE_NULL_EMPTY);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -132,9 +125,7 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
             userApiUtils.modifyExistingResponseToJSON("{\"kind\":\"TokenReview\",\"apiVersion\":\"authentication.k8s.io/v1\",\"metadata\":{\"creationTimestamp\":null},\"spec\":{\"token\":\"OR4SdSuy-8NRK8NEiYXxxDu01DZcT6jPj5RJ32CDA_c\"},\"status\":{\"authenticated\":\"true\"}}");
             fail();
         } catch (SocialLoginException e) {
-            //nls 
             verifyException(e, "CWWKS5374E");
-
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -180,9 +171,7 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
             userApiUtils.modifyExistingResponseToJSON("vlah");
             fail();
         } catch (SocialLoginException e) {
-            //nls 
-            verifyException(e, "OPENSHIFT_USER_API_BAD_RESPONSE");
-
+            verifyException(e, CWWKS5378E_KUBERNETES_USER_API_RESPONSE_NOT_JSON);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -201,13 +190,80 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
             fail();
         } catch (SocialLoginException e) {
             //nls 
-            verifyException(e, "OPENSHIFT_USER_API_RESPONSE_MISCONFIGURED_KEY");
+            verifyException(e, "KUBERNETES_USER_API_RESPONSE_MISCONFIGURED_KEY");
 
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
 
+    @Test
+    public void groupsIsEmpty() {
+        try {
+            mockery.checking(new Expectations() {
+                {
+                    allowing(config).getUserNameAttribute();
+                    will(returnValue("username"));
+                }
+            });
+            String returnedString = userApiUtils.modifyExistingResponseToJSON("{\"status\":{\"authenticated\":true,\"user\":{\"username\":\"admin\",\"uid\":\"ef111c43-d33a-11e9-b239-0016ac102af6\",\"groups\":[],\"extra\":{\"scopes.authorization.openshift.io\":[\"user:full\"]}}}}");
+            assertEquals(returnedString, "{\"username\":\"admin\",\"groups\":[]}");
+
+        } catch (SocialLoginException e) {
+            //nls 
+            // verifyException(e, "KUBERNETES_USER_API_RESPONSE_MISCONFIGURED_KEY");
+            fail();
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void missingUserKeyFromResponse() {
+        try {
+            mockery.checking(new Expectations() {
+                {
+                    allowing(config).getUserNameAttribute();
+                    will(returnValue("username"));
+                }
+            });
+            String errorResponse = "{\"kind\":\"TokenReview\",\"apiVersion\":\"authentication.k8s.io/v1\",\"metadata\":{\"creationTimestamp\":null},\"spec\":{\"token\":\"somebadvalueForAnAccessToken\"},\"status\":{\"user\":{},\"error\":\"[invalid bearer token, token lookup failed]\"}}";
+            userApiUtils.modifyExistingResponseToJSON(errorResponse);
+            //assertEquals(returnedString, "{\"username\":\"admin\",\"groups\":}");
+
+        } catch (SocialLoginException e) {
+            //nls 
+            verifyException(e, "CWWKS5374E");
+            // fail()
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void noUserNameAttributeTest() {
+        try {
+            mockery.checking(new Expectations() {
+                {
+                    allowing(config).getUserNameAttribute();
+                    will(returnValue(null));
+                }
+            });
+            String errorResponse = "{\"kind\":\"TokenReview\",\"apiVersion\":\"authentication.k8s.io/v1\",\"metadata\":{\"creationTimestamp\":null},\"spec\":{\"token\":\"somebadvalueForAnAccessToken\"},\"status\":{\"user\":{},\"error\":\"[invalid bearer token, token lookup failed]\"}}";
+            userApiUtils.modifyExistingResponseToJSON(errorResponse);
+            //assertEquals(returnedString, "{\"username\":\"admin\",\"groups\":}");
+
+        } catch (SocialLoginException e) {
+            //nls 
+            verifyException(e, "CWWKS5374E");
+            // fail()
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    //("{\"kind\":\"TokenReview\",\"apiVersion\":\"authentication.k8s.io/v1\",\"metadata\":{\"creationTimestamp\":null},\"spec\":{\"token\":\"OR4SdSuy-8NRK8NEiYXxxDu01DZcT6jPj5RJ32CDA_c\"},\"status\":{\"authenticated\":\"true\"}}");
+    //{“kind”:“TokenReview”,“apiVersion”:“authentication.k8s.io/v1",“metadata”:{“creationTimestamp”:null},“spec”:{“token”:“somebadvalueForAnAccessToken”},“status”:{“user”:{},“error”:“[invalid bearer token, token lookup failed]“}}
     @SuppressWarnings("unchecked")
     @Test
     public void test_getUserApiResponse_nullAccessToken() {
@@ -227,7 +283,7 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
                 String response = userApiUtils.getUserApiResponse(accessToken, sslSocketFactory);
                 fail("Should have thrown an exception but did not. Got response [" + response + "].");
             } catch (SocialLoginException e) {
-                verifyException(e, CWWKS5371E_OPENSHIFT_ERROR_GETTING_USER_INFO + ".+" + CWWKS5372E_OPENSHIFT_ACCESS_TOKEN_MISSING);
+                verifyException(e, CWWKS5371E_KUBERNETES_ERROR_GETTING_USER_INFO + ".+" + CWWKS5372E_KUBERNETES_ACCESS_TOKEN_MISSING);
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -258,7 +314,7 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
                 userApiUtils.sendUserApiRequest(accessToken, sslSocketFactory);
                 fail("Should have thrown an exception but did not.");
             } catch (SocialLoginException e) {
-                verifyException(e, CWWKS5372E_OPENSHIFT_ACCESS_TOKEN_MISSING);
+                verifyException(e, CWWKS5372E_KUBERNETES_ACCESS_TOKEN_MISSING);
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -331,7 +387,7 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
                 String body = userApiUtils.createUserApiRequestBody(accessToken);
                 fail("Should have thrown an exception but did not. Instead, got: [" + body + "].");
             } catch (SocialLoginException e) {
-                verifyException(e, CWWKS5372E_OPENSHIFT_ACCESS_TOKEN_MISSING);
+                verifyException(e, CWWKS5372E_KUBERNETES_ACCESS_TOKEN_MISSING);
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -368,7 +424,7 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
                 String response = userApiUtils.readUserApiResponse(httpUrlConnection);
                 fail("Should have thrown an exception because we didn't get the right response code, but instead got [" + response + "].");
             } catch (SocialLoginException e) {
-                verifyException(e, CWWKS5373E_OPENSHIFT_USER_API_BAD_STATUS + ".+" + responseCode + ".+" + Pattern.quote(connectionResponse));
+                verifyException(e, CWWKS5373E_KUBERNETES_USER_API_BAD_STATUS + ".+" + responseCode + ".+" + Pattern.quote(connectionResponse));
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);

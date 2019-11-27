@@ -324,7 +324,6 @@ public class WCCustomProperties {
         WCCustomProperties.FullyQualifiedPropertiesMap.put("donotservebyclassname", "com.ibm.ws.webcontainer.donotservebyclassname");
         WCCustomProperties.FullyQualifiedPropertiesMap.put("extracthostheaderport", "com.ibm.ws.webcontainer.extracthostheaderport");
         WCCustomProperties.FullyQualifiedPropertiesMap.put("decodeurlplussign", "com.ibm.ws.webcontainer.decodeurlplussign");
-        WCCustomProperties.FullyQualifiedPropertiesMap.put("channelwritetype", "com.ibm.ws.webcontainer.channelwritetype");
         WCCustomProperties.FullyQualifiedPropertiesMap.put("suppresshtmlrecursiveerroroutput", "com.ibm.ws.webcontainer.suppressHtmlRecursiveErrorOutput");
         WCCustomProperties.FullyQualifiedPropertiesMap.put("filewrapperevents", "com.ibm.ws.webcontainer.fileWrapperEvents");
         WCCustomProperties.FullyQualifiedPropertiesMap.put("webgroupvhostnotfound", "com.ibm.ws.webcontainer.webgroupvhostnotfound");

@@ -1597,3 +1597,9 @@ uncaught.exception.during.AsyncListener.onComplete.useraction=Verifique o c\u00f
 exception.occurred.while.running.ServletContainerInitializers.onStartup=CWWWC0001W: O [{0}] ServletContainerInitializer, localizado no aplicativo [{2}] a seguir, produziu o seguinte erro ao chamar o m\u00e9todo onStartup: [{1}]
 exception.occurred.while.running.ServletContainerInitializers.onStartup.explanation=Uma exce\u00e7\u00e3o foi lan\u00e7ada a partir de um ServletContainerInitializer ao chamar o m\u00e9todo onStartup.
 exception.occurred.while.running.ServletContainerInitializers.onStartup.useraction=Revise a Exce\u00e7\u00e3o para determinar a causa do erro.
+
+# {0} Servlet name used in the servlet name filter mapping
+# {1} Filter name which is used to map a servlet name. 
+no.servlet.defined.for.servlet.filter.name.mapping=CWWWC0002W: Nenhuma defini\u00e7\u00e3o de servlet foi localizada para o nome do servlet {0} no mapeamento de filtro {1}.
+no.servlet.defined.for.servlet.filter.name.mapping.explanation=O nome do servlet \u00e9 usado no mapeamento de filtro, mas sua defini\u00e7\u00e3o n\u00e3o foi realizada. 
+no.servlet.defined.for.servlet.filter.name.mapping.useraction=Defina o servlet que \u00e9 usado no mapeamento de filtro de nome do servlet.

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2016 IBM Corporation and others.
+ * Copyright (c) 2014, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -296,7 +296,11 @@ public class DatabaseStoreImpl implements DatabaseStore {
             }
 
             if ((Boolean) properties.get("createTables"))
-                createTables(persistenceServiceUnit);
+                if (entitySet.equals(SpecialEntitySet.PERSISTENT_EXECUTOR) && entityClassNames.length == 1)
+                    ; // ignore table creation for extra PersistenceServiceUnit that persistent executor creates to allow TRANSACTION_READ_UNCOMMITTED
+                      // TODO is there a better way to accomplish this?
+                else
+                    createTables(persistenceServiceUnit);
 
             if (deactivated) {
                 if (trace && tc.isEntryEnabled())

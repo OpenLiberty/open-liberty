@@ -102,10 +102,10 @@ io.opentracing:opentracing-noop:0.31.0
 io.opentracing:opentracing-util:0.30.0
 io.opentracing:opentracing-util:0.31.0
 io.projectreactor:reactor-core:3.1.8.RELEASE
-io.reactivex.rxjava2:rxjava:2.2.4
-io.smallrye.reactive:smallrye-converter-api:1.0.1
-io.smallrye.reactive:smallrye-reactive-messaging-provider:1.0.1
-io.smallrye.reactive:smallrye-reactive-streams-operators:1.0.0
+io.reactivex.rxjava2:rxjava:2.2.13
+io.smallrye.reactive:smallrye-reactive-converter-api:1.0.10
+io.smallrye.reactive:smallrye-reactive-messaging-provider:1.0.8
+io.smallrye.reactive:smallrye-reactive-streams-operators:1.0.10
 javax.activation:activation:1.1
 javax.annotation:javax.annotation-api:1.2
 javax.annotation:javax.annotation-api:1.3.1
@@ -317,8 +317,8 @@ org.eclipse.microprofile.opentracing:microprofile-opentracing-api:1.0.1
 org.eclipse.microprofile.opentracing:microprofile-opentracing-api:1.1
 org.eclipse.microprofile.opentracing:microprofile-opentracing-api:1.2
 org.eclipse.microprofile.opentracing:microprofile-opentracing-api:1.3
-org.eclipse.microprofile.reactive-streams-operators:microprofile-reactive-streams-operators-api:1.0
-org.eclipse.microprofile.reactive-streams-operators:microprofile-reactive-streams-operators-core:1.0
+org.eclipse.microprofile.reactive-streams-operators:microprofile-reactive-streams-operators-api:1.0.1
+org.eclipse.microprofile.reactive-streams-operators:microprofile-reactive-streams-operators-core:1.0.1
 org.eclipse.microprofile.reactive.messaging:microprofile-reactive-messaging-api:1.0
 org.eclipse.microprofile.rest.client:microprofile-rest-client-api:1.0.1
 org.eclipse.microprofile.rest.client:microprofile-rest-client-api:1.1

@@ -16,7 +16,7 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
-# Message prefix block: CWWKS5400 - CWWKS5499
+# Message prefix block: CWWKS5370 - CWWKS5499
 ADD_ID={0} ({1})
 ADD_ID.explanation=Solo per uso interno.
 ADD_ID.useraction=Non \u00e8 richiesta alcuna azione.
@@ -35,6 +35,29 @@ SELECTION_PAGE_USERNAME=Nome utente
 SELECTION_PAGE_PASSWORD=Password
 
 SELECTION_PAGE_SUBMIT=Inoltra
+
+# 0=Social login configuration attribute name, 1=ID of the social login configuration element, 2=Default value for the configuration attribute
+SOCIAL_LOGIN_CONFIG_ATTRIBUTE_EMPTY=CWWKS5370W: Il valore per l''attributo di configurazione [{0}] nella configurazione del login social [{1}] \u00e8 vuoto. Viene utilizzato il valore predefinito [{2}] per l''attributo di configurazione.
+SOCIAL_LOGIN_CONFIG_ATTRIBUTE_EMPTY.explanation=Il valore per questo attributo di configurazione non deve essere vuoto.
+SOCIAL_LOGIN_CONFIG_ATTRIBUTE_EMPTY.useraction=Assicurarsi che il valore per questo attributo di configurazione non sia vuoto o rimuovere l'attributo di configurazione per utilizzare il valore predefinito.
+
+# 0=Exception message
+OPENSHIFT_ERROR_GETTING_USER_INFO=CWWKS5371E: La risposta dall''API utente OpenShift non pu\u00f2 essere elaborata: {0}
+OPENSHIFT_ERROR_GETTING_USER_INFO.explanation=Impossibile ottenere le informazioni sull'utente autenticato perch\u00e9 si \u00e8 verificato un altro errore.
+OPENSHIFT_ERROR_GETTING_USER_INFO.useraction=Se il messaggio contiene un altro messaggio di errore, consultare l'azione utente per tale messaggio. In alternativa, consultare i log del server per ulteriori messaggi di errore che possono indicare dove si \u00e8 verificato l'altro errore.
+
+OPENSHIFT_ACCESS_TOKEN_MISSING=CWWKS5372E: Manca il token di accesso utilizzato per richiamare le informazioni utente dall'API OpenShift. Verificare che sia stato restituito un token di accesso dall'endpoint token del provider OAuth OpenShift.
+OPENSHIFT_ACCESS_TOKEN_MISSING.explanation=Un token di accesso \u00e8 richiesto per richiamare le informazioni sull'utente autenticato. L'endpoint token del provider OAuth OpenShift potrebbe non aver restituito il token di accesso.
+OPENSHIFT_ACCESS_TOKEN_MISSING.useraction=Verificare che sia stato restituito il token di accesso dall'endpoint token del provider OAuth OpenShift.
+
+# 0=HTTP response code, 1=Response body
+OPENSHIFT_USER_API_BAD_STATUS=CWWKS5373E: L''API utente OpenShift ha restituito un codice di risposta non previsto [{0}]. Verificare che la richiesta all''API contenga tutte le informazioni richieste e che il token dell''account del servizio OpenShift sia stato creato nel progetto OpenShift corretto. La risposta dall''API \u00e8 [{1}].
+OPENSHIFT_USER_API_BAD_STATUS.explanation=L'API utente OpenShift non ha restituito il codice di stato previsto.
+OPENSHIFT_USER_API_BAD_STATUS.useraction=Per ulteriori informazioni fare riferimento alla risposta API nel messaggio di errore. Verificare che la richiesta all'API contenga tutte le informazioni richieste. Assicurarsi che il token dell'account del servizio OpenShift sia stato creato nel progetto OpenShift corretto e abbia le autorizzazioni giuste. 
+# 0=JSON key string, 1=User API response string
+OPENSHIFT_USER_API_RESPONSE_MISSING_KEY=CWWKS5374E: Nella risposta API utente OpenShift manca una chiave prevista: [{0}]. La risposta completa \u00e8 [{1}]
+OPENSHIFT_USER_API_RESPONSE_MISSING_KEY.explanation=La chiave specificata nel messaggio \u00e8 previsto che sia nella risposta API. La chiave potrebbe essere mancante o essere in un'ubicazione non prevista.
+OPENSHIFT_USER_API_RESPONSE_MISSING_KEY.useraction=Controllare la risposta API per determinare se la chiave manca nella risposta.
 
 SOCIAL_LOGIN_CONFIG_PROCESSED=CWWKS5400I: La configurazione del login social [{0}] \u00e8 stata elaborata correttamente.
 SOCIAL_LOGIN_CONFIG_PROCESSED.explanation=La configurazione del login social indicata \u00e8 stata elaborata correttamente.

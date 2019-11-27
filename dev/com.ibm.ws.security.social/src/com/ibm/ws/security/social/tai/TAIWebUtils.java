@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.social.tai;
 
@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.security.common.http.AuthUtils;
 import com.ibm.ws.security.common.web.WebUtils;
 import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.TraceConstants;
@@ -42,6 +43,7 @@ public class TAIWebUtils {
     private static final String ACCESS_TOKEN = "access_token";
     WebUtils webUtils = new WebUtils();
     SocialWebUtils socialWebUtils = new SocialWebUtils();
+    AuthUtils authUtils = new AuthUtils();
     ReferrerURLCookieHandler referrerURLCookieHandler = null;
 
     public TAIWebUtils() {
@@ -144,67 +146,77 @@ public class TAIWebUtils {
     }
 
     public String getBearerAccessToken(HttpServletRequest req, Oauth2LoginConfigImpl clientConfig) {
-
         String headerName = clientConfig.getAccessTokenHeaderName();
         if (headerName != null) {
-            String hdrValue = req.getHeader(headerName);
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, headerName + " content=", hdrValue);
+            String bearerToken = getBearerTokenFromCustomHeader(req, headerName);
+            if (bearerToken == null) {
+                Tr.warning(tc, "CUSTOM_ACCESS_TOKEN_HEADER_MISSING", Oauth2LoginConfigImpl.KEY_accessTokenHeaderName, clientConfig.getUniqueId(), headerName);
             }
-            if (hdrValue != null) {
-                if (hdrValue.startsWith("Bearer ")) {
-                    hdrValue = hdrValue.substring(7);
-                }
-                return hdrValue.trim();
-            } else {
-                StringBuffer sb1 = new StringBuffer(headerName);
-                sb1.append(JWT_SEGMENTS);
-                String headerSegments = req.getHeader(sb1.toString());
-                if (headerSegments != null) {
-                    try {
-                        int iSegs = Integer.parseInt(headerSegments);
-                        StringBuffer sb3 = new StringBuffer();
-                        for (int i = 1; i < iSegs + 1; i++) {
-                            StringBuffer sb2 = new StringBuffer(headerName);
-                            sb2.append(JWT_SEGMENT_INDEX).append(i);
-                            String segHdrValue = req.getHeader(sb2.toString());
-                            if (segHdrValue != null) {
-                                sb3.append(segHdrValue.trim());
-                            }
-                        }
-                        hdrValue = sb3.toString();
-                        if (hdrValue != null && hdrValue.isEmpty()) {
-                            hdrValue = null;
-                        }
-                    } catch (Exception e) {
-                        //can be ignored
-                        if (tc.isDebugEnabled()) {
-                            Tr.debug(tc, "Fail to read Header Segments:", e.getMessage());
-                        }
-                    }
-                    return hdrValue;
-                } else {
-                    return null;
-                }
-            }
+            return bearerToken;
         } else {
-            String hdrValue = req.getHeader(Authorization_Header);
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Authorization header=", hdrValue);
+            return getBearerTokenFromAuthzHeaderOrRequestBody(req);
+        }
+    }
+
+    String getBearerTokenFromCustomHeader(HttpServletRequest req, String headerName) {
+        String hdrValue = authUtils.getBearerTokenFromHeader(req, headerName);
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, headerName + " content=", hdrValue);
+        }
+        if (hdrValue != null) {
+            return hdrValue.trim();
+        } else {
+            return getBearerTokenFromCustomHeaderSegments(req, headerName);
+        }
+    }
+
+    @FFDCIgnore(Exception.class)
+    String getBearerTokenFromCustomHeaderSegments(HttpServletRequest req, String headerName) {
+        String headerSegments = req.getHeader(headerName + JWT_SEGMENTS);
+        if (headerSegments == null) {
+            return null;
+        }
+        String hdrValue = null;
+        try {
+            hdrValue = buildBearerTokenFromCustomHeaderSegments(req, headerName, Integer.parseInt(headerSegments));
+            if (hdrValue != null && hdrValue.isEmpty()) {
+                hdrValue = null;
             }
-            if (hdrValue != null && hdrValue.startsWith("Bearer ")) {
-                hdrValue = hdrValue.substring(7);
-            } else {
-                String reqMethod = req.getMethod();
-                if (ClientConstants.REQ_METHOD_POST.equalsIgnoreCase(reqMethod)) {
-                    String contentType = req.getHeader(ClientConstants.REQ_CONTENT_TYPE_NAME);
-                    if (ClientConstants.REQ_CONTENT_TYPE_APP_FORM_URLENCODED.equals(contentType)) {
-                        hdrValue = req.getParameter(ACCESS_TOKEN);
-                    }
+        } catch (Exception e) {
+            //can be ignored
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Fail to read Header Segments:", e.getMessage());
+            }
+        }
+        return hdrValue;
+    }
+
+    String buildBearerTokenFromCustomHeaderSegments(HttpServletRequest req, String headerName, int numberOfSegments) {
+        StringBuffer tokenStringBuilder = new StringBuffer();
+        for (int i = 1; i < numberOfSegments + 1; i++) {
+            String segHdrValue = req.getHeader(headerName + JWT_SEGMENT_INDEX + i);
+            if (segHdrValue != null) {
+                tokenStringBuilder.append(segHdrValue.trim());
+            }
+        }
+        return tokenStringBuilder.toString();
+    }
+
+    String getBearerTokenFromAuthzHeaderOrRequestBody(HttpServletRequest req) {
+        String hdrValue = authUtils.getBearerTokenFromHeader(req);
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "Authorization header=", hdrValue);
+        }
+        if (hdrValue == null) {
+            String reqMethod = req.getMethod();
+            if (ClientConstants.REQ_METHOD_POST.equalsIgnoreCase(reqMethod)) {
+                String contentType = req.getHeader(ClientConstants.REQ_CONTENT_TYPE_NAME);
+                if (ClientConstants.REQ_CONTENT_TYPE_APP_FORM_URLENCODED.equals(contentType)) {
+                    hdrValue = req.getParameter(ACCESS_TOKEN);
                 }
             }
-            return hdrValue;
         }
+        return hdrValue;
     }
 
 }
