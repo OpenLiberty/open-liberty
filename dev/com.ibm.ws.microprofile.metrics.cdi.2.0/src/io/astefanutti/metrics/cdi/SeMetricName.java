@@ -23,11 +23,8 @@
  *******************************************************************************/
 package io.astefanutti.metrics.cdi;
 
-import static io.astefanutti.metrics.cdi.MetricsParameter.useAbsoluteName;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Set;
 
 import javax.enterprise.inject.Vetoed;
 import javax.enterprise.inject.spi.Annotated;
@@ -47,12 +44,9 @@ import org.eclipse.microprofile.metrics.Timer;
 import org.eclipse.microprofile.metrics.annotation.Metric;
 
 @Vetoed
-/* package-private */ public class SeMetricName implements MetricName {
+public class SeMetricName implements MetricName {
 
-    private final Set<MetricsParameter> parameters;
-
-    public SeMetricName(Set<MetricsParameter> parameters) {
-        this.parameters = parameters;
+    public SeMetricName() {
     }
 
     @Override
@@ -71,10 +65,10 @@ import org.eclipse.microprofile.metrics.annotation.Metric;
         if (member.isAnnotationPresent(Metric.class)) {
             Metric metric = member.getAnnotation(Metric.class);
             String name = (metric.name().isEmpty()) ? member.getJavaMember().getName() : of(metric.name());
-            return metric.absolute() | parameters.contains(useAbsoluteName) ? name : MetricRegistry.name(member.getJavaMember().getDeclaringClass(), name);
+            return metric.absolute() ? name : MetricRegistry.name(member.getJavaMember().getDeclaringClass(), name);
         } else {
-            return parameters.contains(useAbsoluteName) ? member.getJavaMember().getName() : MetricRegistry.name(member.getJavaMember().getDeclaringClass(),
-                                                                                                                 member.getJavaMember().getName());
+            return MetricRegistry.name(member.getJavaMember().getDeclaringClass(),
+                                       member.getJavaMember().getName());
         }
     }
 
@@ -87,11 +81,11 @@ import org.eclipse.microprofile.metrics.annotation.Metric;
         if (parameter.isAnnotationPresent(Metric.class)) {
             Metric metric = parameter.getAnnotation(Metric.class);
             String name = (metric.name().isEmpty()) ? getParameterName(parameter) : of(metric.name());
-            return metric.absolute() | parameters.contains(useAbsoluteName) ? name : MetricRegistry.name(parameter.getDeclaringCallable().getJavaMember().getDeclaringClass(),
-                                                                                                         name);
+            return metric.absolute() ? name : MetricRegistry.name(parameter.getDeclaringCallable().getJavaMember().getDeclaringClass(),
+                                                                  name);
         } else {
-            return parameters.contains(useAbsoluteName) ? getParameterName(parameter) : MetricRegistry.name(parameter.getDeclaringCallable().getJavaMember().getDeclaringClass(),
-                                                                                                            getParameterName(parameter));
+            return MetricRegistry.name(parameter.getDeclaringCallable().getJavaMember().getDeclaringClass(),
+                                       getParameterName(parameter));
         }
     }
 

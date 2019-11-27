@@ -95,8 +95,6 @@ public class MetricsExtension implements Extension, WebSphereCDIExtension {
 
     protected final Set<MetricID> metricIDs = Collections.synchronizedSortedSet(new TreeSet<MetricID>());
 
-    protected final MetricsConfigurationEvent configuration = new MetricsConfigurationEvent();
-
     /**
      * Stores the member/annotation that were intercepted to their metric name.
      */
@@ -110,10 +108,6 @@ public class MetricsExtension implements Extension, WebSphereCDIExtension {
     @Reference
     public void getSharedMetricRegistries(SharedMetricRegistries sharedMetricRegistry) {
         MetricRegistryFactory.SHARED_METRIC_REGISTRIES = sharedMetricRegistry;
-    }
-
-    public Set<MetricsParameter> getParameters() {
-        return configuration.getParameters();
     }
 
     protected <X> void metricsAnnotations(@Observes @WithAnnotations({ Counted.class, Gauge.class, Metered.class, Timed.class,
@@ -139,10 +133,6 @@ public class MetricsExtension implements Extension, WebSphereCDIExtension {
 
     @SuppressWarnings("unchecked")
     protected <T extends Metric> void configuration(@Observes AfterDeploymentValidation adv, BeanManager manager) {
-
-        // Fire configuration event
-        manager.fireEvent(configuration);
-        configuration.unmodifiable();
 
         MetricRegistry registry = getReference(manager, MetricRegistry.class);
 

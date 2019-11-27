@@ -188,8 +188,6 @@ public class MetricResolver {
     }
 
     private boolean isMetricAbsolute(Annotation annotation) {
-        if (extension.getParameters().contains(MetricsParameter.useAbsoluteName))
-            return true;
 
         if (Counted.class.isInstance(annotation))
             return ((Counted) annotation).absolute();

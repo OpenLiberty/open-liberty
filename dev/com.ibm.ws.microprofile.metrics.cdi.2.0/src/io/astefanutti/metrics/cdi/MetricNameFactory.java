@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -33,6 +33,6 @@ import javax.enterprise.inject.spi.BeanManager;
     @Produces
     // TODO: should be declared @ApplicationScoped when WELD-2083 is fixed
     protected MetricName metricName(BeanManager manager) {
-        return new SeMetricName(manager.getExtension(MetricsExtension.class).getParameters());
+        return new SeMetricName();
     }
 }
