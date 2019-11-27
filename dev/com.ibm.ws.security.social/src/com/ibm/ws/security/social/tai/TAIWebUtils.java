@@ -145,7 +145,7 @@ public class TAIWebUtils {
         return hostAndPort;
     }
 
-    public String getBearerAccessToken(HttpServletRequest req, Oauth2LoginConfigImpl clientConfig) {
+    public String getBearerAccessToken(HttpServletRequest req, SocialLoginConfig clientConfig) {
         String headerName = clientConfig.getAccessTokenHeaderName();
         if (headerName != null) {
             String bearerToken = getBearerTokenFromCustomHeader(req, headerName);

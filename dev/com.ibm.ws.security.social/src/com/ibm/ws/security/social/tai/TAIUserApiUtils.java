@@ -44,7 +44,7 @@ public class TAIUserApiUtils {
         UserApiConfig userApiConfig = userinfoCfg[0];
         String userinfoApi = userApiConfig.getApi();
         try {
-            if (SocialUtil.isOpenShiftConfig(clientConfig)) {
+            if (SocialUtil.isKubeConfig(clientConfig)) {
                 return getUserApiResponseFromOpenShift((Oauth2LoginConfigImpl) clientConfig, accessToken, sslSocketFactory);
             }
             String userApiResp = clientUtil.getUserApiResponse(userinfoApi,
