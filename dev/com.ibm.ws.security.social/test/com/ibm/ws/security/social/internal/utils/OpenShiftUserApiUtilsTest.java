@@ -86,6 +86,8 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
                 {
                     allowing(config).getUserNameAttribute();
                     will(returnValue("username"));
+                    allowing(config).getGroupNameAttribute();
+                    will(returnValue("groups"));
                 }
             });
             returnedString = userApiUtils.modifyExistingResponseToJSON(correctString);
@@ -101,7 +103,7 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
             userApiUtils.modifyExistingResponseToJSON(null);
             fail();
         } catch (SocialLoginException e) {
-            verifyException(e, CWWKS5377E_KUBERNETES_USER_API_RESPONSE_NULL_EMPTY);
+            verifyException(e, "CWWKS5377E");
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -113,7 +115,7 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
             userApiUtils.modifyExistingResponseToJSON("");
             fail();
         } catch (SocialLoginException e) {
-            verifyException(e, CWWKS5377E_KUBERNETES_USER_API_RESPONSE_NULL_EMPTY);
+            verifyException(e, "CWWKS5377E");
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -137,9 +139,7 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
             userApiUtils.modifyExistingResponseToJSON("{\"kind\":\"TokenReview\",\"apiVersion\":\"authentication.k8s.io/v1\",\"metadata\":{\"creationTimestamp\":null},\"spec\":{\"token\":\"OR4SdSuy-8NRK8NEiYXxxDu01DZcT6jPj5RJ32CDA_c\"}}");
             fail();
         } catch (SocialLoginException e) {
-            //nls 
             verifyException(e, "CWWKS5374E");
-
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -157,9 +157,7 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
             userApiUtils.modifyExistingResponseToJSON("{\"kind\":\"Status\",\"apiVersion\":\"v1\",\"metadata\":{},\"status\":\"Failure\",\"message\":\"Unauthorized\",\"reason\":\"Unauthorized\",\"code\":401}");
             fail();
         } catch (SocialLoginException e) {
-            //nls 
             verifyException(e, "Unauthorized");
-
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -171,7 +169,7 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
             userApiUtils.modifyExistingResponseToJSON("vlah");
             fail();
         } catch (SocialLoginException e) {
-            verifyException(e, CWWKS5378E_KUBERNETES_USER_API_RESPONSE_NOT_JSON);
+            verifyException(e, "CWWKS5378E");
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -184,18 +182,197 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
                 {
                     allowing(config).getUserNameAttribute();
                     will(returnValue("username"));
+                    allowing(config).getGroupNameAttribute();
+                    will(returnValue("groups"));
                 }
             });
             userApiUtils.modifyExistingResponseToJSON("{\"status\":{\"authenticated\":true,\"user\":{\"username\":\"admin\",\"uid\":\"ef111c43-d33a-11e9-b239-0016ac102af6\",\"groups\":\"yes\",\"extra\":{\"scopes.authorization.openshift.io\":[\"user:full\"]}}}}");
             fail();
         } catch (SocialLoginException e) {
-            //nls 
-            verifyException(e, "KUBERNETES_USER_API_RESPONSE_MISCONFIGURED_KEY");
-
+            verifyException(e, "CWWKS5379E");
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
+
+    @Test
+    public void emailExistsInUserIncorrectType() {
+        try {
+            mockery.checking(new Expectations() {
+                {
+                    allowing(config).getUserNameAttribute();
+                    will(returnValue("email"));
+                    allowing(config).getGroupNameAttribute();
+                    will(returnValue("groups"));
+                }
+            });
+            String returnedString = userApiUtils.modifyExistingResponseToJSON("{\"status\":{\"authenticated\":true,\"user\":{\"email\":2,\"uid\":\"ef111c43-d33a-11e9-b239-0016ac102af6\",\"groups\":[],\"extra\":{\"scopes.authorization.openshift.io\":[\"user:full\"]}}}}");
+            fail();
+        } catch (SocialLoginException e) {
+            verifyException(e, "CWWKS5379E");
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void emailExistsInUserCorrectType() {
+        try {
+            mockery.checking(new Expectations() {
+                {
+                    allowing(config).getUserNameAttribute();
+                    will(returnValue("email"));
+                    allowing(config).getGroupNameAttribute();
+                    will(returnValue("groups"));
+                }
+            });
+            String returnedString = userApiUtils.modifyExistingResponseToJSON("{\"status\":{\"authenticated\":true,\"user\":{\"email\":\"admin\",\"uid\":\"ef111c43-d33a-11e9-b239-0016ac102af6\",\"groups\":[],\"extra\":{\"scopes.authorization.openshift.io\":[\"user:full\"]}}}}");
+            assertEquals(returnedString, "{\"email\":\"admin\",\"groups\":[]}");
+        } catch (SocialLoginException e) {
+            fail();
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void emailDoesNotExistInNameWithDefaultValue() {
+        try {
+            mockery.checking(new Expectations() {
+                {
+                    allowing(config).getUserNameAttribute();
+                    will(returnValue("email"));
+                    allowing(config).getGroupNameAttribute();
+                    will(returnValue("groups"));
+                }
+            });
+            String returnedString = userApiUtils.modifyExistingResponseToJSON("{\"status\":{\"authenticated\":true,\"user\":{\"username\":\"admin\",\"uid\":\"ef111c43-d33a-11e9-b239-0016ac102af6\",\"groups\":[],\"extra\":{\"scopes.authorization.openshift.io\":[\"user:full\"]}}}}");
+            assertEquals(returnedString, "{\"email\":\"admin\",\"groups\":[]}");
+        } catch (SocialLoginException e) {
+            fail();
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void emailDoesNotExistInNameNoDefaultValue() {
+        try {
+            mockery.checking(new Expectations() {
+                {
+                    allowing(config).getUserNameAttribute();
+                    will(returnValue("email"));
+                    allowing(config).getGroupNameAttribute();
+                    will(returnValue("groups"));
+                }
+            });
+
+            String returnedString = userApiUtils.modifyExistingResponseToJSON("{\"status\":{\"authenticated\":true,\"user\":{\"uid\":\"ef111c43-d33a-11e9-b239-0016ac102af6\",\"groups\":[],\"extra\":{\"scopes.authorization.openshift.io\":[\"user:full\"]}}}}");
+            fail();
+        } catch (SocialLoginException e) {
+            verifyException(e, "CWWKS5374E");
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void usernameAttributeDoesNotExist() {
+        try {
+            mockery.checking(new Expectations() {
+                {
+                    allowing(config).getUserNameAttribute();
+                    will(returnValue("blah"));
+                    allowing(config).getGroupNameAttribute();
+                    will(returnValue("groups"));
+                }
+            });
+            String returnedString = userApiUtils.modifyExistingResponseToJSON("{\"status\":{\"authenticated\":true,\"user\":{\"uid\":\"ef111c43-d33a-11e9-b239-0016ac102af6\",\"groups\":[],\"extra\":{\"scopes.authorization.openshift.io\":[\"user:full\"]}}}}");
+            fail();
+        } catch (SocialLoginException e) {
+            verifyException(e, "CWWKS5374E");
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void usernameAttributeIncorrectTypeInteger() {
+        try {
+            mockery.checking(new Expectations() {
+                {
+                    allowing(config).getUserNameAttribute();
+                    will(returnValue("blah"));
+                    allowing(config).getGroupNameAttribute();
+                    will(returnValue("groups"));
+                }
+            });
+            String returnedString = userApiUtils.modifyExistingResponseToJSON("{\"status\":{\"authenticated\":true,\"user\":{\"uid\":\"ef111c43-d33a-11e9-b239-0016ac102af6\",\"blah\":1,\"groups\":[],\"extra\":{\"scopes.authorization.openshift.io\":[\"user:full\"]}}}}");
+            fail();
+        } catch (SocialLoginException e) {
+            verifyException(e, "CWWKS5379E");
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void usernameAttributeIncorrectType() {
+        try {
+            mockery.checking(new Expectations() {
+                {
+                    allowing(config).getUserNameAttribute();
+                    will(returnValue("blah"));
+                    allowing(config).getGroupNameAttribute();
+                    will(returnValue("groups"));
+                }
+            });
+            String returnedString = userApiUtils.modifyExistingResponseToJSON("{\"status\":{\"authenticated\":true,\"user\":{\"uid\":\"ef111c43-d33a-11e9-b239-0016ac102af6\",\"blah\":null,\"groups\":[],\"extra\":{\"scopes.authorization.openshift.io\":[\"user:full\"]}}}}");
+            fail();
+        } catch (SocialLoginException e) {
+            verifyException(e, "CWWKS5379E");
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void usernameAttributeSuccess() {
+        try {
+            mockery.checking(new Expectations() {
+                {
+                    allowing(config).getUserNameAttribute();
+                    will(returnValue("blah"));
+                    allowing(config).getGroupNameAttribute();
+                    will(returnValue("groups"));
+                }
+            });
+            String returnedString = userApiUtils.modifyExistingResponseToJSON("{\"status\":{\"authenticated\":true,\"user\":{\"uid\":\"ef111c43-d33a-11e9-b239-0016ac102af6\",\"blah\":\"blue\",\"groups\":[\"arunagroup\"],\"extra\":{\"scopes.authorization.openshift.io\":[\"user:full\"]}}}}");
+            assertEquals(returnedString, "{\"blah\":\"blue\",\"groups\":[\"arunagroup\"]}");
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void userNameAttributeIsJunk() {
+        try {
+            mockery.checking(new Expectations() {
+                {
+                    allowing(config).getUserNameAttribute();
+                    will(returnValue("blah"));
+                    allowing(config).getGroupNameAttribute();
+                    will(returnValue("groups"));
+                }
+            });
+            String returnedString = userApiUtils.modifyExistingResponseToJSON("{\"status\":{\"authenticated\":true,\"user\":{\"email\":\"admin\",\"uid\":\"ef111c43-d33a-11e9-b239-0016ac102af6\",\"groups\":[],\"extra\":{\"scopes.authorization.openshift.io\":[\"user:full\"]}}}}");
+        } catch (SocialLoginException e) {
+            verifyException(e, "CWWKS5374E");
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
 
     @Test
     public void groupsIsEmpty() {
@@ -204,14 +381,14 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
                 {
                     allowing(config).getUserNameAttribute();
                     will(returnValue("username"));
+                    allowing(config).getGroupNameAttribute();
+                    will(returnValue("groups"));
                 }
             });
             String returnedString = userApiUtils.modifyExistingResponseToJSON("{\"status\":{\"authenticated\":true,\"user\":{\"username\":\"admin\",\"uid\":\"ef111c43-d33a-11e9-b239-0016ac102af6\",\"groups\":[],\"extra\":{\"scopes.authorization.openshift.io\":[\"user:full\"]}}}}");
             assertEquals(returnedString, "{\"username\":\"admin\",\"groups\":[]}");
 
         } catch (SocialLoginException e) {
-            //nls 
-            // verifyException(e, "KUBERNETES_USER_API_RESPONSE_MISCONFIGURED_KEY");
             fail();
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -229,41 +406,54 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
             });
             String errorResponse = "{\"kind\":\"TokenReview\",\"apiVersion\":\"authentication.k8s.io/v1\",\"metadata\":{\"creationTimestamp\":null},\"spec\":{\"token\":\"somebadvalueForAnAccessToken\"},\"status\":{\"user\":{},\"error\":\"[invalid bearer token, token lookup failed]\"}}";
             userApiUtils.modifyExistingResponseToJSON(errorResponse);
-            //assertEquals(returnedString, "{\"username\":\"admin\",\"groups\":}");
-
         } catch (SocialLoginException e) {
-            //nls 
-            verifyException(e, "CWWKS5374E");
-            // fail()
+            verifyException(e, "KUBERNETES_USER_API_RESPONSE_ERROR");
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
 
     @Test
-    public void noUserNameAttributeTest() {
+    public void userNameAttributeNull() {
         try {
             mockery.checking(new Expectations() {
                 {
                     allowing(config).getUserNameAttribute();
                     will(returnValue(null));
+                    allowing(config).getGroupNameAttribute();
+                    will(returnValue("groups"));
                 }
             });
-            String errorResponse = "{\"kind\":\"TokenReview\",\"apiVersion\":\"authentication.k8s.io/v1\",\"metadata\":{\"creationTimestamp\":null},\"spec\":{\"token\":\"somebadvalueForAnAccessToken\"},\"status\":{\"user\":{},\"error\":\"[invalid bearer token, token lookup failed]\"}}";
-            userApiUtils.modifyExistingResponseToJSON(errorResponse);
-            //assertEquals(returnedString, "{\"username\":\"admin\",\"groups\":}");
-
+            String returnedString = userApiUtils.modifyExistingResponseToJSON("{\"status\":{\"authenticated\":true,\"user\":{\"username\":\"admin\",\"uid\":\"ef111c43-d33a-11e9-b239-0016ac102af6\",\"groups\":[],\"extra\":{\"scopes.authorization.openshift.io\":[\"user:full\"]}}}}");
+            fail();
+            
         } catch (SocialLoginException e) {
-            //nls 
-            verifyException(e, "CWWKS5374E");
-            // fail()
+            verifyException(e, "CWWKS5379E");
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
-
-    //("{\"kind\":\"TokenReview\",\"apiVersion\":\"authentication.k8s.io/v1\",\"metadata\":{\"creationTimestamp\":null},\"spec\":{\"token\":\"OR4SdSuy-8NRK8NEiYXxxDu01DZcT6jPj5RJ32CDA_c\"},\"status\":{\"authenticated\":\"true\"}}");
-    //{“kind”:“TokenReview”,“apiVersion”:“authentication.k8s.io/v1",“metadata”:{“creationTimestamp”:null},“spec”:{“token”:“somebadvalueForAnAccessToken”},“status”:{“user”:{},“error”:“[invalid bearer token, token lookup failed]“}}
+    
+    @Test
+    public void userResponseApiUserEmpty() {
+        try {
+            mockery.checking(new Expectations() {
+                {
+                    allowing(config).getUserNameAttribute();
+                    will(returnValue("blah"));
+                    allowing(config).getGroupNameAttribute();
+                    will(returnValue("groups"));
+                }
+            });
+            userApiUtils.modifyExistingResponseToJSON("{\"status\":{\"authenticated\":true,\"user\":{}}}");
+            fail();
+        } catch (SocialLoginException e) {
+            verifyException(e, "CWWKS5374E");
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+    
     @SuppressWarnings("unchecked")
     @Test
     public void test_getUserApiResponse_nullAccessToken() {
