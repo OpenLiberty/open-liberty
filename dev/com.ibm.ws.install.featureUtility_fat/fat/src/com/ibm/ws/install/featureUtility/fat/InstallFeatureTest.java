@@ -105,14 +105,14 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
         assertEquals("Exit code should be 21", 21, po.getReturnCode());
         String output = po.getStdout();
-        assertTrue("Should contain CWWKF1299E or CWWKF1259E", (output.indexOf("CWWKF1299E")>=0 || output.indexOf("CWWKF1259E") >= 0));
+        assertTrue("Should contain CWWKF1299E or CWWKF1203E", (output.indexOf("CWWKF1299E")>=0 || output.indexOf("CWWKF1203E") >= 0));
 
         // try adding closed libery group id
         String [] param2s = {"installFeature", "com.ibm.websphere.appserver.adminCenter-1.0"};
         po = runFeatureUtility(METHOD_NAME, param1s);
         assertEquals("Exit code should be 21", 21, po.getReturnCode());
         output = po.getStdout();
-        assertTrue("Should contain CWWKF1299E or CWWKF1259E", (output.indexOf("CWWKF1299E")>=0 || output.indexOf("CWWKF1259E") >= 0));
+        assertTrue("Should contain CWWKF1299E or CWWKF1203E", (output.indexOf("CWWKF1299E")>=0 || output.indexOf("CWWKF1203E") >= 0));
 
 
 

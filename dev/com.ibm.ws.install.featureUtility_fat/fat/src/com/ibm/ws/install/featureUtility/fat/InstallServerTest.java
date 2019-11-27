@@ -42,6 +42,8 @@ public class InstallServerTest extends FeatureUtilityToolTest {
         Log.entering(c, METHOD_NAME);
 
         String [] param1s = {"installFeature", "jsf-2.2"};
+        deleteFeaturesAndLafilesFolders(METHOD_NAME);
+
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
         assertEquals("Exit code should be 0",0, po.getReturnCode());
         String output = po.getStdout();
