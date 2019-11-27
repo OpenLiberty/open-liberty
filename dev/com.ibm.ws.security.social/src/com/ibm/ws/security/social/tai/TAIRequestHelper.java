@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
 import com.ibm.ws.security.social.Constants;
 import com.ibm.ws.security.social.SocialLoginConfig;
@@ -61,6 +62,7 @@ public class TAIRequestHelper {
         return socialTaiRequest.hasServices();
     }
     
+    @FFDCIgnore({ SocialLoginException.class })
     public boolean requestShouldBeHandledByTAI(HttpServletRequest request, SocialTaiRequest socialTaiRequest, boolean beforeTAI) {
         
         if (requestShouldBeHandledByTAI(request, socialTaiRequest)) {

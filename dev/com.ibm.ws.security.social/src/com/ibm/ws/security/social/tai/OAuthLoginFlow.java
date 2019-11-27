@@ -222,7 +222,6 @@ public class OAuthLoginFlow {
         return query;
     }
 
-    @FFDCIgnore(SocialLoginException.class)
     TAIResult handleAuthorizationCode(HttpServletRequest req, HttpServletResponse res, String authzCode, SocialLoginConfig clientConfig) throws WebTrustAssociationFailedException {
         AuthorizationCodeAuthenticator authzCodeAuthenticator = getAuthorizationCodeAuthenticator(req, res, authzCode, clientConfig);
         try {
