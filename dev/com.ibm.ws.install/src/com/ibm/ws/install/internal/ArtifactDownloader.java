@@ -47,33 +47,38 @@ public class ArtifactDownloader {
         checkValidProxy();
         configureProxyAuthentication();
         configureAuthentication();
-        updateProgress(progressBar.getMethodIncrement("establishConnection"));
-        info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_MAVEN_REPO_CONNECTION_SUCCESSFUL"));
+
         downloadedFiles.clear();
-        int repoResponseCode;
         repo = FormatUrlSuffix(repo);
-        try {
-            repoResponseCode = ArtifactDownloaderUtils.exists(repo, envMap);
-        } catch (Exception e) {
-            throw ExceptionUtils.createByKey("ERROR_FAILED_TO_CONNECT_MAVEN");
-        }
-        ArtifactDownloaderUtils.checkResponseCode(repoResponseCode, repo);
         List<String> featureURLs = ArtifactDownloaderUtils.acquireFeatureURLs(mavenCoords, repo);
         List<String> missingFeatures;
         dLocation = FormatPathSuffix(dLocation);
+        try {
+            int responseCode = ArtifactDownloaderUtils.exists(featureURLs.get(0), envMap);
+            if (responseCode != 404) {
+                ArtifactDownloaderUtils.checkResponseCode(responseCode, repo);
+            }
+        } catch (IOException e) {
+            fine(e.getMessage());
+            throw ExceptionUtils.createByKey("ERROR_FAILED_TO_CONNECT_MAVEN");
+        }
+        updateProgress(progressBar.getMethodIncrement("establishConnection"));
+        info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_MAVEN_REPO_CONNECTION_SUCCESSFUL"));
         try {
             missingFeatures = ArtifactDownloaderUtils.getMissingFiles(featureURLs, envMap);
         } catch (IOException e) {
             throw new InstallException(e.getMessage());
         }
         if (!missingFeatures.isEmpty()) {
+
             List<String> missingFeatureList = new ArrayList<String>();
             for (String f : missingFeatures) {
                 if (f.endsWith(".esa")) {
                     missingFeatureList.add(ArtifactDownloaderUtils.getFileNameFromURL(f));
                 }
             }
-            throw ExceptionUtils.createByKey("ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_REPO", missingFeatureList, "feature(s)", repo);
+            fine("The remote repository is missing the following artifacts: " + missingFeatureList.toString());
+            throw ExceptionUtils.createByKey("ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_REPO", "required", "feature(s)", repo);
         } else {
             // we have downloaded mavenCoords.length amount of features.
             double individualSize = progressBar.getMethodIncrement("downloadArtifacts") / mavenCoords.size();
@@ -116,18 +121,7 @@ public class ArtifactDownloader {
         configureProxyAuthentication();
         configureAuthentication();
         repo = FormatUrlSuffix(repo);
-        if (individualDownload) {
-            checkValidProxy();
-            int repoResponseCode;
-            dLocation = FormatPathSuffix(dLocation);
-            try {
-                repoResponseCode = ArtifactDownloaderUtils.exists(repo, envMap);
-            } catch (Exception e) {
-                fine(e.getMessage());
-                throw ExceptionUtils.createByKey("ERROR_FAILED_TO_CONNECT_MAVEN");
-            }
-            ArtifactDownloaderUtils.checkResponseCode(repoResponseCode, repo);
-        }
+        dLocation = FormatPathSuffix(dLocation);
         String groupId = ArtifactDownloaderUtils.getGroupId(mavenCoords).replace(".", "/") + "/";
         String artifactId = ArtifactDownloaderUtils.getartifactId(mavenCoords);
         String version = ArtifactDownloaderUtils.getVersion(mavenCoords);
@@ -135,6 +129,20 @@ public class ArtifactDownloader {
 
         String filename = ArtifactDownloaderUtils.getfilename(mavenCoords, filetype);
         String urlLocation = ArtifactDownloaderUtils.getUrlLocation(repo, groupId, artifactId, version, filename);
+
+        if (individualDownload) {
+            checkValidProxy();
+            int repoResponseCode;
+            try {
+                repoResponseCode = ArtifactDownloaderUtils.exists(urlLocation, envMap);
+                if (repoResponseCode != 404) {
+                    ArtifactDownloaderUtils.checkResponseCode(repoResponseCode, repo);
+                }
+            } catch (Exception e) {
+                fine(e.getMessage());
+                throw ExceptionUtils.createByKey("ERROR_FAILED_TO_CONNECT_MAVEN");
+            }
+        }
         String[] checksumFormats = new String[3];
         checksumFormats[0] = "SHA256";
         checksumFormats[1] = "MD5";
