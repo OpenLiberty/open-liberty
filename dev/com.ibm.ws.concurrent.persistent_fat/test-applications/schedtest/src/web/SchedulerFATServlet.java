@@ -1092,14 +1092,45 @@ public class SchedulerFATServlet extends HttpServlet {
      * Block the execution of a task after it starts running. Simulate another instance attempting to run the task.
      */
     public void testBlockRunningTaskFE(PrintWriter out) throws Exception {
-        Callable<Integer> task = new CancelableTask("testBlockRunningTaskFE", true);
+        Callable<Integer> task = new CancelableTask("first-testBlockRunningTaskFE", true);
         TaskStatus<Integer> taskStatus = scheduler.submit(task);
         try {
-            CancelableTask.waitForStart("CancelableTask-testBlockRunningTaskFE");
+            CancelableTask.waitForStart("CancelableTask-first-testBlockRunningTaskFE");
 
             System.out.println("Task is running...");
 
             // The PROP entry for the task will remain locked within a suspended transaction
+
+            // Scheduling of additional tasks is not blocked,
+            DBIncrementTask anotherTask = new DBIncrementTask("second-testBlockRunningTaskFE");
+            anotherTask.getExecutionProperties().put(AutoPurge.PROPERTY_NAME, AutoPurge.NEVER.name());
+            TaskStatus<?> statusOfAnotherTask = scheduler.scheduleWithFixedDelay(anotherTask, 0, 70, TimeUnit.DAYS);
+            long anotherTaskId = statusOfAnotherTask.getTaskId();
+
+            // Running of additional tasks is not blocked,
+            for (long start = System.nanoTime(); !statusOfAnotherTask.hasResult() && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL))
+                statusOfAnotherTask = scheduler.getStatus(statusOfAnotherTask.getTaskId());
+            if (!statusOfAnotherTask.hasResult())
+                throw new Exception("The second task didn't run. " + statusOfAnotherTask);
+            statusOfAnotherTask.getResult(); // forces an error to be raised if unsuccessful
+
+            // Queries for tasks are not blocked,
+            List<TaskStatus<?>> statusList = scheduler.findTaskStatus("%testBlockRunningTaskFE", null, TaskState.ANY, true, null, null);
+            if (statusList.size() != 2)
+                throw new Exception("Should find exactly two matching tasks (" + taskStatus.getTaskId() + ", and " + anotherTaskId + "). Instead: " + statusList);
+            for (TaskStatus<?> s : statusList)
+                if (s.getTaskId() != taskStatus.getTaskId() && s.getTaskId() != anotherTaskId)
+                    throw new Exception("Matched wrong task: " + s);
+
+            // Cancellation is not blocked,
+            int count = scheduler.cancel("%second-testBlockRunningTaskFE", null, TaskState.ANY, true);
+            if (count != 1)
+                throw new Exception("Cancel returned a count other than 1: " + count);
+
+            // Removal is not blocked,
+            count = scheduler.remove("%second-testBlockRunningTaskFE", null, TaskState.CANCELED, true);
+            if (count != 1)
+                throw new Exception("Remove returned a count other than 1: " + count);
 
             // Simulate other instances making attempts to claim the task.
             // For testing purposes, directly force this code path from a predictable location (here)
@@ -1151,7 +1182,7 @@ public class SchedulerFATServlet extends HttpServlet {
             //    throw new Exception("Unable to time out from duplicate attempt of task " + taskStatus.getTaskId() + " within a reasonable amount of time. " + duration + " ns.");
         } finally {
             taskStatus.cancel(false);
-            CancelableTask.notifyTaskCanceled("DBIncrementTask-testBlockRunningTaskFE");
+            CancelableTask.notifyTaskCanceled("CancelableTask-first-testBlockRunningTaskFE");
         }
     }
 
