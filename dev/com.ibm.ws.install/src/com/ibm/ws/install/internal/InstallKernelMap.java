@@ -1194,7 +1194,11 @@ public class InstallKernelMap implements Map {
         if (foundFeatures.size() != resolvedFeatures.size() && !missingFeatures.isEmpty()) {
             List<Integer> missingFeatureIndexes = artifactsMap.get("missingArtifactIndexes");
             List<File> downloadedFeatures = downloadFeatures(missingFeatures);
-            insertElementsIntoList(foundFeatures, downloadedFeatures, missingFeatureIndexes);
+            if (downloadedFeatures == null) {
+                return null;
+            } else {
+                insertElementsIntoList(foundFeatures, downloadedFeatures, missingFeatureIndexes);
+            }
             // some increment left over
             double increment = ((progressBar.getMethodIncrement("fetchArtifacts") / resolvedFeatures.size()) * downloadedFeatures.size());
             updateProgress(increment);
