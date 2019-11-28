@@ -53,17 +53,6 @@ public interface TokenManager {
     public abstract SingleSignonToken createSSOToken(Token token) throws TokenCreationFailedException;
 
     /**
-     * Recreates the token from the given token bytes. Will try all known
-     * TokenServices in an attempt to recreate the token.
-     *
-     * @param tokenBytes
-     * @return A non-null Token
-     * @throws InvalidTokenException
-     */
-    @FFDCIgnore(InvalidTokenException.class)
-    public abstract Token recreateTokenFromBytes(byte[] tokenBytes) throws InvalidTokenException, TokenExpiredException;
-
-    /**
      * Recreates the token from the given token bytes without a list of attributes. Will try all known
      * TokenServices in an attempt to recreate the token.
      *

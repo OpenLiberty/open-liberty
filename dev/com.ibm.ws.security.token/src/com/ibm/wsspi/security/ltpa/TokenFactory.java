@@ -44,7 +44,7 @@ public interface TokenFactory {
     public Token validateTokenBytes(byte[] encryptedData) throws InvalidTokenException, TokenExpiredException;
 
     /**
-     * Returns a Token based on the type of configured token
+     * Validate the token byte[] and returns a Token based on the type of configured token without the attributes specify in the removeAttributes parameter
      *
      * @param byte[] token data
      * @param attributes[] A list of attributes will be removed from the token.

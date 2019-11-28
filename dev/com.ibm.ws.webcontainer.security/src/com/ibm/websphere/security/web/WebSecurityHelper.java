@@ -25,13 +25,13 @@ import com.ibm.ws.webcontainer.security.internal.WebSecurityHelperImpl;
  * @ibm-api
  */
 public class WebSecurityHelper {
-    private final static WebSphereRuntimePermission MODIFY_TOKEN = new WebSphereRuntimePermission("modify_token");
+    private final static WebSphereRuntimePermission UPDATE_TOKEN = new WebSphereRuntimePermission("updateToken");
 
     /**
      * Extracts the Single Sign-On (SSO) token from the subject of the current thread
      * and builds an SSO cookie out of it. The new SSO token does not include the attributes specified in the removeAttributes parameter for use on downstream web invocations.
      * The caller must check for a null return value.
-     * The security permission WebSphereRuntimePermission("modify_token") is needed when security manager is enabled.
+     * The security permission WebSphereRuntimePermission("updateToken") is needed when security manager is enabled.
      * <p>
      * Return null if there is an invalid or expired SSO token, no subject on the current thread, no SSO token in subject or no webAppSecurityConfig object.
      * If the returned value is not null, use Cookie methods getName() and getValue()
@@ -41,7 +41,7 @@ public class WebSecurityHelper {
      * @param String ... A list of attributes to be removed from the SSO token. If no attributes is specified, all the attributes are kept.
      *
      * @return An object of type javax.servlet.http.Cookie. May return {@code null}
-     * @throws Exception If SecurityManager exists and does not permit token modification.
+     * @throws Exception If SecurityManager exists and does not permit token update.
      *             <p>
      *             For example:
      *             1) To remove the custom cache key AttributeNameConstants.WSCREDENTIAL_CACHE_KEY from SSO token:
@@ -53,7 +53,7 @@ public class WebSecurityHelper {
     public static Cookie getSSOCookieFromSSOToken(String... removeAttributes) throws Exception {
         java.lang.SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
-            sm.checkPermission(MODIFY_TOKEN);
+            sm.checkPermission(UPDATE_TOKEN);
         }
 
         return WebSecurityHelperImpl.getSSOCookieFromSSOToken(removeAttributes);

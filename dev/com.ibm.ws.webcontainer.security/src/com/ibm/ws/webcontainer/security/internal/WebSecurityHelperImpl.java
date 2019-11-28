@@ -108,7 +108,7 @@ public class WebSecurityHelperImpl {
 //        String accessId = null;
 //        if (ssoToken != null) {
 //            try {
-//                Token recreatedToken = recreateTokenFromBytes(ssoToken, null);
+//                Token recreatedToken = recreateTokenFromBytes(ssoToken);
 //                if (recreatedToken != null) {
 //                    accessId = recreatedToken.getAttributes("u")[0];
 //                }

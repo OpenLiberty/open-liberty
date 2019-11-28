@@ -104,12 +104,6 @@ public class TokenManagerImpl implements TokenManager {
 
     /** {@inheritDoc} */
     @Override
-    public Token recreateTokenFromBytes(byte[] tokenBytes) throws InvalidTokenException, TokenExpiredException {
-        return recreateTokenFromBytes(tokenBytes, null);
-    }
-
-    /** {@inheritDoc} */
-    @Override
     @FFDCIgnore(InvalidTokenException.class)
     public Token recreateTokenFromBytes(byte[] tokenBytes, String... removeAttributes) throws InvalidTokenException, TokenExpiredException {
         Token token = null;
@@ -125,7 +119,11 @@ public class TokenManagerImpl implements TokenManager {
                              + ". This will fail if the token was not created by this service and may fail if the configuration of the service which created the token has changed.");
             }
             try {
-                token = tokenService.recreateTokenFromBytes(tokenBytes, removeAttributes);
+                if (removeAttributes == null) {
+                    token = tokenService.recreateTokenFromBytes(tokenBytes);
+                } else {
+                    token = tokenService.recreateTokenFromBytes(tokenBytes, removeAttributes);
+                }
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Successfully recreated token using token service " + tokenService + ".");
                 }
