@@ -21,7 +21,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package io.astefanutti.metrics.cdi;
+package com.ibm.ws.microprofile.metrics.cdi.interceptors;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Member;
@@ -36,17 +36,20 @@ import javax.interceptor.AroundTimeout;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 
-import org.eclipse.microprofile.metrics.Meter;
 import org.eclipse.microprofile.metrics.MetricID;
 import org.eclipse.microprofile.metrics.MetricRegistry;
-import org.eclipse.microprofile.metrics.annotation.Metered;
+import org.eclipse.microprofile.metrics.Timer;
+import org.eclipse.microprofile.metrics.annotation.Timed;
 
 import com.ibm.ws.microprofile.metrics.cdi.helper.Utils;
 
-@Metered
+import io.astefanutti.metrics.cdi.MetricResolver;
+import io.astefanutti.metrics.cdi.MetricResolver.Of;
+
+@Timed
 @Interceptor
 @Priority(Interceptor.Priority.LIBRARY_BEFORE + 10)
-/* packaged-private */ class MeteredInterceptor {
+/* package-private */ class TimedInterceptor {
 
     private final Bean<?> bean;
 
@@ -55,36 +58,39 @@ import com.ibm.ws.microprofile.metrics.cdi.helper.Utils;
     private final MetricResolver resolver;
 
     @Inject
-    private MeteredInterceptor(@Intercepted Bean<?> bean, MetricRegistry registry, MetricResolver resolver) {
+    private TimedInterceptor(@Intercepted Bean<?> bean, MetricRegistry registry, MetricResolver resolver) {
         this.bean = bean;
         this.registry = registry;
         this.resolver = resolver;
     }
 
     @AroundConstruct
-    private Object meteredConstructor(InvocationContext context) throws Exception {
-        return meteredCallable(context, context.getConstructor());
+    private Object timedConstructor(InvocationContext context) throws Exception {
+        return timedCallable(context, context.getConstructor());
     }
 
     @AroundInvoke
-    private Object meteredMethod(InvocationContext context) throws Exception {
-        return meteredCallable(context, context.getMethod());
+    private Object timedMethod(InvocationContext context) throws Exception {
+        return timedCallable(context, context.getMethod());
     }
 
     @AroundTimeout
-    private Object meteredTimeout(InvocationContext context) throws Exception {
-        return meteredCallable(context, context.getMethod());
+    private Object timedTimeout(InvocationContext context) throws Exception {
+        return timedCallable(context, context.getMethod());
     }
 
-    private <E extends Member & AnnotatedElement> Object meteredCallable(InvocationContext context, E element) throws Exception {
-        MetricResolver.Of<Metered> metered = resolver.metered(bean.getBeanClass(), element);
-        MetricID tmid = new MetricID(metered.metricName(), Utils.tagsToTags(metered.tags()));
-        Meter meter = (Meter) registry.getMetrics().get(tmid);
+    private <E extends Member & AnnotatedElement> Object timedCallable(InvocationContext context, E element) throws Exception {
+        MetricResolver.Of<Timed> timed = resolver.timed(bean.getBeanClass(), element);
+        MetricID MetricID = new MetricID(timed.metricName(), Utils.tagsToTags(timed.tags()));
+        Timer timer = (Timer) registry.getMetrics().get(MetricID);
+        if (timer == null)
+            throw new IllegalStateException("No timer with metricID [" + MetricID + "] found in registry [" + registry + "]");
 
-        if (meter == null)
-            throw new IllegalStateException("No meter with metricID [" + tmid + "] found in registry [" + registry + "]");
-
-        meter.mark();
-        return context.proceed();
+        Timer.Context time = timer.time();
+        try {
+            return context.proceed();
+        } finally {
+            time.stop();
+        }
     }
 }

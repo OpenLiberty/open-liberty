@@ -21,7 +21,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package io.astefanutti.metrics.cdi;
+package com.ibm.ws.microprofile.metrics.cdi.interceptors;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.InvocationTargetException;
@@ -52,6 +52,10 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.metrics.cdi.helper.Utils;
 import com.ibm.ws.microprofile.metrics.cdi.producer.MetricRegistryFactory;
+
+import io.astefanutti.metrics.cdi.MetricResolver;
+import io.astefanutti.metrics.cdi.MetricsExtension;
+import io.astefanutti.metrics.cdi.MetricResolver.Of;
 
 @Interceptor
 @MetricsBinding

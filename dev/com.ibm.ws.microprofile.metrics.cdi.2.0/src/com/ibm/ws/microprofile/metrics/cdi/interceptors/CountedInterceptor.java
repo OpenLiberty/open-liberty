@@ -21,7 +21,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package io.astefanutti.metrics.cdi;
+package com.ibm.ws.microprofile.metrics.cdi.interceptors;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Member;
@@ -43,40 +43,43 @@ import org.eclipse.microprofile.metrics.annotation.Counted;
 
 import com.ibm.ws.microprofile.metrics.cdi.helper.Utils;
 
+import io.astefanutti.metrics.cdi.MetricResolver;
+
 @Counted
 @Interceptor
 @Priority(Interceptor.Priority.LIBRARY_BEFORE + 10)
 /* package-private */ class CountedInterceptor {
 
-    private final Bean<?> bean;
+    protected final Bean<?> bean;
 
-    private final MetricRegistry registry;
+    protected final MetricRegistry registry;
 
-    private final MetricResolver resolver;
+    protected final MetricResolver resolver;
 
     @Inject
-    private CountedInterceptor(@Intercepted Bean<?> bean, MetricRegistry registry, MetricResolver resolver) {
+    protected CountedInterceptor(@Intercepted Bean<?> bean, MetricRegistry registry, MetricResolver resolver) {
         this.bean = bean;
         this.registry = registry;
         this.resolver = resolver;
     }
 
     @AroundConstruct
-    private Object countedConstructor(InvocationContext context) throws Exception {
+    protected Object countedConstructor(InvocationContext context) throws Exception {
         return countedCallable(context, context.getConstructor());
     }
 
     @AroundInvoke
-    private Object countedMethod(InvocationContext context) throws Exception {
+    protected Object countedMethod(InvocationContext context) throws Exception {
         return countedCallable(context, context.getMethod());
     }
 
     @AroundTimeout
-    private Object countedTimeout(InvocationContext context) throws Exception {
+    protected Object countedTimeout(InvocationContext context) throws Exception {
         return countedCallable(context, context.getMethod());
     }
 
-    private <E extends Member & AnnotatedElement> Object countedCallable(InvocationContext context, E element) throws Exception {
+    protected <E extends Member & AnnotatedElement> Object countedCallable(InvocationContext context, E element) throws Exception {
+        System.out.println("Welllllll");
         MetricResolver.Of<Counted> counted = resolver.counted(bean.getBeanClass(), element);
         MetricID tmid = new MetricID(counted.metricName(), Utils.tagsToTags(counted.tags()));
         Counter counter = (Counter) registry.getMetrics().get(tmid);

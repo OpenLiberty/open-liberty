@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.astefanutti.metrics.cdi;
+package com.ibm.ws.microprofile.metrics.cdi.interceptors;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Member;
@@ -28,6 +28,8 @@ import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.eclipse.microprofile.metrics.annotation.ConcurrentGauge;
 
 import com.ibm.ws.microprofile.metrics.cdi.helper.Utils;
+
+import io.astefanutti.metrics.cdi.MetricResolver;
 
 @ConcurrentGauge
 @Interceptor
