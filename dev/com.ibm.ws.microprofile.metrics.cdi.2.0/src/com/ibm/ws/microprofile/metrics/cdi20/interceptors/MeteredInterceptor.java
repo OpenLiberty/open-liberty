@@ -21,7 +21,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package com.ibm.ws.microprofile.metrics.cdi.interceptors;
+package com.ibm.ws.microprofile.metrics.cdi20.interceptors;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Member;
@@ -41,10 +41,10 @@ import org.eclipse.microprofile.metrics.MetricID;
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.eclipse.microprofile.metrics.annotation.Metered;
 
-import com.ibm.ws.microprofile.metrics.cdi.helper.Utils;
+import com.ibm.ws.microprofile.metrics.cdi20.helper.Utils;
 
-import io.astefanutti.metrics.cdi.MetricResolver;
-import io.astefanutti.metrics.cdi.MetricResolver.Of;
+import io.astefanutti.metrics.cdi20.MetricResolver;
+import io.astefanutti.metrics.cdi20.MetricResolver.Of;
 
 @Metered
 @Interceptor

@@ -21,7 +21,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package com.ibm.ws.microprofile.metrics.cdi.interceptors;
+package com.ibm.ws.microprofile.metrics.cdi20.interceptors;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.InvocationTargetException;
@@ -50,12 +50,12 @@ import org.eclipse.microprofile.metrics.annotation.Timed;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.microprofile.metrics.cdi.helper.Utils;
-import com.ibm.ws.microprofile.metrics.cdi.producer.MetricRegistryFactory;
 import com.ibm.ws.microprofile.metrics.cdi.binding.MetricsBinding;
+import com.ibm.ws.microprofile.metrics.cdi20.helper.Utils;
+import com.ibm.ws.microprofile.metrics.cdi20.producer.MetricRegistryFactory;
 
-import io.astefanutti.metrics.cdi.MetricResolver;
-import io.astefanutti.metrics.cdi.MetricsExtension;
+import io.astefanutti.metrics.cdi20.MetricResolver;
+import io.astefanutti.metrics.cdi20.MetricsExtension;
 
 @Interceptor
 @MetricsBinding

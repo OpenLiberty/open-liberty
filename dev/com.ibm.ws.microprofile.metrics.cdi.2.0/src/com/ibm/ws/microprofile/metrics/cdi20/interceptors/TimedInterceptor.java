@@ -21,7 +21,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package com.ibm.ws.microprofile.metrics.cdi.interceptors;
+package com.ibm.ws.microprofile.metrics.cdi20.interceptors;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Member;
@@ -36,56 +36,61 @@ import javax.interceptor.AroundTimeout;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 
-import org.eclipse.microprofile.metrics.Counter;
 import org.eclipse.microprofile.metrics.MetricID;
 import org.eclipse.microprofile.metrics.MetricRegistry;
-import org.eclipse.microprofile.metrics.annotation.Counted;
+import org.eclipse.microprofile.metrics.Timer;
+import org.eclipse.microprofile.metrics.annotation.Timed;
 
-import com.ibm.ws.microprofile.metrics.cdi.helper.Utils;
+import com.ibm.ws.microprofile.metrics.cdi20.helper.Utils;
 
-import io.astefanutti.metrics.cdi.MetricResolver;
+import io.astefanutti.metrics.cdi20.MetricResolver;
+import io.astefanutti.metrics.cdi20.MetricResolver.Of;
 
-@Counted
+@Timed
 @Interceptor
 @Priority(Interceptor.Priority.LIBRARY_BEFORE + 10)
-/* package-private */ class CountedInterceptor {
+/* package-private */ class TimedInterceptor {
 
-    protected final Bean<?> bean;
+    private final Bean<?> bean;
 
-    protected final MetricRegistry registry;
+    private final MetricRegistry registry;
 
-    protected final MetricResolver resolver;
+    private final MetricResolver resolver;
 
     @Inject
-    protected CountedInterceptor(@Intercepted Bean<?> bean, MetricRegistry registry, MetricResolver resolver) {
+    private TimedInterceptor(@Intercepted Bean<?> bean, MetricRegistry registry, MetricResolver resolver) {
         this.bean = bean;
         this.registry = registry;
         this.resolver = resolver;
     }
 
     @AroundConstruct
-    protected Object countedConstructor(InvocationContext context) throws Exception {
-        return countedCallable(context, context.getConstructor());
+    private Object timedConstructor(InvocationContext context) throws Exception {
+        return timedCallable(context, context.getConstructor());
     }
 
     @AroundInvoke
-    protected Object countedMethod(InvocationContext context) throws Exception {
-        return countedCallable(context, context.getMethod());
+    private Object timedMethod(InvocationContext context) throws Exception {
+        return timedCallable(context, context.getMethod());
     }
 
     @AroundTimeout
-    protected Object countedTimeout(InvocationContext context) throws Exception {
-        return countedCallable(context, context.getMethod());
+    private Object timedTimeout(InvocationContext context) throws Exception {
+        return timedCallable(context, context.getMethod());
     }
 
-    protected <E extends Member & AnnotatedElement> Object countedCallable(InvocationContext context, E element) throws Exception {
-        MetricResolver.Of<Counted> counted = resolver.counted(bean.getBeanClass(), element);
-        MetricID tmid = new MetricID(counted.metricName(), Utils.tagsToTags(counted.tags()));
-        Counter counter = (Counter) registry.getMetrics().get(tmid);
-        if (counter == null)
-            throw new IllegalStateException("No counter with metricID [" + tmid + "] found in registry [" + registry + "]");
+    private <E extends Member & AnnotatedElement> Object timedCallable(InvocationContext context, E element) throws Exception {
+        MetricResolver.Of<Timed> timed = resolver.timed(bean.getBeanClass(), element);
+        MetricID MetricID = new MetricID(timed.metricName(), Utils.tagsToTags(timed.tags()));
+        Timer timer = (Timer) registry.getMetrics().get(MetricID);
+        if (timer == null)
+            throw new IllegalStateException("No timer with metricID [" + MetricID + "] found in registry [" + registry + "]");
 
-        counter.inc();
-        return context.proceed();
+        Timer.Context time = timer.time();
+        try {
+            return context.proceed();
+        } finally {
+            time.stop();
+        }
     }
 }

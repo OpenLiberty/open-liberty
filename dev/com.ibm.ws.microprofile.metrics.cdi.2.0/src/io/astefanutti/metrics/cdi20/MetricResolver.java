@@ -21,7 +21,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package io.astefanutti.metrics.cdi;
+package io.astefanutti.metrics.cdi20;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
@@ -45,7 +45,7 @@ import org.eclipse.microprofile.metrics.annotation.Gauge;
 import org.eclipse.microprofile.metrics.annotation.Metered;
 import org.eclipse.microprofile.metrics.annotation.Timed;
 
-import com.ibm.ws.microprofile.metrics.cdi.helper.Utils;
+import com.ibm.ws.microprofile.metrics.cdi20.helper.Utils;
 
 @ApplicationScoped
 public class MetricResolver {

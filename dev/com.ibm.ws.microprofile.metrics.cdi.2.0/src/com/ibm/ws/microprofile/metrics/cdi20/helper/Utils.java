@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.metrics.cdi.helper;
+package com.ibm.ws.microprofile.metrics.cdi20.helper;
 
 import java.util.ArrayList;
 import java.util.List;

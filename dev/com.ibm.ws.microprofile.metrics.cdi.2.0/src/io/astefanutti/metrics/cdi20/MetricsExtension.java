@@ -21,7 +21,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package io.astefanutti.metrics.cdi;
+package io.astefanutti.metrics.cdi20;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
@@ -74,8 +74,8 @@ import org.osgi.service.component.annotations.Reference;
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 import com.ibm.ws.microprofile.metrics.cdi.binding.MetricsBinding;
 import com.ibm.ws.microprofile.metrics.cdi.decorator.AnnotatedTypeDecorator;
-import com.ibm.ws.microprofile.metrics.cdi.helper.Utils;
-import com.ibm.ws.microprofile.metrics.cdi.producer.MetricRegistryFactory;
+import com.ibm.ws.microprofile.metrics.cdi20.helper.Utils;
+import com.ibm.ws.microprofile.metrics.cdi20.producer.MetricRegistryFactory;
 import com.ibm.ws.microprofile.metrics.impl.SharedMetricRegistries;
 import com.ibm.wsspi.classloading.ClassLoadingService;
 

@@ -21,7 +21,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package io.astefanutti.metrics.cdi;
+package io.astefanutti.metrics.cdi20;
 
 import javax.annotation.Priority;
 import javax.enterprise.context.Dependent;
@@ -40,7 +40,7 @@ import org.eclipse.microprofile.metrics.MetricID;
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.eclipse.microprofile.metrics.Timer;
 
-import com.ibm.ws.microprofile.metrics.cdi.helper.Utils;
+import com.ibm.ws.microprofile.metrics.cdi20.helper.Utils;
 
 @Alternative
 @Dependent

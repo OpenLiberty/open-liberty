@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 /**
- * @version 1.0
+ *
  */
 @org.osgi.annotation.versioning.Version("1.0")
-package com.ibm.ws.microprofile.metrics.cdi.helper;
+package com.ibm.ws.microprofile.metrics.cdi20.interceptors;

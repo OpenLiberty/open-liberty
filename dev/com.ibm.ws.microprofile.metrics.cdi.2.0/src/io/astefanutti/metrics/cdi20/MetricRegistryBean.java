@@ -21,7 +21,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package io.astefanutti.metrics.cdi;
+package io.astefanutti.metrics.cdi20;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
