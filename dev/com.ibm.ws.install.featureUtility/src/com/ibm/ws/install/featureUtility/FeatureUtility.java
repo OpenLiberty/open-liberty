@@ -40,6 +40,7 @@ import com.ibm.ws.install.internal.ProgressBar;
 import com.ibm.ws.install.internal.InstallLogUtils.Messages;
 import com.ibm.ws.kernel.boot.ReturnCode;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
+//import com.sun.org.apache.xpath.internal.operations.Bool;
 
 /**
  *
@@ -122,6 +123,7 @@ public class FeatureUtility {
         map.put("target.user.directory", new File(Utils.getInstallDir(), "tmp"));
         map.put("license.accept", true);
         map.get("install.kernel.init.code");
+        map.put("is.feature.utility", true);
 
     }
 
@@ -132,6 +134,7 @@ public class FeatureUtility {
      * @throws IOException
      */
     private void initializeMap(List<File> jsonPaths) throws IOException {
+        map.put("is.feature.utility", true);
         map.put("runtime.install.dir", Utils.getInstallDir());
         map.put("target.user.directory", new File(Utils.getInstallDir(), "tmp"));
         map.put("install.local.esa", true);
@@ -145,7 +148,6 @@ public class FeatureUtility {
             map.put("individual.esas", Arrays.asList(esaFile));
             map.put("install.individual.esas", true);
         }
-        
 
         map.put("license.accept", true);
         map.get("install.kernel.init.code");

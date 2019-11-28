@@ -122,6 +122,8 @@ public class InstallKernelMap implements Map {
     private static final String CLEANUP_TEMP_LOCATION = "cleanup.temp.location";
     private static final String CLEANUP_NEEDED = "cleanup.needed";
     private static final String ENVIRONMENT_VARIABLE_MAP = "environment.variable.map";
+    private static final String IS_FEATURE_UTILITY = "is.feature.utility";
+
 
     //Headers in Manifest File
     private static final String SHORTNAME_HEADER_NAME = "IBM-ShortName";
@@ -268,6 +270,12 @@ public class InstallKernelMap implements Map {
                     return singleFileResolve();
                 }
             }
+        } else if (IS_FEATURE_UTILITY.equals(key)){
+            if(data.get(IS_FEATURE_UTILITY) == null){
+                    return false;
+            } else {
+                    return (Boolean) data.get(IS_FEATURE_UTILITY);
+            }
         } else if (PROGRESS_MONITOR_SIZE.equals(key)) {
             return getMonitorSize();
         } else if (DOWNLOAD_RESULT.equals(key)) {
@@ -360,6 +368,12 @@ public class InstallKernelMap implements Map {
                     installKernel.setUserAgent((String) value);
             } else {
                 throw new IllegalArgumentException();
+            }
+        } else if (IS_FEATURE_UTILITY.equals(key)){
+            if(value instanceof Boolean){
+                    data.put(IS_FEATURE_UTILITY, value);
+            } else {
+                    throw new IllegalArgumentException();
             }
         } else if (TO_EXTENSION.equals(key)) {
             if (value instanceof String) {
@@ -776,8 +790,9 @@ public class InstallKernelMap implements Map {
             data.put(ACTION_ERROR_MESSAGE, e.getMessage());
             data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
         } catch (RepositoryResolutionException e) {
+            boolean isFeatureUtility = (Boolean) this.get(IS_FEATURE_UTILITY);
             data.put(ACTION_RESULT, ERROR);
-            InstallException ie = ExceptionUtils.create(e, e.getTopLevelFeaturesNotResolved(), (File) data.get(RUNTIME_INSTALL_DIR), false, isOpenLiberty);
+            InstallException ie = ExceptionUtils.create(e, e.getTopLevelFeaturesNotResolved(), (File) data.get(RUNTIME_INSTALL_DIR), false, isOpenLiberty, isFeatureUtility);
             data.put(ACTION_ERROR_MESSAGE, ie.getMessage());
             data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(ie));
         } catch (InstallException e) {
