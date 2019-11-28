@@ -52,10 +52,10 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.metrics.cdi.helper.Utils;
 import com.ibm.ws.microprofile.metrics.cdi.producer.MetricRegistryFactory;
+import com.ibm.ws.microprofile.metrics.cdi.binding.MetricsBinding;
 
 import io.astefanutti.metrics.cdi.MetricResolver;
 import io.astefanutti.metrics.cdi.MetricsExtension;
-import io.astefanutti.metrics.cdi.MetricResolver.Of;
 
 @Interceptor
 @MetricsBinding

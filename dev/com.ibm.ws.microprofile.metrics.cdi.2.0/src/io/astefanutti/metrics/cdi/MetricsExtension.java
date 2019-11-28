@@ -72,9 +72,9 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
-import com.ibm.ws.microprofile.metrics.cdi.AnnotatedTypeDecorator;
+import com.ibm.ws.microprofile.metrics.cdi.binding.MetricsBinding;
+import com.ibm.ws.microprofile.metrics.cdi.decorator.AnnotatedTypeDecorator;
 import com.ibm.ws.microprofile.metrics.cdi.helper.Utils;
-import com.ibm.ws.microprofile.metrics.cdi.interceptors.MetricsBinding;
 import com.ibm.ws.microprofile.metrics.cdi.producer.MetricRegistryFactory;
 import com.ibm.ws.microprofile.metrics.impl.SharedMetricRegistries;
 import com.ibm.wsspi.classloading.ClassLoadingService;
