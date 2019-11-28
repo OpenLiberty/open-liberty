@@ -74,7 +74,9 @@ public class ArtifactDownloader {
             List<String> missingFeatureList = new ArrayList<String>();
             for (String f : missingFeatures) {
                 if (f.endsWith(".esa")) {
-                    missingFeatureList.add(ArtifactDownloaderUtils.getFileNameFromURL(f));
+                    missingFeatureList.add(ArtifactDownloaderUtils.getFileNameFromURL(f) + ".esa");
+                } else if (f.endsWith(".pom")) {
+                    missingFeatureList.add(ArtifactDownloaderUtils.getFileNameFromURL(f) + ".pom");
                 }
             }
             fine("The remote repository is missing the following artifacts: " + missingFeatureList.toString());
