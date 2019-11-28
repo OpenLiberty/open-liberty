@@ -131,7 +131,7 @@ public class OpenShiftUserApiUtils {
 
     String createModifiedResponse(JsonObject userInnerMap) throws SocialLoginException {
         JsonObjectBuilder modifiedResponse = Json.createObjectBuilder();
-        if (config.getUserNameAttribute().equals("email")) {
+        if ("email".equals(config.getUserNameAttribute())) {
             addUserAttributeToResponseWithEmail(userInnerMap, modifiedResponse);
         } else {
             addUserToResponseWithoutEmail(userInnerMap, modifiedResponse);
