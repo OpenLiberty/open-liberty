@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -64,24 +64,28 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
+import com.ibm.ws.microprofile.metrics.cdi.binding.MetricsBinding;
+import com.ibm.ws.microprofile.metrics.cdi.decorator.AnnotatedTypeDecorator;
 import com.ibm.ws.microprofile.metrics.cdi.producer.MetricRegistryFactory;
 import com.ibm.ws.microprofile.metrics.impl.SharedMetricRegistries;
 
 @Component(service = WebSphereCDIExtension.class, immediate = true)
 public class MetricsExtension implements Extension, WebSphereCDIExtension {
 
-    private static final AnnotationLiteral<Nonbinding> NON_BINDING = new AnnotationLiteral<Nonbinding>() {};
+    private static final AnnotationLiteral<Nonbinding> NON_BINDING = new AnnotationLiteral<Nonbinding>() {
+    };
 
-    private static final AnnotationLiteral<InterceptorBinding> INTERCEPTOR_BINDING = new AnnotationLiteral<InterceptorBinding>() {};
+    private static final AnnotationLiteral<InterceptorBinding> INTERCEPTOR_BINDING = new AnnotationLiteral<InterceptorBinding>() {
+    };
 
-    private static final AnnotationLiteral<MetricsBinding> METRICS_BINDING = new AnnotationLiteral<MetricsBinding>() {};
+    private static final AnnotationLiteral<MetricsBinding> METRICS_BINDING = new AnnotationLiteral<MetricsBinding>() {
+    };
 
-    private static final AnnotationLiteral<Default> DEFAULT = new AnnotationLiteral<Default>() {};
+    private static final AnnotationLiteral<Default> DEFAULT = new AnnotationLiteral<Default>() {
+    };
 
     private final Map<Bean<?>, AnnotatedMember<?>> metrics = new HashMap<>();
     private final Set<String> metricNames = Collections.synchronizedSortedSet(new TreeSet<String>());
-
-    private final MetricsConfigurationEvent configuration = new MetricsConfigurationEvent();
 
     /**
      * Stores the member/annotation that were intercepted to their metric name.
@@ -96,10 +100,6 @@ public class MetricsExtension implements Extension, WebSphereCDIExtension {
     @Reference
     public void getSharedMetricRegistries(SharedMetricRegistries sharedMetricRegistry) {
         MetricRegistryFactory.SHARED_METRIC_REGISTRIES = sharedMetricRegistry;
-    }
-
-    public Set<MetricsParameter> getParameters() {
-        return configuration.getParameters();
     }
 
     private <X> void metricsAnnotations(@Observes @WithAnnotations({ Counted.class, Gauge.class, Metered.class, Timed.class }) ProcessAnnotatedType<X> pat) {
@@ -122,9 +122,6 @@ public class MetricsExtension implements Extension, WebSphereCDIExtension {
     }
 
     private void configuration(@Observes AfterDeploymentValidation adv, BeanManager manager) {
-        // Fire configuration event
-        manager.fireEvent(configuration);
-        configuration.unmodifiable();
 
         // Produce and register custom metrics
         MetricRegistry registry = getReference(manager, MetricRegistry.class);

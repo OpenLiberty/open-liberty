@@ -24,6 +24,8 @@ Import-Package: \
 
 Export-Package: \
     io.astefanutti.metrics.cdi,\
+    com.ibm.ws.microprofile.metrics.cdi.decorator,\
+    com.ibm.ws.microprofile.metrics.cdi.binding,\
     com.ibm.ws.microprofile.metrics.cdi.producer
 
 Private-Package: \
@@ -49,5 +51,6 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
     com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
     com.ibm.websphere.javaee.annotation.1.2;version=latest,\
-    com.ibm.websphere.javaee.concurrent.1.0;version=latest
+    com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
+    com.ibm.ws.microprofile.metrics.cdi.common;version=latest
 

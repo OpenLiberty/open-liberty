@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -21,7 +21,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package io.astefanutti.metrics.cdi;
+package com.ibm.ws.microprofile.metrics.cdi.interceptors;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.InvocationTargetException;
@@ -48,13 +48,16 @@ import org.eclipse.microprofile.metrics.annotation.Timed;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.microprofile.metrics.cdi.binding.MetricsBinding;
 import com.ibm.ws.microprofile.metrics.cdi.producer.MetricRegistryFactory;
+
+import io.astefanutti.metrics.cdi.MetricResolver;
+import io.astefanutti.metrics.cdi.MetricsExtension;
 
 @Interceptor
 @MetricsBinding
 @Priority(Interceptor.Priority.LIBRARY_BEFORE)
-// See http://docs.oracle.com/javaee/7/tutorial/doc/interceptors.htm
-/* package-private */ class MetricsInterceptor {
+public class MetricsInterceptor {
 
     private static final TraceComponent tc = Tr.register(MetricsInterceptor.class);
 
