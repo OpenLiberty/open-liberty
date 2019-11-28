@@ -653,7 +653,7 @@ if (isAutomatedBuild) {
         }
 
         task buildOsNativePackages(type: Exec) {
-		description 'builds OS Native packages'
+	    description 'builds OS Native packages'
 
             dependsOn copyOpenLiberty
             dependsOn updateRulesTemplate
@@ -664,6 +664,9 @@ if (isAutomatedBuild) {
 
             def rpms = file("./packaging/rpmbuild/RPMS/noarch/openliberty-" + bnd('libertyServiceVersion') + "-1.noarch.rpm")
             def debs = file("./packaging/debuild/openliberty_" + bnd('libertyServiceVersion') + "-1ubuntu1_all.deb")
+            def packageDate = new Date()
+            def formattedRPMDate = packageDate.format("E MMM d y")
+            def formattedDEBDate = packageDate.format("E, d MMM y hh:mm:ss Z")
 
             inputs.dir('packaging/tempPackagingDir')
             outputs.file(rpms)
@@ -671,7 +674,7 @@ if (isAutomatedBuild) {
 
             errorOutput = new ByteArrayOutputStream()
 
-            commandLine 'sh', './buildOsNativePackages.sh', bnd('libertyServiceVersion'), isRelease
+            commandLine 'sh', './buildOsNativePackages.sh', bnd('libertyServiceVersion'), isRelease, formattedRPMDate, formattedDEBDate
 
             ignoreExitValue true
 
