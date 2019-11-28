@@ -12,4 +12,7 @@
  *
  */
 @org.osgi.annotation.versioning.Version("1.0")
+@TraceOptions(traceGroup = "METRICS", messageBundle = "com.ibm.ws.microprofile.metrics.cdi.resources.MetricsCDI")
 package com.ibm.ws.microprofile.metrics.cdi20.interceptors;
+
+import com.ibm.websphere.ras.annotation.TraceOptions;
