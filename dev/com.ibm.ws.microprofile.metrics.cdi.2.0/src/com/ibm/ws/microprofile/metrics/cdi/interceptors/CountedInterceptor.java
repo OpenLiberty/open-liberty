@@ -79,7 +79,6 @@ import io.astefanutti.metrics.cdi.MetricResolver;
     }
 
     protected <E extends Member & AnnotatedElement> Object countedCallable(InvocationContext context, E element) throws Exception {
-        System.out.println("Welllllll");
         MetricResolver.Of<Counted> counted = resolver.counted(bean.getBeanClass(), element);
         MetricID tmid = new MetricID(counted.metricName(), Utils.tagsToTags(counted.tags()));
         Counter counter = (Counter) registry.getMetrics().get(tmid);
