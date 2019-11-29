@@ -1,0 +1,34 @@
+<server description="Security disabled client">
+
+  <javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
+  <javaPermission className="java.net.SocketPermission" name="127.0.0.1" actions="resolve"/>
+  <javaPermission className="java.util.logging.LoggingPermission" name="control" actions=""/>
+
+  <include location="../fatTestPorts.xml"/>
+
+  <featureManager>
+    <feature>servlet-3.1</feature>
+    <feature>jndi-1.0</feature>
+    <feature>wasJmsClient-2.0</feature>
+    <feature>testjmsinternals-1.0</feature>
+    <feature>componentTest-1.0</feature>
+  </featureManager>
+
+  <variable name="onError" value="FAIL"/>
+
+  <keyStore id="defaultKeyStore" location="client.jks" password="{xor}Lz4sLCgwLTs="/>
+
+  <jmsQueueConnectionFactory jndiName="jndi_JMS_BASE_QCF" connectionManagerRef="ConMgr1">
+    <properties.wasJms userName="user1"
+                       password="password123"
+                       remoteServerAddress="localhost:${bvt.prop.jms.1.ssl}:BootstrapSecureMessaging"
+    />
+  </jmsQueueConnectionFactory>
+
+  <connectionManager id="ConMgr1" maxPoolSize="2"/>
+
+  <jmsQueue jndiName="jndi_INPUT_Q">
+    <properties.wasJms  queueName="QUEUE_ONE" timeToLive="500000" busName="defaultBus"/>
+  </jmsQueue>
+
+</server>
