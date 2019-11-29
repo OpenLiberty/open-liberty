@@ -1,0 +1,65 @@
+###############################################################################
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+#CMVCPATHNAME com.ibm.ws.wsat.common/resources/com/ibm/ws/wsat/resources/WSAT.nlsprops
+#COMPONENTPREFIX CWLIB
+#COMPONENTNAMEFOR CWLIB WS Atomic Transaction
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+
+#
+# Use message range CWLIB0201-0300 for WS-AT NLS messages
+#
+
+NO_WSAT_TRAN_CWLIB0201=CWLIB0201E: Aucune transaction WS-AT active avec l'ID {0}.
+NO_WSAT_TRAN_CWLIB0201.explanation=Aucune transaction WS-AT active correspondant \u00e0 l'ID de transaction globale demand\u00e9 n'a \u00e9t\u00e9 trouv\u00e9e.
+NO_WSAT_TRAN_CWLIB0201.useraction=Pour plus de d\u00e9tails sur l'erreur, consultez les fichiers journaux.
+
+NO_WSAT_PART_CWLIB0202=CWLIB0202E: Aucun participant avec l'ID {1} n'a \u00e9t\u00e9 trouv\u00e9 pour la transaction {0}.
+NO_WSAT_PART_CWLIB0202.explanation=Un participant de transaction correspondant \u00e0 l'ID demand\u00e9 n'a pas \u00e9t\u00e9 trouv\u00e9 dans le cadre de la transaction globale.
+NO_WSAT_PART_CWLIB0202.useraction=Pour plus de d\u00e9tails sur l'erreur, consultez les fichiers journaux.
+
+WSAT_TRAN_EXPIRED_CWLIB0203=CWLIB0203E: Le d\u00e9lai de transaction est arriv\u00e9 \u00e0 expiration. 
+WSAT_TRAN_EXPIRED_CWLIB0203.explanation=Le d\u00e9lai de transaction est arriv\u00e9 \u00e0 expiration et la transaction a \u00e9t\u00e9 annul\u00e9e.
+WSAT_TRAN_EXPIRED_CWLIB0203.useraction=Pour plus de d\u00e9tails sur l'erreur, consultez les fichiers journaux.
+
+WEB_SERVICE_ERROR_CWLIB0204=CWLIB0204E: Impossible d'appeler le service Web de protocole. 
+WEB_SERVICE_ERROR_CWLIB0204.explanation=Une erreur s'est produite lors de l'appel des services Web syst\u00e8me.
+WEB_SERVICE_ERROR_CWLIB0204.useraction=Pour plus de d\u00e9tails sur l'erreur, consultez les fichiers journaux.
+
+TRAN_MGR_ERROR_CWLIB0205=CWLIB0205E: Erreur de traitement de transaction.
+TRAN_MGR_ERROR_CWLIB0205.explanation=Une erreur a \u00e9t\u00e9 re\u00e7ue lors du traitement de la fonction de transaction.
+TRAN_MGR_ERROR_CWLIB0205.useraction=Pour plus de d\u00e9tails sur l'erreur, consultez les fichiers journaux.
+
+WSAT_SECURITY_CWLIB0206=CWLIB0206I: Activer SSL {0} pour WS-AT.
+WSAT_SECURITY_CWLIB0206.explanation=WS-AT utilise une connexion SSL pour s\u00e9curiser la communication interne.
+WSAT_SECURITY_CWLIB0206.useraction=aucune.
+
+WSAT_PROXY_CWLIB0207=CWLIB0207I: Activer externalURLPrefix {0} pour WS-AT.
+WSAT_PROXY_CWLIB0207.explanation=WS-AT utilise un proxy pour la communication interne.
+WSAT_PROXY_CWLIB0207.useraction=aucune.
+
+UNABLE_TO_DESERIALIZE_CWLIB0208=CWLIB0208E: Impossible de d\u00e9s\u00e9rialiser la ressource de transaction.
+UNABLE_TO_DESERIALIZE_CWLIB0208.explanation=Une erreur s'est produite lors du traitement d'une ressource du gestionnaire de transactions.
+UNABLE_TO_DESERIALIZE_CWLIB0208.useraction=Pour plus de d\u00e9tails sur l'erreur, consultez les fichiers journaux.
+
+NO_SERVICE_ENDPOINT_CWLIB0209=CWLIB0209E: Impossible d'obtenir le noeud final du service syst\u00e8me.
+NO_SERVICE_ENDPOINT_CWLIB0209.explanation=Une erreur s'est produite lors de la tentative d'obtention du noeud final pour les services Web du syst\u00e8me. 
+NO_SERVICE_ENDPOINT_CWLIB0209.useraction=Pour plus de d\u00e9tails sur l'erreur, consultez les fichiers journaux.
+
+WSAT_PROXY_CWLIB0210=CWLIB0210W: L'adresse externalURLPrefix {0} pour WS-AT doit commencer par http(s)://
+WSAT_PROXY_CWLIB0210.explanation=L'adresse proxy pour WS-AT doit commencer par http(s)://
+WSAT_PROXY_CWLIB0210.useraction=Modifiez l'adresse externalURLPrefix pour qu'elle commence par http(s)://
+
+WSAT_PROXY_CWLIB0211=CWLIB0211W: L'adresse externalURLPrefix {0} pour WS-AT doit commencer par https:// lorsque SSL est activ\u00e9.
+WSAT_PROXY_CWLIB0211.explanation=L'adresse proxy pour WS-AT doit commencer par https:// lorsque SSL est activ\u00e9.
+WSAT_PROXY_CWLIB0211.useraction=Modifiez l'adresse externalURLPrefix pour qu'elle commence par https:// lorsque SSL est activ\u00e9.

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="com.ibm.ws.wsat_fat" default="buildandrun" basedir=".">
+    <mkdir dir="test-applications/wsatApp.war/resources/WEB-INF/classes/com/ibm/ws/test/client" />
+    <mkdir dir="test-applications/wsatApp.war/resources/WEB-INF/classes/com/ibm/ws/test/server" />
+    <mkdir dir="test-applications/wsatApp.war/resources/WEB-INF/classes/com/ibm/ws/test/servlet" />
+    <mkdir dir="test-applications/wsatApp.war/resources/WEB-INF/classes/com/ibm/ws/test/utils" />
+    <mkdir dir="test-applications/wsatApp.war/resources/WEB-INF/lib" />
+    <mkdir dir="test-applications/wsatAppOptional.war/resources/WEB-INF/classes/com/ibm/ws/test/client" />
+    <mkdir dir="test-applications/wsatAppOptional.war/resources/WEB-INF/classes/com/ibm/ws/test/server" />
+    <mkdir dir="test-applications/wsatAppOptional.war/resources/WEB-INF/classes/com/ibm/ws/test/servlet" />
+    <mkdir dir="test-applications/wsatAppOptional.war/resources/WEB-INF/classes/com/ibm/ws/test/utils" />
+    <mkdir dir="test-applications/wsatAppOptional.war/resources/WEB-INF/lib" />
+    <mkdir dir="test-applications/wsatAppService.war/resources/WEB-INF/classes/com/ibm/ws/test/client" />
+    <mkdir dir="test-applications/wsatAppService.war/resources/WEB-INF/classes/com/ibm/ws/test/server" />
+    <mkdir dir="test-applications/wsatAppService.war/resources/WEB-INF/classes/com/ibm/ws/test/servlet" />
+    <mkdir dir="test-applications/wsatAppService.war/resources/WEB-INF/classes/com/ibm/ws/test/utils" />
+    <mkdir dir="test-applications/wsatAppService.war/resources/WEB-INF/lib" />
+    <mkdir dir="test-applications/wsatAppServiceOptional.war/resources/WEB-INF/classes/com/ibm/ws/test/client" />
+    <mkdir dir="test-applications/wsatAppServiceOptional.war/resources/WEB-INF/classes/com/ibm/ws/test/server" />
+    <mkdir dir="test-applications/wsatAppServiceOptional.war/resources/WEB-INF/classes/com/ibm/ws/test/servlet" />
+    <mkdir dir="test-applications/wsatAppServiceOptional.war/resources/WEB-INF/classes/com/ibm/ws/test/utils" />
+    <mkdir dir="test-applications/wsatAppServiceOptional.war/resources/WEB-INF/lib" />
+    <mkdir dir="test-applications/wsatAppWithoutAssertion.war/resources/WEB-INF/lib" />
+	<import file="../ant_build/public_imports/fat_imports.xml" />
+	<property name="build.with.java.level" value="1.7"/>
+    <property name="tested.features" value="servlet-4.0,wsAtomicTransaction-1.2"/>
+    
+    <property name="features.dir" value="${basedir}/override/autoFVT/publish/features" />    
+    <property name="bundles.dir" value="${basedir}/override/autoFVT/publish/bundles" />    
+	<property name="project.compile.use.classpath.source" value="true"/>  
+	<property name="fattest.timeout" value="14400000"/>  
+	
+    <!-- Temporary code: require Java7 for this feature -->
+    <property name="minimum.java.level.for.test.execution" value="1.7"/>
+	<property name="unittest.endorsed" value="${basedir}/build/endorsed/lib/"/>
+
+	<target name="pre-build">
+		<timestampselector property="annotation.jar">
+			<path id="annotation.jar.path">
+				<fileset dir="${basedir}/../build.image/wlp/dev/api/spec" includes="com.ibm.websphere.javaee.jaxws.2.2_*.jar"/>
+			</path>
+		</timestampselector>
+		<property name="annotation.jar" refid="annotation.jar.path"/>
+		<delete dir="${basedir}/build/endorsed/lib"/>
+		<mkdir dir="${basedir}/build/endorsed/lib"/>
+		<copy todir="${basedir}/build/endorsed/lib" file="${annotation.jar}"/>
+	</target>
+
+	<target name="clean" depends="test.build.common.clean">
+	    <dirset id="server.dirs" dir="${basedir}/publish/servers" erroronmissingdir="false">
+      		<include name="*"/>
+    	</dirset>
+
+    	<foreach param="server.dir" in="server.dirs">
+			<delete dir="${server.dir}/derby"/>
+    	</foreach>
+    	
+    	<delete dir="${basedir}/override"/>
+    	<delete dir="${basedir}/publish/bundles"/>
+	</target>
+
+	<target name="addRequiredLibraries"> 
+	    <dirset id="server.dirs" dir="${basedir}/publish/servers" erroronmissingdir="false">
+      		<include name="*"/>
+    	</dirset>
+
+    	<foreach param="server.dir" in="server.dirs">
+			<mkdir dir="${server.dir}/derby"/>
+			<copy file="${derbyDriver}" toDir="${server.dir}/derby"/>
+    	</foreach>
+	</target>
+<!--
+	<target name="addRequiredBundles">
+		<mkdir dir="${bundles.dir}"/>
+		<copy file="${basedir}/../com.ibm.ws.transaction.test.util/build/lib/com.ibm.ws.transaction.test.util_1.0.jar" toDir="${bundles.dir}"/>
+	</target>
+
+	<target name="addRequiredFiles">
+		<mkdir dir="${features.dir}"/>
+		<copy file="${basedir}/../com.ibm.ws.transaction.test.util/publish/features/txtest-1.0.mf" toDir="${features.dir}"/>
+	</target>
+-->
+</project>
