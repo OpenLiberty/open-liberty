@@ -14,10 +14,12 @@ import java.lang.reflect.Method;
 
 import org.eclipse.microprofile.faulttolerance.Asynchronous;
 import org.eclipse.microprofile.faulttolerance.CircuitBreaker;
+import org.eclipse.microprofile.faulttolerance.Fallback;
 
 import com.ibm.ws.microprofile.faulttolerance.cdi.config.AnnotationConfigFactory;
 import com.ibm.ws.microprofile.faulttolerance.cdi.config.AsynchronousConfig;
 import com.ibm.ws.microprofile.faulttolerance.cdi.config.CircuitBreakerConfig;
+import com.ibm.ws.microprofile.faulttolerance.cdi.config.FallbackConfig;
 
 /**
  * Factory for creating annotation config for FT 2.0
@@ -48,6 +50,18 @@ public class AnnotationConfigFactoryImpl20 implements AnnotationConfigFactory {
     @Override
     public CircuitBreakerConfig createCircuitBreakerConfig(Class<?> annotatedClass, CircuitBreaker annotation) {
         return new CircuitBreakerConfigImpl(annotatedClass, annotation);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public FallbackConfig createFallbackConfig(Method annotatedMethod, Class<?> annotatedClass, Fallback annotation) {
+        return new FallbackConfigImpl(annotatedMethod, annotatedClass, annotation);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public FallbackConfig createFallbackConfig(Class<?> annotatedClass, Fallback annotation) {
+        return new FallbackConfigImpl(annotatedClass, annotation);
     }
 
 }
