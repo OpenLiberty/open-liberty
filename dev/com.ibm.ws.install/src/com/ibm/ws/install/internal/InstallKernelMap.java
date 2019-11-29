@@ -272,12 +272,9 @@ public class InstallKernelMap implements Map {
             return getMonitorSize();
         } else if (DOWNLOAD_RESULT.equals(key)) {
             Boolean downloadSingleArtifact = (Boolean) data.get(DOWNLOAD_INDIVIDUAL_ARTIFACT);
-            String downloadLocation = (String) data.get(DOWNLOAD_LOCATION);
 
-            if (downloadLocation != null) {
+            if (downloadSingleArtifact != null && downloadSingleArtifact) {
                 return downloadArtifact();
-            } else if (downloadSingleArtifact != null && downloadSingleArtifact) {
-                return downloadSingleFeature();
             } else {
                 return downloadEsas();
             }
