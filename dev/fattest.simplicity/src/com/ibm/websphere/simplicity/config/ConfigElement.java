@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.websphere.simplicity.config;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -129,7 +130,15 @@ public class ConfigElement implements Cloneable {
 
     @Override
     public Object clone() throws CloneNotSupportedException {
-        return super.clone();
+        ConfigElement clone = (ConfigElement) super.clone();
+        if (extraAttributes != null) {
+            clone.extraAttributes = new HashMap<QName, Object>();
+            clone.extraAttributes.putAll(extraAttributes);
+        }
+        if (extraElements != null) {
+            clone.extraElements = new ArrayList<Element>(extraElements);
+        }
+        return clone;
     }
 
     @Override
