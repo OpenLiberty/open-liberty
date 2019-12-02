@@ -416,9 +416,9 @@ public class H2InboundLink extends HttpInboundLink {
                     Tr.debug(tc, "highestLocalStreamId set to stream-id: " + proposedHighestStreamId);
                 }
             } else if (proposedHighestStreamId < highestLocalStreamId) {
-                throw new ProtocolException("received a new stream with a lower ID than previous; "
-                                            + "current stream-id: " + proposedHighestStreamId + " highest stream-id: "
-                                            + highestLocalStreamId);
+                // throw new ProtocolException("received a new stream with a lower ID than previous; "
+                //                             + "current stream-id: " + proposedHighestStreamId + " highest stream-id: "
+                //                             + highestLocalStreamId);
             }
         } else {
             if (proposedHighestStreamId > highestClientStreamId) {
@@ -427,9 +427,9 @@ public class H2InboundLink extends HttpInboundLink {
                     Tr.debug(tc, "highestClientStreamId set to stream-id: " + proposedHighestStreamId);
                 }
             } else if (proposedHighestStreamId < highestClientStreamId) {
-                throw new ProtocolException("received a new stream with a lower ID than previous; "
-                                            + "current stream-id: " + proposedHighestStreamId + " highest stream-id: "
-                                            + highestClientStreamId);
+                // throw new ProtocolException("received a new stream with a lower ID than previous; "
+                //                             + "current stream-id: " + proposedHighestStreamId + " highest stream-id: "
+                //                             + highestClientStreamId);
             }
         }
     }
