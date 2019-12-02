@@ -74,6 +74,9 @@ public enum FeatureAction implements ActionDefinition {
             	System.out.println(NLS.getMessage("unknown.options", args.getAction(), "--verbose=" + verboseLevel));
                 FeatureAction.help.handleTask(new ArgumentsImpl(new String[] { "help", FeatureAction.getEnum(args.getAction()).toString() }));
             	return ReturnCode.BAD_ARGUMENT;
+            } else if (args.getPositionalArguments().isEmpty()){
+                FeatureAction.help.handleTask(new ArgumentsImpl(new String[] { "help", FeatureAction.getEnum(args.getAction()).toString() }));
+                return ReturnCode.BAD_ARGUMENT;
             }
             ((InstallKernelImpl) installKernel).enableConsoleLog(logLevel);
             return action.handleTask(System.out, System.err, args);

@@ -49,7 +49,7 @@ public class InstallServerTest extends FeatureUtilityToolTest {
         assertEquals("Exit code should be 0",0, po.getReturnCode());
         String output = po.getStdout();
 
-        String noFeaturesMessage = InstallLogUtils.Messages.INSTALL_KERNEL_MESSAGES.getMessage("MSG_SERVER_NEW_FEATURES_NOT_REQUIRED");
+        String noFeaturesMessage = "The server does not require any additional features.";
         assertTrue("No features should be installed", output.indexOf(noFeaturesMessage) >= 0);
 
         Log.exiting(c, METHOD_NAME);

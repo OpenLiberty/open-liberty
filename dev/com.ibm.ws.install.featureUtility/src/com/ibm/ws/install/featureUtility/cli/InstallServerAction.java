@@ -25,6 +25,7 @@ import com.ibm.ws.kernel.boot.ReturnCode;
 import com.ibm.ws.kernel.boot.cmdline.ActionHandler;
 import com.ibm.ws.kernel.boot.cmdline.Arguments;
 import com.ibm.ws.kernel.boot.cmdline.ExitCode;
+import com.ibm.ws.kernel.feature.internal.cmdline.ArgumentsImpl;
 import com.ibm.ws.kernel.provisioning.BundleRepositoryRegistry;
 import com.ibm.ws.product.utility.CommandConsole;
 import com.ibm.ws.product.utility.CommandTaskRegistry;
@@ -46,6 +47,10 @@ public class InstallServerAction implements ActionHandler {
 
 
         @Override public ExitCode handleTask(PrintStream stdout, PrintStream stderr, Arguments args) {
+                if(args.getPositionalArguments().isEmpty()){
+                        FeatureAction.help.handleTask(new ArgumentsImpl(new String[] { "help", FeatureAction.getEnum(args.getAction()).toString() }));
+                        return ReturnCode.BAD_ARGUMENT;
+                }
                 ExitCode rc = initialize(args);
                 if (!!!rc.equals(ReturnCode.OK)) {
                         return rc;

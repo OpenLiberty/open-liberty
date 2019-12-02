@@ -154,6 +154,15 @@ public class FeatureUtility {
 
     }
 
+    /**
+     * Return a hashmap that divides the group id's and artifact id's from a list of features.
+     * In the hashmap, the "jsons" key refers to the group ids and the "features" key refers to the 
+     * artifact ids.
+     * @param featureNames a list of feature shortnames or maven coordinates
+     * @return hashmap with group ids and artifact ids seperated
+     * @throws IOException
+     * @throws InstallException
+     */
     private Map<String, Set<String>> getJsonsAndFeatures(List<String> featureNames)
                     throws IOException, InstallException {
         Map<String, Set<String>> jsonsAndFeatures = new HashMap<>();
@@ -169,30 +178,33 @@ public class FeatureUtility {
             version = null;
             packaging = null;
             String[] mavenCoords = feature.split(":");
-            if (mavenCoords.length == 1) {
-                // simply feature shortname, add to open liberty group id
-                groupId = "io.openliberty.features";
-                artifactId = mavenCoords[0];
-                version = openLibertyVersion;
-                packaging = "esa";
-                verifyMavenCoordinate(feature, groupId, artifactId, version, packaging);
-            } else if (mavenCoords.length == 2) { // groupId:artifactId
-                groupId = mavenCoords[0];
-                artifactId = mavenCoords[1];
-                version = openLibertyVersion;
-                packaging = "esa";
-            } else if (mavenCoords.length == 3) { // groupId:artifactId:version
-                groupId = mavenCoords[0];
-                artifactId = mavenCoords[1];
-                version = mavenCoords[2];
-                packaging = "esa";
-            } else if(mavenCoords.length == 4){ // groupId:artifactId:version:packaging
-                groupId = mavenCoords[0];
-                artifactId = mavenCoords[1];
-                version = mavenCoords[2];
-                packaging = mavenCoords[3];
-            } else { // unsupported maven coordinate format.
-                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_MAVEN_COORDINATE_INVALID", feature));
+            switch(mavenCoords.length){
+                case 1: // artifactId
+                    groupId = "io.openliberty.features";
+                    artifactId = mavenCoords[0];
+                    version = openLibertyVersion;
+                    packaging = "esa";
+                    break;
+                case 2: // groupId:artifactId
+                    groupId = mavenCoords[0];
+                    artifactId = mavenCoords[1];
+                    version = openLibertyVersion;
+                    packaging = "esa";
+                    break;
+                case 3: // groupId:artifactId:version
+                    groupId = mavenCoords[0];
+                    artifactId = mavenCoords[1];
+                    version = mavenCoords[2];
+                    packaging = "esa";
+                    break;
+                case 4: // groupId:artifactId:version:packaging
+                    groupId = mavenCoords[0];
+                    artifactId = mavenCoords[1];
+                    version = mavenCoords[2];
+                    packaging = mavenCoords[3];
+                    break;
+                default:
+                    throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_MAVEN_COORDINATE_INVALID", feature));
             }
             verifyMavenCoordinate(feature, groupId, artifactId, version, packaging);
             jsonsRequired.add(groupId);
@@ -206,7 +218,13 @@ public class FeatureUtility {
     }
 
     private void verifyMavenCoordinate(String feature, String groupId, String artifactId, String version, String packaging) throws IOException, InstallException {
+        // check for any empty parameters
+        if(groupId.isEmpty() || artifactId.isEmpty() || version.isEmpty() || packaging.isEmpty()){
+            throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_MAVEN_COORDINATE_INVALID", feature));
+        }
+
         String openLibertyVersion = getLibertyVersion();
+        logger.info("The open liberty version is: " +openLibertyVersion);
         if (!version.equals(openLibertyVersion)) {
             throw new InstallException(
                             Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_MAVEN_COORDINATE_WRONG_VERSION", feature, openLibertyVersion));
