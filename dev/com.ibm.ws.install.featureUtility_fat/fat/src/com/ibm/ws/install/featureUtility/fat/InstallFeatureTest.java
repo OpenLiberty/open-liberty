@@ -175,7 +175,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         ProgramOutput po = runFeatureUtility(methodName, param1s);
         assertEquals("Group ID does not exist", 21, po.getReturnCode());
         String output = po.getStdout();
-        assertTrue("Msg contains CWWKF1285E", output.indexOf("CWWKF1285E") >=0);
+        assertTrue("Msg contains CWWKF1402E", output.indexOf("CWWKF1402E") >=0);
          // TODO change this message in FeatureUtility
 
     }

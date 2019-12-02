@@ -224,7 +224,6 @@ public class FeatureUtility {
         }
 
         String openLibertyVersion = getLibertyVersion();
-        logger.info("The open liberty version is: " +openLibertyVersion);
         if (!version.equals(openLibertyVersion)) {
             throw new InstallException(
                             Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_MAVEN_COORDINATE_WRONG_VERSION", feature, openLibertyVersion));
