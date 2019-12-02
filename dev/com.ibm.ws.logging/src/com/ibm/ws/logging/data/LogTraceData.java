@@ -54,7 +54,8 @@ public class LogTraceData extends GenericData {
                                               LogFieldConstants.OBJECT_ID,
                                               LogFieldConstants.HOST,
                                               LogFieldConstants.IBM_USERDIR,
-                                              LogFieldConstants.IBM_SERVERNAME
+                                              LogFieldConstants.IBM_SERVERNAME,
+                                              LogFieldConstants.TYPE
     };
 
     private final static String[] NAMES = {

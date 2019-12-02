@@ -55,7 +55,8 @@ public class FFDCData extends GenericData {
                                               LogFieldConstants.IBM_SEQUENCE,
                                               LogFieldConstants.HOST,
                                               LogFieldConstants.IBM_USERDIR,
-                                              LogFieldConstants.IBM_SERVERNAME
+                                              LogFieldConstants.IBM_SERVERNAME,
+                                              LogFieldConstants.TYPE
     };
 
     private static NameAliases jsonLoggingNameAliases = new NameAliases(NAMES1_1);

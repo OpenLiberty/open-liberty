@@ -36,7 +36,8 @@ public class GCData extends GenericData {
                                               LogFieldConstants.IBM_GC_TYPE,
                                               LogFieldConstants.IBM_REASON,
                                               LogFieldConstants.IBM_DATETIME,
-                                              LogFieldConstants.IBM_SEQUENCE
+                                              LogFieldConstants.IBM_SEQUENCE,
+                                              LogFieldConstants.TYPE
     };
 
     public GCData() {

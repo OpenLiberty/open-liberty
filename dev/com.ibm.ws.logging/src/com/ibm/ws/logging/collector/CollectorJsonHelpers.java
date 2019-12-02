@@ -523,7 +523,6 @@ public class CollectorJsonHelpers {
         if (!BaseTraceService.getOmitFieldsMap().isEmpty() || BaseTraceService.getIsServerConfigUpdate()) {
             startAuditJsonFields = null;
         }
-
         if (startAuditJsonFields != null) {
             sb.append(startAuditJsonFields);
         } else {
@@ -545,7 +544,6 @@ public class CollectorJsonHelpers {
         if (!BaseTraceService.getOmitFieldsMap().isEmpty() || BaseTraceService.getIsServerConfigUpdate()) {
             startMessageJsonFields = null;
         }
-
         if (startMessageJsonFields != null) {
             sb.append(startMessageJsonFields);
         } else {
@@ -554,7 +552,6 @@ public class CollectorJsonHelpers {
                   BaseTraceService.getOmitFieldsMap().get(CollectorConstants.MESSAGES_CONFIG_VAL).contains("type"))) {
                 sb.append(MESSAGE_JSON_TYPE_FIELD);
             }
-            //System.out.println("start sb: " + sb.toString());
             addUnchangingFieldsJSON_Message(sb, hostName, wlpUserDir, serverName, true);
 
             startMessageJsonFields = sb.toString();
@@ -569,7 +566,6 @@ public class CollectorJsonHelpers {
         if (!BaseTraceService.getOmitFieldsMap().isEmpty() || BaseTraceService.getIsServerConfigUpdate()) {
             startTraceJsonFields = null;
         }
-
         if (startTraceJsonFields != null) {
             sb.append(startTraceJsonFields);
         } else {
@@ -592,7 +588,6 @@ public class CollectorJsonHelpers {
         if (!BaseTraceService.getOmitFieldsMap().isEmpty() || BaseTraceService.getIsServerConfigUpdate()) {
             startFFDCJsonFields = null;
         }
-
         if (startFFDCJsonFields != null) {
             sb.append(startFFDCJsonFields);
         } else {
@@ -615,7 +610,6 @@ public class CollectorJsonHelpers {
         if (!BaseTraceService.getOmitFieldsMap().isEmpty() || BaseTraceService.getIsServerConfigUpdate()) {
             startAccessLogJsonFields = null;
         }
-
         if (startAccessLogJsonFields != null) {
             sb.append(startAccessLogJsonFields);
         } else {

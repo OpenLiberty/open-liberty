@@ -507,14 +507,15 @@ public class BaseTraceService implements TrService {
 
             if (pair.trim().endsWith(":")) { //FIND FIELDS THAT NEED TO BE OMITTED
                 Set<String> omitFieldsSet = new HashSet<>();
-
                 if (entry.length == 1) { //omit fields for all event types (just a field name)
                     omitFieldsSet.add(entry[0]);
+
                     if (LogTraceList.contains(entry[0])) {
                         valueFound = true;
                         if (omitFieldsMap.containsKey(CollectorConstants.MESSAGES_CONFIG_VAL)) {
                             omitFieldsMap.get(CollectorConstants.MESSAGES_CONFIG_VAL).add(entry[0]);
                         } else if (!omitFieldsMap.containsKey(CollectorConstants.MESSAGES_CONFIG_VAL)) {
+                            System.out.print("putting into map");
                             omitFieldsMap.put(CollectorConstants.MESSAGES_CONFIG_VAL, omitFieldsSet);
                         }
                         if (omitFieldsMap.containsKey(CollectorConstants.TRACE_CONFIG_VAL)) {
