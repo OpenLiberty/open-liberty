@@ -12,12 +12,12 @@ package com.ibm.ws.jdbc.fat.oracle;
 
 import java.util.Collections;
 
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.testcontainers.containers.OracleContainer;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ConfigElementList;
@@ -26,7 +26,6 @@ import com.ibm.websphere.simplicity.config.DataSource;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.dsprops.Properties_oracle_ucp;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
@@ -37,11 +36,14 @@ import componenttest.topology.utils.FATServletClient;
 import ucp.web.OracleUCPTestServlet;
 
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 8)
 public class OracleUCPTest extends FATServletClient {
 
     public static final String JEE_APP = "oracleucpfat";
     public static final String SERVLET_NAME = "OracleUCPTestServlet";
+    
+    //TODO replace this container with the official oracle-xe container if/when it is available without a license
+    @ClassRule
+    public static OracleContainer oracle = new OracleContainer("oracleinanutshell/oracle-xe-11g");
 
     @Server("com.ibm.ws.jdbc.fat.oracle.ucp")
     @TestServlet(servlet = OracleUCPTestServlet.class, path = JEE_APP + "/" + SERVLET_NAME)
@@ -49,15 +51,18 @@ public class OracleUCPTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        FATSuite.dbCluster.addConfigTo(server);
+    	// Set server environment variables
+        server.addEnvVar("URL", oracle.getJdbcUrl());
+        server.addEnvVar("USER", oracle.getUsername());
+        server.addEnvVar("PASSWORD", oracle.getPassword());
+        
+    	// Create a normal Java EE application and export to server
+    	ShrinkHelper.defaultApp(server, JEE_APP, "ucp.web");
 
-        // Create a normal Java EE application and export to server
-        WebArchive app = ShrinkWrap.create(WebArchive.class, JEE_APP + ".war").addPackages(true, "ucp.web");
-        ShrinkHelper.exportAppToServer(server, app);
-
-        server.addInstalledAppForValidation(JEE_APP);
+    	// Start Server
         server.startServer();
 
+        // Run initDatabseTables
         runTest(server, JEE_APP + '/' + SERVLET_NAME, "initDatabaseTables");
     }
 
@@ -66,8 +71,6 @@ public class OracleUCPTest extends FATServletClient {
         if (server.isStarted())
             server.stopServer("CWWKE0701E"); // CWWKE0701E expected in testOracleUCPConnectionPoolDS
     }
-
-    //Config Update Tests
 
     /**
      * Config update test which tests that a datasource configured initially to use the Liberty connection pool
@@ -90,9 +93,9 @@ public class OracleUCPTest extends FATServletClient {
         try {
             //update to UCP
             props.setMaxPoolSize("2");
-            props.setUser("${jdbc.user}");
-            props.setPassword("${jdbc.password}");
-            props.setURL("${jdbc.URL}");
+            props.setUser("${env.USER}");
+            props.setPassword("${env.PASSWORD}");
+            props.setURL("${env.URL}");
             props.setConnectionWaitTimeout("30");
 
             //Update config

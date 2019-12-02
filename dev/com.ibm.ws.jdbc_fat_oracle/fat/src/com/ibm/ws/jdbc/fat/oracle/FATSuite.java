@@ -10,14 +10,12 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.oracle;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
-import componenttest.topology.database.DatabaseCluster;
+import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -26,18 +24,7 @@ import componenttest.topology.database.DatabaseCluster;
                 OracleUCPTest.class
 })
 public class FATSuite {
-
-    public static DatabaseCluster dbCluster;
-
-    @BeforeClass
-    public static void setUp() throws Exception {
-        dbCluster = new DatabaseCluster();
-        dbCluster.createDatabase();
+    static {
+        ExternalTestServiceDockerClientStrategy.clearTestcontainersConfig();
     }
-
-    @AfterClass
-    public static void tearDown() throws Exception {
-        dbCluster.dropDatabase();
-    }
-
 }

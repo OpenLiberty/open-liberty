@@ -30,25 +30,25 @@ dependencies {
   ucp 'com.oracle.ojdbc:ucp:19.3.0.0'
 }
 
-task copySharedOracle(type: Copy) {
+task copyAnonymousOracle(type: Copy) {
   shouldRunAfter jar
   from configurations.oracle
   into new File(autoFvtDir, 'publish/shared/resources/oracle/')
+  rename "ojdbc8_g-.*.", "oracleunknown.jar"
+}
+
+task copySharedOracle(type: Copy) {
+  shouldRunAfter jar
+  from configurations.oracle
+  into new File(autoFvtDir, 'publish/shared/resources/ucp/')
   rename "ojdbc8_g-.*.", "ojdbc8_g.jar"
 }
 
 task copySharedUCP(type: Copy) {
   shouldRunAfter jar
   from configurations.ucp
-  into new File(autoFvtDir, 'publish/shared/resources/oracle/')
+  into new File(autoFvtDir, 'publish/shared/resources/ucp/')
   rename "ucp-.*.", "ucp.jar"
-}
-
-task copyAnonymousOracle(type: Copy) {
-  shouldRunAfter jar
-  from configurations.oracle
-  into new File(autoFvtDir, 'publish/shared/resources/oracle/')
-  rename "ojdbc8_g-.*.", "oracleunknown.jar"
 }
 
 addRequiredLibraries {

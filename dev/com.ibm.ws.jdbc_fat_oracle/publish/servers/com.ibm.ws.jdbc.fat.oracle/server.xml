@@ -23,38 +23,38 @@
     </application>
     
     <library id="DBLib">
-    	<fileset dir="${server.config.dir}/oracle"/>
+    	<fileset dir="${shared.resource.dir}/oracle"/>
     </library>
     
     <dataSource id="DefaultDataSource">
     	<jdbcDriver libraryRef="DBLib"/>
-    	<properties.oracle URL="${jdbc.URL}" user="${jdbc.user}" password="${jdbc.password}"/>
+    	<properties.oracle URL="${env.URL}" user="${env.USER}" password="${env.PASSWORD}"/>
     </dataSource>
 
     <dataSource id="casting-ds" jndiName="jdbc/casting-ds" enableConnectionCasting="true">
     	<jdbcDriver libraryRef="DBLib"/>
-    	<properties.oracle URL="${jdbc.URL}" user="${jdbc.user}" password="${jdbc.password}" roleName="TestRole"/>
+    	<properties.oracle URL="${env.URL}" user="${env.USER}" password="${env.PASSWORD}" roleName="TestRole"/>
     	<onConnect>UPDATE CONCOUNT SET NUMCONNECTIONS = NUMCONNECTIONS + 1</onConnect>
     	<onConnect>CREATE GLOBAL TEMPORARY TABLE ${TEMP_TABLE_NAME}(CURTIME NVARCHAR2(100)) ON COMMIT PRESERVE ROWS</onConnect>
     	<onConnect>INSERT INTO ${TEMP_TABLE_NAME} VALUES (CURRENT_TIMESTAMP)</onConnect>
     </dataSource>
     
     <dataSource id="driver-ds" jndiName="jdbc/driver-ds" type="java.sql.Driver">
-    	<properties.oracle URL="${jdbc.URL}" user="${jdbc.user}" password="${jdbc.password}"/>
+    	<properties.oracle URL="${env.URL}" user="${env.USER}" password="${env.PASSWORD}"/>
     	<jdbcDriver libraryRef="DBLib"/>
     </dataSource>
     
     <dataSource id="generic-driver-ds" jndiName="jdbc/generic-driver-ds">
-    	<properties URL="${jdbc.URL}" user="${jdbc.user}" password="${jdbc.password}"/>
+    	<properties URL="${env.URL}" user="${env.USER}" password="${env.PASSWORD}"/>
     	<jdbcDriver libraryRef="DBLib"/>
     </dataSource>
     
     <dataSource id="inferred-ds" jndiName="jdbc/inferred-ds">
-    	<properties databaseName="${jdbc.databaseName}" portNumber="${jdbc.portNumber}" serverName="${jdbc.serverName}" user="${jdbc.user}" password="${jdbc.password}" driverType="thin"/>
+    	<properties databaseName="${env.DBNAME}" portNumber="${env.PORT}" serverName="${env.HOST}" user="${env.USER}" password="${env.PASSWORD}" driverType="thin"/>
     	<jdbcDriver libraryRef="DBLib"/>
     </dataSource>
     
-    <javaPermission codebase="${server.config.dir}oracle/oracleunknown.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${shared.resource.dir}/oracle/oracleunknown.jar" className="java.security.AllPermission"/>
     <javaPermission codebase="${server.config.dir}/apps/oraclejdbcfat.war" className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
 
     <variable name="TEMP_TABLE_NAME" value="TEMP1"/>

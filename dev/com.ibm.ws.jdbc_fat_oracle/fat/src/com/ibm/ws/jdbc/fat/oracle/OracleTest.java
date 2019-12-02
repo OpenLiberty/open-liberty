@@ -10,15 +10,14 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.oracle;
 
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
+import org.testcontainers.containers.OracleContainer;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
@@ -27,11 +26,14 @@ import componenttest.topology.utils.FATServletClient;
 import web.OracleTestServlet;
 
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 8)
 public class OracleTest extends FATServletClient {
 
     public static final String JEE_APP = "oraclejdbcfat";
     public static final String SERVLET_NAME = "OracleTestServlet";
+
+    //TODO replace this container with the official oracle-xe container if/when it is available without a license
+    @ClassRule
+    public static OracleContainer oracle = new OracleContainer("oracleinanutshell/oracle-xe-11g");
 
     @Server("com.ibm.ws.jdbc.fat.oracle")
     @TestServlet(servlet = OracleTestServlet.class, path = JEE_APP + "/" + SERVLET_NAME)
@@ -39,15 +41,21 @@ public class OracleTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        FATSuite.dbCluster.addConfigTo(server);
+    	// Set server environment variables
+        server.addEnvVar("URL", oracle.getJdbcUrl());
+        server.addEnvVar("USER", oracle.getUsername());
+        server.addEnvVar("PASSWORD", oracle.getPassword());
+        server.addEnvVar("DBNAME", "XE");
+        server.addEnvVar("PORT", Integer.toString(oracle.getFirstMappedPort()));
+        server.addEnvVar("HOST", oracle.getContainerIpAddress());
 
-        // Create a normal Java EE application and export to server
-        WebArchive app = ShrinkWrap.create(WebArchive.class, JEE_APP + ".war").addPackages(true, "web");
-        ShrinkHelper.exportAppToServer(server, app);
+    	// Create a normal Java EE application and export to server
+    	ShrinkHelper.defaultApp(server, JEE_APP, "web");
 
-        server.addInstalledAppForValidation(JEE_APP);
+    	// Start Server
         server.startServer();
 
+        // Run initDatabseTables
         runTest(server, JEE_APP + '/' + SERVLET_NAME, "initDatabaseTables");
     }
 

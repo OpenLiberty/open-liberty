@@ -50,13 +50,13 @@ import oracle.ucp.jdbc.PoolXADataSource;
                                  @DataSourceDefinition(
                                                        name = "java:comp/env/jdbc/dsdUCPDS",
                                                        className = "oracle.ucp.jdbc.PoolDataSourceImpl",
-                                                       url = "${jdbc.URL}",
+                                                       url = "${env.URL}",
                                                        isolationLevel = Connection.TRANSACTION_SERIALIZABLE,
                                                        maxIdleTime = 30,
                                                        minPoolSize = 1,
                                                        initialPoolSize = 1, //This property should be allowed when using UCP
-                                                       user = "${jdbc.user}",
-                                                       password = "${jdbc.password}",
+                                                       user = "${env.USER}",
+                                                       password = "${env.PASSWORD}",
                                                        maxPoolSize = 3,
                                                        maxStatements = 9,
                                                        properties = {
@@ -68,10 +68,10 @@ import oracle.ucp.jdbc.PoolXADataSource;
                                  @DataSourceDefinition(
                                                        name = "java:comp/env/jdbc/dsdXAUCPDS",
                                                        className = "oracle.ucp.jdbc.PoolXADataSourceImpl",
-                                                       url = "${jdbc.URL}",
+                                                       url = "${env.URL}",
                                                        initialPoolSize = 1,
-                                                       user = "${jdbc.user}",
-                                                       password = "${jdbc.password}",
+                                                       user = "${env.USER}",
+                                                       password = "${env.PASSWORD}",
                                                        maxStatements = 10,
                                                        properties = {
                                                                       "validationTimeout=30"
