@@ -106,8 +106,14 @@
 			width: 100%;
 			max-width: 1150px;
 			margin: 0 auto;
+			display: -webkit-box;
+			display: -moz-box;
+			display: -webkit-flex;
+			display: -ms-flexbox;
 			display: flex;
-			flex-wrap: wrap;
+  			-webkit-flex-wrap: wrap;
+			-ms-flex-wrap: wrap;
+  			flex-wrap: wrap;
 		}
 
 		.column {
@@ -116,6 +122,8 @@
 
 		@media (min-width: 767px) {
 			.row {
+  				-webkit-flex-wrap: nowrap;
+				-ms-flex-wrap: none;
 				flex-wrap: nowrap;
 			}
 			
@@ -236,7 +244,7 @@
 		}
 
 		#inner-hero__open_source {
-			color: #c8d2d2;
+			color: #ffffff;
 			float: right;
 			position: relative;
 			top: -39px;
@@ -339,6 +347,12 @@
 		}
 
 		.resources .row {
+			-webkit-box-direction: normal;
+			-webkit-box-orient: vertical;
+			-moz-box-direction: normal;
+			-moz-box-orient: vertical;
+			-webkit-flex-direction: column;
+  			-ms-flex-direction: column;
 			flex-direction: column;
 			padding: 0px 20px;
 		}
@@ -382,6 +396,12 @@
 
 		@media (min-width: 320px) {
 			.resources .row {
+				-webkit-box-direction: normal;
+				-webkit-box-orient: horizontal;
+				-moz-box-direction: normal;
+				-moz-box-orient: horizontal;
+				-webkit-flex-direction: row;
+				-ms-flex-direction: row;
 				flex-direction: row;
 				padding: 0px;
 			}
@@ -458,13 +478,25 @@
 
 		.logos .row {
 			justify-content: center;
+			-webkit-box-direction: normal;
+			-webkit-box-orient: vertical;
+			-moz-box-direction: normal;
+			-moz-box-orient: vertical;
+			-webkit-flex-direction: column;
+  			-ms-flex-direction: column;
 			flex-direction: column;
 			padding: 0px 20px;
 		}
 
 		@media (min-width: 992px) {
 			.logos .row {
-				flex-direction: row;
+				-webkit-box-direction: normal;
+				-webkit-box-orient: horizontal;
+				-moz-box-direction: normal;
+				-moz-box-orient: horizontal;
+				-webkit-flex-direction: row;
+				-ms-flex-direction: row;
+				flex-direction: row;			
 			}
 		}
 
@@ -554,8 +586,12 @@
 
 		@media (min-width: 600px) {
 			.footer__content {
+				display: -webkit-box;
+				display: -moz-box;
+				display: -webkit-flex;
+				display: -ms-flexbox;
 				display: flex;
-				align-items: center;
+  				align-items: center;
 				text-align: left;
 			}
 		}
@@ -597,6 +633,12 @@
 		@media (min-width: 600px) {
 			#update-banner {
 				height: 50px;
+				-webkit-box-direction: reverse;
+				-webkit-box-orient: horizontal;
+				-moz-box-direction: reverse;
+				-moz-box-orient: horizontal;
+				-webkit-flex-direction: row-reverse;
+  				-ms-flex-direction: row-reverse;
 				flex-direction: row-reverse;
 			}
 		}
@@ -604,8 +646,12 @@
 		#banner-container {
 			margin: 0;
 			position: relative;
+			display: -webkit-box;
+			display: -moz-box;
+			display: -webkit-flex;
+			display: -ms-flexbox;
 			display: flex;
-			align-items: center;
+  			align-items: center;
 			padding: 56px 40px 16px;
 		}
 
@@ -722,7 +768,7 @@
 				<div class="inner-hero__message row" data-externalizedAriaLabel="WELCOME_SECTION_CONTENT">
 					<div class="column">
 						<h3 data-externalizedString="WELCOME_MESSAGE"></h3>
-						<img id="inner-hero__title" src="/img/open_liberty_title.png">
+						<img id="inner-hero__title" src="/img/open_liberty_title.png" data-externalizedAlt="OPEN_LIBERTY">
 						<p id="inner-hero__open_source" data-externalizedString="WELCOME_IBM_OPEN_SOURCE"></p>
 						<h2 id="inner-hero__subtitle" data-externalizedString="WELCOME_LIGHTWEIGHT"></h2>
 					</div>
@@ -740,7 +786,7 @@
 				<div class="resource">
 					<a href="https://openliberty.io/docs/" target="_blank" rel="noopener">
 						<img class="resource__logo" src="/img/open_liberty_logo.png" data-externalizedAlt="OL_SUPPORT">
-						<p data-externalizedString="OPEN_LIBERTY"></p>
+						<p data-externalizedString="DOCS"></p>
 					</a>
 				</div>
 				<div class="resource">
@@ -800,48 +846,48 @@
 	</footer>
 
 
-		<script type="text/javascript" src="js/externalize-string.js"></script>
-		<script type="text/javascript" src="js/banner.js"></script>
-		<!-- The call below attempts to get a latest release marker file from a specific location. -->
-		<!-- It's expected that the returned object will be a piece of JavaScript defining a       -->
-		<!-- variable called latestReleasedVersion that contains the following fields:             -->
-		<!-- version: The version number of the latest released product                            -->
-		<!-- availableAt: The URL where you can get the latest version (from a Web Browser)        -->
-		<!-- availableAtLabel: The label to show on the anchor tag                                 -->
-		<script type="text/javascript" src="https://openliberty.io/latestVersion.js"></script>
-		<script type="text/javascript" src="version.js"></script>
+	<script type="text/javascript" src="js/externalize-string.js"></script>
+	<script type="text/javascript" src="js/banner.js"></script>
+	<!-- The call below attempts to get a latest release marker file from a specific location. -->
+	<!-- It's expected that the returned object will be a piece of JavaScript defining a       -->
+	<!-- variable called latestReleasedVersion that contains the following fields:             -->
+	<!-- version: The version number of the latest released product                            -->
+	<!-- availableAt: The URL where you can get the latest version (from a Web Browser)        -->
+	<!-- availableAtLabel: The label to show on the anchor tag                                 -->
+	<script type="text/javascript" src="https://openliberty.io/latestVersion.js"></script>
+	<script type="text/javascript" src="version.js"></script>
 
-		<script type="text/javascript">
-		    //replace all externalized strings with nls
-		    retrieveExternalizedStrings();
+	<script type="text/javascript">
+		//replace all externalized strings with nls
+		retrieveExternalizedStrings();
 
-			var urlForCssEnhancements = "banner-welcome.css";
-			var isLibertyUpdateAvailable = false;
-			function doVersionCheck(latestVersion) {
-				// Check that the remote file was located
-				// and contains the required version details
-				if (latestVersion != null && latestVersion.productName != null
-						&& latestVersion.availableFrom != null
-						&& latestVersion.version != null) {
+		var urlForCssEnhancements = "banner-welcome.css";
+		var isLibertyUpdateAvailable = false;
+		function doVersionCheck(latestVersion) {
+			// Check that the remote file was located
+			// and contains the required version details
+			if (latestVersion != null && latestVersion.productName != null
+					&& latestVersion.availableFrom != null
+					&& latestVersion.version != null) {
 
-					// Check if the online version differs from this current version
-					if (latestVersion.version != current.version) {
-						isLibertyUpdateAvailable = true;
-					}
+				// Check if the online version differs from this current version
+				if (latestVersion.version != current.version) {
+					isLibertyUpdateAvailable = true;
 				}
 			}
-			doVersionCheck(latestReleasedVersion);
+		}
+		doVersionCheck(latestReleasedVersion);
 
-            var script = document.createElement('script');   
-            var nlsFile = "messages.js";
-            var languageCode = getLanguageCode();
-            nlsFile = (languageCode !== "en") ? "nls/" + languageCode + "/" + nlsFile : "nls/" + nlsFile;
-			
-            script.src = nlsFile;
-            document.getElementsByTagName('head')[0].appendChild(script);
-            script.onload = function() {
-                buildUpdateBanner(messages);
-            };
-		</script>
+		var script = document.createElement('script');
+		var nlsFile = "messages.js";
+		var languageCode = getLanguageCode();
+		nlsFile = (languageCode !== "en") ? "nls/" + languageCode + "/" + nlsFile : "nls/" + nlsFile;
+		
+		script.src = nlsFile;
+		document.getElementsByTagName('head')[0].appendChild(script);
+		script.onload = function() {
+			buildUpdateBanner(messages);
+		};
+	</script>
   </body>
 </html>

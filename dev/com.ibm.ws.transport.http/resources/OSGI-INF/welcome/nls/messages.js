@@ -2,9 +2,10 @@ var messages = {
     WELCOME_SECTION: "Welcome Section",
     WELCOME_SECTION_CONTENT: "Welcome Section Content",
     WELCOME_MESSAGE: "Welcome to ",
+    OPEN_LIBERTY: "Open Liberty", // Product name
     WELCOME_IBM_OPEN_SOURCE: "An IBM Open Source Project",
     WELCOME_LIGHTWEIGHT: "A lightweight open framework for building and running fast, efficient cloud-native Java microservices.",
-    UFO: "Ufo and beam",
+    UFO: "UFO and beam",
     CLOUDS: "Clouds",
     LOGOS_SECTION: "Logos Section",
     COMPATIBLE: "Open Liberty is a compatible implementation of:",
@@ -18,7 +19,7 @@ var messages = {
     STACK_OVERFLOW: "Stack Overflow logo",
     GROUPS_IO: "Groups.io logo",
     OL_SUPPORT: "Open Liberty logo",
-    OPEN_LIBERTY: "Docs", // Translate 'Documentation'
+    DOCS: "Docs", // Translate 'Documentation'
     COPYRIGHT: "Copyright",
     OPEN_LIBERTY_FOOTER: "Liberty footer Logo",
     COPYRIGHT_OPEN_LIBERTY: "Licensed Materials — Property of the Open Liberty project, Copyright IBM Corp and others 1997, 2019. Project is distributed under the terms of the Eclipse Public License v1.", // COPYRIGHT_URL
