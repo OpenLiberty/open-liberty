@@ -28,7 +28,6 @@ Import-Package: \
 
 Export-Package: \
     com.ibm.ws.microprofile.metrics.cdi.decorator,\
-    com.ibm.ws.microprofile.metrics.cdi.resources,\
     com.ibm.ws.microprofile.metrics.cdi.binding
 
 WS-TraceGroup: METRICS

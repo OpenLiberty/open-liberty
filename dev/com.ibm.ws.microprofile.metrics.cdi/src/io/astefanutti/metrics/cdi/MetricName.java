@@ -43,7 +43,7 @@ import org.eclipse.microprofile.metrics.Timer;
 import org.eclipse.microprofile.metrics.annotation.Metric;
 
 @Dependent
-/* package-private */ class MetricName {
+public class MetricName {
 
     MetricName() {
     }
