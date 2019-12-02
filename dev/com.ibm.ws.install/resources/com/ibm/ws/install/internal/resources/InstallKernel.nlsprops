@@ -585,7 +585,7 @@ GENERAL_ASSET=asset
 
 MSG_INVALID_FOR_OS=The feature resource {0} is invalid for the current OS and will not be installed.
 
-MSG_SERVER_NEW_FEATURES_NOT_REQUIRED=The server does not require any additional features.  No features were installed.
+MSG_SERVER_NEW_FEATURES_NOT_REQUIRED=The server does not require any additional features. No features were installed.
 
 # Following are validation messages for viewSettings
 MSG_VALIDATION_EMPTY_KEY=The property name is not specified. Either specify a valid property name, or comment out the property if it is unused.
@@ -789,49 +789,55 @@ ERROR_FAILED_TO_CONNECT_MAVEN=CWWKF1390E: The configured Maven Repository cannot
 ERROR_FAILED_TO_CONNECT_MAVEN.explanation=An error occurred when connecting to the configured Maven Repository.
 ERROR_FAILED_TO_CONNECT_MAVEN.useraction=Ensure that the system can access the internet and the appropriate repository.
 
-ERROR_CHECKSUM_FAILED_MAVEN=CWWKF1391E: Failed to validate available checksums for file: {0}
+ERROR_CHECKSUM_FAILED_MAVEN=CWWKF1391E: The available checksums were not able to be validated for the {0} file.
 ERROR_CHECKSUM_FAILED_MAVEN.explanation=The checksum of the downloaded asset is not correct. The content of the downloaded asset is not the same as the content from the repository, so the asset cannot be installed.
-ERROR_CHECKSUM_FAILED_MAVEN.useraction=Run the command again. If the problem continues, see the problem determination information on the WebSphere Application Server Support web page: http://www.ibm.com/software/webservers/appserv/was/support.
+ERROR_CHECKSUM_FAILED_MAVEN.useraction=Run the command again.
 
-ERROR_INVALID_MAVEN_CREDENTIALS=CWWKF1392E:Incorrect credentials provided for the following repository: {0}
-ERROR_INVALID_MAVEN_CREDENTIALS.explanation=Failed to authenticate with the configured repository.
-ERROR_INVALID_MAVEN_CREDENTIALS.useraction=Please supply the correct credentials for the configured repository.
+ERROR_INVALID_MAVEN_CREDENTIALS=CWWKF1392E: Incorrect credentials were provided for the {0} repository.
+ERROR_INVALID_MAVEN_CREDENTIALS.explanation=The FEATURE_REPO_USER and FEATURE_REPO_PASSWORD credentials failed to authenticate with the configured repository.
+ERROR_INVALID_MAVEN_CREDENTIALS.useraction=Supply the correct credentials for the configured repository.
 
-ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_MAVEN_REPO=CWWKF1393E:Failed to download artifacts from the configured repository.
+ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_MAVEN_REPO=CWWKF1393E: The artifacts from the configured repository failed to download.
 ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_MAVEN_REPO.explanation=The specified asset was not downloaded from the specified repository because the repository does not contain a valid version of the asset.
 ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_MAVEN_REPO.useraction=Ensure that the repository contains the asset, and run the command again.
 
-ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE=CWWKF1394E: Could not determine the Liberty runtime version.
-ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE.explanation=The properties file {0} may be missing or corrupted.
-ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE.useraction=Ensure the properties file exists.
+ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE=CWWKF1394E: The Liberty runtime version was not able to be determined.
+ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE.explanation=The {0} properties file might be missing or corrupted.
+ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE.useraction=Ensure that the properties file exists.
 
-ERROR_MAVEN_COORDINATE_WRONG_VERSION=CWWKF1395E: Cannot install feature with Maven coordinate {0} onto a {1} Liberty runtime version.
+ERROR_MAVEN_COORDINATE_WRONG_VERSION=CWWKF1395E: The feature with a {0} Maven coordinate cannot be installed onto a {1} Liberty runtime version.
 ERROR_MAVEN_COORDINATE_WRONG_VERSION.explanation=The feature is incompatible with the Liberty runtime.
 ERROR_MAVEN_COORDINATE_WRONG_VERSION.useraction=Specify a valid version for the feature.
 
-ERROR_MAVEN_COORDINATE_WRONG_PACKAGING=CWWKF1396E: The packaging format in feature Maven coordinate {0} is invalid. The valid packaging format is esa.
+ERROR_MAVEN_COORDINATE_WRONG_PACKAGING=CWWKF1396E: The packaging format in feature Maven coordinate {0} is invalid. The valid packaging format is ESA.
 ERROR_MAVEN_COORDINATE_WRONG_PACKAGING.explanation=The feature is incompatible with the Liberty runtime.
-ERROR_MAVEN_COORDINATE_WRONG_PACKAGING.useraction=Specify "esa" for the packaging in the Maven coordinate.
+ERROR_MAVEN_COORDINATE_WRONG_PACKAGING.useraction=Specify ESA for the packaging in the Maven coordinate..
 
-ERROR_MAVEN_COORDINATE_INVALID=CWWKF1397E: Invalid maven coordinate provided: {0}
-ERROR_MAVEN_COORDINATE_INVALID.explanation=The maven coordinated provided is not in the correct format.
-ERROR_MAVEN_COORDINATE_INVALID.useraction=Enter a valid maven coordinate.
+ERROR_MAVEN_COORDINATE_INVALID=CWWKF1397E: The {0} Maven coordinate is invalid.
+ERROR_MAVEN_COORDINATE_INVALID.explanation=The Maven coordinated that was provided is not in the correct format.
+ERROR_MAVEN_COORDINATE_INVALID.useraction=Enter a valid Maven coordinate.
 
-ERROR_SERVER_NOT_EXIST=CWWKF1398E: The server {0} does not exist. Please enter a valid server name and try again.
+ERROR_SERVER_NOT_EXIST=CWWKF1398E: The {0} server does not exist. Enter a valid server name and try again.
 ERROR_SERVER_NOT_EXIST.explanation=The server does not exist.
 ERROR_SERVER_NOT_EXIST.useraction=Create the server and run the command again.
 
-ERROR_MAVEN_JSON_NOT_FOUND=CWWKF1399E: The group id {0} is invalid. Ensure that the valid group id for the feature coordinate is provided or the system can access the internet and the configured repository.
-ERROR_MAVEN_JSON_NOT_FOUND.explanation=The features json file could not be found on the Maven repository.
-ERROR_MAVEN_JSON_NOT_FOUND.useraction=Check your network connection and ensure the features json is hosted on the Maven repository.
+ERROR_MAVEN_JSON_NOT_FOUND=CWWKF1399E: The {0} group ID is invalid. Ensure that the valid group ID for the feature coordinate is provided or the system can access the internet and the configured repository.
+ERROR_MAVEN_JSON_NOT_FOUND.explanation=The features JSON file was not found on the Maven repository.
+ERROR_MAVEN_JSON_NOT_FOUND.useraction=Check your network connection and ensure that the features JSON file is hosted on the Maven repository.
 
-ERROR_IMPROPER_HTTPPROXY_FORMAT=CWWKF1400E: Invalid http_proxy environment variable format {0}. Ensure that the http_proxy variable is in the following format: http_proxy=http://<proxy-host>:<proxy-port>
-ERROR_IMPROPER_HTTPPROXY_FORMAT.explanation=Invalid proxy environment variable format.
-ERROR_IMPROPER_HTTPPROXY_FORMAT.useraction=Reformat the http_proxy environment variable to fit specifications, namely http_proxy=http://<proxy-host>:<proxy-port>.
+ERROR_IMPROPER_HTTPPROXY_FORMAT=CWWKF1400E: The format of the {0} http_proxy environment variable is invalid. Ensure that the http_proxy variable is in the http_proxy=http://<proxy-host>:<proxy-port> format.
+ERROR_IMPROPER_HTTPPROXY_FORMAT.explanation=The proxy environment variable format is invalid.
+ERROR_IMPROPER_HTTPPROXY_FORMAT.useraction=Reformat the http_proxy environment variable to fit the http_proxy=http://<proxy-host>:<proxy-port> format.
 
-ERROR_IMPROPER_HTTPSPROXY_FORMAT=CWWKF1401E: Invalid https_proxy environment variable format {0}. Ensure that the https_proxy variable is in the following format: https_proxy=https://<user>:<password>@<proxy-host>:<proxy-port>
-ERROR_IMPROPER_HTTPSPROXY_FORMAT.explanation=Invalid proxy environment variable format.
-ERROR_IMPROPER_HTTPSPROXY_FORMAT.useraction=Reformat the http_proxy environment variable to fit specifications, namely https_proxy=https://<user>:<password>@<proxy-host>:<proxy-port>.
+ERROR_IMPROPER_HTTPSPROXY_FORMAT=CWWKF1401E: The format of the {0} https_proxy environment variable is invalid. Ensure that the https_proxy variable is in the https_proxy=https://<user>:<password>@<proxy-host>:<proxy-port> format.
+ERROR_IMPROPER_HTTPSPROXY_FORMAT.explanation=The proxy environment variable format is invalid.
+ERROR_IMPROPER_HTTPSPROXY_FORMAT.useraction=Reformat the https_proxy environment variable to fit the https_proxy=https://<user>:<password>@<proxy-host>:<proxy-port> format.
+
+ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK=CWWKF1402E: The following features were not obtained: {0}. Ensure that the features are valid.
+ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK.explanation=The feature is not supported by Open Liberty.
+ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK.useraction=Run featureUtility with a compatible feature.
+
+MSG_USER_FEATURE_SERVER_XML=CWWKF1402I: The following user features are specified in the server.xml and they will not be installed: {0}
 
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: The feature has been successfully downloaded.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=The feature was downloaded.
