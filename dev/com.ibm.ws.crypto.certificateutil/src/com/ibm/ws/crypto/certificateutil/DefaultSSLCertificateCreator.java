@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -96,6 +96,20 @@ public interface DefaultSSLCertificateCreator {
      * @return File representing the created keystore
      * @throws CertificateException if the certificate could not be created
      * @throws IllegalArgumentException if an argument violates the minimum required value or if the value is otherwise considered invalid
+     */
+    File createDefaultSSLCertificate(String filePath, String password, int validity, String subjectDN, int keySize, String sigAlg,
+                                     List<String> extInfo) throws CertificateException;
+
+    /**
+     * @param filePath
+     * @param password
+     * @param validity
+     * @param subjectDN
+     * @param keySize
+     * @param sigAlg
+     * @param extInfo
+     * @return
+     * @throws CertificateException
      */
     File createDefaultSSLCertificate(String filePath, String password, int validity, String subjectDN, int keySize, String sigAlg, String extInfo) throws CertificateException;
 
