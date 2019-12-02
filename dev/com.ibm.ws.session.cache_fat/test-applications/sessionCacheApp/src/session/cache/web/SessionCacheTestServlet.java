@@ -391,6 +391,7 @@ public class SessionCacheTestServlet extends FATServlet {
      */
     public void testSerialization_complete(HttpServletRequest request, HttpServletResponse response) throws Throwable {
         HttpSession session = request.getSession(false);
+        assertTrue("Value from session is unexpectedly NULL, most likely due to test infrastructure; check logs for more information.", session == null);
         @SuppressWarnings("unchecked")
         Map<String, Object> sessionMap = (Map<String, Object>) session.getAttribute("map");
         System.out.println("Session is: " + session.getId());
@@ -576,12 +577,13 @@ public class SessionCacheTestServlet extends FATServlet {
         List<String> expected = expectedAttributes == null ? Collections.emptyList() : Arrays.asList(expectedAttributes.split(","));
 
         Cache<String, ArrayList> cache = Caching.getCache("com.ibm.ws.session.meta.default_host%2FsessionCacheApp", String.class, ArrayList.class);
+        assertTrue("Value from cache is unexpectedly NULL, most likely due to test infrastructure; check logs for more information.", cache == null);
+
         ArrayList<?> values = cache.get(sessionId);
 
         //catching test case errors due to test infrastructure
         if (values == null) {
             System.out.println("Value from cache is unexpectedly NULL, most likely due to test infrastructure; skipping rest of test method testSessionInfoCache. Check logs for more information.");
-            return;
         }
 
         @SuppressWarnings("unchecked")
@@ -609,6 +611,9 @@ public class SessionCacheTestServlet extends FATServlet {
         }
 
         Cache<String, byte[]> cache = Caching.getCache("com.ibm.ws.session.attr.default_host%2FsessionCacheApp", String.class, byte[].class);
+
+        assertTrue("Value from cache is unexpectedly NULL, most likely due to test infrastructure; check logs for more information.", cache == null);
+
         byte[] bytes = cache.get(key);
 
         String strValue = bytes == null ? null : Arrays.toString(bytes);
@@ -801,6 +806,8 @@ public class SessionCacheTestServlet extends FATServlet {
         for (long start = System.nanoTime(); cache.containsKey(sessionId) && System.nanoTime() - start < TIMEOUT_NS; TimeUnit.MILLISECONDS.sleep(500));
 
         Cache<String, byte[]> cacheAttr = Caching.getCache("com.ibm.ws.session.attr.default_host%2FsessionCacheApp", String.class, byte[].class);
+
+        assertTrue("Value from cache is unexpectedly NULL, most likely due to test infrastructure; check logs for more information.", cacheAttr == null);
         byte[] result = cacheAttr.get(key);
         assertEquals(expected, result == null ? null : Arrays.toString(result));
     }
