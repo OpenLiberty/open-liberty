@@ -11,7 +11,6 @@
 package com.ibm.ws.microprofile.config14.cdi;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
@@ -53,12 +52,10 @@ public class Config14CDIExtension extends Config12CDIExtension implements Extens
         abd.addBean(converterBean);
     }
 
-    void processObserverMethod(@Observes ProcessObserverMethod<?, ?> pot) {
-        AnnotatedMethod<?> annotatedMethod = pot.getAnnotatedMethod();
-        Method method = annotatedMethod.getJavaMember();
-        List<?> parameters = annotatedMethod.getParameters();
-        for (Object p : parameters) {
-            AnnotatedParameter<?> parameter = (AnnotatedParameter<?>) p;
+    <T, X> void processObserverMethod(@Observes ProcessObserverMethod<T, X> pot) {
+        AnnotatedMethod<X> annotatedMethod = pot.getAnnotatedMethod();
+        List<AnnotatedParameter<X>> parameters = annotatedMethod.getParameters();
+        for (AnnotatedParameter<X> parameter : parameters) {
             Type type = parameter.getBaseType();
             Set<Annotation> annotations = parameter.getAnnotations();
             for (Annotation annotation : annotations) {
@@ -71,7 +68,7 @@ public class Config14CDIExtension extends Config12CDIExtension implements Extens
 
                     Throwable configException = validateConfigProperty(type, propertyName, defaultValue, classLoader);
                     if (configException != null) {
-                        Tr.error(tc, "unable.to.resolve.observer.injection.point.CWMCG5005E", method, configException);
+                        Tr.error(tc, "unable.to.resolve.observer.injection.point.CWMCG5005E", annotatedMethod.getJavaMember(), configException);
                     }
                 }
             }

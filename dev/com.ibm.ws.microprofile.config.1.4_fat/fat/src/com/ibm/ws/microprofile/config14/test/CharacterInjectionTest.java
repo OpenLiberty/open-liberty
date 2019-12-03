@@ -32,18 +32,6 @@ import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
-/**
- * <li> Application packaging is done in the @BeforeClass, instead of ant scripting.
- * <li> Injects servers via @Server annotation. Annotation value corresponds to the
- * server directory name in 'publish/servers/%annotation_value%' where ports get
- * assigned to the LibertyServer instance when the 'testports.properties' does not
- * get used.
- * <li> Specifies an @RunWith(FATRunner.class) annotation. Traditionally this has been
- * added to bytecode automatically by ant.
- * <li> Uses the @TestServlet annotation to define test servlets. Notice that no @Test
- * methods are defined in this class. All of the @Test methods are defined on the test
- * servlet referenced by the annotation, and will be run whenever this test class runs.
- */
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
 public class CharacterInjectionTest extends FATServletClient {

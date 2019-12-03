@@ -23,6 +23,6 @@ public class BadObserverBean {
     String property;
 
     public void dummyTest() {
-        //no-op
+        throw new RuntimeException("This test should not have been run");
     }
 }

@@ -25,6 +25,6 @@ public class BadObserverServlet extends FATServlet {
     BadObserverBean bean;
 
     public void dummyTest() {
-        throw new RuntimeException("This test should not have been run");
+        bean.dummyTest();
     }
 }
