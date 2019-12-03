@@ -22,7 +22,6 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
-import app.deserialize.ArrayDeserializeServlet;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -31,6 +30,7 @@ import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import web.BatchFATServlet;
 
 /**
  * Example Shrinkwrap FAT project:
@@ -49,7 +49,7 @@ import componenttest.topology.utils.FATServletClient;
  */
 @RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 7)
-public class ArrayDeserializeTest extends FATServletClient {
+public class FATTest extends FATServletClient {
 
     // Using the RepeatTests @ClassRule in FATSuite will cause all tests in the FAT to be run twice.
     // First without any modifications, then again with all features in all server.xml's upgraded to their EE8 equivalents.
@@ -61,17 +61,22 @@ public class ArrayDeserializeTest extends FATServletClient {
                     .andWith(FeatureReplacementAction.EE8_FEATURES().forServers("BatchDeserialize"));
 
     @Server("BatchDeserialize")
-    @TestServlet(servlet = ArrayDeserializeServlet.class, path = "implicit/ArrayDeserializeServlet")
+    @TestServlet(servlet = BatchFATServlet.class, path = "implicit/FATServlet")
     public static LibertyServer server1;
 
     @BeforeClass
     public static void setUp() throws Exception {
         WebArchive implicit = ShrinkWrap.create(WebArchive.class, "implicit.war")
+                        .addPackages(true, "web")
                         .addPackages(true, "app.deserialize")
+                        .addPackages(true, "app.misc1")
                         .addPackages(true, "fat.util");
 
         addBatchJob(implicit, "ArrayCheckpointDeserialize.xml");
         addBatchJob(implicit, "ArrayUserDataDeserialize.xml");
+        addBatchJob(implicit, "CollectorPropertiesMapper.xml");
+        addBatchJob(implicit, "CollectorPropertiesPlan.xml");
+        addBatchJob(implicit, "ZeroPartitionPlan.xml");
 
         // Write the WebArchive to 'publish/servers/<server>/apps' and print the contents
         ShrinkHelper.exportAppToServer(server1, implicit);
@@ -81,10 +86,10 @@ public class ArrayDeserializeTest extends FATServletClient {
 
     /**
      * @param implicit archive
-     * @param jslName Batch Job JSL name
+     * @param jslName  Batch Job JSL name
      */
     private static void addBatchJob(WebArchive implicit, String jslName) {
-        Log.info(ArrayDeserializeTest.class, "addBatchJob", "Adding jslName = " + jslName);
+        Log.info(FATTest.class, "addBatchJob", "Adding jslName = " + jslName);
         String resourceDir = "test-applications/implicit/resources/";
         String batchJobsDir = "classes/META-INF/batch-jobs/";
         implicit.addAsWebInfResource(new File(resourceDir + jslName), batchJobsDir + jslName);

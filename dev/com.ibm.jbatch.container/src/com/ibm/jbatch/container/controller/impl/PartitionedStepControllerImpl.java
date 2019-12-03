@@ -71,11 +71,11 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.serialization.DeserializationObjectInputStream;
 
 /**
- * This is the "top-level" controller, which spawns the "sub-job" partitions
+ * This is the "top-level" controller, which spawns the partitions
  * and waits for them to finish. The partitions are either BatchletStepControllerImpls
  * or ChunkStepControllerImpls.
  *
- * Sub-job partitions are spawned under startPartition. The partitions communicate
+ * Partitions are spawned under startPartition. The partitions communicate
  * their status back to the top-level thread via the analzyerStatusQueue.
  */
 public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
@@ -91,7 +91,7 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
     private final boolean isMultiJvm;
 
     /**
-     * The sub-job work units.
+     * The partition work units.
      *
      * Declared 'volatile' to ensure thread safety in case a stop() is issued while
      * building the work units.
@@ -106,7 +106,7 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
 
     /**
      * User-supplied object that gets called to process analyzerQueue data passed
-     * back to the top-level from the sub-job partitions as they checkpoint/complete.
+     * back to the top-level from the partitions as they checkpoint/complete.
      */
     private PartitionAnalyzerProxy analyzerProxy = null;
 
@@ -123,13 +123,16 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
     private BatchDispatcher batchJmsDispatcher = null;
 
     /**
-     * As sub-jobs finish, they're added to this list.
+     * As partitions finish, they're added to this list.
      */
     private final List<PartitionReplyMsg> finishedWork = new ArrayList<PartitionReplyMsg>();
 
     private final Date createTime = null;
 
     private PartitionPlanDescriptor plan = null;
+
+    // Better to keep track of whether we called rollback instead of having to check the status later on.
+    private boolean rollbackPartitionedStepInvoked = false;
 
     /**
      * CTOR.
@@ -205,14 +208,14 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
                 // It's possible we may try to stop a partitioned step before any
                 // sub steps have been started.
 
-                // Note: in multi-jvm mode parallelBatchWorkUnits will be empty (sub-jobs may not be
+                // Note: in multi-jvm mode parallelBatchWorkUnits will be empty (partitions may not be
                 //       running locally, so no easy way to stop them).
                 //       TODO: could queue stopPartition thru JMS i suppose...).
-                for (BatchPartitionWorkUnit subJob : parallelBatchWorkUnits) {
+                for (BatchPartitionWorkUnit partition : parallelBatchWorkUnits) {
                     try {
-                        getBatchKernelService().stopWorkUnit(subJob);
+                        getBatchKernelService().stopWorkUnit(partition);
                     } catch (JobExecutionNotRunningException e) {
-                        logger.fine("Caught exception trying to stop work unit: " + subJob + ", which was not running.");
+                        logger.fine("Caught exception trying to stop work unit: " + partition + ", which was not running.");
                         // We want to stop all running sub steps.
                         // We do not want to throw an exception if a sub step has already been completed.
                     } catch (Exception e) {
@@ -319,8 +322,8 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
                                                    + ", with instances=" + partitionsAttr, e);
             }
             partitionProps = new Properties[numPartitions];
-            if (numPartitions < 1) {
-                throw new IllegalArgumentException("Partition instances value must be 1 or greater in stepId: " + getStepName()
+            if (numPartitions < 0) {
+                throw new IllegalArgumentException("Partition instances value must be 0 or greater in stepId: " + getStepName()
                                                    + ", with instances=" + partitionsAttr);
             }
         }
@@ -349,8 +352,13 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
 
             List<JSLProperties> jslProperties = partitionPlan.getProperties();
             for (JSLProperties props : jslProperties) {
-                int targetPartition = Integer.parseInt(props.getPartition());
-
+                Integer targetPartition = null;
+                try {
+                    targetPartition = Integer.parseInt(props.getPartition());
+                } catch (NumberFormatException nfe) {
+                    throw new IllegalArgumentException("Partition <properties> element should have an attributed  named 'partition' like <properties partition=\"2\">" +
+                                                       " , but instead found <null> or non-Integer value of: " + props.getPartition());
+                }
                 try {
                     partitionProps[targetPartition] = CloneUtility.jslPropertiesToJavaProperties(props);
                 } catch (ArrayIndexOutOfBoundsException e) {
@@ -441,7 +449,7 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
         persistCurrentPlanSize(currentPlan);
 
         // Create the PartitionReplyQueue
-        // The sub-job partitions pass back analyzer data, job status, and "partition complete" events on this queue.
+        // The partitions pass back analyzer data, job status, and "partition complete" events on this queue.
         setPartitionReplyQueue(isMultiJvm ? getBatchJmsDispatcher().createPartitionReplyQueue() : new PartitionReplyQueueLocal());
 
         // kick off the threads
@@ -450,7 +458,7 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
         // Close the PartitionReplyQueue
         // In non multi-JVM mode, this does nothing.
         // In multi-JVM mode, it closes the JMS connection and reply-to queue.
-        // Note: in the sub-job partition threads, the queue is closed in BatchPartitionWorkUnit.markThreadCompleted.
+        // Note: in the partition threads, the queue is closed in BatchPartitionWorkUnit.markThreadCompleted.
         getPartitionReplyQueue().close();
 
         // Deal with the results.
@@ -481,8 +489,8 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
             }
         }
 
-        if (numCurrentPartitions < 1) {
-            throw new IllegalArgumentException("Partition plan size is calculated as " + numCurrentPartitions + ", but at least one partition is needed.");
+        if (numCurrentPartitions < 0) {
+            throw new IllegalArgumentException("Partition plan size is calculated as " + numCurrentPartitions + ", must be greater than or equal to 0.");
         }
     }
 
@@ -722,7 +730,7 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
     }
 
     /**
-     * Wait for sub-job partitions to send data back to the top-level thread.
+     * Wait for partitions to send data back to the top-level thread.
      *
      * @return data sent back from the partition to the top-level thread
      */
@@ -735,7 +743,7 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
     }
 
     /**
-     * Get the sub-job partition data sent by the sub-job partition
+     * Get the reply data sent back by the partition
      *
      * @return data sent back from the partition to the top-level thread or return null
      */
@@ -901,7 +909,7 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
     }
 
     /**
-     * check the batch status of each subJob after it's done to see if we need to issue a rollback
+     * check the batch status of each partition after it's done to see if we need to issue a rollback
      * start rollback if any have stopped or failed
      */
     private void checkFinishedPartitions() {
@@ -958,11 +966,14 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
 
     /**
      * If rollback is false we never issued a rollback so we can issue a logicalTXSynchronizationBeforeCompletion
-     * NOTE: this will get issued even in a subjob fails or stops if no logicalTXSynchronizationRollback method is provied
+     * NOTE: this will get issued even in a partition fails or stops if no logicalTXSynchronizationRollback method is provied
      * We are assuming that not providing a rollback was intentional
      *
      */
     private void rollbackPartitionedStep() {
+
+        rollbackPartitionedStepInvoked = true;
+
         if (this.partitionReducerProxy != null) {
             this.partitionReducerProxy.rollbackPartitionedStep();
         }
@@ -1040,10 +1051,10 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
     protected void invokePostStepArtifacts() {
         // Invoke the reducer after all parallel steps are done
         if (this.partitionReducerProxy != null) {
-            if ((BatchStatus.COMPLETED).equals(runtimeStepExecution.getBatchStatus())) {
-                this.partitionReducerProxy.afterPartitionedStepCompletion(PartitionStatus.COMMIT);
-            } else {
+            if (rollbackPartitionedStepInvoked) {
                 this.partitionReducerProxy.afterPartitionedStepCompletion(PartitionStatus.ROLLBACK);
+            } else {
+                this.partitionReducerProxy.afterPartitionedStepCompletion(PartitionStatus.COMMIT);
             }
         }
 
