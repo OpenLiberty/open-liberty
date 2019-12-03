@@ -858,9 +858,6 @@
 	<script type="text/javascript" src="version.js"></script>
 
 	<script type="text/javascript">
-		//replace all externalized strings with nls
-		retrieveExternalizedStrings();
-
 		var urlForCssEnhancements = "banner-welcome.css";
 		var isLibertyUpdateAvailable = false;
 		function doVersionCheck(latestVersion) {
@@ -876,18 +873,20 @@
 				}
 			}
 		}
-		doVersionCheck(latestReleasedVersion);
-
-		var script = document.createElement('script');
-		var nlsFile = "messages.js";
-		var languageCode = getLanguageCode();
-		nlsFile = (languageCode !== "en") ? "nls/" + languageCode + "/" + nlsFile : "nls/" + nlsFile;
 		
-		script.src = nlsFile;
-		document.getElementsByTagName('head')[0].appendChild(script);
-		script.onload = function() {
-			buildUpdateBanner(messages);
-		};
+        doVersionCheck(latestReleasedVersion);
+
+		var url = getUrl();
+		externalizedStrings(url).then(function(response) {
+			buildUpdateBanner(response);
+        }).catch(function(error) {
+			// get english message
+			externalizedStrings("/nls/messages.js").then(function(response2) {
+				buildUpdateBanner(response2);
+        }, function(error2) {
+			    console.error("Failed to externalize strings!", error2);
+			});
+		});
 	</script>
   </body>
 </html>

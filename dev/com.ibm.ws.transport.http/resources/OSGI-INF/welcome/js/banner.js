@@ -25,7 +25,7 @@ function updateBannerTabOrder(media) {
 	}
 }
 
-function createCloseButton(section) {
+function createCloseButton(section, messages) {
 	var button = document.createElement("button");
 	button.setAttribute("class", "x-close");
 	button.setAttribute("onclick", "closeUpdateBanner()");
@@ -43,7 +43,7 @@ function createCloseButton(section) {
 	button.appendChild(left);
 }
 
-function createDownloadLink(section) {
+function createDownloadLink(section, messages) {
 	var article = document.createElement("article");
 	article.setAttribute("id", "banner-container");
 	article.setAttribute("aria-label", messages.UPDATE_BANNER_SECTION);
@@ -77,18 +77,18 @@ function formatString(value, args) {
 	return value;
 }
 
-function buildUpdateBanner() {
+function buildUpdateBanner(messages) {
 	if(isLibertyUpdateAvailable) {		
 		var section = document.createElement("section");
 		section.setAttribute("id", "update-banner");
 
 		var media = window.matchMedia("(max-width : 850px)");
 		if (media.matches) {
-			createCloseButton(section);
-			createDownloadLink(section);
+			createCloseButton(section, messages);
+			createDownloadLink(section, messages);
 		} else {
-			createDownloadLink(section);
-			createCloseButton(section);
+			createDownloadLink(section, messages);
+			createCloseButton(section, messages);
 		}
 		media.addListener(updateBannerTabOrder);
 
