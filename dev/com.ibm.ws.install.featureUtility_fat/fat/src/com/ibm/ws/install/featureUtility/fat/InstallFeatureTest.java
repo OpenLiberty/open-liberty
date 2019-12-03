@@ -12,7 +12,6 @@ import org.junit.Test;
 
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.kernel.boot.ReturnCode;
 
 public class InstallFeatureTest extends FeatureUtilityToolTest {
 
