@@ -48,7 +48,7 @@ import io.astefanutti.metrics.cdi20.MetricResolver;
 @Counted
 @Interceptor
 @Priority(Interceptor.Priority.LIBRARY_BEFORE + 10)
-/* package-private */ class CountedInterceptor {
+public class CountedInterceptor {
 
     protected final Bean<?> bean;
 

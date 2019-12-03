@@ -44,12 +44,11 @@ import org.eclipse.microprofile.metrics.annotation.Metered;
 import com.ibm.ws.microprofile.metrics.cdi20.helper.Utils;
 
 import io.astefanutti.metrics.cdi20.MetricResolver;
-import io.astefanutti.metrics.cdi20.MetricResolver.Of;
 
 @Metered
 @Interceptor
 @Priority(Interceptor.Priority.LIBRARY_BEFORE + 10)
-/* packaged-private */ class MeteredInterceptor {
+public class MeteredInterceptor {
 
     private final Bean<?> bean;
 

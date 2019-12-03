@@ -60,9 +60,7 @@ import io.astefanutti.metrics.cdi20.MetricsExtension;
 @Interceptor
 @MetricsBinding
 @Priority(Interceptor.Priority.LIBRARY_BEFORE)
-public
-// See http://docs.oracle.com/javaee/7/tutorial/doc/interceptors.htm
-/* package-private */ class MetricsInterceptor {
+public class MetricsInterceptor {
 
     private static final TraceComponent tc = Tr.register(MetricsInterceptor.class);
 

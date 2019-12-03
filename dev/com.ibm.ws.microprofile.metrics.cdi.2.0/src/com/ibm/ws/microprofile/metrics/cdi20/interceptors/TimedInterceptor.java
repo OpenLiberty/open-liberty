@@ -44,12 +44,11 @@ import org.eclipse.microprofile.metrics.annotation.Timed;
 import com.ibm.ws.microprofile.metrics.cdi20.helper.Utils;
 
 import io.astefanutti.metrics.cdi20.MetricResolver;
-import io.astefanutti.metrics.cdi20.MetricResolver.Of;
 
 @Timed
 @Interceptor
 @Priority(Interceptor.Priority.LIBRARY_BEFORE + 10)
-/* package-private */ class TimedInterceptor {
+public class TimedInterceptor {
 
     private final Bean<?> bean;
 
