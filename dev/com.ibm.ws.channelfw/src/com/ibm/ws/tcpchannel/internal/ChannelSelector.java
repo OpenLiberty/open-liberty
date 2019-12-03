@@ -147,7 +147,9 @@ public abstract class ChannelSelector implements Runnable, FFDCSelfIntrospectabl
                         Tr.debug(this, tc, "selectNow()");
                     }
                     selector.selectNow();
-                    Tr.debug(this, tc, "select() returned. quit="+quit);
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                      Tr.debug(this, tc, "selectNow() returned. quit="+quit);
+                    }
                     nothingTimedOut = false;
                     numEmptySelects = 0;
                 }
@@ -235,7 +237,9 @@ public abstract class ChannelSelector implements Runnable, FFDCSelfIntrospectabl
 
                 updateCount();
 
-                Tr.debug(this, tc, "ChannelSelector.quit="+quit+" before call to checkForTimeouts()");
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                  Tr.debug(this, tc, "ChannelSelector.quit="+quit+" before call to checkForTimeouts()");
+                }
                 checkForTimeouts();
                 updateSelector();
 
