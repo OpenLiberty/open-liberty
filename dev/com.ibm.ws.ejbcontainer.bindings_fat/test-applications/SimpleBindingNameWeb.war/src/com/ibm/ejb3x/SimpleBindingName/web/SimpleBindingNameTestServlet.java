@@ -360,7 +360,7 @@ public class SimpleBindingNameTestServlet extends FATServlet {
      */
     private void testLookupCombinationsHelper(Context context, String contextString, String lookupName, String SimpleBindingName, String beanNum, String passingCases) {
         try {
-            System.out.print("Testing " + lookupName + " with context " + contextString + " against " + SimpleBindingName);
+            System.out.println("Testing " + lookupName + " with context " + contextString + " against " + SimpleBindingName);
             SimpleBindingNameHome beanHome = (SimpleBindingNameHome) context.lookup(lookupName);
             if (passingCases.contains(beanNum)) {
                 if (beanHome == null) {

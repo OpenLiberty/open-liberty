@@ -11,6 +11,8 @@
 	<classpathentry kind="src" path="test-applications/EJBinWARBean.jar/src"/>
 	<classpathentry kind="src" path="test-applications/EJBinWARIntf.jar/src"/>
 	<classpathentry kind="src" path="test-applications/EJBinWARTest.war/src"/>
+	<classpathentry kind="src" path="test-applications/HomeBindingNameEJB.jar/src"/>
+	<classpathentry kind="src" path="test-applications/HomeBindingNameWeb.war/src"/>
 	<classpathentry kind="src" path="test-applications/JNDINameEJB.jar/src"/>
 	<classpathentry kind="src" path="test-applications/JNDINameWeb.war/src"/>
 	<classpathentry kind="src" path="test-applications/NoInterfaceBndBean.jar/src"/>
