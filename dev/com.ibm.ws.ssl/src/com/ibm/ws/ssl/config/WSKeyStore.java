@@ -30,6 +30,7 @@ import java.security.PrivilegedExceptionAction;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -836,7 +837,7 @@ public class WSKeyStore extends Properties {
                             if (parentFile == null || parentFile.isDirectory() || parentFile.mkdirs()) {
                                 try {
                                     String serverName = cfgSvc.getServerName();
-                                    String san = null;
+                                    List<String> san = null;
                                     if (genKeyHostName != null) {
                                         san = createCertSANInfo(genKeyHostName);
                                     }
@@ -1489,20 +1490,20 @@ public class WSKeyStore extends Properties {
         return cannonicalLocation;
     }
 
-    private String createCertSANInfo(String hostname) {
+    private List<String> createCertSANInfo(String hostname) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(tc, "createCertSANInfo: " + hostname);
-        String ext = null;
+        ArrayList<String> ext = new ArrayList<String>();
 
         InetAddress addr;
         try {
             addr = InetAddress.getByName(hostname);
             if (addr != null && addr.toString().startsWith("/"))
-                ext = "SAN=ip:" + hostname;
+                ext.add("SAN=ip:" + hostname);
             else {
                 // If the hostname start with a digit keytool will not create a SAN with the value
                 if (!Character.isDigit(hostname.charAt(0)))
-                    ext = "SAN=dns:" + hostname;
+                    ext.add("SAN=dns:" + hostname);
             }
         } catch (UnknownHostException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -1512,7 +1513,7 @@ public class WSKeyStore extends Properties {
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.exit(tc, "createCertSANInfo: " + ext);
-        return ext;
+        return (ext);
     }
 
 }

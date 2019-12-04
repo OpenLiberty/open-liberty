@@ -192,7 +192,7 @@ public class TAISubjectUtils {
 
     private String getDefaultRealm(SocialLoginConfig config) throws SettingCustomPropertiesException {
         String realm = null;
-        if (SocialUtil.isOpenShiftConfig(config) && SocialUtil.useAccessTokenFromRequest(config)) {
+        if (SocialUtil.isKubeConfig(config) && SocialUtil.useAccessTokenFromRequest(config)) {
             String ep = getRealmFromUserApiEndpoint(config);
             if (ep == null) {
                 if (tc.isDebugEnabled()) {

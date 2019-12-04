@@ -305,7 +305,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
     volatile boolean _failAssociatedLog = false;
 
     private final String _currentProcessServerName;
-    private String _homeServerName = null;
+
     private static boolean _useNewLockingScheme = false;
     private static int _peerLogGoneStaleTime = 10; // 10 Seconds by default, note in Liberty this default is enforced in metatype.xml.
     private static int _localLogGoneStaleTime = 10; // 10 Seconds by default, note in Liberty this default is enforced in metatype.xml.
@@ -538,9 +538,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 boolean secondPhaseSuccess = false;
                 SQLException currentSqlEx = null;
                 try {
-                    // If the new locking scheme is in play, we do not need to drive this method
-                    if (!_useNewLockingScheme)
-                        updateHADBLock(conn);
+                    // Update the ownership of the recovery log to the running server
+                    updateHADBLock(conn);
 
                     // We are ready to drive recovery
                     recover(conn);
@@ -1295,11 +1294,6 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                     }
 
                     internalKeypoint();
-//NEW
-                    // If the new locking scheme is in play, then drive this method
-                    if (_useNewLockingScheme)
-                        reinstateHADBLockOwner();
-//NEW
                     success = true;
                     _closesRequired--;
                 } catch (LogClosedException exc) {
@@ -1963,9 +1957,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             // logs. Use RDBMS SELECT FOR UPDATE to lock table and access the HA Lock row in the table.
             initialIsolation = prepareConnectionForBatch(conn);
 
-            // If the new locking scheme is in play, we do not need to drive this method
-            if (!_useNewLockingScheme)
-                takeHADBLock(conn);
+            // This will confirm that this server owns this log and will invalidate the log if not.
+            takeHADBLock(conn);
 
             // We can go ahead and write to the Database
             executeBatchStatements(conn);
@@ -2319,9 +2312,10 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
 
                         // Take the HA DB lock and then reexecute the batch
                         initialIsolation = prepareConnectionForBatch(conn);
-                        // If the new locking scheme is in play, we do not need to drive this method
-                        if (!_useNewLockingScheme)
-                            takeHADBLock(conn);
+
+                        // This will confirm that this server owns this log and will invalidate the log if not.
+                        takeHADBLock(conn);
+
                         executeBatchStatements(conn);
 
                         conn.commit();
@@ -2430,9 +2424,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                             Tr.debug(tc, "Acquired connection in Database retry scenario");
                         initialIsolation = prepareConnectionForBatch(conn);
 
-                        // Update the HA DB lock and then recover but not if the new locking scheme is in play
-                        if (!_useNewLockingScheme)
-                            updateHADBLock(conn);
+                        // Update the ownership of the recovery log to the running server
+                        updateHADBLock(conn);
 
                         // Clear out recovery caches in case they were partially filled before the failure.
                         _recoverableUnits.clear();
@@ -2627,37 +2620,43 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                     if (_currentProcessServerName.equalsIgnoreCase(storedServerName)) {
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "This server ALREADY OWNS the HA lock row");
-                        // may need to reset RUSECTION_ID which we use as a latch
-                        Long latch = readForUpdateRS.getLong(2);
-                        if (_reservedConnectionActiveSectionIDSet == latch)
-                            if (tc.isDebugEnabled())
-                                Tr.debug(tc, "latch is set in HA lock row - it will be unset when we perform the UPDATE");
+                        // If the new locking scheme is in play, we do not use latching
+                        if (!_useNewLockingScheme) {
+                            // may need to reset RUSECTION_ID which we use as a latch
+                            Long latch = readForUpdateRS.getLong(2);
+                            if (_reservedConnectionActiveSectionIDSet == latch)
+                                if (tc.isDebugEnabled())
+                                    Tr.debug(tc, "latch is set in HA lock row - it will be unset when we perform the UPDATE");
+                        }
                     } else {
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "ANOTHER server OWNS the lock");
-                        // may need to wait for latch if it's set and we're a peer
-                        Long latch = readForUpdateRS.getLong(2);
-                        if ((_reservedConnectionActiveSectionIDSet == latch) && !(Configuration.localFailureScope().equals(_failureScope))) {
-                            if (tc.isDebugEnabled())
-                                Tr.debug(tc, "latch is set in HA lock row for remote failurescope, latchRetryCount = " + latchRetryCount);
-                            // hardcoded retry twice
-                            if (++latchRetryCount < 3) {
-                                // set for retry,  cleanup JDBC, drop locks and sleep to allow root server to complete
-                                needToRetryLatch = true;
-                                if (readForUpdateRS != null)
+                        // If the new locking scheme is in play, we do not use latching
+                        if (!_useNewLockingScheme) {
+                            // may need to wait for latch if it's set and we're a peer
+                            Long latch = readForUpdateRS.getLong(2);
+                            if ((_reservedConnectionActiveSectionIDSet == latch) && !(Configuration.localFailureScope().equals(_failureScope))) {
+                                if (tc.isDebugEnabled())
+                                    Tr.debug(tc, "latch is set in HA lock row for remote failurescope, latchRetryCount = " + latchRetryCount);
+                                // hardcoded retry twice
+                                if (++latchRetryCount < 3) {
+                                    // set for retry,  cleanup JDBC, drop locks and sleep to allow root server to complete
+                                    needToRetryLatch = true;
+                                    if (readForUpdateRS != null)
+                                        try {
+                                            readForUpdateRS.close();
+                                        } catch (Exception e) {
+                                        }
+                                    if (readForUpdateStmt != null)
+                                        try {
+                                            readForUpdateStmt.close();
+                                        } catch (Exception e) {
+                                        }
+                                    conn.rollback();
                                     try {
-                                        readForUpdateRS.close();
-                                    } catch (Exception e) {
+                                        Thread.sleep(1000);
+                                    } catch (InterruptedException ie) {
                                     }
-                                if (readForUpdateStmt != null)
-                                    try {
-                                        readForUpdateStmt.close();
-                                    } catch (Exception e) {
-                                    }
-                                conn.rollback();
-                                try {
-                                    Thread.sleep(1000);
-                                } catch (InterruptedException ie) {
                                 }
                             }
                         }
@@ -2669,10 +2668,19 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
 
             if (lockingRecordExists) {
                 updateStmt = conn.createStatement();
-                String updateString = "UPDATE " +
-                                      _recoveryTableName + _logIdentifierString + _recoveryTableNameSuffix +
-                                      " SET SERVER_NAME = '" + _currentProcessServerName +
-                                      "', RUSECTION_ID = " + _reservedConnectionActiveSectionIDUnset + " WHERE RU_ID = -1";
+                String updateString = null;
+                // If the new locking scheme is in play, we do not use latching
+                if (!_useNewLockingScheme) {
+                    updateString = "UPDATE " +
+                                   _recoveryTableName + _logIdentifierString + _recoveryTableNameSuffix +
+                                   " SET SERVER_NAME = '" + _currentProcessServerName +
+                                   "', RUSECTION_ID = " + _reservedConnectionActiveSectionIDUnset + " WHERE RU_ID = -1";
+                } else {
+                    updateString = "UPDATE " +
+                                   _recoveryTableName + _logIdentifierString + _recoveryTableNameSuffix +
+                                   " SET SERVER_NAME = '" + _currentProcessServerName +
+                                   "' WHERE RU_ID = -1";
+                }
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Updating HA Lock using update string - " + updateString);
                 int ret = updateStmt.executeUpdate(updateString);
@@ -2729,80 +2737,6 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "updateHADBLock");
-    }
-
-    private void reinstateHADBLockOwner() {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "reinstateHADBLockOwner", new java.lang.Object[] { this });
-
-        try {
-            Connection conn = null;
-            Statement lockingStmt = null;
-            ResultSet lockingRS = null;
-
-            // We are peer recovering another server's logs AND this is the partner log
-            if (!Configuration.localFailureScope().equals(_failureScope) && _logIdentifier == 2) {
-
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Prepare to update control row with home server name - " + _homeServerName);
-
-                // Get a connection to database via its datasource
-                conn = _theDS.getConnection();
-
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Acquired connection " + conn);
-
-                if (conn != null) {
-                    try {
-                        lockingStmt = conn.createStatement();
-                        String queryString = "SELECT SERVER_NAME" +
-                                             " FROM " + _recoveryTableName + _logIdentifierString + _recoveryTableNameSuffix +
-                                             " WHERE RU_ID=" + "-1 FOR UPDATE";
-                        if (tc.isDebugEnabled())
-                            Tr.debug(tc, "Attempt to select the HA LOCKING ROW for UPDATE using - " + queryString);
-                        lockingRS = lockingStmt.executeQuery(queryString);
-
-                        if (lockingRS.next()) {
-                            // We found the HA Lock row
-                            String storedServerName = lockingRS.getString(1);
-                            if (tc.isDebugEnabled())
-                                Tr.debug(tc, "Acquired lock on HA Lock row, stored server value is: " + storedServerName);
-
-                            // Re-instate the original home server name
-                            String updateString = "UPDATE " +
-                                                  _recoveryTableName + _logIdentifierString + _recoveryTableNameSuffix +
-                                                  " SET SERVER_NAME = '" + _homeServerName +
-                                                  "' WHERE RU_ID = -1";
-                            if (tc.isDebugEnabled())
-                                Tr.debug(tc, "Update lock owner using - " + updateString);
-                            int ret = lockingStmt.executeUpdate(updateString);
-
-                            if (tc.isDebugEnabled())
-                                Tr.debug(tc, "Have updated HA Lock row with return: " + ret);
-
-                        } else {
-                            // We didn't find the HA Lock row in the table, debug trace this only
-                            if (tc.isDebugEnabled())
-                                Tr.debug(tc, "Could not find HA Lock row");
-                        }
-                    } finally {
-                        if (lockingRS != null && !lockingRS.isClosed())
-                            lockingRS.close();
-                        if (lockingStmt != null && !lockingStmt.isClosed())
-                            lockingStmt.close();
-                    }
-                }
-            }
-        } catch (SQLException sqlex) {
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "reinstateHADBLockOwner failed with SQLException: " + sqlex);
-        } catch (Exception sqlex) {
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "reinstateHADBLockOwner failed with Exception: " + sqlex);
-        }
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "reinstateHADBLockOwner");
     }
 
     //------------------------------------------------------------------------------
@@ -4015,9 +3949,13 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             } catch (SQLException sqlex) {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "heartbeat failed with SQL exception: " + sqlex);
+                // Mark the Recovery Log as failed, this will lead to server termination on tWAS
+                markFailed(sqlex);
             } catch (Exception ex) {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "heartbeat failed with general Exception: " + ex);
+                // Mark the Recovery Log as failed, this will lead to server termination on tWAS
+                markFailed(ex);
             }
         }
         if (tc.isEntryEnabled())
@@ -4200,13 +4138,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "Timestamp is STALE for " + _recoveryTableName + "PARTNER_LOG" + _recoveryTableNameSuffix
                                          + ", currenttime: " + curTimestamp + ", storedTime: " + storedTimestamp);
-//NEW
-                        // We are peer recovering another server's logs, retain original server_name
 
-                        _homeServerName = storedServerName;
-                        if (tc.isDebugEnabled())
-                            Tr.debug(tc, "Store home server name - " + _homeServerName);
-//NEW
                         // Ownership is stale, claim the logs by updating the server name and timestamp.
                         long fir1 = System.currentTimeMillis();
                         String updateString = "UPDATE " +
@@ -4253,9 +4185,6 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 Tr.debug(tc, "claimPeerRecoveryLogs failed with Exception: " + sqlex);
         }
 
-        // At this point, if we have determined that we can claim these logs, then we should assert ownership
-        // by setting the server_name to the local server's and updating the timestamp.
-//HERE!!! NEED (A) Update to server_name and timestamp + COMMIT
         if (tc.isEntryEnabled())
             Tr.exit(tc, "claimPeerRecoveryLogs", new Boolean(isClaimed));
 

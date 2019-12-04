@@ -9,20 +9,20 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= \
- jar:${fileuri;${repo;org.apache.httpcomponents:httpasyncclient;4.1.3;EXACT}}!/META-INF/MANIFEST.MF,\
- jar:${fileuri;${repo;org.apache.httpcomponents:httpclient;4.5.5;EXACT}}!/META-INF/MANIFEST.MF,\
- jar:${fileuri;${repo;org.apache.httpcomponents:httpcore;4.4.9;EXACT}}!/META-INF/MANIFEST.MF,\
- jar:${fileuri;${repo;org.apache.httpcomponents:httpcore-nio;4.4.9;EXACT}}!/META-INF/MANIFEST.MF,\
+ jar:${fileuri;${repo;org.apache.httpcomponents:httpasyncclient;4.1.4;EXACT}}!/META-INF/MANIFEST.MF,\
+ jar:${fileuri;${repo;org.apache.httpcomponents:httpclient;4.5.10;EXACT}}!/META-INF/MANIFEST.MF,\
+ jar:${fileuri;${repo;org.apache.httpcomponents:httpcore;4.4.12;EXACT}}!/META-INF/MANIFEST.MF,\
+ jar:${fileuri;${repo;org.apache.httpcomponents:httpcore-nio;4.4.12;EXACT}}!/META-INF/MANIFEST.MF,\
  bnd.overrides
 
 -includeresource: \
-   @${repo;org.apache.httpcomponents:httpasyncclient;4.1.3;EXACT}!/org/apache/http/*, \
-   @${repo;org.apache.httpcomponents:httpclient;4.5.5;EXACT}!/org/apache/http/*, \
-   @${repo;org.apache.httpcomponents:httpcore;4.4.9;EXACT}!/org/apache/http/*, \
-   @${repo;org.apache.httpcomponents:httpcore-nio;4.4.9;EXACT}!/org/apache/http/*
+   @${repo;org.apache.httpcomponents:httpasyncclient;4.1.4;EXACT}!/org/apache/http/*, \
+   @${repo;org.apache.httpcomponents:httpclient;4.5.10;EXACT}!/org/apache/http/*, \
+   @${repo;org.apache.httpcomponents:httpcore;4.4.12;EXACT}!/org/apache/http/*, \
+   @${repo;org.apache.httpcomponents:httpcore-nio;4.4.12;EXACT}!/org/apache/http/*
 
 -buildpath: \
-    org.apache.httpcomponents:httpasyncclient;version=4.1.3, \
-    org.apache.httpcomponents:httpclient;version=4.5.5, \
-    org.apache.httpcomponents:httpcore;version=4.4.9, \
-    org.apache.httpcomponents:httpcore-nio;version=4.4.9
+    org.apache.httpcomponents:httpasyncclient;version=4.1.4, \
+    org.apache.httpcomponents:httpclient;version=4.5.10, \
+    org.apache.httpcomponents:httpcore;version=4.4.12, \
+    org.apache.httpcomponents:httpcore-nio;version=4.4.12

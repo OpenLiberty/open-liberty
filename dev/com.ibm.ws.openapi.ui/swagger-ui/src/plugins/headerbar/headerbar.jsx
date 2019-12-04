@@ -1,5 +1,7 @@
 import React, { PropTypes } from "react"
 
+// import Logo from "./logo.png"
+
 export default class Headerbar extends React.Component {
 
   constructor(props, context) {
@@ -27,6 +29,9 @@ export default class Headerbar extends React.Component {
       <div className="headerbar">
         <div className="wrapper">
           <div className="headerbar-wrapper">
+            {/* <Link href="#" title="OpenAPI UI">
+              <img id="logo" src={Logo} alt="Company logo" />
+            </Link> */}
             <form className="filter-wrapper" onSubmit={this.filter}>
               <input className="filter-input" type="text" aria-label="Filter text" onChange={this.onFilterChange} />
               <Button className="filter-button" onClick={this.filter}>Filter</Button>

@@ -4,9 +4,9 @@
 package mpGraphQL10.types;
 
 import org.eclipse.microprofile.graphql.Description;
-import org.eclipse.microprofile.graphql.InputType;
+import org.eclipse.microprofile.graphql.Input;
 
-@InputType("WidgetInput")
+@Input("WidgetInput")
 @Description("A for-sale item object used for input.")
 public class WidgetInput{
 

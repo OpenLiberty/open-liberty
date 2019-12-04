@@ -3,9 +3,13 @@
 #This script takes the Open Liberty version as it's argument
 #ARGUMENT1 = driver version - eg. 19.0.0.12
 #ARGUMENT2 = isRelease build - true or false
+#ARGUMENT3 = RPM Timestamp
+#ARGUMENT4 = DEB Timestamp
 
 driverVer=$1
 isRelease=$2
+RPM_TIMESTAMP=$3
+DEB_TIMESTAMP=$4
 
 #Unzip contents of openliberty-all.zip
 unzip -qq tempPackagingDir/openliberty-*.zip -d tempPackagingDir/tempTar
@@ -23,7 +27,7 @@ cp debuild/openliberty-$driverVer.tar.gz debuild/openliberty_$driverVer.orig.tar
 cp debuild/openliberty-$driverVer.tar.gz rpmbuild/SOURCES
 
 #Update changelogs
-./updateChangelogs.sh $driverVer
+./updateChangelogs.sh $driverVer "${RPM_TIMESTAMP}" "${DEB_TIMESTAMP}"
 
 #Generate PassPhrase file if Passphrase is defined.
 if [ -z "$GPG_PASS" ]
@@ -37,7 +41,7 @@ fi
 #build rpm
 #cd rpmbuild && rpmbuild -ba SPECS/openliberty.spec
 echo "Building openliberty.rpm"
-./buildRPM.sh
+./buildRPM.sh 
 
 echo "Building openliberty.deb"
 #build deb

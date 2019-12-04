@@ -32,9 +32,6 @@
 					<property name="startAtIndex" value="#{partitionPlan['startAtIndex']}" />
 				</properties>
 			</analyzer>
-				
-			<!--  reducer
-				ref="com.ibm.websphere.samples.batch.artifacts.ValidationPartitionReducer" /-->
 		</partition>
 	</step>
 </job>

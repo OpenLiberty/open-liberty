@@ -11,6 +11,7 @@
 package mpGraphQL10.basicMutation;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -73,6 +74,8 @@ public class BasicMutationTestServlet extends FATServlet {
         assertTrue(schema.contains("Create a new widget for sale."));
         assertTrue(schema.contains("WidgetInput"));
         assertTrue(schema.contains("A for-sale item."));
+        assertTrue(schema.contains("quantityOnAllWidgets(arg0: Int!): [Widget]"));
+        assertFalse(schema.contains("setQuantityOnAllWidgets"));
     }
 
     @Test

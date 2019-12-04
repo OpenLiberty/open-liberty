@@ -5,7 +5,7 @@ import io.leangen.graphql.metadata.messages.MessageBundle;
 import io.leangen.graphql.util.ClassUtils;
 import io.leangen.graphql.util.Utils;
 import org.eclipse.microprofile.graphql.Description;
-import org.eclipse.microprofile.graphql.InputType;
+import org.eclipse.microprofile.graphql.Input;
 import org.eclipse.microprofile.graphql.Type;
 
 import java.beans.Introspector;
@@ -43,7 +43,7 @@ public class DefaultTypeInfoGenerator implements TypeInfoGenerator {
 
     @Override
     public String generateInputTypeName(AnnotatedType type, MessageBundle messageBundle) {
-        return Optional.ofNullable(type.getAnnotation(InputType.class))
+        return Optional.ofNullable(type.getAnnotation(Input.class))
                 .map(ann -> messageBundle.interpolate(ann.value()))
                 .filter(Utils::isNotEmpty)
                 .orElse(TypeInfoGenerator.super.generateInputTypeName(type, messageBundle));

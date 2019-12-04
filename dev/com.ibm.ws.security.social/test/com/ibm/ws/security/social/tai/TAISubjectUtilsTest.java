@@ -928,6 +928,7 @@ public class TAISubjectUtilsTest extends CommonTestClass {
                 {
                     one(attributeToSubject).getMappedRealm();
                     will(returnValue(null));
+                    one(config).getUserApiType();
                     one(taiWebUtils).getAuthorizationEndpoint(config);
                     will(returnValue(null));
                 }
@@ -1024,6 +1025,7 @@ public class TAISubjectUtilsTest extends CommonTestClass {
                 {
                     one(config).getRealmName();
                     will(returnValue(null));
+                    one(config).getUserApiType();
                     one(taiWebUtils).getAuthorizationEndpoint(config);
                     will(returnValue(null));
                 }
