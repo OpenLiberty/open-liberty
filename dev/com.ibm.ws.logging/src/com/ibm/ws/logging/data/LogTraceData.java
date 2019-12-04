@@ -12,6 +12,7 @@ package com.ibm.ws.logging.data;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -146,6 +147,26 @@ public class LogTraceData extends GenericData {
 
     public static void newJsonLoggingNameAliasesTrace(Map<String, String> newAliases) {
         jsonLoggingNameAliasesTrace.newAliases(newAliases);
+    }
+
+    private static ArrayList<String> omitFieldsListMessage = new ArrayList<>();
+
+    public static void setOmitFieldsListMessage(Set<String> fieldNames) {
+        omitFieldsListMessage = new ArrayList<>(fieldNames);
+    }
+
+    public static ArrayList<String> getOmitFieldsListMessage() {
+        return omitFieldsListMessage;
+    }
+
+    private static ArrayList<String> omitFieldsListTrace = new ArrayList<>();
+
+    public static void setOmitFieldsListTrace(Set<String> fieldNames) {
+        omitFieldsListTrace = new ArrayList<>(fieldNames);
+    }
+
+    public static ArrayList<String> getOmitFieldsListTrace() {
+        return omitFieldsListTrace;
     }
 
     public LogTraceData() {

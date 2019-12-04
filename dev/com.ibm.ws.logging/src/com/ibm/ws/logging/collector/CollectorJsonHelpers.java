@@ -14,8 +14,6 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.Set;
 
 import com.ibm.ws.logging.data.AccessLogData;
 import com.ibm.ws.logging.data.AuditData;
@@ -114,15 +112,31 @@ public class CollectorJsonHelpers {
     protected static boolean addToJSON(StringBuilder sb, String name, String value, String eventType, boolean jsonEscapeName,
                                        boolean jsonEscapeValue, boolean trim, boolean isFirstField, boolean isQuoteless) {
 
-        Map<String, Set<String>> omitFieldsMap = BaseTraceService.getOmitFieldsMap();
-
         // if name or value is null just return
         if (name == null || value == null)
             return false;
 
         // if the field name is to be omitted for the event type
-        if (omitFieldsMap.containsKey(eventType) && omitFieldsMap.get(eventType).contains(name)) {
-            return false;
+        if (eventType.equals(CollectorConstants.MESSAGES_CONFIG_VAL)) {
+            if (LogTraceData.getOmitFieldsListMessage().contains(name)) {
+                return false;
+            }
+        } else if (eventType.equals(CollectorConstants.TRACE_CONFIG_VAL)) {
+            if (LogTraceData.getOmitFieldsListTrace().contains(name)) {
+                return false;
+            }
+        } else if (eventType.equals(CollectorConstants.AUDIT_CONFIG_VAL)) {
+            if (AuditData.getOmitFieldsList().contains(name)) {
+                return false;
+            }
+        } else if (eventType.equals(CollectorConstants.ACCESS_CONFIG_VAL)) {
+            if (AccessLogData.getOmitFieldsList().contains(name)) {
+                return false;
+            }
+        } else if (eventType.equals(CollectorConstants.FFDC_CONFIG_VAL)) {
+            if (FFDCData.getOmitFieldsList().contains(name)) {
+                return false;
+            }
         }
 
         // add comma if isFirstField == false

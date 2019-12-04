@@ -473,15 +473,23 @@ public class BaseTraceService implements TrService {
     }
 
     public static void applyJsonFields(String value) {
-        if (value == null || value == "" || value.isEmpty()) {
-            //if no property is set, return
-            return;
-        }
 
         if (!isServerConfigSetup)
             isServerConfigUpdate = true;
         else
             isServerConfigSetup = false;
+
+        omitFieldsMap.clear(); //refresh for each server configuration update
+
+        if (value == null || value == "" || value.isEmpty()) {
+            AccessLogData.getOmitFieldsList().clear();
+            FFDCData.getOmitFieldsList().clear();
+            LogTraceData.getOmitFieldsListMessage().clear();
+            LogTraceData.getOmitFieldsListTrace().clear();
+            AuditData.getOmitFieldsList().clear();
+            //if no property is set, return
+            return;
+        }
 
         TraceComponent tc = Tr.register(LogTraceData.class, NLSConstants.GROUP, NLSConstants.LOGGING_NLS);
         boolean valueFound = false;
@@ -498,7 +506,6 @@ public class BaseTraceService implements TrService {
         List<String> AuditList = Arrays.asList(AuditData.NAMES1_1);
 
         String[] keyValuePairs = value.split(","); //split the string to create key-value pairs
-        omitFieldsMap.clear(); //refresh for each server configuration update
 
         for (String pair : keyValuePairs) //iterate over the pairs
         {
@@ -515,7 +522,6 @@ public class BaseTraceService implements TrService {
                         if (omitFieldsMap.containsKey(CollectorConstants.MESSAGES_CONFIG_VAL)) {
                             omitFieldsMap.get(CollectorConstants.MESSAGES_CONFIG_VAL).add(entry[0]);
                         } else if (!omitFieldsMap.containsKey(CollectorConstants.MESSAGES_CONFIG_VAL)) {
-                            System.out.print("putting into map");
                             omitFieldsMap.put(CollectorConstants.MESSAGES_CONFIG_VAL, omitFieldsSet);
                         }
                         if (omitFieldsMap.containsKey(CollectorConstants.TRACE_CONFIG_VAL)) {
@@ -681,11 +687,23 @@ public class BaseTraceService implements TrService {
                 }
             }
         }
+
         AccessLogData.newJsonLoggingNameAliases(accessLogMap);
         FFDCData.newJsonLoggingNameAliases(ffdcMap);
         LogTraceData.newJsonLoggingNameAliasesMessage(messageMap);
         LogTraceData.newJsonLoggingNameAliasesTrace(traceMap);
         AuditData.newJsonLoggingNameAliases(auditMap);
+
+        if (omitFieldsMap.containsKey(CollectorConstants.ACCESS_CONFIG_VAL))
+            AccessLogData.setOmitFieldsList(omitFieldsMap.get(CollectorConstants.ACCESS_CONFIG_VAL));
+        if (omitFieldsMap.containsKey(CollectorConstants.FFDC_CONFIG_VAL))
+            FFDCData.setOmitFieldsList(omitFieldsMap.get(CollectorConstants.FFDC_CONFIG_VAL));
+        if (omitFieldsMap.containsKey(CollectorConstants.MESSAGES_CONFIG_VAL))
+            LogTraceData.setOmitFieldsListMessage(omitFieldsMap.get(CollectorConstants.MESSAGES_CONFIG_VAL));
+        if (omitFieldsMap.containsKey(CollectorConstants.TRACE_CONFIG_VAL))
+            LogTraceData.setOmitFieldsListTrace(omitFieldsMap.get(CollectorConstants.TRACE_CONFIG_VAL));
+        if (omitFieldsMap.containsKey(CollectorConstants.AUDIT_CONFIG_VAL))
+            AuditData.setOmitFieldsList(omitFieldsMap.get(CollectorConstants.AUDIT_CONFIG_VAL));
     }
 
     /**

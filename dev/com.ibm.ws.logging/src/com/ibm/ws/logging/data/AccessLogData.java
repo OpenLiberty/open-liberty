@@ -10,7 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.logging.data;
 
+import java.util.ArrayList;
 import java.util.Map;
+import java.util.Set;
 
 import com.ibm.ws.logging.collector.LogFieldConstants;
 
@@ -60,6 +62,16 @@ public class AccessLogData extends GenericData {
 
     public static void newJsonLoggingNameAliases(Map<String, String> newAliases) {
         jsonLoggingNameAliases.newAliases(newAliases);
+    }
+
+    private static ArrayList<String> omitFieldsList = new ArrayList<>();
+
+    public static void setOmitFieldsList(Set<String> fieldNames) {
+        omitFieldsList = new ArrayList<>(fieldNames);
+    }
+
+    public static ArrayList<String> getOmitFieldsList() {
+        return omitFieldsList;
     }
 
     public AccessLogData() {
