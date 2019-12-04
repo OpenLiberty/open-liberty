@@ -50,7 +50,6 @@ Service-Component: \
     activate:=activate;\
     deactivate:=deactivate;\
     tokenManager=com.ibm.ws.security.token.TokenManager;\
-    dynamic:='tokenService';\
     properties:="service.vendor=IBM",\
   com.ibm.ws.webcontainer.security.internal.WebSecurityHelperImpl;\
     implementation:=com.ibm.ws.webcontainer.security.internal.WebSecurityHelperImpl;\
@@ -58,7 +57,6 @@ Service-Component: \
     activate:=activate;\
     deactivate:=deactivate;\
     tokenManager=com.ibm.ws.security.token.TokenManager;\
-    dynamic:='tokenService';\
     properties:="service.vendor=IBM"
 
 -dsannotations: com.ibm.ws.webcontainer.security.internal.WebAuthenticatorFactoryImpl

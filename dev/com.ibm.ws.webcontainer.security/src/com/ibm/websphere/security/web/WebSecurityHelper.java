@@ -29,6 +29,24 @@ public class WebSecurityHelper {
 
     /**
      * Extracts the Single Sign-On (SSO) token from the subject of the current thread
+     * and builds an SSO cookie out of it and builds an SSO cookie out of it for use on downstream web invocations.
+     * The caller must check for a null return value.
+     * <p>
+     * Return null if there is an invalid or expired SSO token, no subject on the current thread, no SSO token in subject or no webAppSecurityConfig object.
+     * If the returned value is not null, use Cookie methods getName() and getValue()
+     * to set the Cookie header on an HTTP request with header value of
+     * Cookie.getName()=Cookie.getValue()
+     *
+     * @return An object of type javax.servlet.http.Cookie. May return {@code null}
+     *
+     */
+
+    public static Cookie getSSOCookieFromSSOToken() throws Exception {
+        return WebSecurityHelperImpl.getSSOCookieFromSSOToken();
+    }
+
+    /**
+     * Extracts the Single Sign-On (SSO) token from the subject of the current thread
      * and builds an SSO cookie out of it. The new SSO token does not include the attributes specified in the removeAttributes parameter for use on downstream web invocations.
      * The caller must check for a null return value.
      * The security permission WebSphereRuntimePermission("updateToken") is needed when security manager is enabled.

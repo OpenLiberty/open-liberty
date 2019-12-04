@@ -235,7 +235,7 @@ public class WebSecurityHelperImpl {
     }
 
     protected void unsetTokenManager(ServiceReference<TokenManager> ref) {
-        tokenManagerRef.setReference(ref);
+        tokenManagerRef.unsetReference(ref);
     }
 
     protected void activate(ComponentContext cc, Map<String, Object> properties) {
