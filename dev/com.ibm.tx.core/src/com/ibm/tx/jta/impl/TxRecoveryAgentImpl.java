@@ -31,7 +31,6 @@ import org.osgi.framework.ServiceReference;
 import com.ibm.tx.TranConstants;
 import com.ibm.tx.config.ConfigurationProvider;
 import com.ibm.tx.config.ConfigurationProviderManager;
-import com.ibm.tx.jta.config.DefaultConfigurationProvider;
 import com.ibm.tx.jta.util.TranLogConfiguration;
 import com.ibm.tx.util.logging.FFDCFilter;
 import com.ibm.tx.util.logging.Tr;
@@ -82,6 +81,8 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
 
     private ClassLoadingService clService;
 
+    private boolean _unitTesting;
+
     protected TxRecoveryAgentImpl() {
     }
 
@@ -110,6 +111,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
         // In the normal Liberty runtime the Applid will have been set into the JTMConfigurationProvider by the
         // TransactionManagerService. We additionally can set the applid here for the benefit of the unittest framework.
         if (cp.getApplId() == null) {
+            _unitTesting = true;
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "TXAGENT, cp applid null - " + cp + " set applid - " + Util.toHexString(newApplId));
             cp.setApplId(newApplId);
@@ -356,7 +358,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
             });
 
             // If we're not unit testing, set a ThreadContextClassLoader on the recovery thread so SSL classes can be loaded
-            if (!(cp instanceof DefaultConfigurationProvider)) {
+            if (!_unitTesting) {
                 final ClassLoader cl = getThreadContextClassLoader(this.getClass());
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Setting Context ClassLoader on " + t.getName() + " (" + String.format("%08X", t.getId()) + ")", cl);
