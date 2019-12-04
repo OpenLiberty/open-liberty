@@ -2,7 +2,6 @@ var messages = {
     WELCOME_SECTION: "Welcome Section",
     WELCOME_SECTION_CONTENT: "Welcome Section Content",
     WELCOME_MESSAGE: "Welcome to ",
-    OPEN_LIBERTY: "Open Liberty", // Product name
     WELCOME_IBM_OPEN_SOURCE: "An IBM Open Source Project",
     WELCOME_LIGHTWEIGHT: "A lightweight open framework for building and running fast, efficient cloud-native Java microservices.",
     UFO: "UFO and beam",
