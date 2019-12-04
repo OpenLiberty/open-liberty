@@ -85,8 +85,6 @@ function httpSendRequest(url) {
 			replaceExternalizedStrings(httpReq.responseText);
 		} else if (httpReq.readyState === 4 && httpReq.status !== 200) {
 			console.error('Unable to retrieve externalize string for ', url);
-			// get english message
-			httpSendRequest("/nls/messages.js");
 		}
 	};
 	httpReq.send(params);
