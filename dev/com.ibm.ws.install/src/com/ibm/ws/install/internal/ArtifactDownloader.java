@@ -19,6 +19,7 @@ import java.net.URLConnection;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import com.ibm.ws.install.InstallException;
@@ -39,57 +40,81 @@ public class ArtifactDownloader {
     private final Logger logger = InstallLogUtils.getInstallLogger();
 
     private final ProgressBar progressBar = ProgressBar.getInstance();
+    private static Map<String, String> envMap = null;
 
     public void synthesizeAndDownloadFeatures(List<String> mavenCoords, String dLocation, String repo) throws InstallException {
-        info("Establishing a connection to the maven central repository ...\n" +
-             "This process might take several minutes to complete.");
+        info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_CONTACTING_MAVEN_REPO"));
         checkValidProxy();
         configureProxyAuthentication();
         configureAuthentication();
-        updateProgress(progressBar.getMethodIncrement("establishConnection"));
-        info("Successfully connected to all configured repositories.");
+
         downloadedFiles.clear();
-        int repoResponseCode;
-        try {
-            repoResponseCode = ArtifactDownloaderUtils.exists(repo);
-        } catch (IOException e) {
-            throw new InstallException(e.getMessage());
-        }
-        ArtifactDownloaderUtils.checkResponseCode(repoResponseCode, repo);
+        repo = FormatUrlSuffix(repo);
         List<String> featureURLs = ArtifactDownloaderUtils.acquireFeatureURLs(mavenCoords, repo);
         List<String> missingFeatures;
         dLocation = FormatPathSuffix(dLocation);
         try {
-            missingFeatures = ArtifactDownloaderUtils.getMissingFiles(featureURLs);
+            int responseCode = ArtifactDownloaderUtils.exists(featureURLs.get(0), envMap);
+            if (responseCode != 404) {
+                ArtifactDownloaderUtils.checkResponseCode(responseCode, repo);
+            }
+        } catch (IOException e) {
+            fine(e.getMessage());
+            throw ExceptionUtils.createByKey("ERROR_FAILED_TO_CONNECT_MAVEN");
+        }
+        updateProgress(progressBar.getMethodIncrement("establishConnection"));
+        info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_MAVEN_REPO_CONNECTION_SUCCESSFUL"));
+        try {
+            missingFeatures = ArtifactDownloaderUtils.getMissingFiles(featureURLs, envMap);
         } catch (IOException e) {
             throw new InstallException(e.getMessage());
         }
         if (!missingFeatures.isEmpty()) {
+
             List<String> missingFeatureList = new ArrayList<String>();
             for (String f : missingFeatures) {
                 if (f.endsWith(".esa")) {
-                    missingFeatureList.add(ArtifactDownloaderUtils.getFileNameFromURL(f));
+                    missingFeatureList.add(ArtifactDownloaderUtils.getFileNameFromURL(f) + ".esa");
+                } else if (f.endsWith(".pom")) {
+                    missingFeatureList.add(ArtifactDownloaderUtils.getFileNameFromURL(f) + ".pom");
                 }
             }
-            throw ExceptionUtils.createByKey("ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_REPO", missingFeatureList, "feature(s)", repo);
+            fine("The remote repository is missing the following artifacts: " + missingFeatureList.toString());
+            throw ExceptionUtils.createByKey("ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_REPO", "required", "feature(s)", repo);
         } else {
+            // we have downloaded mavenCoords.length amount of features.
+            double individualSize = progressBar.getMethodIncrement("downloadArtifacts") / mavenCoords.size();
+            progressBar.updateMethodMap("downloadArtifact", individualSize);
+            logger.info(Messages.INSTALL_KERNEL_MESSAGES.getMessage("MSG_BEGINNING_DOWNLOAD_FEATURES"));
             for (String coords : mavenCoords) {
                 synthesizeAndDownload(coords, "esa", dLocation, repo, false);
                 synthesizeAndDownload(coords, "pom", dLocation, repo, false);
-                updateProgress(progressBar.getMethodIncrement("downloadArtifact"));
-                fine("Finished downloading feature: " + coords);
+
+                // update progress bar, drain the downloadArtifacts total size
+                updateProgress(individualSize);
+                progressBar.updateMethodMap("downloadArtifacts", progressBar.getMethodIncrement("downloadArtifacts") - individualSize);
+                progressBar.manuallyUpdate();
+                fine("Finished downloading artifact: " + coords);
             }
         }
     }
 
     /**
-     * @param dLocation
+     * @param path
      * @return
      */
-    private String FormatPathSuffix(String dLocation) {
-        String result = dLocation;
-        if (!dLocation.endsWith(File.separator)) {
+    private String FormatPathSuffix(String path) {
+        String result = path;
+        if (!path.endsWith(File.separator)) {
             result += File.separator;
+        }
+        return result;
+    }
+
+    private String FormatUrlSuffix(String url) {
+        String result = url;
+        if (!url.endsWith("/")) {
+            result += "/";
         }
         return result;
     }
@@ -97,17 +122,8 @@ public class ArtifactDownloader {
     public void synthesizeAndDownload(String mavenCoords, String filetype, String dLocation, String repo, boolean individualDownload) throws InstallException {
         configureProxyAuthentication();
         configureAuthentication();
-        if (individualDownload) {
-            checkValidProxy();
-            int repoResponseCode;
-            dLocation = FormatPathSuffix(dLocation);
-            try {
-                repoResponseCode = ArtifactDownloaderUtils.exists(repo);
-            } catch (IOException e) {
-                throw new InstallException(e.getMessage());
-            }
-            ArtifactDownloaderUtils.checkResponseCode(repoResponseCode, repo);
-        }
+        repo = FormatUrlSuffix(repo);
+        dLocation = FormatPathSuffix(dLocation);
         String groupId = ArtifactDownloaderUtils.getGroupId(mavenCoords).replace(".", "/") + "/";
         String artifactId = ArtifactDownloaderUtils.getartifactId(mavenCoords);
         String version = ArtifactDownloaderUtils.getVersion(mavenCoords);
@@ -115,18 +131,33 @@ public class ArtifactDownloader {
 
         String filename = ArtifactDownloaderUtils.getfilename(mavenCoords, filetype);
         String urlLocation = ArtifactDownloaderUtils.getUrlLocation(repo, groupId, artifactId, version, filename);
-        String[] checksumFormats = new String[2];
-        checksumFormats[0] = "MD5";
-        checksumFormats[1] = "SHA1";
+
+        if (individualDownload) {
+            checkValidProxy();
+            int repoResponseCode;
+            try {
+                repoResponseCode = ArtifactDownloaderUtils.exists(urlLocation, envMap);
+                if (repoResponseCode != 404) {
+                    ArtifactDownloaderUtils.checkResponseCode(repoResponseCode, repo);
+                }
+            } catch (Exception e) {
+                fine(e.getMessage());
+                throw ExceptionUtils.createByKey("ERROR_FAILED_TO_CONNECT_MAVEN");
+            }
+        }
+        String[] checksumFormats = new String[3];
+        checksumFormats[0] = "SHA256";
+        checksumFormats[1] = "MD5";
+        checksumFormats[2] = "SHA1";
 
         try {
-            if (individualDownload && ArtifactDownloaderUtils.fileIsMissing(urlLocation)) {
-                throw ExceptionUtils.createByKey("ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_REPO", ArtifactDownloaderUtils.getFileNameFromURL(urlLocation), filetype + " file", repo);
+            if (individualDownload && ArtifactDownloaderUtils.fileIsMissing(urlLocation, envMap)) {
+                throw ExceptionUtils.createByKey("ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_REPO", ArtifactDownloaderUtils.getFileNameFromURL(urlLocation), filetype + " file", repo); //ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_MAVEN_REPO
             } else {
                 download(urlLocation, dLocation, groupId, artifactId, version, filename, checksumFormats);
             }
         } catch (IOException e) {
-            throw ExceptionUtils.createByKey(e, "ERROR_INVALID_ESA", filename);
+            throw new InstallException(e.getMessage());
         }
 
     }
@@ -140,15 +171,33 @@ public class ArtifactDownloader {
             downloadInternal(uriLoc, fileLoc);
 
             downloadedFiles.add(fileLoc);
-
+            boolean someChecksumExists = false;
+            boolean checksumFail = false;
+            boolean checksumSuccess = false;
             for (String checksumFormat : checksumFormats) {
-                String checksumLocal = ArtifactDownloaderUtils.getChecksum(fileLoc.getAbsolutePath(), checksumFormat);
-                String checksumOrigin = ArtifactDownloaderUtils.getMasterChecksum(urlLocation, checksumFormat);
-                if (!checksumLocal.equals(checksumOrigin)) {
+                if (!checksumSuccess) {
+                    if (checksumIsAvailable(urlLocation, checksumFormat)) {
+                        someChecksumExists = true;
+                        if (isIncorrectChecksum(fileLoc.getAbsolutePath(), urlLocation, checksumFormat)) {
+                            fine("Failed to validate " + checksumFormat + " checksum for file: " + filename);
+                            checksumFail = true;
+                        } else {
+                            checksumSuccess = true;
+                            fine("Successfully validated " + checksumFormat + " checksum for file: " + filename);
+                        }
+                    } else {
+                        fine("Failed to find " + checksumFormat + " checksum for file: " + filename);
+                    }
+                }
+            }
+            if (someChecksumExists) {
+                if (checksumFail) {
                     ArtifactDownloaderUtils.deleteFiles(downloadedFiles, dLocation, groupId, artifactId, version, filename);
                     downloadedFiles.clear();
-                    throw ExceptionUtils.createByKey("ERROR_DOWNLOADED_ASSET_INVALID_CHECKSUM", filename, Messages.INSTALL_KERNEL_MESSAGES.getMessage("FEATURE_ASSET"));
+                    throw ExceptionUtils.createByKey("ERROR_CHECKSUM_FAILED_MAVEN", filename);
                 }
+            } else {
+                fine("No checksums found for file in remote repository");
             }
         } catch (URISyntaxException e) {
             throw new InstallException(e.getMessage());
@@ -157,18 +206,49 @@ public class ArtifactDownloader {
         }
     }
 
+    private boolean checksumIsAvailable(String urlLocation, String checksumFormat) {
+        boolean result = true;
+        try {
+            ArtifactDownloaderUtils.getMasterChecksum(urlLocation, checksumFormat);
+        } catch (IOException e) {
+            result = false;
+        }
+        return result;
+    }
+
+    private boolean isIncorrectChecksum(String localFile, String urlLocation, String checksumFormat) throws NoSuchAlgorithmException {
+        boolean result = false;
+        String checksumLocal;
+        try {
+            checksumLocal = ArtifactDownloaderUtils.getChecksum(localFile, checksumFormat);
+        } catch (IOException e) {
+            return true;
+        }
+        String checksumOrigin;
+        try {
+            checksumOrigin = ArtifactDownloaderUtils.getMasterChecksum(urlLocation, checksumFormat);
+        } catch (IOException e) {
+            return true;
+        }
+        if (!checksumLocal.equals(checksumOrigin)) {
+            result = true;
+        }
+        return result;
+    }
+
     private void configureProxyAuthentication() {
-        if (System.getenv("http.proxyUser") != null) {
+        if (envMap.get("https.proxyUser") != null) {
             Authenticator.setDefault(new SystemPropertiesProxyAuthenticator());
         }
     }
 
     private void configureAuthentication() {
-        if (System.getProperty("MVNW_USERNAME") != null && System.getProperty("MVNW_PASSWORD") != null && System.getenv("http.proxyUser") == null) {
+        if (envMap.get("FEATURE_REPO_USER") != null && envMap.get("FEATURE_REPO_PASSWORD") != null
+            && envMap.get("https.proxyUser") == null) {
             Authenticator.setDefault(new Authenticator() {
                 @Override
                 protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication(System.getProperty("MVNW_USERNAME"), System.getProperty("MVNW_PASSWORD").toCharArray());
+                    return new PasswordAuthentication(envMap.get("FEATURE_REPO_USER"), envMap.get("FEATURE_REPO_PASSWORD").toCharArray());
                 }
             });
         }
@@ -186,8 +266,11 @@ public class ArtifactDownloader {
                 throw ExceptionUtils.createByKey("ERROR_FAILED_TO_DOWNLOAD_FEATURE", ArtifactDownloaderUtils.getFileNameFromURL(address.toString()),
                                                  destination.toString());
             }
-            if (System.getenv("http.proxyUser") != null) {
-                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(System.getenv("http.proxyHost"), 8080));
+            if (envMap.get("https.proxyUser") != null) {
+                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(envMap.get("https.proxyHost"), Integer.parseInt(envMap.get("https.proxyPort"))));
+                conn = url.openConnection(proxy);
+            } else if (envMap.get("http.proxyUser") != null) {
+                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(envMap.get("http.proxyHost"), Integer.parseInt(envMap.get("http.proxyPort"))));
                 conn = url.openConnection(proxy);
             } else {
                 conn = url.openConnection();
@@ -195,6 +278,7 @@ public class ArtifactDownloader {
             addBasicAuthentication(address, conn);
             final String userAgentValue = calculateUserAgent();
             conn.setRequestProperty("User-Agent", userAgentValue);
+            conn.connect();
             in = conn.getInputStream();
             byte[] buffer = new byte[BUFFER_SIZE];
             int numRead;
@@ -227,35 +311,35 @@ public class ArtifactDownloader {
         return String.format("%s/%s (%s;%s;%s) (%s;%s;%s)", appName, appVersion, osName, osVersion, osArch, javaVendor, javaVersion, javaVendorVersion);
     }
 
-    private void addBasicAuthentication(URI address, URLConnection connection) throws IOException {
+    private void addBasicAuthentication(URI address, URLConnection conn) throws IOException {
         String userInfo = calculateUserInfo(address);
         if (userInfo == null) {
             return;
         }
-        connection.setRequestProperty("Authorization", "Basic " + base64Encode(userInfo));
+        conn.setRequestProperty("Authorization", "Basic " + base64Encode(userInfo));
     }
 
     private String base64Encode(String userInfo) {
         ClassLoader loader = getClass().getClassLoader();
         try {
-            Method getEncoderMethod = loader.loadClass("java.util.Base64").getMethod("getEncoder");
-            Method encodeMethod = loader.loadClass("java.util.Base64$Encoder").getMethod("encodeToString", byte[].class);
-            Object encoder = getEncoderMethod.invoke(null);
-            return (String) encodeMethod.invoke(encoder, new Object[] { userInfo.getBytes("UTF-8") });
-        } catch (Exception java7OrEarlier) {
+            Method getEncoder = loader.loadClass("java.util.Base64").getMethod("getEncoder");
+            Method encode = loader.loadClass("java.util.Base64$Encoder").getMethod("encodeToString", byte[].class);
+            Object encoder = getEncoder.invoke(null);
+            return (String) encode.invoke(encoder, new Object[] { userInfo.getBytes("UTF-8") });
+        } catch (Exception earlierThanJava7) {
             try {
-                Method encodeMethod = loader.loadClass("javax.xml.bind.DatatypeConverter").getMethod("printBase64Binary", byte[].class);
-                return (String) encodeMethod.invoke(null, new Object[] { userInfo.getBytes("UTF-8") });
-            } catch (Exception java5OrEarlier) {
-                throw new RuntimeException("Downloading Maven distributions with HTTP Basic Authentication is not supported on your JVM.", java5OrEarlier);
+                Method enocode = loader.loadClass("javax.xml.bind.DatatypeConverter").getMethod("printBase64Binary", byte[].class);
+                return (String) enocode.invoke(null, new Object[] { userInfo.getBytes("UTF-8") });
+            } catch (Exception earlierThanJava5) {
+                throw new RuntimeException("Downloading with HTTP Basic Authentication is not supported with your JVM.", earlierThanJava5);
             }
         }
     }
 
     private String calculateUserInfo(URI uri) {
 
-        if (System.getProperty("MVNW_USERNAME") != null && System.getProperty("MVNW_PASSWORD") != null) {
-            return System.getProperty("MVNW_USERNAME") + ':' + System.getProperty("MVNW_PASSWORD");
+        if (envMap.get("FEATURE_REPO_USER") != null && envMap.get("FEATURE_REPO_PASSWORD") != null) {
+            return envMap.get("FEATURE_REPO_USER") + ':' + envMap.get("FEATURE_REPO_PASSWORD");
         }
         return uri.getUserInfo();
     }
@@ -263,7 +347,7 @@ public class ArtifactDownloader {
     private static class SystemPropertiesProxyAuthenticator extends Authenticator {
         @Override
         protected PasswordAuthentication getPasswordAuthentication() {
-            return new PasswordAuthentication(System.getenv("http.proxyUser"), System.getenv("http.proxyPassword").toCharArray());
+            return new PasswordAuthentication(envMap.get("https.proxyUser"), envMap.get("https.proxyPassword").toCharArray());
         }
     }
 
@@ -293,15 +377,15 @@ public class ArtifactDownloader {
 
     public void checkValidProxy() throws InstallException {
 
-        String proxyPort = System.getenv("http.proxyPort");
-        if (System.getenv("http.proxyUser") != null) {
+        String proxyPort = envMap.get("https.proxyPort");
+        if (envMap.get("https.proxyUser") != null) {
             int proxyPortnum = Integer.parseInt(proxyPort);
-            if (System.getenv("http.proxyHost").isEmpty()) {
+            if (envMap.get("https.proxyHost").isEmpty()) {
                 throw ExceptionUtils.createByKey("ERROR_TOOL_PROXY_HOST_MISSING");
             } else if (proxyPortnum < 0 || proxyPortnum > 65535) {
                 throw ExceptionUtils.createByKey("ERROR_TOOL_INVALID_PROXY_PORT", proxyPort);
-            } else if (System.getenv("http.proxyPassword").isEmpty() ||
-                       System.getenv("http.proxyPassword") == null) {
+            } else if (envMap.get("https.proxyPassword").isEmpty() ||
+                       envMap.get("https.proxyPassword") == null) {
                 throw ExceptionUtils.createByKey("ERROR_TOOL_PROXY_PWD_MISSING");
             }
         }
@@ -312,24 +396,28 @@ public class ArtifactDownloader {
 
     }
 
+    public void setEnvMap(Map<String, String> envMap) {
+        this.envMap = envMap;
+    }
+
+    public Map<String, String> getEnvMap() {
+        return this.envMap;
+    }
+
     // log message types
     private void info(String msg) {
-        System.out.print("\033[2K"); // Erase line content
         logger.info(msg);
-        progressBar.display();
+
     }
 
     private void fine(String msg) {
-        System.out.print("\033[2K"); // Erase line content
+
         logger.fine(msg);
-        progressBar.display();
 
     }
 
     private void severe(String msg) {
-        System.out.print("\033[2K"); // Erase line content
         logger.severe(msg);
-        progressBar.display();
 
     }
 

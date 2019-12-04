@@ -14,6 +14,7 @@ import java.lang.reflect.Method;
 
 import org.eclipse.microprofile.faulttolerance.Asynchronous;
 import org.eclipse.microprofile.faulttolerance.CircuitBreaker;
+import org.eclipse.microprofile.faulttolerance.Fallback;
 
 /**
  * Factory for creating annotation config objects
@@ -30,4 +31,8 @@ public interface AnnotationConfigFactory {
     public CircuitBreakerConfig createCircuitBreakerConfig(Method annotatedMethod, Class<?> annotatedClass, CircuitBreaker annotation);
 
     public CircuitBreakerConfig createCircuitBreakerConfig(Class<?> annotatedClass, CircuitBreaker annotation);
+
+    public FallbackConfig createFallbackConfig(Method annotatedMethod, Class<?> annotatedClass, Fallback annotation);
+
+    public FallbackConfig createFallbackConfig(Class<?> annotatedClass, Fallback annotation);
 }

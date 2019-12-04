@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2019 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -36,6 +36,17 @@ import javax.interceptor.InterceptorBinding;
  * <li>If fallbackMethod is specified, invoke the method specified by the fallbackMethod on the same class.</li>
  * <li>If both are specified, the {@link org.eclipse.microprofile.faulttolerance.exceptions.FaultToleranceDefinitionException} must be thrown.</li>
  * </ol>
+ * <p>
+ * When a method returns and the Fallback policy is present, the following rules are applied:
+ * <ol>
+ * <li>If the method returns normally (doesn't throw), the result is simply returned.
+ * <li>Otherwise, if the thrown object is assignable to any value in the {@link #skipOn()} parameter, the thrown object will be rethrown.
+ * <li>Otherwise, if the thrown object is assignable to any value in the {@link #applyOn()} parameter, 
+ * the Fallback policy, detailed above, will be applied.
+ * <li>Otherwise the thrown object will be rethrown.
+ * </ol>
+ * If a method throws a {@link Throwable} which is not an {@link Error} or {@link Exception}, non-portable behavior results.
+
  * 
  * @author <a href="mailto:emijiang@uk.ibm.com">Emily Jiang</a>
  * 
@@ -78,4 +89,30 @@ public @interface Fallback {
     */
     @Nonbinding
     String fallbackMethod() default "";
+
+    /**
+     * The list of exception types which should trigger Fallback
+     * <p>
+     * Note that if a method throws a {@link Throwable} which is not an {@link Error} or {@link Exception}, 
+     * non-portable behavior results.
+     *
+     * @return the exception types which should trigger Fallback
+     */
+    @Nonbinding
+    Class<? extends Throwable>[] applyOn() default {Throwable.class};
+    
+    /**
+     * The list of exception types which should <i>not</i> trigger Fallback
+     * <p>
+     * This list takes priority over the types listed in {@link #applyOn}
+     * <p>
+     * Note that if a method throws a {@link Throwable} which is not an {@link Error} or {@link Exception}, 
+     * non-portable behavior results.
+     *
+     * @return the exception types which should not trigger Fallback
+     */
+    @Nonbinding
+    Class<? extends Throwable>[] skipOn() default {};
+
+
 }

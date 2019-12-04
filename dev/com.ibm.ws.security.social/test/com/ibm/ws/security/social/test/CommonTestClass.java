@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.social.test;
 
@@ -48,9 +48,13 @@ public class CommonTestClass extends com.ibm.ws.security.test.common.CommonTestC
     protected final static String CWWKS5371E_KUBERNETES_ERROR_GETTING_USER_INFO = "CWWKS5371E";
     protected final static String CWWKS5372E_KUBERNETES_ACCESS_TOKEN_MISSING = "CWWKS5372E";
     protected final static String CWWKS5373E_KUBERNETES_USER_API_BAD_STATUS = "CWWKS5373E";
+    protected final static String CWWKS5374E_KUBERNETES_USER_API_RESPONSE_MISSING_KEY = "CWWKS5374E";
     protected final static String CWWKS5376W_CUSTOM_ACCESS_TOKEN_HEADER_MISSING = "CWWKS5376W";
     protected final static String CWWKS5377E_KUBERNETES_USER_API_RESPONSE_NULL_EMPTY = "CWWKS5377E";
     protected final static String CWWKS5378E_KUBERNETES_USER_API_RESPONSE_NOT_JSON = "CWWKS5378E";
+    protected final static String CWWKS5379E_KUBERNETES_USER_API_RESPONSE_WRONG_JSON_TYPE = "CWWKS5379E";
+    protected final static String CWWKS5380E_KUBERNETES_USER_API_RESPONSE_ERROR = "CWWKS5380E";
+    protected final static String CWWKS5381W_KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND = "CWWKS5381W";
     protected final static String CWWKS5400I_SOCIAL_LOGIN_CONFIG_PROCESSED = "CWWKS5400I";
     protected final static String CWWKS5403E_SOCIAL_LOGIN_SERVER_INTERNAL_LOG_ERROR = "CWWKS5403E";
     protected final static String CWWKS5405E_SOCIAL_LOGIN_NO_SUCH_PROVIDER = "CWWKS5405E";

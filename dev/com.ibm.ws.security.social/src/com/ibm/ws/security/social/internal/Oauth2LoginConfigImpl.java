@@ -107,6 +107,7 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
 
     public static final String KEY_responseType = "responseType";
     protected String responseType = null;
+    private final String DEFAULT_RESPONSE_TYPE = ClientConstants.CODE;
 
     protected String grantType = null;
 
@@ -121,6 +122,7 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
 
     public static final String KEY_tokenEndpointAuthMethod = "tokenEndpointAuthMethod";
     protected String tokenEndpointAuthMethod = null;
+    private final String DEFAULT_TOKEN_ENDPOINT_AUTH_METHOD = ClientConstants.METHOD_client_secret_post;
 
     public static final String KEY_userApiNeedsSpecialHeader = "userApiNeedsSpecialHeader";
     protected boolean userApiNeedsSpecialHeader = false;
@@ -145,6 +147,7 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
 
     public static final String KEY_userNameAttribute = "userNameAttribute";
     protected String userNameAttribute = null;
+    private final String DEFAULT_USER_NAME_ATTRIBUTE = "email";
 
     public static final String KEY_groupNameAttribute = "groupNameAttribute";
     protected String groupNameAttribute = null;
@@ -173,7 +176,8 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
     protected boolean useSystemPropertiesForHttpClientConnections = false;
 
     public static final String KEY_userApiType = "userApiType";
-    protected String userApiType = "basic";
+    protected String userApiType = null;
+    private final String DEFAULT_USER_API_TYPE = "basic";
 
     public static final String KEY_userApiToken = "userApiToken";
     protected String userApiToken = null;
@@ -282,12 +286,12 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
         this.website = configUtils.getConfigAttribute(props, KEY_website);
         this.tokenEndpoint = configUtils.getConfigAttribute(props, KEY_tokenEndpoint);
         this.jwksUri = configUtils.getConfigAttribute(props, KEY_jwksUri);
-        this.responseType = configUtils.getConfigAttributeWithDefaultValue(props, KEY_responseType, ClientConstants.CODE);
-        this.tokenEndpointAuthMethod = configUtils.getConfigAttributeWithDefaultValue(props, KEY_tokenEndpointAuthMethod, ClientConstants.METHOD_client_secret_post);
+        this.responseType = configUtils.getConfigAttributeWithDefaultValue(props, KEY_responseType, DEFAULT_RESPONSE_TYPE);
+        this.tokenEndpointAuthMethod = configUtils.getConfigAttributeWithDefaultValue(props, KEY_tokenEndpointAuthMethod, DEFAULT_TOKEN_ENDPOINT_AUTH_METHOD);
         this.sslRef = configUtils.getConfigAttribute(props, KEY_sslRef);
         this.authFilterRef = configUtils.getConfigAttribute(props, KEY_authFilterRef);
         this.redirectToRPHostAndPort = configUtils.getConfigAttribute(props, KEY_redirectToRPHostAndPort);
-        this.userNameAttribute = configUtils.getConfigAttribute(props, KEY_userNameAttribute);
+        this.userNameAttribute = configUtils.getConfigAttributeWithDefaultValue(props, KEY_userNameAttribute, DEFAULT_USER_NAME_ATTRIBUTE);
         this.userApi = configUtils.getConfigAttribute(props, KEY_userApi);
         this.realmName = configUtils.getConfigAttribute(props, KEY_realmName);
         this.realmNameAttribute = configUtils.getConfigAttribute(props, KEY_realmNameAttribute);
@@ -297,7 +301,7 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
         this.isClientSideRedirectSupported = configUtils.getBooleanConfigAttribute(props, KEY_isClientSideRedirectSupported, this.isClientSideRedirectSupported);
         this.nonce = configUtils.getBooleanConfigAttribute(props, KEY_nonce, this.nonce);
         this.userApiNeedsSpecialHeader = configUtils.getBooleanConfigAttribute(props, KEY_userApiNeedsSpecialHeader, this.userApiNeedsSpecialHeader);
-        this.userApiType = configUtils.getConfigAttribute(props, KEY_userApiType);
+        this.userApiType = configUtils.getConfigAttributeWithDefaultValue(props, KEY_userApiType, DEFAULT_USER_API_TYPE);
         this.userApiToken = configUtils.processProtectedString(props, KEY_userApiToken);
         this.accessTokenRequired = configUtils.getBooleanConfigAttribute(props, KEY_accessTokenRequired, this.accessTokenRequired);
         this.accessTokenSupported = configUtils.getBooleanConfigAttribute(props, KEY_accessTokenSupported, this.accessTokenSupported);

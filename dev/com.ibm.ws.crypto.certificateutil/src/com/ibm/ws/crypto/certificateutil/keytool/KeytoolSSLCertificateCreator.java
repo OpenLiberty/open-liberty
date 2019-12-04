@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,9 +11,8 @@
 package com.ibm.ws.crypto.certificateutil.keytool;
 
 import java.io.File;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.security.cert.CertificateException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.naming.InvalidNameException;
@@ -30,6 +29,18 @@ public class KeytoolSSLCertificateCreator implements DefaultSSLCertificateCreato
     @Override
     public File createDefaultSSLCertificate(String filePath, String password, int validity, String subjectDN, int keySize, String sigAlg,
                                             String extInfo) throws CertificateException {
+        ArrayList<String> ext = new ArrayList<String>();
+        if (extInfo != null) {
+            ext.add(extInfo);
+        }
+        return createDefaultSSLCertificate(filePath, password, validity, subjectDN, keySize, sigAlg, ext);
+
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public File createDefaultSSLCertificate(String filePath, String password, int validity, String subjectDN, int keySize, String sigAlg,
+                                            List<String> extInfo) throws CertificateException {
 
         String setKeyStoreType = null;
         KeytoolCommand keytoolCmd = null;
@@ -40,10 +51,6 @@ public class KeytoolSSLCertificateCreator implements DefaultSSLCertificateCreato
 
         if (filePath.lastIndexOf(".") != -1) {
             setKeyStoreType = filePath.substring(filePath.lastIndexOf(".") + 1, filePath.length());
-        }
-
-        if (extInfo == null) {
-            extInfo = defaultExtInfo();
         }
 
         if (!setKeyStoreType.equals("p12") && (!setKeyStoreType.equals(DEFAULT_KEYSTORE_TYPE))) {
@@ -149,44 +156,6 @@ public class KeytoolSSLCertificateCreator implements DefaultSSLCertificateCreato
             return KEYALG_EC_TYPE;
         else
             return KEYALG_RSA_TYPE;
-    }
-
-    /**
-     * Create the default SAN extension value
-     *
-     * @param hostName May be {@code null}. If {@code null} an attempt is made to determine it.
-     */
-    public String defaultExtInfo() {
-        String hostname = getHostName();
-        String ext = null;
-
-        InetAddress addr;
-        try {
-            addr = InetAddress.getByName(hostname);
-            if (addr != null && addr.toString().startsWith("/"))
-                ext = "SAN=ip:" + hostname;
-            else {
-                // If the hostname start with a digit keytool will not create a SAN with the value
-                if (!Character.isDigit(hostname.charAt(0)))
-                    ext = "SAN=dns:" + hostname;
-            }
-        } catch (UnknownHostException e) {
-            // use return null and not set SAN if there is an exception here
-        }
-        return ext;
-    }
-
-    /**
-     * Get the host name.
-     *
-     * @return String value of the host name or "localhost" if not able to resolve
-     */
-    private String getHostName() {
-        try {
-            return java.net.InetAddress.getLocalHost().getCanonicalHostName();
-        } catch (java.net.UnknownHostException e) {
-            return "localhost";
-        }
     }
 
 }

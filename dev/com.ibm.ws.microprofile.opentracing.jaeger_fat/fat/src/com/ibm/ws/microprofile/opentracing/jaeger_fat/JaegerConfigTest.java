@@ -91,7 +91,7 @@ public class JaegerConfigTest {
     @After
     public void tearDown() throws Exception {
     	if (currentServer != null && currentServer.isStarted()) {
-        	currentServer.stopServer("CWMOT0008E", "CWMOT0009W");
+        	currentServer.stopServer("CWMOT0009W", "CWMOT0010W");
         }
     }
     
@@ -130,7 +130,7 @@ public class JaegerConfigTest {
         } catch (IOException e) {
         	// Error should be thrown when hitting endpoint
         }
-        String logMsg = server2.waitForStringInLog("CWMOT0008E");
+        String logMsg = server2.waitForStringInLog("CWMOT0010W");
         FATLogging.info(CLASS, methodName, "Actual Response", logMsg);
         Assert.assertNotNull(logMsg);
     }

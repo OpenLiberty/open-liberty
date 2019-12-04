@@ -25,7 +25,9 @@ import componenttest.rules.repeater.RepeatTests;
                 TestExample_EJB.class,
                 TestExample_Web.class,
                 TestOLGH8820_EJB.class,
-                TestOLGH8820_Web.class
+                TestOLGH8820_Web.class,
+                TestTXSynchronization.class,
+                TestTXDDSynchronization.class
 })
 public class FATSuite {
     public final static String[] JAXB_PERMS = { "permission java.lang.RuntimePermission \"accessClassInPackage.com.sun.xml.internal.bind.v2.runtime.reflect\";",

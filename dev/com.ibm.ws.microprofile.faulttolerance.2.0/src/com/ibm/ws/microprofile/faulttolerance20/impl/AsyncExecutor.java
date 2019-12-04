@@ -44,6 +44,7 @@ import com.ibm.ws.microprofile.faulttolerance20.state.AsyncBulkheadState.Bulkhea
 import com.ibm.ws.microprofile.faulttolerance20.state.AsyncBulkheadState.ExceptionHandler;
 import com.ibm.ws.microprofile.faulttolerance20.state.AsyncBulkheadState.ExecutionReference;
 import com.ibm.ws.microprofile.faulttolerance20.state.CircuitBreakerState;
+import com.ibm.ws.microprofile.faulttolerance20.state.FallbackState;
 import com.ibm.ws.microprofile.faulttolerance20.state.FaultToleranceStateFactory;
 import com.ibm.ws.microprofile.faulttolerance20.state.RetryState;
 import com.ibm.ws.microprofile.faulttolerance20.state.RetryState.RetryResult;
@@ -118,7 +119,7 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
         circuitBreaker = FaultToleranceStateFactory.INSTANCE.createCircuitBreakerState(cbPolicy, metricRecorder);
         this.timeoutPolicy = timeoutPolicy;
         this.executorService = executorService;
-        this.fallbackPolicy = fallbackPolicy;
+        fallback = FaultToleranceStateFactory.INSTANCE.createFallbackState(fallbackPolicy, metricRecorder);
         bulkhead = FaultToleranceStateFactory.INSTANCE.createAsyncBulkheadState(executorService, bulkheadPolicy, metricRecorder);
         this.metricRecorder = metricRecorder;
         this.contextService = contextService;
@@ -128,7 +129,7 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
     private final CircuitBreakerState circuitBreaker;
     private final ScheduledExecutorService executorService;
     private final TimeoutPolicy timeoutPolicy;
-    private final FallbackPolicy fallbackPolicy;
+    private final FallbackState fallback;
     private final AsyncBulkheadState bulkhead;
     private final WSContextService contextService;
     private final MetricRecorder metricRecorder;
@@ -371,7 +372,7 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
                     }
                 }
 
-                if (result.isFailure() && fallbackPolicy != null) {
+                if (fallback.shouldApplyFallback(result)) {
                     prepareFallback(result, executionContext);
                     return;
                 }
@@ -411,15 +412,8 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
     }
 
     @FFDCIgnore({ Throwable.class, IllegalStateException.class })
-    @SuppressWarnings("unchecked")
     private void runFallback(MethodResult<W> failedResult, AsyncExecutionContextImpl<W> executionContext) {
         try {
-
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                Tr.event(tc, "Execution {0} calling fallback", executionContext.getId());
-            }
-
-            executionContext.setFailure(failedResult.getFailure());
 
             MethodResult<W> fallbackResult = null;
             ThreadContextDescriptor contextDescriptor = executionContext.getThreadContextDescriptor();
@@ -431,18 +425,11 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
             }
 
             if (fallbackResult == null) {
-                metricRecorder.incrementFallbackCalls();
                 try {
-                    fallbackResult = MethodResult.success((W) fallbackPolicy.getFallbackFunction().execute(executionContext));
-                } catch (Throwable ex) {
-                    fallbackResult = MethodResult.failure(ex);
+                    fallbackResult = fallback.runFallback(failedResult, executionContext);
                 } finally {
                     contextDescriptor.taskStopping(context);
                 }
-            }
-
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                Tr.event(tc, "Execution {0} fallback result: {1}", executionContext.getId(), fallbackResult);
             }
 
             processEndOfExecution(executionContext, fallbackResult);

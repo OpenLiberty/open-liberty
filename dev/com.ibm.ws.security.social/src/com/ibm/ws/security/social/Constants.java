@@ -18,6 +18,8 @@ public class Constants {
 
     public static final String ATTRIBUTE_SOCIALMEDIA_REQUEST = "SocialLoginRequest";
     public static final String ATTRIBUTE_TAI_REQUEST = "SocialTaiRequest";
+    
+    public static final String ATTRIBUTE_TAI_BEFORE_SSO_REQUEST = "SocialTaiBeforeSSORequest";
 
     public final static String CHARSSTR = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     public final static char[] CHARS = CHARSSTR.toCharArray();

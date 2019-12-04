@@ -138,7 +138,7 @@ public class OAuthClientHttpUtil {
                 }
             }
         }
-        throw new SocialLoginException("RESPONSE_STATUS_UNSUCCESSFUL", null, new Object[] { url, errorMsg });
+        throw new SocialLoginException("RESPONSE_STATUS_UNSUCCESSFUL", null, new Object[] { url, statusInsert, errorMsg });
     }
 
     public Map<String, Object> postToEndpoint(String url,
@@ -348,9 +348,9 @@ public class OAuthClientHttpUtil {
 
         return client;
     }
-    
-    private HttpClientBuilder getBuilder(boolean useJvmProps){
-         return useJvmProps ? HttpClientBuilder.create().useSystemProperties() : HttpClientBuilder.create();
+
+    private HttpClientBuilder getBuilder(boolean useJvmProps) {
+        return useJvmProps ? HttpClientBuilder.create().useSystemProperties() : HttpClientBuilder.create();
     }
 
     public static OAuthClientHttpUtil getInstance() {
