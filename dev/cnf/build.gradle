@@ -592,3 +592,165 @@ List populateProjectDeps(File bndFile, String path, List dependents) {
     }
     return dependents
 }
+
+task printBinaryDependencies() {
+    doLast {
+       
+        Set allDeps = new TreeSet()
+        Map dependencyMap = new LinkedHashMap()
+        rootProject.fileTree(dir: '.', include: '*/bnd.bnd').each { bndFile ->
+            def bndProps = new Properties()
+            bndFile.withInputStream { bndProps.load(it) }
+            if ('false'.equals(bndProps.get('test.project', 'false')) && 'false'.equals(bndProps.get('fat.project', 'false')) /*&& (bndProps.get('publish.wlp.jar.suffix', '') != 'dev/api/spec') */ && 'false'.equals(bndProps.get('publish.wlp.jar.disabled', 'false'))) {
+                
+
+
+                List projDeps = binaryDeps(bndFile, bndProps);
+                for (String dep : projDeps) {
+                    List currentProjects = dependencyMap.get(dep);
+                    if (currentProjects == null) {
+                        currentProjects = new LinkedList()
+                        dependencyMap.put(dep,currentProjects);
+                    }
+                    currentProjects.add(bndFile.getParentFile().getName());
+                }
+            }
+        }
+        List unsorted = new ArrayList();
+        println dependencyMap.keySet().size() + ' Dependencies found'
+        for (String dep : dependencyMap.keySet()) {
+                unsorted.add(dep);
+            }
+        int depCount = 0
+        Collections.sort(unsorted);
+        for (String dep : unsorted) {
+                depCount++
+                println depCount + ') ' + dep + ' referring projects: ' + dependencyMap.get(dep)
+            }
+        }
+    }
+
+List binaryDeps(File bndFile, Properties bndProps) {
+    List dependents = new LinkedList()
+
+    String path = bndProps.get('-buildpath')
+    if (path != null)
+        return binaryDeps(bndFile, path, dependents)
+    return dependents
+}
+
+List binaryDeps(File bndFile, String path, List dependents) {
+    
+    def reg1= 'version='
+    def reg2= 'strategy=exact;'
+    path = path.replaceAll('"[^"]*"', '#')
+    path.split(',').each { pathElem ->
+        if ((pathElem.indexOf('version=') != -1) && (pathElem.indexOf(':') != -1) && (pathElem.indexOf('version=latest') == -1) && (pathElem.indexOf('version=file') == -1)) {
+            dependents.add(pathElem.trim()  - reg1 - reg2)
+        }
+
+    }
+    return dependents
+}
+
+task printRepackagedBinaries() {
+    doLast {
+       
+        Set allDeps = new TreeSet()
+        Map binaryMap = new LinkedHashMap()
+        Map includedMap = new LinkedHashMap()
+        Map proj_packagesMap = new LinkedHashMap()
+        rootProject.fileTree(dir: '.', include: '*/bnd.bnd').each { bndFile ->
+            def bndProps = new Properties()
+            bndFile.withInputStream { bndProps.load(it) }
+            if ('false'.equals(bndProps.get('test.project', 'false')) && 'false'.equals(bndProps.get('fat.project', 'false')) /*&& 'false'.equals(bndProps.get('publish.wlp.jar.disabled', 'false')) */) {
+
+                List packages = new LinkedList();
+                String export_packages = bndProps.get('Export-Package')
+                if (export_packages != null) {
+                    export_packages.split(',').each { pathElem ->
+                        packages.add(pathElem.trim())
+                    }
+                }
+                
+                for (String pack : packages) { 
+                List currentPacks = proj_packagesMap.get(bndFile.getParentFile().getName());
+                    if (currentPacks == null) {
+                        currentPacks = new LinkedList()
+                        proj_packagesMap.put(bndFile.getParentFile().getName(),currentPacks);
+                    }
+                    currentPacks.add(pack);
+                }
+
+
+                List binDeps = binaryDeps(bndFile, bndProps);
+                List includeDeps = includedDeps(bndFile, bndProps);
+                for (String dep : includeDeps) { 
+                    List currentIncludedDeps = includedMap.get(dep);
+                    if (currentIncludedDeps == null) {
+                        currentIncludedDeps = new LinkedList()
+                        includedMap.put(dep,currentIncludedDeps);
+                    }
+                    currentIncludedDeps.add(bndFile.getParentFile().getName());
+                }
+                for (String dep : binDeps) {
+                    List currentProjects = binaryMap.get(dep);
+                    if (currentProjects == null) {
+                        currentProjects = new LinkedList()
+                        binaryMap.put(dep,currentProjects);
+                    }
+                    currentProjects.add(bndFile.getParentFile().getName());
+                }
+            }
+        }
+        List unsorted = new ArrayList();
+        println 'Re-packaged dependencies'
+        for (String dep : binaryMap.keySet()) {
+                unsorted.add(dep);
+            }
+        int depCount = 0
+        Collections.sort(unsorted);
+        boolean isPackaged; 
+        for (String dep : unsorted) {
+            isPackaged = false;
+            List currentIncludes = includedMap.get(dep);
+            if (currentIncludes != null)
+                isPackaged = true;
+            else {
+                for (String proj : binaryMap.get(dep)) {
+                    List currentPacks = proj_packagesMap.get(proj);
+                    if (currentPacks != null) {
+                        for (String pack : currentPacks) {
+                            if (pack.indexOf('com.ibm') == -1)
+                                isPackaged = true;
+                        }
+                    }
+                }
+            }    
+                if (isPackaged)   {       
+                    depCount++
+                    println depCount + ') ' + dep + ' PROJECTS: ' + binaryMap.get(dep)
+                }
+            }
+        }
+    }
+
+List includedDeps(File bndFile, Properties bndProps) {
+    List dependents = new LinkedList()
+    String path = bndProps.get('-include')
+    if (path != null)
+        return includedDeps(bndFile, path, dependents)
+    return dependents
+}
+
+List includedDeps(File bndFile, String path, List dependents) {
+
+    def reg1= 'jar:${fileuri;${repo;'
+    def reg2= '}}!/META-INF/MANIFEST.MF'
+    //path = path.replaceAll('"[^"]*"', '#')
+    path.split(',').each { pathElem ->
+        if ((pathElem.indexOf('repo') != -1) && (pathElem.indexOf(':') != -1))
+            dependents.add(pathElem.trim() - reg1 - reg2)
+    }
+    return dependents
+}

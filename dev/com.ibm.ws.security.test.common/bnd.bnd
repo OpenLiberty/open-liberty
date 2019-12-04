@@ -11,6 +11,7 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+
 Bundle-Name: Security Test Common
 Bundle-SymbolicName: com.ibm.ws.security.test.common
 Bundle-Description: Common code for security test bundles; version=${bVersion}
