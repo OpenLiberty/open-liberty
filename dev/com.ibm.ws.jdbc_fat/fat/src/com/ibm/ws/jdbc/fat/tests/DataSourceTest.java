@@ -17,21 +17,28 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.util.List;
 
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.dsprops.testrules.OnlyIfDataSourceProperties;
 import com.ibm.websphere.simplicity.config.dsprops.testrules.SkipIfDataSourceProperties;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
+@RunWith(FATRunner.class)
 public class DataSourceTest extends FATServletClient {
 
     @Server("com.ibm.ws.jdbc.fat")
@@ -44,11 +51,14 @@ public class DataSourceTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        server.configureForAnyDatabase();
-        server.addInstalledAppForValidation(setupfat);
-        server.addInstalledAppForValidation(dsdfat);
-        server.addInstalledAppForValidation(dsdfat_global_lib);
-        server.addInstalledAppForValidation("jdbcapp");
+    	ShrinkHelper.defaultDropinApp(server, setupfat, "setupfat");
+    	ShrinkHelper.defaultApp(server, dsdfat, "dsdfat");
+    	ShrinkHelper.defaultApp(server, dsdfat_global_lib, "dsdfat_global_lib");
+    	WebArchive basicfat = ShrinkHelper.buildDefaultApp("basicfat.war", "basicfat");
+        EnterpriseArchive basicfatEAR = ShrinkWrap.create(EnterpriseArchive.class, "jdbcapp.ear");
+        basicfatEAR.addAsModule(basicfat);
+        ShrinkHelper.addDirectory(basicfatEAR, "test-applications/jdbcapp/resources");
+        ShrinkHelper.exportAppToServer(server, basicfatEAR);
         server.startServer();
     }
 

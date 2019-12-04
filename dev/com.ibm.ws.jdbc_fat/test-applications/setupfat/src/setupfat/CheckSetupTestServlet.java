@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package web;
+package setupfat;
 
 import java.io.PrintWriter;
 import java.sql.Connection;

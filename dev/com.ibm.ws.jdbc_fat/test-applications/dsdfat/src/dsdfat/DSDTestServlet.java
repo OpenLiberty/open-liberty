@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package web;
+package dsdfat;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;

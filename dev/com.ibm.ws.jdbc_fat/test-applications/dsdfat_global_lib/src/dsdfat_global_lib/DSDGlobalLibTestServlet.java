@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package web;
+package dsdfat_global_lib;
 
 import javax.annotation.Resource;
 import javax.annotation.sql.DataSourceDefinition;

@@ -13,11 +13,15 @@ package com.ibm.ws.jdbc.fat.tests;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import componenttest.annotation.Server;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
+import componenttest.custom.junit.runner.FATRunner;
+
+@RunWith(FATRunner.class)
 public class DataSourceJaasTest extends FATServletClient {
 
     @Server("com.ibm.ws.jdbc.jaas.fat")

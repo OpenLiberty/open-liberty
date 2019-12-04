@@ -15,43 +15,45 @@
     that contains "Derby" or "derby".
     All elements nested or referenced by these types of elements will be updated. -->
     
-    <include location="../fatTestPorts.xml"/>
-    <logging traceSpecification="*=info=enabled:com.ibm.ws.jdbc.*=all=enabled:com.ibm.ejs.j2c.*=all=enabled:com.ibm.ws.rsadapter.*=all=enabled"/>
     <featureManager>
       <feature>componenttest-1.0</feature>
-      <feature>servlet-3.0</feature>
-      <feature>jdbc-4.0</feature>
+      <feature>servlet-3.1</feature>
+      <feature>jdbc-4.1</feature>
       <feature>concurrent-1.0</feature>
     </featureManager>
 
+	<include location="../fatTestPorts.xml"/>
+
+	<logging traceSpecification="*=info=enabled:com.ibm.ws.jdbc.*=all=enabled:com.ibm.ejs.j2c.*=all=enabled:com.ibm.ws.rsadapter.*=all=enabled"/>
+
     <library id="AutomaticDerbyLibrary">
-      <fileset dir="${server.config.dir}/lib/AutomaticDerbyLibrary" includes="derby.jar"/>
+      <fileset dir="${shared.resource.dir}/lib/AutomaticDerbyLibrary" includes="derby.jar"/>
     </library>
 
     <jdbcDriver id="FATJDBCDriver" fat.modify="true">
       <library>
-        <fileset dir="${server.config.dir}/jdbc" includes="driver.jar"/>
+        <fileset dir="${shared.resource.dir}/jdbc" includes="driver.jar"/>
       </library>
     </jdbcDriver>
      
     <jdbcDriver id="FATJDBCDriver1" fat.modify="true">
       <library filesetRef="FATfileset1"/>
     </jdbcDriver>
-    <fileset id="FATfileset1" dir="${server.config.dir}/derby" includes="derby.jar"/>    
+    <fileset id="FATfileset1" dir="${shared.resource.dir}/derby" includes="derby.jar"/>    
 
     <jdbcDriver id="FATJDBCDriver2" libraryRef="FATLib2" fat.modify="true"/>
     <library id="FATLib2">
-      <fileset dir="${server.config.dir}/derby" includes="derby.jar"/>
+      <fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
     </library>
     
     <jdbcDriver id="FATJDBCDriver3" libraryRef="FATLib3" fat.modify="true"/>
     <library id="FATLib3" filesetRef="FATfileset3"/>
-    <fileset id="FATfileset3" dir="${server.config.dir}/derby" includes="derby.jar"/>
+    <fileset id="FATfileset3" dir="${shared.resource.dir}/derby" includes="derby.jar"/>
     
     <!-- Derby-only JDBC driver -->
     <jdbcDriver id="Derby" libraryRef="DerbyLib"/>
     <library id="DerbyLib">
-      <fileset dir="${server.config.dir}/derby"/>
+      <fileset dir="${shared.resource.dir}/derby"/>
     </library>
     
     <!-- Derby-only JDBC driver with no config changes -->
@@ -90,7 +92,7 @@
       <properties.derby.embedded databaseName="${shared.resource.dir}/data/jdbcfat" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
     </dataSource>    
     <library id="FATLib4" filesetRef="FATfileset4"/>
-    <fileset id="FATfileset4" dir="${server.config.dir}/derby" includes="derby.jar"/>
+    <fileset id="FATfileset4" dir="${shared.resource.dir}/derby" includes="derby.jar"/>
     
     <dataSource id="dsfatboot5" jndiName="jdbc/dsfatboot5" fat.modify="true" type="javax.sql.ConnectionPoolDataSource" transactional="false">
       <jdbcDriver id="FATJDBCDriver5">
@@ -98,12 +100,12 @@
       </jdbcDriver>
       <properties.derby.embedded databaseName="${shared.resource.dir}/data/jdbcfat" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
     </dataSource>        
-    <fileset id="FATfileset5" dir="${server.config.dir}/derby" includes="derby.jar"/>    
+    <fileset id="FATfileset5" dir="${shared.resource.dir}/derby" includes="derby.jar"/>    
 
     <dataSource id="dsfatboot6" jndiName="jdbc/dsfatboot6" fat.modify="true" type="javax.sql.ConnectionPoolDataSource" transactional="false">
       <jdbcDriver id="FATJDBCDriver6">
         <library id="FATLib6">
-          <fileset id="FATfileset6" dir="${server.config.dir}/derby" includes="derby.jar"/>    
+          <fileset id="FATfileset6" dir="${shared.resource.dir}/derby" includes="derby.jar"/>    
         </library>
       </jdbcDriver>
       <properties.derby.embedded databaseName="${shared.resource.dir}/data/jdbcfat" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
@@ -164,7 +166,7 @@
     <jaasLoginContextEntry id="myJAASLoginEntry" name="myJAASLoginEntry" loginModuleRef="testLoginModule" />
 	<jaasLoginModule id="testLoginModule" className="com.ibm.ws.jdbc.fat.jaas.tests.TestLoginModule" controlFlag="REQUIRED" libraryRef="customLoginLib"/>
 	<library id="customLoginLib">
-	  <fileset dir="${server.config.dir}" includes="TestLoginModule.jar"/>
+	  <fileset dir="${shared.resource.dir}" includes="TestLoginModule.jar"/>
     </library>
 
     <!-- dsfat6, dsfat7, dsfat8, dsfat9 are defined via @DataSourceDefinition in DataSourceTestServlet
@@ -186,7 +188,7 @@
     <dataSource id="derbyWithNestedList" jndiName="jdbc/derbyWithNestedList">
 		<jdbcDriver>
 			<library>
-				<fileset dir="${server.config.dir}/derby"/>
+				<fileset dir="${shared.resource.dir}/derby"/>
 			</library>
 		</jdbcDriver>
 		<properties.derby.embedded createDatabase="create" />
@@ -194,7 +196,7 @@
 	<dataSource id="db2WithNestedList" jndiName="jdbc/db2WithNestedList">
 		<jdbcDriver>
 			<library>
-				<fileset dir="${server.config.dir}/db2"/>
+				<fileset dir="${shared.resource.dir}/db2"/>
 			</library>
 		</jdbcDriver>
 		<properties.db2.jcc />
@@ -219,16 +221,16 @@
     </application>
     
     <library id="global">
-      <fileset dir="${server.config.dir}/derby"/>
+      <fileset dir="${shared.resource.dir}/derby"/>
     </library>
 
 	<!-- Note that until using a nested <file> works the following ACEs will be thrown: createClassLoader,
 	java.util.PropertyPermission, javax.management.MBeanPermission -->
-    <javaPermission codebase="${server.config.dir}derby/derby.jar" className="java.security.AllPermission"/>
-    <javaPermission codebase="${server.config.dir}derby/derbyclient.jar" className="java.security.AllPermission"/>
-    <javaPermission codebase="${server.config.dir}jdbc/driver.jar" className="java.security.AllPermission"/>
-    <javaPermission codebase="${server.config.dir}lib/AutomaticDerbyLibrary/derby.jar" className="java.security.AllPermission"/>
-	<javaPermission codebase="${server.config.dir}db2/db2jcc4.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${shared.resource.dir}derby/derby.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${shared.resource.dir}derby/derbyclient.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${shared.resource.dir}jdbc/driver.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${shared.resource.dir}lib/AutomaticDerbyLibrary/derby.jar" className="java.security.AllPermission"/>
+	<javaPermission codebase="${shared.resource.dir}db2/db2jcc4.jar" className="java.security.AllPermission"/>
 		
 	<javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
 	<javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>

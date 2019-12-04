@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package web;
+package basicfat;
 
 import java.lang.reflect.Field;
 import java.sql.Connection;
