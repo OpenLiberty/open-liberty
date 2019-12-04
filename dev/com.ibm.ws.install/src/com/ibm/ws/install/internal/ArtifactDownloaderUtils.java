@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.net.ssl.HttpsURLConnection;
+
 import com.ibm.ws.install.InstallException;
 
 public class ArtifactDownloaderUtils {
@@ -41,21 +43,45 @@ public class ArtifactDownloaderUtils {
 
     public static int exists(String URLName, Map<String, String> envMap) throws IOException {
         try {
-            HttpURLConnection.setFollowRedirects(true);
-            HttpURLConnection conn;
-
             URL url = new URL(URLName);
-            if (envMap.get("https.proxyUser") != null) {
-                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(envMap.get("https.proxyHost"), 8080));
-                conn = (HttpURLConnection) url.openConnection(proxy);
+            if (url.getProtocol().equals("https")) {
+                HttpsURLConnection.setFollowRedirects(true);
+                HttpsURLConnection conn;
+
+                if (envMap.get("https.proxyHost") != null) {
+                    Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(envMap.get("https.proxyHost"), Integer.parseInt(envMap.get("https.proxyPort"))));
+                    conn = (HttpsURLConnection) url.openConnection(proxy);
+                } else if (envMap.get("http.proxyHost") != null) {
+                    Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(envMap.get("http.proxyHost"), Integer.parseInt(envMap.get("http.proxyPort"))));
+                    conn = (HttpsURLConnection) url.openConnection(proxy);
+                } else {
+                    conn = (HttpsURLConnection) url.openConnection();
+                }
+                conn.setRequestMethod("HEAD");
+                conn.setConnectTimeout(10000);
+                conn.connect();
+                int responseCode = conn.getResponseCode();
+                conn.setInstanceFollowRedirects(true);
+                return responseCode;
             } else {
-                conn = (HttpURLConnection) url.openConnection();
+                HttpURLConnection.setFollowRedirects(true);
+                HttpURLConnection conn;
+                if (envMap.get("https.proxyHost") != null) {
+                    Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(envMap.get("https.proxyHost"), Integer.parseInt(envMap.get("https.proxyPort"))));
+                    conn = (HttpURLConnection) url.openConnection(proxy);
+                } else if (envMap.get("http.proxyHost") != null) {
+                    Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(envMap.get("http.proxyHost"), Integer.parseInt(envMap.get("http.proxyPort"))));
+                    conn = (HttpURLConnection) url.openConnection(proxy);
+                } else {
+                    conn = (HttpURLConnection) url.openConnection();
+                }
+                conn.setRequestMethod("HEAD");
+                conn.setConnectTimeout(10000);
+                conn.connect();
+                int responseCode = conn.getResponseCode();
+                conn.setInstanceFollowRedirects(true);
+                return responseCode;
             }
-            conn.setRequestMethod("HEAD");
-            conn.setConnectTimeout(10000);
-            int responseCode = conn.getResponseCode();
-            conn.setInstanceFollowRedirects(true);
-            return responseCode;
         } catch (ConnectException e) {
             throw e;
         } catch (SocketTimeoutException e) {

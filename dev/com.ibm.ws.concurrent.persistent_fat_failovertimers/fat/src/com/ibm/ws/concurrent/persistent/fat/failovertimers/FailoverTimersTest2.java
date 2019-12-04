@@ -225,7 +225,8 @@ public class FailoverTimersTest2 extends FATServletClient {
         // Also restart the server. This allows us to process any expected warning messages that are logged in response
         // to the intentionally failed task.
         serverA.stopServer(
-                "CWWKC1500W.*StatelessProgrammaticTimersBean" // Persistent executor defaultEJBPersistentTimerExecutor rolled back task ...
+                "CWWKC1500W.*StatelessProgrammaticTimersBean", // Persistent executor defaultEJBPersistentTimerExecutor rolled back task ... The task is scheduled to retry after ...
+                "CWWKC1502W.*StatelessProgrammaticTimersBean"  // Persistent executor defaultEJBPersistentTimerExecutor rolled back task ... [no retry]
                 );
     }
 

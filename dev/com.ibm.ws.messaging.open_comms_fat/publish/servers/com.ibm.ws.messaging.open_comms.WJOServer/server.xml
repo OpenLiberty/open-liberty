@@ -1,0 +1,44 @@
+<server description="WJOServer">
+
+  <include location="../fatTestPorts.xml"/>
+
+  <featureManager>
+    <feature>jsp-2.3</feature>
+    <feature>wasJmsServer-1.0</feature>
+    <feature>wasJmsSecurity-1.0</feature>
+  </featureManager>
+
+  <keyStore id="defaultKeyStore" location="WJOServer.jks" password="{xor}Lz4sLCgwLTs="/>
+
+  <!-- Overriding the values of the properties used for httpEndpoint port configuration in fatTestPorts.xml -->
+  <variable name="bvt.prop.HTTP_default"         value="${bvt.prop.http.1}"/>
+  <variable name="bvt.prop.HTTP_default.secure"  value="${bvt.prop.http.1.ssl}"/>
+
+  <httpEndpoint id="defaultHttpEndpoint">
+    <sslOptions sslRef="CustomSslOptions"/>
+  </httpEndpoint>
+
+  <quickStartSecurity userPassword="ppersona99" userName="persona99"/>
+
+  <ssl id="CustomSslOptions" keyStoreRef="defaultKeyStore"/>
+
+  <!-- wasJmsPort and wasJmsSSLPort settings in wasJmsEndpoint must match those set in fatTestPorts.xml,
+       to avoid configuration conflict warnings.
+  -->
+  <wasJmsEndpoint id="InboundJmsCommsEndpoint" wasJmsPort="${bvt.prop.jms}" wasJmsSSLPort="${bvt.prop.jms.ssl}">
+    <sslOptions sslRef="CustomSslOptions"/>
+  </wasJmsEndpoint>
+
+  <messagingEngine id="defaultME">
+    <queue id="QUEUE_ONE"/>
+    <messagingSecurity>
+      <role name="admin">
+        <queuePermission queueRef="QUEUE_ONE">
+          <action>ALL</action>
+        </queuePermission>
+        <user name="persona99" />
+      </role>
+    </messagingSecurity>
+  </messagingEngine>
+
+</server>

@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<ejb-jar xmlns="http://java.sun.com/xml/ns/javaee" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd" 
+         version="3.1"> 
+
+    <enterprise-beans>
+        <!-- "Buddy" Session Beans -->
+        
+        <session>
+            <ejb-name>TxSyncBMTSLBuddyEJB</ejb-name>
+            <business-local>com.ibm.ws.jpa.fvt.txsync.buddy.ejblocal.TxSyncBMTSLBuddyLocal</business-local>
+            <ejb-class>com.ibm.ws.jpa.fvt.txsync.buddy.ejb.TxSyncBMTSLBuddyEJB</ejb-class>
+            <session-type>Stateless</session-type>
+        </session>
+        <session>
+            <ejb-name>TxSyncBMTSFBuddyEJB</ejb-name>
+            <business-local>com.ibm.ws.jpa.fvt.txsync.buddy.ejblocal.TxSyncBMTSFBuddyLocal</business-local>
+            <ejb-class>com.ibm.ws.jpa.fvt.txsync.buddy.ejb.TxSyncBMTSFBuddyEJB</ejb-class>
+            <session-type>Stateful</session-type>
+        </session>
+        <session>
+            <ejb-name>TxSyncBMTSFEXSyncBuddyEJB</ejb-name>
+            <business-local>com.ibm.ws.jpa.fvt.txsync.buddy.ejblocal.TxSyncBMTSFEXSyncBuddyLocal</business-local>
+            <ejb-class>com.ibm.ws.jpa.fvt.txsync.buddy.ejb.TxSyncBMTSFEXSyncBuddyEJB</ejb-class>
+            <session-type>Stateful</session-type>
+            <ejb-local-ref>
+                <ejb-ref-name>ejb/TxSyncBMTSFEXSyncBuddyEJB</ejb-ref-name>
+                <local>com.ibm.ws.jpa.fvt.txsync.buddy.ejblocal.TxSyncBMTSFEXSyncBuddyLocal</local>
+                <ejb-link>TxSyncBMTSFEXSyncBuddyEJB</ejb-link>
+            </ejb-local-ref>
+            <ejb-local-ref>
+                <ejb-ref-name>ejb/TxSyncBMTSFEXUnsyncBuddyEJB</ejb-ref-name>
+                <local>com.ibm.ws.jpa.fvt.txsync.buddy.ejblocal.TxSyncBMTSFEXUnsyncBuddyLocal</local>
+                <ejb-link>TxSyncBMTSFEXUnsyncBuddyEJB</ejb-link>
+            </ejb-local-ref>
+            
+            <ejb-local-ref>
+                <ejb-ref-name>ejb/TxSyncCMTSFEXSyncBuddyEJB</ejb-ref-name>
+                <local>com.ibm.ws.jpa.fvt.txsync.buddy.ejblocal.TxSyncCMTSFEXSyncBuddyLocal</local>
+                <ejb-link>TxSyncCMTSFEXSyncBuddyEJB</ejb-link>
+            </ejb-local-ref>
+            <ejb-local-ref>
+                <ejb-ref-name>ejb/TxSyncCMTSFEXUnsyncBuddyEJB</ejb-ref-name>
+                <local>com.ibm.ws.jpa.fvt.txsync.buddy.ejblocal.TxSyncCMTSFEXUnsyncBuddyLocal</local>
+                <ejb-link>TxSyncCMTSFEXUnsyncBuddyEJB</ejb-link>
+            </ejb-local-ref>
+        </session>
+        <session>
+            <ejb-name>TxSyncBMTSFEXUnsyncBuddyEJB</ejb-name>
+            <business-local>com.ibm.ws.jpa.fvt.txsync.buddy.ejblocal.TxSyncBMTSFEXUnsyncBuddyLocal</business-local>
+            <ejb-class>com.ibm.ws.jpa.fvt.txsync.buddy.ejb.TxSyncBMTSFEXUnsyncBuddyEJB</ejb-class>
+            <session-type>Stateful</session-type>
+            <ejb-local-ref>
+                <ejb-ref-name>ejb/TxSyncBMTSFEXSyncBuddyEJB</ejb-ref-name>
+                <local>com.ibm.ws.jpa.fvt.txsync.buddy.ejblocal.TxSyncBMTSFEXSyncBuddyLocal</local>
+                <ejb-link>TxSyncBMTSFEXSyncBuddyEJB</ejb-link>
+            </ejb-local-ref>
+            <ejb-local-ref>
+                <ejb-ref-name>ejb/TxSyncBMTSFEXUnsyncBuddyEJB</ejb-ref-name>
+                <local>com.ibm.ws.jpa.fvt.txsync.buddy.ejblocal.TxSyncBMTSFEXUnsyncBuddyLocal</local>
+                <ejb-link>TxSyncBMTSFEXUnsyncBuddyEJB</ejb-link>
+            </ejb-local-ref>
+            
+            <ejb-local-ref>
+                <ejb-ref-name>ejb/TxSyncCMTSFEXSyncBuddyEJB</ejb-ref-name>
+                <local>com.ibm.ws.jpa.fvt.txsync.buddy.ejblocal.TxSyncCMTSFEXSyncBuddyLocal</local>
+                <ejb-link>TxSyncCMTSFEXSyncBuddyEJB</ejb-link>
+            </ejb-local-ref>
+            <ejb-local-ref>
+                <ejb-ref-name>ejb/TxSyncCMTSFEXUnsyncBuddyEJB</ejb-ref-name>
+                <local>com.ibm.ws.jpa.fvt.txsync.buddy.ejblocal.TxSyncCMTSFEXUnsyncBuddyLocal</local>
+                <ejb-link>TxSyncCMTSFEXUnsyncBuddyEJB</ejb-link>
+            </ejb-local-ref>
+        </session>
+        
+        <session>
+            <ejb-name>TxSyncCMTSLBuddyEJB</ejb-name>
+            <business-local>com.ibm.ws.jpa.fvt.txsync.buddy.ejblocal.TxSyncCMTSLBuddyLocal</business-local>
+            <ejb-class>com.ibm.ws.jpa.fvt.txsync.buddy.ejb.TxSyncCMTSLBuddyEJB</ejb-class>
+            <session-type>Stateless</session-type>
+            <ejb-local-ref>
+                <ejb-ref-name>ejb/TxSyncCMTSLBuddyEJB</ejb-ref-name>
+                <local>com.ibm.ws.jpa.fvt.txsync.buddy.ejblocal.TxSyncCMTSLBuddyLocal</local>
+                <ejb-link>TxSyncCMTSLBuddyEJB</ejb-link>
+            </ejb-local-ref>
+            <ejb-local-ref>
+                <ejb-ref-name>ejb/TxSyncCMTSFBuddyEJB</ejb-ref-name>
+                <local>com.ibm.ws.jpa.fvt.txsync.buddy.ejblocal.TxSyncCMTSFBuddyLocal</local>
+                <ejb-link>TxSyncCMTSFBuddyEJB</ejb-link>
+            </ejb-local-ref>
+        </session>
+        <session>
+            <ejb-name>TxSyncCMTSFBuddyEJB</ejb-name>
+            <business-local>com.ibm.ws.jpa.fvt.txsync.buddy.ejblocal.TxSyncCMTSFBuddyLocal</business-local>
+            <ejb-class>com.ibm.ws.jpa.fvt.txsync.buddy.ejb.TxSyncCMTSFBuddyEJB</ejb-class>
+            <session-type>Stateful</session-type>
+            <ejb-local-ref>
+                <ejb-ref-name>ejb/TxSyncCMTSLBuddyEJB</ejb-ref-name>
+                <local>com.ibm.ws.jpa.fvt.txsync.buddy.ejblocal.TxSyncCMTSLBuddyLocal</local>
+                <ejb-link>TxSyncCMTSLBuddyEJB</ejb-link>
+            </ejb-local-ref>
+            <ejb-local-ref>
+                <ejb-ref-name>ejb/TxSyncCMTSFBuddyEJB</ejb-ref-name>
+                <local>com.ibm.ws.jpa.fvt.txsync.buddy.ejblocal.TxSyncCMTSFBuddyLocal</local>
+                <ejb-link>TxSyncCMTSFBuddyEJB</ejb-link>
+            </ejb-local-ref>
+        </session>
+        
+        <session>
+            <ejb-name>TxSyncCMTSFEXSyncBuddyEJB</ejb-name>
+            <business-local>com.ibm.ws.jpa.fvt.txsync.buddy.ejblocal.TxSyncCMTSFEXSyncBuddyLocal</business-local>
+            <ejb-class>com.ibm.ws.jpa.fvt.txsync.buddy.ejb.TxSyncCMTSFEXSyncBuddyEJB</ejb-class>
+            <session-type>Stateful</session-type>          
+            <remove-method>
+                <bean-method>
+                    <method-name>close</method-name>
+                </bean-method>
+            </remove-method>
+            <transaction-type>Container</transaction-type>
+            <ejb-local-ref>
+                <ejb-ref-name>ejb/TxSyncBMTSLBuddyEJB</ejb-ref-name>
+                <local>com.ibm.ws.jpa.fvt.txsync.buddy.ejblocal.TxSyncBMTSLBuddyLocal</local>
+                <ejb-link>TxSyncBMTSLBuddyEJB</ejb-link>
+            </ejb-local-ref>
+            <ejb-local-ref>
+                <ejb-ref-name>ejb/TxSyncBMTSFBuddyEJB</ejb-ref-name>
+                <local>com.ibm.ws.jpa.fvt.txsync.buddy.ejblocal.TxSyncBMTSFBuddyLocal</local>
+                <ejb-link>TxSyncBMTSFBuddyEJB</ejb-link>
+            </ejb-local-ref>
+            <ejb-local-ref>
+                <ejb-ref-name>ejb/TxSyncBMTSFEXSyncBuddyEJB</ejb-ref-name>
+                <local>com.ibm.ws.jpa.fvt.txsync.buddy.ejblocal.TxSyncBMTSFEXSyncBuddyLocal</local>
+                <ejb-link>TxSyncBMTSFEXSyncBuddyEJB</ejb-link>
+            </ejb-local-ref>
+            <ejb-local-ref>
+                <ejb-ref-name>ejb/TxSyncBMTSFEXUnsyncBuddyEJB</ejb-ref-name>
+                <local>com.ibm.ws.jpa.fvt.txsync.buddy.ejblocal.TxSyncBMTSFEXUnsyncBuddyLocal</local>
+                <ejb-link>TxSyncBMTSFEXUnsyncBuddyEJB</ejb-link>
+            </ejb-local-ref>
+            <ejb-local-ref>
+                <ejb-ref-name>ejb/TxSyncCMTSLBuddyEJB</ejb-ref-name>
+                <local>com.ibm.ws.jpa.fvt.txsync.buddy.ejblocal.TxSyncCMTSLBuddyLocal</local>
+                <ejb-link>TxSyncCMTSLBuddyEJB</ejb-link>
+            </ejb-local-ref>
+            <ejb-local-ref>
+                <ejb-ref-name>ejb/TxSyncCMTSFBuddyEJB</ejb-ref-name>
+                <local>com.ibm.ws.jpa.fvt.txsync.buddy.ejblocal.TxSyncCMTSFBuddyLocal</local>
+                <ejb-link>TxSyncCMTSFBuddyEJB</ejb-link>
+            </ejb-local-ref>
+            
+            <ejb-local-ref>
+                <ejb-ref-name>ejb/TxSyncCMTSFEXSyncBuddyEJB</ejb-ref-name>
+                <local>com.ibm.ws.jpa.fvt.txsync.buddy.ejblocal.TxSyncCMTSFEXSyncBuddyLocal</local>
+                <ejb-link>TxSyncCMTSFEXSyncBuddyEJB</ejb-link>
+            </ejb-local-ref>
+            <ejb-local-ref>
+                <ejb-ref-name>ejb/TxSyncCMTSFEXUnsyncBuddyEJB</ejb-ref-name>
+                <local>com.ibm.ws.jpa.fvt.txsync.buddy.ejblocal.TxSyncCMTSFEXUnsyncBuddyLocal</local>
+                <ejb-link>TxSyncCMTSFEXUnsyncBuddyEJB</ejb-link>
+            </ejb-local-ref>
+        </session>
+        <session>
+            <ejb-name>TxSyncCMTSFEXUnsyncBuddyEJB</ejb-name>
+            <business-local>com.ibm.ws.jpa.fvt.txsync.buddy.ejblocal.TxSyncCMTSFEXUnsyncBuddyLocal</business-local>
+            <ejb-class>com.ibm.ws.jpa.fvt.txsync.buddy.ejb.TxSyncCMTSFEXUnsyncBuddyEJB</ejb-class>
+            <session-type>Stateful</session-type>                    
+            <remove-method>
+                <bean-method>
+                    <method-name>close</method-name>
+                </bean-method>
+            </remove-method>
+            <transaction-type>Container</transaction-type>
+            <ejb-local-ref>
+                <ejb-ref-name>ejb/TxSyncBMTSLBuddyEJB</ejb-ref-name>
+                <local>com.ibm.ws.jpa.fvt.txsync.buddy.ejblocal.TxSyncBMTSLBuddyLocal</local>
+                <ejb-link>TxSyncBMTSLBuddyEJB</ejb-link>
+            </ejb-local-ref>
+            <ejb-local-ref>
+                <ejb-ref-name>ejb/TxSyncBMTSFBuddyEJB</ejb-ref-name>
+                <local>com.ibm.ws.jpa.fvt.txsync.buddy.ejblocal.TxSyncBMTSFBuddyLocal</local>
+                <ejb-link>TxSyncBMTSFBuddyEJB</ejb-link>
+            </ejb-local-ref>
+            <ejb-local-ref>
+                <ejb-ref-name>ejb/TxSyncBMTSFEXSyncBuddyEJB</ejb-ref-name>
+                <local>com.ibm.ws.jpa.fvt.txsync.buddy.ejblocal.TxSyncBMTSFEXSyncBuddyLocal</local>
+                <ejb-link>TxSyncBMTSFEXSyncBuddyEJB</ejb-link>
+            </ejb-local-ref>
+            <ejb-local-ref>
+                <ejb-ref-name>ejb/TxSyncBMTSFEXUnsyncBuddyEJB</ejb-ref-name>
+                <local>com.ibm.ws.jpa.fvt.txsync.buddy.ejblocal.TxSyncBMTSFEXUnsyncBuddyLocal</local>
+                <ejb-link>TxSyncBMTSFEXUnsyncBuddyEJB</ejb-link>
+            </ejb-local-ref>
+            <ejb-local-ref>
+                <ejb-ref-name>ejb/TxSyncCMTSLBuddyEJB</ejb-ref-name>
+                <local>com.ibm.ws.jpa.fvt.txsync.buddy.ejblocal.TxSyncCMTSLBuddyLocal</local>
+                <ejb-link>TxSyncCMTSLBuddyEJB</ejb-link>
+            </ejb-local-ref>
+            <ejb-local-ref>
+                <ejb-ref-name>ejb/TxSyncCMTSFBuddyEJB</ejb-ref-name>
+                <local>com.ibm.ws.jpa.fvt.txsync.buddy.ejblocal.TxSyncCMTSFBuddyLocal</local>
+                <ejb-link>TxSyncCMTSFBuddyEJB</ejb-link>
+            </ejb-local-ref>
+            
+            <ejb-local-ref>
+                <ejb-ref-name>ejb/TxSyncCMTSFEXSyncBuddyEJB</ejb-ref-name>
+                <local>com.ibm.ws.jpa.fvt.txsync.buddy.ejblocal.TxSyncCMTSFEXSyncBuddyLocal</local>
+                <ejb-link>TxSyncCMTSFEXSyncBuddyEJB</ejb-link>
+            </ejb-local-ref>
+            <ejb-local-ref>
+                <ejb-ref-name>ejb/TxSyncCMTSFEXUnsyncBuddyEJB</ejb-ref-name>
+                <local>com.ibm.ws.jpa.fvt.txsync.buddy.ejblocal.TxSyncCMTSFEXUnsyncBuddyLocal</local>
+                <ejb-link>TxSyncCMTSFEXUnsyncBuddyEJB</ejb-link>
+            </ejb-local-ref>
+        </session>
+        
+    </enterprise-beans>
+</ejb-jar>

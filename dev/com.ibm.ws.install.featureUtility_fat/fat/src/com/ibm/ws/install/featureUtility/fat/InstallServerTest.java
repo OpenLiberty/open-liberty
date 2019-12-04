@@ -29,34 +29,39 @@ public class InstallServerTest extends FeatureUtilityToolTest {
     public static void cleanUp() throws Exception {
         // TODO
         resetOriginalWlpProps();
+        cleanUpTempFiles();
     }
 
+    /**
+     * Install jsf-2.2 on its own first, then install a server.xml with jsf-2.2 and cdi-1.2. The autofeature cdi1.2-jsf2.2 should be installed along with the other features.
+     * @throws Exception
+     */
     @Test
     public void testInstallAutoFeatureServerXml() throws Exception {
         final String METHOD_NAME = "testInstallAutoFeatureServerXml";
         Log.entering(c, METHOD_NAME);
 
-        // replace the server.xml
-        copyFileToMinifiedRoot("usr/servers/serverX", "../../publish/tmp/autoFeatureServerXml/server.xml");
-
-        String[] param1s = { "installServerFeatures", "serverX"};
-
-        String [] fileListA = {"lib/features/com.ibm.websphere.appserver.jsf-2.2.mf", "lib/features/com.ibm.websphere.appserver.cdi1.2-jsf2.2.mf"};
-        String [] fileListB = {"lib/features/com.ibm.websphere.appserver.cdi-1.2.mf"};
-//        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.jsf-2.2", fileListA);
-//        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.cdi-1.2", fileListB);
+        String [] param1s = {"installFeature", "jsf-2.2"};
         deleteFeaturesAndLafilesFolders(METHOD_NAME);
-
 
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
         assertEquals("Exit code should be 0",0, po.getReturnCode());
         String output = po.getStdout();
         assertTrue("Output should contain jsf-2.2", output.indexOf("jsf-2.2") >= 0);
+
+        // replace the server.xml and install from server.xml now
+        copyFileToMinifiedRoot("usr/servers/serverX", "../../publish/tmp/autoFeatureServerXml/server.xml");
+        String[] param2s = { "installServerFeatures", "serverX"};
+        deleteFeaturesAndLafilesFolders(METHOD_NAME);
+
+
+        po = runFeatureUtility(METHOD_NAME, param2s);
+        assertEquals("Exit code should be 0",0, po.getReturnCode());
+        output = po.getStdout();
+        assertTrue("Output should contain jsf-2.2", output.indexOf("jsf-2.2") >= 0);
         assertTrue("Output should contain cdi-1.2", output.indexOf("cdi-1.2") >= 0);
         assertTrue("The autofeature cdi1.2-jsf-2.2 should be installed" , new File(minifiedRoot + "/lib/features/com.ibm.websphere.appserver.cdi1.2-jsf2.2.mf").exists());
 
-//        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.jsf-2.2", fileListA);
-//        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.cdi-1.2", fileListB);
         deleteFeaturesAndLafilesFolders(METHOD_NAME);
 
 

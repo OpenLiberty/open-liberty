@@ -41,7 +41,7 @@ DynamicImport-Package:\
   com.ibm.tx.jta;version=latest,\
   com.ibm.websphere.appserver.spi.kernel.service,\
   com.ibm.websphere.appserver.spi.logging,\
-  com.ibm.websphere.javaee.connector.1.7;version=latest,\
+  com.ibm.websphere.javaee.connector.1.6;version=latest,\
   com.ibm.websphere.javaee.jms.2.0;version=latest,\
   com.ibm.websphere.org.osgi.core,\
   com.ibm.websphere.org.osgi.service.cm,\

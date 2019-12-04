@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2018 IBM Corporation and others.
+ * Copyright (c) 2012, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -308,7 +308,13 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
             bvalHelper.setBeanValidationSvc(svc);
         }
 
-        resourceAdapter = configureResourceAdapter();
+        try {
+            beginContext(raMetaData);
+            resourceAdapter = configureResourceAdapter();
+        } finally {
+            endContext(raMetaData);
+        }
+
         if (resourceAdapter != null) {
             propagateThreadContext = !"(service.pid=com.ibm.ws.context.manager)".equals(properties.get("contextService.target"));
             workManager = new WorkManagerImpl(this);
@@ -485,9 +491,10 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
             }
         }
         if (bvalHelper != null) {
-            ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-            if (cmd != null) {
-                bvalHelper.validateInstance(cmd.getModuleMetaData(), resourceAdapterSvc.getClassLoader(), instance);
+            ResourceAdapterMetaData raMetaData = resourceAdapterSvc.getResourceAdapterMetaData();
+            if (raMetaData != null) {
+                // Use raMetaData.getModuleMetaData() to make sure we get the RA's MMD when the RA is embedded.
+                bvalHelper.validateInstance(raMetaData.getModuleMetaData(), resourceAdapterSvc.getClassLoader(), instance);
             }
         }
 

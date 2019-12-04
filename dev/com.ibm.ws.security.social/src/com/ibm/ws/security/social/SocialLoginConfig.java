@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2018 IBM Corporation and others.
+ * Copyright (c) 2016, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -108,7 +108,18 @@ public interface SocialLoginConfig {
     boolean getUserApiNeedsSpecialHeader();
 
     String getResponseMode();
-    
+
     public boolean getUseSystemPropertiesForHttpClientConnections();
+
+    public String getUserApiType();
+
+    @Sensitive
+    public String getUserApiToken();
+
+    public boolean isAccessTokenRequired();
+
+    public boolean isAccessTokenSupported();
+
+    public String getAccessTokenHeaderName();
 
 }

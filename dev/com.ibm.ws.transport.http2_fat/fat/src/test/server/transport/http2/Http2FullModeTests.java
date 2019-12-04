@@ -1121,10 +1121,11 @@ public class Http2FullModeTests extends FATServletClient {
      *
      * @throws Exception
      */
-    @Test
-    public void testTwoWindowUpdateFrameAboveMaxSize() throws Exception {
-        runTest(defaultServletPath, testName.getMethodName());
-    }
+    // Moved to trace bucket
+    //@Test
+    //public void testTwoWindowUpdateFrameAboveMaxSize() throws Exception {
+    //    runTest(defaultServletPath, testName.getMethodName());
+    //}
 
     /**
      * Test Coverage: One stream 3, send a WINDOW_UPDATE that causes the window to exceed 2^31-1 octets

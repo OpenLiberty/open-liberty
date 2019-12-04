@@ -10,9 +10,13 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs.fat.params.form;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 
 @Path("/form")
@@ -39,5 +43,13 @@ public class FormParamResource {
     @Path("withStringEntity")
     public String getStrEntity(String entity) {
         return "str:" + entity;
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Path("httpServletRequestGetParam")
+    public String getParameterValues(@Context HttpServletRequest request) {
+        String id = request.getParameter("id");
+        return "id=" + id;
     }
 }
