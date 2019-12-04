@@ -34,7 +34,7 @@ import io.astefanutti.metrics.cdi20.MetricResolver;
 @ConcurrentGauge
 @Interceptor
 @Priority(Interceptor.Priority.LIBRARY_BEFORE + 10)
-/* package-private */ class ConcurrentGaugeInterceptor {
+public class ConcurrentGaugeInterceptor {
 
     private final Bean<?> bean;
 

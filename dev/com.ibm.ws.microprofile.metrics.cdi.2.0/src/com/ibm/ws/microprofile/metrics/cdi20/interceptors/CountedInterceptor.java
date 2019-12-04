@@ -50,35 +50,35 @@ import io.astefanutti.metrics.cdi20.MetricResolver;
 @Priority(Interceptor.Priority.LIBRARY_BEFORE + 10)
 public class CountedInterceptor {
 
-    protected final Bean<?> bean;
+    private final Bean<?> bean;
 
-    protected final MetricRegistry registry;
+    private final MetricRegistry registry;
 
-    protected final MetricResolver resolver;
+    private final MetricResolver resolver;
 
     @Inject
-    protected CountedInterceptor(@Intercepted Bean<?> bean, MetricRegistry registry, MetricResolver resolver) {
+    private CountedInterceptor(@Intercepted Bean<?> bean, MetricRegistry registry, MetricResolver resolver) {
         this.bean = bean;
         this.registry = registry;
         this.resolver = resolver;
     }
 
     @AroundConstruct
-    protected Object countedConstructor(InvocationContext context) throws Exception {
+    private Object countedConstructor(InvocationContext context) throws Exception {
         return countedCallable(context, context.getConstructor());
     }
 
     @AroundInvoke
-    protected Object countedMethod(InvocationContext context) throws Exception {
+    private Object countedMethod(InvocationContext context) throws Exception {
         return countedCallable(context, context.getMethod());
     }
 
     @AroundTimeout
-    protected Object countedTimeout(InvocationContext context) throws Exception {
+    private Object countedTimeout(InvocationContext context) throws Exception {
         return countedCallable(context, context.getMethod());
     }
 
-    protected <E extends Member & AnnotatedElement> Object countedCallable(InvocationContext context, E element) throws Exception {
+    private <E extends Member & AnnotatedElement> Object countedCallable(InvocationContext context, E element) throws Exception {
         MetricResolver.Of<Counted> counted = resolver.counted(bean.getBeanClass(), element);
         MetricID tmid = new MetricID(counted.metricName(), Utils.tagsToTags(counted.tags()));
         Counter counter = (Counter) registry.getMetrics().get(tmid);
