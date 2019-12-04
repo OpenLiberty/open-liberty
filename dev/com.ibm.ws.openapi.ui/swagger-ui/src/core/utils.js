@@ -1,3 +1,15 @@
+/* 
+  ATTENTION! This file (but not the functions within) is deprecated.
+
+  You should probably add a new file to `./helpers/` instead of adding a new
+  function here.
+
+  One-function-per-file is a better pattern than what we have here.
+
+  If you're refactoring something in here, feel free to break it out to a file
+  in `./helpers` if you have the time.
+*/
+
 import Im from "immutable"
 import { sanitizeUrl as braintreeSanitizeUrl } from "@braintree/sanitize-url"
 import camelCase from "lodash/camelCase"
@@ -9,6 +21,10 @@ import eq from "lodash/eq"
 import { memoizedSampleFromSchema, memoizedCreateXMLExample } from "core/plugins/samples/fn"
 import win from "./window"
 import cssEscape from "css.escape"
+import getParameterSchema from "../helpers/get-parameter-schema"
+import randomBytes from "randombytes"
+import shaJs from "sha.js"
+
 
 const DEFAULT_RESPONSE_KEY = "default"
 
@@ -37,7 +53,7 @@ export function objectify (thing) {
   if(!isObject(thing))
     return {}
   if(isImmutable(thing))
-    return thing.toObject()
+    return thing.toJS()
   return thing
 }
 
@@ -343,13 +359,27 @@ export function mapToList(map, keyNames="key", collectedKeys=Im.Map()) {
 }
 
 export function extractFileNameFromContentDispositionHeader(value){
-  let responseFilename = /filename="([^;]*);?"/i.exec(value)
-  if (responseFilename === null) {
-    responseFilename = /filename=([^;]*);?/i.exec(value)
-  }
+  let patterns = [
+    /filename\*=[^']+'\w*'"([^"]+)";?/i,
+    /filename\*=[^']+'\w*'([^;]+);?/i,
+    /filename="([^;]*);?"/i,
+    /filename=([^;]*);?/i
+  ]
+  
+  let responseFilename
+  patterns.some(regex => {
+    responseFilename = regex.exec(value)
+    return responseFilename !== null
+  })
+    
   if (responseFilename !== null && responseFilename.length > 1) {
-    return responseFilename[1]
+    try {
+      return decodeURIComponent(responseFilename[1])
+    } catch(e) {
+      console.error(e)
+    }
   }
+
   return null
 }
 
@@ -470,15 +500,17 @@ export const validatePattern = (val, rxPattern) => {
 }
 
 // validation of parameters before execute
-export const validateParam = (param, isXml, isOAS3 = false) => {
+export const validateParam = (param, value, { isOAS3 = false, bypassRequiredCheck = false } = {}) => {
+  
   let errors = []
-  let value = isXml && param.get("in") === "body" ? param.get("value_xml") : param.get("value")
-  let required = param.get("required")
 
-  let paramDetails = isOAS3 ? param.get("schema") : param
+  let paramRequired = param.get("required")
+
+  let { schema: paramDetails, parameterContentMediaType } = getParameterSchema(param, { isOAS3 })
 
   if(!paramDetails) return errors
 
+  let required = paramDetails.get("required")
   let maximum = paramDetails.get("maximum")
   let minimum = paramDetails.get("minimum")
   let type = paramDetails.get("type")
@@ -487,25 +519,48 @@ export const validateParam = (param, isXml, isOAS3 = false) => {
   let minLength = paramDetails.get("minLength")
   let pattern = paramDetails.get("pattern")
 
-
   /*
     If the parameter is required OR the parameter has a value (meaning optional, but filled in)
     then we should do our validation routine.
     Only bother validating the parameter if the type was specified.
   */
-  if ( type && (required || value) ) {
+  if ( type && (paramRequired || required || value) ) {
     // These checks should evaluate to true if there is a parameter
     let stringCheck = type === "string" && value
     let arrayCheck = type === "array" && Array.isArray(value) && value.length
-    let listCheck = type === "array" && Im.List.isList(value) && value.count()
+    let arrayListCheck = type === "array" && Im.List.isList(value) && value.count()
+    let arrayStringCheck = type === "array" && typeof value === "string" && value
     let fileCheck = type === "file" && value instanceof win.File
     let booleanCheck = type === "boolean" && (value || value === false)
     let numberCheck = type === "number" && (value || value === 0)
     let integerCheck = type === "integer" && (value || value === 0)
+    let objectCheck = type === "object" && typeof value === "object" && value !== null
+    let objectStringCheck = type === "object" && typeof value === "string" && value
 
-    if ( required && !(stringCheck || arrayCheck || listCheck || fileCheck || booleanCheck || numberCheck || integerCheck) ) {
+    const allChecks = [
+      stringCheck, arrayCheck, arrayListCheck, arrayStringCheck, fileCheck, 
+      booleanCheck, numberCheck, integerCheck, objectCheck, objectStringCheck,
+    ]
+
+    const passedAnyCheck = allChecks.some(v => !!v)
+
+    if ((paramRequired || required) && !passedAnyCheck && !bypassRequiredCheck ) {
       errors.push("Required field is not provided")
       return errors
+    }
+
+    if (
+      type === "object" &&
+      typeof value === "string" &&
+      (parameterContentMediaType === null ||
+        parameterContentMediaType === "application/json")
+    ) {
+      try {
+        JSON.parse(value)
+      } catch (e) {
+        errors.push("Parameter string value must be valid JSON")
+        return errors
+      }
     }
 
     if (pattern) {
@@ -559,7 +614,7 @@ export const validateParam = (param, isXml, isOAS3 = false) => {
     } else if ( type === "array" ) {
       let itemType
 
-      if ( !listCheck || !value.count() ) { return errors }
+      if ( !arrayListCheck || !value.count() ) { return errors }
 
       itemType = paramDetails.getIn(["items", "type"])
 
@@ -597,7 +652,7 @@ export const getSampleSchema = (schema, contentType="", config={}) => {
         let match = schema.$$ref.match(/\S*\/(\S+)$/)
         schema.xml.name = match[1]
       } else if (schema.type || schema.items || schema.properties || schema.additionalProperties) {
-        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!-- XML example cannot be generated -->"
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!-- XML example cannot be generated; root element name is undefined -->"
       } else {
         return null
       }
@@ -605,7 +660,9 @@ export const getSampleSchema = (schema, contentType="", config={}) => {
     return memoizedCreateXMLExample(schema, config)
   }
 
-  return JSON.stringify(memoizedSampleFromSchema(schema, config), null, 2)
+  const res = memoizedSampleFromSchema(schema, config)
+
+  return typeof res === "object" ? JSON.stringify(res, null, 2) : res
 }
 
 export const parseSearch = () => {
@@ -626,6 +683,8 @@ export const parseSearch = () => {
       map[decodeURIComponent(i[0])] = (i[1] && decodeURIComponent(i[1])) || ""
     }
   }
+
+  delete map.url
 
   return map
 }
@@ -708,8 +767,10 @@ export function getAcceptControllingResponse(responses) {
   return suitable2xxResponse || suitableDefaultResponse
 }
 
-export const createDeepLinkPath = (str) => typeof str == "string" || str instanceof String ? str.trim().replace(/\s/g, "_") : ""
-export const escapeDeepLinkPath = (str) => cssEscape( createDeepLinkPath(str) )
+// suitable for use in URL fragments
+export const createDeepLinkPath = (str) => typeof str == "string" || str instanceof String ? str.trim().replace(/\s/g, "%20") : ""
+// suitable for use in CSS classes and ids
+export const escapeDeepLinkPath = (str) => cssEscape( createDeepLinkPath(str).replace(/%20/g, "_") )
 
 export const getExtensions = (defObj) => defObj.filter((v, k) => /^x-/.test(k))
 export const getCommonExtensions = (defObj) => defObj.filter((v, k) => /^pattern|maxLength|minLength|maximum|minimum/.test(k))
@@ -719,7 +780,7 @@ export const getCommonExtensions = (defObj) => defObj.filter((v, k) => /^pattern
 // `predicate` can be used to discriminate the stripping further,
 // by preserving the key's place in the object based on its value.
 export function deeplyStripKey(input, keyToStrip, predicate = () => true) {
-  if(typeof input !== "object" || Array.isArray(input) || !keyToStrip) {
+  if(typeof input !== "object" || Array.isArray(input) || input === null || !keyToStrip) {
     return input
   }
 
@@ -734,4 +795,99 @@ export function deeplyStripKey(input, keyToStrip, predicate = () => true) {
   })
 
   return obj
+}
+
+export function stringify(thing) {
+  if (typeof thing === "string") {
+    return thing
+  }
+
+  if (thing && thing.toJS) {
+    thing = thing.toJS()
+  }
+
+  if (typeof thing === "object" && thing !== null) {
+    try {
+      return JSON.stringify(thing, null, 2)
+    }
+    catch (e) {
+      return String(thing)
+    }
+  }
+
+  if(thing === null || thing === undefined) {
+    return ""
+  }
+
+  return thing.toString()
+}
+
+export function numberToString(thing) {
+  if(typeof thing === "number") {
+    return thing.toString()
+  }
+
+  return thing
+}
+
+export function paramToIdentifier(param, { returnAll = false, allowHashes = true } = {}) {
+  if(!Im.Map.isMap(param)) {
+    throw new Error("paramToIdentifier: received a non-Im.Map parameter as input")
+  }
+  const paramName = param.get("name")
+  const paramIn = param.get("in")
+  
+  let generatedIdentifiers = []
+
+  // Generate identifiers in order of most to least specificity
+
+  if (param && param.hashCode && paramIn && paramName && allowHashes) {
+    generatedIdentifiers.push(`${paramIn}.${paramName}.hash-${param.hashCode()}`)
+  }
+  
+  if(paramIn && paramName) {
+    generatedIdentifiers.push(`${paramIn}.${paramName}`)
+  }
+
+  generatedIdentifiers.push(paramName)
+
+  // Return the most preferred identifier, or all if requested
+
+  return returnAll ? generatedIdentifiers : (generatedIdentifiers[0] || "")
+}
+
+export function paramToValue(param, paramValues) {
+  const allIdentifiers = paramToIdentifier(param, { returnAll: true })
+
+  // Map identifiers to values in the provided value hash, filter undefined values,
+  // and return the first value found
+  const values = allIdentifiers
+    .map(id => {
+      return paramValues[id]
+    })
+    .filter(value => value !== undefined)
+
+  return values[0]
+}
+
+// adapted from https://auth0.com/docs/flows/guides/auth-code-pkce/includes/create-code-verifier
+export function generateCodeVerifier() {
+  return b64toB64UrlEncoded(
+    randomBytes(32).toString("base64")
+  )
+}
+
+export function createCodeChallenge(codeVerifier) {
+  return b64toB64UrlEncoded(
+      shaJs("sha256")
+      .update(codeVerifier)
+      .digest("base64")
+    )
+}
+
+function b64toB64UrlEncoded(str) {
+  return str
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=/g, "")
 }
