@@ -183,7 +183,7 @@ public class FaultToleranceCDIExtension implements Extension, WebSphereCDIExtens
                         AsynchronousConfig asynchronous = annotationConfigFactory.createAsynchronousConfig(javaMethod, clazz, (Asynchronous) annotation);
                         asynchronous.validate();
                     } else if (annotation.annotationType() == Fallback.class) {
-                        FallbackConfig fallback = new FallbackConfig(javaMethod, clazz, (Fallback) annotation);
+                        FallbackConfig fallback = annotationConfigFactory.createFallbackConfig(javaMethod, clazz, (Fallback) annotation);
                         fallback.validate();
                     } else if (annotation.annotationType() == Retry.class) {
                         RetryConfig retry = new RetryConfig(javaMethod, clazz, (Retry) annotation);
