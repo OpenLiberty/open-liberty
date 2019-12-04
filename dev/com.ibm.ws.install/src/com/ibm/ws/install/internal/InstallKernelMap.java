@@ -923,7 +923,7 @@ public class InstallKernelMap implements Map {
         try {
             artifactDownloader.setEnvMap(envMap);
             artifactDownloader.synthesizeAndDownload(feature, filetype, downloadDir, repo, true);
-            data.put(DOWNLOAD_LOCATION, null);
+            // data.put(DOWNLOAD_LOCATION, null);
         } catch (InstallException e) {
             this.put(ACTION_RESULT, ERROR);
             this.put(ACTION_ERROR_MESSAGE, e.getMessage());
