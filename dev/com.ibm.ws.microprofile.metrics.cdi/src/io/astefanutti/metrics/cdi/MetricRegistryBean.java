@@ -46,7 +46,7 @@ import org.eclipse.microprofile.metrics.MetricRegistry;
 
 import com.ibm.ws.microprofile.metrics.impl.MetricRegistryImpl;
 
-/* package-private */ final class MetricRegistryBean implements Bean<MetricRegistryImpl>, PassivationCapable {
+public final class MetricRegistryBean implements Bean<MetricRegistryImpl>, PassivationCapable {
 
     private final Set<Annotation> qualifiers = new HashSet<>(Arrays.<Annotation> asList(new AnnotationLiteral<Any>() {
     }, new AnnotationLiteral<Default>() {

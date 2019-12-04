@@ -43,7 +43,6 @@ import org.eclipse.microprofile.metrics.MetricType;
 import org.eclipse.microprofile.metrics.Timer;
 import org.eclipse.microprofile.metrics.annotation.Metric;
 
-//@Vetoed
 @Dependent
 public class MetricName {
 
