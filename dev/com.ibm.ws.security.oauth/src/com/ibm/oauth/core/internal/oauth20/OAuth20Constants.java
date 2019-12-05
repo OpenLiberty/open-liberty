@@ -46,6 +46,7 @@ public interface OAuth20Constants extends OAuthConstants {
     public static final String RESOURCE = "resource";
     public static final String RESOURCE_IDS = "resourceIds";
     public static final String RESOURCE_OWNER_USERNAME = "username";
+    public static final String RESOURCE_OWNER_OVERRIDDEN_USERNAME = "overriddenusername";
     public static final String RESOURCE_OWNER_PASSWORD = "password";
     public static final String SCOPE = "scope";
     public static final String GRANT_TYPE = "grant_type";
