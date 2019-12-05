@@ -194,7 +194,7 @@ public abstract class FeatureUtilityToolTest {
                 String name = file.getName();
                 if (file.isFile() && name.startsWith("openliberty-MavenArtifact") && name.endsWith(".zip")) {
                     Log.info(c, methodName, "Found maven artifact repo zip: " + file.getAbsolutePath());
-
+                    featureRepo = file;
 
                 }
                 // hope to find OL kernel zip here.
