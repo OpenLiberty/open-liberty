@@ -68,7 +68,7 @@ public class WebSecurityHelper {
      *             Cookie cookie = getSSOCookieFromSSOToken();
      *
      */
-    public static Cookie getSSOCookieFromSSOToken(String... removeAttributes) throws Exception {
+    public static Cookie getSSOCookieFromSSOTokenWithoutAttrs(String... removeAttributes) throws Exception {
         java.lang.SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
             sm.checkPermission(UPDATE_TOKEN);
