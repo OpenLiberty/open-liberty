@@ -68,9 +68,15 @@ public class ConfigCDIExtension implements Extension, WebSphereCDIExtension {
                 Type type = injectionPoint.getType();
                 ConfigProperty qualifier = ConfigProducer.getConfigPropertyAnnotation(injectionPoint);
                 String defaultValue = qualifier.defaultValue();
-                String propertyName = ConfigProducer.getPropertyName(injectionPoint, qualifier);
+                String propertyName = null;
+                Throwable configException = null;
+                try {
+                    propertyName = ConfigProducer.getPropertyName(injectionPoint, qualifier);
+                    configException = validateConfigProperty(type, propertyName, defaultValue, classLoader);
+                } catch (IllegalArgumentException e) {
+                    configException = e;
+                }
 
-                Throwable configException = validateConfigProperty(type, propertyName, defaultValue, classLoader);
                 if (configException != null) {
                     Tr.error(tc, "unable.to.resolve.injection.point.CWMCG5003E", injectionPoint, configException);
                 }
