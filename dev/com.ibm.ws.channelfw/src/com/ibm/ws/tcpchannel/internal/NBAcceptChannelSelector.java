@@ -110,14 +110,16 @@ public class NBAcceptChannelSelector extends ChannelSelector implements FFDCSelf
                     serverSocket.getChannel().register(selector, SelectionKey.OP_ACCEPT, work.endPoint);
                     ++usageCount;
                 } catch (Throwable t) {
-                    FFDCFilter.processException(t, getClass().getName() + ".updateSelector", "101", this, new Object[] { work });
+                    if (com.ibm.wsspi.kernel.service.utils.FrameworkState.isStopping() == false) {
+                        FFDCFilter.processException(t, getClass().getName() + ".updateSelector", "101", this, new Object[] { work });
+                    }
                     if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                         Tr.event(this, tc, "Error registering port(" + work.endPoint.getListenPort() + "); " + t);
                     }
-                }
-
-                synchronized (work.syncObject) {
-                    work.syncObject.notify();
+                } finally {
+                    synchronized (work.syncObject) {
+                        work.syncObject.notifyAll();
+                    }
                 }
 
             } else if (work.action == NBAccept.REMOVE_ENDPOINT) {
@@ -147,14 +149,16 @@ public class NBAcceptChannelSelector extends ChannelSelector implements FFDCSelf
                     }
 
                 } catch (Throwable t) {
-                    FFDCFilter.processException(t, getClass().getName() + ".updateSelector", "102", this, new Object[] { work });
+                    if (com.ibm.wsspi.kernel.service.utils.FrameworkState.isStopping() == false) {
+                        FFDCFilter.processException(t, getClass().getName() + ".updateSelector", "102", this, new Object[] { work });
+                    }
                     if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                         Tr.event(this, tc, "Error removing port(" + work.endPoint.getListenPort() + "); " + t);
                     }
-                }
-
-                synchronized (work.syncObject) {
-                    work.syncObject.notify();
+                } finally {
+                    synchronized (work.syncObject) {
+                        work.syncObject.notifyAll();
+                    }
                 }
             }
         } // process all items on the work queue

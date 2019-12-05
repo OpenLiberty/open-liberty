@@ -197,7 +197,7 @@ public class NBAccept {
         } // end-sync-this
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.exit(tc, "removePort");
+            Tr.exit(tc, "removePort:");
         }
 
     }
