@@ -51,10 +51,7 @@ export default class XPane extends React.Component {
           <Col desktop={showEditor ? 4 : 9} >
             <Operations/>
           </Col>
-
         </Row>
-
-        <Footer></Footer>
 
       </Container>
     )
