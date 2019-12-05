@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.install.featureUtility.fat;
 
 import static org.junit.Assert.assertEquals;
@@ -11,6 +21,7 @@ import org.junit.Test;
 
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.install.internal.InstallLogUtils;
 
 public class InstallServerTest extends FeatureUtilityToolTest {
     private static final Class<?> c = FeatureUtilityToolTest.class;
@@ -31,6 +42,81 @@ public class InstallServerTest extends FeatureUtilityToolTest {
         resetOriginalWlpProps();
         cleanUpTempFiles();
     }
+    /**
+     * Test install when no features are specified in server.xml
+     */
+    @Test
+    public void testInstallBlankFeatures() throws Exception {
+        String METHOD_NAME = "testInstallBlankFeatures";
+        Log.entering(c, METHOD_NAME);
+
+        copyFileToMinifiedRoot("usr/servers/serverY", "../../publish/tmp/noFeaturesServerXml/server.xml");
+        String[] param2s = { "installServerFeatures", "serverY"};
+        deleteFeaturesAndLafilesFolders(METHOD_NAME);
+
+
+        ProgramOutput po = runFeatureUtility(METHOD_NAME, param2s);
+        assertEquals("Exit code should be 0",0, po.getReturnCode());
+        String output = po.getStdout();
+
+        String noFeaturesMessage = "The server does not require any additional features.";
+        assertTrue("No features should be installed", output.indexOf(noFeaturesMessage) >= 0);
+
+        Log.exiting(c, METHOD_NAME);
+    }
+
+//    /**
+//     * // TODO. this test case will be added once the disableUsrFeatures pull request is merged!!
+//     * @throws Exception
+//     */
+//    @Test
+//    public void testUsrFeatureServerXml() throws Exception {
+//        String METHOD_NAME = "testUsrFeatureServerXml";
+//        copyFileToMinifiedRoot("usr/servers/serverZ", "../../publish/tmp/usrFeaturesServerXml/server.xml");
+//        String[] param2s = { "installServerFeatures", "serverZ"};
+//        deleteFeaturesAndLafilesFolders(METHOD_NAME);
+//
+//
+//        ProgramOutput po = runFeatureUtility(METHOD_NAME, param2s);
+//        assertEquals("Exit code should be 0",0, po.getReturnCode());
+//        String output = po.getStdout();
+//        // server.xml contains jsp-2.3, so jsp-2.3 should be installed.
+//        assertTrue("Output should contain jsp-2.3", output.indexOf("jsp-2.3") >= 0);
+//
+//        String noFeaturesMessage = InstallLogUtils.Messages.INSTALL_KERNEL_MESSAGES.getMessage("MSG_SERVER_NEW_FEATURES_NOT_REQUIRED");
+//        assertTrue("No features should be installed", output.indexOf(noFeaturesMessage) >= 0);
+//    }
+
+    /**
+     * Install a server twice.
+     */
+    public void testAlreadyInstalledFeatures() throws Exception {
+        final String METHOD_NAME = "testAlreadyInstalledFeatures";
+        Log.entering(c, METHOD_NAME);
+
+        // replace the server.xml
+        copyFileToMinifiedRoot("usr/servers/serverX", "../../publish/tmp/plainServerXml/server.xml");
+
+        // install the server
+        String[] param1s = { "installServerFeatures", "serverX"};
+        deleteFeaturesAndLafilesFolders(METHOD_NAME);
+        ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
+        assertEquals("Exit code should be 0",0, po.getReturnCode());
+        String output = po.getStdout();
+        assertTrue("Output should contain jsp-2.3", output.indexOf("jsf-2.2") >= 0);
+
+        // install server again
+        deleteFeaturesAndLafilesFolders(METHOD_NAME);
+        po = runFeatureUtility(METHOD_NAME, param1s);
+        assertEquals("Exit code should be 22",22, po.getReturnCode());
+//        output = po.getStdout();
+//        assertTrue("Output should contain jsp-2.3", output.indexOf("jsf-2.2") >= 0);
+
+
+
+        Log.exiting(c, METHOD_NAME);
+    }
+
 
     /**
      * Install jsf-2.2 on its own first, then install a server.xml with jsf-2.2 and cdi-1.2. The autofeature cdi1.2-jsf2.2 should be installed along with the other features.
@@ -67,6 +153,7 @@ public class InstallServerTest extends FeatureUtilityToolTest {
 
         Log.exiting(c, METHOD_NAME);
     }
+
 
 
 }

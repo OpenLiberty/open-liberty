@@ -607,7 +607,12 @@ public class InvokerTask implements Runnable, Synchronization {
                     processRetryableTaskFailure(failure, loader, nextFailureCount, config, taskName);
                 } else {
                     if (taskIdForPropTable != null)
-                        taskStore.removeProperty(taskIdForPropTable);
+                        try {
+                            taskStore.removeProperty(taskIdForPropTable);
+                        } catch (Throwable x) {
+                            tranMgr.rollback();
+                            throw x;
+                        }
 
                     tranMgr.commit();
 
