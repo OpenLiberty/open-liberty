@@ -15,6 +15,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -35,7 +36,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         replaceWlpProperties(getPreviousWlpVersion());
         Log.exiting(c, methodName);
     }
-    
+
     @AfterClass
     public static void cleanUp() throws Exception {
         // TODO
@@ -53,23 +54,25 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         final String METHOD_NAME = "testInstallFeature";
         Log.entering(c, METHOD_NAME);
 
-        String[] param1s = { "installFeature", "jsp-2.3"};
-        String [] fileLists = {"lib/features/com.ibm.websphere.appserver.jsp-2.3.mf"};
-//        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.jsp-2.3", fileLists);
+        String[] param1s = { "installFeature", "jsp-2.3" };
+        String[] fileLists = { "lib/features/com.ibm.websphere.appserver.jsp-2.3.mf" };
+        // deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.jsp-2.3", fileLists);
         deleteFeaturesAndLafilesFolders(METHOD_NAME);
 
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
-        assertEquals("Exit code should be 0",0, po.getReturnCode());
+        assertEquals("Exit code should be 0", 0, po.getReturnCode());
         String output = po.getStdout();
         assertTrue("Should contain jsp-2.3", output.contains("jsp-2.3"));
 
-//        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.jsp-2.3", fileLists);
+        // deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.jsp-2.3", fileLists);
         deleteFeaturesAndLafilesFolders(METHOD_NAME);
         Log.exiting(c, METHOD_NAME);
     }
 
     /**
-     * Test the installation of features cdi-1.2 and jsf-2.2 together, which should also install the autofeature cdi1.2-jsf2.2.
+     * Test the installation of features cdi-1.2 and jsf-2.2 together, which should
+     * also install the autofeature cdi1.2-jsf2.2.
+     * 
      * @throws Exception
      */
     @Test
@@ -77,33 +80,33 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         final String METHOD_NAME = "testInstallAutoFeature";
         Log.entering(c, METHOD_NAME);
 
-        String[] param1s = { "installFeature", "jsf-2.2", "cdi-1.2"};
-        String [] fileListA = {"lib/features/com.ibm.websphere.appserver.jsf-2.2.mf", "lib/features/com.ibm.websphere.appserver.cdi1.2-jsf2.2.mf"};
-        String [] fileListB = {"lib/features/com.ibm.websphere.appserver.cdi-1.2.mf"};
-//        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.jsf-2.2", fileListA);
-//        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.cdi-1.2", fileListB);
+        String[] param1s = { "installFeature", "jsf-2.2", "cdi-1.2" };
+        String[] fileListA = { "lib/features/com.ibm.websphere.appserver.jsf-2.2.mf",
+                "lib/features/com.ibm.websphere.appserver.cdi1.2-jsf2.2.mf" };
+        String[] fileListB = { "lib/features/com.ibm.websphere.appserver.cdi-1.2.mf" };
+        // deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.jsf-2.2", fileListA);
+        // deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.cdi-1.2", fileListB);
         deleteFeaturesAndLafilesFolders(METHOD_NAME);
 
-
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
-        assertEquals("Exit code should be 0",0, po.getReturnCode());
+        assertEquals("Exit code should be 0", 0, po.getReturnCode());
         String output = po.getStdout();
         assertTrue("Output should contain jsf-2.2", output.indexOf("jsf-2.2") >= 0);
         assertTrue("Output should contain cdi-1.2", output.indexOf("cdi-1.2") >= 0);
-        assertTrue("The autofeature cdi1.2-jsf-2.2 should be installed" , new File(minifiedRoot + "/lib/features/com.ibm.websphere.appserver.cdi1.2-jsf2.2.mf").exists());
+        assertTrue("The autofeature cdi1.2-jsf-2.2 should be installed",
+                new File(minifiedRoot + "/lib/features/com.ibm.websphere.appserver.cdi1.2-jsf2.2.mf").exists());
 
-//        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.jsf-2.2", fileListA);
-////        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.cdi-1.2", fileListB);
+        // deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.jsf-2.2", fileListA);
+        //// deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.cdi-1.2", fileListB);
         deleteFeaturesAndLafilesFolders(METHOD_NAME);
-
 
         Log.exiting(c, METHOD_NAME);
     }
 
-
     /**
-     * Test the installation of a closed liberty feature (adminCenter-1.0) in Open Liberty
-     * using Feature Utility.
+     * Test the installation of a closed liberty feature (adminCenter-1.0) in Open
+     * Liberty using Feature Utility.
+     * 
      * @throws Exception
      */
     @Test
@@ -115,23 +118,21 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
         assertEquals("Exit code should be 21", 21, po.getReturnCode());
         String output = po.getStdout();
-        assertTrue("Should contain CWWKF1402E", (output.indexOf("CWWKF1402E")>=0));
+        assertTrue("Should contain CWWKF1402E", (output.indexOf("CWWKF1402E") >= 0));
 
         // try adding closed libery group id
-        String [] param2s = {"installFeature", "com.ibm.websphere.appserver.adminCenter-1.0"};
+        String[] param2s = { "installFeature", "com.ibm.websphere.appserver.adminCenter-1.0" };
         po = runFeatureUtility(METHOD_NAME, param1s);
         assertEquals("Exit code should be 21", 21, po.getReturnCode());
         output = po.getStdout();
         assertTrue("Should contain CWWKF1402E", (output.indexOf("CWWKF1402E") >= 0));
 
-
-
         Log.exiting(c, METHOD_NAME);
     }
 
-
     /**
      * Test the installation of a made up feature.
+     * 
      * @throws Exception
      */
     @Test
@@ -139,11 +140,13 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         final String METHOD_NAME = "testInvalidFeature";
         Log.entering(c, METHOD_NAME);
 
-        String[] param1s = { "installFeature", "veryClearlyMadeUpFeatureThatNoOneWillEverThinkToCreateThemselvesAbCxYz-1.0"};
+        String[] param1s = { "installFeature",
+                "veryClearlyMadeUpFeatureThatNoOneWillEverThinkToCreateThemselvesAbCxYz-1.0" };
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
-        assertEquals("Exit code should be 21",21,  po.getReturnCode());
+        assertEquals("Exit code should be 21", 21, po.getReturnCode());
         String output = po.getStdout();
-        assertTrue("Should contain CWWKF1299E or CWWKF1203E", output.indexOf("CWWKF1402E")>=0 ||output.indexOf("CWWKF1203E") >= 0);
+        assertTrue("Should contain CWWKF1299E or CWWKF1203E",
+                output.indexOf("CWWKF1402E") >= 0 || output.indexOf("CWWKF1203E") >= 0);
         Log.exiting(c, METHOD_NAME);
     }
 
@@ -155,23 +158,24 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         final String METHOD_NAME = "testAlreadyInstalledFeature";
         Log.entering(c, METHOD_NAME);
 
-        String[] param1s = { "installFeature", "mpHealth-2.0"};
-        String [] fileLists = {"lib/features/com.ibm.websphere.appserver.mpHealth-2.0.mf"};
-//        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.mpHealth-2.0", fileLists);
+        String[] param1s = { "installFeature", "mpHealth-2.0" };
+        String[] fileLists = { "lib/features/com.ibm.websphere.appserver.mpHealth-2.0.mf" };
+        // deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.mpHealth-2.0",
+        // fileLists);
         deleteFeaturesAndLafilesFolders(METHOD_NAME);
 
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
-        assertEquals("Exit code should be 0",0, po.getReturnCode());
+        assertEquals("Exit code should be 0", 0, po.getReturnCode());
         String output = po.getStdout();
         assertTrue("Should contain mpHealth-2.0", output.contains("mpHealth-2.0"));
 
         po = runFeatureUtility(METHOD_NAME, param1s);
-        assertEquals("Exit code should be 22 indicating already installd feature",22, po.getReturnCode());
+        assertEquals("Exit code should be 22 indicating already installd feature", 22, po.getReturnCode());
         output = po.getStdout();
         assertTrue("Should contain CWWKF1250I", output.contains("CWWKF1250I"));
 
-
-//        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.mpHealth-2.0", fileLists);
+        // deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.mpHealth-2.0",
+        // fileLists);
         deleteFeaturesAndLafilesFolders(METHOD_NAME);
         Log.exiting(c, METHOD_NAME);
 
@@ -180,19 +184,19 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
     @Test
     public void testInvalidMavenCoordinateGroupId() throws Exception {
         String methodName = "testInvalidMavenCoordinateGroupId";
-        String [] param1s = {"if", "madeUpGroupId:mpHealth-2.0"};
+        String[] param1s = { "if", "madeUpGroupId:mpHealth-2.0" };
         ProgramOutput po = runFeatureUtility(methodName, param1s);
         assertEquals("Group ID does not exist", 21, po.getReturnCode());
         String output = po.getStdout();
-        assertTrue("Msg contains CWWKF1402E", output.indexOf("CWWKF1402E") >=0);
-         // TODO change this message in FeatureUtility
+        assertTrue("Msg contains CWWKF1402E", output.indexOf("CWWKF1402E") >= 0);
+        // TODO change this message in FeatureUtility
 
     }
 
     @Test
     public void testInvalidMavenCoordinateArtifactId() throws Exception {
         String methodName = "testInvalidMavenCoordinateArtifactId";
-        String [] param1s = {"if", "io.openliberty.features:mpHealth"};
+        String[] param1s = { "if", "io.openliberty.features:mpHealth" };
         ProgramOutput po = runFeatureUtility(methodName, param1s);
         assertEquals("Invalid feature shortname", 21, po.getReturnCode());
         String output = po.getStdout();
@@ -210,13 +214,13 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         String methodName = "testInvalidMavenCoordinateVersion";
         // version mismatch. get an old Liberty version.
         String oldVersion = "19.0.0.1";
-        String [] param1s = {"if", "io.openliberty.features:mpHealth-2.0:"+oldVersion};
+        String[] param1s = { "if", "io.openliberty.features:mpHealth-2.0:" + oldVersion };
         ProgramOutput po = runFeatureUtility(methodName, param1s);
-        assertEquals("Incompatible feature version" , 21, po.getReturnCode());
+        assertEquals("Incompatible feature version", 21, po.getReturnCode());
         String output = po.getStdout();
         assertTrue("Expected CWWKF1395E msg", output.indexOf("CWWKF1395E") >= 0);
     }
-    
+
     /**
      * The packaging in a maven coordinate can only be "esa", so we must verify that
      * it only works with esa.
@@ -233,15 +237,15 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         deleteFeaturesAndLafilesFolders(methodName);
 
         // test with invalid packaging
-        String [] param1s = {"if", "io.openliberty.features:jsp-2.3:"+currentVersion+":jar"};
+        String[] param1s = { "if", "io.openliberty.features:jsp-2.3:" + currentVersion + ":jar" };
         ProgramOutput po = runFeatureUtility(methodName, param1s);
         assertEquals(21, po.getReturnCode());
-        //"CWWKF1395E"
+        // "CWWKF1395E"
         String output = po.getStdout();
-        assertTrue("expected CWWKF1396E", output.indexOf("CWWKF1396E")>=0);
+        assertTrue("expected CWWKF1396E", output.indexOf("CWWKF1396E") >= 0);
 
         // now try with valid packaging
-        String [] param2s = {"if", "io.openliberty.features:jsp-2.3:"+currentVersion+":esa"};
+        String[] param2s = { "if", "io.openliberty.features:jsp-2.3:" + currentVersion + ":esa" };
         po = runFeatureUtility(methodName, param2s);
         assertEquals("Should install successfully.", 0, po.getReturnCode());
         deleteFeaturesAndLafilesFolders(methodName);
@@ -255,43 +259,68 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         String output;
         String version = getPreviousWlpVersion();
 
-        String [] param1s = {"if", "groupId:artifactId:"+version+":esa:unsupportedOption"};
+        String[] param1s = { "if", "groupId:artifactId:" + version + ":esa:unsupportedOption" };
         po = runFeatureUtility(methodName, param1s);
         assertEquals(21, po.getReturnCode());
         output = po.getStdout();
-        assertTrue("should output CWWKF1397E ", output.indexOf("CWWKF1397E")>=0);
+        assertTrue("should output CWWKF1397E ", output.indexOf("CWWKF1397E") >= 0);
 
-        String [] param2s = {"if", ":::"};
+        String[] param2s = { "if", ":::" };
         po = runFeatureUtility(methodName, param2s);
         assertEquals(21, po.getReturnCode());
         output = po.getStdout();
-        assertTrue("should output CWWKF1397E ", output.indexOf("CWWKF1397E")>=0);
-        
+        assertTrue("should output CWWKF1397E ", output.indexOf("CWWKF1397E") >= 0);
 
-        String [] param3s = {"if", "groupId::" + version};
+        String[] param3s = { "if", "groupId::" + version };
         po = runFeatureUtility(methodName, param3s);
         assertEquals(21, po.getReturnCode());
         output = po.getStdout();
-        assertTrue("should output CWWKF1397E ", output.indexOf("CWWKF1397E")>=0);
+        assertTrue("should output CWWKF1397E ", output.indexOf("CWWKF1397E") >= 0);
 
-
-        String [] param4s = {"if", "groupId:::esa"};
+        String[] param4s = { "if", "groupId:::esa" };
         po = runFeatureUtility(methodName, param4s);
         assertEquals(21, po.getReturnCode());
         output = po.getStdout();
-        assertTrue("should output CWWKF1397E ", output.indexOf("CWWKF1397E")>=0);
+        assertTrue("should output CWWKF1397E ", output.indexOf("CWWKF1397E") >= 0);
     }
 
     @Test
     public void testBlankFeature() throws Exception {
         String methodName = "testBlankFeature";
 
-        String [] param1s = {"if" , " "};
+        String[] param1s = { "if", " " };
         ProgramOutput po = runFeatureUtility(methodName, param1s);
         assertEquals(20, po.getReturnCode()); // 20 refers to ReturnCode.BAD_ARGUMENT
         String output = po.getStdout();
-        assertTrue("Should refer to ./featureUtility help", output.indexOf("Usage")>=0);
+        assertTrue("Should refer to ./featureUtility help", output.indexOf("Usage") >= 0);
 
+    }
+
+    /**
+     * Installs webProfile-8.0 using the local .m2 cache
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testLocalFeatureInstall() throws Exception {
+        String methodName = "testLocalFeatureInstall";
+        Log.entering(c, methodName);
+
+        if(!unzipMavenArtifactRepo()){
+            Log.info(c, methodName, "Could not unzip into m2 cache, test case will not be run.");
+            return;
+        }
+        deleteFeaturesAndLafilesFolders(methodName);
+        // we have unzipped into m2 cache at this point
+        String[] param1s = { "if", "webProfile-8.0"};
+        ProgramOutput po = runFeatureUtility(methodName, param1s);
+        assertEquals("Return code should be 0", 0 , po.getReturnCode());
+
+        String output = po.getStdout();
+        assertTrue("Should not have downloaded any files", output.indexOf("Downloading") == -1);
+        
+        deleteFeaturesAndLafilesFolders(methodName);
+        Log.exiting(c, methodName);
     }
 
     /**

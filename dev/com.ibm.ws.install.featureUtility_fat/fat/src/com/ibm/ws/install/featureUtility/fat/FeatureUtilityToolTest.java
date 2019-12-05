@@ -41,7 +41,6 @@ public abstract class FeatureUtilityToolTest {
     protected static String serverName = "featureUtility_fat";
     private static String zipFileDestination;
     private static String unzipDestination;
-
     private static Properties wlpVersionProps;
     private static String originalWlpVersion;
     private static String originalWlpEdition;
@@ -122,7 +121,6 @@ public abstract class FeatureUtilityToolTest {
         }
     }
 
-
     /**
      * Same as LibertyServer.copyFileToLibertyInstallRoot except it uses our own installRoot
      * @param extendedPath
@@ -173,8 +171,63 @@ public abstract class FeatureUtilityToolTest {
 
     }
 
+    /**
+     * Gets the maven artifact repo.zip into ~/.m2/repository/
+     * 
+     * @throws IOException
+     */
+    private File getMavenArtifactRepoZip() throws IOException {
+        String methodName = "unzipMavenArtifactRepo";
+        Log.entering(c, methodName);
+
+        String uploadDir = "../build.image/output/upload/externals/installables";
+        File outputUploadDir = new File(uploadDir).getCanonicalFile();
+        Log.info(c, methodName, "Upload dir EXISTS?: " + outputUploadDir.exists());
+        if(!outputUploadDir.exists()){
+            return null;
+        }
+
+        File featureRepo = null;
+        File[] files = outputUploadDir.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                String name = file.getName();
+                if (file.isFile() && name.startsWith("openliberty-MavenArtifact") && name.endsWith(".zip")) {
+                    Log.info(c, methodName, "Found maven artifact repo zip: " + file.getAbsolutePath());
 
 
+                }
+                // hope to find OL kernel zip here.
+                Log.info(c, methodName, "Found file: " + file.getName());
+
+            }
+        }
+        
+        Log.info(c, methodName, "Found artifact zip?: " + featureRepo);
+        Log.exiting(c, methodName);
+        return featureRepo;
+    }
+
+    protected boolean unzipMavenArtifactRepo() throws IOException {
+        String methodName = "unzipMavenArtifactRepo";
+        Log.entering(c, methodName);
+
+        File mavenArtifactZip = getMavenArtifactRepoZip();
+        if(mavenArtifactZip == null){
+            Log.info(c, methodName, "Could not find maven artifact zip");
+            return false;
+        }
+
+        File m2Cache = new File(System.getProperty("user.home") + "/.m2/repository/");
+                    
+        ZipFile zipFile = new ZipFile(mavenArtifactZip);
+        TestUtils.unzipFileIntoDirectory(zipFile, m2Cache);
+        Log.info(c, methodName, "Unzipped into m2 cache");
+
+        Log.exiting(c, methodName);
+        return true;
+    }
+    
 
     // TODO discuss if we need this. may be useful for certain test cases like
     // mirror repo
