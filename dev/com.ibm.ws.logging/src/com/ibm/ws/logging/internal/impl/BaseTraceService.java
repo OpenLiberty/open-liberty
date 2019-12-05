@@ -480,13 +480,18 @@ public class BaseTraceService implements TrService {
             isServerConfigSetup = false;
 
         omitFieldsMap.clear(); //refresh for each server configuration update
-
-        if (value == null || value == "" || value.isEmpty()) {
+        if (value == null || value == "" || value.isEmpty()) { //reset all fields to original when server config has ""
             AccessLogData.getOmitFieldsList().clear();
             FFDCData.getOmitFieldsList().clear();
             LogTraceData.getOmitFieldsListMessage().clear();
             LogTraceData.getOmitFieldsListTrace().clear();
             AuditData.getOmitFieldsList().clear();
+
+            AccessLogData.resetJsonLoggingNameAliases();
+            FFDCData.resetJsonLoggingNameAliases();
+            LogTraceData.resetJsonLoggingNameAliasesMessage();
+            LogTraceData.resetJsonLoggingNameAliasesTrace();
+            AuditData.resetJsonLoggingNameAliases();
             //if no property is set, return
             return;
         }
@@ -506,7 +511,6 @@ public class BaseTraceService implements TrService {
         List<String> AuditList = Arrays.asList(AuditData.NAMES1_1);
 
         String[] keyValuePairs = value.split(","); //split the string to create key-value pairs
-
         for (String pair : keyValuePairs) //iterate over the pairs
         {
             String[] entry = pair.split(":"); //split the pairs to get key and value
@@ -687,6 +691,8 @@ public class BaseTraceService implements TrService {
                 }
             }
         }
+
+        System.out.print("messageMap: " + messageMap);
 
         AccessLogData.newJsonLoggingNameAliases(accessLogMap);
         FFDCData.newJsonLoggingNameAliases(ffdcMap);

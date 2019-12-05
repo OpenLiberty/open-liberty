@@ -62,12 +62,15 @@ public class FFDCData extends GenericData {
     };
 
     private static NameAliases jsonLoggingNameAliases = new NameAliases(NAMES1_1);
+    private static ArrayList<String> omitFieldsList = new ArrayList<>();
 
     public static void newJsonLoggingNameAliases(Map<String, String> newAliases) {
         jsonLoggingNameAliases.newAliases(newAliases);
     }
 
-    private static ArrayList<String> omitFieldsList = new ArrayList<>();
+    public static void resetJsonLoggingNameAliases() {
+        jsonLoggingNameAliases.resetAliases();
+    }
 
     public static void setOmitFieldsList(Set<String> fieldNames) {
         omitFieldsList = new ArrayList<>(fieldNames);
@@ -360,4 +363,9 @@ public class FFDCData extends GenericData {
     public static String getServerNameKeyJSON() {
         return jsonLoggingNameAliases.aliases[15];
     }
+
+    public static String getTypeKeyJSON() {
+        return jsonLoggingNameAliases.aliases[16];
+    }
+
 }

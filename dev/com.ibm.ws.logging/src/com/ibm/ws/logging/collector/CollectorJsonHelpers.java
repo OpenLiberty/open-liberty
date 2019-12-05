@@ -46,7 +46,7 @@ public class CollectorJsonHelpers {
     private static String startAuditJson = null;
     private static String startAuditJson1_1 = null;
     private static String startAuditJsonFields = null;
-    private static final String TYPE_FIELD_PREPPEND = "\"type\":\"";
+    private static final String TYPE_FIELD_PREPPEND = "\":\"";
     private static final String TYPE_FIELD_APPEND = "\"";
     private static final String MESSAGE_JSON_TYPE_FIELD = TYPE_FIELD_PREPPEND + CollectorConstants.MESSAGES_LOG_EVENT_TYPE + TYPE_FIELD_APPEND;
     private static final String TRACE_JSON_TYPE_FIELD = TYPE_FIELD_PREPPEND + CollectorConstants.TRACE_LOG_EVENT_TYPE + TYPE_FIELD_APPEND;
@@ -543,6 +543,8 @@ public class CollectorJsonHelpers {
             sb.append("{");
             if (!(BaseTraceService.getOmitFieldsMap().containsKey(CollectorConstants.MESSAGES_CONFIG_VAL) &&
                   BaseTraceService.getOmitFieldsMap().get(CollectorConstants.MESSAGES_CONFIG_VAL).contains("type"))) {
+                sb.append("\"");
+                sb.append(AuditData.getTypeKeyJSON());
                 sb.append(AUDIT_JSON_TYPE_FIELD);
             }
             addUnchangingFieldsJSON_Audit(sb, hostName, wlpUserDir, serverName);
@@ -564,6 +566,8 @@ public class CollectorJsonHelpers {
             sb.append("{");
             if (!(BaseTraceService.getOmitFieldsMap().containsKey(CollectorConstants.MESSAGES_CONFIG_VAL) &&
                   BaseTraceService.getOmitFieldsMap().get(CollectorConstants.MESSAGES_CONFIG_VAL).contains("type"))) {
+                sb.append("\"");
+                sb.append(LogTraceData.getTypeKeyJSON(true));
                 sb.append(MESSAGE_JSON_TYPE_FIELD);
             }
             addUnchangingFieldsJSON_Message(sb, hostName, wlpUserDir, serverName, true);
@@ -586,6 +590,8 @@ public class CollectorJsonHelpers {
             sb.append("{");
             if (!(BaseTraceService.getOmitFieldsMap().containsKey(CollectorConstants.MESSAGES_CONFIG_VAL) &&
                   BaseTraceService.getOmitFieldsMap().get(CollectorConstants.MESSAGES_CONFIG_VAL).contains("type"))) {
+                sb.append("\"");
+                sb.append(LogTraceData.getTypeKeyJSON(false));
                 sb.append(TRACE_JSON_TYPE_FIELD);
             }
             addUnchangingFieldsJSON_Trace(sb, hostName, wlpUserDir, serverName, false);
@@ -608,6 +614,8 @@ public class CollectorJsonHelpers {
             sb.append("{");
             if (!(BaseTraceService.getOmitFieldsMap().containsKey(CollectorConstants.MESSAGES_CONFIG_VAL) &&
                   BaseTraceService.getOmitFieldsMap().get(CollectorConstants.MESSAGES_CONFIG_VAL).contains("type"))) {
+                sb.append("\"");
+                sb.append(FFDCData.getTypeKeyJSON());
                 sb.append(FFDC_JSON_TYPE_FIELD);
             }
             addUnchangingFieldsJSON_FFDC(sb, hostName, wlpUserDir, serverName);
@@ -630,6 +638,8 @@ public class CollectorJsonHelpers {
             sb.append("{");
             if (!(BaseTraceService.getOmitFieldsMap().containsKey(CollectorConstants.MESSAGES_CONFIG_VAL) &&
                   BaseTraceService.getOmitFieldsMap().get(CollectorConstants.MESSAGES_CONFIG_VAL).contains("type"))) {
+                sb.append("\"");
+                sb.append(AccessLogData.getTypeKeyJSON());
                 sb.append(ACCESS_JSON_TYPE_FIELD);
             }
             addUnchangingFieldsJSON_AccessLog(sb, hostName, wlpUserDir, serverName);

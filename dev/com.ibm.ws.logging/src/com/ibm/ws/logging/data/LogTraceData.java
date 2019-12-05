@@ -107,7 +107,8 @@ public class LogTraceData extends GenericData {
                                                 LogFieldConstants.OBJECT_ID,
                                                 LogFieldConstants.HOST,
                                                 LogFieldConstants.IBM_USERDIR,
-                                                LogFieldConstants.IBM_SERVERNAME
+                                                LogFieldConstants.IBM_SERVERNAME,
+                                                LogFieldConstants.TYPE
     };
 
     public static String[] TRACE_NAMES1_1 = {
@@ -134,22 +135,30 @@ public class LogTraceData extends GenericData {
                                               LogFieldConstants.OBJECT_ID,
                                               LogFieldConstants.HOST,
                                               LogFieldConstants.IBM_USERDIR,
-                                              LogFieldConstants.IBM_SERVERNAME
+                                              LogFieldConstants.IBM_SERVERNAME,
+                                              LogFieldConstants.TYPE
     };
 
     private static NameAliases jsonLoggingNameAliasesMessages = new NameAliases(MESSAGE_NAMES1_1);
+    private static NameAliases jsonLoggingNameAliasesTrace = new NameAliases(TRACE_NAMES1_1);
+    private static ArrayList<String> omitFieldsListMessage = new ArrayList<>();
+    private static ArrayList<String> omitFieldsListTrace = new ArrayList<>();
 
     public static void newJsonLoggingNameAliasesMessage(Map<String, String> newAliases) {
         jsonLoggingNameAliasesMessages.newAliases(newAliases);
     }
 
-    private static NameAliases jsonLoggingNameAliasesTrace = new NameAliases(TRACE_NAMES1_1);
-
     public static void newJsonLoggingNameAliasesTrace(Map<String, String> newAliases) {
         jsonLoggingNameAliasesTrace.newAliases(newAliases);
     }
 
-    private static ArrayList<String> omitFieldsListMessage = new ArrayList<>();
+    public static void resetJsonLoggingNameAliasesMessage() {
+        jsonLoggingNameAliasesMessages.resetAliases();
+    }
+
+    public static void resetJsonLoggingNameAliasesTrace() {
+        jsonLoggingNameAliasesTrace.resetAliases();
+    }
 
     public static void setOmitFieldsListMessage(Set<String> fieldNames) {
         omitFieldsListMessage = new ArrayList<>(fieldNames);
@@ -158,8 +167,6 @@ public class LogTraceData extends GenericData {
     public static ArrayList<String> getOmitFieldsListMessage() {
         return omitFieldsListMessage;
     }
-
-    private static ArrayList<String> omitFieldsListTrace = new ArrayList<>();
 
     public static void setOmitFieldsListTrace(Set<String> fieldNames) {
         omitFieldsListTrace = new ArrayList<>(fieldNames);
@@ -535,6 +542,10 @@ public class LogTraceData extends GenericData {
 
     public static String getServerNameKeyJSON(boolean isMessageEvent) {
         return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[23] : jsonLoggingNameAliasesTrace.aliases[23];
+    }
+
+    public static String getTypeKeyJSON(boolean isMessageEvent) {
+        return isMessageEvent ? jsonLoggingNameAliasesMessages.aliases[24] : jsonLoggingNameAliasesTrace.aliases[24];
     }
 
     public static String getExtensionNameKeyJSON(boolean isMessageEvent, String extKey) {
