@@ -204,7 +204,6 @@ public class InstallServerAction implements ActionHandler {
 
         private ExitCode install() {
                 try {
-                        logger.fine("sending this to feature utility: " + featureNames.toString());
                         featureUtility = new FeatureUtility.FeatureUtilityBuilder().setFromDir(fromDir)
                                         .setFeaturesToInstall(featureNames).setNoCache(noCache).build();
                         featureUtility.installFeatures();
