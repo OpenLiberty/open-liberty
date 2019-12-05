@@ -8,11 +8,24 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-/**
- * @version 1.0
- */
-@org.osgi.annotation.versioning.Version("1.0")
-@TraceOptions(traceGroup = "GraphQL", messageBundle = "com.ibm.ws.microprofile.graphql.resources.MPGraphQL")
-package com.ibm.ws.microprofile.graphql.component;
+package mpGraphQL10.voidQuery;
 
-import com.ibm.websphere.ras.annotation.TraceOptions;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
+public interface QueryClient {
+
+    @POST
+    WidgetQueryResponse allWidgets(Query query) throws Expected404Exception;
+
+    @Produces(MediaType.TEXT_PLAIN)
+    @Path("/schema.graphql")
+    @GET
+    String schema() throws Expected404Exception;
+}
