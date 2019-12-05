@@ -7,7 +7,7 @@ visibility=private
  com.ibm.websphere.appserver.jcaSecurity-1.0
 -bundles=com.ibm.ws.jca.cm
 -jars=com.ibm.websphere.appserver.api.connectionmanager; location:=dev/api/ibm/
--files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.connectionmanager_1.1-javadoc.zip
+-files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.connectionmanager_1.2-javadoc.zip
 kind=ga
 edition=core
 WLP-Activation-Type: parallel
