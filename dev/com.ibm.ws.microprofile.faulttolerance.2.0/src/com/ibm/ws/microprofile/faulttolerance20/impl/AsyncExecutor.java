@@ -58,7 +58,7 @@ import com.ibm.wsspi.threadcontext.WSContextService;
  * <p>
  * Asynchronous calls return their result inside a wrapper (currently either a {@link Future} or a {@link CompletionStage}).
  * <p>
- * When this executor is called, it must create and instance of the wrapper and return that immediately, while execution of the method takes place on another thread. Once the
+ * When this executor is called, it must create an instance of the wrapper and return that immediately, while execution of the method takes place on another thread. Once the
  * execution of the method is complete, the wrapper instance must be updated with the result of the method execution.
  * <p>
  * If an internal exception occurs, this may be thrown directly from the {@link #execute(Callable, ExecutionContext)} method, or logged and propagated back to the user via the
