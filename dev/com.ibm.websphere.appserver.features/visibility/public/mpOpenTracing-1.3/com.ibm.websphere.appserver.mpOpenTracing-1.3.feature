@@ -17,3 +17,4 @@ IBM-API-Package: \
   com.ibm.ws.microprofile.opentracing.1.3
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

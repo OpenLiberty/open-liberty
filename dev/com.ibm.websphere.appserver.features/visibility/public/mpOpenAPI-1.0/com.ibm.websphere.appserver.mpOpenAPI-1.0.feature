@@ -48,3 +48,4 @@ IBM-SPI-Package: \
  com.ibm.ws.com.fasterxml.jackson.2.9.1
 kind=ga
 edition=core
+WLP-Activation-Type: parallel
