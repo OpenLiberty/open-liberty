@@ -11,6 +11,7 @@
 package com.ibm.ws.microprofile.config14.impl;
 
 import java.lang.reflect.Type;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -22,6 +23,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.config.spi.ConfigSource;
 
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.config.impl.AbstractConfig;
 import com.ibm.ws.microprofile.config.impl.ConversionManager;
 import com.ibm.ws.microprofile.config.impl.SortedSources;
@@ -60,13 +62,25 @@ public class Config14Impl extends AbstractConfig implements WebSphereConfig {
         return sourcedValue;
     }
 
+    @Trivial
+    @FFDCIgnore(NullPointerException.class)
+    private static Set<String> getPropertyNames(ConfigSource source) {
+        Set<String> names = null;
+        try {
+            names = source.getPropertyNames();
+        } catch (NullPointerException e) {
+            names = Collections.emptySet();
+        }
+        return names;
+    }
+
     /** {@inheritDoc} */
     @Override
     public Set<String> getKeySet() {
         HashSet<String> result = new HashSet<>();
 
         for (ConfigSource source : sources) {
-            Set<String> names = source.getPropertyNames();
+            Set<String> names = getPropertyNames(source);
             result.addAll(names);
         }
 
@@ -82,7 +96,7 @@ public class Config14Impl extends AbstractConfig implements WebSphereConfig {
         SourcedValue raw = null;
         for (ConfigSource source : sources) {
             String value = source.getValue(key);
-            if (value != null || source.getPropertyNames().contains(key)) {
+            if (value != null || getPropertyNames(source).contains(key)) {
                 String sourceID = source.getName();
                 raw = new SourcedValueImpl(key, value, String.class, sourceID);
                 break;
