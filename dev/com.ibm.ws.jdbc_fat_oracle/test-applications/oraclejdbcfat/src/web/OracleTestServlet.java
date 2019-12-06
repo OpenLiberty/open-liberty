@@ -58,31 +58,6 @@ public class OracleTestServlet extends FATServlet {
     @Resource(lookup = "jdbc/inferred-ds")
     private DataSource inferred_ds;
 
-    public void initDatabaseTables() throws SQLException {
-        Connection con = ds.getConnection();
-        try {
-            Statement stmt = con.createStatement();
-            try {
-                stmt.execute("DROP TABLE MYTABLE");
-            } catch (SQLException x) {
-                // probably didn't exist
-            }
-            stmt.execute("CREATE TABLE MYTABLE (ID NUMBER NOT NULL PRIMARY KEY, STRVAL NVARCHAR2(40))");
-
-            try {
-                stmt.execute("DROP TABLE CONCOUNT");
-            } catch (SQLException x) {
-                // probably didn't exist
-            }
-            stmt.execute("CREATE TABLE CONCOUNT (NUMCONNECTIONS NUMBER NOT NULL)");
-            stmt.execute("INSERT INTO CONCOUNT VALUES(0)");
-
-            stmt.close();
-        } finally {
-            con.close();
-        }
-    }
-
     // Verify that connections are/are not castable to OracleConnection based on whether enableConnectionCasting=true/false.
     @Test
     public void testConnectionCasting() throws Exception {

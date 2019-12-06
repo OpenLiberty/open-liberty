@@ -10,11 +10,13 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.oracle;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.runner.RunWith;
-import org.testcontainers.containers.OracleContainer;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
@@ -31,10 +33,6 @@ public class OracleTest extends FATServletClient {
     public static final String JEE_APP = "oraclejdbcfat";
     public static final String SERVLET_NAME = "OracleTestServlet";
 
-    //TODO replace this container with the official oracle-xe container if/when it is available without a license
-    @ClassRule
-    public static OracleContainer oracle = new OracleContainer("oracleinanutshell/oracle-xe-11g");
-
     @Server("com.ibm.ws.jdbc.fat.oracle")
     @TestServlet(servlet = OracleTestServlet.class, path = JEE_APP + "/" + SERVLET_NAME)
     public static LibertyServer server;
@@ -42,12 +40,12 @@ public class OracleTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
     	// Set server environment variables
-        server.addEnvVar("URL", oracle.getJdbcUrl());
-        server.addEnvVar("USER", oracle.getUsername());
-        server.addEnvVar("PASSWORD", oracle.getPassword());
+        server.addEnvVar("URL", FATSuite.oracle.getJdbcUrl());
+        server.addEnvVar("USER", FATSuite.oracle.getUsername());
+        server.addEnvVar("PASSWORD", FATSuite.oracle.getPassword());
         server.addEnvVar("DBNAME", "XE");
-        server.addEnvVar("PORT", Integer.toString(oracle.getFirstMappedPort()));
-        server.addEnvVar("HOST", oracle.getContainerIpAddress());
+        server.addEnvVar("PORT", Integer.toString(FATSuite.oracle.getFirstMappedPort()));
+        server.addEnvVar("HOST", FATSuite.oracle.getContainerIpAddress());
 
     	// Create a normal Java EE application and export to server
     	ShrinkHelper.defaultApp(server, JEE_APP, "web");
@@ -55,13 +53,39 @@ public class OracleTest extends FATServletClient {
     	// Start Server
         server.startServer();
 
-        // Run initDatabseTables
-        runTest(server, JEE_APP + '/' + SERVLET_NAME, "initDatabaseTables");
+        // Create database tables
+        initDatabaseTables();
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         if (server.isStarted())
             server.stopServer();
+    }
+    
+    private static void initDatabaseTables() throws SQLException {
+    	try (Connection conn = FATSuite.oracle.createConnection("")) {
+            Statement stmt = conn.createStatement();
+            
+            //Create MYTABLE for OracleTest.class
+            try {
+                stmt.execute("DROP TABLE MYTABLE");
+            } catch (SQLException x) {
+                // probably didn't exist
+            }
+            stmt.execute("CREATE TABLE MYTABLE (ID NUMBER NOT NULL PRIMARY KEY, STRVAL NVARCHAR2(40))");
+
+            //Create CONCOUNT for OracleTest.class
+            try {
+                stmt.execute("DROP TABLE CONCOUNT");
+            } catch (SQLException x) {
+                // probably didn't exist
+            }
+            stmt.execute("CREATE TABLE CONCOUNT (NUMCONNECTIONS NUMBER NOT NULL)");
+            stmt.execute("INSERT INTO CONCOUNT VALUES(0)");
+
+            //Close statement
+            stmt.close();
+    	}
     }
 }

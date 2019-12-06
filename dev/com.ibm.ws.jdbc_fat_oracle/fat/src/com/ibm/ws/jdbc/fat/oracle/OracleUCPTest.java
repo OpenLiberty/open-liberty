@@ -10,14 +10,16 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.oracle;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Collections;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.testcontainers.containers.OracleContainer;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ConfigElementList;
@@ -40,10 +42,6 @@ public class OracleUCPTest extends FATServletClient {
 
     public static final String JEE_APP = "oracleucpfat";
     public static final String SERVLET_NAME = "OracleUCPTestServlet";
-    
-    //TODO replace this container with the official oracle-xe container if/when it is available without a license
-    @ClassRule
-    public static OracleContainer oracle = new OracleContainer("oracleinanutshell/oracle-xe-11g");
 
     @Server("com.ibm.ws.jdbc.fat.oracle.ucp")
     @TestServlet(servlet = OracleUCPTestServlet.class, path = JEE_APP + "/" + SERVLET_NAME)
@@ -52,9 +50,9 @@ public class OracleUCPTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
     	// Set server environment variables
-        server.addEnvVar("URL", oracle.getJdbcUrl());
-        server.addEnvVar("USER", oracle.getUsername());
-        server.addEnvVar("PASSWORD", oracle.getPassword());
+        server.addEnvVar("URL", FATSuite.oracle.getJdbcUrl());
+        server.addEnvVar("USER", FATSuite.oracle.getUsername());
+        server.addEnvVar("PASSWORD", FATSuite.oracle.getPassword());
         
     	// Create a normal Java EE application and export to server
     	ShrinkHelper.defaultApp(server, JEE_APP, "ucp.web");
@@ -62,14 +60,36 @@ public class OracleUCPTest extends FATServletClient {
     	// Start Server
         server.startServer();
 
-        // Run initDatabseTables
-        runTest(server, JEE_APP + '/' + SERVLET_NAME, "initDatabaseTables");
+        // Create database tables
+        initDatabaseTables();
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         if (server.isStarted())
             server.stopServer("CWWKE0701E"); // CWWKE0701E expected in testOracleUCPConnectionPoolDS
+    }
+    
+    private static void initDatabaseTables() throws SQLException {
+    	try (Connection conn = FATSuite.oracle.createConnection("")) {
+            Statement stmt = conn.createStatement();
+            
+            //Create COLORTABLE for OracleUCPTest.class
+            try {
+                stmt.execute("DROP TABLE COLORTABLE");
+            } catch (SQLException x) {
+                // probably didn't exist
+            }
+            stmt.execute("CREATE TABLE COLORTABLE (ID NUMBER NOT NULL PRIMARY KEY, COLOR NVARCHAR2(40))");
+            PreparedStatement ps = conn.prepareStatement("INSERT INTO COLORTABLE VALUES(?,?)");
+            ps.setInt(1, 1);
+            ps.setString(2, "maroon");
+            ps.executeUpdate();
+            ps.close();
+
+            //Close statement
+            stmt.close();
+    	}
     }
 
     /**

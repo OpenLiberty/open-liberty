@@ -111,28 +111,6 @@ public class OracleUCPTestServlet extends FATServlet {
     @Resource
     private UserTransaction tran;
 
-    public void initDatabaseTables() throws SQLException {
-        Connection con = ucpDS.getConnection();
-        try {
-            Statement stmt = con.createStatement();
-            try {
-                stmt.execute("DROP TABLE COLORTABLE");
-            } catch (SQLException x) {
-                // probably didn't exist
-            }
-            stmt.execute("CREATE TABLE COLORTABLE (ID NUMBER NOT NULL PRIMARY KEY, COLOR NVARCHAR2(40))");
-            PreparedStatement ps = con.prepareStatement("INSERT INTO COLORTABLE VALUES(?,?)");
-            ps.setInt(1, 1);
-            ps.setString(2, "maroon");
-            ps.executeUpdate();
-            ps.close();
-
-            stmt.close();
-        } finally {
-            con.close();
-        }
-    }
-
     /**
      * Basic test that we can get and use a connection when using Oracle UCP
      */

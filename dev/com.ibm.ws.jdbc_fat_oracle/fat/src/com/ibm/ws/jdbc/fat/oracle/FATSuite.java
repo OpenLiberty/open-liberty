@@ -10,20 +10,25 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.oracle;
 
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+import org.testcontainers.containers.OracleContainer;
 
-import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                AlwaysPassesTest.class,
                 OracleTest.class,
                 OracleUCPTest.class
 })
 public class FATSuite {
+	
+    //TODO replace this container with the official oracle-xe container if/when it is available without a license
+    @ClassRule
+    public static OracleContainer oracle = new OracleContainer("oracleinanutshell/oracle-xe-11g");
+    
     static {
         ExternalTestServiceDockerClientStrategy.clearTestcontainersConfig();
     }
