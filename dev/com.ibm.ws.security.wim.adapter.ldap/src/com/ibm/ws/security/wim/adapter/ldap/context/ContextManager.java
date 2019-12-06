@@ -440,7 +440,6 @@ public class ContextManager {
             }
         } else {
             setActiveURL(providerURL);
-            Tr.debug(tc, METHODNAME + " Active Provider URL: " + getActiveURL());
         }
     }
 
@@ -738,16 +737,11 @@ public class ContextManager {
         final String METHODNAME = "getDirContext";
         TimedDirContext ctx = null;
         long currentTimeSeconds = roundToSeconds(System.currentTimeMillis());
-        Tr.debug(tc, METHODNAME + " iReturnToPrimary: " + Boolean.toString(iReturnToPrimary) + ", currentTimeSeconds: " + currentTimeSeconds + ", iLastQueryTime: " + iLastQueryTime
-                     + ", iQueryInterval: " + iQueryInterval);
-        Tr.debug(tc, METHODNAME + " Should there be a check " + (((currentTimeSeconds - iLastQueryTime) > iQueryInterval) ? "yes" : "no"));
+
         if (iContextPoolEnabled) {
             do {
                 //Get the lock for the current domain
                 synchronized (iLock) {
-                    if (tc.isDebugEnabled()) {
-                        Tr.debug(tc, METHODNAME + " retrieved the lock");
-                    }
                     if (iContexts == null) {
                         try {
                             createContextPool(iInitPoolSize, null);
@@ -1440,7 +1434,7 @@ public class ContextManager {
      * Set the primary LDAP server hostname and port.
      *
      * @param hostname The hostname for the primary LDAP server.
-     * @param port     The port for the primary LDAP server.
+     * @param port The port for the primary LDAP server.
      */
     public void setPrimaryServer(String hostname, int port) {
         this.iPrimaryServer = new HostPort(hostname, port);
@@ -1499,7 +1493,7 @@ public class ContextManager {
     /**
      * Set the administrative credentials used for simple authentication.
      *
-     * @param bindDn       The administrative bind DN.
+     * @param bindDn The administrative bind DN.
      * @param bindPassword The administrative bind password.
      */
     public void setSimpleCredentials(String bindDn, SerializableProtectedString bindPassword) {
