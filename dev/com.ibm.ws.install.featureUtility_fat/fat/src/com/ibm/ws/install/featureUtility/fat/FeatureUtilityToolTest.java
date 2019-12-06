@@ -180,7 +180,11 @@ public abstract class FeatureUtilityToolTest {
         String methodName = "unzipMavenArtifactRepo";
         Log.entering(c, methodName);
 
-        String uploadDir = "../build.image/output/upload/externals/installables";
+        String uploadDir = System.getProperty("image.output.upload.dir");
+
+        if (uploadDir == null) {
+            uploadDir = "../build.image/output/upload/externals/installables";
+        }
         File outputUploadDir = new File(uploadDir).getCanonicalFile();
         Log.info(c, methodName, "Upload dir EXISTS?: " + outputUploadDir.exists());
         if(!outputUploadDir.exists()){
