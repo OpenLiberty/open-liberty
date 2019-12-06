@@ -38,7 +38,7 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=11))"
 
 # include the service providers
 Include-Resource: \
-  @lib/grpc-netty-shaded-1.24.0.jar!/META-INF/**
+  @${repo;io.grpc:grpc-netty-shaded}!/META-INF/**
 
 # expose the service providers to be consumed by grpc-common bundle
 Service-Component: \
@@ -59,7 +59,6 @@ Provide-Capability: osgi.serviceloader;osgi.serviceloader=io.grpc.ServerProvider
 instrument.disabled: true
 
 -buildpath: \
-  lib/grpc-netty-shaded-1.24.0.jar;version=file
+  io.grpc:grpc-netty-shaded;version=1.24.0
 
-  
 -fixupmessages.missingexport: "Used bundle version * for exported package";is:=ignore
