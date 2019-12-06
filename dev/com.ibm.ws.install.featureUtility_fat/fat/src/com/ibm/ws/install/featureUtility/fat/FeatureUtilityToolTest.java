@@ -150,7 +150,7 @@ public abstract class FeatureUtilityToolTest {
         String month = split[3];
 
         String newYear, newMonth;
-        if(month.equals("01")){
+        if(month.equals("1")){
             // subtract year and go into december
             newMonth = "12";
             newYear = String.valueOf(Integer.parseInt(year) - 1);
