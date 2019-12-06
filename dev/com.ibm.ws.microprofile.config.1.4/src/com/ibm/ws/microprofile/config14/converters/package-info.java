@@ -8,16 +8,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.config14.impl;
 
-import com.ibm.ws.microprofile.config.impl.AbstractConfigBuilder;
-import com.ibm.ws.microprofile.config13.impl.Config13ProviderResolverImpl;
+/**
+ * @version 1.0
+ */
+@org.osgi.annotation.versioning.Version("1.0")
+@TraceOptions(traceGroup = "APPCONFIG", messageBundle = "com.ibm.ws.microprofile.config14.resources.Config14")
+package com.ibm.ws.microprofile.config14.converters;
 
-public class Config14ProviderResolverImpl extends Config13ProviderResolverImpl {
-
-    /** {@inheritDoc} */
-    @Override
-    protected AbstractConfigBuilder newBuilder(ClassLoader classLoader) {
-        return new Config14BuilderImpl(classLoader, getScheduledExecutorService(), getInternalConfigSources());
-    }
-}
+import com.ibm.websphere.ras.annotation.TraceOptions;

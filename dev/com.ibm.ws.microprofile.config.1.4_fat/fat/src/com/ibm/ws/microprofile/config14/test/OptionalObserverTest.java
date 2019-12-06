@@ -20,7 +20,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions;
-import com.ibm.ws.microprofile.config14.test.apps.nullDefaultInjection.NullDefaultInjectionServlet;
+import com.ibm.ws.microprofile.config14.test.apps.optional_observer.OptionalObserverServlet;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -32,23 +32,23 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
-@Mode(TestMode.LITE)
-public class NullDefaultInjectionTest extends FATServletClient {
+@Mode(TestMode.FULL)
+public class OptionalObserverTest extends FATServletClient {
 
-    public static final String APP_NAME = "nullDefaultInjectionApp";
+    public static final String APP_NAME = "optionalObserverApp";
     public static final String SERVER_NAME = "Config14Server";
 
     @ClassRule
     public static RepeatTests r = RepeatConfigActions.repeatConfig14(SERVER_NAME);
 
     @Server(SERVER_NAME)
-    @TestServlet(servlet = NullDefaultInjectionServlet.class, contextRoot = APP_NAME)
+    @TestServlet(servlet = OptionalObserverServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
-                        .addPackages(true, NullDefaultInjectionServlet.class.getPackage());
+                        .addPackages(true, OptionalObserverServlet.class.getPackage());
 
         ShrinkHelper.exportDropinAppToServer(server, war, DeployOptions.SERVER_ONLY);
 

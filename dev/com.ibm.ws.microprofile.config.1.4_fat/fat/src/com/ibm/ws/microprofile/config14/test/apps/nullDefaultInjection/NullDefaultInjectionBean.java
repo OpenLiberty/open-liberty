@@ -8,16 +8,23 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.config14.impl;
+package com.ibm.ws.microprofile.config14.test.apps.nullDefaultInjection;
 
-import com.ibm.ws.microprofile.config.impl.AbstractConfigBuilder;
-import com.ibm.ws.microprofile.config13.impl.Config13ProviderResolverImpl;
+import static org.junit.Assert.assertNull;
 
-public class Config14ProviderResolverImpl extends Config13ProviderResolverImpl {
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
-    /** {@inheritDoc} */
-    @Override
-    protected AbstractConfigBuilder newBuilder(ClassLoader classLoader) {
-        return new Config14BuilderImpl(classLoader, getScheduledExecutorService(), getInternalConfigSources());
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+
+@Dependent
+public class NullDefaultInjectionBean {
+
+    @Inject
+    @ConfigProperty(defaultValue = ConfigProperty.NULL_VALUE)
+    String property;
+
+    public void nullDefaultInjectionTest() {
+        assertNull("Property is not null: " + property, property);
     }
 }

@@ -46,7 +46,7 @@
  * </ol>
  * @author <a href="mailto:emijiang@uk.ibm.com">Emily Jiang</a>
  * @author <a href="mailto:struberg@apache.org">Mark Struberg</a>
- * 
+ *
  */
 @org.osgi.annotation.versioning.Version("1.4")
 package org.eclipse.microprofile.config.spi;

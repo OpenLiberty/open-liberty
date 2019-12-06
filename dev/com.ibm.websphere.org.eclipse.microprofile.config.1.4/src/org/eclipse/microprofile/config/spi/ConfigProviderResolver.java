@@ -136,28 +136,19 @@ public abstract class ConfigProviderResolver {
             return null;
         }
 
-        // start from the root CL and go back down to the TCCL
-        ClassLoader parentcl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
-            @Override
-            public ClassLoader run() {
-                return cl.getParent();
-            }
-        });
-        ConfigProviderResolver instance = loadSpi(parentcl);
+        ConfigProviderResolver instance = null;
 
-        if (instance == null) {
-            ServiceLoader<ConfigProviderResolver> sl = ServiceLoader.load(
-                            ConfigProviderResolver.class, cl);
-            for (ConfigProviderResolver spi : sl) {
-                if (instance != null) {
-                    throw new IllegalStateException(
-                                    "Multiple ConfigResolverProvider implementations found: "
-                                                    + spi.getClass().getName() + " and "
-                                                    + instance.getClass().getName());
-                }
-                else {
-                    instance = spi;
-                }
+        ServiceLoader<ConfigProviderResolver> sl = ServiceLoader.load(
+                        ConfigProviderResolver.class, cl);
+        for (ConfigProviderResolver spi : sl) {
+            if (instance != null) {
+                throw new IllegalStateException(
+                                "Multiple ConfigResolverProvider implementations found: "
+                                                + spi.getClass().getName() + " and "
+                                                + instance.getClass().getName());
+            }
+            else {
+                instance = spi;
             }
         }
         return instance;

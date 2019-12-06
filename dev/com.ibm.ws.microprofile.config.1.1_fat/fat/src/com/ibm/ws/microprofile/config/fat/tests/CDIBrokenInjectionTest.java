@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.config.fat.tests;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -50,9 +51,9 @@ public class CDIBrokenInjectionTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
-                        .addPackages(true, "com.ibm.ws.microprofile.appConfig.cdi.broken")
-                        .addAsManifestResource(new File("test-applications/" + APP_NAME + ".war/resources/META-INF/permissions.xml"), "permissions.xml")
-                        .addAsLibrary(SharedShrinkWrapApps.cdiConfigJar());
+                                   .addPackages(true, "com.ibm.ws.microprofile.appConfig.cdi.broken")
+                                   .addAsManifestResource(new File("test-applications/" + APP_NAME + ".war/resources/META-INF/permissions.xml"), "permissions.xml")
+                                   .addAsLibrary(SharedShrinkWrapApps.cdiConfigJar());
 
         ShrinkHelper.exportDropinAppToServer(server, war);
 
@@ -85,28 +86,29 @@ public class CDIBrokenInjectionTest extends FATServletClient {
 
     @Test
     public void testMethodUnnamed() throws Exception {
-        List<String> errors = server
-                        .findStringsInLogs("ConfigUnnamedMethodInjectionBean.*setSimpleKey6.*The property name must be specified for Constructor and Method configuration property injection");
-        assertTrue(errors.size() > 0);
+        List<String> errors = server.findStringsInLogs("ConfigUnnamedMethodInjectionBean.*setSimpleKey6.*The property name must be specified for Constructor and Method configuration property injection");
+        assertNotNull("error not found", errors);
+        assertTrue("error not found: " + errors.size(), errors.size() > 0);
     }
 
     @Test
     public void testConstructorUnnamed() throws Exception {
-        List<String> errors = server
-                        .findStringsInLogs("ConfigUnnamedConstructorInjectionBean.*The property name must be specified for Constructor and Method configuration property injection");
-        assertTrue(errors.size() > 0);
+        List<String> errors = server.findStringsInLogs("ConfigUnnamedConstructorInjectionBean.*The property name must be specified for Constructor and Method configuration property injection");
+        assertNotNull("error not found", errors);
+        assertTrue("error not found: " + errors.size(), errors.size() > 0);
     }
 
     @Test
     public void testNonExistantKey() throws Exception {
-        List<String> errors = server
-                        .findStringsInLogs("CWMCG5003E.*PIZZA_MISSING_PROP.*CWMCG0014E: A Converter could not be found for type com.ibm.ws.microprofile.appConfig.cdi.test.Pizza");
+        List<String> errors = server.findStringsInLogs("CWMCG5003E.*PIZZA_MISSING_PROP.*CWMCG0014E: A Converter could not be found for type com.ibm.ws.microprofile.appConfig.cdi.test.Pizza");
+        assertNotNull(errors);
         assertTrue(errors.size() > 0);
     }
 
     @Test
     public void testDogConverterMissing() throws Exception {
         List<String> errors = server.findStringsInLogs("CWMCG5003E.*DOG_KEY.*CWMCG0014E: A Converter could not be found for type com.ibm.ws.microprofile.appConfig.cdi.test.Dog");
+        assertNotNull(errors);
         assertTrue(errors.size() > 0);
     }
 

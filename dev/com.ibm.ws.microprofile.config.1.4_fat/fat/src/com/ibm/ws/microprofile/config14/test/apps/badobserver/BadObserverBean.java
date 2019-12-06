@@ -8,16 +8,21 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.config14.impl;
+package com.ibm.ws.microprofile.config14.test.apps.badobserver;
 
-import com.ibm.ws.microprofile.config.impl.AbstractConfigBuilder;
-import com.ibm.ws.microprofile.config13.impl.Config13ProviderResolverImpl;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
-public class Config14ProviderResolverImpl extends Config13ProviderResolverImpl {
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
-    /** {@inheritDoc} */
-    @Override
-    protected AbstractConfigBuilder newBuilder(ClassLoader classLoader) {
-        return new Config14BuilderImpl(classLoader, getScheduledExecutorService(), getInternalConfigSources());
+@Dependent
+public class BadObserverBean {
+
+    @Inject
+    @ConfigProperty(defaultValue = "hello")
+    String property;
+
+    public void dummyTest() {
+        throw new RuntimeException("This test should not have been run");
     }
 }
