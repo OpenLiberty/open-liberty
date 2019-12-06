@@ -2,31 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="resources"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.org.osgi.annotation.versioning"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.logging"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.jaxws.common"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.org.osgi.core"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.org.osgi.service.component"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.wsspi.org.osgi.service.component.annotations"/>
-	<classpathentry kind="lib" path="/prereq.published/lib/com.ibm.ws.wsat.common.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.javaee.jaxws.2.2"/>
-	<classpathentry kind="lib" path="/prereq.published/lib/com.ibm.ws.wsat.webclient.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.javaee.servlet.3.0"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.classloading"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.kernel.service"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.org.apache.neethi"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.jaxws.wsat"/>
-	<classpathentry kind="lib" path="/prereq.published/lib/com.ibm.ws.org.apache.cxf.cxf.api.2.6.2.jar"/>
-	<classpathentry kind="lib" path="/prereq.published/lib/com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.2.6.2.jar"/>
-	<classpathentry kind="lib" path="/prereq.published/lib/com.ibm.ws.org.apache.cxf.cxf.rt.bindings.xml.2.6.2.jar"/>
-	<classpathentry kind="lib" path="/prereq.published/lib/com.ibm.ws.org.apache.cxf.cxf.rt.core.2.6.2.jar"/>
-	<classpathentry kind="lib" path="/prereq.published/lib/com.ibm.ws.org.apache.cxf.cxf.rt.databinding.jaxb.2.6.2.jar"/>
-	<classpathentry kind="lib" path="/prereq.published/lib/com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxws.2.6.2.jar"/>
-	<classpathentry kind="lib" path="/prereq.published/lib/com.ibm.ws.org.apache.cxf.cxf.rt.frontend.simple.2.6.2.jar"/>
-	<classpathentry kind="lib" path="/prereq.published/lib/com.ibm.ws.org.apache.cxf.cxf.rt.management.2.6.2.jar"/>
-	<classpathentry kind="lib" path="/prereq.published/lib/com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.2.6.2.jar"/>
-	<classpathentry kind="lib" path="/prereq.published/lib/com.ibm.ws.org.apache.cxf.cxf.rt.ws.addr.2.6.2.jar"/>
-	<classpathentry kind="lib" path="/prereq.published/lib/com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.2.6.2.jar"/>
-	<classpathentry kind="output" path="build/classes"/>
+	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry kind="output" path="bin"/>
 </classpath>
