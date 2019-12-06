@@ -25,13 +25,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.concurrent.ExecutionException;
 
 import javax.management.AttributeChangeNotification;
 import javax.management.DynamicMBean;
@@ -1101,11 +1101,35 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
             if (appFromName != null) {
                 // there isn't an app associated with this pid, but there is
                 // already an app associated with the app name
-                ApplicationTypeSupport typeSupport = _appTypeSupport.get(newAppConfig.getType());
-                AppMessageHelper.get(typeSupport != null ? typeSupport.getHandler() : null).error("DUPLICATE_APPLICATION_NAME", newAppName);
-                blockApplication(pid, newAppConfig, newAppName);
-                ApplicationStateCoordinator.updateStartingAppStatus(pid, ApplicationStateCoordinator.AppStatus.DUP_APP_NAME);
-                return;
+
+                Object autoInstall = appFromName.getConfig().getConfigProperty(AppManagerConstants.AUTO_INSTALL_PROP);
+                Object newAutoInstall = newAppConfig.getConfigProperty(AppManagerConstants.AUTO_INSTALL_PROP);
+
+                boolean isExistingAppFromDropins = (autoInstall != null && autoInstall.toString().equalsIgnoreCase("true"));
+                boolean isNewAppFromDropins = (newAutoInstall != null && newAutoInstall.toString().equalsIgnoreCase("true"));
+
+                if (isExistingAppFromDropins) {
+                    // If the existing app is from dropins, stop it and allow the new one to start
+                    appFromName.getStateMachine().stop();
+                    blockApplication(appFromName.getConfigPid(), appFromName.getConfig(), appFromName.getAppName());
+                    ApplicationStateCoordinator.updateStartingAppStatus(appFromName.getConfigPid(), ApplicationStateCoordinator.AppStatus.DUP_APP_NAME);
+                    // Don't return here so that we will continue to start the configured app
+                } else {
+                    if (isNewAppFromDropins) {
+                        // Just ignore the new app.. Block it so that it will start if the configured app is deleted
+                        blockApplication(pid, newAppConfig, newAppName);
+                        ApplicationStateCoordinator.updateStartingAppStatus(pid, ApplicationStateCoordinator.AppStatus.DUP_APP_NAME);
+                    } else {
+                        // Error condition where two configured apps have the same name
+                        ApplicationTypeSupport typeSupport = _appTypeSupport.get(newAppConfig.getType());
+                        AppMessageHelper.get(typeSupport != null ? typeSupport.getHandler() : null).error("DUPLICATE_APPLICATION_NAME", newAppName);
+                        blockApplication(pid, newAppConfig, newAppName);
+                        ApplicationStateCoordinator.updateStartingAppStatus(pid, ApplicationStateCoordinator.AppStatus.DUP_APP_NAME);
+
+                    }
+                    return;
+                }
+
             }
             // this is the first update we received for this pid and the name is available
             app = new NamedApplication(newAppName, newAppConfig, _ctx, _executor);
@@ -1753,7 +1777,7 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
             if (_tc.isEventEnabled()) {
                 Tr.event(_tc, "CCE: failedCompletion: appStopped, future " + future + ", throwable " + t);
             }
-            if (t !=null && t instanceof ExecutionException) {
+            if (t != null && t instanceof ExecutionException) {
                 com.ibm.ws.ffdc.FFDCFilter.processException(t, "com.ibm.ws.app.manager.internal.ApplicationConfigurator.UpdateEpisodeState.failedCompletion", "1385");
             }
 
