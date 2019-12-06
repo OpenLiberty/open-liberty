@@ -11,3 +11,4 @@ visibility=private
  com.ibm.ws.app.manager.client
 kind=ga
 edition=base
+WLP-Activation-Type: parallel
