@@ -83,6 +83,11 @@ public class Failover1ServerTest2 extends FATServletClient {
      * testMultipleInstancesCompeteToRunManyLateTasks - Have 3 instances available that could take over for running
      * several late tasks.
      */
+    @AllowedFFDC(value = {
+            "javax.transaction.RollbackException", // transaction rolled back due to timeout
+            "javax.transaction.xa.XAException", // rollback/abort path
+            "java.lang.IllegalStateException" // for EclipseLink retry after connection has been aborted due to rollback
+    })
     @Test
     public void testMultipleInstancesCompeteToRunManyLateTasks() throws Exception {
         // Schedule on the only instance that is currently able to run tasks, attempting to time
@@ -203,11 +208,24 @@ public class Failover1ServerTest2 extends FATServletClient {
                     "&taskId=" + taskIdD + "&taskId=" + taskIdE + "&taskId=" + taskIdF +
                     "&jndiName=persistent/exec1&test=testMultipleInstancesCompeteToRunManyLateTasks[8]");
         } finally {
-            // always cancel the tasks
-            int count = 0;
-            for (String taskId : taskIds)
-                runTest(server, APP_NAME + "/Failover1ServerTestServlet",
-                        "testCancelTask&taskId=" + taskId + "&jndiName=persistent/exec1&test=testMultipleInstancesCompeteToRunManyLateTasks[9." + (++count) + "]");
+            try {
+                // always cancel the tasks
+                int count = 0;
+                for (String taskId : taskIds)
+                    runTest(server, APP_NAME + "/Failover1ServerTestServlet",
+                            "testCancelTask&taskId=" + taskId + "&jndiName=persistent/exec1&test=testMultipleInstancesCompeteToRunManyLateTasks[9." + (++count) + "]");
+            } finally {
+                // Stop the server here so that expected warnings/errors can be processed by this test
+                server.stopServer(
+                        "CWWKC1500W.*IncTask_testMultipleInstancesCompeteToRunManyLateTasks", // Rolled back task ... The task is scheduled to retry after ...
+                        "CWWKC1501W.*IncTask_testMultipleInstancesCompeteToRunManyLateTasks", // Rolled back task ... due to failure ... The task is scheduled to retry after ...
+                        "DSRA0302E.*XA_RBROLLBACK", // XAException occurred.  Error code is: XA_RBROLLBACK (100)
+                        "DSRA0304E", // XAException occurred. XAException contents and details are...
+                        "J2CA0079E", // Method cleanup has detected an invalid state ...
+                        "J2CA0088W" // ManagedConnection is in an invalid state
+                        );
+                server.startServer();
+            }
         }
     }
 
