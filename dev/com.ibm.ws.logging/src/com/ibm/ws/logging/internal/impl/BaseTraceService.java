@@ -481,11 +481,11 @@ public class BaseTraceService implements TrService {
 
         omitFieldsMap.clear(); //refresh for each server configuration update
         if (value == null || value == "" || value.isEmpty()) { //reset all fields to original when server config has ""
-            AccessLogData.getOmitFieldsList().clear();
-            FFDCData.getOmitFieldsList().clear();
-            LogTraceData.getOmitFieldsListMessage().clear();
-            LogTraceData.getOmitFieldsListTrace().clear();
-            AuditData.getOmitFieldsList().clear();
+            AccessLogData.resetOmitFields();
+            FFDCData.resetOmitFields();
+            LogTraceData.resetOmitFieldsMessage();
+            LogTraceData.resetOmitFieldsTrace();
+            AuditData.resetOmitFields();
 
             AccessLogData.resetJsonLoggingNameAliases();
             FFDCData.resetJsonLoggingNameAliases();
@@ -722,16 +722,11 @@ public class BaseTraceService implements TrService {
         LogTraceData.newJsonLoggingNameAliasesTrace(traceMap);
         AuditData.newJsonLoggingNameAliases(auditMap);
 
-        if (omitFieldsMap.containsKey(CollectorConstants.ACCESS_CONFIG_VAL))
-            AccessLogData.setOmitFieldsList(omitFieldsMap.get(CollectorConstants.ACCESS_CONFIG_VAL));
-        if (omitFieldsMap.containsKey(CollectorConstants.FFDC_CONFIG_VAL))
-            FFDCData.setOmitFieldsList(omitFieldsMap.get(CollectorConstants.FFDC_CONFIG_VAL));
-        if (omitFieldsMap.containsKey(CollectorConstants.MESSAGES_CONFIG_VAL))
-            LogTraceData.setOmitFieldsListMessage(omitFieldsMap.get(CollectorConstants.MESSAGES_CONFIG_VAL));
-        if (omitFieldsMap.containsKey(CollectorConstants.TRACE_CONFIG_VAL))
-            LogTraceData.setOmitFieldsListTrace(omitFieldsMap.get(CollectorConstants.TRACE_CONFIG_VAL));
-        if (omitFieldsMap.containsKey(CollectorConstants.AUDIT_CONFIG_VAL))
-            AuditData.setOmitFieldsList(omitFieldsMap.get(CollectorConstants.AUDIT_CONFIG_VAL));
+        AccessLogData.setOmitFields(omitFieldsMap.get(CollectorConstants.ACCESS_CONFIG_VAL));
+        FFDCData.setOmitFields(omitFieldsMap.get(CollectorConstants.FFDC_CONFIG_VAL));
+        LogTraceData.setOmitFieldsMessage(omitFieldsMap.get(CollectorConstants.MESSAGES_CONFIG_VAL));
+        LogTraceData.setOmitFieldsTrace(omitFieldsMap.get(CollectorConstants.TRACE_CONFIG_VAL));
+        AuditData.setOmitFields(omitFieldsMap.get(CollectorConstants.AUDIT_CONFIG_VAL));
     }
 
     /**

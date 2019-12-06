@@ -10,7 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.logging.data;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 
@@ -59,7 +59,7 @@ public class AccessLogData extends GenericData {
     };
 
     private static NameAliases jsonLoggingNameAliases = new NameAliases(NAMES1_1);
-    private static ArrayList<String> omitFieldsList = new ArrayList<>();
+    private static boolean[] omitFieldsArray = new boolean[18];
 
     public static void newJsonLoggingNameAliases(Map<String, String> newAliases) {
         jsonLoggingNameAliases.newAliases(newAliases);
@@ -69,12 +69,20 @@ public class AccessLogData extends GenericData {
         jsonLoggingNameAliases.resetAliases();
     }
 
-    public static void setOmitFieldsList(Set<String> fieldNames) {
-        omitFieldsList = new ArrayList<>(fieldNames);
-    }
+    public static void setOmitFields(Set<String> fieldNames) {
+        if (fieldNames == null)
+            return;
 
-    public static ArrayList<String> getOmitFieldsList() {
-        return omitFieldsList;
+        for (int i = 0; i < NAMES1_1.length; i++) {
+            for (String omitField : fieldNames) {
+                if (NAMES1_1[i].equals(omitField)) {
+                    omitFieldsArray[i] = true;
+                    break;
+                } else {
+                    omitFieldsArray[i] = false;
+                }
+            }
+        }
     }
 
     public AccessLogData() {
@@ -317,6 +325,84 @@ public class AccessLogData extends GenericData {
         return NAMES1_1[13];
     }
 
+    //omit fields
+    public static boolean getRequestStartTimeOmitBoolJSON() {
+        return omitFieldsArray[0];
+    }
+
+    public static boolean getUriPathOmitBoolJSON() {
+        return omitFieldsArray[1];
+    }
+
+    public static boolean getRequestMethodOmitBoolJSON() {
+        return omitFieldsArray[2];
+    }
+
+    public static boolean getQueryStringOmitBoolJSON() {
+        return omitFieldsArray[3];
+    }
+
+    public static boolean getRequestHostOmitBoolJSON() {
+        return omitFieldsArray[4];
+    }
+
+    public static boolean getRequestPortOmitBoolJSON() {
+        return omitFieldsArray[5];
+    }
+
+    public static boolean getRemoteHostOmitBoolJSON() {
+        return omitFieldsArray[6];
+    }
+
+    public static boolean getUserAgentOmitBoolJSON() {
+        return omitFieldsArray[7];
+    }
+
+    public static boolean getRequestProtocolOmitBoolJSON() {
+        return omitFieldsArray[8];
+    }
+
+    public static boolean getBytesReceivedOmitBoolJSON() {
+        return omitFieldsArray[9];
+    }
+
+    public static boolean getResponseCodeOmitBoolJSON() {
+        return omitFieldsArray[10];
+    }
+
+    public static boolean getElapsedTimeOmitBoolJSON() {
+        return omitFieldsArray[11];
+    }
+
+    public static boolean getDatetimeOmitBoolJSON() {
+        return omitFieldsArray[12];
+    }
+
+    public static boolean getSequenceOmitBoolJSON() {
+        return omitFieldsArray[13];
+    }
+
+    public static boolean getHostOmitBoolJSON() {
+        return omitFieldsArray[14];
+    }
+
+    public static boolean getUserDirOmitBoolJSON() {
+        return omitFieldsArray[15];
+    }
+
+    public static boolean getServerNameOmitBoolJSON() {
+        return omitFieldsArray[16];
+    }
+
+    public static boolean getTypeOmitBoolJSON() {
+        return omitFieldsArray[17];
+    }
+
+    public static void resetOmitFields() {
+        Arrays.fill(omitFieldsArray, false);
+    }
+
+    //name aliases
     public static String getRequestStartTimeKeyJSON() {
         return jsonLoggingNameAliases.aliases[0];
     }
