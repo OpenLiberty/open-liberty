@@ -257,6 +257,9 @@ public class HttpUtils {
 
     public String readConnectionResponse(HttpURLConnection con) throws IOException {
         InputStream responseStream = getResponseStream(con);
+        if (responseStream == null) {
+            return null;
+        }
         BufferedReader in = new BufferedReader(new InputStreamReader(responseStream, "UTF-8"));
         String line;
         String response = "";
@@ -287,8 +290,20 @@ public class HttpUtils {
         int responseCode = con.getResponseCode();
         if (responseCode < 400) {
             responseStream = con.getInputStream();
+            if (responseStream == null) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Failed to obtain response stream from InputStream. Getting ErrorStream instead");
+                }
+                responseStream = con.getErrorStream();
+            }
         } else {
             responseStream = con.getErrorStream();
+            if (responseStream == null) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Failed to obtain response stream from ErrorStream. Getting InputStream instead");
+                }
+                responseStream = con.getInputStream();
+            }
         }
         return responseStream;
     }

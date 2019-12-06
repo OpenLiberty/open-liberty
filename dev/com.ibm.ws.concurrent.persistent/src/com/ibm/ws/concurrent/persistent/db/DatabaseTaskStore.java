@@ -75,6 +75,7 @@ public class DatabaseTaskStore implements TaskStore {
      * Persistence service unit. Must use the init/destroy lock to determine if lazy initialization is needed.
      */
     private PersistenceServiceUnit persistenceServiceUnit;
+    private PersistenceServiceUnit persistenceServiceUnitReadUncommitted; // TRANSACTION_READ_UNCOMMITTED
 
     private DatabaseTaskStore(DatabaseStore dbStore) {
         this.dbStore = dbStore;
@@ -116,6 +117,12 @@ public class DatabaseTaskStore implements TaskStore {
             } catch (Throwable x) {
                 // auto FFDC
             } finally {
+                try {
+                    if (removed.persistenceServiceUnitReadUncommitted != null)
+                        removed.persistenceServiceUnitReadUncommitted.close();
+                } catch (Throwable x) {
+                    // auto FFDC
+                }
                 removed.lock.writeLock().unlock();
             }
         }
@@ -834,13 +841,14 @@ public class DatabaseTaskStore implements TaskStore {
             Tr.entry(this, tc, "findUnclaimedTasks", Utils.appendDate(new StringBuilder(30), maxNextExecTime), maxResults, find);
 
         List<Object[]> resultList;
-        EntityManager em = getPersistenceServiceUnit().createEntityManager();
+        EntityManager em = getPersistenceServiceUnitReadUncommitted().createEntityManager();
         try {
             TypedQuery<Object[]> query = em.createQuery(find.toString(), Object[].class);
             query.setParameter("m", maxNextExecTime);
             query.setParameter("c", System.currentTimeMillis());
             if (maxResults != null)
                 query.setMaxResults(maxResults);
+
             List<Object[]> results = query.getResultList();
             resultList = results;
         } finally {
@@ -983,7 +991,7 @@ public class DatabaseTaskStore implements TaskStore {
         }
 
         if (trace && tc.isEntryEnabled())
-            Tr.exit(this, tc, "getPartitionWithState", partitionInfo == null ? null : Arrays.asList(partitionInfo));
+            Tr.exit(this, tc, "getPartitionWithState", partitionInfo == null ? null : Arrays.toString(partitionInfo));
         return partitionInfo == null ? null : (Long) partitionInfo[0];
     }
 
@@ -991,7 +999,7 @@ public class DatabaseTaskStore implements TaskStore {
      * Returns the persistence service unit, lazily initializing if necessary.
      *
      * @return the persistence service unit.
-     * @throws Exceptin              if an error occurs.
+     * @throws Exception             if an error occurs.
      * @throws IllegalStateException if this instance has been destroyed.
      */
     public final PersistenceServiceUnit getPersistenceServiceUnit() throws Exception {
@@ -1018,6 +1026,50 @@ public class DatabaseTaskStore implements TaskStore {
                 }
             }
             return persistenceServiceUnit;
+        } finally {
+            lock.readLock().unlock();
+        }
+    }
+
+    /**
+     * Returns the persistence service unit with TRANSACTION_READ_COMMITTED isolation, lazily initializing if necessary.
+     *
+     * @return the persistence service unit.
+     * @throws Exception             if an error occurs.
+     * @throws IllegalStateException if this instance has been destroyed.
+     */
+    public final PersistenceServiceUnit getPersistenceServiceUnitReadUncommitted() throws Exception {
+        lock.readLock().lock();
+        try {
+            if (destroyed)
+                throw new IllegalStateException();
+            if (persistenceServiceUnitReadUncommitted == null) {
+                // Switch to write lock for lazy initialization
+                lock.readLock().unlock();
+                lock.writeLock().lock();
+                try {
+                    if (destroyed)
+                        throw new IllegalStateException();
+                    if (persistenceServiceUnitReadUncommitted == null) {
+                        persistenceServiceUnitReadUncommitted = dbStore.createPersistenceServiceUnit(priv.getClassLoader(Task.class),
+                                                                                                     Task.class.getName());
+                        EntityManager em = persistenceServiceUnitReadUncommitted.createEntityManager();
+                        // This seems to apply to every subsequent usage of the persistence service unit. Can we rely on that?
+                        Object dbSession = em.getClass().getMethod("getDatabaseSession").invoke(em);
+                        org.eclipse.persistence.sessions.DatabaseLogin dbLogin = (org.eclipse.persistence.sessions.DatabaseLogin) dbSession.getClass()
+                                        .getMethod("getDatasourceLogin")
+                                        .invoke(dbSession);
+                        if (!dbLogin.isAnyOracleJDBCDriver())
+                            dbLogin.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
+                        em.close();
+                    }
+                } finally {
+                    // Downgrade to read lock for rest of method
+                    lock.readLock().lock();
+                    lock.writeLock().unlock();
+                }
+            }
+            return persistenceServiceUnitReadUncommitted;
         } finally {
             lock.readLock().unlock();
         }
@@ -1630,12 +1682,18 @@ public class DatabaseTaskStore implements TaskStore {
     /** {@inheritDoc} */
     @FFDCIgnore({ LockTimeoutException.class, PersistenceException.class, QueryTimeoutException.class })
     @Override
-    public boolean setPartitionIfNotLocked(long taskId, int version, long newPartitionId) throws Exception {
+    public boolean claimIfNotLocked(long taskId, int version, long claimExpiryOrPartition) throws Exception {
         String update = "UPDATE Task t SET t.PARTN=:p,t.VERSION=t.VERSION+1 WHERE t.ID=:i AND t.VERSION=:v";
 
         final boolean trace = TraceComponent.isAnyTracingEnabled();
-        if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "setPartition", taskId + " v" + version + " assign to " + newPartitionId, update);
+        if (trace && tc.isEntryEnabled()) {
+            StringBuilder b = new StringBuilder().append(taskId).append(" v").append(version);
+            if (claimExpiryOrPartition > 1500000000000l)
+                Utils.appendDate(b.append(" claim until "), claimExpiryOrPartition);
+            else
+                b.append(" assign to partition ").append(claimExpiryOrPartition);
+            Tr.entry(this, tc, "claimIfNotLocked", b, update);
+        }
 
         EntityManager em = getPersistenceServiceUnit().createEntityManager();
         try {
@@ -1646,36 +1704,37 @@ public class DatabaseTaskStore implements TaskStore {
             // query.setHint("javax.persistence.lock.timeout", 0); // milliseconds
 
             // As a workaround, use a short query timeout,
-            query.setHint("javax.persistence.query.timeout", 5); // seconds
+            query.setHint("eclipselink.query.timeout.unit", "MILLISECONDS"); // Make EclipseLink follow the JPA spec
+            query.setHint("javax.persistence.query.timeout", 3000); // 3 seconds
 
-            query.setParameter("p", newPartitionId);
+            query.setParameter("p", claimExpiryOrPartition);
             query.setParameter("i", taskId);
             query.setParameter("v", version);
             boolean assigned = query.executeUpdate() > 0;
 
             if (trace && tc.isEntryEnabled())
-                Tr.exit(this, tc, "setPartition", assigned);
+                Tr.exit(this, tc, "claimIfNotLocked", assigned);
             return assigned;
         } catch (LockTimeoutException x) {
             if (trace && tc.isEntryEnabled())
-                Tr.exit(this, tc, "setPartition", "false: lock timeout - still owned by another member");
+                Tr.exit(this, tc, "claimIfNotLocked", "false: lock timeout - still owned by another member");
             return false;
         } catch (QueryTimeoutException x) {
             if (trace && tc.isEntryEnabled())
-                Tr.exit(this, tc, "setPartition", "false: query timeout - still owned by another member");
+                Tr.exit(this, tc, "claimIfNotLocked", "false: query timeout - still owned by another member");
             return false;
         } catch (PersistenceException x) {
             for (Throwable c = x.getCause(); c != null; c = c.getCause())
                 if (c instanceof SQLTimeoutException) {
                     if (trace && tc.isEntryEnabled())
-                        Tr.exit(this, tc, "setPartition", "false: SQLTimeoutException still owned by another member");
+                        Tr.exit(this, tc, "claimIfNotLocked", "false: SQLTimeoutException still owned by another member");
                     return false;
                 } else if (c instanceof SQLException) {
                     String ss = ((SQLException) c).getSQLState();
                     if ("XCL52".equals(ss) // Derby Network Client SQLState for query timeout
                     ) {
                         if (trace && tc.isEntryEnabled())
-                            Tr.exit(this, tc, "setPartition", "false: SQLState + " + ss + " - still owned by another member");
+                            Tr.exit(this, tc, "claimIfNotLocked", "false: SQLState + " + ss + " - still owned by another member");
                         return false;
                     }
                 }

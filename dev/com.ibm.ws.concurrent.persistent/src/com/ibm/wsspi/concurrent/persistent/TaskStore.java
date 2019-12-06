@@ -52,6 +52,27 @@ public interface TaskStore {
     int cancel(String pattern, Character escape, TaskState state, boolean inState, String owner) throws Exception;
 
     /**
+     * Attempts to claim the right to run a task. This happens in either of two different ways.
+     * <li>
+     * <ol>By assigning the task to the specified partition.</ol>
+     * <ol>By writing a new claim expiry value to the task entry where the previous was already expired.</ol>
+     * </li>
+     * Assigns a task to the specified partition.
+     * The implementation should aim to return as quickly as possible with a false value if the entry is already locked
+     * by another member, rather than waiting to make the update. A locked task entry indicates that failover is not needed
+     * - a false positive occurred because the task was taking too long to run. This could be caused by a lengthy timer/task
+     * that is otherwise behaving properly, in which case the customer ought to be using a larger value for missedTaskThreshold
+     * so as to avoid triggering failover logic/overhead when there is no outage.
+     *
+     * @param taskId                 id of the task to reassign.
+     * @param version                version number of the task entry which must match in order for the task to be transferred.
+     * @param claimExpiryOrPartition timestamp when the claim on task execution expires OR partition id to which to assign the task.
+     * @return true if the task was assigned. Otherwise false.
+     * @throws Exception if an error occurs when attempting to update the persistent task store.
+     */
+    boolean claimIfNotLocked(long taskId, int version, long claimExpiryOrPartition) throws Exception;
+
+    /**
      * Create a partition entry in the persistent store having the Id of the specified partitionRecord.
      *
      * @param partitionRecord a new partition entry. The record must contain the following attributes (Id, Executor, Host, Server, UserDir)
@@ -393,22 +414,6 @@ public interface TaskStore {
      * @throws Exception if an error occurs when attempting to update the persistent task store.
      */
     boolean removeProperty(String name) throws Exception;
-
-    /**
-     * Assigns a task to the specified partition.
-     * The implementation should aim to return as quickly as possible with a false value if the entry is already locked
-     * by another member, rather than waiting to make the update. A locked task entry indicates that failover is not needed
-     * - a false positive occurred because the task was taking too long to run. This could be caused by a lengthy timer/task
-     * that is otherwise behaving properly, in which case the customer ought to be using a larger value for missedTaskThreshold
-     * so as to avoid triggering failover logic/overhead when there is no outage.
-     *
-     * @param taskId         id of the task to reassign.
-     * @param version        version number of the task entry which must match in order for the task to be transferred.
-     * @param newPartitionId partition id to which to assign the task.
-     * @return true if the task was assigned. Otherwise false.
-     * @throws Exception if an error occurs when attempting to update the persistent task store.
-     */
-    boolean setPartitionIfNotLocked(long taskId, int version, long newPartitionId) throws Exception;
 
     /**
      * Assigns the value of the property if it exists in the persistent store.

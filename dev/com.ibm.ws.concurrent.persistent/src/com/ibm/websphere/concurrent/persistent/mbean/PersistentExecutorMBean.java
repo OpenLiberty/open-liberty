@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,35 +45,7 @@ import javax.management.MXBean;
 
 @MXBean
 public interface PersistentExecutorMBean {
-
-    //TODO Add in a future release 134442
-//    public CompositeData findTask(long taskId);
-//
-//    public TabularData findTasks(String pattern, Character escape, String state, boolean inState, Long minId, Integer maxResults, String owner); //see findTaskStatus add owner parameter
-//
-//    public boolean cancelTask(long taskId);
-//
-//    public int cancelTasks(String pattern, Character escape, String state, boolean inState, String owner); // see remove
-//
-//    public boolean removeTask(long taskId);
-//
-//    public int removeTasks(String pattern, Character escape, String state, boolean inState, String owner);
-
-    //public boolean suspend(long taskId);
-
-    //public boolean resume(long taskId);
-    /*
-     * * Finds partition information in the persistent store. All of the parameters are optional.
-     * If a parameter is specified, entries that match the parameter only are retrieved from the persistent store.
-     * The executorIdentifier is a unique identifier for the Persistent Executor.
-     * If the Persistent Executor is nested, the identifier is the display name.
-     * For example:
-     * <br>
-     * <code> ejbContainer/timerService[default-0]/persistentExecutor[default-0] </code>
-     * <br>
-     * If the Persistent Executor is not nested, the identifier is the ID of the Persistent Executor.
-     * If an ID is not specified for the Persistent Executor, then the identifier is the JNDI name of the Persistent Executor.
-     */
+    // TODO update JavaDoc to mention that partitions do not apply in the case of failover mode.
 
     /**
      * Each task is partitioned to a persistent executor instance in a Liberty profile server with a particular

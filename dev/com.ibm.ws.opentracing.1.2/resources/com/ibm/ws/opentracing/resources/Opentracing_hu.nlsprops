@@ -74,6 +74,10 @@ OPENTRACING_NO_TRACERFACTORY=CWMOT0008E: Az OpenTracing nem tudja nyomon k\u00f6
 OPENTRACING_NO_TRACERFACTORY.explanation=Az OpenTracing nem fog megfelel\u0151en m\u0171k\u00f6dni, mert nem lett biztos\u00edtva egy OpentracingTracerFactory oszt\u00e1ly. A JAX-RS k\u00e9r\u00e9sek norm\u00e1lisan v\u00e9grehajt\u00e1sra ker\u00fclnek, de nem lesznek nyomon k\u00f6vetve.
 OPENTRACING_NO_TRACERFACTORY.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg az OpenTracing osztott nyomk\u00f6vet\u00e9s enged\u00e9lyez\u00e9s\u00e9t bemutat\u00f3 dokument\u00e1ci\u00f3t.
 
+OPENTRACING_UNHANDLED_JAXRS_EXCEPTION=CWMOT0009W: Az OpenTracing kiv\u00e9tel lek\u00e9pez\u0151 a JAX-RS alkalmaz\u00e1sban egy kezeletlen hib\u00e1t tal\u00e1lt, \u00e9s \u00e9ppen kezeli.
+OPENTRACING_UNHANDLED_JAXRS_EXCEPTION.explanation=A JAX-RS alap\u00fa alkalmaz\u00e1s kiv\u00e9telt tapasztalt, amely az alkalmaz\u00e1son bel\u00fcl nem ker\u00fclt kezel\u00e9sre. Az OpenTracing k\u00f3d kezeli a kiv\u00e9telt a veremnyomk\u00f6vet\u00e9s napl\u00f3z\u00e1s\u00e1val, \u00e9s az 500-as Bels\u0151 kiszolg\u00e1l\u00f3hiba v\u00e1laszt adja vissza.
+OPENTRACING_UNHANDLED_JAXRS_EXCEPTION.useraction=Ez a viselked\u00e9s elfogadhat\u00f3 lehet. A kiv\u00e9tel m\u00e1s m\u00f3don val\u00f3 kezel\u00e9s\u00e9hez az alkalmaz\u00e1sfejleszt\u0151 felvehet egy ExceptionMapper csatol\u00f3t, amely kezeli a kiv\u00e9telt, \u00e9s egy m\u00e1sik v\u00e1laszba k\u00e9pezi le.
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Opentracing error message
 #-----------------------------------------------------------------------------------------------------------------------------

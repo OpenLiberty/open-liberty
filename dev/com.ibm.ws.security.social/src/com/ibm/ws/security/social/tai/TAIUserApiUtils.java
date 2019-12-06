@@ -44,7 +44,7 @@ public class TAIUserApiUtils {
         UserApiConfig userApiConfig = userinfoCfg[0];
         String userinfoApi = userApiConfig.getApi();
         try {
-            if (SocialUtil.isOpenShiftConfig(clientConfig)) {
+            if (SocialUtil.isKubeConfig(clientConfig)) {
                 return getUserApiResponseFromOpenShift((Oauth2LoginConfigImpl) clientConfig, accessToken, sslSocketFactory);
             }
             String userApiResp = clientUtil.getUserApiResponse(userinfoApi,
@@ -62,10 +62,10 @@ public class TAIUserApiUtils {
                 return userApiResp;
             }
         } catch (SocialLoginException e) {
-            Tr.warning(tc, "ERROR_GETTING_USER_API_RESPONSE", new Object[] { userinfoApi, clientConfig.getUniqueId(), e.getLocalizedMessage() });
+            Tr.error(tc, "ERROR_GETTING_USER_API_RESPONSE", new Object[] { userinfoApi, clientConfig.getUniqueId(), e.getLocalizedMessage() });
             return null;
         } catch (Exception e) {
-            Tr.warning(tc, "ERROR_GETTING_USER_API_RESPONSE", new Object[] { userinfoApi, clientConfig.getUniqueId(), e.getLocalizedMessage() });
+            Tr.error(tc, "ERROR_GETTING_USER_API_RESPONSE", new Object[] { userinfoApi, clientConfig.getUniqueId(), e.getLocalizedMessage() });
             return null;
         }
     }

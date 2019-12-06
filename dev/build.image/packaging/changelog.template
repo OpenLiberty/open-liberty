@@ -1,6 +1,0 @@
-openliberty (@CHANGELOG_VERSION@-1ubuntu1) unstable; urgency=medium
-
-  * Initial release
-  * This the first debian package for Open Liberty
-
- -- Admin <admin@openliberty.io>  Fri, 11 Oct 2019 12:00:00 -0500

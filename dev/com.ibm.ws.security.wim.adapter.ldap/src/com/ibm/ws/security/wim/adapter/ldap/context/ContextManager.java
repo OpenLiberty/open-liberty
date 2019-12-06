@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -253,6 +253,73 @@ public class ContextManager {
                 throw new OperationNotSupportedException(WIMMessageKey.WRITE_TO_SECONDARY_SERVERS_NOT_ALLOWED, msg);
             }
         }
+    }
+
+    /**
+     * Check whether we can write on the LDAP server the context is currently connected to. It is not
+     * permissible to write to a fail-over server if write to secondary is disabled.
+     *
+     * @param ctx the current directory context, can be null
+     * @param currentURL The URL of the current LDAP server.
+     * @param contextPoolEnabled Boolean to see if a context pool is enabled
+     * @param currentTimeSeconds the current time in seconds
+     * @return updated context if necessary otherwise will return original context
+     * @throws NamingException If the primary server context isn't able to close properly or we are unavailable to ping the primary server or if we are unable to create the
+     *                             contextPool
+     */
+    @FFDCIgnore(NamingException.class)
+    private TimedDirContext checkPrimaryServer(TimedDirContext ctx, String currentURL, long currentTimeSeconds) throws WIMSystemException {
+        String METHODNAME = "checkPrimaryServer";
+        if (iReturnToPrimary && (currentTimeSeconds - iLastQueryTime) > iQueryInterval) {
+
+            try {
+                String primaryURL = getPrimaryURL();
+                if (!primaryURL.equalsIgnoreCase(currentURL)) {
+                    Hashtable<String, Object> env = getEnvironment(URLTYPE_SINGLE, primaryURL);
+                    boolean primaryOK = false;
+                    try {
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, METHODNAME + " Ping primary server '" + primaryURL + "'...");
+                        TimedDirContext testCtx = createDirContext(env);
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, METHODNAME + " Ping primary server '" + primaryURL + "': success");
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, WIMMessageKey.CURRENT_LDAP_SERVER, WIMMessageHelper.generateMsgParms(getActiveURL()));
+                        primaryOK = true;
+                        if (ctx != null) {
+                            TimedDirContext tempCtx = ctx;
+                            try {
+                                tempCtx.close();
+                            } catch (NamingException e) {
+                                if (tc.isDebugEnabled())
+                                    Tr.debug(tc, METHODNAME + " Can not close LDAP connection: " + e.toString(true));
+                            }
+                        }
+                        ctx = testCtx;
+                    } catch (NamingException e) {
+                        if (tc.isInfoEnabled())
+                            Tr.info(tc, WIMMessageKey.CANNOT_CONNECT_LDAP_SERVER, WIMMessageHelper.generateMsgParms(primaryURL));
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, METHODNAME + " Ping primary server '" + primaryURL + "': fail");
+                    }
+
+                    // Refresh context pool if another thread has not already done so
+                    if (primaryOK && iContextPoolEnabled) {
+                        synchronized (iLock) {
+                            if (!getActiveURL().equalsIgnoreCase(primaryURL)) {
+                                createContextPool(iLiveContexts - 1, primaryURL);
+                                ctx.setCreateTimestamp(iPoolCreateTimestampSeconds);
+                            }
+                        }
+                    }
+                }
+                iLastQueryTime = currentTimeSeconds;
+            } catch (NamingException e) {
+                String msg = Tr.formatMessage(tc, WIMMessageKey.NAMING_EXCEPTION, WIMMessageHelper.generateMsgParms(e.toString(true)));
+                throw new WIMSystemException(WIMMessageKey.NAMING_EXCEPTION, msg, e);
+            }
+        }
+        return ctx;
     }
 
     /**
@@ -713,6 +780,8 @@ public class ContextManager {
                         Tr.debug(tc, METHODNAME + " ContextPool: no free context, create a new one...");
                     }
                 }
+                // Test if primaryURL is available
+                ctx = checkPrimaryServer(ctx, getActiveURL(), currentTimeSeconds);
 
                 if (ctx == null) {
                     try {
@@ -721,64 +790,6 @@ public class ContextManager {
                         iLiveContexts--;
                         String msg = Tr.formatMessage(tc, WIMMessageKey.NAMING_EXCEPTION, WIMMessageHelper.generateMsgParms(e.toString(true)));
                         throw new WIMSystemException(WIMMessageKey.NAMING_EXCEPTION, msg, e);
-                    }
-                } else {
-                    // Check
-                    if (iReturnToPrimary && (currentTimeSeconds - iLastQueryTime) > iQueryInterval) {
-                        try {
-                            String currentURL = getProviderURL(ctx);
-                            String primaryURL = getPrimaryURL();
-                            if (!primaryURL.equalsIgnoreCase(currentURL)) {
-                                // Test if primaryURL is available
-                                Hashtable<String, Object> env = getEnvironment(URLTYPE_SINGLE, primaryURL);
-                                boolean primaryOK = false;
-                                try {
-                                    if (tc.isDebugEnabled()) {
-                                        Tr.debug(tc, METHODNAME + " Ping primary server '" + primaryURL + "'...");
-                                    }
-                                    TimedDirContext testCtx = createDirContext(env);
-                                    if (tc.isDebugEnabled()) {
-                                        Tr.debug(tc, METHODNAME + " Ping primary server '" + primaryURL + "': success");
-                                    }
-
-                                    // Log the URL being used.
-                                    if (tc.isDebugEnabled()) {
-                                        Tr.debug(tc, WIMMessageKey.CURRENT_LDAP_SERVER, WIMMessageHelper.generateMsgParms(primaryURL));
-                                    }
-
-                                    primaryOK = true;
-                                    TimedDirContext tempCtx = ctx;
-                                    try {
-                                        tempCtx.close();
-                                    } catch (NamingException e) {
-                                        if (tc.isDebugEnabled())
-                                            Tr.debug(tc, METHODNAME + " Can not close LDAP connection: " + e.toString(true));
-                                    }
-                                    ctx = testCtx;
-                                } catch (NamingException e) {
-                                    if (tc.isInfoEnabled())
-                                        Tr.info(tc, WIMMessageKey.CANNOT_CONNECT_LDAP_SERVER, WIMMessageHelper.generateMsgParms(primaryURL));
-
-                                    if (tc.isDebugEnabled()) {
-                                        Tr.debug(tc, METHODNAME + " Ping primary server '" + primaryURL + "': fail");
-                                    }
-                                }
-
-                                // Refresh context pool if another thread has not already done so
-                                if (primaryOK) {
-                                    synchronized (iLock) {
-                                        if (!getActiveURL().equalsIgnoreCase(primaryURL)) {
-                                            createContextPool(iLiveContexts - 1, primaryURL);
-                                            ctx.setCreateTimestamp(iPoolCreateTimestampSeconds);
-                                        }
-                                    }
-                                }
-                            }
-                            iLastQueryTime = currentTimeSeconds;
-                        } catch (NamingException e) {
-                            String msg = Tr.formatMessage(tc, WIMMessageKey.NAMING_EXCEPTION, WIMMessageHelper.generateMsgParms(e.toString(true)));
-                            throw new WIMSystemException(WIMMessageKey.NAMING_EXCEPTION, msg, e);
-                        }
                     }
                 }
                 if (oldCtx != null) {
@@ -798,28 +809,7 @@ public class ContextManager {
         } else {
             try {
                 // Test if primaryURL is available
-                if (iReturnToPrimary && (currentTimeSeconds - iLastQueryTime) > iQueryInterval) {
-                    String primaryURL = getPrimaryURL();
-                    if (!primaryURL.equalsIgnoreCase(getActiveURL())) {
-                        Hashtable<String, Object> env = getEnvironment(URLTYPE_SINGLE, primaryURL);
-                        try {
-                            if (tc.isDebugEnabled())
-                                Tr.debug(tc, METHODNAME + " Ping primary server '" + primaryURL + "'...");
-                            ctx = createDirContext(env);
-                            if (tc.isDebugEnabled())
-                                Tr.debug(tc, METHODNAME + " Ping primary server '" + primaryURL + "': success");
-
-                            if (tc.isDebugEnabled())
-                                Tr.debug(tc, WIMMessageKey.CURRENT_LDAP_SERVER, WIMMessageHelper.generateMsgParms(getActiveURL()));
-                        } catch (NamingException e) {
-                            if (tc.isInfoEnabled())
-                                Tr.info(tc, WIMMessageKey.CANNOT_CONNECT_LDAP_SERVER, WIMMessageHelper.generateMsgParms(primaryURL));
-                            if (tc.isDebugEnabled())
-                                Tr.debug(tc, METHODNAME + " Ping primary server '" + primaryURL + "': fail");
-                        }
-                    }
-                    iLastQueryTime = currentTimeSeconds;
-                }
+                ctx = checkPrimaryServer(null, getActiveURL(), currentTimeSeconds);
 
                 // create the connection
                 if (ctx == null) {

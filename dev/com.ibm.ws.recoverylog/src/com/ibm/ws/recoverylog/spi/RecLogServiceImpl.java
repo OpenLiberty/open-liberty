@@ -141,8 +141,8 @@ public class RecLogServiceImpl {
         {
             if (checkPeersAtStartup()) {
                 try {
-                    if (director instanceof LibertyRecoveryDirectorImpl) {
-                        ((LibertyRecoveryDirectorImpl) director).drivePeerRecovery();
+                    if (director instanceof RecoveryDirectorImpl) {
+                        ((RecoveryDirectorImpl) director).drivePeerRecovery();
                     }
                 } catch (RecoveryFailedException exc) {
                     if (tc.isDebugEnabled())

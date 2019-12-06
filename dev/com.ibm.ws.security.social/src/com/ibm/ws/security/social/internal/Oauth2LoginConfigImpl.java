@@ -107,6 +107,7 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
 
     public static final String KEY_responseType = "responseType";
     protected String responseType = null;
+    private final String DEFAULT_RESPONSE_TYPE = ClientConstants.CODE;
 
     protected String grantType = null;
 
@@ -121,6 +122,7 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
 
     public static final String KEY_tokenEndpointAuthMethod = "tokenEndpointAuthMethod";
     protected String tokenEndpointAuthMethod = null;
+    private final String DEFAULT_TOKEN_ENDPOINT_AUTH_METHOD = ClientConstants.METHOD_client_secret_post;
 
     public static final String KEY_userApiNeedsSpecialHeader = "userApiNeedsSpecialHeader";
     protected boolean userApiNeedsSpecialHeader = false;
@@ -145,6 +147,7 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
 
     public static final String KEY_userNameAttribute = "userNameAttribute";
     protected String userNameAttribute = null;
+    private final String DEFAULT_USER_NAME_ATTRIBUTE = "email";
 
     public static final String KEY_groupNameAttribute = "groupNameAttribute";
     protected String groupNameAttribute = null;
@@ -168,12 +171,13 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
 
     public static final String DEFAULT_CONTEXT_ROOT = "/ibm/api/social-login";
     static String contextRoot = DEFAULT_CONTEXT_ROOT;
-    
+
     public static final String KEY_USE_SYSPROPS_FOR_HTTPCLIENT_CONNECTONS = "useSystemPropertiesForHttpClientConnections";
     protected boolean useSystemPropertiesForHttpClientConnections = false;
 
     public static final String KEY_userApiType = "userApiType";
     protected String userApiType = null;
+    private final String DEFAULT_USER_API_TYPE = "basic";
 
     public static final String KEY_userApiToken = "userApiToken";
     protected String userApiToken = null;
@@ -231,24 +235,35 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
     }
 
     public void initProps(ComponentContext cc, Map<String, Object> props) throws SocialLoginException {
-        setRequiredConfigAttributes(props);
-        setOptionalConfigAttributes(props);
+        checkForRequiredConfigAttributes(props);
+        setAllConfigAttributes(props);
         initializeMembersAfterConfigAttributesPopulated(props);
         debug();
     }
 
-    protected void setRequiredConfigAttributes(Map<String, Object> props) {
-        if (isOpenShiftConfiguration(props)) {
-            setRequiredConfigAttributesForOpenShift(props);
+    protected void checkForRequiredConfigAttributes(Map<String, Object> props) {
+        if (isConfiguredForProxyFlow(props)) {
+            checkForRequiredConfigAttributesForProxyFlow(props);
+        }
+        if (isKubeConfiguration(props)) {
+            checkForRequiredConfigAttributesForKubernetes(props);
         } else {
-            this.clientId = getRequiredConfigAttribute(props, KEY_clientId);
-            this.clientSecret = getRequiredSerializableProtectedStringConfigAttribute(props, KEY_clientSecret);
-            this.authorizationEndpoint = getRequiredConfigAttribute(props, KEY_authorizationEndpoint);
-            this.scope = getRequiredConfigAttribute(props, KEY_scope);
+            getRequiredConfigAttribute(props, KEY_clientId);
+            getRequiredSerializableProtectedStringConfigAttribute(props, KEY_clientSecret);
+            getRequiredConfigAttribute(props, KEY_authorizationEndpoint);
+            getRequiredConfigAttribute(props, KEY_scope);
         }
     }
 
-    boolean isOpenShiftConfiguration(Map<String, Object> props) {
+    boolean isConfiguredForProxyFlow(Map<String, Object> props) {
+        return configUtils.getBooleanConfigAttribute(props, KEY_accessTokenRequired, accessTokenRequired);
+    }
+
+    protected void checkForRequiredConfigAttributesForProxyFlow(Map<String, Object> props) {
+        configUtils.getRequiredConfigAttributeWithConfigId(props, KEY_userApi, uniqueId);
+    }
+
+    boolean isKubeConfiguration(Map<String, Object> props) {
         String userApiType = configUtils.getConfigAttribute(props, KEY_userApiType);
         if (userApiType != null && ClientConstants.USER_API_TYPE_KUBE.equals(userApiType)) {
             return true;
@@ -256,23 +271,27 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
         return false;
     }
 
-    protected void setRequiredConfigAttributesForOpenShift(Map<String, Object> props) {
-        this.userApiToken = getRequiredSerializableProtectedStringConfigAttribute(props, KEY_userApiToken);
-        this.userApi = getRequiredConfigAttribute(props, KEY_userApi);
+    protected void checkForRequiredConfigAttributesForKubernetes(Map<String, Object> props) {
+        getRequiredSerializableProtectedStringConfigAttribute(props, KEY_userApiToken);
+        configUtils.getRequiredConfigAttributeWithConfigId(props, KEY_userApi, uniqueId);
     }
 
-    protected void setOptionalConfigAttributes(Map<String, Object> props) throws SocialLoginException {
+    protected void setAllConfigAttributes(Map<String, Object> props) throws SocialLoginException {
+        this.clientId = configUtils.getConfigAttribute(props, KEY_clientId);
+        this.clientSecret = configUtils.processProtectedString(props, KEY_clientSecret);
+        this.authorizationEndpoint = configUtils.getConfigAttribute(props, KEY_authorizationEndpoint);
+        this.scope = configUtils.getConfigAttribute(props, KEY_scope);
         this.useSystemPropertiesForHttpClientConnections = configUtils.getBooleanConfigAttribute(props, KEY_USE_SYSPROPS_FOR_HTTPCLIENT_CONNECTONS, false);
         this.displayName = configUtils.getConfigAttribute(props, KEY_displayName);
         this.website = configUtils.getConfigAttribute(props, KEY_website);
         this.tokenEndpoint = configUtils.getConfigAttribute(props, KEY_tokenEndpoint);
         this.jwksUri = configUtils.getConfigAttribute(props, KEY_jwksUri);
-        this.responseType = configUtils.getConfigAttributeWithDefaultValue(props, KEY_responseType, ClientConstants.CODE);
-        this.tokenEndpointAuthMethod = configUtils.getConfigAttributeWithDefaultValue(props, KEY_tokenEndpointAuthMethod, ClientConstants.METHOD_client_secret_post);
+        this.responseType = configUtils.getConfigAttributeWithDefaultValue(props, KEY_responseType, DEFAULT_RESPONSE_TYPE);
+        this.tokenEndpointAuthMethod = configUtils.getConfigAttributeWithDefaultValue(props, KEY_tokenEndpointAuthMethod, DEFAULT_TOKEN_ENDPOINT_AUTH_METHOD);
         this.sslRef = configUtils.getConfigAttribute(props, KEY_sslRef);
         this.authFilterRef = configUtils.getConfigAttribute(props, KEY_authFilterRef);
         this.redirectToRPHostAndPort = configUtils.getConfigAttribute(props, KEY_redirectToRPHostAndPort);
-        this.userNameAttribute = configUtils.getConfigAttribute(props, KEY_userNameAttribute);
+        this.userNameAttribute = configUtils.getConfigAttributeWithDefaultValue(props, KEY_userNameAttribute, DEFAULT_USER_NAME_ATTRIBUTE);
         this.userApi = configUtils.getConfigAttribute(props, KEY_userApi);
         this.realmName = configUtils.getConfigAttribute(props, KEY_realmName);
         this.realmNameAttribute = configUtils.getConfigAttribute(props, KEY_realmNameAttribute);
@@ -282,25 +301,21 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
         this.isClientSideRedirectSupported = configUtils.getBooleanConfigAttribute(props, KEY_isClientSideRedirectSupported, this.isClientSideRedirectSupported);
         this.nonce = configUtils.getBooleanConfigAttribute(props, KEY_nonce, this.nonce);
         this.userApiNeedsSpecialHeader = configUtils.getBooleanConfigAttribute(props, KEY_userApiNeedsSpecialHeader, this.userApiNeedsSpecialHeader);
-        if (isOpenShiftConfiguration(props)) {
-            setOptionalConfigAttributesForOpenShift(props);
-        }
-    }
-
-    protected void setOptionalConfigAttributesForOpenShift(Map<String, Object> props) {
-        this.clientId = configUtils.getConfigAttribute(props, KEY_clientId);
-        this.clientSecret = configUtils.processProtectedString(props, KEY_clientSecret);
-        this.authorizationEndpoint = configUtils.getConfigAttribute(props, KEY_authorizationEndpoint);
-        this.scope = configUtils.getConfigAttribute(props, KEY_scope);
-
-        this.userApiType = configUtils.getConfigAttribute(props, KEY_userApiType);
+        this.userApiType = configUtils.getConfigAttributeWithDefaultValue(props, KEY_userApiType, DEFAULT_USER_API_TYPE);
+        this.userApiToken = configUtils.processProtectedString(props, KEY_userApiToken);
         this.accessTokenRequired = configUtils.getBooleanConfigAttribute(props, KEY_accessTokenRequired, this.accessTokenRequired);
         this.accessTokenSupported = configUtils.getBooleanConfigAttribute(props, KEY_accessTokenSupported, this.accessTokenSupported);
         this.accessTokenHeaderName = configUtils.getConfigAttribute(props, KEY_accessTokenHeaderName);
+        if (isKubeConfiguration(props)) {
+            checkForRequiredAttributesForKubernetesAuthorizationCodeFlow(props);
+        }
+    }
+
+    protected void checkForRequiredAttributesForKubernetesAuthorizationCodeFlow(Map<String, Object> props) {
         if (!accessTokenRequired && !accessTokenSupported) {
-            // If we aren't using the OpenShift proxy configuration, we MUST have the authorizationEndpoint and tokenEndpoint
-            this.authorizationEndpoint = configUtils.getRequiredConfigAttribute(props, KEY_authorizationEndpoint);
-            this.tokenEndpoint = configUtils.getRequiredConfigAttribute(props, KEY_tokenEndpoint);
+            // If we aren't using the Kubernetes proxy configuration, we MUST have the authorizationEndpoint and tokenEndpoint
+            configUtils.getRequiredConfigAttributeWithConfigId(props, KEY_authorizationEndpoint, uniqueId);
+            configUtils.getRequiredConfigAttributeWithConfigId(props, KEY_tokenEndpoint, uniqueId);
         }
     }
 

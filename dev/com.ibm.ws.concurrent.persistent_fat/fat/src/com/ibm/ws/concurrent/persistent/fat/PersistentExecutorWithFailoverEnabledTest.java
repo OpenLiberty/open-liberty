@@ -83,10 +83,6 @@ public class PersistentExecutorWithFailoverEnabledTest extends FATServletClient 
 		//Add application to server
         ShrinkHelper.defaultDropinApp(server, APP_NAME, "web");
 
-        //Create Derby DB if using derby
-        if (dbContainerType == DatabaseContainerType.Derby)
-            DerbyEmbeddedUtilities.createDB(server, "TaskStoreDS", "userx", "passx");
-
         server.startServer();
     }
 
@@ -111,6 +107,46 @@ public class PersistentExecutorWithFailoverEnabledTest extends FATServletClient 
                         server.updateServerConfiguration(originalConfig);
                 }
         }
+    }
+
+    @Test
+    public void testBlockAfterCancelByIdFE() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
+    public void testBlockAfterCancelByNameFE() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
+    public void testBlockAfterFindByIdFE() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
+    public void testBlockAfterFindByNameFE() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
+    public void testBlockAfterRemoveByIdFE() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
+    public void testBlockAfterRemoveByNameFE() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
+    public void testBlockAfterScheduleFE() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
+    public void testBlockRunningTaskFE() throws Exception {
+        runTest(server, APP_NAME, testName);
     }
 
     @Test

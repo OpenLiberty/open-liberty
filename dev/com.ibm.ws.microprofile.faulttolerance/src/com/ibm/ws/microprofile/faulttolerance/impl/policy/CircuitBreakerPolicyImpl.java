@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,7 @@ public class CircuitBreakerPolicyImpl implements CircuitBreakerPolicy {
     private static final TraceComponent tc = Tr.register(BulkheadPolicyImpl.class);
 
     private Class<? extends Throwable>[] failOn;
+    private Class<? extends Throwable>[] skipOn;
     private Duration delay;
     private int requestVolumeThreshold;
     private double failureRatio;
@@ -40,6 +41,7 @@ public class CircuitBreakerPolicyImpl implements CircuitBreakerPolicy {
     public CircuitBreakerPolicyImpl() {
         try {
             failOn = (Class<? extends Throwable>[]) CircuitBreaker.class.getMethod("failOn").getDefaultValue();
+            skipOn = new Class[0];
             long longDelay = (long) CircuitBreaker.class.getMethod("delay").getDefaultValue();
             ChronoUnit delayUnit = (ChronoUnit) CircuitBreaker.class.getMethod("delayUnit").getDefaultValue();
             delay = Duration.of(longDelay, delayUnit);
@@ -61,6 +63,18 @@ public class CircuitBreakerPolicyImpl implements CircuitBreakerPolicy {
     @Override
     public void setFailOn(Class<? extends Throwable>... failOn) {
         this.failOn = failOn;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Class<? extends Throwable>[] getSkipOn() {
+        return skipOn;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setSkipOn(Class<? extends Throwable>... skipOn) {
+        this.skipOn = skipOn;
     }
 
     /** {@inheritDoc} */

@@ -22,50 +22,42 @@
  *      Ordinal solution in Apache OpenWebBeans
  *   2011-12-28 - Mark Struberg & Gerhard Petracek
  *      Contributed to Apache DeltaSpike fb0131106481f0b9a8fd
- *   2016-07-14 - Mark Struberg
- *      Extracted the Config part out of DeltaSpike and proposed as Microprofile-Config cf41cf130bcaf5447ff8
  *   2016-11-14 - Emily Jiang / IBM Corp
  *      Methods renamed, JavaDoc and cleanup
- *
  *
  *******************************************************************************/
 package org.eclipse.microprofile.config.spi;
 
-import java.io.Closeable;
-import java.io.Serializable;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Consumer;
-
-
 
 /**
  * <p>Implement this interfaces to provide a ConfigSource.
  * A ConfigSource provides configuration values from a specific place, like JNDI configuration, a properties file, etc.
  * A ConfigSource is always read-only, any potential updates of the configured values must be handled directly inside each ConfigSource.
  *
- * <p>
- * The default config sources always available by default are:
+ * <p>The default config sources always available by default are:</p>
  * <ol>
- * <li>System properties (ordinal=400)</li>
- * <li>Environment properties (ordinal=300)
- *    <p>Depending on the operating system type, environment variables with '.' are not always allowed.
- *    This ConfigSource searches 3 environment variables for a given property name (e.g. {@code "com.ACME.size"}):</p>
- *        <ol>
- *            <li>Exact match (i.e. {@code "com.ACME.size"})</li>
- *            <li>Replace all '.' by '_' (i.e. {@code "com_ACME_size"})</li>
- *            <li>Replace all '.' by '_' and convert to upper case (i.e. {@code "COM_ACME_SIZE"})</li>
- *        </ol>
- *    <p>The first environment variable that is found is returned by this ConfigSource.</p>
- * </li>
+ * <li>System properties (default ordinal=400)</li>
+ * <li>Environment properties (default ordinal=300)
  * <li>/META-INF/microprofile-config.properties (ordinal=100)</li>
  * </ol>
  *
+ * <h3>Environment Variables Mapping Rules</h3>
+ * <p>Some operating systems allow only alphabetic characters or an underscore, _, in environment variables.
+ * Other characters such as ., /, etc may be disallowed. In order to set a value for a config property 
+ * that has a name containing such disallowed characters from an environment variable, the following rules are used.
+ * This ConfigSource searches 3 environment variables for a given property name (e.g. {@code "com.ACME.size"}):</p>
+ *        <ol>
+ *            <li>Exact match (i.e. {@code "com.ACME.size"})</li>
+ *            <li>Replace each character that is neither alphanumeric nor _ with _ (i.e. {@code "com_ACME_size"})</li>
+ *            <li>Replace each character that is neither alphanumeric nor _ with _ ; then convert the name to upper case
+ * (i.e. {@code "COM_ACME_SIZE"})</li>
+ *        </ol>
+ *    <p>The first environment variable that is found is returned by this ConfigSource.</p>
+ *
  * <p>Custom ConfigSource will get picked up via the {@link java.util.ServiceLoader} mechanism and and can be registered by
- * providing a file
- * <pre>
- *     META-INF/services/org.eclipse.microprofile.config.spi.ConfigSource
- * </pre>
+ * providing a file {@code META-INF/services/org.eclipse.microprofile.config.spi.ConfigSource}
  * which contains the fully qualified {@code ConfigSource} implementation class name as content.
  *
  * <p>Adding a dynamic amount of custom config sources can be done programmatically via
@@ -79,7 +71,6 @@ import java.util.function.Consumer;
  * @author <a href="mailto:gpetracek@apache.org">Gerhard Petracek</a>
  * @author <a href="mailto:emijiang@uk.ibm.com">Emily Jiang</a>
  * @author <a href="mailto:john.d.ament@gmail.com">John D. Ament</a>
- * @author <a href="mailto:tomas.langer@oracle.com">Tomas Langer</a>
  *
  */
 public interface ConfigSource {
@@ -166,54 +157,4 @@ public interface ConfigSource {
      */
     String getName();
 
-    /**
-     * The callback should get invoked if an attribute change got detected inside the ConfigSource.
-     *
-     * @param callback will be set by the {@link org.eclipse.microprofile.config.Config} after this
-     *                 {@code ConfigSource} got created and before any configured values
-     *                 get served.
-     * @return ChangeSupport informing the {@link org.eclipse.microprofile.config.Config} implementation about support for changes by this source
-     * @see ChangeSupport
-     */
-    default ChangeSupport onAttributeChange(Consumer<Set<String>> callback) {
-        // do nothing by default. Just for compat with older ConfigSources.
-        // return unsupported to tell config that it must re-query this source every time
-        return () -> ChangeSupport.Type.UNSUPPORTED;
-    }
-
-    /**
-     * What kind of change support this config source has.
-     * <p>
-     * {@link org.eclipse.microprofile.config.Config} implementations may use this information for internal optimizations.
-     */
-    interface ChangeSupport extends Closeable, Serializable {
-
-        enum Type {
-            /**
-             * Config change is supported, this config source will invoke the callback provided by
-             * {@link ConfigSource#onAttributeChange(Consumer)}.
-             * <p>
-             * Example: File based config source that watches the file for changes
-             */
-            SUPPORTED,
-            /**
-             * Config change is not supported. Configuration values can change, though this change is not reported back.
-             * <p>
-             * Example: LDAP based config source
-             */
-            UNSUPPORTED,
-            /**
-             * Configuration values cannot change for the lifetime of this {@link ConfigSource}.
-             * <p>
-             * Example: Environment variables config source, classpath resource config source
-             */
-            IMMUTABLE
-        }
-
-        Type getType();
-
-        @Override
-        default void close() {
-        }
-    }
 }

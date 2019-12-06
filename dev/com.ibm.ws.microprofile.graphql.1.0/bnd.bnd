@@ -26,7 +26,8 @@ instrument.ffdc: false
     com.ibm.ws.microprofile.graphql.component.*
 
 Private-Package: \
-  com.ibm.ws.microprofile.graphql.internal
+  com.ibm.ws.microprofile.graphql.internal,\
+  com.ibm.ws.microprofile.graphql.resources
 
 Export-Package: \
   com.ibm.ws.microprofile.graphql.component;thread-context=true

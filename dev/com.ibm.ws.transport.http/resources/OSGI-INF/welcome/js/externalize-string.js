@@ -60,14 +60,12 @@ function retrieveExternalizedStrings() {
 	'use strict';
 
 	var languageCode = getLanguageCode();
-
 	var nlsFile = "messages.js";
 	var url = (languageCode !== "en") ? "/nls/" + languageCode + "/" + nlsFile
 			: "/nls/" + nlsFile;
 
 	//Retrieve translations
 	httpSendRequest(url);
-
 }
 
 /**
@@ -86,10 +84,51 @@ function httpSendRequest(url) {
 		if (httpReq.readyState === 4 && httpReq.status === 200) {
 			replaceExternalizedStrings(httpReq.responseText);
 		} else if (httpReq.readyState === 4 && httpReq.status !== 200) {
-			console.log('Unable to retrieve externalize string');
+			console.error('Unable to retrieve externalize string for ', url);
+			// get english message
+            httpSendRequest("/nls/messages.js");
 		}
 	};
 	httpReq.send(params);
+}
+
+/**
+ * Return the url for the translate message.
+ */
+function getUrl() {
+	'use strict';
+
+	var languageCode = getLanguageCode();
+	var nlsFile = "messages.js";
+	var url = (languageCode !== "en") ? "/nls/" + languageCode + "/" + nlsFile
+			: "/nls/" + nlsFile;
+	return url;
+}
+
+/**
+ * Query all the data-externalizedString in index.html and translate the message
+ */
+function externalizedStrings(url) {
+    'use strict';
+	return new Promise(function(resolve, reject) {
+		var httpReq = new XMLHttpRequest();
+		var params = null;
+
+		httpReq.open("GET", url, true);
+
+		// Call a function when the state changes.
+		httpReq.onreadystatechange = function() {
+			if (httpReq.readyState === 4 && httpReq.status === 200) {
+				var messages = replaceExternalizedStrings(httpReq.responseText);
+				resolve(messages);
+			} else if (httpReq.readyState === 4 && httpReq.status !== 200) {
+				console.error('Unable to retrieve externalize string for ', url);
+                reject(Error(httpReq.statusText));
+			}
+		};
+
+		httpReq.send(params);
+    });
 }
 
 /**
@@ -159,4 +198,6 @@ function replaceExternalizedStrings(responseText) {
 		element.setAttribute("value",
 				messages[element.dataset.externalizedvalue]);
 	});
+
+	return messages;
 }

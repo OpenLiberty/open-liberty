@@ -72,10 +72,6 @@ public class PersistentExecutorTest extends FATServletClient {
 		//Add application to server
         ShrinkHelper.defaultDropinApp(server, APP_NAME, "web");
 
-        //Create Derby DB if using derby
-        if (dbContainerType == DatabaseContainerType.Derby)
-            DerbyEmbeddedUtilities.createDB(server, "TaskStoreDS", "userx", "passx");
-
         server.startServer();
     }
 

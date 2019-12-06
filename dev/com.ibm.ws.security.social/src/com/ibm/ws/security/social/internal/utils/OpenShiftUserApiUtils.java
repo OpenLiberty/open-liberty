@@ -13,17 +13,14 @@ package com.ibm.ws.security.social.internal.utils;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-
+import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.json.Json;
-import javax.json.JsonObjectBuilder;
-
-import java.io.StringReader;
-
 import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 import javax.json.JsonValue.ValueType;
 import javax.json.stream.JsonParsingException;
@@ -58,7 +55,7 @@ public class OpenShiftUserApiUtils {
             HttpURLConnection connection = sendUserApiRequest(accessToken, sslSocketFactory);
             response = readUserApiResponse(connection);
         } catch (Exception e) {
-            throw new SocialLoginException("OPENSHIFT_ERROR_GETTING_USER_INFO", e, new Object[] { e });
+            throw new SocialLoginException("KUBERNETES_ERROR_GETTING_USER_INFO", e, new Object[] { e });
         }
         return response;
     }
@@ -90,7 +87,7 @@ public class OpenShiftUserApiUtils {
 
     String createUserApiRequestBody(@Sensitive String accessToken) throws SocialLoginException {
         if (accessToken == null) {
-            throw new SocialLoginException("OPENSHIFT_ACCESS_TOKEN_MISSING", null, null);
+            throw new SocialLoginException("KUBERNETES_ACCESS_TOKEN_MISSING", null, null);
         }
         JsonObjectBuilder bodyBuilder = Json.createObjectBuilder();
         bodyBuilder.add("kind", "TokenReview");
@@ -103,56 +100,114 @@ public class OpenShiftUserApiUtils {
         int responseCode = connection.getResponseCode();
         String response = httpUtils.readConnectionResponse(connection);
         if (responseCode != HttpServletResponse.SC_CREATED) {
-            throw new SocialLoginException("OPENSHIFT_USER_API_BAD_STATUS", null, new Object[] { responseCode, response });
+            throw new SocialLoginException("KUBERNETES_USER_API_BAD_STATUS", null, new Object[] { responseCode, response });
         }
         return modifyExistingResponseToJSON(response);
     }
 
     String modifyExistingResponseToJSON(String response) throws JoseException, SocialLoginException {
+        JsonObject jsonResponse = getJsonResponseIfValid(response);
+        JsonObject statusInnerMap = getStatusJsonObjectFromResponse(jsonResponse);
+        JsonObject userInnerMap = getUserJsonObjectFromResponse(statusInnerMap);
+        return createModifiedResponse(userInnerMap);
+    }
 
+    private JsonObject getJsonResponseIfValid(String response) throws SocialLoginException {
         if (response == null || response.isEmpty()) {
-            throw new SocialLoginException("OPENSHIFT_USER_API_BAD_RESPONSE", null, null);
+            throw new SocialLoginException("KUBERNETES_USER_API_RESPONSE_NULL_EMPTY", null, null);
         }
-
-        JsonObject jsonResponse;
         try {
-            jsonResponse = Json.createReader(new StringReader(response)).readObject();
+            return Json.createReader(new StringReader(response)).readObject();
         } catch (JsonParsingException e) {
-            throw new SocialLoginException("OPENSHIFT_USER_API_BAD_RESPONSE", null, new Object[] { response, e });
+            throw new SocialLoginException("KUBERNETES_USER_API_RESPONSE_NOT_JSON", null, new Object[] { response, e });
         }
+    }
 
-        //The response from the user API is not a valid JSON object. The full response is [{0}]. {1}" where insert {0} would be response and insert {1} would be e
-        JsonObject statusInnerMap, userInnerMap;
+    String createModifiedResponse(JsonObject userInnerMap) throws SocialLoginException {
         JsonObjectBuilder modifiedResponse = Json.createObjectBuilder();
-        if (jsonResponse.containsKey("status")) {
-            //System.out.println(jsonResponse.get("status"));
-            JsonValue statusValue = jsonResponse.get("status");
+        if ("email".equals(config.getUserNameAttribute())) {
+            addUserAttributeToResponseWithEmail(userInnerMap, modifiedResponse);
+        } else {
+            addUserToResponseWithoutEmail(userInnerMap, modifiedResponse);
+        }
+        addGroupNameToResponse(userInnerMap, modifiedResponse);
+        return modifiedResponse.build().toString();
+    }
+
+    void addGroupNameToResponse(JsonObject userInnerMap, JsonObjectBuilder modifiedResponse) throws SocialLoginException {
+        if (userInnerMap.containsKey(config.getGroupNameAttribute())) {
+            JsonValue groupsValue = userInnerMap.get(config.getGroupNameAttribute());
+            if (groupsValue.getValueType() != ValueType.ARRAY) {
+                throw new SocialLoginException("KUBERNETES_USER_API_RESPONSE_WRONG_JSON_TYPE", null, new Object[] { config.getGroupNameAttribute(), ValueType.ARRAY, groupsValue.getValueType(), userInnerMap });
+            }
+            modifiedResponse.add(config.getGroupNameAttribute(), userInnerMap.getJsonArray(config.getGroupNameAttribute()));
+        }
+    }
+
+    void addUserToResponseWithoutEmail(JsonObject userInnerMap, JsonObjectBuilder modifiedResponse) throws SocialLoginException {
+        if (userInnerMap.containsKey(config.getUserNameAttribute())) {
+            JsonValue userInnerMapUsername = userInnerMap.get(config.getUserNameAttribute());
+            if (userInnerMapUsername.getValueType() != ValueType.STRING) {
+                throw new SocialLoginException("KUBERNETES_USER_API_RESPONSE_WRONG_JSON_TYPE", null, new Object[] { config.getUserNameAttribute(), ValueType.STRING, userInnerMapUsername.getValueType(), userInnerMap });
+            }
+            modifiedResponse.add(config.getUserNameAttribute(), userInnerMap.getString(config.getUserNameAttribute()));
+        } else {
+            throw new SocialLoginException("KUBERNETES_USER_API_RESPONSE_MISSING_KEY", null, new Object[] { config.getUserNameAttribute(), userInnerMap });
+        }
+    }
+
+    void addUserAttributeToResponseWithEmail(JsonObject userInnerMap, JsonObjectBuilder modifiedResponse) throws SocialLoginException {
+        if (userInnerMap.containsKey("email")) {
+            JsonValue emailJsonString = userInnerMap.get("email");
+            if (emailJsonString.getValueType() != ValueType.STRING) {
+                throw new SocialLoginException("KUBERNETES_USER_API_RESPONSE_WRONG_JSON_TYPE", null, new Object[] { "email", ValueType.STRING, emailJsonString.getValueType(), userInnerMap });
+            }
+            modifiedResponse.add(config.getUserNameAttribute(), userInnerMap.getString("email"));
+        } else {
+            String defaultKey = "username";
+            Tr.warning(tc, "KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND", config.getUniqueId(), "email", Oauth2LoginConfigImpl.KEY_userNameAttribute, defaultKey);
+            if (userInnerMap.containsKey(defaultKey)) {
+                modifiedResponse.add(config.getUserNameAttribute(), userInnerMap.getString(defaultKey));
+            } else {
+                throw new SocialLoginException("KUBERNETES_USER_API_RESPONSE_MISSING_KEY", null, new Object[] { defaultKey, userInnerMap });
+            }
+        }
+    }
+
+    JsonObject getUserJsonObjectFromResponse(JsonObject statusResponse) throws SocialLoginException {
+        if (statusResponse.containsKey("error")) {
+            throw new SocialLoginException("KUBERNETES_USER_API_RESPONSE_ERROR", null, new Object[] { statusResponse.get("error") });
+        }
+        if (statusResponse.containsKey("user")) {
+            JsonValue userInnerMapValue = statusResponse.get("user");
+            if (userInnerMapValue.getValueType() != ValueType.OBJECT) {
+                throw new SocialLoginException("KUBERNETES_USER_API_RESPONSE_WRONG_JSON_TYPE", null, new Object[] { "user", ValueType.OBJECT, userInnerMapValue.getValueType(), statusResponse });
+            } else {
+                return statusResponse.getJsonObject("user");
+            }
+        } else {
+            throw new SocialLoginException("KUBERNETES_USER_API_RESPONSE_MISSING_KEY", null, new Object[] { "user", statusResponse });
+        }
+    }
+
+    JsonObject getStatusJsonObjectFromResponse(JsonObject currentResponse) throws SocialLoginException {
+        if (currentResponse.containsKey("status")) {
+            JsonValue statusValue = currentResponse.get("status");
             if (ValueType.STRING == statusValue.getValueType()) {
-                if (jsonResponse.getString("status").equals("Failure")) {
-
-                    throw new SocialLoginException(jsonResponse.getString("message"), null, null);
-
+                if (currentResponse.getString("status").equals("Failure")) {
+                    if (currentResponse.containsKey("message") && currentResponse.get("message").getValueType() == ValueType.STRING) {
+                        throw new SocialLoginException(currentResponse.getString("message"), null, null);
+                    }
                 }
             }
-            statusInnerMap = jsonResponse.getJsonObject("status");
+            if (statusValue.getValueType() != ValueType.OBJECT) {
+                throw new SocialLoginException("KUBERNETES_USER_API_RESPONSE_WRONG_JSON_TYPE", null, new Object[] { "status", ValueType.OBJECT, statusValue.getValueType(), currentResponse });
+            }
+            return currentResponse.getJsonObject("status");
         } else {
-            throw new SocialLoginException("OPENSHIFT_USER_API_RESPONSE_MISSING_KEY", null, new Object[] { "status", jsonResponse });
-        }
-        if (statusInnerMap.containsKey("user")) {
-            userInnerMap = statusInnerMap.getJsonObject("user");
-            modifiedResponse.add("username", userInnerMap.getString(config.getUserNameAttribute()));
-        } else {
-            throw new SocialLoginException("OPENSHIFT_USER_API_RESPONSE_MISSING_KEY", null, new Object[] { "user", jsonResponse });
+            throw new SocialLoginException("KUBERNETES_USER_API_RESPONSE_MISSING_KEY", null, new Object[] { "status", currentResponse });
         }
 
-        if (userInnerMap.containsKey("groups")) {
-            JsonValue groupsValue = userInnerMap.get("groups");
-            if (groupsValue.getValueType() != ValueType.ARRAY) {
-                throw new SocialLoginException("OPENSHIFT_USER_API_RESPONSE_MISCONFIGURED_KEY", null, null);
-            }
-            modifiedResponse.add("groups", userInnerMap.getJsonArray("groups"));
-        }
-        return modifiedResponse.build().toString();
     }
 
 }

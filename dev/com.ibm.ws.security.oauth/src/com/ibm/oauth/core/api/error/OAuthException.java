@@ -25,7 +25,7 @@ public abstract class OAuthException extends Exception {
 
     /**
      * Creates a OAuthException.
-     * 
+     *
      * @param message A message for the error.
      * @param cause A root exception.
      */
@@ -35,11 +35,19 @@ public abstract class OAuthException extends Exception {
 
     /**
      * Gets error type for this OAuth exception
-     * 
+     *
      * @return error type
      */
     public abstract String getError();
 
     public abstract String formatSelf(Locale locale, String encoding);
+
+    public String getMsgKey() {
+        return _msgKey;
+    }
+
+    public Object[] getObjects() {
+        return _objs;
+    }
 
 }

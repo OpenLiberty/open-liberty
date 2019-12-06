@@ -56,7 +56,8 @@
 #              The default value is y. 
 #
 # WLP_DEBUG_REMOTE - Whether to allow remote debugging or not. This can be set
-#              to y to allow remote debugging. The default value is n. 
+#              to y to allow remote debugging. By default, this value is not
+#              defined, which does not allow remote debugging on newer JDK/JREs.
 #
 # WLP_SKIP_UMASK -  Skip setting the umask value to allow the default value 
 #              to be used.

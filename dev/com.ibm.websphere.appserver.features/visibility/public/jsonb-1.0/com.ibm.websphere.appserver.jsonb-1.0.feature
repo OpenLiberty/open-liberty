@@ -13,3 +13,4 @@ IBM-API-Package: javax.json.bind; type="spec", \
 -bundles=com.ibm.ws.jsonb.service
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

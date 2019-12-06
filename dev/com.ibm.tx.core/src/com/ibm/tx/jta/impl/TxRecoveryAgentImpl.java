@@ -24,6 +24,10 @@ import java.util.Iterator;
 
 import javax.transaction.SystemException;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
+
 import com.ibm.tx.TranConstants;
 import com.ibm.tx.config.ConfigurationProvider;
 import com.ibm.tx.config.ConfigurationProviderManager;
@@ -53,6 +57,7 @@ import com.ibm.ws.recoverylog.spi.RecoveryLog;
 import com.ibm.ws.recoverylog.spi.RecoveryLogManager;
 import com.ibm.ws.recoverylog.spi.SharedServerLeaseLog;
 import com.ibm.ws.recoverylog.spi.TerminationFailedException;
+import com.ibm.wsspi.classloading.ClassLoadingService;
 import com.ibm.wsspi.resource.ResourceFactory;
 
 public class TxRecoveryAgentImpl implements RecoveryAgent {
@@ -74,7 +79,12 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
 
     protected String localRecoveryIdentity;
 
-    protected TxRecoveryAgentImpl() {}
+    private ClassLoadingService clService;
+
+    private boolean _unitTesting;
+
+    protected TxRecoveryAgentImpl() {
+    }
 
     public TxRecoveryAgentImpl(RecoveryDirector rd) throws Exception {
         _recoveryDirector = rd;
@@ -101,6 +111,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
         // In the normal Liberty runtime the Applid will have been set into the JTMConfigurationProvider by the
         // TransactionManagerService. We additionally can set the applid here for the benefit of the unittest framework.
         if (cp.getApplId() == null) {
+            _unitTesting = true;
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "TXAGENT, cp applid null - " + cp + " set applid - " + Util.toHexString(newApplId));
             cp.setApplId(newApplId);
@@ -114,8 +125,6 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
 
     @Override
     public void agentReportedFailure(int clientId, FailureScope failureScope) {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
@@ -166,8 +175,10 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
             }
             // Determine whether we are dealing with a custom log configuration (e.g. WXS or JDBC)
             boolean isCustom = false;
-            String logDir = ConfigurationProviderManager.getConfigurationProvider().getTransactionLogDirectory();
-            int logSize = ConfigurationProviderManager.getConfigurationProvider().getTransactionLogSize();
+            ConfigurationProvider cp = ConfigurationProviderManager.getConfigurationProvider();
+
+            String logDir = cp.getTransactionLogDirectory();
+            int logSize = cp.getTransactionLogSize();
 
             if (logDir.startsWith("custom")) {
                 isCustom = true;
@@ -205,7 +216,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                     } else {
                         if (tc.isEntryEnabled())
                             Tr.exit(tc, "initiateRecovery", "already recovering failure scope " + fs);
-                        throw new RecoveryFailedException();
+                        throw new RecoveryFailedException("Already recovering failure scope " + fs);
                     }
                 }
             } else {
@@ -310,7 +321,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "Cannot lock server's own logs");
                         Object[] errorObject = new Object[] { localRecoveryIdentity };
-                        RecoveryFailedException rex = new RecoveryFailedException();
+                        RecoveryFailedException rex = new RecoveryFailedException("Cannot lock server's own logs");
                         Tr.audit(tc, "CWRLS0008_RECOVERY_LOG_FAILED",
                                  errorObject);
                         Tr.info(tc, "CWRLS0009_RECOVERY_LOG_FAILED_DETAIL", rex);
@@ -322,7 +333,6 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                         // that owns the logs is not able to recover them. The System Property supports the tWAS style
                         // of processing.
                         if (!doNotShutdownOnRecoveryFailure()) {
-                            ConfigurationProvider cp = ConfigurationProviderManager.getConfigurationProvider();
                             cp.shutDownFramework();
                         }
 
@@ -340,13 +350,24 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                 rm.setLocalRecoveryIdentity(localRecoveryIdentity);
             }
 
-            Thread t = (Thread) AccessController.doPrivileged(new PrivilegedAction<Object>() {
+            Thread t = AccessController.doPrivileged(new PrivilegedAction<Thread>() {
                 @Override
-                public Object run() {
-                    Thread temp = new Thread(rm, "Recovery Thread");
-                    return temp;
+                public Thread run() {
+                    return new Thread(rm, "Recovery Thread");
                 }
             });
+
+            // If we're not unit testing, set a ThreadContextClassLoader on the recovery thread so SSL classes can be loaded
+            if (!_unitTesting) {
+                final ClassLoader cl = getThreadContextClassLoader(this.getClass());
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Setting Context ClassLoader on " + t.getName() + " (" + String.format("%08X", t.getId()) + ")", cl);
+
+                t.setContextClassLoader(cl);
+            } else {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "unit testing so not setting Context ClassLoader on " + t.getName() + " (" + String.format("%08X", t.getId()) + ")");
+            }
             t.start();
 
             // Once we have got things going on another thread, tell the recovery directory that recovery is "complete". This
@@ -388,7 +409,6 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                     // that owns the logs is not able to recover them. The System Property supports the tWAS style
                     // of processing.
                     if (localRecovery && !doNotShutdownOnRecoveryFailure()) {
-                        ConfigurationProvider cp = ConfigurationProviderManager.getConfigurationProvider();
                         cp.shutDownFramework();
                     }
 
@@ -420,41 +440,72 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
 
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "initiateRecovery", e);
-            throw new RecoveryFailedException(); // 171598
+            throw new RecoveryFailedException(e); // 171598
         } catch (InvalidLogPropertiesException e) {
             FFDCFilter.processException(e, "com.ibm.ws.runtime.component.TxServiceImpl.initiateRecovery", "1599", this);
             Tr.error(tc, "WTRN0016_EXC_DURING_RECOVERY", e);
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "initiateRecovery", e);
-            throw new RecoveryFailedException(); // 171598
+            throw new RecoveryFailedException(e); // 171598
         } catch (URISyntaxException e) {
             FFDCFilter.processException(e, "com.ibm.ws.runtime.component.TxServiceImpl.initiateRecovery", "1599", this);
             Tr.error(tc, "WTRN0016_EXC_DURING_RECOVERY", e);
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "initiateRecovery", e);
-            throw new RecoveryFailedException(); // 171598
+            throw new RecoveryFailedException(e); // 171598
         }
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "initiateRecovery");
     }
 
+    /**
+     * @param cl
+     * @return
+     * @throws RecoveryFailedException
+     */
+    private ClassLoader getThreadContextClassLoader(Class<? extends TxRecoveryAgentImpl> cl) throws RecoveryFailedException {
+        return getClassLoadingService().createThreadContextClassLoader(cl.getClassLoader());
+    }
+
+    public synchronized ClassLoadingService getClassLoadingService() throws RecoveryFailedException {
+        if (clService == null) {
+            clService = getService(ClassLoadingService.class);
+        }
+        return clService;
+    }
+
+    /**
+     * @param <T>
+     * @param service
+     * @return
+     * @throws RecoveryFailedException
+     */
+    private <T> T getService(Class<T> service) throws RecoveryFailedException {
+        T impl = null;
+        BundleContext context = FrameworkUtil.getBundle(service).getBundleContext();
+        ServiceReference<T> ref = context.getServiceReference(service);
+        if (ref != null) {
+            impl = context.getService(ref);
+        } else {
+            throw new RecoveryFailedException("Unable to locate service: " + service);
+        }
+
+        return impl;
+    }
+
     @Override
     public boolean isSnapshotSafe() {
-        // TODO Auto-generated method stub
         return false;
     }
 
     @Override
     public String[] logDirectories(FailureScope failureScope) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public void prepareForRecovery(FailureScope failureScope) {
-        // TODO Auto-generated method stub
-
     }
 
     /**
@@ -544,28 +595,20 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
 
     @Override
     public void logFileWarning(String logname, int bytesInUse, int bytesTotal) {
-        // TODO Auto-generated method stub
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "logFileWarning", new Object[] { logname, Integer.valueOf(bytesInUse), Integer.valueOf(bytesTotal) });
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "logFileWarning");
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "logFileWarning", new Object[] { logname, bytesInUse, bytesTotal });
     }
 
     public void setRecoveryGroup(String recoveryGroup) {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "setRecoveryGroup", new Object[] { recoveryGroup });
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "setRecoveryGroup", new Object[] { recoveryGroup });
         _recoveryGroup = recoveryGroup;
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "setRecoveryGroup");
     }
 
     @Override
     public String getRecoveryGroup() {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "getRecoveryGroup");
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "getRecoveryGroup", _recoveryGroup);
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "getRecoveryGroup", _recoveryGroup);
         return _recoveryGroup;
     }
 
@@ -751,7 +794,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
         }
 
         if (peerLeaseCheckInterval == null)
-            peerLeaseCheckInterval = new Integer(20);
+            peerLeaseCheckInterval = 20;
         intToReturn = peerLeaseCheckInterval.intValue();
         if (tc.isEntryEnabled())
             Tr.exit(tc, "getPeerLeaseCheckInterval", intToReturn);
@@ -786,7 +829,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
         }
 
         if (PeerRecoveryLeaseTimeout == null)
-            PeerRecoveryLeaseTimeout = new Integer(20);
+            PeerRecoveryLeaseTimeout = 20;
         intToReturn = PeerRecoveryLeaseTimeout.intValue();
         if (tc.isEntryEnabled())
             Tr.exit(tc, "getPeerRecoveryLeaseTimeout", intToReturn);
@@ -891,7 +934,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
         }
 
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "claimLocalHADBLogs", new Boolean(logIsStale));
+            Tr.exit(tc, "claimLocalHADBLogs", logIsStale);
         return logIsStale;
     }
 
@@ -911,7 +954,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
         }
 
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "claimPeerHADBLogs", new Boolean(logIsStale));
+            Tr.exit(tc, "claimPeerHADBLogs", logIsStale);
         return logIsStale;
     }
 
