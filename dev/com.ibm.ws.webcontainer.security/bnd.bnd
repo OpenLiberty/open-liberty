@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2018 IBM Corporation and others.
+# Copyright (c) 2017, 2018, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -50,7 +50,13 @@ Service-Component: \
     activate:=activate;\
     deactivate:=deactivate;\
     tokenManager=com.ibm.ws.security.token.TokenManager;\
-    dynamic:='tokenService';\
+    properties:="service.vendor=IBM",\
+  com.ibm.ws.webcontainer.security.internal.WebSecurityHelperImpl;\
+    implementation:=com.ibm.ws.webcontainer.security.internal.WebSecurityHelperImpl;\
+    configuration-policy:=ignore;\
+    activate:=activate;\
+    deactivate:=deactivate;\
+    tokenManager=com.ibm.ws.security.token.TokenManager;\
     properties:="service.vendor=IBM"
 
 -dsannotations: com.ibm.ws.webcontainer.security.internal.WebAuthenticatorFactoryImpl
