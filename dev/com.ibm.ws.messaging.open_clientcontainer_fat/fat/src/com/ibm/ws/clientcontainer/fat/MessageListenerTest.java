@@ -44,7 +44,7 @@ public class MessageListenerTest extends FATBase {
       Util.TRACE_EXIT();
     }
   }
-      
+
   @AfterClass
   public static void afterClass() throws Exception {
     try {
@@ -54,13 +54,13 @@ public class MessageListenerTest extends FATBase {
       Util.TRACE_EXIT();
     }
   }
-  
+
   @Test
   public void testMessageListenerContext() throws Exception { runTest(); }
-      
+
   @Test
   public void testMessageListenerConnection() throws Exception { runTest(); }
-   
+
   @Test
   public void testMessageListenerSession() throws Exception { runTest(); }
 }

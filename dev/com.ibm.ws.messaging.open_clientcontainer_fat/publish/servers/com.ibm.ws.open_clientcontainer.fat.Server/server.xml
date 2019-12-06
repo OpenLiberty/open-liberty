@@ -13,7 +13,7 @@
   <!-- Overriding the values of the properties used for wasJmsEndpoint port configuration in fatTestPorts.xml -->
   <variable name="bvt.prop.jms"      value="${bvt.prop.jms.1}"/>
   <variable name="bvt.prop.jms.ssl"  value="${bvt.prop.jms.1.ssl}"/>
-  <!-- wasJmsPort and wasJmsSSLPort settings in wasJmsEndpoint must match those set in fatTestPorts.xml, 
+  <!-- wasJmsPort and wasJmsSSLPort settings in wasJmsEndpoint must match those set in fatTestPorts.xml,
   to avoid configuration conflict warnings. -->
   <wasJmsEndpoint id="InboundJmsEndpoint" host="*" wasJmsPort="${bvt.prop.jms}" wasJmsSSLPort="${bvt.prop.jms.ssl}"/>
 

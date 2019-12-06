@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE application-client 
+<!DOCTYPE application-client
   PUBLIC "-//Sun Microsystems, Inc.//DTD J2EE Application Client 1.2//EN"
          "http://java.sun.com/j2ee/dtds/application-client_1_2.dtd"
 >
@@ -22,7 +22,7 @@
     <res-ref-name>java:comp/env/jndi_DEPTH_LIMITED_QUEUE</res-ref-name>
     <res-type>javax.jms.Queue</res-type>
     <lookup-name>jndi_DEPTH_LIMITED_QUEUE</lookup-name>
-  </resource-ref> 
+  </resource-ref>
 
   <resource-ref>
     <res-ref-name>java:comp/env/myCF</res-ref-name>

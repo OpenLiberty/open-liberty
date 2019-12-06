@@ -42,7 +42,7 @@ public class FATBase {
       } catch (java.io.FileNotFoundException e) {
         // silently ignore if there isn't a file already
         Util.CODEPATH();
-      } 
+      }
       for (String[] setting:args) {
         if (1==setting.length) {
           Util.TRACE("Removing "+setting[0]);

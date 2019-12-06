@@ -27,7 +27,7 @@ import componenttest.custom.junit.runner.FATRunner;
 
 @Mode(TestMode.LITE)
 @RunWith(FATRunner.class)
-@AllowedFFDC({ "com.ibm.ws.sib.jfapchannel.JFapConnectionBrokenException" 
+@AllowedFFDC({ "com.ibm.ws.sib.jfapchannel.JFapConnectionBrokenException"
               ,"com.ibm.ws.sib.processor.exceptions.SIMPLimitExceededException"
             })
 public class JMS2AsyncSendTest extends FATBase {
@@ -48,9 +48,9 @@ public class JMS2AsyncSendTest extends FATBase {
       Util.TRACE_EXIT();
     }
   }
-      
+
   @AfterClass
-  public static void afterClass() throws Exception { 
+  public static void afterClass() throws Exception {
     try {
       Util.TRACE_ENTRY();
       // CWSIJ0051E - Destination not found as expected for testJMS2InvalidDestination

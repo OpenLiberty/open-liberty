@@ -1,14 +1,14 @@
-/* ============================================================================                                                     
+/* ============================================================================
  * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *  
+ *
  * Contributors:
  *     IBM Corporation - initial implementation
  * ============================================================================
- */ 
+ */
 package com.ibm.ws.messaging.open_clientcontainer.fat;
 
 import java.util.concurrent.locks.ReentrantLock;
@@ -55,7 +55,7 @@ public class CompletionListenerBase implements CompletionListener, AutoCloseable
     }
     setPause(false);
     Util.TRACE_EXIT();
-  }   
+  }
 
   protected void checkPause() {
     Util.TRACE_ENTRY();
@@ -93,7 +93,7 @@ public class CompletionListenerBase implements CompletionListener, AutoCloseable
   /**
    * @param expectedCompletionCount
    * @param expectedExceptionCount
-   * @return                                                                                                                        
+   * @return
    */
   public synchronized boolean waitFor(long expectedCompletionCount ,long expectedExceptionCount) {
     return waitFor(defaultMaximumWaitMilliseconds_,expectedCompletionCount,expectedExceptionCount);
@@ -103,7 +103,7 @@ public class CompletionListenerBase implements CompletionListener, AutoCloseable
    * @param maximumWaitMilliseconds time allowed for the condition to be met.
    * @param expectedCompletionCount
    * @param expectedExceptionCount
-   * @return                                                                                                                        
+   * @return
    */
   public boolean waitFor(long maximumWaitMilliseconds, long expectedCompletionCount ,long expectedExceptionCount) {
     Util.TRACE_ENTRY("expectedCompletionCount="+expectedCompletionCount+",expectedExceptionCount="+expectedExceptionCount);
@@ -113,7 +113,7 @@ public class CompletionListenerBase implements CompletionListener, AutoCloseable
       this.expectedExceptionCount_ = (int) expectedExceptionCount;
       long endMilliseconds = System.currentTimeMillis() + maximumWaitMilliseconds;
       long remainingMilliseconds = endMilliseconds - System.currentTimeMillis();
-      while (remainingMilliseconds > 0 
+      while (remainingMilliseconds > 0
             &&(expectedCompletionCount_ > completionCount_ || expectedExceptionCount_ > exceptionCount_)
             ) {
         try {

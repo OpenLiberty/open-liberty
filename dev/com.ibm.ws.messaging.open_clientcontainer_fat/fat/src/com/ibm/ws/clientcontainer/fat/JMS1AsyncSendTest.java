@@ -43,7 +43,7 @@ public class JMS1AsyncSendTest extends FATBase {
     try {
       Util.TRACE_ENTRY();
       deployApplication("JMS1AsyncSend");
-      // CWSIA0281E - expected invalid destination 
+      // CWSIA0281E - expected invalid destination
       // CWSIC2008E - FFDC for commit/rollback error in testJMS1TransactedListener
       client_.addIgnoreErrors("CWSIA0281E","CWSIC2008E");
       start();

@@ -82,8 +82,8 @@ public class JMS2AsyncSend extends ClientMain {
       String messageReceived = consumer.receiveBody(String.class, WAIT_TIME).toString();
       Util.TRACE("message=" + messageReceived);
 
-      if (messageReceived.equals("testJMS2NoAsync") 
-          && completionListener_.completionCount_ == 0 
+      if (messageReceived.equals("testJMS2NoAsync")
+          && completionListener_.completionCount_ == 0
           && completionListener_.exceptionCount_ == 0
          ) {
         reportSuccess();
@@ -174,7 +174,7 @@ public class JMS2AsyncSend extends ClientMain {
               +"completionCount="+completionListener_.completionCount_
               +",exceptionCount="+completionListener_.exceptionCount_
               );
-        
+
       if (completed && conditionMet) {
         reportSuccess();
       } else {
@@ -324,7 +324,7 @@ public class JMS2AsyncSend extends ClientMain {
     try (JMSContext context  = queueConnectionFactory_.createContext();
          JMSContext context1 = queueConnectionFactory_.createContext();
          JMSContext context2 = queueConnectionFactory_.createContext();
-         JMSContext context3 = queueConnectionFactory_.createContext(); 
+         JMSContext context3 = queueConnectionFactory_.createContext();
         ) {
       JMSProducer producer[] = { context1.createProducer()
                                 ,context2.createProducer()
@@ -590,22 +590,22 @@ public class JMS2AsyncSend extends ClientMain {
     try (JMSContext context = queueConnectionFactory_.createContext()) {
       MessageTypeCreator[] typeCreator = new MessageTypeCreator[] {
                                       new MessageTypeCreator() { public String typeName() { return "BytesMessage"; }
-                                                                 public Message create() { return context.createBytesMessage(); } 
+                                                                 public Message create() { return context.createBytesMessage(); }
                                                                }
-                                     ,new MessageTypeCreator() { public String typeName() { return "MapMessage"; } 
-                                                                 public Message create() { return context.createMapMessage(); } 
+                                     ,new MessageTypeCreator() { public String typeName() { return "MapMessage"; }
+                                                                 public Message create() { return context.createMapMessage(); }
                                                               }
-                                     ,new MessageTypeCreator() { public String typeName() { return "ObjectMessage"; } 
-                                                                 public Message create() { return context.createObjectMessage(); } 
+                                     ,new MessageTypeCreator() { public String typeName() { return "ObjectMessage"; }
+                                                                 public Message create() { return context.createObjectMessage(); }
                                                               }
-                                     ,new MessageTypeCreator() { public String typeName() { return "StreamMessage"; } 
-                                                                 public Message create() { return context.createStreamMessage(); } 
+                                     ,new MessageTypeCreator() { public String typeName() { return "StreamMessage"; }
+                                                                 public Message create() { return context.createStreamMessage(); }
                                                               }
-                                     ,new MessageTypeCreator() { public String typeName() { return "TextMessage"; } 
-                                                                 public Message create() { return context.createTextMessage(); } 
+                                     ,new MessageTypeCreator() { public String typeName() { return "TextMessage"; }
+                                                                 public Message create() { return context.createTextMessage(); }
                                                               }
-                                     ,new MessageTypeCreator() { public String typeName() { return "Message"; } 
-                                                                 public Message create() { return context.createMessage(); } 
+                                     ,new MessageTypeCreator() { public String typeName() { return "Message"; }
+                                                                 public Message create() { return context.createMessage(); }
                                                               }
                                                                   };
       JMSConsumer consumer = context.createConsumer(queueOne_);
@@ -627,7 +627,7 @@ public class JMS2AsyncSend extends ClientMain {
         Message messageReceived = consumer.receive(WAIT_TIME);
         Util.CODEPATH();
         boolean propertyValSet = (null!=messageReceived
-                                  && messageReceived.getBooleanProperty("Value") == true 
+                                  && messageReceived.getBooleanProperty("Value") == true
                                   && messageReceived.getJMSCorrelationID().equals("CORREL")
                                  );
 
@@ -663,22 +663,22 @@ public class JMS2AsyncSend extends ClientMain {
     try (JMSContext context = queueConnectionFactory_.createContext()) {
       MessageTypeCreator[] typeCreator = new MessageTypeCreator[] {
                                       new MessageTypeCreator() { public String typeName() { return "BytesMessage"; }
-                                                                 public Message create() { return context.createBytesMessage(); } 
+                                                                 public Message create() { return context.createBytesMessage(); }
                                                                }
-                                     ,new MessageTypeCreator() { public String typeName() { return "MapMessage"; } 
-                                                                 public Message create() { return context.createMapMessage(); } 
+                                     ,new MessageTypeCreator() { public String typeName() { return "MapMessage"; }
+                                                                 public Message create() { return context.createMapMessage(); }
                                                               }
-                                     ,new MessageTypeCreator() { public String typeName() { return "ObjectMessage"; } 
-                                                                 public Message create() { return context.createObjectMessage(); } 
+                                     ,new MessageTypeCreator() { public String typeName() { return "ObjectMessage"; }
+                                                                 public Message create() { return context.createObjectMessage(); }
                                                               }
-                                     ,new MessageTypeCreator() { public String typeName() { return "StreamMessage"; } 
-                                                                 public Message create() { return context.createStreamMessage(); } 
+                                     ,new MessageTypeCreator() { public String typeName() { return "StreamMessage"; }
+                                                                 public Message create() { return context.createStreamMessage(); }
                                                               }
-                                     ,new MessageTypeCreator() { public String typeName() { return "TextMessage"; } 
-                                                                 public Message create() { return context.createTextMessage(); } 
+                                     ,new MessageTypeCreator() { public String typeName() { return "TextMessage"; }
+                                                                 public Message create() { return context.createTextMessage(); }
                                                               }
-                                     ,new MessageTypeCreator() { public String typeName() { return "Message"; } 
-                                                                 public Message create() { return context.createMessage(); } 
+                                     ,new MessageTypeCreator() { public String typeName() { return "Message"; }
+                                                                 public Message create() { return context.createMessage(); }
                                                               }
                                                                   };
       for (int i=0;typeCreator.length>i;++i) {
@@ -746,22 +746,22 @@ public class JMS2AsyncSend extends ClientMain {
     try (JMSContext context = connectionFactory_.createContext()) {
       MessageTypeCreator[] typeCreator = new MessageTypeCreator[] {
                                       new MessageTypeCreator() { public String typeName() { return "BytesMessage"; }
-                                                                 public Message create() { return context.createBytesMessage(); } 
+                                                                 public Message create() { return context.createBytesMessage(); }
                                                                }
-                                     ,new MessageTypeCreator() { public String typeName() { return "MapMessage"; } 
-                                                                 public Message create() { return context.createMapMessage(); } 
+                                     ,new MessageTypeCreator() { public String typeName() { return "MapMessage"; }
+                                                                 public Message create() { return context.createMapMessage(); }
                                                               }
-                                     ,new MessageTypeCreator() { public String typeName() { return "ObjectMessage"; } 
-                                                                 public Message create() { return context.createObjectMessage(); } 
+                                     ,new MessageTypeCreator() { public String typeName() { return "ObjectMessage"; }
+                                                                 public Message create() { return context.createObjectMessage(); }
                                                               }
-                                     ,new MessageTypeCreator() { public String typeName() { return "StreamMessage"; } 
-                                                                 public Message create() { return context.createStreamMessage(); } 
+                                     ,new MessageTypeCreator() { public String typeName() { return "StreamMessage"; }
+                                                                 public Message create() { return context.createStreamMessage(); }
                                                               }
-                                     ,new MessageTypeCreator() { public String typeName() { return "TextMessage"; } 
-                                                                 public Message create() { return context.createTextMessage(); } 
+                                     ,new MessageTypeCreator() { public String typeName() { return "TextMessage"; }
+                                                                 public Message create() { return context.createTextMessage(); }
                                                               }
-                                     ,new MessageTypeCreator() { public String typeName() { return "Message"; } 
-                                                                 public Message create() { return context.createMessage(); } 
+                                     ,new MessageTypeCreator() { public String typeName() { return "Message"; }
+                                                                 public Message create() { return context.createMessage(); }
                                                               }
                                                                   };
       JMSProducer producer = context.createProducer();
@@ -827,12 +827,12 @@ public class JMS2AsyncSend extends ClientMain {
                 +",producerCreated="+contextListener.producerCreated_
                 );
 
-      if (   contextListener.exceptionOnUnrelatedClose_ == false 
-          && contextListener.exceptionOnClose_ == true 
-          && contextListener.exceptionOnCommit_ == true 
-          && contextListener.exceptionOnRollback_ == true 
+      if (   contextListener.exceptionOnUnrelatedClose_ == false
+          && contextListener.exceptionOnClose_ == true
+          && contextListener.exceptionOnCommit_ == true
+          && contextListener.exceptionOnRollback_ == true
           && contextListener.producerCreated_ == true
-          && conditionMet == true 
+          && conditionMet == true
           && messageCount == 1
          ) {
         reportSuccess();

@@ -112,7 +112,7 @@ public class JMS1AsyncSend extends ClientMain {
     completionListener_.reset();
   }
 
-  // Case where the acknowledgement is not received, the JMS provider would notify the application by invoking the 
+  // Case where the acknowledgement is not received, the JMS provider would notify the application by invoking the
   // CompletionListener's onException method.
 
   @ClientTest
@@ -125,7 +125,7 @@ public class JMS1AsyncSend extends ClientMain {
     TextMessage message = session.createTextMessage("testJMS1ExceptionMessageThreshhold");
 
     for (int i = 0; i < 6; i++) producer.send(message, completionListener_);
-       
+
     if (completionListener_.waitFor(5,1)) {
       reportSuccess();
     } else {
@@ -199,7 +199,7 @@ public class JMS1AsyncSend extends ClientMain {
     int outOfOrderCount = 0;
 
     QueueSession session = queueConnection_.createQueueSession(false, javax.jms.Session.AUTO_ACKNOWLEDGE);
-    
+
     MessageProducer producer[] = {  session.createProducer(queueOne_)
                                    ,session.createProducer(queueOne_)
                                    ,session.createProducer(queueOne_)
@@ -241,9 +241,9 @@ public class JMS1AsyncSend extends ClientMain {
   //
   //   JMS defines that messages sent by a session to a destination must be received in the order in which they were sent[...]
   //
-  //   JMS does not define order of message receipt across destinations or across a destination's messages sent from multiple 
+  //   JMS does not define order of message receipt across destinations or across a destination's messages sent from multiple
   //   sessions. This aspect of a session's input message stream order is timing-dependent. It is not under application control
-  //   
+  //
   // So all we can test for with multiple sessions is ordering of messages from each session.
 
   @ClientTest
@@ -515,7 +515,7 @@ public class JMS1AsyncSend extends ClientMain {
           && sessionListener.exceptionOnRollback_ == true
           && sessionListener.producerCreated_ == true
           && sessionListener.exceptionOnProducerClose_ == true
-         ) { 
+         ) {
         reportSuccess();
       } else {
         reportFailure();
@@ -590,7 +590,7 @@ public class JMS1AsyncSend extends ClientMain {
 
     producer.send(queueOne_, textMessage, DeliveryMode.NON_PERSISTENT, 0, 500, completionListener_);
     Util.CODEPATH();
-    
+
     boolean conditionMet = completionListener_.waitFor(1, 0);  // ensure it is on the queue before we start waiting
     Thread.sleep(3000);                                        // wait plenty of time for it to expire
     Util.CODEPATH();

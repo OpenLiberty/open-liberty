@@ -29,7 +29,7 @@ public class Util {
     }
     logger_.setLevel(l);
   }
-  
+
   public static void setLevel(Level l) {
     logger_.setLevel(l);                  //  Requires java.util.logging.LoggingPermission
   }
@@ -126,7 +126,7 @@ public class Util {
 
   private static String assembleMsg(Object ... args) {
     String msg = "";
-    for (Object o:args) { 
+    for (Object o:args) {
       if (o instanceof Throwable) {
         if (null!=((Throwable)o).getMessage()) msg+=((Throwable)o).getMessage()+LS;
         msg+=getThrowableStack((Throwable)o);
@@ -135,7 +135,7 @@ public class Util {
       } else if (null==o) {
         msg+="null";
       } else {
-        msg+=o.toString(); 
+        msg+=o.toString();
       }
     }
     return msg;

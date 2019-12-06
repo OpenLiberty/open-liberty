@@ -44,7 +44,7 @@ public class ClientIDTest extends FATBase {
       Util.TRACE_EXIT();
     }
   }
-      
+
   @AfterClass
   public static void afterClass() throws Exception {
     try {
@@ -57,10 +57,10 @@ public class ClientIDTest extends FATBase {
 
   @Test
   public void testSetClientID() throws Exception { runTest(); }
-    
+
   @Test
   public void testSetClientIDTwice() throws Exception { runTest(); }
-    
+
   @Test
   public void testDurableSubscriberWithoutClientID() throws Exception { runTest(); }
 }
