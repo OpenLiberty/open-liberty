@@ -445,11 +445,12 @@ public class FeatureUtility {
      */
     private void cleanUp() throws IOException {
         String tempStr = (String) map.get("cleanup.temp.location");
-        Boolean cleaupNeeded = (Boolean) map.get("cleanup.needed");
+        Boolean cleanupNeeded = (Boolean) map.get("cleanup.needed");
         boolean deleted = true;
 
-        if (cleaupNeeded != null && cleaupNeeded) { //change this to a map.get("cleanup.needed")
+        if (cleanupNeeded != null && cleanupNeeded) { //change this to a map.get("cleanup.needed")
             File temp = new File(tempStr);
+            fine("Cleaning directory: " +tempStr);
             deleted = deleteFolder(temp);
         }
         updateProgress(progressBar.getMethodIncrement("cleanUp"));
