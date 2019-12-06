@@ -24,3 +24,4 @@ Subsystem-Name: MicroProfile GraphQL 1.0
  com.ibm.ws.com.google.guava
 kind=beta
 edition=core
+WLP-Activation-Type: parallel

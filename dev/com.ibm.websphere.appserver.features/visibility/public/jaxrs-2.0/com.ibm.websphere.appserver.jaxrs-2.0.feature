@@ -11,3 +11,4 @@ Subsystem-Name: Java RESTful Services 2.0
  com.ibm.websphere.appserver.internal.jaxrs-2.0
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

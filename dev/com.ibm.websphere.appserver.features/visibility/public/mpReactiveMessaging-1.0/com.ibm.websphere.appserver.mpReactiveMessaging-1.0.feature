@@ -24,3 +24,4 @@ Subsystem-Name: MicroProfile Reactive Messaging 1.0
  com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.impl
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

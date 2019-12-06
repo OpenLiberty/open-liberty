@@ -25,3 +25,4 @@ Subsystem-Name: MicroProfile Health 2.1
  com.ibm.ws.org.joda.time.1.6.2
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

@@ -22,3 +22,4 @@ Subsystem-Name: MicroProfile Rest Client 1.3
   com.ibm.ws.org.apache.cxf.cxf.rt.rs.mp.client.3.3; apiJar=false; location:="lib/"
 kind=ga
 edition=core
+WLP-Activation-Type: parallel
