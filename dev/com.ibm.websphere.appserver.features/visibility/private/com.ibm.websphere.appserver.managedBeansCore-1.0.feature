@@ -17,3 +17,4 @@ IBM-API-Package: \
   com.ibm.ws.javaee.dd.ejb
 kind=ga
 edition=core
+WLP-Activation-Type: parallel
