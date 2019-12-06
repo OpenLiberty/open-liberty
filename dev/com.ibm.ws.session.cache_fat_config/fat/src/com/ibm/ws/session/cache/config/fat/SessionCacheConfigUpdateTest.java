@@ -68,6 +68,14 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
         server.updateServerConfiguration(savedConfig);
         server.waitForConfigUpdateInLogUsingMark(APP_NAMES, cleanupList);
         cleanupList = EMPTY_RECYCLE_LIST;
+
+        // In addition to starting the application, must also wait for asynchronous web module initialization to complete,
+        // otherwise tests which attempt a configuration update could end up triggering a deactivate and close of the CachingProvider
+        // while the servlet initialization code is still attempting to use the CachingProvider and/or the CacheManager and Caches that it creates.
+        List<String> session = new ArrayList<>();
+        run("getSessionId", session);
+        run("invalidateSession", session);
+
         System.out.println("server configuration restored");
     }
 
