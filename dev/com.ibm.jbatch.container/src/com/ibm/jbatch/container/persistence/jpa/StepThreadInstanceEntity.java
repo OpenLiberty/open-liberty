@@ -63,6 +63,7 @@ public class StepThreadInstanceEntity implements EntityConstants {
 
 	// Not a useful constructor from the "real" flow of creating a step execution for the first time,
 	// for which the other constructor below encapsulates important logic. I think JPA impl uses it though.
+    @Trivial
 	public StepThreadInstanceEntity() {}
 
 	public StepThreadInstanceEntity(JobInstanceEntity jobInstance, String stepName, int partitionNumber) {

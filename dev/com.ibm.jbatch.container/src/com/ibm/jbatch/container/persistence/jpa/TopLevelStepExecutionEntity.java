@@ -23,6 +23,8 @@ import javax.persistence.OneToMany;
 
 import com.ibm.jbatch.container.ws.WSTopLevelStepExecution;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 @Entity
 @DiscriminatorValue("T") // The base level is (P)artition, and (T)op-level extends this
 @NamedQueries({
@@ -43,6 +45,7 @@ public class TopLevelStepExecutionEntity extends StepThreadExecutionEntity imple
 
     // Not a useful constructor from the "real" flow of creating a step execution for the first time,
     // for which the other constructor below encapsulates important logic.
+    @Trivial
     public TopLevelStepExecutionEntity() {
         super();
     }
