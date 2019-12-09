@@ -173,7 +173,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
             }
             // Determine whether we are dealing with a custom log configuration (e.g. WXS or JDBC)
             boolean isCustom = false;
-            ConfigurationProvider cp = ConfigurationProviderManager.getConfigurationProvider();
+            final ConfigurationProvider cp = ConfigurationProviderManager.getConfigurationProvider();
 
             String logDir = cp.getTransactionLogDirectory();
             int logSize = cp.getTransactionLogSize();
@@ -348,24 +348,33 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                 rm.setLocalRecoveryIdentity(localRecoveryIdentity);
             }
 
-            Thread t = AccessController.doPrivileged(new PrivilegedAction<Thread>() {
+            final Thread t = AccessController.doPrivileged(new PrivilegedAction<Thread>() {
                 @Override
                 public Thread run() {
                     return new Thread(rm, "Recovery Thread");
                 }
             });
 
-            // If we're not unit testing, set a ThreadContextClassLoader on the recovery thread so SSL classes can be loaded
-            if (!(cp.getClass().getCanonicalName().equals(DefaultConfigurationProvider.class.getCanonicalName()))) {
-                final ClassLoader cl = getThreadContextClassLoader(this.getClass());
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Setting Context ClassLoader on " + t.getName() + " (" + String.format("%08X", t.getId()) + ")", cl);
+            AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
 
-                t.setContextClassLoader(cl);
-            } else {
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "unit testing so not setting Context ClassLoader on " + t.getName() + " (" + String.format("%08X", t.getId()) + ")");
-            }
+                @Override
+                public Void run() throws RecoveryFailedException {
+                    // If we're not unit testing, set a ThreadContextClassLoader on the recovery thread so SSL classes can be loaded
+                    if (!(cp.getClass().getCanonicalName().equals(DefaultConfigurationProvider.class.getCanonicalName()))) {
+                        final ClassLoader cl = getThreadContextClassLoader(TxRecoveryAgentImpl.class);
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Setting Context ClassLoader on " + t.getName() + " (" + String.format("%08X", t.getId()) + ")", cl);
+
+                        t.setContextClassLoader(cl);
+                    } else {
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "unit testing so not setting Context ClassLoader on " + t.getName() + " (" + String.format("%08X", t.getId()) + ")");
+                    }
+
+                    return null;
+                }
+            });
+
             t.start();
 
             // Once we have got things going on another thread, tell the recovery directory that recovery is "complete". This
@@ -451,6 +460,12 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "initiateRecovery", e);
             throw new RecoveryFailedException(e); // 171598
+        } catch (PrivilegedActionException e) {
+            FFDCFilter.processException(e, "com.ibm.ws.runtime.component.TxServiceImpl.initiateRecovery", "463", this);
+            Tr.error(tc, "WTRN0016_EXC_DURING_RECOVERY", e);
+            if (tc.isEntryEnabled())
+                Tr.exit(tc, "initiateRecovery", e);
+            throw new RecoveryFailedException(e); // 171598
         }
 
         if (tc.isEntryEnabled())
@@ -479,9 +494,11 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
      * @return
      * @throws RecoveryFailedException
      */
-    private <T> T getService(Class<T> service) throws RecoveryFailedException {
+    private <T> T getService(final Class<T> service) throws RecoveryFailedException {
         T impl = null;
+
         BundleContext context = FrameworkUtil.getBundle(service).getBundleContext();
+
         ServiceReference<T> ref = context.getServiceReference(service);
         if (ref != null) {
             impl = context.getService(ref);
