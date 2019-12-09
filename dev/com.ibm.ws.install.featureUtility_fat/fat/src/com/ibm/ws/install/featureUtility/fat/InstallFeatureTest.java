@@ -112,6 +112,8 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         Log.entering(c, METHOD_NAME);
 
         String[] param1s = { "installFeature", "adminCenter-1.0" };
+
+        deleteFeaturesAndLafilesFolders(METHOD_NAME);
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
         assertEquals("Exit code should be 21", 21, po.getReturnCode());
         String output = po.getStdout();
@@ -123,6 +125,8 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         assertEquals("Exit code should be 21", 21, po.getReturnCode());
         output = po.getStdout();
         assertTrue("Should contain CWWKF1402E", (output.indexOf("CWWKF1402E") >= 0));
+
+        deleteFeaturesAndLafilesFolders(METHOD_NAME);
 
 
 

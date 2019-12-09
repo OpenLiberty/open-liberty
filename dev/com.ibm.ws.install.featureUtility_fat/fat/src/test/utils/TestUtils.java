@@ -26,25 +26,34 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
+import com.ibm.websphere.simplicity.log.Log;
+
 public class TestUtils {
-        public static boolean deleteFolder(File file) throws IOException {
+        public static boolean deleteFolder(File file) {
                 Path path = file.toPath();
                 if (!path.toFile().exists()) {
                         return true;
                 }
-                Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
-                        @Override
-                        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                                Files.delete(file);
-                                return FileVisitResult.CONTINUE;
-                        }
+                try {
+                        Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
+                                @Override
+                                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
+                                                throws IOException {
+                                        Files.delete(file);
+                                        return FileVisitResult.CONTINUE;
+                                }
 
-                        @Override
-                        public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-                                Files.delete(dir);
-                                return FileVisitResult.CONTINUE;
-                        }
-                });
+                                @Override
+                                public FileVisitResult postVisitDirectory(Path dir, IOException exc)
+                                                throws IOException {
+                                        Files.delete(dir);
+                                        return FileVisitResult.CONTINUE;
+                                }
+                        });
+                } catch (IOException e) {
+                        file.deleteOnExit();
+
+                }
                 return !file.exists();
         }
 
