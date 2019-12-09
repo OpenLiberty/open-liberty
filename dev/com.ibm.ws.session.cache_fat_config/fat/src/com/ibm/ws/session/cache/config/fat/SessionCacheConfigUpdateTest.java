@@ -209,7 +209,8 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
 
         // Monitor trace.log and wait for the message "doScheduledInvalidation scheduled hours are X and Y" before the test should continue
         // This replaces the TimeUnit.SECONDS.sleep(10) used before
-        assertNotNull("Could not find Infinispan message \"" + messageToCheckFor + "\" Has the Infinispan message changed?",
+        assertNotNull("Could not find message \"" + messageToCheckFor
+                      + "\" in the trace.log file.  Has the logging message in com.ibm.ws.session.store.common.BackedHashMap.doScheduledInvalidation() changed?",
                       server.waitForStringInTraceUsingMark(messageToCheckFor));
 
         ArrayList<String> session = new ArrayList<>();
