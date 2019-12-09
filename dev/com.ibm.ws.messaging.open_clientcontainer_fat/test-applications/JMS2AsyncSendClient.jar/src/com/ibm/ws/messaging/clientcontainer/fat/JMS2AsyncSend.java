@@ -689,7 +689,7 @@ public class JMS2AsyncSend extends ClientMain {
         // for one iteration the remaining callbacks don't interfere with the subsequent loop iterations.
         MessageOrderCompletionListener messageOrderListener = new MessageOrderCompletionListener();
         producer.setAsync(messageOrderListener);
-        messageOrderListener.setExpectedMessageCount(1000);
+        messageOrderListener.setExpectedMessageCount(30);
         Util.CODEPATH();
 
         for (int order = 0; order < messageOrderListener.getExpectedMessageCount(); order++) {
@@ -710,8 +710,9 @@ public class JMS2AsyncSend extends ClientMain {
             }
           }
         }
-        // Testing indicates the default (10s) is too short a wait period to reliably process 1000 messages so we give a maximum
-        // of 30s here to accomodate this
+        // Testing indicates the default (10s) is too short a wait period to reliably process a lot of messages so we give a maximum
+        // of 30s here to accomodate this.  30s being arbitrarily chosen so as not to elongate the overall maximum test time too
+        // greatly.
         boolean conditionMet = messageOrderListener.waitFor(30000,messageOrderListener.getExpectedMessageCount(),0);
         int messageOrderCount = messageOrderListener.getMessageOrderCount();
         Util.TRACE("exceptionsCaught="+exceptionsCaught
@@ -734,6 +735,9 @@ public class JMS2AsyncSend extends ClientMain {
     if (0==result.length()) {
       reportSuccess();
     } else {
+      // Note: If the failure message indicates less than the expected message count has been received (in [] after conditionMet)
+      // then it is likely simply the time taken to process messages and we've timed out (in the waitFor() call) before all have
+      // been processed.  This may happen if build/test machine is slow for some reason.
       reportFailure(result.substring(1));
     }
     clearQueue(queueOne_);
