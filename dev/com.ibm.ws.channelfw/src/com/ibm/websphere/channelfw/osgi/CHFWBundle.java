@@ -231,7 +231,7 @@ public class CHFWBundle implements ServerQuiesceListener {
                policyOption = ReferencePolicyOption.GREEDY)
     protected void setServerStarted(ServiceReference<ServerStarted> ref) {
         // set will be called when the ServerStarted service has been registered (by the FeatureManager as of 9/2015).  This is a signal that
-        // the server is fully started, but before the "smarter planet" message has been output. Use this signal to run task, mostly like task that will
+        // the server is fully started, but before the "smarter planet" message has been output. Use this signal to run tasks, mostly likely tasks that will
         // finish the port listening logic, that need to run at the end of server startup
 
         Callable<?> task;
@@ -252,8 +252,6 @@ public class CHFWBundle implements ServerQuiesceListener {
             serverCompletelyStarted.set(true);
             syncStarted.notifyAll();
         }
-
-        broadcastPortsListening();
     }
 
     /**
@@ -574,24 +572,4 @@ public class CHFWBundle implements ServerQuiesceListener {
     public EndPointMgr getEndpointManager() {
         return EndPointMgrImpl.getRef();
     }
-
-    /**
-     * Relay to the endpoint manaager that the ports have now entered into a listening state
-     */
-    public void broadcastPortsListening() {
-
-        if (getEndpointManager() != null) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(this, tc, "CHFWBundle: calling EndPointMgr.signalPortsListening");
-            }
-
-            getEndpointManager().signalPortsListening();
-
-        } else {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(this, tc, "CHFWBundle: not calling EndPointMgr, is null.");
-            }
-        }
-    }
-
 }

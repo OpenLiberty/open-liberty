@@ -52,11 +52,11 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.injectionengine.osgi.util.JNDIHelper;
 import com.ibm.ws.jca.service.AdminObjectService;
 import com.ibm.ws.jca.service.EndpointActivationService;
+import com.ibm.ws.kernel.feature.ServerStartedPhase2;
 import com.ibm.ws.runtime.metadata.MetaDataSlot;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.ws.tx.rrs.RRSXAResourceFactory;
-import com.ibm.wsspi.channelfw.PortsListening;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
 
@@ -659,10 +659,7 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener {
      * @param serverStarted The server started instance
      */
     @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL)
-    protected synchronized void setPortsListening(PortsListening portsListening) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "MDB setPortsListening invoked");
-        }
+    protected synchronized void setServerStartedPhase2(ServerStartedPhase2 serverStartedPhase2) {
 
         isServerStarted = true;
 
@@ -679,10 +676,7 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener {
      *
      * @param serverStarted The Started service instance
      */
-    protected void unsetPortsListening(PortsListening portsListening) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "MDB unsetPortsListening invoked");
-        }
+    protected void unsetServerStartedPhase2(ServerStartedPhase2 serverStartedPhase2) {
         // No cleanup is needed since the server has stopped.
         isServerStarted = false;
     }

@@ -61,9 +61,4 @@ public interface EndPointMgr {
      * @return List<EndPointInfo>, never null but might be empty
      */
     List<EndPointInfo> getEndPoints(String address, int port);
-
-    /**
-     * This method is called to signal that the ports are now active and in listening state
-     */
-    public void signalPortsListening();
 }

@@ -32,7 +32,6 @@ import com.ibm.websphere.channelfw.EndPointMgr;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.channelfw.internal.ChannelFrameworkConstants;
-import com.ibm.wsspi.channelfw.PortsListening;
 
 /**
  * Temporary version of the WAS runtimefw EndPointMgr.
@@ -256,14 +255,6 @@ public class EndPointMgrImpl implements EndPointMgr {
         synchronized (this.endpoints) {
             return new ArrayList<EndPointInfo>(endpoints.values());
         }
-    }
-
-    @Override
-    public void signalPortsListening() {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "signalPortsListening - call service implementers who are waiting for ports to start");
-        }
-        this.bundleContext.registerService(PortsListening.class, new PortsListening() {}, new Hashtable<String, Object>());
     }
 
 }
