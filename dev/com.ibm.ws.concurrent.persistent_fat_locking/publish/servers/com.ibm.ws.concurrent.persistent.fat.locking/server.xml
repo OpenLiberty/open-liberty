@@ -33,6 +33,12 @@
   
   <javaPermission codebase="${shared.resource.dir}/jdbc/${env.DB_DRIVER}" className="java.security.AllPermission"/>
 
+  <!-- Oracle and SQLServer JDBC drivers get Java 2 security errors when creating a connection. -->
+  <javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve" />
+
+  <!-- Oracle JDBC driver get Java 2 security errors when creating prepared statements, or accessing metadata -->
+  <javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers" />
+
   <variable name="onError" value="FAIL"/>
 
   <application location="pxlocktest.war" />
