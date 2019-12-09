@@ -42,6 +42,7 @@ import com.ibm.jbatch.container.exception.BatchContainerRuntimeException;
 import com.ibm.jbatch.container.exception.BatchIllegalIDPersistedException;
 import com.ibm.jbatch.container.exception.BatchIllegalJobStatusTransitionException;
 import com.ibm.jbatch.container.exception.PersistenceException;
+import com.ibm.jbatch.container.persistence.jpa.RemotablePartitionKey;
 import com.ibm.jbatch.container.ws.BatchInternalDispatcher;
 import com.ibm.jbatch.container.ws.BatchStatusValidator;
 import com.ibm.jbatch.container.ws.BatchSubmitInvalidParametersException;
@@ -50,7 +51,7 @@ import com.ibm.jbatch.container.ws.JobStoppedOnStartException;
 import com.ibm.jbatch.container.ws.PartitionPlanConfig;
 import com.ibm.jbatch.container.ws.PartitionReplyMsg;
 import com.ibm.jbatch.container.ws.PartitionReplyMsg.PartitionReplyMsgType;
-import com.ibm.jbatch.container.ws.RemotablePartitionState;
+import com.ibm.jbatch.container.ws.WSRemotablePartitionState;
 import com.ibm.jbatch.container.ws.WSJobExecution;
 import com.ibm.jbatch.container.ws.WSJobInstance;
 import com.ibm.jbatch.container.ws.WSJobOperator;
@@ -100,7 +101,6 @@ public class BatchJmsEndpointListener implements MessageListener {
      */
     private ConnectionFactory connectionFactory ;
     private BatchOperationGroup batchOperationGroup;
-    private WSJobRepository jobRepository;
    
     /*
      * @param ConnectionFactory configured to use the partition queue
@@ -109,7 +109,6 @@ public class BatchJmsEndpointListener implements MessageListener {
         
         // track the batch operation group name(s)
         this.batchOperationGroup = batchOpGrp;
-        this.jobRepository = jobRepo;
         this.connectionFactory = cf;
     }
     
@@ -376,10 +375,23 @@ public class BatchJmsEndpointListener implements MessageListener {
                 return;
             }
 
-            // The RemotablePartitionState is essentially just for monitoring.  We don't have logic conditionally depending on the state.  So there's not really
-            // a need to worry about locking to guard against inconsistencies for now.
-            jobRepositoryProxy.updateRemotablePartitionInternalState(jobExecutionId, config.getStepName(), config.getPartitionNumber(), RemotablePartitionState.CONSUMED);
-             
+            RemotablePartitionKey rpKey = new RemotablePartitionKey(jobExecutionId, config.getStepName(), config.getPartitionNumber());
+            WSRemotablePartitionState rpState = jobRepositoryProxy.getRemotablePartitionInternalState(rpKey);
+            if (rpState == null) {
+                if(tc.isDebugEnabled()) {
+                    Tr.debug(BatchJmsEndpointListener.this, tc, "Ignore, RP table maybe not created");
+                }
+            } else if (!rpState.equals(WSRemotablePartitionState.QUEUED)) {
+                // It might seem like we should have more locking around the state transition.  However even if we were to let two
+                // threads through, the DB constraint would only allow one to create the partition-level STEPTHREADEXECUTION entry.
+                // So there would be some noise and possible failure even, but not the double execution of this partition.   So we do
+                // this simple check.
+                if(tc.isDebugEnabled()) {
+                    Tr.debug(BatchJmsEndpointListener.this, tc, "Exiting since WSRemotablePartitionState = " + rpState);
+                }
+                return;
+            }
+
             // UPDATE: 2019-09-24 - I'm sure this comment below isn't 100% correct or up-to-date, but I'm leaving it
             // because it enumerates a bunch of considerations that we should keep in mind.
             //
@@ -489,8 +501,8 @@ public class BatchJmsEndpointListener implements MessageListener {
 
             // get the op group names and create a mapping to each for the job instance id
             if (batchOperationGroup != null) {
-                int instanceTableVersion = jobRepositoryProxy.getJobInstanceTableVersion();
-                if (instanceTableVersion >= 3) {
+                int instanceEntityVersion = jobRepositoryProxy.getJobInstanceEntityVersion();
+                if (instanceEntityVersion >= 3) {
                     if (jobInstance.getGroupNames() == null || jobInstance.getGroupNames().size() == 0) {
                         if(tc.isDebugEnabled()) {
                             Tr.debug(BatchJmsEndpointListener.this, tc, "On restart, null/empty operation group mapping. Give it another chance.");
@@ -503,7 +515,7 @@ public class BatchJmsEndpointListener implements MessageListener {
                     }
                 } else {
                     if(tc.isDebugEnabled()) {
-                        Tr.debug(BatchJmsEndpointListener.this, tc, "Skip group names update because job instance table version = " + instanceTableVersion); 
+                        Tr.debug(BatchJmsEndpointListener.this, tc, "Skip group names update because job instance table version = " + instanceEntityVersion); 
                     }
                 }
             }
@@ -568,12 +580,12 @@ public class BatchJmsEndpointListener implements MessageListener {
 
             // get the op group names and create a mapping to each for the job instance id
             if (batchOperationGroup != null) {
-                int instanceTableVersion = jobRepositoryProxy.getJobInstanceTableVersion();
-                if (instanceTableVersion >= 3) {
+                int instanceEntityVersion = jobRepositoryProxy.getJobInstanceEntityVersion();
+                if (instanceEntityVersion >= 3) {
                     jobRepositoryProxy.updateJobInstanceWithGroupNames(instanceId, batchOperationGroup.getGroupNames());
                 } else {
                     if(tc.isDebugEnabled()) {
-                        Tr.debug(BatchJmsEndpointListener.this, tc, "Skip group names update because job instance table version = " + instanceTableVersion); 
+                        Tr.debug(BatchJmsEndpointListener.this, tc, "Skip group names update because job instance table version = " + instanceEntityVersion); 
                     }
                 }
             }

@@ -74,9 +74,9 @@ import com.ibm.jbatch.container.util.WSPartitionStepAggregateImpl;
 import com.ibm.jbatch.container.util.WSStepThreadExecutionAggregateImpl;
 import com.ibm.jbatch.container.ws.BatchLocationService;
 import com.ibm.jbatch.container.ws.InstanceState;
-import com.ibm.jbatch.container.ws.RemotablePartitionState;
 import com.ibm.jbatch.container.ws.WSPartitionStepAggregate;
 import com.ibm.jbatch.container.ws.WSPartitionStepThreadExecution;
+import com.ibm.jbatch.container.ws.WSRemotablePartitionState;
 import com.ibm.jbatch.container.ws.WSStepThreadExecutionAggregate;
 import com.ibm.jbatch.container.ws.WSTopLevelStepExecution;
 import com.ibm.jbatch.spi.services.IBatchConfig;
@@ -643,6 +643,9 @@ public class MemoryPersistenceManagerImpl extends AbstractPersistenceManager imp
             remotablePartition = data.partitionData.get(remotablePartitionKey);
             remotablePartition.setStepExecution(stepExecution);
             stepExecution.setRemotablePartition(remotablePartition);
+            remotablePartition.setInternalStatus(WSRemotablePartitionState.CONSUMED);
+            remotablePartition.setServerId(batchLocationService.getServerId());
+            remotablePartition.setRestUrl(batchLocationService.getBatchRestUrl());
         }
 
         // 4. persist
@@ -701,6 +704,9 @@ public class MemoryPersistenceManagerImpl extends AbstractPersistenceManager imp
             RemotablePartitionKey remotablePartitionKey = new RemotablePartitionKey(newJobExecution.getExecutionId(), stepThreadInstance.getStepName(), stepThreadInstance.getPartitionNumber());
             remotablePartition = data.partitionData.get(remotablePartitionKey);
             remotablePartition.setStepExecution(newStepExecution);
+            remotablePartition.setInternalStatus(WSRemotablePartitionState.CONSUMED);
+            remotablePartition.setServerId(batchLocationService.getServerId());
+            remotablePartition.setRestUrl(batchLocationService.getBatchRestUrl());
 
             newStepExecution.setRemotablePartition(remotablePartition);
         }
@@ -1332,32 +1338,14 @@ public class MemoryPersistenceManagerImpl extends AbstractPersistenceManager imp
     }
 
     @Override
-    public RemotablePartitionEntity createRemotablePartition(long jobExecId,
-                                                             String stepName,
-                                                             int partitionNum,
-                                                             RemotablePartitionState partitionState) {
-        RemotablePartitionKey partitionKey = new RemotablePartitionKey(jobExecId, stepName, partitionNum);
-        JobExecutionEntity jobExecution = data.executionInstanceData.get(partitionKey.getJobExec());
-        RemotablePartitionEntity partition = new RemotablePartitionEntity(jobExecution, partitionKey);
-        partition.setInternalStatus(RemotablePartitionState.QUEUED);
+    public RemotablePartitionEntity createRemotablePartition(RemotablePartitionKey remotablePartitionKey) {
+        JobExecutionEntity jobExecution = data.executionInstanceData.get(remotablePartitionKey.getJobExec());
+        RemotablePartitionEntity partition = new RemotablePartitionEntity(jobExecution, remotablePartitionKey);
+        partition.setInternalStatus(WSRemotablePartitionState.QUEUED);
         partition.setLastUpdated(new Date());
-        data.partitionData.put(partitionKey, partition);
+        data.partitionData.put(remotablePartitionKey, partition);
 
         jobExecution.getRemotablePartitions().add(partition);
-        return partition;
-    }
-
-    @Override
-    public RemotablePartitionEntity updateRemotablePartitionInternalState(
-                                                                          long jobExecId, String stepName, int partitionNum,
-                                                                          RemotablePartitionState internalStatus) {
-        RemotablePartitionKey partitionKey = new RemotablePartitionKey(jobExecId, stepName, partitionNum);
-        RemotablePartitionEntity partition = data.partitionData.get(partitionKey);
-        partition.setInternalStatus(internalStatus);
-        partition.setRestUrl(batchLocationService.getBatchRestUrl());
-        partition.setServerId(batchLocationService.getServerId());
-        partition.setLastUpdated(new Date());
-
         return partition;
     }
 
@@ -1385,32 +1373,49 @@ public class MemoryPersistenceManagerImpl extends AbstractPersistenceManager imp
 
     /** {@inheritDoc} */
     @Override
-    public int getJobExecutionTableVersion() {
-        return getJobExecutionTableVersionField();
+    public int getJobExecutionEntityVersion() {
+        return getJobExecutionEntityVersionField();
     }
 
     /** {@inheritDoc} */
     @Override
-    public int getJobInstanceTableVersion() {
-        return getJobInstanceTableVersionField();
+    public int getJobInstanceEntityVersion() {
+        return getJobInstanceEntityVersionField();
     }
 
     /** {@inheritDoc} */
     @Override
-    public Integer getJobExecutionTableVersionField() {
+    public Integer getJobExecutionEntityVersionField() {
         return 3;
     }
 
     /** {@inheritDoc} */
     @Override
-    public Integer getJobInstanceTableVersionField() {
+    public Integer getJobInstanceEntityVersionField() {
         return 3;
     }
 
     /** {@inheritDoc} */
     @Override
-    public Integer getStepThreadExecutionTableVersionField() {
+    public Integer getStepThreadExecutionEntityVersionField() {
         return 2;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public List<Integer> getRemotablePartitionsRecoveredForStepExecution(long topLevelStepExecutionId) {
+        return new ArrayList<Integer>();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public WSRemotablePartitionState getRemotablePartitionInternalState(RemotablePartitionKey remotablePartitionKey) {
+        RemotablePartitionEntity rp = data.partitionData.get(remotablePartitionKey);
+        if (rp != null) {
+            return rp.getInternalStatus();
+        } else {
+            throw new IllegalArgumentException("RemotablePartition not found for RemotablePartitionKey = " + remotablePartitionKey);
+        }
     }
 
 }

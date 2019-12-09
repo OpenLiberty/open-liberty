@@ -38,6 +38,8 @@ import com.ibm.jbatch.container.context.impl.MetricImpl;
 import com.ibm.jbatch.container.ws.WSPartitionStepThreadExecution;
 import com.ibm.ws.serialization.DeserializationObjectInputStream;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 @DiscriminatorColumn(name = "THREADTYPE", discriminatorType = DiscriminatorType.CHAR)
 @DiscriminatorValue("P")
 // The base level is (P)artition, and (T)op-level extends this
@@ -51,6 +53,7 @@ public class StepThreadExecutionEntity implements WSPartitionStepThreadExecution
 
     // Not a useful constructor from the "real" flow of creating a step execution for the first time,
     // for which the other constructor below encapsulates important logic.
+    @Trivial
     public StepThreadExecutionEntity() {
         super();
     }

@@ -18,16 +18,16 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 @Entity
 public class JobExecutionEntityV3 extends JobExecutionEntityV2 {
-
-    @OneToMany(mappedBy = "jobExec", cascade = CascadeType.REMOVE)
-    private Collection<RemotablePartitionEntity> partitionExecutions;
 
     @OneToMany(mappedBy = "jobExec", cascade = CascadeType.REMOVE)
     private Collection<RemotablePartitionEntity> remotablePartitions;
 
     // For JPA
+    @Trivial
     public JobExecutionEntityV3() {
         super();
     }
