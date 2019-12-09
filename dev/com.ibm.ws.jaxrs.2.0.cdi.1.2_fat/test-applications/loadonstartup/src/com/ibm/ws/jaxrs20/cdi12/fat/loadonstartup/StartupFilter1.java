@@ -13,12 +13,13 @@ package com.ibm.ws.jaxrs20.cdi12.fat.loadonstartup;
 import java.io.IOException;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 
-@ApplicationScoped
+// Change from ApplicationScoped to RequestScoped to verify the fix for issue 9976
+@RequestScoped
 public class StartupFilter1 implements ContainerRequestFilter {
 
     @Inject
