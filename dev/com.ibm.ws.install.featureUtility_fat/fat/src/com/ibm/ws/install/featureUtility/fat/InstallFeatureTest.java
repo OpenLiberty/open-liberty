@@ -129,7 +129,6 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         deleteFeaturesAndLafilesFolders(METHOD_NAME);
 
 
-
         Log.exiting(c, METHOD_NAME);
     }
 
