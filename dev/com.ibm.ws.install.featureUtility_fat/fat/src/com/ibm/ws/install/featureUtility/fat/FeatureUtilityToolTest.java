@@ -180,6 +180,10 @@ public abstract class FeatureUtilityToolTest {
         String methodName = "unzipMavenArtifactRepo";
         Log.entering(c, methodName);
 
+        // see if fe.gsa.basedir is defiend
+        String fegsa = System.getProperty("fe.gsa.basedir");
+        Log.info(c, methodName, "fe.gsa.basedir: " +fegsa);
+
         String uploadDir = System.getProperty("image.output.upload.dir");
         Log.info(c, methodName, "upload dir: " + uploadDir);
         if (uploadDir == null) {
