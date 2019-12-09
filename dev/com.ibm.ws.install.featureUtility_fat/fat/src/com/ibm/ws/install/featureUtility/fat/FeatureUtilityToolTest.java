@@ -181,11 +181,15 @@ public abstract class FeatureUtilityToolTest {
         Log.entering(c, methodName);
 
         String uploadDir = System.getProperty("image.output.upload.dir");
-
+        Log.info(c, methodName, "upload dir: " + uploadDir);
         if (uploadDir == null) {
             uploadDir = "../build.image/output/upload/externals/installables";
+            Log.info(c, methodName, "upload dir changed: " + uploadDir);
+
         }
+
         File outputUploadDir = new File(uploadDir).getCanonicalFile();
+        Log.info(c, methodName, "abs path:"  + outputUploadDir.getAbsolutePath());
         Log.info(c, methodName, "Upload dir EXISTS?: " + outputUploadDir.exists());
         if(!outputUploadDir.exists()){
             return null;
