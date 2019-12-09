@@ -10,7 +10,7 @@
   <!-- SERVLET DEFINITIONS -->
   <servlet id="Default">
     <servlet-name>JDBC FAT DataSourceDefinition Servlet</servlet-name>
-    <servlet-class>web.DSDTestServlet</servlet-class>
+    <servlet-class>dsdfat.DSDTestServlet</servlet-class>
     <load-on-startup></load-on-startup>
   </servlet>
 

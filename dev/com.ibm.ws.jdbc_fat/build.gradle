@@ -8,7 +8,62 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+ configurations {
+  db2
+  derbyClient
+}
+
+dependencies {
+  db2 'com.ibm.db2:jcc:11.1.4.4'
+  derbyClient 'org.apache.derby:derbyclient:10.11.1.1'
+  requiredLibs 'org.apache.derby:derbynet:10.11.1.1'
+}
+ 
+ //Anonymous derby jar
+ task copyAnonymousDerby(type: Copy) {
+  shouldRunAfter jar
+  from configurations.derby
+  into new File(autoFvtDir, 'publish/shared/resources/jdbc')
+  rename 'derby-.*.jar', 'driver.jar'
+ }
+ 
+ //Derby client jar
+ task addDerbyClient(type: Copy) {
+  shouldRunAfter jar
+  from configurations.derbyClient
+  into new File(autoFvtDir, 'publish/shared/resources/derby')
+  rename 'derbyclient.*.jar', 'derbyclient.jar'
+}
+
+ //Automatically discovered derby jar
+ task copyAutomaticDerby(type: Copy) {
+  shouldRunAfter jar
+  from configurations.derby
+  into new File(autoFvtDir, 'publish/lib/AutomaticDerbyLibrary/')
+  rename 'derby-.*.jar', 'derby.jar'
+ }
+
+ //DB2 jar
+ task copyDB2(type: Copy) {
+  shouldRunAfter jar
+  from configurations.db2
+  into new File(autoFvtDir, 'publish/shared/resources/db2')
+  rename 'jcc.*.jar', 'jcc.jar'
+ }
+ 
+ task copyJarToModule(type: Copy) {
+  shouldRunAfter jar
+  from jar
+  into new File(autoFvtDir, 'publish/shared/resources/loginmodule/')
+  rename 'com.ibm.ws.jdbc_fat.jar', 'TestLoginModule.jar'
+ }
+
 
  addRequiredLibraries {
   dependsOn addDerby
-}
+  dependsOn copyAnonymousDerby
+  dependsOn addDerbyClient
+  dependsOn copyAutomaticDerby
+  dependsOn copyDB2
+  dependsOn copyJarToModule
+ }

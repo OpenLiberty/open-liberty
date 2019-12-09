@@ -6,7 +6,7 @@
     id="WebApp_ID">
     
   <servlet id="Default">
-    <servlet-class>web.DSDGlobalLibTestServlet</servlet-class>
+    <servlet-class>dsdfat_global_lib.DSDGlobalLibTestServlet</servlet-class>
     <load-on-startup></load-on-startup>
   </servlet>
 

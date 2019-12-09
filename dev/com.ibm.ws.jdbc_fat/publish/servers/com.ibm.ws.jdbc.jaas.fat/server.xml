@@ -20,40 +20,40 @@
       <feature>servlet-3.1</feature>
       <feature>jdbc-4.1</feature>
       <feature>appSecurity-2.0</feature>
-      <feature>jca-1.6</feature>
+      <feature>jca-1.7</feature>
       <feature>concurrent-1.0</feature>
     </featureManager>
 
 	<include location="../fatTestPorts.xml"/>
 
     <library id="AutomaticDerbyLibrary">
-      <fileset dir="${server.config.dir}/lib/AutomaticDerbyLibrary" includes="derby.jar"/>
+      <fileset dir="${shared.resource.dir}/lib/AutomaticDerbyLibrary" includes="derby.jar"/>
     </library>
 
     <jdbcDriver id="FATJDBCDriver" fat.modify="true">
       <library>
-        <fileset dir="${server.config.dir}/jdbc" includes="driver.jar"/>
+        <fileset dir="${shared.resource.dir}/jdbc" includes="driver.jar"/>
       </library>
     </jdbcDriver>
      
     <jdbcDriver id="FATJDBCDriver1" fat.modify="true">
       <library filesetRef="FATfileset1"/>
     </jdbcDriver>
-    <fileset id="FATfileset1" dir="${server.config.dir}/derby" includes="derby.jar"/>    
+    <fileset id="FATfileset1" dir="${shared.resource.dir}/derby" includes="derby.jar"/>    
 
     <jdbcDriver id="FATJDBCDriver2" libraryRef="FATLib2" fat.modify="true"/>
     <library id="FATLib2">
-      <fileset dir="${server.config.dir}/derby" includes="derby.jar"/>
+      <fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
     </library>
     
     <jdbcDriver id="FATJDBCDriver3" libraryRef="FATLib3" fat.modify="true"/>
     <library id="FATLib3" filesetRef="FATfileset3"/>
-    <fileset id="FATfileset3" dir="${server.config.dir}/derby" includes="derby.jar"/>
+    <fileset id="FATfileset3" dir="${shared.resource.dir}/derby" includes="derby.jar"/>
     
     <!-- Derby-only JDBC driver -->
     <jdbcDriver id="Derby" libraryRef="DerbyLib"/>
     <library id="DerbyLib">
-      <fileset dir="${server.config.dir}/derby"/>
+      <fileset dir="${shared.resource.dir}/derby"/>
     </library>
 
     <authData id="auth1" user="dbuser1" password="{xor}Oz0vKDtu" fat.modify="true" />
@@ -89,7 +89,7 @@
       <properties.derby.embedded databaseName="${shared.resource.dir}/data/jdbcfat" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
     </dataSource>    
     <library id="FATLib4" filesetRef="FATfileset4"/>
-    <fileset id="FATfileset4" dir="${server.config.dir}/derby" includes="derby.jar"/>
+    <fileset id="FATfileset4" dir="${shared.resource.dir}/derby" includes="derby.jar"/>
     
     <dataSource id="dsfatboot5" jndiName="jdbc/dsfatboot5" fat.modify="true" type="javax.sql.ConnectionPoolDataSource" transactional="false">
       <jdbcDriver id="FATJDBCDriver5">
@@ -97,12 +97,12 @@
       </jdbcDriver>
       <properties.derby.embedded databaseName="${shared.resource.dir}/data/jdbcfat" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
     </dataSource>        
-    <fileset id="FATfileset5" dir="${server.config.dir}/derby" includes="derby.jar"/>    
+    <fileset id="FATfileset5" dir="${shared.resource.dir}/derby" includes="derby.jar"/>    
 
     <dataSource id="dsfatboot6" jndiName="jdbc/dsfatboot6" fat.modify="true" type="javax.sql.ConnectionPoolDataSource" transactional="false">
       <jdbcDriver id="FATJDBCDriver6">
         <library id="FATLib6">
-          <fileset id="FATfileset6" dir="${server.config.dir}/derby" includes="derby.jar"/>    
+          <fileset id="FATfileset6" dir="${shared.resource.dir}/derby" includes="derby.jar"/>    
         </library>
       </jdbcDriver>
       <properties.derby.embedded databaseName="${shared.resource.dir}/data/jdbcfat" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
@@ -174,12 +174,13 @@
 	<jaasLoginModule id="testLoginModule" className="com.ibm.ws.jdbc.fat.tests.TestLoginModule" controlFlag="REQUIRED" libraryRef="customLoginLib"/>
 	
 	<library id="customLoginLib">
-	  <fileset dir="${server.config.dir}" includes="TestLoginModule.jar"/>
+	  <fileset dir="${shared.resource.dir}/loginmodule" includes="TestLoginModule.jar"/>
     </library>
     
     <!-- GSS Credential Config - Shares jar for login module with standard JAASLogin test -->
     <jaasLoginContextEntry id="myJAASGSSLoginEntry" name="myJAASGSSLoginEntry" loginModuleRef="testGSSLoginModule" />
 	<jaasLoginModule id="testGSSLoginModule" className="com.ibm.ws.jdbc.fat.tests.TestGSSLoginModule" controlFlag="REQUIRED" libraryRef="customLoginLib"/>
+    <!-- TODO what is this component and can we test it in OL? -->
     <spnego id="includeClientGSSCredentialTrue"
         includeClientGSSCredentialInSubject="true"
         krb5Config="${server.config.dir}/resources/security/kerberos/krb5.conf"
@@ -210,10 +211,11 @@
       <classloader privateLibraryRef="DerbyLib"/>
     </application>
     
-    <javaPermission codebase="${server.config.dir}/TestLoginModule.jar" className="java.security.AllPermission"/>
-    <javaPermission codebase="${server.config.dir}derby/derby.jar" className="java.security.AllPermission"/>
-    <javaPermission codebase="${server.config.dir}jdbc/driver.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${shared.resource.dir}/loginmodule/TestLoginModule.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${shared.resource.dir}derby/derby.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${shared.resource.dir}jdbc/driver.jar" className="java.security.AllPermission"/>
     <javaPermission className="javax.security.auth.AuthPermission" name="createLoginContext.myJAASLoginEntry"/>
+    <javaPermission className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
     <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="javax.resource.spi.security.PasswordCredential" principalType="*" principalName="*" actions="read"/>
     <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="java.util.HashMap" principalType="*" principalName="*" actions="read"/>
     <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="java.util.Hashtable" principalType="*" principalName="*" actions="read"/>

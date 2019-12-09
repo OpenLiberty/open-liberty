@@ -40,25 +40,39 @@ import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
 public class DataSourceTest extends FATServletClient {
+	
+    //App names
+	private static final String setupfat = "setupfat";
+	private static final String basicfat = "basicfat";
+	private static final String dsdfat = "dsdfat";
+	private static final String dsdfat_global_lib = "dsdfat_global_lib";
 
-    @Server("com.ibm.ws.jdbc.fat")
-    public static LibertyServer server;
-
-    private static final String setupfat = "setupfat";
-    private static final String basicfat = "basicfat";
-    private static final String dsdfat = "dsdfat";
-    private static final String dsdfat_global_lib = "dsdfat_global_lib";
+	//Server used for ConfigTest.java and DataSourceTest.java
+	@Server("com.ibm.ws.jdbc.fat")
+	public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
+    	
+        //TODO configure tests for database rotation
+        //server.configureForAnyDatabase();
+    	
+    	//**** jdbcServer apps ****
+    	// Dropin app - setupfat.war 
     	ShrinkHelper.defaultDropinApp(server, setupfat, "setupfat");
-    	ShrinkHelper.defaultApp(server, dsdfat, "dsdfat");
-    	ShrinkHelper.defaultApp(server, dsdfat_global_lib, "dsdfat_global_lib");
-    	WebArchive basicfat = ShrinkHelper.buildDefaultApp("basicfat.war", "basicfat");
-        EnterpriseArchive basicfatEAR = ShrinkWrap.create(EnterpriseArchive.class, "jdbcapp.ear");
-        basicfatEAR.addAsModule(basicfat);
-        ShrinkHelper.addDirectory(basicfatEAR, "test-applications/jdbcapp/resources");
-        ShrinkHelper.exportAppToServer(server, basicfatEAR);
+    	
+    	// Default app - dsdfat.war and dsdfat_global_lib.war
+    	ShrinkHelper.defaultApp(server, dsdfat, dsdfat);
+    	ShrinkHelper.defaultApp(server, dsdfat_global_lib, dsdfat_global_lib);
+    	
+    	// Default app - jdbcapp.ear [basicfat.war, application.xml]
+    	WebArchive basicfatWAR = ShrinkHelper.buildDefaultApp(basicfat, basicfat);
+        EnterpriseArchive jdbcappEAR = ShrinkWrap.create(EnterpriseArchive.class, "jdbcapp.ear");
+        jdbcappEAR.addAsModule(basicfatWAR);
+        ShrinkHelper.addDirectory(jdbcappEAR, "test-applications/jdbcapp/resources");
+        ShrinkHelper.exportAppToServer(server, jdbcappEAR);
+        
+        //Start Server
         server.startServer();
     }
 
@@ -87,7 +101,7 @@ public class DataSourceTest extends FATServletClient {
     }
 
     @Test
-    @SkipIfDataSourceProperties(DERBY_EMBEDDED)
+    @SkipIfDataSourceProperties(DERBY_EMBEDDED) //TODO investigate if this is still necessary
     public void testBootstrapDatabaseConnection() throws Throwable {
         runTest(server, setupfat + '/', testName);
     }
@@ -274,7 +288,7 @@ public class DataSourceTest extends FATServletClient {
 
     @Test
     @AllowedFFDC({ "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException", "javax.transaction.xa.XAException" })
-    @SkipIfDataSourceProperties(ORACLE_JDBC)
+    @SkipIfDataSourceProperties(ORACLE_JDBC) //TODO investigate if this is still necessary
     public void testXARecovery() throws Exception {
         runTest();
     }
@@ -291,7 +305,7 @@ public class DataSourceTest extends FATServletClient {
     }
 
     @Test
-    @OnlyIfDataSourceProperties(DERBY_EMBEDDED)
+    @OnlyIfDataSourceProperties(DERBY_EMBEDDED) //TODO investigate if this is still necessary
     public void testDataSourceDefGlobalLib() throws Exception {
         runTest(server, dsdfat_global_lib, testName);
     }

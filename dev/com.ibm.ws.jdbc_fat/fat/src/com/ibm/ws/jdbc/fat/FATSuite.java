@@ -20,8 +20,10 @@ import com.ibm.ws.jdbc.fat.tests.DataSourceTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-//               ConfigTest.class,
-               DataSourceTest.class
-//               DataSourceJaasTest.class
+               ConfigTest.class,
+               DataSourceTest.class,
+               DataSourceJaasTest.class
 })
-public class FATSuite {} 
+public class FATSuite {
+	//TODO enable database rotation
+} 

@@ -8,7 +8,7 @@
   <servlet id="Default">
     <servlet-name>JDBC FAT CheckSetup Servlet</servlet-name>
     <display-name>JDBC FAT CheckSetup Servlet</display-name>
-    <servlet-class>web.CheckSetupTestServlet</servlet-class>
+    <servlet-class>setupfat.CheckSetupTestServlet</servlet-class>
     <load-on-startup></load-on-startup>
   </servlet>
 
