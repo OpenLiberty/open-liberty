@@ -15,8 +15,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -55,7 +55,9 @@ public class SessionCacheTimeoutTest extends FATServletClient {
     public static void setUp() throws Exception {
         app = new SessionCacheApp(server, false, "session.cache.infinispan.web", "session.cache.infinispan.web.listener1");
         String rand = UUID.randomUUID().toString();
-        server.setJvmOptions(Arrays.asList("-Dinfinispan.cluster.name=" + rand));
+        Map<String, String> options = server.getJvmOptionsAsMap();
+        options.put("-Dinfinispan.cluster.name", rand);
+        server.setJvmOptions(options);
         server.startServer();
 
         // Access a session before the main test logic to ensure that delays caused by lazy initialization

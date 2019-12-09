@@ -14,8 +14,8 @@ import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.junit.AfterClass;
@@ -53,8 +53,12 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
         appB = new SessionCacheApp(serverB, false, "session.cache.infinispan.web"); // no HttpSessionListeners are registered by this app
         serverB.useSecondaryHTTPPort();
         String rand = UUID.randomUUID().toString();
-        serverA.setJvmOptions(Arrays.asList("-Dinfinispan.cluster.name=" + rand));
-        serverB.setJvmOptions(Arrays.asList("-Dinfinispan.cluster.name=" + rand));
+        Map<String, String> options = serverA.getJvmOptionsAsMap();
+        options.put("-Dinfinispan.cluster.name", rand);
+        serverA.setJvmOptions(options);
+        options = serverB.getJvmOptionsAsMap();
+        options.put("-Dinfinispan.cluster.name", rand);
+        serverB.setJvmOptions(options);
 
         serverA.startServer();
 
