@@ -46,6 +46,34 @@ public class ConversionTest extends AbstractConfigTest {
         assertBadConversion("testBadCharUnicode", raw, char.class);
     }
 
+    @Test
+    public void testConverterCache() {
+        Config config = ConfigProviderResolver.instance().getBuilder().addDefaultSources().withConverter(TestType.class, 100, new TestTypeConverter()).build();
+        String key = "testConverterCache";
+
+        String rawString = "This is the RAW String 1";
+        String expected = rawString + " - 1";
+        System.setProperty(key, rawString);
+
+        TestType value = config.getValue(key, TestType.class);
+        assertEquals(expected, value.toString());
+        //should not be reconverted
+        value = config.getValue(key, TestType.class);
+        assertEquals(expected, value.toString());
+
+        rawString = "This is the RAW String 2";
+        //raw string changed so should now get reconverted
+        expected = rawString + " - 2";
+        System.setProperty(key, rawString);
+
+        value = config.getValue(key, TestType.class);
+        assertEquals(expected, value.toString());
+        //should not be reconverted
+        value = config.getValue(key, TestType.class);
+        assertEquals(expected, value.toString());
+
+    }
+
     public <T> void assertConversion(String key, String rawString, T expected, Class<T> type) {
         System.setProperty(key, rawString);
         Config config = ConfigProviderResolver.instance().getBuilder().addDefaultSources().build();

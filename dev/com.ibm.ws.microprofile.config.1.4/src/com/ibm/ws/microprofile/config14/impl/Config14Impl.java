@@ -14,9 +14,11 @@ import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledExecutorService;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
@@ -26,15 +28,14 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.config.impl.AbstractConfig;
 import com.ibm.ws.microprofile.config.impl.ConversionManager;
-import com.ibm.ws.microprofile.config.impl.SortedSources;
 import com.ibm.ws.microprofile.config.impl.SourcedValueImpl;
+import com.ibm.ws.microprofile.config.interfaces.SortedSources;
 import com.ibm.ws.microprofile.config.interfaces.SourcedValue;
 import com.ibm.ws.microprofile.config.interfaces.WebSphereConfig;
 
 public class Config14Impl extends AbstractConfig implements WebSphereConfig {
 
-    private final SortedSources sources;
-    private final ConversionManager conversionManager;
+    private final Map<String, TypeCache> cache = new ConcurrentHashMap<>();
 
     /**
      * The sources passed in should have already been wrapped up as an unmodifiable copy
@@ -46,20 +47,37 @@ public class Config14Impl extends AbstractConfig implements WebSphereConfig {
      */
     public Config14Impl(ConversionManager conversionManager, SortedSources sources, ScheduledExecutorService executor, long refreshInterval) {
         super(conversionManager, sources);
-        this.sources = sources;
-        this.conversionManager = conversionManager;
     }
 
     /** {@inheritDoc} */
     @Override
     public SourcedValue getSourcedValue(String propertyName, Type propertyType) {
         SourcedValue sourcedValue = null;
-        SourcedValue rawProp = getRawCompositeValue(propertyName);
-        if (rawProp != null) {
-            Object value = this.conversionManager.convert((String) rawProp.getValue(), propertyType);
-            sourcedValue = new SourcedValueImpl(propertyName, value, propertyType, rawProp.getSource());
+        SourcedValue rawValue = getRawValue(propertyName);
+        if (rawValue != null) {
+            sourcedValue = getCachedSourcedValue(rawValue, propertyType);
         }
         return sourcedValue;
+    }
+
+    private SourcedValue getCachedSourcedValue(SourcedValue rawValue, Type propertyType) {
+        SourcedValue value = null;
+        String key = rawValue.getKey();
+        TypeCache typeCache = cache.get(key);
+        if (typeCache == null || !rawValue.equals(typeCache.getRawValue())) {
+            //if there is nothing in the cache or the raw value doesn't match, create a new entry
+            typeCache = new TypeCache(rawValue);
+            cache.put(key, typeCache);
+        }
+        SourcedValue cachedValue = typeCache.getConvertedValues().get(propertyType);
+        if (cachedValue == null) {
+            //if there is no value found for the given type, convert the raw String and add it to the cache
+            Object converted = getConversionManager().convert((String) rawValue.getValue(), propertyType);
+            cachedValue = new SourcedValueImpl(key, converted, propertyType, rawValue.getSource());
+            typeCache.getConvertedValues().put(propertyType, cachedValue);
+        }
+        value = cachedValue;
+        return value;
     }
 
     @Trivial
@@ -79,7 +97,7 @@ public class Config14Impl extends AbstractConfig implements WebSphereConfig {
     public Set<String> getKeySet() {
         HashSet<String> result = new HashSet<>();
 
-        for (ConfigSource source : sources) {
+        for (ConfigSource source : getConfigSources()) {
             Set<String> names = getPropertyNames(source);
             result.addAll(names);
         }
@@ -92,9 +110,9 @@ public class Config14Impl extends AbstractConfig implements WebSphereConfig {
      * @return
      */
     @Trivial
-    private SourcedValue getRawCompositeValue(String key) {
+    private SourcedValue getRawValue(String key) {
         SourcedValue raw = null;
-        for (ConfigSource source : sources) {
+        for (ConfigSource source : getConfigSources()) {
             String value = source.getValue(key);
             if (value != null || getPropertyNames(source).contains(key)) {
                 String sourceID = source.getName();
@@ -115,7 +133,7 @@ public class Config14Impl extends AbstractConfig implements WebSphereConfig {
         Iterator<String> keyItr = keys.iterator();
         while (keyItr.hasNext()) {
             String key = keyItr.next();
-            SourcedValue rawCompositeValue = getRawCompositeValue(key);
+            SourcedValue rawCompositeValue = getRawValue(key);
             if (rawCompositeValue == null) {
                 sb.append("null");
             } else {
