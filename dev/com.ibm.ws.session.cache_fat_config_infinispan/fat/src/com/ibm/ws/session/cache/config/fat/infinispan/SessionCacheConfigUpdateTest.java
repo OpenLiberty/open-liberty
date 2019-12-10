@@ -11,6 +11,7 @@
 package com.ibm.ws.session.cache.config.fat.infinispan;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -61,6 +62,14 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
         server.updateServerConfiguration(savedConfig);
         server.waitForConfigUpdateInLogUsingMark(APP_NAMES, cleanupList);
         cleanupList = EMPTY_RECYCLE_LIST;
+
+        // In addition to starting the application, must also wait for asynchronous web module initialization to complete,
+        // otherwise tests which attempt a configuration update could end up triggering a deactivate and close of the CachingProvider
+        // while the servlet initialization code is still attempting to use the CachingProvider and/or the CacheManager and Caches that it creates.
+        List<String> session = new ArrayList<>();
+        run("getSessionId", session);
+        run("invalidateSession", session);
+
         System.out.println("server configuration restored");
     }
 
@@ -153,11 +162,17 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
         httpSessionCache.setScheduleInvalidationSecondHour(Integer.toString(hour2));
         httpSessionCache.setWriteFrequency("TIME_BASED_WRITE");
         httpSessionCache.setWriteInterval("15s");
-        server.setMarkToEndOfLog();
+        server.setMarkToEndOfLog(); // Only marks messages.log, does not mark the trace file
+        server.setTraceMarkToEndOfDefaultTrace();
         server.updateServerConfiguration(config);
         server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
+        String messageToCheckFor = "doScheduledInvalidation scheduled hours are " + Integer.toString(hour1) + " and " + Integer.toString(hour2);
 
-        TimeUnit.SECONDS.sleep(10); // Due to invalidation thread delay
+        // Monitor trace.log and wait for the message "doScheduledInvalidation scheduled hours are X and Y" before the test should continue
+        // This replaces the TimeUnit.SECONDS.sleep(10) used before
+        assertNotNull("Could not find message \"" + messageToCheckFor
+                      + "\" in the trace.log file.  Has the logging message in com.ibm.ws.session.store.common.BackedHashMap.doScheduledInvalidation() changed?",
+                      server.waitForStringInTraceUsingMark(messageToCheckFor));
 
         ArrayList<String> session = new ArrayList<>();
         String response = run("testSetAttributeWithTimeout&attribute=testScheduleInvalidation&value=si1&maxInactiveInterval=1",
