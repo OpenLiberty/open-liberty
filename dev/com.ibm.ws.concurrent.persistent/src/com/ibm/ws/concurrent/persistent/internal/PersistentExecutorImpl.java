@@ -1320,7 +1320,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
         boolean claimFirstExecution = false;
         long nextExecTime = record.getNextExecutionTime();
         if (config.missedTaskThreshold2 > 0 && config.enableTaskExecution
-            && config.pollInterval > 0 && nextExecTime <= System.currentTimeMillis() + config.pollInterval) {
+            && (config.pollInterval < 0 || nextExecTime <= System.currentTimeMillis() + config.pollInterval)) {
             taskAssignmentInfo = nextExecTime + config.missedTaskThreshold2 * 1000;
             claimFirstExecution = true;
         }
