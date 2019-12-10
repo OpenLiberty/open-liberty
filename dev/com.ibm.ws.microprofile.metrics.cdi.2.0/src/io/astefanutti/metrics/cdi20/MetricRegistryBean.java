@@ -21,7 +21,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package io.astefanutti.metrics.cdi;
+package io.astefanutti.metrics.cdi20;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -56,7 +56,7 @@ public final class MetricRegistryBean implements Bean<MetricRegistryImpl>, Passi
 
     private final InjectionTarget<MetricRegistryImpl> target;
 
-    MetricRegistryBean(BeanManager manager) {
+    public MetricRegistryBean(BeanManager manager) {
         AnnotatedType<MetricRegistryImpl> annotatedType = manager.createAnnotatedType(MetricRegistryImpl.class);
         this.types = annotatedType.getTypeClosure();
         this.target = manager.createInjectionTarget(annotatedType);
