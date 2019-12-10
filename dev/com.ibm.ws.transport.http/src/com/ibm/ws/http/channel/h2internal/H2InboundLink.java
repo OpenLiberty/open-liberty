@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2018 IBM Corporation and others.
+ * Copyright (c) 1997, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -324,7 +324,7 @@ public class H2InboundLink extends HttpInboundLink {
      * Handle an h2c upgrade request
      *
      * @param headers a map of the headers for this request
-     * @param link the initial inbound link
+     * @param link    the initial inbound link
      * @return true if the http2 upgrade was successful
      */
     public boolean handleHTTP2UpgradeRequest(Map<String, String> headers, HttpInboundLink link) {
@@ -657,9 +657,9 @@ public class H2InboundLink extends HttpInboundLink {
                 }
 
                 if ((linkStatus != LINK_STATUS.CLOSING) && (linkStatus != LINK_STATUS.GOAWAY_SENDING)) {
-
                     doRead = true;
                 }
+
             }
 
             if (doRead) {
@@ -1171,8 +1171,21 @@ public class H2InboundLink extends HttpInboundLink {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "close(vc,e): close on link called with exception: " + e);
                 }
+
                 // do the close immediately on this thread
                 connTimeout.run();
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "close(vc,e): initLock count is : " + initLock.getCount());
+                }
+
+                // if we are waiting on connection initialization and an error occurred, release the latch
+                if (0 < initLock.getCount()) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "close(vc,e): wake up the initLock countDownLatch");
+                    }
+                    initLock.countDown();
+                }
             }
         }
     }

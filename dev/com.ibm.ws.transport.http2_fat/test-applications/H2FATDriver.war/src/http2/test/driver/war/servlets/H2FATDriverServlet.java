@@ -3419,7 +3419,12 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.sendUpgradeHeader(HEADERS_ONLY_URI);
         h2Client.sendClientPreface("Bad-PRI");
 
-        blockUntilConnectionIsDone.await();
+        // The successful completion of this test is a timeout.
+        // To avoid a timing issue where the client waits for 30 seconds to call it quits, and the server waits for
+        // 30 seconds on server shutdown, I'm reducing the client timeout to 10 seconds, as that should be sufficient
+        // time for connection set up.
+        blockUntilConnectionIsDone.await(10000, TimeUnit.MILLISECONDS);
+
         Assert.assertTrue(testName + " received the server's preface. wasServerPrefaceReceived() = true", !h2Client.wasServerPrefaceReceived());
         //handleErrors(h2Client, testName);
     }
