@@ -10,3 +10,4 @@ IBM-Process-Types: client, \
  bin/tools/ws-client.jar
 kind=ga
 edition=base
+WLP-Activation-Type: parallel
