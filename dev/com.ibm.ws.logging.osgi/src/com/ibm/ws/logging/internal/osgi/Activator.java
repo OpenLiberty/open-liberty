@@ -85,9 +85,9 @@ public class Activator implements BundleActivator {
         // The LogService comes from the framework and is always there;
         // We also never remove our listener because that will be done automatically when 
         // we are stopped.
-        LogReaderService logReader = context.getService(context.getServiceReference(ExtendedLogReaderService.class));
-        logReader.addLogListener(new TrOSGiLogForwarder());
-
+        ExtendedLogReaderService logReader = context.getService(context.getServiceReference(ExtendedLogReaderService.class));
+        TrOSGiLogForwarder logForwarder = new TrOSGiLogForwarder();
+        logReader.addLogListener(logForwarder, logForwarder);
     }
 
     /**
