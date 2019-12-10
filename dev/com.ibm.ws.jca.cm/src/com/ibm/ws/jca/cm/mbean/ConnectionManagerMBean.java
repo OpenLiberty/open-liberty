@@ -89,11 +89,11 @@ public interface ConnectionManagerMBean {
      * this Connection Manager.
      *
      * @param doImmediately The priority to be used to purge the connection pool.
-     *            Priority may be <code>"immediate"</code>, <code>"abort"</code> or <code>null</code>.
-     *            Immediate sets the total connection count to 0 and purges the pool
-     *            as quickly as possible but waits for transactions to complete.
-     *            Abort purges the pool by aborting connections without waiting for transactions to complete.
-     *            The default behavior if no value is specified is to purge the pool with normal priority.
+     *                          Priority may be <code>"immediate"</code>, <code>"abort"</code> or <code>null</code>.
+     *                          Immediate sets the total connection count to 0 and purges the pool
+     *                          as quickly as possible but waits for transactions to complete.
+     *                          Abort purges the pool by aborting connections without waiting for transactions to complete.
+     *                          The default behavior if no value is specified is to purge the pool with normal priority.
      * @throws MBeanException
      */
     public void purgePoolContents(String doImmediately) throws MBeanException;
@@ -123,7 +123,7 @@ public interface ConnectionManagerMBean {
      * Displays the maximum size of the connection pool associated with
      * this Connection Manager as a human readable string.
      *
-     * @return A non-localized string displaying the maximum size of the connection pool
+     * @return A long that is maximum size of the connection pool
      *
      */
     public long getMaxSize();
@@ -132,7 +132,7 @@ public interface ConnectionManagerMBean {
      * Displays the size of the connection pool associated with
      * this Connection Manager as a human readable string.
      *
-     * @return A non-localized string displaying the size of the connection pool
+     * @return A long that is the size of the connection pool
      *
      */
     public long getSize();
@@ -141,7 +141,7 @@ public interface ConnectionManagerMBean {
      * Displays the free space of the connection pool associated with
      * this Connection Manager as a human readable string.
      *
-     * @return A non-localized string displaying the free space of the connection pool
+     * @return A long that is the free space of the connection pool
      *
      */
     public long getAvailable();

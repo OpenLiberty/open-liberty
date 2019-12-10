@@ -297,7 +297,7 @@ public class PoolManagerMBeanImpl extends StandardMBean implements ConnectionMan
         buf.append("size=");
         buf.append(getSize());
         buf.append(nl);
-        int numUnsharedConnections = 0, numSharedConnections = 0, numFreeConnections = 0;;
+        int numUnsharedConnections = 0, numSharedConnections = 0, numFreeConnections = 0;
         _pm.mcToMCWMapWrite.lock();
         try {
             int mcToMCWSize = _pm.mcToMCWMap.size();
