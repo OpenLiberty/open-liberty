@@ -526,6 +526,7 @@ public class FeatureUtility {
     public static class FeatureUtilityBuilder {
         File fromDir;
         Collection<String> featuresToInstall;
+        FeatureBundle featureBundle;
         File esaFile;
         boolean noCache;
 
@@ -543,9 +544,14 @@ public class FeatureUtility {
             this.noCache = noCache;
             return this;
         }
-
+        // TODO deprecate this
         public FeatureUtilityBuilder setFeaturesToInstall(Collection<String> featuresToInstall) {
             this.featuresToInstall = featuresToInstall;
+            return this;
+        }
+
+        public FeatureUtilityBuilder setFeatureBundle(FeatureBundle featureBundle){
+            this.featureBundle = featureBundle;
             return this;
         }
 
@@ -554,47 +560,6 @@ public class FeatureUtility {
         }
 
     }
-
-    public static List<String> getMissingArtifactsFromFolder(List<String> artifacts, String location, boolean isShortName) throws IOException, InstallException{
-        List<String> result = new ArrayList<String>();
-
-        for (String id: artifacts) {
-            Path featurePath;
-            if (isShortName) {
-                String groupId = OPEN_LIBERTY_PRODUCT_ID + ".features";
-                File groupDir = new File(location, groupId.replace(".", "/"));
-                if (!groupDir.exists()) {
-                    result.add(id);
-                    continue;
-                }
-                String featureEsa = id + "-" + openLibertyVersion + ".esa";
-                featurePath = Paths.get(groupDir.getAbsolutePath().toString(), id, openLibertyVersion, featureEsa);
-            } else {
-                String groupId = id.split(":")[0];
-                String featureName = id.split(":")[1];
-                File groupDir = new File(location, groupId.replace(".", "/"));
-                if (!groupDir.exists()) {
-                    result.add(id);
-                    continue;
-                }
-                String featureEsa = featureName + "-" + openLibertyVersion + ".esa";
-                featurePath = Paths.get(groupDir.getAbsolutePath().toString(), featureName, openLibertyVersion, featureEsa);
-            }
-            if (!Files.isRegularFile(featurePath)) {
-                result.add(id);
-            }
-        }
-        return result;
-    }
-
-    public List<String> getMavenCoords(List<String> artifactShortNames) {
-        List<String> result = new ArrayList<String>();
-        for (String shortName: artifactShortNames) {
-            result.add(OPEN_LIBERTY_PRODUCT_ID + ".feature:" + shortName + ":" + openLibertyVersion);
-        }
-        return result;
-    }
-    
 
 
 }

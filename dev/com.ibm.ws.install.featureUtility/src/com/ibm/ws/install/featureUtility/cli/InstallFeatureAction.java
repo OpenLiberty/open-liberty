@@ -11,6 +11,7 @@
 package com.ibm.ws.install.featureUtility.cli;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,6 +26,7 @@ import com.ibm.ws.install.InstallException;
 import com.ibm.ws.install.InstallKernel;
 import com.ibm.ws.install.InstallKernelFactory;
 import com.ibm.ws.install.InstallKernelInteractive;
+import com.ibm.ws.install.featureUtility.FeatureBundle;
 import com.ibm.ws.install.featureUtility.FeatureUtility;
 import com.ibm.ws.install.featureUtility.FeatureUtilityExecutor;
 import com.ibm.ws.install.internal.InstallKernelImpl;
@@ -48,6 +50,7 @@ public class InstallFeatureAction implements ActionHandler {
         private Logger logger;
         private List<String> argList;
         private List<String> featureNames;
+        private FeatureBundle featureBundle;
         private String fromDir;
         private String toDir;
         private Boolean noCache;
@@ -99,20 +102,36 @@ public class InstallFeatureAction implements ActionHandler {
 
                 progressBar.setMethodMap(methodMap);
 
-                String arg = argList.get(0);
                 try {
-                	Collection<String> assetIds = new HashSet<String>(argList);
-                	checkAssetsNotInstalled(new ArrayList<String>(assetIds));
-                	return assetInstallInit(assetIds);
+                        featureBundle = new FeatureBundle();
+                        featureBundle.parseArgs(argList);
                 } catch (InstallException e) {
-                	logger.log(Level.SEVERE, e.getMessage(), e);
-                    return FeatureUtilityExecutor.returnCode(e.getRc());
-                } catch (Throwable e) {
-                	logger.log(Level.SEVERE, e.getMessage(), e);
-                	return FeatureUtilityExecutor.returnCode(InstallException.IO_FAILURE);
+                        logger.log(Level.SEVERE, e.getMessage(), e);
+                        return FeatureUtilityExecutor.returnCode(e.getRc());
+                } catch (IOException e) {
+                        logger.log(Level.SEVERE, e.getMessage(), e);
+                	    return FeatureUtilityExecutor.returnCode(InstallException.IO_FAILURE);
                 }
 
+
+                // check if the feature names have been installed already
+
+
+//                String arg = argList.get(0);
+//                try {
+//                	Collection<String> assetIds = new HashSet<String>(argList);
+//                	checkAssetsNotInstalled(new ArrayList<String>(assetIds));
+//                	return assetInstallInit(assetIds);
+//                } catch (InstallException e) {
+//                	logger.log(Level.SEVERE, e.getMessage(), e);
+//                    return FeatureUtilityExecutor.returnCode(e.getRc());
+//                } catch (Throwable e) {
+//                	logger.log(Level.SEVERE, e.getMessage(), e);
+//                	return FeatureUtilityExecutor.returnCode(InstallException.IO_FAILURE);
+//                }
+                return null;
         }
+
         private ReturnCode validateFromDir(String fromDir) {
                 if (fromDir == null) {
                         return ReturnCode.OK;
