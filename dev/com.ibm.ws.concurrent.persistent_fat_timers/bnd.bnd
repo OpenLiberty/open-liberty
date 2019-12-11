@@ -25,6 +25,7 @@ fat.test.databases: true
 # fat.test.use.remote.docker: true
 
 -buildpath: \
+	fattest.databases;version=latest,\
 	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
 	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
@@ -33,10 +34,5 @@ fat.test.databases: true
 	com.ibm.websphere.javaee.ejb.3.1,\
 	org.testcontainers:database-commons;version=1.12.3,\
 	org.testcontainers:jdbc;version=1.12.3,\
-	org.testcontainers:testcontainers;version=1.12.3,\
-	org.testcontainers:db2;version=1.12.3,\
-	org.testcontainers:postgresql;version=1.12.3,\
-	org.testcontainers:mssqlserver;version=1.12.3,\
-	org.testcontainers:oracle-xe;version=1.12.3,\
-	org.rnorth.duct-tape:duct-tape;version=1.0.7,\
-	org.slf4j:slf4j-api;version=1.7.7
+	org.testcontainers:testcontainers;version=1.12.3
+	

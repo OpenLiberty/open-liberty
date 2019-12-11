@@ -21,9 +21,6 @@ Bundle-Description: FAT infrastructure; version=${bVersion}
 
 Export-Package: \
 	componenttest.topology.database.container;version=1.0.16
-	
-Include-Resource: \
-  META-INF=resources/META-INF
 
 test.project: true
 
