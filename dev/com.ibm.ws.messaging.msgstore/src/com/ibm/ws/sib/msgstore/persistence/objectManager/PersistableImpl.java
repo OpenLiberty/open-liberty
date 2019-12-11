@@ -691,7 +691,7 @@ public class PersistableImpl implements Persistable, Tuple, XmlConstants
         
         synchronized (metaData) {
             // If the Persistable has been deleted, do not attempt to update the RedeliveryCount.  
-            if ( metaData.getState() == ManagedObject.stateDeleted ) {
+            if (metaData.getState() == ManagedObject.stateToBeDeleted | metaData.getState() == ManagedObject.stateDeleted ) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
                     SibTr.exit(this, tc, "updateMetaDataOnly", "MetaData deleted, return without update. MetaData=" + metaData);
                 return;
@@ -779,7 +779,9 @@ public class PersistableImpl implements Persistable, Tuple, XmlConstants
         }
 
         // Finally, we need to delete the item in the object store
-        tran.delete(metaData);
+        synchronized (metaData) {
+            tran.delete(metaData);
+        }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(this, tc, "removeFromStore");
