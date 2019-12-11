@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=com.ibm.websphere.appserver.beanValidationCDI-2.0
+symbolicName=com.ibm.websphere.appserver.beanValidation2.0-cdi2.0
 visibility=private
 IBM-App-ForceRestart: install, uninstall
 IBM-Provision-Capability: \

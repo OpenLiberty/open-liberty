@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=com.ibm.websphere.appserver.beanValidationCDI-1.0
+symbolicName=com.ibm.websphere.appserver.beanValidation1.1-cdi1.2
 IBM-App-ForceRestart: install, \
  uninstall
 IBM-Provision-Capability: \
