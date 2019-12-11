@@ -21,5 +21,7 @@
         <iiopsOptions  iiopsPort="${bvt.prop.IIOP.secure}" sslRef="defaultSSLConfig"/>
     </iiopEndpoint>
 
+    <logging traceSpecification="com.ibm.ws.runtime.update.*"/>
+
     <wasJmsEndpoint host="localhost" wasJmsPort="${bvt.prop.jms}" wasJmsSSLPort="${bvt.prop.jms.ssl}" />
 </server>
