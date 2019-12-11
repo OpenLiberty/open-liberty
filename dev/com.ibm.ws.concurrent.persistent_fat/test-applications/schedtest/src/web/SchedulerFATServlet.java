@@ -87,7 +87,7 @@ public class SchedulerFATServlet extends HttpServlet {
     /**
      * Indicates if the database for the persistent executor is Derby.
      */
-    private boolean isDerby;
+    private static final boolean isDerby = System.getProperty("fat.bucket.db.type", "Derby").compareToIgnoreCase("Derby") == 0;
 
     @Resource(lookup = "concurrent/myScheduler")
     private PersistentExecutor scheduler;
@@ -190,19 +190,6 @@ public class SchedulerFATServlet extends HttpServlet {
                 }
             } finally {
                 con.close();
-            }
-
-            tran.begin();
-            try {
-                con = schedDB.getConnection();
-                try {
-                    String dbProduct = con.getMetaData().getDatabaseProductName();
-                    isDerby = dbProduct != null && dbProduct.toLowerCase().contains("apache derby");
-                } finally {
-                    con.close();
-                }
-            } finally {
-                tran.commit();
             }
         } catch (Exception x) {
             throw new ServletException(x);
