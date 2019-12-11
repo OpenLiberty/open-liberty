@@ -480,7 +480,8 @@ public class BaseTraceService implements TrService {
             isServerConfigSetup = false;
 
         omitFieldsMap.clear(); //refresh for each server configuration update
-        if (value == null || value == "" || value.isEmpty()) { //reset all fields to original when server config has ""
+
+        if (isServerConfigUpdate) {
             AccessLogData.resetOmitFields();
             FFDCData.resetOmitFields();
             LogTraceData.resetOmitFieldsMessage();
@@ -492,6 +493,9 @@ public class BaseTraceService implements TrService {
             LogTraceData.resetJsonLoggingNameAliasesMessage();
             LogTraceData.resetJsonLoggingNameAliasesTrace();
             AuditData.resetJsonLoggingNameAliases();
+        }
+
+        if (value == null || value == "" || value.isEmpty()) { //reset all fields to original when server config has ""
             //if no property is set, return
             return;
         }
@@ -513,7 +517,7 @@ public class BaseTraceService implements TrService {
         String[] keyValuePairs = value.split(","); //split the string to create key-value pairs
         for (String pair : keyValuePairs) //iterate over the pairs
         {
-            String[] entry = pair.split(":"); //split the pairs to get key and value
+            String[] entry = pair.trim().split(":"); //split the pairs to get key and value
             entry[0] = entry[0].trim();
 
             if (pair.trim().endsWith(":")) { //FIND FIELDS THAT NEED TO BE OMITTED
