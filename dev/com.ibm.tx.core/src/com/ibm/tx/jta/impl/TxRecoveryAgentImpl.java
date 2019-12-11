@@ -1,7 +1,7 @@
 package com.ibm.tx.jta.impl;
 
 /*******************************************************************************
- * Copyright (c) 2002, 2019 IBM Corporation and others.
+ * Copyright (c) 2002, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import javax.transaction.SystemException;
-
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
@@ -43,11 +42,12 @@ import com.ibm.ws.recoverylog.spi.CustomLogProperties;
 import com.ibm.ws.recoverylog.spi.FailureScope;
 import com.ibm.ws.recoverylog.spi.FileFailureScope;
 import com.ibm.ws.recoverylog.spi.FileLogProperties;
+import com.ibm.ws.recoverylog.spi.HeartbeatLog;
+import com.ibm.ws.recoverylog.spi.HeartbeatLogManager;
 import com.ibm.ws.recoverylog.spi.InternalLogException;
 import com.ibm.ws.recoverylog.spi.InvalidFailureScopeException;
 import com.ibm.ws.recoverylog.spi.InvalidLogPropertiesException;
 import com.ibm.ws.recoverylog.spi.LeaseInfo;
-import com.ibm.ws.recoverylog.spi.LivingRecoveryLog;
 import com.ibm.ws.recoverylog.spi.LogProperties;
 import com.ibm.ws.recoverylog.spi.PeerLeaseTable;
 import com.ibm.ws.recoverylog.spi.RecoveryAgent;
@@ -82,8 +82,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
 
     private ClassLoadingService clService;
 
-    protected TxRecoveryAgentImpl() {
-    }
+    protected TxRecoveryAgentImpl() {}
 
     public TxRecoveryAgentImpl(RecoveryDirector rd) throws Exception {
         _recoveryDirector = rd;
@@ -122,8 +121,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
     }
 
     @Override
-    public void agentReportedFailure(int clientId, FailureScope failureScope) {
-    }
+    public void agentReportedFailure(int clientId, FailureScope failureScope) {}
 
     @Override
     public int clientIdentifier() {
@@ -520,8 +518,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
     }
 
     @Override
-    public void prepareForRecovery(FailureScope failureScope) {
-    }
+    public void prepareForRecovery(FailureScope failureScope) {}
 
     /**
      * @param fs
@@ -592,7 +589,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
         LeaseTimeoutManager.stopTimeout();
 
         // Stop HADB Log Availability alarm popping when server is on its way down
-        HADBLogAvailabilityManager.stopTimeout();
+        HeartbeatLogManager.stopTimeout();
 
         // The entire server is shutting down. All recovery/peer recovery processing must be stopped. Sping
         // through all known failure scope controllers (which includes the local failure scope if we started
@@ -902,77 +899,6 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
         return fsc;
     }
 
-    @Override
-    public void startHADBLogAvailabilityHeartbeat(RecoveryLog customPartnerLog) {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "startHADBLogAvailabilityHeartbeat", customPartnerLog);
-        ConfigurationProvider cp = ConfigurationProviderManager.getConfigurationProvider();
-        int peerLockTimeBetweenHeartbeats = cp.getTimeBetweenHeartbeats();
-        HADBLogAvailabilityManager.setTimeout(this, customPartnerLog, peerLockTimeBetweenHeartbeats);
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "startHADBLogAvailabilityHeartbeat");
-    }
-
-    /**
-     * Update HADBTimestamp if appropriate
-     *
-     */
-    @Override
-    public void updateHADBTimestamp(RecoveryLog customPartnerLog) {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "updateHADBTimestamp", customPartnerLog);
-        if (customPartnerLog != null) {
-            if (customPartnerLog instanceof LivingRecoveryLog) {
-                LivingRecoveryLog livingRecoveryLog = (LivingRecoveryLog) customPartnerLog;
-                livingRecoveryLog.heartBeat();
-            }
-
-        }
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "updateHADBTimestamp");
-    }
-
-    /**
-     * Claim Local HA DB Logs if appropriate.
-     *
-     */
-    @Override
-    public boolean claimLocalHADBLogs(RecoveryLog customPartnerLog) {
-        boolean logIsStale = false;
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "claimLocalHADBLogs", customPartnerLog);
-
-        if (customPartnerLog != null && customPartnerLog instanceof LivingRecoveryLog) {
-            LivingRecoveryLog livingRecoveryLog = (LivingRecoveryLog) customPartnerLog;
-            logIsStale = livingRecoveryLog.claimLocalRecoveryLogs();
-        }
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "claimLocalHADBLogs", logIsStale);
-        return logIsStale;
-    }
-
-    /**
-     * Claim a Peer server's HA DB Logs if appropriate.
-     *
-     */
-    @Override
-    public boolean claimPeerHADBLogs(RecoveryLog customPartnerLog) {
-        boolean logIsStale = false;
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "claimPeerHADBLogs", customPartnerLog);
-
-        if (customPartnerLog != null && customPartnerLog instanceof LivingRecoveryLog) {
-            LivingRecoveryLog livingRecoveryLog = (LivingRecoveryLog) customPartnerLog;
-            logIsStale = livingRecoveryLog.claimPeerRecoveryLogs();
-        }
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "claimPeerHADBLogs", logIsStale);
-        return logIsStale;
-    }
-
     /**
      * Given a FailureScope, return a reference to the corresponding custom partner recovery log.
      *
@@ -980,16 +906,17 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
      * @return
      */
     @Override
-    public RecoveryLog getCustomPartnerLog(FailureScope fs) {
+    public HeartbeatLog getHeartbeatLog(FailureScope fs) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "getCustomPartnerLog", fs);
+            Tr.entry(tc, "getHeartbeatLog", fs);
         RecoveryLog partnerLog = null;
+        HeartbeatLog heartbeatLog = null;
         String recoveredServerIdentity = null;
         try {
             recoveredServerIdentity = fs.serverName();
 
             if (tc.isDebugEnabled())
-                Tr.debug(tc, "getCustomPartnerLog for server -  ", recoveredServerIdentity);
+                Tr.debug(tc, "getHeartbeatLog for server -  ", recoveredServerIdentity);
 
             // Determine whether we are dealing with a custom log configuration (e.g. WXS or JDBC)
             boolean isCustom = false;
@@ -1037,16 +964,32 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
 
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "Custom PartnerLog is set - ", partnerLog);
+
+                        if (partnerLog instanceof HeartbeatLog) {
+                            if (tc.isDebugEnabled())
+                                Tr.debug(tc, "The log is a Heartbeatlog");
+                            heartbeatLog = (HeartbeatLog) partnerLog;
+                            // Configure the log
+                            ConfigurationProvider cp = ConfigurationProviderManager.getConfigurationProvider();
+                            int peerLockTimeBeforeStale = cp.getPeerTimeBeforeStale();
+                            if (tc.isEntryEnabled())
+                                Tr.debug(tc, "peerLockTimeBeforeStale - ", peerLockTimeBeforeStale);
+                            heartbeatLog.setTimeBeforeLogStale(peerLockTimeBeforeStale);
+                            int timeBetweenHeartbeats = cp.getTimeBetweenHeartbeats();
+                            if (tc.isEntryEnabled())
+                                Tr.debug(tc, "timeBetweenHeartbeats - ", timeBetweenHeartbeats);
+                            heartbeatLog.setTimeBetweenHeartbeats(timeBetweenHeartbeats);
+                        }
                     }
                 }
             }
         } catch (Exception e) {
             if (tc.isEntryEnabled())
-                Tr.exit(tc, "getCustomPartnerLog", e);
+                Tr.exit(tc, "getHeartbeatLog", e);
         }
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "getCustomPartnerLog", partnerLog);
-        return partnerLog;
+            Tr.exit(tc, "getHeartbeatLog", heartbeatLog);
+        return heartbeatLog;
     }
 
     /*
@@ -1055,45 +998,13 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
      * @see com.ibm.ws.recoverylog.spi.RecoveryAgent#enableHADBPeerLocking()
      */
     @Override
-    public boolean enableHADBPeerLocking() {
+    public boolean isDBTXLogPeerLocking() {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "enableHADBPeerLocking");
+            Tr.entry(tc, "isDBTXLogPeerLocking");
         ConfigurationProvider cp = ConfigurationProviderManager.getConfigurationProvider();
         boolean enableLocking = cp.enableHADBPeerLocking();
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "enableHADBPeerLocking", enableLocking);
+            Tr.exit(tc, "isDBTXLogPeerLocking", enableLocking);
         return enableLocking;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.recoverylog.spi.RecoveryAgent#getPeerTimeBeforeStale()
-     */
-    @Override
-    public int getPeerTimeBeforeStale() {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "getPeerTimeBeforeStale");
-        ConfigurationProvider cp = ConfigurationProviderManager.getConfigurationProvider();
-        int peerLockTimeBeforeStale = cp.getPeerTimeBeforeStale();
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "getPeerTimeBeforeStale", peerLockTimeBeforeStale);
-        return peerLockTimeBeforeStale;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.recoverylog.spi.RecoveryAgent#getLocalTimeBeforeStale()
-     */
-    @Override
-    public int getLocalTimeBeforeStale() {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "getLocalTimeBeforeStale");
-        ConfigurationProvider cp = ConfigurationProviderManager.getConfigurationProvider();
-        int localLockTimeBeforeStale = cp.getLocalTimeBeforeStale();
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "getLocalTimeBeforeStale", localLockTimeBeforeStale);
-        return localLockTimeBeforeStale;
     }
 }

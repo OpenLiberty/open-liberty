@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2019 IBM Corporation and others.
+ * Copyright (c) 1997, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -229,63 +229,18 @@ public interface RecoveryAgent {
     public boolean claimPeerLeaseForRecovery(String recoveryIdentityToRecover, String myRecoveryIdentity, LeaseInfo leaseInfo) throws Exception;
 
     /**
-     * Returns a flag to indicate if the client wants to enable the
-     * HADB peer server locking scheme.
+     * Returns a flag to indicate if the HADB peer server locking
+     * scheme is enabled.
      *
      * by default, HADB locking is DISABLED.
      *
      * @return boolean
      */
-    public boolean enableHADBPeerLocking();
+    public boolean isDBTXLogPeerLocking();
 
     /**
-     * Retrieves the configured length of time before a peer log is deemed to be stale when the peer locking scheme is enabled for the Tran recovery logs that are stored in a
-     * database.
-     *
-     * @return
+     * Retrieve reference to a Recovery Log that is stored in an
+     * RDBMS and supports heartbeating.
      */
-    public int getPeerTimeBeforeStale();
-
-    /**
-     * Retrieves the configured length of time before a local log is deemed to be stale when the peer locking scheme is enabled for the Tran recovery logs that are stored in a
-     * database.
-     *
-     * @return
-     */
-    public int getLocalTimeBeforeStale();
-
-    /**
-     * Uses the WAS alarm mechanism to spawn a thread to regularly update a timestamp on a Transaction Recovery Log that is
-     * stored in an RDBMS in an HA environment.
-     */
-    public void startHADBLogAvailabilityHeartbeat(RecoveryLog customPartnerLog);
-
-    /**
-     * Update a timestamp on a Transaction Recovery Log that is stored in an RDBMS in an HA environment.
-     */
-    public void updateHADBTimestamp(RecoveryLog customPartnerLog);
-
-    /**
-     * Retrieve reference to a Transaction Recovery Partner Log that
-     * is stored in an RDBMS in an HA environment.
-     */
-    public RecoveryLog getCustomPartnerLog(FailureScope fs);
-
-    /**
-     * Check the ownership and the currency of the timestamp on the Transaction Recovery Log that is stored in an RDBMS in an HA environment
-     * for the local server in order to determine which server currently owns it, whether it has gone stale and whether it can therefore be claimed.
-     *
-     * @param failureScope
-     * @return
-     */
-    public boolean claimLocalHADBLogs(RecoveryLog customPartnerLog);
-
-    /**
-     * Check the ownership and the currency of the timestamp on a Transaction Recovery Log that is stored in an RDBMS in an HA environment
-     * for a peer server in oreder to determine which server currently owns it, whether it has gone stale and whether it can therefore be claimed.
-     *
-     * @param failureScope
-     * @return
-     */
-    public boolean claimPeerHADBLogs(RecoveryLog customPartnerLog);
+    public HeartbeatLog getHeartbeatLog(FailureScope fs);
 }
