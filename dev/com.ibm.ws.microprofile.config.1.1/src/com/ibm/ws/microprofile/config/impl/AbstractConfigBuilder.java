@@ -26,6 +26,7 @@ import com.ibm.ws.microprofile.config.converters.DefaultConverters;
 import com.ibm.ws.microprofile.config.converters.PriorityConverterMap;
 import com.ibm.ws.microprofile.config.converters.UserConverter;
 import com.ibm.ws.microprofile.config.interfaces.ConfigConstants;
+import com.ibm.ws.microprofile.config.interfaces.SortedSources;
 import com.ibm.ws.microprofile.config.interfaces.WebSphereConfig;
 import com.ibm.ws.microprofile.config.sources.DefaultSources;
 
@@ -161,7 +162,7 @@ public abstract class AbstractConfigBuilder implements ConfigBuilder {
     /////////////////////////////////////////////
 
     protected void addUserConverter(UserConverter<?> userConverter) {
-        userConverters.addConverter(userConverter);
+        this.userConverters.addConverter(userConverter);
     }
 
     /**
@@ -184,7 +185,7 @@ public abstract class AbstractConfigBuilder implements ConfigBuilder {
      * @return sources as a sorted set
      */
     protected SortedSources getSources() {
-        SortedSources sources = new SortedSources(getUserSources());
+        SortedSources sources = new SortedSourcesImpl(getUserSources());
         if (addDefaultSourcesFlag()) {
             sources.addAll(DefaultSources.getDefaultSources(getClassLoader()));
         }
@@ -236,7 +237,7 @@ public abstract class AbstractConfigBuilder implements ConfigBuilder {
             allConverters.addAll(DefaultConverters.getDiscoveredConverters(getClassLoader()));
         }
         //finally add the programatically added converters
-        allConverters.addAll(userConverters);
+        allConverters.addAll(this.userConverters);
 
         allConverters.setUnmodifiable();
 
@@ -255,30 +256,25 @@ public abstract class AbstractConfigBuilder implements ConfigBuilder {
      * @return the executor
      */
     protected ScheduledExecutorService getScheduledExecutorService() {
-        return executor;
+        return this.executor;
     }
 
     protected long getRefreshInterval() {
         long refreshInterval = ConfigConstants.DEFAULT_DYNAMIC_REFRESH_INTERVAL;
 
         String refreshProp = getRefreshRateSystemProperty();
-        if (refreshProp != null && !"".equals(refreshProp)) {
+        if ((refreshProp != null) && !"".equals(refreshProp)) {
             refreshInterval = Long.parseLong(refreshProp);
         }
 
-        if (refreshInterval > 0 && refreshInterval < ConfigConstants.MINIMUM_DYNAMIC_REFRESH_INTERVAL) {
+        if ((refreshInterval > 0) && (refreshInterval < ConfigConstants.MINIMUM_DYNAMIC_REFRESH_INTERVAL)) {
             refreshInterval = ConfigConstants.MINIMUM_DYNAMIC_REFRESH_INTERVAL;
         }
         return refreshInterval;
     }
 
     private static String getRefreshRateSystemProperty() {
-        String prop = AccessController.doPrivileged(new PrivilegedAction<String>() {
-            @Override
-            public String run() {
-                return System.getProperty(ConfigConstants.DYNAMIC_REFRESH_INTERVAL_PROP_NAME);
-            }
-        });
+        String prop = AccessController.doPrivileged((PrivilegedAction<String>) () -> System.getProperty(ConfigConstants.DYNAMIC_REFRESH_INTERVAL_PROP_NAME));
         return prop;
     }
 
@@ -297,7 +293,7 @@ public abstract class AbstractConfigBuilder implements ConfigBuilder {
      * @return
      */
     protected ClassLoader getClassLoader() {
-        return classloader;
+        return this.classloader;
     }
 
     protected ConversionManager getConversionManager(PriorityConverterMap converters, ClassLoader classLoader) {

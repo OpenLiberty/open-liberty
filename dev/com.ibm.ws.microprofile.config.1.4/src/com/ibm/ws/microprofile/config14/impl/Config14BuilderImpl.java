@@ -18,7 +18,7 @@ import org.eclipse.microprofile.config.spi.ConfigSource;
 
 import com.ibm.ws.microprofile.config.converters.PriorityConverterMap;
 import com.ibm.ws.microprofile.config.impl.ConversionManager;
-import com.ibm.ws.microprofile.config.impl.SortedSources;
+import com.ibm.ws.microprofile.config.interfaces.SortedSources;
 import com.ibm.ws.microprofile.config.interfaces.WebSphereConfig;
 import com.ibm.ws.microprofile.config13.impl.Config13BuilderImpl;
 import com.ibm.ws.microprofile.config14.converters.Config14DefaultConverters;
