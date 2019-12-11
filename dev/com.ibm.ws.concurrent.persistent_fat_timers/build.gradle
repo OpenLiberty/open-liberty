@@ -10,7 +10,7 @@
  *******************************************************************************/
 
 addRequiredLibraries {
-	dependsOn addJdbcDrivers
-	dependsOn addDatabaseRotationDrivers
-	dependsOn addFattestDatabases
+	dependsOn copyJdbcDrivers
+	dependsOn copyDatabaseRotationDrivers
+	dependsOn copyFattestDatabases
 }

@@ -81,7 +81,7 @@ task addDerby(type: Copy) {
   rename 'derby-.*.jar', 'derby.jar'
 }
 
-task addJdbcDrivers(type: Copy) {
+task copyJdbcDrivers(type: Copy) {
   shouldRunAfter jar
   from configurations.jdbcDrivers
   into new File(autoFvtDir, 'publish/shared/resources/jdbc')
@@ -92,17 +92,22 @@ task addJdbcDrivers(type: Copy) {
   rename 'ojdbc8_g.*.jar', 'ojdbc8_g.jar'
 }
 
-task addDatabaseRotationDrivers(type: Copy) {
+task copyDatabaseRotationDrivers(type: Copy) {
   shouldRunAfter jar
   from configurations.databaseRotationDrivers
   into new File(autoFvtDir, 'lib')
 }
 
-task addFattestDatabases(type: Copy) {
+task copyFattestDatabases {
   shouldRunAfter jar
-  from new File(project(':fattest.databases').buildDir, '/libs')
-  include 'fattest*.*'
-  into new File(autoFvtDir, 'lib')
+  
+  doLast{
+    copy {
+        from project(':fattest.databases').buildDir
+        include 'fattest*.*'
+        into new File(autoFvtDir, 'lib')
+    }
+  }
 }
 
 task copyFeatureBundles {
