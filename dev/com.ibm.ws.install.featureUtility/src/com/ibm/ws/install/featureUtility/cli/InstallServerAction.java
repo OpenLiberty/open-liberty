@@ -25,6 +25,7 @@ import java.util.logging.Logger;
 import com.ibm.ws.install.InstallException;
 import com.ibm.ws.install.InstallKernelFactory;
 import com.ibm.ws.install.InstallKernelInteractive;
+import com.ibm.ws.install.featureUtility.FeatureBundle;
 import com.ibm.ws.install.featureUtility.FeatureUtility;
 import com.ibm.ws.install.featureUtility.FeatureUtilityExecutor;
 import com.ibm.ws.install.internal.InstallLogUtils;
@@ -54,6 +55,7 @@ public class InstallServerAction implements ActionHandler {
         private String toDir;
         private Boolean noCache;
         private ProgressBar progressBar;
+        private FeatureBundle featureBundle;
 
 
         @Override public ExitCode handleTask(PrintStream stdout, PrintStream stderr, Arguments args) {
@@ -61,7 +63,18 @@ public class InstallServerAction implements ActionHandler {
                         FeatureAction.help.handleTask(new ArgumentsImpl(new String[] { "help", FeatureAction.getEnum(args.getAction()).toString() }));
                         return ReturnCode.BAD_ARGUMENT;
                 }
-                ExitCode rc = initialize(args);
+                ExitCode rc = null;
+                try {
+                        rc = initialize(args);
+                } catch (IOException e) {
+                        logger.log(Level.SEVERE,
+                                InstallLogUtils.Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_TOOL_DIRECTORY_NOT_EXISTS", fromDir));
+                        return FeatureUtilityExecutor.returnCode(InstallException.IO_FAILURE);
+                } catch (InstallException e) {
+                        logger.log(Level.SEVERE,
+                                InstallLogUtils.Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_TOOL_DIRECTORY_NOT_EXISTS", fromDir));
+                        return FeatureUtilityExecutor.returnCode(e.getRc());
+                }
                 if (!!!rc.equals(ReturnCode.OK)) {
                         return rc;
                 }
@@ -72,7 +85,7 @@ public class InstallServerAction implements ActionHandler {
         }
 
 
-        private ExitCode initialize(Arguments args){
+        private ExitCode initialize(Arguments args) throws IOException, InstallException {
                 ExitCode rc = ReturnCode.OK;
 
                 this.logger = InstallLogUtils.getInstallLogger();
@@ -91,6 +104,7 @@ public class InstallServerAction implements ActionHandler {
                 this.toDir = args.getOption("to");
 
                 this.progressBar = ProgressBar.getInstance();
+                this.featureBundle = new FeatureBundle();
 
                 HashMap<String, Double> methodMap = new HashMap<>();
                 // initialize feature utility and install kernel map
@@ -183,14 +197,19 @@ public class InstallServerAction implements ActionHandler {
                         logger.info(InstallLogUtils.Messages.INSTALL_KERNEL_MESSAGES.getMessage("MSG_SERVER_NEW_FEATURES_NOT_REQUIRED"));
                 } else {
                         logger.log(Level.FINE, "Additional server features required.");
-                        rc = assetInstallInit(featuresToInstall);
+                        try {
+                                rc = assetInstallInit(featuresToInstall);
+                        } catch (InstallException e) {
+                                logger.log(Level.SEVERE, e.getMessage(), e);
+                                rc = ReturnCode.RUNTIME_EXCEPTION;
+                        }
                 }
 
                 return rc;
         }
 
 
-        private ExitCode assetInstallInit(Collection<String> assetIds) {
+        private ExitCode assetInstallInit(Collection<String> assetIds) throws InstallException {
                 List<String> features = new ArrayList<>();
                 List<String> userFeatures = new ArrayList<>();
                 // find all user features in server.xml
@@ -213,6 +232,7 @@ public class InstallServerAction implements ActionHandler {
                 } else {
                         featureNames.addAll(features);
                 }
+                featureBundle.parseArgs(featureNames);
 
                 return ReturnCode.OK;
         }
@@ -220,7 +240,7 @@ public class InstallServerAction implements ActionHandler {
         private ExitCode install() {
                 try {
                         featureUtility = new FeatureUtility.FeatureUtilityBuilder().setFromDir(fromDir)
-                                        .setFeaturesToInstall(featureNames).setNoCache(noCache).build();
+                                        .setFeatureBundle(featureBundle).setNoCache(noCache).build();
                         featureUtility.installFeatures();
                 } catch (InstallException e) {
                         logger.log(Level.SEVERE, e.getMessage(), e);
@@ -241,7 +261,7 @@ public class InstallServerAction implements ActionHandler {
                 if (!servers.isEmpty()) {
                         rc = installServerFeatures();
                 }
-                if (ReturnCode.OK.equals(rc) && !featureNames.isEmpty()) {
+                if (ReturnCode.OK.equals(rc) && !featureBundle.getFeatureNames().isEmpty() || !featureBundle.getEsaFiles().isEmpty()) {
                         rc = install();
                 }
                 if(ReturnCode.OK.equals(rc)){

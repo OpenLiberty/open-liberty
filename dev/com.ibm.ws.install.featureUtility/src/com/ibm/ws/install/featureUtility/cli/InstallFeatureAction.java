@@ -105,6 +105,7 @@ public class InstallFeatureAction implements ActionHandler {
                 try {
                         featureBundle = new FeatureBundle();
                         featureBundle.parseArgs(argList);
+                        checkAssetsNotInstalled(featureBundle.getFeatureNames());
                 } catch (InstallException e) {
                         logger.log(Level.SEVERE, e.getMessage(), e);
                         return FeatureUtilityExecutor.returnCode(e.getRc());
@@ -112,8 +113,6 @@ public class InstallFeatureAction implements ActionHandler {
                         logger.log(Level.SEVERE, e.getMessage(), e);
                 	    return FeatureUtilityExecutor.returnCode(InstallException.IO_FAILURE);
                 }
-
-
                 // check if the feature names have been installed already
 
 
@@ -129,7 +128,7 @@ public class InstallFeatureAction implements ActionHandler {
 //                	logger.log(Level.SEVERE, e.getMessage(), e);
 //                	return FeatureUtilityExecutor.returnCode(InstallException.IO_FAILURE);
 //                }
-                return null;
+                return ReturnCode.OK;
         }
 
         private ReturnCode validateFromDir(String fromDir) {
@@ -164,8 +163,10 @@ public class InstallFeatureAction implements ActionHandler {
 
         private ExitCode install() {
                 try {
+//                        featureUtility = new FeatureUtility.FeatureUtilityBuilder().setFromDir(fromDir)
+//                                        .setFeaturesToInstall(featureNames).setNoCache(noCache).build();
                         featureUtility = new FeatureUtility.FeatureUtilityBuilder().setFromDir(fromDir)
-                                        .setFeaturesToInstall(featureNames).setNoCache(noCache).build();
+                                        .setFeatureBundle(featureBundle).setNoCache(noCache).build();
                         featureUtility.installFeatures();
                 } catch (InstallException e) {
                         logger.log(Level.SEVERE, e.getMessage(), e);
@@ -181,9 +182,13 @@ public class InstallFeatureAction implements ActionHandler {
         private ExitCode execute() {
                 ExitCode rc = ReturnCode.OK;
 
-                if ( !featureNames.isEmpty()) {
+                if(!featureBundle.getFeatureNames().isEmpty() || !featureBundle.getEsaFiles().isEmpty()){
                         rc = install();
                 }
+
+//                if ( !featureNames.isEmpty()) {
+//                        rc = install();
+//                }
                 if(ReturnCode.OK.equals(rc)){
                         progressBar.finish();
                 } else {

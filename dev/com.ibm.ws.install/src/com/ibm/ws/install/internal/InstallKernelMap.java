@@ -687,6 +687,7 @@ public class InstallKernelMap implements Map {
                 repoList.add(repo);
             }
 
+
             ManifestFileProcessor m_ManifestFileProcessor = new ManifestFileProcessor();
             Collection<ProvisioningFeatureDefinition> installedFeatures = m_ManifestFileProcessor.getFeatureDefinitions().values();
 
@@ -734,7 +735,7 @@ public class InstallKernelMap implements Map {
                 throw ExceptionUtils.createByKey(InstallException.ALREADY_EXISTS, "ASSETS_ALREADY_INSTALLED", featuresAlreadyPresent);
             }
 
-            resolver = new RepositoryResolver(productDefinitions, installedFeatures, Collections.<IFixInfo> emptySet(), repoList);
+            resolver = new RepositoryResolver(productDefinitions, installedFeatures, Collections.<IFixInfo>emptySet(), repoList);
             resolveResult = resolver.resolveAsSet((Collection<String>) data.get(FEATURES_TO_RESOLVE));
 
             for (List<RepositoryResource> item : resolveResult) {
@@ -752,7 +753,7 @@ public class InstallKernelMap implements Map {
 
                         // determine whether the license should be auto accepted
                         boolean autoAcceptLicense = license.startsWith(LICENSE_EPL_PREFIX) || license.equals(LICENSE_FEATURE_TERMS)
-                                                    || (isNDRuntime && license.equals(LICENSE_FEATURE_TERMS_RESTRICTED));
+                                || (isNDRuntime && license.equals(LICENSE_FEATURE_TERMS_RESTRICTED));
 
                         if (!autoAcceptLicense) {
                             // check whether the license has been accepted
@@ -805,6 +806,7 @@ public class InstallKernelMap implements Map {
             data.put(ACTION_ERROR_MESSAGE, e.getMessage());
             data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
         }
+
         actionType = ActionType.install;
         return featuresResolved;
     }
@@ -1242,24 +1244,29 @@ public class InstallKernelMap implements Map {
 
         for (String feature : artifacts) {
             fine("Processing feature: " + feature);
-            String groupId = feature.split(":")[0];
-            String featureName = feature.split(":")[1];
-            File groupDir = new File(rootDir, groupId.replace(".", "/"));
-            if (!groupDir.exists()) {
-                missingArtifactIndexes.add(index);
-                continue;
-            }
-            String featureEsa = featureName + "-" + openLibertyVersion + extension;
-            Path featurePath = Paths.get(groupDir.getAbsolutePath().toString(), featureName, openLibertyVersion, featureEsa);
 
-            if (Files.isRegularFile(featurePath)) {
-                foundArtifacts.add(featurePath.toFile());
-                artifactsClone.remove(feature);
-                updateProgress(increment);
-                fine("Found feature at path: " + featurePath.toString());
+            if(!feature.endsWith(".esa")){
+                String groupId = feature.split(":")[0];
+                String featureName = feature.split(":")[1];
+                File groupDir = new File(rootDir, groupId.replace(".", "/"));
+                if (!groupDir.exists()) {
+                    missingArtifactIndexes.add(index);
+                    continue;
+                }
+                String featureEsa = featureName + "-" + openLibertyVersion + extension;
+                Path featurePath = Paths.get(groupDir.getAbsolutePath().toString(), featureName, openLibertyVersion, featureEsa);
 
-            } else {
-                missingArtifactIndexes.add(index);
+                if (Files.isRegularFile(featurePath)) {
+                    foundArtifacts.add(featurePath.toFile());
+                    artifactsClone.remove(feature);
+                    updateProgress(increment);
+                    fine("Found feature at path: " + featurePath.toString());
+
+                } else {
+                    missingArtifactIndexes.add(index);
+                }
+            } else { //esa file
+                foundArtifacts.add(new File(feature));
             }
 
             index += 1;

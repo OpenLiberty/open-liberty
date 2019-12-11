@@ -1,6 +1,10 @@
 package com.ibm.ws.install.featureUtility;
 
 import com.ibm.ws.install.InstallException;
+import com.ibm.ws.install.InstallKernel;
+import com.ibm.ws.install.InstallKernelFactory;
+import com.ibm.ws.install.InstallKernelInteractive;
+import com.ibm.ws.install.internal.InstallKernelImpl;
 import com.ibm.ws.install.internal.InstallLogUtils;
 import com.ibm.ws.install.internal.InstallUtils;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
@@ -9,27 +13,21 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 public class FeatureBundle {
 
     private String openLibertyVersion;
     private List<String> featureNames;
-    private List<String> featureJsons;
+    private Set<String> featureJsons;
     private List<File> esaFiles;
     private final static String OPEN_LIBERTY_PRODUCT_ID = "io.openliberty";
 
-
-
     public FeatureBundle() throws IOException, InstallException {
         featureNames = new ArrayList<>();
-        featureJsons = new ArrayList<>();
+        featureJsons = new HashSet<String>();
         esaFiles = new ArrayList<>();
-
         openLibertyVersion = getLibertyVersion();
-
     }
 
     /**
@@ -86,14 +84,15 @@ public class FeatureBundle {
 
 
     public void addEsaFile(File esaFile) throws InstallException {
-        String feature = InstallUtils.getFeatureName(esaFile);
-
-
+        String featureName = InstallUtils.getFeatureName(esaFile);
         esaFiles.add(esaFile);
+        addFeatureName(featureName);
     }
 
-    public void addEsaFiles(List<File> esaFiles){
-        this.esaFiles.addAll(esaFiles);
+    public void addEsaFiles(List<File> esaFiles) throws InstallException {
+        for(File esaFile : esaFiles){
+            addEsaFile(esaFile);
+        }
     }
 
     public List<File> getEsaFiles(){
@@ -104,7 +103,7 @@ public class FeatureBundle {
         return featureNames;
     }
 
-    public List<String> getFeatureJsons(){
+    public Set<String> getFeatureJsons(){
         return featureJsons;
     }
 
