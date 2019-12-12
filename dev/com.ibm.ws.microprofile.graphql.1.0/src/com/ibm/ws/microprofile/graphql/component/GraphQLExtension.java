@@ -72,7 +72,7 @@ public class GraphQLExtension implements Extension, WebSphereCDIExtension, Intro
         AnnotatedType<TracingInterceptor> interceptorType = beanManager.createAnnotatedType(TracingInterceptor.class);
         beforeBeanDiscovery.addAnnotatedType(interceptorType, CDIServiceUtils.getAnnotatedTypeIdentifier(interceptorType, this.getClass()));
 
-        if (canLoad("com.ibm.ws.microprofile.metrics.cdi.producer.MetricRegistryFactory") && metricsEnabled) {
+        if (MetricsInterceptor.metrics != null && metricsEnabled) {
             AnnotatedType<MetricsInterceptor> metricsInterceptorType = beanManager.createAnnotatedType(MetricsInterceptor.class);
             beforeBeanDiscovery.addAnnotatedType(metricsInterceptorType, CDIServiceUtils.getAnnotatedTypeIdentifier(metricsInterceptorType, this.getClass()));
         }
@@ -123,24 +123,13 @@ public class GraphQLExtension implements Extension, WebSphereCDIExtension, Intro
         return schema;
     }
 
-//    static Set<Bean<?>> getGraphQLComponents() {
-//        Set<Bean<?>> set = graphQLComponents.get(getModuleMetaData());
-//        return set == null ? Collections.emptySet() : set;
-//    }
-
     static ModuleMetaData getModuleMetaData() {
         ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
         ModuleMetaData mmd = cmd.getModuleMetaData();
         return mmd;
     }
 
-    private boolean canLoad(String className) {
-        try {
-            return Class.forName(className) != null;
-        } catch (Throwable t) {
-            return false;
-        }
-    }
+    
 
     // Introspector methods:
     @Override
