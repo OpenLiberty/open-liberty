@@ -15,9 +15,9 @@ import static org.junit.Assert.assertNotNull;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -79,7 +79,9 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
 
         savedConfig = server.getServerConfiguration().clone();
         String rand = UUID.randomUUID().toString();
-        server.setJvmOptions(Arrays.asList("-Dinfinispan.cluster.name=" + rand));
+        Map<String, String> options = server.getJvmOptionsAsMap();
+        options.put("-Dinfinispan.cluster.name", rand);
+        server.setJvmOptions(options);
         server.startServer();
 
         // In addition to starting the application, must also wait for asynchronous web module initialization to complete,
