@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017 IBM Corporation and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -23,24 +23,20 @@
  *******************************************************************************/
 package io.astefanutti.metrics.cdi;
 
-import javax.enterprise.inject.spi.AnnotatedMember;
-import javax.enterprise.inject.spi.InjectionPoint;
+/**
+ * The Metrics CDI configuration. Metrics CDI fires a {@code MetricsConfiguration} event
+ * during the deployment phase that the application can observe and use to configure it.
+ *
+ * Note that the event fired can only be used within the observer method invocation context. Any attempt to call one of its methods outside of that context will result in an
+ * `IllegalStateException` to be thrown.
+ */
+public interface MetricsConfiguration {
 
-import org.eclipse.microprofile.metrics.Metadata;
-
-public interface MetricName {
-
-    String of(InjectionPoint point);
-
-    String of(AnnotatedMember<?> member);
-
-    // TODO: expose an SPI so that external strategies can be provided. For example, Camel CDI could provide a property placeholder resolution strategy.
-    String of(String attribute);
-
-    Metadata metadataOf(InjectionPoint point, Class<?> type);
-
-    Metadata metadataOf(AnnotatedMember<?> member, Class<?> type);
-
-    Metadata metadataOf(AnnotatedMember<?> member);
-
+    /**
+     * Overrides the Metrics annotation {@code absolute} attribute values globally for the application to use metric absolute names.
+     *
+     * @return this Metrics CDI configuration
+     * @throws IllegalStateException if called outside of the observer method invocation
+     */
+    MetricsConfiguration useAbsoluteName(boolean useAbsoluteName);
 }

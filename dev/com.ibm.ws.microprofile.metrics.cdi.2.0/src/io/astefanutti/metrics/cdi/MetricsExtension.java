@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -26,6 +26,8 @@ package io.astefanutti.metrics.cdi;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
 import java.lang.reflect.Type;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -55,38 +57,50 @@ import javax.interceptor.InterceptorBinding;
 
 import org.eclipse.microprofile.metrics.Metadata;
 import org.eclipse.microprofile.metrics.Metric;
+import org.eclipse.microprofile.metrics.MetricID;
 import org.eclipse.microprofile.metrics.MetricRegistry;
+import org.eclipse.microprofile.metrics.annotation.ConcurrentGauge;
 import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.eclipse.microprofile.metrics.annotation.Gauge;
 import org.eclipse.microprofile.metrics.annotation.Metered;
 import org.eclipse.microprofile.metrics.annotation.Timed;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
+import com.ibm.ws.microprofile.metrics.cdi.helper.Utils;
 import com.ibm.ws.microprofile.metrics.cdi.producer.MetricRegistryFactory;
 import com.ibm.ws.microprofile.metrics.impl.SharedMetricRegistries;
+import com.ibm.wsspi.classloading.ClassLoadingService;
 
 @Component(service = WebSphereCDIExtension.class, immediate = true)
 public class MetricsExtension implements Extension, WebSphereCDIExtension {
+    protected static final AnnotationLiteral<Nonbinding> NON_BINDING = new AnnotationLiteral<Nonbinding>() {
+    };
 
-    private static final AnnotationLiteral<Nonbinding> NON_BINDING = new AnnotationLiteral<Nonbinding>() {};
+    protected static final AnnotationLiteral<InterceptorBinding> INTERCEPTOR_BINDING = new AnnotationLiteral<InterceptorBinding>() {
+    };
 
-    private static final AnnotationLiteral<InterceptorBinding> INTERCEPTOR_BINDING = new AnnotationLiteral<InterceptorBinding>() {};
+    protected static final AnnotationLiteral<MetricsBinding> METRICS_BINDING = new AnnotationLiteral<MetricsBinding>() {
+    };
 
-    private static final AnnotationLiteral<MetricsBinding> METRICS_BINDING = new AnnotationLiteral<MetricsBinding>() {};
+    protected static final AnnotationLiteral<Default> DEFAULT = new AnnotationLiteral<Default>() {
+    };
 
-    private static final AnnotationLiteral<Default> DEFAULT = new AnnotationLiteral<Default>() {};
+    protected final Map<Bean<?>, AnnotatedMember<?>> metrics = new HashMap<>();
 
-    private final Map<Bean<?>, AnnotatedMember<?>> metrics = new HashMap<>();
-    private final Set<String> metricNames = Collections.synchronizedSortedSet(new TreeSet<String>());
+    protected final Set<MetricID> metricIDs = Collections.synchronizedSortedSet(new TreeSet<MetricID>());
 
-    private final MetricsConfigurationEvent configuration = new MetricsConfigurationEvent();
+    protected final MetricsConfigurationEvent configuration = new MetricsConfigurationEvent();
 
     /**
      * Stores the member/annotation that were intercepted to their metric name.
      */
-    private final Map<Member, Map<Annotation, String>> memberMap = Collections.synchronizedMap(new HashMap<Member, Map<Annotation, String>>());
+    protected final Map<Member, Map<Annotation, String>> memberMap = Collections.synchronizedMap(new HashMap<Member, Map<Annotation, String>>());
 
     /**
      * Stores the CDI bean classes that were already visited, so we can skip re-registering them
@@ -102,32 +116,36 @@ public class MetricsExtension implements Extension, WebSphereCDIExtension {
         return configuration.getParameters();
     }
 
-    private <X> void metricsAnnotations(@Observes @WithAnnotations({ Counted.class, Gauge.class, Metered.class, Timed.class }) ProcessAnnotatedType<X> pat) {
+    protected <X> void metricsAnnotations(@Observes @WithAnnotations({ Counted.class, Gauge.class, Metered.class, Timed.class,
+                                                                       ConcurrentGauge.class }) ProcessAnnotatedType<X> pat) {
         pat.setAnnotatedType(new AnnotatedTypeDecorator<>(pat.getAnnotatedType(), METRICS_BINDING));
     }
 
-    private void metricProducerField(@Observes ProcessProducerField<? extends Metric, ?> ppf) {
+    protected void metricProducerField(@Observes ProcessProducerField<? extends Metric, ?> ppf) {
         metrics.put(ppf.getBean(), ppf.getAnnotatedProducerField());
     }
 
-    private void metricProducerMethod(@Observes ProcessProducerMethod<? extends Metric, ?> ppm) {
+    protected void metricProducerMethod(@Observes ProcessProducerMethod<? extends Metric, ?> ppm) {
         // Skip the Metrics CDI alternatives
-        if (!ppm.getBean().getBeanClass().equals(MetricProducer.class))
+        if (!ppm.getBean().getBeanClass().equals(MetricProducer.class)) {
             metrics.put(ppm.getBean(), ppm.getAnnotatedProducerMethod());
+        }
     }
 
-    private void defaultMetricRegistry(@Observes AfterBeanDiscovery abd, BeanManager manager) {
+    protected void defaultMetricRegistry(@Observes AfterBeanDiscovery abd, BeanManager manager) {
         if (manager.getBeans(MetricRegistry.class).isEmpty())
             abd.addBean(new MetricRegistryBean(manager));
     }
 
-    private void configuration(@Observes AfterDeploymentValidation adv, BeanManager manager) {
+    @SuppressWarnings("unchecked")
+    protected <T extends Metric> void configuration(@Observes AfterDeploymentValidation adv, BeanManager manager) {
+
         // Fire configuration event
         manager.fireEvent(configuration);
         configuration.unmodifiable();
 
-        // Produce and register custom metrics
         MetricRegistry registry = getReference(manager, MetricRegistry.class);
+
         MetricName name = getReference(manager, MetricName.class);
         for (Map.Entry<Bean<?>, AnnotatedMember<?>> bean : metrics.entrySet()) {
             // TODO: add MetricSet metrics into the metric registry
@@ -138,32 +156,55 @@ public class MetricsExtension implements Extension, WebSphereCDIExtension {
                 || hasInjectionPoints(bean.getValue()))
                 continue;
             Metadata metadata = name.metadataOf(bean.getValue());
-            registry.register(metadata.getName(), (Metric) getReference(manager, bean.getValue().getBaseType(), bean.getKey()), metadata);
-            addMetricName(metadata.getName());
+            String[] tags = name.tagOf(bean.getValue());
+
+            ClassLoader origLoader = Thread.currentThread().getContextClassLoader();
+
+            final Bundle bundle = FrameworkUtil.getBundle(ClassLoadingService.class);
+            ClassLoadingService thingthing = AccessController.doPrivileged(new PrivilegedAction<ClassLoadingService>() {
+                @Override
+                public ClassLoadingService run() {
+                    BundleContext bCtx = bundle.getBundleContext();
+                    ServiceReference<ClassLoadingService> svcRef = bCtx.getServiceReference(ClassLoadingService.class);
+                    return svcRef == null ? null : bCtx.getService(svcRef);
+                }
+            });
+
+            try {
+
+                ClassLoader tccl = thingthing.createThreadContextClassLoader(origLoader);
+                Thread.currentThread().setContextClassLoader(tccl);
+
+                registry.register(metadata, (Metric) getReference(manager, bean.getValue().getBaseType(), bean.getKey()), Utils.tagsToTags(tags)); // line 190
+            } finally {
+                Thread.currentThread().setContextClassLoader(origLoader);
+            }
+            MetricID mid = new MetricID(metadata.getName(), Utils.tagsToTags(tags));
+            addMetricID(mid);
         }
 
-        // Let's clear the collected metric producers
+        //Clear the collected metric producers
         metrics.clear();
     }
 
-    private void beforeShutdown(@Observes BeforeShutdown shutdown) {
+    protected void beforeShutdown(@Observes BeforeShutdown shutdown) {
         MetricRegistry registry = MetricRegistryFactory.getApplicationRegistry();
         // Unregister metrics
-        for (String name : metricNames) {
-            registry.remove(name);
+        for (MetricID mid : metricIDs) {
+            registry.remove(mid);
         }
     }
 
-    private static <T> T getReference(BeanManager manager, Class<T> type) {
+    protected static <T> T getReference(BeanManager manager, Class<T> type) {
         return getReference(manager, type, manager.resolve(manager.getBeans(type)));
     }
 
     @SuppressWarnings("unchecked")
-    private static <T> T getReference(BeanManager manager, Type type, Bean<?> bean) {
+    protected static <T> T getReference(BeanManager manager, Type type, Bean<?> bean) {
         return (T) manager.getReference(bean, type, manager.createCreationalContext(bean));
     }
 
-    private static boolean hasInjectionPoints(AnnotatedMember<?> member) {
+    protected static boolean hasInjectionPoints(AnnotatedMember<?> member) {
         if (!(member instanceof AnnotatedMethod))
             return false;
         AnnotatedMethod<?> method = (AnnotatedMethod<?>) member;
@@ -181,21 +222,23 @@ public class MetricsExtension implements Extension, WebSphereCDIExtension {
         return map.get(annotation);
     }
 
-    public void addMetricName(Member member, Annotation annotation, String name) {
+    public void addMetricID(Member member, Annotation annotation, MetricID mid) {
         Map<Annotation, String> map = memberMap.get(member);
+        String name = mid.getName();
         if (map == null) {
             map = Collections.synchronizedMap(new HashMap<Annotation, String>());
             memberMap.put(member, map);
         }
         map.put(annotation, name);
-        metricNames.add(name);
+        metricIDs.add(mid);
+    }
+
+    public void addMetricID(MetricID mid) {
+        metricIDs.add(mid);
     }
 
     public Set<Class<?>> getBeansVisited() {
         return beansVisited;
     }
 
-    public void addMetricName(String name) {
-        metricNames.add(name);
-    }
 }

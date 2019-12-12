@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017 IBM Corporation and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -23,24 +23,16 @@
  *******************************************************************************/
 package io.astefanutti.metrics.cdi;
 
-import javax.enterprise.inject.spi.AnnotatedMember;
-import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.BeanManager;
 
-import org.eclipse.microprofile.metrics.Metadata;
+@Dependent
+/* package-private */ class MetricNameFactory {
 
-public interface MetricName {
-
-    String of(InjectionPoint point);
-
-    String of(AnnotatedMember<?> member);
-
-    // TODO: expose an SPI so that external strategies can be provided. For example, Camel CDI could provide a property placeholder resolution strategy.
-    String of(String attribute);
-
-    Metadata metadataOf(InjectionPoint point, Class<?> type);
-
-    Metadata metadataOf(AnnotatedMember<?> member, Class<?> type);
-
-    Metadata metadataOf(AnnotatedMember<?> member);
-
+    @Produces
+    // TODO: should be declared @ApplicationScoped when WELD-2083 is fixed
+    private MetricName metricName(BeanManager manager) {
+        return new SeMetricName(manager.getExtension(MetricsExtension.class).getParameters());
+    }
 }
