@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017 IBM Corporation and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -23,24 +23,36 @@
  *******************************************************************************/
 package io.astefanutti.metrics.cdi;
 
-import javax.enterprise.inject.spi.AnnotatedMember;
-import javax.enterprise.inject.spi.InjectionPoint;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.Set;
 
-import org.eclipse.microprofile.metrics.Metadata;
+/* package-private */ final class MetricsConfigurationEvent implements MetricsConfiguration {
 
-public interface MetricName {
+    private final EnumSet<MetricsParameter> configuration = EnumSet.noneOf(MetricsParameter.class);
 
-    String of(InjectionPoint point);
+    private volatile boolean unmodifiable;
 
-    String of(AnnotatedMember<?> member);
+    @Override
+    public MetricsConfiguration useAbsoluteName(boolean useAbsoluteName) {
+        throwsIfUnmodifiable();
+        if (useAbsoluteName)
+            configuration.add(MetricsParameter.useAbsoluteName);
+        else
+            configuration.remove(MetricsParameter.useAbsoluteName);
+        return this;
+    }
 
-    // TODO: expose an SPI so that external strategies can be provided. For example, Camel CDI could provide a property placeholder resolution strategy.
-    String of(String attribute);
+    Set<MetricsParameter> getParameters() {
+        return Collections.unmodifiableSet(configuration);
+    }
 
-    Metadata metadataOf(InjectionPoint point, Class<?> type);
+    void unmodifiable() {
+        unmodifiable = true;
+    }
 
-    Metadata metadataOf(AnnotatedMember<?> member, Class<?> type);
-
-    Metadata metadataOf(AnnotatedMember<?> member);
-
+    private void throwsIfUnmodifiable() {
+        if (unmodifiable)
+            throw new IllegalStateException("Metrics CDI configuration event must not be used outside its observer method!");
+    }
 }

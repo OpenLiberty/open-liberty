@@ -14,7 +14,7 @@ bVersion=1.0
 javac.source: 1.8
 javac.target: 1.8
 
-Bundle-Name: com.ibm.ws.microprofile.metrics.cdi.2.0
+Bundle-Name: com.ibm.ws.microprofile.metrics.cdi
 Bundle-SymbolicName: com.ibm.ws.microprofile.metrics.cdi.2.0
 Bundle-Description: MicroProfile Metrics CDI Integration, version ${bVersion}
 
@@ -23,16 +23,13 @@ Import-Package: \
 	*
 
 Export-Package: \
-	io.astefanutti.metrics.cdi20,\
-	com.ibm.ws.microprofile.metrics.cdi.decorator,\
-	com.ibm.ws.microprofile.metrics.cdi.binding,\
-	com.ibm.ws.microprofile.metrics.cdi20.interceptors,\
-	com.ibm.ws.microprofile.metrics.cdi20.producer,\
-	com.ibm.ws.microprofile.metrics.cdi20.helper
+	io.astefanutti.metrics.cdi,\
+	com.ibm.ws.microprofile.metrics.cdi.producer,\
+	com.ibm.ws.microprofile.metrics.cdi.helper
 
 Private-Package: \
-	com.ibm.ws.microprofile.metrics.cdi.resources,\
-	com.ibm.ws.microprofile.metrics.cdi20.helper
+    com.ibm.ws.microprofile.metrics.cdi.resources,\
+    com.ibm.ws.microprofile.metrics.cdi.helper
 
 Include-Resource: \
     META-INF=resources/META-INF
@@ -41,7 +38,7 @@ WS-TraceGroup: METRICS
 
 -dsannotations-inherit: true
 -dsannotations: \
-	io.astefanutti.metrics.cdi20.MetricsExtension
+	io.astefanutti.metrics.cdi.MetricsExtension
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
@@ -64,6 +61,5 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
     com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
     com.ibm.websphere.javaee.annotation.1.2;version=latest,\
     com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
-    com.ibm.ws.microprofile.metrics.cdi.common,\
     com.ibm.ws.microprofile.metrics.common;version=latest
 

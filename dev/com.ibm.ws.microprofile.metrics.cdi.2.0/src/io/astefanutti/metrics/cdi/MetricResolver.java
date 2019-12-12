@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -28,24 +28,30 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Vetoed;
 import javax.inject.Inject;
 
 import org.eclipse.microprofile.metrics.Metadata;
+import org.eclipse.microprofile.metrics.MetadataBuilder;
+import org.eclipse.microprofile.metrics.MetricID;
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.eclipse.microprofile.metrics.MetricType;
+import org.eclipse.microprofile.metrics.MetricUnits;
+import org.eclipse.microprofile.metrics.annotation.ConcurrentGauge;
 import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.eclipse.microprofile.metrics.annotation.Gauge;
 import org.eclipse.microprofile.metrics.annotation.Metered;
 import org.eclipse.microprofile.metrics.annotation.Timed;
 
+import com.ibm.ws.microprofile.metrics.cdi.helper.Utils;
+
 @ApplicationScoped
 public class MetricResolver {
+
+    @Inject
+    private MetricRegistry registry;
 
     @Inject
     protected MetricsExtension extension;
@@ -53,19 +59,23 @@ public class MetricResolver {
     @Inject
     protected MetricName metricName;
 
-    <E extends Member & AnnotatedElement> Of<Counted> counted(Class<?> topClass, E element) {
+    public <E extends Member & AnnotatedElement> Of<Counted> counted(Class<?> topClass, E element) {
         return resolverOf(topClass, element, Counted.class);
     }
 
-    Of<Gauge> gauge(Class<?> topClass, Method method) {
+    public <E extends Member & AnnotatedElement> Of<ConcurrentGauge> concurentGauged(Class<?> topClass, E element) {
+        return resolverOf(topClass, element, ConcurrentGauge.class);
+    }
+
+    public Of<Gauge> gauge(Class<?> topClass, Method method) {
         return resolverOf(topClass, method, Gauge.class);
     }
 
-    <E extends Member & AnnotatedElement> Of<Metered> metered(Class<?> topClass, E element) {
+    public <E extends Member & AnnotatedElement> Of<Metered> metered(Class<?> topClass, E element) {
         return resolverOf(topClass, element, Metered.class);
     }
 
-    <E extends Member & AnnotatedElement> Of<Timed> timed(Class<?> bean, E element) {
+    public <E extends Member & AnnotatedElement> Of<Timed> timed(Class<?> bean, E element) {
         return resolverOf(bean, element, Timed.class);
     }
 
@@ -88,13 +98,19 @@ public class MetricResolver {
             initialDiscovery = true;
         }
 
-        Metadata metadata = newMetadata(name, this.getType(annotation), this.getUnit(annotation));
-        metadata.setDescription(this.getDescription(annotation));
-        metadata.setDisplayName(this.getDisplayname(annotation));
-        for (String tag : this.getTags(annotation)) {
-            metadata.addTag(tag);
+        MetadataBuilder mdb = Metadata.builder().withName(name).withType(this.getType(annotation)).withUnit(this.getUnit(annotation)).withDescription(this.getDescription(annotation)).withDisplayName(this.getDisplayname(annotation));
+
+        String[] tags = this.getTags(annotation);
+
+        if (getReusable(annotation)) {
+            mdb = mdb.reusable();
+        } else {
+            mdb = mdb.notReusable();
         }
-        return new DoesHaveMetric<>(annotation, name, metadata, initialDiscovery);
+
+        Of<T> of = new DoesHaveMetric<>(annotation, name, mdb.build(), initialDiscovery, tags);
+        checkReusable(of);
+        return of;
     }
 
     protected <E extends Member & AnnotatedElement, T extends Annotation> Of<T> beanResolverOf(E element, Class<T> metric, Class<?> bean) {
@@ -110,17 +126,24 @@ public class MetricResolver {
                 initialDiscovery = true;
             }
 
-            Metadata metadata = newMetadata(name, this.getType(annotation), this.getUnit(annotation));
-            metadata.setDescription(this.getDescription(annotation));
-            metadata.setDisplayName(this.getDisplayname(annotation));
-            for (String tag : this.getTags(annotation)) {
-                metadata.addTag(tag);
+            MetadataBuilder mdb = Metadata.builder().withName(name).withType(this.getType(annotation)).withUnit(this.getUnit(annotation)).withDescription(this.getDescription(annotation)).withDisplayName(this.getDisplayname(annotation));
+            String[] tags = this.getTags(annotation);
+
+            if (getReusable(annotation)) {
+                mdb = mdb.reusable();
+            } else {
+                mdb = mdb.notReusable();
             }
-            return new DoesHaveMetric<>(annotation, name, metadata, initialDiscovery);
+
+            Of<T> of = new DoesHaveMetric<>(annotation, name, mdb.build(), initialDiscovery, tags);
+            checkReusable(of);
+
+            return of;
         } else if (bean.getSuperclass() != null) {
             return beanResolverOf(element, metric, bean.getSuperclass());
         }
         return new DoesNotHaveMetric<>();
+
     }
 
     // TODO: should be grouped with the metric name strategy
@@ -152,6 +175,8 @@ public class MetricResolver {
     private String metricName(Annotation annotation) {
         if (Counted.class.isInstance(annotation))
             return ((Counted) annotation).name();
+        else if (ConcurrentGauge.class.isInstance(annotation))
+            return ((ConcurrentGauge) annotation).name();
         else if (Gauge.class.isInstance(annotation))
             return ((Gauge) annotation).name();
         else if (Metered.class.isInstance(annotation))
@@ -168,6 +193,8 @@ public class MetricResolver {
 
         if (Counted.class.isInstance(annotation))
             return ((Counted) annotation).absolute();
+        else if (ConcurrentGauge.class.isInstance(annotation))
+            return ((ConcurrentGauge) annotation).absolute();
         else if (Gauge.class.isInstance(annotation))
             return ((Gauge) annotation).absolute();
         else if (Metered.class.isInstance(annotation))
@@ -181,6 +208,8 @@ public class MetricResolver {
     private String[] getTags(Annotation annotation) {
         if (Counted.class.isInstance(annotation))
             return ((Counted) annotation).tags();
+        else if (ConcurrentGauge.class.isInstance(annotation))
+            return ((ConcurrentGauge) annotation).tags();
         else if (Gauge.class.isInstance(annotation))
             return ((Gauge) annotation).tags();
         else if (Metered.class.isInstance(annotation))
@@ -195,6 +224,8 @@ public class MetricResolver {
     private String getDisplayname(Annotation annotation) {
         if (Counted.class.isInstance(annotation))
             return ((Counted) annotation).displayName();
+        else if (ConcurrentGauge.class.isInstance(annotation))
+            return ((ConcurrentGauge) annotation).displayName();
         else if (Gauge.class.isInstance(annotation))
             return ((Gauge) annotation).displayName();
         else if (Metered.class.isInstance(annotation))
@@ -209,6 +240,8 @@ public class MetricResolver {
     private String getDescription(Annotation annotation) {
         if (Counted.class.isInstance(annotation))
             return ((Counted) annotation).description();
+        else if (ConcurrentGauge.class.isInstance(annotation))
+            return ((ConcurrentGauge) annotation).description();
         else if (Gauge.class.isInstance(annotation))
             return ((Gauge) annotation).description();
         else if (Metered.class.isInstance(annotation))
@@ -222,6 +255,8 @@ public class MetricResolver {
     private MetricType getType(Annotation annotation) {
         if (Counted.class.isInstance(annotation))
             return MetricType.COUNTER;
+        else if (ConcurrentGauge.class.isInstance(annotation))
+            return MetricType.CONCURRENT_GAUGE;
         else if (Gauge.class.isInstance(annotation))
             return MetricType.GAUGE;
         else if (Metered.class.isInstance(annotation))
@@ -235,6 +270,8 @@ public class MetricResolver {
     private String getUnit(Annotation annotation) {
         if (Counted.class.isInstance(annotation))
             return ((Counted) annotation).unit();
+        else if (ConcurrentGauge.class.isInstance(annotation))
+            return MetricUnits.NONE;
         else if (Gauge.class.isInstance(annotation))
             return ((Gauge) annotation).unit();
         else if (Metered.class.isInstance(annotation))
@@ -245,11 +282,52 @@ public class MetricResolver {
             throw new IllegalArgumentException("Unsupported Metrics forMethod [" + annotation.getClass().getName() + "]");
     }
 
+    private boolean getReusable(Annotation annotation) {
+        if (Counted.class.isInstance(annotation))
+            return ((Counted) annotation).reusable();
+        else if (ConcurrentGauge.class.isInstance(annotation))
+            return ((ConcurrentGauge) annotation).reusable();
+        else if (Gauge.class.isInstance(annotation))
+            return false;
+        else if (Metered.class.isInstance(annotation))
+            return ((Metered) annotation).reusable();
+        else if (Timed.class.isInstance(annotation))
+            return ((Timed) annotation).reusable();
+        else
+            throw new IllegalArgumentException("Unsupported Metrics forMethod [" + annotation.getClass().getName() + "]");
+    }
+
+    /**
+     * Checks whether the metric should be re-usable
+     */
+    private <T extends Annotation> boolean checkReusable(MetricResolver.Of<T> of) {
+
+        // If the metric has been registered before (eg. metrics found in RequestScoped beans),
+        // we don't need to worry about re-usable
+        if (!of.isInitialDiscovery()) {
+            return true;
+        }
+
+        String name = of.metadata().getName();
+        String[] tags = of.tags();
+        MetricID MetricID = new MetricID(name, Utils.tagsToTags(tags));
+
+        Metadata existingMetadata = registry.getMetadata().get(MetricID);
+
+        if (existingMetadata != null && (existingMetadata.isReusable() == false || of.metadata().isReusable() == false)) {
+            throw new IllegalArgumentException("Cannot reuse metric for " + of.metricName() + " with tags " + of.tags());
+        }
+        return true;
+
+    }
+
     public interface Of<T extends Annotation> {
 
         boolean isPresent();
 
         String metricName();
+
+        String[] tags();
 
         Metadata metadata();
 
@@ -278,11 +356,14 @@ public class MetricResolver {
 
         private final boolean initialDiscovery;
 
-        private DoesHaveMetric(T annotation, String name, Metadata metadata, boolean initialDiscovery) {
+        private final String[] tags;
+
+        private DoesHaveMetric(T annotation, String name, Metadata metadata, boolean initialDiscovery, String[] tags) {
             this.annotation = annotation;
             this.name = name;
             this.metadata = metadata;
             this.initialDiscovery = initialDiscovery;
+            this.tags = tags;
         }
 
         @Override
@@ -309,12 +390,18 @@ public class MetricResolver {
         public boolean isInitialDiscovery() {
             return initialDiscovery;
         }
+
+        @Override
+        public String[] tags() {
+            return tags;
+        }
     }
 
     @Vetoed
     protected static final class DoesNotHaveMetric<T extends Annotation> implements Of<T> {
 
-        private DoesNotHaveMetric() {}
+        private DoesNotHaveMetric() {
+        }
 
         @Override
         public boolean isPresent() {
@@ -340,18 +427,10 @@ public class MetricResolver {
         public boolean isInitialDiscovery() {
             return false;
         }
-    }
 
-    private static Metadata newMetadata(String name, MetricType type, String unit) {
-        if (System.getSecurityManager() == null) {
-            return new Metadata(name, type, unit);
-        }
-        try {
-            return AccessController.doPrivileged((PrivilegedExceptionAction<Metadata>) () -> {
-                return new Metadata(name, type, unit);
-            });
-        } catch (PrivilegedActionException pae) {
-            throw new IllegalArgumentException(pae.getCause());
+        @Override
+        public String[] tags() {
+            return null;
         }
     }
 }
