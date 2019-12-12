@@ -85,15 +85,15 @@ public class Http2Client {
 
     /**
      * Create an Http2Client with the option to use HTTP/2 with prior knowledge
-     * 
+     *
      * @param hostName
      * @param httpDefaultPort
      * @param blockUntilConnectionIsDone
      * @param defaultTimeOutToSendFrame
      * @param useHttp2WithPriorKnowledge
      */
-    public Http2Client(String hostName, int httpDefaultPort, CountDownLatch blockUntilConnectionIsDone, long defaultTimeOutToSendFrame, 
-            boolean useHttp2WithPriorKnowledge) {
+    public Http2Client(String hostName, int httpDefaultPort, CountDownLatch blockUntilConnectionIsDone, long defaultTimeOutToSendFrame,
+                       boolean useHttp2WithPriorKnowledge) {
         this(hostName, httpDefaultPort, blockUntilConnectionIsDone, defaultTimeOutToSendFrame);
         if (useHttp2WithPriorKnowledge) {
             // tell the connection not to wait for a the 101 switching protocols response since we're not using h2c here
@@ -195,7 +195,7 @@ public class Http2Client {
         long startTime = System.currentTimeMillis();
         //loop until the time is over
         if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.logp(Level.INFO, CLASS_NAME, "sendClientPreface", "Sending client with timeout of: " + timeout);
+            LOGGER.logp(Level.INFO, CLASS_NAME, "sendClientPreface", "Sending client preface with timeout of: " + timeout);
             LOGGER.logp(Level.INFO, CLASS_NAME, "sendClientPreface", "Start time (Millis): " + startTime);
         }
         while ((System.currentTimeMillis() - startTime) < timeout) {
@@ -283,7 +283,7 @@ public class Http2Client {
     /**
      * Send bytes iff the server preface has been received.
      *
-     * @param byte[]
+     * @param         byte[]
      * @param timeout -1 if the frame won't be sent.
      * @return
      * @throws Exception
@@ -324,7 +324,7 @@ public class Http2Client {
      * Send a frame iff the server preface has been received.
      *
      * @param writableFrame
-     * @param timeout -1 if the frame won't be sent.
+     * @param timeout       -1 if the frame won't be sent.
      * @return
      * @throws Exception
      */
@@ -462,7 +462,6 @@ public class Http2Client {
          */
         @Override
         public void receivedFrameGoAway() {
-            System.out.println("received FrameGoAway from server. Calling blockUntilConnectionIsDone.countDown()");
             if (LOGGER.isLoggable(Level.INFO)) {
                 LOGGER.logp(Level.INFO, CLASS_NAME + "$FATFramesListener", "receivedFrameGoAway",
                             "Received FrameGoAway from server. Calling blockUntilConnectionIsDone.countDown() and 'closing' connection.");
@@ -581,7 +580,7 @@ public class Http2Client {
                     if (LOGGER.isLoggable(Level.INFO)) {
                         LOGGER.logp(Level.INFO, CLASS_NAME + "$TimeoutHelper", "run", "Timeout helper sleeping!");
                     }
-        
+
                     Thread.sleep(10);
                 } catch (Exception x) {
                 }
