@@ -72,7 +72,7 @@ public class GraphQLExtension implements Extension, WebSphereCDIExtension, Intro
         AnnotatedType<TracingInterceptor> interceptorType = beanManager.createAnnotatedType(TracingInterceptor.class);
         beforeBeanDiscovery.addAnnotatedType(interceptorType, CDIServiceUtils.getAnnotatedTypeIdentifier(interceptorType, this.getClass()));
 
-        if (canLoad("com.ibm.ws.microprofile.metrics.cdi.producer.MetricRegistryFactory") && metricsEnabled) {
+        if (canLoad("com.ibm.ws.microprofile.metrics.impl.SharedMetricRegistries") && metricsEnabled) {
             AnnotatedType<MetricsInterceptor> metricsInterceptorType = beanManager.createAnnotatedType(MetricsInterceptor.class);
             beforeBeanDiscovery.addAnnotatedType(metricsInterceptorType, CDIServiceUtils.getAnnotatedTypeIdentifier(metricsInterceptorType, this.getClass()));
         }
