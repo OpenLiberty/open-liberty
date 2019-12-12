@@ -14,6 +14,8 @@ import static com.ibm.ws.jaxrs20.fat.TestUtils.asString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.net.ConnectException;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -93,7 +95,16 @@ public class JAXRSWebContainerTest {
     @Test
     public void testHTTPServletRequestInjection() throws Exception {
         HttpGet get = new HttpGet(getWebContainerTestURI());
-        HttpResponse resp = httpClient.execute(get);
+        HttpResponse resp = null;
+        try {
+            resp = httpClient.execute(get);
+        } catch (ConnectException e) {
+            // This test fails intermittently with a Connection refused exception, restarting the server to retry the request.
+            server.stopServer();
+            server.startServer(true);
+            resp = httpClient.execute(get);
+        }
+
         String content = asString(resp);
         System.out.println("testHTTPServletRequestInjection response = " + content);
 
@@ -114,7 +125,15 @@ public class JAXRSWebContainerTest {
     @Test
     public void testHTTPServletResponseInjection() throws Exception {
         HttpPost post = new HttpPost(getWebContainerTestURI());
-        HttpResponse resp = httpClient.execute(post);
+        HttpResponse resp = null;
+        try {
+            resp = httpClient.execute(post);
+        } catch (ConnectException e) {
+            // This test fails intermittently with a Connection refused exception, restarting the server to retry the request.
+            server.stopServer();
+            server.startServer(true);
+            resp = httpClient.execute(post);
+        }
         String content = asString(resp);
         System.out.println("testHTTPServletResponseInjection response = " + content);
 
@@ -132,7 +151,15 @@ public class JAXRSWebContainerTest {
     @Test
     public void testServletContextInjection() throws Exception {
         HttpGet get = new HttpGet(getWebContainerTestURI() + "/servletcontext");
-        HttpResponse resp = httpClient.execute(get);
+        HttpResponse resp = null;
+        try {
+            resp = httpClient.execute(get);
+        } catch (ConnectException e) {
+            // This test fails intermittently with a Connection refused exception, restarting the server to retry the request.
+            server.stopServer();
+            server.startServer(true);
+            resp = httpClient.execute(get);
+        }
         String content = asString(resp);
         System.out.println("testServletContextInjection response = " + content.intern());
 
@@ -148,7 +175,15 @@ public class JAXRSWebContainerTest {
     @Test
     public void testServletConfigInjection() throws Exception {
         HttpGet get = new HttpGet(getWebContainerTestURI() + "/servletconfig");
-        HttpResponse resp = httpClient.execute(get);
+        HttpResponse resp = null;
+        try {
+            resp = httpClient.execute(get);
+        } catch (ConnectException e) {
+            // This test fails intermittently with a Connection refused exception, restarting the server to retry the request.
+            server.stopServer();
+            server.startServer(true);
+            resp = httpClient.execute(get);
+        }
         String content = asString(resp);
         System.out.println("testServletConfigInjection response = " + content);
 
