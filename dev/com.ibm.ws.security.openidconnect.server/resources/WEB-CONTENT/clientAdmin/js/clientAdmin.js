@@ -92,7 +92,12 @@ var clientAdmin = (function() {
                     // Something else happended with the request.  Put up the generic error message.
                     var errTitle = messages.GENERIC_DELETE_FAIL;
                     var errClientName = bidiUtils.getDOMSpanWithBidiTextDirection(client_name);
-                    var errDescription = utils.formatString(messages.GENERIC_DELETE_FAIL_MSG, [errClientName]);
+                    var errDescription = "";
+                    if (errResponse.responseJSON && errResponse.responseJSON.error_description) {
+                        errDescription = errResponse.responseJSON.error_description;
+                    } else {
+                        errDescription = utils.formatString(messages.GENERIC_DELETE_FAIL_MSG, [errClientName]);
+                    }
                     utils.showResultsDialog(true, errTitle, errDescription, true, true, false, __reshowDeleteDialog);
                 });
             });
