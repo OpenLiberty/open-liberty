@@ -86,6 +86,8 @@ public class Failover1ServerTest2 extends FATServletClient {
     @AllowedFFDC(value = {
             "javax.transaction.RollbackException", // transaction rolled back due to timeout
             "javax.transaction.xa.XAException", // rollback/abort path
+            "javax.persistence.PersistenceException", // caused by RollbackException
+            "javax.persistence.ResourceException", // connection error event on retry
             "java.lang.IllegalStateException" // for EclipseLink retry after connection has been aborted due to rollback
     })
     @Test

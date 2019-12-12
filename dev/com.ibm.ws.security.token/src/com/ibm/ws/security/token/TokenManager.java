@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,7 +26,7 @@ public interface TokenManager {
 
     /**
      * Creates a token of the specified token type from the token data.
-     * 
+     *
      * @param tokenType The type of token to create.
      * @param tokenData The token data used to create the token.
      * @return the token of the specified type.
@@ -37,7 +37,7 @@ public interface TokenManager {
 
     /**
      * Creates an SSO token from the token data.
-     * 
+     *
      * @param tokenData
      * @return
      * @throws TokenCreationFailedException
@@ -46,26 +46,27 @@ public interface TokenManager {
 
     /**
      * Creates an SSO token from the existing token.
-     * 
+     *
      * @param token
      * @return
      */
     public abstract SingleSignonToken createSSOToken(Token token) throws TokenCreationFailedException;
 
     /**
-     * Recreates the token from the given token bytes. Will try all known
+     * Recreates the token from the given token bytes without a list of attributes. Will try all known
      * TokenServices in an attempt to recreate the token.
-     * 
+     *
      * @param tokenBytes
+     * @param removeAttributes A list of attributes will be removed from the token
      * @return A non-null Token
      * @throws InvalidTokenException
      */
     @FFDCIgnore(InvalidTokenException.class)
-    public abstract Token recreateTokenFromBytes(byte[] tokenBytes) throws InvalidTokenException, TokenExpiredException;
+    public abstract Token recreateTokenFromBytes(byte[] tokenBytes, String... removeAttributes) throws InvalidTokenException, TokenExpiredException;
 
     /**
      * Recreates the token of the specified token type from the given token bytes.
-     * 
+     *
      * @param tokenType The type of token to recreate.
      * @param encryptedTokenBytes The encrypted token bytes.
      * @return The recreated token of the specified type.

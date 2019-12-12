@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2011 IBM Corporation and others.
+ * Copyright (c) 2004, 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -101,6 +101,36 @@ public class LTPAToken2 implements Token, Serializable {
         this.expirationInMilliseconds = 0;
         this.cipher = AES_CBC_CIPHER;
         decrypt();
+    }
+
+    /**
+     * An LTPA2 token constructor.
+     *
+     * @param tokenBytes The byte representation of the LTPA2 token
+     * @param sharedKey The LTPA shared key
+     * @param privateKey The LTPA private key
+     * @param publicKey The LTPA public key
+     * @param attributes The list of attributes will be removed from the LTPA2 token
+     */
+    public LTPAToken2(byte[] tokenBytes, @Sensitive byte[] sharedKey, LTPAPrivateKey privateKey, LTPAPublicKey publicKey,
+                      String... attributes) throws InvalidTokenException, TokenExpiredException {
+        checkTokenBytes(tokenBytes);
+        this.signature = null;
+        this.encryptedBytes = tokenBytes.clone();
+        this.sharedKey = sharedKey.clone();
+        this.privateKey = privateKey;
+        this.publicKey = publicKey;
+        this.expirationInMilliseconds = 0;
+        this.cipher = AES_CBC_CIPHER;
+        decrypt();
+
+        isValid();
+
+        //Reset signature, encryptedBytes and remove attributes
+        this.signature = null;
+        this.encryptedBytes = null;
+        userData.removeAttributes(attributes);
+
     }
 
     /**
@@ -412,7 +442,7 @@ public class LTPAToken2 implements Token, Serializable {
      * @param expirationInMinutes the expiration limit of the LTPA2 token in minutes
      */
     private final void setExpiration(long expirationInMinutes) {
-	expirationInMilliseconds = System.currentTimeMillis()+ expirationInMinutes * 60 * 1000;
+        expirationInMilliseconds = System.currentTimeMillis() + expirationInMinutes * 60 * 1000;
         signature = null;
         if (userData != null) {
             encryptedBytes = null;

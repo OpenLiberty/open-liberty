@@ -36,6 +36,7 @@ import javax.persistence.OneToMany;
 import org.eclipse.persistence.annotations.ClassExtractor;
 
 import com.ibm.jbatch.container.ws.WSJobExecution;
+import com.ibm.websphere.ras.annotation.Trivial;
 
 @NamedQueries({
                 @NamedQuery(name = JobExecutionEntity.UPDATE_JOB_EXECUTION_AND_INSTANCE_SERVER_NOT_SET, query = "UPDATE JobExecutionEntity x SET x.batchStatus = :batchStatus, x.lastUpdatedTime = :lastUpdatedTime WHERE x.jobExecId = :jobExecId AND x.serverId IS NULL"),
@@ -112,6 +113,7 @@ public class JobExecutionEntity extends JobThreadExecutionBase implements JobExe
     private Collection<StepThreadExecutionEntity> stepThreadExecutions;
 
     // For JPA
+    @Trivial
     public JobExecutionEntity() {
     }
 

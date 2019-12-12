@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -65,6 +65,7 @@ public class TokenManagerImpl implements TokenManager {
     }
 
     /** {@inheritDoc} */
+    @Override
     public Token createToken(String tokenType, Map<String, Object> tokenData) throws TokenCreationFailedException {
         try {
             TokenService tokenService = getTokenServiceForType(tokenType);
@@ -75,6 +76,7 @@ public class TokenManagerImpl implements TokenManager {
     }
 
     /** {@inheritDoc} */
+    @Override
     public SingleSignonToken createSSOToken(Map<String, Object> tokenData) throws TokenCreationFailedException {
         try {
             TokenService tokenService = getTokenServiceForType(ssoTokenType);
@@ -88,6 +90,7 @@ public class TokenManagerImpl implements TokenManager {
     }
 
     /** {@inheritDoc} */
+    @Override
     public SingleSignonToken createSSOToken(Token token) throws TokenCreationFailedException {
         try {
             TokenService tokenService = getTokenServiceForType(ssoTokenType);
@@ -100,8 +103,9 @@ public class TokenManagerImpl implements TokenManager {
     }
 
     /** {@inheritDoc} */
+    @Override
     @FFDCIgnore(InvalidTokenException.class)
-    public Token recreateTokenFromBytes(byte[] tokenBytes) throws InvalidTokenException, TokenExpiredException {
+    public Token recreateTokenFromBytes(byte[] tokenBytes, String... removeAttributes) throws InvalidTokenException, TokenExpiredException {
         Token token = null;
 
         Iterator<TokenService> availableServices = services.getServices();
@@ -111,11 +115,15 @@ public class TokenManagerImpl implements TokenManager {
                 Tr.debug(
                          tc,
                          "Trying to recreate token using token service "
-                                         + tokenService
-                                         + ". This will fail if the token was not created by this service and may fail if the configuration of the service which created the token has changed.");
+                             + tokenService
+                             + ". This will fail if the token was not created by this service and may fail if the configuration of the service which created the token has changed.");
             }
             try {
-                token = tokenService.recreateTokenFromBytes(tokenBytes);
+                if (removeAttributes == null) {
+                    token = tokenService.recreateTokenFromBytes(tokenBytes);
+                } else {
+                    token = tokenService.recreateTokenFromBytes(tokenBytes, removeAttributes);
+                }
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Successfully recreated token using token service " + tokenService + ".");
                 }
@@ -140,6 +148,7 @@ public class TokenManagerImpl implements TokenManager {
     }
 
     /** {@inheritDoc} */
+    @Override
     public Token recreateTokenFromBytes(String tokenType, byte[] tokenBytes) throws InvalidTokenException, TokenExpiredException {
         try {
             TokenService tokenService = getTokenServiceForType(tokenType);
@@ -156,7 +165,7 @@ public class TokenManagerImpl implements TokenManager {
 
     /**
      * Get the TokenService object which provides for the specified tokenType.
-     * 
+     *
      * @param tokenType
      * @return TokenService which handles the specified tokenType. Will not return {@code null}.
      * @throws IllegalArgumentException if there is no available service for the specified tokenType
@@ -176,5 +185,4 @@ public class TokenManagerImpl implements TokenManager {
             throw new IllegalArgumentException(formattedMessage);
         }
     }
-
 }

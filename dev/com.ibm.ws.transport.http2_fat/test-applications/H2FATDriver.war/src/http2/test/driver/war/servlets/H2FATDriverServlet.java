@@ -2402,9 +2402,13 @@ public class H2FATDriverServlet extends FATServlet {
         // Defect 266386
         // addFirstExpectedHeaders(h2Client);
 
-        byte[] debugData = "DATA Frame Received in the wrong state of: HALF_CLOSED_REMOTE".getBytes();
-        FrameGoAwayClient errorFrame = new FrameGoAwayClient(0, debugData, new int[] { STREAM_CLOSED, PROTOCOL_ERROR }, new int[] { 1, 3 });
-        h2Client.addExpectedFrame(errorFrame);
+        //byte[] debugData = "DATA Frame Received in the wrong state of: HALF_CLOSED_REMOTE".getBytes();
+        //FrameGoAwayClient errorFrame = new FrameGoAwayClient(0, debugData, new int[] { STREAM_CLOSED, PROTOCOL_ERROR }, new int[] { 1, 3 });
+        //h2Client.addExpectedFrame(errorFrame);
+
+        // Depending on which order the frames are processed, we may get either a GOAWAY PROTOCOL_ERROR or STREAM_CLOSED
+        // Just check for a generic goaway frame type
+        h2Client.addExpectedFrame(FrameTypes.GOAWAY, 0);
 
         h2Client.sendUpgradeHeader(HEADERS_ONLY_URI);
         h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
@@ -2438,9 +2442,13 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.addExpectedFrame(DEFAULT_SERVER_SETTINGS_FRAME);
         addFirstExpectedHeaders(h2Client);
 
-        byte[] debugData = "HEADERS Frame Received in the wrong state of: HALF_CLOSED_REMOTE".getBytes();
-        FrameGoAwayClient errorFrame = new FrameGoAwayClient(0, debugData, new int[] { STREAM_CLOSED, PROTOCOL_ERROR }, new int[] { 1, 3 });
-        h2Client.addExpectedFrame(errorFrame);
+        //byte[] debugData = "HEADERS Frame Received in the wrong state of: HALF_CLOSED_REMOTE".getBytes();
+        //FrameGoAwayClient errorFrame = new FrameGoAwayClient(0, debugData, new int[] { STREAM_CLOSED, PROTOCOL_ERROR }, new int[] { 1, 3 });
+        //h2Client.addExpectedFrame(errorFrame);
+
+        // Depending on which order the frames are processed, we may get either a GOAWAY PROTOCOL_ERROR or STREAM_CLOSED
+        // Just check for a generic goaway frame type
+        h2Client.addExpectedFrame(FrameTypes.GOAWAY, 0);
 
         h2Client.sendUpgradeHeader(HEADERS_ONLY_URI);
         h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
@@ -2471,9 +2479,13 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.addExpectedFrame(DEFAULT_SERVER_SETTINGS_FRAME);
         addFirstExpectedHeaders(h2Client);
 
-        byte[] debugData = "Did not receive the expected continuation frame".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
-        h2Client.addExpectedFrame(errorFrame);
+        //byte[] debugData = "Did not receive the expected continuation frame".getBytes();
+        //FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
+        //h2Client.addExpectedFrame(errorFrame);
+
+        // Depending on which order the frames are processed, we may get either a GOAWAY PROTOCOL_ERROR or STREAM_CLOSED
+        // Just check for a generic goaway frame type
+        h2Client.addExpectedFrame(FrameTypes.GOAWAY, 0);
 
         h2Client.sendUpgradeHeader(HEADERS_ONLY_URI);
         h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
@@ -2647,9 +2659,13 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.addExpectedFrame(DEFAULT_SERVER_SETTINGS_FRAME);
         addFirstExpectedHeaders(h2Client);
 
-        byte[] debugData = "CONTINUATION Frame Received when not in a Continuation State".getBytes();
-        FrameGoAwayClient errorFrame = new FrameGoAwayClient(0, debugData, new int[] { STREAM_CLOSED, PROTOCOL_ERROR }, new int[] { 1, 3 });
-        h2Client.addExpectedFrame(errorFrame);
+        //byte[] debugData = "CONTINUATION Frame Received when not in a Continuation State".getBytes();
+        //FrameGoAwayClient errorFrame = new FrameGoAwayClient(0, debugData, new int[] { STREAM_CLOSED, PROTOCOL_ERROR }, new int[] { 1, 3 });
+        //h2Client.addExpectedFrame(errorFrame);
+
+        // Depending on which order the frames are processed, we may get either a GOAWAY PROTOCOL_ERROR or STREAM_CLOSED
+        // Just check for a generic goaway frame type
+        h2Client.addExpectedFrame(FrameTypes.GOAWAY, 0);
 
         h2Client.sendUpgradeHeader(HEADERS_ONLY_URI);
         h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
@@ -3419,7 +3435,12 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.sendUpgradeHeader(HEADERS_ONLY_URI);
         h2Client.sendClientPreface("Bad-PRI");
 
-        blockUntilConnectionIsDone.await();
+        // The successful completion of this test is a timeout.
+        // To avoid a timing issue where the client waits for 30 seconds to call it quits, and the server waits for
+        // 30 seconds on server shutdown, I'm reducing the client timeout to 10 seconds, as that should be sufficient
+        // time for connection set up.
+        blockUntilConnectionIsDone.await(10000, TimeUnit.MILLISECONDS);
+
         Assert.assertTrue(testName + " received the server's preface. wasServerPrefaceReceived() = true", !h2Client.wasServerPrefaceReceived());
         //handleErrors(h2Client, testName);
     }
@@ -4297,9 +4318,13 @@ public class H2FATDriverServlet extends FATServlet {
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
         h2Client.addExpectedFrame(DEFAULT_SERVER_SETTINGS_FRAME);
 
-        byte[] debugData = "PUSH_PROMISE Frame Received on server side".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
-        h2Client.addExpectedFrame(errorFrame);
+        //byte[] debugData = "PUSH_PROMISE Frame Received on server side".getBytes();
+        //FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
+        //h2Client.addExpectedFrame(errorFrame);
+
+        // Depending on which order the frames are processed, we may get either a GOAWAY PROTOCOL_ERROR or STREAM_CLOSED
+        // Just check for a generic goaway frame type
+        h2Client.addExpectedFrame(FrameTypes.GOAWAY, 0);
 
         List<H2HeaderField> pushPromiseHeaders = new ArrayList<H2HeaderField>();
         pushPromiseHeaders.add(new H2HeaderField(":method", "GET"));

@@ -14,6 +14,7 @@ import java.util.concurrent.ScheduledExecutorService;
 
 import org.eclipse.microprofile.config.spi.ConfigBuilder;
 
+import com.ibm.ws.microprofile.config.interfaces.SortedSources;
 import com.ibm.ws.microprofile.config.interfaces.WebSphereConfig;
 
 public class ConfigBuilderImpl extends AbstractConfigBuilder implements ConfigBuilder {

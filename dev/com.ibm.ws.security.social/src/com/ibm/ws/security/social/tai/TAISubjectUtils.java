@@ -192,7 +192,7 @@ public class TAISubjectUtils {
 
     private String getDefaultRealm(SocialLoginConfig config) throws SettingCustomPropertiesException {
         String realm = null;
-        if (SocialUtil.isKubeConfig(config) && SocialUtil.useAccessTokenFromRequest(config)) {
+        if (SocialUtil.isKubeConfig(config)) {
             String ep = getRealmFromUserApiEndpoint(config);
             if (ep == null) {
                 if (tc.isDebugEnabled()) {
@@ -205,7 +205,7 @@ public class TAISubjectUtils {
             }
         } else {
             // original behavior before adding the support for kube type
-            realm = getDefaultRealmFromAuthorizationEndpoint(config);
+            realm = constructDefaultRealmFromConfig(config);
         }
         return realm;
         
@@ -247,17 +247,23 @@ public class TAISubjectUtils {
         return realm;
     }
     
-
-    String getDefaultRealmFromAuthorizationEndpoint(SocialLoginConfig config) throws SettingCustomPropertiesException {
-        String authzEndpoint = getAuthorizationEndpoint(config);
-        if (!isValidAuthorizationEndpoint(authzEndpoint)) {
+    String constructDefaultRealmFromConfig(SocialLoginConfig config) throws SettingCustomPropertiesException {
+        // try authorization endpoint first and then the userapi endpoint
+        String endpoint = getAuthorizationEndpoint(config);
+        if (!isValidEndpoint(endpoint)) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Authorization endpoint [" + authzEndpoint + "] is either empty or too short to be a valid URL");
+                Tr.debug(tc, "Authorization endpoint [" + endpoint + "] is either empty or too short to be a valid URL, try using userapi ep.");
             }
-            Tr.error(tc, "REALM_NOT_FOUND");
-            throw new SettingCustomPropertiesException();
+            endpoint = config.getUserApi();
+            if (!isValidEndpoint(endpoint)) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Userapi endpoint [" + endpoint + "] is either empty or too short to be a valid URL");
+                }
+                Tr.error(tc, "REALM_NOT_FOUND");
+                throw new SettingCustomPropertiesException();
+            }    
         }
-        return extractRealmFromAuthorizationEndpoint(authzEndpoint);
+        return extractRealmFromEndpoint(endpoint);
     }
 
     Subject buildSubject(SocialLoginConfig config, Hashtable<String, Object> customProperties) throws SocialLoginException {
@@ -425,12 +431,12 @@ public class TAISubjectUtils {
         }
     }
 
-    private boolean isValidAuthorizationEndpoint(String authzEndpoint) {
+    private boolean isValidEndpoint(String authzEndpoint) {
         int httpsStrLen = "https://".length();
         return authzEndpoint != null && !authzEndpoint.isEmpty() && authzEndpoint.length() > httpsStrLen;
     }
 
-    private String extractRealmFromAuthorizationEndpoint(String authzEndpoint) {
+    private String extractRealmFromEndpoint(String authzEndpoint) {
         // Assumes that the authorization endpoint must start with "https://"
         int httpsStrLen = "https://".length();
         String endpointWithSchemeRemoved = authzEndpoint.substring(httpsStrLen);

@@ -6,3 +6,4 @@ IBM-Process-Types: server, \
 -bundles=com.ibm.ws.transport.iiop.client
 kind=ga
 edition=base
+WLP-Activation-Type: parallel

@@ -31,6 +31,7 @@ import org.osgi.framework.ServiceReference;
 import com.ibm.tx.TranConstants;
 import com.ibm.tx.config.ConfigurationProvider;
 import com.ibm.tx.config.ConfigurationProviderManager;
+import com.ibm.tx.jta.config.DefaultConfigurationProvider;
 import com.ibm.tx.jta.util.TranLogConfiguration;
 import com.ibm.tx.util.logging.FFDCFilter;
 import com.ibm.tx.util.logging.Tr;
@@ -81,8 +82,6 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
 
     private ClassLoadingService clService;
 
-    private boolean _unitTesting;
-
     protected TxRecoveryAgentImpl() {
     }
 
@@ -111,7 +110,6 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
         // In the normal Liberty runtime the Applid will have been set into the JTMConfigurationProvider by the
         // TransactionManagerService. We additionally can set the applid here for the benefit of the unittest framework.
         if (cp.getApplId() == null) {
-            _unitTesting = true;
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "TXAGENT, cp applid null - " + cp + " set applid - " + Util.toHexString(newApplId));
             cp.setApplId(newApplId);
@@ -175,7 +173,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
             }
             // Determine whether we are dealing with a custom log configuration (e.g. WXS or JDBC)
             boolean isCustom = false;
-            ConfigurationProvider cp = ConfigurationProviderManager.getConfigurationProvider();
+            final ConfigurationProvider cp = ConfigurationProviderManager.getConfigurationProvider();
 
             String logDir = cp.getTransactionLogDirectory();
             int logSize = cp.getTransactionLogSize();
@@ -350,24 +348,33 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                 rm.setLocalRecoveryIdentity(localRecoveryIdentity);
             }
 
-            Thread t = AccessController.doPrivileged(new PrivilegedAction<Thread>() {
+            final Thread t = AccessController.doPrivileged(new PrivilegedAction<Thread>() {
                 @Override
                 public Thread run() {
                     return new Thread(rm, "Recovery Thread");
                 }
             });
 
-            // If we're not unit testing, set a ThreadContextClassLoader on the recovery thread so SSL classes can be loaded
-            if (!_unitTesting) {
-                final ClassLoader cl = getThreadContextClassLoader(this.getClass());
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Setting Context ClassLoader on " + t.getName() + " (" + String.format("%08X", t.getId()) + ")", cl);
+            AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
 
-                t.setContextClassLoader(cl);
-            } else {
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "unit testing so not setting Context ClassLoader on " + t.getName() + " (" + String.format("%08X", t.getId()) + ")");
-            }
+                @Override
+                public Void run() throws RecoveryFailedException {
+                    // If we're not unit testing, set a ThreadContextClassLoader on the recovery thread so SSL classes can be loaded
+                    if (!(cp.getClass().getCanonicalName().equals(DefaultConfigurationProvider.class.getCanonicalName()))) {
+                        final ClassLoader cl = getThreadContextClassLoader(TxRecoveryAgentImpl.class);
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Setting Context ClassLoader on " + t.getName() + " (" + String.format("%08X", t.getId()) + ")", cl);
+
+                        t.setContextClassLoader(cl);
+                    } else {
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "unit testing so not setting Context ClassLoader on " + t.getName() + " (" + String.format("%08X", t.getId()) + ")");
+                    }
+
+                    return null;
+                }
+            });
+
             t.start();
 
             // Once we have got things going on another thread, tell the recovery directory that recovery is "complete". This
@@ -453,6 +460,12 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "initiateRecovery", e);
             throw new RecoveryFailedException(e); // 171598
+        } catch (PrivilegedActionException e) {
+            FFDCFilter.processException(e, "com.ibm.ws.runtime.component.TxServiceImpl.initiateRecovery", "463", this);
+            Tr.error(tc, "WTRN0016_EXC_DURING_RECOVERY", e);
+            if (tc.isEntryEnabled())
+                Tr.exit(tc, "initiateRecovery", e);
+            throw new RecoveryFailedException(e); // 171598
         }
 
         if (tc.isEntryEnabled())
@@ -481,9 +494,11 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
      * @return
      * @throws RecoveryFailedException
      */
-    private <T> T getService(Class<T> service) throws RecoveryFailedException {
+    private <T> T getService(final Class<T> service) throws RecoveryFailedException {
         T impl = null;
+
         BundleContext context = FrameworkUtil.getBundle(service).getBundleContext();
+
         ServiceReference<T> ref = context.getServiceReference(service);
         if (ref != null) {
             impl = context.getService(ref);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.config.impl;
 
-import java.util.Collection;
+import java.util.AbstractSet;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.SortedSet;
@@ -19,50 +19,45 @@ import java.util.TreeSet;
 import org.eclipse.microprofile.config.spi.ConfigSource;
 
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.microprofile.config.interfaces.SortedSources;
 
 /**
  * Contains a set of ConfigSources, sorted by ordinal, highest value first
  */
-public class SortedSources implements Iterable<ConfigSource> {
+public class SortedSourcesImpl extends AbstractSet<ConfigSource> implements SortedSources {
 
-    private SortedSet<ConfigSource> sources;
+    private SortedSet<ConfigSource> sources = new TreeSet<>(ConfigSourceComparator.INSTANCE);
 
-    public SortedSources() {
-        sources = new TreeSet<ConfigSource>(ConfigSourceComparator.INSTANCE);
+    public SortedSourcesImpl() {
+        super();
     }
 
-    public SortedSources(SortedSet<ConfigSource> initialSources) {
+    public SortedSourcesImpl(SortedSet<ConfigSource> initialSources) {
         this();
-        sources.addAll(initialSources);
+        this.sources.addAll(initialSources);
     }
 
+    @Override
     @Trivial
-    public SortedSources unmodifiable() {
-        sources = Collections.unmodifiableSortedSet(sources);
+    public SortedSourcesImpl unmodifiable() {
+        this.sources = Collections.unmodifiableSortedSet(this.sources);
         return this;
-    }
-
-    /**
-     * @param toAdd
-     */
-    @Trivial
-    public void addAll(Collection<ConfigSource> toAdd) {
-        sources.addAll(toAdd);
     }
 
     /** {@inheritDoc} */
     @Override
     @Trivial
     public Iterator<ConfigSource> iterator() {
-        return sources.iterator();
+        return this.sources.iterator();
     }
 
     /**
      * @return
      */
+    @Override
     @Trivial
     public int size() {
-        return sources.size();
+        return this.sources.size();
     }
 
     @Override
@@ -77,12 +72,8 @@ public class SortedSources implements Iterable<ConfigSource> {
         return builder.toString();
     }
 
-    /**
-     * CURRENTLY ONLY USED BY UNIT TEST
-     */
-    @Trivial
-    public void add(ConfigSource source) {
-        sources.add(source);
+    @Override
+    public boolean add(ConfigSource configSource) {
+        return this.sources.add(configSource);
     }
-
 }

@@ -18,7 +18,8 @@ import org.eclipse.microprofile.config.spi.ConfigSource;
 
 import com.ibm.ws.microprofile.config.converters.PriorityConverterMap;
 import com.ibm.ws.microprofile.config.impl.ConversionManager;
-import com.ibm.ws.microprofile.config.impl.SortedSources;
+import com.ibm.ws.microprofile.config.impl.SortedSourcesImpl;
+import com.ibm.ws.microprofile.config.interfaces.SortedSources;
 import com.ibm.ws.microprofile.config12.impl.Config12BuilderImpl;
 import com.ibm.ws.microprofile.config13.converters.Config13DefaultConverters;
 import com.ibm.ws.microprofile.config13.sources.Config13DefaultSources;
@@ -53,7 +54,7 @@ public class Config13BuilderImpl extends Config12BuilderImpl implements ConfigBu
      */
     @Override
     protected SortedSources getSources() {
-        SortedSources sources = new SortedSources(getUserSources());
+        SortedSources sources = new SortedSourcesImpl(getUserSources());
         if (addDefaultSourcesFlag()) {
             sources.addAll(Config13DefaultSources.getDefaultSources(getClassLoader()));
         }

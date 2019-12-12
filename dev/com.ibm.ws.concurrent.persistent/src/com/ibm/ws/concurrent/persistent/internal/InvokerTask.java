@@ -535,7 +535,9 @@ public class InvokerTask implements Runnable, Synchronization {
                 // When updating the task entry, determine whether or not to keep a claim on the task.
                 config = persistentExecutor.configRef.get();
                 if (config.missedTaskThreshold2 > 0)
-                    if (config.enableTaskExecution && config.pollInterval > 0 && nextExecTime != null && nextExecTime <= System.currentTimeMillis() + config.pollInterval) {
+                    if (config.enableTaskExecution
+                        && nextExecTime != null
+                        && (config.pollInterval < 0 || nextExecTime <= System.currentTimeMillis() + config.pollInterval)) {
                         updates.setIdentifierOfPartition(nextExecTime + config.missedTaskThreshold2 * 1000);
                         claimNextExecution = true;
                     } else {
@@ -616,12 +618,11 @@ public class InvokerTask implements Runnable, Synchronization {
 
                     tranMgr.commit();
 
-                    // Immediately reschedule tasks that should run in the near future if the transaction commits
+                    // If the transaction commits, immediately reschedule tasks that should run within a single poll cycle. If no polling, then all tasks.
                     config = persistentExecutor.configRef.get();
                     boolean scheduleNextExecution = config.missedTaskThreshold2 > 0 //
                                     ? claimNextExecution //
                                     : config.enableTaskExecution && nextExecTime != null
-                                      && config.missedTaskThreshold2 < 1 // claim on next execution did not need to be written to the persistent store
                                       && (config.pollInterval < 0
                                           || nextExecTime <= System.currentTimeMillis() + config.pollInterval);
                     if (scheduleNextExecution) {
