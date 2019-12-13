@@ -2418,7 +2418,7 @@ public class LibertyServer implements LogMonitorClient {
                 clearMessageCounters();
             }
 
-            if (GLOBAL_JAVA2SECURITY || GLOBAL_DEBUG_JAVA2SECURITY) {
+            if (isJava2SecurityEnabled()) {
                 try {
                     new ACEScanner(this).run();
                 } catch (Throwable t) {
@@ -2517,7 +2517,20 @@ public class LibertyServer implements LogMonitorClient {
                 // When things go wrong with j2sec, a LOT of things tend to go wrong, so just leave a pointer
                 // to the nicely formatted ACE report instead of putting every single issue in the exception msg
                 sb.append("\n <br>");
-                sb.append("Java 2 security issues were found in logs.  See autoFVT/ACE-report-*.log for details.");
+                sb.append("Java 2 security issues were found in logs");
+                boolean showJ2secErrors = true;
+                // If an ACE-report will be generated....
+                if (isJava2SecurityEnabled()) {
+                    sb.append("  See autoFVT/ACE-report-*.log for details.");
+                    if (j2secIssues.size() > 25)
+                        showJ2secErrors = false;
+                }
+                if (showJ2secErrors) {
+                    for (String j2secIssue : j2secIssues) {
+                        sb.append("\n <br>");
+                        sb.append(j2secIssue);
+                    }
+                }
                 errorsInLogs.removeAll(j2secIssues);
             }
             for (String errorInLog : errorsInLogs) {
@@ -4514,9 +4527,9 @@ public class LibertyServer implements LogMonitorClient {
      * the last mark was set (or the beginning of the file if no mark has been set)
      * and reads until the end of the file.
      *
-     * @param regexp pattern to search for
-     * @return A list of the lines in the log file which contain the matching
-     * pattern. No matches result in an empty list.
+     * @param  regexp    pattern to search for
+     * @return           A list of the lines in the log file which contain the matching
+     *                   pattern. No matches result in an empty list.
      * @throws Exception
      */
     public List<String> findStringsInLogsUsingMark(String regexp, String filePath) throws Exception {
