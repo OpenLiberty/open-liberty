@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2006, 2011 IBM Corporation and others.
+# Copyright (c) 2006, 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -302,6 +302,9 @@ NOT_COMPLIANT_WITH_JPA21_CWWJP0054E=CWWJP0054E: Implementacja {0} - {1} nie jest
 NOT_COMPLIANT_WITH_JPA21_CWWJP0054E.explanation=Nie mo\u017cna u\u017cywa\u0107 tego dostawcy trwa\u0142o\u015bci JPA, poniewa\u017c nie zawiera on implementacji metod wymaganych przez specyfikacj\u0119 JPA 2.1.
 NOT_COMPLIANT_WITH_JPA21_CWWJP0054E.useraction=Uzyskaj nowsz\u0105 wersj\u0119 dostawcy trwa\u0142o\u015bci JPA zgodn\u0105 ze specyfikacj\u0105 JPA 2.1.
 
+ERROR_TRANSFORMING_CLASS_CWWJP0055E=CWWJP0055E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by transformowania klasy Java {0}. Zebrano nast\u0119puj\u0105ce informacje o niepowodzeniu: {1}
+ERROR_TRANSFORMING_CLASS_CWWJP0055E.explanation=Wyst\u0105pi\u0142 nieoczekiwany b\u0142\u0105d podczas transformowania klasy Java. Ten b\u0142\u0105d jest zwykle spowodowany niepoprawnym kodem bajtowym Java.
+ERROR_TRANSFORMING_CLASS_CWWJP0055E.useraction=By\u0107 mo\u017ce pami\u0119\u0107 podr\u0119czna klas jest uszkodzona lub aplikacja jest nieprawid\u0142owo spakowana. Najpierw wyczy\u015b\u0107 pami\u0119\u0107 podr\u0119czn\u0105 klas. Je\u015bli to dzia\u0142anie nie rozwi\u0105\u017ce problemu, sprawd\u017a archiwum aplikacji pod k\u0105tem b\u0142\u0119d\u00f3w pakowania.
 #-------------------------------------------------------------------------------
 # Error messages from the JPA Provider below this point
 #-------------------------------------------------------------------------------
