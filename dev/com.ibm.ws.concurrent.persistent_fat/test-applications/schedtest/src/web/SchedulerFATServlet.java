@@ -36,6 +36,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Delayed;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -43,6 +44,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.Phaser;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.annotation.Resource;
 import javax.enterprise.concurrent.AbortedException;
@@ -1184,6 +1186,128 @@ public class SchedulerFATServlet extends HttpServlet {
             taskStatus.cancel(false);
             CancelableTask.notifyTaskCanceled("CancelableTask-first-testBlockRunningTaskFE");
         }
+    }
+
+    // Enables SelfCancelingTask and SelfRemovingTask to coordinate timing with the next two tests
+    public static final AtomicReference<Phaser> phaserRef = new AtomicReference<Phaser>();
+
+    /**
+     * Block the execution of a task after it starts running and cancels itself.
+     */
+    public void testBlockRunningTaskThatCancelsSelfFE(PrintWriter out) throws Exception {
+        SelfCancelingTask task = new SelfCancelingTask("first-testBlockRunningTaskThatCancelsSelfFE", 1, false); // update once, then cancel self
+        task.getExecutionProperties().put(AutoPurge.PROPERTY_NAME, AutoPurge.NEVER.name());
+        TaskStatus<Integer> taskStatus;
+        Phaser phaser = new Phaser(1);
+        phaserRef.set(phaser);
+        try {
+            taskStatus = scheduler.submit((Callable<Integer>) task);
+            try {
+                phaser.awaitAdvance(1);
+                System.out.println("Task is running and has canceled itself...");
+
+                // The PROP entry for the task will remain locked within a suspended transaction
+                // The TASK entry for the task will remain locked within the transaction in which the task executes
+
+                // Scheduling of additional tasks is not blocked,
+                DBIncrementTask anotherTask = new DBIncrementTask("second-testBlockRunningTaskThatCancelsSelfFE");
+                anotherTask.getExecutionProperties().put(AutoPurge.PROPERTY_NAME, AutoPurge.NEVER.name());
+                TaskStatus<?> statusOfAnotherTask = scheduler.scheduleWithFixedDelay(anotherTask, 0, 71, TimeUnit.HOURS);
+                long anotherTaskId = statusOfAnotherTask.getTaskId();
+
+                // Running of additional tasks is not blocked,
+                for (long start = System.nanoTime(); !statusOfAnotherTask.hasResult() && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL))
+                    statusOfAnotherTask = scheduler.getStatus(statusOfAnotherTask.getTaskId());
+                if (!statusOfAnotherTask.hasResult())
+                    throw new Exception("The second task didn't run. " + statusOfAnotherTask);
+                statusOfAnotherTask.getResult(); // forces an error to be raised if unsuccessful
+
+                // Cancellation is not blocked,
+                if (!statusOfAnotherTask.cancel(false))
+                    throw new Exception("Unable to cancel other task " + anotherTaskId);
+
+                // Removal is not blocked,
+                if (!scheduler.remove(anotherTaskId))
+                    throw new Exception("Unable to remove other task " + anotherTaskId);
+            } catch (Exception x) {
+                try {
+                    taskStatus.cancel(false);
+                } catch (Throwable t) {
+                }
+                throw x; // original exception
+            }
+        } finally {
+            phaser.arrive();
+            phaserRef.set(null);
+        }
+
+        // wait for task to finish normally
+        for (long start = System.nanoTime(); !taskStatus.hasResult() && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL))
+            taskStatus = scheduler.getStatus(taskStatus.getTaskId());
+        if (!taskStatus.hasResult())
+            throw new Exception("The first task didn't run. " + taskStatus);
+        try {
+            Integer result = taskStatus.getResult();
+            throw new Exception("Task that cancels itself should raise CancellationException, not have result of " + result);
+        } catch (CancellationException x) {
+            // expected
+        }
+    }
+
+    /**
+     * Block the execution of a task after it starts running and removes itself.
+     */
+    public void testBlockRunningTaskThatRemovesSelfFE(PrintWriter out) throws Exception {
+        SelfRemovingTask task = new SelfRemovingTask("first-testBlockRunningTaskThatRemovesSelfFE", 1, false); // update once, then remove self
+        TaskStatus<Integer> taskStatus;
+        Phaser phaser = new Phaser(1);
+        phaserRef.set(phaser);
+        try {
+            taskStatus = scheduler.submit((Callable<Integer>) task);
+            try {
+                phaser.awaitAdvance(1);
+                System.out.println("Task is running and has removed itself...");
+
+                // The PROP entry for the task will remain locked within a suspended transaction
+                // The TASK entry for the task will remain locked within the transaction in which the task executes
+
+                // Scheduling of additional tasks is not blocked,
+                DBIncrementTask anotherTask = new DBIncrementTask("second-testBlockRunningTaskThatRemovesSelfFE");
+                anotherTask.getExecutionProperties().put(AutoPurge.PROPERTY_NAME, AutoPurge.NEVER.name());
+                TaskStatus<?> statusOfAnotherTask = scheduler.scheduleWithFixedDelay(anotherTask, 0, 72, TimeUnit.HOURS);
+                long anotherTaskId = statusOfAnotherTask.getTaskId();
+
+                // Running of additional tasks is not blocked,
+                for (long start = System.nanoTime(); !statusOfAnotherTask.hasResult() && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL))
+                    statusOfAnotherTask = scheduler.getStatus(statusOfAnotherTask.getTaskId());
+                if (!statusOfAnotherTask.hasResult())
+                    throw new Exception("The second task didn't run. " + statusOfAnotherTask);
+                statusOfAnotherTask.getResult(); // forces an error to be raised if unsuccessful
+
+                // Cancellation is not blocked,
+                if (!statusOfAnotherTask.cancel(false))
+                    throw new Exception("Unable to cancel other task " + anotherTaskId);
+
+                // Removal is not blocked,
+                if (!scheduler.remove(anotherTaskId))
+                    throw new Exception("Unable to remove other task " + anotherTaskId);
+            } catch (Exception x) {
+                try {
+                    taskStatus.cancel(false);
+                } catch (Throwable t) {
+                }
+                throw x; // original exception
+            }
+        } finally {
+            phaser.arrive();
+            phaserRef.set(null);
+        }
+
+        // wait for task to finish normally
+        for (long start = System.nanoTime(); taskStatus != null && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL))
+            taskStatus = scheduler.getStatus(taskStatus.getTaskId());
+        if (taskStatus != null)
+            throw new Exception("The first task didn't remove itself. " + taskStatus);
     }
 
     /**

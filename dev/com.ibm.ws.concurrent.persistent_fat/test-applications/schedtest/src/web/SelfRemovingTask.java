@@ -10,6 +10,8 @@
  *******************************************************************************/
 package web;
 
+import java.util.concurrent.Phaser;
+
 import javax.naming.InitialContext;
 import javax.transaction.UserTransaction;
 
@@ -51,6 +53,13 @@ public class SelfRemovingTask extends DBIncrementTask {
 
             if (!persistentExecutor.remove(taskId))
                 throw new Exception("Task failed to remove itself. Task id is: " + taskId);
+
+            // coordinate timing with certain test cases
+            Phaser phaser = SchedulerFATServlet.phaserRef.get();
+            if (phaser != null) {
+                int phase = phaser.arrive();
+                phaser.awaitAdvance(phase + 1);
+            }
         }
         return numUpdates;
     }
