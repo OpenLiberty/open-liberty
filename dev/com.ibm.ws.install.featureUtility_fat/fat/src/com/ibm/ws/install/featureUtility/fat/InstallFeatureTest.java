@@ -142,11 +142,14 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         final String METHOD_NAME = "testInvalidFeature";
         Log.entering(c, METHOD_NAME);
 
+        deleteFeaturesAndLafilesFolders(METHOD_NAME);
         String[] param1s = { "installFeature", "veryClearlyMadeUpFeatureThatNoOneWillEverThinkToCreateThemselvesAbCxYz-1.0"};
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
         assertEquals("Exit code should be 21",21,  po.getReturnCode());
         String output = po.getStdout();
         assertTrue("Should contain CWWKF1299E or CWWKF1203E", output.indexOf("CWWKF1402E")>=0 ||output.indexOf("CWWKF1203E") >= 0);
+        deleteFeaturesAndLafilesFolders(METHOD_NAME);
+
         Log.exiting(c, METHOD_NAME);
     }
 
@@ -183,23 +186,31 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
     @Test
     public void testInvalidMavenCoordinateGroupId() throws Exception {
         String methodName = "testInvalidMavenCoordinateGroupId";
+        deleteFeaturesAndLafilesFolders(methodName);
+
         String [] param1s = {"if", "madeUpGroupId:mpHealth-2.0"};
         ProgramOutput po = runFeatureUtility(methodName, param1s);
         assertEquals("Group ID does not exist", 21, po.getReturnCode());
         String output = po.getStdout();
         assertTrue("Msg contains CWWKF1402E", output.indexOf("CWWKF1402E") >=0);
-         // TODO change this message in FeatureUtility
+        deleteFeaturesAndLafilesFolders(methodName);
+
+        // TODO change this message in FeatureUtility
 
     }
 
     @Test
     public void testInvalidMavenCoordinateArtifactId() throws Exception {
         String methodName = "testInvalidMavenCoordinateArtifactId";
+        deleteFeaturesAndLafilesFolders(methodName);
+
         String [] param1s = {"if", "io.openliberty.features:mpHealth"};
         ProgramOutput po = runFeatureUtility(methodName, param1s);
         assertEquals("Invalid feature shortname", 21, po.getReturnCode());
         String output = po.getStdout();
         assertTrue("Expected CWWKF1402E", output.indexOf("CWWKF1402E") >= 0);
+        deleteFeaturesAndLafilesFolders(methodName);
+
     }
 
     /**
@@ -212,12 +223,16 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
     public void testInvalidMavenCoordinateVersion() throws Exception {
         String methodName = "testInvalidMavenCoordinateVersion";
         // version mismatch. get an old Liberty version.
+        deleteFeaturesAndLafilesFolders(methodName);
+
         String oldVersion = "19.0.0.1";
         String [] param1s = {"if", "io.openliberty.features:mpHealth-2.0:"+oldVersion};
         ProgramOutput po = runFeatureUtility(methodName, param1s);
         assertEquals("Incompatible feature version" , 21, po.getReturnCode());
         String output = po.getStdout();
         assertTrue("Expected CWWKF1395E msg", output.indexOf("CWWKF1395E") >= 0);
+        deleteFeaturesAndLafilesFolders(methodName);
+
     }
     
     /**
@@ -258,6 +273,9 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         String output;
         String version = getPreviousWlpVersion();
 
+        deleteFeaturesAndLafilesFolders(methodName);
+
+
         String [] param1s = {"if", "groupId:artifactId:"+version+":esa:unsupportedOption"};
         po = runFeatureUtility(methodName, param1s);
         assertEquals(21, po.getReturnCode());
@@ -283,17 +301,23 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         assertEquals(21, po.getReturnCode());
         output = po.getStdout();
         assertTrue("should output CWWKF1397E ", output.indexOf("CWWKF1397E")>=0);
+
+        deleteFeaturesAndLafilesFolders(methodName);
+
     }
 
     @Test
     public void testBlankFeature() throws Exception {
         String methodName = "testBlankFeature";
+        deleteFeaturesAndLafilesFolders(methodName);
 
         String [] param1s = {"if" , " "};
         ProgramOutput po = runFeatureUtility(methodName, param1s);
         assertEquals(20, po.getReturnCode()); // 20 refers to ReturnCode.BAD_ARGUMENT
         String output = po.getStdout();
         assertTrue("Should refer to ./featureUtility help", output.indexOf("Usage")>=0);
+        deleteFeaturesAndLafilesFolders(methodName);
+
 
     }
 
