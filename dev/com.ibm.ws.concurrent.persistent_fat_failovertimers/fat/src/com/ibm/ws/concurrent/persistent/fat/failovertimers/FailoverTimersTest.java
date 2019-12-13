@@ -33,6 +33,8 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.DataSource;
+import com.ibm.websphere.simplicity.config.PersistentExecutor;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.topology.impl.LibertyServer;
@@ -82,6 +84,22 @@ public class FailoverTimersTest extends FATServletClient {
         serverB.useSecondaryHTTPPort();
         originalConfigB = serverB.getServerConfiguration();
         ShrinkHelper.defaultApp(serverB, APP_NAME, "failovertimers.web", "failovertimers.ejb.autotimer", "failovertimers.ejb.stateless");
+
+        // TODO If this approach is chosen, then rename missedTaskThreshold2 and remove this section after deleting the other test
+        ServerConfiguration config = originalConfigA.clone();
+        PersistentExecutor executor = config.getPersistentExecutors().getById("defaultEJBPersistentTimerExecutor");
+        executor.setExtraAttribute("missedTaskThreshold2", executor.getMissedTaskThreshold());
+        executor.setMissedTaskThreshold(null);
+        DataSource defaultDataSource = config.getDataSources().getById("DefaultDataSource");
+        defaultDataSource.getProperties_derby_client().get(0).setDatabaseName("${shared.resource.dir}/data/failovertimers2db");
+        serverA.updateServerConfiguration(config);
+        config = originalConfigB.clone();
+        executor = config.getPersistentExecutors().getById("defaultEJBPersistentTimerExecutor");
+        executor.setExtraAttribute("missedTaskThreshold2", executor.getMissedTaskThreshold());
+        executor.setMissedTaskThreshold(null);
+        defaultDataSource = config.getDataSources().getById("DefaultDataSource");
+        defaultDataSource.getProperties_derby_client().get(0).setDatabaseName("${shared.resource.dir}/data/failovertimers2db");
+        serverB.updateServerConfiguration(config);
     }
 
     /**
@@ -151,8 +169,9 @@ public class FailoverTimersTest extends FATServletClient {
                     "testTimerFailover&timer=Timer_400_1700&server=" + SERVER_B_NAME + "&test=testProgrammaticTimerFailsOverWhenTimerFailsOnOneServer[3]");
         } finally {
             // The server (serverA) upon which the timer failed will initially continue trying to run it.
-            // However, the timer now belongs to a different member (paritionId), so it should be skipped silently
-            // on serverA and then no longer rescheduled there.
+            // However, the timer was taken over by a different member which is likely continuing to claim executions of it,
+            // in which case it should be skipped silently on serverA and then no longer rescheduled there
+            // unless the other member doesn't claim it.
             Thread.sleep(2000);
 
             runTest(serverA, APP_NAME + "/FailoverTimersTestServlet",
@@ -192,8 +211,9 @@ public class FailoverTimersTest extends FATServletClient {
                     "testTimerFailover&timer=Timer_300_1800&server=" + SERVER_B_NAME + "&test=testProgrammaticTimerFailsOverWhenTimerRollsBackOnOneServer[3]");
         } finally {
             // The server (serverA) upon which the timer rolled back will initially continue trying to run it.
-            // However, the timer now belongs to a different member (paritionId), so it should be skipped silently
-            // on serverA and then no longer rescheduled there.
+            // However, the timer was taken over by a different member which is likely continuing to claim executions of it,
+            // in which case it should be skipped silently on serverA and then no longer rescheduled there
+            // unless the other member doesn't claim it.
             Thread.sleep(2000);
 
             runTest(serverA, APP_NAME + "/FailoverTimersTestServlet",
@@ -206,7 +226,8 @@ public class FailoverTimersTest extends FATServletClient {
         // Also restart the server. This allows us to process any expected warning messages that are logged in response
         // to the intentionally failed task.
         serverA.stopServer(
-                "CWWKC1500W.*StatelessProgrammaticTimersBean" // Persistent executor defaultEJBPersistentTimerExecutor rolled back task ...
+                "CWWKC1500W.*StatelessProgrammaticTimersBean", // Persistent executor defaultEJBPersistentTimerExecutor rolled back task ... The task is scheduled to retry after ...
+                "CWWKC1502W.*StatelessProgrammaticTimersBean"  // Persistent executor defaultEJBPersistentTimerExecutor rolled back task ... [no retry]
                 );
     }
 
@@ -238,7 +259,8 @@ public class FailoverTimersTest extends FATServletClient {
 
             // The server upon which the application was stopped will try to run the task again
             // upon seeing that the application has become available.
-            // However, the task now belongs to a different member (paritionId). It should be skipped silently without errors.
+            // However, the timer was taken over by a different member which is likely continuing to claim executions of it.
+            // It should be skipped silently on the first member without errors.
             Thread.sleep(2000);
 
             runTest(serverB, APP_NAME + "/FailoverTimersTestServlet", "testCancelStatelessTxSuspendedTimers&test=testProgrammaticTimerWithTxSuspendedFailsOverWhenAppStops[3]");
@@ -286,7 +308,8 @@ public class FailoverTimersTest extends FATServletClient {
 
             // The server upon which the application was stopped will try to run the task again
             // upon seeing that the application has become available.
-            // However, the task now belongs to a different member (paritionId). It should be skipped silently without errors.
+            // However, the timer was taken over by a different member which is likely continuing to claim executions of it.
+            // It should be skipped silently on the first member without errors.
             Thread.sleep(2000);
 
             // Also restart the server. This allows us to process any expected warning messages that are logged in response
