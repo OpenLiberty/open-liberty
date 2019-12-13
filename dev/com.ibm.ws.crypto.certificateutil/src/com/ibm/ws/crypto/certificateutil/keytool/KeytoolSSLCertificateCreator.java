@@ -12,7 +12,6 @@ package com.ibm.ws.crypto.certificateutil.keytool;
 
 import java.io.File;
 import java.security.cert.CertificateException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.naming.InvalidNameException;
@@ -24,18 +23,6 @@ import com.ibm.ws.crypto.certificateutil.DefaultSSLCertificateCreator;
  *
  */
 public class KeytoolSSLCertificateCreator implements DefaultSSLCertificateCreator {
-
-    /** {@inheritDoc} */
-    @Override
-    public File createDefaultSSLCertificate(String filePath, String password, int validity, String subjectDN, int keySize, String sigAlg,
-                                            String extInfo) throws CertificateException {
-        ArrayList<String> ext = new ArrayList<String>();
-        if (extInfo != null) {
-            ext.add(extInfo);
-        }
-        return createDefaultSSLCertificate(filePath, password, validity, subjectDN, keySize, sigAlg, ext);
-
-    }
 
     /** {@inheritDoc} */
     @Override
