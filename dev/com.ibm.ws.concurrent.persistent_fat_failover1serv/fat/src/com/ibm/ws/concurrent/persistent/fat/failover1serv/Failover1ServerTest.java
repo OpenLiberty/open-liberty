@@ -46,7 +46,7 @@ public class Failover1ServerTest extends FATServletClient {
 	private static final String APP_NAME = "failover1servApp";
 	private static final Set<String> APP_NAMES = Collections.singleton(APP_NAME);
 
-    private static ServerConfiguration originalConfig, savedConfig;
+    private static ServerConfiguration originalConfig;
 
     @Server("com.ibm.ws.concurrent.persistent.fat.failover1serv")
     @TestServlet(servlet = Failover1ServerTestServlet.class, contextRoot = APP_NAME)
@@ -57,16 +57,6 @@ public class Failover1ServerTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         originalConfig = server.getServerConfiguration();
-
-        // TODO remove this and update server.xml instead if we choose the approach that is tested by this class
-        savedConfig = originalConfig.clone();
-        PersistentExecutor persistentExec1 = savedConfig.getPersistentExecutors().getById("persistentExec1");
-        persistentExec1.setExtraAttribute("missedTaskThreshold2", "10h");
-        PersistentExecutor persistentExec2 = savedConfig.getPersistentExecutors().getById("persistentExec2");
-        persistentExec2.setExtraAttribute("missedTaskThreshold2", persistentExec2.getMissedTaskThreshold());
-        persistentExec2.setMissedTaskThreshold(null);
-        server.updateServerConfiguration(savedConfig);
-
         ShrinkHelper.defaultDropinApp(server, APP_NAME, "failover1serv.web");
         server.startServer();
     }
@@ -162,7 +152,7 @@ public class Failover1ServerTest extends FATServletClient {
 
             // Simulate failover by disabling the instance (persistentExec2) to which the tasks were scheduled
             // and allowing other instances to claim ownership
-            ServerConfiguration config = savedConfig.clone();
+            ServerConfiguration config = originalConfig.clone();
             PersistentExecutor persistentExec2 = config.getPersistentExecutors().getById("persistentExec2");
             persistentExec2.setEnableTaskExecution("false");
 
@@ -170,21 +160,21 @@ public class Failover1ServerTest extends FATServletClient {
             persistentExec3.setId("persistentExec3");
             persistentExec3.setPollInterval("2s");
             persistentExec3.setPollSize("4");
-            persistentExec3.setExtraAttribute("missedTaskThreshold2", "3s");
+            persistentExec3.setMissedTaskThreshold("3s");
             config.getPersistentExecutors().add(persistentExec3);
 
             PersistentExecutor persistentExec4 = new PersistentExecutor();
             persistentExec4.setId("persistentExec4");
             persistentExec4.setPollInterval("2s");
             persistentExec4.setPollSize("4");
-            persistentExec4.setExtraAttribute("missedTaskThreshold2", "3s");
+            persistentExec4.setMissedTaskThreshold("3s");
             config.getPersistentExecutors().add(persistentExec4);
 
             PersistentExecutor persistentExec5 = new PersistentExecutor();
             persistentExec5.setId("persistentExec5");
             persistentExec5.setPollInterval("2s");
             persistentExec5.setPollSize("4");
-            persistentExec5.setExtraAttribute("missedTaskThreshold2", "3s");
+            persistentExec5.setMissedTaskThreshold("3s");
             config.getPersistentExecutors().add(persistentExec5);
 
             server.setMarkToEndOfLog();
@@ -198,7 +188,7 @@ public class Failover1ServerTest extends FATServletClient {
             } finally {
                 // restore original configuration
                 server.setMarkToEndOfLog();
-                server.updateServerConfiguration(savedConfig);
+                server.updateServerConfiguration(originalConfig);
                 server.waitForConfigUpdateInLogUsingMark(APP_NAMES);
             }
 
@@ -256,26 +246,26 @@ public class Failover1ServerTest extends FATServletClient {
 
             // Simulate failover by disabling the instance (persistentExec2) to which the task was scheduled
             // and allowing other instances to claim ownership of the task
-            ServerConfiguration config = savedConfig.clone();
+            ServerConfiguration config = originalConfig.clone();
             PersistentExecutor persistentExec2 = config.getPersistentExecutors().getById("persistentExec2");
             persistentExec2.setEnableTaskExecution("false");
 
             PersistentExecutor persistentExec3 = new PersistentExecutor();
             persistentExec3.setId("persistentExec3");
             persistentExec3.setPollInterval("1s500ms");
-            persistentExec3.setExtraAttribute("missedTaskThreshold2", "2s");
+            persistentExec3.setMissedTaskThreshold("2s");
             config.getPersistentExecutors().add(persistentExec3);
 
             PersistentExecutor persistentExec4 = new PersistentExecutor();
             persistentExec4.setId("persistentExec4");
             persistentExec4.setPollInterval("1s500ms");
-            persistentExec4.setExtraAttribute("missedTaskThreshold2", "2s");
+            persistentExec4.setMissedTaskThreshold("2s");
             config.getPersistentExecutors().add(persistentExec4);
 
             PersistentExecutor persistentExec5 = new PersistentExecutor();
             persistentExec5.setId("persistentExec5");
             persistentExec5.setPollInterval("1s500ms");
-            persistentExec5.setExtraAttribute("missedTaskThreshold2", "2s");
+            persistentExec5.setMissedTaskThreshold("2s");
             config.getPersistentExecutors().add(persistentExec5);
 
             server.setMarkToEndOfLog();
@@ -287,7 +277,7 @@ public class Failover1ServerTest extends FATServletClient {
             } finally {
                 // restore original configuration
                 server.setMarkToEndOfLog();
-                server.updateServerConfiguration(savedConfig);
+                server.updateServerConfiguration(originalConfig);
                 server.waitForConfigUpdateInLogUsingMark(APP_NAMES);
             }
 
@@ -346,7 +336,7 @@ public class Failover1ServerTest extends FATServletClient {
 
             // Simulate failover by disabling the instance (persistentExec2) to which the task was scheduled
             // and allowing the other instance to run tasks
-            ServerConfiguration config = savedConfig.clone();
+            ServerConfiguration config = originalConfig.clone();
             PersistentExecutor persistentExec2 = config.getPersistentExecutors().getById("persistentExec2");
             persistentExec2.setEnableTaskExecution("false");
 
@@ -354,7 +344,7 @@ public class Failover1ServerTest extends FATServletClient {
             persistentExec1.setEnableTaskExecution("true");
             persistentExec1.setInitialPollDelay("200ms");
             persistentExec1.setPollInterval("1s500ms");
-            persistentExec1.setExtraAttribute("missedTaskThreshold2", "2s");
+            persistentExec1.setMissedTaskThreshold("2s");
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
             server.waitForConfigUpdateInLogUsingMark(APP_NAMES);
@@ -364,7 +354,7 @@ public class Failover1ServerTest extends FATServletClient {
             } finally {
                 // restore original configuration
                 server.setMarkToEndOfLog();
-                server.updateServerConfiguration(savedConfig);
+                server.updateServerConfiguration(originalConfig);
                 server.waitForConfigUpdateInLogUsingMark(APP_NAMES);
             }
 
@@ -385,11 +375,11 @@ public class Failover1ServerTest extends FATServletClient {
      */
     @Test
     public void testScheduleThenRunOnDifferentServer() throws Exception {
-        ServerConfiguration config = savedConfig.clone();
+        ServerConfiguration config = originalConfig.clone();
         PersistentExecutor persistentExec1 = config.getPersistentExecutors().getById("persistentExec1");
-        persistentExec1.setExtraAttribute("missedTaskThreshold2", null);
+        persistentExec1.setMissedTaskThreshold(null);
         PersistentExecutor persistentExec2 = config.getPersistentExecutors().getById("persistentExec2");
-        persistentExec2.setExtraAttribute("missedTaskThreshold2", "5h"); // even though this value is unreasonably long, it does not impact the ability to take over an unassigned task
+        persistentExec2.setMissedTaskThreshold("5h"); // even though this value is unreasonably long, it does not impact the ability to take over an unassigned task
 
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
@@ -419,7 +409,7 @@ public class Failover1ServerTest extends FATServletClient {
         } finally {
             // restore original configuration
             server.setMarkToEndOfLog();
-            server.updateServerConfiguration(savedConfig);
+            server.updateServerConfiguration(originalConfig);
             server.waitForConfigUpdateInLogUsingMark(APP_NAMES);
         }
     }

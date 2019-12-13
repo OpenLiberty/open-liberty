@@ -97,7 +97,7 @@ public class PersistentExecutorErrorPathsTestWithFailoverEnabledNoPolling {
         ServerConfiguration config = originalConfig.clone();
         PersistentExecutor persistentExecutor = config.getPersistentExecutors().getBy("jndiName", "concurrent/myScheduler");
         persistentExecutor.setInitialPollDelay("-1");
-        persistentExecutor.setExtraAttribute("missedTaskThreshold2", "15s"); // TODO rename and use setter
+        persistentExecutor.setMissedTaskThreshold("15s");
         server.updateServerConfiguration(config);
 
     	ShrinkHelper.defaultDropinApp(server, APP_NAME, "web");

@@ -99,7 +99,7 @@ public class PersistentExecutorExecutionDisabledTestWithFailoverEnabled {
         originalConfig = server.getServerConfiguration();
         ServerConfiguration config = originalConfig.clone();
         PersistentExecutor persistentExecutor = config.getPersistentExecutors().getBy("jndiName", "concurrent/myScheduler");
-        persistentExecutor.setExtraAttribute("missedTaskThreshold2", "6s"); // TODO rename to missedTaskThreshold and use normal setter
+        persistentExecutor.setMissedTaskThreshold("6s");
         server.updateServerConfiguration(config);
 
         ShrinkHelper.defaultDropinApp(server, APP_NAME, "web");

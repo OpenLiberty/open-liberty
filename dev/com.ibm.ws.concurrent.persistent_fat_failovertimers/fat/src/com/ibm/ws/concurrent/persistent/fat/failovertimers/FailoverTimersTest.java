@@ -84,22 +84,6 @@ public class FailoverTimersTest extends FATServletClient {
         serverB.useSecondaryHTTPPort();
         originalConfigB = serverB.getServerConfiguration();
         ShrinkHelper.defaultApp(serverB, APP_NAME, "failovertimers.web", "failovertimers.ejb.autotimer", "failovertimers.ejb.stateless");
-
-        // TODO If this approach is chosen, then rename missedTaskThreshold2 and remove this section after deleting the other test
-        ServerConfiguration config = originalConfigA.clone();
-        PersistentExecutor executor = config.getPersistentExecutors().getById("defaultEJBPersistentTimerExecutor");
-        executor.setExtraAttribute("missedTaskThreshold2", executor.getMissedTaskThreshold());
-        executor.setMissedTaskThreshold(null);
-        DataSource defaultDataSource = config.getDataSources().getById("DefaultDataSource");
-        defaultDataSource.getProperties_derby_client().get(0).setDatabaseName("${shared.resource.dir}/data/failovertimers2db");
-        serverA.updateServerConfiguration(config);
-        config = originalConfigB.clone();
-        executor = config.getPersistentExecutors().getById("defaultEJBPersistentTimerExecutor");
-        executor.setExtraAttribute("missedTaskThreshold2", executor.getMissedTaskThreshold());
-        executor.setMissedTaskThreshold(null);
-        defaultDataSource = config.getDataSources().getById("DefaultDataSource");
-        defaultDataSource.getProperties_derby_client().get(0).setDatabaseName("${shared.resource.dir}/data/failovertimers2db");
-        serverB.updateServerConfiguration(config);
     }
 
     /**
