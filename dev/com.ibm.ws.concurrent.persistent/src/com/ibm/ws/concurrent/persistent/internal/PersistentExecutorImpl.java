@@ -1068,6 +1068,13 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
     /** {@inheritDoc} */
     @Override
+    public boolean isFailOverEnabled() {
+        // TODO update below once we officially decide between the two failover implementations.
+        return configRef.get().missedTaskThreshold > 0 || configRef.get().missedTaskThreshold2 > 0;
+    }
+
+    /** {@inheritDoc} */
+    @Override
     @Trivial
     public boolean isShutdown() {
         // Section 3.1.6.1 of the Concurrency Utilities spec requires IllegalStateException

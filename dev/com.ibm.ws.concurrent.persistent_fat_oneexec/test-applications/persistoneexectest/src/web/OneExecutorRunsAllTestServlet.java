@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2015, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,6 +33,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
+
+import org.junit.Test;
 
 import com.ibm.websphere.concurrent.persistent.PersistentExecutor;
 import com.ibm.websphere.concurrent.persistent.TaskState;
@@ -219,6 +221,34 @@ public class OneExecutorRunsAllTestServlet extends HttpServlet {
             throw new Exception("Task status " + statusAAA + " obtained via getTimerStatus does not match " + statusA);
         if (!statusAA.equals(statusAAA))
             throw new Exception("Task status " + statusAAA + " obtained via getTimerStatus does not match " + statusAA + " obtained via findTimerStatus");
+    }
+
+    /**
+     * Verify that the interface to EJB Timer Service indicates that fail over is enabled.
+     */
+    public void testFailOverIsEnabled(HttpServletRequest request, PrintWriter out) throws Exception {
+        TimersPersistentExecutor executorB = (TimersPersistentExecutor) new InitialContext().lookup("concurrent/executorB");
+        TimersPersistentExecutor executorC = (TimersPersistentExecutor) new InitialContext().lookup("concurrent/executorC");
+
+        if (!executorB.isFailOverEnabled())
+            throw new Exception("persistentExecutor with a positive missedTaskThreshold and with polling disabled reports that fail over is not enabled.");
+
+        if (!executorC.isFailOverEnabled())
+            throw new Exception("persistentExecutor with a positive missedTaskThreshold and with polling enabled reports that fail over is not enabled.");
+    }
+
+    /**
+     * Verify that the interface to EJB Timer Service indicates that fail over is not enabled.
+     */
+    public void testFailOverIsNotEnabled(HttpServletRequest request, PrintWriter out) throws Exception {
+        TimersPersistentExecutor executorB = (TimersPersistentExecutor) new InitialContext().lookup("concurrent/executorB");
+        TimersPersistentExecutor executorC = (TimersPersistentExecutor) new InitialContext().lookup("concurrent/executorC");
+
+        if (executorB.isFailOverEnabled())
+            throw new Exception("persistentExecutor without a missedTaskThreshold and with polling disabled reports that fail over is enabled.");
+
+        if (executorC.isFailOverEnabled())
+            throw new Exception("persistentExecutor without a missedTaskThreshold and with polling enabled reports that fail over is enabled.");
     }
 
     /**
