@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -21,7 +21,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package io.astefanutti.metrics.cdi;
+package io.astefanutti.metrics.cdi20;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -36,6 +36,7 @@ import org.eclipse.microprofile.metrics.Counter;
 import org.eclipse.microprofile.metrics.Gauge;
 import org.eclipse.microprofile.metrics.Histogram;
 import org.eclipse.microprofile.metrics.Metadata;
+import org.eclipse.microprofile.metrics.MetadataBuilder;
 import org.eclipse.microprofile.metrics.Meter;
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.eclipse.microprofile.metrics.MetricType;
@@ -45,7 +46,7 @@ import org.eclipse.microprofile.metrics.annotation.Metric;
 @Dependent
 public class MetricName {
 
-    MetricName() {
+    public MetricName() {
     }
 
     public String of(InjectionPoint ip) {
@@ -114,6 +115,11 @@ public class MetricName {
         return metadataOf(annotated, name, type);
     }
 
+    public String[] tagOf(InjectionPoint ip) {
+        Annotated annotated = ip.getAnnotated();
+        return tagOf(annotated);
+    }
+
     /** {@inheritDoc} */
     public Metadata metadataOf(AnnotatedMember<?> member) {
         // getBaseType is a reflection proxy class, we can't directly compare the classes.
@@ -134,17 +140,27 @@ public class MetricName {
     }
 
     private Metadata metadataOf(Annotated annotated, String name, Class<?> type) {
-        Metadata metadata = new Metadata(name, MetricType.from(type));
+
+        MetadataBuilder mdb = Metadata.builder().withName(name).withType(MetricType.from(type));
         if (annotated.isAnnotationPresent(Metric.class)) {
             Metric metric = annotated.getAnnotation(Metric.class);
-            metadata.setDescription(metadataValueOf(metric.description()));
-            metadata.setDisplayName(metadataValueOf(metric.displayName()));
-            metadata.setUnit(metadataValueOf(metric.unit()));
-            for (String tag : metric.tags()) {
-                metadata.addTag(tag);
-            }
+
+            String val = null;
+            mdb = ((val = metadataValueOf(metric.description())) == null) ? mdb : mdb.withDescription(val);
+            mdb = ((val = metadataValueOf(metric.displayName())) == null) ? mdb : mdb.withDisplayName(val);
+            mdb = ((val = metadataValueOf(metric.unit())) == null) ? mdb : mdb.withUnit(val);
+
         }
-        return metadata;
+        return mdb.build();
+    }
+
+    private String[] tagOf(Annotated annotated) {
+        String[] returnStringArray = null;
+        if (annotated.isAnnotationPresent(Metric.class)) {
+            Metric metric = annotated.getAnnotation(Metric.class);
+            returnStringArray = metric.tags();
+        }
+        return returnStringArray;
     }
 
     /**
@@ -163,5 +179,9 @@ public class MetricName {
     public Metadata metadataOf(AnnotatedMember<?> member, Class<?> type) {
         String name = of(member);
         return metadataOf(member, name, type);
+    }
+
+    public String[] tagOf(AnnotatedMember<?> member) {
+        return tagOf((Annotated) member);
     }
 }
