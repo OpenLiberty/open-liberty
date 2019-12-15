@@ -1020,7 +1020,7 @@ public class HttpChannelConfig {
                         //duplicate and enable the error flag.
                         if (!addCompressionConfig.add(s)) {
 
-                            Tr.warning(tc, "compression.duplicateEncoding", s, defaultConfiguration);
+                            Tr.warning(tc, "compression.duplicateType", s, defaultConfiguration);
 
                             hasConfigError = true;
                             break;
@@ -1035,7 +1035,7 @@ public class HttpChannelConfig {
                         //duplicate and enable the error flag.
                         if (!removeCompressionConfig.add(s)) {
 
-                            Tr.warning(tc, "compression.duplicateEncodingRemoval", s, defaultConfiguration);
+                            Tr.warning(tc, "compression.duplicateTypeRemoval", s, defaultConfiguration);
 
                             hasConfigError = true;
                             break;
@@ -1044,7 +1044,7 @@ public class HttpChannelConfig {
                         //All filters added without the add or remove characters (+/-) will end up overwriting the
                         //default values. Ensure no duplicates are added to this list.
                         if (!configuredCompressionTypes.add(s)) {
-                            Tr.warning(tc, "compression.duplicateEncoding", s, defaultConfiguration);
+                            Tr.warning(tc, "compression.duplicateType", s, defaultConfiguration);
                             hasConfigError = true;
                             break;
                         }
@@ -1070,14 +1070,14 @@ public class HttpChannelConfig {
                         //there isn't a configured compression types set at this point, check that the
                         //user doesn't try to add a value already in the default filter
                         if (this.includedCompressionContentTypes.contains(s)) {
-                            Tr.warning(tc, "compression.duplicateEncoding", s, defaultConfiguration);
+                            Tr.warning(tc, "compression.duplicateType", s, defaultConfiguration);
                             hasConfigError = true;
                             break;
                         }
 
                         //check for any duplicate between add '+' and remove '-' sets, not allowed
                         if (removeCompressionConfig.contains(s)) {
-                            Tr.warning(tc, "compression.duplicateEncodingAddRemove", s, defaultConfiguration);
+                            Tr.warning(tc, "compression.duplicateTypeAddRemove", s, defaultConfiguration);
                             hasConfigError = true;
                             break;
                         }
@@ -1127,7 +1127,7 @@ public class HttpChannelConfig {
     private void parseCompressionPreferredAlgorithm(Map<Object, Object> props) {
         String value = (String) props.get(HttpConfigConstants.PROPNAME_COMPRESSION_PREFERRED_ALGORITHM);
         if (null != value && this.useCompression) {
-            this.preferredCompressionAlgorithm = value;
+            boolean isSupportedConfiguration = true;
 
             //Validate parameter, if not supported default to none.
             switch (value.toLowerCase(Locale.ENGLISH)) {
@@ -1145,10 +1145,14 @@ public class HttpChannelConfig {
                     break;
                 default:
                     if ((TraceComponent.isAnyTracingEnabled()) && (tc.isEventEnabled())) {
-                        Tr.event(tc, "Compression Config", "Unsupported preferred compression algorithm: " + value + ". Setting preferred compression algorithm to 'none'");
+                        Tr.warning(tc, "compression.unsupportedAlgorithm", value, preferredCompressionAlgorithm);
                     }
-                    this.preferredCompressionAlgorithm = "none";
+                    isSupportedConfiguration = false;
 
+            }
+
+            if (isSupportedConfiguration) {
+                this.preferredCompressionAlgorithm = value.toLowerCase();
             }
 
             if ((TraceComponent.isAnyTracingEnabled()) && (tc.isEventEnabled())) {
