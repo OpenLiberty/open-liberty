@@ -50,10 +50,10 @@ public class MetricsInterceptor {
             metricsSupplier = () -> {
                 return com.ibm.ws.microprofile.metrics.cdi.producer.MetricRegistryFactory.getVendorRegistry();
             };
-//        } else if (canLoad("com.ibm.ws.microprofile.metrics.cdi20.producer.MetricRegistryFactory")) {
-//            metricsSupplier = () -> {
-//                return com.ibm.ws.microprofile.metrics.cdi20.producer.MetricRegistryFactory.getVendorRegistry();
-//            };
+        } else if (canLoad("com.ibm.ws.microprofile.metrics.cdi20.producer.MetricRegistryFactory")) {
+            metricsSupplier = () -> {
+                return com.ibm.ws.microprofile.metrics.cdi20.producer.MetricRegistryFactory.getVendorRegistry();
+            };
         }
         if (metricsSupplier != null) {
             metrics = metricsSupplier.get();
