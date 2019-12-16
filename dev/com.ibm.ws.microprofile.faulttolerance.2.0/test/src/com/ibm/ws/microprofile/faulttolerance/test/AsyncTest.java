@@ -10,10 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.faulttolerance.test;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 import java.lang.reflect.Method;
@@ -34,7 +35,10 @@ import org.junit.Test;
 import com.ibm.ws.microprofile.faulttolerance.spi.Executor;
 import com.ibm.ws.microprofile.faulttolerance.spi.ExecutorBuilder;
 import com.ibm.ws.microprofile.faulttolerance.spi.FaultToleranceProvider;
+import com.ibm.ws.microprofile.faulttolerance.spi.RetryPolicy;
 import com.ibm.ws.microprofile.faulttolerance.test.util.AsyncTestFunction;
+import com.ibm.ws.microprofile.faulttolerance.test.util.MockAsyncRequestContext;
+import com.ibm.ws.microprofile.faulttolerance.test.util.TestException;
 
 /**
  *
@@ -148,6 +152,87 @@ public class AsyncTest extends AbstractFTTest {
 
         assertFalse("Waiting future is done", waitingFuture.isDone());
         waitingFuture.get(2000, TimeUnit.MILLISECONDS);
+    }
+
+    @Test
+    public void testAsyncRequestContextCalls() throws InterruptedException, ExecutionException, TimeoutException {
+        ExecutorBuilder<String> builder = FaultToleranceProvider.newExecutionBuilder();
+
+        MockAsyncRequestContext asyncRequestContext = new MockAsyncRequestContext();
+        builder.setRequestContext(asyncRequestContext);
+
+        Executor<CompletionStage<String>> executor = builder.buildAsync(CompletionStage.class);
+        ExecutionContext context = executor.newExecutionContext("testAsyncCS", null);
+
+        assertEquals(0, asyncRequestContext.getActivateContextCount());
+        assertEquals(0, asyncRequestContext.getDeactivateContextCount());
+
+        CompletionStage<String> result = executor.execute(() -> {
+            assertEquals("Activate request context should be called when request is started", 1, asyncRequestContext.getActivateContextCount());
+            assertEquals("Deactivate request context should only be called when request is finished", 0, asyncRequestContext.getDeactivateContextCount());
+            return CompletableFuture.completedFuture("Test");
+        }, context);
+
+        result.toCompletableFuture().get(2000, TimeUnit.MILLISECONDS);
+
+        assertEquals("Deactivate request context should be called when request is finished", 1, asyncRequestContext.getDeactivateContextCount());
+    }
+
+    @Test
+    public void testAsyncRequestContextDeactivatedOnInterruption() throws InterruptedException, ExecutionException, TimeoutException, TestException {
+        ExecutorBuilder<String> builder = FaultToleranceProvider.newExecutionBuilder();
+
+        MockAsyncRequestContext asyncRequestContext = new MockAsyncRequestContext();
+        builder.setRequestContext(asyncRequestContext);
+
+        Executor<Future<String>> executor = builder.buildAsync(CompletionStage.class);
+        ExecutionContext context = executor.newExecutionContext("testAsyncCS", null);
+
+        // Test an execution which throws an exception
+        Future<String> result = executor.execute(() -> {
+            throw new TestException();
+        }, context);
+
+        try {
+            // Give the execution up to 5 seconds to complete
+            result.get(5, TimeUnit.SECONDS);
+        } catch (ExecutionException e) {
+            assertThat(e.getCause(), instanceOf(TestException.class));
+            assertEquals("Activate request context should have been called", 1, asyncRequestContext.getActivateContextCount());
+            assertEquals("Deactivate request context should still be called if method throws an exeption", 1, asyncRequestContext.getDeactivateContextCount());
+        } catch (TimeoutException e) {
+            throw e;
+        }
+    }
+
+    @Test
+    public void testAsyncRequestContextWithRetry() throws InterruptedException, ExecutionException, TimeoutException {
+        ExecutorBuilder<String> builder = FaultToleranceProvider.newExecutionBuilder();
+
+        RetryPolicy retry = FaultToleranceProvider.newRetryPolicy();
+        retry.setMaxRetries(3);
+        builder.setRetryPolicy(retry);
+
+        MockAsyncRequestContext asyncRequestContext = new MockAsyncRequestContext();
+        builder.setRequestContext(asyncRequestContext);
+
+        Executor<Future<String>> executor = builder.buildAsync(CompletionStage.class);
+        ExecutionContext context = executor.newExecutionContext("testAsyncCS", null);
+
+        Future<String> result = executor.execute(() -> {
+            throw new TestException();
+        }, context);
+
+        try {
+            // Give the execution up to 5 seconds to complete
+            result.get(5, TimeUnit.SECONDS);
+        } catch (ExecutionException e) {
+            assertThat(e.getCause(), instanceOf(TestException.class));
+            assertEquals("Activate request context should be called 4 times", 4, asyncRequestContext.getActivateContextCount());
+            assertEquals("Deactivate request context should be called 4 times", 4, asyncRequestContext.getDeactivateContextCount());
+        } catch (TimeoutException e) {
+            throw e;
+        }
     }
 
     private CompletionStage<String> waitThenReturnCS() throws InterruptedException {
