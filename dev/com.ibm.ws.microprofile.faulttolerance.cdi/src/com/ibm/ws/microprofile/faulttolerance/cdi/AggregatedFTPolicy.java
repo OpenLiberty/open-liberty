@@ -46,9 +46,6 @@ public class AggregatedFTPolicy {
         this.method = method;
     }
 
-    /**
-     * @param asynchronous
-     */
     public void setAsynchronousResultWrapper(Class<?> asyncResultWrapper) {
         this.asyncResultWrapper = asyncResultWrapper;
     }
@@ -60,23 +57,14 @@ public class AggregatedFTPolicy {
         this.timeout = timeout;
     }
 
-    /**
-     * @param retryPolicy
-     */
     public void setRetryPolicy(RetryPolicy retryPolicy) {
         this.retryPolicy = retryPolicy;
     }
 
-    /**
-     * @param circuitBreakerPolicy
-     */
     public void setCircuitBreakerPolicy(CircuitBreakerPolicy circuitBreakerPolicy) {
         this.circuitBreakerPolicy = circuitBreakerPolicy;
     }
 
-    /**
-     * @param bulkheadPolicy
-     */
     public void setBulkheadPolicy(BulkheadPolicy bulkheadPolicy) {
         this.bulkheadPolicy = bulkheadPolicy;
     }
@@ -89,22 +77,16 @@ public class AggregatedFTPolicy {
     }
 
     /**
-     * @return
+     * @return true if asyncResultWrapper is not null
      */
     public boolean isAsynchronous() {
         return asyncResultWrapper != null;
     }
 
-    /**
-     * @return
-     */
     public BulkheadPolicy getBulkheadPolicy() {
         return bulkheadPolicy;
     }
 
-    /**
-     * @return
-     */
     public RetryPolicy getRetryPolicy() {
         return retryPolicy;
     }
@@ -116,9 +98,6 @@ public class AggregatedFTPolicy {
         return timeout;
     }
 
-    /**
-     * @return the circuitBreakerPolicy
-     */
     public CircuitBreakerPolicy getCircuitBreakerPolicy() {
         return circuitBreakerPolicy;
     }
