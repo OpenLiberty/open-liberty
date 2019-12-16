@@ -169,7 +169,7 @@ public class BasicAuthCacheKeyProvider implements CacheKeyProvider {
      **/
     protected static String getHashedPassword(String userId, @Sensitive String password, String seedValue) throws NoSuchAlgorithmException, InvalidKeySpecException {
         SecretKeyFactory skf = SecretKeyFactory.getInstance(DEFAULT_ALGORITHM);
-        PBEKeySpec ks = new PBEKeySpec(password.toCharArray(), Base64Coder.getBytes(userId + seedValue + password), userId.length() * 128 + password.length() * 11, 256);
+        PBEKeySpec ks = new PBEKeySpec(password.toCharArray(), Base64Coder.getBytes(userId + seedValue + password), userId.length() + password.length() * 11, 256);
         return Base64Coder.base64EncodeToString(skf.generateSecret(ks).getEncoded());
     }
 
