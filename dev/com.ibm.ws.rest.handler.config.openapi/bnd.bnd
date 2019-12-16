@@ -20,7 +20,7 @@ Bundle-Description: Open API information for REST-based config resources; versio
 WS-TraceGroup: rest.config
 
 Web-ContextPath: openapi/platform
-OL-VirtualHost: ${admin.virtual.host}
+OL-VirtualHost: admin_host
 
 IBM-Authorization-Roles: com.ibm.ws.management
 IBM-Web-Extension-Processing-Disabled: true
