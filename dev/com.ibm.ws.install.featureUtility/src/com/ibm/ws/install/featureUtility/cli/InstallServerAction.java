@@ -239,7 +239,7 @@ public class InstallServerAction implements ActionHandler {
 
         private ExitCode install() {
                 try {
-                        featureUtility = new FeatureUtility.FeatureUtilityBuilder().setFromDir(fromDir)
+                        featureUtility = new FeatureUtility.FeatureUtilityBuilder().setFromDir(fromDir).setToDir(toDir)
                                         .setFeatureBundle(featureBundle).setNoCache(noCache).build();
                         featureUtility.installFeatures();
                 } catch (InstallException e) {

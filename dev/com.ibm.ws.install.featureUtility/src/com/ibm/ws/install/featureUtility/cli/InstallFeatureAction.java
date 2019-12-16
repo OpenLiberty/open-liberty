@@ -85,7 +85,7 @@ public class InstallFeatureAction implements ActionHandler {
                         return rc;
                 }
                 this.noCache = args.getOption("noCache") != null;
-
+                this.toDir = args.getOption("to");
                 this.progressBar = ProgressBar.getInstance();
 
                 HashMap<String, Double> methodMap = new HashMap<>();
@@ -163,9 +163,7 @@ public class InstallFeatureAction implements ActionHandler {
 
         private ExitCode install() {
                 try {
-//                        featureUtility = new FeatureUtility.FeatureUtilityBuilder().setFromDir(fromDir)
-//                                        .setFeaturesToInstall(featureNames).setNoCache(noCache).build();
-                        featureUtility = new FeatureUtility.FeatureUtilityBuilder().setFromDir(fromDir)
+                        featureUtility = new FeatureUtility.FeatureUtilityBuilder().setFromDir(fromDir).setToDir(toDir)
                                         .setFeatureBundle(featureBundle).setNoCache(noCache).build();
                         featureUtility.installFeatures();
                 } catch (InstallException e) {

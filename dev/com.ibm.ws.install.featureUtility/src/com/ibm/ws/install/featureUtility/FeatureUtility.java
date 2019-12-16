@@ -49,10 +49,8 @@ public class FeatureUtility {
 
     private final InstallKernelMap map;
     private File fromDir;
-    private final File esaFile;
     private final Boolean noCache;
-    private Boolean isDownload;
-    private Boolean isBasicInit;
+    private String toDir;
     private final List<String> featuresToInstall;
     private List<File> esaFilesToInstall;
     private static String openLibertyVersion;
@@ -70,20 +68,13 @@ public class FeatureUtility {
         this.openLibertyVersion = getLibertyVersion();
 
         this.fromDir = builder.fromDir; //this can be overwritten by the env prop
-        // this.featuresToInstall = new ArrayList<>(builder.featuresToInstall);
         this.featureBundle = builder.featureBundle;
         this.featuresToInstall = featureBundle.getFeatureNames();
         this.esaFilesToInstall = featureBundle.getEsaFiles();
         Set<String> jsonsRequired = featureBundle.getFeatureJsons();
-//        List<String> rawFeatures = new ArrayList<>(builder.featuresToInstall);
-//        Map<String, Set<String>> jsonsAndFeatures = getJsonsAndFeatures(rawFeatures);
-//
-//        this.featuresToInstall = new ArrayList<>(jsonsAndFeatures.get("features"));
-//        Set<String> jsonsRequired = jsonsAndFeatures.get("jsons");
 
-        this.esaFile = builder.esaFile;
+        this.toDir = builder.toDir;
         this.noCache = builder.noCache;
-
 
         map = new InstallKernelMap();
         info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_INITIALIZING"));
@@ -225,6 +216,10 @@ public class FeatureUtility {
                                                                     extractFeature(esaFile.getName())));
                 map.put("license.accept", true);
                 map.put("action.install", esaFile);
+                if (toDir != null) {
+                    map.put("to.extension", toDir);
+                    logger.fine("Installing to extension: " + toDir);
+                }
                 Integer ac = (Integer) map.get("action.result");
 //                fine("action.result:" + ac);
 //                fine("action.error.message:" + map.get("action.error.message"));
@@ -313,11 +308,12 @@ public class FeatureUtility {
      * @return
      */
     private String extractFeature(String filename) {
+        if(filename.endsWith(".esa")){
+            return filename.split(".esa")[0];
+        }
         String[] split = filename.split("-");
 
-        if(filename.endsWith(".esa")){
-            return split[0];
-        }
+
         return split[0] + "-" + split[1];
 
     }
@@ -425,14 +421,15 @@ public class FeatureUtility {
         FeatureBundle featureBundle;
         File esaFile;
         boolean noCache;
+        String toDir;
 
         public FeatureUtilityBuilder setFromDir(String fromDir) {
             this.fromDir = fromDir != null ? new File(fromDir) : null;
             return this;
         }
 
-        public FeatureUtilityBuilder setEsaFile(File esaFile) {
-            this.esaFile = esaFile;
+        public FeatureUtilityBuilder setToDir(String toDir) {
+            this.toDir = toDir;
             return this;
         }
         
@@ -440,11 +437,7 @@ public class FeatureUtility {
             this.noCache = noCache;
             return this;
         }
-        // TODO deprecate this
-        public FeatureUtilityBuilder setFeaturesToInstall(Collection<String> featuresToInstall) {
-            this.featuresToInstall = featuresToInstall;
-            return this;
-        }
+
 
         public FeatureUtilityBuilder setFeatureBundle(FeatureBundle featureBundle){
             this.featureBundle = featureBundle;

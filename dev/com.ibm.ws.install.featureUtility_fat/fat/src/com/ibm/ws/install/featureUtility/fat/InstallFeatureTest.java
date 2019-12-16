@@ -22,6 +22,7 @@ import org.junit.Test;
 
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.log.Log;
+import test.utils.TestUtils;
 
 public class InstallFeatureTest extends FeatureUtilityToolTest {
 
@@ -294,6 +295,55 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         assertEquals(20, po.getReturnCode()); // 20 refers to ReturnCode.BAD_ARGUMENT
         String output = po.getStdout();
         assertTrue("Should refer to ./featureUtility help", output.indexOf("Usage")>=0);
+
+    }
+
+    @Test
+    public void testInstallEsaFile() throws Exception {
+        String methodName = "testInstallEsaFile";
+        Log.entering(c, methodName);
+
+        deleteFeaturesAndLafilesFolders(methodName);
+        copyFileToMinifiedRoot("tmp/esafiles","../../publish/tmp/testesa1.esa");
+        String [] params = {"if", minifiedRoot + "/tmp/esafiles/testesa1.esa"};
+        ProgramOutput po = runFeatureUtility(methodName, params);
+        assertEquals(0, po.getReturnCode());
+        deleteFeaturesAndLafilesFolders(methodName);
+
+
+        Log.exiting(c, methodName);
+
+    }
+
+    @Test
+    public void testInstallWithToExtension() throws Exception {
+        String methodName = "testInstallWithToExtension";
+        Log.entering(c, methodName);
+
+        deleteFeaturesAndLafilesFolders(methodName);
+        copyFileToMinifiedRoot("etc/extensions", "../../publish/tmp/myExt.properties");
+
+        File extProps = new File(minifiedRoot + "/etc/extensions/myExt.properties");
+        setProperty(extProps, "com.ibm.websphere.productInstall", minifiedRoot + "/testDir/wlp-ext");
+
+        String [] params = {"if", "jsp-2.3", "--to=myExt"};
+        ProgramOutput po = runFeatureUtility(methodName, params);
+        assertEquals(0, po.getReturnCode());
+
+        File myExt = new File(minifiedRoot + "/testDir/wlp-ext");
+//        Log.info(c, methodName, "to dir: " +myExt.getAbsolutePath());
+//
+//        if(myExt.exists()){
+//            Log.info(c, methodName, "to dir exists, checking files");
+//            for(File file : myExt.listFiles()){
+//                Log.info(c, methodName, file.getName());
+//            }
+//        }
+//        // delete the extension folder
+////        TestUtils.deleteFolder(myExt);
+        deleteFeaturesAndLafilesFolders(methodName);
+
+        Log.exiting(c, methodName);
 
     }
 

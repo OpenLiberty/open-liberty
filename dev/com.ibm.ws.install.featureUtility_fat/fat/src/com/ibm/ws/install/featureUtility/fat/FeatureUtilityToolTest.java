@@ -42,7 +42,7 @@ public abstract class FeatureUtilityToolTest {
     private static String zipFileDestination;
     private static String unzipDestination;
 
-    private static Properties wlpVersionProps;
+    private static Properties properties;
     private static String originalWlpVersion;
     private static String originalWlpEdition;
     private static String originalWlpInstallType;
@@ -65,7 +65,7 @@ public abstract class FeatureUtilityToolTest {
         unzipDestination = installRoot + "/../featureUtility_fat_wlp/";
 
         // zip up installRoot
-        minifiedRoot = exportWlp(installRoot, installRoot + "/../temp/wlp.zip", installRoot + "/../featureUtility_fat_wlp/");
+        minifiedRoot = new File(exportWlp(installRoot, installRoot + "/../temp/wlp.zip", installRoot + "/../featureUtility_fat_wlp/")).getCanonicalPath();
         Log.info(c, methodName, "minified root: " + minifiedRoot);
 
         if(!new File(minifiedRoot).exists()){
@@ -192,16 +192,16 @@ public abstract class FeatureUtilityToolTest {
         wlpVersionPropFile.setReadable(true);
 
         FileInputStream fIn = null;
-        wlpVersionProps = new Properties();
+        properties = new Properties();
         try {
             fIn = new FileInputStream(wlpVersionPropFile);
-            wlpVersionProps.load(fIn);
-            originalWlpVersion = wlpVersionProps.getProperty("com.ibm.websphere.productVersion");
-            originalWlpEdition = wlpVersionProps.getProperty("com.ibm.websphere.productEdition");
-            originalWlpInstallType = wlpVersionProps.getProperty("com.ibm.websphere.productInstallType");
+            properties.load(fIn);
+            originalWlpVersion = properties.getProperty("com.ibm.websphere.productVersion");
+            originalWlpEdition = properties.getProperty("com.ibm.websphere.productEdition");
+            originalWlpInstallType = properties.getProperty("com.ibm.websphere.productInstallType");
             Log.info(c, "getWlpVersion", "com.ibm.websphere.productVersion : " + originalWlpVersion);
             Log.info(c, "getWlpVersion",
-                    "com.ibm.websphere.productId : " + wlpVersionProps.getProperty("com.ibm.websphere.productId"));
+                    "com.ibm.websphere.productId : " + properties.getProperty("com.ibm.websphere.productId"));
             Log.info(c, "getWlpVersion", "com.ibm.websphere.productEdition : " + originalWlpEdition);
             Log.info(c, "getWlpVersion", "com.ibm.websphere.productInstallType : " + originalWlpInstallType);
         } finally {
@@ -220,9 +220,9 @@ public abstract class FeatureUtilityToolTest {
             RemoteFile rf = new RemoteFile(server.getMachine(), minifiedRoot+ "/lib/versions/openliberty.properties");
 //            RemoteFile rf = server.getFileFromLibertyInstallRoot("lib/versions/openliberty.properties");
             os = rf.openForWriting(false);
-            wlpVersionProps.setProperty("com.ibm.websphere.productVersion", version);
+            properties.setProperty("com.ibm.websphere.productVersion", version);
             Log.info(c, "replaceWlpProperties", "Set the version to : " + version);
-            wlpVersionProps.store(os, null);
+            properties.store(os, null);
             os.close();
         } finally {
             try {
@@ -232,6 +232,48 @@ public abstract class FeatureUtilityToolTest {
             }
         }
     }
+
+    protected static void setProperty(File file, String key, String value) throws IOException {
+        file.setReadable(true);
+
+        FileInputStream fIn = null;
+        properties = new Properties();
+        try {
+            fIn = new FileInputStream(file);
+            properties.load(fIn);
+            String old = properties.getProperty(key);
+            properties.setProperty(key, value);
+            Log.info(c, "setProperty", "SET property: " +key +": " + old + " -> " + properties.getProperty(key));
+        } finally {
+            try {
+                assert fIn != null;
+                fIn.close();
+            } catch (IOException e) {
+                // ignore we are trying to close.
+            }
+        }
+    }
+
+    protected static String getProperty(File file, String key, String value) throws IOException {
+        file.setReadable(true);
+
+        FileInputStream fIn = null;
+        properties = new Properties();
+        try {
+            fIn = new FileInputStream(file);
+            properties.load(fIn);
+            return properties.getProperty(key);
+        } finally {
+            try {
+                assert fIn != null;
+                fIn.close();
+            } catch (IOException e) {
+                // ignore we are trying to close.
+            }
+        }
+    }
+
+
     protected static void resetOriginalWlpProps() throws Exception {
         replaceWlpProperties(originalWlpVersion);
     }
