@@ -61,10 +61,10 @@ public class PersistentExecutorCompatibilityWithFailoverEnabledTest {
         ServerConfiguration config = originalConfig.clone();
 
         PersistentExecutor myExecutor = config.getPersistentExecutors().getBy("jndiName", "concurrent/myExecutor");
-        myExecutor.setExtraAttribute("missedTaskThreshold2", "4s");
+        myExecutor.setMissedTaskThreshold("4s");
 
         PersistentExecutor mySchedulerWithContext = config.getPersistentExecutors().getBy("jndiName", "concurrent/mySchedulerWithContext");
-        mySchedulerWithContext.setExtraAttribute("missedTaskThreshold2", "1m14s");
+        mySchedulerWithContext.setMissedTaskThreshold("1m14s");
 
         // config.getEJBContainer().getTimerService() lacks a way to get to the nested persistentExecutor, so this is left as is.
 

@@ -115,9 +115,9 @@ public class OneExecutorRunsAllWithFailoverEnabledTest {
         originalConfig = server.getServerConfiguration();
         failoverConfig = originalConfig.clone();
         ConfigElementList<PersistentExecutor> executors = failoverConfig.getPersistentExecutors();
-        executors.getById("executorA").setExtraAttribute("missedTaskThreshold2", "21s");
-        executors.getById("executorB").setExtraAttribute("missedTaskThreshold2", "22s");
-        executors.getById("executorC").setExtraAttribute("missedTaskThreshold2", "23s");
+        executors.getById("executorA").setMissedTaskThreshold("21s");
+        executors.getById("executorB").setMissedTaskThreshold("22s");
+        executors.getById("executorC").setMissedTaskThreshold("23s");
         server.updateServerConfiguration(failoverConfig);
 
         server.startServer();

@@ -55,7 +55,7 @@ public class LoadTestWithFailoverEnabled extends FATServletClient {
         ServerConfiguration config = originalConfig.clone();
         PersistentExecutor myScheduler = config.getPersistentExecutors().getBy("jndiName", "concurrent/myScheduler");
         myScheduler.setPollInterval("1m");
-        myScheduler.setExtraAttribute("missedTaskThreshold2", "40s"); // TODO rename
+        myScheduler.setMissedTaskThreshold("40s");
         server.updateServerConfiguration(config);
 
     	ShrinkHelper.defaultDropinApp(server, APP_NAME, "web", "web.task");

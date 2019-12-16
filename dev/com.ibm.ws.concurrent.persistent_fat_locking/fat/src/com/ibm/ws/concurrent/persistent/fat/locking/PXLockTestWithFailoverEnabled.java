@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -109,7 +109,7 @@ public class PXLockTestWithFailoverEnabled {
         originalConfig = server.getServerConfiguration();
         ServerConfiguration config = originalConfig.clone();
         PersistentExecutor myPersistentExecutor = config.getPersistentExecutors().getBy("jndiName", "concurrent/myPersistentExecutor");
-        myPersistentExecutor.setExtraAttribute("missedTaskThreshold2", "10s"); // TODO rename
+        myPersistentExecutor.setMissedTaskThreshold("10s");
         server.updateServerConfiguration(config);
 
         WebArchive app1 = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")

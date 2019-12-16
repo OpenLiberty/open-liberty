@@ -64,7 +64,7 @@ public class PersistentExecutorWithFailoverEnabledTest extends FATServletClient 
         ServerConfiguration config = originalConfig.clone();
         PersistentExecutor myScheduler = config.getPersistentExecutors().getBy("jndiName", "concurrent/myScheduler");
         myScheduler.setPollInterval("3h"); // the test case does not expect polling, so set a large value that will never be reached
-        myScheduler.setExtraAttribute("missedTaskThreshold2", "1m"); // TODO rename to missedTaskThreshold and use normal setter if this approach is chosen
+        myScheduler.setMissedTaskThreshold("1m");
         server.updateServerConfiguration(config);
 
     	//Get type
