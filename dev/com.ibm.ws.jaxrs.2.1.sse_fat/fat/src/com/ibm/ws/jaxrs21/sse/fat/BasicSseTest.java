@@ -51,7 +51,7 @@ public class BasicSseTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        server.stopServer( "CWWKE1102W", "CWWKE1106W" , "CWWKE1107W");
     }
 
     @Test
