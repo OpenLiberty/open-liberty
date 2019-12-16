@@ -135,7 +135,7 @@ public class Http2Client {
         }
 
         long bytesWritten = 0L;
-        bytesWritten = h2Connection.sendBytes(toSend);
+        bytesWritten = h2Connection.sendBytesSync(toSend);
         if (LOGGER.isLoggable(Level.INFO)) {
             LOGGER.logp(Level.INFO, CLASS_NAME, "sendUpgradeHeader", "Bytes sent: " + bytesWritten);
         }
@@ -160,7 +160,7 @@ public class Http2Client {
                         ":Next Frame: :Writing Out: Magic Preface" + " H2Conn hc: " + h2Connection.hashCode() + " size: " + magicString.length);
         }
 
-        long bytesWritten = h2Connection.sendBytes(magicString);
+        long bytesWritten = h2Connection.sendBytesSync(magicString);
 
         if (LOGGER.isLoggable(Level.INFO)) {
             LOGGER.logp(Level.INFO, CLASS_NAME, "sendClientPreface", "bytes written: " + bytesWritten);
@@ -170,7 +170,7 @@ public class Http2Client {
     }
 
     public void sendBytes(byte[] bytes) {
-        long bytesWritten = h2Connection.sendBytes(bytes);
+        long bytesWritten = h2Connection.sendBytesSync(bytes);
 
         if (LOGGER.isLoggable(Level.FINEST)) {
             LOGGER.logp(Level.FINEST, CLASS_NAME, "sendBytes", "Sending bytes (size: " + bytes.length + " bytes written)= " + bytesWritten);
@@ -178,7 +178,7 @@ public class Http2Client {
     }
 
     public void sendBytes(WsByteBuffer bytes) {
-        long bytesWritten = h2Connection.sendBytes(bytes);
+        long bytesWritten = h2Connection.sendBytesSync(bytes);
 
         if (LOGGER.isLoggable(Level.FINEST)) {
             LOGGER.logp(Level.FINEST, CLASS_NAME, "sendBytes", "Sending bytes (size: " + bytes.limit() + " bytes written)= " + bytesWritten);
@@ -272,11 +272,11 @@ public class Http2Client {
         else {
             if (writableFrame instanceof FrameData) {
                 WsByteBuffer[] bufferArray = ((FrameData) writableFrame).buildFrameArrayForWrite();
-                return h2Connection.sendBytes(bufferArray);
+                return h2Connection.sendBytesSync(bufferArray);
             } else {
 
             }
-            return h2Connection.sendBytes(writableFrame.buildFrameForWrite());
+            return h2Connection.sendBytesSync(writableFrame.buildFrameForWrite());
         }
     }
 
@@ -299,7 +299,7 @@ public class Http2Client {
         do {
             //if we are waiting for a settings ACK, this will loop
             if (((wasUpgradeHeaderReceived() && wasServerPrefaceReceived())) && !h2Connection.getWaitingForACK().get()) {
-                return h2Connection.sendBytes(bytes);
+                return h2Connection.sendBytesSync(bytes);
             } else {
                 try {
                     Thread.sleep(100);
@@ -314,7 +314,7 @@ public class Http2Client {
             LOGGER.logp(Level.SEVERE, CLASS_NAME, "sendBytesAfterPreface", "wasServerPrefaceReceived? " + wasServerPrefaceReceived());
         }
         if (((wasUpgradeHeaderReceived() && wasServerPrefaceReceived())) && !h2Connection.getWaitingForACK().get()) {
-            return h2Connection.sendBytes(bytes);
+            return h2Connection.sendBytesSync(bytes);
         }
         throw new UnableToSendFrameException("Unable to send bytes becuase upgrade header and server preface have not been received yet. wasUpgradeHeaderReceived() = "
                                              + wasUpgradeHeaderReceived() + " wasServerPrefaceReceived() = " + wasServerPrefaceReceived() + " bytes = " + bytes);
