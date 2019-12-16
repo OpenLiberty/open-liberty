@@ -98,6 +98,7 @@ public class PersistentExecutorErrorPathsTestWithFailoverEnabledNoPolling {
         PersistentExecutor persistentExecutor = config.getPersistentExecutors().getBy("jndiName", "concurrent/myScheduler");
         persistentExecutor.setInitialPollDelay("-1");
         persistentExecutor.setMissedTaskThreshold("15s");
+        config.getDataSources().getById("SchedDB").getConnectionManagers().get(0).setMaxPoolSize("10");
         server.updateServerConfiguration(config);
 
     	ShrinkHelper.defaultDropinApp(server, APP_NAME, "web");
