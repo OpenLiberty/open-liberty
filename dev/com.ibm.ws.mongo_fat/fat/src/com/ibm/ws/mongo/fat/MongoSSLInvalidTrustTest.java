@@ -58,7 +58,7 @@ public class MongoSSLInvalidTrustTest extends FATServletClient {
     }
 
     @Test
-    @AllowedFFDC({ "java.security.cert.CertPathBuilderException", "sun.security.validator.ValidatorException" })
+    @AllowedFFDC({ "java.security.cert.CertPathBuilderException", "sun.security.validator.ValidatorException", "com.ibm.security.cert.IBMCertPathBuilderException" })
     public void testCertAuthInvalidTrust() throws Exception {
         testInvalidConfig("mongo/testdb-invalid-certificate-trust", "MongoTimeoutException");
         // CWPKI0823E: SSL HANDSHAKE FAILURE:  A signer with SubjectDN [{0}] was sent from the host [{1}].  The signer might
