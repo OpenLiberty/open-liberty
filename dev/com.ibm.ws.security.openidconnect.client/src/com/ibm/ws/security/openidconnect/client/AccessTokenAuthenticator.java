@@ -176,10 +176,14 @@ public class AccessTokenAuthenticator {
         if (parts.length > 1) {
             try {
                 JsonParser parser = new JsonParser();
-                parser.parse(JsonTokenUtil.fromBase64ToJsonString(parts[0])).getAsJsonObject();
-                parser.parse(JsonTokenUtil.fromBase64ToJsonString(parts[1])).getAsJsonObject();
-                return true;
-            } catch (Exception e) {
+                try {
+                    parser.parse(JsonTokenUtil.fromBase64ToJsonString(parts[0])).getAsJsonObject();
+                    return true;
+                } catch (Exception e1) {
+                    parser.parse(JsonTokenUtil.fromBase64ToJsonString(parts[1])).getAsJsonObject();
+                    return true;
+                }
+            } catch (Exception e2) {
                 return false;
             }
         } else {
