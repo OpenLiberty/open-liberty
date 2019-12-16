@@ -8,31 +8,28 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
+#TODO once we upgrade fattest.simplicty to java 8 this package could be moved there.
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
 javac.source: 1.8
 javac.target: 1.8
 
-src: \
-	fat/src,\
-	test-applications/timersapp/src
+Bundle-Name: FAT Database infrastructure
+Bundle-SymbolicName: fattest.databases
+Bundle-Description: FAT infrastructure; version=${bVersion}
 
-fat.project: true
-fat.test.databases: true
+Export-Package: \
+	componenttest.topology.database.container;version=1.0.16
 
-# Uncomment to use remote docker host to simulate continuous build behavior.
-# fat.test.use.remote.docker: true
+test.project: true
 
 -buildpath: \
-	fattest.databases;version=latest,\
-	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
-	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
-	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
-	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
-	com.ibm.ws.concurrent.persistent;version=latest,\
-	com.ibm.websphere.javaee.ejb.3.1,\
+	com.ibm.ws.componenttest:public.api;version=1.0.0,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	org.testcontainers:database-commons;version=1.12.3,\
 	org.testcontainers:jdbc;version=1.12.3,\
-	org.testcontainers:testcontainers;version=1.12.3
-	
+	org.testcontainers:testcontainers;version=1.12.3,\
+	fattest.simplicity;version=latest,\
+	org.rnorth.duct-tape:duct-tape;version=1.0.7,\
+	org.slf4j:slf4j-api;version=1.7.7
