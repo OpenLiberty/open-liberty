@@ -344,18 +344,29 @@ var table = (function() {
                 // So, if something else happended with the request, put up the generic error message.
                 var regenerateTypeTitle = authType === 'app-password' ? 'App-Password' : 'App-Token';
                 var errTitle = utils.formatString(messages.GENERIC_REGENERATE_FAIL, [regenerateTypeTitle]);
-                var errDescription = utils.formatString(messages.GENERIC_REGENERATE_FAIL_CREATE_MSG, [authType, utils.encodeData(name)]);
+                var errDescription = "";
+                if (errResponse.responseJSON && errResponse.responseJSON.error_description) {
+                    errDelDescription = errResponse.responseJSON.error_description;
+                } else {
+                    errDescription = utils.formatString(messages.GENERIC_REGENERATE_FAIL_CREATE_MSG, [authType, utils.encodeData(name)]);
+                }    
                 utils.showResultsDialog(true, errTitle, errDescription, true, true, false, reshowAddRegenDialog);
             });            
         }).fail(function(errResponse) {
             console.log("delete failed for ID" + authID);
             console.log("errResponse.status: " + errResponse.status + ":   errResponse.statusText: " + errResponse.statusText);
-            // The API returns success (200) if you attempt to delete an aauthentication
+            // The API returns success (200) if you attempt to delete an authentication
             // that is already deleted.
             // So, if something else happended with the request, put up the generic error message.
             var regenDelTitle = authType === 'app-password' ? 'App-Password' : 'App-Token';
             var errDelTitle = utils.formatString(messages.GENERIC_REGENERATE_FAIL, [regenDelTitle]);
-            var errDelDescription = utils.formatString(messages.GENERIC_REGENERATE_FAIL_MSG, [authType, utils.encodeData(name)]);
+            var errDelDescription = "";
+            if (errResponse.responseJSON && errResponse.responseJSON.error_description) {
+                errDelDescription = errResponse.responseJSON.error_description;
+            } else {
+                // Display a generic error message...
+                errDelDescription = utils.formatString(messages.GENERIC_REGENERATE_FAIL_MSG, [authType, utils.encodeData(name)]);
+            }
             utils.showResultsDialog(true, errDelTitle, errDelDescription, true, true, false, reshowAddRegenDialog);
         });
     };
@@ -419,8 +430,13 @@ var table = (function() {
             // that is already deleted.
             // So, if something else happended with the request, put up the generic error message.
             var deleteTypeTitle = authType === 'app-password' ? 'App-Password' : 'App-Token';
+            var errDescription = "";
             var errTitle = utils.formatString(messages.GENERIC_DELETE_FAIL, [deleteTypeTitle]);
-            var errDescription = utils.formatString(messages.GENERIC_DELETE_FAIL_MSG, [authType, utils.encodeData(name)]);
+            if (errResponse.responseJSON && errResponse.responseJSON.error_description) {
+                errDescription = errResponse.responseJSON.error_description;
+            } else {
+                errDescription = utils.formatString(messages.GENERIC_DELETE_FAIL_MSG, [authType, utils.encodeData(name)]);
+            }
             utils.showResultsDialog(true, errTitle, errDescription, true, true, false, __reshowDeleteDialog);
         });
     };

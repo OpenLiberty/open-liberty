@@ -342,7 +342,12 @@ var table = (function() {
             // So, if something else happended with the request, put up the generic error message.
             var deleteTypeTitle = authType === 'app-password' ? 'App-Password' : 'App-Token';
             var errTitle = utils.formatString(messages.GENERIC_DELETE_FAIL, [deleteTypeTitle]);
-            var errDescription = utils.formatString(messages.GENERIC_DELETE_FAIL_MSG, [authType, utils.encodeData(name)]);
+            var errDescription = "";
+            if (errResponse.responseJSON && errResponse.responseJSON.error_description) {
+                errDescription = errResponse.responseJSON.error_description;
+            } else {
+                errDescription = utils.formatString(messages.GENERIC_DELETE_FAIL_MSG, [authType, utils.encodeData(name)]);
+            }
             utils.showResultsDialog(true, errTitle, errDescription, true, true, false, __reshowDeleteDialog);
         });
     };
@@ -390,7 +395,12 @@ var table = (function() {
                 // The API returns success (200) if an invalid user ID was submitted
                 // So, if something else happended with the request, put up the generic error message.
                 var errTitle = utils.formatString(messages.GENERIC_DELETE_FAIL, ["App-Tokens"]);
-                var errDescription = utils.formatString(messages.GENERIC_DELETE_ALL_FAIL_MSG, ["App-Tokens", userID]);
+                var errDescription = "";
+                if (errResponse.responseJSON && errResponse.responseJSON.error_description) {
+                    errDescription = errResponse.responseJSON.error_description;
+                } else {
+                    errDescription = utils.formatString(messages.GENERIC_DELETE_ALL_FAIL_MSG, ["App-Tokens", userID]);
+                }
                 utils.showResultsDialog(true, errTitle, errDescription, true, true, false, __reshowDeleteDialog);
                 });
         }).fail(function(errResponse) {
@@ -399,7 +409,12 @@ var table = (function() {
             // The API returns success (200) if an invalid user ID was submitted
             // So, if something else happended with the request, put up the generic error message.
             var errTitle = utils.formatString(messages.GENERIC_DELETE_FAIL, ["App-Passwords"]);
-            var errDescription = utils.formatString(messages.GENERIC_DELETE_ALL_FAIL_MSG, ["App-Passwords", userID]);
+            var errDescription = "";
+            if (errResponse.responseJSON && errResponse.responseJSON.error_description) {
+                errDescription = errResponse.responseJSON.error_description;
+            } else {
+                errDescription = utils.formatString(messages.GENERIC_DELETE_ALL_FAIL_MSG, ["App-Passwords", userID]);
+            }
             utils.showResultsDialog(true, errTitle, errDescription, true, true, false, __reshowDeleteDialog);
         });
     };
