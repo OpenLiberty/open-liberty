@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,9 @@ package com.ibm.ws.microprofile.faulttolerance.cdi;
 
 import java.lang.reflect.Method;
 
+import javax.enterprise.inject.Instance;
+
+import com.ibm.ws.microprofile.faulttolerance.spi.AsyncRequestContextController;
 import com.ibm.ws.microprofile.faulttolerance.spi.BulkheadPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.CircuitBreakerPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.Executor;
@@ -129,13 +132,21 @@ public class AggregatedFTPolicy {
     }
 
     /**
+     * @param rcInstance an instance of the request context controller
      * @return
      */
     @SuppressWarnings("unchecked")
-    public Executor<Object> getExecutor() {
+    public Executor<Object> getExecutor(Instance<AsyncRequestContextController> rcInstance) {
         synchronized (this) {
             if (this.executor == null) {
                 ExecutorBuilder<?> builder = newBuilder();
+
+                // if CDI version < 2.0 then instance will be null and request context will not be active
+                if (rcInstance != null) {
+                    if (!rcInstance.isUnsatisfied() && !rcInstance.isAmbiguous()) {
+                        builder.setRequestContext(rcInstance.get());
+                    }
+                }
 
                 if (isAsynchronous()) {
                     this.executor = builder.buildAsync(asyncResultWrapper);

@@ -12,6 +12,7 @@ package com.ibm.ws.microprofile.faulttolerance.impl;
 
 import java.util.concurrent.ScheduledExecutorService;
 
+import com.ibm.ws.microprofile.faulttolerance.spi.AsyncRequestContextController;
 import com.ibm.ws.microprofile.faulttolerance.spi.BulkheadPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.CircuitBreakerPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.Executor;
@@ -46,6 +47,7 @@ public abstract class AbstractExecutorBuilderImpl<R> implements ExecutorBuilder<
     protected final WSContextService contextService;
     protected final PolicyExecutorProvider policyExecutorProvider;
     protected final ScheduledExecutorService scheduledExecutorService;
+    protected AsyncRequestContextController asyncRequestContext = null;
 
     public AbstractExecutorBuilderImpl(WSContextService contextService, PolicyExecutorProvider policyExecutorProvider, ScheduledExecutorService scheduledExecutorService) {
         this.contextService = contextService;
@@ -93,6 +95,11 @@ public abstract class AbstractExecutorBuilderImpl<R> implements ExecutorBuilder<
     public ExecutorBuilder<R> setMetricRecorder(MetricRecorder metricRecorder) {
         this.metricRecorder = metricRecorder;
         return this;
+    }
+
+    @Override
+    public void setRequestContext(AsyncRequestContextController asyncRequestContext) {
+        this.asyncRequestContext = asyncRequestContext;
     }
 
 }

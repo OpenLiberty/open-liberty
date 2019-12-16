@@ -20,6 +20,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import javax.annotation.PreDestroy;
 import javax.annotation.Priority;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
@@ -45,6 +46,7 @@ import com.ibm.ws.microprofile.faulttolerance.cdi.config.CircuitBreakerConfig;
 import com.ibm.ws.microprofile.faulttolerance.cdi.config.FallbackConfig;
 import com.ibm.ws.microprofile.faulttolerance.cdi.config.RetryConfig;
 import com.ibm.ws.microprofile.faulttolerance.cdi.config.TimeoutConfig;
+import com.ibm.ws.microprofile.faulttolerance.spi.AsyncRequestContextController;
 import com.ibm.ws.microprofile.faulttolerance.spi.BulkheadPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.CircuitBreakerPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.ExecutionException;
@@ -67,6 +69,9 @@ public class FaultToleranceInterceptor {
     public FaultToleranceInterceptor(ExecutorCleanup executorCleanup) {
         executorCleanup.setPolicies(policyCache.values());
     }
+
+    @Inject
+    Instance<AsyncRequestContextController> rcInstance;
 
     @AroundInvoke
     public Object executeFT(InvocationContext context) throws Exception {
@@ -214,7 +219,8 @@ public class FaultToleranceInterceptor {
         Object result = null;
         //if there is a set of FaultTolerance policies then run it, otherwise just call proceed
         if (aggregatedFTPolicy != null) {
-            Executor<Object> executor = aggregatedFTPolicy.getExecutor();
+
+            Executor<Object> executor = aggregatedFTPolicy.getExecutor(rcInstance);
 
             Method method = invocationContext.getMethod();
             Object[] params = invocationContext.getParameters();

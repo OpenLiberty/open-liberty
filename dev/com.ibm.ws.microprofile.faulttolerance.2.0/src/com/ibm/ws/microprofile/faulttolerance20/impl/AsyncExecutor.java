@@ -30,6 +30,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.microprofile.faulttolerance.spi.AsyncRequestContextController;
 import com.ibm.ws.microprofile.faulttolerance.spi.BulkheadPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.CircuitBreakerPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.Executor;
@@ -114,7 +115,8 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
     };
 
     public AsyncExecutor(RetryPolicy retry, CircuitBreakerPolicy cbPolicy, TimeoutPolicy timeoutPolicy, FallbackPolicy fallbackPolicy, BulkheadPolicy bulkheadPolicy,
-                         ScheduledExecutorService executorService, WSContextService contextService, MetricRecorder metricRecorder) {
+                         ScheduledExecutorService executorService, WSContextService contextService, MetricRecorder metricRecorder,
+                         AsyncRequestContextController asyncRequestContext) {
         retryPolicy = retry;
         circuitBreaker = FaultToleranceStateFactory.INSTANCE.createCircuitBreakerState(cbPolicy, metricRecorder);
         this.timeoutPolicy = timeoutPolicy;
@@ -123,6 +125,7 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
         bulkhead = FaultToleranceStateFactory.INSTANCE.createAsyncBulkheadState(executorService, bulkheadPolicy, metricRecorder);
         this.metricRecorder = metricRecorder;
         this.contextService = contextService;
+        this.asyncRequestContext = asyncRequestContext;
     }
 
     private final RetryPolicy retryPolicy;
@@ -133,6 +136,7 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
     private final AsyncBulkheadState bulkhead;
     private final WSContextService contextService;
     private final MetricRecorder metricRecorder;
+    private final AsyncRequestContextController asyncRequestContext;
 
     @Override
     public W execute(Callable<W> callable, ExecutionContext context) {
@@ -247,6 +251,10 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
                 methodResult = MethodResult.internalFailure(createAppStoppedException(e, attemptContext.getExecutionContext()));
             }
 
+            if (asyncRequestContext != null) {
+                asyncRequestContext.activateContext();
+            }
+
             if (methodResult == null) {
                 try {
                     W result = executionContext.getCallable().call();
@@ -256,6 +264,10 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
                 } finally {
                     contextDescriptor.taskStopping(context);
                 }
+            }
+
+            if (asyncRequestContext != null) {
+                asyncRequestContext.deactivateContext();
             }
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
