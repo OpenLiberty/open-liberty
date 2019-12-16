@@ -18,28 +18,6 @@ import com.ibm.websphere.ras.annotation.Trivial;
 @Trivial
 public class PartitionRecord {
     /**
-     * Queryable bits that are stored in the States field
-     */
-    @Trivial
-    public enum States {
-        /**
-         * Indicates that the instance performs polling of the persistent store on a periodic basis.
-         */
-        POLLS_PERIODICALLY((short) 0x1),
-
-        /**
-         * Indicates that the instance is configured with a positive value for missedTaskThreshold.
-         */
-        MISSED_TASK_THRESHOLD_ENABLED((short) 0x2);
-
-        public final short bit;
-
-        private States(short bit) {
-            this.bit = bit;
-        }
-    }
-
-    /**
      * End of line character.
      */
     private static final String EOLN = String.format("%n");
@@ -66,7 +44,7 @@ public class PartitionRecord {
     private String executor;
 
     /**
-     * Expiry timestamp for the partition entry.
+     * Expiry timestamp for the partition entry. Currently unused.
      */
     private long expiry;
 
@@ -86,7 +64,7 @@ public class PartitionRecord {
     private String libertyServer;
 
     /**
-     * Bits that represent configured state.
+     * Bits that represent configured state. Currently unused.
      */
     private long states;
 

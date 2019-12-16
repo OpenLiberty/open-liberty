@@ -76,8 +76,8 @@ public class MultiplePersistentExecutorsWithFailoverEnabledTest extends FATServl
     	originalConfig = server.getServerConfiguration();
         failoverEnabledConfig = originalConfig.clone();
         ConfigElementList<PersistentExecutor> executors = failoverEnabledConfig.getPersistentExecutors();
-        executors.getById("executor1").setExtraAttribute("missedTaskThreshold2", "15s");
-        executors.getById("executor2").setExtraAttribute("missedTaskThreshold2", "16s");
+        executors.getById("executor1").setMissedTaskThreshold("15s");
+        executors.getById("executor2").setMissedTaskThreshold("16s");
         server.updateServerConfiguration(failoverEnabledConfig);
 
     	//Start server

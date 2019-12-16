@@ -252,56 +252,6 @@ public class DatabaseTaskStore implements TaskStore {
         }
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public boolean create(PartitionRecord record) throws Exception {
-        StringBuilder update = new StringBuilder(111)
-                        .append("UPDATE Partition SET ID=:i1,EXECUTOR=:exec,HOSTNAME=:h,LSERVER=:l,USERDIR=:u");
-        if (record.hasExpiry())
-            update.append(",EXPIRY=:exp");
-        if (record.hasStates())
-            update.append(",STATES=:s");
-        update.append(" WHERE ID=:i2");
-
-        final boolean trace = TraceComponent.isAnyTracingEnabled();
-        if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "create", record, update);
-
-        boolean created = false;
-        EntityManager em = getPersistenceServiceUnit().createEntityManager();
-        try {
-            Partition partition = new Partition();
-            partition.EXECUTOR = "?";
-            partition.HOSTNAME = "?";
-            partition.LSERVER = "?";
-            partition.USERDIR = "?";
-            em.persist(partition);
-            em.flush();
-
-            Query query = em.createQuery(update.toString());
-            query.setParameter("i1", record.getId());
-            query.setParameter("exec", record.getExecutor());
-            query.setParameter("h", record.getHostName());
-            query.setParameter("l", record.getLibertyServer());
-            query.setParameter("u", record.getUserDir());
-            if (record.hasExpiry())
-                query.setParameter("exp", record.getExpiry());
-            if (record.hasStates())
-                query.setParameter("s", record.getStates());
-            query.setParameter("i2", partition.ID);
-
-            created = query.executeUpdate() > 0;
-            if (trace && tc.isDebugEnabled())
-                Tr.debug(this, tc, "update", partition.ID + " --> " + record.getId(), created);
-        } finally {
-            em.close();
-        }
-
-        if (trace && tc.isEntryEnabled())
-            Tr.exit(this, tc, "create", created);
-        return created;
-    }
-
     /**
      * Create an entry in the persistent store for a new task.
      *
@@ -561,82 +511,6 @@ public class DatabaseTaskStore implements TaskStore {
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "findById", taskRecord);
         return taskRecord;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public List<PartitionRecord> findExpired() throws Exception {
-        String find = "SELECT p.ID,p.EXECUTOR,p.HOSTNAME,p.LSERVER,p.USERDIR,p.EXPIRY,p.STATES FROM Partition p WHERE p.EXPIRY<:e";
-
-        final boolean trace = TraceComponent.isAnyTracingEnabled();
-        if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "findExpired", find);
-
-        List<PartitionRecord> records = new ArrayList<PartitionRecord>();
-        EntityManager em = getPersistenceServiceUnit().createEntityManager();
-        try {
-            TypedQuery<Object[]> query = em.createQuery(find.toString(), Object[].class);
-            query.setParameter("e", System.currentTimeMillis());
-            List<Object[]> results = query.getResultList();
-
-            for (Object[] result : results) {
-                PartitionRecord record = new PartitionRecord(true);
-                record.setId((Long) result[0]);
-                record.setExecutor((String) result[1]);
-                record.setHostName((String) result[2]);
-                record.setLibertyServer((String) result[3]);
-                record.setUserDir((String) result[4]);
-                record.setExpiry((Long) result[5]);
-                record.setStates((Long) result[6]);
-                records.add(record);
-            }
-        } finally {
-            em.close();
-        }
-
-        if (trace && tc.isEntryEnabled())
-            Tr.exit(this, tc, "findExpired", records.size());
-        return records;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public List<Object[]> findLateTasks(long maxNextExecTime, long excludePartition, Integer maxResults) throws Exception {
-        StringBuilder find = new StringBuilder(138)
-                        .append("SELECT t.ID,t.MBITS,t.NEXTEXEC,t.TXTIMEOUT,t.VERSION FROM Task t WHERE t.PARTN<>:p AND t.STATES<")
-                        .append(TaskState.SUSPENDED.bit)
-                        .append(" AND t.NEXTEXEC<=:m");
-        if (maxResults != null)
-            find.append(" ORDER BY t.NEXTEXEC");
-
-        final boolean trace = TraceComponent.isAnyTracingEnabled();
-        if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "findLateTasks", Utils.appendDate(new StringBuilder(30), maxNextExecTime), excludePartition, maxResults, find);
-
-        List<Object[]> resultList;
-        EntityManager em = getPersistenceServiceUnit().createEntityManager();
-        try {
-            Connection con = em.unwrap(Connection.class);
-            if (con == null)
-                // TODO why does this sometimes return null when running in builds?
-                System.out.println("em.unwrap(Connection) returned null! em = " + em);
-            else
-                con.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED); // TODO: jdbc driver might not support this
-
-            TypedQuery<Object[]> query = em.createQuery(find.toString(), Object[].class);
-            query.setParameter("p", excludePartition);
-            query.setParameter("m", maxNextExecTime);
-            if (maxResults != null)
-                query.setMaxResults(maxResults);
-            List<Object[]> results = query.getResultList();
-            resultList = results;
-        } finally {
-            em.close();
-        }
-
-        if (trace && tc.isEntryEnabled())
-            Tr.exit(this, tc, "findLateTasks", resultList.size());
-        return resultList;
     }
 
     /** {@inheritDoc} */
@@ -1629,35 +1503,6 @@ public class DatabaseTaskStore implements TaskStore {
 
     /** {@inheritDoc} */
     @Override
-    public int removePropertiesIfLessThanOrEqual(String pattern, Character escape, String comparisonValue) throws Exception {
-        StringBuilder delete = new StringBuilder(58)
-                        .append("DELETE FROM Property WHERE ID LIKE :p AND VAL<:c");
-        if (escape != null)
-            delete.append(" ESCAPE :e");
-
-        final boolean trace = TraceComponent.isAnyTracingEnabled();
-        if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "removePropertiesIfLessThanOrEqual", pattern, escape, comparisonValue, delete);
-
-        EntityManager em = getPersistenceServiceUnit().createEntityManager();
-        try {
-            Query query = em.createQuery(delete.toString());
-            query.setParameter("p", pattern);
-            query.setParameter("c", comparisonValue);
-            if (escape != null)
-                query.setParameter("e", escape);
-            int count = query.executeUpdate();
-
-            if (trace && tc.isEntryEnabled())
-                Tr.exit(this, tc, "removePropertiesIfLessThanOrEqual", count);
-            return count;
-        } finally {
-            em.close();
-        }
-    }
-
-    /** {@inheritDoc} */
-    @Override
     public boolean removeProperty(String name) throws Exception {
         String update = "DELETE FROM Property WHERE ID=:i";
 
@@ -1772,32 +1617,6 @@ public class DatabaseTaskStore implements TaskStore {
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "setProperty", exists);
         return exists;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean setPropertyIfLessThanOrEqual(String name, String value, String comparisonValue) throws Exception {
-        String update = "UPDATE Property SET VAL=:v WHERE ID=:i AND VAL<:c";
-
-        final boolean trace = TraceComponent.isAnyTracingEnabled();
-        if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "setPropertyIfLessThanOrEqual", name, value, comparisonValue, update);
-
-        boolean replaced;
-        EntityManager em = getPersistenceServiceUnit().createEntityManager();
-        try {
-            Query query = em.createQuery(update);
-            query.setParameter("v", value);
-            query.setParameter("i", name);
-            query.setParameter("c", comparisonValue);
-            replaced = query.executeUpdate() > 0;
-        } finally {
-            em.close();
-        }
-
-        if (trace && tc.isEntryEnabled())
-            Tr.exit(this, tc, "setPropertyIfLessThanOrEqual", replaced);
-        return replaced;
     }
 
     /** {@inheritDoc} */

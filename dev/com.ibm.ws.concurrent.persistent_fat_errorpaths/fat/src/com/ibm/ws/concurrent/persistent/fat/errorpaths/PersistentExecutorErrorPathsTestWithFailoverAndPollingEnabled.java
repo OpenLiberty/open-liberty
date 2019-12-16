@@ -96,7 +96,7 @@ public class PersistentExecutorErrorPathsTestWithFailoverAndPollingEnabled {
         originalConfig = server.getServerConfiguration();
         ServerConfiguration config = originalConfig.clone();
         PersistentExecutor persistentExecutor = config.getPersistentExecutors().getBy("jndiName", "concurrent/myScheduler");
-        persistentExecutor.setExtraAttribute("missedTaskThreshold2", "5s"); // TODO rename and use setter
+        persistentExecutor.setMissedTaskThreshold("5s");
         persistentExecutor.setPollInterval("3s");
         server.updateServerConfiguration(config);
 

@@ -269,7 +269,7 @@ public class InvokerTask implements Runnable, Synchronization {
         long[] runningTaskRemovalState = new long[] { taskId, 0 };
         runningTaskState.set(runningTaskRemovalState);
         try {
-            partitionId = config.missedTaskThreshold2 < 1 ? persistentExecutor.getPartitionId() : null;
+            partitionId = config.missedTaskThreshold < 1 ? persistentExecutor.getPartitionId() : null;
 
             int timeout = txTimeout == 0 && (binaryFlags & TaskRecord.Flags.SUSPEND_TRAN_OF_EXECUTOR_THREAD.bit) != 0 ? DEFAULT_TIMEOUT_FOR_SUSPENDED_TRAN : txTimeout;
             tranMgr.setTransactionTimeout(timeout);
@@ -288,7 +288,7 @@ public class InvokerTask implements Runnable, Synchronization {
             // Lock an entry in a different table to prevent concurrent execution, and run with that transaction suspended.
             if ((binaryFlags & TaskRecord.Flags.SUSPEND_TRAN_OF_EXECUTOR_THREAD.bit) != 0) {
                 if (!taskStore.createProperty(taskIdForPropTable = "{" + taskId + "}", " ")) {
-                    if (config.missedTaskThreshold2 > 0)
+                    if (config.missedTaskThreshold > 0)
                         throw new RuntimeException("An attempt to run the task might have been made by a different instance. Retry is needed.");
                     // Determine the partition to which the task is assigned
                     taskIdForPropTable = null;
@@ -534,11 +534,11 @@ public class InvokerTask implements Runnable, Synchronization {
 
                 // When updating the task entry, determine whether or not to keep a claim on the task.
                 config = persistentExecutor.configRef.get();
-                if (config.missedTaskThreshold2 > 0)
+                if (config.missedTaskThreshold > 0)
                     if (config.enableTaskExecution
                         && nextExecTime != null
                         && (config.pollInterval < 0 || nextExecTime <= System.currentTimeMillis() + config.pollInterval)) {
-                        updates.setIdentifierOfPartition(nextExecTime + config.missedTaskThreshold2 * 1000);
+                        updates.setIdentifierOfPartition(nextExecTime + config.missedTaskThreshold * 1000);
                         claimNextExecution = true;
                     } else {
                         updates.setIdentifierOfPartition(-1);
@@ -620,7 +620,7 @@ public class InvokerTask implements Runnable, Synchronization {
 
                     // If the transaction commits, immediately reschedule tasks that should run within a single poll cycle. If no polling, then all tasks.
                     config = persistentExecutor.configRef.get();
-                    boolean scheduleNextExecution = config.missedTaskThreshold2 > 0 //
+                    boolean scheduleNextExecution = config.missedTaskThreshold > 0 //
                                     ? claimNextExecution //
                                     : config.enableTaskExecution && nextExecTime != null
                                       && (config.pollInterval < 0

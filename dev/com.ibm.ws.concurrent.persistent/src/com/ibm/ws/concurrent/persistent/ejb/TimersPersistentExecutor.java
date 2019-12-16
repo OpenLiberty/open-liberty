@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -85,6 +85,13 @@ public interface TimersPersistentExecutor extends PersistentExecutor {
      * @throws Exception if an error occurs accessing the persistent store.
      */
     <T> TimerStatus<T> getTimerStatus(long taskId) throws Exception;
+
+    /**
+     * Indicates whether or not fail over is enabled.
+     *
+     * @return true if fail over is enabled, otherwise false.
+     */
+    boolean isFailOverEnabled();
 
     /**
      * Removes all persisted properties that match the specified name pattern.
