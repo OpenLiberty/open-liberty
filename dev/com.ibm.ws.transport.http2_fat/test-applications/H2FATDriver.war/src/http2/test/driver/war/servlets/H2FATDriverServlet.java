@@ -3364,7 +3364,6 @@ public class H2FATDriverServlet extends FATServlet {
         FrameGoAway errorFrame = new FrameGoAway(0, debugData, FLOW_CONTROL_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
-        addFirstExpectedHeaders(h2Client);
         h2Client.sendUpgradeHeader(HEADERS_ONLY_URI);
         h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
 
