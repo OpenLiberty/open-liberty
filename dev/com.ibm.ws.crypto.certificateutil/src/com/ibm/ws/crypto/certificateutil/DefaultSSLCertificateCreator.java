@@ -100,17 +100,4 @@ public interface DefaultSSLCertificateCreator {
     File createDefaultSSLCertificate(String filePath, String password, int validity, String subjectDN, int keySize, String sigAlg,
                                      List<String> extInfo) throws CertificateException;
 
-    /**
-     * @param filePath
-     * @param password
-     * @param validity
-     * @param subjectDN
-     * @param keySize
-     * @param sigAlg
-     * @param extInfo
-     * @return
-     * @throws CertificateException
-     */
-    File createDefaultSSLCertificate(String filePath, String password, int validity, String subjectDN, int keySize, String sigAlg, String extInfo) throws CertificateException;
-
 }
