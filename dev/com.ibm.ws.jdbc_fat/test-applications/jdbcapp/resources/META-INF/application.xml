@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application version="6" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application_6.xsd"> 
+  <display-name>BasicJDBCApp</display-name>
+
+  <module>
+    <web>
+      <web-uri>basicfat.war</web-uri>
+      <context-root>/basicfat</context-root>
+    </web>
+  </module>
+
+  <!-- DATA SOURCES -->
+  <data-source>
+    <name>java:app/env/jdbc/dsfat9</name>
+    <class-name>org.apache.derby.jdbc.EmbeddedConnectionPoolDataSource40</class-name>
+    <database-name>${shared.resource.dir}/data/derbyfat</database-name>
+    <initial-pool-size>0</initial-pool-size>
+    <isolation-level>TRANSACTION_READ_COMMITTED</isolation-level>
+    <login-timeout>90</login-timeout>
+    <max-idle-time>3</max-idle-time>
+    <max-pool-size>2</max-pool-size>
+    <max-statements>9</max-statements>
+    <min-pool-size>0</min-pool-size>
+    <user>dbuser1</user>
+    <password>{xor}Oz0vKDtu</password>
+    <property><name>createDatabase</name><value>create</value></property>
+    <property><name>purgePolicy</name><value>FailingConnectionOnly</value></property>
+    <property><name>queryTimeout</name><value>1h4m60s</value></property>
+    <property><name>reapTime</name><value>2000ms</value></property>
+  </data-source>
+
+</application>
