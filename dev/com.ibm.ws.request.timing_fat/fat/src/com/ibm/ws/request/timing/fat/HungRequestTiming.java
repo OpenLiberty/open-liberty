@@ -75,6 +75,7 @@ public class HungRequestTiming {
         if (server != null && !server.isStarted()) {
             server.startServer();
         }
+        server.setServerConfigurationFile("server_original.xml");
     }
 
     @After
