@@ -137,7 +137,8 @@ public class PXLockTestWithFailoverEnabled {
                         // wait for tasks to stop running
                         long waitForTaskCompletions = TimeUnit.SECONDS.toMillis(10);
                         Thread.sleep(waitForTaskCompletions);
-                        server.stopServer();
+                        server.stopServer("CWWKC1511W.*CancellationException" // task execution failed because it was canceled
+                        );
                     }
             } finally {
                 if (originalConfig != null)
