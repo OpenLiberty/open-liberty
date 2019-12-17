@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2017 IBM Corporation and others.
+    Copyright (c) 2017, 2019 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -21,18 +21,23 @@
   <databaseStore id="DBTaskStore" dataSourceRef="LockTestDB"/>
 
   <!-- database for scheduled tasks -->
-  <dataSource id="LockTestDB">
-    <jdbcDriver libraryRef="DerbyLib"/>
-    <!-- The following configures in-memory Derby.  For Derby on disk, which is needed if the database
-    is required beyond a single server start, configure the databaseName with a file location such as:
-    databaseName="${shared.config.dir}/data/derbydb" -->
-    <properties.derby.embedded createDatabase="create" databaseName="memory:lockdb"/>
+  <dataSource id="LockTestDB" fat.modify="true">
+    <jdbcDriver libraryRef="JDBCLib"/>
+    <!-- properties modified by fat-suite during database rotation -->
+   	<properties.derby.embedded createDatabase="create" databaseName="memory:lockdb"/>
   </dataSource>
-  <library id="DerbyLib">
-    <fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
+  
+  <library id="JDBCLib">
+    <fileset dir="${shared.resource.dir}/jdbc" includes="${env.DB_DRIVER}"/>
   </library>
   
-  <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+  <javaPermission codebase="${shared.resource.dir}/jdbc/${env.DB_DRIVER}" className="java.security.AllPermission"/>
+
+  <!-- Oracle and SQLServer JDBC drivers get Java 2 security errors when creating a connection. -->
+  <javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve" />
+
+  <!-- Oracle JDBC driver get Java 2 security errors when creating prepared statements, or accessing metadata -->
+  <javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers" />
 
   <variable name="onError" value="FAIL"/>
 

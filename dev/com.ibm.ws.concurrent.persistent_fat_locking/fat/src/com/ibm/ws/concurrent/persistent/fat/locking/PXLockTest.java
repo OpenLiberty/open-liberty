@@ -18,23 +18,19 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Collections;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
+import org.testcontainers.containers.JdbcDatabaseContainer;
 
-import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -43,12 +39,13 @@ import componenttest.topology.impl.LibertyServer;
 public class PXLockTest {
     private static final LibertyServer server = FATSuite.server;
 
-    private static final Set<String> appNames = Collections.singleton("pxlocktest");
-
     private static final String APP_NAME = "pxlocktest";
 
     @Rule
     public TestName testName = new TestName();
+
+    @ClassRule
+    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
 
     /**
      * Runs a test in the servlet.
@@ -99,17 +96,13 @@ public class PXLockTest {
      */
     @BeforeClass
     public static void setUp() throws Exception {
-        // Delete the Derby-only database that is used by the persistent scheduled executor
-        Machine machine = server.getMachine();
-        String installRoot = server.getInstallRoot();
-        LibertyFileManager.deleteLibertyDirectoryAndContents(machine, installRoot + "/usr/shared/resources/data/lockdb");
+        //Get driver info
+        server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
+        DatabaseContainerUtil.setupDataSourceProperties(server, testContainer);
 
-        WebArchive app1 = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
-                        .addPackages(true, "web");
-        // Write the WebArchive to 'publish/servers/FATServer/apps/app1.war' and print the contents
-        ShrinkHelper.exportAppToServer(server, app1);
-        for (String name : appNames)
-            server.addInstalledAppForValidation(name);
+        //Add application to server
+        ShrinkHelper.defaultApp(server, APP_NAME, "web");
+
         server.startServer();
     }
 
