@@ -15,7 +15,8 @@ Subsystem-Name: Concurrency Utilities for Java EE 1.0
 -bundles=com.ibm.ws.javaee.platform.defaultresource, \
  com.ibm.websphere.javaee.concurrent.1.0; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.enterprise.concurrent:javax.enterprise.concurrent-api:1.0", \
  com.ibm.ws.resource, \
- com.ibm.ws.concurrent
+ com.ibm.ws.concurrent, \
+ com.ibm.ws.concurrent.service
 kind=ga
 edition=core
 WLP-Activation-Type: parallel
