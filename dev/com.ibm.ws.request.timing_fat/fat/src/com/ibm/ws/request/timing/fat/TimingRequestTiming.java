@@ -599,7 +599,6 @@ public class TimingRequestTiming {
 
         // Clean up the mess we made.
         if (server != null && server.isStarted()) {
-            server.setServerConfigurationFile("server_original.xml");
             server.stopServer("TRAS3302W.*"); // stop the server, expecting the warning message.
         }
     }
