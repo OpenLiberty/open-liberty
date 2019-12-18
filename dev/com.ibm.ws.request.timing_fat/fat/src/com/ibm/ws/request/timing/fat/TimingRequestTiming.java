@@ -597,8 +597,12 @@ public class TimingRequestTiming {
 
         CommonTasks.writeLogMsg(Level.INFO, "***** timing works - context info conflict detected. *****");
 
+        server.setMarkToEndOfLog();
+
         // Clean up the mess we made.
         if (server != null && server.isStarted()) {
+            server.setServerConfigurationFile("server_original.xml");
+            server.waitForStringInLog("CWWKG0017I", 30000);
             server.stopServer("TRAS3302W.*"); // stop the server, expecting the warning message.
         }
     }
