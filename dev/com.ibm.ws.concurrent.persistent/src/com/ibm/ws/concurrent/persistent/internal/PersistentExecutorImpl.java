@@ -348,8 +348,12 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
         if (readyForPollingTask.addAndCheckIfReady(PollingManager.DS_READY))
             startPollingTask(config);
 
-        mbean = new PersistentExecutorMBeanImpl(this);
-        mbean.register(InvokerTask.priv.getBundleContext(context));
+        if (config.missedTaskThreshold == -1) {
+            // PersistentExecutorMBean is undocumented, experimental, and not supported.
+            // We would like to remove its registration under all circumstances, but that could potentially break some one who is using it
+            mbean = new PersistentExecutorMBeanImpl(this);
+            mbean.register(InvokerTask.priv.getBundleContext(context));
+        }
 
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "activate");
@@ -489,6 +493,10 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
      * @throws Exception if an error occurs.
      */
     String[][] findPartitionInfo(String hostName, String userDir, String libertyServerName, String executorIdentifier) throws Exception {
+        Config config = configRef.get();
+        if (config.missedTaskThreshold != -1)
+            throw new UnsupportedOperationException(); // should be unreachable
+
         PartitionRecord criteria = new PartitionRecord(false);
         if (hostName != null)
             criteria.setHostName(hostName);
@@ -564,6 +572,10 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
      * @throws Exception if an error occurs when attempting to access the persistent task store.
      */
     Long[] findTaskIds(long partition, TaskState state, boolean inState, Long minId, Integer maxResults) throws Exception {
+        Config config = configRef.get();
+        if (config.missedTaskThreshold != -1)
+            throw new UnsupportedOperationException(); // should be unreachable
+
         Long[] results = null;
         TransactionController tranController = new TransactionController();
         try {
@@ -1008,6 +1020,8 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
         configRef.set(newConfig);
 
+        boolean mbeanChange = oldConfig.missedTaskThreshold == -1 && newConfig.missedTaskThreshold != -1;
+
         // If the JNDI name changes, notify the application recycle coordinator and re-register the mbean
         if (newConfig.jndiName == null ? oldConfig.jndiName != null : !newConfig.jndiName.equals(oldConfig.jndiName)) {
             if (!applications.isEmpty()) {
@@ -1017,11 +1031,19 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
                 appCoord.recycleApplications(members);
             }
 
+            mbeanChange = true;
+        }
+
+        if (mbeanChange) {
             if (mbean != null)
                 mbean.unregister();
 
-            mbean = new PersistentExecutorMBeanImpl(this);
-            mbean.register(InvokerTask.priv.getBundleContext(context));
+            if (newConfig.missedTaskThreshold == -1) {
+                // PersistentExecutorMBean is undocumented, experimental, and not supported.
+                // We would like to remove its registration under all circumstances, but that could potentially break some one who is using it
+                mbean = new PersistentExecutorMBeanImpl(this);
+                mbean.register(InvokerTask.priv.getBundleContext(context));
+            }
         }
 
         if (readyForPollingTask.addAndCheckIfReady(PollingManager.DS_READY))
@@ -1317,6 +1339,10 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
      * @throws Exception if an error occurs.
      */
     int removePartitionInfo(String hostName, String userDir, String libertyServerName, String executorIdentifier) throws Exception {
+        Config config = configRef.get();
+        if (config.missedTaskThreshold != -1)
+            throw new UnsupportedOperationException(); // should be unreachable
+
         PartitionRecord criteria = new PartitionRecord(false);
         if (hostName != null)
             criteria.setHostName(hostName);
@@ -1789,8 +1815,8 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
      */
     int transfer(Long maxTaskId, long oldPartitionId) throws Exception {
         Config config = configRef.get();
-        if (config.missedTaskThreshold > 0)
-            throw new UnsupportedOperationException("The transfer operation is not supported when missedTaskThreshold >= 1"); // TODO message
+        if (config.missedTaskThreshold != -1)
+            throw new UnsupportedOperationException(); // should be unreachable
 
         long partitionId = getPartitionId();
 
@@ -1932,63 +1958,6 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
     protected synchronized void unsetServerStarted(ServiceReference<ServerStarted> ref) {
         // server is shutting down
         deactivated = true;
-    }
-
-    /**
-     * Updates partition information in the persistent store. The parameters are optional, except at least one new value
-     * must be specified.
-     *
-     * This method is only by tests. TODO should see if we can update tests and remove it.
-     * com.ibm.ws.concurrent.persistent.fat.multiple.MultiplePersistentExecutorsTest.testFailoverWithFourInstances
-     * com.ibm.ws.concurrent.persistent.fat.oneexec.OneExecutorRunsAllTest.testRunTasksOnDifferentExecutor
-     *
-     * @param oldHostName           the host name to update.
-     * @param oldUserDir            wlp.user.dir to update.
-     * @param oldLibertyServerName  name of the Liberty server to update.
-     * @param oldExecutorIdentifier config.displayId of the persistent executor to update.
-     * @param newHostName           the new host name.
-     * @param newUserDir            the new wlp.user.dir.
-     * @param newLibertyServerName  the new name of the Liberty server.
-     * @param newExecutorIdentifier config.displayId of the new persistent executor.
-     * @return the number of entries removed from the persistent store.
-     * @throws Exception if an error occurs.
-     */
-    int updatePartitionInfo(String oldHostName, String oldUserDir, String oldLibertyServerName, String oldExecutorIdentifier,
-                            String newHostName, String newUserDir, String newLibertyServerName, String newExecutorIdentifier) throws Exception {
-        PartitionRecord updates = new PartitionRecord(false);
-        if (newHostName != null)
-            updates.setHostName(newHostName);
-        if (newUserDir != null)
-            updates.setUserDir(newUserDir);
-        if (newLibertyServerName != null)
-            updates.setLibertyServer(newLibertyServerName);
-        if (newExecutorIdentifier != null)
-            updates.setExecutor(newExecutorIdentifier);
-
-        PartitionRecord expected = new PartitionRecord(false);
-        if (oldHostName != null)
-            expected.setHostName(oldHostName);
-        if (oldUserDir != null)
-            expected.setUserDir(oldUserDir);
-        if (oldLibertyServerName != null)
-            expected.setLibertyServer(oldLibertyServerName);
-        if (oldExecutorIdentifier != null)
-            expected.setExecutor(oldExecutorIdentifier);
-
-        int numUpdated = 0;
-        TransactionController tranController = new TransactionController();
-        try {
-            tranController.preInvoke();
-            numUpdated = taskStore.persist(updates, expected);
-        } catch (Throwable x) {
-            tranController.setFailure(x);
-        } finally {
-            Exception x = tranController.postInvoke(Exception.class);
-            if (x != null)
-                throw x;
-        }
-
-        return numUpdated;
     }
 
     /**
@@ -2232,7 +2201,6 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
         /**
          * Polls for tasks that are owned by the current partition.
-         * TODO decide if missedTaskThreshold approach under this method, which covers missed tasks from other partitions, should be included or removed.
          *
          * @param config configuration of this instance.
          * @throws Exception if an error occurs.
