@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+    version="2.0">
+
+    <persistence-unit name="CriteriaQuery_JEE">
+        <jta-data-source>jdbc/JPA_DS</jta-data-source>
+        <non-jta-data-source>jdbc/JPA_NJTADS</non-jta-data-source>
+        <properties>
+            <property name="eclipselink.logging.parameters" value="true"/>
+
+            <property name="openjpa.jdbc.DBDictionary" value="StoreCharsAsNumbers=false"/>
+            <property name="openjpa.ConnectionFactoryProperties" value="PrintParameters=true" />
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="CriteriaQuery_RL" transaction-type="RESOURCE_LOCAL">
+        <non-jta-data-source>jdbc/JPA_NJTADS</non-jta-data-source>
+        <properties>
+            <property name="eclipselink.logging.parameters" value="true"/>
+
+            <property name="openjpa.jdbc.DBDictionary" value="StoreCharsAsNumbers=false"/>
+            <property name="openjpa.ConnectionFactoryProperties" value="PrintParameters=true" />
+        </properties>
+    </persistence-unit>
+</persistence>

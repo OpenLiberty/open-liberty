@@ -13,6 +13,7 @@ package suite.r80.base.common.datamodel.entities;
 
 import java.math.BigDecimal;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
@@ -108,6 +109,7 @@ public class Entity0314 {
     private Short entity0314_id2;
 
     @Id
+    @Column(precision = 10, scale = 6)
     private BigDecimal entity0314_id3;
 
     @Version

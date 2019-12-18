@@ -16,14 +16,14 @@
     xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application_5.xsd"
     id="Application_ID">
 
-    <display-name>ExampleEJB</display-name>
+    <display-name>Example_EJB</display-name>
     <module id="EjbModule_1"> 
         <ejb>exampleEjb.jar</ejb>
     </module>
     <module id="WebModule_1">
         <web>
             <web-uri>exampleEjb.war</web-uri>
-            <context-root>exampleejb</context-root>
+            <context-root>exampleEjb</context-root>
         </web>
     </module>
 </application>
