@@ -298,7 +298,13 @@ public class FailoverTimersTest extends FATServletClient {
 
             // Also restart the server. This allows us to process any expected warning messages that are logged in response
             // to the application going away while its scheduled tasks remain.
-            serverOnWhichToStopApp.stopServer("CWWKC1556W"); // Execution of tasks from application failoverTimersApp is deferred until the application and modules that scheduled the tasks are available.
+            serverOnWhichToStopApp.stopServer(
+                    "CWWKC1556W", // Execution of tasks from application failoverTimersApp is deferred until the application and modules that scheduled the tasks are available.
+                    "DSRA0230E", // transaction in progress across server stop
+                    "DSRA0302E", // transaction in progress across server stop
+                    "DSRA0304E", // transaction in progress across server stop
+                    "J2CA0027E" // transaction in progress across server stop
+                    );
         }
     }
 
