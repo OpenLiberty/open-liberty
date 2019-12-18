@@ -823,16 +823,25 @@ public class PersistentErrorTestServlet extends HttpServlet {
      * but the task should be retried and succeed on the next attempt.
      */
     public void testShutDownDerbyDuringTaskExecution(PrintWriter out) throws Exception {
-        DerbyShutdownTask task = new DerbyShutdownTask();
+        DerbyShutdownTask task = new DerbyShutdownTask(); // auto-purges upon successful completion
         DerbyShutdownTask.counter.set(0);
 
         TaskStatus<?> status = scheduler.schedule(task, 0, TimeUnit.HOURS);
+        long taskId = status.getTaskId();
 
-        for (long start = System.nanoTime(); DerbyShutdownTask.counter.get() < 2 && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL));
+        long start = System.nanoTime();
+        while (DerbyShutdownTask.counter.get() < 2 && System.nanoTime() - start < TIMEOUT_NS)
+            Thread.sleep(POLL_INTERVAL);
+
+        // Also wait for the task to have completed (auto-purged null status), so that we know it is actually successful again vs another attempt that is still failing.
+        while (status != null && System.nanoTime() - start < TIMEOUT_NS) {
+            Thread.sleep(POLL_INTERVAL);
+            status = scheduler.getStatus(status.getTaskId());
+        }
 
         int count = DerbyShutdownTask.counter.get();
-        if (count != 2)
-            throw new Exception("Task " + status.getTaskId() + " did not run exactly once successfully after Derby shutdown. Attempt count: " + count);
+        if (count != 2 || status != null)
+            throw new Exception("Task " + taskId + " (" + status + ") did not run exactly once successfully after Derby shutdown. Attempt count: " + count);
     }
 
     /**
