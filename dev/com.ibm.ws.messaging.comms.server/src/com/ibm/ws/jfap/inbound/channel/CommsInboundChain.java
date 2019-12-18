@@ -138,7 +138,7 @@ public class CommsInboundChain implements ChainEventListener {
      */
     public void stop() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.entry(tc, "CommsInboundChain Stop");
+            SibTr.entry(tc, "stop");
 
         //stopchain() first quiesce's(invokes chainQuiesced) depending on the chainQuiesceTimeOut
         //Once the chain is quiesced StopChainTask is initiated.Hence we block until the actual stopChain is invoked
@@ -158,7 +158,7 @@ public class CommsInboundChain implements ChainEventListener {
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.exit(tc, "CommsServerServiceFacade JfapChainStop");
+            SibTr.exit(tc, "stop");
     }
 
     /**
@@ -166,7 +166,7 @@ public class CommsInboundChain implements ChainEventListener {
      */
     public void update() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.entry(tc, "CommsInboundChain update");
+            SibTr.entry(tc, "update");
 
         if (!_isEnabled || FrameworkState.isStopping()) //dont do any thing.. just return
             return;
@@ -195,6 +195,8 @@ public class CommsInboundChain implements ChainEventListener {
 
             //stop the chain
             stop();
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                SibTr.exit(tc, "update");
             return;
         }
 
@@ -289,6 +291,8 @@ public class CommsInboundChain implements ChainEventListener {
                 jmsActivePort = -1;
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     SibTr.debug(tc, "JFAP chain InboundBasicMessaging failed in obtaining Listening port from ChannelFrameWork", e);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                    SibTr.exit(tc, "update");
                 return;
             }
 
@@ -305,6 +309,8 @@ public class CommsInboundChain implements ChainEventListener {
             }
         }
 
+      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+          SibTr.exit(tc, "update");
     }
 
     /**
@@ -312,7 +318,7 @@ public class CommsInboundChain implements ChainEventListener {
      */
     private void removeChannel(String name) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.entry(tc, "CommsInboundChain removeChnanel", name);
+            SibTr.entry(tc, "removeChannel", name);
         // Neither of the thrown exceptions are permanent failures: 
         // they usually indicate that we're the victim of a race.
         // If the CFW is also tearing down the chain at the same time 
@@ -329,6 +335,8 @@ public class CommsInboundChain implements ChainEventListener {
                 SibTr.debug(this, tc, "Error removing channel " + name, e);
             }
         }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.exit(tc, "removeChannel");
     }
 
     private final class ChainConfiguration {
