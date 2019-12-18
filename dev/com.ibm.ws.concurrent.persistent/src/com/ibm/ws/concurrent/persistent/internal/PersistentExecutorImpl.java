@@ -82,7 +82,6 @@ import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
 import com.ibm.ws.LocalTransaction.LocalTransactionCurrent;
 import com.ibm.ws.Transaction.UOWCurrent;
 import com.ibm.ws.classloading.ClassLoaderIdentifierService;
-import com.ibm.ws.concurrent.persistent.controller.Controller;
 import com.ibm.ws.concurrent.persistent.db.DatabaseTaskStore;
 import com.ibm.ws.concurrent.persistent.ejb.TaskLocker;
 import com.ibm.ws.concurrent.persistent.ejb.TimerStatus;
@@ -183,12 +182,6 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
      * Reference to the thread context service.
      */
     private final AtomicServiceReference<WSContextService> contextSvcRef = new AtomicServiceReference<WSContextService>("ContextService");
-
-    /**
-     * Interface that allows tests to simulate having a controller for multiple persistent executor instances.
-     * In the future, replace this with a real implementation.
-     */
-    private final AtomicServiceReference<Controller> controllerRef = new AtomicServiceReference<Controller>("Controller");
 
     /**
      * Indicates if this persistent executor instance has been deactivated.
@@ -332,7 +325,6 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
         appTrackerRef.activate(context);
         contextSvcRef.activate(context);
-        controllerRef.activate(context);
         localTranCurrentRef.activate(context);
         serializationSvcRef.activate(context);
         tranMgrRef.activate(context);
@@ -441,7 +433,6 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
             DatabaseTaskStore.unget(persistentStore);
         appTrackerRef.deactivate(context);
         contextSvcRef.deactivate(context);
-        controllerRef.deactivate(context);
         localTranCurrentRef.deactivate(context);
         serializationSvcRef.deactivate(context);
         tranMgrRef.deactivate(context);
@@ -1079,16 +1070,9 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
         Config config = configRef.get();
 
         long taskAssignmentInfo = -1;
-        Long alternatePartition = null;
         if (config.missedTaskThreshold < 1) {
             try {
-                // If the current instance isn't able to run tasks, look for one that is
-                if (!config.enableTaskExecution) {
-                    Controller controller = controllerRef.getService();
-                    if (controller != null) // obtain from the controller
-                        alternatePartition = controller.getActivePartitionId();
-                }
-                taskAssignmentInfo = alternatePartition == null ? getPartitionId() : alternatePartition;
+                taskAssignmentInfo = getPartitionId();
             } catch (RuntimeException x) {
                 throw x;
             } catch (Exception x) {
@@ -1223,19 +1207,11 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
             taskStore.create(record);
 
             // Immediately schedule tasks that should run in the near future or run on other instances if the transaction commits
-            Synchronization autoSchedule = null;
             boolean scheduleToSelf = config.missedTaskThreshold > 0 //
                             ? claimFirstExecution //
                             : config.enableTaskExecution && (config.pollInterval < 0 || nextExecTime <= System.currentTimeMillis() + config.pollInterval);
-            if (scheduleToSelf)
-                autoSchedule = new InvokerTask(this, record.getId(), nextExecTime, record.getMiscBinaryFlags(), txTimeout);
-            else if (alternatePartition != null) {
-                Controller controller = controllerRef.getService();
-                if (controller != null)
-                    autoSchedule = new ControllerAutoSchedule(controller, alternatePartition, record.getId(), nextExecTime, record.getMiscBinaryFlags(), record
-                                    .getTransactionTimeout());
-            }
-            if (autoSchedule != null) {
+            if (scheduleToSelf) {
+                Synchronization autoSchedule = new InvokerTask(this, record.getId(), nextExecTime, record.getMiscBinaryFlags(), txTimeout);
                 UOWCurrent uowCurrent = (UOWCurrent) tranController.tranMgr;
                 tranController.tranMgr.registerSynchronization(uowCurrent.getUOWCoord(), autoSchedule, EmbeddableWebSphereTransactionManager.SYNC_TIER_OUTER);
             }
@@ -1622,19 +1598,6 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
     }
 
     /**
-     * Declarative Services method for setting the controller
-     *
-     * @param ref reference to the service
-     */
-    @Reference(service = Controller.class,
-               cardinality = ReferenceCardinality.OPTIONAL,
-               policy = ReferencePolicy.DYNAMIC,
-               policyOption = ReferencePolicyOption.GREEDY)
-    protected void setController(ServiceReference<Controller> ref) {
-        controllerRef.setReference(ref);
-    }
-
-    /**
      * Declarative Services method for setting the Liberty executor.
      *
      * @param svc the service
@@ -1877,15 +1840,6 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
      */
     protected void unsetContextService(ServiceReference<WSContextService> ref) {
         contextSvcRef.unsetReference(ref);
-    }
-
-    /**
-     * Declarative Services method for unsetting the controller
-     *
-     * @param ref reference to the service
-     */
-    protected void unsetController(ServiceReference<Controller> ref) {
-        controllerRef.unsetReference(ref);
     }
 
     /**
