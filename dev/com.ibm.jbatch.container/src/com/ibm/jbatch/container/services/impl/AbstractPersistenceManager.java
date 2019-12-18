@@ -50,6 +50,7 @@ import com.ibm.jbatch.container.persistence.jpa.StepThreadExecutionEntity;
 import com.ibm.jbatch.container.persistence.jpa.TopLevelStepExecutionEntity;
 import com.ibm.jbatch.container.services.IPersistenceManagerService;
 import com.ibm.jbatch.container.ws.InstanceState;
+import com.ibm.jbatch.container.ws.JobInstanceNotQueuedException;
 import com.ibm.jbatch.container.ws.WSStepThreadExecutionAggregate;
 
 /**
@@ -148,7 +149,7 @@ public abstract class AbstractPersistenceManager implements IPersistenceManagerS
     }
 
     @Override
-    public JobInstanceEntity updateJobInstanceStateOnConsumed(long instanceId) throws BatchIllegalJobStatusTransitionException {
+    public JobInstanceEntity updateJobInstanceStateOnConsumed(long instanceId) throws BatchIllegalJobStatusTransitionException, JobInstanceNotQueuedException {
         JobInstanceEntity retVal = getJobInstance(instanceId);
 
         InstanceState currentState = retVal.getInstanceState();

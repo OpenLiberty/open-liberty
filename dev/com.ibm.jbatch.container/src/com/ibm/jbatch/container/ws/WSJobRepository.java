@@ -169,8 +169,9 @@ public interface WSJobRepository {
      * Update the instanceState to JMS_CONSUMED if it's a valid status transition
      *
      * @param instanceId
+     * @throws JobInstanceNotQueuedException
      */
-    public abstract WSJobInstance updateJobInstanceStateOnConsumed(long instanceId) throws BatchIllegalJobStatusTransitionException;
+    public abstract WSJobInstance updateJobInstanceStateOnConsumed(long instanceId) throws BatchIllegalJobStatusTransitionException, JobInstanceNotQueuedException;
 
     /**
      * Update the instanceState to JMS_QUEUED if it's a valid status transition
@@ -268,6 +269,9 @@ public interface WSJobRepository {
     public abstract WSRemotablePartitionExecution createRemotablePartition(RemotablePartitionKey remotablePartitionKey);
 
     /**
+     * Updates an entry for this remote partition in the RemotablePartition table with the given internalStatus
+     * If the remotable partition is not found, then it just returns
+     *
      * @param remotablePartitionKey
      * @return
      * @throws IllegalArgumentException if partition isn't found via key
