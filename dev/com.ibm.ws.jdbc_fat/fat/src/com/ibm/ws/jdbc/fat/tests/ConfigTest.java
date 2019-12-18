@@ -28,8 +28,10 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.Application;
@@ -56,6 +58,9 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.database.container.DatabaseContainerFactory;
+import componenttest.topology.database.container.DatabaseContainerType;
+import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -73,6 +78,9 @@ public class ConfigTest extends FATServletClient {
 	//Server used for ConfigTest.java and DataSourceTest.java
 	@Server("com.ibm.ws.jdbc.fat")
 	public static LibertyServer server;
+	
+    @ClassRule
+    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
     
     private static final Set<String> appNames = new TreeSet<String>(Arrays.asList(dsdfat, jdbcapp));
 
@@ -105,13 +113,19 @@ public class ConfigTest extends FATServletClient {
     	// Get original server config
         originalServerConfig = server.getServerConfiguration().clone();
         
-        //TODO configure tests for database rotation
-        //server.configureForAnyDatabase();
+    	//Get driver type
+    	server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
+    	server.addEnvVar("ANON_DRIVER", "driver" + DatabaseContainerType.valueOf(testContainer).ordinal() + ".jar");
+    	server.addEnvVar("DB_USER", testContainer.getUsername());
+    	server.addEnvVar("DB_PASSWORD", testContainer.getPassword());
+
+    	//Setup server DataSource properties
+    	DatabaseContainerUtil.setupDataSourceProperties(server, testContainer);
         
         // Get JDBC server config
         originalServerConfigUpdatedForJDBC = server.getServerConfiguration().clone();
 
-        // Start the server with jdbc-4.1 but without any connection managers, data sources, or JDBC drivers
+        // Start the server with JDBC-4.1 but without any connection managers, data sources, or JDBC drivers
         ServerConfiguration config = server.getServerConfiguration();
         config.getConnectionManagers().clear();
         config.getDataSources().clear();

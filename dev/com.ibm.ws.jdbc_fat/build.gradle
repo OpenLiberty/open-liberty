@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
- configurations {
+configurations {
   db2
   derbyClient
 }
@@ -19,32 +19,38 @@ dependencies {
   requiredLibs 'org.apache.derby:derbynet:10.11.1.1'
 }
  
- //Anonymous derby jar
- task copyAnonymousDerby(type: Copy) {
+//Anonymous drivers
+task copyAnonymousDrivers(type: Copy) {
   shouldRunAfter jar
-  from configurations.derby
-  into new File(autoFvtDir, 'publish/shared/resources/jdbc')
-  rename 'derby-.*.jar', 'driver.jar'
- }
+  from configurations.jdbcDrivers
+  into new File(autoFvtDir, 'publish/shared/resources/anonymous')
+  rename 'jcc.*.jar', 'driver0.jar'
+  rename 'derby.*.jar', 'driver1.jar'
+  rename 'ojdbc8_g.*.jar', 'driver2.jar'
+  rename 'postgresql.*.jar', 'driver3.jar'
+  rename 'mssql-jdbc.*.jar', 'driver4.jar'
+  
+  
+}
  
- //Derby client jar
- task addDerbyClient(type: Copy) {
+//Derby client jar
+task addDerbyClient(type: Copy) {
   shouldRunAfter jar
   from configurations.derbyClient
   into new File(autoFvtDir, 'publish/shared/resources/derby')
   rename 'derbyclient.*.jar', 'derbyclient.jar'
 }
 
- //Automatically discovered derby jar
- task copyAutomaticDerby(type: Copy) {
+//Automatically discovered derby jar
+task copyAutomaticDerby(type: Copy) {
   shouldRunAfter jar
   from configurations.derby
   into new File(autoFvtDir, 'publish/lib/AutomaticDerbyLibrary/')
   rename 'derby-.*.jar', 'derby.jar'
- }
+}
 
- //DB2 jar
- task copyDB2(type: Copy) {
+//DB2 jar
+task copyDB2(type: Copy) {
   shouldRunAfter jar
   from configurations.db2
   into new File(autoFvtDir, 'publish/shared/resources/db2')
@@ -58,4 +64,8 @@ dependencies {
   dependsOn addDerbyClient
   dependsOn copyAutomaticDerby
   dependsOn copyDB2
- }
+  dependsOn copyJdbcDrivers
+  //Database Rotation
+  dependsOn copyDatabaseRotationDrivers
+  dependsOn copyFattestDatabases
+}

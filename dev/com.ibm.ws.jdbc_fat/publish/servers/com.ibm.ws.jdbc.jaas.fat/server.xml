@@ -32,7 +32,7 @@
 
     <jdbcDriver id="FATJDBCDriver" fat.modify="true">
       <library>
-        <fileset dir="${shared.resource.dir}/jdbc" includes="driver.jar"/>
+        <fileset dir="${shared.resource.dir}/anonymous" includes="driver.jar"/>
       </library>
     </jdbcDriver>
      
@@ -213,7 +213,7 @@
     
     <javaPermission codebase="${shared.resource.dir}/loginmodule/TestLoginModule.jar" className="java.security.AllPermission"/>
     <javaPermission codebase="${shared.resource.dir}derby/derby.jar" className="java.security.AllPermission"/>
-    <javaPermission codebase="${shared.resource.dir}jdbc/driver.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${shared.resource.dir}anonymous/driver.jar" className="java.security.AllPermission"/>
     <javaPermission className="javax.security.auth.AuthPermission" name="createLoginContext.myJAASLoginEntry"/>
     <javaPermission className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
     <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="javax.resource.spi.security.PasswordCredential" principalType="*" principalName="*" actions="read"/>

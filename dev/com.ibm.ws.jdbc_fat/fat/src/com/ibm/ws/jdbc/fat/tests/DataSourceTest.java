@@ -22,8 +22,10 @@ import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.dsprops.testrules.OnlyIfDataSourceProperties;
@@ -35,6 +37,9 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.database.container.DatabaseContainerFactory;
+import componenttest.topology.database.container.DatabaseContainerType;
+import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -46,6 +51,9 @@ public class DataSourceTest extends FATServletClient {
 	private static final String basicfat = "basicfat";
 	private static final String dsdfat = "dsdfat";
 	private static final String dsdfat_global_lib = "dsdfat_global_lib";
+	
+    @ClassRule
+    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
 
 	//Server used for ConfigTest.java and DataSourceTest.java
 	@Server("com.ibm.ws.jdbc.fat")
@@ -53,9 +61,12 @@ public class DataSourceTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-    	
-        //TODO configure tests for database rotation
-        //server.configureForAnyDatabase();
+    	//Get driver type
+    	server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
+    	server.addEnvVar("ANON_DRIVER", "driver" + DatabaseContainerType.valueOf(testContainer).ordinal() + ".jar");
+
+    	//Setup server DataSource properties
+    	DatabaseContainerUtil.setupDataSourceProperties(server, testContainer);
     	
     	//**** jdbcServer apps ****
     	// Dropin app - setupfat.war 

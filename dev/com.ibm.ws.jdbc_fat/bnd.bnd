@@ -23,8 +23,17 @@ src: \
 	test-applications/dsdfat_global_lib/src
 
 fat.project: true
+fat.test.databases: true
+
+# Uncomment to use remote docker host to simulate continuous build behavior.
+# fat.test.use.remote.docker: true
+
+# Uncomment to test against alternative databases
+# Options: Derby, Postgre, DB2, Oracle, SQLServer
+#fat.bucket.db.type: Postgre
 
 -buildpath: \
+	fattest.databases;version=latest,\
 	com.ibm.ws.componenttest,\
 	com.ibm.websphere.javaee.annotation.1.1,\
 	com.ibm.websphere.javaee.transaction.1.1,\
@@ -32,4 +41,7 @@ fat.project: true
 	org.apache.derby:derby;version=10.11.1.1,\
 	com.ibm.websphere.appserver.api.security,\
 	com.ibm.websphere.javaee.connector.1.6,\
-	com.ibm.websphere.appserver.api.securityClient
+	com.ibm.websphere.appserver.api.securityClient,\
+	org.testcontainers:database-commons;version=1.12.3,\
+	org.testcontainers:jdbc;version=1.12.3,\
+	org.testcontainers:testcontainers;version=1.12.3

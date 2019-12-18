@@ -21,6 +21,8 @@ import com.ibm.ws.jdbc.fat.tests.ConfigTest;
 import com.ibm.ws.jdbc.fat.tests.DataSourceJaasTest;
 import com.ibm.ws.jdbc.fat.tests.DataSourceTest;
 
+import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
+
 @RunWith(Suite.class)
 @SuiteClasses({
                ConfigTest.class,
@@ -29,7 +31,10 @@ import com.ibm.ws.jdbc.fat.tests.DataSourceTest;
 })
 public class FATSuite {
     @BeforeClass
-    public static void beforeSuite() throws Exception {        
+    public static void beforeSuite() throws Exception {
+		//Allows local tests to switch between using a local docker client, to using a remote docker client. 
+        ExternalTestServiceDockerClientStrategy.clearTestcontainersConfig();
+	        
         //Add TestLoginModule.jar to shared.resources.dir
         JavaArchive TestLoginModule = ShrinkHelper.buildJavaArchive("TestLoginModule", "loginmodule");
         ShrinkHelper.exportArtifact(TestLoginModule, "publish/shared/resources/loginmodule/");

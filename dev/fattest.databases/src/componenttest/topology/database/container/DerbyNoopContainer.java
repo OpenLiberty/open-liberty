@@ -44,28 +44,38 @@ class DerbyNoopContainer<SELF extends DerbyNoopContainer<SELF>> extends JdbcData
         //DO NOTHING
     }
 
-    @Override
-    public String getDriverClassName() {
-        return null;
-    }
+	@Override
+	public String getJdbcUrl() {
+		return "jdbc:derby:memory:test;create=true";
+	}
 
-    @Override
-    public String getJdbcUrl() {
-        return null;
-    }
+	@Override
+	public String getUsername() {
+		return "dbuser";
+	}
 
-    @Override
-    public String getPassword() {
-        return null;
-    }
+	@Override
+	public String getPassword() {
+		return "{xor}Oz0vKDtu";
+	}
 
-    @Override
-    protected String getTestQueryString() {
-        return null;
-    }
+	@Override
+	public Integer getFirstMappedPort() {
+		throw new UnsupportedOperationException();
+	}
 
-    @Override
-    public String getUsername() {
-        return null;
-    }
+	@Override
+	public String getContainerIpAddress() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public String getDriverClassName() {
+		return "org.apache.derby.jdbc.AutoloadedDriver";
+	}
+
+	@Override
+	protected String getTestQueryString() {
+		return "";
+	}
 }
