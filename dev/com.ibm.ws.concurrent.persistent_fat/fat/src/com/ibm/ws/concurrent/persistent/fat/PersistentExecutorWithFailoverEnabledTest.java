@@ -55,6 +55,11 @@ public class PersistentExecutorWithFailoverEnabledTest extends FATServletClient 
      */
     @BeforeClass
     public static void setUp() throws Exception {
+    	// Delete the Derby database that might be used by the persistent scheduled executor and the Derby-only test database
+        Machine machine = server.getMachine();
+        String installRoot = server.getInstallRoot();
+        LibertyFileManager.deleteLibertyDirectoryAndContents(machine, installRoot + "/usr/shared/resources/data/scheddb");
+    	
     	//Get driver type
     	server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
 

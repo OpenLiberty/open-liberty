@@ -22,8 +22,8 @@ fat.project: true
 fat.test.databases: true
 
 # Uncomment to test against alternative databases
-# Options: Derby, Postgre, DB2, Oracle, SQLServer
-#fat.bucket.db.type: Postgre
+# Options: Derby, Postgres, DB2, Oracle, SQLServer
+#fat.bucket.db.type: Postgres
 
 # Uncomment to use remote docker host to simulate continuous build behavior.
 #fat.test.use.remote.docker: true

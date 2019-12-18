@@ -37,7 +37,7 @@ import componenttest.custom.junit.runner.FATRunner;
  * DERBY: Uses a derby no-op test container <br>
  * DB2: Uses <a href="https://hub.docker.com/r/ibmcom/db2">Offical DB2 Container</a> <br>
  * Oracle: TODO replace this container with the official oracle-xe container if/when it is available without a license. <br>
- * Postgre: Uses <a href="https://hub.docker.com/_/postgres">Offical Postgres Container</a> <br>
+ * Postgres: Uses <a href="https://hub.docker.com/_/postgres">Offical Postgres Container</a> <br>
  * MS SQL Server: Uses <a href="https://hub.docker.com/_/microsoft-mssql-server">Offical Microsoft SQL Container</a> <br>
  *
  * @see DatabaseContainerType
@@ -50,7 +50,7 @@ public class DatabaseContainerFactory {
      *
      * Reads the {fat.bucket.db.type} system property and
      * returns a container based on that property.
-     * [Postgre, DB2, Oracle, SQLServer, Derby]
+     * [Postgres, DB2, Oracle, SQLServer, Derby]
      *
      * If {fat.bucket.db.type} is not set with a value,
      * default to Derby Embedded.
@@ -110,7 +110,7 @@ public class DatabaseContainerFactory {
 	            case Oracle:          	
 	            	cont = (JdbcDatabaseContainer<?>) clazz.getConstructor(String.class).newInstance("oracleinanutshell/oracle-xe-11g");
 	                break;
-	            case Postgre:
+	            case Postgres:
 	            	cont = (JdbcDatabaseContainer<?>) clazz.getConstructor().newInstance();
 	                break;
 	            case SQLServer:
