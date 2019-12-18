@@ -216,6 +216,8 @@ public class InstallMap implements Map {
      * Clears the map and closes all resources.
      *
      * <b>MUST</b> be used when the map is no longer needed.
+     * 
+     * Throws RuntimeException if resources could not be closed.
      */
     @Override
     public void clear() {
