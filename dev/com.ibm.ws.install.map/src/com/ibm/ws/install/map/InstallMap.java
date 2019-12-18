@@ -216,12 +216,12 @@ public class InstallMap implements Map {
      * Clears the map and closes all resources.
      *
      * <b>MUST</b> be used when the map is no longer needed.
-     * 
+     *
      * Throws RuntimeException if resources could not be closed.
      */
     @Override
     public void clear() {
-        installKernelMap = null;
+        installKernelMap.clear();
         data.clear();
         if (loader != null) {
             try {
@@ -230,6 +230,7 @@ public class InstallMap implements Map {
                 throw new RuntimeException(e);
             }
         }
+        System.gc();
     }
 
     /**

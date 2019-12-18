@@ -55,4 +55,11 @@ public class InstallKernelFactory {
     public static InstallKernelInteractive getInteractiveInstance() {
         return new InstallKernelImpl();
     }
+
+    /**
+     * Clears the instance when the install kernel is no longer needed so that the jar will not be locked.
+     */
+    public static void clear() {
+        installKernel = null;
+    }
 }

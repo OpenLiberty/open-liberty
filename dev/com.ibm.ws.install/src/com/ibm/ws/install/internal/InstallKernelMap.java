@@ -51,6 +51,7 @@ import com.ibm.ws.install.InstallLicense;
 import com.ibm.ws.install.InstallProgressEvent;
 import com.ibm.ws.install.RepositoryConfigUtils;
 import com.ibm.ws.install.internal.InstallLogUtils.Messages;
+import com.ibm.ws.install.repository.RepositoryException;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
 import com.ibm.ws.kernel.feature.internal.generator.ManifestFileProcessor;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
@@ -65,9 +66,7 @@ import com.ibm.ws.repository.connections.RepositoryConnection;
 import com.ibm.ws.repository.connections.RepositoryConnectionList;
 import com.ibm.ws.repository.connections.SingleFileRepositoryConnection;
 import com.ibm.ws.repository.connections.liberty.ProductInfoProductDefinition;
-import com.ibm.ws.repository.exceptions.RepositoryException;
 import com.ibm.ws.repository.parsers.EsaParser;
-import com.ibm.ws.repository.parsers.Parser;
 import com.ibm.ws.repository.resolver.RepositoryResolutionException;
 import com.ibm.ws.repository.resolver.RepositoryResolver;
 import com.ibm.ws.repository.resources.RepositoryResource;
@@ -123,7 +122,6 @@ public class InstallKernelMap implements Map {
     private static final String CLEANUP_NEEDED = "cleanup.needed";
     private static final String ENVIRONMENT_VARIABLE_MAP = "environment.variable.map";
     private static final String IS_FEATURE_UTILITY = "is.feature.utility";
-
 
     //Headers in Manifest File
     private static final String SHORTNAME_HEADER_NAME = "IBM-ShortName";
@@ -216,11 +214,15 @@ public class InstallKernelMap implements Map {
     }
 
     /**
-     * Unsupported operation
+     * Clears the map and closes all resources.
+     *
+     * <b>MUST</b> be used when the map is no longer needed.
      */
     @Override
     public void clear() {
-        throw new UnsupportedOperationException();
+        installKernel = null;
+        data.clear();
+        InstallKernelFactory.clear();
     }
 
     /**
@@ -270,11 +272,11 @@ public class InstallKernelMap implements Map {
                     return singleFileResolve();
                 }
             }
-        } else if (IS_FEATURE_UTILITY.equals(key)){
-            if(data.get(IS_FEATURE_UTILITY) == null){
-                    return false;
+        } else if (IS_FEATURE_UTILITY.equals(key)) {
+            if (data.get(IS_FEATURE_UTILITY) == null) {
+                return false;
             } else {
-                    return (Boolean) data.get(IS_FEATURE_UTILITY);
+                return data.get(IS_FEATURE_UTILITY);
             }
         } else if (PROGRESS_MONITOR_SIZE.equals(key)) {
             return getMonitorSize();
@@ -366,11 +368,11 @@ public class InstallKernelMap implements Map {
             } else {
                 throw new IllegalArgumentException();
             }
-        } else if (IS_FEATURE_UTILITY.equals(key)){
-            if(value instanceof Boolean){
-                    data.put(IS_FEATURE_UTILITY, value);
+        } else if (IS_FEATURE_UTILITY.equals(key)) {
+            if (value instanceof Boolean) {
+                data.put(IS_FEATURE_UTILITY, value);
             } else {
-                    throw new IllegalArgumentException();
+                throw new IllegalArgumentException();
             }
         } else if (TO_EXTENSION.equals(key)) {
             if (value instanceof String) {
