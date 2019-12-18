@@ -161,8 +161,8 @@ action-desc.resume=\
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.clean=\
 \ \ \ \ --clean
-option-desc.clean=\
-\tClean all cached information related to this server instance.
+option-desc.start.clean=\
+\tClean all cached information related to this server instance.             
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.archive=\
 \ \ \ \ --archive="path to the target archive file"
@@ -239,3 +239,15 @@ option-key.server-root=\
 \ \ \ \ --server-root="root server folder in archive"
 option-desc.package.server-root=\
 \tSpecifies the root server folder name in the archive file.           \n\
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.force=\
+\ \ \ \ --force
+option-desc.stop.force=\
+\tSkips the quiesce stage before the server is shut down. Normal server\n\
+\tstop includes a quiesce stage before the server is shut down. The    \n\
+\tquiesce stage, a period of 30 seconds, allows services to perform    \n\
+\tpre-shutdown work; for example, inbound listeners are stopped but    \n\
+\texisting requests are allowed to complete. The --force option has no \n\
+\teffect if server stop was already invoked. If you use the --force    \n\
+\toption, you might see unexpected exceptions in the messages.log file \n\
+\tthat occur after the server stop command was received by the server.
