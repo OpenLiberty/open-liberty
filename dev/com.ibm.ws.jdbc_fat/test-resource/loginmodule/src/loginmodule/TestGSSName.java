@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jdbc.fat.tests;
+package loginmodule;
 
 import org.ietf.jgss.GSSException;
 import org.ietf.jgss.GSSName;
@@ -49,7 +49,7 @@ public class TestGSSName implements GSSName {
      */
     @Override
     public GSSName canonicalize(Oid mech) throws GSSException {
-        // TODO Auto-generated method stub
+        //Auto-generated method stub
         return this;
     }
 
@@ -60,7 +60,7 @@ public class TestGSSName implements GSSName {
      */
     @Override
     public byte[] export() throws GSSException {
-        // TODO Auto-generated method stub
+        //Auto-generated method stub
         return null;
     }
 
@@ -71,7 +71,7 @@ public class TestGSSName implements GSSName {
      */
     @Override
     public Oid getStringNameType() throws GSSException {
-        // TODO Auto-generated method stub
+        //Auto-generated method stub
         return null;
     }
 
@@ -82,7 +82,7 @@ public class TestGSSName implements GSSName {
      */
     @Override
     public boolean isAnonymous() {
-        // TODO Auto-generated method stub
+        //Auto-generated method stub
         return false;
     }
 
@@ -93,7 +93,7 @@ public class TestGSSName implements GSSName {
      */
     @Override
     public boolean isMN() {
-        // TODO Auto-generated method stub
+        //Auto-generated method stub
         return false;
     }
 

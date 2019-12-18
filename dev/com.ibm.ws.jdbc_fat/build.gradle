@@ -50,13 +50,6 @@ dependencies {
   into new File(autoFvtDir, 'publish/shared/resources/db2')
   rename 'jcc.*.jar', 'jcc.jar'
  }
- 
- task copyJarToModule(type: Copy) {
-  shouldRunAfter jar
-  from jar
-  into new File(autoFvtDir, 'publish/shared/resources/loginmodule/')
-  rename 'com.ibm.ws.jdbc_fat.jar', 'TestLoginModule.jar'
- }
 
 
  addRequiredLibraries {
@@ -65,5 +58,4 @@ dependencies {
   dependsOn addDerbyClient
   dependsOn copyAutomaticDerby
   dependsOn copyDB2
-  dependsOn copyJarToModule
  }

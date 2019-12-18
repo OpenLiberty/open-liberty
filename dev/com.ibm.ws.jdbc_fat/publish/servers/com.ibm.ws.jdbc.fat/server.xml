@@ -165,7 +165,7 @@
     <authData id="derbyJAAS" jaasLoginContextEntryRef="myJAASLoginEntry"/>
 -->
     <jaasLoginContextEntry id="myJAASLoginEntry" name="myJAASLoginEntry" loginModuleRef="testLoginModule" />
-	<jaasLoginModule id="testLoginModule" className="com.ibm.ws.jdbc.fat.jaas.tests.TestLoginModule" controlFlag="REQUIRED" libraryRef="customLoginLib"/>
+	<jaasLoginModule id="testLoginModule" className="loginmodule.TestLoginModule" controlFlag="REQUIRED" libraryRef="customLoginLib"/>
 	<library id="customLoginLib">
 	  <fileset dir="${shared.resource.dir}" includes="TestLoginModule.jar"/>
     </library>

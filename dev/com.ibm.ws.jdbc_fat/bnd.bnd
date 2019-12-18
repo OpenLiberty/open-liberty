@@ -16,6 +16,7 @@ javac.target: 1.8
 
 src: \
 	fat/src,\
+	test-resource/loginmodule/src,\
 	test-applications/basicfat/src,\
 	test-applications/dsdfat/src,\
 	test-applications/setupfat/src,\
