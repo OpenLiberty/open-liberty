@@ -10,10 +10,6 @@
  *******************************************************************************/
 package componenttest.topology.database.container;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import com.ibm.websphere.simplicity.config.ConfigElementList;
@@ -31,32 +27,6 @@ public final class DatabaseContainerUtil {
     
     private DatabaseContainerUtil() {
     	//No objects should be created from this class
-    }
-
-    /**
-     * Method that does any database setup necessary prior to making a connection
-     * to the database from a servlet.
-     *
-     * @param cont         - Test container being used.
-     * @param databaseName - Name to be given to database instance.
-     * @throws SQLException - Thrown if there is a failure during connection or initialization.
-     */
-    private static void initDatabase(JdbcDatabaseContainer<?> cont) throws SQLException {
-        if (cont instanceof SQLServerContainer) {
-            //Create database
-            try (Connection conn = cont.createConnection("")) {
-                Statement stmt = conn.createStatement();
-                stmt.execute("CREATE DATABASE [TEST];");
-                stmt.close();
-            }
-
-            //Setup distributed connections
-            try (Connection conn = cont.createConnection("")) {
-                Statement stmt = conn.createStatement();
-                stmt.execute("EXEC sp_sqljdbc_xa_install");
-                stmt.close();
-            }
-        }
     }
 
     /**
@@ -80,10 +50,9 @@ public final class DatabaseContainerUtil {
      * @throws CloneNotSupportedException
      */
     public static void setupDataSourceProperties(LibertyServer serv, JdbcDatabaseContainer<?> cont) throws CloneNotSupportedException, Exception {
-        if (DatabaseContainerType.valueOf(cont) == DatabaseContainerType.Derby)
+        //Skip for Derby
+    	if (DatabaseContainerType.valueOf(cont) == DatabaseContainerType.Derby)
             return; //Derby used by default no need to change DS properties
-
-        initDatabase(cont);
 
         //Get current server config
         ServerConfiguration cloneConfig = serv.getServerConfiguration().clone();

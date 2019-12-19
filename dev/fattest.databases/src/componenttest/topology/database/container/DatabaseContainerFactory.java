@@ -118,6 +118,9 @@ public class DatabaseContainerFactory {
 	            	//Accept license agreement
 	            	Method acceptSQLServerLicense = cont.getClass().getMethod("acceptLicense");
 	            	acceptSQLServerLicense.invoke(cont);
+	            	//Init Script
+	            	Method initScript = cont.getClass().getMethod("withInitScript", String.class);
+	            	initScript.invoke(cont, "resources/init-sqlserver.sql");
 	                break;
 	        }
 	        
