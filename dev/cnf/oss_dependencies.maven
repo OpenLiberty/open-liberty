@@ -280,6 +280,9 @@ org.apache.wink:wink-common:1.4
 org.apache.ws.xmlschema:xmlschema-core:2.0.3
 org.bitbucket.b_c:jose4j:0.5.1
 org.bitbucket.b_c:jose4j:0.6.4
+org.bitbucket.b_c:jose4j:0.6.5
+org.bouncycastle:bcprov-jdk15on:1.61
+org.bouncycastle:bcpkix-jdk15on:1.61
 org.codehaus.jackson:jackson-core-asl:1.6.2
 org.codehaus.jackson:jackson-jaxrs:1.6.2
 org.codehaus.jackson:jackson-mapper-asl:1.6.2
@@ -430,8 +433,10 @@ org.reactivestreams:reactive-streams-examples:1.0.2
 org.reactivestreams:reactive-streams-tck:1.0.2
 org.reactivestreams:reactive-streams:1.0.2
 org.rnorth.duct-tape:duct-tape:1.0.7
-org.slf4j:slf4j-api:1.7.26
+org.shredzone.acme4j:acme4j-client:2.7
+org.shredzone.acme4j:acme4j-utils:2.7
 org.slf4j:slf4j-api:1.7.7
+org.slf4j:slf4j-api:1.7.26
 org.slf4j:slf4j-jdk14:1.7.7
 org.slf4j:slf4j-simple:1.7.25
 org.slf4j:slf4j-simple:1.7.26
