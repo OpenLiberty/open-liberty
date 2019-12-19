@@ -658,6 +658,10 @@ public class ZipFileReaper {
             this.completedStorage = null;
         }
 
+        this.preopenLock = new Object();
+        this.attemptedPreopens = 0;
+        this.failedPreopens = 0;
+
         // Threading ...
 
         // Use of the shutdown thread is optional.  Shutdown provides an
@@ -882,6 +886,10 @@ public class ZipFileReaper {
 
     private final ZipFileDataStore completedStorage;
 
+    private Object preopenLock;
+    private long attemptedPreopens;
+    private long failedPreopens;
+
     //
 
     public ZipFileData.ZipFileState getState(String path) {
@@ -982,6 +990,10 @@ public class ZipFileReaper {
         output.println("    State       [ " + reaperThread.getState() + " ]");
         output.println("    Alive       [ " + reaperThread.isAlive() + " ]");
         output.println("    Interrupted [ " + reaperThread.isInterrupted() + " ]");
+
+        output.println();
+        output.println("  Preopens [ " + attemptedPreopens + " ]");
+        output.println("    Failed [ " + failedPreopens + " ]");
 
         output.println();
         reaperLock.introspect(output);
@@ -1421,93 +1433,157 @@ public class ZipFileReaper {
         // is removed.  Instead, the reaper allowed to run, and is coded to handle
         // that case.
 
+        boolean doPreopen;
         synchronized ( reaperLock ) {
-            if ( !getIsActive() ) {
-                asyncWarning("reaper.inactive", path, reaperName);
-                // "Cannot open [ " + path + " ]: ZipFile cache [ " + reaperName + " ] is inactive"
-                throw new IOException("Cannot open [ " + path + " ]: ZipFile cache is inactive");
-            }
+        	ZipFileData data = storage.get(path);
+        	doPreopen = ( (data == null) || data.isFullyClosed() );
+        }
 
-            ZipFileData data = storage.get(path);
-            ZipFile zipFile;
+        // If no zip file is yet available, open it here outside of the
+        // reaper lock.
+        //
+        // This shifts time spent opening zip files to outside of the reaper lock,
+        // which reduces the time threads spend waiting for opens to complete.
+        //
+        // This optimization relies on a particular access pattern, which is,
+        // that accesses to the same zip file are usually from the same thread.
+        //
+        // This optimization fails when there are concurrent requests to open the
+        // same zip file.  In that case, there can be duplicate opens of the same
+        // zip file, which is very inefficient.
 
-            if ( data == null ) {
-                if ( !debugState ) {
-                    data = completedStorage.remove(path);
-                }
+        ZipFile preopenedZip;
+        if ( doPreopen ) {
+        	if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+        		Tr.debug(tc, methodName + " Preopen [ " + path + " ]");
+        	}
+        	preopenedZip = ZipFileUtils.openZipFile(path); // throws IOException, ZipException
+        	synchronized ( preopenLock ) {
+        		attemptedPreopens++;
+        	}
+        } else {
+        	preopenedZip = null;
+        }
 
-                if ( data == null ) {
-                    if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
-                        Tr.debug(tc, methodName + " New [ " + path + " ]");
-                    }
-                    data = new ZipFileData( path, getInitialAt() ); // throws IOException, ZipException
-                } else {
-                    if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
-                        Tr.debug(tc, methodName + " Recovered [ " + path + " ]");
-                    }
-                }
+        ZipFile zipFile = null;
 
-                storage.put(path, data);
-            }
+        try {
+        	synchronized ( reaperLock ) {
+        		if ( !getIsActive() ) {
+        			asyncWarning("reaper.inactive", path, reaperName);
+        			// "Cannot open [ " + path + " ]: ZipFile cache [ " + reaperName + " ] is inactive"
+        			throw new IOException("Cannot open [ " + path + " ]: ZipFile cache is inactive");
+        		}
 
-            if ( data.isFullyClosed() ) {
-                if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
-                    Tr.debug(tc, methodName + " Open [ " + path + " ]");
-                }
+        		ZipFileData data = storage.get(path);
 
-                zipFile = data.openZipFile(); // throws IOException, ZipException
+        		if ( data == null ) {
+        			if ( !debugState ) {
+        				data = completedStorage.remove(path);
+        			}
 
-            } else if ( data.isPending() ) {
-                if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
-                    Tr.debug(tc, methodName + " Unpend [ " + path + " ]");
-                }
+        			if ( data == null ) {
+        				if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+        					Tr.debug(tc, methodName + " New [ " + path + " ]");
+        				}
+        				data = new ZipFileData( path, getInitialAt() ); // throws IOException, ZipException
+        			} else {
+        				if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+        					Tr.debug(tc, methodName + " Recovered [ " + path + " ]");
+        				}
+        			}
 
-                if ( data.expireQuickly ) {
-                    @SuppressWarnings("unused") // same as 'data'
-                    ZipFileData pendingQuickData = pendingQuickStorage.remove(path);
-                } else {
-                    @SuppressWarnings("unused") // same as 'data'
-                    ZipFileData pendingSlowData = pendingSlowStorage.remove(path);
-                }
-                // Removal from pending may result in the next reap
-                // discovering no expired closes.
+        			storage.put(path, data);
+        		}
 
-                try {
-                    zipFile = data.reacquireZipFile(); // throws IOException, ZipException
+        		if ( data.isFullyClosed() ) {
+        			if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+        				Tr.debug(tc, methodName + " Open [ " + path + " ]");
+        			}
 
-                } catch (Exception e) {
-                    // The closeZipFile() or openZipFile() call failed in reacquireZipFile().
-                    // Either way, the proper state should be fully closed.
-                    data.enactFullClose(openAt);
-                    throw e;
-                }
+        			// Provide the pre-opened zip file to the open call, but not to
+        			// reacquire calls.
 
-            } else if ( data.isOpen() ) {
-                if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
-                    Tr.debug(tc, methodName + " Already open [ " + path + " ]");
-                }
+        			zipFile = data.openZipFile(preopenedZip); // throws IOException, ZipException
 
-                try {
-                    zipFile = data.reacquireZipFile(); // throws IOException, ZipException
+        		} else if ( data.isPending() ) {
+        			if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+        				Tr.debug(tc, methodName + " Unpend [ " + path + " ]");
+        			}
 
-                } catch (Exception e) {
-                    // The closeZipFile() or openZipFile() call failed in reacquireZipFile().
-                    // Either way, the proper state should be fully closed.
-                    data.enactClose(openAt, ZipFileData.CLOSE_ALL);
-                    data.enactFullClose( openAt );
-                    throw e;
-                }
+        			if ( data.expireQuickly ) {
+        				@SuppressWarnings("unused") // same as 'data'
+        				ZipFileData pendingQuickData = pendingQuickStorage.remove(path);
+        			} else {
+        				@SuppressWarnings("unused") // same as 'data'
+        				ZipFileData pendingSlowData = pendingSlowStorage.remove(path);
+        			}
+        			// Removal from pending may result in the next reap
+        			// discovering no expired closes.
 
-            } else {
-                throw data.unknownState();
-            }
+        			// TODO: The pre-opened zip file could be provided to reacquire.
+        			//       That this would be worth doing is unclear.
 
-            data.enactOpen(openAt);
+        			try {
+        				zipFile = data.reacquireZipFile(); // throws IOException, ZipException
+        			} catch (Exception e) {
+                		// The closeZipFile() or openZipFile() call failed in reacquireZipFile().
+                		// Either way, the proper state should be fully closed.
+                    	data.enactFullClose(openAt);
+                    	throw e;
+                	}
 
-            if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
-                Tr.debug(tc, methodName + " Path [ " + path + " ] [ " + zipFile + " ]");
-            }
-            return zipFile;
+        		} else if ( data.isOpen() ) {
+                	if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+                    	Tr.debug(tc, methodName + " Already open [ " + path + " ]");
+                	}
+
+        			// TODO: The pre-opened zip file could be provided to reacquire.
+        			//       That this would be worth doing is unclear.
+
+                	try {
+                		zipFile = data.reacquireZipFile(); // throws IOException, ZipException
+                	} catch (Exception e) {
+                		// The closeZipFile() or openZipFile() call failed in reacquireZipFile().
+                		// Either way, the proper state should be fully closed.
+                    	data.enactClose(openAt, ZipFileData.CLOSE_ALL);
+                    	data.enactFullClose(openAt);
+                    	throw e;
+                	}
+
+            	} else {
+                	throw data.unknownState();
+            	}
+
+        		data.enactOpen(openAt);
+
+            	if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+            		Tr.debug(tc, methodName + " Path [ " + path + " ] [ " + zipFile + " ]");
+            	}
+            	return zipFile;
+        	}
+
+        } finally {
+        	if ( preopenedZip != null ) {
+        		if ( preopenedZip != zipFile ) {
+                	if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+                		Tr.debug(tc, methodName + " Failed preopen [ " + path + " ]");
+                	}
+                	synchronized ( preopenLock ) {
+                		failedPreopens++;
+                	}
+        			try {
+        				ZipFileUtils.closeZipFile(path, preopenedZip); // throws IOException
+        			} catch ( IOException e ) {
+        				Tr.debug(tc, methodName + " Close failure [ " + path + " ] [ " + e.getMessage() + " ]");
+        				// FFDC
+        			}
+        		} else {
+                	if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+                		Tr.debug(tc, methodName + " Successful preopen [ " + path + " ]");
+                	}
+        		}
+        	}
         }
     }
 
@@ -1699,4 +1775,3 @@ public class ZipFileReaper {
         }
     }
 }
-

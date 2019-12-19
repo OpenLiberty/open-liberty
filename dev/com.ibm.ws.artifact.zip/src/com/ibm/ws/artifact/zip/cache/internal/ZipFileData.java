@@ -668,27 +668,80 @@ ZipFile [Path]
 
             @SuppressWarnings("unused")
             ZipFile oldZipFile = closeZipFile();
+
             @SuppressWarnings("unused")
-            ZipFile newZipFile = openZipFile(newZipLength, newZipLastModified); // throws IOException, ZipException
+            ZipFile newZipFile = openZipFile(NO_PREOPENED_ZIP, newZipLength, newZipLastModified);
+            // throws IOException, ZipException
         }
 
         return zipFile;
     }
 
-    private static final long UNKNOWN_ZIP_LENGTH = -1L;
-    private static final long UNUSED_ZIP_LAST_MODIFIED = -1L;
-
+    /**
+     * Open the zip file.  Set the zip file length and last modified values.
+     *
+     * @param preOpenedZip A pre-opened copy of the zip file.  Opened outside of the
+     *     main reaper lock to minimize contention on the reaper lock.
+     *
+     * @return Either, the pre-opened zip file, or the zip file which was just opened.
+     *
+     * @throws IOException Thrown if the zip file could not be opened, or if the
+     *     zip file length or last modified value could not be obtained.
+     * @throws ZipException Throw if the zip file could not be opened.
+     */
     @Trivial
-    protected ZipFile openZipFile() throws IOException, ZipException {
-        return openZipFile(ZipFileData.UNKNOWN_ZIP_LENGTH, ZipFileData.UNUSED_ZIP_LAST_MODIFIED);
+    protected ZipFile openZipFile(ZipFile preOpenedZip) throws IOException, ZipException {
+        return openZipFile(preOpenedZip, ZipFileData.UNKNOWN_ZIP_LENGTH, ZipFileData.UNUSED_ZIP_LAST_MODIFIED);
         // throws IOException, ZipException
     }
 
+    /**
+     * Control parameter: The zip file length is not yet known and must
+     * be obtained from the file system.
+     * 
+     * See {@link #openZipFile(ZipFile, long, long)}.
+     */
+    private static final long UNKNOWN_ZIP_LENGTH = -1L;
+    
+    /**
+     * Control parameter: The zip file last modified value is not yet known and
+     * must be obtained from the file system.
+     * 
+     * See {@link #openZipFile(ZipFile, long, long)}.
+     */
+    private static final long UNUSED_ZIP_LAST_MODIFIED = -1L;
+
+    /**
+     * Control parameter: Used to indicate that no pre-opened zip file is available. 
+     */
+    private static final ZipFile NO_PREOPENED_ZIP = null;
+
+    /**
+     * Open the zip file.  Set the zip file length and last modified values.
+     *
+     * @param preOpenedZip A pre-opened copy of the zip file.  Opened outside of the
+     *     main reaper lock to minimize contention on the reaper lock.
+     * @param useZipLength The length of the zip file.  If set to {@link #UNKNOWN_ZIP_LENGTH},
+     *     the zip file length will be obtained from the file system.
+     * @param useZipLastModified The last modified value of the zip file.  If set
+     *     to {@link #UNKNOWN_ZIP_LAST_MODIFIED}, the last modified value will be obtained
+     *     from the file system.
+     *
+     * @return Either, the pre-opened zip file, or the zip file which was just opened.
+     *
+     * @throws IOException Thrown if the zip file could not be opened, or if the
+     *     zip file length or last modified value could not be obtained.
+     * @throws ZipException Throw if the zip file could not be opened.
+     */
     @Trivial
-    protected ZipFile openZipFile(long useZipLength, long useZipLastModified) throws IOException, ZipException {
+    protected ZipFile openZipFile(ZipFile preOpenedZip, long useZipLength, long useZipLastModified) throws IOException, ZipException {
         String methodName = "openZipFile";
 
-        zipFile = ZipFileUtils.openZipFile(path); // throws IOException, ZipException
+        if ( preOpenedZip != null ) {
+            zipFile = preOpenedZip;
+        } else {
+            zipFile = ZipFileUtils.openZipFile(path); // throws IOException, ZipException
+        }
 
         if ( useZipLength == UNKNOWN_ZIP_LENGTH ) {
             File rawZipFile = new File(path);
