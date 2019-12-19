@@ -106,8 +106,7 @@ public class DatabaseContainerFactory {
 					.withLogConsumer(dbContainerType::log);
 			break;
 		case SQLServer:
-			//TODO Update this to use the PRODUCTION SQL Server 2019 container when available.  Currently using a preview version.
-			cont = new MSSQLServerContainer<>("mcr.microsoft.com/mssql/server:2019-CTP3.1-ubuntu")
+			cont = new MSSQLServerContainer<>("mcr.microsoft.com/mssql/server:2019-GA-ubuntu-16.04")
 					.withLogConsumer(dbContainerType::log);
 			break;
     	}

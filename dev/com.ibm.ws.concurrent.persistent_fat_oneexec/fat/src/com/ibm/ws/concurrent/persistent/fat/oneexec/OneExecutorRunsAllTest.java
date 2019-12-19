@@ -143,6 +143,14 @@ public class OneExecutorRunsAllTest {
     }
 
     /**
+     * Verify that the interface to EJB Timer Service indicates that fail over is not enabled.
+     */
+    @Test
+    public void testFailOverIsNotEnabled() throws Exception {
+        runInServlet("test=testFailOverIsNotEnabled");
+    }
+
+    /**
      * Schedule tasks from two persistentExecutor instances with execution disabled.
      * Verify the tasks run on a third instance, which has task execution enabled.
      * Remove the third instance. Schedule another task.

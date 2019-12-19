@@ -23,6 +23,8 @@ src: \
 	test-applications/EJBinWARBean.jar/src, \
 	test-applications/EJBinWARIntf.jar/src, \
 	test-applications/EJBinWARTest.war/src, \
+	test-applications/HomeBindingNameEJB.jar/src, \
+	test-applications/HomeBindingNameWeb.war/src, \
 	test-applications/JNDINameEJB.jar/src, \
 	test-applications/JNDINameWeb.war/src, \
 	test-applications/NoInterfaceBndBean.jar/src, \

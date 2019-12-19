@@ -159,4 +159,6 @@ public interface OAuth20Provider extends OAuth20ConfigProvider, OAuthComponentIn
 
     public String getInternalClientSecret();
 
+    public boolean isROPCPreferUserSecurityName();
+
 }

@@ -21,3 +21,4 @@ IBM-API-Package: \
   com.ibm.ws.io.reactivex.rxjava.2.2
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

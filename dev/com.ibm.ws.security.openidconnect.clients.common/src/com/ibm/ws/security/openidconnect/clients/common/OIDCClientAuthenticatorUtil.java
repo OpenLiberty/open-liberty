@@ -234,17 +234,34 @@ public class OIDCClientAuthenticatorUtil {
         }
 
         if (responseState == null || !stateValid) {
+            if (tc.isDebugEnabled()) {
+                if (!stateValid) {
+                    Tr.debug(tc, "*** redirect to server because state is not valid");
+                }
+                if (responseState == null) {
+                    Tr.debug(tc, "*** redirect to server because responseState is null");
+                }
+            }
             oidcResult = handleRedirectToServer(req, res, clientConfig); // first time through, we go here.
         } else if (isImplicit) {
             oidcResult = handleImplicitFlowTokens(req, res, responseState, clientConfig, reqParameters);
 
         } else {
-
-            // confirm the code and go get the tokens if it's good.
-
             AuthorizationCodeHandler authzCodeHandler = new AuthorizationCodeHandler(sslSupport);
 
-            oidcResult = authzCodeHandler.handleAuthorizationCode(req, res, authzCode, responseState, clientConfig);
+            if (authzCodeHandler.isAuthCodeReused(authzCode)) {
+                // somehow a previously used code has been re-submitted, along
+                // with valid state query param and state cookie. Rather than having the OP
+                // reject the request due to code re-use and fail the entire flow,
+                // just go get a new code.
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "*** redirect to server because authcode is reused");
+                }
+                oidcResult = handleRedirectToServer(req, res, clientConfig);
+            } else {
+                // confirm the code and go get the tokens if it's good.
+                oidcResult = authzCodeHandler.handleAuthorizationCode(req, res, authzCode, responseState, clientConfig);
+            }
         }
         if (oidcResult.getStatus() != AuthResult.REDIRECT_TO_PROVIDER) {
             // restore post param.
@@ -742,6 +759,9 @@ public class OIDCClientAuthenticatorUtil {
     public Boolean verifyState(HttpServletRequest req, HttpServletResponse res,
             String responseState, ConvergedClientConfig clientConfig) {
         if (responseState.length() < OidcUtil.STATEVALUE_LENGTH) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "*** verifyState returns false because length is wrong");
+            }
             return false; // the state does not even match the length, the verification failed
         }
         long clockSkewMillSeconds = clientConfig.getClockSkewInSeconds() * 1000;
@@ -769,15 +789,19 @@ public class OIDCClientAuthenticatorUtil {
                 if (difference >= clockSkewMillSeconds) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "error current: " + lDate + "  ran at:" + lNumber);
+                        Tr.debug(tc, "verifyState returns check against clockSkew: " + (difference < clockSkewMillSeconds));
                     }
                 }
+
                 return difference < clockSkewMillSeconds;
             } else {
                 if (difference >= allowHandleTimeMillSeconds) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "error current: " + lDate + "  ran at:" + lNumber);
+                        Tr.debug(tc, "verifyState returns check against allowHandleTimeMilliseconds: " + (difference < allowHandleTimeMillSeconds));
                     }
                 }
+
                 return difference < allowHandleTimeMillSeconds;
             }
         }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,7 +43,7 @@ public class LTPATokenService implements TokenService {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @throws TokenCreationFailedException
      */
     @Override
@@ -60,6 +60,16 @@ public class LTPATokenService implements TokenService {
         TokenFactory tokenFactory = ltpaConfig.getTokenFactory();
         Token token = tokenFactory.validateTokenBytes(tokenBytes);
         validateRecreatedToken(token);
+        return token;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Token recreateTokenFromBytes(byte[] tokenBytes, String... removeAttributes) throws InvalidTokenException, TokenExpiredException {
+        TokenFactory tokenFactory = ltpaConfig.getTokenFactory();
+        Token token = tokenFactory.validateTokenBytes(tokenBytes, removeAttributes);
         return token;
     }
 

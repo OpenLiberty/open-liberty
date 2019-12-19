@@ -216,6 +216,26 @@
 
 		<echo message="test.bucket.path including junit: ${toString:test.bucket.path}"/>
 
+		<iff>
+			<istrue value="${is.windows.platform}"/>
+			<then>
+				<echo>generating classpath jar file.</echo>
+				<property name="classpath.jar.name" value="${basedir}/build/lib/cp.jar"/>
+				<manifestclasspath property="classpath.list" maxParentLevels="20" jarfile="${classpath.jar.name}">
+				    <classpath refid="test.bucket.path"/>
+				</manifestclasspath>
+				<jar jarfile="${classpath.jar.name}" >
+				    <manifest>
+				        <attribute name="Class-Path" value="${classpath.list}"/>
+				    </manifest>
+				</jar>
+				<path id="test.bucket.path">
+					<fileset file="${classpath.jar.name}"/>
+			    </path>
+				<echo message="modified test.bucket.path : ${toString:test.bucket.path}"/>
+			</then>
+		</iff>
+		
 		<echo>Initializing JRE logging</echo>
 		<delete dir="${dir.log}" quiet="true" />
 		<mkdir dir="${dir.log.xml}" />

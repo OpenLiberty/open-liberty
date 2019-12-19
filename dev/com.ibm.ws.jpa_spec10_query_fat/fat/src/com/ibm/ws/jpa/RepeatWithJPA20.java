@@ -43,7 +43,7 @@ public class RepeatWithJPA20 extends FeatureReplacementAction {
 
     @Override
     public boolean isEnabled() {
-        LibertyServer server = LibertyServerFactory.getLibertyServer("JPA10Server");
+        LibertyServer server = LibertyServerFactory.getLibertyServer("JPA10QueryServer");
 
         File jpa20Feature = new File(server.getInstallRoot() + "/lib/features/com.ibm.websphere.appserver.jpa-2.0.mf");
         Log.info(getClass(), "isEnabled", "Does the jpa-2.0 feature exist? " + jpa20Feature.exists());

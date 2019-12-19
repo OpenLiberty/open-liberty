@@ -10,12 +10,14 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.persistent.fat.locking;
 
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
+import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -24,4 +26,10 @@ import componenttest.topology.impl.LibertyServerFactory;
 })
 public class FATSuite {
     static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.concurrent.persistent.fat.locking");
+
+    @BeforeClass
+    public static void beforeSuite() throws Exception {
+        //Allows local tests to switch between using a local docker client, to using a remote docker client.
+        ExternalTestServiceDockerClientStrategy.clearTestcontainersConfig();
+    }
 }

@@ -30,15 +30,15 @@ import org.eclipse.microprofile.config.spi.ConfigSource;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.microprofile.config.impl.ConversionManager;
-import com.ibm.ws.microprofile.config.impl.SortedSources;
 import com.ibm.ws.microprofile.config.impl.SourcedValueImpl;
+import com.ibm.ws.microprofile.config.interfaces.SortedSources;
 import com.ibm.ws.microprofile.config.interfaces.SourcedValue;
 import com.ibm.ws.microprofile.config.sources.StaticConfigSource;
 
 public class CompositeConfig implements Closeable, ConfigListener {
 
-    private final CopyOnWriteArrayList<PollingDynamicConfig> children = new CopyOnWriteArrayList<PollingDynamicConfig>();
-    private final CopyOnWriteArrayList<ConfigListener> listeners = new CopyOnWriteArrayList<ConfigListener>();
+    private final CopyOnWriteArrayList<PollingDynamicConfig> children = new CopyOnWriteArrayList<>();
+    private final CopyOnWriteArrayList<ConfigListener> listeners = new CopyOnWriteArrayList<>();
     private final ConversionManager conversionManager;
 
     /**
@@ -61,7 +61,7 @@ public class CompositeConfig implements Closeable, ConfigListener {
     @Override
     public void onConfigAdded() {
         //pass the notification on to our listeners
-        for (ConfigListener listener : listeners) {
+        for (ConfigListener listener : this.listeners) {
             listener.onConfigAdded();
         }
     }
@@ -70,7 +70,7 @@ public class CompositeConfig implements Closeable, ConfigListener {
     @Override
     public void onConfigUpdated() {
         //pass the notification on to our listeners
-        for (ConfigListener listener : listeners) {
+        for (ConfigListener listener : this.listeners) {
             listener.onConfigUpdated();
         }
     }
@@ -93,7 +93,7 @@ public class CompositeConfig implements Closeable, ConfigListener {
         PollingDynamicConfig archaiusConfig = new PollingDynamicConfig(source, executor, refreshInterval);
 
         //add each archaius config to the composite config
-        children.add(archaiusConfig);
+        this.children.add(archaiusConfig);
 
         onConfigAdded();
         archaiusConfig.addListener(this);
@@ -109,7 +109,7 @@ public class CompositeConfig implements Closeable, ConfigListener {
      * @param listener
      */
     public void addListener(ConfigListener listener) {
-        listeners.add(listener);
+        this.listeners.add(listener);
     }
 
     /**
@@ -122,7 +122,7 @@ public class CompositeConfig implements Closeable, ConfigListener {
     public Set<String> getKeySet() {
         HashSet<String> result = new HashSet<>();
 
-        for (PollingDynamicConfig config : children) {
+        for (PollingDynamicConfig config : this.children) {
             Iterator<String> iter = config.getKeys();
             while (iter.hasNext()) {
                 String key = iter.next();
@@ -141,7 +141,7 @@ public class CompositeConfig implements Closeable, ConfigListener {
         sb.append("CompositeConfig[");
         sb.append(hashCode());
         sb.append("](");
-        sb.append(children.size());
+        sb.append(this.children.size());
         sb.append(" children");
         sb.append(")");
         return sb.toString();
@@ -151,7 +151,7 @@ public class CompositeConfig implements Closeable, ConfigListener {
     public String dump() {
         StringBuilder sb = new StringBuilder();
         Set<String> keys = getKeySet();
-        keys = new TreeSet<String>(keys);
+        keys = new TreeSet<>(keys);
         Iterator<String> keyItr = keys.iterator();
         while (keyItr.hasNext()) {
             String key = keyItr.next();
@@ -173,7 +173,7 @@ public class CompositeConfig implements Closeable, ConfigListener {
     /** {@inheritDoc} */
     @Override
     public void close() {
-        for (PollingDynamicConfig child : children) {
+        for (PollingDynamicConfig child : this.children) {
             child.close();
         }
     }
@@ -195,9 +195,9 @@ public class CompositeConfig implements Closeable, ConfigListener {
     @Trivial
     private SourcedValue getRawCompositeValue(String key) {
         SourcedValue raw = null;
-        for (PollingDynamicConfig child : children) {
+        for (PollingDynamicConfig child : this.children) {
             String value = child.getRawProperty(key);
-            if (value != null || child.containsKey(key)) {
+            if ((value != null) || child.containsKey(key)) {
                 String source = child.getSourceID();
                 raw = new SourcedValueImpl(key, value, String.class, source);
                 break;

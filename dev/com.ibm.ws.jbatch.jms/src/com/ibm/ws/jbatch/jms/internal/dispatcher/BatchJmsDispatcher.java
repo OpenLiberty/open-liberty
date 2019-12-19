@@ -54,7 +54,7 @@ import com.ibm.jbatch.container.ws.BatchJobNotLocalException;
 import com.ibm.jbatch.container.ws.InstanceState;
 import com.ibm.jbatch.container.ws.PartitionPlanConfig;
 import com.ibm.jbatch.container.ws.PartitionReplyQueue;
-import com.ibm.jbatch.container.ws.RemotablePartitionState;
+import com.ibm.jbatch.container.ws.WSRemotablePartitionState;
 import com.ibm.jbatch.container.ws.WSJobExecution;
 import com.ibm.jbatch.container.ws.WSJobInstance;
 import com.ibm.jbatch.container.ws.WSJobRepository;
@@ -734,8 +734,8 @@ public class BatchJmsDispatcher implements BatchDispatcher {
 
         RemotablePartitionKey partitionKey = new RemotablePartitionKey(partitionPlanConfig.getTopLevelExecutionId(), partitionPlanConfig.getStepName(), partitionPlanConfig.getPartitionNumber());
         TransactionHelper tranHelper = new TransactionHelper();
-        String errorMessage = "Unable to Dispatch the partition " + partitionKey.toString();
-        tranHelper.preInvoke(errorMessage );
+        
+        tranHelper.partitionPreInvoke(partitionKey);
         
         try {
             sendStartPartitionMessage(partitionPlanConfig,
@@ -744,7 +744,7 @@ public class BatchJmsDispatcher implements BatchDispatcher {
                                       securityContext,
                                       (PartitionReplyQueueJms)partitionReplyQueue);
             
-            jobRepository.createRemotablePartition(partitionPlanConfig.getTopLevelExecutionId(), partitionPlanConfig.getStepName(), partitionPlanConfig.getPartitionNumber(), RemotablePartitionState.QUEUED);
+            jobRepository.createRemotablePartition(partitionKey);
             
             // TODO: publish partition event?
 
@@ -757,10 +757,11 @@ public class BatchJmsDispatcher implements BatchDispatcher {
             savedException = allOtherException;
             tranHelper.setTranRollback();
         } finally {
-            tranHelper.postInvoke(errorMessage);
+            tranHelper.partitionPostInvoke(partitionKey);
             // no error from rollback and commit, but we have an exception,
             // so it must be error that caused the rollback. rethrow it.
             if (savedException != null) {
+        		String errorMessage = "Unable to Dispatch the partition " + partitionKey.toString();
                 throw new BatchJmsDispatcherException(errorMessage);
             } 
 
@@ -904,27 +905,29 @@ public class BatchJmsDispatcher implements BatchDispatcher {
         /**
          * Suspend LTC and start global transaction
          * 
-         * @param message The message to be used with the exception thrown
+         * @param rpk
          */
-        private void preInvoke(String message) {
+        private void partitionPreInvoke(RemotablePartitionKey rpk) {
         	try {
         		suspendExistingLTC();
         		startTransaction();
         	} catch (Exception txException) {
-        		throw new BatchJmsDispatcherException(message, txException);
+        		String errorMessage = "Unable to Dispatch the partition " + rpk.toString();
+        		throw new BatchJmsDispatcherException(errorMessage, txException);
         	}
         }
         
         /**
          * Tidy up transaction
          * 
-         * @param message The message to be used with the exception thrown
+         * @param rpk
          */
-        private void postInvoke(String message) {
+        private void partitionPostInvoke(RemotablePartitionKey rpk) {
             try {
                 rollbackOrCommitTransactionAsRequired();
             } catch (Exception txException) {
-                throw new BatchJmsDispatcherException(message, txException);
+        		String errorMessage = "Unable to Dispatch the partition " + rpk.toString();
+                throw new BatchJmsDispatcherException(errorMessage, txException);
             } finally {
                 resumeExistingLTC();
             }

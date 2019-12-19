@@ -1,0 +1,5 @@
+<server>
+
+	<wsAtomicTransaction SSLEnabled="false" SSLRef="defaultSSLConfig" externalURLPrefix="" clientAuth="false"/>
+
+</server>

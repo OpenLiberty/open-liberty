@@ -5,3 +5,4 @@ singleton=true
 -bundles=com.ibm.websphere.org.eclipse.microprofile.faulttolerance.2.1; location:="dev/api/stable/,lib/"
 kind=noship
 edition=full
+WLP-Activation-Type: parallel

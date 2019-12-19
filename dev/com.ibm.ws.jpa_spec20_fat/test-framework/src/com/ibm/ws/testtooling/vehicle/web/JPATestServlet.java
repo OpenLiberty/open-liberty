@@ -175,13 +175,13 @@ public abstract class JPATestServlet extends FATServlet {
         final StringBuilder sb = new StringBuilder();
 
         final URL dmURL = new URL("http://localhost:" + portNumber + "/DatabaseManagement/DMS?command=EXECDDL&ddl.script.name="
-                                  + scriptName + "&swallow.errors=true");
+                                  + scriptName + "&swallow.errors=false");
         final HttpURLConnection conn = (HttpURLConnection) dmURL.openConnection();
         conn.setRequestMethod("GET");
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
             String buffer;
             while ((buffer = reader.readLine()) != null) {
-                sb.append(buffer);
+                sb.append(buffer + "/n");
             }
         }
 

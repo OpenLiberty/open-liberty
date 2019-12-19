@@ -26,18 +26,21 @@ instrument.ffdc: false
     com.ibm.ws.microprofile.graphql.component.*
 
 Private-Package: \
-  com.ibm.ws.microprofile.graphql.internal
+  com.ibm.ws.microprofile.graphql.internal,\
+  com.ibm.ws.microprofile.graphql.resources
 
 Export-Package: \
   com.ibm.ws.microprofile.graphql.component;thread-context=true
 
 DynamicImport-Package: \
-  com.ibm.ws.microprofile.metrics.cdi.producer; version="[1.0.0,2.0.0)",\
+  com.ibm.ws.microprofile.metrics.cdi.producer,\
+  com.ibm.ws.microprofile.metrics.cdi20.producer,\
   org.eclipse.microprofile.config,\
   org.eclipse.microprofile.metrics
 
 Import-Package: \
   !com.ibm.ws.microprofile.metrics.cdi.producer,\
+  !com.ibm.ws.microprofile.metrics.cdi20.producer,\
   !org.eclipse.microprofile.config,\
   !org.eclipse.microprofile.metrics,\
   *

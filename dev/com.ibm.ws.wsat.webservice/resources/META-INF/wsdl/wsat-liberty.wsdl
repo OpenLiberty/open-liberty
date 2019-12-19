@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<!-- Liberty Implementation of the WS-AT web services -->
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:wsat="http://docs.oasis-open.org/ws-tx/wsat/2006/06" xmlns:tns="http://com.ibm.ws.wsat.webservice"
+	targetNamespace="http://com.ibm.ws.wsat.webservice">
+
+	<wsdl:import namespace="http://docs.oasis-open.org/ws-tx/wsat/2006/06"
+		location="wstx-wsat-1.1-wsdl-200702.wsdl" />
+
+	<!-- wsat bindings/services -->
+	<wsdl:binding name="CoordinatorBinding" type="wsat:CoordinatorPortType">
+		<soap:binding transport="http://schemas.xmlsoap.org/soap/http"
+			style="document" />
+		<wsdl:operation name="PreparedOperation">
+			<soap:operation soapAction="" />
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+		</wsdl:operation>
+		<wsdl:operation name="AbortedOperation">
+			<soap:operation soapAction="" />
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+		</wsdl:operation>
+		<wsdl:operation name="ReadOnlyOperation">
+			<soap:operation soapAction="" />
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+		</wsdl:operation>
+		<wsdl:operation name="CommittedOperation">
+			<soap:operation soapAction="" />
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="CoordinatorService">
+		<wsdl:port name="CoordinatorPort" binding="tns:CoordinatorBinding">
+			<soap:address
+				location="http://localhost:9080/com.ibm.ws.wsat.webservice/CoordinatorService" />
+		</wsdl:port>
+	</wsdl:service>
+
+	<wsdl:binding name="ParticipantBinding" type="wsat:ParticipantPortType">
+		<soap:binding transport="http://schemas.xmlsoap.org/soap/http"
+			style="document" />
+		<wsdl:operation name="PrepareOperation">
+			<soap:operation soapAction="" />
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+		</wsdl:operation>
+		<wsdl:operation name="CommitOperation">
+			<soap:operation soapAction="" />
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+		</wsdl:operation>
+		<wsdl:operation name="RollbackOperation">
+			<soap:operation soapAction="" />
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="ParticipantService">
+		<wsdl:port name="ParticipantPort" binding="tns:ParticipantBinding">
+			<soap:address
+				location="http://localhost:9080/com.ibm.ws.wsat.webservice/ParticipantService" />
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>

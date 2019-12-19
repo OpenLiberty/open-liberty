@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -264,10 +264,11 @@ public class HttpChain implements ChainEventListener {
         Map<String, Object> httpOptions = owner.getHttpOptions();
         Map<String, Object> endpointOptions = owner.getEndpointOptions();
         Map<String, Object> remoteIpOptions = owner.getRemoteIpConfig();
+        Map<String, Object> compressionOptions = owner.getCompressionConfig();
+        
 
-
-        final ActiveConfiguration newConfig = new ActiveConfiguration(isHttps, tcpOptions, sslOptions, httpOptions, remoteIpOptions, endpointOptions, resolvedHostName);
-
+        final ActiveConfiguration newConfig = new ActiveConfiguration(isHttps, tcpOptions, sslOptions, httpOptions, remoteIpOptions, compressionOptions, endpointOptions, resolvedHostName);
+        
         if (newConfig.configPort < 0 || !newConfig.complete()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "Stopping chain due to configuration " + newConfig);
@@ -410,6 +411,25 @@ public class HttpChain implements ChainEventListener {
                         }
                         if(remoteIpOptions.containsKey("useRemoteIpInAccessLog")){
                             chanProps.put(HttpConfigConstants.PROPNAME_REMOTE_IP_ACCESS_LOG, remoteIpOptions.get("useRemoteIpInAccessLog"));
+                        }
+                    }
+                    
+                    if(compressionOptions.get("id").equals("defaultCompression")){
+                        //Put the internal compression set to false since the element was not configured to be used
+                        chanProps.put(HttpConfigConstants.PROPNAME_COMPRESSION, "false");
+                        chanProps.put(HttpConfigConstants.PROPNAME_COMPRESSION_CONTENT_TYPES, null);
+                        chanProps.put(HttpConfigConstants.PROPNAME_COMPRESSION_PREFERRED_ALGORITHM, null);
+                    }
+
+                    else{
+                        chanProps.put(HttpConfigConstants.PROPNAME_COMPRESSION, "true");
+                        //Check if the compression is configured to use content-type filter
+                        if(compressionOptions.containsKey("types")){
+                            chanProps.put(HttpConfigConstants.PROPNAME_COMPRESSION_CONTENT_TYPES, compressionOptions.get("types"));
+                            
+                        }
+                        if(compressionOptions.containsKey("serverPreferredAlgorithm")){
+                            chanProps.put(HttpConfigConstants.PROPNAME_COMPRESSION_PREFERRED_ALGORITHM, compressionOptions.get("serverPreferredAlgorithm"));
                         }
                     }
 
@@ -677,6 +697,7 @@ public class HttpChain implements ChainEventListener {
         final Map<String, Object> sslOptions;
         final Map<String, Object> httpOptions;
         final Map<String, Object> remoteIp;
+        final Map<String, Object> compression;
         final Map<String, Object> endpointOptions;
 
         volatile int activePort = -1;
@@ -687,6 +708,7 @@ public class HttpChain implements ChainEventListener {
                             Map<String, Object> ssl,
                             Map<String, Object> http,
                             Map<String, Object> remoteIp,
+                            Map<String, Object> compression,
                             Map<String, Object> endpoint,
                             String resolvedHostName) {
             this.isHttps = isHttps;
@@ -694,6 +716,7 @@ public class HttpChain implements ChainEventListener {
             sslOptions = ssl;
             httpOptions = http;
             this.remoteIp = remoteIp;
+            this.compression = compression;
             endpointOptions = endpoint;
 
             String attribute = isHttps ? "httpsPort" : "httpPort";
@@ -775,6 +798,7 @@ public class HttpChain implements ChainEventListener {
                        sslOptions == other.sslOptions &&
                        httpOptions == other.httpOptions &&
                        remoteIp == other.remoteIp &&
+                       compression == other.compression &&
                        !endpointChanged(other);
             } else {
                 return configHost.equals(other.configHost) &&
@@ -782,6 +806,7 @@ public class HttpChain implements ChainEventListener {
                        tcpOptions == other.tcpOptions &&
                        httpOptions == other.httpOptions &&
                        remoteIp == other.remoteIp &&
+                       compression == other.compression &&
                        !endpointChanged(other);
             }
         }
@@ -806,7 +831,8 @@ public class HttpChain implements ChainEventListener {
             if (other == null)
                 return true;
 
-            return (httpOptions != other.httpOptions) || (remoteIp != other.remoteIp);
+            return (httpOptions != other.httpOptions) || (remoteIp != other.remoteIp) || (compression != other.compression);
+            
         }
 
         protected boolean endpointChanged(ActiveConfiguration other) {
@@ -830,6 +856,7 @@ public class HttpChain implements ChainEventListener {
                    + ",tcpOptions=" + System.identityHashCode(tcpOptions)
                    + ",httpOptions=" + System.identityHashCode(httpOptions)
                    + ",remoteIp=" + System.identityHashCode(remoteIp)
+                   + ",compression=" + System.identityHashCode(compression)
                    + ",sslOptions=" + (isHttps ? System.identityHashCode(sslOptions) : "0")
                    + ",endpointOptions=" + endpointOptions.get(Constants.SERVICE_PID)
                    + "]";

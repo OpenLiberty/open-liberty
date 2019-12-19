@@ -22,6 +22,9 @@ src: \
 fat.project: true
 fat.test.databases: true
 
+# To choose the database, specify one of: Postgre, DB2, Oracle, SQLServer, Derby
+# fat.bucket.db.type: Postgre
+
 # Uncomment to use remote docker host to simulate continuous build behavior.
 # fat.test.use.remote.docker: true
 

@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package test.utils;
 
 import java.io.File;
@@ -17,26 +27,58 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
 public class TestUtils {
-        public static boolean deleteFolder(File file) throws IOException {
-                Path path = file.toPath();
-                if (!path.toFile().exists()) {
-                        return true;
-                }
-                Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
-                        @Override
-                        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                                Files.delete(file);
-                                return FileVisitResult.CONTINUE;
-                        }
 
-                        @Override
-                        public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-                                Files.delete(dir);
-                                return FileVisitResult.CONTINUE;
+        public static boolean deleteFolder(final File directory) {
+                if (directory.isDirectory()) {
+                        File[] files = directory.listFiles();
+                        if (null != files) {
+                                for (File file : files) {
+                                        if (file.isDirectory()) {
+                                                deleteFolder(file);
+                                        } else {
+                                                if (!file.delete()) {
+                                                        file.deleteOnExit();
+                                                }
+                                        }
+                                }
                         }
-                });
-                return !file.exists();
+                }
+                if(!directory.delete()){
+                        directory.deleteOnExit();
+                        return false;
+                }
+                return true;
         }
+
+        // public static boolean deleteFolder(File file) {
+        //         Path path = file.toPath();
+        //         if (!path.toFile().exists()) {
+        //                 return true;
+        //         }
+        //         try {
+        //                 Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
+        //                         @Override
+        //                         public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
+        //                                         throws IOException {
+        //                                 Files.delete(file);
+        //                                 return FileVisitResult.CONTINUE;
+        //                         }
+
+        //                         @Override
+        //                         public FileVisitResult postVisitDirectory(Path dir, IOException exc)
+        //                                         throws IOException {
+        //                                 Files.delete(dir);
+        //                                 return FileVisitResult.CONTINUE;
+        //                         }
+        //                 });
+        //         } catch (IOException e) {
+        //                 file.deleteOnExit();
+
+        //         }
+        //         return !file.exists();
+        // }
+
+
 
         public static void zipDirectory(String sourceFile, String outFile) throws IOException {
                 FileOutputStream fos = new FileOutputStream(outFile);

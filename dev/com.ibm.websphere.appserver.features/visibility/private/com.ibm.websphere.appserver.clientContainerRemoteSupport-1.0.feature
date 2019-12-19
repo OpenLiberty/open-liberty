@@ -13,3 +13,4 @@ IBM-API-Package: com.ibm.ws.clientcontainer.remote.common;type="internal"
 IBM-Process-Types: server
 kind=ga
 edition=base
+WLP-Activation-Type: parallel
