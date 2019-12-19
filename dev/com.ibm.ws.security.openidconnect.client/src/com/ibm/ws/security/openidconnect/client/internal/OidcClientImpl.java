@@ -6,11 +6,12 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.client.internal;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
@@ -113,6 +114,7 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
             oidcClientConfigRef.putReference((String) ref.getProperty(CFG_KEY_ID), ref);
             initOidcClientAuth = true;
             initBeforeSso = true;
+            warnIfAuthFilterUseDuplicated();
         }
     }
 
@@ -121,6 +123,7 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
             oidcClientConfigRef.putReference((String) ref.getProperty(CFG_KEY_ID), ref);
             initOidcClientAuth = true;
             initBeforeSso = true;
+            warnIfAuthFilterUseDuplicated();
         }
     }
 
@@ -263,6 +266,26 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
         oidcClientAuthenticator = null;
     }
 
+    void warnIfAuthFilterUseDuplicated() {
+        Iterator<OidcClientConfig> configs = oidcClientConfigRef.getServices();
+        ArrayList<String> authFilters = new ArrayList<String>();
+        ArrayList<String> reportedDuplicates = new ArrayList<String>();
+        while (configs.hasNext()) {
+            OidcClientConfig config = configs.next();
+            String authFilter = config.getAuthFilterId();
+            if (authFilter != null) {
+                if (authFilters.contains(authFilter)) {
+                    if (!reportedDuplicates.contains(authFilter)) {
+                        Tr.warning(tc, "CONFIG_AUTHFILTER_NOTUNIQUE", authFilter); // CWWKS1530W
+                        reportedDuplicates.add(authFilter);
+                    }
+                } else {
+                    authFilters.add(authFilter);
+                }
+            }
+        }
+    }
+
     /** {@inheritDoc} */
     @Override
     public ProviderAuthenticationResult authenticate(HttpServletRequest req,
@@ -272,7 +295,7 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
             boolean beforeSso) {
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "OIDC _SSO RP PROCESS IS STARTING.");
-            Tr.debug(tc, "OIDC _SSO RP inbound URL "+WebUtils.getRequestStringForTrace(req, "client_secret"));
+            Tr.debug(tc, "OIDC _SSO RP inbound URL " + WebUtils.getRequestStringForTrace(req, "client_secret"));
         }
         PostParameterHelper.savePostParams((SRTServletRequest) req);
         OidcClientConfig oidcClientConfig = oidcClientConfigRef.getService(provider);

@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.client.internal;
 
@@ -60,6 +60,7 @@ public class OidcClientImplTest {
     };
 
     private final String MY_OIDC_CLIENT = "openidConnectClient1";
+    private final String MY_OIDC_CLIENT2 = "openidConnectClient2";
     private final String authFilterId = "muAuthFilterId";
 
     private final ComponentContext cc = mock.mock(ComponentContext.class);
@@ -72,7 +73,9 @@ public class OidcClientImplTest {
 
     @SuppressWarnings("unchecked")
     private final ServiceReference<OidcClientConfig> oidcClientConfigServiceRef = mock.mock(ServiceReference.class, "oidcClientConfigServiceRef");
-    private final OidcClientConfig oidcClientConfig = mock.mock(OidcClientConfig.class);
+    private final ServiceReference<OidcClientConfig> oidcClientConfigServiceRef2 = mock.mock(ServiceReference.class, "oidcClientConfigServiceRef2");
+    private final OidcClientConfig oidcClientConfig = mock.mock(OidcClientConfig.class, "oidcClientConfig");
+    private final OidcClientConfig oidcClientConfig2 = mock.mock(OidcClientConfig.class, "oidcClientConfig2");
 
     private final OidcClientAuthenticator oidcClientAuthenticator = mock.mock(OidcClientAuthenticator.class);
 
@@ -91,13 +94,27 @@ public class OidcClientImplTest {
                 allowing(req).getContextPath();
                 allowing(cc).locateService("oidcClientConfig");
                 will(returnValue(oidcClientConfig));
+                allowing(cc).locateService("oidcClientConfig2");
+                will(returnValue(oidcClientConfig2));
+                allowing(cc).locateService("oidcClientConfig", oidcClientConfigServiceRef);
+                will(returnValue(oidcClientConfig));
+                allowing(oidcClientConfig).getAuthFilterId();
+                will(returnValue("theFilter"));
+                allowing(oidcClientConfig2).getAuthFilterId();
+                will(returnValue("theFilter"));
                 allowing(oidcClientConfigRef).getReference(MY_OIDC_CLIENT);
                 will(returnValue(oidcClientConfigServiceRef));
                 allowing(oidcClientConfigServiceRef).getProperty("id");
                 will(returnValue(MY_OIDC_CLIENT));
+                allowing(oidcClientConfigServiceRef2).getProperty("id");
+                will(returnValue(MY_OIDC_CLIENT2));
                 allowing(oidcClientConfigServiceRef).getProperty("service.id");
                 will(returnValue(99L));
                 allowing(oidcClientConfigServiceRef).getProperty("service.ranking");
+                will(returnValue(99L));
+                allowing(oidcClientConfigServiceRef2).getProperty("service.id");
+                will(returnValue(99L));
+                allowing(oidcClientConfigServiceRef2).getProperty("service.ranking");
                 will(returnValue(99L));
 
                 allowing(oidcClientConfig).getContextPath();
@@ -111,6 +128,19 @@ public class OidcClientImplTest {
     public void tearDown() {
         mock.assertIsSatisfied();
         outputMgr.resetStreams();
+    }
+
+    @Test
+    public void testWarnIfAuthFilterUseDuplicated() {
+        String methodName = "testWarnIfAuthFilterUseDuplicated";
+        final OidcClientImpl oidcClient = new OidcClientImpl();
+        try {
+            oidcClient.setOidcClientConfig(oidcClientConfigServiceRef);
+            oidcClient.setOidcClientConfig(oidcClientConfigServiceRef2);
+            //todo: find out why we don't get the warning and how to scan for it.
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
     }
 
     @Test
