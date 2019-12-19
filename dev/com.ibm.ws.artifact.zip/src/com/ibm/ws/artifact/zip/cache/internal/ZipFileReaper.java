@@ -130,13 +130,13 @@ public class ZipFileReaper {
     }
 
     @Trivial
-    private static String toRelSec(long baseNS, long actualNS) {
-        return ZipCachingProperties.toRelSec(baseNS, actualNS);
+    private static String toRelSec_s(long baseNS, long actualNS) {
+        return ZipCachingProperties.toRelSec(baseNS, actualNS) + " (s)";
     }
 
     @Trivial
-    private static String toAbsSec(long durationNS) {
-        return ZipCachingProperties.toAbsSec(durationNS);
+    private static String toAbsSec_s(long durationNS) {
+        return ZipCachingProperties.toAbsSec(durationNS) + " (s)";
     }
 
     //
@@ -275,11 +275,6 @@ public class ZipFileReaper {
             // These are used only by 'run', but are stored at the
             // instance level to enable view by the introspector.
 
-            this.initialAt = -1;
-
-            this.isFinal = false;
-            this.finalAt = -1;
-
             this.didShutdownReap = false;
             this.shutdownReapAt = -1;
 
@@ -289,11 +284,6 @@ public class ZipFileReaper {
 
             this.startupLatch = new CountDownLatch(1);
         }
-
-        private long initialAt;
-
-        private boolean isFinal;
-        private long finalAt;
 
         private boolean didShutdownReap;
         private long shutdownReapAt;
@@ -319,21 +309,19 @@ public class ZipFileReaper {
             output.println();
             output.println("  Runner [ " + this + " ]");
 
-            long reaperInitialAt = getReaper().getInitialAt();
-
-            output.println("    Initial       [ " + toRelSec(reaperInitialAt, initialAt) + " (s) ]");
-            if ( isFinal ) {
-                output.println("    Final         [ " + toRelSec(reaperInitialAt, initialAt) + " (s) ]");
+            output.println("    Initial    [ " + toAbsSec_s( reaper.getInitialAt() ) + " ]");
+            if ( reaper.getIsFinal() ) {
+                output.println("    Final      [ " + reaper.fromInitial_s( reaper.getFinalAt() ) + " ]");
             }
 
             if ( didShutdownReap ) {
-                output.println("    Shutdown Reap [ " + toRelSec(reaperInitialAt, shutdownReapAt) + " (s) ]");
+                output.println("    Shutdown   [ " + reaper.fromInitial_s(shutdownReapAt) + " ]");
             }
 
-            output.println("    Last Reap     [ " + toRelSec(reaperInitialAt, lastReapAt) + " (s) ]");
-            output.println("    Next Reap     [ " + toRelSec(reaperInitialAt, nextReapAt) + " (s) ]");
-            String delayText = ( (nextReapDelay < 0) ? "INDEFINITE" : toAbsSec(nextReapDelay) );
-            output.println("    Next Delay    [ " + delayText + " (s) ] (" + nextReapReason + ")");
+            output.println("    Last Reap  [ " + reaper.fromInitial_s(lastReapAt) + " ]");
+            output.println("    Next Reap  [ " + reaper.fromInitial_s(nextReapAt) + " ]");
+            String delayText = ( (nextReapDelay < 0) ? "INDEFINITE" : toAbsSec_s(nextReapDelay) );
+            output.println("    Next Delay [ " + delayText + " ] (" + nextReapReason + ")");
 
             output.println();
             output.println("  Logger [ " + logThread + " ]");
@@ -359,9 +347,8 @@ public class ZipFileReaper {
             String methodName = "run";
             boolean doDebug = ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() );
 
-            long startAt = SystemUtils.getNanoTime();
             if ( doDebug ) {
-                Tr.debug(tc, methodName + " Start [ " + toRelSec(startAt, startAt) + " (s) ]");
+                Tr.debug(tc, methodName + " Start [ " + toAbsSec_s( reaper.getInitialAt() ) + " ]");
             }
 
             synchronized ( reaper.reaperLock ) {
@@ -386,12 +373,11 @@ public class ZipFileReaper {
                 nextReapDelay = REAP_DELAY_INDEFINITE;
                 reaper.addWaitReason("indefinite (initial)");
 
-                nextReapAt = initialAt;
+                nextReapAt = reaper.getInitialAt();
                 nextReapReason = "indefinite (initial)";
 
                 while ( true ) {
-                    
-                    long lastReapAt = nextReapAt;
+                    lastReapAt = nextReapAt;
 
                     // Condition:
                     // Start an indefinite wait if and only if there are no pending closes.
@@ -455,12 +441,12 @@ public class ZipFileReaper {
                     }
 
                     nextReapAt = SystemUtils.getNanoTime();
-                    
+
                     if ( doDebug ) {
-                        Tr.debug(tc, methodName + " Reap [ " + toRelSec(startAt, nextReapAt) + " (s) ]");
+                        Tr.debug(tc, methodName + " Reap [ " + reaper.fromInitial_s(nextReapAt) + " ]");
                         
                         // Issue #7770 - Remove reaper stall warning - change to debug
-                        // asyncWarning("reaper.stall", toAbsSec(actualDelay), toAbsSec(reapDelay));
+                        // asyncWarning("reaper.stall", toAbsSec_s(actualDelay), toAbsSec_s(reapDelay));
                         
                         String message;
                         long actualReapDelay = nextReapAt - lastReapAt;
@@ -475,8 +461,8 @@ public class ZipFileReaper {
                             message = " Reap cycle time:";
                         }
                         Tr.debug(tc, methodName + message + " Actual delay [ " 
-                                        + toAbsSec(actualReapDelay) + " (s) ]; Requested delay [ " 
-                                        + toAbsSec(nextReapDelay) + " (s) ]");
+                                        + toAbsSec_s(actualReapDelay) + " ]; Requested delay [ " 
+                                        + toAbsSec_s(nextReapDelay) + " ]");
                     }
 
                     ZipFileData ripestPending = reaper.getRipest();
@@ -506,7 +492,7 @@ public class ZipFileReaper {
                         nextReapDelay = pendMax - consumedPend;
                         reaper.addWaitReason("specific (incomplete pend)");
                         if ( doDebug ) {
-                            Tr.debug(tc, methodName + " Ripest [ " + ripestPending.path + " ] waited [ " + toAbsSec(consumedPend) + " (s) ] remaining [ " + toAbsSec(nextReapDelay) + " (s) ]");
+                            Tr.debug(tc, methodName + " Ripest [ " + ripestPending.path + " ] waited [ " + toAbsSec_s(consumedPend) + " ] remaining [ " + toAbsSec_s(nextReapDelay) + " ]");
                         }
 
                     } else {
@@ -514,7 +500,7 @@ public class ZipFileReaper {
                         // other pending closes which are fully ripe, and set the next reap delay
                         // according to the ripest but not fully ripe pending close. 
                         if ( doDebug ) {
-                            Tr.debug(tc, methodName + " Ripest [ " + ripestPending.path + " ] waited [ " + toAbsSec(consumedPend) + " (s) ]");
+                            Tr.debug(tc, methodName + " Ripest [ " + ripestPending.path + " ] waited [ " + toAbsSec_s(consumedPend) + " ]");
                         }
 
                         nextReapDelay = reaper.reap(nextReapAt, ZipFileReaper.IS_NOT_SHUTDOWN_REAP);
@@ -525,13 +511,13 @@ public class ZipFileReaper {
 
             long shutdownAt = SystemUtils.getNanoTime();
             if ( doDebug ) {
-                Tr.debug(tc, methodName + " Shutting down [ " + toRelSec(startAt, shutdownAt) + " (s) ]");
+                Tr.debug(tc, methodName + " Shutting down [ " + reaper.fromInitial_s(shutdownAt) + " ]");
             }
             reaper.reap(shutdownAt, ZipFileReaper.IS_SHUTDOWN_REAP); // Maybe, move this to the shutdown thread.
 
             long stopAt = SystemUtils.getNanoTime();
             if ( doDebug ) {
-                Tr.debug(tc, methodName + " Stop [ " + toRelSec(startAt, stopAt) + " (s) ]");
+                Tr.debug(tc, methodName + " Stop [ " + reaper.fromInitial_s(stopAt) + " ]");
             }
         }
     }
@@ -545,14 +531,15 @@ public class ZipFileReaper {
 
     @Trivial
     public ZipFileReaper(String reaperName, long initialAt) {
-        this(reaperName,
-             ZipCachingProperties.ZIP_REAPER_DEBUG_STATE,
-             ZipCachingProperties.ZIP_CACHE_REAPER_MAX_PENDING,
-             ZipCachingProperties.ZIP_CACHE_REAPER_QUICK_PEND_MIN,
-             ZipCachingProperties.ZIP_CACHE_REAPER_QUICK_PEND_MIN,
-             ZipCachingProperties.ZIP_CACHE_REAPER_SLOW_PEND_MAX,
-             ZipCachingProperties.ZIP_CACHE_REAPER_SLOW_PEND_MAX,
-             NULL_ERROR_HANDLER);
+        this( reaperName,
+              ZipCachingProperties.ZIP_REAPER_DEBUG_STATE,
+              ZipCachingProperties.ZIP_CACHE_REAPER_MAX_PENDING,
+              ZipCachingProperties.ZIP_CACHE_REAPER_QUICK_PEND_MIN,
+              ZipCachingProperties.ZIP_CACHE_REAPER_QUICK_PEND_MIN,
+              ZipCachingProperties.ZIP_CACHE_REAPER_SLOW_PEND_MAX,
+              ZipCachingProperties.ZIP_CACHE_REAPER_SLOW_PEND_MAX,
+              NULL_ERROR_HANDLER,
+              initialAt );
     }
 
     protected static final ErrorConsumer<String> NULL_ERROR_HANDLER = null;
@@ -566,35 +553,27 @@ public class ZipFileReaper {
         long slowPendMin, long slowPendMax,
         ErrorConsumer<String> errorHandler) {
 
-        this(reaperName,
-             debugState,
-             maxCache,
-             quickPendMin, quickPendMax,
-             slowPendMin, slowPendMax,
-             errorHandler,
-             SystemUtils.getNanoTime() );
+        this( reaperName, debugState,
+              maxCache,
+              quickPendMin, quickPendMax,
+              slowPendMin, slowPendMax,
+              errorHandler,
+              SystemUtils.getNanoTime() );
     }
 
     @Trivial
     public ZipFileReaper(
-        String reaperName,
-        boolean debugState,
+        String reaperName, boolean debugState,
         int maxCache,
-        long quickPendMin,
-        long quickPendMax,
-        long slowPendMin,
-        long slowPendMax
-    ) {
-        this(
-            reaperName,
-            debugState,
-            maxCache,
-            quickPendMin,
-            quickPendMax,
-            slowPendMin,
-            slowPendMax,
-            ZipFileReaper.NULL_ERROR_HANDLER
-        );
+        long quickPendMin, long quickPendMax,
+        long slowPendMin, long slowPendMax) {
+
+        this( reaperName, debugState,
+              maxCache,
+              quickPendMin, quickPendMax,
+              slowPendMin, slowPendMax,
+              ZipFileReaper.NULL_ERROR_HANDLER,
+              SystemUtils.getNanoTime() );
     }
 
     private static void validate(
@@ -658,7 +637,7 @@ public class ZipFileReaper {
 
         this.reaperName = reaperName;
         this.debugState = debugState;
-        
+
         this.maxCache = maxCache;
 
         this.quickPendMin = quickPendMin;
@@ -859,6 +838,11 @@ public class ZipFileReaper {
     private final long initialAt;
 
     /**
+     * Setting of whether the reaper has been shut down.
+     */
+    private boolean isFinal;
+
+    /**
      * Setting of when the reaper was shutdown.
      * Used when displaying zip file statistics.
      */
@@ -870,13 +854,23 @@ public class ZipFileReaper {
     }
 
     @Trivial
+    public boolean getIsFinal() {
+    	return isFinal;
+    }
+
+    @Trivial
     public long getFinalAt() {
         return finalAt;
     }
 
-    @Trivial
     private void setFinalAt(long finalAt) {
+    	this.isFinal = true;
         this.finalAt = finalAt;
+    }
+
+    @Trivial
+    private String fromInitial_s(long actualNS) {
+        return toRelSec_s( getInitialAt(), actualNS);
     }
 
     //
@@ -927,7 +921,7 @@ public class ZipFileReaper {
     protected void fullyClose(ZipFileData data, long fullCloseAt, boolean isShutdown) {
         String methodName = "fullyClose";
         if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
-            Tr.debug(tc, methodName + " Path [ " + data.path + " ] at [ " + toRelSec(initialAt, fullCloseAt) + " (s) ]");
+            Tr.debug(tc, methodName + " Path [ " + data.path + " ] at [ " + fromInitial_s(fullCloseAt) + " ]");
         }
 
         data.closeZipFile();
@@ -1214,7 +1208,7 @@ public class ZipFileReaper {
     private long reap(long reapAt, boolean isShutdownReap) {
         String methodName = "reap";
         if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
-            Tr.debug(tc, methodName + " At [ " + toRelSec(initialAt, reapAt) + " (s) ] Force [ " + isShutdownReap + " ]");
+            Tr.debug(tc, methodName + " At [ " + fromInitial_s(reapAt) + " ] Force [ " + isShutdownReap + " ]");
             Tr.debug(tc, methodName +
                 " All [ " + storage.size() + " ]" +
                 " Pending Quick [ " + pendingQuickStorage.size() + " ]" +
@@ -1237,7 +1231,7 @@ public class ZipFileReaper {
                 if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                     Tr.debug(tc, methodName +
                             " Path [ " + nextPending.path + " ]" +
-                            " Waiting [ " + toAbsSec(nextPendDuration) + " (s) ] (Quick): Forced");
+                            " Waiting [ " + toAbsSec_s(nextPendDuration) + " ] (Quick): Forced");
                 }
 
                 pendingQuick.remove();
@@ -1249,7 +1243,7 @@ public class ZipFileReaper {
                     if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                         Tr.debug(tc, methodName +
                             " Path [ " + nextPending.path + " ]" +
-                            " Waiting [ " + toAbsSec(nextPendDuration) + " (s) ] (Quick): Expired");
+                            " Waiting [ " + toAbsSec_s(nextPendDuration) + " ] (Quick): Expired");
                     }
 
                     pendingQuick.remove();
@@ -1260,7 +1254,7 @@ public class ZipFileReaper {
                     if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                         Tr.debug(tc, methodName +
                             " Path [ " + nextPending.path + " ]" +
-                            " Waiting [ " + toAbsSec(nextPendDuration) + " (s) ]: Still Waiting");
+                            " Waiting [ " + toAbsSec_s(nextPendDuration) + " ]: Still Waiting");
                     }
 
                     if ( nextPendDuration < 0 ) {
@@ -1287,7 +1281,7 @@ public class ZipFileReaper {
                 if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                     Tr.debug(tc, methodName +
                             " Path [ " + nextPending.path + " ]" +
-                            " Waiting [ " + toAbsSec(nextPendDuration) + " (s) ] (Slow): Forced");
+                            " Waiting [ " + toAbsSec_s(nextPendDuration) + " ] (Slow): Forced");
                 }
 
                 pendingSlow.remove();
@@ -1299,7 +1293,7 @@ public class ZipFileReaper {
                     if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                         Tr.debug(tc, methodName +
                             " Path [ " + nextPending.path + " ]" +
-                            " Waiting [ " + toAbsSec(nextPendDuration) + " (s) ] (Slow): Expired");
+                            " Waiting [ " + toAbsSec_s(nextPendDuration) + " ] (Slow): Expired");
                     }
 
                     pendingSlow.remove();
@@ -1310,7 +1304,7 @@ public class ZipFileReaper {
                     if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                         Tr.debug(tc, methodName +
                             " Path [ " + nextPending.path + " ]" +
-                            " Waiting [ " + toAbsSec(nextPendDuration) + " (s) ]: Still Waiting");
+                            " Waiting [ " + toAbsSec_s(nextPendDuration) + " ]: Still Waiting");
                     }
 
                     if ( nextPendDuration < 0 ) {
@@ -1403,10 +1397,10 @@ public class ZipFileReaper {
 
         if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
             String delayText =
-                ( (nextReapDelay == REAP_DELAY_INDEFINITE) ? "Indefinite" : toAbsSec(nextReapDelay) );
+                ( (nextReapDelay == REAP_DELAY_INDEFINITE) ? "Indefinite" : toAbsSec_s(nextReapDelay) );
             String speedText =
                 ( useQuick ? "Quick" : "Slow" );
-            Tr.debug(tc, methodName + " Next reap [ " + delayText + " (s) ] (" + speedText + ")");
+            Tr.debug(tc, methodName + " Next reap [ " + delayText + " ] (" + speedText + ")");
         }
         return nextReapDelay;
     }
@@ -1420,7 +1414,7 @@ public class ZipFileReaper {
     public ZipFile open(String path, long openAt) throws IOException, ZipException {
         String methodName = "open";
         if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
-            Tr.debug(tc, methodName + " Path [ " + path + " ] at [ " + toRelSec(initialAt, openAt) + " (s) ]");
+            Tr.debug(tc, methodName + " Path [ " + path + " ] at [ " + toRelSec_s(initialAt, openAt) + " ]");
         }
 
         // Open could try to turn off the reaper thread if the last pending close
@@ -1676,9 +1670,9 @@ public class ZipFileReaper {
         synchronized ( reaperLock ) {
             output.println();
             output.println("  IsActive [ " + Boolean.valueOf(isActive) + " ]");
-            output.println("  Initial  [ " + toAbsSec(initialAt) + " (s) ]" );
-            output.println("  Final    [ " + toAbsSec(finalAt) + " (s) ]");
-            output.println("  Current  [ " + toAbsSec(introspectAt) + " (s) ]");
+            output.println("  Initial  [ " + toAbsSec_s(initialAt) + " ]" );
+            output.println("  Final    [ " + toAbsSec_s(finalAt) + " ]");
+            output.println("  Current  [ " + toAbsSec_s(introspectAt) + " ]");
 
             introspectReaperThread(output);
 
