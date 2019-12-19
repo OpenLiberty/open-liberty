@@ -21,6 +21,7 @@ import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+                JPA20Cache_WEB.class,
                 JPA20CriteriaQuery_EJB.class,
                 JPA20CriteriaQuery_WEB.class,
                 JPA20QueryLockMode_EJB.class,

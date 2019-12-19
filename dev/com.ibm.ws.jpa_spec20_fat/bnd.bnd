@@ -16,6 +16,7 @@ javac.source: 1.8
 
 src: \
     fat/src,\
+	test-applications/cache/src,\
     test-applications/common/src,\
     test-applications/criteriaquery/src,\
     test-applications/olgh9018/src,\
@@ -32,6 +33,7 @@ tested.features: jdbc-4.0, beanvalidation-1.1, jpa-2.0, el-3.0
 -buildpath: \
     com.ibm.websphere.javaee.annotation.1.2;version=latest,\
     com.ibm.websphere.javaee.cdi.2.0;version=latest,\
+    com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
     com.ibm.websphere.javaee.ejb.3.2;version=latest,\
     com.ibm.websphere.javaee.jms.2.0;version=latest,\
     com.ibm.websphere.javaee.servlet.4.0;version=latest,\
