@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2013, 2019 IBM Corporation and others.
+ * Copyright (c) 2005, 2013, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -238,10 +238,8 @@ public class WSKeyStore extends Properties {
 
         this.isDefault = LibertyConstants.DEFAULT_KEYSTORE_REF_ID.equals(name);
 
-        boolean storeFileExists = defaultFileExists(this.location);
-
         if (this.fileBased) {
-            if (this.isDefault) {
+            if (this.isDefault && !defaultFileExists(this.location, this.type, this.password)) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "keystore is default");
                 }
@@ -312,19 +310,43 @@ public class WSKeyStore extends Properties {
     }
 
     /**
-     * @param location2
-     * @return
+     * Return true if the keystore file exists and loads successfully, false otherwise.
      */
-    private boolean defaultFileExists(String ksFile) {
+    private boolean defaultFileExists(String ksFile, String type, SerializableProtectedString ksPass) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, "defaultFileExists", new Object[] { ksFile, type });
+        }
 
         boolean exists = false;
         // check if the file from the configuration exists.
-        if (ksFile != null) {
+        if (ksFile != null && type != null) {
             File f = new File(ksFile);
 
             if (f.exists()) {
-                exists = true;
+                //File exists lets try to load it
+                KeyStore tmpKs;
+                try {
+                    tmpKs = KeyStore.getInstance(type);
+                    InputStream is = new URL("file:" + f.getCanonicalPath()).openStream();
+
+                    if (ksPass != null && !ksPass.isEmpty()) {
+                        String pass = new String(ksPass.getChars());
+                        pass = decodePassword(pass);
+                        tmpKs.load(is, pass.toString().toCharArray());
+                    } else {
+                        tmpKs.load(is, null);
+                    }
+                    exists = true;
+
+                } catch (Exception e) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Exception while trying to find out of the keystore file exists " + e.getMessage());
+                    }
+                }
             }
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, "defaultFileExists", exists);
         }
         return exists;
     }
