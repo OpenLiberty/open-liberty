@@ -10,9 +10,10 @@
  *******************************************************************************/
 package componenttest.topology.database.container;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
-import com.ibm.websphere.simplicity.config.ConfigElementList;
 import com.ibm.websphere.simplicity.config.DataSource;
 import com.ibm.websphere.simplicity.config.DatabaseStore;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
@@ -54,52 +55,55 @@ public final class DatabaseContainerUtil {
     	if (DatabaseContainerType.valueOf(cont) == DatabaseContainerType.Derby)
             return; //Derby used by default no need to change DS properties
 
+        //Get a list of datasources that need to be updated
+        List<DataSource> datasources = new ArrayList<>();
         //Get current server config
         ServerConfiguration cloneConfig = serv.getServerConfiguration().clone();
 
-        //Get DataSource configs
-        ConfigElementList<DataSource> dataSources = cloneConfig.getDataSources();
-
-        //Inspect and modify datasource properties
-        for (DataSource ds : dataSources) {
+        //Get general datasources
+        for (DataSource ds : cloneConfig.getDataSources()) {
             if (ds.getFatModify() != null && ds.getFatModify().equalsIgnoreCase("true")) {
-                modifyDataSourceProps(ds, cloneConfig, serv, cont);
+                datasources.add(ds);
             }
         }
 
-        //Inspect and modify datasource properties that are nested under databasestore
+        //Get datasources that are nested under databasestores
         for (DatabaseStore dbs : cloneConfig.getDatabaseStores()) {
             for (DataSource ds : dbs.getDataSources()) {
                 if (ds.getFatModify() != null && ds.getFatModify().equalsIgnoreCase("true")) {
-                    modifyDataSourceProps(ds, cloneConfig, serv, cont);
+                    datasources.add(ds);
                 }
             }
         }
+        
+        modifyDataSourceProps(datasources, cloneConfig, serv, cont);
+        
     }
 
-    private static void modifyDataSourceProps(DataSource ds, ServerConfiguration cloneConfig, LibertyServer serv,
+    private static void modifyDataSourceProps(List<DataSource> datasources, ServerConfiguration cloneConfig, LibertyServer serv,
                                               JdbcDatabaseContainer<?> cont) throws CloneNotSupportedException, Exception {
-        Log.info(c, "setupDataSourceProperties", "FOUND: DataSource to be enlisted in database rotation.  ID: " + ds.getId());
+    	
+    	for(DataSource ds : datasources) {
+            Log.info(c, "setupDataSourceProperties", "FOUND: DataSource to be enlisted in database rotation.  ID: " + ds.getId());
 
-        //Create general properties
-        Properties props = new Properties();
-        props.setUser(cont.getUsername());
-        props.setPassword(cont.getPassword());
-        props.setURL(cont.getJdbcUrl());
+            //Create general properties
+            Properties props = new Properties();
+            props.setUser(cont.getUsername());
+            props.setPassword(cont.getPassword());
+            props.setURL(cont.getJdbcUrl());
 
-        //TODO this should not be required even when using general datasource properties
-        // investigating here: https://github.com/OpenLiberty/open-liberty/issues/10066
-        if (DatabaseContainerType.valueOf(cont) == DatabaseContainerType.DB2) {
-            props.setExtraAttribute("driverType", "4");
-        }
+            //TODO this should not be required even when using general datasource properties
+            // investigating here: https://github.com/OpenLiberty/open-liberty/issues/10066
+            if (DatabaseContainerType.valueOf(cont) == DatabaseContainerType.DB2) {
+                props.setExtraAttribute("driverType", "4");
+            }
 
-        //Replace derby properties
-        ds.clearDataSourceDBProperties();
-        ds.getProperties().add(props);
+            //Replace derby properties
+            ds.clearDataSourceDBProperties();
+            ds.getProperties().add(props);	
+    	}
 
         //Update config
         serv.updateServerConfiguration(cloneConfig);
-
     }
-
 }
