@@ -51,6 +51,8 @@ public class FaultToleranceTck20Launcher {
     @ClassRule
     public static RepeatTests repeat = RepeatTests.with(RepeatFaultTolerance.ft20metrics11Features(SERVER_NAME).fullFATOnly())
                     .andWith(RepeatFaultTolerance.mp30Features(SERVER_NAME).fullFATOnly())
+                    .andWith(RepeatFaultTolerance.mp20Features(SERVER_NAME).fullFATOnly())
+                    .andWith(RepeatFaultTolerance.mp13Features(SERVER_NAME).fullFATOnly())
                     .andWith(RepeatFaultTolerance.mp32Features(SERVER_NAME));
 
     @BeforeClass
@@ -125,15 +127,25 @@ public class FaultToleranceTck20Launcher {
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
     public void launchFaultToleranceTCK() throws Exception {
         boolean isFullMode = TestModeFilter.shouldRun(TestMode.FULL);
-        boolean runMetricsOnly = RepeatTestFilter.CURRENT_REPEAT_ACTION == RepeatFaultTolerance.FT20_METRICS11_ID
-                                 || RepeatTestFilter.CURRENT_REPEAT_ACTION == RepeatFaultTolerance.MP30_FEATURES_ID;
 
         String suiteFileName;
-        if (runMetricsOnly) {
-            // For test configurations which only differ my the version of mpMetrics, just run the metrics tests
-            suiteFileName = "tck-suite-metrics-only.xml";
-        } else {
-            suiteFileName = isFullMode ? "tck-suite.xml" : "tck-suite-lite.xml";
+        switch (RepeatTestFilter.CURRENT_REPEAT_ACTION) {
+            case RepeatFaultTolerance.FT20_METRICS11_ID:
+            case RepeatFaultTolerance.MP30_FEATURES_ID:
+                // For test configurations which only differ my the version of mpMetrics, just run the metrics tests
+                suiteFileName = "tck-suite-metrics-only.xml";
+                break;
+            case RepeatFaultTolerance.MP13_FEATURES_ID:
+                // For FT 1.0 configurations, run a compatible subset of tests which have fixes in the FT 2.0 TCK
+                suiteFileName = "tck-suite-10-subset.xml";
+                break;
+            case RepeatFaultTolerance.MP20_FEATURES_ID:
+                // For FT 1.1 configurations, run a compatible subset of tests which have fixes in the FT 2.0 TCK
+                suiteFileName = "tck-suite-11-subset.xml";
+                break;
+            default:
+                // Otherwise, fun the full test suite
+                suiteFileName = isFullMode ? "tck-suite.xml" : "tck-suite-lite.xml";
         }
 
         MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.microprofile.faulttolerance.2.0_fat_tck", this.getClass() + ":launchFaultToleranceTCK", suiteFileName,

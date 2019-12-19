@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,8 +9,6 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.microprofile.faulttolerance.tck;
-
-import java.util.Collections;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -23,7 +21,6 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.custom.junit.runner.TestModeFilter;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.MvnUtils;
 
@@ -121,10 +118,7 @@ public class FaultToleranceTckLauncher {
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
     public void launchFaultToleranceTCKEE8() throws Exception {
-        boolean isFullMode = TestModeFilter.shouldRun(TestMode.FULL);
-        String suiteFileName = isFullMode ? "tck-suite.xml" : "tck-suite-lite.xml";
-        MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.microprofile.faulttolerance_fat_tck", this.getClass() + ":launchFaultToleranceTCK", suiteFileName,
-                              Collections.emptyMap(), Collections.emptySet());
+        MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.microprofile.faulttolerance_fat_tck", this.getClass() + ":launchFaultToleranceTCK");
     }
 
 }

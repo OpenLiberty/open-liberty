@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
@@ -17,6 +18,7 @@ import javax.enterprise.context.RequestScoped;
 
 import org.eclipse.microprofile.faulttolerance.Asynchronous;
 import org.eclipse.microprofile.faulttolerance.Bulkhead;
+import org.eclipse.microprofile.faulttolerance.Retry;
 import org.eclipse.microprofile.faulttolerance.Timeout;
 
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.TestConstants;
@@ -41,6 +43,34 @@ public class AsyncBulkheadBean {
      */
     @Bulkhead(value = 3, waitingTaskQueue = 2)
     public Future<Void> runTaskWithConfig(SyntheticTask<Void> task) {
+        return CompletableFuture.completedFuture(task.call());
+    }
+
+    /**
+     * Configure both Bulkhead and Retry to test that bulkhead exceptions are retried
+     * <p>
+     * Will retry for up to ten seconds
+     */
+    @Bulkhead(value = 2, waitingTaskQueue = 2)
+    @Retry(maxRetries = 20, delay = 500, jitter = 0)
+    public Future<Void> runTaskWithSlowRetries(Callable<Void> task) {
+        try {
+            return CompletableFuture.completedFuture(task.call());
+        } catch (Exception e) {
+            CompletableFuture<Void> failedResult = new CompletableFuture<Void>();
+            failedResult.completeExceptionally(e);
+            return failedResult;
+        }
+    }
+
+    /**
+     * Configure both Bulkhead and Retry to test that bulkhead exceptions are retried
+     * <p>
+     * Will retry with no delay
+     */
+    @Bulkhead(value = 2, waitingTaskQueue = 2)
+    @Retry(maxRetries = 5, delay = 0, jitter = 0)
+    public Future<Void> runTaskWithFastRetries(SyntheticTask<Void> task) {
         return CompletableFuture.completedFuture(task.call());
     }
 
