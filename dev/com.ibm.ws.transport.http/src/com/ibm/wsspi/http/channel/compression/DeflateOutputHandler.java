@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2009 IBM Corporation and others.
+ * Copyright (c) 2004, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,11 +32,11 @@ public class DeflateOutputHandler implements CompressionHandler {
     /** Deflater used for this output stream */
     private Deflater deflater = null;
     /** Output buffer used during the compression stage */
-    private byte[] buf = new byte[32768];
+    private final byte[] buf = new byte[32768];
 
     /**
      * Create this deflate compression method output handler.
-     * 
+     *
      */
     public DeflateOutputHandler() {
         this.deflater = new Deflater(Deflater.DEFAULT_COMPRESSION, false);
@@ -49,7 +49,7 @@ public class DeflateOutputHandler implements CompressionHandler {
      * Create this deflate compression method output handler. This will check
      * the provided User-Agent value to test for an IE browser client as IE
      * requires that there is no deflate wrapper around the compressed bytes.
-     * 
+     *
      * @param useragent
      *            - header from request
      */
@@ -72,7 +72,7 @@ public class DeflateOutputHandler implements CompressionHandler {
     /**
      * Check the user-agent input header to see if it contains the IE browser
      * marker.
-     * 
+     *
      * @param agent
      * @return boolean
      */
@@ -97,6 +97,7 @@ public class DeflateOutputHandler implements CompressionHandler {
      * com.ibm.wsspi.http.channel.compression.CompressionHandler#compress(com.
      * ibm.wsspi.bytebuffer.WsByteBuffer)
      */
+    @Override
     public List<WsByteBuffer> compress(WsByteBuffer buffer) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "compress, input=" + buffer);
@@ -114,6 +115,7 @@ public class DeflateOutputHandler implements CompressionHandler {
      * com.ibm.wsspi.http.channel.compression.CompressionHandler#compress(com.
      * ibm.wsspi.bytebuffer.WsByteBuffer[])
      */
+    @Override
     public List<WsByteBuffer> compress(WsByteBuffer[] buffers) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "compress, input=" + buffers);
@@ -121,6 +123,7 @@ public class DeflateOutputHandler implements CompressionHandler {
         List<WsByteBuffer> list = new LinkedList<WsByteBuffer>();
         if (null != buffers) {
             for (int i = 0; i < buffers.length; i++) {
+
                 list = compress(list, buffers[i]);
             }
         }
@@ -135,6 +138,7 @@ public class DeflateOutputHandler implements CompressionHandler {
      * com.ibm.wsspi.http.channel.compression.CompressionHandler#getContentEncoding
      * ()
      */
+    @Override
     public ContentEncodingValues getContentEncoding() {
         return ContentEncodingValues.DEFLATE;
     }
@@ -142,6 +146,7 @@ public class DeflateOutputHandler implements CompressionHandler {
     /*
      * @see com.ibm.wsspi.http.channel.compression.CompressionHandler#finish()
      */
+    @Override
     public List<WsByteBuffer> finish() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "finish");
@@ -160,6 +165,7 @@ public class DeflateOutputHandler implements CompressionHandler {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Compressed amount=" + num + " read=" + this.deflater.getBytesRead() + " written=" + this.deflater.getBytesWritten());
             }
+
             if (0 < num) {
                 buffer = makeBuffer(num);
                 list.add(buffer);
@@ -174,22 +180,21 @@ public class DeflateOutputHandler implements CompressionHandler {
     /*
      * @see com.ibm.wsspi.http.channel.compression.CompressionHandler#isFinished()
      */
+    @Override
     public boolean isFinished() {
         return this.deflater.finished();
     }
 
     /**
      * Compress the given input buffer onto the output list.
-     * 
+     *
      * @param list
      * @param buffer
      * @return List<WsByteBuffer>
      */
     protected List<WsByteBuffer> compress(List<WsByteBuffer> list, WsByteBuffer buffer) {
-        if (null == buffer) {
-            return null;
-        }
-        int dataSize = buffer.remaining();
+        int dataSize = (null != buffer) ? buffer.remaining() : 0;
+
         if (0 == dataSize) {
             return list;
         }
@@ -230,7 +235,7 @@ public class DeflateOutputHandler implements CompressionHandler {
 
     /**
      * Create the output bytebuffer based on the output compressed storage.
-     * 
+     *
      * @param len
      * @return WsByteBuffer
      */
@@ -245,6 +250,7 @@ public class DeflateOutputHandler implements CompressionHandler {
      * @see
      * com.ibm.wsspi.http.channel.compression.CompressionHandler#getBytesRead()
      */
+    @Override
     public long getBytesRead() {
         return this.deflater.getBytesRead();
     }
@@ -253,6 +259,7 @@ public class DeflateOutputHandler implements CompressionHandler {
      * @see
      * com.ibm.wsspi.http.channel.compression.CompressionHandler#getBytesWritten()
      */
+    @Override
     public long getBytesWritten() {
         return this.deflater.getBytesWritten();
     }
