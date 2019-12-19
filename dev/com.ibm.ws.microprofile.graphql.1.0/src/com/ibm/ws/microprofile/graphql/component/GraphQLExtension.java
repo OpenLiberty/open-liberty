@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.WeakHashMap;
 
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
@@ -28,13 +29,19 @@ import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessBean;
 
 import graphql.schema.GraphQLSchema;
+import graphql.schema.GraphQLType;
 import graphql.schema.idl.SchemaPrinter;
 
 import io.leangen.graphql.GraphQLSchemaGenerator;
+import io.leangen.graphql.generator.mapping.TypeMapper;
+import io.leangen.graphql.generator.mapping.TypeMapperRegistry;
 import io.leangen.graphql.metadata.strategy.query.AnnotatedResolverBuilder;
 import io.leangen.graphql.metadata.strategy.value.jsonb.JsonbValueMapperFactory;
 
+import org.eclipse.microprofile.graphql.Enum;
 import org.eclipse.microprofile.graphql.GraphQLApi;
+import org.eclipse.microprofile.graphql.Input;
+import org.eclipse.microprofile.graphql.Type;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
@@ -79,23 +86,28 @@ public class GraphQLExtension implements Extension, WebSphereCDIExtension, Intro
     }
 
     public <X> void detectGraphQLComponent(@Observes ProcessBean<X> event) {
-        if (event.getAnnotated().isAnnotationPresent(GraphQLApi.class)) {
-            Bean<?> bean = event.getBean();
+        Annotated annotated = event.getAnnotated();
+        Bean<?> bean = event.getBean();
+        if (annotated.isAnnotationPresent(GraphQLApi.class)) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "adding GraphQLApi bean: " + bean);
             }
-            //TODO: add interceptor(s) set via DS - i.e. metric capturing interceptor
-            ModuleMetaData mmd = getModuleMetaData();
-            graphQLComponents.computeIfAbsent(mmd, k -> {
-                return new HashSet<>();
-            });
-            graphQLComponents.get(mmd).add(bean);
+            addBeanToMMDMap(bean, graphQLComponents);
         }
+    }
+
+    private static void addBeanToMMDMap(Bean<?> bean, Map<ModuleMetaData, Set<Bean<?>>> map) {
+        //TODO: add interceptor(s) set via DS - i.e. metric capturing interceptor
+        ModuleMetaData mmd = getModuleMetaData();
+        map.computeIfAbsent(mmd, k -> {
+            return new HashSet<>();
+        });
+        map.get(mmd).add(bean);
     }
 
     static GraphQLSchema createSchema(BeanManager beanManager) {
         ModuleMetaData mmd = getModuleMetaData();
-        Set<Bean<?>> beans = graphQLComponents.get(getModuleMetaData());
+        Set<Bean<?>> beans = graphQLComponents.get(mmd);
         if (beans == null || beans.size() < 1) {
             return null;
         }

@@ -19,6 +19,7 @@ import io.leangen.graphql.metadata.OperationArgument;
 import io.leangen.graphql.metadata.TypedElement;
 import io.leangen.graphql.util.ClassUtils;
 import io.leangen.graphql.util.GraphQLUtils;
+import org.eclipse.microprofile.graphql.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,15 +51,7 @@ public class NonNullMapper implements TypeMapper, Comparator<AnnotatedType>, Sch
 
     @SuppressWarnings("unchecked")
     public NonNullMapper() {
-        Set<Class<? extends Annotation>> annotations = new HashSet<>();
-        annotations.add(io.leangen.graphql.annotations.GraphQLNonNull.class);
-        for (String additional : COMMON_NON_NULL_ANNOTATIONS) {
-            try {
-                annotations.add((Class<? extends Annotation>) ClassUtils.forName(additional));
-            } catch (ClassNotFoundException e) {
-                /*no-op*/
-            }
-        }
+        Set<Class<? extends Annotation>> annotations = Collections.singleton(NonNull.class);
         this.nonNullAnnotations = Collections.unmodifiableSet(annotations);
     }
 
@@ -128,7 +121,8 @@ public class NonNullMapper implements TypeMapper, Comparator<AnnotatedType>, Sch
 
     @Override
     public boolean supports(AnnotatedType type) {
-        return nonNullAnnotations.stream().anyMatch(type::isAnnotationPresent) || ClassUtils.getRawType(type.getType()).isPrimitive();
+        return type.isAnnotationPresent(NonNull.class) || 
+                        ClassUtils.getRawType(type.getType()).isPrimitive(); 
     }
 
     @Override
