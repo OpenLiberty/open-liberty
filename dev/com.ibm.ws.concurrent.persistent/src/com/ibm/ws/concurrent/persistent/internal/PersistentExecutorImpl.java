@@ -426,8 +426,10 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
      */
     protected void deactivate(ComponentContext context) throws Exception {
         deactivated = true;
-        if (mbean != null)
+        if (mbean != null) {
             mbean.unregister();
+            mbean = null;
+        }
 
         if (taskStore != null)
             DatabaseTaskStore.unget(persistentStore);
@@ -1026,8 +1028,10 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
         }
 
         if (mbeanChange) {
-            if (mbean != null)
+            if (mbean != null) {
                 mbean.unregister();
+                mbean = null;
+            }
 
             if (newConfig.missedTaskThreshold == -1) {
                 // PersistentExecutorMBean is undocumented, experimental, and not supported.
