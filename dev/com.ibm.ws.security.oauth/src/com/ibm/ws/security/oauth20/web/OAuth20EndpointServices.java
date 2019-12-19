@@ -340,8 +340,12 @@ public class OAuth20EndpointServices {
                 // we don't want routine browser auth challenges producing ffdc's.
                 // (but if a login is invalid in that case, we will still get a CWIML4537E from base sec.)
                 // however for non-browsers we want ffdc's like we had before, so generate manually
-                com.ibm.ws.ffdc.FFDCFilter.processException(e,
-                        "com.ibm.ws.security.oauth20.web.OAuth20EndpointServices", "324", this);
+
+                System.out.println("*** error desc: " + e.getErrorDescription());
+                if (!e.getErrorDescription().contains("CWWKS1424E")) { // no ffdc for nonexistent clients
+                    com.ibm.ws.ffdc.FFDCFilter.processException(e,
+                            "com.ibm.ws.security.oauth20.web.OAuth20EndpointServices", "324", this);
+                }
             }
             boolean suppressBasicAuthChallenge = isBrowserWithBasicAuth; // ui must NOT log in using basic auth, so logout function will work.
             WebUtils.sendErrorJSON(response, e.getHttpStatus(), e.getErrorCode(), e.getErrorDescription(request.getLocales()), suppressBasicAuthChallenge);
@@ -462,7 +466,7 @@ public class OAuth20EndpointServices {
                 String encodedURL = URLEncodeParams(logoutRedirectURL);
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "OAUTH20 _SSO OP redirecting to [" + logoutRedirectURL + "], url encoded to [" + encodedURL + "]");
-               	}
+                }
                 response.sendRedirect(encodedURL);
                 return;
             } else {
