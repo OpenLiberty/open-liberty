@@ -341,7 +341,6 @@ public class OAuth20EndpointServices {
                 // (but if a login is invalid in that case, we will still get a CWIML4537E from base sec.)
                 // however for non-browsers we want ffdc's like we had before, so generate manually
 
-                System.out.println("*** error desc: " + e.getErrorDescription());
                 if (!e.getErrorDescription().contains("CWWKS1424E")) { // no ffdc for nonexistent clients
                     com.ibm.ws.ffdc.FFDCFilter.processException(e,
                             "com.ibm.ws.security.oauth20.web.OAuth20EndpointServices", "324", this);
