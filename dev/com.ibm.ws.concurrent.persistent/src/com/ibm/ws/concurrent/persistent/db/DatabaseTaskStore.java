@@ -29,9 +29,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 import javax.persistence.LockTimeoutException;
 import javax.persistence.PersistenceException;
+import javax.persistence.PessimisticLockException;
 import javax.persistence.Query;
 import javax.persistence.QueryTimeoutException;
 import javax.persistence.TypedQuery;
+
+import org.eclipse.persistence.platform.database.DatabasePlatform;
 
 import com.ibm.websphere.concurrent.persistent.PersistentExecutor;
 import com.ibm.websphere.concurrent.persistent.TaskState;
@@ -930,12 +933,20 @@ public class DatabaseTaskStore implements TaskStore {
                         EntityManager em = persistenceServiceUnitReadUncommitted.createEntityManager();
                         // This seems to apply to every subsequent usage of the persistence service unit. Can we rely on that?
                         Object dbSession = em.getClass().getMethod("getDatabaseSession").invoke(em);
-                        org.eclipse.persistence.sessions.DatabaseLogin dbLogin = (org.eclipse.persistence.sessions.DatabaseLogin) dbSession.getClass()
-                                        .getMethod("getDatasourceLogin")
-                                        .invoke(dbSession);
-                        if (!dbLogin.isAnyOracleJDBCDriver())
+
+                        // TODO is there a more efficient way to detect Oracle that doesn't require obtaining an extra connection?
+                        DatabasePlatform dbPlatform = (DatabasePlatform) dbSession.getClass().getMethod("getPlatform").invoke(dbSession);
+                        if (dbPlatform.isOracle() || dbPlatform.isOracle9()) {
+                            em.close();
+                            persistenceServiceUnitReadUncommitted.close();
+                            persistenceServiceUnitReadUncommitted = getPersistenceServiceUnit();
+                        } else {
+                            org.eclipse.persistence.sessions.DatabaseLogin dbLogin = (org.eclipse.persistence.sessions.DatabaseLogin) dbSession.getClass()
+                                            .getMethod("getDatasourceLogin")
+                                            .invoke(dbSession);
                             dbLogin.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
-                        em.close();
+                            em.close();
+                        }
                     }
                 } finally {
                     // Downgrade to read lock for rest of method
@@ -1525,9 +1536,10 @@ public class DatabaseTaskStore implements TaskStore {
     }
 
     /** {@inheritDoc} */
-    @FFDCIgnore({ LockTimeoutException.class, PersistenceException.class, QueryTimeoutException.class })
+    @FFDCIgnore({ LockTimeoutException.class, PersistenceException.class, PessimisticLockException.class, QueryTimeoutException.class })
     @Override
     public boolean claimIfNotLocked(long taskId, int version, long claimExpiryOrPartition) throws Exception {
+        String find = "SELECT t.ID FROM Task t WHERE t.ID=:i AND t.VERSION=:v";
         String update = "UPDATE Task t SET t.PARTN=:p,t.VERSION=t.VERSION+1 WHERE t.ID=:i AND t.VERSION=:v";
 
         final boolean trace = TraceComponent.isAnyTracingEnabled();
@@ -1537,29 +1549,43 @@ public class DatabaseTaskStore implements TaskStore {
                 Utils.appendDate(b.append(" claim until "), claimExpiryOrPartition);
             else
                 b.append(" assign to partition ").append(claimExpiryOrPartition);
-            Tr.entry(this, tc, "claimIfNotLocked", b, update);
+            Tr.entry(this, tc, "claimIfNotLocked", b, find, update);
         }
+
+        // A single update statement would be preferred over find+update. However, unfortunately EclipseLink does not allow
+        // the javax.persistence.lock.timeout hint on updates, so our only option is to first run an extra query so that
+        // databases which support lock timeout (such as SQL Server) can be given the opportunity to time out immediately
+        // when the entry is already locked.
 
         EntityManager em = getPersistenceServiceUnit().createEntityManager();
         try {
-            Query query = em.createQuery(update.toString());
+            TypedQuery<Long> lockingQuery = em.createQuery(find, Long.class);
+            lockingQuery.setLockMode(LockModeType.PESSIMISTIC_WRITE);
+            lockingQuery.setHint("javax.persistence.lock.timeout", 0); // milliseconds
 
-            // We would like the statement to return immediately if the entry is already locked (this means it doesn't need failover),
-            // however EclipseLink says lock timeout isn't valid for this type of query,
-            // query.setHint("javax.persistence.lock.timeout", 0); // milliseconds
+            // Some databases don't support lock timeout. As a workaround, use a short query timeout,
+            lockingQuery.setHint("eclipselink.query.timeout.unit", "MILLISECONDS"); // Make EclipseLink follow the JPA spec
+            lockingQuery.setHint("javax.persistence.query.timeout", 3000); // 3 seconds
 
-            // As a workaround, use a short query timeout,
-            query.setHint("eclipselink.query.timeout.unit", "MILLISECONDS"); // Make EclipseLink follow the JPA spec
-            query.setHint("javax.persistence.query.timeout", 3000); // 3 seconds
+            lockingQuery.setParameter("i", taskId);
+            lockingQuery.setParameter("v", version);
 
-            query.setParameter("p", claimExpiryOrPartition);
-            query.setParameter("i", taskId);
-            query.setParameter("v", version);
-            boolean assigned = query.executeUpdate() > 0;
+            List<Long> lockedEntries = lockingQuery.getResultList();
+            if (lockedEntries.isEmpty()) {
+                if (trace && tc.isEntryEnabled())
+                    Tr.exit(this, tc, "claimIfNotLocked", "false - still owned by another member");
+                return false;
+            }
+
+            Query updateClaim = em.createQuery(update);
+            updateClaim.setParameter("p", claimExpiryOrPartition);
+            updateClaim.setParameter("i", taskId);
+            updateClaim.setParameter("v", version);
+            boolean claimed = updateClaim.executeUpdate() > 0;
 
             if (trace && tc.isEntryEnabled())
-                Tr.exit(this, tc, "claimIfNotLocked", assigned);
-            return assigned;
+                Tr.exit(this, tc, "claimIfNotLocked", claimed);
+            return claimed;
         } catch (LockTimeoutException x) {
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "claimIfNotLocked", "false: lock timeout - still owned by another member");
@@ -1568,11 +1594,15 @@ public class DatabaseTaskStore implements TaskStore {
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "claimIfNotLocked", "false: query timeout - still owned by another member");
             return false;
+        } catch (PessimisticLockException x) {
+            if (trace && tc.isEntryEnabled())
+                Tr.exit(this, tc, "claimIfNotLocked", "false: pessimistic lock timeout - still owned by another member");
+            return false;
         } catch (PersistenceException x) {
             for (Throwable c = x.getCause(); c != null; c = c.getCause())
                 if (c instanceof SQLTimeoutException) {
                     if (trace && tc.isEntryEnabled())
-                        Tr.exit(this, tc, "claimIfNotLocked", "false: SQLTimeoutException still owned by another member");
+                        Tr.exit(this, tc, "claimIfNotLocked", "false: SQLTimeoutException - still owned by another member");
                     return false;
                 } else if (c instanceof SQLException) {
                     String ss = ((SQLException) c).getSQLState();

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package web;
 
+import static org.junit.Assert.assertFalse;
+
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -55,7 +57,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
+import javax.transaction.NotSupportedException;
 import javax.transaction.Status;
+import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
 import org.junit.Test;
@@ -80,6 +84,11 @@ public class SchedulerFATServlet extends HttpServlet {
      */
     private static final String SUCCESS_MESSAGE = "COMPLETED SUCCESSFULLY";
 
+    /**
+     * Indicates if the database for the persistent executor is Derby.
+     */
+    private static final boolean isDerby = System.getProperty("fat.bucket.db.type", "Derby").compareToIgnoreCase("Derby") == 0;
+
     @Resource(lookup = "concurrent/myScheduler")
     private PersistentExecutor scheduler;
 
@@ -99,7 +108,7 @@ public class SchedulerFATServlet extends HttpServlet {
     /**
      * Maximum number of nanoseconds to wait for a task to finish.
      */
-    static final long TIMEOUT_NS = TimeUnit.MINUTES.toNanos(1);
+    static final long TIMEOUT_NS = TimeUnit.MINUTES.toNanos(2);
 
     @Resource
     private UserTransaction tran;
@@ -182,7 +191,7 @@ public class SchedulerFATServlet extends HttpServlet {
             } finally {
                 con.close();
             }
-        } catch (SQLException x) {
+        } catch (Exception x) {
             throw new ServletException(x);
         }
     }
@@ -459,22 +468,47 @@ public class SchedulerFATServlet extends HttpServlet {
             if (!foundIds.containsAll(expected))
                 throw new Exception("On the second query, should have found at least task ids " + expected + " within " + foundIds);
 
-            // Simulate another instance trying to claim the same task, but timing out.
-            // This could happen if task execution outlives the missed task threshold (good configuration should avoid this)
-            // TODO enable if we can determine why query timeouts aren't timing out and fix it, then enable the following:
-            //tran.begin();
-            //try {
-            //    Method DatabaseTaskStore_claimIfNotLocked = dbTaskStore.getClass().getMethod("claimIfNotLocked", long.class, int.class, long.class);
-            //    long newClaimExpiry = System.currentTimeMillis() + TimeUnit.HOURS.toMillis(155);
-            //    System.out.println("About to attempt claim");
-            //    long start = System.nanoTime();
-            //    DatabaseTaskStore_claimIfNotLocked.invoke(dbTaskStore, statusO.getTaskId(), 1, newClaimExpiry);
-            //    long duration = System.nanoTime() - start;
-            //    if (duration > TimeUnit.SECONDS.toNanos(20))
-            ///        throw new Exception("Claim attempt on task (" + statusO.getTaskId() + ") did not timeout within a reasonable amount of time. " + duration + " ns.");
-            //}// finally {
-            //    tran.rollback();
-            //}
+            if (!isDerby) { // skip for Derby, which does not implement query timeout or allow lock timeout to be applied on a granular basis
+                // Simulate another instance trying to claim the same task, but timing out.
+                // This could happen if task execution outlives the missed task threshold (good configuration should avoid this)
+                final Method DatabaseTaskStore_claimIfNotLocked = dbTaskStore.getClass().getMethod("claimIfNotLocked", long.class, int.class, long.class);
+                long newClaimExpiry = System.currentTimeMillis() + TimeUnit.HOURS.toMillis(155);
+                tran.begin();
+                try {
+                    System.out.println("About to attempt claim");
+                    long start = System.nanoTime();
+                    Boolean claimed = (Boolean) DatabaseTaskStore_claimIfNotLocked.invoke(dbTaskStore, statusO.getTaskId(), 1, newClaimExpiry);
+                    long duration = System.nanoTime() - start;
+                    if (duration > TimeUnit.SECONDS.toNanos(20))
+                        throw new Exception("Claim attempt on task (" + statusO.getTaskId() + ") did not timeout within a reasonable amount of time. " + duration + " ns.");
+
+                    if (Boolean.TRUE.equals(claimed)) {
+                        // If we successfully claimed it, ensure that a second thread times out while we are still holding the lock.
+                        final long nextClaimExpiry = newClaimExpiry + TimeUnit.HOURS.toMillis(1);
+                        Future<Long> future = unmanagedExecutor.submit(new Callable<Long>() {
+                            @Override
+                            public Long call() throws Exception {
+                                tran.begin();
+                                try {
+                                    long start = System.nanoTime();
+                                    Boolean claimed = (Boolean) DatabaseTaskStore_claimIfNotLocked.invoke(dbTaskStore, statusO.getTaskId(), 2, nextClaimExpiry);
+                                    if (claimed)
+                                        throw new Error("Should not be able to claim task while other thread has a lock on it");
+                                    long duration = System.nanoTime() - start;
+                                    return duration;
+                                } finally {
+                                    tran.rollback();
+                                }
+                            }
+                        });
+                        duration = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                        if (duration > TimeUnit.SECONDS.toNanos(20))
+                            throw new Exception("Second claim attempt on task (" + statusO.getTaskId() + ") did not timeout within a reasonable amount of time. " + duration + " ns.");
+                    }
+                } finally {
+                    tran.rollback();
+                }
+            }
 
             // It should be possible to cancel other tasks.
             if (!statusM.cancel(false))
@@ -1156,10 +1190,34 @@ public class SchedulerFATServlet extends HttpServlet {
                 long newClaimExpiry = System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(7);
                 System.out.println("About to attempt claim");
                 long start = System.nanoTime();
-                DatabaseTaskStore_claimIfNotLocked.invoke(dbTaskStore, taskStatus.getTaskId(), version, newClaimExpiry);
+                Boolean claimed = (Boolean) DatabaseTaskStore_claimIfNotLocked.invoke(dbTaskStore, taskStatus.getTaskId(), version, newClaimExpiry);
                 long duration = System.nanoTime() - start;
                 if (duration > TimeUnit.SECONDS.toNanos(20))
                     throw new Exception("Unable to attempt a claim on a task (" + taskStatus.getTaskId() + ") within a reasonable amount of time. " + duration + " ns.");
+
+                if (Boolean.TRUE.equals(claimed) && !isDerby) { // skip for Derby, which does not implement query timeout
+                    // If we successfully claimed it, ensure that a second thread times out while we are still holding the lock.
+                    final long nextClaimExpiry = newClaimExpiry + TimeUnit.MINUTES.toMillis(1);
+                    Future<Long> future = unmanagedExecutor.submit(new Callable<Long>() {
+                        @Override
+                        public Long call() throws Exception {
+                            tran.begin();
+                            try {
+                                long start = System.nanoTime();
+                                Boolean claimed = (Boolean) DatabaseTaskStore_claimIfNotLocked.invoke(dbTaskStore, taskStatus.getTaskId(), 2, nextClaimExpiry);
+                                if (claimed)
+                                    throw new Error("Should not be able to claim task while other thread has a lock on it");
+                                long duration = System.nanoTime() - start;
+                                return duration;
+                            } finally {
+                                tran.rollback();
+                            }
+                        }
+                    });
+                    duration = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                    if (duration > TimeUnit.SECONDS.toNanos(20))
+                        throw new Exception("Second claim attempt on task (" + taskStatus.getTaskId() + ") did not timeout within a reasonable amount of time. " + duration + " ns.");
+                }
             } finally {
                 tran.rollback();
             }
