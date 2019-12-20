@@ -33,6 +33,9 @@ import com.ibm.websphere.simplicity.config.PersistentExecutor;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.topology.database.container.DatabaseContainerFactory;
+import componenttest.topology.database.container.DatabaseContainerType;
+import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -106,6 +109,8 @@ public class PXLockTestWithFailoverEnabled {
 
         //Get driver info
         server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
+
+        //Setup datasource properties
         DatabaseContainerUtil.setupDataSourceProperties(server, testContainer);
 
         //Add application to server

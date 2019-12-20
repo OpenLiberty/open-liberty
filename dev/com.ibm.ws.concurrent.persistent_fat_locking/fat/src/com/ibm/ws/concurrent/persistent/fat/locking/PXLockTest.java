@@ -31,6 +31,9 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.topology.database.container.DatabaseContainerFactory;
+import componenttest.topology.database.container.DatabaseContainerType;
+import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -98,6 +101,8 @@ public class PXLockTest {
     public static void setUp() throws Exception {
         //Get driver info
         server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
+
+        //Setup datasource properties
         DatabaseContainerUtil.setupDataSourceProperties(server, testContainer);
 
         //Add application to server

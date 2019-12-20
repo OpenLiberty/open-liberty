@@ -25,7 +25,9 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.database.DerbyEmbeddedUtilities;
+import componenttest.topology.database.container.DatabaseContainerFactory;
+import componenttest.topology.database.container.DatabaseContainerType;
+import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -36,7 +38,6 @@ import web.SchedulerFATServlet;
 public class PersistentExecutorWithFailoverEnabledTest extends FATServletClient {
 
     private static final String APP_NAME = "schedtest";
-    private static final String DB_NAME = "${shared.resource.dir}/data/scheddb";
 
     private static ServerConfiguration originalConfig;
 
@@ -45,7 +46,7 @@ public class PersistentExecutorWithFailoverEnabledTest extends FATServletClient 
     public static LibertyServer server;
     
     @ClassRule
-    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create(DB_NAME);
+    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
 
     /**
      * Before running any tests, start the server
@@ -54,34 +55,27 @@ public class PersistentExecutorWithFailoverEnabledTest extends FATServletClient 
      */
     @BeforeClass
     public static void setUp() throws Exception {
-        // Delete the Derby database that might be used by the persistent scheduled executor and the Derby-only test database
+    	// Delete the Derby database that might be used by the persistent scheduled executor and the Derby-only test database
         Machine machine = server.getMachine();
         String installRoot = server.getInstallRoot();
         LibertyFileManager.deleteLibertyDirectoryAndContents(machine, installRoot + "/usr/shared/resources/data/scheddb");
-        LibertyFileManager.deleteLibertyDirectoryAndContents(machine, installRoot + "/usr/shared/resources/data/testdb");
+    	
+    	//Get driver type
+    	server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
 
+    	//Setup server DataSource properties
+    	DatabaseContainerUtil.setupDataSourceProperties(server, testContainer);
+
+		//Add application to server
+        ShrinkHelper.defaultDropinApp(server, APP_NAME, "web");
+        
+    	//Edit original config to enable failover
         originalConfig = server.getServerConfiguration();
         ServerConfiguration config = originalConfig.clone();
         PersistentExecutor myScheduler = config.getPersistentExecutors().getBy("jndiName", "concurrent/myScheduler");
         myScheduler.setPollInterval("3h"); // the test case does not expect polling, so set a large value that will never be reached
         myScheduler.setMissedTaskThreshold("1m");
         server.updateServerConfiguration(config);
-
-    	//Get type
-		DatabaseContainerType dbContainerType = DatabaseContainerType.valueOf(testContainer);
-
-    	//Get driver info
-    	String driverName = dbContainerType.getDriverName();
-    	server.addEnvVar("DB_DRIVER", driverName);
-
-    	//Setup server DataSource properties
-    	DatabaseContainerUtil.setupDataSourceProperties(server, testContainer);
-    	
-		//Initialize database
-		DatabaseContainerUtil.initDatabase(testContainer, DB_NAME);
-
-		//Add application to server
-        ShrinkHelper.defaultDropinApp(server, APP_NAME, "web");
 
         server.startServer();
     }

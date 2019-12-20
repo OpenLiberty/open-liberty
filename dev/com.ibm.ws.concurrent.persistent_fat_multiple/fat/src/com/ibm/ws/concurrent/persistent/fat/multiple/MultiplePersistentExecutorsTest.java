@@ -26,6 +26,9 @@ import com.ibm.websphere.simplicity.config.PersistentExecutor;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.database.container.DatabaseContainerFactory;
+import componenttest.topology.database.container.DatabaseContainerType;
+import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -36,11 +39,10 @@ import componenttest.topology.utils.FATServletClient;
 @RunWith(FATRunner.class)
 public class MultiplePersistentExecutorsTest extends FATServletClient {
 	private static final String APP_NAME = "persistmultitest";
-	private static final String DB_NAME = "persistmultidb";
     private static final Set<String> appNames = Collections.singleton(APP_NAME);
     
 	@ClassRule
-    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create(DB_NAME);
+    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
     
     private static ServerConfiguration originalConfig;
     
@@ -55,18 +57,11 @@ public class MultiplePersistentExecutorsTest extends FATServletClient {
         String installRoot = server.getInstallRoot();
         LibertyFileManager.deleteLibertyDirectoryAndContents(machine, installRoot + "/usr/shared/resources/data/persistmultidb");
 
-    	//Get type
-		DatabaseContainerType dbContainerType = DatabaseContainerType.valueOf(testContainer);
-		
-    	//Get driver info
-    	String driverName = dbContainerType.getDriverName();
-    	server.addEnvVar("DB_DRIVER", driverName);
+    	//Get driver type
+    	server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
 		
     	//Setup server DataSource properties
     	DatabaseContainerUtil.setupDataSourceProperties(server, testContainer);
-    	
-		//Initialize database
-		DatabaseContainerUtil.initDatabase(testContainer, DB_NAME);
         
     	//Add application to server
     	ShrinkHelper.defaultDropinApp(server, APP_NAME, "web");

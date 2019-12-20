@@ -25,7 +25,7 @@ public enum DatabaseContainerType {
     DB2("jcc.jar", "org.testcontainers.containers.", "Db2Container"),
     Derby("derby.jar", "componenttest.topology.database.container.", "DerbyNoopContainer"),
     Oracle("ojdbc8_g.jar", "org.testcontainers.containers.", "OracleContainer"),
-    Postgre("postgresql.jar", "org.testcontainers.containers.", "PostgreSQLContainer"),
+    Postgres("postgresql.jar", "org.testcontainers.containers.", "PostgreSQLContainer"),
     SQLServer("mssql-jdbc.jar", "componenttest.topology.database.container.", "SQLServerContainer");
 
     private String driverName;
