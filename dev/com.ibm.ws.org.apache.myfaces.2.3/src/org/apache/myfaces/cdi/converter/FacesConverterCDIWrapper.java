@@ -19,6 +19,10 @@
 
 package org.apache.myfaces.cdi.converter;
 
+import java.lang.reflect.Type;
+
+import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.util.TypeLiteral;
 import javax.faces.FacesWrapper;
 import javax.faces.component.PartialStateHolder;
 import javax.faces.component.UIComponent;
@@ -38,6 +42,9 @@ public class FacesConverterCDIWrapper implements PartialStateHolder, Converter, 
     private Class<?> forClass;
     private String converterId;
     private boolean _transient;
+    private static final Type CONVERTER_TYPE = new TypeLiteral<Converter<?>>() {
+        private static final long serialVersionUID = 1L;
+    }.getType();
 
     public FacesConverterCDIWrapper()
     {
@@ -67,17 +74,29 @@ public class FacesConverterCDIWrapper implements PartialStateHolder, Converter, 
     {
         if (delegate == null)
         {
+
+            BeanManager  beanManager = CDIUtils.getBeanManager(FacesContext.getCurrentInstance().getExternalContext());
+            FacesConverterAnnotationLiteral qualifier;
+
             if (converterId != null)
             {
-                delegate = (Converter) CDIUtils.getInstance(CDIUtils.getBeanManager(
-                    FacesContext.getCurrentInstance().getExternalContext()), 
-                        Converter.class, true, new FacesConverterAnnotationLiteral(Object.class, converterId, true));
+                qualifier = new FacesConverterAnnotationLiteral(Object.class, converterId, true);
+                delegate = (Converter) CDIUtils.getInstance(beanManager, CONVERTER_TYPE, true, qualifier);
+
+                if( delegate == null )
+                {
+                    delegate = (Converter) CDIUtils.getInstance(beanManager, Converter.class, true, qualifier);
+                }
             }
             else if (forClass != null)
             {
-                delegate = (Converter) CDIUtils.getInstance(CDIUtils.getBeanManager(
-                    FacesContext.getCurrentInstance().getExternalContext()), 
-                        Converter.class, true, new FacesConverterAnnotationLiteral(forClass, "", true));
+                qualifier = new FacesConverterAnnotationLiteral(forClass, "", true);
+                delegate = (Converter) CDIUtils.getInstance(beanManager, CONVERTER_TYPE, true, qualifier);
+
+                if( delegate == null )
+                {
+                    delegate = (Converter) CDIUtils.getInstance(beanManager, Converter.class, true, qualifier);
+                }
             }
         }
         return delegate;

@@ -83,12 +83,34 @@ public class CDIUtils
         return (Bean<T>) beanManager.resolve(beans);
     }
 
+    @SuppressWarnings("unchecked")
+    public static <T> Bean<T> resolve(BeanManager beanManager, Type type, Annotation... qualifiers)
+    {
+        Set<Bean<?>> beans = beanManager.getBeans(type, qualifiers);
+
+        return (Bean<T>) beanManager.resolve(beans);
+    }
+
     public static <T> T getInstance(BeanManager beanManager, Class<T> beanClass, 
             boolean create, Annotation... qualifiers)
     {
         try
         {
             Bean<T> bean = resolve(beanManager, beanClass, qualifiers);
+            return (bean != null) ? getInstance(beanManager, bean, create) : null;
+        }
+        catch (ContextNotActiveException e)
+        {
+            return null;
+        }
+    }
+
+    public static <T> T getInstance(BeanManager beanManager, Type type, 
+    boolean create, Annotation... qualifiers)
+    {
+        try
+        {
+            Bean<T> bean = resolve(beanManager, type, qualifiers);
             return (bean != null) ? getInstance(beanManager, bean, create) : null;
         }
         catch (ContextNotActiveException e)
