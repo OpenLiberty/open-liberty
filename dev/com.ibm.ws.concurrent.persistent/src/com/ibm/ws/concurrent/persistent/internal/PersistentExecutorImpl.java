@@ -82,7 +82,6 @@ import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
 import com.ibm.ws.LocalTransaction.LocalTransactionCurrent;
 import com.ibm.ws.Transaction.UOWCurrent;
 import com.ibm.ws.classloading.ClassLoaderIdentifierService;
-import com.ibm.ws.concurrent.persistent.controller.Controller;
 import com.ibm.ws.concurrent.persistent.db.DatabaseTaskStore;
 import com.ibm.ws.concurrent.persistent.ejb.TaskLocker;
 import com.ibm.ws.concurrent.persistent.ejb.TimerStatus;
@@ -183,12 +182,6 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
      * Reference to the thread context service.
      */
     private final AtomicServiceReference<WSContextService> contextSvcRef = new AtomicServiceReference<WSContextService>("ContextService");
-
-    /**
-     * Interface that allows tests to simulate having a controller for multiple persistent executor instances.
-     * In the future, replace this with a real implementation.
-     */
-    private final AtomicServiceReference<Controller> controllerRef = new AtomicServiceReference<Controller>("Controller");
 
     /**
      * Indicates if this persistent executor instance has been deactivated.
@@ -332,7 +325,6 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
         appTrackerRef.activate(context);
         contextSvcRef.activate(context);
-        controllerRef.activate(context);
         localTranCurrentRef.activate(context);
         serializationSvcRef.activate(context);
         tranMgrRef.activate(context);
@@ -348,8 +340,12 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
         if (readyForPollingTask.addAndCheckIfReady(PollingManager.DS_READY))
             startPollingTask(config);
 
-        mbean = new PersistentExecutorMBeanImpl(this);
-        mbean.register(InvokerTask.priv.getBundleContext(context));
+        if (config.missedTaskThreshold == -1) {
+            // PersistentExecutorMBean is undocumented, experimental, and not supported.
+            // We would like to remove its registration under all circumstances, but that could potentially break some one who is using it
+            mbean = new PersistentExecutorMBeanImpl(this);
+            mbean.register(InvokerTask.priv.getBundleContext(context));
+        }
 
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "activate");
@@ -430,14 +426,15 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
      */
     protected void deactivate(ComponentContext context) throws Exception {
         deactivated = true;
-        if (mbean != null)
+        if (mbean != null) {
             mbean.unregister();
+            mbean = null;
+        }
 
         if (taskStore != null)
             DatabaseTaskStore.unget(persistentStore);
         appTrackerRef.deactivate(context);
         contextSvcRef.deactivate(context);
-        controllerRef.deactivate(context);
         localTranCurrentRef.deactivate(context);
         serializationSvcRef.deactivate(context);
         tranMgrRef.deactivate(context);
@@ -489,6 +486,10 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
      * @throws Exception if an error occurs.
      */
     String[][] findPartitionInfo(String hostName, String userDir, String libertyServerName, String executorIdentifier) throws Exception {
+        Config config = configRef.get();
+        if (config.missedTaskThreshold != -1)
+            throw new UnsupportedOperationException(); // should be unreachable
+
         PartitionRecord criteria = new PartitionRecord(false);
         if (hostName != null)
             criteria.setHostName(hostName);
@@ -564,6 +565,10 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
      * @throws Exception if an error occurs when attempting to access the persistent task store.
      */
     Long[] findTaskIds(long partition, TaskState state, boolean inState, Long minId, Integer maxResults) throws Exception {
+        Config config = configRef.get();
+        if (config.missedTaskThreshold != -1)
+            throw new UnsupportedOperationException(); // should be unreachable
+
         Long[] results = null;
         TransactionController tranController = new TransactionController();
         try {
@@ -1008,6 +1013,8 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
         configRef.set(newConfig);
 
+        boolean mbeanChange = oldConfig.missedTaskThreshold == -1 && newConfig.missedTaskThreshold != -1;
+
         // If the JNDI name changes, notify the application recycle coordinator and re-register the mbean
         if (newConfig.jndiName == null ? oldConfig.jndiName != null : !newConfig.jndiName.equals(oldConfig.jndiName)) {
             if (!applications.isEmpty()) {
@@ -1017,11 +1024,21 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
                 appCoord.recycleApplications(members);
             }
 
-            if (mbean != null)
-                mbean.unregister();
+            mbeanChange = true;
+        }
 
-            mbean = new PersistentExecutorMBeanImpl(this);
-            mbean.register(InvokerTask.priv.getBundleContext(context));
+        if (mbeanChange) {
+            if (mbean != null) {
+                mbean.unregister();
+                mbean = null;
+            }
+
+            if (newConfig.missedTaskThreshold == -1) {
+                // PersistentExecutorMBean is undocumented, experimental, and not supported.
+                // We would like to remove its registration under all circumstances, but that could potentially break some one who is using it
+                mbean = new PersistentExecutorMBeanImpl(this);
+                mbean.register(InvokerTask.priv.getBundleContext(context));
+            }
         }
 
         if (readyForPollingTask.addAndCheckIfReady(PollingManager.DS_READY))
@@ -1057,16 +1074,9 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
         Config config = configRef.get();
 
         long taskAssignmentInfo = -1;
-        Long alternatePartition = null;
         if (config.missedTaskThreshold < 1) {
             try {
-                // If the current instance isn't able to run tasks, look for one that is
-                if (!config.enableTaskExecution) {
-                    Controller controller = controllerRef.getService();
-                    if (controller != null) // obtain from the controller
-                        alternatePartition = controller.getActivePartitionId();
-                }
-                taskAssignmentInfo = alternatePartition == null ? getPartitionId() : alternatePartition;
+                taskAssignmentInfo = getPartitionId();
             } catch (RuntimeException x) {
                 throw x;
             } catch (Exception x) {
@@ -1201,19 +1211,11 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
             taskStore.create(record);
 
             // Immediately schedule tasks that should run in the near future or run on other instances if the transaction commits
-            Synchronization autoSchedule = null;
             boolean scheduleToSelf = config.missedTaskThreshold > 0 //
                             ? claimFirstExecution //
                             : config.enableTaskExecution && (config.pollInterval < 0 || nextExecTime <= System.currentTimeMillis() + config.pollInterval);
-            if (scheduleToSelf)
-                autoSchedule = new InvokerTask(this, record.getId(), nextExecTime, record.getMiscBinaryFlags(), txTimeout);
-            else if (alternatePartition != null) {
-                Controller controller = controllerRef.getService();
-                if (controller != null)
-                    autoSchedule = new ControllerAutoSchedule(controller, alternatePartition, record.getId(), nextExecTime, record.getMiscBinaryFlags(), record
-                                    .getTransactionTimeout());
-            }
-            if (autoSchedule != null) {
+            if (scheduleToSelf) {
+                Synchronization autoSchedule = new InvokerTask(this, record.getId(), nextExecTime, record.getMiscBinaryFlags(), txTimeout);
                 UOWCurrent uowCurrent = (UOWCurrent) tranController.tranMgr;
                 tranController.tranMgr.registerSynchronization(uowCurrent.getUOWCoord(), autoSchedule, EmbeddableWebSphereTransactionManager.SYNC_TIER_OUTER);
             }
@@ -1317,6 +1319,10 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
      * @throws Exception if an error occurs.
      */
     int removePartitionInfo(String hostName, String userDir, String libertyServerName, String executorIdentifier) throws Exception {
+        Config config = configRef.get();
+        if (config.missedTaskThreshold != -1)
+            throw new UnsupportedOperationException(); // should be unreachable
+
         PartitionRecord criteria = new PartitionRecord(false);
         if (hostName != null)
             criteria.setHostName(hostName);
@@ -1596,19 +1602,6 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
     }
 
     /**
-     * Declarative Services method for setting the controller
-     *
-     * @param ref reference to the service
-     */
-    @Reference(service = Controller.class,
-               cardinality = ReferenceCardinality.OPTIONAL,
-               policy = ReferencePolicy.DYNAMIC,
-               policyOption = ReferencePolicyOption.GREEDY)
-    protected void setController(ServiceReference<Controller> ref) {
-        controllerRef.setReference(ref);
-    }
-
-    /**
      * Declarative Services method for setting the Liberty executor.
      *
      * @param svc the service
@@ -1789,8 +1782,8 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
      */
     int transfer(Long maxTaskId, long oldPartitionId) throws Exception {
         Config config = configRef.get();
-        if (config.missedTaskThreshold > 0)
-            throw new UnsupportedOperationException("The transfer operation is not supported when missedTaskThreshold >= 1"); // TODO message
+        if (config.missedTaskThreshold != -1)
+            throw new UnsupportedOperationException(); // should be unreachable
 
         long partitionId = getPartitionId();
 
@@ -1851,15 +1844,6 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
      */
     protected void unsetContextService(ServiceReference<WSContextService> ref) {
         contextSvcRef.unsetReference(ref);
-    }
-
-    /**
-     * Declarative Services method for unsetting the controller
-     *
-     * @param ref reference to the service
-     */
-    protected void unsetController(ServiceReference<Controller> ref) {
-        controllerRef.unsetReference(ref);
     }
 
     /**
@@ -1932,63 +1916,6 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
     protected synchronized void unsetServerStarted(ServiceReference<ServerStarted> ref) {
         // server is shutting down
         deactivated = true;
-    }
-
-    /**
-     * Updates partition information in the persistent store. The parameters are optional, except at least one new value
-     * must be specified.
-     *
-     * This method is only by tests. TODO should see if we can update tests and remove it.
-     * com.ibm.ws.concurrent.persistent.fat.multiple.MultiplePersistentExecutorsTest.testFailoverWithFourInstances
-     * com.ibm.ws.concurrent.persistent.fat.oneexec.OneExecutorRunsAllTest.testRunTasksOnDifferentExecutor
-     *
-     * @param oldHostName           the host name to update.
-     * @param oldUserDir            wlp.user.dir to update.
-     * @param oldLibertyServerName  name of the Liberty server to update.
-     * @param oldExecutorIdentifier config.displayId of the persistent executor to update.
-     * @param newHostName           the new host name.
-     * @param newUserDir            the new wlp.user.dir.
-     * @param newLibertyServerName  the new name of the Liberty server.
-     * @param newExecutorIdentifier config.displayId of the new persistent executor.
-     * @return the number of entries removed from the persistent store.
-     * @throws Exception if an error occurs.
-     */
-    int updatePartitionInfo(String oldHostName, String oldUserDir, String oldLibertyServerName, String oldExecutorIdentifier,
-                            String newHostName, String newUserDir, String newLibertyServerName, String newExecutorIdentifier) throws Exception {
-        PartitionRecord updates = new PartitionRecord(false);
-        if (newHostName != null)
-            updates.setHostName(newHostName);
-        if (newUserDir != null)
-            updates.setUserDir(newUserDir);
-        if (newLibertyServerName != null)
-            updates.setLibertyServer(newLibertyServerName);
-        if (newExecutorIdentifier != null)
-            updates.setExecutor(newExecutorIdentifier);
-
-        PartitionRecord expected = new PartitionRecord(false);
-        if (oldHostName != null)
-            expected.setHostName(oldHostName);
-        if (oldUserDir != null)
-            expected.setUserDir(oldUserDir);
-        if (oldLibertyServerName != null)
-            expected.setLibertyServer(oldLibertyServerName);
-        if (oldExecutorIdentifier != null)
-            expected.setExecutor(oldExecutorIdentifier);
-
-        int numUpdated = 0;
-        TransactionController tranController = new TransactionController();
-        try {
-            tranController.preInvoke();
-            numUpdated = taskStore.persist(updates, expected);
-        } catch (Throwable x) {
-            tranController.setFailure(x);
-        } finally {
-            Exception x = tranController.postInvoke(Exception.class);
-            if (x != null)
-                throw x;
-        }
-
-        return numUpdated;
     }
 
     /**
@@ -2232,7 +2159,6 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
         /**
          * Polls for tasks that are owned by the current partition.
-         * TODO decide if missedTaskThreshold approach under this method, which covers missed tasks from other partitions, should be included or removed.
          *
          * @param config configuration of this instance.
          * @throws Exception if an error occurs.

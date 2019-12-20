@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -33,8 +32,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
-
-import org.junit.Test;
 
 import com.ibm.websphere.concurrent.persistent.PersistentExecutor;
 import com.ibm.websphere.concurrent.persistent.TaskState;
@@ -367,38 +364,6 @@ public class OneExecutorRunsAllTestServlet extends HttpServlet {
 
         mbs.invoke(bean.getObjectName(), "transfer", new Object[] { maxTaskId, oldPartitionId }
                    , new String[] { "java.lang.Long", "long" });
-    }
-
-    /**
-     * Updates a partition entry.
-     */
-    public void testUpdatePartitions(HttpServletRequest request, PrintWriter out) throws Exception {
-        int expectedUpdateCount = Integer.parseInt(request.getParameter("expectedUpdateCount"));
-
-        String executorName = request.getParameter("executorId");
-        String hostName = request.getParameter("hostName");
-        String libertyServer = request.getParameter("libertyServer");
-        String userDir = request.getParameter("userDir");
-
-        String newExecutorName = request.getParameter("newExecutorId");
-        String newHostName = request.getParameter("newHostName");
-        String newLibertyServer = request.getParameter("newLibertyServer");
-        String newUserDir = request.getParameter("newUserDir");
-
-        String jndiName = request.getParameter("jndiName");
-
-        // TODO in the future we should use the mbean to do the update
-        PersistentExecutor executor = (PersistentExecutor) new InitialContext().lookup(jndiName);
-        Method updatePartitionInfo = executor.getClass().getDeclaredMethod("updatePartitionInfo",
-                                                                           String.class, String.class, String.class, String.class,
-                                                                           String.class, String.class, String.class, String.class);
-        updatePartitionInfo.setAccessible(true);
-
-        int updateCount = (Integer) updatePartitionInfo.invoke(executor, hostName, userDir, libertyServer, executorName,
-                                                               newHostName, newUserDir, newLibertyServer, newExecutorName);
-
-        if (updateCount != expectedUpdateCount)
-            throw new Exception("Expected " + expectedUpdateCount + " partition entries updated, not " + updateCount);
     }
 
     /**

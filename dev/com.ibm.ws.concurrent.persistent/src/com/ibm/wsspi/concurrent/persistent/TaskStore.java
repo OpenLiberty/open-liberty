@@ -292,16 +292,6 @@ public interface TaskStore {
     short incrementFailureCount(long taskId) throws Exception;
 
     /**
-     * Persist updates to a partition record in the persistent store.
-     *
-     * @param updates  updates to make to the partition entry. Only the specified fields are persisted.
-     * @param expected criteria that must be matched for update to succeed.
-     * @return count of entries that were updated.
-     * @throws Exception if an error occurs when attempting to update the persistent store.
-     */
-    int persist(PartitionRecord updates, PartitionRecord expected) throws Exception;
-
-    /**
      * Persist updates to a task record in the persistent store.
      *
      * @param updates  updates to make to the task. Only the specified fields are persisted.
