@@ -42,23 +42,57 @@ SOCIAL_LOGIN_CONFIG_ATTRIBUTE_EMPTY.explanation=O valor para este atributo de co
 SOCIAL_LOGIN_CONFIG_ATTRIBUTE_EMPTY.useraction=Certifique-se de que o valor para este atributo de configura\u00e7\u00e3o n\u00e3o esteja vazio ou remova o atributo de configura\u00e7\u00e3o para usar o valor padr\u00e3o.
 
 # 0=Exception message
-OPENSHIFT_ERROR_GETTING_USER_INFO=CWWKS5371E: A resposta da API do usu\u00e1rio de OpenShift n\u00e3o pode ser processada: {0}
-OPENSHIFT_ERROR_GETTING_USER_INFO.explanation=As informa\u00e7\u00f5es sobre o usu\u00e1rio autenticado n\u00e3o podem ser obtidas porque ocorreu outro erro.
-OPENSHIFT_ERROR_GETTING_USER_INFO.useraction=Se a mensagem contiver outra mensagem de erro, consulte a a\u00e7\u00e3o do usu\u00e1rio para essa mensagem. Caso contr\u00e1rio, verifique os logs do servidor para mensagens de erro adicionais que podem indicar onde ocorreu o outro erro.
+KUBERNETES_ERROR_GETTING_USER_INFO=CWWKS5371E: A resposta da API do usu\u00e1rio do Kubernetes n\u00e3o pode ser processada: {0}
+KUBERNETES_ERROR_GETTING_USER_INFO.explanation=As informa\u00e7\u00f5es sobre o usu\u00e1rio autenticado n\u00e3o podem ser obtidas porque ocorreu outro erro.
+KUBERNETES_ERROR_GETTING_USER_INFO.useraction=Se a mensagem contiver outra mensagem de erro, consulte a a\u00e7\u00e3o do usu\u00e1rio para essa mensagem. Caso contr\u00e1rio, verifique os logs do servidor para obter mais mensagens de erro que possam indicar onde ocorreu o outro erro.
 
-OPENSHIFT_ACCESS_TOKEN_MISSING=CWWKS5372E: O token de acesso usado para recuperar informa\u00e7\u00f5es sobre o usu\u00e1rio da API OpenShift est\u00e1 ausente. Verifique se um token de acesso foi retornado do terminal do token do provedor OAuth OpenShift.
-OPENSHIFT_ACCESS_TOKEN_MISSING.explanation=\u00c9 necess\u00e1rio um token de acesso para recuperar informa\u00e7\u00f5es sobre o usu\u00e1rio autenticado. O terminal do token do provedor OAuth OpenShift pode n\u00e3o ter retornado o token de acesso.
-OPENSHIFT_ACCESS_TOKEN_MISSING.useraction=Verifique se o token de acesso foi retornado do terminal do token do provedor OAuth OpenShift.
+KUBERNETES_ACCESS_TOKEN_MISSING=CWWKS5372E: O token de acesso usado para recuperar informa\u00e7\u00f5es sobre o usu\u00e1rio a partir da API do Kubernetes est\u00e1 ausente. Verifique se um token de acesso foi retornado do terminal de token do provedor OAuth.
+KUBERNETES_ACCESS_TOKEN_MISSING.explanation=\u00c9 necess\u00e1rio um token de acesso para recuperar informa\u00e7\u00f5es sobre o usu\u00e1rio autenticado. O terminal de token do provedor OAuth deve retornar o token de acesso.
+KUBERNETES_ACCESS_TOKEN_MISSING.useraction=Verifique se o terminal de token do provedor OAuth retornou o token de acesso.
 
 # 0=HTTP response code, 1=Response body
-OPENSHIFT_USER_API_BAD_STATUS=CWWKS5373E: A API do usu\u00e1rio de OpenShift retornou um c\u00f3digo de resposta [{0}] inesperado. Verifique se a solicita\u00e7\u00e3o para a API cont\u00e9m todas as informa\u00e7\u00f5es necess\u00e1rias e se o token da conta do servi\u00e7o OpenShift foi criado no projeto OpenShift correto. A resposta da API \u00e9 [{1}].
-OPENSHIFT_USER_API_BAD_STATUS.explanation=A API do usu\u00e1rio de OpenShift n\u00e3o retornou o c\u00f3digo de status esperado.
-OPENSHIFT_USER_API_BAD_STATUS.useraction=Verifique a resposta da API que est\u00e1 na mensagem de erro para obter informa\u00e7\u00f5es adicionais. Verifique se a solicita\u00e7\u00e3o para a API cont\u00e9m todas as informa\u00e7\u00f5es necess\u00e1rias. Certifique-se de que o token da conta do servi\u00e7o OpenShift foi criado no projeto OpenShift correto e tenha as permiss\u00f5es corretas.
+KUBERNETES_USER_API_BAD_STATUS=CWWKS5373E: A API do usu\u00e1rio do Kubernetes retornou um c\u00f3digo de resposta inesperado [{0}]. Verifique se a solicita\u00e7\u00e3o para a API cont\u00e9m todas as informa\u00e7\u00f5es necess\u00e1rias e se o token da conta de servi\u00e7o do Kubernetes foi criado com as permiss\u00f5es corretas. A resposta da API \u00e9 [{1}].
+KUBERNETES_USER_API_BAD_STATUS.explanation=A API do usu\u00e1rio do Kubernetes n\u00e3o retornou o c\u00f3digo de status esperado.
+KUBERNETES_USER_API_BAD_STATUS.useraction=Verifique a resposta da API que est\u00e1 na mensagem de erro para obter informa\u00e7\u00f5es adicionais. Verifique se a solicita\u00e7\u00e3o para a API cont\u00e9m todas as informa\u00e7\u00f5es necess\u00e1rias. Assegure-se de que o token da conta de servi\u00e7o do Kubernetes tenha sido criado com as permiss\u00f5es corretas.
 
 # 0=JSON key string, 1=User API response string
-OPENSHIFT_USER_API_RESPONSE_MISSING_KEY=CWWKS5374E: A resposta da API do usu\u00e1rio de OpenShift n\u00e3o cont\u00e9m uma chave esperada: [{0}]. A resposta completa \u00e9 [{1}]
-OPENSHIFT_USER_API_RESPONSE_MISSING_KEY.explanation=A chave especificada na mensagem deve estar na resposta da API. A chave pode estar ausente, ou pode estar em um local inesperado.
-OPENSHIFT_USER_API_RESPONSE_MISSING_KEY.useraction=Verifique a resposta da API para determinar se a chave est\u00e1 ausente da resposta.
+KUBERNETES_USER_API_RESPONSE_MISSING_KEY=CWWKS5374E: A resposta da API do usu\u00e1rio do Kubernetes n\u00e3o cont\u00e9m uma chave esperada: [{0}]. A resposta completa \u00e9 [{1}].
+KUBERNETES_USER_API_RESPONSE_MISSING_KEY.explanation=A chave especificada na mensagem deve estar na resposta da API. A chave pode estar ausente, ou pode estar em um local inesperado.
+KUBERNETES_USER_API_RESPONSE_MISSING_KEY.useraction=Verifique a resposta da API para determinar se a chave est\u00e1 ausente da resposta.
+
+# 0=Social login configuration ID
+ACCESS_TOKEN_MISSING_FROM_HEADERS=CWWKS5375E: A configura\u00e7\u00e3o de login social [{0}] especifica que \u00e9 necess\u00e1rio que haja um token de acesso na solicita\u00e7\u00e3o, mas n\u00e3o h\u00e1 um token de acesso presente.
+ACCESS_TOKEN_MISSING_FROM_HEADERS.explanation=A configura\u00e7\u00e3o de login social especificada na mensagem requer que todas as solicita\u00e7\u00f5es recebidas contenham um token de acesso.
+ACCESS_TOKEN_MISSING_FROM_HEADERS.useraction=Caso haja um nome de cabe\u00e7alho de token de acesso definido na configura\u00e7\u00e3o de login social, verifique se o cabe\u00e7alho est\u00e1 inclu\u00eddo na solicita\u00e7\u00e3o. Caso contr\u00e1rio, verifique se h\u00e1 um cabe\u00e7alho de Autoriza\u00e7\u00e3o inclu\u00eddo na solicita\u00e7\u00e3o. Assegure-se de que o valor do cabe\u00e7alho esteja em conformidade com a especifica\u00e7\u00e3o do token de acesso do OAuth. Verifique se o provedor OAuth est\u00e1 configurado para transmitir um token de acesso.
+
+# 0=Name of the configuration attribute that specifies the access token header name, 1=Social login configuration ID, 2=Custom access token header name
+CUSTOM_ACCESS_TOKEN_HEADER_MISSING=CWWKS5376W: O valor do atributo [{0}] na configura\u00e7\u00e3o de login social [{1}] indica que deve haver um token de acesso no cabe\u00e7alho da solicita\u00e7\u00e3o [{2}]. No entanto, n\u00e3o \u00e9 poss\u00edvel encontrar um token nesse cabe\u00e7alho.
+CUSTOM_ACCESS_TOKEN_HEADER_MISSING.explanation=\u00c9 poss\u00edvel que o cabe\u00e7alho especificado na mensagem esteja ausente da solicita\u00e7\u00e3o ou que o valor do cabe\u00e7alho esteja vazio.
+CUSTOM_ACCESS_TOKEN_HEADER_MISSING.useraction=Verifique se o cabe\u00e7alho especificado est\u00e1 presente na solicita\u00e7\u00e3o. Verifique se o valor do cabe\u00e7alho est\u00e1 em conformidade com a especifica\u00e7\u00e3o do token de acesso do OAuth.
+
+KUBERNETES_USER_API_RESPONSE_NULL_EMPTY=CWWKS5377E: A resposta da API do usu\u00e1rio do Kubernetes \u00e9 nula ou vazia.
+KUBERNETES_USER_API_RESPONSE_NULL_EMPTY.explanation=A resposta da API do usu\u00e1rio do Kubernetes n\u00e3o pode ser lida. O recurso de login social encontrou um erro ao tentar se comunicar com a API do usu\u00e1rio ou o corpo da resposta da API do usu\u00e1rio est\u00e1 vazio.
+KUBERNETES_USER_API_RESPONSE_NULL_EMPTY.useraction=Verifique se a resposta da API do usu\u00e1rio n\u00e3o est\u00e1 vazia e se a conex\u00e3o com a API do usu\u00e1rio foi bem-sucedida. Verifique os logs do servidor para determinar se houve um erro quando o recurso de login social tentou se comunicar com a API do usu\u00e1rio.
+
+# 0=User API response string, 1=Exception message
+KUBERNETES_USER_API_RESPONSE_NOT_JSON=CWWKS5378E: A resposta da API do usu\u00e1rio do Kubernetes n\u00e3o \u00e9 um objeto JSON v\u00e1lido. A resposta completa \u00e9  {0}. {1}
+KUBERNETES_USER_API_RESPONSE_NOT_JSON.explanation=Espera-se que a resposta da API do usu\u00e1rio do Kubernetes seja objeto JSON v\u00e1lido que contenha informa\u00e7\u00f5es sobre o usu\u00e1rio autenticado.
+KUBERNETES_USER_API_RESPONSE_NOT_JSON.useraction=Verifique se o valor da API do usu\u00e1rio na configura\u00e7\u00e3o de login social est\u00e1 configurada como a URL de uma API de usu\u00e1rio do Kubernetes v\u00e1lida. Verifique a resposta da API do usu\u00e1rio para ver se h\u00e1 mais informa\u00e7\u00f5es inclu\u00eddas.
+
+# 0=JSON key string, 1=JSON value type, for example, object, string, number, and so on, 2=JSON value type, 3=User API response string
+KUBERNETES_USER_API_RESPONSE_WRONG_JSON_TYPE=CWWKS5379E: Espera-se que o valor da chave [{0}] na resposta da API do usu\u00e1rio do Kubernetes seja do tipo {1}, mas o valor \u00e9 do tipo {2}. A resposta completa da API do usu\u00e1rio \u00e9 [{3}].
+KUBERNETES_USER_API_RESPONSE_WRONG_JSON_TYPE.explanation=O valor da chave especificada n\u00e3o tinha o tipo correto. \u00c9 poss\u00edvel que a resposta da API do usu\u00e1rio esteja malformada ou que a API do usu\u00e1rio tenha retornado uma resposta com uma estrutura inesperada.
+KUBERNETES_USER_API_RESPONSE_WRONG_JSON_TYPE.useraction=Verifique a estrutura da resposta da API do usu\u00e1rio. Verifique a resposta da API do usu\u00e1rio para ver se houve um erro.
+
+# 0=Error string from user API response
+KUBERNETES_USER_API_RESPONSE_ERROR=CWWKS5380E: A API do usu\u00e1rio do Kubernetes encontrou um erro ao processar o token de acesso. O erro \u00e9 [{0}]
+KUBERNETES_USER_API_RESPONSE_ERROR.explanation=A resposta da API do usu\u00e1rio do Kubernetes cont\u00e9m um erro. \u00c9 poss\u00edvel que o token de acesso n\u00e3o seja v\u00e1lido ou que tenha ocorrido algum outro erro durante o processamento do token.
+KUBERNETES_USER_API_RESPONSE_ERROR.useraction=Verifique o erro exibido na mensagem. Assegure-se de que o token de acesso seja v\u00e1lido e n\u00e3o esteja malformado.
+
+# 0=Social login configuration ID, 1=Value of the userNameAttribute, 2=userNameAttribute, 3=Alternative key that will be used instead
+KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND=CWWKS5381W: A configura\u00e7\u00e3o de login social [{0}] especifica [{1}] como o valor para o atributo [{2}], mas a resposta da API do usu\u00e1rio n\u00e3o cont\u00e9m uma chave [{1}]. A chave [{3}], quando presente na resposta da API do usu\u00e1rio, \u00e9 usada para determinar o nome do usu\u00e1rio.
+KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND.explanation=A resposta da API do usu\u00e1rio n\u00e3o cont\u00e9m uma chave que corresponda ao valor do atributo de configura\u00e7\u00e3o especificado na mensagem. O recurso de login social tenta usar uma chave diferente no lugar.
+KUBERNETES_USER_API_RESPONSE_DEFAULT_USER_ATTR_NOT_FOUND.useraction=Verifique se o atributo de configura\u00e7\u00e3o especificado na mensagem est\u00e1 configurado corretamente. Assegure-se de que o valor do atributo de configura\u00e7\u00e3o corresponda \u00e0 entrada na resposta da API do usu\u00e1rio que deve ser usada como o nome do usu\u00e1rio.
 
 SOCIAL_LOGIN_CONFIG_PROCESSED=CWWKS5400I: A configura\u00e7\u00e3o de login social [{0}] foi processada com \u00eaxito.
 SOCIAL_LOGIN_CONFIG_PROCESSED.explanation=A configura\u00e7\u00e3o de login social indicada foi processada com \u00eaxito.
@@ -457,8 +491,8 @@ RESPONSE_STATUS_MISSING_OR_ERROR=CWWKS5477E: O status de resposta n\u00e3o pode 
 RESPONSE_STATUS_MISSING_OR_ERROR.explanation=A solicita\u00e7\u00e3o provavelmente falhou porque eram informa\u00e7\u00f5es n\u00e3o autorizadas ou ausentes, como um par\u00e2metro ou um cabe\u00e7alho de solicita\u00e7\u00e3o necess\u00e1rio. Se o status de resposta n\u00e3o for nulo, o c\u00f3digo de status de resposta e a raz\u00e3o estar\u00e3o inclu\u00eddos na mensagem.
 RESPONSE_STATUS_MISSING_OR_ERROR.useraction=Verifique o c\u00f3digo de status de resposta na mensagem, se presente. Verifique se todos os par\u00e2metros e os cabe\u00e7alhos necess\u00e1rios foram inclu\u00eddos na solicita\u00e7\u00e3o.
 
-# 0=URL to which the request was submitted, 1=Error message
-RESPONSE_STATUS_UNSUCCESSFUL=CWWKS5478E: A solicita\u00e7\u00e3o para o terminal [{0}] falhou. O erro era: {1}
+# 0=URL to which the request was submitted, 1=HTTP response status (e.g. 404 Not Found), 2=Error message
+RESPONSE_STATUS_UNSUCCESSFUL=CWWKS5478E: A solicita\u00e7\u00e3o para o terminal [{0}] falhou. O status da resposta \u00e9 [{1}]. O erro \u00e9: {2}
 RESPONSE_STATUS_UNSUCCESSFUL.explanation=A solicita\u00e7\u00e3o provavelmente falhou porque eram informa\u00e7\u00f5es n\u00e3o autorizadas ou ausentes, como um par\u00e2metro ou um cabe\u00e7alho de solicita\u00e7\u00e3o necess\u00e1rio. A solicita\u00e7\u00e3o pode ter sido direcionada para o terminal errado.
 RESPONSE_STATUS_UNSUCCESSFUL.useraction=Verifique se a solicita\u00e7\u00e3o foi direcionada para o terminal correto. Verifique se todos os par\u00e2metros e os cabe\u00e7alhos necess\u00e1rios foram inclu\u00eddos na solicita\u00e7\u00e3o.
 
