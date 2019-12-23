@@ -8,13 +8,11 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jdbc.fat.tests;
+package loginmodule;
 
 import java.io.IOException;
 import java.util.Map;
 
-import javax.resource.spi.ManagedConnectionFactory;
-import javax.resource.spi.security.PasswordCredential;
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
@@ -22,10 +20,14 @@ import javax.security.auth.callback.UnsupportedCallbackException;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 
+import org.ietf.jgss.GSSCredential;
+import org.ietf.jgss.GSSException;
+import org.ietf.jgss.GSSName;
+
 import com.ibm.wsspi.security.auth.callback.WSManagedConnectionFactoryCallback;
 import com.ibm.wsspi.security.auth.callback.WSMappingPropertiesCallback;
 
-public class TestLoginModule implements LoginModule {
+public class TestGSSLoginModule implements LoginModule {
 
     public CallbackHandler callbackHandler;
     public Subject subject;
@@ -49,7 +51,6 @@ public class TestLoginModule implements LoginModule {
         try {
             Callback[] callbacks = getHandledCallbacks();
             setPasswordCredentialInSubject(callbacks);
-            setPropertiesInSubject(callbacks);
         } catch (Exception e) {
             throw new LoginException(e.getMessage());
         }
@@ -65,21 +66,10 @@ public class TestLoginModule implements LoginModule {
         return callbacks;
     }
 
-    private void setPasswordCredentialInSubject(Callback[] callbacks) {
-        ManagedConnectionFactory managedConnectionFactory = ((WSManagedConnectionFactoryCallback) callbacks[0]).getManagedConnectionFacotry();
-        PasswordCredential passwordCredential = new PasswordCredential("dbuser1", "dbuser1pwd".toCharArray());
-        passwordCredential.setManagedConnectionFactory(managedConnectionFactory);
-        subject.getPrivateCredentials().add(passwordCredential);
-    }
-
-    /*
-     * The properties are set in the subject to test that they can be obtained
-     * from the WSMappingPropertiesCallback. Normal login modules are not required to do this.
-     */
-    private void setPropertiesInSubject(Callback[] callbacks) {
-        @SuppressWarnings("rawtypes")
-        Map properties = ((WSMappingPropertiesCallback) callbacks[1]).getProperties();
-        subject.getPrivateCredentials().add(properties);
+    private void setPasswordCredentialInSubject(Callback[] callbacks) throws GSSException {
+        GSSName name = new TestGSSName("dbuser1");
+        GSSCredential credential = new TestGSSCredential(name);
+        subject.getPrivateCredentials().add(credential);
     }
 
     /** {@inheritDoc} */

@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jdbc.fat.tests;
+package loginmodule;
 
 import org.ietf.jgss.GSSCredential;
 import org.ietf.jgss.GSSException;
@@ -34,7 +34,7 @@ public class TestGSSCredential implements GSSCredential {
      */
     @Override
     public void dispose() throws GSSException {
-        // TODO Auto-generated method stub
+        //Auto-generated method stub
     }
 
     /*
@@ -44,7 +44,7 @@ public class TestGSSCredential implements GSSCredential {
      */
     @Override
     public GSSName getName() throws GSSException {
-        // TODO Auto-generated method stub
+        //Auto-generated method stub
         return name;
     }
 
@@ -55,7 +55,7 @@ public class TestGSSCredential implements GSSCredential {
      */
     @Override
     public GSSName getName(Oid mech) throws GSSException {
-        // TODO Auto-generated method stub
+        //Auto-generated method stub
         return name;
     }
 
@@ -66,7 +66,7 @@ public class TestGSSCredential implements GSSCredential {
      */
     @Override
     public int getRemainingLifetime() throws GSSException {
-        // TODO Auto-generated method stub
+        //Auto-generated method stub
         return Integer.MAX_VALUE;
     }
 
@@ -77,7 +77,7 @@ public class TestGSSCredential implements GSSCredential {
      */
     @Override
     public int getRemainingInitLifetime(Oid mech) throws GSSException {
-        // TODO Auto-generated method stub
+        //Auto-generated method stub
         return Integer.MAX_VALUE;
     }
 
@@ -88,7 +88,7 @@ public class TestGSSCredential implements GSSCredential {
      */
     @Override
     public int getRemainingAcceptLifetime(Oid mech) throws GSSException {
-        // TODO Auto-generated method stub
+        //Auto-generated method stub
         return Integer.MAX_VALUE;
     }
 
@@ -99,7 +99,7 @@ public class TestGSSCredential implements GSSCredential {
      */
     @Override
     public int getUsage() throws GSSException {
-        // TODO Auto-generated method stub
+        //Auto-generated method stub
         return INITIATE_AND_ACCEPT;
     }
 
@@ -110,7 +110,7 @@ public class TestGSSCredential implements GSSCredential {
      */
     @Override
     public int getUsage(Oid mech) throws GSSException {
-        // TODO Auto-generated method stub
+        //Auto-generated method stub
         return INITIATE_AND_ACCEPT;
     }
 
@@ -121,7 +121,7 @@ public class TestGSSCredential implements GSSCredential {
      */
     @Override
     public Oid[] getMechs() throws GSSException {
-        // TODO Auto-generated method stub
+        //Auto-generated method stub
         return null;
     }
 

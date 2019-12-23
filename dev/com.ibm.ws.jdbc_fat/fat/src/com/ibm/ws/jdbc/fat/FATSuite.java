@@ -10,10 +10,13 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat;
 
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.jdbc.fat.tests.ConfigTest;
 import com.ibm.ws.jdbc.fat.tests.DataSourceJaasTest;
 import com.ibm.ws.jdbc.fat.tests.DataSourceTest;
@@ -25,5 +28,10 @@ import com.ibm.ws.jdbc.fat.tests.DataSourceTest;
                DataSourceJaasTest.class
 })
 public class FATSuite {
-	//TODO enable database rotation
+    @BeforeClass
+    public static void beforeSuite() throws Exception {        
+        //Add TestLoginModule.jar to shared.resources.dir
+        JavaArchive TestLoginModule = ShrinkHelper.buildJavaArchive("TestLoginModule", "loginmodule");
+        ShrinkHelper.exportArtifact(TestLoginModule, "publish/shared/resources/loginmodule/");
+    }
 } 

@@ -171,7 +171,7 @@
 -->
 
     <jaasLoginContextEntry id="myJAASLoginEntry" name="myJAASLoginEntry" loginModuleRef="testLoginModule" />
-	<jaasLoginModule id="testLoginModule" className="com.ibm.ws.jdbc.fat.tests.TestLoginModule" controlFlag="REQUIRED" libraryRef="customLoginLib"/>
+	<jaasLoginModule id="testLoginModule" className="loginmodule.TestLoginModule" controlFlag="REQUIRED" libraryRef="customLoginLib"/>
 	
 	<library id="customLoginLib">
 	  <fileset dir="${shared.resource.dir}/loginmodule" includes="TestLoginModule.jar"/>
@@ -179,7 +179,7 @@
     
     <!-- GSS Credential Config - Shares jar for login module with standard JAASLogin test -->
     <jaasLoginContextEntry id="myJAASGSSLoginEntry" name="myJAASGSSLoginEntry" loginModuleRef="testGSSLoginModule" />
-	<jaasLoginModule id="testGSSLoginModule" className="com.ibm.ws.jdbc.fat.tests.TestGSSLoginModule" controlFlag="REQUIRED" libraryRef="customLoginLib"/>
+	<jaasLoginModule id="testGSSLoginModule" className="loginmodule.TestGSSLoginModule" controlFlag="REQUIRED" libraryRef="customLoginLib"/>
     <!-- TODO what is this component and can we test it in OL? -->
     <spnego id="includeClientGSSCredentialTrue"
         includeClientGSSCredentialInSubject="true"
