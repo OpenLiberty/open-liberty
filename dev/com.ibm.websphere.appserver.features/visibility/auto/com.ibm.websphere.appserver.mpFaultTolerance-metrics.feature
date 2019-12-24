@@ -7,3 +7,4 @@ IBM-Install-Policy: when-satisfied
 -bundles=com.ibm.ws.microprofile.faulttolerance.metrics, com.ibm.ws.microprofile.faulttolerance.metrics.1.1
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

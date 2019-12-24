@@ -20,3 +20,4 @@ Subsystem-Name: MicroProfile Metrics 1.1
  com.ibm.ws.microprofile.metrics.public
 kind=ga
 edition=core
+WLP-Activation-Type: parallel
