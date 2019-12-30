@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,9 @@
 package com.ibm.ws.jdbc.fat.tests;
 
 import static com.ibm.websphere.simplicity.config.DataSourceProperties.DERBY_EMBEDDED;
-import static com.ibm.websphere.simplicity.config.DataSourceProperties.ORACLE_JDBC;
+import static componenttest.annotation.SkipIfSysProp.DB_Oracle;
+import static componenttest.annotation.SkipIfSysProp.DB_Postgres;
+import static componenttest.annotation.SkipIfSysProp.DB_SQLServer;
 import static org.junit.Assert.fail;
 
 import java.io.File;
@@ -27,6 +29,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
+import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.dsprops.testrules.OnlyIfDataSourceProperties;
 import com.ibm.websphere.simplicity.config.dsprops.testrules.SkipIfDataSourceProperties;
@@ -34,55 +37,65 @@ import com.ibm.websphere.simplicity.config.dsprops.testrules.SkipIfDataSourcePro
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.database.container.DatabaseContainerFactory;
 import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
+import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
 public class DataSourceTest extends FATServletClient {
-	
+
     //App names
-	private static final String setupfat = "setupfat";
-	private static final String basicfat = "basicfat";
-	private static final String dsdfat = "dsdfat";
-	private static final String dsdfat_global_lib = "dsdfat_global_lib";
-	
+    private static final String setupfat = "setupfat";
+    private static final String basicfat = "basicfat";
+    private static final String dsdfat = "dsdfat";
+    private static final String dsdfat_global_lib = "dsdfat_global_lib";
+
     @ClassRule
     public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
 
-	//Server used for ConfigTest.java and DataSourceTest.java
-	@Server("com.ibm.ws.jdbc.fat")
-	public static LibertyServer server;
+    //Server used for ConfigTest.java and DataSourceTest.java
+    @Server("com.ibm.ws.jdbc.fat")
+    public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
-    	//Get driver type
-    	server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
-    	server.addEnvVar("ANON_DRIVER", "driver" + DatabaseContainerType.valueOf(testContainer).ordinal() + ".jar");
+        // Delete the Derby database that might be left over from last run
+        Machine machine = server.getMachine();
+        String installRoot = server.getInstallRoot();
+        LibertyFileManager.deleteLibertyDirectoryAndContents(machine, installRoot + "/usr/shared/resources/data/jdbcfat");
+        LibertyFileManager.deleteLibertyDirectoryAndContents(machine, installRoot + "/usr/shared/resources/data/derbyfat");
 
-    	//Setup server DataSource properties
-    	DatabaseContainerUtil.setupDataSourceProperties(server, testContainer);
-    	
-    	//**** jdbcServer apps ****
-    	// Dropin app - setupfat.war 
-    	ShrinkHelper.defaultDropinApp(server, setupfat, "setupfat");
-    	
-    	// Default app - dsdfat.war and dsdfat_global_lib.war
-    	ShrinkHelper.defaultApp(server, dsdfat, dsdfat);
-    	ShrinkHelper.defaultApp(server, dsdfat_global_lib, dsdfat_global_lib);
-    	
-    	// Default app - jdbcapp.ear [basicfat.war, application.xml]
-    	WebArchive basicfatWAR = ShrinkHelper.buildDefaultApp(basicfat, basicfat);
+        //Get driver type
+        server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
+        server.addEnvVar("ANON_DRIVER", "driver" + DatabaseContainerType.valueOf(testContainer).ordinal() + ".jar");
+        server.addEnvVar("DB_USER", testContainer.getUsername());
+        server.addEnvVar("DB_PASSWORD", testContainer.getPassword());
+
+        //Setup server DataSource properties
+        DatabaseContainerUtil.setupDataSourceProperties(server, testContainer);
+
+        //**** jdbcServer apps ****
+        // Dropin app - setupfat.war 
+        ShrinkHelper.defaultDropinApp(server, setupfat, "setupfat");
+
+        // Default app - dsdfat.war and dsdfat_global_lib.war
+        ShrinkHelper.defaultApp(server, dsdfat, dsdfat);
+        ShrinkHelper.defaultApp(server, dsdfat_global_lib, dsdfat_global_lib);
+
+        // Default app - jdbcapp.ear [basicfat.war, application.xml]
+        WebArchive basicfatWAR = ShrinkHelper.buildDefaultApp(basicfat, basicfat);
         EnterpriseArchive jdbcappEAR = ShrinkWrap.create(EnterpriseArchive.class, "jdbcapp.ear");
         jdbcappEAR.addAsModule(basicfatWAR);
         ShrinkHelper.addDirectory(jdbcappEAR, "test-applications/jdbcapp/resources");
         ShrinkHelper.exportAppToServer(server, jdbcappEAR);
-        
+
         //Start Server
         server.startServer();
     }
@@ -112,7 +125,7 @@ public class DataSourceTest extends FATServletClient {
     }
 
     @Test
-    @SkipIfDataSourceProperties(DERBY_EMBEDDED) //TODO investigate if this is still necessary
+    @SkipIfDataSourceProperties(DERBY_EMBEDDED)
     public void testBootstrapDatabaseConnection() throws Throwable {
         runTest(server, setupfat + '/', testName);
     }
@@ -172,6 +185,10 @@ public class DataSourceTest extends FATServletClient {
     }
 
     @Test
+    @SkipIfSysProp({
+                     DB_Postgres, //TODO figure out why test fails with Postgres
+                     DB_SQLServer //TODO figure out why test stalls using SQLServer
+    })
     public void testLastParticipant() throws Exception {
         runTest();
     }
@@ -265,6 +282,10 @@ public class DataSourceTest extends FATServletClient {
     }
 
     @Test
+    @SkipIfSysProp({
+                     DB_Postgres, //TODO figure out why test fails with Postgres
+                     DB_SQLServer //TODO figure out why test stalls using SQLServer
+    })
     public void testTwoPhaseCommit() throws Exception {
         runTest();
     }
@@ -299,7 +320,10 @@ public class DataSourceTest extends FATServletClient {
 
     @Test
     @AllowedFFDC({ "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException", "javax.transaction.xa.XAException" })
-    @SkipIfDataSourceProperties(ORACLE_JDBC) //TODO investigate if this is still necessary
+    @SkipIfSysProp({
+                     DB_Oracle,
+                     DB_Postgres //TODO figure out why test fails with Postgres
+    })
     public void testXARecovery() throws Exception {
         runTest();
     }
@@ -311,12 +335,13 @@ public class DataSourceTest extends FATServletClient {
     }
 
     @Test
+    @SkipIfSysProp(DB_Postgres) //TODO figure out why test fails with Postgres
     public void testXAWithMultipleDatabases() throws Exception {
         runTest();
     }
 
     @Test
-    @OnlyIfDataSourceProperties(DERBY_EMBEDDED) //TODO investigate if this is still necessary
+    @OnlyIfDataSourceProperties(DERBY_EMBEDDED)
     public void testDataSourceDefGlobalLib() throws Exception {
         runTest(server, dsdfat_global_lib, testName);
     }

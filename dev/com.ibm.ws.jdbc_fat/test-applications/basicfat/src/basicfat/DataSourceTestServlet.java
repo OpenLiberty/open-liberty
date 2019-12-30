@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,6 +51,8 @@ import javax.management.ObjectInstance;
 import javax.management.ObjectName;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import javax.transaction.HeuristicMixedException;
 import javax.transaction.UserTransaction;
@@ -60,7 +62,7 @@ import org.apache.derby.iapi.jdbc.EngineResultSet;
 
 import componenttest.app.FATServlet;
 
-@DataSourceDefinition(
+@DataSourceDefinition( 
                       name = "jdbc/dsfat6",
                       className = "org.apache.derby.jdbc.EmbeddedDataSource40",
                       databaseName = "${shared.resource.dir}/data/derbyfat",
@@ -368,23 +370,28 @@ public class DataSourceTestServlet extends FATServlet {
             DatabaseMetaData metadata = con.getMetaData();
             String user = metadata.getUserName();
             if (!"updatedUserName".equalsIgnoreCase(user))
-                throw new Exception("User name from authData derbyAuth1 was not honored. Instead: " + user);
+                throw new Exception("User name from authData ID:derbyAuth1 was not honored. Expected:updatedUserName Instead:" + user);
         } finally {
             con.close();
         }
     }
 
     /**
-     * Verify that a config change that sets authData derbyAuth1 back its original value of dbuser1.
+     * Verify that a config change that sets authData derbyAuth1 back its original value.
      */
-    public void testConfigChangeAuthDataOriginalValue() throws Throwable {
+    public void testConfigChangeAuthDataOriginalValue(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        String origUser = request.getParameter("originalUsername");
+
+        if (origUser == null) {
+            throw new Exception("Test suite called test without providing an original username.");
+        }
 
         Connection con = ds6_1.getConnection();
         try {
             DatabaseMetaData metadata = con.getMetaData();
             String user = metadata.getUserName();
-            if (!"dbuser1".equalsIgnoreCase(user))
-                throw new Exception("User name from authData derbyAuth1 was not honored. Instead: " + user);
+            if (!origUser.equalsIgnoreCase(user))
+                throw new Exception("User name from authData ID:derbyAuth1 was not honored. Expected:" + origUser + " Instead:" + user);
         } finally {
             con.close();
         }

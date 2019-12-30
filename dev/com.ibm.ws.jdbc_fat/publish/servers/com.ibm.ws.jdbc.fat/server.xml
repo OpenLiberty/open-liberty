@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2019 IBM Corporation and others.
+    Copyright (c) 2019, 2020 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -21,8 +21,6 @@
     </featureManager>
 
 	<include location="../fatTestPorts.xml"/>
-
-	<logging traceSpecification="*=info=enabled:com.ibm.ws.jdbc.*=all=enabled:com.ibm.ejs.j2c.*=all=enabled:com.ibm.ws.rsadapter.*=all=enabled"/>
 
 <!-- ### JDBC Drivers + library ### -->
 	<!-- Test: global library -->
@@ -68,12 +66,15 @@
     <!-- Derby-only JDBC driver with no config changes -->
     <jdbcDriver id="Derby1" libraryRef="DerbyLib"/>
 
-<!-- ### Authentication Data ### -->
+<!-- ### Authentication ### -->
+	<!-- Auth for any database -->
     <authData id="auth1" user="${env.DB_USER}" password="${env.DB_PASSWORD}"/>
-    <authData id="derbyAuth1" user="${env.DB_USER}" password="${env.DB_PASSWORD}"/>
-    <authData id="derbyAuth2" user="${env.DB_USER}" password="${env.DB_PASSWORD}"/>
     <authData id="recoveryAuth" user="${env.DB_USER}" password="${env.DB_PASSWORD}"/>
-	
+    
+    <!-- Auth for derby only -->
+    <authData id="derbyAuth1" user="dbuser1" password="{xor}Oz0vKDtu"/>
+    <authData id="derbyAuth2" user="dbuser2" password="{xor}Oz0vKDtt"/>
+    
 <!-- ### Connection Managers ### -->
     <connectionManager id="conMgr1" connectionTimeout="0" maxPoolSize="3" purgePolicy="ValidateAllConnections" enableSharingForDirectLookups="false"/>
     <connectionManager id="conMgr2" agedTimeout="30s" connectionTimeout="0" maxIdleTime="20s" maxPoolSize="2" minPoolSize="0" purgePolicy="EntirePool" reapTime="10s"/>
@@ -151,9 +152,8 @@
     <dataSource id="dsfat5derby" jndiName="jdbc/dsfat5" jdbcDriverRef="Derby" connectionManagerRef="conMgr5" containerAuthDataRef="derbyAuth1" queryTimeout="30s" syncQueryTimeoutWithTransactionTimeout="true">
       <properties.derby.embedded databaseName="${shared.resource.dir}/data/derbyfat" createDatabase="create"/> 
     </dataSource>
-    
-	<jaasLoginModule id="testLoginModule" className="com.ibm.ws.jdbc.fat.jaas.tests.TestLoginModule" controlFlag="REQUIRED" libraryRef="customLoginLib"/>
-<!-- ### dsfat6, dsfat7, dsfat8, dsfat9 are defined via @DataSourceDefinition in DataSourceTestServlet
+	
+	<!-- ### dsfat6, dsfat7, dsfat8, dsfat9 are defined via @DataSourceDefinition in DataSourceTestServlet
          and only run with Derby ### -->
          
     <!-- This is a Derby-only data source -->
@@ -211,7 +211,7 @@
 
 <!-- ### jaas login module ### -->
 	<jaasLoginContextEntry id="myJAASLoginEntry" name="myJAASLoginEntry" loginModuleRef="testLoginModule" />
-	<jaasLoginModule id="testLoginModule" className="com.ibm.ws.jdbc.fat.jaas.tests.TestLoginModule" controlFlag="REQUIRED" libraryRef="customLoginLib"/>
+	<jaasLoginModule id="testLoginModule" className="loginmodule.TestLoginModule" controlFlag="REQUIRED" libraryRef="customLoginLib"/>
 	<library id="customLoginLib">
 	  <fileset dir="${shared.resource.dir}" includes="TestLoginModule.jar"/>
     </library>
@@ -238,6 +238,12 @@
 <!-- ### Permissions ### -->
 	<!-- Note that until using a nested <file> works the following ACEs will be thrown: createClassLoader,
 	java.util.PropertyPermission, javax.management.MBeanPermission -->
+	<javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+	<javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+	<javaPermission className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
+	<javaPermission className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
+	
+	<!-- JDBC permissions -->
     <javaPermission codebase="${shared.resource.dir}derby/derby.jar" className="java.security.AllPermission"/>
     <javaPermission codebase="${shared.resource.dir}derby/derbyclient.jar" className="java.security.AllPermission"/>
     <javaPermission codebase="${shared.resource.dir}jdbc/${env.DB_DRIVER}" className="java.security.AllPermission"/>
@@ -245,16 +251,16 @@
     <javaPermission codebase="${shared.resource.dir}lib/AutomaticDerbyLibrary/derby.jar" className="java.security.AllPermission"/>
 	<javaPermission codebase="${shared.resource.dir}db2/jcc.jar" className="java.security.AllPermission"/>
 	
-	<javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
-	<javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
-	<javaPermission className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
-	<javaPermission className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
-	
+	<!-- Login module -->
+	<javaPermission codebase="${shared.resource.dir}/loginmodule/TestLoginModule.jar" className="java.security.AllPermission"/>
+
 	<!-- Database specific permissions -->
 	<!-- Oracle and SQLServer JDBC drivers get Java 2 security errors when creating a connection. -->
 	<javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve" />
 	<!-- Oracle JDBC driver get Java 2 security errors when creating prepared statements, or accessing metadata -->
 	<javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers" />
+	<!-- Postgres and SQLServer permission to make a basic query-->
+	<javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
 	
     <variable name="onError" value="FAIL"/>
 </server>

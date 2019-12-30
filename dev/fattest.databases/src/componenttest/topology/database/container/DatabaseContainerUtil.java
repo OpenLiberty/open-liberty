@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import com.ibm.websphere.simplicity.config.DataSource;
 import com.ibm.websphere.simplicity.config.DatabaseStore;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.dsprops.Properties;
+import com.ibm.websphere.simplicity.config.dsprops.Properties_db2_jcc;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.topology.impl.LibertyServer;
@@ -62,7 +63,7 @@ public final class DatabaseContainerUtil {
 
         //Get general datasources
         for (DataSource ds : cloneConfig.getDataSources()) {
-            if (ds.getFatModify() != null && ds.getFatModify().equalsIgnoreCase("true")) {
+            if (ds.getFatModify() != null && ds.getFatModify().equals("true")) {
                 datasources.add(ds);
             }
         }
@@ -70,7 +71,7 @@ public final class DatabaseContainerUtil {
         //Get datasources that are nested under databasestores
         for (DatabaseStore dbs : cloneConfig.getDatabaseStores()) {
             for (DataSource ds : dbs.getDataSources()) {
-                if (ds.getFatModify() != null && ds.getFatModify().equalsIgnoreCase("true")) {
+                if (ds.getFatModify() != null && ds.getFatModify().equals("true")) {
                     datasources.add(ds);
                 }
             }
@@ -85,6 +86,24 @@ public final class DatabaseContainerUtil {
     	
     	for(DataSource ds : datasources) {
             Log.info(c, "setupDataSourceProperties", "FOUND: DataSource to be enlisted in database rotation.  ID: " + ds.getId());
+            
+            //DB2 does not support URL when datasource type is anything but java.sql.Driver
+            if (DatabaseContainerType.valueOf(cont) == DatabaseContainerType.DB2 
+            		&& !!!(ds.getType() != null && ds.getType().equals("java.sql.Driver"))) {
+            	
+            	//Create DB2 jcc properties
+            	Properties_db2_jcc props = new Properties_db2_jcc();
+                props.setUser(cont.getUsername());
+                props.setPassword(cont.getPassword());
+                props.setServerName(cont.getContainerIpAddress());
+                props.setPortNumber(Integer.toString(cont.getFirstMappedPort()));
+                props.setDatabaseName(cont.getDatabaseName());
+                
+                //Replace derby properties
+                ds.clearDataSourceDBProperties();
+                ds.getProperties_db2_jcc().add(props);
+                continue;
+            }
 
             //Create general properties
             Properties props = new Properties();
