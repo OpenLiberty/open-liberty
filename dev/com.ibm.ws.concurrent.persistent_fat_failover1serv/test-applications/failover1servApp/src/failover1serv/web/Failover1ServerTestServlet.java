@@ -12,7 +12,6 @@ package failover1serv.web;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.sql.Connection;
@@ -28,8 +27,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import javax.transaction.UserTransaction;
-
-import org.junit.Test;
 
 import com.ibm.websphere.concurrent.persistent.PersistentExecutor;
 import com.ibm.websphere.concurrent.persistent.TaskStatus;
@@ -58,7 +55,9 @@ public class Failover1ServerTestServlet extends FATServlet {
 
         PersistentExecutor executor = (PersistentExecutor) new InitialContext().lookup(jndiName);
 
-        executor.getStatus(taskId).cancel(false);
+        TaskStatus<?> status = executor.getStatus(taskId);
+        if (status != null)
+            status.cancel(false);
     }
 
     /**

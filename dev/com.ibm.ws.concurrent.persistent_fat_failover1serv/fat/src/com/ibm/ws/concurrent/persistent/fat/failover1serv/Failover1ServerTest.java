@@ -56,15 +56,21 @@ public class Failover1ServerTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        originalConfig = server.getServerConfiguration();
+        originalConfig = server.getServerConfiguration().clone();
         ShrinkHelper.defaultDropinApp(server, APP_NAME, "failover1serv.web");
+
+        server.deleteDirectoryFromLibertyInstallRoot("usr/shared/resources/data/failover1db");
+
         server.startServer();
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
-        server.updateServerConfiguration(originalConfig);
+        try {
+            server.stopServer();
+        } finally {
+            server.updateServerConfiguration(originalConfig);
+        }
     }
 
     /**
