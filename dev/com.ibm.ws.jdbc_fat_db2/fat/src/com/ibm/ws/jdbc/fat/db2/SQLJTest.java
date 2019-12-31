@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.db2;
 
-import static com.ibm.ws.jdbc.fat.db2.FATSuite.db2;
 import static junit.framework.Assert.assertNotNull;
 
 import java.io.File;
@@ -18,6 +17,7 @@ import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -27,8 +27,11 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.testcontainers.containers.Db2Container;
+import org.testcontainers.containers.output.OutputFrame;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
@@ -49,6 +52,13 @@ public class SQLJTest extends FATServletClient {
     @Server("com.ibm.ws.sqlj.fat")
     public static LibertyServer server;
 
+    @ClassRule
+    public static Db2Container db2 = new Db2Container()
+                    .acceptLicense()
+                    // Use 5m timeout for local runs, 25m timeout for remote runs (extra time since the DB2 container can be slow to start)
+                    .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 5 : 25))
+                    .withLogConsumer(SQLJTest::log);
+
     public static final String JEE_APP = "sqljapp";
     public static final String SERVLET_NAME = "SQLJTestServlet";
 
@@ -63,6 +73,13 @@ public class SQLJTest extends FATServletClient {
     private static final String EVENT_PS_EXEC = "websphere.datasource.psExecute";
 
     private static boolean threadLocalContextEnabled = false;
+
+    private static void log(OutputFrame frame) {
+        String msg = frame.getUtf8String();
+        if (msg.endsWith("\n"))
+            msg = msg.substring(0, msg.length() - 1);
+        Log.info(SQLJTest.class, "db2", msg);
+    }
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -338,7 +355,7 @@ public class SQLJTest extends FATServletClient {
         String javaClassPath = System.getProperty("java.class.path");
 
         // 2 - Setup tables and stored procedures needed for the DB2 SQLJ Customizer
-        Connection conn = FATSuite.db2.createConnection("");
+        Connection conn = db2.createConnection("");
         try {
             Statement st = conn.createStatement();
             try {
@@ -379,11 +396,11 @@ public class SQLJTest extends FATServletClient {
         }
         args.add("com.ibm.db2.jcc.sqlj.Customizer");
         args.add("-url");
-        args.add(FATSuite.db2.getJdbcUrl());
+        args.add(db2.getJdbcUrl());
         args.add("-user");
-        args.add(FATSuite.db2.getUsername());
+        args.add(db2.getUsername());
         args.add("-password");
-        args.add(FATSuite.db2.getPassword());
+        args.add(db2.getPassword());
         args.add("-rootPkgName");
         args.add("web");
         args.add("SQLJProcedure_SJProfile0.ser");
