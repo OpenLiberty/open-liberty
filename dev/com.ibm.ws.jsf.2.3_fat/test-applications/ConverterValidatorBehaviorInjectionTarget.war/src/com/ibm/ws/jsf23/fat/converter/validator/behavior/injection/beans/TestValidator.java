@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,7 +22,7 @@ import javax.inject.Inject;
  * Validator that supports Injection
  */
 @FacesValidator(value = "testValidator", managed = true)
-public class TestValidator implements Validator {
+public class TestValidator implements Validator<String> {
 
     @Inject
     private TestCDIBean testBean;
@@ -30,11 +30,11 @@ public class TestValidator implements Validator {
     /*
      * (non-Javadoc)
      *
-     * @see javax.faces.validator.Validator#validate(javax.faces.context.FacesContext, javax.faces.component.UIComponent, java.lang.Object)
+     * @see javax.faces.validator.Validator#validate(javax.faces.context.FacesContext, javax.faces.component.UIComponent, java.lang.String)
      */
     @Override
-    public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
-        if (!String.valueOf(value).contains(testBean.getEarth())) {
+    public void validate(FacesContext context, UIComponent component, String value) throws ValidatorException {
+        if (!value.contains(testBean.getEarth())) {
             FacesMessage msg = new FacesMessage("Text validation failed. Text does not contain '" + testBean.getWorld() + "' or '" + testBean.getEarth() + "'.");
             throw new ValidatorException(msg);
         }
