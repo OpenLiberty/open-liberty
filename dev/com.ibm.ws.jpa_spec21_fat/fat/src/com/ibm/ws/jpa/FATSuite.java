@@ -27,6 +27,8 @@ import componenttest.rules.repeater.RepeatTests;
                 TestOLGH8820_Web.class,
                 TestTXSynchronization.class,
                 TestTXDDSynchronization.class,
+                TestCDI.class,
+                TestCDILib.class,
                 componenttest.custom.junit.runner.AlwaysPassesTest.class
 })
 public class FATSuite {
@@ -34,6 +36,9 @@ public class FATSuite {
                                                 "permission java.lang.RuntimePermission \"accessClassInPackage.com.sun.xml.internal.bind\";" };
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
+    public static RepeatTests r = RepeatTests
+                    .withoutModification()
                     .andWith(FeatureReplacementAction.EE7_FEATURES());
+
+    public static String repeatPhase = "";
 }
