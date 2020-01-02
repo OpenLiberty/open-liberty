@@ -16,7 +16,8 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-    Failover1ServerTest.class
+    Failover1ServerTest.class,
+    SwitchFromSingleInstanceToFailOverTest.class
     })
 public class FATSuite {
 }
