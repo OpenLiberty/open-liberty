@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -82,6 +82,7 @@ public class SwitchFromSingleInstanceToFailOverTest extends FATServletClient {
         server.updateServerConfiguration(config);
         server.startServer(testName.getMethodName() + "-1");
         String taskIdA = null, taskIdB = null, taskIdC = null, taskIdD = null;
+        boolean successful = false;
         try {
             // Schedule on the instance that cannot run tasks
             StringBuilder result = runTestWithResponse(server, APP_NAME + "/Failover1ServerTestServlet",
@@ -122,7 +123,7 @@ public class SwitchFromSingleInstanceToFailOverTest extends FATServletClient {
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(originalConfig);
             server.waitForConfigUpdateInLogUsingMark(APP_NAMES);
-            
+
             // Verify that tasks still run
             runTest(server, APP_NAME + "/Failover1ServerTestServlet",
                     "testTasksAreRunning&taskId=" + taskIdB + "&taskId=" + taskIdC + "&jndiName=persistent/exec1&test=testEnableFailOverWhileServerIsRunning[5]");
@@ -142,25 +143,30 @@ public class SwitchFromSingleInstanceToFailOverTest extends FATServletClient {
             System.out.println("Scheduled fourth task " + taskIdD);
 
             runTest(server, APP_NAME + "/Failover1ServerTestServlet",
-                    "testTaskCompleted&taskId=" + taskIdA + "&expectedResult=1&jndiName=persistent/exec1&test=testEnableFailOverWhileServerIsRunning[8]");
+                    "testTaskCompleted&taskId=" + taskIdD + "&expectedResult=1&jndiName=persistent/exec1&test=testEnableFailOverWhileServerIsRunning[8]");
+            successful = true;
         } finally {
-            if (server.isStarted()) {
-                if (taskIdD != null)
-                    runTest(server, APP_NAME + "/Failover1ServerTestServlet",
-                            "testCancelTask&taskId=" + taskIdD + "&jndiName=persistent/exec1&test=testEnableFailOverWhileServerIsRunning[9]");
+            if (server.isStarted())
+                try {
+                    if (taskIdD != null)
+                        runTest(server, APP_NAME + "/Failover1ServerTestServlet",
+                                "testCancelTask&taskId=" + taskIdD + "&jndiName=persistent/exec1&test=testEnableFailOverWhileServerIsRunning[9]");
 
-                if (taskIdC != null)
-                    runTest(server, APP_NAME + "/Failover1ServerTestServlet",
-                            "testCancelTask&taskId=" + taskIdC + "&jndiName=persistent/exec1&test=testEnableFailOverWhileServerIsRunning[10]");
+                    if (taskIdC != null)
+                        runTest(server, APP_NAME + "/Failover1ServerTestServlet",
+                                "testCancelTask&taskId=" + taskIdC + "&jndiName=persistent/exec1&test=testEnableFailOverWhileServerIsRunning[10]");
 
-                if (taskIdB != null)
-                    runTest(server, APP_NAME + "/Failover1ServerTestServlet",
-                            "testCancelTask&taskId=" + taskIdB + "&jndiName=persistent/exec1&test=testEnableFailOverWhileServerIsRunning[11]");
+                    if (taskIdB != null)
+                        runTest(server, APP_NAME + "/Failover1ServerTestServlet",
+                                "testCancelTask&taskId=" + taskIdB + "&jndiName=persistent/exec1&test=testEnableFailOverWhileServerIsRunning[11]");
 
-                if (taskIdA != null)
-                    runTest(server, APP_NAME + "/Failover1ServerTestServlet",
-                            "testCancelTask&taskId=" + taskIdA + "&jndiName=persistent/exec1&test=testEnableFailOverWhileServerIsRunning[12]");
-            }
+                    if (taskIdA != null)
+                        runTest(server, APP_NAME + "/Failover1ServerTestServlet",
+                                "testCancelTask&taskId=" + taskIdA + "&jndiName=persistent/exec1&test=testEnableFailOverWhileServerIsRunning[12]");
+                } catch (Error | Exception x) {
+                    if (successful)
+                        throw x;
+                }
         }
     }
 
@@ -179,6 +185,7 @@ public class SwitchFromSingleInstanceToFailOverTest extends FATServletClient {
         server.updateServerConfiguration(config);
         server.startServer(testName.getMethodName() + "-1");
         String taskIdA = null, taskIdB = null, taskIdC = null, taskIdD = null;
+        boolean successful = false;
         try {
             // Schedule on the instance that cannot run tasks
             StringBuilder result = runTestWithResponse(server, APP_NAME + "/Failover1ServerTestServlet",
@@ -219,8 +226,8 @@ public class SwitchFromSingleInstanceToFailOverTest extends FATServletClient {
 
             // Enable fail over
             server.updateServerConfiguration(originalConfig);
-            server.startServer();
-            
+            server.startServer(testName.getMethodName() + "-2");
+
             // Verify that tasks still run
             runTest(server, APP_NAME + "/Failover1ServerTestServlet",
                     "testTasksAreRunning&taskId=" + taskIdB + "&taskId=" + taskIdC + "&jndiName=persistent/exec1&test=testEnableFailOverWhileServerIsStopped[5]");
@@ -240,25 +247,450 @@ public class SwitchFromSingleInstanceToFailOverTest extends FATServletClient {
             System.out.println("Scheduled fourth task " + taskIdD);
 
             runTest(server, APP_NAME + "/Failover1ServerTestServlet",
-                    "testTaskCompleted&taskId=" + taskIdA + "&expectedResult=1&jndiName=persistent/exec1&test=testEnableFailOverWhileServerIsStopped[8]");
+                    "testTaskCompleted&taskId=" + taskIdD + "&expectedResult=1&jndiName=persistent/exec1&test=testEnableFailOverWhileServerIsStopped[8]");
+            successful = true;
         } finally {
-            if (server.isStarted()) {
-                if (taskIdD != null)
-                    runTest(server, APP_NAME + "/Failover1ServerTestServlet",
-                            "testCancelTask&taskId=" + taskIdD + "&jndiName=persistent/exec1&test=testEnableFailOverWhileServerIsStopped[9]");
+            if (server.isStarted())
+                try {
+                    if (taskIdD != null)
+                        runTest(server, APP_NAME + "/Failover1ServerTestServlet",
+                                "testCancelTask&taskId=" + taskIdD + "&jndiName=persistent/exec1&test=testEnableFailOverWhileServerIsStopped[9]");
 
-                if (taskIdC != null)
-                    runTest(server, APP_NAME + "/Failover1ServerTestServlet",
-                            "testCancelTask&taskId=" + taskIdC + "&jndiName=persistent/exec1&test=testEnableFailOverWhileServerIsStopped[10]");
+                    if (taskIdC != null)
+                        runTest(server, APP_NAME + "/Failover1ServerTestServlet",
+                                "testCancelTask&taskId=" + taskIdC + "&jndiName=persistent/exec1&test=testEnableFailOverWhileServerIsStopped[10]");
 
-                if (taskIdB != null)
-                    runTest(server, APP_NAME + "/Failover1ServerTestServlet",
-                            "testCancelTask&taskId=" + taskIdB + "&jndiName=persistent/exec1&test=testEnableFailOverWhileServerIsStopped[11]");
+                    if (taskIdB != null)
+                        runTest(server, APP_NAME + "/Failover1ServerTestServlet",
+                                "testCancelTask&taskId=" + taskIdB + "&jndiName=persistent/exec1&test=testEnableFailOverWhileServerIsStopped[11]");
 
-                if (taskIdA != null)
-                    runTest(server, APP_NAME + "/Failover1ServerTestServlet",
-                            "testCancelTask&taskId=" + taskIdA + "&jndiName=persistent/exec1&test=testEnableFailOverWhileServerIsStopped[12]");
-            }
+                    if (taskIdA != null)
+                        runTest(server, APP_NAME + "/Failover1ServerTestServlet",
+                                "testCancelTask&taskId=" + taskIdA + "&jndiName=persistent/exec1&test=testEnableFailOverWhileServerIsStopped[12]");
+                } catch (Error | Exception x) {
+                    if (successful)
+                        throw x;
+                }
+        }
+    }
+
+    /**
+     * testNewFailOverEnabledInstance - Schedules tasks on an instance where fail over is not enabled.
+     * Stop the server and create a new instance with fail over enabled. Verify that the previous, as well as new, tasks run.
+     * Stop the server and remove the old instance. Verify that the previous, as well as new, tasks run.
+     * This is not a recommended way of enabling fail over, because it leaves instances with and without fail over running at
+     * the same time. But it is being tested here in case anyone tries it.
+     */
+    @Test
+    public void testNewFailOverEnabledInstance() throws Exception {
+        ServerConfiguration config = originalConfig.clone();
+        config.getPersistentExecutors().removeById("persistentExec1");
+        PersistentExecutor persistentExec = config.getPersistentExecutors().getById("persistentExec2");
+        String missedTaskThreshold = persistentExec.getMissedTaskThreshold();
+        persistentExec.setMissedTaskThreshold(null);
+
+        server.updateServerConfiguration(config);
+        server.startServer(testName.getMethodName() + "-1");
+        String taskIdA = null, taskIdB = null, taskIdC = null, taskIdD = null;
+        boolean successful = false;
+        try {
+            // Schedule on original instance where fail over is not enabled
+            StringBuilder result = runTestWithResponse(server, APP_NAME + "/Failover1ServerTestServlet",
+                    "testScheduleRepeatingTask&jndiName=persistent/exec2&initialDelayMS=0&delayMS=1555&test=testNewFailOverEnabledInstance[1]");
+
+            int start = result.indexOf(TASK_ID_MESSAGE);
+            if (start < 0)
+                fail("Task id of first scheduled task not found in servlet output: " + result);
+            taskIdA = result.substring(start += TASK_ID_MESSAGE.length(), result.indexOf(".", start));
+
+            System.out.println("Scheduled first task " + taskIdA);
+
+            result = runTestWithResponse(server, APP_NAME + "/Failover1ServerTestServlet",
+                    "testScheduleRepeatingTask&jndiName=persistent/exec2&initialDelayMS=0&delayMS=1556&test=testNewFailOverEnabledInstance[2]");
+
+            start = result.indexOf(TASK_ID_MESSAGE);
+            if (start < 0)
+                fail("Task id of second scheduled task not found in servlet output: " + result);
+            taskIdB = result.substring(start += TASK_ID_MESSAGE.length(), result.indexOf(".", start));
+
+            System.out.println("Scheduled second task " + taskIdB);
+
+            runTest(server, APP_NAME + "/Failover1ServerTestServlet",
+                    "testTasksAreRunning&taskId=" + taskIdA + "&taskId=" + taskIdB + "&jndiName=persistent/exec2&test=testNewFailOverEnabledInstance[3]");
+
+            server.stopServer(); // this might need to allow for expected warnings if the server shuts down while a task is running
+
+            // Enable fail over on a new instance
+            persistentExec = (PersistentExecutor) persistentExec.clone();
+            persistentExec.setId("persistentExec2FE");
+            persistentExec.setJndiName("persistent/exec2FE");
+            persistentExec.setMissedTaskThreshold(missedTaskThreshold);
+            config.getPersistentExecutors().add(persistentExec);
+            server.updateServerConfiguration(config);
+            server.startServer(testName.getMethodName() + "-2");
+
+            // Verify that tasks still run
+            runTest(server, APP_NAME + "/Failover1ServerTestServlet",
+                    "testTasksAreRunning&taskId=" + taskIdA + "&taskId=" + taskIdB + "&jndiName=persistent/exec2FE&test=testNewFailOverEnabledInstance[4]");
+
+            // Schedule another task
+            result = runTestWithResponse(server, APP_NAME + "/Failover1ServerTestServlet",
+                    "testScheduleRepeatingTask&jndiName=persistent/exec2FE&initialDelayMS=0&delayMS=1557&test=testNewFailOverEnabledInstance[5]");
+
+            start = result.indexOf(TASK_ID_MESSAGE);
+            if (start < 0)
+                fail("Task id of third scheduled task not found in servlet output: " + result);
+            taskIdC = result.substring(start += TASK_ID_MESSAGE.length(), result.indexOf(".", start));
+
+            System.out.println("Scheduled third task " + taskIdC);
+
+            server.stopServer(); // this might need to allow for expected warnings if the server shuts down while a task is running
+
+            // Remove the old instance
+            config.getPersistentExecutors().removeById("persistentExec2");
+            server.updateServerConfiguration(config);
+            server.startServer(testName.getMethodName() + "-3");
+
+            // Verify that tasks still run
+            runTest(server, APP_NAME + "/Failover1ServerTestServlet",
+                    "testTasksAreRunning&taskId=" + taskIdA + "&taskId=" + taskIdB + "&taskId=" + taskIdC + "&jndiName=persistent/exec2FE&test=testNewFailOverEnabledInstance[6]");
+
+            // Schedule another task and verify that it runs
+            result = runTestWithResponse(server, APP_NAME + "/Failover1ServerTestServlet",
+                    "testScheduleOneTimeTask&jndiName=persistent/exec2FE&initialDelayMS=0&test=testNewFailOverEnabledInstance[7]");
+
+            start = result.indexOf(TASK_ID_MESSAGE);
+            if (start < 0)
+                fail("Task id of fourth scheduled task not found in servlet output: " + result);
+            taskIdD = result.substring(start += TASK_ID_MESSAGE.length(), result.indexOf(".", start));
+
+            System.out.println("Scheduled fourth task " + taskIdD);
+
+            runTest(server, APP_NAME + "/Failover1ServerTestServlet",
+                    "testTaskCompleted&taskId=" + taskIdD + "&expectedResult=1&jndiName=persistent/exec2FE&test=testNewFailOverEnabledInstance[8]");
+            successful = true;
+        } finally {
+            if (server.isStarted())
+                try {
+                    if (taskIdD != null)
+                        runTest(server, APP_NAME + "/Failover1ServerTestServlet",
+                                "testCancelTask&taskId=" + taskIdD + "&jndiName=" + persistentExec.getJndiName() + "&test=testReplaceWithNewFailOverEnabledInstance[9]");
+
+                    if (taskIdC != null)
+                        runTest(server, APP_NAME + "/Failover1ServerTestServlet",
+                                "testCancelTask&taskId=" + taskIdC + "&jndiName=" + persistentExec.getJndiName() + "&test=testReplaceWithNewFailOverEnabledInstance[10]");
+
+                    if (taskIdB != null)
+                        runTest(server, APP_NAME + "/Failover1ServerTestServlet",
+                                "testCancelTask&taskId=" + taskIdB + "&jndiName=" + persistentExec.getJndiName() + "&test=testReplaceWithNewFailOverEnabledInstance[11]");
+
+                    if (taskIdA != null)
+                        runTest(server, APP_NAME + "/Failover1ServerTestServlet",
+                                "testCancelTask&taskId=" + taskIdA + "&jndiName=" + persistentExec.getJndiName() + "&test=testReplaceWithNewFailOverEnabledInstance[12]");
+                } catch (Error | Exception x) {
+                    if (successful)
+                        throw x;
+                }
+        }
+    }
+
+    /**
+     * testNewFailOverEnabledInstanceWhileServerIsRunning - Schedules tasks on an instance where fail over is not enabled.
+     * While the server is running, create a new instance with fail over enabled. Verify that the previous, as well as new, tasks run.
+     * Then remove the old instance. Verify that the previous, as well as new, tasks run.
+     * This is not a recommended way of enabling fail over, because it leaves instances with and without fail over running at
+     * the same time. But it is being tested here in case anyone tries it.
+     */
+    @Test
+    public void testNewFailOverEnabledInstanceWhileServerIsRunning() throws Exception {
+        ServerConfiguration config = originalConfig.clone();
+        config.getPersistentExecutors().removeById("persistentExec1");
+        PersistentExecutor persistentExec = config.getPersistentExecutors().getById("persistentExec2");
+        String missedTaskThreshold = persistentExec.getMissedTaskThreshold();
+        persistentExec.setMissedTaskThreshold(null);
+
+        server.updateServerConfiguration(config);
+        server.startServer(testName.getMethodName() + "-1");
+        String taskIdA = null, taskIdB = null, taskIdC = null, taskIdD = null;
+        boolean successful = false;
+        try {
+            // Schedule on original instance where fail over is not enabled
+            StringBuilder result = runTestWithResponse(server, APP_NAME + "/Failover1ServerTestServlet",
+                    "testScheduleRepeatingTask&jndiName=persistent/exec2&initialDelayMS=0&delayMS=1900&test=testNewFailOverEnabledInstanceWhileServerIsRunning[1]");
+
+            int start = result.indexOf(TASK_ID_MESSAGE);
+            if (start < 0)
+                fail("Task id of first scheduled task not found in servlet output: " + result);
+            taskIdA = result.substring(start += TASK_ID_MESSAGE.length(), result.indexOf(".", start));
+
+            System.out.println("Scheduled first task " + taskIdA);
+
+            result = runTestWithResponse(server, APP_NAME + "/Failover1ServerTestServlet",
+                    "testScheduleRepeatingTask&jndiName=persistent/exec2&initialDelayMS=0&delayMS=1925&test=testNewFailOverEnabledInstanceWhileServerIsRunning[2]");
+
+            start = result.indexOf(TASK_ID_MESSAGE);
+            if (start < 0)
+                fail("Task id of second scheduled task not found in servlet output: " + result);
+            taskIdB = result.substring(start += TASK_ID_MESSAGE.length(), result.indexOf(".", start));
+
+            System.out.println("Scheduled second task " + taskIdB);
+
+            runTest(server, APP_NAME + "/Failover1ServerTestServlet",
+                    "testTasksAreRunning&taskId=" + taskIdA + "&taskId=" + taskIdB + "&jndiName=persistent/exec2&test=testNewFailOverEnabledInstanceWhileServerIsRunning[3]");
+
+            // Enable fail over on a new instance
+            persistentExec = (PersistentExecutor) persistentExec.clone();
+            persistentExec.setId("persistentExec3FE");
+            persistentExec.setJndiName("persistent/exec3FE");
+            persistentExec.setMissedTaskThreshold(missedTaskThreshold);
+            config.getPersistentExecutors().add(persistentExec);
+            server.setMarkToEndOfLog();
+            server.updateServerConfiguration(config);
+            server.waitForConfigUpdateInLogUsingMark(APP_NAMES);
+
+            // Verify that tasks still run
+            runTest(server, APP_NAME + "/Failover1ServerTestServlet",
+                    "testTasksAreRunning&taskId=" + taskIdA + "&taskId=" + taskIdB + "&jndiName=persistent/exec3FE&test=testNewFailOverEnabledInstanceWhileServerIsRunning[4]");
+
+            // Schedule another task
+            result = runTestWithResponse(server, APP_NAME + "/Failover1ServerTestServlet",
+                    "testScheduleRepeatingTask&jndiName=persistent/exec3FE&initialDelayMS=0&delayMS=1950&test=testNewFailOverEnabledInstanceWhileServerIsRunning[5]");
+
+            start = result.indexOf(TASK_ID_MESSAGE);
+            if (start < 0)
+                fail("Task id of third scheduled task not found in servlet output: " + result);
+            taskIdC = result.substring(start += TASK_ID_MESSAGE.length(), result.indexOf(".", start));
+
+            System.out.println("Scheduled third task " + taskIdC);
+
+            // Remove the old instance
+            config.getPersistentExecutors().removeById("persistentExec2");
+            server.setMarkToEndOfLog();
+            server.updateServerConfiguration(config);
+            server.waitForConfigUpdateInLogUsingMark(APP_NAMES);
+
+            // Verify that tasks still run
+            runTest(server, APP_NAME + "/Failover1ServerTestServlet",
+                    "testTasksAreRunning&taskId=" + taskIdA + "&taskId=" + taskIdB + "&taskId=" + taskIdC + "&jndiName=persistent/exec3FE&test=testNewFailOverEnabledInstanceWhileServerIsRunning[6]");
+
+            // Schedule another task and verify that it runs
+            result = runTestWithResponse(server, APP_NAME + "/Failover1ServerTestServlet",
+                    "testScheduleOneTimeTask&jndiName=persistent/exec3FE&initialDelayMS=0&test=testNewFailOverEnabledInstanceWhileServerIsRunning[7]");
+
+            start = result.indexOf(TASK_ID_MESSAGE);
+            if (start < 0)
+                fail("Task id of fourth scheduled task not found in servlet output: " + result);
+            taskIdD = result.substring(start += TASK_ID_MESSAGE.length(), result.indexOf(".", start));
+
+            System.out.println("Scheduled fourth task " + taskIdD);
+
+            runTest(server, APP_NAME + "/Failover1ServerTestServlet",
+                    "testTaskCompleted&taskId=" + taskIdD + "&expectedResult=1&jndiName=persistent/exec3FE&test=testNewFailOverEnabledInstanceWhileServerIsRunning[8]");
+            successful = true;
+        } finally {
+            if (server.isStarted())
+                try {
+                    if (taskIdD != null)
+                        runTest(server, APP_NAME + "/Failover1ServerTestServlet",
+                                "testCancelTask&taskId=" + taskIdD + "&jndiName=" + persistentExec.getJndiName() + "&test=testReplaceWithNewFailOverEnabledInstanceWhileServerIsRunning[9]");
+
+                    if (taskIdC != null)
+                        runTest(server, APP_NAME + "/Failover1ServerTestServlet",
+                                "testCancelTask&taskId=" + taskIdC + "&jndiName=" + persistentExec.getJndiName() + "&test=testReplaceWithNewFailOverEnabledInstanceWhileServerIsRunning[10]");
+
+                    if (taskIdB != null)
+                        runTest(server, APP_NAME + "/Failover1ServerTestServlet",
+                                "testCancelTask&taskId=" + taskIdB + "&jndiName=" + persistentExec.getJndiName() + "&test=testReplaceWithNewFailOverEnabledInstanceWhileServerIsRunning[11]");
+
+                    if (taskIdA != null)
+                        runTest(server, APP_NAME + "/Failover1ServerTestServlet",
+                                "testCancelTask&taskId=" + taskIdA + "&jndiName=" + persistentExec.getJndiName() + "&test=testReplaceWithNewFailOverEnabledInstanceWhileServerIsRunning[12]");
+                } catch (Error | Exception x) {
+                    if (successful)
+                        throw x;
+                }
+        }
+    }
+
+    /**
+     * testReplaceWithNewFailOverEnabledInstanceWhileServerIsRunning - Schedules tasks on an instance where fail over is not enabled.
+     * While the server is running, removes the original instance, creating a new one with fail over enabled. Then verifies
+     * that the previous, as well as new, tasks run.
+     */
+    @Test
+    public void testReplaceWithNewFailOverEnabledInstanceWhileServerIsRunning() throws Exception {
+        ServerConfiguration config = originalConfig.clone();
+        config.getPersistentExecutors().removeById("persistentExec1");
+        PersistentExecutor persistentExec = config.getPersistentExecutors().getById("persistentExec2");
+        String missedTaskThreshold = persistentExec.getMissedTaskThreshold();
+        persistentExec.setMissedTaskThreshold(null);
+
+        server.updateServerConfiguration(config);
+        server.startServer(testName.getMethodName() + "-1");
+        String taskIdA = null, taskIdB = null, taskIdC = null;
+        boolean successful = false;
+        try {
+            // Schedule on original instance where fail over is not enabled
+            StringBuilder result = runTestWithResponse(server, APP_NAME + "/Failover1ServerTestServlet",
+                    "testScheduleRepeatingTask&jndiName=persistent/exec2&initialDelayMS=0&delayMS=1800&test=testReplaceWithNewFailOverEnabledInstanceWhileServerIsRunning[1]");
+
+            int start = result.indexOf(TASK_ID_MESSAGE);
+            if (start < 0)
+                fail("Task id of first scheduled task not found in servlet output: " + result);
+            taskIdA = result.substring(start += TASK_ID_MESSAGE.length(), result.indexOf(".", start));
+
+            System.out.println("Scheduled first task " + taskIdA);
+
+            result = runTestWithResponse(server, APP_NAME + "/Failover1ServerTestServlet",
+                    "testScheduleRepeatingTask&jndiName=persistent/exec2&initialDelayMS=0&delayMS=1850&test=testReplaceWithNewFailOverEnabledInstanceWhileServerIsRunning[2]");
+
+            start = result.indexOf(TASK_ID_MESSAGE);
+            if (start < 0)
+                fail("Task id of second scheduled task not found in servlet output: " + result);
+            taskIdB = result.substring(start += TASK_ID_MESSAGE.length(), result.indexOf(".", start));
+
+            System.out.println("Scheduled second task " + taskIdB);
+
+            runTest(server, APP_NAME + "/Failover1ServerTestServlet",
+                    "testTasksAreRunning&taskId=" + taskIdA + "&taskId=" + taskIdB + "&jndiName=persistent/exec2&test=testReplaceWithNewFailOverEnabledInstanceWhileServerIsRunning[3]");
+
+            // Enable fail over
+            config.getPersistentExecutors().removeById("persistentExec2");
+            persistentExec.setId("persistentExec3FE");
+            persistentExec.setJndiName("persistent/exec3FE");
+            persistentExec.setMissedTaskThreshold(missedTaskThreshold);
+            config.getPersistentExecutors().add(persistentExec);
+            server.setMarkToEndOfLog();
+            server.updateServerConfiguration(config);
+            server.waitForConfigUpdateInLogUsingMark(APP_NAMES);
+
+            // Verify that tasks still run
+            runTest(server, APP_NAME + "/Failover1ServerTestServlet",
+                    "testTasksAreRunning&taskId=" + taskIdA + "&taskId=" + taskIdB + "&jndiName=persistent/exec3FE&test=testReplaceWithNewFailOverEnabledInstanceWhileServerIsRunning[4]");
+
+            // Schedule another task and verify that it runs
+            result = runTestWithResponse(server, APP_NAME + "/Failover1ServerTestServlet",
+                    "testScheduleOneTimeTask&jndiName=persistent/exec3FE&initialDelayMS=0&test=testReplaceWithNewFailOverEnabledInstanceWhileServerIsRunning[5]");
+
+            start = result.indexOf(TASK_ID_MESSAGE);
+            if (start < 0)
+                fail("Task id of third scheduled task not found in servlet output: " + result);
+            taskIdC = result.substring(start += TASK_ID_MESSAGE.length(), result.indexOf(".", start));
+
+            System.out.println("Scheduled third task " + taskIdC);
+
+            runTest(server, APP_NAME + "/Failover1ServerTestServlet",
+                    "testTaskCompleted&taskId=" + taskIdC + "&expectedResult=1&jndiName=persistent/exec3FE&test=testReplaceWithNewFailOverEnabledInstanceWhileServerIsRunning[6]");
+            successful = true;
+        } finally {
+            if (server.isStarted())
+                try {
+                    if (taskIdC != null)
+                        runTest(server, APP_NAME + "/Failover1ServerTestServlet",
+                                "testCancelTask&taskId=" + taskIdC + "&jndiName=" + persistentExec.getJndiName() + "&test=testReplaceWithNewFailOverEnabledInstanceWhileServerIsRunning[7]");
+
+                    if (taskIdB != null)
+                        runTest(server, APP_NAME + "/Failover1ServerTestServlet",
+                                "testCancelTask&taskId=" + taskIdB + "&jndiName=" + persistentExec.getJndiName() + "&test=testReplaceWithNewFailOverEnabledInstanceWhileServerIsRunning[8]");
+
+                    if (taskIdA != null)
+                        runTest(server, APP_NAME + "/Failover1ServerTestServlet",
+                                "testCancelTask&taskId=" + taskIdA + "&jndiName=" + persistentExec.getJndiName() + "&test=testReplaceWithNewFailOverEnabledInstanceWhileServerIsRunning[9]");
+                } catch (Error | Exception x) {
+                    if (successful)
+                        throw x;
+                }
+        }
+    }
+
+    /**
+     * testReplaceWithNewFailOverEnabledInstanceWhileServerIsStopped - Schedules tasks on an instance where fail over is not enabled.
+     * Stops the server and removes the original instance, creating a new one with fail over enabled. Starts up the server and verifies
+     * that the previous, as well as new, tasks run.
+     */
+    @Test
+    public void testReplaceWithNewFailOverEnabledInstanceWhileServerIsStopped() throws Exception {
+        ServerConfiguration config = originalConfig.clone();
+        config.getPersistentExecutors().removeById("persistentExec1");
+        PersistentExecutor persistentExec = config.getPersistentExecutors().getById("persistentExec2");
+        String missedTaskThreshold = persistentExec.getMissedTaskThreshold();
+        persistentExec.setMissedTaskThreshold(null);
+
+        server.updateServerConfiguration(config);
+        server.startServer(testName.getMethodName() + "-1");
+        String taskIdA = null, taskIdB = null, taskIdC = null;
+        boolean successful = false;
+        try {
+            // Schedule on original instance where fail over is not enabled
+            StringBuilder result = runTestWithResponse(server, APP_NAME + "/Failover1ServerTestServlet",
+                    "testScheduleRepeatingTask&jndiName=persistent/exec2&initialDelayMS=0&delayMS=1700&test=testReplaceWithNewFailOverEnabledInstanceWhileServerIsStopped[1]");
+
+            int start = result.indexOf(TASK_ID_MESSAGE);
+            if (start < 0)
+                fail("Task id of first scheduled task not found in servlet output: " + result);
+            taskIdA = result.substring(start += TASK_ID_MESSAGE.length(), result.indexOf(".", start));
+
+            System.out.println("Scheduled first task " + taskIdA);
+
+            result = runTestWithResponse(server, APP_NAME + "/Failover1ServerTestServlet",
+                    "testScheduleRepeatingTask&jndiName=persistent/exec2&initialDelayMS=0&delayMS=1750&test=testReplaceWithNewFailOverEnabledInstanceWhileServerIsStopped[2]");
+
+            start = result.indexOf(TASK_ID_MESSAGE);
+            if (start < 0)
+                fail("Task id of second scheduled task not found in servlet output: " + result);
+            taskIdB = result.substring(start += TASK_ID_MESSAGE.length(), result.indexOf(".", start));
+
+            System.out.println("Scheduled second task " + taskIdB);
+
+            runTest(server, APP_NAME + "/Failover1ServerTestServlet",
+                    "testTasksAreRunning&taskId=" + taskIdA + "&taskId=" + taskIdB + "&jndiName=persistent/exec2&test=testReplaceWithNewFailOverEnabledInstanceWhileServerIsStopped[3]");
+
+            server.stopServer(); // this might need to allow for expected warnings if the server shuts down while a task is running
+
+            // Enable fail over
+            config.getPersistentExecutors().removeById("persistentExec2");
+            persistentExec.setId("persistentExec2FE");
+            persistentExec.setMissedTaskThreshold(missedTaskThreshold);
+            config.getPersistentExecutors().add(persistentExec);
+            server.updateServerConfiguration(config);
+            server.startServer(testName.getMethodName() + "-2");
+
+            // Verify that tasks still run
+            runTest(server, APP_NAME + "/Failover1ServerTestServlet",
+                    "testTasksAreRunning&taskId=" + taskIdA + "&taskId=" + taskIdB + "&jndiName=persistent/exec2&test=testReplaceWithNewFailOverEnabledInstanceWhileServerIsStopped[4]");
+
+            // Schedule another task and verify that it runs
+            result = runTestWithResponse(server, APP_NAME + "/Failover1ServerTestServlet",
+                    "testScheduleOneTimeTask&jndiName=persistent/exec2&initialDelayMS=0&test=testReplaceWithNewFailOverEnabledInstanceWhileServerIsStopped[5]");
+
+            start = result.indexOf(TASK_ID_MESSAGE);
+            if (start < 0)
+                fail("Task id of third scheduled task not found in servlet output: " + result);
+            taskIdC = result.substring(start += TASK_ID_MESSAGE.length(), result.indexOf(".", start));
+
+            System.out.println("Scheduled third task " + taskIdC);
+
+            runTest(server, APP_NAME + "/Failover1ServerTestServlet",
+                    "testTaskCompleted&taskId=" + taskIdC + "&expectedResult=1&jndiName=persistent/exec2&test=testReplaceWithNewFailOverEnabledInstanceWhileServerIsStopped[6]");
+            successful = true;
+        } finally {
+            if (server.isStarted())
+                try {
+                    if (taskIdC != null)
+                        runTest(server, APP_NAME + "/Failover1ServerTestServlet",
+                                "testCancelTask&taskId=" + taskIdC + "&jndiName=persistent/exec2&test=testReplaceWithNewFailOverEnabledInstanceWhileServerIsStopped[7]");
+
+                    if (taskIdB != null)
+                        runTest(server, APP_NAME + "/Failover1ServerTestServlet",
+                                "testCancelTask&taskId=" + taskIdB + "&jndiName=persistent/exec2&test=testReplaceWithNewFailOverEnabledInstanceWhileServerIsStopped[8]");
+
+                    if (taskIdA != null)
+                        runTest(server, APP_NAME + "/Failover1ServerTestServlet",
+                                "testCancelTask&taskId=" + taskIdA + "&jndiName=persistent/exec2&test=testReplaceWithNewFailOverEnabledInstanceWhileServerIsStopped[9]");
+                } catch (Error | Exception x) {
+                    if (successful)
+                        throw x;
+                }
         }
     }
 }
