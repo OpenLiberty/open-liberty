@@ -16,10 +16,14 @@ import javax.net.ssl.SSLSocketFactory;
 
 import org.jose4j.lang.JoseException;
 
+import com.ibm.oauth.core.api.error.OidcServerException;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.security.oauth20.api.OAuth20Provider;
+import com.ibm.ws.security.oauth20.web.HttpServletRequest;
+import com.ibm.ws.security.oauth20.web.HttpServletResponse;
 import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.TraceConstants;
 import com.ibm.ws.security.social.UserApiConfig;
@@ -28,6 +32,7 @@ import com.ibm.ws.security.social.internal.LinkedinLoginConfigImpl;
 import com.ibm.ws.security.social.internal.Oauth2LoginConfigImpl;
 import com.ibm.ws.security.social.internal.utils.OAuthClientUtil;
 import com.ibm.ws.security.social.internal.utils.OpenShiftUserApiUtils;
+import com.ibm.ws.security.social.internal.utils.OpenShiftUserApiUtilsIntrospect;
 import com.ibm.ws.security.social.internal.utils.SocialUtil;
 
 public class TAIUserApiUtils {
@@ -46,6 +51,9 @@ public class TAIUserApiUtils {
         try {
             if (SocialUtil.isKubeConfig(clientConfig)) {
                 return getUserApiResponseFromOpenShift((Oauth2LoginConfigImpl) clientConfig, accessToken, sslSocketFactory);
+            }
+            if(clientConfig.getUserApiType().equals("introspect")) {
+                return getUserApiResponseFromIntrospectEndpoint((Oauth2LoginConfigImpl) clientConfig, accessToken, sslSocketFactory);
             }
             String userApiResp = clientUtil.getUserApiResponse(userinfoApi,
                     accessToken,
@@ -68,6 +76,15 @@ public class TAIUserApiUtils {
             Tr.error(tc, "ERROR_GETTING_USER_API_RESPONSE", new Object[] { userinfoApi, clientConfig.getUniqueId(), e.getLocalizedMessage() });
             return null;
         }
+    }
+
+
+    private String getUserApiResponseFromIntrospectEndpoint(Oauth2LoginConfigImpl config, @Sensitive String accessToken, SSLSocketFactory sslSocketFactory) throws OidcServerException, IOException  {
+        // TODO Auto-generated method stub
+//        TokenIntrospect tokenIntrospect = new TokenIntrospect();]
+ //have to do something with introspect present and absent, do i need to create a new openshiftuserapiutils thing        
+        OpenShiftUserApiUtilsIntrospect openShiftUtils = new OpenShiftUserApiUtilsIntrospect(config);
+        return openShiftUtils.getUserApiResponse(accessToken, sslSocketFactory);
     }
 
 
