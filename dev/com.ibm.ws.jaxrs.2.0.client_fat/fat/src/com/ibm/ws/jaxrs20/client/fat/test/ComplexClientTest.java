@@ -193,8 +193,13 @@ public class ComplexClientTest extends AbstractTest {
     }
 
     @Test
-    public void testGetSetEntityStream() throws Exception {
-        this.runTestOnServer(target, "testGetSetEntityStream", null, "ENTITY_STREAM_WORKS");
+    public void testGetSetEntityStreamOnRequestFilter() throws Exception {
+        this.runTestOnServer(target, "testGetSetEntityStreamOnRequestFilter", null, "ENTITY_STREAM_WORKS");
+    }
+
+    @Test
+    public void testGetSetEntityStreamOnResponseFilter() throws Exception {
+        this.runTestOnServer(target, "testGetSetEntityStreamOnResponseFilter", null, "ENTITY_STREAM_WORKS1");
     }
 
     @Test
