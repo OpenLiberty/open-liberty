@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,13 +14,18 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
+import java.lang.management.ManagementFactory;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Arrays;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
+import javax.management.MBeanServer;
+import javax.management.ObjectInstance;
+import javax.management.ObjectName;
 import javax.naming.InitialContext;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -246,5 +251,83 @@ public class Failover1ServerTestServlet extends FATServlet {
             Thread.sleep(POLL_INTERVAL_MS);
         if (!status.hasResult())
             throw new Exception("Task did not complete any executions within allotted interval. " + status);
+    }
+
+    /**
+     * Transfer tasks to the specified instance. The transfer operation is performed via the PersistentExecutor MBean.
+     */
+    public void testTransferWithMBean(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String jndiName = request.getParameter("jndiName");
+        String[] taskIds = request.getParameterValues("taskId");
+
+        PersistentExecutor executor = InitialContext.doLookup(jndiName);
+        DataSource ds = InitialContext.doLookup("java:comp/DefaultDataSource");
+        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+        ObjectName obn = new ObjectName("WebSphere:type=PersistentExecutorMBean,jndiName=" + jndiName + ",*");
+        Set<ObjectInstance> s = mbs.queryMBeans(obn, null);
+        if (s.size() != 1) {
+            for (ObjectInstance i : s)
+                System.out.println("  Found MBean: " + i.getObjectName());
+            throw new Exception("Expected to find exactly 1 MBean, instead found " + s.size());
+        }
+        ObjectInstance mbean = s.iterator().next();
+        String[] paramTypes = { "java.lang.Long", "long" };
+
+        for (String taskIdString : taskIds) {
+            long taskId = Long.valueOf(taskIdString);
+            // The only way to find the value stored in a task's PARTN column is to query the database
+            long oldValue;
+            try (Connection con = ds.getConnection()) {
+                PreparedStatement st = con.prepareStatement("SELECT PARTN FROM WLPTASK WHERE ID=?");
+                st.setLong(1, taskId);
+                ResultSet result = st.executeQuery();
+                if (!result.next())
+                    throw new Exception("Task " + taskId + " is not found.");
+                oldValue = result.getLong(1);
+            }
+
+            // Reassign using the mbean
+            int tasksTransferred = (Integer) mbs.invoke(mbean.getObjectName(), "transfer",
+                    new Long[] { taskId, oldValue },
+                    new String[] { "java.lang.Long", "long" });
+
+            if (tasksTransferred < 1)
+                throw new Exception("Task " + taskId + " with " + oldValue + " is not found by mbean " + mbean);
+        }
+    }
+
+    /**
+     * Transfer tasks to the specified instance. The transfer operation is performed by directly updating the database.
+     */
+    public void testTransferWithoutMBean(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String jndiName = request.getParameter("jndiName");
+        String[] taskIds = request.getParameterValues("taskId");
+
+        PersistentExecutor executor = InitialContext.doLookup(jndiName);
+        DataSource ds = InitialContext.doLookup("java:comp/DefaultDataSource");
+
+        for (String taskIdString : taskIds) {
+            long taskId = Long.valueOf(taskIdString);
+            // The only way to find the value stored in a task's PARTN column is to query the database
+            try (Connection con = ds.getConnection()) {
+                // querying only EXECUTOR and ignoring HOSTANME, USERDIR, LSERVER columns because there is only one instance
+                PreparedStatement st = con.prepareStatement("SELECT ID FROM WLPPART WHERE EXECUTOR=?");
+                st.setString(1, "persistentExecRFR");
+                ResultSet result = st.executeQuery();
+                if (!result.next())
+                    throw new Exception("Partition entry of current instance is not found." +
+                            " Typically that would indicate the instance hasn't been used yet in order to generate a partion id," +
+                            " but for this particular test, we know it has been used, so this is an error.");
+                long newValue = result.getLong(1);
+                st.close();
+
+                st = con.prepareStatement("UPDATE WLPTASK SET PARTN=? WHERE ID=?");
+                st.setLong(1, newValue);
+                st.setLong(2, taskId);
+                int numUpdates = st.executeUpdate();
+                if (numUpdates < 1)
+                    throw new Exception("Task " + taskId + " is not found in the database.");
+            }
+        }
     }
 }
