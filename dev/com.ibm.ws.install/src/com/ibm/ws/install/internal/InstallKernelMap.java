@@ -1156,8 +1156,10 @@ public class InstallKernelMap implements Map {
      * @throws IOException
      * @throws RepositoryException
      * @throws InstallException
+     * @throws com.ibm.ws.repository.exceptions.RepositoryException
      */
-    private File generateJsonFromIndividualESAs(Path jsonDirectory, Map<String, String> shortNameMap) throws IOException, RepositoryException, InstallException {
+    private File generateJsonFromIndividualESAs(Path jsonDirectory,
+                                                Map<String, String> shortNameMap) throws IOException, RepositoryException, InstallException, com.ibm.ws.repository.exceptions.RepositoryException {
         String dir = jsonDirectory.toString();
         List<File> esas = (List<File>) data.get(INDIVIDUAL_ESAS);
         File singleJson = new File(dir + "/SingleJson.json");
@@ -1180,7 +1182,7 @@ public class InstallKernelMap implements Map {
                                                                                               esa.getAbsolutePath()));
                 }
             }
-            Parser<? extends RepositoryResourceWritable> parser = new EsaParser(true);
+            EsaParser parser = new EsaParser(true);
             RepositoryResourceWritable resource = parser.parseFileToResource(esa, null, null);
             resource.updateGeneratedFields(true);
             resource.setRepositoryConnection(mySingleFileRepo);
