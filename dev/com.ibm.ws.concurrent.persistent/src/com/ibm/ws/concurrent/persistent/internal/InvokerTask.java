@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -116,10 +116,8 @@ public class InvokerTask implements Runnable, Synchronization {
     /**
      * In a new transaction, updates the database with the new failure count (or autopurges the task).
      * The first failure should always be retried immediately.
-     * For subsequent failures, check the failureLimit and failureRetryInterval to determine if we should
+     * For subsequent failures, check the retryLimit and retryInterval to determine if we should
      * retry, and how long we should wait before doing so.
-     * In the future, when there is support for a controller, we might want to give up the task and
-     * ask another instance to try it.
      *
      * @param failure                 failure of the task itself or of processing related to the task, such as Trigger.getNextRunTime
      * @param loader                  class loader that can load the task and any exceptions that it might raise

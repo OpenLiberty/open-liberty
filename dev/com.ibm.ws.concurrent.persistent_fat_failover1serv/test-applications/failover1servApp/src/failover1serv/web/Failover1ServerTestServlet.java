@@ -310,7 +310,7 @@ public class Failover1ServerTestServlet extends FATServlet {
             long taskId = Long.valueOf(taskIdString);
             // The only way to find the value stored in a task's PARTN column is to query the database
             try (Connection con = ds.getConnection()) {
-                // querying only EXECUTOR and ignoring HOSTANME, USERDIR, LSERVER columns because there is only one instance
+                // querying only EXECUTOR and ignoring HOSTNAME, USERDIR, LSERVER columns because there is only one instance
                 PreparedStatement st = con.prepareStatement("SELECT ID FROM WLPPART WHERE EXECUTOR=?");
                 st.setString(1, "persistentExecRFR");
                 ResultSet result = st.executeQuery();
