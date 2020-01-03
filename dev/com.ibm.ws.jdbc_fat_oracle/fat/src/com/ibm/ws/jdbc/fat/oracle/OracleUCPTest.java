@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 IBM Corporation and others.
+ * Copyright (c) 2016, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collections;
+import java.util.Properties;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -35,6 +36,7 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import oracle.jdbc.pool.OracleDataSource;
 import ucp.web.OracleUCPTestServlet;
 
 @RunWith(FATRunner.class)
@@ -71,7 +73,18 @@ public class OracleUCPTest extends FATServletClient {
     }
     
     private static void initDatabaseTables() throws SQLException {
-    	try (Connection conn = FATSuite.oracle.createConnection("")) {
+		Properties connProps = new Properties();
+		// This property prevents "ORA-01882: timezone region not found" errors due to the Oracle DB not understanding 
+		// some time zones(specifically those used by our RHEL 6 test systems).
+		connProps.put("oracle.jdbc.timezoneAsRegion", "false");
+		
+		OracleDataSource ds = new OracleDataSource();
+		ds.setConnectionProperties(connProps);
+		ds.setUser(FATSuite.oracle.getUsername());
+		ds.setPassword(FATSuite.oracle.getPassword());
+		ds.setURL(FATSuite.oracle.getJdbcUrl());
+		
+    	try (Connection conn = ds.getConnection()){
             Statement stmt = conn.createStatement();
             
             //Create COLORTABLE for OracleUCPTest.class
