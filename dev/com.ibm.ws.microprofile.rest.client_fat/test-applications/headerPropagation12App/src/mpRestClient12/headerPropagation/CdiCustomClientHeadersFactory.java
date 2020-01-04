@@ -13,6 +13,7 @@ package mpRestClient12.headerPropagation;
 import java.net.URI;
 import java.util.logging.Logger;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MultivaluedHashMap;
@@ -21,9 +22,10 @@ import javax.ws.rs.core.UriInfo;
 
 import org.eclipse.microprofile.rest.client.ext.ClientHeadersFactory;
 
-public class CustomClientHeadersFactory implements ClientHeadersFactory {
+@ApplicationScoped
+public class CdiCustomClientHeadersFactory implements ClientHeadersFactory {
 
-    private static final Logger LOG = Logger.getLogger(CustomClientHeadersFactory.class.getName());
+    private static final Logger LOG = Logger.getLogger(CdiCustomClientHeadersFactory.class.getName());
 
     @Context
     private UriInfo uriInfo;
@@ -35,8 +37,8 @@ public class CustomClientHeadersFactory implements ClientHeadersFactory {
     public MultivaluedMap<String, String> update(MultivaluedMap<String, String> incomingHeaders,
                                                  MultivaluedMap<String, String> clientOutgoingHeaders) {
         MultivaluedMap<String, String> myHeaders = new MultivaluedHashMap<>();
-        myHeaders.putSingle("HEADER_FROM_CUSTOM_CLIENTHEADERSFACTORY", "123");
-        LOG.info("update - adding HEADER_FROM_CUSTOM_CLIENTHEADERSFACTORY=123");
+        myHeaders.putSingle("HEADER_FROM_CUSTOM_CLIENTHEADERSFACTORY", "456");
+        LOG.info("update - adding HEADER_FROM_CUSTOM_CLIENTHEADERSFACTORY=456");
 
         if (uriInfo != null) {
             URI uri = uriInfo.getAbsolutePath();
