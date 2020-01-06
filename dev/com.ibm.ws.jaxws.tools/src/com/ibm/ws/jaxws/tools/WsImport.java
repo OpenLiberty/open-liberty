@@ -114,8 +114,17 @@ public class WsImport {
                                                                               }
                                                                           });
 
-        return protectionDomain.getCodeSource().getLocation().getPath();
+        String path = protectionDomain.getCodeSource().getLocation().getPath();
+        if (isWindows()) {
+            // If it's Windows and starts with '/' remove '/'
+            path = path.substring(1);
+        }
+        return path;
+    }
 
+    private static boolean isWindows() {
+        String OS = System.getProperty("os.name").toLowerCase();
+        return (OS.contains("win"));
     }
 
     private static int getMajorJavaVersion() {
