@@ -24,6 +24,8 @@ import componenttest.rules.repeater.RepeatTests;
                 JPA20Cache_WEB.class,
                 JPA20CriteriaQuery_EJB.class,
                 JPA20CriteriaQuery_WEB.class,
+                JPA20OrderColumn_EJB.class,
+                JPA20OrderColumn_WEB.class,
                 JPA20QueryLockMode_EJB.class,
                 JPA20QueryLockMode_WEB.class,
                 TestOLGH9018_EJB.class,

@@ -21,6 +21,7 @@ src: \
     test-applications/criteriaquery/src,\
     test-applications/olgh9018/src,\
     test-applications/olgh9339/src,\
+    test-applications/ordercolumn/src,\
     test-applications/querylockmode/src,\
     test-applications/helpers/DatabaseManagement/src,\
     test-framework/src
