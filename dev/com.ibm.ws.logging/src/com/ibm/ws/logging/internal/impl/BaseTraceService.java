@@ -732,8 +732,6 @@ public class BaseTraceService implements TrService {
         LogTraceData.setOmitFieldsMessage(omitFieldsMap.get(CollectorConstants.MESSAGES_CONFIG_VAL));
         LogTraceData.setOmitFieldsTrace(omitFieldsMap.get(CollectorConstants.TRACE_CONFIG_VAL));
         AuditData.setOmitFields(omitFieldsMap.get(CollectorConstants.AUDIT_CONFIG_VAL));
-
-        System.out.print("FOR EXT FIELDS TESTING");
     }
 
     /**
