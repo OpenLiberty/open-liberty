@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -167,6 +167,7 @@ public class Failover1ServerTest extends FATServletClient {
             persistentExec3.setPollInterval("2s");
             persistentExec3.setPollSize("4");
             persistentExec3.setMissedTaskThreshold("3s");
+            persistentExec3.setExtraAttribute("ignore.minimum.for.test.use.only", "true");
             config.getPersistentExecutors().add(persistentExec3);
 
             PersistentExecutor persistentExec4 = new PersistentExecutor();
@@ -174,6 +175,7 @@ public class Failover1ServerTest extends FATServletClient {
             persistentExec4.setPollInterval("2s");
             persistentExec4.setPollSize("4");
             persistentExec4.setMissedTaskThreshold("3s");
+            persistentExec4.setExtraAttribute("ignore.minimum.for.test.use.only", "true");
             config.getPersistentExecutors().add(persistentExec4);
 
             PersistentExecutor persistentExec5 = new PersistentExecutor();
@@ -181,6 +183,7 @@ public class Failover1ServerTest extends FATServletClient {
             persistentExec5.setPollInterval("2s");
             persistentExec5.setPollSize("4");
             persistentExec5.setMissedTaskThreshold("3s");
+            persistentExec5.setExtraAttribute("ignore.minimum.for.test.use.only", "true");
             config.getPersistentExecutors().add(persistentExec5);
 
             server.setMarkToEndOfLog();
@@ -260,18 +263,21 @@ public class Failover1ServerTest extends FATServletClient {
             persistentExec3.setId("persistentExec3");
             persistentExec3.setPollInterval("1s500ms");
             persistentExec3.setMissedTaskThreshold("2s");
+            persistentExec3.setExtraAttribute("ignore.minimum.for.test.use.only", "true");
             config.getPersistentExecutors().add(persistentExec3);
 
             PersistentExecutor persistentExec4 = new PersistentExecutor();
             persistentExec4.setId("persistentExec4");
             persistentExec4.setPollInterval("1s500ms");
             persistentExec4.setMissedTaskThreshold("2s");
+            persistentExec4.setExtraAttribute("ignore.minimum.for.test.use.only", "true");
             config.getPersistentExecutors().add(persistentExec4);
 
             PersistentExecutor persistentExec5 = new PersistentExecutor();
             persistentExec5.setId("persistentExec5");
             persistentExec5.setPollInterval("1s500ms");
             persistentExec5.setMissedTaskThreshold("2s");
+            persistentExec5.setExtraAttribute("ignore.minimum.for.test.use.only", "true");
             config.getPersistentExecutors().add(persistentExec5);
 
             server.setMarkToEndOfLog();
@@ -351,6 +357,7 @@ public class Failover1ServerTest extends FATServletClient {
             persistentExec1.setInitialPollDelay("200ms");
             persistentExec1.setPollInterval("1s500ms");
             persistentExec1.setMissedTaskThreshold("2s");
+            persistentExec1.setExtraAttribute("ignore.minimum.for.test.use.only", "true");
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
             server.waitForConfigUpdateInLogUsingMark(APP_NAMES);
@@ -385,7 +392,7 @@ public class Failover1ServerTest extends FATServletClient {
         PersistentExecutor persistentExec1 = config.getPersistentExecutors().getById("persistentExec1");
         persistentExec1.setMissedTaskThreshold(null);
         PersistentExecutor persistentExec2 = config.getPersistentExecutors().getById("persistentExec2");
-        persistentExec2.setMissedTaskThreshold("5h"); // even though this value is unreasonably long, it does not impact the ability to take over an unassigned task
+        persistentExec2.setMissedTaskThreshold("2h"); // even though this value is unreasonably long, it does not impact the ability to take over an unassigned task
 
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);

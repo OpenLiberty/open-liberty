@@ -80,6 +80,7 @@ class Config {
     Config(Dictionary<String, ?> properties) {
         jndiName = (String) properties.get("jndiName");
         enableTaskExecution = (Boolean) properties.get("enableTaskExecution");
+        boolean ignoreMin = Boolean.parseBoolean((String) properties.get("ignore.minimum.for.test.use.only")); // helps tests run faster, but NOT SUPPORTED for production use
         initialPollDelay = (Long) properties.get("initialPollDelay");
         missedTaskThreshold = (Long) properties.get("missedTaskThreshold");
         Long pollIntrvl = enableTaskExecution ? (Long) properties.get("pollInterval") : null;
@@ -93,7 +94,7 @@ class Config {
             // TODO come up with better auto-compute logic.
             // For now, we default poll interval to a value between 5m and 30m, matching the missedTaskThreshold, or 5m if less, or 30m if higher.
             if (enableTaskExecution && missedTaskThreshold > 0) {
-                if (missedTaskThreshold < TimeUnit.MINUTES.toSeconds(5))
+                if (missedTaskThreshold < TimeUnit.MINUTES.toSeconds(5) && !ignoreMin)
                     pollIntrvl = TimeUnit.MINUTES.toMillis(5);
                 else if (missedTaskThreshold < TimeUnit.MINUTES.toSeconds(30))
                     pollIntrvl = TimeUnit.SECONDS.toMillis(missedTaskThreshold);
@@ -107,22 +108,24 @@ class Config {
 
         // Default the retry interval to match the poll interval (or lacking that, the missed task threshold) when fail over is enabled.
         if (retryIntrvl == null) {
-            if (missedTaskThreshold > 0)
-                retryIntrvl = enableTaskExecution ? pollInterval : TimeUnit.SECONDS.toMillis(missedTaskThreshold);
-            else
-                retryIntrvl = TimeUnit.MINUTES.toMillis(1); // the old default for single-server, which cannot be changed
+            if (missedTaskThreshold > 0) {
+                retryInterval = enableTaskExecution && pollInterval > 0 ? pollInterval : TimeUnit.SECONDS.toMillis(missedTaskThreshold);
+            } else {
+                retryInterval = TimeUnit.MINUTES.toMillis(1); // the old default for single-server, which cannot be changed
+            }
+        } else {
+            retryInterval = retryIntrvl;
         }
-        retryInterval = retryIntrvl;
 
+        // TODO translatable messages for the following
         // Range checking on duration values, which cannot be enforced via metatype
-        // TODO also restrict lower bound
-        if ((missedTaskThreshold != -1 && missedTaskThreshold < 1) || missedTaskThreshold > 86400) // disallowing above 1 day. What is a reasonable upper bound?
+        if ((missedTaskThreshold != -1 && !ignoreMin && missedTaskThreshold < 100) || missedTaskThreshold > 9000) // disallow below 100 seconds and above 2.5 hours
             throw new IllegalArgumentException("missedTaskThreshold: " + missedTaskThreshold + "s");
         if (initialPollDelay < -1)
             throw new IllegalArgumentException("initialPollDelay: " + initialPollDelay + "ms");
-        if (pollInterval < -1)
+        if (pollInterval < -1 || missedTaskThreshold > 0 && (!ignoreMin && pollInterval < 100000 && pollInterval != -1 || pollInterval > 9000000)) // disallow below 100 seconds and above 2.5 hours
             throw new IllegalArgumentException("pollInterval: " + pollInterval + "ms");
-        if (retryInterval < 0)
+        if (retryInterval < 0 || missedTaskThreshold > 0 && retryIntrvl != null && retryLimit != 0 && !ignoreMin && retryIntrvl < missedTaskThreshold * 1000)
             throw new IllegalArgumentException("retryInterval: " + retryInterval + "ms");
     }
 

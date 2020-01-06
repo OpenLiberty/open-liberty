@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -95,9 +96,23 @@ public class PersistentExecutorErrorPathsTestWithFailoverAndPollingEnabled {
     public static void setUp() throws Exception {
         originalConfig = server.getServerConfiguration();
         ServerConfiguration config = originalConfig.clone();
+
         PersistentExecutor persistentExecutor = config.getPersistentExecutors().getBy("jndiName", "concurrent/myScheduler");
+        persistentExecutor.setExtraAttribute("ignore.minimum.for.test.use.only", "true");
         persistentExecutor.setMissedTaskThreshold("5s");
         persistentExecutor.setPollInterval("3s");
+
+        PersistentExecutor exceedsMaxMissedTaskThresholdExecutor = new PersistentExecutor();
+        exceedsMaxMissedTaskThresholdExecutor.setId("exceedsMaxMissedTaskThresholdExecutor");
+        exceedsMaxMissedTaskThresholdExecutor.setJndiName("concurrent/exceedsMaxMissedTaskThreshold");
+        exceedsMaxMissedTaskThresholdExecutor.setTaskStoreRef("DBTaskStore");
+        exceedsMaxMissedTaskThresholdExecutor.setMissedTaskThreshold("2h30m1s");
+        exceedsMaxMissedTaskThresholdExecutor.setPollInterval("30m");
+        exceedsMaxMissedTaskThresholdExecutor.setInitialPollDelay("-1");
+        config.getPersistentExecutors().add(exceedsMaxMissedTaskThresholdExecutor);
+
+        // TODO test enforcement of other misconfiguration?
+
         config.getDataSources().getById("SchedDB").getConnectionManagers().get(0).setMaxPoolSize("10");
         server.updateServerConfiguration(config);
 
@@ -139,6 +154,27 @@ public class PersistentExecutorErrorPathsTestWithFailoverAndPollingEnabled {
     @Test
     public void testFailOnceAndSkipFirstRetryNoAutoPurgeFEWithPolling() throws Exception {
         runInServlet("testFailOnceAndSkipFirstRetryNoAutoPurge");
+    }
+
+    /**
+     * testMissedTaskThresholdExceedsMaximum - attempt to use a persistent executor where the missedTaskThreshold value exceeds
+     * the maximum allowed. Expect IllegalArgumentException with a translatable message.
+     */
+    @Test
+    public void testMissedTaskThresholdExceedsMaximum() throws Exception {
+        server.setMarkToEndOfLog();
+
+        runInServlet("testMissedTaskThresholdExceedsMaximum");
+
+        List<String> errorMessages = server.findStringsInLogsUsingMark("CWWKE0701E.*9001s", server.getConsoleLogFile());
+        if (errorMessages.isEmpty())
+            throw new Exception("Error message not found in log.");
+
+        String errorMessage = errorMessages.get(0);
+
+        // TODO add more tests of message detail later, after message content is finalized
+        //if (!errorMessage.contains("..."))
+        //    throw new Exception("...");
     }
 
     @Test
