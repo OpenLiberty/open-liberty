@@ -84,8 +84,8 @@ public class OrderColumnEJBSLTestServlet extends EJBTestVehicleServlet {
     }
 
     @Test
-    public void jpa_spec20_ordercolumn_testOrderColumnUni_O2M_XML_AMJTA_Annotated_EJB_SL() throws Exception {
-        final String testName = "jpa_spec20_ordercolumn_testOrderColumnUni_O2M_XML_AMJTA_Annotated_EJB_SL";
+    public void jpa_spec20_ordercolumn_testOrderColumnUni_O2M__AMJTA_XML_EJB_SL() throws Exception {
+        final String testName = "jpa_spec20_ordercolumn_testOrderColumnUni_O2M__AMJTA_XML_EJB_SL";
         final String testMethod = "testOrderColumnUni";
         final String testResource = "test-jpa-resource-amjta";
 
@@ -98,8 +98,8 @@ public class OrderColumnEJBSLTestServlet extends EJBTestVehicleServlet {
     }
 
     @Test
-    public void jpa_spec20_ordercolumn_testOrderColumnUni_O2M_XML_AMRL_Annotated_EJB_SL() throws Exception {
-        final String testName = "jpa_spec20_ordercolumn_testOrderColumnUni_O2M_XML_AMRL_Annotated_EJB_SL";
+    public void jpa_spec20_ordercolumn_testOrderColumnUni_O2M__AMRL_XML_EJB_SL() throws Exception {
+        final String testName = "jpa_spec20_ordercolumn_testOrderColumnUni_O2M__AMRL_XML_EJB_SL";
         final String testMethod = "testOrderColumnUni";
         final String testResource = "test-jpa-resource-amrl";
 
@@ -112,8 +112,8 @@ public class OrderColumnEJBSLTestServlet extends EJBTestVehicleServlet {
     }
 
     @Test
-    public void jpa_spec20_ordercolumn_testOrderColumnUni_O2M_XML_CMTS_Annotated_EJB_SL() throws Exception {
-        final String testName = "jpa_spec20_ordercolumn_testOrderColumnUni_O2M_XML_CMTS_Annotated_EJB_SL";
+    public void jpa_spec20_ordercolumn_testOrderColumnUni_O2M__CMTS_XML_EJB_SL() throws Exception {
+        final String testName = "jpa_spec20_ordercolumn_testOrderColumnUni_O2M__CMTS_XML_EJB_SL";
         final String testMethod = "testOrderColumnUni";
         final String testResource = "test-jpa-resource-cmts";
 
@@ -168,8 +168,8 @@ public class OrderColumnEJBSLTestServlet extends EJBTestVehicleServlet {
     }
 
     @Test
-    public void jpa_spec20_ordercolumn_testOrderColumnUni_M2M_XML_AMJTA_Annotated_EJB_SL() throws Exception {
-        final String testName = "jpa_spec20_ordercolumn_testOrderColumnUni_M2M_XML_AMJTA_Annotated_EJB_SL";
+    public void jpa_spec20_ordercolumn_testOrderColumnUni_M2M__AMJTA_XML_EJB_SL() throws Exception {
+        final String testName = "jpa_spec20_ordercolumn_testOrderColumnUni_M2M__AMJTA_XML_EJB_SL";
         final String testMethod = "testOrderColumnUni";
         final String testResource = "test-jpa-resource-amjta";
 
@@ -182,8 +182,8 @@ public class OrderColumnEJBSLTestServlet extends EJBTestVehicleServlet {
     }
 
     @Test
-    public void jpa_spec20_ordercolumn_testOrderColumnUni_M2M_XML_AMRL_Annotated_EJB_SL() throws Exception {
-        final String testName = "jpa_spec20_ordercolumn_testOrderColumnUni_M2M_XML_AMRL_Annotated_EJB_SL";
+    public void jpa_spec20_ordercolumn_testOrderColumnUni_M2M__AMRL_XML_EJB_SL() throws Exception {
+        final String testName = "jpa_spec20_ordercolumn_testOrderColumnUni_M2M__AMRL_XML_EJB_SL";
         final String testMethod = "testOrderColumnUni";
         final String testResource = "test-jpa-resource-amrl";
 
@@ -196,8 +196,8 @@ public class OrderColumnEJBSLTestServlet extends EJBTestVehicleServlet {
     }
 
     @Test
-    public void jpa_spec20_ordercolumn_testOrderColumnUni_M2M_XML_CMTS_Annotated_EJB_SL() throws Exception {
-        final String testName = "jpa_spec20_ordercolumn_testOrderColumnUni_M2M_XML_CMTS_Annotated_EJB_SL";
+    public void jpa_spec20_ordercolumn_testOrderColumnUni_M2M__CMTS_XML_EJB_SL() throws Exception {
+        final String testName = "jpa_spec20_ordercolumn_testOrderColumnUni_M2M__CMTS_XML_EJB_SL";
         final String testMethod = "testOrderColumnUni";
         final String testResource = "test-jpa-resource-cmts";
 
@@ -212,7 +212,7 @@ public class OrderColumnEJBSLTestServlet extends EJBTestVehicleServlet {
     @Test
     public void jpa_spec20_ordercolumn_testOrderColumnBi_O2M_AMJTA_Annotated_EJB_SL() throws Exception {
         if (!isUsingJPA20Feature()) {
-            // Test fails on Eclipselink
+            // TODO: Investigate why this fails on EclipseLink
             return;
         }
         final String testName = "jpa_spec20_ordercolumn_testOrderColumnBi_O2M_AMJTA_Annotated_EJB_SL";
@@ -230,7 +230,7 @@ public class OrderColumnEJBSLTestServlet extends EJBTestVehicleServlet {
     @Test
     public void jpa_spec20_ordercolumn_testOrderColumnBi_O2M_AMRL_Annotated_EJB_SL() throws Exception {
         if (!isUsingJPA20Feature()) {
-            // Test fails on Eclipselink
+            // TODO: Investigate why this fails on EclipseLink
             return;
         }
         final String testName = "jpa_spec20_ordercolumn_testOrderColumnBi_O2M_AMRL_Annotated_EJB_SL";
@@ -248,7 +248,7 @@ public class OrderColumnEJBSLTestServlet extends EJBTestVehicleServlet {
     @Test
     public void jpa_spec20_ordercolumn_testOrderColumnBi_O2M_CMTS_Annotated_EJB_SL() throws Exception {
         if (!isUsingJPA20Feature()) {
-            // Test fails on Eclipselink
+            // TODO: Investigate why this fails on EclipseLink
             return;
         }
         final String testName = "jpa_spec20_ordercolumn_testOrderColumnBi_O2M_CMTS_Annotated_EJB_SL";
@@ -264,12 +264,12 @@ public class OrderColumnEJBSLTestServlet extends EJBTestVehicleServlet {
     }
 
     @Test
-    public void jpa_spec20_ordercolumn_testOrderColumnBi_O2M_XML_AMJTA_Annotated_EJB_SL() throws Exception {
+    public void jpa_spec20_ordercolumn_testOrderColumnBi_O2M__AMJTA_XML_EJB_SL() throws Exception {
         if (!isUsingJPA20Feature()) {
-            // Test fails on Eclipselink
+            // TODO: Investigate why this fails on EclipseLink
             return;
         }
-        final String testName = "jpa_spec20_ordercolumn_testOrderColumnBi_O2M_XML_AMJTA_Annotated_EJB_SL";
+        final String testName = "jpa_spec20_ordercolumn_testOrderColumnBi_O2M__AMJTA_XML_EJB_SL";
         final String testMethod = "testOrderColumnBi";
         final String testResource = "test-jpa-resource-amjta";
 
@@ -282,12 +282,12 @@ public class OrderColumnEJBSLTestServlet extends EJBTestVehicleServlet {
     }
 
     @Test
-    public void jpa_spec20_ordercolumn_testOrderColumnBi_O2M_XML_AMRL_Annotated_EJB_SL() throws Exception {
+    public void jpa_spec20_ordercolumn_testOrderColumnBi_O2M__AMRL_XML_EJB_SL() throws Exception {
         if (!isUsingJPA20Feature()) {
-            // Test fails on Eclipselink
+            // TODO: Investigate why this fails on EclipseLink
             return;
         }
-        final String testName = "jpa_spec20_ordercolumn_testOrderColumnBi_O2M_XML_AMRL_Annotated_EJB_SL";
+        final String testName = "jpa_spec20_ordercolumn_testOrderColumnBi_O2M__AMRL_XML_EJB_SL";
         final String testMethod = "testOrderColumnBi";
         final String testResource = "test-jpa-resource-amrl";
 
@@ -300,12 +300,12 @@ public class OrderColumnEJBSLTestServlet extends EJBTestVehicleServlet {
     }
 
     @Test
-    public void jpa_spec20_ordercolumn_testOrderColumnBi_O2M_XML_CMTS_Annotated_EJB_SL() throws Exception {
+    public void jpa_spec20_ordercolumn_testOrderColumnBi_O2M__CMTS_XML_EJB_SL() throws Exception {
         if (!isUsingJPA20Feature()) {
-            // Test fails on Eclipselink
+            // TODO: Investigate why this fails on EclipseLink
             return;
         }
-        final String testName = "jpa_spec20_ordercolumn_testOrderColumnBi_O2M_XML_CMTS_Annotated_EJB_SL";
+        final String testName = "jpa_spec20_ordercolumn_testOrderColumnBi_O2M__CMTS_XML_EJB_SL";
         final String testMethod = "testOrderColumnBi";
         final String testResource = "test-jpa-resource-cmts";
 
@@ -360,8 +360,8 @@ public class OrderColumnEJBSLTestServlet extends EJBTestVehicleServlet {
     }
 
     @Test
-    public void jpa_spec20_ordercolumn_testOrderColumnBi_M2M_XML_AMJTA_Annotated_EJB_SL() throws Exception {
-        final String testName = "jpa_spec20_ordercolumn_testOrderColumnBi_M2M_XML_AMJTA_Annotated_EJB_SL";
+    public void jpa_spec20_ordercolumn_testOrderColumnBi_M2M__AMJTA_XML_EJB_SL() throws Exception {
+        final String testName = "jpa_spec20_ordercolumn_testOrderColumnBi_M2M__AMJTA_XML_EJB_SL";
         final String testMethod = "testOrderColumnBi";
         final String testResource = "test-jpa-resource-amjta";
 
@@ -374,8 +374,8 @@ public class OrderColumnEJBSLTestServlet extends EJBTestVehicleServlet {
     }
 
     @Test
-    public void jpa_spec20_ordercolumn_testOrderColumnBi_M2M_XML_AMRL_Annotated_EJB_SL() throws Exception {
-        final String testName = "jpa_spec20_ordercolumn_testOrderColumnBi_M2M_XML_AMRL_Annotated_EJB_SL";
+    public void jpa_spec20_ordercolumn_testOrderColumnBi_M2M__AMRL_XML_EJB_SL() throws Exception {
+        final String testName = "jpa_spec20_ordercolumn_testOrderColumnBi_M2M__AMRL_XML_EJB_SL";
         final String testMethod = "testOrderColumnBi";
         final String testResource = "test-jpa-resource-amrl";
 
@@ -388,8 +388,8 @@ public class OrderColumnEJBSLTestServlet extends EJBTestVehicleServlet {
     }
 
     @Test
-    public void jpa_spec20_ordercolumn_testOrderColumnBi_M2M_XML_CMTS_Annotated_EJB_SL() throws Exception {
-        final String testName = "jpa_spec20_ordercolumn_testOrderColumnBi_M2M_XML_CMTS_Annotated_EJB_SL";
+    public void jpa_spec20_ordercolumn_testOrderColumnBi_M2M__CMTS_XML_EJB_SL() throws Exception {
+        final String testName = "jpa_spec20_ordercolumn_testOrderColumnBi_M2M__CMTS_XML_EJB_SL";
         final String testMethod = "testOrderColumnBi";
         final String testResource = "test-jpa-resource-cmts";
 
@@ -444,8 +444,8 @@ public class OrderColumnEJBSLTestServlet extends EJBTestVehicleServlet {
     }
 
     @Test
-    public void jpa_spec20_ordercolumn_testOrderColumnElement_XML_AMJTA_Annotated_EJB_SL() throws Exception {
-        final String testName = "jpa_spec20_ordercolumn_testOrderColumnElement_XML_AMJTA_Annotated_EJB_SL";
+    public void jpa_spec20_ordercolumn_testOrderColumnElement__AMJTA_XML_EJB_SL() throws Exception {
+        final String testName = "jpa_spec20_ordercolumn_testOrderColumnElement__AMJTA_XML_EJB_SL";
         final String testMethod = "testOrderColumnElement";
         final String testResource = "test-jpa-resource-amjta";
 
@@ -458,8 +458,8 @@ public class OrderColumnEJBSLTestServlet extends EJBTestVehicleServlet {
     }
 
     @Test
-    public void jpa_spec20_ordercolumn_testOrderColumnElement_XML_AMRL_Annotated_EJB_SL() throws Exception {
-        final String testName = "jpa_spec20_ordercolumn_testOrderColumnElement_XML_AMRL_Annotated_EJB_SL";
+    public void jpa_spec20_ordercolumn_testOrderColumnElement__AMRL_XML_EJB_SL() throws Exception {
+        final String testName = "jpa_spec20_ordercolumn_testOrderColumnElement__AMRL_XML_EJB_SL";
         final String testMethod = "testOrderColumnElement";
         final String testResource = "test-jpa-resource-amrl";
 
@@ -472,8 +472,8 @@ public class OrderColumnEJBSLTestServlet extends EJBTestVehicleServlet {
     }
 
     @Test
-    public void jpa_spec20_ordercolumn_testOrderColumnElement_XML_CMTS_Annotated_EJB_SL() throws Exception {
-        final String testName = "jpa_spec20_ordercolumn_testOrderColumnElement_XML_CMTS_Annotated_EJB_SL";
+    public void jpa_spec20_ordercolumn_testOrderColumnElement__CMTS_XML_EJB_SL() throws Exception {
+        final String testName = "jpa_spec20_ordercolumn_testOrderColumnElement__CMTS_XML_EJB_SL";
         final String testMethod = "testOrderColumnElement";
         final String testResource = "test-jpa-resource-cmts";
 

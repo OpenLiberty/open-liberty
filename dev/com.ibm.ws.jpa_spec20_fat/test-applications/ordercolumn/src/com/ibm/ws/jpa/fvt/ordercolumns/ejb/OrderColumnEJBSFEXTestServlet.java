@@ -52,8 +52,8 @@ public class OrderColumnEJBSFEXTestServlet extends EJBTestVehicleServlet {
     }
 
     @Test
-    public void jpa_spec20_ordercolumn_testOrderColumnUni_O2M_XML_CMEX_Annotated_EJB_SF() throws Exception {
-        final String testName = "jpa_spec20_ordercolumn_testOrderColumnUni_O2M_XML_CMEX_Annotated_EJB_SF";
+    public void jpa_spec20_ordercolumn_testOrderColumnUni_O2M__CMEX_XML_EJB_SF() throws Exception {
+        final String testName = "jpa_spec20_ordercolumn_testOrderColumnUni_O2M__CMEX_XML_EJB_SF";
         final String testMethod = "testOrderColumnUni";
         final String testResource = "test-jpa-resource-cmex";
 
@@ -80,8 +80,8 @@ public class OrderColumnEJBSFEXTestServlet extends EJBTestVehicleServlet {
     }
 
     @Test
-    public void jpa_spec20_ordercolumn_testOrderColumnUni_M2M_XML_CMEX_Annotated_EJB_SF() throws Exception {
-        final String testName = "jpa_spec20_ordercolumn_testOrderColumnUni_M2M_XML_CMEX_Annotated_EJB_SF";
+    public void jpa_spec20_ordercolumn_testOrderColumnUni_M2M__CMEX_XML_EJB_SF() throws Exception {
+        final String testName = "jpa_spec20_ordercolumn_testOrderColumnUni_M2M__CMEX_XML_EJB_SF";
         final String testMethod = "testOrderColumnUni";
         final String testResource = "test-jpa-resource-cmex";
 
@@ -96,7 +96,7 @@ public class OrderColumnEJBSFEXTestServlet extends EJBTestVehicleServlet {
     @Test
     public void jpa_spec20_ordercolumn_testOrderColumnBi_O2M_CMEX_Annotated_EJB_SF() throws Exception {
         if (!isUsingJPA20Feature()) {
-            // Test fails on Eclipselink
+            // TODO: Investigate why this fails on EclipseLink
             return;
         }
         final String testName = "jpa_spec20_ordercolumn_testOrderColumnBi_O2M_CMEX_Annotated_EJB_SF";
@@ -112,12 +112,12 @@ public class OrderColumnEJBSFEXTestServlet extends EJBTestVehicleServlet {
     }
 
     @Test
-    public void jpa_spec20_ordercolumn_testOrderColumnBi_O2M_XML_CMEX_Annotated_EJB_SF() throws Exception {
+    public void jpa_spec20_ordercolumn_testOrderColumnBi_O2M__CMEX_XML_EJB_SF() throws Exception {
         if (!isUsingJPA20Feature()) {
-            // Test fails on Eclipselink
+            // TODO: Investigate why this fails on EclipseLink
             return;
         }
-        final String testName = "jpa_spec20_ordercolumn_testOrderColumnBi_O2M_XML_CMEX_Annotated_EJB_SF";
+        final String testName = "jpa_spec20_ordercolumn_testOrderColumnBi_O2M__CMEX_XML_EJB_SF";
         final String testMethod = "testOrderColumnBi";
         final String testResource = "test-jpa-resource-cmex";
 
@@ -144,8 +144,8 @@ public class OrderColumnEJBSFEXTestServlet extends EJBTestVehicleServlet {
     }
 
     @Test
-    public void jpa_spec20_ordercolumn_testOrderColumnBi_M2M_XML_CMEX_Annotated_EJB_SF() throws Exception {
-        final String testName = "jpa_spec20_ordercolumn_testOrderColumnBi_M2M_XML_CMEX_Annotated_EJB_SF";
+    public void jpa_spec20_ordercolumn_testOrderColumnBi_M2M__CMEX_XML_EJB_SF() throws Exception {
+        final String testName = "jpa_spec20_ordercolumn_testOrderColumnBi_M2M__CMEX_XML_EJB_SF";
         final String testMethod = "testOrderColumnBi";
         final String testResource = "test-jpa-resource-cmex";
 
@@ -172,8 +172,8 @@ public class OrderColumnEJBSFEXTestServlet extends EJBTestVehicleServlet {
     }
 
     @Test
-    public void jpa_spec20_ordercolumn_testOrderColumnElement_XML_CMEX_Annotated_EJB_SF() throws Exception {
-        final String testName = "jpa_spec20_ordercolumn_testOrderColumnElement_XML_CMEX_Annotated_EJB_SF";
+    public void jpa_spec20_ordercolumn_testOrderColumnElement__CMEX_XML_EJB_SF() throws Exception {
+        final String testName = "jpa_spec20_ordercolumn_testOrderColumnElement__CMEX_XML_EJB_SF";
         final String testMethod = "testOrderColumnElement";
         final String testResource = "test-jpa-resource-cmex";
 

@@ -51,7 +51,6 @@ public class JPA20OrderColumn_EJB extends JPAFATServletClient {
 
     private final static Set<String> dropSet = new HashSet<String>();
     private final static Set<String> createSet = new HashSet<String>();
-    private final static Set<String> populateSet = new HashSet<String>();
 
     private static long timestart = 0;
 
@@ -98,12 +97,6 @@ public class JPA20OrderColumn_EJB extends JPAFATServletClient {
 
         ddlSet.clear();
         for (String ddlName : createSet) {
-            ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
-        }
-        executeDDL(server, ddlSet, false);
-
-        ddlSet.clear();
-        for (String ddlName : populateSet) {
             ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
         }
         executeDDL(server, ddlSet, false);

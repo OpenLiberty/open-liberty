@@ -8,7 +8,7 @@
     Contributors:
         IBM Corporation - initial API and implementation
  -->
-<server description="JPA 20 Spec Test Server">
+<server description="JPA 20 Spec Order Column Test Server">
 
     <featureManager>
         <feature>ejblite-3.2</feature>
