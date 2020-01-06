@@ -19,6 +19,8 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.ws.security.authentication.cache.AuthCacheService;
 import com.ibm.ws.security.authentication.cache.RevokeAuthCacheUsers;
@@ -32,18 +34,23 @@ import com.ibm.ws.security.authentication.cache.RevokeAuthCacheUsers;
            property = { "service.vendor=IBM", "jmx.objectname=" + RevokeAuthCacheUsers.INSTANCE_NAME })
 public class RevokeAuthCacheUsersImpl extends StandardMBean implements RevokeAuthCacheUsers {
 
+    private BundleContext bContext;
+
+    private AuthCacheService authCacheService;
+
     /**
      * @param mbeanInterface
      * @throws NotCompliantMBeanException
      */
-    protected RevokeAuthCacheUsersImpl() throws NotCompliantMBeanException {
+    public RevokeAuthCacheUsersImpl() throws NotCompliantMBeanException {
         super(RevokeAuthCacheUsers.class);
     }
 
     @Override
     public void removeAllEntries() {
-        AuthCacheService auth = new AuthCacheServiceImpl();
-        auth.removeAllEntries();
+        if (authCacheService != null) {
+            authCacheService.removeAllEntries();
+        }
     }
 
     /**
@@ -60,6 +67,15 @@ public class RevokeAuthCacheUsersImpl extends StandardMBean implements RevokeAut
     @Deactivate
     protected void deactivate() {
         this.bContext = null;
+    }
+
+    @Reference(service = AuthCacheService.class, policyOption = ReferencePolicyOption.GREEDY)
+    protected void setAuthCacheService(AuthCacheService authCacheServiceIn) {
+        this.authCacheService = authCacheServiceIn;
+    }
+
+    protected void unsetAuthCacheService() {
+        this.authCacheService = null;
     }
 
 }
