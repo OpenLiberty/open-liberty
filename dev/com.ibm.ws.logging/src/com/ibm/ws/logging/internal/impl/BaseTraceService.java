@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2019 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -486,6 +486,7 @@ public class BaseTraceService implements TrService {
             FFDCData.resetOmitFields();
             LogTraceData.resetOmitFieldsMessage();
             LogTraceData.resetOmitFieldsTrace();
+            LogTraceData.resetExtFields();
             AuditData.resetOmitFields();
 
             AccessLogData.resetJsonLoggingNameAliases();
@@ -731,6 +732,8 @@ public class BaseTraceService implements TrService {
         LogTraceData.setOmitFieldsMessage(omitFieldsMap.get(CollectorConstants.MESSAGES_CONFIG_VAL));
         LogTraceData.setOmitFieldsTrace(omitFieldsMap.get(CollectorConstants.TRACE_CONFIG_VAL));
         AuditData.setOmitFields(omitFieldsMap.get(CollectorConstants.AUDIT_CONFIG_VAL));
+
+        System.out.print("FOR EXT FIELDS TESTING");
     }
 
     /**
