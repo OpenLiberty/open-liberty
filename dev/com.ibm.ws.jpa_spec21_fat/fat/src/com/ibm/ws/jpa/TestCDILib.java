@@ -207,16 +207,19 @@ public class TestCDILib extends JPAFATServletClient {
                               "WTRN0074E: Exception caught from before_completion synchronization operation" // RuntimeException test, expected
             );
         } finally {
+            try {
+                ServerConfiguration sc = server.getServerConfiguration();
+                sc.getApplications().clear();
+                server.updateServerConfiguration(sc);
+                server.saveServerConfiguration();
+
+                server.deleteFileFromLibertyServerRoot("apps/" + appNameEar);
+                server.deleteFileFromLibertyServerRoot("apps/" + appNameEar + "EJB");
+                server.deleteFileFromLibertyServerRoot("apps/DatabaseManagement.war");
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
             bannerEnd(TestCDILib.class, timestart);
-
-            ServerConfiguration sc = server.getServerConfiguration();
-            sc.getApplications().clear();
-            server.updateServerConfiguration(sc);
-            server.saveServerConfiguration();
-
-            server.deleteFileFromLibertyServerRoot("apps/" + appNameEar);
-            server.deleteFileFromLibertyServerRoot("apps/" + appNameEar + "EJB");
-            server.deleteFileFromLibertyServerRoot("apps/DatabaseManagement.war");
         }
     }
 }
