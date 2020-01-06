@@ -550,7 +550,9 @@ goto:eof
   set JVM_OPTIONS=-Djava.awt.headless=true !JVM_OPTIONS!
   @REM allow late self attach for when the localConnector-1.0 feature is enabled
   set JVM_OPTIONS=-Djdk.attach.allowAttachSelf=true !JVM_OPTIONS!
-
+  
+  @REM Clean out jvm_temp_options from a prior script execution
+  set JVM_TEMP_OPTIONS=
 
   @REM The order of merging the jvm.option files sets the precedence. 
   @REM Once a given jvm option is set, it will be overridden if a duplicate
