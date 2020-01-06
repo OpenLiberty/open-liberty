@@ -1378,11 +1378,11 @@ public class LibertyServer implements LogMonitorClient {
                     // extraordinarily small.
                     Log.warning(c, "The process that runs the server script did not return. The server may or may not have actually started.");
 
-                    //Call resetStarted() to try to determine whether the server is actually running or not.
+                    // Call resetStarted() to try to determine whether the server is actually running or not.
                     int rc = resetStarted();
                     if (rc == 0) {
                         // The server is running, so proceed as if nothing went wrong.
-                        return new ProgramOutput(cmd, rc, "No output buffer available", "No error buffer available");
+                        output = new ProgramOutput(cmd, rc, "No output buffer available", "No error buffer available");
                     } else {
                         Log.info(c, method, "The server does not appear to be running. (rc=" + rc + "). Retrying server start now");
                         // If at first you don't succeed...
