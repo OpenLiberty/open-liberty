@@ -56,6 +56,15 @@ public class DemoTimerTest extends FATServletClient {
         //Get driver name
         server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
 
+        if (DatabaseContainerType.valueOf(testContainer) == DatabaseContainerType.Oracle) {
+            //Type=javax.sql.ConnectionPoolDataSource to avoid
+            //  ORA-02089: COMMIT is not allowed in a subordinate session
+            //  when application tries to create a new table using oracle.
+            server.addEnvVar("DS_TYPE", "javax.sql.ConnectionPoolDataSource");
+        } else {
+            server.addEnvVar("DS_TYPE", "javax.sql.XADataSource");
+        }
+
         //Setup server DataSource properties
         DatabaseContainerUtil.setupDataSourceProperties(server, testContainer);
 
