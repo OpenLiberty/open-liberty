@@ -455,12 +455,14 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
         Iterator<OidcClientConfig> oidcClientConfigs = oidcClientConfigRef.getServices();
         oidcProvider = getProviderConfig(oidcClientConfigs, reqProviderHint, req);
         if (oidcProvider != null) {
-            warnIfAmbiguousAuthFilters(oidcClientConfigs, req);
+            warnIfAmbiguousAuthFilters(oidcClientConfigs, req, authFilterServiceRef);
         }
         return oidcProvider;
     }
 
-    void warnIfAmbiguousAuthFilters(Iterator<OidcClientConfig> oidcClientConfigs, HttpServletRequest req) {
+    // warn if >1 auth filter could have matched this request. If so, inconsist behavior is possible. 
+    void warnIfAmbiguousAuthFilters(Iterator<OidcClientConfig> oidcClientConfigs, HttpServletRequest req,
+            ConcurrentServiceReferenceMap<String, AuthenticationFilter> AFServiceRef) {
         HashMap<String, Object> acceptingAuthFilterIds = new HashMap<String, Object>();
         while (oidcClientConfigs.hasNext()) {
             OidcClientConfig clientConfig = oidcClientConfigs.next();
@@ -469,7 +471,7 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
             }
             String authFilterId = clientConfig.getAuthFilterId();
             if (authFilterId != null && authFilterId.length() > 0) {
-                AuthenticationFilter authFilter = authFilterServiceRef.getService(authFilterId);
+                AuthenticationFilter authFilter = AFServiceRef.getService(authFilterId);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "authFilter id:" + authFilterId + " authFilter:" + authFilter);
                 }

@@ -33,6 +33,7 @@ import org.junit.rules.TestRule;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 
+import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
 import com.ibm.ws.security.openidconnect.client.AccessTokenAuthenticator;
 import com.ibm.ws.security.openidconnect.client.OidcClientAuthenticator;
 import com.ibm.ws.security.openidconnect.clients.common.ClientConstants;
@@ -76,7 +77,10 @@ public class OidcClientImplTest {
     private final ServiceReference<OidcClientConfig> oidcClientConfigServiceRef2 = mock.mock(ServiceReference.class, "oidcClientConfigServiceRef2");
     private final OidcClientConfig oidcClientConfig = mock.mock(OidcClientConfig.class, "oidcClientConfig");
     private final OidcClientConfig oidcClientConfig2 = mock.mock(OidcClientConfig.class, "oidcClientConfig2");
-
+    private final OidcClientConfig oidcClientConfig3 = mock.mock(OidcClientConfig.class, "oidcClientConfig3");
+    private final ConcurrentServiceReferenceMap<String, AuthenticationFilter> authFilterServiceRef = mock.mock(ConcurrentServiceReferenceMap.class, "authFilterServiceRef");
+    private final AuthenticationFilter filter1 = mock.mock(AuthenticationFilter.class, "filter1");
+    private final AuthenticationFilter filter2 = mock.mock(AuthenticationFilter.class, "filter2");
     private final OidcClientAuthenticator oidcClientAuthenticator = mock.mock(OidcClientAuthenticator.class);
 
     private final AccessTokenAuthenticator accessTokenAuthenticator = mock.mock(AccessTokenAuthenticator.class);
@@ -119,7 +123,6 @@ public class OidcClientImplTest {
 
                 allowing(oidcClientConfig).getContextPath();
                 will(returnValue("/foo"));
-
             }
         });
     }
@@ -142,6 +145,45 @@ public class OidcClientImplTest {
             oidcClient.warnIfAuthFilterUseDuplicated(configs.iterator());
 
             assertTrue("expected message not found", outputMgr.checkForStandardOut("CWWKS1530W"));
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+
+    @Test
+    public void testWarnIfAmbiguousAuthFilters() {
+        String methodName = "testWarnIfAmbiguousAuthFilters";
+        final OidcClientImpl oidcClient = new OidcClientImpl();
+
+        try {
+            mock.checking(new Expectations() {
+                {
+                    allowing(oidcClientConfig3).isValidConfig();
+                    will(returnValue(true));
+                    allowing(oidcClientConfig).isValidConfig();
+                    will(returnValue(true));
+                    allowing(oidcClientConfig3).getAuthFilterId();
+                    will(returnValue("filter2"));
+                    allowing(authFilterServiceRef).getService("theFilter");
+                    will(returnValue(filter1));
+                    allowing(authFilterServiceRef).getService("filter2");
+                    will(returnValue(filter2));
+                    allowing(filter1).isAccepted(req);
+                    will(returnValue(true));
+                    allowing(filter2).isAccepted(req);
+                    will(returnValue(true));
+                    allowing(req).getRequestURL();
+                    will(returnValue(new StringBuffer("foourl")));
+                }
+            });
+            ArrayList<OidcClientConfig> configs = new ArrayList<OidcClientConfig>();
+            configs.add(oidcClientConfig);
+            configs.add(oidcClientConfig3);
+
+            oidcClient.warnIfAmbiguousAuthFilters(configs.iterator(), req, authFilterServiceRef);
+
+            assertTrue("expected message not found", outputMgr.checkForStandardOut("CWWKS1531W"));
 
         } catch (Throwable t) {
             outputMgr.failWithThrowable(methodName, t);
@@ -188,7 +230,7 @@ public class OidcClientImplTest {
             mockOidcClientConfig();
             mock.checking(new Expectations() {
                 {
-                    one(oidcClientRequest).getOidcClientConfig();
+                    allowing(oidcClientRequest).getOidcClientConfig();
                     will(returnValue(oidcClientConfig));
                     allowing(oidcClientConfig).getRedirectUrlFromServerToClient();
                     allowing(req).getHeader(with(any(String.class)));
@@ -237,9 +279,9 @@ public class OidcClientImplTest {
                     will(returnValue(null));
                     allowing(req).getParameter("oidc_client");
                     will(returnValue(null));
-                    one(oidcClientConfig).isValidConfig();
+                    allowing(oidcClientConfig).isValidConfig();
                     will(returnValue(true));
-                    one(req).getMethod();
+                    allowing(req).getMethod();
                     will(returnValue("GET"));
                 }
             });
@@ -267,11 +309,11 @@ public class OidcClientImplTest {
                     will(returnValue(null));
                     allowing(req).getParameter("oidc_client");
                     will(returnValue("myOidcClient2"));
-                    one(oidcClientConfig).getIssuerIdentifier();
+                    allowing(oidcClientConfig).getIssuerIdentifier();
                     will(returnValue(null));
-                    one(oidcClientConfig).isValidConfig();
+                    allowing(oidcClientConfig).isValidConfig();
                     will(returnValue(true));
-                    one(req).getMethod();
+                    allowing(req).getMethod();
                     will(returnValue("GET"));
                 }
             });
@@ -303,11 +345,11 @@ public class OidcClientImplTest {
                     will(returnValue(authFilterId));
                     allowing(req).getParameter("oidc_client");
                     will(returnValue(MY_OIDC_CLIENT));
-                    one(oidcClientConfig).isValidConfig();
+                    allowing(oidcClientConfig).isValidConfig();
                     will(returnValue(true));
-                    one(req).getMethod();
+                    allowing(req).getMethod();
                     will(returnValue("POST"));
-                    one(req).getAttribute(PostParameterHelper.ATTRIB_HASH_MAP);
+                    allowing(req).getAttribute(PostParameterHelper.ATTRIB_HASH_MAP);
                     will(returnValue(map));
 
                 }
@@ -338,7 +380,7 @@ public class OidcClientImplTest {
                     will(returnValue(null));
                     allowing(oidcClientConfig).getId();
                     will(returnValue(MY_OIDC_CLIENT));
-                    one(oidcClientConfig).isValidConfig();
+                    allowing(oidcClientConfig).isValidConfig();
                     will(returnValue(true));
                 }
             });
