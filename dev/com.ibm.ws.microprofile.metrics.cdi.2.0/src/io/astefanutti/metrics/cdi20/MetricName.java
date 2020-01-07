@@ -108,7 +108,6 @@ public class MetricName {
         }
     }
 
-    /** {@inheritDoc} */
     public Metadata metadataOf(InjectionPoint ip, Class<?> type) {
         Annotated annotated = ip.getAnnotated();
         String name = of(ip);
@@ -120,7 +119,6 @@ public class MetricName {
         return tagOf(annotated);
     }
 
-    /** {@inheritDoc} */
     public Metadata metadataOf(AnnotatedMember<?> member) {
         // getBaseType is a reflection proxy class, we can't directly compare the classes.
         // If type can be determined more efficiently, we can remove the overloaded methods that pass in class
@@ -175,7 +173,6 @@ public class MetricName {
         return value;
     }
 
-    /** {@inheritDoc} */
     public Metadata metadataOf(AnnotatedMember<?> member, Class<?> type) {
         String name = of(member);
         return metadataOf(member, name, type);
