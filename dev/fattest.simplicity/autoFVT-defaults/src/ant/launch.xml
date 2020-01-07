@@ -314,6 +314,20 @@
 		<!-- Server log validation should be done by default -->
 		<!-- Individual buckets must opt-out if they don't want to have logs checked -->
 		<property name="enable.server.log.validation" value="false" />
+		
+		<property name="extra.vmargs" value=""/>
+	    <echo message="Launching FAT with extra vmargs: ${extra.vmargs}"/>
+					
+		<iff if="zos.environment">
+			<then>
+				<echo message="Setting zos.extra.vmargs because we are running on zos"/>
+				<property name="zos.extra.vmargs" value="-Dcom.ibm.jsse2.overrideDefaultTLS=true -Dcom.ibm.team.repository.transport.client.protocol=TLSv1.2" />
+			</then>
+		    <else>
+				<property name="zos.extra.vmargs" value="" />
+			</else>
+		</iff>
+		<echo message="Launching FAT with zos extra vmargs: ${zos.extra.vmargs}"/>	
 
 		<!-- START coverage properties -->
 		<property name="exec.data.file" location="${dir.log.coverage}/jacoco.exec" />
@@ -420,6 +434,8 @@
 					<jvmarg value="${framework.maxheap}" />
 					<!-- embedded trace conditionals -->
 					<jvmarg value="${framework.debug.embed.jvmarg1}" /> 
+					<jvmarg line="${extra.vmargs}"/>
+					<jvmarg line="${zos.extra.vmargs}"/>
 				</junit>
 			</sequential>
 			<finally>
