@@ -229,15 +229,18 @@ public class JPA10Injection_DMI_YesInheritance_EJB extends JPAFATServletClient {
                                "WTRN0074E: Exception caught from before_completion synchronization operation" // RuntimeException test, expected
             );
         } finally {
+            try {
+                ServerConfiguration sc = server1.getServerConfiguration();
+                sc.getApplications().clear();
+                server1.updateServerConfiguration(sc);
+                server1.saveServerConfiguration();
+
+                server1.deleteFileFromLibertyServerRoot("apps/" + applicationName + ".ear");
+                server1.deleteFileFromLibertyServerRoot("apps/DatabaseManagement.war");
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
             bannerEnd(JPA10Injection_DMI_YesInheritance_EJB.class, timestart);
         }
-
-        ServerConfiguration sc = server1.getServerConfiguration();
-        sc.getApplications().clear();
-        server1.updateServerConfiguration(sc);
-        server1.saveServerConfiguration();
-
-        server1.deleteFileFromLibertyServerRoot("apps/" + applicationName + ".ear");
-        server1.deleteFileFromLibertyServerRoot("apps/DatabaseManagement.war");
     }
 }
