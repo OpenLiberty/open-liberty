@@ -19,8 +19,11 @@ import java.util.Properties;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.testcontainers.containers.OracleContainer;
+import org.testcontainers.containers.output.OutputFrame;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ConfigElementList;
@@ -28,6 +31,7 @@ import com.ibm.websphere.simplicity.config.ConnectionManager;
 import com.ibm.websphere.simplicity.config.DataSource;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.dsprops.Properties_oracle_ucp;
+import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -48,13 +52,24 @@ public class OracleUCPTest extends FATServletClient {
     @Server("com.ibm.ws.jdbc.fat.oracle.ucp")
     @TestServlet(servlet = OracleUCPTestServlet.class, path = JEE_APP + "/" + SERVLET_NAME)
     public static LibertyServer server;
+    
+    //TODO replace this container with the official oracle-xe container if/when it is available without a license
+    @ClassRule
+    public static OracleContainer oracle = new OracleContainer("oracleinanutshell/oracle-xe-11g").withLogConsumer(OracleUCPTest::log);
+    
+    private static void log(OutputFrame frame) {
+        String msg = frame.getUtf8String();
+        if (msg.endsWith("\n"))
+            msg = msg.substring(0, msg.length() - 1);
+        Log.info(OracleUCPTest.class, "oracle", msg);
+    }
 
     @BeforeClass
     public static void setUp() throws Exception {
     	// Set server environment variables
-        server.addEnvVar("URL", FATSuite.oracle.getJdbcUrl());
-        server.addEnvVar("USER", FATSuite.oracle.getUsername());
-        server.addEnvVar("PASSWORD", FATSuite.oracle.getPassword());
+        server.addEnvVar("URL", oracle.getJdbcUrl());
+        server.addEnvVar("USER", oracle.getUsername());
+        server.addEnvVar("PASSWORD", oracle.getPassword());
         
     	// Create a normal Java EE application and export to server
     	ShrinkHelper.defaultApp(server, JEE_APP, "ucp.web");
@@ -80,11 +95,11 @@ public class OracleUCPTest extends FATServletClient {
 		
 		OracleDataSource ds = new OracleDataSource();
 		ds.setConnectionProperties(connProps);
-		ds.setUser(FATSuite.oracle.getUsername());
-		ds.setPassword(FATSuite.oracle.getPassword());
-		ds.setURL(FATSuite.oracle.getJdbcUrl());
+		ds.setUser(oracle.getUsername());
+		ds.setPassword(oracle.getPassword());
+		ds.setURL(oracle.getJdbcUrl());
 		
-    	try (Connection conn = ds.getConnection()){
+    	try (Connection conn = ds.getConnection()) {
             Statement stmt = conn.createStatement();
             
             //Create COLORTABLE for OracleUCPTest.class
