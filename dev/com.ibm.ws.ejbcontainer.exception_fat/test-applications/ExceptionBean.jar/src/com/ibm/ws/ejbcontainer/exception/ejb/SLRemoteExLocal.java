@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,15 +14,14 @@ package com.ibm.ws.ejbcontainer.exception.ejb;
 import java.io.IOException;
 import java.rmi.RemoteException;
 
-import javax.ejb.EJBObject;
+import javax.ejb.EJBLocalObject;
 
 /**
- * Remote interface for Enterprise Bean: SLRemoteExBean
+ * Local interface for Enterprise Bean: SLRemoteExBean
  */
-public interface SLRemoteEx extends EJBObject {
+public interface SLRemoteExLocal extends EJBLocalObject {
 
-    // EJBDeploy/RMIC will fail if RemoteException (or parent) is not thrown
-    // void testMethodwithNoEx(String exceptionToThrow);
+    void testMethodwithNoEx(String exceptionToThrow);
 
     void testMethodwithException(String exceptionToThrow) throws Exception;
 
@@ -43,4 +42,6 @@ public interface SLRemoteEx extends EJBObject {
     void testMethodwithRemoteEx(String exceptionToThrow) throws RemoteException;
 
     void testMethodwithRemoteExAndSub(String exceptionToThrow) throws RemoteException, SLRemoteException;
+
+    void testMethodwithRemoteExSub(String exceptionToThrow) throws SLRemoteException;
 }
