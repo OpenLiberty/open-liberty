@@ -135,9 +135,14 @@ public class OidcClientImplTest {
         String methodName = "testWarnIfAuthFilterUseDuplicated";
         final OidcClientImpl oidcClient = new OidcClientImpl();
         try {
-            oidcClient.setOidcClientConfig(oidcClientConfigServiceRef);
-            oidcClient.setOidcClientConfig(oidcClientConfigServiceRef2);
-            //todo: find out why we don't get the warning and how to scan for it.
+            ArrayList<OidcClientConfig> configs = new ArrayList<OidcClientConfig>();
+            configs.add(oidcClientConfig);
+            configs.add(oidcClientConfig2);
+
+            oidcClient.warnIfAuthFilterUseDuplicated(configs.iterator());
+
+            assertTrue("expected message not found", outputMgr.checkForStandardOut("CWWKS1530W"));
+
         } catch (Throwable t) {
             outputMgr.failWithThrowable(methodName, t);
         }

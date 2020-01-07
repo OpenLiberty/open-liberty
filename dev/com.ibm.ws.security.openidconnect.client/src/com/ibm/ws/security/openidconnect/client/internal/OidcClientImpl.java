@@ -12,6 +12,7 @@ package com.ibm.ws.security.openidconnect.client.internal;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
@@ -114,7 +115,7 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
             oidcClientConfigRef.putReference((String) ref.getProperty(CFG_KEY_ID), ref);
             initOidcClientAuth = true;
             initBeforeSso = true;
-            warnIfAuthFilterUseDuplicated();
+            warnIfAuthFilterUseDuplicated(null);
         }
     }
 
@@ -123,7 +124,7 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
             oidcClientConfigRef.putReference((String) ref.getProperty(CFG_KEY_ID), ref);
             initOidcClientAuth = true;
             initBeforeSso = true;
-            warnIfAuthFilterUseDuplicated();
+            warnIfAuthFilterUseDuplicated(null);
         }
     }
 
@@ -266,8 +267,11 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
         oidcClientAuthenticator = null;
     }
 
-    void warnIfAuthFilterUseDuplicated() {
-        Iterator<OidcClientConfig> configs = oidcClientConfigRef.getServices();
+    // warn if >1 client specifies the same auth filter
+    void warnIfAuthFilterUseDuplicated(Iterator<OidcClientConfig> configs) {
+        if (configs == null) {
+            configs = oidcClientConfigRef.getServices();
+        }
         ArrayList<String> authFilters = new ArrayList<String>();
         ArrayList<String> reportedDuplicates = new ArrayList<String>();
         while (configs.hasNext()) {
@@ -450,7 +454,38 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
         }
         Iterator<OidcClientConfig> oidcClientConfigs = oidcClientConfigRef.getServices();
         oidcProvider = getProviderConfig(oidcClientConfigs, reqProviderHint, req);
+        if (oidcProvider != null) {
+            warnIfAmbiguousAuthFilters(oidcClientConfigs, req);
+        }
         return oidcProvider;
+    }
+
+    void warnIfAmbiguousAuthFilters(Iterator<OidcClientConfig> oidcClientConfigs, HttpServletRequest req) {
+        HashMap<String, Object> acceptingAuthFilterIds = new HashMap<String, Object>();
+        while (oidcClientConfigs.hasNext()) {
+            OidcClientConfig clientConfig = oidcClientConfigs.next();
+            if (!clientConfig.isValidConfig()) {
+                continue;
+            }
+            String authFilterId = clientConfig.getAuthFilterId();
+            if (authFilterId != null && authFilterId.length() > 0) {
+                AuthenticationFilter authFilter = authFilterServiceRef.getService(authFilterId);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "authFilter id:" + authFilterId + " authFilter:" + authFilter);
+                }
+                if (authFilter != null && authFilter.isAccepted(req)) {
+                    acceptingAuthFilterIds.put(authFilterId, null);
+                }
+            }
+        }
+        if (acceptingAuthFilterIds.size() > 1) {
+            String filterIds = "";
+            Iterator<String> it = acceptingAuthFilterIds.keySet().iterator();
+            while (it.hasNext()) {
+                filterIds = filterIds + it.next() + " ";
+            }
+            Tr.warning(tc, "AUTHFILTER_MULTIPLE_MATCHED", req.getRequestURL(), filterIds.trim()); // CWWKS1531W
+        }
     }
 
     String getReqProviderHint(HttpServletRequest req) {
