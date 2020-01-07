@@ -124,8 +124,9 @@ public class InvokerTask implements Runnable, Synchronization {
      * @param consecutiveFailureCount number of consecutive task failures
      * @param config                  snapshot of persistent executor configuration
      * @param taskName                identity name for the task
+     * @param expectedStart           the expected start time of the task execution
      */
-    private void processRetryableTaskFailure(Throwable failure, ClassLoader loader, short consecutiveFailureCount, Config config, String taskName) {
+    private void processRetryableTaskFailure(Throwable failure, ClassLoader loader, short consecutiveFailureCount, Config config, String taskName, long expectedStart) {
         taskName = taskName == null || taskName.length() == 0 || taskName.length() == 1 && taskName.charAt(0) == ' ' ? String.valueOf(taskId) // empty task name
                         : taskId + " (" + taskName + ")";
         TaskStore taskStore = persistentExecutor.taskStore;
@@ -208,11 +209,19 @@ public class InvokerTask implements Runnable, Synchronization {
         }
 
         if (retry == true) {
-            // Always retry the first failure immediately
-            if (consecutiveFailureCount == 1 || config.retryInterval == 0L)
+            // Retry the first failure immediately when fail over is disabled
+            if (consecutiveFailureCount == 1 && config.missedTaskThreshold < 0 || config.retryInterval == 0L)
                 persistentExecutor.scheduledExecutor.submit(this);
             else {
-                persistentExecutor.scheduledExecutor.schedule(this, config.retryInterval, TimeUnit.MILLISECONDS);
+                long delay = config.retryInterval;
+                if (config.missedTaskThreshold > 0) {
+                    // Avoid rescheduling before the current claim runs out
+                    long elapsed = System.currentTimeMillis() - expectedStart;
+                    long remainingClaimed = config.missedTaskThreshold - elapsed;
+                    if (remainingClaimed > delay)
+                        delay = remainingClaimed + 1000;
+                }
+                persistentExecutor.scheduledExecutor.schedule(this, delay, TimeUnit.MILLISECONDS);
             }
         }
 
@@ -593,6 +602,7 @@ public class InvokerTask implements Runnable, Synchronization {
 
             runningTaskState.remove();
 
+            long expectedStart = expectedExecTime;
             try {
                 tranMgr.setTransactionTimeout(0); // clear the value so we don't impact subsequent transactions on this thread
 
@@ -604,7 +614,7 @@ public class InvokerTask implements Runnable, Synchronization {
                     tranMgr.rollback();
                     if (config == null)
                         config = persistentExecutor.configRef.get();
-                    processRetryableTaskFailure(failure, loader, nextFailureCount, config, taskName);
+                    processRetryableTaskFailure(failure, loader, nextFailureCount, config, taskName, expectedStart);
                 } else {
                     if (taskIdForPropTable != null)
                         try {
@@ -649,7 +659,7 @@ public class InvokerTask implements Runnable, Synchronization {
                     failure = x;
 
                 // Retry the task if an error occurred
-                processRetryableTaskFailure(failure, loader, nextFailureCount, config, taskName);
+                processRetryableTaskFailure(failure, loader, nextFailureCount, config, taskName, expectedStart);
             }
         }
 

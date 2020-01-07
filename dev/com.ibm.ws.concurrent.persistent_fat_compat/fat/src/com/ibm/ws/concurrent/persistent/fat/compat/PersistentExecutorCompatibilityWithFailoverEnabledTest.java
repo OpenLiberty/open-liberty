@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -62,9 +62,12 @@ public class PersistentExecutorCompatibilityWithFailoverEnabledTest {
 
         PersistentExecutor myExecutor = config.getPersistentExecutors().getBy("jndiName", "concurrent/myExecutor");
         myExecutor.setMissedTaskThreshold("4s");
+        myExecutor.setExtraAttribute("ignore.minimum.for.test.use.only", "true");
 
         PersistentExecutor mySchedulerWithContext = config.getPersistentExecutors().getBy("jndiName", "concurrent/mySchedulerWithContext");
         mySchedulerWithContext.setMissedTaskThreshold("1m14s");
+        mySchedulerWithContext.setExtraAttribute("ignore.minimum.for.test.use.only", "true");
+
 
         // config.getEJBContainer().getTimerService() lacks a way to get to the nested persistentExecutor, so this is left as is.
 
