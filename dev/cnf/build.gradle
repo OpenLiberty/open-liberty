@@ -167,6 +167,7 @@ task createGradleBootstrap {
 
         File dependenciesFile = new File(project.buildDir, 'dependencies.gradle')
         dependenciesFile.createNewFile()
+
         dependenciesFile.text = """dependencies {
 ${depsList.sort().join('\n')}
 }"""

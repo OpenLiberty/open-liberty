@@ -137,6 +137,27 @@ class PackageLibertyWithFeatures extends DefaultTask {
     }
 }
 
+def allFeatures() {
+    String features = ""
+    // Exec ./bin/productInfo featureInfo
+    new ByteArrayOutputStream().withStream { os ->
+        project.exec {
+            workingDir project.file('wlp/bin')
+            def args = ["featureInfo"]
+            if (OperatingSystem.current().windows) {
+                commandLine = ["cmd", "/c", "productInfo"] + args
+            } else {
+                commandLine = ["./productInfo"] + args
+            }
+            standardOutput = os
+        }
+        os.toString().eachLine {
+            features += '<feature>' + it.substring(0, it.indexOf(' ')) + '</feature>\n'
+        }
+    }
+    features
+}
+
 def gaPublicFeatures() {
     String features = ""
     gaFeatures(true).each {
@@ -176,9 +197,31 @@ def excludedFeatures = ['cdi-1.2',
                         'jdbc-4.0',
                         'jdbc-4.1',
                         'jaxrsClient-2.0',
-                        'servlet-3.1']
+                        'servlet-3.1',
+                        'jaxb-2.2',
+                        'jaxws-2.2',
+                        'wasJmsServer-1.0',
+                        'wasJmsSecurity-1.0']
 
 if (isAutomatedBuild) {
+    task packageOpenLibertyAll(type: PackageLibertyWithFeatures) {
+        doFirst {
+            excludedFeatures.each {
+                this.&removeFeature("${it}")
+            }
+        }
+        enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
+        dependsOn parent.subprojects.assemble
+        dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
+        withFeatures this.&allFeatures
+        outputTo packageDir
+        doLast {
+            excludedFeatures.each {
+                this.&restoreFeature("${it}")
+            }
+        }
+    }
+
     task packageOpenLiberty(type: PackageLibertyWithFeatures) {
         enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
         dependsOn parent.subprojects.assemble
@@ -272,24 +315,34 @@ if (isAutomatedBuild) {
     }
 }
 
-// Includes all features.
-task zipOpenLibertyAll(type: Zip) {
+// Includes all features. For use in development.
+task zipOpenLibertyDev(type: Zip) {
     dependsOn parent.subprojects.assemble
     dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
-    baseName 'openliberty-all'
+    baseName 'openliberty-dev'
     from projectDir
     include 'wlp/**'
     exclude 'wlp/usr/servers/**'
     destinationDir distsDir
     version releaseVersion
-    doLast {
-        rootProject.userProps.setProperty('zipopenliberty.archivename', archivePath.toString())
-        rootProject.storeProps()
-    }
 }
-publish.dependsOn zipOpenLibertyAll
+publish.dependsOn zipOpenLibertyDev
 
 if (isAutomatedBuild) {
+    // Includes all features except excluded features.
+    task zipOpenLibertyAll(type: Zip) {
+        dependsOn packageOpenLibertyAll
+        baseName 'openliberty-all'
+        from packageDir
+        destinationDir distsDir
+        version releaseVersion
+        doLast {
+            rootProject.userProps.setProperty('zipopenliberty.archivename', archivePath.toString())
+            rootProject.storeProps()
+        }
+    }
+    publish.dependsOn zipOpenLibertyAll
+
     // Includes only kind=ga features.
     task zipOpenLiberty(type: Zip) {
         dependsOn packageOpenLiberty
@@ -367,12 +420,17 @@ clean.doLast {
 
 publishing {
     publications {
-        maven(MavenPublication) {
+        openLibertyDev(MavenPublication) {
             artifactId 'openliberty'
             version project.version
-            artifact zipOpenLibertyAll
+            artifact zipOpenLibertyDev
         }
         if (isAutomatedBuild) {
+            openLibertyAll(MavenPublication) {
+                artifactId 'openliberty-all'
+                version project.version
+                artifact zipOpenLibertyAll
+            }
             openLiberty(MavenPublication) {
                 groupId 'io.openliberty'
                 artifactId 'openliberty-runtime'
