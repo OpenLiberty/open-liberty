@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 1997, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,14 +13,14 @@ package com.ibm.ws.security.oauth20.mediator;
 
 import java.rmi.RemoteException;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.oauth.core.api.attributes.AttributeList;
 import com.ibm.oauth.core.api.config.OAuthComponentConfiguration;
 import com.ibm.oauth.core.api.error.OAuthException;
 import com.ibm.oauth.core.api.error.oauth20.OAuth20MediatorException;
 import com.ibm.oauth.core.api.oauth20.mediator.OAuth20Mediator;
 import com.ibm.oauth.core.internal.oauth20.OAuth20Constants;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.CustomRegistryException;
 import com.ibm.websphere.security.PasswordCheckFailedException;
 import com.ibm.websphere.security.UserRegistry;
@@ -36,6 +36,7 @@ public class ResourceOwnerValidationMediator implements OAuth20Mediator {
     private UserRegistry reg = null;
     private static final String FLOW_PASSWORD = "password";
 
+    @Override
     public void init(OAuthComponentConfiguration config) {
         final String methodName = "init";
         if (tc.isEntryEnabled()) {
@@ -58,30 +59,35 @@ public class ResourceOwnerValidationMediator implements OAuth20Mediator {
         }
     }
 
+    @Override
     public void mediateAuthorize(AttributeList attributeList)
             throws OAuth20MediatorException {
         // TODO Auto-generated method stub
 
     }
 
+    @Override
     public void mediateAuthorizeException(AttributeList attributeList,
             OAuthException exception) throws OAuth20MediatorException {
         // TODO Auto-generated method stub
 
     }
 
+    @Override
     public void mediateResource(AttributeList attributeList)
             throws OAuth20MediatorException {
         // TODO Auto-generated method stub
 
     }
 
+    @Override
     public void mediateResourceException(AttributeList attributeList,
             OAuthException exception) throws OAuth20MediatorException {
         // TODO Auto-generated method stub
 
     }
 
+    @Override
     public void mediateToken(AttributeList attributeList) throws OAuth20MediatorException {
         final String methodName = "mediateToken";
         if (tc.isEntryEnabled()) {
@@ -124,6 +130,7 @@ public class ResourceOwnerValidationMediator implements OAuth20Mediator {
         }
     }
 
+    @Override
     public void mediateTokenException(AttributeList attributeList, OAuthException exception)
             throws OAuth20MediatorException {
         final String methodName = "mediateTokenException";

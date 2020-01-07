@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 1997, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,8 +15,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Properties;
 import java.util.Map.Entry;
+import java.util.Properties;
 
 import com.ibm.oauth.core.api.config.SampleComponentConfiguration;
 import com.ibm.websphere.ras.Tr;
@@ -32,14 +32,13 @@ import com.ibm.ws.security.oauth20.util.OAuth20Parameter;
  */
 
 /**
- * This class was imported from tWAS to make only those changes necessary to 
- * run OAuth on Liberty. The mission was not to refactor, restructure, or 
- * generally cleanup the code. 
+ * This class was imported from tWAS to make only those changes necessary to
+ * run OAuth on Liberty. The mission was not to refactor, restructure, or
+ * generally cleanup the code.
  */
 public class OAuth20ComponentConfigurationImpl extends SampleComponentConfiguration implements OAuth20ProviderConfiguration {
 
-    private static final TraceComponent tc =
-            Tr.register(OAuth20ComponentConfigurationImpl.class, "OAUTH", "com.ibm.ws.security.oauth20.internal.resources.OAuthMessages");
+    private static final TraceComponent tc = Tr.register(OAuth20ComponentConfigurationImpl.class, "OAUTH", "com.ibm.ws.security.oauth20.internal.resources.OAuthMessages");
 
     String uniqueId;
     private OAuthResourceProtectionFilter filter = null;
@@ -62,6 +61,7 @@ public class OAuth20ComponentConfigurationImpl extends SampleComponentConfigurat
         }
     }
 
+    @Override
     public List<OAuth20Parameter> getParameters() {
         return params;
     }
@@ -71,6 +71,7 @@ public class OAuth20ComponentConfigurationImpl extends SampleComponentConfigurat
         return uniqueId;
     }
 
+    @Override
     public Properties getCustomizableProperties() {
         Properties props = new Properties();
         for (OAuth20Parameter param : params) {
@@ -89,6 +90,7 @@ public class OAuth20ComponentConfigurationImpl extends SampleComponentConfigurat
         return props;
     }
 
+    @Override
     public List<OAuth20Parameter> mergeCustomizedProperties(Properties props)
             throws CannotModifyOAuthParameterException {
         HashSet<String> addedprops = new HashSet<String>();
