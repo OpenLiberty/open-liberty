@@ -497,6 +497,13 @@ public class ExceptionUtils {
     static InstallException create(RepositoryResolutionException e, Collection<String> assetNames, File installDir, boolean installingAsset,
                                    boolean isOpenLiberty, boolean isFeatureUtility) {
         Collection<MissingRequirement> allRequirementsNotFound = e.getAllRequirementsResourcesNotFound();
+        if(allRequirementsNotFound.isEmpty()){
+            String msg = parseFeatureConflicts(e.getFeatureConflicts());
+            InstallException ie;
+            ie = create(msg, e);
+            ie.setData(assetNames);
+            return ie;
+        }
         Collection<MissingRequirement> dependants = new ArrayList<MissingRequirement>(allRequirementsNotFound.size());
         for (MissingRequirement f : allRequirementsNotFound) {
             /**
