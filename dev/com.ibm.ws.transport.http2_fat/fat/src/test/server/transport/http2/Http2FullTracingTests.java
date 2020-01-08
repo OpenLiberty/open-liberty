@@ -133,4 +133,10 @@ public class Http2FullTracingTests extends FATServletClient {
     public void testTwoWindowUpdateFrameAboveMaxSize() throws Exception {
         runTest(defaultServletPath, testName.getMethodName());
     }
+
+    // Moved to tracing
+    @Test
+    public void testUnknownFrameType() throws Exception {
+        runTest(genericServletPath, testName.getMethodName());
+    }
 }
