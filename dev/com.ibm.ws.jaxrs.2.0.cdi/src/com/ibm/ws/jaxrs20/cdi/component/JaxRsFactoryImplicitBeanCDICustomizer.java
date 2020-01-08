@@ -248,7 +248,7 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
 
         ManagedObject<?> newServiceObject = null;
 
-        newServiceObject = getClassFromManagedObject(clazz);
+        newServiceObject = getClassFromServiceObject(clazz, serviceObject);
         if (newServiceObject != null) {
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -271,6 +271,34 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
             Tr.debug(tc, "Get instance from CDI is null , use from rs for " + clazz.getName());
         }
         return serviceObject;
+    }
+
+    /**
+     * @param clazz
+     * @return
+     */
+    @FFDCIgnore(value = { Exception.class })
+    private ManagedObject<?> getClassFromServiceObject(Class<?> clazz, Object serviceObject) {
+
+        if (! clazz.equals(serviceObject.getClass())) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Couldn't create object instance from ManagedObjectFactory for : " + clazz.getName() + "because the serviceObject and class had different types");
+            }
+            return null;
+        }
+
+        ManagedObjectFactory<Object> managedObjectFactory = (ManagedObjectFactory<Object>) getManagedObjectFactory(clazz);
+
+        ManagedObject<Object> bean = null;
+        try {
+            bean = managedObjectFactory.createManagedObject(serviceObject, null);
+        } catch (Exception e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Couldn't create object instance from ManagedObjectFactory for : " + clazz.getName() + ", but ignore the FFDC: ", e);
+            }
+        }
+
+        return bean;
     }
 
     /**
