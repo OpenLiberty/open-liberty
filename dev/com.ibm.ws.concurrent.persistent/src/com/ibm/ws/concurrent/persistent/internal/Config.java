@@ -13,6 +13,8 @@ package com.ibm.ws.concurrent.persistent.internal;
 import java.util.Dictionary;
 import java.util.concurrent.TimeUnit;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 
 /**
@@ -20,6 +22,8 @@ import com.ibm.websphere.ras.annotation.Trivial;
  */
 @Trivial
 class Config {
+    private static final TraceComponent tc = Tr.register(Config.class);
+
     /**
      * Indicates if this instance can run tasks.
      */
@@ -117,16 +121,21 @@ class Config {
             retryInterval = retryIntrvl;
         }
 
-        // TODO translatable messages for the following
         // Range checking on duration values, which cannot be enforced via metatype
         if ((missedTaskThreshold != -1 && !ignoreMin && missedTaskThreshold < 100) || missedTaskThreshold > 9000) // disallow below 100 seconds and above 2.5 hours
-            throw new IllegalArgumentException("missedTaskThreshold: " + missedTaskThreshold + "s");
+            throw new IllegalArgumentException(Tr.formatMessage(tc, "CWWKC1520.out.of.range",
+                                                                "missedTaskThreshold", missedTaskThreshold + "s", "100s", "2h30m"));
         if (initialPollDelay < -1)
             throw new IllegalArgumentException("initialPollDelay: " + initialPollDelay + "ms");
         if (pollInterval < -1 || missedTaskThreshold > 0 && (!ignoreMin && pollInterval < 100000 && pollInterval != -1 || pollInterval > 9000000)) // disallow below 100 seconds and above 2.5 hours
-            throw new IllegalArgumentException("pollInterval: " + pollInterval + "ms");
-        if (retryInterval < 0 || missedTaskThreshold > 0 && retryIntrvl != null && retryLimit != 0 && !ignoreMin && retryIntrvl < missedTaskThreshold * 1000)
+            throw new IllegalArgumentException(Tr.formatMessage(tc, "CWWKC1520.out.of.range",
+                                                                "pollInterval", pollInterval + "ms", "100s", "2h30m"));
+        if (retryInterval < 0)
             throw new IllegalArgumentException("retryInterval: " + retryInterval + "ms");
+        else if (missedTaskThreshold > 0 && retryIntrvl != null && retryLimit != 0 && !ignoreMin && retryIntrvl < missedTaskThreshold * 1000)
+            throw new IllegalArgumentException(Tr.formatMessage(tc, "CWWKC1521.less.than.min",
+                                                                retryInterval + "ms", "retryInterval",
+                                                                "missedTaskThreshold", missedTaskThreshold + "s"));
     }
 
     @Override
