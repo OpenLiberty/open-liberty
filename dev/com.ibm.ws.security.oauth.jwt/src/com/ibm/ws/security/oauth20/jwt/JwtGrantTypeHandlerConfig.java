@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 1997, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,9 +16,9 @@ import java.util.Map;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.security.SecurityService;
 import com.ibm.ws.security.oauth20.api.OAuth20Provider;
 import com.ibm.ws.security.oauth20.util.BoundedCommonCache;
-import com.ibm.ws.security.SecurityService;
 
 public class JwtGrantTypeHandlerConfig {
     private static final TraceComponent tc = Tr.register(JwtGrantTypeHandlerConfig.class,
@@ -31,9 +31,9 @@ public class JwtGrantTypeHandlerConfig {
 
     /**
      * Collect the config info of customized GrantTypeHandler during configuration time
-     * 
+     *
      * @param configAdmin - configuration admin
-     * @param config - the customizedGrantTypeHandler config data
+     * @param config      - the customizedGrantTypeHandler config data
      */
     public JwtGrantTypeHandlerConfig(String providerId, OAuth20Provider config) {
         _providerId = providerId;
