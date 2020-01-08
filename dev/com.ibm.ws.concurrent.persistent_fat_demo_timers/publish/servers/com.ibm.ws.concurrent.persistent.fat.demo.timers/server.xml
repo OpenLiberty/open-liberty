@@ -18,7 +18,7 @@
   <include location="../fatTestPorts.xml"/>
   
   <!-- Edit persistentExecutor defaults with attribute missedTaskThreshold to enable failover -->
-  <persistentExecutor id="defaultEJBPersistentTimerExecutor" missedTaskThreshold="3s"/>
+  <persistentExecutor id="defaultEJBPersistentTimerExecutor" missedTaskThreshold="120s"/>
   
   <dataSource id="DefaultDataSource" type="${env.DS_TYPE}" fat.modify="true">
     <jdbcDriver libraryRef="AnonymousJDBCLib"/>
