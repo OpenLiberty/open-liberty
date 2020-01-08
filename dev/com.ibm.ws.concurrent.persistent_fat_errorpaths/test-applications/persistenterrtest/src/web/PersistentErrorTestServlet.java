@@ -321,8 +321,21 @@ public class PersistentErrorTestServlet extends HttpServlet {
     }
 
     /**
+     * testMissedTaskThresholdBelowMinimum - attempt to use a persistent executor where the missedTaskThreshold value is less than
+     * the minimum allowed. The detailed error message that is logged is tested by the caller of this method.
+     */
+    public void testMissedTaskThresholdBelowMinimum(PrintWriter out) throws Exception {
+        try {
+            PersistentExecutor misconfiguredExecutor = InitialContext.doLookup("concurrent/belowMinMissedTaskThreshold");
+            throw new Exception("Should not be able to obtain misconfigured persistentExecutor where the missedTaskThreshold value is less than the minimum allowed " + misconfiguredExecutor);
+        } catch (NamingException x) {
+            // expected
+        }
+    }
+
+    /**
      * testMissedTaskThresholdExceedsMaximum - attempt to use a persistent executor where the missedTaskThreshold value exceeds
-     * the maximum allowed. Expect IllegalArgumentException with a translatable message.
+     * the maximum allowed. The detailed error message that is logged is tested by the caller of this method.
      */
     public void testMissedTaskThresholdExceedsMaximum(PrintWriter out) throws Exception {
         try {
@@ -635,6 +648,32 @@ public class PersistentErrorTestServlet extends HttpServlet {
     }
 
     /**
+     * testPollIntervalBelowMinimum - attempt to use a persistent executor where the pollInterval value is less than
+     * the minimum allowed. The detailed error message that is logged is tested by the caller of this method.
+     */
+    public void testPollIntervalBelowMinimum(PrintWriter out) throws Exception {
+        try {
+            PersistentExecutor misconfiguredExecutor = InitialContext.doLookup("concurrent/belowMinPollInterval");
+            throw new Exception("Should not be able to obtain misconfigured persistentExecutor where the pollInterval value is less than the minimum allowed. " + misconfiguredExecutor);
+        } catch (NamingException x) {
+            // expected
+        }
+    }
+
+    /**
+     * testPollIntervalThresholdExceedsMaximum - attempt to use a persistent executor where the pollInterval value exceeds
+     * the maximum allowed. The detailed error message that is logged is tested by the caller of this method.
+     */
+    public void testPollIntervalExceedsMaximum(PrintWriter out) throws Exception {
+        try {
+            PersistentExecutor misconfiguredExecutor = InitialContext.doLookup("concurrent/exceedsMaxPollInterval");
+            throw new Exception("Should not be able to obtain misconfigured persistentExecutor where the pollInterval value exceeds the maximum allowed " + misconfiguredExecutor);
+        } catch (NamingException x) {
+            // expected
+        }
+    }
+
+    /**
      * Attempt to schedule a task with a predetermined result that declares itself serializable but fails to serialize.
      */
     public void testPredeterminedResultFailsToSerialize(PrintWriter out) throws Exception {
@@ -803,6 +842,19 @@ public class PersistentErrorTestServlet extends HttpServlet {
                 throw new Exception("Task should be attempted exactly 2 times (with the first attempting failing). Instead " + result);
         } finally {
             SharedFailingTask.clear();
+        }
+    }
+
+    /**
+     * testRetryIntervalBelowMissedTaskThreshold - attempt to use a persistent executor where the retryInterval value is less than
+     * the missedTaskThreshold. The detailed error message that is logged is tested by the caller of this method.
+     */
+    public void testRetryIntervalBelowMissedTaskThreshold(PrintWriter out) throws Exception {
+        try {
+            PersistentExecutor misconfiguredExecutor = InitialContext.doLookup("concurrent/retryIntervalBelowMissedTaskThreshold");
+            throw new Exception("Should not be able to obtain misconfigured persistentExecutor where the retryInterval value is less than the missedTaskThreshold. " + misconfiguredExecutor);
+        } catch (NamingException x) {
+            // expected
         }
     }
 

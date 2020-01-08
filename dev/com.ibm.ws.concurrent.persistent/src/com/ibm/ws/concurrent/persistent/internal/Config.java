@@ -124,18 +124,18 @@ class Config {
         // Range checking on duration values, which cannot be enforced via metatype
         if ((missedTaskThreshold != -1 && !ignoreMin && missedTaskThreshold < 100) || missedTaskThreshold > 9000) // disallow below 100 seconds and above 2.5 hours
             throw new IllegalArgumentException(Tr.formatMessage(tc, "CWWKC1520.out.of.range",
-                                                                "missedTaskThreshold", missedTaskThreshold + "s", "100s", "2h30m"));
+                                                                toString(missedTaskThreshold, TimeUnit.SECONDS), "missedTaskThreshold", "100s", "2h30m"));
         if (initialPollDelay < -1)
             throw new IllegalArgumentException("initialPollDelay: " + initialPollDelay + "ms");
         if (pollInterval < -1 || missedTaskThreshold > 0 && (!ignoreMin && pollInterval < 100000 && pollInterval != -1 || pollInterval > 9000000)) // disallow below 100 seconds and above 2.5 hours
             throw new IllegalArgumentException(Tr.formatMessage(tc, "CWWKC1520.out.of.range",
-                                                                "pollInterval", pollInterval + "ms", "100s", "2h30m"));
+                                                                toString(pollInterval, TimeUnit.MILLISECONDS), "pollInterval", "100s", "2h30m"));
         if (retryInterval < 0)
             throw new IllegalArgumentException("retryInterval: " + retryInterval + "ms");
         else if (missedTaskThreshold > 0 && retryIntrvl != null && retryLimit != 0 && !ignoreMin && retryIntrvl < missedTaskThreshold * 1000)
             throw new IllegalArgumentException(Tr.formatMessage(tc, "CWWKC1521.less.than.min",
-                                                                retryInterval + "ms", "retryInterval",
-                                                                "missedTaskThreshold", missedTaskThreshold + "s"));
+                                                                toString(retryInterval, TimeUnit.MILLISECONDS), "retryInterval",
+                                                                "missedTaskThreshold", toString(missedTaskThreshold, TimeUnit.SECONDS)));
     }
 
     @Override
@@ -164,5 +164,44 @@ class Config {
                         .append(",id=")
                         .append(id)
                         .toString();
+    }
+
+    /**
+     * Display the duration value in the least granular unit possible without losing precision.
+     *
+     * @param duration the duration
+     * @param unit     the units
+     * @return string value for display in messages.
+     */
+    private String toString(long duration, TimeUnit unit) {
+        if (TimeUnit.MILLISECONDS.equals(unit)) {
+            long s = duration / 1000;
+            if (s * 1000 == duration) {
+                duration = s;
+                unit = TimeUnit.SECONDS;
+            }
+        }
+
+        if (TimeUnit.SECONDS.equals(unit)) {
+            long m = duration / 60;
+            if (m * 60 == duration) {
+                duration = m;
+                unit = TimeUnit.MINUTES;
+            }
+        }
+
+        if (TimeUnit.MINUTES.equals(unit)) {
+            long h = duration / 60;
+            if (h * 60 == duration) {
+                duration = h;
+                unit = TimeUnit.HOURS;
+            }
+        }
+
+        return duration + (unit == TimeUnit.MILLISECONDS ? "ms" //
+                        : unit == TimeUnit.SECONDS ? "s" //
+                                        : unit == TimeUnit.MINUTES ? "m" //
+                                                        : unit == TimeUnit.HOURS ? "h" //
+                                                                        : "d");
     }
 }

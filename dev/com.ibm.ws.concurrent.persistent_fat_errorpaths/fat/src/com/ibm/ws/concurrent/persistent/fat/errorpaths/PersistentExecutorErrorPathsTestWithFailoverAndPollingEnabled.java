@@ -102,6 +102,24 @@ public class PersistentExecutorErrorPathsTestWithFailoverAndPollingEnabled {
         persistentExecutor.setMissedTaskThreshold("5s");
         persistentExecutor.setPollInterval("3s");
 
+        PersistentExecutor belowMinMissedTaskThresholdExecutor = new PersistentExecutor();
+        belowMinMissedTaskThresholdExecutor.setId("belowMinMissedTaskThresholdExecutor");
+        belowMinMissedTaskThresholdExecutor.setJndiName("concurrent/belowMinMissedTaskThreshold");
+        belowMinMissedTaskThresholdExecutor.setTaskStoreRef("DBTaskStore");
+        belowMinMissedTaskThresholdExecutor.setMissedTaskThreshold("99s");
+        belowMinMissedTaskThresholdExecutor.setPollInterval("30m");
+        belowMinMissedTaskThresholdExecutor.setInitialPollDelay("-1");
+        config.getPersistentExecutors().add(belowMinMissedTaskThresholdExecutor);
+
+        PersistentExecutor belowMinPollIntervalExecutor = new PersistentExecutor();
+        belowMinPollIntervalExecutor.setId("belowMinPollIntervalExecutor");
+        belowMinPollIntervalExecutor.setJndiName("concurrent/belowMinPollInterval");
+        belowMinPollIntervalExecutor.setTaskStoreRef("DBTaskStore");
+        belowMinPollIntervalExecutor.setMissedTaskThreshold("100s");
+        belowMinPollIntervalExecutor.setPollInterval("1m38s");
+        belowMinPollIntervalExecutor.setInitialPollDelay("-1");
+        config.getPersistentExecutors().add(belowMinPollIntervalExecutor);
+
         PersistentExecutor exceedsMaxMissedTaskThresholdExecutor = new PersistentExecutor();
         exceedsMaxMissedTaskThresholdExecutor.setId("exceedsMaxMissedTaskThresholdExecutor");
         exceedsMaxMissedTaskThresholdExecutor.setJndiName("concurrent/exceedsMaxMissedTaskThreshold");
@@ -111,7 +129,24 @@ public class PersistentExecutorErrorPathsTestWithFailoverAndPollingEnabled {
         exceedsMaxMissedTaskThresholdExecutor.setInitialPollDelay("-1");
         config.getPersistentExecutors().add(exceedsMaxMissedTaskThresholdExecutor);
 
-        // TODO test enforcement of other misconfiguration?
+        PersistentExecutor exceedsMaxPollIntervalExecutor = new PersistentExecutor();
+        exceedsMaxPollIntervalExecutor.setId("exceedsMaxPollIntervalExecutor");
+        exceedsMaxPollIntervalExecutor.setJndiName("concurrent/exceedsMaxPollIntervalExecutor");
+        exceedsMaxPollIntervalExecutor.setTaskStoreRef("DBTaskStore");
+        exceedsMaxPollIntervalExecutor.setMissedTaskThreshold("2h");
+        exceedsMaxPollIntervalExecutor.setPollInterval("2h31m");
+        exceedsMaxPollIntervalExecutor.setInitialPollDelay("-1");
+        config.getPersistentExecutors().add(exceedsMaxPollIntervalExecutor);
+
+        PersistentExecutor retryIntervalBelowMissedTaskThresholdExecutor = new PersistentExecutor();
+        retryIntervalBelowMissedTaskThresholdExecutor.setId("retryIntervalBelowMissedTaskThresholdExecutor");
+        retryIntervalBelowMissedTaskThresholdExecutor.setJndiName("concurrent/retryIntervalBelowMissedTaskThreshold");
+        retryIntervalBelowMissedTaskThresholdExecutor.setTaskStoreRef("DBTaskStore");
+        retryIntervalBelowMissedTaskThresholdExecutor.setMissedTaskThreshold("1m45s");
+        retryIntervalBelowMissedTaskThresholdExecutor.setPollInterval("28m");
+        retryIntervalBelowMissedTaskThresholdExecutor.setRetryInterval("14s");
+        retryIntervalBelowMissedTaskThresholdExecutor.setInitialPollDelay("-1");
+        config.getPersistentExecutors().add(retryIntervalBelowMissedTaskThresholdExecutor);
 
         config.getDataSources().getById("SchedDB").getConnectionManagers().get(0).setMaxPoolSize("10");
         server.updateServerConfiguration(config);
@@ -157,6 +192,30 @@ public class PersistentExecutorErrorPathsTestWithFailoverAndPollingEnabled {
     }
 
     /**
+     * testMissedTaskThresholdBelowMinimum - attempt to use a persistent executor where the missedTaskThreshold value is less than
+     * the minimum allowed. Expect IllegalArgumentException with a translatable message.
+     */
+    @Test
+    public void testMissedTaskThresholdBelowMinimum() throws Exception {
+        server.setMarkToEndOfLog();
+
+        runInServlet("testMissedTaskThresholdBelowMinimum");
+
+        List<String> errorMessages = server.findStringsInLogsUsingMark("CWWKE0701E.*99s", server.getConsoleLogFile());
+        if (errorMessages.isEmpty())
+            throw new Exception("Error message not found in log.");
+
+        String errorMessage = errorMessages.get(0);
+
+        if (!errorMessage.contains("IllegalArgumentException")
+                || !errorMessage.contains("CWWKC1520E")
+                || !errorMessage.contains("missedTaskThreshold")
+                || !errorMessage.contains("100s")
+                || !errorMessage.contains("2h30m"))
+            throw new Exception("Problem with substitution parameters in message " + errorMessage);
+    }
+
+    /**
      * testMissedTaskThresholdExceedsMaximum - attempt to use a persistent executor where the missedTaskThreshold value exceeds
      * the maximum allowed. Expect IllegalArgumentException with a translatable message.
      */
@@ -172,9 +231,60 @@ public class PersistentExecutorErrorPathsTestWithFailoverAndPollingEnabled {
 
         String errorMessage = errorMessages.get(0);
 
-        // TODO add more tests of message detail later, after message content is finalized
-        //if (!errorMessage.contains("..."))
-        //    throw new Exception("...");
+        if (!errorMessage.contains("IllegalArgumentException")
+                || !errorMessage.contains("CWWKC1520E")
+                || !errorMessage.contains("missedTaskThreshold")
+                || !errorMessage.contains("100s")
+                || !errorMessage.contains("2h30m"))
+            throw new Exception("Problem with substitution parameters in message " + errorMessage);
+    }
+
+    /**
+     * testPollIntervalBelowMinimum - attempt to use a persistent executor where the pollInterval value is less than
+     * the minimum allowed. Expect IllegalArgumentException with a translatable message.
+     */
+    @Test
+    public void testPollIntervalBelowMinimum() throws Exception {
+        server.setMarkToEndOfLog();
+
+        runInServlet("testPollIntervalBelowMinimum");
+
+        List<String> errorMessages = server.findStringsInLogsUsingMark("CWWKE0701E.*98s", server.getConsoleLogFile());
+        if (errorMessages.isEmpty())
+            throw new Exception("Error message not found in log.");
+
+        String errorMessage = errorMessages.get(0);
+
+        if (!errorMessage.contains("IllegalArgumentException")
+                || !errorMessage.contains("CWWKC1520E")
+                || !errorMessage.contains("pollInterval")
+                || !errorMessage.contains("100s")
+                || !errorMessage.contains("2h30m"))
+            throw new Exception("Problem with substitution parameters in message " + errorMessage);
+    }
+
+    /**
+     * testPollIntervalExceedsMaximum - attempt to use a persistent executor where the pollInterval value exceeds
+     * the maximum allowed. Expect IllegalArgumentException with a translatable message.
+     */
+    @Test
+    public void testPollIntervalExceedsMaximum() throws Exception {
+        server.setMarkToEndOfLog();
+
+        runInServlet("testPollIntervalExceedsMaximum");
+
+        List<String> errorMessages = server.findStringsInLogsUsingMark("CWWKE0701E.*151m", server.getConsoleLogFile());
+        if (errorMessages.isEmpty())
+            throw new Exception("Error message not found in log.");
+
+        String errorMessage = errorMessages.get(0);
+
+        if (!errorMessage.contains("IllegalArgumentException")
+                || !errorMessage.contains("CWWKC1520E")
+                || !errorMessage.contains("pollInterval")
+                || !errorMessage.contains("100s")
+                || !errorMessage.contains("2h30m"))
+            throw new Exception("Problem with substitution parameters in message " + errorMessage);
     }
 
     @Test
@@ -195,6 +305,30 @@ public class PersistentExecutorErrorPathsTestWithFailoverAndPollingEnabled {
     @Test
     public void testRetryFailedTaskNoAutoPurgeFEWithPolling() throws Exception {
         runInServlet("testRetryFailedTaskNoAutoPurge");
+    }
+
+    /**
+     * testRetryIntervalBelowMissedTaskThreshold - attempt to use a persistent executor where the retryInterval value is less than
+     * the missedTaskThreshold. Expect IllegalArgumentException with a translatable message.
+     */
+    @Test
+    public void testRetryIntervalBelowMissedTaskThreshold() throws Exception {
+        server.setMarkToEndOfLog();
+
+        runInServlet("testRetryIntervalBelowMissedTaskThreshold");
+
+        List<String> errorMessages = server.findStringsInLogsUsingMark("CWWKE0701E.*14s", server.getConsoleLogFile());
+        if (errorMessages.isEmpty())
+            throw new Exception("Error message not found in log.");
+
+        String errorMessage = errorMessages.get(0);
+
+        if (!errorMessage.contains("IllegalArgumentException")
+                || !errorMessage.contains("CWWKC1521E")
+                || !errorMessage.contains("retryInterval")
+                || !errorMessage.contains("missedTaskThreshold")
+                || !errorMessage.contains("105s"))
+            throw new Exception("Problem with substitution parameters in message " + errorMessage);
     }
 
     @Test
