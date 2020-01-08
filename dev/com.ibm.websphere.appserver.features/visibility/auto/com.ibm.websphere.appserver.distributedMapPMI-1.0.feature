@@ -9,3 +9,4 @@ IBM-Install-Policy: when-satisfied
 -bundles=com.ibm.ws.dynacache.monitor
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

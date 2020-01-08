@@ -16,3 +16,4 @@ Subsystem-Name: Performance Monitoring 1.0
 -files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.monitor_1.1-javadoc.zip
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

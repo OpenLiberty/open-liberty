@@ -22,3 +22,4 @@ Subsystem-Name: JSON Web Token 1.0
   com.ibm.json4j
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

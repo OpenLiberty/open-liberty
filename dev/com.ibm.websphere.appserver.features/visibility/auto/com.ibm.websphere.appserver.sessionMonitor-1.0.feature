@@ -11,3 +11,4 @@ IBM-Install-Policy: when-satisfied
 -files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.sessionstats_1.0-javadoc.zip
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

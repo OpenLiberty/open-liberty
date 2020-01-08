@@ -13,3 +13,4 @@ symbolicName=com.ibm.websphere.appserver.securityInfrastructure-1.0
  com.ibm.ws.security.mp.jwt.proxy
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

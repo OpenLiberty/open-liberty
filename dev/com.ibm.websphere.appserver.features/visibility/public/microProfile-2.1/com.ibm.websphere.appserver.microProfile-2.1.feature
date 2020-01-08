@@ -27,3 +27,4 @@ Subsystem-Name: MicroProfile 2.1
   com.ibm.ws.require.java8
 kind=ga
 edition=core
+WLP-Activation-Type: parallel
