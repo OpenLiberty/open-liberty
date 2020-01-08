@@ -57,7 +57,7 @@ CWWKC1520.out.of.range.useraction=Configure a value within the allowed range.
 
 CWWKC1521.less.than.min=CWWKC1521E: Configured value {0} for {1} cannot be less than the configured value for {2}, which is {3}.
 CWWKC1521.less.than.min.explanation=Configuring a larger retryInterval encourages other servers to retry the failed task instead of the server on which it failed.
-CWWKC1521.less.than.min.useraction=Configure a retryInterval that is larger than the missedTaskThreshold.
+CWWKC1521.less.than.min.useraction=Configure the retryInterval property so that it is larger than the missedTaskThreshold.
 
 CWWKC1540.thread.cannot.submit.tasks=CWWKC1540E: You cannot schedule persistent tasks from the current thread context.
 CWWKC1540.thread.cannot.submit.tasks.explanation=Schedule persistent tasks only from a thread that is associated with an application or feature with a serializable class loader identity.
