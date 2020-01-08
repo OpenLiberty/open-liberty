@@ -57,7 +57,18 @@ public class CDIManagedObjectFactoryImpl<T> extends AbstractManagedObjectFactory
 
     @Override
     public ManagedObject<T> createManagedObject() throws ManagedObjectException {
+        isWeldProxy();
         return super.createManagedObject(null);
+    }
+
+    @Override
+    public ManagedObject<T> createManagedObject(ManagedObjectInvocationContext<T> invocationContext) throws ManagedObjectException {
+        isWeldProxy();
+        return super.createManagedObject(invocationContext);
+    }
+
+    public ManagedObject<T> createManagedObject(T instance) throws ManagedObjectException {
+        return super.createManagedObject(instance, null);
     }
 
     /**
@@ -115,5 +126,11 @@ public class CDIManagedObjectFactoryImpl<T> extends AbstractManagedObjectFactory
     @Override
     public String toString() {
         return "CDI Managed Object Factory for class: " + getManagedObjectClass().getName();
+    }
+
+    private void isWeldProxy() {
+        if (getManagedObjectClass().getSimpleName().contains("Proxy$_$$_Weld")) {
+            throw new IllegalArgumentException("when calling createManagedObject on a Managed Object Factory for a weld subclass; please provide an instance of the class");
+        }
     }
 }
