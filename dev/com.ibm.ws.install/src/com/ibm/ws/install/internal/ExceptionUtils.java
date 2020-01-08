@@ -291,6 +291,55 @@ public class ExceptionUtils {
     }
 
     /**
+     * Return a String containing one of more singleton incompatibility exceptions.
+     * @param featureChain
+     * @return
+     */
+    private static String parseFeatureConflicts( Map<String, Collection<com.ibm.ws.kernel.feature.resolver.FeatureResolver.Chain>> featureChain){
+        StringBuilder sb = new StringBuilder();
+
+        List<String> offendingFeatures;
+        for(String featureFullName : featureChain.keySet()){
+            offendingFeatures = new ArrayList<>();
+            Collection<com.ibm.ws.kernel.feature.resolver.FeatureResolver.Chain> chainList = featureChain.get(featureFullName);
+            for(com.ibm.ws.kernel.feature.resolver.FeatureResolver.Chain chain : chainList){
+                for(String candidate: chain.getCandidates()){
+                    String shortname = getFeatureShortname(candidate);
+                    if(!offendingFeatures.contains(shortname)){
+                        offendingFeatures.add(shortname);
+                    }
+                }
+            }
+            // determine which message to use
+            if(offendingFeatures.size() == 2){
+                String f1 = offendingFeatures.get(0);
+                String f2 = offendingFeatures.get(1);
+                sb.append(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_INCOMPATIBLE_FEATURES_SINGLETON", f1, f2)).append("\n");
+            } else {
+                StringBuilder nMinusOneFeatures = new StringBuilder();
+                for(String feature : offendingFeatures.subList(0, offendingFeatures.size() - 1)){
+                    nMinusOneFeatures.append(feature).append(",");
+                }
+                String lastFeature = offendingFeatures.get(offendingFeatures.size() - 1);
+                sb.append(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_INCOMPATIBLE_FEATURES_SINGLETON", nMinusOneFeatures.toString(), lastFeature)).append("\n");
+            }
+        }
+        return sb.toString();
+    }
+
+    // ex: turns com.ibm.websphere.appserver.mpHealth-2.0 into mpHealth-2.0
+    private static String getFeatureShortname(String feature){
+        String [] split = feature.split("\\.");
+        int len = split.length;
+        if(len <= 2){
+            return feature;
+        }
+
+        return split[len - 2] + "."+split[len - 1];
+
+    }
+
+    /**
      * Create an install exception from a repository resolution exception and asset names
      *
      * @param e
@@ -303,6 +352,14 @@ public class ExceptionUtils {
     static InstallException create(RepositoryResolutionException e, Collection<String> assetNames, File installDir, boolean installingAsset,
                                    boolean isOpenLiberty) {
         Collection<MissingRequirement> allRequirementsNotFound = e.getAllRequirementsResourcesNotFound();
+        if(allRequirementsNotFound.isEmpty()){
+            String msg = parseFeatureConflicts(e.getFeatureConflicts());
+            InstallException ie;
+            ie = create(msg, e);
+            ie.setData(assetNames);
+            return ie;
+        }
+
         Collection<MissingRequirement> dependants = new ArrayList<MissingRequirement>(allRequirementsNotFound.size());
         for (MissingRequirement f : allRequirementsNotFound) {
             /**
