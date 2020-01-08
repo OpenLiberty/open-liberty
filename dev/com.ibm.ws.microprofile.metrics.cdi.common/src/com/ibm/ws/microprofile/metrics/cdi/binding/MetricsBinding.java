@@ -21,8 +21,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-/**
- * @version 1.0
- */
-@org.osgi.annotation.versioning.Version("1.0")
-package io.astefanutti.metrics.cdi;
+package com.ibm.ws.microprofile.metrics.cdi.binding;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import javax.interceptor.InterceptorBinding;
+
+@InterceptorBinding
+@Target({ ElementType.TYPE })
+@Retention(RetentionPolicy.RUNTIME)
+public @interface MetricsBinding {
+}

@@ -25,4 +25,4 @@
  * @version 1.0
  */
 @org.osgi.annotation.versioning.Version("1.0")
-package io.astefanutti.metrics.cdi;
+package io.astefanutti.metrics.cdi20;
