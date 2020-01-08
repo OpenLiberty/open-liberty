@@ -17,7 +17,6 @@ import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Base64;
 
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -37,6 +36,7 @@ import com.ibm.ws.security.common.http.HttpUtils;
 import com.ibm.ws.security.social.TraceConstants;
 import com.ibm.ws.security.social.error.SocialLoginException;
 import com.ibm.ws.security.social.internal.Oauth2LoginConfigImpl;
+import com.ibm.ws.common.internal.encoder.Base64Coder;
 
 public class OpenShiftUserApiUtilsIntrospect {
 
@@ -45,7 +45,7 @@ public class OpenShiftUserApiUtilsIntrospect {
     Oauth2LoginConfigImpl config = null;
 
     HttpUtils httpUtils = new HttpUtils();
-    Base64.Encoder b64encoder = Base64.getEncoder();  
+
     public OpenShiftUserApiUtilsIntrospect(Oauth2LoginConfigImpl config) {
         this.config = config;
     }
@@ -77,7 +77,8 @@ public class OpenShiftUserApiUtilsIntrospect {
     @Sensitive
     Map<String, String> getUserApiRequestHeaders() {
         Map<String, String> headers = new HashMap<String, String>();
-        String idAndSecretEncoded = b64encoder.encodeToString((config.getClientId() + ":" + config.getClientSecret()).getBytes());  
+        String idAndSecretEncoded = Base64Coder.base64Encode(config.getClientId() + ":" + config.getClientSecret());
+                //b64encoder.encodeToString((config.getClientId() + ":" + config.getClientSecret()).getBytes());  
         headers.put("Authorization", "Basic " + idAndSecretEncoded);
         headers.put("Accept", "application/json");
         headers.put("Content-Type", "application/x-www-form-urlencoded");
@@ -87,7 +88,7 @@ public class OpenShiftUserApiUtilsIntrospect {
     String readUserApiResponse(HttpURLConnection connection) throws IOException, SocialLoginException, JoseException {
         int responseCode = connection.getResponseCode();
         String response = httpUtils.readConnectionResponse(connection);
-        if (responseCode != HttpServletResponse.SC_CREATED) {
+        if (responseCode != HttpServletResponse.SC_OK) {
             throw new SocialLoginException("KUBERNETES_USER_API_BAD_STATUS", null, new Object[] { responseCode, response });
         }
         return modifyExistingResponseToJSON(response);
@@ -95,10 +96,16 @@ public class OpenShiftUserApiUtilsIntrospect {
 
     String modifyExistingResponseToJSON(String response) throws JoseException, SocialLoginException {
         JsonObject jsonResponse = getJsonResponseIfValid(response);
+        if(jsonResponse.getBoolean("active")) {
+            return jsonResponse.toString();
+        }
+        else {
+            throw new SocialLoginException("INTROSPECT_USER_API_ACTIVE_NOT_TRUE",null, null);
+        }
 //        JsonObject statusInnerMap = getActiveJsonObjectFromResponse(jsonResponse);
 //        JsonObject userInnerMap = getUserJsonObjectFromResponse(statusInnerMap);
         
-        return createModifiedResponse(jsonResponse);
+      
     }
 
     private JsonObject getJsonResponseIfValid(String response) throws SocialLoginException {
@@ -112,17 +119,17 @@ public class OpenShiftUserApiUtilsIntrospect {
         }
     }
 
-    String createModifiedResponse(JsonObject activeInnerMap) throws SocialLoginException {
-        JsonObjectBuilder modifiedResponse = Json.createObjectBuilder();
-//        if ("email".equals(config.getUserNameAttribute())) {
-//            addUserAttributeToResponseWithEmail(userInnerMap, modifiedResponse);
-//        } else {
-//            addUserToResponseWithoutEmail(userInnerMap, modifiedResponse);
-//        }
-//        addGroupNameToResponse(userInnerMap, modifiedResponse);
-        modifiedResponse.add("active", activeInnerMap.get("active"));
-        return modifiedResponse.build().toString();
-    }
+//    String createModifiedResponse(JsonObject activeInnerMap) throws SocialLoginException {
+//        JsonObjectBuilder modifiedResponse = Json.createObjectBuilder();
+////        if ("email".equals(config.getUserNameAttribute())) {
+////            addUserAttributeToResponseWithEmail(userInnerMap, modifiedResponse);
+////        } else {
+////            addUserToResponseWithoutEmail(userInnerMap, modifiedResponse);
+////        }
+////        addGroupNameToResponse(userInnerMap, modifiedResponse);
+//        modifiedResponse.add("active", activeInnerMap.get("active"));
+//        return modifiedResponse.build().toString();
+//    }
 
 //    void addGroupNameToResponse(JsonObject userInnerMap, JsonObjectBuilder modifiedResponse) throws SocialLoginException {
 //        if (userInnerMap.containsKey(config.getGroupNameAttribute())) {

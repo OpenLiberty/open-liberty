@@ -16,14 +16,10 @@ import javax.net.ssl.SSLSocketFactory;
 
 import org.jose4j.lang.JoseException;
 
-import com.ibm.oauth.core.api.error.OidcServerException;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.security.oauth20.api.OAuth20Provider;
-import com.ibm.ws.security.oauth20.web.HttpServletRequest;
-import com.ibm.ws.security.oauth20.web.HttpServletResponse;
 import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.TraceConstants;
 import com.ibm.ws.security.social.UserApiConfig;
@@ -79,7 +75,7 @@ public class TAIUserApiUtils {
     }
 
 
-    private String getUserApiResponseFromIntrospectEndpoint(Oauth2LoginConfigImpl config, @Sensitive String accessToken, SSLSocketFactory sslSocketFactory) throws OidcServerException, IOException  {
+    private String getUserApiResponseFromIntrospectEndpoint(Oauth2LoginConfigImpl config, @Sensitive String accessToken, SSLSocketFactory sslSocketFactory) throws IOException, SocialLoginException {
         // TODO Auto-generated method stub
 //        TokenIntrospect tokenIntrospect = new TokenIntrospect();]
  //have to do something with introspect present and absent, do i need to create a new openshiftuserapiutils thing        

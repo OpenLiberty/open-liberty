@@ -329,9 +329,10 @@
             type="Boolean" default="false" />
         <AD id="useSystemPropertiesForHttpClientConnections" name="%useSystemPropertiesForHttpClientConnections" description="%useSystemPropertiesForHttpClientConnections.desc" required="false" type="Boolean" default="false"/>
         <AD id="userApiType" name="internal" description="internal use only"
-            required="false" type="String" default="basic">
+            required="false" type="String" default="introspect">
             <Option label="%userApiType.basic" value="basic" />
             <Option label="%userApiType.kube" value="kube" />
+            <Option label="introspect" value="introspect" />
         </AD>
         <!-- If userApiSpec="TokenReview", the userApiToken value is required because the runtime will make a call to the TokenReview API.
              The call to the TokenReview API must include a token for a service account that's allowed to make that call. -->
