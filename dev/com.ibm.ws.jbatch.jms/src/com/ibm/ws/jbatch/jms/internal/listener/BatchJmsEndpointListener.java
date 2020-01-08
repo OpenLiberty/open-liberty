@@ -499,8 +499,8 @@ public class BatchJmsEndpointListener implements MessageListener {
             } catch (JobInstanceNotQueuedException exc) {
             	// trace and swallow this 
                 if(tc.isDebugEnabled()) {
-                	// Might be misleading to trace the non-JMS_CONSUMED `state we found without locking it down
-                    Tr.debug(BatchJmsEndpointListener.this, tc, "Exiting since instanceState isn't equal to JMS_CONSUMED");
+                	// Might be misleading to trace the non-JMS_QUEUED `state we found without locking it down
+                    Tr.debug(BatchJmsEndpointListener.this, tc, "Exiting since instanceState isn't equal to JMS_QUEUED");
                 }
                 return;
             }
@@ -584,8 +584,8 @@ public class BatchJmsEndpointListener implements MessageListener {
             } catch (JobInstanceNotQueuedException exc) {
             	// trace and swallow this 
                 if(tc.isDebugEnabled()) {
-                	// Might be misleading to trace the non-JMS_CONSUMED `state we found without locking it down
-                    Tr.debug(BatchJmsEndpointListener.this, tc, "Exiting since instanceState isn't equal to JMS_CONSUMED");
+                	// Might be misleading to trace the non-JMS_QUEUED `state we found without locking it down
+                    Tr.debug(BatchJmsEndpointListener.this, tc, "Exiting since instanceState isn't equal to JMS_QUEUED");
                 }
                 return;
             }

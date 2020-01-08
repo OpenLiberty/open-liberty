@@ -269,12 +269,10 @@ public interface WSJobRepository {
     public abstract WSRemotablePartitionExecution createRemotablePartition(RemotablePartitionKey remotablePartitionKey);
 
     /**
-     * Updates an entry for this remote partition in the RemotablePartition table with the given internalStatus
-     * If the remotable partition is not found, then it just returns
+     * Gets the internal status of a remotable partition, does nothing if RemotablePartition table does not exist
      *
      * @param remotablePartitionKey
      * @return
-     * @throws IllegalArgumentException if partition isn't found via key
      */
     public abstract WSRemotablePartitionState getRemotablePartitionInternalState(RemotablePartitionKey remotablePartitionKey);
 
