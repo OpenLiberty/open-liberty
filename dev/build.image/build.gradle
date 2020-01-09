@@ -137,6 +137,23 @@ class PackageLibertyWithFeatures extends DefaultTask {
     }
 }
 
+def testFeatures() {
+    def testFeatures = []
+    def tree = fileTree(dir: "$projectDir/wlp/lib/features", include: '*.mf')
+    tree.each {
+        Scanner scanner = new Scanner(it)
+        String line
+        while(scanner.hasNextLine()) {
+            line = scanner.nextLine()
+            if (line.indexOf("IBM-Test-Feature: true") != -1) {
+                testFeatures.add(it.getName())
+                break
+            }
+        }
+    }
+    testFeatures
+}
+
 def allFeatures() {
     String features = ""
     // Exec ./bin/productInfo featureInfo
@@ -182,13 +199,25 @@ def microProfile3Features() {
 }
 
 def removeFeature(feature) {
-    def file = new File("$projectDir/wlp/lib/features/com.ibm.websphere.appserver." + feature + ".mf")
-    file.renameTo(new File("$projectDir/wlp/lib/features/com.ibm.websphere.appserver." + feature + ".mf.bak"))
+    def file
+    if (feature.endsWith(".mf")) {
+        file = new File("$projectDir/wlp/lib/features/" + feature)
+        file.renameTo(new File("$projectDir/wlp/lib/features/" + feature + ".bak"))
+    } else {
+        file = new File("$projectDir/wlp/lib/features/com.ibm.websphere.appserver." + feature + ".mf")
+        file.renameTo(new File("$projectDir/wlp/lib/features/com.ibm.websphere.appserver." + feature + ".mf.bak"))
+    }
 }
 
 def restoreFeature(feature) {
-    def file = new File("$projectDir/wlp/lib/features/com.ibm.websphere.appserver." + feature + ".mf.bak")
-    file.renameTo(new File("$projectDir/wlp/lib/features/com.ibm.websphere.appserver." + feature + ".mf"))
+    def file
+    if (feature.endsWith(".mf")) {
+        file = new File("$projectDir/wlp/lib/features/" + feature + ".bak")
+        file.renameTo(new File("$projectDir/wlp/lib/features/" + feature))
+    } else {
+        file = new File("$projectDir/wlp/lib/features/com.ibm.websphere.appserver." + feature + ".mf.bak")
+        file.renameTo(new File("$projectDir/wlp/lib/features/com.ibm.websphere.appserver." + feature + ".mf"))
+    }
 }
 
 def excludedFeatures = ['cdi-1.2',
@@ -205,8 +234,11 @@ def excludedFeatures = ['cdi-1.2',
 
 if (isAutomatedBuild) {
     task packageOpenLibertyAll(type: PackageLibertyWithFeatures) {
+        def excludedAndTestFeatures = []
         doFirst {
-            excludedFeatures.each {
+            excludedAndTestFeatures.addAll(excludedFeatures)
+            excludedAndTestFeatures.addAll(testFeatures())
+            excludedAndTestFeatures.each {
                 this.&removeFeature("${it}")
             }
         }
@@ -216,7 +248,7 @@ if (isAutomatedBuild) {
         withFeatures this.&allFeatures
         outputTo packageDir
         doLast {
-            excludedFeatures.each {
+            excludedAndTestFeatures.each {
                 this.&restoreFeature("${it}")
             }
         }
