@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2019 IBM Corporation and others.
+ * Copyright (c) 1997, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -113,7 +113,6 @@ public class WCCustomProperties {
     //Start 7.0.0.9
     public static boolean IGNORE_INJECTION_FAILURE; // 596191
 
-    public static String HTTPONLY_COOKIES; //F004323
     public static boolean REINIT_SERVLET_ON_INIT_UNAVAILABLE_EXCEPTION; //PM01373
     //End 7.0.0.9
 
@@ -570,7 +569,6 @@ public class WCCustomProperties {
         //Start 7.0.0.9
         IGNORE_INJECTION_FAILURE = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.ignoreinjectionfailure", "false")).booleanValue(); // 596191
 
-        HTTPONLY_COOKIES = customProps.getProperty("com.ibm.ws.webcontainer.httponlycookies"); //F004323
         REINIT_SERVLET_ON_INIT_UNAVAILABLE_EXCEPTION = Boolean.valueOf(WebContainer.getWebContainerProperties().
               getProperty("com.ibm.ws.webcontainer.reinitservletoninitunavailableexception","true")).booleanValue(); //PM01373
         
