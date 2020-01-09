@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,8 +42,6 @@ public class TestCDI_WEB extends JPAFATServletClient {
     private final static String CONTEXT_ROOT_JPALIB = "TestCDIWithJPALib";
     private final static String RESOURCE_ROOT = "test-applications/CDI/";
     private final static String appFolder = "apps";
-//    private final static String appName = "TestCDISimple";
-//    private final static String appNameEar = appName + ".ear";
 
     private final static Set<String> dropSet = new HashSet<String>();
     private final static Set<String> createSet = new HashSet<String>();
