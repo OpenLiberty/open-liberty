@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -50,6 +50,7 @@ import com.ibm.jbatch.container.persistence.jpa.StepThreadExecutionEntity;
 import com.ibm.jbatch.container.persistence.jpa.TopLevelStepExecutionEntity;
 import com.ibm.jbatch.container.services.IPersistenceManagerService;
 import com.ibm.jbatch.container.ws.InstanceState;
+import com.ibm.jbatch.container.ws.JobInstanceNotQueuedException;
 import com.ibm.jbatch.container.ws.WSStepThreadExecutionAggregate;
 
 /**
@@ -148,7 +149,7 @@ public abstract class AbstractPersistenceManager implements IPersistenceManagerS
     }
 
     @Override
-    public JobInstanceEntity updateJobInstanceStateOnConsumed(long instanceId) throws BatchIllegalJobStatusTransitionException {
+    public JobInstanceEntity updateJobInstanceStateOnConsumed(long instanceId) throws BatchIllegalJobStatusTransitionException, JobInstanceNotQueuedException {
         JobInstanceEntity retVal = getJobInstance(instanceId);
 
         InstanceState currentState = retVal.getInstanceState();
