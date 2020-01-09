@@ -309,7 +309,7 @@ public class BaseTraceService implements TrService {
     @Override
     public synchronized void update(LogProviderConfig config) {
         LogProviderConfigImpl trConfig = (LogProviderConfigImpl) config;
-        applyJsonFields(trConfig.getjsonFields());
+        applyJsonFields(trConfig.getjsonFields(), trConfig.getOmitJsonFields());
         logHeader = trConfig.getLogHeader();
         javaLangInstrument = trConfig.hasJavaLangInstrument();
         consoleLogLevel = trConfig.getConsoleLogLevel();
@@ -472,23 +472,27 @@ public class BaseTraceService implements TrService {
         return isServerConfigUpdate;
     }
 
-    public static void applyJsonFields(String value) {
+    public static void applyJsonFields(String value, Boolean omitJsonFields) {
 
         if (!isServerConfigSetup)
             isServerConfigUpdate = true;
         else
             isServerConfigSetup = false;
 
-        omitFieldsMap.clear(); //refresh for each server configuration update
+        //env var omitJsonFields
+        if (omitJsonFields)
+            omitFieldsMap.clear(); //refresh for each server configuration update
 
         if (isServerConfigUpdate) {
-            AccessLogData.resetOmitFields();
-            FFDCData.resetOmitFields();
-            LogTraceData.resetOmitFieldsMessage();
-            LogTraceData.resetOmitFieldsTrace();
-            LogTraceData.resetExtFields();
-            AuditData.resetOmitFields();
-
+            //env var omitJsonFields
+            if (omitJsonFields) {
+                AccessLogData.resetOmitFields();
+                FFDCData.resetOmitFields();
+                LogTraceData.resetOmitFieldsMessage();
+                LogTraceData.resetOmitFieldsTrace();
+                LogTraceData.resetExtFields();
+                AuditData.resetOmitFields();
+            }
             AccessLogData.resetJsonLoggingNameAliases();
             FFDCData.resetJsonLoggingNameAliases();
             LogTraceData.resetJsonLoggingNameAliasesMessage();
@@ -521,7 +525,8 @@ public class BaseTraceService implements TrService {
             String[] entry = pair.trim().split(":"); //split the pairs to get key and value
             entry[0] = entry[0].trim();
 
-            if (pair.trim().endsWith(":")) { //FIND FIELDS THAT NEED TO BE OMITTED
+            //env var omitJsonFields
+            if (pair.trim().endsWith(":") && omitJsonFields) { //FIND FIELDS THAT NEED TO BE OMITTED
                 Set<String> omitFieldsSet = new HashSet<>();
                 if (entry.length == 1) { //omit fields for all event types (just a field name)
                     omitFieldsSet.add(entry[0]);
@@ -727,11 +732,13 @@ public class BaseTraceService implements TrService {
         LogTraceData.newJsonLoggingNameAliasesTrace(traceMap);
         AuditData.newJsonLoggingNameAliases(auditMap);
 
-        AccessLogData.setOmitFields(omitFieldsMap.get(CollectorConstants.ACCESS_CONFIG_VAL));
-        FFDCData.setOmitFields(omitFieldsMap.get(CollectorConstants.FFDC_CONFIG_VAL));
-        LogTraceData.setOmitFieldsMessage(omitFieldsMap.get(CollectorConstants.MESSAGES_CONFIG_VAL));
-        LogTraceData.setOmitFieldsTrace(omitFieldsMap.get(CollectorConstants.TRACE_CONFIG_VAL));
-        AuditData.setOmitFields(omitFieldsMap.get(CollectorConstants.AUDIT_CONFIG_VAL));
+        if (omitJsonFields) {
+            AccessLogData.setOmitFields(omitFieldsMap.get(CollectorConstants.ACCESS_CONFIG_VAL));
+            FFDCData.setOmitFields(omitFieldsMap.get(CollectorConstants.FFDC_CONFIG_VAL));
+            LogTraceData.setOmitFieldsMessage(omitFieldsMap.get(CollectorConstants.MESSAGES_CONFIG_VAL));
+            LogTraceData.setOmitFieldsTrace(omitFieldsMap.get(CollectorConstants.TRACE_CONFIG_VAL));
+            AuditData.setOmitFields(omitFieldsMap.get(CollectorConstants.AUDIT_CONFIG_VAL));
+        }
     }
 
     /**

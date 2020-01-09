@@ -52,6 +52,9 @@ public interface LoggingConstants {
     String ENV_WLP_LOGGING_JSON_FIELD_MAPPINGS = "WLP_LOGGING_JSON_FIELD_MAPPINGS";
     String ENV_WLP_LOGGING_CONSOLE_LOGLEVEL = "WLP_LOGGING_CONSOLE_LOGLEVEL";
 
+    //beta env var for omission of json fields
+    String ENV_WLP_LOGGING_OMIT_JSON_FIELD_MAPPINGS = "WLP_LOGGING_OMIT_JSON_FIELD_MAPPINGS";
+
     enum FFDCSummaryPolicy {
         DEFAULT, IMMEDIATE
     };
