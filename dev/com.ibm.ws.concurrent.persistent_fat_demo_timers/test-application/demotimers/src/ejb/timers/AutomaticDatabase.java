@@ -85,6 +85,7 @@ public class AutomaticDatabase {
             try (PreparedStatement pstmt = conn.prepareStatement(createTable)) {
                 pstmt.executeUpdate();
             }
+
             isTableCreated = true;
         } catch (SQLException e) {
             e.printStackTrace();

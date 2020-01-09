@@ -89,8 +89,6 @@ public class PersistentDemoTimersServlet extends FATServlet {
     public void testRepeatingAutomaticPersistentTimerIO() throws Exception {
         final long TIMEOUT_NS = TimeUnit.MINUTES.toNanos(4);
 
-        Thread.sleep(TimeUnit.MINUTES.toMillis(1));
-
         int count = autoTimerIO.getRunCount();
         for (long start = System.nanoTime(); count < 3 && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL)) {
             count = autoTimerIO.getRunCount();
