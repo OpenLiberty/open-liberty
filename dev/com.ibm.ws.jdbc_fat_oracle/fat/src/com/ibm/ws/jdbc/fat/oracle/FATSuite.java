@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 IBM Corporation and others.
+ * Copyright (c) 2016, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,11 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.oracle;
 
-import org.junit.ClassRule;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
-import org.testcontainers.containers.OracleContainer;
 
 import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 
@@ -24,12 +23,9 @@ import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
                 OracleUCPTest.class
 })
 public class FATSuite {
-	
-    //TODO replace this container with the official oracle-xe container if/when it is available without a license
-    @ClassRule
-    public static OracleContainer oracle = new OracleContainer("oracleinanutshell/oracle-xe-11g");
-    
-    static {
+    @BeforeClass
+    public static void beforeSuite() throws Exception {
+        //Allows local tests to switch between using a local docker client, to using a remote docker client. 
         ExternalTestServiceDockerClientStrategy.clearTestcontainersConfig();
     }
 }

@@ -39,7 +39,3 @@ task deleteJars(type:Delete) {
 clean {
     dependsOn deleteJars
 }
-
-audit {
-    failOnError = false
-}

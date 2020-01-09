@@ -11,6 +11,7 @@
 package web;
 
 import java.util.Date;
+import java.util.concurrent.Phaser;
 
 import javax.naming.InitialContext;
 import javax.transaction.UserTransaction;
@@ -71,6 +72,13 @@ public class SelfCancelingTask extends DBIncrementTask {
             } finally {
                 if (runInNewTransaction)
                     tran.commit();
+            }
+
+            // coordinate timing with certain test cases
+            Phaser phaser = SchedulerFATServlet.phaserRef.get();
+            if (phaser != null) {
+                int phase = phaser.arrive();
+                phaser.awaitAdvance(phase + 1);
             }
 
             status = persistentExecutor.getStatus(taskId);

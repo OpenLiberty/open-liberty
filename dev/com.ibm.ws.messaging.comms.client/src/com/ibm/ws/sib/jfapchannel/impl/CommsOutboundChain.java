@@ -264,7 +264,7 @@ public class CommsOutboundChain {
             Tr.entry(this, tc, "deactivate", context, _isChainActivated,  _isChainDeactivated);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            SibTr.debug(this, tc, "CommsOutboundChain: Destorying " + (_isSSLChain ? "Secure" : "Non-Secure") + " chain ", _chainName);
+            SibTr.debug(this, tc, "CommsOutboundChain: Destroying " + (_isSSLChain ? "Secure" : "Non-Secure") + " chain ", _chainName);
 
         // The chain may have failed to activate if, for example, sslOptions and sslSupport were not defined.
         if ( _isChainDeactivated ) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -104,6 +104,20 @@ public class HeaderPropagationTestServlet extends FATServlet {
                    allHeaders.contains("InterfaceHeader=abc"));
         assertTrue("Method level @ClientHeaderParam not sent",
                    allHeaders.contains("MethodHeader=def"));
+    }
+
+    @Test
+    public void testSendCustomHeaderViaFactory(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+
+        String allHeaders = ClientBuilder.newClient()
+                        .target(httpUrl)
+                        .path("/clientHeadersFactory")
+                        .request(MediaType.TEXT_PLAIN_TYPE)
+                        .accept(MediaType.TEXT_PLAIN_TYPE)
+                        .get(String.class);
+        LOG.log(Level.INFO, "allHeaders {0}", allHeaders);
+        assertTrue("Header from CustomClientHeadersFactory not sent",
+                   allHeaders.contains("HEADER_FROM_CUSTOM_CLIENTHEADERSFACTORY=123"));
     }
 
     private String createBasicAuthHeaderValue(String username, String password) throws UnsupportedEncodingException {

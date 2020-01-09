@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -73,8 +73,10 @@ public class PersistentExecutorWithFailoverEnabledTest extends FATServletClient 
         originalConfig = server.getServerConfiguration();
         ServerConfiguration config = originalConfig.clone();
         PersistentExecutor myScheduler = config.getPersistentExecutors().getBy("jndiName", "concurrent/myScheduler");
-        myScheduler.setPollInterval("3h"); // the test case does not expect polling, so set a large value that will never be reached
-        myScheduler.setMissedTaskThreshold("1m");
+        myScheduler.setPollInterval("2h30m"); // the test case does not expect polling, so set a large value that will never be reached
+        myScheduler.setRetryInterval("6s");
+        myScheduler.setMissedTaskThreshold("6s");
+        myScheduler.setExtraAttribute("ignore.minimum.for.test.use.only", "true");
         server.updateServerConfiguration(config);
 
         server.startServer();
@@ -140,6 +142,16 @@ public class PersistentExecutorWithFailoverEnabledTest extends FATServletClient 
 
     @Test
     public void testBlockRunningTaskFE() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
+    public void testBlockRunningTaskThatCancelsSelfFE() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
+    public void testBlockRunningTaskThatRemovesSelfFE() throws Exception {
         runTest(server, APP_NAME, testName);
     }
 

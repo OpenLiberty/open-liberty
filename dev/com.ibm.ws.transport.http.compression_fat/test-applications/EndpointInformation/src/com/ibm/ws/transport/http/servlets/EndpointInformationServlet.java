@@ -26,6 +26,9 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/EndpointInformationServlet")
 public class EndpointInformationServlet extends HttpServlet {
 
+    /**  */
+    private static final long serialVersionUID = 1L;
+
     public EndpointInformationServlet() {
 
     }
@@ -59,18 +62,17 @@ public class EndpointInformationServlet extends HttpServlet {
                 res.setHeader("Content-Type", "test");
             }
 
-            else if ("testContentEncoding".equalsIgnoreCase(value)){
-              //This text should not go through the channel's compression
-              //code. Simulates custom servlet compression notified by the
-              //Content-Encoding header.
-              res.setHeader("Vary", "Accept-Encoding");
-              res.setHeader("Content-Encoding", "gzip");
+            else if ("testContentEncoding".equalsIgnoreCase(value)) {
+                //This text should not go through the channel's compression
+                //code. Simulates custom servlet compression notified by the
+                //Content-Encoding header.
+                res.setHeader("Vary", "Accept-Encoding");
+                res.setHeader("Content-Encoding", "gzip");
             }
         }
 
         pw.println(payload);
 
     }
-
 
 }

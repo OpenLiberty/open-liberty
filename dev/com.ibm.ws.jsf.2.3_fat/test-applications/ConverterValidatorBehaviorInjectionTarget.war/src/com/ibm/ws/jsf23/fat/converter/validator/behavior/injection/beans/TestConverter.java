@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,10 +18,12 @@ import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
 
 /**
- * Converter that supports Injection
+ * Converter that supports Injection.
+ *
+ * Added use of generics to this Converter to test MYFACES-4311.
  */
 @FacesConverter(value = "testConverter", managed = true)
-public class TestConverter implements Converter {
+public class TestConverter implements Converter<String> {
 
     @Inject
     private TestCDIBean testBean;
@@ -32,7 +34,7 @@ public class TestConverter implements Converter {
      * @see javax.faces.convert.Converter#getAsObject(javax.faces.context.FacesContext, javax.faces.component.UIComponent, java.lang.String)
      */
     @Override
-    public Object getAsObject(FacesContext context, UIComponent component, String value) throws ConverterException {
+    public String getAsObject(FacesContext context, UIComponent component, String value) throws ConverterException {
         int index = value.indexOf(testBean.getWorld());
         if (index != -1) {
             value = value.substring(0, index) + testBean.getEarth();
@@ -43,14 +45,14 @@ public class TestConverter implements Converter {
     /*
      * (non-Javadoc)
      *
-     * @see javax.faces.convert.Converter#getAsString(javax.faces.context.FacesContext, javax.faces.component.UIComponent, java.lang.Object)
+     * @see javax.faces.convert.Converter#getAsString(javax.faces.context.FacesContext, javax.faces.component.UIComponent, java.lang.String)
      */
     @Override
-    public String getAsString(FacesContext context, UIComponent component, Object value) throws ConverterException {
+    public String getAsString(FacesContext context, UIComponent component, String value) throws ConverterException {
         if (value == null) {
             return "";
         }
-        return String.valueOf(value);
+        return value;
     }
 
 }

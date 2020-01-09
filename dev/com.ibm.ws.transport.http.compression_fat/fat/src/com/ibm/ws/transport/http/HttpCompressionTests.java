@@ -19,7 +19,6 @@ import java.net.InetAddress;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -34,7 +33,9 @@ import org.apache.http.util.EntityUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.RemoteFile;
@@ -104,6 +105,9 @@ public class HttpCompressionTests {
     @Server("FATServer")
     public static LibertyServer server;
 
+    @Rule
+    public TestName name = new TestName();
+
     // Since we have tracing enabled give server longer timeout to start up.
     private static final long SERVER_START_TIMEOUT = 30 * 1000;
 
@@ -165,7 +169,7 @@ public class HttpCompressionTests {
     @After
     public void tearDown() throws Exception {
         if (server != null && server.isStarted())
-            server.stopServer("CWWKT0029W","CWWKT0030W","CWWKT0031W","CWWKT0032W", "CWWKT0033W");
+            server.stopServer("CWWKT0029W", "CWWKT0030W", "CWWKT0031W", "CWWKT0032W", "CWWKT0033W");
     }
 
     /**
@@ -186,9 +190,9 @@ public class HttpCompressionTests {
     public void testQValueWeight() throws Exception {
 
         configurationFileName = ConfigurationFiles.DEFAULT.name;
-        testName = "testQValueWeight";
+        testName = name.getMethodName();
 
-        startServer(configurationFileName);
+        startServer(configurationFileName, testName);
 
         //First Request
         headerList.add(new BasicHeader(ACCEPT_ENCODING, "deflate;q=0.75, gzip;q=0.5"));
@@ -205,7 +209,6 @@ public class HttpCompressionTests {
         //Third Request
         headerList.clear();
         headerList.add(new BasicHeader(ACCEPT_ENCODING, "identity, deflate; q=0.75"));
-
 
         httpResponse = execute(headerList, testName);
         assertNotCompressed(httpResponse);
@@ -245,9 +248,9 @@ public class HttpCompressionTests {
     public void testCompressionFavorsGZIP() throws Exception {
 
         configurationFileName = ConfigurationFiles.DEFAULT.name;
-        testName = "testCompressionFavorsGZIP";
+        testName = name.getMethodName();
 
-        startServer(configurationFileName);
+        startServer(configurationFileName, testName);
 
         //First Request
         headerList.add(new BasicHeader(ACCEPT_ENCODING, "deflate;q=1, gzip;q=1"));
@@ -279,9 +282,9 @@ public class HttpCompressionTests {
     public void testNoSupportedCompressionAlgorithm() throws Exception {
 
         configurationFileName = ConfigurationFiles.DEFAULT.name;
-        testName = "testNoSupportedCompressionAlgorithm";
+        testName = name.getMethodName();
 
-        startServer(configurationFileName);
+        startServer(configurationFileName, testName);
 
         //First Request
         headerList.add(new BasicHeader(ACCEPT_ENCODING, "MostEfficientCompressionAlgorithm"));
@@ -306,9 +309,9 @@ public class HttpCompressionTests {
     public void testSupportedCompressionAlgorithms() throws Exception {
 
         configurationFileName = ConfigurationFiles.DEFAULT.name;
-        testName = "testSupportedCompressionAlgorithms";
+        testName = name.getMethodName();
 
-        startServer(configurationFileName);
+        startServer(configurationFileName, testName);
 
         //First Request
         headerList.add(new BasicHeader(ACCEPT_ENCODING, CompressionType.GZIP.name));
@@ -356,9 +359,9 @@ public class HttpCompressionTests {
     public void testMalformedAcceptEncodingHeader() throws Exception {
 
         configurationFileName = ConfigurationFiles.DEFAULT.name;
-        testName = "testMalformedAcceptEncodingHeader";
+        testName = name.getMethodName();
 
-        startServer(configurationFileName);
+        startServer(configurationFileName, testName);
 
         //First request - test multiple ";"
         headerList.add(new BasicHeader(ACCEPT_ENCODING, "deflate;;q=1"));
@@ -431,9 +434,9 @@ public class HttpCompressionTests {
     @Test
     public void testQValueRange() throws Exception {
         configurationFileName = ConfigurationFiles.DEFAULT.name;
-        testName = "testQValueRange";
+        testName = name.getMethodName();
 
-        startServer(configurationFileName);
+        startServer(configurationFileName, testName);
 
         HttpResponse httpResponse = null;
 
@@ -509,10 +512,10 @@ public class HttpCompressionTests {
     @Test
     public void testDefaultQValue() throws Exception {
         configurationFileName = ConfigurationFiles.DEFAULT.name;
-        testName = "testDefaultQValue";
+        testName = name.getMethodName();
 
         Header contentEncodingHeader = null;
-        startServer(configurationFileName);
+        startServer(configurationFileName, testName);
 
         HttpResponse httpResponse = null;
 
@@ -541,19 +544,19 @@ public class HttpCompressionTests {
      * Expected Result, Server appends (comma delimited) the
      * 'Accept-Encoding'. Header should look like 'Vary:test, Accept-Encoding'
      *
-     *If the Vary header already existed with the 'Accept-Encoding' value,
-     *the server should not try to append anything to the header. During the third
-     *request, the application will set a value of 'Accept-Encoding' to the Vary header.
+     * If the Vary header already existed with the 'Accept-Encoding' value,
+     * the server should not try to append anything to the header. During the third
+     * request, the application will set a value of 'Accept-Encoding' to the Vary header.
      *
      * @throws Exception
      */
     @Test
     public void testVaryHeader() throws Exception {
         configurationFileName = ConfigurationFiles.DEFAULT.name;
-        testName = "testVaryHeader";
+        testName = name.getMethodName();
 
         Header varyHeader = null;
-        startServer(configurationFileName);
+        startServer(configurationFileName, testName);
 
         HttpResponse httpResponse = null;
 
@@ -600,10 +603,10 @@ public class HttpCompressionTests {
     public void testCompressionSizeCompliance() throws Exception {
 
         configurationFileName = ConfigurationFiles.DEFAULT.name;
-        testName = "testCompressionSizeCompliance";
+        testName = name.getMethodName();
         HttpResponse httpResponse = null;
 
-        startServer(configurationFileName);
+        startServer(configurationFileName, testName);
 
         //First Request - Ask for compression, set response to small
         headerList.clear();
@@ -613,7 +616,7 @@ public class HttpCompressionTests {
         httpResponse = execute(headerList, testName);
         assertNotCompressed(httpResponse);
 
-        //Second Request - Ask for compression, set response to larger than 150 bytes
+        //Second Request - Ask for compression, set response to larger than 2048 bytes
         headerList.clear();
         headerList.add(new BasicHeader("TestCondition", "regularSize"));
         headerList.add(new BasicHeader(ACCEPT_ENCODING, "deflate"));
@@ -646,10 +649,10 @@ public class HttpCompressionTests {
     @Test
     public void testCompressionTypesOption() throws Exception {
         configurationFileName = ConfigurationFiles.WITH_CONTENT_TYPES.name;
-        testName = "testCompressionTypesOption";
+        testName = name.getMethodName();
         HttpResponse httpResponse = null;
 
-        startServer(configurationFileName);
+        startServer(configurationFileName, testName);
 
         //First Request - Ask the server for compression, set app to add
         //a Content-Type of "test", which should normally not compress. Since
@@ -685,49 +688,49 @@ public class HttpCompressionTests {
      */
     @Test
     public void testCompressionServerPrefAlgorithm() throws Exception {
-      configurationFileName = ConfigurationFiles.WITH_CONFIG_PREF_ALGO.name;
-      testName = "testCompressionServerPrefAlgorithm";
-      HttpResponse httpResponse = null;
+        configurationFileName = ConfigurationFiles.WITH_CONFIG_PREF_ALGO.name;
+        testName = name.getMethodName();
+        HttpResponse httpResponse = null;
 
-      startServer(configurationFileName);
+        startServer(configurationFileName, testName);
 
-      headerList.clear();
-      //Server Preferred Algorithm is set to deflate. Setting a smaller (yet
-      //larger than zero) quality value than gzip should still compress as
-      //deflate.
-      headerList.add(new BasicHeader(ACCEPT_ENCODING, "deflate;q=0.5, gzip"));
+        headerList.clear();
+        //Server Preferred Algorithm is set to deflate. Setting a smaller (yet
+        //larger than zero) quality value than gzip should still compress as
+        //deflate.
+        headerList.add(new BasicHeader(ACCEPT_ENCODING, "deflate;q=0.5, gzip"));
 
-      httpResponse = execute(headerList, testName);
-      assertCompressed(httpResponse, CompressionType.DEFLATE);
+        httpResponse = execute(headerList, testName);
+        assertCompressed(httpResponse, CompressionType.DEFLATE);
 
-      //Second Request - With the server configured to prefer deflate, a request
-      //with no deflate algorithm should default to  the highest compression
-      //algorithm in the accept encoding header
-      headerList.clear();
-      headerList.add(new BasicHeader(ACCEPT_ENCODING, "identity; q=0.5, gzip"));
+        //Second Request - With the server configured to prefer deflate, a request
+        //with no deflate algorithm should default to  the highest compression
+        //algorithm in the accept encoding header
+        headerList.clear();
+        headerList.add(new BasicHeader(ACCEPT_ENCODING, "identity; q=0.5, gzip"));
 
-      httpResponse = execute(headerList, testName);
-      assertCompressed(httpResponse, CompressionType.GZIP);
+        httpResponse = execute(headerList, testName);
+        assertCompressed(httpResponse, CompressionType.GZIP);
 
-      //Third Request - With the server configured to prefer deflate, send a request
-      //with an Accept-Encoding that sets both deflate and gzip to the same quality
-      //value. While the server would typically chose gzip over deflate in ties,
-      //the server should now pick deflate.
-      headerList.clear();
-      headerList.add(new BasicHeader(ACCEPT_ENCODING, "deflate, gzip"));
+        //Third Request - With the server configured to prefer deflate, send a request
+        //with an Accept-Encoding that sets both deflate and gzip to the same quality
+        //value. While the server would typically chose gzip over deflate in ties,
+        //the server should now pick deflate.
+        headerList.clear();
+        headerList.add(new BasicHeader(ACCEPT_ENCODING, "deflate, gzip"));
 
-      httpResponse = execute(headerList, testName);
-      assertCompressed(httpResponse, CompressionType.DEFLATE);
+        httpResponse = execute(headerList, testName);
+        assertCompressed(httpResponse, CompressionType.DEFLATE);
 
-      //Fourth Request - With the server configured to prefer deflate, send a
-      //request with an Accept-Encoding that sets '*' as the value. While the server
-      //would typically choose gzip as the default algorithm when '*' is set, deflate
-      //should now be set.
-      headerList.clear();
-      headerList.add(new BasicHeader(ACCEPT_ENCODING, "*"));
+        //Fourth Request - With the server configured to prefer deflate, send a
+        //request with an Accept-Encoding that sets '*' as the value. While the server
+        //would typically choose gzip as the default algorithm when '*' is set, deflate
+        //should now be set.
+        headerList.clear();
+        headerList.add(new BasicHeader(ACCEPT_ENCODING, "*"));
 
-      httpResponse = execute(headerList, testName);
-      assertCompressed(httpResponse, CompressionType.DEFLATE);
+        httpResponse = execute(headerList, testName);
+        assertCompressed(httpResponse, CompressionType.DEFLATE);
     }
 
     /**
@@ -747,30 +750,29 @@ public class HttpCompressionTests {
      */
     @Test
     public void testCompressionContentEncodedServlet() throws Exception {
-      configurationFileName = ConfigurationFiles.DEFAULT.name;
-      testName = "testCompressionContentEncodedServlet";
-      HttpResponse httpResponse = null;
-      Header varyHeader = null;
-      startServer(configurationFileName);
+        configurationFileName = ConfigurationFiles.DEFAULT.name;
+        testName = name.getMethodName();
+        HttpResponse httpResponse = null;
+        Header varyHeader = null;
+        startServer(configurationFileName, testName);
 
-      headerList.clear();
-      headerList.add(new BasicHeader("TestCondition", "testContentEncoding"));
-      headerList.add(new BasicHeader(ACCEPT_ENCODING, "gzip"));
+        headerList.clear();
+        headerList.add(new BasicHeader("TestCondition", "testContentEncoding"));
+        headerList.add(new BasicHeader(ACCEPT_ENCODING, "gzip"));
 
-      httpResponse = execute(headerList, testName);
-      varyHeader = httpResponse.getFirstHeader("Vary");
-      //Servlet should set Content-Encoding to gzip, which the server should
-      //not try to compress. As a result, we should see the APP_MESSAGE here.
-      responseString = getResponseAsString(httpResponse);
-      assertTrue("Response is compressed.", responseString != null && responseString.contains(APP_MESSAGE));
+        httpResponse = execute(headerList, testName);
+        varyHeader = httpResponse.getFirstHeader("Vary");
+        //Servlet should set Content-Encoding to gzip, which the server should
+        //not try to compress. As a result, we should see the APP_MESSAGE here.
+        responseString = getResponseAsString(httpResponse);
+        assertTrue("Response is compressed.", responseString != null && responseString.contains(APP_MESSAGE));
 
-      Header contentEncodingHeader = getContentEncodingHeader(httpResponse);
-      assertTrue("Response does not contain Content-Encoding: gzip", "gzip".equalsIgnoreCase(contentEncodingHeader.getValue()));
+        Header contentEncodingHeader = getContentEncodingHeader(httpResponse);
+        assertTrue("Response does not contain Content-Encoding: gzip", "gzip".equalsIgnoreCase(contentEncodingHeader.getValue()));
 
-      //Vary header is added by the servlet, ensure that it contains exactly "Accept-Encoding"
+        //Vary header is added by the servlet, ensure that it contains exactly "Accept-Encoding"
 
-      assertTrue("Response expected to be [Accept-Encoding] but was: " + varyHeader, varyHeader!=null && "Accept-Encoding".equalsIgnoreCase(varyHeader.getValue()));
-
+        assertTrue("Response expected to be [Accept-Encoding] but was: " + varyHeader, varyHeader != null && "Accept-Encoding".equalsIgnoreCase(varyHeader.getValue()));
 
     }
 
@@ -789,17 +791,17 @@ public class HttpCompressionTests {
     @Test
     @Mode(TestMode.FULL)
     public void testCompressionRefConfig() throws Exception {
-      configurationFileName = ConfigurationFiles.WITH_CONFIG_REF.name;
-      testName = "testCompressionRefConfig";
-      HttpResponse httpResponse = null;
+        configurationFileName = ConfigurationFiles.WITH_CONFIG_REF.name;
+        testName = name.getMethodName();
+        HttpResponse httpResponse = null;
 
-      startServer(configurationFileName);
+        startServer(configurationFileName, testName);
 
-      headerList.clear();
-      headerList.add(new BasicHeader(ACCEPT_ENCODING, CompressionType.DEFLATE.name));
+        headerList.clear();
+        headerList.add(new BasicHeader(ACCEPT_ENCODING, CompressionType.DEFLATE.name));
 
-      httpResponse = execute(headerList, testName);
-      assertCompressed(httpResponse, CompressionType.DEFLATE);
+        httpResponse = execute(headerList, testName);
+        assertCompressed(httpResponse, CompressionType.DEFLATE);
     }
 
     /**
@@ -814,19 +816,18 @@ public class HttpCompressionTests {
     @Test
     @Mode(TestMode.FULL)
     public void testCompressionConfigDuplicateTypes() throws Exception {
-      configurationFileName = ConfigurationFiles.WITH_CONFIG_DUPLICATE_TYPES.name;
-      testName = "testCompressionConfigDuplicateTypes";
-      HttpResponse httpResponse = null;
+        configurationFileName = ConfigurationFiles.WITH_CONFIG_DUPLICATE_TYPES.name;
+        testName = name.getMethodName();
 
-      startServer(configurationFileName);
+        startServer(configurationFileName, testName);
 
-      RemoteFile traceLog = server.getFileFromLibertyServerRoot("logs/trace.log");
+        RemoteFile traceLog = server.getFileFromLibertyServerRoot("logs/trace.log");
 
-      String stringToSearchFor = "CWWKT0029W";
+        String stringToSearchFor = "CWWKT0029W";
 
-      // There should be a match so fail if there is not.
-      assertNotNull("The following string was not found in the access log: " + stringToSearchFor,
-                    server.waitForStringInLog(stringToSearchFor, SERVER_LOG_SEARCH_TIMEOUT, traceLog));
+        // There should be a match so fail if there is not.
+        assertNotNull("The following string was not found in the access log: " + stringToSearchFor,
+                      server.waitForStringInLog(stringToSearchFor, SERVER_LOG_SEARCH_TIMEOUT, traceLog));
 
     }
 
@@ -842,19 +843,18 @@ public class HttpCompressionTests {
     @Test
     @Mode(TestMode.FULL)
     public void testCompressionConfigRemoveDuplicateTypes() throws Exception {
-      configurationFileName = ConfigurationFiles.WITH_CONFIG_DUPLICATE_REMOVAL_TYPES.name;
-      testName = "testCompressionRemoveConfigDuplicateTypes";
-      HttpResponse httpResponse = null;
+        configurationFileName = ConfigurationFiles.WITH_CONFIG_DUPLICATE_REMOVAL_TYPES.name;
+        testName = name.getMethodName();
 
-      startServer(configurationFileName);
+        startServer(configurationFileName, testName);
 
-      RemoteFile traceLog = server.getFileFromLibertyServerRoot("logs/trace.log");
+        RemoteFile traceLog = server.getFileFromLibertyServerRoot("logs/trace.log");
 
-      String stringToSearchFor = "CWWKT0030W";
+        String stringToSearchFor = "CWWKT0030W";
 
-      // There should be a match so fail if there is not.
-      assertNotNull("The following string was not found in the access log: " + stringToSearchFor,
-                    server.waitForStringInLog(stringToSearchFor, SERVER_LOG_SEARCH_TIMEOUT, traceLog));
+        // There should be a match so fail if there is not.
+        assertNotNull("The following string was not found in the access log: " + stringToSearchFor,
+                      server.waitForStringInLog(stringToSearchFor, SERVER_LOG_SEARCH_TIMEOUT, traceLog));
 
     }
 
@@ -870,19 +870,18 @@ public class HttpCompressionTests {
     @Test
     @Mode(TestMode.FULL)
     public void testCompressionConfigAddRemoveDuplicateTypes() throws Exception {
-      configurationFileName = ConfigurationFiles.WITH_CONFIG_ADD_REMOVE_DUPLICATE_TYPES.name;
-      testName = "testCompressionConfigAddRemoveDuplicateTypes";
-      HttpResponse httpResponse = null;
+        configurationFileName = ConfigurationFiles.WITH_CONFIG_ADD_REMOVE_DUPLICATE_TYPES.name;
+        testName = name.getMethodName();
 
-      startServer(configurationFileName);
+        startServer(configurationFileName, testName);
 
-      RemoteFile traceLog = server.getFileFromLibertyServerRoot("logs/trace.log");
+        RemoteFile traceLog = server.getFileFromLibertyServerRoot("logs/trace.log");
 
-      String stringToSearchFor = "CWWKT0031W";
+        String stringToSearchFor = "CWWKT0031W";
 
-      // There should be a match so fail if there is not.
-      assertNotNull("The following string was not found in the access log: " + stringToSearchFor,
-                    server.waitForStringInLog(stringToSearchFor, SERVER_LOG_SEARCH_TIMEOUT, traceLog));
+        // There should be a match so fail if there is not.
+        assertNotNull("The following string was not found in the access log: " + stringToSearchFor,
+                      server.waitForStringInLog(stringToSearchFor, SERVER_LOG_SEARCH_TIMEOUT, traceLog));
 
     }
 
@@ -898,19 +897,18 @@ public class HttpCompressionTests {
     @Test
     @Mode(TestMode.FULL)
     public void testCompressionConfigOverWriteAndAddTypes() throws Exception {
-      configurationFileName = ConfigurationFiles.WITH_CONFIG_OVERWRITE_ADD_TYPES.name;
-      testName = "testCompressionConfigOverWriteAndAddTypes";
-      HttpResponse httpResponse = null;
+        configurationFileName = ConfigurationFiles.WITH_CONFIG_OVERWRITE_ADD_TYPES.name;
+        testName = name.getMethodName();
 
-      startServer(configurationFileName);
+        startServer(configurationFileName, testName);
 
-      RemoteFile traceLog = server.getFileFromLibertyServerRoot("logs/trace.log");
+        RemoteFile traceLog = server.getFileFromLibertyServerRoot("logs/trace.log");
 
-      String stringToSearchFor = "CWWKT0032W";
+        String stringToSearchFor = "CWWKT0032W";
 
-      // There should be a match so fail if there is not.
-      assertNotNull("The following string was not found in the access log: " + stringToSearchFor,
-                    server.waitForStringInLog(stringToSearchFor, SERVER_LOG_SEARCH_TIMEOUT, traceLog));
+        // There should be a match so fail if there is not.
+        assertNotNull("The following string was not found in the access log: " + stringToSearchFor,
+                      server.waitForStringInLog(stringToSearchFor, SERVER_LOG_SEARCH_TIMEOUT, traceLog));
 
     }
 
@@ -926,19 +924,18 @@ public class HttpCompressionTests {
     @Test
     @Mode(TestMode.FULL)
     public void testCompressionConfigPrefAlgoMisconfiguration() throws Exception {
-      configurationFileName = ConfigurationFiles.WITH_CONFIG_PREF_ALGO_MISCONFIG.name;
-      testName = "testCompressionConfigPrefAlgoMisconfiguration";
-      HttpResponse httpResponse = null;
+        configurationFileName = ConfigurationFiles.WITH_CONFIG_PREF_ALGO_MISCONFIG.name;
+        testName = name.getMethodName();
 
-      startServer(configurationFileName);
+        startServer(configurationFileName, testName);
 
-      RemoteFile traceLog = server.getFileFromLibertyServerRoot("logs/trace.log");
+        RemoteFile traceLog = server.getFileFromLibertyServerRoot("logs/trace.log");
 
-      String stringToSearchFor = "CWWKT0033W";
+        String stringToSearchFor = "CWWKT0033W";
 
-      // There should be a match so fail if there is not.
-      assertNotNull("The following string was not found in the access log: " + stringToSearchFor,
-                    server.waitForStringInLog(stringToSearchFor, SERVER_LOG_SEARCH_TIMEOUT, traceLog));
+        // There should be a match so fail if there is not.
+        assertNotNull("The following string was not found in the access log: " + stringToSearchFor,
+                      server.waitForStringInLog(stringToSearchFor, SERVER_LOG_SEARCH_TIMEOUT, traceLog));
 
     }
 
@@ -948,12 +945,14 @@ public class HttpCompressionTests {
      * Please look at publish/files/remoteIPConfig directory for the different server names.
      *
      * @param variation The name of the server that needs to be appended to "-server.xml"
+     * @param testname  The name of the test that is starting the server. This allows for easier test
+     *                      debug as the server console log will contain the test name.
      * @throws Exception
      */
-    private void startServer(String variation) throws Exception {
+    private void startServer(String variation, String testName) throws Exception {
         server.setServerConfigurationFile(CONFIGURATION_FILES_DIR + variation + XML_EXTENSION);
         server.setServerStartTimeout(SERVER_START_TIMEOUT);
-        server.startServer(variation + LOG_EXTENSION);
+        server.startServer(testName + LOG_EXTENSION);
         server.waitForStringInLogUsingMark(APP_STARTED_MESSAGE);
     }
 
@@ -961,26 +960,26 @@ public class HttpCompressionTests {
      * Private method to execute/drive an HTTP request and obtain an HTTP response
      *
      * @param headerList A list of headers to be added in the request
-     * @param variation The name of the server for logging purposes
+     * @param testName   The name of the test being executed
      * @return The HTTP response for the request
      * @throws Exception
      */
-    private HttpResponse execute(List<BasicHeader> headerList, String variation) throws Exception {
+    private HttpResponse execute(List<BasicHeader> headerList, String testName) throws Exception {
 
         String urlString = "http://" + server.getHostname() + ":" + httpDefaultPort + "/" + APP_NAME + "/" + APP_SERVLET_NAME;
         URI uri = URI.create(urlString);
-        Log.info(ME, variation, "Execute request to " + uri);
+        Log.info(ME, testName, "Execute request to " + uri);
 
         HttpGet request = new HttpGet(uri);
 
-        Log.info(ME, variation, "Header list: " + headerList.toString());
+        Log.info(ME, testName, "Header list: " + headerList.toString());
 
         for (BasicHeader header : headerList) {
             request.addHeader(header.getName(), header.getValue());
         }
 
         HttpResponse response = client.execute(request);
-        Log.info(ME, variation, "Returned: " + response.getStatusLine());
+        Log.info(ME, testName, "Returned: " + response.getStatusLine());
         return response;
     }
 
@@ -1031,7 +1030,8 @@ public class HttpCompressionTests {
         assertTrue("Response is not compressed.", responseString != null && !responseString.contains(APP_MESSAGE));
 
         Header contentEncodingHeader = getContentEncodingHeader(httpResponse);
-        assertTrue("Response expected Content-Encoding of [" + type.name+"] but got [" +contentEncodingHeader.getValue()+"]", type.name.equals(contentEncodingHeader.getValue()));
+        assertTrue("Response expected Content-Encoding of [" + type.name + "] but got [" + contentEncodingHeader.getValue() + "]",
+                   type.name.equals(contentEncodingHeader.getValue()));
 
     }
 

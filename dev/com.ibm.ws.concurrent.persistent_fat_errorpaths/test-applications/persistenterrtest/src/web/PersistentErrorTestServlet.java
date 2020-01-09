@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,6 +32,7 @@ import javax.enterprise.concurrent.AbortedException;
 import javax.enterprise.concurrent.ManagedTask;
 import javax.enterprise.concurrent.SkippedException;
 import javax.enterprise.concurrent.Trigger;
+import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -317,6 +318,19 @@ public class PersistentErrorTestServlet extends HttpServlet {
             SharedFailingTask.clear();
         }
 
+    }
+
+    /**
+     * testMissedTaskThresholdExceedsMaximum - attempt to use a persistent executor where the missedTaskThreshold value exceeds
+     * the maximum allowed. Expect IllegalArgumentException with a translatable message.
+     */
+    public void testMissedTaskThresholdExceedsMaximum(PrintWriter out) throws Exception {
+        try {
+            PersistentExecutor misconfiguredExecutor = InitialContext.doLookup("concurrent/exceedsMaxMissedTaskThreshold");
+            throw new Exception("Should not be able to obtain misconfigured persistentExecutor where missedTaskThreshold value exceeds the maximum allowed " + misconfiguredExecutor);
+        } catch (NamingException x) {
+            // expected
+        }
     }
 
     /**
