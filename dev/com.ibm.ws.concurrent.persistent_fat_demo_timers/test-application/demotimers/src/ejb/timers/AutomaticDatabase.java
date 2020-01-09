@@ -70,15 +70,16 @@ public class AutomaticDatabase {
     }
 
     private void initTable() {
-        final String createTable = "CREATE TABLE AutomaticDatabase (name VARCHAR(64) NOT NULL PRIMARY KEY, count INT)";
+        final String createTable = "CREATE TABLE AUTOMATICDATABASE (name VARCHAR(64) NOT NULL PRIMARY KEY, count INT)";
 
         try (Connection conn = ds.getConnection()) {
             //See if table was created by another server
             DatabaseMetaData md = conn.getMetaData();
-            ResultSet rs = md.getTables(null, null, "AutomaticDatabase", null);
+            ResultSet rs = md.getTables(null, null, "AUTOMATICDATABASE".toUpperCase(), null);
             while (rs.next()) {
-                isTableCreated = true;
-                return;
+                isTableCreated = rs.getString("TABLE_NAME").equalsIgnoreCase("AUTOMATICDATABASE");
+                if (isTableCreated)
+                    return;
             }
 
             //If not, create it.
@@ -94,7 +95,7 @@ public class AutomaticDatabase {
     }
 
     private void initCounter(Timer timer) {
-        final String createRow = "INSERT INTO AutomaticDatabase VALUES(?,?)";
+        final String createRow = "INSERT INTO AUTOMATICDATABASE VALUES(?,?)";
 
         //create count
         count = 1;
@@ -121,7 +122,7 @@ public class AutomaticDatabase {
             return count;
         }
 
-        final String modifyRow = "UPDATE AutomaticDatabase SET count = ? WHERE name = ?";
+        final String modifyRow = "UPDATE AUTOMATICDATABASE SET count = ? WHERE name = ?";
 
         try (Connection conn = ds.getConnection()) {
             try (PreparedStatement pstmt = conn.prepareStatement(modifyRow)) {
