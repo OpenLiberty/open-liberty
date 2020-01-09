@@ -42,6 +42,7 @@ import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
 import com.ibm.ws.security.authentication.filter.internal.AuthFilterConfig;
 import com.ibm.ws.security.authentication.utility.JaasLoginConfigConstants;
 import com.ibm.ws.security.authentication.utility.SubjectHelper;
+import com.ibm.ws.security.common.structures.BoundedHashMap;
 import com.ibm.ws.security.common.web.WebUtils;
 import com.ibm.ws.security.context.SubjectManager;
 import com.ibm.ws.security.oauth20.util.OAuth20ProviderUtils;
@@ -90,6 +91,7 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
     private final Object initOidcClientAuthLock = new Object() {
     };
     boolean initBeforeSso = false;
+    private final BoundedHashMap authFilterWarnings = new BoundedHashMap(20);
 
     static final String KEY_AUTH_CACHE_SERVICE = "authCacheService";
     static final AtomicServiceReference<AuthCacheService> authCacheServiceRef = new AtomicServiceReference<AuthCacheService>(KEY_AUTH_CACHE_SERVICE);
@@ -267,21 +269,20 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
         oidcClientAuthenticator = null;
     }
 
-    // warn if >1 client specifies the same auth filter
+    // warn (only once) if >1 client specifies the same auth filter
     void warnIfAuthFilterUseDuplicated(Iterator<OidcClientConfig> configs) {
         if (configs == null) {
             configs = oidcClientConfigRef.getServices();
         }
         ArrayList<String> authFilters = new ArrayList<String>();
-        ArrayList<String> reportedDuplicates = new ArrayList<String>();
         while (configs.hasNext()) {
             OidcClientConfig config = configs.next();
             String authFilter = config.getAuthFilterId();
             if (authFilter != null) {
                 if (authFilters.contains(authFilter)) {
-                    if (!reportedDuplicates.contains(authFilter)) {
+                    if (!authFilterWarnings.containsKey(authFilter)) {
                         Tr.warning(tc, "CONFIG_AUTHFILTER_NOTUNIQUE", authFilter); // CWWKS1530W
-                        reportedDuplicates.add(authFilter);
+                        authFilterWarnings.put(authFilter, null);
                     }
                 } else {
                     authFilters.add(authFilter);
@@ -455,14 +456,18 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
         Iterator<OidcClientConfig> oidcClientConfigs = oidcClientConfigRef.getServices();
         oidcProvider = getProviderConfig(oidcClientConfigs, reqProviderHint, req);
         if (oidcProvider != null) {
-            warnIfAmbiguousAuthFilters(oidcClientConfigs, req, authFilterServiceRef);
+            warnIfAmbiguousAuthFilters(oidcClientConfigRef.getServices(), req, authFilterServiceRef);
         }
         return oidcProvider;
     }
 
-    // warn if >1 auth filter could have matched this request. If so, inconsist behavior is possible. 
+    // warn (only once) if >1 auth filter could have matched this request. If so, inconsistent behavior is possible. 
     void warnIfAmbiguousAuthFilters(Iterator<OidcClientConfig> oidcClientConfigs, HttpServletRequest req,
             ConcurrentServiceReferenceMap<String, AuthenticationFilter> AFServiceRef) {
+        if(authFilterWarnings.containsKey(req.getRequestURL().toString())) {
+            return;  //already checked
+        }
+        authFilterWarnings.put(req.getRequestURL().toString(), null);
         HashMap<String, Object> acceptingAuthFilterIds = new HashMap<String, Object>();
         while (oidcClientConfigs.hasNext()) {
             OidcClientConfig clientConfig = oidcClientConfigs.next();
@@ -486,7 +491,10 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
             while (it.hasNext()) {
                 filterIds = filterIds + it.next() + " ";
             }
-            Tr.warning(tc, "AUTHFILTER_MULTIPLE_MATCHED", req.getRequestURL(), filterIds.trim()); // CWWKS1531W
+            filterIds = filterIds.trim();
+            if (!authFilterWarnings.containsKey(filterIds)) {
+                Tr.warning(tc, "AUTHFILTER_MULTIPLE_MATCHED", req.getRequestURL(), filterIds); // CWWKS1531W
+            }
         }
     }
 

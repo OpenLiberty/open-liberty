@@ -283,6 +283,8 @@ public class OidcClientImplTest {
                     will(returnValue(true));
                     allowing(req).getMethod();
                     will(returnValue("GET"));
+                    allowing(req).getRequestURL();
+                    will(returnValue(new StringBuffer("foourl")));
                 }
             });
             ServiceReference<OidcClientConfig> oidcConfigServiceRef = oidcClientConfigRef.getReference(MY_OIDC_CLIENT);
@@ -351,6 +353,8 @@ public class OidcClientImplTest {
                     will(returnValue("POST"));
                     allowing(req).getAttribute(PostParameterHelper.ATTRIB_HASH_MAP);
                     will(returnValue(map));
+                    allowing(req).getRequestURL();
+                    will(returnValue(new StringBuffer("foourl")));
 
                 }
             });
