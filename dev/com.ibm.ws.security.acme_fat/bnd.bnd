@@ -28,5 +28,6 @@ fat.project: true
     org.apache.httpcomponents:httpclient;version=4.5.5,\
     org.apache.httpcomponents:httpcore;version=4.4.9,\
     org.shredzone.acme4j:acme4j-client;version=2.7,\
-    org.shredzone.acme4j:acme4j-utils;version=2.7
+    org.shredzone.acme4j:acme4j-utils;version=2.7,\
+    com.ibm.ws.logging;version=latest
     
