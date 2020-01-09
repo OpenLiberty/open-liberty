@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -237,17 +237,6 @@ public interface TaskStore {
      * @throws Exception if an error occurs accessing the persistent store.
      */
     Long getPartition(long taskId) throws Exception;
-
-    /**
-     * Returns the identifier of a partition whose STATE field's rightmost bits matches the specified value.
-     * This method assumes that the sign bit of the persisted STATES field is always positive (0),
-     * so as to be able to compute the remainder when dividing by the next highest power of 2.
-     *
-     * @param stateBits desired state bits to match.
-     * @return a matching partition identifier, otherwise null.
-     * @throws Exception if an error occurs accessing the persistent store.
-     */
-    Long getPartitionWithState(long stateBits) throws Exception;
 
     /**
      * Returns name/value pairs for all persisted properties that match the specified name pattern.

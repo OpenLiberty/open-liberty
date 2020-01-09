@@ -16,7 +16,6 @@ import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.SQLTimeoutException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -838,38 +837,6 @@ public class DatabaseTaskStore implements TaskStore {
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "getPartition", partitionId);
         return partitionId;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Long getPartitionWithState(long stateBits) throws Exception {
-        String select = "SELECT p.ID,p.EXECUTOR,p.HOSTNAME,p.ID,p.LSERVER,p.USERDIR,p.EXPIRY,p.STATES FROM Partition p WHERE p.STATES-p.STATES/:d*:d=:r AND p.EXPIRY>:t ORDER BY p.EXPIRY DESC";
-
-        final boolean trace = TraceComponent.isAnyTracingEnabled();
-        if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "getPartitionWithState", stateBits, select);
-
-        long denominator = stateBits < 2 ? 2 : stateBits < 4 ? 4 : -1;
-        if (denominator == -1)
-            throw new IllegalArgumentException(Long.toString(stateBits)); // internal error: no states > 3 are currently defined
-
-        Object[] partitionInfo;
-        EntityManager em = getPersistenceServiceUnit().createEntityManager();
-        try {
-            TypedQuery<Object[]> query = em.createQuery(select.toString(), Object[].class);
-            query.setParameter("d", denominator);
-            query.setParameter("r", stateBits);
-            query.setParameter("t", System.currentTimeMillis());
-            query.setMaxResults(1);
-            List<Object[]> results = query.getResultList();
-            partitionInfo = results == null || results.isEmpty() ? null : results.get(0);
-        } finally {
-            em.close();
-        }
-
-        if (trace && tc.isEntryEnabled())
-            Tr.exit(this, tc, "getPartitionWithState", partitionInfo == null ? null : Arrays.toString(partitionInfo));
-        return partitionInfo == null ? null : (Long) partitionInfo[0];
     }
 
     /**
