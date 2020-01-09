@@ -27,8 +27,8 @@ import componenttest.rules.repeater.RepeatTests;
                 TestOLGH8820_Web.class,
                 TestTXSynchronization.class,
                 TestTXDDSynchronization.class,
-                TestCDI.class,
-                TestCDILib.class,
+                TestCDI_WEB.class,
+                TestCDI_EJB.class,
                 componenttest.custom.junit.runner.AlwaysPassesTest.class
 })
 public class FATSuite {

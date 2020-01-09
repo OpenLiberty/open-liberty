@@ -26,7 +26,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.Application;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
-import com.ibm.ws.jpa.fvt.cdi.simple.ejb.web.JPACDISimpleEJBServlet;
+import com.ibm.ws.jpa.fvt.cdi.jpalib.web.JPACDIJPALibServlet;
 import com.ibm.ws.jpa.fvt.cdi.simple.web.JPACDISimpleServlet;
 
 import componenttest.annotation.Server;
@@ -37,12 +37,13 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.PrivHelper;
 
 @RunWith(FATRunner.class)
-public class TestCDI extends JPAFATServletClient {
+public class TestCDI_WEB extends JPAFATServletClient {
     private final static String CONTEXT_ROOT = "TestCDISimple";
+    private final static String CONTEXT_ROOT_JPALIB = "TestCDIWithJPALib";
     private final static String RESOURCE_ROOT = "test-applications/CDI/";
     private final static String appFolder = "apps";
-    private final static String appName = "TestCDISimple";
-    private final static String appNameEar = appName + ".ear";
+//    private final static String appName = "TestCDISimple";
+//    private final static String appNameEar = appName + ".ear";
 
     private final static Set<String> dropSet = new HashSet<String>();
     private final static Set<String> createSet = new HashSet<String>();
@@ -57,7 +58,7 @@ public class TestCDI extends JPAFATServletClient {
     @Server("JPA21CDIServer")
     @TestServlets({
                     @TestServlet(servlet = JPACDISimpleServlet.class, path = CONTEXT_ROOT + "/" + "JPACDISimpleServlet"),
-                    @TestServlet(servlet = JPACDISimpleEJBServlet.class, path = CONTEXT_ROOT + "EJB/" + "JPACDISimpleEJBServlet"),
+                    @TestServlet(servlet = JPACDIJPALibServlet.class, path = CONTEXT_ROOT_JPALIB + "/" + "JPACDIJPALibServlet"),
 
     })
     public static LibertyServer server;
@@ -65,7 +66,7 @@ public class TestCDI extends JPAFATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         PrivHelper.generateCustomPolicy(server, FATSuite.JAXB_PERMS);
-        bannerStart(TestCDI.class);
+        bannerStart(TestCDI_WEB.class);
         timestart = System.currentTimeMillis();
 
         int appStartTimeout = server.getAppStartTimeout();
@@ -100,23 +101,26 @@ public class TestCDI extends JPAFATServletClient {
     }
 
     private static void setupTestApplication() throws Exception {
-        Application webAppRecord = setupWebTestApplication();
-        Application ejbAppRecord = setupEJBTestApplication();
+        Application simpleAppRecord = setupCDISimpleTestApplication();
+        Application jpaLibAppRecord = setupJPALibTestApplication();
 
         server.setMarkToEndOfLog();
         ServerConfiguration sc = server.getServerConfiguration();
-        sc.getApplications().add(webAppRecord);
-        sc.getApplications().add(ejbAppRecord);
+        sc.getApplications().add(simpleAppRecord);
+        sc.getApplications().add(jpaLibAppRecord);
         server.updateServerConfiguration(sc);
         server.saveServerConfiguration();
 
         HashSet<String> appNamesSet = new HashSet<String>();
-        appNamesSet.add(appName);
-        appNamesSet.add(appName + "EJB");
+        appNamesSet.add("TestCDISimple");
+        appNamesSet.add("TestCDIWithJPALib");
         server.waitForConfigUpdateInLogUsingMark(appNamesSet, "");
     }
 
-    private static Application setupWebTestApplication() throws Exception {
+    private static Application setupCDISimpleTestApplication() throws Exception {
+        final String appName = "TestCDISimple";
+        final String appNameEar = appName + ".ear";
+
         // TestCDISimple.war
         WebArchive webApp = ShrinkWrap.create(WebArchive.class, appName + ".war");
         webApp.addPackages(true, "com.ibm.ws.jpa.fvt.cdi.simple");
@@ -150,26 +154,27 @@ public class TestCDI extends JPAFATServletClient {
         return appRecord;
     }
 
-    private static Application setupEJBTestApplication() throws Exception {
-        // TestCDISimple.war
-        WebArchive webApp = ShrinkWrap.create(WebArchive.class, appName + "EJB.war");
-        webApp.addPackages(true, "com.ibm.ws.jpa.fvt.cdi.simple.ejb.web");
-        ShrinkHelper.addDirectory(webApp, RESOURCE_ROOT + appFolder + "/" + appName + "EJB.ear/" + appName + "EJB.war");
+    private static Application setupJPALibTestApplication() throws Exception {
+        final String appName = "TestCDIWithJPALib";
+        final String appNameEar = appName + ".ear";
+        // JPALib
+        JavaArchive jpalib = ShrinkWrap.create(JavaArchive.class, "jpamodel.jar");
+        jpalib.addPackages(true, "com.ibm.ws.jpa.fvt.cdi.jpalib.model");
+        jpalib.addPackages(false, "com.ibm.ws.jpa.fvt.cdi.jpalib");
+        ShrinkHelper.addDirectory(jpalib, RESOURCE_ROOT + appFolder + "/" + appName + ".ear/lib/jpamodel.jar");
 
-        // TestCDISimpleEJB.jar
-        JavaArchive cdiSimpleEjb = ShrinkWrap.create(JavaArchive.class, appName + "EJB.jar");
-        cdiSimpleEjb.addPackages(true, "com.ibm.ws.jpa.fvt.cdi.simple");
-        cdiSimpleEjb.addPackages(true, "com.ibm.ws.jpa.fvt.cdi.simple.model");
-        cdiSimpleEjb.addPackages(true, "com.ibm.ws.jpa.fvt.cdi.simple.ejb");
-        ShrinkHelper.addDirectory(cdiSimpleEjb, RESOURCE_ROOT + appFolder + "/" + appName + "EJB.ear/" + appName + "EJB.jar");
+        // TestCDISimple.war
+        WebArchive webApp = ShrinkWrap.create(WebArchive.class, appName + ".war");
+        webApp.addPackages(true, "com.ibm.ws.jpa.fvt.cdi.jpalib.web");
+        ShrinkHelper.addDirectory(webApp, RESOURCE_ROOT + appFolder + "/" + appName + ".ear/" + appName + ".war");
 
         final JavaArchive testApiJar = buildTestAPIJar();
 
-        final EnterpriseArchive app = ShrinkWrap.create(EnterpriseArchive.class, appName + "EJB.ear");
+        final EnterpriseArchive app = ShrinkWrap.create(EnterpriseArchive.class, appNameEar);
         app.addAsModule(webApp);
-        app.addAsModule(cdiSimpleEjb);
         app.addAsLibrary(testApiJar);
-        ShrinkHelper.addDirectory(app, RESOURCE_ROOT + appFolder + "/" + appName + "EJB.ear", new org.jboss.shrinkwrap.api.Filter<ArchivePath>() {
+        app.addAsLibrary(jpalib);
+        ShrinkHelper.addDirectory(app, RESOURCE_ROOT + appFolder + "/" + appName + ".ear", new org.jboss.shrinkwrap.api.Filter<ArchivePath>() {
 
             @Override
             public boolean include(ArchivePath arg0) {
@@ -184,8 +189,8 @@ public class TestCDI extends JPAFATServletClient {
         ShrinkHelper.exportToServer(server, "apps", app);
 
         Application appRecord = new Application();
-        appRecord.setLocation(appName + "EJB.ear");
-        appRecord.setName(appName + "EJB");
+        appRecord.setLocation(appNameEar);
+        appRecord.setName(appName);
 
         return appRecord;
     }
@@ -203,13 +208,13 @@ public class TestCDI extends JPAFATServletClient {
                 server.updateServerConfiguration(sc);
                 server.saveServerConfiguration();
 
-                server.deleteFileFromLibertyServerRoot("apps/" + appNameEar);
-                server.deleteFileFromLibertyServerRoot("apps/" + appNameEar + "EJB");
+                server.deleteFileFromLibertyServerRoot("apps/" + "TestCDISimple.ear");
+                server.deleteFileFromLibertyServerRoot("apps/" + "TestCDIWithJPALib.ear");
                 server.deleteFileFromLibertyServerRoot("apps/DatabaseManagement.war");
             } catch (Throwable t) {
                 t.printStackTrace();
             }
-            bannerEnd(TestCDI.class, timestart);
+            bannerEnd(TestCDI_WEB.class, timestart);
         }
     }
 }
