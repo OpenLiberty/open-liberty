@@ -25,13 +25,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.concurrent.ExecutionException;
 
 import javax.management.AttributeChangeNotification;
 import javax.management.DynamicMBean;
@@ -369,7 +371,7 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
         }
     }
 
-    private final Map<String, ApplicationTypeSupport> _appTypeSupport = new HashMap<String, ApplicationTypeSupport>();
+    private final ConcurrentMap<String, ApplicationTypeSupport> _appTypeSupport = new ConcurrentHashMap<>();
 
     private volatile BundleContext _ctx;
 
@@ -990,14 +992,13 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
         }
     }
 
-    private synchronized void registerAppType(String appType) {
-        ApplicationTypeSupport typeSupport = _appTypeSupport.get(appType);
-        if (typeSupport == null) {
-            typeSupport = new ApplicationTypeSupport(true);
-            _appTypeSupport.put(appType, typeSupport);
-        } else {
-            typeSupport.setSupported(true);
+    private void registerAppType(String appType) {
+        ApplicationTypeSupport typeSupport = new ApplicationTypeSupport(true);
+        ApplicationTypeSupport existing = _appTypeSupport.putIfAbsent(appType, typeSupport);
+        if (existing != null) {
+            existing.setSupported(true);
         }
+
         if ("rar".equals(appType)) {
             ApplicationDependency current = _appManagerRARSupportDependency;
             if (current != null) {
@@ -1006,7 +1007,7 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
         }
     }
 
-    private synchronized void unregisterAppType(String appType) {
+    private void unregisterAppType(String appType) {
         if (FrameworkState.isStopping()) {
             // we are stopping so bail out
             return;
@@ -1018,16 +1019,16 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
         }
     }
 
-    private synchronized void registerAppHandler(final String appType, final ApplicationHandler<?> appHandler) {
-        ApplicationTypeSupport typeSupport = _appTypeSupport.get(appType);
-        if (typeSupport == null) {
-            typeSupport = new ApplicationTypeSupport(false);
-            _appTypeSupport.put(appType, typeSupport);
+    private void registerAppHandler(final String appType, final ApplicationHandler<?> appHandler) {
+        ApplicationTypeSupport typeSupport = new ApplicationTypeSupport(false);
+        ApplicationTypeSupport existing = _appTypeSupport.putIfAbsent(appType, typeSupport);
+        if (existing != null) {
+            typeSupport = existing;
         }
         typeSupport.setHandler(appHandler);
     }
 
-    private synchronized void unregisterAppHandler(final String appType, final ApplicationHandler<?> appHandler) {
+    private void unregisterAppHandler(final String appType, final ApplicationHandler<?> appHandler) {
         if (FrameworkState.isStopping()) {
             // we are stopping so bail out
             return;
@@ -1040,18 +1041,20 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
             throw new RuntimeException("unregisterAppHandler: appType=" + appType + ": appTypeSupport == null");
         }
         typeSupport.setHandler(null);
-        Collection<NamedApplication> appsUsingHandler = new HashSet<NamedApplication>();
-        for (NamedApplication app : _appFromName.values()) {
-            if (app.getTypeSupport() == typeSupport) {
-                appsUsingHandler.add(app);
-                typeSupport.addWaitingApp(app);
+        synchronized (this) {
+            Collection<NamedApplication> appsUsingHandler = new HashSet<NamedApplication>();
+            for (NamedApplication app : _appFromName.values()) {
+                if (app.getTypeSupport() == typeSupport) {
+                    appsUsingHandler.add(app);
+                    typeSupport.addWaitingApp(app);
+                }
             }
-        }
-        if (!appsUsingHandler.isEmpty()) {
-            final UpdateEpisodeState episode = joinEpisode();
-            if (episode != null) {
-                episode.unsetAppHandler(appsUsingHandler);
-                episode.dropReference();
+            if (!appsUsingHandler.isEmpty()) {
+                final UpdateEpisodeState episode = joinEpisode();
+                if (episode != null) {
+                    episode.unsetAppHandler(appsUsingHandler);
+                    episode.dropReference();
+                }
             }
         }
     }
@@ -1753,7 +1756,7 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
             if (_tc.isEventEnabled()) {
                 Tr.event(_tc, "CCE: failedCompletion: appStopped, future " + future + ", throwable " + t);
             }
-            if (t !=null && t instanceof ExecutionException) {
+            if (t != null && t instanceof ExecutionException) {
                 com.ibm.ws.ffdc.FFDCFilter.processException(t, "com.ibm.ws.app.manager.internal.ApplicationConfigurator.UpdateEpisodeState.failedCompletion", "1385");
             }
 
