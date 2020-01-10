@@ -67,10 +67,6 @@ public class OpenShiftUserApiUtils {
             response = readServiceAccountIntrospectResponse(connection);
         } catch (Exception e) {
             throw new SocialLoginException("ERROR_INTROSPECTING_SERVICE_ACCOUNT", e, new Object[] { e });
-            //# 0=Exception message
-            //ERROR_INTROSPECTING_SERVICE_ACCOUNT=CWWKS53xxE: The response from the service account user API cannot be processed: {0}
-            //ERROR_INTROSPECTING_SERVICE_ACCOUNT.explanation=Information about the service account cannot be obtained because another error occurred.
-            //ERROR_INTROSPECTING_SERVICE_ACCOUNT.useraction=If the message contains another error message, see the user action for that message. Otherwise, check the server logs for more error messages that might indicate where the other error occurred.
         }
         return response;
     }
@@ -140,10 +136,6 @@ public class OpenShiftUserApiUtils {
         String response = httpUtils.readConnectionResponse(connection);
         if (responseCode != HttpServletResponse.SC_OK) {
             throw new SocialLoginException("SERVICE_ACCOUNT_USER_API_BAD_STATUS", null, new Object[] { responseCode, response });
-            //# 0=HTTP response code, 1=Response body
-            //SERVICE_ACCOUNT_USER_API_BAD_STATUS=CWWKS5383E: The service account user API returned an unexpected [{0}] response code. Verify that the request to the API contains all of the required information and that the service account token is valid. The response from the API is [{1}].
-            //SERVICE_ACCOUNT_USER_API_BAD_STATUS.explanation=The service account user API did not return the expected status code.
-            //SERVICE_ACCOUNT_USER_API_BAD_STATUS.useraction=Check the API response that is in the error message for more information. Verify that the request to the API contains all of the required information. Ensure that the service account token is valid.
         }
         return processServiceAccountIntrospectResponse(response);
     }
@@ -269,9 +261,6 @@ public class OpenShiftUserApiUtils {
             jsonResponse = Json.createReader(new StringReader(response)).readObject();
         } catch (JsonParsingException e) {
             throw new SocialLoginException("RESPONSE_NOT_JSON", null, new Object[] { response, e });
-            //RESPONSE_NOT_JSON=CWWKS53xxE: The content of the response is not a valid JSON object. The full response is {0}. {1}
-            //RESPONSE_NOT_JSON.explanation=The response is expected to be a valid JSON object.
-            //RESPONSE_NOT_JSON.useraction=Verify that request was sent to the expected target. Ensure that the intended target of the request is capable of returning JSON data. Check the response to see whether more information is included.
         }
         return jsonResponse;
     }
@@ -279,16 +268,10 @@ public class OpenShiftUserApiUtils {
     JsonObject getJsonObjectValueFromJson(JsonObject json, String key) throws SocialLoginException {
         if (!json.containsKey(key)) {
             throw new SocialLoginException("JSON_MISSING_KEY", null, new Object[] { key, json });
-            //JSON_MISSING_KEY=CWWKS53xxE: The JSON object that is provided is missing an expected key: [{0}]. The full JSON object is [{1}].
-            //JSON_MISSING_KEY.explanation=The key that is specified in the message is expected to be within the JSON data. The key might be missing, or it might be in an unexpected location.
-            //JSON_MISSING_KEY.useraction=Check the JSON data to determine whether the key is missing.
         }
         JsonValue rawValue = json.get(key);
         if (rawValue.getValueType() != ValueType.OBJECT) {
             throw new SocialLoginException("JSON_ENTRY_WRONG_JSON_TYPE", null, new Object[] { key, ValueType.OBJECT, rawValue.getValueType(), json });
-            //JSON_ENTRY_WRONG_JSON_TYPE=CWWKS53xxE: The value for the key [{0}] in the JSON data is expected to be of type {1}, but the value is of type {2}. The JSON data is [{3}].
-            //JSON_ENTRY_WRONG_JSON_TYPE.explanation=The value for the specified key did not have the correct type. The JSON data might be malformed or might have an unexpected structure.
-            //JSON_ENTRY_WRONG_JSON_TYPE.useraction=Check the structure of the JSON data. Check the JSON data to see whether an error occurred.
         }
         return json.getJsonObject(key);
     }
