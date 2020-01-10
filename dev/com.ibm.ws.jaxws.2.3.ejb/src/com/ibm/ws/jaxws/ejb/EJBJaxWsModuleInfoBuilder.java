@@ -10,13 +10,12 @@
  *******************************************************************************/
 package com.ibm.ws.jaxws.ejb;
 
-import java.awt.Container;
-
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
 import com.ibm.ws.container.service.annotations.ModuleAnnotations;
 import com.ibm.ws.container.service.app.deploy.EJBModuleInfo;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedModuleInfo;
@@ -33,6 +32,7 @@ import com.ibm.ws.jaxws.support.JaxWsMetaDataManager;
 import com.ibm.ws.jaxws.support.JaxWsWebContainerManager;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.wsspi.adaptable.module.Adaptable;
+import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.NonPersistentCache;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.anno.info.InfoStore;
@@ -70,9 +70,16 @@ public class EJBJaxWsModuleInfoBuilder extends AbstractJaxWsModuleInfoBuilder {
             return null;
         }
 
-        InfoStore infoStore = ((Adaptable) containerToAdapt).adapt(ModuleAnnotations.class).getInfoStore();
+        ModuleAnnotations moduleAnnotations = AnnotationsBetaHelper.getModuleAnnotations(containerToAdapt); // throws UnableToAdaptException
+        InfoStore infoStore = moduleAnnotations.getInfoStore(); // throws UnableToAdaptException
+
         try {
-            infoStore.open();
+            infoStore.open(); // throws InfoStoreException
+        } catch (InfoStoreException e) {
+            throw new IllegalStateException(e);
+        }
+
+        try {
             JaxWsServerMetaData jaxWsServerMetaData = JaxWsMetaDataManager.getJaxWsServerMetaData(moduleMetaData);
 
             EndpointInfoBuilderContext endpointInfoBuilderContext = new EndpointInfoBuilderContext(infoStore, (com.ibm.wsspi.adaptable.module.Container) containerToAdapt);
@@ -92,15 +99,11 @@ public class EJBJaxWsModuleInfoBuilder extends AbstractJaxWsModuleInfoBuilder {
 
             return createWebRouterModule(containerToAdapt, jaxWsModuleInfo.getContextRoot());
 
-        } catch (InfoStoreException e) {
-            throw new IllegalStateException(e);
         } finally {
-            if (infoStore != null) {
-                try {
-                    infoStore.close();
-                } catch (InfoStoreException e) {
-                    throw new IllegalStateException(e);
-                }
+            try {
+                infoStore.close();
+            } catch (InfoStoreException e) {
+                throw new IllegalStateException(e);
             }
         }
     }
@@ -136,18 +139,5 @@ public class EJBJaxWsModuleInfoBuilder extends AbstractJaxWsModuleInfoBuilder {
 
     protected void unsetJaxWsWebContainerManager(ServiceReference<JaxWsWebContainerManager> ref) {
         jaxWsWebContainerManagerRef.unsetReference(ref);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.ibm.ws.jaxws.metadata.builder.JaxWsModuleInfoBuilder#build(com.ibm.ws.runtime.metadata.ModuleMetaData, com.ibm.wsspi.adaptable.module.Container,
-     * com.ibm.ws.jaxws.metadata.JaxWsModuleInfo)
-     */
-    @Override
-    public ExtendedModuleInfo build(ModuleMetaData moduleMetaData, com.ibm.wsspi.adaptable.module.Container containerToAdapt,
-                                    JaxWsModuleInfo jaxWsModuleInfo) throws UnableToAdaptException {
-        // TODO Auto-generated method stub
-        return null;
     }
 }

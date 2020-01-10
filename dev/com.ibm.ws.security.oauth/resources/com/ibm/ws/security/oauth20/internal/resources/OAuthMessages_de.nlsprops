@@ -452,6 +452,11 @@ JAVA8_REQUIRED_FOR_AT_HASHING=CWWKS1496W: Der OpenID Connect-Provider {0} hat da
 JAVA8_REQUIRED_FOR_AT_HASHING.explanation=Die Java-Version, die momentan verwendet wird, ist nicht Java 8 oder h\u00f6her.
 JAVA8_REQUIRED_FOR_AT_HASHING.useraction=Installieren Sie Java Version 8 oder h\u00f6her, um die genannte Konfigurationsoption zu verwenden.
 
+# {1} already contains brackets, ex [a,b,c]
+WRONG_TOKEN_GRANTTYPE=CWWKS1497E: Das Token mit dem Granttyp [{0}] ist nicht zul\u00e4ssig. Die zul\u00e4ssigen Granttypen sind {1}.
+WRONG_TOKEN_GRANTTYPE.explanation=Das Token ist nicht g\u00fcltig, weil der zugeh\u00f6rige Granttyp nicht zul\u00e4ssig ist.
+WRONG_TOKEN_GRANTTYPE.useraction=Verwenden Sie ein Token mit einem zul\u00e4ssigen Granttypen.
+
 # html title of logout page
 LOGOUT_PAGE_TITLE=Anmelden
 # html body of logout page

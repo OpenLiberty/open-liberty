@@ -1,0 +1,68 @@
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+#CMVCPATHNAME com.ibm.ws.install.featureUtility/resources/com/ibm/ws/install/featureUtility/internal/resources/FeatureUtilityToolOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#--------- ACTIONS ----------------------------------------------------#
+# List of descriptive text for actions. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+usage=\u7528\u6cd5\uff1a{0}
+
+global.description=\u63cf\u8ff0\uff1a
+global.actions=\u64cd\u4f5c\uff1a
+global.options=\u9009\u9879\uff1a
+global.options.lower=\u9009\u9879
+global.usage=\u7528\u6cd5\uff1a
+global.options.statement=\t\u4f7f\u7528 help [actionName] \u53ef\u53d6\u5f97\u6bcf\u4e2a\u64cd\u4f5c\u7684\u8be6\u7ec6\u9009\u9879\u4fe1\u606f\u3002
+task.unknown=\u672a\u77e5\u64cd\u4f5c\uff1a{0}
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+help.desc=\t\u6253\u5370\u6307\u5b9a\u64cd\u4f5c\u7684\u5e2e\u52a9\u4fe1\u606f\u3002
+
+#--------- INSTALLFEATURE ACTION ---------------------------------------------#
+installFeature.desc=\t\u5b89\u88c5\u4e00\u4e2a\u529f\u80fd\u90e8\u4ef6\u6216\u8005\u7528\u7a7a\u683c\u5206\u9694\u7684\u529f\u80fd\u90e8\u4ef6\u5217\u8868\u3002
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.name...=\ \ \ \ \u540d\u79f0...
+installFeature.option-desc.name...=\t\u4e00\u4e2a\u529f\u80fd\u90e8\u4ef6\u6216\u8005\u7528\u7a7a\u683c\u5206\u9694\u7684\u591a\u4e2a\u529f\u80fd\u90e8\u4ef6\u3002\n\
+\t\u5bf9\u4e8e\u529f\u80fd\u90e8\u4ef6\uff0c\u8bf7\u6307\u5b9a\u529f\u80fd\u90e8\u4ef6\u77ed\u540d\u79f0\u6216\u8005 Maven \u5750\u6807\u3002\n\
+\t\u5982\u679c\u60a8\u6307\u5b9a Maven \u5750\u6807\uff0c\n\
+\t\u90a3\u4e48\u5b83\u5fc5\u987b\u81f3\u5c11\u5305\u542b\u7ec4\u6807\u8bc6\u548c\u5de5\u4ef6\u6807\u8bc6\n\
+\t\uff08\u4f8b\u5982\uff0cio.openliberty.features:mpHealth-2.0\uff09\u3002\n\
+\t\u5982\u679c\u672a\u6307\u5b9a\u7248\u672c\u548c\u6253\u5305\uff0c\n\
+\t\u90a3\u4e48\u7248\u672c\u5c06\u7f3a\u7701\u4e3a\u5f53\u524d\u8fd0\u884c\u65f6\u7248\u672c\uff0c\n\
+\t\u6253\u5305\u7c7b\u578b\u5c06\u7f3a\u7701\u4e3a ESA\u3002
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--to=\ \ \ \ --to=[usr|extension]
+installFeature.option-desc.--to=\t\u6307\u5b9a\u529f\u80fd\u90e8\u4ef6\u7684\u5b89\u88c5\u4f4d\u7f6e\u3002\u53ef\u4ee5\u5c06\u529f\u80fd\u90e8\u4ef6\u5b89\u88c5\u5230\u4efb\u4f55\u5df2\u914d\u7f6e\u7684\n\
+\t\u4ea7\u54c1\u6269\u5c55\u4f4d\u7f6e\uff0c\u6216\u4f5c\u4e3a\u7528\u6237\u529f\u80fd\u90e8\u4ef6\u5b89\u88c5\u3002\n\
+\t\u5982\u679c\u672a\u6307\u5b9a\u6b64\u9009\u9879\uff0c\u90a3\u4e48\u529f\u80fd\u90e8\u4ef6\u5c06\u4f5c\u4e3a\u7528\u6237\u529f\u80fd\u90e8\u4ef6\u6765\u5b89\u88c5\u3002\n\
+\t
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--from=\ \ \ \ --from=filePath
+installFeature.option-desc.--from=\t \
+\u4f7f\u7528\u6b64\u9009\u9879\u5c06 Maven \u5de5\u4ef6\u5b58\u50a8\u5e93\u7684\u6587\u4ef6\u8def\u5f84\u6307\u5b9a\u4e3a\n\
+\t\u7528\u4e8e\u5b89\u88c5\u8d44\u4ea7\u7684 featureUtility \u7684\u6e90\u3002
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--verbose=\ \ \ \ --verbose
+installFeature.option-desc.--verbose=\t\u5f53\u64cd\u4f5c\u8fd0\u884c\u65f6\uff0c\u663e\u793a\u5176\u4ed6\u8c03\u8bd5\u4fe1\u606f\u3002
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--noCache=\ \ \ \ --noCache
+installFeature.option-desc.--noCache=\t\u4ece\u8fdc\u7a0b\u5b58\u50a8\u5e93\u5b89\u88c5\u7684\u529f\u80fd\u90e8\u4ef6\n\
+\t\uff08\u4f8b\u5982\uff0cMaven Central\uff09\u672a\u5728\u672c\u5730\u9ad8\u901f\u7f13\u5b58\u3002
+#--------- INSTALLSERVERFEATURES ACTION --------------------------------------#
+installServerFeatures.desc=\t\u4e3a\u6240\u6307\u5b9a\u7684\u670d\u52a1\u5668\u5b89\u88c5\u5fc5\u9700\u7684\u529f\u80fd\u90e8\u4ef6\u3002
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.name...=\ \ \ \ \u540d\u79f0...
+installServerFeatures.option-desc.name...=\t\u540c\u4e00 Liberty \u73af\u5883\u4e2d\u7684\u73b0\u6709\u670d\u52a1\u5668\u7684\u540d\u79f0\u3002
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--from=\ \ \ \ --from=filePath
+installServerFeatures.option-desc.--from=\t\u4f7f\u7528\u6b64\u9009\u9879\u5c06 Maven \u5de5\u4ef6\u5b58\u50a8\u5e93\u7684\u6587\u4ef6\u8def\u5f84\u6307\u5b9a\u4e3a\n\
+\t\u7528\u4e8e\u5b89\u88c5\u8d44\u4ea7\u7684 featureUtility \u7684\u6e90\u3002
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--verbose=\ \ \ \ --verbose
+installServerFeatures.option-desc.--verbose=\t\u5f53\u64cd\u4f5c\u8fd0\u884c\u65f6\uff0c\u663e\u793a\u5176\u4ed6\u8c03\u8bd5\u4fe1\u606f\u3002
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--noCache=\ \ \ \ --noCache
+installServerFeatures.option-desc.--noCache=\t\u4ece\u8fdc\u7a0b\u5b58\u50a8\u5e93\u5b89\u88c5\u7684\u529f\u80fd\u90e8\u4ef6\n\
+\t\uff08\u4f8b\u5982\uff0cMaven Central\uff09\u672a\u5728\u672c\u5730\u9ad8\u901f\u7f13\u5b58\u3002

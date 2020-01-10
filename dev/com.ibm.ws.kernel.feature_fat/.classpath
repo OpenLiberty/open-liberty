@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="test-bundles/test.feature.provisioner/src"/>
+	<classpathentry kind="src" path="test-bundles/test.service.consumer/src"/>
+	<classpathentry kind="src" path="test-bundles/test.service.provider/src"/>
 	<classpathentry kind="src" path="test-bundles/test.feature.api/src"/>
 	<classpathentry kind="src" path="test-bundles/test.activation.type/src"/>
 	<classpathentry kind="src" path="test-bundles/test.origin.bundle/src"/>

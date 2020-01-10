@@ -89,7 +89,13 @@ var acctMgr = (function() {
             // Something else happended with the request.  Put up the generic error message.
             var generateTypeTitle = generateType === 'app-password' ? 'App-Password' : 'App-Token';
             var errTitle = utils.formatString(messages.GENERIC_GENERATE_FAIL, [generateTypeTitle]);
-            var errDescription = utils.formatString(messages.GENERIC_GENERATE_FAIL_MSG, [generateType, utils.encodeData(providedName)]);
+            var errDescription = "";
+            if (errResponse.responseJSON && errResponse.responseJSON.error_description) {
+                errDescription = errResponse.responseJSON.error_description;
+            } else {
+                // Display a generic error message...
+                errDescription = utils.formatString(messages.GENERIC_GENERATE_FAIL_MSG, [generateType, utils.encodeData(providedName)]);
+            }
             utils.showResultsDialog(true, errTitle, errDescription, true, true, false, table.reshowAddRegenDialog);
         });
     };

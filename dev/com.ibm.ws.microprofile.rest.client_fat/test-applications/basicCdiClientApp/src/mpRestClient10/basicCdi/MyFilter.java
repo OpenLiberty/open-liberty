@@ -19,8 +19,8 @@ import javax.ws.rs.client.ClientResponseFilter;
 
 public class MyFilter implements ClientRequestFilter, ClientResponseFilter {
 
-    static boolean requestFilterInvoked;
-    static boolean responseFilterInvoked;
+    static int requestFilterInvocationCount = 0;
+    static int responseFilterInvocationCount = 0;
 
     /*
      * (non-Javadoc)
@@ -29,7 +29,7 @@ public class MyFilter implements ClientRequestFilter, ClientResponseFilter {
      */
     @Override
     public void filter(ClientRequestContext arg0, ClientResponseContext arg1) throws IOException {
-        responseFilterInvoked = true;
+        responseFilterInvocationCount++;
     }
 
     /*
@@ -39,7 +39,6 @@ public class MyFilter implements ClientRequestFilter, ClientResponseFilter {
      */
     @Override
     public void filter(ClientRequestContext arg0) throws IOException {
-        requestFilterInvoked = true;
+        requestFilterInvocationCount++;
     }
-
 }

@@ -143,6 +143,14 @@ public class OneExecutorRunsAllTest {
     }
 
     /**
+     * Verify that the interface to EJB Timer Service indicates that fail over is not enabled.
+     */
+    @Test
+    public void testFailOverIsNotEnabled() throws Exception {
+        runInServlet("test=testFailOverIsNotEnabled");
+    }
+
+    /**
      * Schedule tasks from two persistentExecutor instances with execution disabled.
      * Verify the tasks run on a third instance, which has task execution enabled.
      * Remove the third instance. Schedule another task.
@@ -204,30 +212,22 @@ public class OneExecutorRunsAllTest {
 
             runInServlet("test=testTaskIsRunning&jndiName=concurrent/executorB&taskId=" + taskIdB2 + "&invokedBy=testRunTasksOnDifferentExecutor-7");
 
-            // Liberty doesn't have the ability to coordinate across server instances yet, so manually switch
-            // the partition info from executorC to the one we are about to create
-            runInServlet("test=testUpdatePartitions&jndiName=concurrent/executorB&executorId=executorC&newExecutorId=executorD&expectedUpdateCount=1&invokedBy=testRunTasksOnDifferentExecutor-8");
+            // Add an executor (C) which can run tasks.
+            config.getPersistentExecutors().add(executorC);
 
-            // Add an executor (D) which can run tasks and has heart beats.
-            PersistentExecutor executorD = (PersistentExecutor) executorC.clone();
-            executorD.setId("executorD");
-            executorD.setJndiName("concurrent/executorD");
-            executorD.setInitialControllerDelay("0");
-
-            config.getPersistentExecutors().add(executorD);
-            // Make executor B stop running tasks, and see if executor D picks up its latest task
+            // Make executor B stop running tasks, and see if executor C picks up its latest task
             executorB.setEnableTaskExecution("false");
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
             server.waitForConfigUpdateInLogUsingMark(appNames);
 
             // Liberty doesn't have high availability support yet, so we need to manually trigger the failover from executorB
-            runInServlet("test=testTransfer&jndiName=concurrent/executorD&oldExecutorId=executorB&maxTaskId=" + Long.MAX_VALUE + "&invokedBy=testRunTasksOnDifferentExecutor-9");
+            runInServlet("test=testTransfer&jndiName=concurrent/executorC&oldExecutorId=executorB&maxTaskId=" + Long.MAX_VALUE + "&invokedBy=testRunTasksOnDifferentExecutor-8");
 
             // Verify that all tasks are running
-            runInServlet("test=testTasksAreRunning&jndiName=concurrent/executorD&taskId="
+            runInServlet("test=testTasksAreRunning&jndiName=concurrent/executorC&taskId="
                          + taskIdA1 + "&taskId=" + taskIdB1 + "&taskId=" + taskIdB2
-                         + "&invokedBy=testRunTasksOnDifferentExecutor-10");
+                         + "&invokedBy=testRunTasksOnDifferentExecutor-9");
         } finally {
             // restore original configuration
             server.setMarkToEndOfLog();
@@ -235,8 +235,8 @@ public class OneExecutorRunsAllTest {
             server.waitForConfigUpdateInLogUsingMark(appNames);
         }
 
-        runInServlet("test=testRemoveTask&jndiName=concurrent/executorA&taskId=" + taskIdA1 + "&invokedBy=testRunTasksOnDifferentExecutor-11");
-        runInServlet("test=testRemoveTask&jndiName=concurrent/executorA&taskId=" + taskIdB1 + "&invokedBy=testRunTasksOnDifferentExecutor-12");
-        runInServlet("test=testRemoveTask&jndiName=concurrent/executorA&taskId=" + taskIdB2 + "&invokedBy=testRunTasksOnDifferentExecutor-13");
+        runInServlet("test=testRemoveTask&jndiName=concurrent/executorA&taskId=" + taskIdA1 + "&invokedBy=testRunTasksOnDifferentExecutor-10");
+        runInServlet("test=testRemoveTask&jndiName=concurrent/executorA&taskId=" + taskIdB1 + "&invokedBy=testRunTasksOnDifferentExecutor-11");
+        runInServlet("test=testRemoveTask&jndiName=concurrent/executorA&taskId=" + taskIdB2 + "&invokedBy=testRunTasksOnDifferentExecutor-12");
     }
 }

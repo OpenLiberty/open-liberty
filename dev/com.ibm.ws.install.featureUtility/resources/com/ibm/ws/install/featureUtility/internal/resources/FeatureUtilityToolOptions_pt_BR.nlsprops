@@ -1,0 +1,67 @@
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+#CMVCPATHNAME com.ibm.ws.install.featureUtility/resources/com/ibm/ws/install/featureUtility/internal/resources/FeatureUtilityToolOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#--------- ACTIONS ----------------------------------------------------#
+# List of descriptive text for actions. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+usage=Uso: {0}
+
+global.description=Descri\u00e7\u00e3o:
+global.actions=A\u00e7\u00f5es:
+global.options=Op\u00e7\u00f5es:
+global.options.lower=op\u00e7\u00f5es
+global.usage=Uso:
+global.options.statement=\tUse help [actionName] para obter informa\u00e7\u00f5es de op\u00e7\u00e3o detalhadas de cada a\u00e7\u00e3o.
+task.unknown=A\u00e7\u00e3o Desconhecida: {0}
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+help.desc=\tImprima informa\u00e7\u00f5es da ajuda para a a\u00e7\u00e3o especificada.
+
+#--------- INSTALLFEATURE ACTION ---------------------------------------------#
+installFeature.desc=\tInstale um recurso ou uma lista de recursos separados por espa\u00e7os.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.name...=\ \ \ \ name ...
+installFeature.option-desc.name...=\tUm ou mais recursos separados por espa\u00e7os. Para os recursos,    \n\
+\tespecifique o nome abreviado do recurso ou a coordenada Maven. Ao especificar        \n\
+\tuma coordenada Maven, ela deve conter pelo menos                  \n\
+\to ID do grupo e o ID do artefato                                     \n\
+\t(por exemplo, io.openliberty.features:mpHealth-2.0).                 \n\
+\tA vers\u00e3o \u00e9 padronizada como a vers\u00e3o de runtime atual      \n\
+\te o tipo de pacote \u00e9 padronizado como ESA caso a vers\u00e3o e o pacote   \n\
+\tn\u00e3o sejam especificados.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--to=\ \ \ \ --to=[usr|extension]
+installFeature.option-desc.--to=\tEspecifique onde instalar o recurso. O recurso pode ser instalado em\n\
+\tqualquer local de extens\u00e3o de produto configurado, ou como um recurso do usu\u00e1rio. Se  \n\
+\testa op\u00e7\u00e3o n\u00e3o for especificada, o recurso ser\u00e1 instalado como um recurso      \n\
+\tdo usu\u00e1rio.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--from=\ \ \ \ --from=filePath
+installFeature.option-desc.--from=\tUse esta op\u00e7\u00e3o para especificar o caminho de arquivo de um reposit\u00f3rio de          \n\
+\tartefato Maven como a origem para o featureUtility para a instala\u00e7\u00e3o de ativos.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--verbose=\ \ \ \ --verbose
+installFeature.option-desc.--verbose=\tExibir informa\u00e7\u00f5es sobre depura\u00e7\u00e3o adicionais enquanto a a\u00e7\u00e3o \u00e9 executada.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--noCache=\ \ \ \ --noCache
+installFeature.option-desc.--noCache=\tOs recursos instalados a partir de um reposit\u00f3rio remoto                           \n\
+\t(por exemplo, Maven Central) n\u00e3o s\u00e3o armazenados em cache localmente.
+#--------- INSTALLSERVERFEATURES ACTION --------------------------------------#
+installServerFeatures.desc=\tInstale os recursos necess\u00e1rios para um servidor nomeado 
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.name...=\ \ \ \ name ...
+installServerFeatures.option-desc.name...=\tO nome de um servidor existente no mesmo ambiente Liberty.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--from=\ \ \ \ --from=filePath
+installServerFeatures.option-desc.--from=\tUse esta op\u00e7\u00e3o para especificar o caminho de arquivo de um reposit\u00f3rio de          \n\
+\tartefato Maven como a origem para o featureUtility para a instala\u00e7\u00e3o de ativos.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--verbose=\ \ \ \ --verbose
+installServerFeatures.option-desc.--verbose=\tExibir informa\u00e7\u00f5es sobre depura\u00e7\u00e3o adicionais enquanto a a\u00e7\u00e3o \u00e9 executada.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--noCache=\ \ \ \ --noCache
+installServerFeatures.option-desc.--noCache=\tOs recursos instalados a partir de um reposit\u00f3rio remoto                           \n\
+\t(por exemplo, Maven Central) n\u00e3o s\u00e3o armazenados em cache localmente.

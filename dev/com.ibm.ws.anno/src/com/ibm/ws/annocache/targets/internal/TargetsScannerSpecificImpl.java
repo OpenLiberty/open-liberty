@@ -88,21 +88,23 @@ public class TargetsScannerSpecificImpl extends TargetsScannerBaseImpl {
                 }
                 continue;
 
-            } else if ( scanPolicy == ScanPolicy.EXTERNAL ) {
-                if (logger.isLoggable(Level.FINER)) {
-                    logger.logp(Level.FINER, CLASS_NAME, methodName,
-                                "[ {0} ] [ {1} ] [ {2} ] [ {3} ] Skip: External; Remaining [ {4} ]",
-                                new Object[] { getHashText(),
-                                               classSourceName, classSource.getHashText(),
-                                               scanPolicy,
-                                               Integer.valueOf(i_specificClassNames.size()) });
-                }
-                continue;
+// Don't skip external class sources when doing a specific scan.
+//
+//            } else if ( scanPolicy == ScanPolicy.EXTERNAL ) {
+//                if (logger.isLoggable(Level.FINER)) {
+//                    logger.logp(Level.FINER, CLASS_NAME, methodName,
+//                                "[ {0} ] [ {1} ] [ {2} ] [ {3} ] Skip: External; Remaining [ {4} ]",
+//                                new Object[] { getHashText(),
+//                                               classSourceName, classSource.getHashText(),
+//                                               scanPolicy,
+//                                               Integer.valueOf(i_specificClassNames.size()) });
+//                }
+//                continue;
 
             } else {
                 if (logger.isLoggable(Level.FINER)) {
                     logger.logp(Level.FINER, CLASS_NAME, methodName,
-                                "[ {0} ] [ {1} ] [ {2} ] [ {3} ] Remaining [ {4} ]",
+                                "[ {0} ] [ {1} ] [ {2} ] [ {3} ] Scan: Remaining [ {4} ]",
                                 new Object[] { getHashText(),
                                                classSourceName, classSource.getHashText(),
                                                scanPolicy,
@@ -126,7 +128,7 @@ public class TargetsScannerSpecificImpl extends TargetsScannerBaseImpl {
             putTargetsTable(classSourceName, targetTable);
         }
 
-        mergeInternalResults( getResultTables() );
+        mergeInternalResults( getResultTables(), FORCE_SEED_RESULTS );
 
         TargetsTableClassesMultiImpl useClassTable = createClassTable();
         mergeClasses(useClassTable);

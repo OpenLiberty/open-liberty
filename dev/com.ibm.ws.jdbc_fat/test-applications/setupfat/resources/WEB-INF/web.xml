@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app id="WebApp_ID">
+  <display-name>JDBCFATCheckSetupWeb</display-name>
+
+  <!-- SERVLET DEFINITIONS -->
+  <servlet id="Default">
+    <servlet-name>JDBC FAT CheckSetup Servlet</servlet-name>
+    <display-name>JDBC FAT CheckSetup Servlet</display-name>
+    <servlet-class>setupfat.CheckSetupTestServlet</servlet-class>
+    <load-on-startup></load-on-startup>
+  </servlet>
+
+  <!-- SERVLET MAPPINGS -->        
+  <servlet-mapping id="ServletMapping_Default">
+    <servlet-name>JDBC FAT CheckSetup Servlet</servlet-name>
+    <url-pattern>/*</url-pattern>
+  </servlet-mapping>
+  
+    <!-- RESOURCE REFERENCES -->
+  <resource-ref>
+    <res-ref-name>jdbc/dsfatboot</res-ref-name>
+    <res-type>javax.sql.DataSource</res-type>
+    <res-auth>Application</res-auth>
+    <res-sharing-scope>Unshareable</res-sharing-scope>
+  </resource-ref>
+  
+  <resource-ref>
+    <res-ref-name>jdbc/dsfatboot1</res-ref-name>
+    <res-type>javax.sql.DataSource</res-type>
+    <res-auth>Application</res-auth>
+    <res-sharing-scope>Unshareable</res-sharing-scope>
+  </resource-ref>
+  
+  <resource-ref>
+    <res-ref-name>jdbc/dsfatboot2</res-ref-name>
+    <res-type>javax.sql.DataSource</res-type>
+    <res-auth>Application</res-auth>
+    <res-sharing-scope>Unshareable</res-sharing-scope>
+  </resource-ref>
+  
+  <resource-ref>
+    <res-ref-name>jdbc/dsfatboot3</res-ref-name>
+    <res-type>javax.sql.DataSource</res-type>
+    <res-auth>Application</res-auth>
+    <res-sharing-scope>Unshareable</res-sharing-scope>
+  </resource-ref>
+
+  <resource-ref>
+    <res-ref-name>jdbc/dsfatboot4</res-ref-name>
+    <res-type>javax.sql.DataSource</res-type>
+    <res-auth>Application</res-auth>
+    <res-sharing-scope>Unshareable</res-sharing-scope>
+  </resource-ref>
+
+  <resource-ref>
+    <res-ref-name>jdbc/dsfatboot5</res-ref-name>
+    <res-type>javax.sql.DataSource</res-type>
+    <res-auth>Application</res-auth>
+    <res-sharing-scope>Unshareable</res-sharing-scope>
+  </resource-ref>
+
+  <resource-ref>
+    <res-ref-name>jdbc/dsfatboot6</res-ref-name>
+    <res-type>javax.sql.DataSource</res-type>
+    <res-auth>Application</res-auth>
+    <res-sharing-scope>Unshareable</res-sharing-scope>
+  </resource-ref>
+
+</web-app>

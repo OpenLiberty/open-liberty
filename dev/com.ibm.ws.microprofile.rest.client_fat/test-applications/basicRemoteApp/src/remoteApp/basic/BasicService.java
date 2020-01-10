@@ -10,11 +10,13 @@
  *******************************************************************************/
 package remoteApp.basic;
 
+import java.sql.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.Consumes;
@@ -31,12 +33,13 @@ import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+
 @Path("/basic")
 @ApplicationPath("/")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class BasicService extends Application {
-
+    private static Logger LOG = Logger.getLogger(BasicService.class.getName());
     private static Map<String, Widget> widgets = new HashMap<>();
 
     @GET
@@ -126,5 +129,21 @@ public class BasicService extends Application {
         Map<String, Widget> removedWidgets = new HashMap<>();
         names.stream().forEach(s -> removedWidgets.put(s, widgets.remove(s)));
         return removedWidgets;
+    }
+
+    @GET
+    @Path("/date")
+    public Date getCurrentDate() {
+        Date d = new Date(System.currentTimeMillis());
+        LOG.info("returning " + d);
+        return d;
+    }
+
+    @POST
+    @Path("/date")
+    public Response echoDate(Date d) {
+        Date d2 = new Date(d.getTime());
+        LOG.info("given " + d + ", returning " + d2);
+        return Response.status(202).entity(d2).build();
     }
 }

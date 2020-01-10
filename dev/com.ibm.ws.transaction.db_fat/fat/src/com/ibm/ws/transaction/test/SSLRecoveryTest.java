@@ -30,8 +30,6 @@ import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -112,6 +110,7 @@ public class SSLRecoveryTest extends FATServletClient {
     }
 
     @Test
+    @AllowedFFDC(value = { "org.postgresql.util.PSQLException", "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException" })
     public void testRec001() throws Exception {
         recoveryTest("001");
     }
@@ -131,30 +130,7 @@ public class SSLRecoveryTest extends FATServletClient {
 
         setUp();
         serverLibertySSL.startServer();
-/*
- * ProgramOutput po = serverLibertySSL.startServerAndValidate(false, true, true);
- *
- * if (po.getReturnCode() != 0) {
- * Log.info(this.getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
- * Log.info(this.getClass(), method, "Stdout: " + po.getStdout());
- * Log.info(this.getClass(), method, "Stderr: " + po.getStderr());
- *
- * // It may be that we attempted to restart the server too soon.
- * Log.info(this.getClass(), method, "start server failed, sleep then retry");
- * Thread.sleep(30000); // sleep for 30 seconds
- * po = serverLibertySSL.startServerAndValidate(false, true, true);
- *
- * // If it fails again then we'll report the failure
- * if (po.getReturnCode() != 0) {
- * Log.info(this.getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
- * Log.info(this.getClass(), method, "Stdout: " + po.getStdout());
- * Log.info(this.getClass(), method, "Stderr: " + po.getStderr());
- * Exception ex = new Exception("Could not restart the server");
- * Log.error(this.getClass(), "recoveryTest", ex);
- * throw ex;
- * }
- * }
- */
+
         // Server appears to have started ok
         serverLibertySSL.waitForStringInTrace("Setting state from RECOVERING to ACTIVE");
         Log.info(this.getClass(), method, "calling checkRec" + id);

@@ -10,7 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs20.client.ComplexClientTest.client;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
@@ -23,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
@@ -37,6 +41,8 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.client.ClientRequestFilter;
+import javax.ws.rs.client.ClientResponseContext;
+import javax.ws.rs.client.ClientResponseFilter;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.Invocation.Builder;
@@ -543,7 +549,7 @@ public class ClientTestServlet extends HttpServlet {
         ret.append(result);
     }
 
-    public void testGetSetEntityStream(Map<String, String> param, StringBuilder ret) throws Exception {
+    public void testGetSetEntityStreamOnRequestFilter(Map<String, String> param, StringBuilder ret) throws Exception {
         String serverIP = param.get("serverIP");
         String serverPort = param.get("serverPort");
         String message = "ENTITY_STREAM_WORKS";
@@ -561,6 +567,40 @@ public class ClientTestServlet extends HttpServlet {
         Response response = target.request().post(Entity.entity(entity, MediaType.TEXT_PLAIN_TYPE));
 
         ret.append(response.readEntity(String.class));
+    }
+
+    public void testGetSetEntityStreamOnResponseFilter(Map<String, String> param, StringBuilder ret) throws Exception {
+        String serverIP = param.get("serverIP");
+        String serverPort = param.get("serverPort");
+        final String message = "ENTITY_STREAM_WORKS";
+        String entity = message.replace('T', 'X');
+        final AtomicInteger filterInvocationCount = new AtomicInteger(0);
+
+        Client client = ClientBuilder.newClient();
+        client.register(new ClientResponseFilter() {
+            @Override
+            public void filter(ClientRequestContext reqContext, ClientResponseContext respContext) throws IOException {
+                filterInvocationCount.incrementAndGet();
+                ByteArrayInputStream bais = new ByteArrayInputStream(message.getBytes());
+                respContext.setEntityStream(bais);
+            }
+        });
+
+        WebTarget target = client.target("http://" + serverIP + ":" + serverPort + "/" + moduleName + "/ComplexClientTest/SimpleResource/post");
+        System.out.println("entity=" + entity);
+        Response response = target.request().post(Entity.entity(entity, MediaType.TEXT_PLAIN_TYPE));
+
+        ret.append(response.readEntity(String.class)).append(filterInvocationCount.get());
+    }
+
+    private byte[] readInputStreamBytes(InputStream entityStream) throws IOException {
+        final ByteArrayOutputStream result = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        int length;
+        while ((length = entityStream.read(buffer)) != -1) {
+                result.write(buffer, 0, length);
+        }
+        return result.toByteArray();
     }
 
     public void testTargetTemplateVariable(Map<String, String> param, StringBuilder ret) throws Exception {

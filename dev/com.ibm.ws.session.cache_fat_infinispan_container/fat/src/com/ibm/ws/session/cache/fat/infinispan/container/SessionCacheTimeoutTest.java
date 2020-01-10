@@ -148,22 +148,23 @@ public class SessionCacheTimeoutTest extends FATServletClient {
      */
     @Test
     public void testRefreshInvalidation() throws Exception {
-        int refreshes = TestModeFilter.FRAMEWORK_TEST_MODE == TestMode.FULL ? 15 : 3;
+        int refreshes = TestModeFilter.FRAMEWORK_TEST_MODE == TestMode.FULL ? 45 : 9;
 
         for (int attempt = 0; attempt < 5; attempt++) {
             // Initialize a session attribute
             List<String> session = newSession();
+            long start = 0, prevStart = 0;
+            start = System.nanoTime();
             app.sessionPut("testRefreshInvalidation-foo", "bar", session, true);
 
-            // Read the session attribute every 3 seconds, looping several times.  Reading the session attribute will
+            // Read the session attribute every 1 second, looping several times.  Reading the session attribute will
             // prevent the session from becoming invalid after 5 seconds because it refreshes the timer on each access.
-            long start = 0, prevStart = 0;
             try {
                 for (int i = 0; i < refreshes; i++) {
+                    TimeUnit.SECONDS.sleep(1);
+                    app.sessionGet("testRefreshInvalidation-foo", "bar", session);
                     prevStart = start;
                     start = System.nanoTime();
-                    TimeUnit.SECONDS.sleep(3);
-                    app.sessionGet("testRefreshInvalidation-foo", "bar", session);
                 }
                 return; // test successful
             } catch (AssertionError e) {

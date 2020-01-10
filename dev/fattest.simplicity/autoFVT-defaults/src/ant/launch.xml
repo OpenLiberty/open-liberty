@@ -216,11 +216,12 @@
 
 		<echo message="test.bucket.path including junit: ${toString:test.bucket.path}"/>
 
-		<iff if="is.windows.platform">
+		<iff>
+			<istrue value="${is.windows.platform}"/>
 			<then>
 				<echo>generating classpath jar file.</echo>
 				<property name="classpath.jar.name" value="${basedir}/build/lib/cp.jar"/>
-				<manifestclasspath property="classpath.list" maxParentLevels="10" jarfile="${classpath.jar.name}">
+				<manifestclasspath property="classpath.list" maxParentLevels="20" jarfile="${classpath.jar.name}">
 				    <classpath refid="test.bucket.path"/>
 				</manifestclasspath>
 				<jar jarfile="${classpath.jar.name}" >

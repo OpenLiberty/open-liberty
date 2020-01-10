@@ -11,8 +11,6 @@
 
 package com.ibm.ws.jpa.example.web;
 
-import java.util.HashMap;
-
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -26,7 +24,6 @@ import com.ibm.ws.jpa.example.testlogic.JPATestLogic;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
-import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
 import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
 
 @SuppressWarnings("serial")
@@ -44,77 +41,39 @@ public class TestExampleServlet extends JPATestServlet {
     @PersistenceUnit(unitName = "EXAMPLE_RL")
     private EntityManagerFactory amrlEmf;
 
-    private final String testLogicClassName = JPATestLogic.class.getName();
-
-    private final HashMap<String, JPAPersistenceContext> jpaPctxMap = new HashMap<String, JPAPersistenceContext>();
-
     @PostConstruct
     private void initFAT() {
+        testClassName = JPATestLogic.class.getName();
+
         jpaPctxMap.put("test-jpa-resource-amjta",
                        new JPAPersistenceContext("test-jpa-resource-amjta", PersistenceContextType.APPLICATION_MANAGED_JTA, PersistenceInjectionType.FIELD, "amjtaEmf"));
-
         jpaPctxMap.put("test-jpa-resource-amrl",
                        new JPAPersistenceContext("test-jpa-resource-amrl", PersistenceContextType.APPLICATION_MANAGED_RL, PersistenceInjectionType.FIELD, "amrlEmf"));
-
         jpaPctxMap.put("test-jpa-resource-cmts",
                        new JPAPersistenceContext("test-jpa-resource-cmts", PersistenceContextType.CONTAINER_MANAGED_TS, PersistenceInjectionType.FIELD, "cmtsEm"));
-
     }
 
     @Test
-    public void jpa_jpa21_example_template_AMJTA_Web() throws Exception {
-        final String testName = "jpa_jpa21_example_template_AMJTA_Web";
+    public void jpa_spec21_example_template_AMJTA_Web() throws Exception {
+        final String testName = "jpa21_example_template_AMJTA_Web";
         final String testMethod = "template";
-
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("dbProductName", getDbProductName());
-        properties.put("dbProductVersion", getDbProductVersion());
-        properties.put("jdbcDriverVersion", getJdbcDriverVersion());
-
-//        executeDDL("JPA_EXAMPLE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        final String testResource = "test-jpa-resource-amjta";
+        executeTest(testName, testMethod, testResource);
     }
 
     @Test
-    public void jpa_jpa21_example_template_AMRL_Web() throws Exception {
-        final String testName = "jpa_jpa21_example_template_AMRL_Web";
+    public void jpa_spec21_example_template_AMRL_Web() throws Exception {
+        final String testName = "jpa21_example_template_AMRL_Web";
         final String testMethod = "template";
-
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("dbProductName", getDbProductName());
-        properties.put("dbProductVersion", getDbProductVersion());
-        properties.put("jdbcDriverVersion", getJdbcDriverVersion());
-
-//        executeDDL("JPA_EXAMPLE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
     }
 
     @Test
-    public void jpa_jpa21_example_template_CMTS_Web() throws Exception {
-        final String testName = "jpa_jpa21_example_template_CMTS_Web";
+    public void jpa_spec21_example_template_CMTS_Web() throws Exception {
+        final String testName = "jpa21_example_template_CMTS_Web";
         final String testMethod = "template";
-
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("dbProductName", getDbProductName());
-        properties.put("dbProductVersion", getDbProductVersion());
-        properties.put("jdbcDriverVersion", getJdbcDriverVersion());
-
-//        executeDDL("JPA_EXAMPLE_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        final String testResource = "test-jpa-resource-cmts";
+        executeTest(testName, testMethod, testResource);
     }
 }

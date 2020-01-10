@@ -42,6 +42,7 @@ import componenttest.topology.utils.PrivHelper;
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class TestExample_EJB extends JPAFATServletClient {
+    private final static String CONTEXT_ROOT = "exampleEjb";
     private final static String RESOURCE_ROOT = "test-applications/example/";
     private final static String appFolder = "ejb";
     private final static String appName = "exampleEjb";
@@ -59,12 +60,11 @@ public class TestExample_EJB extends JPAFATServletClient {
         populateSet.add("JPA_EXAMPLE_POPULATE_${dbvendor}.ddl");
     }
 
-    @Server("JPAServer")
+    @Server("EclipseLinkServer")
     @TestServlets({
-                    @TestServlet(servlet = TestExample_EJB_SL_Servlet.class, path = "exampleejb" + "/" + "TestExample_EJB_SL_Servlet"),
-                    @TestServlet(servlet = TestExample_EJB_SF_Servlet.class, path = "exampleejb" + "/" + "TestExample_EJB_SF_Servlet"),
-                    @TestServlet(servlet = TestExample_EJB_SFEx_Servlet.class, path = "exampleejb" + "/" + "TestExample_EJB_SFEx_Servlet"),
-
+                    @TestServlet(servlet = TestExample_EJB_SL_Servlet.class, path = CONTEXT_ROOT + "/" + "TestExample_EJB_SL_Servlet"),
+                    @TestServlet(servlet = TestExample_EJB_SF_Servlet.class, path = CONTEXT_ROOT + "/" + "TestExample_EJB_SF_Servlet"),
+                    @TestServlet(servlet = TestExample_EJB_SFEx_Servlet.class, path = CONTEXT_ROOT + "/" + "TestExample_EJB_SFEx_Servlet")
     })
     public static LibertyServer server;
 
@@ -114,11 +114,11 @@ public class TestExample_EJB extends JPAFATServletClient {
     }
 
     private static void setupTestApplication() throws Exception {
-        JavaArchive ejbApp = ShrinkWrap.create(JavaArchive.class, "exampleEjb.jar");
+        JavaArchive ejbApp = ShrinkWrap.create(JavaArchive.class, appName + ".jar");
         ejbApp.addPackages(true, "com.ibm.ws.jpa.example.ejblocal");
         ejbApp.addPackages(true, "com.ibm.ws.jpa.example.model");
         ejbApp.addPackages(true, "com.ibm.ws.jpa.example.testlogic");
-        ShrinkHelper.addDirectory(ejbApp, RESOURCE_ROOT + "ejb/exampleEjb.jar");
+        ShrinkHelper.addDirectory(ejbApp, RESOURCE_ROOT + appFolder + "/" + appName + ".jar");
 
         WebArchive webApp = ShrinkWrap.create(WebArchive.class, appName + ".war");
         webApp.addPackages(true, "com.ibm.ws.jpa.example.ejb");

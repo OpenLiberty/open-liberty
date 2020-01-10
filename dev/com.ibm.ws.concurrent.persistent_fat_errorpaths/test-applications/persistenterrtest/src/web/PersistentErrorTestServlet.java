@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,6 +32,7 @@ import javax.enterprise.concurrent.AbortedException;
 import javax.enterprise.concurrent.ManagedTask;
 import javax.enterprise.concurrent.SkippedException;
 import javax.enterprise.concurrent.Trigger;
+import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -317,6 +318,32 @@ public class PersistentErrorTestServlet extends HttpServlet {
             SharedFailingTask.clear();
         }
 
+    }
+
+    /**
+     * testMissedTaskThresholdBelowMinimum - attempt to use a persistent executor where the missedTaskThreshold value is less than
+     * the minimum allowed. The detailed error message that is logged is tested by the caller of this method.
+     */
+    public void testMissedTaskThresholdBelowMinimum(PrintWriter out) throws Exception {
+        try {
+            PersistentExecutor misconfiguredExecutor = InitialContext.doLookup("concurrent/belowMinMissedTaskThreshold");
+            throw new Exception("Should not be able to obtain misconfigured persistentExecutor where the missedTaskThreshold value is less than the minimum allowed " + misconfiguredExecutor);
+        } catch (NamingException x) {
+            // expected
+        }
+    }
+
+    /**
+     * testMissedTaskThresholdExceedsMaximum - attempt to use a persistent executor where the missedTaskThreshold value exceeds
+     * the maximum allowed. The detailed error message that is logged is tested by the caller of this method.
+     */
+    public void testMissedTaskThresholdExceedsMaximum(PrintWriter out) throws Exception {
+        try {
+            PersistentExecutor misconfiguredExecutor = InitialContext.doLookup("concurrent/exceedsMaxMissedTaskThreshold");
+            throw new Exception("Should not be able to obtain misconfigured persistentExecutor where missedTaskThreshold value exceeds the maximum allowed " + misconfiguredExecutor);
+        } catch (NamingException x) {
+            // expected
+        }
     }
 
     /**
@@ -621,6 +648,32 @@ public class PersistentErrorTestServlet extends HttpServlet {
     }
 
     /**
+     * testPollIntervalBelowMinimum - attempt to use a persistent executor where the pollInterval value is less than
+     * the minimum allowed. The detailed error message that is logged is tested by the caller of this method.
+     */
+    public void testPollIntervalBelowMinimum(PrintWriter out) throws Exception {
+        try {
+            PersistentExecutor misconfiguredExecutor = InitialContext.doLookup("concurrent/belowMinPollInterval");
+            throw new Exception("Should not be able to obtain misconfigured persistentExecutor where the pollInterval value is less than the minimum allowed. " + misconfiguredExecutor);
+        } catch (NamingException x) {
+            // expected
+        }
+    }
+
+    /**
+     * testPollIntervalThresholdExceedsMaximum - attempt to use a persistent executor where the pollInterval value exceeds
+     * the maximum allowed. The detailed error message that is logged is tested by the caller of this method.
+     */
+    public void testPollIntervalExceedsMaximum(PrintWriter out) throws Exception {
+        try {
+            PersistentExecutor misconfiguredExecutor = InitialContext.doLookup("concurrent/exceedsMaxPollInterval");
+            throw new Exception("Should not be able to obtain misconfigured persistentExecutor where the pollInterval value exceeds the maximum allowed " + misconfiguredExecutor);
+        } catch (NamingException x) {
+            // expected
+        }
+    }
+
+    /**
      * Attempt to schedule a task with a predetermined result that declares itself serializable but fails to serialize.
      */
     public void testPredeterminedResultFailsToSerialize(PrintWriter out) throws Exception {
@@ -793,6 +846,19 @@ public class PersistentErrorTestServlet extends HttpServlet {
     }
 
     /**
+     * testRetryIntervalBelowMissedTaskThreshold - attempt to use a persistent executor where the retryInterval value is less than
+     * the missedTaskThreshold. The detailed error message that is logged is tested by the caller of this method.
+     */
+    public void testRetryIntervalBelowMissedTaskThreshold(PrintWriter out) throws Exception {
+        try {
+            PersistentExecutor misconfiguredExecutor = InitialContext.doLookup("concurrent/retryIntervalBelowMissedTaskThreshold");
+            throw new Exception("Should not be able to obtain misconfigured persistentExecutor where the retryInterval value is less than the missedTaskThreshold. " + misconfiguredExecutor);
+        } catch (NamingException x) {
+            // expected
+        }
+    }
+
+    /**
      * Shut down the database before a task executes. Connection errors will occur,
      * but the task should be retried and succeed on the next attempt.
      */
@@ -823,16 +889,25 @@ public class PersistentErrorTestServlet extends HttpServlet {
      * but the task should be retried and succeed on the next attempt.
      */
     public void testShutDownDerbyDuringTaskExecution(PrintWriter out) throws Exception {
-        DerbyShutdownTask task = new DerbyShutdownTask();
+        DerbyShutdownTask task = new DerbyShutdownTask(); // auto-purges upon successful completion
         DerbyShutdownTask.counter.set(0);
 
         TaskStatus<?> status = scheduler.schedule(task, 0, TimeUnit.HOURS);
+        long taskId = status.getTaskId();
 
-        for (long start = System.nanoTime(); DerbyShutdownTask.counter.get() < 2 && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL));
+        long start = System.nanoTime();
+        while (DerbyShutdownTask.counter.get() < 2 && System.nanoTime() - start < TIMEOUT_NS)
+            Thread.sleep(POLL_INTERVAL);
+
+        // Also wait for the task to have completed (auto-purged null status), so that we know it is actually successful again vs another attempt that is still failing.
+        while (status != null && System.nanoTime() - start < TIMEOUT_NS) {
+            Thread.sleep(POLL_INTERVAL);
+            status = scheduler.getStatus(status.getTaskId());
+        }
 
         int count = DerbyShutdownTask.counter.get();
-        if (count != 2)
-            throw new Exception("Task " + status.getTaskId() + " did not run exactly once successfully after Derby shutdown. Attempt count: " + count);
+        if (count != 2 || status != null)
+            throw new Exception("Task " + taskId + " (" + status + ") did not run exactly once successfully after Derby shutdown. Attempt count: " + count);
     }
 
     /**

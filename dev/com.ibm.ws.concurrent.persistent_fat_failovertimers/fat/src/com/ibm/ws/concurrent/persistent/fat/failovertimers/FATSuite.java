@@ -22,8 +22,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-    FailoverTimersTest.class,
-    FailoverTimersTest2.class // TODO choose one or the other
+    FailoverTimersTest.class
     })
 public class FATSuite {
     @BeforeClass

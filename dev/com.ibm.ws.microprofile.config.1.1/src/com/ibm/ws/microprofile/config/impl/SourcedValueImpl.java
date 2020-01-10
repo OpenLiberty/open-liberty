@@ -57,7 +57,7 @@ public class SourcedValueImpl implements SourcedValue {
     @Override
     @Trivial
     public String getKey() {
-        return key;
+        return this.key;
     }
 
     /**
@@ -68,7 +68,7 @@ public class SourcedValueImpl implements SourcedValue {
     @Override
     @Trivial
     public Object getValue() {
-        return value;
+        return this.value;
     }
 
     /**
@@ -79,7 +79,7 @@ public class SourcedValueImpl implements SourcedValue {
     @Override
     @Trivial
     public Type getType() {
-        return type;
+        return this.type;
     }
 
     /**
@@ -90,13 +90,13 @@ public class SourcedValueImpl implements SourcedValue {
     @Override
     @Trivial
     public String getSource() {
-        return source;
+        return this.source;
     }
 
     @Override
     @Trivial
     public String toString() {
-        return "[" + source + "; " + type + "] " + key + "=" + value;
+        return "[" + this.source + "; " + this.type + "] " + this.key + "=" + this.value;
     }
 
     /** {@inheritDoc} */
@@ -105,4 +105,69 @@ public class SourcedValueImpl implements SourcedValue {
     public Class<?> getGenericSubType() {
         return this.genericSubType;
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = (prime * result) + ((this.genericSubType == null) ? 0 : this.genericSubType.hashCode());
+        result = (prime * result) + ((this.key == null) ? 0 : this.key.hashCode());
+        result = (prime * result) + ((this.source == null) ? 0 : this.source.hashCode());
+        result = (prime * result) + ((this.type == null) ? 0 : this.type.hashCode());
+        result = (prime * result) + ((this.value == null) ? 0 : this.value.hashCode());
+        return result;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        SourcedValueImpl other = (SourcedValueImpl) obj;
+        if (this.genericSubType == null) {
+            if (other.genericSubType != null) {
+                return false;
+            }
+        } else if (!this.genericSubType.equals(other.genericSubType)) {
+            return false;
+        }
+        if (this.key == null) {
+            if (other.key != null) {
+                return false;
+            }
+        } else if (!this.key.equals(other.key)) {
+            return false;
+        }
+        if (this.source == null) {
+            if (other.source != null) {
+                return false;
+            }
+        } else if (!this.source.equals(other.source)) {
+            return false;
+        }
+        if (this.type == null) {
+            if (other.type != null) {
+                return false;
+            }
+        } else if (!this.type.equals(other.type)) {
+            return false;
+        }
+        if (this.value == null) {
+            if (other.value != null) {
+                return false;
+            }
+        } else if (!this.value.equals(other.value)) {
+            return false;
+        }
+        return true;
+    }
+
 }
