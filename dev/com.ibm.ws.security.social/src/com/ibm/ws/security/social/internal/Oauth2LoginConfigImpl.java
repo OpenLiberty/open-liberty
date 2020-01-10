@@ -175,9 +175,13 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
     public static final String KEY_USE_SYSPROPS_FOR_HTTPCLIENT_CONNECTONS = "useSystemPropertiesForHttpClientConnections";
     protected boolean useSystemPropertiesForHttpClientConnections = false;
 
+    public static final String USER_API_TYPE_BASIC = "basic";
+    public static final String USER_API_TYPE_KUBE = "kube";
+    public static final String USER_API_TYPE_OPENSHIFT = "openshift";
+
     public static final String KEY_userApiType = "userApiType";
     protected String userApiType = null;
-    private final String DEFAULT_USER_API_TYPE = "basic";
+    private final String DEFAULT_USER_API_TYPE = USER_API_TYPE_BASIC;
 
     public static final String KEY_userApiToken = "userApiToken";
     protected String userApiToken = null;
@@ -267,7 +271,7 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
 
     boolean isKubeConfiguration(Map<String, Object> props) {
         String userApiType = configUtils.getConfigAttribute(props, KEY_userApiType);
-        if (userApiType != null && ClientConstants.USER_API_TYPE_KUBE.equals(userApiType)) {
+        if (userApiType != null && USER_API_TYPE_KUBE.equals(userApiType)) {
             return true;
         }
         return false;

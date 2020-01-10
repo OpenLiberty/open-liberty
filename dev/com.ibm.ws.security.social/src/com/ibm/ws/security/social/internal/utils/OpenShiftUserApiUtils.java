@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,12 +27,11 @@ import javax.json.stream.JsonParsingException;
 import javax.net.ssl.SSLSocketFactory;
 import javax.servlet.http.HttpServletResponse;
 
-import org.jose4j.lang.JoseException;
-
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.security.common.http.HttpUtils;
+import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.TraceConstants;
 import com.ibm.ws.security.social.error.SocialLoginException;
 import com.ibm.ws.security.social.internal.Oauth2LoginConfigImpl;
@@ -41,11 +40,11 @@ public class OpenShiftUserApiUtils {
 
     public static final TraceComponent tc = Tr.register(OpenShiftUserApiUtils.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 
-    Oauth2LoginConfigImpl config = null;
+    SocialLoginConfig config = null;
 
     HttpUtils httpUtils = new HttpUtils();
 
-    public OpenShiftUserApiUtils(Oauth2LoginConfigImpl config) {
+    public OpenShiftUserApiUtils(SocialLoginConfig config) {
         this.config = config;
     }
 
@@ -56,6 +55,17 @@ public class OpenShiftUserApiUtils {
             response = readUserApiResponse(connection);
         } catch (Exception e) {
             throw new SocialLoginException("KUBERNETES_ERROR_GETTING_USER_INFO", e, new Object[] { e });
+        }
+        return response;
+    }
+
+    public String getUserApiResponseForServiceAccountToken(String serviceAccountToken, SSLSocketFactory sslSocketFactory) throws SocialLoginException {
+        String response = null;
+        try {
+            HttpURLConnection connection = sendServiceAccountIntrospectRequest(serviceAccountToken, sslSocketFactory);
+            response = readServiceAccountIntrospectResponse(connection);
+        } catch (Exception e) {
+            throw new SocialLoginException("ERROR_INTROSPECTING_SERVICE_ACCOUNT", e, new Object[] { e });
         }
         return response;
     }
@@ -76,12 +86,27 @@ public class OpenShiftUserApiUtils {
         return connection;
     }
 
+    HttpURLConnection sendServiceAccountIntrospectRequest(String serviceAccountToken, SSLSocketFactory sslSocketFactory) throws IOException {
+        HttpURLConnection connection = httpUtils.createConnection(HttpUtils.RequestMethod.POST, config.getUserApi(), sslSocketFactory);
+        connection = httpUtils.setHeaders(connection, getServiceAccountIntrospectRequestHeaders(serviceAccountToken));
+        connection.connect();
+        return connection;
+    }
+
     @Sensitive
     Map<String, String> getUserApiRequestHeaders() {
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("Authorization", "Bearer " + config.getUserApiToken());
         headers.put("Accept", "application/json");
         headers.put("Content-Type", "application/json");
+        return headers;
+    }
+
+    @Sensitive
+    Map<String, String> getServiceAccountIntrospectRequestHeaders(@Sensitive String serviceAccountToken) {
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put("Authorization", "Bearer " + serviceAccountToken);
+        headers.put("Accept", "application/json");
         return headers;
     }
 
@@ -96,7 +121,7 @@ public class OpenShiftUserApiUtils {
         return bodyBuilder.build().toString();
     }
 
-    String readUserApiResponse(HttpURLConnection connection) throws IOException, SocialLoginException, JoseException {
+    String readUserApiResponse(HttpURLConnection connection) throws IOException, SocialLoginException {
         int responseCode = connection.getResponseCode();
         String response = httpUtils.readConnectionResponse(connection);
         if (responseCode != HttpServletResponse.SC_CREATED) {
@@ -105,7 +130,16 @@ public class OpenShiftUserApiUtils {
         return modifyExistingResponseToJSON(response);
     }
 
-    String modifyExistingResponseToJSON(String response) throws JoseException, SocialLoginException {
+    String readServiceAccountIntrospectResponse(HttpURLConnection connection) throws IOException, SocialLoginException {
+        int responseCode = connection.getResponseCode();
+        String response = httpUtils.readConnectionResponse(connection);
+        if (responseCode != HttpServletResponse.SC_OK) {
+            throw new SocialLoginException("SERVICE_ACCOUNT_USER_API_BAD_STATUS", null, new Object[] { responseCode, response });
+        }
+        return response;
+    }
+
+    String modifyExistingResponseToJSON(String response) throws SocialLoginException {
         JsonObject jsonResponse = getJsonResponseIfValid(response);
         JsonObject statusInnerMap = getStatusJsonObjectFromResponse(jsonResponse);
         JsonObject userInnerMap = getUserJsonObjectFromResponse(statusInnerMap);
