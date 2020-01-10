@@ -139,4 +139,11 @@ public class RepeatFaultTolerance {
                         .andWith(mp30Features(server));
     }
 
+    public static RepeatTests repeat20AndAbove(String server) {
+        return RepeatTests.with(ft20metrics11Features(server).fullFATOnly())
+                        .andWith(mp30Features(server).fullFATOnly())
+                        .andWith(mp32Features(server).fullFATOnly())
+                        .andWith(mp33Features(server));
+    }
+
 }
