@@ -30,11 +30,14 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
+
+import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -49,6 +52,9 @@ public class FeaturesStartTest {
 	static final List<String> features = new ArrayList<>();
     static final Map<String, Set<String>> acceptableErrors = new HashMap<>();
 
+    static JavaInfo javaInfo = null;
+    static int JAVA_LEVEL;
+
     @Server("features.start.server")
     public static LibertyServer server;
 
@@ -57,6 +63,12 @@ public class FeaturesStartTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        javaInfo = JavaInfo.forServer(server);
+        JAVA_LEVEL = javaInfo.majorVersion();
+        Log.info(c, "setup", "The java level being used by the server is: " + JAVA_LEVEL);
+
+		initAcceptableErrors();
+
 		File featureDir = new File(server.getInstallRoot() + "/lib/features/");
 		for (File feature : featureDir.listFiles())
             parseShortName(feature);
@@ -79,8 +91,8 @@ public class FeaturesStartTest {
 
         for (String feature : features) {
 
-            //if (skipFeature(feature))
-            //    continue;
+            if (skipFeature(feature))
+                continue;
 
                 Log.info(c, m, ">>>>> BEGIN " + feature);
                 boolean saveLogs = true;
@@ -159,10 +171,37 @@ public class FeaturesStartTest {
             scanner.close();
         }
     }
-
+	
     private static void initAcceptableErrors() throws Exception {
         String[] QUISCE_FAILRUES = new String[] { "CWWKE1102W", "CWWKE1107W" };
-        //allowError("openapi-3.0", QUISCE_FAILRUES);
+
+        allowError("openapi-3.1", QUISCE_FAILRUES);
+        allowError("mpOpenApi-1.0", QUISCE_FAILRUES);
+
+        allowError("samlWeb-2.0", "CWWKS5207W: .* inboundPropagation"); // lets the user now certain config attributes will be ignored depending on whether or not 'inboundPropagation' is configured
+        allowError("wsSecuritySaml-1.1", "CWWKS5207W: .* inboundPropagation"); // pulls in the samlWeb-2.0 feature
+    }
+
+    private boolean skipFeature(String feature) throws Exception {
+        // This feature is grandfathered in on not starting cleanly on its own. Fixing it could potentially break existing configurations
+        if (feature.equalsIgnoreCase("wsSecurity-1.1"))
+            return true;
+
+        // Needs to be enabled in conjunction with spnego-1.0 or OIDC
+        if (feature.equalsIgnoreCase("constrainedDelegation-1.0"))
+            return true;
+
+        if (feature.equalsIgnoreCase("logstashCollector-1.0")) {
+            if (javaInfo.vendor() != JavaInfo.Vendor.IBM) {
+                Log.info(c, testName.getMethodName(), "Skipping feature " + feature + " because it is for IBM JDK only.");
+                return true;
+            } else if (server.getMachine().getOperatingSystem().equals(OperatingSystem.ZOS)) {
+                Log.info(c, testName.getMethodName(), "Skipping feature " + feature + " because the attach API is disabled on z/OS");
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private static void allowError(String forFeature, String... allowedErrors) {
