@@ -17,26 +17,30 @@ import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import javax.annotation.Resource;
 import javax.ejb.Schedule;
 import javax.ejb.SessionContext;
-import javax.ejb.Singleton;
+import javax.ejb.Stateless;
 import javax.ejb.Timer;
+import javax.ejb.TransactionManagement;
+import javax.ejb.TransactionManagementType;
 import javax.sql.DataSource;
 
 /**
  * This class uses the @Schedule annotation.
  * Using this annotation will start the timer immediately on start and will run every 30 seconds.
  */
-@Singleton
+@Stateless
+@TransactionManagement(TransactionManagementType.BEAN)
 public class AutomaticDatabase {
     private static final Class<AutomaticDatabase> c = AutomaticDatabase.class;
 
     @Resource
     private SessionContext sessionContext; //Used to get information about timer
 
-    @Resource(name = "DefaultDatasource") //Datasource used to create a new table
+    @Resource(shareable = false)
     private DataSource ds;
 
     private int count = -1; //Incremented with each execution of timer
@@ -75,7 +79,7 @@ public class AutomaticDatabase {
         try (Connection conn = ds.getConnection()) {
             //See if table was created by another server
             DatabaseMetaData md = conn.getMetaData();
-            ResultSet rs = md.getTables(null, null, "AUTOMATICDATABASE".toUpperCase(), null);
+            ResultSet rs = md.getTables(null, null, "AUTOMATICDATABASE", null);
             while (rs.next()) {
                 isTableCreated = rs.getString("TABLE_NAME").equalsIgnoreCase("AUTOMATICDATABASE");
                 if (isTableCreated)
@@ -83,12 +87,12 @@ public class AutomaticDatabase {
             }
 
             //If not, create it.
-            try (PreparedStatement pstmt = conn.prepareStatement(createTable)) {
-                pstmt.executeUpdate();
+            try (Statement stmt = conn.createStatement()) {
+                stmt.execute(createTable);
             }
 
             isTableCreated = true;
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             fail(c.getName() + " caught exception when initializing table: " + e.getMessage());
         }
@@ -104,7 +108,7 @@ public class AutomaticDatabase {
             try (PreparedStatement pstmt = conn.prepareStatement(createRow)) {
                 pstmt.setString(1, timer.getInfo().toString());
                 pstmt.setInt(2, count);
-                pstmt.execute();
+                pstmt.executeUpdate();
             }
         } catch (SQLException e) {
             count = -1;
@@ -128,7 +132,7 @@ public class AutomaticDatabase {
             try (PreparedStatement pstmt = conn.prepareStatement(modifyRow)) {
                 pstmt.setInt(1, ++count);
                 pstmt.setString(2, timer.getInfo().toString());
-                pstmt.execute();
+                pstmt.executeUpdate();
             }
         } catch (SQLException e) {
             count--;
