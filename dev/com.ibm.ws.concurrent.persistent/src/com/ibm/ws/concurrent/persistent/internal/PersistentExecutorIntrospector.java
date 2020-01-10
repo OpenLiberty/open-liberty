@@ -32,14 +32,12 @@ public class PersistentExecutorIntrospector implements Introspector {
     @Override
     @Trivial
     public String getIntrospectorName() {
-        System.out.println("getIntrospectorName");
         return "PersistentExecutorIntrospector";
     }
 
     @Override
     @Trivial
     public String getIntrospectorDescription() {
-        System.out.println("getIntrospectorDescription");
         return "Persistent timers/tasks diagnostics";
     }
 
