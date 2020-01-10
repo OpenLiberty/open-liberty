@@ -38,8 +38,9 @@ public interface ChannelFrameworkConstants {
     String LISTENING_PORT = "listeningPort";
 
     /**
-     * Property put into ChannelData property map when calling
+     * Properies put into ChannelData property map when calling
      * ChannelFactory.findOrCreateChannel().
      */
     String CHAIN_DATA_KEY = "chainData";
+    String CHAIN_NAME_KEY = "chainName";
 }

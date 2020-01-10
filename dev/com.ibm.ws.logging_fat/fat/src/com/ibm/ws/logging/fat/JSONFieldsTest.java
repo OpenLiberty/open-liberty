@@ -39,7 +39,7 @@ public class JSONFieldsTest {
     private static LibertyServer server_xml;
     private static LibertyServer server_env;
     private static LibertyServer server_bootstrap;
-    private static LibertyServer serverInUse;  // hold on to the server currently used so cleanUp knows which server to stop
+    private static LibertyServer serverInUse; // hold on to the server currently used so cleanUp knows which server to stop
 
     @BeforeClass
     public static void initialSetup() throws Exception {
@@ -54,7 +54,7 @@ public class JSONFieldsTest {
     }
 
     public void setUp(LibertyServer server) throws Exception {
-    	serverInUse = server;
+        serverInUse = server;
         if (server != null && !server.isStarted()) {
             // Restore the original server configuration, before starting the server for each test case.
             server.restoreServerConfiguration();
@@ -66,7 +66,8 @@ public class JSONFieldsTest {
     public void cleanUp() throws Exception {
         if (serverInUse != null && serverInUse.isStarted()) {
             serverInUse.stopServer("com.ibm.ws.logging.fat.ffdc.servlet.FFDCServlet.doGet", "ArithmeticException",
-                              "CWWKG0081E", "CWWKG0083W");
+                                   "CWWKG0081E", "CWWKG0083W");
+
         }
     }
 
@@ -76,6 +77,7 @@ public class JSONFieldsTest {
     @Test
     public void testMessageFieldNamesEnv() throws Exception {
         setUp(server_env);
+
         List<String> lines = server_env.findStringsInFileInLibertyServerRoot("log3", MESSAGE_LOG);
         assertTrue("The message field name was not formatted in the new configuration in messages.log.", lines.size() > 0);
     }
