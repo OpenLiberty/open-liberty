@@ -415,8 +415,15 @@ public class MemoryStore implements IStore {
          * runApplicationStoreInvalidation();
          * } else {
          */
+        Set keySet = _sessions.keySet();
+        if (keySet.size() == 0) {
+            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
+                LoggingUtil.SESSION_LOGGER_CORE.exiting(methodClassName, methodNames[RUN_INVALIDATION], "no sessions in memory store - " + appNameForLogging);
+            }
+            return;
+        }
         long nowTime = System.currentTimeMillis();
-        Iterator iter = _sessions.keySet().iterator();
+        Iterator iter = keySet.iterator();
         try {
             //setThreadContext threw a NPE because we were trying to get the config from within getModuleMetaData and it was returning null
             //this only happens after the app has been shutdown.  There was a small timing window where this was possible.
