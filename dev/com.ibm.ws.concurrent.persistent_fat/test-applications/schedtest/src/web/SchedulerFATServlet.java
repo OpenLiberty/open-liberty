@@ -2070,6 +2070,9 @@ public class SchedulerFATServlet extends HttpServlet {
                 && !(statusC.hasResult() && Integer.valueOf(1).equals(statusC.getResult())); )
             Thread.sleep(POLL_INTERVAL);
 
+        if (statusC == null)
+            throw new Exception("Task C should not have been auto-purged.");
+
         if (!statusC.hasResult() || !Integer.valueOf(1).equals(statusC.getResult()))
             throw new Exception("Task C did not complete " + statusC);
 
@@ -2077,6 +2080,9 @@ public class SchedulerFATServlet extends HttpServlet {
                 && (statusD = scheduler.getStatus(statusD.getTaskId())) != null
                 && !(statusD.hasResult() && Integer.valueOf(1).equals(statusD.getResult())); )
             Thread.sleep(POLL_INTERVAL);
+
+        if (statusD == null)
+            throw new Exception("Task D should not have been auto-purged.");
 
         if (!statusD.hasResult() || !Integer.valueOf(1).equals(statusD.getResult()))
             throw new Exception("Task D did not complete " + statusD);
