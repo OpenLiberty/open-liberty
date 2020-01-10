@@ -12,6 +12,7 @@ package com.ibm.ws.security.openidconnect.client.internal;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -91,7 +92,7 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
     private final Object initOidcClientAuthLock = new Object() {
     };
     boolean initBeforeSso = false;
-    private final BoundedHashMap authFilterWarnings = new BoundedHashMap(20);
+    private final BoundedHashMap authFilterWarnings = new BoundedHashMap(10);
 
     static final String KEY_AUTH_CACHE_SERVICE = "authCacheService";
     static final AtomicServiceReference<AuthCacheService> authCacheServiceRef = new AtomicServiceReference<AuthCacheService>(KEY_AUTH_CACHE_SERVICE);
@@ -461,13 +462,10 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
         return oidcProvider;
     }
 
-    // warn (only once) if >1 auth filter could have matched this request. If so, inconsistent behavior is possible. 
+    // warn  if >1 auth filter could have matched this request. If so, inconsistent behavior is possible. 
     void warnIfAmbiguousAuthFilters(Iterator<OidcClientConfig> oidcClientConfigs, HttpServletRequest req,
             ConcurrentServiceReferenceMap<String, AuthenticationFilter> AFServiceRef) {
-        if(authFilterWarnings.containsKey(req.getRequestURL().toString())) {
-            return;  //already checked
-        }
-        authFilterWarnings.put(req.getRequestURL().toString(), null);
+
         HashMap<String, Object> acceptingAuthFilterIds = new HashMap<String, Object>();
         while (oidcClientConfigs.hasNext()) {
             OidcClientConfig clientConfig = oidcClientConfigs.next();
@@ -492,9 +490,7 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
                 filterIds = filterIds + it.next() + " ";
             }
             filterIds = filterIds.trim();
-            if (!authFilterWarnings.containsKey(filterIds)) {
-                Tr.warning(tc, "AUTHFILTER_MULTIPLE_MATCHED", req.getRequestURL(), filterIds); // CWWKS1531W
-            }
+            Tr.warning(tc, "AUTHFILTER_MULTIPLE_MATCHED", req.getRequestURL(), filterIds); // CWWKS1531W
         }
     }
 
