@@ -262,6 +262,15 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
                 Tr.event(tc, "Execution {0} attempt result: {1}", executionContext.getId(), methodResult);
             }
 
+            if (!methodResult.isFailure()) {
+                if (methodResult.getResult() == null) {
+                    String methodName = FTDebug.formatMethod(executionContext.getMethod());
+                    Tr.warning(tc, "asynchronous.returned.null.CWMFT0003W", methodName);
+                    methodResult = MethodResult.internalFailure(new NullPointerException(Tr.formatMessage(tc, "asynchronous.returned.null.CWMFT0003W", methodName)));
+                    // Internal Failure -> Retry and Fallback are not applied
+                }
+            }
+
             processMethodResult(attemptContext, methodResult, reservation);
 
             if (attemptContext.getTimeoutState().isTimedOut()) {
@@ -376,6 +385,7 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
                     prepareFallback(result, executionContext);
                     return;
                 }
+
             }
 
             processEndOfExecution(executionContext, result);

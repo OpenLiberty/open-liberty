@@ -38,6 +38,11 @@ application.shutdown.CWMFT0002W=CWMFT0002W: The {0} asynchronous method cannot c
 application.shutdown.CWMFT0002W.explanation=Asynchronous methods run in the context of the component that started them. The application or component that called the asynchronous method stopped, which prevented the asynchronous method from completing.
 application.shutdown.CWMFT0002W.useraction= This warning usually occurs when an application, component, or server is shutting down. If all running asynchronous methods must complete, then the application or component must wait for the results before stopping.
 
+#The asynchronous method {0} returned null. 
+asynchronous.returned.null.CWMFT0003W=CWMFT0003W: The asynchronous method {0} returned null. 
+asynchronous.returned.null.CWMFT0003W.explanation= Methods annotated with @Asynchronous must not return a null value.
+asynchronous.returned.null.CWMFT0003W.useraction= Prevent a null value being returned from the method.
+
 #An internal error occurred. The exception is {0}.
 internal.error.CWMFT4998E=CWMFT4998E: An internal error occurred. The exception is {0}.
 internal.error.CWMFT4998E.explanation=The application server experienced an internal error.
