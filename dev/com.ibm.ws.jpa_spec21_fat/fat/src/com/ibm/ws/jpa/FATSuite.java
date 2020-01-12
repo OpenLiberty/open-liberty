@@ -25,6 +25,8 @@ import componenttest.rules.repeater.RepeatTests;
                 TestExample_Web.class,
                 TestOLGH8820_EJB.class,
                 TestOLGH8820_Web.class,
+                TestOLGH10240_EJB.class,
+                TestOLGH10240_Web.class,
                 TestTXSynchronization.class,
                 TestTXDDSynchronization.class,
                 TestCDI_WEB.class,
@@ -39,6 +41,5 @@ public class FATSuite {
     public static RepeatTests r = RepeatTests
                     .withoutModification()
                     .andWith(FeatureReplacementAction.EE7_FEATURES());
-
     public static String repeatPhase = "";
 }
