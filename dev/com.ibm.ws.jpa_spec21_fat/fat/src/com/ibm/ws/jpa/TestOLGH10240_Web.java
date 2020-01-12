@@ -138,11 +138,6 @@ public class TestOLGH10240_Web extends JPAFATServletClient {
         Application appRecord = new Application();
         appRecord.setLocation(appNameEar);
         appRecord.setName(appName);
-//        ConfigElementList<ClassloaderElement> cel = appRecord.getClassloaders();
-//        ClassloaderElement loader = new ClassloaderElement();
-//        loader.setApiTypeVisibility("+third-party");
-////        loader.getCommonLibraryRefs().add("HibernateLib");
-//        cel.add(loader);
 
         server.setMarkToEndOfLog();
         ServerConfiguration sc = server.getServerConfiguration();

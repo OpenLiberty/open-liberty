@@ -18,32 +18,31 @@ import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
 
+import com.ibm.ws.jpa.fvt.callback.entities.defaultlistener.EntityNotSupportingDefaultCallbacks;
+import com.ibm.ws.jpa.fvt.callback.entities.defaultlistener.EntitySupportingDefaultCallbacks;
+import com.ibm.ws.jpa.fvt.callback.entities.defaultlistener.XMLEntityNotSupportingDefaultCallbacks;
+import com.ibm.ws.jpa.fvt.callback.entities.defaultlistener.XMLEntitySupportingDefaultCallbacks;
+import com.ibm.ws.jpa.fvt.callback.testlogic.CallbackTestLogic;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
-import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
 import com.ibm.ws.testtooling.vehicle.web.EJBTestVehicleServlet;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/TestCallbackDefaultListener_EJB_SF_Servlet")
 public class TestCallbackDefaultListener_EJB_SF_Servlet extends EJBTestVehicleServlet {
-    private final String testLogicClassName = "com.ibm.ws.jpa.fvt.callback.testlogic.CallbackTestLogic";
-
-    private final HashMap<String, JPAPersistenceContext> jpaPctxMap = new HashMap<String, JPAPersistenceContext>();
-
-    private final static String ejbJNDIName = "ejb/CallbackSFEJB";
 
     @PostConstruct
     private void initFAT() {
+        testClassName = CallbackTestLogic.class.getName();
+        ejbJNDIName = "ejb/CallbackSFEJB";
+
         jpaPctxMap.put("test-jpa-resource-amjta",
                        new JPAPersistenceContext("test-jpa-resource-amjta", PersistenceContextType.APPLICATION_MANAGED_JTA, PersistenceInjectionType.JNDI, "java:comp/env/jpa/Callback-DefaultListener_AMJTA"));
         jpaPctxMap.put("test-jpa-resource-amrl",
                        new JPAPersistenceContext("test-jpa-resource-amrl", PersistenceContextType.APPLICATION_MANAGED_RL, PersistenceInjectionType.JNDI, "java:comp/env/jpa/Callback-DefaultListener_AMRL"));
         jpaPctxMap.put("test-jpa-resource-cmts",
                        new JPAPersistenceContext("test-jpa-resource-cmts", PersistenceContextType.CONTAINER_MANAGED_TS, PersistenceInjectionType.JNDI, "java:comp/env/jpa/Callback-DefaultListener_CMTS"));
-        jpaPctxMap.put("cleanup",
-                       new JPAPersistenceContext("cleanup", PersistenceContextType.APPLICATION_MANAGED_RL, PersistenceInjectionType.JNDI, "java:comp/env/jpa/cleanup"));
-
     }
 
     /*
@@ -60,108 +59,78 @@ public class TestCallbackDefaultListener_EJB_SF_Servlet extends EJBTestVehicleSe
     public void jpa10_CallbackDefaultListener_001_Ano_AMJTA_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackDefaultListener_001_Ano_AMJTA_EJB_SF";
         final String testMethod = "testCallback002";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "EntitySupportingDefaultCallbacks");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", EntitySupportingDefaultCallbacks.class.getSimpleName());
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_CallbackDefaultListener_001_XML_AMJTA_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackDefaultListener_001_XML_AMJTA_EJB_SF";
         final String testMethod = "testCallback002";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLEntitySupportingDefaultCallbacks");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLEntitySupportingDefaultCallbacks.class.getSimpleName());
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_CallbackDefaultListener_001_Ano_AMRL_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackDefaultListener_001_Ano_AMRL_EJB_SF";
         final String testMethod = "testCallback002";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "EntitySupportingDefaultCallbacks");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", EntitySupportingDefaultCallbacks.class.getSimpleName());
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_CallbackDefaultListener_001_XML_AMRL_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackDefaultListener_001_XML_AMRL_EJB_SF";
         final String testMethod = "testCallback002";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLEntitySupportingDefaultCallbacks");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLEntitySupportingDefaultCallbacks.class.getSimpleName());
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_CallbackDefaultListener_001_Ano_CMTS_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackDefaultListener_001_Ano_CMTS_EJB_SF";
         final String testMethod = "testCallback002";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "EntitySupportingDefaultCallbacks");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", EntitySupportingDefaultCallbacks.class.getSimpleName());
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_CallbackDefaultListener_001_XML_CMTS_EJB_SF() throws Exception {
         final String testName = "jpa10_CallbackDefaultListener_001_XML_CMTS_EJB_SF";
         final String testMethod = "testCallback002";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLEntitySupportingDefaultCallbacks");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLEntitySupportingDefaultCallbacks.class.getSimpleName());
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     /*
@@ -179,108 +148,78 @@ public class TestCallbackDefaultListener_EJB_SF_Servlet extends EJBTestVehicleSe
     public void jpa10_ExcludeSuperclassCallbackDefaultListener_001_Ano_AMJTA_EJB_SF() throws Exception {
         final String testName = "jpa10_ExcludeSuperclassCallbackDefaultListener_001_Ano_AMJTA_EJB_SF";
         final String testMethod = "testCallback003";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "EntityNotSupportingDefaultCallbacks");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", EntityNotSupportingDefaultCallbacks.class.getSimpleName());
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_ExcludeSuperclassCallbackDefaultListener_001_XML_AMJTA_EJB_SF() throws Exception {
         final String testName = "jpa10_ExcludeSuperclassCallbackDefaultListener_001_XML_AMJTA_EJB_SF";
         final String testMethod = "testCallback003";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLEntityNotSupportingDefaultCallbacks");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLEntityNotSupportingDefaultCallbacks.class.getSimpleName());
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_ExcludeSuperclassCallbackDefaultListener_001_Ano_AMRL_EJB_SF() throws Exception {
         final String testName = "jpa10_ExcludeSuperclassCallbackDefaultListener_001_Ano_AMRL_EJB_SF";
         final String testMethod = "testCallback003";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "EntityNotSupportingDefaultCallbacks");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", EntityNotSupportingDefaultCallbacks.class.getSimpleName());
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_ExcludeSuperclassCallbackDefaultListener_001_XML_AMRL_EJB_SF() throws Exception {
         final String testName = "jpa10_ExcludeSuperclassCallbackDefaultListener_001_XML_AMRL_EJB_SF";
         final String testMethod = "testCallback003";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLEntityNotSupportingDefaultCallbacks");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLEntityNotSupportingDefaultCallbacks.class.getSimpleName());
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_ExcludeSuperclassCallbackDefaultListener_001_Ano_CMTS_EJB_SF() throws Exception {
         final String testName = "jpa10_ExcludeSuperclassCallbackDefaultListener_001_Ano_CMTS_EJB_SF";
         final String testMethod = "testCallback003";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "EntityNotSupportingDefaultCallbacks");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", EntityNotSupportingDefaultCallbacks.class.getSimpleName());
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_ExcludeSuperclassCallbackDefaultListener_001_XML_CMTS_EJB_SF() throws Exception {
         final String testName = "jpa10_ExcludeSuperclassCallbackDefaultListener_001_XML_CMTS_EJB_SF";
         final String testMethod = "testCallback003";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLEntityNotSupportingDefaultCallbacks");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLEntityNotSupportingDefaultCallbacks.class.getSimpleName());
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx, ejbJNDIName);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
 }

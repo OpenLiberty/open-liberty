@@ -51,11 +51,6 @@ public class CallbackTestLogic extends AbstractTestLogic {
         }
 
         // Fetch JPA Resources
-        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-        if (jpaCleanupResource == null) {
-            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-            return;
-        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -75,7 +70,6 @@ public class CallbackTestLogic extends AbstractTestLogic {
         try {
             System.out.println("CallbackTestLogic.testCallback001(): Begin");
             AbstractCallbackListener.setTargetPostLoadLifeCycleWithRuntimeException(null);
-            cleanupDatabase(jpaCleanupResource);
 
             // Test @PrePersist and @PostPersist
             System.out.println("1) Test @PrePersist and @PostPersist");
@@ -221,11 +215,6 @@ public class CallbackTestLogic extends AbstractTestLogic {
         }
 
         // Fetch JPA Resources
-        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-        if (jpaCleanupResource == null) {
-            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-            return;
-        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -245,7 +234,6 @@ public class CallbackTestLogic extends AbstractTestLogic {
         try {
             System.out.println("CallbackTestLogic.testCallback002(): Begin");
             AbstractCallbackListener.setTargetPostLoadLifeCycleWithRuntimeException(null);
-            cleanupDatabase(jpaCleanupResource);
 
             // Test @PrePersist and @PostPersist
             System.out.println("1) Test @PrePersist and @PostPersist");
@@ -530,11 +518,6 @@ public class CallbackTestLogic extends AbstractTestLogic {
         }
 
         // Fetch JPA Resources
-        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-        if (jpaCleanupResource == null) {
-            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-            return;
-        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -554,7 +537,6 @@ public class CallbackTestLogic extends AbstractTestLogic {
         try {
             System.out.println("CallbackTestLogic.testCallback003(): Begin");
             AbstractCallbackListener.setTargetPostLoadLifeCycleWithRuntimeException(null);
-            cleanupDatabase(jpaCleanupResource);
 
             // Test @PrePersist and @PostPersist
             System.out.println("1) Test @PrePersist and @PostPersist");
@@ -839,11 +821,6 @@ public class CallbackTestLogic extends AbstractTestLogic {
         }
 
         // Fetch JPA Resources
-        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-        if (jpaCleanupResource == null) {
-            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-            return;
-        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -882,7 +859,6 @@ public class CallbackTestLogic extends AbstractTestLogic {
         try {
             System.out.println("CallbackTestLogic.testCallback004(): Begin");
             AbstractCallbackListener.setTargetPostLoadLifeCycleWithRuntimeException(null);
-            cleanupDatabase(jpaCleanupResource);
 
             // Test @PrePersist and @PostPersist
             System.out.println("1) Test @PrePersist and @PostPersist");
@@ -1167,11 +1143,6 @@ public class CallbackTestLogic extends AbstractTestLogic {
         }
 
         // Fetch JPA Resources
-        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-        if (jpaCleanupResource == null) {
-            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-            return;
-        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -1210,7 +1181,6 @@ public class CallbackTestLogic extends AbstractTestLogic {
         try {
             System.out.println("CallbackTestLogic.testCallback005(): Begin");
             AbstractCallbackListener.setTargetPostLoadLifeCycleWithRuntimeException(null);
-            cleanupDatabase(jpaCleanupResource);
 
             // Test @PrePersist and @PostPersist
             System.out.println("1) Test @PrePersist and @PostPersist");
@@ -1490,11 +1460,6 @@ public class CallbackTestLogic extends AbstractTestLogic {
         }
 
         // Fetch JPA Resources
-        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-        if (jpaCleanupResource == null) {
-            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-            return;
-        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -1504,7 +1469,6 @@ public class CallbackTestLogic extends AbstractTestLogic {
         // Execute Test Case
         try {
             System.out.println("CallbackTestLogic.testTemplate(): Begin");
-            cleanupDatabase(jpaCleanupResource);
 
             System.out.println("Ending test.");
         } catch (java.lang.AssertionError ae) {
@@ -1515,13 +1479,6 @@ public class CallbackTestLogic extends AbstractTestLogic {
         } finally {
             System.out.println("CallbackTestLogic.testTemplate(): End");
         }
-    }
-
-    private void cleanupDatabase(JPAResource jpaResource) {
-        // Cleanup the database for executing the test
-        System.out.println("Cleaning up database before executing test...");
-        cleanupDatabase(jpaResource.getEm(), jpaResource.getTj(), CallbackEntityEnum.values());
-        System.out.println("Database cleanup complete.\n");
     }
 
     private void resetDefaultListeners() {

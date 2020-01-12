@@ -22,11 +22,16 @@ import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
 
+import com.ibm.ws.jpa.fvt.callback.entities.listener.ano.AnoListenerEntity;
+import com.ibm.ws.jpa.fvt.callback.entities.listener.ano.AnoListenerExcludeMSCEntity;
+import com.ibm.ws.jpa.fvt.callback.entities.listener.ano.AnoListenerMSCEntity;
+import com.ibm.ws.jpa.fvt.callback.entities.listener.xml.XMLListenerEntity;
+import com.ibm.ws.jpa.fvt.callback.entities.listener.xml.XMLListenerExcludeMSCEntity;
+import com.ibm.ws.jpa.fvt.callback.entities.listener.xml.XMLListenerMSCEntity;
 import com.ibm.ws.jpa.fvt.callback.testlogic.CallbackTestLogic;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
-import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
 import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
 
 @SuppressWarnings("serial")
@@ -44,25 +49,16 @@ public class TestCallbackListenerServlet extends JPATestServlet {
     @PersistenceUnit(unitName = "Callback_RL")
     private EntityManagerFactory amrlEmf;
 
-    // Cleanup
-    @PersistenceUnit(unitName = "Cleanup")
-    private EntityManagerFactory cleanupEmf;
-
-    private final String testLogicClassName = CallbackTestLogic.class.getName();
-
-    private final HashMap<String, JPAPersistenceContext> jpaPctxMap = new HashMap<String, JPAPersistenceContext>();
-
     @PostConstruct
     private void initFAT() {
+        testClassName = CallbackTestLogic.class.getName();
+
         jpaPctxMap.put("test-jpa-resource-amjta",
                        new JPAPersistenceContext("test-jpa-resource-amjta", PersistenceContextType.APPLICATION_MANAGED_JTA, PersistenceInjectionType.FIELD, "amjtaEmf"));
         jpaPctxMap.put("test-jpa-resource-amrl",
                        new JPAPersistenceContext("test-jpa-resource-amrl", PersistenceContextType.APPLICATION_MANAGED_RL, PersistenceInjectionType.FIELD, "amrlEmf"));
         jpaPctxMap.put("test-jpa-resource-cmts",
                        new JPAPersistenceContext("test-jpa-resource-cmts", PersistenceContextType.CONTAINER_MANAGED_TS, PersistenceInjectionType.FIELD, "cmtsEm"));
-        jpaPctxMap.put("cleanup",
-                       new JPAPersistenceContext("cleanup", PersistenceContextType.APPLICATION_MANAGED_RL, PersistenceInjectionType.FIELD, "cleanupEmf"));
-
     }
 
     /*
@@ -79,108 +75,78 @@ public class TestCallbackListenerServlet extends JPATestServlet {
     public void jpa10_CallbackListener_001_Ano_AMJTA_Web() throws Exception {
         final String testName = "jpa10_CallbackListener_001_Ano_AMJTA_Web";
         final String testMethod = "testCallback004";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "AnoListenerEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", AnoListenerEntity.class.getSimpleName());
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_CallbackListener_001_XML_AMJTA_Web() throws Exception {
         final String testName = "jpa10_CallbackListener_001_XML_AMJTA_Web";
         final String testMethod = "testCallback004";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLListenerEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLListenerEntity.class.getSimpleName());
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_CallbackListener_001_Ano_AMRL_Web() throws Exception {
         final String testName = "jpa10_CallbackListener_001_Ano_AMRL_Web";
         final String testMethod = "testCallback004";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "AnoListenerEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", AnoListenerEntity.class.getSimpleName());
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_CallbackListener_001_XML_AMRL_Web() throws Exception {
         final String testName = "jpa10_CallbackListener_001_XML_AMRL_Web";
         final String testMethod = "testCallback004";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLListenerEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLListenerEntity.class.getSimpleName());
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_CallbackListener_001_Ano_CMTS_Web() throws Exception {
         final String testName = "jpa10_CallbackListener_001_Ano_CMTS_Web";
         final String testMethod = "testCallback004";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "AnoListenerEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", AnoListenerEntity.class.getSimpleName());
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_CallbackListener_001_XML_CMTS_Web() throws Exception {
         final String testName = "jpa10_CallbackListener_001_XML_CMTS_Web";
         final String testMethod = "testCallback004";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLListenerEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLListenerEntity.class.getSimpleName());
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     // MSC
@@ -189,108 +155,78 @@ public class TestCallbackListenerServlet extends JPATestServlet {
     public void jpa10_CallbackListener_MSC_001_Ano_AMJTA_Web() throws Exception {
         final String testName = "jpa10_CallbackListener_MSC_001_Ano_AMJTA_Web";
         final String testMethod = "testCallback004";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "AnoListenerMSCEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", AnoListenerMSCEntity.class.getSimpleName());
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_CallbackListener_MSC_001_XML_AMJTA_Web() throws Exception {
         final String testName = "jpa10_CallbackListener_MSC_001_XML_AMJTA_Web";
         final String testMethod = "testCallback004";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLListenerMSCEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLListenerMSCEntity.class.getSimpleName());
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_CallbackListener_MSC_001_Ano_AMRL_Web() throws Exception {
         final String testName = "jpa10_CallbackListener_MSC_001_Ano_AMRL_Web";
         final String testMethod = "testCallback004";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "AnoListenerMSCEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", AnoListenerMSCEntity.class.getSimpleName());
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_CallbackListener_MSC_001_XML_AMRL_Web() throws Exception {
         final String testName = "jpa10_CallbackListener_MSC_001_XML_AMRL_Web";
         final String testMethod = "testCallback004";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLListenerMSCEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLListenerMSCEntity.class.getSimpleName());
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_CallbackListener_MSC_001_Ano_CMTS_Web() throws Exception {
         final String testName = "jpa10_CallbackListener_MSC_001_Ano_CMTS_Web";
         final String testMethod = "testCallback004";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "AnoListenerMSCEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", AnoListenerMSCEntity.class.getSimpleName());
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_CallbackListener_MSC_001_XML_CMTS_Web() throws Exception {
         final String testName = "jpa10_CallbackListener_MSC_001_XML_CMTS_Web";
         final String testMethod = "testCallback004";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLListenerMSCEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLListenerMSCEntity.class.getSimpleName());
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     /*
@@ -310,108 +246,78 @@ public class TestCallbackListenerServlet extends JPATestServlet {
     public void jpa10_ExcludeSuperclassCallbackListener_001_Ano_AMJTA_Web() throws Exception {
         final String testName = "jpa10_ExcludeSuperclassCallbackListener_001_Ano_AMJTA_Web";
         final String testMethod = "testCallback005";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "AnoListenerExcludeMSCEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", AnoListenerExcludeMSCEntity.class.getSimpleName());
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_ExcludeSuperclassCallbackListener_001_XML_AMJTA_Web() throws Exception {
         final String testName = "jpa10_ExcludeSuperclassCallbackListener_001_XML_AMJTA_Web";
         final String testMethod = "testCallback005";
+        final String testResource = "test-jpa-resource-amjta";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amjta"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLListenerExcludeMSCEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLListenerExcludeMSCEntity.class.getSimpleName());
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_ExcludeSuperclassCallbackListener_001_Ano_AMRL_Web() throws Exception {
         final String testName = "jpa10_ExcludeSuperclassCallbackListener_001_Ano_AMRL_Web";
         final String testMethod = "testCallback005";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "AnoListenerExcludeMSCEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", AnoListenerExcludeMSCEntity.class.getSimpleName());
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_ExcludeSuperclassCallbackListener_001_XML_AMRL_Web() throws Exception {
         final String testName = "jpa10_ExcludeSuperclassCallbackListener_001_XML_AMRL_Web";
         final String testMethod = "testCallback005";
+        final String testResource = "test-jpa-resource-amrl";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-amrl"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLListenerExcludeMSCEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLListenerExcludeMSCEntity.class.getSimpleName());
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_ExcludeSuperclassCallbackListener_001_Ano_CMTS_Web() throws Exception {
         final String testName = "jpa10_ExcludeSuperclassCallbackListener_001_Ano_CMTS_Web";
         final String testMethod = "testCallback005";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "AnoListenerExcludeMSCEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", AnoListenerExcludeMSCEntity.class.getSimpleName());
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
     @Test
     public void jpa10_ExcludeSuperclassCallbackListener_001_XML_CMTS_Web() throws Exception {
         final String testName = "jpa10_ExcludeSuperclassCallbackListener_001_XML_CMTS_Web";
         final String testMethod = "testCallback005";
+        final String testResource = "test-jpa-resource-cmts";
 
-        final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
-
-        final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
-        jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmts"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
-
-        HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
-        properties.put("EntityName", "XMLListenerExcludeMSCEntity");
+        HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
+        properties.put("EntityName", XMLListenerExcludeMSCEntity.class.getSimpleName());
 
         executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
-        executeTestVehicle(testExecCtx);
+        executeTest(testName, testMethod, testResource, properties);
     }
 
 }
