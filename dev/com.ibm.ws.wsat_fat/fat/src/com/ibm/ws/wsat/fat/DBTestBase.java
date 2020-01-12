@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -63,13 +63,13 @@ public abstract class DBTestBase extends WSATTest {
 	public static String appNameServiceOptional;
 
 	public static void initWSATTest(LibertyServer s) throws Exception {
-        s.installSystemFeature("wsatfat-1.0");
-        s.installSystemBundle("com.ibm.ws.wsat.fat.utils_1.0");
+		s.removeAllInstalledAppsForValidation();
+		s.deleteDirectoryFromLibertyServerRoot("dropins");
 	}
 
 	public static void cleanupWSATTest(LibertyServer s) throws Exception {
-//        s.uninstallSystemFeature("wsatfat-1.0");
-//        s.uninstallSystemBundle("com.ibm.ws.wsat.fat.utils_1.0");
+    s.removeAllInstalledAppsForValidation();
+		s.deleteDirectoryFromLibertyServerRoot("dropins");
 	}
 
 	public void commonTest(String appName, String testURL, String expectResult,

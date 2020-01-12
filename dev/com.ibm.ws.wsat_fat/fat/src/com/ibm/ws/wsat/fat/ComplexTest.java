@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,8 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.ibm.websphere.simplicity.ShrinkHelper;
+
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.topology.impl.LibertyServer;
@@ -35,18 +37,19 @@ public class ComplexTest extends WSATTest {
 			.getLibertyServer("MigrationServer1");
 	private static String BASE_URL = "http://" + server.getHostname() + ":"
 			+ server.getHttpDefaultPort();
+
 	private static LibertyServer server2 = LibertyServerFactory
 			.getLibertyServer("MigrationServer2");
 	private static String BASE_URL2 = "http://" + server2.getHostname() + ":9992";
+
 	private static LibertyServer server3 = LibertyServerFactory
 			.getLibertyServer("MigrationServer3");
 	private static String BASE_URL3 = "http://" + server3.getHostname() + ":9993";
+
 	private final static int REQUEST_TIMEOUT = 60;
 
 	@BeforeClass
 	public static void beforeTests() throws Exception {
-		DBTestBase.initWSATTest(server);
-
 		if (server != null && server.isStarted()){
 			server.stopServer();
 		}
@@ -57,6 +60,14 @@ public class ComplexTest extends WSATTest {
 		if (server3 != null && server3.isStarted()){
 			server3.stopServer();
 		}
+
+		DBTestBase.initWSATTest(server);
+		DBTestBase.initWSATTest(server2);
+		DBTestBase.initWSATTest(server3);
+
+    ShrinkHelper.defaultDropinApp(server, "simpleClient", "com.ibm.ws.wsat.simpleclient.client.simple");
+    ShrinkHelper.defaultDropinApp(server2, "simpleServer", "com.ibm.ws.wsat.simpleserver.server");
+    ShrinkHelper.defaultDropinApp(server3, "simpleServer", "com.ibm.ws.wsat.simpleserver.server");
 
         if (server != null && !server.isStarted()){
         	 server.setServerStartTimeout(600000);
@@ -80,6 +91,8 @@ public class ComplexTest extends WSATTest {
         ServerUtils.stopServer(server3);
 
         DBTestBase.cleanupWSATTest(server);
+        DBTestBase.cleanupWSATTest(server2);
+        DBTestBase.cleanupWSATTest(server3);
     }
 	
 	@Test

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,8 @@ import java.net.URL;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.custom.junit.runner.Mode;
@@ -49,6 +51,10 @@ public class SleepTest extends WSATTest {
 		BASE_URL2 = "http://" + server2.getHostname() + ":9992";
 
 		DBTestBase.initWSATTest(server);
+		DBTestBase.initWSATTest(server2);
+
+    ShrinkHelper.defaultDropinApp(server, "simpleClient", "com.ibm.ws.wsat.simpleclient.client.simple");
+    ShrinkHelper.defaultDropinApp(server2, "simpleServer", "com.ibm.ws.wsat.simpleserver.server");
 
 		if (server != null && server.isStarted()){
 			server.stopServer();
@@ -75,6 +81,7 @@ public class SleepTest extends WSATTest {
 		ServerUtils.stopServer(server2);
 
 		DBTestBase.cleanupWSATTest(server);
+		DBTestBase.cleanupWSATTest(server2);
     }
 	
 	@Test

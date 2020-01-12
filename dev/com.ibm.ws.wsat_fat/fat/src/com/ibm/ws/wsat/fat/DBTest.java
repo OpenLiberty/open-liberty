@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,8 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.custom.junit.runner.Mode;
@@ -184,6 +186,8 @@ public class DBTest extends DBTestBase {
 				.getLibertyServer("WSATDB_Server2");
 
 		DBTestBase.initWSATTest(client);
+		DBTestBase.initWSATTest(server1);
+		DBTestBase.initWSATTest(server2);
 
 		CLient_URL = "http://" + client.getHostname() + ":"
 				+ client.getHttpDefaultPort();
@@ -195,16 +199,11 @@ public class DBTest extends DBTestBase {
 		// Test URL
 		// ATAssertion exists on Operation level in WSDL
 		appName = "wsatApp";
-		
-		// ATAssertion with Optional=true exists on Operation level in WSDL
-		appNameOptional = "wsatAppOptional";
-		
-		// ATAssertion exists on Service level in WSDL
-		appNameService = "wsatAppService";
-		
-		// ATAssertion with Optional=true exists on Service level in WSDL
-		appNameServiceOptional = "wsatAppServiceOptional";
-		
+
+		ShrinkHelper.defaultDropinApp(client, appName, "com.ibm.ws."+appName+".client","com.ibm.ws."+appName+".server","com.ibm.ws."+appName+".servlet","com.ibm.ws."+appName+".utils");
+		ShrinkHelper.defaultDropinApp(server1, appName, "com.ibm.ws."+appName+".client","com.ibm.ws."+appName+".server","com.ibm.ws."+appName+".servlet","com.ibm.ws."+appName+".utils");
+		ShrinkHelper.defaultDropinApp(server2, appName, "com.ibm.ws."+appName+".client","com.ibm.ws."+appName+".server","com.ibm.ws."+appName+".servlet","com.ibm.ws."+appName+".utils");
+
 		if (client != null && !client.isStarted()) {
 			client.startServer();
 		}
@@ -223,6 +222,8 @@ public class DBTest extends DBTestBase {
 		ServerUtils.stopServer(server2);
 
 		DBTestBase.cleanupWSATTest(client);
+		DBTestBase.cleanupWSATTest(server1);
+		DBTestBase.cleanupWSATTest(server2);
 	}
 	
 	@Before
@@ -237,6 +238,9 @@ public class DBTest extends DBTestBase {
 		client.restoreServerConfiguration();
 		server1.restoreServerConfiguration();
 		server2.restoreServerConfiguration();
+		client.waitForStringInLog("CWWKG001[78]I");
+		server1.waitForStringInLog("CWWKG001[78]I");
+		server2.waitForStringInLog("CWWKG001[78]I");
 	}
 	
 	@Test
@@ -735,181 +739,6 @@ public class DBTest extends DBTestBase {
 				+ server2Port
 				+ "&withouttrans=true";
 		commonTest(appName, wsatURL, noTrans, "1", "0", "0");
-	}
-	
-	/*
-	 * With Transaction and With optional ATAssertion on operation level
-	 */
-	@Test
-	public void test3DBs43() {
-		final String testURL = "/" + appNameOptional + "/ClientServlet";
-
-		String wsatURL = CLient_URL + testURL + "?" + server1Name + "s="
-				+ commit + ":" + basicURL + ":" + server1Port + "&"
-				+ server2Name + "p=" + commit + ":" + basicURL + ":"
-				+ server2Port;
-		commonTest(appName, wsatURL, goodResult, "1");
-	}
-	
-	@Test
-	public void test3DBs44() {
-		String testURL = "/" + appNameOptional + "/ClientServlet";
-		String wsatURL = CLient_URL + testURL + "?" + server1Name + "p="
-				+ commit + ":" + basicURL + ":" + server1Port + "&"
-				+ server2Name + "s=" + commit + ":" + basicURL + ":"
-				+ server2Port;
-		commonTest(appName, wsatURL, goodResult, "1");
-	}
-	
-	@Test
-	public void test3DBs45() {
-		String testURL = "/" + appNameOptional + "/ClientServlet";
-		String wsatURL = CLient_URL + testURL + "?" + server1Name + "s="
-				+ commit + ":" + basicURL + ":" + server1Port + "&"
-				+ server2Name + "p=" + rollback + ":" + basicURL + ":"
-				+ server2Port;
-		commonTest(appName, wsatURL, serverRollbackResult, "0");
-	}
-	
-	@Test
-	public void test3DBs46() {
-		String testURL = "/" + appNameOptional + "/ClientServlet";
-		String wsatURL = CLient_URL + testURL + "?" + server1Name + "p="
-				+ commit + ":" + basicURL + ":" + server1Port + "&"
-				+ server2Name + "s=" + rollback + ":" + basicURL + ":"
-				+ server2Port;
-		commonTest(appName, wsatURL, serverRollbackResult, "0");
-	}
-	
-	/*
-	 * Without Transaction and With optional ATAssertion on operation level
-	 */
-	@Test
-	public void test3DB47() {
-		String testURL = "/" + appNameOptional + "/ClientServlet";
-		String wsatURL = CLient_URL + testURL + "?" + server1Name + "s="
-				+ commit + ":" + basicURL + ":" + server1Port + "&"
-				+ server2Name + "p=" + commit + ":" + basicURL + ":"
-				+ server2Port
-				+ "&withouttrans=true";
-		commonTest(appName, wsatURL, goodResult, "1");
-	}
-	
-	@Test
-	@Mode(TestMode.FULL)
-	public void test3DBs48() {
-		String testURL = "/" + appNameOptional + "/ClientServlet";
-		String wsatURL = CLient_URL + testURL + "?" + server1Name + "p="
-				+ commit + ":" + basicURL + ":" + server1Port + "&"
-				+ server2Name + "s=" + commit + ":" + basicURL + ":"
-				+ server2Port
-				+ "&withouttrans=true";
-		commonTest(appName, wsatURL, goodResult, "1");
-	}
-	
-	@Test
-	@Mode(TestMode.FULL)
-	public void test3DBs49() {
-		String testURL = "/" + appNameOptional + "/ClientServlet";
-		String wsatURL = CLient_URL + testURL + "?" + server1Name + "p="
-				+ rollback + ":" + basicURL + ":" + server1Port + "&"
-				+ server2Name + "p=" + rollback + ":" + basicURL + ":"
-				+ server2Port
-				+ "&withouttrans=true";
-		commonTest(appName, wsatURL, serverRollbackResult, "1", "0", "0");
-	}
-	
-	@Test
-	public void test3DBs50() {
-		String testURL = "/" + appNameOptional + "/ClientServlet";
-		String wsatURL = CLient_URL + testURL + "?" + server1Name + "p="
-				+ commit + ":" + basicURL + ":" + server1Port + "&"
-				+ server2Name + "s=" + rollback + ":" + basicURL + ":"
-				+ server2Port
-				+ "&withouttrans=true";
-		commonTest(appName, wsatURL, serverRollbackResult, "1", "1", "0");
-	}
-	
-	/*
-	 * With/Without Transaction and With ATAssertion on service level
-	 */
-	@Test
-	public void test3DBs51() {
-		String testURL = "/" + appNameService + "/ClientServlet";
-		String wsatURL = CLient_URL + testURL + "?" + server1Name + "s="
-				+ commit + ":" + basicURL + ":" + server1Port + "&"
-				+ server2Name + "p=" + commit + ":" + basicURL + ":"
-				+ server2Port;
-		commonTest(appName, wsatURL, goodResult, "1");
-	}
-	
-	@Test
-	public void test3DBs52() {
-		String testURL = "/" + appNameService + "/ClientServlet";
-		String wsatURL = CLient_URL + testURL + "?" + server1Name + "p="
-				+ commit + ":" + basicURL + ":" + server1Port + "&"
-				+ server2Name + "s=" + rollback + ":" + basicURL + ":"
-				+ server2Port;
-		commonTest(appName, wsatURL, serverRollbackResult, "0");
-	}
-	
-	@Test
-	@Mode(TestMode.FULL)
-	public void test3DBs53() {
-		String testURL = "/" + appNameService + "/ClientServlet";
-		String wsatURL = CLient_URL + testURL + "?" + server1Name + "s="
-				+ commit + ":" + basicURL + ":" + server1Port + "&"
-				+ server2Name + "p=" + commit + ":" + basicURL + ":"
-				+ server2Port
-				+ "&withouttrans=true";
-		commonTest(appName, wsatURL, noTrans, "1", "0", "0");
-	}
-	
-	/*
-	 * With/Without Transaction and With optional ATAssertion on service level
-	 */
-	@Test
-	public void test3DBs54() {
-		String testURL = "/" + appNameServiceOptional + "/ClientServlet";
-		String wsatURL = CLient_URL + testURL + "?" + server1Name + "s="
-				+ commit + ":" + basicURL + ":" + server1Port + "&"
-				+ server2Name + "p=" + commit + ":" + basicURL + ":"
-				+ server2Port;
-		commonTest(appName, wsatURL, goodResult, "1");
-	}
-	
-	@Test
-	public void test3DBs55() {
-		String testURL = "/" + appNameServiceOptional + "/ClientServlet";
-		String wsatURL = CLient_URL + testURL + "?" + server1Name + "p="
-				+ commit + ":" + basicURL + ":" + server1Port + "&"
-				+ server2Name + "s=" + rollback + ":" + basicURL + ":"
-				+ server2Port;
-		commonTest(appName, wsatURL, serverRollbackResult, "0");
-	}
-	
-	@Test
-	@Mode(TestMode.FULL)
-	public void test3DBs56() {
-		String testURL = "/" + appNameServiceOptional + "/ClientServlet";
-		String wsatURL = CLient_URL + testURL + "?" + server1Name + "s="
-				+ commit + ":" + basicURL + ":" + server1Port + "&"
-				+ server2Name + "p=" + commit + ":" + basicURL + ":"
-				+ server2Port
-				+ "&withouttrans=true";
-		commonTest(appName, wsatURL, goodResult, "1");
-	}
-	
-	@Test
-	@Mode(TestMode.FULL)
-	public void test3DBs57() {
-		String testURL = "/" + appNameServiceOptional + "/ClientServlet";
-		String wsatURL = CLient_URL + testURL + "?" + server1Name + "p="
-				+ rollback + ":" + basicURL + ":" + server1Port + "&"
-				+ server2Name + "p=" + rollback + ":" + basicURL + ":"
-				+ server2Port
-				+ "&withouttrans=true";
-		commonTest(appName, wsatURL, serverRollbackResult, "1", "0", "0");
 	}
 	
 	@Test
