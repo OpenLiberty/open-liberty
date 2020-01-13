@@ -47,9 +47,18 @@ public class PersistentExecutorIntrospector implements Introspector {
         BundleContext bundleContext = priv.getBundleContext(FrameworkUtil.getBundle(getClass()));
 
         for (ServiceReference<PersistentExecutor> ref : priv.getServiceReferences(bundleContext, PersistentExecutor.class, "(!(com.ibm.wsspi.resource.ResourceFactory=true))")) {
-            System.out.println("Found service reference: " + ref);
             PersistentExecutorImpl executor = (PersistentExecutorImpl) priv.getService(bundleContext, ref);
-            executor.introspect(out);
+            if (executor == null) {
+                String displayId = (String) ref.getProperty("config.displayId");
+                String name = displayId.contains("]/persistentExecutor[") ? displayId : (String) ref.getProperty("id");
+                if (name == null)
+                    name = (String) ref.getProperty("jndiName");
+                out.println("PersistentExecutor " + name + " is not available");
+                out.println("Properties: " + ref.getProperties());
+                out.println();
+            } else {
+                executor.introspect(out);
+            }
         }
 
         ServiceReference<ApplicationTracker> appTrackerRef = bundleContext.getServiceReference(ApplicationTracker.class);

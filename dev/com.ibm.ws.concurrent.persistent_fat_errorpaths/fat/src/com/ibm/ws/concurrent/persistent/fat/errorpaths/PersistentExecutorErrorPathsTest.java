@@ -219,7 +219,7 @@ public class PersistentExecutorErrorPathsTest {
                     List<String> foundTasksList = Arrays.asList(foundTasks);
                     for (String taskId : scheduledTasks)
                         if (!foundTasksList.contains(taskId))
-                            throw new Exception("Scheduled tasks " + scheduledTasks + " are not all found in server dump output: " + output);
+                            throw new Exception("Scheduled tasks " + Arrays.toString(scheduledTasks) + " are not all found in server dump output: " + output);
                     break;
                 }
             if (found == null)
