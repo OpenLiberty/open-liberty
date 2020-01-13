@@ -96,7 +96,7 @@ public class AuthorizationCodeAuthenticator {
         createJwtUserApiResponseAndIssuedJwtWithAppropriateToken();
     }
     
-    public void generateJwtAndTokensFromTokenReviewResult() throws SocialLoginException {
+    public void generateJwtAndTokensFromAccessOrServiceAccountToken() throws SocialLoginException {
         createSslSocketFactory();
         createJwtUserApiResponseAndIssuedJwtWithAppropriateToken();
     }
