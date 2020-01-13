@@ -1,0 +1,68 @@
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+#CMVCPATHNAME com.ibm.ws.install.featureUtility/resources/com/ibm/ws/install/featureUtility/internal/resources/FeatureUtilityToolOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#--------- ACTIONS ----------------------------------------------------#
+# List of descriptive text for actions. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+usage=Haszn\u00e1lat:  {0}
+
+global.description=Le\u00edr\u00e1s:
+global.actions=M\u0171veletek:
+global.options=Param\u00e9terek:
+global.options.lower=param\u00e9terek
+global.usage=Haszn\u00e1lat:
+global.options.statement=\tAz egyes m\u0171veletek r\u00e9szletes param\u00e9terinform\u00e1ci\u00f3it a help [m\u0171veletn\u00e9v] paranccsal k\u00e9rheti le.
+task.unknown=Ismeretlen m\u0171velet: {0}
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+help.desc=\tS\u00fag\u00f3inform\u00e1ci\u00f3kat jelen\u00edt meg a megadott m\u0171veletr\u0151l.
+
+#--------- INSTALLFEATURE ACTION ---------------------------------------------#
+installFeature.desc=\tEgyetlen szolg\u00e1ltat\u00e1s vagy szolg\u00e1ltat\u00e1sok vessz\u0151vel elv\u00e1lasztott list\u00e1j\u00e1nak telep\u00edt\u00e9se.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.name...=\ \ \ \ n\u00e9v ...
+installFeature.option-desc.name...=\tEgy vagy t\u00f6bb, sz\u00f3k\u00f6zzel elv\u00e1lasztott szolg\u00e1ltat\u00e1s. Szolg\u00e1ltat\u00e1sok   \n\
+\teset\u00e9n, adja meg az \u00f6sszetev\u0151 r\u00f6vid nev\u00e9t vagy a Maven koordin\u00e1t\u00e1t.  \n\
+\tHa egy Maven koordin\u00e1t\u00e1t ad meg, akkor annak tartalmaznia kell       \n\
+\tlegal\u00e1bb a csoportazonos\u00edt\u00f3t \u00e9s a m\u0171term\u00e9kazonos\u00edt\u00f3t                 \n\
+\t(p\u00e9ld\u00e1ul io.openliberty.features:mpHealth-2.0).                      \n\
+\tA verzi\u00f3sz\u00e1m alap\u00e9rtelmez\u00e9se a jelenlegi fut\u00e1si k\u00f6rnyezet v\u00e1ltozat,  \n\
+\ta csomagol\u00e1si t\u00edpus alap\u00e9rtelmez\u00e9se pedig az ESA, ha a verzi\u00f3sz\u00e1m \u00e9s \n\
+\ta csomagol\u00e1s nincs megadva.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--to=\ \ \ \ --to=[usr|extension]
+installFeature.option-desc.--to=\tMegadja a szolg\u00e1ltat\u00e1s telep\u00edt\u00e9s\u00e9nek a hely\u00e9t. A szolg\u00e1ltat\u00e1s b\u00e1rmely\n\
+\tbe\u00e1ll\u00edtott term\u00e9kb\u0151v\u00edtm\u00e9ny helyen vagy felhaszn\u00e1l\u00f3i szolg\u00e1ltat\u00e1sk\u00e9nt \n\
+\ttelep\u00edthet\u0151.                                                         \n Ha \n\
+\tez a param\u00e9ter nincs megadva, akkor a szolg\u00e1ltat\u00e1s felhaszn\u00e1l\u00f3i      \n\
+\tszolg\u00e1ltat\u00e1sk\u00e9nt lesz telep\u00edtve.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--from=\ \ \ \ --from=filePath
+installFeature.option-desc.--from=\tEzzel a param\u00e9terrel megadhatja egy Maven m\u0171term\u00e9k lerakat \u00fatvonal\u00e1t \n\
+\ta featureUtility forr\u00e1sak\u00e9nt eszk\u00f6z\u00f6k telep\u00edt\u00e9s\u00e9hez.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--verbose=\ \ \ \ --verbose
+installFeature.option-desc.--verbose=\tTov\u00e1bbi hibakeres\u00e9si inform\u00e1ci\u00f3k megjelen\u00edt\u00e9se, mik\u00f6zben a m\u0171velet fut.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--noCache=\ \ \ \ --noCache
+installFeature.option-desc.--noCache=\tEgy t\u00e1voli lerakatb\u00f3l telep\u00edtett szolg\u00e1ltat\u00e1sok (p\u00e9ld\u00e1ul Maven       \n\
+\tCentral) nincsenek helyileg gyors\u00edt\u00f3t\u00e1razva.
+#--------- INSTALLSERVERFEATURES ACTION --------------------------------------#
+installServerFeatures.desc=\tA sz\u00fcks\u00e9ges szolg\u00e1ltat\u00e1sok telep\u00edt\u00e9se egy megnevezett kiszolg\u00e1l\u00f3hoz.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.name...=\ \ \ \ n\u00e9v ...
+installServerFeatures.option-desc.name...=\tEgy megl\u00e9v\u0151 kiszolg\u00e1l\u00f3 neve ugyanabban a Liberty k\u00f6rnyezetben.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--from=\ \ \ \ --from=filePath
+installServerFeatures.option-desc.--from=\tEzzel a param\u00e9terrel megadhatja egy Maven m\u0171term\u00e9k lerakat \u00fatvonal\u00e1t \n\
+\ta featureUtility forr\u00e1sak\u00e9nt eszk\u00f6z\u00f6k telep\u00edt\u00e9s\u00e9hez.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--verbose=\ \ \ \ --verbose
+installServerFeatures.option-desc.--verbose=\tTov\u00e1bbi hibakeres\u00e9si inform\u00e1ci\u00f3k megjelen\u00edt\u00e9se, mik\u00f6zben a m\u0171velet fut.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--noCache=\ \ \ \ --noCache
+installServerFeatures.option-desc.--noCache=\tEgy t\u00e1voli lerakatb\u00f3l telep\u00edtett szolg\u00e1ltat\u00e1sok (p\u00e9ld\u00e1ul Maven       \n\
+\tCentral) nincsenek helyileg gyors\u00edt\u00f3t\u00e1razva.

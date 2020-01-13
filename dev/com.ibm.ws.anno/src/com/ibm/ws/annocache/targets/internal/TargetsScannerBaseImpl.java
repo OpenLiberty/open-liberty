@@ -644,7 +644,12 @@ public class TargetsScannerBaseImpl {
     // Does not need to be synchronized.  No write is performed
     // on the merged annotations.
 
-    protected void mergeInternalResults(TargetsTableImpl[] useResultTables) {
+    // Control parameter: When scanning specific classes, the scan policy of the table
+    // is ignored.  All specific scan results are considered SEED.
+
+    protected boolean FORCE_SEED_RESULTS = true;
+
+    protected void mergeInternalResults(TargetsTableImpl[] useResultTables, boolean forceSeedResults) {
         Set<String> i_addedPackageNames = createIdentityStringSet();
         Set<String> i_addedClassNames = createIdentityStringSet();
 
@@ -652,6 +657,10 @@ public class TargetsScannerBaseImpl {
 
         for ( ClassSource classSource : useRootClassSource.getClassSources() ) {
             ScanPolicy scanPolicy = useRootClassSource.getScanPolicy(classSource);
+            if ( forceSeedResults ) {
+            	scanPolicy = ScanPolicy.SEED;
+            } 
+
             if ( scanPolicy == ScanPolicy.EXTERNAL ) {
                 continue;
             }

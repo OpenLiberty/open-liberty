@@ -28,9 +28,10 @@
     <fileset dir="${shared.resource.dir}/jdbc" includes="${env.DB_DRIVER}"/>
   </library>
 
-  <!-- Default datasource, properties created by FATRunner during database rotation. -->
   <dataSource id="DefaultDataSource" fat.modify="true">
     <jdbcDriver libraryRef="AnonymousJDBCLib"/>
+    <!-- properties modified by FATRunner during database rotation. -->
+    <properties createDatabase="create" databaseName="memory:persistmultidb"/>
   </dataSource>
   
   <javaPermission codebase="${shared.resource.dir}/jdbc/${env.DB_DRIVER}" className="java.security.AllPermission"/>

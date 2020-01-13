@@ -29,6 +29,8 @@
 
 package org.eclipse.microprofile.config.spi;
 
+import java.io.Serializable;
+
 /**
  * <p>Interface for converting configured values from String to any Java type.
  **
@@ -98,7 +100,7 @@ package org.eclipse.microprofile.config.spi;
  * @author <a href="mailto:emijiang@uk.ibm.com">Emily Jiang</a>
  * @author <a href="mailto:john.d.ament@gmail.com">John D. Ament</a>
  */
-public interface Converter<T> {
+public interface Converter<T> extends Serializable {
     /**
      * Configure the string value to a specified type
      * @param value the string representation of a property value.

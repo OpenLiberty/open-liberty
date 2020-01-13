@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -115,9 +115,12 @@ public class OneExecutorRunsAllWithFailoverEnabledTest {
         originalConfig = server.getServerConfiguration();
         failoverConfig = originalConfig.clone();
         ConfigElementList<PersistentExecutor> executors = failoverConfig.getPersistentExecutors();
-        executors.getById("executorA").setExtraAttribute("missedTaskThreshold2", "21s");
-        executors.getById("executorB").setExtraAttribute("missedTaskThreshold2", "22s");
-        executors.getById("executorC").setExtraAttribute("missedTaskThreshold2", "23s");
+        executors.getById("executorA").setMissedTaskThreshold("21s");
+        executors.getById("executorB").setMissedTaskThreshold("22s");
+        executors.getById("executorC").setMissedTaskThreshold("23s");
+        executors.getById("executorA").setExtraAttribute("ignore.minimum.for.test.use.only", "true");
+        executors.getById("executorB").setExtraAttribute("ignore.minimum.for.test.use.only", "true");
+        executors.getById("executorC").setExtraAttribute("ignore.minimum.for.test.use.only", "true");
         server.updateServerConfiguration(failoverConfig);
 
         server.startServer();
@@ -154,6 +157,14 @@ public class OneExecutorRunsAllWithFailoverEnabledTest {
     @Test
     public void testEJBTimersFindAndRemoveFE() throws Exception {
         runInServlet("test=testEJBTimersFindAndRemove");
+    }
+
+    /**
+     * Verify that the interface to EJB Timer Service indicates that fail over is enabled.
+     */
+    @Test
+    public void testFailOverIsEnabled() throws Exception {
+        runInServlet("test=testFailOverIsEnabled");
     }
 
     /**

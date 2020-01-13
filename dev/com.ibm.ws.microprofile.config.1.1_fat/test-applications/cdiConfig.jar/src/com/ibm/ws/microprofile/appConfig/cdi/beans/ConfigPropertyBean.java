@@ -44,7 +44,7 @@ public class ConfigPropertyBean {
 
     @Inject
     @ConfigProperty(name = "providerForOptionalThatExists")
-    Provider<Optional<String>> optoinalExists;
+    Provider<Optional<String>> optionalExists;
 
     @Inject
     @ConfigProperty(name = "providerForOptionalThatDoesNotExist")
@@ -74,7 +74,7 @@ public class ConfigPropertyBean {
     }
 
     public String getfromOptionalThatExists() {
-        return optoinalExists.get().orElse("error: should exist");
+        return optionalExists.get().orElse("error: should exist");
     }
 
     public String getelseFromOptionalThatExists() {

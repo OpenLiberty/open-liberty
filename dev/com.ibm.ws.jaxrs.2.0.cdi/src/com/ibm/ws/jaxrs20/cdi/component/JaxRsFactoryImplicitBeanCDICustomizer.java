@@ -499,7 +499,9 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
             }
 
         }
-
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Map of Managed Objects " + resourcesManagedbyCDI);
+        }
         context.setContextObject(resourcesManagedbyCDI);
 
     }
@@ -827,11 +829,6 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
 
     @Trivial
     private void logProviderMismatch(Class<?> clazz, String scopeName, String lifecycleMgr) {
-        if (platformVersion.getMajor() > 7) {
-            Tr.debug(tc, "CWWKW1002W: The CDI scope of JAXRS-2.0 Provider " + clazz.getSimpleName() + " is " +
-                         scopeName + ". Liberty gets the provider instance from " + lifecycleMgr + ".");
-        } else {
-            Tr.warning(tc, "warning.jaxrs.cdi.provider.mismatch", clazz.getSimpleName(), scopeName, lifecycleMgr);
-        }
+        Tr.warning(tc, "warning.jaxrs.cdi.provider.mismatch", clazz.getSimpleName(), scopeName, lifecycleMgr);
     }
 }

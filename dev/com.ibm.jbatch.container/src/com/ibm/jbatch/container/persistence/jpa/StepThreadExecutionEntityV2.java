@@ -14,6 +14,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 @Entity
 public class StepThreadExecutionEntityV2 extends StepThreadExecutionEntity {
 
@@ -21,6 +23,7 @@ public class StepThreadExecutionEntityV2 extends StepThreadExecutionEntity {
     private RemotablePartitionEntity remotablePartition;
 
     // For JPA
+    @Trivial
     public StepThreadExecutionEntityV2() {
         super();
     }

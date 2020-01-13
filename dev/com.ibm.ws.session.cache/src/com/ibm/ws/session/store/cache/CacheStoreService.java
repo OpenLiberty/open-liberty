@@ -40,6 +40,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 
+import java.nio.file.Paths;
+
 import javax.cache.Cache;
 import javax.cache.Cache.Entry;
 import javax.cache.CacheException;
@@ -223,7 +225,13 @@ public class CacheStoreService implements Introspector, SessionStoreService {
                     CacheHashMap.tcInvoke(tcCachingProvider, "getCacheManager", uri, null, vendorProperties);
                 }
 
-                cacheManager = cachingProvider.getCacheManager(uri, null, vendorProperties);
+                
+                // Catch incorrectly formatted httpSessionCache uri values from server.xml file
+                try {
+                    cacheManager = cachingProvider.getCacheManager(uri, null, vendorProperties);
+                } catch (NullPointerException e) {
+                    throw new IllegalArgumentException(Tr.formatMessage(tc, "INCORRECT_URI_SYNTAX", e), e);
+                }
 
                 return null;
             });

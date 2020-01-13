@@ -39,10 +39,6 @@ public class AnnotatedInterfaceStrategy extends AbstractInterfaceMappingStrategy
             }
         }
         if (log.isDebugEnabled()) {
-//            log.debug("hello");
-//            log.debug(interfaceName);
-//            log.debug(typeName);
-//            log.debug(interfaceAnno != null ? interfaceAnno.value() : "no annotation");
             log.debug("name, " + interfaceName + ", derived from ( " + typeName + ", " + 
                             (interfaceAnno != null ? interfaceAnno.value() : "no annotation") + " )");
         }

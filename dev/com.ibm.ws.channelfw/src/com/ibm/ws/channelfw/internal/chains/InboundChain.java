@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.channelfw.internal.chains;
 
+import java.util.Map;
+
 import com.ibm.websphere.channelfw.ChainData;
 import com.ibm.websphere.channelfw.ChannelData;
 import com.ibm.websphere.channelfw.ChannelFactoryData;
@@ -41,21 +43,19 @@ import com.ibm.wsspi.channelfw.exception.InvalidChannelNameException;
 public class InboundChain extends Chain {
 
     /** Trace service */
-    private static final TraceComponent tc =
-                    Tr.register(InboundChain.class,
-                                ChannelFrameworkConstants.BASE_TRACE_NAME,
-                                ChannelFrameworkConstants.BASE_BUNDLE);
+    private static final TraceComponent tc = Tr.register(InboundChain.class,
+                                                         ChannelFrameworkConstants.BASE_TRACE_NAME,
+                                                         ChannelFrameworkConstants.BASE_BUNDLE);
 
     /**
      * Creates an inbound chain from a chain config object.
-     * 
+     *
      * @param config
      * @param framework
      * @throws ChannelException
      * @throws IncoherentChainException
      */
-    public InboundChain(ChainData config, ChannelFrameworkImpl framework)
-        throws ChannelException, IncoherentChainException {
+    public InboundChain(ChainData config, ChannelFrameworkImpl framework) throws ChannelException, IncoherentChainException {
         super(config);
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "constructor");
@@ -75,17 +75,21 @@ public class InboundChain extends Chain {
             if (i != 0) {
                 // Only do this for non device side channels.
                 ((ChildChannelDataImpl) channelDataArray[i]).setDeviceInterface(
-                                channels[i - 1].getApplicationInterface());
+                                                                                channels[i - 1].getApplicationInterface());
             }
             // Inform the child channel data that it is being used inbound.
             ((ChildChannelDataImpl) channelDataArray[i]).setIsInbound(true);
 
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "putting into PropertyBag chain name of: " + chainData.getName());
+            }
+            Map propertyBag = channelDataArray[i].getPropertyBag();
+            propertyBag.put(ChannelFrameworkConstants.CHAIN_NAME_KEY, chainData.getName());
+
             // Get an instance of each channel.
             channels[i] = channelFactory.findOrCreateChannel(channelDataArray[i]);
             if (null == channels[i]) {
-                InvalidChannelNameException e =
-                                new InvalidChannelNameException(
-                                                "Chain cannot be created because of channel, " + channelDataArray[i].getName());
+                InvalidChannelNameException e = new InvalidChannelNameException("Chain cannot be created because of channel, " + channelDataArray[i].getName());
                 FFDCFilter.processException(e, getClass().getName() + ".constructor",
                                             "89", this, new Object[] { channelDataArray[i] });
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
@@ -95,8 +99,7 @@ public class InboundChain extends Chain {
             } else if (null != prevChannel) {
                 // Chain coherency checking.
                 Class<?> prevChannelDiscType = ((InboundChannel) prevChannel).getDiscriminatoryType();
-                Class<?> nextChannelDiscDataType =
-                                ((InboundChannel) channels[i]).getDiscriminator().getDiscriminatoryDataType();
+                Class<?> nextChannelDiscDataType = ((InboundChannel) channels[i]).getDiscriminator().getDiscriminatoryDataType();
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "prev.AppSideClass: " + prevChannel.getApplicationInterface());
                     Tr.debug(tc, "this.DevSideClass: " + channels[i].getDeviceInterface());
@@ -104,11 +107,10 @@ public class InboundChain extends Chain {
                     Tr.debug(tc, "this.DiscType: " + nextChannelDiscDataType);
                 }
                 if (prevChannelDiscType != nextChannelDiscDataType) {
-                    IncoherentChainException e = new IncoherentChainException(
-                                    "Unmatching channel disc types: " + prevChannel.getName()
-                                                    + ", " + prevChannelDiscType
-                                                    + " " + channels[i].getName()
-                                                    + ", " + nextChannelDiscDataType);
+                    IncoherentChainException e = new IncoherentChainException("Unmatching channel disc types: " + prevChannel.getName()
+                                                                              + ", " + prevChannelDiscType
+                                                                              + " " + channels[i].getName()
+                                                                              + ", " + nextChannelDiscDataType);
                     FFDCFilter.processException(e, getClass().getName() + ".constructor",
                                                 "122", this);
                     if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
@@ -117,10 +119,8 @@ public class InboundChain extends Chain {
                     throw e;
                 }
                 if (prevChannel.getApplicationInterface() != channels[i].getDeviceInterface()) {
-                    IncoherentChainException e =
-                                    new IncoherentChainException(
-                                                    "Unmatching channel interfaces: "
-                                                                    + prevChannel.getName() + ", " + channels[i].getName());
+                    IncoherentChainException e = new IncoherentChainException("Unmatching channel interfaces: "
+                                                                              + prevChannel.getName() + ", " + channels[i].getName());
                     FFDCFilter.processException(e, getClass().getName() + ".constructor",
                                                 "136", this);
                     if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
@@ -203,7 +203,7 @@ public class InboundChain extends Chain {
     /**
      * This method is called from ChannelFrameworkImpl during chain startup to start up the discrimination
      * process between each set of adjacent channels in the chain.
-     * 
+     *
      * @param appChannel the channel on the application side of the two provided
      * @param devChannel the channel on the device side of the two provided
      * @param discWeight
@@ -231,9 +231,7 @@ public class InboundChain extends Chain {
             FFDCFilter.processException(discException,
                                         getClass().getName() + ".startDiscProcessBetweenChannels",
                                         "234", this, new Object[] { appChannel, devChannel, Integer.valueOf(discWeight) });
-            throw new ChainException(
-                            "Unable to get discriminator from " + appChannel.getName(),
-                            discException);
+            throw new ChainException("Unable to get discriminator from " + appChannel.getName(), discException);
         }
 
         // Get the discrimination group from the former channel in the chain.
@@ -246,8 +244,7 @@ public class InboundChain extends Chain {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Create new dp for channel, " + devChannel.getName());
                 }
-                DiscriminationGroup newDg =
-                                new DiscriminationProcessImpl(devChannel.getDiscriminatoryType(), prevDg);
+                DiscriminationGroup newDg = new DiscriminationProcessImpl(devChannel.getDiscriminatoryType(), prevDg);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Add in discriminator from channel, " + appChannel.getName());
                 }
@@ -262,9 +259,9 @@ public class InboundChain extends Chain {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc,
                              "Add in disc from channel, "
-                                             + appChannel.getName()
-                                             + " into dp of channel, "
-                                             + devChannel.getName());
+                                 + appChannel.getName()
+                                 + " into dp of channel, "
+                                 + devChannel.getName());
                 }
                 prevDg.addDiscriminator(d, discWeight);
                 prevDg.start();
@@ -281,13 +278,12 @@ public class InboundChain extends Chain {
 
     /**
      * Disable the input channel.
-     * 
+     *
      * @param inputChannel
      * @throws InvalidChannelNameException
      * @throws DiscriminationProcessException
      */
-    public void disableChannel(Channel inputChannel)
-                    throws InvalidChannelNameException, DiscriminationProcessException {
+    public void disableChannel(Channel inputChannel) throws InvalidChannelNameException, DiscriminationProcessException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "disableChannel: " + inputChannel.getName());
         }
@@ -309,9 +305,7 @@ public class InboundChain extends Chain {
 
                 if (channels.length == index) {
                     // Never found the channel. Log an error.
-                    InvalidChannelNameException e =
-                                    new InvalidChannelNameException(
-                                                    "ERROR: can't unlink unknown channel, " + targetName);
+                    InvalidChannelNameException e = new InvalidChannelNameException("ERROR: can't unlink unknown channel, " + targetName);
                     FFDCFilter.processException(e, getClass().getName() + ".disableChannel",
                                                 "319", this, new Object[] { inputChannel });
                     if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
@@ -325,9 +319,7 @@ public class InboundChain extends Chain {
                     }
                     // Discriminator was only added after the chain was started.
                     Class<?> discriminatoryType = prevChannel.getDiscriminatoryType();
-                    DiscriminationProcessImpl newDp = new DiscriminationProcessImpl(
-                                    discriminatoryType,
-                                    (DiscriminationGroup) prevChannel.getDiscriminationProcess());
+                    DiscriminationProcessImpl newDp = new DiscriminationProcessImpl(discriminatoryType, (DiscriminationGroup) prevChannel.getDiscriminationProcess());
                     newDp.removeDiscriminator(((InboundChannel) inputChannel).getDiscriminator());
                     prevChannel.setDiscriminationProcess(newDp);
                 }
@@ -349,12 +341,11 @@ public class InboundChain extends Chain {
      * have the ability to form a chain, the method returns without exception.
      * Otherwise, an IncoherentChainException is thrown describing the channels
      * that were incoherent.
-     * 
+     *
      * @param chainData
      * @throws IncoherentChainException
      */
-    public static void verifyChainCoherency(ChainData chainData)
-                    throws IncoherentChainException {
+    public static void verifyChainCoherency(ChainData chainData) throws IncoherentChainException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "verifyChainCoherency");
         }
@@ -400,9 +391,8 @@ public class InboundChain extends Chain {
                                      + current.getFactory().getName() + ", "
                                      + next.getFactory().getName());
                     }
-                    throw new IncoherentChainException(
-                                    "Found null interface classes between two channel factories: "
-                                                    + current.getFactory().getName() + ", "
+                    throw new IncoherentChainException("Found null interface classes between two channel factories: "
+                                                       + current.getFactory().getName() + ", "
                                                        + next.getFactory().getName());
                 }
                 // Handle polymorphism
@@ -420,8 +410,7 @@ public class InboundChain extends Chain {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Found incoherency between two channel factories: " + current + ", " + next);
                     }
-                    throw new IncoherentChainException(
-                                    "Found incoherency between two channel factories: " + current + ", " + next);
+                    throw new IncoherentChainException("Found incoherency between two channel factories: " + current + ", " + next);
                 }
                 current = next;
             }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -118,6 +118,9 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
     /** Current remoteIp configuration */
     private volatile ChannelConfiguration remoteIpConfig = null;
 
+    /** Current compression configuration */
+    private volatile ChannelConfiguration compressionConfig = null;
+
     private volatile boolean endpointStarted = false;
     private volatile String resolvedHostName = null;
     private volatile String host = HttpServiceConstants.LOCALHOST;
@@ -144,6 +147,8 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
     private final Object actionLock = new Object() {};
     private final LinkedList<Runnable> actionQueue = new LinkedList<Runnable>();
     private Future<?> actionFuture = null;
+
+    Object cid = null;
 
     private final Runnable actionsRunner = new Runnable() {
         @Override
@@ -213,7 +218,7 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
 
     @Activate
     protected void activate(ComponentContext ctx, Map<String, Object> config) {
-        Object cid = config.get(ComponentConstants.COMPONENT_ID);
+        cid = config.get(ComponentConstants.COMPONENT_ID);
         name = (String) config.get("id");
         pid = (String) config.get(Constants.SERVICE_PID);
 
@@ -225,6 +230,7 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(this, tc, "activate HttpEndpoint " + this);
         }
+
         HttpEndpointList.registerEndpoint(this);
         endpointStarted = true;
 
@@ -332,7 +338,13 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         // Store the configuration
         endpointConfig = config;
 
-        processHttpChainWork(endpointEnabled, false);
+        if ((CHFWBundle.isServerCompletelyStarted() != true) && (endpointEnabled == true)) {
+            // SplitStartUp. Enabling during startup need this to stay on the same thread,
+            // or else the port may listen after the server says it is ready
+            processHttpChainWork(endpointEnabled, true);
+        } else {
+            processHttpChainWork(endpointEnabled, false);
+        }
     }
 
     /**
@@ -438,7 +450,7 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         return httpSecureChain.getActivePort();
     }
 
-    public String getProtocolVersion(){
+    public String getProtocolVersion() {
         return this.protocolVersion;
     }
 
@@ -607,6 +619,46 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
 
     public Map<String, Object> getHttpOptions() {
         ChannelConfiguration c = httpOptions;
+        return c == null ? null : c.getConfiguration();
+    }
+
+    /**
+     * The specific compressionOptions is selected by a filter et through metatype that matches a specific user-configured
+     * option set or falls back to a default.
+     *
+     * @param service
+     */
+    @Trivial
+    @Reference(name = "compression",
+               service = ChannelConfiguration.class,
+               policy = ReferencePolicy.DYNAMIC,
+               policyOption = ReferencePolicyOption.GREEDY,
+               cardinality = ReferenceCardinality.MANDATORY)
+    protected void setCompression(ChannelConfiguration config) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.event(this, tc, "set compression " + config.getProperty("id"), this);
+        }
+        this.compressionConfig = config;
+        if (compressionConfig != null) {
+            performAction(updateAction);
+        }
+    }
+
+    @Trivial
+    protected void updatedCompression(ChannelConfiguration config) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.event(this, tc, "update auto compression " + config.getProperty("id"), this);
+        }
+
+        if (compressionConfig != null) {
+            performAction(updateAction);
+        }
+    }
+
+    protected void unsetCompression(ChannelConfiguration config) {}
+
+    public Map<String, Object> getCompressionConfig() {
+        ChannelConfiguration c = compressionConfig;
         return c == null ? null : c.getConfiguration();
     }
 

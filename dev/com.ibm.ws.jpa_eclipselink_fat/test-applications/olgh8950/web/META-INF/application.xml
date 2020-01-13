@@ -16,11 +16,11 @@
     xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application_5.xsd"
     id="Application_ID">
 
-    <display-name>OLGH8950</display-name>
+    <display-name>OLGH8950_WEB</display-name>
     <module id="WebModule_1">
         <web>
             <web-uri>olgh8950Web.war</web-uri>
-            <context-root>olgh8950</context-root>
+            <context-root>olgh8950Web</context-root>
         </web>
     </module>
 </application>

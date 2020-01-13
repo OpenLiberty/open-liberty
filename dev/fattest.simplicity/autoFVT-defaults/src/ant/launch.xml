@@ -216,6 +216,26 @@
 
 		<echo message="test.bucket.path including junit: ${toString:test.bucket.path}"/>
 
+		<iff>
+			<istrue value="${is.windows.platform}"/>
+			<then>
+				<echo>generating classpath jar file.</echo>
+				<property name="classpath.jar.name" value="${basedir}/build/lib/cp.jar"/>
+				<manifestclasspath property="classpath.list" maxParentLevels="20" jarfile="${classpath.jar.name}">
+				    <classpath refid="test.bucket.path"/>
+				</manifestclasspath>
+				<jar jarfile="${classpath.jar.name}" >
+				    <manifest>
+				        <attribute name="Class-Path" value="${classpath.list}"/>
+				    </manifest>
+				</jar>
+				<path id="test.bucket.path">
+					<fileset file="${classpath.jar.name}"/>
+			    </path>
+				<echo message="modified test.bucket.path : ${toString:test.bucket.path}"/>
+			</then>
+		</iff>
+		
 		<echo>Initializing JRE logging</echo>
 		<delete dir="${dir.log}" quiet="true" />
 		<mkdir dir="${dir.log.xml}" />
@@ -294,6 +314,20 @@
 		<!-- Server log validation should be done by default -->
 		<!-- Individual buckets must opt-out if they don't want to have logs checked -->
 		<property name="enable.server.log.validation" value="false" />
+		
+		<property name="extra.vmargs" value=""/>
+	    <echo message="Launching FAT with extra vmargs: ${extra.vmargs}"/>
+					
+		<iff if="zos.environment">
+			<then>
+				<echo message="Setting zos.extra.vmargs because we are running on zos"/>
+				<property name="zos.extra.vmargs" value="-Dcom.ibm.jsse2.overrideDefaultTLS=true -Dcom.ibm.team.repository.transport.client.protocol=TLSv1.2" />
+			</then>
+		    <else>
+				<property name="zos.extra.vmargs" value="" />
+			</else>
+		</iff>
+		<echo message="Launching FAT with zos extra vmargs: ${zos.extra.vmargs}"/>	
 
 		<!-- START coverage properties -->
 		<property name="exec.data.file" location="${dir.log.coverage}/jacoco.exec" />
@@ -400,6 +434,8 @@
 					<jvmarg value="${framework.maxheap}" />
 					<!-- embedded trace conditionals -->
 					<jvmarg value="${framework.debug.embed.jvmarg1}" /> 
+					<jvmarg line="${extra.vmargs}"/>
+					<jvmarg line="${zos.extra.vmargs}"/>
 				</junit>
 			</sequential>
 			<finally>

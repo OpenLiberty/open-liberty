@@ -30,6 +30,7 @@ public class MappingTable {
 	
 	public static final String THREADPOOL_TAG_NAME = "pool";
 	public static final String SERVLET_TAG_NAME = "servlet";
+	public static final String RESTFUL_TAG_NAME = "restful";
 	public static final String CONNECTIONPOOL_TAG_NAME = "datasource";
 	public static final String SESSION_TAG_NAME = "appname";
 	public static final String JAXWS_SERVER_TAG_NAME = "endpoint";
@@ -61,6 +62,13 @@ public class MappingTable {
         	{ "servlet.responseTime.total", "Total Response Time", "servlet.responseTime.total.description", GAUGE, MetricUnits.NANOSECONDS, "ResponseTimeDetails", "total", SERVLET_TAG_NAME }
         };
 		mappingTable.put("WebSphere:type=ServletStats,name=*", servletTable);
+		
+		String[][] restfulTable = new String[][] {
+        	{ "RESTful.request.total", "Total Request", "RESTful.request.total.description", COUNTER, MetricUnits.NONE, "RequestCount", null, RESTFUL_TAG_NAME },
+        	{ "RESTful.responseTime.total", "Total Response Time", "RESTful.responseTime.total.description", GAUGE, MetricUnits.NANOSECONDS, "ResponseTimeDetails", "total", RESTFUL_TAG_NAME }
+        };
+		mappingTable.put("WebSphere:type=RESTful_Stats,name=*", restfulTable);
+
 
 		String[][] connectionPoolTable = new String[][]{
 			{ "connectionpool.create.total", "Create Count", "connectionpool.create.total.description", COUNTER, MetricUnits.NONE, "CreateCount", null, CONNECTIONPOOL_TAG_NAME },

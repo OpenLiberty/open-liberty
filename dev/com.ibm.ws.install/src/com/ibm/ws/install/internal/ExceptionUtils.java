@@ -428,6 +428,151 @@ public class ExceptionUtils {
     }
 
     /**
+     * Create an install exception from a repository resolution exception and asset names
+     *
+     * @param e
+     * @param assetNames
+     * @param edition
+     * @param installDir
+     * @param installingAsset
+     * @return
+     */
+    static InstallException create(RepositoryResolutionException e, Collection<String> assetNames, File installDir, boolean installingAsset,
+                                   boolean isOpenLiberty, boolean isFeatureUtility) {
+        Collection<MissingRequirement> allRequirementsNotFound = e.getAllRequirementsResourcesNotFound();
+        Collection<MissingRequirement> dependants = new ArrayList<MissingRequirement>(allRequirementsNotFound.size());
+        for (MissingRequirement f : allRequirementsNotFound) {
+            /**
+             * make sure it's not invalid asset names entered
+             */
+            if (!assetNames.contains(f.getRequirementName())) {
+                dependants.add(f);
+            }
+        }
+
+        /**
+         * not valid for current product case or dependency not applicable
+         */
+
+        MissingRequirement missingRequirementWithMaxVersion = null;
+        String newestVersion = null;
+        for (MissingRequirement mr : allRequirementsNotFound) {
+            if (missingRequirementWithMaxVersion == null)
+                missingRequirementWithMaxVersion = mr;
+            String r = mr.getRequirementName();
+            if (r.contains("productInstallType") ||
+                r.contains("productEdition") ||
+                r.contains("productVersion")) {
+
+                Pattern validNumericVersionOrRange = Pattern.compile("\\d+\\.\\d+\\.\\d+\\.\\d+");
+                Matcher matcher = validNumericVersionOrRange.matcher(r);
+                String version = null;
+                while (matcher.find()) {
+                    version = matcher.group();
+                    break;
+                }
+                List productMatchers = SelfExtractor.parseAppliesTo(mr.getRequirementName());
+                wlp.lib.extract.ReturnCode validInstallRC = SelfExtractor.validateProductMatches(installDir, productMatchers);
+                String currentEdition = "";
+                if (validInstallRC.getMessageKey().equals("invalidVersion") || validInstallRC.getMessageKey().equals("invalidEdition")) {
+                    int productEdition = 2;
+                    if (validInstallRC.getMessageKey().equals("invalidEdition")) {
+                        productEdition = 0;
+                    }
+                    currentEdition = (String) validInstallRC.getParameters()[productEdition];
+                }
+                if (!!!currentEdition.equals("Liberty Early Access")) {
+                    if (isNewerVersion(version, newestVersion, false)) {
+                        missingRequirementWithMaxVersion = mr;
+                        newestVersion = version;
+                    }
+                } else {
+                    if (isNewerVersion(version, newestVersion, true)) {
+                        missingRequirementWithMaxVersion = mr;
+                        newestVersion = version;
+                    }
+                }
+
+            }
+        }
+
+        /**
+         * missing dependent case, keep the current message
+         */
+        if (dependants.size() > 0) {
+            String missingRequirement = missingRequirementWithMaxVersion.getRequirementName();
+            if (!missingRequirement.contains(";")
+                && !missingRequirement.contains("productInstallType")
+                && !missingRequirement.contains("productEdition")
+                && !missingRequirement.contains("productVersion")) {
+                String assetsStr = "";
+                String feature = missingRequirement;
+                InstallException ie = null;
+                if (assetNames.size() == 1) {
+                    assetsStr = assetNames.iterator().next();
+                    ie = create(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage(installingAsset ? "ERROR_ASSET_MISSING_DEPENDENT" : "ERROR_MISSING_DEPENDENT",
+                                                                               assetsStr,
+                                                                               feature),
+                                e);
+                } else if (assetNames.size() > 1) {
+                    assetsStr = assetNames.toString();
+                    ie = create(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage(installingAsset ? "ERROR_ASSET_MISSING_MULTIPLE_DEPENDENT" : "ERROR_MISSING_MULTIPLE_DEPENDENT",
+                                                                               assetsStr,
+                                                                               feature),
+                                e);
+                }
+
+                ie.setData(assetsStr, feature);
+
+                return ie;
+
+            }
+        }
+
+        if (missingRequirementWithMaxVersion.getRequirementName().contains("productInstallType") ||
+            missingRequirementWithMaxVersion.getRequirementName().contains("productEdition") ||
+            missingRequirementWithMaxVersion.getRequirementName().contains("productVersion")) {
+            @SuppressWarnings("rawtypes")
+            List productMatchers = SelfExtractor.parseAppliesTo(missingRequirementWithMaxVersion.getRequirementName());
+            String feature = RepositoryDownloadUtil.getAssetNameFromMassiveResource(missingRequirementWithMaxVersion.getOwningResource());
+            String errMsg = "";
+            if (InstallUtils.containsIgnoreCase(assetNames, feature)) {
+                errMsg = validateProductMatches(feature, productMatchers, installDir, installingAsset);
+
+            } else {
+                String assetsStr = assetNames.size() == 1 ? assetNames.iterator().next() : InstallUtils.getFeatureListOutput(assetNames);
+                errMsg = validateProductMatches(assetsStr, feature, productMatchers, installDir, installingAsset);
+            }
+            if (!errMsg.isEmpty()) {
+                return create(errMsg, e, InstallException.NOT_VALID_FOR_CURRENT_PRODUCT);
+            }
+        }
+
+        InstallException ie;
+        if(isFeatureUtility){
+            ie = create(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_CANT_RESOLVE_FEATURE_PROVIDE_LINK",
+                                                                       InstallUtils.getFeatureListOutput(assetNames)), e);
+        }
+        else {
+            if (isOpenLiberty) {
+                ie = create(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage(installingAsset ? "ERROR_FAILED_TO_RESOLVE_ASSETS" : "ERROR_FAILED_TO_RESOLVE_FEATURES_FOR_OPEN_LIBERTY",
+                                                                           InstallUtils.getFeatureListOutput(assetNames)),
+                            e);
+            } else {
+                ie = create(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage(installingAsset ? "ERROR_FAILED_TO_RESOLVE_ASSETS" : "ERROR_FAILED_TO_RESOLVE_FEATURES",
+                                                                           InstallUtils.getFeatureListOutput(assetNames)),
+                            e);
+            }
+
+        }
+
+        ie.setData(assetNames);
+
+        return ie;
+    }
+
+
+    /**
      * Checks if the inputed version is newer than the newest version
      *
      * @param version

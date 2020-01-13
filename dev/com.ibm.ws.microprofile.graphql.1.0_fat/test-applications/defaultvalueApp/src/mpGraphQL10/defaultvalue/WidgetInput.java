@@ -11,9 +11,9 @@
 package mpGraphQL10.defaultvalue;
 
 import org.eclipse.microprofile.graphql.DefaultValue;
-import org.eclipse.microprofile.graphql.InputType;
+import org.eclipse.microprofile.graphql.Input;
 
-@InputType("WidgetInput")
+@Input("WidgetInput")
 public class WidgetInput {
 
     @DefaultValue("Crockpot")

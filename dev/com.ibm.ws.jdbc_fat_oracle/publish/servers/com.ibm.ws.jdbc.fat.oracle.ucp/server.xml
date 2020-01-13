@@ -1,0 +1,87 @@
+<!--
+    Copyright (c) 2016, 2019 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+    <featureManager>
+      <feature>servlet-3.1</feature>
+      <feature>jdbc-4.2</feature>
+      <feature>jndi-1.0</feature>
+      <feature>componenttest-1.0</feature>
+    </featureManager>
+    
+    <include location="../fatTestPorts.xml"/>
+
+    <application location="oracleucpfat.war" >
+        <classloader commonLibraryRef="UCPDBLib"/>
+    </application>
+    
+    <library id="UCPDBLib">
+    	<fileset dir="${shared.resource.dir}/ucp"/>
+    </library>
+    
+    <connectionManager id="conMgr" maxPoolSize="2" enableSharingForDirectLookups="false"/> 
+    
+    <connectionManager id="conMgrUpdate" maxPoolSize="1" />
+    
+    <connectionManager id="sharedConMgr" maxPoolSize="1" />
+    
+    <!-- This DataSource intentionally uses a connectionManagerRef -->
+    <dataSource id="ucpDS" jndiName="jdbc/ucpDS" connectionManagerRef="conMgr" validationTimeout="20" >
+    	<jdbcDriver libraryRef="UCPDBLib" />
+    	<properties.oracle.ucp maxStatements="5"  maxPoolSize="3" user="${env.USER}" password="${env.PASSWORD}" connectionWaitTimeout="30" URL="${env.URL}" />
+    </dataSource>
+    
+    <dataSource id="ucpDSSameConMgr" jndiName="jdbc/ucpDSSameConMgr" connectionManagerRef="sharedConMgr" validationTimeout="20" >
+    	<jdbcDriver libraryRef="UCPDBLib" />
+    	<properties.oracle.ucp URL="${env.URL}" user="${env.USER}" password="${env.PASSWORD}" />
+    </dataSource>
+    
+    <dataSource id="ucpXADS" jndiName="jdbc/ucpXADS" type="javax.sql.XADataSource">
+    	<jdbcDriver libraryRef="UCPDBLib" />
+    	<properties.oracle.ucp maxPoolSize="3" connectionWaitTimeout="30" URL="${env.URL}" user="${env.USER}" password="${env.PASSWORD}" />
+    </dataSource>
+    
+    <dataSource id="ucpConnectionPoolDS" jndiName="jdbc/ucpConnectionPoolDS" type="javax.sql.ConnectionPoolDataSource" >
+    	<jdbcDriver libraryRef="UCPDBLib" />
+    	<properties.oracle.ucp URL="${env.URL}" user="${env.USER}" password="${env.PASSWORD}" />
+    </dataSource>
+    
+    <dataSource id="ucpDriverDS" jndiName="jdbc/ucpDriverDS" type="java.sql.Driver" >
+    	<jdbcDriver libraryRef="UCPDBLib" />
+    	<properties.oracle.ucp maxPoolSize="3" connectionWaitTimeout="30" URL="${env.URL}" user="${env.USER}" password="${env.PASSWORD}"/>
+    </dataSource>
+    
+    <dataSource id="ucpDSAuthData" jndiName="jdbc/ucpDSAuthData">
+   	    <jdbcDriver libraryRef="UCPDBLib" />
+   		<properties.oracle.ucp URL="${env.URL}" user="${env.USER}" password="${env.PASSWORD}"/>
+   		<containerAuthData user="wrong" password="wrong" />
+    </dataSource>
+    
+    <!-- This DataSource intentionally uses the generic properties element and embedded connection manager -->
+    <dataSource id="ucpDSEmbeddedConMgr" jndiName="jdbc/ucpDSEmbeddedConMgr" internalDevNonshipFunctionDoNotUseProduction="true" type="javax.sql.DataSource" validationTimeout="20" >
+    	<connectionManager maxPoolSize="2" minPoolSize="1"/> 
+    	<jdbcDriver libraryRef="UCPDBLib" javax.sql.DataSource="oracle.ucp.jdbc.PoolDataSourceImpl"/>
+    	<!-- TODO remove noship guard -->
+    	<properties maxPoolSize="3" connectionWaitTimeout="30" URL="${env.URL}" user="${env.USER}" password="${env.PASSWORD}" connectionFactoryClassName="oracle.jdbc.pool.OracleDataSource"/>
+    </dataSource>
+    
+    <!-- This Oracle DataSource uses Liberty connection pooling rather than UCP -->
+    <dataSource id="oracleDS" jndiName="jdbc/oracleDS" connectionManagerRef="sharedConMgr" type="javax.sql.DataSource">
+    	<jdbcDriver libraryRef="UCPDBLib"/>
+    	<properties.oracle URL="${env.URL}" user="${env.USER}" password="${env.PASSWORD}"/>
+    </dataSource>
+    
+    <javaPermission codebase="${shared.resource.dir}/ucp/ojdbc8_g.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${shared.resource.dir}/ucp/ucp.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${server.config.dir}/apps/oracleucpfat.war" className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+    <javaPermission codebase="${server.config.dir}/apps/oracleucpfat.war" className="javax.management.MBeanServerPermission" name="createMBeanServer"/>    
+    
+    <variable name="onError" value="FAIL"/>
+</server>

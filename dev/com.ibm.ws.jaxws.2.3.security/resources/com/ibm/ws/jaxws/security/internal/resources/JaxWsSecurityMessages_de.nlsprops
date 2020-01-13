@@ -24,7 +24,7 @@
 
 #{0} is the ssl configuration id
 err.when.get.ssl.config=CWWKW0600E: Fehler beim Abrufen der SSL-Konfiguration mit sslRef={0}.
-err.when.get.ssl.config.explanation=Das in der Datei ibm-ws-bnd.xml angegebene Attribut sslRef kann nicht auf das Element ssl in der Datei server.xml verweisen, oder der Inhalt des referenzierten Elements ssl ist ung\u00fcltig.
+err.when.get.ssl.config.explanation=Das in der Datei ibm-ws-bnd.xml angegebene Attribut sslRef kann nicht auf das Element ssl in der Datei server.xml verweisen oder der Inhalt des referenzierten Elements ssl ist ung\u00fcltig.
 err.when.get.ssl.config.useraction=Stellen Sie sicher, dass der Wert des Attributs sslRef mit der ID des Elements ssl in der Datei server.xml \u00fcbereinstimmt bzw. dass der Inhalt des referenzierten Elements ssl korrekt ist.
 
 #{0} is the ssl configuration id

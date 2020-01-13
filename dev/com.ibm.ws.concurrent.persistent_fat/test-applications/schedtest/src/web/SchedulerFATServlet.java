@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,8 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package web;
+
+import static org.junit.Assert.assertFalse;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -36,6 +38,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Delayed;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -43,6 +46,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.Phaser;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.annotation.Resource;
 import javax.enterprise.concurrent.AbortedException;
@@ -55,7 +59,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
+import javax.transaction.NotSupportedException;
 import javax.transaction.Status;
+import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
 import org.junit.Test;
@@ -80,6 +86,11 @@ public class SchedulerFATServlet extends HttpServlet {
      */
     private static final String SUCCESS_MESSAGE = "COMPLETED SUCCESSFULLY";
 
+    /**
+     * Indicates if the database for the persistent executor is Derby.
+     */
+    private static final boolean isDerby = System.getProperty("fat.bucket.db.type", "Derby").compareToIgnoreCase("Derby") == 0;
+
     @Resource(lookup = "concurrent/myScheduler")
     private PersistentExecutor scheduler;
 
@@ -99,7 +110,7 @@ public class SchedulerFATServlet extends HttpServlet {
     /**
      * Maximum number of nanoseconds to wait for a task to finish.
      */
-    static final long TIMEOUT_NS = TimeUnit.MINUTES.toNanos(1);
+    static final long TIMEOUT_NS = TimeUnit.MINUTES.toNanos(2);
 
     @Resource
     private UserTransaction tran;
@@ -182,7 +193,7 @@ public class SchedulerFATServlet extends HttpServlet {
             } finally {
                 con.close();
             }
-        } catch (SQLException x) {
+        } catch (Exception x) {
             throw new ServletException(x);
         }
     }
@@ -220,27 +231,6 @@ public class SchedulerFATServlet extends HttpServlet {
         } catch (SQLException x) {
             throw new ServletException(x);
         }
-    }
-
-    /**
-     * Utility method that waits for a task status with the specified result.
-     *
-     * @return task status if found within the allotted interval, otherwise null.
-     */
-    private <T> TaskStatus<T> pollForResult(long taskId, T result) throws Exception {
-        TaskStatus<T> status = null;
-        for (long start = System.nanoTime(); System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL)) {
-            TaskStatus<T> newStatus = scheduler.getStatus(taskId);
-            status = newStatus;
-            try {
-                if (status == null || status.hasResult() && result.equals(status.getResult()))
-                    return status;
-            } catch (SkippedException x) {
-                // allow for skips
-            }
-        } ;
-
-        return status;
     }
 
     /**
@@ -459,22 +449,47 @@ public class SchedulerFATServlet extends HttpServlet {
             if (!foundIds.containsAll(expected))
                 throw new Exception("On the second query, should have found at least task ids " + expected + " within " + foundIds);
 
-            // Simulate another instance trying to claim the same task, but timing out.
-            // This could happen if task execution outlives the missed task threshold (good configuration should avoid this)
-            // TODO enable if we can determine why query timeouts aren't timing out and fix it, then enable the following:
-            //tran.begin();
-            //try {
-            //    Method DatabaseTaskStore_claimIfNotLocked = dbTaskStore.getClass().getMethod("claimIfNotLocked", long.class, int.class, long.class);
-            //    long newClaimExpiry = System.currentTimeMillis() + TimeUnit.HOURS.toMillis(155);
-            //    System.out.println("About to attempt claim");
-            //    long start = System.nanoTime();
-            //    DatabaseTaskStore_claimIfNotLocked.invoke(dbTaskStore, statusO.getTaskId(), 1, newClaimExpiry);
-            //    long duration = System.nanoTime() - start;
-            //    if (duration > TimeUnit.SECONDS.toNanos(20))
-            ///        throw new Exception("Claim attempt on task (" + statusO.getTaskId() + ") did not timeout within a reasonable amount of time. " + duration + " ns.");
-            //}// finally {
-            //    tran.rollback();
-            //}
+            if (!isDerby) { // skip for Derby, which does not implement query timeout or allow lock timeout to be applied on a granular basis
+                // Simulate another instance trying to claim the same task, but timing out.
+                // This could happen if task execution outlives the missed task threshold (good configuration should avoid this)
+                final Method DatabaseTaskStore_claimIfNotLocked = dbTaskStore.getClass().getMethod("claimIfNotLocked", long.class, int.class, long.class);
+                long newClaimExpiry = System.currentTimeMillis() + TimeUnit.HOURS.toMillis(155);
+                tran.begin();
+                try {
+                    System.out.println("About to attempt claim");
+                    long start = System.nanoTime();
+                    Boolean claimed = (Boolean) DatabaseTaskStore_claimIfNotLocked.invoke(dbTaskStore, statusO.getTaskId(), 1, newClaimExpiry);
+                    long duration = System.nanoTime() - start;
+                    if (duration > TimeUnit.SECONDS.toNanos(20))
+                        throw new Exception("Claim attempt on task (" + statusO.getTaskId() + ") did not timeout within a reasonable amount of time. " + duration + " ns.");
+
+                    if (Boolean.TRUE.equals(claimed)) {
+                        // If we successfully claimed it, ensure that a second thread times out while we are still holding the lock.
+                        final long nextClaimExpiry = newClaimExpiry + TimeUnit.HOURS.toMillis(1);
+                        Future<Long> future = unmanagedExecutor.submit(new Callable<Long>() {
+                            @Override
+                            public Long call() throws Exception {
+                                tran.begin();
+                                try {
+                                    long start = System.nanoTime();
+                                    Boolean claimed = (Boolean) DatabaseTaskStore_claimIfNotLocked.invoke(dbTaskStore, statusO.getTaskId(), 2, nextClaimExpiry);
+                                    if (claimed)
+                                        throw new Error("Should not be able to claim task while other thread has a lock on it");
+                                    long duration = System.nanoTime() - start;
+                                    return duration;
+                                } finally {
+                                    tran.rollback();
+                                }
+                            }
+                        });
+                        duration = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                        if (duration > TimeUnit.SECONDS.toNanos(20))
+                            throw new Exception("Second claim attempt on task (" + statusO.getTaskId() + ") did not timeout within a reasonable amount of time. " + duration + " ns.");
+                    }
+                } finally {
+                    tran.rollback();
+                }
+            }
 
             // It should be possible to cancel other tasks.
             if (!statusM.cancel(false))
@@ -1092,14 +1107,45 @@ public class SchedulerFATServlet extends HttpServlet {
      * Block the execution of a task after it starts running. Simulate another instance attempting to run the task.
      */
     public void testBlockRunningTaskFE(PrintWriter out) throws Exception {
-        Callable<Integer> task = new CancelableTask("testBlockRunningTaskFE", true);
+        Callable<Integer> task = new CancelableTask("first-testBlockRunningTaskFE", true);
         TaskStatus<Integer> taskStatus = scheduler.submit(task);
         try {
-            CancelableTask.waitForStart("CancelableTask-testBlockRunningTaskFE");
+            CancelableTask.waitForStart("CancelableTask-first-testBlockRunningTaskFE");
 
             System.out.println("Task is running...");
 
             // The PROP entry for the task will remain locked within a suspended transaction
+
+            // Scheduling of additional tasks is not blocked,
+            DBIncrementTask anotherTask = new DBIncrementTask("second-testBlockRunningTaskFE");
+            anotherTask.getExecutionProperties().put(AutoPurge.PROPERTY_NAME, AutoPurge.NEVER.name());
+            TaskStatus<?> statusOfAnotherTask = scheduler.scheduleWithFixedDelay(anotherTask, 0, 70, TimeUnit.DAYS);
+            long anotherTaskId = statusOfAnotherTask.getTaskId();
+
+            // Running of additional tasks is not blocked,
+            for (long start = System.nanoTime(); !statusOfAnotherTask.hasResult() && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL))
+                statusOfAnotherTask = scheduler.getStatus(statusOfAnotherTask.getTaskId());
+            if (!statusOfAnotherTask.hasResult())
+                throw new Exception("The second task didn't run. " + statusOfAnotherTask);
+            statusOfAnotherTask.getResult(); // forces an error to be raised if unsuccessful
+
+            // Queries for tasks are not blocked,
+            List<TaskStatus<?>> statusList = scheduler.findTaskStatus("%testBlockRunningTaskFE", null, TaskState.ANY, true, null, null);
+            if (statusList.size() != 2)
+                throw new Exception("Should find exactly two matching tasks (" + taskStatus.getTaskId() + ", and " + anotherTaskId + "). Instead: " + statusList);
+            for (TaskStatus<?> s : statusList)
+                if (s.getTaskId() != taskStatus.getTaskId() && s.getTaskId() != anotherTaskId)
+                    throw new Exception("Matched wrong task: " + s);
+
+            // Cancellation is not blocked,
+            int count = scheduler.cancel("%second-testBlockRunningTaskFE", null, TaskState.ANY, true);
+            if (count != 1)
+                throw new Exception("Cancel returned a count other than 1: " + count);
+
+            // Removal is not blocked,
+            count = scheduler.remove("%second-testBlockRunningTaskFE", null, TaskState.CANCELED, true);
+            if (count != 1)
+                throw new Exception("Remove returned a count other than 1: " + count);
 
             // Simulate other instances making attempts to claim the task.
             // For testing purposes, directly force this code path from a predictable location (here)
@@ -1125,10 +1171,34 @@ public class SchedulerFATServlet extends HttpServlet {
                 long newClaimExpiry = System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(7);
                 System.out.println("About to attempt claim");
                 long start = System.nanoTime();
-                DatabaseTaskStore_claimIfNotLocked.invoke(dbTaskStore, taskStatus.getTaskId(), version, newClaimExpiry);
+                Boolean claimed = (Boolean) DatabaseTaskStore_claimIfNotLocked.invoke(dbTaskStore, taskStatus.getTaskId(), version, newClaimExpiry);
                 long duration = System.nanoTime() - start;
                 if (duration > TimeUnit.SECONDS.toNanos(20))
                     throw new Exception("Unable to attempt a claim on a task (" + taskStatus.getTaskId() + ") within a reasonable amount of time. " + duration + " ns.");
+
+                if (Boolean.TRUE.equals(claimed) && !isDerby) { // skip for Derby, which does not implement query timeout
+                    // If we successfully claimed it, ensure that a second thread times out while we are still holding the lock.
+                    final long nextClaimExpiry = newClaimExpiry + TimeUnit.MINUTES.toMillis(1);
+                    Future<Long> future = unmanagedExecutor.submit(new Callable<Long>() {
+                        @Override
+                        public Long call() throws Exception {
+                            tran.begin();
+                            try {
+                                long start = System.nanoTime();
+                                Boolean claimed = (Boolean) DatabaseTaskStore_claimIfNotLocked.invoke(dbTaskStore, taskStatus.getTaskId(), 2, nextClaimExpiry);
+                                if (claimed)
+                                    throw new Error("Should not be able to claim task while other thread has a lock on it");
+                                long duration = System.nanoTime() - start;
+                                return duration;
+                            } finally {
+                                tran.rollback();
+                            }
+                        }
+                    });
+                    duration = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                    if (duration > TimeUnit.SECONDS.toNanos(20))
+                        throw new Exception("Second claim attempt on task (" + taskStatus.getTaskId() + ") did not timeout within a reasonable amount of time. " + duration + " ns.");
+                }
             } finally {
                 tran.rollback();
             }
@@ -1151,8 +1221,130 @@ public class SchedulerFATServlet extends HttpServlet {
             //    throw new Exception("Unable to time out from duplicate attempt of task " + taskStatus.getTaskId() + " within a reasonable amount of time. " + duration + " ns.");
         } finally {
             taskStatus.cancel(false);
-            CancelableTask.notifyTaskCanceled("DBIncrementTask-testBlockRunningTaskFE");
+            CancelableTask.notifyTaskCanceled("CancelableTask-first-testBlockRunningTaskFE");
         }
+    }
+
+    // Enables SelfCancelingTask and SelfRemovingTask to coordinate timing with the next two tests
+    public static final AtomicReference<Phaser> phaserRef = new AtomicReference<Phaser>();
+
+    /**
+     * Block the execution of a task after it starts running and cancels itself.
+     */
+    public void testBlockRunningTaskThatCancelsSelfFE(PrintWriter out) throws Exception {
+        SelfCancelingTask task = new SelfCancelingTask("first-testBlockRunningTaskThatCancelsSelfFE", 1, false); // update once, then cancel self
+        task.getExecutionProperties().put(AutoPurge.PROPERTY_NAME, AutoPurge.NEVER.name());
+        TaskStatus<Integer> taskStatus;
+        Phaser phaser = new Phaser(1);
+        phaserRef.set(phaser);
+        try {
+            taskStatus = scheduler.submit((Callable<Integer>) task);
+            try {
+                phaser.awaitAdvance(1);
+                System.out.println("Task is running and has canceled itself...");
+
+                // The PROP entry for the task will remain locked within a suspended transaction
+                // The TASK entry for the task will remain locked within the transaction in which the task executes
+
+                // Scheduling of additional tasks is not blocked,
+                DBIncrementTask anotherTask = new DBIncrementTask("second-testBlockRunningTaskThatCancelsSelfFE");
+                anotherTask.getExecutionProperties().put(AutoPurge.PROPERTY_NAME, AutoPurge.NEVER.name());
+                TaskStatus<?> statusOfAnotherTask = scheduler.scheduleWithFixedDelay(anotherTask, 0, 71, TimeUnit.HOURS);
+                long anotherTaskId = statusOfAnotherTask.getTaskId();
+
+                // Running of additional tasks is not blocked,
+                for (long start = System.nanoTime(); !statusOfAnotherTask.hasResult() && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL))
+                    statusOfAnotherTask = scheduler.getStatus(statusOfAnotherTask.getTaskId());
+                if (!statusOfAnotherTask.hasResult())
+                    throw new Exception("The second task didn't run. " + statusOfAnotherTask);
+                statusOfAnotherTask.getResult(); // forces an error to be raised if unsuccessful
+
+                // Cancellation is not blocked,
+                if (!statusOfAnotherTask.cancel(false))
+                    throw new Exception("Unable to cancel other task " + anotherTaskId);
+
+                // Removal is not blocked,
+                if (!scheduler.remove(anotherTaskId))
+                    throw new Exception("Unable to remove other task " + anotherTaskId);
+            } catch (Exception x) {
+                try {
+                    taskStatus.cancel(false);
+                } catch (Throwable t) {
+                }
+                throw x; // original exception
+            }
+        } finally {
+            phaser.arrive();
+            phaserRef.set(null);
+        }
+
+        // wait for task to finish normally
+        for (long start = System.nanoTime(); !taskStatus.hasResult() && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL))
+            taskStatus = scheduler.getStatus(taskStatus.getTaskId());
+        if (!taskStatus.hasResult())
+            throw new Exception("The first task didn't run. " + taskStatus);
+        try {
+            Integer result = taskStatus.getResult();
+            throw new Exception("Task that cancels itself should raise CancellationException, not have result of " + result);
+        } catch (CancellationException x) {
+            // expected
+        }
+    }
+
+    /**
+     * Block the execution of a task after it starts running and removes itself.
+     */
+    public void testBlockRunningTaskThatRemovesSelfFE(PrintWriter out) throws Exception {
+        SelfRemovingTask task = new SelfRemovingTask("first-testBlockRunningTaskThatRemovesSelfFE", 1, false); // update once, then remove self
+        TaskStatus<Integer> taskStatus;
+        Phaser phaser = new Phaser(1);
+        phaserRef.set(phaser);
+        try {
+            taskStatus = scheduler.submit((Callable<Integer>) task);
+            try {
+                phaser.awaitAdvance(1);
+                System.out.println("Task is running and has removed itself...");
+
+                // The PROP entry for the task will remain locked within a suspended transaction
+                // The TASK entry for the task will remain locked within the transaction in which the task executes
+
+                // Scheduling of additional tasks is not blocked,
+                DBIncrementTask anotherTask = new DBIncrementTask("second-testBlockRunningTaskThatRemovesSelfFE");
+                anotherTask.getExecutionProperties().put(AutoPurge.PROPERTY_NAME, AutoPurge.NEVER.name());
+                TaskStatus<?> statusOfAnotherTask = scheduler.scheduleWithFixedDelay(anotherTask, 0, 72, TimeUnit.HOURS);
+                long anotherTaskId = statusOfAnotherTask.getTaskId();
+
+                // Running of additional tasks is not blocked,
+                for (long start = System.nanoTime(); !statusOfAnotherTask.hasResult() && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL))
+                    statusOfAnotherTask = scheduler.getStatus(statusOfAnotherTask.getTaskId());
+                if (!statusOfAnotherTask.hasResult())
+                    throw new Exception("The second task didn't run. " + statusOfAnotherTask);
+                statusOfAnotherTask.getResult(); // forces an error to be raised if unsuccessful
+
+                // Cancellation is not blocked,
+                if (!statusOfAnotherTask.cancel(false))
+                    throw new Exception("Unable to cancel other task " + anotherTaskId);
+
+                // Removal is not blocked,
+                if (!scheduler.remove(anotherTaskId))
+                    throw new Exception("Unable to remove other task " + anotherTaskId);
+            } catch (Exception x) {
+                try {
+                    taskStatus.cancel(false);
+                } catch (Throwable t) {
+                }
+                throw x; // original exception
+            }
+        } finally {
+            phaser.arrive();
+            phaserRef.set(null);
+        }
+
+        // wait for task to finish normally
+        for (long start = System.nanoTime(); taskStatus != null && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL))
+            taskStatus = scheduler.getStatus(taskStatus.getTaskId());
+        if (taskStatus != null)
+            throw new Exception("The first task didn't remove itself. " + taskStatus);
     }
 
     /**
@@ -1873,8 +2065,27 @@ public class SchedulerFATServlet extends HttpServlet {
             throw new Exception("Should not be able to see tasks from outside of application. " + resultsByTaskId);
 
         // Wait for tasks C and D to complete their only execution.
-        pollForResult(statusC.getTaskId(), 1);
-        pollForResult(statusD.getTaskId(), 1);
+        for (long start = System.nanoTime(); System.nanoTime() - start < TIMEOUT_NS
+                && (statusC = scheduler.getStatus(statusC.getTaskId())) != null
+                && !(statusC.hasResult() && Integer.valueOf(1).equals(statusC.getResult())); )
+            Thread.sleep(POLL_INTERVAL);
+
+        if (statusC == null)
+            throw new Exception("Task C should not have been auto-purged.");
+
+        if (!statusC.hasResult() || !Integer.valueOf(1).equals(statusC.getResult()))
+            throw new Exception("Task C did not complete " + statusC);
+
+        for (long start = System.nanoTime(); System.nanoTime() - start < TIMEOUT_NS
+                && (statusD = scheduler.getStatus(statusD.getTaskId())) != null
+                && !(statusD.hasResult() && Integer.valueOf(1).equals(statusD.getResult())); )
+            Thread.sleep(POLL_INTERVAL);
+
+        if (statusD == null)
+            throw new Exception("Task D should not have been auto-purged.");
+
+        if (!statusD.hasResult() || !Integer.valueOf(1).equals(statusD.getResult()))
+            throw new Exception("Task D did not complete " + statusD);
 
         // Look for successfully completed tasks, should be 2 (C,D)
         pattern = DBIncrementTask.class.getSimpleName() + "-testFindByName-%";
@@ -2084,7 +2295,12 @@ public class SchedulerFATServlet extends HttpServlet {
         if (!toString.contains("SCHEDULED"))
             throw new Exception("toString output does not contain the state of the task. Instead: " + toString);
 
-        TaskStatus<Integer> updatedStatus = pollForResult(status.getTaskId(), 1);
+        TaskStatus<Integer> updatedStatus = status;
+
+        for (long start = System.nanoTime(); System.nanoTime() - start < TIMEOUT_NS
+                && (updatedStatus = scheduler.getStatus(updatedStatus.getTaskId())) != null
+                && !(updatedStatus.hasResult() && Integer.valueOf(1).equals(updatedStatus.getResult())); )
+            Thread.sleep(POLL_INTERVAL);
 
         if (updatedStatus == null || !updatedStatus.isDone())
             throw new Exception("Task not completed in allotted interval. Status: " + status);
@@ -3064,7 +3280,16 @@ public class SchedulerFATServlet extends HttpServlet {
         } catch (IllegalStateException x) {
         }
 
-        status = pollForResult(status.getTaskId(), 1);
+        // poll for result, ignoring skips
+        for (long start = System.nanoTime(); System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL)) {
+            status = scheduler.getStatus(status.getTaskId());
+            try {
+                if (status == null || status.hasResult() && Integer.valueOf(1).equals(status.getResult()))
+                    break;
+            } catch (SkippedException x) {
+                // allow for skips
+            }
+        }
 
         if (!status.isDone())
             throw new Exception("Task should be done. " + status);
@@ -3178,7 +3403,16 @@ public class SchedulerFATServlet extends HttpServlet {
         } catch (IllegalStateException x) {
         }
 
-        status = pollForResult(status.getTaskId(), 2);
+        // poll for result, ignoring skips
+        for (long start = System.nanoTime(); System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL)) {
+            status = scheduler.getStatus(status.getTaskId());
+            try {
+                if (status == null || status.hasResult() && Integer.valueOf(2).equals(status.getResult()))
+                    break;
+            } catch (SkippedException x) {
+                // allow for skips
+            }
+        }
 
         if (!status.isDone())
             throw new Exception("Task should be done after the final execution completes. " + status);
@@ -3566,13 +3800,21 @@ public class SchedulerFATServlet extends HttpServlet {
             tran.commit();
         }
 
-        statusA = pollForResult(statusA.getTaskId(), 1);
-        if (statusA == null || !statusA.isDone())
-            throw new Exception("TaskA not completed in allotted interval. Status: " + statusA);
+        for (long start = System.nanoTime(); System.nanoTime() - start < TIMEOUT_NS
+                && (statusA = scheduler.getStatus(statusA.getTaskId())) != null
+                && !(statusA.hasResult() && Integer.valueOf(1).equals(statusA.getResult())); )
+            Thread.sleep(POLL_INTERVAL);
 
-        statusB = pollForResult(statusB.getTaskId(), 1);
-        if (statusB == null || !statusB.isDone())
-            throw new Exception("TaskB not completed in allotted interval. Status: " + statusB);
+        if (statusA == null || !statusA.isDone() || !Integer.valueOf(1).equals(statusA.getResult()))
+            throw new Exception("TaskA not completed with expected result in allotted interval. Status: " + statusA);
+
+        for (long start = System.nanoTime(); System.nanoTime() - start < TIMEOUT_NS
+                && (statusB = scheduler.getStatus(statusB.getTaskId())) != null
+                && !(statusB.hasResult() && Integer.valueOf(1).equals(statusB.getResult())); )
+            Thread.sleep(POLL_INTERVAL);
+
+        if (statusB == null || !statusB.isDone() || !Integer.valueOf(1).equals(statusB.getResult()))
+            throw new Exception("TaskB not completed with expected result in allotted interval. Status: " + statusB);
     }
 
     /**
@@ -3617,9 +3859,13 @@ public class SchedulerFATServlet extends HttpServlet {
                     if (status.hasResult())
                         throw new Exception("Task status initial snapshot should not have a result. " + status);
 
-                    status = pollForResult(status.getTaskId(), 3);
+                    long taskId = status.getTaskId();
+                    for (long start = System.nanoTime(); System.nanoTime() - start < TIMEOUT_NS
+                            && (status = scheduler.getStatus(taskId)) != null
+                            && !(status.hasResult() && Integer.valueOf(1).equals(status.getResult())); )
+                        Thread.sleep(POLL_INTERVAL);
 
-                    boolean removed = scheduler.remove(status.getTaskId());
+                    boolean removed = scheduler.remove(taskId);
                     if (!removed)
                         throw new Exception("Unable to remove task. " + status);
 

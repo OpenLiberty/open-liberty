@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 1997, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,9 +16,9 @@ import com.ibm.ws.security.oauth20.exception.OAuthProviderException;
 import com.ibm.ws.security.oauth20.util.OAuth20Parameter;
 
 /**
- * This class was imported from tWAS to make only those changes necessary to 
- * run OAuth on Liberty. The mission was not to refactor, restructure, or 
- * generally cleanup the code. 
+ * This class was imported from tWAS to make only those changes necessary to
+ * run OAuth on Liberty. The mission was not to refactor, restructure, or
+ * generally cleanup the code.
  */
 public class OAuth20MBeanImpl implements OAuth20MBean {
 

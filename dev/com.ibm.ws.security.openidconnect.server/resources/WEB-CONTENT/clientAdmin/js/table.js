@@ -117,10 +117,16 @@ var table = (function() {
                         return;
                     }
                 } 
-                // Something else happended with the request.  Put up a generic error message.
+                // Something else happended with the request.  Put up an error message...
                 var errTitle = messages.GENERIC_MISSING_CLIENT;
-                var errDescription = utils.formatString(messages.GENERIC_RETRIEVAL_FAIL_MSG, [errClientName]);
-                utils.showResultsDialog(true, errTitle, errDescription, false, false, true);
+                var errDescription = "";
+                if (errResponse.responseJSON && errResponse.responseJSON.error_description) {
+                    errDescription = errResponse.responseJSON.error_description;
+                } else {
+                    // Display a generic error message...
+                    errDescription = utils.formatString(messages.GENERIC_RETRIEVAL_FAIL_MSG, [errClientName]);
+                }
+                utils.showResultsDialog(true, errTitle, errDescription, false, false, true); 
             });
         });
 

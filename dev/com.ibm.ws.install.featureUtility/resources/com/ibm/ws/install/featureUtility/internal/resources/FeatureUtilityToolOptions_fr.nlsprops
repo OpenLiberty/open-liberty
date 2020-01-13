@@ -1,0 +1,67 @@
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+#CMVCPATHNAME com.ibm.ws.install.featureUtility/resources/com/ibm/ws/install/featureUtility/internal/resources/FeatureUtilityToolOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#--------- ACTIONS ----------------------------------------------------#
+# List of descriptive text for actions. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+usage=Syntaxe : {0}
+
+global.description=Description :
+global.actions=Actions :
+global.options=Options :
+global.options.lower=options
+global.usage=Syntaxe :
+global.options.statement=\tUtilisez help [nomAction] pour des informations d\u00e9taill\u00e9es sur les options de chaque action.
+task.unknown=Action inconnue : {0}
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+help.desc=\tImprimer des informations d'aide pour l'action sp\u00e9cifi\u00e9e.
+
+#--------- INSTALLFEATURE ACTION ---------------------------------------------#
+installFeature.desc=\tInstallez une fonction ou une liste de fonctions en les s\u00e9parant par un espace.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.name...=\ \ \ \ name ...
+installFeature.option-desc.name...=\tUne ou plusieurs fonctions s\u00e9par\u00e9es par un espace. Pour les fonctions,    \n\
+\tsp\u00e9cifiez le nom abr\u00e9g\u00e9 de la fonction ou la coordonn\u00e9e Maven. Si vous       \n\
+\tsp\u00e9cifiez une coordonn\u00e9e Maven, celle-ci doit contenir au moins                \n\
+\tl'ID groupe et l'ID artefact                                    \n\
+\t(par exemple io.openliberty.features:mpHealth-2.0).                 \n\
+\tPar d\u00e9faut, la version est la version d'ex\u00e9cution en cours     \n\
+\tet le type de conditionnement est ESA si ces param\u00e8tres ne sont pas           \n\
+\tsp\u00e9cifi\u00e9s.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--to=\ \ \ \ --to=[usr|extension]
+installFeature.option-desc.--to=\tIndiquez o\u00f9 installer la fonction. La fonction peut \u00eatre install\u00e9e \u00e0\n\
+\tn'importe quel emplacement d'extension de produit configur\u00e9 ou en tant que fonction utilisateur. Si  \n\
+\tcette option n'est pas sp\u00e9cifi\u00e9e, la fonction est install\u00e9e en tant que \n\
+\tfonction utilisateur.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--from=\ \ \ \ --from=filePath
+installFeature.option-desc.--from=\tUtilisez cette option pour sp\u00e9cifier le chemin de fichier d'un r\u00e9f\u00e9rentiel \n\
+\td'artefacts Maven en tant que source pour l'installation d'actifs par featureUtility.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--verbose=\ \ \ \ --verbose
+installFeature.option-desc.--verbose=\tAffichez des informations de d\u00e9bogage suppl\u00e9mentaires lors de l'ex\u00e9cution de l'action.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--noCache=\ \ \ \ --noCache
+installFeature.option-desc.--noCache=\tLes fonctions install\u00e9es depuis un r\u00e9f\u00e9rentiel distant                          \n\
+\t(par exemple Maven Central) ne sont pas mises en cache localement.
+#--------- INSTALLSERVERFEATURES ACTION --------------------------------------#
+installServerFeatures.desc=\tInstallez les fonctions requises pour un serveur nomm\u00e9.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.name...=\ \ \ \ name ...
+installServerFeatures.option-desc.name...=\tNom d'un serveur existant dans le m\u00eame environnement Liberty.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--from=\ \ \ \ --from=filePath
+installServerFeatures.option-desc.--from=\tUtilisez cette option pour sp\u00e9cifier le chemin de fichier d'un r\u00e9f\u00e9rentiel \n\
+\td'artefacts Maven en tant que source pour l'installation d'actifs par featureUtility.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--verbose=\ \ \ \ --verbose
+installServerFeatures.option-desc.--verbose=\tAffichez des informations de d\u00e9bogage suppl\u00e9mentaires lors de l'ex\u00e9cution de l'action.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--noCache=\ \ \ \ --noCache
+installServerFeatures.option-desc.--noCache=\tLes fonctions install\u00e9es depuis un r\u00e9f\u00e9rentiel distant                          \n\
+\t(par exemple Maven Central) ne sont pas mises en cache localement.

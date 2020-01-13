@@ -162,7 +162,7 @@ public class FaultToleranceInterceptor {
                     bulkhead = new BulkheadConfig(method, targetClass, (Bulkhead) annotation);
                     bulkhead.validate();
                 } else if (annotation.annotationType().equals(Fallback.class)) {
-                    fallback = new FallbackConfig(method, targetClass, (Fallback) annotation);
+                    fallback = annotationConfigFactory.createFallbackConfig(method, targetClass, (Fallback) annotation);
                     fallback.validate();
                 }
             }

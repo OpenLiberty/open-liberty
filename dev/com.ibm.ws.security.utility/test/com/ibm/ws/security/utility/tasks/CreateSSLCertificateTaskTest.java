@@ -16,6 +16,8 @@ import static org.junit.Assert.assertNotNull;
 import java.io.File;
 import java.io.PrintStream;
 import java.security.cert.CertificateException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.hamcrest.Factory;
 import org.hamcrest.Matcher;
@@ -84,6 +86,7 @@ public class CreateSSLCertificateTaskTest {
     private static final DefaultSSLCertificateCreator creator = mock.mock(DefaultSSLCertificateCreator.class);
     private static final IFileUtility fileUtil = mock.mock(IFileUtility.class);
     private BaseCommandTask task;
+    private final List<String> san = new ArrayList<String>();
 
     @Factory
     public static Matcher<String> matching(String regex) {
@@ -399,6 +402,7 @@ public class CreateSSLCertificateTaskTest {
      */
     @Test
     public void handleTask_justRequiredFlags() throws Exception {
+        san.add("SAN=dns:localhost");
         String[] args = new String[] { task.getTaskName(),
                                        "--server=" + SERVER_NAME,
                                        "--password=" + PLAINTEXT,
@@ -419,7 +423,7 @@ public class CreateSSLCertificateTaskTest {
                                                          new DefaultSubjectDN(null, SERVER_NAME).getSubjectDN(),
                                                          DefaultSSLCertificateCreator.DEFAULT_SIZE,
                                                          DefaultSSLCertificateCreator.SIGALG,
-                                                         null);
+                                                         san);
             }
         });
 
@@ -433,6 +437,7 @@ public class CreateSSLCertificateTaskTest {
      */
     @Test
     public void handleTask_justRequiredFlags_client() throws Exception {
+        san.add("SAN=dns:localhost");
         String[] args = new String[] { task.getTaskName(),
                                        "--client=" + CLIENT_NAME,
                                        "--password=" + PLAINTEXT,
@@ -453,7 +458,7 @@ public class CreateSSLCertificateTaskTest {
                                                          new DefaultSubjectDN(null, CLIENT_NAME).getSubjectDN(),
                                                          DefaultSSLCertificateCreator.DEFAULT_SIZE,
                                                          DefaultSSLCertificateCreator.SIGALG,
-                                                         null);
+                                                         san);
             }
         });
 
@@ -497,6 +502,7 @@ public class CreateSSLCertificateTaskTest {
      */
     @Test
     public void handleTask_promptForPassword() throws Exception {
+        san.add("SAN=dns:localhost");
         String[] args = new String[] { task.getTaskName(),
                                        "--server=" + SERVER_NAME,
                                        "--password",
@@ -523,7 +529,7 @@ public class CreateSSLCertificateTaskTest {
                                                          new DefaultSubjectDN(null, SERVER_NAME).getSubjectDN(),
                                                          DefaultSSLCertificateCreator.DEFAULT_SIZE,
                                                          DefaultSSLCertificateCreator.SIGALG,
-                                                         null);
+                                                         san);
             }
         });
 
@@ -537,6 +543,7 @@ public class CreateSSLCertificateTaskTest {
      */
     @Test
     public void handleTask_passwordAndDays() throws Exception {
+        san.add("SAN=dns:localhost");
         String[] args = new String[] { task.getTaskName(),
                                        "--server=" + SERVER_NAME,
                                        "--password=" + PLAINTEXT,
@@ -558,7 +565,7 @@ public class CreateSSLCertificateTaskTest {
                                                          new DefaultSubjectDN(null, SERVER_NAME).getSubjectDN(),
                                                          DefaultSSLCertificateCreator.DEFAULT_SIZE,
                                                          DefaultSSLCertificateCreator.SIGALG,
-                                                         null);
+                                                         san);
             }
         });
 
@@ -572,6 +579,7 @@ public class CreateSSLCertificateTaskTest {
      */
     @Test
     public void handleTask_passwordAndSubject() throws Exception {
+        san.add("SAN=dns:localhost");
         String[] args = new String[] { task.getTaskName(),
                                        "--server=" + SERVER_NAME,
                                        "--password=" + PLAINTEXT,
@@ -593,7 +601,7 @@ public class CreateSSLCertificateTaskTest {
                                                          SUBJECT_DN,
                                                          DefaultSSLCertificateCreator.DEFAULT_SIZE,
                                                          DefaultSSLCertificateCreator.SIGALG,
-                                                         null);
+                                                         san);
             }
         });
 
@@ -607,6 +615,7 @@ public class CreateSSLCertificateTaskTest {
      */
     @Test
     public void handleTask_passwordAndLongSubject() throws Exception {
+        san.add("SAN=dns:localhost");
         String[] args = new String[] { task.getTaskName(),
                                        "--server=" + SERVER_NAME,
                                        "--password=" + PLAINTEXT,
@@ -628,7 +637,7 @@ public class CreateSSLCertificateTaskTest {
                                                          LONG_SUBJECT_DN,
                                                          DefaultSSLCertificateCreator.DEFAULT_SIZE,
                                                          DefaultSSLCertificateCreator.SIGALG,
-                                                         null);
+                                                         san);
             }
         });
 
@@ -642,6 +651,7 @@ public class CreateSSLCertificateTaskTest {
      */
     @Test
     public void handleTask_passwordAndDaysAndSubject() throws Exception {
+        san.add("SAN=dns:localhost");
         String[] args = new String[] { task.getTaskName(),
                                        "--server=" + SERVER_NAME,
                                        "--password=" + PLAINTEXT,
@@ -664,7 +674,7 @@ public class CreateSSLCertificateTaskTest {
                                                          SUBJECT_DN,
                                                          DefaultSSLCertificateCreator.DEFAULT_SIZE,
                                                          DefaultSSLCertificateCreator.SIGALG,
-                                                         null);
+                                                         san);
             }
         });
 
@@ -678,6 +688,7 @@ public class CreateSSLCertificateTaskTest {
      */
     @Test
     public void handleTask_anyOrder() throws Exception {
+        san.add("SAN=dns:localhost");
         String[] args = new String[] { task.getTaskName(),
                                        "--validity=" + VALIDITY,
                                        "--password=" + PLAINTEXT,
@@ -700,7 +711,7 @@ public class CreateSSLCertificateTaskTest {
                                                          SUBJECT_DN,
                                                          DefaultSSLCertificateCreator.DEFAULT_SIZE,
                                                          DefaultSSLCertificateCreator.SIGALG,
-                                                         null);
+                                                         san);
             }
         });
 
@@ -714,6 +725,7 @@ public class CreateSSLCertificateTaskTest {
      */
     @Test
     public void handleTask_anyOrderPrompt() throws Exception {
+        san.add("SAN=dns:localhost");
         String[] args = new String[] { task.getTaskName(),
                                        "--validity=" + VALIDITY,
                                        "--password",
@@ -741,7 +753,7 @@ public class CreateSSLCertificateTaskTest {
                                                          SUBJECT_DN,
                                                          DefaultSSLCertificateCreator.DEFAULT_SIZE,
                                                          DefaultSSLCertificateCreator.SIGALG,
-                                                         null);
+                                                         san);
             }
         });
 
@@ -850,6 +862,7 @@ public class CreateSSLCertificateTaskTest {
      */
     // @Test
     public void handleTask_failedCreate() throws Exception {
+        san.add("SAN=dns:localhost");
         String[] args = new String[] { task.getTaskName(),
                                        "--validity=" + VALIDITY,
                                        "--password=" + PLAINTEXT,
@@ -871,7 +884,7 @@ public class CreateSSLCertificateTaskTest {
                                                          SUBJECT_DN,
                                                          DefaultSSLCertificateCreator.DEFAULT_SIZE,
                                                          DefaultSSLCertificateCreator.KEYALG,
-                                                         null);
+                                                         san);
                 will(throwException(new CertificateException("Expected")));
 
                 one(stdout).println("Unable to create default SSL certificate:" +

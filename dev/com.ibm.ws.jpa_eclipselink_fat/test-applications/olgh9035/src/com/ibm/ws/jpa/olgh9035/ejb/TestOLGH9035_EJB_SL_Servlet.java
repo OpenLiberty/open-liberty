@@ -16,6 +16,7 @@ import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
 
+import com.ibm.ws.jpa.olgh9035.testlogic.JPATestOLGH9035Logic;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
@@ -27,7 +28,7 @@ public class TestOLGH9035_EJB_SL_Servlet extends EJBTestVehicleServlet {
 
     @PostConstruct
     private void initFAT() {
-        testClassName = "com.ibm.ws.jpa.olgh9035.testlogic.JPATestOLGH9035Logic";
+        testClassName = JPATestOLGH9035Logic.class.getName();
         ejbJNDIName = "ejb/OLGH9035SLEJB";
 
         jpaPctxMap.put("test-jpa-resource-amjta",

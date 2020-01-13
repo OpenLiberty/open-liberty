@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,8 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package session.cache.web.cdi;
+
+import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -78,6 +80,8 @@ public class SessionCDITestServlet extends FATServlet {
         String key1 = sessionId + ".WELD_S#1";
 
         Cache<String, byte[]> cache = Caching.getCache("com.ibm.ws.session.attr.default_host%2FsessionCacheApp", String.class, byte[].class);
+        assertNotNull("Value from cache is unexpectedly NULL, most likely due to test infrastructure; check logs for more information.", cache);
+
         byte[] value0 = cache.get(key0);
         byte[] value1 = cache.get(key1);
         cache.close();

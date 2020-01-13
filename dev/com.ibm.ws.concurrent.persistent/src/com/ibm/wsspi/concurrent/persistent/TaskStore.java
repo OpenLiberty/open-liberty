@@ -73,17 +73,6 @@ public interface TaskStore {
     boolean claimIfNotLocked(long taskId, int version, long claimExpiryOrPartition) throws Exception;
 
     /**
-     * Create a partition entry in the persistent store having the Id of the specified partitionRecord.
-     *
-     * @param partitionRecord a new partition entry. The record must contain the following attributes (Id, Executor, Host, Server, UserDir)
-     *                            and can optionally contain (Expiry, States).
-     * @throws Exception if an error occurs when attempting to update the persistent task store.
-     * @return true if a partition entry with the specified Id was created by this method.
-     *         Otherwise false, in which case it is recommended to roll back the transaction.
-     */
-    boolean create(PartitionRecord partitionRecord) throws Exception;
-
-    /**
      * Create an entry in the persistent store for a new task.
      * This method assigns a unique identifier to the task and updates the Id attribute of the TaskRecord with the value.
      *
@@ -140,27 +129,6 @@ public interface TaskStore {
      * @throws Exception if an error occurs when attempting to access the persistent task store.
      */
     TaskRecord findById(long taskId, String owner, boolean includeTrigger) throws Exception;
-
-    /**
-     * Returns information about all partition entries with expired heart beats.
-     *
-     * @return List of expired partition records.
-     * @throws Exception if an error occurs when attempting to access the persistent task store.
-     */
-    List<PartitionRecord> findExpired() throws Exception;
-
-    /**
-     * Find all pending tasks which are late beyond the specified expected execution time without a
-     * successful execution of the task.
-     *
-     * @param maxNextExecTime  expected next execution time threshold before which an unexecuted task is considered late.
-     * @param excludePartition current partition number, which is excluded from the query because it was just polled.
-     * @param maxResults       maximum number of results to return. Null means unlimited.
-     * @return List of (Id, MiscBinaryFlags, NextExecutionTime, TransactionTimeout, Version) tuples.
-     *         This list is ordered by next execution time only if maxResults is specified.
-     * @throws Exception if an error occurs when attempting to access the persistent task store.
-     */
-    List<Object[]> findLateTasks(long maxNextExecTime, long excludePartition, Integer maxResults) throws Exception;
 
     /**
      * Creates an entry for a partition record if one with the specified combination of executor/host/server/userdir
@@ -324,16 +292,6 @@ public interface TaskStore {
     short incrementFailureCount(long taskId) throws Exception;
 
     /**
-     * Persist updates to a partition record in the persistent store.
-     *
-     * @param updates  updates to make to the partition entry. Only the specified fields are persisted.
-     * @param expected criteria that must be matched for update to succeed.
-     * @return count of entries that were updated.
-     * @throws Exception if an error occurs when attempting to update the persistent store.
-     */
-    int persist(PartitionRecord updates, PartitionRecord expected) throws Exception;
-
-    /**
      * Persist updates to a task record in the persistent store.
      *
      * @param updates  updates to make to the task. Only the specified fields are persisted.
@@ -393,20 +351,6 @@ public interface TaskStore {
     int removeProperties(String pattern, Character escape) throws Exception;
 
     /**
-     * Removes all persisted properties that match the specified name pattern
-     * and which have a value that is less than or equal to the comparisonValue.
-     *
-     * @param pattern         name pattern similar to the LIKE clause in SQL (% matches any characters, _ matches one character)
-     * @param escape          escape character that indicates when matching characters like % and _ should be interpreted literally.
-     *                            A value of null avoids designating an escape character, in which case the
-     *                            behavior depends on the persistent store.
-     * @param comparisonValue the value against which the current value is compared.
-     * @return number of properties removed.
-     * @throws Exception if an error occurs when attempting to update the persistent task store.
-     */
-    int removePropertiesIfLessThanOrEqual(String pattern, Character escape, String comparisonValue) throws Exception;
-
-    /**
      * Removes the property with the specified name from the persistent store.
      *
      * @param name name of the entry.
@@ -425,18 +369,6 @@ public interface TaskStore {
      * @throws Exception if an error occurs when attempting to update the persistent task store.
      */
     boolean setProperty(String name, String value) throws Exception;
-
-    /**
-     * Assigns the value of the property if it exists in the persistent store
-     * and has a value that is less than or equal to the comparisonValue.
-     *
-     * @param name            property name.
-     * @param value           new value for the property.
-     * @param comparisonValue the value against which the current value is compared.
-     * @return true if the property value was assigned to the new value.
-     * @throws Exception if an error occurs when attempting to update the persistent task store.
-     */
-    boolean setPropertyIfLessThanOrEqual(String name, String value, String comparisonValue) throws Exception;
 
     /**
      * Transfers tasks that have not yet completed all executions to another partition.

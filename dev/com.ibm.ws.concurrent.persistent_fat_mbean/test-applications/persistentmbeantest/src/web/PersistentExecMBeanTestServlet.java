@@ -14,25 +14,25 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.Resource;
-import javax.management.JMX;
 import javax.management.MBeanServer;
 import javax.management.ObjectInstance;
 import javax.management.ObjectName;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.ibm.websphere.concurrent.persistent.PersistentExecutor;
-import com.ibm.websphere.concurrent.persistent.TaskState;
-import com.ibm.websphere.concurrent.persistent.TaskStatus;
-import com.ibm.websphere.concurrent.persistent.mbean.PersistentExecutorMBean;
 
 @WebServlet("/*")
 public class PersistentExecMBeanTestServlet extends HttpServlet {
@@ -43,11 +43,8 @@ public class PersistentExecMBeanTestServlet extends HttpServlet {
      */
     private static final String SUCCESS_MESSAGE = "COMPLETED SUCCESSFULLY";
 
-    @Resource(name = "java:module/env/myExecutorRef", lookup = "concurrent/myExecutor")
-    private PersistentExecutor executor;
-
-    @Resource(name = "java:module/env/secondExecutorRef", lookup = "concurrent/secondExecutor")
-    private PersistentExecutor executor2;
+    private ScheduledExecutorService executor;
+    private ScheduledExecutorService executor2;
 
     private final String jndi = "concurrent/myExecutor";
     private final String jndi2 = "concurrent/secondExecutor";
@@ -60,6 +57,8 @@ public class PersistentExecMBeanTestServlet extends HttpServlet {
     String[] signaturesIdOrJndi = { "java.lang.String", "java.lang.String", "java.lang.String", "java.lang.String" };
     String[] signaturesFindScheduled = { "long", "java.lang.String", "boolean", "java.lang.Long", "java.lang.Integer" };
     String[] signaturesTransfer = { "java.lang.Long", "long" };
+
+    private List<Future<?>> taskFutures = new ArrayList<Future<?>>();
 
     /**
      * Invokes test name found in "test" parameter passed to servlet.
@@ -94,6 +93,12 @@ public class PersistentExecMBeanTestServlet extends HttpServlet {
      */
     @Override
     public void init() throws ServletException {
+        try {
+            executor = InitialContext.doLookup("concurrent/myExecutor");
+            executor2 = InitialContext.doLookup("concurrent/secondExecutor");
+        } catch (NamingException x) {
+            throw new ServletException(x);
+        }
 
         mbs = ManagementFactory.getPlatformMBeanServer();
         try {
@@ -110,8 +115,8 @@ public class PersistentExecMBeanTestServlet extends HttpServlet {
      */
     @Override
     public void destroy() {
-        executor.cancel(null, null, TaskState.ANY, true);
-        executor2.cancel(null, null, TaskState.ANY, true);
+        for (Future<?> future : taskFutures)
+            future.cancel(true);
     }
 
     /**
@@ -128,14 +133,18 @@ public class PersistentExecMBeanTestServlet extends HttpServlet {
      */
     public void testfindPartitionInfo(HttpServletRequest request, PrintWriter out) throws Throwable {
         Callable<Integer> task = new MBeanCounterCallable();
-        executor.schedule(task, 2000, TimeUnit.SECONDS);
+        taskFutures.add(executor.schedule(task, 2000, TimeUnit.SECONDS));
 
         String userDir = request.getParameter("userdir").concat("/");
         String libertyServerName = "com.ibm.ws.concurrent.persistent.fat.mbean";
 
-        ObjectName name = new ObjectName("WebSphere:feature=persistentExecutor,type=PersistentExecutorMBean,name=persistentExecutor[Exec],jndiName=concurrent/myExecutor,id=Exec");
-        PersistentExecutorMBean proxy = JMX.newMXBeanProxy(mbs, name, PersistentExecutorMBean.class);
-        String[][] data = proxy.findPartitionInfo(null, null, null, id);
+        // Invoke the equivalent of:
+        //ObjectName name = new ObjectName("WebSphere:feature=persistentExecutor,type=PersistentExecutorMBean,name=persistentExecutor[Exec],jndiName=concurrent/myExecutor,id=Exec");
+        //PersistentExecutorMBean proxy = JMX.newMXBeanProxy(mbs, name, PersistentExecutorMBean.class);
+        //String[][] data = proxy.findPartitionInfo(null, null, null, id);
+        Object[] params = { null, null, null, id };
+        String[][] data = (String[][]) mbs.invoke(bean.getObjectName(), "findPartitionInfo", params, signaturesIdOrJndi);
+
         StringBuilder sb = new StringBuilder(" ");
         String[] info = data[0];
 
@@ -154,8 +163,9 @@ public class PersistentExecMBeanTestServlet extends HttpServlet {
     public void testFindTaskIds(HttpServletRequest request, PrintWriter out) throws Throwable {
 
         Callable<Integer> task = new MBeanCounterCallable();
-        TaskStatus<Integer> ts = executor.schedule(task, 2000, TimeUnit.SECONDS);
-        long taskId = ts.getTaskId();
+        Future<Integer> ts = executor.schedule(task, 2000, TimeUnit.SECONDS);
+        taskFutures.add(ts);
+        long taskId = (Long) ts.getClass().getMethod("getTaskId").invoke(ts);
 
         long partitionId = 1;
         String state = "SCHEDULED";
@@ -180,27 +190,43 @@ public class PersistentExecMBeanTestServlet extends HttpServlet {
      */
     public void testTransfer(HttpServletRequest request, PrintWriter out) throws Throwable {
         Callable<Integer> task = new MBeanCounterCallable();
-        executor.schedule(task, 2000, TimeUnit.SECONDS);
+        taskFutures.add(executor.schedule(task, 2000, TimeUnit.SECONDS));
 
         Callable<Integer> task2 = new MBeanCounterCallable();
-        executor2.schedule(task2, 2000, TimeUnit.SECONDS);
+        taskFutures.add(executor2.schedule(task2, 2000, TimeUnit.SECONDS));
 
         long maxTaskId = 1000;
         long partitionId = 1;
 
-        ObjectName name = new ObjectName("WebSphere:feature=persistentExecutor,type=PersistentExecutorMBean,name=persistentExecutor[default-0],jndiName=concurrent/secondExecutor");
-        PersistentExecutorMBean proxy = JMX.newMXBeanProxy(mbs, name, PersistentExecutorMBean.class);
-        int tasksTransfered = proxy.transfer(maxTaskId, partitionId);
+        // Invoke the equivalent of:
+        //ObjectName name = new ObjectName("WebSphere:feature=persistentExecutor,type=PersistentExecutorMBean,name=persistentExecutor[default-0],jndiName=concurrent/secondExecutor");
+        //PersistentExecutorMBean proxy = JMX.newMXBeanProxy(mbs, name, PersistentExecutorMBean.class);
+        //int tasksTransfered = proxy.transfer(maxTaskId, partitionId);
+        Object[] params = { maxTaskId, partitionId };
+        int tasksTransfered = (Integer) mbs.invoke(bean2.getObjectName(), "transfer", params, signaturesTransfer);
+
         if (tasksTransfered < 1)
             throw new Exception("No tasks were transfered");
     }
 
     /**
+     * This test verifies that the PersistentExecutorMBean class does not get exposed as API.
+     * It was a mistake that the MBean was ever made available at all, and we don't want to further encourage its usage.
+     */
+    public void testPersistentExecutorMBeanClassIsNotAPI(HttpServletRequest request, PrintWriter out) throws Throwable {
+        try {
+            Class.forName("com.ibm.websphere.concurrent.persistent.mbean.PersistentExecutorMBean");
+            throw new Exception("Should not be able to load the PersistentExecutorMBean class as API.");
+        } catch (ClassNotFoundException x) {
+            // Expected. This test prevents anyone from accidentally exposing PersistentExecutorMBean as API.
+        }
+    }
+    /**
      * Test to verify the MBean method remove partition info correctly removes partitions
      */
     public void testRemovePartitionInfo(HttpServletRequest request, PrintWriter out) throws Throwable {
         Callable<Integer> task = new MBeanCounterCallable();
-        executor.schedule(task, 2000, TimeUnit.SECONDS);
+        taskFutures.add(executor.schedule(task, 2000, TimeUnit.SECONDS));
 
         Object[] params = { null, null, null, id };
         Object obj = mbs.invoke(bean.getObjectName(), "findPartitionInfo", params, signaturesIdOrJndi);

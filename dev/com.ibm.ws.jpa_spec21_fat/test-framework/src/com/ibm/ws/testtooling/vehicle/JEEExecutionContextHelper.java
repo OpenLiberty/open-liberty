@@ -256,6 +256,10 @@ public class JEEExecutionContextHelper {
                     return null;
             }
 
+            if (obj == null) {
+                // Lookup failed
+                Assert.fail("Failed to look up JPAPersistenceContext " + pcCtxInfo);
+            }
             // Process the Injected Resource that was acquired.
             EntityManagerFactory emf = null;
             EntityManager em = null;
@@ -303,7 +307,12 @@ public class JEEExecutionContextHelper {
                     Assert.fail("Unsupported Persistence Context Type: " + pcCtxInfo.getPcType().toString());
                     return null;
             }
+        } catch (java.lang.AssertionError ae) {
+            throw ae;
         } catch (Throwable t) {
+            // Comprehensive Failure Recovery Catch-Block
+            System.out.println("+++++++");
+            t.printStackTrace(System.out);
             // Comprehensive Failure Recovery Catch-Block
             Assert.fail("JEEExecutionContextHelper: Unexpected failure processing JPA Persistence Context: " + t);
             return null;

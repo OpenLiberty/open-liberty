@@ -13,7 +13,13 @@ package com.ibm.websphere.concurrent.persistent.mbean;
 import javax.management.MXBean;
 
 /**
- * The PersistentExecutorMBean is an MXBean.<br>
+ * The PersistentExecutorMBean is an undocumented MXBean that was written to experiment with
+ * manually performing fail over of Persistent EJB Timers. It is not registered if automatic
+ * fail over is enabled (missedTaskThreshold), which is the preferred approach.
+ * PersistentExecutorMBean is only left in place in case anyone had discovered it and
+ * might have been using it. Anyone who is currently using PersistentExecutorMBean should
+ * plan to switch off of it because it has never been documented as supported function.<br>
+ *
  * To get a PersistentExecutorMBean, query the MBean server with an object name specifying
  * PersistentExecutorMBean and the ID or display name of the PersistentExecutor<br>
  * For example: <br>
@@ -39,14 +45,10 @@ import javax.management.MXBean;
  * int count = proxy.removePartitionInfo(
  * &nbsp; "hostA.rchland.ibm.com", null, "myServer1", "defaultEJBPersistentTimerExecutor");</pre>
  * </code>
- * 
- * @ibm-api
  */
-
+@Deprecated
 @MXBean
 public interface PersistentExecutorMBean {
-    // TODO update JavaDoc to mention that partitions do not apply in the case of failover mode.
-
     /**
      * Each task is partitioned to a persistent executor instance in a Liberty profile server with a particular
      * Liberty profile user directory on a host. The persistent executor instance runs only tasks that

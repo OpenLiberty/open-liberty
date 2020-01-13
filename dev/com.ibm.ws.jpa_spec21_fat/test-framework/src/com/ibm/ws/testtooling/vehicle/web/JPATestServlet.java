@@ -20,6 +20,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Base64.Decoder;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.annotation.Resource;
@@ -56,6 +57,10 @@ public abstract class JPATestServlet extends FATServlet {
     }
 
     protected void executeTest(String testName, String testMethod, String testResource) throws Exception {
+        executeTest(testName, testMethod, testResource, null);
+    }
+
+    protected void executeTest(String testName, String testMethod, String testResource, Map<String, java.io.Serializable> props) throws Exception {
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testClassName, testMethod);
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
@@ -65,6 +70,10 @@ public abstract class JPATestServlet extends FATServlet {
         properties.put("dbProductName", getDbProductName());
         properties.put("dbProductVersion", getDbProductVersion());
         properties.put("jdbcDriverVersion", getJdbcDriverVersion());
+
+        if (props != null && !props.isEmpty()) {
+            properties.putAll(props);
+        }
 
         executeTestVehicle(testExecCtx);
     }

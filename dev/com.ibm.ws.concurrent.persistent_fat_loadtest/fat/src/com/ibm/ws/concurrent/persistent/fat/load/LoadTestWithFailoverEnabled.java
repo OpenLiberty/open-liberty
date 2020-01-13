@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2019 IBM Corporation and others.
+ * Copyright (c) 2015, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -55,7 +55,9 @@ public class LoadTestWithFailoverEnabled extends FATServletClient {
         ServerConfiguration config = originalConfig.clone();
         PersistentExecutor myScheduler = config.getPersistentExecutors().getBy("jndiName", "concurrent/myScheduler");
         myScheduler.setPollInterval("1m");
-        myScheduler.setExtraAttribute("missedTaskThreshold2", "40s"); // TODO rename
+        myScheduler.setMissedTaskThreshold("40s");
+        myScheduler.setExtraAttribute("ignore.minimum.for.test.use.only", "true"); // allows retryInterval and missedTaskThreshold values for test
+
         server.updateServerConfiguration(config);
 
     	ShrinkHelper.defaultDropinApp(server, APP_NAME, "web", "web.task");

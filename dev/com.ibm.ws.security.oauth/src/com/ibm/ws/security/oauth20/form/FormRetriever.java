@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 1997, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,7 +38,7 @@ public class FormRetriever {
     public static final int dftTemplateLifeTime = Integer.parseInt(System
             .getProperty(CLASS + ".defaultTemplateLifetime", "600"));
 
-    private int lifetime = dftTemplateLifeTime;
+    private final int lifetime = dftTemplateLifeTime;
 
     public Item getTemplate(String templateUrl, String acceptLanguage) throws IOException {
         String methodName = "getTemplate";
@@ -120,10 +120,10 @@ public class FormRetriever {
     }
 
     static class Item {
-        private byte[] content;
-        private long expiration;
-        private String language;
-        private String contentType;
+        private final byte[] content;
+        private final long expiration;
+        private final String language;
+        private final String contentType;
 
         Item(byte[] content, String language, String contentType, int lifetimeInSecond) {
             this.content = content;

@@ -11,7 +11,6 @@
 package com.ibm.ws.session.cache.fat.infinispan;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -46,7 +45,9 @@ public class SessionCacheOneServerTest extends FATServletClient {
     public static void setUp() throws Exception {
         app = new SessionCacheApp(server, true, "session.cache.infinispan.web", "session.cache.infinispan.web.listener1", "session.cache.infinispan.web.listener2");
         String rand = UUID.randomUUID().toString();
-        server.setJvmOptions(Arrays.asList("-Dinfinispan.cluster.name=" + rand));
+        Map<String, String> options = server.getJvmOptionsAsMap();
+        options.put("-Dinfinispan.cluster.name", rand);
+        server.setJvmOptions(options);
         server.startServer();
     }
 

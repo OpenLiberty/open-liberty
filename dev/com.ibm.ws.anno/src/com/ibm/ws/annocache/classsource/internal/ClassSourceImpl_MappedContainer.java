@@ -366,14 +366,16 @@ public class ClassSourceImpl_MappedContainer
         throws ClassSource_Exception {
 
         String methodName = "processSpecific";
-        if ( logger.isLoggable(Level.FINER) ) {
+
+    	boolean doLog = logger.isLoggable(Level.FINER);
+        if ( doLog ) {
             logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] [ {1} ]",
                 new Object[] { getHashText(), Integer.valueOf(i_classNames.size()) });
         }
 
         Container useContainer = getContainer();
         if ( useContainer == null ) {
-            if ( logger.isLoggable(Level.FINER) ) {
+            if ( doLog ) {
                 logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] RETURN", getHashText());
             }
             return;
@@ -394,6 +396,11 @@ public class ClassSourceImpl_MappedContainer
             }
 
             if ( nextEntry == null ) {
+                if ( doLog ) {
+                    logger.logp(Level.FINER, CLASS_NAME, methodName,
+                        "Skip [ {0} ] as [ {1} ]",
+                        new Object[] { i_className, resourceName });
+                }
                 continue;
             }
 
@@ -410,7 +417,7 @@ public class ClassSourceImpl_MappedContainer
         setProcessTime(scanTime);
         setProcessCount( i_classNames.size() );
 
-        if ( logger.isLoggable(Level.FINER) ) {
+        if ( doLog ) {
             logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] RETURN", getHashText());
         }
     }

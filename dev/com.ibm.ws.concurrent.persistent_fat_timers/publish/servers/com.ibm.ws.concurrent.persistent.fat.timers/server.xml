@@ -18,9 +18,10 @@
 
   <include location="../fatTestPorts.xml"/>
 
-  <!-- database for tasks : Properties added by fat for database rotation -->
   <dataSource id="DefaultDataSource" fat.modify="true">
     <jdbcDriver libraryRef="AnonymousJDBCLib"/>
+    <!-- Properties modified by fat for database rotation -->
+    <properties.derby.embedded createDatabase="create" databaseName="pxlocktest" />
   </dataSource>
   
   <library id="AnonymousJDBCLib">

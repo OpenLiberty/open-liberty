@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<wsp:Policy wsu:Id="TransactedPolicy"
+			xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
+			xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"
+	        xmlns:wsat="http://docs.oasis-open.org/ws-tx/wsat/2006/06">
+                    <wsat:ATAssertion/>
+</wsp:Policy>

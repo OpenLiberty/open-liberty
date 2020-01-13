@@ -39,8 +39,8 @@ dependencies {
       'xml-apis:xml-apis:1.4.01'
     mojarra 'org.glassfish:javax.faces:2.3.3',
       'javax.faces:javax.faces-api:2.3'
-    myfaces 'org.apache.myfaces.core:myfaces-api:2.3.4',
-      'org.apache.myfaces.core:myfaces-impl:2.3.4'
+    myfaces 'org.apache.myfaces.core:myfaces-api:2.3.6',
+      'org.apache.myfaces.core:myfaces-impl:2.3.6'
     myfacesLibs 'commons-digester:commons-digester:1.8',
       'commons-collections:commons-collections:3.2.1',
       'commons-logging:commons-logging:1.1.1',

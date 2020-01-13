@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.rest.client.fat;
 
+import static org.junit.Assert.assertNotNull;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -43,6 +45,7 @@ public class HeaderPropagation12Test extends FATServletClient {
     public static void setUp() throws Exception {
         ShrinkHelper.defaultApp(server, appName, "mpRestClient12.headerPropagation");
         server.startServer();
+        assertNotNull("LTPA configuration should report it is ready", server.waitForStringInLog("CWWKS4105I"));
     }
 
     @AfterClass

@@ -20,7 +20,7 @@
     
     <httpSession maxInMemorySessionCount="1" allowOverflow="false" hideSessionValues="false" invalidationTimeout="10m"/>
 
-    <httpSessionCache uri="file:${shared.resource.dir}/infinispan/infinispan.xml"
+    <httpSessionCache uri="file:///${shared.resource.dir}/infinispan/infinispan.xml"
                       enableBetaSupportForInfinispan="true"/> <!-- TODO remove once no longer gated -->
 
     <bell libraryRef="InfinispanLib" service="javax.cache.spi.CachingProvider"/>
