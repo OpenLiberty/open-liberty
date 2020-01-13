@@ -31,6 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.http.HttpUtils;
 import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.TraceConstants;
@@ -61,14 +62,12 @@ public class OpenShiftUserApiUtils {
     }
 
     public String getUserApiResponseForServiceAccountToken(@Sensitive String serviceAccountToken, SSLSocketFactory sslSocketFactory) throws SocialLoginException {
-        String response = null;
         try {
             HttpURLConnection connection = sendServiceAccountIntrospectRequest(serviceAccountToken, sslSocketFactory);
-            response = readServiceAccountIntrospectResponse(connection);
+            return readServiceAccountIntrospectResponse(connection);
         } catch (Exception e) {
             throw new SocialLoginException("ERROR_INTROSPECTING_SERVICE_ACCOUNT", e, new Object[] { e });
         }
-        return response;
     }
 
     HttpURLConnection sendUserApiRequest(@Sensitive String accessToken, SSLSocketFactory sslSocketFactory) throws IOException, SocialLoginException {
@@ -248,13 +247,14 @@ public class OpenShiftUserApiUtils {
     String processServiceAccountIntrospectResponse(String response) throws SocialLoginException {
         JsonObject jsonResponse = readResponseAsJsonObject(response);
         JsonObject userMetadata = getJsonObjectValueFromJson(jsonResponse, "metadata");
-        JsonObject result = addGroupsToResult(jsonResponse, userMetadata);
+        JsonObject result = addGroupsToResult(userMetadata, jsonResponse);
         return result.toString();
     }
 
+    @FFDCIgnore(JsonParsingException.class)
     JsonObject readResponseAsJsonObject(String response) throws SocialLoginException {
         if (response == null || response.isEmpty()) {
-            return null;
+            throw new SocialLoginException("RESPONSE_NOT_JSON", null, new Object[] { response });
         }
         JsonObject jsonResponse;
         try {
@@ -276,7 +276,7 @@ public class OpenShiftUserApiUtils {
         return json.getJsonObject(key);
     }
 
-    JsonObject addGroupsToResult(JsonObject rawJsonResponse, JsonObject metadataEntry) {
+    JsonObject addGroupsToResult(JsonObject metadataEntry, JsonObject rawJsonResponse) {
         JsonObject result = metadataEntry;
         String groupNameAttribute = config.getGroupNameAttribute();
         if (groupNameAttribute != null && rawJsonResponse.containsKey(groupNameAttribute)) {
