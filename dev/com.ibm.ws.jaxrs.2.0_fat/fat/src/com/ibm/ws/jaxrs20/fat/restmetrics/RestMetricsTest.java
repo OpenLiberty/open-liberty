@@ -64,9 +64,9 @@ public class RestMetricsTest {
 
     private final String MAPPEDURI = getBaseTestUri(METRICSWAR, "rest", "restmetrics");
 
-    private static final int BUFFER = 250; // margin or error in seconds for response times.
+    private static final int BUFFER = 300; // margin or error in ms for response times.
 
-    private static final int EXPECTEDRT = 250; //Expected min. response time for a single request.
+    private static final int EXPECTEDRT = 200; // Expected min. response time for a single request.
 
     private final int[] methodCounts = new int[9];
 
@@ -529,7 +529,7 @@ public class RestMetricsTest {
         if (!((minExpectedResponseTime <= responseTime) && (responseTime <= maxExpectedResponseTime))) {
             fail("Failure:  Expected response time >= " + minExpectedResponseTime +
                  " and <= " + maxExpectedResponseTime +
-                 " but received a response time of " + responseTime);
+                 " but received a response time of " + responseTime + ":  index = " + index);
             return 0;
         }
 
