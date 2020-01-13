@@ -9,4 +9,4 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 @org.osgi.annotation.versioning.Version("1.0.0")
-package com.ibm.ws.cxf.transport.http;
+package com.ibm.ws.cxf.transports.http;
