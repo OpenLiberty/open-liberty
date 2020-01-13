@@ -143,6 +143,8 @@ class Config {
         return new StringBuilder(300)
                         .append("instance=")
                         .append(Integer.toHexString(System.identityHashCode(this)))
+                        .append(",id=")
+                        .append(id)
                         .append(",jndiName=")
                         .append(jndiName)
                         .append(",enableTaskExecution=")
@@ -161,8 +163,6 @@ class Config {
                         .append(retryLimit)
                         .append(",xpathId=")
                         .append(xpathId)
-                        .append(",id=")
-                        .append(id)
                         .toString();
     }
 
