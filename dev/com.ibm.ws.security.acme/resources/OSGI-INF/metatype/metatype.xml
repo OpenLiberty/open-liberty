@@ -19,7 +19,7 @@
   <Object ocdref="com.ibm.ws.security.acme.config.metatype"/>
  </Designate>
 
- <OCD id="com.ibm.ws.security.acme.config.metatype" ibm:alias="acmeCA" name="internal" description="internal use only">
+ <OCD id="com.ibm.ws.security.acme.config.metatype" ibm:alias="acmeCA" name="internal" description="internal use only" ibm:objectClass="com.ibm.ws.security.acme.config.AcmeConfig">
  
   <AD id="directoryURI"         name="internal" description="internal use only" type="String"  required="true" />
 
