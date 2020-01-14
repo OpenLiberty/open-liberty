@@ -38,15 +38,15 @@ import com.ibm.ws.security.social.error.SocialLoginException;
 import com.ibm.ws.security.social.internal.Oauth2LoginConfigImpl;
 import com.ibm.ws.common.internal.encoder.Base64Coder;
 
-public class OpenShiftUserApiUtilsIntrospect {
+public class IntrospectUserApiUtils {
 
-    public static final TraceComponent tc = Tr.register(OpenShiftUserApiUtilsIntrospect.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
+    public static final TraceComponent tc = Tr.register(IntrospectUserApiUtils.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 
     Oauth2LoginConfigImpl config = null;
 
     HttpUtils httpUtils = new HttpUtils();
 
-    public OpenShiftUserApiUtilsIntrospect(Oauth2LoginConfigImpl config) {
+    public IntrospectUserApiUtils(Oauth2LoginConfigImpl config) {
         this.config = config;
     }
 
@@ -78,9 +78,6 @@ public class OpenShiftUserApiUtilsIntrospect {
     Map<String, String> getUserApiRequestHeaders() {
         Map<String, String> headers = new HashMap<String, String>();
         
-        if(config.getClientId() ==null  || config.getClientSecret() == null) {
-            throw new SocialLoginException("INTROSPECT_USER_API_NO_ID_OR_SECRET", null, new Object[] { responseCode, response });
-        }
         String idAndSecretEncoded = Base64Coder.base64Encode(config.getClientId() + ":" + config.getClientSecret());
                 //b64encoder.encodeToString((config.getClientId() + ":" + config.getClientSecret()).getBytes());  
         headers.put("Authorization", "Basic " + idAndSecretEncoded);
@@ -89,7 +86,7 @@ public class OpenShiftUserApiUtilsIntrospect {
         return headers;
     }
 
-    String readUserApiResponse(HttpURLConnection connection) throws IOException, SocialLoginException, JoseException {
+    String readUserApiResponse(HttpURLConnection connection) throws IOException, SocialLoginException {
         int responseCode = connection.getResponseCode();
         String response = httpUtils.readConnectionResponse(connection);
         if (responseCode != HttpServletResponse.SC_OK) {
@@ -98,7 +95,7 @@ public class OpenShiftUserApiUtilsIntrospect {
         return modifyExistingResponseToJSON(response);
     }
 
-    String modifyExistingResponseToJSON(String response) throws JoseException, SocialLoginException {
+    String modifyExistingResponseToJSON(String response) throws SocialLoginException {
         JsonObject jsonResponse = getJsonResponseIfValid(response);
         if(jsonResponse.getBoolean("active")) {
             return jsonResponse.toString();

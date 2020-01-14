@@ -24,7 +24,7 @@ import com.ibm.ws.security.social.internal.LinkedinLoginConfigImpl;
 import com.ibm.ws.security.social.internal.Oauth2LoginConfigImpl;
 import com.ibm.ws.security.social.internal.utils.OAuthClientUtil;
 import com.ibm.ws.security.social.internal.utils.OpenShiftUserApiUtils;
-import com.ibm.ws.security.social.internal.utils.OpenShiftUserApiUtilsIntrospect;
+import com.ibm.ws.security.social.internal.utils.IntrospectUserApiUtils;
 import com.ibm.ws.security.social.internal.utils.SocialUtil;
 
 public class TAIUserApiUtils {
@@ -61,11 +61,11 @@ public class TAIUserApiUtils {
         }
     }
 
-    private String getUserApiResponseFromIntrospectEndpoint(Oauth2LoginConfigImpl config, @Sensitive String accessToken, SSLSocketFactory sslSocketFactory) throws IOException, SocialLoginException {
+    private String getUserApiResponseFromIntrospectEndpoint(Oauth2LoginConfigImpl config, @Sensitive String accessToken, SSLSocketFactory sslSocketFactory) throws SocialLoginException {
         // TODO Auto-generated method stub
 //        TokenIntrospect tokenIntrospect = new TokenIntrospect();]
  //have to do something with introspect present and absent, do i need to create a new openshiftuserapiutils thing        
-        OpenShiftUserApiUtilsIntrospect openShiftUtils = new OpenShiftUserApiUtilsIntrospect(config);
+        IntrospectUserApiUtils openShiftUtils = new IntrospectUserApiUtils(config);
         return openShiftUtils.getUserApiResponse(accessToken, sslSocketFactory);
     }
 
