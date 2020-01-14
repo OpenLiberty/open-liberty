@@ -9,7 +9,6 @@ org.apache.cxf.bus.managers.ServerLifeCycleManagerImpl:org.apache.cxf.endpoint.S
 org.apache.cxf.bus.managers.ClientLifeCycleManagerImpl:org.apache.cxf.endpoint.ClientLifeCycleManager:true
 org.apache.cxf.bus.resource.ResourceManagerImpl:org.apache.cxf.resource.ResourceManager:true
 org.apache.cxf.catalog.OASISCatalogManager:org.apache.cxf.catalog.OASISCatalogManager:true
-
 org.apache.cxf.transport.http.HTTPTransportFactory::true
 
 org.apache.cxf.transport.http.asyncclient.AsyncHTTPConduitFactory:org.apache.cxf.transport.http.HTTPConduitFactory:true:true

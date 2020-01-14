@@ -15,6 +15,7 @@ bVersion=1.0
 Bundle-Name: JAX-WS 2.3 Common
 Bundle-SymbolicName: com.ibm.ws.jaxws.2.3.common
 Bundle-Description: IBM JAX-WS 2.3 Common; version=${bVersion}
+Bundle-Activator: org.apache.cxf.bus.osgi.CXFActivator
 
 javac.source: 1.8
 javac.target: 1.8
@@ -53,7 +54,6 @@ Import-Package: \
 
 Private-Package:\
    com.ibm.ws.jaxws.*, \
-   com.ibm.ws.jaxws23.component, \
    com.ibm.wsspi.jaxws
 
 # Use Dynamic Import Packages for JAXB Context Factory,
@@ -166,11 +166,6 @@ Service-Component: \
      configuration-policy:=optional; \
      implementation:=com.ibm.ws.jaxws.catalog.OASISCatalogApplicationBusListener; \
      provide:='com.ibm.ws.jaxws.bus.LibertyApplicationBusListener'; \
-     properties:="service.vendor=IBM", \
-  com.ibm.ws.jaxws.http.transport.factory.provider; \
-     configuration-policy:=optional; \
-     implementation:=com.ibm.ws.jaxws.support.LibertyHTTPTransportFactoryProvider; \
-     provide:='com.ibm.ws.jaxws.bus.ExtensionProvider'; \
      properties:="service.vendor=IBM", \
   com.ibm.ws.jaxws.policy.PolicyAttachmentApplicationBusListener; \
      configuration-policy:=optional; \

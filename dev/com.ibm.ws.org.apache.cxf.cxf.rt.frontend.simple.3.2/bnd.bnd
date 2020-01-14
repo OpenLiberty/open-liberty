@@ -17,8 +17,6 @@ cxfVersion=3.3.3
 
 -includeresource: \
    @${repo;org.apache.cxf:cxf-rt-frontend-simple;${cxfVersion};EXACT}!/!*-INF/*
-   com/ibm/ws=${bin}/com/ibm/ws,\
-   org/apache/cxf=${bin}/org/apache/cxf
 
 -buildpath: org.apache.cxf:cxf-rt-frontend-simple;strategy=exact;version=${cxfVersion},\
   com.ibm.websphere.org.osgi.core,\

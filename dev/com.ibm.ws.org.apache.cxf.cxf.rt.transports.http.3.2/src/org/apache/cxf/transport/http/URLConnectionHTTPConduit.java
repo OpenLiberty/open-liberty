@@ -125,6 +125,16 @@ public class URLConnectionHTTPConduit extends HTTPConduit {
         return connectionFactory.createConnection(clientParameters,
                                                   proxy != null ? proxy : address.getDefaultProxy(), url);
     }
+    
+    
+    public void setAddress(String address) throws IOException {
+        try {
+            defaultAddress = new Address(address);
+    
+        } catch (URISyntaxException e) {
+            throw new IOException(e);
+        }
+    }
 
     @FFDCIgnore({java.net.ProtocolException.class, Throwable.class, Throwable.class})
     protected void setupConnection(Message message, Address address, HTTPClientPolicy csPolicy) throws IOException {
