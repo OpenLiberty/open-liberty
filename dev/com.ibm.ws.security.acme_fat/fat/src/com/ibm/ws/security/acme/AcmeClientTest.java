@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,7 +24,6 @@ import java.security.cert.X509Certificate;
 import java.util.Arrays;
 
 import org.junit.AfterClass;
-import org.junit.Assume;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -134,13 +133,6 @@ public class AcmeClientTest {
 		} catch (Exception e) {
 			Log.error(AcmeClientTest.class, "<cinit>", e);
 		}
-
-		/*
-		 * To talk to the ACME CA, we need to trust the ACME CA.
-		 */
-		System.setProperty("javax.net.ssl.trustStore", TRUSTSTORE_FILE);
-		System.setProperty("javax.net.ssl.trustStorePassword", TRUSTSTORE_PASSWORD);
-		System.setProperty("javax.net.ssl.trustStoreType", "jks");
 	}
 
 	@BeforeClass
@@ -161,13 +153,7 @@ public class AcmeClientTest {
 	}
 
 	@Before
-	public void beforeTest() throws IOException {
-
-		/*
-		 * Don't run on remote builds. Local builds prioritize local Docker. If
-		 * Docker is not installed on the local machine, the tests will fail.
-		 */
-		Assume.assumeTrue(FATRunner.FAT_TEST_LOCALRUN);
+	public void beforeTest() throws Exception {
 
 		/*
 		 * Setup the Mock DNS server to redirect requests to the test domains to
@@ -179,7 +165,7 @@ public class AcmeClientTest {
 			 * responds on AAAA (IPv6) responses before A (IPv4) responses, and
 			 * we don't currently have the testcontainer host's IPv6 address.
 			 */
-			FATSuite.challtestsrv.addARecord(domain, AcmeFatUtils.getDockerHostIP());
+			FATSuite.challtestsrv.addARecord(domain, FATSuite.pebble.getClientHost());
 			FATSuite.challtestsrv.addAAAARecord(domain, "");
 		}
 	}
