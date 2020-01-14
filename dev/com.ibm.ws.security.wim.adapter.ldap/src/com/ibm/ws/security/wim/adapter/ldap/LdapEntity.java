@@ -25,7 +25,6 @@ import javax.naming.directory.BasicAttribute;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.websphere.security.wim.ConfigConstants;
 import com.ibm.websphere.security.wim.ras.WIMMessageHelper;
 import com.ibm.websphere.security.wim.ras.WIMMessageKey;
 import com.ibm.wsspi.security.wim.exception.MissingInitPropertyException;
@@ -405,20 +404,20 @@ public class LdapEntity {
             iRDNObjectClass = new String[size][];
             if (size == 1) {
                 Map<String, Object> rdnAttr = rdnAttrList.get(0);
-                String[] rdns = LdapHelper.getRDNs((String) rdnAttr.get(ConfigConstants.CONFIG_PROP_NAME));
+                String[] rdns = LdapHelper.getRDNs((String) rdnAttr.get(LdapConstants.CONFIG_PROP_NAME));
                 iRDNAttrs[0] = rdns;
             } else {
                 int i = 0;
                 for (Map<String, Object> rdnAttr : rdnAttrList) {
-                    String name = (String) rdnAttr.get(ConfigConstants.CONFIG_PROP_NAME);
+                    String name = (String) rdnAttr.get(LdapConstants.CONFIG_PROP_NAME);
                     String[] rdns = LdapHelper.getRDNs(name);
                     iRDNAttrs[i] = rdns;
-                    String[] objCls = (String[]) rdnAttr.get(ConfigConstants.CONFIG_PROP_OBJECTCLASS);
+                    String[] objCls = (String[]) rdnAttr.get(LdapConstants.CONFIG_DO_OBJECTCLASS);
                     if (objCls == null) {
                         throw new MissingInitPropertyException(WIMMessageKey.MISSING_INI_PROPERTY, Tr.formatMessage(
                                                                                                                     tc,
                                                                                                                     WIMMessageKey.MISSING_INI_PROPERTY,
-                                                                                                                    WIMMessageHelper.generateMsgParms(ConfigConstants.CONFIG_PROP_OBJECTCLASS)));
+                                                                                                                    WIMMessageHelper.generateMsgParms(LdapConstants.CONFIG_DO_OBJECTCLASS)));
                     } else {
                         iRDNObjectClass[i] = objCls;
                     }

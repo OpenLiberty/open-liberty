@@ -19,7 +19,6 @@ import javax.naming.ldap.LdapName;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.security.wim.ConfigConstants;
 import com.ibm.websphere.security.wim.Service;
 import com.ibm.websphere.security.wim.ras.WIMMessageHelper;
 import com.ibm.websphere.security.wim.ras.WIMMessageKey;
@@ -484,7 +483,7 @@ public class MembershipBridge {
                 List<Context> contexts = root.getContexts();
                 if (contexts != null) {
                     Context ctx = new Context();
-                    ctx.setKey(ConfigConstants.CONFIG_PROP_ALLOW_OPERATION_IF_REPOS_DOWN);
+                    ctx.setKey(RegistryConstants.CONFIG_PROP_ALLOW_OPERATION_IF_REPOS_DOWN);
                     ctx.setValue(Boolean.valueOf(this.mappingUtils.getCoreConfiguration().isAllowOpIfRepoDown(idAndRealm.getRealm())));
                     contexts.add(ctx);
                 }
@@ -537,7 +536,7 @@ public class MembershipBridge {
                 List<Context> contexts = root.getContexts();
                 if (contexts != null) {
                     Context ctx = new Context();
-                    ctx.setKey(ConfigConstants.CONFIG_PROP_ALLOW_OPERATION_IF_REPOS_DOWN);
+                    ctx.setKey(RegistryConstants.CONFIG_PROP_ALLOW_OPERATION_IF_REPOS_DOWN);
                     ctx.setValue(Boolean.valueOf(this.mappingUtils.getCoreConfiguration().isAllowOpIfRepoDown(idAndRealm.getRealm())));
                     contexts.add(ctx);
                 }
@@ -594,7 +593,7 @@ public class MembershipBridge {
                 List<Context> contexts = root.getContexts();
                 if (contexts != null) {
                     Context ctx = new Context();
-                    ctx.setKey(ConfigConstants.CONFIG_PROP_ALLOW_OPERATION_IF_REPOS_DOWN);
+                    ctx.setKey(RegistryConstants.CONFIG_PROP_ALLOW_OPERATION_IF_REPOS_DOWN);
                     ctx.setValue(Boolean.valueOf(this.mappingUtils.getCoreConfiguration().isAllowOpIfRepoDown(idAndRealm.getRealm())));
                     contexts.add(ctx);
                 }
