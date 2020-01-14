@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -58,7 +58,7 @@ public class FileUtils {
         }
     }
 
-    public static synchronized boolean fileExists(final File target) {
+    public static boolean fileExists(final File target) {
         Object token = ThreadIdentityManager.runAsServer();
         try {
             return AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
@@ -212,7 +212,7 @@ public class FileUtils {
         }
     }
 
-    public static synchronized boolean fileMkDirs(final File target) {
+    public static boolean fileMkDirs(final File target) {
         Object token = ThreadIdentityManager.runAsServer();
         try {
             return AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
