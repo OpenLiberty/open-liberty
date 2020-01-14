@@ -61,9 +61,9 @@ public class TAIUserApiUtils {
         }
     }
 
-    private String getUserApiResponseFromIntrospectEndpoint(Oauth2LoginConfigImpl config, @Sensitive String accessToken, SSLSocketFactory sslSocketFactory) throws SocialLoginException {       
-        IntrospectUserApiUtils openShiftUtils = new IntrospectUserApiUtils(config);
-        return openShiftUtils.getUserApiResponse(accessToken, sslSocketFactory);
+    private String getUserApiResponseFromIntrospectEndpoint(Oauth2LoginConfigImpl config, @Sensitive String accessToken, SSLSocketFactory sslSocketFactory) throws SocialLoginException {
+        IntrospectUserApiUtils introspectUtils = new IntrospectUserApiUtils(config);
+        return introspectUtils.getUserApiResponse(accessToken, sslSocketFactory);
     }
 
 
