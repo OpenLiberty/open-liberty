@@ -18,6 +18,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.AfterClass;
@@ -189,6 +190,126 @@ public class PersistentExecutorErrorPathsTestWithFailoverAndPollingEnabled {
     @Test
     public void testFailOnceAndSkipFirstRetryNoAutoPurgeFEWithPolling() throws Exception {
         runInServlet("testFailOnceAndSkipFirstRetryNoAutoPurge");
+    }
+
+    /**
+     * Verify that pending/active task ids, plus other helpful information, appears in the server dump output.
+     */
+    // TODO switch to full mode after we are further along
+    @Test
+    public void testIntrospectorWithFailOverEnabled() throws Exception {
+        // schedule some tasks that will remain active while the introspector output is recorded
+        StringBuilder response = runInServlet("testScheduleDistantIntrospectableTasks");
+        int i = response.indexOf("TASKS ARE ");
+        if (i < 0)
+            throw new Exception("Start of task list not found in output: " + response);
+        int end = response.indexOf(".", i);
+        if (end < 0)
+            throw new Exception("End of task list not found in output: " + response);
+
+        String[] scheduledDistantTasks = response.substring(i + "TASKS ARE ".length(), end).split(",");
+
+        response = runInServlet("testScheduleFrequentIntrospectableTasks");
+        i = response.indexOf("TASKS ARE ");
+        if (i < 0)
+            throw new Exception("Start of task list not found in output: " + response);
+        end = response.indexOf(".", i);
+        if (end < 0)
+            throw new Exception("End of task list not found in output: " + response);
+
+        String[] scheduledFrequentTasks = response.substring(i + "TASKS ARE ".length(), end).split(",");
+
+        boolean successful = false;
+        try {
+            // Request a dump of the server
+            List<String> output = FATSuite.persistentExecutorIntrospectorDump();
+
+            // Validate contents of dump
+            String found = null;
+            for (String line : output)
+                if (line.contains("concurrent/myScheduler")) {
+                    found = line;
+                    if (line.toLowerCase().contains("deactivated"))
+                        throw new Exception("Persistent executor should still be active. " + output);
+                    break;
+                }
+            if (found == null)
+                throw new Exception("Persistent executor JNDI name is absent from server dump output: " + output);
+
+            found = null;
+            for (String line : output)
+                if (line.contains("Partition 0")) {
+                    found = line;
+                    break;
+                }
+            if (found == null)
+                throw new Exception("Persistent executor partition must show as 0 in server dump output when fail over is enabled " + output);
+
+            found = null;
+            for (String line : output)
+                if (line.contains("missedTaskThreshold=5s")) {
+                    found = line;
+                    break;
+                }
+            if (found == null)
+                throw new Exception("Persistent executor config is absent from server dump output " + output);
+
+            found = null;
+            for (String line : output)
+                if (line.contains("Accessed from [persistenterrtest]")) {
+                    found = line;
+                    break;
+                }
+            if (found == null)
+                throw new Exception("Application that used persistent executor is absent from server dump output " + output);
+
+            found = null;
+            for (String line : output)
+                if (line.contains("persistenterrtest is STARTED")) {
+                    found = line;
+                    break;
+                }
+            if (found == null)
+                throw new Exception("State of application that used persistent executor is absent from server dump output " + output);
+
+            found = null;
+            for (String line : output)
+                if (line.contains("In-memory")) {
+                    found = line;
+                    int b1 = line.indexOf('[');
+                    int b2 = line.indexOf(']');
+                    if (b1 < 0 || b2 < 0 || b2 < b1)
+                        throw new Exception("In-memory task list not found in server dump output " + output);
+                    String[] foundTasks = line.substring(b1 + 1, b2).split(", ");
+                    List<String> foundTasksList = Arrays.asList(foundTasks);
+                    for (String taskId : scheduledFrequentTasks)
+                        if (!foundTasksList.contains(taskId))
+                            throw new Exception("Scheduled tasks " + Arrays.toString(scheduledFrequentTasks) + " are not all found in server dump output: " + output);
+                    for (String taskId : scheduledDistantTasks)
+                        if (foundTasksList.contains(taskId))
+                            throw new Exception("Scheduled task " + taskId + " should not be found in server dump output " +
+                                "because it is scheduled for the distant future and not claimed by this instance " + output);
+                    break;
+                }
+            if (found == null)
+                throw new Exception("In-memory tasks are absent from server dump output " + output);
+
+            successful = true;
+        } finally {
+            // Cancel tasks that we created during this test
+            try {
+                StringBuilder removalRequest = new StringBuilder("testRemoveTasks");
+                for (String taskId : scheduledDistantTasks)
+                    removalRequest.append("&taskId=").append(taskId);
+                for (String taskId : scheduledFrequentTasks)
+                    removalRequest.append("&taskId=").append(taskId);
+                runInServlet(removalRequest.toString());
+            } catch (Exception x) {
+                if (successful)
+                    throw x;
+                // else allow the original failure to be raised
+            }
+        }
     }
 
     /**

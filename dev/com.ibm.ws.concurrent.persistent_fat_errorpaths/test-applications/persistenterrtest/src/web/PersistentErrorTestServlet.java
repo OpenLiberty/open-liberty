@@ -869,6 +869,30 @@ public class PersistentErrorTestServlet extends HttpServlet {
     }
 
     /**
+     * Schedule some tasks that will remain pending for the distant future during a dump of the server.
+     * Report the task IDs so that the controlling test can look for them in the output.
+     */
+    public void testScheduleDistantIntrospectableTasks(HttpServletRequest request, PrintWriter out) throws Exception {
+        TaskStatus<?> statusA = scheduler.scheduleAtFixedRate(new SharedCounterTask(), 32, 32, TimeUnit.DAYS);
+
+        TaskStatus<?> statusB = scheduler.schedule((Runnable) new SharedCounterTask(), 32, TimeUnit.HOURS);
+
+        out.println("TASKS ARE " + statusA.getTaskId() + "," + statusB.getTaskId() + ".");
+    }
+
+    /**
+     * Schedule some tasks that will run frequently during a dump of the server.
+     * Report the task IDs so that the controlling test can look for them in the output.
+     */
+    public void testScheduleFrequentIntrospectableTasks(HttpServletRequest request, PrintWriter out) throws Exception {
+        TaskStatus<?> statusA = scheduler.scheduleWithFixedDelay(new SharedCounterTask(), 0, 300, TimeUnit.MILLISECONDS);
+
+        TaskStatus<?> statusB = scheduler.scheduleAtFixedRate(new SharedCounterTask(), 0, 333, TimeUnit.MILLISECONDS);
+
+        out.println("TASKS ARE " + statusA.getTaskId() + "," + statusB.getTaskId() + ".");
+    }
+
+    /**
      * Schedule some tasks that will run or remain pending during a dump of the server.
      * Report the task IDs so that the controlling test can look for them in the output.
      */
