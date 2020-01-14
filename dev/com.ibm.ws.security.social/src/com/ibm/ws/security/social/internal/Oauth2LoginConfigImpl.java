@@ -282,7 +282,7 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
     }
     
     protected void checkForRequiredConfigAttributesForIntrospect(Map<String, Object> props) {
-        configUtils.getRequiredConfigAttribute(props, KEY_clientId);
+        getRequiredConfigAttribute(props, KEY_clientId);
         getRequiredSerializableProtectedStringConfigAttribute(props, KEY_clientSecret);
     }
 

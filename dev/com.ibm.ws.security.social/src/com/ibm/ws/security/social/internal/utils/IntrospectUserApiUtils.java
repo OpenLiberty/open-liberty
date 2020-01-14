@@ -33,6 +33,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.security.common.http.HttpUtils;
+import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.TraceConstants;
 import com.ibm.ws.security.social.error.SocialLoginException;
 import com.ibm.ws.security.social.internal.Oauth2LoginConfigImpl;
@@ -42,7 +43,7 @@ public class IntrospectUserApiUtils {
 
     public static final TraceComponent tc = Tr.register(IntrospectUserApiUtils.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 
-    Oauth2LoginConfigImpl config = null;
+    SocialLoginConfig config = null;
 
     HttpUtils httpUtils = new HttpUtils();
 
@@ -112,7 +113,7 @@ public class IntrospectUserApiUtils {
         try {
             return Json.createReader(new StringReader(response)).readObject();
         } catch (JsonParsingException e) {
-            throw new SocialLoginException("INTROSPECT_USER_API_RESPONSE_NOT_JSON", null, new Object[] { response, e });
+            throw new SocialLoginException("INTROSPECT_USER_API_RESPONSE_NOT_JSON", e, new Object[] { response, e });
         }
     }
 
