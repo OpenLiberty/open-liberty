@@ -228,6 +228,11 @@ public class PersistentExecutorErrorPathsTestWithFailoverEnabledNoPolling {
     }
 
     @Test
+    public void testRollbackWhenMissedTaskThresholdExceeded() throws Exception {
+        runInServlet("testRollbackWhenMissedTaskThresholdExceeded");
+    }
+
+    @Test
     public void testShutDownDerbyBeforeTaskExecutionFENoPolling() throws Exception {
         runInServlet("testShutDownDerbyBeforeTaskExecution");
     }

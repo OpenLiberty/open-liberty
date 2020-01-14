@@ -34,6 +34,7 @@ import javax.enterprise.concurrent.SkippedException;
 import javax.enterprise.concurrent.Trigger;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -102,6 +103,12 @@ public class PersistentErrorTestServlet extends HttpServlet {
             out.flush();
             out.close();
         }
+    }
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        // Make UserTransaction available to task that otherwise runs without JEE metadata context
+        WaitForRollbackTask.tran = tran;
     }
 
     /**
@@ -865,6 +872,24 @@ public class PersistentErrorTestServlet extends HttpServlet {
             throw new Exception("Should not be able to obtain misconfigured persistentExecutor where the retryInterval value is less than the missedTaskThreshold. " + misconfiguredExecutor);
         } catch (NamingException x) {
             // expected
+        }
+    }
+
+    /**
+     * testRollbackWhenMissedTaskThresholdExceeded - verify that a task's transaction times out by having the task wait for
+     * the transaction status to be set to rollback-only.
+     */
+    public void testRollbackWhenMissedTaskThresholdExceeded(HttpServletRequest request, PrintWriter out) throws Exception {
+        WaitForRollbackTask task = new WaitForRollbackTask();
+        TaskStatus<Integer> status = scheduler.schedule(task, 4, TimeUnit.MILLISECONDS);
+        for (long start = System.nanoTime(); status != null && !status.hasResult() && System.nanoTime() - start < TIMEOUT_NS; status = scheduler.getStatus(status.getTaskId()))
+            Thread.sleep(POLL_INTERVAL);
+        try {
+            Integer result = status.get();
+            throw new Exception("Should not be able to get a result from a task that always rolls back: " + result);
+        } catch (AbortedException x) {
+            if (x.getMessage() == null || !x.getMessage().startsWith("CWWKC1555E"))
+                throw x;
         }
     }
 
