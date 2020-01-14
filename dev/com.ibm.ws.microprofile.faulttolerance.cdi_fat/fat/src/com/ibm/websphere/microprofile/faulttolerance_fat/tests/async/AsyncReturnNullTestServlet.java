@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,12 +26,12 @@ import org.junit.Test;
 import componenttest.app.FATServlet;
 
 @WebServlet("/AsyncTest")
-public class AsyncTestServlet extends FATServlet {
+public class AsyncReturnNullTestServlet extends FATServlet {
 
     private static final long serialVersionUID = 1L;
 
     @Inject
-    AsyncReturnNullBean nullReturnBean;
+    AsyncMethodsReturnNullBean nullReturnBean;
 
     @Inject
     AsyncClassReturnNullBean nullReturnClassBean;

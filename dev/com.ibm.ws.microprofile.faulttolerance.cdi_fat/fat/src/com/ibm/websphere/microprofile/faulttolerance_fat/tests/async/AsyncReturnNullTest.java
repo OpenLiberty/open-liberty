@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,23 +30,22 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
-public class AsyncTest extends FATServletClient {
+public class AsyncReturnNullTest extends FATServletClient {
 
     private static final String APP_NAME = "ftAsync";
 
     @Server("AsyncFaultTolerance")
-    @TestServlet(contextRoot = APP_NAME, servlet = AsyncTestServlet.class)
+    @TestServlet(contextRoot = APP_NAME, servlet = AsyncReturnNullTestServlet.class)
     public static LibertyServer server;
 
     @BeforeClass
     public static void setup() throws Exception {
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
-                        .addPackage(AsyncTest.class.getPackage());
+                        .addPackage(AsyncReturnNullTest.class.getPackage());
         ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
         server.startServer();
     }
 
-    //run against both EE8 and EE7 features
     @ClassRule
     public static RepeatTests r = RepeatFaultTolerance.repeat20AndAbove("AsyncFaultTolerance");
 
