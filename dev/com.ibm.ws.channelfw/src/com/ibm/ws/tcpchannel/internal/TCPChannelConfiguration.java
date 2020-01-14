@@ -375,6 +375,12 @@ public class TCPChannelConfiguration implements TCPConfigConstants, FFDCSelfIntr
                         //Adding this prevents a message from being output saying it's invalid
                         continue;
                     }
+
+                    if (key.equalsIgnoreCase(PORT_OPEN_RETRIES)) {
+                        //This is a valid configuration option but outbound channels do not use it
+                        //Adding this prevents a message from being output saying it's invalid
+                        continue;
+                    }
                 }
 
                 // PK37541 - move reuse_addr to common config
@@ -1129,7 +1135,7 @@ public class TCPChannelConfiguration implements TCPConfigConstants, FFDCSelfIntr
             Tr.debug(tc, NAME_INC_LIST + ": " + debugStringArray(getHostNameIncludeList()));
             Tr.debug(tc, BACKLOG + ": " + getListenBacklog());
             Tr.debug(tc, NEW_BUFF_SIZE + ": " + getNewConnectionBufferSize());
-            Tr.debug(tc, PORT_OPEN_RETRIES + ": " + getNewConnectionBufferSize());
+            Tr.debug(tc, PORT_OPEN_RETRIES + ": " + getPortOpenRetries());
             Tr.debug(tc, CASE_INSENSITIVE_HOSTNAMES + ": " + getCaseInsensitiveHostnames());
         } else {
             // outbound specific values
