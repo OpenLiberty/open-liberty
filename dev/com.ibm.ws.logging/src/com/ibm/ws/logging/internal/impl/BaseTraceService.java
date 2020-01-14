@@ -23,11 +23,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicReference;
@@ -222,7 +220,8 @@ public class BaseTraceService implements TrService {
     protected volatile String serverName = null;
     protected volatile String wlpUserDir = null;
 
-    private static Map<String, Set<String>> omitFieldsMap = new HashMap<>();
+    //private static Map<String, Set<String>> omitFieldsMap = new HashMap<>();
+    private static final String OMIT_FIELDS_STRING = "@@@OMIT@@@";
     private static boolean isServerConfigUpdate = false;
     private static boolean isServerConfigSetup = true;
 
@@ -464,10 +463,6 @@ public class BaseTraceService implements TrService {
         }
     }
 
-    public static Map<String, Set<String>> getOmitFieldsMap() {
-        return omitFieldsMap;
-    }
-
     public static boolean getIsServerConfigUpdate() {
         return isServerConfigUpdate;
     }
@@ -479,20 +474,7 @@ public class BaseTraceService implements TrService {
         else
             isServerConfigSetup = false;
 
-        //env var omitJsonFields
-        if (omitJsonFields)
-            omitFieldsMap.clear(); //refresh for each server configuration update
-
         if (isServerConfigUpdate) {
-            //env var omitJsonFields
-            if (omitJsonFields) {
-                AccessLogData.resetOmitFields();
-                FFDCData.resetOmitFields();
-                LogTraceData.resetOmitFieldsMessage();
-                LogTraceData.resetOmitFieldsTrace();
-                LogTraceData.resetExtFields();
-                AuditData.resetOmitFields();
-            }
             AccessLogData.resetJsonLoggingNameAliases();
             FFDCData.resetJsonLoggingNameAliases();
             LogTraceData.resetJsonLoggingNameAliasesMessage();
@@ -527,60 +509,29 @@ public class BaseTraceService implements TrService {
 
             //env var omitJsonFields
             if (pair.trim().endsWith(":") && omitJsonFields) { //FIND FIELDS THAT NEED TO BE OMITTED
-                Set<String> omitFieldsSet = new HashSet<>();
                 if (entry.length == 1) { //omit fields for all event types (just a field name)
-                    omitFieldsSet.add(entry[0]);
-
                     if (LogTraceList.contains(entry[0])) {
+                        messageMap.put(entry[0], OMIT_FIELDS_STRING);
+                        traceMap.put(entry[0], OMIT_FIELDS_STRING);
                         valueFound = true;
-                        if (omitFieldsMap.containsKey(CollectorConstants.MESSAGES_CONFIG_VAL)) {
-                            omitFieldsMap.get(CollectorConstants.MESSAGES_CONFIG_VAL).add(entry[0]);
-                        } else if (!omitFieldsMap.containsKey(CollectorConstants.MESSAGES_CONFIG_VAL)) {
-                            omitFieldsMap.put(CollectorConstants.MESSAGES_CONFIG_VAL, omitFieldsSet);
-                        }
-                        if (omitFieldsMap.containsKey(CollectorConstants.TRACE_CONFIG_VAL)) {
-                            omitFieldsMap.get(CollectorConstants.TRACE_CONFIG_VAL).add(entry[0]);
-                        } else if (!omitFieldsMap.containsKey(CollectorConstants.TRACE_CONFIG_VAL)) {
-                            omitFieldsMap.put(CollectorConstants.TRACE_CONFIG_VAL, omitFieldsSet);
-                        }
                     }
                     if (FFDCList.contains(entry[0])) {
+                        ffdcMap.put(entry[0], OMIT_FIELDS_STRING);
                         valueFound = true;
-                        if (omitFieldsMap.containsKey(CollectorConstants.FFDC_CONFIG_VAL)) {
-                            omitFieldsMap.get(CollectorConstants.FFDC_CONFIG_VAL).add(entry[0]);
-                        } else {
-                            omitFieldsMap.put(CollectorConstants.FFDC_CONFIG_VAL, omitFieldsSet);
-                        }
                     }
                     if (AccessLogList.contains(entry[0])) {
+                        accessLogMap.put(entry[0], OMIT_FIELDS_STRING);
                         valueFound = true;
-                        if (omitFieldsMap.containsKey(CollectorConstants.ACCESS_CONFIG_VAL)) {
-                            omitFieldsMap.get(CollectorConstants.ACCESS_CONFIG_VAL).add(entry[0]);
-                        } else {
-                            omitFieldsMap.put(CollectorConstants.ACCESS_CONFIG_VAL, omitFieldsSet);
-                        }
                     }
                     if (AuditList.contains(entry[0])) {
+                        auditMap.put(entry[0], OMIT_FIELDS_STRING);
                         valueFound = true;
-                        if (omitFieldsMap.containsKey(CollectorConstants.AUDIT_CONFIG_VAL)) {
-                            omitFieldsMap.get(CollectorConstants.AUDIT_CONFIG_VAL).add(entry[0]);
-                        } else {
-                            omitFieldsMap.put(CollectorConstants.AUDIT_CONFIG_VAL, omitFieldsSet);
-                        }
                     }
                     //extensions
                     if (entry[0].startsWith("ext_")) {
+                        messageMap.put(entry[0], OMIT_FIELDS_STRING);
+                        traceMap.put(entry[0], OMIT_FIELDS_STRING);
                         valueFound = true;
-                        if (omitFieldsMap.containsKey(CollectorConstants.MESSAGES_CONFIG_VAL)) {
-                            omitFieldsMap.get(CollectorConstants.MESSAGES_CONFIG_VAL).add(entry[0]);
-                        } else if (!omitFieldsMap.containsKey(CollectorConstants.MESSAGES_CONFIG_VAL)) {
-                            omitFieldsMap.put(CollectorConstants.MESSAGES_CONFIG_VAL, omitFieldsSet);
-                        }
-                        if (omitFieldsMap.containsKey(CollectorConstants.TRACE_CONFIG_VAL)) {
-                            omitFieldsMap.get(CollectorConstants.TRACE_CONFIG_VAL).add(entry[0]);
-                        } else if (!omitFieldsMap.containsKey(CollectorConstants.TRACE_CONFIG_VAL)) {
-                            omitFieldsMap.put(CollectorConstants.TRACE_CONFIG_VAL, omitFieldsSet);
-                        }
                     }
                     if (!valueFound) {
                         //if the value does not exist in any of the known keys, give a warning
@@ -589,53 +540,32 @@ public class BaseTraceService implements TrService {
                     valueFound = false;//reset valueFound boolean
 
                 } else if (entry.length == 2) { //omit fields for specific event types (event type and field name)
-                    omitFieldsSet.add(entry[1]);
                     entry[1] = entry[1].trim();
 
                     if (CollectorConstants.MESSAGES_CONFIG_VAL.equals(entry[0])) {
                         if (LogTraceList.contains(entry[1]) || entry[1].startsWith("ext_")) {
+                            messageMap.put(entry[1], OMIT_FIELDS_STRING);
                             valueFound = true;
-                            if (omitFieldsMap.containsKey(entry[0])) {
-                                omitFieldsMap.get(entry[0]).add(entry[1]);
-                            } else {
-                                omitFieldsMap.put(entry[0], omitFieldsSet);
-                            }
                         }
                     } else if (CollectorConstants.TRACE_CONFIG_VAL.equals(entry[0])) {
                         if (LogTraceList.contains(entry[1]) || entry[1].startsWith("ext_")) {
+                            traceMap.put(entry[1], OMIT_FIELDS_STRING);
                             valueFound = true;
-                            if (omitFieldsMap.containsKey(entry[0])) {
-                                omitFieldsMap.get(entry[0]).add(entry[1]);
-                            } else {
-                                omitFieldsMap.put(entry[0], omitFieldsSet);
-                            }
                         }
                     } else if (CollectorConstants.FFDC_CONFIG_VAL.equals(entry[0])) {
                         if (FFDCList.contains(entry[1])) {
+                            ffdcMap.put(entry[1], OMIT_FIELDS_STRING);
                             valueFound = true;
-                            if (omitFieldsMap.containsKey(entry[0])) {
-                                omitFieldsMap.get(entry[0]).add(entry[1]);
-                            } else {
-                                omitFieldsMap.put(entry[0], omitFieldsSet);
-                            }
                         }
                     } else if (CollectorConstants.ACCESS_CONFIG_VAL.equals(entry[0])) {
                         if (AccessLogList.contains(entry[1])) {
+                            accessLogMap.put(entry[1], OMIT_FIELDS_STRING);
                             valueFound = true;
-                            if (omitFieldsMap.containsKey(entry[0])) {
-                                omitFieldsMap.get(entry[0]).add(entry[1]);
-                            } else {
-                                omitFieldsMap.put(entry[0], omitFieldsSet);
-                            }
                         }
                     } else if (CollectorConstants.AUDIT_CONFIG_VAL.equals(entry[0])) {
                         if (AuditList.contains(entry[1])) {
+                            auditMap.put(entry[1], OMIT_FIELDS_STRING);
                             valueFound = true;
-                            if (omitFieldsMap.containsKey(entry[0])) {
-                                omitFieldsMap.get(entry[0]).add(entry[1]);
-                            } else {
-                                omitFieldsMap.put(entry[0], omitFieldsSet);
-                            }
                         }
                     } else {
                         isInvalidField = true;
@@ -731,14 +661,6 @@ public class BaseTraceService implements TrService {
         LogTraceData.newJsonLoggingNameAliasesMessage(messageMap);
         LogTraceData.newJsonLoggingNameAliasesTrace(traceMap);
         AuditData.newJsonLoggingNameAliases(auditMap);
-
-        if (omitJsonFields) {
-            AccessLogData.setOmitFields(omitFieldsMap.get(CollectorConstants.ACCESS_CONFIG_VAL));
-            FFDCData.setOmitFields(omitFieldsMap.get(CollectorConstants.FFDC_CONFIG_VAL));
-            LogTraceData.setOmitFieldsMessage(omitFieldsMap.get(CollectorConstants.MESSAGES_CONFIG_VAL));
-            LogTraceData.setOmitFieldsTrace(omitFieldsMap.get(CollectorConstants.TRACE_CONFIG_VAL));
-            AuditData.setOmitFields(omitFieldsMap.get(CollectorConstants.AUDIT_CONFIG_VAL));
-        }
     }
 
     /**
