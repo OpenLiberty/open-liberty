@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -319,7 +319,7 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
     }
 
     /**
-     * This test verifies that a Liberty server CANNOT recover its own logs if they have been locked for recovery by a peer
+     * This test verifies that a Liberty server DOES recover its own logs if they have been locked for recovery by a peer
      * server where HADB Locking is enabled and the lock is of long duration.
      *
      * The acquisition of Cloud001's logs by Cloud002 is simulated - in practice Cloud002 will assert ownership of
@@ -327,18 +327,17 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
      * in the control row. The Cloud002 server is started, the servlet is run and Cloud002 stopped.
      *
      * The Cloud001 server is started with a server.xml that includes attributes to enable and configure HADB
-     * peer locking such that a lock on the local logs is of long duration. The trace logs are checked to verify that no local recovery
-     * has occurred. Cloud001's server.xml is reset and the server is restarted to tidy up.
+     * peer locking. Local recovery should occur. Cloud001's server.xml is reset and the server is restarted to tidy up.
      *
      * @throws Exception
      */
     @Test
     @Mode(TestMode.LITE)
     @AllowedFFDC(value = { "com.ibm.ws.recoverylog.spi.RecoveryFailedException", "java.lang.RuntimeException" })
-    public void testLocalServerCannotReAcquireLogs() throws Exception {
+    public void testLocalServerDoesAcquireLogs() throws Exception {
         int test = 3;
 
-        final String method = "testLocalServerCannotReAcquireLogs";
+        final String method = "testLocalServerDoesAcquireLogs";
         final String id = String.format("%03d", test);
         StringBuilder sb = null;
         boolean testFailed = false;
@@ -361,16 +360,16 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
         if (!testFailed) {
 
             // switch to new configuration for 1st server
-            server1.copyFileToLibertyServerRoot("longLocalStaleTimeServer1/server.xml");
+            server1.copyFileToLibertyServerRoot("longPeerStaleTimeServer1/server.xml");
             // restart 1st server
             //
-            // Under the HADB locking scheme, with the parameters set in XXXXX, the server cannot re-aqcuire the logs
+            // Under the HADB locking scheme, the local server SHOULD aqcuire the logs
             server1.startServerAndValidate(false, true, true);
 
-            // wait for server to attempt (but fail) to perform local recovery
-            if (!testFailed && (server1.waitForStringInLog("HADB Peer locking, local recovery failed") == null)) {
+            // wait for server to attempt to perform local recovery
+            if (!testFailed && (server1.waitForStringInTrace("Claim the logs for the local server") == null)) {
                 testFailed = true;
-                testFailureString = "Server1 did not report that local recovery has failed where HADB Peer locking scheme is enabled";
+                testFailureString = "Server failed to claim logs";
             }
 
             //Stop server1
@@ -454,7 +453,7 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
                 testFailureString = "Recovery incomplete on first server";
             }
 
-            if (!testFailed && (server1.waitForStringInTrace("Claim the local logs for the local server") == null)) {
+            if (!testFailed && (server1.waitForStringInTrace("Claim the logs for the local server") == null)) {
                 testFailed = true;
                 testFailureString = "Server failed to claim logs";
             }

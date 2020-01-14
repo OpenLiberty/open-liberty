@@ -13,6 +13,7 @@ package com.ibm.ws.security.acme;
 import java.net.UnknownHostException;
 
 import org.junit.AfterClass;
+import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -26,7 +27,7 @@ import com.ibm.ws.security.acme.docker.PebbleContainer;
 import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 
 @RunWith(Suite.class)
-@SuiteClasses({ AcmeClientTest.class })
+@SuiteClasses({ AcmeClientTest.class, AcmeConfigBringUp.class })
 public class FATSuite {
 
 	public static ChalltestsrvContainer challtestsrv = null;
@@ -61,6 +62,9 @@ public class FATSuite {
 	@BeforeClass
 	public static void beforeClass() throws UnknownHostException {
 		final String METHOD_NAME = "beforeClass()";
+		
+		String os = System.getProperty("os.name").toLowerCase();
+		Assume.assumeTrue(!os.startsWith("z/os"));
 
 		/*
 		 * Need to expose the HTTP port that is used to answer the HTTP-01

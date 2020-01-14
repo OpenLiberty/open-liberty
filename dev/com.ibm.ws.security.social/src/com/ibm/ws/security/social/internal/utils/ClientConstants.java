@@ -72,6 +72,5 @@ public class ClientConstants {
     public static final String ERROR = "error";
     public static final String ERROR_DESC = "error_description";
     public static final String ERROR_URI = "error_uri";
-    public static final String USER_API_TYPE_KUBE = "kube";
 
 }

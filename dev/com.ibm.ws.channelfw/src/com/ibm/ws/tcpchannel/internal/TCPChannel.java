@@ -11,23 +11,26 @@
 package com.ibm.ws.tcpchannel.internal;
 
 import java.io.IOException;
-import java.net.Inet6Address;
 import java.net.Socket;
 import java.nio.channels.SocketChannel;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
+import com.ibm.websphere.channelfw.ChainData;
 import com.ibm.websphere.channelfw.ChannelData;
 import com.ibm.websphere.channelfw.osgi.CHFWBundle;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.channelfw.internal.ChannelFrameworkConstants;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.FFDCSelfIntrospectable;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
+import com.ibm.wsspi.channelfw.ChannelFramework;
 import com.ibm.wsspi.channelfw.ChannelFrameworkFactory;
 import com.ibm.wsspi.channelfw.ConnectionLink;
 import com.ibm.wsspi.channelfw.DiscriminationProcess;
@@ -70,6 +73,7 @@ public abstract class TCPChannel implements InboundChannel, OutboundChannel, FFD
     protected volatile boolean stopFlag = true;
     private boolean preparingToStop = false;
     private String displayableHostName = null;
+    private String chainName = null;
 
     private static final TraceComponent tc = Tr.register(TCPChannel.class, TCPChannelMessageConstants.TCP_TRACE_NAME, TCPChannelMessageConstants.TCP_BUNDLE);
 
@@ -124,6 +128,13 @@ public abstract class TCPChannel implements InboundChannel, OutboundChannel, FFD
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "setup");
         }
+
+        Map propertyBag = runtimeConfig.getPropertyBag();
+        this.chainName = (String) propertyBag.get(ChannelFrameworkConstants.CHAIN_NAME_KEY);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "getting from PropertyBag chain name of: " + chainName);
+        }
+
         this.channelFactory = factory;
         this.channelData = runtimeConfig;
         this.channelName = runtimeConfig.getName();
@@ -158,6 +169,10 @@ public abstract class TCPChannel implements InboundChannel, OutboundChannel, FFD
 
     protected String getDisplayableHostName() {
         return this.displayableHostName;
+    }
+
+    protected void setDisplayableHostName(String name) {
+        this.displayableHostName = name;
     }
 
     protected void decrementConnectionCount() {
@@ -247,6 +262,7 @@ public abstract class TCPChannel implements InboundChannel, OutboundChannel, FFD
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "start");
         }
+
         if (this.stopFlag) {
             // only start once
             this.stopFlag = false;
@@ -260,19 +276,23 @@ public abstract class TCPChannel implements InboundChannel, OutboundChannel, FFD
                     acceptReqProcessor.registerPort(this.endPoint);
                     this.preparingToStop = false;
 
-                    String IPvType = "IPv4";
-                    if (this.endPoint.getServerSocket().getInetAddress() instanceof Inet6Address) {
-                        IPvType = "IPv6";
-                    }
+                    // below code has been superceded by the split up of the port listening into a two step process during startup. With the
+                    // port opening not happening until the end of server startup.
+                    //String IPvType = "IPv4";
+                    //if (this.endPoint.getServerSocket().getInetAddress() instanceof Inet6Address) {
+                    //    IPvType = "IPv6";
+                    //}
 
-                    if (this.config.getHostname() == null) {
-                        this.displayableHostName = "*  (" + IPvType + ")";
-                    } else {
-                        this.displayableHostName = this.endPoint.getServerSocket().getInetAddress().getHostName() + "  (" + IPvType + ": "
-                                                   + this.endPoint.getServerSocket().getInetAddress().getHostAddress() + ")";
-                    }
-                    Tr.info(tc, TCPChannelMessageConstants.TCP_CHANNEL_STARTED,
-                            new Object[] { getExternalName(), this.displayableHostName, String.valueOf(this.endPoint.getListenPort()) });
+                    //if (this.config.getHostname() == null) {
+                    //    this.displayableHostName = "*  (" + IPvType + ")";
+                    //} else {
+                    //
+                    //    this.displayableHostName = this.endPoint.getServerSocket().getInetAddress().getHostName() + "  (" + IPvType + ": "
+                    //                                   + this.endPoint.getServerSocket().getInetAddress().getHostAddress() + ")";
+                    //}
+                    //
+                    //Tr.info(tc, TCPChannelMessageConstants.TCP_CHANNEL_STARTED,
+                    //        new Object[] { getExternalName(), this.displayableHostName, String.valueOf(this.endPoint.getListenPort()) });
 
                 } catch (IOException e) {
                     FFDCFilter.processException(e, getClass().getName() + ".start", "100", this);
@@ -299,6 +319,7 @@ public abstract class TCPChannel implements InboundChannel, OutboundChannel, FFD
      */
     @Override
     public void init() throws ChannelException {
+
         if (this.config.isInbound()) {
             // Customize the TCPChannel configuration object so that it knows
             // what port to use for this chain.
@@ -391,6 +412,7 @@ public abstract class TCPChannel implements InboundChannel, OutboundChannel, FFD
             this.preparingToStop = true;
             // d247139 don't null acceptReqProcessor here,
             // need it for processing a subsequent "start"
+
         }
 
         // only stop the channel if millisec is 0, otherwise ignore.
@@ -717,4 +739,62 @@ public abstract class TCPChannel implements InboundChannel, OutboundChannel, FFD
             return null;
         }
     }
+
+    /**
+     * take down a chain. this was added for when the start code failed to open/bind to a port during startup. This is new with the split of the port
+     * opening/listening code during startup.
+     */
+    public void takeDownChain() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, "takeDownChain");
+        }
+
+        if (chainName == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                Tr.exit(tc, "takeDownChain - chainName is null");
+            }
+            return;
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, " chainName is: " + chainName);
+        }
+
+        try {
+            ChannelFramework cfw = ChannelFrameworkFactory.getChannelFramework();
+            ChainData cd = cfw.getChain(chainName);
+
+            if (cd == null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                    Tr.exit(tc, "takeDownChain - ChainData is null");
+                }
+                return;
+            }
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "stopping chain");
+            }
+            cfw.stopChain(cd, 0L); // no timeout needed, chain has not really started yet so force stop it
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "destroying chain");
+            }
+            cfw.destroyChain(cd);
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "removing chain");
+            }
+            cfw.removeChain(cd);
+
+        } catch (Exception x) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "takeDownChain caught exception: " + x);
+            }
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, "takeDownChain - method completed ok");
+        }
+    }
+
 }

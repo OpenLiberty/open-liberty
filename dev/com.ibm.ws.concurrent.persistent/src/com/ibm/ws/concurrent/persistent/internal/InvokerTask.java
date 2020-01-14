@@ -545,10 +545,10 @@ public class InvokerTask implements Runnable, Synchronization {
                     if (config.enableTaskExecution
                         && nextExecTime != null
                         && (config.pollInterval < 0 || nextExecTime <= System.currentTimeMillis() + config.pollInterval)) {
-                        updates.setIdentifierOfPartition(nextExecTime + config.missedTaskThreshold * 1000);
+                        updates.setClaimExpiryOrPartition(nextExecTime + config.missedTaskThreshold * 1000);
                         claimNextExecution = true;
                     } else {
-                        updates.setIdentifierOfPartition(-1);
+                        updates.setClaimExpiryOrPartition(-1);
                     }
 
                 TaskRecord expected = new TaskRecord(false);

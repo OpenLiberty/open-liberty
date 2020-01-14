@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 import java.io.Serializable;
 import java.io.Writer;
 import java.net.InetAddress;
@@ -39,6 +40,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -250,7 +252,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
     /**
      * Reference to the future for the next (or current) poll.
      */
-    private final AtomicReference<Future<?>> pollingFutureRef = new AtomicReference<Future<?>>();
+    private final AtomicReference<ScheduledFuture<?>> pollingFutureRef = new AtomicReference<ScheduledFuture<?>>();
 
     /**
      * Indicates if we received a signal from the user to start polling.
@@ -926,6 +928,49 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
         return name;
     }
 
+    /**
+     * Dump internal state to the introspector.
+     *
+     * @param out writer for the introspector.
+     */
+    void introspect(PrintWriter out) {
+        out.println(toString() + ' ' + name + (deactivated ? " is deactivated" : ""));
+
+        out.print("  Partition ");
+        if (partitionIdLock.readLock().tryLock())
+            try {
+                out.println(partitionId);
+            } finally {
+                partitionIdLock.readLock().unlock();
+            }
+        else
+            out.println("lock temporarily unavailable");
+
+        out.println("  Config " + configRef.get());
+
+        out.println("  Accessed from " + applications);
+
+        out.println("  Signalled to poll? " + pollingStartSignalReceived);
+        out.println("  PollingManager state " + readyForPollingTask.bits);
+
+        ScheduledFuture<?> pollFuture = pollingFutureRef.get();
+        if (pollFuture != null)
+            out.println("  Next poll in " + pollFuture.getDelay(TimeUnit.MILLISECONDS) + "ms");
+
+        if (configUpdatePendingQueueLock.readLock().tryLock())
+            try {
+                out.print("  Config updates (" + configUpdatesInProgress + ") in progress, which block tasks:");
+                for (InvokerTask task : configUpdatePendingQueue)
+                    out.print(' ' + task.taskId);
+                out.println();
+            } finally {
+                configUpdatePendingQueueLock.readLock().unlock();
+            }
+
+        out.println("  In-memory list of known pending (or active) tasks: " + inMemoryTaskIds.keySet());
+        out.println();
+    }
+
     /** {@inheritDoc} */
     @Override
     public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> callables) throws InterruptedException {
@@ -1202,7 +1247,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
             claimFirstExecution = true;
         }
 
-        record.setIdentifierOfPartition(taskAssignmentInfo); // TODO rename the methods on TaskRecord to reflect repurposed usage
+        record.setClaimExpiryOrPartition(taskAssignmentInfo);
 
         TransactionController tranController = new TransactionController();
         try {
@@ -1924,7 +1969,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
      * @param config snapshot of configuration.
      */
     private void startPollingTask(Config config) {
-        Future<?> future;
+        ScheduledFuture<?> future;
         PollingTask pollingTask = new PollingTask(config);
 
         future = scheduledExecutor.schedule(pollingTask, config.initialPollDelay, TimeUnit.MILLISECONDS);
@@ -1997,7 +2042,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
     /**
      * List of Tasks to execute after configuration updates have completed.
      */
-    private final LinkedList<Runnable> configUpdatePendingQueue = new LinkedList<Runnable>();
+    private final LinkedList<InvokerTask> configUpdatePendingQueue = new LinkedList<InvokerTask>();
 
     /**
      * futureMonitor used to track the outcome of a configuration update
@@ -2017,11 +2062,11 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
      * If a configuration update is currently in progress add the targetRunnable to a
      * local queue to drive its run method after the configuration update(s) is complete.
      *
-     * @param targetRunnable Runnable eligible for execution.
+     * @param targetRunnable task eligible for execution.
      * @return return true if a configuration update is in progress, false if not.
      */
     @Trivial
-    boolean deferExecutionForConfigUpdate(Runnable targetRunnable) {
+    boolean deferExecutionForConfigUpdate(InvokerTask targetRunnable) {
         boolean returnValue = false;
 
         configUpdatePendingQueueLock.readLock().lock();
@@ -2099,7 +2144,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
         @Override
         @Trivial
         public void run() {
-            Runnable r;
+            InvokerTask r;
             for (;;) {
 
                 configUpdatePendingQueueLock.writeLock().lock();
@@ -2287,7 +2332,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
                         long delay = config.pollInterval - TimeUnit.NANOSECONDS.toMillis(duration);
                         if (trace && tc.isDebugEnabled())
                             Tr.debug(PersistentExecutorImpl.this, tc, "Poll completed in " + duration + "ns. Next poll " + delay + "ms from now");
-                        Future<?> future;
+                        ScheduledFuture<?> future;
                         future = scheduledExecutor.schedule(this, delay, TimeUnit.MILLISECONDS);
 
                         pollingFutureRef.getAndSet(future);

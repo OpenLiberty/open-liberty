@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2018 IBM Corporation and others.
+ * Copyright (c) 2016, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -175,12 +175,18 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
     public static final String KEY_USE_SYSPROPS_FOR_HTTPCLIENT_CONNECTONS = "useSystemPropertiesForHttpClientConnections";
     protected boolean useSystemPropertiesForHttpClientConnections = false;
 
+    public static final String USER_API_TYPE_BASIC = "basic";
+    public static final String USER_API_TYPE_KUBE = "kube";
+    public static final String USER_API_TYPE_OPENSHIFT = "openshift";
+
     public static final String KEY_userApiType = "userApiType";
     protected String userApiType = null;
-    private final String DEFAULT_USER_API_TYPE = "basic";
+    private final String DEFAULT_USER_API_TYPE = USER_API_TYPE_BASIC;
 
     public static final String KEY_userApiToken = "userApiToken";
     protected String userApiToken = null;
+    public static final String KEY_userApiCacheTime = "userApiCacheTime";
+    protected long userApiCacheTime = 600 * 1000;
     public static final String KEY_accessTokenRequired = "accessTokenRequired";
     protected boolean accessTokenRequired = false;
     public static final String KEY_accessTokenSupported = "accessTokenSupported";
@@ -265,7 +271,7 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
 
     boolean isKubeConfiguration(Map<String, Object> props) {
         String userApiType = configUtils.getConfigAttribute(props, KEY_userApiType);
-        if (userApiType != null && ClientConstants.USER_API_TYPE_KUBE.equals(userApiType)) {
+        if (userApiType != null && USER_API_TYPE_KUBE.equals(userApiType)) {
             return true;
         }
         return false;
@@ -303,6 +309,7 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
         this.userApiNeedsSpecialHeader = configUtils.getBooleanConfigAttribute(props, KEY_userApiNeedsSpecialHeader, this.userApiNeedsSpecialHeader);
         this.userApiType = configUtils.getConfigAttributeWithDefaultValue(props, KEY_userApiType, DEFAULT_USER_API_TYPE);
         this.userApiToken = configUtils.processProtectedString(props, KEY_userApiToken);
+        this.userApiCacheTime = configUtils.getLongConfigAttribute(props, KEY_userApiCacheTime, userApiCacheTime);
         this.accessTokenRequired = configUtils.getBooleanConfigAttribute(props, KEY_accessTokenRequired, this.accessTokenRequired);
         this.accessTokenSupported = configUtils.getBooleanConfigAttribute(props, KEY_accessTokenSupported, this.accessTokenSupported);
         this.accessTokenHeaderName = configUtils.getConfigAttribute(props, KEY_accessTokenHeaderName);
@@ -819,6 +826,10 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
     @Sensitive
     public String getUserApiToken() {
         return userApiToken;
+    }
+
+    public long getUserApiCacheTime() {
+        return userApiCacheTime;
     }
 
     public boolean isAccessTokenRequired() {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,6 +33,7 @@ import com.ibm.ws.security.social.Constants;
 import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.TraceConstants;
 import com.ibm.ws.security.social.error.SocialLoginException;
+import com.ibm.ws.security.social.internal.Oauth2LoginConfigImpl;
 
 /**
  * Collection of utility methods for String to byte[] conversion.
@@ -242,7 +243,7 @@ public class SocialUtil {
 
     public static boolean isKubeConfig(SocialLoginConfig clientConfig) {
         String userApiType = clientConfig.getUserApiType();
-        return (userApiType != null && ClientConstants.USER_API_TYPE_KUBE.equals(userApiType));
+        return (userApiType != null && Oauth2LoginConfigImpl.USER_API_TYPE_KUBE.equals(userApiType));
     }
 
     public static boolean useAccessTokenFromRequest(SocialLoginConfig clientConfig) {

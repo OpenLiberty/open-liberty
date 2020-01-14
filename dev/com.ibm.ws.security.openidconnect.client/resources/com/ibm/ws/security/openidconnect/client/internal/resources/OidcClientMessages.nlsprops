@@ -272,5 +272,14 @@ OIDC_CLIENT_DISCOVERY_NOT_UPDATED_CONFIG.useraction=Informational message. No ac
 CONFIG_REQUIRED_ATTRIBUTE_NULL=CWWKS1529E: The required [{0}] configuration attribute is missing or empty and a default value is not provided. Verify that the attribute is configured or discovered from the provider, that it is not empty, and that it does not consist of only white space characters.
 CONFIG_REQUIRED_ATTRIBUTE_NULL.explanation=The specified configuration attribute might be missing from the server configuration. If a value is specified, white space at the beginning and end of the value is removed when the value is processed, so the value in the configuration might be empty or consist of only white space characters. If the discovery endpoint is specified to get this attribute value from the provider, then the discovery might have a problem.
 CONFIG_REQUIRED_ATTRIBUTE_NULL.useraction=Ensure that the specified configuration attribute is configured, that it is not empty, and that it does not consist of only white space characters. If the discovery endpoint is configured to obtain this information, then make sure that there are no errors with the discovery request.
- 
+
+# do not translate authFilterRef
+CONFIG_AUTHFILTER_NOTUNIQUE=CWWKS1530W: More than one OpenID Connect client configuration specifies the same authentication filter [{0}]. This can cause indeterminate behavior.
+CONFIG_AUTHFILTER_NOTUNIQUE.explanation=More than one OpenID Connect client configuration contains an authFilterRef attribute that refers to the same filter. Any of these clients might process a request that matches the filter, leading to indeterminate behavior.  
+CONFIG_AUTHFILTER_NOTUNIQUE.useraction=Review the server.xml file and correct the configuration.
+
+AUTHFILTER_MULTIPLE_MATCHED=CWWKS1531W: More than one OpenID Connect client authentication filter matches a request to [{0}] URL. The matching filters were [{1}]. This can cause indeterminate behavior.
+AUTHFILTER_MULTIPLE_MATCHED.explanation=More than one authentication filter matches an inbound request. Any client that uses one of these filters could process the request, leading to indeterminate behavior.  
+AUTHFILTER_MULTIPLE_MATCHED.useraction=Review the server.xml file and correct the configuration.
+
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

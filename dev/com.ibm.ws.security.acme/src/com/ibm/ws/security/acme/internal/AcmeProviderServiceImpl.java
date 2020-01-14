@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,10 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.security.acme.internal;
 
-import java.io.File;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
 import javax.servlet.ServletContainerInitializer;
@@ -38,6 +37,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.acme.config.AcmeConfig;
 import com.ibm.ws.security.acme.config.AcmeService;
+import com.ibm.ws.security.acme.util.AcmeConstants;
 import com.ibm.ws.security.acme.web.AcmeAuthorizationServices;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 
@@ -45,99 +45,94 @@ import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
  * ACME certificate management support.
  */
 @Component(service = { AcmeConfig.class, ServletContainerInitializer.class,
-                       ServletContextListener.class }, immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE, configurationPid = "com.ibm.ws.security.acme.config", property = "service.vendor=IBM")
+		ServletContextListener.class }, immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE, configurationPid = AcmeConstants.ACME_PID, property = "service.vendor=IBM")
 public class AcmeProviderServiceImpl implements AcmeConfig, ServletContextListener, ServletContainerInitializer {
 
     private final TraceComponent tc = Tr.register(AcmeProviderServiceImpl.class);
-    private final String parameter1 = "JM-acme-parm1";
-    private final String parameter2 = "JM-acme-parm2";
 
     private AcmeService serviceProvider;
+    
+	private String directoryURI;
+	private String domain;
+	private int validFor;
+	private String country;
+	private String locality;
+	private String state;
+	private String organization;
+	private String organizationalUnit;
 
-    /**
-     * The properties class that contain the attributes defined
-     * by inside of server.xml.
-     */
-    private final Properties sessionProperties = new Properties();
-    /**
-     * Strings used to access the various attributes that are
-     * defined in the <mailSession> and that are subsequently
-     * extracted from the ComponentContext to be placed in the Properties
-     * object
-     */
-    public static final String PARM1 = "configParm1";
-    public static final String PARM2 = "configParm2";
+	// Challenge and order related fields.
+	private int challengeRetries;
+	private int challengeRetryWait;
+	private int orderRetries;
+	private int orderRetryWait;
 
-    private final String propertiesArray[] = { PARM1, PARM2 };
+	// ACME account related fields.
+	private String accountKeyFile;
+	private Set<String> accountContact;
+	private boolean acceptTermsOfService;
+	private String domainKeyFile;
+
+	private AcmeClient acmeClient;
 
     private final HashMap<String, Set<String>> appModules = new HashMap<String, Set<String>>();
 
-    // File name of the User Key Pair
-    private static final File USER_KEY_FILE = new File("user.key");
-
-    // File name of the Domain Key Pair
-    private static final File DOMAIN_KEY_FILE = new File("domain.key");
-
-    // File name of the CSR
-    private static final File DOMAIN_CSR_FILE = new File("domain.csr");
-
-    // File name of the signed certificate
-    private static final File DOMAIN_CHAIN_FILE = new File("domain-chain.crt");
-
-    //Challenge type to be used
-    private static final ChallengeType CHALLENGE_TYPE = ChallengeType.HTTP;
-
-    // RSA key size of generated key pairs
-    private static final int KEY_SIZE = 2048;
-
-    private enum ChallengeType {
-        HTTP, DNS
-    }
-
     @Activate
     public void activate(ComponentContext context, Map<String, Object> properties) {
-        Tr.info(tc, "******* JTM ******* AcmeProviderServiceImpl: inside activate() method. Display input properties: ");
-
+		initialize(properties);
     }
 
     @Modified
     public void modify(Map<String, Object> properties) {
-        Tr.info(tc, " ******* JTM ******* AcmeProviderServiceImpl: inside modified () method");
+		initialize(properties);
     }
+
+	public void initialize(Map<String, Object> configProps) {
+		directoryURI = (String) configProps.get(AcmeConstants.DIR_URI);
+		domain = (String) configProps.get(AcmeConstants.DOMAIN);
+		validFor = ((Integer) configProps.get(AcmeConstants.VALID_FOR)).intValue();
+		country = (String) configProps.get(AcmeConstants.COUNTRY);
+		locality = (String) configProps.get(AcmeConstants.LOCALITY);
+		state = (String) configProps.get(AcmeConstants.STATE);
+		organization = (String) configProps.get(AcmeConstants.ORG);
+		organizationalUnit = (String) configProps.get(AcmeConstants.OU);
+		challengeRetries = ((Integer) configProps.get(AcmeConstants.VALID_FOR)).intValue();
+		challengeRetryWait = ((Integer) configProps.get(AcmeConstants.VALID_FOR)).intValue();
+		orderRetries = ((Integer) configProps.get(AcmeConstants.VALID_FOR)).intValue();
+		orderRetryWait = ((Integer) configProps.get(AcmeConstants.VALID_FOR)).intValue();
+		accountKeyFile = (String) configProps.get(AcmeConstants.ACCOUNT_KEY_FILE);
+		accountContact = new HashSet<String>();
+		accountContact.add((String) configProps.get(AcmeConstants.ACCOUNT_CONTACT));
+		acceptTermsOfService = ((Boolean) configProps.get(AcmeConstants.ACCEPT_TERMS)).booleanValue();
+		domainKeyFile = (String) configProps.get(AcmeConstants.DOMAIN_KEY_FILE);
+
+		acmeClient = new AcmeClient(directoryURI, accountKeyFile, domainKeyFile, accountContact);
+		acmeClient.setAcceptTos(acceptTermsOfService);
+		acmeClient.setChallengeRetries(challengeRetries);
+		acmeClient.setChallengeRetryWait(challengeRetryWait);
+		acmeClient.setOrderRetries(orderRetries);
+		acmeClient.setOrderRetryWait(orderRetryWait);
+
+	}
 
     @Deactivate
     public void deactivate(ComponentContext context, int reason) {
-        Tr.info(tc, " ******* JTM ******* AcmeProviderServiceImpl: inside deactivate() method");
     }
 
     /** {@inheritDoc} */
     @Override
     public void onStartup(java.util.Set<java.lang.Class<?>> c, ServletContext ctx) throws ServletException {
-        Tr.info(tc, " ******* JTM ******* AcmeProviderServiceImpl: entered ServletContext onStartup() method");
     }
 
     /** {@inheritDoc} */
     @Override
     public void contextDestroyed(ServletContextEvent cte) {
-        Tr.info(tc, "**** JTM **** AcmeProviderServiceImpl: entered ServletContextListener contextDestroyed() for application: " + cte.getServletContext().getServletContextName());
         // AcmeProviderServiceImpl.moduleStopped(appmodname);
     }
 
     /** {@inheritDoc} */
     @Override
     public void contextInitialized(ServletContextEvent cte) {
-        Tr.info(tc, "******* JTM ******* AcmeProviderServiceImpl: entered ServletContextListener contextInitialized() for application: "
-                    + cte.getServletContext().getServletContextName());
-    }
-
-    @Override
-    public String getParameter1() {
-        return parameter1;
-    }
-
-    @Override
-    public String getParameter2() {
-        return parameter2;
     }
 
     private final ConcurrentServiceReferenceMap<String, AcmeAuthorizationServices> acmeAuthServiceRef = new ConcurrentServiceReferenceMap<String, AcmeAuthorizationServices>("acmeAuthService");
@@ -146,16 +141,98 @@ public class AcmeProviderServiceImpl implements AcmeConfig, ServletContextListen
 
     protected void setAcmeAuthService(ServiceReference<AcmeAuthorizationServices> ref) {
         synchronized (acmeAuthServiceRef) {
-            Tr.info(tc, "AcmeProviderImpl: setAcmeAuth() Setting reference for " + ref.getProperty("acmeAuthID"));
+			// Tr.info(tc, "AcmeProviderImpl: setAcmeAuth() Setting reference for " +
+			// ref.getProperty("acmeAuthID"));
             acmeAuthServiceRef.putReference((String) ref.getProperty("acmeAuthID"), ref);
         }
     }
 
     protected void unsetAcmeAuthService(ServiceReference<AcmeAuthorizationServices> ref) {
         synchronized (acmeAuthServiceRef) {
-            Tr.info(tc, "AcmeProviderImpl: unsetAcmeAuth() Unsetting reference for " + ref.getProperty("acmeAuthID"));
+			// Tr.info(tc, "AcmeProviderImpl: unsetAcmeAuth() Unsetting reference for " +
+			// ref.getProperty("acmeAuthID"));
             acmeAuthServiceRef.removeReference((String) ref.getProperty("acmeAuthID"), ref);
         }
     }
+
+	@Override
+	public String getDirectoryURI() {
+		return directoryURI;
+	}
+
+	@Override
+	public String getDomain() {
+		return domain;
+	}
+
+	@Override
+	public int getValidFor() {
+		return validFor;
+	}
+
+	@Override
+	public String getCountry() {
+		return country;
+	}
+
+	@Override
+	public String getLocality() {
+		return locality;
+	}
+
+	@Override
+	public String getState() {
+		return state;
+	}
+
+	@Override
+	public String getOrganization() {
+		return organization;
+	}
+
+	@Override
+	public String getOrganizationalUnit() {
+		return organizationalUnit;
+	}
+
+	@Override
+	public int getChallengeRetries() {
+		return challengeRetries;
+	}
+
+	@Override
+	public int getChallengeRetryWait() {
+		return challengeRetryWait;
+	}
+
+	@Override
+	public int getOrderRetries() {
+		return orderRetries;
+	}
+
+	@Override
+	public int getOrderRetryWait() {
+		return orderRetryWait;
+	}
+
+	@Override
+	public String getAccountKeyFile() {
+		return accountKeyFile;
+	}
+
+	@Override
+	public Set<String> getAccountContact() {
+		return accountContact;
+	}
+
+	@Override
+	public boolean getAcceptTermsOfService() {
+		return acceptTermsOfService;
+	}
+
+	@Override
+	public String getDomainKeyFile() {
+		return domainKeyFile;
+	}
 
 }

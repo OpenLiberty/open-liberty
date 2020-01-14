@@ -28,7 +28,7 @@ WS-TraceGroup: ACME
 
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.8))"   
 
-Web-ContextPath: /.well-known/acme-challenge
+# Web-ContextPath: /.well-known/acme-challenge
 
 IBM-Web-Extension-Processing-Disabled: false
 
@@ -42,7 +42,7 @@ Import-Package:
 Private-Package: com.ibm.ws.security.acme.internal.*, \
    com.ibm.ws.security.acme.config, \
    com.ibm.ws.security.acme.web, \
-   com.ibm.ws.security.acme.resources
+   com.ibm.ws.security.acme.util
 
 Include-Resource: \
     WEB-INF=resources/WEB-INF, \
@@ -54,11 +54,12 @@ Export-Package: \
 Service-Component: \
   com.ibm.ws.security.acme.config; \
     implementation:=com.ibm.ws.security.acme.internal.AcmeProviderServiceImpl; \
-    provide:='com.ibm.ws.security.acme.config.AcmeProviderService'
+    provide:='com.ibm.ws.security.acme.config.AcmeConfig'
      
 -dsannotations-inherit: true
--dsannotations: com.ibm.ws.security.acme.internal.ApplicationListener, \
-    com.ibm.ws.security.acme.web.AcmeAuthorizationServices, \
+-dsannotations: \ 
+    #com.ibm.ws.security.acme.internal.ApplicationListener, \
+    #com.ibm.ws.security.acme.web.AcmeAuthorizationServices, \
 	com.ibm.ws.security.acme.internal.ApplicationProcessor
 
 instrument.disabled: true

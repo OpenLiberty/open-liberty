@@ -11,6 +11,12 @@
 
 package com.ibm.ws.concurrent.persistent.fat.demo.timers;
 
+import static org.junit.Assert.fail;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -41,6 +47,7 @@ import ejb.timers.PersistentDemoTimersServlet;
  */
 @RunWith(FATRunner.class)
 public class DemoTimerTest extends FATServletClient {
+    private static final Class<DemoTimerTest> c = DemoTimerTest.class;
 
     public static final String APP_NAME = "demotimer";
 
@@ -63,6 +70,24 @@ public class DemoTimerTest extends FATServletClient {
         ShrinkHelper.defaultDropinApp(server, APP_NAME, "ejb.timers");
 
         server.startServer();
+
+        //Application uses an XA datasource to perform database access.
+        //Oracle restrictions creation/dropping of database tables using transactions with error:
+        //  ORA-02089: COMMIT is not allowed in a subordinate session
+        //Therefore, we will create the table prior to running tests when running against oracle.
+        if (DatabaseContainerType.valueOf(testContainer) == DatabaseContainerType.Oracle) {
+            final String createTable = "CREATE TABLE AUTOMATICDATABASE (name VARCHAR(64) NOT NULL PRIMARY KEY, count INT)";
+
+            try (Connection conn = testContainer.createConnection("")) {
+                try (PreparedStatement pstmt = conn.prepareStatement(createTable)) {
+                    pstmt.executeUpdate();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                fail(c.getName() + " caught exception when initializing table: " + e.getMessage());
+            }
+
+        }
     }
 
     @AfterClass

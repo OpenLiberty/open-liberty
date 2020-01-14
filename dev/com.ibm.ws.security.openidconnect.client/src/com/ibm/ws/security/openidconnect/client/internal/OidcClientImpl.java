@@ -6,11 +6,14 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.client.internal;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
@@ -40,6 +43,7 @@ import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
 import com.ibm.ws.security.authentication.filter.internal.AuthFilterConfig;
 import com.ibm.ws.security.authentication.utility.JaasLoginConfigConstants;
 import com.ibm.ws.security.authentication.utility.SubjectHelper;
+import com.ibm.ws.security.common.structures.BoundedHashMap;
 import com.ibm.ws.security.common.web.WebUtils;
 import com.ibm.ws.security.context.SubjectManager;
 import com.ibm.ws.security.oauth20.util.OAuth20ProviderUtils;
@@ -88,6 +92,7 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
     private final Object initOidcClientAuthLock = new Object() {
     };
     boolean initBeforeSso = false;
+    private final BoundedHashMap authFilterWarnings = new BoundedHashMap(10);
 
     static final String KEY_AUTH_CACHE_SERVICE = "authCacheService";
     static final AtomicServiceReference<AuthCacheService> authCacheServiceRef = new AtomicServiceReference<AuthCacheService>(KEY_AUTH_CACHE_SERVICE);
@@ -113,6 +118,7 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
             oidcClientConfigRef.putReference((String) ref.getProperty(CFG_KEY_ID), ref);
             initOidcClientAuth = true;
             initBeforeSso = true;
+            warnIfAuthFilterUseDuplicated(null);
         }
     }
 
@@ -121,6 +127,7 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
             oidcClientConfigRef.putReference((String) ref.getProperty(CFG_KEY_ID), ref);
             initOidcClientAuth = true;
             initBeforeSso = true;
+            warnIfAuthFilterUseDuplicated(null);
         }
     }
 
@@ -263,6 +270,28 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
         oidcClientAuthenticator = null;
     }
 
+    // warn (only once) if >1 client specifies the same auth filter
+    void warnIfAuthFilterUseDuplicated(Iterator<OidcClientConfig> configs) {
+        if (configs == null) {
+            configs = oidcClientConfigRef.getServices();
+        }
+        ArrayList<String> authFilters = new ArrayList<String>();
+        while (configs.hasNext()) {
+            OidcClientConfig config = configs.next();
+            String authFilter = config.getAuthFilterId();
+            if (authFilter != null) {
+                if (authFilters.contains(authFilter)) {
+                    if (!authFilterWarnings.containsKey(authFilter)) {
+                        Tr.warning(tc, "CONFIG_AUTHFILTER_NOTUNIQUE", authFilter); // CWWKS1530W
+                        authFilterWarnings.put(authFilter, null);
+                    }
+                } else {
+                    authFilters.add(authFilter);
+                }
+            }
+        }
+    }
+
     /** {@inheritDoc} */
     @Override
     public ProviderAuthenticationResult authenticate(HttpServletRequest req,
@@ -272,7 +301,7 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
             boolean beforeSso) {
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "OIDC _SSO RP PROCESS IS STARTING.");
-            Tr.debug(tc, "OIDC _SSO RP inbound URL "+WebUtils.getRequestStringForTrace(req, "client_secret"));
+            Tr.debug(tc, "OIDC _SSO RP inbound URL " + WebUtils.getRequestStringForTrace(req, "client_secret"));
         }
         PostParameterHelper.savePostParams((SRTServletRequest) req);
         OidcClientConfig oidcClientConfig = oidcClientConfigRef.getService(provider);
@@ -427,7 +456,42 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
         }
         Iterator<OidcClientConfig> oidcClientConfigs = oidcClientConfigRef.getServices();
         oidcProvider = getProviderConfig(oidcClientConfigs, reqProviderHint, req);
+        if (oidcProvider != null) {
+            warnIfAmbiguousAuthFilters(oidcClientConfigRef.getServices(), req, authFilterServiceRef);
+        }
         return oidcProvider;
+    }
+
+    // warn  if >1 auth filter could have matched this request. If so, inconsistent behavior is possible. 
+    void warnIfAmbiguousAuthFilters(Iterator<OidcClientConfig> oidcClientConfigs, HttpServletRequest req,
+            ConcurrentServiceReferenceMap<String, AuthenticationFilter> AFServiceRef) {
+
+        HashMap<String, Object> acceptingAuthFilterIds = new HashMap<String, Object>();
+        while (oidcClientConfigs.hasNext()) {
+            OidcClientConfig clientConfig = oidcClientConfigs.next();
+            if (!clientConfig.isValidConfig()) {
+                continue;
+            }
+            String authFilterId = clientConfig.getAuthFilterId();
+            if (authFilterId != null && authFilterId.length() > 0) {
+                AuthenticationFilter authFilter = AFServiceRef.getService(authFilterId);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "authFilter id:" + authFilterId + " authFilter:" + authFilter);
+                }
+                if (authFilter != null && authFilter.isAccepted(req)) {
+                    acceptingAuthFilterIds.put(authFilterId, null);
+                }
+            }
+        }
+        if (acceptingAuthFilterIds.size() > 1) {
+            String filterIds = "";
+            Iterator<String> it = acceptingAuthFilterIds.keySet().iterator();
+            while (it.hasNext()) {
+                filterIds = filterIds + it.next() + " ";
+            }
+            filterIds = filterIds.trim();
+            Tr.warning(tc, "AUTHFILTER_MULTIPLE_MATCHED", req.getRequestURL(), filterIds); // CWWKS1531W
+        }
     }
 
     String getReqProviderHint(HttpServletRequest req) {

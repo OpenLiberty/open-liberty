@@ -77,6 +77,10 @@ public class OpenShiftUserApiUtilsIntrospect {
     @Sensitive
     Map<String, String> getUserApiRequestHeaders() {
         Map<String, String> headers = new HashMap<String, String>();
+        
+        if(config.getClientId() ==null  || config.getClientSecret() == null) {
+            throw new SocialLoginException("INTROSPECT_USER_API_NO_ID_OR_SECRET", null, new Object[] { responseCode, response });
+        }
         String idAndSecretEncoded = Base64Coder.base64Encode(config.getClientId() + ":" + config.getClientSecret());
                 //b64encoder.encodeToString((config.getClientId() + ":" + config.getClientSecret()).getBytes());  
         headers.put("Authorization", "Basic " + idAndSecretEncoded);
@@ -89,7 +93,7 @@ public class OpenShiftUserApiUtilsIntrospect {
         int responseCode = connection.getResponseCode();
         String response = httpUtils.readConnectionResponse(connection);
         if (responseCode != HttpServletResponse.SC_OK) {
-            throw new SocialLoginException("KUBERNETES_USER_API_BAD_STATUS", null, new Object[] { responseCode, response });
+            throw new SocialLoginException("INTROSPECT_USER_API_BAD_STATUS", null, new Object[] { responseCode, response });
         }
         return modifyExistingResponseToJSON(response);
     }

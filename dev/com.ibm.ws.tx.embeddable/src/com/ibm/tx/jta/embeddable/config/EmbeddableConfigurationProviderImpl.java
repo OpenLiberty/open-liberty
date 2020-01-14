@@ -1,7 +1,7 @@
 package com.ibm.tx.jta.embeddable.config;
 
 /*******************************************************************************
- * Copyright (c) 2010, 2019 IBM Corporation and others.
+ * Copyright (c) 2010, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -445,14 +445,4 @@ public class EmbeddableConfigurationProviderImpl implements ConfigurationProvide
         return 10;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.tx.config.ConfigurationProvider#getLocalTimeBeforeStale()
-     */
-    @Override
-    public int getLocalTimeBeforeStale() {
-        // TODO Auto-generated method stub
-        return 10;
-    }
 }

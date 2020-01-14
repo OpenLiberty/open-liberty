@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -237,6 +237,14 @@ public class MultiplePersistentExecutorsTest extends FATServletClient {
 
             // Run the the PersistentExecutorMBean JavaDoc code example
             runInServlet("testMBeanCodeExample&invokedBy=testFailoverWithFourInstances-13");
+
+            // Remove executor2 because testMBeanCodeExample above destroys its partition info, the lack of which can interfere with subsequent tests.
+            // Later in this test, restoring the original config will restore executor2 and activate it into a clean state which will
+            // require creating partition info anew in the database.
+            server.setMarkToEndOfLog();
+            config.getPersistentExecutors().removeById("executor2");
+            server.updateServerConfiguration(config);
+            server.waitForConfigUpdateInLogUsingMark(appNames);
 
             // Remove one of the partition entries
             runInServlet("testRemovePartitions&jndiName=concurrent/executor3&libertyServer=com.ibm.ws.concurrent.persistent.fat.multiple&expectedUpdateCount=1&invokedBy=testFailoverWithFourInstances-14");

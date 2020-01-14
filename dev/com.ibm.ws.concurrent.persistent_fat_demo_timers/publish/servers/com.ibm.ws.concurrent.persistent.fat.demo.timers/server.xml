@@ -16,7 +16,10 @@
   </featureManager>
 
   <include location="../fatTestPorts.xml"/>
-
+  
+  <!-- Edit persistentExecutor defaults with attribute missedTaskThreshold to enable failover -->
+  <persistentExecutor id="defaultEJBPersistentTimerExecutor" missedTaskThreshold="120s"/>
+  
   <dataSource id="DefaultDataSource" fat.modify="true">
     <jdbcDriver libraryRef="AnonymousJDBCLib"/>
     <!-- Properties modified by fat for database rotation -->
@@ -27,10 +30,19 @@
     <fileset dir="${shared.resource.dir}/jdbc" includes="${env.DB_DRIVER}"/>
   </library>
   
+  <!-- JDBC driver -->
   <javaPermission codebase="${shared.resource.dir}/jdbc/${env.DB_DRIVER}" className="java.security.AllPermission"/>
+  
+  <!-- Permission needed for SQLServer driver -->
+  <javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
+  
+  <!-- File read write permissions -->
+  <javaPermission className="java.util.PropertyPermission" name="user.dir" actions="read"/>
   <javaPermission className="java.io.FilePermission" name="files/timertestoutput.txt" actions="read,write"/>
   <javaPermission className="java.io.FilePermission" name="files" actions="write"/>
-  <javaPermission className="java.util.PropertyPermission" name="user.dir" actions="read"/>
+  
+  
+  
 
   <variable name="onError" value="FAIL"/>
 </server>

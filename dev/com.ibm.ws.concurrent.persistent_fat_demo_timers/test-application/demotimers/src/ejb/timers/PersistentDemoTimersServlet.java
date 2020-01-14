@@ -12,10 +12,8 @@ package ejb.timers;
 
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.servlet.annotation.WebServlet;
-import javax.transaction.UserTransaction;
 
 import org.junit.Test;
 
@@ -39,9 +37,6 @@ public class PersistentDemoTimersServlet extends FATServlet {
 
     @EJB
     private AutomaticIO autoTimerIO;
-
-    @Resource
-    private UserTransaction tran;
 
     /**
      * Verify that an automatic persistent timer is running multiple times
@@ -88,8 +83,6 @@ public class PersistentDemoTimersServlet extends FATServlet {
     @Mode(TestMode.FULL)
     public void testRepeatingAutomaticPersistentTimerIO() throws Exception {
         final long TIMEOUT_NS = TimeUnit.MINUTES.toNanos(4);
-
-        Thread.sleep(TimeUnit.MINUTES.toMillis(1));
 
         int count = autoTimerIO.getRunCount();
         for (long start = System.nanoTime(); count < 3 && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL)) {

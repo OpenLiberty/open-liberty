@@ -29,7 +29,6 @@
         enableHADBPeerLocking="true"
         timeBetweenHeartbeats="3"
         peerTimeBeforeStale="30"
-        localTimeBeforeStale="6"
     />
     <application location="transaction.war"/>
 	<dataSource id="tranlogDataSource" 

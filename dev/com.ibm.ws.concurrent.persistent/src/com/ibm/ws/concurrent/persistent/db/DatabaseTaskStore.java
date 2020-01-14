@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,6 @@ import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.SQLTimeoutException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -442,7 +441,7 @@ public class DatabaseTaskStore implements TaskStore {
             taskRecord.setId(taskId);
             taskRecord.setIdentifierOfClassLoader((String) result[0]);
             taskRecord.setIdentifierOfOwner((String) result[1]);
-            taskRecord.setIdentifierOfPartition((Long) result[2]);
+            taskRecord.setClaimExpiryOrPartition((Long) result[2]);
             taskRecord.setMiscBinaryFlags((Short) result[3]);
             taskRecord.setName((String) result[4]);
             taskRecord.setNextExecutionTime((Long) result[5]);
@@ -840,38 +839,6 @@ public class DatabaseTaskStore implements TaskStore {
         return partitionId;
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public Long getPartitionWithState(long stateBits) throws Exception {
-        String select = "SELECT p.ID,p.EXECUTOR,p.HOSTNAME,p.ID,p.LSERVER,p.USERDIR,p.EXPIRY,p.STATES FROM Partition p WHERE p.STATES-p.STATES/:d*:d=:r AND p.EXPIRY>:t ORDER BY p.EXPIRY DESC";
-
-        final boolean trace = TraceComponent.isAnyTracingEnabled();
-        if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "getPartitionWithState", stateBits, select);
-
-        long denominator = stateBits < 2 ? 2 : stateBits < 4 ? 4 : -1;
-        if (denominator == -1)
-            throw new IllegalArgumentException(Long.toString(stateBits)); // internal error: no states > 3 are currently defined
-
-        Object[] partitionInfo;
-        EntityManager em = getPersistenceServiceUnit().createEntityManager();
-        try {
-            TypedQuery<Object[]> query = em.createQuery(select.toString(), Object[].class);
-            query.setParameter("d", denominator);
-            query.setParameter("r", stateBits);
-            query.setParameter("t", System.currentTimeMillis());
-            query.setMaxResults(1);
-            List<Object[]> results = query.getResultList();
-            partitionInfo = results == null || results.isEmpty() ? null : results.get(0);
-        } finally {
-            em.close();
-        }
-
-        if (trace && tc.isEntryEnabled())
-            Tr.exit(this, tc, "getPartitionWithState", partitionInfo == null ? null : Arrays.toString(partitionInfo));
-        return partitionInfo == null ? null : (Long) partitionInfo[0];
-    }
-
     /**
      * Returns the persistence service unit, lazily initializing if necessary.
      *
@@ -1099,7 +1066,7 @@ public class DatabaseTaskStore implements TaskStore {
                 update.append("t.LOADER=:c2,");
             if (updates.hasIdentifierOfOwner())
                 update.append("t.OWNR=:o2,");
-            if (updates.hasIdentifierOfPartition())
+            if (updates.hasClaimExpiryOrPartition())
                 update.append("t.PARTN=:p2,");
             if (updates.hasMiscBinaryFlags())
                 update.append("t.MBITS=:m2,");
@@ -1135,7 +1102,7 @@ public class DatabaseTaskStore implements TaskStore {
             update.append(" AND t.LOADER=:c1");
         if (expected.hasIdentifierOfOwner())
             update.append(" AND t.OWNR=:o1");
-        if (expected.hasIdentifierOfPartition())
+        if (expected.hasClaimExpiryOrPartition())
             update.append(" AND t.PARTN=:p1");
         if (expected.hasMiscBinaryFlags())
             update.append(" AND t.MBITS=:m1");
@@ -1179,8 +1146,8 @@ public class DatabaseTaskStore implements TaskStore {
                     query.setParameter("c2", updates.getIdentifierOfClassLoader());
                 if (updates.hasIdentifierOfOwner())
                     query.setParameter("o2", updates.getIdentifierOfOwner());
-                if (updates.hasIdentifierOfPartition())
-                    query.setParameter("p2", updates.getIdentifierOfPartition());
+                if (updates.hasClaimExpiryOrPartition())
+                    query.setParameter("p2", updates.getClaimExpiryOrPartition());
                 if (updates.hasMiscBinaryFlags())
                     query.setParameter("m2", updates.getMiscBinaryFlags());
                 if (updates.hasName())
@@ -1215,8 +1182,8 @@ public class DatabaseTaskStore implements TaskStore {
                 query.setParameter("c1", expected.getIdentifierOfClassLoader());
             if (expected.hasIdentifierOfOwner())
                 query.setParameter("o1", expected.getIdentifierOfOwner());
-            if (expected.hasIdentifierOfPartition())
-                query.setParameter("p1", expected.getIdentifierOfPartition());
+            if (expected.hasClaimExpiryOrPartition())
+                query.setParameter("p1", expected.getClaimExpiryOrPartition());
             if (expected.hasMiscBinaryFlags())
                 query.setParameter("m1", expected.getMiscBinaryFlags());
             if (expected.hasName())

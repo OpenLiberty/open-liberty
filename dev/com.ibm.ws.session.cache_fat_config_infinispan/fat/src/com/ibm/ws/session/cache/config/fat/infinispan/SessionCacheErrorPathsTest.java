@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -192,7 +192,7 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
     @Test
     public void testInvalidURI() throws Exception {
         // Start the server with invalid httpSessionCache uri
-        String invalidInfinispanURI = "file:" + new java.io.File(server.getUserDir() + "/servers/com.ibm.ws.session.cache.fat.config.infinispan/server.xml").getAbsolutePath();
+        String invalidInfinispanURI = "file:///" + new java.io.File(server.getUserDir() + "/servers/com.ibm.ws.session.cache.fat.config.infinispan/server.xml").getAbsolutePath();
         ServerConfiguration config = savedConfig.clone();
         config.getHttpSessionCaches().get(0).setUri(invalidInfinispanURI);
         server.updateServerConfiguration(config);
@@ -203,7 +203,7 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
             run("testSessionCacheNotAvailable", session);
 
             // Correct the URI
-            String validInfinispanURI = "file:" + new java.io.File(server.getUserDir() + "/shared/resources/infinispan10/" + infinispanConfigFile).getAbsolutePath();
+            String validInfinispanURI = "file:///" + new java.io.File(server.getUserDir() + "/shared/resources/infinispan10/" + infinispanConfigFile).getAbsolutePath();
             config.getHttpSessionCaches().get(0).setUri(validInfinispanURI);
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
@@ -396,23 +396,23 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
             assertTrue(dumpInfo, lines.contains("  is statistics enabled? true"));
             assertFalse(dumpInfo, lines.contains("  is statistics enabled? false"));
 
-            assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
-                            .matches("  average put time:    \\d+\\.\\d+ms")));
+            assertTrue(dumpInfo, lines.parallelStream()
+                            .anyMatch(s -> s.matches("  average put time:    \\d+\\.\\d+ms")));
 
-            assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
-                            .matches("  cache gets:      \\d+")));
+            assertTrue(dumpInfo, lines.parallelStream()
+                            .anyMatch(s -> s.matches("  cache gets:      \\d+")));
 
-            assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
-                            .matches("  cache hit percentage:  \\d+\\.\\d+%")));
+            assertTrue(dumpInfo, lines.parallelStream()
+                            .anyMatch(s -> s.matches("  cache hit percentage:  \\d+\\.\\d+%")));
 
-            assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
-                            .matches("  cache miss percentage: \\d+\\.\\d+%")));
+            assertTrue(dumpInfo, lines.parallelStream()
+                            .anyMatch(s -> s.matches("  cache miss percentage: \\d+\\.\\d+%")));
 
-            assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
-                            .matches("    session \\S+: SessionInfo for anonymous created \\d+ accessed \\d+ listeners 0 maxInactive 2100 \\[testServerDumpWithMonitoring1\\]")));
+            assertTrue(dumpInfo, lines.parallelStream()
+                            .anyMatch(s -> s.matches("    session \\S+: SessionInfo for anonymous created \\d+ accessed \\d+ listeners 0 maxInactive 2100 \\[testServerDumpWithMonitoring1\\]")));
 
-            assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
-                            .matches("    session \\S+: SessionInfo for anonymous created \\d+ accessed \\d+ listeners 0 maxInactive 2200 \\[testServerDumpWithMonitoring2\\]")));
+            assertTrue(dumpInfo, lines.parallelStream()
+                            .anyMatch(s -> s.matches("    session \\S+: SessionInfo for anonymous created \\d+ accessed \\d+ listeners 0 maxInactive 2200 \\[testServerDumpWithMonitoring2\\]")));
         } finally {
             run("invalidateSession", session1);
             run("invalidateSession", session2);
@@ -461,14 +461,14 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
 
             assertFalse(dumpInfo, lines.contains("  is statistics enabled? true"));
 
-            assertFalse(dumpInfo, lines.parallelStream().anyMatch(s -> s
-                            .matches("  average put time:.*")));
+            assertFalse(dumpInfo, lines.parallelStream()
+                            .anyMatch(s -> s.matches("  average put time:.*")));
 
-            assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
-                            .matches("    session \\S+: SessionInfo for anonymous created \\d+ accessed \\d+ listeners 0 maxInactive 1900 \\[testServerDumpWithoutMonitoring1\\]")));
+            assertTrue(dumpInfo, lines.parallelStream()
+                            .anyMatch(s -> s.matches("    session \\S+: SessionInfo for anonymous created \\d+ accessed \\d+ listeners 0 maxInactive 1900 \\[testServerDumpWithoutMonitoring1\\]")));
 
-            assertTrue(dumpInfo, lines.parallelStream().anyMatch(s -> s
-                            .matches("    session \\S+: SessionInfo for anonymous created \\d+ accessed \\d+ listeners 0 maxInactive 2000 \\[testServerDumpWithoutMonitoring2\\]")));
+            assertTrue(dumpInfo, lines.parallelStream()
+                            .anyMatch(s -> s.matches("    session \\S+: SessionInfo for anonymous created \\d+ accessed \\d+ listeners 0 maxInactive 2000 \\[testServerDumpWithoutMonitoring2\\]")));
         } finally {
             run("invalidateSession", session1);
             run("invalidateSession", session2);

@@ -10,11 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.social.tai;
 
-import java.io.IOException;
-
 import javax.net.ssl.SSLSocketFactory;
-
-import org.jose4j.lang.JoseException;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -46,25 +42,16 @@ public class TAIUserApiUtils {
         String userinfoApi = userApiConfig.getApi();
         try {
             if (SocialUtil.isKubeConfig(clientConfig)) {
-                return getUserApiResponseFromOpenShift((Oauth2LoginConfigImpl) clientConfig, accessToken, sslSocketFactory);
+                return getUserApiResponseFromOpenShift(clientConfig, accessToken, sslSocketFactory);
             }
+
             if(clientConfig.getUserApiType().equals("introspect")) {
                 return getUserApiResponseFromIntrospectEndpoint((Oauth2LoginConfigImpl) clientConfig, accessToken, sslSocketFactory);
             }
-            String userApiResp = clientUtil.getUserApiResponse(userinfoApi,
-                    accessToken,
-                    sslSocketFactory,
-                    false,
-                    clientConfig.getUserApiNeedsSpecialHeader(),
-                    clientConfig.getUseSystemPropertiesForHttpClientConnections());
-            if (clientConfig instanceof LinkedinLoginConfigImpl) {
-                return convertLinkedinToJson(userApiResp, clientConfig.getUserNameAttribute());
+            if (isTokenExpectedToBeServiceAccountToken(clientConfig)) {
+                return getUserApiResponseForServiceAccountToken(clientConfig, accessToken, sslSocketFactory);
             }
-            if (userApiResp != null && userApiResp.startsWith("[") && userApiResp.endsWith("]")) {
-                return convertToJson(userApiResp, clientConfig.getUserNameAttribute());
-            } else {
-                return userApiResp;
-            }
+            return getUserApiResponseFromGenericThirdParty(clientUtil, clientConfig, accessToken, sslSocketFactory, userinfoApi);
         } catch (SocialLoginException e) {
             Tr.error(tc, "ERROR_GETTING_USER_API_RESPONSE", new Object[] { userinfoApi, clientConfig.getUniqueId(), e.getLocalizedMessage() });
             return null;
@@ -73,7 +60,6 @@ public class TAIUserApiUtils {
             return null;
         }
     }
-
 
     private String getUserApiResponseFromIntrospectEndpoint(Oauth2LoginConfigImpl config, @Sensitive String accessToken, SSLSocketFactory sslSocketFactory) throws IOException, SocialLoginException {
         // TODO Auto-generated method stub
@@ -84,9 +70,35 @@ public class TAIUserApiUtils {
     }
 
 
-    private String getUserApiResponseFromOpenShift(Oauth2LoginConfigImpl config, @Sensitive String accessToken, SSLSocketFactory sslSocketFactory) throws IOException, SocialLoginException, JoseException {
-        OpenShiftUserApiUtils openShiftUtils = new OpenShiftUserApiUtils(config);
+  private String getUserApiResponseFromOpenShift(SocialLoginConfig config, @Sensitive String accessToken, SSLSocketFactory sslSocketFactory) throws SocialLoginException {
+       OpenShiftUserApiUtils openShiftUtils = new OpenShiftUserApiUtils(config);
         return openShiftUtils.getUserApiResponse(accessToken, sslSocketFactory);
+    }
+
+    private boolean isTokenExpectedToBeServiceAccountToken(SocialLoginConfig clientConfig) {
+        return Oauth2LoginConfigImpl.USER_API_TYPE_OPENSHIFT.equals(clientConfig.getUserApiType());
+    }
+
+    private String getUserApiResponseForServiceAccountToken(SocialLoginConfig config, @Sensitive String serviceAccountToken, SSLSocketFactory sslSocketFactory) throws SocialLoginException {
+        OpenShiftUserApiUtils openShiftUtils = new OpenShiftUserApiUtils(config);
+        return openShiftUtils.getUserApiResponseForServiceAccountToken(serviceAccountToken, sslSocketFactory);
+    }
+
+    private String getUserApiResponseFromGenericThirdParty(OAuthClientUtil clientUtil, SocialLoginConfig clientConfig, String accessToken, SSLSocketFactory sslSocketFactory, String userinfoApi) throws Exception {
+        String userApiResp = clientUtil.getUserApiResponse(userinfoApi,
+                accessToken,
+                sslSocketFactory,
+                false,
+                clientConfig.getUserApiNeedsSpecialHeader(),
+                clientConfig.getUseSystemPropertiesForHttpClientConnections());
+        if (clientConfig instanceof LinkedinLoginConfigImpl) {
+            return convertLinkedinToJson(userApiResp, clientConfig.getUserNameAttribute());
+        }
+        if (userApiResp != null && userApiResp.startsWith("[") && userApiResp.endsWith("]")) {
+            return convertToJson(userApiResp, clientConfig.getUserNameAttribute());
+        } else {
+            return userApiResp;
+        }
     }
 
     // flatten linkedin's json 

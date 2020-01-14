@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,8 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -38,6 +40,12 @@ public class DBWithoutAssertionTest extends DBTestBase {
 				.getLibertyServer("WSATDB_Server2");
 
 		DBTestBase.initWSATTest(client);
+		DBTestBase.initWSATTest(server1);
+		DBTestBase.initWSATTest(server2);
+
+		ShrinkHelper.defaultDropinApp(client, appName, "com.ibm.ws."+appName+".client","com.ibm.ws."+appName+".server","com.ibm.ws."+appName+".servlet","com.ibm.ws."+appName+".utils");
+		ShrinkHelper.defaultDropinApp(server1, appName, "com.ibm.ws."+appName+".client","com.ibm.ws."+appName+".server","com.ibm.ws."+appName+".servlet","com.ibm.ws."+appName+".utils");
+		ShrinkHelper.defaultDropinApp(server2, appName, "com.ibm.ws."+appName+".client","com.ibm.ws."+appName+".server","com.ibm.ws."+appName+".servlet","com.ibm.ws."+appName+".utils");
 
 		CLient_URL = "http://" + client.getHostname() + ":"
 				+ client.getHttpDefaultPort();
@@ -64,7 +72,10 @@ public class DBWithoutAssertionTest extends DBTestBase {
 		ServerUtils.stopServer(server2);
 
 		DBTestBase.cleanupWSATTest(client);
+		DBTestBase.cleanupWSATTest(server1);
+		DBTestBase.cleanupWSATTest(server2);
 	}
+	
 	@Before
 	public void saveServerConfigs() throws Exception {
 		client.saveServerConfiguration();
@@ -77,6 +88,9 @@ public class DBWithoutAssertionTest extends DBTestBase {
 		client.restoreServerConfiguration();
 		server1.restoreServerConfiguration();
 		server2.restoreServerConfiguration();
+		client.waitForStringInLog("CWWKG001[78]I");
+		server1.waitForStringInLog("CWWKG001[78]I");
+		server2.waitForStringInLog("CWWKG001[78]I");
 	}
 
 	@Test

@@ -10,7 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.logging.data;
 
+import java.util.Arrays;
 import java.util.Map;
+import java.util.Set;
 
 import com.ibm.ws.logging.collector.LogFieldConstants;
 
@@ -55,13 +57,35 @@ public class FFDCData extends GenericData {
                                               LogFieldConstants.IBM_SEQUENCE,
                                               LogFieldConstants.HOST,
                                               LogFieldConstants.IBM_USERDIR,
-                                              LogFieldConstants.IBM_SERVERNAME
+                                              LogFieldConstants.IBM_SERVERNAME,
+                                              LogFieldConstants.TYPE
     };
 
     private static NameAliases jsonLoggingNameAliases = new NameAliases(NAMES1_1);
+    private static boolean[] omitFieldsArray = new boolean[17];
 
     public static void newJsonLoggingNameAliases(Map<String, String> newAliases) {
         jsonLoggingNameAliases.newAliases(newAliases);
+    }
+
+    public static void resetJsonLoggingNameAliases() {
+        jsonLoggingNameAliases.resetAliases();
+    }
+
+    public static void setOmitFields(Set<String> fieldNames) {
+        if (fieldNames == null)
+            return;
+
+        for (int i = 0; i < NAMES1_1.length; i++) {
+            for (String omitField : fieldNames) {
+                if (NAMES1_1[i].equals(omitField)) {
+                    omitFieldsArray[i] = true;
+                    break;
+                } else {
+                    omitFieldsArray[i] = false;
+                }
+            }
+        }
     }
 
     private void setPair(int index, String s) {
@@ -284,6 +308,80 @@ public class FFDCData extends GenericData {
         return NAMES1_1[12];
     }
 
+    //omit fields
+    public static boolean getDatetimeOmitBoolJSON() {
+        return omitFieldsArray[0];
+    }
+
+    public static boolean getDateOfFirstOccurenceOmitBoolJSON() {
+        return omitFieldsArray[1];
+    }
+
+    public static boolean getCountOmitBoolJSON() {
+        return omitFieldsArray[2];
+    }
+
+    public static boolean getMessageOmitBoolJSON() {
+        return omitFieldsArray[3];
+    }
+
+    public static boolean getClassNameOmitBoolJSON() {
+        return omitFieldsArray[4];
+    }
+
+    public static boolean getLabelOmitBoolJSON() {
+        return omitFieldsArray[5];
+    }
+
+    public static boolean getExceptionNameOmitBoolJSON() {
+        return omitFieldsArray[6];
+    }
+
+    public static boolean getProbeIdOmitBoolJSON() {
+        return omitFieldsArray[7];
+    }
+
+    public static boolean getSourceIdOmitBoolJSON() {
+        return omitFieldsArray[8];
+    }
+
+    public static boolean getThreadIdOmitBoolJSON() {
+        return omitFieldsArray[9];
+    }
+
+    public static boolean getStacktraceOmitBoolJSON() {
+        return omitFieldsArray[10];
+    }
+
+    public static boolean getObjectDetailsOmitBoolJSON() {
+        return omitFieldsArray[11];
+    }
+
+    public static boolean getSequenceOmitBoolJSON() {
+        return omitFieldsArray[12];
+    }
+
+    public static boolean getHostOmitBoolJSON() {
+        return omitFieldsArray[13];
+    }
+
+    public static boolean getUserDirOmitBoolJSON() {
+        return omitFieldsArray[14];
+    }
+
+    public static boolean getServerNameOmitBoolJSON() {
+        return omitFieldsArray[15];
+    }
+
+    public static boolean getTypeOmitBoolJSON() {
+        return omitFieldsArray[16];
+    }
+
+    public static void resetOmitFields() {
+        Arrays.fill(omitFieldsArray, false);
+    }
+
+    //aliases
     public static String getDatetimeKeyJSON() {
         return jsonLoggingNameAliases.aliases[0];
     }
@@ -347,4 +445,9 @@ public class FFDCData extends GenericData {
     public static String getServerNameKeyJSON() {
         return jsonLoggingNameAliases.aliases[15];
     }
+
+    public static String getTypeKeyJSON() {
+        return jsonLoggingNameAliases.aliases[16];
+    }
+
 }

@@ -20,7 +20,7 @@ public interface EndPointMgr {
 
     /**
      * Create a new endpoint definition with the input parameters.
-     * 
+     *
      * @param name
      * @param host
      * @param port
@@ -31,14 +31,14 @@ public interface EndPointMgr {
 
     /**
      * Delete the endpoint that matches the provided name.
-     * 
+     *
      * @param name
      */
     void removeEndPoint(String name);
 
     /**
      * Query any existing endpoint defined with the input name.
-     * 
+     *
      * @param name
      * @return EndPointInfo, null if not found
      */
@@ -46,7 +46,7 @@ public interface EndPointMgr {
 
     /**
      * Query all currently defined end points.
-     * 
+     *
      * @return List<EndPointInfo>, never null but might be empty
      */
     List<EndPointInfo> getEndsPoints();
@@ -55,7 +55,7 @@ public interface EndPointMgr {
      * Query the possible list of endpoints that match the provided
      * address and port. A wildcard address is * and a wildcard port
      * is 0.
-     * 
+     *
      * @param address
      * @param port
      * @return List<EndPointInfo>, never null but might be empty
