@@ -1,11 +1,12 @@
 <server>
 	<featureManager>
 		<feature>localConnector-1.0</feature>
-		<feature>jsp-2.2</feature>
+		<feature>jsp-2.3</feature>
 		<feature>jaxws-2.2</feature>
+		<feature>cdi-2.0</feature>
 		<feature>jndi-1.0</feature>
 		<feature>jdbc-4.0</feature>
-		<feature>wsatfat-1.0</feature>
+		<feature>txtest-1.0</feature>
 	</featureManager>
 
 	<include location="../fatTestPorts.xml" />
@@ -22,4 +23,6 @@
     	<properties.derby.embedded createDatabase="create" databaseName="memory:WsatDatabase0"></properties.derby.embedded>
     </dataSource>
     <logging traceSpecification="*=info: wsat=all: Transaction=all"></logging>
+    <javaPermission codebase="${server.config.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${server.config.dir}/dropins/wsatApp.war" className="java.security.AllPermission"/>
 </server>

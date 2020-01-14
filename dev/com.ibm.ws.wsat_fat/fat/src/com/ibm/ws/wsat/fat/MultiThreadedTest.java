@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,8 @@ import java.net.URL;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.custom.junit.runner.Mode;
@@ -47,8 +49,6 @@ public class MultiThreadedTest extends WSATTest {
 				.getLibertyServer("MigrationServer2");
 		BASE_URL2 = "http://" + server2.getHostname() + ":9992";
 
-		DBTestBase.initWSATTest(server);
-
 		if (server != null && server.isStarted()){
 			server.stopServer();
 		}
@@ -57,9 +57,14 @@ public class MultiThreadedTest extends WSATTest {
 			server2.stopServer();
 		}
 
-        if (server != null && !server.isStarted()){
-        	 server.setServerStartTimeout(600000);
-             server.startServer(true);
+ 		DBTestBase.initWSATTest(server);
+
+    ShrinkHelper.defaultDropinApp(server, "threadedClient", "com.ibm.ws.wsat.threadedclient.*");
+    ShrinkHelper.defaultDropinApp(server2, "threadedServer", "com.ibm.ws.wsat.threadedserver.*");
+
+     if (server != null && !server.isStarted()){
+         server.setServerStartTimeout(600000);
+         server.startServer(true);
 		}
 		
 		if (server2 != null && !server2.isStarted()){
