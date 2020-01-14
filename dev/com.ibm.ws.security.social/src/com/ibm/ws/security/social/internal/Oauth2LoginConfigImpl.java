@@ -282,8 +282,8 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
     }
     
     protected void checkForRequiredConfigAttributesForIntrospect(Map<String, Object> props) {
-        configUtils.getRequiredConfigAttributeWithConfigId(props, KEY_clientId, uniqueId);
-        configUtils.getRequiredConfigAttributeWithConfigId(props, KEY_clientSecret, uniqueId);
+        configUtils.getRequiredConfigAttribute(props, KEY_clientId);
+        getRequiredSerializableProtectedStringConfigAttribute(props, KEY_clientSecret);
     }
 
     boolean isKubeConfiguration(Map<String, Object> props) {

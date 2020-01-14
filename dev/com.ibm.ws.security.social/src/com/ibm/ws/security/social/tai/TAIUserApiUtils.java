@@ -61,10 +61,7 @@ public class TAIUserApiUtils {
         }
     }
 
-    private String getUserApiResponseFromIntrospectEndpoint(Oauth2LoginConfigImpl config, @Sensitive String accessToken, SSLSocketFactory sslSocketFactory) throws SocialLoginException {
-        // TODO Auto-generated method stub
-//        TokenIntrospect tokenIntrospect = new TokenIntrospect();]
- //have to do something with introspect present and absent, do i need to create a new openshiftuserapiutils thing        
+    private String getUserApiResponseFromIntrospectEndpoint(Oauth2LoginConfigImpl config, @Sensitive String accessToken, SSLSocketFactory sslSocketFactory) throws SocialLoginException {       
         IntrospectUserApiUtils openShiftUtils = new IntrospectUserApiUtils(config);
         return openShiftUtils.getUserApiResponse(accessToken, sslSocketFactory);
     }

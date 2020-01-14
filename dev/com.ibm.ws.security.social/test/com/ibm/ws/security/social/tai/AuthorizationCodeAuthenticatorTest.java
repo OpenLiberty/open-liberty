@@ -994,7 +994,7 @@ public class AuthorizationCodeAuthenticatorTest extends CommonTestClass {
         }
     }
 
-   // @Test
+    @Test
     public void test_createUserApiResponseFromAccessToken_emptyApiResponse() throws Exception {
         try {
             final String userApiResponse = "";
@@ -1029,7 +1029,7 @@ public class AuthorizationCodeAuthenticatorTest extends CommonTestClass {
         }
     }
 
-  //  @Test
+    @Test
     public void test_createUserApiResponseFromAccessToken_validApiResponse() throws Exception {
         try {
             final String userApiResponse = "Some valid response";

@@ -333,6 +333,7 @@
             <Option label="%userApiType.basic" value="basic" />
             <Option label="%userApiType.kube" value="kube" />
             <Option label="internal" value="openshift" />
+            <Option label="internal" value="introspect" />
        </AD>
         <!-- If userApiSpec="TokenReview", the userApiToken value is required because the runtime will make a call to the TokenReview API.
              The call to the TokenReview API must include a token for a service account that's allowed to make that call. -->
