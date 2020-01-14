@@ -220,25 +220,20 @@ def restoreFeature(feature) {
     }
 }
 
-def excludedFeatures = ['cdi-1.2',
-                        'jsonp-1.0',
-                        'jaxrs-2.0',
-                        'jdbc-4.0',
-                        'jdbc-4.1',
-                        'jaxrsClient-2.0',
-                        'servlet-3.1',
-                        'jaxb-2.2',
-                        'jaxws-2.2',
-                        'wasJmsServer-1.0',
-                        'wasJmsSecurity-1.0']
+def excludedEE7Features = ['cdi-1.2',
+                           'jsonp-1.0',
+                           'jaxrs-2.0',
+                           'jdbc-4.0',
+                           'jdbc-4.1',
+                           'jaxrsClient-2.0',
+                           'servlet-3.1']
 
 if (isAutomatedBuild) {
     task packageOpenLibertyAll(type: PackageLibertyWithFeatures) {
-        def excludedAndTestFeatures = []
+        def excludedFeatures = []
         doFirst {
-            excludedAndTestFeatures.addAll(excludedFeatures)
-            excludedAndTestFeatures.addAll(testFeatures())
-            excludedAndTestFeatures.each {
+            excludedFeatures.addAll(testFeatures())
+            excludedFeatures.each {
                 this.&removeFeature("${it}")
             }
         }
@@ -248,7 +243,7 @@ if (isAutomatedBuild) {
         withFeatures this.&allFeatures
         outputTo packageDir
         doLast {
-            excludedAndTestFeatures.each {
+            excludedFeatures.each {
                 this.&restoreFeature("${it}")
             }
         }
@@ -272,7 +267,7 @@ if (isAutomatedBuild) {
 
     task packageOpenLibertyWebProfile8(type: PackageLibertyWithFeatures) {
         doFirst {
-            excludedFeatures.each {
+            excludedEE7Features.each {
                 this.&removeFeature("${it}")
             }
         }
@@ -290,7 +285,7 @@ if (isAutomatedBuild) {
                 from "$packageDir/wlp/templates/clients/javaeeClient8/client.xml"
                 into "$packageDir/wlp/templates/clients/defaultClient"
             }
-            excludedFeatures.each {
+            excludedEE7Features.each {
                 this.&restoreFeature("${it}")
             }
         }
@@ -298,7 +293,7 @@ if (isAutomatedBuild) {
 
     task packageOpenLibertyJavaee8(type: PackageLibertyWithFeatures) {
         doFirst {
-            excludedFeatures.each {
+            excludedEE7Features.each {
                 this.&removeFeature("${it}")
             }
         }
@@ -317,7 +312,7 @@ if (isAutomatedBuild) {
                 from "$packageDir/wlp/templates/clients/javaeeClient8/client.xml"
                 into "$packageDir/wlp/templates/clients/defaultClient"
             }
-            excludedFeatures.each {
+            excludedEE7Features.each {
                 this.&restoreFeature("${it}")
             }
         }
@@ -325,7 +320,7 @@ if (isAutomatedBuild) {
 
     task packageOpenLibertyMicroProfile3(type: PackageLibertyWithFeatures) {
         doFirst {
-            excludedFeatures.each {
+            excludedEE7Features.each {
                 this.&removeFeature("${it}")
             }
         }
@@ -340,7 +335,7 @@ if (isAutomatedBuild) {
                 from "$packageDir/wlp/templates/servers/microProfile3/server.xml"
                 into "$packageDir/wlp/templates/servers/defaultServer"
             }
-            excludedFeatures.each {
+            excludedEE7Features.each {
                 this.&restoreFeature("${it}")
             }
         }
