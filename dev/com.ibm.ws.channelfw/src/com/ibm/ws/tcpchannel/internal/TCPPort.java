@@ -497,7 +497,7 @@ public class TCPPort {
                 throw new RetryableChannelException(bindError.getMessage());
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "attempt: " + currentTry + " of: " + (portOpenRetries + 1) + "failed to open ports, will try again after wait interval");
+                    Tr.debug(tc, "attempt " + currentTry + " of " + (portOpenRetries + 1) + " failed to open the port, will try again after wait interval");
                 }
 
                 currentTry++;
