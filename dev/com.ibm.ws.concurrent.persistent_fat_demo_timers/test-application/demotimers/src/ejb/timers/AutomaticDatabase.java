@@ -19,13 +19,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.Schedule;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.ejb.Timer;
-import javax.ejb.TransactionManagement;
-import javax.ejb.TransactionManagementType;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.sql.DataSource;
 
 /**
@@ -33,7 +34,6 @@ import javax.sql.DataSource;
  * Using this annotation will start the timer immediately on start and will run every 30 seconds.
  */
 @Stateless
-@TransactionManagement(TransactionManagementType.BEAN)
 public class AutomaticDatabase {
     private static final Class<AutomaticDatabase> c = AutomaticDatabase.class;
 
@@ -62,18 +62,9 @@ public class AutomaticDatabase {
         return count;
     }
 
-    /**
-     * Runs ever 30 seconds. Automatically starts when application starts.
-     */
-    @Schedule(info = "Performing Database Operations", hour = "*", minute = "*", second = "*/30", persistent = true)
-    public void run(Timer timer) {
-        if (!isTableCreated)
-            initTable();
-
-        System.out.println("Running execution " + incrementCount(timer) + " of timer " + timer.getInfo());
-    }
-
-    private void initTable() {
+    @PostConstruct
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+    public void initTable() {
         final String createTable = "CREATE TABLE AUTOMATICDATABASE (name VARCHAR(64) NOT NULL PRIMARY KEY, count INT)";
 
         try (Connection conn = ds.getConnection()) {
@@ -96,6 +87,17 @@ public class AutomaticDatabase {
             e.printStackTrace();
             fail(c.getName() + " caught exception when initializing table: " + e.getMessage());
         }
+    }
+
+    /**
+     * Runs ever 30 seconds. Automatically starts when application starts.
+     */
+    @Schedule(info = "Performing Database Operations", hour = "*", minute = "*", second = "*/30", persistent = true)
+    public void run(Timer timer) {
+        if (!isTableCreated)
+            initTable();
+
+        System.out.println("Running execution " + incrementCount(timer) + " of timer " + timer.getInfo());
     }
 
     private void initCounter(Timer timer) {
@@ -128,9 +130,11 @@ public class AutomaticDatabase {
 
         final String modifyRow = "UPDATE AUTOMATICDATABASE SET count = ? WHERE name = ?";
 
+        count++;
+
         try (Connection conn = ds.getConnection()) {
             try (PreparedStatement pstmt = conn.prepareStatement(modifyRow)) {
-                pstmt.setInt(1, ++count);
+                pstmt.setInt(1, count);
                 pstmt.setString(2, timer.getInfo().toString());
                 pstmt.executeUpdate();
             }
