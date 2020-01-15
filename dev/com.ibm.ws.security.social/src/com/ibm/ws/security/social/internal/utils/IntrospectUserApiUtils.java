@@ -90,7 +90,7 @@ public class IntrospectUserApiUtils {
         int responseCode = connection.getResponseCode();
         String response = httpUtils.readConnectionResponse(connection);
         if (responseCode != HttpServletResponse.SC_OK) {
-            throw new SocialLoginException("INTROSPECT_USER_API_BAD_STATUS", null, new Object[] { responseCode, response });
+            throw new SocialLoginException("USER_API_RESPONSE_BAD_STATUS", null, new Object[] { responseCode, response });
         }
         return modifyExistingResponseToJSON(response);
     }
@@ -101,19 +101,19 @@ public class IntrospectUserApiUtils {
             return jsonResponse.toString();
         }
         else {
-            throw new SocialLoginException("INTROSPECT_USER_API_ACTIVE_NOT_TRUE",null, null);
+            throw new SocialLoginException("INTROSPECT_USER_API_INACTIVE",null, null);
         }
 
     }
 
     private JsonObject getJsonResponseIfValid(String response) throws SocialLoginException {
         if (response == null || response.isEmpty()) {
-            throw new SocialLoginException("INTROSPECT_USER_API_RESPONSE_NULL_EMPTY", null, null);
+            throw new SocialLoginException("RESPONSE_NOT_JSON", null, null);
         }
         try {
             return Json.createReader(new StringReader(response)).readObject();
         } catch (JsonParsingException e) {
-            throw new SocialLoginException("INTROSPECT_USER_API_RESPONSE_NOT_JSON", e, new Object[] { response, e });
+            throw new SocialLoginException("RESPONSE_NOT_JSON", e, new Object[] { response, e });
         }
     }
 
