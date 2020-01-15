@@ -308,7 +308,7 @@ public class HttpUtils {
         return responseStream;
     }
 
-    public HttpURLConnection setHeaders(HttpURLConnection con, Map<String, String> headers) {
+    public HttpURLConnection setHeaders(HttpURLConnection con, @Sensitive Map<String, String> headers) {
         if (headers == null) {
             return con;
         }
