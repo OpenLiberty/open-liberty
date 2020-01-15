@@ -133,8 +133,9 @@ public class RegistrationEndpointServices extends AbstractOidcEndpointServices {
             throws IOException, OidcServerException {
         OidcBaseClient client = clientProvider.get(clientId);
         if (client == null) {
+            // CWWKS1424E
             BrowserAndServerLogMessage errorMsg = new BrowserAndServerLogMessage(tc, "OAUTH_CLIENT_REGISTRATION_CLIENTID_NOT_FOUND", new Object[] { clientId });
-            Tr.error(tc, errorMsg.getServerErrorMessage());
+            Tr.event(tc, errorMsg.getServerErrorMessage());
             throw new OidcServerException(errorMsg.getBrowserErrorMessage(), OIDCConstants.ERROR_INVALID_CLIENT, HttpServletResponse.SC_NOT_FOUND);
 
         }

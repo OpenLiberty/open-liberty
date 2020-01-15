@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2019 IBM Corporation and others.
+ * Copyright (c) 2015, 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,8 +28,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.security.auth.AuthPermission;
 
@@ -114,6 +116,11 @@ public class PermissionManager implements PermissionsCombiner {
     private static final String SERVER_XML = "server.xml";
 
     private static final String CLIENT_XML = "client.xml";
+    
+    private static String os_name = System.getProperty("os.name");
+    private static String os_version = System.getProperty("os.version");
+
+    
 
     private String originationFile = null;
 
@@ -358,6 +365,10 @@ public class PermissionManager implements PermissionsCombiner {
         Certificate[] certs = null;
         CodeSource codeSource = null;
         try {
+            //if (codeBase != null) {
+            //    codeBase = codeBase.replace(":/", "/");
+            //}
+            
             codeSource = new CodeSource(new URL("wsjar:file:/" + codeBase), certs);
         } catch (MalformedURLException e) {
             if (tc.isDebugEnabled()) {
@@ -387,9 +398,7 @@ public class PermissionManager implements PermissionsCombiner {
      * @param permissionClass
      * @param target
      * @param action
-     * @param principalName
-     * @param principalType
-     * @param credential
+     * @param principalNamegg
      * @return
      */
     public Permission createPermissionObject(String permissionClass, String target, String action, String credential, String principalType, String principalName, String fileName) {
@@ -556,6 +565,25 @@ public class PermissionManager implements PermissionsCombiner {
 
         // Add the codebase specific permissions
         codeBase = normalize(codeBase);
+        
+        // Windows 10 adds another / to the front of the codesource that needs to removed, else
+        // the codebases will not match between the permissions being specified and the effective perms
+        if (os_name.contains("Windows") && (os_version.equals("10.0"))) {
+            if (codeBase.startsWith("/")) {
+                codeBase = codeBase.substring(1);
+            }
+
+        }     
+        
+        if (tc.isDebugEnabled()) {
+            Set k = codeBasePermissionMap.keySet();
+            Iterator<String> it = codeBasePermissionMap.keySet().iterator();      
+            while(it.hasNext())  
+            {  
+                String key=(String)it.next();
+            }
+        }
+        
         if (codeBasePermissionMap.containsKey(codeBase)) {
             effectivePermissions.addAll(codeBasePermissionMap.get(codeBase));
         }
@@ -565,10 +593,18 @@ public class PermissionManager implements PermissionsCombiner {
             effectivePermissions.addAll(permissionXMLPermissionMap.get(codeBase));
         }
 
+        
         // Iterate over the permissions and only add those that are not restricted
         for (Permission permission : permissions) {
             if (!isRestricted(permission)) {
                 effectivePermissions.add(permission);
+            }
+        }
+        
+        if (tc.isDebugEnabled()) {
+            for (int i = 0; i < effectivePermissions.size(); i++)
+            {
+                    Permission element = effectivePermissions.get(i);
             }
         }
 
