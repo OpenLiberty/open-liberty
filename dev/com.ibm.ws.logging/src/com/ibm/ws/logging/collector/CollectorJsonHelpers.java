@@ -206,9 +206,9 @@ public class CollectorJsonHelpers {
     private static void addUnchangingFields(StringBuilder sb, String hostName, String wlpUserDir, String serverName) {
         if (unchangingFieldsJson == null) {
             StringBuilder temp = new StringBuilder(512);
-            addToJSON(temp, "hostName", hostName, false, false, false, false, false);
-            addToJSON(temp, "wlpUserDir", wlpUserDir, false, false, true, false, false);
-            addToJSON(temp, "serverName", serverName, false, false, false, false, false);
+            addToJSON(temp, "hostName", hostName, false, false, false, false);
+            addToJSON(temp, "wlpUserDir", wlpUserDir, false, true, false, false);
+            addToJSON(temp, "serverName", serverName, false, false, false, false);
             unchangingFieldsJson = temp.toString();
         }
         sb.append(unchangingFieldsJson);
@@ -217,9 +217,9 @@ public class CollectorJsonHelpers {
     private static void addUnchangingFields1_1(StringBuilder sb, String hostName, String wlpUserDir, String serverName) {
         if (unchangingFieldsJson1_1 == null) {
             StringBuilder temp = new StringBuilder(512);
-            addToJSON(temp, "host", hostName, false, false, false, false, false);
-            addToJSON(temp, "ibm_userDir", wlpUserDir, false, false, true, false, false);
-            addToJSON(temp, "ibm_serverName", serverName, false, false, false, false, false);
+            addToJSON(temp, "host", hostName, false, false, false, false);
+            addToJSON(temp, "ibm_userDir", wlpUserDir, false, true, false, false);
+            addToJSON(temp, "ibm_serverName", serverName, false, false, false, false);
             unchangingFieldsJson1_1 = temp.toString();
         }
         sb.append(unchangingFieldsJson1_1);
