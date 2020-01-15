@@ -214,6 +214,14 @@ public class MpJwtFatConstants extends JwtConstants {
     public static final String PAYLOAD_GROUPS = "groups";
     public static final String MP_JWT_TOKEN = "mpJwt_token";
 
+    public static final String BOOTSTRAP_PROP_FAT_SERVER_HOSTNAME = "fat.server.hostname";
+    public static final String BOOTSTRAP_PROP_FAT_SERVER_HOSTIP = "fat.server.hostip";
+
+    public static final String BVT_SERVER_1_PORT_NAME_ROOT = "security_1_HTTP_default";
+    public static final String BVT_SERVER_2_PORT_NAME_ROOT = "security_2_HTTP_default";
+    public static final String BVT_SERVER_3_PORT_NAME_ROOT = "security_3_HTTP_default";
+    public static final String BVT_SERVER_4_PORT_NAME_ROOT = "security_4_HTTP_default";
+
     public static final String TARGET_APP = "targetApp";
     public static final String WHERE = "where";
 
