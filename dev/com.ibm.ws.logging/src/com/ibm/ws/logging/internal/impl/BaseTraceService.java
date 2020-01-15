@@ -220,7 +220,6 @@ public class BaseTraceService implements TrService {
     protected volatile String serverName = null;
     protected volatile String wlpUserDir = null;
 
-    //private static Map<String, Set<String>> omitFieldsMap = new HashMap<>();
     private static final String OMIT_FIELDS_STRING = "@@@OMIT@@@";
     private static boolean isServerConfigUpdate = false;
     private static boolean isServerConfigSetup = true;
