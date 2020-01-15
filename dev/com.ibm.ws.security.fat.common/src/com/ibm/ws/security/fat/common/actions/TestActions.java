@@ -86,18 +86,23 @@ public class TestActions {
     public Page invokeUrlWithBearerToken(String currentTest, WebClient wc, String url, String token) throws Exception {
         return invokeUrlWithBearerTokenUsingGet(currentTest, wc, url, token);
     }
+
     public Page invokeUrlWithBearerTokenUsingGet(String currentTest, WebClient wc, String url, String token) throws Exception {
         return invokeUrlWithBearerToken(currentTest, wc, url, token, HttpMethod.GET, null);
     }
+
     public Page invokeUrlWithBearerTokenUsingGet(String currentTest, String url, String token) throws Exception {
         return invokeUrlWithBearerToken(currentTest, new WebClient(), url, token, HttpMethod.GET, null);
     }
+
     public Page invokeUrlWithBearerTokenUsingPost(String currentTest, WebClient wc, String url, String token) throws Exception {
         return invokeUrlWithBearerToken(currentTest, wc, url, token, HttpMethod.POST, null);
     }
+
     public Page invokeUrlWithBearerTokenUsingPost(String currentTest, String url, String token) throws Exception {
         return invokeUrlWithBearerToken(currentTest, new WebClient(), url, token, HttpMethod.POST, null);
     }
+
     public Page invokeUrlWithBearerToken(String currentTest, WebClient wc, String url, String token, HttpMethod method, List<NameValuePair> requestParms) throws Exception {
         String thisMethod = "invokeUrlWithBearerToken";
         loggingUtils.printMethodName(thisMethod);
@@ -136,21 +141,25 @@ public class TestActions {
      * Invokes the specified URL using the provided WebClient object and returns the Page object that represents the response.
      */
     public Page invokeUrlWithParameters(String currentTest, WebClient wc, String url, List<NameValuePair> requestParams) throws Exception {
-        return invokeUrlWithParametersUsingGet(currentTest, wc, url, requestParams) ;
+        return invokeUrlWithParametersUsingGet(currentTest, wc, url, requestParams);
     }
+
     public Page invokeUrlWithParametersUsingGet(String currentTest, WebClient wc, String url, List<NameValuePair> requestParams) throws Exception {
-        return invokeUrlWithParameters(currentTest, wc, url, HttpMethod.GET, requestParams) ;
+        return invokeUrlWithParameters(currentTest, wc, url, HttpMethod.GET, requestParams);
     }
+
     public Page invokeUrlWithParametersUsingGet(String currentTest, String url, List<NameValuePair> requestParams) throws Exception {
-        return invokeUrlWithParameters(currentTest, new WebClient(), url, HttpMethod.GET, requestParams) ;
+        return invokeUrlWithParameters(currentTest, createWebClient(), url, HttpMethod.GET, requestParams);
     }
+
     public Page invokeUrlWithParametersUsingPost(String currentTest, WebClient wc, String url, List<NameValuePair> requestParams) throws Exception {
-        return invokeUrlWithParameters(currentTest, wc, url, HttpMethod.POST, requestParams) ;
+        return invokeUrlWithParameters(currentTest, wc, url, HttpMethod.POST, requestParams);
     }
+
     public Page invokeUrlWithParametersUsingPost(String currentTest, String url, List<NameValuePair> requestParams) throws Exception {
-        return invokeUrlWithParameters(currentTest, new WebClient(), url, HttpMethod.POST, requestParams) ;
+        return invokeUrlWithParameters(currentTest, createWebClient(), url, HttpMethod.POST, requestParams);
     }
-    
+
     public Page invokeUrlWithParameters(String currentTest, WebClient wc, String url, HttpMethod method, List<NameValuePair> requestParams) throws Exception {
         String thisMethod = "invokeUrlWithParameters";
         loggingUtils.printMethodName(thisMethod);
