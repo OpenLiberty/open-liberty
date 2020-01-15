@@ -134,7 +134,7 @@ public class OpenShiftUserApiUtils {
         int responseCode = connection.getResponseCode();
         String response = httpUtils.readConnectionResponse(connection);
         if (responseCode != HttpServletResponse.SC_OK) {
-            throw new SocialLoginException("SERVICE_ACCOUNT_USER_API_BAD_STATUS", null, new Object[] { responseCode, response });
+            throw new SocialLoginException("USER_API_RESPONSE_BAD_STATUS", null, new Object[] { responseCode, response });
         }
         return processServiceAccountIntrospectResponse(response);
     }
