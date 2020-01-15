@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -196,12 +196,10 @@ public class CollectorJsonUtils1_1 {
         ArrayList<KeyValuePair> extensions = null;
         KeyValuePairList kvpl = null;
 
-        if (eventType.equals(CollectorConstants.MESSAGES_LOG_EVENT_TYPE)) {
+        if (eventType.equals(CollectorConstants.MESSAGES_LOG_EVENT_TYPE))
             sb = CollectorJsonHelpers.startMessageJson1_1(hostName, wlpUserDir, serverName);
-        }
-        if (eventType.equals(CollectorConstants.TRACE_LOG_EVENT_TYPE)) {
+        if (eventType.equals(CollectorConstants.TRACE_LOG_EVENT_TYPE))
             sb = CollectorJsonHelpers.startTraceJson1_1(hostName, wlpUserDir, serverName);
-        }
 
         String message = logData.getMessage();
         String loglevel = logData.getLoglevel();

@@ -125,12 +125,10 @@ public class CollectorJsonUtils {
         LogTraceData logData = (LogTraceData) event;
         StringBuilder sb = null;
 
-        if (eventType.equals(CollectorConstants.MESSAGES_LOG_EVENT_TYPE)) {
+        if (eventType.equals(CollectorConstants.MESSAGES_LOG_EVENT_TYPE))
             sb = CollectorJsonHelpers.startMessageJson(hostName, wlpUserDir, serverName);
-        }
-        if (eventType.equals(CollectorConstants.TRACE_LOG_EVENT_TYPE)) {
+        if (eventType.equals(CollectorConstants.TRACE_LOG_EVENT_TYPE))
             sb = CollectorJsonHelpers.startTraceJson(hostName, wlpUserDir, serverName);
-        }
 
         String message = logData.getMessage();
         String loglevel = logData.getLoglevel();
