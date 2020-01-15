@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,13 +21,14 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import javax.json.Json;
+import javax.json.JsonArray;
 import javax.json.JsonObject;
+import javax.json.JsonString;
 import javax.json.JsonValue;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.StringUtils;
 
-import com.ibm.json.java.JSONArray;
 import com.ibm.websphere.simplicity.log.Log;
 
 /**
@@ -209,19 +210,22 @@ public class JwtTokenForTest {
             Entry<String, JsonValue> entry = iterator.next();
             String key = entry.getKey();
             Object value = entry.getValue();
-//            Log.info(thisClass, "claimsFromJson", "Object type: " + value.getClass());
-            if (value instanceof String) {
+//            Log.info(thisClass, "claimsFromJson", "Key: " + key + " Object type: " + value.getClass());
+            if (value instanceof JsonString) {
+//                Log.info(thisClass, "claimsFromJson", "String");
                 map.put(key, value);
-            } else if (value instanceof JSONArray) {
+            } else if (value instanceof JsonArray) {
+//                Log.info(thisClass, "claimsFromJson", "JsonArray");
                 List<String> arr = new ArrayList<String>();
-                for (int i = 0; i < ((JSONArray) value).size(); i++) {
-                    arr.add(((JSONArray) value).get(i).toString());
+                for (int i = 0; i < ((JsonArray) value).size(); i++) {
+                    arr.add(((JsonArray) value).get(i).toString());
                 }
                 map.put(key, arr);
-
             } else if (value instanceof JsonObject) {
+//                Log.info(thisClass, "claimsFromJson", "JsonObject");
                 map.put(key, mapClaimsFromJsonAsStrings(value.toString()));
             } else {
+//                Log.info(thisClass, "claimsFromJson", "Other");
                 map.put(key, value.toString());
             }
         }
@@ -273,7 +277,10 @@ public class JwtTokenForTest {
         if (obj == null) {
             return theList;
         }
-       if (obj instanceof ArrayList) {
+//        Log.info(thisClass, "createListOfStrings", "Object type: " + obj.getClass());
+
+        if (obj instanceof ArrayList) {
+//            Log.info(thisClass, "createListOfStrings", "here");
             for (String entry : (List<String>) obj) {
                 theList.add(entry);
             }

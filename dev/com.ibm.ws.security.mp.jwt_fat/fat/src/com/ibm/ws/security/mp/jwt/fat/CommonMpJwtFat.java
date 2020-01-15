@@ -220,7 +220,7 @@ public class CommonMpJwtFat extends CommonSecurityFat {
     /**
      * Adds the appropriate claim expectation for the requested claim.
      * Some claims will have a key:value and others will have key:<multivalue> and we'll need to build the
-     * expectation properly. In some cases, we just want to check for the existance of the claim.
+     * expectation properly. In some cases, we just want to check for the existence of the claim.
      * TODO - replace jwtTokenTools
      *
      * @param jwtTokenTools
@@ -241,7 +241,7 @@ public class CommonMpJwtFat extends CommonSecurityFat {
 //        Log.info(thisClass, "addApiOutputExpectations", "list of values is: " + values);
         if (!values.isEmpty()) {
             for (String value : values) {
-                Log.info(thisClass, "addApiOutputExpectations", "value: " + value);
+//                Log.info(thisClass, "addApiOutputExpectations", "value: " + value);
                 expectations.addExpectation(addApiOutputExpectation(jsonWebTokenApi, claimIdentifier, passKeyName, value));
             }
         } else {
