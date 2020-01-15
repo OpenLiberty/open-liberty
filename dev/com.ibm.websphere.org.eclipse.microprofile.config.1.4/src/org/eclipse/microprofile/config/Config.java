@@ -60,7 +60,7 @@ import org.eclipse.microprofile.config.spi.ConfigSource;
  * <pre>
  * public void doSomething(
  *   Config cfg = ConfigProvider.getConfig();
- *   String archiveUrl = cfg.getString("my.project.archive.endpoint", String.class);
+ *   String archiveUrl = cfg.getValue("my.project.archive.endpoint", String.class);
  *   Integer archivePort = cfg.getValue("my.project.archive.port", Integer.class);
  * </pre>
  *
