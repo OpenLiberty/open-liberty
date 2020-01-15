@@ -16,7 +16,7 @@ import com.ibm.websphere.monitor.meters.StatisticsMeter;
 
 /**
  * This is used to report RESTful Resource Method Related Statistics.
- * Each Restful resource method will have one instance of RestfulStatsMXBean.
+ * Each Restful resource method will have one instance of RestStatsMXBean.
  * Statistic reported :
  * 1) Application Name (Ear (when available)  and War)
  * 2) Resource Method Name
@@ -24,7 +24,7 @@ import com.ibm.websphere.monitor.meters.StatisticsMeter;
  * 4) Cumulative Response Time in nano seconds.
  * 
  */
-public class RESTful_Stats extends Meter implements RestfulStatsMXBean {
+public class REST_Stats extends Meter implements RestStatsMXBean {
 
     private String appName;
     private String methodName;
@@ -37,7 +37,7 @@ public class RESTful_Stats extends Meter implements RestfulStatsMXBean {
      * Constructor.
      * We will store AppName and Resource Method Name
      */
-    public RESTful_Stats(String aName, String mName) {
+    public REST_Stats(String aName, String mName) {
         setAppName(aName);
         setMethodName(mName);
         requestCount = new Counter();
