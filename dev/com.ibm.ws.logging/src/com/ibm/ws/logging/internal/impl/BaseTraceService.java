@@ -506,153 +506,87 @@ public class BaseTraceService implements TrService {
             String[] entry = pair.trim().split(":"); //split the pairs to get key and value
             entry[0] = entry[0].trim();
 
-            //env var omitJsonFields
-            if (pair.trim().endsWith(":") && omitJsonFields) { //FIND FIELDS THAT NEED TO BE OMITTED
-                if (entry.length == 1) { //omit fields for all event types (just a field name)
-                    if (LogTraceList.contains(entry[0])) {
-                        messageMap.put(entry[0], OMIT_FIELDS_STRING);
-                        traceMap.put(entry[0], OMIT_FIELDS_STRING);
-                        valueFound = true;
-                    }
-                    if (FFDCList.contains(entry[0])) {
-                        ffdcMap.put(entry[0], OMIT_FIELDS_STRING);
-                        valueFound = true;
-                    }
-                    if (AccessLogList.contains(entry[0])) {
-                        accessLogMap.put(entry[0], OMIT_FIELDS_STRING);
-                        valueFound = true;
-                    }
-                    if (AuditList.contains(entry[0])) {
-                        auditMap.put(entry[0], OMIT_FIELDS_STRING);
-                        valueFound = true;
-                    }
-                    //extensions
-                    if (entry[0].startsWith("ext_")) {
-                        messageMap.put(entry[0], OMIT_FIELDS_STRING);
-                        traceMap.put(entry[0], OMIT_FIELDS_STRING);
-                        valueFound = true;
-                    }
-                    if (!valueFound) {
-                        //if the value does not exist in any of the known keys, give a warning
-                        Tr.warning(tc, "JSON_FIELDS_NO_MATCH");
-                    }
-                    valueFound = false;//reset valueFound boolean
+            if (entry.length == 2 || (pair.trim().endsWith(":") && entry.length == 1 && omitJsonFields)) {//if the mapped value is intended for all event types
+                if (pair.trim().endsWith(":"))
+                    entry = new String[] { entry[0], OMIT_FIELDS_STRING };
 
-                } else if (entry.length == 2) { //omit fields for specific event types (event type and field name)
-                    entry[1] = entry[1].trim();
-
-                    if (CollectorConstants.MESSAGES_CONFIG_VAL.equals(entry[0])) {
-                        if (LogTraceList.contains(entry[1]) || entry[1].startsWith("ext_")) {
-                            messageMap.put(entry[1], OMIT_FIELDS_STRING);
-                            valueFound = true;
-                        }
-                    } else if (CollectorConstants.TRACE_CONFIG_VAL.equals(entry[0])) {
-                        if (LogTraceList.contains(entry[1]) || entry[1].startsWith("ext_")) {
-                            traceMap.put(entry[1], OMIT_FIELDS_STRING);
-                            valueFound = true;
-                        }
-                    } else if (CollectorConstants.FFDC_CONFIG_VAL.equals(entry[0])) {
-                        if (FFDCList.contains(entry[1])) {
-                            ffdcMap.put(entry[1], OMIT_FIELDS_STRING);
-                            valueFound = true;
-                        }
-                    } else if (CollectorConstants.ACCESS_CONFIG_VAL.equals(entry[0])) {
-                        if (AccessLogList.contains(entry[1])) {
-                            accessLogMap.put(entry[1], OMIT_FIELDS_STRING);
-                            valueFound = true;
-                        }
-                    } else if (CollectorConstants.AUDIT_CONFIG_VAL.equals(entry[0])) {
-                        if (AuditList.contains(entry[1])) {
-                            auditMap.put(entry[1], OMIT_FIELDS_STRING);
-                            valueFound = true;
-                        }
-                    } else {
-                        isInvalidField = true;
-                        Tr.warning(tc, "JSON_FIELDS_INCORRECT_EVENT_TYPE");
-                    }
-                    if (!valueFound && !isInvalidField) {
-                        //if the value does not exist in any of the known keys, give a warning
-                        Tr.warning(tc, "JSON_FIELDS_NO_MATCH");
-                    }
-                    valueFound = false;
-                    isInvalidField = false;
+                entry[1] = entry[1].trim();
+                //add properties to all the hashmaps and trim whitespaces
+                if (LogTraceList.contains(entry[0])) {
+                    messageMap.put(entry[0], entry[1]);
+                    traceMap.put(entry[0], entry[1]);
+                    valueFound = true;
                 }
-            } else { //jsonMappingFields implementation
-                if (entry.length == 2) {//if the mapped value is intended for all event types
-                    entry[1] = entry[1].trim();
-                    //add properties to all the hashmaps and trim whitespaces
-                    if (LogTraceList.contains(entry[0])) {
-                        messageMap.put(entry[0], entry[1]);
-                        traceMap.put(entry[0], entry[1]);
-                        valueFound = true;
-                    }
-                    if (FFDCList.contains(entry[0])) {
-                        ffdcMap.put(entry[0], entry[1]);
-                        valueFound = true;
-                    }
-                    if (AccessLogList.contains(entry[0])) {
-                        accessLogMap.put(entry[0], entry[1]);
-                        valueFound = true;
-                    }
-                    if (AuditList.contains(entry[0])) {
-                        auditMap.put(entry[0], entry[1]);
-                        valueFound = true;
-                    }
-                    //Check if mapped value is an extension
-                    if (entry[0].startsWith("ext_")) {
-                        messageMap.put(entry[0], entry[1]);
-                        traceMap.put(entry[0], entry[1]);
-                        valueFound = true;
-                    }
-                    if (!valueFound) {
-                        //if the value does not exist in any of the known keys, give a warning
-                        Tr.warning(tc, "JSON_FIELDS_NO_MATCH");
-                    }
-                    valueFound = false;//reset valueFound boolean
+                if (FFDCList.contains(entry[0])) {
+                    ffdcMap.put(entry[0], entry[1]);
+                    valueFound = true;
+                }
+                if (AccessLogList.contains(entry[0])) {
+                    accessLogMap.put(entry[0], entry[1]);
+                    valueFound = true;
+                }
+                if (AuditList.contains(entry[0])) {
+                    auditMap.put(entry[0], entry[1]);
+                    valueFound = true;
+                }
+                //Check if mapped value is an extension
+                if (entry[0].startsWith("ext_")) {
+                    messageMap.put(entry[0], entry[1]);
+                    traceMap.put(entry[0], entry[1]);
+                    valueFound = true;
+                }
+                if (!valueFound) {
+                    //if the value does not exist in any of the known keys, give a warning
+                    Tr.warning(tc, "JSON_FIELDS_NO_MATCH");
+                }
+                valueFound = false;//reset valueFound boolean
 
-                } else if (entry.length == 3) {
-                    entry[1] = entry[1].trim();
-                    entry[2] = entry[2].trim();
-                    //add properties to their respective hashmaps and trim whitespaces
-                    if (CollectorConstants.MESSAGES_CONFIG_VAL.equals(entry[0])) {
-                        if (LogTraceList.contains(entry[1]) || entry[1].startsWith("ext_")) {
-                            messageMap.put(entry[1], entry[2]);
-                            valueFound = true;
-                        }
-                    } else if (CollectorConstants.TRACE_CONFIG_VAL.equals(entry[0])) {
-                        if (LogTraceList.contains(entry[1]) || entry[1].startsWith("ext_")) {
-                            traceMap.put(entry[1], entry[2]);
-                            valueFound = true;
-                        }
-                    } else if (CollectorConstants.FFDC_CONFIG_VAL.equals(entry[0])) {
-                        if (FFDCList.contains(entry[1])) {
-                            ffdcMap.put(entry[1], entry[2]);
-                            valueFound = true;
-                        }
-                    } else if (CollectorConstants.ACCESS_CONFIG_VAL.equals(entry[0])) {
-                        if (AccessLogList.contains(entry[1])) {
-                            accessLogMap.put(entry[1], entry[2]);
-                            valueFound = true;
-                        }
-                    } else if (CollectorConstants.AUDIT_CONFIG_VAL.equals(entry[0])) {
-                        if (AuditList.contains(entry[1])) {
-                            auditMap.put(entry[1], entry[2]);
-                            valueFound = true;
-                        }
-                    } else {
-                        isInvalidField = true;
-                        Tr.warning(tc, "JSON_FIELDS_INCORRECT_EVENT_TYPE");
+            } else if (entry.length == 3 || (pair.trim().endsWith(":") && entry.length == 2 && omitJsonFields)) {
+                if (pair.trim().endsWith(":"))
+                    entry = new String[] { entry[0], entry[1], OMIT_FIELDS_STRING };
+
+                entry[1] = entry[1].trim();
+                entry[2] = entry[2].trim();
+                //add properties to their respective hashmaps and trim whitespaces
+                if (CollectorConstants.MESSAGES_CONFIG_VAL.equals(entry[0])) {
+                    if (LogTraceList.contains(entry[1]) || entry[1].startsWith("ext_")) {
+                        messageMap.put(entry[1], entry[2]);
+                        valueFound = true;
                     }
-                    if (!valueFound && !isInvalidField) {
-                        //if the value does not exist in any of the known keys, give a warning
-                        Tr.warning(tc, "JSON_FIELDS_NO_MATCH");
+                } else if (CollectorConstants.TRACE_CONFIG_VAL.equals(entry[0])) {
+                    if (LogTraceList.contains(entry[1]) || entry[1].startsWith("ext_")) {
+                        traceMap.put(entry[1], entry[2]);
+                        valueFound = true;
                     }
-                    valueFound = false;
-                    isInvalidField = false;
+                } else if (CollectorConstants.FFDC_CONFIG_VAL.equals(entry[0])) {
+                    if (FFDCList.contains(entry[1])) {
+                        ffdcMap.put(entry[1], entry[2]);
+                        valueFound = true;
+                    }
+                } else if (CollectorConstants.ACCESS_CONFIG_VAL.equals(entry[0])) {
+                    if (AccessLogList.contains(entry[1])) {
+                        accessLogMap.put(entry[1], entry[2]);
+                        valueFound = true;
+                    }
+                } else if (CollectorConstants.AUDIT_CONFIG_VAL.equals(entry[0])) {
+                    if (AuditList.contains(entry[1])) {
+                        auditMap.put(entry[1], entry[2]);
+                        valueFound = true;
+                    }
                 } else {
-                    Tr.warning(tc, "JSON_FIELDS_FORMAT_WARNING_2");
+                    isInvalidField = true;
+                    Tr.warning(tc, "JSON_FIELDS_INCORRECT_EVENT_TYPE");
                 }
+                if (!valueFound && !isInvalidField) {
+                    //if the value does not exist in any of the known keys, give a warning
+                    Tr.warning(tc, "JSON_FIELDS_NO_MATCH");
+                }
+                valueFound = false;
+                isInvalidField = false;
+            } else {
+                Tr.warning(tc, "JSON_FIELDS_FORMAT_WARNING_2");
             }
+
         }
 
         AccessLogData.newJsonLoggingNameAliases(accessLogMap);
