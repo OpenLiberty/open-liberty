@@ -24,6 +24,7 @@ import com.ibm.ws.security.social.internal.LinkedinLoginConfigImpl;
 import com.ibm.ws.security.social.internal.Oauth2LoginConfigImpl;
 import com.ibm.ws.security.social.internal.utils.OAuthClientUtil;
 import com.ibm.ws.security.social.internal.utils.OpenShiftUserApiUtils;
+import com.ibm.ws.security.social.internal.utils.IntrospectUserApiUtils;
 import com.ibm.ws.security.social.internal.utils.SocialUtil;
 
 public class TAIUserApiUtils {
@@ -43,6 +44,10 @@ public class TAIUserApiUtils {
             if (SocialUtil.isKubeConfig(clientConfig)) {
                 return getUserApiResponseFromOpenShift(clientConfig, accessToken, sslSocketFactory);
             }
+
+            if(clientConfig.getUserApiType().equals("introspect")) {
+                return getUserApiResponseFromIntrospectEndpoint((Oauth2LoginConfigImpl) clientConfig, accessToken, sslSocketFactory);
+            }
             if (isTokenExpectedToBeServiceAccountToken(clientConfig)) {
                 return getUserApiResponseForServiceAccountToken(clientConfig, accessToken, sslSocketFactory);
             }
@@ -56,8 +61,14 @@ public class TAIUserApiUtils {
         }
     }
 
-    private String getUserApiResponseFromOpenShift(SocialLoginConfig config, @Sensitive String accessToken, SSLSocketFactory sslSocketFactory) throws SocialLoginException {
-        OpenShiftUserApiUtils openShiftUtils = new OpenShiftUserApiUtils(config);
+    private String getUserApiResponseFromIntrospectEndpoint(Oauth2LoginConfigImpl config, @Sensitive String accessToken, SSLSocketFactory sslSocketFactory) throws SocialLoginException {
+        IntrospectUserApiUtils introspectUtils = new IntrospectUserApiUtils(config);
+        return introspectUtils.getUserApiResponse(accessToken, sslSocketFactory);
+    }
+
+
+  private String getUserApiResponseFromOpenShift(SocialLoginConfig config, @Sensitive String accessToken, SSLSocketFactory sslSocketFactory) throws SocialLoginException {
+       OpenShiftUserApiUtils openShiftUtils = new OpenShiftUserApiUtils(config);
         return openShiftUtils.getUserApiResponse(accessToken, sslSocketFactory);
     }
 

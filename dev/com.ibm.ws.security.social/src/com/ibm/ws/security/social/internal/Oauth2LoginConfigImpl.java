@@ -248,6 +248,10 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
     }
 
     protected void checkForRequiredConfigAttributes(Map<String, Object> props) {
+        
+        if (isIntrospectConfiguration(props)) {
+            checkForRequiredConfigAttributesForIntrospect(props);
+        }
         if (isConfiguredForProxyFlow(props)) {
             checkForRequiredConfigAttributesForProxyFlow(props);
         }
@@ -267,6 +271,19 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
 
     protected void checkForRequiredConfigAttributesForProxyFlow(Map<String, Object> props) {
         configUtils.getRequiredConfigAttributeWithConfigId(props, KEY_userApi, uniqueId);
+    }
+    
+    boolean isIntrospectConfiguration(Map<String, Object> props) {
+        String userApiType = configUtils.getConfigAttribute(props, KEY_userApiType);
+        if (userApiType != null && "introspect".equals(userApiType)) {
+            return true;
+        }
+        return false;
+    }
+    
+    protected void checkForRequiredConfigAttributesForIntrospect(Map<String, Object> props) {
+        getRequiredConfigAttribute(props, KEY_clientId);
+        getRequiredSerializableProtectedStringConfigAttribute(props, KEY_clientSecret);
     }
 
     boolean isKubeConfiguration(Map<String, Object> props) {
