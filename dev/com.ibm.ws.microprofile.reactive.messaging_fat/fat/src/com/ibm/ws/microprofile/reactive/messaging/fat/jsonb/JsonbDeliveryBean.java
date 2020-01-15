@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.delivery;
+package com.ibm.ws.microprofile.reactive.messaging.fat.jsonb;
 
 import java.util.concurrent.CompletionStage;
 
@@ -19,15 +19,15 @@ import org.eclipse.microprofile.reactive.messaging.Outgoing;
 
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractDeliveryBean;
 
+/**
+ * Bean which drives the "input" channel
+ */
 @ApplicationScoped
-public class KafkaDeliveryBean extends AbstractDeliveryBean<String> {
+public class JsonbDeliveryBean extends AbstractDeliveryBean<TestData> {
 
-    public final static String CHANNEL_NAME = "delivery-test-output";
-
-    // Overridden to add @Outgoing
     @Override
-    @Outgoing(CHANNEL_NAME)
-    public CompletionStage<Message<String>> getMessage() {
+    @Outgoing("input")
+    public CompletionStage<Message<TestData>> getMessage() {
         return super.getMessage();
     }
 

@@ -26,8 +26,6 @@ package io.astefanutti.metrics.cdi20;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
 import java.lang.reflect.Type;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -64,10 +62,6 @@ import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.eclipse.microprofile.metrics.annotation.Gauge;
 import org.eclipse.microprofile.metrics.annotation.Metered;
 import org.eclipse.microprofile.metrics.annotation.Timed;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -77,7 +71,6 @@ import com.ibm.ws.microprofile.metrics.cdi.decorator.AnnotatedTypeDecorator;
 import com.ibm.ws.microprofile.metrics.cdi20.helper.Utils;
 import com.ibm.ws.microprofile.metrics.cdi20.producer.MetricRegistryFactory;
 import com.ibm.ws.microprofile.metrics.impl.SharedMetricRegistries;
-import com.ibm.wsspi.classloading.ClassLoadingService;
 
 @Component(service = WebSphereCDIExtension.class, immediate = true)
 public class MetricsExtension implements Extension, WebSphereCDIExtension {
@@ -150,27 +143,8 @@ public class MetricsExtension implements Extension, WebSphereCDIExtension {
             Metadata metadata = name.metadataOf(bean.getValue());
             String[] tags = name.tagOf(bean.getValue());
 
-            ClassLoader origLoader = Thread.currentThread().getContextClassLoader();
+            registry.register(metadata, (Metric) getReference(manager, bean.getValue().getBaseType(), bean.getKey()), Utils.tagsToTags(tags)); // line 190
 
-            final Bundle bundle = FrameworkUtil.getBundle(ClassLoadingService.class);
-            ClassLoadingService thingthing = AccessController.doPrivileged(new PrivilegedAction<ClassLoadingService>() {
-                @Override
-                public ClassLoadingService run() {
-                    BundleContext bCtx = bundle.getBundleContext();
-                    ServiceReference<ClassLoadingService> svcRef = bCtx.getServiceReference(ClassLoadingService.class);
-                    return svcRef == null ? null : bCtx.getService(svcRef);
-                }
-            });
-
-            try {
-
-                ClassLoader tccl = thingthing.createThreadContextClassLoader(origLoader);
-                Thread.currentThread().setContextClassLoader(tccl);
-
-                registry.register(metadata, (Metric) getReference(manager, bean.getValue().getBaseType(), bean.getKey()), Utils.tagsToTags(tags)); // line 190
-            } finally {
-                Thread.currentThread().setContextClassLoader(origLoader);
-            }
             MetricID mid = new MetricID(metadata.getName(), Utils.tagsToTags(tags));
             addMetricID(mid);
         }

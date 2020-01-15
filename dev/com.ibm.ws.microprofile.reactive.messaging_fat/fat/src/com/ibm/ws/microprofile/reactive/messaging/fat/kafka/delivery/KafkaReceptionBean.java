@@ -22,7 +22,7 @@ import org.eclipse.microprofile.reactive.messaging.Message;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractReceptionBean;
 
 @ApplicationScoped
-public class KafkaReceptionBean extends AbstractReceptionBean {
+public class KafkaReceptionBean extends AbstractReceptionBean<String> {
 
     public final static String CHANNEL_NAME = "reception-test-input";
 
