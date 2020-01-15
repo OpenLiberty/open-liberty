@@ -41,7 +41,7 @@ application.shutdown.CWMFT0002W.useraction= This warning usually occurs when an 
 #The asynchronous method {0} returned null. 
 asynchronous.returned.null.CWMFT0003W=CWMFT0003W: The asynchronous method {0} returned null. 
 asynchronous.returned.null.CWMFT0003W.explanation=Methods annotated with @Asynchronous must not return a null value.
-asynchronous.returned.null.CWMFT0003W.useraction=Prevent a null value being returned from the method.
+asynchronous.returned.null.CWMFT0003W.useraction=Prevent a null value from being returned by the method.
 
 #An internal error occurred. The exception is {0}.
 internal.error.CWMFT4998E=CWMFT4998E: An internal error occurred. The exception is {0}.
