@@ -17,12 +17,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.ConnectException;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,6 +25,7 @@ import com.ibm.ws.install.InstallConstants;
 import com.ibm.ws.install.InstallException;
 import com.ibm.ws.install.internal.InstallLogUtils.Messages;
 import com.ibm.ws.install.repository.download.RepositoryDownloadUtil;
+import com.ibm.ws.kernel.feature.resolver.FeatureResolver;
 import com.ibm.ws.kernel.productinfo.DuplicateProductInfoException;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.kernel.productinfo.ProductInfoParseException;
@@ -336,7 +332,6 @@ public class ExceptionUtils {
         }
 
         return split[len - 2] + "."+split[len - 1];
-
     }
 
     /**
@@ -359,6 +354,53 @@ public class ExceptionUtils {
             ie.setData(assetNames);
             return ie;
         }
+
+        if(e.getFeatureConflicts().size()> 0){
+            Set<String> topAssets = new HashSet<>(assetNames);
+            Set<Set<String>> offendingFeaturePairs = new HashSet<>();
+
+            // loop through feature conflicts
+            Map<String, Collection<FeatureResolver.Chain>> featureConflicts = e.getFeatureConflicts();
+            for(String featureFamilyName : featureConflicts.keySet()) {
+                Set<String> off = new HashSet<>();
+                Collection<FeatureResolver.Chain> chainList = featureConflicts.get(featureFamilyName);
+                for(FeatureResolver.Chain chain : chainList){
+                    for(String featureName : chain.getChain()){
+                        String sname = getFeatureShortname(featureName);
+                        if(topAssets.contains(sname)){
+                            off.add(sname);
+                        }
+                    }
+                }
+                if(off.size() > 1){
+                    offendingFeaturePairs.add(off);
+                }
+
+            } // TODO remove subsets?
+            StringBuilder sb = new StringBuilder();
+            for(Set<String> p : offendingFeaturePairs){
+                List<String> pair = new ArrayList<>(p);
+
+                // determine which message to use
+                if(pair.size() == 2){
+                    String f1 = pair.get(0);
+                    String f2 = pair.get(1);
+                    sb.append(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_INCOMPATIBLE_FEATURES", f1, f2)).append("\n");
+                } else {
+                    StringBuilder nMinusOneFeatures = new StringBuilder();
+                    for(String feature : pair.subList(0, pair.size() - 1)){
+                        nMinusOneFeatures.append(feature).append(",");
+                    }
+                    String lastFeature = pair.get(pair.size() - 1);
+                    sb.append(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_INCOMPATIBLE_FEATURES", nMinusOneFeatures.toString(), lastFeature)).append("\n");
+                }
+            }
+            InstallException ie;
+            ie = create(sb.toString(), e);
+            ie.setData(assetNames);
+            return ie;
+        }
+
 
         Collection<MissingRequirement> dependants = new ArrayList<MissingRequirement>(allRequirementsNotFound.size());
         for (MissingRequirement f : allRequirementsNotFound) {
@@ -428,6 +470,9 @@ public class ExceptionUtils {
                 String assetsStr = "";
                 String feature = missingRequirement;
                 InstallException ie = null;
+
+
+
                 if (assetNames.size() == 1) {
                     assetsStr = assetNames.iterator().next();
                     ie = create(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage(installingAsset ? "ERROR_ASSET_MISSING_DEPENDENT" : "ERROR_MISSING_DEPENDENT",
