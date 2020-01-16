@@ -41,6 +41,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
+import javax.transaction.RollbackException;
 import javax.transaction.UserTransaction;
 
 import com.ibm.websphere.concurrent.persistent.AutoPurge;
@@ -888,7 +889,11 @@ public class PersistentErrorTestServlet extends HttpServlet {
             Integer result = status.get();
             throw new Exception("Should not be able to get a result from a task that always rolls back: " + result);
         } catch (AbortedException x) {
-            if (x.getMessage() == null || !x.getMessage().startsWith("CWWKC1555E"))
+            if (x.getMessage() == null || !x.getMessage().startsWith("CWWKC1555E")
+                    || !(x.getCause() instanceof RollbackException)
+                    || x.getCause().getMessage() == null
+                    || !x.getCause().getMessage().startsWith("CWWKC1505E")
+                    || !x.getCause().getMessage().contains(" 4 ")) // value of missedTaskThreshold in seconds
                 throw x;
         }
     }
