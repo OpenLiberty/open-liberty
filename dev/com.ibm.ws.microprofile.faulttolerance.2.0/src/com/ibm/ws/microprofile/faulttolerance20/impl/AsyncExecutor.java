@@ -251,11 +251,10 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
                 methodResult = MethodResult.internalFailure(createAppStoppedException(e, attemptContext.getExecutionContext()));
             }
 
-            if (asyncRequestContext != null) {
-                asyncRequestContext.activateContext();
-            }
-
             if (methodResult == null) {
+                if (asyncRequestContext != null) {
+                    asyncRequestContext.activateContext();
+                }
                 try {
                     W result = executionContext.getCallable().call();
                     methodResult = MethodResult.success(result);
@@ -264,10 +263,10 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
                 } finally {
                     contextDescriptor.taskStopping(context);
                 }
-            }
 
-            if (asyncRequestContext != null) {
-                asyncRequestContext.deactivateContext();
+                if (asyncRequestContext != null) {
+                    asyncRequestContext.deactivateContext();
+                }
             }
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {

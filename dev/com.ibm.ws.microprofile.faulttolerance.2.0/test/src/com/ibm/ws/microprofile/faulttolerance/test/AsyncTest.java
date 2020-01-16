@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -159,7 +159,7 @@ public class AsyncTest extends AbstractFTTest {
         ExecutorBuilder<String> builder = FaultToleranceProvider.newExecutionBuilder();
 
         MockAsyncRequestContext asyncRequestContext = new MockAsyncRequestContext();
-        builder.setRequestContext(asyncRequestContext);
+        builder.setRequestContextController(asyncRequestContext);
 
         Executor<CompletionStage<String>> executor = builder.buildAsync(CompletionStage.class);
         ExecutionContext context = executor.newExecutionContext("testAsyncCS", null);
@@ -183,7 +183,7 @@ public class AsyncTest extends AbstractFTTest {
         ExecutorBuilder<String> builder = FaultToleranceProvider.newExecutionBuilder();
 
         MockAsyncRequestContext asyncRequestContext = new MockAsyncRequestContext();
-        builder.setRequestContext(asyncRequestContext);
+        builder.setRequestContextController(asyncRequestContext);
 
         Executor<Future<String>> executor = builder.buildAsync(CompletionStage.class);
         ExecutionContext context = executor.newExecutionContext("testAsyncCS", null);
@@ -200,8 +200,6 @@ public class AsyncTest extends AbstractFTTest {
             assertThat(e.getCause(), instanceOf(TestException.class));
             assertEquals("Activate request context should have been called", 1, asyncRequestContext.getActivateContextCount());
             assertEquals("Deactivate request context should still be called if method throws an exeption", 1, asyncRequestContext.getDeactivateContextCount());
-        } catch (TimeoutException e) {
-            throw e;
         }
     }
 
@@ -214,7 +212,7 @@ public class AsyncTest extends AbstractFTTest {
         builder.setRetryPolicy(retry);
 
         MockAsyncRequestContext asyncRequestContext = new MockAsyncRequestContext();
-        builder.setRequestContext(asyncRequestContext);
+        builder.setRequestContextController(asyncRequestContext);
 
         Executor<Future<String>> executor = builder.buildAsync(CompletionStage.class);
         ExecutionContext context = executor.newExecutionContext("testAsyncCS", null);
@@ -230,8 +228,6 @@ public class AsyncTest extends AbstractFTTest {
             assertThat(e.getCause(), instanceOf(TestException.class));
             assertEquals("Activate request context should be called 4 times", 4, asyncRequestContext.getActivateContextCount());
             assertEquals("Deactivate request context should be called 4 times", 4, asyncRequestContext.getDeactivateContextCount());
-        } catch (TimeoutException e) {
-            throw e;
         }
     }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,6 +38,7 @@ public class AggregatedFTPolicy {
     private TimeoutPolicy timeout;
     private FallbackPolicy fallbackPolicy;
     private Executor<?> executor;
+    private Instance<AsyncRequestContextController> rcInstance;
 
     /**
      * @return the method this policy will be applied to
@@ -110,21 +111,22 @@ public class AggregatedFTPolicy {
         return this.fallbackPolicy;
     }
 
+    public void setRequestContextInstance(Instance<AsyncRequestContextController> rcInstance) {
+        this.rcInstance = rcInstance;
+    }
+
     /**
      * @param rcInstance an instance of the request context controller
      * @return
      */
     @SuppressWarnings("unchecked")
-    public Executor<Object> getExecutor(Instance<AsyncRequestContextController> rcInstance) {
+    public Executor<Object> getExecutor() {
         synchronized (this) {
             if (this.executor == null) {
                 ExecutorBuilder<?> builder = newBuilder();
 
-                // if CDI version < 2.0 then instance will be null and request context will not be active
-                if (rcInstance != null) {
-                    if (!rcInstance.isUnsatisfied() && !rcInstance.isAmbiguous()) {
-                        builder.setRequestContext(rcInstance.get());
-                    }
+                if (!rcInstance.isUnsatisfied() && !rcInstance.isAmbiguous()) {
+                    builder.setRequestContextController(rcInstance.get());
                 }
 
                 if (isAsynchronous()) {
