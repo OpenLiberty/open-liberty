@@ -1,9 +1,9 @@
 /*
- * Licensed to the University Corporation for Advanced Internet Development, 
- * Inc. (UCAID) under one or more contributor license agreements.  See the 
+ * Licensed to the University Corporation for Advanced Internet Development,
+ * Inc. (UCAID) under one or more contributor license agreements.  See the
  * NOTICE file distributed with this work for additional information regarding
- * copyright ownership. The UCAID licenses this file to You under the Apache 
- * License, Version 2.0 (the "License"); you may not use this file except in 
+ * copyright ownership. The UCAID licenses this file to You under the Apache
+ * License, Version 2.0 (the "License"); you may not use this file except in
  * compliance with the License.  You may obtain a copy of the License at
  *
  *    http://www.apache.org/licenses/LICENSE-2.0
@@ -31,44 +31,43 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.saml.TraceConstants;
 
-public class Activator implements BundleActivator
-{
+public class Activator implements BundleActivator {
     // Trace classes are in the spi, See com.ibm.ws.logging
     private static TraceComponent tc = Tr.register(Activator.class,
                                                    TraceConstants.TRACE_GROUP,
                                                    TraceConstants.MESSAGE_BUNDLE);
 
     private static String[] providerConfigs = {
-                                               "/default-config.xml",
-                                               "/schema-config.xml",
-                                               "/signature-config.xml",
-                                               "/signature-validation-config.xml",
-                                               "/encryption-config.xml",
-                                               "/encryption-validation-config.xml",
-                                               "/soap11-config.xml",
-                                               "/wsfed11-protocol-config.xml",
-                                               "/saml1-assertion-config.xml",
-                                               "/saml1-protocol-config.xml",
-                                               "/saml1-core-validation-config.xml",
-                                               "/saml2-assertion-config.xml",
-                                               "/saml2-protocol-config.xml",
-                                               "/saml2-core-validation-config.xml",
-                                               "/saml1-metadata-config.xml",
-                                               "/saml2-metadata-config.xml",
-                                               "/saml2-metadata-validation-config.xml",
-                                               "/saml2-metadata-idp-discovery-config.xml",
-                                               "/saml2-protocol-thirdparty-config.xml",
-                                               "/saml2-metadata-query-config.xml",
-                                               "/saml2-assertion-delegation-restriction-config.xml",
-                                               "/saml2-ecp-config.xml",
-                                               "/xacml10-saml2-profile-config.xml",
-                                               "/xacml11-saml2-profile-config.xml",
-                                               "/xacml20-context-config.xml",
-                                               "/xacml20-policy-config.xml",
-                                               "/xacml2-saml2-profile-config.xml",
-                                               "/xacml3-saml2-profile-config.xml",
-                                               "/wsaddressing-config.xml",
-                                               "/wssecurity-config.xml",
+                                                "/default-config.xml",
+                                                "/schema-config.xml",
+                                                "/signature-config.xml",
+                                                "/signature-validation-config.xml",
+                                                "/encryption-config.xml",
+                                                "/encryption-validation-config.xml",
+                                                "/soap11-config.xml",
+                                                "/wsfed11-protocol-config.xml",
+                                                "/saml1-assertion-config.xml",
+                                                "/saml1-protocol-config.xml",
+                                                "/saml1-core-validation-config.xml",
+                                                "/saml2-assertion-config.xml",
+                                                "/saml2-protocol-config.xml",
+                                                "/saml2-core-validation-config.xml",
+                                                "/saml1-metadata-config.xml",
+                                                "/saml2-metadata-config.xml",
+                                                "/saml2-metadata-validation-config.xml",
+                                                "/saml2-metadata-idp-discovery-config.xml",
+                                                "/saml2-protocol-thirdparty-config.xml",
+                                                "/saml2-metadata-query-config.xml",
+                                                "/saml2-assertion-delegation-restriction-config.xml",
+                                                "/saml2-ecp-config.xml",
+                                                "/xacml10-saml2-profile-config.xml",
+                                                "/xacml11-saml2-profile-config.xml",
+                                                "/xacml20-context-config.xml",
+                                                "/xacml20-policy-config.xml",
+                                                "/xacml2-saml2-profile-config.xml",
+                                                "/xacml3-saml2-profile-config.xml",
+                                                "/wsaddressing-config.xml",
+                                                "/wssecurity-config.xml",
     };
 
     static boolean bInit = false;
@@ -77,8 +76,7 @@ public class Activator implements BundleActivator
      * see org/opensaml/DefaultBootstrap.java
      */
     @Override
-    public void start(BundleContext ctx) throws Exception
-    {
+    public void start(BundleContext ctx) throws Exception {
         // Currently, we initialize it when the static boolean is not true
         if (!bInit) {
             try {
@@ -134,8 +132,8 @@ public class Activator implements BundleActivator
     }
 
     @Override
-    public void stop(BundleContext ctx) throws Exception
-    {}
+    public void stop(BundleContext ctx) throws Exception {
+    }
 
     /**
      * Initializes the default global security configuration.
