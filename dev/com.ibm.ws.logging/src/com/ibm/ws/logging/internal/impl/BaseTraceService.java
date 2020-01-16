@@ -506,7 +506,7 @@ public class BaseTraceService implements TrService {
             String[] entry = pair.trim().split(":"); //split the pairs to get key and value
             entry[0] = entry[0].trim();
 
-            if (entry.length == 2 || (pair.trim().endsWith(":") && entry.length == 1 && omitJsonFields)) {//if the mapped value is intended for all event types
+            if ((entry.length == 2 && !pair.trim().endsWith(":")) || (pair.trim().endsWith(":") && entry.length == 1 && omitJsonFields)) {//if the mapped value is intended for all event types
                 if (pair.trim().endsWith(":"))
                     entry = new String[] { entry[0], OMIT_FIELDS_STRING };
 
@@ -574,6 +574,7 @@ public class BaseTraceService implements TrService {
                         valueFound = true;
                     }
                 } else {
+                    System.out.print("wrong field");
                     isInvalidField = true;
                     Tr.warning(tc, "JSON_FIELDS_INCORRECT_EVENT_TYPE");
                 }
