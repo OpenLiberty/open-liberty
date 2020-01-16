@@ -574,7 +574,6 @@ public class BaseTraceService implements TrService {
                         valueFound = true;
                     }
                 } else {
-                    System.out.print("wrong field");
                     isInvalidField = true;
                     Tr.warning(tc, "JSON_FIELDS_INCORRECT_EVENT_TYPE");
                 }
