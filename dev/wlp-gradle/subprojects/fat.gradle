@@ -205,7 +205,7 @@ task autoFVT {
     // Create a fat.bnd.properties file that contains metadata about the FAT
     def bndProps = new Properties()
     
-    // By default, load up all properties with certain prefixes
+    // By default, load up all properties with certain prefixes from bndWorkspace
     bndWorkspace.getProject(project.getProjectDir()).getProperties().each { k, v ->
       if(k.startsWith("test.") || k.startsWith("fat."))
         bndProps.setProperty(k, v);
@@ -216,14 +216,31 @@ task autoFVT {
     bndProps.setProperty('fat.minimum.java.level', minJavaLevel)
     bndProps.setProperty('micro.version', bnd('libertyBundleMicroVersion'))
     
-    File propsFile = new File(autoFvtDir, 'fat.bnd.properties')
-    def writer = new FileWriter(propsFile)
+    File bndPropsFile = new File(autoFvtDir, 'fat.bnd.properties')
+    def bndWriter = new FileWriter(bndPropsFile)
     try {
-    	bndProps.store(writer, null)
+    	bndProps.store(bndWriter, null)
     } finally {
-      writer.close()
+      bndWriter.close()
     }
     
+    // Create a fat.sys.properties file that contains metadata about the FAT
+    def sysProps = new Properties()
+    
+    // By default, load up all properties with certain prefixes from System
+    System.getProperties().each { k, v ->
+      if(k.startsWith("test.") || k.startsWith("fat."))
+        sysProps.setProperty(k, v);
+    }
+    
+    File sysPropsFile = new File(autoFvtDir, 'fat.sys.properties')
+    def sysWriter = new FileWriter(sysPropsFile)
+    try {
+    	sysProps.store(sysWriter, null)
+    } finally {
+      sysWriter.close()
+    }
+
     // Copy the component test libs
     // TODO: It looks like the componenttest.app.jar got combined into something else, so this is now way more source in the jar than was there before. This might need changing then.
     copy {
