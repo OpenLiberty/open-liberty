@@ -53,7 +53,8 @@ public class JPATestOLGH8820Logic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
 
         // TODO: Add support for more database platforms
-        if (!isOracle(dbProductName) || !isDB2(dbProductName)) {
+        if (!isOracle(dbProductName) || !isDB2(dbProductName) || !isMySQL(dbProductName)) {
+            System.out.println("This test does not support database platform " + dbProductName);
             return;
         }
 
@@ -143,7 +144,8 @@ public class JPATestOLGH8820Logic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
 
         // TODO: Add support for more database platforms
-        if (!isOracle(dbProductName) || !isDB2(dbProductName)) {
+        if (!isOracle(dbProductName) || !isDB2(dbProductName) || !isMySQL(dbProductName)) {
+            System.out.println("This test does not support database platform " + dbProductName);
             return;
         }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,8 @@ import java.net.URL;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
@@ -55,6 +57,8 @@ public class MultiServerTest extends WSATTest {
 		BASE_URL3 = "http://" + server3.getHostname() + ":9988";
 
 		DBTestBase.initWSATTest(server);
+		DBTestBase.initWSATTest(server2);
+		DBTestBase.initWSATTest(server3);
 
 		if (server != null && server.isStarted()){
 			server.stopServer();
@@ -64,17 +68,22 @@ public class MultiServerTest extends WSATTest {
 			server2.stopServer();
 		}
 		if (server3 != null && server3.isStarted()){
-			server3.stopServer();
+      server3.stopServer();
 		}
 
-        if (server != null && !server.isStarted()){
-        	 server.setServerStartTimeout(600000);
-             server.startServer(true);
+    ShrinkHelper.defaultDropinApp(server, "oneway", "com.ibm.ws.wsat.oneway.*");
+    ShrinkHelper.defaultDropinApp(server, "endtoend", "com.ibm.ws.wsat.endtoend.*");
+    ShrinkHelper.defaultDropinApp(server2, "endtoend", "com.ibm.ws.wsat.endtoend.*");
+    ShrinkHelper.defaultDropinApp(server3, "endtoend", "com.ibm.ws.wsat.endtoend.*");
+
+    if (server != null && !server.isStarted()){
+       server.setServerStartTimeout(600000);
+       server.startServer(true);
 		}
 		
 		if (server2 != null && !server2.isStarted()){
 			 server2.setServerStartTimeout(600000);
-		     server2.startServer(true);
+       server2.startServer(true);
 		}
 		
 		if (server3 != null && !server3.isStarted()){
@@ -90,6 +99,8 @@ public class MultiServerTest extends WSATTest {
 		ServerUtils.stopServer(server3);
 
 		DBTestBase.cleanupWSATTest(server);
+		DBTestBase.cleanupWSATTest(server2);
+		DBTestBase.cleanupWSATTest(server3);
     }
 	
 	@Test

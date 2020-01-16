@@ -35,7 +35,7 @@ instrument.disabled: true
 	com.ibm.websphere.appserver.spi.logging;version=latest,\
 	com.ibm.websphere.security;version=latest,\
 	com.ibm.ws.security;version=latest,\
-    com.ibm.ws.webcontainer.security;version=latest,\
+	com.ibm.ws.webcontainer.security;version=latest,\
 	com.ibm.ws.security.authentication;version=latest,\
 	com.ibm.ws.messaging.utils;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
@@ -44,4 +44,5 @@ instrument.disabled: true
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	com.ibm.ws.messaging.security.common;version=latest,\
 	com.ibm.ws.security.registry;version=latest,\
+	com.ibm.ws.security.token.ltpa;version=latest,\
 	com.ibm.ws.messaging.comms.client;version=latest

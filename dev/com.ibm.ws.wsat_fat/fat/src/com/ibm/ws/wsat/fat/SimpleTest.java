@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,8 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.ibm.websphere.simplicity.ShrinkHelper;
+
 import componenttest.annotation.AllowedFFDC;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -44,10 +46,9 @@ public class SimpleTest extends WSATTest {
 
 		server = LibertyServerFactory.getLibertyServer("MigrationServer1");
 		BASE_URL = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort();
+
 		server2 = LibertyServerFactory.getLibertyServer("MigrationServer2");
 		BASE_URL2 = "http://" + server2.getHostname() + ":9992";
-
-		DBTestBase.initWSATTest(server);
 
 		if (server != null && server.isStarted()){
 			server.stopServer();
@@ -57,14 +58,20 @@ public class SimpleTest extends WSATTest {
 			server2.stopServer();
 		}
 
-        if (server != null && !server.isStarted()){
-        	 server.setServerStartTimeout(600000);
-             server.startServer(true);
+		DBTestBase.initWSATTest(server);
+		DBTestBase.initWSATTest(server2);
+
+    ShrinkHelper.defaultDropinApp(server, "simpleClient", "com.ibm.ws.wsat.simpleclient.client.simple");
+    ShrinkHelper.defaultDropinApp(server2, "simpleServer", "com.ibm.ws.wsat.simpleserver.server");
+
+    if (server != null && !server.isStarted()){
+       server.setServerStartTimeout(600000);
+       server.startServer(true);
 		}
 		
 		if (server2 != null && !server2.isStarted()){
 			 server2.setServerStartTimeout(600000);
-		     server2.startServer(true);
+       server2.startServer(true);
 		}
 	}
 
@@ -74,7 +81,8 @@ public class SimpleTest extends WSATTest {
 		ServerUtils.stopServer(server2);
 
 		DBTestBase.cleanupWSATTest(server);
-    }
+		DBTestBase.cleanupWSATTest(server2);
+  }
 	
 	@After
 	public void sleep() throws InterruptedException {

@@ -1904,9 +1904,9 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.sendUpgradeHeader(HEADERS_ONLY_URI);
         h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
 
-        //Type 244, lenght 0
+        //Type 244, length 0
         byte[] unknownFrameHeader = { 0, 0, 0, -12, 0, 0, 0, 0, 0 };
-        h2Client.sendBytes(unknownFrameHeader);
+        h2Client.sendBytesAfterPreface(unknownFrameHeader);
 
         //send a ping and expect a ping back
         FramePing ping = new FramePing(0, emptyBytes, false);
@@ -1937,21 +1937,16 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.sendUpgradeHeader(HEADERS_ONLY_URI);
         h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
 
-        // sendbytes does not wait for the http2 start up sequence to finish, which
-        // was causing an intermittent failure when the bad ping frame sometimes got intermixed with
-        // the settings frames.  Sendframe does wait, so issue it first, followed by the bad ping.
-        // RTC 255368
-
-        //send a ping and expect a ping back
-        FramePing ping = new FramePing(0, libertyBytes, false);
-        h2Client.sendFrame(ping);
-
         //Type 6, length 0
         byte[] pingFrameBytes = { 0, 0, (byte) 8, (byte) 6, (byte) 255, 0, 0, 0, 0 };
         byte[] payload = { 0, 0, 0, 0, 0, 0, 0, 0 };
 
-        h2Client.sendBytes(pingFrameBytes);
+        h2Client.sendBytesAfterPreface(pingFrameBytes);
         h2Client.sendBytes(payload);
+
+        //send a ping and expect a ping back
+        FramePing ping = new FramePing(0, libertyBytes, false);
+        h2Client.sendFrame(ping);
 
         blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
@@ -3205,17 +3200,11 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.sendUpgradeHeader(HEADERS_ONLY_URI);
         h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
 
-        // Send the whole frame at one time.  An intermittent error was occurring when the first half of the
-        // frame was sent, and before the last 3 bytes could be sent, another frame came in from the server.
-        // RTC defect 263417
-
         //setting with 6 bytes payload
         byte[] settingsFrame = { 0, 0, (byte) 3, (byte) 4, 0, 0, 0, 0, 0, 0, (byte) 3, 0 };
         //SETTINGS_INITIAL_WINDOW_SIZE = 2147483648
-        //byte[] parameter = { 0, (byte) 3, 0 };
 
-        h2Client.sendBytes(settingsFrame);
-        //h2Client.sendBytes(parameter);
+        h2Client.sendBytesAfterPreface(settingsFrame);
 
         blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
@@ -3364,7 +3353,6 @@ public class H2FATDriverServlet extends FATServlet {
         FrameGoAway errorFrame = new FrameGoAway(0, debugData, FLOW_CONTROL_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
-        addFirstExpectedHeaders(h2Client);
         h2Client.sendUpgradeHeader(HEADERS_ONLY_URI);
         h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
 
@@ -3613,7 +3601,7 @@ public class H2FATDriverServlet extends FATServlet {
         // send over the header frames followed by the continuation frames
         h2Client.sendFrame(frameHeadersToSend);
 
-        //Type 244, lenght 0
+        //Type 244, length 0
         byte[] unknownFrameHeader = { 0, 0, 0, -12, 0, 0, 0, 0, 0 };
         h2Client.sendBytes(unknownFrameHeader);
 

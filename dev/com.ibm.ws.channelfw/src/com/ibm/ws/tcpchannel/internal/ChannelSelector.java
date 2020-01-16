@@ -75,6 +75,8 @@ public abstract class ChannelSelector implements Runnable, FFDCSelfIntrospectabl
 
     boolean checkCancel = false;
 
+    boolean waitToAccept = false;
+
     /**
      * Create a new ChannelSelector.
      *
@@ -87,6 +89,21 @@ public abstract class ChannelSelector implements Runnable, FFDCSelfIntrospectabl
         this.checkCancel = _checkCancel;
         this.workQueue1 = new LinkedList<Object>();
         this.workQueue2 = new LinkedList<Object>();
+    }
+
+    /**
+     * Create a new ChannelSelector.
+     *
+     * @param _checkCancel
+     * @throws IOException
+     */
+    public ChannelSelector(boolean _checkCancel, boolean _waitToAccept) throws IOException {
+        this.selector = Selector.open();
+        this.selectorYield = TCPFactoryConfiguration.getSelectorYield();
+        this.checkCancel = _checkCancel;
+        this.workQueue1 = new LinkedList<Object>();
+        this.workQueue2 = new LinkedList<Object>();
+        waitToAccept = _waitToAccept;
     }
 
     /**
@@ -107,7 +124,14 @@ public abstract class ChannelSelector implements Runnable, FFDCSelfIntrospectabl
         long lastEmptySelectorFFDCTime = 0L;
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(this, tc, "selector thread started for " + Thread.currentThread().getName());
+            Tr.debug(this, tc, "selector thread started for " + Thread.currentThread().getName() + " ");
+        }
+
+        if (!waitToAccept) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "waiting for server started signal");
+            }
+            CHFWBundle.waitServerCompletelyStarted();
         }
 
         nextTimeoutTime = currentTime + TCPFactoryConfiguration.getChannelSelectorIdleTimeout();
@@ -147,6 +171,9 @@ public abstract class ChannelSelector implements Runnable, FFDCSelfIntrospectabl
                         Tr.debug(this, tc, "selectNow()");
                     }
                     selector.selectNow();
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                      Tr.debug(this, tc, "selectNow() returned. quit="+quit);
+                    }
                     nothingTimedOut = false;
                     numEmptySelects = 0;
                 }
@@ -234,6 +261,9 @@ public abstract class ChannelSelector implements Runnable, FFDCSelfIntrospectabl
 
                 updateCount();
 
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                  Tr.debug(this, tc, "ChannelSelector.quit="+quit+" before call to checkForTimeouts()");
+                }
                 checkForTimeouts();
                 updateSelector();
 
@@ -300,6 +330,12 @@ public abstract class ChannelSelector implements Runnable, FFDCSelfIntrospectabl
     abstract void updateCount();
 
     protected void shutDown() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+          StringBuilder sb = new StringBuilder();
+          StackTraceElement st[] = Thread.currentThread().getStackTrace();
+          for (StackTraceElement ste:st) sb.append(ste+"\n");
+          Tr.debug(this, tc, "ChannelSelector.shutDown called from "+sb.toString());
+        }
         this.quit = true;
         this.selector.wakeup();
     }

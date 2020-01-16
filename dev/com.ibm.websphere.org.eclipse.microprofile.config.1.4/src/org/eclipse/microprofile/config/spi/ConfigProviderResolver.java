@@ -20,8 +20,7 @@
 
 package org.eclipse.microprofile.config.spi;
 
-import java.security.AccessController;
-import java.security.PrivilegedAction;
+import java.util.Iterator;
 import java.util.ServiceLoader;
 
 import org.eclipse.microprofile.config.Config;
@@ -62,8 +61,8 @@ public abstract class ConfigProviderResolver {
      * This ConfigBuilder will initially contain no {@link ConfigSource}. The other {@link ConfigSource} will have
      * to be added manually or discovered by calling {@link ConfigBuilder#addDiscoveredSources()}.
      *
-     * This ConfigBuilder will initially contain default {@link Converter Converters}. Any other converters will need to 
-     * be added manually. 
+     * This ConfigBuilder will initially contain default {@link Converter Converters}. Any other converters will need to
+     * be added manually.
      *
      * The ConfigProvider will not manage the Config instance internally
      * @return a fresh ConfigBuilder
@@ -105,25 +104,7 @@ public abstract class ConfigProviderResolver {
                 if (instance != null) {
                     return instance;
                 }
-
-                ClassLoader cl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
-                    @Override
-                    public ClassLoader run() {
-                        return Thread.currentThread().getContextClassLoader();
-                    }
-                });
-                if (cl == null) {
-                    cl = ConfigProviderResolver.class.getClassLoader();
-                }
-
-                ConfigProviderResolver newInstance = loadSpi(cl);
-
-                if (newInstance == null) {
-                    throw new IllegalStateException(
-                                    "No ConfigProviderResolver implementation found!");
-                }
-
-                instance = newInstance;
+                instance = loadSpi(ConfigProviderResolver.class.getClassLoader());
             }
         }
 
@@ -132,26 +113,14 @@ public abstract class ConfigProviderResolver {
 
 
     private static ConfigProviderResolver loadSpi(ClassLoader cl) {
-        if (cl == null) {
-            return null;
-        }
-
-        ConfigProviderResolver instance = null;
-
         ServiceLoader<ConfigProviderResolver> sl = ServiceLoader.load(
                         ConfigProviderResolver.class, cl);
-        for (ConfigProviderResolver spi : sl) {
-            if (instance != null) {
-                throw new IllegalStateException(
-                                "Multiple ConfigResolverProvider implementations found: "
-                                                + spi.getClass().getName() + " and "
-                                                + instance.getClass().getName());
-            }
-            else {
-                instance = spi;
-            }
+        final Iterator<ConfigProviderResolver> iterator = sl.iterator();
+        if (iterator.hasNext()) {
+            return iterator.next();
         }
-        return instance;
+        throw new IllegalStateException(
+                        "No ConfigProviderResolver implementation found!");
     }
 
     /**

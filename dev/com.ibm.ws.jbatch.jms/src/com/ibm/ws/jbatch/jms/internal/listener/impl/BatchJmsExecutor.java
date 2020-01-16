@@ -44,7 +44,7 @@ import com.ibm.ws.jbatch.jms.internal.BatchJmsConstants;
 import com.ibm.ws.jbatch.jms.internal.BatchOperationGroup;
 import com.ibm.ws.jca.service.AdminObjectService;
 import com.ibm.ws.jca.service.EndpointActivationService;
-import com.ibm.ws.kernel.feature.ServerStarted;
+import com.ibm.ws.kernel.feature.ServerStartedPhase2;
 import com.ibm.ws.tx.rrs.RRSXAResourceFactory;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
@@ -591,7 +591,7 @@ public class BatchJmsExecutor {
      *            The server started instance
      */
     @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL)
-    protected synchronized void setServerStarted(ServerStarted serverStarted) {
+    protected synchronized void setServerStartedPhase2(ServerStartedPhase2 serverStartedPhase2) {
         	isServerStarted = true;
 
 	        // batch activation spec should be available already
@@ -604,8 +604,8 @@ public class BatchJmsExecutor {
      * 
      * @param serverStarted
      *            The Started service instance
-     */
-    protected void unsetServerStarted(ServerStarted serverStarted) {
+     */    
+    protected void unsetServerStartedPhase2(ServerStartedPhase2 serverStartedPhase2) {
         // No cleanup is needed since the server has stopped.
         isServerStarted = false;
     }

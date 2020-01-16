@@ -42,7 +42,7 @@ TRAN_MGR_ERROR_CWLIB0205.useraction=Consulte os logs em busca de detalhes do err
 
 WSAT_SECURITY_CWLIB0206=CWLIB0206I: Ative o SSL {0} para WS-AT.
 WSAT_SECURITY_CWLIB0206.explanation=O WS-AT usa uma conex\u00e3o SSL para assegurar a comunica\u00e7\u00e3o interna.
-WSAT_SECURITY_CWLIB0206.useraction=Nenhum(a).
+WSAT_SECURITY_CWLIB0206.useraction=Nenhum.
 
 WSAT_PROXY_CWLIB0207=CWLIB0207I: Ative o externalURLPrefix {0} para WS-AT.
 WSAT_PROXY_CWLIB0207.explanation=O WS-AT usa um proxy para a comunica\u00e7\u00e3o interna.

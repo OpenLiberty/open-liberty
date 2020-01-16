@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2019 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,9 +43,10 @@ import com.ibm.ws.recoverylog.spi.Configuration;
 import com.ibm.ws.recoverylog.spi.CustomLogProperties;
 import com.ibm.ws.recoverylog.spi.DistributedRecoveryLog;
 import com.ibm.ws.recoverylog.spi.FailureScope;
+import com.ibm.ws.recoverylog.spi.HeartbeatLog;
+import com.ibm.ws.recoverylog.spi.HeartbeatLogManager;
 import com.ibm.ws.recoverylog.spi.InternalLogException;
 import com.ibm.ws.recoverylog.spi.InvalidRecoverableUnitException;
-import com.ibm.ws.recoverylog.spi.LivingRecoveryLog;
 import com.ibm.ws.recoverylog.spi.Lock;
 import com.ibm.ws.recoverylog.spi.LogAllocationException;
 import com.ibm.ws.recoverylog.spi.LogClosedException;
@@ -86,7 +87,7 @@ import com.ibm.ws.recoverylog.utils.RecoverableUnitIdTable;
  * log.
  * </p>
  */
-public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog, LivingRecoveryLog {
+public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog, HeartbeatLog {
     /**
      * WebSphere RAS TraceComponent registration.
      */
@@ -307,8 +308,10 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
     private final String _currentProcessServerName;
 
     private static boolean _useNewLockingScheme = false;
-    private static int _peerLogGoneStaleTime = 10; // 10 Seconds by default, note in Liberty this default is enforced in metatype.xml.
-    private static int _localLogGoneStaleTime = 10; // 10 Seconds by default, note in Liberty this default is enforced in metatype.xml.
+    private static int _logGoneStaleTime = 10; // If a timestamp has not been updated in _logGoneStaleTime seconds, we assume that
+    // the owning server has crashed. The default is 10 seconds. Note in Liberty this default is enforced in metatype.xml.
+    private int _peerLockTimeBetweenHeartbeats = 5;
+
     private static final long _reservedConnectionActiveSectionIDSet = 255L;
     private static final long _reservedConnectionActiveSectionIDUnset = 1L;
 
@@ -3217,6 +3220,11 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
 
         _serverStopping = true;
 
+        // Stop Heartbeat Log alarm popping when server is on its way down
+        if (_useNewLockingScheme) {
+            HeartbeatLogManager.stopTimeout();
+        }
+
         // if the logs are gone we're done - a later close will fail.
         if (failed() || incompatible() || _closesRequired <= 0) {
             if (tc.isEntryEnabled())
@@ -3966,7 +3974,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
     /*
      * (non-Javadoc)
      *
-     * @see com.ibm.ws.recoverylog.spi.LivingRecoveryLog#claimLocalRecoveryLogs()
+     * @see com.ibm.ws.recoverylog.spi.HeartbeatLog#claimLocalRecoveryLogs()
      */
     @Override
     public boolean claimLocalRecoveryLogs() {
@@ -3978,7 +3986,6 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
         // Calling either local or peer claim, means that the new locking scheme is in play. Setting the _useNewLockingScheme flag
         // at claim time, is early enough to disable the peer-aware HADB code that predated this functionality
         _useNewLockingScheme = true;
-        _localLogGoneStaleTime = _recoveryAgent.getLocalTimeBeforeStale();
 
         try {
             String fullLogDirectory = _internalLogProperties.getProperty("LOG_DIRECTORY");
@@ -3991,6 +3998,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             ResultSet lockingRS = null;
 
             try {
+                // Get the current time for comparison with that stored in the database.
+                long curTimestamp = System.currentTimeMillis();
                 lockingStmt = conn.createStatement();
                 String queryString = "SELECT SERVER_NAME, RUSECTION_ID" +
                                      " FROM " + _recoveryTableName + "PARTNER_LOG" + _recoveryTableNameSuffix +
@@ -4003,9 +4012,10 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                     // We found the HA Lock row
                     String storedServerName = lockingRS.getString(1);
                     long storedTimestamp = lockingRS.getLong(2);
+
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Acquired lock on HA Lock row, stored server value is: " + storedServerName + ", "
-                                     + "timestamp is: " + storedTimestamp + ", stale time is: " + _localLogGoneStaleTime);
+                                     + "timestamp is: " + storedTimestamp);
                     if (_currentProcessServerName.equalsIgnoreCase(storedServerName)) {
                         // In this case we will update the timestamp only
                         if (tc.isDebugEnabled())
@@ -4017,43 +4027,31 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                                               " SET RUSECTION_ID = " + fir1 +
                                               " WHERE RU_ID = -1";
                         if (tc.isDebugEnabled())
-                            Tr.debug(tc, "Claim the local logs for the local server using - " + updateString);
+                            Tr.debug(tc, "Claim the logs for the local server using - " + updateString);
                         int ret = lockingStmt.executeUpdate(updateString);
 
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "Have updated HA Lock row with return: " + ret);
                     } else {
-                        // Another Server has ownership, we can claim the logs if the ownership is stale
+                        // Another Server has ownership, we aggressively claim the logs as we are the home server (no timestamp check)
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Another server owns the HA lock row, we will aggressively claim it,  "
+                                         + _recoveryTableName + "PARTNER_LOG" + _recoveryTableNameSuffix
+                                         + ", currenttime: " + curTimestamp + ", storedTime: " + storedTimestamp);
 
-                        long curTimestamp = System.currentTimeMillis();
-                        //TODO:
-                        if (curTimestamp - storedTimestamp > _localLogGoneStaleTime * 1000) //  10 seconds default for timeout
-                        {
-                            if (tc.isDebugEnabled())
-                                Tr.debug(tc, "Timestamp is STALE for " + _recoveryTableName + "PARTNER_LOG" + _recoveryTableNameSuffix
-                                             + ", currenttime: " + curTimestamp + ", storedTime: " + storedTimestamp);
+                        // Claim the logs by updating the server name and timestamp.
+                        long fir1 = System.currentTimeMillis();
+                        String updateString = "UPDATE " +
+                                              _recoveryTableName + "PARTNER_LOG" + _recoveryTableNameSuffix +
+                                              " SET SERVER_NAME = '" + _currentProcessServerName +
+                                              "', RUSECTION_ID = " + fir1 +
+                                              " WHERE RU_ID = -1";
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Claim the logs for the local server from a peer using - " + updateString);
+                        int ret = lockingStmt.executeUpdate(updateString);
 
-                            // Ownership is stale, claim the logs by updating the server name and timestamp.
-                            long fir1 = System.currentTimeMillis();
-                            String updateString = "UPDATE " +
-                                                  _recoveryTableName + "PARTNER_LOG" + _recoveryTableNameSuffix +
-                                                  " SET SERVER_NAME = '" + _currentProcessServerName +
-                                                  "', RUSECTION_ID = " + fir1 +
-                                                  " WHERE RU_ID = -1";
-                            if (tc.isDebugEnabled())
-                                Tr.debug(tc, "Claim the local logs from a peer server using - " + updateString);
-                            int ret = lockingStmt.executeUpdate(updateString);
-
-                            if (tc.isDebugEnabled())
-                                Tr.debug(tc, "Have updated HA Lock row with return: " + ret);
-                        } else {
-                            if (tc.isDebugEnabled())
-                                Tr.debug(tc, "Timestamp is NOT STALE for " + _recoveryTableName + "PARTNER_LOG" + _recoveryTableNameSuffix
-                                             + ", currenttime: " + curTimestamp + ", storedTime: " + storedTimestamp);
-                            // This is the situation in which we will NOT allow a local server to claim its own logs. It appears that
-                            // A Peer server has locked the recovery logs.
-                            isClaimed = false;
-                        }
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Have updated HA Lock row with return: " + ret);
                     }
                 } else {
                     // We didn't find the HA Lock row in the table
@@ -4081,6 +4079,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 Tr.debug(tc, "claimLocalRecoveryLogs failed with Exception: " + sqlex);
         }
 
+        HeartbeatLogManager.setTimeout(this, _peerLockTimeBetweenHeartbeats);
+
         if (tc.isEntryEnabled())
             Tr.exit(tc, "claimLocalRecoveryLogs", new Boolean(isClaimed));
 
@@ -4090,7 +4090,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
     /*
      * (non-Javadoc)
      *
-     * @see com.ibm.ws.recoverylog.spi.LivingRecoveryLog#claimPeerRecoveryLogs()
+     * @see com.ibm.ws.recoverylog.spi.HeartbeatLog#claimPeerRecoveryLogs()
      */
     @Override
     public boolean claimPeerRecoveryLogs() {
@@ -4102,7 +4102,6 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
         // Calling either local or peer claim, means that the new locking scheme is in play. Setting the _useNewLockingScheme flag
         // at claim time, is early enough to disable the peer-aware HADB code that predated this functionality
         _useNewLockingScheme = true;
-        _peerLogGoneStaleTime = _recoveryAgent.getPeerTimeBeforeStale();
 
         try {
             String fullLogDirectory = _internalLogProperties.getProperty("LOG_DIRECTORY");
@@ -4115,6 +4114,9 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             ResultSet lockingRS = null;
 
             try {
+                // Get the current time for comparison with that stored in the database.
+                long curTimestamp = System.currentTimeMillis();
+
                 lockingStmt = conn.createStatement();
                 String queryString = "SELECT SERVER_NAME, RUSECTION_ID" +
                                      " FROM " + _recoveryTableName + "PARTNER_LOG" + _recoveryTableNameSuffix +
@@ -4127,28 +4129,24 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                     // We found the HA Lock row
                     String storedServerName = lockingRS.getString(1);
                     long storedTimestamp = lockingRS.getLong(2);
+
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Acquired lock on HA Lock row, stored server value is: " + storedServerName + ", "
-                                     + "timestamp is: " + storedTimestamp + ", stale time is: " + _peerLogGoneStaleTime);
+                                     + "timestamp is: " + storedTimestamp + ", stale time is: " + _logGoneStaleTime);
 
-                    long curTimestamp = System.currentTimeMillis();
-
-                    if (curTimestamp - storedTimestamp > _peerLogGoneStaleTime * 1000) //  10 seconds default for timeout
+                    if (curTimestamp - storedTimestamp > _logGoneStaleTime * 1000) //  75 seconds default for timeout
                     {
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "Timestamp is STALE for " + _recoveryTableName + "PARTNER_LOG" + _recoveryTableNameSuffix
                                          + ", currenttime: " + curTimestamp + ", storedTime: " + storedTimestamp);
 
-                        // Ownership is stale, claim the logs by updating the server name and timestamp.
-                        long fir1 = System.currentTimeMillis();
+                        // Ownership is stale, claim the logs by updating the server name.
                         String updateString = "UPDATE " +
                                               _recoveryTableName + "PARTNER_LOG" + _recoveryTableNameSuffix +
                                               " SET SERVER_NAME = '" + _currentProcessServerName +
-                                              "', RUSECTION_ID = " + fir1 +
-                                              " WHERE RU_ID = -1";
+                                              "' WHERE RU_ID = -1";
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "Claim peer logs from a peer server using - " + updateString);
-
                         int ret = lockingStmt.executeUpdate(updateString);
 
                         if (tc.isDebugEnabled())
@@ -4189,6 +4187,38 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             Tr.exit(tc, "claimPeerRecoveryLogs", new Boolean(isClaimed));
 
         return isClaimed;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.recoverylog.spi.HeartbeatLog#setTimeBeforeLogStale()
+     */
+    @Override
+    public void setTimeBeforeLogStale(int timeBeforeStale) {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "setTimeBeforeLogStale", timeBeforeStale);
+
+        _logGoneStaleTime = timeBeforeStale;
+
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "setTimeBeforeLogStale");
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.recoverylog.spi.HeartbeatLog#setTimeBetweenHeartbeats()
+     */
+    @Override
+    public void setTimeBetweenHeartbeats(int timeBetweenHeartbeats) {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "setTimeBetweenHeartbeats", timeBetweenHeartbeats);
+
+        _peerLockTimeBetweenHeartbeats = timeBetweenHeartbeats;
+
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "setTimeBetweenHeartbeats");
     }
 
 }

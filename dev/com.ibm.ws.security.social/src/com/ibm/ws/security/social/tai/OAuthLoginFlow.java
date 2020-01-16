@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.security.WebTrustAssociationFailedException;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.social.Constants;
@@ -51,7 +52,7 @@ public class OAuthLoginFlow {
                 return result;
             }
             // see if we have a valid LTPA cookie to handle before continue with regular oauth login
-            return TAIResult.create(HttpServletResponse.SC_CONTINUE);   
+            return TAIResult.create(HttpServletResponse.SC_CONTINUE);
         }
         String code = webUtils.getAndClearCookie(request, response, ClientConstants.COOKIE_NAME_STATE_KEY);
         if (code == null) {
@@ -90,7 +91,7 @@ public class OAuthLoginFlow {
         return result;
     }
 
-    private boolean isAccessTokenNullOrEmpty(String tokenFromRequest) {
+    private boolean isAccessTokenNullOrEmpty(@Sensitive String tokenFromRequest) {
         if (tokenFromRequest == null || tokenFromRequest.isEmpty()) {
             return true;
         }
@@ -98,13 +99,11 @@ public class OAuthLoginFlow {
     }
 
     @FFDCIgnore(SocialLoginException.class)
-    private TAIResult handleAccessToken(String tokenFromRequest, HttpServletRequest request, HttpServletResponse response, SocialLoginConfig clientConfig) throws WebTrustAssociationFailedException {
-
-        
+    private TAIResult handleAccessToken(@Sensitive String tokenFromRequest, HttpServletRequest request, HttpServletResponse response, SocialLoginConfig clientConfig) throws WebTrustAssociationFailedException {
         AuthorizationCodeAuthenticator authzCodeAuthenticator = new AuthorizationCodeAuthenticator(request, response, clientConfig, tokenFromRequest, true);
         try {
-            authzCodeAuthenticator.generateJwtAndTokensFromTokenReviewResult();
-        } catch (SocialLoginException e) {  
+            authzCodeAuthenticator.generateJwtAndTokensFromAccessOrServiceAccountToken();
+        } catch (SocialLoginException e) {
             if (!clientConfig.isAccessTokenRequired() && clientConfig.isAccessTokenSupported()) {
                 taiWebUtils.restorePostParameters(request); //TODO: make sure that we really need to do this here.
                 return null;

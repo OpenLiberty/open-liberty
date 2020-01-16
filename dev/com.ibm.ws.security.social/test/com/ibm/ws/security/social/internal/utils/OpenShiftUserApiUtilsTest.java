@@ -480,13 +480,13 @@ public class OpenShiftUserApiUtilsTest extends CommonTestClass {
                     will(returnValue(userApi));
                     one(httpUtils).createConnection(RequestMethod.POST, userApi, sslSocketFactory);
                     will(returnValue(httpUrlConnection));
+                    one(config).getUserApiToken();
+                    will(returnValue(serviceAccountToken));
                     one(httpUtils).setHeaders(with(any(HttpURLConnection.class)), with(any(Map.class)));
                     will(returnValue(httpUrlConnection));
                     one(httpUrlConnection).setDoOutput(true);
                     one(httpUrlConnection).getOutputStream();
                     will(returnValue(outputStream));
-                    one(config).getUserApiToken();
-                    will(returnValue(serviceAccountToken));
                 }
             });
             try {

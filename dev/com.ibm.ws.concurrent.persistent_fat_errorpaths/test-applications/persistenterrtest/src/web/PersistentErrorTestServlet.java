@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,6 +32,7 @@ import javax.enterprise.concurrent.AbortedException;
 import javax.enterprise.concurrent.ManagedTask;
 import javax.enterprise.concurrent.SkippedException;
 import javax.enterprise.concurrent.Trigger;
+import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -86,7 +87,7 @@ public class PersistentErrorTestServlet extends HttpServlet {
         try {
             out.println(getClass().getSimpleName() + " is starting " + test + "<br>");
             System.out.println("-----> " + test + " starting");
-            getClass().getMethod(test, PrintWriter.class).invoke(this, out);
+            getClass().getMethod(test, HttpServletRequest.class, PrintWriter.class).invoke(this, request, out);
             System.out.println("<----- " + test + " successful");
             out.println(test + " " + SUCCESS_MESSAGE);
         } catch (Throwable x) {
@@ -106,7 +107,7 @@ public class PersistentErrorTestServlet extends HttpServlet {
     /**
      * Schedule a task that fails all execution attempts, exceeding the task failure limit, then and auto purges.
      */
-    public void testFailingTaskAndAutoPurge(PrintWriter out) throws Exception {
+    public void testFailingTaskAndAutoPurge(HttpServletRequest request, PrintWriter out) throws Exception {
         SharedFailingTask.clear();
         SharedFailingTask.execProps.put(AutoPurge.PROPERTY_NAME, AutoPurge.ALWAYS.toString());
         SharedFailingTask.failOn.add(1l);
@@ -134,7 +135,7 @@ public class PersistentErrorTestServlet extends HttpServlet {
      * Schedule a task that fails all execution attempts, exceeding the task failure limit,
      * and remains in the persistent store upon completion.
      */
-    public void testFailingTaskNoAutoPurge(PrintWriter out) throws Exception {
+    public void testFailingTaskNoAutoPurge(HttpServletRequest request, PrintWriter out) throws Exception {
         SharedFailingTask.clear();
         SharedFailingTask.execProps.put(ManagedTask.IDENTITY_NAME, "testFailingTaskNoAutoPurge");
         SharedFailingTask.failOn.add(1l);
@@ -180,7 +181,7 @@ public class PersistentErrorTestServlet extends HttpServlet {
      * Schedule a task that fails an execution attempt and skips the retry.
      * Autopurges when the retry runs the next time after the skip.
      */
-    public void testFailOnceAndSkipFirstRetryAndAutoPurge(PrintWriter out) throws Exception {
+    public void testFailOnceAndSkipFirstRetryAndAutoPurge(HttpServletRequest request, PrintWriter out) throws Exception {
         SharedFailingTask.clear();
         SharedSkippingTrigger.clear();
         SharedFailingTask task = new SharedFailingTask();
@@ -231,7 +232,7 @@ public class PersistentErrorTestServlet extends HttpServlet {
     /**
      * Schedule a task that fails an execution attempt and skips the retry. Do not autopurge.
      */
-    public void testFailOnceAndSkipFirstRetryNoAutoPurge(PrintWriter out) throws Exception {
+    public void testFailOnceAndSkipFirstRetryNoAutoPurge(HttpServletRequest request, PrintWriter out) throws Exception {
         SharedFailingTask.clear();
         SharedSkippingTrigger.clear();
         SharedFailingTask task = new SharedFailingTask();
@@ -291,7 +292,7 @@ public class PersistentErrorTestServlet extends HttpServlet {
     /**
      * Attempt to invoke TaskStatus.get(timeout, unit). Expect UnsupportedOperationException.
      */
-    public void testGetWithTimeout(PrintWriter out) throws Exception {
+    public void testGetWithTimeout(HttpServletRequest request, PrintWriter out) throws Exception {
         ScheduledFuture<Long> status = scheduler.schedule((Callable<Long>) new SharedCounterTask(), 14, TimeUnit.DAYS);
         try {
             Long result = status.get(14, TimeUnit.MICROSECONDS);
@@ -303,7 +304,7 @@ public class PersistentErrorTestServlet extends HttpServlet {
     /**
      * Attempt to schedule a task with the long running hint set to true. Verify it is rejected.
      */
-    public void testLongRunningTask(PrintWriter out) throws Exception {
+    public void testLongRunningTask(HttpServletRequest request, PrintWriter out) throws Exception {
         SharedFailingTask.clear();
         SharedFailingTask.execProps.put(ManagedTask.LONGRUNNING_HINT, Boolean.TRUE.toString());
         try {
@@ -320,9 +321,35 @@ public class PersistentErrorTestServlet extends HttpServlet {
     }
 
     /**
+     * testMissedTaskThresholdBelowMinimum - attempt to use a persistent executor where the missedTaskThreshold value is less than
+     * the minimum allowed. The detailed error message that is logged is tested by the caller of this method.
+     */
+    public void testMissedTaskThresholdBelowMinimum(HttpServletRequest request, PrintWriter out) throws Exception {
+        try {
+            PersistentExecutor misconfiguredExecutor = InitialContext.doLookup("concurrent/belowMinMissedTaskThreshold");
+            throw new Exception("Should not be able to obtain misconfigured persistentExecutor where the missedTaskThreshold value is less than the minimum allowed " + misconfiguredExecutor);
+        } catch (NamingException x) {
+            // expected
+        }
+    }
+
+    /**
+     * testMissedTaskThresholdExceedsMaximum - attempt to use a persistent executor where the missedTaskThreshold value exceeds
+     * the maximum allowed. The detailed error message that is logged is tested by the caller of this method.
+     */
+    public void testMissedTaskThresholdExceedsMaximum(HttpServletRequest request, PrintWriter out) throws Exception {
+        try {
+            PersistentExecutor misconfiguredExecutor = InitialContext.doLookup("concurrent/exceedsMaxMissedTaskThreshold");
+            throw new Exception("Should not be able to obtain misconfigured persistentExecutor where missedTaskThreshold value exceeds the maximum allowed " + misconfiguredExecutor);
+        } catch (NamingException x) {
+            // expected
+        }
+    }
+
+    /**
      * Schedule a task with a negative transaction timeout. Expect IllegalArgumentException.
      */
-    public void testNegativeTransactionTimeout(PrintWriter out) throws Exception {
+    public void testNegativeTransactionTimeout(HttpServletRequest request, PrintWriter out) throws Exception {
         TenSecondTask task = new TenSecondTask();
         task.getExecutionProperties().put(PersistentExecutor.TRANSACTION_TIMEOUT, "-2");
         try {
@@ -337,7 +364,7 @@ public class PersistentErrorTestServlet extends HttpServlet {
     /**
      * Schedule a task that requires Classloader Context, but don't capture and propagate that type of context to the task.
      */
-    public void testNoClassloaderContext(PrintWriter out) throws Exception {
+    public void testNoClassloaderContext(HttpServletRequest request, PrintWriter out) throws Exception {
         LoadClassTask task = new LoadClassTask();
 
         System.out.println("Servlet thread class loader " + Thread.currentThread().getContextClassLoader());
@@ -378,7 +405,7 @@ public class PersistentErrorTestServlet extends HttpServlet {
     /**
      * Schedule a task that requires Java EE Metadata Context, but don't capture and propagate that type of context to the task.
      */
-    public void testNoJavaEEMetadataContext(PrintWriter out) throws Exception {
+    public void testNoJavaEEMetadataContext(HttpServletRequest request, PrintWriter out) throws Exception {
         LookupTask task = new LookupTask();
 
         // Validate that it works from the servlet thread
@@ -416,7 +443,7 @@ public class PersistentErrorTestServlet extends HttpServlet {
     /**
      * Schedule a task with a transaction timeout value that isn't an integer. Expect IllegalArgumentException.
      */
-    public void testNonIntegerTransactionTimeout(PrintWriter out) throws Exception {
+    public void testNonIntegerTransactionTimeout(HttpServletRequest request, PrintWriter out) throws Exception {
         TenSecondTask task = new TenSecondTask();
         task.getExecutionProperties().put(PersistentExecutor.TRANSACTION_TIMEOUT, "1.5");
         try {
@@ -434,7 +461,7 @@ public class PersistentErrorTestServlet extends HttpServlet {
      * Schedule a task that returns a non-serializable result. Expect the TaskStatus to be returned successfully,
      * but an error must occur when attempting to access the result.
      */
-    public void testNonSerializableResult(PrintWriter out) throws Exception {
+    public void testNonSerializableResult(HttpServletRequest request, PrintWriter out) throws Exception {
         NonSerializableTaskAndResult.resultOverride = null; // just in case any other test forgets to clean it up
 
         TaskStatus<?> status = scheduler.schedule(new NonSerializableTaskAndResult(), 15, TimeUnit.NANOSECONDS);
@@ -461,7 +488,7 @@ public class PersistentErrorTestServlet extends HttpServlet {
     /**
      * Attempt to create/find/remove null (and empty) property and value.
      */
-    public void testNullProperty(PrintWriter out) throws Exception {
+    public void testNullProperty(HttpServletRequest request, PrintWriter out) throws Exception {
         try {
             boolean created = scheduler.createProperty(null, "value1");
             throw new Exception("Should not be able to create a property with null name. Result: " + created);
@@ -506,7 +533,7 @@ public class PersistentErrorTestServlet extends HttpServlet {
     /**
      * Attempt to submit null tasks. Verify the proper errors are raised.
      */
-    public void testNullTasks(PrintWriter out) throws Exception {
+    public void testNullTasks(HttpServletRequest request, PrintWriter out) throws Exception {
         Trigger trigger = new NextTenthOfSecondTrigger();
 
         try {
@@ -573,7 +600,7 @@ public class PersistentErrorTestServlet extends HttpServlet {
     /**
      * Attempt to submit tasks with null Triggers. Verify the proper errors are raised.
      */
-    public void testNullTriggers(PrintWriter out) throws Exception {
+    public void testNullTriggers(HttpServletRequest request, PrintWriter out) throws Exception {
         try {
             ScheduledFuture<Long> status = scheduler.schedule((Callable<Long>) new SharedCounterTask(), null);
             throw new Exception("schedule(callable, null trigger) should fail. Instead: " + status);
@@ -594,7 +621,7 @@ public class PersistentErrorTestServlet extends HttpServlet {
     /**
      * Attempt to submit tasks with null units. Verify the proper errors are raised.
      */
-    public void testNullUnits(PrintWriter out) throws Exception {
+    public void testNullUnits(HttpServletRequest request, PrintWriter out) throws Exception {
         try {
             Future<Long> status = scheduler.schedule((Callable<Long>) new SharedCounterTask(), 6, null);
             throw new Exception("schedule(callable, null units) should fail. Instead: " + status);
@@ -621,9 +648,35 @@ public class PersistentErrorTestServlet extends HttpServlet {
     }
 
     /**
+     * testPollIntervalBelowMinimum - attempt to use a persistent executor where the pollInterval value is less than
+     * the minimum allowed. The detailed error message that is logged is tested by the caller of this method.
+     */
+    public void testPollIntervalBelowMinimum(HttpServletRequest request, PrintWriter out) throws Exception {
+        try {
+            PersistentExecutor misconfiguredExecutor = InitialContext.doLookup("concurrent/belowMinPollInterval");
+            throw new Exception("Should not be able to obtain misconfigured persistentExecutor where the pollInterval value is less than the minimum allowed. " + misconfiguredExecutor);
+        } catch (NamingException x) {
+            // expected
+        }
+    }
+
+    /**
+     * testPollIntervalThresholdExceedsMaximum - attempt to use a persistent executor where the pollInterval value exceeds
+     * the maximum allowed. The detailed error message that is logged is tested by the caller of this method.
+     */
+    public void testPollIntervalExceedsMaximum(HttpServletRequest request, PrintWriter out) throws Exception {
+        try {
+            PersistentExecutor misconfiguredExecutor = InitialContext.doLookup("concurrent/exceedsMaxPollInterval");
+            throw new Exception("Should not be able to obtain misconfigured persistentExecutor where the pollInterval value exceeds the maximum allowed " + misconfiguredExecutor);
+        } catch (NamingException x) {
+            // expected
+        }
+    }
+
+    /**
      * Attempt to schedule a task with a predetermined result that declares itself serializable but fails to serialize.
      */
-    public void testPredeterminedResultFailsToSerialize(PrintWriter out) throws Exception {
+    public void testPredeterminedResultFailsToSerialize(HttpServletRequest request, PrintWriter out) throws Exception {
         try {
             TaskStatus<?> status = scheduler.submit(new SharedCounterTask(), new ResultThatFailsSerialization());
             throw new Exception("Task should not schedule when its predetermined result fails to serialize. " + status);
@@ -638,7 +691,7 @@ public class PersistentErrorTestServlet extends HttpServlet {
     /**
      * Attempt to schedule a task with a predetermined result that is not serializable.
      */
-    public void testPredeterminedResultIsNotSerializable(PrintWriter out) throws Exception {
+    public void testPredeterminedResultIsNotSerializable(HttpServletRequest request, PrintWriter out) throws Exception {
         try {
             TaskStatus<?> status = scheduler.submit(new SharedCounterTask(), new Object());
             throw new Exception("Task should not schedule when its predetermined result is not serializable. " + status);
@@ -651,11 +704,21 @@ public class PersistentErrorTestServlet extends HttpServlet {
     }
 
     /**
+     * Removes tasks with the specified ids.
+     */
+    public void testRemoveTasks(HttpServletRequest request, PrintWriter out) throws Exception {
+        for (String taskId : request.getParameterValues("taskId")) {
+            if (!scheduler.remove(Long.valueOf(taskId)))
+                throw new Exception("Did not find task " + taskId);
+        }
+    }
+
+    /**
      * Schedule a task that returns a result that fails to serialize. Expect the TaskStatus to be returned successfully,
      * but the error must be chained to the ExecutionException (including any chained exceptions)
      * when attempting to access the result.
      */
-    public void testResultFailsToSerialize(PrintWriter out) throws Exception {
+    public void testResultFailsToSerialize(HttpServletRequest request, PrintWriter out) throws Exception {
         try {
             Throwable cause = new ServiceConfigurationError("chained cause 1").initCause(new SQLException("chained cause 2"));
             NonSerializableTaskAndResult.resultOverride = new ResultThatFailsSerialization("testResultFailsToSeralize", cause);
@@ -706,7 +769,7 @@ public class PersistentErrorTestServlet extends HttpServlet {
      * Expect the TaskStatus to be returned successfully, but a serializable copy of the error must be chained to
      * the ExecutionException (including copies of any chained exceptions) when attempting to access the result.
      */
-    public void testResultSerializationFailureFailsToSerialize(PrintWriter out) throws Exception {
+    public void testResultSerializationFailureFailsToSerialize(HttpServletRequest request, PrintWriter out) throws Exception {
         try {
             Throwable cause = new IllegalStateException("chained cause");
             NonSerializableTaskAndResult.resultOverride = new ResultThatFailsSerialization(new ThreadGroup("this is not serializable"), cause);
@@ -745,7 +808,7 @@ public class PersistentErrorTestServlet extends HttpServlet {
      * Schedule a task that fails its first execution attempt, but runs successfully the next time,
      * and auto purges (by default) upon completion.
      */
-    public void testRetryFailedTaskAndAutoPurge(PrintWriter out) throws Exception {
+    public void testRetryFailedTaskAndAutoPurge(HttpServletRequest request, PrintWriter out) throws Exception {
         SharedFailingTask.clear();
         SharedFailingTask.failOn.add(1l);
         try {
@@ -770,7 +833,7 @@ public class PersistentErrorTestServlet extends HttpServlet {
      * Schedule a task that fails its first execution attempt, but runs successfully the next time,
      * and remains in the persistent store upon completion.
      */
-    public void testRetryFailedTaskNoAutoPurge(PrintWriter out) throws Exception {
+    public void testRetryFailedTaskNoAutoPurge(HttpServletRequest request, PrintWriter out) throws Exception {
         SharedFailingTask.clear();
         SharedFailingTask.execProps.put(AutoPurge.PROPERTY_NAME, AutoPurge.NEVER.toString());
         SharedFailingTask.failOn.add(1l);
@@ -793,10 +856,61 @@ public class PersistentErrorTestServlet extends HttpServlet {
     }
 
     /**
+     * testRetryIntervalBelowMissedTaskThreshold - attempt to use a persistent executor where the retryInterval value is less than
+     * the missedTaskThreshold. The detailed error message that is logged is tested by the caller of this method.
+     */
+    public void testRetryIntervalBelowMissedTaskThreshold(HttpServletRequest request, PrintWriter out) throws Exception {
+        try {
+            PersistentExecutor misconfiguredExecutor = InitialContext.doLookup("concurrent/retryIntervalBelowMissedTaskThreshold");
+            throw new Exception("Should not be able to obtain misconfigured persistentExecutor where the retryInterval value is less than the missedTaskThreshold. " + misconfiguredExecutor);
+        } catch (NamingException x) {
+            // expected
+        }
+    }
+
+    /**
+     * Schedule some tasks that will remain pending for the distant future during a dump of the server.
+     * Report the task IDs so that the controlling test can look for them in the output.
+     */
+    public void testScheduleDistantIntrospectableTasks(HttpServletRequest request, PrintWriter out) throws Exception {
+        TaskStatus<?> statusA = scheduler.scheduleAtFixedRate(new SharedCounterTask(), 32, 32, TimeUnit.DAYS);
+
+        TaskStatus<?> statusB = scheduler.schedule((Runnable) new SharedCounterTask(), 32, TimeUnit.HOURS);
+
+        out.println("TASKS ARE " + statusA.getTaskId() + "," + statusB.getTaskId() + ".");
+    }
+
+    /**
+     * Schedule some tasks that will run frequently during a dump of the server.
+     * Report the task IDs so that the controlling test can look for them in the output.
+     */
+    public void testScheduleFrequentIntrospectableTasks(HttpServletRequest request, PrintWriter out) throws Exception {
+        TaskStatus<?> statusA = scheduler.scheduleWithFixedDelay(new SharedCounterTask(), 0, 300, TimeUnit.MILLISECONDS);
+
+        TaskStatus<?> statusB = scheduler.scheduleAtFixedRate(new SharedCounterTask(), 0, 333, TimeUnit.MILLISECONDS);
+
+        out.println("TASKS ARE " + statusA.getTaskId() + "," + statusB.getTaskId() + ".");
+    }
+
+    /**
+     * Schedule some tasks that will run or remain pending during a dump of the server.
+     * Report the task IDs so that the controlling test can look for them in the output.
+     */
+    public void testScheduleIntrospectableTasks(HttpServletRequest request, PrintWriter out) throws Exception {
+        TaskStatus<?> statusA = scheduler.scheduleWithFixedDelay(new SharedCounterTask(), 0, 250, TimeUnit.MILLISECONDS);
+
+        TaskStatus<?> statusB = scheduler.scheduleAtFixedRate(new SharedCounterTask(), 0, 26, TimeUnit.DAYS);
+
+        TaskStatus<?> statusC = scheduler.schedule((Runnable) new SharedCounterTask(), 27, TimeUnit.HOURS);
+
+        out.println("TASKS ARE " + statusA.getTaskId() + "," + statusB.getTaskId() + "," + statusC.getTaskId() + ".");
+    }
+
+    /**
      * Shut down the database before a task executes. Connection errors will occur,
      * but the task should be retried and succeed on the next attempt.
      */
-    public void testShutDownDerbyBeforeTaskExecution(PrintWriter out) throws Exception {
+    public void testShutDownDerbyBeforeTaskExecution(HttpServletRequest request, PrintWriter out) throws Exception {
         SharedCounterTask.counter.set(0);
         SharedCounterTask task = new SharedCounterTask();
         TaskStatus<?> status = scheduler.scheduleAtFixedRate(task, 1, 1, TimeUnit.SECONDS);
@@ -822,23 +936,32 @@ public class PersistentErrorTestServlet extends HttpServlet {
      * Shut down the database while a task is running. Connection errors will occur,
      * but the task should be retried and succeed on the next attempt.
      */
-    public void testShutDownDerbyDuringTaskExecution(PrintWriter out) throws Exception {
-        DerbyShutdownTask task = new DerbyShutdownTask();
+    public void testShutDownDerbyDuringTaskExecution(HttpServletRequest request, PrintWriter out) throws Exception {
+        DerbyShutdownTask task = new DerbyShutdownTask(); // auto-purges upon successful completion
         DerbyShutdownTask.counter.set(0);
 
         TaskStatus<?> status = scheduler.schedule(task, 0, TimeUnit.HOURS);
+        long taskId = status.getTaskId();
 
-        for (long start = System.nanoTime(); DerbyShutdownTask.counter.get() < 2 && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL));
+        long start = System.nanoTime();
+        while (DerbyShutdownTask.counter.get() < 2 && System.nanoTime() - start < TIMEOUT_NS)
+            Thread.sleep(POLL_INTERVAL);
+
+        // Also wait for the task to have completed (auto-purged null status), so that we know it is actually successful again vs another attempt that is still failing.
+        while (status != null && System.nanoTime() - start < TIMEOUT_NS) {
+            Thread.sleep(POLL_INTERVAL);
+            status = scheduler.getStatus(status.getTaskId());
+        }
 
         int count = DerbyShutdownTask.counter.get();
-        if (count != 2)
-            throw new Exception("Task " + status.getTaskId() + " did not run exactly once successfully after Derby shutdown. Attempt count: " + count);
+        if (count != 2 || status != null)
+            throw new Exception("Task " + taskId + " (" + status + ") did not run exactly once successfully after Derby shutdown. Attempt count: " + count);
     }
 
     /**
      * Trigger.skipRun fails causing the first execution attempt to be skipped. The second attempt should succeed.
      */
-    public void testSkipRunFailsOnFirstExecutionAttempt(PrintWriter out) throws Exception {
+    public void testSkipRunFailsOnFirstExecutionAttempt(HttpServletRequest request, PrintWriter out) throws Exception {
         SharedCounterTask.counter.set(0);
         SharedCounterTask task = new SharedCounterTask();
 
@@ -863,7 +986,7 @@ public class PersistentErrorTestServlet extends HttpServlet {
      * The task entry should be autopurged because it was not failed or canceled.
      * In terms of autopurging, it should make no difference whether the first, last, or any other executions were skipped.
      */
-    public void testSkipRunFailsOnLastExecutionAttempt(PrintWriter out) throws Exception {
+    public void testSkipRunFailsOnLastExecutionAttempt(HttpServletRequest request, PrintWriter out) throws Exception {
         SharedCounterTask.counter.set(0);
         SharedCounterTask task = new SharedCounterTask();
 
@@ -883,7 +1006,7 @@ public class PersistentErrorTestServlet extends HttpServlet {
      * Trigger.skipRun fails causing the last execution attempt to be skipped. The first attempt should succeed.
      * Verify that the task entry remains in the persistent store because we disabled autopurge.
      */
-    public void testSkipRunFailsOnLastExecutionAttemptNoAutoPurge(PrintWriter out) throws Exception {
+    public void testSkipRunFailsOnLastExecutionAttemptNoAutoPurge(HttpServletRequest request, PrintWriter out) throws Exception {
         NonSerializableTaskAndResult task = new NonSerializableTaskAndResult();
 
         ImmediateSkippingTrigger trigger = new ImmediateSkippingTrigger(2);
@@ -910,7 +1033,7 @@ public class PersistentErrorTestServlet extends HttpServlet {
      * Trigger.skipRun fails causing the second and third execution attempts to be skipped.
      * The first and last attempts should succeed.
      */
-    public void testSkipRunFailsOnMiddleExecutionAttempts(PrintWriter out) throws Exception {
+    public void testSkipRunFailsOnMiddleExecutionAttempts(HttpServletRequest request, PrintWriter out) throws Exception {
         SharedCounterTask.counter.set(0);
         SharedCounterTask task = new SharedCounterTask();
 
@@ -936,7 +1059,7 @@ public class PersistentErrorTestServlet extends HttpServlet {
      * The task should be autopurged because it was not failed or canceled.
      * In terms of autopurging, it should make no difference whether the first, last, or any other executions were skipped.
      */
-    public void testSkipRunFailsOnOnlyExecutionAttempt(PrintWriter out) throws Exception {
+    public void testSkipRunFailsOnOnlyExecutionAttempt(HttpServletRequest request, PrintWriter out) throws Exception {
         SharedCounterTask.counter.set(0);
         SharedCounterTask task = new SharedCounterTask();
 
@@ -956,7 +1079,7 @@ public class PersistentErrorTestServlet extends HttpServlet {
      * Trigger.skipRun fails causing the only execution attempt to be skipped.
      * Verify that the task entry remains in the persistent store because we disabled autopurge.
      */
-    public void testSkipRunFailsOnOnlyExecutionAttemptNoAutoPurge(PrintWriter out) throws Exception {
+    public void testSkipRunFailsOnOnlyExecutionAttemptNoAutoPurge(HttpServletRequest request, PrintWriter out) throws Exception {
         SharedCounterTask.counter.set(0);
         NonSerializableTaskAndResult task = new NonSerializableTaskAndResult();
 
@@ -983,7 +1106,7 @@ public class PersistentErrorTestServlet extends HttpServlet {
     /**
      * Attempt to schedule a task that declares itself serializable but fails to serialize.
      */
-    public void testTaskFailsToSerialize(PrintWriter out) throws Exception {
+    public void testTaskFailsToSerialize(HttpServletRequest request, PrintWriter out) throws Exception {
         try {
             TaskStatus<?> status = scheduler.schedule(new TaskThatFailsSerialization(), 21, TimeUnit.DAYS);
             throw new Exception("Task should not schedule when it fails to serialize. " + status);
@@ -999,7 +1122,7 @@ public class PersistentErrorTestServlet extends HttpServlet {
     /**
      * Schedule a task that exceeds the transaction timeout when it runs.
      */
-    public void testTransactionTimeout(PrintWriter out) throws Exception {
+    public void testTransactionTimeout(HttpServletRequest request, PrintWriter out) throws Exception {
         TenSecondTask task = new TenSecondTask();
         task.getExecutionProperties().put(AutoPurge.PROPERTY_NAME, AutoPurge.NEVER.name());
         task.getExecutionProperties().put(ManagedTask.IDENTITY_NAME, "testTransactionTimeout");
@@ -1021,7 +1144,7 @@ public class PersistentErrorTestServlet extends HttpServlet {
     /**
      * Schedule a task that exceeds the transaction timeout of the suspended persistent executor transaction when it runs.
      */
-    public void testTransactionTimeoutSuspendedTransaction(PrintWriter out) throws Exception {
+    public void testTransactionTimeoutSuspendedTransaction(HttpServletRequest request, PrintWriter out) throws Exception {
         TenSecondTask task = new TenSecondTask();
         task.getExecutionProperties().put(AutoPurge.PROPERTY_NAME, AutoPurge.NEVER.name());
         task.getExecutionProperties().put(ManagedTask.IDENTITY_NAME, "testTransactionTimeoutSuspendedTransaction");
@@ -1044,7 +1167,7 @@ public class PersistentErrorTestServlet extends HttpServlet {
     /**
      * When Trigger.getNextRunTime fails after a task runs, the execution must be rolled back and retried until the failure is reported.
      */
-    public void testTriggerFailsGetNextRunTimeAfterTaskRuns(PrintWriter out) throws Exception {
+    public void testTriggerFailsGetNextRunTimeAfterTaskRuns(HttpServletRequest request, PrintWriter out) throws Exception {
         Callable<Long> task = new SharedCounterTask();
         FailingTrigger trigger = new FailingTrigger();
         trigger.allowFirstGetNextRunTime = true;
@@ -1069,7 +1192,7 @@ public class PersistentErrorTestServlet extends HttpServlet {
     /**
      * Attempt to schedule a task where Trigger.getNextRunTime fails.
      */
-    public void testTriggerFailsInitialGetNextRunTime(PrintWriter out) throws Exception {
+    public void testTriggerFailsInitialGetNextRunTime(HttpServletRequest request, PrintWriter out) throws Exception {
         try {
             TaskStatus<?> status = scheduler.schedule((Callable<Long>) new SharedCounterTask(), new FailingTrigger());
             throw new Exception("Task should not schedule when the Trigger fails getNextRunTime: " + status);
@@ -1082,7 +1205,7 @@ public class PersistentErrorTestServlet extends HttpServlet {
     /**
      * Attempt to schedule a task where the Trigger declares itself serializable but fails to serialize.
      */
-    public void testTriggerFailsToSerialize(PrintWriter out) throws Exception {
+    public void testTriggerFailsToSerialize(HttpServletRequest request, PrintWriter out) throws Exception {
         try {
             TaskStatus<?> status = scheduler.schedule((Runnable) new SharedCounterTask(), new TriggerThatFailsSerialization());
             throw new Exception("Task should not schedule when the Trigger fails to serialize. " + status);
@@ -1097,7 +1220,7 @@ public class PersistentErrorTestServlet extends HttpServlet {
     /**
      * Attempt to schedule a task with a trigger that has no executions. Verify the proper error is raised.
      */
-    public void testTriggerWithNoExecutions(PrintWriter out) throws Exception {
+    public void testTriggerWithNoExecutions(HttpServletRequest request, PrintWriter out) throws Exception {
         try {
             TaskStatus<?> status = scheduler.schedule((Callable<Long>) new SharedCounterTask(), new NoExecutionsTrigger());
             throw new Exception("Task (Callable) should not schedule when there are no executions: " + status);
@@ -1118,7 +1241,7 @@ public class PersistentErrorTestServlet extends HttpServlet {
     /**
      * Attempt to invoke unsupported methods. Verify the proper errors are raised.
      */
-    public void testUnsupportedOperations(PrintWriter out) throws Exception {
+    public void testUnsupportedOperations(HttpServletRequest request, PrintWriter out) throws Exception {
         @SuppressWarnings("unchecked")
         Collection<Callable<Long>> tasks = Arrays.asList((Callable<Long>) new SharedCounterTask(),
                                                          (Callable<Long>) new SharedCounterTask());
@@ -1181,7 +1304,7 @@ public class PersistentErrorTestServlet extends HttpServlet {
     /**
      * Attempt to submit repeating tasks with non-positive intervals. Verify the proper errors are raised.
      */
-    public void testZeroOrNegativeIntervals(PrintWriter out) throws Exception {
+    public void testZeroOrNegativeIntervals(HttpServletRequest request, PrintWriter out) throws Exception {
         try {
             Future<?> status = scheduler.scheduleAtFixedRate(new SharedCounterTask(), 10, 0, TimeUnit.HOURS);
             throw new Exception("scheduleAtFixedRate(negative interval) should fail. Instead: " + status);

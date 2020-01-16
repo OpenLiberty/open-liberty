@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2012 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -451,6 +451,11 @@ JAVA8_REQUIRED.useraction=Installieren Sie Java Version 8 oder h\u00f6her.
 JAVA8_REQUIRED_FOR_AT_HASHING=CWWKS1496W: Der OpenID Connect-Provider {0} hat das Konfigurationsattribut {1} f\u00fcr die Verwendung des Algorithmus {2} definiert. Hierf\u00fcr ist Java 8 oder h\u00f6her erforderlich. Der angegebene OpenID Connect-Provider ignoriert die {3}-Einstellung.
 JAVA8_REQUIRED_FOR_AT_HASHING.explanation=Die Java-Version, die momentan verwendet wird, ist nicht Java 8 oder h\u00f6her.
 JAVA8_REQUIRED_FOR_AT_HASHING.useraction=Installieren Sie Java Version 8 oder h\u00f6her, um die genannte Konfigurationsoption zu verwenden.
+
+# {1} already contains brackets, ex [a,b,c]
+WRONG_TOKEN_GRANTTYPE=CWWKS1497E: Das Token mit dem Granttyp [{0}] ist nicht zul\u00e4ssig. Die zul\u00e4ssigen Granttypen sind {1}.
+WRONG_TOKEN_GRANTTYPE.explanation=Das Token ist nicht g\u00fcltig, weil der zugeh\u00f6rige Granttyp nicht zul\u00e4ssig ist.
+WRONG_TOKEN_GRANTTYPE.useraction=Verwenden Sie ein Token mit einem zul\u00e4ssigen Granttypen.
 
 # html title of logout page
 LOGOUT_PAGE_TITLE=Anmelden

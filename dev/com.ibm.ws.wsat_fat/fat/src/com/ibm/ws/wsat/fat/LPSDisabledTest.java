@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,8 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.ibm.websphere.simplicity.ShrinkHelper;
+
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -43,6 +45,9 @@ public class LPSDisabledTest extends WSATTest {
 				+ server.getHttpDefaultPort();
 
 		DBTestBase.initWSATTest(server);
+
+   ShrinkHelper.defaultDropinApp(server, "LPSClient", "com.ibm.ws.wsat.lpsclient.*");
+   ShrinkHelper.defaultDropinApp(server, "LPSServer", "com.ibm.ws.wsat.lpsserver.*");
 
 		if (server != null && server.isStarted()){
 			server.stopServer();

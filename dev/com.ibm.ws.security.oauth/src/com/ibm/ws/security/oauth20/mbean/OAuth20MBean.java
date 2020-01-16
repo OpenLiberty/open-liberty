@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 1997, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -91,7 +91,7 @@ public interface OAuth20MBean {
             throws OAuthProviderException;
 
     /**
-     * Deletes a single OAuth provider parameter. The name and type of the supplied 
+     * Deletes a single OAuth provider parameter. The name and type of the supplied
      * OAuth20Parameter are used to identify the parameter to be deleted.
      * @param providerName the provider ID
      * @param parameter the OAuth parameter to delete
@@ -105,7 +105,7 @@ public interface OAuth20MBean {
     /**
      * Remove the token for a user and a client. If providerName is null
      * remove the token for all providers, else only for the given provider
-     * 
+     *
      * @param providerName
      * @param clientId
      * @param userName
@@ -117,7 +117,7 @@ public interface OAuth20MBean {
     /**
      * Remove the token for a user and a unique key. If providerName is null
      * remove the token for all providers, else only for the given provider
-     * 
+     *
      * @param providerName
      * @param uniqueKey
      * @param userName
@@ -129,7 +129,7 @@ public interface OAuth20MBean {
     /**
      * Remove all tokens issued to a client. If providerName is null
      * remove the tokens for all providers, else only for the given provider
-     * 
+     *
      * @param providerName
      * @param clientId
      */
@@ -139,7 +139,7 @@ public interface OAuth20MBean {
     /**
      * Remove all tokens issued for a user. If providerName is null
      * remove the tokens for all providers, else only for the given provider
-     * 
+     *
      * @param providerName
      * @param userName
      */
@@ -149,7 +149,7 @@ public interface OAuth20MBean {
     /**
      * Return authorizations for a user and a client. If providerName is null then get
      * authorizations for all providers, else only for the given provider
-     * 
+     *
      * @param providerName
      * @param userName
      */
@@ -160,7 +160,7 @@ public interface OAuth20MBean {
     /**
      * Return authorizations for a user and a unique key. If providerName is null then
      * get authorizations for all providers, else only for the given provider
-     * 
+     *
      * @param providerName
      * @param userName
      */
@@ -171,7 +171,7 @@ public interface OAuth20MBean {
     /**
      * Return all authorizations for a client. If providerName is null then get
      * authorizations for all providers, else only for the given provider
-     * 
+     *
      * @param providerName
      * @param userName
      */
@@ -181,7 +181,7 @@ public interface OAuth20MBean {
     /**
      * Return all authorizations for a user. If providerName is null then get
      * authorizations for all providers, else only for the given provider
-     * 
+     *
      * @param providerName
      * @param userName
      */

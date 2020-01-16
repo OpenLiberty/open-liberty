@@ -9,4 +9,4 @@ Subsystem-Name: System for Cross-domain Identity Management 2.0
  com.ibm.ws.com.fasterxml.jackson.2.9.1, \
   com.ibm.ws.require.java8
 kind=noship
-edition=core
+edition=full

@@ -23,6 +23,9 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.database.container.DatabaseContainerFactory;
+import componenttest.topology.database.container.DatabaseContainerType;
+import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -36,7 +39,6 @@ import web.PersistentTimersTestServlet;
 public class PersistentExecutorTimersWithFailoverEnabledTest extends FATServletClient {
 
     private static final String APP_NAME = "timersapp";
-    private static final String DB_NAME = "persisttimers";
 
     private static ServerConfiguration originalConfig;
 
@@ -44,7 +46,7 @@ public class PersistentExecutorTimersWithFailoverEnabledTest extends FATServletC
     public static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.concurrent.persistent.fat.timers");
     
     @ClassRule
-    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create(DB_NAME);
+    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
 
     /**
      * Before running any tests, start the server
@@ -77,9 +79,6 @@ public class PersistentExecutorTimersWithFailoverEnabledTest extends FATServletC
 
     	//Setup server DataSource properties
     	DatabaseContainerUtil.setupDataSourceProperties(server, testContainer);
-
-		//Initialize database
-		DatabaseContainerUtil.initDatabase(testContainer, DB_NAME);
 		
 		//Add application to server
         ShrinkHelper.defaultDropinApp(server, APP_NAME, "web", "ejb");

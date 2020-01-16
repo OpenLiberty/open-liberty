@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2018 IBM Corporation and others.
+# Copyright (c) 2018,2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -57,6 +57,10 @@ ERROR_CONFIG_EMPTY_LIBRARY=SESN0309E: Die Sitzungscachebibliothek {0} ist leer. 
 ERROR_CONFIG_EMPTY_LIBRARY.explanation=Das Feature sessionCache hat keinen zu ladenden JCache-Provider gefunden.
 ERROR_CONFIG_EMPTY_LIBRARY.useraction=Stellen Sie sicher, dass die Bibliothek einen JCache-Provider enth\u00e4lt und alle Pfade korrekt angegeben sind.
 
+# do not translate: httpSessionCache, uri
+SESN0310_GEN_INFINISPAN_CONFIG=SESN0310I: Infinispan-Konfiguration f\u00fcr HTTP-Sitzungspersistenz wurde generiert: {0}. Konfigurieren Sie zum \u00dcberschreiben das URI-Attribut des httpSessionCache-Konfigurationselements.
+SESN0310_GEN_INFINISPAN_CONFIG.explanation=F\u00fcr die Infinispan-Caches, die f\u00fcr die HTTP-Sitzungspersistenz verwendet werden, ist eine zus\u00e4tzliche Konfiguration erforderlich, um Sitzungen auf allen Servern persistent zu speichern. Liberty generiert diese Konfiguration, wenn sie nicht vom Benutzer bereitgestellt wird.
+SESN0310_GEN_INFINISPAN_CONFIG.useraction=Es ist keine Aktion erforderlich, wenn Sie mit der generierten Konfiguration zufrieden sind. Andernfalls kann die generierte Konfiguration als Ausgangspunkt verwendet werden. 
 INTERNAL_SERVER_ERROR=Interner Serverfehler
 
 SESSION_CACHE_CONFIG_MESSAGE=Stellen Sie sicher, dass die Serverkonfiguration eine g\u00fcltige httpSessionCache-Konfiguration enth\u00e4lt. Sehen Sie sich die Beispielkonfiguration an. {0}

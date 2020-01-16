@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm orm_2_0.xsd" version="2.0">
+
+    <entity class="com.ibm.ws.jpa.fvt.ordercolumns.model.XMLOrderColumnEntity">
+        <table name="XOColE"/>
+        <attributes>
+            <id name="id" />
+            <one-to-many name="uo2mNames">
+                <order-column/>
+                <join-table name="XOColE_UONameE"/>
+            </one-to-many>
+            <one-to-many name="bo2mNames" mapped-by="xmlColumn">
+                <order-column/>
+                <join-table name="XOColE_BONameXE"/>
+            </one-to-many>
+            <many-to-many name="um2mNames">
+                <order-column/>
+                <join-table name="XOColE_UONameE"/>
+            </many-to-many>
+            <many-to-many name="bm2mNames">
+                <order-column/>
+                <join-table name="XOColE_BONameXE"/>
+            </many-to-many>
+            <element-collection name="listElements">
+                <order-column name="OVRELEMENTS_ORDER"/>
+                <collection-table name="XOColE_listElements"/>
+            </element-collection>
+        </attributes>
+    </entity>
+    
+</entity-mappings>

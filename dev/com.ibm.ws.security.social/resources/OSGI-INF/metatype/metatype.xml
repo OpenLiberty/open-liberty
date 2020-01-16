@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2016, 2018 IBM Corporation and others.
+    Copyright (c) 2016, 2020 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -328,20 +328,24 @@
         <AD id="userApiNeedsSpecialHeader" name="internal" description="internal use only" required="false"
             type="Boolean" default="false" />
         <AD id="useSystemPropertiesForHttpClientConnections" name="%useSystemPropertiesForHttpClientConnections" description="%useSystemPropertiesForHttpClientConnections.desc" required="false" type="Boolean" default="false"/>
-        <AD id="userApiType" name="internal" description="internal use only"
+        <AD id="userApiType" name="%userApiType" description="%userApiType.desc"
             required="false" type="String" default="basic">
             <Option label="%userApiType.basic" value="basic" />
             <Option label="%userApiType.kube" value="kube" />
-        </AD>
+            <Option label="internal" value="openshift" />
+            <Option label="internal" value="introspect" />
+       </AD>
         <!-- If userApiSpec="TokenReview", the userApiToken value is required because the runtime will make a call to the TokenReview API.
              The call to the TokenReview API must include a token for a service account that's allowed to make that call. -->
-        <AD id="userApiToken" name="internal" description="internal use only"
+        <AD id="userApiToken" name="%userApiToken" description="%userApiToken.desc"
             required="false" type="String" ibm:type="password" />
-        <AD id="accessTokenRequired" name="internal" description="internal use only"
+        <AD id="userApiCacheTime" name="internal" description="internal use only"
+            required="false" type="String" default="600s" ibm:type="duration(s)" />
+        <AD id="accessTokenRequired" name="%accessTokenRequired" description="%accessTokenRequired.desc"
             required="false" type="Boolean" default="false" />
-        <AD id="accessTokenSupported" name="internal" description="internal use only"
+        <AD id="accessTokenSupported" name="%accessTokenSupported" description="%accessTokenSupported.desc"
             required="false" type="Boolean" default="false" />
-        <AD id="accessTokenHeaderName" name="internal" description="internal use only"
+        <AD id="accessTokenHeaderName" name="%accessTokenHeaderName" description="%accessTokenHeaderName.desc"
             required="false" type="String" />
     </OCD>
 

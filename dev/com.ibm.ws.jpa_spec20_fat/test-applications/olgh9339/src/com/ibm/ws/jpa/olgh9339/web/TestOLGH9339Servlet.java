@@ -54,24 +54,24 @@ public class TestOLGH9339Servlet extends JPATestServlet {
     }
 
     @Test
-    public void jpa_jpa21_olgh9339_testCoalesceJPQLQueryWithNullParameterValue_AMJTA_Web() throws Exception {
-        final String testName = "jpa_jpa21_olgh9339_testCoalesceJPQLQueryWithNullParameterValue_AMJTA_Web";
+    public void jpa_spec20_olgh9339_testCoalesceJPQLQueryWithNullParameterValue_AMJTA_Web() throws Exception {
+        final String testName = "jpa20_olgh9339_testCoalesceJPQLQueryWithNullParameterValue_AMJTA_Web";
         final String testMethod = "testCoalesceJPQLQueryWithNullParameterValue";
         final String testResource = "test-jpa-resource-amjta";
         executeTest(testName, testMethod, testResource);
     }
 
     @Test
-    public void jpa_jpa21_olgh9339_testCoalesceJPQLQueryWithNullParameterValue_AMRL_Web() throws Exception {
-        final String testName = "jpa_jpa21_olgh9339_testCoalesceJPQLQueryWithNullParameterValue_AMRL_Web";
+    public void jpa_spec20_olgh9339_testCoalesceJPQLQueryWithNullParameterValue_AMRL_Web() throws Exception {
+        final String testName = "jpa20_olgh9339_testCoalesceJPQLQueryWithNullParameterValue_AMRL_Web";
         final String testMethod = "testCoalesceJPQLQueryWithNullParameterValue";
         final String testResource = "test-jpa-resource-amrl";
         executeTest(testName, testMethod, testResource);
     }
 
     @Test
-    public void jpa_jpa21_olgh9339_testCoalesceJPQLQueryWithNullParameterValue_CMTS_Web() throws Exception {
-        final String testName = "jpa_jpa21_olgh9339_testCoalesceJPQLQueryWithNullParameterValue_CMTS_Web";
+    public void jpa_spec20_olgh9339_testCoalesceJPQLQueryWithNullParameterValue_CMTS_Web() throws Exception {
+        final String testName = "jpa20_olgh9339_testCoalesceJPQLQueryWithNullParameterValue_CMTS_Web";
         final String testMethod = "testCoalesceJPQLQueryWithNullParameterValue";
         final String testResource = "test-jpa-resource-cmts";
         executeTest(testName, testMethod, testResource);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -47,6 +47,7 @@ import com.ibm.jbatch.container.ws.BatchInternalDispatcher;
 import com.ibm.jbatch.container.ws.BatchStatusValidator;
 import com.ibm.jbatch.container.ws.BatchSubmitInvalidParametersException;
 import com.ibm.jbatch.container.ws.InstanceState;
+import com.ibm.jbatch.container.ws.JobInstanceNotQueuedException;
 import com.ibm.jbatch.container.ws.JobStoppedOnStartException;
 import com.ibm.jbatch.container.ws.PartitionPlanConfig;
 import com.ibm.jbatch.container.ws.PartitionReplyMsg;
@@ -463,6 +464,7 @@ public class BatchJmsEndpointListener implements MessageListener {
      * @param jobParameters
      * 
      */
+    @FFDCIgnore( JobInstanceNotQueuedException.class )
     private void handleRestartRequest(long jobInstanceId, long executionId, byte[] securityContext, Properties restartParameters) {
     
         WSJobRepository jobRepository = getWSJobRepositoryInstance();
@@ -490,13 +492,19 @@ public class BatchJmsEndpointListener implements MessageListener {
                 return;
             }
 
-            WSJobInstance jobInstance = jobRepositoryProxy.updateJobInstanceStateOnConsumed(instanceId);
-            if (jobInstance.getInstanceState() != InstanceState.JMS_CONSUMED) {
+            WSJobInstance jobInstance = null; 
+
+            try {
+            	jobInstance = jobRepositoryProxy.updateJobInstanceStateOnConsumed(instanceId);
+            } catch (JobInstanceNotQueuedException exc) {
+            	// trace and swallow this 
                 if(tc.isDebugEnabled()) {
-                    Tr.debug(BatchJmsEndpointListener.this, tc, "Exiting since instanceState isn't equal to JMS_CONSUMED, instead is: " + jobInstance.getInstanceState());
+                	// Might be misleading to trace the non-JMS_QUEUED `state we found without locking it down
+                    Tr.debug(BatchJmsEndpointListener.this, tc, "Exiting since instanceState isn't equal to JMS_QUEUED");
                 }
                 return;
             }
+            
             publishEvent(jobInstance, BatchEventsPublisher.TOPIC_INSTANCE_JMS_CONSUMED, correlationId);
 
             // get the op group names and create a mapping to each for the job instance id
@@ -552,7 +560,7 @@ public class BatchJmsEndpointListener implements MessageListener {
      * @param securityContext
      * @param jobParameters
      */
-    @FFDCIgnore( JobStoppedOnStartException.class )
+    @FFDCIgnore( {JobStoppedOnStartException.class, JobInstanceNotQueuedException.class} )
     private void handleStartRequest(long instanceId, long executionId, byte[] securityContext, Properties jobParameters) {
         Exception savedException = null;
         WSJobRepository jobRepository = getWSJobRepositoryInstance();
@@ -569,10 +577,15 @@ public class BatchJmsEndpointListener implements MessageListener {
                 return;
             }
             
-            WSJobInstance jobInstance = jobRepositoryProxy.updateJobInstanceStateOnConsumed(instanceId);
-            if (jobInstance.getInstanceState() != InstanceState.JMS_CONSUMED) {
+            WSJobInstance jobInstance = null; 
+
+            try {
+            	jobInstance = jobRepositoryProxy.updateJobInstanceStateOnConsumed(instanceId);
+            } catch (JobInstanceNotQueuedException exc) {
+            	// trace and swallow this 
                 if(tc.isDebugEnabled()) {
-                    Tr.debug(BatchJmsEndpointListener.this, tc, "Exiting since instanceState isn't equal to JMS_CONSUMED, instead is: " + jobInstance.getInstanceState());
+                	// Might be misleading to trace the non-JMS_QUEUED `state we found without locking it down
+                    Tr.debug(BatchJmsEndpointListener.this, tc, "Exiting since instanceState isn't equal to JMS_QUEUED");
                 }
                 return;
             }

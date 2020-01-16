@@ -33,8 +33,8 @@ public abstract class JavaDumper {
                 Class<?>[] paramTypes = new Class<?>[] { String.class };
                 Method javaDumpToFileMethod = dumpClass.getMethod("javaDumpToFile", paramTypes);
                 Method heapDumpToFileMethod = dumpClass.getMethod("heapDumpToFile", paramTypes);
-                Method systemDumpToFileMethod = dumpClass.getMethod("systemDumpToFile", paramTypes);
-                return new IBMJavaDumperImpl(javaDumpToFileMethod, heapDumpToFileMethod, systemDumpToFileMethod);
+                Method triggerDumpMethod = dumpClass.getMethod("triggerDump", paramTypes);
+                return new IBMJavaDumperImpl(javaDumpToFileMethod, heapDumpToFileMethod, triggerDumpMethod);
             } catch (NoSuchMethodException e) {
                 return new IBMLegacyJavaDumperImpl(dumpClass);
             }
@@ -70,8 +70,8 @@ public abstract class JavaDumper {
 
     /**
      * Generate a java dump of the current process.
-     * 
-     * @param action the dump action
+     *
+     * @param action    the dump action
      * @param outputDir the server output directory
      * @return the file containing the dump, or null if the action is not supported by this JVM
      * @throws RuntimeException if an error occurs while dumping

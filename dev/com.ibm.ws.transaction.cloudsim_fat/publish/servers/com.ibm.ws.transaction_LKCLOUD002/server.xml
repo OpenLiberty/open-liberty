@@ -32,7 +32,6 @@
         enableHADBPeerLocking="true"
         timeBetweenHeartbeats="10"
         peerTimeBeforeStale="30"
-        localTimeBeforeStale="20"
     />
     
     <application location="transaction.war"/>

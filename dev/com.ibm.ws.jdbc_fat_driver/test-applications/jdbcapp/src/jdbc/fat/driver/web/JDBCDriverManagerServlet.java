@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018,2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@ package jdbc.fat.driver.web;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -45,6 +46,8 @@ import org.junit.Test;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.app.FATServlet;
+import jdbc.fat.driver.derby.FATJDBCSpecialOps;
+import jdbc.fat.driver.derby.FATVendorSpecificSomething;
 
 @DataSourceDefinitions({
                          @DataSourceDefinition(name = "java:comp/env/jdbc/dsd-driver-class",
@@ -525,6 +528,29 @@ public class JDBCDriverManagerServlet extends FATServlet {
         } finally {
             con.close();
         }
+    }
+
+    /**
+     * Unwrap and use vendor-specific API, including parameters and return types which are also vendor-specific.
+     */
+    @Test
+    public void testUnwrapToVendorSpecificInterface() throws Exception {
+        FATJDBCSpecialOps vendorApi = xads.unwrap(FATJDBCSpecialOps.class);
+        assertNotNull(vendorApi);
+
+        FATVendorSpecificSomething something1 = vendorApi.createSomething(100);
+        assertEquals(101, something1.increment());
+        assertEquals(102, vendorApi.useSomething(something1));
+        assertEquals(103, vendorApi.useAnything(something1));
+
+        FATVendorSpecificSomething something2 = new FATVendorSpecificSomething(200);
+        assertEquals(201, something2.increment());
+        assertEquals(202, vendorApi.useSomething(something2));
+        assertEquals(203, vendorApi.useAnything(something2));
+
+        assertEquals(something1.getClass().getClassLoader(), something2.getClass().getClassLoader());
+
+        assertEquals(something1.getClass(), something2.getClass());
     }
 
     /**

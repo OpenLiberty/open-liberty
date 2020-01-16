@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2012 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -452,6 +452,11 @@ JAVA8_REQUIRED.useraction=Installare Java versione 8 o successive.
 JAVA8_REQUIRED_FOR_AT_HASHING=CWWKS1496W: Il provider OpenID  Connect {0} ha l''attributo di configurazione {1} impostato per utilizzare l''algoritmo {2}, ci\u00f2 richiede Java 8 o successive. Il provider OpenID Connect specificato ignora l''impostazione {3}.
 JAVA8_REQUIRED_FOR_AT_HASHING.explanation=La versione di Java in uso non \u00e8 la 8 o successive.
 JAVA8_REQUIRED_FOR_AT_HASHING.useraction=Installare Java versione 8 o successive per poter utilizzare l'opzione di configurazione indicata.
+
+# {1} already contains brackets, ex [a,b,c]
+WRONG_TOKEN_GRANTTYPE=CWWKS1497E: Il token con tipo di concessione [{0}] non \u00e8 consentito. I tipi di concessione consentiti sono {1}.
+WRONG_TOKEN_GRANTTYPE.explanation=Il token non \u00e8 valido perch\u00e9 il relativo tipo di concessione non \u00e8 consentito.
+WRONG_TOKEN_GRANTTYPE.useraction=Utilizzare un token con un tipo di concessione consentito.
 
 # html title of logout page
 LOGOUT_PAGE_TITLE=Uscita

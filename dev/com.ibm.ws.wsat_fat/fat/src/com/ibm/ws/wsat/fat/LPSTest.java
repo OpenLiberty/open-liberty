@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,8 @@ import java.util.List;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
@@ -49,8 +51,6 @@ public class LPSTest extends WSATTest {
 				.getLibertyServer("MigrationServer2");
 		BASE_URL2 = "http://" + server2.getHostname() + ":9992";
 
-		DBTestBase.initWSATTest(server);
-		
 		if (server != null && server.isStarted()){
 			server.stopServer();
 		}
@@ -59,7 +59,14 @@ public class LPSTest extends WSATTest {
 			server2.stopServer();
 		}
 
-        if (server != null && !server.isStarted()){
+ 		DBTestBase.initWSATTest(server);
+		DBTestBase.initWSATTest(server2);
+		
+    ShrinkHelper.defaultDropinApp(server, "LPSClient", "com.ibm.ws.wsat.lpsclient.*");
+    ShrinkHelper.defaultDropinApp(server, "LPSServer", "com.ibm.ws.wsat.lpsserver.*");
+    ShrinkHelper.defaultDropinApp(server2, "LPSServer", "com.ibm.ws.wsat.lpsserver.*");
+
+       if (server != null && !server.isStarted()){
         	 server.setServerStartTimeout(600000);
              server.startServer(true);
 		}
@@ -76,6 +83,7 @@ public class LPSTest extends WSATTest {
 		ServerUtils.stopServer(server2);
 
 		DBTestBase.cleanupWSATTest(server);
+		DBTestBase.cleanupWSATTest(server2);
     }
 	
 	// LPS Enabled Test

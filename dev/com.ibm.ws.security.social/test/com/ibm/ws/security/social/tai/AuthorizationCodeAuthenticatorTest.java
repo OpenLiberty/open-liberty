@@ -1003,7 +1003,7 @@ public class AuthorizationCodeAuthenticatorTest extends CommonTestClass {
                     one(config).getUserApis();
                     will(returnValue(new UserApiConfig[] { userApiConfig }));
                     one(userApiConfig).getApi();
-                    one(config).getUserApiType();
+                    allowing(config).getUserApiType();
                     one(config).getUserApiNeedsSpecialHeader();
                     one(clientUtil).getUserApiResponse(with(any(String.class)), with(any(String.class)), with(any(SSLSocketFactory.class)), with(any(Boolean.class)), with(any(Boolean.class)), with(any(Boolean.class)));
                     will(returnValue(userApiResponse));
@@ -1038,7 +1038,7 @@ public class AuthorizationCodeAuthenticatorTest extends CommonTestClass {
                     one(config).getUserApis();
                     will(returnValue(new UserApiConfig[] { userApiConfig }));
                     one(userApiConfig).getApi();
-                    one(config).getUserApiType();
+                    allowing(config).getUserApiType();
                     one(config).getUserApiNeedsSpecialHeader();
                     one(config).getUseSystemPropertiesForHttpClientConnections();
                     one(clientUtil).getUserApiResponse(with(any(String.class)), with(any(String.class)), with(any(SSLSocketFactory.class)), with(any(Boolean.class)), with(any(Boolean.class)), with(any(Boolean.class)));

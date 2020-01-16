@@ -483,6 +483,13 @@ public class TCPChannelConfiguration implements TCPConfigConstants, FFDCSelfIntr
                     continue;
                 }
 
+                if (key.equalsIgnoreCase(ChannelFrameworkConstants.CHAIN_NAME_KEY)) {
+                    // this parameter is an internal optional property used to identify
+                    // the type of chain being processed. If found simply bypass to
+                    // suppress warning messages.
+                    continue;
+                }
+
                 if (key.equalsIgnoreCase(ZAIO_RESOLVE_FOREIGN_HOSTNAMES_KEY)) {
                     // this parameter is an internal optional property used to identify
                     // whether the ZAioTCPChannel should resolve IP addresses to hostnames
@@ -826,6 +833,13 @@ public class TCPChannelConfiguration implements TCPConfigConstants, FFDCSelfIntr
                 }
 
                 if (key.equalsIgnoreCase(CHAIN_TYPE_KEY)) {
+                    // this parameter is an internal optional property used to identify
+                    // the type of chain being processed. If found simply bypass to
+                    // suppress warning messages.
+                    continue;
+                }
+
+                if (key.equalsIgnoreCase(ChannelFrameworkConstants.CHAIN_NAME_KEY)) {
                     // this parameter is an internal optional property used to identify
                     // the type of chain being processed. If found simply bypass to
                     // suppress warning messages.
