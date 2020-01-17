@@ -62,7 +62,7 @@ import org.apache.derby.iapi.jdbc.EngineResultSet;
 
 import componenttest.app.FATServlet;
 
-@DataSourceDefinition( 
+@DataSourceDefinition(
                       name = "jdbc/dsfat6",
                       className = "org.apache.derby.jdbc.EmbeddedDataSource40",
                       databaseName = "${shared.resource.dir}/data/derbyfat",
@@ -634,7 +634,7 @@ public class DataSourceTestServlet extends FATServlet {
 
         int loginTimeout;
         try {
-            loginTimeout = ds1.getLoginTimeout();
+            loginTimeout = ds2.getLoginTimeout();
         } catch (SQLFeatureNotSupportedException x) {
             return; // skip the test if the JDBC driver doesn't support login timeout
         }

@@ -43,7 +43,7 @@ task addDerbyClient(type: Copy) {
 task copyAutomaticDerby(type: Copy) {
   shouldRunAfter jar
   from configurations.derby
-  into new File(autoFvtDir, 'publish/lib/AutomaticDerbyLibrary/')
+  into new File(autoFvtDir, 'publish/shared/resources/AutomaticDerbyLibrary/')
   rename 'derby-.*.jar', 'derby.jar'
 }
 

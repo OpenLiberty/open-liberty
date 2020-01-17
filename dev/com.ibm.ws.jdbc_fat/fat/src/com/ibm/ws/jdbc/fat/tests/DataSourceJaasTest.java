@@ -84,16 +84,16 @@ public class DataSourceJaasTest extends FATServletClient {
 
     //@Test TODO why does this test fail?
     public void testDataSourceMappingConfigAlias() throws Exception {
-        runTest(server, basicfat + '/', testName);
+        runTest(server, basicfat, testName);
     }
 
     @Test
     public void testDataSourceCustomLoginConfiguration() throws Exception {
-        runTest(server, basicfat + '/', testName);
+        runTest(server, basicfat, testName);
     }
 
     @Test
     public void testJAASLoginWithGSSCredential() throws Exception {
-        runTest(server, basicfat + '/', testName);
+        runTest(server, basicfat, testName);
     }
 }

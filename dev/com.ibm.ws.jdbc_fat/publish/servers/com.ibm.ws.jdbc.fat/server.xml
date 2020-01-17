@@ -30,7 +30,7 @@
 
 	<!-- Test: library + nested fileset -->
     <library id="AutomaticDerbyLibrary">
-      <fileset dir="${shared.resource.dir}/lib/AutomaticDerbyLibrary" includes="derby.jar"/>
+      <fileset dir="${shared.resource.dir}/AutomaticDerbyLibrary" includes="derby.jar"/>
     </library>
     
 	<!-- Test: nested Library + anonymous driver -->
@@ -248,7 +248,7 @@
     <javaPermission codebase="${shared.resource.dir}derby/derbyclient.jar" className="java.security.AllPermission"/>
     <javaPermission codebase="${shared.resource.dir}jdbc/${env.DB_DRIVER}" className="java.security.AllPermission"/>
     <javaPermission codebase="${shared.resource.dir}anonymous/${env.ANON_DRIVER}" className="java.security.AllPermission"/>
-    <javaPermission codebase="${shared.resource.dir}lib/AutomaticDerbyLibrary/derby.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${shared.resource.dir}AutomaticDerbyLibrary/derby.jar" className="java.security.AllPermission"/>
 	<javaPermission codebase="${shared.resource.dir}db2/jcc.jar" className="java.security.AllPermission"/>
 	
 	<!-- Login module -->
