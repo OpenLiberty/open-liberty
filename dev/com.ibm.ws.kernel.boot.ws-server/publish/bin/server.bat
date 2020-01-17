@@ -1,7 +1,7 @@
 @echo off
 @REM WebSphere Application Server liberty launch script
 @REM
-@REM Copyright IBM Corp. 2011, 2019
+@REM Copyright IBM Corp. 2011, 2020
 @REM The source code for this program is not published or other-
 @REM wise divested of its trade secrets, irrespective of what has
 @REM been deposited with the U.S. Copyright Office.
@@ -248,13 +248,14 @@ goto:eof
   if %RC% == 2 goto:eof
 
   call:serverWorkingDirectory
-  set SAVE_IBM_JAVA_OPTIONS=!OPENJ9_JAVA_OPTIONS!
+  set SAVE_IBM_JAVA_OPTIONS=!IBM_JAVA_OPTIONS!
+  set SAVE_OPENJ9_JAVA_OPTIONS=!OPENJ9_JAVA_OPTIONS!
   set IBM_JAVA_OPTIONS=!SERVER_IBM_JAVA_OPTIONS!
   set OPENJ9_JAVA_OPTIONS=!SERVER_IBM_JAVA_OPTIONS!
   !JAVA_CMD_QUOTED! !JAVA_AGENT_QUOTED! !JVM_OPTIONS! !JAVA_PARAMS_QUOTED! --batch-file !PARAMS_QUOTED!
   set RC=%errorlevel%
   set IBM_JAVA_OPTIONS=!SAVE_IBM_JAVA_OPTIONS!
-  set OPENJ9_JAVA_OPTIONS=!SAVE_IBM_JAVA_OPTIONS!
+  set OPENJ9_JAVA_OPTIONS=!SAVE_OPENJ9_JAVA_OPTIONS!
   call:javaCmdResult
 goto:eof
 
@@ -265,13 +266,14 @@ goto:eof
   if %RC% == 2 goto:eof
 
   call:serverWorkingDirectory
-  set SAVE_IBM_JAVA_OPTIONS=!OPENJ9_JAVA_OPTIONS!
+  set SAVE_IBM_JAVA_OPTIONS=!IBM_JAVA_OPTIONS!
   set IBM_JAVA_OPTIONS=!SERVER_IBM_JAVA_OPTIONS!
+  set SAVE_OPENJ9_JAVA_OPTIONS=!OPENJ9_JAVA_OPTIONS!
   set OPENJ9_JAVA_OPTIONS=!SERVER_IBM_JAVA_OPTIONS!
   !JAVA_CMD_QUOTED! !JAVA_AGENT_QUOTED! !JVM_OPTIONS! !JAVA_PARAMS_QUOTED! --batch-file !PARAMS_QUOTED!
   set RC=%errorlevel%
   set IBM_JAVA_OPTIONS=!SAVE_IBM_JAVA_OPTIONS!
-  set OPENJ9_JAVA_OPTIONS=!SAVE_IBM_JAVA_OPTIONS!
+  set OPENJ9_JAVA_OPTIONS=!SAVE_OPENJ9_JAVA_OPTIONS!
   call:javaCmdResult
 goto:eof
 
@@ -311,15 +313,16 @@ goto:eof
     )
 
     set X_CMD=!JAVA_CMD_QUOTED! !JAVA_AGENT_QUOTED! !JVM_OPTIONS! !JAVA_PARAMS_QUOTED! --batch-file !PARAMS_QUOTED!
-    set SAVE_IBM_JAVA_OPTIONS=!OPENJ9_JAVA_OPTIONS!
+    set SAVE_IBM_JAVA_OPTIONS=!IBM_JAVA_OPTIONS!
     set IBM_JAVA_OPTIONS=!SERVER_IBM_JAVA_OPTIONS!
+    set SAVE_OPENJ9_JAVA_OPTIONS=!OPENJ9_JAVA_OPTIONS!
     set OPENJ9_JAVA_OPTIONS=!SERVER_IBM_JAVA_OPTIONS!
 
     @REM Use javaw so command windows can be closed.
     start /min /b "" !JAVA_CMD_QUOTED!w !JAVA_AGENT_QUOTED! !JVM_OPTIONS! !JAVA_PARAMS_QUOTED! --batch-file !PARAMS_QUOTED! >> "%X_LOG_DIR%\%X_LOG_FILE%" 2>&1
 
     set IBM_JAVA_OPTIONS=!SAVE_IBM_JAVA_OPTIONS!
-    set OPENJ9_JAVA_OPTIONS=!SAVE_IBM_JAVA_OPTIONS!
+    set OPENJ9_JAVA_OPTIONS=!SAVE_OPENJ9_JAVA_OPTIONS!
 
     !JAVA_CMD_QUOTED! !JAVA_PARAMS_QUOTED! "!SERVER_NAME!" --status:start
     set RC=!errorlevel!
@@ -507,17 +510,29 @@ goto:eof
     set JAVA_CMD_QUOTED="!JAVA_HOME!\bin\java"
   )
 
+@REM Use OPENJ9_JAVA_OPTIONS if defined, otherwise use IBM_JAVA_OPTIONS
+  if NOT defined OPENJ9_JAVA_OPTIONS (
+    set SPECIFIED_JAVA_OPTIONS=!IBM_JAVA_OPTIONS!
+  ) else (
+    set SPECIFIED_JAVA_OPTIONS=!OPENJ9_JAVA_OPTIONS!
+  )
+
   @REM Command-line parsing of -Xshareclasses does not allow "," in cacheDir.
   if "!WLP_OUTPUT_DIR:,=!" == "!WLP_OUTPUT_DIR!" (
-    set SERVER_IBM_JAVA_OPTIONS=-Xshareclasses:name=liberty-%%u,nonfatal,cacheDir="%WLP_OUTPUT_DIR%\.classCache" -XX:ShareClassesEnableBCI -Xscmx80m !OPENJ9_JAVA_OPTIONS!
+    @REM Skip if Xshareclasses is defined in IBM_JAVA_OPTIONS/OPENJ9_JAVA_OPTIONS
+    if "!SPECIFIED_JAVA_OPTIONS:Xshareclasses=!" == "!SPECIFIED_JAVA_OPTIONS!" (
+      set SERVER_IBM_JAVA_OPTIONS=-Xshareclasses:name=liberty-%%u,nonfatal,cacheDir="%WLP_OUTPUT_DIR%\.classCache" -XX:ShareClassesEnableBCI -Xscmx80m !SPECIFIED_JAVA_OPTIONS!
+    ) else (
+      set SERVER_IBM_JAVA_OPTIONS=!SPECIFIED_JAVA_OPTIONS!
+    )
   ) else (
-    set SERVER_IBM_JAVA_OPTIONS=!OPENJ9_JAVA_OPTIONS!
+    set SERVER_IBM_JAVA_OPTIONS=!SPECIFIED_JAVA_OPTIONS!
   )
 
   @REM Add -Xquickstart -Xnoaot for client JVMs only.  AOT is ineffective if
   @REM JVMs have conflicting options, and it's more important that server JVMs
   @REM be able to use AOT.
-  set IBM_JAVA_OPTIONS=-Xquickstart -Xnoaot !OPENJ9_JAVA_OPTIONS!
+  set IBM_JAVA_OPTIONS=-Xquickstart -Xnoaot !IBM_JAVA_OPTIONS!
   set OPENJ9_JAVA_OPTIONS=-Xquickstart -Xnoaot !OPENJ9_JAVA_OPTIONS!
 goto:eof
 
