@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -175,8 +175,7 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
     }
 
     private static boolean useRemoteDocker() {
-        return System.getProperty("os.name", "unknown").toLowerCase().contains("windows") || // we are on windows (no docker support)
-               !FATRunner.FAT_TEST_LOCALRUN || // this is a remote run
+        return !FATRunner.FAT_TEST_LOCALRUN || // this is a remote run
                USE_REMOTE_DOCKER; // or if remote docker hosts are specifically requested
     }
 
