@@ -404,6 +404,7 @@ org.eclipse.microprofile.metrics:microprofile-metrics-api:1.1.1
 org.eclipse.microprofile.metrics:microprofile-metrics-api:2.0.0
 org.eclipse.microprofile.metrics:microprofile-metrics-api:2.2
 org.eclipse.microprofile.metrics:microprofile-metrics-api:2.3
+org.eclipse.microprofile.lra:microprofile-lra-api:1.0-M1
 org.eclipse.microprofile.openapi:microprofile-openapi-api:1.1.1
 org.eclipse.microprofile.opentracing:microprofile-opentracing-api:1.0.1
 org.eclipse.microprofile.opentracing:microprofile-opentracing-api:1.1
@@ -481,6 +482,11 @@ org.jboss.resteasy:resteasy-core-spi:4.5.2.Final
 org.jboss.resteasy:resteasy-jaxb-provider:4.5.2.Final
 org.jboss.resteasy:resteasy-servlet-initializer:4.5.2.Final
 org.jboss.resteasy:resteasy-tracing-api:1.0.0.Final
+org.jboss.narayana.rts:lra-client:5.10.5.Final
+org.jboss.narayana.rts:lra-proxy-api:5.10.5.Final
+org.jboss.narayana.rts:lra-service-base:5.10.5.Final
+org.jboss.narayana.rts:narayana-lra:5.10.5.Final
+org.jboss.narayana.rts:lra-coordinator-jar:5.10.5.Final
 org.jboss.shrinkwrap:shrinkwrap-api:1.2.3
 org.jboss.shrinkwrap:shrinkwrap-impl-base:1.2.3
 org.jboss.shrinkwrap:shrinkwrap-spi:1.2.3
