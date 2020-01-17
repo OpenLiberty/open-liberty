@@ -2167,8 +2167,23 @@
       <version>3.4.1.Final</version>
     </dependency>
     <dependency>
+      <groupId>org.jboss.narayana.arjunacore</groupId>
+      <artifactId>arjuna</artifactId>
+      <version>5.10.5.Final</version>
+    </dependency>
+    <dependency>
       <groupId>org.jboss.narayana.rts</groupId>
       <artifactId>lra-client</artifactId>
+      <version>5.10.5.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.narayana.rts</groupId>
+      <artifactId>lra-client</artifactId>
+      <version>5.10.5.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.narayana.rts</groupId>
+      <artifactId>lra-coordinator-jar</artifactId>
       <version>5.10.5.Final</version>
     </dependency>
     <dependency>
@@ -2183,12 +2198,32 @@
     </dependency>
     <dependency>
       <groupId>org.jboss.narayana.rts</groupId>
+      <artifactId>lra-proxy-api</artifactId>
+      <version>5.10.5.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.narayana.rts</groupId>
+      <artifactId>lra-service-base</artifactId>
+      <version>5.10.5.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.narayana.rts</groupId>
       <artifactId>lra-service-base</artifactId>
       <version>5.10.5.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.narayana.rts</groupId>
       <artifactId>narayana-lra</artifactId>
+      <version>5.10.5.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.narayana.rts</groupId>
+      <artifactId>narayana-lra</artifactId>
+      <version>5.10.5.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.narayana</groupId>
+      <artifactId>common</artifactId>
       <version>5.10.5.Final</version>
     </dependency>
     <dependency>
