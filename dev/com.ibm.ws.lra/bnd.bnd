@@ -1,0 +1,33 @@
+# For information on bnd syntax, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
+
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: Long Running Actions
+Bundle-SymbolicName: com.ibm.ws.lra
+Bundle-Description: Long Running Actions Impl; version=${bVersion}
+
+Export-Package: com.ibm.ws.lra;provide:=true
+
+javac.source: 1.8
+javac.target: 1.8
+
+#Private-Package: com.ibm.ws.example.internal
+
+Service-Component: \
+  com.ibm.ws.lra;\
+    implementation:=com.ibm.ws.lra.SampleComponent;\
+    configuration-policy:=ignore;\
+    properties:="service.vendor=IBM"
+    
+-dsannotations: com.ibm.ws.lra.SampleComponent2
+    
+-buildpath: \
+	com.ibm.ws.channelfw;version=latest,\
+	com.ibm.ws.logging.core;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.cm;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest
+	
