@@ -32,6 +32,8 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -134,7 +136,7 @@ public class PersistentExecutorErrorPathsTest {
     /**
      * Verify that pending/active task ids, plus other helpful information, appears in the server dump output.
      */
-    // TODO switch to full mode after we are further along
+    @Mode(TestMode.FULL)
     @Test
     public void testIntrospectorWithFailOverDisabled() throws Exception {
         // schedule some tasks that will remain active while the introspector output is recorded
@@ -366,11 +368,13 @@ public class PersistentExecutorErrorPathsTest {
         runInServlet("testTaskFailsToSerialize");
     }
 
+    @Mode(TestMode.FULL)
     @Test
     public void testTransactionTimeout() throws Exception {
         runInServlet("testTransactionTimeout");
     }
 
+    @Mode(TestMode.FULL)
     @Test
     public void testTransactionTimeoutSuspendedTransaction() throws Exception {
         runInServlet("testTransactionTimeoutSuspendedTransaction");
