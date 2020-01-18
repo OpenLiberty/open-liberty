@@ -32,6 +32,8 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -232,6 +234,7 @@ public class PersistentExecutorErrorPathsTestWithFailoverEnabledNoPolling {
         runInServlet("testRollbackWhenMissedTaskThresholdExceeded");
     }
 
+    @Mode(TestMode.FULL)
     @Test
     public void testShutDownDerbyBeforeTaskExecutionFENoPolling() throws Exception {
         runInServlet("testShutDownDerbyBeforeTaskExecution");
@@ -277,11 +280,13 @@ public class PersistentExecutorErrorPathsTestWithFailoverEnabledNoPolling {
         runInServlet("testTaskFailsToSerialize");
     }
 
+    @Mode(TestMode.FULL)
     @Test
     public void testTransactionTimeoutFENoPolling() throws Exception {
         runInServlet("testTransactionTimeout");
     }
 
+    @Mode(TestMode.FULL)
     @Test
     public void testTransactionTimeoutSuspendedTransactionFENoPolling() throws Exception {
         runInServlet("testTransactionTimeoutSuspendedTransaction");

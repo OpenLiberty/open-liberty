@@ -34,6 +34,8 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -195,7 +197,7 @@ public class PersistentExecutorErrorPathsTestWithFailoverAndPollingEnabled {
     /**
      * Verify that pending/active task ids, plus other helpful information, appears in the server dump output.
      */
-    // TODO switch to full mode after we are further along
+    @Mode(TestMode.FULL)
     @Test
     public void testIntrospectorWithFailOverEnabled() throws Exception {
         // schedule some tasks that will remain active while the introspector output is recorded
@@ -452,6 +454,7 @@ public class PersistentExecutorErrorPathsTestWithFailoverAndPollingEnabled {
             throw new Exception("Problem with substitution parameters in message " + errorMessage);
     }
 
+    @Mode(TestMode.FULL)
     @Test
     public void testShutDownDerbyBeforeTaskExecutionFEWithPolling() throws Exception {
         runInServlet("testShutDownDerbyBeforeTaskExecution");
@@ -492,11 +495,13 @@ public class PersistentExecutorErrorPathsTestWithFailoverAndPollingEnabled {
         runInServlet("testSkipRunFailsOnOnlyExecutionAttemptNoAutoPurge");
     }
 
+    @Mode(TestMode.FULL)
     @Test
     public void testTransactionTimeoutFEWithPolling() throws Exception {
         runInServlet("testTransactionTimeout");
     }
 
+    @Mode(TestMode.FULL)
     @Test
     public void testTransactionTimeoutSuspendedTransactionFEWithPolling() throws Exception {
         runInServlet("testTransactionTimeoutSuspendedTransaction");
