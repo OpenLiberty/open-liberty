@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2019 IBM Corporation and others.
+ * Copyright (c) 2004, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -150,6 +150,10 @@ public class HttpChannelConfig {
     /** Regex to be used to verify that proxies in forwarded headers are known to user */
     private String proxiesRegex = HttpConfigConstants.DEFAULT_PROXIES_REGEX;
     private Pattern proxiesPattern = null;
+    /** Describes the maximum inflation ratio allowed for a request's body when decompressing */
+    private int decompressionRatioLimit = 200;
+    /** Describes the amount of times a request's body can be decompressed with a ratio above the decompressionRatioLimit before an exception in thrown */
+    private int decompressionTolerance = 3;
     /**
      * Set as an attribute to the remoteIP element to specify if X-Forwarded-* and Forwarded header
      * values affect the NCSA Access Log remote directives
@@ -422,6 +426,13 @@ public class HttpChannelConfig {
             if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_COMPRESSION_PREFERRED_ALGORITHM)) {
                 props.put(HttpConfigConstants.PROPNAME_COMPRESSION_PREFERRED_ALGORITHM, value);
             }
+            if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_DECOMPRESSION_RATIO_LIMIT)) {
+                props.put(HttpConfigConstants.PROPNAME_DECOMPRESSION_RATIO_LIMIT, value);
+            }
+
+            if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_DECOMPRESSION_TOLERANCE)) {
+                props.put(HttpConfigConstants.PROPNAME_DECOMPRESSION_TOLERANCE, value);
+            }
 
             props.put(key, value);
         }
@@ -473,6 +484,8 @@ public class HttpChannelConfig {
         parseCompression(props);
         parseCompressionTypes(props);
         parseCompressionPreferredAlgorithm(props);
+        parseDecompressionRatioLimit(props);
+        parseDecompressionTolerance(props);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "parseConfig");
@@ -1660,6 +1673,53 @@ public class HttpChannelConfig {
     }
 
     /**
+     * Check the configuration to see if the decompression ratio limit
+     * has changed.
+     *
+     * @param props
+     */
+    private void parseDecompressionRatioLimit(Map<?, ?> props) {
+        Object value = props.get(HttpConfigConstants.PROPNAME_DECOMPRESSION_RATIO_LIMIT);
+        if (null != value) {
+            try {
+                this.decompressionRatioLimit = convertInteger(value);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(tc, "Config: Decompression ratio limit is set to: " + getDecompressionRatioLimit());
+                }
+            } catch (NumberFormatException nfe) {
+                FFDCFilter.processException(nfe, getClass().getName() + ".parseDecompressionRatioLimit", "1");
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(tc, "Config: Invalid decompression ratio limit; " + value);
+                }
+            }
+        }
+    }
+
+    /**
+     * Check the configuration to see if the decompression tolerance has
+     * changed.
+     *
+     * @param props
+     */
+
+    private void parseDecompressionTolerance(Map<?, ?> props) {
+        Object value = props.get(HttpConfigConstants.PROPNAME_DECOMPRESSION_TOLERANCE);
+        if (null != value) {
+            try {
+                this.decompressionTolerance = convertInteger(value);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(tc, "Config: Decompression tolerance is set to: " + getDecompressionTolerance());
+                }
+            } catch (NumberFormatException nfe) {
+                FFDCFilter.processException(nfe, getClass().getName() + ".parseDecompressionTolerance", "1");
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(tc, "Config: Invalid decompression tolerance; " + value);
+                }
+            }
+        }
+    }
+
+    /**
      * Configured http protocol version used by this HttpChannel
      *
      * @return
@@ -2219,6 +2279,26 @@ public class HttpChannelConfig {
 
     public String getPreferredCompressionAlgorithm() {
         return this.preferredCompressionAlgorithm;
+    }
+
+    /**
+     * Query the maximum ratio the HTTP Channel will permit when decompressing
+     * a response that has been encoded.
+     *
+     * @return int
+     */
+    public int getDecompressionRatioLimit() {
+        return this.decompressionRatioLimit;
+    }
+
+    /**
+     * Query the maximum number of times the HTTP Channel will tolerate the decompression
+     * ratio to be above the set decompression ratio limit.
+     *
+     * @return int
+     */
+    public int getDecompressionTolerance() {
+        return this.decompressionTolerance;
     }
 
 }

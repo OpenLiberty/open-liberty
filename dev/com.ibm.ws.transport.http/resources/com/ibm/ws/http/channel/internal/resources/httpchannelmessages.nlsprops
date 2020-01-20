@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2019 IBM Corporation and others.
+# Copyright (c) 2002, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -161,3 +161,7 @@ compression.duplicateOverwriteAndAdd.useraction=If the default configuration mus
 compression.unsupportedAlgorithm=CWWKT0033W: An attempt was made to configure {0} as the server-preferred algorithm. The supported values are gzip, x-gzip, zlib, deflate, identity, and none. The default configuration {1} is used instead.
 compression.unsupportedAlgorithm.explanation=The configuration is attempting to set an unsupported algorithm as the server-preferred algorithm to use for compression. 
 compression.unsupportedAlgorithm.useraction= When defining the value, ensure that it is set to gzip, x-gzip, deflate, zlib, identity, or none.
+
+decompression.tolerance.reached=CWWKT0034E: Attempted to decompress a body with a ratio larger than tolerated.
+decompression.tolerance.reached.explanation=The amount of tolerated decompression cycles, defined by the 'decompressionTolerance' httpOption attribute, which resulted in a decompression ratio larger than the configured limit, has been reached. The decompression limit is defined by the 'decompressionRatioLimit' httpOption attribute.
+decompression.tolerance.reached.useraction=When this exception happens on a request body that is considered valid, consider reconfiguring the 'decompressionTolerance' and 'decompressionRatioLimit' httpOption attributes to achieve the desired decompression results.

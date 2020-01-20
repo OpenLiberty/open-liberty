@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2011, 2019 IBM Corporation and others.
+    Copyright (c) 2011, 2020 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -189,7 +189,13 @@
             id="incomingBodyBufferSize" required="false" type="Integer" min="1024" max="1048576" default="32768" />
             
         <AD name="%http.throwIOEForInboundConnections" description="%http.throwIOEForInboundConnections.desc"
-            id="ThrowIOEForInboundConnections" required="false" type="Boolean"/>   
+            id="ThrowIOEForInboundConnections" required="false" type="Boolean"/> 
+            
+        <AD name="%http.decompressionRatioLimit" description="%http.decompressionRatioLimit.desc"
+			id="decompressionRatioLimit" required="false" type="Integer" min="1" default="200" />
+
+		<AD name="%http.decompressionTolerance" description="%http.decompressionTolerance.desc"
+			id="decompressionTolerance" required="false" type="Integer" min="0" default="3" />	  
             
         <AD name="%http2.connectionIdleTimeout" description="%http2.connectionIdleTimeout.desc"
 			id="http2ConnectionIdleTimeout" required="false" type="String" ibm:type="duration(s)" min="0" default="0" />
