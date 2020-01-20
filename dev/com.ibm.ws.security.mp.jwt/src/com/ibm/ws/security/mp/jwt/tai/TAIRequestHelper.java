@@ -20,7 +20,6 @@ import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
 import com.ibm.ws.security.mp.jwt.MicroProfileJwtConfig;
 import com.ibm.ws.security.mp.jwt.TraceConstants;
 import com.ibm.ws.security.mp.jwt.error.MpJwtProcessingException;
-import com.ibm.ws.security.mp.jwt.impl.utils.ClientConstants;
 import com.ibm.ws.security.mp.jwt.impl.utils.MicroProfileJwtTaiRequest;
 
 /**
@@ -148,7 +147,6 @@ public class TAIRequestHelper {
 
     }
 
-    
     public String getBearerToken(HttpServletRequest req, MicroProfileJwtConfig clientConfig) {
         String methodName = "getBearerToken";
         if (tc.isDebugEnabled()) {
@@ -174,13 +172,28 @@ public class TAIRequestHelper {
             Tr.debug(tc, "Authorization header=", hdrValue);
         }
         String bearerAuthzMethod = "Bearer ";
-        if (hdrValue != null && hdrValue.startsWith(bearerAuthzMethod)) {
-            hdrValue = hdrValue.substring(bearerAuthzMethod.length());
+        if (hdrValue == null) {
+            return null; // header not there at all.
         }
-        if (tc.isDebugEnabled()) {
-            Tr.exit(tc, methodName, hdrValue);
+
+        if (hdrValue.startsWith(bearerAuthzMethod)) {
+            String result = hdrValue.substring(bearerAuthzMethod.length());
+            System.out.println("*** for header value of: " + hdrValue + " returning token: " + result);
+            return result; // normal case
         }
-        return hdrValue;
+        // experimental: take anything after a space in the value
+        // Token  mess,  foofie mess, etc.
+        if (hdrValue.contains(" ")) {
+            String result = hdrValue.substring(hdrValue.indexOf(" ") + 1);
+            System.out.println("*** for header value of: " + hdrValue + " returning token: " + result);
+            return hdrValue.substring(hdrValue.indexOf(" "));
+
+        }
+        // todo: why is this here?  instrumented trace not working?
+        //if (tc.isDebugEnabled()) {
+        //    Tr.exit(tc, methodName, hdrValue);
+        //}
+        return null;
     }
 
     String getBearerTokenFromParameter(HttpServletRequest req) {
@@ -214,7 +227,7 @@ public class TAIRequestHelper {
             Tr.debug(tc, "Specific config ID not provided, so will set generic config information for MpJwtTaiRequest object");
         }
         MicroProfileJwtTaiRequest result = setGenericAndFilteredConfigTaiRequestInfo(request, mpJwtTaiRequest, defaultConfig);
-        
+
         if (tc.isDebugEnabled()) {
             Tr.exit(tc, methodName, result);
         }
@@ -261,7 +274,7 @@ public class TAIRequestHelper {
                 }
             } else if (defaultConfig) {
                 mpJwtTaiRequest.addGenericConfig(mpJwtConfig);
-            } else if (!isMpJwtDefaultConfig(mpJwtConfig)){
+            } else if (!isMpJwtDefaultConfig(mpJwtConfig)) {
                 mpJwtTaiRequest.addGenericConfig(mpJwtConfig);
             }
         }
@@ -270,14 +283,14 @@ public class TAIRequestHelper {
         }
         return mpJwtTaiRequest;
     }
-    
+
     public boolean isMpJwtDefaultConfig(MicroProfileJwtConfig mpJwtConfig) {
         boolean isDefault = false;
         if ("defaultMpJwt".equals(mpJwtConfig.getUniqueId())) {
             isDefault = true;
         }
         return isDefault;
-        
+
     }
 
     MicroProfileJwtTaiRequest handleNoMatchingConfiguration(String configId, MicroProfileJwtTaiRequest mpJwtTaiRequest) {
