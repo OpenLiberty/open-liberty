@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.faulttolerance.test;
+package com.ibm.ws.lra.test;
 
 import java.util.EnumSet;
 import java.util.Set;

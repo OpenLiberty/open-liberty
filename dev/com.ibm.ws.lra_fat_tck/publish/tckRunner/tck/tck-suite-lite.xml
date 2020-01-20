@@ -7,51 +7,16 @@
     the specific language governing permissions and limitations under the License. -->
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
 
-<suite name="microprofile-faulttolerance-2.0-TCK" verbose="2"
+<suite name="microprofile-lra-1.0-lite-TCK" verbose="2"
     configfailurepolicy="continue">
 
-    <test name="microprofile-faulttolerance 2.0 TCK">
-        <method-selectors>
-            <method-selector>
-                <script language="beanshell">
-                     <!-- Some tests are sensitive to timing and can spuriously fail on slow build machines. -->
-                     <!-- We exclude all of these tests when running in lite mode -->
-                     <![CDATA[
-                     // All of these bulkhead tests are susceptable to timing issues or "not being parallel enough"
-                     // BulkheadAsynchTest
-                     !method.getName().startsWith("testBulkheadClassAsynchronous10") &&
-                     !method.getName().startsWith("testBulkheadMethodAsynchronous10") &&
-                     !method.getName().startsWith("testBulkheadClassAsynchronous3") &&
-                     !method.getName().startsWith("testBulkheadMethodAsynchronous3") &&
-                     !method.getName().startsWith("testBulkheadClassAsynchronousDefault") &&
-                     !method.getName().startsWith("testBulkheadMethodAsynchronousDefault") &&
-                     !method.getName().startsWith("testBulkheadClassAsynchronousQueueing10") &&
-                     !method.getName().startsWith("testBulkheadMethodAsynchronousQueueing10") &&
-                     
-                     // BulkheadAsynchRetryTest
-                     !method.getName().startsWith("testBulkheadClassAsynchronousPassiveRetry55") &&
-                     !method.getName().startsWith("testBulkheadMethodAsynchronousRetry55") &&
-                     !method.getName().startsWith("testBulkheadMethodAsynchronousRetry55Trip") &&
-                     !method.getName().startsWith("testBulkheadMethodAsynchronous55RetryOverload") &&
-                     !method.getName().startsWith("testBulkheadClassAsynchronous55RetryOverload") &&
-                     !method.getName().startsWith("testBulkheadPassiveRetryMethodAsynchronous55") &&
-                     !method.getName().startsWith("testBulkheadRetryClassAsynchronous55") &&
-                     !method.getName().startsWith("testBulkheadQueReplacesDueToClassRetryFailures") &&
-                     !method.getName().startsWith("testNoRetriesWithoutRetryOn") &&
-                     !method.getName().startsWith("testNoRetriesWithAbortOn") &&
-                     
-                     // BulkheadFutureTest
-                     !method.getDeclaringClass().getSimpleName().equals("BulkheadFutureTest")
-                     
-                     // Note: BulkheadSynchRetryTest and BulkheadSynchTest look vulnerable to the same issues but we haven't seen them fail
-                ]]>
-                </script>
-            </method-selector>
-        </method-selectors>
-        
-        <packages>
-            <package name="org.eclipse.microprofile.fault.tolerance.tck.*">
-            </package>
-        </packages>
+    <test name="microprofile-lra 1.0 TCK">
+        <classes>
+            <class name="org.eclipse.microprofile.lra.tck.TckTests">
+                <methods>
+                    <include name="closeLRA"/>
+                </methods>
+            </class>
+        </classes>
     </test>
 </suite>
