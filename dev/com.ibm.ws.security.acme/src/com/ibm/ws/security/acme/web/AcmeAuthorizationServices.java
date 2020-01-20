@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,12 +25,16 @@ public class AcmeAuthorizationServices {
 
     @Activate
     protected void activate(ComponentContext cc) {
-        Tr.info(tc, "**** JTM **** AcmeAuthorizationServices entered activate() method!");
+		if (tc.isDebugEnabled()) {
+			Tr.debug(tc, "AcmeAuthorizationServices entered activate() method! Review if this class is still needed.");
+		}
     }
 
     @Deactivate
     protected void deactivate(ComponentContext cc) {
-        Tr.info(tc, "**** JTM **** AcmeAuthorizationServices entered deactivate() method!");
+		if (tc.isDebugEnabled()) {
+			Tr.debug(tc, "AcmeAuthorizationServices entered deactivate() method!");
+		}
     }
 
 }
