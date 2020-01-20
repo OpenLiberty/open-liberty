@@ -31,6 +31,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.faulttolerance.spi.AsyncRequestContextController;
+import com.ibm.ws.microprofile.faulttolerance.spi.AsyncRequestContextController.ActivatedContext;
 import com.ibm.ws.microprofile.faulttolerance.spi.BulkheadPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.CircuitBreakerPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.Executor;
@@ -245,28 +246,30 @@ public abstract class AsyncExecutor<W> implements Executor<W> {
             ArrayList<ThreadContext> context = null;
             try {
                 context = contextDescriptor.taskStarting();
+
+                if (methodResult == null) {
+                    ActivatedContext requestContext = null;
+                    if (asyncRequestContext != null) {
+                        requestContext = asyncRequestContext.activateContext();
+                    }
+                    
+                    try {
+                        W result = executionContext.getCallable().call();
+                        methodResult = MethodResult.success(result);
+                    } catch (Throwable e) {
+                        methodResult = MethodResult.failure(e);
+                    } finally {
+                        contextDescriptor.taskStopping(context);
+                    }
+
+                    if (asyncRequestContext != null) {
+                        requestContext.deactivate();
+                    }
+                }
             } catch (IllegalStateException e) {
                 // The application or module has gone away, we can no longer run things for this app
                 // Mark this as an internal failure as we don't want any retries or further processing to occur
                 methodResult = MethodResult.internalFailure(createAppStoppedException(e, attemptContext.getExecutionContext()));
-            }
-
-            if (methodResult == null) {
-                if (asyncRequestContext != null) {
-                    asyncRequestContext.activateContext();
-                }
-                try {
-                    W result = executionContext.getCallable().call();
-                    methodResult = MethodResult.success(result);
-                } catch (Throwable e) {
-                    methodResult = MethodResult.failure(e);
-                } finally {
-                    contextDescriptor.taskStopping(context);
-                }
-
-                if (asyncRequestContext != null) {
-                    asyncRequestContext.deactivateContext();
-                }
             }
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {

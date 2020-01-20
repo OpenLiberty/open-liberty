@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.faulttolerance.test.util;
 
+import static org.junit.Assert.fail;
+
 import com.ibm.ws.microprofile.faulttolerance.spi.AsyncRequestContextController;
 
 public class MockAsyncRequestContext implements AsyncRequestContextController {
@@ -18,13 +20,26 @@ public class MockAsyncRequestContext implements AsyncRequestContextController {
     public int deactivateContextCount = 0;
 
     @Override
-    public void activateContext() {
+    public ActivatedContext activateContext() {
         activateContextCount++;
+        return new MockActivatedContextImpl();
     }
 
-    @Override
-    public void deactivateContext() {
-        deactivateContextCount++;
+    private class MockActivatedContextImpl implements ActivatedContext {
+
+        boolean isDeactivated = false;
+
+        @Override
+        public void deactivate() {
+            // ActivatedContext should only ever deactivated once per method attempt
+            if (!isDeactivated) {
+                isDeactivated = true;
+                deactivateContextCount++;
+            } else {
+                fail("Activated context deactivated twice");
+            }
+        }
+
     }
 
     public int getActivateContextCount() {

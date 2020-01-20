@@ -10,35 +10,44 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.faulttolerance.cdi20;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.ContextNotActiveException;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.context.control.RequestContextController;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import com.ibm.ws.microprofile.faulttolerance.spi.AsyncRequestContextController;
 
-@ApplicationScoped
+@Dependent
 public class AsyncRequestContextControllerImpl implements AsyncRequestContextController {
 
-    private final RequestContextController requestContextController;
-
-    public AsyncRequestContextControllerImpl() {
-        // No-arg constructor required for bean
-        requestContextController = null;
-    }
-
     @Inject
-    public AsyncRequestContextControllerImpl(RequestContextController requestContextController) {
-        this.requestContextController = requestContextController;
-    }
+    private Instance<RequestContextController> requestContextControllerInstance;
 
     @Override
-    public void activateContext() {
+    public ActivatedContext activateContext() {
+        RequestContextController requestContextController = requestContextControllerInstance.get();
         requestContextController.activate();
+        return new ActivatedContextImpl(requestContextController);
     }
 
-    @Override
-    public void deactivateContext() {
-        requestContextController.deactivate();
+    private static class ActivatedContextImpl implements ActivatedContext {
+
+        private final RequestContextController requestContextController;
+
+        public ActivatedContextImpl(RequestContextController requestContextController) {
+            this.requestContextController = requestContextController;
+        }
+
+        @Override
+        public void deactivate() {
+            try {
+                requestContextController.deactivate();
+            } catch (ContextNotActiveException e) {
+                // If the application is shut down during the execution, the context may have already been deactivated
+            }
+        }
+
     }
 
 }

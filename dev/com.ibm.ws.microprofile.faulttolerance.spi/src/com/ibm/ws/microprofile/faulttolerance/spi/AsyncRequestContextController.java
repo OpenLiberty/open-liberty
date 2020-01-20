@@ -10,9 +10,50 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.faulttolerance.spi;
 
+/**
+ * Used to activate and deactivate the request context.
+ * <p>
+ * activateContext() should return an ActivatedContext object to deactivate the request context.
+ * <p>
+ * Example:
+ *
+ * <pre>
+ * <code>
+ *     &#64;Inject
+ *     private final AsyncRequestContextController asyncRequestContext;
+ *
+ *     public void executeAsyncMethod() {
+ *          ActivatedContext requestContext = asyncRequestContext.activateContext();
+ *          try {
+ *              // Do something while request context is active
+ *          } finally {
+ *              requestContext.deactivate();
+ *          }
+ *     }
+ * </code>
+ * </pre>
+ */
 public interface AsyncRequestContextController {
 
-    public void activateContext();
+    /**
+     * Activates the request context on the current thread.
+     * <p>
+     * If the request context is already active, this method does nothing and returns an {@link ActivatedContext} which does
+     * nothing in its {@link ActivatedContext#deactivate()} method.
+     *
+     * @return {@link ActivatedContext} which must be used to deactivate the context again.
+     */
+    public ActivatedContext activateContext();
 
-    public void deactivateContext();
+    /**
+     * Represents a request context started with {@link AsyncRequestContextController#activateContext()}.
+     */
+    public interface ActivatedContext {
+
+        /**
+         * Deactivates the request context linked to this object.
+         */
+        public void deactivate();
+
+    }
 }
